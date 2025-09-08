@@ -664,10 +664,7 @@ class RasterizerContext:
                     self.add_dynamic_node(pbd_entity, None)
 
                 for idx in self.rendered_envs_idx:
-                    if pbd_entity.surface.vis_mode == "recon":
-                        self.add_dynamic_node(pbd_entity, None)
-
-                    elif pbd_entity.surface.vis_mode == "particle":
+                    if pbd_entity.surface.vis_mode == "particle":
                         if self.render_particle_as == "sphere":
                             mesh = mu.create_sphere(
                                 self.sim.pbd_solver.particle_radius * self.particle_size_scale, subdivisions=1
