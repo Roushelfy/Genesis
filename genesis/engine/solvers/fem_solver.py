@@ -554,6 +554,8 @@ class FEMSolver(Solver):
 
         state = {}
         visitor = SceneVisitor(self._scene_ipc)
+        i_g = 0
+        list_pos = []
         for geo_slot in visitor.geometries():
             if isinstance(geo_slot, SimplicialComplexSlot):
                 geo = geo_slot.geometry()
@@ -562,21 +564,14 @@ class FEMSolver(Solver):
                     if geo.instances().size() >= 1:
                         proc_geo = merge(apply_transform(geo))
                     pos = proc_geo.positions().view().reshape(-1, 3)
-                    # tets = proc_geo.tetrahedra().topo().view().reshape(-1, 4)
-                    # vel_slot = proc_geo.vertices().find(builtin.velocity)
-                    # vel = vel_slot.view().reshape(-1, 3) if vel_slot is not None else np.zeros_like(pos)
-                    state[f"tet_{geo_slot.id()}"] = {
-                        "positions": pos,
-                        # 'velocities': vel,
-                        # 'tets': tets,
-                    }
-                    print(
-                        "pos",
-                        geo_slot,
-                        state[f"tet_{geo_slot.id()}"]["positions"].shape,
-                        # state[f"tet_{geo_slot.id()}"]["positions"].mean(),
-                    )
+
+                    list_pos.append(pos)
                     # print("pos", pos.shape, pos.mean())
+
+        for i_e, entity in enumerate(self._entities):
+            all_env_pos = np.stack([list_pos[i_b * self._B + i_e] for i_b in range(self._B)], axis=0)
+            print("all_env_pos", all_env_pos.shape)
+            entity.set_pos(0, all_env_pos)
 
         # state = ipc_sim.step()
         # print(state['tet_0']['positions'].shape)
@@ -1134,7 +1129,6 @@ class FEMSolver(Solver):
             entity.process_input_grad()
 
     def substep_pre_coupling(self, f):
-        print("self.is_active()", self.is_active(), self._options.use_IPC)
         if self.is_active():
             if self._options.use_IPC:
                 self.step_ipc(f)
