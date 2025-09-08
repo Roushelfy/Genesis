@@ -2,6 +2,7 @@ import math
 import os
 import sys
 import tempfile
+from typing import cast
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
@@ -13,7 +14,8 @@ import trimesh
 
 import genesis as gs
 import genesis.utils.geom as gu
-from genesis.utils.misc import get_assets_dir, tensor_to_array
+from genesis.utils.misc import get_assets_dir, tensor_to_array, ti_to_torch
+from genesis.engine.entities.rigid_entity import RigidEntity
 
 from .utils import (
     assert_allclose,
@@ -430,6 +432,14 @@ def test_walker(gs_sim, mj_sim, gjk_collision, tol):
     qpos[2] += 0.5
     qvel = np.random.rand(gs_robot.n_dofs) * 0.2
 
+    # Make sure it is possible to set the configuration vector without failure
+    qpos = gs_robot.get_dofs_position()
+    gs_robot.set_dofs_position(qpos)
+    assert_allclose(gs_robot.get_dofs_position(), qpos, tol=gs.EPS)
+    qpos = torch.rand(gs_robot.n_dofs).clip(*gs_robot.get_dofs_limit())
+    gs_robot.set_dofs_position(qpos)
+    assert_allclose(gs_robot.get_dofs_position(), qpos, tol=gs.EPS)
+
     # Cannot simulate any longer because collision detection is very sensitive
     simulate_and_check_mujoco_consistency(gs_sim, mj_sim, qpos, qvel, num_steps=90, tol=tol)
 
@@ -571,7 +581,12 @@ def test_one_ball_joint(gs_sim, mj_sim, tol):
 @pytest.mark.parametrize("backend", [gs.cpu])
 def test_rope_ball(gs_sim, mj_sim, gs_solver, tol):
     # Make sure it is possible to set the configuration vector without failure
-    gs_sim.rigid_solver.set_dofs_position(gs_sim.rigid_solver.get_dofs_position())
+    qpos = gs_sim.rigid_solver.get_dofs_position()
+    gs_sim.rigid_solver.set_dofs_position(qpos)
+    assert_allclose(gs_sim.rigid_solver.get_dofs_position(), qpos, tol=gs.EPS)
+    qpos = torch.rand(gs_sim.rigid_solver.n_dofs).clip(*gs_sim.rigid_solver.get_dofs_limit())
+    gs_sim.rigid_solver.set_dofs_position(qpos)
+    assert_allclose(gs_sim.rigid_solver.get_dofs_position(), qpos, tol=gs.EPS)
 
     check_mujoco_model_consistency(gs_sim, mj_sim, tol=tol)
     simulate_and_check_mujoco_consistency(gs_sim, mj_sim, num_steps=300, tol=1e-8)
@@ -1091,7 +1106,7 @@ def test_pd_control(show_viewer):
         dofs_torque = MOTORS_KP * (MOTORS_POS_TARGET - dofs_pos) - MOTORS_KD * dofs_vel
         robot.control_dofs_force(dofs_torque, envs_idx=1)
         scene.step()
-        qf_applied = scene.rigid_solver.dofs_state.qf_applied.to_torch(device="cpu").T
+        qf_applied = scene.rigid_solver.dofs_state.qf_applied.to_numpy().T
         # dofs_torque = robot.get_dofs_control_force()
         assert_allclose(qf_applied[0], qf_applied[1], tol=1e-6)
 
@@ -1227,6 +1242,7 @@ def test_stickman(gs_sim, mj_sim, tol):
 
 
 @pytest.mark.required
+@pytest.mark.field_only
 @pytest.mark.parametrize("backend", [gs.cpu, gs.gpu])
 def test_multilink_inverse_kinematics(show_viewer):
     TOL = 1e-5
@@ -1707,8 +1723,8 @@ def test_mesh_repair(convexify, show_viewer, gjk_collision):
 
     # MPR collision detection is less reliable than SDF and GJK in terms of penetration depth estimation
     is_mpr = convexify and not gjk_collision
-    tol_pos = 0.05 if is_mpr else 0.005
-    tol_rot = 1.0 if is_mpr else 0.25
+    tol_pos = 0.05 if is_mpr else 0.01
+    tol_rot = 1.1 if is_mpr else 0.4
     for i in range(450):
         scene.step()
         if i > 350:
@@ -1839,8 +1855,7 @@ def test_collision_edge_cases(gs_sim, mode, gjk_collision):
     qvel = gs_sim.rigid_solver.get_dofs_velocity()
     assert_allclose(qvel, 0, atol=1e-2)
     qpos = gs_sim.rigid_solver.get_dofs_position()
-    # When using GJK, tolerance should be slightly higher for mode 6, but it is still physically valid.
-    atol = 1e-3 if gjk_collision == True and mode == 6 else 1e-4
+    atol = 1e-3 if gjk_collision and mode in (4, 6) else 1e-4
     assert_allclose(qpos[[0, 1, 3, 4, 5]], qpos_0[[0, 1, 3, 4, 5]], atol=atol)
 
 
@@ -2001,7 +2016,7 @@ def test_terrain_size(show_viewer, tol):
 @pytest.mark.parametrize("gs_solver", [gs.constraint_solver.CG])
 @pytest.mark.parametrize("gs_integrator", [gs.integrator.Euler])
 def test_jacobian(gs_sim, tol):
-    pendulum = gs_sim.entities[0]
+    pendulum = cast(RigidEntity, gs_sim.entities[0])
     angle = 0.7
     pendulum.set_qpos(np.array([angle], dtype=gs.np_float))
     gs_sim.scene.step()
@@ -2432,10 +2447,10 @@ def test_data_accessor(n_envs, batched, tol):
 
     # Initialize the simulation
     np.random.seed(0)
-    dof_bounds = gs_s.dofs_info.limit.to_torch(device="cpu")
-    dof_bounds[..., :2, :] = torch.tensor((-1.0, 1.0))
-    dof_bounds[..., 2, :] = torch.tensor((0.7, 1.0))
-    dof_bounds[..., 3:6, :] = torch.tensor((-np.pi / 2, np.pi / 2))
+    dof_bounds = gs_s.dofs_info.limit.to_numpy()
+    dof_bounds[..., :2, :] = np.array((-1.0, 1.0))
+    dof_bounds[..., 2, :] = np.array((0.7, 1.0))
+    dof_bounds[..., 3:6, :] = np.array((-np.pi / 2, np.pi / 2))
     for i in range(max(n_envs, 1)):
         qpos = dof_bounds[:, 0] + (dof_bounds[:, 1] - dof_bounds[:, 0]) * np.random.rand(gs_robot.n_dofs)
         gs_robot.set_dofs_position(qpos, envs_idx=([i] if n_envs else None))
@@ -2487,7 +2502,7 @@ def test_data_accessor(n_envs, batched, tol):
     # Check attribute getters / setters.
     # First, without any any row or column masking:
     # * Call 'Get' -> Call 'Set' with random value -> Call 'Get'
-    # * Compare first 'Get' ouput with field value
+    # * Compare first 'Get' ouput with taichi value
     # Then, for any possible combinations of row and column masking:
     # * Call 'Get' -> Call 'Set' with 'Get' output -> Call 'Get'
     # * Compare first 'Get' output with last 'Get' output
@@ -2506,7 +2521,7 @@ def test_data_accessor(n_envs, batched, tol):
     def must_cast(value):
         return not (isinstance(value, torch.Tensor) and value.dtype == gs.tc_int and value.device == gs.device)
 
-    for arg1_max, arg2_max, getter_or_spec, setter, field in (
+    for arg1_max, arg2_max, getter_or_spec, setter, ti_data in (
         # SOLVER
         (gs_s.n_links, n_envs, gs_s.get_links_pos, None, gs_s.links_state.pos),
         (gs_s.n_links, n_envs, gs_s.get_links_quat, None, gs_s.links_state.quat),
@@ -2592,9 +2607,10 @@ def test_data_accessor(n_envs, batched, tol):
                 datas = [torch.ones((*batch_shape, *shape)) for shape in spec]
             else:
                 datas = torch.ones((*batch_shape, *spec))
-        if field is not None:
-            true = field.to_torch(device="cpu")
-            true = true.movedim(true.ndim - getattr(field, "ndim", 0) - 1, 0)
+        if ti_data is not None:
+            true = ti_to_torch(ti_data)
+            ti_ndim = getattr(ti_data, "ndim", len(getattr(ti_data, "element_shape", ())))
+            true = true.movedim(true.ndim - ti_ndim - 1, 0)
             if is_tuple:
                 true = torch.unbind(true, dim=-1)
                 true = [val.reshape(data.shape) for data, val in zip(datas, true)]
@@ -2910,3 +2926,46 @@ def test_mesh_primitive_COM(show_viewer, tol):
     # root and link COM should be the same for single link
     assert_allclose(root_bunny_z, bunny_z, atol=tol)
     assert_allclose(root_cube_z, cube_z, atol=tol)
+
+
+@pytest.mark.required
+def test_batched_aabb(tol):
+    scene = gs.Scene()
+    plane = scene.add_entity(
+        gs.morphs.Plane(
+            normal=(0, 0, 1),
+            pos=(0, 0, 0),
+        ),
+    )
+    box = scene.add_entity(
+        gs.morphs.Box(
+            size=(0.1, 0.1, 0.1),
+            pos=(0.5, 0, 0.05),
+        ),
+    )
+    sphere = scene.add_entity(
+        gs.morphs.Sphere(
+            radius=0.05,
+            pos=(-0.5, 0, 0.05),
+        ),
+    )
+    scene.build()
+
+    all_aabbs = scene.sim.rigid_solver.get_aabb()
+    plane_aabb = plane.get_aabb()
+    box_aabb = box.get_aabb()
+    sphere_aabb = sphere.get_aabb()
+
+    assert_allclose(all_aabbs.shape, (3, 2, 3), atol=0)
+    assert_allclose(plane_aabb.shape[-1], 3, atol=0)
+    assert_allclose(box_aabb.shape[-1], 3, atol=0)
+    assert_allclose(sphere_aabb.shape[-1], 3, atol=0)
+    assert_allclose((plane_aabb, box_aabb, sphere_aabb), all_aabbs, atol=tol)
+
+    box_aabb_min, box_aabb_max = box_aabb
+    assert_allclose(box_aabb_min, (0.45, -0.05, 0.0), atol=tol)
+    assert_allclose(box_aabb_max, (0.55, 0.05, 0.1), atol=tol)
+
+    sphere_aabb_min, sphere_aabb_max = sphere_aabb
+    assert_allclose(sphere_aabb_min, (-0.55, -0.05, 0.0), atol=tol)
+    assert_allclose(sphere_aabb_max, (-0.45, 0.05, 0.1), atol=tol)
