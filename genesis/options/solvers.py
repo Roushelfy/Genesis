@@ -602,6 +602,8 @@ class FEMOptions(Options):
     use_implicit_solver : bool, optional
         Whether to use the implicit solver. Defaults to False.
         Implicit solver is a more stable solver for FEM. It can be used with a large time step.
+    use_IPC : bool, optional
+        Whether to use the IPC solver. Defaults to False.
     n_newton_iterations : int, optional
         Maximum number of Newton iterations. Defaults to 1. Only used when `use_implicit_solver` is True.
     n_pcg_iterations : int, optional
@@ -629,6 +631,7 @@ class FEMOptions(Options):
     damping: Optional[float] = 0.0
     floor_height: float = None
     use_implicit_solver: bool = False
+    use_IPC: bool = False
     n_newton_iterations: int = 1
     n_pcg_iterations: int = 500
     n_linesearch_iterations: int = 0

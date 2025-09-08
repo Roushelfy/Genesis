@@ -38,6 +38,7 @@ class FEMSolver(Solver):
         self._damping_alpha = options.damping_alpha
         self._damping_beta = options.damping_beta
         self._enable_vertex_constraints = options.enable_vertex_constraints
+        self._options = options
 
         # use scaled volume for better numerical stability, similar to p_vol_scale in mpm
         self._vol_scale = float(1e4)
@@ -403,6 +404,9 @@ class FEMSolver(Solver):
         if self._enable_vertex_constraints and not self._constraints_initialized:
             self.init_constraints()
 
+        if self._options.use_IPC:
+            self.build_ipc()
+
     def add_entity(self, idx, material, morph, surface):
         # add material's update methods if not matching any existing material
         exist = False
@@ -441,6 +445,147 @@ class FEMSolver(Solver):
     # ------------------------------------------------------------------------------------
     # ----------------------------------- simulation -------------------------------------
     # ------------------------------------------------------------------------------------
+
+    def _default_ipc_config(self):
+        config = self._uipc.core.Scene.default_config()
+        config["gravity"] = [[0.0], [-0.0], [-9.8]]
+        config["dt"] = 0.001
+        config["contact"]["d_hat"] = 0.001
+        config["newton"]["velocity_tol"] = 0.001
+        config["contact"]["enable"] = True
+        config["contact"]["friction"]["enable"] = False
+        config["line_search"]["max_iter"] = 30
+        config["linear_system"]["tol_rate"] = 1e-4
+        config["sanity_check"]["enable"] = False
+        return config
+
+    def build_ipc(self):
+        import uipc as _uipc  # type: ignore
+        from asset_dir import AssetDir
+        from uipc import Logger, Timer
+
+        Logger.set_level(Logger.Level.Error)
+        Timer.disable_all()
+
+        self._uipc = _uipc
+        config = self._default_ipc_config()
+
+        workspace = AssetDir.output_path(__file__)  # TODO, change workspace path
+
+        this_folder = AssetDir.folder(__file__)
+
+        engine = self._uipc.core.Engine("cuda", workspace)
+        world = self._uipc.core.World(engine)
+        scene = self._uipc.core.Scene(config)
+        self._engine = engine
+        self._world = world
+        self._scene_ipc = scene
+
+        self.construct_scene_ipc()
+        world.init(scene)
+
+    def construct_scene_ipc(self):
+        from uipc.constitution import AffineBodyConstitution, StableNeoHookean, ElasticModuli
+        from uipc.geometry import ground, label_surface, tetmesh
+        from uipc.unit import MPa, GPa
+        from asset_dir import AssetDir
+
+        # create constituiton
+        abd = AffineBodyConstitution()
+        stk = StableNeoHookean()
+        # create constraint
+        # rm = RotatingMotor()
+        scene_contacts = {}
+
+        scene = self._scene_ipc
+        scene.contact_tabular().default_model(0.1, 1e9)
+
+        # close the collision between different scene
+        for i in range(self._B):
+            scene_contacts[i] = scene.contact_tabular().create_subscene(f"contact_model{i}")
+        for i in range(self._B):
+            for j in range(self._B):
+                if i != j:
+                    scene.contact_tabular().subscene_insert(scene_contacts[i], scene_contacts[j], False)
+        # close the collision within the same scene
+        # TODO ask kemeng: what is contact_tabular?
+        cet0 = scene.contact_tabular().create("contact0")
+        cet1 = scene.contact_tabular().create("contact1")
+
+        # cube_mesh0 = tetmesh(mesh_trimesh_dict["cube"][0], mesh_trimesh_dict["cube"][1])
+        # blob_mesh0 = tetmesh(mesh_trimesh_dict["blob"][0], mesh_trimesh_dict["blob"][1])
+
+        cube_obj = {}
+        cube_mesh = {}
+        blob_obj = {}
+        blob_mesh = {}
+        self._mesh_handles = {}
+
+        self.list_env_obj = []
+        self.list_env_mesh = []
+        for i_b in range(self._B):
+            self.list_env_obj.append([])
+            self.list_env_mesh.append([])
+            for i_e, entity in enumerate(self._entities):
+                self.list_env_obj[i_b].append(scene.objects().create(f"obj_{i_b}_{i_e}"))
+                self.list_env_mesh[i_b].append(tetmesh(entity.init_positions.cpu().numpy(), entity.elems))
+                scene_contacts[i_b].subscene_append(self.list_env_mesh[i_b][i_e])
+                label_surface(self.list_env_mesh[i_b][i_e])
+                moduli_box = ElasticModuli.youngs_poisson(1e3 * pow(3, i_b), 0.45)
+                stk.apply_to(self.list_env_mesh[i_b][i_e], moduli_box)  # 100 MPa
+                self.list_env_obj[i_b][i_e].geometries().create(self.list_env_mesh[i_b][i_e])
+                self._mesh_handles[f"gs_ipc_{i_b}_{i_e}"] = self.list_env_mesh[i_b][i_e]
+                print("i_e", i_e, entity.init_positions.cpu().numpy().shape)
+
+        ground_height = 0
+        ground_obj = scene.objects().create("ground")
+        ground_geo = ground(ground_height, [0, 0, 1])
+        ground_obj.geometries().create(ground_geo)
+
+    def step_ipc(self, f):
+
+        self._world.advance()
+        self._world.retrieve()
+
+        # Gather full volumetric tet states (all tet objects in scene)
+        from uipc import builtin
+        from uipc.backend import SceneVisitor
+        from uipc.geometry import SimplicialComplexSlot, apply_transform, merge
+
+        state = {}
+        visitor = SceneVisitor(self._scene_ipc)
+        for geo_slot in visitor.geometries():
+            if isinstance(geo_slot, SimplicialComplexSlot):
+                geo = geo_slot.geometry()
+                if geo.dim() == 3:
+                    proc_geo = geo
+                    if geo.instances().size() >= 1:
+                        proc_geo = merge(apply_transform(geo))
+                    pos = proc_geo.positions().view().reshape(-1, 3)
+                    # tets = proc_geo.tetrahedra().topo().view().reshape(-1, 4)
+                    # vel_slot = proc_geo.vertices().find(builtin.velocity)
+                    # vel = vel_slot.view().reshape(-1, 3) if vel_slot is not None else np.zeros_like(pos)
+                    state[f"tet_{geo_slot.id()}"] = {
+                        "positions": pos,
+                        # 'velocities': vel,
+                        # 'tets': tets,
+                    }
+                    print(
+                        "pos",
+                        geo_slot,
+                        state[f"tet_{geo_slot.id()}"]["positions"].shape,
+                        # state[f"tet_{geo_slot.id()}"]["positions"].mean(),
+                    )
+                    # print("pos", pos.shape, pos.mean())
+
+        # state = ipc_sim.step()
+        # print(state['tet_0']['positions'].shape)
+        # if 'tet_0' in state:
+        #     cube.set_pos(state['tet_0']['positions'])
+        # if 'tet_1' in state:
+        #     blob.set_pos(state['tet_1']['positions'])
+        # scene._t += 1
+        # scene._visualizer.update(force=True, auto=True)
 
     @ti.kernel
     def init_pos_and_vel(self, f: ti.i32):
@@ -989,8 +1134,11 @@ class FEMSolver(Solver):
             entity.process_input_grad()
 
     def substep_pre_coupling(self, f):
+        print("self.is_active()", self.is_active(), self._options.use_IPC)
         if self.is_active():
-            if self._use_implicit_solver:
+            if self._options.use_IPC:
+                self.step_ipc(f)
+            elif self._use_implicit_solver:
                 self.precompute_material_data(f)
                 self.init_pos_and_inertia(f)
                 self.batch_solve(f)
