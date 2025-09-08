@@ -535,7 +535,6 @@ class FEMSolver(Solver):
                 stk.apply_to(self.list_env_mesh[i_b][i_e], moduli_box)  # 100 MPa
                 self.list_env_obj[i_b][i_e].geometries().create(self.list_env_mesh[i_b][i_e])
                 self._mesh_handles[f"gs_ipc_{i_b}_{i_e}"] = self.list_env_mesh[i_b][i_e]
-                print("i_e", i_e, entity.init_positions.cpu().numpy().shape)
 
         ground_height = 0
         ground_obj = scene.objects().create("ground")
@@ -566,21 +565,10 @@ class FEMSolver(Solver):
                     pos = proc_geo.positions().view().reshape(-1, 3)
 
                     list_pos.append(pos)
-                    # print("pos", pos.shape, pos.mean())
 
         for i_e, entity in enumerate(self._entities):
-            all_env_pos = np.stack([list_pos[i_b * self._B + i_e] for i_b in range(self._B)], axis=0)
-            print("all_env_pos", all_env_pos.shape)
+            all_env_pos = np.stack([list_pos[i_b * len(self._entities) + i_e] for i_b in range(self._B)], axis=0)
             entity.set_pos(0, all_env_pos)
-
-        # state = ipc_sim.step()
-        # print(state['tet_0']['positions'].shape)
-        # if 'tet_0' in state:
-        #     cube.set_pos(state['tet_0']['positions'])
-        # if 'tet_1' in state:
-        #     blob.set_pos(state['tet_1']['positions'])
-        # scene._t += 1
-        # scene._visualizer.update(force=True, auto=True)
 
     @ti.kernel
     def init_pos_and_vel(self, f: ti.i32):
