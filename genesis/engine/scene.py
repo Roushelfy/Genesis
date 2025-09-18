@@ -733,9 +733,16 @@ class Scene(RBC):
         with gs.logger.timer(f"Building scene ~~~<{self._uid}>~~~..."):
             self._parallelize(n_envs, env_spacing, n_envs_per_row, center_envs_at_origin)
 
+            # Check if any solver needs IPC and initialize it
+            self._init_ipc_if_needed()
+
             # simulator
             with open(os.devnull, "w") as stderr, redirect_libc_stderr(stderr):
                 self._sim.build()
+
+            # Initialize IPC world after all solvers have added their content
+            if hasattr(self, '_ipc_world'):
+                self._finalize_ipc()
 
             # reset state
             self._reset()
@@ -755,6 +762,212 @@ class Scene(RBC):
             self.FPS_tracker = FPSTracker(self.n_envs, alpha=self.profiling_options.FPS_tracker_alpha)
 
         gs.global_scene_list.add(self)
+
+    def _init_ipc_if_needed(self):
+        """Initialize IPC environment if any solver has use_IPC=True"""
+        needs_ipc = False
+
+        # Check if FEM solver needs IPC
+        if hasattr(self, 'fem_options') and self.fem_options.use_IPC:
+            needs_ipc = True
+
+        # Check if Rigid solver needs IPC
+        if hasattr(self, 'rigid_options') and self.rigid_options.use_IPC:
+            needs_ipc = True
+
+        if needs_ipc:
+            try:
+                import uipc as _uipc  # type: ignore
+                from asset_dir import AssetDir
+                from uipc import Logger, Timer
+
+                Logger.set_level(Logger.Level.Error)
+                Timer.disable_all()
+
+                self._uipc = _uipc
+                config = self._default_ipc_config()
+
+                workspace = AssetDir.output_path(__file__)
+                engine = self._uipc.core.Engine("cuda", workspace)
+                world = self._uipc.core.World(engine)
+                scene = self._uipc.core.Scene(config)
+
+                # Store IPC components in scene for solvers to access
+                self._ipc_engine = engine
+                self._ipc_world = world
+                self._ipc_scene = scene
+
+                # Initialize basic IPC scene structure
+                self._init_basic_ipc_scene()
+
+                # Note: world.init(scene) will be called after all solvers add their content
+
+                gs.logger.info("IPC environment initialized successfully")
+
+            except ImportError:
+                gs.logger.error("UIPC library not found. Cannot initialize IPC environment.")
+                raise
+            except Exception as e:
+                gs.logger.error(f"Failed to initialize IPC environment: {e}")
+                raise
+
+    def _default_ipc_config(self):
+        """Default IPC configuration"""
+        config = self._uipc.core.Scene.default_config()
+        config["gravity"] = [[0.0], [-0.0], [-9.8]]
+        config["dt"] = 0.001
+        config["contact"]["d_hat"] = 0.001
+        config["newton"]["velocity_tol"] = 0.001
+        config["contact"]["enable"] = True
+        config["contact"]["friction"]["enable"] = False
+        config["line_search"]["max_iter"] = 30
+        config["linear_system"]["tol_rate"] = 1e-4
+        config["sanity_check"]["enable"] = False
+        return config
+
+    def _init_basic_ipc_scene(self):
+        """Initialize basic IPC scene structure"""
+        from uipc.constitution import AffineBodyConstitution, StableNeoHookean
+        from uipc.geometry import ground
+
+        # Create constitutions
+        abd = AffineBodyConstitution()
+        stk = StableNeoHookean()
+
+        # Add constitutions to scene
+        self._ipc_scene.constitution_tabular().insert(abd)
+        self._ipc_scene.constitution_tabular().insert(stk)
+
+        # Set up contact model (matching test_affine_body.py)
+        self._ipc_scene.contact_tabular().default_model(0.5, 1e9)
+
+        # Store constitutions for solver access
+        self._ipc_abd = abd
+        self._ipc_stk = stk
+
+        # Set up contact subscenes for multi-environment
+        self._ipc_scene_contacts = {}
+        for i in range(self._B):
+            self._ipc_scene_contacts[i] = self._ipc_scene.contact_tabular().create_subscene(f"contact_model{i}")
+        for i in range(self._B):
+            for j in range(self._B):
+                if i != j:
+                    self._ipc_scene.contact_tabular().subscene_insert(self._ipc_scene_contacts[i], self._ipc_scene_contacts[j], False)
+
+
+        # Note: IPC GUI will be initialized after world.init() in _finalize_ipc()
+
+    def _init_ipc_gui(self):
+        """Initialize IPC GUI for debugging"""
+        try:
+            import polyscope as ps
+            from polyscope import imgui
+            from uipc.gui import SceneGUI
+
+            # Initialize SceneGUI for IPC scene
+            self._ipc_scene_gui = SceneGUI(self._ipc_scene)
+
+            # Initialize polyscope if not already done
+            if not ps.is_initialized():
+                ps.init()
+
+            # Register IPC GUI with polyscope
+            self._ipc_scene_gui.register()
+            self._ipc_scene_gui.set_edge_width(1)
+
+            # Store imgui reference for later use
+            self._imgui = imgui
+
+            # Flag to control GUI updates
+            self._ipc_gui_enabled = True
+
+            gs.logger.info("IPC GUI initialized successfully")
+
+        except ImportError as e:
+            gs.logger.warning(f"Could not initialize IPC GUI: polyscope not available. {e}")
+            self._ipc_gui_enabled = False
+        except Exception as e:
+            gs.logger.warning(f"Failed to initialize IPC GUI: {e}")
+            self._ipc_gui_enabled = False
+
+    def _finalize_ipc(self):
+        """Finalize IPC setup after all solvers have added their content"""
+
+        # Initialize the IPC world
+        self._ipc_world.init(self._ipc_scene)
+        gs.logger.info("IPC world initialized successfully")
+
+        # Now initialize IPC GUI after world is ready
+        self._init_ipc_gui()
+
+    def _step_ipc(self):
+        """Execute one IPC simulation step and handle position synchronization"""
+        self._ipc_world.advance()
+        self._ipc_world.retrieve()
+
+        # Update IPC GUI if enabled
+        if hasattr(self, '_ipc_gui_enabled') and self._ipc_gui_enabled and hasattr(self, '_ipc_scene_gui'):
+            self._ipc_scene_gui.update()
+
+
+    def show_ipc_gui(self):
+        """Show IPC GUI window for debugging"""
+        if hasattr(self, '_ipc_world'):
+            try:
+                import polyscope as ps
+                from polyscope import imgui
+                from uipc.gui import SceneGUI
+
+                # Reinitialize SceneGUI to ensure it has the latest geometry
+                self._ipc_scene_gui = SceneGUI(self._ipc_scene)
+
+                # Initialize polyscope if not already done
+                if not ps.is_initialized():
+                    ps.init()
+
+                # Register IPC GUI with polyscope
+                self._ipc_scene_gui.register()
+                self._ipc_scene_gui.set_edge_width(1)
+
+                # Set up ground plane display in polyscope to match Genesis z=0
+                ps.set_up_dir("z_up")
+                ps.set_ground_plane_height(0.0)  # Set at z=0 to match Genesis
+
+                # Store imgui reference for later use
+                self._imgui = imgui
+
+                # Set up user callback for GUI control
+                run = [False]  # Use list to allow modification in nested function
+
+                def on_update():
+                    if self._imgui.Button('Run Single IPC Step'):
+                        if hasattr(self, '_ipc_world'):
+                            self.step()
+
+                    self._imgui.Text("IPC Debug Controls:")
+
+                    # Show debug information
+                    from uipc.backend import SceneVisitor
+                    visitor = SceneVisitor(self._ipc_scene)
+                    geometry_count = len(list(visitor.geometries()))
+                    self._imgui.Text(f"IPC Geometries: {geometry_count}")
+
+                    # Toggle button for auto run
+                    button_text = 'Stop Auto Run' if run[0] else 'Start Auto Run'
+                    if self._imgui.Button(button_text):
+                        run[0] = not run[0]
+
+                    if run[0] and hasattr(self, '_ipc_world'):
+                        self.step()
+
+                ps.set_user_callback(on_update)
+                ps.show()
+
+                gs.logger.info("IPC GUI window shown")
+            except Exception as e:
+                gs.logger.error(f"Failed to show IPC GUI: {e}")
+        else:
+            gs.logger.warning("IPC world not initialized. Cannot show IPC GUI.")
 
     def _parallelize(
         self,
@@ -869,6 +1082,10 @@ class Scene(RBC):
             gs.raise_exception("Forward simulation not allowed after backward pass. Please reset scene state.")
 
         self._sim.step()
+
+        # Handle IPC simulation if enabled
+        if hasattr(self, '_ipc_world'):
+            self._step_ipc()
 
         self._t += 1
 

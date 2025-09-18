@@ -301,6 +301,10 @@ class RigidSolver(Solver):
             self._init_collider()
             self._init_constraint_solver()
 
+            # Add rigid bodies to IPC if enabled - only for actual RigidSolver, not AvatarSolver
+            if self._options.use_IPC:
+                self.add_rigid_to_ipc()
+
             # Compute state in neutral configuration at rest
             kernel_forward_kinematics_links_geoms(
                 self._scene._envs_idx,
@@ -903,7 +907,222 @@ class RigidSolver(Solver):
         else:
             self.constraint_solver = ConstraintSolver(self)
 
-    def substep(self):
+    def add_rigid_to_ipc(self):
+        """Add rigid bodies to the IPC scene initialized by Scene"""
+        if not hasattr(self._scene, '_ipc_scene'):
+            raise RuntimeError("IPC environment not initialized in Scene. This should not happen.")
+
+        # Use Scene's IPC environment
+        self._ipc_scene = self._scene._ipc_scene
+        self._ipc_abd = self._scene._ipc_abd
+        scene_contacts = self._scene._ipc_scene_contacts
+
+        # Add rigid bodies to IPC
+        self.add_rigid_entities_to_ipc()
+
+    def add_rigid_entities_to_ipc(self):
+        """Add rigid entities to the existing IPC scene as ABD objects"""
+        from uipc.geometry import tetmesh, label_surface, label_triangle_orient, flip_inward_triangles
+        from genesis.utils import element as eu
+        import numpy as np
+
+        scene = self._ipc_scene
+        abd = self._ipc_abd
+        scene_contacts = self._scene._ipc_scene_contacts
+
+        # Initialize lists following FEM solver pattern
+        self.list_env_obj = []
+        self.list_env_mesh = []
+        self._mesh_handles = {}
+
+        for i_b in range(self._B):
+            self.list_env_obj.append([])
+            self.list_env_mesh.append([])
+
+            for i_e, entity in enumerate(self._entities):
+                # Process entity for IPC
+                try:
+                    # Create rigid object in IPC (following FEM pattern)
+                    rigid_obj = scene.objects().create(f"rigid_obj_{i_b}_{i_e}")
+                    self.list_env_obj[i_b].append(rigid_obj)
+
+                    # Check morph type
+                    morph_type = type(entity.morph).__name__
+
+                    if morph_type == "Plane":
+                        # Use UIPC ground function for plane (following test_affine_body.py pattern)
+                        from uipc.geometry import ground
+                        import numpy as np
+                        morph = entity.morph
+
+                        # Get plane position and normal from morph
+                        pos = np.array(morph.pos) if hasattr(morph, 'pos') and morph.pos is not None else np.array([0.0, 0.0, 0.0])
+                        normal = np.array(morph.normal) if hasattr(morph, 'normal') and morph.normal is not None else np.array([0.0, 0.0, 1.0])
+
+                        # Calculate height: distance from origin to plane along normal direction
+                        height = np.dot(pos, normal)
+
+                        # Create ground plane with correct normal and height
+                        plane_geom = ground(height, normal)
+
+                        # For plane, we don't add to list_env_mesh since it's ImplicitGeometry, not SimplicialComplex
+                        self.list_env_mesh[i_b].append(None)
+
+                        # Create geometry in IPC scene directly
+                        rigid_obj.geometries().create(plane_geom)
+                        self._mesh_handles[f"rigid_ipc_{i_b}_{i_e}"] = plane_geom
+
+                        # Add metadata to identify this as rigid geometry
+                        # Get the first geom index for this entity
+                        geom_start = self.entities_info.geom_start[i_e]
+                        geom_idx = geom_start  # Use the first geom of this entity
+
+                        meta_attrs = plane_geom.meta()
+                        meta_attrs.create("solver_type", "rigid")
+                        meta_attrs.create("env_idx", str(i_b))
+                        meta_attrs.create("entity_idx", str(i_e))
+                        meta_attrs.create("geom_idx", str(geom_idx))
+
+
+                    else:
+                        # Sample entity to tetrahedral mesh
+                        verts, elems = entity.sample()
+                        rigid_mesh = tetmesh(verts.astype(np.float64), elems.astype(np.int32))
+
+                        # Process surface for contact
+                        label_surface(rigid_mesh)
+                        label_triangle_orient(rigid_mesh)
+                        rigid_mesh = flip_inward_triangles(rigid_mesh)
+
+                        self.list_env_mesh[i_b].append(rigid_mesh)
+
+                        # Add to contact subscene and apply ABD constitution
+                        scene_contacts[i_b].subscene_append(rigid_mesh)
+                        abd.apply_to(rigid_mesh, 1e8)
+
+                        # Apply SoftTransformConstraint for Genesis->IPC coupling
+                        from uipc.constitution import SoftTransformConstraint
+                        if not hasattr(self, '_ipc_stc'):
+                            self._ipc_stc = SoftTransformConstraint()
+                            self._scene._ipc_scene.constitution_tabular().insert(self._ipc_stc)
+
+                        # Apply soft constraint with moderate strength
+                        constraint_strength = np.array([
+                            100.0,  # translation strength ratio
+                            100.0   # rotation strength ratio
+                        ])
+                        self._ipc_stc.apply_to(rigid_mesh, constraint_strength)
+
+                        rigid_obj.geometries().create(rigid_mesh)
+
+                        # Set up animator for this rigid object
+                        if not hasattr(self, '_ipc_animator'):
+                            self._ipc_animator = self._scene._ipc_scene.animator()
+
+                        # Create animation function for this specific entity
+                        def create_animate_function(env_idx, entity_idx, geom_idx):
+                            def animate_rigid_entity(info):
+                                from uipc import view, builtin, Transform, Vector3, Quaternion
+
+                                # Get geometries from animation info
+                                geo_slots = info.geo_slots()
+                                if len(geo_slots) == 0:
+                                    return
+                                geo = geo_slots[0].geometry()
+
+                                # Get current Genesis rigid body state
+                                try:
+                                    genesis_pos = self.get_geoms_pos(geoms_idx=geom_idx, envs_idx=env_idx)
+                                    genesis_quat = self.get_geoms_quat(geoms_idx=geom_idx, envs_idx=env_idx)
+
+                                    # Convert to numpy
+                                    genesis_pos = genesis_pos.detach().cpu().numpy()
+                                    genesis_quat = genesis_quat.detach().cpu().numpy()
+
+                                    # Get current position and quaternion as 1D arrays
+                                    pos_1d = genesis_pos[0] if len(genesis_pos.shape) > 1 else genesis_pos
+                                    quat_1d = genesis_quat[0] if len(genesis_quat.shape) > 1 else genesis_quat
+
+                                    # Get initial transform from entity morph (this is where IPC object starts)
+                                    entity = self._entities[entity_idx]
+                                    initial_pos = np.array(entity.morph.pos) if hasattr(entity.morph, 'pos') and entity.morph.pos is not None else np.zeros(3)
+                                    initial_quat = np.array(entity.morph.quat) if hasattr(entity.morph, 'quat') and entity.morph.quat is not None else np.array([1.0, 0.0, 0.0, 0.0])
+
+                                    # Calculate relative transform from initial to current Genesis state
+                                    relative_pos = pos_1d - initial_pos
+
+                                    # Calculate relative rotation: current_quat * initial_quat^(-1)
+                                    # Convert to scipy for quaternion operations
+                                    import scipy.spatial.transform
+                                    current_rot = scipy.spatial.transform.Rotation.from_quat([quat_1d[1], quat_1d[2], quat_1d[3], quat_1d[0]])  # [x,y,z,w]
+                                    initial_rot = scipy.spatial.transform.Rotation.from_quat([initial_quat[1], initial_quat[2], initial_quat[3], initial_quat[0]])  # [x,y,z,w]
+                                    relative_rot = current_rot * initial_rot.inv()
+                                    relative_quat_scipy = relative_rot.as_quat()  # [x,y,z,w]
+                                    relative_quat = np.array([relative_quat_scipy[3], relative_quat_scipy[0], relative_quat_scipy[1], relative_quat_scipy[2]])  # [w,x,y,z]
+
+                                    # Create UIPC Transform for relative movement
+                                    t = Transform.Identity()
+                                    t.translate(Vector3.Values((relative_pos[0], relative_pos[1], relative_pos[2])))
+                                    uipc_quat = Quaternion(relative_quat)
+                                    t.rotate(uipc_quat)
+
+                                    # Enable constraint and set target transform
+                                    is_constrained = geo.instances().find(builtin.is_constrained)
+                                    aim_transform = geo.instances().find(builtin.aim_transform)
+
+                                    if is_constrained and aim_transform:
+                                        # Enable constraint with relative transform
+                                        view(is_constrained)[0] = 1  # Enable constraint
+                                        view(aim_transform)[:] = t.matrix()  # Set relative target transform
+
+                                except Exception as e:
+                                    print(f"Error retrieving Genesis state for IPC animation: {e}")
+                                    # Skip if state retrieval fails
+                                    pass
+
+                            return animate_rigid_entity
+                        # Add metadata to identify this as rigid geometry
+                        # Get the first geom index for this entity
+                        geom_start = self.entities_info.geom_start[i_e]
+                        geom_idx = geom_start  # Use the first geom of this entity
+
+                        # Create and register animation function for this rigid object
+                        animate_func = create_animate_function(i_b, i_e, geom_idx)
+                        self._ipc_animator.insert(rigid_obj, animate_func)
+
+                        meta_attrs = rigid_mesh.meta()
+                        meta_attrs.create("solver_type", "rigid")
+                        meta_attrs.create("env_idx", str(i_b))
+                        meta_attrs.create("entity_idx", str(i_e))
+                        meta_attrs.create("geom_idx", str(geom_idx))
+
+                        # Create geometry in IPC scene (following FEM pattern)
+                        self._mesh_handles[f"rigid_ipc_{i_b}_{i_e}"] = rigid_mesh
+
+                        gs.logger.debug(f"Added rigid entity {i_e} to IPC environment {i_b} using entity.sample()")
+
+                except Exception as e:
+                    gs.logger.warning(f"Failed to add rigid entity {i_e} to IPC: {e}")
+                    # Add empty placeholders to maintain list structure
+                    self.list_env_obj[i_b].append(None)
+                    self.list_env_mesh[i_b].append(None)
+
+
+    def step_ipc(self, f):
+        """
+        Handle rigid body IPC: Genesis->IPC single-direction coupling using soft constraints
+        """
+        # IPC world advance/retrieve is handled at Scene level
+        # Constraint updates are now handled by the animator system
+        # This method is kept for compatibility but no longer needed for coupling
+        pass
+
+
+    def _count_plane_entities(self):
+        """Count the number of Plane entities (helper for step_ipc)"""
+        return sum(1 for entity in self._entities if type(entity.morph).__name__ == "Plane")
+
+    def substep(self,f):
         # from genesis.utils.tools import create_timer
         from genesis.engine.couplers import SAPCoupler
 
@@ -949,6 +1168,10 @@ class RigidSolver(Solver):
                 static_rigid_sim_cache_key=self._static_rigid_sim_cache_key,
             )
             # timer.stamp("kernel_step_2")
+
+        # Call IPC step if enabled
+        if hasattr(self, '_options') and hasattr(self._options, 'use_IPC') and self._options.use_IPC:
+            self.step_ipc(f)
 
     def _kernel_detect_collision(self):
         self.collider.clear()
@@ -1278,7 +1501,8 @@ class RigidSolver(Solver):
 
     def substep_pre_coupling(self, f):
         if self.is_active():
-            self.substep()
+            # Run Genesis rigid simulation step (IPC is now handled inside substep)
+            self.substep(f)
 
     def substep_pre_coupling_grad(self, f):
         pass
@@ -2178,6 +2402,10 @@ class RigidSolver(Solver):
 
     def get_geoms_pos(self, geoms_idx=None, envs_idx=None, *, unsafe=False):
         tensor = ti_to_torch(self.geoms_state.pos, envs_idx, geoms_idx, transpose=True, unsafe=unsafe)
+        return tensor.squeeze(0) if self.n_envs == 0 else tensor
+
+    def get_geoms_quat(self, geoms_idx=None, envs_idx=None, *, unsafe=False):
+        tensor = ti_to_torch(self.geoms_state.quat, envs_idx, geoms_idx, transpose=True, unsafe=unsafe)
         return tensor.squeeze(0) if self.n_envs == 0 else tensor
 
     def get_qpos(self, qs_idx=None, envs_idx=None, *, unsafe=False):

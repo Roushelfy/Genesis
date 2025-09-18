@@ -2950,3 +2950,62 @@ class RigidEntity(Entity):
     def is_local_collision_mask(self):
         """Whether the contype and conaffinity bitmasks of this entity only applies to self-collision."""
         return self._is_local_collision_mask
+
+    def sample(self, tet_cfg=None):
+        """
+        Sample mesh and elements based on the entity's morph type (similar to FEM entity).
+        This method generates tetrahedral mesh for IPC integration.
+
+        Parameters
+        ----------
+        tet_cfg : dict, optional
+            TetGen configuration parameters. Defaults to empty dict.
+
+        Returns
+        -------
+        tuple
+            (vertices, elements) of the tetrahedral mesh
+
+        Raises
+        ------
+        Exception
+            If the morph type is unsupported.
+        """
+        from genesis.utils import element as eu
+
+        if tet_cfg is None:
+            tet_cfg = dict()
+
+        if isinstance(self.morph, gs.options.morphs.Sphere):
+            verts, elems = eu.sphere_to_elements(
+                pos=self._morph.pos,
+                radius=self._morph.radius,
+                tet_cfg=tet_cfg,
+            )
+        elif isinstance(self.morph, gs.options.morphs.Box):
+            verts, elems = eu.box_to_elements(
+                pos=self._morph.pos,
+                size=self._morph.size,
+                tet_cfg=tet_cfg,
+            )
+        elif isinstance(self.morph, gs.options.morphs.Cylinder):
+            verts, elems = eu.cylinder_to_elements()
+        elif isinstance(self.morph, gs.options.morphs.Mesh):
+            verts, elems = eu.mesh_to_elements(
+                file=self._morph.file,
+                pos=self._morph.pos,
+                scale=self._morph.scale,
+                tet_cfg=tet_cfg,
+            )
+        elif isinstance(self.morph, gs.options.morphs.Plane):
+            gs.raise_exception(f"Plane morph not supported for tetrahedral mesh generation.")
+        else:
+            gs.raise_exception(f"Unsupported morph: {self.morph}.")
+
+        # Apply initial rotation using quaternion (similar to FEM entity)
+        from genesis.utils import geom as gu
+        R = gu.quat_to_R(np.array(self.morph.quat, dtype=gs.np_float))
+        verts_COM = verts.mean(axis=0)
+        verts = (verts - verts_COM) @ R.T + verts_COM
+
+        return verts, elems

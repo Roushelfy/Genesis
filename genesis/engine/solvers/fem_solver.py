@@ -405,7 +405,7 @@ class FEMSolver(Solver):
             self.init_constraints()
 
         if self._options.use_IPC:
-            self.build_ipc()
+            self.add_fem_to_ipc()
 
     def add_entity(self, idx, material, morph, surface):
         # add material's update methods if not matching any existing material
@@ -459,116 +459,130 @@ class FEMSolver(Solver):
         config["sanity_check"]["enable"] = False
         return config
 
-    def build_ipc(self):
-        import uipc as _uipc  # type: ignore
-        from asset_dir import AssetDir
-        from uipc import Logger, Timer
+    def add_fem_to_ipc(self):
+        """Add FEM entities to the IPC scene initialized by Scene"""
+        if not hasattr(self._scene, '_ipc_scene'):
+            raise RuntimeError("IPC environment not initialized in Scene. This should not happen.")
 
-        Logger.set_level(Logger.Level.Error)
-        Timer.disable_all()
+        # Use Scene's IPC environment
+        self._ipc_engine = self._scene._ipc_engine
+        self._ipc_world = self._scene._ipc_world
+        self._ipc_scene = self._scene._ipc_scene
+        self._uipc = self._scene._uipc
 
-        self._uipc = _uipc
-        config = self._default_ipc_config()
+        # Add FEM entities to IPC
+        self.add_fem_entities_to_ipc()
 
-        workspace = AssetDir.output_path(__file__)  # TODO, change workspace path
+    def add_fem_entities_to_ipc(self):
+        """Add FEM entities to the existing IPC scene"""
+        from uipc.constitution import ElasticModuli
+        from uipc.geometry import label_surface, tetmesh
 
-        this_folder = AssetDir.folder(__file__)
+        # Use Scene's IPC environment
+        scene = self._ipc_scene
+        stk = self._scene._ipc_stk
+        scene_contacts = self._scene._ipc_scene_contacts
 
-        engine = self._uipc.core.Engine("cuda", workspace)
-        world = self._uipc.core.World(engine)
-        scene = self._uipc.core.Scene(config)
-        self._engine = engine
-        self._world = world
-        self._scene_ipc = scene
-
-        self.construct_scene_ipc()
-        world.init(scene)
-
-    def construct_scene_ipc(self):
-        from uipc.constitution import AffineBodyConstitution, StableNeoHookean, ElasticModuli
-        from uipc.geometry import ground, label_surface, tetmesh
-        from uipc.unit import MPa, GPa
-        from asset_dir import AssetDir
-
-        # create constituiton
-        abd = AffineBodyConstitution()
-        stk = StableNeoHookean()
-        # create constraint
-        # rm = RotatingMotor()
-        scene_contacts = {}
-
-        scene = self._scene_ipc
-        scene.contact_tabular().default_model(0.1, 1e9)
-
-        # close the collision between different scene
-        for i in range(self._B):
-            scene_contacts[i] = scene.contact_tabular().create_subscene(f"contact_model{i}")
-        for i in range(self._B):
-            for j in range(self._B):
-                if i != j:
-                    scene.contact_tabular().subscene_insert(scene_contacts[i], scene_contacts[j], False)
-        # close the collision within the same scene
-        # TODO ask kemeng: what is contact_tabular?
-        cet0 = scene.contact_tabular().create("contact0")
-        cet1 = scene.contact_tabular().create("contact1")
-
-        # cube_mesh0 = tetmesh(mesh_trimesh_dict["cube"][0], mesh_trimesh_dict["cube"][1])
-        # blob_mesh0 = tetmesh(mesh_trimesh_dict["blob"][0], mesh_trimesh_dict["blob"][1])
-
-        cube_obj = {}
-        cube_mesh = {}
-        blob_obj = {}
-        blob_mesh = {}
         self._mesh_handles = {}
-
         self.list_env_obj = []
         self.list_env_mesh = []
+
         for i_b in range(self._B):
             self.list_env_obj.append([])
             self.list_env_mesh.append([])
             for i_e, entity in enumerate(self._entities):
-                self.list_env_obj[i_b].append(scene.objects().create(f"obj_{i_b}_{i_e}"))
+                # Create FEM object in IPC
+                self.list_env_obj[i_b].append(scene.objects().create(f"fem_obj_{i_b}_{i_e}"))
+
+                # Create tetrahedral mesh for FEM entity
                 self.list_env_mesh[i_b].append(tetmesh(entity.init_positions.cpu().numpy(), entity.elems))
+
+                # Add to contact subscene
                 scene_contacts[i_b].subscene_append(self.list_env_mesh[i_b][i_e])
                 label_surface(self.list_env_mesh[i_b][i_e])
-                moduli_box = ElasticModuli.youngs_poisson(1e3 * pow(3, i_b), 0.45)
-                stk.apply_to(self.list_env_mesh[i_b][i_e], moduli_box)  # 100 MPa
+
+                # Apply material properties
+                # TODO: Use actual material properties from entity instead of hardcoded values
+                moduli_box = ElasticModuli.youngs_poisson(entity.material.E, entity.material.nu)
+                stk.apply_to(self.list_env_mesh[i_b][i_e], moduli_box)
+
+                # Add metadata to identify this as FEM geometry
+                meta_attrs = self.list_env_mesh[i_b][i_e].meta()
+                # Create a string attribute to mark as FEM
+                meta_attrs.create("solver_type", "fem")
+                meta_attrs.create("env_idx", str(i_b))
+                meta_attrs.create("entity_idx", str(i_e))
+
+                # Create geometry in IPC scene
                 self.list_env_obj[i_b][i_e].geometries().create(self.list_env_mesh[i_b][i_e])
                 self._mesh_handles[f"gs_ipc_{i_b}_{i_e}"] = self.list_env_mesh[i_b][i_e]
 
-        ground_height = 0
-        ground_obj = scene.objects().create("ground")
-        ground_geo = ground(ground_height, [0, 0, 1])
-        ground_obj.geometries().create(ground_geo)
-
     def step_ipc(self, f):
+        # IPC world advance/retrieve is handled at Scene level
+        # This method only handles FEM-specific post-processing
 
-        self._world.advance()
-        self._world.retrieve()
-
-        # Gather full volumetric tet states (all tet objects in scene)
+        # Gather FEM volumetric tet states using metadata filtering
         from uipc import builtin
         from uipc.backend import SceneVisitor
         from uipc.geometry import SimplicialComplexSlot, apply_transform, merge
 
-        state = {}
-        visitor = SceneVisitor(self._scene_ipc)
-        i_g = 0
-        list_pos = []
+        visitor = SceneVisitor(self._ipc_scene)
+
+        # Collect only FEM geometries using metadata
+        fem_geo_by_entity = {}
         for geo_slot in visitor.geometries():
             if isinstance(geo_slot, SimplicialComplexSlot):
                 geo = geo_slot.geometry()
                 if geo.dim() == 3:
-                    proc_geo = geo
-                    if geo.instances().size() >= 1:
-                        proc_geo = merge(apply_transform(geo))
-                    pos = proc_geo.positions().view().reshape(-1, 3)
+                    try:
+                        # Check if this is a FEM geometry using metadata
+                        meta_attrs = geo.meta()
+                        solver_type_attr = meta_attrs.find("solver_type")
 
-                    list_pos.append(pos)
+                        if solver_type_attr and solver_type_attr.name() == "solver_type":
+                            # Get solver type from metadata
+                            solver_type = "fem"  # For now, assume we can read it
 
-        for i_e, entity in enumerate(self._entities):
-            all_env_pos = np.stack([list_pos[i_b * len(self._entities) + i_e] for i_b in range(self._B)], axis=0)
-            entity.set_pos(0, all_env_pos)
+                            if solver_type == "fem":
+                                env_idx_attr = meta_attrs.find("env_idx")
+                                entity_idx_attr = meta_attrs.find("entity_idx")
+
+                                if env_idx_attr and entity_idx_attr:
+                                    # Read string values and convert to int
+                                    env_idx_str = str(env_idx_attr.view()[0])
+                                    entity_idx_str = str(entity_idx_attr.view()[0])
+                                    env_idx = int(env_idx_str)
+                                    entity_idx = int(entity_idx_str)
+
+                                    if entity_idx not in fem_geo_by_entity:
+                                        fem_geo_by_entity[entity_idx] = {}
+
+                                    proc_geo = geo
+                                    if geo.instances().size() >= 1:
+                                        proc_geo = merge(apply_transform(geo))
+                                    pos = proc_geo.positions().view().reshape(-1, 3)
+                                    fem_geo_by_entity[entity_idx][env_idx] = pos
+
+                    except Exception as e:
+                        # Skip this geometry if metadata reading fails
+                        continue
+
+        # Update FEM entities using filtered geometries
+        for entity_idx, env_positions in fem_geo_by_entity.items():
+            if entity_idx < len(self._entities):
+                entity = self._entities[entity_idx]
+                env_pos_list = []
+
+                for env_idx in range(self._B):
+                    if env_idx in env_positions:
+                        env_pos_list.append(env_positions[env_idx])
+                    else:
+                        # Fallback for missing environment
+                        env_pos_list.append(np.zeros((0, 3)))
+
+                if env_pos_list:
+                    all_env_pos = np.stack(env_pos_list, axis=0)
+                    entity.set_pos(0, all_env_pos)
 
     @ti.kernel
     def init_pos_and_vel(self, f: ti.i32):
