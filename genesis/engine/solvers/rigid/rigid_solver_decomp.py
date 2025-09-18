@@ -301,9 +301,6 @@ class RigidSolver(Solver):
             self._init_collider()
             self._init_constraint_solver()
 
-            # Add rigid bodies to IPC if enabled - only for actual RigidSolver, not AvatarSolver
-            if self._options.use_IPC:
-                self.add_rigid_to_ipc()
 
             # Compute state in neutral configuration at rest
             kernel_forward_kinematics_links_geoms(
@@ -328,6 +325,10 @@ class RigidSolver(Solver):
                 static_rigid_sim_config=self._static_rigid_sim_config,
                 static_rigid_sim_cache_key=self._static_rigid_sim_cache_key,
             )
+            
+            # Add rigid bodies to IPC if enabled 
+            if self._options.use_IPC:
+                self.add_rigid_to_ipc()
 
     def _init_invweight(self):
         # Early return if no DoFs. This is essential to avoid segfault on CUDA.
@@ -918,10 +919,10 @@ class RigidSolver(Solver):
         scene_contacts = self._scene._ipc_scene_contacts
 
         # Add rigid bodies to IPC
-        self.add_rigid_entities_to_ipc()
+        self.add_rigid_geoms_to_ipc()
 
-    def add_rigid_entities_to_ipc(self):
-        """Add rigid entities to the existing IPC scene as ABD objects"""
+    def add_rigid_geoms_to_ipc(self):
+        """Add rigid geoms to the existing IPC scene as ABD objects"""
         from uipc.geometry import tetmesh, label_surface, label_triangle_orient, flip_inward_triangles
         from genesis.utils import element as eu
         import numpy as np
@@ -939,25 +940,44 @@ class RigidSolver(Solver):
             self.list_env_obj.append([])
             self.list_env_mesh.append([])
 
-            for i_e, entity in enumerate(self._entities):
-                # Process entity for IPC
+            geom_counter = 0  # Counter for IPC objects
+
+            # Debug: Print all geom information
+            print(f"\n=== Environment {i_b} - Total geoms: {self.n_geoms_} ===")
+            for i_g in range(self.n_geoms_):
+                geom_type = self.geoms_info.type[i_g]
+                link_idx = self.geoms_info.link_idx[i_g]
+                entity_idx = self.links_info.entity_idx[link_idx]
+                entity = self._entities[entity_idx] if entity_idx < len(self._entities) else None
+                geom_pos = self.geoms_info.pos[i_g]
+                geom_quat = self.geoms_info.quat[i_g]
+                vert_num = self.geoms_info.vert_num[i_g]
+
+                print(f"Geom {i_g}: type={geom_type}, link_idx={link_idx}, entity_idx={entity_idx}")
+                print(f"  Entity: {type(entity.morph).__name__ if entity else 'None'}")
+                print(f"  Geom pos: {geom_pos}, quat: {geom_quat}")
+                print(f"  Vertices: {vert_num}")
+                if entity and hasattr(entity.morph, 'pos'):
+                    print(f"  Entity pos: {entity.morph.pos}")
+
+            # Iterate through all geoms instead of entities
+            for i_g in range(self.n_geoms_):
+                geom_type = self.geoms_info.type[i_g]
+
+                # Process different geom types
                 try:
                     # Create rigid object in IPC (following FEM pattern)
-                    rigid_obj = scene.objects().create(f"rigid_obj_{i_b}_{i_e}")
+                    rigid_obj = scene.objects().create(f"rigid_obj_{i_b}_{geom_counter}")
                     self.list_env_obj[i_b].append(rigid_obj)
 
-                    # Check morph type
-                    morph_type = type(entity.morph).__name__
-
-                    if morph_type == "Plane":
+                    if geom_type == gs.GEOM_TYPE.PLANE:
                         # Use UIPC ground function for plane (following test_affine_body.py pattern)
                         from uipc.geometry import ground
-                        import numpy as np
-                        morph = entity.morph
 
-                        # Get plane position and normal from morph
-                        pos = np.array(morph.pos) if hasattr(morph, 'pos') and morph.pos is not None else np.array([0.0, 0.0, 0.0])
-                        normal = np.array(morph.normal) if hasattr(morph, 'normal') and morph.normal is not None else np.array([0.0, 0.0, 1.0])
+                        # Get plane position and normal from geoms_info
+                        pos = self.geoms_info.pos[i_g]
+                        # For plane, assume normal is [0, 0, 1] (Z-up)
+                        normal = np.array([0.0, 0.0, 1.0])
 
                         # Calculate height: distance from origin to plane along normal direction
                         height = np.dot(pos, normal)
@@ -970,22 +990,53 @@ class RigidSolver(Solver):
 
                         # Create geometry in IPC scene directly
                         rigid_obj.geometries().create(plane_geom)
-                        self._mesh_handles[f"rigid_ipc_{i_b}_{i_e}"] = plane_geom
+                        self._mesh_handles[f"rigid_ipc_{i_b}_{geom_counter}"] = plane_geom
 
                         # Add metadata to identify this as rigid geometry
-                        # Get the first geom index for this entity
-                        geom_start = self.entities_info.geom_start[i_e]
-                        geom_idx = geom_start  # Use the first geom of this entity
-
                         meta_attrs = plane_geom.meta()
                         meta_attrs.create("solver_type", "rigid")
                         meta_attrs.create("env_idx", str(i_b))
-                        meta_attrs.create("entity_idx", str(i_e))
-                        meta_attrs.create("geom_idx", str(geom_idx))
-
+                        meta_attrs.create("geom_idx", str(i_g))
 
                     else:
-                        verts, elems = entity.sample()
+                        # For all non-plane geoms, use vertex/face information
+                        # Check if this geom has vertices
+                        vert_num = self.geoms_info.vert_num[i_g]
+                        if vert_num == 0:
+                            # Skip geoms without vertices
+                            self.list_env_obj[i_b].append(None)
+                            self.list_env_mesh[i_b].append(None)
+                            geom_counter += 1
+                            continue
+
+                        # Extract vertex and face data for this specific geom
+                        vert_start = self.geoms_info.vert_start[i_g]
+                        vert_end = self.geoms_info.vert_end[i_g]
+                        face_start = self.geoms_info.face_start[i_g]
+                        face_end = self.geoms_info.face_end[i_g]
+
+                        # Get vertices for this geom (these are at origin)
+                        geom_verts = self.verts_info.init_pos.to_numpy()[vert_start:vert_end]
+
+                        # Get faces for this geom
+                        geom_faces = self.faces_info.verts_idx.to_numpy()[face_start:face_end]
+                        # Adjust face indices to be relative to this geom's vertex array
+                        geom_faces = geom_faces - vert_start
+
+                        # Convert trimesh to tetmesh using external tetrahedralization
+                        try:
+                            from genesis.utils import mesh as mu
+                            import trimesh
+                            # Create trimesh object from vertices and faces
+                            tri_mesh = trimesh.Trimesh(vertices=geom_verts, faces=geom_faces)
+                            verts, elems = mu.tetrahedralize_mesh(tri_mesh, tet_cfg=dict())
+                        except Exception as e:
+                            gs.logger.warning(f"Failed to convert trimesh to tetmesh for geom {i_g}: {e}")
+                            # Skip this geom if conversion fails
+                            self.list_env_obj[i_b].append(None)
+                            self.list_env_mesh[i_b].append(None)
+                            geom_counter += 1
+                            continue
 
                         rigid_mesh = tetmesh(verts.astype(np.float64), elems.astype(np.int32))
 
@@ -994,18 +1045,36 @@ class RigidSolver(Solver):
                         trans_view = view(rigid_mesh.transforms())
                         t = Transform.Identity()
 
-                        # Apply translation
-                        if hasattr(entity.morph, 'pos') and entity.morph.pos is not None:
-                            pos = entity.morph.pos
-                            t.translate(Vector3.Values((pos[0], pos[1], pos[2])))
+                        # Get entity and link info from geom->link->entity relationship
+                        link_idx = self.geoms_info.link_idx[i_g]
+                        entity_idx = self.links_info.entity_idx[link_idx]
+                        entity = self._entities[entity_idx]
 
-                        # Apply rotation
-                        if hasattr(entity.morph, 'quat') and entity.morph.quat is not None:
-                            quat = entity.morph.quat
-                            uipc_quat = Quaternion(np.array([quat[0], quat[1], quat[2], quat[3]]))
-                            t.rotate(uipc_quat)
+                        # Apply complete transform chain:
+                        # 1. Geom relative to link
+                        geom_rel_pos = self.geoms_info.pos[i_g]
+                        geom_rel_quat = self.geoms_info.quat[i_g]
+
+                        # 2. Link world transform
+                        link_world_pos = self.links_state.pos[link_idx, i_b]
+                        link_world_quat = self.links_state.quat[link_idx, i_b]
+
+                        # Apply transforms: link -> geom
+
+                        # Link transform
+                        t.translate(Vector3.Values((link_world_pos[0], link_world_pos[1], link_world_pos[2])))
+                        uipc_link_quat = Quaternion(link_world_quat)
+                        t.rotate(uipc_link_quat)
+
+                        # Geom transform
+                        t.translate(Vector3.Values((geom_rel_pos[0], geom_rel_pos[1], geom_rel_pos[2])))
+                        uipc_geom_quat = Quaternion(geom_rel_quat)
+                        t.rotate(uipc_geom_quat)
 
                         trans_view[0] = t.matrix()
+
+
+
                         # Process surface for contact
                         label_surface(rigid_mesh)
                         label_triangle_orient(rigid_mesh)
@@ -1015,7 +1084,8 @@ class RigidSolver(Solver):
 
                         # Add to contact subscene and apply ABD constitution
                         scene_contacts[i_b].subscene_append(rigid_mesh)
-                        # Try using same ABD parameter as UIPC sample
+                        # Apply ABD contact element for selective collision control
+                        self._scene._ipc_abd_contact.apply_to(rigid_mesh)
                         from uipc.unit import MPa
                         abd.apply_to(rigid_mesh, 10.0 * MPa)
 
@@ -1039,9 +1109,9 @@ class RigidSolver(Solver):
                         if not hasattr(self, '_ipc_animator'):
                             self._ipc_animator = self._scene._ipc_scene.animator()
 
-                        # Create animation function for this specific entity
-                        def create_animate_function(env_idx, entity_idx, geom_idx):
-                            def animate_rigid_entity(info):
+                        # Create animation function for this specific geom
+                        def create_animate_function(env_idx, geom_idx):
+                            def animate_rigid_geom(info):
                                 from uipc import view, builtin, Transform, Vector3, Quaternion
 
                                 # Get geometries from animation info
@@ -1081,32 +1151,30 @@ class RigidSolver(Solver):
                                 except Exception as e:
                                     print(f"Error retrieving Genesis state for IPC animation: {e}")
 
-                            return animate_rigid_entity
-                        # Add metadata to identify this as rigid geometry
-                        # Get the first geom index for this entity
-                        geom_start = self.entities_info.geom_start[i_e]
-                        geom_idx = geom_start  # Use the first geom of this entity
+                            return animate_rigid_geom
 
                         # Create and register animation function for this rigid object
-                        animate_func = create_animate_function(i_b, i_e, geom_idx)
+                        animate_func = create_animate_function(i_b, i_g)
                         self._ipc_animator.insert(rigid_obj, animate_func)
 
+                        # Add metadata to identify this as rigid geometry
                         meta_attrs = rigid_mesh.meta()
                         meta_attrs.create("solver_type", "rigid")
                         meta_attrs.create("env_idx", str(i_b))
-                        meta_attrs.create("entity_idx", str(i_e))
-                        meta_attrs.create("geom_idx", str(geom_idx))
+                        meta_attrs.create("geom_idx", str(i_g))
 
-                        # Create geometry in IPC scene (following FEM pattern)
-                        self._mesh_handles[f"rigid_ipc_{i_b}_{i_e}"] = rigid_mesh
+                        # Store mesh handle
+                        self._mesh_handles[f"rigid_ipc_{i_b}_{geom_counter}"] = rigid_mesh
 
-                        gs.logger.debug(f"Added rigid entity {i_e} to IPC environment {i_b} using entity.sample()")
+                    geom_counter += 1
 
                 except Exception as e:
-                    gs.logger.warning(f"Failed to add rigid entity {i_e} to IPC: {e}")
+                    gs.logger.warning(f"Failed to add rigid geom {i_g} to IPC: {e}")
                     # Add empty placeholders to maintain list structure
                     self.list_env_obj[i_b].append(None)
                     self.list_env_mesh[i_b].append(None)
+                    geom_counter += 1
+
 
 
     def step_ipc(self, f):

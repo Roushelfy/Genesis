@@ -854,6 +854,18 @@ class Scene(RBC):
                 if i != j:
                     self._ipc_scene.contact_tabular().subscene_insert(self._ipc_scene_contacts[i], self._ipc_scene_contacts[j], False)
 
+        # Set up separate contact elements for ABD and FEM to control collision interactions
+        self._ipc_abd_contact = self._ipc_scene.contact_tabular().create("abd_contact")
+        self._ipc_fem_contact = self._ipc_scene.contact_tabular().create("fem_contact")
+
+        # Configure contact interactions:
+        # - FEM-FEM: enabled (default behavior)
+        # - FEM-ABD: enabled
+        # - ABD-ABD: disabled
+        self._ipc_scene.contact_tabular().insert(self._ipc_fem_contact, self._ipc_fem_contact, 0.5, 1e9, True)  # FEM-FEM enabled
+        self._ipc_scene.contact_tabular().insert(self._ipc_fem_contact, self._ipc_abd_contact, 0.5, 1e9, True)  # FEM-ABD enabled
+        self._ipc_scene.contact_tabular().insert(self._ipc_abd_contact, self._ipc_abd_contact, 0.5, 1e9, False) # ABD-ABD disabled
+
 
         # Note: IPC GUI will be initialized after world.init() in _finalize_ipc()
 
@@ -874,6 +886,10 @@ class Scene(RBC):
             # Register IPC GUI with polyscope
             self._ipc_scene_gui.register()
             self._ipc_scene_gui.set_edge_width(1)
+
+            # Set up ground plane display in polyscope to match Genesis z=0
+            ps.set_up_dir("z_up")
+            ps.set_ground_plane_height(0.0)  # Set at z=0 to match Genesis
 
             # Store imgui reference for later use
             self._imgui = imgui
@@ -915,29 +931,10 @@ class Scene(RBC):
         if hasattr(self, '_ipc_world'):
             try:
                 import polyscope as ps
-                from polyscope import imgui
-                from uipc.gui import SceneGUI
-
-                # Reinitialize SceneGUI to ensure it has the latest geometry
-                self._ipc_scene_gui = SceneGUI(self._ipc_scene)
-
-                # Initialize polyscope if not already done
-                if not ps.is_initialized():
-                    ps.init()
-
-                # Register IPC GUI with polyscope
-                self._ipc_scene_gui.register()
-                self._ipc_scene_gui.set_edge_width(1)
-
-                # Set up ground plane display in polyscope to match Genesis z=0
-                ps.set_up_dir("z_up")
-                ps.set_ground_plane_height(0.0)  # Set at z=0 to match Genesis
-
-                # Store imgui reference for later use
-                self._imgui = imgui
 
                 # Set up user callback for GUI control
                 run = [False]  # Use list to allow modification in nested function
+
 
                 def on_update():
                     if self._imgui.Button('Run Single IPC Step'):
@@ -951,6 +948,14 @@ class Scene(RBC):
                     visitor = SceneVisitor(self._ipc_scene)
                     geometry_count = len(list(visitor.geometries()))
                     self._imgui.Text(f"IPC Geometries: {geometry_count}")
+
+                    # Show current frame number
+                    current_frame = getattr(self, '_t', 0)
+                    self._imgui.Text(f"Current Frame: {current_frame}")
+
+                    # Show simulation time
+                    sim_time = current_frame * self.dt if hasattr(self, 'dt') else 0.0
+                    self._imgui.Text(f"Simulation Time: {sim_time:.3f}s")
 
                     # Toggle button for auto run
                     button_text = 'Stop Auto Run' if run[0] else 'Start Auto Run'

@@ -499,6 +499,8 @@ class FEMSolver(Solver):
 
                 # Add to contact subscene
                 scene_contacts[i_b].subscene_append(self.list_env_mesh[i_b][i_e])
+                # Apply FEM contact element for selective collision control
+                self._scene._ipc_fem_contact.apply_to(self.list_env_mesh[i_b][i_e])
                 label_surface(self.list_env_mesh[i_b][i_e])
 
                 # Apply material properties
