@@ -272,6 +272,9 @@ class RigidOptions(Options):
     use_IPC : bool, optional
         Whether to add rigid bodies to the IPC solver for contact with FEM bodies. Defaults to False.
         When True, rigid bodies will be added to both Genesis rigid solver and IPC solver.
+    ipc_constraint_strength : tuple, optional
+        Strength ratios for IPC soft transform constraint coupling. Tuple of (translation_strength, rotation_strength).
+        Higher values create stiffer coupling between Genesis rigid bodies and IPC ABD objects. Defaults to (100.0, 100.0).
 
     Warning
     -------
@@ -321,6 +324,7 @@ class RigidOptions(Options):
     # GJK collision detection
     use_gjk_collision: bool = True
     use_IPC: bool = False
+    ipc_constraint_strength: tuple = (100.0, 100.0)
 
     def __init__(self, **data):
         super().__init__(**data)

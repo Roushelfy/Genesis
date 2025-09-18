@@ -2978,13 +2978,13 @@ class RigidEntity(Entity):
 
         if isinstance(self.morph, gs.options.morphs.Sphere):
             verts, elems = eu.sphere_to_elements(
-                pos=self._morph.pos,
+                pos=(0, 0, 0),  # Generate at origin for proper ABD matrix
                 radius=self._morph.radius,
                 tet_cfg=tet_cfg,
             )
         elif isinstance(self.morph, gs.options.morphs.Box):
             verts, elems = eu.box_to_elements(
-                pos=self._morph.pos,
+                pos=(0, 0, 0),  # Generate at origin for proper ABD matrix
                 size=self._morph.size,
                 tet_cfg=tet_cfg,
             )
@@ -2993,7 +2993,7 @@ class RigidEntity(Entity):
         elif isinstance(self.morph, gs.options.morphs.Mesh):
             verts, elems = eu.mesh_to_elements(
                 file=self._morph.file,
-                pos=self._morph.pos,
+                pos=(0, 0, 0),  # Generate at origin for proper ABD matrix
                 scale=self._morph.scale,
                 tet_cfg=tet_cfg,
             )
@@ -3002,10 +3002,5 @@ class RigidEntity(Entity):
         else:
             gs.raise_exception(f"Unsupported morph: {self.morph}.")
 
-        # Apply initial rotation using quaternion (similar to FEM entity)
-        from genesis.utils import geom as gu
-        R = gu.quat_to_R(np.array(self.morph.quat, dtype=gs.np_float))
-        verts_COM = verts.mean(axis=0)
-        verts = (verts - verts_COM) @ R.T + verts_COM
 
         return verts, elems

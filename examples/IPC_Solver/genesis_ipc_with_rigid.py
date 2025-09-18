@@ -10,6 +10,7 @@ def main():
         ),
         rigid_options=gs.options.RigidOptions(
             use_IPC=True,
+            ipc_constraint_strength=(0.1, 0.1),  # (translation, rotation) strength ratios
         ),
         vis_options=gs.options.VisOptions(),
         viewer_options=gs.options.ViewerOptions(),
@@ -27,8 +28,8 @@ def main():
 
     # FEM entities (added to IPC as deformable bodies)
     blob = scene.add_entity(
-        morph=gs.morphs.Sphere(pos=tuple(map(sum, zip(SCENE_POS, (-0.0, -0.0, 1.0)))), radius=0.1),
-        material=gs.materials.FEM.Elastic(E=1.0e4, nu=0.45, rho=1000.0, model="stable_neohookean"),
+        morph=gs.morphs.Sphere(pos=tuple(map(sum, zip(SCENE_POS, (-0.0, -0.0, 0.8)))), radius=0.1),
+        material=gs.materials.FEM.Elastic(E=1.0e5, nu=0.45, rho=1000.0, model="stable_neohookean"),
         surface=gs.surfaces.Plastic(color=(0.8, 0.2, 0.2, 0.5)),
     )
 
@@ -44,9 +45,9 @@ def main():
     # Rigid cube  - above the FEM cube
     rigid_cube = scene.add_entity(
         morph=gs.morphs.Box(
-            pos=tuple(map(sum, zip(SCENE_POS, (0, 0, 1.5)))),
+            pos=tuple(map(sum, zip(SCENE_POS, (0, 0, 1.0)))),
             size=(0.08, 0.08, 0.08),
-            euler=(0, 0, 30)
+            euler=(0, 0, 0)
         ),
         material=gs.materials.Rigid(rho=800.0, friction=0.3),
         surface=gs.surfaces.Plastic(color=(0.8, 0.8, 0.2, 0.8)),

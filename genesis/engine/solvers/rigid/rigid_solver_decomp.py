@@ -985,10 +985,27 @@ class RigidSolver(Solver):
 
 
                     else:
-                        # Sample entity to tetrahedral mesh
                         verts, elems = entity.sample()
+
                         rigid_mesh = tetmesh(verts.astype(np.float64), elems.astype(np.int32))
 
+                        # Apply transform to position and rotate the mesh (like UIPC example)
+                        from uipc import view, Transform, Vector3, Quaternion
+                        trans_view = view(rigid_mesh.transforms())
+                        t = Transform.Identity()
+
+                        # Apply translation
+                        if hasattr(entity.morph, 'pos') and entity.morph.pos is not None:
+                            pos = entity.morph.pos
+                            t.translate(Vector3.Values((pos[0], pos[1], pos[2])))
+
+                        # Apply rotation
+                        if hasattr(entity.morph, 'quat') and entity.morph.quat is not None:
+                            quat = entity.morph.quat
+                            uipc_quat = Quaternion(np.array([quat[0], quat[1], quat[2], quat[3]]))
+                            t.rotate(uipc_quat)
+
+                        trans_view[0] = t.matrix()
                         # Process surface for contact
                         label_surface(rigid_mesh)
                         label_triangle_orient(rigid_mesh)
@@ -998,7 +1015,9 @@ class RigidSolver(Solver):
 
                         # Add to contact subscene and apply ABD constitution
                         scene_contacts[i_b].subscene_append(rigid_mesh)
-                        abd.apply_to(rigid_mesh, 1e8)
+                        # Try using same ABD parameter as UIPC sample
+                        from uipc.unit import MPa
+                        abd.apply_to(rigid_mesh, 10.0 * MPa)
 
                         # Apply SoftTransformConstraint for Genesis->IPC coupling
                         from uipc.constitution import SoftTransformConstraint
@@ -1006,10 +1025,11 @@ class RigidSolver(Solver):
                             self._ipc_stc = SoftTransformConstraint()
                             self._scene._ipc_scene.constitution_tabular().insert(self._ipc_stc)
 
-                        # Apply soft constraint with moderate strength
+                        # Apply soft constraint with configurable strength
+                        strength_tuple = self._options.ipc_constraint_strength
                         constraint_strength = np.array([
-                            100.0,  # translation strength ratio
-                            100.0   # rotation strength ratio
+                            strength_tuple[0],  # translation strength
+                            strength_tuple[1],  # rotation strength
                         ])
                         self._ipc_stc.apply_to(rigid_mesh, constraint_strength)
 
@@ -1043,27 +1063,10 @@ class RigidSolver(Solver):
                                     pos_1d = genesis_pos[0] if len(genesis_pos.shape) > 1 else genesis_pos
                                     quat_1d = genesis_quat[0] if len(genesis_quat.shape) > 1 else genesis_quat
 
-                                    # Get initial transform from entity morph (this is where IPC object starts)
-                                    entity = self._entities[entity_idx]
-                                    initial_pos = np.array(entity.morph.pos) if hasattr(entity.morph, 'pos') and entity.morph.pos is not None else np.zeros(3)
-                                    initial_quat = np.array(entity.morph.quat) if hasattr(entity.morph, 'quat') and entity.morph.quat is not None else np.array([1.0, 0.0, 0.0, 0.0])
-
-                                    # Calculate relative transform from initial to current Genesis state
-                                    relative_pos = pos_1d - initial_pos
-
-                                    # Calculate relative rotation: current_quat * initial_quat^(-1)
-                                    # Convert to scipy for quaternion operations
-                                    import scipy.spatial.transform
-                                    current_rot = scipy.spatial.transform.Rotation.from_quat([quat_1d[1], quat_1d[2], quat_1d[3], quat_1d[0]])  # [x,y,z,w]
-                                    initial_rot = scipy.spatial.transform.Rotation.from_quat([initial_quat[1], initial_quat[2], initial_quat[3], initial_quat[0]])  # [x,y,z,w]
-                                    relative_rot = current_rot * initial_rot.inv()
-                                    relative_quat_scipy = relative_rot.as_quat()  # [x,y,z,w]
-                                    relative_quat = np.array([relative_quat_scipy[3], relative_quat_scipy[0], relative_quat_scipy[1], relative_quat_scipy[2]])  # [w,x,y,z]
-
                                     # Create UIPC Transform for relative movement
                                     t = Transform.Identity()
-                                    t.translate(Vector3.Values((relative_pos[0], relative_pos[1], relative_pos[2])))
-                                    uipc_quat = Quaternion(relative_quat)
+                                    t.translate(Vector3.Values((pos_1d[0], pos_1d[1], pos_1d[2])))
+                                    uipc_quat = Quaternion(quat_1d)
                                     t.rotate(uipc_quat)
 
                                     # Enable constraint and set target transform
@@ -1077,8 +1080,6 @@ class RigidSolver(Solver):
 
                                 except Exception as e:
                                     print(f"Error retrieving Genesis state for IPC animation: {e}")
-                                    # Skip if state retrieval fails
-                                    pass
 
                             return animate_rigid_entity
                         # Add metadata to identify this as rigid geometry
