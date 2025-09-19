@@ -845,6 +845,7 @@ class Scene(RBC):
 
                     if run[0]:
                         self.step()
+                        self._ipc_scene_gui.update()
 
                 ps.set_user_callback(on_update)
                 ps.show()

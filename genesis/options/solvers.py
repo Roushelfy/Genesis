@@ -185,13 +185,13 @@ class IPCCouplerOptions(BaseCouplerOptions):
     Parameters
     ----------
     dt : float, optional
-        Time step for IPC simulation. Defaults to 0.01.
+        Time step for IPC simulation. Defaults to 0.001.
     gravity : tuple, optional
         Gravity vector for IPC simulation. Defaults to (0.0, 0.0, -9.8).
     contact_d_hat : float, optional
-        Contact distance threshold. Defaults to 0.01.
+        Contact distance threshold. Defaults to  0.001.
     contact_friction_enable : bool, optional
-        Whether to enable friction in contact. Defaults to True.
+        Whether to enable friction in contact. Defaults to False.
     contact_friction_mu : float, optional
         Friction coefficient. Defaults to 0.5.
     contact_resistance : float, optional
@@ -214,10 +214,10 @@ class IPCCouplerOptions(BaseCouplerOptions):
         Whether to disable IPC library logging output. Defaults to True.
     """
 
-    dt: float = 0.01
+    dt: float = 0.001
     gravity: tuple = (0.0, 0.0, -9.8)
-    contact_d_hat: float = 0.01
-    contact_friction_enable: bool = True
+    contact_d_hat: float = 0.001
+    contact_friction_enable: bool = False
     contact_friction_mu: float = 0.5
     contact_resistance: float = 1e9
     newton_velocity_tol: float = 0.001
