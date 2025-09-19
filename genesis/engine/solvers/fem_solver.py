@@ -404,8 +404,7 @@ class FEMSolver(Solver):
         if self._enable_vertex_constraints and not self._constraints_initialized:
             self.init_constraints()
 
-        if self._options.use_IPC:
-            self.add_fem_to_ipc()
+        # IPC initialization is now handled by IPCCoupler
 
     def add_entity(self, idx, material, morph, surface):
         # add material's update methods if not matching any existing material
@@ -459,29 +458,17 @@ class FEMSolver(Solver):
         config["sanity_check"]["enable"] = False
         return config
 
-    def add_fem_to_ipc(self):
-        """Add FEM entities to the IPC scene initialized by Scene"""
-        if not hasattr(self._scene, '_ipc_scene'):
-            raise RuntimeError("IPC environment not initialized in Scene. This should not happen.")
-
-        # Use Scene's IPC environment
-        self._ipc_engine = self._scene._ipc_engine
-        self._ipc_world = self._scene._ipc_world
-        self._ipc_scene = self._scene._ipc_scene
-        self._uipc = self._scene._uipc
-
-        # Add FEM entities to IPC
-        self.add_fem_entities_to_ipc()
+    # IPC initialization is now handled by IPCCoupler
 
     def add_fem_entities_to_ipc(self):
         """Add FEM entities to the existing IPC scene"""
         from uipc.constitution import ElasticModuli
         from uipc.geometry import label_surface, tetmesh
 
-        # Use Scene's IPC environment
+        # Use IPCCoupler's IPC environment
         scene = self._ipc_scene
-        stk = self._scene._ipc_stk
-        scene_contacts = self._scene._ipc_scene_contacts
+        stk = self._ipc_stk
+        scene_contacts = self._ipc_scene_contacts
 
         self._mesh_handles = {}
         self.list_env_obj = []
@@ -500,7 +487,7 @@ class FEMSolver(Solver):
                 # Add to contact subscene
                 scene_contacts[i_b].subscene_append(self.list_env_mesh[i_b][i_e])
                 # Apply FEM contact element for selective collision control
-                self._scene._ipc_fem_contact.apply_to(self.list_env_mesh[i_b][i_e])
+                self._ipc_fem_contact.apply_to(self.list_env_mesh[i_b][i_e])
                 label_surface(self.list_env_mesh[i_b][i_e])
 
                 # Apply material properties
@@ -519,7 +506,7 @@ class FEMSolver(Solver):
                 self.list_env_obj[i_b][i_e].geometries().create(self.list_env_mesh[i_b][i_e])
                 self._mesh_handles[f"gs_ipc_{i_b}_{i_e}"] = self.list_env_mesh[i_b][i_e]
 
-    def step_ipc(self, f):
+    def retrieve_ipc(self, f):
         # IPC world advance/retrieve is handled at Scene level
         # This method only handles FEM-specific post-processing
 
@@ -542,8 +529,16 @@ class FEMSolver(Solver):
                         solver_type_attr = meta_attrs.find("solver_type")
 
                         if solver_type_attr and solver_type_attr.name() == "solver_type":
-                            # Get solver type from metadata
-                            solver_type = "fem"  # For now, assume we can read it
+                            # Actually read solver type from metadata
+                            try:
+                                # Try to read the solver type value
+                                solver_type_view = solver_type_attr.view()
+                                if len(solver_type_view) > 0:
+                                    solver_type = str(solver_type_view[0])
+                                else:
+                                    continue
+                            except:
+                                continue
 
                             if solver_type == "fem":
                                 env_idx_attr = meta_attrs.find("env_idx")
@@ -1135,7 +1130,7 @@ class FEMSolver(Solver):
     def substep_pre_coupling(self, f):
         if self.is_active():
             if self._options.use_IPC:
-                self.step_ipc(f)
+                pass
             elif self._use_implicit_solver:
                 self.precompute_material_data(f)
                 self.init_pos_and_inertia(f)
@@ -1161,6 +1156,7 @@ class FEMSolver(Solver):
             self.compute_pos(f)
             if self._constraints_initialized and not self._use_implicit_solver:
                 self.apply_hard_constraints(f)
+            
 
     def substep_post_coupling_grad(self, f):
         if self.is_active():

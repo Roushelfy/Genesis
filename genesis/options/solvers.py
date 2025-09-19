@@ -178,6 +178,57 @@ class SAPCouplerOptions(BaseCouplerOptions):
     enable_rigid_fem_contact: bool = True
 
 
+class IPCCouplerOptions(BaseCouplerOptions):
+    """
+    Options configuring the Incremental Potential Contact (IPC) coupler.
+
+    Parameters
+    ----------
+    dt : float, optional
+        Time step for IPC simulation. Defaults to 0.01.
+    gravity : tuple, optional
+        Gravity vector for IPC simulation. Defaults to (0.0, 0.0, -9.8).
+    contact_d_hat : float, optional
+        Contact distance threshold. Defaults to 0.01.
+    contact_friction_enable : bool, optional
+        Whether to enable friction in contact. Defaults to True.
+    contact_friction_mu : float, optional
+        Friction coefficient. Defaults to 0.5.
+    contact_resistance : float, optional
+        Contact resistance/stiffness. Defaults to 1e9.
+    newton_velocity_tol : float, optional
+        Velocity tolerance for Newton solver. Defaults to 0.001.
+    line_search_max_iter : int, optional
+        Maximum iterations for line search. Defaults to 30.
+    linear_system_tol_rate : float, optional
+        Tolerance rate for linear system solver. Defaults to 1e-4.
+    sanity_check_enable : bool, optional
+        Whether to enable sanity checks. Defaults to False.
+    ipc_constraint_strength : tuple, optional
+        Strength ratios for IPC soft transform constraint coupling. Tuple of (translation_strength, rotation_strength).
+        Higher values create stiffer coupling between Genesis rigid bodies and IPC ABD objects. Defaults to (100.0, 100.0).
+    IPC_self_contact : bool, optional
+        Whether to enable contact detection between rigid bodies in IPC system (ABD-ABD collisions).
+        When False, only FEM-FEM and FEM-ABD collisions are detected. Defaults to False.
+    disable_ipc_logging : bool, optional
+        Whether to disable IPC library logging output. Defaults to True.
+    """
+
+    dt: float = 0.01
+    gravity: tuple = (0.0, 0.0, -9.8)
+    contact_d_hat: float = 0.01
+    contact_friction_enable: bool = True
+    contact_friction_mu: float = 0.5
+    contact_resistance: float = 1e9
+    newton_velocity_tol: float = 0.001
+    line_search_max_iter: int = 30
+    linear_system_tol_rate: float = 1e-4
+    sanity_check_enable: bool = False
+    ipc_constraint_strength: tuple = (100.0, 100.0)
+    IPC_self_contact: bool = False
+    disable_ipc_logging: bool = True
+
+
 ############################ Solvers inside simulator ############################
 """
 Parameters in these solver-specific options will override SimOptions if available.
@@ -272,9 +323,7 @@ class RigidOptions(Options):
     use_IPC : bool, optional
         Whether to add rigid bodies to the IPC solver for contact with FEM bodies. Defaults to False.
         When True, rigid bodies will be added to both Genesis rigid solver and IPC solver.
-    ipc_constraint_strength : tuple, optional
-        Strength ratios for IPC soft transform constraint coupling. Tuple of (translation_strength, rotation_strength).
-        Higher values create stiffer coupling between Genesis rigid bodies and IPC ABD objects. Defaults to (100.0, 100.0).
+        Note: This option is automatically managed by IPCCoupler when using IPCCouplerOptions.
 
     Warning
     -------
@@ -324,7 +373,6 @@ class RigidOptions(Options):
     # GJK collision detection
     use_gjk_collision: bool = True
     use_IPC: bool = False
-    ipc_constraint_strength: tuple = (100.0, 100.0)
 
     def __init__(self, **data):
         super().__init__(**data)

@@ -67,18 +67,15 @@ def main():
     print("Scene built successfully!")
     print("Launching IPC debug GUI...")
 
-    try:
-        # Show the IPC GUI with interactive controls
-        scene.show_ipc_gui()
-    except Exception as e:
-        print(f"Failed to show IPC GUI: {e}")
-        print("Running simulation without GUI...")
-
-        # Fallback: Run simulation without GUI
-        for i_step in range(1000):
-            if i_step % 100 == 0:
-                print(f"Step {i_step}: Scene time = {scene.t * scene.dt:.3f}s")
-            scene.step()
+    for i_step in range(1000):
+        if i_step % 10 == 0:
+            gs.logger.debug(f"Step {i_step}: Scene time = {scene.t * scene.dt:.3f}s")
+            # Also print ABD transforms for debugging
+            if hasattr(scene.rigid_solver, '_abd_affines'):
+                for geom_idx, env_dict in scene.rigid_solver._abd_affines.items():
+                    for env_idx, transform in env_dict.items():
+                        print(f"  ABD Geom {geom_idx} Env {env_idx} Transform:\n{transform}")
+        scene.step()
 
 
 if __name__ == "__main__":

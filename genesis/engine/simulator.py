@@ -10,6 +10,7 @@ from genesis.options.solvers import (
     BaseCouplerOptions,
     LegacyCouplerOptions,
     SAPCouplerOptions,
+    IPCCouplerOptions,
     FEMOptions,
     MPMOptions,
     PBDOptions,
@@ -33,7 +34,7 @@ from .solvers import (
     SPHSolver,
     ToolSolver,
 )
-from .couplers import LegacyCoupler, SAPCoupler
+from .couplers import LegacyCoupler, SAPCoupler, IPCCoupler
 from .states.cache import QueriedStates
 from .states.solvers import SimState
 from genesis.sensors.sensor_manager import SensorManager
@@ -141,9 +142,11 @@ class Simulator(RBC):
             self._coupler = SAPCoupler(self, self.coupler_options)
         elif isinstance(self.coupler_options, LegacyCouplerOptions):
             self._coupler = LegacyCoupler(self, self.coupler_options)
+        elif isinstance(self.coupler_options, IPCCouplerOptions):
+            self._coupler = IPCCoupler(self, self.coupler_options)
         else:
             gs.raise_exception(
-                f"Coupler options {self.coupler_options} not supported. Please use SAPCouplerOptions or LegacyCouplerOptions."
+                f"Coupler options {self.coupler_options} not supported. Please use SAPCouplerOptions, LegacyCouplerOptions, or IPCCouplerOptions."
             )
 
         # states
@@ -266,7 +269,7 @@ class Simulator(RBC):
     def step(self, in_backward=False):
         if self._rigid_only:  # "Only Advance!" --Thomas Wade :P
             for _ in range(self._substeps):
-                self.rigid_solver.substep()
+                self.rigid_solver.substep(self._cur_substep_global)
                 self._cur_substep_global += 1
 
         else:
