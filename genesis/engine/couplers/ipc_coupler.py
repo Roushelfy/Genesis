@@ -178,8 +178,8 @@ class IPCCoupler(RBC):
                 fem_solver._mesh_handles[f"gs_ipc_{i_b}_{i_e}"] = fem_solver.list_env_mesh[i_b][i_e]
 
     def _add_rigid_geoms_to_ipc(self):
-        """Add rigid geoms to the existing IPC scene as ABD objects"""
-        from uipc.geometry import tetmesh, label_surface, label_triangle_orient, flip_inward_triangles
+        """Add rigid geoms to the existing IPC scene as ABD objects, merging geoms by link_idx"""
+        from uipc.geometry import tetmesh, label_surface, label_triangle_orient, flip_inward_triangles, merge, ground
         from genesis.utils import mesh as mu
         import numpy as np
         import trimesh
@@ -199,184 +199,183 @@ class IPCCoupler(RBC):
             rigid_solver.list_env_obj.append([])
             rigid_solver.list_env_mesh.append([])
 
-            geom_counter = 0  # Counter for IPC objects
+            # Group geoms by link_idx for merging
+            link_geoms = {}  # link_idx -> dict with 'meshes', 'link_world_pos', 'link_world_quat', 'entity_idx'
+            link_planes = {}  # link_idx -> list of plane geoms (handle separately)
 
-            # Iterate through all geoms instead of entities
+            # First pass: collect and group geoms by link_idx
             for i_g in range(rigid_solver.n_geoms_):
                 geom_type = rigid_solver.geoms_info.type[i_g]
+                link_idx = rigid_solver.geoms_info.link_idx[i_g]
 
-                # Process different geom types
+                # Initialize link group if not exists
+                if link_idx not in link_geoms:
+                    link_geoms[link_idx] = {
+                        'meshes': [],
+                        'link_world_pos': None,
+                        'link_world_quat': None,
+                        'entity_idx': None
+                    }
+                    link_planes[link_idx] = []
+
                 try:
-                    # Create rigid object in IPC (following FEM pattern)
-                    rigid_obj = scene.objects().create(f"rigid_obj_{i_b}_{geom_counter}")
-                    rigid_solver.list_env_obj[i_b].append(rigid_obj)
-
                     if geom_type == gs.GEOM_TYPE.PLANE:
-                        # Use UIPC ground function for plane
-                        from uipc.geometry import ground
-
-                        # Get plane position and normal from geoms_info
-                        pos = rigid_solver.geoms_info.pos[i_g]
-                        # For plane, assume normal is [0, 0, 1] (Z-up)
-                        normal = np.array([0.0, 0.0, 1.0])
-
-                        # Calculate height: distance from origin to plane along normal direction
+                        # Handle planes separately (they can't be merged with SimplicialComplex)
+                        pos = rigid_solver.geoms_info.pos[i_g].to_numpy()
+                        normal = np.array([0.0, 0.0, 1.0])  # Z-up
                         height = np.dot(pos, normal)
-
-                        # Create ground plane
                         plane_geom = ground(height, normal)
-
-                        # For plane, we don't add to list_env_mesh since it's ImplicitGeometry, not SimplicialComplex
-                        rigid_solver.list_env_mesh[i_b].append(None)
-
-                        # Create geometry in IPC scene directly
-                        rigid_obj.geometries().create(plane_geom)
-                        rigid_solver._mesh_handles[f"rigid_ipc_{i_b}_{geom_counter}"] = plane_geom
+                        link_planes[link_idx].append((i_g, plane_geom))
 
                     else:
-                        # For all non-plane geoms, use vertex/face information
-                        # Check if this geom has vertices
+                        # For all non-plane geoms, create tetmesh
                         vert_num = rigid_solver.geoms_info.vert_num[i_g]
                         if vert_num == 0:
-                            # Skip geoms without vertices
-                            rigid_solver.list_env_obj[i_b].append(None)
-                            rigid_solver.list_env_mesh[i_b].append(None)
-                            geom_counter += 1
-                            continue
+                            continue  # Skip geoms without vertices
 
-                        # Extract vertex and face data for this specific geom
+                        # Extract vertex and face data
                         vert_start = rigid_solver.geoms_info.vert_start[i_g]
                         vert_end = rigid_solver.geoms_info.vert_end[i_g]
                         face_start = rigid_solver.geoms_info.face_start[i_g]
                         face_end = rigid_solver.geoms_info.face_end[i_g]
 
-                        # Get vertices for this geom (these are at origin)
+                        # Get vertices and faces
                         geom_verts = rigid_solver.verts_info.init_pos.to_numpy()[vert_start:vert_end]
-
-                        # Get faces for this geom
                         geom_faces = rigid_solver.faces_info.verts_idx.to_numpy()[face_start:face_end]
-                        # Adjust face indices to be relative to this geom's vertices
-                        geom_faces = geom_faces - vert_start
+                        geom_faces = geom_faces - vert_start  # Adjust indices
 
-                        # Convert trimesh to tetmesh using external tetrahedralization
+                        # Apply geom-relative transform to vertices (needed for merging)
+                        geom_rel_pos = rigid_solver.geoms_info.pos[i_g].to_numpy()
+                        geom_rel_quat = rigid_solver.geoms_info.quat[i_g].to_numpy()
+
+                        # Transform vertices by geom relative transform
+                        import genesis.utils.geom as gu
+                        geom_rot_mat = gu.quat_to_R(geom_rel_quat)
+                        transformed_verts = geom_verts @ geom_rot_mat.T + geom_rel_pos
+
+                        # Convert trimesh to tetmesh
                         try:
-                            # Create trimesh object from vertices and faces
-                            tri_mesh = trimesh.Trimesh(vertices=geom_verts, faces=geom_faces)
+                            tri_mesh = trimesh.Trimesh(vertices=transformed_verts, faces=geom_faces)
                             verts, elems = mu.tetrahedralize_mesh(tri_mesh, tet_cfg=dict())
+                            rigid_mesh = tetmesh(verts.astype(np.float64), elems.astype(np.int32))
+
+                            # Store mesh and geom info
+                            link_geoms[link_idx]['meshes'].append((i_g, rigid_mesh))
+
                         except Exception as e:
                             gs.logger.warning(f"Failed to convert trimesh to tetmesh for geom {i_g}: {e}")
-                            # Skip this geom if conversion fails
-                            rigid_solver.list_env_obj[i_b].append(None)
-                            rigid_solver.list_env_mesh[i_b].append(None)
-                            geom_counter += 1
                             continue
 
-                        # Create tetrahedral mesh in IPC
-                        rigid_mesh = tetmesh(verts.astype(np.float64), elems.astype(np.int32))
+                    # Store link transform info (same for all geoms in link)
+                    if link_geoms[link_idx]['link_world_pos'] is None:
+                        link_geoms[link_idx]['link_world_pos'] = rigid_solver.links_state.pos[link_idx, i_b]
+                        link_geoms[link_idx]['link_world_quat'] = rigid_solver.links_state.quat[link_idx, i_b]
+                        link_geoms[link_idx]['entity_idx'] = rigid_solver.links_info.entity_idx[link_idx]
 
-                        # Apply transform to position and rotate the mesh
+                except Exception as e:
+                    gs.logger.warning(f"Failed to process geom {i_g}: {e}")
+                    continue
+
+            # Second pass: merge geoms per link and create IPC objects
+            link_obj_counter = 0
+            for link_idx, link_data in link_geoms.items():
+                try:
+                    # Handle regular meshes (merge if multiple)
+                    if link_data['meshes']:
+                        if len(link_data['meshes']) == 1:
+                            # Single mesh in link
+                            geom_idx, merged_mesh = link_data['meshes'][0]
+                        else:
+                            # Multiple meshes in link - merge them
+                            meshes_to_merge = [mesh for geom_idx, mesh in link_data['meshes']]
+                            merged_mesh = merge(meshes_to_merge)
+                            geom_idx = link_data['meshes'][0][0]  # Use first geom's index for metadata
+
+                        # Apply link world transform
                         from uipc import view, Transform, Vector3, Quaternion
-                        trans_view = view(rigid_mesh.transforms())
+                        trans_view = view(merged_mesh.transforms())
                         t = Transform.Identity()
 
-                        # Get entity and link info from geom->link->entity relationship
-                        link_idx = rigid_solver.geoms_info.link_idx[i_g]
-                        entity_idx = rigid_solver.links_info.entity_idx[link_idx]
-                        entity = rigid_solver._entities[entity_idx]
+                        link_world_pos = link_data['link_world_pos']
+                        link_world_quat = link_data['link_world_quat']
 
-                        # Apply complete transform chain:
-                        # 1. Geom relative to link
-                        geom_rel_pos = rigid_solver.geoms_info.pos[i_g]
-                        geom_rel_quat = rigid_solver.geoms_info.quat[i_g]
+                        # Ensure numpy format
+                        link_world_pos = link_world_pos.to_numpy()
+                        link_world_quat = link_world_quat.to_numpy()
 
-                        # 2. Link world transform
-                        link_world_pos = rigid_solver.links_state.pos[link_idx, i_b]
-                        link_world_quat = rigid_solver.links_state.quat[link_idx, i_b]
-
-                        # Apply transforms: link -> geom
-                        # Link transform
                         t.translate(Vector3.Values((link_world_pos[0], link_world_pos[1], link_world_pos[2])))
                         uipc_link_quat = Quaternion(link_world_quat)
                         t.rotate(uipc_link_quat)
-
-                        # Geom transform
-                        t.translate(Vector3.Values((geom_rel_pos[0], geom_rel_pos[1], geom_rel_pos[2])))
-                        uipc_geom_quat = Quaternion(geom_rel_quat)
-                        t.rotate(uipc_geom_quat)
-
                         trans_view[0] = t.matrix()
 
                         # Process surface for contact
-                        label_surface(rigid_mesh)
-                        label_triangle_orient(rigid_mesh)
-                        rigid_mesh = flip_inward_triangles(rigid_mesh)
+                        label_surface(merged_mesh)
+                        label_triangle_orient(merged_mesh)
+                        merged_mesh = flip_inward_triangles(merged_mesh)
 
-                        rigid_solver.list_env_mesh[i_b].append(rigid_mesh)
+                        # Create rigid object
+                        rigid_obj = scene.objects().create(f"rigid_link_{i_b}_{link_idx}")
+                        rigid_solver.list_env_obj[i_b].append(rigid_obj)
+                        rigid_solver.list_env_mesh[i_b].append(merged_mesh)
 
                         # Add to contact subscene and apply ABD constitution
-                        scene_contacts[i_b].subscene_append(rigid_mesh)
-                        # Apply ABD contact element for selective collision control
-                        self._ipc_abd_contact.apply_to(rigid_mesh)
+                        scene_contacts[i_b].subscene_append(merged_mesh)
+                        self._ipc_abd_contact.apply_to(merged_mesh)
                         from uipc.unit import MPa
-                        abd.apply_to(rigid_mesh, 10.0 * MPa)
+                        abd.apply_to(merged_mesh, 10.0 * MPa)
 
-                        # Apply soft transform constraints to enable coupling with Genesis rigid body system
+                        # Apply soft transform constraints
                         from uipc.constitution import SoftTransformConstraint
                         if not hasattr(self, '_ipc_stc'):
                             self._ipc_stc = SoftTransformConstraint()
                             scene.constitution_tabular().insert(self._ipc_stc)
 
-                        # Apply soft constraint with configurable strength
                         strength_tuple = self.options.ipc_constraint_strength
                         constraint_strength = np.array([
                             strength_tuple[0],  # translation strength
                             strength_tuple[1],  # rotation strength
                         ])
-                        self._ipc_stc.apply_to(rigid_mesh, constraint_strength)
+                        self._ipc_stc.apply_to(merged_mesh, constraint_strength)
 
-                        # Add metadata to identify this as rigid geometry
-                        meta_attrs = rigid_mesh.meta()
+                        # Add metadata
+                        meta_attrs = merged_mesh.meta()
                         meta_attrs.create("solver_type", "rigid")
                         meta_attrs.create("env_idx", str(i_b))
-                        meta_attrs.create("geom_idx", str(i_g))
+                        meta_attrs.create("link_idx", str(link_idx))  # Use link_idx instead of geom_idx
 
-                        rigid_obj.geometries().create(rigid_mesh)
+                        rigid_obj.geometries().create(merged_mesh)
 
-                        # Set up animator for this rigid object
+                        # Set up animator for this link
                         if not hasattr(self, '_ipc_animator'):
                             self._ipc_animator = scene.animator()
 
-                        # Create animation function for this specific geom
-                        def create_animate_function(env_idx, geom_idx):
-                            def animate_rigid_geom(info):
+                        def create_animate_function(env_idx, link_idx):
+                            def animate_rigid_link(info):
                                 from uipc import view, builtin, Transform, Vector3, Quaternion
 
-                                # Get geometries from animation info
                                 geo_slots = info.geo_slots()
                                 if len(geo_slots) == 0:
                                     return
                                 geo = geo_slots[0].geometry()
 
-                                # Get current Genesis rigid body state
                                 try:
-                                    genesis_pos = rigid_solver.get_geoms_pos(geoms_idx=geom_idx, envs_idx=env_idx)
-                                    genesis_quat = rigid_solver.get_geoms_quat(geoms_idx=geom_idx, envs_idx=env_idx)
+                                    # Get current link state instead of geom state
+                                    link_pos = rigid_solver.get_links_pos(links_idx=link_idx, envs_idx=env_idx)
+                                    link_quat = rigid_solver.get_links_quat(links_idx=link_idx, envs_idx=env_idx)
 
-                                    # Convert to numpy
-                                    genesis_pos = genesis_pos.detach().cpu().numpy()
-                                    genesis_quat = genesis_quat.detach().cpu().numpy()
+                                    link_pos = link_pos.detach().cpu().numpy()
+                                    link_quat = link_quat.detach().cpu().numpy()
 
-                                    # Handle different array shapes robustly
-                                    while len(genesis_pos.shape) > 1 and genesis_pos.shape[0] == 1:
-                                        genesis_pos = genesis_pos[0]
-                                    while len(genesis_quat.shape) > 1 and genesis_quat.shape[0] == 1:
-                                        genesis_quat = genesis_quat[0]
+                                    # Handle array shapes
+                                    while len(link_pos.shape) > 1 and link_pos.shape[0] == 1:
+                                        link_pos = link_pos[0]
+                                    while len(link_quat.shape) > 1 and link_quat.shape[0] == 1:
+                                        link_quat = link_quat[0]
 
-                                    # Ensure we have 1D arrays with correct length
-                                    pos_1d = genesis_pos.flatten()[:3]  # Take first 3 elements
-                                    quat_1d = genesis_quat.flatten()[:4]  # Take first 4 elements
+                                    pos_1d = link_pos.flatten()[:3]
+                                    quat_1d = link_quat.flatten()[:4]
 
-                                    # Create UIPC Transform for relative movement
+                                    # Create transform
                                     t = Transform.Identity()
                                     t.translate(Vector3.Values((pos_1d[0], pos_1d[1], pos_1d[2])))
                                     uipc_quat = Quaternion(quat_1d)
@@ -387,29 +386,34 @@ class IPCCoupler(RBC):
                                     aim_transform = geo.instances().find(builtin.aim_transform)
 
                                     if is_constrained and aim_transform:
-                                        # Enable constraint with relative transform
-                                        view(is_constrained)[0] = 1  # Enable constraint
-                                        view(aim_transform)[:] = t.matrix()  # Set relative target transform
+                                        view(is_constrained)[0] = 1
+                                        view(aim_transform)[:] = t.matrix()
 
                                 except Exception as e:
                                     gs.logger.warning(f"Error retrieving Genesis state for IPC animation: {e}")
 
-                            return animate_rigid_geom
+                            return animate_rigid_link
 
-                        # Create and register animation function for this rigid object
-                        animate_func = create_animate_function(i_b, i_g)
+                        animate_func = create_animate_function(i_b, link_idx)
                         self._ipc_animator.insert(rigid_obj, animate_func)
 
-                        rigid_solver._mesh_handles[f"rigid_ipc_{i_b}_{geom_counter}"] = rigid_mesh
+                        rigid_solver._mesh_handles[f"rigid_link_{i_b}_{link_idx}"] = merged_mesh
+                        link_obj_counter += 1
 
-                    geom_counter += 1
+                    # Handle planes for this link separately
+                    for geom_idx, plane_geom in link_planes[link_idx]:
+                        plane_obj = scene.objects().create(f"rigid_plane_{i_b}_{geom_idx}")
+                        rigid_solver.list_env_obj[i_b].append(plane_obj)
+                        rigid_solver.list_env_mesh[i_b].append(None)  # Planes are ImplicitGeometry
+
+                        plane_obj.geometries().create(plane_geom)
+                        rigid_solver._mesh_handles[f"rigid_plane_{i_b}_{geom_idx}"] = plane_geom
+                        link_obj_counter += 1
 
                 except Exception as e:
-                    gs.logger.warning(f"Failed to add rigid geom {i_g} to IPC: {e}")
-                    # Add empty placeholders to maintain list structure
-                    rigid_solver.list_env_obj[i_b].append(None)
-                    rigid_solver.list_env_mesh[i_b].append(None)
-                    geom_counter += 1
+                    gs.logger.warning(f"Failed to create IPC object for link {link_idx}: {e}")
+                    continue
+
 
     def _finalize_ipc(self):
         """Finalize IPC setup"""
@@ -438,9 +442,9 @@ class IPCCoupler(RBC):
         self._retrieve_rigid_states(f)
 
         # Update IPC GUI if enabled
-        scene = self.sim._scene
-        if hasattr(scene, '_ipc_gui_enabled') and scene._ipc_gui_enabled and hasattr(scene, '_ipc_scene_gui'):
-            scene._ipc_scene_gui.update()
+        # scene = self.sim._scene
+        # if hasattr(scene, '_ipc_gui_enabled') and scene._ipc_gui_enabled and hasattr(scene, '_ipc_scene_gui'):
+        #     scene._ipc_scene_gui.update()
 
     def _retrieve_fem_states(self, f):
         # IPC world advance/retrieve is handled at Scene level
@@ -563,23 +567,23 @@ class IPCCoupler(RBC):
 
                             if solver_type == "rigid":
                                 env_idx_attr = meta_attrs.find("env_idx")
-                                geom_idx_attr = meta_attrs.find("geom_idx")
+                                link_idx_attr = meta_attrs.find("link_idx")
 
-                                if env_idx_attr and geom_idx_attr:
+                                if env_idx_attr and link_idx_attr:
                                     # Read metadata values
                                     env_idx_str = str(env_idx_attr.view()[0])
-                                    geom_idx_str = str(geom_idx_attr.view()[0])
+                                    link_idx_str = str(link_idx_attr.view()[0])
                                     env_idx = int(env_idx_str)
-                                    geom_idx = int(geom_idx_str)
+                                    link_idx = int(link_idx_str)
 
                                     # Get current transform matrix from ABD object
                                     transforms = geo.transforms()
                                     if transforms.size() > 0:
                                         transform_matrix = view(transforms)[0]  # 4x4 affine matrix
 
-                                        if geom_idx not in abd_affine_by_geom:
-                                            abd_affine_by_geom[geom_idx] = {}
-                                        abd_affine_by_geom[geom_idx][env_idx] = transform_matrix.copy()
+                                        if link_idx not in abd_affine_by_geom:
+                                            abd_affine_by_geom[link_idx] = {}
+                                        abd_affine_by_geom[link_idx][env_idx] = transform_matrix.copy()
 
                     except Exception as e:
                         gs.logger.warning(f"Failed to retrieve ABD geometry transform: {e}")

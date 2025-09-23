@@ -821,6 +821,7 @@ class Scene(RBC):
                 def on_update():
                     if self._imgui.Button('Run Single IPC Step'):
                         self.step()
+                        self._ipc_scene_gui.update()
 
                     self._imgui.Text("IPC Debug Controls:")
 

@@ -9,7 +9,7 @@ def main():
             dt=1e-3,
             gravity=(0.0, 0.0, -9.8),
             ipc_constraint_strength=(100, 100),  # (translation, rotation) strength ratios
-            IPC_self_contact=False,  # Disable rigid-rigid contact in IPC
+            IPC_self_contact=True,  # Disable rigid-rigid contact in IPC
         ),
         vis_options=gs.options.VisOptions(),
         viewer_options=gs.options.ViewerOptions(),
@@ -32,31 +32,21 @@ def main():
         surface=gs.surfaces.Plastic(color=(0.8, 0.2, 0.2, 0.5)),
     )
 
-    cube = scene.add_entity(
-        morph=gs.morphs.Box(pos=tuple(map(sum, zip(SCENE_POS, (0.0, 0.0, 0.5)))), size=(0.2, 0.2, 0.2)),
-        material=gs.materials.FEM.Elastic(E=1.0e6, nu=0.45, rho=1000.0, model="stable_neohookean"),
-        surface=gs.surfaces.Plastic(color=(0.2, 0.8, 0.2, 0.5)),
-    )
+    # cube = scene.add_entity(
+    #     morph=gs.morphs.Box(pos=tuple(map(sum, zip(SCENE_POS, (0.0, 0.0, 0.5)))), size=(0.2, 0.2, 0.2)),
+    #     material=gs.materials.FEM.Elastic(E=1.0e6, nu=0.45, rho=1000.0, model="stable_neohookean"),
+    #     surface=gs.surfaces.Plastic(color=(0.2, 0.8, 0.2, 0.5)),
+    # )
 
     # Rigid bodies (added to both Genesis rigid solver AND IPC as ABD objects)
     # This enables contact between rigid bodies and FEM bodies through IPC
 
-    # Rigid cube  - above the FEM cube
-    # rigid_cube = scene.add_entity(
-    #     morph=gs.morphs.Box(
-    #         pos=tuple(map(sum, zip(SCENE_POS, (0, 0, 1.1)))),
-    #         size=(0.08, 0.08, 0.08),
-    #         euler=(0, 0, 0)
-    #     ),
-    #     material=gs.materials.Rigid(rho=800.0, friction=0.3),
-    #     surface=gs.surfaces.Plastic(color=(0.8, 0.8, 0.2, 0.8)),
-    # )
 
    # a rigid go2 dog
     rigid_dog = scene.add_entity(
         gs.morphs.URDF(
             file="urdf/go2/urdf/go2.urdf",
-            pos=(0, 0, 1.0),
+            pos=(0, 0, 0.5),
             scale=0.5,
         ),
     )
