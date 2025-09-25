@@ -35,15 +35,9 @@ def main():
 
 
     franka = scene.add_entity(
-        gs.morphs.MJCF(file="xml/franka_emika_panda/panda_no_tendon.xml"),
+        gs.morphs.MJCF(file="xml/franka_emika_panda/panda.xml"),
     )
-    # rigid_dog = scene.add_entity(
-    #     gs.morphs.URDF(
-    #         file="urdf/go2/urdf/go2.urdf",
-    #         pos=(0, 0, 0.4),
-    #         scale=0.5,
-    #     ),
-    # )
+    franka.set_ipc_link_filter(link_names=["left_finger", "right_finger"])
 
     material = gs.materials.FEM.Elastic(E=1.0e6, nu=0.45, rho=1000.0, model="stable_neohookean") if args.ipc else gs.materials.Rigid()
 
@@ -58,17 +52,6 @@ def main():
     # Show IPC GUI for debugging
     print("Scene built successfully!")
 
-
-    # if args.ipc:
-    #     print("Launching IPC debug GUI...")
-    #     try:
-    #         # Show the IPC GUI with interactive controls
-    #         scene.show_ipc_gui()
-    #     except Exception as e:
-
-    #         print(f"Failed to show IPC GUI: {e}")
-    #         print("Running simulation without GUI...")
-    # else:
     motors_dof = np.arange(7)
     fingers_dof = np.arange(7, 9)
     qpos = np.array([-1.0124, 1.5559, 1.3662, -1.6878, -1.5799, 1.7757, 1.4602, 0.04, 0.04])

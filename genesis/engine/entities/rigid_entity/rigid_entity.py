@@ -91,6 +91,9 @@ class RigidEntity(Entity):
 
         self._is_built: bool = False
 
+        # IPC link filter: if None, all links participate in IPC; if specified, only these links participate
+        self._ipc_link_filter: set = None
+
         self._load_model()
 
     def _load_model(self):
@@ -3004,3 +3007,70 @@ class RigidEntity(Entity):
 
 
         return verts, elems
+
+    def set_ipc_link_filter(self, link_names=None, link_indices=None):
+        """
+        Set which links of this entity should participate in IPC simulation.
+
+        Parameters
+        ----------
+        link_names : list of str, optional
+            Names of links to include in IPC. If None and link_indices is None, all links participate.
+        link_indices : list of int, optional
+            Indices of links to include in IPC. If None and link_names is None, all links participate.
+        """
+        if link_names is None and link_indices is None:
+            self._ipc_link_filter = None
+            return
+
+        self._ipc_link_filter = set()
+
+        if link_names is not None:
+            # Convert link names to indices
+            for name in link_names:
+                link_idx = self.get_link_idx_by_name(name)
+                if link_idx is not None:
+                    # Convert to solver-level index
+                    solver_link_idx = link_idx + self._link_start
+                    self._ipc_link_filter.add(solver_link_idx)
+                else:
+                    gs.logger.warning(f"Link '{name}' not found in entity {self._idx}")
+
+        if link_indices is not None:
+            # Convert entity-local link indices to solver-level indices
+            for link_idx in link_indices:
+                if 0 <= link_idx < self.n_links:
+                    solver_link_idx = link_idx + self._link_start
+                    self._ipc_link_filter.add(solver_link_idx)
+                else:
+                    gs.logger.warning(f"Link index {link_idx} out of range for entity {self._idx}")
+
+    def get_ipc_link_filter(self):
+        """
+        Get the current IPC link filter.
+
+        Returns
+        -------
+        set or None
+            Set of solver-level link indices to include in IPC, or None if all links should participate.
+        """
+        return self._ipc_link_filter
+
+    def get_link_idx_by_name(self, name):
+        """
+        Get entity-local link index by name.
+
+        Parameters
+        ----------
+        name : str
+            Name of the link.
+
+        Returns
+        -------
+        int or None
+            Entity-local link index, or None if not found.
+        """
+        for i, link in enumerate(self._links):
+            if hasattr(link, 'name') and link.name == name:
+                return i
+        return None

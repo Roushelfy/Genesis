@@ -207,6 +207,13 @@ class IPCCoupler(RBC):
             for i_g in range(rigid_solver.n_geoms_):
                 geom_type = rigid_solver.geoms_info.type[i_g]
                 link_idx = rigid_solver.geoms_info.link_idx[i_g]
+                entity_idx = rigid_solver.links_info.entity_idx[link_idx]
+                entity = rigid_solver._entities[entity_idx]
+
+                # Check if this link should be included in IPC based on entity's filter
+                if hasattr(entity, '_ipc_link_filter') and entity._ipc_link_filter is not None:
+                    if link_idx not in entity._ipc_link_filter:
+                        continue  # Skip this geom/link
 
                 # Initialize link group if not exists
                 if link_idx not in link_geoms:
@@ -214,7 +221,7 @@ class IPCCoupler(RBC):
                         'meshes': [],
                         'link_world_pos': None,
                         'link_world_quat': None,
-                        'entity_idx': None
+                        'entity_idx': entity_idx
                     }
                     link_planes[link_idx] = []
 
@@ -271,7 +278,6 @@ class IPCCoupler(RBC):
                     if link_geoms[link_idx]['link_world_pos'] is None:
                         link_geoms[link_idx]['link_world_pos'] = rigid_solver.links_state.pos[link_idx, i_b]
                         link_geoms[link_idx]['link_world_quat'] = rigid_solver.links_state.quat[link_idx, i_b]
-                        link_geoms[link_idx]['entity_idx'] = rigid_solver.links_info.entity_idx[link_idx]
 
                 except Exception as e:
                     gs.logger.warning(f"Failed to process geom {i_g}: {e}")
