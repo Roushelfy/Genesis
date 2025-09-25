@@ -751,6 +751,10 @@ class Scene(RBC):
         with gs.logger.timer("Building visualizer..."):
             self._visualizer.build()
 
+            #ipc gui
+            if hasattr(self._sim, '_coupler') and self._sim._coupler is not None and self._sim._coupler._ipc_scene is not None:
+                self._init_ipc_gui()
+
         if self.profiling_options.show_FPS:
             self.FPS_tracker = FPSTracker(self.n_envs, alpha=self.profiling_options.FPS_tracker_alpha)
 
@@ -787,6 +791,10 @@ class Scene(RBC):
             ps.set_up_dir("z_up")
             ps.set_ground_plane_height(0.0)  # Set at z=0 to match Genesis
 
+            # Show polyscope window for first frame to initialize properly
+            ps.show(forFrames=1)
+            self._ipc_gui_shown = True
+
             # Store imgui reference for later use
             self._imgui = imgui
 
@@ -803,59 +811,6 @@ class Scene(RBC):
             self._ipc_gui_enabled = False
 
 
-
-    def show_ipc_gui(self):
-        """Show IPC GUI window for debugging"""
-        # Check if simulator has an active IPC coupler
-        if hasattr(self._sim, '_coupler') and hasattr(self._sim._coupler, '_ipc_world') and self._sim._coupler._ipc_world is not None:
-            try:
-                import polyscope as ps
-
-                # Initialize IPC GUI if not done yet
-                if not hasattr(self, '_ipc_gui_enabled'):
-                    self._init_ipc_gui()
-
-                # Set up user callback for GUI control
-                run = [False]  # Use list to allow modification in nested function
-
-                def on_update():
-                    if self._imgui.Button('Run Single IPC Step'):
-                        self.step()
-                        self._ipc_scene_gui.update()
-
-                    self._imgui.Text("IPC Debug Controls:")
-
-                    # Show debug information
-                    from uipc.backend import SceneVisitor
-                    visitor = SceneVisitor(self._sim._coupler._ipc_scene)
-                    geometry_count = len(list(visitor.geometries()))
-                    self._imgui.Text(f"IPC Geometries: {geometry_count}")
-
-                    # Show current frame number
-                    current_frame = getattr(self, '_t', 0)
-                    self._imgui.Text(f"Current Frame: {current_frame}")
-
-                    # Show simulation time
-                    sim_time = current_frame * self.dt if hasattr(self, 'dt') else 0.0
-                    self._imgui.Text(f"Simulation Time: {sim_time:.3f}s")
-
-                    # Toggle button for auto run
-                    button_text = 'Stop Auto Run' if run[0] else 'Start Auto Run'
-                    if self._imgui.Button(button_text):
-                        run[0] = not run[0]
-
-                    if run[0]:
-                        self.step()
-                        self._ipc_scene_gui.update()
-
-                ps.set_user_callback(on_update)
-                ps.show()
-
-                gs.logger.info("IPC GUI window shown")
-            except Exception as e:
-                gs.logger.error(f"Failed to show IPC GUI: {e}")
-        else:
-            gs.logger.warning("IPC coupler not initialized. Cannot show IPC GUI.")
 
     def _parallelize(
         self,
@@ -975,6 +930,14 @@ class Scene(RBC):
 
         if update_visualizer:
             self._visualizer.update(force=False, auto=refresh_visualizer)
+            if hasattr(self, '_ipc_gui_enabled') and self._ipc_gui_enabled:
+                # Non-blocking GUI update
+                try:
+                    import polyscope as ps
+                    ps.frame_tick()  # Non-blocking frame update
+                    self._ipc_scene_gui.update()
+                except ImportError:
+                    pass
 
         if self.profiling_options.show_FPS:
             self.FPS_tracker.step()

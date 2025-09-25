@@ -11,8 +11,6 @@ def main():
             ipc_constraint_strength=(100, 100),  # (translation, rotation) strength ratios
             IPC_self_contact=True,  # Disable rigid-rigid contact in IPC
         ),
-        vis_options=gs.options.VisOptions(),
-        viewer_options=gs.options.ViewerOptions(),
         profiling_options=gs.options.ProfilingOptions(
             show_FPS=False,
         ),
@@ -26,14 +24,13 @@ def main():
     SCENE_POS = (0.0, 0.0, 0.0)
 
     # FEM entities (added to IPC as deformable bodies)
-    blob = scene.add_entity(
-        morph=gs.morphs.Sphere(pos=tuple(map(sum, zip(SCENE_POS, (-0.0, -0.0, 0.8)))), radius=0.1),
-        material=gs.materials.FEM.Elastic(E=1.0e5, nu=0.45, rho=1000.0, model="stable_neohookean"),
-        surface=gs.surfaces.Plastic(color=(0.8, 0.2, 0.2, 0.5)),
-    )
+    # blob = scene.add_entity(
+    #     morph=gs.morphs.Sphere(pos=tuple(map(sum, zip(SCENE_POS, (-0.0, -0.0, 0.2)))), radius=0.1),
+    #     material=gs.materials.FEM.Elastic(E=1.0e5, nu=0.45, rho=1000.0, model="stable_neohookean")
+    # )
 
     # cube = scene.add_entity(
-    #     morph=gs.morphs.Box(pos=tuple(map(sum, zip(SCENE_POS, (0.0, 0.0, 0.5)))), size=(0.2, 0.2, 0.2)),
+    #     morph=gs.morphs.Box(pos=tuple(map(sum, zip(SCENE_POS, (0.0, 0.0, 0.6)))), size=(0.2, 0.2, 0.2)),
     #     material=gs.materials.FEM.Elastic(E=1.0e6, nu=0.45, rho=1000.0, model="stable_neohookean"),
     #     surface=gs.surfaces.Plastic(color=(0.2, 0.8, 0.2, 0.5)),
     # )
@@ -46,7 +43,7 @@ def main():
     rigid_dog = scene.add_entity(
         gs.morphs.URDF(
             file="urdf/go2/urdf/go2.urdf",
-            pos=(0, 0, 0.5),
+            pos=(0, 0, 0.4),
             scale=0.5,
         ),
     )

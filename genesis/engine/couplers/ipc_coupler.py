@@ -165,7 +165,7 @@ class IPCCoupler(RBC):
 
                 # Apply material properties
                 moduli_box = ElasticModuli.youngs_poisson(entity.material.E, entity.material.nu)
-                stk.apply_to(fem_solver.list_env_mesh[i_b][i_e], moduli_box)
+                stk.apply_to(fem_solver.list_env_mesh[i_b][i_e], moduli_box,mass_density=entity.material.rho)
 
                 # Add metadata to identify this as FEM geometry
                 meta_attrs = fem_solver.list_env_mesh[i_b][i_e].meta()
@@ -225,6 +225,7 @@ class IPCCoupler(RBC):
                         normal = np.array([0.0, 0.0, 1.0])  # Z-up
                         height = np.dot(pos, normal)
                         plane_geom = ground(height, normal)
+                        self._ipc_abd_contact.apply_to(plane_geom)
                         link_planes[link_idx].append((i_g, plane_geom))
 
                     else:

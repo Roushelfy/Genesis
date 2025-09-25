@@ -1,0 +1,108 @@
+import genesis as gs
+import logging
+import argparse
+
+import numpy as np
+def main():
+    gs.init(backend=gs.gpu, logging_level=logging.DEBUG)
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--ipc", action="store_true", default=True)
+    args = parser.parse_args()
+
+    coupler_options = gs.options.IPCCouplerOptions(
+        dt=1e-3,
+        gravity=(0.0, 0.0, -9.8),
+        ipc_constraint_strength=(100, 100),  # (translation, rotation) strength ratios
+        IPC_self_contact=False,  # Disable rigid-rigid contact in IPC
+    ) if args.ipc else None
+
+    
+    scene = gs.Scene(
+        sim_options=gs.options.SimOptions(dt=1e-3, gravity=(0.0, 0.0, -9.8)),
+        coupler_options=coupler_options,
+        profiling_options=gs.options.ProfilingOptions(
+            show_FPS=False,
+        ),
+        show_viewer=True,
+    )
+
+    # Both FEM and Rigid bodies will be added to IPC for unified contact simulation
+    # FEM bodies use StableNeoHookean constitution, Rigid bodies use ABD constitution
+
+    scene.add_entity(gs.morphs.Plane())
+    SCENE_POS = (0.0, 0.0, 0.0)
+
+
+    franka = scene.add_entity(
+        gs.morphs.MJCF(file="xml/franka_emika_panda/panda_no_tendon.xml"),
+    )
+    # rigid_dog = scene.add_entity(
+    #     gs.morphs.URDF(
+    #         file="urdf/go2/urdf/go2.urdf",
+    #         pos=(0, 0, 0.4),
+    #         scale=0.5,
+    #     ),
+    # )
+
+    material = gs.materials.FEM.Elastic(E=1.0e6, nu=0.45, rho=1000.0, model="stable_neohookean") if args.ipc else gs.materials.Rigid()
+
+    cube = scene.add_entity(
+        morph=gs.morphs.Box(pos=(0.65, 0.0, 0.03), size=(0.04, 0.04, 0.04)),
+        material=material,
+        surface=gs.surfaces.Plastic(color=(0.2, 0.8, 0.2, 0.5)),
+    )
+
+    scene.build()
+
+    # Show IPC GUI for debugging
+    print("Scene built successfully!")
+
+
+    # if args.ipc:
+    #     print("Launching IPC debug GUI...")
+    #     try:
+    #         # Show the IPC GUI with interactive controls
+    #         scene.show_ipc_gui()
+    #     except Exception as e:
+
+    #         print(f"Failed to show IPC GUI: {e}")
+    #         print("Running simulation without GUI...")
+    # else:
+    motors_dof = np.arange(7)
+    fingers_dof = np.arange(7, 9)
+    qpos = np.array([-1.0124, 1.5559, 1.3662, -1.6878, -1.5799, 1.7757, 1.4602, 0.04, 0.04])
+    franka.set_qpos(qpos)
+    scene.step()
+    end_effector = franka.get_link("hand")
+    qpos = franka.inverse_kinematics(
+        link=end_effector,
+        pos=np.array([0.65, 0.0, 0.135]),
+        quat=np.array([0, 1, 0, 0]),
+    )
+    franka.control_dofs_position(qpos[:-2], motors_dof)
+    # hold
+    for i in range(100):
+        print("hold", i)
+        scene.step()
+    # grasp
+    finder_pos = -0.0
+    for i in range(100):
+        print("grasp", i)
+        franka.control_dofs_position(qpos[:-2], motors_dof)
+        franka.control_dofs_position(np.array([finder_pos, finder_pos]), fingers_dof)
+        scene.step()
+    # lift
+    qpos = franka.inverse_kinematics(
+        link=end_effector,
+        pos=np.array([0.65, 0.0, 0.3]),
+        quat=np.array([0, 1, 0, 0]),
+    )
+    for i in range(200):
+        print("lift", i)
+        franka.control_dofs_position(qpos[:-2], motors_dof)
+        franka.control_dofs_position(np.array([finder_pos, finder_pos]), fingers_dof)
+        scene.step()
+
+if __name__ == "__main__":
+    main()

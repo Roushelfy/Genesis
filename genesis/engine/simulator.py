@@ -201,7 +201,7 @@ class Simulator(RBC):
         self._para_level = self.scene._para_level
 
         # solvers
-        self._rigid_only = self.rigid_solver.is_active()
+        self._rigid_only = self.rigid_solver.is_active() and not isinstance(self.coupler, IPCCoupler)
         for solver in self._solvers:
             solver.build()
             if solver.is_active():
@@ -267,7 +267,7 @@ class Simulator(RBC):
     # ------------------------------------------------------------------------------------
 
     def step(self, in_backward=False):
-        if self._rigid_only:  # "Only Advance!" --Thomas Wade :P
+        if self._rigid_only :  # "Only Advance!" --Thomas Wade :P
             for _ in range(self._substeps):
                 self.rigid_solver.substep(self._cur_substep_global)
                 self._cur_substep_global += 1
