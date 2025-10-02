@@ -191,7 +191,7 @@ class IPCCouplerOptions(BaseCouplerOptions):
     contact_d_hat : float, optional
         Contact distance threshold. Defaults to  0.001.
     contact_friction_enable : bool, optional
-        Whether to enable friction in contact. Defaults to False.
+        Whether to enable friction in contact. Defaults to True.
     contact_friction_mu : float, optional
         Friction coefficient. Defaults to 0.5.
     contact_resistance : float, optional
@@ -207,6 +207,10 @@ class IPCCouplerOptions(BaseCouplerOptions):
     ipc_constraint_strength : tuple, optional
         Strength ratios for IPC soft transform constraint coupling. Tuple of (translation_strength, rotation_strength).
         Higher values create stiffer coupling between Genesis rigid bodies and IPC ABD objects. Defaults to (100.0, 100.0).
+    two_way_coupling : bool, optional
+        Whether to enable bidirectional coupling between IPC and Genesis rigid bodies.
+        When True, forces from IPC ABD constraint are applied back to Genesis rigid bodies.
+        When False, only Genesis → IPC coupling is active (one-way). Defaults to True.
     IPC_self_contact : bool, optional
         Whether to enable contact detection between rigid bodies in IPC system (ABD-ABD collisions).
         When False, only FEM-FEM and FEM-ABD collisions are detected. Defaults to False.
@@ -217,7 +221,7 @@ class IPCCouplerOptions(BaseCouplerOptions):
     dt: float = 0.001
     gravity: tuple = (0.0, 0.0, -9.8)
     contact_d_hat: float = 0.001
-    contact_friction_enable: bool = False
+    contact_friction_enable: bool = True
     contact_friction_mu: float = 0.5
     contact_resistance: float = 1e9
     newton_velocity_tol: float = 0.001
@@ -225,6 +229,7 @@ class IPCCouplerOptions(BaseCouplerOptions):
     linear_system_tol_rate: float = 1e-4
     sanity_check_enable: bool = False
     ipc_constraint_strength: tuple = (100.0, 100.0)
+    two_way_coupling: bool = True
     IPC_self_contact: bool = False
     disable_ipc_logging: bool = True
 

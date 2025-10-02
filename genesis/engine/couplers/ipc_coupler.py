@@ -329,7 +329,7 @@ class IPCCoupler(RBC):
                         scene_contacts[i_b].subscene_append(merged_mesh)
                         self._ipc_abd_contact.apply_to(merged_mesh)
                         from uipc.unit import MPa
-                        abd.apply_to(merged_mesh, 10.0 * MPa)
+                        abd.apply_to(merged_mesh, kappa=10.0 * MPa, mass_density=rigid_solver._entities[link_data['entity_idx']].material.rho)
 
                         # Apply soft transform constraints
                         from uipc.constitution import SoftTransformConstraint
@@ -356,9 +356,9 @@ class IPCCoupler(RBC):
                         if not hasattr(self, '_ipc_animator'):
                             self._ipc_animator = scene.animator()
 
-                        def create_animate_function(env_idx, link_idx):
+                        def create_animate_function(env_idx, link_idx, rigid_solver_ref):
                             def animate_rigid_link(info):
-                                from uipc import view, builtin, Transform, Vector3, Quaternion
+                                from uipc import view, builtin
 
                                 geo_slots = info.geo_slots()
                                 if len(geo_slots) == 0:
@@ -366,42 +366,27 @@ class IPCCoupler(RBC):
                                 geo = geo_slots[0].geometry()
 
                                 try:
-                                    # Get current link state instead of geom state
-                                    link_pos = rigid_solver.get_links_pos(links_idx=link_idx, envs_idx=env_idx)
-                                    link_quat = rigid_solver.get_links_quat(links_idx=link_idx, envs_idx=env_idx)
+                                    # Read stored Genesis transform (q_genesis^n)
+                                    # This was stored in _store_genesis_rigid_states() before advance()
+                                    if hasattr(rigid_solver_ref, '_genesis_stored_states'):
+                                        stored_states = rigid_solver_ref._genesis_stored_states
+                                        if link_idx in stored_states and env_idx in stored_states[link_idx]:
+                                            transform_matrix = stored_states[link_idx][env_idx]
 
-                                    link_pos = link_pos.detach().cpu().numpy()
-                                    link_quat = link_quat.detach().cpu().numpy()
+                                            # Enable constraint and set target transform
+                                            is_constrained = geo.instances().find(builtin.is_constrained)
+                                            aim_transform_attr = geo.instances().find(builtin.aim_transform)
 
-                                    # Handle array shapes
-                                    while len(link_pos.shape) > 1 and link_pos.shape[0] == 1:
-                                        link_pos = link_pos[0]
-                                    while len(link_quat.shape) > 1 and link_quat.shape[0] == 1:
-                                        link_quat = link_quat[0]
-
-                                    pos_1d = link_pos.flatten()[:3]
-                                    quat_1d = link_quat.flatten()[:4]
-
-                                    # Create transform
-                                    t = Transform.Identity()
-                                    t.translate(Vector3.Values((pos_1d[0], pos_1d[1], pos_1d[2])))
-                                    uipc_quat = Quaternion(quat_1d)
-                                    t.rotate(uipc_quat)
-
-                                    # Enable constraint and set target transform
-                                    is_constrained = geo.instances().find(builtin.is_constrained)
-                                    aim_transform = geo.instances().find(builtin.aim_transform)
-
-                                    if is_constrained and aim_transform:
-                                        view(is_constrained)[0] = 1
-                                        view(aim_transform)[:] = t.matrix()
+                                            if is_constrained and aim_transform_attr:
+                                                view(is_constrained)[0] = 1
+                                                view(aim_transform_attr)[:] = transform_matrix
 
                                 except Exception as e:
-                                    gs.logger.warning(f"Error retrieving Genesis state for IPC animation: {e}")
+                                    gs.logger.warning(f"Error setting IPC animation target: {e}")
 
                             return animate_rigid_link
 
-                        animate_func = create_animate_function(i_b, link_idx)
+                        animate_func = create_animate_function(i_b, link_idx, rigid_solver)
                         self._ipc_animator.insert(rigid_obj, animate_func)
 
                         rigid_solver._mesh_handles[f"rigid_link_{i_b}_{link_idx}"] = merged_mesh
@@ -435,23 +420,62 @@ class IPCCoupler(RBC):
         """Preprocessing step before coupling"""
         pass
 
+    def _store_genesis_rigid_states(self):
+        """
+        Store current Genesis rigid body states before IPC advance.
+        These stored states will be used by:
+        1. Animator: to set aim_transform for IPC soft constraints
+        2. Force computation: to ensure action-reaction force consistency
+        """
+        if not (self.rigid_solver.is_active() and self.rigid_solver._options.use_IPC):
+            return
+
+        rigid_solver = self.rigid_solver
+
+        # Initialize storage if not exists
+        if not hasattr(rigid_solver, '_genesis_stored_states'):
+            rigid_solver._genesis_stored_states = {}
+
+        # Store transforms for all rigid links
+        # Iterate through mesh handles to get all links
+        if hasattr(rigid_solver, '_mesh_handles'):
+            for handle_key in rigid_solver._mesh_handles.keys():
+                if handle_key.startswith('rigid_link_'):
+                    # Parse: "rigid_link_{env_idx}_{link_idx}"
+                    parts = handle_key.split('_')
+                    if len(parts) >= 4:
+                        env_idx = int(parts[2])
+                        link_idx = int(parts[3])
+
+                        # Get and store current Genesis transform
+                        genesis_transform = self._get_genesis_link_transform(link_idx, env_idx)
+
+                        if link_idx not in rigid_solver._genesis_stored_states:
+                            rigid_solver._genesis_stored_states[link_idx] = {}
+                        rigid_solver._genesis_stored_states[link_idx][env_idx] = genesis_transform
+
     def couple(self, f):
         """Execute IPC coupling step"""
         if not self.is_active():
             return
 
-        # Advance IPC simulation
+        # Step 1: Store current Genesis rigid body states (q_genesis^n)
+        # This will be used by both animator (to set aim_transform) and
+        # force computation (to ensure action-reaction force consistency)
+        self._store_genesis_rigid_states()
+
+        # Step 2: Advance IPC simulation
+        # Animator reads stored Genesis states and sets them as IPC targets
         self._ipc_world.advance()
         self._ipc_world.retrieve()
 
-        # Retrieve updated states from IPC for all solvers
+        # Step 3: Retrieve IPC results and apply coupling forces
+        # Now use IPC's new positions (q_ipc^{n+1}) and stored Genesis states (q_genesis^n)
+        # to compute forces: F = M * (q_ipc^{n+1} - q_genesis^n)
         self._retrieve_fem_states(f)
         self._retrieve_rigid_states(f)
 
-        # Update IPC GUI if enabled
-        # scene = self.sim._scene
-        # if hasattr(scene, '_ipc_gui_enabled') and scene._ipc_gui_enabled and hasattr(scene, '_ipc_scene_gui'):
-        #     scene._ipc_scene_gui.update()
+
 
     def _retrieve_fem_states(self, f):
         # IPC world advance/retrieve is handled at Scene level
@@ -535,6 +559,7 @@ class IPCCoupler(RBC):
     def _retrieve_rigid_states(self, f):
         """
         Handle rigid body IPC: Retrieve ABD transforms/affine matrices after IPC step
+        and apply coupling forces back to Genesis rigid bodies
         """
         # IPC world advance/retrieve is handled at Scene level
         # Retrieve ABD transform matrices after IPC simulation
@@ -546,12 +571,14 @@ class IPCCoupler(RBC):
         from uipc.backend import SceneVisitor
         from uipc.geometry import SimplicialComplexSlot
         import numpy as np
+        import genesis.utils.geom as gu
 
         rigid_solver = self.rigid_solver
         visitor = SceneVisitor(self._ipc_scene)
 
-        # Collect ABD geometries and their transforms using metadata
-        abd_affine_by_geom = {}
+        # Collect ABD geometries and their constraint data using metadata
+        abd_data_by_link = {}  # link_idx -> {env_idx: {transform, gradient, mass}}
+
         for geo_slot in visitor.geometries():
             if isinstance(geo_slot, SimplicialComplexSlot):
                 geo = geo_slot.geometry()
@@ -583,21 +610,197 @@ class IPCCoupler(RBC):
                                     env_idx = int(env_idx_str)
                                     link_idx = int(link_idx_str)
 
-                                    # Get current transform matrix from ABD object
-                                    transforms = geo.transforms()
-                                    if transforms.size() > 0:
-                                        transform_matrix = view(transforms)[0]  # 4x4 affine matrix
+                                    # Initialize link data structure
+                                    if link_idx not in abd_data_by_link:
+                                        abd_data_by_link[link_idx] = {}
 
-                                        if link_idx not in abd_affine_by_geom:
-                                            abd_affine_by_geom[link_idx] = {}
-                                        abd_affine_by_geom[link_idx][env_idx] = transform_matrix.copy()
+                                    # Get current transform matrix from ABD object (after IPC solve)
+                                    # This is q_ipc^{n+1}
+                                    transforms = geo.transforms()
+                                    transform_matrix = None
+                                    if transforms.size() > 0:
+                                        transform_matrix = view(transforms)[0].copy()  # 4x4 affine matrix
+
+                                    # Get aim transform that was used by IPC during solve
+                                    # This is q_genesis^n (stored before advance)
+                                    aim_transform = None
+                                    if (hasattr(rigid_solver, '_genesis_stored_states') and
+                                        link_idx in rigid_solver._genesis_stored_states and
+                                        env_idx in rigid_solver._genesis_stored_states[link_idx]):
+                                        aim_transform = rigid_solver._genesis_stored_states[link_idx][env_idx]
+
+                                    abd_data_by_link[link_idx][env_idx] = {
+                                        'transform': transform_matrix,  # q_ipc^{n+1}
+                                        'aim_transform': aim_transform,  # q_genesis^n
+                                    }
 
                     except Exception as e:
-                        gs.logger.warning(f"Failed to retrieve ABD geometry transform: {e}")
+                        gs.logger.warning(f"Failed to retrieve ABD geometry data: {e}")
                         continue
 
         # Store transforms for later access
-        rigid_solver._abd_affines = abd_affine_by_geom
+        rigid_solver._abd_affines = abd_data_by_link
+
+        # Apply coupling forces from IPC ABD to Genesis rigid bodies (two-way coupling)
+        # Based on soft_transform_constraint.cu gradient computation
+        if self.options.two_way_coupling:
+            self._apply_abd_coupling_forces(abd_data_by_link)
+
+    def _get_genesis_link_transform(self, link_idx, env_idx):
+        """
+        Get the current transform (4x4 matrix) of a Genesis rigid body link.
+
+        Parameters
+        ----------
+        link_idx : int
+            The link index
+        env_idx : int
+            The environment index
+
+        Returns
+        -------
+        np.ndarray
+            4x4 transformation matrix
+        """
+        from uipc import Transform, Vector3, Quaternion
+        import numpy as np
+
+        rigid_solver = self.rigid_solver
+
+        # Get current link state from Genesis
+        link_pos = rigid_solver.get_links_pos(links_idx=link_idx, envs_idx=env_idx)
+        link_quat = rigid_solver.get_links_quat(links_idx=link_idx, envs_idx=env_idx)
+
+        link_pos = link_pos.detach().cpu().numpy()
+        link_quat = link_quat.detach().cpu().numpy()
+
+        # Handle array shapes - squeeze down to 1D
+        while len(link_pos.shape) > 1 and link_pos.shape[0] == 1:
+            link_pos = link_pos[0]
+        while len(link_quat.shape) > 1 and link_quat.shape[0] == 1:
+            link_quat = link_quat[0]
+
+        pos_1d = link_pos.flatten()[:3]
+        quat_1d = link_quat.flatten()[:4]
+
+        # Create transform matrix
+        t = Transform.Identity()
+        t.translate(Vector3.Values((pos_1d[0], pos_1d[1], pos_1d[2])))
+        uipc_quat = Quaternion(quat_1d)
+        t.rotate(uipc_quat)
+
+        return t.matrix().copy()
+
+    def _apply_abd_coupling_forces(self, abd_data_by_link):
+        """
+        Apply coupling forces from IPC ABD constraint to Genesis rigid bodies.
+
+        This ensures action-reaction force consistency:
+        - IPC constraint force: G_ipc = M * (q_ipc^{n+1} - q_genesis^n)
+        - Genesis reaction force: F_genesis = M * (q_ipc^{n+1} - q_genesis^n) = G_ipc
+
+        Where:
+        - q_ipc^{n+1}: IPC ABD position after solve (from geo.transforms())
+        - q_genesis^n: Genesis position before IPC advance (stored in _genesis_stored_states)
+        - M: Mass matrix scaled by constraint strengths
+
+        Based on soft_transform_constraint.cu implementation:
+        - q is 12D: [translation(3), rotation_matrix_col_major(9)]
+        - G is 12D: [linear_force(3), rotational_force(9)]
+        - We extract linear force and convert rotational force to 3D torque
+        """
+        import numpy as np
+        import genesis.utils.geom as gu
+
+        rigid_solver = self.rigid_solver
+        strength_tuple = self.options.ipc_constraint_strength
+        translation_strength = strength_tuple[0]
+        rotation_strength = strength_tuple[1]
+
+        dt = self.sim._dt 
+        dt2 = dt * dt 
+
+        for link_idx, env_data in abd_data_by_link.items():
+            for env_idx, data in env_data.items():
+                ipc_transform = data.get('transform')  # Current transform after IPC solve
+                aim_transform = data.get('aim_transform')  # Target from Genesis
+
+                if ipc_transform is None or aim_transform is None:
+                    continue
+
+                try:
+                    # Extract current and target transforms (4x4 matrices)
+                    T_current = ipc_transform  # Current ABD transform from IPC
+                    T_aim = aim_transform  # Target transform from Genesis animator
+
+                    # Extract translation and rotation components
+                    # Current state (from IPC)
+                    pos_current = T_current[:3, 3]
+                    R_current = T_current[:3, :3]
+
+                    # Target state (from Genesis)
+                    pos_aim = T_aim[:3, 3]
+                    R_aim = T_aim[:3, :3]
+
+                    # Compute translation error: delta_pos = pos_current - pos_aim
+                    delta_pos = pos_current - pos_aim
+
+                    # Get link mass for scaling (similar to body_masses in CUDA code)
+                    link_mass = rigid_solver.links_info.inertial_mass[link_idx]
+
+                    # Compute generalized force (gradient) following soft_transform_constraint.cu:
+                    # G = M * (q - q_aim)
+                    # where M is the mass matrix, scaled by strength ratios
+
+                    # Linear force component: F = translation_strength * mass * delta_pos
+                    linear_force = translation_strength * link_mass * delta_pos / dt2
+
+                    R_rel = R_current @ R_aim.T  
+
+                    from scipy.spatial.transform import Rotation as R
+                    rotvec = R.from_matrix(R_rel).as_rotvec()   # shape (3,), 小旋转时 ~ (axis * angle)
+
+                    inertia_tensor = rigid_solver.links_info.inertial_i[link_idx].to_numpy()
+
+                    angular_torque = rotation_strength * inertia_tensor @ rotvec / dt2
+
+                    # Format forces for Genesis API
+                    # _sanitize_2D_io_variables expects:
+                    # - Non-parallelized (n_envs=0): shape (n_links, 3)
+                    # - Parallelized (n_envs>0): shape (n_envs, n_links, 3)
+                    # It will use torch.as_tensor to convert numpy arrays to tensors
+
+                    if self.sim._scene.n_envs > 0:
+                        # Parallelized scene: shape (1, 1, 3) for (n_envs, n_links, 3)
+                        force_input = linear_force.reshape(1, 1, 3)
+                        torque_input = angular_torque.reshape(1, 1, 3)
+                        apply_kwargs = {
+                            'links_idx': link_idx,
+                            'envs_idx': env_idx
+                        }
+                    else:
+                        # Non-parallelized scene: shape (1, 3) for (n_links, 3)
+                        force_input = linear_force.reshape(1, 3)
+                        torque_input = angular_torque.reshape(1, 3)
+                        apply_kwargs = {
+                            'links_idx': link_idx,
+                        }
+
+                    # Apply forces to Genesis rigid body
+                    rigid_solver.apply_links_external_force(
+                        force=force_input,
+                        **apply_kwargs
+                    )
+
+                    rigid_solver.apply_links_external_torque(
+                        torque=torque_input,
+                        local=True,
+                        **apply_kwargs
+                    )
+
+                except Exception as e:
+                    gs.logger.warning(f"Failed to apply ABD coupling force for link {link_idx}, env {env_idx}: {e}")
+                    continue
 
     def couple_grad(self, f):
         """Gradient computation for coupling"""

@@ -752,7 +752,7 @@ class Scene(RBC):
             self._visualizer.build()
 
             #ipc gui
-            if hasattr(self._sim, '_coupler') and self._sim._coupler is not None and self._sim._coupler._ipc_scene is not None:
+            if hasattr(self._sim, '_coupler') and self._sim._coupler is not None and hasattr(self._sim._coupler, '_ipc_scene') and self._sim._coupler._ipc_scene is not None:
                 self._init_ipc_gui()
 
         if self.profiling_options.show_FPS:

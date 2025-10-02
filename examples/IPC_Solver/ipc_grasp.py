@@ -7,14 +7,16 @@ def main():
     gs.init(backend=gs.gpu, logging_level=logging.DEBUG)
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--ipc", action="store_true", default=True)
+    parser.add_argument("--ipc", action="store_true", default=False)
     args = parser.parse_args()
 
     coupler_options = gs.options.IPCCouplerOptions(
         dt=1e-3,
         gravity=(0.0, 0.0, -9.8),
-        ipc_constraint_strength=(100, 100),  # (translation, rotation) strength ratios
+        ipc_constraint_strength=(100, 100),  # (translation, rotation) strength ratios,
+        contact_friction_mu=0.8,
         IPC_self_contact=False,  # Disable rigid-rigid contact in IPC
+        two_way_coupling=False,
     ) if args.ipc else None
 
     
@@ -39,10 +41,10 @@ def main():
     )
     franka.set_ipc_link_filter(link_names=["left_finger", "right_finger"])
 
-    material = gs.materials.FEM.Elastic(E=1.0e6, nu=0.45, rho=1000.0, model="stable_neohookean") if args.ipc else gs.materials.Rigid()
+    material = gs.materials.FEM.Elastic(E=1.0e5, nu=0.45, rho=1000.0, model="stable_neohookean") if args.ipc else gs.materials.Rigid()
 
     cube = scene.add_entity(
-        morph=gs.morphs.Box(pos=(0.65, 0.0, 0.03), size=(0.04, 0.04, 0.04)),
+        morph=gs.morphs.Box(pos=(0.65, 0.0, 0.03), size=(0.05, 0.05, 0.05)),
         material=material,
         surface=gs.surfaces.Plastic(color=(0.2, 0.8, 0.2, 0.5)),
     )
@@ -65,11 +67,19 @@ def main():
     )
     franka.control_dofs_position(qpos[:-2], motors_dof)
     # hold
-    for i in range(100):
+    for i in range(50):
         print("hold", i)
+        franka.set_qpos(qpos)
         scene.step()
+    # 示例：增大所有关节的 kp
+    current_kp = franka.get_dofs_kp()
+    print(f"Current kp: {current_kp}")
+
+    # 增大 10 倍
+    new_kp = current_kp * 10
+    franka.set_dofs_kp(new_kp)
     # grasp
-    finder_pos = -0.0
+    finder_pos = 0.0  
     for i in range(100):
         print("grasp", i)
         franka.control_dofs_position(qpos[:-2], motors_dof)
@@ -81,6 +91,7 @@ def main():
         pos=np.array([0.65, 0.0, 0.3]),
         quat=np.array([0, 1, 0, 0]),
     )
+    
     for i in range(200):
         print("lift", i)
         franka.control_dofs_position(qpos[:-2], motors_dof)
