@@ -16,7 +16,7 @@ def main():
         ipc_constraint_strength=(100, 100),  # (translation, rotation) strength ratios,
         contact_friction_mu=0.8,
         IPC_self_contact=False,  # Disable rigid-rigid contact in IPC
-        two_way_coupling=False,
+        two_way_coupling=True,  # Enable two-way coupling (forces from IPC to Genesis rigid bodies)
     ) if args.ipc else None
 
     
