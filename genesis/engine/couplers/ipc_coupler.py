@@ -46,7 +46,8 @@ class IPCCoupler(RBC):
         self._ipc_stk = None
         self._ipc_abd_contact = None
         self._ipc_fem_contact = None
-        self._ipc_scene_contacts = {}
+        self._ipc_scene_subscenes = {}
+        self._use_subscenes = False  # Will be set in _init_ipc based on number of environments
 
     def build(self) -> None:
         """Build IPC system and auto-configure solver options"""
@@ -102,26 +103,41 @@ class IPCCoupler(RBC):
         self._ipc_scene.constitution_tabular().insert(self._ipc_abd)
         self._ipc_scene.constitution_tabular().insert(self._ipc_stk)
 
-        # Set up contact model
+        # Set up contact model (physical parameters)
         self._ipc_scene.contact_tabular().default_model(self.options.contact_friction_mu, self.options.contact_resistance)
 
-        # Set up contact subscenes for multi-environment
-        B = self.sim._B
-        for i in range(B):
-            self._ipc_scene_contacts[i] = self._ipc_scene.contact_tabular().create_subscene(f"contact_model{i}")
-        for i in range(B):
-            for j in range(B):
-                if i != j:
-                    self._ipc_scene.contact_tabular().subscene_insert(self._ipc_scene_contacts[i], self._ipc_scene_contacts[j], False)
-
-        # Set up separate contact elements for ABD and FEM
+        # Create separate contact elements for ABD and FEM to control their interactions
         self._ipc_abd_contact = self._ipc_scene.contact_tabular().create("abd_contact")
         self._ipc_fem_contact = self._ipc_scene.contact_tabular().create("fem_contact")
 
         # Configure contact interactions based on IPC coupler options
-        self._ipc_scene.contact_tabular().insert(self._ipc_fem_contact, self._ipc_fem_contact, self.options.contact_friction_mu, self.options.contact_resistance, True)
-        self._ipc_scene.contact_tabular().insert(self._ipc_fem_contact, self._ipc_abd_contact, self.options.contact_friction_mu, self.options.contact_resistance, True)
-        self._ipc_scene.contact_tabular().insert(self._ipc_abd_contact, self._ipc_abd_contact, self.options.contact_friction_mu, self.options.contact_resistance, self.options.IPC_self_contact)
+        # FEM-FEM: always enabled
+        self._ipc_scene.contact_tabular().insert(self._ipc_fem_contact, self._ipc_fem_contact,
+                                                 self.options.contact_friction_mu, self.options.contact_resistance, True)
+        # FEM-ABD: always enabled
+        self._ipc_scene.contact_tabular().insert(self._ipc_fem_contact, self._ipc_abd_contact,
+                                                 self.options.contact_friction_mu, self.options.contact_resistance, True)
+        # ABD-ABD: controlled by IPC_self_contact option
+        self._ipc_scene.contact_tabular().insert(self._ipc_abd_contact, self._ipc_abd_contact,
+                                                 self.options.contact_friction_mu, self.options.contact_resistance,
+                                                 self.options.IPC_self_contact)
+
+        # Set up subscenes for multi-environment (scene grouping)
+        # Only use subscenes when B > 1 to avoid issues with ground collision
+        # (ground's subscene support is incomplete in libuipc)
+        B = self.sim._B
+        self._ipc_scene_subscenes = {}
+        self._use_subscenes = (B > 1)
+
+        if self._use_subscenes:
+            for i in range(B):
+                self._ipc_scene_subscenes[i] = self._ipc_scene.subscene_tabular().create(f"subscene{i}")
+
+            # Disable contact between different environments
+            for i in range(B):
+                for j in range(B):
+                    if i != j:
+                        self._ipc_scene.subscene_tabular().insert(self._ipc_scene_subscenes[i], self._ipc_scene_subscenes[j], False)
 
     def _add_objects_to_ipc(self):
         """Add objects from solvers to IPC system"""
@@ -141,7 +157,7 @@ class IPCCoupler(RBC):
         fem_solver = self.fem_solver
         scene = self._ipc_scene
         stk = self._ipc_stk
-        scene_contacts = self._ipc_scene_contacts
+        scene_subscenes = self._ipc_scene_subscenes
 
         fem_solver._mesh_handles = {}
         fem_solver.list_env_obj = []
@@ -157,8 +173,9 @@ class IPCCoupler(RBC):
                 # Create tetrahedral mesh for FEM entity
                 fem_solver.list_env_mesh[i_b].append(tetmesh(entity.init_positions.cpu().numpy(), entity.elems))
 
-                # Add to contact subscene
-                scene_contacts[i_b].subscene_append(fem_solver.list_env_mesh[i_b][i_e])
+                # Add to contact subscene (only for multi-environment)
+                if self._use_subscenes:
+                    scene_subscenes[i_b].apply_to(fem_solver.list_env_mesh[i_b][i_e])
                 # Apply FEM contact element for selective collision control
                 self._ipc_fem_contact.apply_to(fem_solver.list_env_mesh[i_b][i_e])
                 label_surface(fem_solver.list_env_mesh[i_b][i_e])
@@ -187,7 +204,7 @@ class IPCCoupler(RBC):
         rigid_solver = self.rigid_solver
         scene = self._ipc_scene
         abd = self._ipc_abd
-        scene_contacts = self._ipc_scene_contacts
+        scene_subscenes = self._ipc_scene_subscenes
 
         # Initialize lists following FEM solver pattern
         rigid_solver.list_env_obj = []
@@ -228,11 +245,12 @@ class IPCCoupler(RBC):
                 try:
                     if geom_type == gs.GEOM_TYPE.PLANE:
                         # Handle planes separately (they can't be merged with SimplicialComplex)
+                        # Ground/plane should not be assigned to any subscene or contact element
+                        # to allow it to interact with all objects globally
                         pos = rigid_solver.geoms_info.pos[i_g].to_numpy()
                         normal = np.array([0.0, 0.0, 1.0])  # Z-up
                         height = np.dot(pos, normal)
                         plane_geom = ground(height, normal)
-                        self._ipc_abd_contact.apply_to(plane_geom)
                         link_planes[link_idx].append((i_g, plane_geom))
 
                     else:
@@ -325,8 +343,9 @@ class IPCCoupler(RBC):
                         rigid_solver.list_env_obj[i_b].append(rigid_obj)
                         rigid_solver.list_env_mesh[i_b].append(merged_mesh)
 
-                        # Add to contact subscene and apply ABD constitution
-                        scene_contacts[i_b].subscene_append(merged_mesh)
+                        # Add to contact subscene and apply ABD constitution (only for multi-environment)
+                        if self._use_subscenes:
+                            scene_subscenes[i_b].apply_to(merged_mesh)
                         self._ipc_abd_contact.apply_to(merged_mesh)
                         from uipc.unit import MPa
                         abd.apply_to(merged_mesh, kappa=10.0 * MPa, mass_density=rigid_solver._entities[link_data['entity_idx']].material.rho)

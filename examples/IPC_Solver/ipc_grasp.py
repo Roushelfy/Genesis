@@ -41,7 +41,7 @@ def main():
     )
     franka.set_ipc_link_filter(link_names=["left_finger", "right_finger"])
 
-    material = gs.materials.FEM.Elastic(E=1.0e5, nu=0.45, rho=1000.0, model="stable_neohookean") if args.ipc else gs.materials.Rigid()
+    material = gs.materials.FEM.Elastic(E=1.0e6, nu=0.45, rho=1000.0, model="stable_neohookean") if args.ipc else gs.materials.Rigid()
 
     cube = scene.add_entity(
         morph=gs.morphs.Box(pos=(0.65, 0.0, 0.03), size=(0.05, 0.05, 0.05)),
@@ -67,7 +67,7 @@ def main():
     )
     franka.control_dofs_position(qpos[:-2], motors_dof)
     # hold
-    for i in range(50):
+    for i in range(100):
         print("hold", i)
         franka.set_qpos(qpos)
         scene.step()
