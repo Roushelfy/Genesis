@@ -68,7 +68,7 @@ class IPCCoupler(RBC):
     def _init_ipc(self):
         """Initialize IPC system components"""
         from uipc.core import Engine, World, Scene
-        from uipc.constitution import AffineBodyConstitution, StableNeoHookean
+        from uipc.constitution import AffineBodyConstitution, StableNeoHookean, NeoHookeanShell, DiscreteShellBending
 
         # Disable IPC logging if requested
         if self.options.disable_ipc_logging:
@@ -98,17 +98,21 @@ class IPCCoupler(RBC):
         # Create constitutions
         self._ipc_abd = AffineBodyConstitution()
         self._ipc_stk = StableNeoHookean()
+        self._ipc_nks = NeoHookeanShell()  # For cloth
+        self._ipc_dsb = DiscreteShellBending()  # For cloth bending
 
         # Add constitutions to scene
         self._ipc_scene.constitution_tabular().insert(self._ipc_abd)
         self._ipc_scene.constitution_tabular().insert(self._ipc_stk)
+        # Note: Shell constitutions are added on-demand when cloth entities exist
 
         # Set up contact model (physical parameters)
         self._ipc_scene.contact_tabular().default_model(self.options.contact_friction_mu, self.options.contact_resistance)
 
-        # Create separate contact elements for ABD and FEM to control their interactions
+        # Create separate contact elements for ABD, FEM, and Cloth to control their interactions
         self._ipc_abd_contact = self._ipc_scene.contact_tabular().create("abd_contact")
         self._ipc_fem_contact = self._ipc_scene.contact_tabular().create("fem_contact")
+        self._ipc_cloth_contact = self._ipc_scene.contact_tabular().create("cloth_contact")
 
         # Configure contact interactions based on IPC coupler options
         # FEM-FEM: always enabled
@@ -121,6 +125,16 @@ class IPCCoupler(RBC):
         self._ipc_scene.contact_tabular().insert(self._ipc_abd_contact, self._ipc_abd_contact,
                                                  self.options.contact_friction_mu, self.options.contact_resistance,
                                                  self.options.IPC_self_contact)
+        # Cloth-Cloth: controlled by IPC_self_contact option (for cloth self-collision)
+        self._ipc_scene.contact_tabular().insert(self._ipc_cloth_contact, self._ipc_cloth_contact,
+                                                 self.options.contact_friction_mu, self.options.contact_resistance,
+                                                 self.options.IPC_self_contact)
+        # Cloth-FEM: always enabled
+        self._ipc_scene.contact_tabular().insert(self._ipc_cloth_contact, self._ipc_fem_contact,
+                                                 self.options.contact_friction_mu, self.options.contact_resistance, True)
+        # Cloth-ABD: always enabled
+        self._ipc_scene.contact_tabular().insert(self._ipc_cloth_contact, self._ipc_abd_contact,
+                                                 self.options.contact_friction_mu, self.options.contact_resistance, True)
 
         # Set up subscenes for multi-environment (scene grouping)
         # Only use subscenes when B > 1 to avoid issues with ground collision
@@ -148,6 +162,9 @@ class IPCCoupler(RBC):
         # Add rigid geoms to IPC
         if self.rigid_solver.is_active() and self.rigid_solver._options.use_IPC:
             self._add_rigid_geoms_to_ipc()
+
+        # Add cloth entities to IPC
+        self._add_cloth_entities_to_ipc()
 
     def _add_fem_entities_to_ipc(self):
         """Add FEM entities to the existing IPC scene"""
@@ -425,6 +442,79 @@ class IPCCoupler(RBC):
                     gs.logger.warning(f"Failed to create IPC object for link {link_idx}: {e}")
                     continue
 
+    def _add_cloth_entities_to_ipc(self):
+        """Add cloth entities to IPC scene"""
+        from uipc.constitution import ElasticModuli
+        from uipc.geometry import trimesh, label_surface
+        from genesis.engine.entities import ClothEntity
+
+        scene = self._ipc_scene
+        nks = self._ipc_nks  # NeoHookeanShell
+        dsb = self._ipc_dsb  # DiscreteShellBending
+        scene_subscenes = self._ipc_scene_subscenes
+
+        # Find all cloth entities
+        cloth_entities = [e for e in self.sim._entities if isinstance(e, ClothEntity)]
+
+        if not cloth_entities:
+            return  # No cloth entities
+
+        # Initialize storage for cloth objects and meshes
+        self._cloth_entities = cloth_entities
+        self._cloth_objects = []
+        self._cloth_meshes = []
+
+        for i_b in range(self.sim._B):
+            self._cloth_objects.append([])
+            self._cloth_meshes.append([])
+
+            for i_c, entity in enumerate(cloth_entities):
+                # Create cloth object in IPC
+                cloth_obj = scene.objects().create(f"cloth_{i_b}_{i_c}")
+                self._cloth_objects[i_b].append(cloth_obj)
+
+                # Use the pre-loaded uipc mesh from ClothEntity and clone it for this environment
+                # This ensures consistent mesh topology with the original load
+                from uipc.geometry import SimplicialComplexIO
+                from uipc import Transform
+
+                # Re-read mesh with the same transform to get a fresh copy for this env
+                transform = Transform.Identity()
+                transform.scale(entity.morph.scale)
+                transform.translate(np.array(entity.morph.pos))
+                io = SimplicialComplexIO(transform)
+                cloth_mesh = io.read(entity.morph.file)
+
+                # Add to subscene (only for multi-environment)
+                if self._use_subscenes:
+                    scene_subscenes[i_b].apply_to(cloth_mesh)
+
+                # Apply cloth contact element
+                self._ipc_cloth_contact.apply_to(cloth_mesh)
+                label_surface(cloth_mesh)
+
+                # Apply NeoHookeanShell material
+                moduli = ElasticModuli.youngs_poisson(entity.material.E, entity.material.nu)
+                nks.apply_to(cloth_mesh,
+                            moduli=moduli,
+                            mass_density=entity.material.rho,
+                            thickness=entity.material.thickness)
+
+                # Apply bending stiffness if specified
+                if entity.material.bending_stiffness is not None:
+                    dsb.apply_to(cloth_mesh, bending_stiffness=entity.material.bending_stiffness)
+
+                # Add metadata
+                meta_attrs = cloth_mesh.meta()
+                meta_attrs.create("solver_type", "cloth")
+                meta_attrs.create("env_idx", str(i_b))
+                meta_attrs.create("entity_idx", str(i_c))
+
+                # Create geometry in IPC scene
+                cloth_obj.geometries().create(cloth_mesh)
+                self._cloth_meshes[i_b].append(cloth_mesh)
+
+        gs.logger.info(f"Added {len(cloth_entities)} cloth entities to IPC")
 
     def _finalize_ipc(self):
         """Finalize IPC setup"""
@@ -493,6 +583,7 @@ class IPCCoupler(RBC):
         # to compute forces: F = M * (q_ipc^{n+1} - q_genesis^n)
         self._retrieve_fem_states(f)
         self._retrieve_rigid_states(f)
+        self._retrieve_cloth_states(f)
 
 
 
@@ -665,6 +756,75 @@ class IPCCoupler(RBC):
         if self.options.two_way_coupling:
             self._apply_abd_coupling_forces(abd_data_by_link)
 
+    def _retrieve_cloth_states(self, f):
+        """Retrieve cloth vertex positions from IPC and update ClothEntity states"""
+        if not hasattr(self, '_cloth_entities') or not self._cloth_entities:
+            return  # No cloth entities
+
+        from uipc.backend import SceneVisitor
+        from uipc.geometry import SimplicialComplexSlot, apply_transform, merge
+        import numpy as np
+
+        visitor = SceneVisitor(self._ipc_scene)
+
+        # Collect cloth geometries by entity index
+        cloth_geo_by_entity = {}
+        for geo_slot in visitor.geometries():
+            if isinstance(geo_slot, SimplicialComplexSlot):
+                geo = geo_slot.geometry()
+                if geo.dim() == 2:  # Cloth is 2D trimesh
+                    try:
+                        meta_attrs = geo.meta()
+                        solver_type_attr = meta_attrs.find("solver_type")
+
+                        if solver_type_attr and solver_type_attr.name() == "solver_type":
+                            solver_type_view = solver_type_attr.view()
+                            if len(solver_type_view) > 0:
+                                solver_type = str(solver_type_view[0])
+                            else:
+                                continue
+
+                            if solver_type == "cloth":
+                                env_idx_attr = meta_attrs.find("env_idx")
+                                entity_idx_attr = meta_attrs.find("entity_idx")
+
+                                if env_idx_attr and entity_idx_attr:
+                                    env_idx_str = str(env_idx_attr.view()[0])
+                                    entity_idx_str = str(entity_idx_attr.view()[0])
+                                    env_idx = int(env_idx_str)
+                                    entity_idx = int(entity_idx_str)
+
+                                    if entity_idx not in cloth_geo_by_entity:
+                                        cloth_geo_by_entity[entity_idx] = {}
+
+                                    # Get vertex positions
+                                    proc_geo = geo
+                                    if geo.instances().size() >= 1:
+                                        proc_geo = merge(apply_transform(geo))
+                                    pos = proc_geo.positions().view().reshape(-1, 3)
+                                    cloth_geo_by_entity[entity_idx][env_idx] = pos
+
+                    except Exception as e:
+                        gs.logger.warning(f"Failed to retrieve cloth geometry: {e}")
+                        continue
+
+        # Update cloth entity positions
+        for entity_idx, env_positions in cloth_geo_by_entity.items():
+            if entity_idx < len(self._cloth_entities):
+                entity = self._cloth_entities[entity_idx]
+                env_pos_list = []
+
+                for env_idx in range(self.sim._B):
+                    if env_idx in env_positions:
+                        env_pos_list.append(env_positions[env_idx])
+                    else:
+                        # Fallback
+                        env_pos_list.append(np.zeros((0, 3)))
+
+                if env_pos_list:
+                    all_env_pos = np.stack(env_pos_list, axis=0)
+                    entity.set_pos(0, all_env_pos)
+
     def _get_genesis_link_transform(self, link_idx, env_idx):
         """
         Get the current transform (4x4 matrix) of a Genesis rigid body link.
@@ -779,9 +939,14 @@ class IPCCoupler(RBC):
                     from scipy.spatial.transform import Rotation as R
                     rotvec = R.from_matrix(R_rel).as_rotvec()   # shape (3,), 小旋转时 ~ (axis * angle)
 
-                    inertia_tensor = rigid_solver.links_info.inertial_i[link_idx].to_numpy()
-
-                    angular_torque = rotation_strength * inertia_tensor @ rotvec / dt2
+                    # 获取局部坐标系下的惯性张量
+                    inertia_tensor_local = rigid_solver.links_info.inertial_i[link_idx].to_numpy()
+                    
+                    # 转换到世界坐标系: I_world = R_current * I_local * R_current^T
+                    inertia_tensor_world = R_current @ inertia_tensor_local @ R_current.T
+                    
+                    # 在世界坐标系下计算角加速度和扭矩
+                    angular_torque = rotation_strength * inertia_tensor_world @ rotvec / dt2
 
                     # Format forces for Genesis API
                     # _sanitize_2D_io_variables expects:

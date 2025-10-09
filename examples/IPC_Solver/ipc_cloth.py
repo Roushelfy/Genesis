@@ -1,0 +1,99 @@
+"""
+IPC Cloth Simulation Example
+
+This example demonstrates cloth simulation using IPC (Incremental Potential Contact)
+with Genesis. The cloth is simulated using NeoHookeanShell constitution.
+"""
+
+import genesis as gs
+import logging
+
+
+def main():
+    gs.init(backend=gs.gpu, logging_level=logging.INFO)
+
+    scene = gs.Scene(
+        sim_options=gs.options.SimOptions(dt=1e-3, gravity=(0.0, 0.0, -9.8)),
+        coupler_options=gs.options.IPCCouplerOptions(
+            dt=0.001,  # Match libuipc sample timestep
+            gravity=(0.0, 0.0, -9.8),
+            contact_d_hat=0.01,  # Contact barrier distance (10mm) - must be appropriate for mesh resolution
+            contact_friction_mu=0.3,  # Friction coefficient
+            IPC_self_contact=False,  # Enable cloth self-collision
+            two_way_coupling=True,  # Enable two-way coupling (forces from IPC to Genesis rigid bodies
+        ),
+        profiling_options=gs.options.ProfilingOptions(
+            show_FPS=True,
+        ),
+        show_viewer=True,
+    )
+
+    # Ground plane
+    scene.add_entity(gs.morphs.Plane())
+
+    SCENE_POS = (0.0, 0.0, 0.0)
+
+    # Cloth using Cloth material
+    # Note: Using coarse grid mesh to avoid IPC thickness violations
+    # The built-in cloth.obj is too dense for IPC's contact detection
+    cloth = scene.add_entity(
+        morph=gs.morphs.Mesh(
+            file=r"C:\Work\Code\Sig\libuipc-samples\assets\sim_data\trimesh\grid20x20.obj",
+            scale=2.0,  # Scale to 2.0 like in libuipc sample
+            pos=tuple(map(sum, zip(SCENE_POS, (0.0, 0.0, 1.0)))),
+        ),
+        material=gs.materials.Cloth(
+            E=10e3,  # Young's modulus (Pa) - soft cloth (10 kPa)
+            nu=0.499,  # Poisson's ratio - nearly incompressible
+            rho=200,  # Density (kg/m³) - typical fabric
+            thickness=0.001,  # Shell thickness (m) - 1mm
+            bending_stiffness=10.0,  # Bending resistance
+        ),
+        surface=gs.surfaces.Plastic(color=(0.3, 0.5, 0.8, 1.0), double_sided=True),
+    )
+
+    # Optional: Add a rigid obstacle for the cloth to interact with
+    rigid_cube = scene.add_entity(
+        morph=gs.morphs.Box(
+            pos=tuple(map(sum, zip(SCENE_POS, (0.0, 0.0, 0.4)))),
+            size=(0.15, 0.15, 0.15),
+            euler=(0, 0,0 )
+        ),
+        material=gs.materials.Rigid(rho=500, friction=0.3),
+        surface=gs.surfaces.Plastic(color=(0.8, 0.3, 0.2, 0.8)),
+    )
+
+    # Optional: Add another FEM volume object
+    # soft_ball = scene.add_entity(
+    #     morph=gs.morphs.Sphere(
+    #         pos=tuple(map(sum, zip(SCENE_POS, (0.2, 0.0, 0.6)))),
+    #         radius=0.08
+    #     ),
+    #     material=gs.materials.FEM.Elastic(
+    #         E=1.0e5, nu=0.45, rho=1000.0, model="stable_neohookean"
+    #     ),
+    #     surface=gs.surfaces.Plastic(color=(0.2, 0.8, 0.3, 0.8)),
+    # )
+
+    print("Building scene...")
+    scene.build(n_envs=1)
+    print("Scene built successfully!")
+
+    # print("\nCloth parameters:")
+    # print(f"  - Young's modulus: {cloth.material.E} Pa")
+    # print(f"  - Thickness: {cloth.material.thickness} m")
+    # print(f"  - Bending stiffness: {cloth.material.bending_stiffness}")
+
+    # Simulation loop
+    print("\nRunning simulation...")
+    horizon = 1000
+    for i in range(horizon):
+        scene.step()
+        if i % 100 == 0:
+            print(f"  Step {i}/{horizon}")
+
+    print("\nSimulation completed successfully!")
+
+
+if __name__ == "__main__":
+    main()

@@ -260,6 +260,16 @@ class Visualizer(RBC):
         if self._scene.pbd_solver.is_active():
             self._scene.pbd_solver.update_render_fields()
 
+        # Update cloth entities if present
+        if hasattr(self._scene.sim, '_entities'):
+            from genesis.engine.entities import ClothEntity
+            for entity in self._scene.sim._entities:
+                if isinstance(entity, ClothEntity):
+                    # Cloth state is already updated by IPCCoupler's _retrieve_cloth_states
+                    # Just ensure rendering state is synced
+                    if entity._positions is not None:
+                        entity.get_state_render(0)
+
         self._t = self._scene._t
 
     def colorize_seg_idxc_arr(self, seg_idxc_arr):

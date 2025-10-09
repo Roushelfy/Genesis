@@ -22,7 +22,7 @@ from genesis.options.solvers import (
 )
 from genesis.repr_base import RBC
 
-from .entities import HybridEntity
+from .entities import HybridEntity, ClothEntity
 from .solvers.base_solver import Solver
 from .solvers import (
     AvatarSolver,
@@ -179,6 +179,10 @@ class Simulator(RBC):
 
         elif isinstance(material, gs.materials.FEM.Base):
             entity = self.fem_solver.add_entity(self.n_entities, material, morph, surface)
+
+        elif isinstance(material, gs.materials.Cloth):
+            # Cloth entities are managed by IPCCoupler, not a dedicated solver
+            entity = ClothEntity(self.scene, material, morph, surface, self.n_entities)
 
         elif isinstance(material, gs.materials.Hybrid):
             entity = HybridEntity(
