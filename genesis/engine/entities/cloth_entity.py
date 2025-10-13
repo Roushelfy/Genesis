@@ -56,9 +56,32 @@ class ClothEntity(Entity):
             from uipc.geometry import SimplicialComplexIO
             from uipc import Transform
 
-            # Create transform for scaling and translation
+            # Create transform for scaling, rotation, and translation
+            # Order: scale -> rotate -> translate (standard transform order)
             transform = Transform.Identity()
+
+            # 1. Apply scale first
             transform.scale(self._morph.scale)
+
+            # 2. Apply rotation if specified (euler or quat)
+            if self._morph.quat is not None:
+                # Convert quaternion to rotation matrix, then apply
+                from scipy.spatial.transform import Rotation as R
+                quat_xyzw = [self._morph.quat[1], self._morph.quat[2], self._morph.quat[3], self._morph.quat[0]]  # w,x,y,z -> x,y,z,w
+                rot = R.from_quat(quat_xyzw)
+                euler_xyz = rot.as_euler('xyz', degrees=False)  # Get euler angles in radians
+
+                # Apply rotation using AngleAxis (axis-angle representation)
+                from uipc import AngleAxis, Vector3
+                # Convert euler XYZ to sequential rotations
+                if abs(euler_xyz[0]) > 1e-6:  # X rotation
+                    transform.rotate(AngleAxis(euler_xyz[0], Vector3.UnitX()))
+                if abs(euler_xyz[1]) > 1e-6:  # Y rotation
+                    transform.rotate(AngleAxis(euler_xyz[1], Vector3.UnitY()))
+                if abs(euler_xyz[2]) > 1e-6:  # Z rotation
+                    transform.rotate(AngleAxis(euler_xyz[2], Vector3.UnitZ()))
+
+            # 3. Apply translation last
             transform.translate(np.array(self._morph.pos))
 
             # Load mesh using uipc's loader

@@ -125,10 +125,10 @@ class IPCCoupler(RBC):
         self._ipc_scene.contact_tabular().insert(self._ipc_abd_contact, self._ipc_abd_contact,
                                                  self.options.contact_friction_mu, self.options.contact_resistance,
                                                  self.options.IPC_self_contact)
-        # Cloth-Cloth: controlled by IPC_self_contact option (for cloth self-collision)
+        # Cloth-Cloth: always enabled for cloth self-collision (necessary to prevent self-penetration)
         self._ipc_scene.contact_tabular().insert(self._ipc_cloth_contact, self._ipc_cloth_contact,
                                                  self.options.contact_friction_mu, self.options.contact_resistance,
-                                                 self.options.IPC_self_contact)
+                                                 True)  # Always enable cloth self-collision
         # Cloth-FEM: always enabled
         self._ipc_scene.contact_tabular().insert(self._ipc_cloth_contact, self._ipc_fem_contact,
                                                  self.options.contact_friction_mu, self.options.contact_resistance, True)
@@ -479,9 +479,30 @@ class IPCCoupler(RBC):
                 from uipc import Transform
 
                 # Re-read mesh with the same transform to get a fresh copy for this env
+                # Order: scale -> rotate -> translate
                 transform = Transform.Identity()
+
+                # 1. Apply scale first
                 transform.scale(entity.morph.scale)
+                # 3. Apply translation last
                 transform.translate(np.array(entity.morph.pos))
+                # 2. Apply rotation if specified
+                if entity.morph.quat is not None:
+                    # Convert quaternion to euler angles and apply using AngleAxis
+                    from scipy.spatial.transform import Rotation as R
+                    quat_xyzw = [entity.morph.quat[1], entity.morph.quat[2], entity.morph.quat[3], entity.morph.quat[0]]
+                    rot = R.from_quat(quat_xyzw)
+                    euler_xyz = rot.as_euler('xyz', degrees=False)
+
+                    from uipc import AngleAxis, Vector3
+                    if abs(euler_xyz[0]) > 1e-6:
+                        transform.rotate(AngleAxis(euler_xyz[0], Vector3.UnitX()))
+                    if abs(euler_xyz[1]) > 1e-6:
+                        transform.rotate(AngleAxis(euler_xyz[1], Vector3.UnitY()))
+                    if abs(euler_xyz[2]) > 1e-6:
+                        transform.rotate(AngleAxis(euler_xyz[2], Vector3.UnitZ()))
+
+
                 io = SimplicialComplexIO(transform)
                 cloth_mesh = io.read(entity.morph.file)
 

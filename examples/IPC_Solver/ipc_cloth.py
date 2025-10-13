@@ -13,9 +13,9 @@ def main():
     gs.init(backend=gs.gpu, logging_level=logging.INFO)
 
     scene = gs.Scene(
-        sim_options=gs.options.SimOptions(dt=1e-3, gravity=(0.0, 0.0, -9.8)),
+        sim_options=gs.options.SimOptions(dt=2e-3, gravity=(0.0, 0.0, -9.8)),
         coupler_options=gs.options.IPCCouplerOptions(
-            dt=0.001,  # Match libuipc sample timestep
+            dt=2e-3,  # Match libuipc sample timestep
             gravity=(0.0, 0.0, -9.8),
             contact_d_hat=0.01,  # Contact barrier distance (10mm) - must be appropriate for mesh resolution
             contact_friction_mu=0.3,  # Friction coefficient
@@ -38,30 +38,38 @@ def main():
     # The built-in cloth.obj is too dense for IPC's contact detection
     cloth = scene.add_entity(
         morph=gs.morphs.Mesh(
-            file=r"C:\Work\Code\Sig\libuipc-samples\assets\sim_data\trimesh\grid20x20.obj",
+            file=r"meshes\grid20x20.obj",
             scale=2.0,  # Scale to 2.0 like in libuipc sample
-            pos=tuple(map(sum, zip(SCENE_POS, (0.0, 0.0, 1.0)))),
+            pos=tuple(map(sum, zip(SCENE_POS, (0.0, 0.0, 0.3)))),
+            euler=(90, 0, 0),
         ),
         material=gs.materials.Cloth(
-            E=10e3,  # Young's modulus (Pa) - soft cloth (10 kPa)
+            E=10e5,  # Young's modulus (Pa) - soft cloth (10 kPa)
             nu=0.499,  # Poisson's ratio - nearly incompressible
             rho=200,  # Density (kg/m³) - typical fabric
             thickness=0.001,  # Shell thickness (m) - 1mm
-            bending_stiffness=10.0,  # Bending resistance
+            bending_stiffness=100.0,  # Bending resistance
         ),
         surface=gs.surfaces.Plastic(color=(0.3, 0.5, 0.8, 1.0), double_sided=True),
     )
 
-    # Optional: Add a rigid obstacle for the cloth to interact with
-    rigid_cube = scene.add_entity(
-        morph=gs.morphs.Box(
-            pos=tuple(map(sum, zip(SCENE_POS, (0.0, 0.0, 0.4)))),
-            size=(0.15, 0.15, 0.15),
-            euler=(0, 0,0 )
-        ),
-        material=gs.materials.Rigid(rho=500, friction=0.3),
-        surface=gs.surfaces.Plastic(color=(0.8, 0.3, 0.2, 0.8)),
-    )
+    # Add 16 rigid cubes uniformly distributed under the cloth (4x4 grid)
+    cube_size = 0.2
+    cube_height = 0.3  # Height below cloth
+    grid_spacing = 0.6  # Spacing between cubes
+
+    for i in range(4):
+        for j in range(4):
+            x = (i - 1.5) * grid_spacing  # Center the grid
+            y = (j - 1.5) * grid_spacing
+            scene.add_entity(
+                morph=gs.morphs.Box(
+                    pos=tuple(map(sum, zip(SCENE_POS, (x, y, cube_height)))),
+                    size=(cube_size, cube_size, cube_size),
+                ),
+                material=gs.materials.Rigid(rho=500, friction=0.3),
+                surface=gs.surfaces.Plastic(color=(0.8, 0.3, 0.2, 0.8)),
+            )
 
     # Optional: Add another FEM volume object
     # soft_ball = scene.add_entity(

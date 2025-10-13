@@ -41,7 +41,7 @@ def main():
     )
     franka.set_ipc_link_filter(link_names=["left_finger", "right_finger"])
 
-    material = gs.materials.FEM.Elastic(E=1.0e6, nu=0.45, rho=1000.0, model="stable_neohookean") if args.ipc else gs.materials.Rigid()
+    material = gs.materials.FEM.Elastic(E=5.0e3, nu=0.45, rho=1000.0, model="stable_neohookean") if args.ipc else gs.materials.Rigid()
 
     cube = scene.add_entity(
         morph=gs.morphs.Box(pos=(0.65, 0.0, 0.03), size=(0.05, 0.05, 0.05)),
@@ -71,13 +71,13 @@ def main():
         print("hold", i)
         franka.set_qpos(qpos)
         scene.step()
-    # 示例：增大所有关节的 kp
-    current_kp = franka.get_dofs_kp()
-    print(f"Current kp: {current_kp}")
 
-    # 增大 10 倍
-    new_kp = current_kp * 10
+    current_kp = franka.get_dofs_kp()
+    new_kp = current_kp
+    new_kp[fingers_dof] = current_kp[fingers_dof] * 10
     franka.set_dofs_kp(new_kp)
+
+    print(f"New kp: {franka.get_dofs_kp()}")
     # grasp
     finder_pos = 0.0  
     for i in range(100):
