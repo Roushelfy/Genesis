@@ -680,6 +680,24 @@ class IPCCoupler(RBC):
                 articulation_data.mass_matrix[entity_idx, j * n_joints + i] = \
                     solver_mass_mat[dof_start + dof_i, dof_start + dof_j, env_idx]
 
+    @ti.kernel
+    def _update_ref_dof_prev_kernel(
+        self,
+        articulation_data: ti.template(),
+    ):
+        """
+        Update ref_dof_prev from qpos_new for next timestep.
+        Parallelized over all entities and environments.
+        """
+        n_entities = articulation_data.n_entities[None]
+
+        for entity_idx, env_idx in ti.ndrange(n_entities, articulation_data.ref_dof_prev.shape[1]):
+            n_dofs = articulation_data.entity_n_dofs[entity_idx]
+
+            for dof_idx in range(n_dofs):
+                articulation_data.ref_dof_prev[entity_idx, env_idx, dof_idx] = \
+                    articulation_data.qpos_new[entity_idx, env_idx, dof_idx]
+
     # ==================== End of Articulation Coupling Kernels ====================
 
     @ti.data_oriented
@@ -3351,15 +3369,11 @@ class IPCCoupler(RBC):
                                 link_transform = self._genesis_stored_states[child_link_idx][env_idx]
                                 ref_dof_prev_view[0] = affine_body.transform_to_q(link_transform)
 
-            # Read delta_theta_tilde from Taichi field and set to articulation geometry
-            delta_theta_tilde_np = np.zeros(n_joints, dtype=np.float64)
-            for joint_idx in range(n_joints):
-                delta_theta_tilde_np[joint_idx] = ad.delta_theta_tilde[idx, env_idx, joint_idx]
-
-            # Set delta_theta_tilde to IPC geometry
+            # Set delta_theta_tilde to IPC geometry directly from Taichi field
             delta_theta_tilde_attr = articulation_geo["joint"].find("delta_theta_tilde")
             delta_theta_tilde_view = view(delta_theta_tilde_attr)
-            delta_theta_tilde_view[:] = delta_theta_tilde_np
+            for joint_idx in range(n_joints):
+                delta_theta_tilde_view[joint_idx] = ad.delta_theta_tilde[idx, env_idx, joint_idx]
 
             # Update mass matrix from Genesis (using Taichi kernel for efficiency)
             self._extract_joint_mass_matrix_kernel(ad, self.rigid_solver.mass_mat, idx, env_idx)
@@ -3387,32 +3401,26 @@ class IPCCoupler(RBC):
             # This is critical - don't use the stored articulation_geo, it may be stale!
             scene_art_geo = articulation_slot.geometry()
 
-            # Read delta_theta from IPC (following test_external_articulation_constraint.py)
+            # Read delta_theta from IPC directly to Taichi field
             delta_theta_attr = scene_art_geo["joint"].find("delta_theta")
             delta_theta_view = view(delta_theta_attr)
-            delta_theta_np = np.array(delta_theta_view[:], dtype=np.float32)
-
-            # Write to Taichi field
             for joint_idx in range(n_joints):
-                ad.delta_theta_ipc[idx, env_idx, joint_idx] = delta_theta_np[joint_idx]
+                ad.delta_theta_ipc[idx, env_idx, joint_idx] = delta_theta_view[joint_idx]
 
         # Step 6: Compute qpos_new using Taichi kernel (parallelized)
         self._compute_qpos_new_kernel(ad)
 
-        # Step 7: Write qpos_new back to Genesis
-        qpos_new_batch = np.zeros((n_entities, max_envs, max_dofs), dtype=np.float32)
-        self._batch_write_qpos_kernel(ad, qpos_new_batch)
-
+        # Step 7: Write qpos_new back to Genesis directly from Taichi field
         for idx, (entity_idx, art_data) in enumerate(self._articulated_entities.items()):
             entity = art_data['entity']
             env_idx = art_data['env_idx']
-            n_dofs = entity.n_dofs
+            n_dofs = ad.entity_n_dofs[idx]  # Use stored metadata
 
-            # Extract qpos_new for this entity
-            qpos_new = qpos_new_batch[idx, env_idx, :n_dofs]
+            # Extract qpos_new directly from Taichi field (no intermediate numpy array)
+            qpos_new_np = np.array([ad.qpos_new[idx, env_idx, dof_idx] for dof_idx in range(n_dofs)], dtype=np.float32)
 
             # Set qpos to Genesis (with zero velocity for stability)
-            qpos_tensor = gs.torch.as_tensor(qpos_new, dtype=gs.tc_float, device=gs.device)
+            qpos_tensor = gs.torch.as_tensor(qpos_new_np, dtype=gs.tc_float, device=gs.device)
 
             # Only use envs_idx for parallelized scenes
             if self.sim._B > 1:
@@ -3420,14 +3428,8 @@ class IPCCoupler(RBC):
             else:
                 entity.set_qpos(qpos_tensor, zero_velocity=True)
 
-        # Step 8: Update ref_dof_prev for next timestep (store current qpos_new as next ref_dof_prev)
-        for idx, (entity_idx, art_data) in enumerate(self._articulated_entities.items()):
-            env_idx = art_data['env_idx']
-            n_dofs = art_data['entity'].n_dofs
-
-            # Copy qpos_new to ref_dof_prev for next iteration
-            for dof_idx in range(n_dofs):
-                ad.ref_dof_prev[idx, env_idx, dof_idx] = ad.qpos_new[idx, env_idx, dof_idx]
+        # Step 8: Update ref_dof_prev for next timestep using kernel (parallelized)
+        self._update_ref_dof_prev_kernel(ad)
 
         # Step 9: Store current link transforms to prev_link_transforms for next timestep
         # This ensures ref_dof_prev uses the previous timestep's transform
