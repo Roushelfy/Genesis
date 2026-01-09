@@ -360,7 +360,7 @@ class IPCCoupler(RBC):
     def _store_qpos_kernel(
         self,
         transform_data: ti.template(),
-        solver_qpos: ti.types.ndarray(),  # (n_total_dofs, n_envs) from rigid solver
+        solver_qpos: ti.types.ndarray(),  
         entity_idx: ti.i32,
         env_idx: ti.i32,
         q_start: ti.i32,
@@ -368,6 +368,24 @@ class IPCCoupler(RBC):
     ):
         """
         Store qpos for a single entity to Taichi fields.
+        Input is ndarray from rigid solver (when gs.use_ndarray=True).
+        """
+        for i in range(n_qs):
+            transform_data.stored_qpos[entity_idx, env_idx, i] = solver_qpos[q_start + i, env_idx]
+
+    @ti.kernel
+    def _store_qpos_kernel_field(
+        self,
+        transform_data: ti.template(),
+        solver_qpos: ti.template(),  # ti.field (performance_mode=True)
+        entity_idx: ti.i32,
+        env_idx: ti.i32,
+        q_start: ti.i32,
+        n_qs: ti.i32,
+    ):
+        """
+        Store qpos from ti.field (for performance_mode=True).
+        Same logic as _store_qpos_kernel but accepts ti.field.
         """
         for i in range(n_qs):
             transform_data.stored_qpos[entity_idx, env_idx, i] = solver_qpos[q_start + i, env_idx]
@@ -614,12 +632,12 @@ class IPCCoupler(RBC):
     def _batch_read_qpos_from_solver_kernel(
         self,
         articulation_data: ti.template(),
-        solver_qpos: ti.types.ndarray(),  # Rigid solver's qpos ndarray (n_total_dofs, n_envs)
+        solver_qpos: ti.types.ndarray(),  # ndarray/field: qpos (n_total_dofs, n_envs)
     ):
         """
-        Batch read qpos directly from rigid solver's qpos ndarray.
+        Batch read qpos directly from rigid solver's qpos (ndarray or field).
         Parallelized over all entities and environments.
-        This avoids creating temporary numpy arrays and the torch->numpy conversion overhead.
+        Works with both ti.ndarray (use_ndarray=True) and ti.field (performance_mode=True).
         """
         n_entities = articulation_data.n_entities[None]
 
@@ -654,13 +672,14 @@ class IPCCoupler(RBC):
     def _extract_joint_mass_matrix_kernel(
         self,
         articulation_data: ti.template(),
-        solver_mass_mat: ti.types.ndarray(),  # Rigid solver's mass matrix (n_total_dofs, n_total_dofs, n_envs)
+        solver_mass_mat: ti.types.ndarray(),  # ndarray/field: mass matrix (n_total_dofs, n_total_dofs, n_envs)
         entity_idx: ti.i32,
         env_idx: ti.i32,
     ):
         """
         Extract the mass matrix submatrix for joints from the full DOF mass matrix.
         Stores result in column-major order for IPC (transposed).
+        Works with both ti.ndarray (use_ndarray=True) and ti.field (performance_mode=True).
 
         Parameters:
         - solver_mass_mat: Full mass matrix from rigid solver (n_total_dofs, n_total_dofs, n_envs)
@@ -677,6 +696,28 @@ class IPCCoupler(RBC):
                 dof_j = articulation_data.joint_dof_indices[entity_idx, j]
                 # Store in column-major order: mass_matrix[j * n_joints + i] = M[i, j]
                 # This is equivalent to transposing during flatten
+                articulation_data.mass_matrix[entity_idx, j * n_joints + i] = \
+                    solver_mass_mat[dof_start + dof_i, dof_start + dof_j, env_idx]
+
+    @ti.kernel
+    def _extract_joint_mass_matrix_kernel_field(
+        self,
+        articulation_data: ti.template(),
+        solver_mass_mat: ti.template(),  # ti.field: mass matrix (performance_mode=True)
+        entity_idx: ti.i32,
+        env_idx: ti.i32,
+    ):
+        """
+        Extract mass matrix from ti.field (for performance_mode=True).
+        Same logic as _extract_joint_mass_matrix_kernel but accepts ti.field.
+        """
+        dof_start = articulation_data.entity_dof_start[entity_idx]
+        n_joints = articulation_data.entity_n_joints[entity_idx]
+
+        for i in range(n_joints):
+            dof_i = articulation_data.joint_dof_indices[entity_idx, i]
+            for j in range(n_joints):
+                dof_j = articulation_data.joint_dof_indices[entity_idx, j]
                 articulation_data.mass_matrix[entity_idx, j * n_joints + i] = \
                     solver_mass_mat[dof_start + dof_i, dof_start + dof_j, env_idx]
 
@@ -1899,8 +1940,11 @@ class IPCCoupler(RBC):
                     continue
 
                 # Use kernel to store qpos for all environments
+                # Choose kernel based on use_ndarray setting
+                kernel_func = self._store_qpos_kernel if gs.use_ndarray else self._store_qpos_kernel_field
+
                 for env_idx in range(self.sim._B):
-                    self._store_qpos_kernel(
+                    kernel_func(
                         self.transform_data,
                         rigid_solver.qpos,
                         entity_idx,
@@ -3125,6 +3169,11 @@ class IPCCoupler(RBC):
                 # Get joint axis in world coordinates
                 joint_axis = joint.dofs_motion_ang[0]  # (3,) array
 
+                # DEBUG: Print joint axis
+                print(f"DEBUG Revolute Joint {joint.name}:")
+                print(f"  dofs_motion_ang[0] = {joint_axis}")
+                print(f"  child_link_idx = {child_link_idx}, parent_link_idx = {parent_link_idx}")
+
                 # Create linemesh for revolute joint (following reference implementation)
                 # Use a simple line segment representing the joint axis
                 vertices = np.array([[-0.1 * joint_axis[0], -0.1 * joint_axis[1], -0.1 * joint_axis[2]],
@@ -3376,7 +3425,9 @@ class IPCCoupler(RBC):
                 delta_theta_tilde_view[joint_idx] = ad.delta_theta_tilde[idx, env_idx, joint_idx]
 
             # Update mass matrix from Genesis (using Taichi kernel for efficiency)
-            self._extract_joint_mass_matrix_kernel(ad, self.rigid_solver.mass_mat, idx, env_idx)
+            # Choose kernel based on use_ndarray setting
+            mass_kernel_func = self._extract_joint_mass_matrix_kernel if gs.use_ndarray else self._extract_joint_mass_matrix_kernel_field
+            mass_kernel_func(ad, self.rigid_solver.mass_mat, idx, env_idx)
 
             # Transfer mass matrix from Taichi field to IPC
             mass_attr = articulation_geo["joint_joint"].find("mass")
