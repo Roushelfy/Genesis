@@ -3156,7 +3156,7 @@ class IPCCoupler(RBC):
                 parent_link_idx = joint.link.parent_idx if joint.link.parent_idx >= 0 else 0
 
                 # Find the corresponding ABD geometry SLOTS in IPC scene
-                # NOTE: This requires that _add_rigid_geoms_to_ipc has already been called
+                # NOTE: This requires that _add_rigid_geoms_to_ipccalled
                 parent_abd_slot = self._find_abd_geometry_slot_by_link(parent_link_idx, env_idx=0)
                 child_abd_slot = self._find_abd_geometry_slot_by_link(child_link_idx, env_idx=0)
 
@@ -3166,18 +3166,32 @@ class IPCCoupler(RBC):
                     )
                     continue
 
-                # Get joint axis in world coordinates
+                # Get joint axis and position in world coordinates
+                # libuipc uses ABSOLUTE world coordinates for linemesh vertices
+                # From URDF parsing: child_link.pos = joint world position
                 joint_axis = joint.dofs_motion_ang[0]  # (3,) array
+                child_link = self.rigid_solver.links[child_link_idx]
+                parent_link = self.rigid_solver.links[parent_link_idx]
+                joint_pos = child_link.pos  # Absolute world position (from URDF joint origin)
 
-                # DEBUG: Print joint axis
-                print(f"DEBUG Revolute Joint {joint.name}:")
-                print(f"  dofs_motion_ang[0] = {joint_axis}")
-                print(f"  child_link_idx = {child_link_idx}, parent_link_idx = {parent_link_idx}")
+                # Debug output
+                gs.logger.info(f"[DEBUG] Revolute joint '{joint.name}':")
+                gs.logger.info(f"  parent_link pos = {parent_link.pos}")
+                gs.logger.info(f"  child_link pos = {child_link.pos}")
+                gs.logger.info(f"  joint_pos (world) = {joint_pos}")
+                gs.logger.info(f"  joint_axis = {joint_axis}")
+                gs.logger.info(f"  parent_link_idx = {parent_link_idx}, child_link_idx = {child_link_idx}")
 
-                # Create linemesh for revolute joint (following reference implementation)
-                # Use a simple line segment representing the joint axis
-                vertices = np.array([[-0.1 * joint_axis[0], -0.1 * joint_axis[1], -0.1 * joint_axis[2]],
-                                     [0.1 * joint_axis[0], 0.1 * joint_axis[1], 0.1 * joint_axis[2]]])
+                # Create linemesh for revolute joint in world coordinates
+                # Line segment centered at joint_pos, aligned with joint_axis
+                axis_length = 1.0
+                v1 = joint_pos - (axis_length / 2) * joint_axis
+                v2 = joint_pos + (axis_length / 2) * joint_axis
+                vertices = np.array([v1, v2], dtype=np.float64)
+
+                gs.logger.info(f"  linemesh vertices:")
+                gs.logger.info(f"    v1 = {v1}")
+                gs.logger.info(f"    v2 = {v2}")
                 edges = np.array([[0, 1]], dtype=np.int32)
                 revolute_mesh = linemesh(vertices, edges)
 
@@ -3207,12 +3221,32 @@ class IPCCoupler(RBC):
                     )
                     continue
 
-                # Get joint axis (translation direction)
+                # Get joint axis and position in world coordinates
+                # libuipc uses ABSOLUTE world coordinates for linemesh vertices
+                # From URDF parsing: child_link.pos = joint world position
                 joint_axis = joint.dofs_motion_vel[0]  # (3,) array
+                child_link = self.rigid_solver.links[child_link_idx]
+                parent_link = self.rigid_solver.links[parent_link_idx]
+                joint_pos = child_link.pos  # Absolute world position (from URDF joint origin)
 
-                # Create linemesh for prismatic joint
-                vertices = np.array([[0.0, 0.0, 0.0],
-                                     [0.1 * joint_axis[0], 0.1 * joint_axis[1], 0.1 * joint_axis[2]]])
+                # Debug output
+                gs.logger.info(f"[DEBUG] Prismatic joint '{joint.name}':")
+                gs.logger.info(f"  parent_link pos = {parent_link.pos}")
+                gs.logger.info(f"  child_link pos = {child_link.pos}")
+                gs.logger.info(f"  joint_pos (world) = {joint_pos}")
+                gs.logger.info(f"  joint_axis = {joint_axis}")
+                gs.logger.info(f"  parent_link_idx = {parent_link_idx}, child_link_idx = {child_link_idx}")
+
+                # Create linemesh for prismatic joint in world coordinates
+                # Line segment centered at joint_pos, aligned with translation axis
+                axis_length = 0.2
+                v1 = joint_pos - (axis_length / 2) * joint_axis
+                v2 = joint_pos + (axis_length / 2) * joint_axis
+                vertices = np.array([v1, v2], dtype=np.float64)
+
+                gs.logger.info(f"  linemesh vertices:")
+                gs.logger.info(f"    v1 = {v1}")
+                gs.logger.info(f"    v2 = {v2}")
                 edges = np.array([[0, 1]], dtype=np.int32)
                 prismatic_mesh = linemesh(vertices, edges)
 

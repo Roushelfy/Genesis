@@ -20,9 +20,9 @@ def main():
         gs.options.IPCCouplerOptions(
             dt=dt,
             gravity=(0.0, 0.0, -9.8),
-            ipc_constraint_strength=(3, 3),  # (translation, rotation) strength ratios,
+            ipc_constraint_strength=(100, 100),  # (translation, rotation) strength ratios,
+            coupling_strategy="external_articulation",
             contact_friction_mu=0.8,
-            use_contact_proxy=True,
             enable_ipc_gui=args.vis_ipc,
         )
         if args.ipc
@@ -42,21 +42,21 @@ def main():
     # Both FEM and Rigid bodies will be added to IPC for unified contact simulation
     # FEM bodies use StableNeoHookean constitution, Rigid bodies use ABD constitution
 
-    scene.add_entity(gs.morphs.Plane())
+    # scene.add_entity(gs.morphs.Plane())
 
     franka = scene.add_entity(
         gs.morphs.MJCF(file="xml/franka_emika_panda/panda_non_overlap.xml"),
     )
 
-    if args.ipc:
-        scene.sim.coupler.set_link_ipc_coupling_type(
-            entity=franka,
-            coupling_type="both",
-            link_names=["left_finger", "right_finger"],
-        )
+    # if args.ipc:
+    #     scene.sim.coupler.set_link_ipc_coupling_type(
+    #         entity=franka,
+    #         coupling_type="both",
+    #         link_names=["left_finger", "right_finger"],
+    #     )
 
     material = (
-        gs.materials.FEM.Elastic(E=5.0e3, nu=0.45, rho=1000.0, model="stable_neohookean")
+        gs.materials.FEM.Elastic(E=5.0e4, nu=0.45, rho=1000.0, model="stable_neohookean")
         if args.ipc
         else gs.materials.Rigid()
     )
