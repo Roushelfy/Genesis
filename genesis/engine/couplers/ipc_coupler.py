@@ -86,13 +86,13 @@ class IPCCoupler(RBC):
         n_links: ti.i32,
         ipc_transforms: ti.template(),  # Taichi Matrix field
         aim_transforms: ti.template(),  # Taichi Matrix field
-        link_masses: ti.template(),     # Taichi field
-        inertia_tensors: ti.template(), # Taichi Matrix field
+        link_masses: ti.template(),  # Taichi field
+        inertia_tensors: ti.template(),  # Taichi Matrix field
         translation_strength: ti.f32,
         rotation_strength: ti.f32,
         dt2: ti.f32,
-        out_forces: ti.template(),      # Taichi Vector field
-        out_torques: ti.template(),     # Taichi Vector field
+        out_forces: ti.template(),  # Taichi Vector field
+        out_torques: ti.template(),  # Taichi Vector field
     ):
         """
         Compute coupling forces and torques for all links in parallel.
@@ -360,7 +360,7 @@ class IPCCoupler(RBC):
     def _store_qpos_kernel(
         self,
         transform_data: ti.template(),
-        solver_qpos: ti.types.ndarray(),  
+        solver_qpos: ti.types.ndarray(),
         entity_idx: ti.i32,
         env_idx: ti.i32,
         q_start: ti.i32,
@@ -395,6 +395,7 @@ class IPCCoupler(RBC):
         self,
         transform_data: ti.template(),
         articulation_data: ti.template(),
+        n_envs: ti.i32,
     ):
         """
         Copy qpos from stored_qpos (TransformData) to qpos_current (ArticulationData).
@@ -405,11 +406,12 @@ class IPCCoupler(RBC):
         for idx in range(n_entities):
             entity_idx = articulation_data.entity_indices[idx]
             n_dofs = transform_data.stored_qpos_size[entity_idx]
-            n_envs = articulation_data.qpos_current.shape[1]
 
             for env_idx, dof_idx in ti.ndrange(n_envs, n_dofs):
                 # Copy from stored_qpos to qpos_current
-                articulation_data.qpos_current[idx, env_idx, dof_idx] = transform_data.stored_qpos[entity_idx, env_idx, dof_idx]
+                articulation_data.qpos_current[idx, env_idx, dof_idx] = transform_data.stored_qpos[
+                    entity_idx, env_idx, dof_idx
+                ]
 
     @ti.kernel
     def _init_mappings_and_flags_kernel(self, transform_data: ti.template(), max_links: ti.i32):
@@ -577,6 +579,7 @@ class IPCCoupler(RBC):
     def _compute_delta_theta_tilde_kernel(
         self,
         articulation_data: ti.template(),
+        n_envs: ti.i32,
     ):
         """
         Compute target joint displacement: delta_theta_tilde = qpos_current - ref_dof_prev
@@ -585,7 +588,7 @@ class IPCCoupler(RBC):
         """
         n_entities = articulation_data.n_entities[None]
 
-        for entity_idx, env_idx in ti.ndrange(n_entities, articulation_data.qpos_current.shape[1]):
+        for entity_idx, env_idx in ti.ndrange(n_entities, n_envs):
             n_joints = articulation_data.entity_n_joints[entity_idx]
 
             for joint_idx in range(n_joints):
@@ -601,6 +604,7 @@ class IPCCoupler(RBC):
     def _compute_qpos_new_kernel(
         self,
         articulation_data: ti.template(),
+        n_envs: ti.i32,
     ):
         """
         Compute new qpos from ref_dof_prev and delta_theta_ipc.
@@ -611,28 +615,31 @@ class IPCCoupler(RBC):
         """
         n_entities = articulation_data.n_entities[None]
 
-        for entity_idx, env_idx in ti.ndrange(n_entities, articulation_data.qpos_new.shape[1]):
+        for entity_idx, env_idx in ti.ndrange(n_entities, n_envs):
             n_dofs = articulation_data.entity_n_dofs[entity_idx]
             n_joints = articulation_data.entity_n_joints[entity_idx]
 
             # First, copy all ref_dof_prev to qpos_new
             for dof_idx in range(n_dofs):
-                articulation_data.qpos_new[entity_idx, env_idx, dof_idx] = \
-                    articulation_data.ref_dof_prev[entity_idx, env_idx, dof_idx]
+                articulation_data.qpos_new[entity_idx, env_idx, dof_idx] = articulation_data.ref_dof_prev[
+                    entity_idx, env_idx, dof_idx
+                ]
 
             # Then, update DOFs corresponding to joints
             for joint_idx in range(n_joints):
                 dof_idx = articulation_data.joint_dof_indices[entity_idx, joint_idx]
                 if dof_idx < n_dofs:
                     delta_theta = articulation_data.delta_theta_ipc[entity_idx, env_idx, joint_idx]
-                    articulation_data.qpos_new[entity_idx, env_idx, dof_idx] = \
+                    articulation_data.qpos_new[entity_idx, env_idx, dof_idx] = (
                         articulation_data.ref_dof_prev[entity_idx, env_idx, dof_idx] + delta_theta
+                    )
 
     @ti.kernel
     def _batch_read_qpos_from_solver_kernel(
         self,
         articulation_data: ti.template(),
         solver_qpos: ti.types.ndarray(),  # ndarray/field: qpos (n_total_dofs, n_envs)
+        n_envs: ti.i32,
     ):
         """
         Batch read qpos directly from rigid solver's qpos (ndarray or field).
@@ -644,7 +651,6 @@ class IPCCoupler(RBC):
         for entity_idx in range(n_entities):
             n_dofs = articulation_data.entity_n_dofs[entity_idx]
             dof_start = articulation_data.entity_dof_start[entity_idx]
-            n_envs = articulation_data.qpos_current.shape[1]
 
             for env_idx, dof_idx in ti.ndrange(n_envs, n_dofs):
                 # Read from solver: solver_qpos[dof_start + dof_idx, env_idx]
@@ -655,6 +661,7 @@ class IPCCoupler(RBC):
         self,
         articulation_data: ti.template(),
         qpos_out: ti.types.ndarray(),  # (n_entities, max_envs, max_dofs)
+        n_envs: ti.i32,
     ):
         """
         Batch write qpos_new from Taichi fields to output array.
@@ -662,7 +669,7 @@ class IPCCoupler(RBC):
         """
         n_entities = articulation_data.n_entities[None]
 
-        for entity_idx, env_idx in ti.ndrange(n_entities, articulation_data.qpos_new.shape[1]):
+        for entity_idx, env_idx in ti.ndrange(n_entities, n_envs):
             n_dofs = articulation_data.entity_n_dofs[entity_idx]
 
             for dof_idx in range(n_dofs):
@@ -696,8 +703,9 @@ class IPCCoupler(RBC):
                 dof_j = articulation_data.joint_dof_indices[entity_idx, j]
                 # Store in column-major order: mass_matrix[j * n_joints + i] = M[i, j]
                 # This is equivalent to transposing during flatten
-                articulation_data.mass_matrix[entity_idx, j * n_joints + i] = \
-                    solver_mass_mat[dof_start + dof_i, dof_start + dof_j, env_idx]
+                articulation_data.mass_matrix[entity_idx, j * n_joints + i] = solver_mass_mat[
+                    dof_start + dof_i, dof_start + dof_j, env_idx
+                ]
 
     @ti.kernel
     def _extract_joint_mass_matrix_kernel_field(
@@ -718,13 +726,15 @@ class IPCCoupler(RBC):
             dof_i = articulation_data.joint_dof_indices[entity_idx, i]
             for j in range(n_joints):
                 dof_j = articulation_data.joint_dof_indices[entity_idx, j]
-                articulation_data.mass_matrix[entity_idx, j * n_joints + i] = \
-                    solver_mass_mat[dof_start + dof_i, dof_start + dof_j, env_idx]
+                articulation_data.mass_matrix[entity_idx, j * n_joints + i] = solver_mass_mat[
+                    dof_start + dof_i, dof_start + dof_j, env_idx
+                ]
 
     @ti.kernel
     def _update_ref_dof_prev_kernel(
         self,
         articulation_data: ti.template(),
+        n_envs: ti.i32,
     ):
         """
         Update ref_dof_prev from qpos_new for next timestep.
@@ -732,12 +742,13 @@ class IPCCoupler(RBC):
         """
         n_entities = articulation_data.n_entities[None]
 
-        for entity_idx, env_idx in ti.ndrange(n_entities, articulation_data.ref_dof_prev.shape[1]):
+        for entity_idx, env_idx in ti.ndrange(n_entities, n_envs):
             n_dofs = articulation_data.entity_n_dofs[entity_idx]
 
             for dof_idx in range(n_dofs):
-                articulation_data.ref_dof_prev[entity_idx, env_idx, dof_idx] = \
-                    articulation_data.qpos_new[entity_idx, env_idx, dof_idx]
+                articulation_data.ref_dof_prev[entity_idx, env_idx, dof_idx] = articulation_data.qpos_new[
+                    entity_idx, env_idx, dof_idx
+                ]
 
     # ==================== End of Articulation Coupling Kernels ====================
 
@@ -1264,10 +1275,10 @@ class IPCCoupler(RBC):
             )
 
         return {
-            'revolute_joints': revolute_joints,
-            'prismatic_joints': prismatic_joints,
-            'joint_dof_indices': joint_dof_indices,
-            'n_joints': n_joints,
+            "revolute_joints": revolute_joints,
+            "prismatic_joints": prismatic_joints,
+            "joint_dof_indices": joint_dof_indices,
+            "n_joints": n_joints,
         }
 
     def _add_objects_to_ipc(self):
@@ -1552,17 +1563,30 @@ class IPCCoupler(RBC):
                             mass_density=entity_rho,
                         )
 
-                        # Set external_kinetic=1 for all ABD objects (matching test_external_articulation_constraint.py)
+                        # Set external_kinetic=1 for all ABD objects
                         from uipc import builtin, view
+
                         external_kinetic_attr = merged_mesh.instances().find(builtin.external_kinetic)
                         if external_kinetic_attr is not None:
                             external_kinetic_view = view(external_kinetic_attr)
                             external_kinetic_view[:] = 1
 
+                        # Set is_fixed attribute for base link (when link.is_fixed=True)
+                        # This fixes the base link in IPC, matching test_external_articulation_constraint.py
+                        link = rigid_solver.links[link_idx]
+                        is_link_fixed = link.is_fixed
+
+                        is_fixed_attr = merged_mesh.instances().find(builtin.is_fixed)
+                        if is_fixed_attr is not None:
+                            is_fixed_view = view(is_fixed_attr)
+                            # Fix link if it's fixed in Genesis
+                            is_fixed_view[0] = 1 if is_link_fixed else 0
+
                         # For external_articulation mode, create ref_dof_prev attribute
                         if self.options.coupling_strategy == "external_articulation":
                             from uipc.geometry import affine_body
                             from uipc import Vector12
+
                             # Create ref_dof_prev attribute on instances
                             ref_dof_prev_attr = merged_mesh.instances().create("ref_dof_prev", Vector12.Zero())
                             ref_dof_prev_view = view(ref_dof_prev_attr)
@@ -1944,14 +1968,7 @@ class IPCCoupler(RBC):
                 kernel_func = self._store_qpos_kernel if gs.use_ndarray else self._store_qpos_kernel_field
 
                 for env_idx in range(self.sim._B):
-                    kernel_func(
-                        self.transform_data,
-                        rigid_solver.qpos,
-                        entity_idx,
-                        env_idx,
-                        q_start,
-                        n_qs
-                    )
+                    kernel_func(self.transform_data, rigid_solver.qpos, entity_idx, env_idx, q_start, n_qs)
 
         # For two_way_soft_constraint: also maintain the dictionary (for backward compatibility with user modification detection)
         if self.options.coupling_strategy == "two_way_soft_constraint":
@@ -1961,13 +1978,15 @@ class IPCCoupler(RBC):
                     if n_qs > 0 and n_qs <= self.max_qpos_size:
                         for env_idx in range(self.sim._B):
                             # Read from Taichi field to numpy
-                            qpos_out = np.array([self.transform_data.stored_qpos[entity_idx, env_idx, i]
-                                               for i in range(n_qs)])
+                            qpos_out = np.array(
+                                [self.transform_data.stored_qpos[entity_idx, env_idx, i] for i in range(n_qs)]
+                            )
                             self._entity_qpos_before_ipc[(entity_idx, env_idx)] = qpos_out
 
         # Store transforms for all rigid links using Taichi fields
         # OPTIMIZED VERSION: Batch get all link states at once per environment
         from uipc import Transform, Vector3, Quaternion
+
         is_parallelized = self.sim._scene.n_envs > 0
 
         for env_idx in range(self.sim._B):
@@ -1983,13 +2002,7 @@ class IPCCoupler(RBC):
             n_links = all_links_pos.shape[0]
 
             # Use kernel to store to Taichi fields (for external_articulation to read pos/quat)
-            self._store_link_states_kernel(
-                self.transform_data,
-                all_links_pos,
-                all_links_quat,
-                env_idx,
-                n_links
-            )
+            self._store_link_states_kernel(self.transform_data, all_links_pos, all_links_quat, env_idx, n_links)
 
             # Also convert to transform matrices and store in _genesis_stored_states (for two_way_soft_constraint)
             # Only store for links that have mesh handles (are in the IPC scene)
@@ -2299,6 +2312,7 @@ class IPCCoupler(RBC):
 
                 # Compare using kernel (both inputs and output are Taichi fields, zero copy)
                 import numpy as np
+
                 self._compare_qpos_kernel(n_qs, td.qpos_buffer, stored_qpos, 1e-6, td.qpos_comparison_result)
 
                 if td.qpos_comparison_result[0] == 1:
@@ -3107,9 +3121,9 @@ class IPCCoupler(RBC):
             ExternalArticulationConstraint,
             AffineBodyConstitution,
             AffineBodyRevoluteJoint,
-            AffineBodyPrismaticJoint
+            AffineBodyPrismaticJoint,
         )
-        
+
         from uipc import view
         import numpy as np
         import genesis as gs
@@ -3129,7 +3143,7 @@ class IPCCoupler(RBC):
             # Extract joints from the entity
             joint_info = self._extract_articulated_joints(entity, env_idx=0)
 
-            if joint_info['n_joints'] == 0:
+            if joint_info["n_joints"] == 0:
                 continue  # Skip entities without joints
 
             gs.logger.info(
@@ -3148,7 +3162,7 @@ class IPCCoupler(RBC):
             abpj = AffineBodyPrismaticJoint()
 
             # Add revolute joints
-            for joint in joint_info['revolute_joints']:
+            for joint in joint_info["revolute_joints"]:
                 # Get parent and child links
                 # joint.link is the child link (the one that moves)
                 # joint.link.parent_idx is the parent link index
@@ -3168,19 +3182,13 @@ class IPCCoupler(RBC):
 
                 # Get joint axis and position in world coordinates
                 # libuipc uses ABSOLUTE world coordinates for linemesh vertices
-                # From URDF parsing: child_link.pos = joint world position
-                joint_axis = joint.dofs_motion_ang[0]  # (3,) array
+                joint_axis = joint.dofs_motion_ang[0]  # (3,) array - rotation axis
                 child_link = self.rigid_solver.links[child_link_idx]
                 parent_link = self.rigid_solver.links[parent_link_idx]
-                joint_pos = child_link.pos  # Absolute world position (from URDF joint origin)
 
-                # Debug output
-                gs.logger.info(f"[DEBUG] Revolute joint '{joint.name}':")
-                gs.logger.info(f"  parent_link pos = {parent_link.pos}")
-                gs.logger.info(f"  child_link pos = {child_link.pos}")
-                gs.logger.info(f"  joint_pos (world) = {joint_pos}")
-                gs.logger.info(f"  joint_axis = {joint_axis}")
-                gs.logger.info(f"  parent_link_idx = {parent_link_idx}, child_link_idx = {child_link_idx}")
+                # Get joint world position from joints_state.xanchor (computed by FK)
+                joint_idx = joint.idx
+                joint_pos = rigid_solver.joints_state.xanchor.to_numpy()[joint_idx, 0]  # env_idx=0
 
                 # Create linemesh for revolute joint in world coordinates
                 # Line segment centered at joint_pos, aligned with joint_axis
@@ -3188,10 +3196,6 @@ class IPCCoupler(RBC):
                 v1 = joint_pos - (axis_length / 2) * joint_axis
                 v2 = joint_pos + (axis_length / 2) * joint_axis
                 vertices = np.array([v1, v2], dtype=np.float64)
-
-                gs.logger.info(f"  linemesh vertices:")
-                gs.logger.info(f"    v1 = {v1}")
-                gs.logger.info(f"    v2 = {v2}")
                 edges = np.array([[0, 1]], dtype=np.int32)
                 revolute_mesh = linemesh(vertices, edges)
 
@@ -3207,7 +3211,7 @@ class IPCCoupler(RBC):
                 joint_objects.append(joint_obj)
 
             # Add prismatic joints
-            for joint in joint_info['prismatic_joints']:
+            for joint in joint_info["prismatic_joints"]:
                 # Get parent and child links (same as revolute joints)
                 child_link_idx = joint.link.idx
                 parent_link_idx = joint.link.parent_idx if joint.link.parent_idx >= 0 else 0
@@ -3223,30 +3227,21 @@ class IPCCoupler(RBC):
 
                 # Get joint axis and position in world coordinates
                 # libuipc uses ABSOLUTE world coordinates for linemesh vertices
-                # From URDF parsing: child_link.pos = joint world position
-                joint_axis = joint.dofs_motion_vel[0]  # (3,) array
+                joint_axis = joint.dofs_motion_vel[0]  # (3,) array - translation axis
                 child_link = self.rigid_solver.links[child_link_idx]
                 parent_link = self.rigid_solver.links[parent_link_idx]
-                joint_pos = child_link.pos  # Absolute world position (from URDF joint origin)
 
-                # Debug output
-                gs.logger.info(f"[DEBUG] Prismatic joint '{joint.name}':")
-                gs.logger.info(f"  parent_link pos = {parent_link.pos}")
-                gs.logger.info(f"  child_link pos = {child_link.pos}")
-                gs.logger.info(f"  joint_pos (world) = {joint_pos}")
-                gs.logger.info(f"  joint_axis = {joint_axis}")
-                gs.logger.info(f"  parent_link_idx = {parent_link_idx}, child_link_idx = {child_link_idx}")
+                # Get joint world position from joints_state.xanchor (computed by FK)
+                joint_idx = joint.idx
+                joint_pos = rigid_solver.joints_state.xanchor.to_numpy()[joint_idx, 0]  # env_idx=0
 
                 # Create linemesh for prismatic joint in world coordinates
                 # Line segment centered at joint_pos, aligned with translation axis
-                axis_length = 0.2
+                # Use same length as revolute joints for consistency
+                axis_length = 1.0
                 v1 = joint_pos - (axis_length / 2) * joint_axis
                 v2 = joint_pos + (axis_length / 2) * joint_axis
                 vertices = np.array([v1, v2], dtype=np.float64)
-
-                gs.logger.info(f"  linemesh vertices:")
-                gs.logger.info(f"    v1 = {v1}")
-                gs.logger.info(f"    v2 = {v2}")
                 edges = np.array([[0, 1]], dtype=np.int32)
                 prismatic_mesh = linemesh(vertices, edges)
 
@@ -3284,20 +3279,20 @@ class IPCCoupler(RBC):
 
             # Store articulation data
             self._articulated_entities[entity_idx] = {
-                'entity': entity,
-                'env_idx': 0,  # TODO: support multi-environment
-                'revolute_joints': joint_info['revolute_joints'],
-                'prismatic_joints': joint_info['prismatic_joints'],
-                'joint_geo_slots': joint_geo_slots,
-                'articulation_geo': articulation_geo,
-                'articulation_slot': articulation_slot,  # Store the slot for later updates
-                'articulation_object': articulation_object,
-                'n_joints': n_joints,
-                'ref_dof_prev': np.zeros(entity.n_dofs, dtype=np.float64),
-                'delta_theta_tilde': np.zeros(n_joints, dtype=np.float64),
-                'delta_theta': np.zeros(n_joints, dtype=np.float64),
-                'joint_dof_indices': joint_info['joint_dof_indices'],
-                'mass_matrix': mass_matrix,
+                "entity": entity,
+                "env_idx": 0,  # TODO: support multi-environment
+                "revolute_joints": joint_info["revolute_joints"],
+                "prismatic_joints": joint_info["prismatic_joints"],
+                "joint_geo_slots": joint_geo_slots,
+                "articulation_geo": articulation_geo,
+                "articulation_slot": articulation_slot,  # Store the slot for later updates
+                "articulation_object": articulation_object,
+                "n_joints": n_joints,
+                "ref_dof_prev": np.zeros(entity.n_dofs, dtype=np.float64),
+                "delta_theta_tilde": np.zeros(n_joints, dtype=np.float64),
+                "delta_theta": np.zeros(n_joints, dtype=np.float64),
+                "joint_dof_indices": joint_info["joint_dof_indices"],
+                "mass_matrix": mass_matrix,
             }
 
             gs.logger.info(f"Successfully added articulated entity {entity_idx} to IPC")
@@ -3367,17 +3362,17 @@ class IPCCoupler(RBC):
         self._store_genesis_rigid_states()
 
         ad = self.articulation_data
-        
+
         # Initialize metadata on first call
-        if not hasattr(self, '_articulation_metadata_initialized'):
+        if not hasattr(self, "_articulation_metadata_initialized"):
             n_entities = len(self._articulated_entities)
             ad.n_entities[None] = n_entities
 
             for idx, (entity_idx, art_data) in enumerate(self._articulated_entities.items()):
-                entity = art_data['entity']
-                env_idx = art_data['env_idx']
-                n_joints = art_data['n_joints']
-                joint_dof_indices = art_data['joint_dof_indices']
+                entity = art_data["entity"]
+                env_idx = art_data["env_idx"]
+                n_joints = art_data["n_joints"]
+                joint_dof_indices = art_data["joint_dof_indices"]
 
                 # Get actual qpos size from the entity
                 if self.sim._B > 1:
@@ -3387,7 +3382,7 @@ class IPCCoupler(RBC):
                 n_dofs_actual = len(actual_qpos)
 
                 # Store the actual size, not entity.n_dofs which may be incorrect
-                art_data['n_dofs_actual'] = n_dofs_actual
+                art_data["n_dofs_actual"] = n_dofs_actual
 
                 # Fill metadata
                 ad.entity_indices[idx] = entity_idx
@@ -3409,26 +3404,28 @@ class IPCCoupler(RBC):
 
         # Step 1: Copy qpos from transform_data.stored_qpos (already stored by _store_genesis_rigid_states)
         # to articulation_data.qpos_current using kernel (zero-copy)
-        self._copy_stored_qpos_to_articulation_kernel(self.transform_data, ad)
+        is_parallelized = self.sim._scene.n_envs > 0
+        n_envs = self.sim._scene.n_envs if is_parallelized else 1
+        self._copy_stored_qpos_to_articulation_kernel(self.transform_data, ad, n_envs)
 
         # Step 2: Compute delta_theta_tilde = qpos_current - ref_dof_prev (parallelized)
-        self._compute_delta_theta_tilde_kernel(ad)
-        
+        self._compute_delta_theta_tilde_kernel(ad, n_envs)
+
         # Step 3: Update IPC - set ref_dof_prev to ABD instances and delta_theta_tilde to articulation geo
         from uipc.geometry import affine_body
 
         for idx, (entity_idx, art_data) in enumerate(self._articulated_entities.items()):
             # IMPORTANT: Get the geometry from slot (not the stored copy)
             # The slot's geometry is what UIPC actually reads from
-            articulation_slot = art_data['articulation_slot']
+            articulation_slot = art_data["articulation_slot"]
             articulation_geo = articulation_slot.geometry()
-            env_idx = art_data['env_idx']
-            n_joints = art_data['n_joints']
-            entity = art_data['entity']
+            env_idx = art_data["env_idx"]
+            n_joints = art_data["n_joints"]
+            entity = art_data["entity"]
 
             # Update ref_dof_prev on all ABD instances (links) for this entity
             # Use PREVIOUS timestep transforms (stored in prev_link_transforms)
-            for joint_idx, joint in enumerate(art_data['revolute_joints'] + art_data['prismatic_joints']):
+            for joint_idx, joint in enumerate(art_data["revolute_joints"] + art_data["prismatic_joints"]):
                 # Get child link (the one that moves)
                 child_link_idx = joint.link.idx
                 abd_geo_slot = self._find_abd_geometry_slot_by_link(child_link_idx, env_idx)
@@ -3448,9 +3445,13 @@ class IPCCoupler(RBC):
                             ref_dof_prev_view[0] = q
                         else:
                             # First timestep: use current transform as fallback
-                            if child_link_idx in self._genesis_stored_states and env_idx in self._genesis_stored_states[child_link_idx]:
+                            if (
+                                child_link_idx in self._genesis_stored_states
+                                and env_idx in self._genesis_stored_states[child_link_idx]
+                            ):
                                 link_transform = self._genesis_stored_states[child_link_idx][env_idx]
-                                ref_dof_prev_view[0] = affine_body.transform_to_q(link_transform)
+                                q = affine_body.transform_to_q(link_transform)
+                                ref_dof_prev_view[0] = q
 
             # Set delta_theta_tilde to IPC geometry directly from Taichi field
             delta_theta_tilde_attr = articulation_geo["joint"].find("delta_theta_tilde")
@@ -3460,7 +3461,11 @@ class IPCCoupler(RBC):
 
             # Update mass matrix from Genesis (using Taichi kernel for efficiency)
             # Choose kernel based on use_ndarray setting
-            mass_kernel_func = self._extract_joint_mass_matrix_kernel if gs.use_ndarray else self._extract_joint_mass_matrix_kernel_field
+            mass_kernel_func = (
+                self._extract_joint_mass_matrix_kernel
+                if gs.use_ndarray
+                else self._extract_joint_mass_matrix_kernel_field
+            )
             mass_kernel_func(ad, self.rigid_solver.mass_mat, idx, env_idx)
 
             # Transfer mass matrix from Taichi field to IPC
@@ -3471,16 +3476,16 @@ class IPCCoupler(RBC):
                 mass_size = n_joints * n_joints
                 for i in range(mass_size):
                     mass_view[i] = ad.mass_matrix[idx, i]
-    
+
         # Step 4: Advance IPC simulation
         self._ipc_world.advance()
         self._ipc_world.retrieve()
-        
+
         # Step 5: Read delta_theta_ipc from IPC (using slot to get updated geometry, following reference)
         for idx, (entity_idx, art_data) in enumerate(self._articulated_entities.items()):
-            articulation_slot = art_data['articulation_slot']
-            env_idx = art_data['env_idx']
-            n_joints = art_data['n_joints']
+            articulation_slot = art_data["articulation_slot"]
+            env_idx = art_data["env_idx"]
+            n_joints = art_data["n_joints"]
 
             # IMPORTANT: Get the latest geometry from slot (after retrieve())
             # This is critical - don't use the stored articulation_geo, it may be stale!
@@ -3493,12 +3498,12 @@ class IPCCoupler(RBC):
                 ad.delta_theta_ipc[idx, env_idx, joint_idx] = delta_theta_view[joint_idx]
 
         # Step 6: Compute qpos_new using Taichi kernel (parallelized)
-        self._compute_qpos_new_kernel(ad)
+        self._compute_qpos_new_kernel(ad, n_envs)
 
         # Step 7: Write qpos_new back to Genesis directly from Taichi field
         for idx, (entity_idx, art_data) in enumerate(self._articulated_entities.items()):
-            entity = art_data['entity']
-            env_idx = art_data['env_idx']
+            entity = art_data["entity"]
+            env_idx = art_data["env_idx"]
             n_dofs = ad.entity_n_dofs[idx]  # Use stored metadata
 
             # Extract qpos_new directly from Taichi field (no intermediate numpy array)
@@ -3514,15 +3519,18 @@ class IPCCoupler(RBC):
                 entity.set_qpos(qpos_tensor, zero_velocity=True)
 
         # Step 8: Update ref_dof_prev for next timestep using kernel (parallelized)
-        self._update_ref_dof_prev_kernel(ad)
+        self._update_ref_dof_prev_kernel(ad, n_envs)
 
         # Step 9: Store current link transforms to prev_link_transforms for next timestep
         # This ensures ref_dof_prev uses the previous timestep's transform
         for idx, (entity_idx, art_data) in enumerate(self._articulated_entities.items()):
-            env_idx = art_data['env_idx']
-            for joint_idx, joint in enumerate(art_data['revolute_joints'] + art_data['prismatic_joints']):
+            env_idx = art_data["env_idx"]
+            for joint_idx, joint in enumerate(art_data["revolute_joints"] + art_data["prismatic_joints"]):
                 child_link_idx = joint.link.idx
                 # Store current transform from _genesis_stored_states as "previous" for next step
-                if child_link_idx in self._genesis_stored_states and env_idx in self._genesis_stored_states[child_link_idx]:
+                if (
+                    child_link_idx in self._genesis_stored_states
+                    and env_idx in self._genesis_stored_states[child_link_idx]
+                ):
                     key = (idx, joint_idx, env_idx)
                     ad.prev_link_transforms[key] = self._genesis_stored_states[child_link_idx][env_idx].copy()
