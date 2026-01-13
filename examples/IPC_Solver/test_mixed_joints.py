@@ -1,6 +1,6 @@
 """
-Test for external_articulation coupling with three cube chain (two joints).
-Tests joint positioning and oscillating motion.
+Test for external_articulation coupling with mixed joints (revolute + prismatic).
+Tests both rotational and translational joint control.
 """
 
 import genesis as gs
@@ -20,7 +20,7 @@ def main():
         gravity=(0.0, 0.0, -9.8),
         coupling_strategy="external_articulation",
         contact_friction_mu=0.5,
-        IPC_self_contact=False,
+        IPC_self_contact=True,
         enable_ipc_gui=True,
     )
 
@@ -40,12 +40,18 @@ def main():
             camera_pos=(1.5, 0.0, 1.0),
             camera_lookat=(0.0, 0.0, 0.5),
             camera_fov=40,
+            max_FPS=60,
         ),
         show_viewer=True,
     )
 
-    # Create three-cube chain robot with two joints
-    robot = scene.add_entity(gs.morphs.URDF(file="urdf/simple/three_cube_chain.urdf", pos=(0.1, 0.0, 0.5), fixed=True))
+    # Add ground plane
+    scene.add_entity(gs.morphs.Plane())
+
+    # Create robot with mixed joints (revolute + prismatic)
+    robot = scene.add_entity(
+        gs.morphs.URDF(file="urdf/simple/mixed_joints_robot.urdf", pos=(0.0, 0.0, 0.5), fixed=True)
+    )
 
     # Build scene
     print("Building scene...")
@@ -70,26 +76,42 @@ def main():
             current_qpos = robot.get_qpos().cpu().numpy()
             print(f"Step {i:3d}: qpos = {current_qpos}")
 
-    # Phase 2: Oscillating motion (back and forth)
-    print("\n=== Phase 2: Oscillating motion ===")
+    # Phase 2: Oscillating motion (both joints move)
+    print("\n=== Phase 2: Oscillating motion (both joints) ===")
 
     # Parameters for oscillation
-    amplitude1 = 1  # radians for joint1 (Z-axis rotation)
-    amplitude2 = 1  # radians for joint2 (Y-axis rotation)
+    revolute_amplitude = 1.5  # radians for revolute joint (rotation)
+    prismatic_amplitude = 0.2  # meters for prismatic joint (translation)
     period = 5000  # steps per cycle
 
     step = 0
+    print(f"\nStarting oscillation:")
+    print(f"  Revolute joint: ±{revolute_amplitude} rad (±{np.degrees(revolute_amplitude):.1f}°)")
+    print(f"  Prismatic joint: ±{prismatic_amplitude} m")
+    print(f"  Period: {period} steps\n")
+
     while scene.viewer.is_alive():
         phase = 2.0 * np.pi * step / period
 
         target = np.zeros(robot.n_dofs)
         if robot.n_dofs >= 1:
-            target[0] = amplitude1 * np.sin(phase)
+            # Revolute joint (DOF 0): sinusoidal rotation
+            target[0] = revolute_amplitude * np.sin(phase)
         if robot.n_dofs >= 2:
-            target[1] = amplitude2 * np.sin(phase)
+            # Prismatic joint (DOF 1): sinusoidal translation
+            target[1] = prismatic_amplitude * np.sin(phase + np.pi / 2)  # 90° phase shift
 
         robot.control_dofs_position(target)
         scene.step()
+
+        # Print status every 100 steps
+        if step % 100 == 0 and step > 0:
+            current_qpos = robot.get_qpos().cpu().numpy()
+            print(
+                f"Step {step:4d}: revolute={current_qpos[0]:+.3f} rad ({np.degrees(current_qpos[0]):+.1f}°), "
+                f"prismatic={current_qpos[1]:+.4f} m"
+            )
+
         step += 1
 
 
