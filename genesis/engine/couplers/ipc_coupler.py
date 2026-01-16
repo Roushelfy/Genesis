@@ -695,7 +695,8 @@ class IPCCoupler(RBC):
         """
         dof_start = articulation_data.entity_dof_start[entity_idx]
         n_joints = articulation_data.entity_n_joints[entity_idx]
-
+        print("Extracting mass matrix for entity ", entity_idx, " in env ", env_idx)
+        print("DOF start: ", dof_start, ", Number of joints: ", n_joints)
         # Extract joint submatrix and store in column-major order
         for i in range(n_joints):
             dof_i = articulation_data.joint_dof_indices[entity_idx, i]
@@ -706,6 +707,17 @@ class IPCCoupler(RBC):
                 articulation_data.mass_matrix[entity_idx, j * n_joints + i] = solver_mass_mat[
                     dof_start + dof_i, dof_start + dof_j, env_idx
                 ]
+                # print mass matrix access for debugging
+                print(
+                    "Mass matrix access: M[",
+                    dof_start + dof_i,
+                    ",",
+                    dof_start + dof_j,
+                    ",",
+                    env_idx,
+                    "] = ",
+                    solver_mass_mat[dof_start + dof_i, dof_start + dof_j, env_idx],
+                )
 
     @ti.kernel
     def _extract_joint_mass_matrix_kernel_field(
@@ -722,6 +734,9 @@ class IPCCoupler(RBC):
         dof_start = articulation_data.entity_dof_start[entity_idx]
         n_joints = articulation_data.entity_n_joints[entity_idx]
 
+        print("Extracting mass matrix for entity ", entity_idx, " in env ", env_idx)
+        print("DOF start: ", dof_start, ", Number of joints: ", n_joints)
+
         for i in range(n_joints):
             dof_i = articulation_data.joint_dof_indices[entity_idx, i]
             for j in range(n_joints):
@@ -729,6 +744,17 @@ class IPCCoupler(RBC):
                 articulation_data.mass_matrix[entity_idx, j * n_joints + i] = solver_mass_mat[
                     dof_start + dof_i, dof_start + dof_j, env_idx
                 ]
+                # print mass matrix access for debugging
+                print(
+                    "Mass matrix access: M[",
+                    dof_start + dof_i,
+                    ",",
+                    dof_start + dof_j,
+                    ",",
+                    env_idx,
+                    "] = ",
+                    solver_mass_mat[dof_start + dof_i, dof_start + dof_j, env_idx],
+                )
 
     @ti.kernel
     def _update_ref_dof_prev_kernel(

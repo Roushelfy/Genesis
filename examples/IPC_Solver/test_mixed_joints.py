@@ -23,8 +23,7 @@ def main():
         IPC_self_contact=True,
         enable_ipc_gui=True,
         disable_ipc_logging=False,
-        newton_velocity_tol=5e-3,
-        newton_transrate_tol=1e-3,
+        newton_velocity_tol=5e-4,
     )
 
     # Disable rigid collision when using IPC

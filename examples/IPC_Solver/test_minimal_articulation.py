@@ -22,6 +22,8 @@ def main():
         contact_friction_mu=0.5,
         IPC_self_contact=False,
         enable_ipc_gui=True,
+        disable_ipc_logging=False,
+        newton_velocity_tol=5e-4,
     )
 
     # Disable rigid collision when using IPC
@@ -85,8 +87,8 @@ def main():
     print("\n=== Phase 2: Oscillating motion ===")
 
     # Parameters for oscillation
-    amplitude = 1  # radians for the joint
-    period = 300  # steps per cycle
+    amplitude = 1.5  # radians for the joint
+    period = 200  # steps per cycle
     total_steps = 5000
 
     for i in range(total_steps):

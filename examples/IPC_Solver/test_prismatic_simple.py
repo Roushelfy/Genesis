@@ -12,7 +12,7 @@ def main():
     gs.init(backend=gs.gpu, logging_level="info", performance_mode=True)
 
     # Create scene
-    dt = 0.01
+    dt = 0.1
 
     # Configure IPC coupler with external_articulation strategy
     coupler_options = gs.options.IPCCouplerOptions(
@@ -22,6 +22,8 @@ def main():
         contact_friction_mu=0.5,
         IPC_self_contact=False,
         enable_ipc_gui=True,
+        disable_ipc_logging=False,
+        newton_velocity_tol=5e-4,
     )
 
     # Disable rigid collision when using IPC
@@ -82,7 +84,8 @@ def main():
 
     # Parameters for oscillation
     amplitude = 0.25  # meters for prismatic joint (within ±0.3 limit)
-    period = 400  # steps per cycle
+    period_time = 2.0  # seconds per cycle
+    period = int(period_time / dt)  # steps per cycle
 
     step = 0
     print(f"\nStarting oscillation:")
