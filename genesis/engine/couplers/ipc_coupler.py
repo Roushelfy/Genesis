@@ -1044,19 +1044,72 @@ class IPCCoupler(RBC):
         # Create workspace directory for IPC output
         workspace = os.path.join(tempfile.gettempdir(), "genesis_ipc_workspace")
         os.makedirs(workspace, exist_ok=True)
+
+        # Note: gpu_device option may need to be set via CUDA environment variables (CUDA_VISIBLE_DEVICES)
+        # before Genesis initialization, as libuipc Engine does not expose device selection in constructor
         self._ipc_engine = Engine("cuda", workspace)
         self._ipc_world = World(self._ipc_engine)
 
         # Create IPC scene with configuration
         config = Scene.default_config()
+
+        # Basic simulation parameters (always set)
         config["dt"] = self.options.dt
         config["gravity"] = [[self.options.gravity[0]], [self.options.gravity[1]], [self.options.gravity[2]]]
-        config["contact"]["d_hat"] = self.options.contact_d_hat
-        config["contact"]["friction"]["enable"] = self.options.contact_friction_enable
-        config["newton"]["velocity_tol"] = self.options.newton_velocity_tol
-        config["line_search"]["max_iter"] = self.options.line_search_max_iter
-        config["linear_system"]["tol_rate"] = self.options.linear_system_tol_rate
-        config["sanity_check"]["enable"] = self.options.sanity_check_enable
+
+        # Newton solver options (only set if specified)
+        if self.options.newton_max_iter is not None:
+            config["newton"]["max_iter"] = self.options.newton_max_iter
+        if self.options.newton_min_iter is not None:
+            config["newton"]["min_iter"] = self.options.newton_min_iter
+        if self.options.newton_velocity_tol is not None:
+            config["newton"]["velocity_tol"] = self.options.newton_velocity_tol
+        if self.options.newton_ccd_tol is not None:
+            config["newton"]["ccd_tol"] = self.options.newton_ccd_tol
+        if self.options.newton_use_adaptive_tol is not None:
+            config["newton"]["use_adaptive_tol"] = self.options.newton_use_adaptive_tol
+        if self.options.newton_transrate_tol is not None:
+            config["newton"]["transrate_tol"] = self.options.newton_transrate_tol
+
+        # Line search options (only set if specified)
+        if self.options.line_search_max_iter is not None:
+            config["line_search"]["max_iter"] = self.options.line_search_max_iter
+        if self.options.line_search_report_energy is not None:
+            config["line_search"]["report_energy"] = self.options.line_search_report_energy
+
+        # Linear system options (only set if specified)
+        if self.options.linear_system_solver is not None:
+            config["linear_system"]["solver"] = self.options.linear_system_solver
+        if self.options.linear_system_tol_rate is not None:
+            config["linear_system"]["tol_rate"] = self.options.linear_system_tol_rate
+
+        # Contact options (only set if specified)
+        if self.options.contact_enable is not None:
+            config["contact"]["enable"] = self.options.contact_enable
+        if self.options.contact_d_hat is not None:
+            config["contact"]["d_hat"] = self.options.contact_d_hat
+        if self.options.contact_friction_enable is not None:
+            config["contact"]["friction"]["enable"] = self.options.contact_friction_enable
+        if self.options.contact_eps_velocity is not None:
+            config["contact"]["eps_velocity"] = self.options.contact_eps_velocity
+        if self.options.contact_constitution is not None:
+            config["contact"]["constitution"] = self.options.contact_constitution
+
+        # Collision detection options (only set if specified)
+        if self.options.collision_detection_method is not None:
+            config["collision_detection"]["method"] = self.options.collision_detection_method
+
+        # CFL options (only set if specified)
+        if self.options.cfl_enable is not None:
+            config["cfl"]["enable"] = self.options.cfl_enable
+
+        # Sanity check options (only set if specified)
+        if self.options.sanity_check_enable is not None:
+            config["sanity_check"]["enable"] = self.options.sanity_check_enable
+
+        # Differential simulation options (only set if specified)
+        if self.options.diff_sim_enable is not None:
+            config["diff_sim"]["enable"] = self.options.diff_sim_enable
 
         self._ipc_scene = Scene(config)
 

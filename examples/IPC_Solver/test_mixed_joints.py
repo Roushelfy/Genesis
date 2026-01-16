@@ -22,6 +22,9 @@ def main():
         contact_friction_mu=0.5,
         IPC_self_contact=True,
         enable_ipc_gui=True,
+        disable_ipc_logging=False,
+        newton_velocity_tol=5e-3,
+        newton_transrate_tol=1e-3,
     )
 
     # Disable rigid collision when using IPC
@@ -80,9 +83,9 @@ def main():
     print("\n=== Phase 2: Oscillating motion (both joints) ===")
 
     # Parameters for oscillation
-    revolute_amplitude = 1.5  # radians for revolute joint (rotation)
+    revolute_amplitude = 1  # radians for revolute joint (rotation)
     prismatic_amplitude = 0.2  # meters for prismatic joint (translation)
-    period = 5000  # steps per cycle
+    period = 250  # steps per cycle
 
     step = 0
     print(f"\nStarting oscillation:")
