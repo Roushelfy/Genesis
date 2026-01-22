@@ -22,14 +22,14 @@ def main():
     parser.add_argument("--vis_ipc", action="store_true", default=False)
     args = parser.parse_args()
 
-    dt = 2e-3
+    dt = 0.01
     scene = gs.Scene(
         sim_options=gs.options.SimOptions(dt=dt, gravity=(0.0, 0.0, -9.8)),
         coupler_options=gs.options.IPCCouplerOptions(
             dt=dt,
             gravity=(0.0, 0.0, -9.8),
-            contact_d_hat=0.01,  # Contact barrier distance (10mm) - must be appropriate for mesh resolution
-            contact_friction_mu=0.3,  # Friction coefficient
+            contact_d_hat=0.001,  # Contact barrier distance (1mm) - must be appropriate for mesh resolution
+            contact_friction_mu=0.02,  # Friction coefficient
             IPC_self_contact=False,  # Disable rigid self-contact in IPC
             disable_genesis_contact=True,  # Disable Genesis ground contact to avoid double contact handling
             enable_ipc_gui=args.vis_ipc,
@@ -54,36 +54,37 @@ def main():
     cloth = scene.add_entity(
         morph=gs.morphs.Mesh(
             file=f"{asset_path}/grid20x20.obj",
-            scale=2.0,
-            pos=(0.0, 0.0, 1.5),
+            scale=1.0,
+            pos=(0.0, 0.0, 0.85),
             euler=(0, 0, 0),
         ),
         material=gs.materials.FEM.Cloth(
-            E=10e5,  # Young's modulus (Pa) - soft cloth (10 kPa)
+            E=1e5,  # Young's modulus (Pa) - soft cloth (10 kPa)
             nu=0.499,  # Poisson's ratio - nearly incompressible
             rho=200,  # Density (kg/m³)
             thickness=0.001,  # Shell thickness (m) - 1mm
-            bending_stiffness=50.0,  # Bending resistance
+            bending_stiffness=1.0,  # Bending resistance
         ),
         surface=gs.surfaces.Plastic(color=(0.3, 0.5, 0.8, 1.0), double_sided=True),
     )
 
-    cube_size = 0.2
-    cube_height = 0.3  # Height below cloth
+    cube_size = 0.1
+    cube_height = 0.15  # Height below cloth
 
-    scene.add_entity(
-        morph=gs.morphs.Box(
-            pos=(0, 0, cube_height),
-            size=(cube_size, cube_size, cube_size),
-        ),
-        material=gs.materials.Rigid(rho=500, friction=0.3),
-        surface=gs.surfaces.Plastic(color=(0.8, 0.3, 0.2, 0.8)),
-    )
+    #  TOFIX: weird coupling behaviour on rigid body (between Genesis and IPC)
+    # scene.add_entity(
+    #     morph=gs.morphs.Box(
+    #         pos=(0.25, 0.0, cube_height),
+    #         size=(cube_size, cube_size, cube_size),
+    #     ),
+    #     material=gs.materials.Rigid(rho=500, friction=0.3),
+    #     surface=gs.surfaces.Plastic(color=(0.8, 0.3, 0.2, 0.8)),
+    # )
 
     # Optional: Add another FEM volume object
     soft_ball = scene.add_entity(
-        morph=gs.morphs.Sphere(pos=(0.5, 0.0, 0.1), radius=0.08),
-        material=gs.materials.FEM.Elastic(E=1.0e3, nu=0.3, rho=1000.0, model="stable_neohookean"),
+        morph=gs.morphs.Sphere(pos=(-0.25, 0.0, 0.12), radius=0.1),
+        material=gs.materials.FEM.Elastic(E=1.0e4, nu=0.3, rho=1000.0, model="stable_neohookean"),
         surface=gs.surfaces.Plastic(color=(0.2, 0.8, 0.3, 0.8)),
     )
 

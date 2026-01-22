@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 import gstaichi as ti
+from uipc.constitution import ElasticModuli2D, ElasticModuli
 
 import genesis as gs
 from genesis.options.solvers import IPCCouplerOptions
@@ -346,12 +347,19 @@ class IPCCoupler(RBC):
         """
         for link_idx in range(n_links):
             # Store position
-            for j in ti.static(range(3)):
-                transform_data.stored_link_pos[link_idx, env_idx][j] = links_pos[link_idx, j]
+            transform_data.stored_link_pos[link_idx, env_idx] = ti.Vector(
+                [links_pos[link_idx, 0], links_pos[link_idx, 1], links_pos[link_idx, 2]]
+            )
 
             # Store quaternion
-            for j in ti.static(range(4)):
-                transform_data.stored_link_quat[link_idx, env_idx][j] = links_quat[link_idx, j]
+            transform_data.stored_link_quat[link_idx, env_idx] = ti.Vector(
+                [
+                    links_quat[link_idx, 0],
+                    links_quat[link_idx, 1],
+                    links_quat[link_idx, 2],
+                    links_quat[link_idx, 3],
+                ]
+            )
 
             # Mark as valid
             transform_data.stored_link_valid[link_idx, env_idx] = 1
@@ -1136,6 +1144,8 @@ class IPCCoupler(RBC):
         # Differential simulation options (only set if specified)
         if self.options.diff_sim_enable is not None:
             config["diff_sim"]["enable"] = self.options.diff_sim_enable
+        
+        config["newton"]["semi_implicit"]["enable"] = True
 
         self._ipc_scene = Scene(config)
 
@@ -1426,8 +1436,8 @@ class IPCCoupler(RBC):
                 label_surface(mesh)
 
                 # Apply material constitution based on type
-                moduli = ElasticModuli.youngs_poisson(entity.material.E, entity.material.nu)
                 if is_cloth:
+                    moduli = ElasticModuli2D.youngs_poisson(entity.material.E, entity.material.nu)
                     # Apply shell material for cloth
                     nks.apply_to(
                         mesh, moduli=moduli, mass_density=entity.material.rho, thickness=entity.material.thickness
@@ -1437,6 +1447,7 @@ class IPCCoupler(RBC):
                         dsb.apply_to(mesh, bending_stiffness=entity.material.bending_stiffness)
                 else:
                     # Apply volumetric material for FEM
+                    moduli = ElasticModuli.youngs_poisson(entity.material.E, entity.material.nu)
                     stk.apply_to(mesh, moduli, mass_density=entity.material.rho)
 
                 # Add metadata to identify geometry type
@@ -2076,6 +2087,12 @@ class IPCCoupler(RBC):
             else:
                 all_links_pos = rigid_solver.get_links_pos().detach().cpu().numpy()
                 all_links_quat = rigid_solver.get_links_quat().detach().cpu().numpy()
+
+            # Some backends still return (n_links, n_envs, dim); slice to 2D for kernels.
+            if all_links_pos.ndim == 3:
+                all_links_pos = all_links_pos[:, env_idx, :]
+            if all_links_quat.ndim == 3:
+                all_links_quat = all_links_quat[:, env_idx, :]
 
             # Get number of links
             n_links = all_links_pos.shape[0]
