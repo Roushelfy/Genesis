@@ -208,6 +208,10 @@ class IPCCouplerOptions(BaseCouplerOptions):
         Whether Newton solver should use adaptive tolerance. Defaults to None (use libuipc default: False).
     newton_transrate_tol : float, optional
         Translation rate tolerance for Newton solver. Defaults to None (use libuipc default: 0.1).
+    newton_semi_implicit_enable : bool, optional
+        Whether to enable semi-implicit Newton solver mode. Defaults to None (use libuipc default: False).
+    newton_semi_implicit_beta_tol : float, optional
+        Beta tolerance for semi-implicit Newton solver. Defaults to None (use libuipc default: 1e-3).
 
     Line Search Options
     -------------------
@@ -307,6 +311,8 @@ class IPCCouplerOptions(BaseCouplerOptions):
     newton_ccd_tol: float = None
     newton_use_adaptive_tol: bool = None
     newton_transrate_tol: float = None
+    newton_semi_implicit_enable: bool = None
+    newton_semi_implicit_beta_tol: float = None
 
     # Line search options (None = use libuipc default)
     line_search_max_iter: int = None

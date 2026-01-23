@@ -1104,6 +1104,10 @@ class IPCCoupler(RBC):
             config["newton"]["use_adaptive_tol"] = self.options.newton_use_adaptive_tol
         if self.options.newton_transrate_tol is not None:
             config["newton"]["transrate_tol"] = self.options.newton_transrate_tol
+        if self.options.newton_semi_implicit_enable is not None:
+            config["newton"]["semi_implicit"]["enable"] = self.options.newton_semi_implicit_enable
+        if self.options.newton_semi_implicit_beta_tol is not None:
+            config["newton"]["semi_implicit"]["beta_tol"] = self.options.newton_semi_implicit_beta_tol
 
         # Line search options (only set if specified)
         if self.options.line_search_max_iter is not None:
@@ -1144,8 +1148,6 @@ class IPCCoupler(RBC):
         # Differential simulation options (only set if specified)
         if self.options.diff_sim_enable is not None:
             config["diff_sim"]["enable"] = self.options.diff_sim_enable
-        
-        config["newton"]["semi_implicit"]["enable"] = True
 
         self._ipc_scene = Scene(config)
 

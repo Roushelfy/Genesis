@@ -28,6 +28,7 @@ def main():
             contact_friction_mu=0.8,
             IPC_self_contact=False,
             disable_ipc_logging=False,
+            newton_semi_implicit_enable=False,
             enable_ipc_gui=args.vis_ipc,
         )
         if args.ipc
@@ -151,9 +152,8 @@ def main():
 
     # Increase finger stiffness for grasping
     current_kp = franka.get_dofs_kp()
-    new_kp = current_kp.copy()
-    new_kp[fingers_dof] = current_kp[fingers_dof] * 10
-    franka.set_dofs_kp(new_kp)
+    current_kp[fingers_dof] = current_kp[fingers_dof] * 10
+    franka.set_dofs_kp(current_kp)
 
     finger_pos_open = 0.04
     finger_pos_closed = 0.0
