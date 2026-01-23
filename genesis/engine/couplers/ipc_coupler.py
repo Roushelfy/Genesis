@@ -3210,6 +3210,47 @@ class IPCCoupler(RBC):
                     local=False,
                 )
 
+    def _compute_link_init_world_rotation(self, link_idx):
+        """
+        Compute the world rotation matrix for a link in its initial configuration.
+        This recursively computes the rotation by traversing up the kinematic tree.
+
+        Note: In MuJoCo/URDF, the joint origin rotation (rpy) is baked into the child
+        link's body transformation. Therefore, we use link.quat (not joint.quat) which
+        contains the complete transformation including the joint origin rotation.
+        """
+        import numpy as np
+        import genesis.utils.geom as gu
+        import genesis as gs
+
+        link = self.rigid_solver.links[link_idx]
+
+        gs.logger.info(f"Computing rotation for link {link_idx} ({link.name})")
+
+        if link.parent_idx < 0:
+            # Root link, just use its own orientation
+            link_quat = link.quat
+            gs.logger.info(f"  Link {link_idx} is root")
+            gs.logger.info(f"  Link quat: {link_quat}")
+            link_rot = gu.quat_to_R(link_quat)
+            gs.logger.info(f"  Link rotation matrix:\n{link_rot}")
+            return link_rot
+
+        gs.logger.info(f"  Link {link_idx} parent_idx: {link.parent_idx}")
+        parent_rot = self._compute_link_init_world_rotation(link.parent_idx)
+
+        # Use link.quat which contains the joint origin rotation (from URDF <origin rpy="..."/>)
+        # Note: joint.quat is hardcoded to [1,0,0,0] in Genesis's MJCF parser and is NOT used
+        link_quat = link.quat
+        gs.logger.info(f"  Link quat (includes joint origin rotation): {link_quat}")
+        link_local_rot = gu.quat_to_R(link_quat)
+        gs.logger.info(f"  Link local rotation matrix:\n{link_local_rot}")
+
+        link_world_rot = parent_rot @ link_local_rot
+        gs.logger.info(f"  Link world rotation matrix:\n{link_world_rot}")
+
+        return link_world_rot
+
     def _add_articulated_entities_to_ipc(self):
         """
         Add articulated robot entities to IPC using ExternalArticulationConstraint.
@@ -3221,6 +3262,7 @@ class IPCCoupler(RBC):
             AffineBodyRevoluteJoint,
             AffineBodyPrismaticJoint,
         )
+        from uipc.geometry import label_surface
 
         from uipc import view
         import numpy as np
@@ -3267,8 +3309,6 @@ class IPCCoupler(RBC):
                 child_link_idx = joint.link.idx
                 parent_link_idx = joint.link.parent_idx if joint.link.parent_idx >= 0 else 0
 
-                # Find the corresponding ABD geometry SLOTS in IPC scene
-                # NOTE: This requires that _add_rigid_geoms_to_ipccalled
                 parent_abd_slot = self._find_abd_geometry_slot_by_link(parent_link_idx, env_idx=0)
                 child_abd_slot = self._find_abd_geometry_slot_by_link(child_link_idx, env_idx=0)
 
@@ -3280,13 +3320,27 @@ class IPCCoupler(RBC):
 
                 # Get joint axis and position in world coordinates
                 # libuipc uses ABSOLUTE world coordinates for linemesh vertices
-                joint_axis = joint.dofs_motion_ang[0]  # (3,) array - rotation axis
+                joint_axis_local = joint.dofs_motion_ang[0]  # (3,) array - rotation axis in joint frame
                 child_link = self.rigid_solver.links[child_link_idx]
                 parent_link = self.rigid_solver.links[parent_link_idx]
+
+                gs.logger.info(f"\n--- Processing revolute joint: {joint.name} ---")
+                gs.logger.info(f"  Parent link: {parent_link_idx} ({parent_link.name})")
+                gs.logger.info(f"  Child link: {child_link_idx} ({child_link.name})")
+                gs.logger.info(f"  Joint axis (joint frame): {joint_axis_local}")
+
+                # Transform joint axis from joint frame to world frame
+                # In MuJoCo/URDF convention, the axis is defined in the joint frame
+                child_rot_matrix = self._compute_link_init_world_rotation(child_link_idx)
+                joint_axis = child_rot_matrix @ joint_axis_local  # Transform to world coordinates
+
+                gs.logger.info(f"  Child link rotation matrix:\n{child_rot_matrix}")
+                gs.logger.info(f"  Joint axis (world): {joint_axis}")
 
                 # Get joint world position from joints_state.xanchor (computed by FK)
                 joint_idx = joint.idx
                 joint_pos = rigid_solver.joints_state.xanchor.to_numpy()[joint_idx, 0]  # env_idx=0
+                gs.logger.info(f"  Joint position (world): {joint_pos}")
 
                 # Create linemesh for revolute joint in world coordinates
                 # Line segment centered at joint_pos, aligned with joint_axis
@@ -3325,9 +3379,13 @@ class IPCCoupler(RBC):
 
                 # Get joint axis and position in world coordinates
                 # libuipc uses ABSOLUTE world coordinates for linemesh vertices
-                joint_axis = joint.dofs_motion_vel[0]  # (3,) array - translation axis
+                joint_axis_local = joint.dofs_motion_vel[0]  # (3,) array - rotation axis in joint frame
+
                 child_link = self.rigid_solver.links[child_link_idx]
                 parent_link = self.rigid_solver.links[parent_link_idx]
+
+                child_rot_matrix = self._compute_link_init_world_rotation(child_link_idx)
+                joint_axis = child_rot_matrix @ joint_axis_local  # Transform to world coordinates
 
                 # Get joint world position from joints_state.xanchor (computed by FK)
                 joint_idx = joint.idx
