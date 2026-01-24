@@ -1347,6 +1347,10 @@ class IPCCoupler(RBC):
                 continue  # This link has no joints
 
             for joint in link_joints:
+                # Skip FIXED joints (they are merged into parent link in _add_rigid_geoms_to_ipc)
+                if joint.type == gs.JOINT_TYPE.FIXED:
+                    continue
+
                 # Only process 1-DOF joints (revolute and prismatic)
                 if joint.type == gs.JOINT_TYPE.REVOLUTE:
                     revolute_joints.append(joint)
@@ -1465,6 +1469,103 @@ class IPCCoupler(RBC):
                 # Update global vertex offset (FEM vertices occupy index space but aren't in mapping)
                 self._global_vertex_offset += mesh.vertices().size()
 
+    def _find_target_link_for_fixed_merge(self, link_idx):
+        """
+        Find the target link for merging fixed joints.
+
+        Walks up the kinematic tree, skipping links connected via FIXED joints,
+        until finding a link with a non-FIXED joint (or the root).
+
+        This is similar to _merge_target_id in mjcf.py.
+
+        Returns:
+            int: The target link index to merge into
+        """
+        import genesis as gs
+
+        rigid_solver = self.rigid_solver
+        target_idx = link_idx
+
+        while True:
+            link = rigid_solver.links[target_idx]
+
+            # If this is the root link (no parent), stop
+            if link.parent_idx < 0:
+                break
+
+            # Check if all joints connecting this link to parent are FIXED
+            # In Genesis/MuJoCo convention:
+            # - len(joints) == 0: means this link has no joints (fixed to parent)
+            # - all joints are FIXED type: also means fixed to parent
+            joints = link.joints
+            if len(joints) == 0:
+                # No joints means this is a fixed joint, continue merging
+                target_idx = link.parent_idx
+                continue
+
+            # Check if all joints are FIXED
+            all_fixed = all(joint.type == gs.JOINT_TYPE.FIXED for joint in joints)
+
+            if not all_fixed:
+                # Found a link with non-FIXED joint, this is our target
+                break
+
+            # All joints are FIXED, move up to parent
+            target_idx = link.parent_idx
+
+        return target_idx
+
+    def _compute_link_to_link_transform(self, from_link_idx, to_link_idx):
+        """
+        Compute the relative transform from from_link to to_link.
+
+        Similar to _accumulate_body_to_parent_transform in mjcf.py, but computed
+        using Genesis link positions and quaternions.
+
+        Returns:
+            tuple: (rotation_matrix, translation_vector) transforming points from
+                   from_link frame to to_link frame
+        """
+        import numpy as np
+        import genesis.utils.geom as gu
+
+        rigid_solver = self.rigid_solver
+
+        # Build path from from_link to to_link by going up the tree
+        from_link = rigid_solver.links[from_link_idx]
+        to_link = rigid_solver.links[to_link_idx]
+
+        # Accumulate transforms going up from from_link to common ancestor (to_link)
+        R_acc = np.eye(3, dtype=np.float32)
+        t_acc = np.zeros(3, dtype=np.float32)
+
+        current_idx = from_link_idx
+        while current_idx != to_link_idx:
+            link = rigid_solver.links[current_idx]
+
+            if link.parent_idx < 0:
+                # Reached root without finding to_link - this shouldn't happen
+                import genesis as gs
+
+                gs.logger.error(f"Cannot compute transform from link {from_link_idx} to {to_link_idx}")
+                break
+
+            # Get link's local transform (relative to parent)
+            link_quat = link.quat
+            link_pos = link.pos
+            link_rot = gu.quat_to_R(link_quat)
+
+            # Accumulate: transform from current link to its parent
+            # New point = R_link @ old_point + t_link
+            # Accumulated: R_acc_new = R_link @ R_acc_old
+            #              t_acc_new = R_link @ t_acc_old + t_link
+            R_acc = link_rot @ R_acc
+            t_acc = link_rot @ t_acc + link_pos
+
+            current_idx = link.parent_idx
+
+        return R_acc, t_acc
+
     def _add_rigid_geoms_to_ipc(self):
         """Add rigid geoms to the existing IPC scene as ABD objects, merging geoms by link_idx"""
         from uipc.geometry import tetmesh, label_surface, label_triangle_orient, flip_inward_triangles, merge, ground
@@ -1494,10 +1595,15 @@ class IPCCoupler(RBC):
             rigid_solver.list_env_mesh.append([])
 
             # Group geoms by link_idx for merging
-            link_geoms = {}  # link_idx -> dict with 'meshes', 'link_world_pos', 'link_world_quat', 'entity_idx'
-            link_planes = {}  # link_idx -> list of plane geoms (handle separately)
+            # IMPORTANT: We merge geoms by target_link_idx (after fixed joint merging)
+            # This matches the behavior of mjcf.py where geoms from fixed-joint children
+            # are merged into the parent body's mesh
+            link_geoms = (
+                {}
+            )  # target_link_idx -> dict with 'meshes', 'link_world_pos', 'link_world_quat', 'entity_idx', 'original_to_target'
+            link_planes = {}  # target_link_idx -> list of plane geoms (handle separately)
 
-            # First pass: collect and group geoms by link_idx
+            # First pass: collect and group geoms by target_link_idx (merging fixed joints)
             for i_g in range(rigid_solver.n_geoms_):
                 geom_type = rigid_solver.geoms_info.type[i_g]
                 link_idx = rigid_solver.geoms_info.link_idx[i_g]
@@ -1510,15 +1616,37 @@ class IPCCoupler(RBC):
                     if link_filter is not None and link_idx not in link_filter:
                         continue  # Skip this geom/link
 
-                # Initialize link group if not exists
-                if link_idx not in link_geoms:
-                    link_geoms[link_idx] = {
+                # Find target link for fixed joint merging
+                # This walks up the tree, skipping FIXED joints
+                target_link_idx = self._find_target_link_for_fixed_merge(link_idx)
+
+                # Initialize target link group if not exists
+                if target_link_idx not in link_geoms:
+                    link_geoms[target_link_idx] = {
                         "meshes": [],
                         "link_world_pos": None,
                         "link_world_quat": None,
                         "entity_idx": entity_idx,
+                        "original_to_target": {},  # Maps original link_idx to (R, t) transform
                     }
-                    link_planes[link_idx] = []
+                    link_planes[target_link_idx] = []
+
+                # Compute transform from original link to target link (for fixed joint merging)
+                if link_idx != target_link_idx:
+                    if link_idx not in link_geoms[target_link_idx]["original_to_target"]:
+                        # Compute relative transform
+                        R_link_to_target, t_link_to_target = self._compute_link_to_link_transform(
+                            link_idx, target_link_idx
+                        )
+                        link_geoms[target_link_idx]["original_to_target"][link_idx] = (
+                            R_link_to_target,
+                            t_link_to_target,
+                        )
+                        gs.logger.info(
+                            f"Merging link {link_idx} ({rigid_solver.links[link_idx].name}) "
+                            f"into target link {target_link_idx} ({rigid_solver.links[target_link_idx].name}) "
+                            f"via fixed joint"
+                        )
 
                 try:
                     if geom_type == gs.GEOM_TYPE.PLANE:
@@ -1528,10 +1656,10 @@ class IPCCoupler(RBC):
                         normal = np.array([0.0, 0.0, 1.0])  # Z-up
                         height = np.dot(pos, normal)
                         plane_geom = ground(height, normal)
-                        link_planes[link_idx].append((i_g, plane_geom))
+                        link_planes[target_link_idx].append((i_g, plane_geom))
 
                     else:
-                        # For all non-plane geoms, create tetmesh
+                        # For all non-plane geoms, create trimesh
                         vert_num = rigid_solver.geoms_info.vert_num[i_g]
                         if vert_num == 0:
                             continue  # Skip geoms without vertices
@@ -1557,6 +1685,15 @@ class IPCCoupler(RBC):
                         geom_rot_mat = gu.quat_to_R(geom_rel_quat)
                         transformed_verts = geom_verts @ geom_rot_mat.T + geom_rel_pos
 
+                        # If this geom belongs to a link that was merged via fixed joint,
+                        # apply additional transform to target link frame
+                        if link_idx != target_link_idx:
+                            R_link_to_target, t_link_to_target = link_geoms[target_link_idx]["original_to_target"][
+                                link_idx
+                            ]
+                            # Transform vertices: v' = R @ v + t
+                            transformed_verts = transformed_verts @ R_link_to_target.T + t_link_to_target
+
                         # Create uipc trimesh for rigid body (ABD doesn't need tetmesh)
                         try:
                             from uipc.geometry import trimesh as uipc_trimesh
@@ -1565,16 +1702,20 @@ class IPCCoupler(RBC):
                             rigid_mesh = uipc_trimesh(transformed_verts.astype(np.float64), geom_faces.astype(np.int32))
 
                             # Store uipc mesh (SimplicialComplex) for merging
-                            link_geoms[link_idx]["meshes"].append((i_g, rigid_mesh))
+                            link_geoms[target_link_idx]["meshes"].append((i_g, rigid_mesh))
 
                         except Exception as e:
                             gs.logger.warning(f"Failed to convert trimesh to tetmesh for geom {i_g}: {e}")
                             continue
 
-                    # Store link transform info (same for all geoms in link)
-                    if link_geoms[link_idx]["link_world_pos"] is None:
-                        link_geoms[link_idx]["link_world_pos"] = rigid_solver.links_state.pos[link_idx, i_b]
-                        link_geoms[link_idx]["link_world_quat"] = rigid_solver.links_state.quat[link_idx, i_b]
+                    # Store target link transform info (same for all geoms merged into this target)
+                    if link_geoms[target_link_idx]["link_world_pos"] is None:
+                        link_geoms[target_link_idx]["link_world_pos"] = rigid_solver.links_state.pos[
+                            target_link_idx, i_b
+                        ]
+                        link_geoms[target_link_idx]["link_world_quat"] = rigid_solver.links_state.quat[
+                            target_link_idx, i_b
+                        ]
 
                 except Exception as e:
                     gs.logger.warning(f"Failed to process geom {i_g}: {e}")
@@ -1793,8 +1934,19 @@ class IPCCoupler(RBC):
                         rigid_solver._mesh_handles[f"rigid_link_{i_b}_{link_idx}"] = merged_mesh
 
                         # Store ABD geometry and slot mapping for articulation constraint
+                        # Store for target link
                         self._link_to_abd_geo[(i_b, link_idx)] = merged_mesh
                         self._link_to_abd_slot[(i_b, link_idx)] = abd_slot
+
+                        # Also store mappings for all original links that were merged into this target
+                        # This allows joints connecting to child links (via fixed joints) to find the merged ABD
+                        if "original_to_target" in link_data:
+                            for original_link_idx in link_data["original_to_target"].keys():
+                                self._link_to_abd_geo[(i_b, original_link_idx)] = merged_mesh
+                                self._link_to_abd_slot[(i_b, original_link_idx)] = abd_slot
+                                gs.logger.info(
+                                    f"Created ABD slot mapping: link {original_link_idx} -> target link {link_idx} (merged via fixed joint)"
+                                )
 
                         link_obj_counter += 1
 
@@ -3224,30 +3376,20 @@ class IPCCoupler(RBC):
         import genesis as gs
 
         link = self.rigid_solver.links[link_idx]
-
-        gs.logger.info(f"Computing rotation for link {link_idx} ({link.name})")
-
         if link.parent_idx < 0:
             # Root link, just use its own orientation
             link_quat = link.quat
-            gs.logger.info(f"  Link {link_idx} is root")
-            gs.logger.info(f"  Link quat: {link_quat}")
             link_rot = gu.quat_to_R(link_quat)
-            gs.logger.info(f"  Link rotation matrix:\n{link_rot}")
+
             return link_rot
 
-        gs.logger.info(f"  Link {link_idx} parent_idx: {link.parent_idx}")
         parent_rot = self._compute_link_init_world_rotation(link.parent_idx)
 
         # Use link.quat which contains the joint origin rotation (from URDF <origin rpy="..."/>)
         # Note: joint.quat is hardcoded to [1,0,0,0] in Genesis's MJCF parser and is NOT used
         link_quat = link.quat
-        gs.logger.info(f"  Link quat (includes joint origin rotation): {link_quat}")
         link_local_rot = gu.quat_to_R(link_quat)
-        gs.logger.info(f"  Link local rotation matrix:\n{link_local_rot}")
-
         link_world_rot = parent_rot @ link_local_rot
-        gs.logger.info(f"  Link world rotation matrix:\n{link_world_rot}")
 
         return link_world_rot
 
@@ -3307,8 +3449,16 @@ class IPCCoupler(RBC):
                 # joint.link is the child link (the one that moves)
                 # joint.link.parent_idx is the parent link index
                 child_link_idx = joint.link.idx
-                parent_link_idx = joint.link.parent_idx if joint.link.parent_idx >= 0 else 0
+                parent_link_idx_original = joint.link.parent_idx if joint.link.parent_idx >= 0 else 0
 
+                # IMPORTANT: Following mjcf.py logic (line 187):
+                # Parent link index should be the MERGED TARGET (for fixed joint merging)
+                # Child link index stays ORIGINAL (used for axis/position calculation)
+                parent_link_idx = self._find_target_link_for_fixed_merge(parent_link_idx_original)
+
+                # Find the corresponding ABD geometry SLOTS in IPC scene
+                # NOTE: parent_abd_slot uses target link (merged), child uses original mapping
+                # Both will work because _link_to_abd_slot has mappings for both original and target
                 parent_abd_slot = self._find_abd_geometry_slot_by_link(parent_link_idx, env_idx=0)
                 child_abd_slot = self._find_abd_geometry_slot_by_link(child_link_idx, env_idx=0)
 
@@ -3366,7 +3516,12 @@ class IPCCoupler(RBC):
             for joint in joint_info["prismatic_joints"]:
                 # Get parent and child links (same as revolute joints)
                 child_link_idx = joint.link.idx
-                parent_link_idx = joint.link.parent_idx if joint.link.parent_idx >= 0 else 0
+                parent_link_idx_original = joint.link.parent_idx if joint.link.parent_idx >= 0 else 0
+
+                # IMPORTANT: Following mjcf.py logic (line 187):
+                # Parent link index should be the MERGED TARGET (for fixed joint merging)
+                # Child link index stays ORIGINAL (used for axis/position calculation)
+                parent_link_idx = self._find_target_link_for_fixed_merge(parent_link_idx_original)
 
                 parent_abd_slot = self._find_abd_geometry_slot_by_link(parent_link_idx, env_idx=0)
                 child_abd_slot = self._find_abd_geometry_slot_by_link(child_link_idx, env_idx=0)
@@ -3381,8 +3536,14 @@ class IPCCoupler(RBC):
                 # libuipc uses ABSOLUTE world coordinates for linemesh vertices
                 joint_axis_local = joint.dofs_motion_vel[0]  # (3,) array - rotation axis in joint frame
 
+                # Get link objects first
                 child_link = self.rigid_solver.links[child_link_idx]
                 parent_link = self.rigid_solver.links[parent_link_idx]
+
+                gs.logger.info(f"\n--- Processing prismatic joint: {joint.name} ---")
+                gs.logger.info(f"  Parent link: {parent_link_idx} ({parent_link.name})")
+                gs.logger.info(f"  Child link: {child_link_idx} ({child_link.name})")
+                gs.logger.info(f"  Joint axis (joint frame): {joint_axis_local}")
 
                 child_rot_matrix = self._compute_link_init_world_rotation(child_link_idx)
                 joint_axis = child_rot_matrix @ joint_axis_local  # Transform to world coordinates
@@ -3390,6 +3551,9 @@ class IPCCoupler(RBC):
                 # Get joint world position from joints_state.xanchor (computed by FK)
                 joint_idx = joint.idx
                 joint_pos = rigid_solver.joints_state.xanchor.to_numpy()[joint_idx, 0]  # env_idx=0
+
+                gs.logger.info(f"  Child link rotation matrix:\n{child_rot_matrix}")
+                gs.logger.info(f"  Joint axis (world): {joint_axis}")
 
                 # Create linemesh for prismatic joint in world coordinates
                 # Line segment centered at joint_pos, aligned with translation axis
@@ -3690,3 +3854,72 @@ class IPCCoupler(RBC):
                 ):
                     key = (idx, joint_idx, env_idx)
                     ad.prev_link_transforms[key] = self._genesis_stored_states[child_link_idx][env_idx].copy()
+
+        # DEBUG: Summary of joint movements and link transforms
+        if False:
+            gs.logger.debug("\n=== Joint Movement Summary ===")
+            for idx, (entity_idx, art_data) in enumerate(self._articulated_entities.items()):
+                env_idx = art_data["env_idx"]
+                n_joints = art_data["n_joints"]
+                all_joints = art_data["revolute_joints"] + art_data["prismatic_joints"]
+
+                gs.logger.debug(f"Entity {entity_idx}:")
+                for joint_idx in range(n_joints):
+                    joint = all_joints[joint_idx]
+                    delta_tilde = ad.delta_theta_tilde[idx, env_idx, joint_idx]
+                    delta_ipc = ad.delta_theta_ipc[idx, env_idx, joint_idx]
+                    qpos_old = ad.ref_dof_prev[idx, env_idx, joint_idx]
+                    qpos_new = ad.qpos_new[idx, env_idx, joint_idx]
+
+                    # Check if joint is moving
+                    is_moving = abs(delta_ipc) > 1e-6
+                    status = "MOVING" if is_moving else "STATIC"
+
+                    # Get child link info
+                    child_link_idx = joint.link.idx
+                    child_link = self.rigid_solver.links[child_link_idx]
+
+                    # Get link transform from stored states
+                    if (
+                        child_link_idx in self._genesis_stored_states
+                        and env_idx in self._genesis_stored_states[child_link_idx]
+                    ):
+                        link_transform = self._genesis_stored_states[child_link_idx][env_idx]
+                        link_pos = link_transform[:3, 3]
+                        # Extract rotation matrix
+                        link_rot = link_transform[:3, :3]
+                        gs.logger.debug(f"  Joint {joint_idx} ({joint.name}): {status}")
+                        gs.logger.debug(f"    delta_tilde={delta_tilde:.6f}, delta_ipc={delta_ipc:.6f}")
+                        gs.logger.debug(f"    qpos: {qpos_old:.6f} -> {qpos_new:.6f}")
+                        gs.logger.debug(f"    Child link {child_link_idx} ({child_link.name}): pos={link_pos}")
+                        gs.logger.debug(f"    Child link rotation:\n{link_rot}")
+                    else:
+                        gs.logger.debug(
+                            f"  Joint {joint_idx} ({joint.name}): {status} | "
+                            f"delta_tilde={delta_tilde:.6f}, delta_ipc={delta_ipc:.6f}, "
+                            f"qpos: {qpos_old:.6f} -> {qpos_new:.6f}"
+                        )
+                        gs.logger.debug(f"    Child link {child_link_idx} ({child_link.name}): transform not available")
+
+                    # Get parent link info
+                    parent_link_idx_original = joint.link.parent_idx if joint.link.parent_idx >= 0 else 0
+                    parent_link_idx = self._find_target_link_for_fixed_merge(parent_link_idx_original)
+                    parent_link = self.rigid_solver.links[parent_link_idx]
+
+                    if parent_link_idx != parent_link_idx_original:
+                        gs.logger.debug(
+                            f"    Parent link: {parent_link_idx_original} -> {parent_link_idx} (merged) ({parent_link.name})"
+                        )
+                    else:
+                        gs.logger.debug(f"    Parent link: {parent_link_idx} ({parent_link.name})")
+
+                    # Get parent link transform
+                    if (
+                        parent_link_idx in self._genesis_stored_states
+                        and env_idx in self._genesis_stored_states[parent_link_idx]
+                    ):
+                        parent_transform = self._genesis_stored_states[parent_link_idx][env_idx]
+                        parent_pos = parent_transform[:3, 3]
+                        parent_rot = parent_transform[:3, :3]
+                        gs.logger.debug(f"    Parent link pos={parent_pos}")
+                        gs.logger.debug(f"    Parent link rotation:\n{parent_rot}")
