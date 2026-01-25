@@ -356,6 +356,7 @@ class IPCCouplerOptions(BaseCouplerOptions):
     disable_ipc_ground_contact: bool = False
     two_way_coupling: bool = True
     use_contact_proxy: bool = False
+    sync_dof_enable: bool = True
 
 
 ############################ Solvers inside simulator ############################

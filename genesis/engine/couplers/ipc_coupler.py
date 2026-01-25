@@ -1062,7 +1062,7 @@ class IPCCoupler(RBC):
     def _init_ipc(self):
         """Initialize IPC system components"""
         from uipc.core import Engine, World, Scene
-        from uipc.constitution import AffineBodyConstitution, StableNeoHookean, NeoHookeanShell, DiscreteShellBending
+        from uipc.constitution import AffineBodyConstitution, StableNeoHookean, NeoHookeanShell, StrainLimitingBaraffWitkinShell, DiscreteShellBending
 
         # Disable IPC logging if requested
         if self.options.disable_ipc_logging:
@@ -1149,12 +1149,14 @@ class IPCCoupler(RBC):
         if self.options.diff_sim_enable is not None:
             config["diff_sim"]["enable"] = self.options.diff_sim_enable
 
+        # config["extras"]["debug"]["dump_surface"] = True
+
         self._ipc_scene = Scene(config)
 
         # Create constitutions
         self._ipc_abd = AffineBodyConstitution()
         self._ipc_stk = StableNeoHookean()
-        self._ipc_nks = NeoHookeanShell()  # For cloth
+        self._ipc_nks = StrainLimitingBaraffWitkinShell()  # For cloth
         self._ipc_dsb = DiscreteShellBending()  # For cloth bending
 
         # Add constitutions to scene
@@ -1792,7 +1794,7 @@ class IPCCoupler(RBC):
                         # Always use full density (no mass splitting)
                         abd.apply_to(
                             merged_mesh,
-                            kappa=10.0 * MPa,
+                            kappa=100.0 * MPa,
                             mass_density=entity_rho,
                         )
 
@@ -1816,7 +1818,7 @@ class IPCCoupler(RBC):
                             is_fixed_view[0] = 1 if is_link_fixed else 0
 
                         # For external_articulation mode, create ref_dof_prev attribute
-                        if self.options.coupling_strategy == "external_articulation":
+                        if self.options.coupling_strategy == "external_articulation" and self.options.sync_dof_enable:
                             from uipc.geometry import affine_body
                             from uipc import Vector12
 
@@ -2926,7 +2928,7 @@ class IPCCoupler(RBC):
             self.ps = ps
 
             # Initialize SceneGUI for IPC scene
-            self._ipc_scene_gui = SceneGUI(self._ipc_scene)
+            self._ipc_scene_gui = SceneGUI(self._ipc_scene, 'split')
 
             # Initialize polyscope if not already done
             if not ps.is_initialized():
@@ -3497,7 +3499,7 @@ class IPCCoupler(RBC):
                 axis_length = 1.0
                 v1 = joint_pos - (axis_length / 2) * joint_axis
                 v2 = joint_pos + (axis_length / 2) * joint_axis
-                vertices = np.array([v1, v2], dtype=np.float64)
+                vertices = np.array([v2, v1], dtype=np.float64)
                 edges = np.array([[0, 1]], dtype=np.int32)
                 revolute_mesh = linemesh(vertices, edges)
 
@@ -3592,7 +3594,6 @@ class IPCCoupler(RBC):
             mass_attr = articulation_geo["joint_joint"].find("mass")
             mass_view = view(mass_attr)
             mass_view[:] = mass_matrix.T.flatten()  # Column-major
-
             # Create object in IPC scene and get the articulation geometry slot
             articulation_object = scene.objects().create(f"articulation_entity_{entity_idx}")
             articulation_slot, _ = articulation_object.geometries().create(articulation_geo)
@@ -3751,7 +3752,7 @@ class IPCCoupler(RBC):
                 abd_geo_slot = self._find_abd_geometry_slot_by_link(child_link_idx, env_idx)
                 abd_geo = abd_geo_slot.geometry()
 
-                if abd_geo is not None:
+                if abd_geo is not None and self.options.sync_dof_enable:
                     ref_dof_prev_attr = abd_geo.instances().find("ref_dof_prev")
                     if ref_dof_prev_attr is not None:
                         ref_dof_prev_view = view(ref_dof_prev_attr)
@@ -3776,6 +3777,7 @@ class IPCCoupler(RBC):
             # Set delta_theta_tilde to IPC geometry directly from Taichi field
             delta_theta_tilde_attr = articulation_geo["joint"].find("delta_theta_tilde")
             delta_theta_tilde_view = view(delta_theta_tilde_attr)
+            
             for joint_idx in range(n_joints):
                 delta_theta_tilde_view[joint_idx] = ad.delta_theta_tilde[idx, env_idx, joint_idx]
 
@@ -3814,8 +3816,11 @@ class IPCCoupler(RBC):
             # Read delta_theta from IPC directly to Taichi field
             delta_theta_attr = scene_art_geo["joint"].find("delta_theta")
             delta_theta_view = view(delta_theta_attr)
+            delta_theta_tilde_attr = scene_art_geo["joint"].find("delta_theta_tilde")
+            delta_theta_tilde_view = view(delta_theta_tilde_attr)
             for joint_idx in range(n_joints):
                 ad.delta_theta_ipc[idx, env_idx, joint_idx] = delta_theta_view[joint_idx]
+                # print(f"delta_theta={delta_theta_view[joint_idx]}, delta_theta_tilde={delta_theta_tilde_view[joint_idx]}, delta_theta_relative_error={abs(delta_theta_view[joint_idx] - delta_theta_tilde_view[joint_idx])/abs(delta_theta_view[joint_idx])}")
 
         # Step 6: Compute qpos_new using Taichi kernel (parallelized)
         self._compute_qpos_new_kernel(ad, n_envs)
@@ -3834,9 +3839,9 @@ class IPCCoupler(RBC):
 
             # Only use envs_idx for parallelized scenes
             if self.sim._B > 1:
-                entity.set_qpos(qpos_tensor, envs_idx=env_idx, zero_velocity=True)
+                entity.set_qpos(qpos_tensor, envs_idx=env_idx, zero_velocity=False)
             else:
-                entity.set_qpos(qpos_tensor, zero_velocity=True)
+                entity.set_qpos(qpos_tensor, zero_velocity=False)
 
         # Step 8: Update ref_dof_prev for next timestep using kernel (parallelized)
         self._update_ref_dof_prev_kernel(ad, n_envs)
@@ -3855,6 +3860,9 @@ class IPCCoupler(RBC):
                     key = (idx, joint_idx, env_idx)
                     ad.prev_link_transforms[key] = self._genesis_stored_states[child_link_idx][env_idx].copy()
 
+        # Step 10: retrieve fem states
+        self._retrieve_fem_states(f)
+        
         # DEBUG: Summary of joint movements and link transforms
         if False:
             gs.logger.debug("\n=== Joint Movement Summary ===")
