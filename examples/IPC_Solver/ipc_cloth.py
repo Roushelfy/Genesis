@@ -28,11 +28,16 @@ def main():
         coupler_options=gs.options.IPCCouplerOptions(
             dt=dt,
             gravity=(0.0, 0.0, -9.8),
+            ipc_constraint_strength=(1, 1),  # (translation, rotation) strength ratios,
             contact_d_hat=0.001,  # Contact barrier distance (1mm) - must be appropriate for mesh resolution
             contact_friction_mu=0.02,  # Friction coefficient
             IPC_self_contact=False,  # Disable rigid self-contact in IPC
             disable_genesis_contact=True,  # Disable Genesis ground contact to avoid double contact handling
             enable_ipc_gui=args.vis_ipc,
+            newton_semi_implicit_enable=True,
+        ),
+        rigid_options=gs.options.RigidOptions(
+            enable_collision=False,  # Disable rigid collision when using IPC
         ),
         show_viewer=args.vis,
     )
@@ -72,14 +77,14 @@ def main():
     cube_height = 0.15  # Height below cloth
 
     #  TOFIX: weird coupling behaviour on rigid body (between Genesis and IPC)
-    # scene.add_entity(
-    #     morph=gs.morphs.Box(
-    #         pos=(0.25, 0.0, cube_height),
-    #         size=(cube_size, cube_size, cube_size),
-    #     ),
-    #     material=gs.materials.Rigid(rho=500, friction=0.3),
-    #     surface=gs.surfaces.Plastic(color=(0.8, 0.3, 0.2, 0.8)),
-    # )
+    scene.add_entity(
+        morph=gs.morphs.Box(
+            pos=(0.25, 0.0, cube_height),
+            size=(cube_size, cube_size, cube_size),
+        ),
+        material=gs.materials.Rigid(rho=500, friction=0.3),
+        surface=gs.surfaces.Plastic(color=(0.8, 0.3, 0.2, 0.8)),
+    )
 
     # Optional: Add another FEM volume object
     soft_ball = scene.add_entity(

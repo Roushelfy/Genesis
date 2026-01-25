@@ -2242,11 +2242,11 @@ class IPCCoupler(RBC):
                 all_links_pos = rigid_solver.get_links_pos().detach().cpu().numpy()
                 all_links_quat = rigid_solver.get_links_quat().detach().cpu().numpy()
 
-            # Some backends still return (n_links, n_envs, dim); slice to 2D for kernels.
+            # Some backends still return (n_envs, n_links, dim); slice to 2D for kernels.
             if all_links_pos.ndim == 3:
-                all_links_pos = all_links_pos[:, env_idx, :]
+                all_links_pos = all_links_pos[env_idx, :, :]
             if all_links_quat.ndim == 3:
-                all_links_quat = all_links_quat[:, env_idx, :]
+                all_links_quat = all_links_quat[env_idx, :, :]
 
             # Get number of links
             n_links = all_links_pos.shape[0]
@@ -2887,6 +2887,12 @@ class IPCCoupler(RBC):
                     try:
                         force_input = np.array(batch["forces"][j]).reshape(1, 1, 3)
                         torque_input = np.array(batch["torques"][j]).reshape(1, 1, 3)
+                        # check if force_input is nan
+                        if np.isnan(force_input).any() or np.isnan(torque_input).any():
+                            gs.logger.warning(
+                                f"NaN detected in ABD coupling force/torque for link {link_idx}, env {env_idx}. Skipping application."
+                            )
+                            continue
                         rigid_solver.apply_links_external_force(force=force_input, links_idx=link_idx, envs_idx=env_idx)
                         rigid_solver.apply_links_external_torque(
                             torque=torque_input, links_idx=link_idx, envs_idx=env_idx
@@ -2901,6 +2907,12 @@ class IPCCoupler(RBC):
                 try:
                     force_input = np.array([cd.out_forces[i][j] for j in range(3)]).reshape(1, 3)
                     torque_input = np.array([cd.out_torques[i][j] for j in range(3)]).reshape(1, 3)
+                    # check if force_input is nan
+                    if np.isnan(force_input).any() or np.isnan(torque_input).any():
+                        gs.logger.warning(
+                            f"NaN detected in ABD coupling force/torque for link {link_idx}. Skipping application."
+                        )
+                        continue
                     rigid_solver.apply_links_external_force(force=force_input, links_idx=link_idx)
                     rigid_solver.apply_links_external_torque(torque=torque_input, links_idx=link_idx)
                 except Exception as e:
@@ -3800,6 +3812,10 @@ class IPCCoupler(RBC):
         # Step 4: Advance IPC simulation
         self._ipc_world.advance()
         self._ipc_world.retrieve()
+
+        # Step 4.5: Retrieve FEM/Cloth states from IPC back to Genesis
+        # This is critical for cloth/FEM entities to update their positions after IPC solve
+        self._retrieve_fem_states(f)
 
         # Step 5: Read delta_theta_ipc from IPC (using slot to get updated geometry, following reference)
         for idx, (entity_idx, art_data) in enumerate(self._articulated_entities.items()):

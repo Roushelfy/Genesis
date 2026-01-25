@@ -14,7 +14,7 @@ def main():
     parser.add_argument("-v", "--vis", action="store_true", default=False)
     args = parser.parse_args()
 
-    dt = 1e-3
+    dt = 5e-3
 
     coupler_options = (
         gs.options.IPCCouplerOptions(
@@ -22,6 +22,8 @@ def main():
             gravity=(0.0, 0.0, -9.8),
             ipc_constraint_strength=(100, 100),  # (translation, rotation) strength ratios,
             coupling_strategy="external_articulation",
+            disable_ipc_ground_contact=True,
+            IPC_self_contact=False,
             contact_friction_mu=0.8,
             enable_ipc_gui=args.vis_ipc,
         )
@@ -29,12 +31,10 @@ def main():
         else None
     )
     args.vis = args.vis or args.vis_ipc
-    rigid_options = gs.options.RigidOptions(
-        enable_collision=False,  # Disable rigid collision when using IPC
-    )
+
     scene = gs.Scene(
         sim_options=gs.options.SimOptions(dt=dt, gravity=(0.0, 0.0, -9.8)),
-        rigid_options=rigid_options,
+        rigid_options=None,
         coupler_options=coupler_options,
         show_viewer=args.vis,
     )
@@ -42,12 +42,17 @@ def main():
     # Both FEM and Rigid bodies will be added to IPC for unified contact simulation
     # FEM bodies use StableNeoHookean constitution, Rigid bodies use ABD constitution
 
-    # scene.add_entity(gs.morphs.Plane())
+    scene.add_entity(gs.morphs.Plane())
 
     franka = scene.add_entity(
         gs.morphs.MJCF(file="xml/franka_emika_panda/panda_non_overlap.xml"),
     )
-
+    # franka = scene.add_entity(
+    #     gs.morphs.URDF(
+    #         file="urdf/panda_bullet/panda.urdf",
+    #         fixed=True,
+    #     ),
+    # )
     # if args.ipc:
     #     scene.sim.coupler.set_link_ipc_coupling_type(
     #         entity=franka,
@@ -73,7 +78,8 @@ def main():
     motors_dof = np.arange(7)
     fingers_dof = np.arange(7, 9)
     qpos = np.array([-1.0124, 1.5559, 1.3662, -1.6878, -1.5799, 1.7757, 1.4602, 0.04, 0.04])
-    franka.set_qpos(qpos)
+
+    franka.control_dofs_position(qpos)
     scene.step()
     end_effector = franka.get_link("hand")
     qpos = franka.inverse_kinematics(
@@ -81,16 +87,16 @@ def main():
         pos=np.array([0.65, 0.0, 0.135]),
         quat=np.array([0, 1, 0, 0]),
     )
-    franka.control_dofs_position(qpos[:-2], motors_dof)
-    # hold
-    for i in range(int(0.1 / dt)):
-        franka.set_qpos(qpos)
-        scene.step()
-
     current_kp = franka.get_dofs_kp()
     new_kp = current_kp
     new_kp[fingers_dof] = current_kp[fingers_dof] * 10
     franka.set_dofs_kp(new_kp)
+
+    franka.control_dofs_position(qpos[:-2], motors_dof)
+    # hold
+    for i in range(int(10 / dt)):
+        franka.control_dofs_position(qpos)
+        scene.step()
 
     # print(f"New kp: {franka.get_dofs_kp()}")
     # grasp
