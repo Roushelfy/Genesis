@@ -1,8 +1,3 @@
-"""
-Smooth grasping test with gradual movement.
-Based on ipc_grasp.py but uses smooth interpolation to target positions.
-"""
-
 import argparse
 import logging
 
@@ -66,7 +61,7 @@ def main():
             line_search_report_energy=False,
             newton_velocity_tol=1e-1,
             newton_transrate_tol=1,
-            sync_dof_enable=False
+            sync_dof_enable=True
         )
         if args.ipc
         else None
