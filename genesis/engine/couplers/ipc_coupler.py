@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 # Check if libuipc is available
 try:
     import uipc
-
+    from uipc import Timer
     UIPC_AVAILABLE = True
 except ImportError:
     UIPC_AVAILABLE = False
@@ -1084,9 +1084,12 @@ class IPCCoupler(RBC):
 
         # Disable IPC logging if requested
         if self.options.disable_ipc_logging:
-            from uipc import Logger, Timer
-
+            from uipc import Logger
             Logger.set_level(Logger.Level.Error)
+        
+        if self.options.enable_ipc_timer:
+            Timer.enable_all()
+        else:
             Timer.disable_all()
 
         # Create IPC engine and world
@@ -1200,7 +1203,7 @@ class IPCCoupler(RBC):
         self._ipc_scene.contact_tabular().insert(
             self._ipc_fem_contact,
             self._ipc_fem_contact,
-            self.options.contact_friction_mu,
+            self.options.cloth_internal_friction_mu,
             self.options.contact_resistance,
             True,
         )
@@ -1224,7 +1227,7 @@ class IPCCoupler(RBC):
         self._ipc_scene.contact_tabular().insert(
             self._ipc_cloth_contact,
             self._ipc_cloth_contact,
-            self.options.contact_friction_mu,
+            self.options.cloth_internal_friction_mu,
             self.options.contact_resistance,
             True,
         )  # Always enable cloth self-collision
@@ -1232,7 +1235,7 @@ class IPCCoupler(RBC):
         self._ipc_scene.contact_tabular().insert(
             self._ipc_cloth_contact,
             self._ipc_fem_contact,
-            self.options.contact_friction_mu,
+            self.options.cloth_internal_friction_mu,
             self.options.contact_resistance,
             True,
         )
@@ -1802,6 +1805,7 @@ class IPCCoupler(RBC):
                         label_surface(merged_mesh)
 
                         # Create rigid object
+                        print(f"Creating rigid object: rigid_link_{i_b}_{link_idx}")
                         rigid_obj = scene.objects().create(f"rigid_link_{i_b}_{link_idx}")
                         rigid_solver.list_env_obj[i_b].append(rigid_obj)
                         rigid_solver.list_env_mesh[i_b].append(merged_mesh)
@@ -2050,7 +2054,8 @@ class IPCCoupler(RBC):
 
         This must be called before scene.build().
         """
-        entity_idx = entity._idx
+        # Use solver-local entity index to match rigid_solver.links_info.entity_idx
+        entity_idx = entity._idx_in_solver
 
         # Validate coupling type
         valid_types = [None, "two_way_soft_constraint", "external_articulation", "ipc_only"]
@@ -2101,7 +2106,8 @@ class IPCCoupler(RBC):
         - This must be called before scene.build()
         - Only valid for 'two_way_soft_constraint' entities
         """
-        entity_idx = entity._idx
+        # Use solver-local entity index to match rigid_solver.links_info.entity_idx
+        entity_idx = entity._idx_in_solver
 
         # Check that entity has appropriate coupling type
         coupling_type = self._entity_coupling_types.get(entity_idx)
@@ -2401,6 +2407,8 @@ class IPCCoupler(RBC):
 
         # ========== Step 3: IPC advance + retrieve (common, only once) ==========
         self._ipc_world.advance()
+        if self.options.enable_ipc_timer:
+            Timer.report()
         self._ipc_world.retrieve()
 
         # ========== Step 4: Retrieve FEM states (common) ==========
@@ -2654,32 +2662,32 @@ class IPCCoupler(RBC):
                 continue
 
             # Batch set transforms
-            pos_tensor = torch.tensor(np.array(pos_list), dtype=torch.float32, device=rigid_solver.device)
-            quat_tensor = torch.tensor(np.array(quat_list), dtype=torch.float32, device=rigid_solver.device)
-            link_idx_tensor = torch.tensor(link_idx_list, dtype=torch.int64, device=rigid_solver.device)
+            pos_tensor = torch.tensor(np.array(pos_list), dtype=torch.float32, device=gs.device)
+            quat_tensor = torch.tensor(np.array(quat_list), dtype=torch.float32, device=gs.device)
+            link_idx_tensor = torch.tensor(link_idx_list, dtype=torch.int64, device=gs.device)
 
             if is_parallelized:
                 rigid_solver.set_base_links_pos(
-                    pos_tensor, link_idx_tensor, envs_idx=env_idx, relative=False, unsafe=True, skip_forward=False
+                    pos_tensor, link_idx_tensor, envs_idx=env_idx, relative=False
                 )
                 rigid_solver.set_base_links_quat(
-                    quat_tensor, link_idx_tensor, envs_idx=env_idx, relative=False, unsafe=True, skip_forward=False
+                    quat_tensor, link_idx_tensor, envs_idx=env_idx, relative=False
                 )
             else:
                 rigid_solver.set_base_links_pos(
-                    pos_tensor, link_idx_tensor, envs_idx=None, relative=False, unsafe=True, skip_forward=False
+                    pos_tensor, link_idx_tensor, envs_idx=None, relative=False
                 )
                 rigid_solver.set_base_links_quat(
-                    quat_tensor, link_idx_tensor, envs_idx=None, relative=False, unsafe=True, skip_forward=False
+                    quat_tensor, link_idx_tensor, envs_idx=None, relative=False
                 )
 
             # Zero velocities for these entities
             for entity_idx in entity_indices:
                 entity = rigid_solver._entities[entity_idx]
                 if is_parallelized:
-                    entity.zero_all_dofs_velocity(envs_idx=env_idx, unsafe=True)
+                    entity.zero_all_dofs_velocity(envs_idx=env_idx)
                 else:
-                    entity.zero_all_dofs_velocity(envs_idx=None, unsafe=True)
+                    entity.zero_all_dofs_velocity(envs_idx=None)
 
     def _retrieve_fem_states(self, f):
         # IPC world advance/retrieve is handled at Scene level

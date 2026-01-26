@@ -56,7 +56,7 @@ def main():
         gs.options.IPCCouplerOptions(
             dt=dt,
             gravity=(0.0, 0.0, -9.8),
-            contact_friction_mu=0.5,
+            contact_friction_mu=0.8,
             contact_d_hat=0.001,
             IPC_self_contact=False,
             contact_enable=True,
@@ -68,7 +68,8 @@ def main():
             line_search_report_energy=False,
             newton_velocity_tol=1e-1,
             newton_transrate_tol=1,
-            sync_dof_enable=False,
+            sync_dof_enable=True,
+            enable_ipc_timer=True,
         )
         if args.ipc
         else None
@@ -106,11 +107,6 @@ def main():
             entity=franka,
             link_names=["left_finger", "right_finger"],
         )
-    material = (
-        gs.materials.FEM.Elastic(E=1.0e4, nu=0.45, rho=1000.0, model="stable_neohookean")
-        if args.ipc
-        else gs.materials.Rigid()
-    )
 
     cloth_asset_path = snapshot_download(
         repo_type="dataset",
@@ -159,11 +155,13 @@ def main():
     cube_height = 0.02501
     grid_spacing = 0.15
 
+    I = 0
+
     for i in range(4):
         for j in range(4):
             x = (i + 1.7) * grid_spacing
             y = (j - 1.5) * grid_spacing
-            scene.add_entity(
+            cube = scene.add_entity(
                 morph=gs.morphs.Box(
                     pos=(x, y, cube_height),
                     size=(cube_size, cube_size, cube_size),
@@ -171,6 +169,10 @@ def main():
                 ),
                 material=gs.materials.Rigid(rho=500, friction=0.3),
                 surface=gs.surfaces.Plastic(color=(0.8, 0.3, 0.2, 0.8)),
+            )
+            scene.sim.coupler.set_entity_coupling_type(
+                entity=cube,
+                coupling_type="ipc_only",
             )
 
     motors_dof = np.arange(7)
@@ -215,10 +217,6 @@ def main():
     scene.build()
 
     print("Scene built successfully!")
-
-    # Increase PD stiffness (k) for all DOFs
-    # current_kp = franka.get_dofs_kp()
-    # franka.set_dofs_kp(current_kp * 5.0)
 
     if scene.viewer is None:
         gs.logger.warning("Viewer is not active. Keyboard input requires the Genesis viewer.")
@@ -279,5 +277,7 @@ def main():
         pressed_keys.clear()
 
 
+    # scene.step()
+    
 if __name__ == "__main__":
     main()

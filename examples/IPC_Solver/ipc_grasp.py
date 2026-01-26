@@ -29,6 +29,7 @@ def main():
             enable_ipc_gui=args.vis_ipc,
             newton_transrate_tol=10,
             sync_dof_enable=False,
+            contact_d_hat=0.001,
         )
         if args.ipc
         else None
