@@ -322,6 +322,7 @@ class IPCCouplerOptions(BaseCouplerOptions):
     contact_d_hat: float = None
     contact_friction_enable: bool = None
     contact_friction_mu: float = 0.5
+    cloth_internal_friction_mu: float = 0.001
     contact_resistance: float = 1e9
     contact_eps_velocity: float = None
     contact_constitution: str = None
@@ -341,6 +342,7 @@ class IPCCouplerOptions(BaseCouplerOptions):
     # Engine options
     gpu_device: int = 0
     enable_ipc_gui: bool = False
+    enable_ipc_timer: bool = False
     disable_ipc_logging: bool = True
 
     # Genesis coupling options

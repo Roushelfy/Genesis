@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 # Check if libuipc is available
 try:
     import uipc
+    from uipc import Timer
 
     UIPC_AVAILABLE = True
 except ImportError:
@@ -1084,9 +1085,13 @@ class IPCCoupler(RBC):
 
         # Disable IPC logging if requested
         if self.options.disable_ipc_logging:
-            from uipc import Logger, Timer
+            from uipc import Logger
 
             Logger.set_level(Logger.Level.Error)
+
+        if self.options.enable_ipc_timer:
+            Timer.enable_all()
+        else:
             Timer.disable_all()
 
         # Create IPC engine and world
@@ -1200,7 +1205,7 @@ class IPCCoupler(RBC):
         self._ipc_scene.contact_tabular().insert(
             self._ipc_fem_contact,
             self._ipc_fem_contact,
-            self.options.contact_friction_mu,
+            self.options.cloth_internal_friction_mu,
             self.options.contact_resistance,
             True,
         )
@@ -1224,7 +1229,7 @@ class IPCCoupler(RBC):
         self._ipc_scene.contact_tabular().insert(
             self._ipc_cloth_contact,
             self._ipc_cloth_contact,
-            self.options.contact_friction_mu,
+            self.options.cloth_internal_friction_mu,
             self.options.contact_resistance,
             True,
         )  # Always enable cloth self-collision
@@ -1232,7 +1237,7 @@ class IPCCoupler(RBC):
         self._ipc_scene.contact_tabular().insert(
             self._ipc_cloth_contact,
             self._ipc_fem_contact,
-            self.options.contact_friction_mu,
+            self.options.cloth_internal_friction_mu,
             self.options.contact_resistance,
             True,
         )
@@ -1808,6 +1813,7 @@ class IPCCoupler(RBC):
                         label_surface(merged_mesh)
 
                         # Create rigid object
+                        print(f"Creating rigid object: rigid_link_{i_b}_{link_idx}")
                         rigid_obj = scene.objects().create(f"rigid_link_{i_b}_{link_idx}")
                         rigid_solver.list_env_obj[i_b].append(rigid_obj)
                         rigid_solver.list_env_mesh[i_b].append(merged_mesh)
@@ -2056,7 +2062,7 @@ class IPCCoupler(RBC):
 
         This must be called before scene.build().
         """
-        # Use solver-level index for consistency with rigid_solver.links_info.entity_idx
+        # Use solver-local entity index to match rigid_solver.links_info.entity_idx
         entity_idx = entity._idx_in_solver
 
         # Validate coupling type
@@ -2108,7 +2114,7 @@ class IPCCoupler(RBC):
         - This must be called before scene.build()
         - Only valid for 'two_way_soft_constraint' entities
         """
-        # Use solver-level index for consistency with rigid_solver.links_info.entity_idx
+        # Use solver-local entity index to match rigid_solver.links_info.entity_idx
         entity_idx = entity._idx_in_solver
 
         # Check that entity has appropriate coupling type
@@ -2410,6 +2416,8 @@ class IPCCoupler(RBC):
 
         # ========== Step 3: IPC advance + retrieve (common, only once) ==========
         self._ipc_world.advance()
+        if self.options.enable_ipc_timer:
+            Timer.report()
         self._ipc_world.retrieve()
 
         # ========== Step 4: Retrieve FEM states (common) ==========
