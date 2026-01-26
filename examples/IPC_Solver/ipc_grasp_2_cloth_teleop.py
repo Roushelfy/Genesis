@@ -56,14 +56,15 @@ def main():
         gs.options.IPCCouplerOptions(
             dt=dt,
             gravity=(0.0, 0.0, -9.8),
+            ipc_constraint_strength=(20.0, 20.0),
             contact_friction_mu=0.5,
             contact_d_hat=0.001,
             IPC_self_contact=False,
             contact_enable=True,
+            disable_genesis_contact=True,
             disable_ipc_logging=True,
             newton_semi_implicit_enable=False,  # True: you will see time stealing artifact
             enable_ipc_gui=args.vis_ipc,
-            ipc_constraint_strength=(100.0, 100.0),
             line_search_max_iter=8,
             line_search_report_energy=False,
             newton_velocity_tol=1e-1,
@@ -163,7 +164,7 @@ def main():
         for j in range(4):
             x = (i + 1.7) * grid_spacing
             y = (j - 1.5) * grid_spacing
-            scene.add_entity(
+            box = scene.add_entity(
                 morph=gs.morphs.Box(
                     pos=(x, y, cube_height),
                     size=(cube_size, cube_size, cube_size),
@@ -171,6 +172,10 @@ def main():
                 ),
                 material=gs.materials.Rigid(rho=500, friction=0.3),
                 surface=gs.surfaces.Plastic(color=(0.8, 0.3, 0.2, 0.8)),
+            )
+            scene.sim.coupler.set_entity_coupling_type(
+                entity=box,
+                coupling_type="ipc_only",
             )
 
     motors_dof = np.arange(7)

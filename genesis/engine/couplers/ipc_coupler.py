@@ -1611,6 +1611,9 @@ class IPCCoupler(RBC):
         rigid_solver._mesh_handles = {}
         rigid_solver._abd_transforms = {}
 
+        # Debug: print all registered entity coupling types
+        gs.logger.info(f"Registered entity coupling types: {self._entity_coupling_types}")
+
         for i_b in range(self.sim._B):
             rigid_solver.list_env_obj.append([])
             rigid_solver.list_env_mesh.append([])
@@ -1663,6 +1666,9 @@ class IPCCoupler(RBC):
 
                 # Check if this entity has a coupling type (None means skip entirely)
                 entity_coupling_type = self._entity_coupling_types.get(entity_idx)
+                gs.logger.debug(
+                    f"Geom {i_g}: link_idx={link_idx}, entity_idx={entity_idx}, coupling_type={entity_coupling_type}"
+                )
                 if entity_coupling_type is None:
                     continue  # Entity not in IPC
 
@@ -1825,6 +1831,9 @@ class IPCCoupler(RBC):
 
                         from uipc.unit import MPa
 
+                        # Get entity coupling type for this link's entity
+                        entity_coupling_type = self._entity_coupling_types.get(entity_idx)
+
                         # Check if this entity is IPC-only
                         is_ipc_only = entity_coupling_type == "ipc_only"
 
@@ -1855,9 +1864,6 @@ class IPCCoupler(RBC):
                             is_fixed_view = view(is_fixed_attr)
                             # Fix link if it's fixed in Genesis
                             is_fixed_view[0] = 1 if is_link_fixed else 0
-
-                        # Get entity coupling type for per-entity logic
-                        entity_coupling_type = self._entity_coupling_types.get(entity_idx)
 
                         # For external_articulation mode, create ref_dof_prev attribute
                         if entity_coupling_type == "external_articulation" and self.options.sync_dof_enable:
@@ -2050,7 +2056,8 @@ class IPCCoupler(RBC):
 
         This must be called before scene.build().
         """
-        entity_idx = entity._idx
+        # Use solver-level index for consistency with rigid_solver.links_info.entity_idx
+        entity_idx = entity._idx_in_solver
 
         # Validate coupling type
         valid_types = [None, "two_way_soft_constraint", "external_articulation", "ipc_only"]
@@ -2076,7 +2083,7 @@ class IPCCoupler(RBC):
         else:
             self._entity_coupling_types[entity_idx] = coupling_type
 
-        gs.logger.info(f"Entity {entity_idx}: coupling type set to '{coupling_type}'")
+        gs.logger.info(f"Rigid entity (solver idx={entity_idx}): coupling type set to '{coupling_type}'")
 
     def set_ipc_coupling_link_filter(self, entity, link_names=None, link_indices=None):
         """
@@ -2101,7 +2108,8 @@ class IPCCoupler(RBC):
         - This must be called before scene.build()
         - Only valid for 'two_way_soft_constraint' entities
         """
-        entity_idx = entity._idx
+        # Use solver-level index for consistency with rigid_solver.links_info.entity_idx
+        entity_idx = entity._idx_in_solver
 
         # Check that entity has appropriate coupling type
         coupling_type = self._entity_coupling_types.get(entity_idx)
@@ -2203,7 +2211,8 @@ class IPCCoupler(RBC):
         # Enable collision for all links (default behavior)
         coupler.set_link_ipc_collision(robot, enabled=True)
         """
-        entity_idx = entity._idx
+        # Use solver-level index for consistency with rigid_solver.links_info.entity_idx
+        entity_idx = entity._idx_in_solver
 
         # Determine which links to configure
         if link_names is None and link_indices is None:
@@ -2654,32 +2663,24 @@ class IPCCoupler(RBC):
                 continue
 
             # Batch set transforms
-            pos_tensor = torch.tensor(np.array(pos_list), dtype=torch.float32, device=rigid_solver.device)
-            quat_tensor = torch.tensor(np.array(quat_list), dtype=torch.float32, device=rigid_solver.device)
-            link_idx_tensor = torch.tensor(link_idx_list, dtype=torch.int64, device=rigid_solver.device)
+            pos_tensor = torch.tensor(np.array(pos_list), dtype=torch.float32, device=gs.device)
+            quat_tensor = torch.tensor(np.array(quat_list), dtype=torch.float32, device=gs.device)
+            link_idx_tensor = torch.tensor(link_idx_list, dtype=torch.int64, device=gs.device)
 
             if is_parallelized:
-                rigid_solver.set_base_links_pos(
-                    pos_tensor, link_idx_tensor, envs_idx=env_idx, relative=False, unsafe=True, skip_forward=False
-                )
-                rigid_solver.set_base_links_quat(
-                    quat_tensor, link_idx_tensor, envs_idx=env_idx, relative=False, unsafe=True, skip_forward=False
-                )
+                rigid_solver.set_base_links_pos(pos_tensor, link_idx_tensor, envs_idx=env_idx, relative=False)
+                rigid_solver.set_base_links_quat(quat_tensor, link_idx_tensor, envs_idx=env_idx, relative=False)
             else:
-                rigid_solver.set_base_links_pos(
-                    pos_tensor, link_idx_tensor, envs_idx=None, relative=False, unsafe=True, skip_forward=False
-                )
-                rigid_solver.set_base_links_quat(
-                    quat_tensor, link_idx_tensor, envs_idx=None, relative=False, unsafe=True, skip_forward=False
-                )
+                rigid_solver.set_base_links_pos(pos_tensor, link_idx_tensor, envs_idx=None, relative=False)
+                rigid_solver.set_base_links_quat(quat_tensor, link_idx_tensor, envs_idx=None, relative=False)
 
             # Zero velocities for these entities
             for entity_idx in entity_indices:
                 entity = rigid_solver._entities[entity_idx]
                 if is_parallelized:
-                    entity.zero_all_dofs_velocity(envs_idx=env_idx, unsafe=True)
+                    entity.zero_all_dofs_velocity(envs_idx=env_idx)
                 else:
-                    entity.zero_all_dofs_velocity(envs_idx=None, unsafe=True)
+                    entity.zero_all_dofs_velocity(envs_idx=None)
 
     def _retrieve_fem_states(self, f):
         # IPC world advance/retrieve is handled at Scene level
