@@ -275,11 +275,6 @@ class IPCCouplerOptions(BaseCouplerOptions):
 
     Genesis Coupling Options
     ------------------------
-    coupling_strategy : str, optional
-        Strategy for coupling rigid bodies between Genesis and IPC. Defaults to 'two_way_soft_constraint'.
-        - 'two_way_soft_constraint': Uses SoftTransformConstraint in IPC for bidirectional coupling
-        - 'external_articulation': Uses external articulation constraint for articulated rigid bodies
-        - 'contact_proxy': Alternative coupling strategy (placeholder for future implementation)
     ipc_constraint_strength : tuple, optional
         Strength ratios for IPC soft transform constraint coupling. Tuple of (translation_strength, rotation_strength).
         Higher values create stiffer coupling between Genesis rigid bodies and IPC ABD objects. Defaults to (100.0, 100.0).
@@ -349,7 +344,6 @@ class IPCCouplerOptions(BaseCouplerOptions):
     disable_ipc_logging: bool = True
 
     # Genesis coupling options
-    coupling_strategy: str = "two_way_soft_constraint"
     ipc_constraint_strength: tuple = (100.0, 100.0)
     IPC_self_contact: bool = True
     disable_genesis_contact: bool = True

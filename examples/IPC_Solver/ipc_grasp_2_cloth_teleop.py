@@ -9,6 +9,7 @@ from scipy.spatial.transform import Rotation as R
 from genesis.ext.pyrender.interaction.viewer_interaction_base import ViewerInteractionBase
 from huggingface_hub import snapshot_download
 
+
 class ViewerKeyListener(ViewerInteractionBase):
     def __init__(self, delegate, pressed_keys):
         super().__init__(log_events=False)
@@ -33,6 +34,7 @@ class ViewerKeyListener(ViewerInteractionBase):
         if self.delegate is not None:
             return self.delegate.update_on_sim_step()
 
+
 def main():
     gs.init(backend=gs.gpu, logging_level=logging.INFO, performance_mode=True)
 
@@ -40,6 +42,12 @@ def main():
     parser.add_argument("--ipc", action="store_true", default=True)
     parser.add_argument("--vis_ipc", action="store_true", default=True)
     parser.add_argument("-v", "--vis", action="store_true", default=True)
+    parser.add_argument(
+        "--coupling_strategy",
+        type=str,
+        default="external_articulation",
+        choices=["external_articulation", "two_way_soft_constraint"],
+    )
     args = parser.parse_args()
 
     dt = 2e-2
@@ -48,20 +56,19 @@ def main():
         gs.options.IPCCouplerOptions(
             dt=dt,
             gravity=(0.0, 0.0, -9.8),
-            coupling_strategy="external_articulation",
             contact_friction_mu=0.5,
             contact_d_hat=0.001,
             IPC_self_contact=False,
             contact_enable=True,
             disable_ipc_logging=True,
-            newton_semi_implicit_enable=False, # True: you will see time stealing artifact
+            newton_semi_implicit_enable=False,  # True: you will see time stealing artifact
             enable_ipc_gui=args.vis_ipc,
             ipc_constraint_strength=(100.0, 100.0),
             line_search_max_iter=8,
             line_search_report_energy=False,
             newton_velocity_tol=1e-1,
             newton_transrate_tol=1,
-            sync_dof_enable=True
+            sync_dof_enable=False,
         )
         if args.ipc
         else None
@@ -82,20 +89,29 @@ def main():
             camera_fov=40,
         ),
     )
-    
+
     # Add Franka robot
     franka = scene.add_entity(
-        gs.morphs.MJCF(file="xml/franka_emika_panda/panda_non_overlap.xml",
-                       pos=(0.0, 0.0, 0.005),
-                       ),
+        gs.morphs.MJCF(
+            file="xml/franka_emika_panda/panda_non_overlap.xml",
+            pos=(0.0, 0.0, 0.005),
+        ),
     )
-
+    if args.ipc:
+        scene.sim.coupler.set_entity_coupling_type(
+            entity=franka,
+            coupling_type=args.coupling_strategy,
+        )
+        scene.sim.coupler.set_ipc_coupling_link_filter(
+            entity=franka,
+            link_names=["left_finger", "right_finger"],
+        )
     material = (
         gs.materials.FEM.Elastic(E=1.0e4, nu=0.45, rho=1000.0, model="stable_neohookean")
         if args.ipc
         else gs.materials.Rigid()
     )
-    
+
     cloth_asset_path = snapshot_download(
         repo_type="dataset",
         repo_id="Genesis-Intelligence/assets",
@@ -191,13 +207,13 @@ def main():
 
     dpos = 0.006
     drot = 0.04
-    
+
     plane = scene.add_entity(
         gs.morphs.Plane(),
     )
-    
+
     scene.build()
-    
+
     print("Scene built successfully!")
 
     # Increase PD stiffness (k) for all DOFs
