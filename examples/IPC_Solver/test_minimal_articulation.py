@@ -9,7 +9,7 @@ import numpy as np
 
 def main():
     # Initialize Genesis
-    gs.init(backend=gs.gpu, logging_level="info", performance_mode=True)
+    gs.init(backend=gs.gpu, logging_level="debug", performance_mode=True)
 
     # Create scene
     dt = 0.01
@@ -17,12 +17,12 @@ def main():
     # Configure IPC coupler with external_articulation strategy
     coupler_options = gs.options.IPCCouplerOptions(
         dt=dt,
+        ipc_constraint_strength=(1, 1),
         gravity=(0.0, 0.0, -9.8),
-        coupling_strategy="external_articulation",
         contact_friction_mu=0.5,
         IPC_self_contact=False,
         enable_ipc_gui=True,
-        disable_ipc_logging=False,
+        disable_ipc_logging=True,
         newton_velocity_tol=5e-4,
     )
 
@@ -50,8 +50,11 @@ def main():
     scene.add_entity(gs.morphs.Plane())
 
     # Create simple two-cube robot with one joint
-    robot = scene.add_entity(gs.morphs.URDF(file="urdf/simple/two_cube_joint.urdf", pos=(0.0, 0.0, 0.5), fixed=True))
-
+    robot = scene.add_entity(gs.morphs.URDF(file="urdf/simple/two_cube_joint.urdf", pos=(0.0, 0.0, 0.5), fixed=False))
+    scene.sim.coupler.set_entity_coupling_type(
+        entity=robot,
+        coupling_type="external_articulation",
+    )
     # Build scene
     print("Building scene...")
     scene.build()
@@ -69,7 +72,7 @@ def main():
     # Phase 1: Hold at zero position (settle)
     print("\n=== Phase 1: Settling at zero (10 steps) ===")
     target_zero = np.zeros(robot.n_dofs)
-    for i in range(10):
+    for i in range(0):
         robot.control_dofs_position(target_zero)
         scene.step()
 
@@ -87,25 +90,25 @@ def main():
     print("\n=== Phase 2: Oscillating motion ===")
 
     # Parameters for oscillation
-    amplitude = 1.5  # radians for the joint
+    amplitude = 1.0  # radians for the joint
     period = 200  # steps per cycle
     total_steps = 5000
-
+    target_dof = [robot.n_dofs - 1]  # Only one joint
     for i in range(total_steps):
         # Calculate sinusoidal target for the joint
         phase = 2.0 * np.pi * i / period
 
-        target = np.zeros(robot.n_dofs)
+        target = [0]
         if robot.n_dofs >= 1:
             target[0] = amplitude * np.sin(phase)
 
-        robot.control_dofs_position(target)
+        robot.control_dofs_position(target, target_dof)
         scene.step()
 
-        if i % 50 == 0:
-            current_qpos = robot.get_qpos().cpu().numpy()
-            error = np.linalg.norm(current_qpos - target)
-            print(f"Step {i:3d}: target = {target[0]:.3f}, qpos = {current_qpos[0]:.3f}, error = {error:.4f}")
+        # if i % 50 == 0:
+        #     current_qpos = robot.get_qpos().cpu().numpy()
+        #     error = np.linalg.norm(current_qpos - target)
+        #     print(f"Step {i:3d}: target = {target[0]:.3f}, qpos = {current_qpos[0]:.3f}, error = {error:.4f}")
 
     # Final result
     final_qpos = robot.get_qpos().cpu().numpy()

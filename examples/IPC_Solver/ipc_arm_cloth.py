@@ -56,7 +56,7 @@ class KeyboardDevice:
         return self.pressed_keys
 
 
-def build_scene(use_ipc=False, show_viewer=False, enable_ipc_gui=False):
+def build_scene(use_ipc=False, show_viewer=False, enable_ipc_gui=False, coupling_strategy="external_articulation"):
     ########################## init ##########################
     gs.init(seed=0, precision="32", logging_level="info", backend=gs.gpu, performance_mode=True)
     np.set_printoptions(precision=7, suppress=True)
@@ -68,13 +68,21 @@ def build_scene(use_ipc=False, show_viewer=False, enable_ipc_gui=False):
         gs.options.IPCCouplerOptions(
             dt=dt,
             gravity=(0.0, 0.0, -9.8),
-            ipc_constraint_strength=(1, 1),  # (translation, rotation) strength ratios,
+            ipc_constraint_strength=(20.0, 20.0),
             contact_friction_mu=0.8,
-            IPC_self_contact=False,  # Disable rigid-rigid contact in IPC
+            contact_d_hat=0.001,
+            IPC_self_contact=False,
+            contact_enable=True,
+            disable_genesis_contact=True,
+            disable_ipc_logging=True,
+            newton_semi_implicit_enable=False,  # True: you will see time stealing artifact
+            enable_ipc_gui=enable_ipc_gui,
+            disable_ipc_ground_contact=True,
+            line_search_max_iter=8,
+            line_search_report_energy=False,
             newton_velocity_tol=1e-1,
             newton_transrate_tol=1,
-            enable_ipc_gui=enable_ipc_gui,
-            sync_dof_enable=False,
+            sync_dof_enable=True,
         )
         if use_ipc
         else None
@@ -108,15 +116,19 @@ def build_scene(use_ipc=False, show_viewer=False, enable_ipc_gui=False):
     entities["robot"] = scene.add_entity(
         material=gs.materials.Rigid(gravity_compensation=1),
         morph=gs.morphs.MJCF(
-            file="xml/franka_emika_panda/panda.xml",
+            file="xml/franka_emika_panda/panda_non_overlap.xml",
             euler=(0, 0, 0),
         ),
     )
-    scene.sim.coupler.set_link_ipc_coupling_type(
-        entity=entities["robot"],
-        coupling_type="both",
-        link_names=["left_finger", "right_finger"],
-    )
+    if use_ipc:
+        scene.sim.coupler.set_entity_coupling_type(
+            entity=entities["robot"],
+            coupling_type=coupling_strategy,
+        )
+        scene.sim.coupler.set_ipc_coupling_link_filter(
+            entity=entities["robot"],
+            link_names=["left_finger", "right_finger"],
+        )
 
     material = (
         gs.materials.FEM.Elastic(E=1.0e4, nu=0.45, rho=1000.0, model="stable_neohookean")
@@ -158,7 +170,7 @@ def build_scene(use_ipc=False, show_viewer=False, enable_ipc_gui=False):
         for j in range(4):
             x = (i + 1.7) * grid_spacing  # Center the grid
             y = (j - 1.5) * grid_spacing
-            scene.add_entity(
+            box = scene.add_entity(
                 morph=gs.morphs.Box(
                     pos=(x, y, cube_height),
                     size=(cube_size, cube_size, cube_size),
@@ -166,6 +178,10 @@ def build_scene(use_ipc=False, show_viewer=False, enable_ipc_gui=False):
                 ),
                 material=gs.materials.Rigid(rho=500, friction=0.3),
                 surface=gs.surfaces.Plastic(color=(0.8, 0.3, 0.2, 0.8)),
+            )
+            scene.sim.coupler.set_entity_coupling_type(
+                entity=box,
+                coupling_type="ipc_only",
             )
     entities["target"] = scene.add_entity(
         gs.morphs.Mesh(
@@ -182,7 +198,9 @@ def build_scene(use_ipc=False, show_viewer=False, enable_ipc_gui=False):
     return scene, entities
 
 
-def run_sim(scene, entities, clients, mode="interactive", trajectory_file=None):
+def run_sim(
+    scene, entities, clients, mode="interactive", trajectory_file=None, coupling_strategy="external_articulation"
+):
     robot = entities["robot"]
     target_entity = entities["target"]
 
@@ -418,6 +436,12 @@ def main():
         default="grasp_cloth1.csv",
         help="Trajectory file to load (for playback mode, default: grasp_cloth1.csv)",
     )
+    parser.add_argument(
+        "--coupling_strategy",
+        type=str,
+        default="external_articulation",
+        choices=["external_articulation", "two_way_soft_constraint"],
+    )
     parser.add_argument("--list", action="store_true", help="List available trajectories and exit")
     parser.add_argument("-v", "--vis", action="store_true", default=False, help="Show Genesis viewer")
     parser.add_argument("--vis_ipc", action="store_true", default=False, help="Show IPC GUI")
@@ -451,7 +475,9 @@ def main():
     clients["keyboard"] = KeyboardDevice()
     clients["keyboard"].start()
 
-    scene, entities = build_scene(use_ipc=args.ipc, show_viewer=args.vis, enable_ipc_gui=args.vis_ipc)
+    scene, entities = build_scene(
+        use_ipc=args.ipc, show_viewer=args.vis, enable_ipc_gui=args.vis_ipc, coupling_strategy=args.coupling_strategy
+    )
     run_sim(scene, entities, clients, mode=args.mode, trajectory_file=trajectory_file)
 
 
