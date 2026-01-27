@@ -58,6 +58,7 @@ def main():
             gravity=(0.0, 0.0, -9.8),
             ipc_constraint_strength=(20.0, 20.0),
             contact_friction_mu=0.5,
+            fem_fem_friction_mu=0.00,
             contact_d_hat=0.001,
             IPC_self_contact=False,
             contact_enable=True,
@@ -69,7 +70,9 @@ def main():
             line_search_report_energy=False,
             newton_velocity_tol=1e-1,
             newton_transrate_tol=1,
-            sync_dof_enable=False,
+            sync_dof_enable=True,
+            linear_system_tol_rate=1e-3,
+            contact_resistance=1e7
         )
         if args.ipc
         else None
@@ -102,11 +105,12 @@ def main():
         scene.sim.coupler.set_entity_coupling_type(
             entity=franka,
             coupling_type=args.coupling_strategy,
+            # coupling_type="two_way_soft_constraint",
         )
-        scene.sim.coupler.set_ipc_coupling_link_filter(
-            entity=franka,
-            link_names=["left_finger", "right_finger"],
-        )
+        # scene.sim.coupler.set_ipc_coupling_link_filter(
+        #     entity=franka,
+        #     link_names=["left_finger", "right_finger"],
+        # )
     material = (
         gs.materials.FEM.Elastic(E=1.0e4, nu=0.45, rho=1000.0, model="stable_neohookean")
         if args.ipc
@@ -130,11 +134,11 @@ def main():
                 euler=(90, 0, 0),
             ),
             material=gs.materials.FEM.Cloth(
-                E=1e5,
-                nu=0.499,
+                E=6e4,
+                nu=0.49,
                 rho=200,
                 thickness=0.001,
-                bending_stiffness=30.0,
+                bending_stiffness=10.0,
             ),
             surface=gs.surfaces.Plastic(color=(0.3, 0.1, 0.8, 1.0), double_sided=True),
         )
@@ -146,8 +150,8 @@ def main():
                 euler=(90, 0, 0),
             ),
             material=gs.materials.FEM.Cloth(
-                E=1e5,
-                nu=0.499,
+                E=6e4,
+                nu=0.49,
                 rho=200,
                 thickness=0.001,
                 bending_stiffness=40.0,
@@ -210,8 +214,8 @@ def main():
     print("space\t- Press to close gripper, release to open gripper")
     print("esc\t- Quit")
 
-    dpos = 0.006
-    drot = 0.04
+    dpos = 0.003
+    drot = 0.02
 
     plane = scene.add_entity(
         gs.morphs.Plane(),
@@ -275,9 +279,11 @@ def main():
             franka.control_dofs_position(q[:-2], motors_dof)
 
             if is_close_gripper:
-                franka.control_dofs_force(np.array([-3.0, -3.0]), fingers_dof)
+                # franka.control_dofs_force(np.array([-3.0, -3.0]), fingers_dof)
+                franka.control_dofs_velocity(np.array([-0.1, -0.1]), fingers_dof)
             else:
-                franka.control_dofs_force(np.array([3.0, 3.0]), fingers_dof)
+                # franka.control_dofs_force(np.array([3.0, 3.0]), fingers_dof)
+                franka.control_dofs_velocity(np.array([0.1, 0.1]), fingers_dof)
 
             scene.step()
     finally:

@@ -1200,7 +1200,7 @@ class IPCCoupler(RBC):
         self._ipc_scene.contact_tabular().insert(
             self._ipc_fem_contact,
             self._ipc_fem_contact,
-            self.options.contact_friction_mu,
+            self.options.fem_fem_friction_mu,
             self.options.contact_resistance,
             True,
         )
@@ -1224,7 +1224,7 @@ class IPCCoupler(RBC):
         self._ipc_scene.contact_tabular().insert(
             self._ipc_cloth_contact,
             self._ipc_cloth_contact,
-            self.options.contact_friction_mu,
+            self.options.fem_fem_friction_mu,
             self.options.contact_resistance,
             True,
         )  # Always enable cloth self-collision
@@ -1232,7 +1232,7 @@ class IPCCoupler(RBC):
         self._ipc_scene.contact_tabular().insert(
             self._ipc_cloth_contact,
             self._ipc_fem_contact,
-            self.options.contact_friction_mu,
+            self.options.fem_fem_friction_mu,
             self.options.contact_resistance,
             True,
         )
