@@ -2611,76 +2611,169 @@ class IPCCoupler(RBC):
                     key = (idx, joint_idx, env_idx)
                     ad.prev_link_transforms[key] = self._genesis_stored_states[child_link_idx][env_idx].copy()
 
+    def _is_robot_entity(self, entity) -> bool:
+        """Heuristic: treat URDF/MJCF/Drone morphs as robots."""
+        try:
+            return isinstance(entity.morph, (gs.morphs.URDF, gs.morphs.MJCF, gs.morphs.Drone))
+        except Exception:
+            return False
+
+    def _apply_ipc_only_robot_qpos(self, entity_indices, env_idx: int, is_parallelized: bool):
+        """Update robot qpos from IPC transforms; returns list of updated entities."""
+        import numpy as np
+        from scipy.spatial.transform import Rotation as R
+
+        if not hasattr(self, "abd_data_by_link"):
+            return []
+
+        rigid_solver = self.rigid_solver
+        updated_entities = []
+
+        for entity_idx in entity_indices:
+            entity = rigid_solver._entities[entity_idx]
+            link_idx = entity.base_link_idx
+
+            if link_idx not in self.abd_data_by_link:
+                continue
+            env_data = self.abd_data_by_link[link_idx]
+            if env_idx not in env_data:
+                continue
+
+            ipc_transform = env_data[env_idx].get("transform")
+            if ipc_transform is None:
+                continue
+
+            # Extract position and quaternion from transform
+            pos = ipc_transform[:3, 3]
+            rot_mat = ipc_transform[:3, :3]
+            quat_xyzw = R.from_matrix(rot_mat).as_quat()
+            quat_wxyz = np.array([quat_xyzw[3], quat_xyzw[0], quat_xyzw[1], quat_xyzw[2]])
+
+            if entity.n_qs < 7:
+                gs.logger.warning(
+                    f"ipc_only entity {entity_idx} has n_qs={entity.n_qs}; expected at least 7 for base pose."
+                )
+                continue
+
+            if is_parallelized:
+                qpos_current = entity.get_qpos(envs_idx=env_idx).detach().cpu().numpy()
+            else:
+                qpos_current = entity.get_qpos().detach().cpu().numpy()
+
+            if qpos_current.ndim > 1:
+                qpos_current = qpos_current[0]
+
+            qpos_new = qpos_current.copy()
+            qpos_new[:3] = pos
+            qpos_new[3:7] = quat_wxyz
+
+            qpos_tensor = gs.torch.as_tensor(qpos_new, dtype=gs.tc_float, device=gs.device)
+            if is_parallelized:
+                entity.set_qpos(qpos_tensor, envs_idx=env_idx, zero_velocity=True, skip_forward=True)
+            else:
+                entity.set_qpos(qpos_tensor, envs_idx=None, zero_velocity=True, skip_forward=True)
+
+            updated_entities.append(entity_idx)
+
+        return updated_entities
+
+    def _finalize_ipc_only_robot_fk(self, entity_indices, env_idx: int, is_parallelized: bool):
+        """Run forward kinematics/geoms update for robot entities only."""
+        if not entity_indices:
+            return
+
+        envs_idx = self.sim._scene._sanitize_envs_idx(env_idx if is_parallelized else None)
+        for entity_idx in entity_indices:
+            self.rigid_solver._func_forward_kinematics_entity(entity_idx, envs_idx)
+        self.rigid_solver._func_update_geoms(envs_idx)
+        self.rigid_solver._is_forward_pos_updated = True
+        self.rigid_solver._is_forward_vel_updated = True
+
+    def _apply_ipc_only_transforms(self, entity_indices, env_idx: int, is_parallelized: bool):
+        """Apply IPC transforms directly to base links (non-robots)."""
+        import numpy as np
+        from scipy.spatial.transform import Rotation as R
+
+        if not hasattr(self, "abd_data_by_link"):
+            return
+
+        rigid_solver = self.rigid_solver
+        pos_list = []
+        quat_list = []
+        link_idx_list = []
+
+        for entity_idx in entity_indices:
+            entity = rigid_solver._entities[entity_idx]
+            link_idx = entity.base_link_idx
+
+            if link_idx not in self.abd_data_by_link:
+                continue
+            env_data = self.abd_data_by_link[link_idx]
+            if env_idx not in env_data:
+                continue
+
+            ipc_transform = env_data[env_idx].get("transform")
+            if ipc_transform is None:
+                continue
+
+            pos = ipc_transform[:3, 3]
+            rot_mat = ipc_transform[:3, :3]
+            quat_xyzw = R.from_matrix(rot_mat).as_quat()
+            quat_wxyz = np.array([quat_xyzw[3], quat_xyzw[0], quat_xyzw[1], quat_xyzw[2]])
+
+            pos_list.append(pos)
+            quat_list.append(quat_wxyz)
+            link_idx_list.append(link_idx)
+
+        if not pos_list:
+            return
+
+        pos_tensor = gs.torch.as_tensor(np.array(pos_list), dtype=gs.tc_float, device=gs.device)
+        quat_tensor = gs.torch.as_tensor(np.array(quat_list), dtype=gs.tc_float, device=gs.device)
+        link_idx_tensor = gs.torch.as_tensor(np.array(link_idx_list), dtype=gs.tc_int, device=gs.device)
+
+        if is_parallelized:
+            rigid_solver.set_base_links_pos(pos_tensor, link_idx_tensor, envs_idx=env_idx, relative=False)
+            rigid_solver.set_base_links_quat(quat_tensor, link_idx_tensor, envs_idx=env_idx, relative=False)
+        else:
+            rigid_solver.set_base_links_pos(pos_tensor, link_idx_tensor, envs_idx=None, relative=False)
+            rigid_solver.set_base_links_quat(quat_tensor, link_idx_tensor, envs_idx=None, relative=False)
+
+        for entity_idx in entity_indices:
+            entity = rigid_solver._entities[entity_idx]
+            if is_parallelized:
+                entity.zero_all_dofs_velocity(envs_idx=env_idx)
+            else:
+                entity.zero_all_dofs_velocity(envs_idx=None)
+
     def _post_advance_ipc_only(self, entity_indices):
         """
         Post-advance processing for ipc_only entities.
         Directly sets Genesis transforms from IPC results.
         Only handles simple case (single base link entities).
         """
-        import numpy as np
-        from scipy.spatial.transform import Rotation as R
-        import torch
-
-        if not hasattr(self, "abd_data_by_link"):
-            return
-
         rigid_solver = self.rigid_solver
         is_parallelized = self.sim._scene.n_envs > 0
         n_envs = self.sim._scene.n_envs if is_parallelized else 1
 
-        # Collect data for batch processing
         for env_idx in range(n_envs):
-            pos_list = []
-            quat_list = []
-            link_idx_list = []
+            robot_entities = []
+            non_robot_entities = []
 
             for entity_idx in entity_indices:
                 entity = rigid_solver._entities[entity_idx]
-                # ipc_only entities have only 1 link (base link)
-                link_idx = entity.base_link_idx
-
-                if link_idx not in self.abd_data_by_link:
-                    continue
-                env_data = self.abd_data_by_link[link_idx]
-                if env_idx not in env_data:
-                    continue
-
-                ipc_transform = env_data[env_idx].get("transform")
-                if ipc_transform is None:
-                    continue
-
-                # Extract position and quaternion from transform
-                pos = ipc_transform[:3, 3]
-                rot_mat = ipc_transform[:3, :3]
-                quat_xyzw = R.from_matrix(rot_mat).as_quat()
-                quat_wxyz = np.array([quat_xyzw[3], quat_xyzw[0], quat_xyzw[1], quat_xyzw[2]])
-
-                pos_list.append(pos)
-                quat_list.append(quat_wxyz)
-                link_idx_list.append(link_idx)
-
-            if not pos_list:
-                continue
-
-            # Batch set transforms
-            pos_tensor = torch.tensor(np.array(pos_list), dtype=torch.float32, device=gs.device)
-            quat_tensor = torch.tensor(np.array(quat_list), dtype=torch.float32, device=gs.device)
-            link_idx_tensor = torch.tensor(link_idx_list, dtype=torch.int64, device=gs.device)
-
-            if is_parallelized:
-                rigid_solver.set_base_links_pos(pos_tensor, link_idx_tensor, envs_idx=env_idx, relative=False)
-                rigid_solver.set_base_links_quat(quat_tensor, link_idx_tensor, envs_idx=env_idx, relative=False)
-            else:
-                rigid_solver.set_base_links_pos(pos_tensor, link_idx_tensor, envs_idx=None, relative=False)
-                rigid_solver.set_base_links_quat(quat_tensor, link_idx_tensor, envs_idx=None, relative=False)
-
-            # Zero velocities for these entities
-            for entity_idx in entity_indices:
-                entity = rigid_solver._entities[entity_idx]
-                if is_parallelized:
-                    entity.zero_all_dofs_velocity(envs_idx=env_idx)
+                if self._is_robot_entity(entity):
+                    robot_entities.append(entity_idx)
                 else:
-                    entity.zero_all_dofs_velocity(envs_idx=None)
+                    non_robot_entities.append(entity_idx)
+
+            updated_robot_entities = self._apply_ipc_only_robot_qpos(robot_entities, env_idx, is_parallelized)
+
+            if non_robot_entities:
+                self._apply_ipc_only_transforms(non_robot_entities, env_idx, is_parallelized)
+            else:
+                # Only robots are present; run FK update explicitly.
+                self._finalize_ipc_only_robot_fk(updated_robot_entities, env_idx, is_parallelized)
 
     def _retrieve_fem_states(self, f):
         # IPC world advance/retrieve is handled at Scene level
