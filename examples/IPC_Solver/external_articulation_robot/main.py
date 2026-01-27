@@ -28,7 +28,7 @@ print(f"xml_path: {xml_path}")
 engine = Engine("cuda", this_output_path)
 world = World(engine)
 
-dt = 0.01
+dt = 0.001
 config = Scene.default_config()
 config["gravity"] = [[0.0], [-9.8], [0.0]]
 config["contact"]["enable"] = False
@@ -55,21 +55,23 @@ abd = AffineBodyConstitution()
 links = scene.objects().create("links")
 body_slots = {}
 
+
 def _make_transform_matrix(rotation: np.ndarray, position: np.ndarray) -> np.ndarray:
     mat = np.eye(4, dtype=np.float32)
     mat[:3, :3] = rotation
     mat[:3, 3] = position
     return mat
 
+
 for body in collision_bodies:
     mesh = trimesh(body.vertices, body.faces)
     # mesh = cube_mesh.copy()
     mesh.instances().resize(1)
     label_surface(mesh)
-    
+
     io = SimplicialComplexIO()
     io.write(f"{this_output_path}/{body.name}.obj", mesh)
-    
+
     print(f"body name: {body.name}")
     abd.apply_to(mesh, 100.0 * MPa)
     default_element.apply_to(mesh)
@@ -160,6 +162,7 @@ if joint_geo_slots:
     joint_count = len(joint_geo_slots)
     mass_mat = np.eye(joint_count, dtype=np.float32)
     import test_mass
+
     mass_mat = test_mass.mass_mat
     mass = articulation["joint_joint"].find("mass")
     view(mass)[:] = mass_mat.flatten()

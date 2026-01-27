@@ -56,7 +56,7 @@ def main():
         gs.options.IPCCouplerOptions(
             dt=dt,
             gravity=(0.0, 0.0, -9.8),
-            ipc_constraint_strength=(20.0, 20.0),
+            ipc_constraint_strength=(100.0, 100.0),
             contact_friction_mu=0.5,
             fem_fem_friction_mu=0.00,
             contact_d_hat=0.001,
@@ -72,7 +72,7 @@ def main():
             newton_transrate_tol=1,
             sync_dof_enable=True,
             linear_system_tol_rate=1e-3,
-            contact_resistance=1e7
+            contact_resistance=1e7,
         )
         if args.ipc
         else None
@@ -105,12 +105,11 @@ def main():
         scene.sim.coupler.set_entity_coupling_type(
             entity=franka,
             coupling_type=args.coupling_strategy,
-            # coupling_type="two_way_soft_constraint",
         )
-        # scene.sim.coupler.set_ipc_coupling_link_filter(
-        #     entity=franka,
-        #     link_names=["left_finger", "right_finger"],
-        # )
+        scene.sim.coupler.set_ipc_coupling_link_filter(
+            entity=franka,
+            link_names=["left_finger", "right_finger"],
+        )
     material = (
         gs.materials.FEM.Elastic(E=1.0e4, nu=0.45, rho=1000.0, model="stable_neohookean")
         if args.ipc

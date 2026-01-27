@@ -1306,7 +1306,6 @@ class IPCCoupler(RBC):
         from uipc.geometry import tetmesh, label_surface, label_triangle_orient, flip_inward_triangles, merge, ground
         from uipc.constitution import AffineBodyExternalBodyForce
         from genesis.utils import mesh as mu
-        import numpy as np
         import trimesh
 
         rigid_solver = self.rigid_solver
@@ -1642,7 +1641,6 @@ class IPCCoupler(RBC):
                             def create_animate_function(env_idx, link_idx, coupler_ref):
                                 def animate_rigid_link(info):
                                     from uipc import view, builtin
-                                    import numpy as np
 
                                     geo_slots = info.geo_slots()
                                     if len(geo_slots) == 0:
@@ -2139,10 +2137,8 @@ class IPCCoupler(RBC):
         Pre-advance processing for external_articulation entities.
         Prepares articulation data and updates IPC geometry before advance().
         """
-        import numpy as np
         from uipc import view
         from uipc.geometry import affine_body
-        import genesis as gs
 
         if len(self._articulated_entities) == 0:
             return
@@ -2252,9 +2248,7 @@ class IPCCoupler(RBC):
         Post-advance processing for external_articulation entities.
         Reads delta_theta from IPC and updates Genesis qpos.
         """
-        import numpy as np
         from uipc import view
-        import genesis as gs
 
         if len(self._articulated_entities) == 0:
             return
@@ -2279,13 +2273,17 @@ class IPCCoupler(RBC):
         # Compute qpos_new using kernel
         self._compute_qpos_new_kernel(ad, n_envs)
 
-        # Write qpos_new back to Genesis
+        # Export qpos_new to numpy once (avoid per-element access in loop)
+        qpos_new_all = ad.qpos_new.to_numpy()  # (max_entities, max_envs, max_dofs)
+
+        # Write qpos_new back to Genesis using numpy slices
         for idx, (entity_idx, art_data) in enumerate(self._articulated_entities.items()):
             entity = art_data["entity"]
             env_idx = art_data["env_idx"]
             n_dofs = ad.entity_n_dofs[idx]
 
-            qpos_new_np = np.array([ad.qpos_new[idx, env_idx, dof_idx] for dof_idx in range(n_dofs)], dtype=np.float32)
+            # Use slice instead of list comprehension
+            qpos_new_np = qpos_new_all[idx, env_idx, :n_dofs].astype(np.float32)
             qpos_tensor = gs.torch.as_tensor(qpos_new_np, dtype=gs.tc_float, device=gs.device)
 
             if self.sim._B > 1:
@@ -2314,8 +2312,6 @@ class IPCCoupler(RBC):
 
     def _apply_ipc_only_robot_qpos(self, entity_indices, env_idx: int, is_parallelized: bool):
         """Update robot qpos from IPC transforms; returns list of updated entities."""
-        import numpy as np
-
         if not hasattr(self, "abd_data_by_link"):
             return []
 
@@ -2380,8 +2376,6 @@ class IPCCoupler(RBC):
 
     def _apply_ipc_only_transforms(self, entity_indices, env_idx: int, is_parallelized: bool):
         """Apply IPC transforms directly to base links (non-robots)."""
-        import numpy as np
-
         if not hasattr(self, "abd_data_by_link"):
             return
 
@@ -2475,7 +2469,6 @@ class IPCCoupler(RBC):
         from uipc import builtin
         from uipc.backend import SceneVisitor
         from uipc.geometry import SimplicialComplexSlot, apply_transform, merge
-        import numpy as np
 
         visitor = SceneVisitor(self._ipc_scene)
 
@@ -2542,7 +2535,6 @@ class IPCCoupler(RBC):
         from uipc import builtin, view
         from uipc.backend import SceneVisitor
         from uipc.geometry import SimplicialComplexSlot
-        import numpy as np
         import genesis.utils.geom as gu
 
         rigid_solver = self.rigid_solver
@@ -2613,7 +2605,6 @@ class IPCCoupler(RBC):
         entity_set : set, optional
             Set of entity indices to process. If None, process all two_way_soft_constraint entities.
         """
-        import numpy as np
         import torch
 
         rigid_solver = self.rigid_solver
@@ -2688,23 +2679,29 @@ class IPCCoupler(RBC):
         # Apply forces to Genesis rigid bodies - OPTIMIZED batch processing
         is_parallelized = self.sim._scene.n_envs > 0
 
+        # Export Taichi fields to numpy once (avoid per-element access in loops)
+        out_forces_np = cd.out_forces.to_numpy()[:n_items]  # (n_items, 3)
+        out_torques_np = cd.out_torques.to_numpy()[:n_items]  # (n_items, 3)
+        link_indices_np = cd.link_indices.to_numpy()[:n_items]
+        env_indices_np = cd.env_indices.to_numpy()[:n_items]
+
         if is_parallelized:
-            # Group by environment - read directly from Taichi fields
+            # Group by environment using numpy arrays
             env_batches = {}  # {env_idx: {'link_indices': [], 'forces': [], 'torques': []}}
             for i in range(n_items):
-                env_idx = cd.env_indices[i]
+                env_idx = int(env_indices_np[i])
                 if env_idx not in env_batches:
                     env_batches[env_idx] = {"link_indices": [], "forces": [], "torques": []}
-                env_batches[env_idx]["link_indices"].append(cd.link_indices[i])
-                env_batches[env_idx]["forces"].append([cd.out_forces[i][j] for j in range(3)])
-                env_batches[env_idx]["torques"].append([cd.out_torques[i][j] for j in range(3)])
+                env_batches[env_idx]["link_indices"].append(int(link_indices_np[i]))
+                env_batches[env_idx]["forces"].append(out_forces_np[i])
+                env_batches[env_idx]["torques"].append(out_torques_np[i])
 
             # Apply forces per environment
             for env_idx, batch in env_batches.items():
                 for j, link_idx in enumerate(batch["link_indices"]):
                     try:
-                        force_input = np.array(batch["forces"][j]).reshape(1, 1, 3)
-                        torque_input = np.array(batch["torques"][j]).reshape(1, 1, 3)
+                        force_input = batch["forces"][j].reshape(1, 1, 3)
+                        torque_input = batch["torques"][j].reshape(1, 1, 3)
                         # check if force_input is nan
                         if np.isnan(force_input).any() or np.isnan(torque_input).any():
                             gs.logger.warning(
@@ -2719,12 +2716,12 @@ class IPCCoupler(RBC):
                         gs.logger.warning(f"Failed to apply ABD coupling force for link {link_idx}, env {env_idx}: {e}")
                         continue
         else:
-            # Non-parallelized: apply all forces
+            # Non-parallelized: apply all forces using numpy slices
             for i in range(n_items):
-                link_idx = cd.link_indices[i]
+                link_idx = int(link_indices_np[i])
                 try:
-                    force_input = np.array([cd.out_forces[i][j] for j in range(3)]).reshape(1, 3)
-                    torque_input = np.array([cd.out_torques[i][j] for j in range(3)]).reshape(1, 3)
+                    force_input = out_forces_np[i].reshape(1, 3)
+                    torque_input = out_torques_np[i].reshape(1, 3)
                     # check if force_input is nan
                     if np.isnan(force_input).any() or np.isnan(torque_input).any():
                         gs.logger.warning(
@@ -2824,8 +2821,6 @@ class IPCCoupler(RBC):
         - Torque is computed as τ = ∑(r × F) where r is the vector from link center to contact point
         - Link center is computed as the average of all vertex positions
         """
-        import numpy as np
-
         if not total_force_dict:
             return {}
 
@@ -2894,13 +2889,16 @@ class IPCCoupler(RBC):
             self.link_contact_torques_out,
         )
 
-        # Step 6: Extract results into dictionary (read directly from Taichi fields)
+        # Step 6: Extract results using to_numpy() once (avoid per-element access)
+        forces_all = self.link_contact_forces_out.to_numpy()  # (max_links, max_envs, 3)
+        torques_all = self.link_contact_torques_out.to_numpy()  # (max_links, max_envs, 3)
+
         link_forces = {}  # {(link_idx, env_idx): {'force': np.array, 'torque': np.array, 'center': np.array}}
 
         for (link_idx, env_idx), center in link_centers_dict.items():
-            # Read force and torque from Taichi fields
-            force = np.array([self.link_contact_forces_out[link_idx, env_idx][j] for j in range(3)])
-            torque = np.array([self.link_contact_torques_out[link_idx, env_idx][j] for j in range(3)])
+            # Use numpy slices instead of list comprehension
+            force = forces_all[link_idx, env_idx]
+            torque = torques_all[link_idx, env_idx]
 
             # Only include if there's non-zero force/torque
             if np.any(force != 0.0) or np.any(torque != 0.0):
@@ -2919,7 +2917,6 @@ class IPCCoupler(RBC):
         This method extracts contact forces and torques from IPC's contact system
         and stores them for later application to Genesis rigid bodies.
         """
-        import numpy as np
         from uipc import view
         from uipc.geometry import Geometry
 
@@ -2954,16 +2951,28 @@ class IPCCoupler(RBC):
             grad_attr = instances.find("grad")  # Gradient vectors
 
             if i_attr is not None and grad_attr is not None:
-                indices = view(i_attr)
-                gradients = view(grad_attr)
+                # view() returns numpy array directly - no conversion needed
+                indices = view(i_attr)  # shape: (n,)
+                gradients = view(grad_attr)  # shape may be (n, 3) or (n, 3, 3)
 
-                # Accumulate gradients for each vertex
-                # Gradients from IPC are force * dt^2, so divide by dt^2 to get actual force
-                for idx, grad in zip(indices, gradients):
-                    grad_vec = np.array(grad).flatten()
+                # Skip if empty
+                if len(indices) == 0 or gradients.size == 0:
+                    continue
+
+                # Handle different gradient shapes - could be vector (n, 3) or matrix (n, 3, 3)
+                # Flatten each gradient and take first 3 elements
+                if gradients.ndim == 3:
+                    # Matrix gradients (n, 3, 3) -> flatten to (n, 9) -> take first 3
+                    scaled_grads = gradients.reshape(len(gradients), -1)[:, :3] / dt2
+                else:
+                    # Vector gradients (n, 3) -> use directly
+                    scaled_grads = gradients[:, :3] / dt2
+
+                # Accumulate forces per vertex index
+                for i, idx in enumerate(indices):
                     if idx not in total_force_dict:
                         total_force_dict[idx] = np.zeros(3)
-                    total_force_dict[idx] += grad_vec[:3] / dt2  # Convert gradient to force
+                    total_force_dict[idx] += scaled_grads[i]
 
         if not total_force_dict:
             return  # No contact forces to process
@@ -3068,12 +3077,17 @@ class IPCCoupler(RBC):
                 self.out_forces_ti,
             )
 
+            # Export to numpy once (avoid per-element access in loop)
+            out_forces_np = self.out_forces_ti.to_numpy()[:n_links]  # (n_links, 12)
+            link_indices_np = self.link_indices_ti.to_numpy()[:n_links]
+            env_indices_np = self.env_indices_ti.to_numpy()[:n_links]
+
             # Store forces in _external_force_data for animator to use
             for i in range(n_links):
-                link_idx = self.link_indices_ti[i]
-                env_idx = self.env_indices_ti[i]
-                # Read directly from Taichi field, convert to numpy for IPC
-                force_vector = np.array([self.out_forces_ti[i][j] for j in range(12)], dtype=np.float64)
+                link_idx = int(link_indices_np[i])
+                env_idx = int(env_indices_np[i])
+                # Use numpy slice instead of list comprehension
+                force_vector = out_forces_np[i].astype(np.float64)
                 self._external_force_data[(link_idx, env_idx)] = force_vector
 
     def _apply_ipc_contact_forces(self):
@@ -3086,7 +3100,6 @@ class IPCCoupler(RBC):
         and applies them to the corresponding Genesis rigid links.
         """
         import torch
-        import numpy as np
 
         if not self._ipc_contact_forces:
             return  # No contact forces to apply
@@ -3194,8 +3207,6 @@ class IPCCoupler(RBC):
         from uipc.geometry import label_surface
 
         from uipc import view
-        import numpy as np
-        import genesis as gs
 
         # Create ExternalArticulationConstraint if not already created
         if self._ipc_eac is None:

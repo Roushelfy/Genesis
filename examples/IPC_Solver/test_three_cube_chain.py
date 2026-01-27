@@ -76,7 +76,7 @@ def main():
     # Parameters for oscillation
     amplitude1 = 1  # radians for joint1 (Z-axis rotation)
     amplitude2 = 1  # radians for joint2 (Y-axis rotation)
-    period = 5000  # steps per cycle
+    period = 500  # steps per cycle
 
     step = 0
     while scene.viewer.is_alive():
