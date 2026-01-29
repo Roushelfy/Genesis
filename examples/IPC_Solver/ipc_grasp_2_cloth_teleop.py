@@ -1,3 +1,19 @@
+"""
+Keyboard Controls:
+↑	- Move Forward (North)
+↓	- Move Backward (South)
+←	- Move Left (West)
+→	- Move Right (East)
+n	- Move Up
+m	- Move Down
+j/k	- Yaw Left/Right (Rotate around Z axis)
+i/o	- Pitch Up/Down (Rotate around Y axis)
+l/;	- Roll Left/Right (Rotate around X axis)
+u	- Reset Scene
+space	- Press to close gripper, release to open gripper
+esc	- Quit
+"""
+
 import argparse
 import logging
 
@@ -39,21 +55,13 @@ def main():
     gs.init(backend=gs.gpu, logging_level=logging.INFO, performance_mode=True)
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--ipc", action="store_true", default=True)
-    parser.add_argument("--vis_ipc", action="store_true", default=True)
-    parser.add_argument("-v", "--vis", action="store_true", default=True)
-    parser.add_argument(
-        "--coupling_strategy",
-        type=str,
-        default="external_articulation",
-        choices=["external_articulation", "two_way_soft_constraint"],
-    )
+    parser.add_argument("--vis_ipc", action="store_true", default=False)
+    parser.add_argument("-v", "--vis", action="store_true", default=False)
     args = parser.parse_args()
 
     dt = 2e-2
 
-    coupler_options = (
-        gs.options.IPCCouplerOptions(
+    coupler_options = gs.options.IPCCouplerOptions(
             dt=dt,
             gravity=(0.0, 0.0, -9.8),
             ipc_constraint_strength=(100.0, 100.0),
@@ -74,11 +82,7 @@ def main():
             linear_system_tol_rate=1e-3,
             contact_resistance=1e7,
         )
-        if args.ipc
-        else None
-    )
-    # coupler_options = None
-    args.vis = args.vis or args.vis_ipc
+
     rigid_options = gs.options.RigidOptions(
         enable_collision=False,  # Disable rigid collision when using IPC
     )
@@ -100,21 +104,12 @@ def main():
             file="xml/franka_emika_panda/panda.xml",
             pos=(0.0, 0.0, 0.005),
         ),
+        vis_mode="collision",
     )
 
-    if args.ipc:
-        scene.sim.coupler.set_entity_coupling_type(
-            entity=franka,
-            coupling_type=args.coupling_strategy,
-        )
-        scene.sim.coupler.set_ipc_coupling_link_filter(
-            entity=franka,
-            link_names=["left_finger", "right_finger"],
-        )
-    material = (
-        gs.materials.FEM.Elastic(E=1.0e4, nu=0.45, rho=1000.0, model="stable_neohookean")
-        if args.ipc
-        else gs.materials.Rigid()
+    scene.sim.coupler.set_entity_coupling_type(
+        entity=franka,
+        coupling_type="external_articulation",
     )
 
     cloth_asset_path = snapshot_download(
@@ -125,39 +120,38 @@ def main():
         max_workers=1,
     )
 
-    if args.ipc:
-        scene.add_entity(
-            morph=gs.morphs.Mesh(
-                file=f"{cloth_asset_path}/grid40x40.obj",
-                scale=0.5,
-                pos=(0.5, 0.0, 0.1),
-                euler=(90, 0, 0),
-            ),
-            material=gs.materials.FEM.Cloth(
-                E=6e4,
-                nu=0.49,
-                rho=200,
-                thickness=0.001,
-                bending_stiffness=10.0,
-            ),
-            surface=gs.surfaces.Plastic(color=(0.3, 0.1, 0.8, 1.0), double_sided=True),
-        )
-        scene.add_entity(
-            morph=gs.morphs.Mesh(
-                file=f"{cloth_asset_path}/grid20x20.obj",
-                scale=0.3,
-                pos=(0.5, 0.0, 0.14),
-                euler=(90, 0, 0),
-            ),
-            material=gs.materials.FEM.Cloth(
-                E=6e4,
-                nu=0.49,
-                rho=200,
-                thickness=0.001,
-                bending_stiffness=40.0,
-            ),
-            surface=gs.surfaces.Plastic(color=(0.3, 0.5, 0.8, 1.0), double_sided=True),
-        )
+    scene.add_entity(
+        morph=gs.morphs.Mesh(
+            file=f"{cloth_asset_path}/grid40x40.obj",
+            scale=0.5,
+            pos=(0.5, 0.0, 0.1),
+            euler=(90, 0, 0),
+        ),
+        material=gs.materials.FEM.Cloth(
+            E=6e4,
+            nu=0.49,
+            rho=200,
+            thickness=0.001,
+            bending_stiffness=10.0,
+        ),
+        surface=gs.surfaces.Plastic(color=(0.3, 0.1, 0.8, 1.0), double_sided=True),
+    )
+    scene.add_entity(
+        morph=gs.morphs.Mesh(
+            file=f"{cloth_asset_path}/grid20x20.obj",
+            scale=0.3,
+            pos=(0.5, 0.0, 0.14),
+            euler=(90, 0, 0),
+        ),
+        material=gs.materials.FEM.Cloth(
+            E=6e4,
+            nu=0.49,
+            rho=200,
+            thickness=0.001,
+            bending_stiffness=40.0,
+        ),
+        surface=gs.surfaces.Plastic(color=(0.3, 0.5, 0.8, 1.0), double_sided=True),
+    )
 
     # Add 16 rigid cubes uniformly distributed under the cloth (4x4 grid)
     cube_size = 0.05
@@ -200,20 +194,6 @@ def main():
     target_pos = target_init_pos.copy()
     target_R = target_init_R
 
-    print("\nKeyboard Controls:")
-    print("↑\t- Move Forward (North)")
-    print("↓\t- Move Backward (South)")
-    print("←\t- Move Left (West)")
-    print("→\t- Move Right (East)")
-    print("n\t- Move Up")
-    print("m\t- Move Down")
-    print("j/k\t- Yaw Left/Right (Rotate around Z axis)")
-    print("i/o\t- Pitch Up/Down (Rotate around Y axis)")
-    print("l/;\t- Roll Left/Right (Rotate around X axis)")
-    print("u\t- Reset Scene")
-    print("space\t- Press to close gripper, release to open gripper")
-    print("esc\t- Quit")
-
     dpos = 0.003
     drot = 0.02
 
@@ -225,10 +205,6 @@ def main():
 
     print("Scene built successfully!")
 
-    # Increase PD stiffness (k) for all DOFs
-    # current_kp = franka.get_dofs_kp()
-    # franka.set_dofs_kp(current_kp * 5.0)
-
     if scene.viewer is None:
         gs.logger.warning("Viewer is not active. Keyboard input requires the Genesis viewer.")
         return
@@ -238,57 +214,59 @@ def main():
     pyrender_viewer = viewer._pyrender_viewer
     pyrender_viewer.viewer_interaction = ViewerKeyListener(pyrender_viewer.viewer_interaction, pressed_keys)
 
-    try:
-        while scene.viewer.is_alive():
-            if pyglet_key.ESCAPE in pressed_keys:
-                break
+    if args.vis:
+        try:
+            while scene.viewer.is_alive():
+                if pyglet_key.ESCAPE in pressed_keys:
+                    break
 
-            # Position control
-            is_close_gripper = False
-            for key in pressed_keys:
-                if key == pyglet_key.UP:
-                    target_pos[0] -= dpos
-                elif key == pyglet_key.DOWN:
-                    target_pos[0] += dpos
-                elif key == pyglet_key.RIGHT:
-                    target_pos[1] += dpos
-                elif key == pyglet_key.LEFT:
-                    target_pos[1] -= dpos
-                elif key == pyglet_key.N:
-                    target_pos[2] += dpos
-                elif key == pyglet_key.M:
-                    target_pos[2] -= dpos
-                elif key == pyglet_key.J:
-                    target_R = R.from_euler("z", drot) * target_R
-                elif key == pyglet_key.K:
-                    target_R = R.from_euler("z", -drot) * target_R
-                elif key == pyglet_key.I:
-                    target_R = R.from_euler("y", drot) * target_R
-                elif key == pyglet_key.O:
-                    target_R = R.from_euler("y", -drot) * target_R
-                elif key == pyglet_key.L:
-                    target_R = R.from_euler("x", drot) * target_R
-                elif key == pyglet_key.SEMICOLON:
-                    target_R = R.from_euler("x", -drot) * target_R
-                elif key == pyglet_key.SPACE:
-                    is_close_gripper = True
+                # Position control
+                is_close_gripper = False
+                for key in pressed_keys:
+                    if key == pyglet_key.UP:
+                        target_pos[0] -= dpos
+                    elif key == pyglet_key.DOWN:
+                        target_pos[0] += dpos
+                    elif key == pyglet_key.RIGHT:
+                        target_pos[1] += dpos
+                    elif key == pyglet_key.LEFT:
+                        target_pos[1] -= dpos
+                    elif key == pyglet_key.N:
+                        target_pos[2] += dpos
+                    elif key == pyglet_key.M:
+                        target_pos[2] -= dpos
+                    elif key == pyglet_key.J:
+                        target_R = R.from_euler("z", drot) * target_R
+                    elif key == pyglet_key.K:
+                        target_R = R.from_euler("z", -drot) * target_R
+                    elif key == pyglet_key.I:
+                        target_R = R.from_euler("y", drot) * target_R
+                    elif key == pyglet_key.O:
+                        target_R = R.from_euler("y", -drot) * target_R
+                    elif key == pyglet_key.L:
+                        target_R = R.from_euler("x", drot) * target_R
+                    elif key == pyglet_key.SEMICOLON:
+                        target_R = R.from_euler("x", -drot) * target_R
+                    elif key == pyglet_key.SPACE:
+                        is_close_gripper = True
 
-            target_quat = target_R.as_quat(scalar_first=True)
-            target_entity.set_qpos(np.concatenate([target_pos, target_quat]))
-            q, _ = franka.inverse_kinematics(link=ee_link, pos=target_pos, quat=target_quat, return_error=True)
-            franka.control_dofs_position(q[:-2], motors_dof)
+                target_quat = target_R.as_quat(scalar_first=True)
+                target_entity.set_qpos(np.concatenate([target_pos, target_quat]))
+                q, _ = franka.inverse_kinematics(link=ee_link, pos=target_pos, quat=target_quat, return_error=True)
+                franka.control_dofs_position(q[:-2], motors_dof)
 
-            if is_close_gripper:
-                # franka.control_dofs_force(np.array([-3.0, -3.0]), fingers_dof)
-                franka.control_dofs_velocity(np.array([-0.1, -0.1]), fingers_dof)
-            else:
-                # franka.control_dofs_force(np.array([3.0, 3.0]), fingers_dof)
-                franka.control_dofs_velocity(np.array([0.1, 0.1]), fingers_dof)
+                if is_close_gripper:
+                    # franka.control_dofs_force(np.array([-3.0, -3.0]), fingers_dof)
+                    franka.control_dofs_velocity(np.array([-0.1, -0.1]), fingers_dof)
+                else:
+                    # franka.control_dofs_force(np.array([3.0, 3.0]), fingers_dof)
+                    franka.control_dofs_velocity(np.array([0.1, 0.1]), fingers_dof)
 
-            scene.step()
-    finally:
-        pressed_keys.clear()
-
+                scene.step()
+        finally:
+            pressed_keys.clear()
+    else:
+        scene.step()
 
 if __name__ == "__main__":
     main()
