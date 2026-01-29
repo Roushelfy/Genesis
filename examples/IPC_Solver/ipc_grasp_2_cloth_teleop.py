@@ -101,6 +101,7 @@ def main():
             pos=(0.0, 0.0, 0.005),
         ),
     )
+
     if args.ipc:
         scene.sim.coupler.set_entity_coupling_type(
             entity=franka,
@@ -110,6 +111,7 @@ def main():
             entity=franka,
             link_names=["left_finger", "right_finger"],
         )
+
     material = (
         gs.materials.FEM.Elastic(E=1.0e4, nu=0.45, rho=1000.0, model="stable_neohookean")
         if args.ipc
