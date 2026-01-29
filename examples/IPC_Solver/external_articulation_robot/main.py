@@ -55,13 +55,11 @@ abd = AffineBodyConstitution()
 links = scene.objects().create("links")
 body_slots = {}
 
-
 def _make_transform_matrix(rotation: np.ndarray, position: np.ndarray) -> np.ndarray:
     mat = np.eye(4, dtype=np.float32)
     mat[:3, :3] = rotation
     mat[:3, 3] = position
     return mat
-
 
 for body in collision_bodies:
     mesh = trimesh(body.vertices, body.faces)
@@ -162,7 +160,6 @@ if joint_geo_slots:
     joint_count = len(joint_geo_slots)
     mass_mat = np.eye(joint_count, dtype=np.float32)
     import test_mass
-
     mass_mat = test_mass.mass_mat
     mass = articulation["joint_joint"].find("mass")
     view(mass)[:] = mass_mat.flatten()
