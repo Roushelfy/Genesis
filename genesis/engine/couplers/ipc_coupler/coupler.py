@@ -193,6 +193,76 @@ class IPCCoupler(RBC):
                 out_torques[i][j] = angular_torque[j]
 
     @ti.kernel
+    def _compute_coupling_forces_kernel_np(
+        self,
+        n_links: ti.i32,
+        ipc_transforms: ti.types.ndarray(),  # numpy (n, 4, 4)
+        aim_transforms: ti.types.ndarray(),  # numpy (n, 4, 4)
+        link_masses: ti.types.ndarray(),  # numpy (n,)
+        inertia_tensors: ti.types.ndarray(),  # numpy (n, 3, 3)
+        translation_strength: ti.f32,
+        rotation_strength: ti.f32,
+        dt2: ti.f32,
+        out_forces: ti.types.ndarray(),  # numpy (n, 3)
+        out_torques: ti.types.ndarray(),  # numpy (n, 3)
+    ):
+        """
+        Compute coupling forces and torques for all links in parallel.
+        Uses numpy arrays instead of Taichi fields for zero-copy performance.
+        """
+        for i in range(n_links):
+            # Extract positions from transform matrices
+            pos_current = ti.Vector([ipc_transforms[i, 0, 3], ipc_transforms[i, 1, 3], ipc_transforms[i, 2, 3]])
+            pos_aim = ti.Vector([aim_transforms[i, 0, 3], aim_transforms[i, 1, 3], aim_transforms[i, 2, 3]])
+            delta_pos = pos_current - pos_aim
+
+            # Extract rotation matrices
+            R_current = ti.Matrix.zero(ti.f32, 3, 3)
+            R_aim = ti.Matrix.zero(ti.f32, 3, 3)
+            for row in range(3):
+                for col in range(3):
+                    R_current[row, col] = ipc_transforms[i, row, col]
+                    R_aim[row, col] = aim_transforms[i, row, col]
+
+            # Compute linear force
+            mass = link_masses[i]
+            linear_force = translation_strength * mass * delta_pos / dt2
+
+            # Compute relative rotation: R_rel = R_current @ R_aim^T
+            R_rel = R_current @ R_aim.transpose()
+
+            # Extract rotation vector from R_rel using Rodrigues formula
+            trace = R_rel[0, 0] + R_rel[1, 1] + R_rel[2, 2]
+            theta = ti.acos(ti.min(ti.max((trace - 1.0) / 2.0, -1.0), 1.0))
+
+            # Rotation axis (when theta != 0)
+            rotvec = ti.Vector.zero(ti.f32, 3)
+            if theta > 1e-6:
+                axis_x = R_rel[2, 1] - R_rel[1, 2]
+                axis_y = R_rel[0, 2] - R_rel[2, 0]
+                axis_z = R_rel[1, 0] - R_rel[0, 1]
+                norm = ti.sqrt(axis_x * axis_x + axis_y * axis_y + axis_z * axis_z)
+                if norm > 1e-8:
+                    rotvec = theta * ti.Vector([axis_x, axis_y, axis_z]) / norm
+
+            # Load inertia tensor
+            I_local = ti.Matrix.zero(ti.f32, 3, 3)
+            for row in range(3):
+                for col in range(3):
+                    I_local[row, col] = inertia_tensors[i, row, col]
+
+            # Transform to world frame: I_world = R_current @ I_local @ R_current^T
+            I_world = R_current @ I_local @ R_current.transpose()
+
+            # Compute angular torque
+            angular_torque = rotation_strength / dt2 * (I_world @ rotvec)
+
+            # Store results in output arrays
+            for j in ti.static(range(3)):
+                out_forces[i, j] = linear_force[j]
+                out_torques[i, j] = angular_torque[j]
+
+    @ti.kernel
     def _accumulate_contact_forces_kernel(
         self,
         n_contacts: ti.i32,
@@ -998,6 +1068,12 @@ class IPCCoupler(RBC):
             self.MAX_ENVS,
         )
 
+        # ============ AffineBodyStateAccessorFeature for efficient state retrieval ============
+        # Optimized batch ABD state retrieval (initialized in _finalize_ipc)
+        self._abd_state_feature = None  # AffineBodyStateAccessorFeature instance
+        self._abd_state_geo = None  # Geometry for batch data transfer
+        self._abd_body_idx_to_link = {}  # Maps ABD body index -> (env_idx, link_idx, entity_idx)
+
     def build(self) -> None:
         """Build IPC system"""
         # Initialize IPC system
@@ -1715,9 +1791,79 @@ class IPCCoupler(RBC):
         # All mass is handled by IPC, Genesis uses external_kinetic for kinematic coupling
 
     def _finalize_ipc(self):
-        """Finalize IPC setup"""
+        """Finalize IPC setup and initialize AffineBodyStateAccessorFeature"""
         self._ipc_world.init(self._ipc_scene)
         gs.logger.info("IPC world initialized successfully")
+
+        # Initialize AffineBodyStateAccessorFeature for optimized ABD state retrieval
+        self._init_abd_state_accessor()
+
+    def _init_abd_state_accessor(self):
+        """
+        Initialize AffineBodyStateAccessorFeature for efficient batch ABD state retrieval.
+
+        This feature allows O(num_rigid_bodies) retrieval instead of O(total_geometries).
+        Creates index mapping from ABD body index to (env_idx, link_idx, entity_idx) for
+        fast lookups during runtime.
+        """
+        try:
+            from uipc.core import AffineBodyStateAccessorFeature
+            from uipc import builtin
+            import numpy as np
+
+            # Try to get the feature from IPC world
+            self._abd_state_feature = self._ipc_world.features().find(AffineBodyStateAccessorFeature)
+            if self._abd_state_feature is None:
+                gs.logger.warning(
+                    "AffineBodyStateAccessorFeature not available. "
+                    "Using legacy SceneVisitor method for ABD state retrieval (slower)."
+                )
+                return
+
+            body_count = self._abd_state_feature.body_count()
+            gs.logger.info(f"AffineBodyStateAccessorFeature initialized with {body_count} ABD bodies")
+
+            if body_count == 0:
+                # No ABD bodies, feature not needed
+                self._abd_state_feature = None
+                return
+
+            # Create state geometry for batch data transfer
+            self._abd_state_geo = self._abd_state_feature.create_geometry()
+            identity_matrix = np.eye(4, dtype=np.float64)
+            self._abd_state_geo.instances().create(builtin.transform, identity_matrix)
+            self._abd_state_geo.instances().create(builtin.velocity, identity_matrix)
+
+            # Build index mapping: ABD body index -> (env_idx, link_idx, entity_idx)
+            # The order matches the order ABD bodies were added to IPC scene
+            self._abd_body_idx_to_link = {}
+            abd_body_idx = 0
+
+            # Iterate in the same order as _add_rigid_geoms_to_ipc
+            for (env_idx, link_idx), _ in self._link_to_abd_geo.items():
+                entity_idx = self.rigid_solver.links_info.entity_idx[link_idx]
+                self._abd_body_idx_to_link[abd_body_idx] = (env_idx, link_idx, entity_idx)
+                abd_body_idx += 1
+
+            gs.logger.info(
+                f"ABD body index mapping created: {len(self._abd_body_idx_to_link)} entries. "
+                f"Optimized state retrieval enabled (O(N) instead of O(M), N={body_count})."
+            )
+
+        except ImportError:
+            gs.logger.warning(
+                "AffineBodyStateAccessorFeature not available in this libuipc version. "
+                "Using legacy SceneVisitor method for ABD state retrieval (slower)."
+            )
+            self._abd_state_feature = None
+            self._abd_state_geo = None
+        except Exception as e:
+            gs.logger.warning(
+                f"Failed to initialize AffineBodyStateAccessorFeature: {e}. "
+                f"Falling back to legacy SceneVisitor method (slower)."
+            )
+            self._abd_state_feature = None
+            self._abd_state_geo = None
 
     # ============================================================
     # Section 3: Configuration API
@@ -2516,8 +2662,10 @@ class IPCCoupler(RBC):
 
     def _retrieve_rigid_states(self, f, entity_set=None):
         """
-        Handle rigid body IPC: Retrieve ABD transforms/affine matrices after IPC step
-        and apply coupling forces back to Genesis rigid bodies.
+        Handle rigid body IPC: Retrieve ABD transforms/affine matrices after IPC step.
+
+        Uses AffineBodyStateAccessorFeature for optimized batch retrieval if available,
+        otherwise falls back to legacy SceneVisitor method.
 
         Parameters
         ----------
@@ -2526,22 +2674,125 @@ class IPCCoupler(RBC):
         entity_set : set, optional
             Set of entity indices to process. If None, process all.
         """
-        # IPC world advance/retrieve is handled at Scene level
-        # Retrieve ABD transform matrices after IPC simulation
-
         if not hasattr(self, "_ipc_scene") or not hasattr(self.rigid_solver, "list_env_mesh"):
             return
 
+        # Try optimized path first
+        if self._abd_state_feature is not None and self._abd_state_geo is not None:
+            try:
+                abd_data_by_link = self._retrieve_rigid_states_optimized(entity_set)
+                self.abd_data_by_link = abd_data_by_link
+                return
+            except Exception as e:
+                gs.logger.warning(
+                    f"AffineBodyStateAccessorFeature failed: {e}. " f"Falling back to legacy SceneVisitor method."
+                )
+                # Fall through to legacy method
+
+        # Use legacy method
+        abd_data_by_link = self._retrieve_rigid_states_legacy(entity_set)
+        self.abd_data_by_link = abd_data_by_link
+
+    def _retrieve_rigid_states_optimized(self, entity_set=None):
+        """
+        Optimized ABD state retrieval using AffineBodyStateAccessorFeature.
+
+        Performance: O(num_rigid_bodies) instead of O(total_geometries).
+        Also directly populates pre-allocated numpy arrays in coupling_data for
+        force computation, eliminating Python loops and memory allocation overhead.
+
+        Parameters
+        ----------
+        entity_set : set, optional
+            Set of entity indices to process. If None, process all.
+
+        Returns
+        -------
+        dict
+            abd_data_by_link: link_idx -> {env_idx: {transform, aim_transform}}
+        """
+        from uipc import builtin
+
+        rigid_solver = self.rigid_solver
+        abd_data_by_link = {}
+
+        # Single batch copy of ALL ABD states from IPC
+        self._abd_state_feature.copy_to(self._abd_state_geo)
+
+        # Get all transforms at once (array view)
+        trans_attr = self._abd_state_geo.instances().find(builtin.transform)
+        if trans_attr is None:
+            return abd_data_by_link
+
+        transforms = trans_attr.view()  # Shape: (num_bodies, 4, 4)
+
+        # Get pre-allocated numpy arrays from coupling_data
+        cd = self.coupling_data
+        n_items = 0
+
+        # Fill arrays in single pass - direct write to pre-allocated numpy buffers
+        for abd_body_idx, (env_idx, link_idx, entity_idx) in self._abd_body_idx_to_link.items():
+            # Filter by entity_set if specified
+            if entity_set is not None and entity_idx not in entity_set:
+                continue
+
+            # Get aim transform (Genesis state stored before advance)
+            if link_idx not in self._genesis_stored_states or env_idx not in self._genesis_stored_states[link_idx]:
+                continue
+
+            aim_transform = self._genesis_stored_states[link_idx][env_idx]
+
+            # Direct array access from IPC - O(1)
+            transform_matrix = transforms[abd_body_idx]
+
+            # Store data for abd_data_by_link (for compatibility/debugging)
+            if link_idx not in abd_data_by_link:
+                abd_data_by_link[link_idx] = {}
+
+            abd_data_by_link[link_idx][env_idx] = {
+                "transform": transform_matrix.copy(),
+                "aim_transform": aim_transform,
+            }
+
+            # Fill pre-allocated numpy arrays (no allocation, direct write)
+            cd.link_indices[n_items] = link_idx
+            cd.env_indices[n_items] = env_idx
+            cd.ipc_transforms[n_items] = transform_matrix
+            cd.aim_transforms[n_items] = aim_transform
+            cd.link_masses[n_items] = rigid_solver.links_info.inertial_mass[link_idx]
+            cd.inertia_tensors[n_items] = rigid_solver.links_info.inertial_i[link_idx].to_numpy()
+            n_items += 1
+
+        # Store count for _apply_abd_coupling_forces
+        cd.n_items = n_items
+
+        return abd_data_by_link
+
+    def _retrieve_rigid_states_legacy(self, entity_set=None):
+        """
+        Legacy ABD state retrieval using SceneVisitor.
+
+        Performance: O(total_geometries) - iterates all IPC geometries.
+
+        Parameters
+        ----------
+        entity_set : set, optional
+            Set of entity indices to process. If None, process all.
+
+        Returns
+        -------
+        dict
+            abd_data_by_link: link_idx -> {env_idx: {transform, aim_transform}}
+        """
         from uipc import builtin, view
         from uipc.backend import SceneVisitor
         from uipc.geometry import SimplicialComplexSlot
-        import genesis.utils.geom as gu
 
         rigid_solver = self.rigid_solver
         visitor = SceneVisitor(self._ipc_scene)
 
         # Collect ABD geometries and their constraint data using metadata
-        abd_data_by_link = {}  # link_idx -> {env_idx: {transform, gradient, mass}}
+        abd_data_by_link = {}  # link_idx -> {env_idx: {transform, aim_transform}}
 
         for geo_slot in visitor.geometries():
             if isinstance(geo_slot, SimplicialComplexSlot):
@@ -2584,86 +2835,42 @@ class IPCCoupler(RBC):
                         gs.logger.warning(f"Failed to retrieve ABD geometry data: {e}")
                         continue
 
-        # Store transforms for later access
-        self.abd_data_by_link = abd_data_by_link
+        return abd_data_by_link
 
     def _apply_abd_coupling_forces(self, entity_set=None):
         """
-        Apply coupling forces from IPC ABD constraint to Genesis rigid bodies using taichi kernel.
+        Apply coupling forces from IPC ABD constraint to Genesis rigid bodies using Taichi kernel.
+
+        Data has already been populated in coupling_data by _retrieve_rigid_states_optimized,
+        so this function just calls the kernel and applies the results.
 
         This ensures action-reaction force consistency:
         - IPC constraint force: G_ipc = M * (q_ipc^{n+1} - q_genesis^n)
         - Genesis reaction force: F_genesis = M * (q_ipc^{n+1} - q_genesis^n) = G_ipc
-
-        Where:
-        - q_ipc^{n+1}: IPC ABD position after solve (from geo.transforms())
-        - q_genesis^n: Genesis position before IPC advance (stored in _genesis_stored_states)
-        - M: Mass matrix scaled by constraint strengths
 
         Parameters
         ----------
         entity_set : set, optional
             Set of entity indices to process. If None, process all two_way_soft_constraint entities.
         """
-        import torch
+        import numpy as np
 
-        rigid_solver = self.rigid_solver
-        strength_tuple = self.options.ipc_constraint_strength
-        translation_strength = float(strength_tuple[0])
-        rotation_strength = float(strength_tuple[1])
-
-        dt = self.sim._dt
-        dt2 = dt * dt
-
-        # Collect all link data directly into pre-allocated Taichi buffers
         cd = self.coupling_data
-        n_items = 0
-
-        for link_idx, env_data in self.abd_data_by_link.items():
-            # Filter by entity_set if specified
-            entity_idx = rigid_solver.links_info.entity_idx[link_idx]
-            if entity_set is not None and entity_idx not in entity_set:
-                continue
-
-            for env_idx, data in env_data.items():
-                ipc_transform = data.get("transform")  # Current transform after IPC solve
-                aim_transform = data.get("aim_transform")  # Target from Genesis
-
-                if ipc_transform is None or aim_transform is None:
-                    continue
-
-                try:
-                    # Write directly to Taichi fields
-                    cd.link_indices[n_items] = link_idx
-                    cd.env_indices[n_items] = env_idx
-
-                    # Copy transform matrices
-                    for row in range(4):
-                        for col in range(4):
-                            cd.ipc_transforms[n_items][row, col] = ipc_transform[row, col]
-                            cd.aim_transforms[n_items][row, col] = aim_transform[row, col]
-
-                    cd.link_masses[n_items] = float(rigid_solver.links_info.inertial_mass[link_idx])
-
-                    # Copy inertia tensor
-                    inertia = rigid_solver.links_info.inertial_i[link_idx]
-                    for row in range(3):
-                        for col in range(3):
-                            cd.inertia_tensors[n_items][row, col] = inertia[row, col]
-
-                    n_items += 1
-                except Exception as e:
-                    gs.logger.warning(f"Failed to collect data for link {link_idx}, env {env_idx}: {e}")
-                    continue
+        n_items = cd.n_items
 
         if n_items == 0:
             return  # No links to process
 
-        cd.n_items[None] = n_items
+        # Get coupling parameters
+        strength_tuple = self.options.ipc_constraint_strength
+        translation_strength = float(strength_tuple[0])
+        rotation_strength = float(strength_tuple[1])
+        dt = self.sim._dt
+        dt2 = dt * dt
 
-        # Call taichi kernel with pre-allocated fields
-        # IMPORTANT: Pass Taichi fields directly, not numpy arrays, so kernel can write results
-        self._compute_coupling_forces_kernel(
+        # Call optimized Taichi kernel with numpy arrays (zero-copy)
+        # Data is already in cd arrays from _retrieve_rigid_states_optimized
+        self._compute_coupling_forces_kernel_np(
             n_items,
             cd.ipc_transforms,
             cd.aim_transforms,
@@ -2677,13 +2884,14 @@ class IPCCoupler(RBC):
         )
 
         # Apply forces to Genesis rigid bodies - OPTIMIZED batch processing
+        rigid_solver = self.rigid_solver
         is_parallelized = self.sim._scene.n_envs > 0
 
-        # Export Taichi fields to numpy once (avoid per-element access in loops)
-        out_forces_np = cd.out_forces.to_numpy()[:n_items]  # (n_items, 3)
-        out_torques_np = cd.out_torques.to_numpy()[:n_items]  # (n_items, 3)
-        link_indices_np = cd.link_indices.to_numpy()[:n_items]
-        env_indices_np = cd.env_indices.to_numpy()[:n_items]
+        # Use slices of pre-allocated arrays (no allocation)
+        out_forces_np = cd.out_forces[:n_items]  # (n_items, 3)
+        out_torques_np = cd.out_torques[:n_items]  # (n_items, 3)
+        link_indices_np = cd.link_indices[:n_items]
+        env_indices_np = cd.env_indices[:n_items]
 
         if is_parallelized:
             # Group by environment using numpy arrays

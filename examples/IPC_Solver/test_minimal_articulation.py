@@ -21,7 +21,7 @@ def main():
         contact_friction_mu=0.5,
         IPC_self_contact=False,
         enable_ipc_gui=True,
-        disable_ipc_logging=False,
+        disable_ipc_logging=True,
         newton_velocity_tol=5e-4,
     )
 
@@ -50,6 +50,10 @@ def main():
 
     # Create simple two-cube robot with one joint
     robot = scene.add_entity(gs.morphs.URDF(file="urdf/simple/two_cube_joint.urdf", pos=(0.0, 0.0, 0.5), fixed=True))
+    scene.sim.coupler.set_entity_coupling_type(
+        entity=robot,
+        coupling_type="two_way_soft_constraint",
+    )
 
     # Build scene
     print("Building scene...")
