@@ -249,11 +249,13 @@ def extract_articulated_joints(entity):
         Dictionary containing:
         - 'revolute_joints': List of revolute joints
         - 'prismatic_joints': List of prismatic joints
+        - 'joint_qpos_indices': List of local q-space indices for each joint
         - 'joint_dof_indices': List of local DOF indices for each joint
         - 'n_joints': Total number of joints
     """
     revolute_joints = []
     prismatic_joints = []
+    joint_qpos_indices = []
     joint_dof_indices = []
 
     for link_joints in entity._joints:
@@ -266,9 +268,11 @@ def extract_articulated_joints(entity):
 
             if joint.type == gs.JOINT_TYPE.REVOLUTE:
                 revolute_joints.append(joint)
+                joint_qpos_indices.append(joint.qs_idx_local[0])
                 joint_dof_indices.append(joint.dofs_idx_local[0])
             elif joint.type == gs.JOINT_TYPE.PRISMATIC:
                 prismatic_joints.append(joint)
+                joint_qpos_indices.append(joint.qs_idx_local[0])
                 joint_dof_indices.append(joint.dofs_idx_local[0])
 
     n_joints = len(revolute_joints) + len(prismatic_joints)
@@ -282,6 +286,7 @@ def extract_articulated_joints(entity):
     return {
         "revolute_joints": revolute_joints,
         "prismatic_joints": prismatic_joints,
+        "joint_qpos_indices": joint_qpos_indices,
         "joint_dof_indices": joint_dof_indices,
         "n_joints": n_joints,
     }

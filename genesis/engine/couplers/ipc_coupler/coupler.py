@@ -403,74 +403,6 @@ class IPCCoupler(RBC):
     # ---------- 1.3 Transform and initialization kernels ----------
 
     @ti.kernel
-    def _batch_pos_quat_to_transform_kernel(
-        self,
-        n_links: ti.i32,
-        positions: ti.template(),  # Taichi Vector field (max_links, 3)
-        quaternions: ti.template(),  # Taichi Vector field (max_links, 4) - wxyz format
-        out_transforms: ti.template(),  # Taichi Matrix field (max_links, 4, 4)
-    ):
-        """
-        Convert batch of positions and quaternions to 4x4 transform matrices.
-        Quaternion format: [w, x, y, z]
-        Uses Taichi fields to avoid numpy copying overhead.
-        """
-        for i in range(n_links):
-            # Extract quaternion components
-            w = quaternions[i][0]
-            x = quaternions[i][1]
-            y = quaternions[i][2]
-            z = quaternions[i][3]
-
-            # Compute rotation matrix from quaternion
-            # R = I + 2*s*K + 2*K^2, where s = w, K = skew(x,y,z)
-            xx = x * x
-            yy = y * y
-            zz = z * z
-            xy = x * y
-            xz = x * z
-            yz = y * z
-            wx = w * x
-            wy = w * y
-            wz = w * z
-
-            # Rotation matrix (3x3)
-            R00 = 1.0 - 2.0 * (yy + zz)
-            R01 = 2.0 * (xy - wz)
-            R02 = 2.0 * (xz + wy)
-
-            R10 = 2.0 * (xy + wz)
-            R11 = 1.0 - 2.0 * (xx + zz)
-            R12 = 2.0 * (yz - wx)
-
-            R20 = 2.0 * (xz - wy)
-            R21 = 2.0 * (yz + wx)
-            R22 = 1.0 - 2.0 * (xx + yy)
-
-            # Build 4x4 transform matrix
-            # [R  t]
-            # [0  1]
-            out_transforms[i][0, 0] = R00
-            out_transforms[i][0, 1] = R01
-            out_transforms[i][0, 2] = R02
-            out_transforms[i][0, 3] = positions[i][0]
-
-            out_transforms[i][1, 0] = R10
-            out_transforms[i][1, 1] = R11
-            out_transforms[i][1, 2] = R12
-            out_transforms[i][1, 3] = positions[i][1]
-
-            out_transforms[i][2, 0] = R20
-            out_transforms[i][2, 1] = R21
-            out_transforms[i][2, 2] = R22
-            out_transforms[i][2, 3] = positions[i][2]
-
-            out_transforms[i][3, 0] = 0.0
-            out_transforms[i][3, 1] = 0.0
-            out_transforms[i][3, 2] = 0.0
-            out_transforms[i][3, 3] = 1.0
-
-    @ti.kernel
     def _store_link_states_kernel(
         self,
         transform_data: ti.template(),
@@ -580,144 +512,6 @@ class IPCCoupler(RBC):
         for i, env in ti.ndrange(n_items, max_envs):
             transform_data.input_valid[i, env] = 0
 
-    @ti.kernel
-    def _filter_and_collect_batch_outputs_kernel(
-        self,
-        transform_data: ti.template(),
-        n_items: ti.i32,
-        max_envs: ti.i32,
-        ipc_only: ti.i32,  # 1 for True, 0 for False
-    ):
-        """
-        Complete pipeline kernel:
-        1. Filter links based on ipc_only flag
-        2. Extract pos/quat from transform matrices
-        3. Separate simple vs complex cases
-        4. Compact output per environment into batch arrays
-        """
-        # Reset batch output counts
-        for env in range(max_envs):
-            transform_data.output_count_per_env[env] = 0
-
-        # Reset complex case flags
-        for entity_idx, env in ti.ndrange(200, max_envs):  # max_links as max entities
-            transform_data.complex_case_flags[entity_idx, env] = 0
-
-        # Process all (link, env) pairs in parallel
-        for i, env in ti.ndrange(n_items, max_envs):
-            if transform_data.input_valid[i, env] == 0:
-                continue
-
-            link_idx = transform_data.input_link_indices[i]
-            env_idx = transform_data.input_env_indices[i, env]
-            entity_idx = transform_data.link_to_entity_map[link_idx]
-
-            if entity_idx < 0:
-                continue
-
-            # Check user modification flag
-            if transform_data.user_modified_flags[entity_idx, env_idx] == 1:
-                continue
-
-            # Check filtering criteria
-            passes_filter = 0
-            if ipc_only == 1:
-                # Must be both IPC-only AND in IPC filters
-                if transform_data.ipc_only_flags[link_idx] == 1 and transform_data.ipc_filter_flags[link_idx] == 1:
-                    passes_filter = 1
-            else:
-                # Must be in IPC filters
-                if transform_data.ipc_filter_flags[link_idx] == 1:
-                    passes_filter = 1
-
-            if passes_filter == 0:
-                continue
-
-            # Check if this is a simple case: single base link
-            base_link_idx = transform_data.entity_base_link_map[entity_idx]
-            n_links = transform_data.entity_n_links_map[entity_idx]
-
-            is_simple_case = n_links == 1 and link_idx == base_link_idx
-
-            if is_simple_case:
-                # Extract rotation matrix (3x3)
-                R = ti.Matrix(
-                    [
-                        [
-                            transform_data.input_transforms[i, env][0, 0],
-                            transform_data.input_transforms[i, env][0, 1],
-                            transform_data.input_transforms[i, env][0, 2],
-                        ],
-                        [
-                            transform_data.input_transforms[i, env][1, 0],
-                            transform_data.input_transforms[i, env][1, 1],
-                            transform_data.input_transforms[i, env][1, 2],
-                        ],
-                        [
-                            transform_data.input_transforms[i, env][2, 0],
-                            transform_data.input_transforms[i, env][2, 1],
-                            transform_data.input_transforms[i, env][2, 2],
-                        ],
-                    ]
-                )
-
-                # Extract position
-                pos = ti.Vector(
-                    [
-                        transform_data.input_transforms[i, env][0, 3],
-                        transform_data.input_transforms[i, env][1, 3],
-                        transform_data.input_transforms[i, env][2, 3],
-                    ]
-                )
-
-                # Convert rotation matrix to quaternion using Shepperd's method
-                trace = R[0, 0] + R[1, 1] + R[2, 2]
-
-                qw = 0.0
-                qx = 0.0
-                qy = 0.0
-                qz = 0.0
-
-                if trace > 0.0:
-                    s = ti.sqrt(trace + 1.0)
-                    qw = s * 0.5
-                    s = 0.5 / s
-                    qx = (R[2, 1] - R[1, 2]) * s
-                    qy = (R[0, 2] - R[2, 0]) * s
-                    qz = (R[1, 0] - R[0, 1]) * s
-                else:
-                    if R[0, 0] >= R[1, 1] and R[0, 0] >= R[2, 2]:
-                        s = ti.sqrt(1.0 + R[0, 0] - R[1, 1] - R[2, 2])
-                        qx = s * 0.5
-                        s = 0.5 / s
-                        qw = (R[2, 1] - R[1, 2]) * s
-                        qy = (R[0, 1] + R[1, 0]) * s
-                        qz = (R[0, 2] + R[2, 0]) * s
-                    elif R[1, 1] > R[2, 2]:
-                        s = ti.sqrt(1.0 + R[1, 1] - R[0, 0] - R[2, 2])
-                        qy = s * 0.5
-                        s = 0.5 / s
-                        qw = (R[0, 2] - R[2, 0]) * s
-                        qx = (R[0, 1] + R[1, 0]) * s
-                        qz = (R[1, 2] + R[2, 1]) * s
-                    else:
-                        s = ti.sqrt(1.0 + R[2, 2] - R[0, 0] - R[1, 1])
-                        qz = s * 0.5
-                        s = 0.5 / s
-                        qw = (R[1, 0] - R[0, 1]) * s
-                        qx = (R[0, 2] + R[2, 0]) * s
-                        qy = (R[1, 2] + R[2, 1]) * s
-
-                # Atomically add to batch output for this environment
-                idx = ti.atomic_add(transform_data.output_count_per_env[env_idx], 1)
-                transform_data.output_link_idx[env_idx, idx] = link_idx
-                transform_data.output_pos[env_idx, idx] = pos
-                transform_data.output_quat[env_idx, idx] = ti.Vector([qw, qx, qy, qz])
-                transform_data.output_entity_idx[env_idx, idx] = entity_idx
-            else:
-                # Complex case: mark for later IK processing
-                transform_data.complex_case_flags[entity_idx, env_idx] = 1
-
     # ==================== Articulation Coupling Kernels ====================
 
     @ti.kernel
@@ -737,12 +531,12 @@ class IPCCoupler(RBC):
             n_joints = articulation_data.entity_n_joints[entity_idx]
 
             for joint_idx in range(n_joints):
-                # Get the DOF index for this joint
-                dof_idx = articulation_data.joint_dof_indices[entity_idx, joint_idx]
+                # Get the q-space index for this joint
+                qpos_idx = articulation_data.joint_qpos_indices[entity_idx, joint_idx]
 
                 # Compute delta_theta_tilde = qpos_current - ref_dof_prev
-                qpos_curr = articulation_data.qpos_current[entity_idx, env_idx, dof_idx]
-                qpos_prev = articulation_data.ref_dof_prev[entity_idx, env_idx, dof_idx]
+                qpos_curr = articulation_data.qpos_current[entity_idx, env_idx, qpos_idx]
+                qpos_prev = articulation_data.ref_dof_prev[entity_idx, env_idx, qpos_idx]
                 articulation_data.delta_theta_tilde[entity_idx, env_idx, joint_idx] = qpos_curr - qpos_prev
 
     @ti.kernel
@@ -764,19 +558,19 @@ class IPCCoupler(RBC):
             n_dofs = articulation_data.entity_n_dofs[entity_idx]
             n_joints = articulation_data.entity_n_joints[entity_idx]
 
-            # First, copy all ref_dof_prev to qpos_new
+            # Copy ref_dof_prev to qpos_new
             for dof_idx in range(n_dofs):
                 articulation_data.qpos_new[entity_idx, env_idx, dof_idx] = articulation_data.ref_dof_prev[
                     entity_idx, env_idx, dof_idx
                 ]
 
-            # Then, update DOFs corresponding to joints
+            # Then, update qpos corresponding to joints
             for joint_idx in range(n_joints):
-                dof_idx = articulation_data.joint_dof_indices[entity_idx, joint_idx]
-                if dof_idx < n_dofs:
+                qpos_idx = articulation_data.joint_qpos_indices[entity_idx, joint_idx]
+                if qpos_idx < n_dofs:
                     delta_theta = articulation_data.delta_theta_ipc[entity_idx, env_idx, joint_idx]
-                    articulation_data.qpos_new[entity_idx, env_idx, dof_idx] = (
-                        articulation_data.ref_dof_prev[entity_idx, env_idx, dof_idx] + delta_theta
+                    articulation_data.qpos_new[entity_idx, env_idx, qpos_idx] = (
+                        articulation_data.ref_dof_prev[entity_idx, env_idx, qpos_idx] + delta_theta
                     )
 
     @ti.kernel
@@ -1055,6 +849,10 @@ class IPCCoupler(RBC):
         # Mapping from link_idx to ABD geometry slot for articulation constraint
         # Structure: {(env_idx, link_idx): abd_geometry_slot}
         self._link_to_abd_slot = {}
+
+        # Track primary ABD bodies (excludes merged link aliases from fixed joints)
+        # Only primary bodies are used to build _abd_body_idx_to_link mapping
+        self._primary_abd_links = []  # List of (env_idx, link_idx) tuples
 
         # Link collision settings for IPC
         # Structure: {entity_idx: {link_idx: bool}} - True to enable collision, False to disable
@@ -1451,7 +1249,7 @@ class IPCCoupler(RBC):
 
                 link_idx = rigid_solver.geoms_info.link_idx[i_g]
                 entity_idx = rigid_solver.links_info.entity_idx[link_idx]
-                entity = rigid_solver._entities[entity_idx]
+                entity = rigid_solver._entities[entity_idx]  # Get entity once and reuse
 
                 # Check if this entity has a coupling type (None means skip entirely)
                 entity_coupling_type = self._entity_coupling_types.get(entity_idx)
@@ -1626,6 +1424,15 @@ class IPCCoupler(RBC):
                         # Check if this entity is IPC-only
                         is_ipc_only = entity_coupling_type == "ipc_only"
 
+                        # Pre-calculate conditional logic for STC and animator (used later)
+                        # This condition determines if this link needs SoftTransformConstraint and animator
+                        is_soft_constraint_target = entity_coupling_type == "two_way_soft_constraint" or (
+                            entity_coupling_type == "external_articulation"
+                            and link_idx == entity.base_link_idx
+                            and not entity.links[0].is_fixed
+                            and not self.options.free_base_driven_by_ipc
+                        )
+
                         entity_rho = rigid_solver._entities[link_data["entity_idx"]].material.rho
 
                         # Always use full density (no mass splitting)
@@ -1635,13 +1442,27 @@ class IPCCoupler(RBC):
                             mass_density=entity_rho,
                         )
 
-                        # Set external_kinetic=1 for all ABD objects
+                        # Set external_kinetic attribute:
+                        # - For free_base_driven_by_ipc=True: keep external_kinetic=0 for non-fixed base link
+                        # - Otherwise: set external_kinetic=1 for all ABD objects
                         from uipc import builtin, view
+
+                        # Check if this is a free base driven by IPC (no entity retrieval needed - already have it)
+                        is_free_base_ipc_driven = (
+                            entity_coupling_type == "external_articulation"
+                            and link_idx == entity.base_link_idx
+                            and not entity.links[0].is_fixed
+                            and self.options.free_base_driven_by_ipc
+                        )
 
                         external_kinetic_attr = merged_mesh.instances().find(builtin.external_kinetic)
                         if external_kinetic_attr is not None:
                             external_kinetic_view = view(external_kinetic_attr)
-                            external_kinetic_view[:] = 1
+                            # Don't set external_kinetic for IPC-driven free base
+                            if not is_free_base_ipc_driven:
+                                external_kinetic_view[:] = 1
+                            else:
+                                external_kinetic_view[:] = 0
 
                         # Set is_fixed attribute for base link (when link.is_fixed=True)
                         # This fixes the base link in IPC, matching test_external_articulation_constraint.py
@@ -1666,8 +1487,13 @@ class IPCCoupler(RBC):
                             initial_transform = trans_view[0]
                             ref_dof_prev_view[0] = affine_body.transform_to_q(initial_transform)
 
-                        # Apply soft transform constraints for non-IPC-only links
-                        if not is_ipc_only:
+                        # Apply soft transform constraints:
+                        # - For two_way_soft_constraint: all links need STC
+                        # - For external_articulation with non-fixed base: only base link needs STC (unless free_base_driven_by_ipc=True)
+                        # - For ipc_only: no STC needed
+                        # This prevents over-constraint that causes Newton iteration convergence issues
+                        # Use pre-calculated is_soft_constraint_target (no need to retrieve entity again)
+                        if is_soft_constraint_target:
                             from uipc.constitution import SoftTransformConstraint
 
                             if not hasattr(self, "_ipc_stc"):
@@ -1707,10 +1533,12 @@ class IPCCoupler(RBC):
                         # Create geometry and get slot
                         abd_slot, _ = rigid_obj.geometries().create(merged_mesh)
 
-                        # Set up animator for this link (only for two_way_soft_constraint)
-                        # For external_articulation, the ExternalArticulationConstraint handles the coupling
-                        # For ipc_only, no animator needed - transforms are directly set from IPC
-                        if entity_coupling_type == "two_way_soft_constraint":
+                        # Set up animator for this link:
+                        # - For two_way_soft_constraint: all links need animator
+                        # - For external_articulation with non-fixed base: only base link needs animator (unless free_base_driven_by_ipc=True)
+                        # - For ipc_only: no animator needed - transforms are directly set from IPC
+                        # Use pre-calculated is_soft_constraint_target (no need to retrieve entity again)
+                        if is_soft_constraint_target:
                             if not hasattr(self, "_ipc_animator"):
                                 self._ipc_animator = scene.animator()
 
@@ -1771,8 +1599,12 @@ class IPCCoupler(RBC):
                         self._link_to_abd_geo[(i_b, link_idx)] = merged_mesh
                         self._link_to_abd_slot[(i_b, link_idx)] = abd_slot
 
+                        # Record this as a primary ABD body (not an alias from fixed joint merging)
+                        self._primary_abd_links.append((i_b, link_idx))
+
                         # Also store mappings for all original links that were merged into this target
                         # This allows joints connecting to child links (via fixed joints) to find the merged ABD
+                        # NOTE: These are aliases and NOT added to _primary_abd_links
                         if "original_to_target" in link_data:
                             for original_link_idx in link_data["original_to_target"].keys():
                                 self._link_to_abd_geo[(i_b, original_link_idx)] = merged_mesh
@@ -1836,19 +1668,27 @@ class IPCCoupler(RBC):
 
             # Build index mapping: ABD body index -> (env_idx, link_idx, entity_idx)
             # The order matches the order ABD bodies were added to IPC scene
+            # IMPORTANT: Only iterate over primary ABD bodies (not merged link aliases)
             self._abd_body_idx_to_link = {}
             abd_body_idx = 0
 
-            # Iterate in the same order as _add_rigid_geoms_to_ipc
-            for (env_idx, link_idx), _ in self._link_to_abd_geo.items():
+            # Only iterate over primary ABD bodies (excludes merged link aliases)
+            for env_idx, link_idx in self._primary_abd_links:
                 entity_idx = self.rigid_solver.links_info.entity_idx[link_idx]
                 self._abd_body_idx_to_link[abd_body_idx] = (env_idx, link_idx, entity_idx)
                 abd_body_idx += 1
 
-            gs.logger.info(
-                f"ABD body index mapping created: {len(self._abd_body_idx_to_link)} entries. "
-                f"Optimized state retrieval enabled (O(N) instead of O(M), N={body_count})."
-            )
+            # Verify the count matches IPC's ABD body count
+            if abd_body_idx != body_count:
+                gs.logger.warning(
+                    f"ABD body count mismatch: expected {body_count}, got {abd_body_idx}. "
+                    f"This may cause indexing errors in AffineBodyStateAccessorFeature."
+                )
+            else:
+                gs.logger.info(
+                    f"ABD body index mapping created: {len(self._abd_body_idx_to_link)} entries. "
+                    f"Optimized state retrieval enabled (O(N) instead of O(M), N={body_count})."
+                )
 
         except ImportError:
             gs.logger.warning(
@@ -2253,8 +2093,11 @@ class IPCCoupler(RBC):
         self._retrieve_fem_states(f)
 
         # ========== Step 5: Post-advance processing (per entity type) ==========
-        # First, retrieve rigid states for all entities that need it (two_way + ipc_only)
-        rigid_entities = two_way_entities + ipc_only_entities
+        # Get articulation entities with non-fixed base (pre-computed during build)
+        articulation_with_non_fixed_base = getattr(self, "_articulation_with_non_fixed_base", [])
+
+        # Retrieve rigid states for: two_way + ipc_only + articulation with non-fixed base
+        rigid_entities = two_way_entities + ipc_only_entities + articulation_with_non_fixed_base
         if rigid_entities:
             self._retrieve_rigid_states(f, set(rigid_entities))
 
@@ -2300,6 +2143,7 @@ class IPCCoupler(RBC):
                 entity = art_data["entity"]
                 env_idx = art_data["env_idx"]
                 n_joints = art_data["n_joints"]
+                joint_qpos_indices = art_data["joint_qpos_indices"]
                 joint_dof_indices = art_data["joint_dof_indices"]
 
                 # Get actual qpos size from the entity
@@ -2319,9 +2163,10 @@ class IPCCoupler(RBC):
                 ad.entity_n_joints[idx] = n_joints
                 ad.entity_dof_start[idx] = entity.dof_start
 
-                # Fill joint to DOF mapping
-                for j_idx, dof_idx in enumerate(joint_dof_indices):
-                    ad.joint_dof_indices[idx, j_idx] = dof_idx
+                # Fill joint to qpos and DOF mappings
+                for j_idx in range(n_joints):
+                    ad.joint_qpos_indices[idx, j_idx] = joint_qpos_indices[j_idx]
+                    ad.joint_dof_indices[idx, j_idx] = joint_dof_indices[j_idx]
 
             self._articulation_metadata_initialized = True
 
@@ -2346,6 +2191,11 @@ class IPCCoupler(RBC):
             for joint_idx, joint in enumerate(art_data["revolute_joints"] + art_data["prismatic_joints"]):
                 child_link_idx = joint.link.idx
                 abd_geo_slot = self._find_abd_geometry_slot_by_link(child_link_idx, env_idx)
+
+                # Check if abd_geo_slot is None before accessing it
+                if abd_geo_slot is None:
+                    continue
+
                 abd_geo = abd_geo_slot.geometry()
 
                 if abd_geo is not None and self.options.sync_dof_enable:
@@ -2430,12 +2280,79 @@ class IPCCoupler(RBC):
 
             # Use slice instead of list comprehension
             qpos_new_np = qpos_new_all[idx, env_idx, :n_dofs].astype(np.float32)
-            qpos_tensor = gs.torch.as_tensor(qpos_new_np, dtype=gs.tc_float, device=gs.device)
-
+            # Set qpos for all DOFs
+            # Note: For non-fixed base robots, qpos_new already preserves base DOFs from ref_dof_prev
+            # (only joint DOFs were updated by _compute_qpos_new_kernel)
+            # The base link transform will be overwritten later using IPC data
             if self.sim._B > 1:
-                entity.set_qpos(qpos_tensor, envs_idx=env_idx, zero_velocity=False)
+                entity.set_qpos(qpos_new_np, envs_idx=env_idx, zero_velocity=False)
             else:
-                entity.set_qpos(qpos_tensor, zero_velocity=False)
+                entity.set_qpos(qpos_new_np, zero_velocity=False)
+
+            # For non-fixed base robots, apply base link transform and velocity from IPC
+            has_non_fixed_base = art_data.get("has_non_fixed_base", False)
+            if has_non_fixed_base:
+                base_link_idx = art_data["base_link_idx"]
+
+                # Get IPC transform and velocity for base link from abd_data_by_link
+                if hasattr(self, "abd_data_by_link") and base_link_idx in self.abd_data_by_link:
+                    env_data = self.abd_data_by_link[base_link_idx]
+                    if env_idx in env_data:
+                        ipc_transform = env_data[env_idx].get("transform")
+                        if ipc_transform is not None:
+                            pos, quat_wxyz = decompose_transform_matrix(ipc_transform)
+
+                            if self.sim._B > 1:
+                                self.rigid_solver.set_base_links_pos(
+                                    pos, [base_link_idx], envs_idx=env_idx, relative=False
+                                )
+                                self.rigid_solver.set_base_links_quat(
+                                    quat_wxyz, [base_link_idx], envs_idx=env_idx, relative=False
+                                )
+                            else:
+                                self.rigid_solver.set_base_links_pos(
+                                    pos, [base_link_idx], envs_idx=None, relative=False
+                                )
+                                self.rigid_solver.set_base_links_quat(
+                                    quat_wxyz, [base_link_idx], envs_idx=None, relative=False
+                                )
+
+                            # Set base link velocities from IPC if available
+                            ipc_velocity = env_data[env_idx].get("velocity")
+                            if ipc_velocity is not None:
+                                # Extract linear velocity (last column, first 3 elements)
+                                linear_vel = ipc_velocity[:3, 3]
+
+                                # Extract angular velocity from rotation rate matrix
+                                # velocity[:3, :3] = dR/dt (rotation matrix derivative)
+                                # omega_skew = dR/dt @ R^T (skew-symmetric matrix of angular velocity)
+                                # See _compute_coupling_forces_kernel_np for similar rotation handling
+                                R_current = ipc_transform[:3, :3]
+                                dR_dt = ipc_velocity[:3, :3]
+                                omega_skew = dR_dt @ R_current.T
+
+                                # Extract angular velocity from skew-symmetric matrix
+                                # omega_skew = [[0, -wz, wy], [wz, 0, -wx], [-wy, wx, 0]]
+                                angular_vel = np.array(
+                                    [
+                                        (omega_skew[2, 1] - omega_skew[1, 2]) / 2.0,
+                                        (omega_skew[0, 2] - omega_skew[2, 0]) / 2.0,
+                                        (omega_skew[1, 0] - omega_skew[0, 1]) / 2.0,
+                                    ]
+                                )
+
+                                # Combine linear and angular velocity into 6-DOF velocity vector
+                                # For base link: first 6 DOFs are [linear_vel (3), angular_vel (3)]
+                                base_dof_velocity = np.concatenate([linear_vel, angular_vel])
+
+                                # Set velocity for base link's 6 DOFs (indices 0-5 in entity's DOF space)
+                                base_dofs_local = list(range(6))  # First 6 DOFs for non-fixed base
+                                if self.sim._B > 1:
+                                    entity.set_dofs_velocity(
+                                        base_dof_velocity, dofs_idx_local=base_dofs_local, envs_idx=env_idx
+                                    )
+                                else:
+                                    entity.set_dofs_velocity(base_dof_velocity, dofs_idx_local=base_dofs_local)
 
         # Update ref_dof_prev for next timestep
         self._update_ref_dof_prev_kernel(ad, n_envs)
@@ -2498,11 +2415,10 @@ class IPCCoupler(RBC):
             qpos_new[:3] = pos
             qpos_new[3:7] = quat_wxyz
 
-            qpos_tensor = gs.torch.as_tensor(qpos_new, dtype=gs.tc_float, device=gs.device)
             if is_parallelized:
-                entity.set_qpos(qpos_tensor, envs_idx=env_idx, zero_velocity=True, skip_forward=True)
+                entity.set_qpos(qpos_new, envs_idx=env_idx, zero_velocity=True, skip_forward=True)
             else:
-                entity.set_qpos(qpos_tensor, envs_idx=None, zero_velocity=True, skip_forward=True)
+                entity.set_qpos(qpos_new, envs_idx=None, zero_velocity=True, skip_forward=True)
 
             updated_entities.append(entity_idx)
 
@@ -2553,17 +2469,12 @@ class IPCCoupler(RBC):
         if not pos_list:
             return
 
-        pos_tensor = gs.torch.as_tensor(np.array(pos_list), dtype=gs.tc_float, device=gs.device)
-        quat_tensor = gs.torch.as_tensor(np.array(quat_list), dtype=gs.tc_float, device=gs.device)
-        link_idx_tensor = gs.torch.as_tensor(np.array(link_idx_list), dtype=gs.tc_int, device=gs.device)
-
         if is_parallelized:
-            rigid_solver.set_base_links_pos(pos_tensor, link_idx_tensor, envs_idx=env_idx, relative=False)
-            rigid_solver.set_base_links_quat(quat_tensor, link_idx_tensor, envs_idx=env_idx, relative=False)
+            rigid_solver.set_base_links_pos(pos_list, link_idx_list, envs_idx=env_idx, relative=False)
+            rigid_solver.set_base_links_quat(quat_list, link_idx_list, envs_idx=env_idx, relative=False)
         else:
-            rigid_solver.set_base_links_pos(pos_tensor, link_idx_tensor, envs_idx=None, relative=False)
-            rigid_solver.set_base_links_quat(quat_tensor, link_idx_tensor, envs_idx=None, relative=False)
-
+            rigid_solver.set_base_links_pos(pos_list, link_idx_list, envs_idx=None, relative=False)
+            rigid_solver.set_base_links_quat(quat_list, link_idx_list, envs_idx=None, relative=False)
         for entity_idx in entity_indices:
             entity = rigid_solver._entities[entity_idx]
             if is_parallelized:
@@ -2726,6 +2637,12 @@ class IPCCoupler(RBC):
 
         transforms = trans_attr.view()  # Shape: (num_bodies, 4, 4)
 
+        # Get velocities (4x4 matrix representing transform derivative)
+        vel_attr = self._abd_state_geo.instances().find(builtin.velocity)
+        velocities = None
+        if vel_attr is not None:
+            velocities = vel_attr.view()  # Shape: (num_bodies, 4, 4)
+
         # Get pre-allocated numpy arrays from coupling_data
         cd = self.coupling_data
         n_items = 0
@@ -2753,6 +2670,18 @@ class IPCCoupler(RBC):
                 "transform": transform_matrix.copy(),
                 "aim_transform": aim_transform,
             }
+
+            # Add velocity if available (4x4 matrix representing transform derivative)
+            if velocities is not None:
+                velocity_matrix = velocities[abd_body_idx]
+                # Velocity matrix format (from libuipc utils.cu):
+                # [  A[0,0]  A[0,1]  A[0,2]  v_x  ]
+                # [  A[1,0]  A[1,1]  A[1,2]  v_y  ]
+                # [  A[2,0]  A[2,1]  A[2,2]  v_z  ]
+                # [    0       0       0       0   ]
+                # where v = [v_x, v_y, v_z] is linear velocity (last column, first 3 elements)
+                # and A is 3x3 rotation rate matrix (top-left 3x3 block)
+                abd_data_by_link[link_idx][env_idx]["velocity"] = velocity_matrix.copy()
 
             # Fill pre-allocated numpy arrays (no allocation, direct write)
             cd.link_indices[n_items] = link_idx
@@ -3335,28 +3264,20 @@ class IPCCoupler(RBC):
                 if not batch_data["link_indices"]:
                     continue
 
-                # Convert to torch tensors for batch application
-                forces_tensor = torch.as_tensor(
-                    np.array(batch_data["forces"], dtype=np.float32),
-                    dtype=gs.tc_float,
-                    device=gs.device,
-                )  # (n_links, 3)
-                torques_tensor = torch.as_tensor(
-                    np.array(batch_data["torques"], dtype=np.float32),
-                    dtype=gs.tc_float,
-                    device=gs.device,
-                )  # (n_links, 3)
+                # Prepare numpy arrays (Genesis will handle conversion internally)
+                forces = batch_data["forces"]  # (n_links, 3)
+                torques = batch_data["torques"]  # (n_links, 3)
                 link_indices = batch_data["link_indices"]
 
                 # Apply forces/torques in batch
                 rigid_solver.apply_links_external_force(
-                    force=forces_tensor,
+                    force=forces,
                     links_idx=link_indices,
                     envs_idx=env_idx,
                     local=False,
                 )
                 rigid_solver.apply_links_external_torque(
-                    torque=torques_tensor,
+                    torque=torques,
                     links_idx=link_indices,
                     envs_idx=env_idx,
                     local=False,
@@ -3377,22 +3298,18 @@ class IPCCoupler(RBC):
             if not all_link_indices:
                 return
 
-            # Convert to torch tensors for batch application
-            forces_tensor = torch.as_tensor(
-                np.array(all_forces, dtype=np.float32), dtype=gs.tc_float, device=gs.device
-            )  # (n_links, 3)
-            torques_tensor = torch.as_tensor(
-                np.array(all_torques, dtype=np.float32), dtype=gs.tc_float, device=gs.device
-            )  # (n_links, 3)
+            # Prepare numpy arrays (Genesis will handle conversion internally)
+            forces = np.array(all_forces, dtype=np.float32)  # (n_links, 3)
+            torques = np.array(all_torques, dtype=np.float32)  # (n_links, 3)
 
             # Apply forces/torques in batch
             rigid_solver.apply_links_external_force(
-                force=forces_tensor,
+                force=forces,
                 links_idx=all_link_indices,
                 local=False,
             )
             rigid_solver.apply_links_external_torque(
-                torque=torques_tensor,
+                torque=torques,
                 links_idx=all_link_indices,
                 local=False,
             )
@@ -3421,6 +3338,11 @@ class IPCCoupler(RBC):
             self._ipc_eac = ExternalArticulationConstraint()
             self._ipc_scene.constitution_tabular().insert(self._ipc_eac)
 
+        # Initialize cache list for articulation entities with non-fixed base
+        # (used by couple() to call _retrieve_rigid_states for base link transforms)
+        if not hasattr(self, "_articulation_with_non_fixed_base"):
+            self._articulation_with_non_fixed_base = []
+
         rigid_solver = self.rigid_solver
         scene = self._ipc_scene
 
@@ -3438,6 +3360,11 @@ class IPCCoupler(RBC):
 
             if joint_info["n_joints"] == 0:
                 continue  # Skip entities without joints
+
+            # Detect non-fixed base (for handling base link separately via SoftTransformConstraint)
+            base_link = entity.links[0]
+            has_non_fixed_base = not base_link.is_fixed
+            base_link_idx = entity.base_link_idx
 
             gs.logger.info(
                 f"Adding articulated entity {entity_idx} with {joint_info['n_joints']} joints "
@@ -3621,9 +3548,16 @@ class IPCCoupler(RBC):
                 "ref_dof_prev": np.zeros(entity.n_dofs, dtype=np.float64),
                 "delta_theta_tilde": np.zeros(n_joints, dtype=np.float64),
                 "delta_theta": np.zeros(n_joints, dtype=np.float64),
+                "joint_qpos_indices": joint_info["joint_qpos_indices"],
                 "joint_dof_indices": joint_info["joint_dof_indices"],
                 "mass_matrix": mass_matrix,
+                "has_non_fixed_base": has_non_fixed_base,
+                "base_link_idx": base_link_idx,
             }
+
+            # Add to cache list if non-fixed base (for _retrieve_rigid_states in couple())
+            if has_non_fixed_base:
+                self._articulation_with_non_fixed_base.append(entity_idx)
 
             gs.logger.info(f"Successfully added articulated entity {entity_idx} to IPC")
 

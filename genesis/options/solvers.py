@@ -293,6 +293,11 @@ class IPCCouplerOptions(BaseCouplerOptions):
         Whether to apply coupling forces/torques from IPC back to Genesis rigid bodies. Defaults to True.
     use_contact_proxy : bool, optional
         Whether to use contact proxy mode for IPC coupling. Defaults to False.
+    free_base_driven_by_ipc : bool, optional
+        For external_articulation with non-fixed base: whether base link is fully driven by IPC physics.
+        - False (default): base link uses external_kinetic + SoftTransformConstraint (controlled by Genesis animator)
+        - True: base link is fully driven by IPC physics (no external_kinetic, no STC, no animator)
+        This option allows choosing between Genesis-driven and IPC-driven base link control. Defaults to False.
     """
 
     # Basic simulation parameters
@@ -352,6 +357,7 @@ class IPCCouplerOptions(BaseCouplerOptions):
     use_contact_proxy: bool = False
     sync_dof_enable: bool = True
     fem_fem_friction_mu: float = 0.001
+    free_base_driven_by_ipc: bool = False
 
 
 ############################ Solvers inside simulator ############################

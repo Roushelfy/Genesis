@@ -22,7 +22,7 @@ def main():
         IPC_self_contact=False,
         enable_ipc_gui=True,
         disable_ipc_logging=True,
-        newton_velocity_tol=5e-4,
+        sync_dof_enable=False,  # Test sync_dof fix
     )
 
     # Disable rigid collision when using IPC
@@ -49,10 +49,10 @@ def main():
     scene.add_entity(gs.morphs.Plane())
 
     # Create simple two-cube robot with one joint
-    robot = scene.add_entity(gs.morphs.URDF(file="urdf/simple/two_cube_joint.urdf", pos=(0.0, 0.0, 0.5), fixed=True))
+    robot = scene.add_entity(gs.morphs.URDF(file="urdf/simple/two_cube_joint.urdf", pos=(0.0, 0.0, 0.5), fixed=False))
     scene.sim.coupler.set_entity_coupling_type(
         entity=robot,
-        coupling_type="two_way_soft_constraint",
+        coupling_type="external_articulation",
     )
 
     # Build scene
@@ -98,17 +98,17 @@ def main():
         # Calculate sinusoidal target for the joint
         phase = 2.0 * np.pi * i / period
 
-        target = np.zeros(robot.n_dofs)
+        target = [0.0]
         if robot.n_dofs >= 1:
             target[0] = amplitude * np.sin(phase)
 
-        robot.control_dofs_position(target)
+        robot.control_dofs_position(target, [robot.n_dofs - 1])
         scene.step()
 
         if i % 50 == 0:
             current_qpos = robot.get_qpos().cpu().numpy()
-            error = np.linalg.norm(current_qpos - target)
-            print(f"Step {i:3d}: target = {target[0]:.3f}, qpos = {current_qpos[0]:.3f}, error = {error:.4f}")
+            error = np.linalg.norm(current_qpos[-1] - target[-1])
+            print(f"Step {i:3d}: target = {target[-1]:.3f}, qpos = {current_qpos[-1]:.3f}, error = {error:.4f}")
 
     # Final result
     final_qpos = robot.get_qpos().cpu().numpy()

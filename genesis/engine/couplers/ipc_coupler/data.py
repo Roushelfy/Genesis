@@ -97,8 +97,10 @@ class ArticulationData:
         self.entity_n_joints = ti.field(dtype=ti.i32, shape=max_entities)
         self.entity_dof_start = ti.field(dtype=ti.i32, shape=max_entities)  # DOF start index in rigid solver
 
-        # Joint to DOF mapping (per entity)
-        # joint_dof_indices[entity_idx, joint_idx] = local DOF index
+        # Joint to qpos and DOF mapping (per entity)
+        # joint_qpos_indices[entity_idx, joint_idx] = local q-space index (for qpos_current, qpos_new access)
+        # joint_dof_indices[entity_idx, joint_idx] = local DOF index (for mass_mat access)
+        self.joint_qpos_indices = ti.field(dtype=ti.i32, shape=(max_entities, max_joints_per_entity))
         self.joint_dof_indices = ti.field(dtype=ti.i32, shape=(max_entities, max_joints_per_entity))
 
         # DOF data (per entity, per environment)
