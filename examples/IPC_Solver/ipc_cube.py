@@ -20,11 +20,15 @@ def main():
         gs.options.IPCCouplerOptions(
             dt=dt,
             gravity=(0.0, 0.0, -9.8),
-            ipc_constraint_strength=(3, 3),  # (translation, rotation) strength ratios,
+            ipc_constraint_strength=(100, 100),  # (translation, rotation) strength ratios,
+            disable_ipc_ground_contact=False,
+            disable_ipc_logging=False,
+            IPC_self_contact=True,
             contact_friction_mu=0.8,
-            use_contact_proxy=True,
-            # disable_ipc_logging   = False,
             enable_ipc_gui=args.vis_ipc,
+            newton_transrate_tol=0.1,
+            sync_dof_enable=False,
+            # contact_constitution="al-ipc",
         )
         if args.ipc
         else None
@@ -48,12 +52,24 @@ def main():
         else gs.materials.Rigid()
     )
     material = gs.materials.Rigid()
-    cube = scene.add_entity(
+    cube1 = scene.add_entity(
         morph=gs.morphs.Box(pos=(0.65, 0.0, 0.1), size=(0.05, 0.05, 0.05)),
         material=material,
         surface=gs.surfaces.Plastic(color=(0.2, 0.8, 0.2, 0.5)),
     )
-
+    cube2 = scene.add_entity(
+        morph=gs.morphs.Box(pos=(0.65, 0.0, 0.3), size=(0.05, 0.05, 0.05)),
+        material=material,
+        surface=gs.surfaces.Plastic(color=(0.2, 0.8, 0.2, 0.5)),
+    )
+    scene.sim.coupler.set_entity_coupling_type(
+        entity=cube1,
+        coupling_type="ipc_only",
+    )
+    scene.sim.coupler.set_entity_coupling_type(
+        entity=cube2,
+        coupling_type="ipc_only",
+    )
     scene.build()
     print("Scene built successfully!")
 

@@ -23,6 +23,7 @@ def main():
         enable_ipc_gui=True,
         disable_ipc_logging=True,
         sync_dof_enable=False,  # Test sync_dof fix
+        contact_constitution="al-ipc",
     )
 
     # Disable rigid collision when using IPC

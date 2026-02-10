@@ -23,12 +23,13 @@ def main():
             ipc_constraint_strength=(100, 100),  # (translation, rotation) strength ratios,
             # coupling_strategy="external_articulation",
             disable_ipc_ground_contact=True,
-            disable_ipc_logging=False,
+            disable_ipc_logging=True,
             IPC_self_contact=False,
             contact_friction_mu=0.8,
             enable_ipc_gui=args.vis_ipc,
             newton_transrate_tol=10,
             sync_dof_enable=False,
+            # contact_constitution="al-ipc",
         )
         if args.ipc
         else None

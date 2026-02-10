@@ -888,6 +888,7 @@ class IPCCoupler(RBC):
             AffineBodyConstitution,
             StableNeoHookean,
             NeoHookeanShell,
+            ExternalArticulationConstraint,
             StrainLimitingBaraffWitkinShell,
             DiscreteShellBending,
         )
@@ -921,11 +922,11 @@ class IPCCoupler(RBC):
         self._ipc_stk = StableNeoHookean()
         self._ipc_nks = StrainLimitingBaraffWitkinShell()  # For cloth
         self._ipc_dsb = DiscreteShellBending()  # For cloth bending
-
+        self._ipc_eac = ExternalArticulationConstraint()
         # Add constitutions to scene
         self._ipc_scene.constitution_tabular().insert(self._ipc_abd)
         self._ipc_scene.constitution_tabular().insert(self._ipc_stk)
-        # Note: Shell constitutions are added on-demand when cloth entities exist
+        self._ipc_scene.constitution_tabular().insert(self._ipc_eac)
 
         # Set up contact model (physical parameters)
         self._ipc_scene.contact_tabular().default_model(
@@ -3333,10 +3334,11 @@ class IPCCoupler(RBC):
 
         from uipc import view
 
-        # Create ExternalArticulationConstraint if not already created
-        if self._ipc_eac is None:
-            self._ipc_eac = ExternalArticulationConstraint()
-            self._ipc_scene.constitution_tabular().insert(self._ipc_eac)
+        # ExternalArticulationConstraint should already be initialized in _init_ipc()
+        if not hasattr(self, "_ipc_eac") or self._ipc_eac is None:
+            raise RuntimeError(
+                "ExternalArticulationConstraint not initialized. This should not happen - it should be created in _init_ipc()."
+            )
 
         # Initialize cache list for articulation entities with non-fixed base
         # (used by couple() to call _retrieve_rigid_states for base link transforms)

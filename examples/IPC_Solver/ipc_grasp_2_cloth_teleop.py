@@ -62,26 +62,26 @@ def main():
     dt = 2e-2
 
     coupler_options = gs.options.IPCCouplerOptions(
-            dt=dt,
-            gravity=(0.0, 0.0, -9.8),
-            ipc_constraint_strength=(100.0, 100.0),
-            contact_friction_mu=0.5,
-            fem_fem_friction_mu=0.00,
-            contact_d_hat=0.001,
-            IPC_self_contact=False,
-            contact_enable=True,
-            disable_genesis_contact=True,
-            disable_ipc_logging=True,
-            newton_semi_implicit_enable=False,  # True: you will see time stealing artifact
-            enable_ipc_gui=args.vis_ipc,
-            line_search_max_iter=8,
-            line_search_report_energy=False,
-            newton_velocity_tol=1e-1,
-            newton_transrate_tol=1,
-            sync_dof_enable=True,
-            linear_system_tol_rate=1e-3,
-            contact_resistance=1e7,
-        )
+        dt=dt,
+        gravity=(0.0, 0.0, -9.8),
+        ipc_constraint_strength=(100.0, 100.0),
+        contact_friction_mu=0.5,
+        fem_fem_friction_mu=0.00,
+        contact_d_hat=0.001,
+        IPC_self_contact=False,
+        disable_genesis_contact=True,
+        disable_ipc_logging=True,
+        newton_semi_implicit_enable=False,  # True: you will see time stealing artifact
+        enable_ipc_gui=args.vis_ipc,
+        line_search_max_iter=8,
+        line_search_report_energy=False,
+        newton_velocity_tol=1e-1,
+        newton_transrate_tol=1,
+        sync_dof_enable=True,
+        linear_system_tol_rate=1e-3,
+        contact_resistance=1e7,
+        contact_constitution="al-ipc",
+    )
 
     rigid_options = gs.options.RigidOptions(
         enable_collision=False,  # Disable rigid collision when using IPC
@@ -115,14 +115,14 @@ def main():
     cloth_asset_path = snapshot_download(
         repo_type="dataset",
         repo_id="Genesis-Intelligence/assets",
-        revision="main",
+        revision="72b04f7125e21df1bebd54a7f7b39d1cd832331c",
         allow_patterns="grid*.obj",
         max_workers=1,
     )
 
     scene.add_entity(
         morph=gs.morphs.Mesh(
-            file=f"{cloth_asset_path}/grid40x40.obj",
+            file=f"{cloth_asset_path}/grid20x20.obj",
             scale=0.5,
             pos=(0.5, 0.0, 0.1),
             euler=(90, 0, 0),
@@ -267,6 +267,7 @@ def main():
             pressed_keys.clear()
     else:
         scene.step()
+
 
 if __name__ == "__main__":
     main()
