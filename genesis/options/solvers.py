@@ -229,6 +229,8 @@ class IPCCouplerOptions(BaseCouplerOptions):
 
     Contact Options
     ---------------
+    contact_constitution : str, optional
+        Use original IPC contact constitution ('ipc') or Augmented Lagrangian constitution ('al-ipc'). Defaults to None (use libuipc default: 'ipc').
     contact_enable : bool, optional
         Whether to enable contact detection. Defaults to None (use libuipc default: True).
     contact_d_hat : float, optional
@@ -323,6 +325,7 @@ class IPCCouplerOptions(BaseCouplerOptions):
     linear_system_tol_rate: float = None
 
     # Contact options (None = use libuipc default)
+    contact_constitution: str = None
     contact_enable: bool = None
     contact_d_hat: float = None
     contact_friction_enable: bool = None

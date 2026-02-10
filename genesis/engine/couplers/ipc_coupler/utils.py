@@ -203,6 +203,7 @@ def build_ipc_scene_config(options):
     _set_if_not_none(config, ["linear_system", "tol_rate"], options.linear_system_tol_rate)
 
     # Contact options
+    _set_if_not_none(config, ["contact", "constitution"], options.contact_constitution)
     _set_if_not_none(config, ["contact", "enable"], options.contact_enable)
     _set_if_not_none(config, ["contact", "d_hat"], options.contact_d_hat)
     _set_if_not_none(config, ["contact", "friction", "enable"], options.contact_friction_enable)
