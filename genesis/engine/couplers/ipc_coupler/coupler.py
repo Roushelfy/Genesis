@@ -1626,6 +1626,7 @@ class IPCCoupler(RBC):
     def _finalize_ipc(self):
         """Finalize IPC setup and initialize AffineBodyStateAccessorFeature"""
         self._ipc_world.init(self._ipc_scene)
+        self._ipc_world.dump()
         gs.logger.info("IPC world initialized successfully")
 
         # Initialize AffineBodyStateAccessorFeature for optimized ABD state retrieval
@@ -2879,8 +2880,9 @@ class IPCCoupler(RBC):
 
     def reset(self, envs_idx=None):
         """Reset coupling state"""
-        # IPC doesn't need special reset logic currently
-        pass
+        gs.logger.info("Resetting IPC coupler state")
+        self._ipc_world.recover(0)
+        self._ipc_world.retrieve()
 
     # ============================================================
     # Section 9: GUI
