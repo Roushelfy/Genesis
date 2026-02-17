@@ -295,6 +295,14 @@ class IPCCouplerOptions(BaseCouplerOptions):
         Whether to apply coupling forces/torques from IPC back to Genesis rigid bodies. Defaults to True.
     use_contact_proxy : bool, optional
         Whether to use contact proxy mode for IPC coupling. Defaults to False.
+    enable_ipc_contact_force_query : bool, optional
+        Whether to record IPC-computed rigid-link contact forces for runtime queries via
+        `IPCCoupler.get_ipc_contact_forces()`. This only enables recording/readback and does not apply
+        those forces back to Genesis rigid bodies. For force application behavior, use `use_contact_proxy`.
+        This option is intended to be configured before `scene.build()`. Defaults to False.
+    sync_dof_enable : bool, optional
+        Whether to enable DOF synchronization for external_articulation coupling type.
+        When True, joint DOF values are synchronized between Genesis and IPC. Defaults to True.
     free_base_driven_by_ipc : bool, optional
         For external_articulation with non-fixed base: whether base link is fully driven by IPC physics.
         - False (default): base link uses external_kinetic + SoftTransformConstraint (controlled by Genesis animator)
@@ -358,6 +366,7 @@ class IPCCouplerOptions(BaseCouplerOptions):
     disable_ipc_ground_contact: bool = False
     two_way_coupling: bool = True
     use_contact_proxy: bool = False
+    enable_ipc_contact_force_query: bool = False
     sync_dof_enable: bool = True
     fem_fem_friction_mu: float = 0.001
     free_base_driven_by_ipc: bool = False

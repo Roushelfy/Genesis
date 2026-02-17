@@ -1460,8 +1460,8 @@ class IPCCoupler(RBC):
                         external_kinetic_attr = merged_mesh.instances().find(builtin.external_kinetic)
                         if external_kinetic_attr is not None:
                             external_kinetic_view = view(external_kinetic_attr)
-                            # Don't set external_kinetic for IPC-driven free base
-                            if not is_free_base_ipc_driven:
+                            # Don't set external_kinetic for IPC-driven free base or ipc_only entities, to allow direct transform control from IPC without animator or STC
+                            if not is_free_base_ipc_driven and not is_ipc_only:
                                 external_kinetic_view[:] = 1
                             else:
                                 external_kinetic_view[:] = 0
@@ -1521,9 +1521,12 @@ class IPCCoupler(RBC):
                         meta_attrs.create("env_idx", str(i_b))
                         meta_attrs.create("link_idx", str(link_idx))  # Use link_idx instead of geom_idx
 
-                        # Build vertex-to-link mapping for contact force computation
-                        # Only for two_way_soft_constraint (needs contact force feedback)
-                        if entity_coupling_type == "two_way_soft_constraint":
+                        # Build vertex-to-link mapping for contact force computation.
+                        # Needed for two_way contact proxy and for standalone contact-force query mode.
+                        if (
+                            entity_coupling_type == "two_way_soft_constraint"
+                            or self.options.enable_ipc_contact_force_query
+                        ):
                             n_verts = merged_mesh.vertices().size()
                             for local_idx in range(n_verts):
                                 global_idx = self._global_vertex_offset + local_idx
@@ -1937,6 +1940,121 @@ class IPCCoupler(RBC):
         status = "enabled" if enabled else "disabled"
         gs.logger.info(f"Entity {entity_idx}: {len(target_links)} link(s) set to collision {status}")
 
+    def get_ipc_contact_forces(
+        self,
+        links_idx=None,
+        envs_idx=None,
+        with_torque: bool = False,
+        applied_to_genesis: bool = True,
+    ):
+        """
+        Get IPC net contact force on rigid links from the latest coupling step.
+
+        Parameters
+        ----------
+        links_idx : None | int | array_like, optional
+            Global rigid-link indices in `RigidSolver` to query. If None, all links are returned.
+        envs_idx : None | int | array_like, optional
+            Environment indices to query. For non-parallelized scenes (`n_envs == 0`), this must be None.
+        with_torque : bool, optional
+            If True, also return net contact torque with the same shape as force. Defaults to False.
+        applied_to_genesis : bool, optional
+            If True, return the scaled force/torque actually applied to Genesis rigid links
+            (same 0.5 factor used in `_apply_ipc_contact_forces`). If False, return raw IPC-aggregated values.
+
+        Returns
+        -------
+        force : np.ndarray
+            Shape `(n_links, 3)` for non-parallelized scenes, otherwise `(n_envs, n_links, 3)`.
+        torque : np.ndarray, optional
+            Returned only when `with_torque=True`, with the same shape as `force`.
+
+        Notes
+        -----
+        - Query after `scene.step()` to get the latest values.
+        - Data is refreshed when either:
+          1) `IPCCouplerOptions.enable_ipc_contact_force_query=True`, or
+          2) `use_contact_proxy=True` with at least one `two_way_soft_constraint` entity.
+
+        Raises
+        ------
+        Exception
+            If IPC contact-force recording is not enabled for this scene configuration.
+        """
+        has_two_way_entity = any(
+            coupling_type == "two_way_soft_constraint" for coupling_type in self._entity_coupling_types.values()
+        )
+        is_recording_enabled = self.options.enable_ipc_contact_force_query or (
+            self.options.use_contact_proxy and has_two_way_entity
+        )
+        if not is_recording_enabled:
+            gs.raise_exception(
+                "IPC contact force query is disabled. Enable `IPCCouplerOptions.enable_ipc_contact_force_query=True`, "
+                "or use `use_contact_proxy=True` with at least one `two_way_soft_constraint` rigid entity."
+            )
+
+        # Resolve queried links (global solver indices).
+        n_links_total = self.rigid_solver.n_links
+        if links_idx is None:
+            queried_links = np.arange(n_links_total, dtype=np.int32)
+        elif isinstance(links_idx, slice):
+            queried_links = np.arange(n_links_total, dtype=np.int32)[links_idx]
+        elif isinstance(links_idx, range):
+            queried_links = np.array(list(links_idx), dtype=np.int32)
+        elif isinstance(links_idx, (int, np.integer)):
+            queried_links = np.array([int(links_idx)], dtype=np.int32)
+        else:
+            queried_links = np.asarray(links_idx, dtype=np.int32).reshape(-1)
+
+        if queried_links.size > 0 and ((queried_links < 0).any() or (queried_links >= n_links_total).any()):
+            gs.raise_exception(
+                f"`links_idx` contains out-of-range values. Valid range: [0, {n_links_total - 1}]. "
+                f"Got: {queried_links.tolist()}"
+            )
+
+        # Resolve queried envs.
+        if self.sim.n_envs == 0:
+            if envs_idx is not None:
+                gs.raise_exception("`envs_idx` is not supported for non-parallelized scene.")
+            queried_envs = np.array([0], dtype=np.int32)
+        else:
+            if envs_idx is None:
+                queried_envs = np.arange(self.sim.n_envs, dtype=np.int32)
+            else:
+                queried_envs = self.sim.scene._sanitize_envs_idx(envs_idx).detach().cpu().numpy().astype(np.int32)
+
+        # Build output buffers.
+        force_out = np.zeros((len(queried_envs), len(queried_links), 3), dtype=np.float64)
+        torque_out = np.zeros_like(force_out) if with_torque else None
+
+        env_map = {env_idx: i_env for i_env, env_idx in enumerate(queried_envs.tolist())}
+        link_map = {link_idx: i_link for i_link, link_idx in enumerate(queried_links.tolist())}
+        scale = 0.5 if applied_to_genesis else 1.0
+
+        # Fill sparse IPC contact data into dense output arrays.
+        for link_idx, env_data in self._ipc_contact_forces.items():
+            i_link = link_map.get(link_idx)
+            if i_link is None:
+                continue
+
+            for env_idx, data in env_data.items():
+                i_env = env_map.get(env_idx)
+                if i_env is None:
+                    continue
+
+                force_out[i_env, i_link] += scale * np.asarray(data["force"], dtype=np.float64)
+                if with_torque:
+                    torque_out[i_env, i_link] += scale * np.asarray(data["torque"], dtype=np.float64)
+
+        if self.sim.n_envs == 0:
+            force_out = force_out[0]
+            if with_torque:
+                torque_out = torque_out[0]
+
+        if with_torque:
+            return force_out, torque_out
+        return force_out
+
     # ============================================================
     # Section 4: Main Coupling Loop & Shared Helpers
     # ============================================================
@@ -2104,12 +2222,24 @@ class IPCCoupler(RBC):
         if rigid_entities:
             self._retrieve_rigid_states(f, set(rigid_entities))
 
+        # Record IPC contact forces for runtime query and/or contact-proxy force application.
+        should_record_ipc_contact_forces = self.options.enable_ipc_contact_force_query or (
+            len(two_way_entities) > 0 and self.options.use_contact_proxy
+        )
+        if should_record_ipc_contact_forces:
+            self._record_ipc_contact_forces(
+                update_external_force_data=(len(two_way_entities) > 0 and self.options.use_contact_proxy)
+            )
+        else:
+            # Avoid stale readback values when recording is disabled for this step.
+            self._ipc_contact_forces.clear()
+            self._external_force_data.clear()
+
         # For two_way_soft_constraint: apply coupling forces
         if two_way_entities:
             if self.options.two_way_coupling:
                 self._apply_abd_coupling_forces(set(two_way_entities))
             if self.options.use_contact_proxy:
-                self._record_ipc_contact_forces()
                 self._apply_ipc_contact_forces()
 
         # For external_articulation: read delta_theta and update Genesis qpos
@@ -3051,12 +3181,18 @@ class IPCCoupler(RBC):
 
         return link_forces
 
-    def _record_ipc_contact_forces(self):
+    def _record_ipc_contact_forces(self, update_external_force_data: bool = True):
         """
-        Record contact forces from IPC for two_way_soft_constraint coupling links.
+        Record IPC contact forces for rigid links when contact-force recording is enabled.
 
         This method extracts contact forces and torques from IPC's contact system
-        and stores them for later application to Genesis rigid bodies.
+        and stores them in `_ipc_contact_forces` for `get_ipc_contact_forces()`.
+
+        Parameters
+        ----------
+        update_external_force_data : bool, optional
+            Whether to also compute `_external_force_data` used by contact-proxy animator updates.
+            Set to False for query-only mode to avoid introducing force-application side effects.
         """
         from uipc import view
         from uipc.geometry import Geometry
@@ -3174,6 +3310,10 @@ class IPCCoupler(RBC):
                 self._ipc_contact_forces[link_idx] = {}
 
             self._ipc_contact_forces[link_idx][env_idx] = {"force": data["force"], "torque": data["torque"]}
+
+        # Query-only mode does not need external-force feedback used by contact proxy.
+        if not update_external_force_data:
+            return
 
         # Compute external force from contact forces using taichi kernel
         # Collect data directly into pre-allocated Taichi fields
