@@ -300,14 +300,21 @@ class IPCCouplerOptions(BaseCouplerOptions):
         `IPCCoupler.get_ipc_contact_forces()`. This only enables recording/readback and does not apply
         those forces back to Genesis rigid bodies. For force application behavior, use `use_contact_proxy`.
         This option is intended to be configured before `scene.build()`. Defaults to False.
+    enable_free_base_force_coupling : bool, optional
+        For `external_articulation` entities with non-fixed base, whether to use force-coupling mode for
+        the base link. When True, Genesis receives coupling force/torque on base link instead of directly
+        writing IPC base transform/velocity back to Genesis. When False, fallback to legacy direct-write mode.
+        This option is independent from `two_way_coupling`. Defaults to True.
     sync_dof_enable : bool, optional
         Whether to enable DOF synchronization for external_articulation coupling type.
         When True, joint DOF values are synchronized between Genesis and IPC. Defaults to True.
     free_base_driven_by_ipc : bool, optional
-        For external_articulation with non-fixed base: whether base link is fully driven by IPC physics.
-        - False (default): base link uses external_kinetic + SoftTransformConstraint (controlled by Genesis animator)
-        - True: base link is fully driven by IPC physics (no external_kinetic, no STC, no animator)
-        This option allows choosing between Genesis-driven and IPC-driven base link control. Defaults to False.
+        For external_articulation with non-fixed base: whether IPC side keeps base link fully dynamic
+        (no external_kinetic, no STC, no animator).
+        - False (default): base link is constrained on IPC side with external_kinetic + SoftTransformConstraint
+        - True: base link is unconstrained on IPC side and follows pure IPC dynamics
+        Genesis-side update mode is controlled by `enable_free_base_force_coupling`.
+        Defaults to False.
     """
 
     # Basic simulation parameters
@@ -367,6 +374,7 @@ class IPCCouplerOptions(BaseCouplerOptions):
     two_way_coupling: bool = True
     use_contact_proxy: bool = False
     enable_ipc_contact_force_query: bool = False
+    enable_free_base_force_coupling: bool = True
     sync_dof_enable: bool = True
     fem_fem_friction_mu: float = 0.001
     free_base_driven_by_ipc: bool = False

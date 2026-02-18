@@ -19,11 +19,18 @@ def main():
         dt=dt,
         gravity=(0.0, 0.0, -9.8),
         contact_friction_mu=0.5,
+        ipc_constraint_strength=(1, 1),  # (translation, rotation) strength ratios,
         IPC_self_contact=False,
+        enable_ipc_contact_force_query=True,
         enable_ipc_gui=True,
         disable_ipc_logging=True,
+        newton_velocity_tol=1e-2,
+        newton_transrate_tol=1e-2,
+        linear_system_tol_rate=1e-3,
+        enable_free_base_force_coupling=False,
         sync_dof_enable=False,  # Test sync_dof fix
-        contact_constitution="al-ipc",
+        newton_semi_implicit_enable=False,
+        # contact_constitution="al-ipc",
     )
 
     # Disable rigid collision when using IPC
@@ -61,6 +68,23 @@ def main():
     scene.build()
     print("Scene built!")
 
+    # Prepare contact-force query metadata
+    queried_link_indices = [link.idx for link in robot.links]
+    queried_link_names = [link.name for link in robot.links]
+
+    def print_contact_forces(step_tag):
+        forces, torques = scene.sim.coupler.get_ipc_contact_forces(
+            links_idx=queried_link_indices,
+            with_torque=True,
+            applied_to_genesis=False,
+        )
+        lines = []
+        for i_l, name in enumerate(queried_link_names):
+            f = np.round(forces[i_l], 6)
+            t = np.round(torques[i_l], 6)
+            lines.append(f"{name}: F={f} T={t}")
+        print(f"[{step_tag}] " + " | ".join(lines))
+
     # Get initial qpos
     print(f"\n=== Robot Info ===")
     print(f"robot.n_dofs = {robot.n_dofs}")
@@ -86,6 +110,7 @@ def main():
         if i % 10 == 0:
             current_qpos = robot.get_qpos().cpu().numpy()
             print(f"Step {i:3d}: qpos = {current_qpos}")
+            print_contact_forces(f"phase1 step {i:03d}")
 
     # Phase 2: Oscillating motion (back and forth)
     print("\n=== Phase 2: Oscillating motion ===")
@@ -110,6 +135,7 @@ def main():
             current_qpos = robot.get_qpos().cpu().numpy()
             error = np.linalg.norm(current_qpos[-1] - target[-1])
             print(f"Step {i:3d}: target = {target[-1]:.3f}, qpos = {current_qpos[-1]:.3f}, error = {error:.4f}")
+            print_contact_forces(f"phase2 step {i:03d}")
 
     # Final result
     final_qpos = robot.get_qpos().cpu().numpy()
@@ -130,6 +156,8 @@ def main():
 
         robot.control_dofs_position(target)
         scene.step()
+        if step % 200 == 0:
+            print_contact_forces(f"viewer step {step:05d}")
         step += 1
 
 

@@ -1177,17 +1177,89 @@ class IPCCoupler(RBC):
                 # Update global vertex offset (FEM vertices occupy index space but aren't in mapping)
                 self._global_vertex_offset += mesh.vertices().size()
 
+    def _compute_collision_mesh_volume(self, vertices, faces):
+        """
+        Compute robust positive collision mesh volume for ABD density estimation.
+
+        This follows the same rule used for rigid inertial estimation:
+        - use convex hull for non-watertight meshes
+        - fix winding when large negative volume is detected
+        """
+        import trimesh
+
+        try:
+            mesh = trimesh.Trimesh(vertices=vertices, faces=faces, process=False)
+            if not mesh.is_watertight:
+                mesh = trimesh.convex.convex_hull(mesh)
+            if mesh.volume < -gs.EPS:
+                mesh.invert()
+            volume = float(mesh.volume)
+            if not np.isfinite(volume) or volume <= gs.EPS:
+                return 0.0
+            return volume
+        except Exception:
+            return 0.0
+
+    def _resolve_rigid_abd_density(
+        self,
+        entity,
+        link_idx,
+        link_data,
+        env_idx,
+        warned_fallback_keys,
+    ):
+        """
+        Resolve ABD mass density per rigid link.
+
+        Robot entities use inertial-mass-derived density:
+        density = merged_mass / merged_collision_volume.
+        Non-robot entities keep legacy entity.material.rho behavior.
+        """
+        fallback_density = float(entity.material.rho)
+        if not is_robot_entity(entity):
+            return fallback_density
+
+        source_link_indices = link_data.get("source_link_indices", set())
+        total_collision_volume = float(link_data.get("total_collision_volume", 0.0))
+
+        merged_mass = 0.0
+        for source_link_idx in source_link_indices:
+            try:
+                link_mass = float(self.rigid_solver.links_info.inertial_mass[source_link_idx])
+            except Exception:
+                link_mass = np.nan
+            if np.isfinite(link_mass) and link_mass > gs.EPS:
+                merged_mass += link_mass
+
+        if (
+            np.isfinite(merged_mass)
+            and merged_mass > gs.EPS
+            and np.isfinite(total_collision_volume)
+            and total_collision_volume > gs.EPS
+        ):
+            return merged_mass / total_collision_volume
+
+        warn_key = (int(env_idx), int(link_idx))
+        if warn_key not in warned_fallback_keys:
+            warned_fallback_keys.add(warn_key)
+            gs.logger.warning(
+                f"Invalid robot density inputs for env={int(env_idx)} link={int(link_idx)} "
+                f"(merged_mass={float(merged_mass):.6g}, collision_volume={float(total_collision_volume):.6g}). "
+                f"Falling back to entity.material.rho={fallback_density:.6g}."
+            )
+        return fallback_density
+
     def _add_rigid_geoms_to_ipc(self):
         """Add rigid geoms to the existing IPC scene as ABD objects, merging geoms by link_idx"""
         from uipc.geometry import tetmesh, label_surface, label_triangle_orient, flip_inward_triangles, merge, ground
         from uipc.constitution import AffineBodyExternalBodyForce
         from genesis.utils import mesh as mu
-        import trimesh
 
         rigid_solver = self.rigid_solver
         scene = self._ipc_scene
         abd = self._ipc_abd
         scene_subscenes = self._ipc_scene_subscenes
+        density_fallback_warned = set()
 
         # Create and register AffineBodyExternalBodyForce constitution
         if not hasattr(self, "_ipc_ext_force"):
@@ -1280,6 +1352,8 @@ class IPCCoupler(RBC):
                         "link_world_quat": None,
                         "entity_idx": entity_idx,
                         "original_to_target": {},  # Maps original link_idx to (R, t) transform
+                        "source_link_indices": set(),
+                        "total_collision_volume": 0.0,
                     }
 
                 # Compute transform from original link to target link (for fixed joint merging)
@@ -1337,11 +1411,16 @@ class IPCCoupler(RBC):
                     try:
                         from uipc.geometry import trimesh as uipc_trimesh
 
+                        geom_collision_volume = self._compute_collision_mesh_volume(transformed_verts, geom_faces)
+
                         # Create uipc trimesh directly (dim=2, surface mesh for ABD)
                         rigid_mesh = uipc_trimesh(transformed_verts.astype(np.float64), geom_faces.astype(np.int32))
 
                         # Store uipc mesh (SimplicialComplex) for merging
                         link_geoms[target_link_idx]["meshes"].append((i_g, rigid_mesh))
+                        link_geoms[target_link_idx]["source_link_indices"].add(int(link_idx))
+                        if geom_collision_volume > 0.0:
+                            link_geoms[target_link_idx]["total_collision_volume"] += geom_collision_volume
 
                     except Exception as e:
                         gs.logger.warning(f"Failed to convert trimesh to tetmesh for geom {i_g}: {e}")
@@ -1408,6 +1487,7 @@ class IPCCoupler(RBC):
                         # Check if collision is disabled for this link
                         collision_enabled = True
                         entity_idx = link_data["entity_idx"]
+                        entity = rigid_solver._entities[entity_idx]
                         if entity_idx in self._link_collision_settings:
                             if link_idx in self._link_collision_settings[entity_idx]:
                                 collision_enabled = self._link_collision_settings[entity_idx][link_idx]
@@ -1435,13 +1515,19 @@ class IPCCoupler(RBC):
                             and not self.options.free_base_driven_by_ipc
                         )
 
-                        entity_rho = rigid_solver._entities[link_data["entity_idx"]].material.rho
+                        mass_density = self._resolve_rigid_abd_density(
+                            entity=entity,
+                            link_idx=link_idx,
+                            link_data=link_data,
+                            env_idx=i_b,
+                            warned_fallback_keys=density_fallback_warned,
+                        )
 
-                        # Always use full density (no mass splitting)
+                        # Robot entities use inertial-mass-derived density; non-robots keep material.rho.
                         abd.apply_to(
                             merged_mesh,
                             kappa=100.0 * MPa,
-                            mass_density=entity_rho,
+                            mass_density=mass_density,
                         )
 
                         # Set external_kinetic attribute:
@@ -2242,6 +2328,22 @@ class IPCCoupler(RBC):
             if self.options.use_contact_proxy:
                 self._apply_ipc_contact_forces()
 
+        # For external_articulation with non-fixed base: apply base-link force coupling.
+        # This path is controlled by an independent option and does not depend on two_way_coupling.
+        if articulation_entities and self.options.enable_free_base_force_coupling:
+            free_base_link_set = set()
+            for entity_idx in articulation_with_non_fixed_base:
+                art_data = self._articulated_entities.get(entity_idx)
+                if art_data is None or not art_data.get("has_non_fixed_base", False):
+                    continue
+                free_base_link_set.add(int(art_data["base_link_idx"]))
+
+            if free_base_link_set:
+                self._apply_abd_coupling_forces(
+                    entity_set=set(articulation_with_non_fixed_base),
+                    link_set=free_base_link_set,
+                )
+
         # For external_articulation: read delta_theta and update Genesis qpos
         if articulation_entities:
             self._post_advance_external_articulation(articulation_entities)
@@ -2376,6 +2478,9 @@ class IPCCoupler(RBC):
         """
         Post-advance processing for external_articulation entities.
         Reads delta_theta from IPC and updates Genesis qpos.
+        For non-fixed base, behavior depends on `enable_free_base_force_coupling`:
+        - True: update joint qpos only (base is driven by coupling force/torque in Genesis)
+        - False: legacy direct-write of base transform/velocity from IPC
         """
         from uipc import view
 
@@ -2410,21 +2515,40 @@ class IPCCoupler(RBC):
             entity = art_data["entity"]
             env_idx = art_data["env_idx"]
             n_dofs = ad.entity_n_dofs[idx]
+            has_non_fixed_base = art_data.get("has_non_fixed_base", False)
+            use_force_coupling_for_base = has_non_fixed_base and self.options.enable_free_base_force_coupling
 
             # Use slice instead of list comprehension
             qpos_new_np = qpos_new_all[idx, env_idx, :n_dofs].astype(np.float32)
-            # Set qpos for all DOFs
-            # Note: For non-fixed base robots, qpos_new already preserves base DOFs from ref_dof_prev
-            # (only joint DOFs were updated by _compute_qpos_new_kernel)
-            # The base link transform will be overwritten later using IPC data
-            if self.sim._B > 1:
-                entity.set_qpos(qpos_new_np, envs_idx=env_idx, zero_velocity=False)
-            else:
-                entity.set_qpos(qpos_new_np, zero_velocity=False)
 
-            # For non-fixed base robots, apply base link transform and velocity from IPC
-            has_non_fixed_base = art_data.get("has_non_fixed_base", False)
-            if has_non_fixed_base:
+            if use_force_coupling_for_base:
+                # In force-coupling mode, update only joint qpos and keep base pose/velocity under
+                # Genesis dynamics driven by applied coupling force/torque.
+                joint_qpos_indices = [int(i) for i in art_data["joint_qpos_indices"]]
+                if joint_qpos_indices:
+                    joint_qpos_np = qpos_new_np[np.asarray(joint_qpos_indices, dtype=np.int32)]
+                    if self.sim._B > 1:
+                        entity.set_qpos(
+                            joint_qpos_np,
+                            qs_idx_local=joint_qpos_indices,
+                            envs_idx=env_idx,
+                            zero_velocity=False,
+                        )
+                    else:
+                        entity.set_qpos(
+                            joint_qpos_np,
+                            qs_idx_local=joint_qpos_indices,
+                            zero_velocity=False,
+                        )
+            else:
+                # Legacy mode: write back full qpos from articulation solve.
+                if self.sim._B > 1:
+                    entity.set_qpos(qpos_new_np, envs_idx=env_idx, zero_velocity=False)
+                else:
+                    entity.set_qpos(qpos_new_np, zero_velocity=False)
+
+            # In legacy direct-write mode, non-fixed base pose/velocity is directly set from IPC.
+            if has_non_fixed_base and not self.options.enable_free_base_force_coupling:
                 base_link_idx = art_data["base_link_idx"]
 
                 # Get IPC transform and velocity for base link from abd_data_by_link
@@ -2721,6 +2845,9 @@ class IPCCoupler(RBC):
         if not hasattr(self, "_ipc_scene") or not hasattr(self.rigid_solver, "list_env_mesh"):
             return
 
+        # Clear count first to avoid stale coupling data if retrieval fails or returns empty.
+        self.coupling_data.n_items = 0
+
         # Try optimized path first
         if self._abd_state_feature is not None and self._abd_state_geo is not None:
             try:
@@ -2852,6 +2979,8 @@ class IPCCoupler(RBC):
 
         rigid_solver = self.rigid_solver
         visitor = SceneVisitor(self._ipc_scene)
+        cd = self.coupling_data
+        n_items = 0
 
         # Collect ABD geometries and their constraint data using metadata
         abd_data_by_link = {}  # link_idx -> {env_idx: {transform, aim_transform}}
@@ -2893,18 +3022,42 @@ class IPCCoupler(RBC):
                             "aim_transform": aim_transform,
                         }
 
+                        # Velocity is used by legacy direct-write mode when available.
+                        velocity_attr = geo.instances().find(builtin.velocity)
+                        if velocity_attr is not None:
+                            velocity_view = view(velocity_attr)
+                            if velocity_view.size > 0:
+                                abd_data_by_link[link_idx][env_idx]["velocity"] = velocity_view[0].copy()
+
+                        # Populate coupling_data for force-coupling path.
+                        if transform_matrix is None or aim_transform is None:
+                            continue
+                        if n_items >= cd.link_indices.shape[0]:
+                            gs.logger.warning(
+                                f"Coupling capacity exceeded in legacy retrieval: {n_items} >= {cd.link_indices.shape[0]}."
+                            )
+                            continue
+                        cd.link_indices[n_items] = link_idx
+                        cd.env_indices[n_items] = env_idx
+                        cd.ipc_transforms[n_items] = transform_matrix
+                        cd.aim_transforms[n_items] = aim_transform
+                        cd.link_masses[n_items] = rigid_solver.links_info.inertial_mass[link_idx]
+                        cd.inertia_tensors[n_items] = rigid_solver.links_info.inertial_i[link_idx].to_numpy()
+                        n_items += 1
+
                     except Exception as e:
                         gs.logger.warning(f"Failed to retrieve ABD geometry data: {e}")
                         continue
 
+        cd.n_items = n_items
         return abd_data_by_link
 
-    def _apply_abd_coupling_forces(self, entity_set=None):
+    def _apply_abd_coupling_forces(self, entity_set=None, link_set=None):
         """
         Apply coupling forces from IPC ABD constraint to Genesis rigid bodies using Taichi kernel.
 
-        Data has already been populated in coupling_data by _retrieve_rigid_states_optimized,
-        so this function just calls the kernel and applies the results.
+        Data has already been populated in coupling_data by `_retrieve_rigid_states_*`,
+        so this function calls the kernel and applies the selected results.
 
         This ensures action-reaction force consistency:
         - IPC constraint force: G_ipc = M * (q_ipc^{n+1} - q_genesis^n)
@@ -2913,7 +3066,9 @@ class IPCCoupler(RBC):
         Parameters
         ----------
         entity_set : set, optional
-            Set of entity indices to process. If None, process all two_way_soft_constraint entities.
+            Set of entity indices to process. If None, process all entities in `coupling_data`.
+        link_set : set, optional
+            Set of link indices to process. If None, process all links in `coupling_data`.
         """
         import numpy as np
 
@@ -2923,6 +3078,47 @@ class IPCCoupler(RBC):
         if n_items == 0:
             return  # No links to process
 
+        rigid_solver = self.rigid_solver
+        entity_filter = set(entity_set) if entity_set is not None else None
+        link_filter = set(link_set) if link_set is not None else None
+
+        # Select links for this invocation without mutating shared coupling buffers.
+        if entity_filter is None and link_filter is None:
+            n_selected = n_items
+            link_indices_np = cd.link_indices[:n_selected]
+            env_indices_np = cd.env_indices[:n_selected]
+            ipc_transforms_np = cd.ipc_transforms[:n_selected]
+            aim_transforms_np = cd.aim_transforms[:n_selected]
+            link_masses_np = cd.link_masses[:n_selected]
+            inertia_tensors_np = cd.inertia_tensors[:n_selected]
+            out_forces_np = cd.out_forces[:n_selected]
+            out_torques_np = cd.out_torques[:n_selected]
+        else:
+            selected_indices = []
+            for i in range(n_items):
+                link_idx = int(cd.link_indices[i])
+                if link_filter is not None and link_idx not in link_filter:
+                    continue
+
+                entity_idx = int(rigid_solver.links_info.entity_idx[link_idx])
+                if entity_filter is not None and entity_idx not in entity_filter:
+                    continue
+                selected_indices.append(i)
+
+            if not selected_indices:
+                return
+
+            selected_indices = np.asarray(selected_indices, dtype=np.int32)
+            n_selected = len(selected_indices)
+            link_indices_np = cd.link_indices[selected_indices]
+            env_indices_np = cd.env_indices[selected_indices]
+            ipc_transforms_np = cd.ipc_transforms[selected_indices]
+            aim_transforms_np = cd.aim_transforms[selected_indices]
+            link_masses_np = cd.link_masses[selected_indices]
+            inertia_tensors_np = cd.inertia_tensors[selected_indices]
+            out_forces_np = np.empty((n_selected, 3), dtype=gs.np_float)
+            out_torques_np = np.empty((n_selected, 3), dtype=gs.np_float)
+
         # Get coupling parameters
         strength_tuple = self.options.ipc_constraint_strength
         translation_strength = float(strength_tuple[0])
@@ -2930,35 +3126,28 @@ class IPCCoupler(RBC):
         dt = self.sim._dt
         dt2 = dt * dt
 
-        # Call optimized Taichi kernel with numpy arrays (zero-copy)
-        # Data is already in cd arrays from _retrieve_rigid_states_optimized
+        # Call optimized Taichi kernel with numpy arrays (zero-copy).
+        # Data is already in cd arrays from `_retrieve_rigid_states_*`.
         self._compute_coupling_forces_kernel_np(
-            n_items,
-            cd.ipc_transforms,
-            cd.aim_transforms,
-            cd.link_masses,
-            cd.inertia_tensors,
+            n_selected,
+            ipc_transforms_np,
+            aim_transforms_np,
+            link_masses_np,
+            inertia_tensors_np,
             translation_strength,
             rotation_strength,
             dt2,
-            cd.out_forces,
-            cd.out_torques,
+            out_forces_np,
+            out_torques_np,
         )
 
         # Apply forces to Genesis rigid bodies - OPTIMIZED batch processing
-        rigid_solver = self.rigid_solver
         is_parallelized = self.sim._scene.n_envs > 0
-
-        # Use slices of pre-allocated arrays (no allocation)
-        out_forces_np = cd.out_forces[:n_items]  # (n_items, 3)
-        out_torques_np = cd.out_torques[:n_items]  # (n_items, 3)
-        link_indices_np = cd.link_indices[:n_items]
-        env_indices_np = cd.env_indices[:n_items]
 
         if is_parallelized:
             # Group by environment using numpy arrays
             env_batches = {}  # {env_idx: {'link_indices': [], 'forces': [], 'torques': []}}
-            for i in range(n_items):
+            for i in range(n_selected):
                 env_idx = int(env_indices_np[i])
                 if env_idx not in env_batches:
                     env_batches[env_idx] = {"link_indices": [], "forces": [], "torques": []}
@@ -2987,7 +3176,7 @@ class IPCCoupler(RBC):
                         continue
         else:
             # Non-parallelized: apply all forces using numpy slices
-            for i in range(n_items):
+            for i in range(n_selected):
                 link_idx = int(link_indices_np[i])
                 try:
                     force_input = out_forces_np[i].reshape(1, 3)
