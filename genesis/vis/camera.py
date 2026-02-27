@@ -10,7 +10,7 @@ import genesis as gs
 import genesis.utils.geom as gu
 from genesis.constants import IMAGE_TYPE
 from genesis.repr_base import RBC
-from genesis.utils.misc import tensor_to_array
+from genesis.utils.misc import tensor_to_array, harmonic_mean
 from genesis.utils.image_exporter import as_grayscale_image
 
 
@@ -836,7 +836,7 @@ class Camera(RBC):
             else:
                 projected_pixel_size = min(0.036 / self._res[1], 0.024 / self._res[0])
             image_dist = self._res[1] * projected_pixel_size / (2 * tan_half_fov)
-            return 1.0 / (1.0 / image_dist + 1.0 / self._focus_dist)
+            return harmonic_mean(image_dist, self._focus_dist)
         elif self.model in ("pinhole", "fisheye"):
             return self._res[0] / (2.0 * tan_half_fov)
 

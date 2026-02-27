@@ -263,6 +263,22 @@ def get_usd_cache_dir():
     return os.path.join(get_cache_dir(), "usd")
 
 
+def geometric_mean(a, b):
+    """Geometric mean of two non-negative values: sqrt(a * b)."""
+    if a < 0 or b < 0:
+        gs.raise_exception(f"geometric_mean requires non-negative values, got {a} and {b}.")
+    return (a * b) ** 0.5
+
+
+def harmonic_mean(a, b):
+    """Harmonic mean of two non-negative values: (a * b) / (a + b). Returns 0 if either value is 0."""
+    if a < 0 or b < 0:
+        gs.raise_exception(f"harmonic_mean requires non-negative values, got {a} and {b}.")
+    if a == 0 or b == 0:
+        return 0.0
+    return (a * b) / (a + b)
+
+
 def assert_gs_tensor(x):
     if not isinstance(x, gs.Tensor):
         gs.raise_exception("Only accepts genesis.Tensor.")
