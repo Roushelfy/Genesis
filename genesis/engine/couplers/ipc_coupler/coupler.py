@@ -178,6 +178,11 @@ class IPCCoupler(RBC):
         self._abd_data_by_link: dict["RigidLink", ABDLinkData] = {}
         self._articulation_data_by_entity: dict["RigidEntity", ArticulatedEntityData] = {}
 
+        # ==== User hooks ====
+        # Callbacks invoked after _add_objects_to_ipc() but before _finalize_ipc().
+        # Each hook receives the coupler instance as its sole argument.
+        self._pre_finalize_hooks: list = []
+
         # ==== Restitution ====
         # Per-frame velocity corrections: (dof_start, dof_end, correction_array).
         self._restitution_vel_corrections: list[tuple[int, int, np.ndarray]] = []
@@ -210,6 +215,9 @@ class IPCCoupler(RBC):
         self._init_ipc()
         self._setup_coupling_config()
         self._add_objects_to_ipc()
+        # Run user-registered pre-finalize hooks (e.g. applying RotatingMotor)
+        for hook in self._pre_finalize_hooks:
+            hook(self)
         self._finalize_ipc()
         self._init_accessors()
 
@@ -355,7 +363,8 @@ class IPCCoupler(RBC):
             uipc.Logger.set_level(uipc.Logger.Level.Info)
             uipc.Timer.enable_all()
         else:
-            uipc.Logger.set_level(uipc.Logger.Level.Error)
+            # TODO: revert to Error after profiling
+            uipc.Logger.set_level(uipc.Logger.Level.Info)
             uipc.Timer.disable_all()
 
         # Create workspace directory for IPC output, named after scene UID.
@@ -929,9 +938,11 @@ class IPCCoupler(RBC):
         )
         body_count = self._abd_state_feature.body_count()
 
-        # Verify the count matches IPC's ABD body count
-        if body_count != n_abd_links * self._B:
-            gs.raise_exception(f"ABD body count mismatch: got {body_count}.")
+        # Verify IPC has at least as many ABD bodies as we expect.
+        # Extra bodies may exist from user pre-finalize hooks (e.g. pin rods, joints).
+        expected = n_abd_links * self._B
+        if body_count < expected:
+            gs.raise_exception(f"ABD body count too low: got {body_count}, expected at least {expected}.")
 
         # Create state geometry for batch data transfer
         self._abd_state_geom = self._abd_state_feature.create_geometry()
@@ -989,29 +1000,45 @@ class IPCCoupler(RBC):
         if not self.is_active:
             return
 
+        import time as _time
+
         # Step 1: Store Genesis rigid states (common)
+        _t0 = _time.perf_counter()
         self._store_gs_rigid_states()
+        _t1 = _time.perf_counter()
         if self.options._export_pre_coupling_surface:
             self._export_genesis_surface("after_genesis_before_ipc")
 
         # Step 2: Pre-advance processing (per entity type)
         self._pre_advance_external_articulation()
+        _t2 = _time.perf_counter()
 
         # Step 3: IPC advance + retrieve (common)
         self._ipc_world.advance()
+        _t3 = _time.perf_counter()
         self._ipc_world.retrieve()
+        _t4 = _time.perf_counter()
         if self.options._export_ipc_surface:
             self._export_ipc_surface()
 
         # Step 4: Retrieve states
         self._retrieve_ipc_fem_states()
         self._retrieve_ipc_rigid_states()
+        _t5 = _time.perf_counter()
 
         # Step 5: Post-advance — write IPC-resolved state to qpos
         self._post_advance_write_qpos()
         self._sync_rigid_fk()
+        _t6 = _time.perf_counter()
         if self.options._export_post_coupling_surface:
             self._export_genesis_surface("after_ipc_correction")
+
+        print(
+            f"[IPC timing] store={(_t1 - _t0) * 1000:.1f}ms  pre_adv={(_t2 - _t1) * 1000:.1f}ms  "
+            f"advance={(_t3 - _t2) * 1000:.1f}ms  retrieve={(_t4 - _t3) * 1000:.1f}ms  "
+            f"retrieve_states={(_t5 - _t4) * 1000:.1f}ms  post_adv={(_t6 - _t5) * 1000:.1f}ms  "
+            f"total={(_t6 - _t0) * 1000:.1f}ms"
+        )
 
         # Step 6: Update GUI if enabled
         if self._ipc_gui is not None:

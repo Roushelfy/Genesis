@@ -947,6 +947,44 @@ class RigidSolver(KinematicSolver):
 
             self.constraint_solver.resolve()
 
+    def _func_constraint_force_timed(self):
+        import time as _time
+        import torch
+
+        torch.cuda.synchronize()
+        _t0 = _time.perf_counter()
+        if not self._disable_constraint:
+            if self._use_contact_island:
+                self.constraint_solver.clear()
+            else:
+                self.constraint_solver.add_equality_constraints()
+        torch.cuda.synchronize()
+        _t1 = _time.perf_counter()
+
+        if self._enable_collision:
+            self.collider.detection()
+        torch.cuda.synchronize()
+        _t2 = _time.perf_counter()
+
+        if not self._disable_constraint:
+            if self._use_contact_island:
+                self.constraint_solver.add_constraints()
+            else:
+                self.constraint_solver.add_inequality_constraints()
+            torch.cuda.synchronize()
+            _t3 = _time.perf_counter()
+            self.constraint_solver.resolve()
+            torch.cuda.synchronize()
+            _t4 = _time.perf_counter()
+        else:
+            _t3 = _t2
+            _t4 = _t2
+        print(
+            f"[constraint] eq={(_t1 - _t0) * 1000:.1f}ms  collision={(_t2 - _t1) * 1000:.1f}ms  "
+            f"ineq={(_t3 - _t2) * 1000:.1f}ms  resolve={(_t4 - _t3) * 1000:.1f}ms  "
+            f"total={(_t4 - _t0) * 1000:.1f}ms"
+        )
+
     def _func_forward_dynamics(self):
         kernel_forward_dynamics(
             self.links_state,
@@ -1143,9 +1181,18 @@ class RigidSolver(KinematicSolver):
                 update_qpos=False,
             )
         elif isinstance(self.sim.coupler, IPCCoupler):
-            self._func_constraint_force()
+            import time as _time
+            import torch
+
+            torch.cuda.synchronize()
+            _t0 = _time.perf_counter()
+            self._func_constraint_force_timed()
+            torch.cuda.synchronize()
+            _t1 = _time.perf_counter()
             # Cache pre-prediction link transforms for IPC ABD sync (before predict overwrites them)
             self.sim.coupler.cache_pre_prediction_transforms()
+            torch.cuda.synchronize()
+            _t2 = _time.perf_counter()
             # TODO: Exclude IPC-only entities from predict/FK — IPC fully drives them
             # (external_kinetic=0, no animator), so predicted poses are unused.
             kernel_predict_integrate(
@@ -1157,6 +1204,8 @@ class RigidSolver(KinematicSolver):
                 is_backward=self._is_backward,
                 update_qpos=True,
             )
+            torch.cuda.synchronize()
+            _t3 = _time.perf_counter()
             # FK on predicted qpos to get predicted link transforms for IPC coupler
             kernel_forward_kinematics_links_geoms(
                 self._scene._envs_idx,
@@ -1171,6 +1220,13 @@ class RigidSolver(KinematicSolver):
                 entities_info=self.entities_info,
                 rigid_global_info=self._rigid_global_info,
                 static_rigid_sim_config=self._static_rigid_sim_config,
+            )
+            torch.cuda.synchronize()
+            _t4 = _time.perf_counter()
+            print(
+                f"[rigid pre_coup] constraint={(_t1 - _t0) * 1000:.1f}ms  cache={(_t2 - _t1) * 1000:.1f}ms  "
+                f"predict={(_t3 - _t2) * 1000:.1f}ms  FK={(_t4 - _t3) * 1000:.1f}ms  "
+                f"total={(_t4 - _t0) * 1000:.1f}ms"
             )
         else:
             self._func_constraint_force()

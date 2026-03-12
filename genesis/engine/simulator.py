@@ -318,10 +318,22 @@ class Simulator(RBC):
             solver.process_input_grad()
 
     def substep(self, f):
+        import time as _time
+
+        _t0 = _time.perf_counter()
         self._coupler.preprocess(f)
+        _t1 = _time.perf_counter()
         self.substep_pre_coupling(f)
+        _t2 = _time.perf_counter()
         self._coupler.couple(f)
+        _t3 = _time.perf_counter()
         self.substep_post_coupling(f)
+        _t4 = _time.perf_counter()
+        print(
+            f"[substep] preprocess={(_t1 - _t0) * 1000:.1f}ms  pre_coup={(_t2 - _t1) * 1000:.1f}ms  "
+            f"couple={(_t3 - _t2) * 1000:.1f}ms  post_coup={(_t4 - _t3) * 1000:.1f}ms  "
+            f"total={(_t4 - _t0) * 1000:.1f}ms"
+        )
 
     def sub_step_grad(self, f):
         self.substep_post_coupling_grad(f)

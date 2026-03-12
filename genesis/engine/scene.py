@@ -994,15 +994,22 @@ class Scene(RBC):
         if not self._forward_ready:
             gs.raise_exception("Forward simulation not allowed after backward pass. Please reset scene state.")
 
+        import time as _time
+
+        _t0 = _time.perf_counter()
         self._sim.step()
+        _t1 = _time.perf_counter()
 
         self._t += 1
 
         if update_visualizer:
             self._visualizer.update(force=False, auto=refresh_visualizer)
+        _t2 = _time.perf_counter()
 
         if self.profiling_options.show_FPS:
             self.FPS_tracker.step()
+
+        print(f"[scene.step] sim={(_t1 - _t0) * 1000:.1f}ms  viewer={(_t2 - _t1) * 1000:.1f}ms")
 
         self._recorder_manager.step(self._sim.cur_step_global)
 
