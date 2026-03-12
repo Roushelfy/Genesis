@@ -450,6 +450,10 @@ class IPCCoupler(RBC):
                 moduli = ElasticModuli.youngs_poisson(entity.material.E, entity.material.nu)
                 self._ipc_stk.apply_to(mesh, moduli, mass_density=entity.material.rho)
 
+            # Partition FEM/cloth mesh for faster IPC assembly/solve on large meshes.
+            # This follows libuipc sample usage and is applied once on env-independent geometry.
+            uipc.geometry.mesh_partition(mesh)
+
             # ---- Per-environment: create IPC objects, then set per-env attrs on slot geometry ----
             for env_idx in range(self._B):
                 fem_obj = self._ipc_objects.create(f"{solver_type}_{i_e}_{env_idx}")
