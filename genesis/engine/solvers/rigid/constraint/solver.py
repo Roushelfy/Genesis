@@ -10,7 +10,7 @@ import genesis as gs
 import genesis.utils.array_class as array_class
 import genesis.utils.geom as gu
 from genesis.engine.solvers.rigid.abd import func_solve_mass_batch
-from genesis.utils.misc import qd_to_torch
+from genesis.utils.misc import qd_to_numpy, qd_to_torch
 
 from ..collider.contact_island import ContactIsland
 from . import backward as backward_constraint_solver
@@ -111,6 +111,11 @@ class ConstraintSolver:
         # and not used when hibernation is not enabled.
         self.contact_island = ContactIsland(self._collider)
 
+    def _has_zero_constraints(self):
+        """Check if all environments have zero constraints (CPU read, triggers sync)."""
+        n_c = qd_to_numpy(self.constraint_state.n_constraints)
+        return int(n_c.max()) == 0
+
     def reset(self, envs_idx=None):
         self._eq_const_info_cache.clear()
 
@@ -179,6 +184,17 @@ class ConstraintSolver:
         )
 
     def resolve(self):
+        # Fast path: skip the expensive solve (O(n_dofs³) Cholesky) when no
+        # environment has any constraints.  In that case the unconstrained
+        # acceleration is the answer and constraint forces are zero.
+        if self._has_zero_constraints():
+            func_resolve_unconstrained(
+                self._solver.dofs_state,
+                self.constraint_state,
+                self._solver._static_rigid_sim_config,
+            )
+            return
+
         func_solve_init(
             self._solver.dofs_info,
             self._solver.dofs_state,
@@ -3114,6 +3130,28 @@ def func_update_contact_force(
             links_state.contact_force[contact_data_link_b, i_b] = (
                 links_state.contact_force[contact_data_link_b, i_b] + force
             )
+
+
+@qd.kernel(fastcache=gs.use_fastcache)
+def func_resolve_unconstrained(
+    dofs_state: array_class.DofsState,
+    constraint_state: array_class.ConstraintState,
+    static_rigid_sim_config: qd.template(),
+):
+    """Fast path when no constraints exist: acc = acc_smooth, qfrc_constraint = 0."""
+    n_dofs = dofs_state.acc.shape[0]
+    _B = dofs_state.acc.shape[1]
+
+    qd.loop_config(serialize=static_rigid_sim_config.para_level < gs.PARA_LEVEL.ALL)
+    for i_d, i_b in qd.ndrange(n_dofs, _B):
+        dofs_state.acc[i_d, i_b] = dofs_state.acc_smooth[i_d, i_b]
+        dofs_state.qf_constraint[i_d, i_b] = gs.qd_float(0.0)
+        dofs_state.force[i_d, i_b] = dofs_state.qf_smooth[i_d, i_b]
+        constraint_state.qacc_ws[i_d, i_b] = dofs_state.acc_smooth[i_d, i_b]
+
+    qd.loop_config(serialize=static_rigid_sim_config.para_level < gs.PARA_LEVEL.ALL)
+    for i_b in range(_B):
+        constraint_state.is_warmstart[i_b] = True
 
 
 @qd.kernel(fastcache=gs.use_fastcache)
