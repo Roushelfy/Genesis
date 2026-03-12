@@ -1,26 +1,52 @@
 """Load G1 29-DOF URDF with symmetric initial qpos and cashmere sweater."""
 
 import numpy as np
-
 import genesis as gs
+
+gs.init(backend=gs.cpu)
+
+from genesis.engine.couplers.ipc_coupler.coupler import GenesisSolverContext, IPCBeforeWorldInitContext
 
 SWEATER_GLB = "DemoAssets/Cashmere_Sweater_adjusted.glb"
 ROBOT_Z = 0.75
 
-gs.init(backend=gs.gpu)
+def before_ipc_world_init(ipc: IPCBeforeWorldInitContext, gs: GenesisSolverContext) -> None:
+    """User hook called after IPC scene assembly and before World.init(scene)."""
+    print("before_ipc_world_init")
+    print(ipc.scene)
+    pass
 
 scene = gs.Scene(
+    sim_options=gs.options.SimOptions(dt=0.01),
+    fem_options=gs.options.FEMOptions(
+        use_rigid_compatible_transform=False,
+    ),
+    coupler_options=gs.options.IPCCouplerOptions(
+        contact_enable=False,
+        enable_rigid_rigid_contact=False,
+        ignore_end_effector_check=True,
+        before_ipc_world_init=before_ipc_world_init,
+        _export_ipc_surface=True,
+        _export_surface_dir="outputs",
+    ),
     show_viewer=True,
-    rigid_options=gs.options.RigidOptions(dt=0.01),
 )
 
-scene.add_entity(gs.morphs.Plane())
+scene.add_entity(
+    gs.morphs.Plane(),
+    material=gs.materials.Rigid(coup_type="ipc_only"),
+    name="ground_plane",
+)
 
 robot = scene.add_entity(
     gs.morphs.URDF(
         file="DemoAssets/g1_29dof.urdf",
         pos=(0, 0, ROBOT_Z),
     ),
+    material=gs.materials.Rigid(
+        coup_type="two_way_soft_constraint",
+    ),
+    name="g1_robot",
 )
 
 # Sweater mesh from USD transform:
@@ -36,10 +62,36 @@ sweater = scene.add_entity(
         pos=(0.0244, 0.0, ROBOT_Z - 0.175),
         euler=(0, 0, 90),
     ),
-    material=gs.materials.Rigid(),
+    material=gs.materials.FEM.Cloth(
+        E=6e4,
+        nu=0.49,
+        rho=200,
+        thickness=0.001,
+        bending_stiffness=10.0,
+        friction_mu=0.5,
+    ),
     surface=gs.surfaces.Plastic(
         opacity=0.2,
     ),
+    name="sweater_cloth",
+)
+
+# Rigid reference mesh using the same transform pipeline as rigid entities.
+# Use this as a visual baseline when tuning FEM cloth transform behavior.
+sweater_rigid_ref = scene.add_entity(
+    morph=gs.morphs.Mesh(
+        file=SWEATER_GLB,
+        scale=0.81,
+        pos=(0.0244, 0.0, ROBOT_Z - 0.175),
+        euler=(0, 0, 90),
+        fixed=True,
+        collision=False,
+    ),
+    material=gs.materials.Rigid(),
+    surface=gs.surfaces.Plastic(
+        color=(1.0, 0.2, 0.2, 0.25),
+    ),
+    name="sweater_rigid_ref",
 )
 
 scene.build()
@@ -96,7 +148,7 @@ for name, deg in joint_angles_deg.items():
 
 robot.set_qpos(qpos)
 
-# for i in range(1000):
-#     scene.step()
 while True:
-    scene._visualizer.update()
+    scene.step()
+    # scene._visualizer.update()
+    

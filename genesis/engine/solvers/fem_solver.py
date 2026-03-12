@@ -24,6 +24,7 @@ class FEMSolver(Solver):
 
     def __init__(self, scene, sim, options):
         super().__init__(scene, sim, options)
+        self._options = options
 
         # options
         self._floor_height = options.floor_height

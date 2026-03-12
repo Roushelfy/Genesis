@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Any, Callable, Optional
 
 import numpy as np
 
@@ -183,6 +183,9 @@ class SAPCouplerOptions(BaseCouplerOptions):
     rigid_rigid_contact_type: str = "tet"
 
 
+IPCBeforeWorldInitCallback = Callable[[Any, Any], None]
+
+
 class IPCCouplerOptions(BaseCouplerOptions):
     """
     Options configuring the Incremental Potential Contact (IPC) coupler.
@@ -278,6 +281,12 @@ class IPCCouplerOptions(BaseCouplerOptions):
         skips both the explicit `coup_links` requirement and the end-effector-only validation.
         This can produce non-physical behavior and should be used only for debugging/experiments.
         Defaults to False.
+    before_ipc_world_init : IPCBeforeWorldInitCallback | None, optional
+        Optional callback executed after IPC scene objects are created but before
+        ``World.init(scene)`` is called. This is the intended extension point for
+        user-side IPC geometry/meta edits. The callback receives ``(ipc, gs)``:
+        ``ipc`` is a pre-init context exposing key uipc handles, and ``gs`` is the
+        Genesis module. Defaults to None.
     """
 
     # Newton solver options (None = use libuipc default)
@@ -320,6 +329,7 @@ class IPCCouplerOptions(BaseCouplerOptions):
     enable_rigid_rigid_contact: bool = True
     restitution: float = 1.0
     ignore_end_effector_check: bool = False
+    before_ipc_world_init: Optional[IPCBeforeWorldInitCallback] = None
 
     # Internal export options
     _export_ipc_surface: bool = False
@@ -781,6 +791,10 @@ class FEMOptions(Options):
         Rayleigh Damping factor for the implicit solver. Defaults to 5e-4. Only used when `use_implicit_solver` is True.
     enable_vertex_constraints : bool, optional
         Whether to enable vertex constraints. Defaults to False.
+    use_rigid_compatible_transform : bool, optional
+        Whether FEM mesh pose should follow rigid-compatible transform behavior
+        (local rotation then world translation). Defaults to False for backward compatibility.
+        Set to True to use rigid-compatible transform behavior.
     """
 
     dt: Optional[float] = None
@@ -798,6 +812,7 @@ class FEMOptions(Options):
     damping_alpha: float = 0.5
     damping_beta: float = 5e-4
     enable_vertex_constraints: bool = False
+    use_rigid_compatible_transform: bool = False
 
 
 class SFOptions(Options):

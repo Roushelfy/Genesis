@@ -369,15 +369,25 @@ class FEMEntity(Entity):
         verts = verts.astype(gs.np_float, copy=False)
         elems = elems.astype(gs.np_int, copy=False)
 
-        # rotate
+        solver_options = getattr(self._solver, "_options", None)
+        if solver_options is None:
+            solver_options = getattr(self._solver, "options", None)
+        use_rigid_compatible_transform = bool(getattr(solver_options, "use_rigid_compatible_transform", False))
         R = gu.quat_to_R(np.array(self.morph.quat, dtype=gs.np_float))
-        verts_COM = verts.mean(axis=0)
-        init_positions = (verts - verts_COM) @ R.T + verts_COM
+        if not use_rigid_compatible_transform:
+            # Legacy FEM behavior: rotate around mesh COM after translation was already baked in vertices.
+            verts_COM = verts.mean(axis=0)
+            init_positions = (verts - verts_COM) @ R.T + verts_COM
+        else:
+            # Rigid-compatible behavior: local rotation, then world translation.
+            p = np.array(self.morph.pos, dtype=gs.np_float)
+            init_positions = verts @ R.T + p
 
         if not init_positions.shape[0] > 0:
             gs.raise_exception("Entity has zero vertices.")
 
         self.init_positions = gs.tensor(init_positions)
+        verts_COM = init_positions.mean(axis=0)
         self.init_positions_COM_offset = self.init_positions - gs.tensor(verts_COM)
 
         self.elems = elems
@@ -397,6 +407,11 @@ class FEMEntity(Entity):
         from genesis.engine.materials.FEM.cloth import Cloth as ClothMaterial
 
         is_cloth = isinstance(self.material, ClothMaterial)
+        solver_options = getattr(self._solver, "_options", None)
+        if solver_options is None:
+            solver_options = getattr(self._solver, "options", None)
+        use_rigid_compatible_transform = bool(getattr(solver_options, "use_rigid_compatible_transform", False))
+        sample_pos = gu.zero_pos() if use_rigid_compatible_transform else self._morph.pos
         self._uvs = None
 
         if is_cloth:
@@ -404,32 +419,34 @@ class FEMEntity(Entity):
             if isinstance(self.morph, gs.options.morphs.Mesh):
                 import trimesh
 
-                mesh = trimesh.load_mesh(self._morph.file)
-                verts = mesh.vertices * self._morph.scale + np.array(self._morph.pos)
-                faces = mesh.faces
+                # Use the same mesh parsing path as rigid entities so file-axis conventions,
+                # glTF node transforms, and submesh handling are consistent.
+                meshes = gs.Mesh.from_morph_surface(self._morph, self._surface)
+                if len(meshes) == 1:
+                    mesh = meshes[0]
+                    verts = np.asarray(mesh.verts, dtype=gs.np_float) + np.array(sample_pos, dtype=gs.np_float)
+                    faces = np.asarray(mesh.faces, dtype=gs.np_int)
+                    self._uvs = mesh.uvs.astype(gs.np_float, copy=False) if mesh.uvs is not None else None
+                else:
+                    tmesh = trimesh.util.concatenate([mesh.trimesh for mesh in meshes])
+                    verts = np.asarray(tmesh.vertices, dtype=gs.np_float) + np.array(sample_pos, dtype=gs.np_float)
+                    faces = np.asarray(tmesh.faces, dtype=gs.np_int)
+                    self._uvs = None
                 # For cloth, we store faces as "elements" (treating them as surface elements)
                 self.instantiate(verts, faces)
-
-                # Load UVs from mesh (1:1 mapping for cloth).
-                # UVs are not always available in 3D file, in case they are missing we set the entity UVs to None when UVs are None,
-                # the solver will use 0 UVs for rendering. A mesh with 0 UVs means that no tangent directions can be recomputed,
-                # thus texture mapping and anisotropic surfaces will not work properly.
-                self._uvs = None
-                if isinstance(mesh.visual, trimesh.visual.texture.TextureVisuals) and mesh.visual.uv is not None:
-                    self._uvs = mesh.visual.uv.astype(gs.np_float, copy=False)
             else:
                 gs.raise_exception(f"Cloth material only supports Mesh morph. Got: {self.morph}.")
         else:
             # Regular FEM: tetrahedralize mesh
             if isinstance(self.morph, gs.options.morphs.Sphere):
                 verts, elems = eu.sphere_to_elements(
-                    pos=self._morph.pos,
+                    pos=sample_pos,
                     radius=self._morph.radius,
                     tet_cfg=self.tet_cfg,
                 )
             elif isinstance(self.morph, gs.options.morphs.Box):
                 verts, elems = eu.box_to_elements(
-                    pos=self._morph.pos,
+                    pos=sample_pos,
                     size=self._morph.size,
                     tet_cfg=self.tet_cfg,
                 )
@@ -442,7 +459,7 @@ class FEMEntity(Entity):
                 # not used for rendering so it's fine.
                 verts, elems, self._uvs = eu.mesh_to_elements(
                     file=self._morph.file,
-                    pos=self._morph.pos,
+                    pos=sample_pos,
                     scale=self._morph.scale,
                     tet_cfg=self.tet_cfg,
                 )

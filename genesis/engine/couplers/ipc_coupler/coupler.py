@@ -3,7 +3,8 @@ import os
 import tempfile
 import weakref
 from functools import partial
-from typing import TYPE_CHECKING, cast
+from types import SimpleNamespace
+from typing import TYPE_CHECKING, Any, Callable, Protocol, cast
 
 import numpy as np
 import torch
@@ -57,6 +58,22 @@ if TYPE_CHECKING or UIPC_AVAILABLE:
         find_target_link_for_fixed_merge,
         read_ipc_geometry_metadata,
     )
+
+
+class IPCBeforeWorldInitContext(Protocol):
+    """Typed context passed to before_ipc_world_init(ipc, gs)."""
+
+    engine: "Engine"
+    world: "World"
+    scene: "Scene"
+
+
+class GenesisSolverContext(Protocol):
+    """Typed Genesis module view passed to before_ipc_world_init(ipc, gs)."""
+    pass
+
+
+IPCBeforeWorldInitCallback = Callable[[IPCBeforeWorldInitContext, GenesisSolverContext], None]
 
 
 # Affine body stiffness in MPa
@@ -243,8 +260,6 @@ class IPCCoupler(RBC):
 
             if coup_type == COUPLING_TYPE.TWO_WAY_SOFT_CONSTRAINT:
                 selected_links = self._resolve_two_way_target_links(entity, is_robot)
-                for link in selected_links:
-                    self._validate_link_inertial_com_for_ipc(link)
 
             # Resolve collision settings from material
             if not entity.material.enable_coup_collision:
@@ -438,6 +453,7 @@ class IPCCoupler(RBC):
                 slot_meta = slot_geom.meta()
                 slot_meta.create("solver_type", solver_type)
                 slot_meta.create("entity_idx", str(i_e))
+                slot_meta.create("entity_name", str(entity.name))
                 slot_meta.create("env_idx", str(env_idx))
 
     def _add_rigid_geoms_to_ipc(self) -> None:
@@ -506,9 +522,16 @@ class IPCCoupler(RBC):
 
                         for env_idx in range(self._B):
                             plane_obj = self._ipc_objects.create(f"rigid_plane_{geom.idx}_{env_idx}")
+                            plane_geom_slot, _ = plane_obj.geometries().create(plane_geom)
+                            slot_geom = plane_geom_slot.geometry()
                             if self._B > 1:
-                                self._ipc_subscenes[env_idx].apply_to(plane_geom)
-                            plane_obj.geometries().create(plane_geom)
+                                self._ipc_subscenes[env_idx].apply_to(slot_geom)
+                            slot_meta = slot_geom.meta()
+                            slot_meta.create("solver_type", "rigid")
+                            slot_meta.create("entity_name", str(entity.name))
+                            slot_meta.create("link_name", str(source_link.name))
+                            slot_meta.create("link_idx", str(source_link.idx))
+                            slot_meta.create("env_idx", str(env_idx))
                     elif geom.n_verts:
                         # Apply geom transform to vertices
                         geom_verts = gu.transform_by_trans_quat(geom.init_verts, geom.init_pos, geom.init_quat)
@@ -564,7 +587,28 @@ class IPCCoupler(RBC):
             if self._ipc_abd is None:
                 self._ipc_abd = AffineBodyConstitution()
                 self._ipc_constitution_tabular.insert(self._ipc_abd)
-            self._ipc_abd.apply_to(rigid_link_geom, kappa=ABD_KAPPA * uipc.unit.MPa, mass_density=entity.material.rho)
+            link_mass = target_link.inertial_mass
+            link_com = target_link.inertial_pos
+            link_inertia = target_link.inertial_i
+            rho = float(entity.material.rho)
+            use_rigid_quantity = (
+                link_mass is not None
+                and link_com is not None
+                and link_inertia is not None
+                and rho > gs.EPS
+                and float(link_mass) > gs.EPS
+            )
+            if use_rigid_quantity:
+                abd_mass = uipc.geometry.affine_body.from_rigid_body(
+                    float(link_mass),
+                    np.asarray(link_com, dtype=np.float64),
+                    np.asarray(link_inertia, dtype=np.float64),
+                )
+                volume = float(link_mass) / rho
+                self._ipc_abd.apply_to(rigid_link_geom, kappa=ABD_KAPPA * uipc.unit.MPa, mass=abd_mass, volume=volume)
+            else:
+                # Fallback for links without usable inertial info.
+                self._ipc_abd.apply_to(rigid_link_geom, kappa=ABD_KAPPA * uipc.unit.MPa, mass_density=entity.material.rho)
 
             # Apply SoftTransformConstraint for coupled links
             if is_soft_constraint_target:
@@ -598,6 +642,8 @@ class IPCCoupler(RBC):
                     self._ipc_subscenes[env_idx].apply_to(slot_geom)
                 slot_meta = slot_geom.meta()
                 slot_meta.create("solver_type", "rigid")
+                slot_meta.create("entity_name", str(entity.name))
+                slot_meta.create("link_name", str(target_link.name))
                 slot_meta.create("link_idx", str(target_link.idx))
                 slot_meta.create("env_idx", str(env_idx))
                 abd_geom_slots.append(abd_geom_slot)
@@ -844,10 +890,28 @@ class IPCCoupler(RBC):
         """Finalize IPC setup and initialize AffineBodyStateAccessorFeature"""
         assert gs.logger is not None
         assert self._ipc_world is not None
+        callback: IPCBeforeWorldInitCallback | None = self.options.before_ipc_world_init
+        if callback is not None:
+            ipc = self._build_before_ipc_world_init_context()
+            try:
+                callback(ipc, gs)
+            except Exception as exc:
+                gs.raise_exception_from("`before_ipc_world_init(ipc, gs)` callback failed.", exc)
         self._ipc_world.init(self._ipc_scene)
         # Checkpoint frame 0 so that recover(0) works in reset().
         self._ipc_world.dump()
         gs.logger.info("IPC world initialized successfully")
+
+    def _build_before_ipc_world_init_context(self) -> IPCBeforeWorldInitContext:
+        """Build user callback context passed to before_ipc_world_init(ipc, gs)."""
+        return cast(
+            IPCBeforeWorldInitContext,
+            SimpleNamespace(
+                engine=self._ipc_engine,
+                world=self._ipc_world,
+                scene=self._ipc_scene,
+            ),
+        )
 
     def _init_accessors(self):
         assert gs.logger is not None
@@ -1234,6 +1298,7 @@ class IPCCoupler(RBC):
                 continue
 
             entity = cast("FEMEntity", self.fem_solver.entities[i_e])
+            # uipc.view(fem_geom.transforms())[:] = uipc.Matrix4x4.Identity()
             (transformed_geom,) = uipc.geometry.apply_transform(fem_geom)
             fem_positions_by_entity[entity][env_idx] = transformed_geom.positions().view().reshape(-1, 3)
 
