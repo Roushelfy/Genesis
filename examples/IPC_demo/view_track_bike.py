@@ -392,16 +392,17 @@ def main():
     else:
         bike = None
 
-    # Franka robot to push the crank pedal
+    # Franka robot to grip the crank pedal from the front
     franka = None
     if not args.no_franka:
-        # Front sprocket center in Z-up
+        # Front sprocket center in Z-up: (~-0.109, ~-0.045, ~0.319)
         sprocket_zup = yup_to_zup_position(FRONT_CENTER_YUP)
         print(f"Adding Franka... (sprocket center Z-up: {sprocket_zup})")
+        # Place Franka in front of the bike (negative Y), reaching forward (+Y)
         franka = scene.add_entity(
             gs.morphs.MJCF(
                 file="xml/franka_emika_panda/panda_non_overlap.xml",
-                pos=(sprocket_zup[0] + 0.35, sprocket_zup[1] - 0.3, 0.0),
+                pos=(sprocket_zup[0], sprocket_zup[1] - 0.6, 0.0),
             ),
             material=gs.materials.Rigid(
                 coup_type="two_way_soft_constraint",
@@ -419,41 +420,43 @@ def main():
 
     scene.build()
 
-    # Set up Franka IK targets
-    motor_dofs_idx = None
-    finger_dofs_idx = None
-    ee_link = None
+    # Set up Franka multi-phase grasp
     if franka is not None:
         motor_dofs_idx = slice(0, 7)
         finger_dofs_idx = slice(7, 9)
         ee_link = franka.get_link("hand")
 
         sprocket_zup = yup_to_zup_position(FRONT_CENTER_YUP)
-        # Pedal radius ~0.187m; crank sweeps in XZ plane around sprocket center
+        # Crank geometry in Z-up:
+        #   Arms extend ±0.187 in Z from sprocket center → bottom pedal at Z ≈ 0.132
+        #   Pedal width along Y: sprocket_y+0.201 to sprocket_y-0.109
+        #   Grab from -Y side near Y ≈ sprocket_y - 0.10
         pedal_radius = 0.187
-        # Initial target: pedal at bottom (negative Z from sprocket center)
-        init_pos = np.array(
-            [
-                sprocket_zup[0],
-                sprocket_zup[1],
-                sprocket_zup[2] - pedal_radius + 0.05,
-            ],
-            dtype=gs.np_float,
-        )
-        # Hand faces down
-        target_quat = gu.xyz_to_quat(np.array([0.0, 180.0, 0.0], dtype=gs.np_float), degrees=True)
+        pedal_z = sprocket_zup[2] - pedal_radius
+        pedal_x = sprocket_zup[0]
+        # Where the pedal is in Y (crank mesh Z range -0.201..+0.109 maps to Y offset +0.201..-0.109)
+        pedal_y = sprocket_zup[1] - 0.10
 
-        # Set initial Franka pose via IK
+        # Hand faces forward (-Y) to approach from front
+        grip_quat = gu.xyz_to_quat(np.array([-90.0, 0.0, 0.0], dtype=gs.np_float), degrees=True)
+
+        # Phase waypoints
+        # 1) Start: offset in -Y from pedal (open grip, no contact)
+        approach_pos = np.array([pedal_x, pedal_y - 0.15, pedal_z], dtype=gs.np_float)
+        # 2) Grasp: at the pedal (close grip)
+        grasp_pos = np.array([pedal_x, pedal_y, pedal_z], dtype=gs.np_float)
+
+        # Solve IK for approach position, set as initial pose
         qpos = franka.inverse_kinematics(
             link=ee_link,
-            pos=init_pos,
-            quat=target_quat,
+            pos=approach_pos,
+            quat=grip_quat,
             dofs_idx_local=motor_dofs_idx,
         )
-        franka.control_dofs_position(qpos)
         franka.set_qpos(qpos)
+        franka.control_dofs_position(qpos[motor_dofs_idx], motor_dofs_idx)
 
-        # PD gains for arm and fingers
+        # PD gains
         franka.set_dofs_kp(
             [4500, 4500, 3500, 3500, 2000, 2000, 2000],
             dofs_idx_local=motor_dofs_idx,
@@ -464,45 +467,67 @@ def main():
         )
         franka.set_dofs_kp(500.0, dofs_idx_local=finger_dofs_idx)
         franka.set_dofs_kv(50.0, dofs_idx_local=finger_dofs_idx)
-        # Close fingers to grip the pedal
-        franka.control_dofs_position(0.0, dofs_idx_local=finger_dofs_idx)
+        # Open grip initially
+        franka.control_dofs_position(0.04, dofs_idx_local=finger_dofs_idx)
 
     # Start recording
     cam.start_recording()
     first_frame_saved = False
 
-    if bike is not None and franka is None:
-        bike.control_dofs_velocity(0.8, 0)
+    # Phase durations (in steps)
+    N_SETTLE = 30
+    N_APPROACH = 100
+    N_CLOSE = 50
+    n_rotate = args.steps - N_SETTLE - N_APPROACH - N_CLOSE
 
     for step_i in range(args.steps):
-        # Franka traces a circular arc to push the crank
         if franka is not None:
-            sprocket_zup = yup_to_zup_position(FRONT_CENTER_YUP)
-            pedal_radius = 0.187
-            # Rotate the crank: angular speed ~ 1 rad/s
-            angle = -np.pi / 2 - step_i * 0.01 * 1.0
-            target_pos = np.array(
-                [
-                    sprocket_zup[0] + pedal_radius * np.cos(angle),
-                    sprocket_zup[1],
-                    sprocket_zup[2] + pedal_radius * np.sin(angle),
-                ],
-                dtype=gs.np_float,
-            )
-            target_quat = gu.xyz_to_quat(np.array([0.0, 180.0, 0.0], dtype=gs.np_float), degrees=True)
-            qpos = franka.inverse_kinematics(
-                link=ee_link,
-                pos=target_pos,
-                quat=target_quat,
-                dofs_idx_local=motor_dofs_idx,
-            )
-            franka.control_dofs_position(qpos[motor_dofs_idx], motor_dofs_idx)
-            franka.control_dofs_position(0.0, dofs_idx_local=finger_dofs_idx)
+            if step_i < N_SETTLE:
+                # Phase 1: Settle with open grip at approach position
+                pass
+
+            elif step_i < N_SETTLE + N_APPROACH:
+                # Phase 2: Move in +Y toward the crank pedal (grip open)
+                t = (step_i - N_SETTLE) / N_APPROACH
+                pos = approach_pos * (1 - t) + grasp_pos * t
+                qpos = franka.inverse_kinematics(
+                    link=ee_link,
+                    pos=pos,
+                    quat=grip_quat,
+                    dofs_idx_local=motor_dofs_idx,
+                )
+                franka.control_dofs_position(qpos[motor_dofs_idx], motor_dofs_idx)
+                franka.control_dofs_position(0.04, dofs_idx_local=finger_dofs_idx)
+
+            elif step_i < N_SETTLE + N_APPROACH + N_CLOSE:
+                # Phase 3: Close grip around the pedal
+                franka.control_dofs_position(0.0, dofs_idx_local=finger_dofs_idx)
+
+            else:
+                # Phase 4: Rotate the crank by tracing a circular arc in XZ plane
+                rot_step = step_i - N_SETTLE - N_APPROACH - N_CLOSE
+                # Start angle at bottom (-π/2), rotate CCW
+                angle = -np.pi / 2 + rot_step * 0.01 * 1.0
+                rot_pos = np.array(
+                    [
+                        sprocket_zup[0] + pedal_radius * np.cos(angle),
+                        pedal_y,
+                        sprocket_zup[2] + pedal_radius * np.sin(angle),
+                    ],
+                    dtype=gs.np_float,
+                )
+                qpos = franka.inverse_kinematics(
+                    link=ee_link,
+                    pos=rot_pos,
+                    quat=grip_quat,
+                    dofs_idx_local=motor_dofs_idx,
+                )
+                franka.control_dofs_position(qpos[motor_dofs_idx], motor_dofs_idx)
+                franka.control_dofs_position(0.0, dofs_idx_local=finger_dofs_idx)
 
         scene.step()
 
         # Render and save first frame
-        print("Step i:", step_i)
         rgb, _, _, _ = cam.render(rgb=True)
         if not first_frame_saved:
             imageio.imwrite("track_bike_first_frame.png", rgb)
