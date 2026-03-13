@@ -521,10 +521,19 @@ class StructContactIslandState(metaclass=BASE_METACLASS):
     edge_id: V_ANNOTATION
     constraint_list: V_ANNOTATION
     constraint_id: V_ANNOTATION
-    entity_edge: StructAggList
-    island_col: StructAggList
+    # entity_edge (flattened from StructAggList)
+    entity_edge_n: V_ANNOTATION
+    entity_edge_start: V_ANNOTATION
+    entity_edge_curr: V_ANNOTATION
+    # island_col (flattened from StructAggList)
+    island_col_n: V_ANNOTATION
+    island_col_start: V_ANNOTATION
+    island_col_curr: V_ANNOTATION
     island_hibernated: V_ANNOTATION
-    island_entity: StructAggList
+    # island_entity (flattened from StructAggList)
+    island_entity_n: V_ANNOTATION
+    island_entity_start: V_ANNOTATION
+    island_entity_curr: V_ANNOTATION
     entity_id: V_ANNOTATION
     n_edges: V_ANNOTATION
     n_islands: V_ANNOTATION
@@ -550,10 +559,16 @@ def get_contact_island_state(solver, collider):
         edge_id=V(dtype=gs.qd_int, shape=(max_edges * 2, _B)),
         constraint_list=V(dtype=gs.qd_int, shape=(max_contact_pairs, _B)),
         constraint_id=V(dtype=gs.qd_int, shape=(max_contact_pairs * 2, _B)),
-        entity_edge=get_agg_list(solver),
-        island_col=get_agg_list(solver),
+        entity_edge_n=V(dtype=gs.qd_int, shape=(n_entities, _B)),
+        entity_edge_start=V(dtype=gs.qd_int, shape=(n_entities, _B)),
+        entity_edge_curr=V(dtype=gs.qd_int, shape=(n_entities, _B)),
+        island_col_n=V(dtype=gs.qd_int, shape=(n_entities, _B)),
+        island_col_start=V(dtype=gs.qd_int, shape=(n_entities, _B)),
+        island_col_curr=V(dtype=gs.qd_int, shape=(n_entities, _B)),
         island_hibernated=V(dtype=gs.qd_int, shape=(n_entities, _B)),
-        island_entity=get_agg_list(solver),
+        island_entity_n=V(dtype=gs.qd_int, shape=(n_entities, _B)),
+        island_entity_start=V(dtype=gs.qd_int, shape=(n_entities, _B)),
+        island_entity_curr=V(dtype=gs.qd_int, shape=(n_entities, _B)),
         entity_id=V(dtype=gs.qd_int, shape=(n_entities, _B)),
         n_edges=V(dtype=gs.qd_int, shape=(_B,)),
         n_islands=V(dtype=gs.qd_int, shape=(_B,)),

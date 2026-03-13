@@ -1352,8 +1352,8 @@ def func_hibernate__for_all_awake_islands_either_hiberanate_or_update_aabb_sort_
 
             if not was_island_hibernated:
                 are_all_entities_okay_for_hibernation = True
-                entity_ref_n = contact_island_state.island_entity.n[island_idx, i_b]
-                entity_ref_start = contact_island_state.island_entity.start[island_idx, i_b]
+                entity_ref_n = contact_island_state.island_entity_n[island_idx, i_b]
+                entity_ref_start = contact_island_state.island_entity_start[island_idx, i_b]
 
                 # Invariant check: ensure entity_id access won't exceed buffer
                 if entity_ref_start + entity_ref_n > contact_island_state.entity_id.shape[0]:

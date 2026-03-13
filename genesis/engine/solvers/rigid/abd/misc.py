@@ -21,8 +21,8 @@ def func_wakeup_entity_and_its_temp_island(
     # Now, we require a properly hibernated entity to be passed in.
     island_idx = contact_island_state.entity_island[i_e, i_b]
 
-    for ei in range(contact_island_state.island_entity.n[island_idx, i_b]):
-        entity_ref = contact_island_state.island_entity.start[island_idx, i_b] + ei
+    for ei in range(contact_island_state.island_entity_n[island_idx, i_b]):
+        entity_ref = contact_island_state.island_entity_start[island_idx, i_b] + ei
         entity_idx = contact_island_state.entity_id[entity_ref, i_b]
 
         is_entity_hibernated = entities_state.hibernated[entity_idx, i_b]
