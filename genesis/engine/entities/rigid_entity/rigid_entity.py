@@ -1744,6 +1744,13 @@ class RigidEntity(KinematicEntity):
 
         self._batch_fixed_verts: bool = morph.batch_fixed_verts
 
+        # ipc_only entities: IPC fully controls dynamics, so we convert their FREE
+        # joint to FIXED (0 DOFs in constraint solver). We force batch_fixed_verts
+        # so that geometry vertices are stored per-batch despite the FIXED joint.
+        self._is_ipc_only: bool = material.coup_type == "ipc_only"
+        if self._is_ipc_only:
+            self._batch_fixed_verts = True
+
         super().__init__(
             scene,
             solver,
@@ -1762,6 +1769,25 @@ class RigidEntity(KinematicEntity):
             morph_heterogeneous,
             name,
         )
+
+    def _create_joints(self, j_infos, link_idx, joint_start):
+        # ipc_only entities: convert FREE joint to FIXED so they contribute 0 DOFs
+        # to the constraint solver. IPC fully controls their dynamics.
+        if self._is_ipc_only:
+            for j_info in j_infos:
+                if j_info["type"] == gs.JOINT_TYPE.FREE:
+                    j_info["type"] = gs.JOINT_TYPE.FIXED
+                    j_info["n_dofs"] = 0
+                    j_info["n_qs"] = 0
+                    j_info["dofs_limit"] = np.zeros((0, 2))
+                    j_info["init_qpos"] = np.zeros(0)
+                    j_info["dofs_armature"] = np.zeros(0)
+                    j_info["dofs_invweight"] = np.zeros(0)
+                    j_info["dofs_stiffness"] = np.zeros(0)
+                    j_info["dofs_damping"] = np.zeros(0)
+                    j_info["dofs_friction_loss"] = np.zeros(0)
+
+        super()._create_joints(j_infos, link_idx, joint_start)
 
     def _add_heterogeneous_variant(self, link, cg_infos, vg_infos):
         # Add collision geometries
@@ -3078,6 +3104,8 @@ class RigidEntity(KinematicEntity):
             Whether to zero the velocity of all the entity's dofs. Defaults to True. This is a safety measure after a
             sudden change in entity pose.
         """
+        if self._is_ipc_only:
+            gs.raise_exception("ipc_only entities have no qpos. Use set_pos() and set_quat() instead.")
         super().set_qpos(qpos, qs_idx_local, envs_idx, zero_velocity=zero_velocity, skip_forward=skip_forward)
 
     @gs.assert_built
@@ -3199,6 +3227,8 @@ class RigidEntity(KinematicEntity):
             Whether to zero the velocity of all the entity's dofs. Defaults to True. This is a safety measure after a
             sudden change in entity pose.
         """
+        if self._is_ipc_only:
+            gs.raise_exception("ipc_only entities have no DOFs. Use set_pos() and set_quat() instead.")
         super().set_dofs_position(position, dofs_idx_local, envs_idx, zero_velocity=zero_velocity)
 
     @gs.assert_built
