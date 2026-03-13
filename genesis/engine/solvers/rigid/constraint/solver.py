@@ -184,17 +184,6 @@ class ConstraintSolver:
         )
 
     def resolve(self):
-        # Fast path: skip the expensive solve (O(n_dofs³) Cholesky) when no
-        # environment has any constraints.  In that case the unconstrained
-        # acceleration is the answer and constraint forces are zero.
-        if self._has_zero_constraints():
-            func_resolve_unconstrained(
-                self._solver.dofs_state,
-                self.constraint_state,
-                self._solver._static_rigid_sim_config,
-            )
-            return
-
         func_solve_init(
             self._solver.dofs_info,
             self._solver.dofs_state,
@@ -3055,7 +3044,7 @@ def func_solve_body(
 ) -> None: ...
 
 
-@func_solve_body.register(is_compatible=lambda *args, **kwargs: True)
+@func_solve_body.register(is_compatible=lambda *args, **kwargs: gs.backend not in {gs.cuda})
 @qd.kernel(fastcache=gs.use_fastcache)
 def func_solve_body_monolith(
     entities_info: array_class.EntitiesInfo,
