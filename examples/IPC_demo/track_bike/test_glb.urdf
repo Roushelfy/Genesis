@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<robot name="test_glb">
+  <link name="base">
+    <visual>
+      <geometry><mesh filename="bike_base.glb"/></geometry>
+    </visual>
+    <collision>
+      <geometry><mesh filename="bike_base.obj"/></geometry>
+    </collision>
+  </link>
+  <link name="sprocket">
+    <visual>
+      <geometry><mesh filename="front_sprocket.obj"/></geometry>
+    </visual>
+    <collision>
+      <geometry><mesh filename="front_sprocket.obj"/></geometry>
+    </collision>
+  </link>
+  <joint name="j1" type="revolute">
+    <parent link="base"/>
+    <child link="sprocket"/>
+    <origin xyz="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-10" upper="10" effort="100" velocity="100"/>
+  </joint>
+</robot>

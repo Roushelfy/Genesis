@@ -70,6 +70,7 @@ class IPCBeforeWorldInitContext(Protocol):
 
 class GenesisSolverContext(Protocol):
     """Typed Genesis module view passed to before_ipc_world_init(ipc, gs)."""
+
     pass
 
 
@@ -85,6 +86,18 @@ RESTITUTION_CONTACT_THRESHOLD = 1e-7
 COM_AABB_TOL = 2e-3
 IPC_SURFACE_PREFIX = "ipc_surface"
 GENESIS_SURFACE_PREFIX = "genesis_surface"
+
+
+def _link_is_fixed_for_ipc(link: "RigidLink") -> bool:
+    """Whether a link should be treated as fixed in IPC.
+
+    For ipc_only entities the FREE→FIXED joint conversion makes link.is_fixed
+    always True, but the body should only be fixed if the morph was originally
+    fixed. For other coupling types, link.is_fixed is correct.
+    """
+    if getattr(link.entity, "_is_ipc_only", False):
+        return link.entity.morph.fixed
+    return link.is_fixed
 
 
 class IPCCoupler(RBC):
@@ -621,7 +634,9 @@ class IPCCoupler(RBC):
                 self._ipc_abd.apply_to(rigid_link_geom, kappa=ABD_KAPPA * uipc.unit.MPa, mass=abd_mass, volume=volume)
             else:
                 # Fallback for links without usable inertial info.
-                self._ipc_abd.apply_to(rigid_link_geom, kappa=ABD_KAPPA * uipc.unit.MPa, mass_density=entity.material.rho)
+                self._ipc_abd.apply_to(
+                    rigid_link_geom, kappa=ABD_KAPPA * uipc.unit.MPa, mass_density=entity.material.rho
+                )
 
             # Apply SoftTransformConstraint for coupled links
             if is_soft_constraint_target:
@@ -638,7 +653,7 @@ class IPCCoupler(RBC):
             uipc.view(external_kinetic_attr)[:] = int(not is_ipc_only)
 
             is_fixed_attr = rigid_link_geom.instances().find(uipc.builtin.is_fixed)
-            uipc.view(is_fixed_attr)[:] = int(target_link.is_fixed)
+            uipc.view(is_fixed_attr)[:] = int(_link_is_fixed_for_ipc(target_link))
 
             # ---- Per-environment: create IPC objects, then set per-env attrs on slot geometry ----
             abd_geom_slots: list[GeometrySlot] = []
@@ -846,7 +861,7 @@ class IPCCoupler(RBC):
                     continue
 
                 # Fixed-fixed pairs never collide (mirrors RigidSolver collider)
-                if link_i.is_fixed and link_j.is_fixed:
+                if _link_is_fixed_for_ipc(link_i) and _link_is_fixed_for_ipc(link_j):
                     self._ipc_contact_tabular.insert(elem_i, elem_j, friction_ij, resistance_ij, False)
                     continue
 
@@ -878,7 +893,7 @@ class IPCCoupler(RBC):
         for elem, friction, resistance in non_abd_infos:
             all_contact_infos.append((elem, friction, resistance, False, False))
         for elem, link, friction, resistance in abd_link_infos:
-            all_contact_infos.append((elem, friction, resistance, True, link.is_fixed))
+            all_contact_infos.append((elem, friction, resistance, True, _link_is_fixed_for_ipc(link)))
 
         # Register per-plane ground contact pairs
         # Ground planes are fixed, so skip fixed ABD links (fixed-fixed pairs never collide).
@@ -1454,11 +1469,34 @@ class IPCCoupler(RBC):
         # Clear one-shot impulses from previous step
         self._restitution_vel_corrections = []
 
-        # ---- Step 1: Non-fixed base links — write IPC transform to qpos[0:7] ----
+        # ---- Step 1a: ipc_only base links — write IPC transform to links_state directly ----
+        # ipc_only entities have FIXED joints (0 qs/DOFs), so we write to links_state.pos/quat
+        # instead of qpos. The FK kernel propagates FIXED root link transforms from links_state.
+        links_pos_tc = qd_to_torch(self.rigid_solver.links_state.pos, transpose=True, copy=False)
+        links_quat_tc = qd_to_torch(self.rigid_solver.links_state.quat, transpose=True, copy=False)
         for link, abd_data in self._abd_data_by_link.items():
             if abd_data.ipc_transforms is None:
                 continue
             entity = link.entity
+            if not entity._is_ipc_only:
+                continue
+            if link is not entity.base_link:
+                continue
+
+            envs_pos = np.empty((self._B, 3), dtype=gs.np_float)
+            envs_quat = np.empty((self._B, 4), dtype=gs.np_float)
+            for env_idx in range(self._B):
+                envs_pos[env_idx], envs_quat[env_idx] = gu.T_to_trans_quat(abd_data.ipc_transforms[env_idx])
+            links_pos_tc[:, link.idx] = torch.from_numpy(envs_pos).to(links_pos_tc.device)
+            links_quat_tc[:, link.idx] = torch.from_numpy(envs_quat).to(links_quat_tc.device)
+
+        # ---- Step 1b: Non-fixed base links — write IPC transform to qpos[0:7] ----
+        for link, abd_data in self._abd_data_by_link.items():
+            if abd_data.ipc_transforms is None:
+                continue
+            entity = link.entity
+            if entity._is_ipc_only:
+                continue
             if link is not entity.base_link or entity.base_link.is_fixed:
                 continue
 
