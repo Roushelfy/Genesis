@@ -402,6 +402,7 @@ def main():
                 pos=bike_pos_zup,
                 euler=(90, 0, 0),
                 convexify=False,
+                links_to_keep=["rear_wheel"],
             ),
             material=bike_material,
             vis_mode="collision",
@@ -443,15 +444,18 @@ def main():
 
     # Set up motor to spin a sprocket
     if bike is not None and args.motor != "none":
+        has_chain = not args.no_chain
+        # With chain: slightly stronger motor to overcome chain friction/inertia
+        motor_kv = 10.0 if has_chain else 5.0
+        motor_vel = -3.0
+
         if args.motor == "front":
             motor_dof = bike.get_joint("front_sprocket_joint").dof_idx_local
-            bike.set_dofs_kv(10.0, dofs_idx_local=motor_dof)
-            bike.control_dofs_force(5.0, dofs_idx_local=motor_dof)
         else:
             motor_dof = bike.get_joint("rear_sprocket_joint").dof_idx_local
-            bike.set_dofs_kp(0.0, dofs_idx_local=motor_dof)
-            bike.set_dofs_kv(5.0, dofs_idx_local=motor_dof)
-            bike.control_dofs_velocity(-3.0, dofs_idx_local=motor_dof)
+        bike.set_dofs_kp(0.0, dofs_idx_local=motor_dof)
+        bike.set_dofs_kv(motor_kv, dofs_idx_local=motor_dof)
+        bike.control_dofs_velocity(motor_vel, dofs_idx_local=motor_dof)
 
     # Set up Franka multi-phase grasp
     if franka is not None:
@@ -503,9 +507,8 @@ def main():
         # Open grip initially
         franka.control_dofs_position(0.04, dofs_idx_local=finger_dofs_idx)
 
-    # Start recording
-    cam.start_recording()
     first_frame_saved = False
+    video_frames = []
 
     # Phase durations (in steps)
     N_SETTLE = 30
@@ -573,16 +576,18 @@ def main():
                 lookat=(bike_pos[0], bike_pos[1], 0.35),
             )
 
-        # Render and save first frame
+        # Render and collect frame
         rgb, _, _, _ = cam.render(rgb=True)
+        video_frames.append(rgb)
         if not first_frame_saved:
             imageio.imwrite("track_bike_first_frame.png", rgb)
             print("Saved first frame to track_bike_first_frame.png")
             first_frame_saved = True
 
-    # Save video
-    cam.stop_recording(save_to_filename=args.video, fps=60)
-    print(f"Saved video to {args.video}")
+        # Flush video every 10 steps so we can watch progress mid-simulation
+        if (step_i + 1) % 10 == 0 or step_i == args.steps - 1:
+            imageio.mimwrite(args.video, video_frames, fps=60)
+            print(f"  Saved video ({step_i + 1}/{args.steps} frames) to {args.video}")
 
 
 if __name__ == "__main__":

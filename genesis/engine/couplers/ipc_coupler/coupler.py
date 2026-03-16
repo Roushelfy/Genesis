@@ -311,11 +311,16 @@ class IPCCoupler(RBC):
 
         if not ignore_end_effector_check:
             for link in selected_links:
-                # End-effector only: no child link in the same entity.
-                if any(child.parent_idx == link.idx for child in entity.links):
+                # End-effector only: no coupled child link in the same entity.
+                # Non-coupled children (e.g. a wheel attached to a sprocket) are fine.
+                coupled_children = [
+                    child for child in entity.links if child.parent_idx == link.idx and child in selected_links
+                ]
+                if coupled_children:
                     gs.raise_exception(
                         f"Two-way soft coupling only supports end-effector links. "
-                        f"Link '{link.name}' has child links in entity '{entity.uid}'."
+                        f"Link '{link.name}' has coupled child links "
+                        f"{[c.name for c in coupled_children]} in entity '{entity.uid}'."
                     )
         elif gs.logger is not None and is_robot:
             gs.logger.warning(
