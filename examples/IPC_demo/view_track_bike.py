@@ -216,7 +216,7 @@ def generate_chain_path():
     return points
 
 
-def add_chain(scene):
+def add_chain(scene, bike_pos_zup=(0, 0, 0)):
     """Add chain entities as ipc_only bodies.
 
     Each segment gets 2 link plates (±Z offset), 1 barring at the start
@@ -224,7 +224,11 @@ def add_chain(scene):
     layout.  Pins and barrings are placed at the path points (joint
     positions) so that adjacent segments share co-located pin+barring at
     each joint, so adjacent segments share co-located pin+barring.
+
+    bike_pos_zup: world-frame offset of the bike entity (Z-up),
+        applied to all chain part positions so they align with the sprockets.
     """
+    bike_offset_zup = np.array(bike_pos_zup, dtype=float)
     points = generate_chain_path()
     n = len(points)
 
@@ -235,7 +239,7 @@ def add_chain(scene):
         coup_type="ipc_only",
         coup_friction=0.0,
         friction=0.01,
-        # enable_coup_collision=False,
+        enable_coup_collision=True,
     )
     # Base quat for barring/pin: 90° around X (Y-up mesh convention), no yaw
     joint_quat = yup_to_zup_quat(euler_xyz_deg_to_quat(90, 0, 0))
@@ -273,11 +277,12 @@ def add_chain(scene):
         # Two link plates (±Z offset in Y-up)
         for sign in (+1, -1):
             pos_yup = (mid[0], mid[1], chain_z + sign * z_off)
+            pos_zup = np.array(yup_to_zup_position(pos_yup)) + bike_offset_zup
             entities.append(
                 scene.add_entity(
                     gs.morphs.Mesh(
                         file=LINK_MESH,
-                        pos=yup_to_zup_position(pos_yup),
+                        pos=tuple(pos_zup),
                         quat=link_quat,
                         scale=CHAIN_SCALE,
                         fixed=False,
@@ -291,11 +296,12 @@ def add_chain(scene):
 
         # Barring at start joint (path point p0)
         barring_pos_yup = (p0[0], p0[1], chain_z)
+        barring_pos_zup = np.array(yup_to_zup_position(barring_pos_yup)) + bike_offset_zup
         entities.append(
             scene.add_entity(
                 gs.morphs.Mesh(
                     file=BARRING_MESH,
-                    pos=yup_to_zup_position(barring_pos_yup),
+                    pos=tuple(barring_pos_zup),
                     quat=joint_quat,
                     scale=CHAIN_SCALE,
                     fixed=False,
@@ -309,11 +315,12 @@ def add_chain(scene):
 
         # Pin at end joint (path point p1)
         pin_pos_yup = (p1[0], p1[1], chain_z)
+        pin_pos_zup = np.array(yup_to_zup_position(pin_pos_yup)) + bike_offset_zup
         entities.append(
             scene.add_entity(
                 gs.morphs.Mesh(
                     file=PIN_MESH,
-                    pos=yup_to_zup_position(pin_pos_yup),
+                    pos=tuple(pin_pos_zup),
                     quat=joint_quat,
                     scale=CHAIN_SCALE,
                     fixed=False,
@@ -336,6 +343,9 @@ def main():
     parser.add_argument("--no-bike", action="store_true", help="Load chain only, no bike")
     parser.add_argument("--no-franka", action="store_true", help="Skip Franka robot")
     parser.add_argument("--no-gravity", action="store_true")
+    parser.add_argument(
+        "--motor", choices=["front", "rear", "none"], default="rear", help="Which sprocket to apply motor to"
+    )
     parser.add_argument("--steps", type=int, default=600, help="Number of sim steps")
     parser.add_argument("--video", type=str, default="./data/track_bike.mp4", help="Video output path")
     args = parser.parse_args()
@@ -351,7 +361,7 @@ def main():
         ),
         rigid_options=gs.options.RigidOptions(
             dt=0.01,
-            enable_collision=False,
+            enable_collision=True,
             constraint_solver=gs.constraint_solver.CG,
             gravity=(0, 0, 0 if args.no_gravity else -9.81),
         ),
@@ -362,28 +372,39 @@ def main():
         ),
     )
 
+    # Ground plane (rigid collision only, no IPC coupling)
+    scene.add_entity(
+        gs.morphs.Plane(),
+        material=gs.materials.Rigid(needs_coup=False),
+    )
+
+    bike_pos_zup = (0, 0, 0.002)
+
     if not args.no_chain:
         print("Adding chain...")
-        add_chain(scene)
+        add_chain(scene, bike_pos_zup=bike_pos_zup)
 
     if not args.no_bike:
         # Mesh is Y-up (Blender convention); rotate 90 deg around X for Genesis Z-up.
         # Bike uses two_way coupling so IPC and Genesis share control.
         print("Adding bike...")
+        bike_material = gs.materials.Rigid(
+            coup_type="two_way_soft_constraint",
+            coup_friction=0.3,
+            coup_links=["front_sprocket", "rear_sprocket"],
+            enable_coup_collision=True,
+        )
+
         bike = scene.add_entity(
             gs.morphs.URDF(
                 file=URDF_PATH,
-                fixed=True,
+                fixed=False,
+                pos=bike_pos_zup,
                 euler=(90, 0, 0),
                 convexify=False,
             ),
-            material=gs.materials.Rigid(
-                coup_type="two_way_soft_constraint",
-                coup_friction=0.3,
-                coup_links=["front_sprocket", "rear_sprocket"],
-                # enable_coup_collision=False,
-            ),
-            # vis_mode="collision"
+            material=bike_material,
+            vis_mode="collision",
         )
 
         print(f"Links: {[l.name for l in bike.links]}")
@@ -419,6 +440,18 @@ def main():
     )
 
     scene.build()
+
+    # Set up motor to spin a sprocket
+    if bike is not None and args.motor != "none":
+        if args.motor == "front":
+            motor_dof = bike.get_joint("front_sprocket_joint").dof_idx_local
+            bike.set_dofs_kv(10.0, dofs_idx_local=motor_dof)
+            bike.control_dofs_force(5.0, dofs_idx_local=motor_dof)
+        else:
+            motor_dof = bike.get_joint("rear_sprocket_joint").dof_idx_local
+            bike.set_dofs_kp(0.0, dofs_idx_local=motor_dof)
+            bike.set_dofs_kv(5.0, dofs_idx_local=motor_dof)
+            bike.control_dofs_velocity(-3.0, dofs_idx_local=motor_dof)
 
     # Set up Franka multi-phase grasp
     if franka is not None:
@@ -526,6 +559,19 @@ def main():
                 franka.control_dofs_position(0.0, dofs_idx_local=finger_dofs_idx)
 
         scene.step()
+
+        # Log bike position and update camera to follow
+        if bike is not None and step_i % 50 == 0:
+            pos = bike.get_pos()
+            vel = bike.get_vel()
+            print(f"  Step {step_i:4d}: bike pos = {pos}  vel = {vel}")
+
+        if bike is not None:
+            bike_pos = bike.get_pos().cpu().numpy()
+            cam.set_pose(
+                pos=(bike_pos[0] + 0.5, bike_pos[1] - 1.2, 0.6),
+                lookat=(bike_pos[0], bike_pos[1], 0.35),
+            )
 
         # Render and save first frame
         rgb, _, _, _ = cam.render(rgb=True)
