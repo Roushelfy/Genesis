@@ -244,7 +244,25 @@ class IPCCouplerOptions(BaseCouplerOptions):
     contact_eps_velocity : float, optional
         Epsilon velocity for contact. Defaults to None (use libuipc default: 0.01).
     contact_constitution : str, optional
-        Contact constitution model. Options: 'ipc', 'isometric'. Defaults to None (use libuipc default: 'ipc').
+        Contact constitution model. Options: 'ipc', 'al-ipc'. Defaults to None (use libuipc default: 'ipc').
+        When set to 'al-ipc', the Augmented Lagrangian IPC pipeline is used instead of the
+        standard barrier-based IPC. AL-IPC maintains Lagrange multipliers and active sets for
+        each contact, which can improve convergence for stiff contact scenarios.
+    al_ipc_mu_scale : float, optional
+        AL-IPC penalty parameter scale. The actual penalty is ``mass_norm * mu_scale * dt^2``.
+        Higher values give stiffer contacts and faster convergence but may reduce stability.
+        Only used when ``contact_constitution='al-ipc'``.
+        Defaults to None (use libuipc default: 5e6).
+    al_ipc_toi_threshold : float, optional
+        AL-IPC convergence threshold. The AL loop converges when ``beta >= 1.0 - toi_threshold``.
+        Lower values enforce tighter convergence.
+        Only used when ``contact_constitution='al-ipc'``.
+        Defaults to None (use libuipc default: 0.1).
+    al_ipc_decay_factor : float, optional
+        AL-IPC Lagrange multiplier decay factor (Γ). Controls how aggressively multipliers are
+        scaled down for inactive constraints. Higher values prune inactive contacts more aggressively.
+        Only used when ``contact_constitution='al-ipc'``.
+        Defaults to None (use libuipc default: 0.3).
 
     Collision Detection Options
     ---------------------------
@@ -314,6 +332,11 @@ class IPCCouplerOptions(BaseCouplerOptions):
     contact_resistance: float = 1e9
     contact_eps_velocity: float = None
     contact_constitution: str = None
+
+    # AL-IPC options (only used when contact_constitution='al-ipc')
+    al_ipc_mu_scale: float = None
+    al_ipc_toi_threshold: float = None
+    al_ipc_decay_factor: float = None
 
     # Collision detection options
     collision_detection_method: str = None

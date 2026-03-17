@@ -350,6 +350,8 @@ def main():
     )
     parser.add_argument("--steps", type=int, default=600, help="Number of sim steps")
     parser.add_argument("--video", type=str, default="./data/track_bike.mp4", help="Video output path")
+    parser.add_argument("--al-ipc", action="store_true", help="Use AL-IPC contact constitution")
+    parser.add_argument("--al-ipc-mu-scale", type=float, default=None, help="AL-IPC mu_scale override")
     args = parser.parse_args()
 
     gs.init(backend=gs.gpu)
@@ -371,6 +373,10 @@ def main():
             contact_d_hat=2e-4,
             newton_semi_implicit_enable=True,
             linear_system_tolerance=1e-4,
+            # AL-IPC: Augmented Lagrangian contact (faster convergence for many contacts)
+            contact_constitution="al-ipc" if args.al_ipc else None,
+            al_ipc_toi_threshold=0.1 if args.al_ipc else None,
+            al_ipc_mu_scale=args.al_ipc_mu_scale if args.al_ipc else None,
         ),
     )
 

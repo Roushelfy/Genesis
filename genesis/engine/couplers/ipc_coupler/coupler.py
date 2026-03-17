@@ -267,6 +267,7 @@ class IPCCoupler(RBC):
         # ==== Newton iteration counter (captures libuipc stderr) ====
         self._newton_counter = _NewtonIterCounter()
         self._ipc_frame = 0
+        self._al_ipc_mu_checked = False
 
         # ==== IPC Constitutions ====
         self._ipc_abd: AffineBodyConstitution | None = None
@@ -1166,12 +1167,140 @@ class IPCCoupler(RBC):
         print(
             f"[IPC] frame {self._ipc_frame:4d}  newton={_n_newton:2d}  "
             f"advance={(_t3 - _t2) * 1000:.0f}ms  total={(_t6 - _t0) * 1000:.0f}ms"
+            f"{_mu_str}"
         )
+
+        # AL-IPC mu_scale calibration check (first frame only)
+        if _adaptive_mu is not None and not self._al_ipc_mu_checked:
+            self._check_al_ipc_mu(_adaptive_mu)
+            self._al_ipc_mu_checked = True
 
         # Step 6: Update GUI if enabled
         if self._ipc_gui is not None:
             ps.frame_tick()
             self._ipc_gui.update()
+
+    @staticmethod
+    def _compute_fem_max_vertex_mass(entity: "FEMEntity") -> float:
+        """Estimate the max per-vertex mass of a FEM entity.
+
+        libuipc mass_norm() uses the max per-vertex mass (not total body mass)
+        for FEM subsystems.  We approximate this by distributing each element's
+        mass equally to its vertices and taking the vertex-wise maximum.
+
+        For cloth (triangle mesh): element_mass = rho * area_i * thickness
+        For volumetric FEM (tet mesh): element_mass = rho * volume_i
+        """
+        verts = tensor_to_array(entity.init_positions)
+        elems = entity.elems
+        rho = float(entity.material.rho)
+        is_cloth = isinstance(entity.material, Cloth)
+        n_verts = len(verts)
+
+        # Accumulate mass per vertex
+        vertex_mass = np.zeros(n_verts, dtype=np.float64)
+
+        if is_cloth:
+            v0 = verts[elems[:, 0]]
+            v1 = verts[elems[:, 1]]
+            v2 = verts[elems[:, 2]]
+            crosses = np.cross(v1 - v0, v2 - v0)
+            areas = 0.5 * np.linalg.norm(crosses, axis=1)
+            thickness = float(entity.material.thickness)
+            elem_masses = rho * areas * thickness
+            # Distribute each triangle's mass equally to its 3 vertices
+            per_vert = elem_masses / 3.0
+            for k in range(3):
+                np.add.at(vertex_mass, elems[:, k], per_vert)
+        else:
+            v0 = verts[elems[:, 0]]
+            v1 = verts[elems[:, 1]]
+            v2 = verts[elems[:, 2]]
+            v3 = verts[elems[:, 3]]
+            d = np.stack([v1 - v0, v2 - v0, v3 - v0], axis=-1)
+            volumes = np.abs(np.linalg.det(d)) / 6.0
+            elem_masses = rho * volumes
+            # Distribute each tet's mass equally to its 4 vertices
+            per_vert = elem_masses / 4.0
+            for k in range(4):
+                np.add.at(vertex_mass, elems[:, k], per_vert)
+
+        return float(np.max(vertex_mass)) if n_verts > 0 else 0.0
+
+    def _check_al_ipc_mu(self, adaptive_mu):
+        """Check whether AL-IPC adaptive mu is reasonable.
+
+        libuipc computes: mu = mass_norm * mu_scale * dt^2
+        where mass_norm = max across all subsystems of:
+          - ABD: total body mass per rigid body (non-fixed only)
+          - FEM: max per-vertex mass
+
+        When heavy rigid bodies are present, mass_norm is dominated by the
+        rigid body mass, making mu far too large for the soft bodies.
+
+        We back-compute mass_norm from the captured adaptive mu and compare it
+        to the soft-only mass_norm (max FEM/cloth vertex mass).  If the ratio
+        is large, the user should set a smaller mu_scale.
+
+        Genesis _inertial_mass can be unreliable for surface-only meshes (zero
+        volume → near-zero mass), so we use the actual adaptive mu from libuipc
+        rather than estimating rigid masses ourselves.
+        """
+        if not self._abd_data_by_link:
+            return
+
+        # Check if any ABD link is non-fixed (only non-fixed bodies affect mass_norm)
+        has_non_fixed_abd = any(not _link_is_fixed_for_ipc(link) for link in self._abd_data_by_link)
+
+        # FEM/cloth max per-vertex mass (same as libuipc FEM mass_norm)
+        soft_vertex_masses = []
+        for entity in self._ipc_fems_contact:
+            m = self._compute_fem_max_vertex_mass(entity)
+            if m > 0:
+                soft_vertex_masses.append(m)
+        for entity in self._ipc_clothes_contact:
+            m = self._compute_fem_max_vertex_mass(entity)
+            if m > 0:
+                soft_vertex_masses.append(m)
+
+        if not soft_vertex_masses:
+            gs.logger.info(f"[AL-IPC] Adaptive mu = {adaptive_mu:.2e} (no soft bodies)")
+            return
+
+        max_soft_vertex_mass = max(soft_vertex_masses)
+
+        if not has_non_fixed_abd:
+            # All rigid bodies are fixed → they don't affect mass_norm → no correction needed
+            gs.logger.info(
+                f"[AL-IPC] Adaptive mu = {adaptive_mu:.2e}, "
+                f"max_soft_vertex_mass = {max_soft_vertex_mass:.6f}, "
+                f"all ABD bodies are fixed (no mu_scale correction needed)"
+            )
+            return
+
+        # Back-compute mass_norm from: mu = mass_norm * mu_scale * dt^2
+        mu_scale = self.options.al_ipc_mu_scale or 5e6
+        dt = self.sim.rigid_solver.options.dt
+        overall_mass_norm = adaptive_mu / (mu_scale * dt * dt)
+
+        # Soft-only mass_norm would be max_soft_vertex_mass
+        ratio = overall_mass_norm / max_soft_vertex_mass
+
+        gs.logger.info(
+            f"[AL-IPC] Adaptive mu = {adaptive_mu:.2e}, "
+            f"back-computed mass_norm = {overall_mass_norm:.6f}, "
+            f"max_soft_vertex_mass = {max_soft_vertex_mass:.6f}, "
+            f"mass_norm ratio = {ratio:.1f}x"
+        )
+
+        if ratio > 5.0:
+            suggested_mu_scale = mu_scale / ratio
+            gs.logger.warning(
+                f"[AL-IPC] Rigid body mass dominates mass_norm by {ratio:.0f}x. "
+                f"The adaptive mu is likely too large, causing excessive damping. "
+                f"Consider setting al_ipc_mu_scale={suggested_mu_scale:.2e} "
+                f"(current: {mu_scale:.2e}) to compensate."
+            )
 
     def couple_grad(self, f):
         """Gradient computation for coupling"""
