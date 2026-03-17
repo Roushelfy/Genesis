@@ -198,13 +198,20 @@ def main():
     parser = argparse.ArgumentParser(description="Bike chain with Franka robot driving sprocket")
     parser.add_argument("--no-viewer", action="store_true")
     parser.add_argument("--use-motor", action="store_true", help="Use RotatingMotor instead of Franka robot")
+    parser.add_argument(
+        "--two-way", action="store_true", help="Use two_way_soft_constraint for sprockets (instead of ipc_only)"
+    )
     args = parser.parse_args()
+
+    # Sprocket body indices in the JSON fixture (last two bodies)
+    two_way_indices = {136, 137} if args.two_way else None
 
     print(f"Loading: {BIKE_CHAIN_JSON}")
     scene, entities, bodies, data = load_rigid_ipc_scene(
         BIKE_CHAIN_JSON,
         show_viewer=not args.no_viewer,
         ipc=True,
+        two_way_body_indices=two_way_indices,
     )
 
     # Find sprockets
@@ -215,18 +222,39 @@ def main():
         add_cylinder_axles(scene, sprockets)
 
     if args.use_motor:
-        # RotatingMotor via IPC pre-finalize hook
-        from genesis.engine.couplers.ipc_coupler import IPCCoupler
+        if args.two_way:
+            # Two-way: drive sprockets from Genesis side with velocity control
+            scene.build()
+            print_scene_info(scene)
 
-        coupler = scene.sim.coupler
-        if isinstance(coupler, IPCCoupler):
-            coupler._pre_finalize_hooks.append(lambda c: add_rotating_motor(c, sprockets))
-        scene.build()
-        print_scene_info(scene)
+            for info in sprockets:
+                if not info["is_kinematic"] or info["omega"] < 1e-10:
+                    continue
+                entity = info["entity"]
+                # Single-link mesh entity with a free joint (6 DOFs: tx,ty,tz,rx,ry,rz)
+                # Rotation axis is Y in Y-up → Z in Z-up → DOF index 5 (rz)
+                motor_dof = [5]
+                entity.set_dofs_kp(0.0, dofs_idx_local=motor_dof)
+                entity.set_dofs_kv(10.0, dofs_idx_local=motor_dof)
+                entity.control_dofs_velocity(info["omega"], dofs_idx_local=motor_dof)
+                print(f"  Two-way velocity control on entity {entity.idx}: omega={info['omega']:.4f} on DOF 5 (rz)")
 
-        print(f"\nSimulation (motor mode): dt={data.get('timestep', 0.01)}")
-        while True:
-            scene.step()
+            print(f"\nSimulation (two-way motor mode): dt={data.get('timestep', 0.01)}")
+            while True:
+                scene.step()
+        else:
+            # RotatingMotor via IPC pre-finalize hook
+            from genesis.engine.couplers.ipc_coupler import IPCCoupler
+
+            coupler = scene.sim.coupler
+            if isinstance(coupler, IPCCoupler):
+                coupler._pre_finalize_hooks.append(lambda c: add_rotating_motor(c, sprockets))
+            scene.build()
+            print_scene_info(scene)
+
+            print(f"\nSimulation (motor mode): dt={data.get('timestep', 0.01)}")
+            while True:
+                scene.step()
     else:
         # Franka robot grips and rotates the gear
         franka, gear_center = add_franka(scene, sprockets)

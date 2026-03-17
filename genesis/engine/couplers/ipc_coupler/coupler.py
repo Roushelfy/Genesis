@@ -1,5 +1,8 @@
+import io
 import logging
 import os
+import re
+import sys
 import tempfile
 import weakref
 from functools import partial
@@ -98,6 +101,119 @@ def _link_is_fixed_for_ipc(link: "RigidLink") -> bool:
     return link.is_fixed
 
 
+class _NewtonIterCounter:
+    """Redirect OS-level stdout/stderr to pipes so that C++ libuipc log spam
+    is captured and suppressed.  Extracts Newton iteration counts from the
+    convergence summary line and only forwards warnings/errors.
+
+    libuipc writes directly to C file descriptors (fd 1/2), so Python-level
+    sys.stdout/stderr replacement is not sufficient — we must use os.dup2.
+
+    Background threads drain the pipes continuously to prevent deadlock from
+    the finite pipe buffer (~64KB on Linux).
+    """
+
+    _CONVERGED_RE = re.compile(r"Newton Iteration Converged with Iteration Count: (\d+)")
+    _ADAPTIVE_MU_RE = re.compile(r"Adaptive mu: ([0-9.eE+\-]+)")
+
+    def __init__(self):
+        self.newton_iters = 0
+        self.adaptive_mu = None
+        self._active = False
+        self._saved_stderr_fd = None
+        self._saved_stdout_fd = None
+        self._threads = []
+
+    def start(self):
+        if self._active:
+            return
+        import threading
+
+        # Flush before redirecting
+        sys.stderr.flush()
+        sys.stdout.flush()
+
+        # Save original fds
+        self._saved_stderr_fd = os.dup(2)
+        self._saved_stdout_fd = os.dup(1)
+
+        # Create pipes and redirect
+        pipe_r_err, pipe_w_err = os.pipe()
+        pipe_r_out, pipe_w_out = os.pipe()
+        os.dup2(pipe_w_err, 2)
+        os.dup2(pipe_w_out, 1)
+        os.close(pipe_w_err)
+        os.close(pipe_w_out)
+
+        # Background threads drain pipes continuously to avoid buffer deadlock
+        self._captured = [[], []]
+        t_err = threading.Thread(target=self._drain, args=(pipe_r_err, 0), daemon=True)
+        t_out = threading.Thread(target=self._drain, args=(pipe_r_out, 1), daemon=True)
+        t_err.start()
+        t_out.start()
+        self._threads = [t_err, t_out]
+        self._pipe_fds = [pipe_r_err, pipe_r_out]
+
+        self._active = True
+
+    def _drain(self, fd, idx):
+        """Read from pipe fd until EOF, storing chunks."""
+        try:
+            while True:
+                data = os.read(fd, 65536)
+                if not data:
+                    break
+                self._captured[idx].append(data)
+        except OSError:
+            pass
+
+    def stop(self):
+        if not self._active:
+            return
+        # Flush Python streams before restoring
+        sys.stderr.flush()
+        sys.stdout.flush()
+
+        # Restore original fds (closes the pipe write ends implicitly)
+        os.dup2(self._saved_stderr_fd, 2)
+        os.dup2(self._saved_stdout_fd, 1)
+        os.close(self._saved_stderr_fd)
+        os.close(self._saved_stdout_fd)
+
+        # Wait for drain threads to finish (pipe write ends are closed, so reads will EOF)
+        for t in self._threads:
+            t.join(timeout=2.0)
+        for fd in self._pipe_fds:
+            os.close(fd)
+
+        # Process captured data
+        for chunks in self._captured:
+            if not chunks:
+                continue
+            text = b"".join(chunks).decode("utf-8", errors="replace")
+            for line in text.splitlines():
+                m = self._CONVERGED_RE.search(line)
+                if m:
+                    self.newton_iters += int(m.group(1))
+                m_mu = self._ADAPTIVE_MU_RE.search(line)
+                if m_mu:
+                    self.adaptive_mu = float(m_mu.group(1))
+                # Forward warnings and errors to real stderr
+                if "[error]" in line or "[warning]" in line:
+                    sys.stderr.write(line + "\n")
+
+        self._threads = []
+        self._active = False
+
+    def reset(self):
+        """Reset counter for next frame. Returns (newton_iters, adaptive_mu)."""
+        n = self.newton_iters
+        mu = self.adaptive_mu
+        self.newton_iters = 0
+        self.adaptive_mu = None
+        return n, mu
+
+
 class IPCCoupler(RBC):
     """
     Coupler class for handling Incremental Potential Contact (IPC) simulation coupling.
@@ -147,6 +263,10 @@ class IPCCoupler(RBC):
         self._ipc_subscene_tabular = None
         self._ipc_objects = None
         self._ipc_animator = None
+
+        # ==== Newton iteration counter (captures libuipc stderr) ====
+        self._newton_counter = _NewtonIterCounter()
+        self._ipc_frame = 0
 
         # ==== IPC Constitutions ====
         self._ipc_abd: AffineBodyConstitution | None = None
@@ -1019,7 +1139,10 @@ class IPCCoupler(RBC):
         _t2 = _time.perf_counter()
 
         # Step 3: IPC advance + retrieve (common)
+        self._newton_counter.start()
         self._ipc_world.advance()
+        self._newton_counter.stop()
+        _n_newton, _adaptive_mu = self._newton_counter.reset()
         _t3 = _time.perf_counter()
         self._ipc_world.retrieve()
         _t4 = _time.perf_counter()
@@ -1038,11 +1161,11 @@ class IPCCoupler(RBC):
         if self.options._export_post_coupling_surface:
             self._export_genesis_surface("after_ipc_correction")
 
+        self._ipc_frame += 1
+        _mu_str = f"  mu={_adaptive_mu:.2e}" if _adaptive_mu is not None else ""
         print(
-            f"[IPC timing] store={(_t1 - _t0) * 1000:.1f}ms  pre_adv={(_t2 - _t1) * 1000:.1f}ms  "
-            f"advance={(_t3 - _t2) * 1000:.1f}ms  retrieve={(_t4 - _t3) * 1000:.1f}ms  "
-            f"retrieve_states={(_t5 - _t4) * 1000:.1f}ms  post_adv={(_t6 - _t5) * 1000:.1f}ms  "
-            f"total={(_t6 - _t0) * 1000:.1f}ms"
+            f"[IPC] frame {self._ipc_frame:4d}  newton={_n_newton:2d}  "
+            f"advance={(_t3 - _t2) * 1000:.0f}ms  total={(_t6 - _t0) * 1000:.0f}ms"
         )
 
         # Step 6: Update GUI if enabled

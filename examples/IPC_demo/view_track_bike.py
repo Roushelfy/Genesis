@@ -342,6 +342,8 @@ def main():
     parser.add_argument("--no-chain", action="store_true", help="Load bike only, no chain")
     parser.add_argument("--no-bike", action="store_true", help="Load chain only, no bike")
     parser.add_argument("--no-franka", action="store_true", help="Skip Franka robot")
+    parser.add_argument("--no-plane", action="store_true", help="No ground plane")
+    parser.add_argument("--fix-bike", action="store_true", help="Fix bike base (no free joint)")
     parser.add_argument("--no-gravity", action="store_true")
     parser.add_argument(
         "--motor", choices=["front", "rear", "none"], default="rear", help="Which sprocket to apply motor to"
@@ -372,11 +374,12 @@ def main():
         ),
     )
 
-    # Ground plane (rigid collision only, no IPC coupling)
-    scene.add_entity(
-        gs.morphs.Plane(),
-        material=gs.materials.Rigid(needs_coup=False),
-    )
+    if not args.no_plane:
+        # Ground plane (rigid collision only, no IPC coupling)
+        scene.add_entity(
+            gs.morphs.Plane(),
+            material=gs.materials.Rigid(needs_coup=False),
+        )
 
     bike_pos_zup = (0, 0, 0.002)
 
@@ -398,11 +401,11 @@ def main():
         bike = scene.add_entity(
             gs.morphs.URDF(
                 file=URDF_PATH,
-                fixed=False,
+                fixed=args.fix_bike,
                 pos=bike_pos_zup,
                 euler=(90, 0, 0),
                 convexify=False,
-                links_to_keep=["rear_wheel"],
+                merge_fixed_links=False,
             ),
             material=bike_material,
             vis_mode="collision",

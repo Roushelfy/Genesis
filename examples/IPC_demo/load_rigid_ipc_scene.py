@@ -80,6 +80,7 @@ def load_rigid_ipc_scene(
     vis_mode="visual",
     coacd_threshold=0.1,
     ipc=False,
+    two_way_body_indices=None,
 ):
     """Load a rigid-ipc JSON fixture into a Genesis scene.
 
@@ -162,8 +163,11 @@ def load_rigid_ipc_scene(
         morph = gs.morphs.Mesh(**morph_kwargs)
         entity_kwargs = dict(vis_mode=vis_mode)
         if ipc and not fixed:
-            # All non-fixed bodies use ipc_only: IPC handles dynamics (gravity + contact).
-            entity_kwargs["material"] = gs.materials.Rigid(coup_type="ipc_only")
+            if two_way_body_indices is not None and i in two_way_body_indices:
+                entity_kwargs["material"] = gs.materials.Rigid(coup_type="two_way_soft_constraint")
+            else:
+                # All non-fixed bodies use ipc_only: IPC handles dynamics (gravity + contact).
+                entity_kwargs["material"] = gs.materials.Rigid(coup_type="ipc_only")
         entity = scene.add_entity(morph, **entity_kwargs)
         entities.append(entity)
         bodies.append(body)
