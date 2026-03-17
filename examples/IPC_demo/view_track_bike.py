@@ -24,13 +24,11 @@ from load_rigid_ipc_scene import (
     yup_to_zup_quat,
 )
 
-URDF_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "track_bike", "track_bike.urdf")
-
-# Chain mesh paths (same mesh family as the sprockets)
-CHAIN_MESH_DIR = os.path.expanduser("~/Desktop/hz/rigid-ipc/meshes/507-movements/227-chain-pully")
-LINK_MESH = os.path.join(CHAIN_MESH_DIR, "link.obj")
-PIN_MESH = os.path.join(CHAIN_MESH_DIR, "pin.obj")
-BARRING_MESH = os.path.join(CHAIN_MESH_DIR, "barring.obj")
+ASSET_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "DemoAssets", "track_bike")
+BIKE_URDF = os.path.join(ASSET_PATH, "track_bike.urdf")
+LINK_MESH = os.path.join(ASSET_PATH, "link.obj")
+PIN_MESH = os.path.join(ASSET_PATH, "pin.obj")
+BARRING_MESH = os.path.join(ASSET_PATH, "barring.obj")
 
 # Chain geometry constants (from chain_pully.py, in mesh units)
 LINK_HOLE_CENTER = 2.45905
@@ -350,8 +348,7 @@ def main():
     )
     parser.add_argument("--steps", type=int, default=600, help="Number of sim steps")
     parser.add_argument("--video", type=str, default="./data/track_bike.mp4", help="Video output path")
-    parser.add_argument("--al-ipc", action="store_true", help="Use AL-IPC contact constitution")
-    parser.add_argument("--al-ipc-mu-scale", type=float, default=None, help="AL-IPC mu_scale override")
+    parser.add_argument("--use-al", action="store_true", help="Use AL-IPC contact constitution")
     args = parser.parse_args()
 
     gs.init(backend=gs.gpu)
@@ -373,10 +370,15 @@ def main():
             contact_d_hat=2e-4,
             newton_semi_implicit_enable=True,
             linear_system_tolerance=1e-4,
-            # AL-IPC: Augmented Lagrangian contact (faster convergence for many contacts)
-            contact_constitution="al-ipc" if args.al_ipc else None,
-            al_ipc_toi_threshold=0.1 if args.al_ipc else None,
-            al_ipc_mu_scale=args.al_ipc_mu_scale if args.al_ipc else None,
+            # AL-IPC (opt-in via --al-ipc)
+            **(
+                dict(
+                    contact_constitution="al-ipc",
+                    al_ipc_toi_threshold=0.1,
+                )
+                if args.use_al
+                else {}
+            ),
         ),
     )
 
@@ -406,7 +408,7 @@ def main():
 
         bike = scene.add_entity(
             gs.morphs.URDF(
-                file=URDF_PATH,
+                file=BIKE_URDF,
                 fixed=args.fix_bike,
                 pos=bike_pos_zup,
                 euler=(90, 0, 0),

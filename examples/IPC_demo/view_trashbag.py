@@ -32,6 +32,7 @@ def main():
     parser = argparse.ArgumentParser(description="Genesis trashbag (AL-IPC)")
     parser.add_argument("--no-viewer", action="store_true")
     parser.add_argument("--steps", type=int, default=500)
+    parser.add_argument("--use-al", action="store_true", help="Use AL-IPC contact constitution")
     args = parser.parse_args()
 
     gs.init(backend=gs.gpu)
@@ -42,17 +43,22 @@ def main():
             dt=0.01,
             gravity=(0.0, 0.0, -9.8),
         ),
+        fem_options=gs.options.FEMOptions(
+            # libuipc applies scale→rotate→translate; Genesis legacy FEM bakes pos into
+            # vertices first then rotates around COM. This flag fixes the order.
+            use_rigid_compatible_transform=True,
+        ),
         coupler_options=gs.options.IPCCouplerOptions(
             # Contact (matching libuipc trashbag.py exactly)
             contact_d_hat=0.001,
             contact_friction_enable=True,
             contact_resistance=1e8,
-            contact_constitution="al-ipc",
-            al_ipc_toi_threshold=0.1,
             # Newton solver
             newton_tolerance=0.5,
             newton_translation_tolerance=10,
             newton_min_iterations=2,
+            # AL-IPC (opt-in via --use-al)
+            **(dict(contact_constitution="al-ipc", al_ipc_toi_threshold=0.1) if args.use_al else {}),
         ),
     )
 
@@ -60,7 +66,8 @@ def main():
     scene.add_entity(
         gs.morphs.Plane(pos=(0, 0, -0.001)),
         material=gs.materials.Rigid(
-            needs_coup=False,
+            coup_type="ipc_only",
+            coup_friction=0.02,
         ),
     )
 

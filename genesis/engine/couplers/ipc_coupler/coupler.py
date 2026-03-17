@@ -344,6 +344,7 @@ class IPCCoupler(RBC):
 
         self._B = self.sim._B
 
+        self._auto_compute_al_ipc_mu_scale()
         self._init_ipc()
         self._setup_coupling_config()
         self._add_objects_to_ipc()
@@ -483,6 +484,107 @@ class IPCCoupler(RBC):
                 "Fix inertial origin or collision geometry alignment."
             )
 
+    @staticmethod
+    def _estimate_abd_link_mass(link: "RigidLink", rho: float) -> float:
+        """Estimate ABD body mass for a link, matching libuipc's computation.
+
+        For links with usable _inertial_mass (from URDF/MJCF or volumetric meshes),
+        uses that directly (same as coupler: from_rigid_body(mass, ...)).
+
+        For surface-only meshes (near-zero _inertial_mass), computes volume
+        from collision geometry and multiplies by rho — matching libuipc's
+        mass_density path.
+        """
+        link_mass = link._inertial_mass
+        if link_mass is not None and link_mass > gs.EPS and rho > gs.EPS:
+            return float(link_mass)
+
+        # Fallback: compute volume from collision mesh geometry
+        for geom in link._geoms:
+            mesh = geom._mesh
+            if mesh is None:
+                continue
+            volume = mesh.volume
+            if volume is not None and volume > 1e-15:
+                return rho * volume
+
+        return 0.0
+
+    def _auto_compute_al_ipc_mu_scale(self):
+        """Auto-compute al_ipc_mu_scale to make mu independent of heavy bodies.
+
+        libuipc computes: mu = mass_norm * mu_scale * dt^2
+        where mass_norm = max across all non-fixed body masses (ABD + FEM).
+
+        When heavy bodies coexist with lighter ones, mass_norm is dominated
+        by the heaviest body, making mu too large and causing the AL active
+        set to explode.
+
+        Fix: set mu_scale = default * min_mass / max_mass so that
+          mu = max_mass * (default * min_mass / max_mass) * dt^2
+             = default * min_mass * dt^2
+        This cancels out max_mass, making mu the same regardless of what
+        heavy bodies are in the scene.
+        """
+
+        if self.options.contact_constitution != "al-ipc":
+            return
+        if self.options.al_ipc_mu_scale is not None:
+            return
+
+        from genesis.engine.entities import FEMEntity, RigidEntity
+
+        default_mu_scale = 5e6
+        all_masses = []
+
+        # Collect non-fixed ABD body masses from rigid entities
+        entity: RigidEntity
+        for entity in self.rigid_solver.entities:
+            if not entity.material.needs_coup:
+                continue
+            coup_links_names = entity.material.coup_links
+            for link in entity.links:
+                if coup_links_names is not None and link.name not in coup_links_names:
+                    continue
+                if _link_is_fixed_for_ipc(link):
+                    continue
+                rho = float(entity.material.rho)
+                mass = self._estimate_abd_link_mass(link, rho)
+                if mass > 0:
+                    all_masses.append(mass)
+
+        # Collect FEM/cloth max vertex masses
+        fem_entity: FEMEntity
+        for fem_entity in self.fem_solver.entities:
+            m = self._compute_fem_max_vertex_mass(fem_entity)
+            if m > 0:
+                all_masses.append(m)
+
+        if len(all_masses) < 2:
+            return
+
+        target_mass = min(all_masses)
+        actual_mass = max(all_masses)
+        ratio = actual_mass / target_mass
+
+        if ratio <= 1.0 + 1e-6:
+            return
+
+        corrected_mu_scale = default_mu_scale * target_mass / actual_mass
+        self.options.al_ipc_mu_scale = corrected_mu_scale
+
+        dt = self.sim.dt
+        # adaptive mu = mass_norm * mu_scale * dt²
+        predicted_mu = actual_mass * corrected_mu_scale * dt * dt
+        default_mu = actual_mass * default_mu_scale * dt * dt
+
+        gs.logger.info(
+            f"[AL-IPC] Auto mu_scale: target_mass={target_mass:.6f}, "
+            f"actual_mass={actual_mass:.6f}, ratio={ratio:.1f}x, "
+            f"mu_scale={corrected_mu_scale:.2e} (default={default_mu_scale:.2e}), "
+            f"predicted adaptive mu={predicted_mu:.2e} (without correction={default_mu:.2e})"
+        )
+
     def _init_ipc(self) -> None:
         """Initialize IPC system components"""
         assert gs.logger is not None
@@ -491,6 +593,10 @@ class IPCCoupler(RBC):
         self._ipc_scene = Scene(build_ipc_scene_config(self.options, self.sim))
         self._ipc_constitution_tabular = self._ipc_scene.constitution_tabular()
         self._ipc_contact_tabular = self._ipc_scene.contact_tabular()
+        # Disable the default contact model so unregistered pairs are ignored.
+        # Genesis registers all required pairs explicitly; this prevents
+        # unregistered pairs from silently falling back to an enabled default.
+        self._ipc_contact_tabular.default_model(0.0, 0.0, False)
         self._ipc_subscene_tabular = self._ipc_scene.subscene_tabular()
         self._ipc_objects = self._ipc_scene.objects()
         self._ipc_animator = self._ipc_scene.animator()
@@ -1003,14 +1109,13 @@ class IPCCoupler(RBC):
             all_contact_infos.append((elem, friction, resistance, True, _link_is_fixed_for_ipc(link)))
 
         # Register per-plane ground contact pairs
-        # Ground planes are fixed, so skip fixed ABD links (fixed-fixed pairs never collide).
         for entity, ground_elem in self._ipc_grounds_contact.items():
             plane_friction = entity.material.coup_friction
             plane_resistance = entity.material.contact_resistance or self.options.contact_resistance
             for elem, friction, resistance, is_abd, is_fixed in all_contact_infos:
+                enabled = (not is_abd or self.options.enable_rigid_ground_contact) and not is_fixed
                 friction_ground = geometric_mean(friction, plane_friction)
                 resistance_ground = harmonic_mean(resistance, plane_resistance)
-                enabled = (not is_abd or self.options.enable_rigid_ground_contact) and not is_fixed
                 self._ipc_contact_tabular.insert(ground_elem, elem, friction_ground, resistance_ground, enabled)
             self._ipc_contact_tabular.insert(self._ipc_no_collision_contact, ground_elem, 0.0, 0.0, False)
 
@@ -1188,7 +1293,8 @@ class IPCCoupler(RBC):
         for FEM subsystems.  We approximate this by distributing each element's
         mass equally to its vertices and taking the vertex-wise maximum.
 
-        For cloth (triangle mesh): element_mass = rho * area_i * thickness
+        For cloth (triangle mesh): element_mass = rho * area_i * (2 * thickness)
+          libuipc treats thickness as a radius; actual shell thickness = 2 * thickness.
         For volumetric FEM (tet mesh): element_mass = rho * volume_i
         """
         verts = tensor_to_array(entity.init_positions)
@@ -1207,7 +1313,8 @@ class IPCCoupler(RBC):
             crosses = np.cross(v1 - v0, v2 - v0)
             areas = 0.5 * np.linalg.norm(crosses, axis=1)
             thickness = float(entity.material.thickness)
-            elem_masses = rho * areas * thickness
+            # libuipc treats thickness as radius; shell volume = area * 2*thickness
+            elem_masses = rho * areas * (2.0 * thickness)
             # Distribute each triangle's mass equally to its 3 vertices
             per_vert = elem_masses / 3.0
             for k in range(3):
@@ -1228,79 +1335,24 @@ class IPCCoupler(RBC):
         return float(np.max(vertex_mass)) if n_verts > 0 else 0.0
 
     def _check_al_ipc_mu(self, adaptive_mu):
-        """Check whether AL-IPC adaptive mu is reasonable.
+        """Verify AL-IPC adaptive mu after the first advance.
 
         libuipc computes: mu = mass_norm * mu_scale * dt^2
-        where mass_norm = max across all subsystems of:
-          - ABD: total body mass per rigid body (non-fixed only)
-          - FEM: max per-vertex mass
+        where mass_norm = max across all non-fixed body masses.
 
-        When heavy rigid bodies are present, mass_norm is dominated by the
-        rigid body mass, making mu far too large for the soft bodies.
-
-        We back-compute mass_norm from the captured adaptive mu and compare it
-        to the soft-only mass_norm (max FEM/cloth vertex mass).  If the ratio
-        is large, the user should set a smaller mu_scale.
-
-        Genesis _inertial_mass can be unreliable for surface-only meshes (zero
-        volume → near-zero mass), so we use the actual adaptive mu from libuipc
-        rather than estimating rigid masses ourselves.
+        _auto_compute_al_ipc_mu_scale() already corrects mu_scale before scene
+        creation.  This post-hoc check verifies the correction worked by
+        back-computing mass_norm from the captured adaptive mu.
         """
-        if not self._abd_data_by_link:
-            return
-
-        # Check if any ABD link is non-fixed (only non-fixed bodies affect mass_norm)
-        has_non_fixed_abd = any(not _link_is_fixed_for_ipc(link) for link in self._abd_data_by_link)
-
-        # FEM/cloth max per-vertex mass (same as libuipc FEM mass_norm)
-        soft_vertex_masses = []
-        for entity in self._ipc_fems_contact:
-            m = self._compute_fem_max_vertex_mass(entity)
-            if m > 0:
-                soft_vertex_masses.append(m)
-        for entity in self._ipc_clothes_contact:
-            m = self._compute_fem_max_vertex_mass(entity)
-            if m > 0:
-                soft_vertex_masses.append(m)
-
-        if not soft_vertex_masses:
-            gs.logger.info(f"[AL-IPC] Adaptive mu = {adaptive_mu:.2e} (no soft bodies)")
-            return
-
-        max_soft_vertex_mass = max(soft_vertex_masses)
-
-        if not has_non_fixed_abd:
-            # All rigid bodies are fixed → they don't affect mass_norm → no correction needed
-            gs.logger.info(
-                f"[AL-IPC] Adaptive mu = {adaptive_mu:.2e}, "
-                f"max_soft_vertex_mass = {max_soft_vertex_mass:.6f}, "
-                f"all ABD bodies are fixed (no mu_scale correction needed)"
-            )
-            return
-
-        # Back-compute mass_norm from: mu = mass_norm * mu_scale * dt^2
         mu_scale = self.options.al_ipc_mu_scale or 5e6
-        dt = self.sim.rigid_solver.options.dt
+        dt = self.sim.rigid_options.dt
         overall_mass_norm = adaptive_mu / (mu_scale * dt * dt)
-
-        # Soft-only mass_norm would be max_soft_vertex_mass
-        ratio = overall_mass_norm / max_soft_vertex_mass
 
         gs.logger.info(
             f"[AL-IPC] Adaptive mu = {adaptive_mu:.2e}, "
-            f"back-computed mass_norm = {overall_mass_norm:.6f}, "
-            f"max_soft_vertex_mass = {max_soft_vertex_mass:.6f}, "
-            f"mass_norm ratio = {ratio:.1f}x"
+            f"mu_scale = {mu_scale:.2e}, "
+            f"back-computed mass_norm = {overall_mass_norm:.6f}"
         )
-
-        if ratio > 5.0:
-            suggested_mu_scale = mu_scale / ratio
-            gs.logger.warning(
-                f"[AL-IPC] Rigid body mass dominates mass_norm by {ratio:.0f}x. "
-                f"The adaptive mu is likely too large, causing excessive damping. "
-                f"Consider setting al_ipc_mu_scale={suggested_mu_scale:.2e} "
-                f"(current: {mu_scale:.2e}) to compensate."
-            )
 
     def couple_grad(self, f):
         """Gradient computation for coupling"""
