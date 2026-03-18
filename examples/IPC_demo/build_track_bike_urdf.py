@@ -14,9 +14,11 @@ Blender model). OBJ files are used for collision geometry.
 
 Articulation:
   bike_base (base_link, fixed)
-    +-- front_sprocket (revolute, Z axis at crankset center)
+    +-- front_sprocket (continuous, Z axis at crankset center)
     |     +-- combined_crank (fixed)
-    +-- rear_sprocket (revolute, Z axis at fixed_gear center)
+    +-- rear_sprocket (continuous, Z axis at fixed_gear center)
+    |     +-- rear_wheel (fixed)
+    +-- front_wheel (continuous, Z axis at front hub center)
 
 Usage:
     python examples/IPC_demo/build_track_bike_urdf.py
@@ -191,34 +193,44 @@ def write_urdf(
     path,
     crankset_center,
     fixed_gear_center,
+    rear_wheel_center,
+    front_wheel_center,
     sprocket_axis,
     front_sprocket_mesh,
     crank_mesh,
     rear_sprocket_mesh,
+    rear_wheel_meshes,
+    front_wheel_meshes,
     base_meshes,
 ):
     """Generate the track_bike.urdf file with inertial properties."""
 
     cx, cy, cz = crankset_center
     fx, fy, fz = fixed_gear_center
+    rwx, rwy, rwz = rear_wheel_center
+    fwx, fwy, fwz = front_wheel_center
     ax, ay, az = sprocket_axis
 
     # Approximate masses (kg) for a real track bike
-    base_mass, base_com, base_ixx, base_iyy, base_izz = inertial_from_mesh(trimesh.util.concatenate(base_meshes), 8.0)
+    base_mass, base_com, base_ixx, base_iyy, base_izz = inertial_from_mesh(trimesh.util.concatenate(base_meshes), 6.0)
     fs_mass, fs_com, fs_ixx, fs_iyy, fs_izz = inertial_from_mesh(front_sprocket_mesh, 0.3)
     crank_mass, crank_com, crank_ixx, crank_iyy, crank_izz = inertial_from_mesh(crank_mesh, 0.5)
     rs_mass, rs_com, rs_ixx, rs_iyy, rs_izz = inertial_from_mesh(rear_sprocket_mesh, 0.1)
+    rw_mass, rw_com, rw_ixx, rw_iyy, rw_izz = inertial_from_mesh(trimesh.util.concatenate(rear_wheel_meshes), 0.8)
+    fw_mass, fw_com, fw_ixx, fw_iyy, fw_izz = inertial_from_mesh(trimesh.util.concatenate(front_wheel_meshes), 0.8)
 
     base_inertial = inertial_xml(base_mass, base_com, base_ixx, base_iyy, base_izz)
     fs_inertial = inertial_xml(fs_mass, fs_com, fs_ixx, fs_iyy, fs_izz)
     crank_inertial = inertial_xml(crank_mass, crank_com, crank_ixx, crank_iyy, crank_izz)
     rs_inertial = inertial_xml(rs_mass, rs_com, rs_ixx, rs_iyy, rs_izz)
+    rw_inertial = inertial_xml(rw_mass, rw_com, rw_ixx, rw_iyy, rw_izz)
+    fw_inertial = inertial_xml(fw_mass, fw_com, fw_ixx, fw_iyy, fw_izz)
 
     urdf = f"""\
 <?xml version="1.0" ?>
 <robot name="track_bike">
 
-  <!-- ====== Base link: frame, wheels, fork, seat, etc. ====== -->
+  <!-- ====== Base link: frame, fork, seat, handlebars, etc. ====== -->
   <link name="bike_base">
 {base_inertial}
     <visual>
@@ -248,12 +260,11 @@ def write_urdf(
     </collision>
   </link>
 
-  <joint name="front_sprocket_joint" type="revolute">
+  <joint name="front_sprocket_joint" type="continuous">
     <parent link="bike_base"/>
     <child link="front_sprocket"/>
     <origin xyz="{cx} {cy} {(cz + fz) / 2}" rpy="0 0 0"/>
     <axis xyz="{ax} {ay} {az}"/>
-    <limit lower="-1e16" upper="1e16" effort="100" velocity="100"/>
   </joint>
 
   <!-- ====== Combined crank (arms + bracket + pedals), fixed to front sprocket ====== -->
@@ -292,12 +303,54 @@ def write_urdf(
     </collision>
   </link>
 
-  <joint name="rear_sprocket_joint" type="revolute">
+  <joint name="rear_sprocket_joint" type="continuous">
     <parent link="bike_base"/>
     <child link="rear_sprocket"/>
     <origin xyz="{fx} {fy} {(cz + fz) / 2}" rpy="0 0 0"/>
     <axis xyz="{ax} {ay} {az}"/>
-    <limit lower="-1e16" upper="1e16" effort="100" velocity="100"/>
+  </joint>
+
+  <!-- ====== Rear wheel, fixed to rear sprocket (spins with it) ====== -->
+  <link name="rear_wheel">
+{rw_inertial}
+    <visual>
+      <geometry>
+        <mesh filename="rear_wheel.glb"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="rear_wheel.obj"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="rear_wheel_joint" type="fixed">
+    <parent link="rear_sprocket"/>
+    <child link="rear_wheel"/>
+    <origin xyz="0 0 {-(cz + fz) / 2}" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ====== Front wheel, revolute on bike_base (spins freely) ====== -->
+  <link name="front_wheel">
+{fw_inertial}
+    <visual>
+      <geometry>
+        <mesh filename="front_wheel.glb"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="front_wheel.obj"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="front_wheel_joint" type="continuous">
+    <parent link="bike_base"/>
+    <child link="front_wheel"/>
+    <origin xyz="{fwx} {fwy} 0" rpy="0 0 0"/>
+    <axis xyz="{ax} {ay} {az}"/>
   </joint>
 
 </robot>
@@ -331,23 +384,35 @@ def main():
     # Including Pedal_L/R since they are physically on the crank arms
     crank_parts = {"Crank_arm_L", "Crank_arm_R", "Bracket", "Pedal_L", "Pedal_R"}
 
+    # Rear wheel parts: fixed to rear sprocket so they spin together
+    rear_wheel_parts = {"Hub_back", "Hubs_001", "Rims_001", "Spokes_001", "Tires_Back_001"}
+
+    # Front wheel parts: revolute joint to bike_base (spins freely)
+    front_wheel_parts = {"Hub_front", "Hubs", "Rims_002", "Spokes_002", "Tires_Back_002"}
+
     # Everything else goes in bike_base
-    excluded_from_base = delete_only | crank_parts
+    excluded_from_base = delete_only | crank_parts | rear_wheel_parts | front_wheel_parts
     base_parts = [n for n in all_top_nodes if n not in excluded_from_base]
 
     print(f"\n  bike_base parts ({len(base_parts)}): {sorted(base_parts)}")
     print(f"  combined_crank parts ({len(crank_parts)}): {sorted(crank_parts)}")
+    print(f"  rear_wheel parts ({len(rear_wheel_parts)}): {sorted(rear_wheel_parts)}")
+    print(f"  front_wheel parts ({len(front_wheel_parts)}): {sorted(front_wheel_parts)}")
     print(f"  deleted parts ({len(delete_only)}): {sorted(delete_only)}")
 
     # ── Get reference positions before splitting ──
 
     crankset_center = get_center(scene, ["Crankset"])
     fixed_gear_center = get_center(scene, ["Fixed_Gear"])
-    # Sprocket rotation axis: Z in mesh coords (the lateral / axle direction)
+    rear_wheel_center = get_center(scene, list(rear_wheel_parts))
+    front_wheel_center = get_center(scene, list(front_wheel_parts))
+    # Sprocket/wheel rotation axis: Z in mesh coords (the lateral / axle direction)
     sprocket_axis = np.array([0.0, 0.0, 1.0])
 
-    print(f"\n  Crankset center:   {np.round(crankset_center, 5)}")
-    print(f"  Fixed_Gear center: {np.round(fixed_gear_center, 5)}")
+    print(f"\n  Crankset center:    {np.round(crankset_center, 5)}")
+    print(f"  Fixed_Gear center:  {np.round(fixed_gear_center, 5)}")
+    print(f"  Rear wheel center:  {np.round(rear_wheel_center, 5)}")
+    print(f"  Front wheel center: {np.round(front_wheel_center, 5)}")
 
     # ── 1. Export bike_base (GLB for visual, OBJ for collision) ──
 
@@ -367,7 +432,27 @@ def main():
         m.vertices -= crankset_center
     save_as_obj(crank_meshes, os.path.join(OUTPUT_DIR, "combined_crank.obj"))
 
-    # ── 3. Export front_sprocket.obj (scaled sprocket-20teeth) ──
+    # ── 3. Export rear_wheel (recentered to rear axle) ──
+
+    print("\nExporting rear_wheel (recentered to rear wheel axle)...")
+    rear_wheel_sub = collect_subscene(scene, list(rear_wheel_parts))
+    save_as_glb(rear_wheel_sub, os.path.join(OUTPUT_DIR, "rear_wheel.glb"), translate=-rear_wheel_center)
+    rear_wheel_meshes = collect_world_meshes(scene, list(rear_wheel_parts))
+    for m in rear_wheel_meshes:
+        m.vertices -= rear_wheel_center
+    save_as_obj(rear_wheel_meshes, os.path.join(OUTPUT_DIR, "rear_wheel.obj"))
+
+    # ── 4. Export front_wheel (recentered to front axle) ──
+
+    print("\nExporting front_wheel (recentered to front wheel axle)...")
+    front_wheel_sub = collect_subscene(scene, list(front_wheel_parts))
+    save_as_glb(front_wheel_sub, os.path.join(OUTPUT_DIR, "front_wheel.glb"), translate=-front_wheel_center)
+    front_wheel_meshes = collect_world_meshes(scene, list(front_wheel_parts))
+    for m in front_wheel_meshes:
+        m.vertices -= front_wheel_center
+    save_as_obj(front_wheel_meshes, os.path.join(OUTPUT_DIR, "front_wheel.obj"))
+
+    # ── 5. Export front_sprocket (scaled sprocket-20teeth) ──
 
     print("\nExporting front_sprocket.obj...")
     sprocket_20 = trimesh.load(SPROCKET_20_PATH, force="mesh")
@@ -392,7 +477,7 @@ def main():
     # Dark metallic GLB for visual
     save_mesh_as_glb(sprocket_20.copy(), os.path.join(OUTPUT_DIR, "front_sprocket.glb"))
 
-    # ── 4. Export rear_sprocket.obj (scaled sprocket-8teeth, same scale) ──
+    # ── 6. Export rear_sprocket (scaled sprocket-8teeth, same scale) ──
 
     print("\nExporting rear_sprocket.obj (same scale)...")
     sprocket_8 = trimesh.load(SPROCKET_8_PATH, force="mesh")
@@ -407,7 +492,7 @@ def main():
     # Dark metallic GLB for visual
     save_mesh_as_glb(sprocket_8.copy(), os.path.join(OUTPUT_DIR, "rear_sprocket.glb"))
 
-    # ── 5. Generate URDF ──
+    # ── 7. Generate URDF ──
 
     print("\nGenerating track_bike.urdf...")
     # Combined crank mesh (already recentered) for inertial computation
@@ -417,10 +502,14 @@ def main():
         os.path.join(OUTPUT_DIR, "track_bike.urdf"),
         crankset_center=crankset_center,
         fixed_gear_center=fixed_gear_center,
+        rear_wheel_center=rear_wheel_center,
+        front_wheel_center=front_wheel_center,
         sprocket_axis=sprocket_axis,
         front_sprocket_mesh=sprocket_20,
         crank_mesh=crank_combined,
         rear_sprocket_mesh=sprocket_8,
+        rear_wheel_meshes=rear_wheel_meshes,
+        front_wheel_meshes=front_wheel_meshes,
         base_meshes=base_meshes,
     )
 

@@ -1,0 +1,151 @@
+<?xml version="1.0" ?>
+<robot name="track_bike">
+
+  <!-- ====== Base link: frame, fork, seat, handlebars, etc. ====== -->
+  <link name="bike_base">
+    <inertial>
+      <mass value="6.000000"/>
+      <origin xyz="0.013588 0.706262 0.000000"/>
+      <inertia ixx="0.43666613" ixy="0" ixz="0" iyy="0.80456595" iyz="0" izz="1.05460810"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="bike_base.glb"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="bike_base.obj"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- ====== Front sprocket (replaces Crankset) ====== -->
+  <link name="front_sprocket">
+    <inertial>
+      <mass value="0.300000"/>
+      <origin xyz="0.000000 0.000000 0.000000"/>
+      <inertia ixx="0.00095460" ixy="0" ixz="0" iyy="0.00095460" iyz="0" izz="0.00190694"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="front_sprocket.glb"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="front_sprocket.obj"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="front_sprocket_joint" type="continuous">
+    <parent link="bike_base"/>
+    <child link="front_sprocket"/>
+    <origin xyz="-0.10924958810210228 0.31892967224121094 0.045414417050778866" rpy="0 0 0"/>
+    <axis xyz="0.0 0.0 1.0"/>
+  </joint>
+
+  <!-- ====== Combined crank (arms + bracket + pedals), fixed to front sprocket ====== -->
+  <link name="combined_crank">
+    <inertial>
+      <mass value="0.500000"/>
+      <origin xyz="0.000935 0.000849 -0.045925"/>
+      <inertia ixx="0.00979050" ixy="0" ixz="0" iyy="0.00474686" iyz="0" izz="0.00654051"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="combined_crank.glb"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="combined_crank.obj"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="combined_crank_joint" type="fixed">
+    <parent link="front_sprocket"/>
+    <child link="combined_crank"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ====== Rear sprocket (replaces Fixed_Gear) ====== -->
+  <link name="rear_sprocket">
+    <inertial>
+      <mass value="0.100000"/>
+      <origin xyz="0.000000 0.000000 0.000000"/>
+      <inertia ixx="0.00006098" ixy="0" ixz="0" iyy="0.00006098" iyz="0" izz="0.00012121"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="rear_sprocket.glb"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="rear_sprocket.obj"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="rear_sprocket_joint" type="continuous">
+    <parent link="bike_base"/>
+    <child link="rear_sprocket"/>
+    <origin xyz="-0.5371130406856537 0.3666304647922516 0.045414417050778866" rpy="0 0 0"/>
+    <axis xyz="0.0 0.0 1.0"/>
+  </joint>
+
+  <!-- ====== Rear wheel, fixed to rear sprocket (spins with it) ====== -->
+  <link name="rear_wheel">
+    <inertial>
+      <mass value="0.800000"/>
+      <origin xyz="0.000000 0.000000 0.000000"/>
+      <inertia ixx="0.03710773" ixy="0" ixz="0" iyy="0.03710774" iyz="0" izz="0.07105333"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="rear_wheel.glb"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="rear_wheel.obj"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="rear_wheel_joint" type="fixed">
+    <parent link="rear_sprocket"/>
+    <child link="rear_wheel"/>
+    <origin xyz="0 0 -0.045414417050778866" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ====== Front wheel, revolute on bike_base (spins freely) ====== -->
+  <link name="front_wheel">
+    <inertial>
+      <mass value="0.800000"/>
+      <origin xyz="0.000000 0.000000 0.000000"/>
+      <inertia ixx="0.03632661" ixy="0" ixz="0" iyy="0.03632661" iyz="0" izz="0.07066454"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="front_wheel.glb"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="front_wheel.obj"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="front_wheel_joint" type="continuous">
+    <parent link="bike_base"/>
+    <child link="front_wheel"/>
+    <origin xyz="0.5380368232727051 0.36400002241134644 0" rpy="0 0 0"/>
+    <axis xyz="0.0 0.0 1.0"/>
+  </joint>
+
+</robot>

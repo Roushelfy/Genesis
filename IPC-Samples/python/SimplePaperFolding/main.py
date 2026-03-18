@@ -68,17 +68,17 @@ SHEET_RESOLUTION = 40
 SHEET_SIZE = 1.6
 MESH_PARTITION_SIZE = 16
 
-SHEET_THICKNESS = 0.0012
-SHELL_DENSITY = 120.0
-SHELL_YOUNG = 5.0e8
-SHELL_POISSON = 0.30
-BENDING_STIFFNESS = 4.0e3
-YIELD_THRESHOLD = 0.05
-HARDENING_MODULUS = 0.0
+SHELL_THICKNESS = 5e-5
+SHELL_DENSITY = 1200.0
+SHELL_YOUNG = 1.5e9
+SHELL_POISSON = 0.3
+SHELL_BENDING_STIFFNESS = 1.2e6
+SHELL_YIELD_THRESHOLD = 0.05
+SHELL_HARDENING_MODULUS = 0.0
 
 
 CUBE_SCALE = 0.6
-CUBE_Y_HIGH = 1.35
+CUBE_Y_HIGH = 1.55
 CUBE_Y_LOW = 0.33
 GROUND_Y = -0.01
 CORNER_TARGET_GAP = 0.22
@@ -217,12 +217,12 @@ def build_demo():
     # Enable the MAS preconditioner on the shell solve.
     mesh_partition(sheet, MESH_PARTITION_SIZE)
     moduli = ElasticModuli2D.youngs_poisson(SHELL_YOUNG, SHELL_POISSON)
-    shell.apply_to(sheet, moduli, SHELL_DENSITY, SHEET_THICKNESS)
+    shell.apply_to(sheet, moduli, SHELL_DENSITY, SHELL_THICKNESS)
     try:
         plastic_bending.apply_to(sheet,
-                         BENDING_STIFFNESS,
-                         YIELD_THRESHOLD,
-                         HARDENING_MODULUS)
+                         SHELL_BENDING_STIFFNESS,
+                         SHELL_YIELD_THRESHOLD,
+                         SHELL_HARDENING_MODULUS)
         
     except TypeError as exc:
         raise SystemExit(
@@ -230,7 +230,7 @@ def build_demo():
             "Rebuild/reinstall the Python bindings so PlasticDiscreteShellBending "
             "is available and accepts (sc, bending_stiffness, yield_threshold, hardening_modulus)."
         ) from exc
-    spc.apply_to(sheet, 3.0)
+    spc.apply_to(sheet, 50.0)
     default_contact.apply_to(sheet)
 
     sheet_rest_positions = np.array(view(sheet.positions()), copy=True).reshape(-1, 3)
@@ -384,8 +384,8 @@ def run_demo():
         psim.Text(f"Arc progress: {arc_alpha:.3f}")
         psim.Text(f"Cube target Y: {cube_y:+.3f}")
         psim.Text(f"Ground Y: {GROUND_Y:+.3f}")
-        psim.Text(f"Yield threshold: {YIELD_THRESHOLD:.3f} rad")
-        psim.Text(f"Hardening modulus: {HARDENING_MODULUS:.3f}")
+        psim.Text(f"Yield threshold: {SHELL_YIELD_THRESHOLD:.3f} rad")
+        psim.Text(f"Hardening modulus: {SHELL_HARDENING_MODULUS:.3f}")
         psim.Text(f"Max sheet displacement: {max_disp:.4f}")
         psim.Text(f"Residual crease depth: {crease_depth:.4f}")
         psim.Text(f"Diagonal corner gap: {corner_gap:.4f}")

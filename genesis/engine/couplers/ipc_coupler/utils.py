@@ -13,37 +13,6 @@ import genesis.utils.geom as gu
 from uipc.core import Scene
 
 
-def find_target_link_for_fixed_merge(link):
-    """
-    Find the target link for merging fixed joints.
-
-    Walks up the kinematic tree, skipping links connected via FIXED joints, until finding a link with a non-FIXED joint
-    or the root.
-
-    This is similar to _merge_target_id in mjcf.py.
-
-    Returns
-    -------
-    int
-        The target link index to merge into
-    """
-    entity = link.entity
-
-    while True:
-        # If this is the root link (no parent), stop
-        if link.parent_idx < 0:
-            break
-
-        # Stop if the link has any non-fixed joint (non-fixed joints define separate bodies)
-        if any(joint.type != gs.JOINT_TYPE.FIXED for joint in link.joints):
-            break
-
-        # All joints are FIXED, move up to parent
-        link = entity.links[link.parent_idx - entity.link_start]
-
-    return link
-
-
 def compute_link_to_link_transform(from_link, to_link):
     """
     Compute the relative transform from from_link to to_link.
@@ -122,6 +91,11 @@ def build_ipc_scene_config(options, simulator):
     _set_if_not_none(config, ["contact", "friction", "enable"], options.contact_friction_enable)
     _set_if_not_none(config, ["contact", "eps_velocity"], options.contact_eps_velocity)
     _set_if_not_none(config, ["contact", "constitution"], options.contact_constitution)
+
+    # AL-IPC options (only effective when contact_constitution='al-ipc')
+    _set_if_not_none(config, ["contact", "al-ipc", "mu_scale"], options.al_ipc_mu_scale)
+    _set_if_not_none(config, ["contact", "al-ipc", "toi_threshold"], options.al_ipc_toi_threshold)
+    _set_if_not_none(config, ["contact", "al-ipc", "decay_factor"], options.al_ipc_decay_factor)
 
     # Collision detection options
     _set_if_not_none(config, ["collision_detection", "method"], options.collision_detection_method)
