@@ -113,12 +113,17 @@ class _NewtonIterCounter:
     the finite pipe buffer (~64KB on Linux).
     """
 
-    _CONVERGED_RE = re.compile(r"Newton Iteration Converged with Iteration Count: (\d+)")
+    _CONVERGED_RE = re.compile(r"Newton Iteration Converged with Iteration Count: (\d+)(?:, Line Search Iters: (\d+))?")
     _ADAPTIVE_MU_RE = re.compile(r"Adaptive mu: ([0-9.eE+\-]+)")
+    _LS_MAX_RE = re.compile(r"Line Search Exits with Max Iteration: (\d+)")
+    _NEWTON_MAX_RE = re.compile(r"Newton Iteration Exits with Max Iteration: (\d+)")
 
     def __init__(self):
         self.newton_iters = 0
+        self.ls_iters = 0
         self.adaptive_mu = None
+        self.ls_max_hits = 0
+        self.newton_max_hit = False
         self._active = False
         self._saved_stderr_fd = None
         self._saved_stdout_fd = None
@@ -195,9 +200,17 @@ class _NewtonIterCounter:
                 m = self._CONVERGED_RE.search(line)
                 if m:
                     self.newton_iters += int(m.group(1))
+                    if m.group(2) is not None:
+                        self.ls_iters += int(m.group(2))
                 m_mu = self._ADAPTIVE_MU_RE.search(line)
                 if m_mu:
                     self.adaptive_mu = float(m_mu.group(1))
+                m_ls = self._LS_MAX_RE.search(line)
+                if m_ls:
+                    self.ls_max_hits += 1
+                m_nmax = self._NEWTON_MAX_RE.search(line)
+                if m_nmax:
+                    self.newton_max_hit = True
                 # Forward warnings and errors to real stderr
                 if "[error]" in line or "[warning]" in line:
                     sys.stderr.write(line + "\n")
@@ -206,12 +219,18 @@ class _NewtonIterCounter:
         self._active = False
 
     def reset(self):
-        """Reset counter for next frame. Returns (newton_iters, adaptive_mu)."""
+        """Reset counter for next frame."""
         n = self.newton_iters
+        ls = self.ls_iters
         mu = self.adaptive_mu
+        ls_max = self.ls_max_hits
+        nmax = self.newton_max_hit
         self.newton_iters = 0
+        self.ls_iters = 0
         self.adaptive_mu = None
-        return n, mu
+        self.ls_max_hits = 0
+        self.newton_max_hit = False
+        return n, ls, mu, ls_max, nmax
 
 
 class IPCCoupler(RBC):
@@ -724,7 +743,8 @@ class IPCCoupler(RBC):
         self._link_to_abd_link = [None] * self.rigid_solver.n_links
 
         # ========== Collect selected links (env-independent) ==========
-        # Each selected link becomes its own ABD body — no fixed-joint merging.
+        # Each selected link becomes its own ABD body. Fixed-joint merging is handled
+        # at the morph/parser level (merge_fixed_links option on MJCF/URDF).
         selected_links: list["RigidLink"] = []
         for link in self.rigid_solver.links:
             entity = link.entity
@@ -870,6 +890,15 @@ class IPCCoupler(RBC):
             is_fixed_attr = rigid_link_geom.instances().find(uipc.builtin.is_fixed)
             uipc.view(is_fixed_attr)[:] = int(_link_is_fixed_for_ipc(link))
 
+            # Create ref_dof_prev for external_articulation links.
+            # This attribute is re-read every step by the ExternalArticulationConstraint
+            # and used as the reference DOF state for computing delta_theta. Without it,
+            # set_qpos teleportation causes a huge energy spike because q_prevs (IPC internal)
+            # still holds the pre-teleport state.
+            is_ext_art = entity_coup_type == COUPLING_TYPE.EXTERNAL_ARTICULATION
+            if is_ext_art:
+                rigid_link_geom.instances().create("ref_dof_prev", np.zeros(12, dtype=np.float64))
+
             # ---- Per-environment: create IPC objects, then set per-env attrs on slot geometry ----
             abd_geom_slots: list[GeometrySlot] = []
             for env_idx in range(self._B):
@@ -878,9 +907,15 @@ class IPCCoupler(RBC):
 
                 # All per-env writes go on the slot's own geometry (deep-copied)
                 slot_geom = abd_geom_slot.geometry()
-                uipc.view(slot_geom.transforms())[0] = gu.trans_quat_to_T(
-                    links_pos[env_idx, link.idx], links_quat[env_idx, link.idx]
-                )
+                link_T = gu.trans_quat_to_T(links_pos[env_idx, link.idx], links_quat[env_idx, link.idx])
+                uipc.view(slot_geom.transforms())[0] = link_T
+
+                # Initialize ref_dof_prev from the initial transform
+                if is_ext_art:
+                    ref_dof_prev_attr = slot_geom.instances().find("ref_dof_prev")
+                    uipc.view(ref_dof_prev_attr)[0] = uipc.geometry.affine_body.transform_to_q(
+                        link_T.astype(np.float64)
+                    )
                 if self._B > 1:
                     self._ipc_subscenes[env_idx].apply_to(slot_geom)
                 slot_meta = slot_geom.meta()
@@ -895,6 +930,13 @@ class IPCCoupler(RBC):
                 if is_soft_constraint_target:
                     self._ipc_animator.insert(
                         abd_obj, partial(self._animate_rigid_link, weakref.ref(self), link, env_idx)
+                    )
+                # Register animator for ext_art links to update ref_dof_prev each step.
+                # The ExternalArticulationConstraint re-reads this attribute in do_step()
+                # and uses it as the reference DOF state for delta_theta computation.
+                elif is_ext_art:
+                    self._ipc_animator.insert(
+                        abd_obj, partial(self._animate_ext_art_link, weakref.ref(self), link, env_idx)
                     )
 
             # ---- Store link data ----
@@ -1246,10 +1288,20 @@ class IPCCoupler(RBC):
 
         # Step 3: IPC advance + retrieve (common)
         self._newton_counter.start()
-        self._ipc_world.advance()
+        try:
+            self._ipc_world.advance()
+        except Exception as e:
+            self._newton_counter.stop()
+            gs.raise_exception(f"[IPC] advance() failed at frame {self._ipc_frame + 1}: {e}")
         self._newton_counter.stop()
-        _n_newton, _adaptive_mu = self._newton_counter.reset()
+        _n_newton, _n_ls, _adaptive_mu, _ls_max, _newton_max = self._newton_counter.reset()
         _t3 = _time.perf_counter()
+        # Check world validity before retrieve — a failed solver leaves corrupted GPU state
+        if not self._ipc_world.is_valid():
+            gs.raise_exception(
+                f"[IPC] World became invalid after advance at frame {self._ipc_frame + 1}. "
+                f"The solver likely hit a numerical failure (newton={_n_newton}, ls={_n_ls})."
+            )
         self._ipc_world.retrieve()
         _t4 = _time.perf_counter()
         if self.options._export_ipc_surface:
@@ -1269,10 +1321,12 @@ class IPCCoupler(RBC):
 
         self._ipc_frame += 1
         _mu_str = f"  mu={_adaptive_mu:.2e}" if _adaptive_mu is not None else ""
+        _ls_str = f"  ls_maxout={_ls_max}" if _ls_max > 0 else ""
+        _nmax_str = "  NEWTON_MAXOUT" if _newton_max else ""
         print(
-            f"[IPC] frame {self._ipc_frame:4d}  newton={_n_newton:2d}  "
+            f"[IPC] frame {self._ipc_frame:4d}  newton={_n_newton:2d}  ls={_n_ls:3d}  "
             f"advance={(_t3 - _t2) * 1000:.0f}ms  total={(_t6 - _t0) * 1000:.0f}ms"
-            f"{_mu_str}"
+            f"{_mu_str}{_ls_str}{_nmax_str}"
         )
 
         # AL-IPC mu_scale calibration check (first frame only)
@@ -1435,6 +1489,12 @@ class IPCCoupler(RBC):
         Called by RigidSolver before kernel_predict_integrate. At this point
         links_state reflects actual poses (including any set_qpos changes) before
         prediction overwrites them. Only updated (link, env) pairs are synced.
+
+        For external_articulation entities, we also write the new transform to
+        the ``ref_dof_prev`` attribute on each dirty link's IPC geometry. The
+        ExternalArticulationConstraint reads ``ref_dof_prev`` every step and uses
+        it instead of its stale internal ``q_prevs``, avoiding a huge
+        delta_theta that would blow up Newton iterations after a teleport.
         """
         if not self._abd_updated_links or self._abd_state_feature is None:
             return
@@ -1449,15 +1509,29 @@ class IPCCoupler(RBC):
         trans_attr = self._abd_state_geom.instances().find(uipc.builtin.transform)
         transforms = trans_attr.view()
 
-        for i_link, link in enumerate(self._abd_data_by_link.keys()):
+        for i_link, (link, abd_data) in enumerate(self._abd_data_by_link.items()):
             dirty_envs = self._abd_updated_links.get(link)
             if dirty_envs is None:
                 continue
+
+            is_ext_art = self._coup_type_by_entity.get(link.entity) == COUPLING_TYPE.EXTERNAL_ARTICULATION
+
             for env_idx in dirty_envs:
                 abd_body_idx = i_link * self._B + env_idx
-                transforms[abd_body_idx] = links_transform[env_idx, link.idx]
+                new_T = links_transform[env_idx, link.idx]
+                transforms[abd_body_idx] = new_T
+
+                # For ext_art links, update ref_dof_prev so the constraint uses the
+                # teleported transform as the reference state instead of stale q_prevs.
+                if is_ext_art:
+                    slot = abd_data.slots[env_idx]
+                    geom = slot.geometry()
+                    ref_attr = geom.instances().find("ref_dof_prev")
+                    if ref_attr is not None:
+                        uipc.view(ref_attr)[0] = uipc.geometry.affine_body.transform_to_q(new_T.astype(np.float64))
 
         self._abd_state_feature.copy_from(self._abd_state_geom)
+
         self._abd_updated_links.clear()
 
     @property
@@ -1603,6 +1677,33 @@ class IPCCoupler(RBC):
         assert is_constrained_attr and aim_transform_attr
         uipc.view(is_constrained_attr)[0] = 1
         uipc.view(aim_transform_attr)[:] = coupler._abd_data_by_link[link].aim_transforms[env_idx]
+
+    @staticmethod
+    def _animate_ext_art_link(coupler_ref, link, env_idx, info):
+        """Animator callback for an external_articulation link.
+
+        Updates ref_dof_prev from the current body transform so that
+        ExternalArticulationConstraint computes delta_theta relative
+        to the current (possibly teleported) state rather than the
+        stale IPC-internal q_prevs.
+        """
+        coupler = coupler_ref()
+        if coupler is None:
+            gs.raise_exception("IPCCoupler was garbage collected while animator callback is still active.")
+
+        geom_slots = info.geo_slots()
+        if not geom_slots:
+            return
+        geom = geom_slots[0].geometry()
+
+        ref_attr = geom.instances().find("ref_dof_prev")
+        if ref_attr is None:
+            return
+
+        transform_view = geom.transforms().view()
+        uipc.view(ref_attr)[0] = uipc.geometry.affine_body.transform_to_q(
+            np.asarray(transform_view[0], dtype=np.float64)
+        )
 
     def _retrieve_ipc_fem_states(self):
         # IPC world advance/retrieve is handled at Scene level

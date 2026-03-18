@@ -13,37 +13,6 @@ import genesis.utils.geom as gu
 from uipc.core import Scene
 
 
-def find_target_link_for_fixed_merge(link):
-    """
-    Find the target link for merging fixed joints.
-
-    Walks up the kinematic tree, skipping links connected via FIXED joints, until finding a link with a non-FIXED joint
-    or the root.
-
-    This is similar to _merge_target_id in mjcf.py.
-
-    Returns
-    -------
-    int
-        The target link index to merge into
-    """
-    entity = link.entity
-
-    while True:
-        # If this is the root link (no parent), stop
-        if link.parent_idx < 0:
-            break
-
-        # Stop if the link has any non-fixed joint (non-fixed joints define separate bodies)
-        if any(joint.type != gs.JOINT_TYPE.FIXED for joint in link.joints):
-            break
-
-        # All joints are FIXED, move up to parent
-        link = entity.links[link.parent_idx - entity.link_start]
-
-    return link
-
-
 def compute_link_to_link_transform(from_link, to_link):
     """
     Compute the relative transform from from_link to to_link.

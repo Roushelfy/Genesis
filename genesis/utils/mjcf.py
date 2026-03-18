@@ -24,6 +24,196 @@ from .misc import get_assets_dir, redirect_libc_stderr
 MIN_TIMECONST = np.finfo(np.double).eps
 
 
+def _mjcf_body_transform(body_elem):
+    """Extract the 4x4 transform of an MJCF body element from its pos/quat/euler/axisangle attributes."""
+    T = np.eye(4, dtype=np.float64)
+    pos_str = body_elem.get("pos")
+    if pos_str:
+        T[:3, 3] = np.fromstring(pos_str, sep=" ", dtype=np.float64)
+
+    quat_str = body_elem.get("quat")
+    euler_str = body_elem.get("euler")
+    axisangle_str = body_elem.get("axisangle")
+    if quat_str:
+        # MuJoCo quat is (w, x, y, z)
+        q = np.fromstring(quat_str, sep=" ", dtype=np.float64)
+        T[:3, :3] = gu.quat_to_R(q)
+    elif euler_str:
+        euler = np.fromstring(euler_str, sep=" ", dtype=np.float64)
+        q = gu.xyz_to_quat(euler)
+        T[:3, :3] = gu.quat_to_R(q)
+    elif axisangle_str:
+        aa = np.fromstring(axisangle_str, sep=" ", dtype=np.float64)
+        axis, angle = aa[:3], aa[3]
+        axis = axis / (np.linalg.norm(axis) + 1e-30)
+        T[:3, :3] = gu.rotvec_to_R(axis * angle)
+    return T
+
+
+def _set_mjcf_body_transform(body_elem, T):
+    """Write a 4x4 transform back to an MJCF body element as pos + quat attributes."""
+    pos = T[:3, 3]
+    quat = gu.R_to_quat(T[:3, :3])
+    body_elem.set("pos", " ".join(f"{v:.10g}" for v in pos))
+    body_elem.set("quat", " ".join(f"{v:.10g}" for v in quat))
+    # Remove alternative rotation representations
+    for attr in ("euler", "axisangle", "xyaxes", "zaxis"):
+        if attr in body_elem.attrib:
+            del body_elem.attrib[attr]
+
+
+def _mjcf_inertial_to_mass_com_I(inertial_elem):
+    """Parse an MJCF <inertial> element into (mass, com, inertia_3x3)."""
+    mass = float(inertial_elem.get("mass", "0"))
+    pos_str = inertial_elem.get("pos", "0 0 0")
+    com = np.fromstring(pos_str, sep=" ", dtype=np.float64)
+
+    # Rotation of the inertia frame
+    quat_str = inertial_elem.get("quat")
+    if quat_str:
+        R = gu.quat_to_R(np.fromstring(quat_str, sep=" ", dtype=np.float64))
+    else:
+        R = np.eye(3, dtype=np.float64)
+
+    diag_str = inertial_elem.get("diaginertia")
+    full_str = inertial_elem.get("fullinertia")
+    if full_str:
+        vals = np.fromstring(full_str, sep=" ", dtype=np.float64)
+        I_local = np.array(
+            [
+                [vals[0], vals[3], vals[4]],
+                [vals[3], vals[1], vals[5]],
+                [vals[4], vals[5], vals[2]],
+            ],
+            dtype=np.float64,
+        )
+    elif diag_str:
+        vals = np.fromstring(diag_str, sep=" ", dtype=np.float64)
+        I_local = np.diag(vals)
+    else:
+        I_local = np.zeros((3, 3), dtype=np.float64)
+
+    # Rotate inertia to parent body frame
+    I_body = R @ I_local @ R.T
+    return mass, com, I_body
+
+
+def _set_mjcf_inertial(body_elem, mass, com, I):
+    """Write (mass, com, inertia_3x3) back to an MJCF <inertial> element."""
+    inertial = body_elem.find("inertial")
+    if inertial is None:
+        inertial = ET.SubElement(body_elem, "inertial")
+
+    inertial.set("mass", f"{mass:.10g}")
+    inertial.set("pos", " ".join(f"{v:.10g}" for v in com))
+    # Write as fullinertia (xx yy zz xy xz yz)
+    inertial.set(
+        "fullinertia", f"{I[0, 0]:.10g} {I[1, 1]:.10g} {I[2, 2]:.10g} {I[0, 1]:.10g} {I[0, 2]:.10g} {I[1, 2]:.10g}"
+    )
+    # Remove alternative representations
+    for attr in ("diaginertia", "quat", "euler", "axisangle", "xyaxes", "zaxis"):
+        if attr in inertial.attrib:
+            del inertial.attrib[attr]
+
+
+def merge_fixed_links_mjcf(mjcf_root, links_to_keep=()):
+    """Merge fixed-joint bodies in an MJCF XML tree, analogous to URDF merge_fixed_links.
+
+    A "fixed body" is a ``<body>`` with no ``<joint>`` child element.
+    For each fixed body (processed bottom-up so children are merged first):
+      1. Its geoms and child bodies are transformed by the fixed body's frame offset and moved to the parent body.
+      2. Its inertial is merged into the parent.
+      3. The fixed body element is removed.
+
+    Parameters
+    ----------
+    mjcf_root : ET.Element
+        Root ``<mujoco>`` element of the MJCF XML tree.
+    links_to_keep : tuple of str
+        Body names that should NOT be merged even if they are fixed.
+    """
+    links_to_keep = set(links_to_keep)
+
+    # Collect all fixed bodies bottom-up (deepest first)
+    worldbody = mjcf_root.find("worldbody")
+    if worldbody is None:
+        return
+
+    def _collect_fixed_bodies(parent, is_worldbody=False):
+        """Collect (parent_elem, child_elem) pairs for fixed bodies, deepest first."""
+        pairs = []
+        for child in list(parent):
+            if child.tag != "body":
+                continue
+            # Recurse into children first (bottom-up)
+            pairs.extend(_collect_fixed_bodies(child))
+            # A fixed body has no <joint> child
+            has_joint = any(c.tag == "joint" for c in child)
+            # Never merge root-level bodies (direct children of worldbody)
+            if not has_joint and not is_worldbody and child.get("name", "") not in links_to_keep:
+                pairs.append((parent, child))
+        return pairs
+
+    fixed_pairs = _collect_fixed_bodies(worldbody, is_worldbody=True)
+
+    for parent_body, fixed_body in fixed_pairs:
+        body_T = _mjcf_body_transform(fixed_body)
+
+        # Transform and reparent geoms
+        for geom in list(fixed_body):
+            if geom.tag == "geom":
+                geom_T = _mjcf_body_transform(geom)
+                combined = body_T @ geom_T
+                _set_mjcf_body_transform(geom, combined)
+                fixed_body.remove(geom)
+                parent_body.append(geom)
+
+        # Transform and reparent child bodies
+        for child in list(fixed_body):
+            if child.tag == "body":
+                child_T = _mjcf_body_transform(child)
+                combined = body_T @ child_T
+                _set_mjcf_body_transform(child, combined)
+                fixed_body.remove(child)
+                parent_body.append(child)
+
+        # Transform and reparent other elements (site, light, camera, etc.)
+        for elem in list(fixed_body):
+            if elem.tag == "inertial":
+                continue
+            fixed_body.remove(elem)
+            parent_body.append(elem)
+
+        # Merge inertial
+        parent_inertial = parent_body.find("inertial")
+        child_inertial = fixed_body.find("inertial")
+        if child_inertial is not None:
+            c_mass, c_com, c_I = _mjcf_inertial_to_mass_com_I(child_inertial)
+            # Transform child inertial into parent frame
+            R = body_T[:3, :3]
+            t = body_T[:3, 3]
+            c_com_parent = R @ c_com + t
+            c_I_parent = R @ c_I @ R.T
+
+            if parent_inertial is not None:
+                p_mass, p_com, p_I = _mjcf_inertial_to_mass_com_I(parent_inertial)
+                combined_mass = p_mass + c_mass
+                if combined_mass > 1e-30:
+                    combined_com = (p_mass * p_com + c_mass * c_com_parent) / combined_mass
+                else:
+                    combined_com = p_com
+                # Parallel axis theorem
+                p_I_new = uu.translate_inertia(p_I, p_mass, combined_com - p_com)
+                c_I_new = uu.translate_inertia(c_I_parent, c_mass, combined_com - c_com_parent)
+                combined_I = p_I_new + c_I_new
+                _set_mjcf_inertial(parent_body, combined_mass, combined_com, combined_I)
+            else:
+                _set_mjcf_inertial(parent_body, c_mass, c_com_parent, c_I_parent)
+
+        # Remove the fixed body
+        parent_body.remove(fixed_body)
+
+
 def get_model_name(file_path):
     """
     Extract the model name from an MJCF file, if specified.
@@ -165,9 +355,13 @@ def build_model(xml, discard_visual, default_armature=None, merge_fixed_links=Fa
                 # Beware symlinks must NOT be resolved, otherwise it may break the file extension, which is used by
                 # Mujoco MJCF parser to determine how to load mesh files.
                 elem.set("filename", str(Path(asset_path) / mesh_path))
+        else:
+            # Native MJCF: merge fixed-joint bodies on the XML tree before compilation
+            if merge_fixed_links:
+                merge_fixed_links_mjcf(mjcf, links_to_keep)
 
         with open(os.devnull, "w") as stderr, redirect_libc_stderr(stderr):
-            # Parse updated URDF file as a string
+            # Parse updated XML as a string
             data = ET.tostring(root, encoding="utf8")
             mj = mujoco.MjModel.from_xml_string(data)
 
@@ -202,7 +396,7 @@ def build_model(xml, discard_visual, default_armature=None, merge_fixed_links=Fa
 def parse_xml(morph, surface):
     # Always merge fixed links unless explicitly asked not to do so
     merge_fixed_links, links_to_keep = False, ()
-    if isinstance(morph, (gs.morphs.URDF, gs.morphs.Drone)):
+    if isinstance(morph, (gs.morphs.URDF, gs.morphs.Drone, gs.morphs.MJCF)):
         merge_fixed_links = morph.merge_fixed_links
         links_to_keep = morph.links_to_keep
 

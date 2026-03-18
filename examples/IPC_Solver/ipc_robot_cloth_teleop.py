@@ -1,32 +1,15 @@
 """
-Keyboard Controls:
-↑	- Move Forward (North)
-↓	- Move Backward (South)
-←	- Move Left (West)
-→	- Move Right (East)
-n	- Move Up
-m	- Move Down
-j/k	- Yaw Left/Right (Rotate around Z axis)
-i/o	- Pitch Up/Down (Rotate around Y axis)
-l/;	- Roll Left/Right (Rotate around X axis)
-u	- Reset Scene
-space	- Press to close gripper, release to open gripper
-esc	- Quit
+Franka robot teleop with cloth — IPC demo.
+
+Keyboard controls: see franka_teleop.py for the full keybind list.
 """
 
 import argparse
 import os
 
-import numpy as np
-
 import genesis as gs
-import genesis.utils.geom as gu
-from genesis.vis.keybindings import Key, KeyAction, Keybind
 from huggingface_hub import snapshot_download
-
-
-DELTA_POS = 0.003
-DELTA_ROT = 0.02
+from robot_teleop import RobotTeleop
 
 
 def main():
@@ -39,6 +22,7 @@ def main():
         default="two_way_soft_constraint",
         choices=["two_way_soft_constraint", "external_articulation"],
     )
+    parser.add_argument("--use-al", action="store_true", help="Use AL-IPC contact constitution")
     args = parser.parse_args()
 
     scene = gs.Scene(
@@ -56,6 +40,7 @@ def main():
             enable_rigid_rigid_contact=True,
             contact_d_hat=0.001,
             contact_resistance=1e7,
+            **(dict(contact_constitution="al-ipc") if args.use_al else {}),
         ),
         viewer_options=gs.options.ViewerOptions(
             camera_pos=(2.0, -1.0, 1.5),
@@ -65,7 +50,7 @@ def main():
         show_viewer=True,
     )
 
-    # Add flat floor
+    # Ground plane
     scene.add_entity(
         gs.morphs.Plane(),
         material=gs.materials.Rigid(
@@ -73,7 +58,8 @@ def main():
         ),
     )
 
-    # Add Franka robot
+    # Franka robot
+    use_ext_art = args.coup_type == "external_articulation"
     franka_material_kwargs = dict(
         coup_type=args.coup_type,
     )
@@ -83,12 +69,13 @@ def main():
         gs.morphs.MJCF(
             file="xml/franka_emika_panda/panda_non_overlap.xml",
             pos=(0.0, 0.0, 0.005),
+            convexify=True,
+            merge_fixed_links=use_ext_art,
         ),
         material=gs.materials.Rigid(**franka_material_kwargs),
-        # vis_mode="collision",
     )
 
-    # Add cloths
+    # Cloth layers
     cloth_asset_path = snapshot_download(
         repo_type="dataset",
         repo_id="Genesis-Intelligence/assets",
@@ -135,7 +122,7 @@ def main():
         ),
     )
 
-    # Add 16 rigid cubes uniformly distributed under the cloth (4x4 grid)
+    # Rigid cubes (4x4 grid) under the cloth
     cube_size = 0.05
     cube_height = 0.02501
     grid_spacing = 0.15
@@ -143,7 +130,7 @@ def main():
         for j in range(4):
             x = (i + 1.7) * grid_spacing
             y = (j - 1.5) * grid_spacing
-            box = scene.add_entity(
+            scene.add_entity(
                 morph=gs.morphs.Box(
                     pos=(x, y, cube_height),
                     size=(cube_size, cube_size, cube_size),
@@ -159,110 +146,26 @@ def main():
                 ),
             )
 
-    motor_dofs_idx = slice(0, 7)
-    finger_dofs_idx = slice(7, 9)
-
-    ee_link = franka.get_link("hand")
-
-    target_init_pos = np.array([0.5, 0.0, 0.6], dtype=gs.np_float)
-    target_init_quat = gu.xyz_to_quat(np.array([0.0, 180.0, 0.0], dtype=gs.np_float), degrees=True)
-    target_pos, target_quat = target_init_pos.copy(), target_init_quat.copy()
-
     scene.build()
 
-    franka.set_dofs_kp(500.0, dofs_idx_local=finger_dofs_idx)
-    franka.set_dofs_kv(50.0, dofs_idx_local=finger_dofs_idx)
-
-    # Setting initial configuration is not supported by coupling mode "external_articulation"
-    if args.coup_type != "external_articulation":
-        # qpos = franka.inverse_kinematics(link=ee_link, pos=target_pos, quat=target_quat, dofs_idx_local=motor_dofs_idx)
-        qpos = (2.2116, -1.5328, -0.7347, -1.7235, -1.3377, 0.7519, -1.4410, 0.04, 0.04)
-        franka.set_qpos(qpos)
-        franka.control_dofs_position(qpos)
-
-    target_ik = scene.draw_debug_frame(
-        T=gu.trans_quat_to_T(target_pos, target_quat),
-        axis_length=0.15,
-        origin_size=0.01,
-        axis_radius=0.007,
-    )
-    scene.viewer.update(force=True)
-
-    if scene.viewer is None:
-        gs.logger.warning("Viewer is not active. Keyboard input requires the Genesis viewer.")
-        return
-
-    gripper_close = np.array(False, dtype=gs.np_bool)
-    is_running = True
-
-    def move(dpos_xyz: tuple[float, float, float]):
-        target_pos[:] += dpos_xyz
-
-    def rotate(axis_idx: int, delta: float):
-        delta_xyz = np.zeros(3, dtype=gs.np_float)
-        delta_xyz[axis_idx] = delta
-        delta_quat = gu.xyz_to_quat(delta_xyz)
-        target_quat[:] = gu.transform_quat_by_quat(target_quat, delta_quat)
-
-    def reset_scene():
-        target_pos[:], target_quat[:] = target_init_pos, target_init_quat
-        pose = gu.trans_quat_to_T(target_pos, target_quat)
-        scene.visualizer.context.update_debug_objects((target_ik,), (pose,))
-        qpos = franka.inverse_kinematics(link=ee_link, pos=target_pos, quat=target_quat, dofs_idx_local=motor_dofs_idx)
-        franka.control_dofs_position(qpos[:-2], dofs_idx_local=motor_dofs_idx)
-
-    def set_gripper(close: bool):
-        gripper_close[()] = close
-
-    def stop():
-        nonlocal is_running
-        is_running = False
-
-    scene.viewer.register_keybinds(
-        Keybind("move_forward", Key.UP, KeyAction.HOLD, callback=move, args=((-DELTA_POS, 0, 0),)),
-        Keybind("move_back", Key.DOWN, KeyAction.HOLD, callback=move, args=((DELTA_POS, 0, 0),)),
-        Keybind("move_left", Key.LEFT, KeyAction.HOLD, callback=move, args=((0, -DELTA_POS, 0),)),
-        Keybind("move_right", Key.RIGHT, KeyAction.HOLD, callback=move, args=((0, DELTA_POS, 0),)),
-        Keybind("move_up", Key.N, KeyAction.HOLD, callback=move, args=((0, 0, DELTA_POS),)),
-        Keybind("move_down", Key.M, KeyAction.HOLD, callback=move, args=((0, 0, -DELTA_POS),)),
-        Keybind("yaw_left", Key.J, KeyAction.HOLD, callback=rotate, args=(2, DELTA_ROT)),
-        Keybind("yaw_right", Key.K, KeyAction.HOLD, callback=rotate, args=(2, -DELTA_ROT)),
-        Keybind("pitch_up", Key.U, KeyAction.HOLD, callback=rotate, args=(1, DELTA_ROT)),
-        Keybind("pitch_down", Key.O, KeyAction.HOLD, callback=rotate, args=(1, -DELTA_ROT)),
-        Keybind("roll_left", Key.L, KeyAction.HOLD, callback=rotate, args=(0, DELTA_ROT)),
-        Keybind("roll_right", Key.SEMICOLON, KeyAction.HOLD, callback=rotate, args=(0, -DELTA_ROT)),
-        Keybind("reset_scene", Key.G, KeyAction.PRESS, callback=reset_scene),
-        Keybind("close_gripper", Key.SPACE, KeyAction.PRESS, callback=set_gripper, args=(True,)),
-        Keybind("open_gripper", Key.SPACE, KeyAction.RELEASE, callback=set_gripper, args=(False,)),
-        Keybind("quit", Key.ESCAPE, KeyAction.PRESS, callback=stop),
-        overwrite=True,
-    )
-
-    try:
-        while is_running and scene.viewer.is_alive():
-            pose = gu.trans_quat_to_T(target_pos, target_quat)
-            scene.visualizer.context.update_debug_objects((target_ik,), (pose,))
-
-            qpos = franka.inverse_kinematics(
-                link=ee_link, pos=target_pos, quat=target_quat, dofs_idx_local=motor_dofs_idx
-            )
-            franka.control_dofs_position(qpos[motor_dofs_idx], motor_dofs_idx)
-
-            if gripper_close[()]:
-                # FIXME: Force control is acting weird...
-                # franka.control_dofs_force(-0.1, dofs_idx_local=finger_dofs_idx)
-                franka.control_dofs_position(-0.03, dofs_idx_local=finger_dofs_idx)
-            else:
-                franka.control_dofs_position(0.04, dofs_idx_local=finger_dofs_idx)
-
-            scene.step()
-
-            if "PYTEST_VERSION" in os.environ:
-                break
-    except KeyboardInterrupt:
-        gs.logger.info("Simulation interrupted, exiting.")
-    finally:
-        gs.logger.info("Simulation finished.")
+    # ext_art merges hand into link7 — use link7 as EE with adjusted pose
+    if use_ext_art:
+        teleop = RobotTeleop.franka(
+            scene=scene,
+            robot=franka,
+            ee_link_name="link7",
+            init_pos=(0.5, 0.0, 0.707),
+            init_euler=(180.0, 0.0, 135.0),
+        )
+    else:
+        teleop = RobotTeleop.franka(
+            scene=scene,
+            robot=franka,
+            init_pos=(0.5, 0.0, 0.6),
+            init_euler=(0.0, 180.0, 0.0),
+        )
+    teleop.setup()
+    teleop.run()
 
 
 if __name__ == "__main__":

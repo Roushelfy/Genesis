@@ -863,6 +863,13 @@ class MJCF(FileMorph):
     batch_fixed_verts : bool, optional
         Whether to batch fixed vertices. This will allow setting env-specific poses to fixed geometries, at the cost of
         significantly increasing memory usage. Default to true. **This is only used for RigidEntity.**
+    merge_fixed_links : bool, optional
+        Whether to merge bodies connected via a fixed joint (no ``<joint>`` child in MJCF) into their parent.
+        Geoms and child bodies are transformed into the parent frame, and inertial properties are combined.
+        Required for ``external_articulation`` IPC coupling on robots with fixed-joint links.
+        Defaults to False.
+    links_to_keep : list of str, optional
+        A list of body names that should not be merged even if they are fixed. Defaults to [].
     default_armature : float, optional
         Default rotor inertia of the actuators. In practice it is applied to all joints regardless of whether they are
         actuated. None to disable. Default to 0.1.
@@ -872,6 +879,8 @@ class MJCF(FileMorph):
     euler: Optional[tuple] = None
     quat: Optional[tuple] = None
     requires_jac_and_IK: bool = True
+    merge_fixed_links: bool = False
+    links_to_keep: List[str] = []
     default_armature: Optional[float] = 0.1
 
     def __init__(self, **data):
