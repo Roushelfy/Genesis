@@ -49,14 +49,14 @@ def _default_asset_path(repo_root: Path, relative_name: str) -> Path:
 
 def parse_arguments() -> argparse.Namespace:
     repo_root = Path(__file__).resolve().parents[3]
-    default_urdf = _default_asset_path(repo_root, "g1_29dof.urdf")
+    default_urdf = _default_asset_path(repo_root, "locomotion/assets/g1_29dof_rev_1_0.urdf")
     parser = argparse.ArgumentParser(description="Core-first wearing sample.")
     parser.add_argument("--backend", default="cuda", type=str, help="Backend name.")
     parser.add_argument(
         "--urdf",
         default=str(default_urdf),
         type=str,
-        help="URDF file path used to build the skeleton (defaults to DomeAssets/DemoAssets/TestAssets g1_29dof.urdf).",
+        help="URDF file path used to build the skeleton (defaults to DemoAssets/locomotion/assets/g1_29dof_rev_1_0.urdf).",
     )
     parser.add_argument(
         "--urdf-mesh-source",

@@ -4,6 +4,8 @@ This script is used to load the G1 29-DOF URDF with symmetric initial qpos (no c
 NEXT STEP: Use houdini to place the cloth on the robot.
 """
 
+from pathlib import Path
+
 import numpy as np
 import genesis as gs
 
@@ -12,6 +14,8 @@ gs.init(backend=gs.cpu)
 from genesis.engine.couplers.ipc_coupler.coupler import GenesisSolverContext, IPCBeforeWorldInitContext
 
 ROBOT_Z = 0.75
+REPO_ROOT = Path(__file__).resolve().parents[2]
+G1_URDF = REPO_ROOT / "DemoAssets" / "locomotion" / "assets" / "g1_29dof_rev_1_0.urdf"
 
 scene = gs.Scene(
     sim_options=gs.options.SimOptions(dt=0.01),
@@ -36,7 +40,7 @@ scene.add_entity(
 
 robot = scene.add_entity(
     gs.morphs.URDF(
-        file="DemoAssets/g1_29dof.urdf",
+        file=str(G1_URDF),
         pos=(0, 0, ROBOT_Z),
     ),
     material=gs.materials.Rigid(

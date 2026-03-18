@@ -11,6 +11,7 @@ Usage:
 import argparse
 import json
 import time
+from pathlib import Path
 
 import numpy as np
 
@@ -28,9 +29,10 @@ from uipc.geometry import (
 )
 from uipc.unit import GPa, MPa
 
-RIGID_IPC_ROOT = "/home/zhehuan/Desktop/hz/rigid-ipc"
-MESH_ROOT = f"{RIGID_IPC_ROOT}/meshes"
-BIKE_CHAIN_JSON = f"{RIGID_IPC_ROOT}/fixtures/3D/mechanisms/507-movements/227-bike-chain.json"
+REPO_ROOT = Path(__file__).resolve().parents[2]
+RIGID_IPC_ROOT = REPO_ROOT / "DemoAssets" / "rigid-ipc"
+MESH_ROOT = RIGID_IPC_ROOT / "meshes"
+BIKE_CHAIN_JSON = RIGID_IPC_ROOT / "fixtures" / "3D" / "mechanisms" / "507-movements" / "227-bike-chain.json"
 
 
 def process_surface(sc):
@@ -98,7 +100,7 @@ def main():
     def load_mesh(mesh_rel, scale):
         cache_key = (mesh_rel, scale)
         if cache_key not in mesh_cache:
-            mesh_path = f"{MESH_ROOT}/{mesh_rel}"
+            mesh_path = str(MESH_ROOT / mesh_rel)
             mesh = io.read(mesh_path)
             # Apply scale directly to vertex positions (like Genesis does)
             if scale != 1.0:

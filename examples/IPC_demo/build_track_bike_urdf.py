@@ -25,18 +25,20 @@ Usage:
 """
 
 import os
+from pathlib import Path
 
 import numpy as np
 import trimesh
 
 # ─── Paths ───────────────────────────────────────────────────────────────────
 
-GLB_PATH = os.path.expanduser("~/blenderkit_downloads/track_bike_d3e5722d-ea7a-41cd-9b1e-3c60e61e7f4f/Track_Bike.glb")
-SPROCKET_20_PATH = os.path.expanduser(
-    "~/Desktop/hz/rigid-ipc/meshes/507-movements/227-chain-pully/sprocket-20teeth.obj"
-)
-SPROCKET_8_PATH = os.path.expanduser("~/Desktop/hz/rigid-ipc/meshes/507-movements/227-chain-pully/sprocket-8teeth.obj")
-OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "track_bike")
+REPO_ROOT = Path(__file__).resolve().parents[2]
+DEMO_ASSETS = REPO_ROOT / "DemoAssets"
+RIGID_IPC_ROOT = DEMO_ASSETS / "rigid-ipc"
+GLB_PATH = DEMO_ASSETS / "track_bike" / "Track_Bike.glb"
+SPROCKET_20_PATH = RIGID_IPC_ROOT / "meshes" / "507-movements" / "227-chain-pully" / "sprocket-20teeth.obj"
+SPROCKET_8_PATH = RIGID_IPC_ROOT / "meshes" / "507-movements" / "227-chain-pully" / "sprocket-8teeth.obj"
+OUTPUT_DIR = DEMO_ASSETS / "track_bike"
 
 
 # ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -369,7 +371,7 @@ def main():
 
     # ── Load scene ──
     print("\nLoading GLB scene...")
-    scene = trimesh.load(GLB_PATH)
+    scene = trimesh.load(str(GLB_PATH))
 
     # All top-level node names (children of "world")
     all_top_nodes = list(scene.graph.transforms.children.get("world", []))
@@ -455,7 +457,7 @@ def main():
     # ── 5. Export front_sprocket (scaled sprocket-20teeth) ──
 
     print("\nExporting front_sprocket.obj...")
-    sprocket_20 = trimesh.load(SPROCKET_20_PATH, force="mesh")
+    sprocket_20 = trimesh.load(str(SPROCKET_20_PATH), force="mesh")
 
     # Compute scale: match the crankset outer radius
     crankset_meshes = collect_world_meshes(scene, ["Crankset"])
@@ -480,7 +482,7 @@ def main():
     # ── 6. Export rear_sprocket (scaled sprocket-8teeth, same scale) ──
 
     print("\nExporting rear_sprocket.obj (same scale)...")
-    sprocket_8 = trimesh.load(SPROCKET_8_PATH, force="mesh")
+    sprocket_8 = trimesh.load(str(SPROCKET_8_PATH), force="mesh")
 
     # sprocket-8teeth is NOT centered at origin; recenter first, then scale
     s8_center = (sprocket_8.bounds[0] + sprocket_8.bounds[1]) / 2

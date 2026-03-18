@@ -16,13 +16,16 @@ Genesis uses Z-up, so we apply a Y-up to Z-up transform:
 
 import argparse
 import json
+from pathlib import Path
 
 import numpy as np
 
 import genesis as gs
 
-RIGID_IPC_ROOT = "/home/zhehuan/Desktop/hz/rigid-ipc"
-MESH_ROOT = f"{RIGID_IPC_ROOT}/meshes"
+REPO_ROOT = Path(__file__).resolve().parents[2]
+DEMO_ASSETS_ROOT = REPO_ROOT / "DemoAssets"
+RIGID_IPC_ROOT = DEMO_ASSETS_ROOT / "rigid-ipc"
+MESH_ROOT = RIGID_IPC_ROOT / "meshes"
 
 
 def euler_xyz_deg_to_quat(rx_deg, ry_deg, rz_deg):
@@ -126,7 +129,7 @@ def load_rigid_ipc_scene(
     entities = []
     bodies = []
     for i, body in enumerate(json_bodies):
-        mesh_path = f"{MESH_ROOT}/{body['mesh']}"
+        mesh_path = str(MESH_ROOT / body["mesh"])
         scale = body.get("scale", 1.0)
         pos_ipc = body.get("position", [0, 0, 0])
         rot_deg = body.get("rotation", [0, 0, 0])

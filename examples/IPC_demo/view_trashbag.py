@@ -19,13 +19,14 @@ Usage:
 """
 
 import argparse
-import os
+from pathlib import Path
 
 import genesis as gs
 
-DEMO_ASSETS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "DemoAssets", "trashbag")
-BAG_MESH = os.path.join(DEMO_ASSETS, "Trashbag_coarse.obj")
-CAN_MESH = os.path.join(DEMO_ASSETS, "trashcan_128.obj")
+REPO_ROOT = Path(__file__).resolve().parents[2]
+DEMO_ASSETS = REPO_ROOT / "DemoAssets" / "trashbag"
+BAG_MESH = DEMO_ASSETS / "Trashbag_coarse.obj"
+CAN_MESH = DEMO_ASSETS / "trashcan_128.obj"
 
 
 def main():
@@ -77,7 +78,7 @@ def main():
     # Global friction=0.02 from contact_tabular default_model
     bag = scene.add_entity(
         morph=gs.morphs.Mesh(
-            file=BAG_MESH,
+            file=str(BAG_MESH),
             pos=(0.5, 0.0, 1.0),
             euler=(90, 0, 0),
             scale=1.0,
@@ -96,7 +97,7 @@ def main():
     # Original: pos=(0.5, 0, 0.5), no rotation, scale=1.0
     can = scene.add_entity(
         morph=gs.morphs.Mesh(
-            file=CAN_MESH,
+            file=str(CAN_MESH),
             pos=(0.5, 0.0, 0.5),
             scale=1.0,
             fixed=True,

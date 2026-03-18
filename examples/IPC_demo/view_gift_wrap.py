@@ -19,13 +19,14 @@ Usage:
 """
 
 import argparse
-import os
+from pathlib import Path
 
 import genesis as gs
 
-DEMO_ASSETS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "DemoAssets", "gift_wrap")
-RIBBON_MESH = os.path.join(DEMO_ASSETS, "ribbon_reordered_fine.obj")
-BOX_MESH = os.path.join(DEMO_ASSETS, "box.obj")
+REPO_ROOT = Path(__file__).resolve().parents[2]
+DEMO_ASSETS = REPO_ROOT / "DemoAssets" / "gift_wrap"
+RIBBON_MESH = DEMO_ASSETS / "ribbon_reordered_fine.obj"
+BOX_MESH = DEMO_ASSETS / "box.obj"
 
 
 def main():
@@ -75,7 +76,7 @@ def main():
     if not args.no_ribbon:
         ribbon = scene.add_entity(
             morph=gs.morphs.Mesh(
-                file=RIBBON_MESH,
+                file=str(RIBBON_MESH),
                 scale=1.0,
                 euler=(90, 0, 0),
             ),
@@ -94,7 +95,7 @@ def main():
     if not args.no_box:
         box = scene.add_entity(
             morph=gs.morphs.Mesh(
-                file=BOX_MESH,
+                file=str(BOX_MESH),
                 scale=1.0,
                 euler=(90, 0, 0),
                 convexify=False,

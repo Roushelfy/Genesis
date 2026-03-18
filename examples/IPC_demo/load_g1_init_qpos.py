@@ -1,10 +1,14 @@
 """Load G1 29-DOF URDF with symmetric initial qpos and cashmere sweater."""
 
+from pathlib import Path
+
 import numpy as np
 
 import genesis as gs
 
-SWEATER_GLB = "DemoAssets/Cashmere_Sweater_adjusted.glb"
+REPO_ROOT = Path(__file__).resolve().parents[2]
+SWEATER_GLB = REPO_ROOT / "DemoAssets" / "Cashmere_Sweater_adjusted.glb"
+G1_URDF = REPO_ROOT / "DemoAssets" / "locomotion" / "assets" / "g1_29dof_rev_1_0.urdf"
 ROBOT_Z = 0.75
 
 gs.init(backend=gs.gpu)
@@ -18,7 +22,7 @@ scene.add_entity(gs.morphs.Plane())
 
 robot = scene.add_entity(
     gs.morphs.URDF(
-        file="DemoAssets/g1_29dof.urdf",
+        file=str(G1_URDF),
         pos=(0, 0, ROBOT_Z),
     ),
 )
@@ -31,7 +35,7 @@ robot = scene.add_entity(
 # Combined rotation: Rz(90) * Rx(90) => euler=(90, 0, 90) in extrinsic XYZ
 sweater = scene.add_entity(
     morph=gs.morphs.Mesh(
-        file=SWEATER_GLB,
+        file=str(SWEATER_GLB),
         scale=0.81,
         pos=(0.0244, 0.0, ROBOT_Z - 0.175),
         euler=(0, 0, 90),

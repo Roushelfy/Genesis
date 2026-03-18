@@ -9,7 +9,7 @@ Usage:
 """
 
 import argparse
-import os
+from pathlib import Path
 
 import imageio
 import numpy as np
@@ -24,11 +24,12 @@ from load_rigid_ipc_scene import (
     yup_to_zup_quat,
 )
 
-ASSET_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "DemoAssets", "track_bike")
-BIKE_URDF = os.path.join(ASSET_PATH, "track_bike.urdf")
-LINK_MESH = os.path.join(ASSET_PATH, "link.obj")
-PIN_MESH = os.path.join(ASSET_PATH, "pin.obj")
-BARRING_MESH = os.path.join(ASSET_PATH, "barring.obj")
+REPO_ROOT = Path(__file__).resolve().parents[2]
+ASSET_PATH = REPO_ROOT / "DemoAssets" / "track_bike"
+BIKE_URDF = ASSET_PATH / "track_bike.urdf"
+LINK_MESH = ASSET_PATH / "link.obj"
+PIN_MESH = ASSET_PATH / "pin.obj"
+BARRING_MESH = ASSET_PATH / "barring.obj"
 
 # Chain geometry constants (from chain_pully.py, in mesh units)
 LINK_HOLE_CENTER = 2.45905
@@ -279,7 +280,7 @@ def add_chain(scene, bike_pos_zup=(0, 0, 0)):
             entities.append(
                 scene.add_entity(
                     gs.morphs.Mesh(
-                        file=LINK_MESH,
+                        file=str(LINK_MESH),
                         pos=tuple(pos_zup),
                         quat=link_quat,
                         scale=CHAIN_SCALE,
@@ -298,7 +299,7 @@ def add_chain(scene, bike_pos_zup=(0, 0, 0)):
         entities.append(
             scene.add_entity(
                 gs.morphs.Mesh(
-                    file=BARRING_MESH,
+                    file=str(BARRING_MESH),
                     pos=tuple(barring_pos_zup),
                     quat=joint_quat,
                     scale=CHAIN_SCALE,
@@ -317,7 +318,7 @@ def add_chain(scene, bike_pos_zup=(0, 0, 0)):
         entities.append(
             scene.add_entity(
                 gs.morphs.Mesh(
-                    file=PIN_MESH,
+                    file=str(PIN_MESH),
                     pos=tuple(pin_pos_zup),
                     quat=joint_quat,
                     scale=CHAIN_SCALE,
@@ -409,7 +410,7 @@ def main():
 
         bike = scene.add_entity(
             gs.morphs.URDF(
-                file=BIKE_URDF,
+                file=str(BIKE_URDF),
                 fixed=args.fix_bike,
                 pos=bike_pos_zup,
                 euler=(90, 0, 0),

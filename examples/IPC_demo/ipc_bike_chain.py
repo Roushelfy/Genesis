@@ -10,6 +10,7 @@ Usage:
 """
 
 import argparse
+from pathlib import Path
 
 import numpy as np
 import trimesh
@@ -28,7 +29,8 @@ from load_rigid_ipc_scene import (
     yup_to_zup_position,
 )
 
-BIKE_CHAIN_JSON = "/home/zhehuan/Desktop/hz/rigid-ipc/fixtures/3D/mechanisms/507-movements/227-bike-chain.json"
+REPO_ROOT = Path(__file__).resolve().parents[2]
+BIKE_CHAIN_JSON = REPO_ROOT / "DemoAssets" / "rigid-ipc" / "fixtures" / "3D" / "mechanisms" / "507-movements" / "227-bike-chain.json"
 
 # Cylinder height (along Y-axis in Z-up, the rotation axis)
 CYLINDER_HEIGHT = 0.1
@@ -46,7 +48,7 @@ def find_sprockets(entities, bodies):
             continue
 
         # Compute sprocket center from mesh centroid
-        mesh_path = f"{MESH_ROOT}/{body['mesh']}"
+        mesh_path = str(MESH_ROOT / body["mesh"])
         scale = body.get("scale", 1.0)
         mesh = trimesh.load(mesh_path)
         center_ipc = mesh.centroid * scale
@@ -208,7 +210,7 @@ def main():
 
     print(f"Loading: {BIKE_CHAIN_JSON}")
     scene, entities, bodies, data = load_rigid_ipc_scene(
-        BIKE_CHAIN_JSON,
+        str(BIKE_CHAIN_JSON),
         show_viewer=not args.no_viewer,
         ipc=True,
         two_way_body_indices=two_way_indices,

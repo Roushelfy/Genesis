@@ -15,6 +15,7 @@ Usage:
 
 import argparse
 import os
+from pathlib import Path
 
 import numpy as np
 
@@ -29,9 +30,10 @@ from uipc.constitution import (
 from uipc.core import Engine, World, Scene
 from uipc.geometry import SimplicialComplexIO, ground, label_surface
 
-DEMO_ASSETS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "DemoAssets", "gift_wrap")
-RIBBON_MESH = os.path.join(DEMO_ASSETS, "ribbon_reordered_fine.obj")
-BOX_MESH = os.path.join(DEMO_ASSETS, "box.obj")
+REPO_ROOT = Path(__file__).resolve().parents[2]
+DEMO_ASSETS = REPO_ROOT / "DemoAssets" / "gift_wrap"
+RIBBON_MESH = DEMO_ASSETS / "ribbon_reordered_fine.obj"
+BOX_MESH = DEMO_ASSETS / "box.obj"
 
 
 def main():
@@ -87,7 +89,7 @@ def main():
         pre = Transform.Identity()
         pre.rotate(AngleAxis(np.pi / 2, Vector3.UnitX()))
         io = SimplicialComplexIO(pre)
-        ribbon_mesh = io.read(RIBBON_MESH)
+        ribbon_mesh = io.read(str(RIBBON_MESH))
         label_surface(ribbon_mesh)
         slbws.apply_to(ribbon_mesh, moduli=cloth_moduli, mass_density=200.0, thickness=0.0001)
         dsb.apply_to(ribbon_mesh, bending_stiffness=40.0)
@@ -100,7 +102,7 @@ def main():
         pre = Transform.Identity()
         pre.rotate(AngleAxis(np.pi / 2, Vector3.UnitX()))
         io = SimplicialComplexIO(pre)
-        box_mesh = io.read(BOX_MESH)
+        box_mesh = io.read(str(BOX_MESH))
         label_surface(box_mesh)
         abd.apply_to(box_mesh, 100e6, mass_density=1000.0)
         box_obj.geometries().create(box_mesh)
@@ -112,18 +114,9 @@ def main():
         pre = Transform.Identity()
         # Scale cube to a flat slab, then shift down so top face is at z=0
         pre.scale(2.0)
-        trimesh_path = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),
-            "..",
-            "..",
-            "..",
-            "libuipc-samples",
-            "assets",
-            "sim_data",
-            "trimesh",
-        )
+        trimesh_path = REPO_ROOT / "DemoAssets" / "assets" / "sim_data" / "trimesh"
         io = SimplicialComplexIO(pre)
-        floor_mesh = io.read(os.path.join(trimesh_path, "cube.obj"))
+        floor_mesh = io.read(str(trimesh_path / "cube.obj"))
         # Shift the mesh down so the top face is at z=0
         positions = view(floor_mesh.positions())
         positions[:, 2] -= float(np.max(positions[:, 2]))
