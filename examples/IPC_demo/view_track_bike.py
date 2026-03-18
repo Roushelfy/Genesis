@@ -401,7 +401,8 @@ def main():
         print("Adding bike...")
         bike_material = gs.materials.Rigid(
             coup_type="two_way_soft_constraint",
-            coup_friction=0.3,
+            coup_friction=0.0,
+            friction=0.3,
             coup_links=["front_sprocket", "rear_sprocket"],
             enable_coup_collision=True,
         )

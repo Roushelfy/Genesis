@@ -143,7 +143,7 @@ def add_rotating_motor(coupler, sprockets):
                 geom,
                 strength=100.0,
                 motor_axis=info["axis"],
-                motor_rot_vel=info["omega"],
+                motor_rot_vel=-info["omega"],
             )
 
         # Register animator to advance the motor each frame
