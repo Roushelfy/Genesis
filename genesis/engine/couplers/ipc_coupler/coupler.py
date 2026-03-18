@@ -1508,6 +1508,8 @@ class IPCCoupler(RBC):
         self._abd_state_feature.copy_to(self._abd_state_geom)
         trans_attr = self._abd_state_geom.instances().find(uipc.builtin.transform)
         transforms = trans_attr.view()
+        vel_attr = self._abd_state_geom.instances().find(uipc.builtin.velocity)
+        velocities = vel_attr.view() if vel_attr is not None else None
 
         for i_link, (link, abd_data) in enumerate(self._abd_data_by_link.items()):
             dirty_envs = self._abd_updated_links.get(link)
@@ -1521,14 +1523,19 @@ class IPCCoupler(RBC):
                 new_T = links_transform[env_idx, link.idx]
                 transforms[abd_body_idx] = new_T
 
-                # For ext_art links, update ref_dof_prev so the constraint uses the
-                # teleported transform as the reference state instead of stale q_prevs.
+                # Zero velocity so IPC's time integrator doesn't see phantom
+                # motion from the teleported position.
+                if velocities is not None:
+                    velocities[abd_body_idx] = np.zeros((4, 4), dtype=new_T.dtype)
+
+                # For ext_art links, update the slot geometry's transform attribute
+                # so the animator callback in advance() reads the teleported pose
+                # (not the stale previous-frame pose) when computing ref_dof_prev.
                 if is_ext_art:
                     slot = abd_data.slots[env_idx]
                     geom = slot.geometry()
-                    ref_attr = geom.instances().find("ref_dof_prev")
-                    if ref_attr is not None:
-                        uipc.view(ref_attr)[0] = uipc.geometry.affine_body.transform_to_q(new_T.astype(np.float64))
+                    slot_transforms = geom.transforms().view()
+                    slot_transforms[0] = new_T
 
         self._abd_state_feature.copy_from(self._abd_state_geom)
 
