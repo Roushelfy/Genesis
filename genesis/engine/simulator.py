@@ -329,7 +329,7 @@ class Simulator(RBC):
         _t3 = _time.perf_counter()
         self.substep_post_coupling(f)
         _t4 = _time.perf_counter()
-        print(
+        gs.logger.info(
             f"[substep] preprocess={(_t1 - _t0) * 1000:.1f}ms  pre_coup={(_t2 - _t1) * 1000:.1f}ms  "
             f"couple={(_t3 - _t2) * 1000:.1f}ms  post_coup={(_t4 - _t3) * 1000:.1f}ms  "
             f"total={(_t4 - _t0) * 1000:.1f}ms"

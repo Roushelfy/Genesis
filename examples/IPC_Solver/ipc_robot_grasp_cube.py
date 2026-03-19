@@ -13,14 +13,12 @@ def main():
     parser.add_argument(
         "--coup_type",
         type=str,
-        default="two_way_soft_constraint",
+        default="external_articulation",
         choices=["two_way_soft_constraint", "external_articulation"],
     )
     parser.add_argument("--use-al", action="store_true", help="Use AL-IPC contact constitution")
     parser.add_argument("--abd", action="store_true", help="Use ABD rigid cube instead of FEM")
     args = parser.parse_args()
-
-    use_ext_art = args.coup_type == "external_articulation"
 
     coupler_options = None
     if not args.no_ipc:
@@ -61,7 +59,6 @@ def main():
     franka = scene.add_entity(
         gs.morphs.MJCF(
             file="xml/franka_emika_panda/panda_non_overlap.xml",
-            merge_fixed_links=use_ext_art,
         ),
         material=franka_material,
     )
@@ -98,32 +95,25 @@ def main():
 
     motors_dof, fingers_dof = slice(0, 7), slice(7, 9)
 
-    # ext_art merges hand into link7, so use link7 as EE with adjusted poses
-    if use_ext_art:
-        end_effector = franka.get_link("link7")
-        ee_quat = [0.0, 0.9238795, -0.3826834, 0.0]
-        ee_z_offset = 0.107
-    else:
-        end_effector = franka.get_link("hand")
-        ee_quat = [0.0, 1.0, 0.0, 0.0]
-        ee_z_offset = 0.0
+    end_effector = franka.get_link("hand")
+    ee_quat = [0.0, 1.0, 0.0, 0.0]
 
     franka.set_dofs_kp([4500.0, 4500.0, 3500.0, 3500.0, 2000.0, 2000.0, 2000.0, 500.0, 500.0])
 
-    qpos = franka.inverse_kinematics(link=end_effector, pos=[0.65, 0.0, 0.4 + ee_z_offset], quat=ee_quat)
+    qpos = franka.inverse_kinematics(link=end_effector, pos=[0.65, 0.0, 0.4], quat=ee_quat)
     qpos[fingers_dof] = 0.04
     franka.control_dofs_position(qpos)
     for _ in range(200 if "PYTEST_VERSION" not in os.environ else 1):
         scene.step()
 
     # Lower the grapper half way to grasping position
-    qpos = franka.inverse_kinematics(link=end_effector, pos=[0.65, 0.0, 0.25 + ee_z_offset], quat=ee_quat)
+    qpos = franka.inverse_kinematics(link=end_effector, pos=[0.65, 0.0, 0.25], quat=ee_quat)
     franka.control_dofs_position(qpos[motors_dof], dofs_idx_local=motors_dof)
     for _ in range(100 if "PYTEST_VERSION" not in os.environ else 1):
         scene.step()
 
     # Reach grasping position
-    qpos = franka.inverse_kinematics(link=end_effector, pos=[0.65, 0.0, 0.135 + ee_z_offset], quat=ee_quat)
+    qpos = franka.inverse_kinematics(link=end_effector, pos=[0.65, 0.0, 0.135], quat=ee_quat)
     franka.control_dofs_position(qpos[motors_dof], dofs_idx_local=motors_dof)
     for _ in range(50 if "PYTEST_VERSION" not in os.environ else 1):
         scene.step()
@@ -135,7 +125,7 @@ def main():
         scene.step()
 
     # Lift the cube
-    qpos = franka.inverse_kinematics(link=end_effector, pos=[0.65, 0.0, 0.3 + ee_z_offset], quat=ee_quat)
+    qpos = franka.inverse_kinematics(link=end_effector, pos=[0.65, 0.0, 0.3], quat=ee_quat)
     franka.control_dofs_position(qpos[motors_dof], dofs_idx_local=motors_dof)
     for _ in range(50 if "PYTEST_VERSION" not in os.environ else 1):
         scene.step()

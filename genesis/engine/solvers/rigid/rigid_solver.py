@@ -979,7 +979,7 @@ class RigidSolver(KinematicSolver):
         else:
             _t3 = _t2
             _t4 = _t2
-        print(
+        gs.logger.info(
             f"[constraint] eq={(_t1 - _t0) * 1000:.1f}ms  collision={(_t2 - _t1) * 1000:.1f}ms  "
             f"ineq={(_t3 - _t2) * 1000:.1f}ms  resolve={(_t4 - _t3) * 1000:.1f}ms  "
             f"total={(_t4 - _t0) * 1000:.1f}ms"
@@ -1223,7 +1223,7 @@ class RigidSolver(KinematicSolver):
             )
             torch.cuda.synchronize()
             _t4 = _time.perf_counter()
-            print(
+            gs.logger.info(
                 f"[rigid pre_coup] constraint={(_t1 - _t0) * 1000:.1f}ms  cache={(_t2 - _t1) * 1000:.1f}ms  "
                 f"predict={(_t3 - _t2) * 1000:.1f}ms  FK={(_t4 - _t3) * 1000:.1f}ms  "
                 f"total={(_t4 - _t0) * 1000:.1f}ms"
