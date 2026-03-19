@@ -13,6 +13,35 @@ import genesis.utils.geom as gu
 from uipc.core import Scene
 
 
+def find_abd_merge_target(link):
+    """Find the ABD merge target for a fixed-joint link.
+
+    Walks up the kinematic tree through FIXED joints until finding a link
+    that has a non-FIXED joint (or the root). Returns that ancestor link.
+    Used by external_articulation coupling so fixed-joint child bodies are
+    folded into their parent ABD body instead of floating freely.
+
+    Parameters
+    ----------
+    link : RigidLink
+        The link to find a merge target for.
+
+    Returns
+    -------
+    RigidLink
+        The ancestor link to merge into. Returns ``link`` itself if it
+        already has a non-FIXED joint or is the root.
+    """
+    entity = link.entity
+    while True:
+        if link.parent_idx < 0:
+            break
+        if any(joint.type != gs.JOINT_TYPE.FIXED for joint in link.joints):
+            break
+        link = entity.links[link.parent_idx - entity.link_start]
+    return link
+
+
 def compute_link_to_link_transform(from_link, to_link):
     """
     Compute the relative transform from from_link to to_link.

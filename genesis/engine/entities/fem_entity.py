@@ -427,6 +427,10 @@ class FEMEntity(Entity):
                     verts = np.asarray(mesh.verts, dtype=gs.np_float) + np.array(sample_pos, dtype=gs.np_float)
                     faces = np.asarray(mesh.faces, dtype=gs.np_int)
                     self._uvs = mesh.uvs.astype(gs.np_float, copy=False) if mesh.uvs is not None else None
+                    # Copy back the mesh's surface which may have been updated with
+                    # textures from the OBJ/glTF material (from_trimesh copies the
+                    # surface and updates the copy, so we need to propagate back).
+                    self._surface = mesh.surface
                 else:
                     tmesh = trimesh.util.concatenate([mesh.trimesh for mesh in meshes])
                     verts = np.asarray(tmesh.vertices, dtype=gs.np_float) + np.array(sample_pos, dtype=gs.np_float)

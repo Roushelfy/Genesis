@@ -430,10 +430,10 @@ def test_single_joint(n_envs, coup_type, joint_type, fixed, show_viewer):
             newton_semi_implicit_enable=False,
             restitution=0.0,
             ignore_end_effector_check=True,  # bypass two-way soft constraint check
-            _export_ipc_surface=True,
-            _export_pre_coupling_surface=True,
-            _export_post_coupling_surface=True,
-            _export_surface_dir="C:/Users/81946/Projects/GenesisFix/Output",
+            # _export_ipc_surface=True,
+            # _export_pre_coupling_surface=True,
+            # _export_post_coupling_surface=True,
+            # _export_surface_dir="C:/Users/81946/Projects/GenesisFix/Output",
         ),
         viewer_options=gs.options.ViewerOptions(
             camera_pos=(1.0, 1.0, 0.8),

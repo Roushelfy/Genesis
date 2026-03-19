@@ -16,6 +16,7 @@ import trimesh
 import genesis as gs
 import genesis.utils.geom as gu
 from genesis.engine.materials.FEM.cloth import Cloth
+from genesis.engine.materials.FEM.paper import Paper
 from genesis.options.solvers import IPCCouplerOptions, RigidOptions
 from genesis.repr_base import RBC
 from genesis.utils.mesh import are_meshes_overlapping
@@ -43,6 +44,7 @@ if TYPE_CHECKING or UIPC_AVAILABLE:
         AffineBodyPrismaticJoint,
         AffineBodyRevoluteJoint,
         DiscreteShellBending,
+        PlasticDiscreteShellBending,
         ElasticModuli,
         ElasticModuli2D,
         ExternalArticulationConstraint,
@@ -57,6 +59,8 @@ if TYPE_CHECKING or UIPC_AVAILABLE:
     from .data import COUPLING_TYPE, ABDLinkData, ArticulatedEntityData
     from .utils import (
         build_ipc_scene_config,
+        compute_link_to_link_transform,
+        find_abd_merge_target,
         read_ipc_geometry_metadata,
     )
 
@@ -87,6 +91,71 @@ RESTITUTION_CONTACT_THRESHOLD = 1e-7
 COM_AABB_TOL = 2e-3
 IPC_SURFACE_PREFIX = "ipc_surface"
 GENESIS_SURFACE_PREFIX = "genesis_surface"
+
+
+def _combine_inertials(
+    parent_link: "RigidLink",
+    children: "list[RigidLink]",
+) -> "tuple[float, np.ndarray, np.ndarray]":
+    """Combine inertial properties of a parent link and its merged children.
+
+    Uses the parallel axis theorem to shift each body's inertia tensor to the
+    parent link's origin, then sums mass, computes combined COM, and shifts
+    the total inertia tensor to the combined COM.
+
+    Parameters
+    ----------
+    parent_link : RigidLink
+        The target link whose frame defines the output.
+    children : list[RigidLink]
+        Fixed-joint child links being merged into *parent_link*.
+
+    Returns
+    -------
+    tuple[float, np.ndarray, np.ndarray]
+        (total_mass, combined_com, combined_inertia) in parent-local frame.
+    """
+    total_mass = float(parent_link.inertial_mass)
+    # Weighted COM accumulator (in parent-local frame)
+    weighted_com = total_mass * np.asarray(parent_link.inertial_pos, dtype=np.float64)
+    # Inertia at parent-link origin (parallel axis from parent COM)
+    I_origin = _shift_inertia_to_origin(
+        np.asarray(parent_link.inertial_i, dtype=np.float64),
+        np.asarray(parent_link.inertial_pos, dtype=np.float64),
+        total_mass,
+    )
+
+    for child in children:
+        child_mass = child.inertial_mass
+        if child_mass is None or float(child_mass) < gs.EPS:
+            continue
+        m = float(child_mass)
+        child_com_local = np.asarray(child.inertial_pos, dtype=np.float64)
+        child_I_local = np.asarray(child.inertial_i, dtype=np.float64)
+
+        # Transform child COM and inertia into parent frame
+        rel_pos, rel_quat = compute_link_to_link_transform(child, parent_link)
+        rel_pos = np.asarray(rel_pos, dtype=np.float64)
+        R_child_to_parent = gu.quat_to_R(np.asarray(rel_quat, dtype=np.float64))
+
+        com_in_parent = R_child_to_parent @ child_com_local + rel_pos
+        I_in_parent = R_child_to_parent @ child_I_local @ R_child_to_parent.T
+
+        total_mass += m
+        weighted_com += m * com_in_parent
+        I_origin += _shift_inertia_to_origin(I_in_parent, com_in_parent, m)
+
+    combined_com = weighted_com / total_mass
+    # Shift accumulated inertia from origin to combined COM (reverse parallel axis)
+    d = combined_com
+    combined_I = I_origin - total_mass * (np.dot(d, d) * np.eye(3) - np.outer(d, d))
+    return total_mass, combined_com, combined_I
+
+
+def _shift_inertia_to_origin(I_com: np.ndarray, com: np.ndarray, mass: float) -> np.ndarray:
+    """Shift inertia tensor from COM to the frame origin via parallel axis theorem."""
+    d = com
+    return I_com + mass * (np.dot(d, d) * np.eye(3) - np.outer(d, d))
 
 
 def _link_is_fixed_for_ipc(link: "RigidLink") -> bool:
@@ -191,12 +260,17 @@ class _NewtonIterCounter:
         for fd in self._pipe_fds:
             os.close(fd)
 
-        # Process captured data
+        # Process captured data — extract counters and forward errors/warnings.
+        # When an error or warning is detected, dump ALL captured output so
+        # stack traces and surrounding context are not lost.
+        has_error = False
+        all_lines: list[str] = []
         for chunks in self._captured:
             if not chunks:
                 continue
             text = b"".join(chunks).decode("utf-8", errors="replace")
             for line in text.splitlines():
+                all_lines.append(line)
                 m = self._CONVERGED_RE.search(line)
                 if m:
                     self.newton_iters += int(m.group(1))
@@ -211,9 +285,10 @@ class _NewtonIterCounter:
                 m_nmax = self._NEWTON_MAX_RE.search(line)
                 if m_nmax:
                     self.newton_max_hit = True
-                # Forward warnings and errors to real stderr
                 if "[error]" in line or "[warning]" in line:
-                    sys.stderr.write(line + "\n")
+                    has_error = True
+        if has_error:
+            gs.logger.error("[IPC] libuipc log:\n" + "\n".join(all_lines))
 
         self._threads = []
         self._active = False
@@ -294,6 +369,7 @@ class IPCCoupler(RBC):
         self._ipc_stc: SoftTransformConstraint | None = None
         self._ipc_nks: StrainLimitingBaraffWitkinShell | None = None
         self._ipc_dsb: DiscreteShellBending | None = None
+        self._ipc_pdsb: PlasticDiscreteShellBending | None = None
         self._ipc_eac: ExternalArticulationConstraint | None = None
 
         # ==== IPC Contact Elements ====
@@ -699,11 +775,26 @@ class IPCCoupler(RBC):
                 )
 
                 if entity.material.bending_stiffness is not None:
-                    if self._ipc_dsb is None:
-                        self._ipc_dsb = DiscreteShellBending()
-                        self._ipc_constitution_tabular.insert(self._ipc_dsb)
+                    is_paper = isinstance(entity.material, Paper)
+                    if is_paper:
+                        # Plastic bending for Paper material
+                        if self._ipc_pdsb is None:
+                            self._ipc_pdsb = PlasticDiscreteShellBending()
+                            self._ipc_constitution_tabular.insert(self._ipc_pdsb)
 
-                    self._ipc_dsb.apply_to(mesh, bending_stiffness=entity.material.bending_stiffness)
+                        self._ipc_pdsb.apply_to(
+                            mesh,
+                            bending_stiffness=entity.material.bending_stiffness,
+                            yield_threshold=entity.material.yield_threshold,
+                            hardening_modulus=entity.material.hardening_modulus,
+                        )
+                    else:
+                        # Elastic bending for Cloth material
+                        if self._ipc_dsb is None:
+                            self._ipc_dsb = DiscreteShellBending()
+                            self._ipc_constitution_tabular.insert(self._ipc_dsb)
+
+                        self._ipc_dsb.apply_to(mesh, bending_stiffness=entity.material.bending_stiffness)
             else:
                 if self._ipc_stk is None:
                     self._ipc_stk = StableNeoHookean()
@@ -742,15 +833,34 @@ class IPCCoupler(RBC):
         self._dof_to_abd_link = [None] * self.rigid_solver.n_dofs
         self._link_to_abd_link = [None] * self.rigid_solver.n_links
 
+        # ========== Build fixed-joint merge map for ext_art entities ==========
+        # For external_articulation, fixed-joint child links must be folded into
+        # their parent ABD body (IPC has no FixedJoint constraint).  Build a map
+        # from each fixed-joint link to its merge target and a reverse map listing
+        # all children that merge into each target.
+        abd_merge_target: dict["RigidLink", "RigidLink"] = {}
+        abd_merge_children: dict["RigidLink", list["RigidLink"]] = {}
+        for link in self.rigid_solver.links:
+            entity = link.entity
+            if self._coup_type_by_entity.get(entity) != COUPLING_TYPE.EXTERNAL_ARTICULATION:
+                continue
+            target = find_abd_merge_target(link)
+            if target is not link:
+                abd_merge_target[link] = target
+                abd_merge_children.setdefault(target, []).append(link)
+                gs.logger.info(f"[IPC] ext_art: merging link '{link.name}' into '{target.name}'")
+
         # ========== Collect selected links (env-independent) ==========
-        # Each selected link becomes its own ABD body. Fixed-joint merging is handled
-        # at the morph/parser level (merge_fixed_links option on MJCF/URDF).
         selected_links: list["RigidLink"] = []
         for link in self.rigid_solver.links:
             entity = link.entity
 
             coup_type = self._coup_type_by_entity.get(entity)
             if coup_type is None:
+                continue
+
+            # Skip links that are merged into a parent for ext_art
+            if link in abd_merge_target:
                 continue
 
             # Link filter for two_way_soft_constraint
@@ -771,45 +881,59 @@ class IPCCoupler(RBC):
             i_e = entity._idx_in_solver
 
             # ---- Collect geom meshes (env-independent local-frame geometry) ----
+            # For ext_art links with merged children, also include children's
+            # geoms transformed from child-local frame to this link's local frame.
+            merged_children = abd_merge_children.get(link, [])
+            geom_sources: list[tuple[list, np.ndarray, np.ndarray]] = [
+                (link.geoms, np.zeros(3, dtype=gs.np_float), np.array([1, 0, 0, 0], dtype=gs.np_float))
+            ]
+            for child in merged_children:
+                child_pos, child_quat = compute_link_to_link_transform(child, link)
+                geom_sources.append((child.geoms, child_pos, child_quat))
+
             meshes = []
-            for geom in link.geoms:
-                if geom.type == gs.GEOM_TYPE.PLANE:
-                    local_normal = geom.data[:3].astype(np.float64, copy=False)
-                    normal = gu.transform_by_quat(local_normal, geom.init_quat)
-                    normal = normal / np.linalg.norm(normal)
-                    height = np.dot(geom.init_pos, normal)
-                    plane_geom = uipc.geometry.ground(height, normal)
+            for geoms, frame_pos, frame_quat in geom_sources:
+                for geom in geoms:
+                    if geom.type == gs.GEOM_TYPE.PLANE:
+                        local_normal = geom.data[:3].astype(np.float64, copy=False)
+                        normal = gu.transform_by_quat(local_normal, geom.init_quat)
+                        normal = normal / np.linalg.norm(normal)
+                        height = np.dot(geom.init_pos, normal)
+                        plane_geom = uipc.geometry.ground(height, normal)
 
-                    if entity not in self._ipc_grounds_contact:
-                        plane_contact = self._ipc_contact_tabular.create(f"ground_contact_{i_e}")
-                        self._ipc_grounds_contact[entity] = plane_contact
-                    self._ipc_grounds_contact[entity].apply_to(plane_geom)
+                        if entity not in self._ipc_grounds_contact:
+                            plane_contact = self._ipc_contact_tabular.create(f"ground_contact_{i_e}")
+                            self._ipc_grounds_contact[entity] = plane_contact
+                        self._ipc_grounds_contact[entity].apply_to(plane_geom)
 
-                    for env_idx in range(self._B):
-                        plane_obj = self._ipc_objects.create(f"rigid_plane_{geom.idx}_{env_idx}")
-                        plane_geom_slot, _ = plane_obj.geometries().create(plane_geom)
-                        slot_geom = plane_geom_slot.geometry()
-                        if self._B > 1:
-                            self._ipc_subscenes[env_idx].apply_to(slot_geom)
-                        slot_meta = slot_geom.meta()
-                        slot_meta.create("solver_type", "rigid")
-                        slot_meta.create("entity_name", str(entity.name))
-                        slot_meta.create("link_name", str(link.name))
-                        slot_meta.create("link_idx", str(link.idx))
-                        slot_meta.create("env_idx", str(env_idx))
-                elif geom.n_verts:
-                    # Apply geom transform to vertices
-                    geom_verts = gu.transform_by_trans_quat(geom.init_verts, geom.init_pos, geom.init_quat)
+                        for env_idx in range(self._B):
+                            plane_obj = self._ipc_objects.create(f"rigid_plane_{geom.idx}_{env_idx}")
+                            plane_geom_slot, _ = plane_obj.geometries().create(plane_geom)
+                            slot_geom = plane_geom_slot.geometry()
+                            if self._B > 1:
+                                self._ipc_subscenes[env_idx].apply_to(slot_geom)
+                            slot_meta = slot_geom.meta()
+                            slot_meta.create("solver_type", "rigid")
+                            slot_meta.create("entity_name", str(entity.name))
+                            slot_meta.create("link_name", str(link.name))
+                            slot_meta.create("link_idx", str(link.idx))
+                            slot_meta.create("env_idx", str(env_idx))
+                    elif geom.n_verts:
+                        # Apply geom transform to vertices (geom-local → link-local)
+                        geom_verts = gu.transform_by_trans_quat(geom.init_verts, geom.init_pos, geom.init_quat)
+                        # If from a merged child, transform child-local → parent-local
+                        if frame_pos is not None and np.any(frame_pos) or np.any(frame_quat[1:]):
+                            geom_verts = gu.transform_by_trans_quat(geom_verts, frame_pos, frame_quat)
 
-                    try:
-                        mesh = uipc.geometry.trimesh(
-                            geom_verts.astype(np.float64, copy=False),
-                            geom.init_faces.astype(np.int32, copy=False),
-                        )
-                    except RuntimeError as e:
-                        gs.raise_exception_from(f"Failed to process geom {geom.idx} for IPC.", e)
+                        try:
+                            mesh = uipc.geometry.trimesh(
+                                geom_verts.astype(np.float64, copy=False),
+                                geom.init_faces.astype(np.int32, copy=False),
+                            )
+                        except RuntimeError as e:
+                            gs.raise_exception_from(f"Failed to process geom {geom.idx} for IPC.", e)
 
-                    meshes.append(mesh)
+                        meshes.append(mesh)
 
             if not meshes:
                 continue
@@ -848,9 +972,14 @@ class IPCCoupler(RBC):
             if self._ipc_abd is None:
                 self._ipc_abd = AffineBodyConstitution()
                 self._ipc_constitution_tabular.insert(self._ipc_abd)
+
+            # Combine inertial properties from the link and any merged children.
             link_mass = link.inertial_mass
             link_com = link.inertial_pos
             link_inertia = link.inertial_i
+            if merged_children and link_mass is not None:
+                link_mass, link_com, link_inertia = _combine_inertials(link, merged_children)
+
             rho = float(entity.material.rho)
             use_rigid_quantity = (
                 link_mass is not None
@@ -956,6 +1085,9 @@ class IPCCoupler(RBC):
             if link.dof_start >= 0:
                 for di in range(link.dof_start, link.dof_end):
                     self._dof_to_abd_link[di] = link
+            # Merged children also map to this link's ABD body
+            for child in merged_children:
+                self._link_to_abd_link[child.idx] = link
 
     def _add_articulation_entities_to_ipc(self) -> None:
         """
@@ -998,6 +1130,15 @@ class IPCCoupler(RBC):
 
                 child_link = joint.link
                 parent_link = entity.links[max(joint.link.parent_idx, 0) - entity.link_start]
+                # Remap merged links to their ABD merge target
+                if parent_link not in self._abd_data_by_link:
+                    abd_target = self._link_to_abd_link[parent_link.idx]
+                    if abd_target is not None:
+                        parent_link = abd_target
+                if child_link not in self._abd_data_by_link:
+                    abd_target = self._link_to_abd_link[child_link.idx]
+                    if abd_target is not None:
+                        child_link = abd_target
                 if parent_link not in self._abd_data_by_link or child_link not in self._abd_data_by_link:
                     gs.raise_exception(
                         "Rigid link has no collision geometry. Coupling type 'external_articulation' is not supported."
@@ -1106,6 +1247,8 @@ class IPCCoupler(RBC):
                 )
 
         # ---- ABD link × ABD link pairs (with self-collision filtering) ----
+        _n_enabled = 0
+        _n_disabled = 0
         for i, (elem_i, link_i, friction_i, resistance_i) in enumerate(abd_link_infos):
             for elem_j, link_j, friction_j, resistance_j in abd_link_infos[i:]:
                 friction_ij = geometric_mean(friction_i, friction_j)
@@ -1113,20 +1256,26 @@ class IPCCoupler(RBC):
 
                 if not self.options.enable_rigid_rigid_contact:
                     self._ipc_contact_tabular.insert(elem_i, elem_j, friction_ij, resistance_ij, False)
+                    _n_disabled += 1
                     continue
 
                 # Fixed-fixed pairs never collide (mirrors RigidSolver collider)
                 if _link_is_fixed_for_ipc(link_i) and _link_is_fixed_for_ipc(link_j):
                     self._ipc_contact_tabular.insert(elem_i, elem_j, friction_ij, resistance_ij, False)
+                    _n_disabled += 1
                     continue
 
                 # Same-entity self-collision filtering (mirrors RigidSolver collider)
                 if link_i.entity is link_j.entity and link_i is not link_j:
                     if not enable_self_collision:
                         self._ipc_contact_tabular.insert(elem_i, elem_j, friction_ij, resistance_ij, False)
+                        _n_disabled += 1
+                        gs.logger.debug(f"[IPC CONTACT] DISABLED self-collision: {link_i.name} × {link_j.name}")
                         continue
                     if not enable_adjacent_collision and are_links_adjacent(link_i, link_j):
                         self._ipc_contact_tabular.insert(elem_i, elem_j, friction_ij, resistance_ij, False)
+                        _n_disabled += 1
+                        gs.logger.debug(f"[IPC CONTACT] DISABLED adjacent: {link_i.name} × {link_j.name}")
                         continue
                     mesh_i = self._abd_merged_meshes.get(link_i)
                     mesh_j = self._abd_merged_meshes.get(link_j)
@@ -1137,9 +1286,15 @@ class IPCCoupler(RBC):
                         and are_meshes_overlapping(mesh_i, mesh_j)
                     ):
                         self._ipc_contact_tabular.insert(elem_i, elem_j, friction_ij, resistance_ij, False)
+                        _n_disabled += 1
+                        gs.logger.debug(f"[IPC CONTACT] DISABLED overlapping: {link_i.name} × {link_j.name}")
                         continue
 
+                gs.logger.debug(f"[IPC CONTACT] ENABLED: {link_i.name} × {link_j.name}")
+                _n_enabled += 1
                 self._ipc_contact_tabular.insert(elem_i, elem_j, friction_ij, resistance_ij, True)
+
+        gs.logger.info(f"[IPC CONTACT] ABD×ABD pairs: {_n_enabled} enabled, {_n_disabled} disabled")
 
         # ---- All contact elements (for ground and no-collision registration) ----
         # is_abd: whether the element is an ABD rigid link
@@ -1227,8 +1382,8 @@ class IPCCoupler(RBC):
         try:
             if not ps.is_initialized():
                 ps.init()
+            ps.set_up_dir("z_up")
             self._ipc_gui = SceneGUI(self._ipc_scene, "split")
-            # Also sets up_dir and ground_plane_height from scene
             self._ipc_gui.register()
 
             # Match polyscope camera to Genesis viewer options
@@ -1286,14 +1441,34 @@ class IPCCoupler(RBC):
         self._pre_advance_external_articulation()
         _t2 = _time.perf_counter()
 
+        # Debug: dump IPC body info on first frame
+        if self._ipc_frame == 0 and self.options.verbose_ipc_log:
+            gs.logger.info("[IPC DEBUG] === IPC bodies at frame 0, before advance ===")
+            for link, abd_data in self._abd_data_by_link.items():
+                entity = link.entity
+                coup_type = self._coup_type_by_entity.get(entity, "?")
+                n_verts = abd_data.n_vertices if hasattr(abd_data, "n_vertices") else "?"
+                mass = link.inertial_mass if hasattr(link, "inertial_mass") else "?"
+                gs.logger.info(
+                    f"[IPC DEBUG]   link={link.name}, entity={entity.name}, "
+                    f"coup={coup_type}, verts={n_verts}, mass={mass}, "
+                    f"n_geoms={len(link.geoms)}"
+                )
+            gs.logger.info(f"[IPC DEBUG] Total ABD links: {len(self._abd_data_by_link)}")
+            gs.logger.info(f"[IPC DEBUG] Coupling types: {set(self._coup_type_by_entity.values())}")
+
         # Step 3: IPC advance + retrieve (common)
-        self._newton_counter.start()
+        _verbose = self.options.verbose_ipc_log
+        if not _verbose:
+            self._newton_counter.start()
         try:
             self._ipc_world.advance()
         except Exception as e:
-            self._newton_counter.stop()
+            if not _verbose:
+                self._newton_counter.stop()
             gs.raise_exception(f"[IPC] advance() failed at frame {self._ipc_frame + 1}: {e}")
-        self._newton_counter.stop()
+        if not _verbose:
+            self._newton_counter.stop()
         _n_newton, _n_ls, _adaptive_mu, _ls_max, _newton_max = self._newton_counter.reset()
         _t3 = _time.perf_counter()
         # Check world validity before retrieve — a failed solver leaves corrupted GPU state
@@ -1323,7 +1498,7 @@ class IPCCoupler(RBC):
         _mu_str = f"  mu={_adaptive_mu:.2e}" if _adaptive_mu is not None else ""
         _ls_str = f"  ls_maxout={_ls_max}" if _ls_max > 0 else ""
         _nmax_str = "  NEWTON_MAXOUT" if _newton_max else ""
-        print(
+        gs.logger.info(
             f"[IPC] frame {self._ipc_frame:4d}  newton={_n_newton:2d}  ls={_n_ls:3d}  "
             f"advance={(_t3 - _t2) * 1000:.0f}ms  total={(_t6 - _t0) * 1000:.0f}ms"
             f"{_mu_str}{_ls_str}{_nmax_str}"
@@ -1421,7 +1596,6 @@ class IPCCoupler(RBC):
             envs_set = set(int(x) for x in envs_idx) if hasattr(envs_idx, "__iter__") else {int(envs_idx)}
             assert envs_set == all_envs, f"IPC coupler only supports full reset, got envs_idx={envs_idx}"
 
-        gs.logger.debug("Resetting IPC coupler state")
         self._abd_updated_links.clear()
         self._ipc_world.recover(0)
         self._ipc_world.retrieve()
@@ -1490,11 +1664,11 @@ class IPCCoupler(RBC):
         links_state reflects actual poses (including any set_qpos changes) before
         prediction overwrites them. Only updated (link, env) pairs are synced.
 
-        For external_articulation entities, we also write the new transform to
-        the ``ref_dof_prev`` attribute on each dirty link's IPC geometry. The
-        ExternalArticulationConstraint reads ``ref_dof_prev`` every step and uses
-        it instead of its stale internal ``q_prevs``, avoiding a huge
-        delta_theta that would blow up Newton iterations after a teleport.
+        For external_articulation entities, we also write the teleported
+        transform to each dirty link's slot geometry. This ensures the
+        animator callback (which runs inside advance()) reads the teleported
+        pose when computing ``ref_dof_prev``, rather than the stale
+        previous-frame pose from the slot geometry.
         """
         if not self._abd_updated_links or self._abd_state_feature is None:
             return
@@ -1580,11 +1754,9 @@ class IPCCoupler(RBC):
                 raise AttributeError("SceneIO has no supported surface export method.")
 
             self._debug_surface_export_idx += 1
-            if gs.logger is not None:
-                gs.logger.debug(f"IPC debug surface exported: {output_path}")
         except Exception as exc:
-            if gs.logger is not None:
-                gs.logger.warning(f"Failed to export IPC debug surface snapshot: {exc}")
+            assert gs.logger is not None
+            gs.logger.warning(f"Failed to export IPC debug surface snapshot: {exc}")
 
     def _export_genesis_surface(self, phase: str):
         """Export current Genesis rigid geometry as one combined OBJ snapshot."""
@@ -1641,11 +1813,9 @@ class IPCCoupler(RBC):
                 self._debug_genesis_surface_export_after_genesis_before_ipc_idx += 1
             else:
                 self._debug_genesis_surface_export_after_ipc_correction_idx += 1
-            if gs.logger is not None:
-                gs.logger.debug(f"Genesis debug surface exported: {output_path}")
         except Exception as exc:
-            if gs.logger is not None:
-                gs.logger.warning(f"Failed to export Genesis debug surface snapshot: {exc}")
+            assert gs.logger is not None
+            gs.logger.warning(f"Failed to export Genesis debug surface snapshot: {exc}")
 
     @property
     def has_any_rigid_coupling(self) -> bool:
@@ -1810,7 +1980,26 @@ class IPCCoupler(RBC):
                     entity_qpos[..., ad.joints_qs_idx_local] - entity_qpos_prev[..., ad.joints_qs_idx_local]
                 )
                 ad.prev_qpos[:] = entity_qpos_prev
-                ad.mass_matrix[:] = mass_matrix[:, ad.dof_slice, ad.dof_slice]
+                entity_mass = mass_matrix[:, ad.dof_slice, ad.dof_slice]
+                ad.mass_matrix[:] = entity_mass
+
+                # Debug: check mass matrix for NaN/Inf/singularity
+                if self.options.verbose_ipc_log:
+                    import numpy as _np
+
+                    for env_idx in range(self._B):
+                        M = entity_mass[env_idx]
+                        has_nan = _np.any(_np.isnan(M))
+                        has_inf = _np.any(_np.isinf(M))
+                        diag = _np.diag(M)
+                        min_diag = _np.min(diag)
+                        max_diag = _np.max(diag)
+                        det = _np.linalg.det(M) if M.shape[0] <= 20 else float("nan")
+                        gs.logger.info(
+                            f"[IPC DEBUG] mass_matrix env={env_idx}: shape={M.shape}, "
+                            f"nan={has_nan}, inf={has_inf}, diag_range=[{min_diag:.6e}, {max_diag:.6e}], "
+                            f"det={det:.6e}, delta_theta={ad.delta_theta_tilde[env_idx]}"
+                        )
 
         # Store transforms for all rigid links
         links_pos = qd_to_numpy(self.rigid_solver.links_state.pos, transpose=True)

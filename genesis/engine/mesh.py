@@ -309,10 +309,14 @@ class Mesh(RBC):
                 opacity_texture = color_texture.check_dim(3)
             roughness_texture = mu.create_texture(None, roughness_factor, "linear")
 
+            # Force update when mesh has its own texture (image from OBJ/glTF material),
+            # otherwise the surface's pre-existing default ColorTexture takes priority.
+            has_mesh_texture = color_image is not None
             surface.update_texture(
                 color_texture=color_texture,
                 opacity_texture=opacity_texture,
                 roughness_texture=roughness_texture,
+                force=has_mesh_texture,
             )
             mesh.visual = mu.surface_uvs_to_trimesh_visual(surface, uvs, len(mesh.vertices))
 

@@ -19,7 +19,7 @@ def main():
     parser.add_argument(
         "--coup_type",
         type=str,
-        default="two_way_soft_constraint",
+        default="external_articulation",
         choices=["two_way_soft_constraint", "external_articulation"],
     )
     parser.add_argument("--use-al", action="store_true", help="Use AL-IPC contact constitution")
@@ -59,7 +59,6 @@ def main():
     )
 
     # Franka robot
-    use_ext_art = args.coup_type == "external_articulation"
     franka_material_kwargs = dict(
         coup_type=args.coup_type,
     )
@@ -70,7 +69,6 @@ def main():
             file="xml/franka_emika_panda/panda_non_overlap.xml",
             pos=(0.0, 0.0, 0.005),
             convexify=True,
-            merge_fixed_links=use_ext_art,
         ),
         material=gs.materials.Rigid(**franka_material_kwargs),
     )
@@ -148,22 +146,12 @@ def main():
 
     scene.build()
 
-    # ext_art merges hand into link7 — use link7 as EE with adjusted pose
-    if use_ext_art:
-        teleop = RobotTeleop.franka(
-            scene=scene,
-            robot=franka,
-            ee_link_name="link7",
-            init_pos=(0.5, 0.0, 0.707),
-            init_euler=(180.0, 0.0, 135.0),
-        )
-    else:
-        teleop = RobotTeleop.franka(
-            scene=scene,
-            robot=franka,
-            init_pos=(0.5, 0.0, 0.6),
-            init_euler=(0.0, 180.0, 0.0),
-        )
+    teleop = RobotTeleop.franka(
+        scene=scene,
+        robot=franka,
+        init_pos=(0.5, 0.0, 0.6),
+        init_euler=(0.0, 180.0, 0.0),
+    )
     teleop.setup()
     teleop.run()
 

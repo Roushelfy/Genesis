@@ -354,6 +354,9 @@ class IPCCouplerOptions(BaseCouplerOptions):
     ignore_end_effector_check: bool = False
     before_ipc_world_init: Optional[IPCBeforeWorldInitCallback] = None
 
+    # Verbose IPC log — bypass the digest and print full libuipc info log
+    verbose_ipc_log: bool = False
+
     # Internal export options
     _export_ipc_surface: bool = False
     _export_pre_coupling_surface: bool = False
