@@ -120,7 +120,7 @@ def load_rigid_ipc_scene(
         ipc_opts = {}
         # libuipc sample overrides JSON d_hat (1e-5) to 2e-4 for performance
         ipc_opts["contact_d_hat"] = 2e-4
-        ipc_opts["newton_semi_implicit_enable"] = True
+        ipc_opts["newton_semi_implicit_enable"] = False
         ipc_opts["linear_system_tolerance"] = 1e-4
         scene_kwargs["coupler_options"] = gs.options.IPCCouplerOptions(**ipc_opts)
 

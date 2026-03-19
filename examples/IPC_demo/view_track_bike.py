@@ -30,6 +30,7 @@ BIKE_URDF = ASSET_PATH / "track_bike.urdf"
 LINK_MESH = ASSET_PATH / "link.obj"
 PIN_MESH = ASSET_PATH / "pin.obj"
 BARRING_MESH = ASSET_PATH / "barring.obj"
+DEFAULT_VIDEO_PATH = REPO_ROOT / "outputs" / "track_bike.mp4"
 
 # Chain geometry constants (from chain_pully.py, in mesh units)
 LINK_HOLE_CENTER = 2.45905
@@ -348,9 +349,12 @@ def main():
         "--motor", choices=["front", "rear", "none"], default="rear", help="Which sprocket to apply motor to"
     )
     parser.add_argument("--steps", type=int, default=600, help="Number of sim steps")
-    parser.add_argument("--video", type=str, default="./data/track_bike.mp4", help="Video output path")
+    parser.add_argument("--video", type=str, default=str(DEFAULT_VIDEO_PATH), help="Video output path")
     parser.add_argument("--use-al", action="store_true", help="Use AL-IPC contact constitution")
     args = parser.parse_args()
+    video_path = Path(args.video)
+    video_path.parent.mkdir(parents=True, exist_ok=True)
+    first_frame_path = video_path.parent / "track_bike_first_frame.png"
 
     gs.init(backend=gs.gpu)
 
@@ -593,14 +597,14 @@ def main():
         rgb, _, _, _ = cam.render(rgb=True)
         video_frames.append(rgb)
         if not first_frame_saved:
-            imageio.imwrite("track_bike_first_frame.png", rgb)
-            print("Saved first frame to track_bike_first_frame.png")
+            imageio.imwrite(str(first_frame_path), rgb)
+            print(f"Saved first frame to {first_frame_path}")
             first_frame_saved = True
 
         # Flush video every 10 steps so we can watch progress mid-simulation
         if (step_i + 1) % 10 == 0 or step_i == args.steps - 1:
-            imageio.mimwrite(args.video, video_frames, fps=60)
-            print(f"  Saved video ({step_i + 1}/{args.steps} frames) to {args.video}")
+            imageio.mimwrite(str(video_path), video_frames, fps=60)
+            print(f"  Saved video ({step_i + 1}/{args.steps} frames) to {video_path}")
 
 
 if __name__ == "__main__":
