@@ -64,13 +64,13 @@ def main():
     config["newton"]["transrate_tol"] = 10
     config["newton"]["min_iter"] = 2
     print("Config:", config)
-    if args.use_al:
-        config["contact"]["al-ipc"]["toi_threshold"] = 0.1
-        # Match Genesis auto mu_scale: corrected for box+ribbon mass ratio
-        # box mass=19.17, ribbon max vertex mass=2.82e-6, ratio=6.8M
-        # mu_scale = default * target/actual = 5e6 * 2.82e-6 / 19.17 = 0.736
-        if not args.no_box and not args.no_ribbon:
-            config["contact"]["al-ipc"]["mu_scale"] = 0.7356699607168192
+    # if args.use_al:
+    #     config["contact"]["al-ipc"]["toi_threshold"] = 0.1
+    #     # Match Genesis auto mu_scale: corrected for box+ribbon mass ratio
+    #     # box mass=19.17, ribbon max vertex mass=2.82e-6, ratio=6.8M
+    #     # mu_scale = default * target/actual = 5e6 * 2.82e-6 / 19.17 = 0.736
+    #     if not args.no_box and not args.no_ribbon:
+    #         config["contact"]["al-ipc"]["mu_scale"] = 0.7356699607168192
     print("Config:", config)
     scene = Scene(config)
 
