@@ -122,7 +122,8 @@ def build_ipc_scene_config(options, simulator):
     _set_if_not_none(config, ["contact", "constitution"], options.contact_constitution)
 
     # AL-IPC options (only effective when contact_constitution='al-ipc')
-    _set_if_not_none(config, ["contact", "al-ipc", "mu_scale"], options.al_ipc_mu_scale)
+    _set_if_not_none(config, ["contact", "al-ipc", "mu_scale_fem"], options.al_ipc_mu_scale_fem)
+    _set_if_not_none(config, ["contact", "al-ipc", "mu_scale_abd"], options.al_ipc_mu_scale_abd)
     _set_if_not_none(config, ["contact", "al-ipc", "toi_threshold"], options.al_ipc_toi_threshold)
     _set_if_not_none(config, ["contact", "al-ipc", "decay_factor"], options.al_ipc_decay_factor)
 

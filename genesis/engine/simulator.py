@@ -325,6 +325,7 @@ class Simulator(RBC):
         _t1 = _time.perf_counter()
         self.substep_pre_coupling(f)
         _t2 = _time.perf_counter()
+        self._log_gpu_memory("pre_coup")
         self._coupler.couple(f)
         _t3 = _time.perf_counter()
         self.substep_post_coupling(f)
@@ -339,6 +340,20 @@ class Simulator(RBC):
         self.substep_post_coupling_grad(f)
         self._coupler.couple_grad(f)
         self.substep_pre_coupling_grad(f)
+
+    def _log_gpu_memory(self, label):
+        import torch
+
+        if torch.cuda.is_available():
+            alloc = torch.cuda.memory_allocated() / (1024**2)
+            reserved = torch.cuda.memory_reserved() / (1024**2)
+            free, total = torch.cuda.mem_get_info()
+            free_mb = free / (1024**2)
+            total_mb = total / (1024**2)
+            gs.logger.info(
+                f"[GPU mem @ {label}] allocated={alloc:.0f}MB  reserved={reserved:.0f}MB  "
+                f"free={free_mb:.0f}MB  total={total_mb:.0f}MB"
+            )
 
     # -------------- pre coupling --------------
     def substep_pre_coupling(self, f):

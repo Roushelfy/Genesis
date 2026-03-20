@@ -550,6 +550,8 @@ class FileMorph(Morph):
     decimate: bool = True
     decimate_face_num: int = 500
     decimate_aggressiveness: int = 2
+    no_decimate_links: List[str] = []
+    no_convexify_links: List[str] = []
     convexify: Optional[bool] = None
     decompose_nonconvex: Optional[bool] = None
     decompose_object_error_threshold: float = 0.15

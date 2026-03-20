@@ -36,13 +36,24 @@ DEFAULT_VIDEO_PATH = REPO_ROOT / "outputs" / "track_bike.mp4"
 LINK_HOLE_CENTER = 2.45905
 LINK_WIDTH = 2 * LINK_HOLE_CENTER
 LINK_Z_OFFSETS = [0.763387, 0.940965]
+RADIUS_FRONT = 15.719135251027335
+RADIUS_REAR = 6.426657137752367
 
+# Extra scale applied to sprocket meshes in URDF (baked into mesh scale="1.02 1.02 1.02")
+SPROCKET_SCALE = 0.985
 # Scale: same as the sprocket scale in build_track_bike_urdf.py
-CHAIN_SCALE = 0.005597
+CHAIN_SCALE = 0.005597 * SPROCKET_SCALE
+BIKE_POS = (0, 0, 0.002)
 
 # Sprocket positions in Y-up mesh coords (from build_track_bike_urdf.py)
 FRONT_CENTER_YUP = np.array([-0.10925, 0.31893, 0.04541])
 REAR_CENTER_YUP = np.array([-0.53711, 0.36663, 0.04541])
+
+
+def get_camera_pose(bike_pos):
+    camera_pos = (bike_pos[0], bike_pos[1] - 1.2, 0.6)
+    camera_lookat = (bike_pos[0], bike_pos[1], 0.35)
+    return camera_pos, camera_lookat
 
 
 def _solve_chain_radii(front_xy, rear_xy, link_w, n_front_arc, n_rear_arc, n_top, n_bot):
@@ -110,13 +121,14 @@ def generate_chain_path():
     rear_xy = REAR_CENTER_YUP[:2]
 
     # Target: 46 segments (even), split as 14 front arc + 13 top + 3 rear arc + 16 bottom
-    n_front_arc = 12
+    n_front_arc = 11
+    # n_front_arc = 11    # We wan to make it 11.
     n_rear_arc = 4
-    n_top = 14
+    n_top = 15
     n_bot = 16
 
-    rf = 0.08798
-    rr = 0.03597
+    rf = RADIUS_FRONT * CHAIN_SCALE
+    rr = RADIUS_REAR * CHAIN_SCALE
     # rf, rr = _solve_chain_radii(front_xy, rear_xy, link_w, n_front_arc, n_rear_arc, n_top, n_bot)
 
     # Arc angular steps (chord = link_w at solved radius)
@@ -124,6 +136,8 @@ def generate_chain_path():
     # arc_step_r = 2 * np.arcsin(link_w / (2 * rr))
     arc_step_f = 2 * np.pi / 20
     arc_step_r = 2 * np.pi / 8
+    # arc_f_offset = 0.0125
+    arc_f_offset = -0.065
 
     # d_vec = rear_xy - front_xy
     # d_dist = np.linalg.norm(d_vec)
@@ -133,7 +147,7 @@ def generate_chain_path():
     # tangent_bot = theta + np.pi / 2 - beta
 
     # Front arc: tangent_bot CCW, n_front_arc+1 points
-    front_angles = np.arange(n_front_arc + 1) * arc_step_f - np.pi / 2
+    front_angles = np.arange(n_front_arc + 1) * arc_step_f - np.pi / 2 + arc_f_offset
     front_pts = np.column_stack(
         [
             front_xy[0] + rf * np.cos(front_angles),
@@ -200,8 +214,8 @@ def generate_chain_path():
         d = np.linalg.norm(points[j] - points[i])
         max_err = max(max_err, abs(d - link_w))
 
-    r_front_nom = LINK_WIDTH / (2 * np.sin(np.pi / 20)) * CHAIN_SCALE
-    r_rear_nom = LINK_WIDTH / (2 * np.sin(np.pi / 8)) * CHAIN_SCALE
+    r_front_nom = link_w / (2 * np.sin(np.pi / 20))
+    r_rear_nom = link_w / (2 * np.sin(np.pi / 8))
 
     print(
         f"  Chain path: {len(points)} joints "
@@ -216,7 +230,7 @@ def generate_chain_path():
     return points
 
 
-def add_chain(scene, bike_pos_zup=(0, 0, 0)):
+def add_chain(scene):
     """Add chain entities as ipc_only bodies.
 
     Each segment gets 2 link plates (±Z offset), 1 barring at the start
@@ -228,7 +242,7 @@ def add_chain(scene, bike_pos_zup=(0, 0, 0)):
     bike_pos_zup: world-frame offset of the bike entity (Z-up),
         applied to all chain part positions so they align with the sprockets.
     """
-    bike_offset_zup = np.array(bike_pos_zup, dtype=float)
+    bike_offset_zup = np.array(BIKE_POS, dtype=float)
     points = generate_chain_path()
     n = len(points)
 
@@ -294,43 +308,25 @@ def add_chain(scene, bike_pos_zup=(0, 0, 0)):
                 )
             )
 
-        # Barring at start joint (path point p0)
-        barring_pos_yup = (p0[0], p0[1], chain_z)
-        barring_pos_zup = np.array(yup_to_zup_position(barring_pos_yup)) + bike_offset_zup
-        entities.append(
-            scene.add_entity(
-                gs.morphs.Mesh(
-                    file=str(BARRING_MESH),
-                    pos=tuple(barring_pos_zup),
-                    quat=joint_quat,
-                    scale=CHAIN_SCALE,
-                    fixed=False,
-                    convexify=False,
-                    decimate=False,
-                ),
-                material=chain_material,
-                surface=chain_surface,
+        # Barring and pin at start joint (path point p0)
+        joint_pos_yup = (p0[0], p0[1], chain_z)
+        joint_pos_zup = np.array(yup_to_zup_position(joint_pos_yup)) + bike_offset_zup
+        for mesh_file in (BARRING_MESH, PIN_MESH):
+            entities.append(
+                scene.add_entity(
+                    gs.morphs.Mesh(
+                        file=str(mesh_file),
+                        pos=tuple(joint_pos_zup),
+                        quat=joint_quat,
+                        scale=CHAIN_SCALE,
+                        fixed=False,
+                        convexify=False,
+                        decimate=False,
+                    ),
+                    material=chain_material,
+                    surface=chain_surface,
+                )
             )
-        )
-
-        # Pin at end joint (path point p1)
-        pin_pos_yup = (p1[0], p1[1], chain_z)
-        pin_pos_zup = np.array(yup_to_zup_position(pin_pos_yup)) + bike_offset_zup
-        entities.append(
-            scene.add_entity(
-                gs.morphs.Mesh(
-                    file=str(PIN_MESH),
-                    pos=tuple(pin_pos_zup),
-                    quat=joint_quat,
-                    scale=CHAIN_SCALE,
-                    fixed=False,
-                    convexify=False,
-                    decimate=False,
-                ),
-                material=chain_material,
-                surface=chain_surface,
-            )
-        )
 
     print(f"  Added {len(entities)} chain bodies ({n} segments: {2 * n} links + {n} barrings + {n} pins)")
     return entities
@@ -351,6 +347,7 @@ def main():
     parser.add_argument("--steps", type=int, default=600, help="Number of sim steps")
     parser.add_argument("--video", type=str, default=str(DEFAULT_VIDEO_PATH), help="Video output path")
     parser.add_argument("--use-al", action="store_true", help="Use AL-IPC contact constitution")
+    parser.add_argument("--verbose-ipc", action="store_true", help="Print full libuipc log (bypass digest)")
     args = parser.parse_args()
     video_path = Path(args.video)
     video_path.parent.mkdir(parents=True, exist_ok=True)
@@ -358,11 +355,12 @@ def main():
 
     gs.init(backend=gs.gpu)
 
+    viewer_pos, viewer_lookat = get_camera_pose(BIKE_POS)
     scene = gs.Scene(
         show_viewer=not args.no_viewer,
         viewer_options=gs.options.ViewerOptions(
-            camera_pos=(0.5, -1.5, 0.7),
-            camera_lookat=(-0.2, 0.0, 0.4),
+            camera_pos=viewer_pos,
+            camera_lookat=viewer_lookat,
             camera_fov=45,
         ),
         rigid_options=gs.options.RigidOptions(
@@ -375,6 +373,7 @@ def main():
             contact_d_hat=2e-4,
             newton_semi_implicit_enable=True,
             linear_system_tolerance=1e-4,
+            verbose_ipc_log=args.verbose_ipc,
             # AL-IPC (opt-in via --al-ipc)
             **(
                 dict(
@@ -394,11 +393,42 @@ def main():
             material=gs.materials.Rigid(needs_coup=False),
         )
 
-    bike_pos_zup = (0, 0, 0.002)
-
+    chain_entities = []
     if not args.no_chain:
         print("Adding chain...")
-        add_chain(scene, bike_pos_zup=bike_pos_zup)
+        chain_entities = add_chain(scene)
+
+        # Disable collision between non-adjacent chain bodies.
+        #
+        # Per segment i, 4 entities at [4i..4i+3]:
+        #   0,1 = link plates (centered between p[i] and p[i+1])
+        #   2   = barring (at p[i], hollow — pin fits through the hole)
+        #   3   = pin     (at p[i])
+        #
+        # Allowed: all pairs within same segment + all pairs between adjacent segments.
+        # Disallowed: everything between non-adjacent segments.
+        coupler = scene._sim.coupler
+        n_seg = len(chain_entities) // 4
+        allowed = set()
+        for i in range(n_seg):
+            j = (i + 1) % n_seg
+            allowed.add((i * 4 + 0, i * 4 + 2))
+            allowed.add((i * 4 + 0, i * 4 + 3))
+            allowed.add((i * 4 + 1, i * 4 + 2))
+            allowed.add((i * 4 + 1, i * 4 + 3))
+            allowed.add((i * 4 + 2, i * 4 + 3))
+
+            allowed.add((i * 4 + 0, j * 4 + 0))
+            allowed.add((i * 4 + 1, j * 4 + 1))
+            allowed.add((i * 4 + 0, j * 4 + 2))
+            allowed.add((i * 4 + 1, j * 4 + 2))
+            allowed.add((i * 4 + 0, j * 4 + 3))
+            allowed.add((i * 4 + 1, j * 4 + 3))
+
+        for a in range(len(chain_entities)):
+            for b in range(a + 1, len(chain_entities)):
+                if (a, b) not in allowed and (b, a) not in allowed:
+                    coupler.disable_collision_pair(chain_entities[a], chain_entities[b])
 
     if not args.no_bike:
         # Mesh is Y-up (Blender convention); rotate 90 deg around X for Genesis Z-up.
@@ -416,9 +446,13 @@ def main():
             gs.morphs.URDF(
                 file=str(BIKE_URDF),
                 fixed=args.fix_bike,
-                pos=bike_pos_zup,
+                pos=BIKE_POS,
                 euler=(90, 0, 0),
-                convexify=False,
+                convexify=True,
+                no_convexify_links=["front_sprocket", "rear_sprocket"],
+                decimate=True,
+                decompose_robot_error_threshold=0.15,
+                no_decimate_links=["front_sprocket", "rear_sprocket"],
                 merge_fixed_links=False,
             ),
             material=bike_material,
@@ -452,12 +486,16 @@ def main():
     # Camera for recording
     cam = scene.add_camera(
         res=(1280, 960),
-        pos=(0.5, -1.2, 0.6),
-        lookat=(-0.2, 0.0, 0.35),
+        pos=viewer_pos,
+        lookat=viewer_lookat,
         fov=45,
     )
 
     scene.build()
+
+    rgb, _, _, _ = cam.render(rgb=True)
+    imageio.imwrite(str(first_frame_path), rgb)
+    print(f"Saved first frame to {first_frame_path}")
 
     # Set up motor to spin a sprocket
     if bike is not None and args.motor != "none":
@@ -588,19 +626,12 @@ def main():
 
         if bike is not None:
             bike_pos = bike.get_pos().cpu().numpy()
-            cam.set_pose(
-                pos=(bike_pos[0] + 0.5, bike_pos[1] - 1.2, 0.6),
-                lookat=(bike_pos[0], bike_pos[1], 0.35),
-            )
+            camera_pos, camera_lookat = get_camera_pose(bike_pos)
+            cam.set_pose(pos=camera_pos, lookat=camera_lookat)
 
         # Render and collect frame
         rgb, _, _, _ = cam.render(rgb=True)
         video_frames.append(rgb)
-        if not first_frame_saved:
-            imageio.imwrite(str(first_frame_path), rgb)
-            print(f"Saved first frame to {first_frame_path}")
-            first_frame_saved = True
-
         # Flush video every 10 steps so we can watch progress mid-simulation
         if (step_i + 1) % 10 == 0 or step_i == args.steps - 1:
             imageio.mimwrite(str(video_path), video_frames, fps=60)

@@ -1979,7 +1979,9 @@ class RigidEntity(KinematicEntity):
 
         # Separate collision from visual geometry, post-process collision meshes, and randomize colors.
         # See _separate_geom_infos for post-processing details.
-        cg_infos, vg_infos = self._separate_geom_infos(morph, g_infos, l_info.get("is_robot", False))
+        cg_infos, vg_infos = self._separate_geom_infos(
+            morph, g_infos, l_info.get("is_robot", False), link_name=l_info.get("name")
+        )
 
         # Add visual geometries
         for g_info in vg_infos:
@@ -2012,7 +2014,7 @@ class RigidEntity(KinematicEntity):
         return link, joints
 
     @staticmethod
-    def _separate_geom_infos(morph, g_infos, is_robot):
+    def _separate_geom_infos(morph, g_infos, is_robot, link_name=None):
         """
         Separate collision from visual geometry and post-process collision meshes.
         Used for both normal loading and heterogeneous simulation.
@@ -2040,12 +2042,20 @@ class RigidEntity(KinematicEntity):
             else:
                 decompose_error_threshold = morph.decompose_object_error_threshold
 
+            # Skip decimation/convexification for links listed in no_decimate/no_convexify_links
+            decimate = morph.decimate
+            if decimate and link_name is not None and link_name in morph.no_decimate_links:
+                decimate = False
+            convexify = morph.convexify
+            if convexify and link_name is not None and link_name in morph.no_convexify_links:
+                convexify = False
+
             cg_infos = mu.postprocess_collision_geoms(
                 cg_infos,
-                morph.decimate,
+                decimate,
                 morph.decimate_face_num,
                 morph.decimate_aggressiveness,
-                morph.convexify,
+                convexify,
                 decompose_error_threshold,
                 morph.coacd_options,
             )

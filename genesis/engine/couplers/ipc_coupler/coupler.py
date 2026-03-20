@@ -183,14 +183,12 @@ class _NewtonIterCounter:
     """
 
     _CONVERGED_RE = re.compile(r"Newton Iteration Converged with Iteration Count: (\d+)(?:, Line Search Iters: (\d+))?")
-    _ADAPTIVE_MU_RE = re.compile(r"Adaptive mu: ([0-9.eE+\-]+)")
     _LS_MAX_RE = re.compile(r"Line Search Exits with Max Iteration: (\d+)")
     _NEWTON_MAX_RE = re.compile(r"Newton Iteration Exits with Max Iteration: (\d+)")
 
     def __init__(self):
         self.newton_iters = 0
         self.ls_iters = 0
-        self.adaptive_mu = None
         self.ls_max_hits = 0
         self.newton_max_hit = False
         self._active = False
@@ -201,6 +199,7 @@ class _NewtonIterCounter:
     def start(self):
         if self._active:
             return
+        import signal
         import threading
 
         # Flush before redirecting
@@ -228,7 +227,30 @@ class _NewtonIterCounter:
         self._threads = [t_err, t_out]
         self._pipe_fds = [pipe_r_err, pipe_r_out]
 
+        # Install SIGABRT handler to restore fds before crash so libuipc's
+        # error message reaches the terminal instead of being lost in the pipe.
+        self._prev_sigabrt = signal.getsignal(signal.SIGABRT)
+
+        def _on_abort(signum, frame):
+            self._emergency_restore()
+            if callable(self._prev_sigabrt) and self._prev_sigabrt not in (signal.SIG_DFL, signal.SIG_IGN):
+                self._prev_sigabrt(signum, frame)
+            signal.signal(signal.SIGABRT, signal.SIG_DFL)
+            os.kill(os.getpid(), signal.SIGABRT)
+
+        signal.signal(signal.SIGABRT, _on_abort)
+
         self._active = True
+
+    def _emergency_restore(self):
+        """Restore original fds without processing captured data."""
+        if not self._active:
+            return
+        try:
+            os.dup2(self._saved_stderr_fd, 2)
+            os.dup2(self._saved_stdout_fd, 1)
+        except OSError:
+            pass
 
     def _drain(self, fd, idx):
         """Read from pipe fd until EOF, storing chunks."""
@@ -244,6 +266,11 @@ class _NewtonIterCounter:
     def stop(self):
         if not self._active:
             return
+        import signal
+
+        # Restore SIGABRT handler
+        signal.signal(signal.SIGABRT, self._prev_sigabrt)
+
         # Flush Python streams before restoring
         sys.stderr.flush()
         sys.stdout.flush()
@@ -276,9 +303,6 @@ class _NewtonIterCounter:
                     self.newton_iters += int(m.group(1))
                     if m.group(2) is not None:
                         self.ls_iters += int(m.group(2))
-                m_mu = self._ADAPTIVE_MU_RE.search(line)
-                if m_mu:
-                    self.adaptive_mu = float(m_mu.group(1))
                 m_ls = self._LS_MAX_RE.search(line)
                 if m_ls:
                     self.ls_max_hits += 1
@@ -297,15 +321,13 @@ class _NewtonIterCounter:
         """Reset counter for next frame."""
         n = self.newton_iters
         ls = self.ls_iters
-        mu = self.adaptive_mu
         ls_max = self.ls_max_hits
         nmax = self.newton_max_hit
         self.newton_iters = 0
         self.ls_iters = 0
-        self.adaptive_mu = None
         self.ls_max_hits = 0
         self.newton_max_hit = False
-        return n, ls, mu, ls_max, nmax
+        return n, ls, ls_max, nmax
 
 
 class IPCCoupler(RBC):
@@ -361,7 +383,6 @@ class IPCCoupler(RBC):
         # ==== Newton iteration counter (captures libuipc stderr) ====
         self._newton_counter = _NewtonIterCounter()
         self._ipc_frame = 0
-        self._al_ipc_mu_checked = False
 
         # ==== IPC Constitutions ====
         self._ipc_abd: AffineBodyConstitution | None = None
@@ -378,6 +399,10 @@ class IPCCoupler(RBC):
         self._ipc_clothes_contact: dict["FEMEntity", ContactElement] = {}
         self._ipc_abd_links_contact: dict["RigidLink", ContactElement] = {}
         self._ipc_grounds_contact: dict["RigidEntity", ContactElement] = {}
+
+        # ==== Entity Collision Pair Overrides (pre-build) ====
+        # Frozensets of (entity_a, entity_b) whose cross-entity ABD collision is disabled.
+        self._disabled_collision_pairs: set[frozenset] = set()
 
         # ==== Entity Coupling Configuration ====
         self._coup_type_by_entity: dict["RigidEntity", COUPLING_TYPE] = {}
@@ -424,6 +449,20 @@ class IPCCoupler(RBC):
     # Section 1: Configuration API
     # ============================================================
 
+    def disable_collision_pair(self, entity_a: "RigidEntity", entity_b: "RigidEntity") -> None:
+        """Disable IPC collision between two cross-entity ABD rigid bodies.
+
+        Must be called before ``scene.build()``.  Order does not matter.
+        """
+        self._disabled_collision_pairs.add(frozenset((entity_a, entity_b)))
+
+    def enable_collision_pair(self, entity_a: "RigidEntity", entity_b: "RigidEntity") -> None:
+        """Re-enable a previously disabled cross-entity collision pair.
+
+        Must be called before ``scene.build()``.
+        """
+        self._disabled_collision_pairs.discard(frozenset((entity_a, entity_b)))
+
     def build(self) -> None:
         """Build IPC system"""
         # IPC coupler builds a single IPC scene shared across all envs, so it requires
@@ -439,7 +478,6 @@ class IPCCoupler(RBC):
 
         self._B = self.sim._B
 
-        self._auto_compute_al_ipc_mu_scale()
         self._init_ipc()
         self._setup_coupling_config()
         self._add_objects_to_ipc()
@@ -578,107 +616,6 @@ class IPCCoupler(RBC):
                 f"inertial COM [{com_str}] outside collision AABB [{aabb_str}]. "
                 "Fix inertial origin or collision geometry alignment."
             )
-
-    @staticmethod
-    def _estimate_abd_link_mass(link: "RigidLink", rho: float) -> float:
-        """Estimate ABD body mass for a link, matching libuipc's computation.
-
-        For links with usable _inertial_mass (from URDF/MJCF or volumetric meshes),
-        uses that directly (same as coupler: from_rigid_body(mass, ...)).
-
-        For surface-only meshes (near-zero _inertial_mass), computes volume
-        from collision geometry and multiplies by rho — matching libuipc's
-        mass_density path.
-        """
-        link_mass = link._inertial_mass
-        if link_mass is not None and link_mass > gs.EPS and rho > gs.EPS:
-            return float(link_mass)
-
-        # Fallback: compute volume from collision mesh geometry
-        for geom in link._geoms:
-            mesh = geom._mesh
-            if mesh is None:
-                continue
-            volume = mesh.volume
-            if volume is not None and volume > 1e-15:
-                return rho * volume
-
-        return 0.0
-
-    def _auto_compute_al_ipc_mu_scale(self):
-        """Auto-compute al_ipc_mu_scale to make mu independent of heavy bodies.
-
-        libuipc computes: mu = mass_norm * mu_scale * dt^2
-        where mass_norm = max across all non-fixed body masses (ABD + FEM).
-
-        When heavy bodies coexist with lighter ones, mass_norm is dominated
-        by the heaviest body, making mu too large and causing the AL active
-        set to explode.
-
-        Fix: set mu_scale = default * min_mass / max_mass so that
-          mu = max_mass * (default * min_mass / max_mass) * dt^2
-             = default * min_mass * dt^2
-        This cancels out max_mass, making mu the same regardless of what
-        heavy bodies are in the scene.
-        """
-
-        if self.options.contact_constitution != "al-ipc":
-            return
-        if self.options.al_ipc_mu_scale is not None:
-            return
-
-        from genesis.engine.entities import FEMEntity, RigidEntity
-
-        default_mu_scale = 5e6
-        all_masses = []
-
-        # Collect non-fixed ABD body masses from rigid entities
-        entity: RigidEntity
-        for entity in self.rigid_solver.entities:
-            if not entity.material.needs_coup:
-                continue
-            coup_links_names = entity.material.coup_links
-            for link in entity.links:
-                if coup_links_names is not None and link.name not in coup_links_names:
-                    continue
-                if _link_is_fixed_for_ipc(link):
-                    continue
-                rho = float(entity.material.rho)
-                mass = self._estimate_abd_link_mass(link, rho)
-                if mass > 0:
-                    all_masses.append(mass)
-
-        # Collect FEM/cloth max vertex masses
-        fem_entity: FEMEntity
-        for fem_entity in self.fem_solver.entities:
-            m = self._compute_fem_max_vertex_mass(fem_entity)
-            if m > 0:
-                all_masses.append(m)
-
-        if len(all_masses) < 2:
-            return
-
-        target_mass = min(all_masses)
-        actual_mass = max(all_masses)
-        ratio = actual_mass / target_mass
-
-        if ratio <= 1.0 + 1e-6:
-            return
-
-        corrected_mu_scale = default_mu_scale * target_mass / actual_mass
-        self.options.al_ipc_mu_scale = corrected_mu_scale
-
-        dt = self.sim.dt
-        # adaptive mu = mass_norm * mu_scale * dt²
-        predicted_mu = actual_mass * corrected_mu_scale * dt * dt
-        default_mu = actual_mass * default_mu_scale * dt * dt
-
-        gs.logger.info(
-            f"[AL-IPC] Auto mu_scale: target_mass={target_mass:.6f}, "
-            f"actual_mass={actual_mass:.6f}, ratio={ratio:.1f}x, "
-            f"mu_scale={corrected_mu_scale:.2e} (default={default_mu_scale:.2e}), "
-            f"predicted adaptive mu={predicted_mu:.2e} (without correction={default_mu:.2e})"
-        )
 
     def _init_ipc(self) -> None:
         """Initialize IPC system components"""
@@ -1290,6 +1227,14 @@ class IPCCoupler(RBC):
                         gs.logger.debug(f"[IPC CONTACT] DISABLED overlapping: {link_i.name} × {link_j.name}")
                         continue
 
+                # Cross-entity collision pair override
+                if link_i.entity is not link_j.entity:
+                    if frozenset((link_i.entity, link_j.entity)) in self._disabled_collision_pairs:
+                        self._ipc_contact_tabular.insert(elem_i, elem_j, friction_ij, resistance_ij, False)
+                        _n_disabled += 1
+                        gs.logger.debug(f"[IPC CONTACT] DISABLED by pair override: {link_i.name} × {link_j.name}")
+                        continue
+
                 gs.logger.debug(f"[IPC CONTACT] ENABLED: {link_i.name} × {link_j.name}")
                 _n_enabled += 1
                 self._ipc_contact_tabular.insert(elem_i, elem_j, friction_ij, resistance_ij, True)
@@ -1469,7 +1414,7 @@ class IPCCoupler(RBC):
             gs.raise_exception(f"[IPC] advance() failed at frame {self._ipc_frame + 1}: {e}")
         if not _verbose:
             self._newton_counter.stop()
-        _n_newton, _n_ls, _adaptive_mu, _ls_max, _newton_max = self._newton_counter.reset()
+        _n_newton, _n_ls, _ls_max, _newton_max = self._newton_counter.reset()
         _t3 = _time.perf_counter()
         # Check world validity before retrieve — a failed solver leaves corrupted GPU state
         if not self._ipc_world.is_valid():
@@ -1495,93 +1440,18 @@ class IPCCoupler(RBC):
             self._export_genesis_surface("after_ipc_correction")
 
         self._ipc_frame += 1
-        _mu_str = f"  mu={_adaptive_mu:.2e}" if _adaptive_mu is not None else ""
         _ls_str = f"  ls_maxout={_ls_max}" if _ls_max > 0 else ""
         _nmax_str = "  NEWTON_MAXOUT" if _newton_max else ""
         gs.logger.info(
             f"[IPC] frame {self._ipc_frame:4d}  newton={_n_newton:2d}  ls={_n_ls:3d}  "
             f"advance={(_t3 - _t2) * 1000:.0f}ms  total={(_t6 - _t0) * 1000:.0f}ms"
-            f"{_mu_str}{_ls_str}{_nmax_str}"
+            f"{_ls_str}{_nmax_str}"
         )
-
-        # AL-IPC mu_scale calibration check (first frame only)
-        if _adaptive_mu is not None and not self._al_ipc_mu_checked:
-            self._check_al_ipc_mu(_adaptive_mu)
-            self._al_ipc_mu_checked = True
 
         # Step 6: Update GUI if enabled
         if self._ipc_gui is not None:
             ps.frame_tick()
             self._ipc_gui.update()
-
-    @staticmethod
-    def _compute_fem_max_vertex_mass(entity: "FEMEntity") -> float:
-        """Estimate the max per-vertex mass of a FEM entity.
-
-        libuipc mass_norm() uses the max per-vertex mass (not total body mass)
-        for FEM subsystems.  We approximate this by distributing each element's
-        mass equally to its vertices and taking the vertex-wise maximum.
-
-        For cloth (triangle mesh): element_mass = rho * area_i * (2 * thickness)
-          libuipc treats thickness as a radius; actual shell thickness = 2 * thickness.
-        For volumetric FEM (tet mesh): element_mass = rho * volume_i
-        """
-        verts = tensor_to_array(entity.init_positions)
-        elems = entity.elems
-        rho = float(entity.material.rho)
-        is_cloth = isinstance(entity.material, Cloth)
-        n_verts = len(verts)
-
-        # Accumulate mass per vertex
-        vertex_mass = np.zeros(n_verts, dtype=np.float64)
-
-        if is_cloth:
-            v0 = verts[elems[:, 0]]
-            v1 = verts[elems[:, 1]]
-            v2 = verts[elems[:, 2]]
-            crosses = np.cross(v1 - v0, v2 - v0)
-            areas = 0.5 * np.linalg.norm(crosses, axis=1)
-            thickness = float(entity.material.thickness)
-            # libuipc treats thickness as radius; shell volume = area * 2*thickness
-            elem_masses = rho * areas * (2.0 * thickness)
-            # Distribute each triangle's mass equally to its 3 vertices
-            per_vert = elem_masses / 3.0
-            for k in range(3):
-                np.add.at(vertex_mass, elems[:, k], per_vert)
-        else:
-            v0 = verts[elems[:, 0]]
-            v1 = verts[elems[:, 1]]
-            v2 = verts[elems[:, 2]]
-            v3 = verts[elems[:, 3]]
-            d = np.stack([v1 - v0, v2 - v0, v3 - v0], axis=-1)
-            volumes = np.abs(np.linalg.det(d)) / 6.0
-            elem_masses = rho * volumes
-            # Distribute each tet's mass equally to its 4 vertices
-            per_vert = elem_masses / 4.0
-            for k in range(4):
-                np.add.at(vertex_mass, elems[:, k], per_vert)
-
-        return float(np.max(vertex_mass)) if n_verts > 0 else 0.0
-
-    def _check_al_ipc_mu(self, adaptive_mu):
-        """Verify AL-IPC adaptive mu after the first advance.
-
-        libuipc computes: mu = mass_norm * mu_scale * dt^2
-        where mass_norm = max across all non-fixed body masses.
-
-        _auto_compute_al_ipc_mu_scale() already corrects mu_scale before scene
-        creation.  This post-hoc check verifies the correction worked by
-        back-computing mass_norm from the captured adaptive mu.
-        """
-        mu_scale = self.options.al_ipc_mu_scale or 5e6
-        dt = self.sim.rigid_options.dt
-        overall_mass_norm = adaptive_mu / (mu_scale * dt * dt)
-
-        gs.logger.info(
-            f"[AL-IPC] Adaptive mu = {adaptive_mu:.2e}, "
-            f"mu_scale = {mu_scale:.2e}, "
-            f"back-computed mass_norm = {overall_mass_norm:.6f}"
-        )
 
     def couple_grad(self, f):
         """Gradient computation for coupling"""

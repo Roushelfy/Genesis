@@ -28,13 +28,15 @@
       <inertia ixx="0.00095460" ixy="0" ixz="0" iyy="0.00095460" iyz="0" izz="0.00190694"/>
     </inertial>
     <visual>
+      <origin rpy="0 0 -0.065"/>
       <geometry>
-        <mesh filename="front_sprocket.glb"/>
+        <mesh filename="front_sprocket.glb" scale="0.985 0.985 0.985"/>
       </geometry>
     </visual>
     <collision>
+      <origin rpy="0 0 -0.065"/>
       <geometry>
-        <mesh filename="front_sprocket.obj"/>
+        <mesh filename="front_sprocket.obj" scale="0.985 0.985 0.985"/>
       </geometry>
     </collision>
   </link>
@@ -80,12 +82,12 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="rear_sprocket.glb"/>
+        <mesh filename="rear_sprocket.glb" scale="0.985 0.985 0.985"/>
       </geometry>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="rear_sprocket.obj"/>
+        <mesh filename="rear_sprocket.obj" scale="0.985 0.985 0.985"/>
       </geometry>
     </collision>
   </link>
