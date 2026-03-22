@@ -3,6 +3,7 @@ import marshal
 import math
 import os
 import pickle as pkl
+import re
 from functools import lru_cache
 from pathlib import Path
 
@@ -514,9 +515,91 @@ def parse_mesh_trimesh(path, group_by_material, scale, is_mesh_zup, surface):
         if not isinstance(tmesh, trimesh.Trimesh):
             gs.raise_exception(f"Mesh type not supported: {path}")
         mesh = gs.Mesh.from_trimesh(
-            mesh=tmesh, scale=scale, surface=surface, is_mesh_zup=is_mesh_zup, metadata={"mesh_path": path}
+            mesh=tmesh,
+            scale=scale,
+            surface=surface,
+            is_mesh_zup=is_mesh_zup,
+            metadata={"mesh_path": path},
         )
         meshes.append(mesh)
+    return meshes
+
+
+def _parse_obj_lines(path):
+    """Parse OBJ 'l' (line) elements into per-group edge lists.
+
+    OBJ vertex indices are global (1-based). Groups are split by 'o'/'g' lines.
+    Returns a list of (N, 2) int arrays with 0-based global indices, one per
+    group that has 'l' elements. Returns empty list if no 'l' elements found.
+    """
+    groups = []
+    current_edges = []
+    try:
+        with open(path) as f:
+            for line in f:
+                parts = line.strip().split()
+                if not parts:
+                    continue
+                if parts[0] in ("o", "g"):
+                    if current_edges:
+                        groups.append(np.array(current_edges, dtype=np.int32))
+                        current_edges = []
+                elif parts[0] == "l":
+                    indices = [int(re.split(r"/", p)[0]) - 1 for p in parts[1:]]
+                    for j in range(len(indices) - 1):
+                        current_edges.append([indices[j], indices[j + 1]])
+    except Exception:
+        return []
+    if current_edges:
+        groups.append(np.array(current_edges, dtype=np.int32))
+    return groups
+
+
+def parse_mesh_linemesh(path, scale, radius, is_mesh_zup, surface):
+    """Load an OBJ with 'l' (line) elements as a LineMesh.
+
+    Vertices are loaded via trimesh. Edges are parsed from 'l' lines.
+    Falls back to sequential edges if no 'l' lines are found.
+    """
+    from genesis.engine.mesh import LineMesh
+
+    # Load all vertices globally. trimesh merges PointCloud groups into one,
+    # but concatenate all geometries' vertices to be safe.
+    scene = trimesh.load(path, force="scene", process=False)
+    vert_arrays = []
+    for geom in scene.geometry.values():
+        if isinstance(geom, (trimesh.points.PointCloud, trimesh.Trimesh)):
+            vert_arrays.append(np.array(geom.vertices, dtype=gs.np_float))
+    if len(vert_arrays) == 0:
+        gs.raise_exception(f"Cannot load vertices from: {path}")
+    all_verts = np.vstack(vert_arrays)
+
+    # Parse per-group edges (global indices).
+    edge_groups = _parse_obj_lines(path)
+
+    # No 'l' lines: treat all vertices as a single sequential chain
+    if len(edge_groups) == 0:
+        n = len(all_verts)
+        edge_groups = [np.column_stack([np.arange(n - 1), np.arange(1, n)]).astype(np.int32)]
+
+    # One LineMesh per group, extracting only the referenced vertices.
+    meshes = []
+    for group_edges in edge_groups:
+        used_global = np.unique(group_edges)
+        group_verts = all_verts[used_global]
+        global_to_local = np.full(len(all_verts), -1, dtype=np.int32)
+        global_to_local[used_global] = np.arange(len(used_global), dtype=np.int32)
+        local_edges = global_to_local[group_edges]
+        meshes.append(
+            LineMesh(
+                vertices=group_verts,
+                edges=local_edges,
+                radius=radius,
+                surface=surface.copy() if surface is not None else gs.surfaces.Default(),
+                is_mesh_zup=is_mesh_zup,
+                scale=scale,
+            )
+        )
     return meshes
 
 

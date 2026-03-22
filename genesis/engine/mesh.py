@@ -398,7 +398,7 @@ class Mesh(RBC):
         else:
             gs.raise_exception()
 
-        return cls.from_trimesh(tmesh, surface=surface)
+        return [cls.from_trimesh(tmesh, surface=surface)]
 
     def set_color(self, color):
         """
@@ -507,3 +507,130 @@ class Mesh(RBC):
         Volume of the mesh.
         """
         return self._mesh.volume
+
+
+class LineMesh(RBC):
+    """A 1D line mesh (vertices + edges) for rope/string simulation.
+
+    Loaded from OBJ files with 'l' (line) elements. Handles scale and
+    Y-up→Z-up conversion, matching the transform convention of gs.Mesh.
+    """
+
+    def __init__(self, vertices, edges, radius, surface=None, is_mesh_zup=True, scale=None, n_tube_sides=6):
+        self._vertices = np.array(vertices, dtype=gs.np_float)
+        self._edges = np.array(edges, dtype=np.int32)
+        self._surface = surface or gs.surfaces.Default()
+        self._n_tube_sides = n_tube_sides
+        self._tube_radius = radius
+        self._tube_faces = None
+        self._tube_angles = None
+
+        if not is_mesh_zup:
+            self._vertices = (mu.Y_UP_TRANSFORM.T[:3, :3] @ self._vertices.T).T
+
+        if scale is not None:
+            scale = np.atleast_1d(np.asarray(scale))
+            self._vertices *= scale
+
+        self._build_tube_topology()
+
+    @classmethod
+    def from_morph_surface(cls, morph, radius, surface=None):
+        """Create LineMesh(es) from a Mesh morph.
+
+        Currently only supports OBJ format (with 'l' line elements).
+        Returns a list of LineMesh objects (one per geometry group in the file).
+        """
+        if not isinstance(morph, gs.options.morphs.Mesh):
+            gs.raise_exception(f"LineMesh only supports Mesh morph. Got: {morph}.")
+        if not morph.is_format(gs.options.morphs.OBJ_FORMAT):
+            gs.raise_exception(f"LineMesh only supports OBJ format. Got: {morph.file}")
+        if surface is None:
+            surface = gs.surfaces.Default()
+        return mu.parse_mesh_linemesh(morph.file, morph.scale, radius, morph.file_meshes_are_zup, surface)
+
+    @property
+    def verts(self):
+        """Vertex positions."""
+        return self._vertices
+
+    @property
+    def edges(self):
+        """Edge connectivity (N, 2) array."""
+        return self._edges
+
+    @property
+    def uvs(self):
+        """UVs (always None for line meshes)."""
+        return None
+
+    @property
+    def surface(self):
+        """Surface material."""
+        return self._surface
+
+    def _build_tube_topology(self):
+        """Pre-build tube face topology for rendering.
+
+        Uses ``n_tube_sides`` and ``tube_radius`` from init. Each vertex
+        becomes a ring of vertices; each edge becomes a cylinder segment.
+        Tube vertex positions are rebuilt each frame via ``build_tube_verts()``.
+        """
+        n_sides = self._n_tube_sides
+        n_edges = len(self._edges)
+
+        tube_faces = np.zeros((n_edges * 2 * n_sides, 3), dtype=np.int32)
+        for ei, (v0, v1) in enumerate(self._edges):
+            for si in range(n_sides):
+                sn = (si + 1) % n_sides
+                a = v0 * n_sides + si
+                b = v0 * n_sides + sn
+                c = v1 * n_sides + si
+                d = v1 * n_sides + sn
+                tube_faces[ei * 2 * n_sides + 2 * si] = [a, b, c]
+                tube_faces[ei * 2 * n_sides + 2 * si + 1] = [b, d, c]
+
+        self._tube_faces = tube_faces
+        self._tube_angles = np.linspace(0, 2 * np.pi, n_sides, endpoint=False)
+
+    def build_tube_verts(self, sim_verts):
+        """Rebuild tube vertex positions from current sim vertex positions.
+
+        Returns (n_verts * n_sides, 3) array. Call ``build_tube_topology()``
+        first to set up the face topology.
+        """
+        n_sides = self._n_tube_sides
+        radius = self._tube_radius
+        angles = self._tube_angles
+        n_verts = len(sim_verts)
+
+        # Per-vertex tangent
+        tangents = np.zeros_like(sim_verts)
+        for e in self._edges:
+            d = sim_verts[e[1]] - sim_verts[e[0]]
+            tangents[e[0]] += d
+            tangents[e[1]] += d
+        norms = np.linalg.norm(tangents, axis=1, keepdims=True)
+        norms[norms < 1e-12] = 1.0
+        tangents /= norms
+
+        # Build tube ring vertices
+        tube_verts = np.zeros((n_verts * n_sides, 3), dtype=sim_verts.dtype)
+        for vi in range(n_verts):
+            t = tangents[vi]
+            up = np.array([0.0, 0.0, 1.0])
+            if abs(np.dot(t, up)) > 0.9:
+                up = np.array([1.0, 0.0, 0.0])
+            n1 = np.cross(t, up)
+            n1 /= np.linalg.norm(n1) + 1e-15
+            n2 = np.cross(t, n1)
+            for si in range(n_sides):
+                tube_verts[vi * n_sides + si] = sim_verts[vi] + radius * (
+                    np.cos(angles[si]) * n1 + np.sin(angles[si]) * n2
+                )
+        return tube_verts
+
+    @property
+    def tube_faces(self):
+        """Pre-built tube face topology. None if ``build_tube_topology()`` not called."""
+        return self._tube_faces

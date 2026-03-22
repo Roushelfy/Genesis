@@ -20,8 +20,9 @@ from .options import Options
 
 URDF_FORMAT = ".urdf"
 MJCF_FORMAT = ".xml"
+OBJ_FORMAT = ".obj"
 GLTF_FORMATS = (".glb", ".gltf")
-MESH_FORMATS = (".obj", ".stl", *GLTF_FORMATS)
+MESH_FORMATS = (OBJ_FORMAT, ".stl", *GLTF_FORMATS)
 USD_FORMATS = (".usd", ".usda", ".usdc", ".usdz")
 
 

@@ -31,11 +31,7 @@ def cylinder_to_elements():
     raise NotImplementedError
 
 
-def mesh_to_elements(file, pos=(0, 0, 0), scale=1.0, tet_cfg=dict()):
-    mesh = mu.load_mesh(file)
-
-    mesh.vertices = mesh.vertices * scale
-
+def mesh_to_elements(mesh, tet_cfg=dict()):
     # compute file name via hashing for caching
     tet_file_path = mu.get_tet_path(mesh.vertices, mesh.faces, tet_cfg)
 
@@ -58,19 +54,7 @@ def mesh_to_elements(file, pos=(0, 0, 0), scale=1.0, tet_cfg=dict()):
             with open(tet_file_path, "wb") as tet_file:
                 pkl.dump((verts, elems), tet_file)
 
-    verts += np.array(pos)
-
-    # Build full UV array
-    uvs = None
-    if isinstance(mesh.visual, trimesh.visual.texture.TextureVisuals) and mesh.visual.uv is not None:
-        # Extract UVs from mesh before tetrahedralization.
-        # Note that 'tetgen' preserves original vertices at start of output array.
-        uvs_orig = mesh.visual.uv.astype(gs.np_float, copy=False)
-
-        # Original vertices get their UVs, interior vertices get zeros
-        uvs = np.pad(uvs_orig, ((0, len(verts) - len(mesh.vertices)), (0, 0)))
-
-    return verts, elems, uvs
+    return verts, elems
 
 
 def split_all_surface_tets(verts, elems):

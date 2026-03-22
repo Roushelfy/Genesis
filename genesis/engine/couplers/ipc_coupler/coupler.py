@@ -17,6 +17,7 @@ import genesis as gs
 import genesis.utils.geom as gu
 from genesis.engine.materials.FEM.cloth import Cloth
 from genesis.engine.materials.FEM.paper import Paper
+from genesis.engine.materials.FEM.rope import Rope
 from genesis.options.solvers import IPCCouplerOptions, RigidOptions
 from genesis.repr_base import RBC
 from genesis.utils.mesh import are_meshes_overlapping
@@ -44,6 +45,8 @@ if TYPE_CHECKING or UIPC_AVAILABLE:
         AffineBodyPrismaticJoint,
         AffineBodyRevoluteJoint,
         DiscreteShellBending,
+        HookeanSpring,
+        KirchhoffRodBending,
         PlasticDiscreteShellBending,
         ElasticModuli,
         ElasticModuli2D,
@@ -391,12 +394,15 @@ class IPCCoupler(RBC):
         self._ipc_nks: StrainLimitingBaraffWitkinShell | None = None
         self._ipc_dsb: DiscreteShellBending | None = None
         self._ipc_pdsb: PlasticDiscreteShellBending | None = None
+        self._ipc_hks: HookeanSpring | None = None
+        self._ipc_krb: KirchhoffRodBending | None = None
         self._ipc_eac: ExternalArticulationConstraint | None = None
 
         # ==== IPC Contact Elements ====
         self._ipc_no_collision_contact: ContactElement | None = None
         self._ipc_fems_contact: dict["FEMEntity", ContactElement] = {}
         self._ipc_clothes_contact: dict["FEMEntity", ContactElement] = {}
+        self._ipc_ropes_contact: dict["FEMEntity", ContactElement] = {}
         self._ipc_abd_links_contact: dict["RigidLink", ContactElement] = {}
         self._ipc_grounds_contact: dict["RigidEntity", ContactElement] = {}
 
@@ -678,22 +684,34 @@ class IPCCoupler(RBC):
 
         entity: "FEMEntity"
         for i_e, entity in enumerate(cast(list["FEMEntity"], self.fem_solver.entities)):
-            is_cloth = isinstance(entity.material, Cloth)
-            solver_type = "cloth" if is_cloth else "fem"
+            is_rope = isinstance(entity.material, Rope)
+            is_cloth = not is_rope and isinstance(entity.material, Cloth)
+            if is_rope:
+                solver_type = "rope"
+            elif is_cloth:
+                solver_type = "cloth"
+            else:
+                solver_type = "fem"
 
             # ---- Create mesh (env-independent geometry) ----
-            # trimesh for cloth (2D shell), tetmesh for volumetric FEM (3D)
-            if is_cloth:
-                verts = tensor_to_array(entity.init_positions).astype(np.float64, copy=False)
+            # linemesh for rope (1D), trimesh for cloth (2D), tetmesh for volumetric FEM (3D)
+            verts = tensor_to_array(entity.init_positions).astype(np.float64, copy=False)
+            if is_rope:
+                edges = entity.elems.astype(np.int32, copy=False)
+                mesh = uipc.geometry.linemesh(verts, edges)
+            elif is_cloth:
                 faces = entity.surface_triangles.astype(np.int32, copy=False)
                 mesh = uipc.geometry.trimesh(verts, faces)
             else:
-                mesh = uipc.geometry.tetmesh(tensor_to_array(entity.init_positions), entity.elems)
+                mesh = uipc.geometry.tetmesh(verts, entity.elems)
             uipc.geometry.label_surface(mesh)
 
             # ---- Apply constitutions (env-independent) ----
             # Apply per-entity contact element
-            if is_cloth:
+            if is_rope:
+                self._ipc_ropes_contact[entity] = self._ipc_contact_tabular.create(f"rope_contact_{i_e}")
+                self._ipc_ropes_contact[entity].apply_to(mesh)
+            elif is_cloth:
                 self._ipc_clothes_contact[entity] = self._ipc_contact_tabular.create(f"cloth_contact_{i_e}")
                 self._ipc_clothes_contact[entity].apply_to(mesh)
             else:
@@ -701,7 +719,27 @@ class IPCCoupler(RBC):
                 self._ipc_fems_contact[entity].apply_to(mesh)
 
             # Apply material constitution based on type
-            if is_cloth:
+            if is_rope:
+                # HookeanSpring for stretch
+                if self._ipc_hks is None:
+                    self._ipc_hks = HookeanSpring()
+                    self._ipc_constitution_tabular.insert(self._ipc_hks)
+
+                self._ipc_hks.apply_to(
+                    mesh,
+                    moduli=entity.material.E,
+                    mass_density=entity.material.rho,
+                    thickness=entity.material.thickness,
+                )
+
+                # KirchhoffRodBending for bending (optional)
+                if entity.material.bending_stiffness is not None:
+                    if self._ipc_krb is None:
+                        self._ipc_krb = KirchhoffRodBending()
+                        self._ipc_constitution_tabular.insert(self._ipc_krb)
+
+                    self._ipc_krb.apply_to(mesh, E=entity.material.bending_stiffness)
+            elif is_cloth:
                 if self._ipc_nks is None:
                     self._ipc_nks = StrainLimitingBaraffWitkinShell()
                     self._ipc_constitution_tabular.insert(self._ipc_nks)
@@ -1149,7 +1187,11 @@ class IPCCoupler(RBC):
 
         # Collect non-ABD contact infos (FEM, cloth)
         non_abd_infos: list[tuple[ContactElement, float, float]] = []
-        for entity, elem in (*self._ipc_clothes_contact.items(), *self._ipc_fems_contact.items()):
+        for entity, elem in (
+            *self._ipc_clothes_contact.items(),
+            *self._ipc_ropes_contact.items(),
+            *self._ipc_fems_contact.items(),
+        ):
             friction = entity.material.friction_mu
             resistance = entity.material.contact_resistance or self.options.contact_resistance
             non_abd_infos.append((elem, friction, resistance))
@@ -1772,13 +1814,13 @@ class IPCCoupler(RBC):
                 continue
 
             fem_geom = fem_geom_slot.geometry()
-            if fem_geom.dim() not in (2, 3):
+            if fem_geom.dim() not in (1, 2, 3):
                 continue
             meta = read_ipc_geometry_metadata(fem_geom)
             if meta is None:
                 continue
             solver_type, env_idx, i_e = meta
-            if solver_type not in ("fem", "cloth"):
+            if solver_type not in ("fem", "cloth", "rope"):
                 continue
 
             entity = cast("FEMEntity", self.fem_solver.entities[i_e])

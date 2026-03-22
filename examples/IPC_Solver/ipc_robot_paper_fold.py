@@ -24,6 +24,8 @@ def main():
         default="external_articulation",
         choices=["two_way_soft_constraint", "external_articulation"],
     )
+    parser.add_argument("--no-franka", action="store_true")
+    parser.add_argument("--no-table", action="store_true")
     args = parser.parse_args()
 
     scene = gs.Scene(
@@ -56,20 +58,22 @@ def main():
     )
 
     # Franka robot
-    franka_material_kwargs = dict(
-        coup_type=args.coup_type,
-        coup_friction=0.5,
-    )
-    if args.coup_type == "two_way_soft_constraint":
-        franka_material_kwargs["coup_links"] = ("left_finger", "right_finger")
-    franka = scene.add_entity(
-        gs.morphs.MJCF(
-            file="xml/franka_emika_panda/panda_non_overlap.xml",
-            pos=(0.0, 0.0, 0.005),
-            convexify=True,
-        ),
-        material=gs.materials.Rigid(**franka_material_kwargs),
-    )
+    franka = None
+    if not args.no_franka:
+        franka_material_kwargs = dict(
+            coup_type=args.coup_type,
+            coup_friction=0.5,
+        )
+        if args.coup_type == "two_way_soft_constraint":
+            franka_material_kwargs["coup_links"] = ("left_finger", "right_finger")
+        franka = scene.add_entity(
+            gs.morphs.MJCF(
+                file="xml/franka_emika_panda/panda_non_overlap.xml",
+                pos=(0.0, 0.0, 0.005),
+                convexify=True,
+            ),
+            material=gs.materials.Rigid(**franka_material_kwargs),
+        )
 
     # Table — fixed rigid box at the far end of the robot's reach.
     # The paper overhangs the near edge (-x, toward robot) so the gripper
@@ -78,68 +82,90 @@ def main():
     table_size_x = 0.20
     table_size_y = 0.30
     table_x = 0.65
-    scene.add_entity(
-        morph=gs.morphs.Box(
-            pos=(table_x, 0.0, table_height / 2),
-            size=(table_size_x, table_size_y, table_height),
-            fixed=True,
-        ),
-        material=gs.materials.Rigid(
-            rho=1000,
-            coup_friction=0.5,
-            coup_type="ipc_only",
-        ),
-        surface=gs.surfaces.Plastic(
-            color=(0.55, 0.35, 0.2, 1.0),
-        ),
-    )
+    if not args.no_table:
+        scene.add_entity(
+            morph=gs.morphs.Box(
+                pos=(table_x, 0.0, table_height / 2),
+                size=(table_size_x, table_size_y, table_height),
+                fixed=True,
+            ),
+            material=gs.materials.Rigid(
+                rho=1000,
+                coup_friction=0.5,
+                coup_type="ipc_only",
+            ),
+            surface=gs.surfaces.Plastic(
+                color=(0.55, 0.35, 0.2, 1.0),
+            ),
+        )
 
-    # Paper sheet on the table.
+    # Paper sheet on the table with fold-line texture.
     # Offset toward -x so the near edge hangs off the table toward the robot.
     # The robot grabs the hanging edge from below and folds it up and over.
     _repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    paper_mesh = os.path.join(
-        os.path.dirname(_repo_root),
-        "libuipc-samples",
-        "assets",
-        "sim_data",
-        "trimesh",
-        "grid20x20.obj",
-    )
-    paper_size = 0.25
+    paper_mesh = os.path.join(_repo_root, "DemoAssets", "fold_plane", "fold_plane.obj")
+    # fold_plane.obj spans [-1,1] (2 units wide), vs grid20x20.obj's [-0.5,0.5].
+    # Use scale=0.125 to match the original 0.25m paper from grid20x20.
+    paper_size = 0.125
     scene.add_entity(
         morph=gs.morphs.Mesh(
             file=paper_mesh,
             scale=paper_size,
-            pos=(table_x - 0.06, 0.0, table_height + 0.002),
-            euler=(90, 0, 0),
+            pos=(table_x, 0.0, table_height + 0.005),
         ),
         material=gs.materials.FEM.Paper(
             E=5e5,
             rho=700.0,
-            thickness=0.001,
+            thickness=0.0001,
             bending_stiffness=1e4,
             yield_threshold=0.05,
             hardening_modulus=0.2,
             friction_mu=0.5,
         ),
+        # No surface specified — uses the OBJ's MTL texture (fold lines on paper)
+    )
+
+    # Brick press — the robot grabs the handle and uses the brick to press fold lines.
+    # Placed next to the paper on the table, within robot reach.
+    brick_mesh = os.path.join(_repo_root, "DemoAssets", "fold_plane", "brick_press.obj")
+    scene.add_entity(
+        morph=gs.morphs.Mesh(
+            file=brick_mesh,
+            pos=(table_x, 0.0, table_height + 0.01),
+            fixed=False,
+            convexify=False,
+            decimate=False,
+        ),
+        material=gs.materials.Rigid(
+            rho=2000,
+            coup_type="ipc_only",
+            coup_friction=0.5,
+            enable_coup_collision=True,
+        ),
         surface=gs.surfaces.Plastic(
-            color=(0.95, 0.92, 0.85, 1.0),
+            color=(0.6, 0.4, 0.3, 1.0),
         ),
     )
 
     scene.build()
 
-    # Start EE above the near (hanging) edge of the paper, pointing down
-    paper_near_edge_x = table_x - 0.06 - paper_size / 2
-    teleop = RobotTeleop.franka(
-        scene=scene,
-        robot=franka,
-        init_pos=(paper_near_edge_x, 0.0, 0.5),
-        init_euler=(0.0, 180.0, 0.0),
-    )
-    teleop.setup()
-    teleop.run()
+    if franka is not None:
+        # Start EE above the near (hanging) edge of the paper, pointing down
+        paper_near_edge_x = table_x - paper_size
+        teleop = RobotTeleop.franka(
+            scene=scene,
+            robot=franka,
+            init_pos=(paper_near_edge_x, 0.0, 0.5),
+            init_euler=(0.0, 180.0, 0.0),
+        )
+        teleop.setup()
+        teleop.run()
+    else:
+        for step in range(500):
+            scene.step()
+            if step % 50 == 0:
+                print(f"  Step {step}")
+        print("Done.")
 
 
 if __name__ == "__main__":
