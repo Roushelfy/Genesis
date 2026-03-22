@@ -279,11 +279,6 @@ class IPCCouplerOptions(BaseCouplerOptions):
     cfl_enable : bool, optional
         Whether to enable CFL (Courant-Friedrichs-Lewy) condition. Defaults to None (use libuipc default: False).
 
-    Sanity Check Options
-    --------------------
-    sanity_check_enable : bool, optional
-        Whether to enable sanity checks. Defaults to None (use libuipc default: True).
-
     Genesis Coupling Options
     ------------------------
     enable_rigid_ground_contact : bool, optional
@@ -351,8 +346,6 @@ class IPCCouplerOptions(BaseCouplerOptions):
     cfl_enable: bool = None
 
     # Sanity check options
-    sanity_check_enable: bool = None
-
     # Genesis coupling options
     enable_rigid_ground_contact: bool = True
     enable_rigid_rigid_contact: bool = True
