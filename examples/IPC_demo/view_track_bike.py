@@ -372,9 +372,10 @@ def main():
             gravity=(0, 0, 0 if args.no_gravity else -9.81),
         ),
         coupler_options=gs.options.IPCCouplerOptions(
-            contact_d_hat=2e-4,
-            newton_semi_implicit_enable=True,
-            linear_system_tolerance=1e-4,
+            contact_d_hat=1e-4,
+            newton_semi_implicit_enable=False,
+            linear_system_tolerance=1e-5,
+            newton_tolerance=0.05
             # AL-IPC (opt-in via --al-ipc)
             **(
                 dict(

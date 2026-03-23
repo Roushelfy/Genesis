@@ -19,17 +19,18 @@ from uipc.constitution import (
 from uipc.geometry import SimplicialComplexIO, label_surface, mesh_partition
 from uipc.gui import SceneGUI
 from uipc.unit import MPa
+from asset_dir import AssetDir
 
 
 Logger.set_level(Logger.Level.Warn)
 Timer.enable_all()
 
 repo = Path(__file__).resolve().parents[3]
-workspace = repo / "IPC-Samples" / "output" / "YoyoIPCOnly" / "main-string2"
-workspace.mkdir(parents=True, exist_ok=True)
+workspace = AssetDir.output_path(__file__)
+folder = AssetDir.folder(__file__)
 
-ball_obj = repo / "DemoAssets" / "yoyo-ball.obj"
-string_obj = repo / "DemoAssets" / "yoyo-string2.obj"
+ball_obj = folder / "results" / "yoyo-ball.obj"
+string_obj = folder / "results" / "yoyo-string2.obj"
 
 engine = Engine("cuda", str(workspace))
 world = World(engine)
@@ -127,9 +128,6 @@ def on_update():
     global running
     if imgui.Button("Run / Pause"):
         running = not running
-
-    # imgui.Text(f"Frame: {world.frame()}")
-    # imgui.Text("Pinned vertex: string[0] (top)")
 
     if running:
         world.advance()
