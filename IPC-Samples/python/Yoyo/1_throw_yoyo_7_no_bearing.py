@@ -38,7 +38,7 @@ workspace = AssetDir.output_path(__file__)
 folder = AssetDir.folder(__file__)
 
 ball_obj = folder / "results" / "v1" /"yoyo-ball.obj"
-string_obj = folder / "results" / "v1" /"yoyo_string_1669.obj"
+string_obj = folder / "results" / "v1" /"yoyo_string_1669_no_bearing.obj"
 
 engine = Engine("cuda", str(workspace))
 world = World(engine)
