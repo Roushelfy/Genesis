@@ -248,11 +248,16 @@ class IPCCouplerOptions(BaseCouplerOptions):
         When set to 'al-ipc', the Augmented Lagrangian IPC pipeline is used instead of the
         standard barrier-based IPC. AL-IPC maintains Lagrange multipliers and active sets for
         each contact, which can improve convergence for stiff contact scenarios.
-    al_ipc_mu_scale : float, optional
-        AL-IPC penalty parameter scale. The actual penalty is ``mass_norm * mu_scale * dt^2``.
-        Higher values give stiffer contacts and faster convergence but may reduce stability.
+    al_ipc_mu_scale_fem : float, optional
+        AL-IPC penalty scale for FEM/cloth bodies. Per-vertex mu is
+        ``vertex_mass * mu_scale_fem * dt^2``. Rarely needs manual tuning.
         Only used when ``contact_constitution='al-ipc'``.
-        Defaults to None (use libuipc default: 5e6).
+        Defaults to None (use libuipc default).
+    al_ipc_mu_scale_abd : float, optional
+        AL-IPC penalty scale for ABD (rigid) bodies. Per-body mu is
+        ``body_mass * mu_scale_abd * dt^2``. Rarely needs manual tuning.
+        Only used when ``contact_constitution='al-ipc'``.
+        Defaults to None (use libuipc default).
     al_ipc_toi_threshold : float, optional
         AL-IPC convergence threshold. The AL loop converges when ``beta >= 1.0 - toi_threshold``.
         Lower values enforce tighter convergence.
@@ -273,11 +278,6 @@ class IPCCouplerOptions(BaseCouplerOptions):
     -----------
     cfl_enable : bool, optional
         Whether to enable CFL (Courant-Friedrichs-Lewy) condition. Defaults to None (use libuipc default: False).
-
-    Sanity Check Options
-    --------------------
-    sanity_check_enable : bool, optional
-        Whether to enable sanity checks. Defaults to None (use libuipc default: True).
 
     Genesis Coupling Options
     ------------------------
@@ -334,7 +334,8 @@ class IPCCouplerOptions(BaseCouplerOptions):
     contact_constitution: str = None
 
     # AL-IPC options (only used when contact_constitution='al-ipc')
-    al_ipc_mu_scale: float = None
+    al_ipc_mu_scale_fem: float = None
+    al_ipc_mu_scale_abd: float = None
     al_ipc_toi_threshold: float = None
     al_ipc_decay_factor: float = None
 
@@ -345,8 +346,6 @@ class IPCCouplerOptions(BaseCouplerOptions):
     cfl_enable: bool = None
 
     # Sanity check options
-    sanity_check_enable: bool = None
-
     # Genesis coupling options
     enable_rigid_ground_contact: bool = True
     enable_rigid_rigid_contact: bool = True

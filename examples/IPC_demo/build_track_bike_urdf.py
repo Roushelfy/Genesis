@@ -198,6 +198,8 @@ def write_urdf(
     rear_wheel_center,
     front_wheel_center,
     sprocket_axis,
+    sprocket_scale,
+    sprocket_init_angle,
     front_sprocket_mesh,
     crank_mesh,
     rear_sprocket_mesh,
@@ -251,13 +253,15 @@ def write_urdf(
   <link name="front_sprocket">
 {fs_inertial}
     <visual>
+      <origin rpy="0 0 {sprocket_init_angle}"/>
       <geometry>
-        <mesh filename="front_sprocket.glb"/>
+        <mesh filename="front_sprocket.glb" scale="{sprocket_scale} {sprocket_scale} {sprocket_scale}"/>
       </geometry>
     </visual>
     <collision>
+      <origin rpy="0 0 {sprocket_init_angle}"/>
       <geometry>
-        <mesh filename="front_sprocket.obj"/>
+        <mesh filename="front_sprocket.obj" scale="{sprocket_scale} {sprocket_scale} {sprocket_scale}"/>
       </geometry>
     </collision>
   </link>
@@ -295,12 +299,12 @@ def write_urdf(
 {rs_inertial}
     <visual>
       <geometry>
-        <mesh filename="rear_sprocket.glb"/>
+        <mesh filename="rear_sprocket.glb" scale="{sprocket_scale} {sprocket_scale} {sprocket_scale}"/>
       </geometry>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="rear_sprocket.obj"/>
+        <mesh filename="rear_sprocket.obj" scale="{sprocket_scale} {sprocket_scale} {sprocket_scale}"/>
       </geometry>
     </collision>
   </link>
@@ -507,6 +511,8 @@ def main():
         rear_wheel_center=rear_wheel_center,
         front_wheel_center=front_wheel_center,
         sprocket_axis=sprocket_axis,
+        sprocket_scale=0.985,
+        sprocket_init_angle=-0.065,
         front_sprocket_mesh=sprocket_20,
         crank_mesh=crank_combined,
         rear_sprocket_mesh=sprocket_8,

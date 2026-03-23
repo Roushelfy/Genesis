@@ -23,7 +23,6 @@ scene = gs.Scene(
         newton_translation_tolerance=10.0,
         linear_system_tolerance=1e-4,
         # newton_semi_implicit_enable=True,
-        sanity_check_enable=True,
         enable_rigid_rigid_contact=False,
         ignore_end_effector_check=True,
     ),

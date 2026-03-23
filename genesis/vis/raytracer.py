@@ -333,7 +333,8 @@ class Raytracer:
         if self.sim.fem_solver.is_active:
             for fem_entity in self.sim.fem_solver.entities:
                 if fem_entity.surface.vis_mode == "visual":
-                    self.add_deformable(str(fem_entity.uid))
+                    for sub_idx in range(len(fem_entity.render_meshes)):
+                        self.add_deformable(f"{fem_entity.uid}_sub{sub_idx}")
 
     def get_transform(self, matrix):
         if matrix is None:
@@ -780,27 +781,36 @@ class Raytracer:
 
         # FEM entities
         if self.sim.fem_solver.is_active:
-            vertices_all, triangles_all, uvs_qd = self.sim.fem_solver.get_state_render(self.sim.cur_substep_local)
+            vertices_all = self.sim.fem_solver.get_state_render(self.sim.cur_substep_local)
             vertices_all = vertices_all.to_numpy()[:, self.rendered_envs_idx[0]]
-            triangles_all = triangles_all.to_numpy().reshape((-1, 3))
-            uvs_all = uvs_qd.to_numpy()
 
             for fem_entity in self.sim.fem_solver.entities:
-                if fem_entity.surface.vis_mode == "visual":
-                    vertices = vertices_all[fem_entity.v_start : fem_entity.v_start + fem_entity.n_vertices]
-                    triangles = (
-                        triangles_all[fem_entity.s_start : (fem_entity.s_start + fem_entity.n_surfaces)]
-                        - fem_entity.v_start
-                    )
-                    vertex_normals = trimesh.Trimesh(vertices=vertices, faces=triangles, process=False).vertex_normals
-                    uvs = uvs_all[fem_entity.v_start : fem_entity.v_start + fem_entity.n_vertices]
+                if fem_entity.surface.vis_mode != "visual":
+                    continue
 
+                from genesis.engine.mesh import LineMesh
+
+                sim_verts = vertices_all[fem_entity.v_start : fem_entity.v_start + fem_entity.n_vertices]
+
+                for sub_idx, (rmesh, svm) in enumerate(zip(fem_entity.render_meshes, fem_entity.sim_vert_maps)):
+                    if isinstance(rmesh, LineMesh):
+                        render_verts = rmesh.build_tube_verts(sim_verts[svm])
+                        render_faces = rmesh.tube_faces
+                    else:
+                        render_verts = sim_verts[svm]
+                        render_faces = rmesh.faces
+                    vertex_normals = trimesh.Trimesh(
+                        vertices=render_verts, faces=render_faces, process=False
+                    ).vertex_normals
+                    render_uvs = (
+                        rmesh.uvs if rmesh.uvs is not None else np.zeros((len(render_verts), 2), dtype=gs.np_float)
+                    )
                     self.update_deformable(
-                        str(fem_entity.uid),
-                        vertices,
-                        triangles,
+                        f"{fem_entity.uid}_sub{sub_idx}",
+                        render_verts,
+                        render_faces,
                         vertex_normals,
-                        uvs,
+                        render_uvs,
                     )
 
         # Flush the update buffer.

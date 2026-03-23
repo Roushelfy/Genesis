@@ -20,8 +20,9 @@ from .options import Options
 
 URDF_FORMAT = ".urdf"
 MJCF_FORMAT = ".xml"
+OBJ_FORMAT = ".obj"
 GLTF_FORMATS = (".glb", ".gltf")
-MESH_FORMATS = (".obj", ".stl", *GLTF_FORMATS)
+MESH_FORMATS = (OBJ_FORMAT, ".stl", *GLTF_FORMATS)
 USD_FORMATS = (".usd", ".usda", ".usdc", ".usdz")
 
 
@@ -550,6 +551,8 @@ class FileMorph(Morph):
     decimate: bool = True
     decimate_face_num: int = 500
     decimate_aggressiveness: int = 2
+    no_decimate_links: List[str] = []
+    no_convexify_links: List[str] = []
     convexify: Optional[bool] = None
     decompose_nonconvex: Optional[bool] = None
     decompose_object_error_threshold: float = 0.15

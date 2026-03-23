@@ -122,7 +122,8 @@ def build_ipc_scene_config(options, simulator):
     _set_if_not_none(config, ["contact", "constitution"], options.contact_constitution)
 
     # AL-IPC options (only effective when contact_constitution='al-ipc')
-    _set_if_not_none(config, ["contact", "al-ipc", "mu_scale"], options.al_ipc_mu_scale)
+    _set_if_not_none(config, ["contact", "al-ipc", "mu_scale_fem"], options.al_ipc_mu_scale_fem)
+    _set_if_not_none(config, ["contact", "al-ipc", "mu_scale_abd"], options.al_ipc_mu_scale_abd)
     _set_if_not_none(config, ["contact", "al-ipc", "toi_threshold"], options.al_ipc_toi_threshold)
     _set_if_not_none(config, ["contact", "al-ipc", "decay_factor"], options.al_ipc_decay_factor)
 
@@ -132,8 +133,7 @@ def build_ipc_scene_config(options, simulator):
     # CFL options
     _set_if_not_none(config, ["cfl", "enable"], options.cfl_enable)
 
-    # Sanity check options
-    _set_if_not_none(config, ["sanity_check", "enable"], options.sanity_check_enable)
+    # Sanity check is always enabled — never disable it; fix geometry issues instead.
 
     # Differential simulation options
     _set_if_not_none(config, ["diff_sim", "enable"], simulator.options.requires_grad)
@@ -178,7 +178,7 @@ def read_ipc_geometry_metadata(geo):
 
     if solver_type == "rigid":
         (idx,) = map(int, meta_attrs.find("link_idx").view())
-    elif solver_type in ("fem", "cloth"):
+    elif solver_type in ("fem", "cloth", "rope"):
         (idx,) = map(int, meta_attrs.find("entity_idx").view())
     else:
         gs.raise_exception(f"Unknown IPC geometry solver_type: {solver_type!r}")

@@ -167,10 +167,10 @@ class RobotTeleop:
             self._is_running = False
 
         self.scene.viewer.register_keybinds(
-            Keybind("move_forward", Key.UP, KeyAction.HOLD, callback=move, args=((-dp, 0, 0),)),
-            Keybind("move_back", Key.DOWN, KeyAction.HOLD, callback=move, args=((dp, 0, 0),)),
-            Keybind("move_left", Key.LEFT, KeyAction.HOLD, callback=move, args=((0, -dp, 0),)),
-            Keybind("move_right", Key.RIGHT, KeyAction.HOLD, callback=move, args=((0, dp, 0),)),
+            Keybind("move_forward", Key.UP, KeyAction.HOLD, callback=move, args=((dp, 0, 0),)),
+            Keybind("move_back", Key.DOWN, KeyAction.HOLD, callback=move, args=((-dp, 0, 0),)),
+            Keybind("move_left", Key.LEFT, KeyAction.HOLD, callback=move, args=((0, dp, 0),)),
+            Keybind("move_right", Key.RIGHT, KeyAction.HOLD, callback=move, args=((0, -dp, 0),)),
             Keybind("move_up", Key.N, KeyAction.HOLD, callback=move, args=((0, 0, dp),)),
             Keybind("move_down", Key.M, KeyAction.HOLD, callback=move, args=((0, 0, -dp),)),
             Keybind("yaw_left", Key.J, KeyAction.HOLD, callback=rotate, args=(2, dr)),

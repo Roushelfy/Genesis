@@ -57,20 +57,12 @@ def main():
 
     config = Scene.default_config()
     config["dt"] = 0.01
-    config["contact"]["d_hat"] = 0.0001
+    config["contact"]["d_hat"] = 0.001
     config["contact"]["constitution"] = "al-ipc" if args.use_al else "ipc"
     config["gravity"] = [[0.0], [0.0], [-9.8]]
     config["newton"]["velocity_tol"] = 0.5
     config["newton"]["transrate_tol"] = 10
     config["newton"]["min_iter"] = 2
-    print("Config:", config)
-    if args.use_al:
-        config["contact"]["al-ipc"]["toi_threshold"] = 0.1
-        # Match Genesis auto mu_scale: corrected for box+ribbon mass ratio
-        # box mass=19.17, ribbon max vertex mass=2.82e-6, ratio=6.8M
-        # mu_scale = default * target/actual = 5e6 * 2.82e-6 / 19.17 = 0.736
-        if not args.no_box and not args.no_ribbon:
-            config["contact"]["al-ipc"]["mu_scale"] = 0.7356699607168192
     print("Config:", config)
     scene = Scene(config)
 
@@ -91,7 +83,7 @@ def main():
         io = SimplicialComplexIO(pre)
         ribbon_mesh = io.read(str(RIBBON_MESH))
         label_surface(ribbon_mesh)
-        slbws.apply_to(ribbon_mesh, moduli=cloth_moduli, mass_density=200.0, thickness=0.0001)
+        slbws.apply_to(ribbon_mesh, moduli=cloth_moduli, mass_density=200.0, thickness=0.00001)
         dsb.apply_to(ribbon_mesh, bending_stiffness=40.0)
         ribbon_obj.geometries().create(ribbon_mesh)
 
