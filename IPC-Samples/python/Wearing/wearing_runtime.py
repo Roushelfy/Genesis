@@ -343,8 +343,9 @@ class WearingRuntimeAPI:
         joint_state = self.urdf_adapter.joint_state()
         output_path = Path(file_path)
         output_path.parent.mkdir(parents=True, exist_ok=True)
+        frame = int(self.world.frame()) if self.world_initialized else 0
         payload = {
-            "frame": int(self.world.frame()),
+            "frame": frame,
             "joint_angles": joint_state,
         }
         with open(output_path, "w", encoding="utf-8") as f:
@@ -399,8 +400,9 @@ class WearingRuntimeAPI:
     def save_inflation_json(self, file_path: str | Path) -> str:
         output_path = Path(file_path)
         output_path.parent.mkdir(parents=True, exist_ok=True)
+        frame = int(self.world.frame()) if self.world_initialized else 0
         payload = {
-            "frame": int(self.world.frame()),
+            "frame": frame,
             "global_scale": float(self.target_global_scale),
             "bone_names": [str(v) for v in self.bone_display_names],
             "bone_scale_by_name": {

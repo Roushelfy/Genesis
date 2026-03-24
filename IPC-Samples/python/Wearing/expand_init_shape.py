@@ -1,6 +1,7 @@
 import argparse
 import fnmatch
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import polyscope as ps
@@ -28,8 +29,15 @@ def _asset_candidates(repo_root: Path, relative_name: str) -> list[Path]:
     ]
 
 
+def _default_asset_path(repo_root: Path, relative_name: str) -> Path:
+    candidates = _asset_candidates(repo_root, relative_name)
+    for path in candidates:
+        if path.exists():
+            return path
+    return candidates[0]
+
+
 def _resolve_asset(repo_root: Path, relative_name: str) -> Path:
-    # Prefer project-local asset folders used by Genesis demos.
     candidates = _asset_candidates(repo_root, relative_name)
     for path in candidates:
         if path.exists():
@@ -39,40 +47,15 @@ def _resolve_asset(repo_root: Path, relative_name: str) -> Path:
     )
 
 
-def _default_asset_path(repo_root: Path, relative_name: str) -> Path:
-    candidates = _asset_candidates(repo_root, relative_name)
-    for path in candidates:
-        if path.exists():
-            return path
-    return candidates[0]
+def _default_assets_output_dir() -> Path:
+    return Path(__file__).resolve().parent / "results" / "v1"
 
 
-def parse_arguments() -> argparse.Namespace:
-    repo_root = Path(__file__).resolve().parents[3]
-    default_urdf = _default_asset_path(repo_root, "locomotion/assets/g1_29dof_rev_1_0.urdf")
-    parser = argparse.ArgumentParser(description="Core-first wearing sample.")
-    parser.add_argument("--backend", default="cuda", type=str, help="Backend name.")
-    parser.add_argument(
-        "--urdf",
-        default=str(default_urdf),
-        type=str,
-        help="URDF file path used to build the skeleton (defaults to DemoAssets/locomotion/assets/g1_29dof_rev_1_0.urdf).",
-    )
-    parser.add_argument(
-        "--urdf-mesh-source",
-        default="collision",
-        choices=["collision", "visual"],
-        help="Mesh source used to build URDF-derived skeleton and capsule estimates.",
-    )
-    parser.add_argument("--no-gui", action="store_true", help="Run smoke test without opening GUI.")
-    parser.add_argument("--steps", default=10, type=int, help="Simulation steps used in --no-gui mode.")
-    parser.add_argument("--disable-mesh-partition", action="store_true", help="Disable mesh_partition for compatibility fallback.")
-    return parser.parse_args()
+def _default_runtime_workspace_dir() -> Path:
+    return Path(__file__).resolve().parents[2] / "output" / "python" / "Wearing"
 
 
 def _build_named_linemesh(vertices: np.ndarray, edges: np.ndarray, edge_names: list[str]) -> None:
-    # Build a line mesh carrying edge-level names for downstream tools.
-    # Do not register it into scene to avoid changing simulation DOF layout.
     mesh = linemesh(vertices, edges)
     if len(edge_names) == int(edges.shape[0]):
         try:
@@ -84,20 +67,17 @@ def _build_named_linemesh(vertices: np.ndarray, edges: np.ndarray, edge_names: l
             pass
 
 
-def _default_assets_output_dir() -> Path:
-    return Path(__file__).resolve().parent / "results"
-
-
-def _default_runtime_workspace_dir() -> Path:
-    return Path(__file__).resolve().parents[2] / "output" / "python" / "Wearing"
-
-
 def setup_scene(
     args: argparse.Namespace,
+    cloth_targets: list[tuple[Any, str]],
     assets_output_dir: str | Path | None = None,
     runtime_workspace_dir: str | Path | None = None,
+    cloth_thickness: float = 0.0001,
+    cloth_young: float = 5.0e1,
+    cloth_poisson: float = 0.45,
+    cloth_mass_density: float = 200.0,
+    cloth_bending_stiffness: float = 10.0,
 ) -> tuple[World, SceneGUI | None, WearingRuntimeAPI, UrdfForwardAdapter | None]:
-    repo_root = Path(__file__).resolve().parents[3]
     assets_dir = Path(assets_output_dir) if assets_output_dir is not None else _default_assets_output_dir()
     workspace_dir = Path(runtime_workspace_dir) if runtime_workspace_dir is not None else _default_runtime_workspace_dir()
     assets_dir.mkdir(parents=True, exist_ok=True)
@@ -107,7 +87,7 @@ def setup_scene(
         raise FileNotFoundError(f"URDF file not found: {urdf_path}")
 
     Timer.disable_all()
-    Logger.set_level(Logger.Level.Warn)
+    Logger.set_level(Logger.Level.Info)
     engine = Engine(args.backend, str(workspace_dir))
     world = World(engine)
 
@@ -123,21 +103,28 @@ def setup_scene(
     scene = Scene(config)
     scene.contact_tabular().default_model(0.05, 1e7)
 
-    io = GeometryIO()
-    cloth_path = _resolve_asset(repo_root, "Sweater-Wearing.obj")
-    cloth_mesh = io.read(str(cloth_path))
-    label_surface(cloth_mesh)
+    if not cloth_targets:
+        raise ValueError("cloth_targets must contain at least one (mesh, name) pair.")
+
     shell = StrainLimitingBaraffWitkinShell()
     bending = DiscreteShellBending()
-    moduli = ElasticModuli2D.youngs_poisson(5.0e1, 0.45)
-    cloth_thickness = 0.0001
-    shell.apply_to(cloth_mesh, moduli=moduli, mass_density=200.0, thickness=cloth_thickness)
-    bending.apply_to(cloth_mesh, bending_stiffness=10.0)
-    cloth_is_dynamic = cloth_mesh.vertices().find(builtin.is_dynamic)
-    view(cloth_is_dynamic)[:] = 0
+    moduli = ElasticModuli2D.youngs_poisson(float(cloth_young), float(cloth_poisson))
+    for cloth_mesh, _name in cloth_targets:
+        label_surface(cloth_mesh)
+        shell.apply_to(
+            cloth_mesh,
+            moduli=moduli,
+            mass_density=float(cloth_mass_density),
+            thickness=float(cloth_thickness),
+        )
+        bending.apply_to(cloth_mesh, bending_stiffness=float(cloth_bending_stiffness))
+        cloth_is_dynamic = cloth_mesh.vertices().find(builtin.is_dynamic)
+        view(cloth_is_dynamic)[:] = 0
 
-    core = WearingCore(scene=scene, world=world, use_mesh_partition=True)
-    core.add_target_mesh(cloth_mesh, "cloth")
+    use_partition = not bool(getattr(args, "disable_mesh_partition", False))
+    core = WearingCore(scene=scene, world=world, use_mesh_partition=use_partition)
+    for cloth_mesh, target_name in cloth_targets:
+        core.add_target_mesh(cloth_mesh, target_name)
 
     urdf_adapter = UrdfForwardAdapter(scene, str(urdf_path), mesh_source=args.urdf_mesh_source)
     (
@@ -154,7 +141,6 @@ def setup_scene(
         raise RuntimeError(f"URDF skeleton is empty: {urdf_path}")
     _build_named_linemesh(skeleton_vertices, skeleton_edges, edge_joint_names)
 
-    # Group-wise unified radius: same kinematic branch uses one radius value.
     grouped_radius = np.asarray(capsule_radii, dtype=np.float64).copy()
     radius_groups: dict[str, list[float]] = {}
     for i in range(grouped_radius.shape[0]):
@@ -190,7 +176,6 @@ def setup_scene(
             continue
         start = capsule_starts[i]
         end = capsule_ends[i]
-        # Use one unified global initial radius for all capsule proxies.
         base_radius = global_initial_radius
         core.add_bone_proxy(start, end, radius=base_radius, name=f"bone_{i}")
         proxy_edge_indices.append(i)
@@ -218,13 +203,45 @@ def setup_scene(
     return world, sgui, runtime, urdf_adapter
 
 
+def parse_arguments() -> argparse.Namespace:
+    repo_root = Path(__file__).resolve().parents[3]
+    default_urdf = _default_asset_path(repo_root, "locomotion/assets/g1_29dof_rev_1_0.urdf")
+    parser = argparse.ArgumentParser(description="Core-first wearing sample.")
+    parser.add_argument("--backend", default="cuda", type=str, help="Backend name.")
+    parser.add_argument(
+        "--urdf",
+        default=str(default_urdf),
+        type=str,
+        help="URDF file path used to build the skeleton (defaults to DemoAssets/locomotion/assets/g1_29dof_rev_1_0.urdf).",
+    )
+    parser.add_argument(
+        "--urdf-mesh-source",
+        default="collision",
+        choices=["collision", "visual"],
+        help="Mesh source used to build URDF-derived skeleton and capsule estimates.",
+    )
+    parser.add_argument("--no-gui", action="store_true", help="Run smoke test without opening GUI.")
+    parser.add_argument("--steps", default=10, type=int, help="Simulation steps used in --no-gui mode.")
+    parser.add_argument("--disable-mesh-partition", action="store_true", help="Disable mesh_partition for compatibility fallback.")
+    return parser.parse_args()
+
+
+def load_sweater_cloth_mesh(repo_root: Path, io: GeometryIO) -> Any:
+    cloth_path = _resolve_asset(repo_root, "Sweater-Wearing.obj")
+    return io.read(str(cloth_path))
+
+
 def main(
     assets_output_dir: str | Path | None = None,
     runtime_workspace_dir: str | Path | None = None,
 ) -> None:
     args = parse_arguments()
+    repo_root = Path(__file__).resolve().parents[3]
+    io = GeometryIO()
+    cloth_mesh = load_sweater_cloth_mesh(repo_root, io)
     world, sgui, runtime, urdf_adapter = setup_scene(
         args,
+        [(cloth_mesh, "cloth")],
         assets_output_dir=assets_output_dir,
         runtime_workspace_dir=runtime_workspace_dir,
     )

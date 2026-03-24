@@ -34,6 +34,7 @@ class WearingGUIController:
     def _draw_save_load_panel(self) -> None:
         if not imgui.CollapsingHeader("Save / Load"):
             return
+        imgui.Text("Load Joint / Load Inflation: ok before first Step (scene-only); Save uses frame 0 until sim runs.")
         if imgui.Button("Export rest/init"):
             self.runtime.export_shapes(self.export_dir_path)
         imgui.SameLine()
