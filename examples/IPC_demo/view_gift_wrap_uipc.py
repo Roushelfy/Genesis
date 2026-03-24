@@ -96,7 +96,7 @@ def main():
         io = SimplicialComplexIO(pre)
         box_mesh = io.read(str(BOX_MESH))
         label_surface(box_mesh)
-        abd.apply_to(box_mesh, 100e6, mass_density=1000.0)
+        abd.apply_to(box_mesh, 100e6, mass_density=20.0)
         box_obj.geometries().create(box_mesh)
 
     # Ground: either half-plane or fixed ABD floor box

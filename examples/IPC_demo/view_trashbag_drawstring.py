@@ -17,12 +17,15 @@ Usage:
 import argparse
 from pathlib import Path
 
+import numpy as np
+
 import genesis as gs
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DEMO_ASSETS = REPO_ROOT / "DemoAssets" / "trashbag_drawstring"
 BAG_MESH = DEMO_ASSETS / "Trashbag_drawstring.glb"
 ROPE_MESH = DEMO_ASSETS / "rope.obj"
+BAG_POS = (0.2, 0.2, 0.2)
 
 
 def main():
@@ -63,7 +66,7 @@ def main():
             newton_min_iterations=2,
             verbose_ipc_log=args.verbose_ipc,
             # AL-IPC (opt-in via --use-al)
-            **(dict(contact_constitution="al-ipc", al_ipc_toi_threshold=0.1) if args.use_al else {}),
+            **(dict(contact_constitution="al-ipc") if args.use_al else {}),
         ),
     )
 
@@ -118,9 +121,62 @@ def main():
             surface=gs.surfaces.Default(color=(0.8, 0.15, 0.1, 1.0)),
         )
 
+    # Four small cubes to pinch and pull the rope at the two gap openings.
+    # Uses two_way_soft_constraint so the rigid solver drives position
+    # while IPC handles contact with the rope.
+    cube_size = 0.02
+    bag_pos = np.array(BAG_POS)
+    gap_z = bag_pos[2] + 0.575  # rope gap arc Z in world
+    gap_offset = 0.015  # vertical offset above/below rope for pinch cubes
+
+    # Gap 1: +Y side of bag — place cubes outside the bag at the gap exit
+    gap1_dir = np.array([0.022, 1.0])
+    gap1_dir /= np.linalg.norm(gap1_dir)
+    gap1_xy = bag_pos[:2] + np.array([0.004, 0.177]) + gap1_dir * 0.04
+    # Gap 2: -X/-Y side of bag
+    gap2_dir = np.array([-0.685, -0.729])
+    gap2_dir /= np.linalg.norm(gap2_dir)
+    gap2_xy = bag_pos[:2] + np.array([-0.129, -0.148]) + gap2_dir * 0.04
+
+    grippers = []
+    for gap_xy, gap_dir in [(gap1_xy, gap1_dir), (gap2_xy, gap2_dir)]:
+        for z_sign in (+1, -1):
+            cube = scene.add_entity(
+                morph=gs.morphs.Box(
+                    pos=(gap_xy[0], gap_xy[1], gap_z + z_sign * gap_offset),
+                    size=(cube_size, cube_size, cube_size),
+                    fixed=False,
+                ),
+                material=gs.materials.Rigid(
+                    rho=2000,
+                    coup_type="two_way_soft_constraint",
+                    coup_friction=0.8,
+                    enable_coup_collision=True,
+                ),
+                surface=gs.surfaces.Plastic(color=(0.3, 0.3, 0.8, 1.0)),
+            )
+            grippers.append((cube, gap_xy, gap_dir, z_sign))
+
     scene.build()
 
+    # Scripted gripper motion:
+    # Phase 1 (steps 0-50): cubes close vertically to pinch the rope
+    # Phase 2 (steps 50+): cubes pull outward along gap direction
+    pinch_speed = 0.002
+    pull_speed = 0.001
+    dt = 0.01
+
     for step in range(args.steps):
+        for cube, gap_xy, gap_dir, z_sign in grippers:
+            # Set linear velocity on the free joint DOFs [vx, vy, vz, wx, wy, wz]
+            dof_vel = np.zeros(6)
+            if step < 50:
+                dof_vel[2] = -z_sign * pinch_speed / dt
+            else:
+                dof_vel[0] = pull_speed * gap_dir[0] / dt
+                dof_vel[1] = pull_speed * gap_dir[1] / dt
+            cube.set_dofs_velocity(dof_vel)
+
         scene.step()
         if step % 50 == 0:
             print(f"  Step {step}")
