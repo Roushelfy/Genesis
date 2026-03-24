@@ -59,7 +59,7 @@ def main():
             newton_translation_tolerance=10,
             newton_min_iterations=2,
             # AL-IPC (opt-in via --use-al)
-            **(dict(contact_constitution="al-ipc", al_ipc_toi_threshold=0.1) if args.use_al else {}),
+            **(dict(contact_constitution="al-ipc") if args.use_al else {}),
         ),
     )
 

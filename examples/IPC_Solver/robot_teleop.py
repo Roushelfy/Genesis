@@ -56,6 +56,8 @@ class RobotTeleop:
         gripper_dofs_idx,
         init_pos=(0.5, 0.0, 0.6),
         init_euler=(0.0, 180.0, 0.0),
+        motor_kp=500.0,
+        motor_kv=50.0,
         gripper_kp=500.0,
         gripper_kv=50.0,
         gripper_init_pos=0.04,
@@ -74,10 +76,13 @@ class RobotTeleop:
             gripper_dofs_idx: Indices (or slice) for the gripper DOFs.
             init_pos: Initial end-effector position (x, y, z).
             init_euler: Initial end-effector orientation in degrees (rx, ry, rz).
+            motor_kp: Proportional gain for arm motor DOFs. None uses robot default.
+            motor_kv: Derivative gain for arm motor DOFs. None uses robot default.
             gripper_kp: Proportional gain for gripper DOFs.
             gripper_kv: Derivative gain for gripper DOFs.
-            gripper_open_pos: Target position for open gripper.
-            gripper_close_force: Force applied when closing gripper.
+            gripper_init_pos: Target position for open gripper.
+            gripper_open_vel: Velocity for opening gripper.
+            gripper_close_vel: Velocity for closing gripper.
             delta_pos: Position increment per key frame.
             delta_rot: Rotation increment per key frame (radians).
             on_step: Optional callback called each step with (teleop_instance,).
@@ -87,6 +92,8 @@ class RobotTeleop:
         self.ee_link = robot.get_link(ee_link_name)
         self.motor_dofs_idx = motor_dofs_idx
         self.gripper_dofs_idx = gripper_dofs_idx
+        self.motor_kp = motor_kp
+        self.motor_kv = motor_kv
         self.gripper_kp = gripper_kp
         self.gripper_kv = gripper_kv
         self.gripper_init_pos = gripper_init_pos
@@ -110,6 +117,8 @@ class RobotTeleop:
 
         Call this after scene.build().
         """
+        self.robot.set_dofs_kp(self.motor_kp, dofs_idx_local=self.motor_dofs_idx)
+        self.robot.set_dofs_kv(self.motor_kv, dofs_idx_local=self.motor_dofs_idx)
         self.robot.set_dofs_kp(self.gripper_kp, dofs_idx_local=self.gripper_dofs_idx)
         self.robot.set_dofs_kv(self.gripper_kv, dofs_idx_local=self.gripper_dofs_idx)
 
@@ -237,7 +246,9 @@ class RobotTeleop:
             ee_link_name="hand",
             motor_dofs_idx=slice(0, 7),
             gripper_dofs_idx=slice(7, 9),
-            gripper_kp=500.0,
+            motor_kp=2000.0,
+            motor_kv=50.0,
+            gripper_kp=1000.0,
             gripper_kv=50.0,
             gripper_init_pos=0.04,
             gripper_open_vel=0.1,

@@ -1113,12 +1113,7 @@ class FEMEntity(Entity):
 
     @property
     def n_elements(self):
-        """Number of elements for the FEM solver (0 for rope/IPC-only 1D entities)."""
-        from genesis.engine.materials.FEM.rope import Rope as RopeMaterial
-
-        if isinstance(self.material, RopeMaterial):
-            # Rope elements (edges) are handled by IPC, not the FEM solver
-            return 0
+        """Number of elements (edges for rope, triangles for cloth, tets for volumetric)."""
         return len(self.elems)
 
     @property

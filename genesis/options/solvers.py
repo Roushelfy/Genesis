@@ -288,6 +288,10 @@ class IPCCouplerOptions(BaseCouplerOptions):
         Whether to enable contact detection between rigid bodies (ABD objects) in the IPC system.
         When False, only soft-soft and soft-rigid collisions are detected by IPC; rigid-rigid
         collisions within IPC are skipped. Defaults to True.
+    enable_fem_fem_friction : bool, optional
+        Whether to enable friction between FEM entities (cloth, rope, volumetric FEM)
+        in the IPC system. When False, FEM-FEM contact pairs have friction set to 0,
+        while FEM-rigid friction is unaffected. Defaults to True.
     restitution : float, optional
         Coefficient of restitution for IPC contact (0 = perfectly inelastic, 1 = perfectly elastic).
         IPC natively computes inelastic contact (e=0). This parameter adds a post-solve velocity
@@ -349,6 +353,7 @@ class IPCCouplerOptions(BaseCouplerOptions):
     # Genesis coupling options
     enable_rigid_ground_contact: bool = True
     enable_rigid_rigid_contact: bool = True
+    enable_fem_fem_friction: bool = True
     restitution: float = 1.0
     ignore_end_effector_check: bool = False
     before_ipc_world_init: Optional[IPCBeforeWorldInitCallback] = None

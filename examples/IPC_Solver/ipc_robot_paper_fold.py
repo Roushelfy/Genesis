@@ -26,6 +26,7 @@ def main():
     )
     parser.add_argument("--no-franka", action="store_true")
     parser.add_argument("--no-table", action="store_true")
+    parser.add_argument("--use-al", action="store_true", help="Use AL-IPC contact constitution")
     args = parser.parse_args()
 
     scene = gs.Scene(
@@ -42,6 +43,7 @@ def main():
             enable_rigid_rigid_contact=True,
             contact_d_hat=0.001,
             contact_resistance=1e7,
+            **(dict(contact_constitution="al-ipc") if args.use_al else {}),
         ),
         viewer_options=gs.options.ViewerOptions(
             camera_pos=(1.5, -0.8, 1.2),

@@ -42,6 +42,7 @@ if TYPE_CHECKING or UIPC_AVAILABLE:
     from uipc.backend import SceneVisitor
     from uipc.constitution import (
         AffineBodyConstitution,
+        AffineBodyShell,
         AffineBodyPrismaticJoint,
         AffineBodyRevoluteJoint,
         DiscreteShellBending,
@@ -389,6 +390,7 @@ class IPCCoupler(RBC):
 
         # ==== IPC Constitutions ====
         self._ipc_abd: AffineBodyConstitution | None = None
+        self._ipc_abd_shell: AffineBodyShell | None = None
         self._ipc_stk: StableNeoHookean | None = None
         self._ipc_stc: SoftTransformConstraint | None = None
         self._ipc_nks: StrainLimitingBaraffWitkinShell | None = None
@@ -943,38 +945,25 @@ class IPCCoupler(RBC):
             else:
                 self._ipc_no_collision_contact.apply_to(rigid_link_geom)
 
-            # Apply ABD constitution
-            if self._ipc_abd is None:
-                self._ipc_abd = AffineBodyConstitution()
-                self._ipc_constitution_tabular.insert(self._ipc_abd)
-
-            # Combine inertial properties from the link and any merged children.
-            link_mass = link.inertial_mass
-            link_com = link.inertial_pos
-            link_inertia = link.inertial_i
-            if merged_children and link_mass is not None:
-                link_mass, link_com, link_inertia = _combine_inertials(link, merged_children)
-
+            # Apply ABD constitution — use AffineBodyShell for non-watertight meshes
+            # (open surfaces like gripper pads) where volume-based mass would be near-zero.
             rho = float(entity.material.rho)
-            use_rigid_quantity = (
-                link_mass is not None
-                and link_com is not None
-                and link_inertia is not None
-                and rho > gs.EPS
-                and float(link_mass) > gs.EPS
-            )
-            if use_rigid_quantity:
-                abd_mass = uipc.geometry.affine_body.from_rigid_body(
-                    float(link_mass),
-                    np.asarray(link_com, dtype=np.float64),
-                    np.asarray(link_inertia, dtype=np.float64),
-                )
-                volume = float(link_mass) / rho
-                self._ipc_abd.apply_to(rigid_link_geom, kappa=ABD_KAPPA * uipc.unit.MPa, mass=abd_mass, volume=volume)
+            mesh_for_check = self._abd_merged_meshes.get(link)
+            is_watertight = mesh_for_check is not None and mesh_for_check.is_watertight
+
+            if is_watertight:
+                if self._ipc_abd is None:
+                    self._ipc_abd = AffineBodyConstitution()
+                    self._ipc_constitution_tabular.insert(self._ipc_abd)
+                self._ipc_abd.apply_to(rigid_link_geom, kappa=ABD_KAPPA * uipc.unit.MPa, mass_density=rho)
             else:
-                # Fallback for links without usable inertial info.
-                self._ipc_abd.apply_to(
-                    rigid_link_geom, kappa=ABD_KAPPA * uipc.unit.MPa, mass_density=entity.material.rho
+                if self._ipc_abd_shell is None:
+                    self._ipc_abd_shell = AffineBodyShell()
+                    self._ipc_constitution_tabular.insert(self._ipc_abd_shell)
+                # Use contact_d_hat as shell thickness — a reasonable scale for thin rigid surfaces.
+                shell_thickness = (self.options.contact_d_hat or 0.001) / 2
+                self._ipc_abd_shell.apply_to(
+                    rigid_link_geom, kappa=ABD_KAPPA * uipc.unit.MPa, mass_density=rho, thickness=shell_thickness
                 )
 
             # Apply SoftTransformConstraint for coupled links
@@ -1203,13 +1192,15 @@ class IPCCoupler(RBC):
             resistance = link.entity.material.contact_resistance or self.options.contact_resistance
             abd_link_infos.append((elem, link, friction, resistance))
 
-        # ---- Non-ABD × Non-ABD pairs ----
+        # ---- Non-ABD × Non-ABD pairs (FEM × FEM) ----
+        enable_fem_fem_friction = self.options.enable_fem_fem_friction
         for i, (elem_i, friction_i, resistance_i) in enumerate(non_abd_infos):
             for elem_j, friction_j, resistance_j in non_abd_infos[i:]:
+                friction_ij = geometric_mean(friction_i, friction_j) if enable_fem_fem_friction else 0.0
                 self._ipc_contact_tabular.insert(
                     elem_i,
                     elem_j,
-                    geometric_mean(friction_i, friction_j),
+                    friction_ij,
                     harmonic_mean(resistance_i, resistance_j),
                     True,
                 )
