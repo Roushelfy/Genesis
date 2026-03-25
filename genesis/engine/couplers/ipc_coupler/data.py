@@ -42,12 +42,10 @@ class ABDLinkData:
 
     Per-step outputs
     ----------------
-    ipc_transforms : np.ndarray | None
+    ipc_transforms : np.ndarray
         (B, 4, 4) — IPC-resolved link transforms.
-        Only allocated for links that need state readback (two_way / ipc_only).
-    ipc_velocities : np.ndarray | None
+    ipc_velocities : np.ndarray
         (B, 4, 4) — IPC-resolved velocity matrices.
-        Only allocated for links that need state readback.
     """
 
     slots: list[GeometrySlot]

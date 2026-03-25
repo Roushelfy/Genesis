@@ -975,6 +975,11 @@ class IPCCoupler(RBC):
                 constraint_strength = np.array(entity.material.coup_stiffness)
                 self._ipc_stc.apply_to(rigid_link_geom, constraint_strength)
 
+                # Enable constraint once at build time (stays enabled for all frames)
+                is_constrained_attr = rigid_link_geom.instances().find(uipc.builtin.is_constrained)
+                if is_constrained_attr is not None:
+                    uipc.view(is_constrained_attr)[0] = 1
+
             # Set geometry attributes (env-independent)
             # external_kinetic: 1 = driven by rigid solver, 0 = IPC-only
             external_kinetic_attr = rigid_link_geom.instances().find(uipc.builtin.external_kinetic)
@@ -1019,26 +1024,12 @@ class IPCCoupler(RBC):
                 slot_meta.create("env_idx", str(env_idx))
                 abd_geom_slots.append(abd_geom_slot)
 
-                # Register animator for coupled links (env-specific: needs abd_obj and env_idx)
-                if is_soft_constraint_target:
-                    self._ipc_animator.insert(
-                        abd_obj, partial(self._animate_rigid_link, weakref.ref(self), link, env_idx)
-                    )
-                # Register animator for ext_art links to update ref_dof_prev each step.
-                # The ExternalArticulationConstraint re-reads this attribute in do_step()
-                # and uses it as the reference DOF state for delta_theta computation.
-                elif is_ext_art:
-                    self._ipc_animator.insert(
-                        abd_obj, partial(self._animate_ext_art_link, weakref.ref(self), link, env_idx)
-                    )
-
             # ---- Store link data ----
-            needs_ipc_state = is_ipc_only or is_soft_constraint_target
             self._abd_data_by_link[link] = ABDLinkData(
                 slots=abd_geom_slots,
                 aim_transforms=np.tile(np.eye(4, dtype=gs.np_float), (self._B, 1, 1)),
-                ipc_transforms=np.tile(np.eye(4, dtype=gs.np_float), (self._B, 1, 1)) if needs_ipc_state else None,
-                ipc_velocities=np.zeros((self._B, 4, 4), dtype=gs.np_float) if needs_ipc_state else None,
+                ipc_transforms=np.tile(np.eye(4, dtype=gs.np_float), (self._B, 1, 1)),
+                ipc_velocities=np.zeros((self._B, 4, 4), dtype=gs.np_float),
             )
 
             # Populate lookup tables
@@ -1272,7 +1263,7 @@ class IPCCoupler(RBC):
                 _n_enabled += 1
                 self._ipc_contact_tabular.insert(elem_i, elem_j, friction_ij, resistance_ij, True)
 
-        gs.logger.info(f"[IPC CONTACT] ABD×ABD pairs: {_n_enabled} enabled, {_n_disabled} disabled")
+        gs.logger.info(f"[IPC CONTACT] ABD x ABD pairs: {_n_enabled} enabled, {_n_disabled} disabled")
 
         # ---- All contact elements (for ground and no-collision registration) ----
         # is_abd: whether the element is an ABD rigid link
@@ -1415,8 +1406,8 @@ class IPCCoupler(RBC):
         if self.options._export_pre_coupling_surface:
             self._export_genesis_surface("after_genesis_before_ipc")
 
-        # Step 2: Pre-advance processing (per entity type)
-        self._pre_advance_external_articulation()
+        # Step 2: Pre-advance processing — write all per-frame data to IPC geometries
+        self._pre_advance_write_ipc_attributes()
         _t2 = _time.perf_counter()
 
         # Debug: dump IPC body info on first frame
@@ -1593,8 +1584,6 @@ class IPCCoupler(RBC):
             if dirty_envs is None:
                 continue
 
-            is_ext_art = self._coup_type_by_entity.get(link.entity) == COUPLING_TYPE.EXTERNAL_ARTICULATION
-
             for env_idx in dirty_envs:
                 abd_body_idx = i_link * self._B + env_idx
                 new_T = links_transform[env_idx, link.idx]
@@ -1605,14 +1594,9 @@ class IPCCoupler(RBC):
                 if velocities is not None:
                     velocities[abd_body_idx] = np.zeros((4, 4), dtype=new_T.dtype)
 
-                # For ext_art links, update the slot geometry's transform attribute
-                # so the animator callback in advance() reads the teleported pose
-                # (not the stale previous-frame pose) when computing ref_dof_prev.
-                if is_ext_art:
-                    slot = abd_data.slots[env_idx]
-                    geom = slot.geometry()
-                    slot_transforms = geom.transforms().view()
-                    slot_transforms[0] = new_T
+                # Update ipc_transforms so _pre_advance_write_ipc_attributes
+                # writes the correct ref_dof_prev for ext_art links.
+                abd_data.ipc_transforms[env_idx] = new_T
 
         self._abd_state_feature.copy_from(self._abd_state_geom)
 
@@ -1736,54 +1720,8 @@ class IPCCoupler(RBC):
     # ============================================================
     # Section 3: Helpers
     # ============================================================
-    @staticmethod
-    def _animate_rigid_link(coupler_ref, link, env_idx, info):
-        """Animator callback for a soft-constraint coupled rigid link.
-
-        Uses a weakref to the coupler to avoid preventing garbage collection.
-        """
-        coupler = coupler_ref()
-        if coupler is None:
-            gs.raise_exception("IPCCoupler was garbage collected while animator callback is still active.")
-
-        geom_slots = info.geo_slots()
-        if not geom_slots:
-            return
-        geom = geom_slots[0].geometry()
-
-        # Enable constraint and set target transform (q_genesis^n)
-        is_constrained_attr = geom.instances().find(uipc.builtin.is_constrained)
-        aim_transform_attr = geom.instances().find(uipc.builtin.aim_transform)
-        assert is_constrained_attr and aim_transform_attr
-        uipc.view(is_constrained_attr)[0] = 1
-        uipc.view(aim_transform_attr)[:] = coupler._abd_data_by_link[link].aim_transforms[env_idx]
-
-    @staticmethod
-    def _animate_ext_art_link(coupler_ref, link, env_idx, info):
-        """Animator callback for an external_articulation link.
-
-        Updates ref_dof_prev from the current body transform so that
-        ExternalArticulationConstraint computes delta_theta relative
-        to the current (possibly teleported) state rather than the
-        stale IPC-internal q_prevs.
-        """
-        coupler = coupler_ref()
-        if coupler is None:
-            gs.raise_exception("IPCCoupler was garbage collected while animator callback is still active.")
-
-        geom_slots = info.geo_slots()
-        if not geom_slots:
-            return
-        geom = geom_slots[0].geometry()
-
-        ref_attr = geom.instances().find("ref_dof_prev")
-        if ref_attr is None:
-            return
-
-        transform_view = geom.transforms().view()
-        uipc.view(ref_attr)[0] = uipc.geometry.affine_body.transform_to_q(
-            np.asarray(transform_view[0], dtype=np.float64)
-        )
+    # Animator callbacks removed — all per-frame IPC attribute writes are now
+    # in _pre_advance_write_ipc_attributes(), avoiding C++→Python→C++ overhead.
 
     def _retrieve_ipc_fem_states(self):
         # IPC world advance/retrieve is handled at Scene level
@@ -1849,8 +1787,6 @@ class IPCCoupler(RBC):
         velocities = vel_attr.view()
 
         for i_link, (link, abd_data) in enumerate(self._abd_data_by_link.items()):
-            if abd_data.ipc_transforms is None:
-                continue
             for env_idx in range(self._B):
                 abd_body_idx = i_link * self._B + env_idx
                 abd_data.ipc_transforms[env_idx] = transforms[abd_body_idx]
@@ -1911,16 +1847,40 @@ class IPCCoupler(RBC):
         for link, abd_data in self._abd_data_by_link.items():
             abd_data.aim_transforms[:] = links_transform[:, link.idx]
 
-    def _pre_advance_external_articulation(self):
-        """
-        Pre-advance processing for external_articulation entities.
-        Prepares articulation data and updates IPC geometry before advance().
-        """
-        if COUPLING_TYPE.EXTERNAL_ARTICULATION not in self._entities_by_coup_type:
-            return
+    def _pre_advance_write_ipc_attributes(self):
+        """Write all per-frame IPC attributes before advance().
 
+        Replaces animator callbacks — writes aim_transform (two-way),
+        ref_dof_prev (ext_art), delta_theta_tilde and mass_matrix (ext_art)
+        directly to IPC geometries.
+        """
+        # 1. Write aim_transform for two_way_soft_constraint links
+        for link, abd_data in self._abd_data_by_link.items():
+            coup_type = self._coup_type_by_entity.get(link.entity)
+            if coup_type != COUPLING_TYPE.TWO_WAY_SOFT_CONSTRAINT:
+                continue
+            for env_idx in range(self._B):
+                geom = abd_data.slots[env_idx].geometry()
+                aim_transform_attr = geom.instances().find(uipc.builtin.aim_transform)
+                uipc.view(aim_transform_attr)[:] = abd_data.aim_transforms[env_idx]
+
+        # 2. Write ref_dof_prev for external_articulation links
+        # Uses ipc_transforms (synced from copy_from via libuipc's write_scene)
+        # instead of reading geom.transforms()
+        for link, abd_data in self._abd_data_by_link.items():
+            coup_type = self._coup_type_by_entity.get(link.entity)
+            if coup_type != COUPLING_TYPE.EXTERNAL_ARTICULATION:
+                continue
+            for env_idx in range(self._B):
+                geom = abd_data.slots[env_idx].geometry()
+                ref_attr = geom.instances().find("ref_dof_prev")
+                if ref_attr is None:
+                    continue
+                T = abd_data.ipc_transforms[env_idx]
+                uipc.view(ref_attr)[0] = uipc.geometry.affine_body.transform_to_q(np.asarray(T, dtype=np.float64))
+
+        # 3. Write delta_theta_tilde and mass_matrix for external_articulation
         for ad in self._articulation_data_by_entity.values():
-            # Update IPC geometry for each articulated entity
             for env_idx in range(self._B):
                 articulation_geom = ad.slots[env_idx].geometry()
 
