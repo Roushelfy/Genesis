@@ -1925,8 +1925,6 @@ class IPCCoupler(RBC):
         links_pos_tc = qd_to_torch(self.rigid_solver.links_state.pos, transpose=True, copy=False)
         links_quat_tc = qd_to_torch(self.rigid_solver.links_state.quat, transpose=True, copy=False)
         for link, abd_data in self._abd_data_by_link.items():
-            if abd_data.ipc_transforms is None:
-                continue
             entity = link.entity
             if not entity._is_ipc_only:
                 continue
@@ -1942,8 +1940,6 @@ class IPCCoupler(RBC):
 
         # ---- Step 1b: Non-fixed base links — write IPC transform to qpos[0:7] ----
         for link, abd_data in self._abd_data_by_link.items():
-            if abd_data.ipc_transforms is None:
-                continue
             entity = link.entity
             if entity._is_ipc_only:
                 continue
@@ -1972,8 +1968,6 @@ class IPCCoupler(RBC):
             links_quat = qd_to_numpy(self.rigid_solver.links_state.quat, transpose=True)
 
             for link, abd_data in self._abd_data_by_link.items():
-                if abd_data.ipc_transforms is None:
-                    continue
                 entity = link.entity
                 if self._coup_type_by_entity.get(entity) != COUPLING_TYPE.TWO_WAY_SOFT_CONSTRAINT:
                     continue
