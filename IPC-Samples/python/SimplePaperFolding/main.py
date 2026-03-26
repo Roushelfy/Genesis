@@ -22,6 +22,7 @@ Controls:
 The simulation auto-pauses after the cycle so the residual fold can be inspected.
 """
 
+import argparse
 import os
 import sys
 import numpy as np
@@ -46,14 +47,6 @@ try:
         label_triangle_orient,
         flip_inward_triangles,
     )
-    from uipc.constitution import (
-        AffineBodyConstitution,
-        SoftTransformConstraint,
-        SoftPositionConstraint,
-        NeoHookeanShell,
-        PlasticDiscreteShellBending,
-        ElasticModuli2D,
-    )
 except ImportError as exc:
     raise SystemExit(
         "This example requires the libuipc Python bindings (`uipc._native.pyuipc`). "
@@ -73,8 +66,10 @@ SHELL_DENSITY = 1200.0
 SHELL_YOUNG = 1.5e9
 SHELL_POISSON = 0.3
 SHELL_BENDING_STIFFNESS = 1.2e6
-SHELL_YIELD_THRESHOLD = 0.05
-SHELL_HARDENING_MODULUS = 0.0
+SHELL_STRAIN_YIELD_THRESHOLD = 0.05
+SHELL_STRAIN_HARDENING_MODULUS = 0.0
+SHELL_STRESS_YIELD_STRESS = 4.2e5
+SHELL_STRESS_HARDENING_MODULUS = 0.0
 
 
 CUBE_SCALE = 0.6
@@ -185,7 +180,28 @@ def upper_arc_point(start: np.ndarray, end: np.ndarray, alpha: float) -> np.ndar
     return center + radius * (np.cos(theta) * u + np.sin(theta) * v)
 
 
-def build_demo():
+def build_demo(bending_model: str = "stress"):
+    try:
+        from uipc.constitution import (
+            AffineBodyConstitution,
+            SoftTransformConstraint,
+            SoftPositionConstraint,
+            NeoHookeanShell,
+            StrainPlasticDiscreteShellBending,
+            StressPlasticDiscreteShellBending,
+            ElasticModuli2D,
+        )
+    except ImportError as exc:
+        raise SystemExit(
+            "This example requires newer libuipc Python bindings with "
+            "`NeoHookeanShell`, `StrainPlasticDiscreteShellBending`, "
+            "`StressPlasticDiscreteShellBending`, `SoftTransformConstraint`, "
+            "`SoftPositionConstraint`, and `ElasticModuli2D`."
+        ) from exc
+
+    if bending_model not in {"strain", "stress"}:
+        raise SystemExit(f"Unknown bending model '{bending_model}'. Available: 'strain', 'stress'.")
+
     Logger.set_level(Logger.Level.Warn)
 
     workspace = AssetDir.output_path(__file__)
@@ -197,6 +213,7 @@ def build_demo():
     config["gravity"] = [[0.0], [0.0], [0.0]]
     config["contact"]["enable"] = True
     config["contact"]["friction"]["enable"] = False
+    config["contact"]["constitution"] = "ipc"
     config["line_search"]["max_iter"] = 12
     config["linear_system"]["tol_rate"] = 1.0e-3
     scene = Scene(config)
@@ -208,28 +225,38 @@ def build_demo():
     cube_object = scene.objects().create("press_cube")
 
     shell = NeoHookeanShell()
-    plastic_bending = PlasticDiscreteShellBending()
     abd = AffineBodyConstitution()
     stc = SoftTransformConstraint()
     spc = SoftPositionConstraint()
+
+    if bending_model == "strain":
+        plastic_bending = StrainPlasticDiscreteShellBending()
+        bending_constitution_name = "StrainPlasticDiscreteShellBending"
+        bending_yield_label = "yield threshold"
+        bending_yield_value = SHELL_STRAIN_YIELD_THRESHOLD
+        bending_hardening_value = SHELL_STRAIN_HARDENING_MODULUS
+    else:
+        plastic_bending = StressPlasticDiscreteShellBending()
+        bending_constitution_name = "StressPlasticDiscreteShellBending"
+        bending_yield_label = "yield stress"
+        bending_yield_value = SHELL_STRESS_YIELD_STRESS
+        bending_hardening_value = SHELL_STRESS_HARDENING_MODULUS
 
     sheet = make_sheet_mesh(SHEET_RESOLUTION, SHEET_SIZE)
     # Enable the MAS preconditioner on the shell solve.
     mesh_partition(sheet, MESH_PARTITION_SIZE)
     moduli = ElasticModuli2D.youngs_poisson(SHELL_YOUNG, SHELL_POISSON)
     shell.apply_to(sheet, moduli, SHELL_DENSITY, SHELL_THICKNESS)
-    try:
+    if bending_model == "strain":
         plastic_bending.apply_to(sheet,
                          SHELL_BENDING_STIFFNESS,
-                         SHELL_YIELD_THRESHOLD,
-                         SHELL_HARDENING_MODULUS)
-        
-    except TypeError as exc:
-        raise SystemExit(
-            "Your installed pyuipc bindings are older than this branch. "
-            "Rebuild/reinstall the Python bindings so PlasticDiscreteShellBending "
-            "is available and accepts (sc, bending_stiffness, yield_threshold, hardening_modulus)."
-        ) from exc
+                         SHELL_STRAIN_YIELD_THRESHOLD,
+                         SHELL_STRAIN_HARDENING_MODULUS)
+    else:
+        plastic_bending.apply_to(sheet,
+                         SHELL_BENDING_STIFFNESS,
+                         SHELL_STRESS_YIELD_STRESS,
+                         SHELL_STRESS_HARDENING_MODULUS)
     spc.apply_to(sheet, 50.0)
     default_contact.apply_to(sheet)
 
@@ -311,17 +338,26 @@ def build_demo():
         "sheet_rest_positions": sheet_rest_positions,
         "moving_corner": corner_d,
         "target_corner": corner_c,
+        "bending_model": bending_model,
+        "bending_constitution_name": bending_constitution_name,
+        "bending_yield_label": bending_yield_label,
+        "bending_yield_value": bending_yield_value,
+        "bending_hardening_value": bending_hardening_value,
     }
 
 
-def run_demo():
-    state = build_demo()
+def run_demo(bending_model: str = "stress"):
+    state = build_demo(bending_model)
     world = state["world"]
     scene_io = state["scene_io"]
     sheet_slot = state["sheet_slot"]
     sheet_rest_positions = state["sheet_rest_positions"]
     moving_corner = state["moving_corner"]
     target_corner = state["target_corner"]
+    bending_constitution_name = state["bending_constitution_name"]
+    bending_yield_label = state["bending_yield_label"]
+    bending_yield_value = state["bending_yield_value"]
+    bending_hardening_value = state["bending_hardening_value"]
 
     ps.init()
     ps.set_ground_plane_mode("none")
@@ -384,8 +420,9 @@ def run_demo():
         psim.Text(f"Arc progress: {arc_alpha:.3f}")
         psim.Text(f"Cube target Y: {cube_y:+.3f}")
         psim.Text(f"Ground Y: {GROUND_Y:+.3f}")
-        psim.Text(f"Yield threshold: {SHELL_YIELD_THRESHOLD:.3f} rad")
-        psim.Text(f"Hardening modulus: {SHELL_HARDENING_MODULUS:.3f}")
+        psim.Text(f"Bending model: {bending_constitution_name}")
+        psim.Text(f"{bending_yield_label.capitalize()}: {bending_yield_value:.3g}")
+        psim.Text(f"Hardening modulus: {bending_hardening_value:.3g}")
         psim.Text(f"Max sheet displacement: {max_disp:.4f}")
         psim.Text(f"Residual crease depth: {crease_depth:.4f}")
         psim.Text(f"Diagonal corner gap: {corner_gap:.4f}")
@@ -397,5 +434,18 @@ def run_demo():
     ps.show()
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="ABD cube -> shell plastic crease demo.")
+    parser.add_argument(
+        "--bending-model",
+        choices=("strain", "stress"),
+        default="stress",
+        dest="bending_model",
+        help="Plastic bending model to use. Default: 'stress'.",
+    )
+    return parser.parse_args()
+
+
 if __name__ == "__main__":
-    run_demo()
+    args = parse_args()
+    run_demo(bending_model=args.bending_model)
