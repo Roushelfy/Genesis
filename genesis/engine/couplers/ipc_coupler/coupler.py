@@ -48,12 +48,14 @@ if TYPE_CHECKING or UIPC_AVAILABLE:
         DiscreteShellBending,
         HookeanSpring,
         KirchhoffRodBending,
+        StrainPlasticDiscreteShellBending,
         StressPlasticDiscreteShellBending,
         ElasticModuli,
         ElasticModuli2D,
         ExternalArticulationConstraint,
         SoftTransformConstraint,
         StableNeoHookean,
+        NeoHookeanShell,
         StrainLimitingBaraffWitkinShell,
     )
     from uipc.core import (
@@ -402,9 +404,11 @@ class IPCCoupler(RBC):
         self._ipc_abd_shell: AffineBodyShell | None = None
         self._ipc_stk: StableNeoHookean | None = None
         self._ipc_stc: SoftTransformConstraint | None = None
-        self._ipc_nks: StrainLimitingBaraffWitkinShell | None = None
+        self._ipc_nhs: NeoHookeanShell | None = None
+        self._ipc_slbws: StrainLimitingBaraffWitkinShell | None = None
         self._ipc_dsb: DiscreteShellBending | None = None
-        self._ipc_pdsb: StressPlasticDiscreteShellBending | None = None
+        self._ipc_stress_pdsb: StressPlasticDiscreteShellBending | None = None
+        self._ipc_strain_pdsb: StrainPlasticDiscreteShellBending | None = None
         self._ipc_hks: HookeanSpring | None = None
         self._ipc_krb: KirchhoffRodBending | None = None
         self._ipc_eac: ExternalArticulationConstraint | None = None
@@ -759,29 +763,48 @@ class IPCCoupler(RBC):
 
                     self._ipc_krb.apply_to(mesh, E=entity.material.bending_stiffness)
             elif is_cloth:
-                if self._ipc_nks is None:
-                    self._ipc_nks = StrainLimitingBaraffWitkinShell()
-                    self._ipc_constitution_tabular.insert(self._ipc_nks)
-
                 moduli = ElasticModuli2D.youngs_poisson(entity.material.E, entity.material.nu)
-                self._ipc_nks.apply_to(
-                    mesh, moduli=moduli, mass_density=entity.material.rho, thickness=entity.material.thickness
-                )
+                shell_model = entity.material.model
+
+                if shell_model == "neohookean":
+                    if self._ipc_nhs is None:
+                        self._ipc_nhs = NeoHookeanShell()
+                        self._ipc_constitution_tabular.insert(self._ipc_nhs)
+                    self._ipc_nhs.apply_to(
+                        mesh, moduli=moduli, mass_density=entity.material.rho, thickness=entity.material.thickness
+                    )
+                else:
+                    if self._ipc_slbws is None:
+                        self._ipc_slbws = StrainLimitingBaraffWitkinShell()
+                        self._ipc_constitution_tabular.insert(self._ipc_slbws)
+                    self._ipc_slbws.apply_to(
+                        mesh, moduli=moduli, mass_density=entity.material.rho, thickness=entity.material.thickness
+                    )
 
                 if entity.material.bending_stiffness is not None:
                     is_paper = isinstance(entity.material, Paper)
                     if is_paper:
-                        # Stress-based plastic bending for Paper material
-                        if self._ipc_pdsb is None:
-                            self._ipc_pdsb = StressPlasticDiscreteShellBending()
-                            self._ipc_constitution_tabular.insert(self._ipc_pdsb)
-
-                        self._ipc_pdsb.apply_to(
-                            mesh,
-                            bending_stiffness=entity.material.bending_stiffness,
-                            yield_stress=entity.material.yield_stress,
-                            hardening_modulus=entity.material.hardening_modulus,
-                        )
+                        # Plastic bending for Paper material
+                        if entity.material.plasticity_model == "stress":
+                            if self._ipc_stress_pdsb is None:
+                                self._ipc_stress_pdsb = StressPlasticDiscreteShellBending()
+                                self._ipc_constitution_tabular.insert(self._ipc_stress_pdsb)
+                            self._ipc_stress_pdsb.apply_to(
+                                mesh,
+                                bending_stiffness=entity.material.bending_stiffness,
+                                yield_stress=entity.material.yield_stress,
+                                hardening_modulus=entity.material.hardening_modulus,
+                            )
+                        else:
+                            if self._ipc_strain_pdsb is None:
+                                self._ipc_strain_pdsb = StrainPlasticDiscreteShellBending()
+                                self._ipc_constitution_tabular.insert(self._ipc_strain_pdsb)
+                            self._ipc_strain_pdsb.apply_to(
+                                mesh,
+                                bending_stiffness=entity.material.bending_stiffness,
+                                yield_threshold=entity.material.yield_threshold,
+                                hardening_modulus=entity.material.hardening_modulus,
+                            )
                     else:
                         # Elastic bending for Cloth material
                         if self._ipc_dsb is None:
@@ -976,6 +999,9 @@ class IPCCoupler(RBC):
                     self._ipc_abd = AffineBodyConstitution()
                     self._ipc_constitution_tabular.insert(self._ipc_abd)
                 self._ipc_abd.apply_to(rigid_link_geom, kappa=ABD_KAPPA * uipc.unit.MPa, mass_density=rho)
+                # Explicitly set thickness=0 so the sanity check merge doesn't
+                # inherit a non-zero default from AffineBodyShell geometries.
+                rigid_link_geom.vertices().create(uipc.builtin.thickness, 0.0)
             else:
                 if self._ipc_abd_shell is None:
                     self._ipc_abd_shell = AffineBodyShell()
