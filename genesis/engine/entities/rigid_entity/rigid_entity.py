@@ -1730,6 +1730,8 @@ class RigidEntity(KinematicEntity):
         morph_heterogeneous: list[Morph] | None = None,
         name: str | None = None,
     ):
+        from genesis.engine.couplers.ipc_coupler.coupler import IPCCoupler
+
         self._geom_start = geom_start
         self._cell_start = cell_start
         self._vert_start = vert_start
@@ -1741,14 +1743,16 @@ class RigidEntity(KinematicEntity):
         self._free_verts_idx_local = torch.tensor([], dtype=gs.tc_int, device=gs.device)
         self._fixed_verts_idx_local = torch.tensor([], dtype=gs.tc_int, device=gs.device)
         self._visualize_contact: bool = visualize_contact
-
         self._batch_fixed_verts: bool = morph.batch_fixed_verts
+
+        self._delegation: str | None = None
+        if isinstance(scene.sim.coupler, IPCCoupler) and material.coup_type == "ipc_only":
+            self._delegation = "ipc"
 
         # ipc_only entities: IPC fully controls dynamics, so we convert their FREE
         # joint to FIXED (0 DOFs in constraint solver). We force batch_fixed_verts
         # so that geometry vertices are stored per-batch despite the FIXED joint.
-        self._is_ipc_only: bool = material.coup_type == "ipc_only"
-        if self._is_ipc_only:
+        if self._delegation is not None:
             self._batch_fixed_verts = True
 
         super().__init__(
@@ -1773,7 +1777,7 @@ class RigidEntity(KinematicEntity):
     def _create_joints(self, j_infos, link_idx, joint_start):
         # ipc_only entities: convert FREE joint to FIXED so they contribute 0 DOFs
         # to the constraint solver. IPC fully controls their dynamics.
-        if self._is_ipc_only:
+        if self._delegation is not None:
             for j_info in j_infos:
                 if j_info["type"] == gs.JOINT_TYPE.FREE:
                     j_info["type"] = gs.JOINT_TYPE.FIXED
@@ -1788,6 +1792,11 @@ class RigidEntity(KinematicEntity):
                     j_info["dofs_friction_loss"] = np.zeros(0)
 
         super()._create_joints(j_infos, link_idx, joint_start)
+
+    @property
+    def delegation(self) -> str | None:
+        """Solver delegation mode. ``'ipc'`` if IPC fully controls this entity, else ``None``."""
+        return self._delegation
 
     def _add_heterogeneous_variant(self, link, cg_infos, vg_infos):
         # Add collision geometries
@@ -3030,6 +3039,9 @@ class RigidEntity(KinematicEntity):
             Whether the position to set is absolute or relative to the initial (not current!) position. Defaults to
             False.
         """
+        # Delegated entities (ipc_only) have no DOFs to zero
+        if self._delegation is not None:
+            zero_velocity = False
         super().set_pos(pos, envs_idx, zero_velocity=zero_velocity, relative=relative)
 
     @gs.assert_built
@@ -3055,6 +3067,8 @@ class RigidEntity(KinematicEntity):
             Whether the quaternion to set is absolute or relative to the initial (not current!) quaternion. Defaults to
             False.
         """
+        if self._delegation is not None:
+            zero_velocity = False
         super().set_quat(quat, envs_idx, zero_velocity=zero_velocity, relative=relative)
 
     @gs.assert_built
@@ -3114,7 +3128,7 @@ class RigidEntity(KinematicEntity):
             Whether to zero the velocity of all the entity's dofs. Defaults to True. This is a safety measure after a
             sudden change in entity pose.
         """
-        if self._is_ipc_only:
+        if self._delegation is not None:
             gs.raise_exception("ipc_only entities have no qpos. Use set_pos() and set_quat() instead.")
         super().set_qpos(qpos, qs_idx_local, envs_idx, zero_velocity=zero_velocity, skip_forward=skip_forward)
 
@@ -3237,7 +3251,7 @@ class RigidEntity(KinematicEntity):
             Whether to zero the velocity of all the entity's dofs. Defaults to True. This is a safety measure after a
             sudden change in entity pose.
         """
-        if self._is_ipc_only:
+        if self._delegation is not None:
             gs.raise_exception("ipc_only entities have no DOFs. Use set_pos() and set_quat() instead.")
         super().set_dofs_position(position, dofs_idx_local, envs_idx, zero_velocity=zero_velocity)
 
@@ -3256,6 +3270,8 @@ class RigidEntity(KinematicEntity):
         envs_idx : None | array_like, optional
             The indices of the environments. If None, all environments will be considered. Defaults to None.
         """
+        if self._delegation is not None:
+            gs.raise_exception("This method is not supported for `coup_type='ipc_only'` entities.")
         super().set_dofs_velocity(velocity, dofs_idx_local, envs_idx, skip_forward=skip_forward)
 
     # ------------------------------------------------------------------------------------
@@ -3276,9 +3292,7 @@ class RigidEntity(KinematicEntity):
         envs_idx : None | array_like, optional
             The indices of the environments. If None, all environments will be considered. Defaults to None.
         """
-        from genesis.engine.couplers import IPCCoupler
-
-        if isinstance(self.sim.coupler, IPCCoupler) and self.material.coup_type == "ipc_only":
+        if self._delegation is not None:
             gs.raise_exception("This method is not supported for `coup_type='ipc_only'` entities.")
 
         dofs_idx = self._get_global_idx(dofs_idx_local, self.n_dofs, self._dof_start, unsafe=True)
@@ -3298,9 +3312,7 @@ class RigidEntity(KinematicEntity):
         envs_idx : None | array_like, optional
             The indices of the environments. If None, all environments will be considered. Defaults to None.
         """
-        from genesis.engine.couplers import IPCCoupler
-
-        if isinstance(self.sim.coupler, IPCCoupler) and self.material.coup_type == "ipc_only":
+        if self._delegation is not None:
             gs.raise_exception("This method is not supported for `coup_type='ipc_only'` entities.")
 
         dofs_idx = self._get_global_idx(dofs_idx_local, self.n_dofs, self._dof_start, unsafe=True)
@@ -3321,9 +3333,7 @@ class RigidEntity(KinematicEntity):
         envs_idx : array_like, optional
             The indices of the environments. If None, all environments will be considered. Defaults to None.
         """
-        from genesis.engine.couplers import IPCCoupler
-
-        if isinstance(self.sim.coupler, IPCCoupler) and self.material.coup_type == "ipc_only":
+        if self._delegation is not None:
             gs.raise_exception("This method is not supported for `coup_type='ipc_only'` entities.")
 
         dofs_idx = self._get_global_idx(dofs_idx_local, self.n_dofs, self._dof_start, unsafe=True)
@@ -3345,9 +3355,7 @@ class RigidEntity(KinematicEntity):
         envs_idx : None | array_like, optional
             The indices of the environments. If None, all environments will be considered. Defaults to None.
         """
-        from genesis.engine.couplers import IPCCoupler
-
-        if isinstance(self.sim.coupler, IPCCoupler) and self.material.coup_type == "ipc_only":
+        if self._delegation is not None:
             gs.raise_exception("This method is not supported for `coup_type='ipc_only'` entities.")
 
         dofs_idx = self._get_global_idx(dofs_idx_local, self.n_dofs, self._dof_start, unsafe=True)

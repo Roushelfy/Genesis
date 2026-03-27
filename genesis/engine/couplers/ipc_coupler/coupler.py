@@ -48,7 +48,7 @@ if TYPE_CHECKING or UIPC_AVAILABLE:
         DiscreteShellBending,
         HookeanSpring,
         KirchhoffRodBending,
-        PlasticDiscreteShellBending,
+        StressPlasticDiscreteShellBending,
         ElasticModuli,
         ElasticModuli2D,
         ExternalArticulationConstraint,
@@ -56,7 +56,16 @@ if TYPE_CHECKING or UIPC_AVAILABLE:
         StableNeoHookean,
         StrainLimitingBaraffWitkinShell,
     )
-    from uipc.core import Engine, World, Scene, SceneIO, AffineBodyStateAccessorFeature, ContactElement, SubsceneElement
+    from uipc.core import (
+        Engine,
+        World,
+        Scene,
+        SceneIO,
+        AffineBodyStateAccessorFeature,
+        FiniteElementStateAccessorFeature,
+        ContactElement,
+        SubsceneElement,
+    )
     from uipc.geometry import GeometrySlot, SimplicialComplex, SimplicialComplexSlot
     from uipc.gui import SceneGUI
 
@@ -169,7 +178,7 @@ def _link_is_fixed_for_ipc(link: "RigidLink") -> bool:
     always True, but the body should only be fixed if the morph was originally
     fixed. For other coupling types, link.is_fixed is correct.
     """
-    if getattr(link.entity, "_is_ipc_only", False):
+    if link.entity.delegation is not None:
         return link.entity.morph.fixed
     return link.is_fixed
 
@@ -395,7 +404,7 @@ class IPCCoupler(RBC):
         self._ipc_stc: SoftTransformConstraint | None = None
         self._ipc_nks: StrainLimitingBaraffWitkinShell | None = None
         self._ipc_dsb: DiscreteShellBending | None = None
-        self._ipc_pdsb: PlasticDiscreteShellBending | None = None
+        self._ipc_pdsb: StressPlasticDiscreteShellBending | None = None
         self._ipc_hks: HookeanSpring | None = None
         self._ipc_krb: KirchhoffRodBending | None = None
         self._ipc_eac: ExternalArticulationConstraint | None = None
@@ -419,6 +428,13 @@ class IPCCoupler(RBC):
         self._coupling_collision_settings: dict["RigidEntity", dict["RigidLink", bool]] = {}
         self._entities_by_coup_type: dict[COUPLING_TYPE, list["RigidEntity"]] = {}
 
+        # ==== FEM Geometry & State ====
+        # Per-entity FEM geometry slots, one list per env: entity → list[GeometrySlot] indexed by env
+        self._fem_state_feature: "FiniteElementStateAccessorFeature | None" = None
+        self._fem_state_geom: SimplicialComplex | None = None
+        # FEM entities whose IPC positions need sync: entity → set of dirty env indices.
+        self._fem_updated_entities: dict["FEMEntity", set[int]] = {}
+
         # ==== ABD Geometry & State ====
         # Cached merged world-frame trimesh per link for neutral-pose overlap check
         self._abd_merged_meshes: dict["RigidLink", trimesh.Trimesh] = {}
@@ -437,6 +453,7 @@ class IPCCoupler(RBC):
         # ==== Input/Output Data ====
         self._abd_data_by_link: dict["RigidLink", ABDLinkData] = {}
         self._articulation_data_by_entity: dict["RigidEntity", ArticulatedEntityData] = {}
+        self._fem_slots_by_entity: dict["FEMEntity", list] = {}
 
         # ==== User hooks ====
         # Callbacks invoked after _add_objects_to_ipc() but before _finalize_ipc().
@@ -754,15 +771,15 @@ class IPCCoupler(RBC):
                 if entity.material.bending_stiffness is not None:
                     is_paper = isinstance(entity.material, Paper)
                     if is_paper:
-                        # Plastic bending for Paper material
+                        # Stress-based plastic bending for Paper material
                         if self._ipc_pdsb is None:
-                            self._ipc_pdsb = PlasticDiscreteShellBending()
+                            self._ipc_pdsb = StressPlasticDiscreteShellBending()
                             self._ipc_constitution_tabular.insert(self._ipc_pdsb)
 
                         self._ipc_pdsb.apply_to(
                             mesh,
                             bending_stiffness=entity.material.bending_stiffness,
-                            yield_threshold=entity.material.yield_threshold,
+                            yield_stress=entity.material.yield_stress,
                             hardening_modulus=entity.material.hardening_modulus,
                         )
                     else:
@@ -785,9 +802,11 @@ class IPCCoupler(RBC):
             uipc.geometry.mesh_partition(mesh)
 
             # ---- Per-environment: create IPC objects, then set per-env attrs on slot geometry ----
+            fem_slots: list = []
             for env_idx in range(self._B):
                 fem_obj = self._ipc_objects.create(f"{solver_type}_{i_e}_{env_idx}")
                 fem_geom_slot, _ = fem_obj.geometries().create(mesh)
+                fem_slots.append(fem_geom_slot)
 
                 # All per-env writes go on the slot's own geometry (deep-copied)
                 slot_geom = fem_geom_slot.geometry()
@@ -798,6 +817,7 @@ class IPCCoupler(RBC):
                 slot_meta.create("entity_idx", str(i_e))
                 slot_meta.create("entity_name", str(entity.name))
                 slot_meta.create("env_idx", str(env_idx))
+            self._fem_slots_by_entity[entity] = fem_slots
 
     def _add_rigid_geoms_to_ipc(self) -> None:
         """Add rigid geoms to the IPC scene as ABD objects, merging geoms by link."""
@@ -1323,28 +1343,37 @@ class IPCCoupler(RBC):
         assert gs.logger is not None
         assert self._ipc_world is not None
 
-        # No ABD bodies, feature not needed
-        if not self._abd_data_by_link:
-            return
+        # ---- ABD state accessor ----
+        if self._abd_data_by_link:
+            abd_links = list(self._abd_data_by_link.keys())
+            n_abd_links = len(abd_links)
 
-        abd_links = list(self._abd_data_by_link.keys())
-        n_abd_links = len(abd_links)
+            self._abd_state_feature = cast(
+                AffineBodyStateAccessorFeature, self._ipc_world.features().find(AffineBodyStateAccessorFeature)
+            )
+            body_count = self._abd_state_feature.body_count()
 
-        self._abd_state_feature = cast(
-            AffineBodyStateAccessorFeature, self._ipc_world.features().find(AffineBodyStateAccessorFeature)
-        )
-        body_count = self._abd_state_feature.body_count()
+            # Verify IPC has at least as many ABD bodies as we expect.
+            # Extra bodies may exist from user pre-finalize hooks (e.g. pin rods, joints).
+            expected = n_abd_links * self._B
+            if body_count < expected:
+                gs.raise_exception(f"ABD body count too low: got {body_count}, expected at least {expected}.")
 
-        # Verify IPC has at least as many ABD bodies as we expect.
-        # Extra bodies may exist from user pre-finalize hooks (e.g. pin rods, joints).
-        expected = n_abd_links * self._B
-        if body_count < expected:
-            gs.raise_exception(f"ABD body count too low: got {body_count}, expected at least {expected}.")
+            # Create state geometry for batch data transfer
+            self._abd_state_geom = self._abd_state_feature.create_geometry()
+            self._abd_state_geom.instances().create(uipc.builtin.transform, np.eye(4, dtype=np.float64))
+            self._abd_state_geom.instances().create(uipc.builtin.velocity, np.zeros((4, 4), dtype=np.float64))
 
-        # Create state geometry for batch data transfer
-        self._abd_state_geom = self._abd_state_feature.create_geometry()
-        self._abd_state_geom.instances().create(uipc.builtin.transform, np.eye(4, dtype=np.float64))
-        self._abd_state_geom.instances().create(uipc.builtin.velocity, np.zeros((4, 4), dtype=np.float64))
+        # ---- FEM state accessor ----
+        if self._fem_slots_by_entity:
+            self._fem_state_feature = cast(
+                FiniteElementStateAccessorFeature,
+                self._ipc_world.features().find(FiniteElementStateAccessorFeature),
+            )
+            if self._fem_state_feature is not None:
+                self._fem_state_geom = self._fem_state_feature.create_geometry()
+                self._fem_state_geom.vertices().create(uipc.builtin.position, np.zeros(3, dtype=np.float64))
+                self._fem_state_geom.vertices().create(uipc.builtin.velocity, np.zeros(3, dtype=np.float64))
 
     def _init_ipc_gui(self):
         """Initialize polyscope-based IPC GUI viewer."""
@@ -1601,6 +1630,57 @@ class IPCCoupler(RBC):
         self._abd_state_feature.copy_from(self._abd_state_geom)
 
         self._abd_updated_links.clear()
+
+    def mark_fem_updated(self, entity: "FEMEntity", envs_idx=None):
+        """Mark a FEM entity as needing IPC position sync."""
+        if entity not in self._fem_slots_by_entity:
+            return
+        all_envs = set(range(self._B)) if self._B > 0 else {0}
+        env_set = all_envs if envs_idx is None else set(int(i) for i in envs_idx)
+        existing = self._fem_updated_entities.get(entity)
+        if existing is None:
+            self._fem_updated_entities[entity] = env_set.copy()
+        else:
+            existing.update(env_set)
+
+    def cache_fem_positions(self):
+        """Sync FEM vertex positions from Genesis to IPC before advance.
+
+        Called when the user modifies FEM positions via set_position().
+        Writes the new positions (and zero velocity) to IPC's internal
+        FEM state via FiniteElementStateAccessorFeature.copy_from().
+        """
+        if not self._fem_updated_entities or self._fem_state_feature is None:
+            return
+
+        assert self._fem_state_geom is not None
+
+        self._fem_state_feature.copy_to(self._fem_state_geom)
+        pos_attr = self._fem_state_geom.vertices().find(uipc.builtin.position)
+        vel_attr = self._fem_state_geom.vertices().find(uipc.builtin.velocity)
+        positions = pos_attr.view()
+        velocities = vel_attr.view() if vel_attr is not None else None
+
+        # FEM vertex order in IPC matches the order geometries were added.
+        # Each entity-env pair occupies a contiguous block of vertices.
+        # Read current positions from the solver state via get_frame().
+        offset = 0
+        for entity, slots in self._fem_slots_by_entity.items():
+            n_verts = entity.n_vertices
+            dirty_envs = self._fem_updated_entities.get(entity)
+            if dirty_envs is not None:
+                state = entity.get_state()
+                entity_pos = state.pos.numpy()
+            for env_idx, slot in enumerate(slots):
+                if dirty_envs is not None and env_idx in dirty_envs:
+                    # IPC stores positions as (N, 3, 1) column vectors
+                    positions[offset : offset + n_verts] = entity_pos[env_idx].astype(np.float64).reshape(-1, 3, 1)
+                    if velocities is not None:
+                        velocities[offset : offset + n_verts] = 0.0
+                offset += n_verts
+
+        self._fem_state_feature.copy_from(self._fem_state_geom)
+        self._fem_updated_entities.clear()
 
     @property
     def is_active(self) -> bool:
@@ -1926,7 +2006,7 @@ class IPCCoupler(RBC):
         links_quat_tc = qd_to_torch(self.rigid_solver.links_state.quat, transpose=True, copy=False)
         for link, abd_data in self._abd_data_by_link.items():
             entity = link.entity
-            if not entity._is_ipc_only:
+            if not (entity.delegation is not None):
                 continue
             if link is not entity.base_link:
                 continue
@@ -1941,7 +2021,7 @@ class IPCCoupler(RBC):
         # ---- Step 1b: Non-fixed base links — write IPC transform to qpos[0:7] ----
         for link, abd_data in self._abd_data_by_link.items():
             entity = link.entity
-            if entity._is_ipc_only:
+            if entity.delegation is not None:
                 continue
             if link is not entity.base_link or entity.base_link.is_fixed:
                 continue

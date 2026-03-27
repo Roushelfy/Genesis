@@ -1,9 +1,9 @@
 """
-Paper material for IPC-based shell simulation with plastic bending.
+Paper material for IPC-based shell simulation with stress-based plastic bending.
 
 This material inherits from Cloth, replacing elastic bending (DiscreteShellBending)
-with plastic bending (PlasticDiscreteShellBending) from libuipc.  The membrane
-response stays unchanged (StrainLimitingBaraffWitkinShell).
+with stress-based plastic bending (StressPlasticDiscreteShellBending) from libuipc.
+The membrane response stays unchanged (StrainLimitingBaraffWitkinShell).
 """
 
 from .cloth import Cloth
@@ -11,13 +11,13 @@ from .cloth import Cloth
 
 class Paper(Cloth):
     """
-    Paper material with plastic bending for thin shell simulation using IPC.
+    Paper material with stress-based plastic bending for thin shell simulation using IPC.
 
     Extends Cloth by adding plasticity parameters that drive
-    ``PlasticDiscreteShellBending`` in the IPC backend.  When the dihedral
-    angle at an edge exceeds ``yield_threshold``, the rest angle evolves
-    permanently (crease formation).  ``hardening_modulus`` controls how
-    much the yield threshold grows with accumulated plastic strain.
+    ``StressPlasticDiscreteShellBending`` in the IPC backend.  When the
+    bending moment at an edge exceeds ``yield_stress``, the rest angle
+    evolves permanently (crease formation).  ``hardening_modulus`` controls
+    isotropic hardening in stress space.
 
     Parameters
     ----------
@@ -32,14 +32,13 @@ class Paper(Cloth):
     bending_stiffness : float, optional
         Bending stiffness (kPa). Required for plastic bending to have
         any effect. Default is 4e3.
-    yield_threshold : float, optional
-        Yield threshold on dihedral angle deviation (radians). Bending
-        beyond this angle causes permanent plastic deformation. Default
-        is 0.02 (~1.15°).
+    yield_stress : float, optional
+        Yield stress on generalized bending moment. Bending beyond this
+        stress causes permanent plastic deformation. Default is 960.0.
     hardening_modulus : float, optional
-        Linear hardening modulus. 0 gives perfect plasticity (constant
-        yield threshold); positive values increase the threshold after
-        each plastic event. Default is 0.1.
+        Isotropic hardening modulus in stress space. 0 gives perfect
+        plasticity; positive values increase the yield stress after
+        each plastic event. Default is 0.0.
     friction_mu : float, optional
         Friction coefficient. Default is 0.3.
     contact_resistance : float | None, optional
@@ -52,8 +51,7 @@ class Paper(Cloth):
     ...     material=gs.materials.FEM.Paper(
     ...         E=1e5, thickness=0.0003,
     ...         bending_stiffness=4e3,
-    ...         yield_threshold=0.02,
-    ...         hardening_modulus=0.1,
+    ...         yield_stress=960.0,
     ...     ),
     ... )
     """
@@ -65,8 +63,8 @@ class Paper(Cloth):
         rho=700.0,
         thickness=0.0003,
         bending_stiffness=4e3,
-        yield_threshold=0.02,
-        hardening_modulus=0.1,
+        yield_stress=960.0,
+        hardening_modulus=0.0,
         model="stable_neohookean",
         friction_mu=0.3,
         contact_resistance=None,
@@ -82,22 +80,22 @@ class Paper(Cloth):
             contact_resistance=contact_resistance,
         )
 
-        self._yield_threshold = yield_threshold
+        self._yield_stress = yield_stress
         self._hardening_modulus = hardening_modulus
 
     @property
-    def yield_threshold(self):
-        """Yield threshold on dihedral angle deviation (radians)."""
-        return self._yield_threshold
+    def yield_stress(self):
+        """Yield stress on generalized bending moment."""
+        return self._yield_stress
 
     @property
     def hardening_modulus(self):
-        """Linear hardening modulus for plastic bending."""
+        """Isotropic hardening modulus in stress space."""
         return self._hardening_modulus
 
     def __repr__(self):
         return (
             f"<gs.materials.FEM.Paper(E={self.E}, nu={self.nu}, rho={self.rho}, "
             f"thickness={self.thickness}, bending_stiffness={self.bending_stiffness}, "
-            f"yield_threshold={self.yield_threshold}, hardening_modulus={self.hardening_modulus})>"
+            f"yield_stress={self.yield_stress}, hardening_modulus={self.hardening_modulus})>"
         )

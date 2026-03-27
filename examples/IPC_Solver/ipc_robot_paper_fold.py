@@ -120,8 +120,8 @@ def main():
             rho=700.0,
             thickness=0.0001,
             bending_stiffness=1e4,
-            yield_threshold=0.05,
-            hardening_modulus=0.2,
+            yield_stress=960.0,
+            hardening_modulus=0.0,
             friction_mu=0.5,
         ),
         # No surface specified — uses the OBJ's MTL texture (fold lines on paper)
