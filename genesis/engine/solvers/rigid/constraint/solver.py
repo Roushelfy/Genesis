@@ -101,7 +101,10 @@ class ConstraintSolver:
             self.cg_prev_Mgrad = cs.cg_prev_Mgrad
             self.cg_beta = cs.cg_beta
             self.cg_pg_dot_pMg = cs.cg_pg_dot_pMg
-        if self._solver_type == gs.constraint_solver.Newton:
+        # Both CG and Newton need the Hessian for proper preconditioning.
+        # CG's block-diagonal mass preconditioner diverges with multiple
+        # articulated entities; using the full Hessian (like Newton) fixes this.
+        if self._solver_type in (gs.constraint_solver.Newton, gs.constraint_solver.CG):
             self.nt_H = cs.nt_H
             self.nt_vec = cs.nt_vec
 
@@ -2533,7 +2536,7 @@ def func_update_constraint_batch(
 
     # Beware 'active' does not refer to whether a constraint is active, but rather whether its quadratic cost is active
     for i_c in range(constraint_state.n_constraints[i_b]):
-        if qd.static(static_rigid_sim_config.solver_type == gs.constraint_solver.Newton):
+        if qd.static(static_rigid_sim_config.solver_type in (gs.constraint_solver.Newton, gs.constraint_solver.CG)):
             constraint_state.prev_active[i_c, i_b] = constraint_state.active[i_c, i_b]
         constraint_state.active[i_c, i_b] = True
 
@@ -2631,19 +2634,7 @@ def func_update_gradient_batch(
             constraint_state.Ma[i_d, i_b] - dofs_state.force[i_d, i_b] - constraint_state.qfrc_constraint[i_d, i_b]
         )
 
-    if qd.static(static_rigid_sim_config.solver_type == gs.constraint_solver.CG):
-        func_solve_mass_batch(
-            i_b,
-            constraint_state.grad,
-            constraint_state.Mgrad,
-            array_class.PLACEHOLDER,
-            entities_info=entities_info,
-            rigid_global_info=rigid_global_info,
-            static_rigid_sim_config=static_rigid_sim_config,
-            is_backward=False,
-        )
-
-    if qd.static(static_rigid_sim_config.solver_type == gs.constraint_solver.Newton):
+    if qd.static(static_rigid_sim_config.solver_type in (gs.constraint_solver.CG, gs.constraint_solver.Newton)):
         func_cholesky_solve_batch(i_b, constraint_state=constraint_state)
 
 
@@ -2665,21 +2656,7 @@ def func_update_gradient_tiled(
             constraint_state.Ma[i_d, i_b] - dofs_state.force[i_d, i_b] - constraint_state.qfrc_constraint[i_d, i_b]
         )
 
-    if qd.static(static_rigid_sim_config.solver_type == gs.constraint_solver.CG):
-        qd.loop_config(serialize=static_rigid_sim_config.para_level < gs.PARA_LEVEL.ALL, block_dim=32)
-        for i_b in range(_B):
-            func_solve_mass_batch(
-                i_b,
-                constraint_state.grad,
-                constraint_state.Mgrad,
-                array_class.PLACEHOLDER,
-                entities_info=entities_info,
-                rigid_global_info=rigid_global_info,
-                static_rigid_sim_config=static_rigid_sim_config,
-                is_backward=False,
-            )
-
-    if qd.static(static_rigid_sim_config.solver_type == gs.constraint_solver.Newton):
+    if qd.static(static_rigid_sim_config.solver_type in (gs.constraint_solver.CG, gs.constraint_solver.Newton)):
         func_cholesky_solve_tiled(constraint_state, static_rigid_sim_config)
 
 
@@ -2930,7 +2907,7 @@ def func_solve_init(
     for i_b in qd.ndrange(_B):
         constraint_state.improved[i_b] = constraint_state.n_constraints[i_b] > 0
 
-    if qd.static(static_rigid_sim_config.solver_type == gs.constraint_solver.Newton):
+    if qd.static(static_rigid_sim_config.solver_type in (gs.constraint_solver.Newton, gs.constraint_solver.CG)):
         func_hessian_and_cholesky_factor_direct(
             entities_info=entities_info,
             constraint_state=constraint_state,
@@ -2997,7 +2974,7 @@ def func_solve_iter(
             static_rigid_sim_config=static_rigid_sim_config,
         )
 
-        if qd.static(static_rigid_sim_config.solver_type == gs.constraint_solver.Newton):
+        if qd.static(static_rigid_sim_config.solver_type in (gs.constraint_solver.Newton, gs.constraint_solver.CG)):
             func_build_changed_constraint_list(i_b, constraint_state=constraint_state)
             is_degenerated = func_hessian_and_cholesky_factor_incremental_batch(
                 i_b,

@@ -118,7 +118,7 @@ def kernel_init_meaninertia(
                     rigid_global_info.meaninertia[i_b] = (
                         rigid_global_info.meaninertia[i_b] + rigid_global_info.mass_mat[i_d, i_d, i_b]
                     )
-                rigid_global_info.meaninertia[i_b] = rigid_global_info.meaninertia[i_b] / n_dofs
+            rigid_global_info.meaninertia[i_b] = rigid_global_info.meaninertia[i_b] / n_dofs
         else:
             rigid_global_info.meaninertia[i_b] = 1.0
 
