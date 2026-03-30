@@ -1,9 +1,12 @@
 """
-Replay exported yoyo simulation sequences.
+Replay exported yoyo simulation sequences using Genesis.
 
-Loads OBJ meshes for the static rest shapes and per-frame NPY files
-(transforms for rigid bodies, positions for the string, joint angles)
-exported by ``IPC-Samples/python/Yoyo/urdf_controller_main.py``.
+Loads ``meta.json`` from the sequence directory, sets up:
+- Marvin robot (URDF) with per-frame joint positions
+- Yoyo rigid parts (ball, bearings) with per-frame transforms
+- Yoyo string (FEM rope) with per-frame vertex positions
+
+All collisions are disabled — this is purely visual replay.
 
 Usage:
     python ipc_robot_yoyo.py                # GUI playback
@@ -13,200 +16,240 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import json
+import os
 from pathlib import Path
 
 import numpy as np
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
-_YOYO_DIR = _REPO_ROOT / "IPC-Samples" / "python" / "Yoyo"
-_ASSET_DIR = _YOYO_DIR / "results" / "v3"
-_SEQ_DIR = _ASSET_DIR / "seq"
+_DEFAULT_SEQ_DIR = _REPO_ROOT / "IPC-Samples" / "python" / "Yoyo" / "results" / "v3" / "seq"
 
 
-def _parse_obj(path: Path) -> tuple[np.ndarray, np.ndarray | None, np.ndarray | None]:
-    verts: list[list[float]] = []
-    faces: list[list[int]] = []
+def _tf_to_pos_quat(tf: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """Extract position (3,) and quaternion (w,x,y,z) from a 4x4 transform."""
+    from scipy.spatial.transform import Rotation
+
+    pos = tf[:3, 3].copy()
+    R = tf[:3, :3]
+    r = Rotation.from_matrix(R)
+    xyzw = r.as_quat()
+    quat = np.array([xyzw[3], xyzw[0], xyzw[1], xyzw[2]], dtype=np.float64)
+    return pos, quat
+
+
+def _parse_obj_edges(path: Path) -> np.ndarray | None:
+    """Parse line elements from OBJ for string visualization."""
     edges: list[list[int]] = []
     with open(path, encoding="utf-8") as fh:
         for line in fh:
             parts = line.strip().split()
-            if not parts:
-                continue
-            if parts[0] == "v" and len(parts) >= 4:
-                verts.append([float(parts[1]), float(parts[2]), float(parts[3])])
-            elif parts[0] == "f":
-                idx = [int(p.split("/")[0]) - 1 for p in parts[1:]]
-                for k in range(1, len(idx) - 1):
-                    faces.append([idx[0], idx[k], idx[k + 1]])
-            elif parts[0] == "l":
+            if parts and parts[0] == "l":
                 idx = [int(p) - 1 for p in parts[1:]]
                 for k in range(len(idx) - 1):
                     edges.append([idx[k], idx[k + 1]])
-    v = np.array(verts, dtype=np.float64) if verts else np.zeros((0, 3))
-    f = np.array(faces, dtype=np.int32) if faces else None
-    e = np.array(edges, dtype=np.int32) if edges else None
-    return v, f, e
+    return np.array(edges, dtype=np.int32) if edges else None
 
 
-def _discover_frames(seq_dir: Path) -> list[int]:
-    """Find all exported frame numbers by scanning one subdirectory."""
-    for sub in sorted(seq_dir.iterdir()):
-        if sub.is_dir():
-            frames = sorted(
-                int(p.stem) for p in sub.glob("*.npy") if p.stem.isdigit()
+def run_gui(seq_dir: Path, meta: dict) -> None:
+    import genesis as gs
+
+    gs.init(backend=gs.cpu, logging_level="warning")
+
+    frame_count = meta["frame_count"]
+    objects = meta["objects"]
+    joint_meta = meta.get("joints", {})
+    joint_names = joint_meta.get("names", [])
+    urdf_rel = meta.get("urdf", "")
+
+    joints_data = None
+    if joint_meta.get("data"):
+        joints_path = seq_dir / joint_meta["data"]
+        if joints_path.exists():
+            joints_data = np.load(str(joints_path))
+
+    rigid_data: dict[str, np.ndarray] = {}
+    fem_data: dict[str, np.ndarray] = {}
+    for name, info in objects.items():
+        npy_path = seq_dir / info["data"]
+        if not npy_path.exists():
+            print(f"[warn] {npy_path} not found, skipping {name}")
+            continue
+        arr = np.load(str(npy_path))
+        if info["type"] == "rigid":
+            rigid_data[name] = arr
+        else:
+            fem_data[name] = arr
+
+    scene = gs.Scene(
+        sim_options=gs.options.SimOptions(
+            dt=meta.get("dt", 0.001),
+            gravity=(0.0, 0.0, 0.0),
+        ),
+        rigid_options=gs.options.RigidOptions(
+            enable_collision=False,
+            enable_self_collision=False,
+        ),
+        viewer_options=gs.options.ViewerOptions(
+            camera_pos=(0.5, -0.5, 0.5),
+            camera_lookat=(0.0, 0.0, 0.2),
+            camera_fov=45,
+        ),
+        show_viewer=True,
+    )
+
+    robot = None
+    if urdf_rel:
+        urdf_path = _REPO_ROOT / urdf_rel
+        if urdf_path.exists():
+            robot = scene.add_entity(
+                gs.morphs.URDF(
+                    file=str(urdf_path),
+                    fixed=True,
+                    collision=False,
+                ),
+                material=gs.materials.Rigid(
+                    coup_type="ipc_only",
+                ),
+                name="robot",
             )
-            if frames:
-                return frames
-    return []
 
-
-def _apply_transform(verts: np.ndarray, tf: np.ndarray) -> np.ndarray:
-    R = tf[:3, :3]
-    t = tf[:3, 3]
-    return verts @ R.T + t
-
-
-
-def _load_all_meshes_from_seq(seq_dir: Path) -> dict[str, dict]:
-    """Discover and load mesh.obj from each subdirectory of seq_dir."""
-    meshes: dict[str, dict] = {}
-    for sub in sorted(seq_dir.iterdir()):
-        if not sub.is_dir():
+    rigid_entities: dict[str, object] = {}
+    for name in rigid_data:
+        mesh_path = seq_dir / name / "mesh.obj"
+        if not mesh_path.exists():
+            print(f"[warn] {mesh_path} not found, skipping {name}")
             continue
-        obj_path = sub / "mesh.obj"
-        if not obj_path.exists():
+        ent = scene.add_entity(
+            morph=gs.morphs.Mesh(
+                file=str(mesh_path),
+                fixed=True,
+                collision=False,
+            ),
+            material=gs.materials.Rigid(),
+            name=name,
+        )
+        rigid_entities[name] = ent
+
+    string_entity = None
+    string_name = None
+    for name in fem_data:
+        mesh_path = seq_dir / name / "mesh.obj"
+        if not mesh_path.exists():
+            print(f"[warn] {mesh_path} not found, skipping {name}")
             continue
-        name = sub.name
-        verts, faces, edges = _parse_obj(obj_path)
-        meshes[name] = {"verts": verts, "faces": faces, "edges": edges, "name": name}
-    return meshes
+        string_name = name
+        string_entity = scene.add_entity(
+            morph=gs.morphs.Mesh(
+                file=str(mesh_path),
+            ),
+            material=gs.materials.FEM.Rope(
+                E=1e6,
+                rho=100.0,
+                thickness=0.0004,
+            ),
+            name=name,
+        )
+        break
 
+    scene.build()
 
-def run_gui(frames: list[int]) -> None:
-    import polyscope as ps
-    from polyscope import imgui
+    qs_idx_map: list[int] = []
+    if robot is not None:
+        for jname in joint_names:
+            try:
+                qs_idx_map.append(robot.get_joint(jname).qs_idx_local[0])
+            except Exception:
+                qs_idx_map.append(-1)
+        matched = sum(1 for x in qs_idx_map if x >= 0)
+        print(f"[replay] Joint mapping: {matched}/{len(joint_names)} matched")
+        if matched == 0:
+            all_joints = [j.name for j in robot.joints]
+            print(f"[replay] Robot joints: {all_joints}")
+            print(f"[replay] Seq joints: {joint_names}")
 
-    ps.init()
-    ps.set_up_dir("z_up")
-
-    all_meshes = _load_all_meshes_from_seq(_SEQ_DIR)
-    meshes: dict[str, dict] = {}
-    for name, entry in all_meshes.items():
-        verts, faces, edges = entry["verts"], entry["faces"], entry["edges"]
-        is_string = "string" in name
-        if is_string and edges is not None and len(edges) > 0:
-            cn = ps.register_curve_network(name, verts, edges, radius=0.0004)
-            entry["ps_curve"] = cn
-        elif faces is not None and len(faces) > 0:
-            sm = ps.register_surface_mesh(name, verts, faces)
-            entry["ps_surf"] = sm
-        meshes[name] = entry
-
-    state = {"frame_idx": 0, "playing": False}
-
-    def _apply_frame(fidx: int) -> None:
-        if fidx < 0 or fidx >= len(frames):
+    def _apply_frame(i: int) -> None:
+        if i < 0 or i >= frame_count:
             return
-        frame = frames[fidx]
 
-        for name, entry in meshes.items():
-            npy_path = _SEQ_DIR / name / f"{frame}.npy"
-            if not npy_path.exists():
-                continue
-            data = np.load(str(npy_path), allow_pickle=True)
-            if "ps_curve" in entry:
-                entry["ps_curve"].update_node_positions(data.reshape(-1, 3))
-            elif "ps_surf" in entry:
-                if "string" in name:
-                    entry["ps_surf"].update_vertex_positions(data.reshape(-1, 3))
-                else:
-                    tf = data.reshape(4, 4)
-                    entry["ps_surf"].update_vertex_positions(
-                        _apply_transform(entry["verts"], tf)
-                    )
+        if robot is not None and joints_data is not None and i < joints_data.shape[0]:
+            qpos = robot.get_qpos()
+            for j, qi in enumerate(qs_idx_map):
+                if qi >= 0:
+                    qpos[qi] = joints_data[i, j]
+            robot.set_qpos(qpos, zero_velocity=True)
+
+        for name, ent in rigid_entities.items():
+            if name in rigid_data and i < rigid_data[name].shape[0]:
+                tf = rigid_data[name][i]
+                pos, quat = _tf_to_pos_quat(tf)
+                ent.set_pos(pos)
+                ent.set_quat(quat)
+
+        if string_entity is not None and string_name in fem_data:
+            if i < fem_data[string_name].shape[0]:
+                string_entity.set_position(fem_data[string_name][i])
+
+        scene.step()
 
     _apply_frame(0)
 
-    def on_update() -> None:
-        imgui.Text("=== Yoyo Replay ===")
-        imgui.Text(f"Frames: {len(frames)}  ({frames[0]}..{frames[-1]})")
-        imgui.Separator()
+    for i in range(1, frame_count):
+        _apply_frame(i)
 
-        changed, idx = imgui.SliderInt("Frame", state["frame_idx"], 0, len(frames) - 1)
-        if changed:
-            state["frame_idx"] = idx
-            _apply_frame(idx)
-
-        if imgui.Button("Play / Pause"):
-            state["playing"] = not state["playing"]
-
-        if state["playing"]:
-            state["frame_idx"] = min(state["frame_idx"] + 1, len(frames) - 1)
-            _apply_frame(state["frame_idx"])
-            if state["frame_idx"] >= len(frames) - 1:
-                state["playing"] = False
-
-        joints_path = _SEQ_DIR / "joints" / f"{frames[state['frame_idx']]}.npy"
-        if joints_path.exists():
-            jdata = np.load(str(joints_path), allow_pickle=True).item()
-            if isinstance(jdata, dict) and imgui.TreeNode("Joint Angles"):
-                for jn, jv in sorted(jdata.items()):
-                    imgui.Text(f"  {jn}: {jv:.4f}")
-                imgui.TreePop()
-
-    ps.set_user_callback(on_update)
-    ps.show()
+    print(f"[replay] finished {frame_count} frames")
 
 
-def run_no_gui(frames: list[int]) -> None:
-    print(f"[no-gui] {len(frames)} frames available ({frames[0]}..{frames[-1]})")
+def run_no_gui(seq_dir: Path, meta: dict) -> None:
+    frame_count = meta["frame_count"]
+    objects = meta["objects"]
+    joint_meta = meta.get("joints", {})
 
-    all_meshes = _load_all_meshes_from_seq(_SEQ_DIR)
-    for name, entry in all_meshes.items():
-        print(f"[mesh] {name}: {entry['verts'].shape[0]} verts (from mesh.obj)")
+    print(f"[no-gui] {frame_count} frames, {len(objects)} objects")
 
-    test_frames = [frames[0], frames[len(frames) // 2], frames[-1]]
-    for f in test_frames:
-        missing = []
-        for sub in sorted(_SEQ_DIR.iterdir()):
-            if not sub.is_dir():
-                continue
-            npy = sub / f"{f}.npy"
-            if not npy.exists() and sub.name != "joints":
-                missing.append(sub.name)
-        joints_path = _SEQ_DIR / "joints" / f"{f}.npy"
-        j_ok = joints_path.exists()
-        status = "OK" if not missing and j_ok else f"MISSING: {missing}, joints={'OK' if j_ok else 'MISS'}"
-        print(f"[check] frame {f}: {status}")
+    for name, info in objects.items():
+        npy_path = seq_dir / info["data"]
+        mesh_path = seq_dir / name / "mesh.obj"
+        npy_ok = npy_path.exists()
+        mesh_ok = mesh_path.exists()
+        if npy_ok:
+            arr = np.load(str(npy_path))
+            print(f"  {name}: type={info['type']}  shape={arr.shape}  mesh={'OK' if mesh_ok else 'MISS'}")
+        else:
+            print(f"  {name}: type={info['type']}  data=MISSING  mesh={'OK' if mesh_ok else 'MISS'}")
 
+    if joint_meta.get("data"):
+        jp = seq_dir / joint_meta["data"]
+        if jp.exists():
+            jarr = np.load(str(jp))
+            print(f"  joints: shape={jarr.shape}  names={len(joint_meta.get('names', []))}")
+        else:
+            print(f"  joints: MISSING")
+
+    print(f"  urdf: {meta.get('urdf', '(none)')}")
     print("[no-gui] Done.")
 
 
 def main() -> None:
-    global _SEQ_DIR
-
-    parser = argparse.ArgumentParser(description="Replay exported yoyo simulation.")
+    parser = argparse.ArgumentParser(description="Replay exported yoyo simulation (Genesis).")
     parser.add_argument("--no-gui", action="store_true")
-    parser.add_argument("--seq-dir", type=str, default=str(_SEQ_DIR))
+    parser.add_argument("--seq-dir", type=str, default=str(_DEFAULT_SEQ_DIR))
     args = parser.parse_args()
 
-    _SEQ_DIR = Path(args.seq_dir)
+    seq_dir = Path(args.seq_dir)
+    meta_path = seq_dir / "meta.json"
 
-    if not _SEQ_DIR.exists():
-        print(f"[error] Sequence directory not found: {_SEQ_DIR}")
+    if not meta_path.exists():
+        print(f"[error] meta.json not found in {seq_dir}")
         return
 
-    frames = _discover_frames(_SEQ_DIR)
-    if not frames:
-        print(f"[error] No frames found in {_SEQ_DIR}")
-        return
-
-    print(f"[replay] Found {len(frames)} frames in {_SEQ_DIR}")
+    meta = json.loads(meta_path.read_text(encoding="utf-8"))
+    print(f"[replay] {meta['frame_count']} frames from {seq_dir}")
 
     if args.no_gui:
-        run_no_gui(frames)
+        run_no_gui(seq_dir, meta)
     else:
-        run_gui(frames)
+        run_gui(seq_dir, meta)
 
 
 if __name__ == "__main__":

@@ -34,9 +34,9 @@ from polyscope import imgui
 
 from urdf_controller import URDFController
 from load_user_scene import (
+    SequenceExporter,
     apply_global_transform,
     build_stitch_line_nodes,
-    export_frame_npy,
     get_user_objects,
     stitch_string_to_gripper,
     user_load_scene,
@@ -506,8 +506,6 @@ def main() -> None:
         "total_frames": 0,
     }
 
-    _seq_dir = _SCRIPT_DIR / "results" / "v3" / "seq"
-
     def _do_sim_step(_sio_ref) -> None:
         world.advance()
         world.retrieve()
@@ -515,13 +513,6 @@ def main() -> None:
             world.dump()
         if _sim_live["export_surface"]:
             _sio_ref.write_surface(f"{output_dir}/surface_{world.frame()}.obj")
-        if _sim_live.get("export_npy", True):
-            f = world.frame()
-            export_frame_npy(_seq_dir, f)
-            joints_dir = _seq_dir / "joints"
-            joints_dir.mkdir(parents=True, exist_ok=True)
-            joint_vals = {n: controller._joint_state.get(n, 0.0) for n in controller.joint_names}
-            np.save(str(joints_dir / f"{f}.npy"), joint_vals)
 
     def on_update() -> None:
         imgui.Text("=== URDF Controller Inspector ===")
@@ -1398,8 +1389,6 @@ def run_simulation(
             "stitch_line", sim_stitch_nodes, sim_stitch_edges, radius=0.001, color=(1.0, 0.2, 0.2)
         )
 
-    _rs_seq_dir = Path(__file__).resolve().parent / "results" / "v3" / "seq"
-
     sim_state = {
         "run": False,
         "steps_per_tick": 1,
@@ -1416,12 +1405,6 @@ def run_simulation(
             world.dump()
         if sim_state["export_surface"]:
             sio.write_surface(f"{output_dir}/surface_{world.frame()}.obj")
-        f = world.frame()
-        export_frame_npy(_rs_seq_dir, f)
-        joints_dir = _rs_seq_dir / "joints"
-        joints_dir.mkdir(parents=True, exist_ok=True)
-        joint_vals = {n: controller._joint_state.get(n, 0.0) for n in controller.joint_names}
-        np.save(str(joints_dir / f"{f}.npy"), joint_vals)
 
     def _update_stitch_line() -> None:
         if sim_stitch_net is not None:
@@ -1543,8 +1526,8 @@ def run_simulation(
 # Entry point
 # =====================================================================
 
-def run_export_recover(max_frame: int) -> None:
-    """No-GUI mode: init scene, recover frames 0..max_frame, export NPY each frame."""
+def run_export_recover(max_frame: int, frame_skip: int = 10) -> None:
+    """No-GUI mode: init scene, recover every *frame_skip*-th frame up to *max_frame*, export NPY."""
     from uipc import Logger, SceneIO, Timer, view
     from uipc.core import Engine, Scene, World
     from uipc.unit import GPa
@@ -1619,13 +1602,24 @@ def run_export_recover(max_frame: int) -> None:
             sim_right_binding.rest_geo_slot,
         )
 
+    sim_dt_val = float(view(scene.config().find("dt"))[0])
+    urdf_rel = "DemoAssets/marvin_bimanual/urdf/marvin_pika.urdf"
+
+    schedule = _build_frame_schedule(sim_keyframes, sim_dt_val, 1)
+    print(f"[export-recover] {len(sim_keyframes)} keyframes -> {len(schedule)} scheduled frames")
+
+    def _joints_at_frame(f: int) -> dict[str, float]:
+        if f < len(schedule):
+            return schedule[f]["joints"]
+        if schedule:
+            return schedule[-1]["joints"]
+        return {n: 0.0 for n in joint_names}
+
+    exporter = SequenceExporter(joint_names, dt=sim_dt_val, urdf_rel=urdf_rel)
+
     world.init(scene)
     world.retrieve()
-    export_frame_npy(seq_dir, world.frame())
-    joints_dir = seq_dir / "joints"
-    joints_dir.mkdir(parents=True, exist_ok=True)
-    np.save(str(joints_dir / f"{world.frame()}.npy"),
-            {n: controller._joint_state.get(n, 0.0) for n in joint_names})
+    exporter.capture(world.frame(), _joints_at_frame(world.frame()))
 
     exported = 0
     for target in range(1, max_frame + 1):
@@ -1633,14 +1627,14 @@ def run_export_recover(max_frame: int) -> None:
             print(f"[export-recover] no dump at frame {target}, stopping")
             break
         world.retrieve()
-        export_frame_npy(seq_dir, target)
-        np.save(str(joints_dir / f"{target}.npy"),
-                {n: controller._joint_state.get(n, 0.0) for n in joint_names})
-        exported += 1
-        if exported % 100 == 0:
-            print(f"[export-recover] {exported} frames exported ...")
+        if target % frame_skip == 0:
+            exporter.capture(target, _joints_at_frame(target))
+            exported += 1
+            if exported % 100 == 0:
+                print(f"[export-recover] {exported} frames captured ...")
 
-    print(f"[export-recover] Done: {exported} frames exported to {seq_dir}")
+    exporter.save(seq_dir)
+    print(f"[export-recover] Done: {exported} frames (skip={frame_skip})")
 
 
 def _parse_args() -> argparse.Namespace:
@@ -1654,13 +1648,19 @@ def _parse_args() -> argparse.Namespace:
         metavar="MAX_FRAME",
         help="No-GUI: recover frames 0..MAX_FRAME, export NPY, then exit.",
     )
+    parser.add_argument(
+        "--frame-skip",
+        type=int,
+        default=10,
+        help="Export every N-th frame (default 10).",
+    )
     return parser.parse_args()
 
 
 if __name__ == "__main__":
     args = _parse_args()
     if args.export_recover >= 0:
-        run_export_recover(args.export_recover)
+        run_export_recover(args.export_recover, frame_skip=max(1, args.frame_skip))
     elif args.sim:
         run_simulation(user_scene_fn=user_load_scene, recover_frame=args.recover)
     else:

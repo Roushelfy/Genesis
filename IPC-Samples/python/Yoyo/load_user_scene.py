@@ -88,10 +88,10 @@ def user_load_scene(scene: Scene, world: World) -> None:
     ball_contact = tabular.create("ball")
     string_contact = tabular.create("string")
     bearing_contact = tabular.create("bearing")
-    scene.contact_tabular().insert(ball_contact, string_contact, 0.7, 800.0 * MPa, enable=True)
+    scene.contact_tabular().insert(ball_contact, string_contact, 0.8, 800.0 * MPa, enable=True)
     scene.contact_tabular().insert(string_contact, string_contact, 0.10, 800.0 * MPa, enable=True)
     scene.contact_tabular().insert(bearing_contact, bearing_contact, 0.01, 800.0 * MPa, enable=True)
-    scene.contact_tabular().insert(bearing_contact, ball_contact, 0.05, 800.0 * MPa, enable=True)
+    scene.contact_tabular().insert(bearing_contact, ball_contact, 0.1, 800.0 * MPa, enable=True)
     scene.contact_tabular().insert(bearing_contact, string_contact, 0.5, 800.0 * MPa, enable=True)
 
     # Robot contact ↔ yoyo parts
@@ -386,36 +386,102 @@ def _closest_point_on_triangle(
 
 
 # ---------------------------------------------------------------------------
-# Per-frame NPY export
+# Sequence exporter (consolidated NPY + meta.json)
 # ---------------------------------------------------------------------------
 
-def export_frame_npy(seq_dir: Path, frame: int) -> None:
-    """Export current frame state to ``seq_dir`` as .npy files.
+import json as _json
+import shutil as _shutil
 
-    Rigid bodies (yoyo_ball, bearing_outer, bearing_sphere_*):
-        ``<name>/<frame>.npy`` — 4x4 float64 transform matrix.
-    String (yoyo_string):
-        ``yoyo_string/<frame>.npy`` — (N,3) float64 vertex positions.
 
-    On first call per object, also copies the source OBJ into the subdirectory
-    as ``mesh.obj`` so the replay script is self-contained.
+class SequenceExporter:
+    """Accumulate per-frame simulation state and write consolidated NPY files.
+
+    Usage::
+
+        exporter = SequenceExporter(joint_names, dt=0.001)
+        for frame in frames:
+            exporter.capture(frame)
+        exporter.save(seq_dir)
     """
-    import shutil
 
-    for name, gs in _user_geo_slots.items():
-        obj_dir = seq_dir / name
-        obj_dir.mkdir(parents=True, exist_ok=True)
+    def __init__(self, joint_names: list[str], dt: float = 0.001, urdf_rel: str = ""):
+        self._joint_names = list(joint_names)
+        self._dt = dt
+        self._urdf_rel = urdf_rel
+        self._frame_ids: list[int] = []
+        self._rigid_frames: dict[str, list[np.ndarray]] = {}
+        self._fem_frames: dict[str, list[np.ndarray]] = {}
+        self._joint_frames: list[np.ndarray] = []
 
+    def capture(self, frame: int, joint_state: dict[str, float] | None = None) -> None:
+        """Snapshot current geo_slot state and optional joint angles."""
+        self._frame_ids.append(frame)
+
+        for name, gs in _user_geo_slots.items():
+            geo = gs.geometry()
+            if name in _FEM_OBJECTS:
+                pos = np.array(view(geo.positions()), copy=True).reshape(-1, 3)
+                self._fem_frames.setdefault(name, []).append(pos)
+            else:
+                tf = np.array(view(geo.transforms()), copy=True).reshape(-1, 4, 4)[0]
+                self._rigid_frames.setdefault(name, []).append(tf)
+
+        if joint_state is not None:
+            jv = np.array([joint_state.get(n, 0.0) for n in self._joint_names], dtype=np.float64)
+            self._joint_frames.append(jv)
+
+    def save(self, seq_dir: Path) -> None:
+        """Write consolidated NPY arrays, mesh OBJs, and meta.json."""
+        seq_dir.mkdir(parents=True, exist_ok=True)
+        frame_skip = 1
+        if len(self._frame_ids) >= 2:
+            frame_skip = max(1, self._frame_ids[1] - self._frame_ids[0])
+        meta: dict = {
+            "frame_count": len(self._frame_ids),
+            "frame_ids": self._frame_ids,
+            "frame_skip": frame_skip,
+            "dt": self._dt,
+            "objects": {},
+        }
+
+        for name, frames in self._rigid_frames.items():
+            obj_dir = seq_dir / name
+            obj_dir.mkdir(parents=True, exist_ok=True)
+            arr = np.stack(frames, axis=0)
+            npy_name = "transforms.npy"
+            np.save(str(obj_dir / npy_name), arr)
+            self._copy_mesh_obj(name, obj_dir)
+            meta["objects"][name] = {"type": "rigid", "data": f"{name}/{npy_name}"}
+
+        for name, frames in self._fem_frames.items():
+            obj_dir = seq_dir / name
+            obj_dir.mkdir(parents=True, exist_ok=True)
+            arr = np.stack(frames, axis=0)
+            npy_name = "positions.npy"
+            np.save(str(obj_dir / npy_name), arr)
+            self._copy_mesh_obj(name, obj_dir)
+            meta["objects"][name] = {"type": "fem", "data": f"{name}/{npy_name}"}
+
+        if self._joint_frames:
+            jarr = np.stack(self._joint_frames, axis=0)
+            np.save(str(seq_dir / "joints.npy"), jarr)
+            meta["joints"] = {
+                "data": "joints.npy",
+                "names": self._joint_names,
+            }
+
+        if self._urdf_rel:
+            meta["urdf"] = self._urdf_rel
+
+        (seq_dir / "meta.json").write_text(
+            _json.dumps(meta, indent=2, ensure_ascii=True), encoding="utf-8"
+        )
+        print(f"[seq-export] saved {len(self._frame_ids)} frames to {seq_dir}")
+
+    @staticmethod
+    def _copy_mesh_obj(name: str, obj_dir: Path) -> None:
         mesh_dst = obj_dir / "mesh.obj"
         if not mesh_dst.exists() and name in _user_obj_sources:
             src = _user_obj_sources[name]
             if src.exists():
-                shutil.copy2(str(src), str(mesh_dst))
-
-        geo = gs.geometry()
-        if name in _FEM_OBJECTS:
-            pos = np.array(view(geo.positions()), copy=True).reshape(-1, 3)
-            np.save(str(obj_dir / f"{frame}.npy"), pos)
-        else:
-            tf = np.array(view(geo.transforms()), copy=True).reshape(-1, 4, 4)[0]
-            np.save(str(obj_dir / f"{frame}.npy"), tf)
+                _shutil.copy2(str(src), str(mesh_dst))
