@@ -81,7 +81,7 @@ class Rigid(Kinematic["RigidEntity"]):
         Default is ``(100.0, 100.0)``.
     """
 
-    rho: ValidFloat | None = None
+    rho: ValidFloat | None = 200.0
     friction: Annotated[ValidFloat, Field(ge=0.01, le=5.0)] | None = None
     needs_coup: StrictBool = True
     coup_friction: NonNegativeFloat = 0.1
