@@ -327,6 +327,12 @@ class IPCCouplerOptions(BaseCouplerOptions):
     # CFL options
     cfl_enable: StrictBool | None = None
 
+    # AL-IPC options
+    al_ipc_mu_scale_fem: PositiveFloat | None = None
+    al_ipc_mu_scale_abd: PositiveFloat | None = None
+    al_ipc_toi_threshold: PositiveFloat | None = None
+    al_ipc_decay_factor: PositiveFloat | None = None
+
     # Genesis coupling options
     enable_rigid_ground_contact: StrictBool = True
     enable_rigid_rigid_contact: StrictBool = True
