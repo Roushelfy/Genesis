@@ -15,6 +15,7 @@ import trimesh
 
 import genesis as gs
 import genesis.utils.geom as gu
+from genesis.engine.entities.rigid_entity.rigid_link import RHO_MUJOCO, RHO_OBJECT, RHO_ROBOT
 from genesis.engine.materials.FEM.cloth import Cloth
 from genesis.engine.materials.FEM.paper import Paper
 from genesis.engine.materials.FEM.rope import Rope
@@ -990,7 +991,13 @@ class IPCCoupler(RBC):
 
             # Apply ABD constitution — use AffineBodyShell for non-watertight meshes
             # (open surfaces like gripper pads) where volume-based mass would be near-zero.
-            rho = float(entity.material.rho)
+            rho = entity.material.rho
+            if rho is None:
+                if entity.solver._enable_mujoco_compatibility:
+                    rho = RHO_MUJOCO
+                else:
+                    rho = RHO_ROBOT if link._is_robot else RHO_OBJECT
+            rho = float(rho)
             mesh_for_check = self._abd_merged_meshes.get(link)
             is_watertight = mesh_for_check is not None and mesh_for_check.is_watertight
 

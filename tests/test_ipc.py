@@ -178,7 +178,6 @@ def test_contact_pair_friction_resistance(enable_rigid_rigid_contact):
                     elem = coupler._ipc_abd_links_contact[entity.base_link]
                 friction = entity.material.coup_friction
             else:
-                assert isinstance(entity, FEMEntity)
                 elem = coupler._ipc_fems_contact[entity]
                 friction = entity.material.friction_mu
             resistance = entity.material.contact_resistance or coupler.options.contact_resistance
@@ -1328,7 +1327,6 @@ def test_collision_delegation_ipc_vs_rigid(coup_type, enable_rigid_ground_contac
             needs_coup=False,
         ),
     )
-    assert isinstance(plane, RigidEntity)
 
     # Non-IPC box — always handled by rigid solver
     box = scene.add_entity(

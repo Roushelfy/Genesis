@@ -48,7 +48,6 @@ from .abd.misc import (
     kernel_init_vert_fields,
     kernel_init_vvert_fields,
     kernel_init_geom_fields,
-    kernel_adjust_link_inertia,
     kernel_init_vgeom_fields,
     kernel_init_entity_fields,
     kernel_init_equality_fields,
@@ -112,8 +111,8 @@ from .abd.forward_dynamics import (
     kernel_update_acc,
     kernel_compute_qacc,
     kernel_forward_dynamics_without_qacc,
-    kernel_restore_integrate,
-    kernel_predict_integrate,
+    update_qacc_from_qvel_delta,
+    update_qvel,
 )
 from .abd.accessor import (
     kernel_get_state,
@@ -151,6 +150,7 @@ from .abd.accessor import (
     kernel_update_drone_propeller_vgeoms,
     kernel_set_geom_friction,
     kernel_set_geoms_friction,
+    kernel_adjust_link_inertia,
 )
 from .abd.diff import (
     func_copy_cartesian_space,
@@ -248,27 +248,14 @@ class RigidSolver(KinematicSolver):
         self._hibernation_thresh_vel = options.hibernation_thresh_vel
         self._hibernation_thresh_acc = options.hibernation_thresh_acc
 
-        if options.contact_resolve_time is not None:
-            gs.logger.warning(
-                "Rigid option 'contact_resolve_time' is deprecated and will be remove in future release. Please "
-                "use 'constraint_timeconst' instead."
-            )
         self._sol_min_timeconst = TIME_CONSTANT_SAFETY_FACTOR * self._substep_dt
         self._sol_default_timeconst = max(options.constraint_timeconst, self._sol_min_timeconst)
 
-        if (
-            not self._disable_constraint
-            and self._enable_collision
-            and not options.use_gjk_collision
-            and self._substep_dt < 0.002
-        ):
-            gs.logger.warning(
-                "Using a simulation timestep smaller than 2ms is not recommended for 'use_gjk_collision=False' as "
-                "it could lead to numerically unstable collision detection."
-            )
-
         self.collider = None
         self.constraint_solver = None
+
+        self.qpos: qd.Field | qd.Ndarray | None = None
+
         self._is_backward: bool = False
 
         self._ckpt = dict()
@@ -276,7 +263,7 @@ class RigidSolver(KinematicSolver):
     def init_ckpt(self):
         pass
 
-    def add_entity(self, idx, material, morph, surface, visualize_contact, name: str | None = None) -> Entity:
+    def add_entity(self, idx, material, morph, surface, visualize_contact, name: str | None = None) -> RigidEntity:
         # Handle heterogeneous morphs (list/tuple of morphs)
         morph_heterogeneous = []
         if isinstance(morph, (tuple, list)):
@@ -562,8 +549,18 @@ class RigidSolver(KinematicSolver):
                     A = jac @ mass_mat_inv @ jac.T
                     A_diag = np.diag(A)
 
-                    links_invweight[i_b_, i_l, 0] = A_diag[:3].mean()
-                    links_invweight[i_b_, i_l, 1] = A_diag[3:].mean()
+                    tran = A_diag[:3].mean()
+                    rot = A_diag[3:].mean()
+
+                    # If one component is zero, use the other to prevent degenerate constraints.
+                    # See https://github.com/google-deepmind/mujoco/commit/1cda1e7a
+                    if tran < gs.EPS and rot > gs.EPS:
+                        tran = rot
+                    elif rot < gs.EPS and tran > gs.EPS:
+                        rot = tran
+
+                    links_invweight[i_b_, i_l, 0] = tran
+                    links_invweight[i_b_, i_l, 1] = rot
 
             # Compute dofs invweight
             if i_b_ == 0 or self._options.batch_dofs_info:
@@ -678,7 +675,8 @@ class RigidSolver(KinematicSolver):
             # Build per-env inertial arrays from pre-computed per-variant inertial
             links_inertial_mass = np.array([link._variant_inertial[v][0] for v in variant_idx], dtype=gs.np_float)
             links_inertial_pos = np.array([link._variant_inertial[v][1] for v in variant_idx], dtype=gs.np_float)
-            links_inertial_i = np.array([link._variant_inertial[v][2] for v in variant_idx], dtype=gs.np_float)
+            links_inertial_quat = np.array([link._variant_inertial[v][2] for v in variant_idx], dtype=gs.np_float)
+            links_inertial_i = np.array([link._variant_inertial[v][3] for v in variant_idx], dtype=gs.np_float)
 
             # Update links_info with per-environment values
             # Note: when batch_links_info is True, the shape is (n_links, B)
@@ -690,6 +688,7 @@ class RigidSolver(KinematicSolver):
                 vgeom_ends,
                 links_inertial_mass,
                 links_inertial_pos,
+                links_inertial_quat,
                 links_inertial_i,
                 self.links_info,
             )
@@ -882,8 +881,74 @@ class RigidSolver(KinematicSolver):
             self.constraint_solver = ConstraintSolver(self)
 
     def substep(self, f):
-        self.substep_pre_coupling(f)
-        self.substep_post_coupling(f)
+        # from genesis.utils.tools import create_timer
+        from genesis.engine.couplers import SAPCoupler
+
+        if self._requires_grad and f == 0:
+            kernel_save_adjoint_cache(
+                f=f,
+                dofs_state=self.dofs_state,
+                rigid_global_info=self._rigid_global_info,
+                rigid_adjoint_cache=self._rigid_adjoint_cache,
+                static_rigid_sim_config=self._static_rigid_sim_config,
+            )
+
+        kernel_step_1(
+            self.links_state,
+            self.links_info,
+            self.joints_state,
+            self.joints_info,
+            self.dofs_state,
+            self.dofs_info,
+            self.geoms_state,
+            self.geoms_info,
+            self.entities_state,
+            self.entities_info,
+            self._rigid_global_info,
+            self._static_rigid_sim_config,
+            self.constraint_solver.contact_island.contact_island_state,
+            self._is_forward_pos_updated,
+            self._is_forward_vel_updated,
+            self._is_backward,
+        )
+
+        if isinstance(self.sim.coupler, SAPCoupler):
+            update_qvel(
+                self.dofs_state,
+                self._rigid_global_info,
+                self._static_rigid_sim_config,
+                self._is_backward,
+            )
+        else:
+            self._func_constraint_force()
+            kernel_step_2(
+                self.dofs_state,
+                self.dofs_info,
+                self.links_info,
+                self.links_state,
+                self.joints_info,
+                self.joints_state,
+                self.entities_state,
+                self.entities_info,
+                self.geoms_info,
+                self.geoms_state,
+                self.collider._collider_state,
+                self._rigid_global_info,
+                self._static_rigid_sim_config,
+                self.constraint_solver.contact_island.contact_island_state,
+                self._is_backward,
+                self._errno,
+            )
+            self._is_forward_pos_updated = not self._enable_mujoco_compatibility
+            self._is_forward_vel_updated = not self._enable_mujoco_compatibility
+            if self._requires_grad:
+                kernel_save_adjoint_cache(
+                    f + 1,
+                    self.dofs_state,
+                    self._rigid_global_info,
+                    self._rigid_adjoint_cache,
+                    self._static_rigid_sim_config,
+                )
 
     def get_error_envs_mask(self):
         return qd_to_torch(self._errno) > 0
@@ -946,44 +1011,6 @@ class RigidSolver(KinematicSolver):
                 self.constraint_solver.add_inequality_constraints()
 
             self.constraint_solver.resolve()
-
-    def _func_constraint_force_timed(self):
-        import time as _time
-        import torch
-
-        torch.cuda.synchronize()
-        _t0 = _time.perf_counter()
-        if not self._disable_constraint:
-            if self._use_contact_island:
-                self.constraint_solver.clear()
-            else:
-                self.constraint_solver.add_equality_constraints()
-        torch.cuda.synchronize()
-        _t1 = _time.perf_counter()
-
-        if self._enable_collision:
-            self.collider.detection()
-        torch.cuda.synchronize()
-        _t2 = _time.perf_counter()
-
-        if not self._disable_constraint:
-            if self._use_contact_island:
-                self.constraint_solver.add_constraints()
-            else:
-                self.constraint_solver.add_inequality_constraints()
-            torch.cuda.synchronize()
-            _t3 = _time.perf_counter()
-            self.constraint_solver.resolve()
-            torch.cuda.synchronize()
-            _t4 = _time.perf_counter()
-        else:
-            _t3 = _t2
-            _t4 = _t2
-        gs.logger.info(
-            f"[constraint] eq={(_t1 - _t0) * 1000:.1f}ms  collision={(_t2 - _t1) * 1000:.1f}ms  "
-            f"ineq={(_t3 - _t2) * 1000:.1f}ms  resolve={(_t4 - _t3) * 1000:.1f}ms  "
-            f"total={(_t4 - _t0) * 1000:.1f}ms"
-        )
 
     def _func_forward_dynamics(self):
         kernel_forward_dynamics(
@@ -1137,99 +1164,18 @@ class RigidSolver(KinematicSolver):
         )
 
     def substep_pre_coupling(self, f):
-        from genesis.engine.couplers import SAPCoupler, IPCCoupler
+        if self.is_active:
+            # Skip rigid body computation when using IPCCoupler (IPC handles rigid simulation)
+            from genesis.engine.couplers import IPCCoupler
 
-        if not self.is_active:
-            return
+            if isinstance(self.sim.coupler, IPCCoupler):
+                # If any rigid entity is coupled to IPC, skip pre-coupling rigid simulation
+                # The rigid simulation will be done in post-coupling phase instead
+                if self.sim.coupler.has_any_rigid_coupling:
+                    return
 
-        if self._requires_grad and f == 0:
-            kernel_save_adjoint_cache(
-                f=f,
-                dofs_state=self.dofs_state,
-                rigid_global_info=self._rigid_global_info,
-                rigid_adjoint_cache=self._rigid_adjoint_cache,
-                static_rigid_sim_config=self._static_rigid_sim_config,
-            )
-
-        kernel_step_1(
-            links_state=self.links_state,
-            links_info=self.links_info,
-            joints_state=self.joints_state,
-            joints_info=self.joints_info,
-            dofs_state=self.dofs_state,
-            dofs_info=self.dofs_info,
-            geoms_state=self.geoms_state,
-            geoms_info=self.geoms_info,
-            entities_state=self.entities_state,
-            entities_info=self.entities_info,
-            rigid_global_info=self._rigid_global_info,
-            static_rigid_sim_config=self._static_rigid_sim_config,
-            contact_island_state=self.constraint_solver.contact_island.contact_island_state,
-            is_forward_pos_updated=self._is_forward_pos_updated,
-            is_forward_vel_updated=self._is_forward_vel_updated,
-            is_backward=self._is_backward,
-        )
-
-        if isinstance(self.sim.coupler, SAPCoupler):
-            kernel_predict_integrate(
-                dofs_state=self.dofs_state,
-                links_info=self.links_info,
-                joints_info=self.joints_info,
-                rigid_global_info=self._rigid_global_info,
-                static_rigid_sim_config=self._static_rigid_sim_config,
-                is_backward=self._is_backward,
-                update_qpos=False,
-            )
-        elif isinstance(self.sim.coupler, IPCCoupler):
-            import time as _time
-            import torch
-
-            torch.cuda.synchronize()
-            _t0 = _time.perf_counter()
-            self._func_constraint_force_timed()
-            torch.cuda.synchronize()
-            _t1 = _time.perf_counter()
-            # Cache pre-prediction link transforms for IPC ABD sync (before predict overwrites them)
-            self.sim.coupler.cache_pre_prediction_transforms()
-            torch.cuda.synchronize()
-            _t2 = _time.perf_counter()
-            # TODO: Exclude IPC-only entities from predict/FK — IPC fully drives them
-            # (external_kinetic=0, no animator), so predicted poses are unused.
-            kernel_predict_integrate(
-                dofs_state=self.dofs_state,
-                links_info=self.links_info,
-                joints_info=self.joints_info,
-                rigid_global_info=self._rigid_global_info,
-                static_rigid_sim_config=self._static_rigid_sim_config,
-                is_backward=self._is_backward,
-                update_qpos=True,
-            )
-            torch.cuda.synchronize()
-            _t3 = _time.perf_counter()
-            # FK on predicted qpos to get predicted link transforms for IPC coupler
-            kernel_forward_kinematics_links_geoms(
-                self._scene._envs_idx,
-                links_state=self.links_state,
-                links_info=self.links_info,
-                joints_state=self.joints_state,
-                joints_info=self.joints_info,
-                dofs_state=self.dofs_state,
-                dofs_info=self.dofs_info,
-                geoms_state=self.geoms_state,
-                geoms_info=self.geoms_info,
-                entities_info=self.entities_info,
-                rigid_global_info=self._rigid_global_info,
-                static_rigid_sim_config=self._static_rigid_sim_config,
-            )
-            torch.cuda.synchronize()
-            _t4 = _time.perf_counter()
-            gs.logger.info(
-                f"[rigid pre_coup] constraint={(_t1 - _t0) * 1000:.1f}ms  cache={(_t2 - _t1) * 1000:.1f}ms  "
-                f"predict={(_t3 - _t2) * 1000:.1f}ms  FK={(_t4 - _t3) * 1000:.1f}ms  "
-                f"total={(_t4 - _t0) * 1000:.1f}ms"
-            )
-        else:
-            self._func_constraint_force()
+            # Run Genesis rigid simulation step for non-IPC couplers
+            self.substep(f)
 
     def substep_pre_coupling_grad(self, f):
         # Change to backward mode
@@ -1406,59 +1352,35 @@ class RigidSolver(KinematicSolver):
             return
 
         if isinstance(self.sim.coupler, SAPCoupler):
-            kernel_restore_integrate(
+            update_qacc_from_qvel_delta(
                 dofs_state=self.dofs_state,
-                links_info=self.links_info,
-                joints_info=self.joints_info,
                 rigid_global_info=self._rigid_global_info,
                 static_rigid_sim_config=self._static_rigid_sim_config,
                 is_backward=self._is_backward,
-                restore_qpos=False,
+            )
+            kernel_step_2(
+                dofs_state=self.dofs_state,
+                dofs_info=self.dofs_info,
+                links_info=self.links_info,
+                links_state=self.links_state,
+                joints_info=self.joints_info,
+                joints_state=self.joints_state,
+                entities_state=self.entities_state,
+                entities_info=self.entities_info,
+                geoms_info=self.geoms_info,
+                geoms_state=self.geoms_state,
+                collider_state=self.collider._collider_state,
+                rigid_global_info=self._rigid_global_info,
+                static_rigid_sim_config=self._static_rigid_sim_config,
+                contact_island_state=self.constraint_solver.contact_island.contact_island_state,
+                is_backward=self._is_backward,
+                errno=self._errno,
             )
         elif isinstance(self.sim.coupler, IPCCoupler):
-            kernel_restore_integrate(
-                dofs_state=self.dofs_state,
-                links_info=self.links_info,
-                joints_info=self.joints_info,
-                rigid_global_info=self._rigid_global_info,
-                static_rigid_sim_config=self._static_rigid_sim_config,
-                is_backward=self._is_backward,
-                restore_qpos=True,
-            )
-
-        kernel_step_2(
-            dofs_state=self.dofs_state,
-            dofs_info=self.dofs_info,
-            links_info=self.links_info,
-            links_state=self.links_state,
-            joints_info=self.joints_info,
-            joints_state=self.joints_state,
-            entities_state=self.entities_state,
-            entities_info=self.entities_info,
-            geoms_info=self.geoms_info,
-            geoms_state=self.geoms_state,
-            collider_state=self.collider._collider_state,
-            rigid_global_info=self._rigid_global_info,
-            static_rigid_sim_config=self._static_rigid_sim_config,
-            contact_island_state=self.constraint_solver.contact_island.contact_island_state,
-            is_backward=self._is_backward,
-            errno=self._errno,
-        )
-        self._is_forward_pos_updated = not self._enable_mujoco_compatibility
-        self._is_forward_vel_updated = not self._enable_mujoco_compatibility
-
-        # Apply IPC restitution velocity corrections after step_2
-        if isinstance(self.sim.coupler, IPCCoupler):
-            self.sim.coupler.apply_restitution_velocity()
-
-        if self._requires_grad:
-            kernel_save_adjoint_cache(
-                f=f + 1,
-                dofs_state=self.dofs_state,
-                rigid_global_info=self._rigid_global_info,
-                rigid_adjoint_cache=self._rigid_adjoint_cache,
-                static_rigid_sim_config=self._static_rigid_sim_config,
-            )
+            # If any rigid entity is coupled to IPC, perform rigid simulation in post-coupling phase.
+            # Collision exclusion for IPC-coupled links is handled in the collider at build time.
+            if self.sim.coupler.has_any_rigid_coupling:
+                self.substep(f)
 
     # ------------------------------------------------------------------------------------
     # ----------------------------------- render -----------------------------------------
@@ -1504,16 +1426,79 @@ class RigidSolver(KinematicSolver):
             state = None
         return state
 
-    def set_state(self, f, state, envs_idx=None):
-        if self.is_active:
-            envs_idx = self._scene._sanitize_envs_idx(envs_idx)
+    def set_state(self, f, state, envs_idx=None, *, partial: bool = False) -> None:
+        if not self.is_active:
+            return
 
-            if gs.use_zerocopy:
-                errno = qd_to_torch(self._errno, copy=False)
-                errno[envs_idx] = 0
+        if partial:
+            self.collider.reset(envs_idx)
+            self.constraint_solver.reset(envs_idx)
+        else:
+            self.collider.clear(envs_idx)
+            self.constraint_solver.clear(envs_idx)
+
+        if (
+            not self._requires_grad
+            and gs.use_zerocopy
+            and (not isinstance(envs_idx, torch.Tensor) or (not IS_OLD_TORCH or envs_idx.dtype == torch.bool))
+        ):
+            errno = qd_to_torch(self._errno, copy=False)
+            qpos_dst = qd_to_torch(self._rigid_global_info.qpos, transpose=True, copy=False)
+            vel_dst = qd_to_torch(self.dofs_state.vel, transpose=True, copy=False)
+            acc_dst = qd_to_torch(self.dofs_state.acc, transpose=True, copy=False)
+            ctrl_force_dst = qd_to_torch(self.dofs_state.ctrl_force, transpose=True, copy=False)
+            ctrl_mode_dst = qd_to_torch(self.dofs_state.ctrl_mode, transpose=True, copy=False)
+            pos_dst = qd_to_torch(self.links_state.pos, transpose=True, copy=False)
+            quat_dst = qd_to_torch(self.links_state.quat, transpose=True, copy=False)
+            shift_dst = qd_to_torch(self.links_state.i_pos_shift, transpose=True, copy=False)
+            cfrc_vel_dst = qd_to_torch(self.links_state.cfrc_applied_vel, transpose=True, copy=False)
+            cfrc_ang_dst = qd_to_torch(self.links_state.cfrc_applied_ang, transpose=True, copy=False)
+            mass_dst = qd_to_torch(self.links_state.mass_shift, transpose=True, copy=False)
+            fric_dst = qd_to_torch(self.geoms_state.friction_ratio, transpose=True, copy=False)
+
+            if envs_idx is not None and not isinstance(envs_idx, torch.Tensor):
+                (envs_idx,) = indices_to_mask(envs_idx)
+            if isinstance(envs_idx, torch.Tensor):
+                if envs_idx.dtype == torch.bool:
+                    envs_mask = envs_idx
+                else:
+                    envs_mask = torch.zeros(self._B, dtype=torch.bool, device=gs.device)
+                    envs_mask[envs_idx] = True
+
+                errno.masked_fill_(envs_mask, 0)
+                if self.n_qs:
+                    torch.where(envs_mask[:, None], state.qpos, qpos_dst, out=qpos_dst)
+                    torch.where(envs_mask[:, None], state.dofs_vel, vel_dst, out=vel_dst)
+                    torch.where(envs_mask[:, None], state.dofs_acc, acc_dst, out=acc_dst)
+                    ctrl_force_dst.masked_fill_(envs_mask[:, None], 0.0)
+                    ctrl_mode_dst.masked_fill_(envs_mask[:, None], gs.CTRL_MODE.FORCE)
+                torch.where(envs_mask[:, None, None], state.links_pos, pos_dst, out=pos_dst)
+                torch.where(envs_mask[:, None, None], state.links_quat, quat_dst, out=quat_dst)
+                torch.where(envs_mask[:, None, None], state.i_pos_shift, shift_dst, out=shift_dst)
+                cfrc_vel_dst.masked_fill_(envs_mask[:, None, None], 0.0)
+                cfrc_ang_dst.masked_fill_(envs_mask[:, None, None], 0.0)
+                torch.where(envs_mask[:, None], state.mass_shift, mass_dst, out=mass_dst)
+                if self.n_geoms:
+                    torch.where(envs_mask[:, None], state.friction_ratio, fric_dst, out=fric_dst)
             else:
-                kernel_set_zero(envs_idx, self._errno)
-
+                if self.n_qs:
+                    errno[envs_idx] = 0
+                    qpos_dst[envs_idx] = state.qpos[envs_idx]
+                    vel_dst[envs_idx] = state.dofs_vel[envs_idx]
+                    acc_dst[envs_idx] = state.dofs_acc[envs_idx]
+                    ctrl_force_dst[envs_idx] = 0.0
+                    ctrl_mode_dst[envs_idx] = gs.CTRL_MODE.FORCE
+                pos_dst[envs_idx] = state.links_pos[envs_idx]
+                quat_dst[envs_idx] = state.links_quat[envs_idx]
+                shift_dst[envs_idx] = state.i_pos_shift[envs_idx]
+                cfrc_vel_dst[envs_idx] = 0.0
+                cfrc_ang_dst[envs_idx] = 0.0
+                mass_dst[envs_idx] = state.mass_shift[envs_idx]
+                if self.n_geoms:
+                    fric_dst[envs_idx] = state.friction_ratio[envs_idx]
+        else:
+            envs_idx = self._scene._sanitize_envs_idx(envs_idx)
+            kernel_set_zero(envs_idx, self._errno)
             kernel_set_state(
                 envs_idx=envs_idx,
                 qpos=state.qpos,
@@ -1530,7 +1515,15 @@ class RigidSolver(KinematicSolver):
                 rigid_global_info=self._rigid_global_info,
                 static_rigid_sim_config=self._static_rigid_sim_config,
             )
-            kernel_forward_kinematics_links_geoms(
+
+        if not partial:
+            if not isinstance(envs_idx, torch.Tensor):
+                envs_idx = self._scene._sanitize_envs_idx(envs_idx)
+            if envs_idx.dtype == torch.bool:
+                fn = kernel_masked_forward_kinematics_links_geoms
+            else:
+                fn = kernel_forward_kinematics_links_geoms
+            fn(
                 envs_idx,
                 links_state=self.links_state,
                 links_info=self.links_info,
@@ -1546,13 +1539,13 @@ class RigidSolver(KinematicSolver):
             )
             self._is_forward_pos_updated = True
             self._is_forward_vel_updated = True
+        else:
+            self._is_forward_pos_updated = False
+            self._is_forward_vel_updated = False
 
-            self.collider.clear(envs_idx)
-            self.constraint_solver.clear(envs_idx)
-
-            for entity in self.entities:
-                if isinstance(entity, DroneEntity):
-                    entity._prev_prop_t = -1
+        for entity in self.entities:
+            if isinstance(entity, DroneEntity):
+                entity._prev_prop_t = -1
 
     def process_input(self, in_backward=False):
         for entity in self._entities:
@@ -1604,13 +1597,6 @@ class RigidSolver(KinematicSolver):
     # ------------------------------------------------------------------------------------
     # ------------------------------------ control ---------------------------------------
     # ------------------------------------------------------------------------------------
-
-    def _mark_ipc_abd_updated(self, qs_idx=None, dofs_idx=None, links_idx=None, envs_idx=None):
-        """Notify IPC coupler that rigid positions changed and ABD state needs sync."""
-        from genesis.engine.couplers import IPCCoupler
-
-        if isinstance(self.sim.coupler, IPCCoupler):
-            self.sim.coupler.mark_abd_updated(qs_idx=qs_idx, dofs_idx=dofs_idx, links_idx=links_idx, envs_idx=envs_idx)
 
     def set_links_pos(self, pos, links_idx=None, envs_idx=None):
         raise DeprecationError("This method has been removed. Please use 'set_base_links_pos' instead.")
@@ -1683,7 +1669,6 @@ class RigidSolver(KinematicSolver):
         )
         self._is_forward_pos_updated = True
         self._is_forward_vel_updated = True
-        self._mark_ipc_abd_updated(links_idx=links_idx, envs_idx=envs_idx)
 
     def set_links_quat(self, quat, links_idx=None, envs_idx=None):
         raise DeprecationError("This method has been removed. Please use 'set_base_links_quat' instead.")
@@ -1751,7 +1736,6 @@ class RigidSolver(KinematicSolver):
         )
         self._is_forward_pos_updated = True
         self._is_forward_vel_updated = True
-        self._mark_ipc_abd_updated(links_idx=links_idx, envs_idx=envs_idx)
 
     def set_links_mass_shift(self, mass, links_idx=None, envs_idx=None):
         mass, links_idx, envs_idx = self._sanitize_io_variables(
@@ -1789,6 +1773,34 @@ class RigidSolver(KinematicSolver):
             mass = mass[None]
         kernel_set_links_inertial_mass(mass, links_idx, envs_idx, self.links_info, self._static_rigid_sim_config)
 
+    def set_links_inertia(self, ratio, links_idx=None, envs_idx=None):
+        if gs.use_zerocopy:
+            mass_data = qd_to_torch(self.links_info.inertial_mass, transpose=True, copy=False)
+            inertial_i_data = qd_to_torch(self.links_info.inertial_i, transpose=True, copy=False)
+            invweight_data = qd_to_torch(self.links_info.invweight, transpose=True, copy=False)
+            links_mask = indices_to_mask(links_idx)
+            if self._options.batch_links_info:
+                mask = (0, *links_mask) if self.n_envs == 0 else indices_to_mask(envs_idx, *links_mask)
+            else:
+                mask = links_mask
+            ratio_t = broadcast_tensor(ratio, gs.tc_float, mass_data[mask].shape)
+            assign_indexed_tensor(mass_data, mask, mass_data[mask] * ratio_t)
+            assign_indexed_tensor(inertial_i_data, mask, inertial_i_data[mask] * ratio_t[..., None, None])
+            assign_indexed_tensor(invweight_data, mask, invweight_data[mask] / ratio_t[..., None])
+        else:
+            ratio, links_idx, envs_idx = self._sanitize_io_variables(
+                ratio,
+                links_idx,
+                self.n_links,
+                "links_idx",
+                envs_idx,
+                batched=self._options.batch_links_info,
+                skip_allocation=True,
+            )
+            if self.n_envs == 0 and self._options.batch_links_info:
+                ratio = ratio[None]
+            kernel_adjust_link_inertia(ratio, links_idx, envs_idx, self.links_info, self._static_rigid_sim_config)
+
     def set_geoms_friction_ratio(self, friction_ratio, geoms_idx=None, envs_idx=None):
         friction_ratio, geoms_idx, envs_idx = self._sanitize_io_variables(
             friction_ratio, geoms_idx, self.n_geoms, "geoms_idx", envs_idx, skip_allocation=True
@@ -1800,6 +1812,11 @@ class RigidSolver(KinematicSolver):
         )
 
     def set_qpos(self, qpos, qs_idx=None, envs_idx=None, *, skip_forward=False):
+        if self.collider is not None:
+            self.collider.reset(envs_idx)
+        if self.constraint_solver is not None:
+            self.constraint_solver.reset(envs_idx)
+
         if gs.use_zerocopy:
             data = qd_to_torch(self._rigid_global_info.qpos, transpose=True, copy=False)
             errno = qd_to_torch(self._errno, copy=False)
@@ -1810,8 +1827,8 @@ class RigidSolver(KinematicSolver):
                 and envs_idx.dtype == torch.bool
             ):
                 qs_data = data[(slice(None), *qs_mask)]
-                if qpos.ndim == 2:
-                    # Note that it is necessary to create a new temporary view because it will be modified in-place
+                if qpos.ndim == 2 and len(qpos) != len(qs_data):
+                    # Note that it is necessary to create a new temporary view because it will be reshaped in-place
                     qs_data.masked_scatter_(envs_idx[:, None], qpos.view_as(qpos))
                 else:
                     qpos = broadcast_tensor(qpos, gs.tc_float, qs_data.shape)
@@ -1831,11 +1848,6 @@ class RigidSolver(KinematicSolver):
                 qpos = qpos[None]
             kernel_set_qpos(qpos, qs_idx, envs_idx, self._rigid_global_info, self._static_rigid_sim_config)
             kernel_set_zero(envs_idx, self._errno)
-
-        if self.collider is not None:
-            self.collider.reset(envs_idx)
-        if self.constraint_solver is not None:
-            self.constraint_solver.reset(envs_idx)
 
         if not skip_forward:
             if not isinstance(envs_idx, torch.Tensor):
@@ -1863,8 +1875,6 @@ class RigidSolver(KinematicSolver):
         else:
             self._is_forward_pos_updated = False
             self._is_forward_vel_updated = False
-
-        self._mark_ipc_abd_updated(qs_idx=qs_idx, envs_idx=envs_idx)
 
     def set_global_sol_params(self, sol_params):
         """
@@ -1946,6 +1956,8 @@ class RigidSolver(KinematicSolver):
             num_values = len(tensor_list)
             for j, mask_j in enumerate(((*mask, ..., j) for j in range(num_values)) if num_values > 1 else (mask,)):
                 assign_indexed_tensor(data, mask_j, tensor_list[j])
+            if gs.backend == gs.metal:
+                torch.mps.synchronize()
             return
 
         tensor_list = list(tensor_list)
@@ -2014,6 +2026,9 @@ class RigidSolver(KinematicSolver):
         self._set_dofs_info([lower, upper], dofs_idx, "limit", envs_idx)
 
     def set_dofs_position(self, position, dofs_idx=None, envs_idx=None):
+        self.collider.reset(envs_idx)
+        self.constraint_solver.reset(envs_idx)
+
         position, dofs_idx, envs_idx = self._sanitize_io_variables(
             position, dofs_idx, self.n_dofs, "dofs_idx", envs_idx, skip_allocation=True
         )
@@ -2034,11 +2049,10 @@ class RigidSolver(KinematicSolver):
         if gs.use_zerocopy:
             errno = qd_to_torch(self._errno, copy=False)
             errno[envs_idx] = 0
+            if gs.backend == gs.metal:
+                torch.mps.synchronize()
         else:
             kernel_set_zero(envs_idx, self._errno)
-
-        self.collider.reset(envs_idx)
-        self.constraint_solver.reset(envs_idx)
 
         kernel_forward_kinematics_links_geoms(
             envs_idx,
@@ -2056,7 +2070,6 @@ class RigidSolver(KinematicSolver):
         )
         self._is_forward_pos_updated = True
         self._is_forward_vel_updated = True
-        self._mark_ipc_abd_updated(dofs_idx=dofs_idx, envs_idx=envs_idx)
 
     def control_dofs_force(self, force, dofs_idx=None, envs_idx=None):
         if gs.use_zerocopy:
@@ -2065,6 +2078,8 @@ class RigidSolver(KinematicSolver):
             ctrl_mode[mask] = gs.CTRL_MODE.FORCE
             ctrl_force = qd_to_torch(self.dofs_state.ctrl_force, transpose=True, copy=False)
             assign_indexed_tensor(ctrl_force, mask, force)
+            if gs.backend == gs.metal:
+                torch.mps.synchronize()
             return
 
         force, dofs_idx, envs_idx = self._sanitize_io_variables(
@@ -2084,6 +2099,8 @@ class RigidSolver(KinematicSolver):
             ctrl_pos[mask] = 0.0
             ctrl_vel = qd_to_torch(self.dofs_state.ctrl_vel, transpose=True, copy=False)
             assign_indexed_tensor(ctrl_vel, mask, velocity)
+            if gs.backend == gs.metal:
+                torch.mps.synchronize()
             return
 
         velocity, dofs_idx, envs_idx = self._sanitize_io_variables(
@@ -2103,6 +2120,8 @@ class RigidSolver(KinematicSolver):
             assign_indexed_tensor(ctrl_pos, mask, position)
             ctrl_vel = qd_to_torch(self.dofs_state.ctrl_vel, transpose=True, copy=False)
             ctrl_vel[mask] = 0.0
+            if gs.backend == gs.metal:
+                torch.mps.synchronize()
             return
 
         position, dofs_idx, envs_idx = self._sanitize_io_variables(
@@ -2122,6 +2141,8 @@ class RigidSolver(KinematicSolver):
             assign_indexed_tensor(ctrl_pos, mask, position)
             ctrl_vel = qd_to_torch(self.dofs_state.ctrl_vel, transpose=True, copy=False)
             assign_indexed_tensor(ctrl_vel, mask, velocity)
+            if gs.backend == gs.metal:
+                torch.mps.synchronize()
             return
 
         position, dofs_idx, _ = self._sanitize_io_variables(

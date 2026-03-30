@@ -52,6 +52,7 @@ from .rigid.abd.accessor import (
 )
 
 if TYPE_CHECKING:
+    from genesis.engine.entities import KinematicEntity
     from genesis.engine.scene import Scene
     from genesis.engine.simulator import Simulator
 
@@ -83,27 +84,7 @@ class KinematicSolver(Solver):
     def __init__(self, scene: "Scene", sim: "Simulator", options: "KinematicOptions") -> None:
         super().__init__(scene, sim, options)
 
-        if isinstance(options, RigidOptions):
-            self._options = options
-        elif isinstance(options, KinematicOptions):
-            self._options = RigidOptions(
-                dt=options.dt,
-                enable_collision=False,
-                enable_joint_limit=False,
-                enable_self_collision=False,
-                enable_neutral_collision=False,
-                enable_adjacent_collision=False,
-                disable_constraint=True,
-                max_collision_pairs=0,
-                enable_multi_contact=False,
-                enable_mujoco_compatibility=False,
-                use_contact_island=False,
-                use_hibernation=False,
-                max_dynamic_constraints=0,
-                iterations=0,
-            )
-        else:
-            gs.raise_exception(f"Invalid options type: {type(options)}")
+        self._options = options
 
         self._enable_collision = False
         self._enable_mujoco_compatibility = False
@@ -126,7 +107,7 @@ class KinematicSolver(Solver):
     # ----------------------------------- add_entity -------------------------------------
     # ------------------------------------------------------------------------------------
 
-    def add_entity(self, idx, material, morph, surface, visualize_contact=False, name=None):
+    def add_entity(self, idx, material, morph, surface, visualize_contact=False, name=None) -> "KinematicEntity":
         morph_heterogeneous = []
         if isinstance(morph, (tuple, list)):
             morph, *morph_heterogeneous = morph
@@ -223,10 +204,10 @@ class KinematicSolver(Solver):
             para_level=self.sim._para_level,
             requires_grad=False,
             use_hibernation=False,
-            batch_links_info=False,
+            batch_links_info=self._options.batch_links_info,
             batch_dofs_info=False,
             batch_joints_info=False,
-            enable_heterogeneous=False,
+            enable_heterogeneous=self._enable_heterogeneous,
             enable_mujoco_compatibility=False,
             enable_multi_contact=False,
             enable_collision=False,
@@ -349,6 +330,17 @@ class KinematicSolver(Solver):
         self.qpos_prev = self._rigid_global_info.qpos_prev
         if self.n_qs > 0:
             init_qpos = np.tile(np.expand_dims(self.init_qpos, -1), (1, self._B))
+
+            # Dispatch per-variant init_qpos for heterogeneous entities
+            for entity in self.entities:
+                if entity._variant_init_qpos is None:
+                    continue
+                n_variants = len(entity._variant_init_qpos)
+                variant_idx = _balanced_variant_mapping(n_variants, self._B)
+                q_s, q_e = entity.q_start, entity.q_start + entity.n_qs
+                for i_b in range(self._B):
+                    init_qpos[q_s:q_e, i_b] = entity._variant_init_qpos[variant_idx[i_b]]
+
             self.qpos0.from_numpy(init_qpos)
             is_init_qpos_out_of_bounds = False
             for joint in self.joints:
@@ -561,22 +553,25 @@ class KinematicSolver(Solver):
             state = None
         return state
 
-    def set_state(self, f, state, envs_idx=None):
-        if self.is_active:
-            envs_idx = self._scene._sanitize_envs_idx(envs_idx)
+    def set_state(self, f, state, envs_idx=None, *, partial: bool = False) -> None:
+        if not self.is_active:
+            return
 
-            kernel_set_kinematic_state(
-                envs_idx=envs_idx,
-                qpos=state.qpos,
-                dofs_vel=state.dofs_vel,
-                links_pos=state.links_pos,
-                links_quat=state.links_quat,
-                i_pos_shift=state.i_pos_shift,
-                links_state=self.links_state,
-                dofs_state=self.dofs_state,
-                rigid_global_info=self._rigid_global_info,
-                static_rigid_sim_config=self._static_rigid_sim_config,
-            )
+        envs_idx = self._scene._sanitize_envs_idx(envs_idx)
+
+        kernel_set_kinematic_state(
+            envs_idx=envs_idx,
+            qpos=state.qpos,
+            dofs_vel=state.dofs_vel,
+            links_pos=state.links_pos,
+            links_quat=state.links_quat,
+            i_pos_shift=state.i_pos_shift,
+            links_state=self.links_state,
+            dofs_state=self.dofs_state,
+            rigid_global_info=self._rigid_global_info,
+            static_rigid_sim_config=self._static_rigid_sim_config,
+        )
+        if not partial:
             kernel_forward_kinematics(
                 envs_idx,
                 links_state=self.links_state,
@@ -591,6 +586,9 @@ class KinematicSolver(Solver):
             )
             self._is_forward_pos_updated = True
             self._is_forward_vel_updated = True
+        else:
+            self._is_forward_pos_updated = False
+            self._is_forward_vel_updated = False
 
     # ------------------------------------------------------------------------------------
     # -------------------------------- process_input -------------------------------------
@@ -777,8 +775,8 @@ class KinematicSolver(Solver):
                 and envs_idx.dtype == torch.bool
             ):
                 qs_data = data[(slice(None), *qs_mask)]
-                if qpos.ndim == 2:
-                    # Note that it is necessary to create a new temporary view because it will be modified in-place
+                if qpos.ndim == 2 and len(qpos) != len(qs_data):
+                    # Note that it is necessary to create a new temporary view because it will be reshaped in-place
                     qs_data.masked_scatter_(envs_idx[:, None], qpos.view_as(qpos))
                 else:
                     qpos = broadcast_tensor(qpos, gs.tc_float, qs_data.shape)
@@ -840,8 +838,8 @@ class KinematicSolver(Solver):
                     else:
                         dofs_vel.scatter_(0, envs_idx[:, None].expand((-1, dofs_vel.shape[1])), 0.0)
                 else:
-                    if velocity.ndim == 2:
-                        # Note that it is necessary to create a new temporary view because it will be modified in-place
+                    if velocity.ndim == 2 and len(dofs_vel) != len(velocity):
+                        # Note that it is necessary to create a new temporary view because it will be reshaped in-place
                         dofs_vel.masked_scatter_(envs_idx[:, None], velocity.view_as(velocity))
                     else:
                         velocity = broadcast_tensor(velocity, gs.tc_float, dofs_vel.shape)

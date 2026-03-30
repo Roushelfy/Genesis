@@ -767,7 +767,9 @@ class RasterizerContext:
                             uvs=uvs if uvs is not None else np.zeros((len(render_verts), 2), dtype=gs.np_float),
                             n_verts=len(render_verts),
                         )
-                        node = pyrender.Mesh.from_trimesh(mesh, double_sided=rmesh.surface.double_sided)
+                        node = pyrender.Mesh.from_trimesh(
+                            mesh, smooth=rmesh.surface.smooth, double_sided=rmesh.surface.double_sided
+                        )
                         static_node = self.add_node(node)
                         self.static_nodes[(idx, fem_entity.uid, sub_idx)] = static_node
                         if self.segmentation_level == "geom":
