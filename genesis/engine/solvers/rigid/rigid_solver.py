@@ -1172,6 +1172,8 @@ class RigidSolver(KinematicSolver):
                 # If any rigid entity is coupled to IPC, skip pre-coupling rigid simulation
                 # The rigid simulation will be done in post-coupling phase instead
                 if self.sim.coupler.has_any_rigid_coupling:
+                    # Sync any set_pos/set_qpos changes to IPC before coupler step
+                    self.sim.coupler.cache_pre_prediction_transforms()
                     return
 
             # Run Genesis rigid simulation step for non-IPC couplers

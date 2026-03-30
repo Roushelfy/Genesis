@@ -3287,6 +3287,33 @@ class RigidEntity(KinematicEntity):
         return self._solver.get_links_invweight(links_idx, envs_idx)
 
     # ------------------------------------------------------------------------------------
+    # -------------------------------- IPC sync helper -----------------------------------
+    # ------------------------------------------------------------------------------------
+
+    def _notify_ipc_coupler(self, qs_idx_local=None, dofs_idx_local=None, links_idx=None, envs_idx=None):
+        """Notify the IPC coupler that this entity's state changed (set_pos/set_qpos/etc).
+
+        Converts local indices to global and calls coupler.mark_abd_updated().
+        No-op when there is no IPC coupler.
+        """
+        from genesis.engine.couplers import IPCCoupler
+
+        if not isinstance(self.sim.coupler, IPCCoupler):
+            return
+        qs_idx = None
+        if qs_idx_local is not None:
+            qs_idx = self._get_global_idx(qs_idx_local, self.n_qs, self._q_start, unsafe=True)
+        dofs_idx = None
+        if dofs_idx_local is not None:
+            dofs_idx = self._get_global_idx(dofs_idx_local, self.n_dofs, self._dof_start, unsafe=True)
+        self.sim.coupler.mark_abd_updated(
+            qs_idx=qs_idx,
+            dofs_idx=dofs_idx,
+            links_idx=links_idx,
+            envs_idx=envs_idx,
+        )
+
+    # ------------------------------------------------------------------------------------
     # ----------------------------- base pos/quat get/set --------------------------------
     # ------------------------------------------------------------------------------------
 
@@ -3313,6 +3340,7 @@ class RigidEntity(KinematicEntity):
         if self._delegation is not None:
             zero_velocity = False
         super().set_pos(pos, envs_idx, zero_velocity=zero_velocity, relative=relative)
+        self._notify_ipc_coupler(links_idx=[self.base_link_idx], envs_idx=envs_idx)
 
     @gs.assert_built
     def set_pos_grad(self, envs_idx, relative, pos_grad):
@@ -3340,6 +3368,7 @@ class RigidEntity(KinematicEntity):
         if self._delegation is not None:
             zero_velocity = False
         super().set_quat(quat, envs_idx, zero_velocity=zero_velocity, relative=relative)
+        self._notify_ipc_coupler(links_idx=[self.base_link_idx], envs_idx=envs_idx)
 
     @gs.assert_built
     def set_quat_grad(self, envs_idx, relative, quat_grad):
@@ -3401,6 +3430,7 @@ class RigidEntity(KinematicEntity):
         if self._delegation is not None:
             gs.raise_exception("ipc_only entities have no qpos. Use set_pos() and set_quat() instead.")
         super().set_qpos(qpos, qs_idx_local, envs_idx, zero_velocity=zero_velocity, skip_forward=skip_forward)
+        self._notify_ipc_coupler(qs_idx_local=qs_idx_local, envs_idx=envs_idx)
 
     @gs.assert_built
     def set_dofs_kp(self, kp, dofs_idx_local=None, envs_idx=None):
@@ -3521,11 +3551,8 @@ class RigidEntity(KinematicEntity):
             Whether to zero the velocity of all the entity's dofs. Defaults to True. This is a safety measure after a
             sudden change in entity pose.
         """
-        from genesis.engine.couplers import IPCCoupler
-
-        if isinstance(self.sim.coupler, IPCCoupler) and self.material.coup_type == "external_articulation":
-            gs.raise_exception("This method is not supported by `RigidMaterial.coup_type='external_articulation'`.")
         super().set_dofs_position(position, dofs_idx_local, envs_idx, zero_velocity=zero_velocity)
+        self._notify_ipc_coupler(dofs_idx_local=dofs_idx_local, envs_idx=envs_idx)
 
     # ------------------------------------------------------------------------------------
     # ---------------------------------- PD control --------------------------------------
