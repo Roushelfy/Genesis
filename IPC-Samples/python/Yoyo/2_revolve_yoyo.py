@@ -73,6 +73,7 @@ string_obj = asset_root / "yoyo-string-revolve.obj"
 bearing_outer_obj = asset_root / "bearing_outer.obj"
 bearing_spheres_obj = asset_root / "bearing_spheres.obj"
 tuber_obj = asset_root / "tuber.obj"
+SPLIT_SPHERE_OBJ_PREFIX = "bearing_spheres_"
 
 engine = Engine("cuda", str(workspace))
 world = World(engine)
@@ -187,6 +188,7 @@ label_region(bearing_spheres_mesh)
 sphere_regions = apply_region(bearing_spheres_mesh)
 sphere_slot_map = {}
 for i, sphere_mesh in enumerate(sphere_regions):
+    io.write(str(asset_root / f"{SPLIT_SPHERE_OBJ_PREFIX}{i}.obj"), sphere_mesh)
     label_surface(sphere_mesh)
     AffineBodyConstitution().apply_to(sphere_mesh, 200.0 * MPa)
     bearing_contact.apply_to(sphere_mesh)

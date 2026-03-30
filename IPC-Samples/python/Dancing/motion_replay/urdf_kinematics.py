@@ -32,18 +32,21 @@ def _quat_wxyz_to_matrix(quat_wxyz: np.ndarray) -> np.ndarray:
 
 
 class UrdfKinematics:
-    def __init__(self, urdf_path: str | Path) -> None:
+    def __init__(self, urdf_path: str | Path, mesh_source: str = "collision") -> None:
+        if mesh_source not in ("collision", "visual"):
+            raise ValueError("mesh_source must be 'collision' or 'visual'.")
         self.urdf_path = Path(urdf_path)
+        load_collision = mesh_source == "collision"
         self.urdf = URDF.load(
             str(self.urdf_path),
-            build_collision_scene_graph=True,
-            load_collision_meshes=True,
-            build_scene_graph=False,
-            load_meshes=False,
+            build_collision_scene_graph=load_collision,
+            load_collision_meshes=load_collision,
+            build_scene_graph=not load_collision,
+            load_meshes=not load_collision,
         )
-        self.mesh_scene = self.urdf.collision_scene
+        self.mesh_scene = self.urdf.collision_scene if load_collision else self.urdf.scene
         if self.mesh_scene is None:
-            raise RuntimeError(f"Failed to load collision scene from URDF: {self.urdf_path}")
+            raise RuntimeError(f"Failed to load {mesh_source} scene from URDF: {self.urdf_path}")
 
         self._joint_names = list(self.urdf.actuated_joint_names)
         self._joint_state = {name: 0.0 for name in self._joint_names}
