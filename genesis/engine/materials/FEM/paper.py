@@ -12,6 +12,10 @@ with plastic bending from libuipc. Two plasticity models are available:
 The membrane response stays unchanged (StrainLimitingBaraffWitkinShell).
 """
 
+from typing import Literal
+
+from genesis.typing import NonNegativeFloat, PositiveFloat
+
 from .cloth import Cloth
 
 
@@ -55,70 +59,14 @@ class Paper(Cloth):
     >>> paper = gs.materials.FEM.Paper(plasticity_model="strain", yield_threshold=0.02)
     """
 
-    def __init__(
-        self,
-        E=1e5,
-        nu=0.49,
-        rho=700.0,
-        thickness=0.0003,
-        bending_stiffness=4e3,
-        plasticity_model="stress",
-        yield_stress=960.0,
-        yield_threshold=0.02,
-        hardening_modulus=0.0,
-        model="stable_neohookean",
-        friction_mu=0.3,
-        contact_resistance=None,
-    ):
-        super().__init__(
-            E=E,
-            nu=nu,
-            rho=rho,
-            thickness=thickness,
-            bending_stiffness=bending_stiffness,
-            model=model,
-            friction_mu=friction_mu,
-            contact_resistance=contact_resistance,
-        )
-
-        if plasticity_model not in ("stress", "strain"):
-            from genesis.utils.misc import raise_exception
-
-            raise_exception(f"Unknown plasticity_model '{plasticity_model}'. Use 'stress' or 'strain'.")
-
-        self._plasticity_model = plasticity_model
-        self._yield_stress = yield_stress
-        self._yield_threshold = yield_threshold
-        self._hardening_modulus = hardening_modulus
-
-    @property
-    def plasticity_model(self):
-        """Plasticity model: ``'stress'`` or ``'strain'``."""
-        return self._plasticity_model
-
-    @property
-    def yield_stress(self):
-        """Yield stress on generalized bending moment (stress model)."""
-        return self._yield_stress
-
-    @property
-    def yield_threshold(self):
-        """Yield threshold on dihedral angle deviation in radians (strain model)."""
-        return self._yield_threshold
-
-    @property
-    def hardening_modulus(self):
-        """Hardening modulus for plastic bending."""
-        return self._hardening_modulus
-
-    def __repr__(self):
-        if self._plasticity_model == "stress":
-            yield_str = f"yield_stress={self.yield_stress}"
-        else:
-            yield_str = f"yield_threshold={self.yield_threshold}"
-        return (
-            f"<gs.materials.FEM.Paper(E={self.E}, nu={self.nu}, rho={self.rho}, "
-            f"thickness={self.thickness}, bending_stiffness={self.bending_stiffness}, "
-            f"plasticity_model='{self.plasticity_model}', {yield_str}, "
-            f"hardening_modulus={self.hardening_modulus})>"
-        )
+    E: PositiveFloat = 1e5
+    nu: PositiveFloat = 0.49
+    rho: PositiveFloat = 700.0
+    thickness: PositiveFloat = 0.0003
+    bending_stiffness: NonNegativeFloat | None = 4e3
+    plasticity_model: Literal["stress", "strain"] = "stress"
+    yield_stress: PositiveFloat = 960.0
+    yield_threshold: PositiveFloat = 0.02
+    hardening_modulus: NonNegativeFloat = 0.0
+    model: Literal["strain_limiting_baraff_witkin", "neohookean"] = "strain_limiting_baraff_witkin"
+    friction_mu: NonNegativeFloat = 0.3
