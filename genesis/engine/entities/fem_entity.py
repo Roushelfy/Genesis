@@ -63,7 +63,13 @@ class FEMEntity(Entity):
     def __init__(
         self, scene, solver, material, morph, surface, idx, v_start=0, el_start=0, s_start=0, name: str | None = None
     ):
+        from genesis.engine.couplers.ipc_coupler.coupler import IPCCoupler
+
         super().__init__(idx, scene, morph, solver, material, surface, name=name)
+
+        self._delegation = None
+        if isinstance(self._sim.coupler, IPCCoupler):
+            self._delegation = "ipc"
 
         self._v_start = v_start  # offset for vertex index of elements
         self._el_start = el_start  # offset for element index
@@ -158,7 +164,7 @@ class FEMEntity(Entity):
 
         return broadcast_tensor(tensor, dtype, tensor_shape, dim_names).contiguous()
 
-    def set_position(self, pos):
+    def set_position(self, pos, *, skip_forward=False):
         """
         Set the target position(s) for the FEM entity.
 
@@ -170,6 +176,11 @@ class FEMEntity(Entity):
             - (n_vertices, 3): per-vertex positions for all vertices.
             - (n_envs, 3): per-environment COM offsets.
             - (n_envs, n_vertices, 3): full batched per-vertex positions.
+        skip_forward : bool, optional
+            If True, skip the immediate flush to solver state. The positions
+            will be applied later by ``process_input()`` at the start of the
+            next step. Useful when batching multiple set calls before a single
+            ``scene.step()``. Defaults to False.
 
         Raises
         ------
@@ -177,35 +188,30 @@ class FEMEntity(Entity):
             If the tensor shape is not supported.
         """
         self._assert_active()
-        gs.logger.warning("Manually setting element positions. This is not recommended and could break gradient flow.")
 
         pos = to_gs_tensor(pos)
+        B = self._sim._B
 
-        is_valid = False
-        if pos.ndim == 1:
-            if pos.shape == (3,):
-                pos = self.init_positions_COM_offset + pos
-                self._tgt["pos"] = pos[None].tile((self._sim._B, 1, 1))
-                is_valid = True
-        elif pos.ndim == 2:
-            if pos.shape == (self.n_vertices, 3):
-                self._tgt["pos"] = pos[None].tile((self._sim._B, 1, 1))
-                is_valid = True
-            elif pos.shape == (self._sim._B, 3):
-                pos = self.init_positions_COM_offset[None] + pos[:, None]
-                self._tgt["pos"] = pos
-                is_valid = True
-        elif pos.ndim == 3:
-            if pos.shape == (self._sim._B, self.n_vertices, 3):
-                self._tgt["pos"] = pos
-                is_valid = True
-        if not is_valid:
-            gs.raise_exception("Tensor shape not supported.")
+        if pos.ndim == 1 and pos.shape == (3,):
+            pos = (self.init_positions_COM_offset + pos)[None].tile((B, 1, 1))
+        elif pos.ndim == 2 and pos.shape == (self.n_vertices, 3):
+            pos = pos[None].tile((B, 1, 1))
+        elif pos.ndim == 2 and pos.shape == (B, 3):
+            pos = self.init_positions_COM_offset[None] + pos[:, None]
+        elif pos.ndim == 3 and pos.shape == (B, self.n_vertices, 3):
+            pass
+        else:
+            gs.raise_exception(f"Unsupported position shape {pos.shape}.")
 
-        # Immediately flush to the solver's internal elements_v so that the
-        # visualizer can render the updated positions without scene.step().
-        if is_valid and self._tgt["pos"] is not None:
-            self.set_pos(self._sim.cur_substep_local, self._tgt["pos"])
+        self._tgt["pos"] = pos
+
+        if not skip_forward:
+            self.set_pos(self._sim.cur_substep_local, pos)
+
+        from genesis.engine.couplers.ipc_coupler.coupler import IPCCoupler
+
+        if isinstance(self._sim.coupler, IPCCoupler):
+            self._sim.coupler.mark_fem_updated(self)
 
     def set_velocity(self, vel):
         """
@@ -557,7 +563,7 @@ class FEMEntity(Entity):
                 f"Pressure field max distance is too small: {max_distance}. "
                 "This might be due to a mesh having no internal vertices."
             )
-        self.pressure_field_np = unsigned_distance / max_distance * self.material._hydroelastic_modulus  # normalize
+        self.pressure_field_np = unsigned_distance / max_distance * self.material.hydroelastic_modulus  # normalize
 
     # ------------------------------------------------------------------------------------
     # ---------------------------- checkpoint and buffer ---------------------------------

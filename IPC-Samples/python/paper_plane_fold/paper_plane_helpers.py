@@ -47,8 +47,12 @@ SHELL_DENSITY = 1200.0
 SHELL_YOUNG = 1.5e9
 SHELL_POISSON = 0.3
 SHELL_BENDING_STIFFNESS = 1.2e6
-SHELL_YIELD_THRESHOLD = 0.05
-SHELL_HARDENING_MODULUS = 0.0
+# strain-based plasticity parameters
+SHELL_STRAIN_YIELD_THRESHOLD = 0.05
+SHELL_STRAIN_HARDENING_MODULUS = 0.0
+# stress-based plasticity parameters
+SHELL_STRESS_YIELD_STRESS = 4.2e5
+SHELL_STRESS_HARDENING_MODULUS = 0.0
 
 STRONG_SPC_STRENGTH = 1200
 WEAK_SPC_STRENGTH = 100.0
@@ -706,10 +710,16 @@ def asset_identity(asset_filename: str | None) -> tuple[str, str, str]:
     return resolved, basename, Path(basename).stem
 
 
-def demo_workspace(asset_filename: str | None, sequence: str = "full") -> str:
+def demo_workspace(
+    asset_filename: str | None,
+    sequence: str = "full",
+    bending_model: str = "strain",
+) -> str:
     _, _, asset_stem = asset_identity(asset_filename)
     base_output = Path(AssetDir.output_path(__file__)).resolve()
     workspace = base_output.parent / Path(__file__).stem / asset_stem
+    if bending_model != "strain":
+        workspace = workspace / bending_model
     if sequence != "full":
         workspace = workspace / sequence
     workspace.mkdir(parents=True, exist_ok=True)
@@ -722,12 +732,14 @@ def resume_manifest_template(
     schedule_steps: tuple[FoldStep, ...],
     total_frames: int,
     sequence: str = "full",
+    bending_model: str = "strain",
 ) -> dict[str, object]:
     resolved_filename, _, asset_stem = asset_identity(asset_filename)
     return {
         "asset_filename": resolved_filename,
         "asset_stem": asset_stem,
         "sequence": sequence,
+        "bending_model": bending_model,
         "step_defs": step_manifest_entries(step_specs),
         "step_end_frames": list(completed_step_end_frames(schedule_steps)),
         "total_frames": total_frames,
@@ -750,6 +762,10 @@ def completed_prefix_compatible(
         expected = manifest_template.get(field_name)
         if not isinstance(actual, list) or actual[:prefix_count] != expected[:prefix_count]:
             return f"{field_name} mismatch through completed step"
+    actual_bending_model = manifest.get("bending_model") or "strain"
+    expected_bending_model = manifest_template.get("bending_model") or "strain"
+    if actual_bending_model != expected_bending_model:
+        return "bending_model mismatch"
     if manifest.get("last_completed_step_name") != manifest_template["step_defs"][completed_index]["name"]:
         return "last_completed_step_name mismatch"
     return None
@@ -826,6 +842,16 @@ def maybe_recover_world(
     if manifest is None:
         print(f"[paper_plane_resume] resume skipped: {reason}")
         resume_info["skip_reason"] = reason
+        return resume_info
+    manifest_bending_model = manifest.get("bending_model") or "strain"
+    expected_bending_model = manifest_template.get("bending_model") or "strain"
+    if manifest_bending_model != expected_bending_model:
+        message = (
+            f"bending model mismatch: manifest={manifest_bending_model}, "
+            f"expected={expected_bending_model}"
+        )
+        print(f"[paper_plane_resume] resume skipped: {message}")
+        resume_info["skip_reason"] = message
         return resume_info
     try:
         dump_frame = int(manifest["last_dump_frame"])

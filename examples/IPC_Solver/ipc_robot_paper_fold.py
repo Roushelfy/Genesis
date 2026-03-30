@@ -33,16 +33,16 @@ def main():
         sim_options=gs.options.SimOptions(
             dt=0.02,
         ),
+        fem_options=gs.options.FEMOptions(
+            use_rigid_compatible_transform=True,
+        ),
         coupler_options=gs.options.IPCCouplerOptions(
-            n_linesearch_iterations=8,
-            newton_tolerance=1e-1,
-            newton_translation_tolerance=1,
-            newton_semi_implicit_enable=False,
-            linear_system_tolerance=1e-3,
-            contact_enable=True,
-            enable_rigid_rigid_contact=True,
             contact_d_hat=0.001,
+            newton_tolerance=0.1,
             contact_resistance=1e7,
+            newton_translation_tolerance=1,
+            linear_system_tolerance=1e-5,
+            enable_fem_fem_friction=False,
             **(dict(contact_constitution="al-ipc") if args.use_al else {}),
         ),
         viewer_options=gs.options.ViewerOptions(
@@ -101,39 +101,43 @@ def main():
             ),
         )
 
-    # Paper sheet on the table with fold-line texture.
-    # Offset toward -x so the near edge hangs off the table toward the robot.
-    # The robot grabs the hanging edge from below and folds it up and over.
+    # Paper airplane sheet on the table with crease-line texture.
+    # GLB is Y-up; Genesis auto-rotates to Z-up — no manual euler needed.
+    # Scale 0.125 → 25cm wide, 35cm long.
     _repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    paper_mesh = os.path.join(_repo_root, "DemoAssets", "fold_plane", "fold_plane.obj")
-    # fold_plane.obj spans [-1,1] (2 units wide), vs grid20x20.obj's [-0.5,0.5].
-    # Use scale=0.125 to match the original 0.25m paper from grid20x20.
-    paper_size = 0.125
+    paper_mesh = os.path.join(_repo_root, "DemoAssets", "fold_plane", "paper_plane_coarse.glb")
+    # paper_mesh = os.path.join(
+    #     _repo_root, "IPC-Samples", "assets", "sim_data", "trimesh",
+    #     # "paper_plane_2_fine_textured.glb",
+    #     # "paper_plane_2_coarse.obj",
+    #     "paper_plane_2_coarse.obj",
+    # )
+    paper_scale = 0.125
     scene.add_entity(
         morph=gs.morphs.Mesh(
             file=paper_mesh,
-            scale=paper_size,
-            pos=(table_x, 0.0, table_height + 0.005),
+            # euler=(90, 0, 0),
+            scale=paper_scale,
+            pos=(table_x, 0.0, table_height + 0.02),
         ),
         material=gs.materials.FEM.Paper(
             E=5e5,
-            rho=700.0,
-            thickness=0.0001,
-            bending_stiffness=1e4,
-            yield_threshold=0.05,
-            hardening_modulus=0.2,
+            rho=200.0,
+            thickness=0.0003,
+            plasticity_model="stress",
+            bending_stiffness=5e4,
+            yield_stress=960.0,
+            hardening_modulus=0.0,
             friction_mu=0.5,
         ),
-        # No surface specified — uses the OBJ's MTL texture (fold lines on paper)
     )
 
-    # Brick press — the robot grabs the handle and uses the brick to press fold lines.
-    # Placed next to the paper on the table, within robot reach.
+    # Brick press — placed beside the paper on the table.
     brick_mesh = os.path.join(_repo_root, "DemoAssets", "fold_plane", "brick_press.obj")
     scene.add_entity(
         morph=gs.morphs.Mesh(
             file=brick_mesh,
-            pos=(table_x, 0.0, table_height + 0.01),
+            pos=(table_x, -0.30, table_height + 0.05),
             fixed=False,
             convexify=False,
             decimate=False,
@@ -152,8 +156,9 @@ def main():
     scene.build()
 
     if franka is not None:
-        # Start EE above the near (hanging) edge of the paper, pointing down
-        paper_near_edge_x = table_x - paper_size
+        # Start EE above the near edge of the paper, pointing down
+        # Paper X extent: [-1,1]*scale = [-0.125, 0.125] centered at table_x
+        paper_near_edge_x = table_x - paper_scale
         teleop = RobotTeleop.franka(
             scene=scene,
             robot=franka,

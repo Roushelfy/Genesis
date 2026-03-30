@@ -603,7 +603,7 @@ def parse_mesh_linemesh(path, scale, radius, is_mesh_zup, surface):
     return meshes
 
 
-def trimesh_to_mesh(mesh, scale, surface):
+def trimesh_to_mesh(mesh, scale, surface) -> "gs.Mesh":
     return gs.Mesh.from_trimesh(mesh=mesh, scale=scale, surface=surface)
 
 

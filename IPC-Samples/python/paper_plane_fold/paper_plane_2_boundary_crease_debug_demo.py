@@ -35,7 +35,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "..", "..", "tests"))
 from asset_dir import AssetDir
 
 
-DEFAULT_ASSET_FILENAME = "paper_plane_2_fine.obj"
+DEFAULT_ASSET_FILENAME = "paper_plane_2_coarse.obj"
 MESH_PARTITION_SIZE = 16
 
 SHELL_THICKNESS = 8.0e-4
@@ -802,7 +802,7 @@ def build_demo(asset_filename: str | None = None) -> dict[str, object]:
     try:
         from uipc.constitution import (
             NeoHookeanShell,
-            PlasticDiscreteShellBending,
+            StrainPlasticDiscreteShellBending,
             SoftPositionConstraint,
             ElasticModuli2D,
         )
@@ -810,7 +810,7 @@ def build_demo(asset_filename: str | None = None) -> dict[str, object]:
     except ImportError as exc:
         raise SystemExit(
             "This example requires newer libuipc Python bindings with "
-            "`NeoHookeanShell`, `PlasticDiscreteShellBending`, "
+            "`NeoHookeanShell`, `StrainPlasticDiscreteShellBending`, "
             "`SoftPositionConstraint`, `ElasticModuli2D`, and `mesh_partition`."
         ) from exc
 
@@ -831,7 +831,7 @@ def build_demo(asset_filename: str | None = None) -> dict[str, object]:
     plane_object = scene.objects().create("paper_plane_boundary")
 
     shell = NeoHookeanShell()
-    plastic_bending = PlasticDiscreteShellBending()
+    plastic_bending = StrainPlasticDiscreteShellBending()
     position_constraint = SoftPositionConstraint()
 
     plane = load_paper_plane_mesh(asset_filename)

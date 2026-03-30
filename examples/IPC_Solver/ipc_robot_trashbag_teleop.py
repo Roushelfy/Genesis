@@ -18,8 +18,9 @@ from robot_teleop import RobotTeleop
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 DEMO_ASSETS = os.path.join(REPO_ROOT, "DemoAssets", "trashbag_drawstring")
-BAG_MESH = os.path.join(DEMO_ASSETS, "Trashbag_drawstring.glb")
-ROPE_MESH = os.path.join(DEMO_ASSETS, "rope.obj")
+BAG_MESH = os.path.join(DEMO_ASSETS, "Trashbag_rope.glb")
+ROPE1_MESH = os.path.join(DEMO_ASSETS, "rope1.obj")
+ROPE2_MESH = os.path.join(DEMO_ASSETS, "rope2.obj")
 CAN_MESH = os.path.join(REPO_ROOT, "DemoAssets", "trashbag", "trashcan_128.obj")
 
 BAG_POS = (0.5, 0.0, 0.65)
@@ -47,6 +48,9 @@ def main():
         fem_options=gs.options.FEMOptions(
             use_rigid_compatible_transform=True,
         ),
+        # rigid_options=gs.options.RigidOptions(
+        #     enable_self_collision=False,
+        # ),
         coupler_options=gs.options.IPCCouplerOptions(
             contact_d_hat=0.001,
             contact_friction_enable=True,
@@ -129,7 +133,23 @@ def main():
     # Drawstring rope (closed loop through channel)
     scene.add_entity(
         morph=gs.morphs.Mesh(
-            file=ROPE_MESH,
+            file=ROPE1_MESH,
+            pos=BAG_POS,
+            euler=(90, 0, 0),
+            scale=1.0,
+        ),
+        material=gs.materials.FEM.Rope(
+            E=5e5,
+            rho=10.0,
+            thickness=0.002,
+            bending_stiffness=1e3,
+            friction_mu=0.5,
+        ),
+        surface=gs.surfaces.Default(color=(0.8, 0.15, 0.1, 1.0)),
+    )
+    scene.add_entity(
+        morph=gs.morphs.Mesh(
+            file=ROPE2_MESH,
             pos=BAG_POS,
             euler=(90, 0, 0),
             scale=1.0,

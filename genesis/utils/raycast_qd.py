@@ -162,7 +162,7 @@ def ray_triangle_intersection(
         valid = False
 
     if valid:
-        f = 1.0 / a
+        f = gs.qd_float(1.0) / a
         s = ray_start - v0
         u = f * s.dot(h)
 
@@ -185,7 +185,7 @@ def ray_triangle_intersection(
             valid = False
 
     if valid:
-        result = qd.math.vec4(t, u, v, 1.0)
+        result = qd.math.vec4(t, u, v, gs.qd_float(1.0))
 
     return result
 
@@ -215,7 +215,7 @@ def ray_aabb_intersection(
     tmin = qd.min(t1, t2)
     tmax = qd.max(t1, t2)
 
-    t_near = qd.max(tmin.x, tmin.y, tmin.z, 0.0)
+    t_near = qd.max(tmin.x, tmin.y, tmin.z, gs.qd_float(0.0))
     t_far = qd.min(tmax.x, tmax.y, tmax.z)
 
     # Check if ray intersects AABB
@@ -273,7 +273,8 @@ def kernel_update_verts_and_aabbs(
     )
 
 
-@qd.kernel(fastcache=gs.use_fastcache)
+# FIXME: Fastcache is not supported because of 'bvh_nodes', 'bvh_morton_codes'.
+@qd.kernel(fastcache=False)
 def kernel_cast_ray(
     fixed_verts_state: array_class.VertsState,
     free_verts_state: array_class.VertsState,

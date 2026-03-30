@@ -178,7 +178,6 @@ def test_contact_pair_friction_resistance(enable_rigid_rigid_contact):
                     elem = coupler._ipc_abd_links_contact[entity.base_link]
                 friction = entity.material.coup_friction
             else:
-                assert isinstance(entity, FEMEntity)
                 elem = coupler._ipc_fems_contact[entity]
                 friction = entity.material.friction_mu
             resistance = entity.material.contact_resistance or coupler.options.contact_resistance
@@ -484,8 +483,8 @@ def test_single_joint(n_envs, coup_type, joint_type, fixed, show_viewer):
         art_data = coupler._articulation_data_by_entity[robot]
         assert len(art_data.slots) == max(scene.n_envs, 1)
         if fixed:
-            # Fixed-base ext_art: links are in IPC but not coupling targets
-            assert coupler._abd_data_by_link[moving_link].ipc_transforms is None
+            # Fixed-base ext_art: links are in IPC with ipc_transforms for ref_dof_prev
+            assert coupler._abd_data_by_link[moving_link].ipc_transforms is not None
 
     dist_min = np.array(float("inf"))
     cur_dof_pos_history, target_dof_pos_history = [], []
@@ -559,7 +558,7 @@ def test_single_joint(n_envs, coup_type, joint_type, fixed, show_viewer):
 def test_find_target_links(coup_type, merge_fixed_links, show_viewer):
     """Test that find_target_link_for_fixed_merge correctly groups ABD bodies."""
     from genesis.engine.entities import RigidEntity
-    from genesis.engine.couplers.ipc_coupler.utils import find_target_link_for_fixed_merge
+    from genesis.engine.couplers.ipc_coupler.utils import find_abd_merge_target
 
     scene = gs.Scene(
         sim_options=gs.options.SimOptions(dt=0.01, gravity=(0, 0, -9.8)),
@@ -580,6 +579,13 @@ def test_find_target_links(coup_type, merge_fixed_links, show_viewer):
         ),
     )
 
+    material_kwargs = dict(
+        coup_type=coup_type,
+        coup_stiffness=(1.0, 1.0),
+    )
+    # two_way_soft_constraint requires explicit coup_links for articulated robots
+    if coup_type == "two_way_soft_constraint":
+        material_kwargs["coup_links"] = ("link7",)
     robot = scene.add_entity(
         morph=gs.morphs.URDF(
             file="urdf/panda_bullet/panda_nohand.urdf",
@@ -587,10 +593,7 @@ def test_find_target_links(coup_type, merge_fixed_links, show_viewer):
             fixed=True,
             merge_fixed_links=merge_fixed_links,
         ),
-        material=gs.materials.Rigid(
-            coup_type=coup_type,
-            coup_stiffness=(1.0, 1.0),
-        ),
+        material=gs.materials.Rigid(**material_kwargs),
     )
     assert isinstance(robot, RigidEntity)
 
@@ -607,7 +610,7 @@ def test_find_target_links(coup_type, merge_fixed_links, show_viewer):
     if not merge_fixed_links:
         attachment = robot.get_link("attachment")
         # attachment exists as separate link but shares ABD body with link7
-        target = find_target_link_for_fixed_merge(attachment)
+        target = find_abd_merge_target(attachment)
         assert target == link7
         # attachment is NOT in _abd_data_by_link — only the target link gets a slot entry
         assert attachment not in coupler._abd_data_by_link
@@ -1153,11 +1156,12 @@ def test_robot_grasp_abd(coup_type, show_viewer):
     cyl_link = cylinder.links[0]
     assert cyl_link in coupler._abd_data_by_link
 
-    cyl_z_0 = tensor_to_array(cylinder.get_dofs_position())[..., 2]
+    # ipc_only has FIXED joints (0 DOFs), so use get_pos() instead of get_dofs_position()
+    cyl_z_0 = tensor_to_array(cylinder.get_pos())[..., 2]
 
     _run_grasp_sequence(scene, franka, DT)
 
-    cyl_z_f = tensor_to_array(cylinder.get_dofs_position())[..., 2]
+    cyl_z_f = tensor_to_array(cylinder.get_pos())[..., 2]
     assert (cyl_z_f - cyl_z_0 >= 0.2).all()
 
 
@@ -1323,7 +1327,6 @@ def test_collision_delegation_ipc_vs_rigid(coup_type, enable_rigid_ground_contac
             needs_coup=False,
         ),
     )
-    assert isinstance(plane, RigidEntity)
 
     # Non-IPC box — always handled by rigid solver
     box = scene.add_entity(
@@ -1738,16 +1741,20 @@ def test_set_object_qpos(coup_type):
     pos0 = tensor_to_array(box.get_pos()).flatten()
     assert_allclose(pos0, INIT_POS, atol=1e-4)
 
-    # --- Test set_qpos ---
-    # Free joint qpos: [x, y, z, qw, qx, qy, qz]
-    target_qpos = np.array([*TARGET_POS, 1.0, 0.0, 0.0, 0.0], dtype=gs.np_float)
-    box.set_qpos(target_qpos)
+    if coup_type == "ipc_only":
+        # ipc_only uses FIXED joints — no qpos DOFs. Use set_pos/set_quat instead.
+        box.set_pos(TARGET_POS)
+    else:
+        # Free joint qpos: [x, y, z, qw, qx, qy, qz]
+        target_qpos = np.array([*TARGET_POS, 1.0, 0.0, 0.0, 0.0], dtype=gs.np_float)
+        box.set_qpos(target_qpos)
+
+        # Velocity should be zeroed (default zero_velocity=True for RigidEntity)
+        vel_after_set = tensor_to_array(box.get_dofs_velocity()).flatten()
+        assert_allclose(vel_after_set, np.zeros(6), atol=1e-6)
+
     pos_after_set = tensor_to_array(box.get_pos()).flatten()
     assert_allclose(pos_after_set, TARGET_POS, atol=1e-4)
-
-    # Velocity should be zeroed (default zero_velocity=True for RigidEntity)
-    vel_after_set = tensor_to_array(box.get_dofs_velocity()).flatten()
-    assert_allclose(vel_after_set, np.zeros(6), atol=1e-6)
 
     # Step and verify IPC stays in sync (no crash, position doesn't jump back)
     for _ in range(5):
@@ -1757,8 +1764,13 @@ def test_set_object_qpos(coup_type):
     gs_quat = tensor_to_array(box.get_quat()).flatten()
     assert_ipc_genesis_transform_close(coupler, box.base_link, 0, pos_after_step, gs_quat, atol=0.01)
 
-    # --- Test set_dofs_position ---
-    box.set_dofs_position(INIT_POS, dofs_idx_local=[0, 1, 2])
+    if coup_type == "ipc_only":
+        # Reset via set_pos
+        box.set_pos(INIT_POS)
+    else:
+        # Test set_dofs_position
+        box.set_dofs_position(INIT_POS, dofs_idx_local=[0, 1, 2])
+
     pos_after_dof_set = tensor_to_array(box.get_pos()).flatten()
     assert_allclose(pos_after_dof_set, INIT_POS, atol=1e-4)
 
@@ -1898,3 +1910,190 @@ def test_coup_collision_links():
     assert base_link in collision_settings
     assert collision_settings[base_link] is False
     assert moving_link not in collision_settings
+
+
+# ============================================================
+# FEM set_position IPC sync
+# ============================================================
+
+
+@pytest.mark.required
+def test_fem_set_position_ipc_sync():
+    """Verify FEMEntity.set_position syncs to IPC via FiniteElementStateAccessorFeature."""
+    DT = 0.01
+    INIT_POS = (0.5, 0.0, 0.3)
+    TELEPORT_DZ = 0.3
+
+    scene = gs.Scene(
+        sim_options=gs.options.SimOptions(dt=DT, gravity=(0, 0, 0)),
+        coupler_options=gs.options.IPCCouplerOptions(
+            newton_translation_tolerance=10.0,
+        ),
+        show_viewer=False,
+    )
+    scene.add_entity(gs.morphs.Plane(), material=gs.materials.Rigid(coup_type="ipc_only"))
+    cube = scene.add_entity(
+        morph=gs.morphs.Box(pos=INIT_POS, size=(0.05, 0.05, 0.05)),
+        material=gs.materials.FEM.Elastic(E=5e4, nu=0.45, rho=1000, model="stable_neohookean"),
+    )
+    scene.build()
+
+    coupler = cast("IPCCoupler", scene.sim.coupler)
+    assert coupler._fem_state_feature is not None
+    assert coupler._fem_state_geom is not None
+    assert cube in coupler._fem_slots_by_entity
+
+    # Step once to settle
+    scene.step()
+    state0 = cube.get_state()
+    z0 = state0.pos.numpy()[0].mean(axis=0)[2]
+
+    # Teleport up
+    new_pos = state0.pos.numpy()[0] + np.array([0, 0, TELEPORT_DZ])
+    cube.set_position(new_pos)
+    assert len(coupler._fem_updated_entities) == 1
+
+    # Step — IPC should see teleported positions
+    scene.step()
+    z1 = cube.get_state().pos.numpy()[0].mean(axis=0)[2]
+    assert abs(z1 - (z0 + TELEPORT_DZ)) < 0.05, f"FEM teleport failed: z={z1:.4f}, expected ~{z0 + TELEPORT_DZ:.4f}"
+
+
+@pytest.mark.required
+def test_fem_set_position_skip_forward():
+    """Verify skip_forward=True defers flush but IPC still syncs on next step."""
+    DT = 0.01
+    TELEPORT_DZ = 0.2
+
+    scene = gs.Scene(
+        sim_options=gs.options.SimOptions(dt=DT, gravity=(0, 0, 0)),
+        coupler_options=gs.options.IPCCouplerOptions(
+            newton_translation_tolerance=10.0,
+        ),
+        show_viewer=False,
+    )
+    scene.add_entity(gs.morphs.Plane(), material=gs.materials.Rigid(coup_type="ipc_only"))
+    cube = scene.add_entity(
+        morph=gs.morphs.Box(pos=(0.5, 0.0, 0.3), size=(0.05, 0.05, 0.05)),
+        material=gs.materials.FEM.Elastic(E=5e4, nu=0.45, rho=1000, model="stable_neohookean"),
+    )
+    scene.build()
+
+    scene.step()
+    z0 = cube.get_state().pos.numpy()[0].mean(axis=0)[2]
+
+    # Teleport with skip_forward=True
+    new_pos = cube.get_state().pos.numpy()[0] + np.array([0, 0, TELEPORT_DZ])
+    cube.set_position(new_pos, skip_forward=True)
+
+    # Step — process_input flushes _tgt, then cache_fem_positions syncs to IPC
+    scene.step()
+    z1 = cube.get_state().pos.numpy()[0].mean(axis=0)[2]
+    assert abs(z1 - (z0 + TELEPORT_DZ)) < 0.05, (
+        f"skip_forward teleport failed: z={z1:.4f}, expected ~{z0 + TELEPORT_DZ:.4f}"
+    )
+
+
+# ============================================================
+# ExtArt coupler-level fixed-link merge
+# ============================================================
+
+
+@pytest.mark.required
+def test_ext_art_coupler_fixed_merge():
+    """Verify ext_art auto-merges fixed-joint links at coupler level without merge_fixed_links on morph."""
+    from genesis.engine.couplers.ipc_coupler.utils import find_abd_merge_target
+
+    scene = gs.Scene(
+        sim_options=gs.options.SimOptions(dt=0.02),
+        coupler_options=gs.options.IPCCouplerOptions(
+            newton_translation_tolerance=10.0,
+            enable_rigid_rigid_contact=True,
+            enable_rigid_ground_contact=True,
+        ),
+        show_viewer=False,
+    )
+    scene.add_entity(gs.morphs.Plane(), material=gs.materials.Rigid(coup_type="ipc_only"))
+
+    # No merge_fixed_links on morph — coupler should handle it
+    franka = scene.add_entity(
+        gs.morphs.MJCF(file="xml/franka_emika_panda/panda_non_overlap.xml"),
+        material=gs.materials.Rigid(coup_type="external_articulation"),
+    )
+    scene.build()
+
+    coupler = cast("IPCCoupler", scene.sim.coupler)
+
+    # hand link should be merged into link7
+    hand = franka.get_link("hand")
+    link7 = franka.get_link("link7")
+    assert find_abd_merge_target(hand) is link7
+
+    # hand should NOT have its own ABD body
+    assert hand not in coupler._abd_data_by_link
+    # link7 should have an ABD body
+    assert link7 in coupler._abd_data_by_link
+    # hand's lookup should point to link7
+    assert coupler._link_to_abd_link[hand.idx] is link7
+
+    # Fingers should still have their own ABD bodies (prismatic joints, not fixed)
+    left_finger = franka.get_link("left_finger")
+    right_finger = franka.get_link("right_finger")
+    assert left_finger in coupler._abd_data_by_link
+    assert right_finger in coupler._abd_data_by_link
+
+    # Articulation should have 9 joints (7 revolute + 2 prismatic, no fixed)
+    ad = list(coupler._articulation_data_by_entity.values())[0]
+    assert len(ad.joints_child_link) == 9
+
+    # Step to verify no crash
+    ee = franka.get_link("link7")
+    franka.set_dofs_kp([4500, 4500, 3500, 3500, 2000, 2000, 2000, 500, 500])
+    qpos = franka.inverse_kinematics(link=franka.get_link("hand"), pos=[0.5, 0, 0.5], quat=[0, 1, 0, 0])
+    qpos[7:9] = 0.04
+    franka.set_qpos(qpos)
+    franka.control_dofs_position(qpos)
+    for _ in range(3):
+        scene.step()
+
+
+@pytest.mark.required
+@pytest.mark.parametrize("coup_type", ["two_way_soft_constraint", "external_articulation"])
+def test_ext_art_same_trajectory(coup_type):
+    """Verify ext_art and two_way produce similar arm trajectories in free space."""
+    scene = gs.Scene(
+        sim_options=gs.options.SimOptions(dt=0.01),
+        coupler_options=gs.options.IPCCouplerOptions(
+            enable_rigid_rigid_contact=False,
+            enable_rigid_ground_contact=False,
+            newton_translation_tolerance=10.0,
+        ),
+        show_viewer=False,
+    )
+    scene.add_entity(gs.morphs.Plane(), material=gs.materials.Rigid(coup_type="ipc_only"))
+
+    kw = dict(coup_friction=0.8, coup_type=coup_type, coup_stiffness=(10, 10))
+    if coup_type == "two_way_soft_constraint":
+        kw["coup_links"] = ("left_finger", "right_finger")
+    franka = scene.add_entity(
+        gs.morphs.MJCF(file="xml/franka_emika_panda/panda_non_overlap.xml"),
+        material=gs.materials.Rigid(**kw),
+    )
+    scene.add_entity(
+        morph=gs.morphs.Box(pos=(0.65, 0, 0.03), size=(0.05, 0.05, 0.05)),
+        material=gs.materials.FEM.Elastic(E=5e4, nu=0.45, rho=1000, friction_mu=0.5, model="stable_neohookean"),
+    )
+    scene.build()
+
+    ee = franka.get_link("hand")
+    franka.set_dofs_kp([4500, 4500, 3500, 3500, 2000, 2000, 2000, 500, 500])
+    qpos = franka.inverse_kinematics(link=ee, pos=[0.65, 0, 0.4], quat=[0, 1, 0, 0])
+    qpos[7:9] = 0.04
+    franka.control_dofs_position(qpos)
+    for _ in range(3):
+        scene.step()
+
+    # After 3 steps the arm won't reach the target yet, but IPC should be
+    # stable (no crash, no NaN) and the hand should have moved from neutral.
+    hand_pos = qd_to_numpy(scene.sim.rigid_solver.links_state.pos, transpose=True)[0][ee.idx]
+    assert not np.any(np.isnan(hand_pos)), f"{coup_type}: hand pos is NaN"

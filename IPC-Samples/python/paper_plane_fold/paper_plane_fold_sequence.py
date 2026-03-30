@@ -9,11 +9,12 @@ Built-in sequences (--sequence):
 - 'short' (default): steps 1, 2, c01, c03, 7, 8
 - 'full': all 8 boundary steps
 
-Default: paper_plane_2_coarse.obj, --sequence short, --from-start
+Default: paper_plane_2_coarse.obj, --sequence short, --bending-model strain, --from-start
 
 Run:
     python python/examples/paper_plane_fold/paper_plane_fold_sequence.py
     python python/examples/paper_plane_fold/paper_plane_fold_sequence.py --sequence full --no-from-start
+    python python/examples/paper_plane_fold/paper_plane_fold_sequence.py --bending-model stress
     python python/examples/paper_plane_fold/paper_plane_fold_sequence.py assets/sim_data/trimesh/paper_plane_2_fine.obj
     python python/examples/paper_plane_fold/paper_plane_fold_sequence.py --start-after-step 2
     python python/examples/paper_plane_fold/paper_plane_fold_sequence.py --overhead-big-cube
@@ -49,8 +50,10 @@ from paper_plane_helpers import (  # noqa: E402
     SHELL_YOUNG,
     SHELL_POISSON,
     SHELL_BENDING_STIFFNESS,
-    SHELL_YIELD_THRESHOLD,
-    SHELL_HARDENING_MODULUS,
+    SHELL_STRAIN_YIELD_THRESHOLD,
+    SHELL_STRAIN_HARDENING_MODULUS,
+    SHELL_STRESS_YIELD_STRESS,
+    SHELL_STRESS_HARDENING_MODULUS,
     STRONG_SPC_STRENGTH,
     WEAK_SPC_STRENGTH,
     GROUND_Y,
@@ -147,6 +150,13 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default="short",
         dest="sequence",
         help="Named fold sequence to use. Options: 'full' (all 8 steps), 'short' (steps 1,2,c01,c03,7,8).",
+    )
+    parser.add_argument(
+        "--bending-model",
+        choices=("strain", "stress"),
+        default="stress",
+        dest="bending_model",
+        help="Plastic bending model to use. Default: 'stress'.",
     )
     return parser.parse_args(argv)
 
@@ -282,6 +292,7 @@ def build_demo(
     start_after_step: int | None = None,
     overhead_big_cube: bool = False,
     sequence: str = "full",
+    bending_model: str = "strain",
 ) -> dict[str, object]:
     try:
         from uipc import SceneIO
@@ -296,7 +307,8 @@ def build_demo(
         from uipc.constitution import (
             AffineBodyConstitution,
             NeoHookeanShell,
-            PlasticDiscreteShellBending,
+            StrainPlasticDiscreteShellBending,
+            StressPlasticDiscreteShellBending,
             SoftTransformConstraint,
             SoftPositionConstraint,
             ElasticModuli2D,
@@ -304,15 +316,20 @@ def build_demo(
     except ImportError as exc:
         raise SystemExit(
             "This example requires newer libuipc Python bindings with "
-            "`NeoHookeanShell`, `PlasticDiscreteShellBending`, `SoftTransformConstraint`, "
-            "`SoftPositionConstraint`, `ElasticModuli2D`, `SimplicialComplexIO`, and `mesh_partition`."
+            "`NeoHookeanShell`, `StrainPlasticDiscreteShellBending`, "
+            "`StressPlasticDiscreteShellBending`, `SoftTransformConstraint`, "
+            "`SoftPositionConstraint`, `ElasticModuli2D`, `SimplicialComplexIO`, "
+            "and `mesh_partition`."
         ) from exc
 
     Logger.set_level(Logger.Level.Warn)
 
+    if bending_model not in {"strain", "stress"}:
+        raise SystemExit(f"Unknown bending model '{bending_model}'. Available: 'strain', 'stress'.")
+
     context = load_asset_context(asset_filename)
     validate_asset_context(context)
-    workspace = demo_workspace(context.asset_filename, sequence)
+    workspace = demo_workspace(context.asset_filename, sequence, bending_model)
 
     engine = Engine("cuda", workspace)
     world = World(engine)
@@ -337,9 +354,21 @@ def build_demo(
 
     abd = AffineBodyConstitution()
     shell = NeoHookeanShell()
-    plastic_bending = PlasticDiscreteShellBending()
     stc = SoftTransformConstraint()
     spc = SoftPositionConstraint()
+
+    if bending_model == "strain":
+        plastic_bending = StrainPlasticDiscreteShellBending()
+        bending_constitution_name = "StrainPlasticDiscreteShellBending"
+        bending_yield_label = "yield threshold"
+        bending_yield_value = SHELL_STRAIN_YIELD_THRESHOLD
+        bending_hardening_value = SHELL_STRAIN_HARDENING_MODULUS
+    else:
+        plastic_bending = StressPlasticDiscreteShellBending()
+        bending_constitution_name = "StressPlasticDiscreteShellBending"
+        bending_yield_label = "yield stress"
+        bending_yield_value = SHELL_STRESS_YIELD_STRESS
+        bending_hardening_value = SHELL_STRESS_HARDENING_MODULUS
 
     plane = context.plane
     diagnostics = context.diagnostics
@@ -353,12 +382,20 @@ def build_demo(
     mesh_partition(plane, MESH_PARTITION_SIZE)
     moduli = ElasticModuli2D.youngs_poisson(SHELL_YOUNG, SHELL_POISSON)
     shell.apply_to(plane, moduli, SHELL_DENSITY, SHELL_THICKNESS)
-    plastic_bending.apply_to(
-        plane,
-        SHELL_BENDING_STIFFNESS,
-        SHELL_YIELD_THRESHOLD,
-        SHELL_HARDENING_MODULUS,
-    )
+    if bending_model == "strain":
+        plastic_bending.apply_to(
+            plane,
+            SHELL_BENDING_STIFFNESS,
+            SHELL_STRAIN_YIELD_THRESHOLD,
+            SHELL_STRAIN_HARDENING_MODULUS,
+        )
+    else:
+        plastic_bending.apply_to(
+            plane,
+            SHELL_BENDING_STIFFNESS,
+            SHELL_STRESS_YIELD_STRESS,
+            SHELL_STRESS_HARDENING_MODULUS,
+        )
     spc.apply_to(plane, STRONG_SPC_STRENGTH)
     default_contact.apply_to(plane)
 
@@ -378,7 +415,14 @@ def build_demo(
     )
     total_frames = total_sequence_frames(schedule_steps)
     step_end_frames = completed_step_end_frames(schedule_steps)
-    manifest_template = resume_manifest_template(context.asset_filename, step_specs, schedule_steps, total_frames, sequence)
+    manifest_template = resume_manifest_template(
+        context.asset_filename,
+        step_specs,
+        schedule_steps,
+        total_frames,
+        sequence,
+        bending_model,
+    )
 
     plane_slot = plane_object.geometries().create(plane)[0]
     ground_object.geometries().create(ground(GROUND_Y))
@@ -568,6 +612,11 @@ def build_demo(
         "runtime": runtime,
         "total_frames": total_frames,
         "workspace": workspace,
+        "bending_model": bending_model,
+        "bending_constitution_name": bending_constitution_name,
+        "bending_yield_label": bending_yield_label,
+        "bending_yield_value": bending_yield_value,
+        "bending_hardening_value": bending_hardening_value,
         "step_end_frames": step_end_frames,
         "resume_info": resume_info,
         "manifest_template": manifest_template,
@@ -594,6 +643,7 @@ def run_demo(
     overhead_big_cube: bool = False,
     export_obj_every_frame: bool = False,
     sequence: str = "full",
+    bending_model: str = "strain",
 ):
     try:
         import polyscope as ps
@@ -609,6 +659,7 @@ def run_demo(
         start_after_step=start_after_step,
         overhead_big_cube=overhead_big_cube,
         sequence=sequence,
+        bending_model=bending_model,
     )
     world = state["world"]
     scene_io = state["scene_io"]
@@ -622,6 +673,11 @@ def run_demo(
     runtime = state["runtime"]
     total_frames = state["total_frames"]
     workspace = state["workspace"]
+    bending_model = state["bending_model"]
+    bending_constitution_name = state["bending_constitution_name"]
+    bending_yield_label = state["bending_yield_label"]
+    bending_yield_value = state["bending_yield_value"]
+    bending_hardening_value = state["bending_hardening_value"]
     step_end_frames = state["step_end_frames"]
     resume_info = state["resume_info"]
     manifest_template = state["manifest_template"]
@@ -811,6 +867,11 @@ def run_demo(
         psim.Text(f"Frame: {world.frame()} / {total_frames}")
         psim.Text(f"Asset: {context.asset_filename}")
         psim.Text(f"Asset mode: boundary")
+        psim.Text(f"Bending model: {bending_model} ({bending_constitution_name})")
+        psim.Text(f"Bending stiffness: {SHELL_BENDING_STIFFNESS:.4e}")
+        psim.Text(f"Bending {bending_yield_label}: {bending_yield_value:.4e}")
+        psim.Text(f"Bending hardening: {bending_hardening_value:.4e}")
+        psim.Text(f"Workspace: {workspace}")
         psim.Text(f"Resume mode: {resume_info['mode']}")
         if resume_info["mode"] == "recovered":
             psim.Text(f"Recovered frame: {resume_info['recovered_frame']}")
@@ -896,4 +957,5 @@ if __name__ == "__main__":
         overhead_big_cube=args.overhead_big_cube,
         export_obj_every_frame=args.export_obj_every_frame,
         sequence=args.sequence,
+        bending_model=args.bending_model,
     )

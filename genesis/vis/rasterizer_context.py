@@ -767,7 +767,9 @@ class RasterizerContext:
                             uvs=uvs if uvs is not None else np.zeros((len(render_verts), 2), dtype=gs.np_float),
                             n_verts=len(render_verts),
                         )
-                        node = pyrender.Mesh.from_trimesh(mesh, double_sided=rmesh.surface.double_sided)
+                        node = pyrender.Mesh.from_trimesh(
+                            mesh, smooth=rmesh.surface.smooth, double_sided=rmesh.surface.double_sided
+                        )
                         static_node = self.add_node(node)
                         self.static_nodes[(idx, fem_entity.uid, sub_idx)] = static_node
                         if self.segmentation_level == "geom":
@@ -1031,15 +1033,15 @@ class RasterizerContext:
 
     def add_light(self, light):
         # light direction is light pose's -z frame
-        if light["type"] == "directional":
+        if isinstance(light, gs.options.vis.DirectionalLight):
             pose = np.eye(4, dtype=np.float32)
-            gu.z_up_to_R(-np.asarray(light["dir"], dtype=np.float32), out=pose[:3, :3])
-            self.add_node(pyrender.DirectionalLight(color=light["color"], intensity=light["intensity"]), pose=pose)
-        elif light["type"] == "point":
-            pose = gu.trans_to_T(np.asarray(light["pos"], dtype=np.float32))
-            self.add_node(pyrender.PointLight(color=light["color"], intensity=light["intensity"]), pose=pose)
+            gu.z_up_to_R(-np.array(light.dir, dtype=np.float32), out=pose[:3, :3])
+            self.add_node(pyrender.DirectionalLight(color=light.color, intensity=light.intensity), pose=pose)
+        elif isinstance(light, gs.options.vis.PointLight):
+            pose = gu.trans_to_T(np.array(light.pos, dtype=np.float32))
+            self.add_node(pyrender.PointLight(color=light.color, intensity=light.intensity), pose=pose)
         else:
-            gs.raise_exception(f"Unsupported light type: {light['type']}")
+            gs.raise_exception(f"Unsupported light: {light}")
 
     def create_node_seg(self, seg_key, seg_node):
         seg_idxc = self.seg_color_map.seg_key_to_idxc(seg_key)
