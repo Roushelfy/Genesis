@@ -1562,10 +1562,14 @@ class IPCCoupler(RBC):
         # Re-sync cached IPC transforms from the recovered state
         self._retrieve_ipc_rigid_states()
 
-        # Reset articulation cached state (delta_theta, prev_qpos)
-        for ad in self._articulation_data_by_entity.values():
-            ad.delta_theta_tilde[:] = 0.0
-            ad.prev_qpos[:] = 0.0
+        # Reset articulation cached state
+        # delta_theta must be zero (no joint movement at frame 0)
+        # prev_qpos must match the current (initial) qpos from the rigid solver
+        if self.rigid_solver.is_active:
+            qpos = qd_to_numpy(self.rigid_solver.qpos, transpose=True)
+            for ad in self._articulation_data_by_entity.values():
+                ad.delta_theta_tilde[:] = 0.0
+                ad.prev_qpos[:] = qpos[..., ad.q_slice]
 
     def _mark_abd_link_updated(self, link: "RigidLink", env_set: set[int]):
         """Add a link to the updated set for the given environments."""
