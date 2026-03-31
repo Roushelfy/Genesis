@@ -335,7 +335,11 @@ class Raytracer:
             for fem_entity in self.sim.fem_solver.entities:
                 if fem_entity.surface.vis_mode == "visual":
                     for sub_idx in range(len(fem_entity.render_meshes)):
-                        self.add_deformable(f"{fem_entity.uid}_sub{sub_idx}")
+                        sub_name = f"{fem_entity.uid}_sub{sub_idx}"
+                        rmesh = fem_entity.render_meshes[sub_idx]
+                        surface = rmesh.surface if hasattr(rmesh, "surface") else fem_entity.surface
+                        self.add_surface(sub_name, surface)
+                        self.add_deformable(sub_name)
 
     def get_transform(self, matrix):
         if matrix is None:
