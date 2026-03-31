@@ -29,8 +29,9 @@ def create_motion_replay_player(
     default_robot_resistance: float = 1.0e9,
     ignore_link_patterns: list[str] | None = None,
     bind_animator: bool = True,
+    mesh_source: str = "collision",
 ) -> MotionReplayPlayer:
-    urdf_kinematics = UrdfKinematics(urdf_path)
+    urdf_kinematics = UrdfKinematics(urdf_path, mesh_source=mesh_source)
     sequence = load_motion_sequence(
         npz_path=npz_path,
         episode=episode,

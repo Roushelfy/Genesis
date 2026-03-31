@@ -544,7 +544,7 @@ class LineMesh(RBC):
         """
         if not isinstance(morph, gs.options.morphs.Mesh):
             gs.raise_exception(f"LineMesh only supports Mesh morph. Got: {morph}.")
-        if not morph.is_format(gs.options.morphs.OBJ_FORMAT):
+        if not morph.is_format(".obj"):
             gs.raise_exception(f"LineMesh only supports OBJ format. Got: {morph.file}")
         if surface is None:
             surface = gs.surfaces.Default()

@@ -124,17 +124,17 @@ def setup_scene(
     config = Scene.default_config()
     config["dt"] = 0.01
     config["contact"]["d_hat"] = 0.001
-    config["gravity"] = [[0.0], [0.0], [-9.8]]
-    config["newton"]["velocity_tol"] = 0.1
+    config["gravity"] = [[0.0], [0.0], [0.0]]
+    config["newton"]["velocity_tol"] = 0.05
     config["newton"]["transrate_tol"] = 10.0
     config["contact"]["enable"] = True
-    # config["contact"]["constitution"] = "al-ipc"
+    config["contact"]["constitution"] = "al-ipc"
     # config["newton"]["max_iter"] = 16
     config["newton"]["semi_implicit"]["enable"] = 1
     config["newton"]["semi_implicit"]["beta_tol"] = 1e-3
+    config["linear_system"]["tol_rate"] = 1e-4
     config["sanity_check"]["enable"] = 0
-    config["linear_system"]["precond"]["mas"]["contact_aware"] = 1
-    config["linear_system"]["solver"] = "linear_pcg"
+    # config["linear_system"]["solver"] = "linear_pcg"
     scene = Scene(config)
     scene.contact_tabular().default_model(0.05, 1e8)
 
@@ -245,14 +245,14 @@ def load_kimono_v0_cloth_targets(kimono_dir: Path, io: GeometryIO) -> list[tuple
     targets: list[tuple[Any, str]] = []
     for p in paths:
         mesh = io.read(str(p))
-        if p.stem == "kimono_inner_lower":
-            continue
-        # if p.stem == "kimono_inner_upper":
+        # if p.stem == "kimono_inner_lower":
         #     continue
-        if p.stem == "kimono_belt":
-            continue
-        if p.stem == "kimono_outer":
-            continue
+        # # if p.stem == "kimono_inner_upper":
+        # #     continue
+        # if p.stem == "kimono_belt":
+        #     continue
+        # if p.stem == "kimono_outer":
+        #     continue
         targets.append((mesh, p.stem))
     return targets
 
