@@ -31,6 +31,7 @@ from genesis.typing import (
 from .misc import CoacdOptions
 from .options import Options
 
+OBJ_FORMAT = ".obj"
 URDF_FORMAT = ".urdf"
 MJCF_FORMAT = ".xml"
 GLTF_FORMATS = (".glb", ".gltf")

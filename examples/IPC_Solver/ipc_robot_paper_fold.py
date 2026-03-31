@@ -65,6 +65,7 @@ def main():
         franka_material_kwargs = dict(
             coup_type=args.coup_type,
             coup_friction=0.5,
+            gravity_compensation=1.0,
         )
         if args.coup_type == "two_way_soft_constraint":
             franka_material_kwargs["coup_links"] = ("left_finger", "right_finger")

@@ -285,14 +285,23 @@ def kernel_rigid_entity_inverse_kinematics(
                     for i_error in range(n_error_dims):
                         rigid_entity._IK_err_pose_best[i_error, i_b] = rigid_entity._IK_err_pose[i_error, i_b]
 
-                # Resample init q — scope to this entity's links only to ensure
-                # the RNG sequence is independent of other entities in the scene.
+                # Resample init q
                 if respect_joint_limit and i_sample < max_samples - 1:
-                    for i_l in range(
-                        entities_info.link_start[rigid_entity._idx_in_solver],
-                        entities_info.link_end[rigid_entity._idx_in_solver],
-                    ):
+                    i_e = rigid_entity._idx_in_solver
+                    entity_dof_start = entities_info.dof_start[i_e]
+                    for i_l in range(entities_info.link_start[i_e], entities_info.link_end[i_e]):
                         I_l = [i_l, i_b] if qd.static(static_rigid_sim_config.batch_links_info) else i_l
+
+                        must_resample = False
+                        for i_d_ in range(n_dofs):
+                            i_d = dofs_idx[i_d_]
+                            link_dof_start_local = links_info.dof_start[I_l] - entity_dof_start
+                            link_dof_end_local = links_info.dof_end[I_l] - entity_dof_start
+                            if link_dof_start_local <= i_d and i_d < link_dof_end_local:
+                                must_resample = True
+                                break
+                        if not must_resample:
+                            continue
 
                         for i_j in range(links_info.joint_start[I_l], links_info.joint_end[I_l]):
                             I_j = [i_j, i_b] if qd.static(static_rigid_sim_config.batch_joints_info) else i_j

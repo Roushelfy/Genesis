@@ -257,42 +257,38 @@ class IPCCouplerOptions(BaseCouplerOptions):
     cfl_enable : bool, optional
         Whether to enable CFL (Courant-Friedrichs-Lewy) condition. Defaults to None (use libuipc default: False).
 
-    Sanity Check Options
-    --------------------
-    sanity_check_enable : bool, optional
-        Whether to enable sanity checks. Defaults to None (use libuipc default: True).
+    AL-IPC Options
+    --------------
+    al_ipc_mu_scale_fem : float | None, optional
+        Override AL-IPC mu scale for FEM bodies. ``mu = vertex_mass * mu_scale_fem * dt^2``.
+        None uses libuipc default. Defaults to None.
+    al_ipc_mu_scale_abd : float | None, optional
+        Override AL-IPC mu scale for ABD (rigid) bodies. ``mu = body_mass * mu_scale_abd * dt^2``.
+        None uses libuipc default. Defaults to None.
+    al_ipc_toi_threshold : float | None, optional
+        Override AL-IPC TOI (time of impact) threshold. None uses libuipc default. Defaults to None.
+    al_ipc_decay_factor : float | None, optional
+        Override AL-IPC decay factor. None uses libuipc default. Defaults to None.
 
     Genesis Coupling Options
     ------------------------
-    constraint_strength_translation : float, optional
-        Translation strength for IPC soft transform constraint coupling.
-        Higher values create stiffer position coupling between Genesis rigid bodies and IPC ABD objects.
-        Defaults to 100.0.
-    constraint_strength_rotation : float, optional
-        Rotation strength for IPC soft transform constraint coupling.
-        Higher values create stiffer orientation coupling between Genesis rigid bodies and IPC ABD objects.
-        Defaults to 100.0.
     enable_rigid_ground_contact : bool, optional
-        Whether to enable ground contact in IPC system. When False, objects in IPC will not collide
-        with the ground plane. Defaults to True.
+        Whether to enable ground contact in IPC system. Defaults to True.
     enable_rigid_rigid_contact : bool, optional
-        Whether to enable contact detection between rigid bodies (ABD objects) in the IPC system.
-        When False, only soft-soft and soft-rigid collisions are detected by IPC; rigid-rigid
-        collisions within IPC are skipped. Defaults to True.
-    two_way_coupling : bool, optional
-        Whether to apply coupling forces/torques from IPC back to Genesis rigid bodies. Defaults to True.
-    enable_rigid_dofs_sync : bool, optional
-        Whether to synchronize the IPC reference DOF state with Genesis each step for
-        external_articulation entities. When True, IPC gets tighter coupling with Genesis joint
-        state but may amplify small divergences. When False, IPC uses its own DOF reference
-        without per-step updates. Defaults to False.
-    free_base_driven_by_ipc : bool, optional
-        For external_articulation with non-fixed base: whether base link is fully driven by IPC physics.
-        When False, base link uses SoftTransformConstraint controlled by Genesis. When True, base link
-        is fully driven by IPC physics. Defaults to False.
+        Whether to enable contact detection between rigid bodies (ABD objects) in IPC. Defaults to True.
+    enable_fem_fem_friction : bool, optional
+        Whether to enable friction between FEM bodies. Defaults to True.
+    restitution : float, optional
+        Restitution coefficient for IPC contact. Defaults to 1.0.
+    ignore_end_effector_check : bool, optional
+        Skip end-effector geometry overlap check during IPC setup. Defaults to False.
+    before_ipc_world_init : callable | None, optional
+        Callback ``(world, coupler) -> None`` invoked after IPC scene setup but before ``world.init()``.
+        Defaults to None.
+    verbose_ipc_log : bool, optional
+        Print full libuipc info log instead of the digest. Defaults to False.
     _show_ipc_gui : bool, optional
-        [Dev/debug] Enable the libuipc built-in polyscope GUI viewer for inspecting the IPC scene.
-        Defaults to False.
+        [Dev/debug] Enable the libuipc built-in polyscope GUI viewer. Defaults to False.
     """
 
     # Newton solver options (None = use libuipc default)
@@ -493,6 +489,10 @@ class RigidOptions(Options):
     use_gjk_collision: bool, optional
         Whether to use GJK for collision detection instead of MPR. More stable but much slower. Defaults to
         `sim_options.requires_grad`.
+    broadphase_traversal : gs.broadphase_traversal, optional
+        Broadphase traversal strategy. ``SAP`` (sweep-and-prune) or ``ALL_VS_ALL`` (parallel pair iteration). Defaults
+        to ``None`` (auto: ``SAP`` on CPU or when hibernation/heterogeneous entities are enabled, ``ALL_VS_ALL`` on GPU
+        otherwise). See ``gs.broadphase_traversal`` for details on each strategy.
 
     Warning
     -------
@@ -545,10 +545,17 @@ class RigidOptions(Options):
     # GJK collision detection
     use_gjk_collision: StrictBool | None = None
 
+    # broadphase configuration
+    broadphase_traversal: gs.broadphase_traversal | None = None
+
     def __init__(self, *, contact_resolve_time: float | None = None, **data):
         super().__init__(**data)
         if contact_resolve_time is not None:
             gs.logger.warning("'contact_resolve_time' is deprecated. Use 'constraint_timeconst' instead.")
+
+    def model_post_init(self, context):
+        if self.broadphase_traversal == gs.broadphase_traversal.ALL_VS_ALL and self.use_hibernation:
+            gs.raise_exception("ALL_VS_ALL broadphase traversal does not support hibernation")
 
 
 class MPMOptions(Options):
