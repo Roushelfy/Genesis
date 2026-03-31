@@ -1553,8 +1553,19 @@ class IPCCoupler(RBC):
             assert envs_set == all_envs, f"IPC coupler only supports full reset, got envs_idx={envs_idx}"
 
         self._abd_updated_links.clear()
+        self._restitution_vel_corrections.clear()
+        self._ipc_frame = 0
+
         self._ipc_world.recover(0)
         self._ipc_world.retrieve()
+
+        # Re-sync cached IPC transforms from the recovered state
+        self._retrieve_ipc_rigid_states()
+
+        # Reset articulation cached state (delta_theta, prev_qpos)
+        for ad in self._articulation_data_by_entity.values():
+            ad.delta_theta_tilde[:] = 0.0
+            ad.prev_qpos[:] = 0.0
 
     def _mark_abd_link_updated(self, link: "RigidLink", env_set: set[int]):
         """Add a link to the updated set for the given environments."""
