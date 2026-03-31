@@ -132,7 +132,7 @@ def user_load_scene(scene: Scene, world: World) -> None:
     # ---- String (top vertex fixed) ----
     string_mesh = io.read(str(_STRING_OBJ))
     label_surface(string_mesh)
-    HookeanSpring().apply_to(string_mesh, 1.0 * GPa, thickness=0.00038, mass_density=100.0)
+    HookeanSpring().apply_to(string_mesh, 1.0 * GPa, thickness=0.00037, mass_density=100.0)
     KirchhoffRodBending().apply_to(string_mesh, 1.0e4)
     # SoftPositionConstraint().apply_to(string_mesh, 100.0)
     string_contact.apply_to(string_mesh)
