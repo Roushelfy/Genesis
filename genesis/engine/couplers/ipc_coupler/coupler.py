@@ -1562,10 +1562,15 @@ class IPCCoupler(RBC):
         # Re-sync cached IPC transforms from the recovered state
         self._retrieve_ipc_rigid_states()
 
-        # Reset articulation cached state
-        # delta_theta must be zero (no joint movement at frame 0)
-        # prev_qpos must match the current (initial) qpos from the rigid solver
+        # Reset rigid solver's qpos_prev to match qpos (scene.reset restores
+        # qpos but not qpos_prev, causing delta_theta = qpos - qpos_prev to be
+        # huge on the next step).
         if self.rigid_solver.is_active:
+            qpos_tc = qd_to_torch(self.rigid_solver.qpos, copy=False)
+            qpos_prev_tc = qd_to_torch(self.rigid_solver.qpos_prev, copy=False)
+            qpos_prev_tc.copy_(qpos_tc)
+
+            # Reset articulation cached state
             qpos = qd_to_numpy(self.rigid_solver.qpos, transpose=True)
             for ad in self._articulation_data_by_entity.values():
                 ad.delta_theta_tilde[:] = 0.0
