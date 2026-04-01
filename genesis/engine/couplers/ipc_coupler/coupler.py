@@ -1570,36 +1570,14 @@ class IPCCoupler(RBC):
             qpos_prev_tc = qd_to_torch(self.rigid_solver.qpos_prev, copy=False)
             qpos_prev_tc.copy_(qpos_tc)
 
-            # Reset articulation cached state and write to IPC geometry.
-            # Both are needed: cached state for _store_gs_rigid_states,
-            # geometry writes because libuipc reads them during advance().
+            # Reset articulation cached state (read by _store_gs_rigid_states
+            # on the next step). IPC geometry attributes (delta_theta_tilde,
+            # mass_matrix, ref_dof_prev) are overwritten by
+            # _pre_advance_write_ipc_attributes before each advance().
             qpos = qd_to_numpy(self.rigid_solver.qpos, transpose=True)
-            mass_matrix = qd_to_numpy(self.rigid_solver.mass_mat, transpose=True)
             for ad in self._articulation_data_by_entity.values():
                 ad.delta_theta_tilde[:] = 0.0
                 ad.prev_qpos[:] = qpos[..., ad.q_slice]
-                ad.mass_matrix[:] = mass_matrix[:, ad.dof_slice, ad.dof_slice]
-
-                for env_idx in range(self._B):
-                    art_geom = ad.slots[env_idx].geometry()
-                    dt_attr = art_geom["joint"].find("delta_theta_tilde")
-                    if dt_attr is not None:
-                        uipc.view(dt_attr)[:] = ad.delta_theta_tilde[env_idx]
-                    mass_attr = art_geom["joint_joint"].find("mass")
-                    if mass_attr is not None:
-                        uipc.view(mass_attr).flat[:] = ad.mass_matrix[env_idx]
-
-            # Write ref_dof_prev from recovered transforms
-            for link, abd_data in self._abd_data_by_link.items():
-                if self._coup_type_by_entity.get(link.entity) != COUPLING_TYPE.EXTERNAL_ARTICULATION:
-                    continue
-                for env_idx in range(self._B):
-                    geom = abd_data.slots[env_idx].geometry()
-                    ref_attr = geom.instances().find("ref_dof_prev")
-                    if ref_attr is None:
-                        continue
-                    T = abd_data.ipc_transforms[env_idx]
-                    uipc.view(ref_attr)[0] = uipc.geometry.affine_body.transform_to_q(np.asarray(T, dtype=np.float64))
 
     def _mark_abd_link_updated(self, link: "RigidLink", env_set: set[int]):
         """Add a link to the updated set for the given environments."""
