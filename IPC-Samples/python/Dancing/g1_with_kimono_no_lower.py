@@ -29,7 +29,7 @@ from motion_replay import create_motion_replay_player
 
 IGNORE_LINK_PATTERNS: list[str] = []
 
-BELT_REST_SCALE = 0.95
+BELT_REST_SCALE = 0.9
 
 SKIP_CLOTH_PIECES = {"kimono_inner_lower"}
 
@@ -235,7 +235,7 @@ def build_player(
         episode="demo_0",
         warmup_joint_json_path=warmup_joint_json,
         warmup_frames=60,
-        loop=True,
+        loop=False,
         object_prefix="g1_link",
         stc_strength=np.array([10.0, 10.0], dtype=np.float64),
         enable_robot_robot_contact=False,
@@ -260,30 +260,69 @@ def run_no_gui(world: World, player) -> None:
     for step_idx in range(total):
         world.advance()
         world.retrieve()
+        world.dump()
         if (step_idx + 1) % 50 == 0 or (step_idx + 1) == total:
             print(f"[no-gui] step={step_idx + 1}/{total}")
     status = player.last_status
     print(f"[no-gui] done world_frame={status.world_frame} replay_frame={status.frame_index}")
 
 
-def run_recover(world: World, scene: Scene, workspace: Path, max_frame: int = -1) -> None:
-    sio = SceneIO(scene)
-    frame = 1
-    while True:
-        if max_frame > 0 and frame > max_frame:
-            break
+def _find_max_dump_frame(workspace: Path) -> int:
+    """Scan the dump directory to find the highest available frame number."""
+    dump_dir = workspace / "dump" / "common" / "sim_engine.cpp"
+    if not dump_dir.exists():
+        return 0
+    max_frame = 0
+    for p in dump_dir.glob("state.*.json"):
         try:
-            world.recover(frame)
-        except Exception:
-            print(f"[recover] no more dumps after frame {frame - 1}")
-            break
+            n = int(p.stem.split(".")[1])
+            max_frame = max(max_frame, n)
+        except (IndexError, ValueError):
+            continue
+    return max_frame
+
+
+def run_recover(
+    world: World,
+    scene: Scene,
+    workspace: Path,
+    cloth_slots: list[tuple[ClothPiece, object, object]],
+    player,
+    max_frame: int = -1,
+) -> None:
+    from usd_exporter import UsdExporter, read_obj_faces
+
+    available = _find_max_dump_frame(workspace)
+    if available == 0:
+        print(f"[recover] no dump files found in {workspace}")
+        return
+    total = available if max_frame <= 0 else min(max_frame, available)
+    print(f"[recover] found {available} dump frames, will export {total}")
+
+    dt = 0.01
+    fps = 1.0 / dt
+    usd_path = workspace / "animation.usdc"
+    exporter = UsdExporter(str(usd_path), fps=fps)
+
+    for piece, geo_slot, _rest in cloth_slots:
+        faces = read_obj_faces(str(piece.init_obj))
+        exporter.add_deformable(piece.name, geo_slot, faces)
+
+    for binding in player.driver.bindings:
+        node = next(
+            n for n in player.urdf_kinematics.mesh_nodes if n.node_name == binding.node_name
+        )
+        exporter.add_rigid(binding.node_name, binding.geo_slot, node.local_vertices, node.faces)
+
+    for frame in range(1, total + 1):
+        world.recover(frame)
         world.retrieve()
-        out_path = f"{str(workspace)}/surface_{frame}.obj"
-        sio.write_surface(out_path)
+        exporter.capture_frame()
         if frame % 50 == 0:
-            print(f"[recover] exported frame {frame}")
-        frame += 1
-    print(f"[recover] done, exported {frame - 1} frames to {workspace}")
+            print(f"[recover] exported frame {frame}/{total}")
+
+    exporter.close()
+    print(f"[recover] done, exported {total} frames to {usd_path}")
 
 
 def run_gui(world: World, scene: Scene, player, workspace: Path) -> None:
@@ -364,7 +403,7 @@ def main() -> None:
     
 
     if args.recover is not None:
-        run_recover(world, scene, output_dir, max_frame=args.recover)
+        run_recover(world, scene, output_dir, cloth_slots, player, max_frame=args.recover)
         return
 
     if args.no_gui:

@@ -1,7 +1,6 @@
-"""Yoyo scenario: FK/IK inspector + UIPC simulation with ball + string + bearing.
+"""Yoyo scenario (v4 variant): FK/IK inspector + UIPC simulation.
 
-Thin entry script that configures URDFGuiApp with the yoyo scene
-(previously loaded via ``load_user_scene.py``).
+Thin entry script that configures URDFGuiApp with the yoyo scene.
 
 Modes:
   --sim       Launch UIPC physics simulation directly with SceneGUI.
@@ -181,7 +180,7 @@ def load_yoyo_scene(scene, world, ss: SceneState) -> None:
 
 
 # ---------------------------------------------------------------------------
-# Stitch setup (inlined from load_user_scene.py)
+# Stitch setup
 # ---------------------------------------------------------------------------
 
 
@@ -258,8 +257,8 @@ def setup_yoyo_stitch(scene, controller, ss: SceneState) -> None:
 # ---------------------------------------------------------------------------
 
 
-def create_yoyo_app(entry_file: str = __file__) -> URDFGuiApp:
-    """Create a URDFGuiApp configured for the yoyo scenario."""
+def create_app(entry_file: str = __file__) -> URDFGuiApp:
+    """Create a URDFGuiApp configured for the v4 yoyo scenario."""
     return URDFGuiApp(
         urdf_path=_URDF_PATH,
         sim_link_patterns=_SIM_LINK_PATTERNS,
@@ -269,10 +268,9 @@ def create_yoyo_app(entry_file: str = __file__) -> URDFGuiApp:
         record_file=_SCRIPT_DIR / "motion_keyframes.json",
         joint_file=_SCRIPT_DIR / "joint_angles.json",
         config_file=_SCRIPT_DIR / "urdf_gui_config.json",
-        seq_dir=_SCRIPT_DIR / "results" / "v3" / "seq",
         entry_file=entry_file,
     )
 
 
 if __name__ == "__main__":
-    create_yoyo_app(__file__).main_cli()
+    create_app(__file__).main_cli()

@@ -88,10 +88,10 @@ def user_load_scene(scene: Scene, world: World) -> None:
     ball_contact = tabular.create("ball")
     string_contact = tabular.create("string")
     bearing_contact = tabular.create("bearing")
-    scene.contact_tabular().insert(ball_contact, string_contact, 0.7, 800.0 * MPa, enable=True)
-    scene.contact_tabular().insert(string_contact, string_contact, 0.2, 800.0 * MPa, enable=True)
+    scene.contact_tabular().insert(ball_contact, string_contact, 0.9, 800.0 * MPa, enable=True)
+    scene.contact_tabular().insert(string_contact, string_contact, 0.3, 800.0 * MPa, enable=True)
     scene.contact_tabular().insert(bearing_contact, bearing_contact, 0.01, 800.0 * MPa, enable=True)
-    scene.contact_tabular().insert(bearing_contact, ball_contact, 0.05, 800.0 * MPa, enable=True)
+    scene.contact_tabular().insert(bearing_contact, ball_contact, 0.2, 800.0 * MPa, enable=True)
     scene.contact_tabular().insert(bearing_contact, string_contact, 0.8, 800.0 * MPa, enable=True)
 
     # Robot contact ↔ yoyo parts
@@ -132,7 +132,7 @@ def user_load_scene(scene: Scene, world: World) -> None:
     # ---- String (top vertex fixed) ----
     string_mesh = io.read(str(_STRING_OBJ))
     label_surface(string_mesh)
-    HookeanSpring().apply_to(string_mesh, 1.0 * GPa, thickness=0.00038, mass_density=100.0)
+    HookeanSpring().apply_to(string_mesh, 1.0 * GPa, thickness=0.00037, mass_density=100.0)
     KirchhoffRodBending().apply_to(string_mesh, 1.0e4)
     # SoftPositionConstraint().apply_to(string_mesh, 100.0)
     string_contact.apply_to(string_mesh)

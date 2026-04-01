@@ -1,7 +1,7 @@
-"""Yoyo scenario: FK/IK inspector + UIPC simulation with ball + string + bearing.
+"""Yoyo scenario (long sleeping variant): FK/IK inspector + UIPC simulation.
 
-Thin entry script that configures URDFGuiApp with the yoyo scene
-(previously loaded via ``load_user_scene.py``).
+Thin entry script that configures URDFGuiApp with the yoyo scene.
+Uses ``motion_keyframes_long_sleeping.json`` for its keyframe data.
 
 Modes:
   --sim       Launch UIPC physics simulation directly with SceneGUI.
@@ -38,7 +38,7 @@ _STITCH_BINDING_PATTERN = "*Link9_R*"
 
 
 # ---------------------------------------------------------------------------
-# Yoyo scene loading (inlined from load_user_scene.py)
+# Yoyo scene loading (inlined from load_user_scene_long_sleeping.py)
 # ---------------------------------------------------------------------------
 
 
@@ -88,7 +88,7 @@ def load_yoyo_scene(scene, world, ss: SceneState) -> None:
     scene.contact_tabular().insert(ball_contact, string_contact, 0.7, 800.0 * MPa, enable=True)
     scene.contact_tabular().insert(string_contact, string_contact, 0.2, 800.0 * MPa, enable=True)
     scene.contact_tabular().insert(bearing_contact, bearing_contact, 0.01, 800.0 * MPa, enable=True)
-    scene.contact_tabular().insert(bearing_contact, ball_contact, 0.05, 800.0 * MPa, enable=True)
+    scene.contact_tabular().insert(bearing_contact, ball_contact, 0.01, 800.0 * MPa, enable=True)
     scene.contact_tabular().insert(bearing_contact, string_contact, 0.8, 800.0 * MPa, enable=True)
 
     robot_contact = tabular.default_element()
@@ -181,7 +181,7 @@ def load_yoyo_scene(scene, world, ss: SceneState) -> None:
 
 
 # ---------------------------------------------------------------------------
-# Stitch setup (inlined from load_user_scene.py)
+# Stitch setup
 # ---------------------------------------------------------------------------
 
 
@@ -258,21 +258,21 @@ def setup_yoyo_stitch(scene, controller, ss: SceneState) -> None:
 # ---------------------------------------------------------------------------
 
 
-def create_yoyo_app(entry_file: str = __file__) -> URDFGuiApp:
-    """Create a URDFGuiApp configured for the yoyo scenario."""
+def create_app(entry_file: str = __file__) -> URDFGuiApp:
+    """Create a URDFGuiApp configured for the long-sleeping yoyo scenario."""
     return URDFGuiApp(
         urdf_path=_URDF_PATH,
         sim_link_patterns=_SIM_LINK_PATTERNS,
         stc_strength=_STC_STRENGTH,
         load_scene_fn=load_yoyo_scene,
         setup_stitch_fn=setup_yoyo_stitch,
-        record_file=_SCRIPT_DIR / "motion_keyframes.json",
+        record_file=_SCRIPT_DIR / "motion_keyframes_long_sleeping.json",
         joint_file=_SCRIPT_DIR / "joint_angles.json",
         config_file=_SCRIPT_DIR / "urdf_gui_config.json",
-        seq_dir=_SCRIPT_DIR / "results" / "v3" / "seq",
+        seq_dir=_SCRIPT_DIR / "results" / "long_sleep" / "seq",
         entry_file=entry_file,
     )
 
 
 if __name__ == "__main__":
-    create_yoyo_app(__file__).main_cli()
+    create_app(__file__).main_cli()
