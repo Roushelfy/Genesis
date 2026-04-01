@@ -408,7 +408,7 @@ class RasterizerContext:
                         mesh = geom.get_sdf_trimesh()
                     else:
                         mesh = geom.get_trimesh()
-                    geom_T = geoms_T[geom.idx][geom_envs_idx]
+                    geom_T = geoms_T[geom.idx][list(geom_envs_idx)]
                     self.add_rigid_node(
                         geom,
                         pyrender.Mesh.from_trimesh(
@@ -446,7 +446,7 @@ class RasterizerContext:
                     if len(geom_envs_idx) == 0:
                         continue
 
-                    geom_T = geoms_T[geom.idx][geom_envs_idx]
+                    geom_T = geoms_T[geom.idx][list(geom_envs_idx)]
                     node = self.rigid_nodes[geom.uid]
                     node.mesh._bounds = None
                     node.mesh.primitives[0].poses = geom_T

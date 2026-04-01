@@ -145,6 +145,7 @@ def parse_urdf(morph, surface):
             geom_is_col = not isinstance(geom_prop, urdfpy.Visual)
 
             geom_meshes = []
+            glb_surfaces = None  # populated only for GLB meshes
             if isinstance(geometry, urdfpy.Mesh):
                 geom_type = gs.GEOM_TYPE.MESH
                 geom_data = None
@@ -157,7 +158,11 @@ def parse_urdf(morph, surface):
                     meshes = gltf_utils.parse_mesh_glb(
                         mesh_path, group_by_material=False, scale=None, is_mesh_zup=True, surface=surface
                     )
-                    tmeshes, metadatas = zip(*[(mesh.trimesh, mesh.metadata) for mesh in meshes])
+                    # Preserve the per-mesh surfaces parsed from GLB PBR materials
+                    # (metallic, roughness, emissive, etc.) so the raytracer can use them.
+                    tmeshes, metadatas, glb_surfaces = zip(
+                        *[(mesh.trimesh, mesh.metadata, mesh.surface) for mesh in meshes]
+                    )
 
                 # Compute the absolute scale of the geometry
                 scale = float(morph.scale)
@@ -195,11 +200,16 @@ def parse_urdf(morph, surface):
                 is_mesh_zup = True
 
             # Each mesh is one RigidGeom in genesis
+            glb_surf_iter = iter(glb_surfaces) if glb_surfaces is not None else iter([])
             for tmesh, metadata in zip(tmeshes, metadatas, strict=True):
+                glb_surf = next(glb_surf_iter, None)
                 # Overwrite surface color by original color specified in URDF file only if necessary
                 is_urdf_material = False
                 if geom_is_col:
                     geom_surface = gs.surfaces.Collision()
+                elif glb_surf is not None:
+                    # Use the PBR surface parsed from GLB (metallic, roughness, emissive, etc.)
+                    geom_surface = glb_surf
                 elif (
                     surface.texture is None
                     and getattr(geom_prop, "material") is not None
