@@ -1777,9 +1777,12 @@ class URDFGuiApp:
             help="No-GUI: recover frames 0..MAX_FRAME, export NPY, then exit.",
         )
         parser.add_argument("--frame-skip", type=int, default=10, help="Export every N-th frame (default 10).")
+        parser.add_argument("--seq-dir", type=str, default=None, help="Override sequence export directory.")
         args = parser.parse_args()
 
         if args.export_recover >= 0:
+            if args.seq_dir:
+                self._seq_dir = Path(args.seq_dir)
             self.run_export_recover(args.export_recover, frame_skip=max(1, args.frame_skip))
         elif args.sim:
             self.run_simulation(recover_frame=args.recover)

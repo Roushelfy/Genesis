@@ -37,7 +37,9 @@ from _yoyo_common import (
 )
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_SEQ_DIR = _REPO_ROOT / "IPC-Samples" / "python" / "Yoyo" / "results" / "long_sleep" / "seq"
+_LONG_SLEEP_ROOT = _REPO_ROOT / "IPC-Samples" / "python" / "Yoyo" / "results" / "long_sleep"
+DEFAULT_SEQ_DIR = _LONG_SLEEP_ROOT / "seq"
+FULL_SEQ_DIR = _LONG_SLEEP_ROOT / "seq_full"
 
 
 def _smooth(t):
@@ -286,10 +288,19 @@ def main() -> None:
         metavar="FILE",
         help="Record video with LuisaRender (e.g. data/ipc_demo/ipc_yoyo/yoyo_long_sleep.mp4)",
     )
-    parser.add_argument("--seq-dir", type=str, default=str(DEFAULT_SEQ_DIR))
+    parser.add_argument("--seq-dir", type=str, default=None, help="Override sequence directory.")
+    parser.add_argument(
+        "--full", action="store_true",
+        help="Use full-rate sequence (every frame) instead of sub-sampled (every 10th frame).",
+    )
     args = parser.parse_args()
 
-    seq_dir = Path(args.seq_dir)
+    if args.seq_dir:
+        seq_dir = Path(args.seq_dir)
+    elif args.full:
+        seq_dir = FULL_SEQ_DIR
+    else:
+        seq_dir = DEFAULT_SEQ_DIR
     meta_path = seq_dir / "meta.json"
     if not meta_path.exists():
         print(f"[error] meta.json not found in {seq_dir}")
