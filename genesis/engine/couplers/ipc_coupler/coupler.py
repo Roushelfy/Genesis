@@ -1570,19 +1570,16 @@ class IPCCoupler(RBC):
             qpos_prev_tc = qd_to_torch(self.rigid_solver.qpos_prev, copy=False)
             qpos_prev_tc.copy_(qpos_tc)
 
-            # Reset articulation cached state AND write to IPC geometry attributes.
-            # recover(0) restores IPC internal state (positions, velocities) but NOT
-            # the geometry attributes that Genesis writes directly (delta_theta_tilde,
-            # mass_matrix). We must re-write them to match the initial state.
+            # Reset articulation cached state and write to IPC geometry.
+            # Both are needed: cached state for _store_gs_rigid_states,
+            # geometry writes because libuipc reads them during advance().
             qpos = qd_to_numpy(self.rigid_solver.qpos, transpose=True)
             mass_matrix = qd_to_numpy(self.rigid_solver.mass_mat, transpose=True)
             for ad in self._articulation_data_by_entity.values():
                 ad.delta_theta_tilde[:] = 0.0
                 ad.prev_qpos[:] = qpos[..., ad.q_slice]
-                entity_mass = mass_matrix[:, ad.dof_slice, ad.dof_slice]
-                ad.mass_matrix[:] = entity_mass
+                ad.mass_matrix[:] = mass_matrix[:, ad.dof_slice, ad.dof_slice]
 
-                # Write to IPC geometry attributes immediately
                 for env_idx in range(self._B):
                     art_geom = ad.slots[env_idx].geometry()
                     dt_attr = art_geom["joint"].find("delta_theta_tilde")
@@ -1592,10 +1589,9 @@ class IPCCoupler(RBC):
                     if mass_attr is not None:
                         uipc.view(mass_attr).flat[:] = ad.mass_matrix[env_idx]
 
-            # Write ref_dof_prev from recovered transforms to ALL ext_art ABD bodies
+            # Write ref_dof_prev from recovered transforms
             for link, abd_data in self._abd_data_by_link.items():
-                coup_type = self._coup_type_by_entity.get(link.entity)
-                if coup_type != COUPLING_TYPE.EXTERNAL_ARTICULATION:
+                if self._coup_type_by_entity.get(link.entity) != COUPLING_TYPE.EXTERNAL_ARTICULATION:
                     continue
                 for env_idx in range(self._B):
                     geom = abd_data.slots[env_idx].geometry()
