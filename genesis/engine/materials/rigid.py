@@ -77,7 +77,7 @@ class Rigid(Kinematic["RigidEntity"]):
     coup_stiffness : tuple of float or None, optional
         ``(translation, rotation)`` strength ratios for SoftTransformConstraint coupling.
         Controls how tightly the IPC ABD body tracks the Genesis rigid body pose.
-        Actual strength = ratio × body_mass. Only used with ``coup_type='two_way_soft_constraint'``.
+        Actual strength = ratio * body_mass. Only used with ``coup_type='two_way_soft_constraint'``.
         Default is ``(100.0, 100.0)``.
     """
 
