@@ -90,8 +90,8 @@ def _gen_dome_texture(size=TEX_SIZE):
             py = cy - r_frac * np.sin(angle)
             pts.append((px, py))
         # Draw the arc as connected line segments
-        color = (150, 230, 245)
-        width = max(2, int(3 * (1.0 - li / n_lines)))
+        color = (220, 245, 250)
+        width = max(4, int(6 * (1.0 - li / n_lines)))
         for k in range(len(pts) - 1):
             draw.line([pts[k], pts[k + 1]], fill=color, width=width)
 

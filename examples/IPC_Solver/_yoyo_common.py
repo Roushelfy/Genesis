@@ -10,8 +10,15 @@ import numpy as np
 from scipy.spatial.transform import Rotation
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_SEQ_DIR = _REPO_ROOT / "IPC-Samples" / "python" / "Yoyo" / "results" / "v3" / "seq"
 YOYO_ASSETS_DIR = _REPO_ROOT / "IPC-Samples" / "python" / "Yoyo" / "results" / "v3"
+
+# Available trajectories
+TRAJECTORIES = {
+    "v3": _REPO_ROOT / "IPC-Samples" / "python" / "Yoyo" / "results" / "v3" / "seq",
+    "long_sleep": _REPO_ROOT / "IPC-Samples" / "python" / "Yoyo" / "results" / "long_sleep" / "seq",
+    "long_sleep_full": _REPO_ROOT / "IPC-Samples" / "python" / "Yoyo" / "results" / "long_sleep" / "seq_full",
+}
+DEFAULT_SEQ_DIR = TRAJECTORIES["v3"]
 
 # Map from seq object names (underscores) to GLB asset names (hyphens)
 GLB_NAME_MAP = {
@@ -28,7 +35,8 @@ END_CAMERA_POS = (0.55, 0.35, 0.15)
 # Shell surface parameters
 # Metallic/roughness are baked into GLB assets via export_yoyo_glb.py
 # Only opacity is set at runtime (to selectively make one side transparent)
-SHELL_OPACITY_TRANSPARENT = 0.35
+SHELL_OPACITY_TRANSPARENT = 0.05
+INTERNAL_OPACITY_TRANSPARENT = 0.5
 
 # Env map candidates (tried in order, first existing wins)
 ENV_MAP_CANDIDATES = [

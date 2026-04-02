@@ -2272,7 +2272,9 @@ class RigidEntity(KinematicEntity):
 
         # Split and convexify collision geometry. Must be done before alignment so that
         # convexified geoms are used to compute the inertia frame.
-        cg_infos, vg_infos = self._postprocess_geoms_info(morph, g_infos, l_info.get("is_robot", False))
+        cg_infos, vg_infos = self._postprocess_geoms_info(
+            morph, g_infos, l_info.get("is_robot", False), link_name=l_info.get("name")
+        )
 
         # Align root links' frames to their collision geometry COM and principal inertia axes.
         self._align_link(l_info, j_infos, cg_infos, vg_infos, morph)
