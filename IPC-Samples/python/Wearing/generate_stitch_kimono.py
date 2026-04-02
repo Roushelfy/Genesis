@@ -25,8 +25,7 @@ from polyscope import imgui
 # ---------------------------------------------------------------------------
 
 STITCH_PAIRS: list[tuple[str, str]] = [
-    ("kimono_belt", "kimono_inner_lower"),
-    ("kimono_belt", "kimono_inner_upper"),
+    ("kimono_inner_lower", "kimono_inner_upper"),
 ]
 
 MAX_STITCH_DISTANCE: float = 0.01  # metres

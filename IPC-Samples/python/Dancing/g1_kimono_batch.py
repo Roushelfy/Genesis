@@ -46,7 +46,7 @@ from motion_replay import create_motion_replay_player
 
 IGNORE_LINK_PATTERNS: list[str] = []
 
-BELT_REST_SCALE = 0.9
+BELT_REST_SCALE = 0.8
 
 DATASET_FILES = [
     "dataset.npz",
@@ -79,6 +79,28 @@ def parse_args() -> argparse.Namespace:
         metavar="MAX_FRAME",
         help="Recover mode: load dumps and export USD. "
         "Optionally limit to MAX_FRAME frames (default: all).",
+    )
+    parser.add_argument(
+        "--resume-from",
+        type=int,
+        default=0,
+        metavar="FRAME",
+        help="Resume simulation from a previously dumped frame.",
+    )
+    parser.add_argument(
+        "--substep",
+        type=int,
+        default=0,
+        metavar="N",
+        help="Override animator substep (default: use script constant).",
+    )
+    parser.add_argument(
+        "--settle",
+        type=int,
+        default=0,
+        metavar="N",
+        help="Settle mode: recover to last dumped frame, then run N extra frames "
+        "with robot frozen to let cloth reach equilibrium.",
     )
     return parser.parse_args()
 
@@ -140,7 +162,7 @@ def discover_kimono_pieces(kimono_dir: Path, skip_pieces: set[str]) -> list[Clot
     return pieces
 
 
-def build_scene(output_dir: Path, pieces: list[ClothPiece]):
+def build_scene(output_dir: Path, pieces: list[ClothPiece], substep_override: int = 0):
     Logger.set_level(Logger.Level.Info)
     Timer.enable_all()
     engine = Engine("cuda", str(output_dir))
@@ -156,7 +178,9 @@ def build_scene(output_dir: Path, pieces: list[ClothPiece]):
     config["linear_system"]["tol_rate"] = 1e-4
     config["newton"]["max_iter"] = 256
     scene = Scene(config)
-    scene.animator().substep(10)
+    actual_substep = substep_override if substep_override > 0 else 20
+    scene.animator().substep(actual_substep)
+    print(f"[scene] animator substep = {actual_substep}")
 
     tabular = scene.contact_tabular()
     tabular.default_model(0.5, 1.0 * GPa)
@@ -286,9 +310,12 @@ def build_player(
     return player
 
 
-def run_no_gui(world: World, player) -> None:
+def run_no_gui(world: World, player, resume_from: int = 0) -> None:
     total = player.num_frames + player.warmup_frames
-    for step_idx in range(total):
+    start = resume_from if resume_from > 0 else 0
+    if start > 0:
+        print(f"[no-gui] resuming from step {start}")
+    for step_idx in range(start, total):
         world.advance()
         world.retrieve()
         world.dump()
@@ -296,6 +323,24 @@ def run_no_gui(world: World, player) -> None:
             print(f"[no-gui] step={step_idx + 1}/{total}")
     status = player.last_status
     print(f"[no-gui] done world_frame={status.world_frame} replay_frame={status.frame_index}")
+
+
+def run_settle(world: World, workspace: Path, extra_frames: int) -> None:
+    """Recover to last dumped frame, then run extra_frames more to let cloth settle."""
+    last = _find_max_dump_frame(workspace)
+    if last == 0:
+        print("[settle] no dump files found, nothing to do")
+        return
+    print(f"[settle] recovering to frame {last}, then running {extra_frames} extra frames ...")
+    world.recover(last)
+    for i in range(1, extra_frames + 1):
+        world.advance()
+        world.retrieve()
+        world.dump()
+        frame_num = last + i
+        if i % 10 == 0 or i == extra_frames:
+            print(f"[settle] extra frame {i}/{extra_frames} (total frame {frame_num})")
+    print(f"[settle] done. total frames now: {_find_max_dump_frame(workspace)}")
 
 
 def _find_max_dump_frame(workspace: Path) -> int:
@@ -419,7 +464,9 @@ def main() -> None:
     pieces = discover_kimono_pieces(kimono_dir, skip_pieces)
     print(f"[kimono] discovered {len(pieces)} pieces: {[p.name for p in pieces]}")
 
-    engine, world, scene, cloth_contact, ground_contact, cloth_slots = build_scene(output_dir, pieces)
+    engine, world, scene, cloth_contact, ground_contact, cloth_slots = build_scene(
+        output_dir, pieces, substep_override=args.substep
+    )
 
     stitch_configs = load_stitch_configs(kimono_dir)
     if stitch_configs:
@@ -427,20 +474,34 @@ def main() -> None:
 
     player = build_player(scene, urdf_path, npz_path, warmup_joint_json, cloth_contact, ground_contact)
 
-    root_tf = player.current_root_transform
+    root_tf = player.current_root_transform  # 4x4 column-vector convention
+    rot = root_tf[:3, :3]
+    trans = root_tf[:3, 3].flatten()
     for _piece, cloth_geo_slot, cloth_rest_geo_slot in cloth_slots:
-        view(cloth_geo_slot.geometry().transforms())[0] = root_tf
-        view(cloth_rest_geo_slot.geometry().transforms())[0] = root_tf
+        for slot in (cloth_geo_slot, cloth_rest_geo_slot):
+            pos = view(slot.geometry().positions())
+            pos_squeezed = np.asarray(pos).squeeze()  # (N, 3)
+            transformed = (rot @ pos_squeezed.T).T + trans
+            pos[:] = transformed.reshape(pos.shape)
 
     world.init(scene)
     world.retrieve()
+
+    if args.settle > 0:
+        run_settle(world, output_dir, args.settle)
+        run_recover(world, scene, output_dir, cloth_slots, player, vname)
+        return
+
+    if args.resume_from > 0:
+        print(f"[batch] recovering to frame {args.resume_from} before simulation ...")
+        world.recover(args.resume_from)
 
     if args.recover is not None:
         run_recover(world, scene, output_dir, cloth_slots, player, vname, max_frame=args.recover)
         return
 
     if args.no_gui:
-        run_no_gui(world, player)
+        run_no_gui(world, player, resume_from=args.resume_from)
         return
 
     _ = engine
