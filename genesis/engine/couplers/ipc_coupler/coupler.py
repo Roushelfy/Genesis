@@ -956,41 +956,11 @@ class IPCCoupler(RBC):
 
                         meshes.append(mesh)
 
-            if not meshes:
-                continue
-
-            # ---- Merge meshes ----
-            rigid_link_geom = meshes[0] if len(meshes) == 1 else uipc.geometry.merge(meshes)
-            uipc.geometry.label_surface(rigid_link_geom)
-            is_open_mesh = not uipc.geometry.is_trimesh_closed(rigid_link_geom)
-
-            # Cache merged world-frame trimesh for env 0 (used by neutral overlap check)
-            link_T_0 = gu.trans_quat_to_T(links_pos[0, link.idx], links_quat[0, link.idx])
-            local_verts = np.asarray(rigid_link_geom.positions().view())[..., 0]
-            world_verts = (link_T_0[:3, :3] @ local_verts.T).T + link_T_0[:3, 3]
-            faces = rigid_link_geom.triangles().topo().view()[..., 0]
-            # Shrink 0.1% toward centroid to match rigid collider's neutral overlap check
-            centroid = world_verts.mean(axis=0, keepdims=True)
-            world_verts = centroid + (1.0 - 1e-3) * (world_verts - centroid)
-            self._abd_merged_meshes[link] = trimesh.Trimesh(vertices=world_verts, faces=faces, process=False)
-
             # ---- Determine coupling behavior ----
             is_ipc_only = entity_coup_type == COUPLING_TYPE.IPC_ONLY
             is_soft_constraint_target = entity_coup_type == COUPLING_TYPE.TWO_WAY_SOFT_CONSTRAINT
 
-            # ---- Apply constitutions (env-independent, once per link) ----
-
-            # Apply per-link contact element or no-collision marker
-            if self._coupling_collision_settings.get(entity, {}).get(link, True):
-                if link not in self._ipc_abd_links_contact:
-                    abd_contact = self._ipc_contact_tabular.create(f"abd_link_contact_{link.idx}")
-                    self._ipc_abd_links_contact[link] = abd_contact
-                self._ipc_abd_links_contact[link].apply_to(rigid_link_geom)
-            else:
-                self._ipc_no_collision_contact.apply_to(rigid_link_geom)
-
-            # Apply ABD constitution — use AffineBodyShell for non-watertight meshes
-            # (open surfaces like gripper pads) where volume-based mass would be near-zero.
+            # ---- Resolve density ----
             rho = entity.material.rho
             if rho is None:
                 if entity.solver._enable_mujoco_compatibility:
@@ -998,26 +968,73 @@ class IPCCoupler(RBC):
                 else:
                     rho = RHO_ROBOT if link._is_robot else RHO_OBJECT
             rho = float(rho)
-            mesh_for_check = self._abd_merged_meshes.get(link)
-            is_watertight = mesh_for_check is not None and mesh_for_check.is_watertight
 
-            if is_watertight:
+            is_proxy = not meshes
+
+            if is_proxy:
+                # No collision mesh — create a proxy ABD body from inertial properties
                 if self._ipc_abd is None:
                     self._ipc_abd = AffineBodyConstitution()
                     self._ipc_constitution_tabular.insert(self._ipc_abd)
-                self._ipc_abd.apply_to(rigid_link_geom, kappa=ABD_KAPPA * uipc.unit.MPa, mass_density=rho)
-                # Explicitly set thickness=0 so the sanity check merge doesn't
-                # inherit a non-zero default from AffineBodyShell geometries.
-                rigid_link_geom.vertices().create(uipc.builtin.thickness, 0.0)
-            else:
-                if self._ipc_abd_shell is None:
-                    self._ipc_abd_shell = AffineBodyShell()
-                    self._ipc_constitution_tabular.insert(self._ipc_abd_shell)
-                # Use contact_d_hat as shell thickness — a reasonable scale for thin rigid surfaces.
-                shell_thickness = (self.options.contact_d_hat or 0.001) / 2
-                self._ipc_abd_shell.apply_to(
-                    rigid_link_geom, kappa=ABD_KAPPA * uipc.unit.MPa, mass_density=rho, thickness=shell_thickness
+                mass_val = float(link.inertial_mass)
+                mass_center = np.asarray(link.inertial_pos, dtype=np.float64)
+                inertia = np.asarray(link.inertial_i, dtype=np.float64)
+                volume = mass_val / rho if rho > 0 else 1.0
+                rigid_link_geom = self._ipc_abd.create_proxy(
+                    kappa=ABD_KAPPA * uipc.unit.MPa,
+                    mass=mass_val,
+                    mass_center=mass_center,
+                    inertia=inertia,
+                    volume=volume,
                 )
+                self._ipc_no_collision_contact.apply_to(rigid_link_geom)
+                gs.logger.info(f"[IPC] link '{link.name}' has no collision mesh — using proxy ABD body")
+            else:
+                # ---- Merge meshes ----
+                rigid_link_geom = meshes[0] if len(meshes) == 1 else uipc.geometry.merge(meshes)
+                uipc.geometry.label_surface(rigid_link_geom)
+
+                # Cache merged world-frame trimesh for env 0 (used by neutral overlap check)
+                link_T_0 = gu.trans_quat_to_T(links_pos[0, link.idx], links_quat[0, link.idx])
+                local_verts = np.asarray(rigid_link_geom.positions().view())[..., 0]
+                world_verts = (link_T_0[:3, :3] @ local_verts.T).T + link_T_0[:3, 3]
+                faces = rigid_link_geom.triangles().topo().view()[..., 0]
+                # Shrink 0.1% toward centroid to match rigid collider's neutral overlap check
+                centroid = world_verts.mean(axis=0, keepdims=True)
+                world_verts = centroid + (1.0 - 1e-3) * (world_verts - centroid)
+                self._abd_merged_meshes[link] = trimesh.Trimesh(vertices=world_verts, faces=faces, process=False)
+
+                # Apply per-link contact element or no-collision marker
+                if self._coupling_collision_settings.get(entity, {}).get(link, True):
+                    if link not in self._ipc_abd_links_contact:
+                        abd_contact = self._ipc_contact_tabular.create(f"abd_link_contact_{link.idx}")
+                        self._ipc_abd_links_contact[link] = abd_contact
+                    self._ipc_abd_links_contact[link].apply_to(rigid_link_geom)
+                else:
+                    self._ipc_no_collision_contact.apply_to(rigid_link_geom)
+
+                # Apply ABD constitution — use AffineBodyShell for non-watertight meshes
+                # (open surfaces like gripper pads) where volume-based mass would be near-zero.
+                mesh_for_check = self._abd_merged_meshes.get(link)
+                is_watertight = mesh_for_check is not None and mesh_for_check.is_watertight
+
+                if is_watertight:
+                    if self._ipc_abd is None:
+                        self._ipc_abd = AffineBodyConstitution()
+                        self._ipc_constitution_tabular.insert(self._ipc_abd)
+                    self._ipc_abd.apply_to(rigid_link_geom, kappa=ABD_KAPPA * uipc.unit.MPa, mass_density=rho)
+                    # Explicitly set thickness=0 so the sanity check merge doesn't
+                    # inherit a non-zero default from AffineBodyShell geometries.
+                    rigid_link_geom.vertices().create(uipc.builtin.thickness, 0.0)
+                else:
+                    if self._ipc_abd_shell is None:
+                        self._ipc_abd_shell = AffineBodyShell()
+                        self._ipc_constitution_tabular.insert(self._ipc_abd_shell)
+                    # Use contact_d_hat as shell thickness — a reasonable scale for thin rigid surfaces.
+                    shell_thickness = (self.options.contact_d_hat or 0.001) / 2
+                    self._ipc_abd_shell.apply_to(
+                        rigid_link_geom, kappa=ABD_KAPPA * uipc.unit.MPa, mass_density=rho, thickness=shell_thickness
+                    )
 
             # Apply SoftTransformConstraint for coupled links
             if is_soft_constraint_target:
