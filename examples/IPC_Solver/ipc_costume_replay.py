@@ -332,11 +332,21 @@ def run_gui(
         )
         cloth_entities[usd_name] = ent
 
-    # ── Camera ──
-    cam_pos = (2.0, -1.0, 1.0)
-    cam_lookat = (0.0, 0.0, 0.6)
+    # ── Camera (tracks pelvis) ──
+    # Camera offset relative to pelvis: front-left, slightly above
+    CAM_OFFSET = np.array([1.5, -1.5, 0.4])
+    CAM_LOOKAT_OFFSET = np.array([0.0, 0.0, -0.1])
     cam_up = (0.0, 0.0, 1.0)
     cam_fov = 40
+
+    def _get_pelvis_pos(frame_idx: int) -> np.ndarray:
+        if "pelvis" in link_transforms and frame_idx < link_transforms["pelvis"].shape[0]:
+            return link_transforms["pelvis"][frame_idx][:3, 3].copy()
+        return np.array([0.0, 0.0, 0.78])
+
+    init_pelvis = _get_pelvis_pos(0)
+    cam_pos = tuple(init_pelvis + CAM_OFFSET)
+    cam_lookat = tuple(init_pelvis + CAM_LOOKAT_OFFSET)
 
     cam = None
     if use_render and use_nyx:
@@ -435,10 +445,17 @@ def run_gui(
         for i in range(start_frame, frame_count):
             _apply_frame(i)
 
+            # Track pelvis with camera
+            pelvis_pos = _get_pelvis_pos(i)
+            cur_cam_pos = tuple(pelvis_pos + CAM_OFFSET)
+            cur_cam_lookat = tuple(pelvis_pos + CAM_LOOKAT_OFFSET)
+
             if use_nyx:
+                cam.update_camera_pose(pos=cur_cam_pos, lookat=cur_cam_lookat, up=cam_up)
                 data = cam.read()
                 rgb = data.rgb.cpu().numpy()
             else:
+                cam.set_pose(pos=cur_cam_pos, lookat=cur_cam_lookat, up=cam_up)
                 rgb_result = cam.render(rgb=True, force_render=True)
                 rgb_tensor = rgb_result[0]
                 if hasattr(rgb_tensor, "cpu"):

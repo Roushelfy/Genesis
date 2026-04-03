@@ -913,9 +913,11 @@ class IPCCoupler(RBC):
                 geom_sources.append((child.geoms, child_pos, child_quat))
 
             meshes = []
+            has_plane_geom = False
             for geoms, frame_pos, frame_quat in geom_sources:
                 for geom in geoms:
                     if geom.type == gs.GEOM_TYPE.PLANE:
+                        has_plane_geom = True
                         local_normal = geom.data[:3].astype(np.float64, copy=False)
                         normal = gu.transform_by_quat(local_normal, geom.init_quat)
                         normal = normal / np.linalg.norm(normal)
@@ -970,6 +972,11 @@ class IPCCoupler(RBC):
             rho = float(rho)
 
             is_proxy = not meshes
+
+            # Plane geoms are already added as IPC ground objects above;
+            # no ABD body is needed for the link.
+            if is_proxy and has_plane_geom:
+                continue
 
             if is_proxy:
                 # No collision mesh — create a proxy ABD body from inertial properties
