@@ -7,8 +7,8 @@ import numpy as np
 import genesis as gs
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-SWEATER_GLB = REPO_ROOT / "DemoAssets" / "Cashmere_Sweater_adjusted.glb"
-G1_URDF = REPO_ROOT / "DemoAssets" / "locomotion" / "assets" / "g1_29dof_rev_1_0.urdf"
+SWEATER_GLB = REPO_ROOT / "DemoAssets" / "sweater" / "Cashmere_Sweater_adjusted.glb"
+G1_URDF = REPO_ROOT / "DemoAssets" / "g1_robot" / "assets" / "g1_29dof_rev_1_0.urdf"
 ROBOT_Z = 0.75
 
 gs.init(backend=gs.gpu)

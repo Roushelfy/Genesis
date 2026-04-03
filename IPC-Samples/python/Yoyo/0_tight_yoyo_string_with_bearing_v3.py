@@ -22,9 +22,9 @@ from uipc.unit import MPa, GPa
 from asset_dir import AssetDir
 
 # ── Default tunable parameters (overridable via GUI) ────────────────
-WRAP_SPEED    = 1    # tangential wrapping speed (m/s)
-OUTWARD_SPEED = 0.8    # radial outward pull speed for tension (m/s)
-INWARD_SPEED  = 0.02   # radial inward speed (m/s)
+WRAP_SPEED = 1  # tangential wrapping speed (m/s)
+OUTWARD_SPEED = 0.8  # radial outward pull speed for tension (m/s)
+INWARD_SPEED = 0.02  # radial inward speed (m/s)
 # ────────────────────────────────────────────────────────────────────
 
 Logger.set_level(Logger.Level.Warn)
@@ -32,11 +32,12 @@ Timer.enable_all()
 
 workspace = AssetDir.output_path(__file__)
 folder = AssetDir.folder(__file__)
+_YOYO_DIR = folder.parents[2] / "DemoAssets" / "yoyo"
 
-ball_obj = folder / "results" / "v3"/ "yoyo-ball.obj"
-string_obj = folder / "results" / "v3" / "yoyo-string.obj"
-bearing_outer_obj = folder / "results" / "v3" / "bearing_outer.obj"
-bearing_spheres_obj = folder / "results" / "v3" / "bearing_spheres.obj"
+ball_obj = _YOYO_DIR / "v3" / "yoyo-ball.obj"
+string_obj = _YOYO_DIR / "v3" / "yoyo-string.obj"
+bearing_outer_obj = _YOYO_DIR / "v3" / "bearing_outer.obj"
+bearing_spheres_obj = _YOYO_DIR / "v3" / "bearing_spheres.obj"
 
 engine = Engine("cuda", str(workspace))
 world = World(engine)
@@ -104,7 +105,7 @@ ui = {
     "outward_speed": OUTWARD_SPEED,
     "inward_speed": INWARD_SPEED,
     "stopped": False,
-    "save_path": str(folder / "results" / ""),
+    "save_path": str(_YOYO_DIR / ""),
 }
 # ────────────────────────────────────────────────────────────────────
 
@@ -186,7 +187,7 @@ def _update_skip_colors():
     skip = ui["skip_start_verts"]
     colors = np.tile(np.array([0.1, 0.1, 0.9]), (n_verts, 1))
     if skip > 0:
-        colors[:min(skip, n_verts)] = [0.9, 0.1, 0.1]
+        colors[: min(skip, n_verts)] = [0.9, 0.1, 0.1]
     try:
         cn = ps.get_curve_network(_string_curve_name)
         cn.add_color_quantity("skip_highlight", colors, enabled=True)
@@ -246,7 +247,7 @@ def on_update():
     if changed:
         ui["save_path"] = new_path
     if imgui.Button("Save String"):
-        save_dir = folder / "results"
+        save_dir = _YOYO_DIR
         save_dir.mkdir(parents=True, exist_ok=True)
         path = ui["save_path"]
         out_file = f"{path}/yoyo_string_{world.frame()}.obj"
@@ -257,7 +258,7 @@ def on_update():
             positions = np.array(view(geo.positions()), copy=False).reshape(-1, 3)
             edges = np.array(view(geo.edges().topo()), copy=False).reshape(-1, 2)
             keep_mask = np.ones(positions.shape[0], dtype=bool)
-            keep_mask[:min(skip, positions.shape[0])] = False
+            keep_mask[: min(skip, positions.shape[0])] = False
             old_to_new = np.full(positions.shape[0], -1, dtype=np.int32)
             old_to_new[keep_mask] = np.arange(int(keep_mask.sum()), dtype=np.int32)
             new_positions = positions[keep_mask]
@@ -265,6 +266,7 @@ def on_update():
             new_edges = old_to_new[edges[valid_edges]]
 
             from uipc.geometry import linemesh
+
             trimmed = linemesh(new_positions, new_edges)
             sio = SimplicialComplexIO()
             sio.write(out_file, trimmed)

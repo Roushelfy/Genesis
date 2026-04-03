@@ -32,8 +32,8 @@ import numpy as np
 from scipy.spatial.transform import Rotation
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
-_PACK_DIR = _REPO_ROOT / "DemoAssets" / "ipc_costume" / "results" / "dancing_export_pack"
-_KIMONO_DIR = _REPO_ROOT / "DemoAssets" / "kimono_v0"
+_PACK_DIR = _REPO_ROOT / "DemoAssets" / "costume" / "results" / "dancing_export_pack"
+_KIMONO_DIR = _REPO_ROOT / "DemoAssets" / "kimono"
 
 AVAILABLE_TRAJECTORIES = [
     "d0_lower",
@@ -47,7 +47,7 @@ AVAILABLE_TRAJECTORIES = [
     "d5_no_lower",
 ]
 
-URDF_PATH = str(_REPO_ROOT / "DemoAssets" / "locomotion" / "assets" / "g1_29dof_rev_1_0.urdf")
+URDF_PATH = str(_REPO_ROOT / "DemoAssets" / "g1_robot" / "assets" / "g1_29dof_rev_1_0.urdf")
 
 # Cloth PBR materials from the Sketchfab kimono GLTF.
 # (base_color_rgb, roughness)

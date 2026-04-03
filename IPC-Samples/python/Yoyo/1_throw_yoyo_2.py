@@ -26,8 +26,8 @@ from uipc.unit import MPa
 from asset_dir import AssetDir
 
 # ── Tunable parameters (overridable via GUI) ────────────────────────
-THROW_SPEED = 0.0        # initial downward speed (m/s)
-THROW_DURATION = 0.00    # how long to apply the push (seconds)
+THROW_SPEED = 0.0  # initial downward speed (m/s)
+THROW_DURATION = 0.00  # how long to apply the push (seconds)
 STRING_TOP_UP_SPEED = 0.5  # top control point upward speed (m/s)
 # ────────────────────────────────────────────────────────────────────
 
@@ -36,10 +36,11 @@ Timer.enable_all()
 
 workspace = AssetDir.output_path(__file__)
 folder = AssetDir.folder(__file__)
+_YOYO_DIR = folder.parents[2] / "DemoAssets" / "yoyo"
 
-ball_obj = folder / "results" / "yoyo-ball.obj"
-string_obj = folder / "results" / "yoyo_string_1191.obj"
-bearing_obj = folder / "results" / "yoyo-bear.obj"
+ball_obj = _YOYO_DIR / "yoyo-ball.obj"
+string_obj = _YOYO_DIR / "yoyo_string_1191.obj"
+bearing_obj = _YOYO_DIR / "yoyo-bear.obj"
 
 engine = Engine("cuda", str(workspace))
 world = World(engine)
@@ -157,9 +158,8 @@ def on_update():
 
     if imgui.Button("Run / Pause"):
         running = not running
-    
-    imgui.Separator()
 
+    imgui.Separator()
 
     if running:
         world.advance()

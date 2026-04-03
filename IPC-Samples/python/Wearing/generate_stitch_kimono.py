@@ -32,7 +32,7 @@ MAX_STITCH_DISTANCE: float = 0.01  # metres
 
 THIS_DIR = Path(__file__).resolve().parent
 REPO_ROOT = THIS_DIR.parents[2]
-KIMONO_DIR = REPO_ROOT / "DemoAssets" / "kimono_v0"
+KIMONO_DIR = REPO_ROOT / "DemoAssets" / "kimono"
 OUTPUT_DIR = THIS_DIR / "results" / "kimono_v0"
 
 # ---------------------------------------------------------------------------

@@ -42,9 +42,7 @@ def _resolve_asset(repo_root: Path, relative_name: str) -> Path:
     for path in candidates:
         if path.exists():
             return path
-    raise FileNotFoundError(
-        f"Asset not found: {relative_name}. Tried: {', '.join(str(p) for p in candidates)}"
-    )
+    raise FileNotFoundError(f"Asset not found: {relative_name}. Tried: {', '.join(str(p) for p in candidates)}")
 
 
 def _default_assets_output_dir() -> Path:
@@ -79,7 +77,9 @@ def setup_scene(
     cloth_bending_stiffness: float = 10.0,
 ) -> tuple[World, SceneGUI | None, WearingRuntimeAPI, UrdfForwardAdapter | None]:
     assets_dir = Path(assets_output_dir) if assets_output_dir is not None else _default_assets_output_dir()
-    workspace_dir = Path(runtime_workspace_dir) if runtime_workspace_dir is not None else _default_runtime_workspace_dir()
+    workspace_dir = (
+        Path(runtime_workspace_dir) if runtime_workspace_dir is not None else _default_runtime_workspace_dir()
+    )
     assets_dir.mkdir(parents=True, exist_ok=True)
     workspace_dir.mkdir(parents=True, exist_ok=True)
     urdf_path = Path(args.urdf) if args.urdf else None
@@ -149,7 +149,9 @@ def setup_scene(
         key = edge_group_keys[i] if i < len(edge_group_keys) else f"group_{i}"
         radius_groups.setdefault(key, []).append(float(grouped_radius[i]))
     group_radius_value: dict[str, float] = {
-        key: float(np.median(np.asarray(vals, dtype=np.float64))) for key, vals in radius_groups.items() if len(vals) > 0
+        key: float(np.median(np.asarray(vals, dtype=np.float64)))
+        for key, vals in radius_groups.items()
+        if len(vals) > 0
     }
     for i in range(grouped_radius.shape[0]):
         key = edge_group_keys[i] if i < len(edge_group_keys) else f"group_{i}"
@@ -205,14 +207,14 @@ def setup_scene(
 
 def parse_arguments() -> argparse.Namespace:
     repo_root = Path(__file__).resolve().parents[3]
-    default_urdf = _default_asset_path(repo_root, "locomotion/assets/g1_29dof_rev_1_0.urdf")
+    default_urdf = _default_asset_path(repo_root, "g1_robot/assets/g1_29dof_rev_1_0.urdf")
     parser = argparse.ArgumentParser(description="Core-first wearing sample.")
     parser.add_argument("--backend", default="cuda", type=str, help="Backend name.")
     parser.add_argument(
         "--urdf",
         default=str(default_urdf),
         type=str,
-        help="URDF file path used to build the skeleton (defaults to DemoAssets/locomotion/assets/g1_29dof_rev_1_0.urdf).",
+        help="URDF file path used to build the skeleton (defaults to DemoAssets/g1_robot/assets/g1_29dof_rev_1_0.urdf).",
     )
     parser.add_argument(
         "--urdf-mesh-source",
@@ -222,7 +224,9 @@ def parse_arguments() -> argparse.Namespace:
     )
     parser.add_argument("--no-gui", action="store_true", help="Run smoke test without opening GUI.")
     parser.add_argument("--steps", default=10, type=int, help="Simulation steps used in --no-gui mode.")
-    parser.add_argument("--disable-mesh-partition", action="store_true", help="Disable mesh_partition for compatibility fallback.")
+    parser.add_argument(
+        "--disable-mesh-partition", action="store_true", help="Disable mesh_partition for compatibility fallback."
+    )
     return parser.parse_args()
 
 

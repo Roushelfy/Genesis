@@ -28,9 +28,10 @@ Timer.enable_all()
 repo = Path(__file__).resolve().parents[3]
 workspace = AssetDir.output_path(__file__)
 folder = AssetDir.folder(__file__)
+_YOYO_DIR = folder.parents[2] / "DemoAssets" / "yoyo"
 
-ball_obj = folder / "results" / "yoyo-ball.obj"
-string_obj = folder / "results" / "yoyo-string2.obj"
+ball_obj = _YOYO_DIR / "yoyo-ball.obj"
+string_obj = _YOYO_DIR / "yoyo-string2.obj"
 
 engine = Engine("cuda", str(workspace))
 world = World(engine)
@@ -99,7 +100,7 @@ def pull_string_segment_up(info: Animation.UpdateInfo):
     rest_positions = np.array(view(rest_geo.positions()), copy=False).reshape(-1, 3)
 
     is_constrained[:] = 0
-    if info.frame()*info.dt() >= 0.5:
+    if info.frame() * info.dt() >= 0.5:
         jump_up = 0.05
         # Keep vertex 0 pinned by is_fixed; pull vertices 1..50 upward suddenly.
         for vid in range(1, 51):
@@ -107,7 +108,7 @@ def pull_string_segment_up(info: Animation.UpdateInfo):
             target = rest_positions[vid].copy()
             target[1] += jump_up
             aim_position[vid] = target.reshape(3, 1)
-    if info.frame()*info.dt() >= 0.55:
+    if info.frame() * info.dt() >= 0.55:
         is_constrained[:] = 0
 
 

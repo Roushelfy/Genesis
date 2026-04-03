@@ -1,5 +1,5 @@
 """
-Load kimono_v0 cloth pieces (one uipc mesh per OBJ, no rigid transform) with the G1 URDF
+Load kimono cloth pieces (one uipc mesh per OBJ, no rigid transform) with the G1 URDF
 skeleton and capsule proxies. Use the GUI to reduce initial penetration, then Export rest/init
 and Save Joint.
 
@@ -8,12 +8,12 @@ rest-shape.obj. shrink_init_shape.py still expects a single wearing_cloth_0_* pa
 one-piece garment there or extend shrink to load multiple OBJs.
 
 ``joint_pose.json`` / ``inflation_scaling.json`` are loaded from the **first** existing path among:
-``DemoAssets/kimono_v0/``, the run ``output`` dir (default ``Wearing/results/kimono_v0``), then
+``DemoAssets/kimono/``, the run ``output`` dir (default ``Wearing/results/kimono_v0``), then
 ``Wearing/results/v1/``. Loading runs **after** ``setup_scene`` (defined in this file) and **before**
 ``world.init`` so the solver starts from the saved pose and inflation.
 
 Those JSON files adjust **URDF pose and proxy inflation only** — they do **not** move cloth
-vertices. The kimono still comes from ``kimono_v0/*.obj`` unless you add a separate path that
+vertices. The kimono still comes from ``kimono/*.obj`` unless you add a separate path that
 loads exported ``wearing_*_init-shape.obj`` meshes.
 
 Run: python check_skeleton.py
@@ -109,7 +109,9 @@ def setup_scene(
 ) -> tuple[World, SceneGUI | None, WearingRuntimeAPI, UrdfForwardAdapter]:
     c = cloth if cloth is not None else KimonoClothParams()
     assets_dir = Path(assets_output_dir) if assets_output_dir is not None else _default_assets_output_dir()
-    workspace_dir = Path(runtime_workspace_dir) if runtime_workspace_dir is not None else _default_runtime_workspace_dir()
+    workspace_dir = (
+        Path(runtime_workspace_dir) if runtime_workspace_dir is not None else _default_runtime_workspace_dir()
+    )
     assets_dir.mkdir(parents=True, exist_ok=True)
     workspace_dir.mkdir(parents=True, exist_ok=True)
     urdf_path = Path(args.urdf) if args.urdf else None
@@ -184,7 +186,9 @@ def setup_scene(
         key = edge_group_keys[i] if i < len(edge_group_keys) else f"group_{i}"
         radius_groups.setdefault(key, []).append(float(grouped_radius[i]))
     group_radius_value: dict[str, float] = {
-        key: float(np.median(np.asarray(vals, dtype=np.float64))) for key, vals in radius_groups.items() if len(vals) > 0
+        key: float(np.median(np.asarray(vals, dtype=np.float64)))
+        for key, vals in radius_groups.items()
+        if len(vals) > 0
     }
     for i in range(grouped_radius.shape[0]):
         key = edge_group_keys[i] if i < len(edge_group_keys) else f"group_{i}"
@@ -301,7 +305,7 @@ def try_load_kimono_v0_saved_config(
 
 def parse_arguments() -> argparse.Namespace:
     repo_root = Path(__file__).resolve().parents[3]
-    default_urdf = _default_asset_path(repo_root, "locomotion/assets/g1_29dof_rev_1_0.urdf")
+    default_urdf = _default_asset_path(repo_root, "g1_robot/assets/g1_29dof_rev_1_0.urdf")
     parser = argparse.ArgumentParser(description="Kimono + skeleton check (GUI or --no-gui smoke test).")
     parser.add_argument("--no-gui", action="store_true", help="Run a short headless test without Polyscope.")
     ns = parser.parse_args()
@@ -320,13 +324,17 @@ def main(
 ) -> None:
     args = parse_arguments()
     repo_root = Path(__file__).resolve().parents[3]
-    kimono_dir = repo_root / "DemoAssets" / "kimono_v0"
+    kimono_dir = repo_root / "DemoAssets" / "kimono"
     if not kimono_dir.is_dir():
         raise FileNotFoundError(f"Kimono directory not found: {kimono_dir}")
 
     io = GeometryIO()
     cloth_targets = load_kimono_v0_cloth_targets(kimono_dir, io)
-    out_dir = Path(assets_output_dir) if assets_output_dir is not None else (Path(__file__).resolve().parent / "results" / "kimono_v0")
+    out_dir = (
+        Path(assets_output_dir)
+        if assets_output_dir is not None
+        else (Path(__file__).resolve().parent / "results" / "kimono_v0")
+    )
     out_dir.mkdir(parents=True, exist_ok=True)
 
     world, sgui, runtime, urdf_adapter, scene = setup_scene(
@@ -360,7 +368,9 @@ def main(
     ps.set_user_callback(gui_controller.on_update)
     ps.show()
 
-    sio.save("C:/Users/81946/Projects/LibuipcJointDesign/libuipc-samples/examples/39_test_mesh_partition_large_cloth/scene.json")
+    sio.save(
+        "C:/Users/81946/Projects/LibuipcJointDesign/libuipc-samples/examples/39_test_mesh_partition_large_cloth/scene.json"
+    )
 
 
 if __name__ == "__main__":

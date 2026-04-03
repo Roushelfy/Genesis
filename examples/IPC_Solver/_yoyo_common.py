@@ -10,13 +10,13 @@ import numpy as np
 from scipy.spatial.transform import Rotation
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
-YOYO_ASSETS_DIR = _REPO_ROOT / "IPC-Samples" / "python" / "Yoyo" / "results" / "v3"
+YOYO_ASSETS_DIR = _REPO_ROOT / "DemoAssets" / "yoyo" / "v3"
 
 # Available trajectories
 TRAJECTORIES = {
-    "v3": _REPO_ROOT / "IPC-Samples" / "python" / "Yoyo" / "results" / "v3" / "seq",
-    "long_sleep": _REPO_ROOT / "IPC-Samples" / "python" / "Yoyo" / "results" / "long_sleep" / "seq",
-    "long_sleep_full": _REPO_ROOT / "IPC-Samples" / "python" / "Yoyo" / "results" / "long_sleep" / "seq_full",
+    "v3": _REPO_ROOT / "DemoAssets" / "yoyo" / "v3" / "seq",
+    "long_sleep": _REPO_ROOT / "DemoAssets" / "yoyo" / "long_sleep" / "seq",
+    "long_sleep_full": _REPO_ROOT / "DemoAssets" / "yoyo" / "long_sleep" / "seq_full",
 }
 DEFAULT_SEQ_DIR = TRAJECTORIES["v3"]
 

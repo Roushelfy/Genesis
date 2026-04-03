@@ -34,10 +34,10 @@ import trimesh
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DEMO_ASSETS = REPO_ROOT / "DemoAssets"
-RIGID_IPC_ROOT = DEMO_ASSETS / "rigid-ipc"
+RIGID_IPC_SRC = DEMO_ASSETS / "track_bike" / "rigid_ipc_src"
 GLB_PATH = DEMO_ASSETS / "track_bike" / "Track_Bike.glb"
-SPROCKET_20_PATH = RIGID_IPC_ROOT / "meshes" / "507-movements" / "227-chain-pully" / "sprocket-20teeth.obj"
-SPROCKET_8_PATH = RIGID_IPC_ROOT / "meshes" / "507-movements" / "227-chain-pully" / "sprocket-8teeth.obj"
+SPROCKET_20_PATH = RIGID_IPC_SRC / "sprocket-20teeth.obj"
+SPROCKET_8_PATH = RIGID_IPC_SRC / "sprocket-8teeth.obj"
 OUTPUT_DIR = DEMO_ASSETS / "track_bike"
 
 

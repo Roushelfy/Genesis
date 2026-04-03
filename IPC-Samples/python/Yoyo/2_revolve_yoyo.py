@@ -63,11 +63,13 @@ def parse_args() -> argparse.Namespace:
     )
     return parser.parse_args()
 
+
 workspace = AssetDir.output_path(__file__)
 folder = AssetDir.folder(__file__)
+_YOYO_DIR = folder.parents[2] / "DemoAssets" / "yoyo"
 args = parse_args()
 
-asset_root = folder / "results" / "v2"
+asset_root = _YOYO_DIR / "v2"
 ball_obj = asset_root / "yoyo-ball.obj"
 string_obj = asset_root / "yoyo-string-revolve.obj"
 bearing_outer_obj = asset_root / "bearing_outer.obj"
@@ -168,9 +170,10 @@ def pull_string_end_diag(info: Animation.UpdateInfo):
         target = cur_positions[vid].copy() + direction * (STRING_END_PULL_SPEED * info.dt())
         is_constrained[vid] = 1
         aim_position[vid] = target.reshape(3, 1)
-    
+
     if t_now >= STRING_END_PULL_END:
         is_constrained[:] = 0
+
 
 scene.animator().insert(string_obj_node, pull_string_end_diag)
 

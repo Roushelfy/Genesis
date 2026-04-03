@@ -25,12 +25,12 @@ from urdf_gui import SceneState, URDFGuiApp, closest_point_on_triangle
 _SCRIPT_DIR = Path(__file__).resolve().parent
 _REPO_ROOT = _SCRIPT_DIR.parents[2]
 
-_BALL_OBJ = _SCRIPT_DIR / "results" / "v3" / "yoyo-ball.obj"
-_STRING_OBJ = _SCRIPT_DIR / "results" / "v3" / "yoyo_string_6153.obj"
-_BEARING_OUTER_OBJ = _SCRIPT_DIR / "results" / "v1" / "bearing_outer.obj"
-_BEARING_SPHERES_OBJ = _SCRIPT_DIR / "results" / "v1" / "bearing_spheres.obj"
+_BALL_OBJ = _REPO_ROOT / "DemoAssets" / "yoyo" / "v3" / "yoyo-ball.obj"
+_STRING_OBJ = _REPO_ROOT / "DemoAssets" / "yoyo" / "v3" / "yoyo_string_6153.obj"
+_BEARING_OUTER_OBJ = _REPO_ROOT / "DemoAssets" / "yoyo" / "v1" / "bearing_outer.obj"
+_BEARING_SPHERES_OBJ = _REPO_ROOT / "DemoAssets" / "yoyo" / "v1" / "bearing_spheres.obj"
 
-_URDF_PATH = _REPO_ROOT / "DemoAssets" / "marvin_bimanual" / "urdf" / "marvin_pika.urdf"
+_URDF_PATH = _REPO_ROOT / "DemoAssets" / "marvin_robot" / "urdf" / "marvin_pika.urdf"
 _SIM_LINK_PATTERNS = ["*Link8*", "*Link9*"]
 _STC_STRENGTH = np.array([120.0, 120.0], dtype=np.float64)
 _STITCH_BINDING_PATTERN = "*Link9_R*"
@@ -139,9 +139,7 @@ def load_yoyo_scene(scene, world, ss: SceneState) -> None:
     ss.rest_geo_slots["yoyo_string"] = string_rest_gs
     ss.obj_sources["yoyo_string"] = _STRING_OBJ
     ss.original_transforms["yoyo_string"] = np.array(view(string_mesh.transforms())[0], copy=True)
-    ss.original_positions["yoyo_string"] = np.array(
-        view(string_gs.geometry().positions()), copy=True
-    ).reshape(-1, 3)
+    ss.original_positions["yoyo_string"] = np.array(view(string_gs.geometry().positions()), copy=True).reshape(-1, 3)
 
     # ---- Bearing Outer ----
     bearing_outer_mesh = io.read(str(_BEARING_OUTER_OBJ))
@@ -168,10 +166,8 @@ def load_yoyo_scene(scene, world, ss: SceneState) -> None:
         sp_gs, _ = sp_obj.geometries().create(sphere_mesh)
         ss.objects[f"bearing_sphere_{i}"] = sp_obj
         ss.geo_slots[f"bearing_sphere_{i}"] = sp_gs
-        ss.original_transforms[f"bearing_sphere_{i}"] = np.array(
-            view(sphere_mesh.transforms())[0], copy=True
-        )
-        split_obj_path = _SCRIPT_DIR / "results" / "v3" / f"bearing_sphere_{i}.obj"
+        ss.original_transforms[f"bearing_sphere_{i}"] = np.array(view(sphere_mesh.transforms())[0], copy=True)
+        split_obj_path = _REPO_ROOT / "DemoAssets" / "yoyo" / "v3" / f"bearing_sphere_{i}.obj"
         if not split_obj_path.exists():
             io.write(str(split_obj_path), sphere_mesh)
         ss.obj_sources[f"bearing_sphere_{i}"] = split_obj_path
@@ -245,9 +241,7 @@ def setup_yoyo_stitch(scene, controller, ss: SceneState) -> None:
     ss.stitch_vis["string_gs"] = string_gs
     ss.stitch_vis["gripper_gs"] = gripper_geo_slot
     ss.stitch_vis["pairs"] = pairs
-    ss.stitch_vis["gripper_tris"] = np.array(
-        view(gripper_geo.triangles().topo()), copy=True
-    ).reshape(-1, 3)
+    ss.stitch_vis["gripper_tris"] = np.array(view(gripper_geo.triangles().topo()), copy=True).reshape(-1, 3)
 
     print(f"[stitch] string vertex 0 -> gripper triangle {best_tri} (dist={best_dist:.4f})")
 

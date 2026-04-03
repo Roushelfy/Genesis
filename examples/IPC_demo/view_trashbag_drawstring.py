@@ -22,7 +22,7 @@ import numpy as np
 import genesis as gs
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-DEMO_ASSETS = REPO_ROOT / "DemoAssets" / "trashbag_drawstring"
+DEMO_ASSETS = REPO_ROOT / "DemoAssets" / "trashbag"
 BAG_MESH = DEMO_ASSETS / "Trashbag_drawstring.glb"
 ROPE_MESH = DEMO_ASSETS / "rope.obj"
 BAG_POS = (0.2, 0.2, 0.2)

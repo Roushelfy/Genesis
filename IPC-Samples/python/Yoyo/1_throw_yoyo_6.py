@@ -26,8 +26,8 @@ from uipc.unit import MPa
 from asset_dir import AssetDir
 
 # ── Tunable parameters (overridable via GUI) ────────────────────────
-THROW_SPEED = 0.0        # initial downward speed (m/s)
-THROW_DURATION = 0.00    # how long to apply the push (seconds)
+THROW_SPEED = 0.0  # initial downward speed (m/s)
+THROW_DURATION = 0.00  # how long to apply the push (seconds)
 STRING_TOP_UP_SPEED = 1.0  # top control segment upward speed (m/s)
 # ────────────────────────────────────────────────────────────────────
 
@@ -36,11 +36,12 @@ Timer.enable_all()
 
 workspace = AssetDir.output_path(__file__)
 folder = AssetDir.folder(__file__)
+_YOYO_DIR = folder.parents[2] / "DemoAssets" / "yoyo"
 
-ball_obj = folder / "results" / "yoyo-ball.obj"
-string_obj = folder / "results" / "yoyo_string_1408.obj"
-bearing_obj = folder / "results" / "yoyo-bear.obj"
-finger_obj = folder / "results" / "finger.obj"
+ball_obj = _YOYO_DIR / "yoyo-ball.obj"
+string_obj = _YOYO_DIR / "yoyo_string_1408.obj"
+bearing_obj = _YOYO_DIR / "yoyo-bear.obj"
+finger_obj = _YOYO_DIR / "finger.obj"
 
 engine = Engine("cuda", str(workspace))
 world = World(engine)
@@ -49,7 +50,7 @@ dt = 0.002
 config = Scene.default_config()
 config["dt"] = dt
 config["gravity"] = [[0.0], [-9.8], [0.0]]
-config["integrator"]["type"] = "bdf1" # BDF2 integrator for better kinetic energy conservation
+config["integrator"]["type"] = "bdf1"  # BDF2 integrator for better kinetic energy conservation
 config["contact"]["enable"] = True
 config["contact"]["friction"]["enable"] = True
 config["contact"]["d_hat"] = 0.0001
@@ -84,7 +85,7 @@ motor.apply_to(
     ball_mesh,
     strength=100.0,
     motor_axis=np.array([[0.0], [0.0], [1.0]], dtype=np.float64),
-    motor_rot_vel= 2.0 * np.pi * 10,
+    motor_rot_vel=2.0 * np.pi * 10,
 )
 velocity = ball_mesh.instances().find(builtin.velocity)
 t = Transform.Identity()
@@ -96,10 +97,12 @@ view(velocity)[0] = (t.matrix() - Transform.Identity().matrix()) * 10
 ball_obj_node = scene.objects().create("yoyo_ball")
 ball_obj_node.geometries().create(ball_mesh)
 
+
 def rotate_yoyo_ball(info: Animation.UpdateInfo):
     geo = info.geo_slots()[0].geometry()
     view(geo.instances().find(builtin.is_constrained))[0] = 1
     RotatingMotor.animate(geo, info.dt())
+
 
 scene.animator().insert(ball_obj_node, rotate_yoyo_ball)
 
@@ -224,9 +227,8 @@ def on_update():
 
     if imgui.Button("Run / Pause"):
         running = not running
-    
-    imgui.Separator()
 
+    imgui.Separator()
 
     if running:
         world.advance()
@@ -238,7 +240,7 @@ def on_update():
         imgui.SameLine()
         imgui.Text(f"Time: {world.frame() * dt:.3f} s")
         Timer.report()
-    
+
     if world.frame() >= 4000:
         running = False
 

@@ -36,10 +36,12 @@ from uipc.geometry import (
 from uipc.unit import GPa, MPa
 
 _SCRIPT_DIR = Path(__file__).resolve().parent
-_BALL_OBJ = _SCRIPT_DIR / "results" / "v3" / "yoyo-ball.obj"
-_STRING_OBJ = _SCRIPT_DIR / "results" / "v3" / "yoyo_string_6153.obj"
-_BEARING_OUTER_OBJ = _SCRIPT_DIR / "results" / "v1" / "bearing_outer.obj"
-_BEARING_SPHERES_OBJ = _SCRIPT_DIR / "results" / "v1" / "bearing_spheres.obj"
+_REPO_ROOT = _SCRIPT_DIR.parents[2]
+_YOYO_DIR = _REPO_ROOT / "DemoAssets" / "yoyo"
+_BALL_OBJ = _YOYO_DIR / "v3" / "yoyo-ball.obj"
+_STRING_OBJ = _YOYO_DIR / "v3" / "yoyo_string_6153.obj"
+_BEARING_OUTER_OBJ = _YOYO_DIR / "v1" / "bearing_outer.obj"
+_BEARING_SPHERES_OBJ = _YOYO_DIR / "v1" / "bearing_spheres.obj"
 
 STRING_TOP_UP_SPEED = 5.0
 
@@ -50,6 +52,7 @@ _original_transforms: dict[str, np.ndarray] = {}
 _original_positions: dict[str, np.ndarray] = {}
 _user_obj_sources: dict[str, Path] = {}
 _FEM_OBJECTS = {"yoyo_string"}
+
 
 def user_load_scene(scene: Scene, world: World) -> None:
     # return None
@@ -147,9 +150,7 @@ def user_load_scene(scene: Scene, world: World) -> None:
     _user_rest_geo_slots["yoyo_string"] = string_rest_gs
     _user_obj_sources["yoyo_string"] = _STRING_OBJ
     _original_transforms["yoyo_string"] = np.array(view(string_mesh.transforms())[0], copy=True)
-    _original_positions["yoyo_string"] = np.array(
-        view(string_gs.geometry().positions()), copy=True
-    ).reshape(-1, 3)
+    _original_positions["yoyo_string"] = np.array(view(string_gs.geometry().positions()), copy=True).reshape(-1, 3)
 
     # def pull_string_segment_up(info: Animation.UpdateInfo) -> None:
     #     geo = info.geo_slots()[0].geometry()
@@ -196,10 +197,8 @@ def user_load_scene(scene: Scene, world: World) -> None:
         sp_gs, _ = sp_obj.geometries().create(sphere_mesh)
         _user_objects[f"bearing_sphere_{i}"] = sp_obj
         _user_geo_slots[f"bearing_sphere_{i}"] = sp_gs
-        _original_transforms[f"bearing_sphere_{i}"] = np.array(
-            view(sphere_mesh.transforms())[0], copy=True
-        )
-        split_obj_path = _SCRIPT_DIR / "results" / "v3" / f"bearing_sphere_{i}.obj"
+        _original_transforms[f"bearing_sphere_{i}"] = np.array(view(sphere_mesh.transforms())[0], copy=True)
+        split_obj_path = _YOYO_DIR / "v3" / f"bearing_sphere_{i}.obj"
         if not split_obj_path.exists():
             io.write(str(split_obj_path), sphere_mesh)
         _user_obj_sources[f"bearing_sphere_{i}"] = split_obj_path
@@ -292,9 +291,7 @@ def stitch_string_to_gripper(
     _stitch_vis["string_gs"] = string_gs
     _stitch_vis["gripper_gs"] = gripper_geo_slot
     _stitch_vis["pairs"] = pairs
-    _stitch_vis["gripper_tris"] = np.array(
-        view(gripper_geo.triangles().topo()), copy=True
-    ).reshape(-1, 3)
+    _stitch_vis["gripper_tris"] = np.array(view(gripper_geo.triangles().topo()), copy=True).reshape(-1, 3)
 
     print(f"[stitch] string vertex 0 -> gripper triangle {best_tri} (dist={best_dist:.4f})")
 
@@ -315,9 +312,7 @@ def build_stitch_line_nodes() -> tuple[np.ndarray, np.ndarray] | None:
     if "string_gs" not in _stitch_vis:
         return None
 
-    string_pos = np.array(
-        view(_stitch_vis["string_gs"].geometry().positions()), copy=False
-    ).reshape(-1, 3)
+    string_pos = np.array(view(_stitch_vis["string_gs"].geometry().positions()), copy=False).reshape(-1, 3)
     gripper_geo = _stitch_vis["gripper_gs"].geometry()
     gripper_local = np.array(view(gripper_geo.positions()), copy=False).reshape(-1, 3)
     gripper_tris = _stitch_vis["gripper_tris"]
@@ -339,16 +334,12 @@ def build_stitch_line_nodes() -> tuple[np.ndarray, np.ndarray] | None:
         pt = string_pos[vid]
         nodes[2 * i] = pt
         tri = gripper_tris[tid]
-        nodes[2 * i + 1] = _closest_point_on_triangle(
-            pt, gripper_pos[tri[0]], gripper_pos[tri[1]], gripper_pos[tri[2]]
-        )
+        nodes[2 * i + 1] = _closest_point_on_triangle(pt, gripper_pos[tri[0]], gripper_pos[tri[1]], gripper_pos[tri[2]])
         edges[i] = [2 * i, 2 * i + 1]
     return nodes, edges
 
 
-def _closest_point_on_triangle(
-    p: np.ndarray, v0: np.ndarray, v1: np.ndarray, v2: np.ndarray
-) -> np.ndarray:
+def _closest_point_on_triangle(p: np.ndarray, v0: np.ndarray, v1: np.ndarray, v2: np.ndarray) -> np.ndarray:
     """Closest point on triangle (v0,v1,v2) to point p.  Ericson §5.1.5."""
     ab = v1 - v0
     ac = v2 - v0
@@ -473,9 +464,7 @@ class SequenceExporter:
         if self._urdf_rel:
             meta["urdf"] = self._urdf_rel
 
-        (seq_dir / "meta.json").write_text(
-            _json.dumps(meta, indent=2, ensure_ascii=True), encoding="utf-8"
-        )
+        (seq_dir / "meta.json").write_text(_json.dumps(meta, indent=2, ensure_ascii=True), encoding="utf-8")
         print(f"[seq-export] saved {len(self._frame_ids)} frames to {seq_dir}")
 
     @staticmethod

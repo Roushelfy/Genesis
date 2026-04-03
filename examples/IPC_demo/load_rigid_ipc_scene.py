@@ -24,8 +24,8 @@ import genesis as gs
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DEMO_ASSETS_ROOT = REPO_ROOT / "DemoAssets"
-RIGID_IPC_ROOT = DEMO_ASSETS_ROOT / "rigid-ipc"
-MESH_ROOT = RIGID_IPC_ROOT / "meshes"
+RIGID_IPC_ROOT = DEMO_ASSETS_ROOT / "track_bike" / "rigid_ipc_src"
+MESH_ROOT = RIGID_IPC_ROOT
 
 
 def euler_xyz_deg_to_quat(rx_deg, ry_deg, rz_deg):

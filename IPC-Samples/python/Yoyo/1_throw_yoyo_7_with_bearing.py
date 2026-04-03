@@ -1,4 +1,4 @@
-﻿"""
+"""
 Stage-1 yoyo throw (scene from 0_tight_yoyo_string_2):
 - Load yoyo ball + string + bearing outer + bearing spheres.
 - Yoyo ball is free (not fixed).
@@ -36,11 +36,12 @@ STRING_TOP_UP_SPEED = 5.0
 
 workspace = AssetDir.output_path(__file__)
 folder = AssetDir.folder(__file__)
+_YOYO_DIR = folder.parents[2] / "DemoAssets" / "yoyo"
 
-ball_obj = folder / "results" / "v1" /"yoyo-ball.obj"
-string_obj = folder / "results" / "v1" /"yoyo_string_1007_with_bearing.obj"
-bearing_outer_obj = folder / "results" / "v1" / "bearing_outer.obj"
-bearing_spheres_obj = folder / "results" / "v1" / "bearing_spheres.obj"
+ball_obj = _YOYO_DIR / "v1" / "yoyo-ball.obj"
+string_obj = _YOYO_DIR / "v1" / "yoyo_string_1007_with_bearing.obj"
+bearing_outer_obj = _YOYO_DIR / "v1" / "bearing_outer.obj"
+bearing_spheres_obj = _YOYO_DIR / "v1" / "bearing_spheres.obj"
 
 engine = Engine("cuda", str(workspace))
 world = World(engine)
@@ -171,6 +172,7 @@ running = False
 
 world.recover(1199)
 world.retrieve()
+
 
 def on_update():
     global running

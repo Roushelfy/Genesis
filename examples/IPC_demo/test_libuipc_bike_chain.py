@@ -30,9 +30,9 @@ from uipc.geometry import (
 from uipc.unit import GPa, MPa
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-RIGID_IPC_ROOT = REPO_ROOT / "DemoAssets" / "rigid-ipc"
-MESH_ROOT = RIGID_IPC_ROOT / "meshes"
-BIKE_CHAIN_JSON = RIGID_IPC_ROOT / "fixtures" / "3D" / "mechanisms" / "507-movements" / "227-bike-chain.json"
+RIGID_IPC_SRC = REPO_ROOT / "DemoAssets" / "track_bike" / "rigid_ipc_src"
+MESH_ROOT = RIGID_IPC_SRC
+BIKE_CHAIN_JSON = RIGID_IPC_SRC / "227-bike-chain.json"
 
 
 def process_surface(sc):

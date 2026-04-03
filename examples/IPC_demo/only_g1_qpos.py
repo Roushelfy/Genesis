@@ -15,7 +15,7 @@ from genesis.engine.couplers.ipc_coupler.coupler import GenesisSolverContext, IP
 
 ROBOT_Z = 0.75
 REPO_ROOT = Path(__file__).resolve().parents[2]
-G1_URDF = REPO_ROOT / "DemoAssets" / "locomotion" / "assets" / "g1_29dof_rev_1_0.urdf"
+G1_URDF = REPO_ROOT / "DemoAssets" / "g1_robot" / "assets" / "g1_29dof_rev_1_0.urdf"
 
 scene = gs.Scene(
     sim_options=gs.options.SimOptions(dt=0.01),

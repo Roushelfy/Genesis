@@ -24,7 +24,7 @@ import trimesh.intersections
 from PIL import Image, ImageDraw, ImageFilter
 from trimesh.visual.material import PBRMaterial
 
-RESULTS_DIR = Path(__file__).parent / "results" / "v3"
+RESULTS_DIR = Path(__file__).resolve().parents[3] / "DemoAssets" / "yoyo" / "v3"
 TEX_SIZE = 1024
 
 # ── Material definitions ──

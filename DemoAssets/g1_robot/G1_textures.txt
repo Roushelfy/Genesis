@@ -1,0 +1,57 @@
+# G1 Robot Link Material/Surface Assignment
+# Generated from DemoAssets/g1_robot/assets/build_glb.py
+#
+# Materials:
+#   BLACK: color=(0.05, 0.05, 0.05), metallic=0.3, roughness=0.2
+#   SILVER: color=(0.9, 0.9, 0.9), metallic=0.6, roughness=0.2
+#   CYAN_GLOW: color=(0.039, 0.820, 0.820), metallic=0.0, roughness=0.3, emissive=(0.039, 0.820, 0.820)
+#   LOGO_WHITE: color=(0.95, 0.95, 0.95), metallic=0.0, roughness=0.3
+#
+# Format: link_name | type | assignment
+#   solid: entire mesh gets one material
+#   split: segmented parts grouped by material (part indices from meshes_segmented/)
+
+head_link | split: default=BLACK, {3,6}=CYAN_GLOW
+pelvis | solid: BLACK
+pelvis_contour_link | solid: BLACK
+left_hip_pitch_link | solid: BLACK
+right_hip_pitch_link | solid: BLACK
+left_ankle_pitch_link | solid: BLACK
+right_ankle_pitch_link | solid: BLACK
+left_ankle_roll_link | solid: BLACK
+right_ankle_roll_link | solid: BLACK
+left_rubber_hand | solid: BLACK
+right_rubber_hand | solid: BLACK
+waist_yaw_link_rev_1_0 | solid: BLACK
+waist_roll_link_rev_1_0 | solid: BLACK
+torso_link_rev_1_0 | solid: SILVER
+left_shoulder_pitch_link | solid: SILVER
+right_shoulder_pitch_link | solid: SILVER
+left_shoulder_roll_link | solid: SILVER
+right_shoulder_roll_link | solid: SILVER
+left_shoulder_yaw_link | solid: SILVER
+right_shoulder_yaw_link | solid: SILVER
+left_wrist_roll_link | solid: SILVER
+right_wrist_roll_link | solid: SILVER
+left_wrist_pitch_link | solid: SILVER
+right_wrist_pitch_link | solid: SILVER
+left_wrist_yaw_link | solid: SILVER
+right_wrist_yaw_link | solid: SILVER
+left_hip_roll_link | solid: SILVER
+right_hip_roll_link | solid: SILVER
+logo_link | solid: LOGO_WHITE
+left_hip_yaw_link | split: default=SILVER, {1,5,7,8,10,15,18}=BLACK
+right_hip_yaw_link | split: default=SILVER, {1,5,7,8,10,15,18}=BLACK
+left_knee_link | split: default=SILVER, {5,7,17,19,26,27,28,29,31,45}=BLACK
+right_knee_link | split: default=SILVER, {5,7,17,19,25,26,27,28,29,44}=BLACK
+left_elbow_link | split: default=SILVER, {1,3,6}=BLACK
+right_elbow_link | split: default=SILVER, {1,3,6}=BLACK
+
+# Segmented part counts (from meshes_segmented/):
+#   head_link: 8 parts
+#   left_hip_yaw_link: 19 parts
+#   right_hip_yaw_link: 19 parts
+#   left_knee_link: 53 parts
+#   right_knee_link: 52 parts
+#   left_elbow_link: 7 parts
+#   right_elbow_link: 7 parts

@@ -10,15 +10,17 @@ gs.init(backend=gs.cpu)
 from genesis.engine.couplers.ipc_coupler.coupler import GenesisSolverContext, IPCBeforeWorldInitContext
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-SWEATER_GLB = REPO_ROOT / "DemoAssets" / "Cashmere_Sweater_adjusted.glb"
-G1_URDF = REPO_ROOT / "DemoAssets" / "locomotion" / "assets" / "g1_29dof_rev_1_0.urdf"
+SWEATER_GLB = REPO_ROOT / "DemoAssets" / "sweater" / "Cashmere_Sweater_adjusted.glb"
+G1_URDF = REPO_ROOT / "DemoAssets" / "g1_robot" / "assets" / "g1_29dof_rev_1_0.urdf"
 ROBOT_Z = 0.75
+
 
 def before_ipc_world_init(ipc: IPCBeforeWorldInitContext, gs: GenesisSolverContext) -> None:
     """User hook called after IPC scene assembly and before World.init(scene)."""
     print("before_ipc_world_init")
     print(ipc.scene)
     pass
+
 
 scene = gs.Scene(
     sim_options=gs.options.SimOptions(dt=0.01),
@@ -155,4 +157,3 @@ robot.set_qpos(qpos)
 while True:
     scene.step()
     # scene._visualizer.update()
-    

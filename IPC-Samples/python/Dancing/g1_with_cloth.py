@@ -35,11 +35,15 @@ def parse_args() -> argparse.Namespace:
 def default_paths() -> tuple[Path, Path, Path, Path, Path, Path]:
     repo_root = Path(__file__).resolve().parents[3]
     output_dir = AssetDir.output_path(__file__)
-    urdf_path = repo_root / "DemoAssets" / "locomotion" / "assets" / "g1_29dof_rev_1_0.urdf"
-    npz_path = repo_root / "DemoAssets" / "locomotion" / "dataset.npz"
+    urdf_path = repo_root / "DemoAssets" / "g1_robot" / "assets" / "g1_29dof_rev_1_0.urdf"
+    npz_path = repo_root / "DemoAssets" / "g1_robot" / "dataset.npz"
     warmup_joint_json = repo_root / "IPC-Samples" / "python" / "Wearing" / "results" / "v1" / "joint_pose.json"
-    cloth_obj = repo_root / "IPC-Samples" / "python" / "Wearing" / "results" / "v1" / "wearing_cloth_0_init-shape_fixed.obj"
-    rest_cloth_obj = repo_root / "IPC-Samples" / "python" / "Wearing" / "results" / "v1" / "wearing_cloth_0_rest-shape.obj"
+    cloth_obj = (
+        repo_root / "IPC-Samples" / "python" / "Wearing" / "results" / "v1" / "wearing_cloth_0_init-shape_fixed.obj"
+    )
+    rest_cloth_obj = (
+        repo_root / "IPC-Samples" / "python" / "Wearing" / "results" / "v1" / "wearing_cloth_0_rest-shape.obj"
+    )
     return output_dir, urdf_path, npz_path, warmup_joint_json, cloth_obj, rest_cloth_obj
 
 
@@ -177,7 +181,7 @@ def run_gui(world: World, scene: Scene, player, workspace: Path) -> None:
         imgui.Text(f"Replay frame: {player.last_status.frame_index + 1}/{player.num_frames}")
         imgui.Text(f"Warmup frames: {player.warmup_frames}")
         imgui.Text(f"Current frame: {state['CurrentFrame']}")
-        
+
         if state["run"]:
             for _ in range(state["steps_per_tick"]):
                 world.advance()

@@ -60,8 +60,8 @@ def parse_args() -> argparse.Namespace:
 def default_paths() -> tuple[Path, Path, Path, Path, Path]:
     repo_root = Path(__file__).resolve().parents[3]
     output_dir = Path(AssetDir.output_path(__file__))
-    urdf_path = repo_root / "DemoAssets" / "locomotion" / "assets" / "g1_29dof_rev_1_0.urdf"
-    npz_path = repo_root / "DemoAssets" / "locomotion" / "dataset.npz"
+    urdf_path = repo_root / "DemoAssets" / "g1_robot" / "assets" / "g1_29dof_rev_1_0.urdf"
+    npz_path = repo_root / "DemoAssets" / "g1_robot" / "dataset.npz"
     kimono_dir = repo_root / "IPC-Samples" / "python" / "Wearing" / "results" / "kimono_v0"
     warmup_joint_json = kimono_dir / "joint_pose.json"
     return output_dir, urdf_path, npz_path, warmup_joint_json, kimono_dir
@@ -154,8 +154,7 @@ def build_scene(output_dir: Path, pieces: list[ClothPiece]):
         rest_pos = np.asarray(view(rest_source.positions()), copy=True)
         if view(rest_mesh.positions()).shape != rest_pos.shape:
             raise ValueError(
-                f"Rest shape mismatch for {piece.name}: "
-                f"init={view(rest_mesh.positions()).shape}, rest={rest_pos.shape}"
+                f"Rest shape mismatch for {piece.name}: init={view(rest_mesh.positions()).shape}, rest={rest_pos.shape}"
             )
 
         if _is_belt_piece(piece):
@@ -309,9 +308,7 @@ def run_recover(
         exporter.add_deformable(piece.name, geo_slot, faces)
 
     for binding in player.driver.bindings:
-        node = next(
-            n for n in player.urdf_kinematics.mesh_nodes if n.node_name == binding.node_name
-        )
+        node = next(n for n in player.urdf_kinematics.mesh_nodes if n.node_name == binding.node_name)
         exporter.add_rigid(binding.node_name, binding.geo_slot, node.local_vertices, node.faces)
 
     for frame in range(1, total + 1):
@@ -400,7 +397,6 @@ def main() -> None:
     world.init(scene)
     # world.recover(190)
     world.retrieve()
-    
 
     if args.recover is not None:
         run_recover(world, scene, output_dir, cloth_slots, player, max_frame=args.recover)

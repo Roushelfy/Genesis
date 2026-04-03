@@ -68,9 +68,9 @@ PRESET_NAMES: list[str] = list(ORIENTATION_PRESETS.keys())
 def rot_to_display(R: np.ndarray) -> str:
     """Format a 3x3 rotation as local X/Y/Z axis directions."""
     return (
-        f"  X: ({R[0,0]:+.3f}, {R[1,0]:+.3f}, {R[2,0]:+.3f})\n"
-        f"  Y: ({R[0,1]:+.3f}, {R[1,1]:+.3f}, {R[2,1]:+.3f})\n"
-        f"  Z: ({R[0,2]:+.3f}, {R[1,2]:+.3f}, {R[2,2]:+.3f})"
+        f"  X: ({R[0, 0]:+.3f}, {R[1, 0]:+.3f}, {R[2, 0]:+.3f})\n"
+        f"  Y: ({R[0, 1]:+.3f}, {R[1, 1]:+.3f}, {R[2, 1]:+.3f})\n"
+        f"  Z: ({R[0, 2]:+.3f}, {R[1, 2]:+.3f}, {R[2, 2]:+.3f})"
     )
 
 
@@ -145,9 +145,7 @@ def make_rotation(rx: float, ry: float, rz: float) -> np.ndarray:
     return Rz @ Ry @ Rx
 
 
-def closest_point_on_triangle(
-    p: np.ndarray, v0: np.ndarray, v1: np.ndarray, v2: np.ndarray
-) -> np.ndarray:
+def closest_point_on_triangle(p: np.ndarray, v0: np.ndarray, v1: np.ndarray, v2: np.ndarray) -> np.ndarray:
     """Closest point on triangle (v0,v1,v2) to point p.  Ericson p.141."""
     ab = v1 - v0
     ac = v2 - v0
@@ -200,9 +198,7 @@ def load_keyframes(record_file: Path) -> list[dict]:
     ]
 
 
-def build_frame_schedule(
-    keyframes: list[dict], sim_dt: float, substep: int
-) -> list[dict]:
+def build_frame_schedule(keyframes: list[dict], sim_dt: float, substep: int) -> list[dict]:
     """Expand keyframes into a per-frame joint-angle schedule.
 
     Each keyframe's ``dt`` is the real-time duration to interpolate from the
@@ -225,11 +221,13 @@ def build_frame_schedule(
                 v0 = prev_joints.get(n, 0.0)
                 v1 = dst.get(n, 0.0)
                 frame_joints[n] = v0 + (v1 - v0) * alpha
-            schedule.append({
-                "joints": frame_joints,
-                "left_orient": kf.get("left_orient", ""),
-                "right_orient": kf.get("right_orient", ""),
-            })
+            schedule.append(
+                {
+                    "joints": frame_joints,
+                    "left_orient": kf.get("left_orient", ""),
+                    "right_orient": kf.get("right_orient", ""),
+                }
+            )
         prev_joints = dict(dst)
     return schedule
 
@@ -289,9 +287,7 @@ class SceneState:
                 pts[:] = orig_pts @ R.T + t
                 rest_gs = self.rest_geo_slots.get(name)
                 if rest_gs is not None:
-                    rest_pts = np.array(
-                        view(rest_gs.geometry().positions()), copy=False
-                    ).reshape(-1, 3)
+                    rest_pts = np.array(view(rest_gs.geometry().positions()), copy=False).reshape(-1, 3)
                     rest_pts[:] = orig_pts @ R.T + t
             else:
                 view(geo.transforms())[0] = mat44 @ orig_tf
@@ -302,9 +298,7 @@ class SceneState:
 
         if "string_gs" not in self.stitch_vis:
             return None
-        string_pos = np.array(
-            view(self.stitch_vis["string_gs"].geometry().positions()), copy=False
-        ).reshape(-1, 3)
+        string_pos = np.array(view(self.stitch_vis["string_gs"].geometry().positions()), copy=False).reshape(-1, 3)
         gripper_geo = self.stitch_vis["gripper_gs"].geometry()
         gripper_local = np.array(view(gripper_geo.positions()), copy=False).reshape(-1, 3)
         gripper_tris = self.stitch_vis["gripper_tris"]
@@ -367,9 +361,7 @@ class SequenceExporter:
                 tf = np.array(view(geo.transforms()), copy=True).reshape(-1, 4, 4)[0]
                 self._rigid_frames.setdefault(name, []).append(tf)
         if joint_state is not None:
-            jv = np.array(
-                [joint_state.get(n, 0.0) for n in self._joint_names], dtype=np.float64
-            )
+            jv = np.array([joint_state.get(n, 0.0) for n in self._joint_names], dtype=np.float64)
             self._joint_frames.append(jv)
 
     def save(self, seq_dir: Path) -> None:
@@ -406,9 +398,7 @@ class SequenceExporter:
             meta["joints"] = {"data": "joints.npy", "names": self._joint_names}
         if self._urdf_rel:
             meta["urdf"] = self._urdf_rel
-        (seq_dir / "meta.json").write_text(
-            json.dumps(meta, indent=2, ensure_ascii=True), encoding="utf-8"
-        )
+        (seq_dir / "meta.json").write_text(json.dumps(meta, indent=2, ensure_ascii=True), encoding="utf-8")
         print(f"[seq-export] saved {len(self._frame_ids)} frames to {seq_dir}")
 
     def _copy_mesh_obj(self, name: str, obj_dir: Path) -> None:
@@ -473,7 +463,7 @@ class URDFGuiApp:
         self._record_file = Path(record_file) if record_file else script_dir / "motion_keyframes.json"
         self._joint_file = Path(joint_file) if joint_file else script_dir / "joint_angles.json"
         self._config_file = Path(config_file) if config_file else script_dir / "urdf_gui_config.json"
-        self._seq_dir = Path(seq_dir) if seq_dir else script_dir / "results" / "v3" / "seq"
+        self._seq_dir = Path(seq_dir) if seq_dir else script_dir.parents[2] / "DemoAssets" / "yoyo" / "v3" / "seq"
         self._entry_file = str(entry_file) if entry_file else __file__
 
         self.scene_state = SceneState()
@@ -552,12 +542,14 @@ class URDFGuiApp:
                 loaded_kfs = json.loads(self._record_file.read_text(encoding="utf-8"))
                 self._rec["keyframes"].clear()
                 for entry in loaded_kfs:
-                    self._rec["keyframes"].append({
-                        "joints": entry["joints"],
-                        "dt": entry.get("dt", 1.0),
-                        "left_orient": entry.get("left_orient", ""),
-                        "right_orient": entry.get("right_orient", ""),
-                    })
+                    self._rec["keyframes"].append(
+                        {
+                            "joints": entry["joints"],
+                            "dt": entry.get("dt", 1.0),
+                            "left_orient": entry.get("left_orient", ""),
+                            "right_orient": entry.get("right_orient", ""),
+                        }
+                    )
                 if self._rec["keyframes"]:
                     kf0 = self._rec["keyframes"][0]
                     for n in self._joint_names:
@@ -679,10 +671,7 @@ class URDFGuiApp:
 
     def _save_config(self) -> None:
         data = {
-            "ref_objs": [
-                {"path": e["path"], "transform": e["transform"]}
-                for e in self._ref["entries"]
-            ],
+            "ref_objs": [{"path": e["path"], "transform": e["transform"]} for e in self._ref["entries"]],
             "user_scene_transform": list(self._user_scene_tf),
         }
         with open(self._config_file, "w", encoding="utf-8") as f:
@@ -840,9 +829,12 @@ class URDFGuiApp:
                     PRESET_NAMES.append("Locked L")
                 self._state["left_orient_idx"] = PRESET_NAMES.index("Locked L")
             for label, delta in [
-                ("+X##Lik", [s, 0, 0]), ("-X##Lik", [-s, 0, 0]),
-                ("+Y##Lik", [0, s, 0]), ("-Y##Lik", [0, -s, 0]),
-                ("+Z##Lik", [0, 0, s]), ("-Z##Lik", [0, 0, -s]),
+                ("+X##Lik", [s, 0, 0]),
+                ("-X##Lik", [-s, 0, 0]),
+                ("+Y##Lik", [0, s, 0]),
+                ("-Y##Lik", [0, -s, 0]),
+                ("+Z##Lik", [0, 0, s]),
+                ("-Z##Lik", [0, 0, -s]),
             ]:
                 if label != "+X##Lik":
                     imgui.SameLine()
@@ -870,9 +862,12 @@ class URDFGuiApp:
                     PRESET_NAMES.append("Locked R")
                 self._state["right_orient_idx"] = PRESET_NAMES.index("Locked R")
             for label, delta in [
-                ("+X##Rik", [s, 0, 0]), ("-X##Rik", [-s, 0, 0]),
-                ("+Y##Rik", [0, s, 0]), ("-Y##Rik", [0, -s, 0]),
-                ("+Z##Rik", [0, 0, s]), ("-Z##Rik", [0, 0, -s]),
+                ("+X##Rik", [s, 0, 0]),
+                ("-X##Rik", [-s, 0, 0]),
+                ("+Y##Rik", [0, s, 0]),
+                ("-Y##Rik", [0, -s, 0]),
+                ("+Z##Rik", [0, 0, s]),
+                ("-Z##Rik", [0, 0, -s]),
             ]:
                 if label != "+X##Rik":
                     imgui.SameLine()
@@ -1023,12 +1018,14 @@ class URDFGuiApp:
                     loaded = json.load(f)
                 kfs.clear()
                 for entry in loaded:
-                    kfs.append({
-                        "joints": entry["joints"],
-                        "dt": entry.get("dt", 1.0),
-                        "left_orient": entry.get("left_orient", ""),
-                        "right_orient": entry.get("right_orient", ""),
-                    })
+                    kfs.append(
+                        {
+                            "joints": entry["joints"],
+                            "dt": entry.get("dt", 1.0),
+                            "left_orient": entry.get("left_orient", ""),
+                            "right_orient": entry.get("right_orient", ""),
+                        }
+                    )
                 rec["sel_kf"] = 0
                 print(f"[record] Loaded {len(kfs)} keyframes from {self._record_file}")
             else:
@@ -1391,10 +1388,16 @@ class URDFGuiApp:
         schedule = build_frame_schedule(keyframes, sim_dt, 1)
 
         self._sim_ctx = {
-            "engine": engine, "world": world, "scene": scene,
-            "schedule": schedule, "output_dir": output_dir,
-            "controller": controller, "sim_dt": sim_dt,
-            "Timer": Timer, "SceneIO": SceneIO, "SceneGUI": SceneGUI,
+            "engine": engine,
+            "world": world,
+            "scene": scene,
+            "schedule": schedule,
+            "output_dir": output_dir,
+            "controller": controller,
+            "sim_dt": sim_dt,
+            "Timer": Timer,
+            "SceneIO": SceneIO,
+            "SceneGUI": SceneGUI,
         }
 
         def on_frame(info: Any, ctrl: URDFController) -> None:
@@ -1430,9 +1433,7 @@ class URDFGuiApp:
         stitch_result = self.scene_state.build_stitch_line_nodes()
         if stitch_result is not None:
             sn, se = stitch_result
-            self._stitch_net = ps.register_curve_network(
-                "stitch_line", sn, se, radius=0.001, color=(1.0, 0.2, 0.2)
-            )
+            self._stitch_net = ps.register_curve_network("stitch_line", sn, se, radius=0.001, color=(1.0, 0.2, 0.2))
 
         # Identify left / right grippers
         ee = self._end_effectors
@@ -1560,9 +1561,7 @@ class URDFGuiApp:
         sim_stitch_result = self.scene_state.build_stitch_line_nodes()
         if sim_stitch_result is not None:
             sn, se = sim_stitch_result
-            sim_stitch_net = ps.register_curve_network(
-                "stitch_line", sn, se, radius=0.001, color=(1.0, 0.2, 0.2)
-            )
+            sim_stitch_net = ps.register_curve_network("stitch_line", sn, se, radius=0.001, color=(1.0, 0.2, 0.2))
 
         sim_state = {
             "run": False,
@@ -1773,7 +1772,10 @@ class URDFGuiApp:
         parser.add_argument("--sim", action="store_true", help="Launch UIPC simulation mode")
         parser.add_argument("--recover", type=int, default=0, help="Recover simulation from frame N")
         parser.add_argument(
-            "--export-recover", type=int, default=-1, metavar="MAX_FRAME",
+            "--export-recover",
+            type=int,
+            default=-1,
+            metavar="MAX_FRAME",
             help="No-GUI: recover frames 0..MAX_FRAME, export NPY, then exit.",
         )
         parser.add_argument("--frame-skip", type=int, default=10, help="Export every N-th frame (default 10).")

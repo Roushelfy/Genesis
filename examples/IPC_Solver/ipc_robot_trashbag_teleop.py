@@ -17,7 +17,7 @@ import genesis as gs
 from robot_teleop import RobotTeleop
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-DEMO_ASSETS = os.path.join(REPO_ROOT, "DemoAssets", "trashbag_drawstring")
+DEMO_ASSETS = os.path.join(REPO_ROOT, "DemoAssets", "trashbag")
 BAG_MESH = os.path.join(DEMO_ASSETS, "Trashbag_rope.glb")
 ROPE1_MESH = os.path.join(DEMO_ASSETS, "rope1.obj")
 ROPE2_MESH = os.path.join(DEMO_ASSETS, "rope2.obj")

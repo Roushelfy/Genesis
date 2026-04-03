@@ -113,7 +113,7 @@ def default_paths() -> tuple[Path, Path, Path]:
     repo_root = Path(__file__).resolve().parents[3]
     output_dir = THIS_DIR / "results" / "kimono_v0"
     output_dir.mkdir(parents=True, exist_ok=True)
-    urdf_path = repo_root / "DemoAssets" / "locomotion" / "assets" / "g1_29dof_rev_1_0.urdf"
+    urdf_path = repo_root / "DemoAssets" / "g1_robot" / "assets" / "g1_29dof_rev_1_0.urdf"
     warmup_joint_json = output_dir / "joint_pose.json"
     return output_dir, urdf_path, warmup_joint_json
 
@@ -121,9 +121,7 @@ def default_paths() -> tuple[Path, Path, Path]:
 def discover_kimono_pieces(output_dir: Path) -> list[ClothPiece]:
     init_paths = sorted(output_dir.glob("wearing_*_init-shape.obj"))
     if not init_paths:
-        raise FileNotFoundError(
-            f"No kimono init shape found in {output_dir}. Expected wearing_*_init-shape.obj."
-        )
+        raise FileNotFoundError(f"No kimono init shape found in {output_dir}. Expected wearing_*_init-shape.obj.")
 
     pieces: list[ClothPiece] = []
     for init_path in init_paths:
@@ -191,8 +189,7 @@ def build_scene(workspace: Path, pieces: list[ClothPiece]):
         rest_pos = view(rest_source.positions())
         if view(rest_mesh.positions()).shape != rest_pos.shape:
             raise ValueError(
-                f"Rest shape mismatch for {piece.name}: "
-                f"init={view(rest_mesh.positions()).shape}, rest={rest_pos.shape}"
+                f"Rest shape mismatch for {piece.name}: init={view(rest_mesh.positions()).shape}, rest={rest_pos.shape}"
             )
         view(rest_mesh.positions())[:] = rest_pos
 

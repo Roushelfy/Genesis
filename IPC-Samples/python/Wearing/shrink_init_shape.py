@@ -92,7 +92,7 @@ def default_paths() -> tuple[Path, Path, Path, Path, Path]:
     repo_root = Path(__file__).resolve().parents[3]
     output_dir = THIS_DIR / "results" / "v1"
     output_dir.mkdir(parents=True, exist_ok=True)
-    urdf_path = repo_root / "DemoAssets" / "locomotion" / "assets" / "g1_29dof_rev_1_0.urdf"
+    urdf_path = repo_root / "DemoAssets" / "g1_robot" / "assets" / "g1_29dof_rev_1_0.urdf"
     warmup_joint_json = THIS_DIR / "results" / "v1" / "joint_pose.json"
     cloth_obj = THIS_DIR / "results" / "v1" / "wearing_cloth_0_init-shape.obj"
     rest_cloth_obj = THIS_DIR / "results" / "v1" / "wearing_cloth_0_rest-shape.obj"
@@ -227,7 +227,7 @@ def run_gui(world: World, scene: Scene, cloth_geo_slot, save_fixed_path: Path) -
             state["save_path_text"] = str(new_path)
 
         imgui.Text(f"Frame: {world.frame()}")
-        
+
         if state["run"]:
             world.advance()
             world.retrieve()

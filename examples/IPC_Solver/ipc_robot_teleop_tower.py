@@ -25,7 +25,7 @@ import genesis as gs
 from robot_teleop import RobotTeleop
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
-_TOWER_DIR = _REPO_ROOT / "DemoAssets" / "ipc_tower"
+_TOWER_DIR = _REPO_ROOT / "DemoAssets" / "tower"
 _PANDA_MJCF = "xml/franka_emika_panda/panda_non_overlap.xml"
 
 # ── Tower geometry ───────────────────────────────────────────────────────────

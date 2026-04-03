@@ -106,7 +106,7 @@ def main():
     # GLB is Y-up; Genesis auto-rotates to Z-up — no manual euler needed.
     # Scale 0.125 → 25cm wide, 35cm long.
     _repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    paper_mesh = os.path.join(_repo_root, "DemoAssets", "fold_plane", "paper_plane_coarse.glb")
+    paper_mesh = os.path.join(_repo_root, "DemoAssets", "paper", "paper_plane_coarse.glb")
     # paper_mesh = os.path.join(
     #     _repo_root, "IPC-Samples", "assets", "sim_data", "trimesh",
     #     # "paper_plane_2_fine_textured.glb",
@@ -134,7 +134,7 @@ def main():
     )
 
     # Brick press — placed beside the paper on the table.
-    brick_mesh = os.path.join(_repo_root, "DemoAssets", "fold_plane", "brick_press.obj")
+    brick_mesh = os.path.join(_repo_root, "DemoAssets", "paper", "brick_press.obj")
     scene.add_entity(
         morph=gs.morphs.Mesh(
             file=brick_mesh,

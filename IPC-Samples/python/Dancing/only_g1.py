@@ -31,8 +31,8 @@ def default_paths() -> tuple[Path, Path, Path, Path]:
     repo_root = Path(__file__).resolve().parents[3]
     output_dir = Path(__file__).resolve().parent / "results"
     output_dir.mkdir(parents=True, exist_ok=True)
-    urdf_path = repo_root / "DemoAssets" / "locomotion" / "assets" / "g1_29dof_rev_1_0.urdf"
-    npz_path = repo_root / "DemoAssets" / "locomotion" / "dataset.npz"
+    urdf_path = repo_root / "DemoAssets" / "g1_robot" / "assets" / "g1_29dof_rev_1_0.urdf"
+    npz_path = repo_root / "DemoAssets" / "g1_robot" / "dataset.npz"
     wearing_joint_json = repo_root / "IPC-Samples" / "python" / "Wearing" / "results" / "joint_pose.json"
     return output_dir, urdf_path, npz_path, wearing_joint_json
 

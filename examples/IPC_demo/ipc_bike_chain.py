@@ -30,7 +30,7 @@ from load_rigid_ipc_scene import (
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-BIKE_CHAIN_JSON = REPO_ROOT / "DemoAssets" / "rigid-ipc" / "fixtures" / "3D" / "mechanisms" / "507-movements" / "227-bike-chain.json"
+BIKE_CHAIN_JSON = REPO_ROOT / "DemoAssets" / "track_bike" / "rigid_ipc_src" / "227-bike-chain.json"
 
 # Cylinder height (along Y-axis in Z-up, the rotation axis)
 CYLINDER_HEIGHT = 0.1

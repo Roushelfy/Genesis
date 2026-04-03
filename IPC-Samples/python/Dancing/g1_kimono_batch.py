@@ -77,8 +77,7 @@ def parse_args() -> argparse.Namespace:
         const=-1,
         default=None,
         metavar="MAX_FRAME",
-        help="Recover mode: load dumps and export USD. "
-        "Optionally limit to MAX_FRAME frames (default: all).",
+        help="Recover mode: load dumps and export USD. Optionally limit to MAX_FRAME frames (default: all).",
     )
     parser.add_argument(
         "--resume-from",
@@ -109,17 +108,13 @@ def variant_name(dataset_idx: int, no_lower: bool) -> str:
     return f"d{dataset_idx}_{'no_lower' if no_lower else 'lower'}"
 
 
-def get_paths(
-    dataset_idx: int, no_lower: bool
-) -> tuple[Path, Path, Path, Path, Path, str]:
+def get_paths(dataset_idx: int, no_lower: bool) -> tuple[Path, Path, Path, Path, Path, str]:
     repo_root = Path(__file__).resolve().parents[3]
     vname = variant_name(dataset_idx, no_lower)
-    output_dir = (
-        repo_root / "IPC-Samples" / "output" / "python" / "Dancing" / "g1_kimono_batch" / vname
-    )
+    output_dir = repo_root / "IPC-Samples" / "output" / "python" / "Dancing" / "g1_kimono_batch" / vname
     output_dir.mkdir(parents=True, exist_ok=True)
-    urdf_path = repo_root / "DemoAssets" / "locomotion" / "assets" / "g1_29dof_rev_1_0.urdf"
-    npz_path = repo_root / "DemoAssets" / "locomotion" / DATASET_FILES[dataset_idx]
+    urdf_path = repo_root / "DemoAssets" / "g1_robot" / "assets" / "g1_29dof_rev_1_0.urdf"
+    npz_path = repo_root / "DemoAssets" / "g1_robot" / DATASET_FILES[dataset_idx]
     kimono_dir = repo_root / "IPC-Samples" / "python" / "Wearing" / "results" / "kimono_v0"
     warmup_joint_json = kimono_dir / "joint_pose.json"
     return output_dir, urdf_path, npz_path, warmup_joint_json, kimono_dir, vname
@@ -207,8 +202,7 @@ def build_scene(output_dir: Path, pieces: list[ClothPiece], substep_override: in
         rest_pos = np.asarray(view(rest_source.positions()), copy=True)
         if view(rest_mesh.positions()).shape != rest_pos.shape:
             raise ValueError(
-                f"Rest shape mismatch for {piece.name}: "
-                f"init={view(rest_mesh.positions()).shape}, rest={rest_pos.shape}"
+                f"Rest shape mismatch for {piece.name}: init={view(rest_mesh.positions()).shape}, rest={rest_pos.shape}"
             )
 
         if _is_belt_piece(piece):
@@ -385,9 +379,7 @@ def run_recover(
         exporter.add_deformable(piece.name, geo_slot, faces)
 
     for binding in player.driver.bindings:
-        node = next(
-            n for n in player.urdf_kinematics.mesh_nodes if n.node_name == binding.node_name
-        )
+        node = next(n for n in player.urdf_kinematics.mesh_nodes if n.node_name == binding.node_name)
         exporter.add_rigid(binding.node_name, binding.geo_slot, node.local_vertices, node.faces)
 
     for frame in range(1, total + 1):
@@ -455,9 +447,7 @@ def run_gui(world: World, scene: Scene, player, workspace: Path) -> None:
 def main() -> None:
     args = parse_args()
     skip_pieces: set[str] = {"kimono_inner_lower"} if args.no_lower else set()
-    output_dir, urdf_path, npz_path, warmup_joint_json, kimono_dir, vname = get_paths(
-        args.dataset, args.no_lower
-    )
+    output_dir, urdf_path, npz_path, warmup_joint_json, kimono_dir, vname = get_paths(args.dataset, args.no_lower)
 
     print(f"[batch] variant={vname}, dataset={DATASET_FILES[args.dataset]}, skip={skip_pieces or 'none'}")
 

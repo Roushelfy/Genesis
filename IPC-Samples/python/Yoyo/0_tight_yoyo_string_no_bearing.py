@@ -22,9 +22,9 @@ from uipc.unit import MPa, GPa
 from asset_dir import AssetDir
 
 # ── Default tunable parameters (overridable via GUI) ────────────────
-WRAP_SPEED    = 1    # tangential wrapping speed (m/s)
-OUTWARD_SPEED = 0.8    # radial outward pull speed for tension (m/s)
-INWARD_SPEED  = 0.02   # radial inward speed (m/s)
+WRAP_SPEED = 1  # tangential wrapping speed (m/s)
+OUTWARD_SPEED = 0.8  # radial outward pull speed for tension (m/s)
+INWARD_SPEED = 0.02  # radial inward speed (m/s)
 # ────────────────────────────────────────────────────────────────────
 
 Logger.set_level(Logger.Level.Warn)
@@ -32,9 +32,10 @@ Timer.enable_all()
 
 workspace = AssetDir.output_path(__file__)
 folder = AssetDir.folder(__file__)
+_YOYO_DIR = folder.parents[2] / "DemoAssets" / "yoyo"
 
-ball_obj = folder / "results" / "v1"/ "yoyo-ball.obj"
-string_obj = folder / "results" / "v1" / "yoyo-string.obj"
+ball_obj = _YOYO_DIR / "v1" / "yoyo-ball.obj"
+string_obj = _YOYO_DIR / "v1" / "yoyo-string.obj"
 
 engine = Engine("cuda", str(workspace))
 world = World(engine)
@@ -88,7 +89,7 @@ ui = {
     "outward_speed": OUTWARD_SPEED,
     "inward_speed": INWARD_SPEED,
     "stopped": False,
-    "save_path": str(folder / "results" / ""),
+    "save_path": str(_YOYO_DIR / ""),
 }
 # ────────────────────────────────────────────────────────────────────
 
@@ -175,7 +176,7 @@ def on_update():
     if changed:
         ui["save_path"] = new_path
     if imgui.Button("Save String"):
-        save_dir = folder / "results"
+        save_dir = _YOYO_DIR
         save_dir.mkdir(parents=True, exist_ok=True)
         path = ui["save_path"]
         out_file = f"{path}/yoyo_string_{world.frame()}.obj"

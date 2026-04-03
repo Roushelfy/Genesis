@@ -1,4 +1,4 @@
-"""Visualise the original meshes (DemoAssets/kimono_v0) used to generate stitches,
+"""Visualise the original meshes (DemoAssets/kimono) used to generate stitches,
 with stitch lines drawn as vertex-to-projection-point connections.
 
 Usage::
@@ -15,7 +15,7 @@ import numpy as np
 import polyscope as ps
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
-KIMONO_SRC_DIR = REPO_ROOT / "DemoAssets" / "kimono_v0"
+KIMONO_SRC_DIR = REPO_ROOT / "DemoAssets" / "kimono"
 STITCH_DIR = REPO_ROOT / "IPC-Samples" / "python" / "Wearing" / "results" / "kimono_v0"
 
 
@@ -119,8 +119,7 @@ def main() -> None:
             edge_dist[2 * i + 1] = dists[i]
         cn.add_scalar_quantity("distance", edge_dist, defined_on="nodes", enabled=True)
         print(
-            f"[stitch] {net_name}: {n} pairs, "
-            f"dist min={dists.min():.6f} max={dists.max():.6f} mean={dists.mean():.6f}"
+            f"[stitch] {net_name}: {n} pairs, dist min={dists.min():.6f} max={dists.max():.6f} mean={dists.mean():.6f}"
         )
 
     ps.show()
