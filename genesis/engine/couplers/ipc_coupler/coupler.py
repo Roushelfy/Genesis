@@ -1726,7 +1726,7 @@ class IPCCoupler(RBC):
             dirty_envs = self._fem_updated_entities.get(entity)
             if dirty_envs is not None:
                 state = entity.get_state()
-                entity_pos = state.pos.numpy()
+                entity_pos = state.pos.cpu().numpy()
             for env_idx, slot in enumerate(slots):
                 if dirty_envs is not None and env_idx in dirty_envs:
                     # IPC stores positions as (N, 3, 1) column vectors
