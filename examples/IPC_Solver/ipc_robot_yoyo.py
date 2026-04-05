@@ -132,15 +132,14 @@ def run_gui(
     )
 
     # Robot
-    robot = None
-    if urdf_rel:
-        urdf_path = _REPO_ROOT / urdf_rel
-        if urdf_path.exists():
-            robot = scene.add_entity(
-                gs.morphs.URDF(file=str(urdf_path), fixed=True, collision=False),
-                material=gs.materials.Rigid(coup_type="ipc_only"),
-                name="robot",
-            )
+    assert urdf_rel, "meta.json must specify 'urdf'"
+    urdf_path = _REPO_ROOT / urdf_rel
+    assert urdf_path.exists(), f"Robot URDF not found: {urdf_path}"
+    robot = scene.add_entity(
+        gs.morphs.URDF(file=str(urdf_path), fixed=True, collision=False),
+        material=gs.materials.Rigid(coup_type="ipc_only"),
+        name="robot",
+    )
 
     # Rigid yoyo parts — split yoyo_ball into shells, rings, internals
     rigid_entities: dict[str, object] = {}

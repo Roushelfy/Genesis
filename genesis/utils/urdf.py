@@ -235,6 +235,12 @@ def parse_urdf(morph, surface):
 
                 geom_meshes.append(mesh)
 
+            # Propagate original link name from merge_fixed_links into metadata
+            source_link_name = getattr(geom_prop, "_source_link_name", None)
+            if source_link_name is not None:
+                for mesh in geom_meshes:
+                    mesh.metadata["source_link_name"] = source_link_name
+
             for mesh in geom_meshes:
                 g_info = {
                     "mesh" if geom_is_col else "vmesh": mesh,
@@ -430,6 +436,15 @@ def merge_fixed_links(robot, links_to_keep):
 
             update_subtree(links, joints, child_link.name, joint.origin)
             merge_inertia(parent_link, child_link)
+            # Tag merged visuals/collisions with their original link name so
+            # downstream renderers (e.g. Nyx) can map them to the correct
+            # sub-scene node in the original URDF hierarchy.
+            for geom in child_link.visuals:
+                if not hasattr(geom, "_source_link_name"):
+                    geom._source_link_name = child_link.name
+            for geom in child_link.collisions:
+                if not hasattr(geom, "_source_link_name"):
+                    geom._source_link_name = child_link.name
             parent_link.visuals.extend(child_link.visuals)
             parent_link.collisions.extend(child_link.collisions)
             joints.remove(joint)

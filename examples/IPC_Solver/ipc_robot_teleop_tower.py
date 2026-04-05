@@ -72,12 +72,6 @@ def _compute_stack_positions() -> dict[str, tuple[float, float, float]]:
 
 def main():
     parser = argparse.ArgumentParser(description="Panda teleop — ring tower (IPC)")
-    parser.add_argument(
-        "--coup_type",
-        type=str,
-        default="two_way_soft_constraint",
-        choices=["two_way_soft_constraint", "external_articulation"],
-    )
     parser.add_argument("--no-ipc", action="store_true", help="Pure rigid, no IPC coupler")
     parser.add_argument("--vis-collision", action="store_true", help="Visualize collision geometry")
     args = parser.parse_args()
@@ -106,7 +100,7 @@ def main():
             contact_enable=True,
             enable_rigid_rigid_contact=True,
             enable_rigid_ground_contact=True,
-            contact_d_hat=0.0001,
+            contact_d_hat=0.001,
             contact_resistance=1e7,
         )
 
@@ -121,8 +115,7 @@ def main():
     # ── Panda robot ──
     panda_mat_kwargs = {}
     if not args.no_ipc:
-        panda_mat_kwargs["coup_type"] = args.coup_type
-        panda_mat_kwargs["coup_links"] = ("left_finger", "right_finger")
+        panda_mat_kwargs["coup_type"] = "external_articulation"
 
     panda = scene.add_entity(
         gs.morphs.MJCF(
@@ -143,19 +136,35 @@ def main():
             print(f"[warn] Missing: {glb_path.name}")
             continue
         pos = positions[name]
-        mat_kwargs = {}
+        mat_kwargs = {
+            "rho": 50.0,
+            "coup_friction": 0.1,
+        }
         if not args.no_ipc:
             mat_kwargs["coup_type"] = "ipc_only"
+        if name == "ball":
+            scale = 1.0
+            fixed = False
+            convexify = False
+        elif name == "base_pole":
+            scale = 1.0
+            fixed = True
+            convexify = False
+        else:
+            scale = 1.0
+            fixed = False
+            convexify = False
+
         # Base pole is fixed; rings and ball are free
-        is_fixed = name == "base_pole"
         ent = scene.add_entity(
             morph=gs.morphs.Mesh(
                 file=str(glb_path),
                 pos=pos,
+                scale=scale,
                 file_meshes_are_zup=True,
-                fixed=is_fixed,
+                fixed=fixed,
                 collision=True,
-                convexify=False,
+                convexify=convexify,
                 decimate=False,
             ),
             material=gs.materials.Rigid(**mat_kwargs),
