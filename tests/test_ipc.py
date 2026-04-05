@@ -1,6 +1,7 @@
 import math
 import os
 from itertools import permutations
+from pathlib import Path
 from typing import TYPE_CHECKING, cast, Any
 
 import numpy as np
@@ -1163,6 +1164,110 @@ def test_robot_grasp_abd(coup_type, show_viewer):
 
     cyl_z_f = tensor_to_array(cylinder.get_pos())[..., 2]
     assert (cyl_z_f - cyl_z_0 >= 0.2).all()
+
+
+@pytest.mark.required
+def test_robot_grasp_abd_missing_collision_geom(show_viewer, tmp_path):
+    """Verify ext_art grasp works when a middle link has no collision geometry.
+
+    Creates a modified Panda MJCF with link4's collision geom removed, then runs
+    the standard grasp sequence to ensure the IPC coupler handles the missing
+    geometry gracefully.
+    """
+    import xml.etree.ElementTree as ET
+
+    from genesis.engine.entities import RigidEntity
+
+    # Build a modified MJCF with link4's collision geom removed
+    mjcf_src = Path(gs.utils.get_assets_dir()) / "xml" / "franka_emika_panda" / "panda_non_overlap.xml"
+    tree = ET.parse(mjcf_src)
+    root = tree.getroot()
+
+    # Find the link4 body and remove its collision geom(s)
+    removed = 0
+    for body in root.iter("body"):
+        if body.get("name") == "link4":
+            for geom in list(body):
+                if geom.tag == "geom" and geom.get("class") == "collision":
+                    body.remove(geom)
+                    removed += 1
+            break
+    assert removed > 0, "Expected to remove at least one collision geom from link4"
+
+    # Symlink the assets directory so meshdir="assets" resolves correctly
+    (tmp_path / "assets").symlink_to(mjcf_src.parent / "assets")
+    mjcf_path = tmp_path / "panda_no_link4_coll.xml"
+    tree.write(mjcf_path, xml_declaration=False)
+
+    # Build scene
+    coup_type = "external_articulation"
+    DT = 0.01
+    GRAVITY = np.array([0.0, 0.0, -9.8], dtype=gs.np_float)
+    CYL_POS = (0.65, 0.0, 0.025)
+
+    scene = gs.Scene(
+        sim_options=gs.options.SimOptions(dt=DT, gravity=GRAVITY),
+        coupler_options=gs.options.IPCCouplerOptions(
+            newton_translation_tolerance=10.0,
+        ),
+        viewer_options=gs.options.ViewerOptions(
+            camera_pos=(2.0, 1.0, 1.0),
+            camera_lookat=(0.3, 0.0, 0.5),
+        ),
+        show_viewer=show_viewer,
+    )
+
+    scene.add_entity(
+        gs.morphs.Plane(),
+        material=gs.materials.Rigid(coup_type="ipc_only", coup_friction=0.8),
+    )
+
+    franka = scene.add_entity(
+        gs.morphs.MJCF(file=str(mjcf_path)),
+        material=gs.materials.Rigid(
+            coup_friction=0.8,
+            coup_type=coup_type,
+            coup_stiffness=(10.0, 10.0),
+        ),
+    )
+    assert isinstance(franka, RigidEntity)
+
+    cylinder = scene.add_entity(
+        morph=gs.morphs.Cylinder(pos=CYL_POS, height=0.05, radius=0.025),
+        material=gs.materials.Rigid(rho=1000.0, coup_type="ipc_only", coup_friction=0.8),
+        surface=gs.surfaces.Plastic(color=(0.2, 0.2, 0.8, 0.5)),
+    )
+    assert isinstance(cylinder, RigidEntity)
+
+    scene.build()
+
+    # Verify finger links and cylinder are registered in IPC
+    coupler = cast("IPCCoupler", scene.sim.coupler)
+    for finger_name in ("left_finger", "right_finger"):
+        finger_link = franka.get_link(finger_name)
+        assert finger_link in coupler._abd_data_by_link, f"{finger_name} should be in IPC"
+    cyl_link = cylinder.links[0]
+    assert cyl_link in coupler._abd_data_by_link
+
+    # Verify link4 is a proxy: registered in IPC but with a single-vertex geometry
+    # (no triangles = no surface for contact detection)
+    link4 = franka.get_link("link4")
+    assert link4 in coupler._abd_data_by_link, "link4 proxy should be registered"
+    assert link4 not in coupler._ipc_abd_links_contact, "link4 proxy should have no collision contact"
+    link4_slot = coupler._abd_data_by_link[link4].slots[0]
+    link4_geom = link4_slot.geometry()
+    link4_n_verts = link4_geom.positions().view().shape[0]
+    link4_tris = link4_geom.triangles().topo()
+    assert link4_n_verts == 1, f"Proxy should have 1 vertex, got {link4_n_verts}"
+    assert link4_tris is None or link4_tris.view().shape[0] == 0, "Proxy should have no triangles"
+
+    cyl_z_0 = tensor_to_array(cylinder.get_pos())[..., 2]
+
+    # Run grasp sequence
+    _run_grasp_sequence(scene, franka, DT)
+
+    cyl_z_f = tensor_to_array(cylinder.get_pos())[..., 2]
+    assert (cyl_z_f - cyl_z_0 >= 0.2).all(), f"Cylinder should be lifted >= 0.2m, got {(cyl_z_f - cyl_z_0).min():.4f}m"
 
 
 @pytest.mark.required
