@@ -399,12 +399,22 @@ def run_gui(
         return
 
     # Interactive replay
+    import time as _time
+
+    frame_dt = meta.get("dt", 0.001) * meta.get("frame_skip", 10)
     if start_frame > 0:
         print(f"[replay] Skipping to frame {start_frame}")
         _apply_frame(start_frame - 1)
     for i in range(start_frame, frame_count):
+        t0 = _time.perf_counter()
         _apply_frame(i)
-        scene._visualizer.update_visual_states(force_render=True)
+        scene._visualizer.update(force=True)
+        elapsed = _time.perf_counter() - t0
+        sleep = max(0.0, frame_dt - elapsed)
+        if sleep > 0:
+            _time.sleep(sleep)
+        if i % 100 == 0:
+            print(f"[replay] frame {i}/{frame_count}")
     print(f"[replay] finished {frame_count - start_frame} frames (from {start_frame})")
 
 

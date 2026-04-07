@@ -1322,17 +1322,22 @@ class URDFGuiApp:
             imgui.SameLine()
             if imgui.Button("Replay to##sim"):
                 target = self._sim_live["recover_frame"]
-                world.recover(0)
-                world.retrieve()
                 self._sim_live["replaying"] = True
                 self._sim_live["replay_target"] = target
-                print(f"[sim] replaying from 0 to {target} ...")
+                print(f"[sim] replay from {world.frame()} to {target} ...")
 
             if self._sim_live.get("replaying"):
                 replay_target = self._sim_live["replay_target"]
                 steps_this_tick = min(self._sim_live["steps_per_tick"], replay_target - world.frame())
                 for _ in range(max(1, steps_this_tick)):
-                    self._do_sim_step_ctx()
+                    next_frame = world.frame() + 1
+                    if world.recover(next_frame):
+                        world.retrieve()
+                        if self._sim_live["export_surface"]:
+                            od = self._sim_ctx["output_dir"]
+                            self._sim_ctx["sio"].write_surface(f"{od}/surface_{world.frame()}.obj")
+                    else:
+                        self._do_sim_step_ctx()
                     if world.frame() >= replay_target:
                         self._sim_live["replaying"] = False
                         print(f"[sim] replay reached frame {world.frame()}")

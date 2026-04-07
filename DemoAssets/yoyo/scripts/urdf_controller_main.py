@@ -36,11 +36,9 @@ _SIM_LINK_PATTERNS = ["*Link8*", "*Link9*"]
 _STC_STRENGTH = np.array([120.0, 120.0], dtype=np.float64)
 _STITCH_BINDING_PATTERN = "*Link9_R*"
 
-
 # ---------------------------------------------------------------------------
 # Yoyo scene loading (inlined from load_user_scene.py)
 # ---------------------------------------------------------------------------
-
 
 def load_yoyo_scene(scene, world, ss: SceneState) -> None:
     """Add the full yoyo (ball + string + bearings) to *scene*.
@@ -88,7 +86,8 @@ def load_yoyo_scene(scene, world, ss: SceneState) -> None:
     scene.contact_tabular().insert(ball_contact, string_contact, 0.7, 800.0 * MPa, enable=True)
     scene.contact_tabular().insert(string_contact, string_contact, 0.2, 800.0 * MPa, enable=True)
     scene.contact_tabular().insert(bearing_contact, bearing_contact, 0.01, 800.0 * MPa, enable=True)
-    scene.contact_tabular().insert(bearing_contact, ball_contact, 0.05, 800.0 * MPa, enable=True)
+    # scene.contact_tabular().insert(bearing_contact, ball_contact, 0.05, 800.0 * MPa, enable=True)
+    scene.contact_tabular().insert(bearing_contact, ball_contact, 0.8, 800.0 * MPa, enable=True) # Frame 3610
     scene.contact_tabular().insert(bearing_contact, string_contact, 0.8, 800.0 * MPa, enable=True)
 
     robot_contact = tabular.default_element()
