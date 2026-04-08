@@ -508,18 +508,61 @@ def postprocess_collision_geoms(
     return _g_infos
 
 
+def _resolve_trimesh_texture_path(tmesh, mesh_dir):
+    """Try to find the diffuse texture file path from a trimesh material.
+
+    Checks the material's image for a ``filename`` attribute, then falls
+    back to ``<mesh_dir>/<material_name>.png``.  Returns *None* when no
+    texture file can be located on disk.
+    """
+    visual = tmesh.visual
+    if not isinstance(visual, trimesh.visual.texture.TextureVisuals):
+        return None
+    mat = visual.material
+    if mat is None:
+        return None
+
+    # PBRMaterial (GLB) — baseColorTexture may carry a filename
+    image = None
+    if isinstance(mat, trimesh.visual.material.PBRMaterial):
+        image = mat.baseColorTexture
+    elif isinstance(mat, trimesh.visual.material.SimpleMaterial):
+        image = mat.image
+    if image is None:
+        return None
+
+    # Some loaders populate PIL Image.filename
+    if hasattr(image, "filename") and image.filename:
+        candidate = os.path.join(mesh_dir, image.filename)
+        if os.path.isfile(candidate):
+            return candidate
+
+    # Fallback: look for <material_name>.<ext> in the mesh directory
+    mat_name = getattr(mat, "name", None) or ""
+    for ext in (".png", ".jpg", ".jpeg"):
+        candidate = os.path.join(mesh_dir, mat_name + ext)
+        if os.path.isfile(candidate):
+            return candidate
+
+    return None
+
+
 def parse_mesh_trimesh(path, group_by_material, scale, is_mesh_zup, surface):
     meshes = []
+    mesh_dir = os.path.dirname(path)
     scene = trimesh.load(path, force="scene", group_material=group_by_material, process=False)
     for tmesh in scene.geometry.values():
         if not isinstance(tmesh, trimesh.Trimesh):
             gs.raise_exception(f"Mesh type not supported: {path}")
+        metadata = {"mesh_path": path}
+        diffuse_texture_path = _resolve_trimesh_texture_path(tmesh, mesh_dir)
         mesh = gs.Mesh.from_trimesh(
             mesh=tmesh,
             scale=scale,
             surface=surface,
             is_mesh_zup=is_mesh_zup,
-            metadata={"mesh_path": path},
+            metadata=metadata,
+            diffuse_texture_path=diffuse_texture_path,
         )
         meshes.append(mesh)
     return meshes
