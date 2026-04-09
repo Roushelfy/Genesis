@@ -399,6 +399,8 @@ class IPCCoupler(RBC):
         # ==== Newton iteration counter (captures libuipc stderr) ====
         self._newton_counter = _NewtonIterCounter()
         self._ipc_frame = 0
+        # Saved states for save_state/load_state (frame → snapshot dict)
+        self._saved_states: dict[int, dict] = {}
 
         # ==== IPC Constitutions ====
         self._ipc_abd: AffineBodyConstitution | None = None
@@ -1578,6 +1580,7 @@ class IPCCoupler(RBC):
 
         self._abd_updated_links.clear()
         self._restitution_vel_corrections.clear()
+        self._saved_states.clear()
         self._ipc_frame = 0
 
         self._ipc_world.recover(0)
@@ -1602,6 +1605,129 @@ class IPCCoupler(RBC):
             for ad in self._articulation_data_by_entity.values():
                 ad.delta_theta_tilde[:] = 0.0
                 ad.prev_qpos[:] = qpos[..., ad.q_slice]
+
+    # ------------------------------------------------------------------
+    # Manual save / load
+    # ------------------------------------------------------------------
+
+    def save_state(self) -> int:
+        """Save the current IPC + Genesis coupling state and return the frame id.
+
+        The saved frame can later be restored with :meth:`load_state`.
+        Internally this calls ``libuipc World.dump()`` and snapshots the
+        Genesis-side cached arrays (qpos_prev, articulation data, ABD
+        transforms) so they can be restored consistently.
+
+        Returns
+        -------
+        int
+            The IPC frame number of the saved state.
+        """
+        assert gs.logger is not None
+        assert self._ipc_world is not None
+
+        ok = self._ipc_world.dump()
+        if not ok:
+            gs.raise_exception(f"[IPC] dump() failed at frame {self._ipc_frame}")
+
+        # Snapshot Genesis-side state that is NOT stored inside libuipc
+        snapshot: dict = {
+            "ipc_frame": self._ipc_frame,
+        }
+        if self.rigid_solver.is_active:
+            snapshot["qpos"] = qd_to_numpy(self.rigid_solver.qpos, transpose=True).copy()
+            snapshot["qpos_prev"] = qd_to_numpy(self.rigid_solver.qpos_prev, transpose=True).copy()
+        for entity, ad in self._articulation_data_by_entity.items():
+            snapshot[("art_delta_theta", id(entity))] = (
+                ad.delta_theta_tilde.copy() if ad.delta_theta_tilde is not None else None
+            )
+            snapshot[("art_prev_qpos", id(entity))] = ad.prev_qpos.copy() if ad.prev_qpos is not None else None
+        for link, abd_data in self._abd_data_by_link.items():
+            snapshot[("abd_ipc_transforms", id(link))] = (
+                abd_data.ipc_transforms.copy() if abd_data.ipc_transforms is not None else None
+            )
+            snapshot[("abd_ipc_velocities", id(link))] = (
+                abd_data.ipc_velocities.copy() if abd_data.ipc_velocities is not None else None
+            )
+            snapshot[("abd_aim_transforms", id(link))] = (
+                abd_data.aim_transforms.copy() if abd_data.aim_transforms is not None else None
+            )
+
+        self._saved_states[self._ipc_frame] = snapshot
+        gs.logger.info(f"[IPC] Saved state at frame {self._ipc_frame}")
+        return self._ipc_frame
+
+    def load_state(self, frame: int) -> None:
+        """Restore a previously saved IPC + Genesis coupling state.
+
+        Parameters
+        ----------
+        frame : int
+            The frame number returned by :meth:`save_state`.
+        """
+        assert gs.logger is not None
+        assert self._ipc_world is not None
+
+        if frame not in self._saved_states:
+            gs.raise_exception(f"[IPC] No saved state at frame {frame}. Available: {sorted(self._saved_states.keys())}")
+
+        # Recover libuipc side
+        ok = self._ipc_world.recover(frame)
+        if not ok:
+            gs.raise_exception(f"[IPC] recover({frame}) failed")
+        self._ipc_world.retrieve()
+
+        # Restore Genesis-side snapshot
+        snapshot = self._saved_states[frame]
+        self._ipc_frame = snapshot["ipc_frame"]
+        self._abd_updated_links.clear()
+        self._restitution_vel_corrections.clear()
+
+        # Re-sync cached IPC transforms
+        self._retrieve_ipc_rigid_states()
+
+        # Restore qpos and qpos_prev
+        if self.rigid_solver.is_active and "qpos" in snapshot:
+            qpos_tc = qd_to_torch(self.rigid_solver.qpos, copy=False)
+            qpos_prev_tc = qd_to_torch(self.rigid_solver.qpos_prev, copy=False)
+            saved_qpos = torch.as_tensor(snapshot["qpos"], dtype=qpos_tc.dtype, device=qpos_tc.device)
+            saved_prev = torch.as_tensor(snapshot["qpos_prev"], dtype=qpos_tc.dtype, device=qpos_tc.device)
+            # qpos/qpos_prev are stored as (B, n_qs) — match the transposed layout
+            if saved_qpos.shape == qpos_tc.shape:
+                qpos_tc.copy_(saved_qpos)
+                qpos_prev_tc.copy_(saved_prev)
+            else:
+                # Transposed: (n_qs, B) in qd vs (B, n_qs) in snapshot
+                qpos_tc.copy_(saved_qpos.T)
+                qpos_prev_tc.copy_(saved_prev.T)
+
+        # Restore articulation cached state
+        for entity, ad in self._articulation_data_by_entity.items():
+            key_dt = ("art_delta_theta", id(entity))
+            key_pq = ("art_prev_qpos", id(entity))
+            if key_dt in snapshot and snapshot[key_dt] is not None:
+                ad.delta_theta_tilde[:] = snapshot[key_dt]
+            if key_pq in snapshot and snapshot[key_pq] is not None:
+                ad.prev_qpos[:] = snapshot[key_pq]
+
+        # Restore ABD cached transforms
+        for link, abd_data in self._abd_data_by_link.items():
+            key_t = ("abd_ipc_transforms", id(link))
+            key_v = ("abd_ipc_velocities", id(link))
+            key_a = ("abd_aim_transforms", id(link))
+            if key_t in snapshot and snapshot[key_t] is not None:
+                abd_data.ipc_transforms[:] = snapshot[key_t]
+            if key_v in snapshot and snapshot[key_v] is not None:
+                abd_data.ipc_velocities[:] = snapshot[key_v]
+            if key_a in snapshot and snapshot[key_a] is not None:
+                abd_data.aim_transforms[:] = snapshot[key_a]
+
+        # Write restored IPC state back to the rigid solver and run FK
+        # so that entity.get_pos()/get_quat() reflect the restored state.
+        self._post_advance_write_qpos()
+        self._sync_rigid_fk()
+
+        gs.logger.info(f"[IPC] Loaded state from frame {frame}")
 
     def _mark_abd_link_updated(self, link: "RigidLink", env_set: set[int]):
         """Add a link to the updated set for the given environments."""

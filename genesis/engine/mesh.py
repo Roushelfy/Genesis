@@ -227,6 +227,7 @@ class Mesh(RBC):
         metadata=None,
         surface=None,
         is_mesh_zup=True,
+        diffuse_texture_path=None,
     ):
         """
         Create a genesis.Mesh from a trimesh.Trimesh object.
@@ -305,6 +306,14 @@ class Mesh(RBC):
             metadata["is_visual_overwritten"] = isinstance(surface.texture, gs.textures.ColorTexture)
 
             color_texture = mu.create_texture(color_image, color_factor, "srgb")
+            # Attach the resolved file path so downstream renderers (e.g. Nyx)
+            # can load the texture from disk without metadata workarounds.
+            if (
+                diffuse_texture_path is not None
+                and isinstance(color_texture, gs.textures.ImageTexture)
+                and not color_texture.image_path
+            ):
+                color_texture.image_path = diffuse_texture_path
             opacity_texture = None
             if color_texture is not None:
                 opacity_texture = color_texture.check_dim(3)

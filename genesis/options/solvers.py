@@ -315,7 +315,7 @@ class IPCCouplerOptions(BaseCouplerOptions):
     contact_friction_enable: StrictBool | None = None
     contact_resistance: PositiveFloat = 1e9
     contact_eps_velocity: PositiveFloat | None = None
-    contact_constitution: Literal["ipc", "isometric"] | None = None
+    contact_constitution: Literal["ipc", "al-ipc"] | None = None
 
     # Collision detection options
     collision_detection_method: Literal["linear_bvh", "spatial_hash"] | None = None
