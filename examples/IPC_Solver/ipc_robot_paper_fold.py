@@ -33,6 +33,9 @@ def main():
         sim_options=gs.options.SimOptions(
             dt=0.02,
         ),
+        rigid_options=gs.options.RigidOptions(
+            enable_self_collision=False,
+        ),
         fem_options=gs.options.FEMOptions(
             use_rigid_compatible_transform=True,
         ),
@@ -76,6 +79,7 @@ def main():
                 convexify=True,
             ),
             material=gs.materials.Rigid(**franka_material_kwargs),
+            vis_mode="collision",
         )
 
     # Table — fixed rigid box at the far end of the robot's reach.

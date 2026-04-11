@@ -3296,11 +3296,13 @@ class RigidEntity(KinematicEntity):
         """Notify the IPC coupler that this entity's state changed (set_pos/set_qpos/etc).
 
         Converts local indices to global and calls coupler.mark_abd_updated().
-        No-op when there is no IPC coupler.
+        No-op when there is no IPC coupler or when the entity has needs_coup=False.
         """
         from genesis.engine.couplers import IPCCoupler
 
         if not isinstance(self.sim.coupler, IPCCoupler):
+            return
+        if not self.material.needs_coup:
             return
         qs_idx = None
         if qs_idx_local is not None:

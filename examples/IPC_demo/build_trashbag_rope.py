@@ -362,11 +362,12 @@ def main():
     bag_mesh.visual = trimesh.visual.TextureVisuals(
         material=trimesh.visual.material.PBRMaterial(
             name="plastic_bag",
-            baseColorFactor=[240, 240, 245, 210],
+            baseColorFactor=[240, 240, 245, 128],
             metallicFactor=0.0,
-            roughnessFactor=0.3,
+            roughnessFactor=0.01,
             alphaMode="BLEND",
             doubleSided=True,
+            ior=2.0,
         )
     )
 

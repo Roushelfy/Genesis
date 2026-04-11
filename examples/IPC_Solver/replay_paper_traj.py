@@ -143,6 +143,7 @@ class PaperReplay(TrajectoryReplay):
                     thickness=0.001,
                     bending_stiffness=1e4,
                 ),
+                surface=gs.surfaces.Default(smooth=False),
                 vis_mode="visual",
             ),
         }
