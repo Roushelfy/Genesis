@@ -3,8 +3,8 @@ Replay exported yoyo simulation sequences.
 
 Usage:
     python examples/IPC_Solver/replay_yoyo_traj.py
-    python examples/IPC_Solver/replay_yoyo_traj.py --trajectory long_sleep
-    python examples/IPC_Solver/replay_yoyo_traj.py --render --nyx
+    python examples/IPC_Solver/replay_yoyo_traj.py --trajectory long_sleep  
+    python examples/IPC_Solver/replay_yoyo_traj.py --render --nyx # v4
     python examples/IPC_Solver/replay_yoyo_traj.py --render --nyx --camera-traj surround
 """
 
@@ -168,7 +168,7 @@ class YoyoReplay(TrajectoryReplay):
         is_long_sleep = self._is_long_sleep
 
         # Robot
-        urdf_rel = self._meta.get("urdf", "")
+        urdf_rel = self._meta.get("urdf", "").replace("\\", "/")
         assert urdf_rel, "meta.json must specify 'urdf'"
         urdf_path = _REPO_ROOT / urdf_rel
         assert urdf_path.exists(), f"Robot URDF not found: {urdf_path}"
@@ -216,20 +216,21 @@ class YoyoReplay(TrajectoryReplay):
                 )
                 self._rigid_entities[name] = [ent]
 
-        # String (FEM rope)
+        # String (FEM rope) — skip when using Nyx (requires Quadrants scope)
         self._fem_entities: dict[str, object] = {}
-        for name in self._fem_data:
-            mesh_path = self._seq_dir / name / "mesh.obj"
-            if not mesh_path.exists():
-                continue
-            ent = scene.add_entity(
-                morph=gs.morphs.Mesh(file=str(mesh_path)),
-                material=gs.materials.FEM.Rope(E=1e6, rho=100.0, thickness=0.0004),
-                surface=gs.surfaces.Default(color=(0.9, 0.87, 0.8, 1.0)),
-                name=name,
-            )
-            self._fem_entities[name] = ent
-            break
+        if not use_nyx:
+            for name in self._fem_data:
+                mesh_path = self._seq_dir / name / "mesh.obj"
+                if not mesh_path.exists():
+                    continue
+                ent = scene.add_entity(
+                    morph=gs.morphs.Mesh(file=str(mesh_path)),
+                    material=gs.materials.FEM.Rope(E=1e6, rho=100.0, thickness=0.0004),
+                    surface=gs.surfaces.Default(color=(0.9, 0.87, 0.8, 1.0)),
+                    name=name,
+                )
+                self._fem_entities[name] = ent
+                break
 
     def _add_ball_part(self, scene, asset_name, opacity, use_nyx):
         import genesis as gs

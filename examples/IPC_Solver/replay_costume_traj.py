@@ -33,7 +33,7 @@ from scipy.spatial.transform import Rotation
 from _replay_common import TrajectoryReplay
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
-_PACK_DIR = _REPO_ROOT / "DemoAssets" / "costume" / "results" / "dancing_export_pack"
+_PACK_DIR = _REPO_ROOT / "DemoAssets" / "robot_cloth" / "dancing_export_pack"
 _KIMONO_DIR = _REPO_ROOT / "DemoAssets" / "kimono"
 
 AVAILABLE_TRAJECTORIES = [
@@ -251,8 +251,8 @@ def compute_qpos_from_transforms(
 
 class CostumeReplay(TrajectoryReplay):
     name = "costume"
-    cam_pos = (2.0, -1.5, 1.2)
-    cam_lookat = (0.0, 0.0, 0.6)
+    cam_pos = (2.0, -1.5, 0.8)
+    cam_lookat = (0.0, 0.0, 0.2)
     cam_fov = 45
 
     def add_args(self, parser):
@@ -337,10 +337,15 @@ class CostumeReplay(TrajectoryReplay):
 
         # Reorder from URDF joint order to Genesis qs_idx order
         qpos = self._robot.get_qpos()
+        # With n_envs>=1, qpos has shape (B, n_dofs); squeeze for scalar indexing.
+        batched = qpos.ndim > 1
+        qpos_flat = qpos[0] if batched else qpos
         for j_idx, jinfo in enumerate(self._ik_chain):
             gs_idx = self._joint_name_to_qs_idx.get(jinfo["name"])
             if gs_idx is not None:
-                qpos[gs_idx] = qpos_urdf_order[j_idx]
+                qpos_flat[gs_idx] = qpos_urdf_order[j_idx]
+        if batched:
+            qpos[0] = qpos_flat
 
         # Set pelvis (base) position from USD
         if "pelvis" in link_transforms and frame_idx < link_transforms["pelvis"].shape[0]:

@@ -151,6 +151,7 @@ class TrajectoryReplay:
         parser.add_argument("--nyx", action="store_true", help="Use Nyx renderer")
         parser.add_argument("--start-frame", type=int, default=0, help="Start from this frame")
         parser.add_argument("--save-frames", action="store_true", help="Save each frame as PNG")
+        parser.add_argument("--follow", action="store_true", help="Camera follows the robot")
         self.add_args(parser)
         self.args = parser.parse_args()
 
@@ -371,6 +372,10 @@ class TrajectoryReplay:
         """Render one frame and return the RGB array."""
         use_nyx = self.args.nyx
         if use_nyx:
+            # In replay mode scene.t never advances, so the camera's
+            # staleness check thinks the cache is still fresh.  Force it
+            # stale so _render_current_state() runs on each read().
+            self._cam._stale = True
             data = self._cam.read()
             rgb = data.rgb.cpu().numpy()
             if rgb.ndim == 4:
@@ -407,11 +412,27 @@ class TrajectoryReplay:
             print(f"[render] Skipping to frame {start}")
             self._apply(start - 1)
 
+        # Follow mode: camera tracks the robot with a fixed offset
+        follow = args.follow
+        if follow:
+            cam_offset = np.array(self.cam_pos) - np.array(self.cam_lookat)
+
         frames_rgb = []
         for i in range(start, self._n_frames):
             self._apply(i)
 
-            if self._camera_traj is not None:
+            if follow and self._robot is not None:
+                robot_pos = self._robot.get_pos()
+                if robot_pos.ndim > 1:
+                    robot_pos = robot_pos[0]
+                robot_pos = robot_pos.cpu().numpy()
+                lookat = (float(robot_pos[0]), float(robot_pos[1]), float(robot_pos[2]) + 0.5)
+                cam_pos = tuple(np.array(lookat) + cam_offset)
+                if use_nyx:
+                    self._cam.update_camera_pose(pos=cam_pos, lookat=lookat, up=(0, 0, 1))
+                else:
+                    self._cam.set_pose(pos=cam_pos, lookat=lookat, up=(0, 0, 1))
+            elif self._camera_traj is not None:
                 cam_pos, cam_lookat = self._camera_traj.get_pose(i, self._n_frames)
                 if use_nyx:
                     self._cam.update_camera_pose(pos=cam_pos, lookat=cam_lookat, up=(0, 0, 1))
