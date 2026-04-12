@@ -257,6 +257,31 @@ class YoyoReplay(TrajectoryReplay):
             name=asset_name,
         )
 
+    def apply_frame(self, scene, frame_idx):
+        super().apply_frame(scene, frame_idx)
+        if frame_idx in (30, 31, 32, 33):
+            self._save_rope_tube_mesh(frame_idx)
+
+    def _save_rope_tube_mesh(self, frame_idx):
+        import trimesh
+        from genesis.engine.mesh import LineMesh
+
+        out_dir = Path("data/ipc_demo/ipc_yoyo/rope_tube_meshes")
+        out_dir.mkdir(parents=True, exist_ok=True)
+
+        for name, entity in self._fem_entities.items():
+            for rm_idx, rmesh in enumerate(entity.render_meshes):
+                if not isinstance(rmesh, LineMesh) or rmesh.tube_faces is None:
+                    continue
+                # Get current sim vertex positions
+                sim_verts = self._fem_data[name][frame_idx]
+                tube_verts = rmesh.build_tube_verts(sim_verts.astype(np.float32))
+                tube_faces = rmesh.tube_faces
+                mesh = trimesh.Trimesh(vertices=tube_verts, faces=tube_faces, process=False)
+                path = out_dir / f"{name}_frame{frame_idx}.obj"
+                mesh.export(str(path))
+                print(f"[save] Tube mesh: {path} ({len(tube_verts)} verts, {len(tube_faces)} faces)")
+
     def make_camera_traj(self, name):
         if name == "_yoyo_default":
             if self._is_long_sleep:

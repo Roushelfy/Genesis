@@ -100,8 +100,6 @@ IPCBeforeWorldInitCallback = Callable[[IPCBeforeWorldInitContext, GenesisSolverC
 
 # Affine body stiffness in MPa
 ABD_KAPPA = 100.0
-# TODO: consider deriving from Genesis joint properties instead of hardcoding.
-JOINT_STRENGTH_RATIO = 100.0
 # Position-space threshold for detecting active IPC contact (restitution tracking)
 RESTITUTION_CONTACT_THRESHOLD = 1e-7
 COM_AABB_TOL = 2e-3
@@ -1026,6 +1024,9 @@ class IPCCoupler(RBC):
                 # (open surfaces like gripper pads) where volume-based mass would be near-zero.
                 mesh_for_check = self._abd_merged_meshes.get(link)
                 is_watertight = mesh_for_check is not None and mesh_for_check.is_watertight
+                gs.logger.info(
+                    f"[IPC ABD] link={link.name}, is_watertight={is_watertight}, mesh_exists={mesh_for_check is not None}, rho={rho}"
+                )
 
                 if is_watertight:
                     if self._ipc_abd is None:
@@ -1149,16 +1150,14 @@ class IPCCoupler(RBC):
             gs.logger.debug(f"Adding articulated entity {i_e} with {entity.n_joints} joints")
 
             # ---- Collect joint info (env-independent) ----
-            joints: list[tuple["RigidJoint", type, bool, "RigidLink", "RigidLink"]] = []
+            joints: list[tuple["RigidJoint", type, "RigidLink", "RigidLink"]] = []
             for joint in entity.joints:
                 if joint.type == gs.JOINT_TYPE.FIXED:
                     continue
                 elif joint.type == gs.constants.JOINT_TYPE.REVOLUTE:
                     joint_constitution = AffineBodyRevoluteJoint
-                    reverse_verts = True
                 elif joint.type == gs.constants.JOINT_TYPE.PRISMATIC:
                     joint_constitution = AffineBodyPrismaticJoint
-                    reverse_verts = False
                 else:
                     gs.raise_exception(f"Unsupported joint type: {joint.type}")
 
@@ -1177,19 +1176,19 @@ class IPCCoupler(RBC):
                     gs.raise_exception(
                         "Rigid link has no collision geometry. Coupling type 'external_articulation' is not supported."
                     )
-                joints.append((joint, joint_constitution, reverse_verts, parent_link, child_link))
+                joints.append((joint, joint_constitution, parent_link, child_link))
 
             # ---- Create joint geometries per environment ----
             articulation_geom_slots: list[GeometrySlot] = []
             for env_idx in range(self._B):
                 joint_geom_slots: list[GeometrySlot] = []
-                for joint, joint_constitution, reverse_verts, parent_link, child_link in joints:
+                for joint, joint_constitution, parent_link, child_link in joints:
                     joint_axis = joints_xaxis[env_idx, joint.idx]
                     joint_pos = joints_xanchor[env_idx, joint.idx]
 
                     v1 = joint_pos - 0.5 * joint_axis
                     v2 = joint_pos + 0.5 * joint_axis
-                    vertices = np.array([v2, v1] if reverse_verts else [v1, v2], dtype=np.float64)
+                    vertices = np.array([v1, v2], dtype=np.float64)
                     edges = np.array([[0, 1]], dtype=np.int32)
                     joint_geom = uipc.geometry.linemesh(vertices, edges)
                     if self._B > 1:
@@ -1198,7 +1197,7 @@ class IPCCoupler(RBC):
                     parent_abd_slot = self._abd_data_by_link[parent_link].slots[env_idx]
                     child_abd_slot = self._abd_data_by_link[child_link].slots[env_idx]
                     joint_constitution().apply_to(
-                        joint_geom, [parent_abd_slot], [0], [child_abd_slot], [0], [JOINT_STRENGTH_RATIO]
+                        joint_geom, [parent_abd_slot], [0], [child_abd_slot], [0], [self.options.joint_strength_ratio]
                     )
 
                     joint_obj = self._ipc_objects.create(f"joint_{joint.idx}_{env_idx}")
@@ -1801,6 +1800,9 @@ class IPCCoupler(RBC):
         """
         if not self._abd_updated_links or self._abd_state_feature is None:
             return
+        # DEBUG: log when teleport sync is triggered
+        dirty_names = [f"{link.name}(envs={envs})" for link, envs in self._abd_updated_links.items()]
+        gs.logger.warning(f"[IPC TELEPORT SYNC] {len(self._abd_updated_links)} dirty links: {dirty_names}")
 
         assert self._abd_state_geom is not None
 

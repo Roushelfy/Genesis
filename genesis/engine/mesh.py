@@ -608,6 +608,10 @@ class LineMesh(RBC):
 
         Returns (n_verts * n_sides, 3) array. Call ``build_tube_topology()``
         first to set up the face topology.
+
+        Uses parallel transport to propagate the local frame along the
+        curve, avoiding the ring-twist self-intersections that occur when
+        each vertex computes its frame independently.
         """
         n_sides = self._n_tube_sides
         radius = self._tube_radius
@@ -624,21 +628,106 @@ class LineMesh(RBC):
         norms[norms < 1e-12] = 1.0
         tangents /= norms
 
+        # Build vertex ordering along the curve from edge list
+        order = self._tube_vertex_order(n_verts)
+
+        # Seed frame at the first vertex
+        t0 = tangents[order[0]]
+        up = np.array([0.0, 0.0, 1.0])
+        if abs(np.dot(t0, up)) > 0.9:
+            up = np.array([1.0, 0.0, 0.0])
+        n1 = np.cross(t0, up)
+        n1 /= np.linalg.norm(n1) + 1e-15
+        n2 = np.cross(t0, n1)
+
+        # Parallel-transport the frame along the curve
+        frames_n1 = np.empty((n_verts, 3), dtype=sim_verts.dtype)
+        frames_n2 = np.empty((n_verts, 3), dtype=sim_verts.dtype)
+        frames_n1[order[0]] = n1
+        frames_n2[order[0]] = n2
+
+        for i in range(1, len(order)):
+            vi_prev = order[i - 1]
+            vi = order[i]
+            t_prev = tangents[vi_prev]
+            t_cur = tangents[vi]
+
+            # Rotation axis and angle between consecutive tangents
+            b = np.cross(t_prev, t_cur)
+            b_len = np.linalg.norm(b)
+            if b_len < 1e-12:
+                # Tangents are parallel — keep the same frame
+                frames_n1[vi] = frames_n1[vi_prev]
+                frames_n2[vi] = frames_n2[vi_prev]
+            else:
+                b /= b_len
+                cos_a = np.clip(np.dot(t_prev, t_cur), -1.0, 1.0)
+                sin_a = b_len
+                # Rodrigues rotation of n1 around b
+                prev_n1 = frames_n1[vi_prev]
+                rotated = prev_n1 * cos_a + np.cross(b, prev_n1) * sin_a + b * np.dot(b, prev_n1) * (1.0 - cos_a)
+                frames_n1[vi] = rotated
+                frames_n2[vi] = np.cross(t_cur, rotated)
+
         # Build tube ring vertices
         tube_verts = np.zeros((n_verts * n_sides, 3), dtype=sim_verts.dtype)
         for vi in range(n_verts):
-            t = tangents[vi]
-            up = np.array([0.0, 0.0, 1.0])
-            if abs(np.dot(t, up)) > 0.9:
-                up = np.array([1.0, 0.0, 0.0])
-            n1 = np.cross(t, up)
-            n1 /= np.linalg.norm(n1) + 1e-15
-            n2 = np.cross(t, n1)
+            n1_vi = frames_n1[vi]
+            n2_vi = frames_n2[vi]
             for si in range(n_sides):
                 tube_verts[vi * n_sides + si] = sim_verts[vi] + radius * (
-                    np.cos(angles[si]) * n1 + np.sin(angles[si]) * n2
+                    np.cos(angles[si]) * n1_vi + np.sin(angles[si]) * n2_vi
                 )
         return tube_verts
+
+    def _tube_vertex_order(self, n_verts):
+        """Return vertex indices in curve order from the edge list."""
+        if not hasattr(self, "_cached_tube_order") or self._cached_tube_order is None:
+            from collections import defaultdict
+
+            adj = defaultdict(list)
+            for e in self._edges:
+                adj[e[0]].append(e[1])
+                adj[e[1]].append(e[0])
+
+            # Find an endpoint (degree 1) to start from
+            start = 0
+            for v in range(n_verts):
+                if len(adj[v]) == 1:
+                    start = v
+                    break
+
+            order = [start]
+            visited = {start}
+            cur = start
+            while len(order) < n_verts:
+                found = False
+                for nb in adj[cur]:
+                    if nb not in visited:
+                        order.append(nb)
+                        visited.add(nb)
+                        cur = nb
+                        found = True
+                        break
+                if not found:
+                    # Walk got stuck (branch or disconnected component).
+                    # Find any unvisited vertex connected to a visited one
+                    # to continue with a smooth frame transition.
+                    restarted = False
+                    for v_visited in reversed(order):
+                        for nb in adj[v_visited]:
+                            if nb not in visited:
+                                order.append(nb)
+                                visited.add(nb)
+                                cur = nb
+                                restarted = True
+                                break
+                        if restarted:
+                            break
+                    if not restarted:
+                        break
+            self._cached_tube_order = order
+        return self._cached_tube_order
 
     @property
     def tube_faces(self):

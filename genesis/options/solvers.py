@@ -335,6 +335,8 @@ class IPCCouplerOptions(BaseCouplerOptions):
     enable_fem_fem_friction: StrictBool = True
     restitution: NonNegativeFloat = 1.0
     ignore_end_effector_check: StrictBool = False
+    joint_strength_ratio: PositiveFloat = 100.0
+    """Strength ratio for external articulation joint constraints. Higher = stiffer joints, less drift."""
     before_ipc_world_init: IPCBeforeWorldInitCallback | None = None
 
     # Verbose IPC log — bypass the digest and print full libuipc info log
