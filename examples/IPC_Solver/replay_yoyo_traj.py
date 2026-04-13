@@ -120,7 +120,8 @@ class YoyoReplay(TrajectoryReplay):
         self._meta = json.loads(meta_path.read_text(encoding="utf-8"))
 
         self._is_long_sleep = "long_sleep" in str(self._seq_dir)
-        if self._is_long_sleep:
+        self._force_closeup_camera = False
+        if self._is_long_sleep or self._force_closeup_camera:
             self.cam_fov = CLOSEUP_FOV
 
         # Joint data (remapped to qpos in post_build via _remap_joint_data)
@@ -165,7 +166,7 @@ class YoyoReplay(TrajectoryReplay):
         import genesis as gs
 
         use_nyx = self.args.nyx
-        is_long_sleep = self._is_long_sleep
+        is_long_sleep = self._is_long_sleep or getattr(self, "_force_closeup_camera", False)
 
         # Robot
         urdf_rel = self._meta.get("urdf", "").replace("\\", "/")
@@ -284,7 +285,7 @@ class YoyoReplay(TrajectoryReplay):
 
     def make_camera_traj(self, name):
         if name == "_yoyo_default":
-            if self._is_long_sleep:
+            if self._is_long_sleep or getattr(self, "_force_closeup_camera", False):
                 return YoyoCloseupCamera(self._rigid_data)
             return YoyoOrbitCamera()
         if name == "surround":
