@@ -61,6 +61,8 @@ SPATULA_USD = _COOK_ROOT / "Spatula018" / "Spatula018.usd"
 BROCCOLI_OBJ = _ASSET_ROOT / "broccoli.obj"
 TOMATO_OBJ = _ASSET_ROOT / "tomato_slice.obj"
 TOMATO_NPZ = _ASSET_ROOT / "tomato_slice.npz"
+MUSHROOM_OBJ = _ASSET_ROOT / "mushroom_slice.obj"
+MUSHROOM_NPZ = _ASSET_ROOT / "mushroom_slice.npz"
 DEFAULT_TRAJ = _COOK_ROOT / "trajectories" / "cooking_demo.json"
 DEFAULT_OUTPUT = _ASSET_ROOT / "placement.json"
 
@@ -93,6 +95,21 @@ def _scale_pos_4x4(scale, pos):
     """Uniform scale + translation as 4x4 homogeneous matrix."""
     M = np.eye(4, dtype=np.float64)
     M[0, 0] = M[1, 1] = M[2, 2] = scale
+    M[0, 3], M[1, 3], M[2, 3] = pos[0], pos[1], pos[2]
+    return M
+
+
+def _scale_pos_4x4(scale, pos):
+    """Uniform scale + translation -> 4x4."""
+    M = np.eye(4, dtype=np.float64)
+    M[0, 0] = M[1, 1] = M[2, 2] = float(scale)
+    M[0, 3], M[1, 3], M[2, 3] = pos[0], pos[1], pos[2]
+    return M
+
+
+def _pos_4x4(pos):
+    """Translation-only 4x4."""
+    M = np.eye(4, dtype=np.float64)
     M[0, 3], M[1, 3], M[2, 3] = pos[0], pos[1], pos[2]
     return M
 
@@ -174,10 +191,17 @@ def main():
     tomato_tet = np.load(TOMATO_NPZ)
     tomato_tet_Vs = tomato_tet["vertices"].astype(np.float64)
     tomato_tet_Ts = tomato_tet["tetrahedra"].astype(np.int32)
+    mushroom_verts_raw, mushroom_faces = load_obj_numpy(MUSHROOM_OBJ)
+    mushroom_tet = np.load(MUSHROOM_NPZ)
+    mushroom_tet_Vs = mushroom_tet["vertices"].astype(np.float64)
+    mushroom_tet_Ts = mushroom_tet["tetrahedra"].astype(np.int32)
+    print(f"[place] Mushroom slice: {len(mushroom_verts_raw)} surf verts, "
+          f"{len(mushroom_tet_Vs)} tet nodes, {len(mushroom_tet_Ts)} tets")
     print("[place] Meshes ready.")
 
     # ---- editable state ----
     pan_pos = list(frame0["pan"]["pos"])
+    pan_scale = [1.0, 1.0, 1.0]
     spatula_pos = list(frame0["spatula"]["pos"])
     spatula_pos[2] += 0.5
 
@@ -188,6 +212,11 @@ def main():
 
     tomato_list: list[dict] = [
         {"pos": [pan_pos[0] - 0.02, pan_pos[1] + 0.02, pan_pos[2] + 0.03],
+         "scale": 1.0},
+    ]
+
+    mushroom_list: list[dict] = [
+        {"pos": [pan_pos[0] + 0.03, pan_pos[1] + 0.04, pan_pos[2] + 0.02],
          "scale": 1.0},
     ]
 
@@ -208,6 +237,11 @@ def main():
                 saved = json.load(f)
             if "pan" in saved:
                 pan_pos[:] = saved["pan"]["pos"]
+                saved_scale = saved["pan"].get("scale", [1.0, 1.0, 1.0])
+                if isinstance(saved_scale, (int, float)):
+                    pan_scale[:] = [saved_scale, saved_scale, saved_scale]
+                else:
+                    pan_scale[:] = saved_scale
             if "spatula" in saved:
                 spatula_pos[:] = saved["spatula"]["pos"]
             if "broccoli" in saved:
@@ -226,6 +260,14 @@ def main():
                     tomato_list[:] = list(td.values())
                 elif isinstance(td, list):
                     tomato_list[:] = td
+            if "mushroom" in saved:
+                md = saved["mushroom"]
+                if isinstance(md, dict) and "pos" in md:
+                    mushroom_list[:] = [md]
+                elif isinstance(md, dict):
+                    mushroom_list[:] = list(md.values())
+                elif isinstance(md, list):
+                    mushroom_list[:] = md
             if "noodles" in saved:
                 ns = saved["noodles"]
                 noodle_center[:] = ns.get("center", noodle_center)
@@ -238,6 +280,8 @@ def main():
                 noodle_bending[0] = ns.get("bending_stiffness", noodle_bending[0])
             if "ground_height" in saved:
                 ground_z[0] = saved["ground_height"]
+            for item in broc_list + tomato_list + mushroom_list:
+                item.pop("rot", None)
             print(f"[place] Loaded placement from {output_path}")
         except Exception as e:
             print(f"[place] Could not load {output_path}: {e}")
@@ -252,20 +296,29 @@ def main():
     noodles_obj_ref = [None]
     broc_objs_ref: list[list] = [[]]
     tomato_objs_ref: list[list] = [[]]
+    mushroom_objs_ref: list[list] = [[]]
 
     # ================================================================
     # Phase 1 — Placement preview (pure polyscope)
     # ================================================================
+    def _pan_transform():
+        M = quat_pos_to_4x4(pan_quat, pan_pos)
+        M[:3, 0] *= pan_scale[0]
+        M[:3, 1] *= pan_scale[1]
+        M[:3, 2] *= pan_scale[2]
+        return M
+
     def _show_placement():
         ps.remove_all_structures()
-        v = _apply_4x4(pan_verts_raw, quat_pos_to_4x4(pan_quat, pan_pos))
+        v = _apply_4x4(pan_verts_raw, _pan_transform())
         ps.register_surface_mesh("pan", v, pan_faces,
                                  color=(0.6, 0.6, 0.65), smooth_shade=True)
         v = _apply_4x4(spatula_verts_raw, quat_pos_to_4x4(spatula_quat, spatula_pos))
         ps.register_surface_mesh("spatula", v, spatula_faces,
                                  color=(0.5, 0.5, 0.55), smooth_shade=True)
         for bi, bd in enumerate(broc_list):
-            v = _apply_4x4(broc_verts_raw, _scale_pos_4x4(bd["scale"], bd["pos"]))
+            v = _apply_4x4(broc_verts_raw,
+                           _scale_pos_4x4(bd["scale"], bd["pos"]))
             ps.register_surface_mesh(f"broc_{bi}", v, broc_faces,
                                      color=(0.2, 0.6, 0.15), smooth_shade=True)
         for ti, td in enumerate(tomato_list):
@@ -273,6 +326,11 @@ def main():
                            _scale_pos_4x4(td["scale"], td["pos"]))
             ps.register_surface_mesh(f"tomato_{ti}", v, tomato_faces,
                                      color=(0.85, 0.15, 0.1), smooth_shade=True)
+        for mi, md in enumerate(mushroom_list):
+            v = _apply_4x4(mushroom_verts_raw,
+                           _scale_pos_4x4(md["scale"], md["pos"]))
+            ps.register_surface_mesh(f"mushroom_{mi}", v, mushroom_faces,
+                                     color=(0.9, 0.85, 0.7), smooth_shade=True)
         nv, ne = generate_noodle_curves(
             noodle_center, noodle_nx[0], noodle_ny[0],
             noodle_spacing[0], noodle_n_edges[0], noodle_length[0])
@@ -288,7 +346,7 @@ def main():
         gm.set_transparency(0.4)
 
     def _update_pan():
-        v = _apply_4x4(pan_verts_raw, quat_pos_to_4x4(pan_quat, pan_pos))
+        v = _apply_4x4(pan_verts_raw, _pan_transform())
         ps.register_surface_mesh("pan", v, pan_faces,
                                  color=(0.6, 0.6, 0.65), smooth_shade=True)
 
@@ -299,7 +357,8 @@ def main():
 
     def _update_broccoli():
         for bi, bd in enumerate(broc_list):
-            v = _apply_4x4(broc_verts_raw, _scale_pos_4x4(bd["scale"], bd["pos"]))
+            v = _apply_4x4(broc_verts_raw,
+                           _scale_pos_4x4(bd["scale"], bd["pos"]))
             ps.register_surface_mesh(f"broc_{bi}", v, broc_faces,
                                      color=(0.2, 0.6, 0.15), smooth_shade=True)
 
@@ -309,6 +368,13 @@ def main():
                            _scale_pos_4x4(td["scale"], td["pos"]))
             ps.register_surface_mesh(f"tomato_{ti}", v, tomato_faces,
                                      color=(0.85, 0.15, 0.1), smooth_shade=True)
+
+    def _update_mushroom():
+        for mi, md in enumerate(mushroom_list):
+            v = _apply_4x4(mushroom_verts_raw,
+                           _scale_pos_4x4(md["scale"], md["pos"]))
+            ps.register_surface_mesh(f"mushroom_{mi}", v, mushroom_faces,
+                                     color=(0.9, 0.85, 0.7), smooth_shade=True)
 
     def _update_noodles():
         nv, ne = generate_noodle_curves(
@@ -338,10 +404,10 @@ def main():
         config["contact"]["enable"] = True
         config["contact"]["friction"]["enable"] = False
         config["contact"]["d_hat"] = 0.0005
-        config["newton"]["semi_implicit"] = True
-        config["newton"]["velocity_tol"] = 1
+        config["newton"]["semi_implicit"] = False
+        config["newton"]["velocity_tol"] = 0.5
         config["newton"]["transrate_tol"] = 10
-        config["linear_system"]["tol_rate"] = 1e-4
+        config["linear_system"]["tol_rate"] = 1e-5
 
         scene = Scene(config)
         scene.animator().substep(1)
@@ -352,13 +418,16 @@ def main():
         krb = KirchhoffRodBending()
 
         tabular = scene.contact_tabular()
-        tabular.default_model(0.01, 1.0 * GPa)
+        tabular.default_model(0.00, 1.0 * GPa)
         default_elem = tabular.default_element()
         noodle_elem = tabular.create("noodle")
         tomato_elem = tabular.create("tomato")
+        mushroom_elem = tabular.create("mushroom")
 
         # ---- Pan (fixed) ----
-        pan_mesh = trimesh(*load_usd_mesh(PAN_USD))
+        pan_v_sim, pan_f_sim = load_usd_mesh(PAN_USD)
+        pan_v_scaled = pan_v_sim * np.array(pan_scale, dtype=np.float64)
+        pan_mesh = trimesh(pan_v_scaled, pan_f_sim)
         label_surface(pan_mesh)
         pan_mesh.triangles().create(builtin.orient, 1)
         ab_shell.apply_to(pan_mesh, 100.0 * MPa, thickness=0.0001)
@@ -390,9 +459,7 @@ def main():
             bmesh.triangles().create(builtin.orient, 1)
             ab_shell.apply_to(bmesh, 100.0 * MPa, thickness=0.001)
             default_elem.apply_to(bmesh)
-            M = np.eye(4, dtype=np.float64)
-            M[:3, 3] = bd["pos"]
-            view(bmesh.transforms())[0] = M
+            view(bmesh.transforms())[0] = _pos_4x4(bd["pos"])
             bobj = scene.objects().create(f"broc_{bi}")
             bobj.geometries().create(bmesh)
             broc_objs.append(bobj)
@@ -402,8 +469,7 @@ def main():
         tomato_moduli = ElasticModuli.youngs_poisson(0.01 * MPa, 0.45)
         for ti, td in enumerate(tomato_list):
             sc = td["scale"]
-            Vs_scaled = tomato_tet_Vs * sc
-            Vs_offset = Vs_scaled + np.array(td["pos"], dtype=np.float64)
+            Vs_offset = tomato_tet_Vs * sc + np.array(td["pos"], dtype=np.float64)
             tmesh = tetmesh(Vs_offset, tomato_tet_Ts)
             label_surface(tmesh)
             label_triangle_orient(tmesh)
@@ -413,6 +479,22 @@ def main():
             tobj = scene.objects().create(f"tomato_{ti}")
             tobj.geometries().create(tmesh)
             tomato_objs.append(tobj)
+
+        # ---- Mushroom slices (FEM deformable, dynamic) ----
+        mushroom_objs = []
+        mushroom_moduli = ElasticModuli.youngs_poisson(0.005 * MPa, 0.45)
+        for mi, md in enumerate(mushroom_list):
+            sc = md["scale"]
+            Vs_offset = mushroom_tet_Vs * sc + np.array(md["pos"], dtype=np.float64)
+            mmesh = tetmesh(Vs_offset, mushroom_tet_Ts)
+            label_surface(mmesh)
+            label_triangle_orient(mmesh)
+            mmesh = flip_inward_triangles(mmesh)
+            snh.apply_to(mmesh, mushroom_moduli)
+            mushroom_elem.apply_to(mmesh)
+            mobj = scene.objects().create(f"mushroom_{mi}")
+            mobj.geometries().create(mmesh)
+            mushroom_objs.append(mobj)
 
         # ---- Noodles (deformable, dynamic) ----
         noodles_obj = scene.objects().create("noodles")
@@ -451,7 +533,8 @@ def main():
         # ---- Init ----
         w.init(scene)
         print(f"[sim] world.init() done  ({len(broc_list)} broc, "
-              f"{len(tomato_list)} tomato, {nx*ny} noodles)")
+              f"{len(tomato_list)} tomato, {len(mushroom_list)} mushroom, "
+              f"{nx*ny} noodles)")
 
         sgui = SceneGUI(scene, "merge")
         sgui.register()
@@ -463,6 +546,7 @@ def main():
         noodles_obj_ref[0] = noodles_obj
         broc_objs_ref[0] = broc_objs
         tomato_objs_ref[0] = tomato_objs
+        mushroom_objs_ref[0] = mushroom_objs
         mode[0] = "simulation"
         sim_running[0] = True
 
@@ -479,6 +563,7 @@ def main():
         noodles_obj_ref[0] = None
         broc_objs_ref[0] = []
         tomato_objs_ref[0] = []
+        mushroom_objs_ref[0] = []
         mode[0] = "placement"
         sim_running[0] = False
         _show_placement()
@@ -495,6 +580,7 @@ def main():
         noodle_verts = {}
         broc_tfs = {}
         tomato_verts = {}
+        mushroom_verts = {}
 
         if noodles_obj_ref[0] is not None:
             geo_ids = noodles_obj_ref[0].geometries().ids()
@@ -518,21 +604,34 @@ def main():
             pos = np.array(view(geo.positions()), dtype=np.float64)
             tomato_verts[f"tomato_{ti}"] = pos.tolist()
 
-        return noodle_verts, broc_tfs, tomato_verts
+        for mi, mobj in enumerate(mushroom_objs_ref[0]):
+            geo_ids = mobj.geometries().ids()
+            slot, _ = scene.geometries().find(int(geo_ids[0]))
+            geo = slot.geometry()
+            pos = np.array(view(geo.positions()), dtype=np.float64)
+            mushroom_verts[f"mushroom_{mi}"] = pos.tolist()
+
+        return noodle_verts, broc_tfs, tomato_verts, mushroom_verts
 
     def _save(with_record: bool):
         broc_map = {}
         for bi, bd in enumerate(broc_list):
-            broc_map[f"broc_{bi}"] = {"pos": list(bd["pos"]), "scale": bd["scale"]}
+            broc_map[f"broc_{bi}"] = {"pos": list(bd["pos"]),
+                                      "scale": bd["scale"]}
         tomato_map = {}
         for ti, td in enumerate(tomato_list):
             tomato_map[f"tomato_{ti}"] = {"pos": list(td["pos"]),
                                           "scale": td["scale"]}
+        mushroom_map = {}
+        for mi, md in enumerate(mushroom_list):
+            mushroom_map[f"mushroom_{mi}"] = {"pos": list(md["pos"]),
+                                              "scale": md["scale"]}
         data = {
-            "pan": {"pos": list(pan_pos), "quat": list(pan_quat)},
+            "pan": {"pos": list(pan_pos), "quat": list(pan_quat), "scale": list(pan_scale)},
             "spatula": {"pos": list(spatula_pos), "quat": list(spatula_quat)},
             "broccoli": broc_map,
             "tomato": tomato_map,
+            "mushroom": mushroom_map,
             "noodles": {
                 "center": list(noodle_center),
                 "grid_nx": noodle_nx[0],
@@ -546,14 +645,16 @@ def main():
             "ground_height": ground_z[0],
         }
         if with_record:
-            noodle_verts, broc_tfs, tomato_vs = _capture_sim_state()
+            noodle_verts, broc_tfs, tomato_vs, mush_vs = _capture_sim_state()
             data["recorded_state"] = {
                 "noodles": noodle_verts,
                 "broccoli": broc_tfs,
                 "tomato": tomato_vs,
+                "mushroom": mush_vs,
             }
             print(f"[place] captured {len(noodle_verts)} noodles, "
-                  f"{len(broc_tfs)} broccoli, {len(tomato_vs)} tomato")
+                  f"{len(broc_tfs)} broccoli, {len(tomato_vs)} tomato, "
+                  f"{len(mush_vs)} mushroom")
         with open(output_path, "w") as f:
             json.dump(data, f, indent=2)
         tag = " (+state)" if with_record else ""
@@ -585,6 +686,12 @@ def main():
         c, pan_pos[1] = imgui.SliderFloat("Pan Y", pan_pos[1], -1.0, 1.0)
         pan_changed |= c
         c, pan_pos[2] = imgui.SliderFloat("Pan Z", pan_pos[2], 0.0, 2.0)
+        pan_changed |= c
+        c, pan_scale[0] = imgui.SliderFloat("Pan SX", pan_scale[0], 0.1, 5.0)
+        pan_changed |= c
+        c, pan_scale[1] = imgui.SliderFloat("Pan SY", pan_scale[1], 0.1, 5.0)
+        pan_changed |= c
+        c, pan_scale[2] = imgui.SliderFloat("Pan SZ", pan_scale[2], 0.1, 5.0)
         pan_changed |= c
         if pan_changed and is_placement:
             _update_pan()
@@ -667,6 +774,41 @@ def main():
             tomato_changed = True
         if tomato_changed and is_placement:
             _update_tomato()
+        imgui.Separator()
+
+        # ======================== Mushroom ========================
+        imgui.Text(f"=== Mushroom ({len(mushroom_list)}) ===")
+        if is_placement and imgui.Button("Add Mushroom"):
+            mushroom_list.append({
+                "pos": [pan_pos[0], pan_pos[1], pan_pos[2] + 0.05],
+                "scale": 1.0,
+            })
+            _update_mushroom()
+
+        mush_changed = False
+        mush_remove = None
+        for mi, md in enumerate(mushroom_list):
+            imgui.Text(f"-- mushroom_{mi} --")
+            c, md["pos"][0] = imgui.SliderFloat(
+                f"X##m{mi}", md["pos"][0], -0.5, 1.5)
+            mush_changed |= c
+            c, md["pos"][1] = imgui.SliderFloat(
+                f"Y##m{mi}", md["pos"][1], -1.0, 1.0)
+            mush_changed |= c
+            c, md["pos"][2] = imgui.SliderFloat(
+                f"Z##m{mi}", md["pos"][2], 0.0, 2.0)
+            mush_changed |= c
+            c, md["scale"] = imgui.SliderFloat(
+                f"Scale##m{mi}", md["scale"], 0.1, 5.0)
+            mush_changed |= c
+            if is_placement and len(mushroom_list) > 1:
+                if imgui.Button(f"Remove##m{mi}"):
+                    mush_remove = mi
+        if mush_remove is not None:
+            mushroom_list.pop(mush_remove)
+            mush_changed = True
+        if mush_changed and is_placement:
+            _update_mushroom()
         imgui.Separator()
 
         # ======================== Noodles ========================
