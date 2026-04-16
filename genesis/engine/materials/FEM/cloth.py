@@ -35,6 +35,10 @@ class Cloth(Base):
     bending_stiffness : float, optional
         Bending resistance coefficient. If None, no bending resistance.
         Default is None.
+    aerodynamic_drag : float, optional
+        Aerodynamic drag coefficient (C_d * rho_air / 2). Models air resistance
+        as a dissipative force proportional to the face-normal velocity component
+        and face area. If None, no aerodynamic damping is applied. Default is None.
     model : str, optional
         Shell constitution model. ``"strain_limiting_baraff_witkin"`` uses
         ``StrainLimitingBaraffWitkinShell``, ``"neohookean"`` uses ``NeoHookeanShell``.
@@ -57,7 +61,8 @@ class Cloth(Base):
     >>> cloth = scene.add_entity(
     ...     morph=gs.morphs.Mesh(file="cloth.obj"),
     ...     material=gs.materials.FEM.Cloth(
-    ...         E=10e3, nu=0.49, rho=200, thickness=0.001, bending_stiffness=10.0
+    ...         E=10e3, nu=0.49, rho=200, thickness=0.001,
+    ...         bending_stiffness=10.0, aerodynamic_drag=1.0,
     ...     ),
     ... )
     """
@@ -67,4 +72,7 @@ class Cloth(Base):
     rho: PositiveFloat = 200.0
     thickness: PositiveFloat = 0.001
     bending_stiffness: NonNegativeFloat | None = None
+    aerodynamic_drag: NonNegativeFloat | None = None
+    curvature_drag_scale: NonNegativeFloat = 0.0
+    curvature_inflate_scale: NonNegativeFloat = 0.0
     model: Literal["strain_limiting_baraff_witkin", "neohookean"] = "strain_limiting_baraff_witkin"
