@@ -22,7 +22,7 @@ import genesis as gs
 from _replay_common import TrajectoryReplay
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
-_DEFAULT_SEQ_DIR = _REPO_ROOT / "DemoAssets" / "yoyo" / "v6" / "seq"
+_DEFAULT_SEQ_DIR = _REPO_ROOT / "DemoAssets" / "yoyo" / "v7" / "seq"
 
 
 class YoyoV5Replay(TrajectoryReplay):
