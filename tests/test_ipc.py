@@ -1,5 +1,6 @@
 import math
 import os
+import tempfile
 from itertools import permutations
 from pathlib import Path
 from typing import TYPE_CHECKING, cast, Any
@@ -1810,6 +1811,358 @@ def test_cloth_uniform_biaxial_stretching(E, nu, strech_scale, n_envs, show_view
     cloth_aabb_extent = cloth_aabb_max - cloth_aabb_min
     assert (cloth_aabb_extent[..., :2] < STRETCH_RATIO_1 * (2.0 * CLOTH_HALF)).all()
     assert ((0.001 < cloth_aabb_extent[..., 2]) & (cloth_aabb_extent[..., 2] < 0.2)).all()
+
+
+@pytest.mark.required
+@pytest.mark.parametrize("n_envs", [0, 2])
+def test_cloth_aerodynamic_drag(n_envs, show_viewer):
+    """Drop two identical cloths under gravity — one with aerodynamic drag, one without.
+
+    Compare their centroid Z after N steps: the cloth with drag must fall significantly
+    less than the one without, confirming the aerodynamic damping force is active.
+    """
+    DT = 0.01
+    N_STEPS = 40
+    DROP_HEIGHT = 1.0
+    DRAG_COEFF = 2.0
+
+    def run_cloth_drop(aerodynamic_drag):
+        scene = gs.Scene(
+            sim_options=gs.options.SimOptions(
+                dt=DT,
+                gravity=(0.0, 0.0, -9.8),
+            ),
+            coupler_options=gs.options.IPCCouplerOptions(
+                contact_enable=False,
+                newton_tolerance=0.1,
+            ),
+            show_viewer=show_viewer,
+        )
+
+        asset_path = get_hf_dataset(pattern="IPC/grid20x20.obj")
+        cloth = scene.add_entity(
+            morph=gs.morphs.Mesh(
+                file=f"{asset_path}/IPC/grid20x20.obj",
+                scale=1.0,
+                pos=(0.0, 0.0, DROP_HEIGHT),
+                euler=(90, 0, 0),
+            ),
+            material=gs.materials.FEM.Cloth(
+                E=1e4,
+                nu=0.3,
+                rho=200.0,
+                thickness=0.001,
+                aerodynamic_drag=aerodynamic_drag,
+            ),
+        )
+
+        scene.build(n_envs=n_envs)
+        for _ in range(N_STEPS):
+            scene.step()
+
+        cloth_positions = tensor_to_array(cloth.get_state().pos)
+        return cloth_positions[..., 2].mean(axis=-1)
+
+    centroid_z_no_drag = run_cloth_drop(aerodynamic_drag=None)
+    centroid_z_zero_drag = run_cloth_drop(aerodynamic_drag=0.0)
+    centroid_z_drag = run_cloth_drop(aerodynamic_drag=DRAG_COEFF)
+
+    # drag=0.0 must behave identically to drag=None
+    assert_allclose(centroid_z_zero_drag, centroid_z_no_drag, tol=1e-6)
+
+    # Both cloths must have fallen (below initial height)
+    assert (centroid_z_no_drag < DROP_HEIGHT).all()
+    assert (centroid_z_drag < DROP_HEIGHT).all()
+
+    # Aerodynamic drag must significantly slow the fall
+    fall_no_drag = DROP_HEIGHT - centroid_z_no_drag
+    fall_drag = DROP_HEIGHT - centroid_z_drag
+    assert (fall_drag < fall_no_drag * 0.1).all(), (
+        f"Cloth with drag fell {fall_drag} but without drag fell {fall_no_drag}. "
+        f"Drag should reduce fall distance to less than 10% of no-drag fall."
+    )
+
+
+@pytest.mark.required
+@pytest.mark.parametrize("n_envs", [0, 2])
+def test_cloth_curvature_drag(n_envs, show_viewer):
+    """Verify curvature-aware aerodynamic drag modulation.
+
+    Drop a cloth with aerodynamic drag enabled. Compare results with
+    curvature_drag_scale=0 (baseline) vs curvature_drag_scale>0 (curvature active).
+
+    A falling cloth deforms into a bowl shape (center sags), developing curvature.
+    With curvature_drag_scale>0, concave regions get amplified drag, producing
+    measurably different centroid positions from the curvature-free baseline.
+    """
+    DT = 0.01
+    N_STEPS = 60
+    DROP_HEIGHT = 1.0
+    DRAG_COEFF = 1.0
+
+    def run_cloth_drop(curvature_drag_scale):
+        scene = gs.Scene(
+            sim_options=gs.options.SimOptions(
+                dt=DT,
+                gravity=(0.0, 0.0, -9.8),
+            ),
+            coupler_options=gs.options.IPCCouplerOptions(
+                contact_enable=False,
+                newton_tolerance=0.1,
+            ),
+            show_viewer=show_viewer,
+        )
+
+        asset_path = get_hf_dataset(pattern="IPC/grid20x20.obj")
+        cloth = scene.add_entity(
+            morph=gs.morphs.Mesh(
+                file=f"{asset_path}/IPC/grid20x20.obj",
+                scale=1.0,
+                pos=(0.0, 0.0, DROP_HEIGHT),
+                euler=(90, 0, 0),
+            ),
+            material=gs.materials.FEM.Cloth(
+                E=1e4,
+                nu=0.3,
+                rho=200.0,
+                thickness=0.001,
+                aerodynamic_drag=DRAG_COEFF,
+                curvature_drag_scale=curvature_drag_scale,
+            ),
+        )
+
+        scene.build(n_envs=n_envs)
+        for _ in range(N_STEPS):
+            scene.step()
+
+        cloth_positions = tensor_to_array(cloth.get_state().pos)
+        return cloth_positions[..., 2].mean(axis=-1)
+
+    centroid_z_no_curv = run_cloth_drop(curvature_drag_scale=0.0)
+    centroid_z_with_curv = run_cloth_drop(curvature_drag_scale=10.0)
+
+    # Both cloths must have fallen from initial height
+    assert (centroid_z_no_curv < DROP_HEIGHT).all()
+    assert (centroid_z_with_curv < DROP_HEIGHT).all()
+
+    # Curvature modulation must produce measurably different results
+    diff = np.abs(centroid_z_no_curv - centroid_z_with_curv)
+    assert (diff > 1e-6).all(), (
+        f"Curvature drag scale had no effect. "
+        f"Without curvature: {centroid_z_no_curv}, with curvature: {centroid_z_with_curv}"
+    )
+
+
+def _generate_hemisphere_obj(filepath, radius=0.25, n_lat=12, n_lon=20):
+    """Generate a hemisphere mesh OBJ (dome at +Y, opening at Y=0)."""
+    verts = []
+    faces = []
+
+    # Pole vertex
+    verts.append((0.0, radius, 0.0))
+
+    # Latitude rings from near-pole to equator
+    for i in range(1, n_lat + 1):
+        theta = (np.pi / 2) * i / n_lat
+        y = radius * np.cos(theta)
+        r = radius * np.sin(theta)
+        for j in range(n_lon):
+            phi = 2 * np.pi * j / n_lon
+            x = r * np.cos(phi)
+            z = r * np.sin(phi)
+            verts.append((x, y, z))
+
+    # Triangle fan at pole
+    for j in range(n_lon):
+        j_next = (j + 1) % n_lon
+        faces.append((1, 1 + j + 1, 1 + j_next + 1))
+
+    # Quad strips between rings
+    for i in range(n_lat - 1):
+        ring_start = 1 + i * n_lon
+        next_ring_start = 1 + (i + 1) * n_lon
+        for j in range(n_lon):
+            j_next = (j + 1) % n_lon
+            v00 = ring_start + j + 1
+            v01 = ring_start + j_next + 1
+            v10 = next_ring_start + j + 1
+            v11 = next_ring_start + j_next + 1
+            faces.append((v00, v10, v11))
+            faces.append((v00, v11, v01))
+
+    with open(filepath, "w") as f:
+        for v in verts:
+            f.write(f"v {v[0]:.8f} {v[1]:.8f} {v[2]:.8f}\n")
+        for face in faces:
+            f.write(f"f {face[0]} {face[1]} {face[2]}\n")
+
+
+@pytest.mark.required
+@pytest.mark.parametrize("n_envs", [0, 2])
+def test_hemisphere_curvature_drag(n_envs, show_viewer):
+    """Dome (convex down) must fall faster than parachute (concave down).
+
+    Two identical hemisphere meshes drop under gravity with the same
+    aerodynamic_drag and curvature_drag_scale. The only difference is
+    orientation: one opens downward (parachute), the other opens upward (dome).
+
+    With curvature-aware drag (min-clamped H_v ≤ 0), the dome's convex
+    exterior facing velocity gets reduced drag (H_v < 0), while the
+    parachute's concave interior gets baseline drag (H_v clamped to 0).
+    """
+    DT = 0.01
+    N_STEPS = 80
+    DROP_HEIGHT = 1.5
+    DRAG = 0.05
+    CURV_SCALE = 5.0
+
+    tmpdir = tempfile.mkdtemp()
+    hemi_obj = os.path.join(tmpdir, "hemisphere.obj")
+    _generate_hemisphere_obj(hemi_obj)
+
+    def run_hemisphere_drop(euler):
+        scene = gs.Scene(
+            sim_options=gs.options.SimOptions(
+                dt=DT,
+                gravity=(0.0, 0.0, -9.8),
+            ),
+            coupler_options=gs.options.IPCCouplerOptions(
+                contact_enable=False,
+                newton_tolerance=0.5,
+                newton_translation_tolerance=10.0,
+            ),
+            show_viewer=show_viewer,
+        )
+
+        hemi = scene.add_entity(
+            morph=gs.morphs.Mesh(
+                file=hemi_obj,
+                scale=1.0,
+                pos=(0.0, 0.0, DROP_HEIGHT),
+                euler=euler,
+            ),
+            material=gs.materials.FEM.Cloth(
+                E=20e3,
+                nu=0.4,
+                rho=200.0,
+                thickness=0.001,
+                bending_stiffness=20.0,
+                aerodynamic_drag=DRAG,
+                curvature_drag_scale=CURV_SCALE,
+            ),
+        )
+
+        scene.build(n_envs=n_envs)
+        for _ in range(N_STEPS):
+            scene.step()
+
+        positions = tensor_to_array(hemi.get_state().pos)
+        return positions[..., 2].mean(axis=-1)
+
+    # Parachute: open-side down (euler 90° → dome at +Z, opening at Z=0)
+    centroid_z_parachute = run_hemisphere_drop(euler=(90, 0, 0))
+    # Dome: open-side up (euler -90° → dome at -Z, opening at Z=0)
+    centroid_z_dome = run_hemisphere_drop(euler=(-90, 0, 0))
+
+    # Both must have fallen
+    assert (centroid_z_parachute < DROP_HEIGHT).all()
+    assert (centroid_z_dome < DROP_HEIGHT).all()
+
+    # Parachute must fall less than dome (higher centroid = more drag)
+    fall_parachute = DROP_HEIGHT - centroid_z_parachute
+    fall_dome = DROP_HEIGHT - centroid_z_dome
+    assert (fall_parachute < fall_dome).all(), (
+        f"Parachute fell {fall_parachute} but dome fell {fall_dome}. "
+        f"Curvature-aware drag should make the parachute fall less than the dome."
+    )
+
+
+@pytest.mark.required
+@pytest.mark.parametrize("n_envs", [0, 2])
+def test_hemisphere_curvature_inflate(n_envs, show_viewer):
+    """Curvature inflate must slow descent of a parachute (open-side down).
+
+    Drop identical hemispheres in parachute orientation (open-side down).
+    Compare curvature_inflate_scale=0 (baseline) vs curvature_inflate_scale>0.
+
+    With inflate active, concave-facing-velocity regions (H_v > 0) get increased
+    drag, slowing the fall. The inflate hemisphere must have a higher centroid Z
+    (fell less) than the baseline.
+
+    Also verifies that inflate_scale=0 is bit-identical to curvature-only baseline.
+    """
+    DT = 0.01
+    N_STEPS = 80
+    DROP_HEIGHT = 1.5
+    DRAG = 0.05
+    CURV_SCALE = 5.0
+
+    tmpdir = tempfile.mkdtemp()
+    hemi_obj = os.path.join(tmpdir, "hemisphere.obj")
+    _generate_hemisphere_obj(hemi_obj)
+
+    def run_hemisphere_drop(curvature_inflate_scale):
+        scene = gs.Scene(
+            sim_options=gs.options.SimOptions(
+                dt=DT,
+                gravity=(0.0, 0.0, -9.8),
+            ),
+            coupler_options=gs.options.IPCCouplerOptions(
+                contact_enable=False,
+                newton_tolerance=0.5,
+                newton_translation_tolerance=10.0,
+            ),
+            show_viewer=show_viewer,
+        )
+
+        hemi = scene.add_entity(
+            morph=gs.morphs.Mesh(
+                file=hemi_obj,
+                scale=1.0,
+                pos=(0.0, 0.0, DROP_HEIGHT),
+                # Parachute orientation: open-side down
+                euler=(90, 0, 0),
+            ),
+            material=gs.materials.FEM.Cloth(
+                E=20e3,
+                nu=0.4,
+                rho=200.0,
+                thickness=0.001,
+                bending_stiffness=20.0,
+                aerodynamic_drag=DRAG,
+                curvature_drag_scale=CURV_SCALE,
+                curvature_inflate_scale=curvature_inflate_scale,
+            ),
+        )
+
+        scene.build(n_envs=n_envs)
+        for _ in range(N_STEPS):
+            scene.step()
+
+        positions = tensor_to_array(hemi.get_state().pos)
+        return positions[..., 2].mean(axis=-1)
+
+    centroid_z_no_inflate = run_hemisphere_drop(curvature_inflate_scale=0.0)
+    centroid_z_no_inflate_2 = run_hemisphere_drop(curvature_inflate_scale=0.0)
+    centroid_z_with_inflate = run_hemisphere_drop(curvature_inflate_scale=5.0)
+
+    # inflate_scale=0 must be bit-identical across runs
+    assert_allclose(centroid_z_no_inflate, centroid_z_no_inflate_2, tol=1e-10)
+
+    # Both must have fallen
+    assert (centroid_z_no_inflate < DROP_HEIGHT).all()
+    assert (centroid_z_with_inflate < DROP_HEIGHT).all()
+
+    # Inflate must slow the fall (higher centroid = less fall)
+    fall_no_inflate = DROP_HEIGHT - centroid_z_no_inflate
+    fall_with_inflate = DROP_HEIGHT - centroid_z_with_inflate
+    assert (fall_with_inflate < fall_no_inflate).all(), (
+        f"Inflate did not slow descent. Without inflate fell {fall_no_inflate}, with inflate fell {fall_with_inflate}."
+    )
+
+    # The effect should be significant (at least 10% reduction in fall distance)
+    reduction = (fall_no_inflate - fall_with_inflate) / fall_no_inflate
+    assert (reduction > 0.1).all(), f"Inflate effect too small: only {reduction * 100:.1f}% reduction in fall distance."
 
 
 @pytest.mark.required

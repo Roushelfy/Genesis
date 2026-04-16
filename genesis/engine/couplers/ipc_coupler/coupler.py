@@ -42,6 +42,7 @@ if TYPE_CHECKING or UIPC_AVAILABLE:
     import polyscope as ps
     from uipc.backend import SceneVisitor
     from uipc.constitution import (
+        AerodynamicDamping,
         AffineBodyConstitution,
         AffineBodyShell,
         AffineBodyPrismaticJoint,
@@ -410,6 +411,7 @@ class IPCCoupler(RBC):
         self._ipc_dsb: DiscreteShellBending | None = None
         self._ipc_stress_pdsb: StressPlasticDiscreteShellBending | None = None
         self._ipc_strain_pdsb: StrainPlasticDiscreteShellBending | None = None
+        self._ipc_aero: AerodynamicDamping | None = None
         self._ipc_hks: HookeanSpring | None = None
         self._ipc_krb: KirchhoffRodBending | None = None
         self._ipc_eac: ExternalArticulationConstraint | None = None
@@ -813,6 +815,18 @@ class IPCCoupler(RBC):
                             self._ipc_constitution_tabular.insert(self._ipc_dsb)
 
                         self._ipc_dsb.apply_to(mesh, bending_stiffness=entity.material.bending_stiffness)
+
+                # Aerodynamic damping (optional, for Cloth and Paper)
+                if entity.material.aerodynamic_drag is not None:
+                    if self._ipc_aero is None:
+                        self._ipc_aero = AerodynamicDamping()
+                        self._ipc_constitution_tabular.insert(self._ipc_aero)
+                    self._ipc_aero.apply_to(
+                        mesh,
+                        drag_coefficient=entity.material.aerodynamic_drag,
+                        curvature_scale=entity.material.curvature_drag_scale,
+                        inflate_scale=entity.material.curvature_inflate_scale,
+                    )
             else:
                 if self._ipc_stk is None:
                     self._ipc_stk = StableNeoHookean()
