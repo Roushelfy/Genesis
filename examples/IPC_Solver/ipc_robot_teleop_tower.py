@@ -93,15 +93,15 @@ def main():
     if not args.no_ipc:
         scene_kwargs["coupler_options"] = gs.options.IPCCouplerOptions(
             n_linesearch_iterations=8,
-            newton_tolerance=1e-1,
+            newton_tolerance=1e-2,
             newton_translation_tolerance=1,
             newton_semi_implicit_enable=False,
             linear_system_tolerance=1e-3,
             contact_enable=True,
             enable_rigid_rigid_contact=True,
             enable_rigid_ground_contact=True,
-            contact_d_hat=0.001,
-            contact_resistance=1e7,
+            contact_d_hat=0.0002,
+            contact_resistance=1e9,
         )
 
     scene = gs.Scene(**scene_kwargs)

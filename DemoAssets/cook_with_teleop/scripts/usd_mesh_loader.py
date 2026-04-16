@@ -1,4 +1,4 @@
-"""Load triangle mesh from a USD file using OpenUSD (pxr).
+"""Load triangle mesh from a USD / USDZ file using OpenUSD (pxr).
 
 Returns (vertices, faces) numpy arrays that can be fed directly
 into ``uipc.geometry.trimesh()``.
@@ -11,6 +11,10 @@ Typical USD asset layout (e.g. Pan025.usd)::
 
 By default only meshes under ``Visuals`` are loaded.  Pass
 ``prim_filter=None`` to load everything (old behaviour).
+
+For ``.usdz`` files the filter is automatically set to ``None``
+unless explicitly overridden, since USDZ archives from external
+sources rarely follow the Visuals/Collisions convention.
 """
 
 from __future__ import annotations
@@ -21,17 +25,21 @@ from typing import Sequence
 import numpy as np
 
 
+_SENTINEL = object()
+
+
 def load_usd_mesh(
     usd_path: str | Path,
-    prim_filter: str | Sequence[str] | None = "Visuals",
+    prim_filter: str | Sequence[str] | None | object = _SENTINEL,
 ) -> tuple[np.ndarray, np.ndarray]:
-    """Extract mesh geometry from a USD stage.
+    """Extract mesh geometry from a USD / USDZ stage.
 
     Args:
-        usd_path: Path to ``.usd`` / ``.usda`` file.
+        usd_path: Path to ``.usd`` / ``.usda`` / ``.usdz`` file.
         prim_filter: Only include mesh prims whose ancestor path contains
             one of these tokens.  Set to ``None`` to include all meshes.
-            Default ``"Visuals"`` — skips Collisions / Sites duplicates.
+            Default ``"Visuals"`` for ``.usd``/``.usda``, ``None`` for
+            ``.usdz``.
 
     Returns:
         vertices: (N, 3) float64 array
@@ -39,7 +47,11 @@ def load_usd_mesh(
     """
     from pxr import Usd, UsdGeom
 
+    usd_path = Path(usd_path)
     stage = Usd.Stage.Open(str(usd_path))
+
+    if prim_filter is _SENTINEL:
+        prim_filter = None if usd_path.suffix.lower() == ".usdz" else "Visuals"
 
     if isinstance(prim_filter, str):
         prim_filter = [prim_filter]

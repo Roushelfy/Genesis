@@ -124,6 +124,13 @@ class YoyoReplay(TrajectoryReplay):
         if self._is_long_sleep or self._force_closeup_camera:
             self.cam_fov = CLOSEUP_FOV
 
+        robot_pos = self._meta.get("robot_base_pos")
+        if robot_pos and robot_pos[2] > 0.5:
+            rz = robot_pos[2]
+            self.cam_pos = (1.2, -0.8, rz + 0.6)
+            self.cam_lookat = (0.2, 0.0, rz - 0.1)
+            self.cam_fov = 45
+
         # Joint data (remapped to qpos in post_build via _remap_joint_data)
         joint_meta = self._meta.get("joints", {})
         self._joint_names = joint_meta.get("names", [])
@@ -171,10 +178,24 @@ class YoyoReplay(TrajectoryReplay):
         # Robot
         urdf_rel = self._meta.get("urdf", "").replace("\\", "/")
         assert urdf_rel, "meta.json must specify 'urdf'"
-        urdf_path = _REPO_ROOT / urdf_rel
+        urdf_path = Path(urdf_rel)
+        if not urdf_path.is_absolute():
+            urdf_path = _REPO_ROOT / urdf_rel
+        if not urdf_path.exists() and "marvin_sharpa" in urdf_rel:
+            from huggingface_hub import snapshot_download
+            local_dir = snapshot_download(
+                repo_id="Genesis-Intelligence/internal_assets",
+                repo_type="dataset",
+                allow_patterns="marvin_sharpa_description/**",
+            )
+            urdf_path = Path(local_dir) / "marvin_sharpa_description" / "marvin_sharpa.urdf"
         assert urdf_path.exists(), f"Robot URDF not found: {urdf_path}"
+        robot_pos = self._meta.get("robot_base_pos", [0, 0, 0])
         self._robot = scene.add_entity(
-            gs.morphs.URDF(file=str(urdf_path), fixed=True, collision=False),
+            gs.morphs.URDF(
+                file=str(urdf_path), fixed=True, collision=False,
+                pos=tuple(robot_pos),
+            ),
             material=gs.materials.Rigid(coup_type="external_articulation"),
             vis_mode="visual",
             name="robot",

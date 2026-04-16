@@ -49,6 +49,8 @@ PAN_USD = _COOK_ROOT / "Pan025" / "Pan025.usd"
 SPATULA_USD = _COOK_ROOT / "Spatula018" / "Spatula018.usd"
 BROCCOLI_OBJ = _ASSET_ROOT / "broccoli.obj"
 TOMATO_NPZ = _ASSET_ROOT / "tomato_slice.npz"
+MUSHROOM_NPZ = _ASSET_ROOT / "mushroom_slice.npz"
+MUSHROOM_OBJ = _ASSET_ROOT / "mushroom_slice.obj"
 DEFAULT_TRAJ = _COOK_ROOT / "trajectories" / "cooking_demo.json"
 DEFAULT_PLACEMENT = _ASSET_ROOT / "placement.json"
 
@@ -85,6 +87,13 @@ def _nlerp(q0, q1, t):
         b = -b
     q = (1.0 - t) * a + t * b
     return (q / np.linalg.norm(q)).tolist()
+
+
+def _pos_4x4(pos):
+    """Translation-only 4x4."""
+    M = np.eye(4, dtype=np.float64)
+    M[0, 3], M[1, 3], M[2, 3] = pos[0], pos[1], pos[2]
+    return M
 
 
 def load_mesh_usd(usd_path: Path):
@@ -283,7 +292,7 @@ def main():
                         help="Path to trajectory JSON")
     parser.add_argument("--dt", type=float, default=0.005,
                         help="Simulation timestep (smaller = more accurate)")
-    parser.add_argument("--speed", type=float, default=0.4,
+    parser.add_argument("--speed", type=float, default=0.45,
                         help="Playback speed multiplier")
     parser.add_argument("--no-gui", action="store_true",
                         help="Run without polyscope GUI (headless)")
@@ -348,8 +357,8 @@ def main():
     config["contact"]["enable"] = True
     config["contact"]["friction"]["enable"] = True
     config["contact"]["d_hat"] = 0.0005
-    config["newton"]["semi_implicit"] = True
-    config["newton"]["velocity_tol"] = 1
+    config["newton"]["semi_implicit"] = False
+    config["newton"]["velocity_tol"] = 0.5
     config["newton"]["transrate_tol"] = 10
     config["newton"]["max_iter"] = 1024
     config["linear_system"]["tol_rate"] = 1e-4
@@ -371,6 +380,7 @@ def main():
 
     noodle_contact = tabular.create("noodle")
     tomato_contact = tabular.create("tomato")
+    mushroom_contact = tabular.create("mushroom")
 
     tabular.insert(pan_contact, spatula_contact, 0.0, 1.0 * GPa, enable=True)
     tabular.insert(broccoli_contact, pan_contact, 0.5, 1.0 * GPa, enable=True)
@@ -385,13 +395,29 @@ def main():
     tabular.insert(tomato_contact, broccoli_contact, 0.3, 1.0 * GPa, enable=True)
     tabular.insert(tomato_contact, noodle_contact, 0.3, 1.0 * GPa, enable=True)
     tabular.insert(tomato_contact, tomato_contact, 0.3, 1.0 * GPa, enable=True)
+    tabular.insert(mushroom_contact, pan_contact, 0.5, 1.0 * GPa, enable=True)
+    tabular.insert(mushroom_contact, spatula_contact, 0.5, 1.0 * GPa, enable=True)
+    tabular.insert(mushroom_contact, broccoli_contact, 0.3, 1.0 * GPa, enable=True)
+    tabular.insert(mushroom_contact, noodle_contact, 0.3, 1.0 * GPa, enable=True)
+    tabular.insert(mushroom_contact, tomato_contact, 0.3, 1.0 * GPa, enable=True)
+    tabular.insert(mushroom_contact, mushroom_contact, 0.0, 0.2 * GPa, enable=True)
 
     # ---- Initial placement from trajectory frame 0 ----
     frame0 = frames[0]
+    _raw_scale = placement.get("pan", {}).get("scale", [1.0, 1.0, 1.0])
+    if isinstance(_raw_scale, (int, float)):
+        pan_scale = np.array([_raw_scale, _raw_scale, _raw_scale], dtype=np.float64)
+    else:
+        pan_scale = np.array(_raw_scale, dtype=np.float64)
 
-    def _setup_kinematic_mesh(usd_path, entity_name, contact_elem, thickness):
+    def _setup_kinematic_mesh(usd_path, entity_name, contact_elem, thickness,
+                              scale=None):
         """Load USD mesh for kinematic replay (shell + STC + contact element)."""
-        mesh = load_mesh_usd(usd_path)
+        if scale is not None:
+            verts, faces = load_usd_mesh(usd_path)
+            mesh = trimesh(verts * scale, faces)
+        else:
+            mesh = load_mesh_usd(usd_path)
         label_surface(mesh)
         mesh.triangles().create(builtin.orient, 1)
         ab_shell.apply_to(mesh, 100.0 * MPa, thickness=thickness)
@@ -406,7 +432,8 @@ def main():
         obj.geometries().create(mesh)
         return obj
 
-    pan_obj = _setup_kinematic_mesh(PAN_USD, "pan", pan_contact, 0.0001)
+    pan_obj = _setup_kinematic_mesh(PAN_USD, "pan", pan_contact, 0.0001,
+                                    scale=pan_scale)
     spatula_obj = _setup_kinematic_mesh(SPATULA_USD, "spatula", spatula_contact, 0.001)
 
     # ---- Broccoli (dynamic, from placement recorded_state) ----
@@ -432,9 +459,7 @@ def main():
             view(bmesh.transforms())[0] = np.array(broc_rec[key], dtype=np.float64)
             print(f"[scene] {key}: transform from recorded_state")
         else:
-            M = np.eye(4, dtype=np.float64)
-            M[:3, 3] = bd["pos"]
-            view(bmesh.transforms())[0] = M
+            view(bmesh.transforms())[0] = _pos_4x4(bd["pos"])
             print(f"[scene] {key}: pos from placement config")
         bobj = scene.objects().create(key)
         bobj.geometries().create(bmesh)
@@ -548,6 +573,59 @@ def main():
             tomato_count += 1
         print(f"[scene] {tomato_count} tomato slices from placement config")
 
+    # ---- Mushroom slices (FEM deformable, dynamic) ----
+    mushroom_cfg = placement.get("mushroom", {})
+    mushroom_rec = rec_state.get("mushroom", {})
+    mushroom_objs: dict[str, object] = {}
+    mushroom_surf_data: dict[str, tuple] = {}
+    mushroom_count = 0
+
+    mush_tet_data = np.load(MUSHROOM_NPZ)
+    mush_base_Vs = mush_tet_data["vertices"].astype(np.float64)
+    mush_base_Ts = mush_tet_data["tetrahedra"].astype(np.int32)
+    mushroom_moduli = ElasticModuli.youngs_poisson(0.005 * MPa, 0.45)
+    print(f"[scene] Mushroom tet mesh: {len(mush_base_Vs)} nodes, {len(mush_base_Ts)} tets")
+
+    def _make_mushroom_tetmesh(sc, pos_or_verts, from_verts=False):
+        if from_verts:
+            Vs = np.array(pos_or_verts, dtype=np.float64).reshape(-1, 3)
+        else:
+            Vs = mush_base_Vs * sc + np.array(pos_or_verts, dtype=np.float64)
+        mmesh = tetmesh(Vs, mush_base_Ts)
+        label_surface(mmesh)
+        label_triangle_orient(mmesh)
+        mmesh = flip_inward_triangles(mmesh)
+        sv = np.array(view(mmesh.positions()), dtype=np.float64, copy=True).reshape(-1, 3)
+        st = np.array(view(mmesh.triangles().topo()), dtype=np.int32, copy=True).reshape(-1, 3)
+        snh.apply_to(mmesh, mushroom_moduli)
+        mushroom_contact.apply_to(mmesh)
+        return mmesh, sv, st
+
+    if mushroom_rec:
+        for key in sorted(mushroom_rec.keys()):
+            md = mushroom_cfg.get(key, {})
+            sc = md.get("scale", 1.0)
+            mmesh, sv, st = _make_mushroom_tetmesh(sc, mushroom_rec[key], from_verts=True)
+            mushroom_surf_data[key] = (sv, st)
+            print(f"[scene] {key}: verts from recorded_state")
+            mobj = scene.objects().create(key)
+            mobj.geometries().create(mmesh)
+            mushroom_objs[key] = mobj
+            mushroom_count += 1
+        print(f"[scene] {mushroom_count} mushrooms from recorded_state")
+    elif mushroom_cfg:
+        for key in sorted(mushroom_cfg.keys()):
+            md = mushroom_cfg[key]
+            sc = md.get("scale", 1.0)
+            mmesh, sv, st = _make_mushroom_tetmesh(sc, md.get("pos", [0, 0, 0]))
+            mushroom_surf_data[key] = (sv, st)
+            print(f"[scene] {key}: pos from placement config")
+            mobj = scene.objects().create(key)
+            mobj.geometries().create(mmesh)
+            mushroom_objs[key] = mobj
+            mushroom_count += 1
+        print(f"[scene] {mushroom_count} mushrooms from placement config")
+
     # ---- Ground ----
     ground_h = placement.get("ground_height", 0.0)
     ground_obj = scene.objects().create("ground")
@@ -575,6 +653,8 @@ def main():
         return pos, quat
 
     SPATULA_Z_OFFSET = -0.07
+    SPATULA_X_OFFSET = 0.04
+    SPATULA_OFFSET_DURATION = 0.4
 
     def _make_replay_cb(entity_name: str):
         def _cb(info: Animation.UpdateInfo):
@@ -585,8 +665,10 @@ def main():
             if pos is None:
                 return
             if entity_name == "spatula":
+                alpha = min(t / SPATULA_OFFSET_DURATION, 1.0)
                 pos = list(pos)
-                pos[2] += SPATULA_Z_OFFSET
+                pos[0] += SPATULA_X_OFFSET * alpha
+                pos[2] += SPATULA_Z_OFFSET * alpha
             geo = info.geo_slots()[0].geometry()
             view(geo.instances().find(builtin.is_constrained))[0] = 1
             mat = quat_pos_to_4x4(quat, pos)
@@ -607,7 +689,7 @@ def main():
     if seq_dir is not None or args.export_recover >= 0:
         exporter = CookSequenceExporter(scene, args.dt)
         pan_v, pan_f = load_usd_mesh(PAN_USD)
-        exporter.register_rigid("pan", pan_obj, pan_v, pan_f)
+        exporter.register_rigid("pan", pan_obj, pan_v * pan_scale, pan_f)
         spat_v, spat_f = load_usd_mesh(SPATULA_USD)
         exporter.register_rigid("spatula", spatula_obj, spat_v, spat_f)
         for key, bobj in broc_objs.items():
@@ -616,6 +698,9 @@ def main():
         for key, tobj in tomato_objs.items():
             tv, tt = tomato_surf_data[key]
             exporter.register_fem(key, tobj, tv, tt)
+        for key, mobj in mushroom_objs.items():
+            mv, mt = mushroom_surf_data[key]
+            exporter.register_fem(key, mobj, mv, mt)
         if noodle_count > 0:
             exporter.register_noodles(noodles_obj)
         print(f"[export] exporter ready  frame_skip={args.frame_skip}")

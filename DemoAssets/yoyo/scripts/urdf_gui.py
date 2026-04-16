@@ -338,11 +338,13 @@ class SequenceExporter:
         scene_state: SceneState,
         dt: float = 0.001,
         urdf_rel: str = "",
+        robot_base_pos: list[float] | None = None,
     ):
         self._joint_names = list(joint_names)
         self._ss = scene_state
         self._dt = dt
         self._urdf_rel = urdf_rel
+        self._robot_base_pos = robot_base_pos
         self._frame_ids: list[int] = []
         self._rigid_frames: dict[str, list[np.ndarray]] = {}
         self._fem_frames: dict[str, list[np.ndarray]] = {}
@@ -398,6 +400,8 @@ class SequenceExporter:
             meta["joints"] = {"data": "joints.npy", "names": self._joint_names}
         if self._urdf_rel:
             meta["urdf"] = self._urdf_rel
+        if self._robot_base_pos is not None:
+            meta["robot_base_pos"] = list(self._robot_base_pos)
         (seq_dir / "meta.json").write_text(json.dumps(meta, indent=2, ensure_ascii=True), encoding="utf-8")
         print(f"[seq-export] saved {len(self._frame_ids)} frames to {seq_dir}")
 
