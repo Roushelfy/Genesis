@@ -340,6 +340,7 @@ def run(
     )
     total_schedule_frames = len(schedule)
     sim_traj_frames = traj.n_frames - init_frame
+    steps_per_traj_frame = max(1, int(np.round(effective_traj_dt / sim_dt)))
     print(f"[replay] UIPC sim_dt={sim_dt}, traj dt={traj.dt}, play_speed={play_speed}x, "
           f"traj frames={sim_traj_frames} (from {init_frame}) -> schedule={total_schedule_frames} frames")
 
@@ -700,7 +701,9 @@ def run(
 
             cur_frame = world.frame()
             tf = sim["total_frames"]
-            imgui.Text(f"Frame: {cur_frame} / {tf}")
+            imgui.Text(f"Sim Frame: {cur_frame} / {tf}")
+            traj_f = int(cur_frame / max(steps_per_traj_frame, 1)) + init_frame
+            imgui.Text(f"Traj Frame: {traj_f}")
             if tf > 0:
                 imgui.Text(f"Progress: {min(cur_frame / max(tf, 1), 1.0) * 100:.1f}%")
 
@@ -904,7 +907,7 @@ def run_export_recover(
 
     output_dir = Path(AssetDir.output_path(__file__))
     if seq_dir is None:
-        seq_dir = _YOYO_DIR / "v6" / "seq"
+        seq_dir = _YOYO_DIR / "v7" / "seq"
 
     app = URDFGuiApp(
         urdf_path=urdf_path,
@@ -1011,7 +1014,7 @@ def main() -> None:
         description="Replay recorded trajectory in Polyscope GUI"
     )
     parser.add_argument(
-        "--traj-dir", type=str, default=str(_YOYO_DIR / "v5_init"),
+        "--traj-dir", type=str, default=str(_YOYO_DIR / "v5_init_blended_v1"),
         help="Directory containing trajectory.npz and meshes",
     )
     parser.add_argument(
