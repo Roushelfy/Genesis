@@ -251,6 +251,7 @@ class Mesh(RBC):
         metadata = metadata or {}
         must_update_surface = True
         roughness_factor = None
+        metallic_factor = None
         color_image = None
         color_factor = None
         opacity = 1.0
@@ -270,6 +271,9 @@ class Mesh(RBC):
 
                     if material.roughnessFactor is not None:
                         roughness_factor = (material.roughnessFactor,)
+
+                    if material.metallicFactor is not None:
+                        metallic_factor = (material.metallicFactor,)
 
                 elif isinstance(material, trimesh.visual.material.SimpleMaterial):
                     if material.image is not None:
@@ -318,14 +322,16 @@ class Mesh(RBC):
             if color_texture is not None:
                 opacity_texture = color_texture.check_dim(3)
             roughness_texture = mu.create_texture(None, roughness_factor, "linear")
+            metallic_texture = mu.create_texture(None, metallic_factor, "linear")
 
-            # Force update when mesh has its own texture (image from OBJ/glTF material),
+            # Force update when mesh has its own texture or color factor (from OBJ/glTF material),
             # otherwise the surface's pre-existing default ColorTexture takes priority.
-            has_mesh_texture = color_image is not None
+            has_mesh_texture = color_image is not None or color_factor is not None
             surface.update_texture(
                 color_texture=color_texture,
                 opacity_texture=opacity_texture,
                 roughness_texture=roughness_texture,
+                metallic_texture=metallic_texture,
                 force=has_mesh_texture,
             )
             mesh.visual = mu.surface_uvs_to_trimesh_visual(surface, uvs, len(mesh.vertices))
