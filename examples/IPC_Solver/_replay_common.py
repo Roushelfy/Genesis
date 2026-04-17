@@ -152,6 +152,10 @@ class TrajectoryReplay:
         parser.add_argument("--start-frame", type=int, default=0, help="Start from this frame")
         parser.add_argument("--save-frames", action="store_true", help="Save each frame as PNG")
         parser.add_argument("--follow", action="store_true", help="Camera follows the robot")
+        parser.add_argument("--stride", type=int, default=1, help="Render every Nth frame (subsample)")
+        parser.add_argument("--black-bg", action="store_true", help="Pure black background (Nyx only)")
+        parser.add_argument("--grey-bg", action="store_true", help="Uniform grey background (Nyx only)")
+        parser.add_argument("--sage-bg", action="store_true", help="Uniform sage-green background (Nyx only)")
         self.add_args(parser)
         self.args = parser.parse_args()
 
@@ -313,6 +317,39 @@ class TrajectoryReplay:
             env_map.texture = str((_REPO_ROOT / "DemoAssets/textures/san_carlos_left_marvin_modified.exr").resolve())
             env_map.rotation = 0.0
             env_map.multiplier = 1.0
+            nyx_lights = []
+            if getattr(self.args, "sage_bg", False):
+                env_map.texture = str((_REPO_ROOT / "DemoAssets/textures/sage.exr").resolve())
+                env_map.multiplier = 1.0
+                nyx_lights = [
+                    {"type": "directional", "dir": (-0.3, -0.4, -1.0),
+                     "color": (1, 1, 1), "intensity": 4.0, "shadow": True},
+                    {"type": "directional", "dir": (0.5, 0.3, -0.6),
+                     "color": (0.8, 0.85, 1.0), "intensity": 2.0, "shadow": False},
+                ]
+            elif getattr(self.args, "grey_bg", False):
+                env_map.texture = str((_REPO_ROOT / "DemoAssets/textures/grey.exr").resolve())
+                env_map.multiplier = 1.0
+                # Add directional lights since flat grey HDR is weak lighting
+                nyx_lights = [
+                    {"type": "directional", "dir": (-0.3, -0.4, -1.0),
+                     "color": (1, 1, 1), "intensity": 4.0, "shadow": True},
+                    {"type": "directional", "dir": (0.5, 0.3, -0.6),
+                     "color": (0.8, 0.85, 1.0), "intensity": 2.0, "shadow": False},
+                ]
+            elif getattr(self.args, "black_bg", False):
+                env_map.multiplier = 0.0
+                env_map.tint = ap.float3(0.0, 0.0, 0.0)
+                nyx_lights = [
+                    {"type": "directional", "dir": (-0.3, -0.4, -1.0),
+                     "color": (1, 1, 1), "intensity": 4.0, "shadow": True},
+                    {"type": "directional", "dir": (0.5, 0.3, -0.6),
+                     "color": (0.8, 0.85, 1.0), "intensity": 2.0, "shadow": False},
+                ]
+
+            # Subclass hook: optional extra directional lights
+            extra = getattr(self, "_extra_nyx_lights", None) or []
+            nyx_lights = list(nyx_lights) + list(extra)
 
             self._cam = self._scene.add_sensor(
                 NyxCameraOptions(
@@ -324,6 +361,7 @@ class TrajectoryReplay:
                     denoise=True,
                     render_mode=npr.ERenderMode.RefPathTracer,
                     env_maps=(env_map,),
+                    lights=nyx_lights,
                 )
             )
         else:
@@ -417,8 +455,15 @@ class TrajectoryReplay:
         if follow:
             cam_offset = np.array(self.cam_pos) - np.array(self.cam_lookat)
 
-        frames_rgb = []
+        stride = max(1, args.stride)
+        writer = imageio.get_writer(str(out), fps=max(1, self.fps // stride),
+                                    codec="libx264", macro_block_size=1)
+        frame_count = 0
         for i in range(start, self._n_frames):
+            if (i - start) % stride != 0:
+                # Still advance scene state for correct FK/cloth, but skip render
+                self._apply(i)
+                continue
             self._apply(i)
 
             if follow and self._robot is not None:
@@ -442,19 +487,17 @@ class TrajectoryReplay:
             rgb = self._render_frame()
             if frames_dir is not None:
                 imageio.imwrite(str(frames_dir / f"{i:05d}.png"), rgb)
-            frames_rgb.append(rgb)
+            writer.append_data(rgb)
+            frame_count += 1
             if (i + 1) % 100 == 0:
                 print(f"[render] Frame {i + 1}/{self._n_frames}")
 
-        writer = imageio.get_writer(str(out), fps=self.fps)
-        for rgb in frames_rgb:
-            writer.append_data(rgb)
         writer.close()
 
         if not use_nyx:
             self._cam.stop_recording()
 
-        print(f"[render] Saved {out} ({len(frames_rgb)} frames, {self.fps} fps)")
+        print(f"[render] Saved {out} ({frame_count} frames, {max(1, self.fps // stride)} fps)")
         if frames_dir is not None:
             print(f"[render] Individual frames in {frames_dir}/")
 

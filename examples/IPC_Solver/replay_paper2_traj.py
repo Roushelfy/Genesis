@@ -33,8 +33,8 @@ DEFAULT_TRAJ = str(_PAPER / "trajectory_sharpa.npz")
 
 class Paper2Replay(TrajectoryReplay):
     name = "paper2"
-    cam_pos = (0.5, -0.6, 1.1)
-    cam_lookat = (0.5, 0.0, 0.78)
+    cam_pos = (0.53, -1.2, 1.3)
+    cam_lookat = (0.53, 0.0, 1.0)
     cam_fov = 40
 
     def add_args(self, parser):

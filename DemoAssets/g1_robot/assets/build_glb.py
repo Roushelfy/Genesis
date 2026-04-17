@@ -49,7 +49,7 @@ class PBR:
 
 
 BLACK = PBR("black", color=(0.05, 0.05, 0.05), metallic=0.3, roughness=0.2)
-SILVER = PBR("silver", color=(0.9, 0.9, 0.9), metallic=0.6, roughness=0.2)
+SILVER = PBR("silver", color=(0.9, 0.9, 0.9), metallic=0.8, roughness=0.45)
 CYAN_GLOW = PBR("cyan_glow", color=(0.039, 0.820, 0.820), metallic=0.0, roughness=0.3, emissive=(0.039, 0.820, 0.820))
 LOGO_WHITE = PBR("logo_white", color=(0.95, 0.95, 0.95), metallic=0.0, roughness=0.3)
 
