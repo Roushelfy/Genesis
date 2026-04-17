@@ -30,7 +30,7 @@ BEEF_GLB = str(_DEMO / "cook/beef.glb")
 
 def main():
     parser = argparse.ArgumentParser(description="Replay cooking teleop trajectory")
-    _default_traj = str(_DEMO / "cook/trajectories/cooking_demo.json")
+    _default_traj = str(_DEMO / "cook/trajectories/cooking_keyframed_v1.json")
     parser.add_argument("--traj", type=str, default=_default_traj, help="Path to trajectory.json")
     parser.add_argument("--loop", action="store_true", help="Loop replay")
     parser.add_argument("--speed", type=float, default=1.0, help="Playback speed multiplier")
@@ -77,16 +77,19 @@ def main():
         material=gs.materials.Rigid(coup_type="ipc_only") if use_ipc else None,
     )
 
-    # Robot (kinematic — no IPC, just visual tracking)
-    robot = scene.add_entity(
-        gs.morphs.URDF(
-            file=MARVIN_URDF,
-            pos=(0, 0, 1.08),
-            collision=False,
-        ),
-        material=gs.materials.Rigid(gravity_compensation=1.0),
-        vis_mode="visual",
-    )
+    # Robot (only if trajectory has robot data)
+    robot = None
+    has_robot = frames and "robot" in frames[0]
+    if has_robot:
+        robot = scene.add_entity(
+            gs.morphs.URDF(
+                file=MARVIN_URDF,
+                pos=(0, 0, 1.08),
+                collision=False,
+            ),
+            material=gs.materials.Rigid(gravity_compensation=1.0),
+            vis_mode="visual",
+        )
 
     # Pan
     coup = "two_way_soft_constraint" if use_ipc else None
@@ -169,17 +172,19 @@ def main():
     scene.step()
 
     entities = {
-        "robot": robot,
         "pan": pan,
         "spatula": spatula,
         "meat_0": meat_0,
         "meat_1": meat_1,
     }
+    if robot is not None:
+        entities["robot"] = robot
     skip_keys = {"table", "ground", "sim_time"}
 
     # Robot: free base (7) + joints (18) = 25 qpos
     base_qpos = np.array([0.0, 0.0, 1.08, 1.0, 0.0, 0.0, 0.0])
-    print(f"Robot: n_qs={robot.n_qs}, n_dofs={robot.n_dofs}")
+    if robot is not None:
+        print(f"Robot: n_qs={robot.n_qs}, n_dofs={robot.n_dofs}")
 
     # Replay
     dt_frame = 1.0 / 60 / args.speed
@@ -191,22 +196,22 @@ def main():
             t_start = time.time()
 
             # Robot
-            if "robot" in frame:
+            if robot is not None and "robot" in frame:
                 joint_qpos = np.array(frame["robot"]["qpos"], dtype=np.float32)
                 full_qpos = np.concatenate([base_qpos, joint_qpos]).astype(np.float32)
                 robot.set_qpos(torch.from_numpy(full_qpos).unsqueeze(0).cuda())
 
             # Objects
-            for name, data in frame.items():
+            for name, obj_data in frame.items():
                 if name in skip_keys or name == "robot":
                     continue
                 if name not in entities:
                     continue
                 entity = entities[name]
-                if "pos" in data:
-                    entity.set_pos(data["pos"])
-                if "quat" in data:
-                    entity.set_quat(data["quat"])
+                if "pos" in obj_data:
+                    entity.set_pos(obj_data["pos"])
+                if "quat" in obj_data:
+                    entity.set_quat(obj_data["quat"])
 
             scene.step()
             scene.visualizer.update()

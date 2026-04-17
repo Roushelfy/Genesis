@@ -26,7 +26,6 @@ from scipy.spatial.transform import Rotation
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 _DEFAULT_SEQ = _REPO_ROOT / "DemoAssets" / "cook_with_teleop" / "seq"
 
-VERTS_PER_NOODLE = 51
 
 
 def tf_to_pos_quat(tf: np.ndarray):
@@ -116,27 +115,78 @@ def _prepare_rigid_world_mesh(seq_dir: Path, name: str, tf0: np.ndarray) -> Path
     print(f"[mesh] {name}: wrote world-space mesh ({len(local_verts)} verts)")
     return world_path
 
+VERTS_PER_NOODLE = None  # auto-detected from mesh.obj
 
-def _split_noodle_meshes(seq_dir: Path, n_noodles: int) -> list[Path]:
-    """Split the combined noodle line mesh into individual OBJ files."""
+
+def _detect_noodle_strands(verts: np.ndarray, edges: np.ndarray):
+    """Detect individual noodle strands from a combined line mesh.
+
+    Returns a list of (v_start, v_count) tuples, one per strand.
+    Strands are detected by finding connectivity gaps in the edge list.
+    """
+    n_verts = len(verts)
+    if edges is None or len(edges) == 0:
+        return [(0, n_verts)]
+
+    adj: dict[int, set[int]] = {i: set() for i in range(n_verts)}
+    for e in edges:
+        a, b = int(e[0]), int(e[1])
+        adj[a].add(b)
+        adj[b].add(a)
+
+    visited = [False] * n_verts
+    strands = []
+    for start in range(n_verts):
+        if visited[start]:
+            continue
+        chain = []
+        queue = [start]
+        visited[start] = True
+        while queue:
+            v = queue.pop(0)
+            chain.append(v)
+            for nb in adj[v]:
+                if not visited[nb]:
+                    visited[nb] = True
+                    queue.append(nb)
+        chain.sort()
+        strands.append((chain[0], len(chain)))
+    return strands
+
+
+def _split_noodle_meshes(seq_dir: Path, n_total_verts: int) -> tuple[list[Path], int]:
+    """Split the combined noodle line mesh into individual OBJ files.
+
+    Returns (list_of_paths, verts_per_noodle).
+    """
     noodle_dir = seq_dir / "noodles"
+    verts, _, edges = _read_obj(noodle_dir / "mesh.obj")
+
+    strands = _detect_noodle_strands(verts, edges)
+    n_noodles = len(strands)
+    vpn = strands[0][1] if strands else n_total_verts
+
     first_path = noodle_dir / "noodle_0.obj"
     if first_path.exists():
-        return [noodle_dir / f"noodle_{i}.obj" for i in range(n_noodles)]
+        old_v, _, _ = _read_obj(first_path)
+        if len(old_v) != vpn:
+            for i in range(500):
+                p = noodle_dir / f"noodle_{i}.obj"
+                if p.exists():
+                    p.unlink()
+                else:
+                    break
 
-    verts, _, edges = _read_obj(noodle_dir / "mesh.obj")
-    vpn = VERTS_PER_NOODLE
-    paths = []
-    for i in range(n_noodles):
-        v_start = i * vpn
-        v_end = v_start + vpn
-        nv = verts[v_start:v_end]
-        ne = np.array([[j, j + 1] for j in range(vpn - 1)], dtype=np.int32)
-        p = noodle_dir / f"noodle_{i}.obj"
-        _write_obj(p, nv, edges=ne)
-        paths.append(p)
+    if not first_path.exists():
+        for i, (v_start, v_count) in enumerate(strands):
+            nv = verts[v_start:v_start + v_count]
+            ne = np.array([[j, j + 1] for j in range(v_count - 1)], dtype=np.int32)
+            p = noodle_dir / f"noodle_{i}.obj"
+            _write_obj(p, nv, edges=ne)
+
+    paths = [noodle_dir / f"noodle_{i}.obj" for i in range(n_noodles)]
     print(f"[mesh] split {n_noodles} noodle meshes ({vpn} verts each)")
-    return paths
+    return paths, vpn
 
 
 def run_gui(seq_dir: Path, meta: dict, render_output: str | None = None) -> None:
@@ -192,7 +242,6 @@ def run_gui(seq_dir: Path, meta: dict, render_output: str | None = None) -> None
         rigid_entities[name] = ent
 
     # ---- FEM cloth entities (tomato slices) ----
-    # Mesh uses frame-0 vertex positions; set_position() per frame.
     fem_entities: dict[str, object] = {}
     for name in fem_data:
         mesh_path = seq_dir / name / "mesh.obj"
@@ -211,11 +260,12 @@ def run_gui(seq_dir: Path, meta: dict, render_output: str | None = None) -> None
     noodle_entities: list[object] = []
     noodle_positions: np.ndarray | None = None
     n_noodles = 0
+    vpn = 0
     for name in rod_data:
         noodle_positions = rod_data[name]
         n_total_verts = noodle_positions.shape[1]
-        n_noodles = n_total_verts // VERTS_PER_NOODLE
-        noodle_meshes = _split_noodle_meshes(seq_dir, n_noodles)
+        noodle_meshes, vpn = _split_noodle_meshes(seq_dir, n_total_verts)
+        n_noodles = len(noodle_meshes)
         for i, mp in enumerate(noodle_meshes):
             ent = scene.add_entity(
                 morph=gs.morphs.Mesh(file=str(mp)),
@@ -224,8 +274,8 @@ def run_gui(seq_dir: Path, meta: dict, render_output: str | None = None) -> None
                 name=f"noodle_{i}",
             )
             noodle_entities.append(ent)
-        print(f"[scene] {n_noodles} noodle FEM.Rope entities")
-        break  # only one "noodles" rod entry
+        print(f"[scene] {n_noodles} noodle FEM.Rope entities ({vpn} verts each)")
+        break
 
     cam = None
     if use_render:
@@ -239,8 +289,6 @@ def run_gui(seq_dir: Path, meta: dict, render_output: str | None = None) -> None
         )
 
     scene.build()
-
-    vpn = VERTS_PER_NOODLE
 
     def _apply_frame(i: int) -> None:
         if i < 0 or i >= frame_count:
@@ -261,29 +309,36 @@ def run_gui(seq_dir: Path, meta: dict, render_output: str | None = None) -> None
                 ent.set_position(frame_pos[v_start: v_start + vpn])
 
     if use_render:
-        import imageio
+        import cv2
 
         output_path = Path(render_output)
         output_path.parent.mkdir(parents=True, exist_ok=True)
+
         cam.start_recording()
-        frames_rgb = []
+        replay_fps = int(1.0 / meta.get("dt", 0.005) / 10)
+        fps = min(replay_fps, 60)
+        writer = None
         for i in range(frame_count):
             _apply_frame(i)
             scene._visualizer.update_visual_states(force_render=True)
             rgb_result = cam.render(rgb=True, force_render=True)
             rgb_tensor = rgb_result[0]
             rgb = rgb_tensor.cpu().numpy() if hasattr(rgb_tensor, "cpu") else np.array(rgb_tensor)
-            frames_rgb.append(rgb)
+            bgr = cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR)
+            if writer is None:
+                h, w = bgr.shape[:2]
+                writer = cv2.VideoWriter(
+                    str(output_path),
+                    cv2.VideoWriter_fourcc(*"mp4v"),
+                    fps, (w, h),
+                )
+            writer.write(bgr)
             if i % 50 == 0:
                 print(f"[render] Frame {i}/{frame_count}")
-        replay_fps = int(1.0 / meta.get("dt", 0.005) / 10)
-        fps = min(replay_fps, 60)
-        writer = imageio.get_writer(str(output_path), fps=fps)
-        for rgb in frames_rgb:
-            writer.append_data(rgb)
-        writer.close()
+        if writer is not None:
+            writer.release()
         cam.stop_recording()
-        print(f"[render] Saved {output_path} ({frame_count} frames)")
+        print(f"[render] Saved {output_path} ({frame_count} frames @ {fps}fps)")
         return
 
     import time as _time

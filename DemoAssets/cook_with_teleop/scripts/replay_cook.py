@@ -51,7 +51,7 @@ BROCCOLI_OBJ = _ASSET_ROOT / "broccoli.obj"
 TOMATO_NPZ = _ASSET_ROOT / "tomato_slice.npz"
 MUSHROOM_NPZ = _ASSET_ROOT / "mushroom_slice.npz"
 MUSHROOM_OBJ = _ASSET_ROOT / "mushroom_slice.obj"
-DEFAULT_TRAJ = _COOK_ROOT / "trajectories" / "cooking_demo.json"
+DEFAULT_TRAJ = _COOK_ROOT / "trajectories" / "cooking_keyframed.json"
 DEFAULT_PLACEMENT = _ASSET_ROOT / "placement.json"
 
 
@@ -292,7 +292,7 @@ def main():
                         help="Path to trajectory JSON")
     parser.add_argument("--dt", type=float, default=0.005,
                         help="Simulation timestep (smaller = more accurate)")
-    parser.add_argument("--speed", type=float, default=0.45,
+    parser.add_argument("--speed", type=float, default=0.5,
                         help="Playback speed multiplier")
     parser.add_argument("--no-gui", action="store_true",
                         help="Run without polyscope GUI (headless)")
@@ -340,7 +340,9 @@ def main():
           f"(duration {traj_duration:.3f}s)")
     print(f"  dt={args.dt}, speed={args.speed}")
 
-    cur_traj_time = [traj_t0]
+    LEADIN_DURATION = 0.06  # 30 frames at dt=0.002
+    SPATULA_HIGH_Z  = 1.25  # spatula start height (matches place_all_stuff)
+    cur_traj_time = [traj_t0 - LEADIN_DURATION]  # negative = lead-in phase
     speed_val = [args.speed]
 
     # ---- UIPC engine / scene ----
@@ -382,20 +384,21 @@ def main():
     tomato_contact = tabular.create("tomato")
     mushroom_contact = tabular.create("mushroom")
 
+    pan_friction = 0.01
     tabular.insert(pan_contact, spatula_contact, 0.0, 1.0 * GPa, enable=True)
-    tabular.insert(broccoli_contact, pan_contact, 0.5, 1.0 * GPa, enable=True)
+    tabular.insert(broccoli_contact, pan_contact, 0.1, 1.0 * GPa, enable=True)
     tabular.insert(broccoli_contact, spatula_contact, 0.5, 1.0 * GPa, enable=True)
     tabular.insert(broccoli_contact, broccoli_contact, 0.3, 1.0 * GPa, enable=True)
-    tabular.insert(noodle_contact, pan_contact, 0.5, 1.0 * GPa, enable=True)
+    tabular.insert(noodle_contact, pan_contact, pan_friction, 1.0 * GPa, enable=True)
     tabular.insert(noodle_contact, spatula_contact, 0.5, 1.0 * GPa, enable=True)
     tabular.insert(noodle_contact, broccoli_contact, 0.3, 1.0 * GPa, enable=True)
     tabular.insert(noodle_contact, noodle_contact, 0.3, 1.0 * GPa, enable=True)
-    tabular.insert(tomato_contact, pan_contact, 0.5, 1.0 * GPa, enable=True)
+    tabular.insert(tomato_contact, pan_contact, pan_friction, 1.0 * GPa, enable=True)
     tabular.insert(tomato_contact, spatula_contact, 0.5, 1.0 * GPa, enable=True)
     tabular.insert(tomato_contact, broccoli_contact, 0.3, 1.0 * GPa, enable=True)
     tabular.insert(tomato_contact, noodle_contact, 0.3, 1.0 * GPa, enable=True)
     tabular.insert(tomato_contact, tomato_contact, 0.3, 1.0 * GPa, enable=True)
-    tabular.insert(mushroom_contact, pan_contact, 0.5, 1.0 * GPa, enable=True)
+    tabular.insert(mushroom_contact, pan_contact, pan_friction, 1.0 * GPa, enable=True)
     tabular.insert(mushroom_contact, spatula_contact, 0.5, 1.0 * GPa, enable=True)
     tabular.insert(mushroom_contact, broccoli_contact, 0.3, 1.0 * GPa, enable=True)
     tabular.insert(mushroom_contact, noodle_contact, 0.3, 1.0 * GPa, enable=True)
@@ -411,7 +414,7 @@ def main():
         pan_scale = np.array(_raw_scale, dtype=np.float64)
 
     def _setup_kinematic_mesh(usd_path, entity_name, contact_elem, thickness,
-                              scale=None):
+                              scale=None, stc_strength=None):
         """Load USD mesh for kinematic replay (shell + STC + contact element)."""
         if scale is not None:
             verts, faces = load_usd_mesh(usd_path)
@@ -421,20 +424,23 @@ def main():
         label_surface(mesh)
         mesh.triangles().create(builtin.orient, 1)
         ab_shell.apply_to(mesh, 100.0 * MPa, thickness=thickness)
-        stc.apply_to(mesh, np.array([1.0, 1.0]))
+        stc.apply_to(mesh, stc_strength)
         contact_elem.apply_to(mesh)
         data = frame0.get(entity_name)
         if data and "pos" in data and "quat" in data:
-            init_mat = quat_pos_to_4x4(data["quat"], data["pos"])
+            init_pos = list(data["pos"])
+            if entity_name == "spatula":
+                init_pos[2] = SPATULA_HIGH_Z
+            init_mat = quat_pos_to_4x4(data["quat"], init_pos)
             view(mesh.transforms())[0] = init_mat
-            print(f"[scene] {entity_name} initial pos: {data['pos']}")
+            print(f"[scene] {entity_name} initial pos: {init_pos}")
         obj = scene.objects().create(entity_name)
         obj.geometries().create(mesh)
         return obj
 
     pan_obj = _setup_kinematic_mesh(PAN_USD, "pan", pan_contact, 0.0001,
-                                    scale=pan_scale)
-    spatula_obj = _setup_kinematic_mesh(SPATULA_USD, "spatula", spatula_contact, 0.001)
+                                    scale=pan_scale, stc_strength=np.array([1.0, 1.0]))
+    spatula_obj = _setup_kinematic_mesh(SPATULA_USD, "spatula", spatula_contact, 0.001, stc_strength=np.array([0.1, 0.1]))
 
     # ---- Broccoli (dynamic, from placement recorded_state) ----
     broc_cfg = placement.get("broccoli", {})
@@ -453,7 +459,7 @@ def main():
         bv = np.array(view(bmesh.positions()), dtype=np.float64, copy=True).reshape(-1, 3)
         bt = np.array(view(bmesh.triangles().topo()), dtype=np.int32, copy=True).reshape(-1, 3)
         broc_mesh_data[key] = (bv, bt)
-        ab_shell.apply_to(bmesh, 100.0 * MPa, thickness=0.001)
+        ab_shell.apply_to(bmesh, 100.0 * MPa, thickness=0.001, mass_density=600.0)
         broccoli_contact.apply_to(bmesh)
         if key in broc_rec:
             view(bmesh.transforms())[0] = np.array(broc_rec[key], dtype=np.float64)
@@ -484,7 +490,7 @@ def main():
             edges = np.array([[j, j + 1] for j in range(n_v - 1)], dtype=np.int32)
             nmesh = linemesh(verts, edges)
             label_surface(nmesh)
-            hs.apply_to(nmesh, thickness=thickness)
+            hs.apply_to(nmesh, thickness=thickness, mass_density=600.0)
             krb.apply_to(nmesh, bending)
             noodle_contact.apply_to(nmesh)
             mesh_partition(nmesh, 16)
@@ -516,12 +522,12 @@ def main():
                 Es = np.array([[j, j + 1] for j in range(ne)], dtype=np.int32)
                 nmesh = linemesh(Vs, Es)
                 label_surface(nmesh)
-                hs.apply_to(nmesh, thickness=thickness)
-                krb.apply_to(nmesh, bending)
-                noodle_contact.apply_to(nmesh)
-                mesh_partition(nmesh, 16)
-                noodles_obj.geometries().create(nmesh)
-                noodle_count += 1
+            hs.apply_to(nmesh, thickness=thickness, mass_density=600.0)
+            krb.apply_to(nmesh, bending)
+            noodle_contact.apply_to(nmesh)
+            mesh_partition(nmesh, 16)
+            noodles_obj.geometries().create(nmesh)
+            noodle_count += 1
         print(f"[scene] {noodle_count} noodles generated from placement config")
 
     # ---- Tomato slices (FEM deformable) ----
@@ -545,7 +551,7 @@ def main():
             tv = np.array(view(tmesh.positions()), dtype=np.float64, copy=True).reshape(-1, 3)
             tt = np.array(view(tmesh.triangles().topo()), dtype=np.int32, copy=True).reshape(-1, 3)
             tomato_surf_data[key] = (tv, tt)
-            snh.apply_to(tmesh, tomato_moduli)
+            snh.apply_to(tmesh, tomato_moduli, mass_density=600.0)
             tomato_contact.apply_to(tmesh)
             tobj = scene.objects().create(key)
             tobj.geometries().create(tmesh)
@@ -565,7 +571,7 @@ def main():
             tv = np.array(view(tmesh.positions()), dtype=np.float64, copy=True).reshape(-1, 3)
             tt = np.array(view(tmesh.triangles().topo()), dtype=np.int32, copy=True).reshape(-1, 3)
             tomato_surf_data[key] = (tv, tt)
-            snh.apply_to(tmesh, tomato_moduli)
+            snh.apply_to(tmesh, tomato_moduli, mass_density=600.0)
             tomato_contact.apply_to(tmesh)
             tobj = scene.objects().create(key)
             tobj.geometries().create(tmesh)
@@ -597,7 +603,7 @@ def main():
         mmesh = flip_inward_triangles(mmesh)
         sv = np.array(view(mmesh.positions()), dtype=np.float64, copy=True).reshape(-1, 3)
         st = np.array(view(mmesh.triangles().topo()), dtype=np.int32, copy=True).reshape(-1, 3)
-        snh.apply_to(mmesh, mushroom_moduli)
+        snh.apply_to(mmesh, mushroom_moduli, mass_density=600.0)
         mushroom_contact.apply_to(mmesh)
         return mmesh, sv, st
 
@@ -652,23 +658,25 @@ def main():
         quat = _nlerp(d0["quat"], d1["quat"], alpha)
         return pos, quat
 
-    SPATULA_Z_OFFSET = -0.07
-    SPATULA_X_OFFSET = 0.04
-    SPATULA_OFFSET_DURATION = 0.4
-
     def _make_replay_cb(entity_name: str):
         def _cb(info: Animation.UpdateInfo):
             t = cur_traj_time[0]
             if t > traj_t_end:
                 return
-            pos, quat = _interp_frame(entity_name, t)
-            if pos is None:
-                return
-            if entity_name == "spatula":
-                alpha = min(t / SPATULA_OFFSET_DURATION, 1.0)
-                pos = list(pos)
-                pos[0] += SPATULA_X_OFFSET * alpha
-                pos[2] += SPATULA_Z_OFFSET * alpha
+            if t < traj_t0:
+                # lead-in phase: pan at frame 0, spatula descends from high
+                pos, quat = _interp_frame(entity_name, traj_t0)
+                if pos is None:
+                    return
+                if entity_name == "spatula":
+                    alpha = (t - (traj_t0 - LEADIN_DURATION)) / LEADIN_DURATION
+                    alpha = max(0.0, min(1.0, alpha))
+                    pos = list(pos)
+                    pos[2] = SPATULA_HIGH_Z + alpha * (pos[2] - SPATULA_HIGH_Z)
+            else:
+                pos, quat = _interp_frame(entity_name, t)
+                if pos is None:
+                    return
             geo = info.geo_slots()[0].geometry()
             view(geo.instances().find(builtin.is_constrained))[0] = 1
             mat = quat_pos_to_4x4(quat, pos)
@@ -775,9 +783,11 @@ def main():
             _, export_surface[0] = imgui.Checkbox(
                 "Export Surface", export_surface[0])
             done = cur_traj_time[0] >= traj_t_end
-            progress = (cur_traj_time[0] - traj_t0) / traj_duration
-            imgui.Text(f"Step: {world.frame()}  "
-                       f"traj: {cur_traj_time[0]:.3f} / {traj_t_end:.3f} s  "
+            total_dur = traj_duration + LEADIN_DURATION
+            progress = (cur_traj_time[0] - (traj_t0 - LEADIN_DURATION)) / total_dur
+            phase = "lead-in" if cur_traj_time[0] < traj_t0 else "traj"
+            imgui.Text(f"Step: {world.frame()}  [{phase}]  "
+                       f"t={cur_traj_time[0]:.3f} / {traj_t_end:.3f} s  "
                        f"({progress*100:.0f}%)")
             if done:
                 imgui.Text("[FINISHED]")
