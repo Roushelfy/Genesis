@@ -4,7 +4,7 @@ Shared replay utilities for trajectory replay scripts.
 Provides:
 - Scene creation with no-physics config
 - Frame application (robot qpos, rigid poses, FEM particles)
-- Camera trajectories (surround, full, ego)
+- Camera trajectories (surround, full, ego, custom)
 - Interactive and render replay loops
 - Nyx / LuisaRender camera setup
 """
@@ -15,8 +15,6 @@ import argparse
 import math
 import time
 from pathlib import Path
-from typing import Callable
-
 import numpy as np
 
 import genesis as gs
@@ -338,8 +336,6 @@ class TrajectoryReplay:
                     ent.set_pos(pose[:3])
                     ent.set_quat(pose[3:])
 
-                # if name == "coat_hanger":
-                #     print(entities[0].get_AABB(), pose[:3], ent.get_pos())
 
         # FEM objects (particle positions)
         for name, entity in self._fem_entities.items():

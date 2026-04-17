@@ -15,9 +15,8 @@ Interactive viewer (default)
     --start-frame N         Start from frame N (BACKSPACE also resets here)
     --end-frame N           Stop at frame N exclusive (default: last frame)
     --camera-traj MODE      Drive camera automatically: surround | full | ego | custom
-                            K key   = log current frame + camera pose to stdout
-                            [ / ]   = jump to prev/next custom keyframe (pauses)
-                            /       = toggle ego camera on/off
+                            K key  = log current frame + camera pose to stdout
+                            [ / ]  = jump to prev/next custom keyframe (pauses)
 
 Live preview (interactive mode only)
     --preview               Open an OpenCV window with live Luisa-rendered view
@@ -176,16 +175,9 @@ class TrashbagSharpaReplay(TrajectoryReplay):
         return super().make_camera_traj(name)
 
     def custom_camera_keyframes(self):
-        # Keyframes captured on the pika trajectory — will need re-tuning for sharpa.
-        # Use K key in interactive mode to log new keyframes.
         # Each entry: (frame, pos, lookat[, up[, ease_in[, ease_out]]])
+        # Use K key in interactive mode to log new keyframes.
         return [
-            # (0, (1.6531, -0.6216, 2.0048), (0.9043, -0.2882, 1.4319), (0, 0, 1), None),
-            # (64, (1.6531, -0.6216, 2.0048), (0.9043, -0.2882, 1.4319)),
-            # (359, (1.0431, -0.2551, 1.81), (0.471, -0.1305, 0.9993)),
-            # (585, (0.8324, -0.2202, 1.4868), (0.3867, -0.1278, 0.5964)),
-            # (1007, (0.7981, -0.1766, 1.7551), (0.5121, -0.1717, 0.7969)),
-            # (1492, (0.8892, 0.0118, 2.0495), (0.6032, 0.0166, 1.0913)),
             (8, (1.3205, -0.3625, 1.9686), (0.6509, -0.1743, 1.2502), (-0.583, 0.0086, 0.8124)),
             (10, (2.3313, -0.0087, 1.9842), (1.519, 0.0033, 1.4011), (-0.583, 0.0086, 0.8124)),
             (23, (1.0502, 0.3062, 1.274), (0.2742, 0.2846, 0.6436), (-0.583, 0.0086, 0.8124)),
@@ -201,12 +193,6 @@ class TrashbagSharpaReplay(TrajectoryReplay):
             (2118, (0.6169, -0.2011, 0.8638), (0.5252, -0.0436, 1.8471), (-0.583, 0.0086, 0.8124)),
             (2206, (-0.1851, 1.0792, 1.629), (0.353, 0.319, 1.2649), (-0.583, 0.0086, 0.8124)),
         ]
-    
-        # new camera shots
-        # hero hand shot
-        # cam_pos    = (0.3306, -0.2908, 1.3306)
-        # cam_lookat = (0.5077, 0.5963, 0.9043)
-
 
     def build_scene(self, scene):
         import genesis as gs
@@ -282,18 +268,10 @@ class TrashbagSharpaReplay(TrajectoryReplay):
                 ),
                 material=gs.materials.Rigid(rho=50.0),
                 surface=gs.surfaces.BSDF(
-#                    color=(0.8, 0.85, 0.95),
                     roughness=0.05,
                     ior=1.33,
                     specular_trans=0.83,
                 ),
-#             surface=gs.surfaces.Glass(
-#                 color=(0.9, 0.95, 0.95),   # specular/reflection tint
-#                 roughness=0.12,             # surface roughness (0 = perfect glass)
-#                 ior=1.35,                   # PET plastic IOR
-# #                subsurface=True,            # enables thickness-based BSSRDF
-# #                thickness=0.001,            # shell thickness in metres (3 mm)
-#             ),
                 vis_mode="visual",
             ),
         }
