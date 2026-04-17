@@ -63,7 +63,7 @@ TOMATO_OBJ = _ASSET_ROOT / "tomato_slice.obj"
 TOMATO_NPZ = _ASSET_ROOT / "tomato_slice.npz"
 MUSHROOM_OBJ = _ASSET_ROOT / "mushroom_slice.obj"
 MUSHROOM_NPZ = _ASSET_ROOT / "mushroom_slice.npz"
-DEFAULT_TRAJ = _COOK_ROOT / "trajectories" / "cooking_demo.json"
+DEFAULT_TRAJ = _COOK_ROOT / "trajectories" / "cooking_keyframed.json"
 DEFAULT_OUTPUT = _ASSET_ROOT / "placement.json"
 
 
@@ -175,7 +175,7 @@ def main():
     args = parser.parse_args()
     output_path = args.output
 
-    # ---- trajectory frame 0 ----
+    # ---- trajectory frame 0 (initial pose) ----
     with open(args.traj) as f:
         traj = json.load(f)
     frame0 = traj["frames"][0]
@@ -203,7 +203,7 @@ def main():
     pan_pos = list(frame0["pan"]["pos"])
     pan_scale = [1.0, 1.0, 1.0]
     spatula_pos = list(frame0["spatula"]["pos"])
-    spatula_pos[2] += 0.5
+    spatula_pos[2] = 1.25  # raise spatula so food can settle into pan
 
     broc_list: list[dict] = [
         {"pos": [pan_pos[0] + 0.04, pan_pos[1] - 0.06, pan_pos[2] + 0.02],
@@ -236,14 +236,11 @@ def main():
             with open(output_path) as f:
                 saved = json.load(f)
             if "pan" in saved:
-                pan_pos[:] = saved["pan"]["pos"]
                 saved_scale = saved["pan"].get("scale", [1.0, 1.0, 1.0])
                 if isinstance(saved_scale, (int, float)):
                     pan_scale[:] = [saved_scale, saved_scale, saved_scale]
                 else:
                     pan_scale[:] = saved_scale
-            if "spatula" in saved:
-                spatula_pos[:] = saved["spatula"]["pos"]
             if "broccoli" in saved:
                 bd = saved["broccoli"]
                 if isinstance(bd, dict) and "pos" in bd:
@@ -675,8 +672,56 @@ def main():
     # ================================================================
     # GUI callback
     # ================================================================
+    bulk_step = [0.005]
+
+    def _apply_bulk_offset(dx, dy, dz):
+        for bd in broc_list:
+            bd["pos"][0] += dx
+            bd["pos"][1] += dy
+            bd["pos"][2] += dz
+        for td in tomato_list:
+            td["pos"][0] += dx
+            td["pos"][1] += dy
+            td["pos"][2] += dz
+        for md in mushroom_list:
+            md["pos"][0] += dx
+            md["pos"][1] += dy
+            md["pos"][2] += dz
+        noodle_center[0] += dx
+        noodle_center[1] += dy
+        noodle_center[2] += dz
+        _update_broccoli()
+        _update_tomato()
+        _update_mushroom()
+        _update_noodles()
+
     def on_update():
         is_placement = mode[0] == "placement"
+
+        # ======================== Bulk Offset ========================
+        if is_placement:
+            imgui.Text("=== Bulk Food Offset ===")
+            _, bulk_step[0] = imgui.SliderFloat(
+                "Step", bulk_step[0], 0.001, 0.05)
+            s = bulk_step[0]
+            if imgui.Button("+X##bulk"):
+                _apply_bulk_offset(s, 0, 0)
+            imgui.SameLine()
+            if imgui.Button("-X##bulk"):
+                _apply_bulk_offset(-s, 0, 0)
+            imgui.SameLine()
+            if imgui.Button("+Y##bulk"):
+                _apply_bulk_offset(0, s, 0)
+            imgui.SameLine()
+            if imgui.Button("-Y##bulk"):
+                _apply_bulk_offset(0, -s, 0)
+            imgui.SameLine()
+            if imgui.Button("+Z##bulk"):
+                _apply_bulk_offset(0, 0, s)
+            imgui.SameLine()
+            if imgui.Button("-Z##bulk"):
+                _apply_bulk_offset(0, 0, -s)
+            imgui.Separator()
 
         # ======================== Pan ========================
         imgui.Text("=== Pan ===")
