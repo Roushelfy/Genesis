@@ -15,6 +15,7 @@ YOYO_ASSETS_DIR = _REPO_ROOT / "DemoAssets" / "yoyo" / "v3"
 # Available trajectories
 TRAJECTORIES = {
     "v3": _REPO_ROOT / "DemoAssets" / "yoyo" / "v3" / "seq",
+    "v4": _REPO_ROOT / "DemoAssets" / "yoyo" / "v4" / "seq",
     "v5": _REPO_ROOT / "DemoAssets" / "yoyo" / "v5" / "seq",
     "long_sleep": _REPO_ROOT / "DemoAssets" / "yoyo" / "long_sleep" / "seq",
     "long_sleep_full": _REPO_ROOT / "DemoAssets" / "yoyo" / "long_sleep" / "seq_full",

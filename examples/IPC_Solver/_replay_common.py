@@ -258,6 +258,9 @@ class TrajectoryReplay:
         parser.add_argument("--end-frame", type=int, default=None, help="Stop at this frame exclusive (default: last frame)")
         parser.add_argument("--no-raytracer", action="store_true", help="Suppress Luisa renderer: with --nyx shows only the Nyx preview; without --nyx shows no preview window")
         parser.add_argument("--save-frames", action="store_true", help="Save each frame as PNG")
+        parser.add_argument("--follow", action="store_true", help="Camera follows the robot")
+        parser.add_argument("--stride", type=int, default=1, help="Render every Nth frame (subsample)")
+        parser.add_argument("--dark-bg", action="store_true", help="Dark grey (0.01) background, no extra lights (Nyx only)")
         parser.add_argument(
             "--preview",
             action="store_true",
@@ -518,6 +521,11 @@ class TrajectoryReplay:
             env_map.texture = str((_REPO_ROOT / "DemoAssets/textures/san_carlos_left_marvin_modified.exr").resolve())
             env_map.rotation = 0.0
             env_map.multiplier = 1.0
+            if getattr(self.args, "dark_bg", False):
+                # Dark grey background (0.01, 0.01, 0.01) like trashbag scene.
+                # No extra directional lights — relies on subclass nyx_lights().
+                env_map.texture = str((_REPO_ROOT / "DemoAssets/textures/dark_grey.exr").resolve())
+                env_map.multiplier = 1.0
 
             lights = self.nyx_lights()
             light_field = self._build_nyx_light_field()
@@ -651,6 +659,10 @@ class TrajectoryReplay:
         """Render one frame and return the RGB array."""
         use_nyx = self.args.nyx
         if use_nyx:
+            # In replay mode scene.t never advances, so the camera's
+            # staleness check thinks the cache is still fresh.  Force it
+            # stale so _render_current_state() runs on each read().
+            self._cam._stale = True
             data = self._cam.read()
             rgb = data.rgb.cpu().numpy()
             if rgb.ndim == 4:
@@ -686,13 +698,35 @@ class TrajectoryReplay:
             print(f"[render] Skipping to frame {start}")
             self._apply(start - 1)
 
+        # Follow mode: camera tracks the robot with a fixed offset
+        follow = args.follow
+        if follow:
+            cam_offset = np.array(self.cam_pos) - np.array(self.cam_lookat)
+
+        stride = max(1, args.stride)
         n_written = 0
-        writer = imageio.get_writer(str(out), fps=self.fps)
+        writer = imageio.get_writer(str(out), fps=max(1, self.fps // stride),
+                                    codec="libx264", macro_block_size=1)
         try:
             for i in range(start, end):
+                if (i - start) % stride != 0:
+                    # Still advance scene state for correct FK/cloth, but skip render
+                    self._apply(i)
+                    continue
                 self._apply(i)
 
-                if self._camera_traj is not None:
+                if follow and self._robot is not None:
+                    robot_pos = self._robot.get_pos()
+                    if robot_pos.ndim > 1:
+                        robot_pos = robot_pos[0]
+                    robot_pos = robot_pos.cpu().numpy()
+                    lookat = (float(robot_pos[0]), float(robot_pos[1]), float(robot_pos[2]) + 0.5)
+                    cam_pos = tuple(np.array(lookat) + cam_offset)
+                    if use_nyx:
+                        self._cam.update_camera_pose(pos=cam_pos, lookat=lookat, up=(0, 0, 1))
+                    else:
+                        self._cam.set_pose(pos=cam_pos, lookat=lookat, up=(0, 0, 1))
+                elif self._camera_traj is not None:
                     cam_pos, cam_lookat = self._camera_traj.get_pose(i, self._n_frames)
                     if use_nyx:
                         self._cam.update_camera_pose(pos=cam_pos, lookat=cam_lookat, up=(0, 0, 1))
@@ -709,7 +743,7 @@ class TrajectoryReplay:
         finally:
             writer.close()
 
-        print(f"[render] Saved {out} ({n_written} frames, {self.fps} fps)")
+        print(f"[render] Saved {out} ({n_written} frames, {max(1, self.fps // stride)} fps)")
         if frames_dir is not None:
             print(f"[render] Individual frames in {frames_dir}/")
 

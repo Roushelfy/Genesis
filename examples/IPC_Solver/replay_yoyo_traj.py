@@ -3,8 +3,8 @@ Replay exported yoyo simulation sequences.
 
 Usage:
     python examples/IPC_Solver/replay_yoyo_traj.py
-    python examples/IPC_Solver/replay_yoyo_traj.py --trajectory long_sleep
-    python examples/IPC_Solver/replay_yoyo_traj.py --render --nyx
+    python examples/IPC_Solver/replay_yoyo_traj.py --trajectory long_sleep  
+    python examples/IPC_Solver/replay_yoyo_traj.py --render --nyx # v4
     python examples/IPC_Solver/replay_yoyo_traj.py --render --nyx --camera-traj surround
 """
 
@@ -120,7 +120,8 @@ class YoyoReplay(TrajectoryReplay):
         self._meta = json.loads(meta_path.read_text(encoding="utf-8"))
 
         self._is_long_sleep = "long_sleep" in str(self._seq_dir)
-        if self._is_long_sleep:
+        self._force_closeup_camera = False
+        if self._is_long_sleep or self._force_closeup_camera:
             self.cam_fov = CLOSEUP_FOV
 
         robot_pos = self._meta.get("robot_base_pos")
@@ -172,10 +173,10 @@ class YoyoReplay(TrajectoryReplay):
         import genesis as gs
 
         use_nyx = self.args.nyx
-        is_long_sleep = self._is_long_sleep
+        is_long_sleep = self._is_long_sleep or getattr(self, "_force_closeup_camera", False)
 
         # Robot
-        urdf_rel = self._meta.get("urdf", "")
+        urdf_rel = self._meta.get("urdf", "").replace("\\", "/")
         assert urdf_rel, "meta.json must specify 'urdf'"
         urdf_path = Path(urdf_rel)
         if not urdf_path.is_absolute():
@@ -304,7 +305,7 @@ class YoyoReplay(TrajectoryReplay):
 
     def make_camera_traj(self, name):
         if name == "_yoyo_default":
-            if self._is_long_sleep:
+            if self._is_long_sleep or getattr(self, "_force_closeup_camera", False):
                 return YoyoCloseupCamera(self._rigid_data)
             return YoyoOrbitCamera()
         if name == "surround":
