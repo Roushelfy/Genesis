@@ -260,9 +260,7 @@ class TrajectoryReplay:
         parser.add_argument("--save-frames", action="store_true", help="Save each frame as PNG")
         parser.add_argument("--follow", action="store_true", help="Camera follows the robot")
         parser.add_argument("--stride", type=int, default=1, help="Render every Nth frame (subsample)")
-        parser.add_argument("--black-bg", action="store_true", help="Pure black background (Nyx only)")
-        parser.add_argument("--grey-bg", action="store_true", help="Uniform grey background (Nyx only)")
-        parser.add_argument("--sage-bg", action="store_true", help="Uniform sage-green background (Nyx only)")
+        parser.add_argument("--dark-bg", action="store_true", help="Dark grey (0.01) background, no extra lights (Nyx only)")
         parser.add_argument(
             "--preview",
             action="store_true",
@@ -523,39 +521,11 @@ class TrajectoryReplay:
             env_map.texture = str((_REPO_ROOT / "DemoAssets/textures/san_carlos_left_marvin_modified.exr").resolve())
             env_map.rotation = 0.0
             env_map.multiplier = 1.0
-            nyx_lights = []
-            if getattr(self.args, "sage_bg", False):
-                env_map.texture = str((_REPO_ROOT / "DemoAssets/textures/sage.exr").resolve())
+            if getattr(self.args, "dark_bg", False):
+                # Dark grey background (0.01, 0.01, 0.01) like trashbag scene.
+                # No extra directional lights — relies on subclass nyx_lights().
+                env_map.texture = str((_REPO_ROOT / "DemoAssets/textures/dark_grey.exr").resolve())
                 env_map.multiplier = 1.0
-                nyx_lights = [
-                    {"type": "directional", "dir": (-0.3, -0.4, -1.0),
-                     "color": (1, 1, 1), "intensity": 4.0, "shadow": True},
-                    {"type": "directional", "dir": (0.5, 0.3, -0.6),
-                     "color": (0.8, 0.85, 1.0), "intensity": 2.0, "shadow": False},
-                ]
-            elif getattr(self.args, "grey_bg", False):
-                env_map.texture = str((_REPO_ROOT / "DemoAssets/textures/grey.exr").resolve())
-                env_map.multiplier = 1.0
-                # Add directional lights since flat grey HDR is weak lighting
-                nyx_lights = [
-                    {"type": "directional", "dir": (-0.3, -0.4, -1.0),
-                     "color": (1, 1, 1), "intensity": 4.0, "shadow": True},
-                    {"type": "directional", "dir": (0.5, 0.3, -0.6),
-                     "color": (0.8, 0.85, 1.0), "intensity": 2.0, "shadow": False},
-                ]
-            elif getattr(self.args, "black_bg", False):
-                env_map.multiplier = 0.0
-                env_map.tint = ap.float3(0.0, 0.0, 0.0)
-                nyx_lights = [
-                    {"type": "directional", "dir": (-0.3, -0.4, -1.0),
-                     "color": (1, 1, 1), "intensity": 4.0, "shadow": True},
-                    {"type": "directional", "dir": (0.5, 0.3, -0.6),
-                     "color": (0.8, 0.85, 1.0), "intensity": 2.0, "shadow": False},
-                ]
-
-            # Subclass hook: optional extra directional lights
-            extra = getattr(self, "_extra_nyx_lights", None) or []
-            nyx_lights = list(nyx_lights) + list(extra)
 
             lights = self.nyx_lights()
             light_field = self._build_nyx_light_field()
@@ -569,8 +539,8 @@ class TrajectoryReplay:
                     denoise=True,
                     render_mode=npr.ERenderMode.RefPathTracer,
                     env_maps=(env_map,),
-                    lights=nyx_lights + lights,
                     light_fields=(light_field,) if light_field is not None else (),
+                    **({"lights": lights} if lights else {}),
                 )
             )
         else:

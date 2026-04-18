@@ -238,21 +238,20 @@ class YoyoReplay(TrajectoryReplay):
                 )
                 self._rigid_entities[name] = [ent]
 
-        # String (FEM rope) — skip when using Nyx (requires Quadrants scope)
+        # String (FEM rope)
         self._fem_entities: dict[str, object] = {}
-        if not use_nyx:
-            for name in self._fem_data:
-                mesh_path = self._seq_dir / name / "mesh.obj"
-                if not mesh_path.exists():
-                    continue
-                ent = scene.add_entity(
-                    morph=gs.morphs.Mesh(file=str(mesh_path)),
-                    material=gs.materials.FEM.Rope(E=1e6, rho=100.0, thickness=0.0004),
-                    surface=gs.surfaces.Default(color=(0.9, 0.87, 0.8, 1.0)),
-                    name=name,
-                )
-                self._fem_entities[name] = ent
-                break
+        for name in self._fem_data:
+            mesh_path = self._seq_dir / name / "mesh.obj"
+            if not mesh_path.exists():
+                continue
+            ent = scene.add_entity(
+                morph=gs.morphs.Mesh(file=str(mesh_path)),
+                material=gs.materials.FEM.Rope(E=1e6, rho=100.0, thickness=0.0004),
+                surface=gs.surfaces.Default(color=(0.9, 0.87, 0.8, 1.0)),
+                name=name,
+            )
+            self._fem_entities[name] = ent
+            break
 
     def _add_ball_part(self, scene, asset_name, opacity, use_nyx):
         import genesis as gs
