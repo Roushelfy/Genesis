@@ -28,7 +28,7 @@ PART_COLORS = {
 }
 
 MESH_FILE_MAP = {
-    "sun_gear":  "sun_gear.stl",
+    "sun_gear":  "sun_gear_handle.stl",
     "planet_0":  "planet_gear.stl",
     "planet_1":  "planet_gear.stl",
     "planet_2":  "planet_gear.stl",

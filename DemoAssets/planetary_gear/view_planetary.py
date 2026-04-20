@@ -93,9 +93,9 @@ def assemble_transforms() -> dict[str, np.ndarray]:
     # Ring: centered at origin
     tfs["ring_gear"] = np.eye(4)
 
-    # Carrier: shifted below the gears
+    # Carrier: shifted so its top face is flush with gear bottom (1.5mm gap only)
     tf = np.eye(4)
-    tf[2, 3] = -GEAR_WIDTH / 2 - CARRIER_THICK
+    tf[2, 3] = -GEAR_WIDTH / 2
     tfs["carrier"] = tf
 
     return tfs
