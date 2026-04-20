@@ -35,13 +35,6 @@ REPO_ROOT = Path(__file__).resolve().parents[2]  # Genesis_IPC_demo
 URDF_PATH = REPO_ROOT / "DemoAssets" / "marvin_robot" / "urdf" / "marvin_pika.urdf"
 JOINT_ANGLES_PATH = Path(__file__).parent / "robot_joints.json"
 
-# Only these links are rendered as the "shoulder" mounted on the carrier flange.
-# Base_R = arm base plate (bolted to carrier flange)
-# Link1_R = first shoulder link (shoulder yaw)
-# Link2_R = second shoulder link (shoulder pitch)
-SHOULDER_LINKS  = {"Base_R", "Link1_R", "Link2_R", "Link3_R"}
-SHOULDER_JOINTS = {"Joint1_R", "Joint2_R"}
-
 # ── Gear parameters (mm, matching planetary_gear.scad) ──
 MODUL        = 3
 SUN_TEETH    = 12
@@ -150,17 +143,14 @@ def _build_root_transform(pos, rot_deg):
 def _update_robot_meshes(ctrl):
     transforms = ctrl.get_mesh_transforms()
     for node in ctrl.mesh_nodes:
-        if node.parent_link not in SHOULDER_LINKS:
-            continue
         tf = transforms.get(node.node_name, np.eye(4))
         verts_h = np.hstack([node.local_vertices,
                              np.ones((len(node.local_vertices), 1))])
         world_verts = (tf @ verts_h.T).T[:, :3]
-        label = f"shoulder/{node.node_name}"
+        label = f"robot/{node.node_name}"
         surf = ps.register_surface_mesh(label, world_verts, node.faces)
-        surf.set_color((0.40, 0.52, 0.65))
-        surf.set_transparency(0.40)
-        surf.set_smooth_shade(True)
+        surf.set_color((0.4, 0.5, 0.6))
+        surf.set_transparency(0.5)
 
 
 def _load_joint_angles():
@@ -193,39 +183,14 @@ def _save_joint_angles(ctrl, root_pos, root_rot_deg):
 
 
 def load_robot_reference(ctrl, root_pos, root_rot_deg):
-    # Compute root_transform so that Joint2_R world frame == gear world frame.
-    #
-    # Derivation:
-    #   T_world(Link2_R) = root_transform @ T_local(Link2_R)
-    #   We want  T_world(Link2_R) = T_gear  (identity rotation, z = carrier_tz)
-    #   ∴  root_transform = T_gear @ inv(T_local(Link2_R))
-    #
-    # This also ensures Joint2_R's rotation axis (= Z in joint frame) ==
-    # world Z  ==  carrier rotation axis.  So the carrier DRIVES Joint2_R.
-    ctrl.set_root_transform(np.eye(4))
-    ctrl.set_joint_positions({n: 0.0 for n in ctrl.joint_names})
-    T_j2_local = ctrl.get_link_transform("Link2_R").copy()   # 4×4 from FK
-
-    carrier_centre_z = -(GEAR_WIDTH / 2) * MM_TO_M           # ≈ -0.006 m
-    T_gear = np.eye(4, dtype=np.float64)
-    T_gear[2, 3] = carrier_centre_z                          # gear at z = -0.006
-
-    root_tf = T_gear @ np.linalg.inv(T_j2_local)
-    ctrl.set_root_transform(root_tf)
+    saved_joints, saved_pos, saved_rot = _load_joint_angles()
+    if saved_joints:
+        ctrl.set_joint_positions(saved_joints)
+    root_pos[:] = saved_pos
+    root_rot_deg[:] = saved_rot
+    ctrl.set_root_transform(_build_root_transform(root_pos, root_rot_deg))
     _update_robot_meshes(ctrl)
-
-    root_pos[:] = root_tf[:3, 3].tolist()
-    root_rot_deg[:] = [0.0, 0.0, 0.0]   # kept for re-snap reference only
-    shoulder_nodes = [n for n in ctrl.mesh_nodes if n.parent_link in SHOULDER_LINKS]
-
-    # Verify: Joint2_R world pos should now be (0,0,carrier_centre_z)
-    j2_world = ctrl.get_link_transform("Link2_R")[:3, 3]
-    j2_axis  = ctrl.get_link_transform("Link2_R")[:3, 2]  # Z column = joint axis
-    print(f"  [SHOULDER] {len(shoulder_nodes)} mesh nodes  "
-          f"({', '.join(sorted(SHOULDER_LINKS))})")
-    print(f"  [SHOULDER] Joint2_R world pos  = {np.round(j2_world*1000,1)} mm")
-    print(f"  [SHOULDER] Joint2_R world axis = {np.round(j2_axis,3)}  "
-          f"(should be [0,0,1])")
+    print(f"  [REF] Loaded {len(ctrl.mesh_nodes)} robot meshes from {URDF_PATH.name}")
 
 
 def _planet_transform(index: int):
@@ -514,9 +479,66 @@ def main():
     ps.set_ground_plane_height(-0.5)
     ps.set_automatically_compute_scene_extents(False)
 
+    # ── Detect end effectors ──
+    end_effectors = []
+    left_ee = ""
+    right_ee = ""
+    if robot_ctrl is not None:
+        end_effectors = robot_ctrl.find_end_effectors()
+        left_ee = next((e for e in end_effectors if "_L" in e or "left" in e.lower()),
+                       end_effectors[0] if end_effectors else "")
+        right_ee = next((e for e in end_effectors if "_R" in e or "right" in e.lower()),
+                        end_effectors[-1] if end_effectors else "")
+        print(f"  [IK] Left EE: {left_ee}  |  Right EE: {right_ee}")
+
+    # ── Orientation presets (Z-up world) ──
+    orient_presets: dict[str, np.ndarray] = {
+        "None (pos only)": np.zeros((3, 3)),
+        "Horiz -Z": np.array([[1,0,0],[0,1,0],[0,0,1]], dtype=np.float64),
+        "Horiz -Z inv": np.array([[-1,0,0],[0,-1,0],[0,0,1]], dtype=np.float64),
+        "Horiz +X": np.array([[0,0,1],[0,1,0],[-1,0,0]], dtype=np.float64),
+        "Horiz +X inv": np.array([[0,0,1],[0,-1,0],[1,0,0]], dtype=np.float64),
+        "Horiz -X": np.array([[0,0,-1],[0,1,0],[1,0,0]], dtype=np.float64),
+        "Horiz -X inv": np.array([[0,0,-1],[0,-1,0],[-1,0,0]], dtype=np.float64),
+        "Horiz +Y": np.array([[1,0,0],[0,0,1],[0,-1,0]], dtype=np.float64),
+        "Horiz +Y inv": np.array([[-1,0,0],[0,0,1],[0,1,0]], dtype=np.float64),
+        "Horiz -Y": np.array([[1,0,0],[0,0,-1],[0,1,0]], dtype=np.float64),
+        "Horiz -Y inv": np.array([[-1,0,0],[0,0,-1],[0,-1,0]], dtype=np.float64),
+        "Vert +Z": np.array([[1,0,0],[0,-1,0],[0,0,-1]], dtype=np.float64),
+        "Vert +Z inv": np.array([[-1,0,0],[0,1,0],[0,0,-1]], dtype=np.float64),
+    }
+    orient_names: list[str] = list(orient_presets.keys())
+
     run = False
-    shoulder_panel_open = [True]
-    auto_sync_arm = [True]   # whether to sync arm joints with carrier
+    joint_panel_open = [True]
+    ik_panel_open = [True]
+    ik_step = [0.005]
+    left_orient_idx = [0]
+    right_orient_idx = [0]
+    robot_sync_T0    = [None]   # root transform captured when sync is first activated
+    auto_sync_arm    = [False]   # whether to auto-rotate arm with carrier
+
+    def _get_orient(idx: int):
+        R = orient_presets[orient_names[idx]]
+        if np.allclose(R, 0):
+            return None
+        return R
+
+    def do_ik(ee_name, delta, orient_idx):
+        cur_tf = robot_ctrl.get_link_transform(ee_name)
+        cur_pos = cur_tf[:3, 3].copy()
+        arm_joints = robot_ctrl.find_arm_joints(ee_name)
+        if not arm_joints:
+            return
+        target_orient = _get_orient(orient_idx)
+        orient_mode = "all" if target_orient is not None else None
+        robot_ctrl.solve_ik(
+            ee_name, cur_pos + delta,
+            target_orientation=target_orient,
+            orientation_mode=orient_mode,
+            arm_joints=arm_joints,
+        )
+        _update_robot_meshes(robot_ctrl)
 
     def gui_callback():
         nonlocal run
@@ -526,76 +548,184 @@ def main():
         else:
             if imgui.Button("Run / Stop"):
                 run = not run
+                if run and robot_sync_T0[0] is None and robot_ctrl is not None:
+                    # Capture base pose the first time simulation starts
+                    robot_sync_T0[0] = robot_ctrl.root_transform
             imgui.SameLine()
             imgui.TextUnformatted(f"  Frame: {world.frame()}  "
                                   f"Time: {world.frame()*DT:.2f}s")
             imgui.SameLine()
-            c, auto_sync_arm[0] = imgui.Checkbox("Sync shoulder to carrier", auto_sync_arm[0])
+            c, auto_sync_arm[0] = imgui.Checkbox("Sync arm to carrier", auto_sync_arm[0])
             if c and not auto_sync_arm[0]:
-                # Reset arm to neutral when unchecking
-                if robot_ctrl is not None:
-                    robot_ctrl.set_joint_positions({"Joint2_R": 0.0})
-                    _update_robot_meshes(robot_ctrl)
-        imgui.TextUnformatted(f"Mode: {DRIVE_MODE}  RPM: {DRIVEN_RPM}  d_hat: {D_HAT}m")
+                robot_sync_T0[0] = None  # reset so re-enabling re-captures pose
+        imgui.TextUnformatted(f"Mode: {DRIVE_MODE}  RPM: {DRIVEN_RPM}  "
+                              f"d_hat: {D_HAT}m")
 
         if robot_ctrl is not None:
-            # ── Shoulder joint panel ──────────────────────────────────────
+            # ── IK Control panel ──
             imgui.Separator()
-            _, shoulder_panel_open[0] = imgui.CollapsingHeader(
-                "Shoulder (Base_R / Link1_R / Link2_R)", shoulder_panel_open[0])
-            if shoulder_panel_open[0]:
-                imgui.TextUnformatted(
-                    f"Shoulder bolted to carrier flange  "
-                    f"z = {_FLANGE_MOUNT_POS[2]*1000:.1f} mm  "
-                    f"Reduction 1:{REDUCTION:.1f}")
+            _, ik_panel_open[0] = imgui.CollapsingHeader(
+                "IK Control", ik_panel_open[0])
+            if ik_panel_open[0]:
+                c, val = imgui.SliderFloat("IK Step (m)", ik_step[0], 0.001, 0.05)
+                if c:
+                    ik_step[0] = val
+                s = ik_step[0]
+                imgui.Separator()
+
+                # Left gripper
+                if left_ee and imgui.TreeNode(f"Left: {left_ee}  [WASDQE]"):
+                    ltf = robot_ctrl.get_link_transform(left_ee)
+                    lp = ltf[:3, 3]
+                    imgui.TextUnformatted(f"Pos: ({lp[0]:.4f}, {lp[1]:.4f}, {lp[2]:.4f})")
+                    arm_j = robot_ctrl.find_arm_joints(left_ee)
+                    imgui.TextUnformatted(f"IK joints ({len(arm_j)}): {', '.join(arm_j)}")
+                    imgui.TextUnformatted("Orientation:")
+                    c, oidx = imgui.Combo("##orient_L", left_orient_idx[0], orient_names)
+                    if c:
+                        left_orient_idx[0] = oidx
+                    if imgui.Button("Lock current##lock_L"):
+                        orient_presets["Locked L"] = ltf[:3, :3].copy()
+                        if "Locked L" not in orient_names:
+                            orient_names.append("Locked L")
+                        left_orient_idx[0] = orient_names.index("Locked L")
+                    for label, delta in [
+                        ("+X##Lik", [s,0,0]), ("-X##Lik", [-s,0,0]),
+                        ("+Y##Lik", [0,s,0]), ("-Y##Lik", [0,-s,0]),
+                        ("+Z##Lik", [0,0,s]), ("-Z##Lik", [0,0,-s]),
+                    ]:
+                        if label != "+X##Lik":
+                            imgui.SameLine()
+                        if imgui.Button(label):
+                            do_ik(left_ee, np.array(delta), left_orient_idx[0])
+                    imgui.TreePop()
+
+                imgui.Separator()
+
+                # Right gripper
+                if right_ee and imgui.TreeNode(f"Right: {right_ee}  [IJKLUO]"):
+                    rtf = robot_ctrl.get_link_transform(right_ee)
+                    rp = rtf[:3, 3]
+                    imgui.TextUnformatted(f"Pos: ({rp[0]:.4f}, {rp[1]:.4f}, {rp[2]:.4f})")
+                    arm_j = robot_ctrl.find_arm_joints(right_ee)
+                    imgui.TextUnformatted(f"IK joints ({len(arm_j)}): {', '.join(arm_j)}")
+                    imgui.TextUnformatted("Orientation:")
+                    c, oidx = imgui.Combo("##orient_R", right_orient_idx[0], orient_names)
+                    if c:
+                        right_orient_idx[0] = oidx
+                    if imgui.Button("Lock current##lock_R"):
+                        orient_presets["Locked R"] = rtf[:3, :3].copy()
+                        if "Locked R" not in orient_names:
+                            orient_names.append("Locked R")
+                        right_orient_idx[0] = orient_names.index("Locked R")
+                    for label, delta in [
+                        ("+X##Rik", [s,0,0]), ("-X##Rik", [-s,0,0]),
+                        ("+Y##Rik", [0,s,0]), ("-Y##Rik", [0,-s,0]),
+                        ("+Z##Rik", [0,0,s]), ("-Z##Rik", [0,0,-s]),
+                    ]:
+                        if label != "+X##Rik":
+                            imgui.SameLine()
+                        if imgui.Button(label):
+                            do_ik(right_ee, np.array(delta), right_orient_idx[0])
+                    imgui.TreePop()
+
+                imgui.Separator()
+
+                # Keyboard IK polling
+                left_delta = np.zeros(3, dtype=np.float64)
+                if _try_key_pressed("W"): left_delta[0] += s
+                if _try_key_pressed("S"): left_delta[0] -= s
+                if _try_key_pressed("A"): left_delta[1] += s
+                if _try_key_pressed("D"): left_delta[1] -= s
+                if _try_key_pressed("E"): left_delta[2] += s
+                if _try_key_pressed("Q"): left_delta[2] -= s
+                if np.any(left_delta != 0) and left_ee:
+                    do_ik(left_ee, left_delta, left_orient_idx[0])
+
+                right_delta = np.zeros(3, dtype=np.float64)
+                if _try_key_pressed("I"): right_delta[0] += s
+                if _try_key_pressed("K"): right_delta[0] -= s
+                if _try_key_pressed("J"): right_delta[1] += s
+                if _try_key_pressed("L"): right_delta[1] -= s
+                if _try_key_pressed("O"): right_delta[2] += s
+                if _try_key_pressed("U"): right_delta[2] -= s
+                if np.any(right_delta != 0) and right_ee:
+                    do_ik(right_ee, right_delta, right_orient_idx[0])
+
+                imgui.TextUnformatted("Left  keys: W/S=X  A/D=Y  Q/E=Z")
+                imgui.TextUnformatted("Right keys: I/K=X  J/L=Y  U/O=Z")
+
+            # ── Robot joint panel ──
+            imgui.Separator()
+            _, joint_panel_open[0] = imgui.CollapsingHeader(
+                "Robot Joints", joint_panel_open[0])
+            if joint_panel_open[0]:
+                root_changed = False
+                for axis, label in enumerate(["Root X", "Root Y", "Root Z"]):
+                    changed, new_val = imgui.SliderFloat(
+                        label, root_pos[axis], -1.0, 1.0)
+                    if changed:
+                        root_pos[axis] = new_val
+                        root_changed = True
+                for axis, label in enumerate(["Rot X", "Rot Y", "Rot Z"]):
+                    changed, new_val = imgui.SliderFloat(
+                        label, root_rot_deg[axis], -180.0, 180.0)
+                    if changed:
+                        root_rot_deg[axis] = new_val
+                        root_changed = True
+                if root_changed:
+                    robot_ctrl.set_root_transform(
+                        _build_root_transform(root_pos, root_rot_deg))
+                    _update_robot_meshes(robot_ctrl)
 
                 imgui.Separator()
                 joints_changed = False
-                limits    = robot_ctrl.joint_limits
+                limits = robot_ctrl.joint_limits
                 positions = robot_ctrl.get_joint_positions()
-                for jname in sorted(SHOULDER_JOINTS):
-                    if jname not in limits:
-                        continue
-                    lo, hi = limits[jname]
-                    c, val = imgui.SliderFloat(jname, positions.get(jname, 0.0), lo, hi)
-                    if c:
-                        positions[jname] = val
+                for name in robot_ctrl.joint_names:
+                    lo, hi = limits.get(name, (-np.pi, np.pi))
+                    changed, new_val = imgui.SliderFloat(
+                        name, positions[name], lo, hi)
+                    if changed:
+                        positions[name] = new_val
                         joints_changed = True
                 if joints_changed:
                     robot_ctrl.set_joint_positions(positions)
                     _update_robot_meshes(robot_ctrl)
-
-                imgui.Separator()
-                if imgui.Button("Reset shoulder"):
-                    robot_ctrl.set_joint_positions(
-                        {n: 0.0 for n in SHOULDER_JOINTS})
-                    _update_robot_meshes(robot_ctrl)
-                imgui.SameLine()
-                if imgui.Button("Re-snap to flange"):
-                    robot_ctrl.set_root_transform(np.eye(4))
+                if imgui.Button("Reset Joints"):
                     robot_ctrl.set_joint_positions(
                         {n: 0.0 for n in robot_ctrl.joint_names})
-                    T_j2 = robot_ctrl.get_link_transform("Link2_R").copy()
-                    cz = -(GEAR_WIDTH / 2) * MM_TO_M
-                    T_gear = np.eye(4, dtype=np.float64)
-                    T_gear[2, 3] = cz
-                    root_tf = T_gear @ np.linalg.inv(T_j2)
-                    robot_ctrl.set_root_transform(root_tf)
-                    root_pos[:] = root_tf[:3, 3].tolist()
-                    root_rot_deg[:] = [0.0, 0.0, 0.0]
                     _update_robot_meshes(robot_ctrl)
+                imgui.SameLine()
+                if imgui.Button("Snap to Flange"):
+                    root_pos[:] = list(_FLANGE_MOUNT_POS)
+                    root_rot_deg[:] = [0.0, 0.0, 0.0]
+                    robot_ctrl.set_root_transform(
+                        _build_root_transform(root_pos, root_rot_deg))
+                    _update_robot_meshes(robot_ctrl)
+                    robot_sync_T0[0] = None   # re-capture base pose on next sim step
+                    print(f"  [FLANGE] Robot snapped to flange mount {_FLANGE_MOUNT_POS}")
+                imgui.SameLine()
+                if imgui.Button("Save Joints"):
+                    _save_joint_angles(robot_ctrl, root_pos, root_rot_deg)
 
         if run:
             world.advance()
             world.retrieve()
             sgui.update()
 
-            # ── Sync: carrier rotation → Joint2_R angle (arm only, base fixed) ──
-            # Base_R / Link1_R stay stationary (housing side).
-            # Link2_R / Link3_R follow carrier (output side).
+            # ── Sync robot arm rotation to carrier output ──
             if robot_ctrl is not None and auto_sync_arm[0]:
+                if robot_sync_T0[0] is None:
+                    robot_sync_T0[0] = robot_ctrl.root_transform
                 carrier_angle = _compute_carrier_angle(world.frame())
-                robot_ctrl.set_joint_positions({"Joint2_R": carrier_angle})
+                c_a, s_a = np.cos(carrier_angle), np.sin(carrier_angle)
+                Rz4 = np.array([
+                    [c_a, -s_a, 0, 0],
+                    [s_a,  c_a, 0, 0],
+                    [0,    0,   1, 0],
+                    [0,    0,   0, 1]], dtype=np.float64)
+                robot_ctrl.set_root_transform(Rz4 @ robot_sync_T0[0])
                 _update_robot_meshes(robot_ctrl)
 
     ps.set_user_callback(gui_callback)
