@@ -200,12 +200,18 @@ class _NewtonIterCounter:
     _CONVERGED_RE = re.compile(r"Newton Iteration Converged with Iteration Count: (\d+)(?:, Line Search Iters: (\d+))?")
     _LS_MAX_RE = re.compile(r"Line Search Exits with Max Iteration: (\d+)")
     _NEWTON_MAX_RE = re.compile(r"Newton Iteration Exits with Max Iteration: (\d+)")
+    # Tolerance checker lines: [x] or [*] followed by <CheckerName> report
+    _TOL_CHECK_RE = re.compile(r"\[([\*x])\]\s+<(.+?)>\s+(.*)")
+    # Separator line that ends a tolerance block
+    _TOL_BLOCK_END_RE = re.compile(r"-{20,}")
 
     def __init__(self):
         self.newton_iters = 0
         self.ls_iters = 0
         self.ls_max_hits = 0
         self.newton_max_hit = False
+        self.last_tol_checks: list[str] = []
+        self._cur_tol_checks: list[str] = []
         self._active = False
         self._saved_stderr_fd = None
         self._saved_stdout_fd = None
@@ -324,6 +330,15 @@ class _NewtonIterCounter:
                 m_nmax = self._NEWTON_MAX_RE.search(line)
                 if m_nmax:
                     self.newton_max_hit = True
+                m_tol = self._TOL_CHECK_RE.search(line)
+                if m_tol:
+                    status, name, report = m_tol.group(1), m_tol.group(2), m_tol.group(3)
+                    # Strip C++ namespace prefix for readability
+                    short_name = name.rsplit("::", 1)[-1]
+                    self._cur_tol_checks.append(f"[{status}] {short_name}: {report}")
+                if self._TOL_BLOCK_END_RE.search(line) and self._cur_tol_checks:
+                    self.last_tol_checks = self._cur_tol_checks
+                    self._cur_tol_checks = []
                 if "[error]" in line or "[warning]" in line:
                     has_error = True
         if has_error:
@@ -338,11 +353,14 @@ class _NewtonIterCounter:
         ls = self.ls_iters
         ls_max = self.ls_max_hits
         nmax = self.newton_max_hit
+        tol_checks = self.last_tol_checks
         self.newton_iters = 0
         self.ls_iters = 0
         self.ls_max_hits = 0
         self.newton_max_hit = False
-        return n, ls, ls_max, nmax
+        self.last_tol_checks = []
+        self._cur_tol_checks = []
+        return n, ls, ls_max, nmax, tol_checks
 
 
 class IPCCoupler(RBC):
@@ -835,6 +853,10 @@ class IPCCoupler(RBC):
                 moduli = ElasticModuli.youngs_poisson(entity.material.E, entity.material.nu)
                 self._ipc_stk.apply_to(mesh, moduli, mass_density=entity.material.rho)
 
+            # Per-entity d_hat override
+            if entity.material.contact_d_hat is not None:
+                mesh.meta().create(uipc.builtin.d_hat, float(entity.material.contact_d_hat))
+
             # Partition FEM/cloth mesh for faster IPC assembly/solve on large meshes.
             # This follows libuipc sample usage and is applied once on env-independent geometry.
             uipc.geometry.mesh_partition(mesh)
@@ -1059,6 +1081,10 @@ class IPCCoupler(RBC):
                     self._ipc_abd_shell.apply_to(
                         rigid_link_geom, kappa=ABD_KAPPA * uipc.unit.MPa, mass_density=rho, thickness=shell_thickness
                     )
+
+            # Per-entity d_hat override
+            if entity.material.contact_d_hat is not None:
+                rigid_link_geom.meta().create(uipc.builtin.d_hat, float(entity.material.contact_d_hat))
 
             # Apply SoftTransformConstraint for coupled links
             if is_soft_constraint_target:
@@ -1539,7 +1565,7 @@ class IPCCoupler(RBC):
             gs.raise_exception(f"[IPC] advance() failed at frame {self._ipc_frame + 1}: {e}")
         if not _verbose:
             self._newton_counter.stop()
-        _n_newton, _n_ls, _ls_max, _newton_max = self._newton_counter.reset()
+        _n_newton, _n_ls, _ls_max, _newton_max, _tol_fails = self._newton_counter.reset()
         _t3 = _time.perf_counter()
         # Check world validity before retrieve — a failed solver leaves corrupted GPU state
         if not self._ipc_world.is_valid():
@@ -1567,6 +1593,9 @@ class IPCCoupler(RBC):
         self._ipc_frame += 1
         _ls_str = f"  ls_maxout={_ls_max}" if _ls_max > 0 else ""
         _nmax_str = "  NEWTON_MAXOUT" if _newton_max else ""
+        if _newton_max and _tol_fails:
+            # Show tolerance check status from the last Newton iteration
+            _nmax_str += " (" + "; ".join(_tol_fails) + ")"
         gs.logger.info(
             f"[IPC] frame {self._ipc_frame:4d}  newton={_n_newton:2d}  ls={_n_ls:3d}  "
             f"advance={(_t3 - _t2) * 1000:.0f}ms  total={(_t6 - _t0) * 1000:.0f}ms"

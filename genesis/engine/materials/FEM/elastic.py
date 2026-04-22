@@ -43,6 +43,8 @@ class Elastic(Base):
     contact_resistance : float | None, optional
         IPC contact resistance/stiffness override. ``None`` uses the coupler global
         default. Default is None.
+    contact_d_hat : float | None, optional
+        Per-entity contact distance threshold override. Default is None.
     """
 
     model: Literal["linear", "stable_neohookean", "linear_corotated"] = "linear"

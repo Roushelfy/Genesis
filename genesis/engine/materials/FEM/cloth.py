@@ -48,6 +48,9 @@ class Cloth(Base):
     contact_resistance : float | None, optional
         IPC contact resistance/stiffness override. ``None`` uses the IPC coupler
         global default. Default is None.
+    contact_d_hat : float | None, optional
+        Per-entity contact distance threshold override. ``None`` uses the
+        global ``IPCCouplerOptions.contact_d_hat``. Default is None.
 
     Notes
     -----

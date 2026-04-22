@@ -36,6 +36,9 @@ class Base(Material["FEMEntity"]):
     contact_resistance : float | None, optional
         IPC contact resistance/stiffness override for this material. ``None`` means
         use the IPC coupler global default (``IPCCouplerOptions.contact_resistance``).
+    contact_d_hat : float | None, optional
+        Per-entity contact distance threshold override. ``None`` means use the
+        global ``IPCCouplerOptions.contact_d_hat``.
     hessian_invariant : bool, optional
         If True, Hessian is computed only once. Default is False.
     """
@@ -46,6 +49,7 @@ class Base(Material["FEMEntity"]):
     hydroelastic_modulus: PositiveFloat = 1e7
     friction_mu: NonNegativeFloat = 0.1
     contact_resistance: PositiveFloat | None = None
+    contact_d_hat: PositiveFloat | None = None
     hessian_invariant: StrictBool = False
 
     # Dispatch fields — set by subclass model_post_init, not user-specified.

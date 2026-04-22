@@ -29,6 +29,8 @@ class Muscle(Elastic):
         Contact friction coefficient. Default is 0.1.
     contact_resistance : float | None, optional
         IPC contact resistance/stiffness override. Default is None.
+    contact_d_hat : float | None, optional
+        Per-entity contact distance threshold override. Default is None.
     """
 
     n_groups: PositiveInt = 1

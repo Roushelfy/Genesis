@@ -74,6 +74,9 @@ class Rigid(Kinematic["RigidEntity"]):
     contact_resistance : float or None, optional
         IPC coupling contact resistance/stiffness override for this entity. ``None`` means use
         ``IPCCouplerOptions.contact_resistance``. Default is None.
+    contact_d_hat : float or None, optional
+        Per-entity contact distance threshold override. ``None`` means use the
+        global ``IPCCouplerOptions.contact_d_hat``. Default is None.
     coup_stiffness : tuple of float or None, optional
         ``(translation, rotation)`` strength ratios for SoftTransformConstraint coupling.
         Controls how tightly the IPC ABD body tracks the Genesis rigid body pose.
@@ -96,6 +99,7 @@ class Rigid(Kinematic["RigidEntity"]):
     enable_coup_collision: StrictBool = True
     coup_collision_links: StrArrayType | None = None
     contact_resistance: PositiveFloat | None = None
+    contact_d_hat: PositiveFloat | None = None
     coup_stiffness: PositiveVec2FType = (100.0, 100.0)
 
     @model_validator(mode="before")

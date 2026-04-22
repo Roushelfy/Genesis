@@ -39,6 +39,8 @@ class Rope(Base):
         Friction coefficient. Default is 0.3.
     contact_resistance : float | None, optional
         Per-entity IPC contact stiffness override. Default is None.
+    contact_d_hat : float | None, optional
+        Per-entity contact distance threshold override. Default is None.
 
     Examples
     --------
@@ -60,8 +62,16 @@ class Rope(Base):
         bending_stiffness=None,
         friction_mu=0.3,
         contact_resistance=None,
+        contact_d_hat=None,
     ):
-        super().__init__(E=E, nu=nu, rho=rho, friction_mu=friction_mu, contact_resistance=contact_resistance)
+        super().__init__(
+            E=E,
+            nu=nu,
+            rho=rho,
+            friction_mu=friction_mu,
+            contact_resistance=contact_resistance,
+            contact_d_hat=contact_d_hat,
+        )
 
         self._thickness = thickness
         self._bending_stiffness = bending_stiffness

@@ -50,6 +50,8 @@ class Paper(Cloth):
         Friction coefficient. Default is 0.3.
     contact_resistance : float | None, optional
         Per-entity IPC contact stiffness override. Default is None.
+    contact_d_hat : float | None, optional
+        Per-entity contact distance threshold override. Default is None.
 
     Examples
     --------
