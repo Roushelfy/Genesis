@@ -42,7 +42,6 @@ if TYPE_CHECKING or UIPC_AVAILABLE:
     import polyscope as ps
     from uipc.backend import SceneVisitor
     from uipc.constitution import (
-        AerodynamicDamping,
         AffineBodyConstitution,
         AffineBodyShell,
         AffineBodyPrismaticJoint,
@@ -60,6 +59,14 @@ if TYPE_CHECKING or UIPC_AVAILABLE:
         NeoHookeanShell,
         StrainLimitingBaraffWitkinShell,
     )
+    # AerodynamicDamping was added in a private uipc fork and is not part of
+    # every public release.  Try to import it; if it's missing we simply
+    # disable the corresponding code path at runtime instead of failing
+    # the whole module import.
+    try:
+        from uipc.constitution import AerodynamicDamping  # type: ignore[attr-defined]
+    except ImportError:
+        AerodynamicDamping = None  # type: ignore[assignment, misc]
     from uipc.core import (
         Engine,
         World,
@@ -429,7 +436,8 @@ class IPCCoupler(RBC):
         self._ipc_dsb: DiscreteShellBending | None = None
         self._ipc_stress_pdsb: StressPlasticDiscreteShellBending | None = None
         self._ipc_strain_pdsb: StrainPlasticDiscreteShellBending | None = None
-        self._ipc_aero: AerodynamicDamping | None = None
+        # AerodynamicDamping is optional (only some uipc builds ship it).
+        self._ipc_aero: "AerodynamicDamping | None" = None
         self._ipc_hks: HookeanSpring | None = None
         self._ipc_krb: KirchhoffRodBending | None = None
         self._ipc_eac: ExternalArticulationConstraint | None = None
@@ -834,17 +842,25 @@ class IPCCoupler(RBC):
 
                         self._ipc_dsb.apply_to(mesh, bending_stiffness=entity.material.bending_stiffness)
 
-                # Aerodynamic damping (optional, for Cloth and Paper)
+                # Aerodynamic damping (optional, for Cloth and Paper).
+                # Only available when the installed uipc build exposes
+                # ``AerodynamicDamping`` (private fork); skipped otherwise.
                 if entity.material.aerodynamic_drag is not None:
-                    if self._ipc_aero is None:
-                        self._ipc_aero = AerodynamicDamping()
-                        self._ipc_constitution_tabular.insert(self._ipc_aero)
-                    self._ipc_aero.apply_to(
-                        mesh,
-                        drag_coefficient=entity.material.aerodynamic_drag,
-                        curvature_scale=entity.material.curvature_drag_scale,
-                        inflate_scale=entity.material.curvature_inflate_scale,
-                    )
+                    if AerodynamicDamping is None:
+                        gs.logger.warning(
+                            "Material requests aerodynamic_drag but the installed "
+                            "uipc build does not expose AerodynamicDamping; skipping."
+                        )
+                    else:
+                        if self._ipc_aero is None:
+                            self._ipc_aero = AerodynamicDamping()
+                            self._ipc_constitution_tabular.insert(self._ipc_aero)
+                        self._ipc_aero.apply_to(
+                            mesh,
+                            drag_coefficient=entity.material.aerodynamic_drag,
+                            curvature_scale=entity.material.curvature_drag_scale,
+                            inflate_scale=entity.material.curvature_inflate_scale,
+                        )
             else:
                 if self._ipc_stk is None:
                     self._ipc_stk = StableNeoHookean()

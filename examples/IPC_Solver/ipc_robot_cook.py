@@ -27,6 +27,33 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 _DEFAULT_SEQ = _REPO_ROOT / "DemoAssets" / "cook_with_teleop" / "seq"
 
 
+def _euler_xyz_deg_to_quat_wxyz(rx_deg, ry_deg, rz_deg):
+    """Convert XYZ-Euler (degrees) to a (w, x, y, z) quaternion."""
+    r = Rotation.from_euler("XYZ", [rx_deg, ry_deg, rz_deg], degrees=True)
+    xyzw = r.as_quat()
+    return np.array([xyzw[3], xyzw[0], xyzw[1], xyzw[2]], dtype=np.float32)
+
+
+def _load_robot_seq(seq_dir: Path):
+    """Return None if seq_dir/robot.npz is missing, else a dict with:
+       qpos (N, D)
+       urdf (str, path relative to repo root)
+       base_pos (3,)
+       base_quat (4,) wxyz
+    """
+    p = seq_dir / "robot.npz"
+    if not p.exists():
+        return None
+    data = np.load(str(p), allow_pickle=True)
+    base_rpy = data["base_rpy_deg"].astype(np.float64)
+    return {
+        "qpos":      data["qpos"].astype(np.float32),
+        "urdf":      str(data["urdf"]),
+        "base_pos":  data["base_pos"].astype(np.float32),
+        "base_quat": _euler_xyz_deg_to_quat_wxyz(*base_rpy),
+    }
+
+
 
 def tf_to_pos_quat(tf: np.ndarray):
     """Extract (pos, quat_wxyz) from a 4x4 homogeneous transform."""
@@ -277,6 +304,23 @@ def run_gui(seq_dir: Path, meta: dict, render_output: str | None = None) -> None
         print(f"[scene] {n_noodles} noodle FEM.Rope entities ({vpn} verts each)")
         break
 
+    # ---- Optional robot (qpos + base pose from replay_traj_polyscope) ----
+    robot_seq = _load_robot_seq(seq_dir)
+    robot_ent = None
+    if robot_seq is not None:
+        urdf_path = _REPO_ROOT / robot_seq["urdf"]
+        print(f"[robot] Loading {urdf_path.name} at base_pos={robot_seq['base_pos']}")
+        robot_ent = scene.add_entity(
+            morph=gs.morphs.URDF(
+                file=str(urdf_path),
+                fixed=True,
+                collision=False,
+                pos=tuple(robot_seq["base_pos"].tolist()),
+                quat=tuple(robot_seq["base_quat"].tolist()),
+            ),
+            vis_mode="visual",
+        )
+
     cam = None
     if use_render:
         cam = scene.add_camera(
@@ -307,6 +351,8 @@ def run_gui(seq_dir: Path, meta: dict, render_output: str | None = None) -> None
             for ni, ent in enumerate(noodle_entities):
                 v_start = ni * vpn
                 ent.set_position(frame_pos[v_start: v_start + vpn])
+        if robot_ent is not None and i < robot_seq["qpos"].shape[0]:
+            robot_ent.set_qpos(robot_seq["qpos"][i])
 
     if use_render:
         import cv2

@@ -1,5 +1,8 @@
 """
-IPC simulation of the planetary gear assembly.
+IPC simulation of the planetary gear assembly -- v2 (large-clearance gears, d_hat=1e-3 m).
+
+Uses modul_v2=2.5 teeth (sun+planet) for >=2.4 mm tooth-tip clearance at all mesh points.
+Ring gear and carrier are unchanged from v1.
 
 - Length unit: metre  (STL/OBJ are in mm, scaled ×0.001 at load time)
 - d_hat = 0.001 m
@@ -30,7 +33,7 @@ from uipc.gui import SceneGUI
 from uipc.unit import MPa
 
 ASSETS = Path(__file__).parent / "assets"
-WORKSPACE = Path(__file__).parent / "sim_output"
+WORKSPACE = Path(__file__).parent / "sim_output_v2"
 REPO_ROOT = Path(__file__).resolve().parents[2]  # Genesis_IPC_demo
 URDF_PATH = REPO_ROOT / "DemoAssets" / "marvin_robot" / "urdf" / "marvin_pika.urdf"
 JOINT_ANGLES_PATH = Path(__file__).parent / "robot_joints.json"
@@ -65,7 +68,7 @@ _FLANGE_MOUNT_POS = [0.0, 0.0,
                      round(-(GEAR_WIDTH / 2 + FLANGE_THICK_MM) * MM_TO_M, 6)]   # metres
 
 # ── IPC / simulation parameters ──
-D_HAT           = 2e-4
+D_HAT           = 5e-4
 DT              = 0.01
 ABD_KAPPA       = 100.0    # MPa
 # STC strength_rate = [translation, rotation]
@@ -106,7 +109,7 @@ HOLD_TIME        = 0.5        # seconds to hold at top before lowering
 SETTLE_TIME      = 0.3        # seconds to wait after release before driven part starts
 DRIVEN_RAMP_TIME = 2.0        # seconds to ramp up driven speed from 0 to full
 
-Logger.set_level(Logger.Level.Info)
+Logger.set_level(Logger.Level.Warn)
 
 
 def _try_key_pressed(key_char: str) -> bool:
@@ -265,14 +268,12 @@ def main():
     world  = World(engine)
 
     config = Scene.default_config()
-    print(config)
     config["dt"] = DT
     config["contact"]["d_hat"]            = D_HAT
     config["contact"]["enable"]           = True
     config["contact"]["friction"]["enable"] = True
     config["gravity"] = [[0.0], [0.0], [-9.8]]
     config["sanity_check"]["enable"] = True
-    config["linear_system"]["tol_rate"] = 1e-3
     config["newton"]["max_iter"] = 32
     scene = Scene(config)
 
@@ -305,7 +306,7 @@ def main():
     # ── Part definitions ──
     # Sun gear always uses the handle model; other parts use standard files.
     _obj_files = {
-        "sun_gear":  "sun_gear_handle.obj",
+        "sun_gear":  "sun_gear_handle_v2.obj",
         "ring_gear": "ring_gear.obj",
         "carrier":   "carrier.obj",
     }
@@ -316,7 +317,7 @@ def main():
         parts.append((pname, _obj_files[pname], is_fixed, has_stc))
     for i in range(NUM_PLANETS):
         is_driven_planet = (i == 0)  # planet_0 is driven for pick-and-place
-        parts.append((f"planet_{i}", "planet_gear.obj", False, is_driven_planet))
+        parts.append((f"planet_{i}", "planet_gear_v2.obj", False, is_driven_planet))
 
     carrier_obj = None
     carrier_slot = None
