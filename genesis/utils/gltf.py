@@ -306,7 +306,12 @@ def parse_mesh_glb(path, group_by_material, scale, is_mesh_zup, surface):
 
     mesh_infos = mu.MeshInfoGroup()
     materials = {}
-    is_visual_overwritten = surface.texture is not None
+
+    # Support per-material-slot surface overrides: surface may be a dict[material_name -> Surface].
+    # _base_surface is used as the template for GLB-material parsing for non-overridden slots.
+    surface_dict = surface if isinstance(surface, dict) else None
+    _base_surface = gs.surfaces.Default() if surface_dict is not None else surface
+    is_visual_overwritten = surface_dict is not None or _base_surface.texture is not None
 
     for i, (mesh_index, mesh_transform) in enumerate(mesh_list):
         mesh_glb = glb.meshes[mesh_index]
@@ -316,11 +321,27 @@ def parse_mesh_glb(path, group_by_material, scale, is_mesh_zup, surface):
             if primitive.material is not None:
                 material, uv_used, material_name = materials.get(primitive.material, (None, 0, ""))
                 if material is None:
-                    material, uv_used, material_name = materials.setdefault(
-                        primitive.material, parse_glb_material(glb, primitive.material, surface)
-                    )
+                    if surface_dict is not None:
+                        _mat_name = glb.materials[primitive.material].name
+                        if _mat_name in surface_dict:
+                            # Use the provided override directly, skipping GLB texture parsing.
+                            # update_texture() must be called to populate default texture fields
+                            # (e.g. Glass needs specular_texture/transmission_texture set to
+                            # ColorTexture defaults so Luisa gets non-None ks/kt).
+                            material = surface_dict[_mat_name].model_copy()
+                            material.update_texture()
+                            uv_used, material_name = 0, _mat_name
+                            materials[primitive.material] = (material, uv_used, material_name)
+                        else:
+                            material, uv_used, material_name = materials.setdefault(
+                                primitive.material, parse_glb_material(glb, primitive.material, _base_surface)
+                            )
+                    else:
+                        material, uv_used, material_name = materials.setdefault(
+                            primitive.material, parse_glb_material(glb, primitive.material, surface)
+                        )
             else:
-                material, uv_used, material_name = surface.model_copy(), 0, ""
+                material, uv_used, material_name = _base_surface.model_copy(), 0, ""
 
             uvs = None
             if "KHR_draco_mesh_compression" in primitive.extensions:

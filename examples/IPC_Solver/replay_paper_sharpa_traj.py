@@ -1,12 +1,13 @@
 """
-Replay a coat-hanger teleop trajectory — Sharpa hands, physics matching registry.
+Replay a paper-folding teleop trajectory — Sharpa hands, high-quality rendering.
 
 Uses the sharpa-hand trajectory (trajectory_sharpa.npz) with updated FEM params
-from the ipc_hanger registry, combined with the rendering tweaks from replay_hanger_traj.py.
+from the ipc_demo registry, combined with the rendering tweaks from
+replay_trashbag_sharpa_traj.py.
 
 Usage
 -----
-    python examples/IPC_Solver/replay_hanger_sharpa_traj.py [OPTIONS]
+    python examples/IPC_Solver/replay_paper_sharpa_traj.py [OPTIONS]
 
 Interactive viewer (default)
     --loop                  Loop replay continuously
@@ -43,10 +44,7 @@ Shared camera / render options
     --focal-len METRES      Focal length (default: 0.05 = 50 mm)
 
 Trajectory
-    --traj PATH             Path to trajectory .npz file (default: trajectory_sharpa.npz,
-                            or trajectory_sharpa_subdiv.npz when --subdiv is set)
-    --subdiv                Use Loop-subdivided shirt mesh + trajectory
-                            (genesis_shirt_subdiv.glb + trajectory_sharpa_subdiv.npz)
+    --traj PATH             Path to trajectory .npz file (default: trajectory_sharpa.npz)
 """
 
 from __future__ import annotations
@@ -72,68 +70,30 @@ from _replay_common import (
 
 _REPO = Path(__file__).resolve().parents[2]
 _DEMO = _REPO / "DemoAssets"
-_HANGER = _DEMO / "coat_hanger"
+_PAPER = _DEMO / "paper"
 
 MARVIN_URDF = str(_DEMO / "marvin_sharpa_description/marvin_sharpa.urdf")
-TABLE_GLB = str(_HANGER / "work_table.glb")
-SHIRT_GLB = str(_HANGER / "genesis_shirt.glb")
-SHIRT_GLB_SUBDIV = str(_HANGER / "genesis_shirt_subdiv.glb")
-COAT_HANGER_GLB = str(_HANGER / "coat_hanger.glb")
-RACK_GLB = str(_HANGER / "rack_frame.glb")
-DEFAULT_TRAJ = str(_HANGER / "trajectory_sharpa.npz")
-DEFAULT_TRAJ_SUBDIV = str(_HANGER / "trajectory_sharpa_subdiv.npz")
+TABLE_GLB = str(_PAPER / "work_table.glb")
+PAPER_GLB = str(_PAPER / "paper_plane_coarse.glb")
+DEFAULT_TRAJ = str(_PAPER / "trajectory_sharpa.npz")
 
 
-class HangerSharpaReplay(TrajectoryReplay):
-    name = "hanger_sharpa"
-    cam_pos = (1.5122, -0.767, 1.8931)
-    cam_lookat = (0.838, -0.3497, 1.2837)
+class PaperSharpaReplay(TrajectoryReplay):
+    name = "paper_sharpa"
+    cam_pos = (1.4097, -0.3759, 1.3223)
+    cam_lookat = (0.5421, -0.0112, 0.9842)
     cam_fov = 40
-
-    def add_args(self, parser):
-        parser.add_argument("--traj", type=str, default=None,
-                            help="Path to trajectory.npz (default: trajectory_sharpa.npz, "
-                                 "or trajectory_sharpa_subdiv.npz when --subdiv is set)")
-        parser.add_argument("--subdiv", action="store_true",
-                            help="Use Loop-subdivided shirt mesh + trajectory "
-                                 "(genesis_shirt_subdiv.glb + trajectory_sharpa_subdiv.npz)")
-
-    def load_trajectory(self):
-        traj_path = self.args.traj or (DEFAULT_TRAJ_SUBDIV if self.args.subdiv else DEFAULT_TRAJ)
-        traj = np.load(traj_path)
-        self.sim_time = traj["sim_time"]
-        n_frames = len(self.sim_time)
-
-        # Robot: MARVIN_SHARPA, 58 DOF
-        self._joint_qpos = traj["robot_qpos"].astype(np.float32)
-
-        # Rigid data (skip static: ground, table, drying_rack)
-        self._rigid_data = {
-            "coat_hanger": traj["rigid_coat_hanger"],
-        }
-
-        # FEM data
-        self._fem_data = {
-            "shirt": traj["fem_shirt"],
-        }
-
-        print(f"Robot qpos: {self._joint_qpos.shape[1]} DOF")
-        print(f"Coat hanger frames: {self._rigid_data['coat_hanger'].shape[0]}")
-        print(f"Shirt: {self._fem_data['shirt'].shape[1]} verts")
-        if n_frames > 1:
-            self.fps = min(int(1.0 / (self.sim_time[1] - self.sim_time[0])), 60)
-        return n_frames
 
     # ── Shared light rig ──────────────────────────────────────────────────────
     # Edit pos / color / intensity here; both renderers pick them up automatically.
     # radius and intensity are in Luisa units — Nyx scale factors are applied below.
     _LIGHTS: list[_LightDef] = [
-        # Key light: above-left, warm, casting shadows across the scene
-        {"pos": (0.5,   1.1,  2.4),  "radius": 0.2,  "color": (1.0, 0.97, 0.92), "intensity": 50.0},
+        # Key light: above-left, warm, soft — highlights paper creases
+        {"pos": (0.5,  1.1,  2.4),  "radius": 0.2,  "color": (1.0, 0.97, 0.92), "intensity": 50.0},
         # Fill light: right side, cooler, large and soft
-        {"pos": (0.5,  -1.8,  4.2),  "radius": 1.0,  "color": (0.48, 0.52, 0.6),  "intensity": 1.0},
-        # Rim light: behind the scene, cool, hard — separates hands/shirt from dark background
-        {"pos": (-0.8, -3.0,  0.5),  "radius": 0.25, "color": (0.8, 0.88, 1.0),   "intensity": 150.0},
+        {"pos": (0.5, -1.8,  4.2),  "radius": 1.0,  "color": (0.48, 0.52, 0.6),  "intensity": 1.0},
+        # Rim light: behind the scene, cool, hard — separates hands from dark background
+        {"pos": (-0.8, -3.0, 0.5), "radius": 0.25, "color": (0.8, 0.88, 1.0),  "intensity": 150.0},
     ]
     # Nyx uses different physical units for radius and intensity.
     # Tune these two scalars to match perceived brightness/softness without
@@ -148,8 +108,9 @@ class HangerSharpaReplay(TrajectoryReplay):
         return gs.renderers.RayTracer(
             logging_level="warning",
             tracing_depth=32,
+            env_surface=gs.surfaces.Emission(
+                emissive_texture=gs.textures.ColorTexture(color=(0.01, 0.01, 0.01))),
             env_radius=100.0,
-            env_euler=(0, 0, 20),
             lights=[
                 SphereLight(
                     pos=l["pos"],
@@ -174,8 +135,6 @@ class HangerSharpaReplay(TrajectoryReplay):
         ]
 
     def nyx_light_field(self):
-        # San Carlos robot station splat — position/rotation tuned for this scene.
-        # Run with --nyx --preview and tweak until the background aligns.
         return {
             "uri": str((_REPO / "DemoAssets/3dgs/0325_san_carlos_robot_station.ply").resolve()),
             "position": (1.5, 0.81, -3.0),
@@ -183,28 +142,49 @@ class HangerSharpaReplay(TrajectoryReplay):
             "scale": (1.0, 1.0, 1.0),
         }
 
-    def custom_camera_keyframes(self):
-        # Keyframes captured on the wuji trajectory
-        # Each entry: (frame, pos, lookat[, up[, ease_in[, ease_out]]])
-        return [
-            (152, (1.5122, -0.767, 1.8931), (0.838, -0.3497, 1.2837)),
-            (239, (1.2059, -0.0776, 1.3647), (0.4035, 0.0213, 0.7761)),
-            (291, (1.3401, 0.0904, 1.0712), (0.3722, -0.0178, 0.8444)),
-            (325, (0.6697, -0.5786, 1.3138), (0.5125, 0.2175, 0.7295)),
-            (378, (0.1256, -0.852, 1.6709), (0.4728, -0.1608, 1.0371)),
-            (459, (0.0621, 0.7607, 1.8796), (0.3539, 0.2161, 1.0933)),
-        ]
+    def add_args(self, parser):
+        parser.add_argument(
+            "--traj",
+            type=str,
+            default=DEFAULT_TRAJ,
+            help="Path to trajectory.npz",
+        )
+
+    def load_trajectory(self):
+        traj = np.load(self.args.traj)
+        self.sim_time = traj["sim_time"]
+        n_frames = len(self.sim_time)
+
+        # Robot: MARVIN_SHARPA, 58 DOF
+        self._joint_qpos = traj["robot_qpos"].astype(np.float32)
+
+        # No rigid objects in this recording
+        self._rigid_data = {}
+
+        # FEM data
+        self._fem_data = {
+            "paper_sheet": traj["fem_paper_sheet"],
+        }
+
+        print(f"Robot qpos: {self._joint_qpos.shape[1]} DOF")
+        print(f"Paper: {self._fem_data['paper_sheet'].shape[1]} verts")
+        if n_frames > 1:
+            self.fps = min(int(1.0 / (self.sim_time[1] - self.sim_time[0])), 60)
+        return n_frames
 
     def make_camera_traj(self, name):
         presets = {
             "surround": lambda: SurroundCamera(
-                center=(0.53, 0.0, 1.0),
-                radius=1.5,
-                height=1.3,
+                center=(0.5, 0.0, 0.78),
+                radius=0.7,
+                height=1.1,
                 angle_start=-60,
                 angle_end=60,
             ),
-            "full": lambda: FullViewCamera(pos=self.cam_pos, lookat=self.cam_lookat),
+            "full": lambda: FullViewCamera(
+                pos=self.cam_pos,
+                lookat=self.cam_lookat,
+            ),
             "ego": lambda: EgoCamera(
                 base_pos=(0.0, 0.0, 1.08),
                 offset=(0.0, -0.15, 0.45),
@@ -215,15 +195,33 @@ class HangerSharpaReplay(TrajectoryReplay):
             return presets[name]()
         return super().make_camera_traj(name)
 
+    def custom_camera_keyframes(self):
+        # Use K key in interactive mode to capture keyframes, then paste them here.
+        # Each entry: (frame, pos, lookat[, up[, ease_in[, ease_out]]])
+        return [
+            (427, (1.4097, -0.3759, 1.3223), (0.5421, -0.0112, 0.9842)),
+            (734, (1.0611, -0.6897, 1.3552), (0.4518, -0.0024, 0.9597)),
+            (930, (1.0287, -0.7462, 1.3071), (0.4194, -0.0589, 0.9115)),
+            (1112, (0.9679, -0.5581, 1.2046), (0.286, 0.0729, 0.8348)),
+            (1367, (1.1963, 0.0209, 1.1793), (0.2985, 0.0318, 0.7389)),
+            (1442, (1.1695, -0.1887, 1.1844), (0.3508, 0.1765, 0.7413)),
+        ]
+
     def build_scene(self, scene):
         import genesis as gs
 
-        # Table (ipc_hanger: rotated 90 deg, shifted)
+        # Ground — large flat box so surface color override works (Plane ignores it)
+        scene.add_entity(
+            gs.morphs.Box(size=(20.0, 20.0, 0.02), pos=(0.0, 0.0, -2.01), fixed=True),
+            surface=gs.surfaces.BSDF(
+                diffuse_texture=gs.textures.ColorTexture(color=(0.05, 0.05, 0.05))),
+        )
+
+        # Table (ipc_paper: pos raised +0.02)
         scene.add_entity(
             gs.morphs.Mesh(
                 file=TABLE_GLB,
-                pos=(0.95, 0.10, 0.0),
-                euler=(0, 0, 90),
+                pos=(0.8, 0.0, 0.02),
                 scale=(1.14, 1.0, 1.47),
                 fixed=True,
                 file_meshes_are_zup=True,
@@ -237,62 +235,37 @@ class HangerSharpaReplay(TrajectoryReplay):
             vis_mode="visual",
         )
 
-        # Drying rack (fixed)
-        scene.add_entity(
-            gs.morphs.Mesh(
-                file=RACK_GLB,
-                pos=(0.53, 0.0, 0.0),
-                euler=(0, 0, 90),
-                scale=0.83,
-                fixed=True,
-                file_meshes_are_zup=False,
-                convexify=False,
-                decimate=True,
-                decimate_face_num=1000,
-            ),
-            material=gs.materials.Rigid(rho=100.0),
-            vis_mode="visual",
-        )
+        # No rigid entities in this recording
+        self._rigid_entities = {}
 
-        # Rigid objects (matches registry COAT_HANGER for ipc_hanger)
-        self._rigid_entities = {
-            "coat_hanger": scene.add_entity(
+        # Paper sheet (FEM Paper, matches registry PAPER_SHEET)
+        self._fem_entities = {
+            "paper_sheet": scene.add_entity(
                 gs.morphs.Mesh(
-                    file=COAT_HANGER_GLB,
-                    pos=(0.51, -0.25, 0.84),
-                    euler=(180, 180, 0),
-                    scale=0.004,
+                    file=PAPER_GLB,
+                    pos=(0.53, 0.0, 0.80),
+                    euler=(0, 0, -90),
+                    scale=0.125,
                     fixed=False,
                     file_meshes_are_zup=False,
-                    convexify=False,
-                    decimate=True,
-                    decimate_face_num=500,
                 ),
-                material=gs.materials.Rigid(rho=80.0),
-                vis_mode="visual",
-            ),
-        }
-
-        # Shirt (FEM Cloth, matches registry SHIRT_HANGER)
-        shirt_glb = SHIRT_GLB_SUBDIV if getattr(self.args, "subdiv", False) else SHIRT_GLB
-        self._fem_entities = {
-            "shirt": scene.add_entity(
-                gs.morphs.Mesh(
-                    file=shirt_glb,
-                    pos=(0.55, 0.25, 1.09),
-                    euler=(-90, 150, 90),
-                    scale=0.80,
-                    fixed=False,
-                ),
-                material=gs.materials.FEM.Cloth(
-                    E=1e3,
-                    nu=0.49,
-                    rho=60.0,
-                    thickness=0.0005,
-                    bending_stiffness=0.1,
+                material=gs.materials.FEM.Paper(
+                    E=1e7,
+                    nu=0.3,
+                    rho=300.0,
+                    thickness=0.0002,
+                    plasticity_model="stress",
+                    bending_stiffness=8e4,
+                    yield_stress=1.8e5,
+                    hardening_modulus=0.001,
                     friction_mu=0.3,
                 ),
-                surface=gs.surfaces.Plastic(),
+                surface=gs.surfaces.BSDF(
+                    diffuse_texture=gs.textures.ColorTexture(color=(0.93, 0.91, 0.88)),
+                    roughness=0.85,
+                    metallic=0.0,
+                    ior=1.5,
+                ),
                 vis_mode="visual",
             ),
         }
@@ -319,4 +292,4 @@ class HangerSharpaReplay(TrajectoryReplay):
 
 
 if __name__ == "__main__":
-    HangerSharpaReplay().run()
+    PaperSharpaReplay().run()
