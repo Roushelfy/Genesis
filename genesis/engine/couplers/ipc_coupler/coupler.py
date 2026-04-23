@@ -54,6 +54,8 @@ if TYPE_CHECKING or UIPC_AVAILABLE:
         ElasticModuli,
         ElasticModuli2D,
         ExternalArticulationConstraint,
+        FiniteElementExternalForce,
+        SoftPositionConstraint,
         SoftTransformConstraint,
         StableNeoHookean,
         NeoHookeanShell,
@@ -441,6 +443,8 @@ class IPCCoupler(RBC):
         self._ipc_hks: HookeanSpring | None = None
         self._ipc_krb: KirchhoffRodBending | None = None
         self._ipc_eac: ExternalArticulationConstraint | None = None
+        self._ipc_fem_ext_force: FiniteElementExternalForce | None = None
+        self._ipc_soft_pos_constraint: SoftPositionConstraint | None = None
 
         # ==== IPC Contact Elements ====
         self._ipc_no_collision_contact: ContactElement | None = None
@@ -467,6 +471,11 @@ class IPCCoupler(RBC):
         self._fem_state_geom: SimplicialComplex | None = None
         # FEM entities whose IPC positions need sync: entity → set of dirty env indices.
         self._fem_updated_entities: dict["FEMEntity", set[int]] = {}
+        # Pending per-vertex external forces: entity → (n_verts, 3) array or None (clear).
+        self._fem_external_forces: dict["FEMEntity", np.ndarray | None] = {}
+        # Pending per-vertex soft position constraints: entity → dict with
+        # "strength_ratio" (n_verts,) and "aim_position" (n_verts, 3), or None (clear).
+        self._fem_soft_position: dict["FEMEntity", dict[str, np.ndarray] | None] = {}
 
         # ==== ABD Geometry & State ====
         # Cached merged world-frame trimesh per link for neutral-pose overlap check
@@ -868,6 +877,20 @@ class IPCCoupler(RBC):
 
                 moduli = ElasticModuli.youngs_poisson(entity.material.E, entity.material.nu)
                 self._ipc_stk.apply_to(mesh, moduli, mass_density=entity.material.rho)
+
+            # Apply external force constitution (initially zero, activated at runtime)
+            if is_cloth:
+                if self._ipc_fem_ext_force is None:
+                    self._ipc_fem_ext_force = FiniteElementExternalForce()
+                    self._ipc_constitution_tabular.insert(self._ipc_fem_ext_force)
+                self._ipc_fem_ext_force.apply_to(mesh, np.array([0.0, 0.0, 0.0]))
+
+            # Apply soft position constraint (initially inactive, activated at runtime)
+            if is_cloth:
+                if self._ipc_soft_pos_constraint is None:
+                    self._ipc_soft_pos_constraint = SoftPositionConstraint()
+                    self._ipc_constitution_tabular.insert(self._ipc_soft_pos_constraint)
+                self._ipc_soft_pos_constraint.apply_to(mesh, strength_rate=0.0)
 
             # Per-entity d_hat override
             if entity.material.contact_d_hat is not None:
@@ -1898,6 +1921,57 @@ class IPCCoupler(RBC):
 
         self._abd_updated_links.clear()
 
+    def set_fem_external_force(self, entity: "FEMEntity", forces: np.ndarray) -> None:
+        """Set per-vertex external forces for a FEM entity.
+
+        Forces are written to IPC geometry before each advance().
+        Requires FiniteElementExternalForce constitution on the entity (applied
+        automatically for cloth/paper in _add_fem_entities_to_ipc).
+
+        Parameters
+        ----------
+        entity : FEMEntity
+            The FEM entity to apply forces to.
+        forces : np.ndarray
+            Per-vertex force vectors, shape (n_vertices, 3).
+        """
+        self._fem_external_forces[entity] = forces.astype(np.float64)
+
+    def clear_fem_external_force(self, entity: "FEMEntity") -> None:
+        """Clear external forces for a FEM entity.
+
+        Zeros are written on the next advance, then the entry is removed.
+        """
+        if entity in self._fem_external_forces:
+            self._fem_external_forces[entity] = None
+
+    def set_fem_soft_position(
+        self,
+        entity: "FEMEntity",
+        strength_ratio: np.ndarray,
+        aim_position: np.ndarray,
+    ) -> None:
+        """Set per-vertex soft position constraint for a FEM entity.
+
+        Parameters
+        ----------
+        entity : FEMEntity
+            The FEM entity.
+        strength_ratio : np.ndarray
+            Per-vertex strength, shape (n_vertices,). Use 0 to disable on a vertex.
+        aim_position : np.ndarray
+            Per-vertex target positions, shape (n_vertices, 3).
+        """
+        self._fem_soft_position[entity] = {
+            "strength_ratio": strength_ratio.astype(np.float64),
+            "aim_position": aim_position.astype(np.float64),
+        }
+
+    def clear_fem_soft_position(self, entity: "FEMEntity") -> None:
+        """Clear soft position constraint for a FEM entity."""
+        if entity in self._fem_soft_position:
+            self._fem_soft_position[entity] = None
+
     def mark_fem_updated(self, entity: "FEMEntity", envs_idx=None):
         """Mark a FEM entity as needing IPC position sync."""
         if entity not in self._fem_slots_by_entity:
@@ -2236,6 +2310,60 @@ class IPCCoupler(RBC):
 
                 mass_matrix_attr = articulation_geom["joint_joint"].find("mass")
                 uipc.view(mass_matrix_attr).flat[:] = ad.mass_matrix[env_idx]
+
+        # 4. Write FEM external forces
+        for entity, forces in list(self._fem_external_forces.items()):
+            slots = self._fem_slots_by_entity.get(entity)
+            if slots is None:
+                continue
+            for env_idx in range(self._B):
+                geom = slots[env_idx].geometry()
+                force_attr = geom.vertices().find("external_force")
+                is_constrained = geom.vertices().find(uipc.builtin.is_constrained)
+                if force_attr is None or is_constrained is None:
+                    continue
+                fv = uipc.view(force_attr)
+                cv = uipc.view(is_constrained)
+                if forces is not None:
+                    cv[:] = 1
+                    fv[:] = forces.reshape(-1, 3, 1)
+                else:
+                    cv[:] = 0
+                    fv[:] = 0.0
+            if forces is None:
+                del self._fem_external_forces[entity]
+
+        # 5. Write FEM soft position constraints
+        # Must run AFTER section 4 so is_constrained for pinned vertices
+        # is not clobbered by the external force clear (cv[:] = 0).
+        for entity, data in list(self._fem_soft_position.items()):
+            slots = self._fem_slots_by_entity.get(entity)
+            if slots is None:
+                continue
+            for env_idx in range(self._B):
+                geom = slots[env_idx].geometry()
+                sr_attr = geom.vertices().find("strength_ratio")
+                aim_attr = geom.vertices().find(uipc.builtin.aim_position)
+                is_constrained = geom.vertices().find(uipc.builtin.is_constrained)
+                if sr_attr is None or aim_attr is None:
+                    continue
+                sr = uipc.view(sr_attr)
+                ap = uipc.view(aim_attr)
+                if data is not None:
+                    sr[:] = data["strength_ratio"]
+                    ap[:] = data["aim_position"].reshape(-1, 3, 1)
+                    # Ensure is_constrained=1 for vertices with non-zero strength
+                    # so the SoftPositionConstraint backend includes them.
+                    if is_constrained is not None:
+                        cv = uipc.view(is_constrained)
+                        pinned = data["strength_ratio"] > 0
+                        for k in range(len(pinned)):
+                            if pinned[k]:
+                                cv[k] = 1
+                else:
+                    sr[:] = 0.0
+            if data is None:
+                del self._fem_soft_position[entity]
 
     def _post_advance_write_qpos(self):
         """
