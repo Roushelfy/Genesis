@@ -336,13 +336,23 @@ def main() -> None:
     n_traj = len(qpos)
     print(f"  {n_traj} frames")
 
-    # ----- Phase B data: seq_v1 --------------------------------------------
-    print(f"\nLoading scene: {_SEQ_DIR.name}")
-    seq = SeqPlayer(_SEQ_DIR)
+    # ----- Phase B data: scan all available seq*/ subdirs ----------------
+    seq_root = _HERE.parents[1]
+    seq_options = sorted(
+        p for p in seq_root.iterdir()
+        if p.is_dir() and p.name.startswith("seq") and (p / "meta.json").exists()
+    )
+    if not seq_options:
+        raise RuntimeError(f"No seq*/ directories with meta.json found in {seq_root}")
+    print(f"\n[SCENES] Available: {[p.name for p in seq_options]}")
+    # Use _SEQ_DIR if it's in the list, else the first option.
+    initial_seq_dir = _SEQ_DIR if _SEQ_DIR in seq_options else seq_options[0]
+    print(f"Loading scene: {initial_seq_dir.name}")
+    seq = SeqPlayer(initial_seq_dir)
     print(f"  {seq.n_frames} frames | rigid={len(seq.rigid)}  "
           f"fem={len(seq.fem)}  rod={len(seq.rod)}")
     if "pan" not in seq.rigid or "spatula" not in seq.rigid:
-        raise RuntimeError("seq_v1 must contain rigid 'pan' and 'spatula'")
+        raise RuntimeError(f"{initial_seq_dir.name} must contain rigid 'pan' and 'spatula'")
 
     # ----- Calibration ------------------------------------------------------
     calib = Calibration.load(_CALIB)
@@ -412,6 +422,75 @@ def main() -> None:
         cn.set_radius(0.0018, relative=False)
         cn.set_enabled(False)
         rod_handles_B[name] = cn
+
+    current_seq_dir = [initial_seq_dir]   # mutable holder for the active dir
+
+    def _reload_scene(new_dir: Path) -> None:
+        """Tear down the existing Phase-B meshes, load a different SeqPlayer
+        from *new_dir*, and re-register the meshes.  All closures see the new
+        SeqPlayer because they read the (rebound) ``seq`` cell."""
+        nonlocal seq, pan_v_local, spat_v_local, pan_f, spat_f
+        for sm in list(rigid_handles_B.values()): sm.remove()
+        for sm in list(fem_handles_B.values()):   sm.remove()
+        for cn in list(rod_handles_B.values()):   cn.remove()
+        rigid_handles_B.clear()
+        fem_handles_B.clear()
+        rod_handles_B.clear()
+
+        seq = SeqPlayer(new_dir)
+        if "pan" not in seq.rigid or "spatula" not in seq.rigid:
+            raise RuntimeError(
+                f"{new_dir.name} must contain rigid 'pan' and 'spatula'")
+        current_seq_dir[0] = new_dir
+        print(f"\n[SCENE] Switched to {new_dir.name}: {seq.n_frames} frames | "
+              f"rigid={len(seq.rigid)} fem={len(seq.fem)} rod={len(seq.rod)}",
+              flush=True)
+
+        # Refresh rest-pose vertices/faces used by Phase A's pan/spatula tools.
+        pan_v_local  = np.asarray(seq.rigid["pan"][0],  np.float64)
+        spat_v_local = np.asarray(seq.rigid["spatula"][0], np.float64)
+        pan_f        = seq.rigid["pan"][1]
+        spat_f       = seq.rigid["spatula"][1]
+        ps_pan_A.update_vertex_positions(_transform_verts(pan_v_local, pan_tf0_traj))
+        ps_spat_A.update_vertex_positions(_transform_verts(spat_v_local, spat_tf0_traj))
+
+        in_B = state["phase"] == "B"
+        for name, (v_local, faces, tfs) in seq.rigid.items():
+            if faces is None or len(faces) == 0:
+                continue
+            color = _RIGID_COLORS.get(name) or (_BROC_COLOR if name.startswith("broc")
+                                                else (0.7, 0.7, 0.7))
+            sm = ps.register_surface_mesh(f"phaseB/{name}",
+                    _transform_verts(v_local, tfs[0]), faces, smooth_shade=True)
+            sm.set_color(color)
+            sm.set_enabled(in_B)
+            rigid_handles_B[name] = sm
+        for name, (faces, positions) in seq.fem.items():
+            if len(faces) == 0:
+                continue
+            color = (_TOMATO_COLOR if name.startswith("tomato")
+                     else _MUSHROOM_COLOR if name.startswith("mushroom")
+                     else (0.7, 0.7, 0.7))
+            sm = ps.register_surface_mesh(f"phaseB/{name}", positions[0], faces,
+                                           smooth_shade=True)
+            sm.set_color(color)
+            sm.set_enabled(in_B)
+            fem_handles_B[name] = sm
+        for name, (edges, positions) in seq.rod.items():
+            if len(edges) == 0:
+                continue
+            cn = ps.register_curve_network(f"phaseB/{name}", positions[0], edges)
+            cn.set_color(_NOODLE_COLOR)
+            cn.set_radius(0.0018, relative=False)
+            cn.set_enabled(in_B)
+            rod_handles_B[name] = cn
+
+        # Reset frame index and refresh the visible phase.
+        state["frame_B"] = 0
+        if in_B:
+            update_phase_B(0)
+        else:
+            update_phase_A(state["frame_A"])
 
     # ----- Gizmo handles (6-DOF for palms, translate-only for fingertips) ---
     _palm_cube_V, _palm_cube_F = _cube_mesh(0.025)     # 2.5cm cube for palm
@@ -872,7 +951,7 @@ def main() -> None:
                 print(f"    frame {fi + 1}/{n}", flush=True)
         update_phase_B(saved_frame)
 
-        out_path = _SEQ_DIR / "robot.npz"
+        out_path = current_seq_dir[0] / "robot.npz"
         np.savez(
             str(out_path),
             qpos          = qposes,
@@ -1044,13 +1123,24 @@ def main() -> None:
         # ---- Phase-B status ----
         if not is_A:
             imgui.Separator()
+            # Scene-source switcher: lets the user pick between any seq*/
+            # subdirectory found at startup.
+            imgui.TextUnformatted(f"Scene source: [{current_seq_dir[0].name}]")
+            for opt_dir in seq_options:
+                is_active = opt_dir == current_seq_dir[0]
+                if imgui.RadioButton(opt_dir.name + "##scene_src", is_active):
+                    if not is_active:
+                        _reload_scene(opt_dir)
+                imgui.SameLine()
+            imgui.NewLine()
+
             if calib.is_complete:
                 imgui.TextUnformatted("Calibration loaded.  IK is driving the arms.")
             else:
                 imgui.TextUnformatted(
                     "[!] No calibration yet.  Switch to Phase A and press Capture."
                 )
-            if imgui.Button("Export robot seq -> seq_v1/robot.npz"):
+            if imgui.Button(f"Export robot seq -> {current_seq_dir[0].name}/robot.npz"):
                 do_export_robot_seq()
             # Robot base pose (6-DOF): XYZ translation + RPY Euler rotation.
             imgui.TextUnformatted("Robot base pose:")
