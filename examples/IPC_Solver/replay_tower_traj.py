@@ -37,7 +37,7 @@ _TOWER = _DEMO / "tower"
 _TABLE_GLB = str(_DEMO / "coat_hanger" / "work_table.glb")
 
 MARVIN_URDF = str(_DEMO / "marvin_robot" / "urdf" / "marvin_pika.urdf")
-DEFAULT_TRAJ = str(_TOWER / "trajectory_tower.npz")
+DEFAULT_TRAJ = str(_TOWER / "trajectory_20260422_155628.npz")
 
 # Tower position (matching IPCTowerEnvConfig / registry)
 TOWER_X, TOWER_Y = 0.54, 0.0
