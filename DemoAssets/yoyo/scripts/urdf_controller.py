@@ -675,10 +675,20 @@ class URDFController:
             root_inv = np.linalg.inv(self._root_transform)
             target_pos = (root_inv[:3, :3] @ target_pos) + root_inv[:3, 3]
 
-        # Initial seed from current joint state
+        # Initial seed from current joint state.  IMPORTANT: the ikpy chain
+        # includes EVERY joint from the URDF root to the tip link.  We must
+        # seed each of those with its current value, not just the ones in
+        # ``joint_map`` (the "active"/IK-modifiable subset).  Otherwise the
+        # joints we *don't* let IK modify would appear to ikpy as sitting at
+        # their zero position, and it would search for a finger pose that
+        # reaches the world target starting from a robot posture where the
+        # arm/palm are completely straight.
         initial = np.zeros(len(chain.links), dtype=np.float64)
-        for idx, jname in joint_map:
-            initial[idx] = self._joint_state.get(jname, 0.0)
+        for i, link in enumerate(chain.links):
+            lname = getattr(link, "name", None)
+            jname = self._child_to_joint.get(lname) if lname else None
+            if jname is not None:
+                initial[i] = self._joint_state.get(jname, 0.0)
 
         # Solve
         if target_orientation is not None and orientation_mode is not None:
