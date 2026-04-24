@@ -211,7 +211,8 @@ def parse_urdf(morph, surface):
                     # Use the PBR surface parsed from GLB (metallic, roughness, emissive, etc.)
                     geom_surface = glb_surf
                 elif (
-                    surface.texture is None
+                    not isinstance(surface, dict)
+                    and surface.texture is None
                     and getattr(geom_prop, "material") is not None
                     and geom_prop.material.color is not None
                     and (morph.prioritize_urdf_material or not tmesh.visual.defined)
@@ -219,7 +220,7 @@ def parse_urdf(morph, surface):
                     is_urdf_material = True
                     geom_surface = gs.surfaces.Default(color=geom_prop.material.color)
                 else:
-                    geom_surface = surface
+                    geom_surface = surface if not isinstance(surface, dict) else gs.surfaces.Default()
 
                 mesh = gs.Mesh.from_trimesh(
                     tmesh,
