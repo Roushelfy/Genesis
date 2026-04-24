@@ -346,6 +346,10 @@ class TrajectoryReplay:
             choices=["none", "aces", "uncharted2"],
             help="Tone mapping operator (default: aces)",
         )
+        parser.add_argument(
+            "--vis-mode", choices=["visual", "collision", "sdf"], default="visual",
+            help="Which mesh to render for rigid entities: visual (default), collision, or sdf",
+        )
         self.add_args(parser)
         self.args = parser.parse_args()
 

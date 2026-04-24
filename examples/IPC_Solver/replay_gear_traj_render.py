@@ -237,7 +237,7 @@ class GearReplay(TrajectoryReplay):
                 convexify=False,
             ),
             surface=gs.surfaces.BSDF(roughness=0.45, metallic=0.0, ior=1.45),
-            vis_mode="visual",
+            vis_mode=self.args.vis_mode,
         )
 
         rigid_mat = gs.materials.Rigid(rho=1000.0)
@@ -255,7 +255,7 @@ class GearReplay(TrajectoryReplay):
             ),
             material=rigid_mat,
             # surface=gs.surfaces.Metal(color=(0.25, 0.25, 0.27, 1.0), roughness=0.35),
-            vis_mode="visual",
+            vis_mode=self.args.vis_mode,
         )
 
         # Sun gear with handle — bright polished steel, low roughness for sharp specular
@@ -263,15 +263,15 @@ class GearReplay(TrajectoryReplay):
             gs.morphs.Mesh(
                 file=f"{gear_assets}/sun_gear_handle_v2.glb",
                 pos=(CX, CY, CZ),
-                euler=(0, 0, rot_off),
-                scale=MESH_SCALE,
+#                euler=(0, 0, rot_off),
+#                scale=MESH_SCALE,
                 fixed=False,
                 convexify=False,
                 decimate=False,
             ),
             material=rigid_mat,
             #            surface=gs.surfaces.Metal(color=(0.80, 0.80, 0.78, 1.0), roughness=0.08),
-            vis_mode="visual",
+            vis_mode=self.args.vis_mode,
         )
 
         # Planet gears — mid roughness, warm brass/bronze tint to distinguish from sun+ring
@@ -288,8 +288,8 @@ class GearReplay(TrajectoryReplay):
                     decimate=False,
                 ),
                 material=rigid_mat,
-                #                surface=gs.surfaces.Metal(color=(0.72, 0.60, 0.35, 1.0), roughness=0.25),
-                vis_mode="visual",
+#                surface=gs.surfaces.Metal(color=(0.72, 0.60, 0.35, 1.0), roughness=0.25),
+                vis_mode=self.args.vis_mode,
             )
 
         # Carrier — matte aluminium, clearly different from the steel gears
@@ -305,8 +305,8 @@ class GearReplay(TrajectoryReplay):
                 decimate=False,
             ),
             material=rigid_mat,
-            #            surface=gs.surfaces.Metal(color=(0.55, 0.57, 0.60, 1.0), roughness=0.45),
-            vis_mode="visual",
+#            surface=gs.surfaces.Metal(color=(0.55, 0.57, 0.60, 1.0), roughness=0.45),
+            vis_mode=self.args.vis_mode,
         )
 
         # Support pin — fixed shaft
@@ -342,7 +342,7 @@ class GearReplay(TrajectoryReplay):
                     metallic=0.25,
                 ),
             },
-            vis_mode="visual",
+            vis_mode=self.args.vis_mode,
         )
 
 
