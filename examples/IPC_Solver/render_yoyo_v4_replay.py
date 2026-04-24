@@ -143,6 +143,20 @@ class YoyoV4StaticReplay(YoyoReplay):
                         metallic=0.3,
                         roughness=0.4,
                     )
+            elif name == "robot":
+                kwargs["surface"] = {
+                    "paint_white_glossy": gs.surfaces.BSDF(
+                        color=(0.74, 0.74, 0.74),
+                        roughness=0.25,
+                        metallic=0.25,
+                    ),
+                    "plastic_black_rough": gs.surfaces.BSDF(
+                        color=(0.02, 0.02, 0.03),
+                        roughness=0.35,
+                        metallic=0.0,
+                        ior=1.45,
+                    ),
+                }
             return original_add(*args, **kwargs)
 
         scene.add_entity = patched_add
