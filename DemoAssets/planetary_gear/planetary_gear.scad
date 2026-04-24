@@ -30,9 +30,30 @@ flange_bolt_r    = 49;    // mm – bolt hole circle radius
 flange_bolt_n    = 6;     // number of bolt holes
 flange_bolt_hole = 3.5;   // mm – bolt hole radius
 
+// Support pin – a fixed cylindrical shaft on the gear axis.
+// Provides a rotation axis for sun gear + carrier and prevents the carrier
+// from falling (shoulder wider than carrier bore but narrower than flange hole).
+//
+//  part=6 exports the pin in its own local frame (bottom at z=0).
+//  In assembly it is translated to z = -(gear_width/2 + flange_thick).
+//
+support_pin_r          = bore/2 - 0.25;          // 4.0 mm shaft radius (0.25 mm clearance each side)
+support_pin_shoulder_r = bore/2 + 1.0;           // 5.25 mm – 1.0 mm radial gap from bore inner
+                                                  //  wall; 0.75 mm gap from flange inner hole (6 mm)
+support_pin_shoulder_h = 1.5;                     // mm – shoulder thickness
+// Shoulder top is placed 1 mm BELOW the carrier-plate bottom face (assembly z=−6 mm)
+// to avoid the sharp inner step at the bore/flange transition.
+//   shoulder top  in pin-local coords = gear_width/2 − 1 = 5 mm  → assembly z = −7 mm
+//   shoulder base in pin-local coords = 5 − 1.5 = 3.5 mm        → assembly z = −8.5 mm
+// Total height: from flange-bottom (assembly z=−12) to 1mm below handle-insert bottom.
+// handle_insert_depth=3 mm → handle insert occupies z=9→12 mm → pin top at z=8 mm.
+//   pin_h = (gear_width - handle_insert_depth - 1) + gear_width/2 + flange_thick
+//         = (12 - 3 - 1) + 6 + 6 = 20 mm
+support_pin_h = 20;   // mm
+
 // Handle – L-shaped crank: post inserts into bore, tapers above gear, then horizontal arm + grip
 handle_post_r       = bore/2;    // post radius = bore inner radius (exact fit into bore)
-handle_insert_depth = 10.0;      // depth the post inserts into the bore (mm)
+handle_insert_depth = 3.0;       // depth the post inserts into the bore (mm)
 handle_arm_r        = 2.0;       // arm & grip rod radius (mm)
 handle_fillet_r     = 4.0;       // arc fillet radius at each L-bend (mm)
 handle_post_h       = 8.0;       // post height above gear top face before fillet (mm)
@@ -49,6 +70,28 @@ d_planet         = modul * planet_teeth;
 need_rotate_sun  = (planet_teeth % 2 == 0) ? 1 : 0;
 
 // ── Parts ──
+
+module make_support_pin() {
+    // Pin in local frame: bottom at z = 0.
+    // In assembly: translate([0, 0, -(gear_width/2 + flange_thick)]).
+    //
+    // Geometry:
+    //   Shaft:    r = support_pin_r    (fits in bore + flange inner hole)
+    //   Shoulder: r = support_pin_shoulder_r,  placed so its top face aligns with
+    //             the carrier-plate bottom (local z = gear_width/2).
+    //             Blocks the carrier from sliding downward.
+    color("dimgray")
+    union() {
+        // Main shaft through the entire stack
+        cylinder(r=support_pin_r, h=support_pin_h, $fn=48);
+
+        // Support shoulder – local z: (gear_width/2 − 1 − shoulder_h) → (gear_width/2 − 1)
+        // Assembly z: −8.5 mm → −7 mm  (1 mm below carrier-plate bottom at −6 mm)
+        // Shoulder stays inside flange inner hole (r=5.25 < 6), sits below bore/flange step.
+        translate([0, 0, gear_width/2 - 1 - support_pin_shoulder_h])
+            cylinder(r=support_pin_shoulder_r, h=support_pin_shoulder_h, $fn=48);
+    }
+}
 
 module make_sun() {
     color("gold")
@@ -198,6 +241,10 @@ module assembly() {
 
     translate([0, 0, -gear_width/2])
         make_carrier();
+
+    // Support pin: bottom at z = -(gear_width/2 + flange_thick) = -12 mm
+    translate([0, 0, -(gear_width/2 + flange_thick)])
+        make_support_pin();
 }
 
 // ── Select ──
@@ -208,4 +255,5 @@ else if (part == 5) make_sun_with_handle();
 else if (part == 2) make_planet();
 else if (part == 3) make_ring();
 else if (part == 4) make_carrier();
+else if (part == 6) make_support_pin();
 else                assembly();

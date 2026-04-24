@@ -19,21 +19,23 @@ ASSETS_DIR = Path(__file__).parent / "assets"
 MM_TO_M = 0.001
 
 PART_COLORS = {
-    "sun_gear":  (0.95, 0.85, 0.20),   # yellow
-    "planet_0":  (0.55, 0.70, 0.90),   # blue
-    "planet_1":  (0.55, 0.70, 0.90),
-    "planet_2":  (0.55, 0.70, 0.90),
-    "ring_gear": (0.85, 0.55, 0.60),   # pink
-    "carrier":   (0.75, 0.75, 0.75),   # grey
+    "sun_gear":    (0.95, 0.85, 0.20),   # yellow
+    "planet_0":    (0.55, 0.70, 0.90),   # blue
+    "planet_1":    (0.55, 0.70, 0.90),
+    "planet_2":    (0.55, 0.70, 0.90),
+    "ring_gear":   (0.85, 0.55, 0.60),   # pink
+    "carrier":     (0.75, 0.75, 0.75),   # grey
+    "support_pin": (0.35, 0.35, 0.35),   # dark grey
 }
 
 MESH_FILE_MAP = {
-    "sun_gear":  "sun_gear_handle.stl",
-    "planet_0":  "planet_gear.stl",
-    "planet_1":  "planet_gear.stl",
-    "planet_2":  "planet_gear.stl",
-    "ring_gear": "ring_gear.stl",
-    "carrier":   "carrier.stl",
+    "sun_gear":    "sun_gear_handle.stl",
+    "planet_0":    "planet_gear.stl",
+    "planet_1":    "planet_gear.stl",
+    "planet_2":    "planet_gear.stl",
+    "ring_gear":   "ring_gear.stl",
+    "carrier":     "carrier.stl",
+    "support_pin": "support_pin.stl",
 }
 
 
