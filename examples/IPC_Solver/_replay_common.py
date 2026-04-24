@@ -537,20 +537,21 @@ class TrajectoryReplay:
 
             lights = self.nyx_lights()
             light_field = self._build_nyx_light_field()
-            self._cam = self._scene.add_sensor(
-                NyxCameraOptions(
-                    res=(self.args.res[0], self.args.res[1]),
-                    pos=self.cam_pos,
-                    lookat=self.cam_lookat,
-                    fov=self.cam_fov,
-                    spp=self.args.spp,
-                    denoise=True,
-                    render_mode=npr.ERenderMode.RefPathTracer,
-                    env_maps=(env_map,),
-                    light_fields=(light_field,) if light_field is not None else (),
-                    **({"lights": lights} if lights else {}),
-                )
+            nyx_kwargs = dict(
+                res=(self.args.res[0], self.args.res[1]),
+                pos=self.cam_pos,
+                lookat=self.cam_lookat,
+                fov=self.cam_fov,
+                spp=self.args.spp,
+                denoise=True,
+                render_mode=npr.ERenderMode.RefPathTracer,
+                env_maps=(env_map,),
+                light_fields=(light_field,) if light_field is not None else (),
+                **({"lights": lights} if lights else {}),
             )
+            if hasattr(self, "cam_near"):
+                nyx_kwargs["near"] = self.cam_near
+            self._cam = self._scene.add_sensor(NyxCameraOptions(**nyx_kwargs))
         else:
             self._cam = self._scene.add_camera(
                 res=(self.args.res[0], self.args.res[1]),
