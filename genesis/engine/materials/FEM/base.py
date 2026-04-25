@@ -50,6 +50,7 @@ class Base(Material["FEMEntity"]):
     friction_mu: NonNegativeFloat = 0.1
     contact_resistance: PositiveFloat | None = None
     contact_d_hat: PositiveFloat | None = None
+    gravity: tuple[float, float, float] | None = None
     hessian_invariant: StrictBool = False
 
     # Dispatch fields — set by subclass model_post_init, not user-specified.

@@ -71,7 +71,7 @@ SODA_CAN_GLB = str(_TRASH / "soda_can.glb")
 PLASTIC_BOTTLE_GLB = str(_TRASH / "plastic_bottle.glb")
 ROPE1_OBJ = str(_TRASH / "rope1.obj")
 ROPE2_OBJ = str(_TRASH / "rope2.obj")
-DEFAULT_TRAJ = str(_TRASH / "trajectory_sharpa.npz")
+DEFAULT_TRAJ = str(_TRASH / "trajectory_sharpa_20260423_2.npz")
 
 
 class TrashbagSharpaReplay(TrajectoryReplay):
@@ -87,14 +87,13 @@ class TrashbagSharpaReplay(TrajectoryReplay):
         return gs.renderers.RayTracer(
             logging_level="warning",
             tracing_depth=32,
-            env_surface=gs.surfaces.Emission(
-                emissive_texture=gs.textures.ColorTexture(color=(0.01, 0.01, 0.01))),
+            env_surface=gs.surfaces.Emission(emissive_texture=gs.textures.ColorTexture(color=(0.01, 0.01, 0.01))),
             env_radius=100.0,
             lights=[
                 # Key light: above-left, warm, casting shadows across the table
                 SphereLight(pos=(0.85, 1.25, 2.45), radius=0.2, color=(1.0, 0.97, 0.92), intensity=50.0),
                 # Fill light: right side, cooler, softer
-                SphereLight(pos=(0.6, -1.7, 4.3), radius=1.0, color=(0.48, 0.52, 0.6),  intensity=1.0),
+                SphereLight(pos=(0.6, -1.7, 4.3), radius=1.0, color=(0.48, 0.52, 0.6), intensity=1.0),
                 # Rim light: behind the scene, cool, hard — separates hands/bag from dark background
                 SphereLight(pos=(-0.8, -3.16, 0.5), radius=0.25, color=(0.8, 0.88, 1.0), intensity=150.0),
             ],
@@ -102,8 +101,8 @@ class TrashbagSharpaReplay(TrajectoryReplay):
 
     def nyx_lights(self):
         return [
-            {"type": "point", "pos": (-1.15, 0.0, 2.7),  "radius": 0.2, "color": (1.0, 0.97, 0.92), "intensity": 10.0},
-            {"type": "point", "pos": (1.85,  0.15, 2.5), "radius": 0.5, "color": (0.88, 0.92, 1.0),  "intensity": 20.0},
+            {"type": "point", "pos": (-1.15, 0.0, 2.7), "radius": 0.2, "color": (1.0, 0.97, 0.92), "intensity": 10.0},
+            {"type": "point", "pos": (1.85, 0.15, 2.5), "radius": 0.5, "color": (0.88, 0.92, 1.0), "intensity": 20.0},
         ]
 
     def nyx_light_field(self):
@@ -200,8 +199,7 @@ class TrashbagSharpaReplay(TrajectoryReplay):
         # Ground — large flat box so surface color override works (Plane ignores it)
         scene.add_entity(
             gs.morphs.Box(size=(20.0, 20.0, 0.02), pos=(0.0, 0.0, -2.01), fixed=True),
-            surface=gs.surfaces.BSDF(
-                diffuse_texture=gs.textures.ColorTexture(color=(0.05, 0.05, 0.05))),
+            surface=gs.surfaces.BSDF(diffuse_texture=gs.textures.ColorTexture(color=(0.05, 0.05, 0.05))),
         )
 
         # Table (pos matches registry)
@@ -215,7 +213,7 @@ class TrashbagSharpaReplay(TrajectoryReplay):
                 convexify=False,
             ),
             surface=gs.surfaces.BSDF(
-                #color=(0.8, 0.8, 0.95, 1.0),
+                # color=(0.8, 0.8, 0.95, 1.0),
                 roughness=0.45,
                 metallic=0.0,
                 ior=1.45,

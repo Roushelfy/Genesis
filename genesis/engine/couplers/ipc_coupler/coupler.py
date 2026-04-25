@@ -61,6 +61,7 @@ if TYPE_CHECKING or UIPC_AVAILABLE:
         NeoHookeanShell,
         StrainLimitingBaraffWitkinShell,
     )
+
     # AerodynamicDamping was added in a private uipc fork and is not part of
     # every public release.  Try to import it; if it's missing we simply
     # disable the corresponding code path at runtime instead of failing
@@ -895,6 +896,13 @@ class IPCCoupler(RBC):
             # Per-entity d_hat override
             if entity.material.contact_d_hat is not None:
                 mesh.meta().create(uipc.builtin.d_hat, float(entity.material.contact_d_hat))
+
+            # Per-entity gravity override (e.g. (0,0,0) to disable gravity on this entity).
+            if entity.material.gravity is not None:
+                mesh.vertices().create(
+                    uipc.builtin.gravity,
+                    np.array(entity.material.gravity, dtype=np.float64),
+                )
 
             # Partition FEM/cloth mesh for faster IPC assembly/solve on large meshes.
             # This follows libuipc sample usage and is applied once on env-independent geometry.

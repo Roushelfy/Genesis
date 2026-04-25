@@ -121,9 +121,114 @@ def find_bottom_ring(vertices, faces, strip_loop, match_to=None):
     return ring, match_idx, inner_faces
 
 
+def recenter_bottom(vertices, faces, power=3.0, strength=1.0):
+    """Translate the bag's bottom to sit under the mouth axis, preserving local shape.
+
+    Computes the XZ offset between the bottom centroid and the mouth axis,
+    then applies a smooth height-weighted translation to remove the lean.
+    weight = (1 - t)^power * strength, where t is normalized height (0=bottom, 1=top).
+    This shifts vertices without collapsing their spread — the bag stays round.
+    """
+    out = vertices.copy()
+    y = vertices[:, 1]
+    y_min, y_max = y.min(), y.max()
+    t = (y - y_min) / (y_max - y_min)
+    w = (1.0 - t) ** power * strength
+
+    # Mouth axis = XZ centroid of top 5%
+    top_mask = t > 0.95
+    axis_x = vertices[top_mask, 0].mean()
+    axis_z = vertices[top_mask, 2].mean()
+
+    # Bottom centroid = XZ centroid of bottom 5%
+    bot_mask = t < 0.05
+    bot_cx = vertices[bot_mask, 0].mean()
+    bot_cz = vertices[bot_mask, 2].mean()
+
+    # Offset to remove (lean direction)
+    offset_x = bot_cx - axis_x
+    offset_z = bot_cz - axis_z
+
+    # Translate — shift XZ by -w * offset (preserves local shape)
+    out[:, 0] = vertices[:, 0] - w * offset_x * strength
+    out[:, 2] = vertices[:, 2] - w * offset_z * strength
+
+    disp = np.linalg.norm(out - vertices, axis=1)
+    print(f"Recenter bottom: offset=({offset_x:.4f}, {offset_z:.4f}), max_disp={disp.max():.6f}")
+    return out
+
+
+def round_bottom(vertices, faces, push_dist=0.04, push_power=5.0, smooth_iters=30, smooth_lambda=0.5, smooth_power=3.0):
+    """Round the bag bottom by pushing vertices outward, then Laplacian-smoothing.
+
+    Step 1 — Radial expansion: push each vertex outward from the bag axis by
+    push_dist * (1-t)^push_power.  This widens the pinched bottom.
+
+    Step 2 — Laplacian smooth XZ only with weight (1-t)^smooth_power to even
+    out irregularities from the expansion.
+
+    Y positions are never touched — bag height and face sizes are preserved.
+    All weights are continuous (no threshold), so no discontinuities.
+    """
+    from collections import defaultdict as ddict
+
+    out = vertices.copy()
+    y = vertices[:, 1]
+    y_min, y_max = y.min(), y.max()
+    t = (y - y_min) / (y_max - y_min)
+
+    # Bag axis (XZ centroid of top region)
+    top_mask = t > 0.95
+    axis_x = vertices[top_mask, 0].mean()
+    axis_z = vertices[top_mask, 2].mean()
+
+    # ── Step 1: radial outward push ──
+    for i in range(len(vertices)):
+        dx = out[i, 0] - axis_x
+        dz = out[i, 2] - axis_z
+        r = np.sqrt(dx * dx + dz * dz)
+        if r < 1e-10:
+            continue
+        push = push_dist * (1.0 - t[i]) ** push_power
+        out[i, 0] += dx / r * push
+        out[i, 2] += dz / r * push
+
+    # ── Step 2: Laplacian smooth XZ ──
+    adj = ddict(set)
+    for face in faces:
+        idxs = [v - 1 for v in face]
+        for a in idxs:
+            for b in idxs:
+                if a != b:
+                    adj[a].add(b)
+
+    smooth_w = (1.0 - t) ** smooth_power
+
+    for _iteration in range(smooth_iters):
+        new_pos = out.copy()
+        for i in range(len(out)):
+            if smooth_w[i] < 1e-8 or not adj[i]:
+                continue
+            neighbors = list(adj[i])
+            avg = out[neighbors].mean(axis=0)
+            w = smooth_lambda * smooth_w[i]
+            new_pos[i, 0] = out[i, 0] + w * (avg[0] - out[i, 0])
+            new_pos[i, 2] = out[i, 2] + w * (avg[2] - out[i, 2])
+        out = new_pos
+
+    disp = np.linalg.norm(out - vertices, axis=1)
+    print(f"Round bottom: push={push_dist}, max_disp={disp.max():.6f}, affected={int((disp > 1e-4).sum())} verts")
+    return out
+
+
 def main():
     vertices, faces = read_obj(INPUT)
     print(f"Original: {len(vertices)} vertices, {len(faces)} faces")
+
+    # Fix asymmetric bottom — smooth recentering before building channel/ropes
+    vertices = recenter_bottom(vertices, faces)
+    # Laplacian smooth XZ only — spreads vertices more evenly, reduces creases
+    vertices = round_bottom(vertices, faces)
 
     boundary_loop = find_boundary_loop(vertices, faces)
     N = len(boundary_loop)

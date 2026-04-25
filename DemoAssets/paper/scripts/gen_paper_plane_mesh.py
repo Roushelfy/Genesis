@@ -28,26 +28,18 @@ X_MIN, X_MAX = -1.0, 1.0
 Z_MIN, Z_MAX = -1.414, 1.414
 Y_CONST = 0.1
 
-# ---- 14 crease lines as (u0, v0) -> (u1, v1) ----
+# ---- 6 crease lines as (u0, v0) -> (u1, v1) ----
 # Coordinates are in the XZ plane of the 3D mesh.
 CREASE_LINES = [
     # Verticals (BT_V1, BT_V2, BT_V3)
     ((-0.24815, Z_MIN), (-0.24815, Z_MAX)),
     ((0.0, Z_MIN), (0.0, Z_MAX)),
     ((0.24815, Z_MIN), (0.24815, Z_MAX)),
-    # Horizontals (LR_H1..H4)
-    ((X_MIN, 1.16585), (X_MAX, 1.16585)),
-    ((X_MIN, 0.414), (X_MAX, 0.414)),
-    ((X_MIN, 0.16585), (X_MAX, 0.16585)),
-    ((X_MIN, -0.0823), (X_MAX, -0.0823)),
-    # Diagonals
+    # Horizontal
+    ((X_MIN, 1.16585), (X_MAX, 1.16585)),  # LR_H1
+    # Diagonals (symmetric V at top)
     ((0.0, Z_MAX), (X_MAX, 0.414)),  # TR_DN1
-    ((X_MIN, 1.16585), (X_MAX, -0.83415)),  # LR_DN1
-    ((X_MIN, -0.83415), (-0.24815, Z_MIN)),  # LB_DN1
-    ((X_MIN, 1.16585), (-0.24815, Z_MAX)),  # LT_DP1
     ((X_MIN, 0.414), (0.0, Z_MAX)),  # LT_DP2
-    ((X_MIN, -0.83415), (X_MAX, 1.16585)),  # LR_DP1
-    ((0.24815, Z_MIN), (X_MAX, -0.83415)),  # BR_DP1
 ]
 
 
