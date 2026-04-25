@@ -48,7 +48,7 @@ def _load_robot_seq(seq_dir: Path):
     base_rpy = data["base_rpy_deg"].astype(np.float64)
     return {
         "qpos":      data["qpos"].astype(np.float32),
-        "urdf":      str(data["urdf"]),
+        "urdf":      str(data["urdf"]).replace("\\", "/"),
         "base_pos":  data["base_pos"].astype(np.float32),
         "base_quat": _euler_xyz_deg_to_quat_wxyz(*base_rpy),
     }
@@ -216,16 +216,106 @@ def _split_noodle_meshes(seq_dir: Path, n_total_verts: int) -> tuple[list[Path],
     return paths, vpn
 
 
-def run_gui(seq_dir: Path, meta: dict, render_output: str | None = None) -> None:
+# --- Render config copied from replay_hanger_sharpa_traj.py -------------------
+# Camera pose and sphere-light rig follow the Sharpa hanger scene so videos
+# match its look.  Luisa (default) gets the SphereLight rig + no env texture
+# (dark background).  Nyx (--nyx) gets the same lights as point-lights plus the
+# san_carlos env map + 3DGS light field.
+RT_CAM_POS = (1.5122, -0.767, 2.0931)  # hanger_sharpa base + 0.5 m - 0.3 m in z
+RT_CAM_LOOKAT = (0.838, -0.3497, 1.5337)  # hanger_sharpa base + 0.6 m - 0.5 m + 0.3 m - 0.15 m in z
+RT_CAM_FOV = 40
+
+RT_LIGHTS = [
+    {"pos": (0.5,   1.1,  2.4),  "radius": 0.2,  "color": (1.0, 0.97, 0.92), "intensity": 50.0},
+    {"pos": (0.5,  -1.8,  4.2),  "radius": 1.0,  "color": (0.48, 0.52, 0.6), "intensity": 1.0},
+    {"pos": (-0.8, -3.0,  0.5),  "radius": 0.25, "color": (0.8, 0.88, 1.0),  "intensity": 150.0},
+]
+NYX_RADIUS_SCALE = 1.0
+NYX_INTENSITY_SCALE = 0.2
+
+NYX_ENV_MAP = _REPO_ROOT / "DemoAssets/textures/dark_grey.exr"
+
+
+def _build_luisa_renderer():
+    """Create a Luisa RayTracer matching HangerSharpaReplay.make_renderer().
+    No env texture -> dark background; lit only by the SphereLight rig."""
+    import genesis as gs
+    from genesis.options.renderers import SphereLight
+
+    return gs.renderers.RayTracer(
+        logging_level="warning",
+        tracing_depth=32,
+        env_surface=gs.surfaces.Emission(
+            emissive_texture=gs.textures.ColorTexture(color=(0.01, 0.01, 0.01))),
+        env_radius=100.0,
+        env_euler=(0, 0, 20),
+        lights=[
+            SphereLight(
+                pos=l["pos"],
+                radius=l["radius"],
+                color=l["color"],
+                intensity=l["intensity"],
+            )
+            for l in RT_LIGHTS
+        ],
+    )
+
+
+def _build_nyx_camera(scene, res, spp):
+    """Create a NyxCameraOptions sensor with the Sharpa hanger lighting rig."""
+    from gs_nyx_plugin.nyx_camera_options import NyxCameraOptions
+    from gs_nyx_plugin.nyx_camera_sensor import NyxCameraSensor  # noqa: F401 — registers sensor
+    import gs_nyx.nyx_py_renderer as npr
+    import gs_nyx.nyx_py_sdk as ap
+
+    env_map = ap.EnvironmentMapAsset()
+    env_map.texture = str(NYX_ENV_MAP.resolve())
+    env_map.rotation = 0.0
+    env_map.multiplier = 1.0
+
+    lights = [
+        {
+            "type": "point",
+            "pos": l["pos"],
+            "radius": float(l["radius"]) * NYX_RADIUS_SCALE,
+            "color": l["color"],
+            "intensity": float(l["intensity"]) * NYX_INTENSITY_SCALE,
+        }
+        for l in RT_LIGHTS
+    ]
+
+    return scene.add_sensor(
+        NyxCameraOptions(
+            res=res,
+            pos=RT_CAM_POS,
+            lookat=RT_CAM_LOOKAT,
+            fov=RT_CAM_FOV,
+            spp=spp,
+            denoise=True,
+            render_mode=npr.ERenderMode.RefPathTracer,
+            env_maps=(env_map,),
+            lights=lights,
+        )
+    )
+
+
+def run_gui(
+    seq_dir: Path,
+    meta: dict,
+    render_output: str | None = None,
+    use_nyx: bool = False,
+    res: tuple[int, int] = (1920, 1080),
+    spp: int = 256,
+) -> None:
     import genesis as gs
 
     use_render = render_output is not None
-    gs.init(backend=gs.gpu if use_render else gs.cpu, logging_level="warning")
+    gs.init(backend=gs.gpu if (use_render or use_nyx) else gs.cpu, logging_level="warning")
 
     frame_count = meta["frame_count"]
     rigid_data, fem_data, rod_data = load_seq_data(seq_dir, meta)
 
-    scene = gs.Scene(
+    scene_kwargs: dict = dict(
         sim_options=gs.options.SimOptions(
             dt=meta.get("dt", 0.005),
             gravity=(0.0, 0.0, 0.0),
@@ -235,15 +325,18 @@ def run_gui(seq_dir: Path, meta: dict, render_output: str | None = None) -> None
             enable_self_collision=False,
         ),
         viewer_options=gs.options.ViewerOptions(
-            camera_pos=(0.8, -0.6, 1.3),
-            camera_lookat=(0.5, 0.2, 0.85),
-            camera_fov=45,
+            camera_pos=RT_CAM_POS if (use_render or use_nyx) else (0.8, -0.6, 1.3),
+            camera_lookat=RT_CAM_LOOKAT if (use_render or use_nyx) else (0.5, 0.2, 0.85),
+            camera_fov=RT_CAM_FOV if (use_render or use_nyx) else 45,
         ),
         vis_options=gs.options.VisOptions(
-            ambient_light=(0.4, 0.4, 0.45),
+            ambient_light=(0.0, 0.0, 0.0) if (use_render and not use_nyx) else (0.4, 0.4, 0.45),
         ),
         show_viewer=not use_render,
     )
+    if use_render and not use_nyx:
+        scene_kwargs["renderer"] = _build_luisa_renderer()
+    scene = gs.Scene(**scene_kwargs)
 
     # ---- Rigid entities (pan, spatula, broccoli) ----
     # Mesh pre-transformed to frame-0 world space; playback uses T_i @ T_0^{-1}.
@@ -323,16 +416,19 @@ def run_gui(seq_dir: Path, meta: dict, render_output: str | None = None) -> None
 
     cam = None
     if use_render:
-        cam = scene.add_camera(
-            res=(1920, 1080),
-            pos=(0.8, -0.6, 1.2),
-            lookat=(0.5, 0.0, 0.85),
-            up=(0.0, 0.0, 1.0),
-            fov=45,
-            spp=128,
-        )
+        if use_nyx:
+            cam = _build_nyx_camera(scene, res=res, spp=spp)
+        else:
+            cam = scene.add_camera(
+                res=res,
+                pos=RT_CAM_POS,
+                lookat=RT_CAM_LOOKAT,
+                up=(0.0, 0.0, 1.0),
+                fov=RT_CAM_FOV,
+                spp=spp,
+            )
 
-    scene.build()
+    scene.build(n_envs=1 if use_nyx else 0)
 
     def _apply_frame(i: int) -> None:
         if i < 0 or i >= frame_count:
@@ -360,16 +456,26 @@ def run_gui(seq_dir: Path, meta: dict, render_output: str | None = None) -> None
         output_path = Path(render_output)
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
-        cam.start_recording()
         replay_fps = int(1.0 / meta.get("dt", 0.005) / 10)
         fps = min(replay_fps, 60)
+
+        if not use_nyx:
+            cam.start_recording()
+
         writer = None
         for i in range(frame_count):
             _apply_frame(i)
             scene._visualizer.update_visual_states(force_render=True)
-            rgb_result = cam.render(rgb=True, force_render=True)
-            rgb_tensor = rgb_result[0]
-            rgb = rgb_tensor.cpu().numpy() if hasattr(rgb_tensor, "cpu") else np.array(rgb_tensor)
+            if use_nyx:
+                cam._stale = True
+                data = cam.read()
+                rgb = data.rgb.cpu().numpy()
+                if rgb.ndim == 4:
+                    rgb = rgb[0]
+            else:
+                rgb_result = cam.render(rgb=True, force_render=True)
+                rgb_tensor = rgb_result[0]
+                rgb = rgb_tensor.cpu().numpy() if hasattr(rgb_tensor, "cpu") else np.array(rgb_tensor)
             bgr = cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR)
             if writer is None:
                 h, w = bgr.shape[:2]
@@ -379,11 +485,12 @@ def run_gui(seq_dir: Path, meta: dict, render_output: str | None = None) -> None
                     fps, (w, h),
                 )
             writer.write(bgr)
-            if i % 50 == 0:
+            if i % 10 == 0:
                 print(f"[render] Frame {i}/{frame_count}")
         if writer is not None:
             writer.release()
-        cam.stop_recording()
+        if not use_nyx:
+            cam.stop_recording()
         print(f"[render] Saved {output_path} ({frame_count} frames @ {fps}fps)")
         return
 
@@ -434,7 +541,16 @@ def main() -> None:
                         help="Sequence directory with meta.json")
     parser.add_argument("--no-gui", action="store_true")
     parser.add_argument("--render", action="store_true",
-                        help="Record video (LuisaRender)")
+                        help="Record video (Luisa unless --nyx)")
+    parser.add_argument("--nyx", action="store_true",
+                        help="Use Nyx renderer with Sharpa-hanger lighting/background/camera. "
+                             "Implies --render.")
+    parser.add_argument("--spp", type=int, default=256,
+                        help="Samples-per-pixel for the render camera (default: 256)")
+    parser.add_argument("--res", type=int, nargs=2, metavar=("W", "H"), default=[1920, 1080],
+                        help="Render resolution (default: 1920 1080)")
+    parser.add_argument("--output", type=str, default=None,
+                        help="Output video path (default: data/ipc_demo/ipc_cook/cook_replay_<seq>_<renderer>.mp4)")
     args = parser.parse_args()
 
     seq_dir = Path(args.seq_dir)
@@ -445,14 +561,28 @@ def main() -> None:
     meta = json.loads(meta_path.read_text(encoding="utf-8"))
     print(f"[replay] {meta['frame_count']} frames from {seq_dir}")
 
+    use_render = args.render or args.nyx
     render_output = None
-    if args.render:
-        render_output = str(Path("data/ipc_demo/ipc_cook") / "cook_replay.mp4")
+    if use_render:
+        if args.output:
+            render_output = args.output
+        else:
+            renderer_tag = "nyx" if args.nyx else "luisa"
+            render_output = str(
+                Path("data/ipc_demo/ipc_cook") / f"cook_replay_{seq_dir.name}_{renderer_tag}.mp4"
+            )
 
     if args.no_gui:
         run_no_gui(seq_dir, meta)
     else:
-        run_gui(seq_dir, meta, render_output=render_output)
+        run_gui(
+            seq_dir,
+            meta,
+            render_output=render_output,
+            use_nyx=args.nyx,
+            res=tuple(args.res),
+            spp=args.spp,
+        )
 
 
 if __name__ == "__main__":
