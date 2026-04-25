@@ -1028,11 +1028,11 @@ class TrajectoryReplay:
         def _update_preview(frame_idx: int) -> None:
             if not use_preview:
                 return
-            if self._camera_traj is not None:
-                cam_pos, cam_lookat = self._camera_traj.get_pose(frame_idx, self._n_frames)
-            else:
-                cam_pos = tuple(self._scene.viewer.camera_pos)
-                cam_lookat = tuple(self._scene.viewer.camera_lookat)
+            # Always read from the viewer — the main loop already drives the viewer
+            # from _camera_traj each frame, so this stays in sync during playback.
+            # When paused, the viewer is user-controlled and this lets Luisa follow it.
+            cam_pos = tuple(self._scene.viewer.camera_pos)
+            cam_lookat = tuple(self._scene.viewer.camera_lookat)
 
             # Luisa window (skipped when --no-raytracer)
             if self._preview_cam is not None:
