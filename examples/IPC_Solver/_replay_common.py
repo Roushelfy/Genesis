@@ -292,6 +292,8 @@ class TrajectoryReplay:
                             help="Start camera at custom keyframe N (1-based, matches [ / ] display)")
         parser.add_argument("--debug-lights", action="store_true",
                             help="Add sphere markers in the viewer for each Luisa light (position + radius)")
+        parser.add_argument("--exposure", type=float, default=0.0, help="Exposure in EV stops (default: 0.0, positive = brighter)")
+        parser.add_argument("--tone-mapping", type=str, default="none", choices=["none", "aces", "uncharted2"], help="Tone mapping operator (default: none)")
         self.add_args(parser)
         self.args = parser.parse_args()
 
@@ -559,6 +561,8 @@ class TrajectoryReplay:
                 lookat=self.cam_lookat,
                 fov=self.cam_fov,
                 spp=self.args.spp,
+                exposure=self.args.exposure,
+                tone_mapping=self.args.tone_mapping,
                 **self._dof_kwargs(),
             )
 
@@ -575,6 +579,8 @@ class TrajectoryReplay:
                 lookat=self.cam_lookat,
                 fov=self.cam_fov,
                 spp=self.args.preview_spp,
+                exposure=self.args.exposure,
+                tone_mapping=self.args.tone_mapping,
                 **self._dof_kwargs(),
             )
 

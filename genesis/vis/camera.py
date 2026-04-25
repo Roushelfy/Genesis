@@ -87,6 +87,8 @@ class Camera(RBC):
         transform=None,
         env_idx=None,
         debug=False,
+        exposure=0.0,
+        tone_mapping="none",
     ):
         self._idx = idx
         self._uid = gs.UID()
@@ -100,6 +102,8 @@ class Camera(RBC):
         self._denoise = denoise
         self._near = near
         self._far = far
+        self._exposure = exposure
+        self._tone_mapping = tone_mapping
         self._initial_pos = torch.as_tensor(pos, dtype=gs.tc_float, device=gs.device)
         self._initial_lookat = torch.as_tensor(lookat, dtype=gs.tc_float, device=gs.device)
         self._initial_up = torch.as_tensor(up, dtype=gs.tc_float, device=gs.device)
@@ -849,6 +853,16 @@ class Camera(RBC):
     def spp(self):
         """Samples per pixel of the camera."""
         return self._spp
+
+    @property
+    def exposure(self):
+        """Exposure in EV stops applied before tone mapping (raytracer only)."""
+        return self._exposure
+
+    @property
+    def tone_mapping(self):
+        """Tone mapping operator: 'none', 'aces', or 'uncharted2' (raytracer only)."""
+        return self._tone_mapping
 
     @property
     def denoise(self):

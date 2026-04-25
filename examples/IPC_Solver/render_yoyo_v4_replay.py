@@ -175,6 +175,7 @@ class YoyoV4StaticReplay(YoyoReplay):
             "--smooth-joints", type=float, default=0,
             help="Gaussian smoothing sigma (in frames) for joint angles. 0 = off.",
         )
+        parser.set_defaults(exposure=0.5, tone_mapping="aces")
 
     def load_trajectory(self):
         n_frames = super().load_trajectory()
