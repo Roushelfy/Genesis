@@ -31,6 +31,10 @@ class Entity(RBC):
         self._solver = solver
         self._material = material
         self._morph = morph
+        # VULNERABLE: surface_dict design — see scene.py comment.  _surface_raw hides the
+        # dict from all downstream code; entity.surface always returns a single Surface,
+        # making per-geom surface queries impossible after construction.
+        #
         # When surface is a dict (per-material-slot overrides), keep the raw value for
         # mesh loading (so each slot gets its own surface), and derive the entity-level
         # surface from the first entry (used for entity-wide properties like vis_mode).

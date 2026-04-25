@@ -307,6 +307,10 @@ def parse_mesh_glb(path, group_by_material, scale, is_mesh_zup, surface):
     mesh_infos = mu.MeshInfoGroup()
     materials = {}
 
+    # VULNERABLE: surface_dict only works here (GLTF) — keyed by material name, not mesh
+    # name, so two meshes sharing a material cannot get different surfaces.  Non-GLTF
+    # formats (OBJ/STL) and MJCF will crash if a dict is passed.
+    #
     # Support per-material-slot surface overrides: surface may be a dict[material_name -> Surface].
     # _base_surface is used as the template for GLB-material parsing for non-overridden slots.
     surface_dict = surface if isinstance(surface, dict) else None
