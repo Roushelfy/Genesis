@@ -38,9 +38,9 @@ from _yoyo_common import (
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 
 # ── Camera orbit parameters (v3) ──
-ORBIT_CENTER = np.array([0.20, 0.0, -0.05])
-ORBIT_RADIUS = 0.85
-ORBIT_HEIGHT = 0.30
+ORBIT_CENTER = np.array([0.20, 0.0, -0.25])  # shifted down 10cm more to keep yoyo in frame
+ORBIT_RADIUS = 0.80    # 10cm further (was 0.70)
+ORBIT_HEIGHT = 0.15    # 5cm higher (was 0.10)
 ORBIT_ANGLE_START = math.radians(-60)
 ORBIT_ANGLE_END = math.radians(60)
 CLOSEUP_DISTANCE = 0.02
@@ -63,8 +63,13 @@ def _find_asset(name):
 class YoyoOrbitCamera(CameraTrajectory):
     """Half-circle orbit around the robot (v3 trajectory)."""
 
+    def __init__(self, freeze_frac=None):
+        self._freeze_frac = freeze_frac  # if set, clamp frac at this value
+
     def get_pose(self, frame_idx, n_frames):
         frac = frame_idx / max(n_frames - 1, 1)
+        if self._freeze_frac is not None:
+            frac = min(frac, self._freeze_frac)
         angle = ORBIT_ANGLE_START + (ORBIT_ANGLE_END - ORBIT_ANGLE_START) * _smooth(frac)
         cam_pos = (
             ORBIT_CENTER[0] + ORBIT_RADIUS * math.cos(angle),
@@ -307,7 +312,7 @@ class YoyoReplay(TrajectoryReplay):
         if name == "_yoyo_default":
             if self._is_long_sleep or getattr(self, "_force_closeup_camera", False):
                 return YoyoCloseupCamera(self._rigid_data)
-            return YoyoOrbitCamera()
+            return YoyoOrbitCamera(freeze_frac=0.606)  # stop rotating at sub10 f296
         if name == "surround":
             return SurroundCamera(
                 center=tuple(ORBIT_CENTER),

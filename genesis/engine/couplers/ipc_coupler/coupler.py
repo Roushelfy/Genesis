@@ -51,6 +51,8 @@ if TYPE_CHECKING or UIPC_AVAILABLE:
         KirchhoffRodBending,
         StrainPlasticDiscreteShellBending,
         StressPlasticDiscreteShellBending,
+        StrainPlasticDiscreteShellBendingModifier,
+        StressPlasticDiscreteShellBendingModifier,
         ElasticModuli,
         ElasticModuli2D,
         ExternalArticulationConstraint,
@@ -439,6 +441,8 @@ class IPCCoupler(RBC):
         self._ipc_dsb: DiscreteShellBending | None = None
         self._ipc_stress_pdsb: StressPlasticDiscreteShellBending | None = None
         self._ipc_strain_pdsb: StrainPlasticDiscreteShellBending | None = None
+        self._ipc_stress_pdsb_modifier: StressPlasticDiscreteShellBendingModifier | None = None
+        self._ipc_strain_pdsb_modifier: StrainPlasticDiscreteShellBendingModifier | None = None
         # AerodynamicDamping is optional (only some uipc builds ship it).
         self._ipc_aero: "AerodynamicDamping | None" = None
         self._ipc_hks: HookeanSpring | None = None
@@ -834,6 +838,10 @@ class IPCCoupler(RBC):
                                 yield_stress=entity.material.yield_stress,
                                 hardening_modulus=entity.material.hardening_modulus,
                             )
+                            if self._ipc_stress_pdsb_modifier is None:
+                                self._ipc_stress_pdsb_modifier = StressPlasticDiscreteShellBendingModifier()
+                                self._ipc_constitution_tabular.insert(self._ipc_stress_pdsb_modifier)
+                            self._ipc_stress_pdsb_modifier.apply_to(mesh)
                         else:
                             if self._ipc_strain_pdsb is None:
                                 self._ipc_strain_pdsb = StrainPlasticDiscreteShellBending()
@@ -844,6 +852,10 @@ class IPCCoupler(RBC):
                                 yield_threshold=entity.material.yield_threshold,
                                 hardening_modulus=entity.material.hardening_modulus,
                             )
+                            if self._ipc_strain_pdsb_modifier is None:
+                                self._ipc_strain_pdsb_modifier = StrainPlasticDiscreteShellBendingModifier()
+                                self._ipc_constitution_tabular.insert(self._ipc_strain_pdsb_modifier)
+                            self._ipc_strain_pdsb_modifier.apply_to(mesh)
                     else:
                         # Elastic bending for Cloth material
                         if self._ipc_dsb is None:
@@ -1979,6 +1991,31 @@ class IPCCoupler(RBC):
         """Clear soft position constraint for a FEM entity."""
         if entity in self._fem_soft_position:
             self._fem_soft_position[entity] = None
+
+    def freeze_plastic_bending(self, entity: "FEMEntity", new_bending_stiffness: float = 0.0) -> None:
+        """Freeze plasticity on all environment copies of an entity's shell mesh.
+
+        Sets per-edge attribute "cancel_plastic" = 1 (all edges) and
+        optionally "target_bending_stiffness".  Individual edges can also be
+        controlled directly via the slot geometry.
+
+        Args:
+            entity: The FEM entity whose plasticity should be frozen.
+            new_bending_stiffness: Bending stiffness after freeze (Pa·m).
+                                   Pass 0.0 to keep the original value.
+        """
+        slots = self._fem_slots_by_entity.get(entity)
+        if slots is None:
+            return
+        for env_idx in range(self._B):
+            geom = slots[env_idx].geometry()
+            freeze_attr = geom.edges().find("cancel_plastic")
+            if freeze_attr is not None:
+                uipc.view(freeze_attr)[:] = 1
+            if new_bending_stiffness > 0.0:
+                stiffness_attr = geom.edges().find("target_bending_stiffness")
+                if stiffness_attr is not None:
+                    uipc.view(stiffness_attr)[:] = new_bending_stiffness
 
     def mark_fem_updated(self, entity: "FEMEntity", envs_idx=None):
         """Mark a FEM entity as needing IPC position sync."""

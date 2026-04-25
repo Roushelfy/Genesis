@@ -27,7 +27,8 @@ def main():
     parser.add_argument("--open-up", action="store_true", help="Bags open-side UP (bowl). Default is open-side DOWN.")
     parser.add_argument("--drag", type=float, default=0.1, help="Base drag coefficient")
     parser.add_argument("--curv", type=float, default=1.0, help="Curvature drag scale")
-    parser.add_argument("--infl", type=float, default=1.0, help="Curvature inflate scale")
+    # parser.add_argument("--infl", type=float, default=1.0, help="Curvature inflate scale")
+    parser.add_argument("--infl", type=float, default=0.001, help="Curvature inflate scale")
     args = parser.parse_args()
 
     gs.init(backend=gs.cpu)
@@ -50,8 +51,7 @@ def main():
             contact_enable=True,
             contact_friction_enable=True,
             contact_d_hat=0.001,
-            newton_tolerance=0.5,
-            newton_translation_tolerance=10.0,
+            newton_tolerance=1e-2,
             enable_rigid_rigid_contact=False,
             ignore_end_effector_check=True,
         ),
@@ -95,39 +95,39 @@ def main():
     )
 
     # Left bag (red): no aerodynamic drag
-    print("  [0] bag_no_drag: no aero damping")
-    scene.add_entity(
-        morph=gs.morphs.Mesh(
-            file=BAG_GLB,
-            scale=1.0,
-            pos=(-SPACING, 0.0, DROP_HEIGHT),
-            euler=bag_euler,
-        ),
-        material=gs.materials.FEM.Cloth(
-            **cloth_params,
-            aerodynamic_drag=args.drag,
-        ),
-        surface=gs.surfaces.Plastic(color=(0.9, 0.3, 0.3, 1.0)),
-        name="bag_no_drag",
-    )
+    # print("  [0] bag_no_drag: no aero damping")
+    # scene.add_entity(
+    #     morph=gs.morphs.Mesh(
+    #         file=BAG_GLB,
+    #         scale=1.0,
+    #         pos=(-SPACING, 0.0, DROP_HEIGHT),
+    #         euler=bag_euler,
+    #     ),
+    #     material=gs.materials.FEM.Cloth(
+    #         **cloth_params,
+    #         aerodynamic_drag=args.drag,
+    #     ),
+    #     surface=gs.surfaces.Plastic(color=(0.9, 0.3, 0.3, 1.0)),
+    #     name="bag_no_drag",
+    # )
 
-    # Middle bag (green): drag + curvature drag scale
-    print(f"  [1] bag_drag_curv: drag={args.drag}, curv={args.curv}")
-    scene.add_entity(
-        morph=gs.morphs.Mesh(
-            file=BAG_GLB,
-            scale=1.0,
-            pos=(0.0, 0.0, DROP_HEIGHT),
-            euler=bag_euler,
-        ),
-        material=gs.materials.FEM.Cloth(
-            **cloth_params,
-            aerodynamic_drag=args.drag,
-            curvature_drag_scale=args.curv,
-        ),
-        surface=gs.surfaces.Plastic(color=(0.3, 0.9, 0.3, 1.0)),
-        name="bag_drag_curv",
-    )
+    # # Middle bag (green): drag + curvature drag scale
+    # print(f"  [1] bag_drag_curv: drag={args.drag}, curv={args.curv}")
+    # scene.add_entity(
+    #     morph=gs.morphs.Mesh(
+    #         file=BAG_GLB,
+    #         scale=1.0,
+    #         pos=(0.0, 0.0, DROP_HEIGHT),
+    #         euler=bag_euler,
+    #     ),
+    #     material=gs.materials.FEM.Cloth(
+    #         **cloth_params,
+    #         aerodynamic_drag=args.drag,
+    #         curvature_drag_scale=args.curv,
+    #     ),
+    #     surface=gs.surfaces.Plastic(color=(0.3, 0.9, 0.3, 1.0)),
+    #     name="bag_drag_curv",
+    # )
 
     # Right bag (blue): drag + curvature drag scale + inflate
     print(f"  [2] bag_drag_curv_infl: drag={args.drag}, curv={args.curv}, infl={args.infl}")

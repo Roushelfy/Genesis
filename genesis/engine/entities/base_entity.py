@@ -31,7 +31,11 @@ class Entity(RBC):
         self._solver = solver
         self._material = material
         self._morph = morph
-        self._surface = surface
+        # When surface is a dict (per-material-slot overrides), keep the raw value for
+        # mesh loading (so each slot gets its own surface), and derive the entity-level
+        # surface from the first entry (used for entity-wide properties like vis_mode).
+        self._surface_raw = surface
+        self._surface = next(iter(surface.values())) if isinstance(surface, dict) else surface
         self._sim = scene.sim
 
         # Set entity name (auto-generate if not provided)

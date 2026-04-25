@@ -344,7 +344,7 @@ class Scene(RBC):
         self,
         morph: Morph | Iterable[Morph],
         material: Material | None = None,
-        surface: Surface | None = None,
+        surface: "Surface | dict[str, Surface] | None" = None,
         visualize_contact: bool = False,
         vis_mode: str | None = None,
         name: str | None = None,
@@ -360,8 +360,10 @@ class Scene(RBC):
             geometry variant from the list.
         material : gs.materials.Material | None, optional
             The material of the entity. If None, use ``gs.materials.Rigid()``.
-        surface : gs.surfaces.Surface | None, optional
+        surface : gs.surfaces.Surface | dict[str, gs.surfaces.Surface] | None, optional
             The surface of the entity. If None, use ``gs.surfaces.Default()``.
+            A dict keyed by GLB material name (requires ``group_by_material=True`` on the morph)
+            assigns different surfaces to individual material slots of the mesh.
         visualize_contact : bool
             Whether to visualize contact forces applied to this entity as arrows in the viewer and rendered images.
             Note that this will not be displayed in images rendered by camera using the `RayTracer` renderer.
@@ -410,27 +412,32 @@ class Scene(RBC):
             if isinstance(morph_for_checks, gs.morphs.Primitive):
                 material.sdf_max_res = 32
 
+        # When surface is a dict (per-material-slot overrides), use a proxy for entity-level
+        # property handling (smooth, double_sided, vis_mode). Mutations are broadcast to all
+        # dict values at the end of this block.
+        _surface_proxy = next(iter(surface.values())).model_copy() if isinstance(surface, dict) else surface
+
         # some morph should not smooth surface normal
         if isinstance(morph_for_checks, (gs.morphs.Box, gs.morphs.Cylinder, gs.morphs.Terrain)):
-            surface.smooth = False
+            _surface_proxy.smooth = False
 
         if isinstance(morph_for_checks, (gs.morphs.URDF, gs.morphs.MJCF, gs.morphs.USD, gs.morphs.Terrain)):
             if not isinstance(material, (gs.materials.Kinematic, gs.materials.Hybrid)):
                 gs.raise_exception(f"Unsupported material for morph: {material} and {morph_for_checks}.")
 
-        if surface.double_sided is None:
-            surface.double_sided = isinstance(material, (gs.materials.PBD.Cloth, gs.materials.FEM.Cloth))
+        if _surface_proxy.double_sided is None:
+            _surface_proxy.double_sided = isinstance(material, (gs.materials.PBD.Cloth, gs.materials.FEM.Cloth))
 
         if vis_mode is not None:
-            surface.vis_mode = vis_mode
+            _surface_proxy.vis_mode = vis_mode
         # validate and populate default surface.vis_mode considering morph type
         if isinstance(material, (gs.materials.Kinematic, gs.materials.Tool)):
-            if surface.vis_mode is None:
-                surface.vis_mode = "visual"
+            if _surface_proxy.vis_mode is None:
+                _surface_proxy.vis_mode = "visual"
 
-            if surface.vis_mode not in ("visual", "collision", "sdf"):
+            if _surface_proxy.vis_mode not in ("visual", "collision", "sdf"):
                 gs.raise_exception(
-                    f"Unsupported `surface.vis_mode` for material {material}: '{surface.vis_mode}'. Expected one of: "
+                    f"Unsupported `surface.vis_mode` for material {material}: '{_surface_proxy.vis_mode}'. Expected one of: "
                     "['visual', 'collision', 'sdf']."
                 )
 
@@ -445,52 +452,59 @@ class Scene(RBC):
                 gs.materials.SPH.Liquid,
             ),
         ):
-            if surface.vis_mode is None:
-                surface.vis_mode = "particle"
+            if _surface_proxy.vis_mode is None:
+                _surface_proxy.vis_mode = "particle"
 
-            if surface.vis_mode not in ("particle", "recon"):
+            if _surface_proxy.vis_mode not in ("particle", "recon"):
                 gs.raise_exception(
-                    f"Unsupported `surface.vis_mode` for material {material}: '{surface.vis_mode}'. Expected one of: ['particle', 'recon']."
+                    f"Unsupported `surface.vis_mode` for material {material}: '{_surface_proxy.vis_mode}'. Expected one of: ['particle', 'recon']."
                 )
 
         elif isinstance(material, gs.materials.SF.Smoke):
-            if surface.vis_mode is None:
-                surface.vis_mode = "particle"
+            if _surface_proxy.vis_mode is None:
+                _surface_proxy.vis_mode = "particle"
 
-            if surface.vis_mode not in ("particle",):
+            if _surface_proxy.vis_mode not in ("particle",):
                 gs.raise_exception(
-                    f"Unsupported `surface.vis_mode` for material {material}: '{surface.vis_mode}'. Expected one of: ['particle', 'recon']."
+                    f"Unsupported `surface.vis_mode` for material {material}: '{_surface_proxy.vis_mode}'. Expected one of: ['particle', 'recon']."
                 )
 
         elif isinstance(material, (gs.materials.PBD.Base, gs.materials.MPM.Base, gs.materials.SPH.Base)):
-            if surface.vis_mode is None:
-                surface.vis_mode = "visual"
+            if _surface_proxy.vis_mode is None:
+                _surface_proxy.vis_mode = "visual"
 
-            if surface.vis_mode not in ("visual", "particle", "recon"):
+            if _surface_proxy.vis_mode not in ("visual", "particle", "recon"):
                 gs.raise_exception(
-                    f"Unsupported `surface.vis_mode` for material {material}: '{surface.vis_mode}'. Expected one of: ['visual', 'particle', 'recon']."
+                    f"Unsupported `surface.vis_mode` for material {material}: '{_surface_proxy.vis_mode}'. Expected one of: ['visual', 'particle', 'recon']."
                 )
 
         elif isinstance(material, gs.materials.FEM.Base):
-            if surface.vis_mode is None:
-                surface.vis_mode = "visual"
+            if _surface_proxy.vis_mode is None:
+                _surface_proxy.vis_mode = "visual"
 
-            if surface.vis_mode not in ("visual",):
+            if _surface_proxy.vis_mode not in ("visual",):
                 gs.raise_exception(
-                    f"Unsupported `surface.vis_mode` for material {material}: '{surface.vis_mode}'. Expected one of: ['visual']."
+                    f"Unsupported `surface.vis_mode` for material {material}: '{_surface_proxy.vis_mode}'. Expected one of: ['visual']."
                 )
 
         elif isinstance(material, gs.materials.Hybrid):  # determine the visual of the outer soft part
-            if surface.vis_mode is None:
-                surface.vis_mode = "particle"
+            if _surface_proxy.vis_mode is None:
+                _surface_proxy.vis_mode = "particle"
 
-            if surface.vis_mode not in ("particle", "visual"):
+            if _surface_proxy.vis_mode not in ("particle", "visual"):
                 gs.raise_exception(
-                    f"Unsupported `surface.vis_mode` for material {material}: '{surface.vis_mode}'. Expected one of: ['particle', 'visual']."
+                    f"Unsupported `surface.vis_mode` for material {material}: '{_surface_proxy.vis_mode}'. Expected one of: ['particle', 'visual']."
                 )
 
         else:
             gs.raise_exception()
+
+        # Broadcast entity-level properties back to all per-slot surfaces
+        if isinstance(surface, dict):
+            for _s in surface.values():
+                _s.smooth = _surface_proxy.smooth
+                _s.double_sided = _surface_proxy.double_sided
+                _s.vis_mode = _surface_proxy.vis_mode
 
         # Set material-dependent default options
         morphs_to_configure = morph if is_heterogeneous else (morph,)

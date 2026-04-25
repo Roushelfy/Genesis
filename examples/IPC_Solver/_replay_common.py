@@ -14,6 +14,7 @@ from __future__ import annotations
 import argparse
 import math
 import time
+from datetime import datetime
 from pathlib import Path
 import numpy as np
 
@@ -248,6 +249,13 @@ class TrajectoryReplay:
             help="Camera trajectory: surround, full, ego.",
         )
         parser.add_argument("--render", action="store_true", help="Record video")
+        parser.add_argument("--render-all-keyframes", action="store_true",
+                            help="Render one video per custom keyframe (fixed static camera for each). "
+                                 "Videos are named kf01_, kf02_, … and share a datetime tag.")
+        parser.add_argument("--start-keyframe", type=int, default=1, metavar="N",
+                            help="Start the --render-all-keyframes batch at keyframe N (1-based). "
+                                 "--start-frame applies to that first keyframe; later shots start at frame 0. "
+                                 "Use this to resume an interrupted batch.")
         parser.add_argument("--spp", type=int, default=256, help="Samples-per-pixel for the render camera (default: 256)")
         parser.add_argument("--dof", action="store_true", help="Enable depth-of-field (thinlens camera model)")
         parser.add_argument("--aperture", type=float, default=1.4, help="Aperture f-number for DOF (default: 1.4, lower=shallower)")
@@ -482,7 +490,7 @@ class TrajectoryReplay:
         """Create a Genesis scene configured for replay (no physics)."""
         import genesis as gs
 
-        use_render = self.args.render
+        use_render = self.args.render or getattr(self.args, "render_all_keyframes", False)
         use_nyx = self.args.nyx
 
         renderer_kwargs = {}
@@ -529,20 +537,21 @@ class TrajectoryReplay:
 
             lights = self.nyx_lights()
             light_field = self._build_nyx_light_field()
-            self._cam = self._scene.add_sensor(
-                NyxCameraOptions(
-                    res=(self.args.res[0], self.args.res[1]),
-                    pos=self.cam_pos,
-                    lookat=self.cam_lookat,
-                    fov=self.cam_fov,
-                    spp=self.args.spp,
-                    denoise=True,
-                    render_mode=npr.ERenderMode.RefPathTracer,
-                    env_maps=(env_map,),
-                    light_fields=(light_field,) if light_field is not None else (),
-                    **({"lights": lights} if lights else {}),
-                )
+            nyx_kwargs = dict(
+                res=(self.args.res[0], self.args.res[1]),
+                pos=self.cam_pos,
+                lookat=self.cam_lookat,
+                fov=self.cam_fov,
+                spp=self.args.spp,
+                denoise=True,
+                render_mode=npr.ERenderMode.RefPathTracer,
+                env_maps=(env_map,),
+                light_fields=(light_field,) if light_field is not None else (),
+                **({"lights": lights} if lights else {}),
             )
+            if hasattr(self, "cam_near"):
+                nyx_kwargs["near"] = self.cam_near
+            self._cam = self._scene.add_sensor(NyxCameraOptions(**nyx_kwargs))
         else:
             self._cam = self._scene.add_camera(
                 res=(self.args.res[0], self.args.res[1]),
@@ -601,7 +610,8 @@ class TrajectoryReplay:
 
     def run(self) -> None:
         args = self.args
-        use_render = args.render
+        # --render-all-keyframes implies --render
+        use_render = args.render or getattr(args, "render_all_keyframes", False)
         use_nyx = args.nyx
 
         # Luisa preview: --preview without --no-raytracer (and not in render mode)
@@ -674,15 +684,70 @@ class TrajectoryReplay:
         return rgb
 
     def _run_render(self) -> None:
+        """Render entry point. Dispatches to _render_to_file, looping over
+        keyframes when --render-all-keyframes is set."""
+        # All videos in a batch share one timestamp so they sort together.
+        dt_tag = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+        if getattr(self.args, "render_all_keyframes", False):
+            kfs = self.custom_camera_keyframes()
+            if not kfs:
+                print("[render] --render-all-keyframes: no keyframes defined, falling back to single render")
+                self._render_to_file(dt_tag=dt_tag)
+                return
+            start_kf = max(0, getattr(self.args, "start_keyframe", 1) - 1)  # 0-based
+            n_remaining = len(kfs) - start_kf
+            print(f"[render] Rendering {n_remaining}/{len(kfs)} keyframe shot(s)"
+                  + (f" (resuming from kf{start_kf + 1:02d})" if start_kf > 0 else "") + " …")
+            for kf_idx, kf in enumerate(kfs):
+                if kf_idx < start_kf:
+                    continue
+                print(f"\n[render] ── Shot {kf_idx + 1}/{len(kfs)} ──")
+                # --start-frame applies only to the first shot of the batch; later shots start at 0
+                start_frame_override = None if kf_idx == start_kf else 0
+                self._render_to_file(
+                    dt_tag=dt_tag,
+                    kf_idx=kf_idx,
+                    kf_pos=tuple(float(v) for v in kf[1]),
+                    kf_lookat=tuple(float(v) for v in kf[2]),
+                    start_frame_override=start_frame_override,
+                )
+        else:
+            self._render_to_file(dt_tag=dt_tag)
+
+    def _render_to_file(
+        self,
+        dt_tag: str,
+        kf_idx: int | None = None,
+        kf_pos: tuple | None = None,
+        kf_lookat: tuple | None = None,
+        start_frame_override: int | None = None,
+    ) -> None:
+        """Render the full frame range to a single MP4.
+
+        When *kf_idx* / *kf_pos* / *kf_lookat* are supplied the camera is
+        locked to that fixed position for the entire video (ignoring any
+        --camera-traj).  Otherwise the normal camera-traj logic applies.
+
+        *start_frame_override* replaces --start-frame for this specific call.
+        Used by --render-all-keyframes to let --start-frame apply only to the
+        first (possibly resumed) shot while later shots start at frame 0.
+        """
         import imageio
 
         args = self.args
         use_nyx = args.nyx
         renderer_name = "nyx" if use_nyx else "luisa"
         traj_name = getattr(args, "trajectory", "default")
-        stem = f"ipc_{self.name}_{traj_name}_{renderer_name}"
+
+        if kf_idx is not None:
+            stem = f"ipc_{self.name}_kf{kf_idx + 1:02d}_{renderer_name}_{dt_tag}"
+        else:
+            stem = f"ipc_{self.name}_{traj_name}_{renderer_name}_{dt_tag}"
+
+        # --output is honoured only for single-render mode (would collide in batch)
         default_output = f"data/ipc_demo/ipc_{self.name}/{stem}.mp4"
-        output = getattr(args, "output", None) or default_output
+        output = (getattr(args, "output", None) if kf_idx is None else None) or default_output
         out = Path(output)
         out.parent.mkdir(parents=True, exist_ok=True)
 
@@ -691,11 +756,17 @@ class TrajectoryReplay:
             frames_dir = out.parent / f"{stem}_frames"
             frames_dir.mkdir(parents=True, exist_ok=True)
 
-        start = args.start_frame
+        # Point the camera at the keyframe position (static for the whole video)
+        if kf_pos is not None:
+            if use_nyx:
+                self._cam.update_camera_pose(pos=kf_pos, lookat=kf_lookat, up=(0, 0, 1))
+            else:
+                self._cam.set_pose(pos=kf_pos, lookat=kf_lookat, up=(0, 0, 1))
+
+        start = args.start_frame if start_frame_override is None else start_frame_override
         end = args.end_frame if args.end_frame is not None else self._n_frames
-        print(f"[render] frames {start}–{end - 1} of {self._n_frames - 1}")
+        print(f"[render] {out.name}  frames {start}–{end - 1} of {self._n_frames - 1}")
         if start > 0:
-            print(f"[render] Skipping to frame {start}")
             self._apply(start - 1)
 
         # Follow mode: camera tracks the robot with a fixed offset
@@ -705,6 +776,7 @@ class TrajectoryReplay:
 
         stride = max(1, args.stride)
         n_written = 0
+        interrupted = False
         writer = imageio.get_writer(str(out), fps=max(1, self.fps // stride),
                                     codec="libx264", macro_block_size=1)
         try:
@@ -715,23 +787,25 @@ class TrajectoryReplay:
                     continue
                 self._apply(i)
 
-                if follow and self._robot is not None:
-                    robot_pos = self._robot.get_pos()
-                    if robot_pos.ndim > 1:
-                        robot_pos = robot_pos[0]
-                    robot_pos = robot_pos.cpu().numpy()
-                    lookat = (float(robot_pos[0]), float(robot_pos[1]), float(robot_pos[2]) + 0.5)
-                    cam_pos = tuple(np.array(lookat) + cam_offset)
-                    if use_nyx:
-                        self._cam.update_camera_pose(pos=cam_pos, lookat=lookat, up=(0, 0, 1))
-                    else:
-                        self._cam.set_pose(pos=cam_pos, lookat=lookat, up=(0, 0, 1))
-                elif self._camera_traj is not None:
-                    cam_pos, cam_lookat = self._camera_traj.get_pose(i, self._n_frames)
-                    if use_nyx:
-                        self._cam.update_camera_pose(pos=cam_pos, lookat=cam_lookat, up=(0, 0, 1))
-                    else:
-                        self._cam.set_pose(pos=cam_pos, lookat=cam_lookat, up=(0, 0, 1))
+                # Per-frame camera update — skipped for fixed keyframe shots
+                if kf_idx is None:
+                    if follow and self._robot is not None:
+                        robot_pos = self._robot.get_pos()
+                        if robot_pos.ndim > 1:
+                            robot_pos = robot_pos[0]
+                        robot_pos = robot_pos.cpu().numpy()
+                        lookat = (float(robot_pos[0]), float(robot_pos[1]), float(robot_pos[2]) + 0.5)
+                        cam_pos = tuple(np.array(lookat) + cam_offset)
+                        if use_nyx:
+                            self._cam.update_camera_pose(pos=cam_pos, lookat=lookat, up=(0, 0, 1))
+                        else:
+                            self._cam.set_pose(pos=cam_pos, lookat=lookat, up=(0, 0, 1))
+                    elif self._camera_traj is not None:
+                        cam_pos, cam_lookat = self._camera_traj.get_pose(i, self._n_frames)
+                        if use_nyx:
+                            self._cam.update_camera_pose(pos=cam_pos, lookat=cam_lookat, up=(0, 0, 1))
+                        else:
+                            self._cam.set_pose(pos=cam_pos, lookat=cam_lookat, up=(0, 0, 1))
 
                 rgb = self._render_frame()
                 if frames_dir is not None:
@@ -740,10 +814,15 @@ class TrajectoryReplay:
                 n_written += 1
                 if i % 100 == 0 and i > start:
                     print(f"[render] Frame {i}/{end}")
+        except KeyboardInterrupt:
+            interrupted = True
         finally:
             writer.close()
 
-        print(f"[render] Saved {out} ({n_written} frames, {max(1, self.fps // stride)} fps)")
+        if interrupted:
+            print(f"[render] Interrupted — partial video saved: {out} ({n_written} frames, {max(1, self.fps // stride)} fps)")
+        else:
+            print(f"[render] Saved {out} ({n_written} frames, {max(1, self.fps // stride)} fps)")
         if frames_dir is not None:
             print(f"[render] Individual frames in {frames_dir}/")
 
@@ -858,7 +937,7 @@ class TrajectoryReplay:
         # Keyframe browsing: [ / ] jump to prev/next custom keyframe
         _custom_kfs = self.custom_camera_keyframes()
         _kf_idx = [0]
-        _kf_jump = [None]  # pending: (idx, kf_frame, kf_pos, kf_lookat, kf_up)
+        _kf_jump = [False]  # pending jump flag — index is always read from _kf_idx
 
         def _on_pause():
             _pause[0] = not _pause[0]
@@ -881,38 +960,37 @@ class TrajectoryReplay:
             up     = tuple(round(float(v), 4) for v in self._scene.viewer.camera_up)
             print(f"[keyframe] ({_current_frame[0]}, {pos}, {lookat}, {up}),")
 
-        def _queue_kf_jump(idx: int) -> None:
-            entry = _custom_kfs[idx]
-            kf_frame  = int(entry[0])
-            kf_pos    = np.array(entry[1], dtype=float)
-            kf_lookat = np.array(entry[2], dtype=float)
-            raw_up    = entry[3] if len(entry) > 3 and entry[3] is not None else (0.0, 0.0, 1.0)
-            kf_up     = np.array(raw_up, dtype=float)
-            _kf_jump[0] = (idx, kf_frame, kf_pos, kf_lookat, kf_up)
-
         def _on_prev_kf() -> None:
             if not _custom_kfs:
                 return
             _kf_idx[0] = (_kf_idx[0] - 1) % len(_custom_kfs)
-            _queue_kf_jump(_kf_idx[0])
+            _kf_jump[0] = True
             _pause[0] = True
 
         def _on_next_kf() -> None:
             if not _custom_kfs:
                 return
             _kf_idx[0] = (_kf_idx[0] + 1) % len(_custom_kfs)
-            _queue_kf_jump(_kf_idx[0])
+            _kf_jump[0] = True
             _pause[0] = True
 
         def _do_kf_jump() -> None:
             """Apply a pending keyframe camera jump. Must be called from the main loop thread.
 
+            Reads _kf_idx at execution time so rapid [ / ] presses never lose a jump —
+            the index is always correct even if multiple key events fired before this ran.
             Only moves the camera — does not seek the scene to the keyframe's frame.
             """
-            if _kf_jump[0] is None:
+            if not _kf_jump[0]:
                 return
-            idx, kf_frame, kf_pos, kf_lookat, kf_up = _kf_jump[0]
-            _kf_jump[0] = None
+            _kf_jump[0] = False
+            idx = _kf_idx[0]
+            entry = _custom_kfs[idx]
+            kf_frame  = int(entry[0])
+            kf_pos    = np.array(entry[1], dtype=float)
+            kf_lookat = np.array(entry[2], dtype=float)
+            raw_up    = entry[3] if len(entry) > 3 and entry[3] is not None else (0.0, 0.0, 1.0)
+            kf_up     = np.array(raw_up, dtype=float)
             self._scene.viewer._camera_up = kf_up
             self._scene.viewer.set_camera_pose(pos=kf_pos, lookat=kf_lookat)
             n = len(_custom_kfs)

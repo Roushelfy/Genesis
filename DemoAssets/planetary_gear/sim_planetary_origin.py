@@ -205,15 +205,6 @@ def _planet_transform(index: int):
     return R, np.array([tx, ty, 0.0])
 
 
-def _apply_rigid_transform(mesh: SimplicialComplex,
-                           R: np.ndarray, t: np.ndarray):
-    pos = view(mesh.positions())
-    verts = np.array(pos, copy=True).reshape(-1, 3)
-    verts = (R @ verts.T).T + t
-    flat = pos.reshape(-1)
-    flat[:] = verts.reshape(-1)
-
-
 def _rotation_z_4x4(angle_rad: float, tz: float = 0.0) -> np.ndarray:
     """4×4 rotation around Z with optional Z-translation."""
     c, s = np.cos(angle_rad), np.sin(angle_rad)
@@ -286,7 +277,8 @@ def main():
     driven_obj   = None
     passive_obj  = None
     planet0_obj  = None
-    planet0_init_tf = None  # 4x4 initial transform for planet_0
+    planet0_init_tf = None  # 4x4 initial world transform for planet_0
+    T_carrier       = np.eye(4, dtype=np.float64)  # initial transform for carrier
 
     print("Loading parts...")
     for name, obj_file, is_fixed, is_driven in parts:
@@ -297,14 +289,8 @@ def main():
 
         mesh = io.read(str(obj_path))
         label_surface(mesh)
-
-        if name.startswith("planet_"):
-            idx = int(name.split("_")[1])
-            R, t = _planet_transform(idx)
-            _apply_rigid_transform(mesh, R, t)
-        elif name == "carrier":
-            _apply_rigid_transform(mesh, np.eye(3),
-                                   np.array([0, 0, carrier_tz]))
+        # Mesh vertices stay in the canonical OBJ local frame (scaled by MM_TO_M).
+        # Initial world placement is written to geo.transforms() after creation.
 
         abd.apply_to(mesh, ABD_KAPPA * MPa)
 
@@ -326,6 +312,22 @@ def main():
         obj = scene.objects().create(name)
         gs, _ = obj.geometries().create(mesh)
 
+        # Compute and set this part's initial world transform.
+        if name.startswith("planet_"):
+            idx = int(name.split("_")[1])
+            R, t = _planet_transform(idx)
+            T_part = np.eye(4, dtype=np.float64)
+            T_part[:3, :3] = R
+            T_part[:3, 3]  = t
+        elif name == "carrier":
+            T_part = np.eye(4, dtype=np.float64)
+            T_part[2, 3] = carrier_tz
+            T_carrier = T_part
+        else:
+            T_part = np.eye(4, dtype=np.float64)  # sun_gear / ring_gear at origin
+
+        view(gs.geometry().transforms())[0] = T_part
+
         if name == "carrier":
             carrier_obj = obj
             carrier_slot = gs
@@ -335,13 +337,9 @@ def main():
             passive_obj = obj
         if name == "planet_0":
             planet0_obj = obj
-            R0, t0 = _planet_transform(0)
-            tf4 = np.eye(4, dtype=np.float64)
-            tf4[:3, :3] = R0
-            tf4[:3, 3] = t0
-            planet0_init_tf = tf4
+            planet0_init_tf = T_part  # same 4×4 computed above
 
-        nverts = np.array(view(mesh.positions()), copy=True).reshape(-1, 3).shape[0]
+        nverts = mesh.vertices().size()
         tag = "FIXED" if is_fixed else ("DRIVE" if is_driven else " FREE")
         print(f"  [{tag:5s}] {name:14s}  {nverts:5d} verts")
 
@@ -401,9 +399,9 @@ def main():
             else:
                 dz = lift_h - lift_speed * (t - t_lift - t_hold)
                 dz = max(dz, release_h)
-            tf = np.eye(4, dtype=np.float64)
-            tf[2, 3] = dz
-            aim_transform[0] = tf
+            T_lift = np.eye(4, dtype=np.float64)
+            T_lift[2, 3] = dz
+            aim_transform[0] = T_lift @ planet0_init_tf
         else:
             is_constrained[0] = 0
 
@@ -434,7 +432,7 @@ def main():
         is_constrained = view(geo.instances().find(builtin.is_constrained))
         aim_transform = view(geo.instances().find(builtin.aim_transform))
         is_constrained[0] = 1
-        aim_transform[0] = np.eye(4, dtype=np.float64)  # lock translation, allow rotation
+        aim_transform[0] = T_carrier  # lock translation to T_carrier pos; rotation free
 
     animator.insert(passive_obj, passive_animation)
 

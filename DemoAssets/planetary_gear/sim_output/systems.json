@@ -60,8 +60,7 @@
             "name": "class uipc::backend::cuda::AffineBodyStateAccessor",
             "strong_deps": [
                 "class uipc::backend::cuda::AffineBodyDynamics",
-                "class uipc::backend::cuda::AffineBodyVertexReporter",
-                "class uipc::backend::cuda::GlobalJointDofManager"
+                "class uipc::backend::cuda::AffineBodyVertexReporter"
             ],
             "valid": true,
             "weak_deps": []
@@ -178,6 +177,20 @@
                 "class uipc::backend::cuda::AffineBodyDynamics",
                 "class uipc::backend::cuda::GlobalVertexManager",
                 "class uipc::backend::cuda::AffineBodyVertexReporter"
+            ],
+            "valid": true,
+            "weak_deps": []
+        },
+        {
+            "engine_aware": false,
+            "name": "class uipc::backend::cuda::IPCSimplexFrictionalContact",
+            "strong_deps": [
+                "class uipc::backend::cuda::GlobalDyTopoEffectManager",
+                "class uipc::backend::cuda::GlobalContactManager",
+                "class uipc::backend::cuda::GlobalTrajectoryFilter",
+                "class uipc::backend::cuda::GlobalContactManager",
+                "class uipc::backend::cuda::GlobalVertexManager",
+                "class uipc::backend::cuda::IPCPipelineFlag"
             ],
             "valid": true,
             "weak_deps": []
@@ -347,20 +360,6 @@
         },
         {
             "engine_aware": false,
-            "name": "class uipc::backend::cuda::IPCSimplexFrictionalContact",
-            "strong_deps": [
-                "class uipc::backend::cuda::GlobalDyTopoEffectManager",
-                "class uipc::backend::cuda::GlobalContactManager",
-                "class uipc::backend::cuda::GlobalTrajectoryFilter",
-                "class uipc::backend::cuda::GlobalContactManager",
-                "class uipc::backend::cuda::GlobalVertexManager",
-                "class uipc::backend::cuda::IPCPipelineFlag"
-            ],
-            "valid": true,
-            "weak_deps": []
-        },
-        {
-            "engine_aware": false,
             "name": "class uipc::backend::cuda::IPCSimplexNormalContact",
             "strong_deps": [
                 "class uipc::backend::cuda::GlobalDyTopoEffectManager",
@@ -519,8 +518,7 @@
             "valid": true,
             "weak_deps": [
                 "class uipc::backend::cuda::GlobalTrajectoryFilter",
-                "class uipc::backend::cuda::GlobalActiveSetManager",
-                "class uipc::backend::cuda::GlobalJointDofManager"
+                "class uipc::backend::cuda::GlobalActiveSetManager"
             ]
         },
         {
@@ -541,13 +539,6 @@
                 "class uipc::backend::cuda::HalfPlane",
                 "class uipc::backend::cuda::HalfPlaneBodyReporter"
             ],
-            "valid": true,
-            "weak_deps": []
-        },
-        {
-            "engine_aware": false,
-            "name": "class uipc::backend::cuda::GlobalJointDofManager",
-            "strong_deps": [],
             "valid": true,
             "weak_deps": []
         },

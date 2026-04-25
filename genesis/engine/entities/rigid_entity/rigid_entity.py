@@ -124,9 +124,9 @@ class KinematicEntity(Entity):
     def _load_morph(self, morph: Morph):
         """Load a single morph into the entity."""
         if isinstance(morph, gs.morphs.Mesh):
-            self._load_mesh(morph, self._surface)
+            self._load_mesh(morph, self._surface_raw)
         elif isinstance(morph, (gs.morphs.MJCF, gs.morphs.URDF, gs.morphs.Drone, gs.morphs.USD)):
-            self._load_scene(morph, self._surface)
+            self._load_scene(morph, self._surface_raw)
         elif isinstance(morph, gs.morphs.Primitive):
             self._load_primitive(morph, self._surface)
         elif isinstance(morph, gs.morphs.Terrain):
@@ -210,7 +210,7 @@ class KinematicEntity(Entity):
                     self._on_heterogeneous_scene_variant_loaded(link, morph, v_l_info)
 
             elif isinstance(morph, gs.morphs.Mesh):
-                g_infos = self._load_mesh(morph, self._surface, load_geom_only_for_heterogeneous=True)
+                g_infos = self._load_mesh(morph, self._surface_raw, load_geom_only_for_heterogeneous=True)
                 cg_infos, vg_infos = self._postprocess_geoms_info(morph, g_infos, is_robot=False)
                 self._add_heterogeneous_variant(self._links[0], cg_infos, vg_infos)
                 init_qpos = np.array((*morph.pos, *morph.quat) if not morph.fixed else (), dtype=gs.np_float)

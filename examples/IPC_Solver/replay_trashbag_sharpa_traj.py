@@ -15,8 +15,8 @@ Interactive viewer (default)
     --start-frame N         Start from frame N (BACKSPACE also resets here)
     --end-frame N           Stop at frame N exclusive (default: last frame)
     --camera-traj MODE      Drive camera automatically: surround | full | ego | custom
-                            K key  = log current frame + camera pose to stdout
-                            [ / ]  = jump to prev/next custom keyframe (pauses)
+                            K key   = log current frame + camera pose to stdout
+                            [ / ]   = jump to prev/next custom keyframe (pauses)
 
 Live preview (interactive mode only)
     --preview               Open an OpenCV window with live Luisa-rendered view
@@ -43,7 +43,10 @@ Shared camera / render options
     --focal-len METRES      Focal length (default: 0.05 = 50 mm)
 
 Trajectory
-    --traj PATH             Path to trajectory .npz file (default: trajectory_sharpa.npz)
+    --traj PATH             Path to trajectory .npz file (default: trajectory_sharpa.npz,
+                            or trajectory_sharpa_subdiv.npz when --subdiv is set)
+    --subdiv                Use Loop-subdivided trashbag + rope meshes and matching trajectory
+                            (Trashbag_rope_subdiv.glb, rope1/2_subdiv.obj, trajectory_sharpa_subdiv.npz)
 """
 
 from __future__ import annotations
@@ -66,12 +69,16 @@ _TRASH = _DEMO / "trashbag"
 MARVIN_URDF = str(_DEMO / "marvin_sharpa_description/marvin_sharpa.urdf")
 TABLE_GLB = str(_TRASH / "work_table.glb")
 TRASHBAG_GLB = str(_TRASH / "Trashbag_rope.glb")
+TRASHBAG_GLB_SUBDIV = str(_TRASH / "Trashbag_rope_subdiv.glb")
 TRASHCAN_GLB = str(_TRASH / "Trashcan033.glb")
 SODA_CAN_GLB = str(_TRASH / "soda_can.glb")
 PLASTIC_BOTTLE_GLB = str(_TRASH / "plastic_bottle.glb")
 ROPE1_OBJ = str(_TRASH / "rope1.obj")
 ROPE2_OBJ = str(_TRASH / "rope2.obj")
+ROPE1_OBJ_SUBDIV = str(_TRASH / "rope1_subdiv.obj")
+ROPE2_OBJ_SUBDIV = str(_TRASH / "rope2_subdiv.obj")
 DEFAULT_TRAJ = str(_TRASH / "trajectory_sharpa_20260423_2.npz")
+DEFAULT_TRAJ_SUBDIV = str(_TRASH / "trajectory_sharpa_subdiv.npz")
 
 
 class TrashbagSharpaReplay(TrajectoryReplay):
@@ -117,12 +124,20 @@ class TrashbagSharpaReplay(TrajectoryReplay):
         parser.add_argument(
             "--traj",
             type=str,
-            default=DEFAULT_TRAJ,
-            help="Path to trajectory.npz",
+            default=None,
+            help="Path to trajectory.npz (default: trajectory_sharpa.npz, "
+            "or trajectory_sharpa_subdiv.npz when --subdiv is set)",
+        )
+        parser.add_argument(
+            "--subdiv",
+            action="store_true",
+            help="Use Loop-subdivided trashbag + rope meshes and matching trajectory "
+            "(Trashbag_rope_subdiv.glb, rope1/2_subdiv.obj, trajectory_sharpa_subdiv.npz)",
         )
 
     def load_trajectory(self):
-        traj = np.load(self.args.traj)
+        traj_path = self.args.traj or (DEFAULT_TRAJ_SUBDIV if getattr(self.args, "subdiv", False) else DEFAULT_TRAJ)
+        traj = np.load(traj_path)
         self.sim_time = traj["sim_time"]
         n_frames = len(self.sim_time)
 
@@ -174,23 +189,19 @@ class TrashbagSharpaReplay(TrajectoryReplay):
         return super().make_camera_traj(name)
 
     def custom_camera_keyframes(self):
-        # Each entry: (frame, pos, lookat[, up[, ease_in[, ease_out]]])
+        # Keyframes captured on the pika trajectory — will need re-tuning for sharpa.
         # Use K key in interactive mode to log new keyframes.
+        # Each entry: (frame, pos, lookat[, up[, ease_in[, ease_out]]])
         return [
-            (8, (1.3205, -0.3625, 1.9686), (0.6509, -0.1743, 1.2502), (-0.583, 0.0086, 0.8124)),
-            (10, (2.3313, -0.0087, 1.9842), (1.519, 0.0033, 1.4011), (-0.583, 0.0086, 0.8124)),
-            (23, (1.0502, 0.3062, 1.274), (0.2742, 0.2846, 0.6436), (-0.583, 0.0086, 0.8124)),
-            (41, (1.0275, 0.499, 1.1794), (0.354, 0.0108, 0.6243), (-0.583, 0.0086, 0.8124)),
-            (87, (0.8742, 0.6937, 1.2944), (0.3189, 0.0744, 0.7393), (-0.583, 0.0086, 0.8124)),
-            (170, (0.8384, 0.6602, 1.371), (0.2754, 0.0322, 0.8337), (-0.583, 0.0086, 0.8124)),
-            (197, (0.8893, -0.4378, 1.3246), (0.3981, 0.3221, 0.899), (-0.583, 0.0086, 0.8124)),
-            (690, (0.8246, -0.2951, 1.4988), (0.4017, 0.0223, 0.65), (-0.583, 0.0086, 0.8124)),
-            (838, (0.8229, -0.2938, 1.4391), (0.4, 0.0236, 0.5903), (-0.583, 0.0086, 0.8124)),
-            (982, (0.8124, -0.286, 1.418), (0.3895, 0.0315, 0.5692), (-0.583, 0.0086, 0.8124)),
-            (1040, (0.6682, -0.215, 0.8907), (0.3521, 0.1057, 1.7836), (-0.583, 0.0086, 0.8124)),
-            (1090, (0.6104, -0.1985, 0.8624), (0.4218, -0.0021, 1.8246), (-0.583, 0.0086, 0.8124)),
-            (2118, (0.6169, -0.2011, 0.8638), (0.5252, -0.0436, 1.8471), (-0.583, 0.0086, 0.8124)),
-            (2206, (-0.1851, 1.0792, 1.629), (0.353, 0.319, 1.2649), (-0.583, 0.0086, 0.8124)),
+            (1, (1.3717, 0.0888, 1.501), (0.5382, 0.0954, 0.9486)),  # grab bag
+            (2, (1.1121, -0.1711, 1.3672), (0.2076, -0.1816, 0.9408)),  # spread bag open
+            (3, (0.8751, -0.684, 1.3839), (0.5325, 0.1772, 1.0084)),  # step in & stretch bag
+            (4, (0.8915, -0.3679, 1.3836), (0.3012, 0.1517, 0.766)),  # pick up bottle
+            (5, (0.8325, -0.3047, 1.3894), (0.3326, 0.0995, 0.6234)),  # drop into can
+            (6, (0.6946, -0.2428, 1.3516), (0.4141, -0.0268, 0.4164)),  # drop soda
+            (7, (0.7932, -0.4961, 1.3813), (0.4041, 0.1829, 0.7587)),  # close bag
+            (8, (1.1363, -0.0733, 1.2694), (0.1565, -0.0498, 1.071)),  # lift it up
+            (9, (1.179, 0.148, 1.0849), (0.1991, 0.1715, 0.8865)),  # put it down
         ]
 
     def build_scene(self, scene):
@@ -213,7 +224,6 @@ class TrashbagSharpaReplay(TrajectoryReplay):
                 convexify=False,
             ),
             surface=gs.surfaces.BSDF(
-                # color=(0.8, 0.8, 0.95, 1.0),
                 roughness=0.45,
                 metallic=0.0,
                 ior=1.45,
@@ -232,6 +242,12 @@ class TrashbagSharpaReplay(TrajectoryReplay):
                 convexify=True,
                 decimate=True,
                 decimate_face_num=1000,
+            ),
+            surface=gs.surfaces.Plastic(
+                color=(0.2353, 0.3529, 0.4078),
+                roughness=0.55,  # semi-matte, not fully diffuse
+                metallic=0.0,  # pure dielectric
+                ior=1.52,  # typical ABS/HDPE plastic
             ),
             material=gs.materials.Rigid(rho=100.0),
             vis_mode="visual",
@@ -260,25 +276,38 @@ class TrashbagSharpaReplay(TrajectoryReplay):
                     scale=0.036,
                     fixed=False,
                     file_meshes_are_zup=False,
+                    group_by_material=True,
                     convexify=True,
                     decimate=True,
                     decimate_face_num=100,
                 ),
                 material=gs.materials.Rigid(rho=50.0),
-                surface=gs.surfaces.BSDF(
-                    roughness=0.05,
-                    ior=1.33,
-                    specular_trans=0.83,
-                ),
+                surface={
+                    "Material.Body": gs.surfaces.Glass(
+                        color=(0.905, 0.905, 0.905, 1.0),
+                        roughness=0.1,
+                        ior=1.4,
+                    ),
+                    "Material.Cap": gs.surfaces.BSDF(
+                        color=(0.0, 0.3451, 0.90588),
+                        roughness=0.5,
+                        ior=1.5,
+                    ),
+                },
                 vis_mode="visual",
             ),
         }
 
         # FEM objects (params match registry)
+        subdiv = getattr(self.args, "subdiv", False)
+        trashbag_glb = TRASHBAG_GLB_SUBDIV if subdiv else TRASHBAG_GLB
+        rope1_mesh = ROPE1_OBJ_SUBDIV if subdiv else ROPE1_OBJ
+        rope2_mesh = ROPE2_OBJ_SUBDIV if subdiv else ROPE2_OBJ
+
         self._fem_entities = {
             "trashbag": scene.add_entity(
                 gs.morphs.Mesh(
-                    file=TRASHBAG_GLB,
+                    file=trashbag_glb,
                     pos=(0.60, 0.23, 0.75),
                     euler=(0, 0, 45),
                     scale=0.76,
@@ -302,7 +331,7 @@ class TrashbagSharpaReplay(TrajectoryReplay):
         # Ropes (euler = trashbag_euler + (90, 0, 0) = (90, 0, 45))
         self._fem_entities["rope1"] = scene.add_entity(
             gs.morphs.Mesh(
-                file=ROPE1_OBJ,
+                file=rope1_mesh,
                 pos=(0.60, 0.23, 0.75),
                 euler=(90, 0, 45),
                 scale=0.76,
@@ -319,7 +348,7 @@ class TrashbagSharpaReplay(TrajectoryReplay):
         )
         self._fem_entities["rope2"] = scene.add_entity(
             gs.morphs.Mesh(
-                file=ROPE2_OBJ,
+                file=rope2_mesh,
                 pos=(0.60, 0.23, 0.75),
                 euler=(90, 0, 45),
                 scale=0.76,
@@ -336,6 +365,8 @@ class TrashbagSharpaReplay(TrajectoryReplay):
         )
 
         # Robot (MARVIN_SHARPA, 58 DOF, fixed base)
+        # Override paint_white_glossy (arm links 1-6) to add some shininess; GLB default is too matte.
+        # aluminium_brushed and plastic_black_rough are left to the GLB PBR values.
         self._robot = scene.add_entity(
             gs.morphs.URDF(
                 file=MARVIN_URDF,
@@ -343,6 +374,13 @@ class TrashbagSharpaReplay(TrajectoryReplay):
                 collision=False,
                 pos=(0, 0, 1.08),
             ),
+            surface={
+                "paint_white_glossy": gs.surfaces.BSDF(
+                    color=(0.74, 0.74, 0.74),
+                    roughness=0.25,
+                    metallic=0.25,
+                ),
+            },
             vis_mode="visual",
         )
 
