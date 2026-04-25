@@ -185,7 +185,7 @@ class GearReplay(TrajectoryReplay):
         # Sun gear with handle — free
         self._rigid_entities["sun_gear"] = scene.add_entity(
             gs.morphs.Mesh(
-                file=f"{gear_assets}/sun_gear_handle.obj",
+                file=f"{gear_assets}/sun_gear_handle_v2.obj",
                 pos=(CX, CY, CZ),
                 euler=(0, 0, rot_off),
                 scale=MESH_SCALE,
@@ -207,7 +207,7 @@ class GearReplay(TrajectoryReplay):
 
             self._rigid_entities[f"planet_gear_{i}"] = scene.add_entity(
                 gs.morphs.Mesh(
-                    file=f"{gear_assets}/planet_gear.obj",
+                    file=f"{gear_assets}/planet_gear_v2.obj",
                     pos=(px, py, pz),
                     euler=(0, 0, self_rot_deg),
                     scale=MESH_SCALE,
@@ -234,6 +234,22 @@ class GearReplay(TrajectoryReplay):
             ),
             material=rigid_mat,
             surface=carrier_surface,
+            vis_mode="visual",
+        )
+
+        # Support pin — fixed shaft
+        support_pin_tz = -12.0 * MESH_SCALE
+        scene.add_entity(
+            gs.morphs.Mesh(
+                file=f"{gear_assets}/support_pin.obj",
+                pos=(CX, CY, CZ + support_pin_tz),
+                scale=MESH_SCALE,
+                fixed=True,
+                convexify=False,
+                decimate=False,
+            ),
+            material=rigid_mat,
+            surface=housing_surface,
             vis_mode="visual",
         )
 

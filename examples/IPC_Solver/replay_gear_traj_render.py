@@ -117,8 +117,8 @@ class GearReplay(TrajectoryReplay):
 
         # Rigid data (skip static: ground, table, ring_gear)
         self._rigid_data = {
-            "sun_gear":      traj["rigid_sun_gear"],
-            "carrier":       traj["rigid_carrier"],
+            "sun_gear": traj["rigid_sun_gear"],
+            "carrier": traj["rigid_carrier"],
             "planet_gear_0": traj["rigid_planet_gear_0"],
             "planet_gear_1": traj["rigid_planet_gear_1"],
             "planet_gear_2": traj["rigid_planet_gear_2"],
@@ -135,13 +135,13 @@ class GearReplay(TrajectoryReplay):
     # radius and intensity are Luisa units — Nyx scale factors applied below.
     _LIGHTS: list[_LightDef] = [
         # Key light: above-left, warm — rakes across the gear teeth for shadow detail
-        {"pos": (0.1,   1.2,  2.0),  "radius": 0.15, "color": (1.0, 0.97, 0.92), "intensity": 160.0},
+        {"pos": (0.1, 1.2, 2.0), "radius": 0.15, "color": (1.0, 0.97, 0.92), "intensity": 160.0},
         # Fill light: right side, cooler, large — lifts shadow side without flattening
-        {"pos": (1.0,  -1.8,  3.5),  "radius": 1.0,  "color": (0.48, 0.52, 0.6),  "intensity": 1.5},
+        {"pos": (1.0, -1.8, 3.5), "radius": 1.0, "color": (0.48, 0.52, 0.6), "intensity": 1.5},
         # Rim light: behind scene, cool, hard — catches gear edges against dark background
-        {"pos": (-0.5, -2.5,  0.8),  "radius": 0.2,  "color": (0.8, 0.88, 1.0),   "intensity": 120.0},
+        {"pos": (-0.5, -2.5, 0.8), "radius": 0.2, "color": (0.8, 0.88, 1.0), "intensity": 120.0},
     ]
-    NYX_RADIUS_SCALE    = 1.0
+    NYX_RADIUS_SCALE = 1.0
     NYX_INTENSITY_SCALE = 0.2
 
     def make_renderer(self):
@@ -151,8 +151,7 @@ class GearReplay(TrajectoryReplay):
         return gs.renderers.RayTracer(
             logging_level="warning",
             tracing_depth=32,
-            env_surface=gs.surfaces.Emission(
-                emissive_texture=gs.textures.ColorTexture(color=(0.1, 0.1, 0.1))),
+            env_surface=gs.surfaces.Emission(emissive_texture=gs.textures.ColorTexture(color=(0.1, 0.1, 0.1))),
             env_radius=100.0,
             lights=[
                 SphereLight(
@@ -224,8 +223,7 @@ class GearReplay(TrajectoryReplay):
         # Ground — dark backdrop so gear mechanism reads against black
         scene.add_entity(
             gs.morphs.Box(size=(20.0, 20.0, 0.02), pos=(0.0, 0.0, -2.01), fixed=True),
-            surface=gs.surfaces.BSDF(
-                diffuse_texture=gs.textures.ColorTexture(color=(0.03, 0.03, 0.03))),
+            surface=gs.surfaces.BSDF(diffuse_texture=gs.textures.ColorTexture(color=(0.03, 0.03, 0.03))),
         )
 
         # Table
@@ -264,7 +262,7 @@ class GearReplay(TrajectoryReplay):
         # Sun gear with handle — bright polished steel, low roughness for sharp specular
         self._rigid_entities["sun_gear"] = scene.add_entity(
             gs.morphs.Mesh(
-                file=f"{gear_assets}/sun_gear_handle.glb",
+                file=f"{gear_assets}/sun_gear_handle_v2.glb",
                 pos=(CX, CY, CZ),
                 euler=(0, 0, rot_off),
                 scale=MESH_SCALE,
@@ -274,7 +272,7 @@ class GearReplay(TrajectoryReplay):
                 decimate=False,
             ),
             material=rigid_mat,
-#            surface=gs.surfaces.Metal(color=(0.80, 0.80, 0.78, 1.0), roughness=0.08),
+            #            surface=gs.surfaces.Metal(color=(0.80, 0.80, 0.78, 1.0), roughness=0.08),
             vis_mode="visual",
         )
 
@@ -283,7 +281,7 @@ class GearReplay(TrajectoryReplay):
             tx, ty, self_rot_deg = _planet_position(i)
             self._rigid_entities[f"planet_gear_{i}"] = scene.add_entity(
                 gs.morphs.Mesh(
-                    file=f"{gear_assets}/planet_gear.glb",
+                    file=f"{gear_assets}/planet_gear_v2.glb",
                     pos=(CX + tx, CY + ty, CZ),
                     euler=(0, 0, self_rot_deg),
                     scale=MESH_SCALE,
@@ -293,7 +291,7 @@ class GearReplay(TrajectoryReplay):
                     decimate=False,
                 ),
                 material=rigid_mat,
-#                surface=gs.surfaces.Metal(color=(0.72, 0.60, 0.35, 1.0), roughness=0.25),
+                #                surface=gs.surfaces.Metal(color=(0.72, 0.60, 0.35, 1.0), roughness=0.25),
                 vis_mode="visual",
             )
 
@@ -311,7 +309,23 @@ class GearReplay(TrajectoryReplay):
                 decimate=False,
             ),
             material=rigid_mat,
-#            surface=gs.surfaces.Metal(color=(0.55, 0.57, 0.60, 1.0), roughness=0.45),
+            #            surface=gs.surfaces.Metal(color=(0.55, 0.57, 0.60, 1.0), roughness=0.45),
+            vis_mode="visual",
+        )
+
+        # Support pin — fixed shaft
+        support_pin_tz = -12.0 * MESH_SCALE
+        scene.add_entity(
+            gs.morphs.Mesh(
+                file=f"{gear_assets}/support_pin.obj",
+                pos=(CX, CY, CZ + support_pin_tz),
+                scale=MESH_SCALE,
+                fixed=True,
+                convexify=False,
+                decimate=False,
+            ),
+            material=rigid_mat,
+            surface=gs.surfaces.Metal(color=(0.6, 0.6, 0.6, 1.0)),
             vis_mode="visual",
         )
 

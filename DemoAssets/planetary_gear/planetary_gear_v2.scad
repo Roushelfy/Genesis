@@ -47,7 +47,7 @@ flange_bolt_hole = 3.5;
 
 // Handle (sun crank)
 handle_post_r       = bore/2;
-handle_insert_depth = 10.0;
+handle_insert_depth = 3.0;    // match v1 — leaves bore open Z=[0,9] for support_pin
 handle_arm_r        = 2.0;
 handle_fillet_r     = 4.0;
 handle_post_h       = 8.0;
