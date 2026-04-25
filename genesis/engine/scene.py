@@ -412,6 +412,11 @@ class Scene(RBC):
             if isinstance(morph_for_checks, gs.morphs.Primitive):
                 material.sdf_max_res = 32
 
+        # VULNERABLE: surface_dict design is fragile — only works for GLTF (material-name
+        # keyed), silently ignored for primitives/terrain, crashes for OBJ/MJCF.  Geoms are
+        # nameless after loading so per-geom surface control is impossible.  Do not merge
+        # into main; needs a proper redesign with geom-name propagation and format validation.
+        #
         # When surface is a dict (per-material-slot overrides), use a proxy for entity-level
         # property handling (smooth, double_sided, vis_mode). Mutations are broadcast to all
         # dict values at the end of this block.
