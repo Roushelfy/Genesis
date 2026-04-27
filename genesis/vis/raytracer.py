@@ -607,11 +607,20 @@ class Raytracer:
         camera_name = str(camera.uid)
         camera_model = camera.model
 
+        try:
+            film = LuisaRenderPy.Film(
+                resolution=camera.res,
+                exposure=getattr(camera, "exposure", 0.0),
+                tone_mapping=getattr(camera, "tone_mapping", "none"),
+            )
+        except TypeError:
+            # Older LuisaRender builds don't expose exposure/tone_mapping — fall back gracefully.
+            film = LuisaRenderPy.Film(resolution=camera.res)
         if camera_model == "pinhole":
             self._cameras[camera_name] = LuisaRenderPy.PinholeCamera(
                 name=camera_name,
                 pose=self.get_transform(np.eye(4)),
-                film=LuisaRenderPy.Film(resolution=camera.res),
+                film=film,
                 filter=LuisaRenderPy.Filter(),
                 spp=camera.spp,
                 fov=camera.fov,
@@ -620,7 +629,7 @@ class Raytracer:
             self._cameras[camera_name] = LuisaRenderPy.ThinLensCamera(
                 name=camera_name,
                 pose=self.get_transform(np.eye(4)),
-                film=LuisaRenderPy.Film(resolution=camera.res),
+                film=film,
                 filter=LuisaRenderPy.Filter(),
                 spp=camera.spp,
                 aperture=camera.aperture,

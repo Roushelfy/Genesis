@@ -706,6 +706,8 @@ class Scene(RBC):
         far=20.0,
         env_idx=None,
         debug=False,
+        exposure=0.0,
+        tone_mapping="none",
     ):
         """
         Add a camera to the scene.
@@ -774,7 +776,8 @@ class Scene(RBC):
         if denoise is None:
             denoise = sys.platform != "darwin"
         return self._visualizer.add_camera(
-            res, pos, lookat, up, model, fov, aperture, focus_dist, GUI, spp, denoise, near, far, env_idx, debug
+            res, pos, lookat, up, model, fov, aperture, focus_dist, GUI, spp, denoise, near, far, env_idx, debug,
+            exposure=exposure, tone_mapping=tone_mapping,
         )
 
     @gs.assert_unbuilt
