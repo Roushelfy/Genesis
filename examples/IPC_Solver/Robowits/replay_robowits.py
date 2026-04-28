@@ -83,26 +83,29 @@ def _envmap(filename: str) -> str:
     return _hf_download("Genesis-Intelligence/Digital_twin_asset", f"envmap/4K/{filename}")
 
 
-# Per-task HDR envmap (filename within Digital_twin_asset/envmap/4K/).
-# Names sourced from gs-core/.../envmaps/registry.py — only multiplier=1.0
-# entries are used so we don't need post-load scaling.
-_TASK_ENVMAPS: dict[str, str] = {
-    "02": "brown_photostudio_07_4k.exr",
-    "03": "machine_shop_01_4k.exr",
-    "04": "poly_haven_studio_4k.exr",
-    "06": "art_studio_4k.exr",
-    "09": "lythwood_lounge_4k.exr",
-    "11": "empty_warehouse_01_4k.exr",
-    "13": "brown_photostudio_05_4k.exr",
-    "14": "blue_photo_studio_4k.exr",
-    "16": "gear_store_4k.exr",
-    "17": "small_hangar_01_4k.exr",
-    "18": "abandoned_factory_canteen_02_4k.exr",
-    "19": "ballroom_4k.exr",
-    "24": "machine_shop_03_4k.exr",
-    "27": "abandoned_hall_01_4k.exr",
-    "28": "marry_hall_4k.exr",
-    "29": "brown_photostudio_06_4k.exr",
+# Per-task HDR envmap: (filename within Digital_twin_asset/envmap/4K/, intensity multiplier).
+# Filenames are sourced from gs-core/.../envmaps/registry.py (all unit-multiplier
+# entries there); the 0.7 here is a hand-tuned global dim so the HDR sky doesn't
+# overpower our key/fill/rim sphere lights under exposure=0.5/aces.  Apply via
+# ImageTexture.image_color (clamped to [0, 1]); multiplier > 1 would need an
+# extra exposure EV bump instead.
+_TASK_ENVMAPS: dict[str, tuple[str, float]] = {
+    "02": ("brown_photostudio_07_4k.exr", 0.7),
+    "03": ("machine_shop_01_4k.exr", 0.7),
+    "04": ("poly_haven_studio_4k.exr", 0.7),
+    "06": ("art_studio_4k.exr", 0.7),
+    "09": ("lythwood_lounge_4k.exr", 0.7),
+    "11": ("empty_warehouse_01_4k.exr", 0.7),
+    "13": ("brown_photostudio_05_4k.exr", 0.7),
+    "14": ("blue_photo_studio_4k.exr", 0.7),
+    "16": ("gear_store_4k.exr", 0.7),
+    "17": ("small_hangar_01_4k.exr", 0.7),
+    "18": ("abandoned_factory_canteen_02_4k.exr", 0.7),
+    "19": ("ballroom_4k.exr", 0.7),
+    "24": ("machine_shop_03_4k.exr", 0.7),
+    "27": ("abandoned_hall_01_4k.exr", 0.7),
+    "28": ("marry_hall_4k.exr", 0.7),
+    "29": ("brown_photostudio_06_4k.exr", 0.7),
 }
 
 
@@ -1092,7 +1095,11 @@ class RobowitsReplay(TrajectoryReplay):
         import genesis as gs
         from genesis.options.renderers import SphereLight
 
-        env_path = _envmap(_TASK_ENVMAPS[self.args.task])
+        env_filename, env_multiplier = _TASK_ENVMAPS[self.args.task]
+        env_path = _envmap(env_filename)
+        # ImageTexture.image_color is clamped to [0, 1]; >1 multipliers would need
+        # an exposure EV bump instead, but our 16-task table is all <= 1.
+        assert env_multiplier <= 1.0, f"task {self.args.task}: envmap multiplier {env_multiplier} > 1 not supported"
         return gs.renderers.RayTracer(
             logging_level="warning",
             tracing_depth=32,
@@ -1101,6 +1108,7 @@ class RobowitsReplay(TrajectoryReplay):
             env_surface=gs.surfaces.Emission(
                 emissive_texture=gs.textures.ImageTexture(
                     image_path=env_path,
+                    image_color=env_multiplier,
                     encoding="linear",
                 ),
             ),
@@ -1257,6 +1265,12 @@ class RobowitsReplay(TrajectoryReplay):
                     color=(0.74, 0.74, 0.74),
                     roughness=0.25,
                     metallic=0.25,
+                ),
+                "plastic_black_rough": gs.surfaces.BSDF(
+                    color=(0.02, 0.02, 0.03),
+                    roughness=0.35,
+                    metallic=0.0,
+                    ior=1.45,
                 ),
             },
             vis_mode=vis_mode,
