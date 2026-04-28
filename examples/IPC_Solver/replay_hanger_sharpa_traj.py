@@ -63,6 +63,7 @@ class _LightDef(TypedDict):
     color: tuple[float, float, float]
     intensity: float
 
+
 from _replay_common import (
     EgoCamera,
     FullViewCamera,
@@ -80,7 +81,7 @@ SHIRT_GLB = str(_HANGER / "genesis_shirt.glb")
 SHIRT_GLB_SUBDIV = str(_HANGER / "genesis_shirt_subdiv.glb")
 COAT_HANGER_GLB = str(_HANGER / "coat_hanger.glb")
 RACK_GLB = str(_HANGER / "rack_frame.glb")
-DEFAULT_TRAJ = str(_HANGER / "trajectory_sharpa.npz")
+DEFAULT_TRAJ = str(_HANGER / "trajectory_hanger_sharpa.npz")
 DEFAULT_TRAJ_SUBDIV = str(_HANGER / "trajectory_sharpa_subdiv.npz")
 
 
@@ -91,12 +92,19 @@ class HangerSharpaReplay(TrajectoryReplay):
     cam_fov = 40
 
     def add_args(self, parser):
-        parser.add_argument("--traj", type=str, default=None,
-                            help="Path to trajectory.npz (default: trajectory_sharpa.npz, "
-                                 "or trajectory_sharpa_subdiv.npz when --subdiv is set)")
-        parser.add_argument("--subdiv", action="store_true",
-                            help="Use Loop-subdivided shirt mesh + trajectory "
-                                 "(genesis_shirt_subdiv.glb + trajectory_sharpa_subdiv.npz)")
+        parser.add_argument(
+            "--traj",
+            type=str,
+            default=None,
+            help="Path to trajectory.npz (default: trajectory_sharpa.npz, "
+            "or trajectory_sharpa_subdiv.npz when --subdiv is set)",
+        )
+        parser.add_argument(
+            "--subdiv",
+            action="store_true",
+            help="Use Loop-subdivided shirt mesh + trajectory "
+            "(genesis_shirt_subdiv.glb + trajectory_sharpa_subdiv.npz)",
+        )
 
     def load_trajectory(self):
         traj_path = self.args.traj or (DEFAULT_TRAJ_SUBDIV if self.args.subdiv else DEFAULT_TRAJ)
@@ -110,16 +118,22 @@ class HangerSharpaReplay(TrajectoryReplay):
         # Rigid data (skip static: ground, table, drying_rack)
         self._rigid_data = {
             "coat_hanger": traj["rigid_coat_hanger"],
+            "hung_hanger_1": traj["rigid_hung_hanger_1"],
+            "hung_hanger_2": traj["rigid_hung_hanger_2"],
         }
 
         # FEM data
         self._fem_data = {
             "shirt": traj["fem_shirt"],
+            "hung_shirt_1": traj["fem_hung_shirt_1"],
+            "hung_shirt_2": traj["fem_hung_shirt_2"],
         }
 
         print(f"Robot qpos: {self._joint_qpos.shape[1]} DOF")
-        print(f"Coat hanger frames: {self._rigid_data['coat_hanger'].shape[0]}")
-        print(f"Shirt: {self._fem_data['shirt'].shape[1]} verts")
+        for name, data in self._rigid_data.items():
+            print(f"  {name}: {data.shape[0]} frames")
+        for name, data in self._fem_data.items():
+            print(f"  {name}: {data.shape[1]} verts, {data.shape[0]} frames")
         if n_frames > 1:
             self.fps = min(int(1.0 / (self.sim_time[1] - self.sim_time[0])), 60)
         return n_frames
@@ -129,16 +143,16 @@ class HangerSharpaReplay(TrajectoryReplay):
     # radius and intensity are in Luisa units — Nyx scale factors are applied below.
     _LIGHTS: list[_LightDef] = [
         # Key light: above-left, warm, casting shadows across the scene
-        {"pos": (0.5,   1.1,  2.4),  "radius": 0.2,  "color": (1.0, 0.97, 0.92), "intensity": 50.0},
+        {"pos": (0.5, 1.1, 2.4), "radius": 0.2, "color": (1.0, 0.97, 0.92), "intensity": 50.0},
         # Fill light: right side, cooler, large and soft
-        {"pos": (0.5,  -1.8,  4.2),  "radius": 1.0,  "color": (0.48, 0.52, 0.6),  "intensity": 1.0},
+        {"pos": (0.5, -1.8, 4.2), "radius": 1.0, "color": (0.48, 0.52, 0.6), "intensity": 1.0},
         # Rim light: behind the scene, cool, hard — separates hands/shirt from dark background
-        {"pos": (-0.8, -3.0,  0.5),  "radius": 0.25, "color": (0.8, 0.88, 1.0),   "intensity": 150.0},
+        {"pos": (-0.8, -3.0, 0.5), "radius": 0.25, "color": (0.8, 0.88, 1.0), "intensity": 150.0},
     ]
     # Nyx uses different physical units for radius and intensity.
     # Tune these two scalars to match perceived brightness/softness without
     # touching individual light values.
-    NYX_RADIUS_SCALE    = 1.0
+    NYX_RADIUS_SCALE = 1.0
     NYX_INTENSITY_SCALE = 0.2
 
     def make_renderer(self):
@@ -237,12 +251,12 @@ class HangerSharpaReplay(TrajectoryReplay):
             vis_mode="visual",
         )
 
-        # Drying rack (fixed)
+        # Drying rack (fixed, matches DRYING_RACK_X registry)
         scene.add_entity(
             gs.morphs.Mesh(
                 file=RACK_GLB,
-                pos=(0.53, 0.0, 0.0),
-                euler=(0, 0, 90),
+                pos=(0.62, -0.61, 0.0),
+                euler=(0, 0, 0),
                 scale=0.83,
                 fixed=True,
                 file_meshes_are_zup=False,
@@ -254,13 +268,23 @@ class HangerSharpaReplay(TrajectoryReplay):
             vis_mode="visual",
         )
 
+        rigid_mat = gs.materials.Rigid(rho=80.0)
+        cloth_mat = gs.materials.FEM.Cloth(
+            E=1e3,
+            nu=0.49,
+            rho=60.0,
+            thickness=0.0005,
+            bending_stiffness=0.1,
+            friction_mu=0.3,
+        )
+
         # Rigid objects (matches registry COAT_HANGER for ipc_hanger)
         self._rigid_entities = {
             "coat_hanger": scene.add_entity(
                 gs.morphs.Mesh(
                     file=COAT_HANGER_GLB,
-                    pos=(0.51, -0.25, 0.84),
-                    euler=(180, 180, 0),
+                    pos=(0.51, -0.24, 0.84),
+                    euler=(180, 180, 90),
                     scale=0.004,
                     fixed=False,
                     file_meshes_are_zup=False,
@@ -268,30 +292,77 @@ class HangerSharpaReplay(TrajectoryReplay):
                     decimate=True,
                     decimate_face_num=500,
                 ),
-                material=gs.materials.Rigid(rho=80.0),
+                material=rigid_mat,
+                vis_mode="visual",
+            ),
+            "hung_hanger_1": scene.add_entity(
+                gs.morphs.Mesh(
+                    file=COAT_HANGER_GLB,
+                    pos=(0.12, -0.607, 1.165),
+                    euler=(90, 180, -90),
+                    scale=0.004,
+                    fixed=False,
+                    file_meshes_are_zup=False,
+                    convexify=False,
+                    decimate=True,
+                    decimate_face_num=500,
+                ),
+                material=rigid_mat,
+                vis_mode="visual",
+            ),
+            "hung_hanger_2": scene.add_entity(
+                gs.morphs.Mesh(
+                    file=COAT_HANGER_GLB,
+                    pos=(0.44, -0.607, 1.165),
+                    euler=(90, 180, -90),
+                    scale=0.004,
+                    fixed=False,
+                    file_meshes_are_zup=False,
+                    convexify=False,
+                    decimate=True,
+                    decimate_face_num=500,
+                ),
+                material=rigid_mat,
                 vis_mode="visual",
             ),
         }
 
-        # Shirt (FEM Cloth, matches registry SHIRT_HANGER)
-        shirt_glb = SHIRT_GLB_SUBDIV if getattr(self.args, "subdiv", False) else SHIRT_GLB
+        # Shirt (FEM Cloth, matches registry)
+        shirt_glb = SHIRT_GLB_SUBDIV if self.args.subdiv else SHIRT_GLB
         self._fem_entities = {
             "shirt": scene.add_entity(
                 gs.morphs.Mesh(
                     file=shirt_glb,
-                    pos=(0.55, 0.25, 1.09),
-                    euler=(-90, 150, 90),
+                    pos=(0.59, 0.21, 1.1),
+                    euler=(-90, 178, -90),
                     scale=0.80,
                     fixed=False,
                 ),
-                material=gs.materials.FEM.Cloth(
-                    E=1e3,
-                    nu=0.49,
-                    rho=60.0,
-                    thickness=0.0005,
-                    bending_stiffness=0.1,
-                    friction_mu=0.3,
+                material=cloth_mat,
+                surface=gs.surfaces.Plastic(),
+                vis_mode="visual",
+            ),
+            "hung_shirt_1": scene.add_entity(
+                gs.morphs.Mesh(
+                    file=SHIRT_GLB,
+                    pos=(0.10, -0.60, 1.035),
+                    euler=(-90, 180, 90),
+                    scale=0.80,
+                    fixed=False,
                 ),
+                material=cloth_mat,
+                surface=gs.surfaces.Plastic(),
+                vis_mode="visual",
+            ),
+            "hung_shirt_2": scene.add_entity(
+                gs.morphs.Mesh(
+                    file=SHIRT_GLB,
+                    pos=(0.42, -0.60, 1.035),
+                    euler=(-90, 180, 90),
+                    scale=0.80,
+                    fixed=False,
+                ),
+                material=cloth_mat,
                 surface=gs.surfaces.Plastic(),
                 vis_mode="visual",
             ),
