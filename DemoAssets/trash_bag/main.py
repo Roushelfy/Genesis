@@ -53,7 +53,7 @@ SHELL_POISSON  = 0.35
 # 0.0 = perfect plasticity (any bend leaves a crease).
 # Large value = elastic only.
 BENDING_STIFFNESS  = 5.0e1     # Pa*m  — soft, crumples easily
-YIELD_THRESHOLD    = 0.4       # rad   — yields at ~23 deg bend
+YIELD_THRESHOLD    = 0.5       # rad   — yields at ~23 deg bend
 HARDENING_MODULUS  = 0.0       # perfect plasticity (no hardening)
 
 # After freeze: theta_bar is reset to the original rest angle and

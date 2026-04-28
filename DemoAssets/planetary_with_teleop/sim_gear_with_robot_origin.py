@@ -139,23 +139,25 @@ def _genesis_pose_to_4x4(pos_quat: np.ndarray) -> np.ndarray:
 
 
 def _build_qpos_joint_order(joint_names: list[str]) -> list[str]:
-    """Build Genesis qpos column → joint-name mapping for MARVIN_SHARPA.
+    """Return joint names in Genesis qpos column order for MARVIN_SHARPA.
 
-    Arm joints are interleaved R/L (Joint1_R, Joint1_L, ..., Joint7_R, Joint7_L)
-    followed by all remaining finger joints in URDF declaration order.
+    Loaded from ``genesis_joint_order.json``.  Arm joints are interleaved
+    (Joint1_R, Joint1_L, Joint2_R, …) and finger joints follow a
+    breadth-first grouping — neither URDF declaration order nor naive
+    interleaving matches the full 58-DOF Genesis ordering.
     """
-    joint_set = set(joint_names)
-    ordered: list[str] = []
-    for k in range(1, 8):
-        for side in ("R", "L"):
-            name = f"Joint{k}_{side}"
-            if name in joint_set:
-                ordered.append(name)
-    arm_set = set(ordered)
-    for name in joint_names:
-        if name not in arm_set:
-            ordered.append(name)
-    return ordered
+    import json as _json
+    for candidate in (
+        _GEAR / "genesis_joint_order.json",
+        _DEMO_ASSETS / "marvin_sharpa_description" / "genesis_joint_order.json",
+    ):
+        if candidate.exists():
+            names = _json.loads(candidate.read_text(encoding="utf-8"))
+            print(f"  [joint-order] loaded {len(names)} joints from {candidate.name}")
+            return names
+    print("  [joint-order] WARNING: genesis_joint_order.json not found, "
+          "falling back to URDF declaration order (may be wrong!)")
+    return list(joint_names)
 
 
 # ---------------------------------------------------------------------------
