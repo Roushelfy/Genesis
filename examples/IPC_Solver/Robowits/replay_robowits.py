@@ -1258,6 +1258,12 @@ class RobowitsReplay(TrajectoryReplay):
                     roughness=0.25,
                     metallic=0.25,
                 ),
+                "plastic_black_rough": gs.surfaces.BSDF(
+                    color=(0.02, 0.02, 0.03),
+                    roughness=0.35,
+                    metallic=0.0,
+                    ior=1.45,
+                ),
             },
             vis_mode=vis_mode,
         )

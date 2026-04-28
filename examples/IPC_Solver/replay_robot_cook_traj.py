@@ -37,6 +37,9 @@ Render to video
     --render --camera-traj MODE  Use a camera trajectory for the render
     --spp N                 Samples-per-pixel for the render camera (default: 256)
     --save-frames           Also save each frame as a PNG alongside the video
+    --stride N              Render every Nth frame — subsample for quick previews
+    --render-all-keyframes  Render one video per custom keyframe entry
+    --start-keyframe N      Starting keyframe index for --render-all-keyframes (1-based)
 
 Shared camera / render options
     --res W H               Resolution for viewer, preview, and render cameras
@@ -48,6 +51,10 @@ Shared camera / render options
     --focal-len METRES      Focal length (default: 0.05 = 50 mm)
     --exposure EV           Exposure stops (default: 0.0)
     --tone-mapping MODE     Tone mapping operator: none | aces | uncharted2
+    --camera-keyframe N     Start camera at custom keyframe N (1-based, matches [ / ] display)
+    --follow                Camera follows the robot
+    --dark-bg               Dark grey background, no extra lights (Nyx only)
+    --debug-lights          Show sphere markers in viewer for each Luisa light
 
 Sequence
     --seq-dir PATH          Sequence directory containing meta.json
@@ -71,11 +78,11 @@ _COOK = _DEMO / "cook_with_teleop"
 _DEFAULT_SEQ = _COOK / "seq"
 
 TABLE_GLB    = str(_DEMO / "trashbag" / "work_table.glb")
-STOVETOP_GLB = str(_COOK / "stovetop.glb")
+STOVETOP_GLB = str(_COOK / "stovetop_on.glb")
 
 # Camera pose — matches the hanger_sharpa scene (same table height / work area)
-_CAM_POS    = (1.5122, -0.767, 2.0931)
-_CAM_LOOKAT = (0.838, -0.3497, 1.5337)
+_CAM_POS    = (0.9334, -0.5834, 1.4634)
+_CAM_LOOKAT = (0.4422, 0.0514, 0.8669)
 _CAM_FOV    = 40
 
 # Sphere-light rig — three-light key/fill/rim setup (from ipc_robot_cook.py)
@@ -369,14 +376,24 @@ class RobotCookReplay(TrajectoryReplay):
             if not mesh_path.exists():
                 print(f"[warn] mesh.obj not found for rigid '{name}', skipping")
                 continue
-            world_mesh = _prepare_rigid_world_mesh(seq_dir, name, self._rigid_T0[name])
-            color = _ENTITY_COLORS.get(name)
-            if color is None:
-                color = _BROC_COLOR if name.startswith("broc") else (0.7, 0.7, 0.7, 1.0)
+            pan_glb = seq_dir / "pan" / "mesh_world.glb"
+            if name == "pan" and pan_glb.exists():
+                morph_file = str(pan_glb)
+                surface = gs.surfaces.BSDF(color=(0.7, 0.7, 0.75), roughness=0.2, metallic=0.9)
+                morph = gs.morphs.Mesh(file=morph_file, fixed=True, collision=False,
+                                       file_meshes_are_zup=True)
+            else:
+                world_mesh = _prepare_rigid_world_mesh(seq_dir, name, self._rigid_T0[name])
+                morph_file = str(world_mesh)
+                color = _ENTITY_COLORS.get(name)
+                if color is None:
+                    color = _BROC_COLOR if name.startswith("broc") else (0.7, 0.7, 0.7, 1.0)
+                surface = gs.surfaces.Default(color=color)
+                morph = gs.morphs.Mesh(file=morph_file, fixed=True, collision=False)
             self._rigid_entities[name] = scene.add_entity(
-                morph=gs.morphs.Mesh(file=str(world_mesh), fixed=True, collision=False),
+                morph=morph,
                 material=gs.materials.Rigid(),
-                surface=gs.surfaces.Default(color=color),
+                surface=surface,
                 name=name,
             )
 
@@ -416,7 +433,11 @@ class RobotCookReplay(TrajectoryReplay):
 
         # Optional robot
         if self._robot_seq is not None:
+            # Prefer the GLB-hands URDF alongside the original if it exists
             urdf_path = _REPO / self._robot_seq["urdf"]
+            glb_urdf = urdf_path.with_name(urdf_path.stem + "_glb.urdf")
+            if glb_urdf.exists():
+                urdf_path = glb_urdf
             print(f"[robot] Loading {urdf_path.name} at base_pos={self._robot_seq['base_pos']}")
             self._robot = scene.add_entity(
                 morph=gs.morphs.URDF(
@@ -426,6 +447,33 @@ class RobotCookReplay(TrajectoryReplay):
                     pos=tuple(self._robot_seq["base_pos"].tolist()),
                     quat=tuple(self._robot_seq["base_quat"].tolist()),
                 ),
+                surface={
+                    # Arm body — slightly shinier than GLB default
+                    "paint_white_glossy": gs.surfaces.BSDF(
+                        color=(0.74, 0.74, 0.74),
+                        roughness=0.25,
+                        metallic=0.25,
+                    ),
+                    # Joint / wrist accents
+                    "aluminium_brushed": gs.surfaces.BSDF(
+                        color=(0.72, 0.72, 0.75),
+                        roughness=0.25,
+                        metallic=0.85,
+                    ),
+                    # Dark plastic parts (arm + hand links share this name)
+                    "plastic_black_rough": gs.surfaces.BSDF(
+                        color=(0.02, 0.02, 0.03),
+                        roughness=0.55,
+                        metallic=0.0,
+                        ior=1.45,
+                    ),
+                    # Fingertip rubber pads (hand GLBs only)
+                    "gss_hand_elastomer": gs.surfaces.BSDF(
+                        color=(0.03, 0.03, 0.03),
+                        roughness=0.80,
+                        metallic=0.0,
+                    ),
+                },
                 vis_mode="visual",
             )
 
@@ -479,7 +527,10 @@ class RobotCookReplay(TrajectoryReplay):
     def custom_camera_keyframes(self):
         # Use K key in interactive mode to capture good shots, then paste here.
         # Format: (frame, pos, lookat[, up[, ease_in[, ease_out]]])
-        return []
+        return [
+            (1, (0.9334, -0.5834, 1.4634), (0.4422, 0.0514, 0.8669)),
+
+        ]
 
 
 if __name__ == "__main__":
