@@ -1,26 +1,9 @@
 {
     "features": [
         "core/affine_body_state_accessor",
-        "core/contact_system",
-        "core/distance_diagnoser"
+        "core/contact_system"
     ],
     "sim_systems": [
-        {
-            "engine_aware": false,
-            "name": "class uipc::backend::cuda::IPCVertexHalfPlaneFrictionalContact",
-            "strong_deps": [
-                "class uipc::backend::cuda::GlobalDyTopoEffectManager",
-                "class uipc::backend::cuda::GlobalContactManager",
-                "class uipc::backend::cuda::GlobalTrajectoryFilter",
-                "class uipc::backend::cuda::GlobalContactManager",
-                "class uipc::backend::cuda::GlobalVertexManager",
-                "class uipc::backend::cuda::HalfPlaneVertexReporter",
-                "class uipc::backend::cuda::IPCPipelineFlag",
-                "class uipc::backend::cuda::HalfPlane"
-            ],
-            "valid": true,
-            "weak_deps": []
-        },
         {
             "engine_aware": false,
             "name": "class uipc::backend::cuda::ABDDiagPreconditioner",
@@ -38,6 +21,30 @@
             "strong_deps": [
                 "class uipc::backend::cuda::GlobalDyTopoEffectManager",
                 "class uipc::backend::cuda::AffineBodyVertexReporter"
+            ],
+            "valid": true,
+            "weak_deps": []
+        },
+        {
+            "engine_aware": false,
+            "name": "class uipc::backend::cuda::IPCSimplexNormalContact",
+            "strong_deps": [
+                "class uipc::backend::cuda::GlobalDyTopoEffectManager",
+                "class uipc::backend::cuda::GlobalContactManager",
+                "class uipc::backend::cuda::GlobalTrajectoryFilter",
+                "class uipc::backend::cuda::GlobalContactManager",
+                "class uipc::backend::cuda::GlobalVertexManager"
+            ],
+            "valid": true,
+            "weak_deps": []
+        },
+        {
+            "engine_aware": false,
+            "name": "class uipc::backend::cuda::AffineBodyAnimator",
+            "strong_deps": [
+                "class uipc::backend::cuda::GlobalAnimator",
+                "class uipc::backend::cuda::AffineBodyDynamics",
+                "class uipc::backend::cuda::GlobalAnimator"
             ],
             "valid": true,
             "weak_deps": []
@@ -76,6 +83,16 @@
             "weak_deps": []
         },
         {
+            "engine_aware": false,
+            "name": "class uipc::backend::cuda::AffineBodyAnimatorLinearSubsystemReporter",
+            "strong_deps": [
+                "class uipc::backend::cuda::ABDLinearSubsystem",
+                "class uipc::backend::cuda::AffineBodyAnimator"
+            ],
+            "valid": true,
+            "weak_deps": []
+        },
+        {
             "engine_aware": true,
             "name": "class uipc::backend::cuda::GlobalLinearSystem",
             "strong_deps": [],
@@ -94,21 +111,10 @@
         },
         {
             "engine_aware": false,
-            "name": "class uipc::backend::cuda::AffineBodyAnimator",
+            "name": "class uipc::backend::cuda::SimplexNormalContactPEExporter",
             "strong_deps": [
-                "class uipc::backend::cuda::GlobalAnimator",
-                "class uipc::backend::cuda::AffineBodyDynamics",
-                "class uipc::backend::cuda::GlobalAnimator"
-            ],
-            "valid": true,
-            "weak_deps": []
-        },
-        {
-            "engine_aware": false,
-            "name": "class uipc::backend::cuda::AffineBodyAnimatorLinearSubsystemReporter",
-            "strong_deps": [
-                "class uipc::backend::cuda::ABDLinearSubsystem",
-                "class uipc::backend::cuda::AffineBodyAnimator"
+                "class uipc::backend::cuda::ContactExporterManager",
+                "class uipc::backend::cuda::IPCSimplexNormalContact"
             ],
             "valid": true,
             "weak_deps": []
@@ -170,6 +176,17 @@
             "weak_deps": []
         },
         {
+            "engine_aware": true,
+            "name": "class uipc::backend::cuda::GlobalContactManager",
+            "strong_deps": [
+                "class uipc::backend::cuda::GlobalVertexManager"
+            ],
+            "valid": true,
+            "weak_deps": [
+                "class uipc::backend::cuda::GlobalTrajectoryFilter"
+            ]
+        },
+        {
             "engine_aware": false,
             "name": "class uipc::backend::cuda::AffinebodySurfaceReporter",
             "strong_deps": [
@@ -189,8 +206,7 @@
                 "class uipc::backend::cuda::GlobalContactManager",
                 "class uipc::backend::cuda::GlobalTrajectoryFilter",
                 "class uipc::backend::cuda::GlobalContactManager",
-                "class uipc::backend::cuda::GlobalVertexManager",
-                "class uipc::backend::cuda::IPCPipelineFlag"
+                "class uipc::backend::cuda::GlobalVertexManager"
             ],
             "valid": true,
             "weak_deps": []
@@ -226,15 +242,6 @@
         },
         {
             "engine_aware": false,
-            "name": "class uipc::backend::cuda::ABDBDF2State",
-            "strong_deps": [
-                "class uipc::backend::cuda::AffineBodyDynamics"
-            ],
-            "valid": true,
-            "weak_deps": []
-        },
-        {
-            "engine_aware": false,
             "name": "class uipc::backend::cuda::AffineBodyBDF1Kinetic",
             "strong_deps": [
                 "class uipc::backend::cuda::AffineBodyDynamics",
@@ -244,30 +251,10 @@
             "weak_deps": []
         },
         {
-            "engine_aware": false,
-            "name": "class uipc::backend::cuda::IPCPipelineFlag",
-            "strong_deps": [],
-            "valid": true,
-            "weak_deps": []
-        },
-        {
-            "engine_aware": false,
-            "name": "class uipc::backend::cuda::SoftTransformConstraint",
+            "engine_aware": true,
+            "name": "class uipc::backend::cuda::GlobalTrajectoryFilter",
             "strong_deps": [
-                "class uipc::backend::cuda::AffineBodyAnimator"
-            ],
-            "valid": true,
-            "weak_deps": []
-        },
-        {
-            "engine_aware": false,
-            "name": "class uipc::backend::cuda::InfoStacklessBVHSimplexTrajectoryFilter",
-            "strong_deps": [
-                "class uipc::backend::cuda::GlobalVertexManager",
-                "class uipc::backend::cuda::GlobalSimplicialSurfaceManager",
-                "class uipc::backend::cuda::GlobalContactManager",
-                "class uipc::backend::cuda::GlobalBodyManager",
-                "class uipc::backend::cuda::GlobalTrajectoryFilter"
+                "class uipc::backend::cuda::GlobalContactManager"
             ],
             "valid": true,
             "weak_deps": []
@@ -282,10 +269,24 @@
             "weak_deps": []
         },
         {
-            "engine_aware": true,
-            "name": "class uipc::backend::cuda::GlobalTrajectoryFilter",
+            "engine_aware": false,
+            "name": "class uipc::backend::cuda::StacklessBVHSimplexTrajectoryFilter",
             "strong_deps": [
-                "class uipc::backend::cuda::GlobalContactManager"
+                "class uipc::backend::cuda::GlobalVertexManager",
+                "class uipc::backend::cuda::GlobalSimplicialSurfaceManager",
+                "class uipc::backend::cuda::GlobalContactManager",
+                "class uipc::backend::cuda::GlobalBodyManager",
+                "class uipc::backend::cuda::GlobalTrajectoryFilter"
+            ],
+            "valid": true,
+            "weak_deps": []
+        },
+        {
+            "engine_aware": false,
+            "name": "class uipc::backend::cuda::SimplexFrictionalContactPTExporter",
+            "strong_deps": [
+                "class uipc::backend::cuda::ContactExporterManager",
+                "class uipc::backend::cuda::IPCSimplexFrictionalContact"
             ],
             "valid": true,
             "weak_deps": []
@@ -302,10 +303,9 @@
         },
         {
             "engine_aware": false,
-            "name": "class uipc::backend::cuda::SimplexFrictionalContactPTExporter",
+            "name": "class uipc::backend::cuda::SoftTransformConstraint",
             "strong_deps": [
-                "class uipc::backend::cuda::ContactExporterManager",
-                "class uipc::backend::cuda::IPCSimplexFrictionalContact"
+                "class uipc::backend::cuda::AffineBodyAnimator"
             ],
             "valid": true,
             "weak_deps": []
@@ -327,7 +327,21 @@
                 "class uipc::backend::cuda::HalfPlane",
                 "class uipc::backend::cuda::HalfPlaneVertexReporter",
                 "class uipc::backend::cuda::GlobalTrajectoryFilter",
-                "class uipc::backend::cuda::IPCPipelineFlag"
+                "class uipc::backend::cuda::GlobalSimplicialSurfaceManager",
+                "class uipc::backend::cuda::GlobalVertexManager",
+                "class uipc::backend::cuda::GlobalContactManager",
+                "class uipc::backend::cuda::HalfPlane",
+                "class uipc::backend::cuda::HalfPlaneVertexReporter"
+            ],
+            "valid": true,
+            "weak_deps": []
+        },
+        {
+            "engine_aware": false,
+            "name": "class uipc::backend::cuda::SimplexFrictionalContactPEExporter",
+            "strong_deps": [
+                "class uipc::backend::cuda::ContactExporterManager",
+                "class uipc::backend::cuda::IPCSimplexFrictionalContact"
             ],
             "valid": true,
             "weak_deps": []
@@ -343,6 +357,13 @@
         },
         {
             "engine_aware": false,
+            "name": "class uipc::backend::cuda::ContactExporterManager",
+            "strong_deps": [],
+            "valid": true,
+            "weak_deps": []
+        },
+        {
+            "engine_aware": false,
             "name": "class uipc::backend::cuda::SimplexFrictionalContactPPExporter",
             "strong_deps": [
                 "class uipc::backend::cuda::ContactExporterManager",
@@ -353,21 +374,25 @@
         },
         {
             "engine_aware": false,
-            "name": "class uipc::backend::cuda::ContactExporterManager",
-            "strong_deps": [],
-            "valid": true,
-            "weak_deps": []
-        },
-        {
-            "engine_aware": false,
-            "name": "class uipc::backend::cuda::IPCSimplexNormalContact",
+            "name": "class uipc::backend::cuda::IPCVertexHalfPlaneFrictionalContact",
             "strong_deps": [
                 "class uipc::backend::cuda::GlobalDyTopoEffectManager",
                 "class uipc::backend::cuda::GlobalContactManager",
                 "class uipc::backend::cuda::GlobalTrajectoryFilter",
                 "class uipc::backend::cuda::GlobalContactManager",
                 "class uipc::backend::cuda::GlobalVertexManager",
-                "class uipc::backend::cuda::IPCPipelineFlag"
+                "class uipc::backend::cuda::HalfPlaneVertexReporter",
+                "class uipc::backend::cuda::HalfPlane"
+            ],
+            "valid": true,
+            "weak_deps": []
+        },
+        {
+            "engine_aware": false,
+            "name": "class uipc::backend::cuda::SimplexNormalContactPPExporter",
+            "strong_deps": [
+                "class uipc::backend::cuda::ContactExporterManager",
+                "class uipc::backend::cuda::IPCSimplexNormalContact"
             ],
             "valid": true,
             "weak_deps": []
@@ -382,36 +407,14 @@
                 "class uipc::backend::cuda::GlobalContactManager",
                 "class uipc::backend::cuda::GlobalVertexManager",
                 "class uipc::backend::cuda::HalfPlaneVertexReporter",
-                "class uipc::backend::cuda::IPCPipelineFlag",
                 "class uipc::backend::cuda::HalfPlane"
             ],
             "valid": true,
             "weak_deps": []
         },
         {
-            "engine_aware": true,
-            "name": "class uipc::backend::cuda::GlobalContactManager",
-            "strong_deps": [
-                "class uipc::backend::cuda::GlobalVertexManager"
-            ],
-            "valid": true,
-            "weak_deps": [
-                "class uipc::backend::cuda::GlobalTrajectoryFilter"
-            ]
-        },
-        {
             "engine_aware": false,
             "name": "class uipc::backend::cuda::SimplexFrictionalContactEEExporter",
-            "strong_deps": [
-                "class uipc::backend::cuda::ContactExporterManager",
-                "class uipc::backend::cuda::IPCSimplexFrictionalContact"
-            ],
-            "valid": true,
-            "weak_deps": []
-        },
-        {
-            "engine_aware": false,
-            "name": "class uipc::backend::cuda::SimplexFrictionalContactPEExporter",
             "strong_deps": [
                 "class uipc::backend::cuda::ContactExporterManager",
                 "class uipc::backend::cuda::IPCSimplexFrictionalContact"
@@ -441,26 +444,6 @@
         },
         {
             "engine_aware": false,
-            "name": "class uipc::backend::cuda::SimplexNormalContactPEExporter",
-            "strong_deps": [
-                "class uipc::backend::cuda::ContactExporterManager",
-                "class uipc::backend::cuda::IPCSimplexNormalContact"
-            ],
-            "valid": true,
-            "weak_deps": []
-        },
-        {
-            "engine_aware": false,
-            "name": "class uipc::backend::cuda::SimplexNormalContactPPExporter",
-            "strong_deps": [
-                "class uipc::backend::cuda::ContactExporterManager",
-                "class uipc::backend::cuda::IPCSimplexNormalContact"
-            ],
-            "valid": true,
-            "weak_deps": []
-        },
-        {
-            "engine_aware": false,
             "name": "class uipc::backend::cuda::VertexHalfPlaneFrictionalContactExporter",
             "strong_deps": [
                 "class uipc::backend::cuda::ContactExporterManager",
@@ -478,13 +461,6 @@
                 "class uipc::backend::cuda::IPCVertexHalfPlaneNormalContact",
                 "class uipc::backend::cuda::HalfPlaneVertexReporter"
             ],
-            "valid": true,
-            "weak_deps": []
-        },
-        {
-            "engine_aware": false,
-            "name": "class uipc::backend::cuda::DistanceDiagnoser",
-            "strong_deps": [],
             "valid": true,
             "weak_deps": []
         },
@@ -517,8 +493,7 @@
             "strong_deps": [],
             "valid": true,
             "weak_deps": [
-                "class uipc::backend::cuda::GlobalTrajectoryFilter",
-                "class uipc::backend::cuda::GlobalActiveSetManager"
+                "class uipc::backend::cuda::GlobalTrajectoryFilter"
             ]
         },
         {
@@ -541,6 +516,21 @@
             ],
             "valid": true,
             "weak_deps": []
+        },
+        {
+            "engine_aware": true,
+            "name": "class uipc::backend::cuda::AsyncCCDDirectionFilter",
+            "strong_deps": [
+                "class uipc::backend::cuda::GlobalVertexManager",
+                "class uipc::backend::cuda::GlobalLinearSystem"
+            ],
+            "valid": true,
+            "weak_deps": [
+                "class uipc::backend::cuda::GlobalTrajectoryFilter",
+                "class uipc::backend::cuda::AffineBodyDynamics",
+                "class uipc::backend::cuda::FiniteElementVertexReporter",
+                "class uipc::backend::cuda::AffineBodyVertexReporter"
+            ]
         },
         {
             "engine_aware": true,
