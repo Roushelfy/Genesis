@@ -81,8 +81,29 @@ SHIRT_GLB = str(_HANGER / "genesis_shirt.glb")
 SHIRT_GLB_SUBDIV = str(_HANGER / "genesis_shirt_subdiv.glb")
 COAT_HANGER_GLB = str(_HANGER / "coat_hanger.glb")
 RACK_GLB = str(_HANGER / "rack_frame.glb")
-DEFAULT_TRAJ = str(_HANGER / "trajectory_hanger_sharpa.npz")
 DEFAULT_TRAJ_SUBDIV = str(_HANGER / "trajectory_sharpa_subdiv.npz")
+
+_HF_REPO = "Genesis-Intelligence/internal_assets"
+_HF_TRAJ = "ipc_trajectories/coat_hanger/trajectory_hanger_sharpa.npz"
+
+
+def _resolve_default_traj() -> str:
+    """Return local path to the default trajectory, downloading from HF if needed."""
+    local = _HANGER / "trajectory_hanger_sharpa.npz"
+    if local.exists():
+        return str(local)
+    print(f"Downloading trajectory from HuggingFace ({_HF_REPO}) ...")
+    from huggingface_hub import hf_hub_download  # noqa: PLC0415
+
+    path = hf_hub_download(
+        repo_id=_HF_REPO,
+        repo_type="dataset",
+        filename=_HF_TRAJ,
+    )
+    return path
+
+
+DEFAULT_TRAJ = _resolve_default_traj()
 
 
 class HangerSharpaReplay(TrajectoryReplay):
