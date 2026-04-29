@@ -245,7 +245,7 @@ class GearReplay(TrajectoryReplay):
         # Ring gear — fixed housing
         scene.add_entity(
             gs.morphs.Mesh(
-                file=f"{gear_assets}/ring_gear.glb",
+                file=f"{gear_assets}/ring_gear_v1.glb",
                 pos=(CX, CY, CZ),
                 euler=(0, 0, rot_off),
                 scale=MESH_SCALE,
@@ -296,7 +296,7 @@ class GearReplay(TrajectoryReplay):
         carrier_tz = -(GEAR_WIDTH_MM / 2) * MESH_SCALE
         self._rigid_entities["carrier"] = scene.add_entity(
             gs.morphs.Mesh(
-                file=f"{gear_assets}/carrier.glb",
+                file=f"{gear_assets}/carrier_v1.glb",
                 pos=(CX, CY, CZ + carrier_tz),
                 euler=(0, 0, rot_off),
                 scale=MESH_SCALE,
