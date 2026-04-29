@@ -26,6 +26,7 @@ from __future__ import annotations
 import argparse
 import math
 import sys
+import time
 from pathlib import Path
 
 import numpy as np
@@ -34,13 +35,17 @@ _REPO = Path(__file__).resolve().parents[2]
 _ASSETS = _REPO / "DemoAssets" / "planetary_gear" / "assets"
 
 SUN_OBJ = str(_ASSETS / "sun_gear_handle.obj")
-SUN_GLB = str(_ASSETS / "sun_gear_handle_debug.glb")
+SUN_GLB = str(_ASSETS / "sun_gear_handle_recentered.glb")
 CARRIER_OBJ = str(_ASSETS / "carrier.obj")
-CARRIER_GLB = str(_ASSETS / "carrier.glb")
+CARRIER_GLB = str(_ASSETS / "carrier_recentered.glb")
 RING_OBJ = str(_ASSETS / "ring_gear.obj")
 RING_GLB = str(_ASSETS / "ring_gear.glb")
 PLANET_OBJ = str(_ASSETS / "planet_gear.obj")
 PLANET_GLB = str(_ASSETS / "planet_gear.glb")
+
+# GLB compensation constants — no longer needed; GLBs regenerated to match OBJ centroids.
+# GLB_CORRECTION_SUN_GEAR: list[float] | None = [0.0, 0.011454000137746334, 0.0031969998963177204]
+# GLB_CORRECTION_CARRIER:  list[float] | None = [0.0, 0.0, 0.006289000157266855]
 
 # Same transforms as replay_gear_traj.py
 CX, CY, CZ = 0.5, 0.0, 0.79   # mechanism center — matches replay script
@@ -84,8 +89,14 @@ def main() -> None:
         action="store_true",
         help="Skip adding GLB entities — show OBJ meshes only",
     )
+    parser.add_argument(
+        "--no-obj",
+        action="store_true",
+        help="Skip adding OBJ entities — show GLB meshes only",
+    )
     args = parser.parse_args()
     show_glb = not args.no_glb
+    show_obj = not args.no_obj
 
     if not Path(SUN_GLB).exists():
         sys.exit(f"GLB not found: {SUN_GLB}\nExport sun_gear_handle from Blender and save it there.")
@@ -95,6 +106,12 @@ def main() -> None:
     gs.init(backend=gs.cpu)
 
     scene = gs.Scene(
+        sim_options=gs.options.SimOptions(dt=1 / 60, gravity=(0, 0, 0)),
+        rigid_options=gs.options.RigidOptions(
+            gravity=(0, 0, 0),
+            enable_collision=False,
+            enable_self_collision=False,
+        ),
         show_viewer=True,
         vis_options=gs.options.VisOptions(show_world_frame=True),
     )
@@ -106,49 +123,60 @@ def main() -> None:
     # Dynamic entity refs for trajectory stepping: name -> [obj_ent, glb_ent]
     rigid_entities: dict[str, list] = {}
 
+    rigid_entities["sun_gear"] = []
+
     # Sun gear — OBJ reference
-    _e = scene.add_entity(
-        gs.morphs.Mesh(file=SUN_OBJ, pos=sun_pos, euler=EULER, scale=SCALE, fixed=False, convexify=False),
-        material=rigid,
-        surface=gs.surfaces.Metal(color=(0.2, 0.7, 0.2, 1.0)),  # green
-        vis_mode="collision",
-    )
-    rigid_entities["sun_gear"] = [_e]
+    if show_obj:
+        _e = scene.add_entity(
+            gs.morphs.Mesh(file=SUN_OBJ, pos=sun_pos, euler=EULER, scale=SCALE,
+                           fixed=False, convexify=False, decimate=False),
+            material=rigid,
+            surface=gs.surfaces.Metal(color=(0.2, 0.7, 0.2, 1.0)),  # green
+            vis_mode="collision",
+        )
+        rigid_entities["sun_gear"].append(_e)
 
     # Sun gear — GLB test (--zup controls file_meshes_are_zup)
     if show_glb:
         _e = scene.add_entity(
-            gs.morphs.Mesh(file=SUN_GLB, pos=sun_pos, euler=EULER, scale=SCALE, fixed=False, convexify=False,
+            gs.morphs.Mesh(file=SUN_GLB, pos=sun_pos, euler=EULER, scale=SCALE,
+                           fixed=False, convexify=False, decimate=False,
                            file_meshes_are_zup=args.zup),
             material=rigid,
             surface=gs.surfaces.Metal(color=(0.8, 0.2, 0.2, 1.0)),  # red
             vis_mode="collision",
         )
-        # rigid_entities["sun_gear"].append(_e)  # GLB — not driven by trajectory
+        rigid_entities["sun_gear"].append(_e)
+
+    rigid_entities["carrier"] = []
 
     # Carrier — OBJ reference
-    _e = scene.add_entity(
-        gs.morphs.Mesh(file=CARRIER_OBJ, pos=carrier_pos, euler=EULER, scale=SCALE, fixed=False, convexify=False),
-        material=rigid,
-        surface=gs.surfaces.Metal(color=(0.2, 0.7, 0.7, 1.0)),  # cyan
-        vis_mode="collision",
-    )
-    rigid_entities["carrier"] = [_e]
+    if show_obj:
+        _e = scene.add_entity(
+            gs.morphs.Mesh(file=CARRIER_OBJ, pos=carrier_pos, euler=EULER, scale=SCALE,
+                           fixed=False, convexify=False, decimate=False),
+            material=rigid,
+            surface=gs.surfaces.Metal(color=(0.2, 0.7, 0.7, 1.0)),  # cyan
+            vis_mode="collision",
+        )
+        rigid_entities["carrier"].append(_e)
 
     # Carrier — GLB
     if show_glb:
         _e = scene.add_entity(
-            gs.morphs.Mesh(file=CARRIER_GLB, pos=carrier_pos, euler=EULER, scale=SCALE, fixed=False, convexify=False,
+            gs.morphs.Mesh(file=CARRIER_GLB, pos=carrier_pos, euler=EULER, scale=SCALE,
+                           fixed=False, convexify=False, decimate=False,
                            file_meshes_are_zup=False),
             material=rigid,
             surface=gs.surfaces.Metal(color=(0.8, 0.7, 0.1, 1.0)),  # yellow
             vis_mode="collision",
         )
-        # rigid_entities["carrier"].append(_e)  # GLB — not driven by trajectory
+        rigid_entities["carrier"].append(_e)
 
     # Ring gear — OBJ reference (fixed, not driven by trajectory)
     scene.add_entity(
-        gs.morphs.Mesh(file=RING_OBJ, pos=sun_pos, euler=EULER, scale=SCALE, fixed=True, convexify=False),
+        gs.morphs.Mesh(file=RING_OBJ, pos=sun_pos, euler=EULER, scale=SCALE,
+                       fixed=True, convexify=False, decimate=False),
         material=rigid,
         surface=gs.surfaces.Metal(color=(0.2, 0.3, 0.9, 1.0)),  # blue
         vis_mode="collision",
@@ -157,7 +185,8 @@ def main() -> None:
     # Ring gear — GLB (fixed, not driven by trajectory)
     if show_glb:
         scene.add_entity(
-            gs.morphs.Mesh(file=RING_GLB, pos=sun_pos, euler=EULER, scale=SCALE, fixed=True, convexify=False,
+            gs.morphs.Mesh(file=RING_GLB, pos=sun_pos, euler=EULER, scale=SCALE,
+                           fixed=True, convexify=False, decimate=False,
                            file_meshes_are_zup=True),
             material=rigid,
             surface=gs.surfaces.Metal(color=(0.9, 0.2, 0.8, 1.0)),  # magenta
@@ -170,24 +199,28 @@ def main() -> None:
         planet_pos = (CX + tx, CY + ty, CZ)
         planet_euler = (0, 0, self_rot_deg)
 
-        _e = scene.add_entity(
-            gs.morphs.Mesh(file=PLANET_OBJ, pos=planet_pos, euler=planet_euler, scale=SCALE,
-                           fixed=False, convexify=False),
-            material=rigid,
-            surface=gs.surfaces.Metal(color=(0.9, 0.9, 0.9, 1.0)),  # white
-            vis_mode="collision",
-        )
-        rigid_entities[f"planet_gear_{i}"] = [_e]
+        rigid_entities[f"planet_gear_{i}"] = []
+
+        if show_obj:
+            _e = scene.add_entity(
+                gs.morphs.Mesh(file=PLANET_OBJ, pos=planet_pos, euler=planet_euler, scale=SCALE,
+                               fixed=False, convexify=False, decimate=False),
+                material=rigid,
+                surface=gs.surfaces.Metal(color=(0.9, 0.9, 0.9, 1.0)),  # white
+                vis_mode="collision",
+            )
+            rigid_entities[f"planet_gear_{i}"].append(_e)
 
         if show_glb:
             _e = scene.add_entity(
                 gs.morphs.Mesh(file=PLANET_GLB, pos=planet_pos, euler=planet_euler, scale=SCALE,
-                               fixed=False, convexify=False, file_meshes_are_zup=args.zup),
+                               fixed=False, convexify=False, decimate=False,
+                               file_meshes_are_zup=args.zup),
                 material=rigid,
                 surface=gs.surfaces.Metal(color=(0.9, 0.5, 0.1, 1.0)),  # orange
                 vis_mode="collision",
             )
-            # rigid_entities[f"planet_gear_{i}"].append(_e)  # GLB — not driven by trajectory
+            rigid_entities[f"planet_gear_{i}"].append(_e)
 
     print(f"\nSun gear   OBJ (green)   : {SUN_OBJ}")
     print(f"Sun gear   GLB (red)     : {SUN_GLB}  file_meshes_are_zup={args.zup}")
@@ -200,7 +233,48 @@ def main() -> None:
     print(f"\npos=({CX},{CY},{CZ})  euler={EULER}  scale={SCALE}  carrier_tz={CARRIER_TZ:.5f}")
     print("Each OBJ+GLB pair should overlap.\n")
 
-    scene.build()
+    scene.build(n_envs=0)
+
+    # ── Post-build initial entity positions ──────────────────────────────────
+    print("\n[init positions] get_pos() right after build (before any trajectory)")
+    print(f"  morph.pos for sun_gear / ring:  ({CX}, {CY}, {CZ})")
+    print(f"  morph.pos for carrier:          ({CX}, {CY}, {CZ + CARRIER_TZ:.5f})")
+    for name, ents in rigid_entities.items():
+        labels = (["OBJ", "GLB"] if len(ents) == 2
+                  else ["GLB"] if not show_obj else ["OBJ"])
+        for ent, label in zip(ents, labels):
+            try:
+                p = ent.get_pos().numpy().flatten()
+                print(f"  {name:18s} [{label}]  get_pos={np.round(p, 5)}")
+            except Exception as exc:
+                print(f"  {name} [{label}]  error: {exc}")
+    print()
+
+    # ── Post-build geometry offset diagnostics ───────────────────────────────
+    print("\n[geom offsets] inertial_pos | col init_pos | vis init_pos  (link 0, geom 0)")
+    for name, ents in rigid_entities.items():
+        labels = (["OBJ", "GLB"] if len(ents) == 2
+                  else ["GLB"] if not show_obj else ["OBJ"])
+        for ent, label in zip(ents, labels):
+            try:
+                link = ent.links[0]
+                ip   = np.array(link.inertial_pos).round(5)
+                cpos = np.array(link.geoms[0].init_pos).round(5)  if link.geoms  else None
+                vpos = np.array(link.vgeoms[0].init_pos).round(5) if link.vgeoms else None
+                print(f"  {name:18s} [{label}]"
+                      f"  inertial={ip}"
+                      f"  col={cpos}"
+                      f"  vis={vpos}"
+                      f"  ngeoms={len(link.geoms)} nvgeoms={len(link.vgeoms)}")
+            except Exception as exc:
+                print(f"  {name} [{label}]  error: {exc}")
+    print()
+
+    # ── GLB position compensation — disabled; GLBs now match OBJ centroids ──────
+    # def _quat_to_rot(q): ...
+    # _glb_pos_correction: dict = {}
+    # (old compensation logic removed — see git history if needed)
+    # ─────────────────────────────────────────────────────────────────────────────
 
     # ── Optional trajectory stepping ─────────────────────────────────────────
     if args.traj is None:
@@ -224,31 +298,40 @@ def main() -> None:
             for name, ents in rigid_entities.items():
                 if name in rigid_data and frame_idx < len(rigid_data[name]):
                     pose = rigid_data[name][frame_idx]
-                    pos  = pose[:3]
-                    quat = pose[3:]
-                    print(f"  {name}: pos=[{pos[0]:.3f}, {pos[1]:.3f}, {pos[2]:.3f}]")
+                    pos, quat = pose[:3], pose[3:]
                     for ent in ents:
                         ent.set_pos(pos)
                         ent.set_quat(quat)
+                        ep = ent.get_pos().numpy().flatten()
+                        eq = ent.get_quat().numpy().flatten()
+                        print(f"  {name}  traj p=[{pos[0]:.3f},{pos[1]:.3f},{pos[2]:.3f}] q=[{quat[0]:.3f},{quat[1]:.3f},{quat[2]:.3f},{quat[3]:.3f}]"
+                              f"  ent p=[{ep[0]:.3f},{ep[1]:.3f},{ep[2]:.3f}] q=[{eq[0]:.3f},{eq[1]:.3f},{eq[2]:.3f},{eq[3]:.3f}]")
             scene._visualizer.update_visual_states(force_render=True)
             scene._visualizer.update(force=True)
 
-        def _on_next_frame() -> None:
-            _frame[0] = min(_frame[0] + 1, n_frames - 1)
+        _last_step = [0.0]
+        _STEP_INTERVAL = 1.0 / 30  # max 30 fps scrub rate
+
+        def _step(delta: int) -> None:
+            now = time.monotonic()
+            if now - _last_step[0] < _STEP_INTERVAL:
+                return
+            _last_step[0] = now
+            _frame[0] = max(0, min(_frame[0] + delta, n_frames - 1))
             _apply_frame(_frame[0])
             print(f"[traj] frame {_frame[0]}/{n_frames - 1}")
 
-        def _on_prev_frame() -> None:
-            _frame[0] = max(_frame[0] - 1, 0)
-            _apply_frame(_frame[0])
-            print(f"[traj] frame {_frame[0]}/{n_frames - 1}")
+        def _on_next_frame() -> None: _step(+1)
+        def _on_prev_frame() -> None: _step(-1)
 
         scene.viewer.register_keybinds(
-            Keybind("next_frame", Key.RIGHT, KeyAction.RELEASE, callback=_on_next_frame),
-            Keybind("prev_frame", Key.LEFT,  KeyAction.RELEASE, callback=_on_prev_frame),
+            Keybind("next_frame",      Key.RIGHT, KeyAction.RELEASE, callback=_on_next_frame),
+            Keybind("next_frame_hold", Key.RIGHT, KeyAction.HOLD,    callback=_on_next_frame),
+            Keybind("prev_frame",      Key.LEFT,  KeyAction.RELEASE, callback=_on_prev_frame),
+            Keybind("prev_frame_hold", Key.LEFT,  KeyAction.HOLD,    callback=_on_prev_frame),
         )
         print(f"\nLoaded {n_frames} frames from {args.traj}")
-        print("LEFT / RIGHT arrows to step one frame at a time.\n")
+        print("LEFT / RIGHT arrows to step frames (hold to scrub).\n")
 
     while True:
         scene._visualizer.update(force=True)
