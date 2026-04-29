@@ -66,7 +66,7 @@ _DEMO = _REPO / "DemoAssets"
 _GEAR = _DEMO / "planetary_gear"
 
 MARVIN_URDF = str(_DEMO / "marvin_sharpa_description" / "marvin_sharpa.urdf")
-TABLE_GLB = str(_DEMO / "coat_hanger" / "work_table.glb")
+TABLE_GLB = str(_DEMO / "trashbag" / "work_table.glb")
 DEFAULT_TRAJ = str(_GEAR / "trajectory_gear_sharpa.npz")
 
 # Gear geometry (matching IPCGearEnvConfig defaults)
@@ -254,23 +254,23 @@ class GearReplay(TrajectoryReplay):
                 decimate=False,
             ),
             material=rigid_mat,
-            # surface=gs.surfaces.Metal(color=(0.25, 0.25, 0.27, 1.0), roughness=0.35),
             vis_mode=self.args.vis_mode,
         )
 
-        # Sun gear with handle — bright polished steel, low roughness for sharp specular
+        # Sun gear with handle — polished steel surface override
         self._rigid_entities["sun_gear"] = scene.add_entity(
             gs.morphs.Mesh(
-                file=f"{gear_assets}/sun_gear_handle_v2.glb",
+                file=f"{gear_assets}/sun_gear_handle.glb",
                 pos=(CX, CY, CZ),
-#                euler=(0, 0, rot_off),
-#                scale=MESH_SCALE,
+                euler=(0, 0, rot_off),
+                scale=MESH_SCALE,
                 fixed=False,
+                file_meshes_are_zup=False,
                 convexify=False,
                 decimate=False,
             ),
             material=rigid_mat,
-            #            surface=gs.surfaces.Metal(color=(0.80, 0.80, 0.78, 1.0), roughness=0.08),
+            surface=gs.surfaces.BSDF(color=(67.0/255.0, 79.0/255.0, 99.0/255.0), metallic=0.9, roughness=0.35),
             vis_mode=self.args.vis_mode,
         )
 
@@ -288,7 +288,6 @@ class GearReplay(TrajectoryReplay):
                     decimate=False,
                 ),
                 material=rigid_mat,
-#                surface=gs.surfaces.Metal(color=(0.72, 0.60, 0.35, 1.0), roughness=0.25),
                 vis_mode=self.args.vis_mode,
             )
 
@@ -301,11 +300,11 @@ class GearReplay(TrajectoryReplay):
                 euler=(0, 0, rot_off),
                 scale=MESH_SCALE,
                 fixed=False,
+                file_meshes_are_zup=False,
                 convexify=False,
                 decimate=False,
             ),
             material=rigid_mat,
-#            surface=gs.surfaces.Metal(color=(0.55, 0.57, 0.60, 1.0), roughness=0.45),
             vis_mode=self.args.vis_mode,
         )
 
