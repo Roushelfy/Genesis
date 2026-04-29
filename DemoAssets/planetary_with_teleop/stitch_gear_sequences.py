@@ -594,7 +594,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description="GUI editor: stitch teleop + IK gear sequences"
     )
-    _default_p1  = str(_GEAR  / "trajectory_gear_sharpa_objorigin.npz")
+    _edited_p1   = _HERE / "phase1_edited.npz"
+    _default_p1  = str(_edited_p1 if _edited_p1.exists()
+                       else _GEAR / "trajectory_gear_sharpa_objorigin.npz")
     _default_p2  = str(_HERE  / "ik_sequence.npz")
     _default_out = str(_HERE  / "full_sequence.npz")
 
