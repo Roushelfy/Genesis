@@ -226,8 +226,8 @@ class FullSequenceWithArmReplay(TrajectoryReplay):
             # Fallback: just get link pos/quat
             for link in shoulder.links:
                 if link.name == "Link2_R":
-                    pos = np.array(link.get_pos())
-                    quat = np.array(link.get_quat())  # wxyz
+                    pos = link.get_pos().cpu().numpy()
+                    quat = link.get_quat().cpu().numpy()  # wxyz
                     T_j2_local = np.eye(4, dtype=np.float64)
                     T_j2_local[:3, :3] = _quat_wxyz_to_mat3(*quat)
                     T_j2_local[:3, 3] = pos
