@@ -51,12 +51,9 @@ if TYPE_CHECKING or UIPC_AVAILABLE:
         KirchhoffRodBending,
         StrainPlasticDiscreteShellBending,
         StressPlasticDiscreteShellBending,
-        StrainPlasticDiscreteShellBendingModifier,
-        StressPlasticDiscreteShellBendingModifier,
         ElasticModuli,
         ElasticModuli2D,
         ExternalArticulationConstraint,
-        FiniteElementExternalForce,
         SoftPositionConstraint,
         SoftTransformConstraint,
         StableNeoHookean,
@@ -72,6 +69,18 @@ if TYPE_CHECKING or UIPC_AVAILABLE:
         from uipc.constitution import AerodynamicDamping  # type: ignore[attr-defined]
     except ImportError:
         AerodynamicDamping = None  # type: ignore[assignment, misc]
+    try:
+        from uipc.constitution import StrainPlasticDiscreteShellBendingModifier  # type: ignore[attr-defined]
+    except ImportError:
+        StrainPlasticDiscreteShellBendingModifier = None  # type: ignore[assignment, misc]
+    try:
+        from uipc.constitution import StressPlasticDiscreteShellBendingModifier  # type: ignore[attr-defined]
+    except ImportError:
+        StressPlasticDiscreteShellBendingModifier = None  # type: ignore[assignment, misc]
+    try:
+        from uipc.constitution import FiniteElementExternalForce  # type: ignore[attr-defined]
+    except ImportError:
+        FiniteElementExternalForce = None  # type: ignore[assignment, misc]
     from uipc.core import (
         Engine,
         World,
@@ -838,10 +847,16 @@ class IPCCoupler(RBC):
                                 yield_stress=entity.material.yield_stress,
                                 hardening_modulus=entity.material.hardening_modulus,
                             )
-                            if self._ipc_stress_pdsb_modifier is None:
-                                self._ipc_stress_pdsb_modifier = StressPlasticDiscreteShellBendingModifier()
-                                self._ipc_constitution_tabular.insert(self._ipc_stress_pdsb_modifier)
-                            self._ipc_stress_pdsb_modifier.apply_to(mesh)
+                            if StressPlasticDiscreteShellBendingModifier is None:
+                                gs.logger.warning(
+                                    "Material requests stress-plastic bending modifier but the installed "
+                                    "uipc build does not expose StressPlasticDiscreteShellBendingModifier; skipping."
+                                )
+                            else:
+                                if self._ipc_stress_pdsb_modifier is None:
+                                    self._ipc_stress_pdsb_modifier = StressPlasticDiscreteShellBendingModifier()
+                                    self._ipc_constitution_tabular.insert(self._ipc_stress_pdsb_modifier)
+                                self._ipc_stress_pdsb_modifier.apply_to(mesh)
                         else:
                             if self._ipc_strain_pdsb is None:
                                 self._ipc_strain_pdsb = StrainPlasticDiscreteShellBending()
@@ -852,10 +867,16 @@ class IPCCoupler(RBC):
                                 yield_threshold=entity.material.yield_threshold,
                                 hardening_modulus=entity.material.hardening_modulus,
                             )
-                            if self._ipc_strain_pdsb_modifier is None:
-                                self._ipc_strain_pdsb_modifier = StrainPlasticDiscreteShellBendingModifier()
-                                self._ipc_constitution_tabular.insert(self._ipc_strain_pdsb_modifier)
-                            self._ipc_strain_pdsb_modifier.apply_to(mesh)
+                            if StrainPlasticDiscreteShellBendingModifier is None:
+                                gs.logger.warning(
+                                    "Material requests strain-plastic bending modifier but the installed "
+                                    "uipc build does not expose StrainPlasticDiscreteShellBendingModifier; skipping."
+                                )
+                            else:
+                                if self._ipc_strain_pdsb_modifier is None:
+                                    self._ipc_strain_pdsb_modifier = StrainPlasticDiscreteShellBendingModifier()
+                                    self._ipc_constitution_tabular.insert(self._ipc_strain_pdsb_modifier)
+                                self._ipc_strain_pdsb_modifier.apply_to(mesh)
                     else:
                         # Elastic bending for Cloth material
                         if self._ipc_dsb is None:
@@ -893,10 +914,16 @@ class IPCCoupler(RBC):
 
             # Apply external force constitution (initially zero, activated at runtime)
             if is_cloth:
-                if self._ipc_fem_ext_force is None:
-                    self._ipc_fem_ext_force = FiniteElementExternalForce()
-                    self._ipc_constitution_tabular.insert(self._ipc_fem_ext_force)
-                self._ipc_fem_ext_force.apply_to(mesh, np.array([0.0, 0.0, 0.0]))
+                if FiniteElementExternalForce is None:
+                    gs.logger.warning(
+                        "Cloth entity requests FiniteElementExternalForce but the installed "
+                        "uipc build does not expose it; external forces will be unavailable."
+                    )
+                else:
+                    if self._ipc_fem_ext_force is None:
+                        self._ipc_fem_ext_force = FiniteElementExternalForce()
+                        self._ipc_constitution_tabular.insert(self._ipc_fem_ext_force)
+                    self._ipc_fem_ext_force.apply_to(mesh, np.array([0.0, 0.0, 0.0]))
 
             # Apply soft position constraint (initially inactive, activated at runtime)
             if is_cloth:
