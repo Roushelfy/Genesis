@@ -362,7 +362,7 @@ class RobotCookReplay(TrajectoryReplay):
                 file=STOVETOP_GLB,
                 pos=(0.55, 0.05, 0.683),
                 euler=(0, 0, -90),
-                scale=1.0,
+                scale=(0.75, 0.75, 1.0),
                 fixed=True,
                 convexify=False,
             ),
