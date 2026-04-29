@@ -57,11 +57,13 @@ def _orbit_pose(frame_idx, n_frames):
     """YoyoOrbitCamera pose formula copied from replay_yoyo_traj.py."""
     frac = frame_idx / max(n_frames - 1, 1)
     angle = ORBIT_ANGLE_START + (ORBIT_ANGLE_END - ORBIT_ANGLE_START) * _smooth(frac)
-    cam_pos = np.array([
-        ORBIT_CENTER[0] + ORBIT_RADIUS * math.cos(angle),
-        ORBIT_CENTER[1] + ORBIT_RADIUS * math.sin(angle),
-        ORBIT_HEIGHT,
-    ])
+    cam_pos = np.array(
+        [
+            ORBIT_CENTER[0] + ORBIT_RADIUS * math.cos(angle),
+            ORBIT_CENTER[1] + ORBIT_RADIUS * math.sin(angle),
+            ORBIT_HEIGHT,
+        ]
+    )
     return cam_pos, np.array(ORBIT_CENTER, dtype=np.float64)
 
 
@@ -107,14 +109,11 @@ class YoyoV4StaticReplay(YoyoReplay):
     def nyx_lights(self):
         return [
             # Key light: above-left, warm, casting shadows
-            {"type": "point", "pos": (0.85, 1.25, 2.45),
-             "color": (1.0, 0.97, 0.92), "intensity": 50.0, "shadow": True},
+            {"type": "point", "pos": (0.85, 1.25, 2.45), "color": (1.0, 0.97, 0.92), "intensity": 50.0, "shadow": True},
             # Fill light: right side, cooler, softer
-            {"type": "point", "pos": (0.6, -1.7, 4.3),
-             "color": (0.48, 0.52, 0.6), "intensity": 1.0, "shadow": False},
+            {"type": "point", "pos": (0.6, -1.7, 4.3), "color": (0.48, 0.52, 0.6), "intensity": 1.0, "shadow": False},
             # Rim light: behind the scene, cool, hard
-            {"type": "point", "pos": (-0.8, -3.16, 0.5),
-             "color": (0.8, 0.88, 1.0), "intensity": 150.0, "shadow": True},
+            {"type": "point", "pos": (-0.8, -3.16, 0.5), "color": (0.8, 0.88, 1.0), "intensity": 150.0, "shadow": True},
         ]
 
     def nyx_light_field(self):
@@ -127,6 +126,7 @@ class YoyoV4StaticReplay(YoyoReplay):
 
     def build_scene(self, scene):
         import genesis as gs
+
         original_add = scene.add_entity
 
         def patched_add(*args, **kwargs):
@@ -168,14 +168,17 @@ class YoyoV4StaticReplay(YoyoReplay):
     def add_args(self, parser):
         super().add_args(parser)
         parser.add_argument(
-            "--subsample", type=int, default=1,
+            "--subsample",
+            type=int,
+            default=1,
             help="Take every Nth frame from the trajectory data (default: 1 = all frames)",
         )
         parser.add_argument(
-            "--smooth-joints", type=float, default=0,
+            "--smooth-joints",
+            type=float,
+            default=0,
             help="Gaussian smoothing sigma (in frames) for joint angles. 0 = off.",
         )
-        parser.set_defaults(exposure=0.5, tone_mapping="aces")
 
     def load_trajectory(self):
         n_frames = super().load_trajectory()
@@ -186,6 +189,7 @@ class YoyoV4StaticReplay(YoyoReplay):
         # then subsample the smooth curve → no aliasing).
         if sigma > 0 and self._raw_joint_data is not None:
             from scipy.ndimage import gaussian_filter1d
+
             print(f"[smooth-joints] Gaussian sigma={sigma} on {self._raw_joint_data.shape}")
             self._raw_joint_data = gaussian_filter1d(
                 self._raw_joint_data.astype(np.float64), sigma=sigma, axis=0

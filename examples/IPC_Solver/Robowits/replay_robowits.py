@@ -20,6 +20,7 @@ Usage
 
 from __future__ import annotations
 
+import argparse
 import sys
 from pathlib import Path
 from typing import Any, TypedDict
@@ -83,29 +84,82 @@ def _envmap(filename: str) -> str:
     return _hf_download("Genesis-Intelligence/Digital_twin_asset", f"envmap/4K/{filename}")
 
 
-# Per-task HDR envmap: (filename within Digital_twin_asset/envmap/4K/, intensity multiplier).
-# Filenames are sourced from gs-core/.../envmaps/registry.py (all unit-multiplier
-# entries there); the 0.7 here is a hand-tuned global dim so the HDR sky doesn't
-# overpower our key/fill/rim sphere lights under exposure=0.5/aces.  Apply via
-# ImageTexture.image_color (clamped to [0, 1]); multiplier > 1 would need an
-# extra exposure EV bump instead.
-_TASK_ENVMAPS: dict[str, tuple[str, float]] = {
-    "02": ("brown_photostudio_07_4k.exr", 0.7),
-    "03": ("machine_shop_01_4k.exr", 0.7),
-    "04": ("poly_haven_studio_4k.exr", 0.7),
-    "06": ("art_studio_4k.exr", 0.7),
-    "09": ("lythwood_lounge_4k.exr", 0.7),
-    "11": ("empty_warehouse_01_4k.exr", 0.7),
-    "13": ("brown_photostudio_05_4k.exr", 0.7),
-    "14": ("blue_photo_studio_4k.exr", 0.7),
-    "16": ("gear_store_4k.exr", 0.7),
-    "17": ("small_hangar_01_4k.exr", 0.7),
-    "18": ("abandoned_factory_canteen_02_4k.exr", 0.7),
-    "19": ("ballroom_4k.exr", 0.7),
-    "24": ("machine_shop_03_4k.exr", 0.7),
-    "27": ("abandoned_hall_01_4k.exr", 0.7),
-    "28": ("marry_hall_4k.exr", 0.7),
-    "29": ("brown_photostudio_06_4k.exr", 0.7),
+# Mirror of gs-core/.../envmaps/registry.py: per-EXR (rotation_deg, multiplier).
+# Keyed by filename so the task -> envmap mapping below stays orthogonal to
+# the registry values.
+_ENVMAP_REGISTRY: dict[str, tuple[float, float]] = {
+    "abandoned_factory_canteen_02_4k.exr": (0.0, 1.0),
+    "abandoned_greenhouse_4k.exr": (0.0, 1.0),
+    "abandoned_hall_01_4k.exr": (0.0, 1.0),
+    "art_studio_4k.exr": (0.0, 1.0),
+    "ballroom_4k.exr": (0.0, 1.0),
+    "blue_photo_studio_4k.exr": (0.0, 1.0),
+    "bright_church_1.exr": (0.0, 1e-2),
+    "bright_church_3.exr": (0.0, 1e-1),
+    "bright_house_garage.exr": (0.0, 1e-2),
+    "bright_house_living_room_2.exr": (0.0, 1e-1),
+    "bright_house_living_room_3.exr": (0.0, 1e-1),
+    "bright_house_staircase.exr": (0.0, 1e-1),
+    "bright_labratory.exr": (0.0, 1.0),
+    "bright_library.exr": (0.0, 1e-1),
+    "bright_school_science_room.exr": (0.0, 1e-1),
+    "brown_photostudio_02_4k.exr": (0.0, 1.0),
+    "brown_photostudio_05_4k.exr": (0.0, 1.0),
+    "brown_photostudio_06_4k.exr": (0.0, 1.0),
+    "brown_photostudio_07_4k.exr": (0.0, 1.0),
+    "burnt_warehouse_4k.exr": (0.0, 1.0),
+    "empty_warehouse_01_4k.exr": (0.0, 1.0),
+    "fireplace_4k.exr": (0.0, 1.0),
+    "gear_store_4k.exr": (0.0, 1.0),
+    "lythwood_lounge_4k.exr": (0.0, 1.0),
+    "machine_shop_01_4k.exr": (0.0, 1.0),
+    "machine_shop_03_4k.exr": (0.0, 1.0),
+    "marry_hall_4k.exr": (0.0, 1.0),
+    "mirrored_hall_4k.exr": (0.0, 1.0),
+    "neon_photostudio_4k.exr": (0.0, 1.0),
+    "paris_robot_room_softbox.exr": (0.0, 4.0),
+    "poly_haven_studio_4k.exr": (0.0, 1.0),
+    "robot_room_all_lights_16k.exr": (0.0, 1.0),
+    "robot_room_spot01_16k.exr": (0.0, 1.0),
+    "robot_room_spot02_16k.exr": (0.0, 1.0),
+    "robot_room_top_light_16k.exr": (0.0, 1.0),
+    "robot_room_window_16k.exr": (0.0, 1.0),
+    "san_carlos_left_marvin_modified.exr": (0.349066, 1.0),
+    "small_hangar_01_4k.exr": (0.0, 1.0),
+    "unfinished_office_night_4k.exr": (0.0, 1.0),
+}
+
+# ---------------------------------------------------------------------------
+# Lighting tuning knobs (all dimming/scaling scalars in one place)
+# ---------------------------------------------------------------------------
+# Global dim on the registry envmap multiplier so the HDR sky doesn't
+# overpower our key/fill/rim sphere lights under exposure=0.5/aces.
+_OVERALL_INTENSITY = 0.5
+# Global dim on per-light Luisa intensity (applied in `_LIGHTS` below).
+_ENV_LIGHT_EFFECT = 0.1
+# Luisa SphereLight intensity vs Nyx PointLight intensity use different
+# physical units; this scalar maps Luisa values to Nyx so the two renderers
+# look comparably bright. Pos/radius/color/type pass through unchanged.
+_LUISA_TO_NYX_INTENSITY_SCALE = 0.3
+
+# Task -> EXR filename (key into _ENVMAP_REGISTRY above).
+_TASK_ENVMAP: dict[str, str] = {
+    "02": "brown_photostudio_07_4k.exr",
+    "03": "machine_shop_01_4k.exr",
+    "04": "poly_haven_studio_4k.exr",
+    "06": "art_studio_4k.exr",
+    "09": "lythwood_lounge_4k.exr",
+    "11": "empty_warehouse_01_4k.exr",
+    "13": "brown_photostudio_05_4k.exr",
+    "14": "blue_photo_studio_4k.exr",
+    "16": "gear_store_4k.exr",
+    "17": "small_hangar_01_4k.exr",
+    "18": "abandoned_factory_canteen_02_4k.exr",
+    "19": "ballroom_4k.exr",
+    "24": "machine_shop_03_4k.exr",
+    "27": "abandoned_hall_01_4k.exr",
+    "28": "marry_hall_4k.exr",
+    "29": "brown_photostudio_06_4k.exr",
 }
 
 
@@ -128,7 +182,7 @@ def _task_02():
             "name": "deep narrow container",
             "morph": gs.morphs.Mesh(
                 coacd_options=coacd,
-                file=_bk("ddfb928e-c26d-4805-b41a-ab1545269e99/obj.glb"),
+                file=str(_DEMO / "repaired" / "deep_narrow_container.glb"),
                 scale=0.6,
                 pos=(0.50, 0.00, 0.83992),
                 euler=(0, 0, 90),
@@ -353,7 +407,7 @@ def _task_09():
             "name": "slope",
             "morph": gs.morphs.Mesh(
                 coacd_options=coacd,
-                file=_bk("ab77c172-c69f-41b5-956a-600ea7b64c73/obj.glb"),
+                file=str(_DEMO / "repaired" / "slope.glb"),
                 scale=(0.5, 1.5, 0.6),
                 pos=(0.58, 0.0, 0.76 + 0.0586 * 0.5),
                 euler=(0, 0, 90),
@@ -713,7 +767,7 @@ def _task_18():
             "name": "hole_plate",
             "morph": gs.morphs.Mesh(
                 coacd_options=coacd_fine,
-                file=_rw("toolbench/holeplate.glb"),
+                file=str(_DEMO / "repaired" / "holeplate.glb"),
                 scale=(1.2, 1.2, 1.0),
                 pos=(0.55, 0.0, 0.7823),
                 euler=(0, 90, -90),
@@ -722,7 +776,7 @@ def _task_18():
                 parse_glb_with_zup=True,
             ),
             "material": gs.materials.Rigid(),
-            "surface": gs.surfaces.Smooth(color=(0.95, 0.95, 0.95), double_sided=True),
+            "surface": gs.surfaces.Rough(double_sided=True),
         },
         {
             "name": "cylindrical_peg",
@@ -894,7 +948,7 @@ def _task_28():
     import genesis as gs
 
     coacd = gs.options.CoacdOptions(threshold=0.01, preprocess_resolution=80, max_convex_hull=20, decimate=True)
-    slope_file = _bk("ab77c172-c69f-41b5-956a-600ea7b64c73/obj.glb")
+    slope_file = str(_DEMO / "repaired" / "slope.glb")
     return [
         {
             "name": "cube 1",
@@ -978,7 +1032,7 @@ def _task_29():
             "name": "board",
             "morph": gs.morphs.Mesh(
                 coacd_options=coacd,
-                file=_bk("f923466c-c37d-4744-b197-6089b2899715/obj.glb"),
+                file=str(_DEMO / "repaired" / "cutting_board.glb"),
                 scale=0.8,
                 pos=(0.535, 0.0, 0.8009),
                 euler=(0, 0, 0),
@@ -1076,35 +1130,41 @@ class RobowitsReplay(TrajectoryReplay):
 
     # ── Shared light rig ──────────────────────────────────────────────────────
     # Edit pos / color / intensity here; both renderers pick them up automatically.
-    # radius and intensity are in Luisa units — Nyx scale factors are applied below.
+    # Values are in Luisa units; Nyx multiplies intensity by
+    # `_LUISA_TO_NYX_INTENSITY_SCALE` (defined module-top), nothing else.
     _LIGHTS: list[_LightDef] = [
         # Key light: above-left, warm, casting shadows across the scene
         {"pos": (0.5, 1.1, 2.4), "radius": 0.2, "color": (1.0, 0.97, 0.92), "intensity": 50.0},
         # Fill light: right side, cooler, large and soft
         {"pos": (0.5, -1.8, 4.2), "radius": 1.0, "color": (0.48, 0.52, 0.6), "intensity": 1.0},
         # Rim light: behind the scene, cool, hard — separates hands/shirt from dark background
+        # {"pos": (-0.8, -3.0, 0.5), "radius": 0.25, "color": (0.8, 0.88, 1.0), "intensity": 150.0},
         {"pos": (-0.8, -3.0, 0.5), "radius": 0.25, "color": (0.8, 0.88, 1.0), "intensity": 150.0},
     ]
-    # Nyx uses different physical units for radius and intensity.
-    # Tune these two scalars to match perceived brightness/softness without
-    # touching individual light values.
-    NYX_RADIUS_SCALE = 1.0
-    NYX_INTENSITY_SCALE = 0.2
+
+    def _light_intensity_factor(self) -> float:
+        # Sphere lights are tuned to balance against the per-task env map. When
+        # the env map is off (--no-use_env_map), the env contribution is zero,
+        # so skip the dampening factor and run lights at their tuned full level.
+        return _ENV_LIGHT_EFFECT if self.args.use_env_map else 1.0
 
     def make_renderer(self):
         import genesis as gs
         from genesis.options.renderers import SphereLight
 
-        env_filename, env_multiplier = _TASK_ENVMAPS[self.args.task]
+        env_filename = _TASK_ENVMAP[self.args.task]
+        env_yaw, env_registry_mult = _ENVMAP_REGISTRY[env_filename]
+        env_multiplier = env_registry_mult * _OVERALL_INTENSITY if self.args.use_env_map else 0.0
         env_path = _envmap(env_filename)
         # ImageTexture.image_color is clamped to [0, 1]; >1 multipliers would need
         # an exposure EV bump instead, but our 16-task table is all <= 1.
         assert env_multiplier <= 1.0, f"task {self.args.task}: envmap multiplier {env_multiplier} > 1 not supported"
+        light_factor = self._light_intensity_factor()
         return gs.renderers.RayTracer(
             logging_level="warning",
             tracing_depth=32,
             env_radius=100.0,
-            env_euler=(0, 0, 20),
+            env_euler=(0, 0, env_yaw),
             env_surface=gs.surfaces.Emission(
                 emissive_texture=gs.textures.ImageTexture(
                     image_path=env_path,
@@ -1117,33 +1177,39 @@ class RobowitsReplay(TrajectoryReplay):
                     pos=l["pos"],
                     radius=l["radius"],
                     color=l["color"],
-                    intensity=l["intensity"],
+                    intensity=l["intensity"] * light_factor,
                 )
                 for l in self._LIGHTS
             ],
         )
 
     def nyx_lights(self):
+        light_factor = self._light_intensity_factor()
         return [
             {
                 "type": "point",
                 "pos": l["pos"],
-                "radius": float(l["radius"]) * self.NYX_RADIUS_SCALE,
+                "radius": float(l["radius"]),
                 "color": l["color"],
-                "intensity": float(l["intensity"]) * self.NYX_INTENSITY_SCALE,
+                "intensity": float(l["intensity"]) * light_factor * _LUISA_TO_NYX_INTENSITY_SCALE,
             }
             for l in self._LIGHTS
         ]
 
+    def nyx_env_map(self):
+        # Match Luisa: same EXR, registry yaw, and registry-mult * dim so the
+        # two renderers see identical sky. With --no-use_env_map, multiplier is
+        # zero so the env contribution is pure black (texture is still loaded
+        # but doesn't reach the scene).
+        env_filename = _TASK_ENVMAP[self.args.task]
+        env_yaw, env_registry_mult = _ENVMAP_REGISTRY[env_filename]
+        mult = env_registry_mult * _OVERALL_INTENSITY if self.args.use_env_map else 0.0
+        return (_envmap(env_filename), env_yaw, mult)
+
     def nyx_light_field(self):
-        # San Carlos robot station splat — position/rotation tuned for this scene.
-        # Run with --nyx --preview and tweak until the background aligns.
-        return {
-            "uri": str((_REPO / "DemoAssets/3dgs/0325_san_carlos_robot_station.ply").resolve()),
-            "position": (1.5, 0.81, -3.0),
-            "rotation": (0.0, 0.701707, 0.0, 0.701707),  # (w, x, y, z) — 180° around Y
-            "scale": (1.0, 1.0, 1.0),
-        }
+        # No 3DGS splat for Robowits — the per-task envmap is the visible
+        # background, matching Luisa.
+        return None
 
     def add_args(self, parser):
         parser.add_argument(
@@ -1173,14 +1239,24 @@ class RobowitsReplay(TrajectoryReplay):
             help="Render everything (table, task entities, robot) in vis_mode='collision' "
             "to visualize the collision geometry instead of the visual meshes.",
         )
-        # HDR envmaps benefit from tone mapping to keep highlights from blowing out.
-        parser.set_defaults(exposure=0.5, tone_mapping="aces")
+        parser.add_argument(
+            "--use_env_map",
+            action=argparse.BooleanOptionalAction,
+            default=True,
+            help="Use the per-task HDR env map (default: on). Pass --no-use_env_map "
+            "for pure black env; sphere lights then run at full tuned intensity "
+            "(no _ENV_LIGHT_EFFECT dampening) and the output filename gains a "
+            "_no_envmap suffix to avoid clobbering env-map renders.",
+        )
 
     def load_trajectory(self):
         task_id = self.args.task
         # Use the task id as the trajectory tag so render outputs are named
         # ipc_robowits_<task>_<renderer>_<datetime>.mp4 instead of "default".
-        self.args.trajectory = f"task{task_id}"
+        # With --no-use_env_map we add a _no_envmap suffix so those renders
+        # land in a separate file and never clobber the env-map renders.
+        suffix = "" if self.args.use_env_map else "_no_envmap"
+        self.args.trajectory = f"task{task_id}{suffix}"
         traj_path = _resolve_traj(task_id, self.args.traj)
         traj = np.load(traj_path)
 

@@ -236,6 +236,16 @@ class TrajectoryReplay:
     cam_fov: float = 40
     fps: int = 60
 
+    # Subclasses populate this in load_trajectory() (np.ndarray of shape (N,)).
+    # Used by interactive replay to print the sim_time when stopping/pausing.
+    sim_time: "np.ndarray | None" = None
+
+    def _fmt_stop(self, frame_idx: int) -> str:
+        """Render a 'frame=… sim_time=…' string for stop/pause messages."""
+        if self.sim_time is not None and 0 <= frame_idx < len(self.sim_time):
+            return f"frame={frame_idx} sim_time={float(self.sim_time[frame_idx]):.3f}s"
+        return f"frame={frame_idx}"
+
     def __init__(self):
         parser = argparse.ArgumentParser(description=f"Replay trajectory: {self.name}")
         parser.add_argument("--loop", action="store_true", help="Loop replay")
@@ -264,7 +274,7 @@ class TrajectoryReplay:
             "Use this to resume an interrupted batch.",
         )
         parser.add_argument(
-            "--spp", type=int, default=256, help="Samples-per-pixel for the render camera (default: 256)"
+            "--spp", type=int, default=1024, help="Samples-per-pixel for the render camera (default: 1024)"
         )
         parser.add_argument("--dof", action="store_true", help="Enable depth-of-field (thinlens camera model)")
         parser.add_argument(
@@ -327,14 +337,14 @@ class TrajectoryReplay:
             help="Add sphere markers in the viewer for each Luisa light (position + radius)",
         )
         parser.add_argument(
-            "--exposure", type=float, default=0.0, help="Exposure in EV stops (default: 0.0, positive = brighter)"
+            "--exposure", type=float, default=0.5, help="Exposure in EV stops (default: 0.5, positive = brighter)"
         )
         parser.add_argument(
             "--tone-mapping",
             type=str,
-            default="none",
+            default="aces",
             choices=["none", "aces", "uncharted2"],
-            help="Tone mapping operator (default: none)",
+            help="Tone mapping operator (default: aces)",
         )
         self.add_args(parser)
         self.args = parser.parse_args()
@@ -419,6 +429,20 @@ class TrajectoryReplay:
         color, intensity — same format as scene_runner.py LIGHTS.
         """
         return []
+
+    def nyx_env_map(self) -> tuple[str, float, float]:
+        """Return (texture_path, rotation_deg, multiplier) for Nyx's environment map.
+
+        Default: the San Carlos left-marvin EXR at unit multiplier — historical
+        behaviour, used when subclasses don't override.  Subclasses that pick a
+        per-task or per-scene HDR should return its absolute path here so Luisa
+        and Nyx see the same sky.
+        """
+        return (
+            str((_REPO_ROOT / "DemoAssets/textures/san_carlos_left_marvin_modified.exr").resolve()),
+            0.0,
+            1.0,
+        )
 
     def nyx_light_field(self) -> dict | None:
         """Return Gaussian splat light field config, or None to skip.
@@ -572,9 +596,10 @@ class TrajectoryReplay:
             import gs_nyx.nyx_py_sdk as ap
 
             env_map = ap.EnvironmentMapAsset()
-            env_map.texture = str((_REPO_ROOT / "DemoAssets/textures/san_carlos_left_marvin_modified.exr").resolve())
-            env_map.rotation = 0.0
-            env_map.multiplier = 1.0
+            tex, rot, mult = self.nyx_env_map()
+            env_map.texture = tex
+            env_map.rotation = rot
+            env_map.multiplier = mult
             if getattr(self.args, "dark_bg", False):
                 # Dark grey background (0.01, 0.01, 0.01) like trashbag scene.
                 # No extra directional lights — relies on subclass nyx_lights().
@@ -637,9 +662,10 @@ class TrajectoryReplay:
             import gs_nyx.nyx_py_sdk as ap
 
             env_map = ap.EnvironmentMapAsset()
-            env_map.texture = str((_REPO_ROOT / "DemoAssets/textures/san_carlos_left_marvin_modified.exr").resolve())
-            env_map.rotation = 0.0
-            env_map.multiplier = 1.0
+            tex, rot, mult = self.nyx_env_map()
+            env_map.texture = tex
+            env_map.rotation = rot
+            env_map.multiplier = mult
 
             lights = self.nyx_lights()
             light_field = self._build_nyx_light_field()
@@ -990,6 +1016,10 @@ class TrajectoryReplay:
 
         def _on_pause():
             _pause[0] = not _pause[0]
+            if _pause[0]:
+                print(f"[replay] paused at {self._fmt_stop(_current_frame[0])}")
+            else:
+                print(f"[replay] resumed at {self._fmt_stop(_current_frame[0])}")
 
         def _on_reset():
             _reset[0] = True
@@ -1156,17 +1186,24 @@ class TrajectoryReplay:
                 i += step
                 if i % 200 < step:
                     print(f"Frame {i}/{end}")
-            print("Trajectory complete. Press BACKSPACE to replay, SPACE to pause.")
+            last_idx = max(start, min(end - 1, i - step))
+            _current_frame[0] = last_idx
+            print(f"Trajectory complete at {self._fmt_stop(last_idx)}. Press BACKSPACE to replay, SPACE to pause.")
 
         # ── Main loop ─────────────────────────────────────────────────────────
-        while True:
-            _reset[0] = False
-            _run_pass()
-            if not args.loop and not _reset[0]:
-                # Trajectory done — keep viewer alive, wait for BACKSPACE to replay
-                while not _reset[0]:
-                    self._scene._visualizer.update(force=True)
-                    _check_camera_settled()
-                    if use_preview:
-                        cv2.waitKey(1)
-                    time.sleep(1 / 60)
+        try:
+            while True:
+                _reset[0] = False
+                _run_pass()
+                if not args.loop and not _reset[0]:
+                    # Trajectory done — keep viewer alive, wait for BACKSPACE to replay
+                    while not _reset[0]:
+                        self._scene._visualizer.update(force=True)
+                        _check_camera_settled()
+                        if use_preview:
+                            cv2.waitKey(1)
+                        time.sleep(1 / 60)
+        except gs.GenesisException as exc:
+            if "Viewer closed" in str(exc):
+                print(f"[replay] viewer closed at {self._fmt_stop(_current_frame[0])}")
+            raise
