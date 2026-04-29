@@ -85,6 +85,7 @@ DEFAULT_TRAJ_SUBDIV = str(_HANGER / "trajectory_sharpa_subdiv.npz")
 
 _HF_REPO = "Genesis-Intelligence/internal_assets"
 _HF_TRAJ = "ipc_trajectories/coat_hanger/trajectory_hanger_sharpa.npz"
+_HF_TRAJ_REVISION = "52ed7d38d9f0dffc7794bd3941b6a60a5ddc0886"
 
 
 def _resolve_default_traj() -> str:
@@ -99,6 +100,7 @@ def _resolve_default_traj() -> str:
         repo_id=_HF_REPO,
         repo_type="dataset",
         filename=_HF_TRAJ,
+        revision=_HF_TRAJ_REVISION,
     )
     return path
 
