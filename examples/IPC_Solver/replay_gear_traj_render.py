@@ -250,6 +250,7 @@ class GearReplay(TrajectoryReplay):
                 euler=(0, 0, rot_off),
                 scale=MESH_SCALE,
                 fixed=True,
+                file_meshes_are_zup=True,
                 convexify=False,
                 decimate=False,
             ),
