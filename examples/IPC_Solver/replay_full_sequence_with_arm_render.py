@@ -301,7 +301,7 @@ class FullSequenceWithArmRender(TrajectoryReplay):
             tx, ty, self_rot_deg = _planet_position(i)
             self._rigid_entities[f"planet_gear_{i}"] = scene.add_entity(
                 gs.morphs.Mesh(
-                    file=f"{gear_assets}/planet_gear_v2.glb",
+                    file=f"{gear_assets}/planet_gear_v4.glb",
                     pos=(CX + tx, CY + ty, CZ),
                     euler=(0, 0, self_rot_deg),
                     scale=MESH_SCALE,

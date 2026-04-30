@@ -14,6 +14,7 @@ from __future__ import annotations
 import argparse
 import math
 import time
+from datetime import datetime
 from pathlib import Path
 import numpy as np
 
@@ -818,10 +819,11 @@ class TrajectoryReplay:
         renderer_name = "nyx" if use_nyx else "luisa"
         traj_name = getattr(args, "trajectory", "default")
 
+        dt_tag = datetime.now().strftime("%Y%m%d_%H%M%S")
         if kf_idx is not None:
-            stem = f"ipc_{self.name}_kf{kf_idx + 1:02d}_{renderer_name}"
+            stem = f"ipc_{self.name}_kf{kf_idx + 1:02d}_{renderer_name}_{dt_tag}"
         else:
-            stem = f"ipc_{self.name}_{traj_name}_{renderer_name}"
+            stem = f"ipc_{self.name}_{traj_name}_{renderer_name}_{dt_tag}"
 
         # --output is honoured only for single-render mode (would collide in batch)
         default_output = f"data/ipc_demo/ipc_{self.name}/{stem}.mp4"
