@@ -210,11 +210,10 @@ class FullSequenceWithArmRender(TrajectoryReplay):
         # Each entry: (frame, pos, lookat[, up[, ease_in[, ease_out]]])
         # Use K key in interactive mode to log new keyframes.
         return [
-            (1, (1.4129, -0.0083, 1.6242), (0.6747, -0.0016, 0.9496)),
-            (2, (0.7976, 0.0379, 1.1304), (0.1417, -0.0456, 0.3802)),
-            (3, (0.7346, 0.06, 1.0665), (0.0963, -0.1032, 0.3142)),
-            (4, (0.7028, 0.0452, 1.0474), (0.0897, -0.0915, 0.2693)),
-            (5, (0.8956, 0.0661, 1.2744), (0.2666, -0.039, 0.5042)),
+            (1, (0.7976, 0.0379, 1.1304), (0.1417, -0.0456, 0.3802), (0, 0, 1), None),
+            (480, (0.7976, 0.0379, 1.1304), (0.1417, -0.0456, 0.3802), (0, 0, 1), 4, 4),
+#            (800, (2.2845, 0.2272, 2.8311), (1.6286, 0.1437, 2.0809)),
+            (900, (1.6295, 0.028, 2.172), (0.9967, 0.0123, 1.3978)),
         ]
 
     def make_camera_traj(self, name):
@@ -243,25 +242,25 @@ class FullSequenceWithArmRender(TrajectoryReplay):
         gear_assets = str(_GEAR / "assets")
         rot_off = GEAR_ROTATION_DEG
 
-        # Ground — dark backdrop so gear mechanism reads against black
+        #Ground — dark backdrop so gear mechanism reads against black
         scene.add_entity(
             gs.morphs.Box(size=(20.0, 20.0, 0.02), pos=(0.0, 0.0, -2.01), fixed=True),
             surface=gs.surfaces.BSDF(diffuse_texture=gs.textures.ColorTexture(color=(0.03, 0.03, 0.03))),
         )
 
         # Table
-        scene.add_entity(
-            gs.morphs.Mesh(
-                file=TABLE_GLB,
-                pos=(0.8, 0.0, 0.0),
-                scale=(1.14, 1.0, 1.47),
-                fixed=True,
-                file_meshes_are_zup=True,
-                convexify=False,
-            ),
-            surface=gs.surfaces.BSDF(roughness=0.45, metallic=0.0, ior=1.45),
-            vis_mode=self.args.vis_mode,
-        )
+        # scene.add_entity(
+        #     gs.morphs.Mesh(
+        #         file=TABLE_GLB,
+        #         pos=(0.8, 0.0, 0.0),
+        #         scale=(1.14, 1.0, 1.47),
+        #         fixed=True,
+        #         file_meshes_are_zup=True,
+        #         convexify=False,
+        #     ),
+        #     surface=gs.surfaces.BSDF(roughness=0.45, metallic=0.0, ior=1.45),
+        #     vis_mode=self.args.vis_mode,
+        # )
 
         rigid_mat = gs.materials.Rigid(rho=1000.0)
 
