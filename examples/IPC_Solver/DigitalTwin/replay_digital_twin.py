@@ -1,15 +1,20 @@
-"""Replay digital_twin teleop trajectories (MARVIN_SHARPA, 58 DOF).
+"""Replay digital_twin teleop trajectories (Marvin GSS 54 DOF or Sharpa 58 DOF).
 
 Replays NPZ trajectories produced by
 ``gs-core/scripts/mcap_to_digital_twin_npz.py`` against the corresponding
 gs-core ``*_TWIN`` env: SORT_AND_PLACE_TWIN, POUR_COFFEE_BEANS_TWIN, and
-PLACE_IN_DRAWER_TWIN. Three pre-built NPZs ship in ``trajectories/``:
+PLACE_IN_DRAWER_TWIN. Default NPZs ship in ``trajectories/``:
 
-    * ``sort_objects_and_place.npz``  — task=sort
-    * ``pour_coffee_beans.npz``       — task=pour
-    * ``place_in_drawer.npz``         — task=drawer (drawer + banana have full
-                                                    qpos so the prismatic slide
-                                                    replays correctly)
+    * ``sort_gss.npz``    — task=sort
+    * ``pour_gss.npz``    — task=pour
+    * ``drawer_gss.npz``  — task=drawer (drawer + primary have full qpos
+                                         so the prismatic slide replays
+                                         correctly)
+
+The earlier Sharpa-recorded NPZs (``sort_objects_and_place.npz``,
+``pour_coffee_beans.npz``, ``place_in_drawer.npz``) are still available via
+``--traj <path>``. The robot URDF is auto-selected by the ``robot_qpos``
+dimension in the NPZ (54 → GSS, 58 → Sharpa).
 
 Usage
 -----
@@ -31,13 +36,17 @@ fix lands.
 Rendering
 ---------
 ``--render`` (Luisa) and ``--nyx`` are wired up with a shared 3-light sphere
-rig and the san-carlos HDR env map. Three replay tasks all live on the same
-digital-twin table layout so a single rig works; tweak ``_LIGHTS`` /
-``_ENVMAP_FILENAME`` below if a task wants a different look.
+rig and a per-task HDR env map. The three tasks all live on the same
+digital-twin table layout so one rig works; tweak ``_LIGHTS`` /
+``_TASK_ENVMAP`` / ``_ENVMAP_REGISTRY`` below if a task wants a different look.
+Output filenames are timestamp-free
+(``data/ipc_demo/ipc_digital_twin/ipc_digital_twin_<task>_<renderer>.mp4``)
+so re-renders overwrite cleanly.
 """
 
 from __future__ import annotations
 
+import argparse
 import sys
 from pathlib import Path
 from typing import Any
@@ -64,11 +73,18 @@ from _replay_common import TrajectoryReplay  # noqa: E402
 
 TABLE_GLB = str(_DEMO / "coat_hanger" / "work_table.glb")
 MARVIN_SHARPA_URDF = str(_DEMO / "marvin_sharpa_description" / "marvin_sharpa.urdf")
+MARVIN_GSS_URDF = str(_DEMO / "marvin_gss" / "marvin_gss.urdf")
+
+# Robot URDF dispatch — picked from robot_qpos column count.
+_ROBOT_URDF_BY_DOF = {
+    54: ("gss", MARVIN_GSS_URDF),
+    58: ("sharpa", MARVIN_SHARPA_URDF),
+}
 
 # Local override for drawer URDF (matches _DIGITAL_TWIN_LOCAL_OVERRIDES in
 # gs-core/env/schemas/.../objects/registry.py — that one carries the inertial
 # fix where the outer shell mass is 5.0 kg).
-DRAWER_URDF = str(_GS_CORE / "data/local_assets/digital_twin/drawer/acrylic_drawer.urdf")
+DRAWER_URDF = str(_DEMO / "repaired" / "drawer" / "acrylic_drawer.urdf")
 
 # Mirror gs-core/env/schemas/.../data_assets.py
 _DIGITAL_TWIN_REPO = "Genesis-Intelligence/Digital_twin_asset"
@@ -108,14 +124,32 @@ _LIGHTS = [
     # Rim: behind to separate the robot/objects from the background
     {"pos": (-0.8, -3.0, 0.5), "radius": 0.25, "color": (0.8, 0.88, 1.0), "intensity": 150.0},
 ]
-_ENVMAP_FILENAME = "san_carlos_left_marvin_modified.exr"
-_ENVMAP_YAW = 0.349066  # rad — same as Robowits / yoyo defaults
-_ENVMAP_MULT = 0.5
+
+# Per-EXR (rotation_deg, multiplier) — same shape as Robowits's registry. Keep
+# this orthogonal to the task → EXR mapping so the values are easy to retune.
+_ENVMAP_REGISTRY: dict[str, tuple[float, float]] = {
+    "brown_photostudio_02_4k.exr": (0.0, 1.0),
+    "bright_labratory.exr": (0.0, 1.0),
+    "unfinished_office_night_4k.exr": (0.0, 1.0),
+}
+
+# Task → EXR. Each digital-twin task gets a distinct env map, and all three are
+# disjoint from Robowits's _TASK_ENVMAP so the two demos don't share skies.
+_TASK_ENVMAP: dict[str, str] = {
+    "sort": "brown_photostudio_02_4k.exr",
+    "pour": "bright_labratory.exr",
+    "drawer": "unfinished_office_night_4k.exr",
+}
+
+# Global dim on the registry envmap multiplier so the HDR sky doesn't
+# overpower our key/fill/rim sphere lights under exposure=0.5/aces.
+_OVERALL_INTENSITY = 0.5
+# Dim sphere lights when env map is on, so HDR sky doesn't get drowned out.
+# With --no-use_env_map the lights run at full tuned intensity.
+_ENV_LIGHT_EFFECT = 0.1
 # Luisa SphereLight intensity ↔ Nyx PointLight intensity scaling (same scale
 # as Robowits — keeps the two renderers visually comparable).
 _LUISA_TO_NYX_INTENSITY_SCALE = 0.3
-# Dim sphere lights when env map is on, so HDR sky doesn't get drowned out.
-_ENV_LIGHT_EFFECT = 0.1
 
 
 # ---------------------------------------------------------------------------
@@ -148,7 +182,7 @@ def _task_sort() -> list[dict]:
         {
             "name": "fruits_primary_1",  # grapes
             "morph": gs.morphs.Mesh(
-                file=_dt("grapes/grapes.glb"),
+                file=str(_DEMO / "repaired" / "grapes.glb"),
                 scale=0.15,
                 fixed=False,
                 collision=True,
@@ -170,7 +204,7 @@ def _task_sort() -> list[dict]:
         {
             "name": "vegetables_primary_0",  # red_chili
             "morph": gs.morphs.Mesh(
-                file=_dt("chili/red_chili.glb"),
+                file=str(_DEMO / "repaired" / "red_chili.glb"),
                 scale=0.16,
                 fixed=False,
                 collision=True,
@@ -290,9 +324,9 @@ TASK_REGISTRY: dict[str, Any] = {
 }
 
 TASK_NPZ: dict[str, str] = {
-    "sort": "sort_objects_and_place.npz",
-    "pour": "pour_coffee_beans.npz",
-    "drawer": "place_in_drawer.npz",
+    "sort": "sort_gss.npz",
+    "pour": "pour_gss.npz",
+    "drawer": "drawer_gss.npz",
 }
 
 
@@ -309,19 +343,36 @@ class DigitalTwinReplay(TrajectoryReplay):
     fps = 30  # gs-core digital_twin scene runs at dt = 1/30
 
     # ── Render hooks (Luisa + Nyx) ────────────────────────────────────────
+    def _light_intensity_factor(self) -> float:
+        # Sphere lights are tuned to balance against the per-task env map. When
+        # the env map is off (--no-use_env_map), the env contribution is zero,
+        # so skip the dampening factor and run lights at their tuned full level.
+        return _ENV_LIGHT_EFFECT if self.args.use_env_map else 1.0
+
+    def _env_map_settings(self) -> tuple[str, float, float]:
+        env_filename = _TASK_ENVMAP[self.args.task]
+        env_yaw, env_registry_mult = _ENVMAP_REGISTRY[env_filename]
+        env_multiplier = env_registry_mult * _OVERALL_INTENSITY if self.args.use_env_map else 0.0
+        return env_filename, env_yaw, env_multiplier
+
     def make_renderer(self):
         import genesis as gs
         from genesis.options.renderers import SphereLight
 
+        env_filename, env_yaw, env_multiplier = self._env_map_settings()
+        # ImageTexture.image_color is clamped to [0, 1]; >1 multipliers would
+        # need an exposure EV bump instead, but our 3-task table is all <= 1.
+        assert env_multiplier <= 1.0, f"task {self.args.task}: envmap multiplier {env_multiplier} > 1 not supported"
+        light_factor = self._light_intensity_factor()
         return gs.renderers.RayTracer(
             logging_level="warning",
             tracing_depth=32,
             env_radius=100.0,
-            env_euler=(0, 0, _ENVMAP_YAW),
+            env_euler=(0, 0, env_yaw),
             env_surface=gs.surfaces.Emission(
                 emissive_texture=gs.textures.ImageTexture(
-                    image_path=_envmap(_ENVMAP_FILENAME),
-                    image_color=_ENVMAP_MULT,
+                    image_path=_envmap(env_filename),
+                    image_color=env_multiplier,
                     encoding="linear",
                 ),
             ),
@@ -330,26 +381,28 @@ class DigitalTwinReplay(TrajectoryReplay):
                     pos=l["pos"],
                     radius=l["radius"],
                     color=l["color"],
-                    intensity=l["intensity"] * _ENV_LIGHT_EFFECT,
+                    intensity=l["intensity"] * light_factor,
                 )
                 for l in _LIGHTS
             ],
         )
 
     def nyx_lights(self):
+        light_factor = self._light_intensity_factor()
         return [
             {
                 "type": "point",
                 "pos": l["pos"],
                 "radius": float(l["radius"]),
                 "color": l["color"],
-                "intensity": float(l["intensity"]) * _ENV_LIGHT_EFFECT * _LUISA_TO_NYX_INTENSITY_SCALE,
+                "intensity": float(l["intensity"]) * light_factor * _LUISA_TO_NYX_INTENSITY_SCALE,
             }
             for l in _LIGHTS
         ]
 
     def nyx_env_map(self):
-        return (_envmap(_ENVMAP_FILENAME), _ENVMAP_YAW, _ENVMAP_MULT)
+        env_filename, env_yaw, env_multiplier = self._env_map_settings()
+        return (_envmap(env_filename), env_yaw, env_multiplier)
 
     def add_args(self, parser):
         parser.add_argument(
@@ -365,18 +418,41 @@ class DigitalTwinReplay(TrajectoryReplay):
             default=None,
             help="Override NPZ path (default: trajectories/<task>.npz)",
         )
+        parser.add_argument(
+            "--use_env_map",
+            action=argparse.BooleanOptionalAction,
+            default=True,
+            help="Use the per-task HDR env map (default: on). Pass --no-use_env_map "
+            "for pure black env; sphere lights then run at full tuned intensity "
+            "(no _ENV_LIGHT_EFFECT dampening) and the output filename gains a "
+            "_no_envmap suffix to avoid clobbering env-map renders.",
+        )
 
     def load_trajectory(self):
         traj_path = Path(self.args.traj) if self.args.traj else _TRAJ_DIR / TASK_NPZ[self.args.task]
         if not traj_path.exists():
             raise FileNotFoundError(f"Trajectory NPZ not found: {traj_path}")
         traj = np.load(traj_path)
-        self.args.trajectory = self.args.task
+        env_suffix = "" if self.args.use_env_map else "_no_envmap"
+        self.args.trajectory = f"{self.args.task}{env_suffix}"
+        # Pin the render output to a stable, timestamp-free name so re-renders
+        # overwrite cleanly. _replay_common appends a `_YYYYMMDD_HHMMSS` tag to
+        # its default stem; setting args.output bypasses that for single
+        # renders (kf_idx is always None for digital_twin).
+        if getattr(self.args, "render", False):
+            renderer_name = "nyx" if getattr(self.args, "nyx", False) else "luisa"
+            self.args.output = (
+                f"data/ipc_demo/ipc_{self.name}/ipc_{self.name}_{self.args.trajectory}_{renderer_name}.mp4"
+            )
         self.sim_time = traj["sim_time"]
         n_frames = len(self.sim_time)
 
         self._joint_qpos = traj["robot_qpos"].astype(np.float32)
-        print(f"  Robot: {self._joint_qpos.shape[1]} DOF")
+        n_dof = self._joint_qpos.shape[1]
+        if n_dof not in _ROBOT_URDF_BY_DOF:
+            raise ValueError(f"Unsupported robot DOF count {n_dof}; expected one of {sorted(_ROBOT_URDF_BY_DOF)}")
+        self._robot_kind, self._robot_urdf = _ROBOT_URDF_BY_DOF[n_dof]
+        print(f"  Robot: {self._robot_kind} ({n_dof} DOF) — {self._robot_urdf}")
 
         # Per-entity rigid pose array (N, 7) = pos(3) + quat_wxyz(4).
         self._rigid_data = {}
@@ -426,10 +502,10 @@ class DigitalTwinReplay(TrajectoryReplay):
             )
             self._rigid_entities[edef["name"]] = entity
 
-        # Robot — Marvin Sharpa, 58 DOF
+        # Robot — URDF picked in load_trajectory() from robot_qpos DOF count
         self._robot = scene.add_entity(
             gs.morphs.URDF(
-                file=MARVIN_SHARPA_URDF,
+                file=self._robot_urdf,
                 fixed=True,
                 pos=(0.0, 0.0, 1.08),
                 merge_fixed_links=False,
