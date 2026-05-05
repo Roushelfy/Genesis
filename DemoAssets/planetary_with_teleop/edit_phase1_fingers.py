@@ -142,7 +142,8 @@ def main():
 
     print(f"Loading: {args.input}")
     data = {k: v.copy() for k, v in np.load(args.input, allow_pickle=True).items()}
-    robot_qpos = data["robot_qpos"].copy()
+    robot_qpos_original = data["robot_qpos"].copy()   # never modified
+    robot_qpos = data["robot_qpos"].copy()             # bake writes here
     n_frames = len(robot_qpos)
     print(f"  {n_frames} frames, {robot_qpos.shape[1]} DOF")
 
@@ -151,7 +152,9 @@ def main():
 
     # Map joint names to qpos column indices
     joint_to_col = {name: i for i, name in enumerate(joint_order)}
-    rh_joint_names = _R_SETUP_JOINTS
+    # Gizmo IK can move arm + fingers, but bake only interpolates FINGER joints
+    rh_joint_names = _R_SETUP_JOINTS          # all editable joints (arm + fingers)
+    rh_bake_joints = _R_ALL_FINGER_JOINTS     # only fingers get spline interpolation
     rh_cols = [joint_to_col[j] for j in rh_joint_names if j in joint_to_col]
 
     # URDF controller
@@ -223,8 +226,12 @@ def main():
     _last_tip_T = {fn: np.eye(4) for fn in _R_FINGER_CHAINS}
     gizmos_enabled = [False]
 
+    def _active_qpos():
+        """Return the qpos array for the current play mode."""
+        return robot_qpos if st.get("play_baked", False) else robot_qpos_original
+
     def _set_robot_from_qpos(frame: int):
-        q = robot_qpos[frame]
+        q = _active_qpos()[frame]
         n_use = min(n_joints, len(q))
         vis_ctrl.set_joint_positions({joint_order[i]: float(q[i]) for i in range(n_use)})
 
@@ -295,33 +302,35 @@ def main():
         _load_keyframes()
 
     def _bake_keyframes():
-        """Cubic spline interpolate keyframes into robot_qpos."""
+        """Cubic spline interpolate finger keyframes into robot_qpos.
+
+        Only finger joints are interpolated; arm joints keep their original values.
+        """
         if len(keyframes) < 2:
             print("[bake] Need at least 2 keyframes")
             return False
+        # Reset baked qpos to original before re-baking
+        robot_qpos[:] = robot_qpos_original
         kf_frames = sorted(keyframes.keys())
-        for jname in rh_joint_names:
+        n_interp = 0
+        for jname in rh_bake_joints:
             col = joint_to_col.get(jname)
             if col is None:
                 continue
-            vals = [keyframes[f].get(jname, float(robot_qpos[f, col])) for f in kf_frames]
+            vals = [keyframes[f].get(jname, float(robot_qpos_original[f, col])) for f in kf_frames]
             cs = CubicSpline(kf_frames, vals, bc_type="clamped")
-            # Only interpolate within keyframe range
             f_start, f_end = kf_frames[0], kf_frames[-1]
             frames_range = np.arange(f_start, f_end + 1)
             robot_qpos[f_start:f_end + 1, col] = cs(frames_range).astype(np.float32)
-        print(f"[bake] Interpolated {len(rh_joint_names)} joints across "
+            n_interp += 1
+        print(f"[bake] Interpolated {n_interp} finger joints across "
               f"frames {kf_frames[0]}-{kf_frames[-1]} ({len(kf_frames)} keyframes)")
         return True
 
     # --- State ---
-    st = {"frame": 0, "play": False, "_acc": 0.0, "_last": time.perf_counter(),
-          "saved": False, "baked": False, "auto_bake": True}
-
-    # Auto-bake on startup if keyframes were loaded
-    if len(keyframes) >= 2:
-        _bake_keyframes()
-        st["baked"] = True
+    st = {"frame": 0, "play": False, "play_baked": False,
+          "_acc": 0.0, "_last": time.perf_counter(),
+          "saved": False, "baked": False}
 
     _update_display(0)
     fps = 60.0
@@ -335,19 +344,53 @@ def main():
         imgui.Separator()
 
         # --- Playback ---
-        if imgui.Button("Pause" if st["play"] else "Play"):
-            st["play"] = not st["play"]; st["_acc"] = 0.0
+        playing = st["play"]
+        if imgui.Button("Pause" if playing else "Play Original"):
+            if playing:
+                st["play"] = False
+            else:
+                st["play"] = True; st["play_baked"] = False; st["_acc"] = 0.0
+                _update_display(st["frame"])
+        imgui.SameLine()
+        if imgui.Button("Pause##bk" if (playing and st["play_baked"]) else "Play Baked"):
+            if playing and st["play_baked"]:
+                st["play"] = False
+            else:
+                if not st["baked"]:
+                    imgui.SameLine()
+                    imgui.TextColored((1.0, 0.3, 0.3, 1.0), "Bake first!")
+                else:
+                    st["play"] = True; st["play_baked"] = True; st["_acc"] = 0.0
+                    _update_display(st["frame"])
         imgui.SameLine()
         if imgui.Button("|<"):
-            st["frame"] = 0; st["play"] = False
+            st["frame"] = 0; st["play"] = False; _update_display(0)
         imgui.SameLine()
         if imgui.Button(">|"):
-            st["frame"] = n_frames - 1; st["play"] = False
+            st["frame"] = n_frames - 1; st["play"] = False; _update_display(n_frames - 1)
+
+        if playing:
+            mode_label = "BAKED" if st["play_baked"] else "ORIGINAL"
+            imgui.TextColored((0.3, 1.0, 0.3, 1.0) if st["play_baked"] else (0.8, 0.8, 0.3, 1.0),
+                              f"  Playing: {mode_label}")
 
         changed, val = imgui.SliderInt("Frame", st["frame"], 0, n_frames - 1)
         if changed:
             st["frame"] = val; st["play"] = False
             _update_display(val)
+
+        # Arrow keys: left/right = step one frame; K = set keyframe
+        if imgui.IsKeyPressed(imgui.ImGuiKey_LeftArrow) and st["frame"] > 0:
+            st["frame"] -= 1; st["play"] = False; _update_display(st["frame"])
+        if imgui.IsKeyPressed(imgui.ImGuiKey_RightArrow) and st["frame"] < n_frames - 1:
+            st["frame"] += 1; st["play"] = False; _update_display(st["frame"])
+        if imgui.IsKeyPressed(imgui.ImGuiKey_K):
+            f = st["frame"]
+            joints = _get_rh_joints()
+            keyframes[f] = joints
+            _write_rh_joints_to_qpos(f, joints)
+            st["baked"] = False
+            print(f"[keyframe] Set at frame {f} (K)")
 
         if st["play"]:
             st["_acc"] += dt_w * fps
@@ -405,6 +448,32 @@ def main():
 
         imgui.Separator()
 
+        # --- Joint angle sliders for thumb & index ---
+        if imgui.CollapsingHeader("Thumb & Index Joints"):
+            slider_dirty = False
+            positions = vis_ctrl.get_joint_positions()
+            limits = vis_ctrl.joint_limits
+            for fname in ("thumb", "index"):
+                chain = _R_FINGER_CHAINS[fname]
+                imgui.Text(f"  {fname}:")
+                for jname in chain["joints"]:
+                    if jname not in limits:
+                        continue
+                    lo, hi = limits[jname]
+                    cur = float(positions.get(jname, 0.0))
+                    changed, val = imgui.SliderFloat(
+                        f"{jname.split('_', 1)[1]}##{jname}",
+                        cur, float(lo), float(hi))
+                    if changed:
+                        vis_ctrl.set_joint_positions({jname: val})
+                        slider_dirty = True
+                imgui.Separator()
+            if slider_dirty:
+                _update_robot_meshes()
+                _sync_gizmos_to_fk()
+
+        imgui.Separator()
+
         # --- Keyframe controls ---
         imgui.Text("--- Keyframes ---")
 
@@ -413,11 +482,7 @@ def main():
             joints = _get_rh_joints()
             keyframes[f] = joints
             _write_rh_joints_to_qpos(f, joints)
-            if len(keyframes) >= 2:
-                _bake_keyframes()
-                st["baked"] = True
-            else:
-                st["baked"] = False
+            st["baked"] = False
             print(f"[keyframe] Set at frame {f}")
 
         imgui.SameLine()
@@ -425,11 +490,7 @@ def main():
             f = st["frame"]
             if f in keyframes:
                 del keyframes[f]
-                if len(keyframes) >= 2:
-                    _bake_keyframes()
-                    st["baked"] = True
-                else:
-                    st["baked"] = False
+                st["baked"] = False
                 print(f"[keyframe] Deleted frame {f}")
 
         imgui.SameLine()
@@ -438,12 +499,7 @@ def main():
         imgui.SameLine()
         if imgui.Button("Load KF"):
             _load_keyframes()
-            if len(keyframes) >= 2:
-                _bake_keyframes()
-                st["baked"] = True
-                _update_display(st["frame"])
-            else:
-                st["baked"] = False
+            st["baked"] = False
 
         imgui.Text(f"Keyframes: {len(keyframes)}")
         if keyframes:
