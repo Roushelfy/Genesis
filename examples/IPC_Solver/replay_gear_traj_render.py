@@ -59,13 +59,14 @@ from _replay_common import (
     FullViewCamera,
     SurroundCamera,
     TrajectoryReplay,
+    marvin_urdf,
 )
 
 _REPO = Path(__file__).resolve().parents[2]
 _DEMO = _REPO / "DemoAssets"
 _GEAR = _DEMO / "planetary_gear"
 
-MARVIN_URDF = str(_DEMO / "marvin_sharpa_description" / "marvin_sharpa.urdf")
+MARVIN_URDF = marvin_urdf("marvin_sharpa")
 TABLE_GLB = str(_DEMO / "trashbag" / "work_table.glb")
 DEFAULT_TRAJ = str(_GEAR / "trajectory_gear_sharpa.npz")
 
@@ -271,7 +272,7 @@ class GearReplay(TrajectoryReplay):
                 decimate=False,
             ),
             material=rigid_mat,
-            surface=gs.surfaces.BSDF(color=(67.0/255.0, 79.0/255.0, 99.0/255.0), metallic=0.9, roughness=0.35),
+            surface=gs.surfaces.BSDF(color=(67.0 / 255.0, 79.0 / 255.0, 99.0 / 255.0), metallic=0.9, roughness=0.35),
             vis_mode=self.args.vis_mode,
         )
 
@@ -326,8 +327,6 @@ class GearReplay(TrajectoryReplay):
         )
 
         # Robot (MARVIN_SHARPA, 58 DOF, fixed base)
-        # Override paint_white_glossy (arm links 1-6) to add some shininess; GLB default is too matte.
-        # aluminium_brushed and plastic_black_rough are left to the GLB PBR values.
         self._robot = scene.add_entity(
             gs.morphs.URDF(
                 file=MARVIN_URDF,
@@ -335,13 +334,6 @@ class GearReplay(TrajectoryReplay):
                 collision=False,
                 pos=(0, 0, 1.08),
             ),
-            surface={
-                "paint_white_glossy": gs.surfaces.BSDF(
-                    color=(0.74, 0.74, 0.74),
-                    roughness=0.25,
-                    metallic=0.25,
-                ),
-            },
             vis_mode=self.args.vis_mode,
         )
 

@@ -77,32 +77,32 @@ _COOK = _DEMO / "cook_with_teleop"
 
 _DEFAULT_SEQ = _COOK / "seq"
 
-TABLE_GLB    = str(_DEMO / "trashbag" / "work_table.glb")
+TABLE_GLB = str(_DEMO / "trashbag" / "work_table.glb")
 STOVETOP_GLB = str(_COOK / "stovetop_on.glb")
 
 # Camera pose — matches the hanger_sharpa scene (same table height / work area)
-_CAM_POS    = (0.9334, -0.5834, 1.4634)
+_CAM_POS = (0.9334, -0.5834, 1.4634)
 _CAM_LOOKAT = (0.4422, 0.0514, 0.8669)
-_CAM_FOV    = 40
+_CAM_FOV = 40
 
 # Sphere-light rig — three-light key/fill/rim setup (from ipc_robot_cook.py)
 _LIGHTS = [
     # key: warm, above-left, casts shadows across hand/pan
-    {"pos": (0.5,   1.1,  2.4),  "radius": 0.2,  "color": (1.0, 0.97, 0.92), "intensity": 50.0},
+    {"pos": (0.5, 1.1, 2.4), "radius": 0.2, "color": (1.0, 0.97, 0.92), "intensity": 50.0},
     # fill: cool, soft, opposite side
-    {"pos": (0.5,  -1.8,  4.2),  "radius": 1.0,  "color": (0.48, 0.52, 0.6), "intensity": 1.0},
+    {"pos": (0.5, -1.8, 4.2), "radius": 1.0, "color": (0.48, 0.52, 0.6), "intensity": 1.0},
     # rim: hard, behind, separates subjects from background
-    {"pos": (-0.8, -3.0,  0.5),  "radius": 0.25, "color": (0.8, 0.88, 1.0),  "intensity": 150.0},
+    {"pos": (-0.8, -3.0, 0.5), "radius": 0.25, "color": (0.8, 0.88, 1.0), "intensity": 150.0},
 ]
-_NYX_RADIUS_SCALE    = 1.0
+_NYX_RADIUS_SCALE = 1.0
 _NYX_INTENSITY_SCALE = 0.2
 
 # Per-object fallback colors (used when object name has no named preset)
 _ENTITY_COLORS = {
-    "pan":     (0.6, 0.6, 0.65, 1.0),
+    "pan": (0.6, 0.6, 0.65, 1.0),
     "spatula": (0.5, 0.5, 0.55, 1.0),
 }
-_BROC_COLOR   = (0.2, 0.6, 0.15, 1.0)
+_BROC_COLOR = (0.2, 0.6, 0.15, 1.0)
 _TOMATO_COLOR = (0.85, 0.15, 0.1, 1.0)
 _NOODLE_COLOR = (0.92, 0.86, 0.55, 1.0)
 
@@ -110,6 +110,7 @@ _NOODLE_COLOR = (0.92, 0.86, 0.55, 1.0)
 # ---------------------------------------------------------------------------
 # Mesh helpers (ported from ipc_robot_cook.py)
 # ---------------------------------------------------------------------------
+
 
 def _euler_xyz_deg_to_quat_wxyz(rx_deg, ry_deg, rz_deg):
     """Convert XYZ-Euler (degrees) to a (w, x, y, z) quaternion."""
@@ -129,17 +130,16 @@ def _apply_tf_to_verts(verts: np.ndarray, tf: np.ndarray) -> np.ndarray:
     return (tf[:3, :3] @ verts.T).T + tf[:3, 3]
 
 
-def _write_obj(path: Path, verts: np.ndarray, faces: np.ndarray | None = None,
-               edges: np.ndarray | None = None):
+def _write_obj(path: Path, verts: np.ndarray, faces: np.ndarray | None = None, edges: np.ndarray | None = None):
     with open(path, "w") as f:
         for v in verts:
             f.write(f"v {v[0]:.8f} {v[1]:.8f} {v[2]:.8f}\n")
         if faces is not None:
             for tri in faces:
-                f.write(f"f {tri[0]+1} {tri[1]+1} {tri[2]+1}\n")
+                f.write(f"f {tri[0] + 1} {tri[1] + 1} {tri[2] + 1}\n")
         if edges is not None:
             for e in edges:
-                f.write(f"l {e[0]+1} {e[1]+1}\n")
+                f.write(f"l {e[0] + 1} {e[1] + 1}\n")
 
 
 def _read_obj(path: Path):
@@ -154,9 +154,11 @@ def _read_obj(path: Path):
                 idx = [int(x) - 1 for x in raw.split()[1:]]
                 for a, b in zip(idx, idx[1:]):
                     edges.append([a, b])
-    return (np.array(verts, dtype=np.float64),
-            np.array(faces, dtype=np.int32) if faces else None,
-            np.array(edges, dtype=np.int32) if edges else None)
+    return (
+        np.array(verts, dtype=np.float64),
+        np.array(faces, dtype=np.int32) if faces else None,
+        np.array(edges, dtype=np.int32) if edges else None,
+    )
 
 
 def _prepare_rigid_world_mesh(seq_dir: Path, name: str, tf0: np.ndarray) -> Path:
@@ -224,7 +226,7 @@ def _split_noodle_meshes(seq_dir: Path, n_total_verts: int):
 
     if not first_path.exists():
         for i, (v_start, v_count) in enumerate(strands):
-            nv = verts[v_start:v_start + v_count]
+            nv = verts[v_start : v_start + v_count]
             ne = np.array([[j, j + 1] for j in range(v_count - 1)], dtype=np.int32)
             _write_obj(noodle_dir / f"noodle_{i}.obj", nv, edges=ne)
 
@@ -237,21 +239,21 @@ def _split_noodle_meshes(seq_dir: Path, n_total_verts: int):
 # Replay class
 # ---------------------------------------------------------------------------
 
+
 class RobotCookReplay(TrajectoryReplay):
     """Replay exported cooking simulation sequences."""
 
-    name       = "robot_cook"
-    cam_pos    = _CAM_POS
+    name = "robot_cook"
+    cam_pos = _CAM_POS
     cam_lookat = _CAM_LOOKAT
-    cam_fov    = _CAM_FOV
+    cam_fov = _CAM_FOV
 
     def add_args(self, parser):
         parser.add_argument(
             "--seq-dir",
             type=str,
             default=str(_DEFAULT_SEQ),
-            help="Sequence directory containing meta.json "
-                 "(default: DemoAssets/cook_with_teleop/seq)",
+            help="Sequence directory containing meta.json (default: DemoAssets/cook_with_teleop/seq)",
         )
 
     def load_trajectory(self) -> int:
@@ -269,7 +271,7 @@ class RobotCookReplay(TrajectoryReplay):
 
         # Load per-object arrays, split by type
         rigid_raw: dict[str, np.ndarray] = {}
-        fem_raw:   dict[str, np.ndarray] = {}
+        fem_raw: dict[str, np.ndarray] = {}
         self._rod_data: dict[str, np.ndarray] = {}
         for name, info in self._meta["objects"].items():
             npy_path = self._seq_dir / info["data"]
@@ -311,9 +313,9 @@ class RobotCookReplay(TrajectoryReplay):
             data = np.load(str(robot_npz), allow_pickle=True)
             base_rpy = data["base_rpy_deg"].astype(np.float64)
             self._robot_seq = {
-                "qpos":      data["qpos"].astype(np.float32),
-                "urdf":      str(data["urdf"]).replace("\\", "/"),
-                "base_pos":  data["base_pos"].astype(np.float32),
+                "qpos": data["qpos"].astype(np.float32),
+                "urdf": str(data["urdf"]).replace("\\", "/"),
+                "base_pos": data["base_pos"].astype(np.float32),
                 "base_quat": _euler_xyz_deg_to_quat_wxyz(*base_rpy),
             }
             self._joint_qpos = self._robot_seq["qpos"]
@@ -323,8 +325,7 @@ class RobotCookReplay(TrajectoryReplay):
         print(f"  fem:    {list(self._fem_data)}")
         print(f"  rods:   {list(self._rod_data)}")
         if self._robot_seq is not None:
-            print(f"  robot:  {Path(self._robot_seq['urdf']).name}  "
-                  f"qpos={self._robot_seq['qpos'].shape}")
+            print(f"  robot:  {Path(self._robot_seq['urdf']).name}  qpos={self._robot_seq['qpos'].shape}")
         return n_frames
 
     def build_scene(self, scene):
@@ -380,8 +381,7 @@ class RobotCookReplay(TrajectoryReplay):
             if name == "pan" and pan_glb.exists():
                 morph_file = str(pan_glb)
                 surface = gs.surfaces.BSDF(color=(0.7, 0.7, 0.75), roughness=0.2, metallic=0.9)
-                morph = gs.morphs.Mesh(file=morph_file, fixed=True, collision=False,
-                                       file_meshes_are_zup=True)
+                morph = gs.morphs.Mesh(file=morph_file, fixed=True, collision=False, file_meshes_are_zup=True)
             else:
                 world_mesh = _prepare_rigid_world_mesh(seq_dir, name, self._rigid_T0[name])
                 morph_file = str(world_mesh)
@@ -422,12 +422,14 @@ class RobotCookReplay(TrajectoryReplay):
             self._noodle_vpn = vpn
             self._noodle_rod_key = rod_name
             for i, mp in enumerate(noodle_meshes):
-                self._noodle_entities.append(scene.add_entity(
-                    morph=gs.morphs.Mesh(file=str(mp)),
-                    material=gs.materials.FEM.Rope(E=1e6, rho=100.0, thickness=0.001),
-                    surface=gs.surfaces.Default(color=_NOODLE_COLOR),
-                    name=f"noodle_{i}",
-                ))
+                self._noodle_entities.append(
+                    scene.add_entity(
+                        morph=gs.morphs.Mesh(file=str(mp)),
+                        material=gs.materials.FEM.Rope(E=1e6, rho=100.0, thickness=0.001),
+                        surface=gs.surfaces.Default(color=_NOODLE_COLOR),
+                        name=f"noodle_{i}",
+                    )
+                )
             print(f"[scene] {len(noodle_meshes)} noodle FEM.Rope entities ({vpn} verts each)")
             break  # only one rod group expected
 
@@ -447,33 +449,6 @@ class RobotCookReplay(TrajectoryReplay):
                     pos=tuple(self._robot_seq["base_pos"].tolist()),
                     quat=tuple(self._robot_seq["base_quat"].tolist()),
                 ),
-                surface={
-                    # Arm body — slightly shinier than GLB default
-                    "paint_white_glossy": gs.surfaces.BSDF(
-                        color=(0.74, 0.74, 0.74),
-                        roughness=0.25,
-                        metallic=0.25,
-                    ),
-                    # Joint / wrist accents
-                    "aluminium_brushed": gs.surfaces.BSDF(
-                        color=(0.72, 0.72, 0.75),
-                        roughness=0.25,
-                        metallic=0.85,
-                    ),
-                    # Dark plastic parts (arm + hand links share this name)
-                    "plastic_black_rough": gs.surfaces.BSDF(
-                        color=(0.02, 0.02, 0.03),
-                        roughness=0.55,
-                        metallic=0.0,
-                        ior=1.45,
-                    ),
-                    # Fingertip rubber pads (hand GLBs only)
-                    "gss_hand_elastomer": gs.surfaces.BSDF(
-                        color=(0.03, 0.03, 0.03),
-                        roughness=0.80,
-                        metallic=0.0,
-                    ),
-                },
                 vis_mode="visual",
             )
 
@@ -487,7 +462,7 @@ class RobotCookReplay(TrajectoryReplay):
                 frame_pos = rod_arr[frame_idx]
                 vpn = self._noodle_vpn
                 for ni, ent in enumerate(self._noodle_entities):
-                    ent.set_position(frame_pos[ni * vpn: (ni + 1) * vpn])
+                    ent.set_position(frame_pos[ni * vpn : (ni + 1) * vpn])
 
     def make_renderer(self):
         import genesis as gs
@@ -515,10 +490,10 @@ class RobotCookReplay(TrajectoryReplay):
     def nyx_lights(self):
         return [
             {
-                "type":      "point",
-                "pos":       l["pos"],
-                "radius":    float(l["radius"])    * _NYX_RADIUS_SCALE,
-                "color":     l["color"],
+                "type": "point",
+                "pos": l["pos"],
+                "radius": float(l["radius"]) * _NYX_RADIUS_SCALE,
+                "color": l["color"],
                 "intensity": float(l["intensity"]) * _NYX_INTENSITY_SCALE,
             }
             for l in _LIGHTS
@@ -529,7 +504,6 @@ class RobotCookReplay(TrajectoryReplay):
         # Format: (frame, pos, lookat[, up[, ease_in[, ease_out]]])
         return [
             (1, (0.9334, -0.5834, 1.4634), (0.4422, 0.0514, 0.8669)),
-
         ]
 
 

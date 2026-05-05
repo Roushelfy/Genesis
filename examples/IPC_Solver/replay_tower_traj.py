@@ -29,6 +29,7 @@ from _replay_common import (
     FullViewCamera,
     SurroundCamera,
     TrajectoryReplay,
+    marvin_urdf,
 )
 
 _REPO = Path(__file__).resolve().parents[2]
@@ -36,7 +37,7 @@ _DEMO = _REPO / "DemoAssets"
 _TOWER = _DEMO / "tower"
 _TABLE_GLB = str(_DEMO / "coat_hanger" / "work_table.glb")
 
-MARVIN_URDF = str(_DEMO / "marvin_robot" / "urdf" / "marvin_pika.urdf")
+MARVIN_URDF = marvin_urdf("marvin_pika")
 DEFAULT_TRAJ = str(_TOWER / "trajectory_20260422_155628.npz")
 
 # Tower position (matching IPCTowerEnvConfig / registry)

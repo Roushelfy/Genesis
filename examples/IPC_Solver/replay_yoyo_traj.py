@@ -3,7 +3,7 @@ Replay exported yoyo simulation sequences.
 
 Usage:
     python examples/IPC_Solver/replay_yoyo_traj.py
-    python examples/IPC_Solver/replay_yoyo_traj.py --trajectory long_sleep  
+    python examples/IPC_Solver/replay_yoyo_traj.py --trajectory long_sleep
     python examples/IPC_Solver/replay_yoyo_traj.py --render --nyx # v4
     python examples/IPC_Solver/replay_yoyo_traj.py --render --nyx --camera-traj surround
 """
@@ -20,6 +20,7 @@ from _replay_common import (
     CameraTrajectory,
     SurroundCamera,
     TrajectoryReplay,
+    marvin_urdf,
 )
 from _yoyo_common import (
     INTERNAL_OPACITY_TRANSPARENT,
@@ -39,8 +40,8 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 
 # ── Camera orbit parameters (v3) ──
 ORBIT_CENTER = np.array([0.20, 0.0, -0.25])  # shifted down 10cm more to keep yoyo in frame
-ORBIT_RADIUS = 0.80    # 10cm further (was 0.70)
-ORBIT_HEIGHT = 0.15    # 5cm higher (was 0.10)
+ORBIT_RADIUS = 0.80  # 10cm further (was 0.70)
+ORBIT_HEIGHT = 0.15  # 5cm higher (was 0.10)
 ORBIT_ANGLE_START = math.radians(-60)
 ORBIT_ANGLE_END = math.radians(60)
 CLOSEUP_DISTANCE = 0.02
@@ -180,25 +181,23 @@ class YoyoReplay(TrajectoryReplay):
         use_nyx = self.args.nyx
         is_long_sleep = self._is_long_sleep or getattr(self, "_force_closeup_camera", False)
 
-        # Robot
+        # Robot — marvin URDFs always come from the internal_assets HF dataset
+        # (marvin_description/marvin_robots/), regardless of any meta.urdf path.
         urdf_rel = self._meta.get("urdf", "").replace("\\", "/")
         assert urdf_rel, "meta.json must specify 'urdf'"
-        urdf_path = Path(urdf_rel)
-        if not urdf_path.is_absolute():
-            urdf_path = _REPO_ROOT / urdf_rel
-        if not urdf_path.exists() and "marvin_sharpa" in urdf_rel:
-            from huggingface_hub import snapshot_download
-            local_dir = snapshot_download(
-                repo_id="Genesis-Intelligence/internal_assets",
-                repo_type="dataset",
-                allow_patterns="marvin_sharpa_description/**",
-            )
-            urdf_path = Path(local_dir) / "marvin_sharpa_description" / "marvin_sharpa.urdf"
+        if "marvin_sharpa" in urdf_rel:
+            urdf_path = Path(marvin_urdf("marvin_sharpa"))
+        else:
+            urdf_path = Path(urdf_rel)
+            if not urdf_path.is_absolute():
+                urdf_path = _REPO_ROOT / urdf_rel
         assert urdf_path.exists(), f"Robot URDF not found: {urdf_path}"
         robot_pos = self._meta.get("robot_base_pos", [0, 0, 0])
         self._robot = scene.add_entity(
             gs.morphs.URDF(
-                file=str(urdf_path), fixed=True, collision=False,
+                file=str(urdf_path),
+                fixed=True,
+                collision=False,
                 pos=tuple(robot_pos),
             ),
             material=gs.materials.Rigid(coup_type="external_articulation"),

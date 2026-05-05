@@ -30,6 +30,7 @@ from _replay_common import (
     FullViewCamera,
     SurroundCamera,
     TrajectoryReplay,
+    marvin_urdf,
 )
 
 _REPO = Path(__file__).resolve().parents[2]
@@ -37,7 +38,7 @@ _DEMO = _REPO / "DemoAssets"
 _GEAR = _DEMO / "planetary_gear"
 _TABLE_GLB = str(_DEMO / "coat_hanger" / "work_table.glb")
 
-MARVIN_URDF = str(_DEMO / "marvin_sharpa_description" / "marvin_sharpa.urdf")
+MARVIN_URDF = marvin_urdf("marvin_sharpa")
 DEFAULT_TRAJ = str(_GEAR / "trajectory_gear_sharpa.npz")
 
 # Gear geometry (matching IPCGearEnvConfig defaults)

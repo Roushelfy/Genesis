@@ -19,6 +19,8 @@ import torch
 
 import genesis as gs
 
+from _replay_common import marvin_urdf
+
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 _DEFAULT_TRAJ = Path("/home/zhehuan/Desktop/hz/gs-core/tmp/teleop/20260403_210121_174578/wuji_qpos_trajectory.npy")
 
@@ -76,10 +78,7 @@ def main():
     )
 
     # Wuji robot
-    urdf_path = str(
-        Path.home()
-        / ".cache/huggingface/hub/datasets--Genesis-Intelligence--internal_assets/snapshots/0978856d9bd81e63422af041364c5963e15f467e/marvin_wuji_description/robot_capsule.urdf"
-    )
+    urdf_path = marvin_urdf("marvin_wuji")
 
     mat_kwargs = {
         "rho": 100.0,

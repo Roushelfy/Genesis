@@ -54,13 +54,14 @@ from _replay_common import (
     FullViewCamera,
     SurroundCamera,
     TrajectoryReplay,
+    marvin_urdf,
 )
 
 _REPO = Path(__file__).resolve().parents[2]
 _DEMO = _REPO / "DemoAssets"
 _HANGER = _DEMO / "coat_hanger"
 
-MARVIN_URDF = str(_DEMO / "marvin_wuji/robot_capsule.urdf")
+MARVIN_URDF = marvin_urdf("marvin_wuji")
 TABLE_GLB = str(_HANGER / "work_table.glb")
 SHIRT_GLB = str(_HANGER / "genesis_shirt.glb")
 COAT_HANGER_GLB = str(_HANGER / "coat_hanger.glb")
@@ -114,16 +115,16 @@ class HangerReplay(TrajectoryReplay):
             env_euler=(0, 0, 20),
             lights=[
                 SphereLight(pos=(-1.15, 0.0, 2.7), radius=0.2, color=(1.0, 0.97, 0.92), intensity=10.0),
-                SphereLight(pos=(1.85, 0.15, 2.5), radius=0.5, color=(0.88, 0.92, 1.0),  intensity=20.0),
-                SphereLight(pos=(0.0, -2.0, 3), radius=0.5, color=(1.0, 1.0, 1.0),  intensity=15.0),
-                SphereLight(pos=(0.0, 2.0, 3), radius=0.5, color=(1.0, 1.0, 1.0),  intensity=15.0),
+                SphereLight(pos=(1.85, 0.15, 2.5), radius=0.5, color=(0.88, 0.92, 1.0), intensity=20.0),
+                SphereLight(pos=(0.0, -2.0, 3), radius=0.5, color=(1.0, 1.0, 1.0), intensity=15.0),
+                SphereLight(pos=(0.0, 2.0, 3), radius=0.5, color=(1.0, 1.0, 1.0), intensity=15.0),
             ],
         )
 
     def nyx_lights(self):
         return [
-            {"type": "point", "pos": (-1.15, 0.0, 2.7),  "radius": 0.2, "color": (1.0, 0.97, 0.92), "intensity": 10.0},
-            {"type": "point", "pos": (1.85,  0.15, 2.5), "radius": 0.5, "color": (0.88, 0.92, 1.0),  "intensity": 20.0},
+            {"type": "point", "pos": (-1.15, 0.0, 2.7), "radius": 0.2, "color": (1.0, 0.97, 0.92), "intensity": 10.0},
+            {"type": "point", "pos": (1.85, 0.15, 2.5), "radius": 0.5, "color": (0.88, 0.92, 1.0), "intensity": 20.0},
         ]
 
     def nyx_light_field(self):

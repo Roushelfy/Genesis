@@ -62,6 +62,7 @@ from _replay_common import (
     FullViewCamera,
     SurroundCamera,
     TrajectoryReplay,
+    marvin_urdf,
 )
 
 _REPO = Path(__file__).resolve().parents[2]
@@ -69,9 +70,9 @@ _DEMO = _REPO / "DemoAssets"
 _GEAR = _DEMO / "planetary_gear"
 _FULL_SEQ = _DEMO / "planetary_with_teleop"
 
-MARVIN_URDF = str(_DEMO / "marvin_sharpa_description" / "marvin_sharpa.urdf")
-PIKA_URDF   = str(_DEMO / "marvin_robot" / "urdf" / "marvin_pika.urdf")
-TABLE_GLB   = str(_DEMO / "trashbag" / "work_table.glb")
+MARVIN_URDF = marvin_urdf("marvin_sharpa")
+PIKA_URDF = marvin_urdf("marvin_pika")
+TABLE_GLB = str(_DEMO / "trashbag" / "work_table.glb")
 DEFAULT_TRAJ = str(_FULL_SEQ / "gs_full_sequence.npz")
 
 # Gear geometry (matching IPCGearEnvConfig defaults)
@@ -105,10 +106,13 @@ def _planet_position(index: int) -> tuple[float, float, float]:
 
 def _quat_wxyz_to_mat3(qw, qx, qy, qz):
     w, x, y, z = float(qw), float(qx), float(qy), float(qz)
-    return np.array([
-        [1-2*(y*y+z*z), 2*(x*y-w*z), 2*(x*z+w*y)],
-        [2*(x*y+w*z), 1-2*(x*x+z*z), 2*(y*z-w*x)],
-        [2*(x*z-w*y), 2*(y*z+w*x), 1-2*(x*x+y*y)]])
+    return np.array(
+        [
+            [1 - 2 * (y * y + z * z), 2 * (x * y - w * z), 2 * (x * z + w * y)],
+            [2 * (x * y + w * z), 1 - 2 * (x * x + z * z), 2 * (y * z - w * x)],
+            [2 * (x * z - w * y), 2 * (y * z + w * x), 1 - 2 * (x * x + y * y)],
+        ]
+    )
 
 
 def _carrier_z_angle(pose7):
@@ -212,7 +216,7 @@ class FullSequenceWithArmRender(TrajectoryReplay):
         return [
             (1, (0.7976, 0.0379, 1.1304), (0.1417, -0.0456, 0.3802), (0, 0, 1), None),
             (480, (0.7976, 0.0379, 1.1304), (0.1417, -0.0456, 0.3802), (0, 0, 1), 4, 4),
-#            (800, (2.2845, 0.2272, 2.8311), (1.6286, 0.1437, 2.0809)),
+            #            (800, (2.2845, 0.2272, 2.8311), (1.6286, 0.1437, 2.0809)),
             (900, (1.6295, 0.028, 2.172), (0.9967, 0.0123, 1.3978)),
         ]
 
@@ -242,7 +246,7 @@ class FullSequenceWithArmRender(TrajectoryReplay):
         gear_assets = str(_GEAR / "assets")
         rot_off = GEAR_ROTATION_DEG
 
-        #Ground — dark backdrop so gear mechanism reads against black
+        # Ground — dark backdrop so gear mechanism reads against black
         scene.add_entity(
             gs.morphs.Box(size=(20.0, 20.0, 0.02), pos=(0.0, 0.0, -2.01), fixed=True),
             surface=gs.surfaces.BSDF(diffuse_texture=gs.textures.ColorTexture(color=(0.03, 0.03, 0.03))),
@@ -292,7 +296,7 @@ class FullSequenceWithArmRender(TrajectoryReplay):
                 decimate=False,
             ),
             material=rigid_mat,
-            surface=gs.surfaces.BSDF(color=(67.0/255.0, 79.0/255.0, 99.0/255.0), metallic=0.9, roughness=0.35),
+            surface=gs.surfaces.BSDF(color=(67.0 / 255.0, 79.0 / 255.0, 99.0 / 255.0), metallic=0.9, roughness=0.35),
             vis_mode=self.args.vis_mode,
         )
 
@@ -347,7 +351,6 @@ class FullSequenceWithArmRender(TrajectoryReplay):
         )
 
         # MARVIN_SHARPA robot (teleop arms)
-        # Override paint_white_glossy (arm links 1-6) to add some shininess; GLB default is too matte.
         self._robot = scene.add_entity(
             gs.morphs.URDF(
                 file=MARVIN_URDF,
@@ -355,13 +358,6 @@ class FullSequenceWithArmRender(TrajectoryReplay):
                 collision=False,
                 pos=(0, 0, 1.08),
             ),
-            surface={
-                "paint_white_glossy": gs.surfaces.BSDF(
-                    color=(0.74, 0.74, 0.74),
-                    roughness=0.25,
-                    metallic=0.25,
-                ),
-            },
             vis_mode=self.args.vis_mode,
         )
 
@@ -399,7 +395,9 @@ class FullSequenceWithArmRender(TrajectoryReplay):
         T_j2_local = None
         for link in shoulder.links:
             if link.name == "Link2_R":
-                T_j2_local = np.array(link.get_pos_quat_matrix()).reshape(4, 4) if hasattr(link, 'get_pos_quat_matrix') else None
+                T_j2_local = (
+                    np.array(link.get_pos_quat_matrix()).reshape(4, 4) if hasattr(link, "get_pos_quat_matrix") else None
+                )
                 break
 
         if T_j2_local is None:
@@ -424,6 +422,7 @@ class FullSequenceWithArmRender(TrajectoryReplay):
             root_tf = T_gear @ np.linalg.inv(T_j2_local)
             shoulder.set_pos(root_tf[:3, 3])
             from scipy.spatial.transform import Rotation as Rot
+
             r = Rot.from_matrix(root_tf[:3, :3])
             qx, qy, qz, qw = r.as_quat()
             shoulder.set_quat(np.array([qw, qx, qy, qz]))
@@ -449,7 +448,7 @@ class FullSequenceWithArmRender(TrajectoryReplay):
             carrier_angle = _carrier_z_angle(self._carrier_poses[frame_idx])
             relative_angle = carrier_angle - self._carrier_angle_0
             qpos = self._shoulder_robot.get_qpos()
-            if hasattr(qpos, 'cpu'):
+            if hasattr(qpos, "cpu"):
                 qpos = qpos.cpu().numpy().copy()
             else:
                 qpos = np.array(qpos, dtype=np.float64).copy()

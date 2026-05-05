@@ -46,14 +46,14 @@ _TRAJ_DIR = Path(__file__).resolve().parent / "trajectories"
 
 # Ensure _replay_common is importable
 sys.path.insert(0, str(_REPO / "examples" / "IPC_Solver"))
-from _replay_common import TrajectoryReplay  # noqa: E402
+from _replay_common import TrajectoryReplay, marvin_urdf  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Shared assets
 # ---------------------------------------------------------------------------
 
 TABLE_GLB = str(_DEMO / "coat_hanger" / "work_table.glb")
-MARVIN_PIKA_URDF = str(_DEMO / "marvin_robot" / "urdf" / "marvin_pika.urdf")
+MARVIN_PIKA_URDF = marvin_urdf("marvin_pika")
 
 # HuggingFace download helper (lazy, cached)
 _HF_CACHE: dict[str, str] = {}
@@ -1336,19 +1336,6 @@ class RobowitsReplay(TrajectoryReplay):
                 collision=robot_collision,
                 pos=(0, 0, 1.08),
             ),
-            surface={
-                "paint_white_glossy": gs.surfaces.BSDF(
-                    color=(0.74, 0.74, 0.74),
-                    roughness=0.25,
-                    metallic=0.25,
-                ),
-                "plastic_black_rough": gs.surfaces.BSDF(
-                    color=(0.02, 0.02, 0.03),
-                    roughness=0.35,
-                    metallic=0.0,
-                    ior=1.45,
-                ),
-            },
             vis_mode=vis_mode,
         )
 
