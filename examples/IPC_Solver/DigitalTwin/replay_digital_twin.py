@@ -65,15 +65,15 @@ _TRAJ_DIR = Path(__file__).resolve().parent / "trajectories"
 _GS_CORE = Path("/home/zhehuan/Desktop/hz/gs-core")
 
 sys.path.insert(0, str(_REPO / "examples" / "IPC_Solver"))
-from _replay_common import TrajectoryReplay  # noqa: E402
+from _replay_common import TrajectoryReplay, marvin_urdf  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Shared assets
 # ---------------------------------------------------------------------------
 
 TABLE_GLB = str(_DEMO / "coat_hanger" / "work_table.glb")
-MARVIN_SHARPA_URDF = str(_DEMO / "marvin_sharpa_description" / "marvin_sharpa.urdf")
-MARVIN_GSS_URDF = str(_DEMO / "marvin_gss" / "marvin_gss.urdf")
+MARVIN_SHARPA_URDF = marvin_urdf("marvin_sharpa")
+MARVIN_GSS_URDF = marvin_urdf("marvin_gss")
 
 # Robot URDF dispatch — picked from robot_qpos column count.
 _ROBOT_URDF_BY_DOF = {

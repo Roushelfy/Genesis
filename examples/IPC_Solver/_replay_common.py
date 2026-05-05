@@ -23,6 +23,56 @@ import genesis as gs
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
+# ── Marvin URDF resolution from internal_assets HF dataset ──────────────────
+#
+# Genesis-IPC must not depend on gs-core, so we call huggingface_hub directly
+# rather than going through gs_data_assets / gs_env_schemas. The commit pin
+# below tracks the latest published marvin_robots/ subtree; bump it manually
+# when gs-core's scripts/publish_marvin_robots.py re-publishes.
+
+_INTERNAL_ASSETS_REPO = "Genesis-Intelligence/internal_assets"
+_INTERNAL_ASSETS_COMMIT = "0bdfdd35641eb355a6593c753c19658ae7e4ead6"
+
+_MARVIN_URDF_STEMS = frozenset(
+    {
+        "marvin",
+        "marvin_pika",
+        "marvin_pika_wo_finger",
+        "marvin_sharpa",
+        "marvin_sharpa_wo_finger",
+        "marvin_gss",
+        "marvin_gss_wo_finger",
+        "marvin_wuji",
+        "marvin_wuji_no_capsule",
+        "marvin_wuji_capsule_scaled",
+        "marvin_wuji_wo_finger",
+    }
+)
+
+
+def marvin_urdf(stem: str) -> str:
+    """Return the full path to an `assemble/<stem>.urdf` cached locally from
+    the Genesis-Intelligence/internal_assets HF dataset.
+
+    The marvin_robots/ tree (arms + hands + assemble URDFs with baked PBR) is
+    published under ``marvin_description/marvin_robots/`` of internal_assets;
+    URDF mesh paths are relative so meshes resolve via the same cache.
+
+    `stem` is the bare filename without ".urdf" — see _MARVIN_URDF_STEMS.
+    """
+    if stem not in _MARVIN_URDF_STEMS:
+        raise ValueError(f"Unknown marvin URDF stem: {stem!r}; valid: {sorted(_MARVIN_URDF_STEMS)}")
+    from huggingface_hub import snapshot_download
+
+    cache = snapshot_download(
+        repo_id=_INTERNAL_ASSETS_REPO,
+        repo_type="dataset",
+        revision=_INTERNAL_ASSETS_COMMIT,
+        allow_patterns="marvin_description/marvin_robots/**",
+    )
+    return str(Path(cache) / "marvin_description" / "marvin_robots" / "assemble" / f"{stem}.urdf")
+
+
 # ── Camera trajectories ─────────────────────────────────────────────────────
 
 
@@ -348,7 +398,9 @@ class TrajectoryReplay:
             help="Tone mapping operator (default: aces)",
         )
         parser.add_argument(
-            "--vis-mode", choices=["visual", "collision", "sdf"], default="visual",
+            "--vis-mode",
+            choices=["visual", "collision", "sdf"],
+            default="visual",
             help="Which mesh to render for rigid entities: visual (default), collision, or sdf",
         )
         self.add_args(parser)
