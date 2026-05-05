@@ -1,0 +1,130 @@
+<?xml version="1.0"?>
+<robot name="acrylic_drawer">
+
+  <!-- Base link: outer shell.
+       Origin (z=0) is at the physical bottom of the outer shell floor plate,
+       so the drawer sits flush on the table when placed at table_height. -->
+  <link name="outer">
+    <inertial>
+      <origin xyz="0 0 0.045" rpy="0 0 0"/>
+      <mass value="5.0"/>
+      <inertia ixx="0.01842" ixy="0" ixz="0"
+                             iyy="0.04444" iyz="0"
+                                           izz="0.05612"/>
+    </inertial>
+    <visual>
+      <!-- GLB was authored with its origin 0.025 m above the floor plate bottom,
+           so shift it down to align with the new link origin. -->
+      <origin xyz="0 0 -0.025" rpy="0 0 0"/>
+      <geometry><mesh filename="outer_shell.glb"/></geometry>
+    </visual>
+
+    <!-- floor plate: 5mm thick, bottom at z=0 -->
+    <collision>
+      <origin xyz="0 0 0.0025" rpy="0 0 0"/>
+      <geometry><box size="0.314 0.190 0.005"/></geometry>
+    </collision>
+    <!-- side wall +X -->
+    <collision>
+      <origin xyz="0.157 0 0.045" rpy="0 0 0"/>
+      <geometry><box size="0.006 0.190 0.090"/></geometry>
+    </collision>
+    <!-- side wall -X -->
+    <collision>
+      <origin xyz="-0.157 0 0.045" rpy="0 0 0"/>
+      <geometry><box size="0.006 0.190 0.090"/></geometry>
+    </collision>
+    <!-- back wall -Y -->
+    <collision>
+      <origin xyz="0 -0.092 0.045" rpy="0 0 0"/>
+      <geometry><box size="0.320 0.006 0.090"/></geometry>
+    </collision>
+    <!-- top plate: 2.5mm thick -->
+    <collision>
+      <origin xyz="0 0 0.08875" rpy="0 0 0"/>
+      <geometry><box size="0.314 0.190 0.0025"/></geometry>
+    </collision>
+  </link>
+
+  <!-- Drawer link: slides along +Y -->
+  <link name="drawer">
+    <inertial>
+      <origin xyz="0 0 0.042" rpy="0 0 0"/>
+      <mass value="0.003"/>
+      <inertia ixx="9.26e-6" ixy="0" ixz="0"
+                             iyy="2.41e-5" iyz="0"
+                                           izz="3.02e-5"/>
+    </inertial>
+    <visual>
+      <geometry><mesh filename="drawer_body.glb"/></geometry>
+    </visual>
+
+    <!-- drawer floor: ~2mm thick -->
+    <collision>
+      <origin xyz="0 0 0.001" rpy="0 0 0"/>
+      <geometry><box size="0.300 0.175 0.002"/></geometry>
+    </collision>
+    <!-- drawer side wall +X -->
+    <collision>
+      <origin xyz="0.150 0 0.042" rpy="0 0 0"/>
+      <geometry><box size="0.005 0.175 0.080"/></geometry>
+    </collision>
+    <!-- drawer side wall -X -->
+    <collision>
+      <origin xyz="-0.150 0 0.042" rpy="0 0 0"/>
+      <geometry><box size="0.005 0.175 0.080"/></geometry>
+    </collision>
+    <!-- drawer back wall -Y -->
+    <collision>
+      <origin xyz="0 -0.085 0.042" rpy="0 0 0"/>
+      <geometry><box size="0.300 0.005 0.080"/></geometry>
+    </collision>
+    <!-- drawer front wall +Y -->
+    <collision>
+      <origin xyz="0 0.085 0.042" rpy="0 0 0"/>
+      <geometry><box size="0.300 0.005 0.080"/></geometry>
+    </collision>
+  </link>
+
+  <!-- Handle link: two posts + crossbar -->
+  <link name="handle">
+    <visual>
+      <geometry><mesh filename="handle.glb"/></geometry>
+    </visual>
+
+    <!-- left post -->
+    <collision>
+      <origin xyz="0.020 0.009 0" rpy="1.5708 0 0"/>
+      <geometry><cylinder radius="0.0042" length="0.018"/></geometry>
+    </collision>
+    <!-- right post -->
+    <collision>
+      <origin xyz="-0.020 0.009 0" rpy="1.5708 0 0"/>
+      <geometry><cylinder radius="0.0042" length="0.018"/></geometry>
+    </collision>
+    <!-- crossbar -->
+    <collision>
+      <origin xyz="0 0.018 0" rpy="0 1.5708 0"/>
+      <geometry><cylinder radius="0.0040" length="0.040"/></geometry>
+    </collision>
+  </link>
+
+  <!-- Prismatic joint: drawer slides along +Y, range 0.0 to 0.19 m.
+       Joint origin shifted from z=0.025 to z=0.000 to match the new outer link origin. -->
+  <joint name="drawer_slide" type="prismatic">
+    <parent link="outer"/>
+    <child link="drawer"/>
+    <origin xyz="0 0 0.000" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="0.0" upper="0.19" effort="100" velocity="1.0"/>
+    <dynamics damping="0.5" friction="0.01"/>
+  </joint>
+
+  <!-- Fixed joint: handle attached to front-center of drawer at mid-height -->
+  <joint name="handle_joint" type="fixed">
+    <parent link="drawer"/>
+    <child link="handle"/>
+    <origin xyz="0 0.090 0.042" rpy="0 0 0"/>
+  </joint>
+
+</robot>

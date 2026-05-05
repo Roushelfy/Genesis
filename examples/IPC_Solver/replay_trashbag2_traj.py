@@ -19,13 +19,14 @@ from _replay_common import (
     FullViewCamera,
     SurroundCamera,
     TrajectoryReplay,
+    marvin_urdf,
 )
 
 _REPO = Path(__file__).resolve().parents[2]
 _DEMO = _REPO / "DemoAssets"
 _TRASH = _DEMO / "trashbag"
 
-MARVIN_URDF = str(_DEMO / "marvin_sharpa_description/marvin_sharpa.urdf")
+MARVIN_URDF = marvin_urdf("marvin_sharpa")
 TABLE_GLB = str(_TRASH / "work_table.glb")
 TRASHBAG_GLB = str(_TRASH / "Trashbag_rope.glb")
 TRASHCAN_OBJ = str(_TRASH / "Trashcan033.obj")

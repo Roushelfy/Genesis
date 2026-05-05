@@ -30,6 +30,7 @@ from _replay_common import (
     FullViewCamera,
     SurroundCamera,
     TrajectoryReplay,
+    marvin_urdf,
 )
 
 _REPO = Path(__file__).resolve().parents[2]
@@ -37,7 +38,7 @@ _DEMO = _REPO / "DemoAssets"
 _GEAR = _DEMO / "planetary_gear"
 _TABLE_GLB = str(_DEMO / "coat_hanger" / "work_table.glb")
 
-MARVIN_URDF = str(_DEMO / "marvin_sharpa_description" / "marvin_sharpa.urdf")
+MARVIN_URDF = marvin_urdf("marvin_sharpa")
 DEFAULT_TRAJ = str(_GEAR / "trajectory_gear_sharpa.npz")
 
 # Gear geometry (matching IPCGearEnvConfig defaults)
@@ -156,7 +157,7 @@ class GearReplay(TrajectoryReplay):
                 convexify=False,
             ),
             surface=gs.surfaces.BSDF(roughness=0.1, metallic=0.0, ior=1.5),
-            vis_mode="visual",
+            vis_mode=self.args.vis_mode,
         )
 
         housing_surface = gs.surfaces.Metal(color=(0.6, 0.6, 0.6, 1.0))
@@ -179,7 +180,7 @@ class GearReplay(TrajectoryReplay):
             ),
             material=rigid_mat,
             surface=housing_surface,
-            vis_mode="visual",
+            vis_mode=self.args.vis_mode,
         )
 
         # Sun gear with handle — free
@@ -195,7 +196,7 @@ class GearReplay(TrajectoryReplay):
             ),
             material=rigid_mat,
             surface=sun_surface,
-            vis_mode="visual",
+            vis_mode=self.args.vis_mode,
         )
 
         # Planet gears
@@ -217,7 +218,7 @@ class GearReplay(TrajectoryReplay):
                 ),
                 material=rigid_mat,
                 surface=planet_surface,
-                vis_mode="visual",
+                vis_mode=self.args.vis_mode,
             )
 
         # Carrier — offset below gear plane
@@ -234,7 +235,7 @@ class GearReplay(TrajectoryReplay):
             ),
             material=rigid_mat,
             surface=carrier_surface,
-            vis_mode="visual",
+            vis_mode=self.args.vis_mode,
         )
 
         # Support pin — fixed shaft
@@ -261,7 +262,7 @@ class GearReplay(TrajectoryReplay):
                 collision=False,
                 pos=(0, 0, 1.08),
             ),
-            vis_mode="visual",
+            vis_mode=self.args.vis_mode,
         )
 
 

@@ -18,13 +18,14 @@ from _replay_common import (
     FullViewCamera,
     SurroundCamera,
     TrajectoryReplay,
+    marvin_urdf,
 )
 
 _REPO = Path(__file__).resolve().parents[2]
 _DEMO = _REPO / "DemoAssets"
 
-MARVIN_GSS_URDF = str(_DEMO / "marvin_gss/marvin_gss.urdf")
-MARVIN_PIKA_URDF = str(_DEMO / "marvin_robot/urdf/marvin_pika.urdf")
+MARVIN_GSS_URDF = marvin_urdf("marvin_gss")
+MARVIN_PIKA_URDF = marvin_urdf("marvin_pika")
 PAN_USD = str(_DEMO / "cook/Pan025/Pan025.usd")
 SPATULA_USD = str(_DEMO / "cook/Spatula018/Spatula018.usd")
 DEFAULT_TRAJ = str(_DEMO / "cook_with_teleop/trajectory.npz")

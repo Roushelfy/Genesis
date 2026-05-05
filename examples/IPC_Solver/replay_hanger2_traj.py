@@ -22,13 +22,14 @@ from _replay_common import (
     FullViewCamera,
     SurroundCamera,
     TrajectoryReplay,
+    marvin_urdf,
 )
 
 _REPO = Path(__file__).resolve().parents[2]
 _DEMO = _REPO / "DemoAssets"
 _HANGER = _DEMO / "coat_hanger"
 
-MARVIN_URDF = str(_DEMO / "marvin_sharpa_description/marvin_sharpa.urdf")
+MARVIN_URDF = marvin_urdf("marvin_sharpa")
 TABLE_GLB = str(_HANGER / "work_table.glb")
 SHIRT_GLB = str(_HANGER / "genesis_shirt.glb")
 COAT_HANGER_GLB = str(_HANGER / "coat_hanger.glb")

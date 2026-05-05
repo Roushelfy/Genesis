@@ -59,14 +59,15 @@ from _replay_common import (
     FullViewCamera,
     SurroundCamera,
     TrajectoryReplay,
+    marvin_urdf,
 )
 
 _REPO = Path(__file__).resolve().parents[2]
 _DEMO = _REPO / "DemoAssets"
 _GEAR = _DEMO / "planetary_gear"
 
-MARVIN_URDF = str(_DEMO / "marvin_sharpa_description" / "marvin_sharpa.urdf")
-TABLE_GLB = str(_DEMO / "coat_hanger" / "work_table.glb")
+MARVIN_URDF = marvin_urdf("marvin_sharpa")
+TABLE_GLB = str(_DEMO / "trashbag" / "work_table.glb")
 DEFAULT_TRAJ = str(_GEAR / "trajectory_gear_sharpa.npz")
 
 # Gear geometry (matching IPCGearEnvConfig defaults)
@@ -237,7 +238,7 @@ class GearReplay(TrajectoryReplay):
                 convexify=False,
             ),
             surface=gs.surfaces.BSDF(roughness=0.45, metallic=0.0, ior=1.45),
-            vis_mode="visual",
+            vis_mode=self.args.vis_mode,
         )
 
         rigid_mat = gs.materials.Rigid(rho=1000.0)
@@ -245,33 +246,34 @@ class GearReplay(TrajectoryReplay):
         # Ring gear — fixed housing
         scene.add_entity(
             gs.morphs.Mesh(
-                file=f"{gear_assets}/ring_gear.glb",
+                file=f"{gear_assets}/ring_gear_v1.glb",
                 pos=(CX, CY, CZ),
                 euler=(0, 0, rot_off),
                 scale=MESH_SCALE,
                 fixed=True,
+                file_meshes_are_zup=True,
                 convexify=False,
                 decimate=False,
             ),
             material=rigid_mat,
-            # surface=gs.surfaces.Metal(color=(0.25, 0.25, 0.27, 1.0), roughness=0.35),
-            vis_mode="visual",
+            vis_mode=self.args.vis_mode,
         )
 
-        # Sun gear with handle — bright polished steel, low roughness for sharp specular
+        # Sun gear with handle — polished steel surface override
         self._rigid_entities["sun_gear"] = scene.add_entity(
             gs.morphs.Mesh(
-                file=f"{gear_assets}/sun_gear_handle_v2.glb",
+                file=f"{gear_assets}/sun_gear_handle.glb",
                 pos=(CX, CY, CZ),
                 euler=(0, 0, rot_off),
                 scale=MESH_SCALE,
                 fixed=False,
+                file_meshes_are_zup=False,
                 convexify=False,
                 decimate=False,
             ),
             material=rigid_mat,
-            #            surface=gs.surfaces.Metal(color=(0.80, 0.80, 0.78, 1.0), roughness=0.08),
-            vis_mode="visual",
+            surface=gs.surfaces.BSDF(color=(67.0 / 255.0, 79.0 / 255.0, 99.0 / 255.0), metallic=0.9, roughness=0.35),
+            vis_mode=self.args.vis_mode,
         )
 
         # Planet gears — mid roughness, warm brass/bronze tint to distinguish from sun+ring
@@ -279,7 +281,7 @@ class GearReplay(TrajectoryReplay):
             tx, ty, self_rot_deg = _planet_position(i)
             self._rigid_entities[f"planet_gear_{i}"] = scene.add_entity(
                 gs.morphs.Mesh(
-                    file=f"{gear_assets}/planet_gear_v2.glb",
+                    file=f"{gear_assets}/planet_gear_v4.glb",
                     pos=(CX + tx, CY + ty, CZ),
                     euler=(0, 0, self_rot_deg),
                     scale=MESH_SCALE,
@@ -288,25 +290,24 @@ class GearReplay(TrajectoryReplay):
                     decimate=False,
                 ),
                 material=rigid_mat,
-                #                surface=gs.surfaces.Metal(color=(0.72, 0.60, 0.35, 1.0), roughness=0.25),
-                vis_mode="visual",
+                vis_mode=self.args.vis_mode,
             )
 
         # Carrier — matte aluminium, clearly different from the steel gears
         carrier_tz = -(GEAR_WIDTH_MM / 2) * MESH_SCALE
         self._rigid_entities["carrier"] = scene.add_entity(
             gs.morphs.Mesh(
-                file=f"{gear_assets}/carrier.glb",
+                file=f"{gear_assets}/carrier_v1.glb",
                 pos=(CX, CY, CZ + carrier_tz),
                 euler=(0, 0, rot_off),
                 scale=MESH_SCALE,
                 fixed=False,
+                file_meshes_are_zup=False,
                 convexify=False,
                 decimate=False,
             ),
             material=rigid_mat,
-            #            surface=gs.surfaces.Metal(color=(0.55, 0.57, 0.60, 1.0), roughness=0.45),
-            vis_mode="visual",
+            vis_mode=self.args.vis_mode,
         )
 
         # Support pin — fixed shaft
@@ -326,8 +327,6 @@ class GearReplay(TrajectoryReplay):
         )
 
         # Robot (MARVIN_SHARPA, 58 DOF, fixed base)
-        # Override paint_white_glossy (arm links 1-6) to add some shininess; GLB default is too matte.
-        # aluminium_brushed and plastic_black_rough are left to the GLB PBR values.
         self._robot = scene.add_entity(
             gs.morphs.URDF(
                 file=MARVIN_URDF,
@@ -335,14 +334,7 @@ class GearReplay(TrajectoryReplay):
                 collision=False,
                 pos=(0, 0, 1.08),
             ),
-            surface={
-                "paint_white_glossy": gs.surfaces.BSDF(
-                    color=(0.74, 0.74, 0.74),
-                    roughness=0.25,
-                    metallic=0.25,
-                ),
-            },
-            vis_mode="visual",
+            vis_mode=self.args.vis_mode,
         )
 
 

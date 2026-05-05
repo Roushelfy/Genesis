@@ -19,7 +19,7 @@ from scipy.spatial.transform import Rotation
 
 import genesis as gs
 
-from _replay_common import TrajectoryReplay
+from _replay_common import TrajectoryReplay, marvin_urdf
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 _DEFAULT_SEQ_DIR = _REPO_ROOT / "DemoAssets" / "yoyo" / "v7" / "seq"
@@ -33,7 +33,9 @@ class YoyoV5Replay(TrajectoryReplay):
 
     def add_args(self, parser):
         parser.add_argument(
-            "--seq-dir", type=str, default=str(_DEFAULT_SEQ_DIR),
+            "--seq-dir",
+            type=str,
+            default=str(_DEFAULT_SEQ_DIR),
             help="Sequence directory containing meta.json",
         )
 
@@ -86,23 +88,20 @@ class YoyoV5Replay(TrajectoryReplay):
 
         urdf_rel = self._meta.get("urdf", "")
         assert urdf_rel, "meta.json must specify 'urdf'"
-        urdf_path = Path(urdf_rel)
-        if not urdf_path.is_absolute():
-            urdf_path = _REPO_ROOT / urdf_rel
-        if not urdf_path.exists() and "marvin_sharpa" in urdf_rel:
-            from huggingface_hub import snapshot_download
-            local_dir = snapshot_download(
-                repo_id="Genesis-Intelligence/internal_assets",
-                repo_type="dataset",
-                allow_patterns="marvin_sharpa_description/**",
-            )
-            urdf_path = Path(local_dir) / "marvin_sharpa_description" / "marvin_sharpa.urdf"
+        if "marvin_sharpa" in urdf_rel:
+            urdf_path = Path(marvin_urdf("marvin_sharpa"))
+        else:
+            urdf_path = Path(urdf_rel)
+            if not urdf_path.is_absolute():
+                urdf_path = _REPO_ROOT / urdf_rel
         assert urdf_path.exists(), f"Robot URDF not found: {urdf_path}"
 
         robot_pos = self._meta.get("robot_base_pos", [0, 0, 0])
         self._robot = scene.add_entity(
             gs.morphs.URDF(
-                file=str(urdf_path), fixed=True, collision=False,
+                file=str(urdf_path),
+                fixed=True,
+                collision=False,
                 pos=tuple(robot_pos),
             ),
             material=gs.materials.Rigid(coup_type="external_articulation"),
@@ -137,14 +136,12 @@ class YoyoV5Replay(TrajectoryReplay):
             )
             self._fem_entities[name] = ent
 
-
     def post_build(self):
         super().post_build()
         for name, ent in self._fem_entities.items():
             data = self._fem_data.get(name)
             if data is not None:
-                print(f"[v5] FEM '{name}': entity n_vertices={ent.n_vertices}, "
-                      f"seq data shape={data.shape}")
+                print(f"[v5] FEM '{name}': entity n_vertices={ent.n_vertices}, seq data shape={data.shape}")
 
     def apply_frame(self, scene, frame_idx):
         if self._joint_qpos is not None and frame_idx < len(self._joint_qpos):

@@ -19,13 +19,14 @@ from _replay_common import (
     FullViewCamera,
     SurroundCamera,
     TrajectoryReplay,
+    marvin_urdf,
 )
 
 _REPO = Path(__file__).resolve().parents[2]
 _DEMO = _REPO / "DemoAssets"
 _PAPER = _DEMO / "paper"
 
-MARVIN_URDF = str(_DEMO / "marvin_sharpa_description/marvin_sharpa.urdf")
+MARVIN_URDF = marvin_urdf("marvin_sharpa")
 TABLE_GLB = str(_PAPER / "work_table.glb")
 PAPER_GLB = str(_PAPER / "paper_plane_coarse.glb")
 DEFAULT_TRAJ = str(_PAPER / "trajectory_sharpa.npz")

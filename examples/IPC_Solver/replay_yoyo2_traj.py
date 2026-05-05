@@ -16,20 +16,11 @@ import numpy as np
 
 import genesis as gs
 
-from _replay_common import TrajectoryReplay
+from _replay_common import TrajectoryReplay, marvin_urdf
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 _YOYO_DIR = _REPO_ROOT / "DemoAssets" / "yoyo"
-def _get_sharpa_urdf() -> str:
-    from huggingface_hub import snapshot_download
-    local_dir = snapshot_download(
-        repo_id="Genesis-Intelligence/internal_assets",
-        repo_type="dataset",
-        allow_patterns="marvin_sharpa_description/**",
-    )
-    return os.path.join(local_dir, "marvin_sharpa_description", "marvin_sharpa.urdf")
-
-_SHARPA_URDF = _get_sharpa_urdf()
+_SHARPA_URDF = marvin_urdf("marvin_sharpa")
 
 
 class YoyoReplay(TrajectoryReplay):

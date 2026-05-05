@@ -19,13 +19,14 @@ from _replay_common import (
     FullViewCamera,
     SurroundCamera,
     TrajectoryReplay,
+    marvin_urdf,
 )
 
 _REPO = Path(__file__).resolve().parents[2]
 _DEMO = _REPO / "DemoAssets"
 _PAPER = _DEMO / "paper"
 
-MARVIN_URDF = str(_DEMO / "marvin_wuji/robot_capsule.urdf")
+MARVIN_URDF = marvin_urdf("marvin_wuji")
 TABLE_GLB = str(_PAPER / "work_table.glb")
 PAPER_GLB = str(_PAPER / "genesis_paper.glb")
 PRESS_OBJ = str(_PAPER / "brick_press.obj")

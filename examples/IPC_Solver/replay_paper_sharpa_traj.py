@@ -61,21 +61,31 @@ class _LightDef(TypedDict):
     color: tuple[float, float, float]
     intensity: float
 
+
 from _replay_common import (
     EgoCamera,
     FullViewCamera,
     SurroundCamera,
     TrajectoryReplay,
+    marvin_urdf,
 )
 
 _REPO = Path(__file__).resolve().parents[2]
 _DEMO = _REPO / "DemoAssets"
 _PAPER = _DEMO / "paper"
 
-MARVIN_URDF = str(_DEMO / "marvin_sharpa_description/marvin_sharpa.urdf")
+MARVIN_URDF = marvin_urdf("marvin_sharpa")
 TABLE_GLB = str(_PAPER / "work_table.glb")
-PAPER_GLB = str(_PAPER / "paper_plane_coarse.glb")
-DEFAULT_TRAJ = str(_PAPER / "trajectory_sharpa.npz")
+DEFAULT_TRAJ = str(_PAPER / "trajectory_sharpa_20260502.npz")
+
+# Auto-pick the paper GLB by FEM vertex count so older trajectories keep
+# replaying. Add new variants here when their meshes change.
+_PAPER_GLB_BY_VCOUNT = {
+    736: str(_PAPER / "paper_plane_extra_coarse.glb"),
+    795: str(_PAPER / "paper_plane_coarse.glb"),
+    960: str(_PAPER / "paper_plane_coarse.glb"),
+    2339: str(_PAPER / "paper_plane_coarse_dense.glb"),
+}
 
 
 class PaperSharpaReplay(TrajectoryReplay):
@@ -89,16 +99,16 @@ class PaperSharpaReplay(TrajectoryReplay):
     # radius and intensity are in Luisa units — Nyx scale factors are applied below.
     _LIGHTS: list[_LightDef] = [
         # Key light: above-left, warm, soft — highlights paper creases
-        {"pos": (0.5,  1.1,  2.4),  "radius": 0.2,  "color": (1.0, 0.97, 0.92), "intensity": 50.0},
+        {"pos": (0.5, 1.1, 2.4), "radius": 0.2, "color": (1.0, 0.97, 0.92), "intensity": 50.0},
         # Fill light: right side, cooler, large and soft
-        {"pos": (0.5, -1.8,  4.2),  "radius": 1.0,  "color": (0.48, 0.52, 0.6),  "intensity": 1.0},
+        {"pos": (0.5, -1.8, 4.2), "radius": 1.0, "color": (0.48, 0.52, 0.6), "intensity": 1.0},
         # Rim light: behind the scene, cool, hard — separates hands from dark background
-        {"pos": (-0.8, -3.0, 0.5), "radius": 0.25, "color": (0.8, 0.88, 1.0),  "intensity": 150.0},
+        {"pos": (-0.8, -3.0, 0.5), "radius": 0.25, "color": (0.8, 0.88, 1.0), "intensity": 150.0},
     ]
     # Nyx uses different physical units for radius and intensity.
     # Tune these two scalars to match perceived brightness/softness without
     # touching individual light values.
-    NYX_RADIUS_SCALE    = 1.0
+    NYX_RADIUS_SCALE = 1.0
     NYX_INTENSITY_SCALE = 0.2
 
     def make_renderer(self):
@@ -108,8 +118,7 @@ class PaperSharpaReplay(TrajectoryReplay):
         return gs.renderers.RayTracer(
             logging_level="warning",
             tracing_depth=32,
-            env_surface=gs.surfaces.Emission(
-                emissive_texture=gs.textures.ColorTexture(color=(0.01, 0.01, 0.01))),
+            env_surface=gs.surfaces.Emission(emissive_texture=gs.textures.ColorTexture(color=(0.01, 0.01, 0.01))),
             env_radius=100.0,
             lights=[
                 SphereLight(
@@ -166,8 +175,13 @@ class PaperSharpaReplay(TrajectoryReplay):
             "paper_sheet": traj["fem_paper_sheet"],
         }
 
+        v_count = self._fem_data["paper_sheet"].shape[1]
+        if v_count not in _PAPER_GLB_BY_VCOUNT:
+            raise ValueError(f"unknown paper FEM vertex count {v_count}; add a GLB mapping in _PAPER_GLB_BY_VCOUNT")
+        self._paper_glb = _PAPER_GLB_BY_VCOUNT[v_count]
+
         print(f"Robot qpos: {self._joint_qpos.shape[1]} DOF")
-        print(f"Paper: {self._fem_data['paper_sheet'].shape[1]} verts")
+        print(f"Paper: {v_count} verts → {Path(self._paper_glb).name}")
         if n_frames > 1:
             self.fps = min(int(1.0 / (self.sim_time[1] - self.sim_time[0])), 60)
         return n_frames
@@ -213,8 +227,7 @@ class PaperSharpaReplay(TrajectoryReplay):
         # Ground — large flat box so surface color override works (Plane ignores it)
         scene.add_entity(
             gs.morphs.Box(size=(20.0, 20.0, 0.02), pos=(0.0, 0.0, -2.01), fixed=True),
-            surface=gs.surfaces.BSDF(
-                diffuse_texture=gs.textures.ColorTexture(color=(0.05, 0.05, 0.05))),
+            surface=gs.surfaces.BSDF(diffuse_texture=gs.textures.ColorTexture(color=(0.05, 0.05, 0.05))),
         )
 
         # Table (ipc_paper: pos raised +0.02)
@@ -242,7 +255,7 @@ class PaperSharpaReplay(TrajectoryReplay):
         self._fem_entities = {
             "paper_sheet": scene.add_entity(
                 gs.morphs.Mesh(
-                    file=PAPER_GLB,
+                    file=self._paper_glb,
                     pos=(0.53, 0.0, 0.80),
                     euler=(0, 0, -90),
                     scale=0.125,
@@ -271,8 +284,6 @@ class PaperSharpaReplay(TrajectoryReplay):
         }
 
         # Robot (MARVIN_SHARPA, 58 DOF, fixed base)
-        # Override paint_white_glossy (arm links 1-6) to add some shininess; GLB default is too matte.
-        # aluminium_brushed and plastic_black_rough are left to the GLB PBR values.
         self._robot = scene.add_entity(
             gs.morphs.URDF(
                 file=MARVIN_URDF,
@@ -280,13 +291,6 @@ class PaperSharpaReplay(TrajectoryReplay):
                 collision=False,
                 pos=(0, 0, 1.08),
             ),
-            surface={
-                "paint_white_glossy": gs.surfaces.BSDF(
-                    color=(0.74, 0.74, 0.74),
-                    roughness=0.25,
-                    metallic=0.25,
-                ),
-            },
             vis_mode="visual",
         )
 
