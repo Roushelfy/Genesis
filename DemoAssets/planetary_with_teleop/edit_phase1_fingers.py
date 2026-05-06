@@ -301,29 +301,35 @@ def main():
     if _KF_FILE.exists():
         _load_keyframes()
 
+    use_spline = [False]   # False = linear, True = cubic spline
+
     def _bake_keyframes():
-        """Cubic spline interpolate finger keyframes into robot_qpos.
+        """Interpolate finger keyframes into robot_qpos.
 
         Only finger joints are interpolated; arm joints keep their original values.
         """
         if len(keyframes) < 2:
             print("[bake] Need at least 2 keyframes")
             return False
-        # Reset baked qpos to original before re-baking
         robot_qpos[:] = robot_qpos_original
         kf_frames = sorted(keyframes.keys())
         n_interp = 0
+        mode = "spline" if use_spline[0] else "linear"
         for jname in rh_bake_joints:
             col = joint_to_col.get(jname)
             if col is None:
                 continue
             vals = [keyframes[f].get(jname, float(robot_qpos_original[f, col])) for f in kf_frames]
-            cs = CubicSpline(kf_frames, vals, bc_type="clamped")
             f_start, f_end = kf_frames[0], kf_frames[-1]
             frames_range = np.arange(f_start, f_end + 1)
-            robot_qpos[f_start:f_end + 1, col] = cs(frames_range).astype(np.float32)
+            if use_spline[0]:
+                cs = CubicSpline(kf_frames, vals, bc_type="clamped")
+                robot_qpos[f_start:f_end + 1, col] = cs(frames_range).astype(np.float32)
+            else:
+                robot_qpos[f_start:f_end + 1, col] = np.interp(
+                    frames_range, kf_frames, vals).astype(np.float32)
             n_interp += 1
-        print(f"[bake] Interpolated {n_interp} finger joints across "
+        print(f"[bake] {mode}: {n_interp} finger joints, "
               f"frames {kf_frames[0]}-{kf_frames[-1]} ({len(kf_frames)} keyframes)")
         return True
 
@@ -504,19 +510,28 @@ def main():
         imgui.Text(f"Keyframes: {len(keyframes)}")
         if keyframes:
             kf_list = sorted(keyframes.keys())
-            imgui.Text(f"  Frames: {kf_list}")
-            for kf in kf_list:
-                if imgui.Button(f"Go {kf}"):
-                    st["frame"] = kf; st["play"] = False
-                    _update_display(kf)
-                imgui.SameLine()
-            imgui.NewLine()
+            per_row = 8
+            for row_start in range(0, len(kf_list), per_row):
+                row = kf_list[row_start:row_start + per_row]
+                for kf in row:
+                    if imgui.Button(f"Go {kf}"):
+                        st["frame"] = kf; st["play"] = False
+                        _update_display(kf)
+                    imgui.SameLine()
+                imgui.NewLine()
 
         imgui.Separator()
 
         # --- Bake & Save ---
+        changed, val = imgui.Checkbox("Cubic Spline", use_spline[0])
+        if changed:
+            use_spline[0] = val
+        imgui.SameLine()
+        imgui.Text("(off = linear)")
+
         if len(keyframes) >= 2:
-            if imgui.Button("Bake (spline interpolate)"):
+            label = "Bake (spline)" if use_spline[0] else "Bake (linear)"
+            if imgui.Button(label):
                 if _bake_keyframes():
                     st["baked"] = True
                     _update_display(st["frame"])
