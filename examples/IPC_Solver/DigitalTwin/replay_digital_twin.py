@@ -89,6 +89,13 @@ DRAWER_URDF = str(_DEMO / "repaired" / "drawer" / "acrylic_drawer.urdf")
 # Mirror gs-core/env/schemas/.../data_assets.py
 _DIGITAL_TWIN_REPO = "Genesis-Intelligence/Digital_twin_asset"
 _DIGITAL_TWIN_COMMIT = "a9eb6ecbed37af1bf9c0553d8b013d9302e10508"
+_DEMO_AUG_REPO = "Genesis-Intelligence/DemoAug_assets"
+_DEMO_AUG_COMMIT = "4480ca6f204ae41612b6f0b01f7bcf6910161003"
+
+# Local-only assets that don't live on HuggingFace (mirrors
+# _DIGITAL_TWIN_LOCAL_OVERRIDES in gs-core/env/schemas/.../objects/registry.py).
+_WOODEN_PLATEAU_GLB = str(_GS_CORE / "data/local_assets/digital_twin/wooden_plateau/wooden_plateau.glb")
+_BIN_LID_GLB = str(_GS_CORE / "data/local_assets/digital_twin/bin_lid/bin_lid.glb")
 
 
 _HF_CACHE: dict[str, str] = {}
@@ -106,6 +113,21 @@ def _dt(rel_path: str) -> str:
             revision=_DIGITAL_TWIN_COMMIT,
         )
     return _HF_CACHE[rel_path]
+
+
+def _da(rel_path: str) -> str:
+    """Download a file from DemoAug_assets at the pinned commit."""
+    key = f"demo_aug:{rel_path}"
+    if key not in _HF_CACHE:
+        from huggingface_hub import hf_hub_download
+
+        _HF_CACHE[key] = hf_hub_download(
+            repo_id=_DEMO_AUG_REPO,
+            repo_type="dataset",
+            filename=rel_path,
+            revision=_DEMO_AUG_COMMIT,
+        )
+    return _HF_CACHE[key]
 
 
 def _envmap(filename: str) -> str:
@@ -131,14 +153,25 @@ _ENVMAP_REGISTRY: dict[str, tuple[float, float]] = {
     "brown_photostudio_02_4k.exr": (0.0, 1.0),
     "bright_labratory.exr": (0.0, 1.0),
     "unfinished_office_night_4k.exr": (0.0, 1.0),
+    "mirrored_hall_4k.exr": (0.0, 1.0),
+    "burnt_warehouse_4k.exr": (0.0, 1.0),
+    "fireplace_4k.exr": (0.0, 1.0),
+    "neon_photostudio_4k.exr": (0.0, 1.0),
+    "abandoned_greenhouse_4k.exr": (0.0, 1.0),
 }
 
-# Task → EXR. Each digital-twin task gets a distinct env map, and all three are
-# disjoint from Robowits's _TASK_ENVMAP so the two demos don't share skies.
+# Task → EXR. Each of the 8 digital-twin tasks gets a distinct env map, and
+# all 8 are disjoint from Robowits's _TASK_ENVMAP so the union of 16+8=24
+# tasks across the two demos all have unique skies.
 _TASK_ENVMAP: dict[str, str] = {
     "sort": "brown_photostudio_02_4k.exr",
     "pour": "bright_labratory.exr",
     "drawer": "unfinished_office_night_4k.exr",
+    "pick_cup_tray": "mirrored_hall_4k.exr",
+    "pick_corn_bin": "burnt_warehouse_4k.exr",
+    "pick_potatoes": "fireplace_4k.exr",
+    "ipc_pick_pen": "neon_photostudio_4k.exr",
+    "pick_carrot_basket": "abandoned_greenhouse_4k.exr",
 }
 
 # Global dim on the registry envmap multiplier so the HDR sky doesn't
@@ -175,8 +208,8 @@ def _task_sort() -> list[dict]:
                 scale=0.7,
                 fixed=False,
                 collision=True,
-                convexify=False,
-                decimate=False,
+                convexify=True,
+                decimate=True,
             ),
         },
         {
@@ -186,8 +219,8 @@ def _task_sort() -> list[dict]:
                 scale=0.15,
                 fixed=False,
                 collision=True,
-                convexify=False,
-                decimate=False,
+                convexify=True,
+                decimate=True,
             ),
         },
         {
@@ -197,8 +230,8 @@ def _task_sort() -> list[dict]:
                 euler=(90, 0, 0),
                 fixed=False,
                 collision=True,
-                convexify=False,
-                decimate=False,
+                convexify=True,
+                decimate=True,
             ),
         },
         {
@@ -208,8 +241,8 @@ def _task_sort() -> list[dict]:
                 scale=0.16,
                 fixed=False,
                 collision=True,
-                convexify=False,
-                decimate=False,
+                convexify=True,
+                decimate=True,
             ),
         },
         {
@@ -219,8 +252,8 @@ def _task_sort() -> list[dict]:
                 scale=0.003,
                 fixed=False,
                 collision=True,
-                convexify=False,
-                decimate=False,
+                convexify=True,
+                decimate=True,
             ),
         },
         {
@@ -230,8 +263,8 @@ def _task_sort() -> list[dict]:
                 euler=(90, 0, 0),
                 fixed=False,
                 collision=True,
-                convexify=False,
-                decimate=False,
+                convexify=True,
+                decimate=True,
             ),
         },
     ]
@@ -248,8 +281,8 @@ def _task_pour() -> list[dict]:
                 euler=(90, 0, 0),
                 fixed=False,
                 collision=True,
-                convexify=False,
-                decimate=False,
+                convexify=True,
+                decimate=True,
             ),
         },
         {
@@ -259,8 +292,8 @@ def _task_pour() -> list[dict]:
                 euler=(90, 0, 0),
                 fixed=False,
                 collision=True,
-                convexify=False,
-                decimate=False,
+                convexify=True,
+                decimate=True,
             ),
         },
     ]
@@ -277,6 +310,8 @@ def _task_pour() -> list[dict]:
                             scale=0.1,
                             fixed=False,
                             collision=True,
+                            convexify=True,
+                            decimate=False,
                             merge_fixed_links=False,
                         ),
                     }
@@ -298,7 +333,7 @@ def _task_drawer() -> list[dict]:
                 fixed=False,
                 collision=True,
                 convexify=True,
-                decimate=False,
+                decimate=True,
             ),
         },
         {
@@ -311,7 +346,225 @@ def _task_drawer() -> list[dict]:
                 euler=(0, 0, 90),
                 fixed=False,
                 collision=True,
+                convexify=True,
+                decimate=False,
                 merge_fixed_links=False,
+            ),
+        },
+    ]
+
+
+def _task_pick_cup_tray() -> list[dict]:
+    """PICK_CUP_TRAY_TWIN — pick a cup onto a tray, then bimanually lift the
+    tray off the under-tray plateau onto the destination plateau.
+
+    NPZ layout: primary_0 = cup, destination = tray,
+    distractor_0 = destination plateau, distractor_1 = under-tray plateau.
+    """
+    import genesis as gs
+
+    return [
+        {
+            "name": "primary_0",  # cup
+            "morph": gs.morphs.Mesh(
+                file=_dt("cup/cup.glb"),
+                euler=(90, 0, 0),
+                scale=0.125,
+                fixed=False,
+                collision=True,
+                convexify=True,
+                decimate=True,
+                # Match gs-core PICK_CUP_TRAY_TWIN: skip COACD → single convex hull.
+                decompose_object_error_threshold=float("inf"),
+            ),
+        },
+        {
+            "name": "destination",  # tray
+            "morph": gs.morphs.Mesh(
+                file=_dt("tray/tray.glb"),
+                euler=(90, 0, 0),
+                scale=0.35,
+                fixed=False,
+                collision=True,
+                convexify=True,
+                decimate=True,
+            ),
+        },
+        {
+            "name": "distractor_0",  # destination plateau (fixed in gs-core)
+            "morph": gs.morphs.Mesh(
+                file=_WOODEN_PLATEAU_GLB,
+                fixed=True,
+                collision=True,
+                convexify=True,
+                decimate=True,
+            ),
+        },
+        {
+            "name": "distractor_1",  # under-tray plateau (fixed in gs-core)
+            "morph": gs.morphs.Mesh(
+                file=_WOODEN_PLATEAU_GLB,
+                fixed=True,
+                collision=True,
+                convexify=True,
+                decimate=True,
+            ),
+        },
+    ]
+
+
+def _task_pick_corn_bin() -> list[dict]:
+    """PICK_CORN_BIN_TWIN — pick a corn cob and drop it into a bin (with the
+    bin lid sitting next to the bin as a distractor).
+
+    NPZ layout: primary_0 = corn, destination = bin, distractor_0 = bin_lid.
+    """
+    import genesis as gs
+
+    return [
+        {
+            "name": "primary_0",  # corn
+            "morph": gs.morphs.Mesh(
+                file=_dt("verified/corn/corn.glb"),
+                euler=(90, 0, 0),
+                fixed=False,
+                collision=True,
+                convexify=True,
+                decimate=True,
+            ),
+        },
+        {
+            "name": "destination",  # bin
+            "morph": gs.morphs.Mesh(
+                file=_dt("bin/bin.glb"),
+                euler=(90, 0, 0),
+                scale=0.27,
+                fixed=False,
+                collision=True,
+                convexify=True,
+                decimate=True,
+            ),
+        },
+        {
+            "name": "distractor_0",  # bin_lid (local override — not on HF)
+            "morph": gs.morphs.Mesh(
+                file=_BIN_LID_GLB,
+                euler=(90, 0, 0),
+                scale=0.27,
+                fixed=False,
+                collision=True,
+                convexify=True,
+                decimate=True,
+            ),
+        },
+    ]
+
+
+def _task_pick_potatoes() -> list[dict]:
+    """PICK_POTATOES_TWIN — pick two potatoes into a green plastic bowl.
+
+    NPZ layout: primary_0/1 = potatoes, destination = green_plastic_bowl.
+    """
+    import genesis as gs
+
+    def potato_morph():
+        return gs.morphs.Mesh(
+            file=_dt("verified/potato/potato.glb"),
+            scale=1.50,
+            fixed=False,
+            collision=True,
+            convexify=True,
+            decimate=True,
+        )
+
+    return [
+        {"name": "primary_0", "morph": potato_morph()},
+        {"name": "primary_1", "morph": potato_morph()},
+        {
+            "name": "destination",  # green_plastic_bowl
+            "morph": gs.morphs.Mesh(
+                file=_dt("verified/green_plastic_bowl/green_plastic_bowl.glb"),
+                euler=(90, 0, 0),
+                fixed=False,
+                collision=True,
+                convexify=True,
+                decimate=True,
+            ),
+        },
+    ]
+
+
+def _task_ipc_pick_pen() -> list[dict]:
+    """IPC_PICK_PEN — pick a pen and place it in a pen holder, IPC variant.
+
+    Entity names match IPCPickPenEnv: ``pen`` and ``pen_holder`` (the rigid
+    PICK_PEN_TWIN variant uses ``primary_0`` / ``destination`` instead).
+    Morph args mirror the digital_twin defaults — same as the rigid pick_pen.
+    """
+    import genesis as gs
+
+    return [
+        {
+            "name": "pen",
+            "morph": gs.morphs.Mesh(
+                file=_dt("pen/pen.glb"),
+                euler=(90, 0, 0),
+                scale=0.15,
+                fixed=False,
+                collision=True,
+                convexify=True,
+                decimate=True,
+            ),
+        },
+        {
+            "name": "pen_holder",
+            "morph": gs.morphs.Mesh(
+                file=_dt("pen_holder/pen_holder.glb"),
+                euler=(90, 0, 0),
+                scale=0.50,
+                fixed=False,
+                collision=True,
+                convexify=True,
+                decimate=True,
+            ),
+        },
+    ]
+
+
+def _task_pick_carrot_basket() -> list[dict]:
+    """PICK_CARROT_BASKET_TWIN — carrot into a basket.
+
+    NPZ layout: primary_0 = carrot, destination = basket (basket_scan.glb).
+    Morph args mirror gs-core MORPH_DIGITAL_TWIN_ARGS_MAP: carrot
+    euler=(90,0,0); basket_scan euler=(90,180,0), scale=0.25. Both are
+    Y-up GLBs, so file_meshes_are_zup=False lets Genesis convert to Z-up.
+    """
+    import genesis as gs
+
+    return [
+        {
+            "name": "primary_0",  # carrot
+            "morph": gs.morphs.Mesh(
+                file=_dt("verified/carrot/carrot.glb"),
+                euler=(90, 0, 0),
+                fixed=False,
+                collision=True,
+                convexify=True,
+                decimate=True,
+                file_meshes_are_zup=False,
+            ),
+        },
+        {
+            "name": "destination",  # basket
+            "morph": gs.morphs.Mesh(
+                file=_dt("basket/basket_scan.glb"),
+                euler=(90, 180, 0),
+                scale=0.25,
+                fixed=False,
+                collision=True,
+                convexify=True,
+                decimate=True,
+                file_meshes_are_zup=False,
             ),
         },
     ]
@@ -321,12 +574,22 @@ TASK_REGISTRY: dict[str, Any] = {
     "sort": _task_sort,
     "pour": _task_pour,
     "drawer": _task_drawer,
+    "pick_cup_tray": _task_pick_cup_tray,
+    "pick_corn_bin": _task_pick_corn_bin,
+    "pick_potatoes": _task_pick_potatoes,
+    "ipc_pick_pen": _task_ipc_pick_pen,
+    "pick_carrot_basket": _task_pick_carrot_basket,
 }
 
 TASK_NPZ: dict[str, str] = {
     "sort": "sort_gss.npz",
     "pour": "pour_gss.npz",
     "drawer": "drawer_gss.npz",
+    "pick_cup_tray": "pick_cup_tray_gss.npz",
+    "pick_corn_bin": "pick_corn_bin_gss.npz",
+    "pick_potatoes": "pick_potatoes_gss.npz",
+    "ipc_pick_pen": "ipc_pick_pen_gss.npz",
+    "pick_carrot_basket": "pick_carrot_basket_gss.npz",
 }
 
 
@@ -410,7 +673,7 @@ class DigitalTwinReplay(TrajectoryReplay):
             type=str,
             required=True,
             choices=sorted(TASK_REGISTRY.keys()),
-            help="Task to replay: sort, pour, or drawer",
+            help="Task to replay (one of: sort, pour, drawer, pick_cup_tray, pick_corn_bin, pick_potatoes, ipc_pick_pen, pick_carrot_basket)",
         )
         parser.add_argument(
             "--traj",
@@ -435,15 +698,6 @@ class DigitalTwinReplay(TrajectoryReplay):
         traj = np.load(traj_path)
         env_suffix = "" if self.args.use_env_map else "_no_envmap"
         self.args.trajectory = f"{self.args.task}{env_suffix}"
-        # Pin the render output to a stable, timestamp-free name so re-renders
-        # overwrite cleanly. _replay_common appends a `_YYYYMMDD_HHMMSS` tag to
-        # its default stem; setting args.output bypasses that for single
-        # renders (kf_idx is always None for digital_twin).
-        if getattr(self.args, "render", False):
-            renderer_name = "nyx" if getattr(self.args, "nyx", False) else "luisa"
-            self.args.output = (
-                f"data/ipc_demo/ipc_{self.name}/ipc_{self.name}_{self.args.trajectory}_{renderer_name}.mp4"
-            )
         self.sim_time = traj["sim_time"]
         n_frames = len(self.sim_time)
 
@@ -469,6 +723,23 @@ class DigitalTwinReplay(TrajectoryReplay):
             extra = f" (qpos: {self._entity_qpos[name].shape[1]})" if name in self._entity_qpos else ""
             print(f"  {name}: {arr.shape[0]} frames{extra}")
 
+        # Table pose recorded in the NPZ — depends on the env's
+        # `table_x_offset` at recording time (sort/pour/drawer were captured
+        # with offset=0 → table at X=0.597; the 5 newer pick_* tasks were
+        # captured with offset=0.203 → table at X=0.800). The table is fixed
+        # in build_scene (not in _rigid_entities), so we read its pose once
+        # here and bake it into the morph.
+        # NOTE: only position is taken. The recorded quat is Genesis's
+        # auto-applied y_up rotation for GLB+file_meshes_are_zup=True (see
+        # genesis/options/morphs.py:_resolve_zup); passing it back into the
+        # morph would compose with the same auto-rotation and tip the table
+        # on its side. Leave quat=None and let Genesis apply y_up once.
+        table_arr = self._rigid_data.pop("table", None)
+        if table_arr is None or table_arr.shape[0] == 0:
+            raise RuntimeError("NPZ missing rigid_table — cannot determine table pose")
+        self._table_pos = tuple(float(x) for x in table_arr[0, :3])
+        print(f"  table (fixed): pos={self._table_pos}")
+
         # FPS from timestamps when available
         if n_frames > 1:
             dt = float(self.sim_time[1] - self.sim_time[0])
@@ -480,16 +751,21 @@ class DigitalTwinReplay(TrajectoryReplay):
     def build_scene(self, scene):
         import genesis as gs
 
-        # Table — same mesh and pose as _table_digital_twin in gs-core
+        # Table — same mesh as _table_digital_twin in gs-core. Pose is read
+        # from the NPZ at frame 0 because `sim_digital_twin_env._apply_table_x_offset`
+        # shifts the table by an env-specific offset before recording (older
+        # sort/pour/drawer NPZs: offset=0 → X=0.597; newer pick_* NPZs:
+        # offset=0.203 → X=0.800). Mesh params match gs-core MORPH_TABLE:
+        # convexify left to Genesis auto (None), decimate=True (default),
+        # coacd_options=COACD_HQ (preprocess_resolution=150).
         scene.add_entity(
             gs.morphs.Mesh(
                 file=TABLE_GLB,
-                pos=(0.597, 0.0, 0.0),
-                euler=(0, 0, 0),
+                pos=self._table_pos,
                 scale=(1.14, 1.0, 1.445),
                 fixed=True,
                 file_meshes_are_zup=True,
-                convexify=False,
+                coacd_options=gs.options.CoacdOptions(preprocess_resolution=150),
             ),
             surface=gs.surfaces.BSDF(roughness=0.45, metallic=0.0),
         )

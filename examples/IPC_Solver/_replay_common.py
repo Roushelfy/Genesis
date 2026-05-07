@@ -14,7 +14,6 @@ from __future__ import annotations
 import argparse
 import math
 import time
-from datetime import datetime
 from pathlib import Path
 import numpy as np
 
@@ -31,7 +30,7 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 # when gs-core's scripts/publish_marvin_robots.py re-publishes.
 
 _INTERNAL_ASSETS_REPO = "Genesis-Intelligence/internal_assets"
-_INTERNAL_ASSETS_COMMIT = "0bdfdd35641eb355a6593c753c19658ae7e4ead6"
+_INTERNAL_ASSETS_COMMIT = "b30eeb1f312881e2a567e29a3067963f21bd4787"
 
 _MARVIN_URDF_STEMS = frozenset(
     {
@@ -871,11 +870,10 @@ class TrajectoryReplay:
         renderer_name = "nyx" if use_nyx else "luisa"
         traj_name = getattr(args, "trajectory", "default")
 
-        dt_tag = datetime.now().strftime("%Y%m%d_%H%M%S")
         if kf_idx is not None:
-            stem = f"ipc_{self.name}_kf{kf_idx + 1:02d}_{renderer_name}_{dt_tag}"
+            stem = f"ipc_{self.name}_kf{kf_idx + 1:02d}_{renderer_name}"
         else:
-            stem = f"ipc_{self.name}_{traj_name}_{renderer_name}_{dt_tag}"
+            stem = f"ipc_{self.name}_{traj_name}_{renderer_name}"
 
         # --output is honoured only for single-render mode (would collide in batch)
         default_output = f"data/ipc_demo/ipc_{self.name}/{stem}.mp4"

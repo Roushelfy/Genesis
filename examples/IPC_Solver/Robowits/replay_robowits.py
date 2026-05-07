@@ -84,6 +84,34 @@ def _envmap(filename: str) -> str:
     return _hf_download("Genesis-Intelligence/Digital_twin_asset", f"envmap/4K/{filename}")
 
 
+# ---------------------------------------------------------------------------
+# Classic mode (--classic): old MarvinPika URDF + polyhaven small_empty_room_1
+# ---------------------------------------------------------------------------
+
+# polyhaven CC0; downloaded on first use, cached under DemoAssets/_polyhaven_cache/.
+_POLYHAVEN_4K_URL = "https://dl.polyhaven.org/file/ph-assets/HDRIs/exr/4k/small_empty_room_1_4k.exr"
+_CLASSIC_ENVMAP_NAME = "small_empty_room_1_4k.exr"
+_CLASSIC_ENVMAP_REGISTRY: tuple[float, float] = (90.0, 1.0)  # (yaw, multiplier)
+
+# Local archived old MarvinPika URDF — predates the new camera-base assembly.
+CLASSIC_MARVIN_PIKA_URDF = str(
+    _REPO / "data" / "archive_marvin_demoassets" / "marvin_robot" / "urdf" / "marvin_pika.urdf"
+)
+
+
+def _classic_envmap_path() -> str:
+    """Return the cached path to the polyhaven small_empty_room_1 EXR."""
+    cache_dir = _DEMO / "_polyhaven_cache"
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    target = cache_dir / _CLASSIC_ENVMAP_NAME
+    if not target.exists():
+        import urllib.request
+
+        print(f"[classic] downloading {_POLYHAVEN_4K_URL} -> {target}")
+        urllib.request.urlretrieve(_POLYHAVEN_4K_URL, target)
+    return str(target)
+
+
 # Mirror of gs-core/.../envmaps/registry.py: per-EXR (rotation_deg, multiplier).
 # Keyed by filename so the task -> envmap mapping below stays orthogonal to
 # the registry values.
@@ -144,19 +172,26 @@ _LUISA_TO_NYX_INTENSITY_SCALE = 0.3
 
 # Task -> EXR filename (key into _ENVMAP_REGISTRY above).
 _TASK_ENVMAP: dict[str, str] = {
+    "01": "brown_photostudio_02_4k.exr",
     "02": "brown_photostudio_07_4k.exr",
     "03": "machine_shop_01_4k.exr",
     "04": "poly_haven_studio_4k.exr",
+    "05": "abandoned_greenhouse_4k.exr",
     "06": "art_studio_4k.exr",
+    "07": "bright_labratory.exr",
     "09": "lythwood_lounge_4k.exr",
+    "10": "machine_shop_01_4k.exr",
     "11": "empty_warehouse_01_4k.exr",
+    "12": "mirrored_hall_4k.exr",
     "13": "brown_photostudio_05_4k.exr",
     "14": "blue_photo_studio_4k.exr",
     "16": "gear_store_4k.exr",
     "17": "small_hangar_01_4k.exr",
     "18": "abandoned_factory_canteen_02_4k.exr",
     "19": "ballroom_4k.exr",
+    "23": "bright_library.exr",
     "24": "machine_shop_03_4k.exr",
+    "26": "unfinished_office_night_4k.exr",
     "27": "abandoned_hall_01_4k.exr",
     "28": "marry_hall_4k.exr",
     "29": "brown_photostudio_06_4k.exr",
@@ -269,7 +304,7 @@ def _task_04():
             "morph": gs.morphs.Mesh(
                 coacd_options=coacd,
                 file=_bk("9b4245ca-361f-4940-a23d-090b1e547a52/obj.glb"),
-                scale=0.8,
+                scale=(0.8, 0.8, 1.2),
                 pos=(0.46, 0.0, 0.843),
                 euler=(0, 0, 0),
                 fixed=False,
@@ -320,7 +355,7 @@ def _task_04():
         {
             "name": "target area",
             "morph": gs.morphs.Box(
-                pos=(0.7, -0.3, 0.96), euler=(0, 0, 0), size=(0.15, 0.15, 0.002), fixed=True, collision=False
+                pos=(0.7, -0.3, 0.9592), euler=(0, 0, 0), size=(0.15, 0.15, 0.002), fixed=True, collision=False
             ),
             "material": gs.materials.Rigid(),
             "surface": gs.surfaces.Default(color=(0.2, 0.8, 0.2), roughness=0.4),
@@ -433,6 +468,58 @@ def _task_09():
             ),
             "material": gs.materials.Rigid(),
             "surface": gs.surfaces.Default(color=(0.2, 0.8, 0.3), roughness=0.2),
+        },
+    ]
+
+
+def _task_10():
+    import genesis as gs
+
+    coacd = gs.options.CoacdOptions(threshold=0.01, preprocess_resolution=80, max_convex_hull=20, decimate=True)
+    return [
+        {
+            "name": "container",
+            "morph": gs.morphs.Mesh(
+                coacd_options=coacd,
+                file=_bk("382432e6-4f0d-44b6-98f9-2f3a013a47e2/obj.glb"),
+                scale=1.2,
+                pos=(0.58, 0.00, 0.81892),
+                euler=(0, 0, 0),
+                fixed=True,
+                collision=True,
+                parse_glb_with_zup=True,
+            ),
+            "material": gs.materials.Rigid(),
+            "surface": gs.surfaces.Rough(double_sided=True),
+        },
+        {
+            "name": "dustpan",
+            "morph": gs.morphs.Mesh(
+                coacd_options=coacd,
+                file=_rw("toolbench/dustpan.STL"),
+                scale=0.001,
+                pos=(0.67, 0.35, 0.9696),
+                euler=(90, 180, 0),
+                fixed=False,
+                collision=True,
+            ),
+            "material": gs.materials.Rigid(),
+            "surface": gs.surfaces.Rough(color=(0.9, 0.8, 0.6), double_sided=True),
+        },
+        {
+            "name": "screw",
+            "morph": gs.morphs.Mesh(
+                coacd_options=coacd,
+                file=_bk("1d373cbe-c73d-4929-bf32-e85a98dc4bca/obj.glb"),
+                scale=1.5,
+                pos=(0.56, -0.16, 0.7674),
+                euler=(0, 0, 0),
+                fixed=False,
+                collision=True,
+                parse_glb_with_zup=True,
+            ),
+            "material": gs.materials.Rigid(),
+            "surface": gs.surfaces.Rough(color=(0.6, 0.7, 0.9), double_sided=True),
         },
     ]
 
@@ -1054,40 +1141,589 @@ def _task_29():
     ]
 
 
+# ---------------------------------------------------------------------------
+# Tasks 01/05/07/12/23/26 — recovered from `mcap_converted_0301/<NN>_SUC_raw/`.
+# These MCAPs use the `we.v2` schema (newer than the lattice.v1 set used by the
+# 16 tasks above), so `convert_mcap_to_npz.py` auto-detects the format.  The
+# scene definitions below are ported from gs-core-robowits source files at
+# `gs_env_sim/envs/robowits/{01,05,07,12,23,26}_*.py` so geometry matches what
+# the trajectory was recorded against.  The quat-correction logic in
+# apply_frame handles any pure-yaw difference between the random initial pose
+# of the source env and the natural euler set on the morph.
+# ---------------------------------------------------------------------------
+
+
+def _task_01():
+    """01_ruler_align_cubes — push 3 colored cubes against a long rigid ruler."""
+    import genesis as gs
+
+    coacd = gs.options.CoacdOptions(threshold=0.01, preprocess_resolution=80, max_convex_hull=20, decimate=True)
+    return [
+        {
+            "name": "long rigid ruler",
+            "morph": gs.morphs.Mesh(
+                coacd_options=coacd,
+                file=_bk("33679be6-fc3f-40e0-ae2b-c6329d2d0ac8/obj.glb"),
+                scale=1.2,
+                pos=(0.43, 0.0, 0.76 + 0.0097 * 1.2),
+                euler=(0, 0, 90),
+                fixed=False,
+                collision=True,
+                parse_glb_with_zup=True,
+            ),
+            "material": gs.materials.Rigid(),
+            "surface": gs.surfaces.Rough(double_sided=True),
+        },
+        {
+            "name": "first target cube",
+            "morph": gs.morphs.Box(
+                pos=(0.56, -0.05, 0.785),
+                euler=(0, 0, 0),
+                size=(0.05, 0.05, 0.05),
+                fixed=False,
+                collision=True,
+            ),
+            "material": gs.materials.Rigid(),
+            "surface": gs.surfaces.Default(color=(0.6, 0.7, 0.9), roughness=0.5),
+        },
+        {
+            "name": "second target cube",
+            "morph": gs.morphs.Box(
+                pos=(0.62, 0.12, 0.785),
+                euler=(0, 0, 0),
+                size=(0.05, 0.05, 0.05),
+                fixed=False,
+                collision=True,
+            ),
+            "material": gs.materials.Rigid(),
+            "surface": gs.surfaces.Default(color=(0.6, 0.7, 0.9), roughness=0.5),
+        },
+        {
+            "name": "third target cube",
+            "morph": gs.morphs.Box(
+                pos=(0.48, 0.03, 0.785),
+                euler=(0, 0, 0),
+                size=(0.05, 0.05, 0.05),
+                fixed=False,
+                collision=True,
+            ),
+            "material": gs.materials.Rigid(),
+            "surface": gs.surfaces.Default(color=(0.6, 0.7, 0.9), roughness=0.5),
+        },
+    ]
+
+
+def _task_05():
+    """05_box_into_basket — place a box into a high basket while a long board leans."""
+    import genesis as gs
+
+    coacd = gs.options.CoacdOptions(threshold=0.01, preprocess_resolution=80, max_convex_hull=20, decimate=True)
+    return [
+        {
+            "name": "long board",
+            "morph": gs.morphs.Mesh(
+                coacd_options=coacd,
+                file=_bk("08893dc4-bfb1-49ca-9e47-4b3958a21e4b/obj.glb"),
+                scale=(0.1567, 0.151, 0.214),
+                pos=(0.50, -0.15, 0.77),
+                euler=(0, 0, 0),
+                fixed=False,
+                collision=True,
+                parse_glb_with_zup=True,
+            ),
+            "material": gs.materials.Rigid(),
+            "surface": gs.surfaces.Rough(double_sided=True),
+        },
+        {
+            "name": "high basket",
+            "morph": gs.morphs.Mesh(
+                coacd_options=coacd,
+                file=_bk("c6009731-c1d9-48f9-9486-1d5754c336d9/obj.glb"),
+                scale=0.611,
+                pos=(0.595, 0.04, 0.806),
+                euler=(0, 0, 0),
+                fixed=True,
+                collision=True,
+                parse_glb_with_zup=True,
+            ),
+            "material": gs.materials.Rigid(),
+            "surface": gs.surfaces.Rough(double_sided=True),
+        },
+        {
+            "name": "box",
+            "morph": gs.morphs.Box(
+                pos=(0.395, 0.105, 0.81),
+                euler=(0, 0, 0),
+                size=(0.1, 0.1, 0.1),
+                fixed=False,
+                collision=True,
+            ),
+            "material": gs.materials.Rigid(friction=1),
+            "surface": gs.surfaces.Smooth(color=(1.0, 0.5, 0.0), double_sided=True),
+        },
+    ]
+
+
+def _task_07():
+    """07_assemble_pages_with_bar — align 2 eyelet pages and bind with a stabilizing bar."""
+    import genesis as gs
+
+    coacd = gs.options.CoacdOptions(threshold=0.01, preprocess_resolution=80, max_convex_hull=20, decimate=True)
+    return [
+        {
+            "name": "nope",
+            "morph": gs.morphs.Box(
+                pos=(0.0, 0.0, 0.2),
+                size=(0.01, 0.01, 0.01),
+                fixed=True,
+                collision=False,
+            ),
+            "material": gs.materials.Rigid(),
+            "surface": gs.surfaces.Default(),
+        },
+        {
+            "name": "page A with eyelets",
+            "morph": gs.morphs.Mesh(
+                coacd_options=coacd,
+                file=_rw("toolbench/pageA.glb"),
+                scale=0.6,
+                pos=(0.40, -0.07, 0.796),
+                euler=(0.0, 90.0, 180.0),
+                fixed=False,
+                collision=True,
+                parse_glb_with_zup=True,
+            ),
+            "material": gs.materials.Rigid(),
+            "surface": gs.surfaces.Smooth(color=(0.7, 0.7, 0.7), double_sided=True),
+        },
+        {
+            "name": "page B with eyelets",
+            "morph": gs.morphs.Mesh(
+                coacd_options=coacd,
+                file=_rw("toolbench/pageB.glb"),
+                scale=0.6,
+                pos=(0.4, 0.07, 0.796),
+                euler=(0.0, 90.0, 0.0),
+                fixed=False,
+                collision=True,
+                parse_glb_with_zup=True,
+            ),
+            "material": gs.materials.Rigid(),
+            "surface": gs.surfaces.Smooth(color=(0.7, 0.7, 0.7), double_sided=True),
+        },
+        {
+            "name": "stabilizing bar",
+            "morph": gs.morphs.Box(
+                pos=(0.4, 0.0, 0.796),
+                euler=(0.0, 0.0, 0.0),
+                size=(0.2, 0.015, 0.015),
+                fixed=False,
+                collision=True,
+            ),
+            "material": gs.materials.Rigid(rho=500.0, friction=0.8),
+            "surface": gs.surfaces.Default(color=(0.7, 0.7, 0.7), roughness=0.2, ior=1.5),
+        },
+    ]
+
+
+def _task_12():
+    """12_pour_ball_through_funnel — guide a small ball through a tilted funnel into a container."""
+    import genesis as gs
+
+    coacd = gs.options.CoacdOptions(threshold=0.01, preprocess_resolution=80, max_convex_hull=20, decimate=True)
+    return [
+        {
+            "name": "red bottle",
+            "morph": gs.morphs.Mesh(
+                file=_bk("ffb3fbe7-1355-465f-8750-475210d8c949/obj.glb"),
+                scale=(1.4, 1.4, 1.0),
+                pos=(0.50, 0.00, 0.88026),
+                euler=(0, 0, 0),
+                fixed=True,
+                collision=True,
+                parse_glb_with_zup=True,
+                coacd_options=gs.options.CoacdOptions(
+                    threshold=0.01, preprocess_resolution=150, max_convex_hull=50, decimate=True
+                ),
+            ),
+            "material": gs.materials.Rigid(),
+            "surface": gs.surfaces.Rough(double_sided=True, color=(0.8, 0.2, 0.2)),
+        },
+        {
+            "name": "funnel",
+            "morph": gs.morphs.Mesh(
+                coacd_options=coacd,
+                file=_rw("toolbench/funnel.glb"),
+                scale=(0.7, 0.7, 1.1),
+                pos=(0.64, -0.08, 0.825),
+                euler=(0.0, -90.0, 0.0),
+                fixed=False,
+                collision=True,
+                parse_glb_with_zup=True,
+            ),
+            "material": gs.materials.Rigid(),
+            "surface": gs.surfaces.Rough(double_sided=True),
+        },
+        {
+            "name": "ball container",
+            "morph": gs.morphs.Mesh(
+                coacd_options=coacd,
+                file=_bk("3d998505-6bbb-4cc2-8359-c147ac531430/obj.glb"),
+                scale=1.1,
+                pos=(0.50, 0.14, 0.76 + 0.0459 * 1.1),
+                euler=(0, 0, 0),
+                fixed=False,
+                collision=True,
+                parse_glb_with_zup=True,
+            ),
+            "material": gs.materials.Rigid(),
+            "surface": gs.surfaces.Plastic(color=(0.8, 0.9, 1.0), opacity=0.3, double_sided=True),
+        },
+        {
+            "name": "small ball",
+            "morph": gs.morphs.Sphere(
+                pos=(0.50, 0.14, 0.85),
+                radius=0.005,
+                fixed=False,
+                collision=True,
+            ),
+            "material": gs.materials.Rigid(),
+            "surface": gs.surfaces.Smooth(color=(0.2, 0.6, 0.9), double_sided=True),
+        },
+    ]
+
+
+def _task_23():
+    """23_place_book_on_shelf — slot a book into a 5-slot bookshelf."""
+    import genesis as gs
+
+    coacd = gs.options.CoacdOptions(threshold=0.01, preprocess_resolution=80, max_convex_hull=20, decimate=True)
+    book_glb = _bk("ee74f10e-acc7-4f5a-80e2-1b2999c6743e/obj.glb")
+    shelf_color = (27 / 255, 103 / 255, 235 / 255)
+    return [
+        {
+            "name": "shelf left",
+            "morph": gs.morphs.Box(
+                pos=(0.58, 0.15, 0.86),
+                euler=(0, 0, 0),
+                size=(0.16, 0.02, 0.2),
+                fixed=True,
+                collision=True,
+            ),
+            "material": gs.materials.Rigid(rho=450.0, friction=1.0),
+            "surface": gs.surfaces.Smooth(color=shelf_color, double_sided=True),
+        },
+        {
+            "name": "shelf right",
+            "morph": gs.morphs.Box(
+                pos=(0.58, -0.15, 0.86),
+                euler=(0, 0, 0),
+                size=(0.16, 0.02, 0.2),
+                fixed=True,
+                collision=True,
+            ),
+            "material": gs.materials.Rigid(rho=450.0, friction=1.0),
+            "surface": gs.surfaces.Smooth(color=shelf_color, double_sided=True),
+        },
+        {
+            "name": "shelf back",
+            "morph": gs.morphs.Box(
+                pos=(0.67, 0.0, 0.86),
+                euler=(0, 0, 0),
+                size=(0.02, 0.32, 0.2),
+                fixed=True,
+                collision=True,
+            ),
+            "material": gs.materials.Rigid(rho=450.0, friction=1.0),
+            "surface": gs.surfaces.Smooth(color=shelf_color, double_sided=True),
+        },
+        {
+            "name": "shelf top",
+            "morph": gs.morphs.Box(
+                pos=(0.62, 0.0, 0.96),
+                euler=(0, 0, 0),
+                size=(0.1, 0.32, 0.02),
+                fixed=True,
+                collision=True,
+            ),
+            "material": gs.materials.Rigid(rho=450.0, friction=1.0),
+            "surface": gs.surfaces.Smooth(color=shelf_color, double_sided=True),
+        },
+        {
+            "name": "book on shelf 1",
+            "morph": gs.morphs.Mesh(
+                coacd_options=coacd,
+                file=book_glb,
+                scale=(0.4, 0.4, 0.4),
+                pos=(0.6, -0.077, 0.83),
+                euler=(-43.5, 0.0, 0.0),
+                fixed=False,
+                collision=True,
+                parse_glb_with_zup=True,
+            ),
+            "material": gs.materials.Rigid(rho=50.0, friction=0.5),
+            "surface": gs.surfaces.Rough(double_sided=True),
+        },
+        {
+            "name": "book on shelf 2",
+            "morph": gs.morphs.Mesh(
+                coacd_options=coacd,
+                file=book_glb,
+                scale=(0.4, 0.4, 0.4),
+                pos=(0.6, -0.03, 0.83),
+                euler=(-43.3, 0.0, 0.0),
+                fixed=False,
+                collision=True,
+                parse_glb_with_zup=True,
+            ),
+            "material": gs.materials.Rigid(rho=50.0, friction=0.5),
+            "surface": gs.surfaces.Rough(double_sided=True),
+        },
+        {
+            "name": "book on shelf 3",
+            "morph": gs.morphs.Mesh(
+                coacd_options=coacd,
+                file=book_glb,
+                scale=(0.4, 0.4, 0.4),
+                pos=(0.6, 0.038, 0.83),
+                euler=(-15.0, 0.0, 0.0),
+                fixed=False,
+                collision=True,
+                parse_glb_with_zup=True,
+            ),
+            "material": gs.materials.Rigid(rho=50.0, friction=0.5),
+            "surface": gs.surfaces.Rough(double_sided=True),
+        },
+        {
+            "name": "book on shelf 4",
+            "morph": gs.morphs.Mesh(
+                coacd_options=coacd,
+                file=book_glb,
+                scale=(0.4, 0.4, 0.4),
+                pos=(0.6, 0.07, 0.83),
+                euler=(-15.0, 0.0, 0.0),
+                fixed=False,
+                collision=True,
+                parse_glb_with_zup=True,
+            ),
+            "material": gs.materials.Rigid(rho=50.0, friction=0.5),
+            "surface": gs.surfaces.Rough(double_sided=True),
+        },
+        {
+            "name": "book on shelf 5",
+            "morph": gs.morphs.Mesh(
+                coacd_options=coacd,
+                file=book_glb,
+                scale=(0.4, 0.4, 0.4),
+                pos=(0.6, 0.123, 0.83),
+                euler=(-1.0, 0.0, 0.0),
+                fixed=False,
+                collision=True,
+                parse_glb_with_zup=True,
+            ),
+            "material": gs.materials.Rigid(rho=50.0, friction=0.5),
+            "surface": gs.surfaces.Rough(double_sided=True),
+        },
+        {
+            "name": "book",
+            "morph": gs.morphs.Mesh(
+                coacd_options=coacd,
+                file=book_glb,
+                scale=(0.4, 0.4, 0.4),
+                pos=(0.4, 0.0, 0.83),
+                euler=(0.0, 0.0, 0.0),
+                fixed=False,
+                collision=True,
+                parse_glb_with_zup=True,
+            ),
+            "material": gs.materials.Rigid(rho=50.0, friction=0.5),
+            "surface": gs.surfaces.Rough(double_sided=True),
+        },
+        {
+            "name": "board",
+            "morph": gs.morphs.Box(
+                pos=(0.2, 0.2, 0.96),
+                euler=(0, 0, 0),
+                size=(0.2, 0.03, 0.03),
+                fixed=False,
+                collision=True,
+            ),
+            "material": gs.materials.Rigid(rho=50.0, friction=1.0),
+            "surface": gs.surfaces.Smooth(color=(0.3, 0.3, 0.3), double_sided=True),
+        },
+    ]
+
+
+def _task_26():
+    """26_align_chopsticks_with_ruler — line up 6 chopsticks against a ruler on a board."""
+    import genesis as gs
+
+    coacd = gs.options.CoacdOptions(threshold=0.01, preprocess_resolution=80, max_convex_hull=20, decimate=True)
+    chopstick_glb = _rw("toolbench/chopstick.glb")
+    dis = 0.2
+    dis2 = 0.2
+    return [
+        {
+            "name": "board",
+            "morph": gs.morphs.Mesh(
+                coacd_options=coacd,
+                file=_bk("e8afda3b-6dea-4bfc-859f-88a35bb623a0/obj.glb"),
+                scale=1.0,
+                pos=(0.54 + dis2, 0.0, 0.76 + 0.01),
+                euler=(0, 0, 0),
+                fixed=False,
+                parse_glb_with_zup=True,
+            ),
+            "material": gs.materials.Rigid(friction=1.0),
+            "surface": gs.surfaces.Rough(double_sided=True),
+        },
+        {
+            "name": "ruler",
+            "morph": gs.morphs.Box(
+                pos=(0.56, 0.33, 0.8),
+                euler=(0, 0, 0),
+                size=(0.2, 0.03, 0.03),
+                fixed=False,
+                collision=True,
+            ),
+            "material": gs.materials.Rigid(rho=50.0, friction=1.0),
+            "surface": gs.surfaces.Smooth(color=(0.3, 0.3, 0.3), double_sided=True),
+        },
+        {
+            "name": "first chopstick",
+            "morph": gs.morphs.Mesh(
+                coacd_options=coacd,
+                file=chopstick_glb,
+                scale=(1.2, 2.8, 2.8),
+                pos=(0.335 + dis, -0.02, 0.85),
+                euler=(0, 0, 180),
+                fixed=False,
+                parse_glb_with_zup=True,
+            ),
+            "material": gs.materials.Rigid(rho=50, friction=0.7),
+            "surface": gs.surfaces.Smooth(double_sided=True),
+        },
+        {
+            "name": "second chopstick",
+            "morph": gs.morphs.Mesh(
+                coacd_options=coacd,
+                file=chopstick_glb,
+                scale=(1.2, 2.8, 2.8),
+                pos=(0.335 + dis, -0.02, 0.82),
+                euler=(0, 0, 0),
+                fixed=False,
+                parse_glb_with_zup=True,
+            ),
+            "material": gs.materials.Rigid(rho=50, friction=0.7),
+            "surface": gs.surfaces.Smooth(double_sided=True),
+        },
+        {
+            "name": "third chopstick",
+            "morph": gs.morphs.Mesh(
+                coacd_options=coacd,
+                file=chopstick_glb,
+                scale=(1.2, 2.8, 2.8),
+                pos=(0.335 + dis, -0.00, 0.85),
+                euler=(0, 0, 0),
+                fixed=False,
+                parse_glb_with_zup=True,
+            ),
+            "material": gs.materials.Rigid(rho=50, friction=0.7),
+            "surface": gs.surfaces.Smooth(double_sided=True),
+        },
+        {
+            "name": "fourth chopstick",
+            "morph": gs.morphs.Mesh(
+                coacd_options=coacd,
+                file=chopstick_glb,
+                scale=(1.2, 2.8, 2.8),
+                pos=(0.335 + dis, 0.00, 0.82),
+                euler=(0, 0, 0),
+                fixed=False,
+                parse_glb_with_zup=True,
+            ),
+            "material": gs.materials.Rigid(rho=50, friction=0.7),
+            "surface": gs.surfaces.Smooth(double_sided=True),
+        },
+        {
+            "name": "fifth chopstick",
+            "morph": gs.morphs.Mesh(
+                coacd_options=coacd,
+                file=chopstick_glb,
+                scale=(1.2, 2.8, 2.8),
+                pos=(0.335 + dis, 0.02, 0.82),
+                euler=(0, 0, 0),
+                fixed=False,
+                parse_glb_with_zup=True,
+            ),
+            "material": gs.materials.Rigid(rho=50, friction=0.7),
+            "surface": gs.surfaces.Smooth(double_sided=True),
+        },
+        {
+            "name": "sixth chopstick",
+            "morph": gs.morphs.Mesh(
+                coacd_options=coacd,
+                file=chopstick_glb,
+                scale=(1.2, 2.8, 2.8),
+                pos=(0.335 + dis, 0.02, 0.85),
+                euler=(0, 0, 0),
+                fixed=False,
+                parse_glb_with_zup=True,
+            ),
+            "material": gs.materials.Rigid(rho=50, friction=0.7),
+            "surface": gs.surfaces.Smooth(double_sided=True),
+        },
+    ]
+
+
 # Task registry: task_id (str) -> builder function
 TASK_REGISTRY: dict[str, Any] = {
+    "01": _task_01,
     "02": _task_02,
     "03": _task_03,
     "04": _task_04,
+    "05": _task_05,
     "06": _task_06,
+    "07": _task_07,
     "09": _task_09,
+    "10": _task_10,
     "11": _task_11,
+    "12": _task_12,
     "13": _task_13,
     "14": _task_14,
     "16": _task_16,
     "17": _task_17,
     "18": _task_18,
     "19": _task_19,
+    "23": _task_23,
     "24": _task_24,
+    "26": _task_26,
     "27": _task_27,
     "28": _task_28,
     "29": _task_29,
 }
 
 TASK_NAMES: dict[str, str] = {
+    "01": "ruler_align_cubes",
     "02": "retrieve_cube",
     "03": "gap_retrieve",
     "04": "pinch_card",
+    "05": "box_into_basket",
     "06": "dominos",
+    "07": "assemble_pages_with_bar",
     "09": "hold_cup",
+    "10": "collect_screws",
     "11": "place_tall_box",
+    "12": "pour_ball_through_funnel",
     "13": "cover_with_lid",
     "14": "stack_cubes",
     "16": "stand_bulb",
     "17": "ball_onto_tower",
     "18": "cylinder_through_hole",
     "19": "stack_bowls",
+    "23": "place_book_on_shelf",
     "24": "raise_platform",
+    "26": "align_chopsticks_with_ruler",
     "27": "retrieve_roll",
     "28": "move_cube",
     "29": "balance_board",
@@ -1148,14 +1784,29 @@ class RobowitsReplay(TrajectoryReplay):
         # so skip the dampening factor and run lights at their tuned full level.
         return _ENV_LIGHT_EFFECT if self.args.use_env_map else 1.0
 
+    def _resolve_envmap(self) -> tuple[str, float, float]:
+        """Return (local_path, yaw_deg, registry_multiplier) for the active envmap.
+
+        In classic mode, all tasks use polyhaven small_empty_room_1; otherwise
+        the per-task EXR from _TASK_ENVMAP is used.
+        """
+        if self.args.classic:
+            yaw, mult = _CLASSIC_ENVMAP_REGISTRY
+            path = _classic_envmap_path()
+        else:
+            env_filename = _TASK_ENVMAP[self.args.task]
+            yaw, mult = _ENVMAP_REGISTRY[env_filename]
+            path = _envmap(env_filename)
+        if self.args.env_yaw is not None:
+            yaw = float(self.args.env_yaw)
+        return (path, yaw, mult)
+
     def make_renderer(self):
         import genesis as gs
         from genesis.options.renderers import SphereLight
 
-        env_filename = _TASK_ENVMAP[self.args.task]
-        env_yaw, env_registry_mult = _ENVMAP_REGISTRY[env_filename]
+        env_path, env_yaw, env_registry_mult = self._resolve_envmap()
         env_multiplier = env_registry_mult * _OVERALL_INTENSITY if self.args.use_env_map else 0.0
-        env_path = _envmap(env_filename)
         # ImageTexture.image_color is clamped to [0, 1]; >1 multipliers would need
         # an exposure EV bump instead, but our 16-task table is all <= 1.
         assert env_multiplier <= 1.0, f"task {self.args.task}: envmap multiplier {env_multiplier} > 1 not supported"
@@ -1201,10 +1852,9 @@ class RobowitsReplay(TrajectoryReplay):
         # two renderers see identical sky. With --no-use_env_map, multiplier is
         # zero so the env contribution is pure black (texture is still loaded
         # but doesn't reach the scene).
-        env_filename = _TASK_ENVMAP[self.args.task]
-        env_yaw, env_registry_mult = _ENVMAP_REGISTRY[env_filename]
+        env_path, env_yaw, env_registry_mult = self._resolve_envmap()
         mult = env_registry_mult * _OVERALL_INTENSITY if self.args.use_env_map else 0.0
-        return (_envmap(env_filename), env_yaw, mult)
+        return (env_path, env_yaw, mult)
 
     def nyx_light_field(self):
         # No 3DGS splat for Robowits — the per-task envmap is the visible
@@ -1217,7 +1867,15 @@ class RobowitsReplay(TrajectoryReplay):
             type=str,
             required=True,
             choices=sorted(TASK_REGISTRY.keys()),
-            help="Task ID (e.g. 02, 06, 29)",
+            help="Task ID (e.g. 01, 02, 06, 23, 26, 29)",
+        )
+        parser.add_argument(
+            "--classic",
+            action="store_true",
+            help="Classic mode: use the archived MarvinPika URDF (no new camera "
+            "base), the polyhaven small_empty_room_1 envmap for every task, and "
+            "a Y=0 side-on camera (looking from +X,+Z toward smaller X,Z). "
+            "Output filename gains a _classic suffix.",
         )
         parser.add_argument(
             "--traj",
@@ -1248,14 +1906,35 @@ class RobowitsReplay(TrajectoryReplay):
             "(no _ENV_LIGHT_EFFECT dampening) and the output filename gains a "
             "_no_envmap suffix to avoid clobbering env-map renders.",
         )
+        parser.add_argument(
+            "--env_yaw",
+            type=float,
+            default=None,
+            help="Override the env-map yaw rotation (degrees about Z). When unset, "
+            "uses the registry default (per-task yaw, or _CLASSIC_ENVMAP_REGISTRY "
+            "for --classic).",
+        )
 
     def load_trajectory(self):
+        # In classic mode, override the camera so both points lie on the Y=0
+        # plane: camera at (+X, 0, +Z) looking back toward (X-X0, 0, Z-Z0).
+        # XZ projection of the default cam_pos/lookat is preserved; we only
+        # zero out the Y components so the view is purely side-on.
+        if self.args.classic:
+            cp = type(self).cam_pos
+            cl = type(self).cam_lookat
+            self.cam_pos = (cp[0], 0.0, cp[2])
+            self.cam_lookat = (cl[0], 0.0, cl[2])
+
         task_id = self.args.task
         # Use the task id as the trajectory tag so render outputs are named
         # ipc_robowits_<task>_<renderer>_<datetime>.mp4 instead of "default".
         # With --no-use_env_map we add a _no_envmap suffix so those renders
         # land in a separate file and never clobber the env-map renders.
+        # --classic adds a _classic suffix for the same reason.
         suffix = "" if self.args.use_env_map else "_no_envmap"
+        if self.args.classic:
+            suffix = f"{suffix}_classic"
         self.args.trajectory = f"task{task_id}{suffix}"
         traj_path = _resolve_traj(task_id, self.args.traj)
         traj = np.load(traj_path)
@@ -1273,10 +1952,6 @@ class RobowitsReplay(TrajectoryReplay):
 
         # Rigid object data: keys are "rigid_{entity_name}" with original names
         self._rigid_data = {}
-        # Per-entity quat correction, populated lazily on first apply_frame call.
-        # Inner value is None when no correction is needed (recorded init differs
-        # from natural by yaw only — random rotation, not a morph mismatch).
-        self._quat_correction: "dict[str, torch.Tensor | None] | None" = None
         for key in traj.files:
             if key.startswith("rigid_"):
                 entity_name = key[6:]
@@ -1328,10 +2003,12 @@ class RobowitsReplay(TrajectoryReplay):
             )
             self._rigid_entities[edef["name"]] = entity
 
-        # Robot (MARVIN_PIKA, 18 DOF, fixed base)
+        # Robot (MARVIN_PIKA, 18 DOF, fixed base). --classic swaps to the
+        # archived URDF that predates the new camera-base assembly.
+        urdf_file = CLASSIC_MARVIN_PIKA_URDF if self.args.classic else MARVIN_PIKA_URDF
         self._robot = scene.add_entity(
             gs.morphs.URDF(
-                file=MARVIN_PIKA_URDF,
+                file=urdf_file,
                 fixed=True,
                 collision=robot_collision,
                 pos=(0, 0, 1.08),
@@ -1346,63 +2023,13 @@ class RobowitsReplay(TrajectoryReplay):
         if self._joint_qpos is not None and frame_idx < len(self._joint_qpos):
             self._robot.set_qpos(self._joint_qpos[frame_idx])
 
-        # Some MCAPs were recorded against a different morph euler than the
-        # current source env (e.g. task 02: container morph changed from
-        # euler=(90,0,90) lying-down → (0,0,90) upright). For those entities
-        # we rebase the recorded *world* rotation so the new entity undergoes
-        # the same world-frame rotation as the old:
-        #   R_world(t) = Q_old(t) * inv(Q_old_init)
-        #   Q_new(t)   = R_world(t) * Q_new_init = Q_old(t) * C
-        # where C = inv(Q_old_init) * Q_new_init (right-multiplication).
-        #
-        # Only entities whose recorded_init differs from source_natural by
-        # a non-yaw rotation (i.e. an actual morph orientation mismatch) get
-        # corrected. Pure-yaw differences come from the source env's random
-        # rotation augmentation and should be left alone — applying the
-        # correction would inject any small recording noise into every frame,
-        # producing a visibly tilted resting pose later in the trajectory.
-        if self._quat_correction is None:
-            self._quat_correction = {}
-            # sin(half-angle) threshold around non-Z axes. ~0.1 ≈ 11° non-yaw.
-            non_yaw_thresh = 0.1
-            for name, entity in self._rigid_entities.items():
-                if name not in self._rigid_data:
-                    continue
-                source_natural = entity.get_quat()
-                if source_natural.dim() == 2:
-                    source_natural = source_natural[0]
-                source_natural = source_natural.detach().to("cpu", dtype=torch.float32)
-                pose0 = self._rigid_data[name][0]
-                euler0 = torch.tensor(pose0[3:], dtype=torch.float32)
-                recorded_init = gu.xyz_to_quat(euler0, rpy=True).detach().cpu()
-                w, x, y, z = recorded_init.tolist()
-                inv_recorded = torch.tensor([w, -x, -y, -z], dtype=torch.float32)
-                # transform_quat_by_quat(v, u) computes u * v, so passing
-                # (source_natural, inv_recorded) yields inv_recorded * source_natural.
-                C = gu.transform_quat_by_quat(source_natural, inv_recorded)
-                # Decide whether to apply correction: check non-yaw axis component.
-                cw, cx, cy, cz = C.tolist()
-                non_yaw = (cx * cx + cy * cy) ** 0.5
-                if non_yaw > non_yaw_thresh:
-                    self._quat_correction[name] = C
-                else:
-                    self._quat_correction[name] = None  # no correction needed
-
         # Rigid objects — NPZ stores pos(3) + euler(3, RPY radians)
         for name, entity in self._rigid_entities.items():
             if name in self._rigid_data and frame_idx < len(self._rigid_data[name]):
                 pose = self._rigid_data[name][frame_idx]
                 entity.set_pos(pose[:3])
                 euler = torch.tensor(pose[3:], dtype=torch.float32)
-                recorded_quat = gu.xyz_to_quat(euler, rpy=True)
-                correction = self._quat_correction[name]
-                if correction is not None:
-                    # Right-multiply: Q_new(t) = Q_old(t) * correction.
-                    # transform_quat_by_quat(v, u) = u * v, so pass (correction, recorded_quat).
-                    quat = gu.transform_quat_by_quat(correction, recorded_quat)
-                else:
-                    quat = recorded_quat
-                entity.set_quat(quat)
+                entity.set_quat(gu.xyz_to_quat(euler, rpy=True))
 
 
 if __name__ == "__main__":
