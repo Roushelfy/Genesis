@@ -21,6 +21,7 @@ Usage
 from __future__ import annotations
 
 import argparse
+import re
 import sys
 from pathlib import Path
 from typing import Any, TypedDict
@@ -3132,7 +3133,8 @@ class RobowitsReplay(TrajectoryReplay):
             yaw, mult = _CLASSIC_ENVMAP_REGISTRY
             path = _classic_envmap_path()
         else:
-            env_filename = _TASK_ENVMAP[self.args.task]
+            envmap_key = re.sub(r"_v\d+$", "", self.args.task)
+            env_filename = _TASK_ENVMAP[envmap_key]
             yaw, mult = _ENVMAP_REGISTRY[env_filename]
             path = _envmap(env_filename)
         if self.args.env_yaw is not None:

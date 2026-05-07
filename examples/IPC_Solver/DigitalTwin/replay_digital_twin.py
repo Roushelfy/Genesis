@@ -622,8 +622,8 @@ TASK_NPZ: dict[str, str] = {
 
 class DigitalTwinReplay(TrajectoryReplay):
     name = "digital_twin"
-    cam_pos = (1.5, -0.9, 1.7)
-    cam_lookat = (0.55, 0.0, 0.95)
+    cam_pos = (1.5122, -0.767, 1.8931)
+    cam_lookat = (0.838, -0.3497, 1.2837)
     cam_fov = 40
     fps = 30  # gs-core digital_twin scene runs at dt = 1/30
 
