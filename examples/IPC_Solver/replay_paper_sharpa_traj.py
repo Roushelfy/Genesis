@@ -76,14 +76,14 @@ _PAPER = _DEMO / "paper"
 
 MARVIN_URDF = marvin_urdf("marvin_sharpa")
 TABLE_GLB = str(_PAPER / "work_table.glb")
-DEFAULT_TRAJ = str(_PAPER / "trajectory_sharpa_20260502.npz")
+DEFAULT_TRAJ = str(_PAPER / "trajectory_sharpa.npz")
 
 # Auto-pick the paper GLB by FEM vertex count so older trajectories keep
 # replaying. Add new variants here when their meshes change.
 _PAPER_GLB_BY_VCOUNT = {
     736: str(_PAPER / "paper_plane_extra_coarse.glb"),
     795: str(_PAPER / "paper_plane_coarse.glb"),
-    960: str(_PAPER / "paper_plane_coarse.glb"),
+    960: str(_PAPER / "genesis_paper.glb"),
     2339: str(_PAPER / "paper_plane_coarse_dense.glb"),
 }
 
