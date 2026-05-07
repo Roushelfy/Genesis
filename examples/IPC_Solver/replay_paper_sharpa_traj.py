@@ -75,7 +75,7 @@ _DEMO = _REPO / "DemoAssets"
 _PAPER = _DEMO / "paper"
 
 MARVIN_URDF = marvin_urdf("marvin_sharpa")
-TABLE_GLB = str(_PAPER / "work_table.glb")
+TABLE_GLB = str(_DEMO / "trashbag" / "work_table.glb")
 DEFAULT_TRAJ = str(_PAPER / "trajectory_sharpa.npz")
 
 # Auto-pick the paper GLB by FEM vertex count so older trajectories keep

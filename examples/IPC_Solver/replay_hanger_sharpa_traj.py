@@ -77,7 +77,7 @@ _DEMO = _REPO / "DemoAssets"
 _HANGER = _DEMO / "coat_hanger"
 
 MARVIN_URDF = marvin_urdf("marvin_sharpa")
-TABLE_GLB = str(_HANGER / "work_table.glb")
+TABLE_GLB = str(_DEMO / "trashbag" / "work_table.glb")
 SHIRT_GLB = str(_HANGER / "genesis_shirt.glb")
 SHIRT_GLB_SUBDIV = str(_HANGER / "genesis_shirt_subdiv.glb")
 COAT_HANGER_GLB = str(_HANGER / "coat_hanger.glb")
