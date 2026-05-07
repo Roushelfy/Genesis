@@ -204,6 +204,7 @@ def _task_sort() -> list[dict]:
         {
             "name": "fruits_primary_0",  # orange
             "morph": gs.morphs.Mesh(
+                align=False,
                 file=_dt("orange/orange.glb"),
                 scale=0.7,
                 fixed=False,
@@ -215,6 +216,7 @@ def _task_sort() -> list[dict]:
         {
             "name": "fruits_primary_1",  # grapes
             "morph": gs.morphs.Mesh(
+                align=False,
                 file=str(_DEMO / "repaired" / "grapes.glb"),
                 scale=0.15,
                 fixed=False,
@@ -226,6 +228,7 @@ def _task_sort() -> list[dict]:
         {
             "name": "fruits_destination",  # grey_plate
             "morph": gs.morphs.Mesh(
+                align=False,
                 file=_dt("verified/plate/grey_plate.glb"),
                 euler=(90, 0, 0),
                 fixed=False,
@@ -237,6 +240,7 @@ def _task_sort() -> list[dict]:
         {
             "name": "vegetables_primary_0",  # red_chili
             "morph": gs.morphs.Mesh(
+                align=False,
                 file=str(_DEMO / "repaired" / "red_chili.glb"),
                 scale=0.16,
                 fixed=False,
@@ -248,6 +252,7 @@ def _task_sort() -> list[dict]:
         {
             "name": "vegetables_primary_1",  # green_pepper
             "morph": gs.morphs.Mesh(
+                align=False,
                 file=_dt("green_pepper/green_pepper.glb"),
                 scale=0.003,
                 fixed=False,
@@ -259,6 +264,7 @@ def _task_sort() -> list[dict]:
         {
             "name": "vegetables_destination",  # sage_plate
             "morph": gs.morphs.Mesh(
+                align=False,
                 file=_dt("verified/plate/sage_plate.glb"),
                 euler=(90, 0, 0),
                 fixed=False,
@@ -277,6 +283,7 @@ def _task_pour() -> list[dict]:
         {
             "name": "src_container",  # yellow_plastic_bowl
             "morph": gs.morphs.Mesh(
+                align=False,
                 file=_dt("verified/yellow_plastic_bowl/yellow_plastic_bowl.glb"),
                 euler=(90, 0, 0),
                 fixed=False,
@@ -288,6 +295,7 @@ def _task_pour() -> list[dict]:
         {
             "name": "dst_container",
             "morph": gs.morphs.Mesh(
+                align=False,
                 file=_dt("verified/yellow_plastic_bowl/yellow_plastic_bowl.glb"),
                 euler=(90, 0, 0),
                 fixed=False,
@@ -329,6 +337,7 @@ def _task_drawer() -> list[dict]:
             # (pos + quat) and rigid_/qpos_ paths agree.
             "name": "primary",
             "morph": gs.morphs.Mesh(
+                align=False,
                 file=_dt("banana/textured.obj"),
                 fixed=False,
                 collision=True,
@@ -367,6 +376,7 @@ def _task_pick_cup_tray() -> list[dict]:
         {
             "name": "primary_0",  # cup
             "morph": gs.morphs.Mesh(
+                align=False,
                 file=_dt("cup/cup.glb"),
                 euler=(90, 0, 0),
                 scale=0.125,
@@ -381,6 +391,7 @@ def _task_pick_cup_tray() -> list[dict]:
         {
             "name": "destination",  # tray
             "morph": gs.morphs.Mesh(
+                align=False,
                 file=_dt("tray/tray.glb"),
                 euler=(90, 0, 0),
                 scale=0.35,
@@ -393,6 +404,7 @@ def _task_pick_cup_tray() -> list[dict]:
         {
             "name": "distractor_0",  # destination plateau (fixed in gs-core)
             "morph": gs.morphs.Mesh(
+                align=False,
                 file=_WOODEN_PLATEAU_GLB,
                 fixed=True,
                 collision=True,
@@ -403,6 +415,7 @@ def _task_pick_cup_tray() -> list[dict]:
         {
             "name": "distractor_1",  # under-tray plateau (fixed in gs-core)
             "morph": gs.morphs.Mesh(
+                align=False,
                 file=_WOODEN_PLATEAU_GLB,
                 fixed=True,
                 collision=True,
@@ -425,6 +438,7 @@ def _task_pick_corn_bin() -> list[dict]:
         {
             "name": "primary_0",  # corn
             "morph": gs.morphs.Mesh(
+                align=False,
                 file=_dt("verified/corn/corn.glb"),
                 euler=(90, 0, 0),
                 fixed=False,
@@ -436,6 +450,7 @@ def _task_pick_corn_bin() -> list[dict]:
         {
             "name": "destination",  # bin
             "morph": gs.morphs.Mesh(
+                align=False,
                 file=_dt("bin/bin.glb"),
                 euler=(90, 0, 0),
                 scale=0.27,
@@ -448,6 +463,7 @@ def _task_pick_corn_bin() -> list[dict]:
         {
             "name": "distractor_0",  # bin_lid (local override — not on HF)
             "morph": gs.morphs.Mesh(
+                align=False,
                 file=_BIN_LID_GLB,
                 euler=(90, 0, 0),
                 scale=0.27,
@@ -469,6 +485,7 @@ def _task_pick_potatoes() -> list[dict]:
 
     def potato_morph():
         return gs.morphs.Mesh(
+            align=False,
             file=_dt("verified/potato/potato.glb"),
             scale=1.50,
             fixed=False,
@@ -483,6 +500,7 @@ def _task_pick_potatoes() -> list[dict]:
         {
             "name": "destination",  # green_plastic_bowl
             "morph": gs.morphs.Mesh(
+                align=False,
                 file=_dt("verified/green_plastic_bowl/green_plastic_bowl.glb"),
                 euler=(90, 0, 0),
                 fixed=False,
@@ -507,6 +525,7 @@ def _task_ipc_pick_pen() -> list[dict]:
         {
             "name": "pen",
             "morph": gs.morphs.Mesh(
+                align=False,
                 file=_dt("pen/pen.glb"),
                 euler=(90, 0, 0),
                 scale=0.15,
@@ -519,6 +538,7 @@ def _task_ipc_pick_pen() -> list[dict]:
         {
             "name": "pen_holder",
             "morph": gs.morphs.Mesh(
+                align=False,
                 file=_dt("pen_holder/pen_holder.glb"),
                 euler=(90, 0, 0),
                 scale=0.50,
@@ -545,6 +565,7 @@ def _task_pick_carrot_basket() -> list[dict]:
         {
             "name": "primary_0",  # carrot
             "morph": gs.morphs.Mesh(
+                align=False,
                 file=_dt("verified/carrot/carrot.glb"),
                 euler=(90, 0, 0),
                 fixed=False,
@@ -557,6 +578,7 @@ def _task_pick_carrot_basket() -> list[dict]:
         {
             "name": "destination",  # basket
             "morph": gs.morphs.Mesh(
+                align=False,
                 file=_dt("basket/basket_scan.glb"),
                 euler=(90, 180, 0),
                 scale=0.25,
@@ -760,6 +782,7 @@ class DigitalTwinReplay(TrajectoryReplay):
         # coacd_options=COACD_HQ (preprocess_resolution=150).
         scene.add_entity(
             gs.morphs.Mesh(
+                align=False,
                 file=TABLE_GLB,
                 pos=self._table_pos,
                 scale=(1.14, 1.0, 1.445),

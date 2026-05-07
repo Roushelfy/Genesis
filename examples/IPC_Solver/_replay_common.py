@@ -30,7 +30,7 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 # when gs-core's scripts/publish_marvin_robots.py re-publishes.
 
 _INTERNAL_ASSETS_REPO = "Genesis-Intelligence/internal_assets"
-_INTERNAL_ASSETS_COMMIT = "b30eeb1f312881e2a567e29a3067963f21bd4787"
+_INTERNAL_ASSETS_COMMIT = "0acee03cf80a0e78409efde78a57aa40eff5f9a4"
 
 _MARVIN_URDF_STEMS = frozenset(
     {
@@ -685,7 +685,7 @@ class TrajectoryReplay:
                 pos=self.cam_pos,
                 lookat=self.cam_lookat,
                 fov=self.cam_fov,
-                spp=self.args.spp,
+                spp=max(self.args.spp // 4, 1),
                 exposure=self.args.exposure,
                 tone_mapping=self.args.tone_mapping,
                 **self._dof_kwargs(),

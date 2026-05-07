@@ -110,11 +110,12 @@ def main():
         sim_options=gs.options.SimOptions(dt=1 / 60),
         show_viewer=False,
     )
+    env_map_rotation = 0.0
     if not use_nyx:
         scene_kwargs["renderer"] = gs.renderers.RayTracer(
             tracing_depth=32,
             env_radius=100.0,
-            env_euler=(0.0, 0.0, 90.0),
+            env_euler=(0.0, 0.0, env_map_rotation),
             env_surface=gs.surfaces.Emission(
                 emissive_texture=gs.textures.ImageTexture(
                     image_path=_resolve_envmap(args),
@@ -168,7 +169,7 @@ def main():
 
         env_map = ap.EnvironmentMapAsset()
         env_map.texture = _resolve_envmap(args)
-        env_map.rotation = 90.0
+        env_map.rotation = env_map_rotation
         env_map.multiplier = _OVERALL_INTENSITY
 
         nyx_lights = [
