@@ -156,7 +156,11 @@ def parse_urdf(morph, surface):
                 metadatas = [{"mesh_path": mesh_path} for _ in tmeshes]
                 if mesh_path.lower().endswith(gs.options.morphs.GLTF_FORMATS):
                     meshes = gltf_utils.parse_mesh_glb(
-                        mesh_path, group_by_material=True, scale=None, is_mesh_zup=True, surface=surface
+                        mesh_path,
+                        group_by_material=morph.group_by_material,
+                        scale=None,
+                        is_mesh_zup=True,
+                        surface=surface,
                     )
                     # Preserve the per-mesh surfaces parsed from GLB PBR materials
                     # (metallic, roughness, emissive, etc.) so the raytracer can use them.

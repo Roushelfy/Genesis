@@ -542,6 +542,10 @@ class FileMorph(Morph):
     batch_fixed_verts : bool, optional
         Whether to batch fixed vertices. This will allow setting env-specific poses to fixed geometries, at the cost of
         significantly increasing memory usage. Default to true. **This is only used for RigidEntity.**
+    group_by_material : bool, optional
+        Controls how glTF/GLB mesh primitives are grouped when loading. If True, primitives sharing a material are
+        merged into one sub-mesh (typical for visual assets). If False, each glTF primitive becomes its own sub-mesh,
+        which preserves any artist-authored convex decomposition baked into the GLB. Defaults to False.
     requires_jac_and_IK : bool, optional
         Whether this morph, if created as `RigidEntity`, requires jacobian and inverse kinematics. Defaults to False.
         **This is only used for RigidEntity.**
@@ -562,6 +566,7 @@ class FileMorph(Morph):
     align: StrictBool | None = None
     file_meshes_are_zup: StrictBool | None = True
     batch_fixed_verts: StrictBool = False
+    group_by_material: StrictBool = False
 
     @model_validator(mode="before")
     @classmethod
@@ -712,9 +717,6 @@ class Mesh(FileMorph, TetGenMixin):
     conaffinity : int, optional
         The 32-bit integer bitmasks used for contact filtering of contact pairs. When the conaffinity of one geom and
         the contype of the other geom share a common bit set to 1, two geoms can collide. Defaults to 0xFFFF.
-    group_by_material : bool, optional
-        Whether to group submeshes by their visual material type defined in the asset file. Defaults to False.
-        **This is only used for RigidEntity.**
     align : bool, optional
         Whether to reframe the mesh so that its link origin coincides with the center of mass and its axes are
         aligned with the principal axes of inertia. This makes the inertia tensor diagonal, which improves
@@ -749,7 +751,6 @@ class Mesh(FileMorph, TetGenMixin):
     fixed: StrictBool = False
     contype: StrictInt = Field(default=0xFFFF, ge=0, le=0xFFFFFFFF)
     conaffinity: StrictInt = Field(default=0xFFFF, ge=0, le=0xFFFFFFFF)
-    group_by_material: StrictBool = False
     merge_submeshes_for_collision: StrictBool = False
 
     @model_validator(mode="after")

@@ -1,6 +1,6 @@
 """Replay Robowits tabletop manipulation trajectories (MARVIN_PIKA bimanual).
 
-Replays NPZ trajectories (from convert_mcap_to_npz.py) in Genesis with the
+Replays NPZ trajectories (from gs-core/scripts/mcap_to_npz.py) in Genesis with the
 correct per-task scene geometry.  Supports all 16 non-excluded Robowits tasks.
 
 Usage
@@ -1172,7 +1172,7 @@ def _task_29():
 # ---------------------------------------------------------------------------
 # Tasks 01/05/07/12/23/26 — recovered from `mcap_converted_0301/<NN>_SUC_raw/`.
 # These MCAPs use the `we.v2` schema (newer than the lattice.v1 set used by the
-# 16 tasks above), so `convert_mcap_to_npz.py` auto-detects the format.  The
+# 16 tasks above), so `gs-core/scripts/mcap_to_npz.py` auto-detects the format.  The
 # scene definitions below are ported from gs-core-robowits source files at
 # `gs_env_sim/envs/robowits/{01,05,07,12,23,26}_*.py` so geometry matches what
 # the trajectory was recorded against.  The quat-correction logic in
@@ -3088,7 +3088,7 @@ def _resolve_traj(task_id: str, traj_arg: str | None) -> str:
         pass
     raise FileNotFoundError(
         f"No trajectory found for task {task_id}. "
-        f"Place {task_id}.npz in {_TRAJ_DIR}/ or run convert_mcap_to_npz.py first."
+        f"Place {task_id}.npz in {_TRAJ_DIR}/ or run gs-core/scripts/mcap_to_npz.py first."
     )
 
 

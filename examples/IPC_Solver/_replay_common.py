@@ -30,7 +30,7 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 # when gs-core's scripts/publish_marvin_robots.py re-publishes.
 
 _INTERNAL_ASSETS_REPO = "Genesis-Intelligence/internal_assets"
-_INTERNAL_ASSETS_COMMIT = "0acee03cf80a0e78409efde78a57aa40eff5f9a4"
+_INTERNAL_ASSETS_COMMIT = "ad5ff46d96441da71dbf11b56e88df0193206b86"
 
 _MARVIN_URDF_STEMS = frozenset(
     {
