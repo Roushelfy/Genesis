@@ -45,6 +45,9 @@ Shared camera / render options
 
 Trajectory
     --traj PATH             Path to trajectory .npz file (default: trajectory_sharpa.npz)
+    --textured-paper        Use the paper GLB's embedded UV texture (matches gs-core
+                            PAPER_SHEET surface_args=PlasticSurfaceArgs()) instead of
+                            the default flat off-white BSDF.
 """
 
 from __future__ import annotations
@@ -158,6 +161,12 @@ class PaperSharpaReplay(TrajectoryReplay):
             default=DEFAULT_TRAJ,
             help="Path to trajectory.npz",
         )
+        parser.add_argument(
+            "--textured-paper",
+            action="store_true",
+            help="Use the paper GLB's embedded UV texture instead of a flat off-white BSDF "
+            "(matches gs-core PAPER_SHEET registry surface).",
+        )
 
     def load_trajectory(self):
         traj = np.load(self.args.traj)
@@ -252,6 +261,18 @@ class PaperSharpaReplay(TrajectoryReplay):
         self._rigid_entities = {}
 
         # Paper sheet (FEM Paper, matches registry PAPER_SHEET)
+        if self.args.textured_paper:
+            # Pass-through: gs-core registry uses PlasticSurfaceArgs() with no color,
+            # so the GLB's embedded UV texture (e.g. paper_plane_extra_coarse_tex.png)
+            # is what gets rendered.
+            paper_surface = gs.surfaces.Plastic()
+        else:
+            paper_surface = gs.surfaces.BSDF(
+                diffuse_texture=gs.textures.ColorTexture(color=(0.93, 0.91, 0.88)),
+                roughness=0.85,
+                metallic=0.0,
+                ior=1.5,
+            )
         self._fem_entities = {
             "paper_sheet": scene.add_entity(
                 gs.morphs.Mesh(
@@ -273,12 +294,7 @@ class PaperSharpaReplay(TrajectoryReplay):
                     hardening_modulus=0.001,
                     friction_mu=0.3,
                 ),
-                surface=gs.surfaces.BSDF(
-                    diffuse_texture=gs.textures.ColorTexture(color=(0.93, 0.91, 0.88)),
-                    roughness=0.85,
-                    metallic=0.0,
-                    ior=1.5,
-                ),
+                surface=paper_surface,
                 vis_mode="visual",
             ),
         }
