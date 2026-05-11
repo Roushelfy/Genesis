@@ -307,6 +307,13 @@ class PaperSharpaReplay(TrajectoryReplay):
                 collision=False,
                 pos=(0, 0, 1.08),
             ),
+            surface={
+                "paint_white_glossy": gs.surfaces.BSDF(
+                    color=(0.74, 0.74, 0.74),
+                    roughness=0.25,
+                    metallic=0.25,
+                ),
+            },
             vis_mode="visual",
         )
 
