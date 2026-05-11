@@ -393,6 +393,8 @@ class HangerSharpaReplay(TrajectoryReplay):
         }
 
         # Robot (MARVIN_SHARPA, 58 DOF, fixed base)
+        # paint_white_glossy arm links (1-6): boost shininess; GLB default is too matte.
+        # sharpa_aluminum hand links: left as GLB PBR values.
         self._robot = scene.add_entity(
             gs.morphs.URDF(
                 file=MARVIN_URDF,
@@ -400,6 +402,13 @@ class HangerSharpaReplay(TrajectoryReplay):
                 collision=False,
                 pos=(0, 0, 1.08),
             ),
+            surface={
+                "paint_white_glossy": gs.surfaces.BSDF(
+                    color=(0.74, 0.74, 0.74),
+                    roughness=0.25,
+                    metallic=0.25,
+                ),
+            },
             vis_mode="visual",
         )
 
