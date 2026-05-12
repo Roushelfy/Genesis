@@ -188,8 +188,7 @@ class HangerSharpaReplay(TrajectoryReplay):
         return gs.renderers.RayTracer(
             logging_level="warning",
             tracing_depth=32,
-            env_surface=gs.surfaces.Emission(
-                emissive_texture=gs.textures.ColorTexture(color=(0.01, 0.01, 0.01))),
+            env_surface=gs.surfaces.Emission(emissive_texture=gs.textures.ColorTexture(color=(0.01, 0.01, 0.01))),
             env_radius=100.0,
             env_euler=(0, 0, 20),
             lights=[
@@ -261,8 +260,7 @@ class HangerSharpaReplay(TrajectoryReplay):
         # Ground — large flat box (paper-plane background)
         scene.add_entity(
             gs.morphs.Box(size=(20.0, 20.0, 0.02), pos=(0.0, 0.0, -2.01), fixed=True),
-            surface=gs.surfaces.BSDF(
-                diffuse_texture=gs.textures.ColorTexture(color=(0.05, 0.05, 0.05))),
+            surface=gs.surfaces.BSDF(diffuse_texture=gs.textures.ColorTexture(color=(0.05, 0.05, 0.05))),
         )
 
         # Table (ipc_hanger: rotated 90 deg, shifted)
@@ -401,9 +399,15 @@ class HangerSharpaReplay(TrajectoryReplay):
             ),
         }
 
-        # Robot (MARVIN_SHARPA, 58 DOF, fixed base)
-        # paint_white_glossy arm links (1-6): boost shininess; GLB default is too matte.
-        # sharpa_aluminum hand links: left as GLB PBR values.
+        # Robot (MARVIN_SHARPA, 58 DOF, fixed base).
+        # NOTE: the `surface={"paint_white_glossy": ...}` block below is
+        # *stale* and should probably be deleted — comment dates from before
+        # `scripts/bake_marvin_pbr.py` baked canonical PBR into the GLBs.
+        # Nyx already reads per-material GLB PBR via subscene_uri, and
+        # Luisa renders byte-identical with or without it; the override
+        # actually clamps aluminium hand parts (baked metallic=0.85) to
+        # the paint_white_glossy values, slightly degrading those frames.
+        # Left in place to preserve historical visual output; safe to drop.
         self._robot = scene.add_entity(
             gs.morphs.URDF(
                 file=MARVIN_URDF,

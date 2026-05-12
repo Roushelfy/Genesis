@@ -25,6 +25,7 @@ from PIL import Image, ImageDraw, ImageFilter
 from trimesh.visual.material import PBRMaterial
 
 RESULTS_DIR = Path(__file__).resolve().parent.parent / "v3"
+LOGO_PNG_PATH = Path(__file__).resolve().parent.parent / "logo_centered.png"
 TEX_SIZE = 1024
 
 # ── Material definitions ──
@@ -34,35 +35,65 @@ PART_MATERIALS = {
     "bearing_spheres": ([0.86, 0.88, 0.90, 1.0], 1.0, 0.05),
 }
 
+# Individual bearing-sphere variant (hand-tuned in HEAD): more diffuse cream
+# look, doubleSided, used by the closeup/explode scenes where each sphere is
+# rendered separately.
+BEARING_SPHERE_INDIVIDUAL = {
+    "color": [0.9, 0.87, 0.8, 1.0],
+    "metallic": 0.0,
+    "roughness": 0.6,
+    "double_sided": True,
+}
+
 # Shell dome: anodized metal
 SHELL_DOME_METALLIC = 0.9
 SHELL_DOME_ROUGHNESS = 0.1
 
-# Shell rim: polished raw aluminum edge
-SHELL_RIM_COLOR = [0.88, 0.89, 0.91, 1.0]
+# Shell rim (plain): polished aluminum edge — used by the assembled
+# yoyo-ball.glb to match HEAD.
+SHELL_RIM_COLOR = [0.8784313725490196, 0.8901960784313725, 0.9098039215686274, 1.0]
 SHELL_RIM_METALLIC = 0.95
 SHELL_RIM_ROUGHNESS = 0.05
+
+# Shell rim (logo): cylindrically wraps DemoAssets/yoyo/logo_centered.png
+SHELL_RIM_LOGO_METALLIC = 0.3
+SHELL_RIM_LOGO_ROUGHNESS = 0.4
 
 # Fraction of shell z-range from base where the rim-to-dome cut is made
 RIM_CUT_FRAC = 0.30
 
 
-def make_pbr_visual(mesh, base_color, metallic, roughness, name):
+def make_pbr_visual(mesh, base_color, metallic, roughness, name, double_sided=False):
     """Assign a PBR metallic-roughness material to a mesh."""
     mat = PBRMaterial(
         baseColorFactor=base_color,
         metallicFactor=metallic,
         roughnessFactor=roughness,
+        doubleSided=double_sided,
         name=name,
     )
     mesh.visual = trimesh.visual.TextureVisuals(material=mat)
 
 
-def _gen_dome_texture(size=TEX_SIZE):
-    """Clean teal anodize with swept lines for rotation visibility."""
-    base = (70, 150, 175)
+DOME_COLOR_PRESETS = {
+    "teal": (70, 150, 175),
+    "cyan": (0, 200, 220),
+    "gold": (212, 175, 55),
+    "rose_red": (193, 75, 99),
+    "firefly_green": (95, 220, 95),
+    "sapphire_blue": (15, 82, 186),
+}
+
+
+def _lighten(rgb, by=80):
+    return tuple(min(255, int(c + by)) for c in rgb)
+
+
+def _gen_dome_texture(size=TEX_SIZE, base=(70, 150, 175), sweep=None):
+    """Anodized dome texture with concentric CNC rings + swept arc lines."""
+    if sweep is None:
+        sweep = _lighten(base, by=120)
     img = Image.new("RGB", (size, size), base)
-    draw = ImageDraw.Draw(img)
     cx, cy = size / 2, size / 2
 
     # Concentric rings: subtle CNC turning marks
@@ -84,16 +115,14 @@ def _gen_dome_texture(size=TEX_SIZE):
         # Draw a smooth arc from -30° to +90°
         pts = []
         for angle_deg in range(0, 121):
-            alpha = 1.0 - (angle_deg / 120.0) ** 0.6
             angle = np.radians(angle_deg - 30)
             px = cx + r_frac * np.cos(angle)
             py = cy - r_frac * np.sin(angle)
             pts.append((px, py))
         # Draw the arc as connected line segments
-        color = (220, 245, 250)
         width = max(4, int(6 * (1.0 - li / n_lines)))
         for k in range(len(pts) - 1):
-            draw.line([pts[k], pts[k + 1]], fill=color, width=width)
+            draw.line([pts[k], pts[k + 1]], fill=sweep, width=width)
 
     img = img.filter(ImageFilter.GaussianBlur(radius=1.5))
 
@@ -133,8 +162,30 @@ def _to_yup(mesh):
     return mesh
 
 
-def _apply_shell_materials(shell_mesh, shell_name, dome_tex):
-    """Cut a half-shell into dome + rim and apply materials. Returns list of (geom_name, mesh)."""
+def _apply_rim_logo(rim, shell_name, logo_img):
+    """Cylindrically wrap a Genesis-logo PNG around the rim primitive (Z-up coords).
+
+    Mirrors what build_shell_logo.py used to do in Y-up GLB space — formulas
+    transformed so the post-_to_yup UVs match exactly.
+    """
+    v = np.asarray(rim.vertices, dtype=np.float64)
+    u = np.arctan2(-v[:, 1], v[:, 0]) / (2 * np.pi) + 0.5
+    z_min, z_max = float(v[:, 2].min()), float(v[:, 2].max())
+    v_uv = 1.0 - (v[:, 2] - z_min) / (z_max - z_min)
+    uvs = np.column_stack([u, v_uv]).astype(np.float32)
+    mat = PBRMaterial(
+        baseColorTexture=logo_img,
+        metallicFactor=SHELL_RIM_LOGO_METALLIC,
+        roughnessFactor=SHELL_RIM_LOGO_ROUGHNESS,
+        name=f"{shell_name}_rim_logo",
+    )
+    rim.visual = trimesh.visual.TextureVisuals(uv=uvs, material=mat, image=logo_img)
+
+
+def _apply_shell_materials(shell_mesh, shell_name, dome_tex, logo_img=None):
+    """Cut a half-shell into dome + rim. Dome gets the anodized texture;
+    rim either gets a cylindrical wrap of `logo_img` (when given) or the
+    plain polished-aluminum color (when None — matches HEAD's yoyo-ball.glb)."""
     outward_sign = 1.0 if shell_name == "top" else -1.0
     z_min = shell_mesh.vertices[:, 2].min()
     z_max = shell_mesh.vertices[:, 2].max()
@@ -162,7 +213,10 @@ def _apply_shell_materials(shell_mesh, shell_name, dome_tex):
         result.append((f"{shell_name}_dome", dome))
 
     if rim is not None and len(rim.faces) > 0:
-        make_pbr_visual(rim, SHELL_RIM_COLOR, SHELL_RIM_METALLIC, SHELL_RIM_ROUGHNESS, f"{shell_name}_rim")
+        if logo_img is not None:
+            _apply_rim_logo(rim, shell_name, logo_img)
+        else:
+            make_pbr_visual(rim, SHELL_RIM_COLOR, SHELL_RIM_METALLIC, SHELL_RIM_ROUGHNESS, f"{shell_name}_rim")
         result.append((f"{shell_name}_rim", rim))
 
     return result
@@ -215,8 +269,10 @@ INTERNAL_MATERIALS = {
 }
 
 
-def export_ball_glb(ball_mesh, output_path):
-    """Export full yoyo ball (all parts combined) as a single GLB."""
+def export_ball_glb(ball_mesh, output_path, logo_img):
+    """Export full yoyo ball (all parts combined) as a single GLB. The rim
+    primitive uses the cylindrical Genesis-logo wrap so yoyo-ball.glb stays
+    visually consistent with the separated yoyo-{top,bottom}_shell_logo.glb."""
     scene = trimesh.Scene()
     dome_tex = _gen_dome_texture()
     classified = _classify_ball_parts(ball_mesh)
@@ -225,7 +281,7 @@ def export_ball_glb(ball_mesh, output_path):
         shell = classified[key]
         if shell is not None:
             half = "top" if "top" in key else "bottom"
-            for geom_name, mesh in _apply_shell_materials(shell, half, dome_tex):
+            for geom_name, mesh in _apply_shell_materials(shell, half, dome_tex, logo_img=logo_img):
                 scene.add_geometry(_to_yup(mesh), geom_name=geom_name)
 
     for key in ("top_ring", "bottom_ring", "axle", "hub"):
@@ -239,10 +295,10 @@ def export_ball_glb(ball_mesh, output_path):
     return scene
 
 
-def export_ball_halves(ball_mesh, output_dir):
+def export_ball_halves(ball_mesh, output_dir, logo_img):
     """Export each yoyo ball sub-part as a separate GLB for exploded view.
 
-    Produces: yoyo-top_shell.glb, yoyo-bottom_shell.glb,
+    Produces: yoyo-top_shell_logo.glb, yoyo-bottom_shell_logo.glb,
               yoyo-top_ring.glb, yoyo-bottom_ring.glb,
               yoyo-axle.glb, yoyo-hub.glb
     """
@@ -257,9 +313,9 @@ def export_ball_halves(ball_mesh, output_dir):
             continue
         shell_scene = trimesh.Scene()
         half = "top" if "top" in key else "bottom"
-        for geom_name, mesh in _apply_shell_materials(shell, half, dome_tex):
+        for geom_name, mesh in _apply_shell_materials(shell, half, dome_tex, logo_img):
             shell_scene.add_geometry(_to_yup(mesh), geom_name=geom_name)
-        out_path = output_dir / f"yoyo-{key}.glb"
+        out_path = output_dir / f"yoyo-{key}_logo.glb"
         shell_scene.export(str(out_path))
         exported.append((key, out_path))
 
@@ -287,17 +343,23 @@ def export_simple_glb(mesh_path, output_path, material_key):
 
 
 def main():
+    if not LOGO_PNG_PATH.exists():
+        raise SystemExit(f"missing rim logo: {LOGO_PNG_PATH}")
+    logo_img = Image.open(LOGO_PNG_PATH).convert("RGB")
+    print(f"[export] using rim logo: {LOGO_PNG_PATH}")
+
     ball = trimesh.load(str(RESULTS_DIR / "yoyo-ball.obj"), force="mesh")
 
-    # Full ball (for ipc_robot_yoyo replay)
+    # Full ball (for ipc_robot_yoyo replay) — logo'd rim, same look as the
+    # separated yoyo-{top,bottom}_shell_logo.glb halves.
     ball_out = RESULTS_DIR / "yoyo-ball.glb"
-    s = export_ball_glb(ball, ball_out)
+    s = export_ball_glb(ball, ball_out, logo_img)
     print(f"Exported {ball_out.name}: {len(ball.vertices)} verts")
     for name in s.geometry:
         print(f"  {name}: {len(s.geometry[name].faces)} faces")
 
-    # Split halves + internals (for ipc_show_yoyo exploded view)
-    halves = export_ball_halves(ball, RESULTS_DIR)
+    # Split halves + internals (for ipc_show_yoyo exploded view) — logo'd rim
+    halves = export_ball_halves(ball, RESULTS_DIR, logo_img)
     for name, path in halves:
         print(f"Exported {path.name} ({name})")
 
@@ -309,11 +371,19 @@ def main():
     bs = export_simple_glb(RESULTS_DIR / "bearing_spheres.obj", bs_out, "bearing_spheres")
     print(f"Exported {bs_out.name}: {len(bs.vertices)} verts")
 
+    # Individual bearing spheres use the hand-tuned diffuse-cream variant
+    # (BEARING_SPHERE_INDIVIDUAL) to match HEAD; the closeup/explode scenes
+    # often override these per-sphere anyway.
+    cfg = BEARING_SPHERE_INDIVIDUAL
     for i in range(8):
         sp_path = RESULTS_DIR / f"bearing_sphere_{i}.obj"
         if sp_path.exists():
             sp_out = RESULTS_DIR / f"bearing_sphere_{i}.glb"
-            sp = export_simple_glb(sp_path, sp_out, "bearing_spheres")
+            sp = trimesh.load(str(sp_path), force="mesh")
+            make_pbr_visual(
+                sp, cfg["color"], cfg["metallic"], cfg["roughness"], "bearing_spheres", double_sided=cfg["double_sided"]
+            )
+            _to_yup(sp).export(str(sp_out))
             print(f"Exported {sp_out.name}: {len(sp.vertices)} verts")
 
     print("\nString (yoyo-string.obj) is FEM — loaded separately, not exported as GLB.")

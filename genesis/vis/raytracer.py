@@ -253,6 +253,13 @@ class Raytracer:
                 if isinstance(entity, entities.RigidEntity):
                     for geom in entity.geoms:
                         self.add_surface(str(geom.uid), geom.surface)
+                # Each SkinSpec gets its own surface so Luisa can render the
+                # deformable shape registered for it in the rigid-entity loop
+                # below. The surface comes from the parsed skin gs.Mesh, which
+                # already resolved the GLB's embedded PBR material — and which
+                # SkinSpec.skin_surface overrides if the caller set it.
+                for skin_idx, state in enumerate(entity._skin_states):
+                    self.add_surface(f"skin_{entity.uid}_{skin_idx}", state.skin_mesh.surface)
             else:
                 self.add_surface(str(entity.uid), entity.surface)
 
@@ -275,7 +282,17 @@ class Raytracer:
                 else:
                     geoms = rigid_entity.geoms
 
+                # Skin the URDF: links covered by an entity's SkinSpec have
+                # their normal visual replaced by an LBS-deformed scan
+                # (registered as a deformable shape below). See SkinSpec
+                # docstring in genesis/options/morphs.py.
+                skinned_links: frozenset[str] = frozenset(
+                    name for state in rigid_entity._skin_states for name in state.spec.bone_link_names
+                )
+
                 for geom in geoms:
+                    if geom.link.name in skinned_links:
+                        continue
                     if "sdf" in rigid_entity.surface.vis_mode:
                         mesh = geom.get_sdf_trimesh()
                     else:
@@ -287,6 +304,11 @@ class Raytracer:
                         normals=mesh.vertex_normals,
                         uvs=np.array([]) if geom.uvs is None else geom.uvs,
                     )
+
+                # Per-skin deformable shape: registered once, updated each
+                # frame in this file's update loop.
+                for skin_idx, state in enumerate(rigid_entity._skin_states):
+                    self.add_deformable(f"skin_{rigid_entity.uid}_{skin_idx}")
 
         # kinematic entities
         if self.sim.kinematic_solver.is_active:
@@ -698,9 +720,30 @@ class Raytracer:
                     geoms = entity.geoms
                     geoms_T = solver._geoms_render_T
 
+                skinned_links: frozenset[str] = frozenset(
+                    name for state in entity._skin_states for name in state.spec.bone_link_names
+                )
+
                 for geom in geoms:
+                    if geom.link.name in skinned_links:
+                        continue
                     geom_T = geoms_T[geom.idx]  # TODO: support batching
                     self.update_rigid_batch(str(geom.uid), geom_T)
+
+                # Per-skin LBS update: same shape as the SPH/PBD recon path
+                # above — get a deformed trimesh and forward its verts/faces/
+                # vertex_normals into update_deformable. UVs are static, so
+                # we read them once from the parsed gs.Mesh.
+                for skin_idx, state in enumerate(entity._skin_states):
+                    mesh = state.lbs_mesh()
+                    uvs = state.skin_mesh.uvs
+                    self.update_deformable(
+                        f"skin_{entity.uid}_{skin_idx}",
+                        mesh.vertices,
+                        mesh.faces,
+                        mesh.vertex_normals,
+                        np.asarray(uvs, dtype=np.float32) if uvs is not None else np.array([]),
+                    )
 
         # MPM particles
         if self.sim.mpm_solver.is_active:

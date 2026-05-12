@@ -44,19 +44,22 @@ from replay_yoyo_traj import (  # noqa: E402
 
 # Orbit camera pose at its first frame (target for the showcase pullback,
 # so the pullback ends exactly where the replay's orbit begins → continuous motion).
-_ORBIT_START_POS = np.array([
-    ORBIT_CENTER[0] + ORBIT_RADIUS * math.cos(ORBIT_ANGLE_START),
-    ORBIT_CENTER[1] + ORBIT_RADIUS * math.sin(ORBIT_ANGLE_START),
-    ORBIT_HEIGHT,
-], dtype=np.float64)
+_ORBIT_START_POS = np.array(
+    [
+        ORBIT_CENTER[0] + ORBIT_RADIUS * math.cos(ORBIT_ANGLE_START),
+        ORBIT_CENTER[1] + ORBIT_RADIUS * math.sin(ORBIT_ANGLE_START),
+        ORBIT_HEIGHT,
+    ],
+    dtype=np.float64,
+)
 _ORBIT_START_LOOKAT = np.array(ORBIT_CENTER, dtype=np.float64)
 
 
 # ── Explode + reveal animation timing ──
 
 FPS = 30
-PHASE_HOLD_EXPLODED = 2.0     # start already decomposed, hold for viewing
-PHASE_MERGE_PULLBACK = 3.5    # merge + camera pullback + robot reveal simultaneously
+PHASE_HOLD_EXPLODED = 2.0  # start already decomposed, hold for viewing
+PHASE_MERGE_PULLBACK = 3.5  # merge + camera pullback + robot reveal simultaneously
 
 EXPLODE_TOP = 0.035
 EXPLODE_BEARING_OUTER = 0.018
@@ -97,7 +100,7 @@ def _ease_out_explosive(t: float) -> float:
 def _ease_in_snap(t: float) -> float:
     """Slow start, fast settle — feels like a sudden snap-back."""
     t = max(0.0, min(1.0, t))
-    return t ** 4
+    return t**4
 
 
 def _lerp(a, b, t):
@@ -171,14 +174,10 @@ class YoyoV4Showcase(YoyoReplay):
     # Same lighting as orbit BulletTimeRenderer
     def nyx_lights(self):
         return [
-            {"type": "point", "pos": (0.85, 1.25, 2.45),
-             "color": (1.0, 0.97, 0.92), "intensity": 20.0, "shadow": True},
-            {"type": "point", "pos": (0.6, -1.7, 4.3),
-             "color": (0.48, 0.52, 0.6), "intensity": 1.0, "shadow": False},
-            {"type": "point", "pos": (-0.8, -3.16, 0.5),
-             "color": (0.8, 0.88, 1.0), "intensity": 100.0, "shadow": True},
-            {"type": "point", "pos": (0.85, 1.25, 0.0),
-             "color": (1.0, 0.97, 0.92), "intensity": 20.0, "shadow": True},
+            {"type": "point", "pos": (0.85, 1.25, 2.45), "color": (1.0, 0.97, 0.92), "intensity": 20.0, "shadow": True},
+            {"type": "point", "pos": (0.6, -1.7, 4.3), "color": (0.48, 0.52, 0.6), "intensity": 1.0, "shadow": False},
+            {"type": "point", "pos": (-0.8, -3.16, 0.5), "color": (0.8, 0.88, 1.0), "intensity": 100.0, "shadow": True},
+            {"type": "point", "pos": (0.85, 1.25, 0.0), "color": (1.0, 0.97, 0.92), "intensity": 20.0, "shadow": True},
         ]
 
     def nyx_light_field(self):
@@ -193,6 +192,7 @@ class YoyoV4Showcase(YoyoReplay):
             choices=["auto", "hidden", "visible"],
             help="Robot visibility mode: auto (teleport at pullback), hidden (always), visible (always).",
         )
+
     # Class-level values used when the sensor is first created; the camera
     # trajectory overrides these every frame.
     cam_pos = tuple(np.array(REPLAY_CAMERA_POS))
@@ -210,17 +210,37 @@ class YoyoV4Showcase(YoyoReplay):
         if getattr(self.args, "robot_pass", "auto") == "hidden":
             self._extra_nyx_lights = [
                 # Top
-                {"type": "directional", "dir": (0.0, 0.0, -1.0),
-                 "color": (1.0, 1.0, 1.0), "intensity": 3.0, "shadow": False},
+                {
+                    "type": "directional",
+                    "dir": (0.0, 0.0, -1.0),
+                    "color": (1.0, 1.0, 1.0),
+                    "intensity": 3.0,
+                    "shadow": False,
+                },
                 # Back (away from camera → facing camera)
-                {"type": "directional", "dir": (0.0, 1.0, 0.0),
-                 "color": (1.0, 1.0, 1.0), "intensity": 2.0, "shadow": False},
+                {
+                    "type": "directional",
+                    "dir": (0.0, 1.0, 0.0),
+                    "color": (1.0, 1.0, 1.0),
+                    "intensity": 2.0,
+                    "shadow": False,
+                },
                 # Left
-                {"type": "directional", "dir": (1.0, 0.0, 0.0),
-                 "color": (1.0, 1.0, 1.0), "intensity": 2.0, "shadow": False},
+                {
+                    "type": "directional",
+                    "dir": (1.0, 0.0, 0.0),
+                    "color": (1.0, 1.0, 1.0),
+                    "intensity": 2.0,
+                    "shadow": False,
+                },
                 # Front (behind camera → facing into scene)
-                {"type": "directional", "dir": (0.0, -1.0, 0.0),
-                 "color": (1.0, 1.0, 1.0), "intensity": 2.0, "shadow": False},
+                {
+                    "type": "directional",
+                    "dir": (0.0, -1.0, 0.0),
+                    "color": (1.0, 1.0, 1.0),
+                    "intensity": 2.0,
+                    "shadow": False,
+                },
             ]
 
         # Phase frame counts (in output frames).
@@ -296,20 +316,22 @@ class YoyoV4Showcase(YoyoReplay):
                         args = (gs.morphs.Mesh(file=str(glb_file), fixed=True, collision=False),) + args[1:]
                     else:
                         kwargs["morph"] = gs.morphs.Mesh(file=str(glb_file), fixed=True, collision=False)
-                    if not is_ring:
-                        # G-Warm light gray 03 (sRGB ~195 → linear ~0.55)
-                        kwargs["surface"] = gs.surfaces.BSDF(
-                            color=(0.55, 0.52, 0.50, 1.0),
-                            metallic=0.3,
-                            roughness=0.4,
-                        )
+                    # if not is_ring:
+                    #     # G-Warm light gray 03 (sRGB ~195 → linear ~0.55)
+                    #     kwargs["surface"] = gs.surfaces.BSDF(
+                    #         color=(0.55, 0.52, 0.50, 1.0),
+                    #         metallic=0.3,
+                    #         roughness=0.4,
+                    #     )
             # Bearing spheres: alternating blue/cyan, opaque
             if name.startswith("bearing_sphere_"):
                 try:
                     idx = int(name.split("_")[-1])
                     color = self._BEARING_PALETTE[idx % len(self._BEARING_PALETTE)]
                     kwargs["surface"] = gs.surfaces.BSDF(
-                        color=color, metallic=0.1, roughness=0.05,
+                        color=color,
+                        metallic=0.1,
+                        roughness=0.05,
                     )
                 except (ValueError, IndexError):
                     pass
@@ -370,12 +392,12 @@ class YoyoV4Showcase(YoyoReplay):
         # Explode from CENTER: axle/hub stay static, shells move outward both sides.
         d = EXPLODE_TOP * t_explode  # positive offset magnitude
         ball_offsets = {
-            "yoyo-top_shell": 1.5 * d,       # rightmost
-            "yoyo-top_ring": 0.7 * d,         # right
-            "yoyo-axle": 0.0,                  # center (static)
-            "yoyo-hub": 0.0,                   # center (static)
-            "yoyo-bottom_ring": -0.7 * d,     # left
-            "yoyo-bottom_shell": -1.5 * d,    # leftmost
+            "yoyo-top_shell": 1.5 * d,  # rightmost
+            "yoyo-top_ring": 0.7 * d,  # right
+            "yoyo-axle": 0.0,  # center (static)
+            "yoyo-hub": 0.0,  # center (static)
+            "yoyo-bottom_ring": -0.7 * d,  # left
+            "yoyo-bottom_shell": -1.5 * d,  # leftmost
         }
         new_ball_quat = compose_spin(pose0[3:])
         ball_entities = self._rigid_entities.get("yoyo_ball", [])

@@ -57,8 +57,8 @@ OUT_FPS = 30
 # Window 1: 10× slow — same physical moment as before (full-seq 580–860)
 # Window 2: 10× slow — new orig frames 400–432 → replay 184–216 → full-seq 3680–4320
 BULLET_WINDOWS_SRC = [
-    (580, 860, 2),       # 10× slow (stride 2 vs normal 20)
-    (3680, 4220, 2),     # 10× slow (stride 2 vs normal 20), ends at orig frame 375
+    (580, 860, 2),  # 10× slow (stride 2 vs normal 20)
+    (3680, 4220, 2),  # 10× slow (stride 2 vs normal 20), ends at orig frame 375
 ]
 
 
@@ -103,14 +103,10 @@ class BulletTimeRenderer(YoyoReplay):
     # Same lighting as trashbag (Luisa settings on Nyx)
     def nyx_lights(self):
         return [
-            {"type": "point", "pos": (0.85, 1.25, 2.45),
-             "color": (1.0, 0.97, 0.92), "intensity": 20.0, "shadow": True},
-            {"type": "point", "pos": (0.6, -1.7, 4.3),
-             "color": (0.48, 0.52, 0.6), "intensity": 1.0, "shadow": False},
-            {"type": "point", "pos": (-0.8, -3.16, 0.5),
-             "color": (0.8, 0.88, 1.0), "intensity": 100.0, "shadow": True},
-            {"type": "point", "pos": (0.85, 1.25, 0.0),
-             "color": (1.0, 0.97, 0.92), "intensity": 20.0, "shadow": True},
+            {"type": "point", "pos": (0.85, 1.25, 2.45), "color": (1.0, 0.97, 0.92), "intensity": 20.0, "shadow": True},
+            {"type": "point", "pos": (0.6, -1.7, 4.3), "color": (0.48, 0.52, 0.6), "intensity": 1.0, "shadow": False},
+            {"type": "point", "pos": (-0.8, -3.16, 0.5), "color": (0.8, 0.88, 1.0), "intensity": 100.0, "shadow": True},
+            {"type": "point", "pos": (0.85, 1.25, 0.0), "color": (1.0, 0.97, 0.92), "intensity": 20.0, "shadow": True},
         ]
 
     def nyx_light_field(self):
@@ -123,6 +119,7 @@ class BulletTimeRenderer(YoyoReplay):
         import genesis as gs
         from genesis.options.renderers import SphereLight
         import genesis.vis.raytracer as _gr
+
         _gr.sphere_light_as_mesh = False  # hide SphereLight bodies from the render
 
         env_path = _REPO_ROOT_BT / "DemoAssets/textures/g_warm_light_gray_02.exr"
@@ -132,20 +129,17 @@ class BulletTimeRenderer(YoyoReplay):
             tracing_depth=32,
             env_surface=gs.surfaces.Emission(
                 emissive_texture=gs.textures.ImageTexture(
-                    image_path=str(env_path), encoding="linear",
+                    image_path=str(env_path),
+                    encoding="linear",
                 ),
             ),
             env_radius=100.0,  # treat env as effectively infinite, like Nyx env_map
             env_euler=(0, 0, 0),
             lights=[
-                SphereLight(pos=(0.85, 1.25, 2.45), radius=0.001,
-                            color=(1.0, 0.97, 0.92), intensity=20.0 * SCALE),
-                SphereLight(pos=(0.6, -1.7, 4.3),   radius=0.001,
-                            color=(0.48, 0.52, 0.6), intensity=1.0 * SCALE),
-                SphereLight(pos=(-0.8, -3.16, 0.5), radius=0.001,
-                            color=(0.8, 0.88, 1.0), intensity=100.0 * SCALE),
-                SphereLight(pos=(0.85, 1.25, 0.0),  radius=0.001,
-                            color=(1.0, 0.97, 0.92), intensity=20.0 * SCALE),
+                SphereLight(pos=(0.85, 1.25, 2.45), radius=0.001, color=(1.0, 0.97, 0.92), intensity=20.0 * SCALE),
+                SphereLight(pos=(0.6, -1.7, 4.3), radius=0.001, color=(0.48, 0.52, 0.6), intensity=1.0 * SCALE),
+                SphereLight(pos=(-0.8, -3.16, 0.5), radius=0.001, color=(0.8, 0.88, 1.0), intensity=100.0 * SCALE),
+                SphereLight(pos=(0.85, 1.25, 0.0), radius=0.001, color=(1.0, 0.97, 0.92), intensity=20.0 * SCALE),
             ],
         )
 
@@ -171,8 +165,7 @@ class BulletTimeRenderer(YoyoReplay):
         orig = self._fem_data["yoyo_string"]
         n_orig = orig.shape[1]
         n_dense = (n_orig - 1) * STRING_SUBDIVISIONS + 1
-        print(f"[smooth-string] Interpolating {n_orig} → {n_dense} verts "
-              f"({orig.shape[0]} frames)...")
+        print(f"[smooth-string] Interpolating {n_orig} → {n_dense} verts ({orig.shape[0]} frames)...")
 
         dense = np.zeros((orig.shape[0], n_dense, 3), dtype=orig.dtype)
         for fi in range(orig.shape[0]):
@@ -185,7 +178,7 @@ class BulletTimeRenderer(YoyoReplay):
             cs = CubicSpline(t, pts, bc_type="natural")
             dense[fi] = cs(np.linspace(0, 1, n_dense))
             if (fi + 1) % 500 == 0:
-                print(f"  frame {fi+1}/{orig.shape[0]}")
+                print(f"  frame {fi + 1}/{orig.shape[0]}")
 
         self._fem_data["yoyo_string"] = dense
 
@@ -195,7 +188,7 @@ class BulletTimeRenderer(YoyoReplay):
             for i in range(n_dense):
                 f.write(f"v 0 0 {i * 0.001}\n")
             for i in range(n_dense - 1):
-                f.write(f"l {i+1} {i+2}\n")
+                f.write(f"l {i + 1} {i + 2}\n")
         print(f"[smooth-string] Done. Dense mesh: {self._dense_string_obj}")
 
     def make_camera_traj(self, name):
@@ -238,10 +231,10 @@ class BulletTimeRenderer(YoyoReplay):
                     else:
                         kwargs["morph"] = gs.morphs.Mesh(file=str(glb_file), fixed=True, collision=False)
                     # Plain G-Warm light gray 03 (matches showcase), no logo PNG
-                    kwargs["surface"] = gs.surfaces.BSDF(
-                        color=(0.55, 0.52, 0.50, 1.0),
-                        metallic=0.3, roughness=0.4,
-                    )
+                    # kwargs["surface"] = gs.surfaces.BSDF(
+                    #     color=(0.55, 0.52, 0.50, 1.0),
+                    #     metallic=0.3, roughness=0.4,
+                    # )
             # Closeup-only: remove near-side shell (so internals visible),
             # swap string mesh, color bearings, override robot materials
             if is_closeup:
@@ -274,7 +267,9 @@ class BulletTimeRenderer(YoyoReplay):
                         # Alternating blue / cyan, opaque
                         color = (0.40, 0.50, 1.00, 1.0) if idx % 2 == 0 else (0.30, 0.80, 1.00, 1.0)
                         kwargs["surface"] = gs.surfaces.BSDF(
-                            color=color, metallic=0.1, roughness=0.05,
+                            color=color,
+                            metallic=0.1,
+                            roughness=0.05,
                         )
                     except (ValueError, IndexError):
                         pass
@@ -367,7 +362,7 @@ class BulletTimeRenderer(YoyoReplay):
 
             if (out_i + 1) % 50 == 0:
                 tag = "BT" if _get_stride_for_src(src_i) < NORMAL_STRIDE else "  "
-                print(f"  [{out_i+1}/{len(needed)}] src={src_i} {tag}")
+                print(f"  [{out_i + 1}/{len(needed)}] src={src_i} {tag}")
 
         writer.close()
         print(f"Saved {out_path} ({len(needed)} frames @ {self.fps} fps)")

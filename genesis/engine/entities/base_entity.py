@@ -38,6 +38,17 @@ class Entity(RBC):
         # When surface is a dict (per-material-slot overrides), keep the raw value for
         # mesh loading (so each slot gets its own surface), and derive the entity-level
         # surface from the first entry (used for entity-wide properties like vis_mode).
+        #
+        # KNOWN BUG (gs_nyx_plugin, OPEN as of 2026-05-11): for URDF entities, Nyx's
+        # _build_entity_instance builds a single global matOverride from `entity.surface`,
+        # which the line below silently degrades to `first_dict_value`. Result: a
+        # runtime `surface={"paint_white_glossy": BSDF(...)}` per-material override is
+        # applied *across every material* in the URDF subscene, clamping other materials
+        # (e.g. aluminium_brushed with baked metallic=0.85) to the wrong values. Luisa
+        # and pyrender read per-vgeom and so honor the dict correctly. See
+        # `gs-core/CLAUDE.md → Known Genesis Bugs → Nyx ignores per-vgeom GLB-baked PBR`
+        # and `apollo-genesis-plugin/.../nyx_scene_exporter.py:_get_surface_for_material`
+        # (missing URDF branch) for the fix path.
         self._surface_raw = surface
         self._surface = next(iter(surface.values())) if isinstance(surface, dict) else surface
         self._sim = scene.sim

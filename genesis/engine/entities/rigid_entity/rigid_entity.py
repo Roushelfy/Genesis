@@ -102,6 +102,11 @@ class KinematicEntity(Entity):
         self._is_attached: bool = False
         self._variant_init_qpos: list[np.ndarray] | None = None
 
+        # LBS skin overlays declared on FileMorph.skins (e.g. textured glove
+        # scan over a URDF hand). Materialised in _build() once links exist;
+        # each renderer reads this list to add/update its own scan node.
+        self._skin_states: list = []
+
         self._load_model()
 
         # Initialize target variables and checkpoint
@@ -786,6 +791,15 @@ class KinematicEntity(Entity):
         self._n_qs = self.n_qs
         self._n_dofs = self.n_dofs
         self._vgeoms = self.vgeoms
+
+        # Materialise SkinSpec → SkinState now that links are queryable. Only
+        # FileMorph subtypes carry a `skins` field (URDF, Mesh, MJCF, USD,
+        # Drone); Primitive and Terrain morphs don't, so we gate on isinstance.
+        if isinstance(self._morph, gs.morphs.FileMorph) and self._morph.skins:
+            from genesis.utils.skin import SkinState  # noqa: PLC0415
+
+            self._skin_states = [SkinState(spec, self) for spec in self._morph.skins]
+
         self._is_built = True
 
     def _create_joints(self, j_infos, link_idx, joint_start):

@@ -30,6 +30,7 @@ from genesis.typing import (
 
 from .misc import CoacdOptions
 from .options import Options
+from .surfaces import Surface
 
 OBJ_FORMAT = ".obj"
 URDF_FORMAT = ".urdf"
@@ -472,6 +473,81 @@ class Plane(Primitive):
 ############################ Mesh ############################
 
 
+class SkinSpec(Options):
+    """Linear-blend-skinning overlay that replaces some of a URDF's visual meshes
+    with a single textured "skin" mesh deformed per-frame from URDF link transforms.
+
+    See the `vis_mode="recon"` pattern in `genesis/vis/rasterizer_context.py` and
+    `genesis/vis/raytracer.py` — every renderer hooks into its own update loop
+    and asks the entity for current visual vertex positions. This spec carries
+    enough data for that LBS update without renderer-specific code.
+
+    Math
+    ----
+    For every scan vertex ``v`` and bone ``L``::
+
+        M[L]   = T_live[L] @ inv(T_canon[L])
+        V_t[v] = sum_L W[v, L] · M[L] · V_rest_h[v]
+
+    where:
+      - ``V_rest`` are the rest-pose vertices loaded from ``skin_mesh``;
+      - ``W`` is the sparse (V, n_bones) matrix loaded from ``weights_file``;
+      - ``T_canon[L]`` is bone L's rest-pose world transform, loaded from
+        ``canonical_link_T_file`` (``link_T`` field, ordered to match
+        ``bone_link_names``); and
+      - ``T_live[L]`` is the same bone's current world transform, read live from
+        ``entity.get_link(bone_link_names[L]).get_pos()/get_quat()``.
+
+    Bones with zero weight in every row of W contribute nothing, so the spec
+    tolerates URDF links named in ``bone_link_names`` that don't exist on the
+    parent URDF (their T_live falls back to identity).
+
+    Parameters
+    ----------
+    skin_mesh : str
+        Path to the rest-pose visual mesh (any format Genesis can load —
+        ``.glb`` / ``.gltf`` / ``.obj`` / ``.stl``). Loaded through the same
+        parser as ``gs.morphs.Mesh`` so embedded PBR materials, UVs and
+        textures flow into the renderer naturally. Its vertex order must
+        match the rows of ``weights_file`` exactly.
+    weights_file : str
+        Path to a ``.npz`` holding a sparse ``scipy.sparse`` matrix of shape
+        ``(V, n_bones)`` saved via ``scipy.sparse.save_npz``. Row sums
+        should equal 1.
+    canonical_link_T_file : str
+        Path to a ``.npz`` with arrays ``link_T`` of shape ``(n_bones, 4, 4)``
+        and ``link_names`` of length ``n_bones`` (rest-pose world transforms).
+    bone_link_names : tuple[str, ...]
+        URDF link names that drive each bone. Length must match the column count
+        of ``weights_file`` and the row count of ``canonical_link_T_file``.
+        Each renderer also suppresses the normal visual mesh for any URDF link
+        named here — the scan covers those links and showing both would let the
+        skeleton poke through.
+    skin_surface : Surface, optional
+        Override the surface (material) used for the skin. Leave at ``None``
+        to use the mesh's embedded PBR material (extracted by Genesis's
+        mesh parser from ``skin_mesh``).
+    """
+
+    skin_mesh: str
+    weights_file: str
+    canonical_link_T_file: str
+    bone_link_names: tuple[str, ...]
+    skin_surface: Surface | None = None
+
+    @model_validator(mode="after")
+    def _check_file_formats(self) -> "SkinSpec":
+        if not self.skin_mesh.lower().endswith(MESH_FORMATS):
+            gs.raise_exception(f"SkinSpec.skin_mesh must be one of {MESH_FORMATS}, got: {self.skin_mesh}")
+        for field, value in (
+            ("weights_file", self.weights_file),
+            ("canonical_link_T_file", self.canonical_link_T_file),
+        ):
+            if not value.lower().endswith(".npz"):
+                gs.raise_exception(f"SkinSpec.{field} must be a .npz file, got: {value}")
+        return self
+
+
 class FileMorph(Morph):
     """
     Morph loaded from a file.
@@ -567,6 +643,10 @@ class FileMorph(Morph):
     file_meshes_are_zup: StrictBool | None = True
     batch_fixed_verts: StrictBool = False
     group_by_material: StrictBool = False
+    skins: tuple[SkinSpec, ...] = ()
+    """Optional LBS skins that replace some of the URDF's visual meshes with a
+    textured scan deformed by per-frame URDF link transforms. See
+    `SkinSpec` and the `vis_mode="recon"` rendering pattern for details."""
 
     @model_validator(mode="before")
     @classmethod

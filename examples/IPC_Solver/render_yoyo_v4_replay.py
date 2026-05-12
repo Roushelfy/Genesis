@@ -104,16 +104,18 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 class YoyoV4StaticReplay(YoyoReplay):
     name = "yoyo_v4_replay"
 
-    # Luisa renderer lighting from replay_trashbag_sharpa_traj.py, applied to Nyx.
-    # 3 sphere lights (key / fill / rim) + dark grey (0.01) background.
+    # Matches yoyo_closeup.blend (4 point lights) and the showcase / bullet-time
+    # renderers — same positions, colors, and energies as Blender.
     def nyx_lights(self):
         return [
             # Key light: above-left, warm, casting shadows
-            {"type": "point", "pos": (0.85, 1.25, 2.45), "color": (1.0, 0.97, 0.92), "intensity": 50.0, "shadow": True},
+            {"type": "point", "pos": (0.85, 1.25, 2.45), "color": (1.0, 0.97, 0.92), "intensity": 20.0, "shadow": True},
             # Fill light: right side, cooler, softer
             {"type": "point", "pos": (0.6, -1.7, 4.3), "color": (0.48, 0.52, 0.6), "intensity": 1.0, "shadow": False},
             # Rim light: behind the scene, cool, hard
-            {"type": "point", "pos": (-0.8, -3.16, 0.5), "color": (0.8, 0.88, 1.0), "intensity": 150.0, "shadow": True},
+            {"type": "point", "pos": (-0.8, -3.16, 0.5), "color": (0.8, 0.88, 1.0), "intensity": 100.0, "shadow": True},
+            # Bottom warm fill, balances the Key from below
+            {"type": "point", "pos": (0.85, 1.25, 0.0), "color": (1.0, 0.97, 0.92), "intensity": 20.0, "shadow": True},
         ]
 
     def nyx_light_field(self):
@@ -138,11 +140,11 @@ class YoyoV4StaticReplay(YoyoReplay):
                         args = (gs.morphs.Mesh(file=str(logo_glb), fixed=True, collision=False),) + args[1:]
                     else:
                         kwargs["morph"] = gs.morphs.Mesh(file=str(logo_glb), fixed=True, collision=False)
-                    kwargs["surface"] = gs.surfaces.BSDF(
-                        diffuse_texture=gs.textures.ImageTexture(image_path=str(self._LOGO_IMG)),
-                        metallic=0.3,
-                        roughness=0.4,
-                    )
+                    # kwargs["surface"] = gs.surfaces.BSDF(
+                    #     diffuse_texture=gs.textures.ImageTexture(image_path=str(self._LOGO_IMG)),
+                    #     metallic=0.3,
+                    #     roughness=0.4,
+                    # )
             elif name == "robot":
                 kwargs["surface"] = {
                     "paint_white_glossy": gs.surfaces.BSDF(

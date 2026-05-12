@@ -398,10 +398,21 @@ class RasterizerContext:
                     geoms = entity.geoms
                     geoms_T = solver._geoms_render_T
 
+                # Any link covered by a skin has its URDF visual suppressed —
+                # we render the deformed scan instead. Empty for entities with
+                # no skins (most cases). _skin_states is always a list (set in
+                # KinematicEntity._build), so direct attribute access is safe.
+                skinned_links: frozenset[str] = frozenset(
+                    name for state in entity._skin_states for name in state.spec.bone_link_names
+                )
+
                 for geom in geoms:
                     # For heterogeneous simulation, filter envs based on geom's assigned environments
                     geom_envs_idx = self._get_geom_active_envs_idx(geom, self.rendered_envs_idx)
                     if len(geom_envs_idx) == 0:
+                        continue
+
+                    if geom.link.name in skinned_links:
                         continue
 
                     if "sdf" in entity.surface.vis_mode:
@@ -424,6 +435,29 @@ class RasterizerContext:
                     )
                     if isinstance(entity._morph, gs.morphs.Plane):
                         self.set_reflection_mat(geom_T)
+
+                # Add a static pyrender node for each skin on this entity.
+                # The node carries the rest-pose scan mesh; update_rigid pushes
+                # deformed positions to its "pos"/"normal" buffers every frame,
+                # mirroring how vis_mode="visual" handles PBD entities (see
+                # ~line 733). The SkinState (V_rest, W, T_canon_inv, link
+                # refs) is owned by the entity — every renderer reads the same
+                # instance via ``entity._skin_states``.
+                for skin_idx, state in enumerate(entity._skin_states):
+                    # state.skin_mesh is a parsed gs.Mesh whose `.trimesh`
+                    # carries the embedded PBR material (or the override set
+                    # by SkinSpec.skin_surface). pyrender.Mesh.from_trimesh
+                    # picks the material up automatically.
+                    node = self.add_node(
+                        pyrender.Mesh.from_trimesh(
+                            mesh=state.skin_mesh.trimesh,
+                            smooth=True,
+                            double_sided=False,
+                            env_shared=not self.env_separate_rigid,
+                        ),
+                    )
+                    self.static_nodes[(0, entity.uid, "skin", skin_idx)] = node
+                    self.create_node_seg(entity.idx, node)
 
     def update_rigid(self, buffer_updates):
         for solver in self._rigid_solvers():
@@ -453,6 +487,24 @@ class RasterizerContext:
                     buffer_updates[self._scene.get_buffer_id(node, "model")] = geom_T.transpose((0, 2, 1))
                     if isinstance(entity._morph, gs.morphs.Plane):
                         self.set_reflection_mat(geom_T)
+
+                # Per-skin LBS: deform the scan and push verts to the
+                # static node registered in on_rigid. Same pattern as the
+                # SPH/PBD recon path (~line 700): get a fresh trimesh from
+                # the entity (state.lbs_mesh()), read its vertices, let
+                # jit.update_normal handle normals on the GPU.
+                for skin_idx, state in enumerate(entity._skin_states):
+                    key = (0, entity.uid, "skin", skin_idx)
+                    if key not in self.static_nodes:
+                        continue
+                    node = self.static_nodes[key]
+                    mesh = state.lbs_mesh()
+                    V_t = np.asarray(mesh.vertices, dtype=np.float32)
+                    update_data = self._scene.reorder_vertices(node, V_t)
+                    buffer_updates[self._scene.get_buffer_id(node, "pos")] = update_data
+                    normal_data = self.jit.update_normal(node, update_data)
+                    if normal_data is not None:
+                        buffer_updates[self._scene.get_buffer_id(node, "normal")] = normal_data
 
     def update_contact(self, buffer_updates):
         if self.sim.rigid_solver.is_active and any(link.visualize_contact for link in self.sim.rigid_solver.links):
