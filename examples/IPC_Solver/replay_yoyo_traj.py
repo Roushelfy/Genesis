@@ -187,6 +187,8 @@ class YoyoReplay(TrajectoryReplay):
         assert urdf_rel, "meta.json must specify 'urdf'"
         if "marvin_sharpa" in urdf_rel:
             urdf_path = Path(marvin_urdf("marvin_sharpa"))
+        elif "marvin_pika" in urdf_rel:
+            urdf_path = Path(marvin_urdf("marvin_pika"))
         else:
             urdf_path = Path(urdf_rel)
             if not urdf_path.is_absolute():
