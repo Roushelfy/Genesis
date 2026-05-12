@@ -199,15 +199,15 @@ class CustomCamera(CameraTrajectory):
     def __init__(self, keyframes: list, default_pos: tuple, default_lookat: tuple):
         normalized = []
         for entry in keyframes:
-            frame = int(entry[0])
-            pos = np.array(entry[1], dtype=float)
-            lookat = np.array(entry[2], dtype=float)
-            up = np.array(entry[3] if len(entry) > 3 else (0.0, 0.0, 1.0), dtype=float)
-            ein = None if (len(entry) > 4 and entry[4] is None) else float(entry[4]) if len(entry) > 4 else 2.0
-            eout = None if (len(entry) > 5 and entry[5] is None) else float(entry[5]) if len(entry) > 5 else 2.0
+            frame   = int(entry[0])
+            pos     = np.array(entry[1], dtype=float)
+            lookat  = np.array(entry[2], dtype=float)
+            up      = np.array(entry[3] if len(entry) > 3 else (0.0, 0.0, 1.0), dtype=float)
+            ein     = None if (len(entry) > 4 and entry[4] is None) else float(entry[4]) if len(entry) > 4 else 2.0
+            eout    = None if (len(entry) > 5 and entry[5] is None) else float(entry[5]) if len(entry) > 5 else 2.0
             normalized.append((frame, pos, lookat, up, ein, eout))
         self._kf = sorted(normalized, key=lambda x: x[0])
-        self._default_pos = np.array(default_pos, dtype=float)
+        self._default_pos    = np.array(default_pos,    dtype=float)
         self._default_lookat = np.array(default_lookat, dtype=float)
 
     def _interp(self, frame_idx: int):
@@ -230,16 +230,16 @@ class CustomCamera(CameraTrajectory):
         # Find the enclosing segment and interpolate
         for i in range(len(self._kf) - 1):
             f0, p0, l0, u0, ein, eout = self._kf[i]
-            f1, p1, l1, u1, _, _ = self._kf[i + 1]
+            f1, p1, l1, u1, _,   _    = self._kf[i + 1]
             if f0 <= frame_idx < f1:
                 if ein is None:  # cut: hold at this keyframe until the next
                     return p0.copy(), l0.copy(), u0.copy()
                 t_raw = (frame_idx - f0) / (f1 - f0)
                 t = _ease(t_raw, ein, eout)
-                pos = p0 + t * (p1 - p0)
+                pos    = p0 + t * (p1 - p0)
                 lookat = l0 + t * (l1 - l0)
-                up = u0 + t * (u1 - u0)
-                norm = np.linalg.norm(up)
+                up     = u0 + t * (u1 - u0)
+                norm   = np.linalg.norm(up)
                 if norm > 1e-6:
                     up /= norm
                 return pos, lookat, up
@@ -286,16 +286,6 @@ class TrajectoryReplay:
     cam_fov: float = 40
     fps: int = 60
 
-    # Subclasses populate this in load_trajectory() (np.ndarray of shape (N,)).
-    # Used by interactive replay to print the sim_time when stopping/pausing.
-    sim_time: "np.ndarray | None" = None
-
-    def _fmt_stop(self, frame_idx: int) -> str:
-        """Render a 'frame=… sim_time=…' string for stop/pause messages."""
-        if self.sim_time is not None and 0 <= frame_idx < len(self.sim_time):
-            return f"frame={frame_idx} sim_time={float(self.sim_time[frame_idx]):.3f}s"
-        return f"frame={frame_idx}"
-
     def __init__(self):
         parser = argparse.ArgumentParser(description=f"Replay trajectory: {self.name}")
         parser.add_argument("--loop", action="store_true", help="Loop replay")
@@ -308,53 +298,26 @@ class TrajectoryReplay:
             help="Camera trajectory: surround, full, ego.",
         )
         parser.add_argument("--render", action="store_true", help="Record video")
-        parser.add_argument(
-            "--render-all-keyframes",
-            action="store_true",
-            help="Render one video per custom keyframe (fixed static camera for each). "
-            "Videos are named kf01_, kf02_, …",
-        )
-        parser.add_argument(
-            "--start-keyframe",
-            type=int,
-            default=1,
-            metavar="N",
-            help="Start the --render-all-keyframes batch at keyframe N (1-based). "
-            "--start-frame applies to that first keyframe; later shots start at frame 0. "
-            "Use this to resume an interrupted batch.",
-        )
-        parser.add_argument(
-            "--spp", type=int, default=1024, help="Samples-per-pixel for the render camera (default: 1024)"
-        )
+        parser.add_argument("--render-all-keyframes", action="store_true",
+                            help="Render one video per custom keyframe (fixed static camera for each). "
+                                 "Videos are named kf01_, kf02_, … and share a datetime tag.")
+        parser.add_argument("--start-keyframe", type=int, default=1, metavar="N",
+                            help="Start the --render-all-keyframes batch at keyframe N (1-based). "
+                                 "--start-frame applies to that first keyframe; later shots start at frame 0. "
+                                 "Use this to resume an interrupted batch.")
+        parser.add_argument("--spp", type=int, default=256, help="Samples-per-pixel for the render camera (default: 256)")
         parser.add_argument("--dof", action="store_true", help="Enable depth-of-field (thinlens camera model)")
-        parser.add_argument(
-            "--aperture", type=float, default=1.4, help="Aperture f-number for DOF (default: 1.4, lower=shallower)"
-        )
-        parser.add_argument(
-            "--focus-dist",
-            type=float,
-            default=None,
-            help="Focus distance in metres (default: auto from cam_pos/lookat)",
-        )
-        parser.add_argument(
-            "--focal-len", type=float, default=0.05, help="Focal length in metres for DOF (default: 0.05 = 50mm)"
-        )
+        parser.add_argument("--aperture", type=float, default=1.4, help="Aperture f-number for DOF (default: 1.4, lower=shallower)")
+        parser.add_argument("--focus-dist", type=float, default=None, help="Focus distance in metres (default: auto from cam_pos/lookat)")
+        parser.add_argument("--focal-len", type=float, default=0.05, help="Focal length in metres for DOF (default: 0.05 = 50mm)")
         parser.add_argument("--nyx", action="store_true", help="Use Nyx renderer")
         parser.add_argument("--start-frame", type=int, default=0, help="Start from this frame (interactive + render)")
-        parser.add_argument(
-            "--end-frame", type=int, default=None, help="Stop at this frame exclusive (default: last frame)"
-        )
-        parser.add_argument(
-            "--no-raytracer",
-            action="store_true",
-            help="Suppress Luisa renderer: with --nyx shows only the Nyx preview; without --nyx shows no preview window",
-        )
+        parser.add_argument("--end-frame", type=int, default=None, help="Stop at this frame exclusive (default: last frame)")
+        parser.add_argument("--no-raytracer", action="store_true", help="Suppress Luisa renderer: with --nyx shows only the Nyx preview; without --nyx shows no preview window")
         parser.add_argument("--save-frames", action="store_true", help="Save each frame as PNG")
         parser.add_argument("--follow", action="store_true", help="Camera follows the robot")
         parser.add_argument("--stride", type=int, default=1, help="Render every Nth frame (subsample)")
-        parser.add_argument(
-            "--dark-bg", action="store_true", help="Dark grey (0.01) background, no extra lights (Nyx only)"
-        )
+        parser.add_argument("--dark-bg", action="store_true", help="Dark grey (0.01) background, no extra lights (Nyx only)")
         parser.add_argument(
             "--preview",
             action="store_true",
@@ -457,6 +420,7 @@ class TrajectoryReplay:
                     ent.set_pos(pose[:3])
                     ent.set_quat(pose[3:])
 
+
         # FEM objects (particle positions)
         for name, entity in self._fem_entities.items():
             if name in self._fem_data and frame_idx < len(self._fem_data[name]):
@@ -475,7 +439,6 @@ class TrajectoryReplay:
     def make_renderer(self):
         """Create the RayTracer renderer. Override to use scene-specific lights."""
         from _yoyo_common import make_raytracer
-
         return make_raytracer()
 
     def nyx_lights(self) -> list:
@@ -485,20 +448,6 @@ class TrajectoryReplay:
         color, intensity — same format as scene_runner.py LIGHTS.
         """
         return []
-
-    def nyx_env_map(self) -> tuple[str, float, float]:
-        """Return (texture_path, rotation_deg, multiplier) for Nyx's environment map.
-
-        Default: the San Carlos left-marvin EXR at unit multiplier — historical
-        behaviour, used when subclasses don't override.  Subclasses that pick a
-        per-task or per-scene HDR should return its absolute path here so Luisa
-        and Nyx see the same sky.
-        """
-        return (
-            str((_REPO_ROOT / "DemoAssets/textures/san_carlos_left_marvin_modified.exr").resolve()),
-            0.0,
-            1.0,
-        )
 
     def nyx_light_field(self) -> dict | None:
         """Return Gaussian splat light field config, or None to skip.
@@ -525,7 +474,6 @@ class TrajectoryReplay:
         if not self.args.dof:
             return {}
         import math
-
         if self.args.focus_dist is not None:
             focus_dist = self.args.focus_dist
         else:
@@ -603,7 +551,6 @@ class TrajectoryReplay:
         if cfg is None:
             return None
         import gs_nyx.nyx_py_sdk as nps
-
         lf = nps.LightFieldAsset()
         lf.uri = cfg["uri"]
         lf.type = nps.ELightFieldType.GaussianField
@@ -652,15 +599,18 @@ class TrajectoryReplay:
             import gs_nyx.nyx_py_sdk as ap
 
             env_map = ap.EnvironmentMapAsset()
-            tex, rot, mult = self.nyx_env_map()
-            env_map.texture = tex
-            env_map.rotation = rot
-            env_map.multiplier = mult
+            env_map.texture = str((_REPO_ROOT / "DemoAssets/textures/san_carlos_left_marvin_modified.exr").resolve())
+            env_map.rotation = 0.0
+            env_map.multiplier = 1.0
             if getattr(self.args, "dark_bg", False):
-                # Dark grey background (0.01, 0.01, 0.01) like trashbag scene.
-                # No extra directional lights — relies on subclass nyx_lights().
-                env_map.texture = str((_REPO_ROOT / "DemoAssets/textures/dark_grey.exr").resolve())
+                # G-Warm light gray 02 background (uniform sRGB ~235 → linear 0.831),
+                # matching the palette in DemoAssets/yoyo/color.png and the
+                # ColorTexture(0.831) used by the Luisa closeup renderer.
+                env_map.texture = str((_REPO_ROOT / "DemoAssets/textures/g_warm_light_gray_02.exr").resolve())
                 env_map.multiplier = 1.0
+
+            # Subclasses can disable the env map by overriding nyx_use_env_map() → False
+            use_env_map = getattr(self, "nyx_use_env_map", lambda: True)()
 
             lights = self.nyx_lights()
             light_field = self._build_nyx_light_field()
@@ -672,7 +622,7 @@ class TrajectoryReplay:
                 spp=self.args.spp,
                 denoise=True,
                 render_mode=npr.ERenderMode.RefPathTracer,
-                env_maps=(env_map,),
+                env_maps=(env_map,) if use_env_map else (),
                 light_fields=(light_field,) if light_field is not None else (),
                 **({"lights": lights} if lights else {}),
             )
@@ -704,8 +654,6 @@ class TrajectoryReplay:
                 lookat=self.cam_lookat,
                 fov=self.cam_fov,
                 spp=self.args.preview_spp,
-                exposure=self.args.exposure,
-                tone_mapping=self.args.tone_mapping,
                 **self._dof_kwargs(),
             )
 
@@ -718,10 +666,9 @@ class TrajectoryReplay:
             import gs_nyx.nyx_py_sdk as ap
 
             env_map = ap.EnvironmentMapAsset()
-            tex, rot, mult = self.nyx_env_map()
-            env_map.texture = tex
-            env_map.rotation = rot
-            env_map.multiplier = mult
+            env_map.texture = str((_REPO_ROOT / "DemoAssets/textures/san_carlos_left_marvin_modified.exr").resolve())
+            env_map.rotation = 0.0
+            env_map.multiplier = 1.0
 
             lights = self.nyx_lights()
             light_field = self._build_nyx_light_field()
@@ -762,13 +709,13 @@ class TrajectoryReplay:
             idx = args.camera_keyframe - 1
             if 0 <= idx < len(kfs):
                 entry = kfs[idx]
-                self.cam_pos = tuple(float(v) for v in entry[1])
+                self.cam_pos    = tuple(float(v) for v in entry[1])
                 self.cam_lookat = tuple(float(v) for v in entry[2])
-                print(
-                    f"[camera] keyframe {args.camera_keyframe}/{len(kfs)}  pos={self.cam_pos}  lookat={self.cam_lookat}"
-                )
+                print(f"[camera] keyframe {args.camera_keyframe}/{len(kfs)}  "
+                      f"pos={self.cam_pos}  lookat={self.cam_lookat}")
             else:
-                print(f"[camera] --camera-keyframe {args.camera_keyframe} out of range (1–{len(kfs)}), ignoring")
+                print(f"[camera] --camera-keyframe {args.camera_keyframe} out of range "
+                      f"(1–{len(kfs)}), ignoring")
 
         self._make_scene()
         self.build_scene(self._scene)
@@ -818,19 +765,19 @@ class TrajectoryReplay:
     def _run_render(self) -> None:
         """Render entry point. Dispatches to _render_to_file, looping over
         keyframes when --render-all-keyframes is set."""
+        # All videos in a batch share one timestamp so they sort together.
+        dt_tag = datetime.now().strftime("%Y%m%d_%H%M%S")
+
         if getattr(self.args, "render_all_keyframes", False):
             kfs = self.custom_camera_keyframes()
             if not kfs:
                 print("[render] --render-all-keyframes: no keyframes defined, falling back to single render")
-                self._render_to_file()
+                self._render_to_file(dt_tag=dt_tag)
                 return
             start_kf = max(0, getattr(self.args, "start_keyframe", 1) - 1)  # 0-based
             n_remaining = len(kfs) - start_kf
-            print(
-                f"[render] Rendering {n_remaining}/{len(kfs)} keyframe shot(s)"
-                + (f" (resuming from kf{start_kf + 1:02d})" if start_kf > 0 else "")
-                + " …"
-            )
+            print(f"[render] Rendering {n_remaining}/{len(kfs)} keyframe shot(s)"
+                  + (f" (resuming from kf{start_kf + 1:02d})" if start_kf > 0 else "") + " …")
             for kf_idx, kf in enumerate(kfs):
                 if kf_idx < start_kf:
                     continue
@@ -838,16 +785,18 @@ class TrajectoryReplay:
                 # --start-frame applies only to the first shot of the batch; later shots start at 0
                 start_frame_override = None if kf_idx == start_kf else 0
                 self._render_to_file(
+                    dt_tag=dt_tag,
                     kf_idx=kf_idx,
                     kf_pos=tuple(float(v) for v in kf[1]),
                     kf_lookat=tuple(float(v) for v in kf[2]),
                     start_frame_override=start_frame_override,
                 )
         else:
-            self._render_to_file()
+            self._render_to_file(dt_tag=dt_tag)
 
     def _render_to_file(
         self,
+        dt_tag: str,
         kf_idx: int | None = None,
         kf_pos: tuple | None = None,
         kf_lookat: tuple | None = None,
@@ -907,7 +856,8 @@ class TrajectoryReplay:
         stride = max(1, args.stride)
         n_written = 0
         interrupted = False
-        writer = imageio.get_writer(str(out), fps=max(1, self.fps // stride), codec="libx264", macro_block_size=1)
+        writer = imageio.get_writer(str(out), fps=max(1, self.fps // stride),
+                                    codec="libx264", macro_block_size=1)
         try:
             for i in range(start, end):
                 if (i - start) % stride != 0:
@@ -949,9 +899,7 @@ class TrajectoryReplay:
             writer.close()
 
         if interrupted:
-            print(
-                f"[render] Interrupted — partial video saved: {out} ({n_written} frames, {max(1, self.fps // stride)} fps)"
-            )
+            print(f"[render] Interrupted — partial video saved: {out} ({n_written} frames, {max(1, self.fps // stride)} fps)")
         else:
             print(f"[render] Saved {out} ({n_written} frames, {max(1, self.fps // stride)} fps)")
         if frames_dir is not None:
@@ -959,11 +907,11 @@ class TrajectoryReplay:
 
     # Distinct bright colors per light index (RGB 0-1), cycling if more than 4
     _LIGHT_MARKER_COLORS = [
-        (1.0, 0.4, 0.1),  # 0: warm orange  — key
-        (0.1, 0.8, 0.3),  # 1: green        — fill
-        (0.2, 0.4, 1.0),  # 2: blue         — rim
-        (1.0, 0.9, 0.1),  # 3: yellow       — back-ambient
-        (1.0, 0.1, 0.8),  # 4+: magenta fallback
+        (1.0, 0.4, 0.1),   # 0: warm orange  — key
+        (0.1, 0.8, 0.3),   # 1: green        — fill
+        (0.2, 0.4, 1.0),   # 2: blue         — rim
+        (1.0, 0.9, 0.1),   # 3: yellow       — back-ambient
+        (1.0, 0.1, 0.8),   # 4+: magenta fallback
     ]
 
     def _add_light_markers(self, scene) -> None:
@@ -987,13 +935,12 @@ class TrajectoryReplay:
                     radius=float(light.radius),
                     fixed=False,
                 ),
-                surface=gs.surfaces.Emission(emissive_texture=gs.textures.ColorTexture(color=color)),
+                surface=gs.surfaces.Emission(
+                    emissive_texture=gs.textures.ColorTexture(color=color)),
             )
             self._light_markers.append(marker)
-            print(
-                f"[lights] marker {i}: pos={tuple(round(float(v), 3) for v in light.pos)}  "
-                f"radius={light.radius:.3f}  color={color}"
-            )
+            print(f"[lights] marker {i}: pos={tuple(round(float(v),3) for v in light.pos)}  "
+                  f"radius={light.radius:.3f}  color={color}")
 
     def _register_light_keybinds(self) -> None:
         """Register keybinds to move lights interactively.
@@ -1019,12 +966,12 @@ class TrajectoryReplay:
             print(f"[lights] active: light {active[0]}")
 
         BINDINGS = [
-            (Key._1, np.array([0, 1, 0])),
-            (Key._2, np.array([0, -1, 0])),
-            (Key._3, np.array([-1, 0, 0])),
-            (Key._4, np.array([1, 0, 0])),
-            (Key._5, np.array([0, 0, 1])),
-            (Key._6, np.array([0, 0, -1])),
+            (Key._1, np.array([ 0,  1,  0])),
+            (Key._2, np.array([ 0, -1,  0])),
+            (Key._3, np.array([-1,  0,  0])),
+            (Key._4, np.array([ 1,  0,  0])),
+            (Key._5, np.array([ 0,  0,  1])),
+            (Key._6, np.array([ 0,  0, -1])),
         ]
 
         def _move(axis: np.ndarray) -> None:
@@ -1044,7 +991,8 @@ class TrajectoryReplay:
             Keybind("light_cycle", Key.TAB, KeyAction.RELEASE, callback=_cycle_light),
         ]
         for key, axis in BINDINGS:
-            binds.append(Keybind(f"light_{key.name}", key, KeyAction.HOLD, callback=_move, args=(axis,)))
+            binds.append(Keybind(f"light_{key.name}", key, KeyAction.HOLD,
+                                 callback=_move, args=(axis,)))
 
         self._scene.viewer.register_keybinds(*binds)
         n = len(raytracer.lights)
@@ -1072,10 +1020,6 @@ class TrajectoryReplay:
 
         def _on_pause():
             _pause[0] = not _pause[0]
-            if _pause[0]:
-                print(f"[replay] paused at {self._fmt_stop(_current_frame[0])}")
-            else:
-                print(f"[replay] resumed at {self._fmt_stop(_current_frame[0])}")
 
         def _on_reset():
             _reset[0] = True
@@ -1090,9 +1034,9 @@ class TrajectoryReplay:
             print(f"[replay] speed={_speed[0]:.2f}x")
 
         def _on_keyframe():
-            pos = tuple(round(float(v), 4) for v in self._scene.viewer.camera_pos)
+            pos    = tuple(round(float(v), 4) for v in self._scene.viewer.camera_pos)
             lookat = tuple(round(float(v), 4) for v in self._scene.viewer.camera_lookat)
-            up = tuple(round(float(v), 4) for v in self._scene.viewer.camera_up)
+            up     = tuple(round(float(v), 4) for v in self._scene.viewer.camera_up)
             print(f"[keyframe] ({_current_frame[0]}, {pos}, {lookat}, {up}),")
 
         def _on_prev_kf() -> None:
@@ -1121,34 +1065,31 @@ class TrajectoryReplay:
             _kf_jump[0] = False
             idx = _kf_idx[0]
             entry = _custom_kfs[idx]
-            kf_frame = int(entry[0])
-            kf_pos = np.array(entry[1], dtype=float)
+            kf_frame  = int(entry[0])
+            kf_pos    = np.array(entry[1], dtype=float)
             kf_lookat = np.array(entry[2], dtype=float)
-            raw_up = entry[3] if len(entry) > 3 and entry[3] is not None else (0.0, 0.0, 1.0)
-            kf_up = np.array(raw_up, dtype=float)
+            raw_up    = entry[3] if len(entry) > 3 and entry[3] is not None else (0.0, 0.0, 1.0)
+            kf_up     = np.array(raw_up, dtype=float)
             self._scene.viewer._camera_up = kf_up
             self._scene.viewer.set_camera_pose(pos=kf_pos, lookat=kf_lookat)
             n = len(_custom_kfs)
-            print(
-                f"[keyframe] {idx + 1}/{n}  frame={kf_frame}  "
-                f"pos={tuple(round(float(v), 4) for v in kf_pos)}  "
-                f"lookat={tuple(round(float(v), 4) for v in kf_lookat)}"
-            )
+            print(f"[keyframe] {idx + 1}/{n}  frame={kf_frame}  "
+                  f"pos={tuple(round(float(v), 4) for v in kf_pos)}  "
+                  f"lookat={tuple(round(float(v), 4) for v in kf_lookat)}")
 
         self._scene.viewer.register_keybinds(
-            Keybind("replay_pause", Key.SPACE, KeyAction.RELEASE, callback=_on_pause),
-            Keybind("replay_reset", Key.BACKSPACE, KeyAction.RELEASE, callback=_on_reset),
-            Keybind("replay_speed_up", Key.PERIOD, KeyAction.RELEASE, callback=_on_speed_up),
-            Keybind("replay_speed_down", Key.COMMA, KeyAction.RELEASE, callback=_on_speed_down),
-            Keybind("replay_keyframe", Key.K, KeyAction.RELEASE, callback=_on_keyframe),
-            Keybind("replay_prev_kf", Key.BRACKETLEFT, KeyAction.RELEASE, callback=_on_prev_kf),
-            Keybind("replay_next_kf", Key.BRACKETRIGHT, KeyAction.RELEASE, callback=_on_next_kf),
+            Keybind("replay_pause",      Key.SPACE,        KeyAction.RELEASE, callback=_on_pause),
+            Keybind("replay_reset",      Key.BACKSPACE,    KeyAction.RELEASE, callback=_on_reset),
+            Keybind("replay_speed_up",   Key.PERIOD,       KeyAction.RELEASE, callback=_on_speed_up),
+            Keybind("replay_speed_down", Key.COMMA,        KeyAction.RELEASE, callback=_on_speed_down),
+            Keybind("replay_keyframe",   Key.K,            KeyAction.RELEASE, callback=_on_keyframe),
+            Keybind("replay_prev_kf",    Key.BRACKETLEFT,  KeyAction.RELEASE, callback=_on_prev_kf),
+            Keybind("replay_next_kf",    Key.BRACKETRIGHT, KeyAction.RELEASE, callback=_on_next_kf),
         )
         self._register_light_keybinds()
 
         if use_preview:
             import cv2
-
             w, h = args.res
             if self._preview_cam is not None:
                 cv2.namedWindow("preview (luisa)", cv2.WINDOW_GUI_NORMAL)
@@ -1160,11 +1101,11 @@ class TrajectoryReplay:
         def _update_preview(frame_idx: int) -> None:
             if not use_preview:
                 return
-            # Always read from the viewer — the main loop already drives the viewer
-            # from _camera_traj each frame, so this stays in sync during playback.
-            # When paused, the viewer is user-controlled and this lets Luisa follow it.
-            cam_pos = tuple(self._scene.viewer.camera_pos)
-            cam_lookat = tuple(self._scene.viewer.camera_lookat)
+            if self._camera_traj is not None:
+                cam_pos, cam_lookat = self._camera_traj.get_pose(frame_idx, self._n_frames)
+            else:
+                cam_pos = tuple(self._scene.viewer.camera_pos)
+                cam_lookat = tuple(self._scene.viewer.camera_lookat)
 
             # Luisa window (skipped when --no-raytracer)
             if self._preview_cam is not None:
@@ -1185,16 +1126,16 @@ class TrajectoryReplay:
             cv2.waitKey(1)
 
         # ── Camera-settle tracker ─────────────────────────────────────────────
-        _last_cam_pos = [None]
+        _last_cam_pos    = [None]
         _last_cam_lookat = [None]
-        _settled_frames = [0]
-        SETTLE_FRAMES = 30  # ~0.5 s at 60 Hz
+        _settled_frames  = [0]
+        SETTLE_FRAMES    = 30  # ~0.5 s at 60 Hz
 
         def _check_camera_settled() -> None:
             """Print cam_pos / cam_lookat once the viewer camera stops moving."""
             if self._camera_traj is not None:
                 return  # camera-traj mode: viewer isn't user-controlled
-            pos = tuple(round(float(v), 4) for v in self._scene.viewer.camera_pos)
+            pos    = tuple(round(float(v), 4) for v in self._scene.viewer.camera_pos)
             lookat = tuple(round(float(v), 4) for v in self._scene.viewer.camera_lookat)
             if pos == _last_cam_pos[0] and lookat == _last_cam_lookat[0]:
                 _settled_frames[0] += 1
@@ -1202,9 +1143,9 @@ class TrajectoryReplay:
                     print(f"[camera] cam_pos    = {pos}")
                     print(f"[camera] cam_lookat = {lookat}")
             else:
-                _last_cam_pos[0] = pos
+                _last_cam_pos[0]    = pos
                 _last_cam_lookat[0] = lookat
-                _settled_frames[0] = 0
+                _settled_frames[0]  = 0
 
         def _wait_while_paused(frame_idx: int) -> None:
             while _pause[0] and not _reset[0]:
@@ -1242,24 +1183,17 @@ class TrajectoryReplay:
                 i += step
                 if i % 200 < step:
                     print(f"Frame {i}/{end}")
-            last_idx = max(start, min(end - 1, i - step))
-            _current_frame[0] = last_idx
-            print(f"Trajectory complete at {self._fmt_stop(last_idx)}. Press BACKSPACE to replay, SPACE to pause.")
+            print("Trajectory complete. Press BACKSPACE to replay, SPACE to pause.")
 
         # ── Main loop ─────────────────────────────────────────────────────────
-        try:
-            while True:
-                _reset[0] = False
-                _run_pass()
-                if not args.loop and not _reset[0]:
-                    # Trajectory done — keep viewer alive, wait for BACKSPACE to replay
-                    while not _reset[0]:
-                        self._scene._visualizer.update(force=True)
-                        _check_camera_settled()
-                        if use_preview:
-                            cv2.waitKey(1)
-                        time.sleep(1 / 60)
-        except gs.GenesisException as exc:
-            if "Viewer closed" in str(exc):
-                print(f"[replay] viewer closed at {self._fmt_stop(_current_frame[0])}")
-            raise
+        while True:
+            _reset[0] = False
+            _run_pass()
+            if not args.loop and not _reset[0]:
+                # Trajectory done — keep viewer alive, wait for BACKSPACE to replay
+                while not _reset[0]:
+                    self._scene._visualizer.update(force=True)
+                    _check_camera_settled()
+                    if use_preview:
+                        cv2.waitKey(1)
+                    time.sleep(1 / 60)

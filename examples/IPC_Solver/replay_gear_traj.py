@@ -104,6 +104,8 @@ class GearReplay(TrajectoryReplay):
         return gs.renderers.RayTracer(
             logging_level="warning",
             tracing_depth=32,
+            env_surface=gs.surfaces.Emission(
+                emissive_texture=gs.textures.ColorTexture(color=(0.01, 0.01, 0.01))),
             env_radius=100.0,
             env_euler=(0, 0, 20),
             lights=[
@@ -145,6 +147,13 @@ class GearReplay(TrajectoryReplay):
 
         rot_off = GEAR_ROTATION_DEG
         gear_assets = str(_GEAR / "assets")
+
+        # Ground — large flat box (paper-plane background)
+        scene.add_entity(
+            gs.morphs.Box(size=(20.0, 20.0, 0.02), pos=(0.0, 0.0, -2.01), fixed=True),
+            surface=gs.surfaces.BSDF(
+                diffuse_texture=gs.textures.ColorTexture(color=(0.05, 0.05, 0.05))),
+        )
 
         # Table
         scene.add_entity(

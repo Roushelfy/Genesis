@@ -172,12 +172,14 @@ class HangerSharpaReplay(TrajectoryReplay):
         {"pos": (0.5, -1.8, 4.2), "radius": 1.0, "color": (0.48, 0.52, 0.6), "intensity": 1.0},
         # Rim light: behind the scene, cool, hard — separates hands/shirt from dark background
         {"pos": (-0.8, -3.0, 0.5), "radius": 0.25, "color": (0.8, 0.88, 1.0), "intensity": 150.0},
+        # Extra accent light
+        {"pos": (2.5, 2.1, 1.4), "radius": 0.2, "color": (1.0, 0.97, 0.92), "intensity": 70.0},
     ]
     # Nyx uses different physical units for radius and intensity.
     # Tune these two scalars to match perceived brightness/softness without
     # touching individual light values.
     NYX_RADIUS_SCALE = 1.0
-    NYX_INTENSITY_SCALE = 0.2
+    NYX_INTENSITY_SCALE = 0.2  # tuned to match Luisa perceived brightness
 
     def make_renderer(self):
         import genesis as gs
@@ -186,6 +188,8 @@ class HangerSharpaReplay(TrajectoryReplay):
         return gs.renderers.RayTracer(
             logging_level="warning",
             tracing_depth=32,
+            env_surface=gs.surfaces.Emission(
+                emissive_texture=gs.textures.ColorTexture(color=(0.01, 0.01, 0.01))),
             env_radius=100.0,
             env_euler=(0, 0, 20),
             lights=[
@@ -212,14 +216,12 @@ class HangerSharpaReplay(TrajectoryReplay):
         ]
 
     def nyx_light_field(self):
-        # San Carlos robot station splat — position/rotation tuned for this scene.
-        # Run with --nyx --preview and tweak until the background aligns.
-        return {
-            "uri": str((_REPO / "DemoAssets/3dgs/0325_san_carlos_robot_station.ply").resolve()),
-            "position": (1.5, 0.81, -3.0),
-            "rotation": (0.0, 0.701707, 0.0, 0.701707),  # (w, x, y, z) — 180° around Y
-            "scale": (1.0, 1.0, 1.0),
-        }
+        # Disabled to match Luisa (no 3DGS background)
+        return None
+
+    def nyx_use_env_map(self):
+        # Disabled to match Luisa (uses default raytracer environment, not HDR)
+        return False
 
     def custom_camera_keyframes(self):
         # Keyframes captured on the wuji trajectory
@@ -255,6 +257,13 @@ class HangerSharpaReplay(TrajectoryReplay):
 
     def build_scene(self, scene):
         import genesis as gs
+
+        # Ground — large flat box (paper-plane background)
+        scene.add_entity(
+            gs.morphs.Box(size=(20.0, 20.0, 0.02), pos=(0.0, 0.0, -2.01), fixed=True),
+            surface=gs.surfaces.BSDF(
+                diffuse_texture=gs.textures.ColorTexture(color=(0.05, 0.05, 0.05))),
+        )
 
         # Table (ipc_hanger: rotated 90 deg, shifted)
         scene.add_entity(
