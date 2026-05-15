@@ -471,6 +471,9 @@ class IPCCoupler(RBC):
         # ==== Entity Collision Pair Overrides (pre-build) ====
         # Frozensets of (entity_a, entity_b) whose cross-entity ABD collision is disabled.
         self._disabled_collision_pairs: set[frozenset] = set()
+        # Optional allowlist for ABD collision. When set, every ABD x ABD pair
+        # whose entity pair is absent here is disabled, including same-entity pairs.
+        self._enabled_collision_pairs: set[frozenset] | None = None
 
         # ==== Entity Coupling Configuration ====
         self._coup_type_by_entity: dict["RigidEntity", COUPLING_TYPE] = {}
@@ -543,6 +546,13 @@ class IPCCoupler(RBC):
         Must be called before ``scene.build()``.
         """
         self._disabled_collision_pairs.discard(frozenset((entity_a, entity_b)))
+
+    def set_enabled_collision_pairs(self, entity_pairs) -> None:
+        """Allow only the provided IPC ABD collision entity pairs.
+
+        Must be called before ``scene.build()``. Order within each pair does not matter.
+        """
+        self._enabled_collision_pairs = {frozenset(pair) for pair in entity_pairs}
 
     def build(self) -> None:
         """Build IPC system"""
@@ -1423,6 +1433,14 @@ class IPCCoupler(RBC):
                     self._ipc_contact_tabular.insert(elem_i, elem_j, friction_ij, resistance_ij, False)
                     _n_disabled += 1
                     continue
+
+                if self._enabled_collision_pairs is not None:
+                    pair = frozenset((link_i.entity, link_j.entity))
+                    if pair not in self._enabled_collision_pairs:
+                        self._ipc_contact_tabular.insert(elem_i, elem_j, friction_ij, resistance_ij, False)
+                        _n_disabled += 1
+                        gs.logger.debug(f"[IPC CONTACT] DISABLED by pair allowlist: {link_i.name} × {link_j.name}")
+                        continue
 
                 # Fixed-fixed pairs never collide (mirrors RigidSolver collider)
                 if _link_is_fixed_for_ipc(link_i) and _link_is_fixed_for_ipc(link_j):

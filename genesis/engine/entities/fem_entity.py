@@ -430,7 +430,11 @@ class FEMEntity(Entity):
 
             mesh_verts = [mesh.verts for mesh in meshes]
             mesh_faces = [mesh.faces for mesh in meshes]
-            verts, faces = self._merge_elements(mesh_verts, mesh_faces)
+            mesh_uvs = [mesh.uvs for mesh in meshes]
+            if any(uvs is not None for uvs in mesh_uvs):
+                verts, faces, self._uvs = self._merge_elements(mesh_verts, mesh_faces, mesh_uvs)
+            else:
+                verts, faces = self._merge_elements(mesh_verts, mesh_faces)
             self._instantiate(verts, faces)
 
         else:
@@ -444,35 +448,52 @@ class FEMEntity(Entity):
 
             mesh_verts = [mesh.verts for mesh in meshes]
             mesh_faces = [mesh.faces for mesh in meshes]
-            surface_verts, surface_faces = self._merge_elements(mesh_verts, mesh_faces)
+            mesh_uvs = [mesh.uvs for mesh in meshes]
+            if any(uvs is not None for uvs in mesh_uvs):
+                surface_verts, surface_faces, surface_uvs = self._merge_elements(mesh_verts, mesh_faces, mesh_uvs)
+            else:
+                surface_verts, surface_faces = self._merge_elements(mesh_verts, mesh_faces)
+                surface_uvs = None
             surface_trimesh = trimesh.Trimesh(vertices=surface_verts, faces=surface_faces, process=False)
             # NOTE: returned verts from mesh_to_elements and split_all_surface_tets does not change the
             # order of surface vertices. Once changed, we should modify sim_verts_maps accordingly.
             verts, elems = eu.mesh_to_elements(mesh=surface_trimesh, tet_cfg=self.tet_cfg)
-            self._instantiate(*eu.split_all_surface_tets(verts, elems))
+            if surface_uvs is not None:
+                self._uvs = np.pad(surface_uvs, ((0, len(verts) - len(surface_uvs)), (0, 0)))
+            verts, elems = eu.split_all_surface_tets(verts, elems)
+            if self._uvs is not None and len(self._uvs) < len(verts):
+                self._uvs = np.pad(self._uvs, ((0, len(verts) - len(self._uvs)), (0, 0)))
+            self._instantiate(verts, elems)
 
-    def _merge_elements(self, mesh_verts_list, mesh_elems_list):
+    def _merge_elements(self, mesh_verts_list, mesh_elems_list, mesh_uvs_list=None):
         """Merge multiple sub-meshes' vertices and elements, deduplicating shared vertices.
 
         Concatenates all vertices, deduplicates by position, remaps element
         indices, and builds ``_sim_vert_maps`` mapping each sub-mesh's local
         vertex indices to the deduplicated sim vertex array.
 
-        Returns (combined_verts, combined_elems).
+        Returns (combined_verts, combined_elems), plus combined UVs if requested.
         """
         all_verts_list = []
         all_elems_list = []
+        all_uvs_list = []
         sub_mesh_ranges = []
         offset = 0
-        for verts, elems in zip(mesh_verts_list, mesh_elems_list):
+        for idx, (verts, elems) in enumerate(zip(mesh_verts_list, mesh_elems_list)):
             v = np.asarray(verts, dtype=np.float64)
             e = np.asarray(elems, dtype=np.int32)
             all_verts_list.append(v)
             all_elems_list.append(e + offset)
+            if mesh_uvs_list is not None:
+                uvs = mesh_uvs_list[idx]
+                if uvs is None or len(uvs) != len(v):
+                    uvs = np.zeros((len(v), 2), dtype=gs.np_float)
+                all_uvs_list.append(np.asarray(uvs, dtype=gs.np_float))
             sub_mesh_ranges.append((offset, len(v)))
             offset += len(v)
         all_verts = np.vstack(all_verts_list)
         all_elems = np.vstack(all_elems_list)
+        all_uvs = np.vstack(all_uvs_list) if mesh_uvs_list is not None else None
 
         # Deduplicate by quantizing positions
         quantized = np.round(all_verts * 1e8).astype(np.int64)
@@ -490,6 +511,10 @@ class FEMEntity(Entity):
         for sub_offset, sub_n_verts in sub_mesh_ranges:
             self._sim_vert_maps.append(global_remap[sub_offset : sub_offset + sub_n_verts].astype(gs.np_int))
 
+        if all_uvs is not None:
+            uvs = all_uvs[np.sort(unique_idx)].astype(gs.np_float, copy=False)
+            return verts, elems, uvs
+
         return verts, elems
 
     def _add_to_solver(self, in_backward=False):
@@ -506,6 +531,7 @@ class FEMEntity(Entity):
             )
 
         verts_numpy = tensor_to_array(self.init_positions, dtype=gs.np_float)
+        uvs_np = self._uvs if self._uvs is not None else np.zeros((0, 2), dtype=gs.np_float)
 
         if is_rope or is_cloth:
             # Cloth/Rope: add vertices to solver for position tracking (physics managed by IPC)
@@ -515,8 +541,13 @@ class FEMEntity(Entity):
             )
             self._solver._kernel_add_vertices_only(
                 f=self._sim.cur_substep_local,
+                n_surfaces=self._n_surfaces,
                 v_start=self._v_start,
+                s_start=self._s_start,
                 verts=verts_numpy,
+                tri2v=self._surface_tri_np,
+                tri2el=self._surface_el_np,
+                uvs=uvs_np,
             )
         else:
             # Regular FEM: add vertices, elements, and surfaces for physics
@@ -536,6 +567,7 @@ class FEMEntity(Entity):
                 elems=elems_np,
                 tri2v=self._surface_tri_np,
                 tri2el=self._surface_el_np,
+                uvs=uvs_np,
             )
 
         self.active = True
@@ -1116,6 +1148,11 @@ class FEMEntity(Entity):
     def sim_vert_maps(self):
         """List of arrays mapping each render mesh's verts to sim vert indices, or None."""
         return self._sim_vert_maps
+
+    @property
+    def uvs(self):
+        """UV coordinates aligned with solver vertices, or None if unavailable."""
+        return self._uvs
 
     @property
     def n_elements(self):
