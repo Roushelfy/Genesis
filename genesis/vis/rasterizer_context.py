@@ -791,22 +791,36 @@ class RasterizerContext:
                         if normal_data is not None:
                             buffer_updates[self._scene.get_buffer_id(node, "normal")] = normal_data
 
+    def _get_fem_render_vertices_all_envs(self):
+        vertices_all, _, _ = self.sim.fem_solver.get_state_render(self.sim.cur_substep_local)
+        if isinstance(vertices_all, torch.Tensor):
+            vertices_all = vertices_all.detach().cpu().numpy()
+            if vertices_all.shape[0] != self.sim._B and vertices_all.shape[1] == self.sim._B:
+                vertices_all = np.swapaxes(vertices_all, 0, 1)
+        else:
+            vertices_all = qd_to_numpy(vertices_all, transpose=True)
+
+        envs_offset = getattr(self.scene, "envs_offset", None)
+        if envs_offset is not None:
+            vertices_all = vertices_all + envs_offset[:, None, :]
+
+        return vertices_all.astype(gs.np_float, copy=False)
+
     def on_fem(self):
         if self.sim.fem_solver.is_active:
-            vertices_all, _, _ = self.sim.fem_solver.get_state_render(self.sim.cur_substep_local)
-            vertices_all = qd_to_numpy(vertices_all)
+            vertices_all = self._get_fem_render_vertices_all_envs()
 
             for fem_entity in self.sim.fem_solver.entities:
                 if fem_entity.surface.vis_mode != "visual":
                     continue
 
-                sim_verts_all_envs = vertices_all[fem_entity.v_start : fem_entity.v_start + fem_entity.n_vertices]
+                sim_verts_all_envs = vertices_all[:, fem_entity.v_start : fem_entity.v_start + fem_entity.n_vertices]
 
                 from genesis.engine.mesh import LineMesh
 
                 for sub_idx, (rmesh, svm) in enumerate(zip(fem_entity.render_meshes, fem_entity.sim_vert_maps)):
                     for idx in self.rendered_envs_idx:
-                        sim_verts = sim_verts_all_envs[:, idx]
+                        sim_verts = sim_verts_all_envs[idx]
                         if isinstance(rmesh, LineMesh) and rmesh.tube_faces is not None:
                             render_verts = rmesh.build_tube_verts(sim_verts[svm])
                             faces = rmesh.tube_faces
@@ -833,8 +847,7 @@ class RasterizerContext:
 
     def update_fem(self, buffer_updates):
         if self.sim.fem_solver.is_active:
-            vertices_all, _, _ = self.sim.fem_solver.get_state_render(self.sim.cur_substep_local)
-            vertices_all = vertices_all.to_numpy(dtype=gs.np_float)
+            vertices_all = self._get_fem_render_vertices_all_envs()
 
             for fem_entity in self.sim.fem_solver.entities:
                 if fem_entity.surface.vis_mode != "visual":
@@ -842,11 +855,11 @@ class RasterizerContext:
 
                 from genesis.engine.mesh import LineMesh
 
-                sim_verts_all_envs = vertices_all[fem_entity.v_start : fem_entity.v_start + fem_entity.n_vertices]
+                sim_verts_all_envs = vertices_all[:, fem_entity.v_start : fem_entity.v_start + fem_entity.n_vertices]
 
                 for sub_idx, (rmesh, svm) in enumerate(zip(fem_entity.render_meshes, fem_entity.sim_vert_maps)):
                     for idx in self.rendered_envs_idx:
-                        sim_verts = sim_verts_all_envs[:, idx]
+                        sim_verts = sim_verts_all_envs[idx]
                         if isinstance(rmesh, LineMesh) and rmesh.tube_faces is not None:
                             render_verts = rmesh.build_tube_verts(sim_verts[svm])
                         else:

@@ -839,7 +839,19 @@ class Raytracer:
         # FEM entities
         if self.sim.fem_solver.is_active:
             vertices_all, _, _ = self.sim.fem_solver.get_state_render(self.sim.cur_substep_local)
-            vertices_all = vertices_all.to_numpy()[:, self.rendered_envs_idx[0]]
+            env_idx = self.rendered_envs_idx[0]
+            if hasattr(vertices_all, "detach"):
+                vertices_all = vertices_all.detach().cpu().numpy()
+                if vertices_all.shape[0] == self.sim._B:
+                    vertices_all = vertices_all[env_idx]
+                else:
+                    vertices_all = vertices_all[:, env_idx]
+            else:
+                vertices_all = vertices_all.to_numpy()[:, env_idx]
+
+            envs_offset = getattr(self.scene, "envs_offset", None)
+            if envs_offset is not None:
+                vertices_all = vertices_all + envs_offset[env_idx]
 
             for fem_entity in self.sim.fem_solver.entities:
                 if fem_entity.surface.vis_mode != "visual":

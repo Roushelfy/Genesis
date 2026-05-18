@@ -225,7 +225,9 @@ class FEMSolver(Solver):
             layout=qd.Layout.SOA,
         )
 
-        # Sim vertex positions for rendering (read by get_state_render)
+        # Sim vertex positions for rendering (read by get_state_render).
+        # Keep these env-local; render backends that draw all envs in one world
+        # should add scene.envs_offset themselves.
         surface_state_render_v = qd.types.struct(
             vertices=gs.qd_vec3,
         )
@@ -1408,7 +1410,7 @@ class FEMSolver(Solver):
         for i_v, i_b in qd.ndrange(self.n_vertices, self._B):
             for j in qd.static(range(3)):
                 pos_j = qd.cast(self.elements_v[f, i_v, i_b].pos[j], qd.f32)
-                self.surface_render_v[i_v, i_b].vertices[j] = pos_j + self.envs_offset[i_b][j]
+                self.surface_render_v[i_v, i_b].vertices[j] = pos_j
 
         for i_s in range(self.n_surfaces):
             for j in qd.static(range(3)):
