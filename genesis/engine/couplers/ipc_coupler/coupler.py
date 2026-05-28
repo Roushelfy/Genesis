@@ -81,6 +81,10 @@ if TYPE_CHECKING or UIPC_AVAILABLE:
         from uipc.constitution import FiniteElementExternalForce  # type: ignore[attr-defined]
     except ImportError:
         FiniteElementExternalForce = None  # type: ignore[assignment, misc]
+    try:
+        from uipc.constitution import RCCAdhesive  # type: ignore[attr-defined]
+    except ImportError:
+        RCCAdhesive = None  # type: ignore[assignment, misc]
     from uipc.core import (
         Engine,
         World,
@@ -459,6 +463,7 @@ class IPCCoupler(RBC):
         self._ipc_eac: ExternalArticulationConstraint | None = None
         self._ipc_fem_ext_force: FiniteElementExternalForce | None = None
         self._ipc_soft_pos_constraint: SoftPositionConstraint | None = None
+        self._ipc_rcc_adhesive: "RCCAdhesive | None" = None
 
         # ==== IPC Contact Elements ====
         self._ipc_no_collision_contact: ContactElement | None = None
@@ -518,6 +523,8 @@ class IPCCoupler(RBC):
         # Callbacks invoked after _add_objects_to_ipc() but before _finalize_ipc().
         # Each hook receives the coupler instance as its sole argument.
         self._pre_finalize_hooks: list = []
+        self._rcc_adhesion_requests: list[dict[str, Any]] = []
+        self._ipc_finalized = False
 
         # ==== Restitution ====
         # Per-frame velocity corrections: (dof_start, dof_end, correction_array).
@@ -575,6 +582,7 @@ class IPCCoupler(RBC):
         # Run user-registered pre-finalize hooks (e.g. applying RotatingMotor)
         for hook in self._pre_finalize_hooks:
             hook(self)
+        self._apply_rcc_adhesions()
         self._finalize_ipc()
         self._init_accessors()
 
@@ -1119,13 +1127,29 @@ class IPCCoupler(RBC):
                 mass_center = np.asarray(link.inertial_pos, dtype=np.float64)
                 inertia = np.asarray(link.inertial_i, dtype=np.float64)
                 volume = mass_val / rho if rho > 0 else 1.0
-                rigid_link_geom = self._ipc_abd.create_proxy(
-                    kappa=ABD_KAPPA * uipc.unit.MPa,
-                    mass=mass_val,
-                    mass_center=mass_center,
-                    inertia=inertia,
-                    volume=volume,
-                )
+                if hasattr(self._ipc_abd, "create_proxy"):
+                    rigid_link_geom = self._ipc_abd.create_proxy(
+                        kappa=ABD_KAPPA * uipc.unit.MPa,
+                        mass=mass_val,
+                        mass_center=mass_center,
+                        inertia=inertia,
+                        volume=volume,
+                    )
+                else:
+                    # Older pyuipc bindings do not expose create_proxy().
+                    # Use a tiny no-collision closed box as an ABD carrier so
+                    # external articulation constraints still have a body slot.
+                    side = max(volume, 1.0e-12) ** (1.0 / 3.0)
+                    proxy_mesh = trimesh.creation.box(extents=(side, side, side))
+                    proxy_verts = np.asarray(proxy_mesh.vertices, dtype=np.float64) + mass_center
+                    proxy_faces = np.asarray(proxy_mesh.faces, dtype=np.int32)
+                    rigid_link_geom = uipc.geometry.trimesh(proxy_verts, proxy_faces)
+                    uipc.geometry.label_surface(rigid_link_geom)
+                    self._ipc_abd.apply_to(
+                        rigid_link_geom,
+                        kappa=ABD_KAPPA * uipc.unit.MPa,
+                        mass_density=rho,
+                    )
                 self._ipc_no_collision_contact.apply_to(rigid_link_geom)
                 gs.logger.info(f"[IPC] link '{link.name}' has no collision mesh — using proxy ABD body")
             else:
@@ -1528,6 +1552,7 @@ class IPCCoupler(RBC):
         self._ipc_world.init(self._ipc_scene)
         # Checkpoint frame 0 so that recover(0) works in reset().
         self._ipc_world.dump()
+        self._ipc_finalized = True
         gs.logger.info("IPC world initialized successfully")
 
     def _build_before_ipc_world_init_context(self) -> IPCBeforeWorldInitContext:
@@ -1540,6 +1565,188 @@ class IPCCoupler(RBC):
                 scene=self._ipc_scene,
             ),
         )
+
+    def add_rcc_adhesion(
+        self,
+        source_entity: Any,
+        target_entities: Any,
+        sticky_side: int,
+        Cn: float,
+        Ct: float,
+        W: float,
+        eta: float,
+        bonding_rate: float,
+        p0: float,
+        initial_beta: float,
+        enabled: bool = True,
+    ) -> None:
+        """Register RCC adhesive contact from one IPC entity to one or more targets.
+
+        The request is applied after Genesis registers its normal IPC contact
+        pairs and immediately before ``World.init(scene)``. This keeps adhesion
+        opt-in and lets existing contact behavior stay unchanged.
+        """
+        if self._ipc_finalized:
+            gs.raise_exception("RCC adhesion must be registered before the IPC world is finalized.")
+        if RCCAdhesive is None:
+            gs.raise_exception(
+                "The installed uipc package does not expose RCCAdhesive. "
+                "Use the local libuipc branch that provides uipc.constitution.RCCAdhesive."
+            )
+
+        if isinstance(target_entities, (list, tuple, set, frozenset)):
+            targets = tuple(target_entities)
+        else:
+            targets = (target_entities,)
+        if not targets:
+            gs.raise_exception("RCC adhesion requires at least one target entity.")
+
+        sticky_side = int(sticky_side)
+        if sticky_side not in (-1, 0, 1):
+            gs.raise_exception("RCC adhesion sticky_side must be -1, 0, or 1.")
+
+        self._rcc_adhesion_requests.append(
+            {
+                "source_entity": source_entity,
+                "target_entities": targets,
+                "sticky_side": sticky_side,
+                "Cn": float(Cn),
+                "Ct": float(Ct),
+                "W": float(W),
+                "eta": float(eta),
+                "bonding_rate": float(bonding_rate),
+                "p0": float(p0),
+                "initial_beta": float(initial_beta),
+                "enabled": bool(enabled),
+            }
+        )
+
+    def _contact_elements_for_entity(self, entity: Any) -> list[Any]:
+        """Return IPC contact elements associated with a Genesis entity."""
+        elems: list[Any] = []
+        seen: set[int] = set()
+
+        def append(elem: Any) -> None:
+            if elem is None:
+                return
+            key = id(elem)
+            if key in seen:
+                return
+            seen.add(key)
+            elems.append(elem)
+
+        append(self._ipc_clothes_contact.get(entity))
+        append(self._ipc_ropes_contact.get(entity))
+        append(self._ipc_fems_contact.get(entity))
+        append(self._ipc_grounds_contact.get(entity))
+
+        for link in getattr(entity, "links", ()):
+            abd_link = link
+            link_idx = getattr(link, "idx", None)
+            if link_idx is not None and 0 <= link_idx < len(self._link_to_abd_link):
+                abd_link = self._link_to_abd_link[link_idx] or link
+            append(self._ipc_abd_links_contact.get(abd_link))
+
+        return elems
+
+    def _geometry_slots_for_entity(self, entity: Any) -> list[Any]:
+        """Return IPC geometry slots associated with a Genesis entity."""
+        slots: list[Any] = []
+        seen: set[int] = set()
+
+        def extend(candidate_slots: Any) -> None:
+            if not candidate_slots:
+                return
+            for slot in candidate_slots:
+                key = id(slot)
+                if key in seen:
+                    continue
+                seen.add(key)
+                slots.append(slot)
+
+        extend(self._fem_slots_by_entity.get(entity))
+
+        for link in getattr(entity, "links", ()):
+            abd_link = link
+            link_idx = getattr(link, "idx", None)
+            if link_idx is not None and 0 <= link_idx < len(self._link_to_abd_link):
+                abd_link = self._link_to_abd_link[link_idx] or link
+            abd_data = self._abd_data_by_link.get(abd_link)
+            if abd_data is not None:
+                extend(abd_data.slots)
+
+        return slots
+
+    @staticmethod
+    def _rcc_entity_name(entity: Any) -> str:
+        return str(getattr(entity, "name", type(entity).__name__))
+
+    def _apply_rcc_adhesions(self) -> None:
+        if not self._rcc_adhesion_requests:
+            return
+
+        assert gs.logger is not None
+        assert self._ipc_contact_tabular is not None
+        if RCCAdhesive is None:
+            gs.raise_exception(
+                "Cannot apply RCC adhesion because the installed uipc package does not expose RCCAdhesive."
+            )
+
+        if self._ipc_rcc_adhesive is None:
+            self._ipc_rcc_adhesive = RCCAdhesive()
+            self._ipc_rcc_adhesive.default_model(
+                self._ipc_contact_tabular,
+                Cn=0.0,
+                Ct=0.0,
+                W=0.0,
+                eta=2.0,
+                bonding_rate=0.0,
+                p0=0.0,
+                initial_beta=0.0,
+                enabled=False,
+            )
+
+        n_pairs = 0
+        for request in self._rcc_adhesion_requests:
+            source_entity = request["source_entity"]
+            source_elems = self._contact_elements_for_entity(source_entity)
+            if not source_elems:
+                gs.raise_exception(
+                    f"RCC adhesion source entity '{self._rcc_entity_name(source_entity)}' has no IPC contact element."
+                )
+
+            source_slots = self._geometry_slots_for_entity(source_entity)
+            if not source_slots:
+                gs.raise_exception(
+                    f"RCC adhesion source entity '{self._rcc_entity_name(source_entity)}' has no IPC geometry slot."
+                )
+            for slot in source_slots:
+                RCCAdhesive.set_sticky_side(slot.geometry(), request["sticky_side"])
+
+            for target_entity in request["target_entities"]:
+                target_elems = self._contact_elements_for_entity(target_entity)
+                if not target_elems:
+                    gs.raise_exception(
+                        f"RCC adhesion target entity '{self._rcc_entity_name(target_entity)}' has no IPC contact element."
+                    )
+                for source_elem in source_elems:
+                    for target_elem in target_elems:
+                        self._ipc_rcc_adhesive.set(
+                            self._ipc_contact_tabular,
+                            source_elem,
+                            target_elem,
+                            Cn=request["Cn"],
+                            Ct=request["Ct"],
+                            W=request["W"],
+                            eta=request["eta"],
+                            bonding_rate=request["bonding_rate"],
+                            p0=request["p0"],
+                            initial_beta=request["initial_beta"],
+                            enabled=request["enabled"],
+                        )
+                        n_pairs += 1
+
+        gs.logger.info(f"[IPC RCC] Registered RCC adhesion on {n_pairs} contact pairs")
 
     def _init_accessors(self):
         assert gs.logger is not None
