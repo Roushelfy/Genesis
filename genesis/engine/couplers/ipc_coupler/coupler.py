@@ -85,6 +85,10 @@ if TYPE_CHECKING or UIPC_AVAILABLE:
         from uipc.constitution import RCCAdhesive  # type: ignore[attr-defined]
     except ImportError:
         RCCAdhesive = None  # type: ignore[assignment, misc]
+    try:
+        from uipc.core import RCCAdhesionStateAccessorFeature  # type: ignore[attr-defined]
+    except ImportError:
+        RCCAdhesionStateAccessorFeature = None  # type: ignore[assignment, misc]
     from uipc.core import (
         Engine,
         World,
@@ -241,6 +245,8 @@ class _NewtonIterCounter:
         self._saved_stderr_fd = None
         self._saved_stdout_fd = None
         self._threads = []
+        self._prev_sigabrt = None
+        self._sigabrt_handler_installed = False
 
     def start(self):
         if self._active:
@@ -276,15 +282,18 @@ class _NewtonIterCounter:
         # Install SIGABRT handler to restore fds before crash so libuipc's
         # error message reaches the terminal instead of being lost in the pipe.
         self._prev_sigabrt = signal.getsignal(signal.SIGABRT)
+        # None means a native handler is installed; Python cannot restore it.
+        self._sigabrt_handler_installed = self._prev_sigabrt is not None
 
-        def _on_abort(signum, frame):
-            self._emergency_restore()
-            if callable(self._prev_sigabrt) and self._prev_sigabrt not in (signal.SIG_DFL, signal.SIG_IGN):
-                self._prev_sigabrt(signum, frame)
-            signal.signal(signal.SIGABRT, signal.SIG_DFL)
-            os.kill(os.getpid(), signal.SIGABRT)
+        if self._sigabrt_handler_installed:
+            def _on_abort(signum, frame):
+                self._emergency_restore()
+                if callable(self._prev_sigabrt) and self._prev_sigabrt not in (signal.SIG_DFL, signal.SIG_IGN):
+                    self._prev_sigabrt(signum, frame)
+                signal.signal(signal.SIGABRT, signal.SIG_DFL)
+                os.kill(os.getpid(), signal.SIGABRT)
 
-        signal.signal(signal.SIGABRT, _on_abort)
+            signal.signal(signal.SIGABRT, _on_abort)
 
         self._active = True
 
@@ -315,7 +324,9 @@ class _NewtonIterCounter:
         import signal
 
         # Restore SIGABRT handler
-        signal.signal(signal.SIGABRT, self._prev_sigabrt)
+        if self._sigabrt_handler_installed:
+            signal.signal(signal.SIGABRT, self._prev_sigabrt)
+            self._sigabrt_handler_installed = False
 
         # Flush Python streams before restoring
         sys.stderr.flush()
@@ -524,6 +535,7 @@ class IPCCoupler(RBC):
         # Each hook receives the coupler instance as its sole argument.
         self._pre_finalize_hooks: list = []
         self._rcc_adhesion_requests: list[dict[str, Any]] = []
+        self._rcc_adhesion_pt_state: dict[str, Any] | None = None
         self._ipc_finalized = False
 
         # ==== Restitution ====
@@ -1127,29 +1139,13 @@ class IPCCoupler(RBC):
                 mass_center = np.asarray(link.inertial_pos, dtype=np.float64)
                 inertia = np.asarray(link.inertial_i, dtype=np.float64)
                 volume = mass_val / rho if rho > 0 else 1.0
-                if hasattr(self._ipc_abd, "create_proxy"):
-                    rigid_link_geom = self._ipc_abd.create_proxy(
-                        kappa=ABD_KAPPA * uipc.unit.MPa,
-                        mass=mass_val,
-                        mass_center=mass_center,
-                        inertia=inertia,
-                        volume=volume,
-                    )
-                else:
-                    # Older pyuipc bindings do not expose create_proxy().
-                    # Use a tiny no-collision closed box as an ABD carrier so
-                    # external articulation constraints still have a body slot.
-                    side = max(volume, 1.0e-12) ** (1.0 / 3.0)
-                    proxy_mesh = trimesh.creation.box(extents=(side, side, side))
-                    proxy_verts = np.asarray(proxy_mesh.vertices, dtype=np.float64) + mass_center
-                    proxy_faces = np.asarray(proxy_mesh.faces, dtype=np.int32)
-                    rigid_link_geom = uipc.geometry.trimesh(proxy_verts, proxy_faces)
-                    uipc.geometry.label_surface(rigid_link_geom)
-                    self._ipc_abd.apply_to(
-                        rigid_link_geom,
-                        kappa=ABD_KAPPA * uipc.unit.MPa,
-                        mass_density=rho,
-                    )
+                rigid_link_geom = self._ipc_abd.create_proxy(
+                    kappa=ABD_KAPPA * uipc.unit.MPa,
+                    mass=mass_val,
+                    mass_center=mass_center,
+                    inertia=inertia,
+                    volume=volume,
+                )
                 self._ipc_no_collision_contact.apply_to(rigid_link_geom)
                 gs.logger.info(f"[IPC] link '{link.name}' has no collision mesh — using proxy ABD body")
             else:
@@ -1550,6 +1546,7 @@ class IPCCoupler(RBC):
             except Exception as exc:
                 gs.raise_exception_from("`before_ipc_world_init(ipc, gs)` callback failed.", exc)
         self._ipc_world.init(self._ipc_scene)
+        self._restore_rcc_adhesion_pt_state()
         # Checkpoint frame 0 so that recover(0) works in reset().
         self._ipc_world.dump()
         self._ipc_finalized = True
@@ -1620,6 +1617,32 @@ class IPCCoupler(RBC):
                 "enabled": bool(enabled),
             }
         )
+
+    def set_rcc_adhesion_pt_state(self, keys: Any, betas: Any, strict: bool = True) -> None:
+        """Restore RCC point-triangle adhesion state after ``World.init(scene)``.
+
+        The state is loaded before Genesis checkpoints frame 0, so later
+        ``recover(0)`` calls keep the restored beta values.
+        """
+        if self._ipc_finalized:
+            gs.raise_exception("RCC adhesion PT state must be registered before the IPC world is finalized.")
+
+        keys_array = np.asarray(keys, dtype=np.uint64)
+        betas_array = np.asarray(betas, dtype=np.float64)
+        if keys_array.ndim != 1:
+            gs.raise_exception(f"RCC adhesion PT state keys must be 1D, got shape {keys_array.shape}.")
+        if betas_array.ndim != 1:
+            gs.raise_exception(f"RCC adhesion PT state betas must be 1D, got shape {betas_array.shape}.")
+        if keys_array.shape != betas_array.shape:
+            gs.raise_exception(
+                f"RCC adhesion PT state keys/betas shape mismatch: {keys_array.shape} vs {betas_array.shape}."
+            )
+
+        self._rcc_adhesion_pt_state = {
+            "keys": np.ascontiguousarray(keys_array),
+            "betas": np.ascontiguousarray(betas_array),
+            "strict": bool(strict),
+        }
 
     def _contact_elements_for_entity(self, entity: Any) -> list[Any]:
         """Return IPC contact elements associated with a Genesis entity."""
@@ -1747,6 +1770,44 @@ class IPCCoupler(RBC):
                         n_pairs += 1
 
         gs.logger.info(f"[IPC RCC] Registered RCC adhesion on {n_pairs} contact pairs")
+
+    def _restore_rcc_adhesion_pt_state(self) -> None:
+        if self._rcc_adhesion_pt_state is None:
+            return
+
+        assert gs.logger is not None
+        assert self._ipc_world is not None
+
+        keys = self._rcc_adhesion_pt_state["keys"]
+        betas = self._rcc_adhesion_pt_state["betas"]
+        strict = self._rcc_adhesion_pt_state["strict"]
+        if len(betas) == 0:
+            gs.logger.info("[IPC RCC] Skipped empty RCC adhesion beta state restore")
+            return
+
+        if RCCAdhesionStateAccessorFeature is None:
+            message = (
+                "Cannot restore RCC adhesion beta state because the installed uipc package does not expose "
+                "uipc.core.RCCAdhesionStateAccessorFeature. Rebuild/sync the local libuipc pybind/native artifacts."
+            )
+            if strict:
+                gs.raise_exception(message)
+            gs.logger.warning(message)
+            return
+
+        accessor = self._ipc_world.features().find(RCCAdhesionStateAccessorFeature)
+        if accessor is None:
+            message = "Cannot restore RCC adhesion beta state because RCCAdhesionStateAccessorFeature is unavailable."
+            if strict:
+                gs.raise_exception(message)
+            gs.logger.warning(message)
+            return
+
+        accessor.load_pt_state(keys, betas)
+        gs.logger.info(
+            "[IPC RCC] Restored RCC adhesion beta state: "
+            f"n={len(betas)}, mean={float(np.mean(betas)):.3f}, frac>0.9={float(np.mean(betas > 0.9)):.2%}"
+        )
 
     def _init_accessors(self):
         assert gs.logger is not None
