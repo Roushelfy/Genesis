@@ -457,7 +457,9 @@ class RigidOptions(Options):
     iterations : int, optional
         Number of iterations for the constraint solver. Defaults to 50.
     tolerance : float, optional
-        Tolerance for the constraint solver. Defaults to 1e-6.
+        Tolerance for the constraint solver. If None, resolved based on the floating-point precision selected via
+        `gs.init(precision=...)`: 1e-5 for single precision ("32") and 1e-8 for double precision ("64"). Defaults
+        to None.
     ls_iterations : int, optional
         Number of line search iterations for the constraint solver. Defaults to 50.
     ls_tolerance : float, optional
@@ -522,11 +524,12 @@ class RigidOptions(Options):
     # constraint solver
     constraint_solver: gs.constraint_solver = gs.constraint_solver.Newton
     iterations: PositiveInt = 50
-    tolerance: PositiveFloat = 1e-6
+    tolerance: PositiveFloat | None = None
     ls_iterations: PositiveInt = 50
     ls_tolerance: PositiveFloat = 1e-2
     noslip_iterations: NonNegativeInt = 0
     noslip_tolerance: PositiveFloat = 1e-6
+    contact_pruning_tolerance: PositiveFloat | None = 0.02
     sparse_solve: StrictBool = False
     constraint_timeconst: PositiveFloat = 0.01
     use_contact_island: StrictBool = False
@@ -556,8 +559,24 @@ class RigidOptions(Options):
             gs.logger.warning("'contact_resolve_time' is deprecated. Use 'constraint_timeconst' instead.")
 
     def model_post_init(self, context):
+        super().model_post_init(context)
         if self.broadphase_traversal == gs.broadphase_traversal.ALL_VS_ALL and self.use_hibernation:
             gs.raise_exception("ALL_VS_ALL broadphase traversal does not support hibernation")
+        if self.contact_pruning_tolerance is not None and self.enable_mujoco_compatibility:
+            if "contact_pruning_tolerance" in self.model_fields_set:
+                gs.raise_exception(
+                    "'contact_pruning_tolerance' is not supported when 'enable_mujoco_compatibility' is True"
+                )
+            # User did not explicitly request pruning, silently disable to guarantee mujoco compatibility
+            self.contact_pruning_tolerance = None
+        if self.contact_pruning_tolerance is not None and self.use_contact_island:
+            if "contact_pruning_tolerance" in self.model_fields_set:
+                gs.raise_exception(
+                    "'contact_pruning_tolerance' is not supported when 'use_contact_island' is True. The contact "
+                    "island path consumes contacts in physical layout and does not honor the logical permutation "
+                    "that link-pair pruning produces."
+                )
+            self.contact_pruning_tolerance = None
 
 
 class MPMOptions(Options):

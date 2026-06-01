@@ -79,7 +79,7 @@ def func_collision_clear(
 ):
     _B = collider_state.n_contacts.shape[0]
 
-    qd.loop_config(serialize=static_rigid_sim_config.para_level < gs.PARA_LEVEL.ALL)
+    qd.loop_config(name="collision_clear", serialize=static_rigid_sim_config.para_level < gs.PARA_LEVEL.ALL)
     for i_b in range(_B):
         if qd.static(static_rigid_sim_config.use_hibernation):
             collider_state.n_contacts_hibernated[i_b] = 0
@@ -99,7 +99,7 @@ def func_collision_clear(
                 ):
                     i_c_hibernated = collider_state.n_contacts_hibernated[i_b]
                     if i_c != i_c_hibernated:
-                        # Copying all fields of class StructContactData individually
+                        # Copying all fields of class ContactData individually
                         # (fields mode doesn't support struct-level copy operations):
                         # fmt: off
                         collider_state.contact_data.geom_a[i_c_hibernated, i_b] = collider_state.contact_data.geom_a[i_c, i_b]
@@ -138,7 +138,7 @@ def func_collision_clear(
             collider_state.n_contacts[i_b] = 0
 
 
-@qd.kernel(fastcache=gs.use_fastcache)
+@qd.kernel(fastcache=True)
 def _func_broad_phase_sap(
     links_state: array_class.LinksState,
     links_info: array_class.LinksInfo,
@@ -150,7 +150,7 @@ def _func_broad_phase_sap(
     collider_state: array_class.ColliderState,
     equalities_info: array_class.EqualitiesInfo,
     collider_info: array_class.ColliderInfo,
-    errno: array_class.V_ANNOTATION,
+    errno: qd.Tensor,
 ):
     """
     Sweep and Prune (SAP) for broad-phase collision detection.
@@ -396,7 +396,7 @@ def _func_broad_phase_sap(
         collider_state.n_broad_pairs[i_b] = n_broad
 
 
-@qd.kernel(fastcache=gs.use_fastcache)
+@qd.kernel(fastcache=True)
 def _func_broad_phase_all_vs_all(
     links_state: array_class.LinksState,
     links_info: array_class.LinksInfo,
@@ -408,7 +408,7 @@ def _func_broad_phase_all_vs_all(
     collider_state: array_class.ColliderState,
     equalities_info: array_class.EqualitiesInfo,
     collider_info: array_class.ColliderInfo,
-    errno: array_class.V_ANNOTATION,
+    errno: qd.Tensor,
 ):
     """
     All-vs-all broad-phase collision detection.
@@ -420,11 +420,12 @@ def _func_broad_phase_all_vs_all(
     func_collision_clear(links_state, links_info, collider_state, static_rigid_sim_config)
 
     _B = collider_state.n_contacts.shape[0]
-    qd.loop_config(serialize=static_rigid_sim_config.para_level < gs.PARA_LEVEL.ALL)
+    qd.loop_config(name="init_broad_pairs", serialize=static_rigid_sim_config.para_level < gs.PARA_LEVEL.ALL)
     for i_b in range(_B):
         collider_state.n_broad_pairs[i_b] = 0
 
     n_valid_pairs = collider_info.n_valid_pairs[None]
+    qd.loop_config(name="traverse_valid")
     for i_vp, i_b in qd.ndrange(n_valid_pairs, _B):
         pair = collider_info.valid_collision_pairs[i_vp]
         i_ga = pair[0]

@@ -85,6 +85,8 @@ class Rigid(Kinematic["RigidEntity"]):
     """
 
     rho: ValidFloat | None = 200.0
+
+    use_visual_raycasting: StrictBool = False
     friction: Annotated[ValidFloat, Field(ge=0.01, le=5.0)] | None = None
     needs_coup: StrictBool = True
     coup_friction: NonNegativeFloat = 0.1

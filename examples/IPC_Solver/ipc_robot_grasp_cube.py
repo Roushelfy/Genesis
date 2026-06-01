@@ -99,6 +99,7 @@ def main():
     ee_quat = [0.0, 1.0, 0.0, 0.0]
 
     franka.set_dofs_kp([4500.0, 4500.0, 3500.0, 3500.0, 2000.0, 2000.0, 2000.0, 500.0, 500.0])
+    franka.set_dofs_kv([100.0, 100.0], fingers_dof)
 
     qpos = franka.inverse_kinematics(link=end_effector, pos=[0.65, 0.0, 0.4], quat=ee_quat)
     qpos[fingers_dof] = 0.04

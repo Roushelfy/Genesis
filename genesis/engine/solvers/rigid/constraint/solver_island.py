@@ -17,104 +17,6 @@ if TYPE_CHECKING:
 
 
 @qd.data_oriented
-class _ContactDataFields:
-    """qd.field() wrapper for StructContactData fields used by island solver."""
-
-    def __init__(self, max_contact_pairs_, _B):
-        self.link_a = qd.field(dtype=gs.qd_int, shape=(max_contact_pairs_, _B))
-        self.link_b = qd.field(dtype=gs.qd_int, shape=(max_contact_pairs_, _B))
-        self.normal = qd.field(dtype=gs.qd_vec3, shape=(max_contact_pairs_, _B))
-        self.friction = qd.field(dtype=gs.qd_float, shape=(max_contact_pairs_, _B))
-        self.pos = qd.field(dtype=gs.qd_vec3, shape=(max_contact_pairs_, _B))
-        self.sol_params = qd.field(dtype=gs.qd_vec7, shape=(max_contact_pairs_, _B))
-        self.penetration = qd.field(dtype=gs.qd_float, shape=(max_contact_pairs_, _B))
-        self.force = qd.field(dtype=gs.qd_vec3, shape=(max_contact_pairs_, _B))
-
-
-@qd.data_oriented
-class _EntitiesInfoFields:
-    """qd.field() wrapper for StructEntitiesInfo fields used by island solver."""
-
-    def __init__(self, n_entities_):
-        shape = (n_entities_,)
-        self.dof_start = qd.field(dtype=gs.qd_int, shape=shape)
-        self.dof_end = qd.field(dtype=gs.qd_int, shape=shape)
-        self.link_start = qd.field(dtype=gs.qd_int, shape=shape)
-        self.link_end = qd.field(dtype=gs.qd_int, shape=shape)
-
-
-@qd.data_oriented
-class _LinksInfoFields:
-    """qd.field() wrapper for StructLinksInfo fields used by island solver."""
-
-    def __init__(self, n_links_, batch_links_info, _B):
-        shape = (n_links_, _B) if batch_links_info else (n_links_,)
-        self.invweight = qd.field(dtype=gs.qd_vec2, shape=shape)
-        self.n_dofs = qd.field(dtype=gs.qd_int, shape=shape)
-        self.dof_end = qd.field(dtype=gs.qd_int, shape=shape)
-        self.parent_idx = qd.field(dtype=gs.qd_int, shape=shape)
-        self.entity_idx = qd.field(dtype=gs.qd_int, shape=shape)
-        self.joint_start = qd.field(dtype=gs.qd_int, shape=shape)
-        self.joint_end = qd.field(dtype=gs.qd_int, shape=shape)
-        self.is_fixed = qd.field(dtype=gs.qd_bool, shape=shape)
-
-
-@qd.data_oriented
-class _DofsInfoFields:
-    """qd.field() wrapper for StructDofsInfo fields used by island solver."""
-
-    def __init__(self, n_dofs_, batch_dofs_info, _B):
-        shape = (n_dofs_, _B) if batch_dofs_info else (n_dofs_,)
-        self.limit = qd.field(dtype=gs.qd_vec2, shape=shape)
-        self.invweight = qd.field(dtype=gs.qd_float, shape=shape)
-
-
-@qd.data_oriented
-class _JointsInfoFields:
-    """qd.field() wrapper for StructJointsInfo fields used by island solver."""
-
-    def __init__(self, n_joints_, batch_joints_info, _B):
-        shape = (n_joints_, _B) if batch_joints_info else (n_joints_,)
-        self.type = qd.field(dtype=gs.qd_int, shape=shape)
-        self.q_start = qd.field(dtype=gs.qd_int, shape=shape)
-        self.dof_start = qd.field(dtype=gs.qd_int, shape=shape)
-        self.sol_params = qd.field(dtype=gs.qd_vec7, shape=shape)
-
-
-@qd.data_oriented
-class _DofsStateFields:
-    """qd.field() wrapper for StructDofsState fields used by island solver."""
-
-    def __init__(self, n_dofs_, _B):
-        shape = (n_dofs_, _B)
-        self.cdof_ang = qd.field(dtype=gs.qd_vec3, shape=shape)
-        self.cdof_vel = qd.field(dtype=gs.qd_vec3, shape=shape)
-        self.vel = qd.field(dtype=gs.qd_float, shape=shape)
-        self.force = qd.field(dtype=gs.qd_float, shape=shape)
-        self.acc = qd.field(dtype=gs.qd_float, shape=shape)
-
-
-@qd.data_oriented
-class _LinksStateFields:
-    """qd.field() wrapper for StructLinksState fields used by island solver."""
-
-    def __init__(self, n_links_, _B):
-        shape = (n_links_, _B)
-        self.root_COM = qd.field(dtype=gs.qd_vec3, shape=shape)
-        self.contact_force = qd.field(dtype=gs.qd_vec3, shape=shape)
-        self.hibernated = qd.field(dtype=gs.qd_int, shape=shape)
-
-
-@qd.data_oriented
-class _EntitiesStateFields:
-    """qd.field() wrapper for StructEntitiesState fields used by island solver."""
-
-    def __init__(self, n_entities_, _B):
-        shape = (n_entities_, _B)
-        self.hibernated = qd.field(dtype=gs.qd_int, shape=shape)
-
-
-@qd.data_oriented
 class ConstraintSolverIsland:
     def __init__(self, rigid_solver: "RigidSolver"):
         self._solver: "RigidSolver" = rigid_solver
@@ -128,16 +30,6 @@ class ConstraintSolverIsland:
         self.ls_iterations: int = rigid_solver._options.ls_iterations
         self.ls_tolerance: float = rigid_solver._options.ls_tolerance
         self.sparse_solve: bool = True
-
-        # Store static config flags needed in kernels
-        self._batch_links_info: bool = rigid_solver._options.batch_links_info
-        self._batch_dofs_info: bool = rigid_solver._options.batch_dofs_info
-        self._batch_joints_info: bool = rigid_solver._options.batch_joints_info
-        self._use_hibernation: bool = rigid_solver._use_hibernation
-        self._n_dofs: int = rigid_solver.n_dofs
-        self._n_dofs_: int = rigid_solver.n_dofs_
-        self._n_entities: int = rigid_solver.n_entities
-        self._n_entities_: int = rigid_solver.n_entities_
 
         # 4 constraints per contact and 1 constraints per joint limit (upper and lower, if not inf)
         self.len_constraints = int(
@@ -194,23 +86,7 @@ class ConstraintSolverIsland:
         self.ls_result = qd.field(gs.qd_int, shape=(self._B,))
 
         self.contact_island = ContactIsland(self._collider)
-
-        # Build qd.field() wrappers for frozen dataclass structs accessed in kernels
-        max_contact_pairs_ = max(self._collider._collider_info.max_contact_pairs[None], 1)
-        self._contact_data = _ContactDataFields(max_contact_pairs_, self._B)
-        self.entities_info = _EntitiesInfoFields(rigid_solver.n_entities_)
-        self._links_info = _LinksInfoFields(rigid_solver.n_links_, rigid_solver._options.batch_links_info, self._B)
-        self._dofs_info = _DofsInfoFields(rigid_solver.n_dofs_, rigid_solver._options.batch_dofs_info, self._B)
-        self._joints_info = _JointsInfoFields(rigid_solver.n_joints_, rigid_solver._options.batch_joints_info, self._B)
-        self._dofs_state = _DofsStateFields(rigid_solver.n_dofs_, self._B)
-        self._links_state = _LinksStateFields(rigid_solver.n_links_, self._B)
-        self._entities_state = _EntitiesStateFields(rigid_solver.n_entities_, self._B)
-
-        # qpos, mass_mat, mass_mat_mask, meaninertia from rigid_global_info
-        self._qpos = qd.field(dtype=gs.qd_float, shape=(rigid_solver.n_qs_, self._B))
-        self._mass_mat = qd.field(dtype=gs.qd_float, shape=(rigid_solver.n_dofs_, rigid_solver.n_dofs_, self._B))
-        self._mass_mat_mask = qd.field(dtype=gs.qd_bool, shape=(rigid_solver.n_entities_, self._B))
-        self._meaninertia = qd.field(dtype=gs.qd_float, shape=(self._B,))
+        self.entities_info = self._solver.entities_info
 
         if self._solver_type == gs.constraint_solver.CG:
             self.cg_prev_grad = qd.field(dtype=gs.qd_float, shape=(self._solver.n_dofs_, self._B))
@@ -222,88 +98,7 @@ class ConstraintSolverIsland:
             self.nt_H = qd.field(dtype=gs.qd_float, shape=(self._B, self._solver.n_dofs_, self._solver.n_dofs_))
             self.nt_vec = qd.field(dtype=gs.qd_float, shape=(self._solver.n_dofs_, self._B))
 
-        # Sync static info once at init
-        self._sync_info_from_solver()
         self.reset()
-
-    def _sync_info_from_solver(self):
-        """Copy static info fields from frozen dataclass structs to qd.field() wrappers (once at init/reset)."""
-        solver = self._solver
-
-        # entities_info (static, shape (n_entities_,))
-        self.entities_info.dof_start.from_numpy(solver.entities_info.dof_start.to_numpy())
-        self.entities_info.dof_end.from_numpy(solver.entities_info.dof_end.to_numpy())
-        self.entities_info.link_start.from_numpy(solver.entities_info.link_start.to_numpy())
-        self.entities_info.link_end.from_numpy(solver.entities_info.link_end.to_numpy())
-
-        # links_info
-        self._links_info.invweight.from_numpy(solver.links_info.invweight.to_numpy())
-        self._links_info.n_dofs.from_numpy(solver.links_info.n_dofs.to_numpy())
-        self._links_info.dof_end.from_numpy(solver.links_info.dof_end.to_numpy())
-        self._links_info.parent_idx.from_numpy(solver.links_info.parent_idx.to_numpy())
-        self._links_info.entity_idx.from_numpy(solver.links_info.entity_idx.to_numpy())
-        self._links_info.joint_start.from_numpy(solver.links_info.joint_start.to_numpy())
-        self._links_info.joint_end.from_numpy(solver.links_info.joint_end.to_numpy())
-        self._links_info.is_fixed.from_numpy(solver.links_info.is_fixed.to_numpy())
-
-        # dofs_info
-        self._dofs_info.limit.from_numpy(solver.dofs_info.limit.to_numpy())
-        self._dofs_info.invweight.from_numpy(solver.dofs_info.invweight.to_numpy())
-
-        # joints_info
-        self._joints_info.type.from_numpy(solver.joints_info.type.to_numpy())
-        self._joints_info.q_start.from_numpy(solver.joints_info.q_start.to_numpy())
-        self._joints_info.dof_start.from_numpy(solver.joints_info.dof_start.to_numpy())
-        self._joints_info.sol_params.from_numpy(solver.joints_info.sol_params.to_numpy())
-
-    def _sync_from_solver(self):
-        """Copy per-step frozen dataclass data to qd.field() wrappers before resolve."""
-        solver = self._solver
-        collider = self._collider
-        cd = collider._collider_state.contact_data
-
-        # Contact data (changes every step)
-        self._contact_data.link_a.from_numpy(cd.link_a.to_numpy())
-        self._contact_data.link_b.from_numpy(cd.link_b.to_numpy())
-        self._contact_data.normal.from_numpy(cd.normal.to_numpy())
-        self._contact_data.friction.from_numpy(cd.friction.to_numpy())
-        self._contact_data.pos.from_numpy(cd.pos.to_numpy())
-        self._contact_data.sol_params.from_numpy(cd.sol_params.to_numpy())
-        self._contact_data.penetration.from_numpy(cd.penetration.to_numpy())
-        self._contact_data.force.from_numpy(cd.force.to_numpy())
-
-        # State fields (changes every step)
-        self._dofs_state.cdof_ang.from_numpy(solver.dofs_state.cdof_ang.to_numpy())
-        self._dofs_state.cdof_vel.from_numpy(solver.dofs_state.cdof_vel.to_numpy())
-        self._dofs_state.vel.from_numpy(solver.dofs_state.vel.to_numpy())
-        self._dofs_state.force.from_numpy(solver.dofs_state.force.to_numpy())
-        self._dofs_state.acc.from_numpy(solver.dofs_state.acc.to_numpy())
-
-        self._links_state.root_COM.from_numpy(solver.links_state.root_COM.to_numpy())
-        self._links_state.contact_force.from_numpy(solver.links_state.contact_force.to_numpy())
-        self._links_state.hibernated.from_numpy(solver.links_state.hibernated.to_numpy())
-
-        self._entities_state.hibernated.from_numpy(solver.entities_state.hibernated.to_numpy())
-
-        # rigid_global_info fields
-        self._qpos.from_numpy(solver.qpos.to_numpy())
-        self._mass_mat.from_numpy(solver.mass_mat.to_numpy())
-        self._mass_mat_mask.from_numpy(solver.mass_mat_mask.to_numpy())
-        self._meaninertia.from_numpy(solver.meaninertia.to_numpy())
-
-    def _sync_to_solver(self):
-        """Copy write-back fields to solver after resolve."""
-        solver = self._solver
-        cd = self._collider._collider_state.contact_data
-
-        # Contact force (written in _func_update_contact_force)
-        cd.force.from_numpy(self._contact_data.force.to_numpy())
-
-        # Links contact_force (written in _func_update_contact_force)
-        solver.links_state.contact_force.from_numpy(self._links_state.contact_force.to_numpy())
-
-        # Dofs acc (written in _func_update_qacc)
-        solver.dofs_state.acc.from_numpy(self._dofs_state.acc.to_numpy())
 
     def clear(self, envs_idx=None):
         if envs_idx is None:
@@ -312,28 +107,23 @@ class ConstraintSolverIsland:
 
     @qd.kernel
     def _kernel_clear(self, envs_idx: qd.types.ndarray()):
-        qd.loop_config(serialize=self._para_level < gs.PARA_LEVEL.ALL)
+        qd.loop_config(serialize=self._solver._para_level < gs.PARA_LEVEL.ALL)
         for i_b_ in range(envs_idx.shape[0]):
             i_b = envs_idx[i_b_]
             self.n_constraints[i_b] = 0
 
-    def resolve(self):
-        self._sync_from_solver()
-        self._kernel_resolve()
-        self._sync_to_solver()
-
     @qd.kernel
-    def _kernel_resolve(self):
+    def resolve(self, entities_info: array_class.EntitiesInfo, rigid_global_info: array_class.RigidGlobalInfo):
         for i_b in range(self._B):
             for i_island in range(self.contact_island.n_islands[i_b]):
                 is_active = True
-                if qd.static(self._use_hibernation):
+                if qd.static(self._solver._use_hibernation):
                     is_active = not self.contact_island.island_hibernated[i_island, i_b]
                 if is_active:
                     self.add_collision_constraints_and_wakeup_entities(i_island, i_b)
                     self.add_joint_limit_constraints(i_island, i_b)
-                    self._func_init_solver(i_island, i_b)
-                    self._func_solve(i_island, i_b)
+                    self._func_init_solver(i_island, i_b, entities_info, rigid_global_info)
+                    self._func_solve(i_island, i_b, entities_info, rigid_global_info)
                     self._func_update_qacc(i_island, i_b)
                     self._func_update_contact_force(i_island, i_b)
 
@@ -343,26 +133,26 @@ class ConstraintSolverIsland:
     @qd.func
     def add_collision_constraints_and_wakeup_entities(self, i_island: int, i_b: int):
         self.n_constraints[i_b] = 0
-        for i_island_col in range(self.contact_island.island_col_n[i_island, i_b]):
-            i_col_ = self.contact_island.island_col_start[i_island, i_b] + i_island_col
+        for i_island_col in range(self.contact_island.island_col.n[i_island, i_b]):
+            i_col_ = self.contact_island.island_col.start[i_island, i_b] + i_island_col
             i_col = self.contact_island.constraint_id[i_col_, i_b]
 
             # get links indices of the contact_data
-            link_a = self._contact_data.link_a[i_col, i_b]
-            link_b = self._contact_data.link_b[i_col, i_b]
-            link_a_maybe_batch = [link_a, i_b] if qd.static(self._batch_links_info) else link_a
-            link_b_maybe_batch = [link_b, i_b] if qd.static(self._batch_links_info) else link_b
+            link_a = self._collider._collider_state.contact_data.link_a[i_col, i_b]
+            link_b = self._collider._collider_state.contact_data.link_b[i_col, i_b]
+            link_a_maybe_batch = [link_a, i_b] if qd.static(self._solver._options.batch_links_info) else link_a
+            link_b_maybe_batch = [link_b, i_b] if qd.static(self._solver._options.batch_links_info) else link_b
 
-            contact_normal = self._contact_data.normal[i_col, i_b]
+            contact_normal = self._collider._collider_state.contact_data.normal[i_col, i_b]
             d1, d2 = gu.qd_orthogonals(contact_normal)
 
-            invweight = self._links_info.invweight[link_a_maybe_batch][0] + self._links_info.invweight[
+            invweight = self._solver.links_info.invweight[link_a_maybe_batch][0] + self._solver.links_info.invweight[
                 link_b_maybe_batch
             ][0] * (link_b > -1)
 
             for i in range(4):
                 d = (2 * (i % 2) - 1) * (d1 if i < 2 else d2)
-                contact_friction = self._contact_data.friction[i_col, i_b]
+                contact_friction = self._collider._collider_state.contact_data.friction[i_col, i_b]
                 n = d * contact_friction - contact_normal
 
                 n_con = qd.atomic_add(self.n_constraints[i_b], 1)
@@ -371,7 +161,7 @@ class ConstraintSolverIsland:
                         i_d = self.jac_relevant_dofs[n_con, i_d_, i_b]
                         self.jac[n_con, i_d, i_b] = gs.qd_float(0.0)
                 else:
-                    for i_d in range(self._n_dofs):
+                    for i_d in range(self._solver.n_dofs):
                         self.jac[n_con, i_d, i_b] = gs.qd_float(0.0)
 
                 con_n_relevant_dofs = 0
@@ -384,35 +174,35 @@ class ConstraintSolverIsland:
                         link = link_b
 
                     while link > -1:
-                        link_maybe_batch = [link, i_b] if qd.static(self._batch_links_info) else link
+                        link_maybe_batch = [link, i_b] if qd.static(self._solver._options.batch_links_info) else link
 
                         # reverse order to make sure dofs in each row of self.jac_relevant_dofs is strictly descending
-                        for i_d_ in range(self._links_info.n_dofs[link]):
-                            i_d = self._links_info.dof_end[link_maybe_batch] - 1 - i_d_
+                        for i_d_ in range(self._solver.links_info.n_dofs[link]):
+                            i_d = self._solver.links_info.dof_end[link_maybe_batch] - 1 - i_d_
 
-                            cdof_ang = self._dofs_state.cdof_ang[i_d, i_b]
-                            cdot_vel = self._dofs_state.cdof_vel[i_d, i_b]
+                            cdof_ang = self._solver.dofs_state.cdof_ang[i_d, i_b]
+                            cdot_vel = self._solver.dofs_state.cdof_vel[i_d, i_b]
 
                             t_quat = gu.qd_identity_quat()
-                            contact_pos = self._contact_data.pos[i_col, i_b]
-                            t_pos = contact_pos - self._links_state.root_COM[link, i_b]
+                            contact_pos = self._collider._collider_state.contact_data.pos[i_col, i_b]
+                            t_pos = contact_pos - self._solver.links_state.root_COM[link, i_b]
                             _, vel = gu.qd_transform_motion_by_trans_quat(cdof_ang, cdot_vel, t_pos, t_quat)
 
                             diff = sign * vel
                             jac = diff @ n
-                            jac_qvel = jac_qvel + jac * self._dofs_state.vel[i_d, i_b]
+                            jac_qvel = jac_qvel + jac * self._solver.dofs_state.vel[i_d, i_b]
                             self.jac[n_con, i_d, i_b] = self.jac[n_con, i_d, i_b] + jac
                             if qd.static(self.sparse_solve):
                                 self.jac_relevant_dofs[n_con, con_n_relevant_dofs, i_b] = i_d
                                 con_n_relevant_dofs += 1
 
-                        link = self._links_info.parent_idx[link_maybe_batch]
+                        link = self._solver.links_info.parent_idx[link_maybe_batch]
 
                 if qd.static(self.sparse_solve):
                     self.jac_n_relevant_dofs[n_con, i_b] = con_n_relevant_dofs
 
-                contact_sol_params = self._contact_data.sol_params[i_col, i_b]
-                contact_penetration = self._contact_data.penetration[i_col, i_b]
+                contact_sol_params = self._collider._collider_state.contact_data.sol_params[i_col, i_b]
+                contact_penetration = self._collider._collider_state.contact_data.penetration[i_col, i_b]
                 imp, aref = gu.imp_aref(contact_sol_params, -contact_penetration, jac_qvel, -contact_penetration)
 
                 diag = invweight + contact_friction * contact_friction * invweight
@@ -423,20 +213,16 @@ class ConstraintSolverIsland:
 
                 self.efc_D[n_con, i_b] = 1 / qd.max(diag, gs.EPS)
 
-            if qd.static(self._use_hibernation):
-                entity_idx_a = self._links_info.entity_idx[link_a_maybe_batch]
-                entity_idx_b = self._links_info.entity_idx[link_b_maybe_batch]
+            if qd.static(self._solver._use_hibernation):
+                entity_idx_a = self._solver.links_info.entity_idx[link_a_maybe_batch]
+                entity_idx_b = self._solver.links_info.entity_idx[link_b_maybe_batch]
 
-                is_entity_a_hibernated = self._entities_state.hibernated[entity_idx_a, i_b]
-                is_entity_b_hibernated = self._entities_state.hibernated[entity_idx_b, i_b]
+                is_entity_a_hibernated = self._solver.entities_state.hibernated[entity_idx_a, i_b]
+                is_entity_b_hibernated = self._solver.entities_state.hibernated[entity_idx_b, i_b]
                 if is_entity_a_hibernated or is_entity_b_hibernated:
                     # wake up entities
                     any_hibernated_entity_idx = entity_idx_a if is_entity_a_hibernated else entity_idx_b
 
-                    # TODO: Wakeup needs a separate kernel for full ndarray mode support with hibernation.
-                    # func_wakeup_entity_and_its_temp_island accesses frozen dataclass structs from the solver
-                    # which won't work in ndarray mode. For now this path is only compiled when
-                    # _use_hibernation is True (uncommon).
                     func_wakeup_entity_and_its_temp_island(
                         any_hibernated_entity_idx,
                         i_b,
@@ -451,34 +237,36 @@ class ConstraintSolverIsland:
 
     @qd.func
     def add_joint_limit_constraints(self, i_island: int, i_b: int):
-        for i_island_entity in range(self.contact_island.island_entity_n[i_island, i_b]):
-            i_e_ = self.contact_island.island_entity_start[i_island, i_b] + i_island_entity
+        for i_island_entity in range(self.contact_island.island_entity.n[i_island, i_b]):
+            i_e_ = self.contact_island.island_entity.start[i_island, i_b] + i_island_entity
             i_e = self.contact_island.entity_id[i_e_, i_b]
 
             for i_l in range(self.entities_info.link_start[i_e], self.entities_info.link_end[i_e]):
-                I_l = [i_l, i_b] if qd.static(self._batch_links_info) else i_l
-                l_info_start = self._links_info.joint_start[I_l]
-                l_info_end = self._links_info.joint_end[I_l]
+                I_l = [i_l, i_b] if qd.static(self._solver._options.batch_links_info) else i_l
+                l_info_start = self._solver.links_info.joint_start[I_l]
+                l_info_end = self._solver.links_info.joint_end[I_l]
 
                 for i_j in range(l_info_start, l_info_end):
-                    I_j = [i_j, i_b] if qd.static(self._batch_joints_info) else i_j
+                    I_j = [i_j, i_b] if qd.static(self._solver._options.batch_joints_info) else i_j
 
                     if (
-                        self._joints_info.type[I_j] == gs.JOINT_TYPE.REVOLUTE
-                        or self._joints_info.type[I_j] == gs.JOINT_TYPE.PRISMATIC
+                        self._solver.joints_info.type[I_j] == gs.JOINT_TYPE.REVOLUTE
+                        or self._solver.joints_info.type[I_j] == gs.JOINT_TYPE.PRISMATIC
                     ):
-                        i_q = self._joints_info.q_start[I_j]
-                        i_d = self._joints_info.dof_start[I_j]
-                        I_d = [i_d, i_b] if qd.static(self._batch_dofs_info) else i_d
-                        pos_delta_min = self._qpos[i_q, i_b] - self._dofs_info.limit[I_d][0]
-                        pos_delta_max = self._dofs_info.limit[I_d][1] - self._qpos[i_q, i_b]
+                        i_q = self._solver.joints_info.q_start[I_j]
+                        i_d = self._solver.joints_info.dof_start[I_j]
+                        I_d = [i_d, i_b] if qd.static(self._solver._options.batch_dofs_info) else i_d
+                        pos_delta_min = self._solver.qpos[i_q, i_b] - self._solver.dofs_info.limit[I_d][0]
+                        pos_delta_max = self._solver.dofs_info.limit[I_d][1] - self._solver.qpos[i_q, i_b]
                         pos_delta = min(pos_delta_min, pos_delta_max)
 
                         if pos_delta < 0:
                             jac = (pos_delta_min < pos_delta_max) * 2 - 1
-                            jac_qvel = jac * self._dofs_state.vel[i_d, i_b]
-                            imp, aref = gu.imp_aref(self._joints_info.sol_params[I_j], pos_delta, jac_qvel, pos_delta)
-                            diag = qd.max(self._dofs_info.invweight[I_d] * (1 - imp) / imp, gs.EPS)
+                            jac_qvel = jac * self._solver.dofs_state.vel[i_d, i_b]
+                            imp, aref = gu.imp_aref(
+                                self._solver.joints_info.sol_params[I_j], pos_delta, jac_qvel, pos_delta
+                            )
+                            diag = qd.max(self._solver.dofs_info.invweight[I_d] * (1 - imp) / imp, gs.EPS)
 
                             n_con = self.n_constraints[i_b]
                             self.n_constraints[i_b] = n_con + 1
@@ -491,7 +279,7 @@ class ConstraintSolverIsland:
                                     i_d2 = self.jac_relevant_dofs[n_con, i_d2_, i_b]
                                     self.jac[n_con, i_d2, i_b] = gs.qd_float(0.0)
                             else:
-                                for i_d2 in range(self._n_dofs):
+                                for i_d2 in range(self._solver.n_dofs):
                                     self.jac[n_con, i_d2, i_b] = gs.qd_float(0.0)
                             self.jac[n_con, i_d, i_b] = jac
 
@@ -501,7 +289,7 @@ class ConstraintSolverIsland:
 
     @qd.func
     def _func_nt_hessian_incremental(self, island, i_b):
-        rank = self._n_dofs
+        rank = self._solver.n_dofs
         updated = False
 
         for i_c in range(self.n_constraints[i_b]):
@@ -520,7 +308,7 @@ class ConstraintSolverIsland:
                             i_d = self.jac_relevant_dofs[i_c, i_d_, i_b]
                             self.nt_vec[i_d, i_b] = self.jac[i_c, i_d, i_b] * qd.sqrt(self.efc_D[i_c, i_b])
 
-                        rank = self._n_dofs
+                        rank = self._solver.n_dofs
                         for k_ in range(self.jac_n_relevant_dofs[i_c, i_b]):
                             k = self.jac_relevant_dofs[i_c, k_, i_b]
                             Lkk = self.nt_H[i_b, k, k]
@@ -543,16 +331,16 @@ class ConstraintSolverIsland:
                                 i = self.jac_relevant_dofs[i_c, i_, i_b]  # i is strictly > k
                                 self.nt_vec[i, i_b] = self.nt_vec[i, i_b] * c - s * self.nt_H[i_b, i, k]
 
-                        if rank < self._n_dofs:
+                        if rank < self._solver.n_dofs:
                             self._func_nt_hessian_direct(island, i_b)
                             updated = True
                 else:
                     if flag_update != -1:
-                        for i_d in range(self._n_dofs):
+                        for i_d in range(self._solver.n_dofs):
                             self.nt_vec[i_d, i_b] = self.jac[i_c, i_d, i_b] * qd.sqrt(self.efc_D[i_c, i_b])
 
-                        rank = self._n_dofs
-                        for k in range(self._n_dofs):
+                        rank = self._solver.n_dofs
+                        for k in range(self._solver.n_dofs):
                             if qd.abs(self.nt_vec[k, i_b]) > gs.EPS:
                                 Lkk = self.nt_H[i_b, k, k]
                                 tmp = Lkk * Lkk + self.nt_vec[k, i_b] * self.nt_vec[k, i_b] * (flag_update * 2 - 1)
@@ -564,27 +352,27 @@ class ConstraintSolverIsland:
                                 cinv = 1 / c
                                 s = self.nt_vec[k, i_b] / Lkk
                                 self.nt_H[i_b, k, k] = r
-                                for i in range(k + 1, self._n_dofs):
+                                for i in range(k + 1, self._solver.n_dofs):
                                     self.nt_H[i_b, i, k] = (
                                         self.nt_H[i_b, i, k] + s * self.nt_vec[i, i_b] * (flag_update * 2 - 1)
                                     ) * cinv
 
-                                for i in range(k + 1, self._n_dofs):
+                                for i in range(k + 1, self._solver.n_dofs):
                                     self.nt_vec[i, i_b] = self.nt_vec[i, i_b] * c - s * self.nt_H[i_b, i, k]
 
-                        if rank < self._n_dofs:
+                        if rank < self._solver.n_dofs:
                             self._func_nt_hessian_direct(island, i_b)
                             updated = True
 
     @qd.func
     def _func_nt_hessian_direct(self, island, i_b):
         # # H = M + J'*D*J
-        for i_island_entity in range(self.contact_island.island_entity_n[island, i_b]):
-            i_e_ = self.contact_island.island_entity_start[island, i_b] + i_island_entity
+        for i_island_entity in range(self.contact_island.island_entity.n[island, i_b]):
+            i_e_ = self.contact_island.island_entity.start[island, i_b] + i_island_entity
             i_e = self.contact_island.entity_id[i_e_, i_b]
             for i_d1 in range(self.entities_info.dof_start[i_e], self.entities_info.dof_end[i_e]):
-                for i_island_entity2 in range(self.contact_island.island_entity_n[island, i_b]):
-                    i_e2_ = self.contact_island.island_entity_start[island, i_b] + i_island_entity2
+                for i_island_entity2 in range(self.contact_island.island_entity.n[island, i_b]):
+                    i_e2_ = self.contact_island.island_entity.start[island, i_b] + i_island_entity2
                     i_e2 = self.contact_island.entity_id[i_e2_, i_b]
                     for i_d2 in range(self.entities_info.dof_start[i_e2], self.entities_info.dof_end[i_e2]):
                         self.nt_H[i_b, i_d1, i_d2] = gs.qd_float(0.0)
@@ -610,37 +398,37 @@ class ConstraintSolverIsland:
                             * self.active[i_c, i_b]
                         )
 
-        for i_island_entity in range(self.contact_island.island_entity_n[island, i_b]):
-            i_e_ = self.contact_island.island_entity_start[island, i_b] + i_island_entity
+        for i_island_entity in range(self.contact_island.island_entity.n[island, i_b]):
+            i_e_ = self.contact_island.island_entity.start[island, i_b] + i_island_entity
             i_e = self.contact_island.entity_id[i_e_, i_b]
             for i_d1 in range(self.entities_info.dof_start[i_e], self.entities_info.dof_end[i_e]):
-                for i_island_entity2 in range(self.contact_island.island_entity_n[island, i_b]):
-                    i_e2_ = self.contact_island.island_entity_start[island, i_b] + i_island_entity2
+                for i_island_entity2 in range(self.contact_island.island_entity.n[island, i_b]):
+                    i_e2_ = self.contact_island.island_entity.start[island, i_b] + i_island_entity2
                     i_e2 = self.contact_island.entity_id[i_e2_, i_b]
                     for i_d2 in range(self.entities_info.dof_start[i_e2], self.entities_info.dof_end[i_e2]):
                         if i_d1 < i_d2:
                             self.nt_H[i_b, i_d1, i_d2] = self.nt_H[i_b, i_d2, i_d1]
 
-        for i_island_entity in range(self.contact_island.island_entity_n[island, i_b]):
-            i_e_ = self.contact_island.island_entity_start[island, i_b] + i_island_entity
+        for i_island_entity in range(self.contact_island.island_entity.n[island, i_b]):
+            i_e_ = self.contact_island.island_entity.start[island, i_b] + i_island_entity
             i_e = self.contact_island.entity_id[i_e_, i_b]
             for i_d1 in range(self.entities_info.dof_start[i_e], self.entities_info.dof_end[i_e]):
                 for i_d2 in range(self.entities_info.dof_start[i_e], self.entities_info.dof_end[i_e]):
-                    self.nt_H[i_b, i_d1, i_d2] = self.nt_H[i_b, i_d1, i_d2] + self._mass_mat[i_d1, i_d2, i_b]
+                    self.nt_H[i_b, i_d1, i_d2] = self.nt_H[i_b, i_d1, i_d2] + self._solver.mass_mat[i_d1, i_d2, i_b]
         self._func_nt_chol_factor(island, i_b)
 
     @qd.func
     def _func_nt_chol_factor(self, island, i_b):
-        rank = self._n_dofs
+        rank = self._solver.n_dofs
 
-        for i_island_entity in range(self.contact_island.island_entity_n[island, i_b]):
-            i_e_ = self.contact_island.island_entity_start[island, i_b] + i_island_entity
+        for i_island_entity in range(self.contact_island.island_entity.n[island, i_b]):
+            i_e_ = self.contact_island.island_entity.start[island, i_b] + i_island_entity
             i_e = self.contact_island.entity_id[i_e_, i_b]
             for i_d in range(self.entities_info.dof_start[i_e], self.entities_info.dof_end[i_e]):
                 tmp = self.nt_H[i_b, i_d, i_d]
 
                 for j_island_entity in range(i_island_entity + 1):
-                    j_e_ = self.contact_island.island_entity_start[island, i_b] + j_island_entity
+                    j_e_ = self.contact_island.island_entity.start[island, i_b] + j_island_entity
                     j_e = self.contact_island.entity_id[j_e_, i_b]
                     for j_d in range(self.entities_info.dof_start[j_e], qd.min(self.entities_info.dof_end[j_e], i_d)):
                         tmp = tmp - (self.nt_H[i_b, i_d, j_d] * self.nt_H[i_b, i_d, j_d])
@@ -653,8 +441,8 @@ class ConstraintSolverIsland:
 
                 tmp = 1 / self.nt_H[i_b, i_d, i_d]
 
-                for j_island_entity in range(i_island_entity, self.contact_island.island_entity_n[island, i_b]):
-                    j_e_ = self.contact_island.island_entity_start[island, i_b] + j_island_entity
+                for j_island_entity in range(i_island_entity, self.contact_island.island_entity.n[island, i_b]):
+                    j_e_ = self.contact_island.island_entity.start[island, i_b] + j_island_entity
                     j_e = self.contact_island.entity_id[j_e_, i_b]
                     for j_d in range(
                         qd.max(i_d + 1, self.entities_info.dof_start[j_e]), self.entities_info.dof_end[j_e]
@@ -662,7 +450,7 @@ class ConstraintSolverIsland:
                         dot = gs.qd_float(0.0)
 
                         for k_island_entity in range(i_island_entity + 1):
-                            k_e_ = self.contact_island.island_entity_start[island, i_b] + k_island_entity
+                            k_e_ = self.contact_island.island_entity.start[island, i_b] + k_island_entity
                             k_e = self.contact_island.entity_id[k_e_, i_b]
                             for k_d in range(
                                 self.entities_info.dof_start[k_e], qd.min(self.entities_info.dof_end[k_e], i_d)
@@ -673,32 +461,32 @@ class ConstraintSolverIsland:
 
     @qd.func
     def _func_nt_chol_solve(self, island, i_b):
-        for i_island_entity in range(self.contact_island.island_entity_n[island, i_b]):
-            i_e_ = self.contact_island.island_entity_start[island, i_b] + i_island_entity
+        for i_island_entity in range(self.contact_island.island_entity.n[island, i_b]):
+            i_e_ = self.contact_island.island_entity.start[island, i_b] + i_island_entity
             i_e = self.contact_island.entity_id[i_e_, i_b]
             for i_d in range(self.entities_info.dof_start[i_e], self.entities_info.dof_end[i_e]):
                 self.Mgrad[i_d, i_b] = self.grad[i_d, i_b]
 
-        for i_island_entity in range(self.contact_island.island_entity_n[island, i_b]):
-            i_e_ = self.contact_island.island_entity_start[island, i_b] + i_island_entity
+        for i_island_entity in range(self.contact_island.island_entity.n[island, i_b]):
+            i_e_ = self.contact_island.island_entity.start[island, i_b] + i_island_entity
             i_e = self.contact_island.entity_id[i_e_, i_b]
             for i_d in range(self.entities_info.dof_start[i_e], self.entities_info.dof_end[i_e]):
                 for j_island_entity in range(i_island_entity + 1):
-                    j_e_ = self.contact_island.island_entity_start[island, i_b] + j_island_entity
+                    j_e_ = self.contact_island.island_entity.start[island, i_b] + j_island_entity
                     j_e = self.contact_island.entity_id[j_e_, i_b]
                     for j_d in range(self.entities_info.dof_start[j_e], qd.min(self.entities_info.dof_end[j_e], i_d)):
                         self.Mgrad[i_d, i_b] = self.Mgrad[i_d, i_b] - (self.nt_H[i_b, i_d, j_d] * self.Mgrad[j_d, i_b])
                 self.Mgrad[i_d, i_b] = self.Mgrad[i_d, i_b] / self.nt_H[i_b, i_d, i_d]
 
-        for i_island_entity_ in range(self.contact_island.island_entity_n[island, i_b]):
-            i_island_entity = self.contact_island.island_entity_n[island, i_b] - 1 - i_island_entity_
-            i_e_ = self.contact_island.island_entity_start[island, i_b] + i_island_entity
+        for i_island_entity_ in range(self.contact_island.island_entity.n[island, i_b]):
+            i_island_entity = self.contact_island.island_entity.n[island, i_b] - 1 - i_island_entity_
+            i_e_ = self.contact_island.island_entity.start[island, i_b] + i_island_entity
             i_e = self.contact_island.entity_id[i_e_, i_b]
             for i_d_ in range(self.entities_info.dof_end[i_e] - self.entities_info.dof_start[i_e]):
                 i_d = self.entities_info.dof_end[i_e] - 1 - i_d_
 
-                for j_island_entity in range(i_island_entity, self.contact_island.island_entity_n[island, i_b]):
-                    j_e_ = self.contact_island.island_entity_start[island, i_b] + j_island_entity
+                for j_island_entity in range(i_island_entity, self.contact_island.island_entity.n[island, i_b]):
+                    j_e_ = self.contact_island.island_entity.start[island, i_b] + j_island_entity
                     j_e = self.contact_island.entity_id[j_e_, i_b]
                     for j_d in range(
                         qd.max(i_d + 1, self.entities_info.dof_start[j_e]), self.entities_info.dof_end[j_e]
@@ -714,10 +502,10 @@ class ConstraintSolverIsland:
 
     @qd.kernel
     def _kernel_reset(self, envs_idx: qd.types.ndarray()):
-        qd.loop_config(serialize=self._para_level < gs.PARA_LEVEL.ALL)
+        qd.loop_config(serialize=self._solver._para_level < gs.PARA_LEVEL.ALL)
         for i_b_ in range(envs_idx.shape[0]):
             i_b = envs_idx[i_b_]
-            for i_d in range(self._n_dofs_):
+            for i_d in range(self._solver.n_dofs_):
                 self.qacc_ws[i_d, i_b] = 0
                 for i_c in range(self.len_constraints_):
                     self.jac[i_c, i_d, i_b] = 0
@@ -727,18 +515,18 @@ class ConstraintSolverIsland:
 
     @qd.func
     def _func_update_contact_force(self, i_island: int, i_b: int):
-        for i_island_entity in range(self.contact_island.island_entity_n[i_island, i_b]):
-            i_e_ = self.contact_island.island_entity_start[i_island, i_b] + i_island_entity
+        for i_island_entity in range(self.contact_island.island_entity.n[i_island, i_b]):
+            i_e_ = self.contact_island.island_entity.start[i_island, i_b] + i_island_entity
             i_e = self.contact_island.entity_id[i_e_, i_b]
             for i_l in range(self.entities_info.link_start[i_e], self.entities_info.link_end[i_e]):
-                self._links_state.contact_force[i_l, i_b] = qd.Vector.zero(gs.qd_float, 3)
+                self._solver.links_state.contact_force[i_l, i_b] = qd.Vector.zero(gs.qd_float, 3)
 
-        for i_island_col in range(self.contact_island.island_col_n[i_island, i_b]):
-            i_col_ = self.contact_island.island_col_start[i_island, i_b] + i_island_col
+        for i_island_col in range(self.contact_island.island_col.n[i_island, i_b]):
+            i_col_ = self.contact_island.island_col.start[i_island, i_b] + i_island_col
             i_col = self.contact_island.constraint_id[i_col_, i_b]
 
-            contact_normal = self._contact_data.normal[i_col, i_b]
-            contact_friction = self._contact_data.friction[i_col, i_b]
+            contact_normal = self._collider._collider_state.contact_data.normal[i_col, i_b]
+            contact_friction = self._collider._collider_state.contact_data.friction[i_col, i_b]
 
             force = qd.Vector.zero(gs.qd_float, 3)
             d1, d2 = gu.qd_orthogonals(contact_normal)
@@ -746,39 +534,49 @@ class ConstraintSolverIsland:
                 d = (2 * (i % 2) - 1) * (d1 if i < 2 else d2)
                 n = d * contact_friction - contact_normal
                 force += n * self.efc_force[i_island_col * 4 + i, i_b]
-            self._contact_data.force[i_col, i_b] = force
+            self._collider._collider_state.contact_data.force[i_col, i_b] = force
 
-            link_a = self._contact_data.link_a[i_col, i_b]
-            link_b = self._contact_data.link_b[i_col, i_b]
+            link_a = self._collider._collider_state.contact_data.link_a[i_col, i_b]
+            link_b = self._collider._collider_state.contact_data.link_b[i_col, i_b]
 
-            self._links_state.contact_force[link_a, i_b] = self._links_state.contact_force[link_a, i_b] - force
-            self._links_state.contact_force[link_b, i_b] = self._links_state.contact_force[link_b, i_b] + force
+            self._solver.links_state.contact_force[link_a, i_b] = (
+                self._solver.links_state.contact_force[link_a, i_b] - force
+            )
+            self._solver.links_state.contact_force[link_b, i_b] = (
+                self._solver.links_state.contact_force[link_b, i_b] + force
+            )
 
     @qd.func
     def _func_update_qacc(self, i_island: int, i_b: int):
-        for i_island_entity in range(self.contact_island.island_entity_n[i_island, i_b]):
-            i_e_ = self.contact_island.island_entity_start[i_island, i_b] + i_island_entity
+        for i_island_entity in range(self.contact_island.island_entity.n[i_island, i_b]):
+            i_e_ = self.contact_island.island_entity.start[i_island, i_b] + i_island_entity
             i_e = self.contact_island.entity_id[i_e_, i_b]
             for i_d in range(self.entities_info.dof_start[i_e], self.entities_info.dof_end[i_e]):
-                self._dofs_state.acc[i_d, i_b] = self.qacc[i_d, i_b]
+                self._solver.dofs_state.acc[i_d, i_b] = self.qacc[i_d, i_b]
                 self.qacc_ws[i_d, i_b] = self.qacc[i_d, i_b]
 
     @qd.func
-    def _func_solve(self, i_island: int, i_b: int):
+    def _func_solve(
+        self,
+        i_island: int,
+        i_b: int,
+        entities_info: array_class.EntitiesInfo,
+        rigid_global_info: array_class.RigidGlobalInfo,
+    ):
         # this safeguard seems not necessary in normal execution
         # if self.n_constraints[i_b] > 0 or self.cost_ws[i_b] < self.cost[i_b]:
         if self.n_constraints[i_b] > 0:
-            tol_scaled = (self._meaninertia[i_b] * qd.max(1, self._n_dofs)) * self.tolerance
+            tol_scaled = (self._solver.meaninertia[i_b] * qd.max(1, self._solver.n_dofs)) * self.tolerance
             for it in range(self.iterations):
-                self._func_solve_body(i_island, i_b)
+                self._func_solve_body(i_island, i_b, entities_info, rigid_global_info)
                 if not self.improved[i_b]:
                     break
 
                 gradient = gs.qd_float(0.0)
 
                 n_dof = 0
-                for i_island_entity in range(self.contact_island.island_entity_n[i_island, i_b]):
-                    i_e_ = self.contact_island.island_entity_start[i_island, i_b] + i_island_entity
+                for i_island_entity in range(self.contact_island.island_entity.n[i_island, i_b]):
+                    i_e_ = self.contact_island.island_entity.start[i_island, i_b] + i_island_entity
                     i_e = self.contact_island.entity_id[i_e_, i_b]
                     n_dof = n_dof + self.entities_info.dof_end[i_e] - self.entities_info.dof_start[i_e]
                     for i_d in range(self.entities_info.dof_start[i_e], self.entities_info.dof_end[i_e]):
@@ -793,13 +591,13 @@ class ConstraintSolverIsland:
     def _func_ls_init(self, island, i_b):
         # mv and jv
 
-        for i_island_entity in range(self.contact_island.island_entity_n[island, i_b]):
-            i_e_ = self.contact_island.island_entity_start[island, i_b] + i_island_entity
+        for i_island_entity in range(self.contact_island.island_entity.n[island, i_b]):
+            i_e_ = self.contact_island.island_entity.start[island, i_b] + i_island_entity
             i_e = self.contact_island.entity_id[i_e_, i_b]
             for i_d1 in range(self.entities_info.dof_start[i_e], self.entities_info.dof_end[i_e]):
                 mv = gs.qd_float(0.0)
                 for i_d2 in range(self.entities_info.dof_start[i_e], self.entities_info.dof_end[i_e]):
-                    mv += self._mass_mat[i_d1, i_d2, i_b] * self.search[i_d2, i_b]
+                    mv += self._solver.mass_mat[i_d1, i_d2, i_b] * self.search[i_d2, i_b]
                 self.mv[i_d1, i_b] = mv
 
         for i_c in range(self.n_constraints[i_b]):
@@ -809,8 +607,8 @@ class ConstraintSolverIsland:
                     i_d = self.jac_relevant_dofs[i_c, i_d_, i_b]
                     jv += self.jac[i_c, i_d, i_b] * self.search[i_d, i_b]
             else:
-                for i_island_entity in range(self.contact_island.island_entity_n[island, i_b]):
-                    i_e_ = self.contact_island.island_entity_start[island, i_b] + i_island_entity
+                for i_island_entity in range(self.contact_island.island_entity.n[island, i_b]):
+                    i_e_ = self.contact_island.island_entity.start[island, i_b] + i_island_entity
                     i_e = self.contact_island.entity_id[i_e_, i_b]
                     for i_d in range(self.entities_info.dof_start[i_e], self.entities_info.dof_end[i_e]):
                         jv += self.jac[i_c, i_d, i_b] * self.search[i_d, i_b]
@@ -820,12 +618,13 @@ class ConstraintSolverIsland:
         quad_gauss_1 = gs.qd_float(0.0)
         quad_gauss_2 = gs.qd_float(0.0)
 
-        for i_island_entity in range(self.contact_island.island_entity_n[island, i_b]):
-            i_e_ = self.contact_island.island_entity_start[island, i_b] + i_island_entity
+        for i_island_entity in range(self.contact_island.island_entity.n[island, i_b]):
+            i_e_ = self.contact_island.island_entity.start[island, i_b] + i_island_entity
             i_e = self.contact_island.entity_id[i_e_, i_b]
             for i_d in range(self.entities_info.dof_start[i_e], self.entities_info.dof_end[i_e]):
                 quad_gauss_1 += (
-                    self.search[i_d, i_b] * self.Ma[i_d, i_b] - self.search[i_d, i_b] * self._dofs_state.force[i_d, i_b]
+                    self.search[i_d, i_b] * self.Ma[i_d, i_b]
+                    - self.search[i_d, i_b] * self._solver.dofs_state.force[i_d, i_b]
                 )
                 quad_gauss_2 += 0.5 * self.search[i_d, i_b] * self.mv[i_d, i_b]
 
@@ -863,12 +662,12 @@ class ConstraintSolverIsland:
     def _func_linesearch(self, island, i_b):
         ## use adaptive linesearch tolerance
         snorm = gs.qd_float(0.0)
-        for i_island_entity in range(self.contact_island.island_entity_n[island, i_b]):
-            i_e_ = self.contact_island.island_entity_start[island, i_b] + i_island_entity
+        for i_island_entity in range(self.contact_island.island_entity.n[island, i_b]):
+            i_e_ = self.contact_island.island_entity.start[island, i_b] + i_island_entity
             i_e = self.contact_island.entity_id[i_e_, i_b]
             for i_d in range(self.entities_info.dof_start[i_e], self.entities_info.dof_end[i_e]):
                 snorm += self.search[i_d, i_b] ** 2
-        snorm = qd.sqrt(snorm / self._n_dofs_) * self._meaninertia[i_b] * self._n_dofs
+        snorm = qd.sqrt(snorm / self._solver.n_dofs_) * self._solver.meaninertia[i_b] * self._solver.n_dofs
         self.gtol[i_b] = self.tolerance * self.ls_tolerance * snorm
         gtol = self.tolerance * self.ls_tolerance * snorm
         ## use adaptive linesearch tolerance
@@ -883,7 +682,7 @@ class ConstraintSolverIsland:
             self.ls_result[i_b] = 1
             res_alpha = 0.0
         else:
-            scale = 1 / (self._meaninertia[i_b] * qd.max(1, self._n_dofs))
+            scale = 1 / (self._solver.meaninertia[i_b] * qd.max(1, self._solver.n_dofs))
             gtol = self.tolerance * self.ls_tolerance * snorm
             slopescl = scale / snorm
 
@@ -1055,15 +854,17 @@ class ConstraintSolverIsland:
         return flag, p_alpha, p_cost, p_deriv_0, p_deriv_1, p_next_alpha, p_next_cost, p_next_deriv_0, p_next_deriv_1
 
     @qd.func
-    def _func_solve_body(self, island, i_b):
+    def _func_solve_body(
+        self, island, i_b, entities_info: array_class.EntitiesInfo, rigid_global_info: array_class.RigidGlobalInfo
+    ):
         alpha = self._func_linesearch(island, i_b)
 
         if qd.abs(alpha) < gs.EPS:
             self.improved[i_b] = False
         else:
             self.improved[i_b] = True
-            for i_island_entity in range(self.contact_island.island_entity_n[island, i_b]):
-                i_e_ = self.contact_island.island_entity_start[island, i_b] + i_island_entity
+            for i_island_entity in range(self.contact_island.island_entity.n[island, i_b]):
+                i_e_ = self.contact_island.island_entity.start[island, i_b] + i_island_entity
                 i_e = self.contact_island.entity_id[i_e_, i_b]
                 for i_d in range(self.entities_info.dof_start[i_e], self.entities_info.dof_end[i_e]):
                     self.qacc[i_d, i_b] = self.qacc[i_d, i_b] + self.search[i_d, i_b] * alpha
@@ -1073,8 +874,8 @@ class ConstraintSolverIsland:
                 self.Jaref[i_c, i_b] = self.Jaref[i_c, i_b] + self.jv[i_c, i_b] * alpha
 
             if qd.static(self._solver_type == gs.constraint_solver.CG):
-                for i_island_entity in range(self.contact_island.island_entity_n[island, i_b]):
-                    i_e_ = self.contact_island.island_entity_start[island, i_b] + i_island_entity
+                for i_island_entity in range(self.contact_island.island_entity.n[island, i_b]):
+                    i_e_ = self.contact_island.island_entity.start[island, i_b] + i_island_entity
                     i_e = self.contact_island.entity_id[i_e_, i_b]
                     for i_d in range(self.entities_info.dof_start[i_e], self.entities_info.dof_end[i_e]):
                         self.cg_prev_grad[i_d, i_b] = self.grad[i_d, i_b]
@@ -1082,13 +883,13 @@ class ConstraintSolverIsland:
             self._func_update_constraint(island, i_b, self.qacc, self.Ma, self.cost)
 
             if qd.static(self._solver_type == gs.constraint_solver.CG):
-                self._func_update_gradient(island, i_b)
+                self._func_update_gradient(island, i_b, entities_info, rigid_global_info)
 
                 self.cg_beta[i_b] = gs.qd_float(0.0)
                 self.cg_pg_dot_pMg[i_b] = gs.qd_float(0.0)
 
-                for i_island_entity in range(self.contact_island.island_entity_n[island, i_b]):
-                    i_e_ = self.contact_island.island_entity_start[island, i_b] + i_island_entity
+                for i_island_entity in range(self.contact_island.island_entity.n[island, i_b]):
+                    i_e_ = self.contact_island.island_entity.start[island, i_b] + i_island_entity
                     i_e = self.contact_island.entity_id[i_e_, i_b]
                     for i_d in range(self.entities_info.dof_start[i_e], self.entities_info.dof_end[i_e]):
                         self.cg_beta[i_b] += self.grad[i_d, i_b] * (self.Mgrad[i_d, i_b] - self.cg_prev_Mgrad[i_d, i_b])
@@ -1097,8 +898,8 @@ class ConstraintSolverIsland:
                 self.cg_beta[i_b] = self.cg_beta[i_b] / qd.max(gs.EPS, self.cg_pg_dot_pMg[i_b])
                 self.cg_beta[i_b] = qd.max(0.0, self.cg_beta[i_b])
 
-                for i_island_entity in range(self.contact_island.island_entity_n[island, i_b]):
-                    i_e_ = self.contact_island.island_entity_start[island, i_b] + i_island_entity
+                for i_island_entity in range(self.contact_island.island_entity.n[island, i_b]):
+                    i_e_ = self.contact_island.island_entity.start[island, i_b] + i_island_entity
                     i_e = self.contact_island.entity_id[i_e_, i_b]
                     for i_d in range(self.entities_info.dof_start[i_e], self.entities_info.dof_end[i_e]):
                         self.search[i_d, i_b] = -self.Mgrad[i_d, i_b] + self.cg_beta[i_b] * self.search[i_d, i_b]
@@ -1107,10 +908,10 @@ class ConstraintSolverIsland:
                 if improvement > 0:
                     # TODO
                     self._func_nt_hessian_incremental(island, i_b)
-                    self._func_update_gradient(island, i_b)
+                    self._func_update_gradient(island, i_b, entities_info, rigid_global_info)
 
-                    for i_island_entity in range(self.contact_island.island_entity_n[island, i_b]):
-                        i_e_ = self.contact_island.island_entity_start[island, i_b] + i_island_entity
+                    for i_island_entity in range(self.contact_island.island_entity.n[island, i_b]):
+                        i_e_ = self.contact_island.island_entity.start[island, i_b] + i_island_entity
                         i_e = self.contact_island.entity_id[i_e_, i_b]
                         for i_d in range(self.entities_info.dof_start[i_e], self.entities_info.dof_end[i_e]):
                             self.search[i_d, i_b] = -self.Mgrad[i_d, i_b]
@@ -1127,8 +928,8 @@ class ConstraintSolverIsland:
             self.active[i_c, i_b] = self.Jaref[i_c, i_b] < 0
             self.efc_force[i_c, i_b] = -self.efc_D[i_c, i_b] * self.Jaref[i_c, i_b] * self.active[i_c, i_b]
         if qd.static(self.sparse_solve):
-            for i_island_entity in range(self.contact_island.island_entity_n[island, i_b]):
-                i_e_ = self.contact_island.island_entity_start[island, i_b] + i_island_entity
+            for i_island_entity in range(self.contact_island.island_entity.n[island, i_b]):
+                i_e_ = self.contact_island.island_entity.start[island, i_b] + i_island_entity
                 i_e = self.contact_island.entity_id[i_e_, i_b]
                 for i_d in range(self.entities_info.dof_start[i_e], self.entities_info.dof_end[i_e]):
                     self.qfrc_constraint[i_d, i_b] = gs.qd_float(0.0)
@@ -1139,20 +940,20 @@ class ConstraintSolverIsland:
                         self.qfrc_constraint[i_d, i_b] + self.jac[i_c, i_d, i_b] * self.efc_force[i_c, i_b]
                     )
         else:
-            for i_d in range(self._n_dofs):
+            for i_d in range(self._solver.n_dofs):
                 qfrc_constraint = gs.qd_float(0.0)
                 for i_c in range(self.n_constraints[i_b]):
                     qfrc_constraint += self.jac[i_c, i_d, i_b] * self.efc_force[i_c, i_b]
                 self.qfrc_constraint[i_d, i_b] = qfrc_constraint
 
-        for i_island_entity in range(self.contact_island.island_entity_n[island, i_b]):
-            i_e_ = self.contact_island.island_entity_start[island, i_b] + i_island_entity
+        for i_island_entity in range(self.contact_island.island_entity.n[island, i_b]):
+            i_e_ = self.contact_island.island_entity.start[island, i_b] + i_island_entity
             i_e = self.contact_island.entity_id[i_e_, i_b]
             for i_d in range(self.entities_info.dof_start[i_e], self.entities_info.dof_end[i_e]):
                 v = (
                     0.5
-                    * (Ma[i_d, i_b] - self._dofs_state.force[i_d, i_b])
-                    * (qacc[i_d, i_b] - self._dofs_state.acc[i_d, i_b])
+                    * (Ma[i_d, i_b] - self._solver.dofs_state.force[i_d, i_b])
+                    * (qacc[i_d, i_b] - self._solver.dofs_state.acc[i_d, i_b])
                 )
                 self.gauss[i_b] = self.gauss[i_b] + v
                 cost[i_b] = cost[i_b] + v
@@ -1164,37 +965,36 @@ class ConstraintSolverIsland:
             )
 
     @qd.func
-    def _func_update_gradient(self, island, i_b):
-        for i_island_entity in range(self.contact_island.island_entity_n[island, i_b]):
-            i_e_ = self.contact_island.island_entity_start[island, i_b] + i_island_entity
+    def _func_update_gradient(
+        self, island, i_b, entities_info: array_class.EntitiesInfo, rigid_global_info: array_class.RigidGlobalInfo
+    ):
+        for i_island_entity in range(self.contact_island.island_entity.n[island, i_b]):
+            i_e_ = self.contact_island.island_entity.start[island, i_b] + i_island_entity
             i_e = self.contact_island.entity_id[i_e_, i_b]
             for i_d in range(self.entities_info.dof_start[i_e], self.entities_info.dof_end[i_e]):
                 self.grad[i_d, i_b] = (
-                    self.Ma[i_d, i_b] - self._dofs_state.force[i_d, i_b] - self.qfrc_constraint[i_d, i_b]
+                    self.Ma[i_d, i_b] - self._solver.dofs_state.force[i_d, i_b] - self.qfrc_constraint[i_d, i_b]
                 )
 
         if qd.static(self._solver_type == gs.constraint_solver.CG):
-            for i_e in range(self._n_entities):
-                self._mass_mat_mask[i_e, i_b] = False
-            for i_island_entity in range(self.contact_island.island_entity_n[island, i_b]):
-                i_e_ = self.contact_island.island_entity_start[island, i_b] + i_island_entity
+            for i_e in range(self._solver.n_entities):
+                self._solver.mass_mat_mask[i_e, i_b] = False
+            for i_island_entity in range(self.contact_island.island_entity.n[island, i_b]):
+                i_e_ = self.contact_island.island_entity.start[island, i_b] + i_island_entity
                 i_e = self.contact_island.entity_id[i_e_, i_b]
-                self._mass_mat_mask[i_e_, i_b] = True
-            # TODO: CG solver path with func_solve_mass_batch needs ndarray-mode adaptation.
-            # func_solve_mass_batch accesses rigid_global_info (frozen dataclass) fields.
-            # For now, this path is only compiled when constraint_solver == CG.
+                self._solver.mass_mat_mask[i_e_, i_b] = True
             self._solver.func_solve_mass_batch(
                 i_b,
                 self.grad,
                 self.Mgrad,
-                array_class.PLACEHOLDER,
-                entities_info=self.entities_info,
-                rigid_global_info=self._solver.data_manager.rigid_global_info,
+                None,
+                entities_info=entities_info,
+                rigid_global_info=rigid_global_info,
                 static_rigid_sim_config=self._solver._static_rigid_sim_config,
                 is_backward=False,
             )
-            for i_e in range(self._n_entities):
-                self._mass_mat_mask[i_e, i_b] = True
+            for i_e in range(self._solver.n_entities):
+                self._solver.mass_mat_mask[i_e, i_b] = True
         if qd.static(self._solver_type == gs.constraint_solver.Newton):
             self._func_nt_chol_solve(island, i_b)
 
@@ -1207,41 +1007,47 @@ class ConstraintSolverIsland:
                     i_d = self.jac_relevant_dofs[i_c, i_d_, i_b]
                     Jaref += self.jac[i_c, i_d, i_b] * qacc[i_d, i_b]
             else:
-                for i_d in range(self._n_dofs):
+                for i_d in range(self._solver.n_dofs):
                     Jaref += self.jac[i_c, i_d, i_b] * qacc[i_d, i_b]
             self.Jaref[i_c, i_b] = Jaref
 
     @qd.func
     def initialize_Ma(self, Ma, qacc, island, i_b):
-        for i_island_entity in range(self.contact_island.island_entity_n[island, i_b]):
-            i_e_ = self.contact_island.island_entity_start[island, i_b] + i_island_entity
+        for i_island_entity in range(self.contact_island.island_entity.n[island, i_b]):
+            i_e_ = self.contact_island.island_entity.start[island, i_b] + i_island_entity
             i_e = self.contact_island.entity_id[i_e_, i_b]
             for i_d1 in range(self.entities_info.dof_start[i_e], self.entities_info.dof_end[i_e]):
                 Ma_ = gs.qd_float(0.0)
                 for i_d2 in range(self.entities_info.dof_start[i_e], self.entities_info.dof_end[i_e]):
-                    Ma_ += self._mass_mat[i_d1, i_d2, i_b] * qacc[i_d2, i_b]
+                    Ma_ += self._solver.mass_mat[i_d1, i_d2, i_b] * qacc[i_d2, i_b]
                 Ma[i_d1, i_b] = Ma_
 
     @qd.func
-    def _func_init_solver(self, i_island: int, i_b: int):
+    def _func_init_solver(
+        self,
+        i_island: int,
+        i_b: int,
+        entities_info: array_class.EntitiesInfo,
+        rigid_global_info: array_class.RigidGlobalInfo,
+    ):
         # check if warm start
         self.initialize_Jaref(self.qacc_ws, i_b)
         self.initialize_Ma(self.Ma_ws, self.qacc_ws, i_island, i_b)
         self._func_update_constraint(i_island, i_b, self.qacc_ws, self.Ma_ws, self.cost_ws)
 
-        self.initialize_Jaref(self._dofs_state.acc, i_b)
-        self.initialize_Ma(self.Ma, self._dofs_state.acc, i_island, i_b)
-        self._func_update_constraint(i_island, i_b, self._dofs_state.acc, self.Ma, self.cost)
+        self.initialize_Jaref(self._solver.dofs_state.acc, i_b)
+        self.initialize_Ma(self.Ma, self._solver.dofs_state.acc, i_island, i_b)
+        self._func_update_constraint(i_island, i_b, self._solver.dofs_state.acc, self.Ma, self.cost)
 
-        for i_island_entity in range(self.contact_island.island_entity_n[i_island, i_b]):
-            i_e_ = self.contact_island.island_entity_start[i_island, i_b] + i_island_entity
+        for i_island_entity in range(self.contact_island.island_entity.n[i_island, i_b]):
+            i_e_ = self.contact_island.island_entity.start[i_island, i_b] + i_island_entity
             i_e = self.contact_island.entity_id[i_e_, i_b]
             for i_d in range(self.entities_info.dof_start[i_e], self.entities_info.dof_end[i_e]):
                 if self.cost_ws[i_b] < self.cost[i_b]:
                     self.qacc[i_d, i_b] = self.qacc_ws[i_d, i_b]
                     self.Ma[i_d, i_b] = self.Ma_ws[i_d, i_b]
                 else:
-                    self.qacc[i_d, i_b] = self._dofs_state.acc[i_d, i_b]
+                    self.qacc[i_d, i_b] = self._solver.dofs_state.acc[i_d, i_b]
         self.initialize_Jaref(self.qacc, i_b)
         # end warm start
 
@@ -1250,10 +1056,10 @@ class ConstraintSolverIsland:
         if qd.static(self._solver_type == gs.constraint_solver.Newton):
             self._func_nt_hessian_direct(i_island, i_b)
 
-        self._func_update_gradient(i_island, i_b)
+        self._func_update_gradient(i_island, i_b, entities_info, rigid_global_info)
 
-        for i_island_entity in range(self.contact_island.island_entity_n[i_island, i_b]):
-            i_e_ = self.contact_island.island_entity_start[i_island, i_b] + i_island_entity
+        for i_island_entity in range(self.contact_island.island_entity.n[i_island, i_b]):
+            i_e_ = self.contact_island.island_entity.start[i_island, i_b] + i_island_entity
             i_e = self.contact_island.entity_id[i_e_, i_b]
             for i_d in range(self.entities_info.dof_start[i_e], self.entities_info.dof_end[i_e]):
                 self.search[i_d, i_b] = -self.Mgrad[i_d, i_b]
