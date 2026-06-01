@@ -509,6 +509,10 @@ class IPCCoupler(RBC):
         # Pending per-vertex soft position constraints: entity → dict with
         # "strength_ratio" (n_verts,) and "aim_position" (n_verts, 3), or None (clear).
         self._fem_soft_position: dict["FEMEntity", dict[str, np.ndarray] | None] = {}
+        # Optional per-vertex initial FEM velocities. These are written onto
+        # the IPC geometry before World.init so the first libuipc step starts
+        # from the saved dynamic state instead of v=0.
+        self._fem_initial_velocities: dict["FEMEntity", np.ndarray] = {}
 
         # ==== ABD Geometry & State ====
         # Cached merged world-frame trimesh per link for neutral-pose overlap check
@@ -976,6 +980,24 @@ class IPCCoupler(RBC):
             # Partition FEM/cloth mesh for faster IPC assembly/solve on large meshes.
             # This follows libuipc sample usage and is applied once on env-independent geometry.
             uipc.geometry.mesh_partition(mesh)
+
+            initial_velocity = self._fem_initial_velocities.get(entity)
+            if initial_velocity is not None:
+                if initial_velocity.shape != (entity.n_vertices, 3):
+                    gs.raise_exception(
+                        f"FEM initial velocity shape changed for entity '{entity.name}': "
+                        f"got {initial_velocity.shape}, expected {(entity.n_vertices, 3)}."
+                    )
+                vel_attr = mesh.vertices().find(uipc.builtin.velocity)
+                if vel_attr is None:
+                    mesh.vertices().create(uipc.builtin.velocity, np.zeros(3, dtype=np.float64))
+                    vel_attr = mesh.vertices().find(uipc.builtin.velocity)
+                uipc.view(vel_attr)[:] = initial_velocity.reshape(-1, 3, 1)
+                speed = np.linalg.norm(initial_velocity, axis=1)
+                gs.logger.info(
+                    f"[IPC FEM] Seeded initial velocity for '{entity.name}': "
+                    f"max={float(speed.max()):.3e} m/s, mean={float(speed.mean()):.3e} m/s"
+                )
 
             # ---- Per-environment: create IPC objects, then set per-env attrs on slot geometry ----
             fem_slots: list = []
@@ -1643,6 +1665,22 @@ class IPCCoupler(RBC):
             "betas": np.ascontiguousarray(betas_array),
             "strict": bool(strict),
         }
+
+    def set_fem_initial_velocity(self, entity: "FEMEntity", velocity: Any) -> None:
+        """Seed a FEM/cloth entity's per-vertex velocity before ``World.init(scene)``."""
+        if self._ipc_finalized:
+            gs.raise_exception("FEM initial velocity must be registered before the IPC world is finalized.")
+
+        velocity_array = np.asarray(velocity, dtype=np.float64)
+        if velocity_array.ndim != 2 or velocity_array.shape[1] != 3:
+            gs.raise_exception(f"FEM initial velocity must have shape (N, 3), got {velocity_array.shape}.")
+        if velocity_array.shape[0] != entity.n_vertices:
+            gs.raise_exception(
+                f"FEM initial velocity vertex count mismatch for entity '{getattr(entity, 'name', entity)}': "
+                f"got {velocity_array.shape[0]}, expected {entity.n_vertices}."
+            )
+
+        self._fem_initial_velocities[entity] = np.ascontiguousarray(velocity_array)
 
     def _contact_elements_for_entity(self, entity: Any) -> list[Any]:
         """Return IPC contact elements associated with a Genesis entity."""
