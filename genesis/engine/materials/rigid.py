@@ -10,7 +10,7 @@ from .kinematic import Kinematic
 if TYPE_CHECKING:
     from genesis.engine.entities.rigid_entity import RigidEntity
 
-CoupType = Literal["two_way_soft_constraint", "external_articulation", "ipc_only"]
+CoupType = Literal["two_way_soft_constraint", "external_articulation", "ipc_only", "ipc_authoritative"]
 
 
 class Rigid(Kinematic["RigidEntity"]):
@@ -107,9 +107,9 @@ class Rigid(Kinematic["RigidEntity"]):
     @model_validator(mode="before")
     @classmethod
     def _resolve_defaults(cls, data: dict) -> dict:
-        # ipc_only entities have their dynamics fully controlled by IPC (gravity + collision).
-        # Genesis gravity must be disabled to avoid double-counting.
-        if data.get("coup_type") == "ipc_only":
+        # ipc_only / ipc_authoritative entities have their dynamics fully controlled by IPC
+        # (gravity + collision). Genesis gravity must be disabled to avoid double-counting.
+        if data.get("coup_type") in ("ipc_only", "ipc_authoritative"):
             grav_comp = data.get("gravity_compensation")
             if grav_comp is not None and grav_comp != 0.0:
                 gs.raise_exception(

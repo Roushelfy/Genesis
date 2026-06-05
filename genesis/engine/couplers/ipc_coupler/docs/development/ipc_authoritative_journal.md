@@ -1,0 +1,277 @@
+# IPC-Authoritative Mode — Development Journal
+
+Chronological decisions, validations, and findings. Stable conclusions migrate to
+[../architecture.md](../architecture.md); current status stays in
+[../roadmap.md](../roadmap.md).
+
+---
+
+## M0 — Feasibility & source verification (COMPLETE)
+
+Goal: decide whether "IPC solves+controls everything, Genesis only reads state &
+renders" is feasible, and resolve the dependency/engine question, before writing
+code.
+
+### Findings (verified)
+
+1. **Engine is libuipc, not a re-impl.** The coupler delegates to libuipc
+   `World.advance()/retrieve()`; `import uipc` at `coupler.py:35`. No Taichi IPC.
+
+2. **Dependency / engine split.**
+   - sim2sim → **public PyPI `pyuipc==0.0.23`** (`uv.lock` source `pypi.org/simple`;
+     wheels cp310–cp313, `requires-python <3.14,>=3.10` — the "cp311-only" was an
+     artifact of sim2sim pinning py311).
+   - Genesis coupler → **fork `Roushelfy/libuipc`**, branch `RCC-Adhesion`,
+     version 0.9.0, cuda backend. Fork delta vs public = `RCCAdhesive` +
+     SOCU/cuda_mixed backends; **articulation joints + motors + external-force +
+     `ExternalArticulationConstraint` exist in the public 0.0.x line too**
+     (verified in cached `0.0.24` `constitution.pyi`).
+   - Decision: **default to the fork** (consumer needs RCC coexistence).
+
+3. **`copy_from` truly writes backend ABD state.** Traced
+   pybind → `do_copy_from`
+   (`src/backends/cuda/affine_body/affine_body_state_accessor_feature.cu:25`):
+   `builtin::transform → transform_to_q → m_abd.m_impl.body_id_to_q`, and
+   `qs()` returns exactly `m_impl.body_id_to_q.view()`
+   (`affine_body_dynamics.h:380`). Velocity → `body_id_to_q_v`. Then
+   `request_attribute_update()` (recompute contact verts) +
+   `update_dof_attributes()` (resync per-joint `current_angles`). So state writes
+   mutate the live coordinate the solver integrates — not a shadow buffer.
+
+4. **BDF1 makes pre-advance writes clean.** BDF1 predictor sets `q_prev = qs(i)`
+   each step (`abd_bdf1_time_integrator.cu:37`), so a write to `q` (with `q_v=0`)
+   does not produce the stale-`q_prev` energy spike warned about at
+   `coupler.py:1230`. BDF2 keeps `q_v_n_1s` untouched by `copy_from` → not clean.
+   Default scene integrator is `bdf1` (`scene_default_config.cpp:15`). → **lock BDF1.**
+
+5. **Clean control-torque seam already exists.** `get_dofs_control_force`
+   (`rigid_solver.py:2398`) / its kernel in `abd/accessor.py` folds all four
+   control modes + `force_range` clamp into a per-DOF torque. It lives in the
+   `abd/` module → built for this ABD path. → **B2 = Genesis-side torque** with no
+   re-implementation.
+
+6. **No Python joint-angle accessor.** Only FEM / AffineBody / RCC state accessors
+   are exposed in `src/pybind/pyuipc/core/state_accessor_feature.cpp`. → joint
+   readback must be **signed-angle reconstruction** (C1).
+
+7. **Clean per-joint torque API in fork.** `AffineBodyRevoluteJointExternalForce`
+   exposes `apply_to(sc, torque)` and `apply_to(sc, torques[])`; the constitution
+   converts scalar joint torque → affine moment internally (no manual
+   `make_affine_torque_force_vector` as sim2sim 0.0.23 needed). Revolute joint
+   build uses per-edge `init_angle`/`strength_ratio` and tracks the angle
+   (`affine_body_revolute_joint.cu`).
+
+8. **"Genesis does no sim" is not free.** Current `external_articulation` still
+   runs `kernel_step_1` + `_func_constraint_force` (`rigid_solver.py:1219`) +
+   `kernel_predict_integrate` + FK before the coupler; nothing forces
+   `enable_collision/disable_constraint` off (defaults `True/False` at
+   `solvers.py:506,511`). → the new mode must **explicitly** skip predict and
+   force collision/constraint off (Rules 1,2).
+
+9. **Consumer = gs-gym-internal.** Vendors `third_party/Genesis`
+   (`Roushelfy/Genesis`, branch `feature/nyx-fem-render-tuple-api` — the branch
+   this work is on) and `third_party/libuipc` (`RCC-Adhesion`) editable; pins
+   **Python 3.10**, torch **cu129**, `pyuipc>=0.0.24`. Already uses
+   `external_articulation`, `ipc_only`, `IPCCouplerOptions`, and RCC
+   (`add_rcc_adhesion`, `set_rcc_adhesion_pt_state`) in cloth/tape scenes. The new
+   mode targets this exact stack.
+
+10. **Build reference.** `~/work/libuipc/build/cuda_mixed_fused_pcg/CMakeCache.txt`:
+    nvcc `/usr/local/cuda-12.8`, `CMAKE_CUDA_ARCHITECTURES=native`,
+    `CMAKE_BUILD_TYPE=RelWithDebInfo`, `UIPC_WITH_CUDA_BACKEND=ON`,
+    `UIPC_WITH_CUDA_MIXED_BACKEND=ON`, `Python_EXECUTABLE=.../libuipc/python/.venv`.
+    → For this work: same config but **`-DUIPC_WITH_CUDA_MIXED_BACKEND=OFF`**
+    (cuda backend only) and a **py3.10** interpreter matching gs-gym-internal.
+
+### Design decisions (from Q&A with owner)
+
+Locked in [../roadmap.md](../roadmap.md) "Decisions locked for v1": fixed base ·
+revolute+fixed · torque path · Genesis-side PD via `get_dofs_control_force` · all
+modes→torque · signed-angle readback · finite-diff velocity · per-joint offset at
+build · skip predict + force collision/constraint off · BDF1 · single env ·
+coexist with FEM/RCC · fork `RCC-Adhesion` head · match gs-gym-internal env.
+
+### Decision
+
+Proceed. The mode is a specialization of the existing IPC split-step seam (~70%
+of plumbing exists). Next: **M1 environment** (the active blocker).
+
+### Verdict on the verbatim ask
+
+"IPC does all solving+control, Genesis only renders" is achievable for fixed-base
+revolute robots: IPC owns dynamics+contact+joints, Genesis contributes only the
+control torque and the readback→render writeback. The honest caveat is that
+Genesis still *evaluates the control law* (by design — it reuses Genesis's PD), it
+just performs **no dynamics, no integration, no contact solve**.
+
+---
+
+## M1 — Environment (COMPLETE, 2026-06-05)
+
+No build was needed: the consumer's venv already has a working cuda-backend fork.
+
+### Environment (verified)
+
+- Venv: `/home/zhaofeng/work/gs-gym-internal/.venv` — **Python 3.10.20**, torch
+  `2.10.0+cu129`.
+- `uipc` `0.9.0` imports from `gs-gym-internal/third_party/libuipc/python/src/uipc`
+  (editable, `_pyuipc_editable.pth`). Backend `.so` present:
+  `libuipc_backend_cuda.so` (+ `_none`). Fork SHA **`07f3be94`**, branch
+  `RCC-Adhesion`.
+- GPU **NVIDIA RTX 4090**, driver `595.71.05`. `nvcc` **release 12.8** at
+  `/usr/local/cuda-12.8`.
+- Build reference (already built): `~/work/libuipc/build/cuda_mixed_fused_pcg`
+  (RelWithDebInfo, `CUDA_ARCHITECTURES=native`). To rebuild cuda-only, repeat
+  with `-DUIPC_WITH_CUDA_MIXED_BACKEND=OFF -DUIPC_WITH_CUDA_BACKEND=ON` and a
+  py3.10 `Python_EXECUTABLE`. Not required while the editable fork build works.
+
+### Smoke (PASS)
+
+Script: [m1_uipc_smoke.py](m1_uipc_smoke.py). Command:
+
+```bash
+/home/zhaofeng/work/gs-gym-internal/.venv/bin/python \
+  genesis/engine/couplers/ipc_coupler/docs/development/m1_uipc_smoke.py
+```
+
+Result (2 ABD cubes + 1 revolute joint about +z, one fixed):
+
+```
+[cfg] integrator/type = 'bdf1'  dt = 0.01
+[accessor] body_count = 2
+[init]  free-body angle: geom=+0.00000  accessor=+0.00000
+[after 40 steps] free-body angle: geom=-1.97341  accessor=-1.97341
+[delta] rotated -1.97341 rad | accessor agrees: True
+SMOKE PASS
+```
+
+This validates the exact surfaces the new mode uses, on the consumer's py3.10
+cuda build:
+- `Engine("cuda")` + `World.advance()/retrieve()` run and stay valid (`is_valid()`).
+- **B1 torque actuation**: `AffineBodyRevoluteJointExternalForce.apply_to(joint, 50.0)`
+  drove the free body's rotation (a torque genuinely moves the articulation).
+- **C1 readback**: `AffineBodyStateAccessorFeature.copy_to` agrees with
+  `link_slot.geometry().transforms()` to <1e-6.
+- Default integrator is `bdf1` (mode requirement).
+
+### Caveat discovered — TWO Genesis checkouts (action for M2)
+
+The consumer's `genesis-world` editable install resolves to
+**`gs-gym-internal/third_party/Genesis`** (a *separate* working copy of
+`Roushelfy/Genesis` @ `feature/nyx-fem-render-tuple-api`), **not** this repo
+`/home/zhaofeng/work/Genesis`. Verified by import from a neutral cwd:
+
+```
+$ cd /tmp && .../.venv/bin/python -c "import genesis; print(genesis.__file__)"
+/home/zhaofeng/work/gs-gym-internal/third_party/Genesis/genesis/__init__.py
+```
+
+This repo only "wins" when cwd is `/home/zhaofeng/work/Genesis` (cwd/`''` shadows
+the editable). **All M0 doc/feature edits so far live in `/home/zhaofeng/work/Genesis`,
+which the consumer does NOT import by default.** Before M2 implementation is
+testable in gs-gym-internal, pick one:
+- (recommended) repoint the consumer's editable to this repo
+  (`uv pip install -e /home/zhaofeng/work/Genesis` in the gs-gym venv, or edit the
+  `__editable__.genesis_world-1.0.0` finder/.pth), or
+- develop directly in `third_party/Genesis`, or
+- keep both in sync via git (same branch/remote).
+
+### B3 resolved (2026-06-05) — editable repointed to this repo
+
+Chose option 1. Redirected the consumer's genesis editable finder to this repo
+(no rebuild, fully reversible):
+
+```bash
+F=/home/zhaofeng/work/gs-gym-internal/.venv/lib/python3.10/site-packages/__editable___genesis_world_1_0_0_finder.py
+cp -n "$F" "$F.bak"
+sed -i 's#/home/zhaofeng/work/gs-gym-internal/third_party/Genesis#/home/zhaofeng/work/Genesis#g' "$F"
+```
+
+Verified from a neutral cwd (`/tmp`): `find_spec("genesis").origin =
+/home/zhaofeng/work/Genesis/genesis/__init__.py`, full `import genesis` (0.4.4)
+and `import uipc` (0.9.0) both OK, ipc docs visible. The consumer venv now imports
+**this repo** regardless of cwd.
+
+> CAVEAT: `uv sync` in gs-gym-internal will regenerate this finder from its
+> pyproject source (`third_party/Genesis`) and revert the redirect. To make it
+> durable, either re-run the `sed` after each sync, or change gs-gym's
+> `[tool.uv.sources] genesis-world` path to `/home/zhaofeng/work/Genesis`.
+> Restore the original with `mv "$F.bak" "$F"`.
+
+### Decision
+
+M1 gate met. Blockers **B1 and B3 resolved**. Proceed to **M2 (scaffold)**.
+
+---
+
+## M2 — Scaffold (COMPLETE, 2026-06-05)
+
+Added `coup_type='ipc_authoritative'` end to end: the robot is built inside IPC
+(ABD links + `AffineBodyRevoluteJoint` + `AffineBodyRevoluteJointExternalForce`,
+zero torque), Genesis runs no contact/constraint solve, and IPC state reads back.
+
+### Code changes (this repo)
+
+- `ipc_coupler/data.py`: `COUPLING_TYPE.IPC_AUTHORITATIVE = 4`; new
+  `IpcAuthoritativeEntityData` (joint slots, child/parent links, qs/dof idx, joint
+  axis, loader `q0`, torque buffer).
+- `genesis/options/solvers.py`: `IPCCouplerOptions.ipc_authoritative_actuation`
+  (`Literal["torque"]`, default `"torque"`).
+- `genesis/engine/materials/rigid.py`: added `"ipc_authoritative"` to `CoupType`;
+  forces `gravity_compensation=0` (IPC owns gravity, like ipc_only).
+- `ipc_coupler/coupler.py`:
+  - import `AffineBodyRevoluteJointExternalForce` + `IpcAuthoritativeEntityData`;
+    new `self._ipc_authoritative_data_by_entity`, `self._ipc_rev_ext_force`.
+  - `_setup_coupling_config`: validate fixed base + revolute/fixed joints + B==1 +
+    actuation=='torque'; when present, force `rigid_solver._enable_collision=False`
+    and `_disable_constraint=True` (rule 2).
+  - `_add_rigid_geoms_to_ipc`: fixed-joint merge map now covers IPC_AUTHORITATIVE;
+    `external_kinetic=0` for ipc_authoritative (IPC-owned dynamics, like ipc_only).
+  - new `_add_ipc_authoritative_entities` (mirrors `_add_articulation_entities_to_ipc`
+    but uses per-joint `AffineBodyRevoluteJointExternalForce` instead of
+    `ExternalArticulationConstraint`); wired into `_add_objects_to_ipc`.
+- No `couple()` change needed for M2: torque persists at 0 from build, and readback
+  uses the existing `_retrieve_ipc_rigid_states`. (Per-step torque push = M3;
+  joint-angle reconstruction → qpos = M4; predict-skip not required while gravity is
+  off — deferred to M3.)
+
+### Smoke (PASS)
+
+Fixture: [m2_arm.urdf](m2_arm.urdf) (fixed-base 2-DOF revolute arm, box collision).
+Script: [m2_holdpose_smoke.py](m2_holdpose_smoke.py).
+
+```bash
+/home/zhaofeng/work/gs-gym-internal/.venv/bin/python \
+  genesis/engine/couplers/ipc_coupler/docs/development/m2_holdpose_smoke.py
+```
+
+```
+[build] coupler=IPCCoupler  ipc_authoritative entities=1  abd links=3
+[build] ipc_authoritative joints=2  child_links=['link1', 'link2']  ext_force=True
+[build] rigid_solver enable_collision=False  disable_constraint=True
+SanityCheck Summary: 0 errors, 0 warns, 0 infos
+  link base/link1/link2: pos_drift=0.00e+00 m  rot_drift=0.00e+00
+M2 HOLD-POSE PASS
+```
+
+Validates: config accepted the mode; the robot was built in IPC with 2 real
+revolute joints + the external-force actuator; Genesis's own collision/constraint
+solve is disabled; `advance()` runs clean; and IPC read-back transforms match the
+loader pose under gravity-off + zero-torque (a genuine held articulation, since the
+joints were confirmed built).
+
+### Not yet proven (next milestones)
+
+- Dynamics under load (torque/gravity → motion): **M3** (the M1 smoke already showed
+  torque rotates a jointed body in isolation).
+- Joint-angle reconstruction back into `qpos` + getters/render parity: **M4**.
+- Backward-compat: changes are purely additive branches gated on the new enum, so
+  `external_articulation`/`ipc_only` paths are logically unaffected — but a live
+  ext_art regression in gs-gym should be run before merge (TODO).
+
+### Decision
+
+M2 gate met. Proceed to **M3 (torque actuation)**: per-step push of
+`get_dofs_control_force` → per-joint scalar torque, validated against a
+forward-dynamics oracle under gravity; add the predict-skip in
+`substep_pre_coupling`.

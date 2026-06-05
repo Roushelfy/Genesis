@@ -23,6 +23,7 @@ class COUPLING_TYPE(IntEnum):
     EXTERNAL_ARTICULATION = 1
     IPC_ONLY = 2
     NONE = 3
+    IPC_AUTHORITATIVE = 4
 
 
 @dataclass
@@ -104,3 +105,46 @@ class ArticulatedEntityData:
     prev_qpos: np.ndarray | None = None
     mass_matrix: np.ndarray | None = None
     ipc_qpos: np.ndarray | None = None
+
+
+@dataclass
+class IpcAuthoritativeEntityData:
+    """Per-entity data for ``ipc_authoritative`` coupling (IPC owns the dynamics).
+
+    Unlike external_articulation, Genesis runs no dynamics here: each step the
+    coupler pushes a per-joint scalar torque (computed Genesis-side from the
+    control law) into IPC via ``AffineBodyRevoluteJointExternalForce``, IPC
+    integrates the affine-body articulation, and joint angles are read back by
+    signed-angle reconstruction from the parent/child body transforms.
+
+    v1 invariant: fixed base, revolute + fixed joints only, single env.
+
+    Build-time
+    ----------
+    joint_slots : list[list[GeometrySlot]]
+        Per-env list of per-joint linemesh slots (each has AffineBodyRevoluteJoint
+        and AffineBodyRevoluteJointExternalForce applied). Indexed [env][joint].
+    joints_child_link / joints_parent_link : list[RigidLink]
+        ABD parent/child link for each actuated joint (after fixed-joint merge).
+    joints_qs_idx_local / joints_dof_idx_local : list[int]
+        Entity-local qpos / dof index for each actuated joint (1-DOF joints).
+    joints_axis_local : list[np.ndarray]
+        Joint motion axis in the child link frame (for angle reconstruction).
+    q0 : np.ndarray
+        (n_qs,) loader-pose qpos; reconstruction baseline so the per-joint zero
+        offset maps IPC's internal angle to Genesis qpos (C4 calibration).
+
+    Per-step
+    --------
+    torque : np.ndarray
+        (B, n_joints) per-joint scalar torque pushed to IPC each step.
+    """
+
+    joint_slots: list[list["GeometrySlot"]]
+    joints_child_link: list["RigidLink"]
+    joints_parent_link: list["RigidLink"]
+    joints_qs_idx_local: list[int]
+    joints_dof_idx_local: list[int]
+    joints_axis_local: list[np.ndarray]
+    q0: np.ndarray
+    torque: np.ndarray | None = None
