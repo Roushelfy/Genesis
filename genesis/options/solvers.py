@@ -368,6 +368,12 @@ class IPCCouplerOptions(BaseCouplerOptions):
     """Actuation channel for ``coup_type='ipc_monolithic'`` entities. Currently only
     ``'torque'`` (per-joint scalar torque via AffineBodyRevoluteJointExternalForce, computed
     Genesis-side from the control law)."""
+    monolithic_joint_limit_enable: StrictBool = True
+    """Whether ``coup_type='ipc_monolithic'`` revolute joints get an
+    AffineBodyRevoluteJointLimit (cubic penalty) at their URDF/MJCF limits."""
+    monolithic_joint_limit_strength: PositiveFloat = 100.0
+    """Strength (stiffness) of the monolithic revolute joint-limit cubic penalty.
+    Higher = tighter enforcement / less overshoot past the limit."""
     before_ipc_world_init: IPCBeforeWorldInitCallback | None = None
 
     # Verbose IPC log — bypass the digest and print full libuipc info log

@@ -324,3 +324,33 @@ penalty-based, not hard stops). That is expected IPC behavior, not a bug.
   predict-skip; tracking vs a forward-dynamics oracle.
 - **M4 completion:** joint velocity readback (finite diff) into `dofs_state.vel`;
   merged-parent reconstruction; getter parity (`get_dofs_position`).
+
+---
+
+## Joint limits — added + verified (2026-06-05)
+
+The M2/M4 build applied the revolute joint + external force but **no joint limit**
+(hence the M4 video swung past ±3.0). Added `AffineBodyRevoluteJointLimit` (cubic
+penalty) to the monolithic build, with bounds from the URDF/MJCF joint limit mapped
+into IPC's angle convention (subtract the build qpos). Two new options:
+`IPCCouplerOptions.monolithic_joint_limit_enable` (default True) and
+`monolithic_joint_limit_strength` (default 100).
+
+### Verification (PASS)
+
+Fixture: [m5_pendulum.urdf](m5_pendulum.urdf) — 1-DOF fixed-base pendulum, limit
+±0.4 rad. Script: [m5_joint_limit_experiment.py](m5_joint_limit_experiment.py)
+(`--limit on/off --strength`). Released bent under gravity, driven into the limit:
+
+| config | max\|angle\| | overshoot past ±0.4 |
+|---|---|---|
+| limit OFF | 3.1227 rad | 2.7227 rad (flies past — falls & swings) |
+| ON strength=10 | 0.4017 | 0.0017 rad |
+| ON strength=100 | 0.4005 | 0.0005 rad |
+| ON strength=1000 | 0.4002 | 0.0002 rad |
+
+Conclusion: the limit genuinely constrains the joint (OFF → 3.12 rad vs ON → held
+at 0.40), and overshoot **monotonically shrinks with strength** — consistent with a
+cubic penalty (soft = small overshoot, stiff = near-exact). The limit is a soft
+penalty, not a hard stop (matches conventions.md rule on penalty-based limits).
+M2 hold-pose re-run PASS (no regression with limits on by default).

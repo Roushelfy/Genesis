@@ -47,6 +47,7 @@ if TYPE_CHECKING or UIPC_AVAILABLE:
         AffineBodyPrismaticJoint,
         AffineBodyRevoluteJoint,
         AffineBodyRevoluteJointExternalForce,
+        AffineBodyRevoluteJointLimit,
         DiscreteShellBending,
         HookeanSpring,
         KirchhoffRodBending,
@@ -541,6 +542,7 @@ class IPCCoupler(RBC):
         # ipc_monolithic: IPC owns the dynamics; Genesis only pushes joint torque.
         self._ipc_monolithic_data_by_entity: dict["RigidEntity", IpcMonolithicEntityData] = {}
         self._ipc_rev_ext_force: "AffineBodyRevoluteJointExternalForce | None" = None
+        self._ipc_rev_joint_limit: "AffineBodyRevoluteJointLimit | None" = None
         self._fem_slots_by_entity: dict["FEMEntity", list] = {}
 
         # ==== User hooks ====
@@ -1484,6 +1486,10 @@ class IPCCoupler(RBC):
         self._ipc_rev_ext_force = AffineBodyRevoluteJointExternalForce()
         self._ipc_constitution_tabular.insert(self._ipc_rev_ext_force)
 
+        if self.options.monolithic_joint_limit_enable:
+            self._ipc_rev_joint_limit = AffineBodyRevoluteJointLimit()
+            self._ipc_constitution_tabular.insert(self._ipc_rev_joint_limit)
+
         joints_xaxis = qd_to_numpy(self.rigid_solver.joints_state.xaxis, transpose=True)
         joints_xanchor = qd_to_numpy(self.rigid_solver.joints_state.xanchor, transpose=True)
         qpos0 = qd_to_numpy(self.rigid_solver.qpos0, transpose=True)
@@ -1542,6 +1548,21 @@ class IPCCoupler(RBC):
                     )
                     # Actuation channel: per-joint scalar torque, zero at build.
                     self._ipc_rev_ext_force.apply_to(joint_geom, 0.0)
+
+                    # Joint limit (cubic penalty). Bounds come from the URDF/MJCF joint
+                    # limit, mapped into IPC's angle convention (angle is tracked relative
+                    # to the build pose, so subtract the build qpos for this joint).
+                    if self._ipc_rev_joint_limit is not None:
+                        lim = np.asarray(joint.dofs_limit, dtype=np.float64).reshape(-1, 2)[0]
+                        lo, hi = float(lim[0]), float(lim[1])
+                        if np.isfinite(lo) and np.isfinite(hi) and hi > lo:
+                            q_build = float(qpos0[env_idx, entity.q_start + joint.qs_idx_local[0]])
+                            self._ipc_rev_joint_limit.apply_to(
+                                joint_geom,
+                                lo - q_build,
+                                hi - q_build,
+                                float(self.options.monolithic_joint_limit_strength),
+                            )
 
                     joint_obj = self._ipc_objects.create(f"ipc_auth_joint_{joint.idx}_{env_idx}")
                     joint_geom_slot, _ = joint_obj.geometries().create(joint_geom)
