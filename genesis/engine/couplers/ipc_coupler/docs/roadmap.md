@@ -50,6 +50,14 @@ Hold-pose smoke ([development/m2_holdpose_smoke.py](development/m2_holdpose_smok
 PASSED: fixed-base 2-DOF arm built in IPC with 2 revolute joints, Genesis
 collision/constraint disabled, IPC read-back transforms match loader pose. See
 journal §M2.
+**M4 (readback) — partially done early (2026-06-05).** Implemented joint-angle
+readback (signed-angle reconstruction → `qpos`) ahead of M3 to enable a render
+check. Gravity-swing video PASSED
+([development/m4_swing_render.py](development/m4_swing_render.py)): fixed-base arm
+released bent under gravity, IPC integrates it, Genesis reconstructs angles + FK +
+camera renders 150 frames (`/tmp/ipc_monolithic_swing.mp4`). Validates A2 (IPC
+drives, Genesis renders). Remaining M4: joint-velocity readback, merged-parent
+reconstruction, getter parity.
 **M3 — Torque actuation: NEXT.** Per-step push `get_dofs_control_force` → per-joint
 scalar torque via `AffineBodyRevoluteJointExternalForce`; add predict-skip in
 `substep_pre_coupling`; gate on tracking vs a forward-dynamics oracle under gravity.

@@ -275,3 +275,52 @@ M2 gate met. Proceed to **M3 (torque actuation)**: per-step push of
 `get_dofs_control_force` → per-joint scalar torque, validated against a
 forward-dynamics oracle under gravity; add the predict-skip in
 `substep_pre_coupling`.
+
+---
+
+## M4 (readback) — done early for a render check (2026-06-05)
+
+Reordered: implemented the **joint-angle readback + rendering** before M3, because
+gravity provides motion for a video without needing torque actuation. This proves
+the A2 primary use case — *IPC drives the robot, Genesis renders it*.
+
+### Code change
+
+`coupler.py` `_post_advance_write_qpos`: generalized the two_way "Step 2a"
+signed-angle-from-transforms reconstruction to also cover `IPC_MONOLITHIC` (same
+revolute math — joint angle = parent-relative rotation of the child ABD body about
+the joint axis, added to `qpos0`). Now IPC's resolved articulation flows back into
+`qpos`, FK runs, and `geoms_state` (hence the renderer) reflects the IPC state.
+Limitation noted in code: merged-parent robots (ABD parent ≠ true kinematic parent
+due to fixed-joint folding) are not yet handled — the v1 test arm has no merge.
+
+### Render check (PASS)
+
+Script: [m4_swing_render.py](m4_swing_render.py) (fixture: [m2_arm.urdf](m2_arm.urdf)).
+Fixed-base 2-DOF arm, started bent `[1.4, -0.6]`, released under gravity, zero torque.
+
+```
+[IPC TELEPORT SYNC] 3 dirty links: ['base','link1','link2']   # bent start teleported into IPC
+[step   0] joint angles (rad) = [ 1.4043 -0.6064]
+[step  50] joint angles (rad) = [-2.4644  0.2139]
+[step 149] joint angles (rad) = [ 2.6376 -0.7387]
+[result] video=/tmp/ipc_monolithic_swing.mp4  frames=150  finite=True
+         total_motion=22.061 rad  swing_range=6.258 rad
+M4 SWING-RENDER PASS
+```
+
+Validates: `set_dofs_position` teleports the bent start into IPC; IPC integrates the
+2-link pendulum under gravity; the signed-angle readback reconstructs changing joint
+angles into `qpos`; Genesis FK + camera renders 150 valid frames (640×480, 30fps).
+The video is in `/tmp/ipc_monolithic_swing.mp4` (not committed — binary).
+
+Note: the arm is a frictionless/undamped double pendulum released near-horizontal,
+so it swings vigorously (angles overshoot the ±3.0 soft joint limits — limits are
+penalty-based, not hard stops). That is expected IPC behavior, not a bug.
+
+### Still next
+
+- **M3 (torque actuation):** per-step `get_dofs_control_force` → per-joint torque +
+  predict-skip; tracking vs a forward-dynamics oracle.
+- **M4 completion:** joint velocity readback (finite diff) into `dofs_state.vel`;
+  merged-parent reconstruction; getter parity (`get_dofs_position`).

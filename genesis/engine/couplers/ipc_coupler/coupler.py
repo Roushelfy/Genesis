@@ -3060,15 +3060,21 @@ class IPCCoupler(RBC):
                     dt,
                 )
 
-        # ---- Step 2a: Two-way child links — back-compute joint angles from IPC transforms ----
-        if COUPLING_TYPE.TWO_WAY_SOFT_CONSTRAINT in self._entities_by_coup_type:
+        # ---- Step 2a: Two-way / monolithic child links — back-compute joint angles from IPC transforms ----
+        # ipc_monolithic uses the identical signed-angle-from-transforms reconstruction as
+        # two_way (M4 readback): the joint angle is the parent-relative rotation of the child
+        # ABD body about the joint axis. (Merged-parent robots, where the ABD parent differs
+        # from the true kinematic parent, are not yet handled — v1 test arm has no fixed-joint
+        # merge.)
+        _recon_types = (COUPLING_TYPE.TWO_WAY_SOFT_CONSTRAINT, COUPLING_TYPE.IPC_MONOLITHIC)
+        if any(t in self._entities_by_coup_type for t in _recon_types):
             qpos0 = qd_to_numpy(self.rigid_solver.qpos0, transpose=True)
             links_pos = qd_to_numpy(self.rigid_solver.links_state.pos, transpose=True)
             links_quat = qd_to_numpy(self.rigid_solver.links_state.quat, transpose=True)
 
             for link, abd_data in self._abd_data_by_link.items():
                 entity = link.entity
-                if self._coup_type_by_entity.get(entity) != COUPLING_TYPE.TWO_WAY_SOFT_CONSTRAINT:
+                if self._coup_type_by_entity.get(entity) not in _recon_types:
                     continue
                 if link is entity.base_link or link.parent_idx == -1:
                     continue
