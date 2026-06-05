@@ -1,6 +1,6 @@
-# IPC-Authoritative Coupling Mode — Architecture
+# IPC-Monolithic Coupling Mode — Architecture
 
-Stable design for the `ipc_authoritative` coupling type. See
+Stable design for the `ipc_monolithic` coupling type. See
 [roadmap.md](roadmap.md) for status and [conventions.md](conventions.md) for the
 enforceable rules.
 
@@ -46,9 +46,9 @@ RigidSolver.substep_post_coupling(f)          # rigid_solver.py:1420 -> step_2 w
 Visualizer.update_visual_states()             # reads geoms_state -> render
 ```
 
-`ipc_authoritative` is a **specialization of this existing seam**, not a new loop.
+`ipc_monolithic` is a **specialization of this existing seam**, not a new loop.
 
-## 3. Per-step data flow (`ipc_authoritative`)
+## 3. Per-step data flow (`ipc_monolithic`)
 
 ```
         ┌─────────────────────────── Genesis ───────────────────────────┐
@@ -95,7 +95,7 @@ is **readback → reconstruct → compute torque → push → advance**.
 - Teleport sync (`mark_abd_updated` → `cache_pre_prediction_transforms`).
 
 **New work:**
-1. `COUPLING_TYPE.IPC_AUTHORITATIVE` + config plumbing.
+1. `COUPLING_TYPE.IPC_MONOLITHIC` + config plumbing.
 2. Robot build branch: ABD links + `AffineBodyRevoluteJoint` (with per-joint
    `init_angle` = reference offset) + `AffineBodyRevoluteJointExternalForce`
    constitution. (Existing ext_art uses `ExternalArticulationConstraint`; this
@@ -123,14 +123,14 @@ is **readback → reconstruct → compute torque → push → advance**.
 
 | File | Change |
 |---|---|
-| `ipc_coupler/data.py` | add `COUPLING_TYPE.IPC_AUTHORITATIVE`; `ArticulatedEntityData` fields for torque/offset arrays |
-| `genesis/options/solvers.py` | `IPCCouplerOptions.actuation_mode` (default keeps current behavior) |
+| `ipc_coupler/data.py` | add `COUPLING_TYPE.IPC_MONOLITHIC`; `ArticulatedEntityData` fields for torque/offset arrays |
+| `genesis/options/solvers.py` | `IPCCouplerOptions.ipc_monolithic_actuation` (default keeps current behavior) |
 | `ipc_coupler/coupler.py` `_setup_coupling_config` (~:604) | recognize new type; validate fixed base + revolute/fixed; assert/auto-set `enable_collision=False`, `disable_constraint=True`; assert BDF1 |
-| `ipc_coupler/coupler.py` build (~:1283) | `_add_ipc_authoritative_entities`: ABD + `AffineBodyRevoluteJoint(init_angle)` + `AffineBodyRevoluteJointExternalForce` |
+| `ipc_coupler/coupler.py` build (~:1283) | `_add_ipc_monolithic_entities`: ABD + `AffineBodyRevoluteJoint(init_angle)` + `AffineBodyRevoluteJointExternalForce` |
 | `ipc_coupler/coupler.py` `couple()` (~:1878) | new branch: push torques (pre-advance), reconstruct joints (post-advance) |
 | `ipc_coupler/coupler.py` new methods | `_push_joint_torques()`, `_reconstruct_joint_positions()` |
-| `rigid_solver.py` `substep_pre_coupling` (:1185) | for ipc_authoritative entities: run torque eval but **skip** `kernel_predict_integrate` |
-| `rigid_entity.py` | `coup_type='ipc_authoritative'` acceptance in `control_dofs_*` guards |
+| `rigid_solver.py` `substep_pre_coupling` (:1185) | for ipc_monolithic entities: run torque eval but **skip** `kernel_predict_integrate` |
+| `rigid_entity.py` | `coup_type='ipc_monolithic'` acceptance in `control_dofs_*` guards |
 
 ## 7. Why BDF1 is required
 

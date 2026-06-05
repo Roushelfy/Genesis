@@ -364,8 +364,8 @@ class IPCCouplerOptions(BaseCouplerOptions):
     ignore_end_effector_check: StrictBool = False
     joint_strength_ratio: PositiveFloat = 100.0
     """Strength ratio for external articulation joint constraints. Higher = stiffer joints, less drift."""
-    ipc_authoritative_actuation: Literal["torque"] = "torque"
-    """Actuation channel for ``coup_type='ipc_authoritative'`` entities. Currently only
+    ipc_monolithic_actuation: Literal["torque"] = "torque"
+    """Actuation channel for ``coup_type='ipc_monolithic'`` entities. Currently only
     ``'torque'`` (per-joint scalar torque via AffineBodyRevoluteJointExternalForce, computed
     Genesis-side from the control law)."""
     before_ipc_world_init: IPCBeforeWorldInitCallback | None = None

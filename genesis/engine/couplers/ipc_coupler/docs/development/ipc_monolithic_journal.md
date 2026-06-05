@@ -1,4 +1,4 @@
-# IPC-Authoritative Mode — Development Journal
+# IPC-Monolithic Mode — Development Journal
 
 Chronological decisions, validations, and findings. Stable conclusions migrate to
 [../architecture.md](../architecture.md); current status stays in
@@ -206,28 +206,28 @@ M1 gate met. Blockers **B1 and B3 resolved**. Proceed to **M2 (scaffold)**.
 
 ## M2 — Scaffold (COMPLETE, 2026-06-05)
 
-Added `coup_type='ipc_authoritative'` end to end: the robot is built inside IPC
+Added `coup_type='ipc_monolithic'` end to end: the robot is built inside IPC
 (ABD links + `AffineBodyRevoluteJoint` + `AffineBodyRevoluteJointExternalForce`,
 zero torque), Genesis runs no contact/constraint solve, and IPC state reads back.
 
 ### Code changes (this repo)
 
-- `ipc_coupler/data.py`: `COUPLING_TYPE.IPC_AUTHORITATIVE = 4`; new
-  `IpcAuthoritativeEntityData` (joint slots, child/parent links, qs/dof idx, joint
+- `ipc_coupler/data.py`: `COUPLING_TYPE.IPC_MONOLITHIC = 4`; new
+  `IpcMonolithicEntityData` (joint slots, child/parent links, qs/dof idx, joint
   axis, loader `q0`, torque buffer).
-- `genesis/options/solvers.py`: `IPCCouplerOptions.ipc_authoritative_actuation`
+- `genesis/options/solvers.py`: `IPCCouplerOptions.ipc_monolithic_actuation`
   (`Literal["torque"]`, default `"torque"`).
-- `genesis/engine/materials/rigid.py`: added `"ipc_authoritative"` to `CoupType`;
+- `genesis/engine/materials/rigid.py`: added `"ipc_monolithic"` to `CoupType`;
   forces `gravity_compensation=0` (IPC owns gravity, like ipc_only).
 - `ipc_coupler/coupler.py`:
-  - import `AffineBodyRevoluteJointExternalForce` + `IpcAuthoritativeEntityData`;
-    new `self._ipc_authoritative_data_by_entity`, `self._ipc_rev_ext_force`.
+  - import `AffineBodyRevoluteJointExternalForce` + `IpcMonolithicEntityData`;
+    new `self._ipc_monolithic_data_by_entity`, `self._ipc_rev_ext_force`.
   - `_setup_coupling_config`: validate fixed base + revolute/fixed joints + B==1 +
     actuation=='torque'; when present, force `rigid_solver._enable_collision=False`
     and `_disable_constraint=True` (rule 2).
-  - `_add_rigid_geoms_to_ipc`: fixed-joint merge map now covers IPC_AUTHORITATIVE;
-    `external_kinetic=0` for ipc_authoritative (IPC-owned dynamics, like ipc_only).
-  - new `_add_ipc_authoritative_entities` (mirrors `_add_articulation_entities_to_ipc`
+  - `_add_rigid_geoms_to_ipc`: fixed-joint merge map now covers IPC_MONOLITHIC;
+    `external_kinetic=0` for ipc_monolithic (IPC-owned dynamics, like ipc_only).
+  - new `_add_ipc_monolithic_entities` (mirrors `_add_articulation_entities_to_ipc`
     but uses per-joint `AffineBodyRevoluteJointExternalForce` instead of
     `ExternalArticulationConstraint`); wired into `_add_objects_to_ipc`.
 - No `couple()` change needed for M2: torque persists at 0 from build, and readback
@@ -246,8 +246,8 @@ Script: [m2_holdpose_smoke.py](m2_holdpose_smoke.py).
 ```
 
 ```
-[build] coupler=IPCCoupler  ipc_authoritative entities=1  abd links=3
-[build] ipc_authoritative joints=2  child_links=['link1', 'link2']  ext_force=True
+[build] coupler=IPCCoupler  ipc_monolithic entities=1  abd links=3
+[build] ipc_monolithic joints=2  child_links=['link1', 'link2']  ext_force=True
 [build] rigid_solver enable_collision=False  disable_constraint=True
 SanityCheck Summary: 0 errors, 0 warns, 0 infos
   link base/link1/link2: pos_drift=0.00e+00 m  rot_drift=0.00e+00

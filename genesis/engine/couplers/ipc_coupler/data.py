@@ -23,7 +23,7 @@ class COUPLING_TYPE(IntEnum):
     EXTERNAL_ARTICULATION = 1
     IPC_ONLY = 2
     NONE = 3
-    IPC_AUTHORITATIVE = 4
+    IPC_MONOLITHIC = 4
 
 
 @dataclass
@@ -108,8 +108,8 @@ class ArticulatedEntityData:
 
 
 @dataclass
-class IpcAuthoritativeEntityData:
-    """Per-entity data for ``ipc_authoritative`` coupling (IPC owns the dynamics).
+class IpcMonolithicEntityData:
+    """Per-entity data for ``ipc_monolithic`` coupling (IPC owns the dynamics).
 
     Unlike external_articulation, Genesis runs no dynamics here: each step the
     coupler pushes a per-joint scalar torque (computed Genesis-side from the

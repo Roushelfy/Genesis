@@ -1,14 +1,14 @@
-# IPC-Authoritative Coupling Mode — Roadmap
+# IPC-Monolithic Coupling Mode — Roadmap
 
-Status surface for the new `ipc_authoritative` coupling option in the Genesis
+Status surface for the new `ipc_monolithic` coupling option in the Genesis
 IPC coupler. Keep this page short and current; historical detail lives in
-[development/ipc_authoritative_journal.md](development/ipc_authoritative_journal.md).
+[development/ipc_monolithic_journal.md](development/ipc_monolithic_journal.md).
 Stable design lives in [architecture.md](architecture.md); enforceable rules in
 [conventions.md](conventions.md).
 
 ## North-star principle
 
-> In `ipc_authoritative` mode, **libuipc is the single source of truth for robot
+> In `ipc_monolithic` mode, **libuipc is the single source of truth for robot
 > state**. Genesis computes only the per-DOF control torque (reusing its existing
 > PD/`ctrl_mode` evaluation), pushes scalar joint torques into IPC, advances IPC,
 > and reads body transforms back to populate `qpos`/`links_state` for getters and
@@ -44,7 +44,7 @@ rendering + correct robot↔deformable contact win over joint-velocity fidelity.
 py3.10 venv already has the cuda-backend fork (uipc 0.9.0, SHA `07f3be94`, RTX
 4090 / CUDA 12.8). Smoke ([development/m1_uipc_smoke.py](development/m1_uipc_smoke.py))
 PASSED: torque-driven revolute joint + state-accessor readback on `cuda`/bdf1.
-**M2 — Scaffold: COMPLETE (2026-06-05).** `coup_type='ipc_authoritative'` wired end
+**M2 — Scaffold: COMPLETE (2026-06-05).** `coup_type='ipc_monolithic'` wired end
 to end (enum + option + material + config/validation + ABD/joint/ext-force build).
 Hold-pose smoke ([development/m2_holdpose_smoke.py](development/m2_holdpose_smoke.py))
 PASSED: fixed-base 2-DOF arm built in IPC with 2 revolute joints, Genesis
@@ -62,10 +62,10 @@ gate** (see "Planned gates"); no gate is runnable today.
 | Phase | Goal | Acceptance gate (planned) |
 |---|---|---|
 | **M1 Env** | Build `cuda` backend of `RCC-Adhesion` into a py3.10 + cu12 venv; `import uipc` works; one-body `World.advance()` smoke | `python -c "import uipc; ..."` advances a 1-body scene without error |
-| **M2 Scaffold** | New `COUPLING_TYPE.IPC_AUTHORITATIVE`, config + validation, build robot in IPC (ABD links + `AffineBodyRevoluteJoint` + external-force constitution), **zero torque** | Fixed-base arm builds, holds pose under one `couple()`, transforms read back match the loader pose within 1e-4 |
+| **M2 Scaffold** | New `COUPLING_TYPE.IPC_MONOLITHIC`, config + validation, build robot in IPC (ABD links + `AffineBodyRevoluteJoint` + external-force constitution), **zero torque** | Fixed-base arm builds, holds pose under one `couple()`, transforms read back match the loader pose within 1e-4 |
 | **M3 Actuation** | Genesis-side torque (`get_dofs_control_force`) → per-joint scalar torque → IPC; all 4 ctrl modes | A known constant-torque / step-position trajectory tracks an independent forward-dynamics oracle within tolerance (see test ladder) |
 | **M4 Readback+render** | signed-angle joint readback + finite-diff vel → `qpos`/`links_state`; getters + viewer/camera render IPC-driven robot | `get_dofs_position` round-trips IPC state; headless render smoke produces a frame of the moving arm |
-| **M5 Coexistence** | Robot + cloth/RCC in one scene; no double-solve; RCC adhesion intact | A gs-gym-internal deformable scene (arm + cloth) runs N steps and renders with the robot in `ipc_authoritative` |
+| **M5 Coexistence** | Robot + cloth/RCC in one scene; no double-solve; RCC adhesion intact | A gs-gym-internal deformable scene (arm + cloth) runs N steps and renders with the robot in `ipc_monolithic` |
 
 ## Next tasks (M1)
 

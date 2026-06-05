@@ -1,7 +1,7 @@
-"""M2 scaffold smoke for the ipc_authoritative coupling mode.
+"""M2 scaffold smoke for the ipc_monolithic coupling mode.
 
 Builds a fixed-base 2-DOF revolute arm in a Genesis IPC scene with
-``coup_type='ipc_authoritative'`` and gravity OFF. With zero joint torque the
+``coup_type='ipc_monolithic'`` and gravity OFF. With zero joint torque the
 arm must hold its loader pose. We then check that IPC's read-back link
 transforms match the loader pose — validating: config/validation accepted the
 mode, the robot was built inside IPC (ABD links + AffineBodyRevoluteJoint +
@@ -36,21 +36,21 @@ def main():
     )
     arm = scene.add_entity(
         gs.morphs.URDF(file=URDF, fixed=True, pos=(0.0, 0.0, 0.0)),
-        material=gs.materials.Rigid(coup_type="ipc_authoritative"),
+        material=gs.materials.Rigid(coup_type="ipc_monolithic"),
     )
     scene.build(n_envs=1)
 
     coupler = scene._sim._coupler
     print(f"[build] coupler={type(coupler).__name__}  "
-          f"ipc_authoritative entities={len(coupler._ipc_authoritative_data_by_entity)}  "
+          f"ipc_monolithic entities={len(coupler._ipc_monolithic_data_by_entity)}  "
           f"abd links={len(coupler._abd_data_by_link)}")
-    assert arm in coupler._ipc_authoritative_data_by_entity, "arm not registered as ipc_authoritative"
+    assert arm in coupler._ipc_monolithic_data_by_entity, "arm not registered as ipc_monolithic"
 
     # Structural: the two revolute joints were actually built into IPC (so a zero
     # drift below reflects a real held articulation, not frozen disconnected bodies).
-    ad = coupler._ipc_authoritative_data_by_entity[arm]
+    ad = coupler._ipc_monolithic_data_by_entity[arm]
     n_joints = len(ad.joint_slots[0])
-    print(f"[build] ipc_authoritative joints={n_joints}  child_links={[l.name for l in ad.joints_child_link]}  "
+    print(f"[build] ipc_monolithic joints={n_joints}  child_links={[l.name for l in ad.joints_child_link]}  "
           f"ext_force={coupler._ipc_rev_ext_force is not None}")
     assert n_joints == 2, f"expected 2 revolute joints built in IPC, got {n_joints}"
     assert coupler._ipc_rev_ext_force is not None, "AffineBodyRevoluteJointExternalForce not created"

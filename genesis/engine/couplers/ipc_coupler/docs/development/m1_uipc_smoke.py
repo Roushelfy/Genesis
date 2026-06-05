@@ -1,4 +1,4 @@
-"""M1 environment smoke test for the ipc_authoritative coupling mode.
+"""M1 environment smoke test for the ipc_monolithic coupling mode.
 
 Exercises exactly the libuipc surfaces the new mode will use:
   - AffineBodyConstitution (ABD links)

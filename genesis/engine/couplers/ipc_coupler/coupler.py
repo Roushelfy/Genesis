@@ -107,7 +107,7 @@ if TYPE_CHECKING or UIPC_AVAILABLE:
     from uipc.geometry import GeometrySlot, SimplicialComplex, SimplicialComplexSlot
     from uipc.gui import SceneGUI
 
-    from .data import COUPLING_TYPE, ABDLinkData, ArticulatedEntityData, IpcAuthoritativeEntityData
+    from .data import COUPLING_TYPE, ABDLinkData, ArticulatedEntityData, IpcMonolithicEntityData
     from .utils import (
         build_ipc_scene_config,
         compute_link_to_link_transform,
@@ -538,8 +538,8 @@ class IPCCoupler(RBC):
         # ==== Input/Output Data ====
         self._abd_data_by_link: dict["RigidLink", ABDLinkData] = {}
         self._articulation_data_by_entity: dict["RigidEntity", ArticulatedEntityData] = {}
-        # ipc_authoritative: IPC owns the dynamics; Genesis only pushes joint torque.
-        self._ipc_authoritative_data_by_entity: dict["RigidEntity", IpcAuthoritativeEntityData] = {}
+        # ipc_monolithic: IPC owns the dynamics; Genesis only pushes joint torque.
+        self._ipc_monolithic_data_by_entity: dict["RigidEntity", IpcMonolithicEntityData] = {}
         self._ipc_rev_ext_force: "AffineBodyRevoluteJointExternalForce | None" = None
         self._fem_slots_by_entity: dict["FEMEntity", list] = {}
 
@@ -649,31 +649,31 @@ class IPCCoupler(RBC):
                     gs.raise_exception(
                         f"Rigid entity {i_e} has articulated joints. Use 'external_articulation' instead of 'ipc_only'."
                     )
-            elif coup_type == COUPLING_TYPE.IPC_AUTHORITATIVE:
+            elif coup_type == COUPLING_TYPE.IPC_MONOLITHIC:
                 # v1: IPC owns the dynamics. Fixed base, revolute+fixed joints, single env only.
                 if not is_robot:
                     gs.raise_exception(
-                        f"Rigid entity {i_e} has no articulated joints. Use 'ipc_only' instead of 'ipc_authoritative'."
+                        f"Rigid entity {i_e} has no articulated joints. Use 'ipc_only' instead of 'ipc_monolithic'."
                     )
                 if not entity.base_link.is_fixed:
                     gs.raise_exception(
-                        f"Rigid entity {i_e} has a non-fixed base. 'ipc_authoritative' v1 supports fixed-base "
+                        f"Rigid entity {i_e} has a non-fixed base. 'ipc_monolithic' v1 supports fixed-base "
                         f"robots only (free base is not yet implemented)."
                     )
                 for j in entity.joints:
                     if j.type not in (gs.JOINT_TYPE.FIXED, gs.JOINT_TYPE.REVOLUTE):
                         gs.raise_exception(
-                            f"Rigid entity {i_e} joint '{j.name}' has type {j.type}. 'ipc_authoritative' v1 "
+                            f"Rigid entity {i_e} joint '{j.name}' has type {j.type}. 'ipc_monolithic' v1 "
                             f"supports REVOLUTE and FIXED joints only."
                         )
                 if self._B > 1:
                     gs.raise_exception(
-                        f"'ipc_authoritative' v1 supports a single environment only (got B={self._B})."
+                        f"'ipc_monolithic' v1 supports a single environment only (got B={self._B})."
                     )
-                if self.options.ipc_authoritative_actuation != "torque":
+                if self.options.ipc_monolithic_actuation != "torque":
                     gs.raise_exception(
-                        f"'ipc_authoritative' v1 only supports actuation='torque' "
-                        f"(got '{self.options.ipc_authoritative_actuation}')."
+                        f"'ipc_monolithic' v1 only supports actuation='torque' "
+                        f"(got '{self.options.ipc_monolithic_actuation}')."
                     )
             gs.logger.debug(f"Rigid entity {i_e}: coupling type '{coup_type.name.lower()}'")
 
@@ -703,17 +703,17 @@ class IPCCoupler(RBC):
         for entity, coup_type in self._coup_type_by_entity.items():
             self._entities_by_coup_type.setdefault(coup_type, []).append(entity)
 
-        # ipc_authoritative: IPC owns ALL dynamics + contact. Disable the rigid
+        # ipc_monolithic: IPC owns ALL dynamics + contact. Disable the rigid
         # solver's own collision detection and constraint solve so Genesis does no
         # physics of its own (rule 2: no double-solve against IPC). This is a
-        # solver-wide setting; v1 assumes the scene is not mixing ipc_authoritative
+        # solver-wide setting; v1 assumes the scene is not mixing ipc_monolithic
         # with other rigid coupling that relies on Genesis-side contact.
-        if COUPLING_TYPE.IPC_AUTHORITATIVE in self._entities_by_coup_type:
+        if COUPLING_TYPE.IPC_MONOLITHIC in self._entities_by_coup_type:
             self.rigid_solver._enable_collision = False
             self.rigid_solver._disable_constraint = True
             gs.logger.info(
-                "[IPC] ipc_authoritative active: disabled rigid solver collision detection and "
-                "constraint solve (IPC is authoritative for dynamics and contact)."
+                "[IPC] ipc_monolithic active: disabled rigid solver collision detection and "
+                "constraint solve (IPC is monolithic for dynamics and contact)."
             )
 
     def _resolve_two_way_target_links(self, entity: "RigidEntity", is_robot: bool):
@@ -833,7 +833,7 @@ class IPCCoupler(RBC):
         if self.rigid_solver.is_active:
             self._add_rigid_geoms_to_ipc()
             self._add_articulation_entities_to_ipc()
-            self._add_ipc_authoritative_entities()
+            self._add_ipc_monolithic_entities()
 
         # Register all per-entity contact pair models with per-material friction
         self._register_contact_pairs()
@@ -1090,7 +1090,7 @@ class IPCCoupler(RBC):
             # Fixed-joint merge applies to any articulated mode (IPC has no FixedJoint).
             if self._coup_type_by_entity.get(entity) not in (
                 COUPLING_TYPE.EXTERNAL_ARTICULATION,
-                COUPLING_TYPE.IPC_AUTHORITATIVE,
+                COUPLING_TYPE.IPC_MONOLITHIC,
             ):
                 continue
             target = find_abd_merge_target(link)
@@ -1188,7 +1188,7 @@ class IPCCoupler(RBC):
 
             # ---- Determine coupling behavior ----
             is_ipc_only = entity_coup_type == COUPLING_TYPE.IPC_ONLY
-            is_ipc_authoritative = entity_coup_type == COUPLING_TYPE.IPC_AUTHORITATIVE
+            is_ipc_monolithic = entity_coup_type == COUPLING_TYPE.IPC_MONOLITHIC
             is_soft_constraint_target = entity_coup_type == COUPLING_TYPE.TWO_WAY_SOFT_CONSTRAINT
 
             # ---- Resolve density ----
@@ -1295,10 +1295,10 @@ class IPCCoupler(RBC):
 
             # Set geometry attributes (env-independent)
             # external_kinetic: 1 = driven by rigid solver, 0 = IPC-owned dynamics.
-            # ipc_authoritative bodies are integrated by IPC (under joint torques +
+            # ipc_monolithic bodies are integrated by IPC (under joint torques +
             # gravity + contact), so they are NOT externally kinetic.
             external_kinetic_attr = rigid_link_geom.instances().find(uipc.builtin.external_kinetic)
-            uipc.view(external_kinetic_attr)[:] = int(not (is_ipc_only or is_ipc_authoritative))
+            uipc.view(external_kinetic_attr)[:] = int(not (is_ipc_only or is_ipc_monolithic))
 
             is_fixed_attr = rigid_link_geom.instances().find(uipc.builtin.is_fixed)
             uipc.view(is_fixed_attr)[:] = int(_link_is_fixed_for_ipc(link))
@@ -1463,8 +1463,8 @@ class IPCCoupler(RBC):
 
             gs.logger.debug(f"Successfully added articulated rigid entity {i_e} to IPC.")
 
-    def _add_ipc_authoritative_entities(self) -> None:
-        """Add ipc_authoritative robots: IPC owns the articulation dynamics.
+    def _add_ipc_monolithic_entities(self) -> None:
+        """Add ipc_monolithic robots: IPC owns the articulation dynamics.
 
         Each actuated (revolute) joint becomes an ``AffineBodyRevoluteJoint``
         between the parent/child ABD bodies, plus an
@@ -1478,7 +1478,7 @@ class IPCCoupler(RBC):
         """
         assert gs.logger is not None
 
-        if COUPLING_TYPE.IPC_AUTHORITATIVE not in self._coup_type_by_entity.values():
+        if COUPLING_TYPE.IPC_MONOLITHIC not in self._coup_type_by_entity.values():
             return
 
         self._ipc_rev_ext_force = AffineBodyRevoluteJointExternalForce()
@@ -1489,10 +1489,10 @@ class IPCCoupler(RBC):
         qpos0 = qd_to_numpy(self.rigid_solver.qpos0, transpose=True)
 
         for i_e, entity in enumerate(cast(list["RigidEntity"], self.rigid_solver.entities)):
-            if self._coup_type_by_entity.get(entity) != COUPLING_TYPE.IPC_AUTHORITATIVE:
+            if self._coup_type_by_entity.get(entity) != COUPLING_TYPE.IPC_MONOLITHIC:
                 continue
 
-            gs.logger.debug(f"Adding ipc_authoritative entity {i_e} with {entity.n_joints} joints")
+            gs.logger.debug(f"Adding ipc_monolithic entity {i_e} with {entity.n_joints} joints")
 
             # ---- Collect actuated joints (revolute; fixed joints already merged) ----
             joints: list[tuple["RigidJoint", "RigidLink", "RigidLink"]] = []
@@ -1500,7 +1500,7 @@ class IPCCoupler(RBC):
                 if joint.type == gs.JOINT_TYPE.FIXED:
                     continue
                 if joint.type != gs.constants.JOINT_TYPE.REVOLUTE:
-                    gs.raise_exception(f"ipc_authoritative v1 supports REVOLUTE joints only, got {joint.type}.")
+                    gs.raise_exception(f"ipc_monolithic v1 supports REVOLUTE joints only, got {joint.type}.")
 
                 child_link = joint.link
                 parent_link = entity.links[max(joint.link.parent_idx, 0) - entity.link_start]
@@ -1515,7 +1515,7 @@ class IPCCoupler(RBC):
                         child_link = abd_target
                 if parent_link not in self._abd_data_by_link or child_link not in self._abd_data_by_link:
                     gs.raise_exception(
-                        "Rigid link has no collision geometry. Coupling type 'ipc_authoritative' is not supported."
+                        "Rigid link has no collision geometry. Coupling type 'ipc_monolithic' is not supported."
                     )
                 joints.append((joint, parent_link, child_link))
 
@@ -1549,7 +1549,7 @@ class IPCCoupler(RBC):
                 joint_slots_per_env.append(per_joint_slots)
 
             n_joints = len(joints)
-            self._ipc_authoritative_data_by_entity[entity] = IpcAuthoritativeEntityData(
+            self._ipc_monolithic_data_by_entity[entity] = IpcMonolithicEntityData(
                 joint_slots=joint_slots_per_env,
                 joints_child_link=[cl for _, _, cl in joints],
                 joints_parent_link=[pl for _, pl, _ in joints],
@@ -1560,7 +1560,7 @@ class IPCCoupler(RBC):
                 torque=np.zeros((self._B, n_joints), dtype=np.float64),
             )
 
-            gs.logger.debug(f"Successfully added ipc_authoritative entity {i_e} to IPC ({n_joints} joints).")
+            gs.logger.debug(f"Successfully added ipc_monolithic entity {i_e} to IPC ({n_joints} joints).")
 
     def _register_contact_pairs(self) -> None:
         """Register pairwise contact models for all contact elements.

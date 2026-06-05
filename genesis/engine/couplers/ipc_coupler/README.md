@@ -4,10 +4,10 @@ This folder contains the IPC coupler implementation used by Genesis rigid/FEM co
 
 ## Design docs
 
-- [docs/roadmap.md](docs/roadmap.md) — `ipc_authoritative` mode: status, locked decisions, phase gates.
+- [docs/roadmap.md](docs/roadmap.md) — `ipc_monolithic` mode: status, locked decisions, phase gates.
 - [docs/architecture.md](docs/architecture.md) — stable design, step seam, data flow, per-file change map.
 - [docs/conventions.md](docs/conventions.md) — enforceable rules + validation ladder.
-- [docs/development/ipc_authoritative_journal.md](docs/development/ipc_authoritative_journal.md) — chronological findings/decisions.
+- [docs/development/ipc_monolithic_journal.md](docs/development/ipc_monolithic_journal.md) — chronological findings/decisions.
 
 ## Internal debug surface export
 
