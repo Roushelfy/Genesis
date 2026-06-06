@@ -5,11 +5,14 @@ matter for whether `ipc_monolithic` can actually grasp/lift the cube. Per-phase 
 the end-effector pos vs the IK target, the gripper opening, and the cube height — so you
 can see *where* it fails (arm not reaching, gripper not closing, or grip slipping on lift).
 
-Run (gs-gym venv):
-  .../python examples/IPC_Solver/ipc_monolithic_grasp_tune.py --vis
+Run (uses the gs-gym-internal uv env, which has the libuipc fork + cu129 torch; the
+Genesis repo's own `uv run` fails on the private gs-nyx index and lacks uipc):
+  examples/IPC_Solver/run.sh ipc_monolithic_grasp_tune.py --vis --realtime
 
 Compare against the working reduced-coordinate path:
-  .../python examples/IPC_Solver/ipc_monolithic_grasp_tune.py --vis --coup external_articulation
+  examples/IPC_Solver/run.sh ipc_monolithic_grasp_tune.py --vis --coup external_articulation
+
+(Equivalently: cd ~/work/gs-gym-internal && uv run --no-sync python <abs path to this file> ...)
 
 Knobs to try for ipc_monolithic (default reproduces the non-lifting case):
   --kp-scale       scale all arm PD gains (lower = softer/faster IPC solve, less tracking)
