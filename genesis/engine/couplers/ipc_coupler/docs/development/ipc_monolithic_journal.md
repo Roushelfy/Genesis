@@ -414,3 +414,38 @@ the torque path works as designed; or (b) switch monolithic actuation to
 `AffineBodyDrivingRevoluteJoint` (test 72 passes) — a motor/PD-toward-target model (IPC
 does the PD), which changes B1 (Genesis-computed torque → IPC-side motor) but is the
 proven-working path on this build. M3 paused pending that choice.
+
+### Fork fix landed + torque validated (2026-06-05, option a)
+
+Owner fixed the fork: libuipc commit `db2bade6` "use device-safe closed-form inverse in
+revolute-joint external-torque kernel" — `q_to_A(q).inverse()` (Eigen LU) device-traps;
+replaced with a closed-form cofactor/det inverse-transpose. libuipc test 74 now passes
+(401 assertions). Applied the same `.cu` change to `gs-gym/third_party/libuipc` and
+rebuilt its cp310 cuda backend.
+
+Torque actuation now works (no crash):
+- FORCE mode (1-DOF, gravity off): `+0.02`/`-0.02` Nm → smooth symmetric ±0.153 rad,
+  correct sign, sane dynamics. `get_dofs_velocity` matches finite-diff exactly.
+Remaining for full M3: **2-DOF position control is unstable** — `get_dofs_velocity` on the
+*chained* joint (joint2, parent link1 moves) returns a garbage value (~258 rad/s,
+gain-independent), so the `kv·vel` PD-damping term destabilizes. FORCE mode is unaffected
+(no velocity term). So M3-position needs the chained-joint **velocity readback** fixed
+(joint1/1-DOF velocity is correct; only multi-link chains are wrong). `monolithic_torque_enable`
+stays default False until position control is validated.
+
+## Merge to Genesis v1.0.0 (2026-06-05)
+
+`gs-gym/third_party/Genesis` had diverged from this repo at `b389620a`: it merged ~150
+upstream Genesis commits (v0.4.5 → **v1.0.0**, rigid-solver refactor, sensors, ImGui) +
+"FEM initial velocity seeding" + uncommitted gs-gym RCC bonded-PT work, while this repo had
+the ipc_monolithic commits on the old base. To unify on this repo:
+1. Committed third_party's RCC bonded-PT work (`58734dc6`).
+2. Merged `tp/feature/...` into this repo — **automatic, zero conflicts** (ipc_coupler is
+   fork-only so upstream doesn't touch it; the 4 co-edited files merged in disjoint regions).
+   Merge commit `5f1a1711`.
+
+Validated on the merged v1.0.0 tree: `import genesis` (now v1.0.0) OK with both option sets
+(`monolithic_torque_enable` + `rcc_bonded_pt_enabled`); M2 hold-pose PASS; M3 force-mode PASS
+(identical to pre-merge). ipc_monolithic's `capture_monolithic_control_torque` hook landed
+correctly in the refactored `substep_pre_coupling`. gs-gym venv kept pointed at this repo via
+the manual editable-finder redirect (re-applied; reverts on `uv sync`).

@@ -58,13 +58,16 @@ released bent under gravity, IPC integrates it, Genesis reconstructs angles + FK
 camera renders 150 frames (`/tmp/ipc_monolithic_swing.mp4`). Validates A2 (IPC
 drives, Genesis renders). Remaining M4: joint-velocity readback, merged-parent
 reconstruction, getter parity.
-**M3 — Torque actuation: IMPLEMENTED but BLOCKED (2026-06-05).** Genesis-side torque
-path done (`capture_monolithic_control_torque` + per-joint animator), gated behind
-`IPCCouplerOptions.monolithic_torque_enable` (default **False**). Blocker: the fork's
-`AffineBodyRevoluteJointExternalForce` SIGABRTs the cuda backend when activated
-(CUDA 719; libuipc test 74 also crashes on this build, while tests 37/52/72 pass). See
-journal §M3. **Owner decision needed:** fix the fork's external force, or switch
-actuation to the working `AffineBodyDrivingRevoluteJoint` (motor) path.
+**Repo merged to Genesis v1.0.0 (2026-06-05).** Unified onto this repo: merged
+`gs-gym/third_party/Genesis` (v1.0.0 + FEM-init + RCC bonded-PT) — clean auto-merge,
+commit `5f1a1711`. ipc_monolithic validated on the v1.0.0 base (M2 + M3-force PASS).
+
+**M3 — Torque actuation: UNBLOCKED, force-mode validated; position control WIP.** Fork
+fixed (`db2bade6`, device-safe inverse; test 74 passes); applied to third_party/libuipc +
+rebuilt. FORCE-mode torque works (correct sign/dynamics, no crash). Remaining: 2-DOF
+**position control** is unstable because the *chained-joint* velocity readback is garbage
+(`kv·vel` term destabilizes); 1-DOF velocity is correct. Next: fix chained-joint velocity
+readback, then validate PD position tracking and flip `monolithic_torque_enable` default.
 
 ## Phase plan & acceptance gates
 
