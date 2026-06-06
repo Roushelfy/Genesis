@@ -1182,6 +1182,10 @@ class IPCCoupler(RBC):
         # ========== Process each link across environments ==========
         links_pos = qd_to_numpy(self.rigid_solver.links_state.pos, transpose=True)
         links_quat = qd_to_numpy(self.rigid_solver.links_state.quat, transpose=True)
+        # Per-DOF armature (reflected rotor inertia). Genesis adds it to the effective
+        # joint-space inertia; for ipc_monolithic we fold it into the driven ABD body's
+        # inertia so IPC integrates I_link + armature, matching the Genesis/ext_art model.
+        dofs_armature = np.asarray(qd_to_numpy(self.rigid_solver.dofs_info.armature)).reshape(-1)
 
         # Precompute the constant rigid offset for each fixed-joint-merged link relative
         # to its merge-target ABD body. P is rigidly fixed to its target M, so
@@ -1300,6 +1304,34 @@ class IPCCoupler(RBC):
                         f"[IPC monolithic] link '{link.name}' has degenerate inertials "
                         f"(mass={m_val}); falling back to density-based ABD mass."
                     )
+                else:
+                    # Fold the driving joint's armature (reflected rotor inertia) into this
+                    # body. Genesis integrates I_eff = I_link + armature; without it the ABD
+                    # body is far too light for robots like Franka (armature 0.1 >> link
+                    # inertia ~0.01-0.05), making monolithic twitchy vs ext_art. The driving
+                    # joint is the (revolute/prismatic) joint whose child link is this body.
+                    for jt in entity.joints:
+                        if jt.link is not link or jt.type not in (
+                            gs.constants.JOINT_TYPE.REVOLUTE,
+                            gs.constants.JOINT_TYPE.PRISMATIC,
+                        ):
+                            continue
+                        a = float(dofs_armature[entity.dof_start + jt.dofs_idx_local[0]])
+                        if a <= 0.0:
+                            break
+                        if jt.type == gs.constants.JOINT_TYPE.REVOLUTE:
+                            # Reflected rotor inertia acts about the joint axis (link frame).
+                            e = np.asarray(jt.dofs_motion_ang[0], dtype=np.float64)
+                            n = np.linalg.norm(e)
+                            if n > 1e-12:
+                                e = e / n
+                                mono_inertia = mono_inertia + a * np.outer(e, e)
+                        else:
+                            # Prismatic: reflected mass along the slide axis. from_rigid_body
+                            # takes a scalar mass, so this adds it isotropically (the perpendicular
+                            # over-mass is absorbed by the prismatic joint constraint).
+                            mono_mass = mono_mass + a
+                        break
 
             if is_proxy:
                 # No collision mesh — create a proxy ABD body from inertial properties

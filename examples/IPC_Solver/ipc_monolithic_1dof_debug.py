@@ -24,7 +24,11 @@ Run (from the Genesis repo; uv env has the libuipc fork + cu129 torch):
   uv run examples/IPC_Solver/ipc_monolithic_1dof_debug.py --coup ipc_monolithic --vis --realtime --kp 10 --kv 0.1
   # (driver --vis shows monolithic first, then external_articulation; close each window to advance)
 
-Knobs: --axis {y,z} --mass --length --kp --kv --amp --freq --dt --steps --no-limit --vis --realtime
+  # armature check: monolithic should match ext_art once armature is folded into the ABD inertia:
+  uv run examples/IPC_Solver/ipc_monolithic_1dof_debug.py --axis z --armature 0.1 --kp 200 --kv 5
+
+Knobs: --axis {y,z} --mass --length --armature --damping --kp --kv --amp --freq --dt --steps
+       --no-limit --vis --realtime --effort
 """
 
 import argparse
@@ -38,64 +42,46 @@ import time
 import numpy as np
 
 
-def build_urdf(axis: str, mass: float, length: float) -> tuple[str, float, float]:
-    """Write a 1-revolute-joint box-pendulum URDF; return (path, I_com_axis, I_joint_axis).
+def build_model(axis: str, mass: float, length: float, armature: float, damping: float) -> tuple[str, float, float]:
+    """Write a 1-hinge box-pendulum MJCF; return (path, I_com_axis, I_joint_axis).
 
-    The link is a box (0.08 x 0.08 x length) with COM at its center (0,0,length/2),
-    hinged at the origin. I_com_axis / I_joint_axis are the scalar inertia about the
-    rotation axis, about the COM and about the joint (parallel axis), for reference.
+    MJCF (not URDF) so the joint's ``armature`` (reflected rotor inertia) and ``damping``
+    are settable — armature is a MuJoCo concept Genesis adds to the effective joint
+    inertia. The link is a box (0.08 x 0.08 x length), COM at (0,0,length/2), hinged at
+    the origin (fixed base = worldbody). I_com_axis / I_joint_axis are the scalar inertia
+    about the rotation axis, about the COM and about the joint (parallel axis), for
+    reference — they EXCLUDE armature; the effective joint inertia is I_joint + armature.
     """
     w = 0.08
     ixx = mass / 12.0 * (w * w + length * length)
-    iyy = mass / 12.0 * (w * w + length * length)
     izz = mass / 12.0 * (w * w + w * w)
     axis_vec = {"x": "1 0 0", "y": "0 1 0", "z": "0 0 1"}[axis]
     # scalar inertia about the chosen axis, about COM and about the hinge (origin)
-    i_com = {"x": ixx, "y": iyy, "z": izz}[axis]
+    i_com = {"x": ixx, "y": ixx, "z": izz}[axis]
     lever = length / 2.0
     # parallel-axis adds m*d^2 only for axes perpendicular to the COM offset (offset is +z)
     i_joint = i_com + (mass * lever * lever if axis in ("x", "y") else 0.0)
 
-    urdf = f"""<?xml version="1.0"?>
-<robot name="arm1dof">
-  <link name="base">
-    <inertial>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
-      <mass value="0.1"/>
-      <inertia ixx="1e-4" ixy="0" ixz="0" iyy="1e-4" iyz="0" izz="1e-4"/>
-    </inertial>
-    <collision>
-      <origin xyz="0 0 0"/>
-      <geometry><box size="0.05 0.05 0.05"/></geometry>
-    </collision>
-  </link>
-  <link name="link1">
-    <inertial>
-      <origin xyz="0 0 {length / 2.0}" rpy="0 0 0"/>
-      <mass value="{mass}"/>
-      <inertia ixx="{ixx}" ixy="0" ixz="0" iyy="{iyy}" iyz="0" izz="{izz}"/>
-    </inertial>
-    <collision>
-      <origin xyz="0 0 {length / 2.0}"/>
-      <geometry><box size="{w} {w} {length}"/></geometry>
-    </collision>
-    <visual>
-      <origin xyz="0 0 {length / 2.0}"/>
-      <geometry><box size="{w} {w} {length}"/></geometry>
-    </visual>
-  </link>
-  <joint name="j1" type="revolute">
-    <parent link="base"/>
-    <child link="link1"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
-    <axis xyz="{axis_vec}"/>
-    <limit lower="-3.1416" upper="3.1416" effort="200" velocity="100"/>
-  </joint>
-</robot>
+    # The root body "base" has NO joint -> welded to world -> fixed base (Genesis infers
+    # fixity structurally; MJCF has no 'fixed' morph flag). link1 hinges off the base.
+    mjcf = f"""<mujoco model="arm1dof">
+  <compiler angle="radian"/>
+  <worldbody>
+    <body name="base" pos="0 0 0">
+      <geom name="base_g" type="box" size="0.025 0.025 0.025" mass="0.1"/>
+      <body name="link1" pos="0 0 0">
+        <joint name="j1" type="hinge" axis="{axis_vec}" pos="0 0 0"
+               armature="{armature}" damping="{damping}" range="-3.1416 3.1416"/>
+        <geom name="g1" type="box" size="{w / 2.0} {w / 2.0} {length / 2.0}" pos="0 0 {length / 2.0}"
+              mass="{mass}" rgba="0.8 0.35 0.35 1"/>
+      </body>
+    </body>
+  </worldbody>
+</mujoco>
 """
-    fd, path = tempfile.mkstemp(suffix=".urdf", prefix="arm1dof_")
+    fd, path = tempfile.mkstemp(suffix=".xml", prefix="arm1dof_")
     with os.fdopen(fd, "w") as f:
-        f.write(urdf)
+        f.write(mjcf)
     return path, i_com, i_joint
 
 
@@ -105,7 +91,7 @@ def run_one(mode: str, args) -> dict:
 
     gs.init(backend=getattr(gs, args.backend), logging_level="warning")
 
-    urdf_path, i_com, i_joint = build_urdf(args.axis, args.mass, args.length)
+    model_path, i_com, i_joint = build_model(args.axis, args.mass, args.length, args.armature, args.damping)
 
     coupler_options = gs.options.IPCCouplerOptions(
         enable_rigid_rigid_contact=False,
@@ -121,7 +107,7 @@ def run_one(mode: str, args) -> dict:
         show_viewer=args.vis,
     )
     robot = scene.add_entity(
-        gs.morphs.URDF(file=urdf_path, fixed=True),
+        gs.morphs.MJCF(file=model_path),
         material=gs.materials.Rigid(coup_type=mode),
     )
     scene.build()
@@ -131,6 +117,7 @@ def run_one(mode: str, args) -> dict:
     assert n_dofs == 1, f"expected 1 DOF, got {n_dofs}"
     robot.set_dofs_kp(np.array([args.kp], dtype=np.float32))
     robot.set_dofs_kv(np.array([args.kv], dtype=np.float32))
+    robot.set_dofs_force_range(-args.effort, args.effort)
 
     link = robot.get_link("link1")
     coupler = getattr(scene.sim, "coupler", None)
@@ -150,6 +137,8 @@ def run_one(mode: str, args) -> dict:
     print(f"axis={args.axis}  mass={args.mass}  length={args.length}  dt={args.dt}", flush=True)
     print(f"link1 inertial_mass = {float(link.inertial_mass):.5f} kg", flush=True)
     print(f"I about axis: COM={i_com:.6f}  joint(parallel-axis)={i_joint:.6f} kg*m^2", flush=True)
+    print(f"armature={args.armature:.4f}  damping={args.damping:.4f}  -> "
+          f"effective joint inertia I_joint+armature = {i_joint + args.armature:.6f}", flush=True)
     print(f"kp={args.kp} kv={args.kv}  SHM amp={args.amp} rad freq={args.freq} Hz", flush=True)
 
     omega = 2.0 * math.pi * args.freq
@@ -205,7 +194,9 @@ def run_one(mode: str, args) -> dict:
         good = np.isfinite(acc) & np.isfinite(tau) & (np.abs(acc) > 1.0)
         if good.any():
             inferred = np.median(tau[good] / acc[good])
-            print(f"  inferred I (tau/accel)  = {inferred:.6f}  (true I_joint={i_joint:.6f})", flush=True)
+            i_eff = i_joint + args.armature
+            print(f"  inferred I (tau/accel)  = {inferred:.6f}  "
+                  f"(I_joint+armature={i_eff:.6f}, I_joint={i_joint:.6f})", flush=True)
 
     # Keep the viewer open, continuing the SHM so the arm keeps moving (Ctrl-C to exit).
     if args.vis and getattr(scene, "viewer", None) is not None:
@@ -227,7 +218,7 @@ def run_one(mode: str, args) -> dict:
 
     gs.destroy() if hasattr(gs, "destroy") else None
     try:
-        os.remove(urdf_path)
+        os.remove(model_path)
     except OSError:
         pass
     return out
@@ -284,8 +275,13 @@ def main():
                    help="revolute axis. y=gravity pendulum, z=gravity-free pure-inertia.")
     p.add_argument("--mass", type=float, default=1.0)
     p.add_argument("--length", type=float, default=0.4)
-    p.add_argument("--kp", type=float, default=200.0)
-    p.add_argument("--kv", type=float, default=20.0)
+    p.add_argument("--armature", type=float, default=0.0,
+                   help="joint armature (reflected rotor inertia); Franka uses ~0.1. Tests the "
+                        "monolithic armature injection against ext_art.")
+    p.add_argument("--damping", type=float, default=0.0, help="passive joint damping")
+    p.add_argument("--effort", type=float, default=200.0, help="force_range clamp on the control torque")
+    p.add_argument("--kp", type=float, default=20.0)
+    p.add_argument("--kv", type=float, default=1.0)
     p.add_argument("--amp", type=float, default=1.0, help="SHM amplitude (rad)")
     p.add_argument("--freq", type=float, default=0.5, help="SHM frequency (Hz)")
     p.add_argument("--dt", type=float, default=0.01)
@@ -309,6 +305,7 @@ def main():
         sys.executable, os.path.abspath(__file__),
         "--backend", args.backend, "--axis", args.axis,
         "--mass", str(args.mass), "--length", str(args.length),
+        "--armature", str(args.armature), "--damping", str(args.damping), "--effort", str(args.effort),
         "--kp", str(args.kp), "--kv", str(args.kv),
         "--amp", str(args.amp), "--freq", str(args.freq),
         "--dt", str(args.dt), "--steps", str(args.steps),
