@@ -89,6 +89,10 @@ if TYPE_CHECKING or UIPC_AVAILABLE:
         from uipc.core import RCCAdhesionStateAccessorFeature  # type: ignore[attr-defined]
     except ImportError:
         RCCAdhesionStateAccessorFeature = None  # type: ignore[assignment, misc]
+    try:
+        from uipc.core import RCCBondedPTStateAccessorFeature  # type: ignore[attr-defined]
+    except ImportError:
+        RCCBondedPTStateAccessorFeature = None  # type: ignore[assignment, misc]
     from uipc.core import (
         Engine,
         World,
@@ -375,7 +379,8 @@ class _NewtonIterCounter:
                 if self._TOL_BLOCK_END_RE.search(line) and self._cur_tol_checks:
                     self.last_tol_checks = self._cur_tol_checks
                     self._cur_tol_checks = []
-                if "[error]" in line or "[warning]" in line:
+                is_line_search_maxout = "Line Search Exits with Max Iteration" in line
+                if "[error]" in line or ("[warning]" in line and not is_line_search_maxout):
                     has_error = True
         if has_error:
             gs.logger.error("[IPC] libuipc log:\n" + "\n".join(all_lines))
@@ -540,6 +545,7 @@ class IPCCoupler(RBC):
         self._pre_finalize_hooks: list = []
         self._rcc_adhesion_requests: list[dict[str, Any]] = []
         self._rcc_adhesion_pt_state: dict[str, Any] | None = None
+        self._rcc_bonded_pt_locks: dict[str, Any] | None = None
         self._ipc_finalized = False
 
         # ==== Restitution ====
@@ -960,7 +966,7 @@ class IPCCoupler(RBC):
                     self._ipc_fem_ext_force.apply_to(mesh, np.array([0.0, 0.0, 0.0]))
 
             # Apply soft position constraint (initially inactive, activated at runtime)
-            if is_cloth:
+            if is_cloth or is_rope:
                 if self._ipc_soft_pos_constraint is None:
                     self._ipc_soft_pos_constraint = SoftPositionConstraint()
                     self._ipc_constitution_tabular.insert(self._ipc_soft_pos_constraint)
@@ -1569,6 +1575,7 @@ class IPCCoupler(RBC):
                 gs.raise_exception_from("`before_ipc_world_init(ipc, gs)` callback failed.", exc)
         self._ipc_world.init(self._ipc_scene)
         self._restore_rcc_adhesion_pt_state()
+        self._restore_rcc_bonded_pt_locks()
         # Checkpoint frame 0 so that recover(0) works in reset().
         self._ipc_world.dump()
         self._ipc_finalized = True
@@ -1663,6 +1670,37 @@ class IPCCoupler(RBC):
         self._rcc_adhesion_pt_state = {
             "keys": np.ascontiguousarray(keys_array),
             "betas": np.ascontiguousarray(betas_array),
+            "strict": bool(strict),
+        }
+
+    def set_rcc_bonded_pt_locks(
+        self,
+        topos: Any,
+        betas: Any,
+        beta_lock_threshold: float,
+        strict: bool = True,
+    ) -> None:
+        """Seed RCC bonded-PT locks after ``World.init(scene)`` and before frame-0 dump."""
+        if self._ipc_finalized:
+            gs.raise_exception("RCC bonded PT locks must be registered before the IPC world is finalized.")
+
+        topos_array = np.asarray(topos, dtype=np.int32)
+        betas_array = np.asarray(betas, dtype=np.float64)
+        if topos_array.ndim != 2 or topos_array.shape[1] != 4:
+            gs.raise_exception(f"RCC bonded PT lock topos must have shape (M, 4), got {topos_array.shape}.")
+        if betas_array.ndim != 1:
+            gs.raise_exception(f"RCC bonded PT lock betas must be 1D, got shape {betas_array.shape}.")
+        if topos_array.shape[0] != betas_array.shape[0]:
+            gs.raise_exception(
+                f"RCC bonded PT lock topos/betas shape mismatch: {topos_array.shape} vs {betas_array.shape}."
+            )
+        if beta_lock_threshold <= 0.0:
+            gs.raise_exception(f"RCC bonded PT beta_lock_threshold must be positive, got {beta_lock_threshold}.")
+
+        self._rcc_bonded_pt_locks = {
+            "topos": np.ascontiguousarray(topos_array),
+            "betas": np.ascontiguousarray(betas_array),
+            "beta_lock_threshold": float(beta_lock_threshold),
             "strict": bool(strict),
         }
 
@@ -1845,6 +1883,46 @@ class IPCCoupler(RBC):
         gs.logger.info(
             "[IPC RCC] Restored RCC adhesion beta state: "
             f"n={len(betas)}, mean={float(np.mean(betas)):.3f}, frac>0.9={float(np.mean(betas > 0.9)):.2%}"
+        )
+
+    def _restore_rcc_bonded_pt_locks(self) -> None:
+        if self._rcc_bonded_pt_locks is None:
+            return
+
+        assert gs.logger is not None
+        assert self._ipc_world is not None
+
+        topos = self._rcc_bonded_pt_locks["topos"]
+        betas = self._rcc_bonded_pt_locks["betas"]
+        beta_lock_threshold = self._rcc_bonded_pt_locks["beta_lock_threshold"]
+        strict = self._rcc_bonded_pt_locks["strict"]
+        if len(betas) == 0:
+            gs.logger.info("[IPC RCC] Skipped empty RCC bonded PT lock restore")
+            return
+
+        if RCCBondedPTStateAccessorFeature is None:
+            message = (
+                "Cannot seed RCC bonded PT locks because the installed uipc package does not expose "
+                "uipc.core.RCCBondedPTStateAccessorFeature. Rebuild/sync the local libuipc pybind/native artifacts."
+            )
+            if strict:
+                gs.raise_exception(message)
+            gs.logger.warning(message)
+            return
+
+        accessor = self._ipc_world.features().find(RCCBondedPTStateAccessorFeature)
+        if accessor is None:
+            message = "Cannot seed RCC bonded PT locks because RCCBondedPTStateAccessorFeature is unavailable."
+            if strict:
+                gs.raise_exception(message)
+            gs.logger.warning(message)
+            return
+
+        accessor.seed_locks(topos, betas, beta_lock_threshold)
+        gs.logger.info(
+            "[IPC RCC] Seeded RCC bonded PT locks from asset: "
+            f"n={len(betas)}, mean={float(np.mean(betas)):.3f}, "
+            f"frac>0.9={float(np.mean(betas > 0.9)):.2%}, threshold={beta_lock_threshold:g}"
         )
 
     def _init_accessors(self):
@@ -2846,6 +2924,8 @@ class IPCCoupler(RBC):
                     continue
 
                 parent_link = entity.links[link.parent_idx - entity.link_start]
+                if not link.joints:
+                    continue
                 joint = link.joints[0]
                 if joint.type not in (gs.JOINT_TYPE.REVOLUTE, gs.JOINT_TYPE.PRISMATIC):
                     continue

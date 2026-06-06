@@ -257,6 +257,24 @@ class IPCCouplerOptions(BaseCouplerOptions):
     cfl_enable : bool, optional
         Whether to enable CFL (Courant-Friedrichs-Lewy) condition. Defaults to None (use libuipc default: False).
 
+    RCC Bonded-PT Options
+    ---------------------
+    rcc_bonded_pt_enabled : bool, optional
+        Whether to enable RCC bonded point-triangle acceleration. Defaults to None (use libuipc default).
+    rcc_bonded_pt_skip_ccd : bool, optional
+        Whether bonded PT constraints may skip CCD. Defaults to None (use libuipc default).
+    rcc_bonded_pt_beta_lock_threshold : float, optional
+        Beta threshold used to lock bonded PT pairs. Defaults to None (use libuipc default).
+    rcc_bonded_pt_energy_model : str, optional
+        Bonded PT energy model name. Defaults to None (use libuipc default).
+    rcc_bonded_pt_kappa : float, optional
+        Stiffness for bonded PT constraints. Defaults to None (use libuipc default).
+    rcc_bonded_pt_release_force : float, optional
+        Restoring-force threshold for releasing bonded PT pairs. Defaults to None (use libuipc default).
+    rcc_adhesion_normal_offset_coeff : float, optional
+        RCC soft normal-adhesion energy-minimum offset coefficient in [0, 1].
+        Defaults to None (use libuipc default).
+
     AL-IPC Options
     --------------
     al_ipc_mu_scale_fem : float | None, optional
@@ -322,6 +340,15 @@ class IPCCouplerOptions(BaseCouplerOptions):
 
     # CFL options
     cfl_enable: StrictBool | None = None
+
+    # RCC bonded-PT options
+    rcc_bonded_pt_enabled: StrictBool | None = None
+    rcc_bonded_pt_skip_ccd: StrictBool | None = None
+    rcc_bonded_pt_beta_lock_threshold: PositiveFloat | None = None
+    rcc_bonded_pt_energy_model: Literal["abd_ortho"] | None = None
+    rcc_bonded_pt_kappa: PositiveFloat | None = None
+    rcc_bonded_pt_release_force: PositiveFloat | None = None
+    rcc_adhesion_normal_offset_coeff: NonNegativeFloat | None = None
 
     # AL-IPC options
     al_ipc_mu_scale_fem: PositiveFloat | None = None
