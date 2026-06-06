@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
-# Run an IPC_Solver example in the gs-gym-internal uv environment.
+# Fallback runner: run an IPC_Solver example in the gs-gym-internal uv environment.
 #
-# Why not `uv run` from the Genesis repo directly?
-#   - The Genesis project pulls the optional `nyx` extra -> `gs-nyx` from a private
-#     jfrog index that needs auth (401), so a fresh `uv run`/`uv sync` here fails.
-#   - The Genesis repo also doesn't depend on `uipc` (the IPC backend) at all.
-# The gs-gym-internal venv already has everything built: the libuipc fork (uipc 0.9.0),
-# cu129 torch, and this Genesis checkout (via the editable-finder redirect). `--no-sync`
-# uses that prebuilt env as-is, so it neither re-resolves (no 401) nor regenerates the
-# editable finder (keeps the redirect to /home/zhaofeng/work/Genesis).
+# Normally you can run these examples directly from the Genesis repo:
+#   cd ~/work/Genesis && uv run examples/IPC_Solver/<script.py> [args...]
+# The Genesis uv env now carries the libuipc fork (uipc 0.9.0) + cu129 torch via the
+# default `ipc` dependency group, and gs-nyx resolves from public PyPI (no jfrog 401).
+#
+# Use this script only to reuse the *prebuilt* gs-gym-internal venv as-is (e.g. to skip
+# any sync entirely). `--no-sync` uses that env without re-resolving or regenerating the
+# editable finder, so it keeps any editable-finder redirect to /home/zhaofeng/work/Genesis.
 #
 # Usage:
 #   examples/IPC_Solver/run.sh ipc_monolithic_grasp_tune.py --vis --realtime
