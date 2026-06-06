@@ -527,5 +527,8 @@ With the fix, the ipc_monolithic Franka grasp still does **not lift the cube**
 grasp gap is ipc_monolithic-specific and orthogonal to merged-parent readback. Likely cause:
 ipc_monolithic uses **soft maximal-coordinate joints** (`joint_strength_ratio`, default 100)
 + explicit torque control, which tracks IK targets / holds grip less precisely than
-external_articulation's reduced-coordinate dynamics. Candidate levers to investigate:
-higher `joint_strength_ratio`, IPC-tuned PD gains, finger grip force. Tracked as next work.
+external_articulation's reduced-coordinate dynamics. Stiffer joints alone are NOT the fix:
+`joint_strength_ratio=2000` made the run much faster (22 vs 5.6 FPS, less compliant → fewer
+newton iters) but still did **not lift** the cube. So the grasp gap is multi-factor (arm IK
+tracking accuracy in maximal coordinates and/or finger↔cube contact), a separate
+investigation from this readback fix. Tracked as next work.
