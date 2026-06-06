@@ -20,8 +20,11 @@ Run (from the Genesis repo; uv env has the libuipc fork + cu129 torch):
   uv run examples/IPC_Solver/ipc_monolithic_1dof_debug.py --coup ipc_monolithic --verbose
   # gravity-free pure-inertia check:
   uv run examples/IPC_Solver/ipc_monolithic_1dof_debug.py --axis z
+  # watch it in the viewer (single mode, real-time):
+  uv run examples/IPC_Solver/ipc_monolithic_1dof_debug.py --coup ipc_monolithic --vis --realtime --kp 10 --kv 0.1
+  # (driver --vis shows monolithic first, then external_articulation; close each window to advance)
 
-Knobs: --axis {y,z} --mass --length --kp --kv --amp --freq --dt --steps --no-limit
+Knobs: --axis {y,z} --mass --length --kp --kv --amp --freq --dt --steps --no-limit --vis --realtime
 """
 
 import argparse
@@ -30,6 +33,7 @@ import os
 import subprocess
 import sys
 import tempfile
+import time
 
 import numpy as np
 
@@ -110,8 +114,11 @@ def run_one(mode: str, args) -> dict:
     )
     scene = gs.Scene(
         sim_options=gs.options.SimOptions(dt=args.dt),
+        viewer_options=gs.options.ViewerOptions(
+            camera_pos=(1.6, 1.2, 0.9), camera_lookat=(0.0, 0.0, 0.2)
+        ),
         coupler_options=coupler_options,
-        show_viewer=False,
+        show_viewer=args.vis,
     )
     robot = scene.add_entity(
         gs.morphs.URDF(file=urdf_path, fixed=True),
@@ -157,7 +164,12 @@ def run_one(mode: str, args) -> dict:
         q_cmd = args.amp * math.sin(omega * t)
         qd_cmd = args.amp * omega * math.cos(omega * t)
         robot.control_dofs_position(np.array([q_cmd], dtype=np.float32))
+        t0 = time.perf_counter()
         scene.step()
+        if args.realtime:
+            dtr = args.dt - (time.perf_counter() - t0)
+            if dtr > 0:
+                time.sleep(dtr)
 
         q = scalar(robot.get_dofs_position())
         qd = scalar(robot.get_dofs_velocity())
@@ -194,6 +206,24 @@ def run_one(mode: str, args) -> dict:
         if good.any():
             inferred = np.median(tau[good] / acc[good])
             print(f"  inferred I (tau/accel)  = {inferred:.6f}  (true I_joint={i_joint:.6f})", flush=True)
+
+    # Keep the viewer open, continuing the SHM so the arm keeps moving (Ctrl-C to exit).
+    if args.vis and getattr(scene, "viewer", None) is not None:
+        print(f"\n[{mode}] holding viewer open — continuing SHM (Ctrl-C / close window to exit)...", flush=True)
+        try:
+            i = args.steps
+            while scene.viewer.is_alive():
+                q_cmd = args.amp * math.sin(omega * i * args.dt)
+                robot.control_dofs_position(np.array([q_cmd], dtype=np.float32))
+                t0 = time.perf_counter()
+                scene.step()
+                i += 1
+                if args.realtime:
+                    dtr = args.dt - (time.perf_counter() - t0)
+                    if dtr > 0:
+                        time.sleep(dtr)
+        except KeyboardInterrupt:
+            pass
 
     gs.destroy() if hasattr(gs, "destroy") else None
     try:
@@ -261,6 +291,8 @@ def main():
     p.add_argument("--dt", type=float, default=0.01)
     p.add_argument("--steps", type=int, default=400)
     p.add_argument("--no-limit", action="store_true", help="disable monolithic joint limit penalty")
+    p.add_argument("-v", "--vis", action="store_true", help="show the viewer (driver mode shows each mode in turn)")
+    p.add_argument("--realtime", action="store_true", help="throttle stepping to ~real time (watchable)")
     p.add_argument("--verbose", action="store_true", help="print every --log-every steps")
     p.add_argument("--log-every", type=int, default=20)
     p.add_argument("--out", default=None, help="(worker) npz path to dump per-step arrays")
@@ -284,6 +316,10 @@ def main():
     ]
     if args.no_limit:
         common.append("--no-limit")
+    if args.vis:
+        common.append("--vis")
+    if args.realtime:
+        common.append("--realtime")
     if args.verbose:
         common.append("--verbose")
 
