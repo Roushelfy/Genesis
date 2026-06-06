@@ -43,6 +43,7 @@ if TYPE_CHECKING or UIPC_AVAILABLE:
     from uipc.backend import SceneVisitor
     from uipc.constitution import (
         AffineBodyConstitution,
+        AffineBodyExternalBodyForce,
         AffineBodyShell,
         AffineBodyPrismaticJoint,
         AffineBodyPrismaticJointExternalForce,
@@ -138,15 +139,40 @@ IPCBeforeWorldInitCallback = Callable[[IPCBeforeWorldInitContext, GenesisSolverC
 
 # Affine body stiffness in MPa
 ABD_KAPPA = 100.0
-# Sign mapping Genesis per-DOF joint torque -> AffineBodyRevoluteJointExternalForce
-# scalar torque. The external force applies +tau about the built joint axis to the
-# child body; this aligns with Genesis's DOF axis sign for the standard build, so +1.
+# Sign mapping a Genesis per-DOF joint torque -> the world torque applied about the
+# joint axis. +1 means +tau rotates the child about +axis (Genesis DOF axis convention).
 MONOLITHIC_TORQUE_SIGN = 1.0
+# Below this |force12| an ipc_monolithic body's external-force enable flag is left off.
+AFFINE_FORCE_ENABLE_EPS = 1e-9
 # Position-space threshold for detecting active IPC contact (restitution tracking)
 RESTITUTION_CONTACT_THRESHOLD = 1e-7
 COM_AABB_TOL = 2e-3
 IPC_SURFACE_PREFIX = "ipc_surface"
 GENESIS_SURFACE_PREFIX = "genesis_surface"
+
+
+def _skew_symmetric(vec: np.ndarray) -> np.ndarray:
+    x, y, z = np.asarray(vec, dtype=np.float64)
+    return np.array([[0.0, -z, y], [z, 0.0, -x], [-y, x, 0.0]], dtype=np.float64)
+
+
+def _make_affine_torque_force_vector(world_torque: np.ndarray, rotation: np.ndarray) -> np.ndarray:
+    """Pack a world-frame torque into a 12D ABD generalized external force.
+
+    Matches sim2sim's AffineBodyExternalBodyForce convention: the translation block
+    (force[:3]) is zero and the 3x3 affine-matrix block (force[3:]) is
+    ``0.5 * skew(world_torque) @ rotation`` (row-major), where ``rotation`` is the
+    body's current world rotation (upper-left 3x3 of its ABD transform).
+    """
+    force = np.zeros(12, dtype=np.float64)
+    force[3:] = (0.5 * _skew_symmetric(world_torque) @ np.asarray(rotation, dtype=np.float64)).reshape(-1)
+    return force
+
+
+def _normalize_or_zero(vec: np.ndarray) -> np.ndarray:
+    v = np.asarray(vec, dtype=np.float64)
+    n = np.linalg.norm(v)
+    return v / n if n > 1e-12 else np.zeros(3, dtype=np.float64)
 
 
 def _link_inertia_about_com(link: "RigidLink") -> np.ndarray:
@@ -564,9 +590,11 @@ class IPCCoupler(RBC):
         self._articulation_data_by_entity: dict["RigidEntity", ArticulatedEntityData] = {}
         # ipc_monolithic: IPC owns the dynamics; Genesis only pushes joint torque.
         self._ipc_monolithic_data_by_entity: dict["RigidEntity", IpcMonolithicEntityData] = {}
-        self._ipc_rev_ext_force: "AffineBodyRevoluteJointExternalForce | None" = None
+        # ipc_monolithic actuation: a per-body affine wrench (AffineBodyExternalBodyForce),
+        # matching sim2sim — joint torques are applied as equal/opposite body wrenches, NOT
+        # via AffineBodyRevoluteJointExternalForce.
+        self._ipc_body_ext_force: "AffineBodyExternalBodyForce | None" = None
         self._ipc_rev_joint_limit: "AffineBodyRevoluteJointLimit | None" = None
-        self._ipc_prism_ext_force: "AffineBodyPrismaticJointExternalForce | None" = None
         self._ipc_prism_joint_limit: "AffineBodyPrismaticJointLimit | None" = None
         self._fem_slots_by_entity: dict["FEMEntity", list] = {}
 
@@ -1413,8 +1441,18 @@ class IPCCoupler(RBC):
             if is_ext_art:
                 rigid_link_geom.instances().create("ref_dof_prev", np.zeros(12, dtype=np.float64))
 
+            # ipc_monolithic actuation: a per-body affine wrench. Joint torques are applied
+            # as equal/opposite body wrenches written into the builtin external_force slot
+            # (see _pre_advance_write_ipc_attributes), exactly like sim2sim.
+            if is_ipc_monolithic:
+                if self._ipc_body_ext_force is None:
+                    self._ipc_body_ext_force = AffineBodyExternalBodyForce()
+                    self._ipc_constitution_tabular.insert(self._ipc_body_ext_force)
+                self._ipc_body_ext_force.apply_to(rigid_link_geom, np.zeros(12, dtype=np.float64))
+
             # ---- Per-environment: create IPC objects, then set per-env attrs on slot geometry ----
             abd_geom_slots: list[GeometrySlot] = []
+            init_transforms: list[np.ndarray] = []
             for env_idx in range(self._B):
                 abd_obj = self._ipc_objects.create(f"rigid_link_{link.idx}_{env_idx}")
                 abd_geom_slot, _ = abd_obj.geometries().create(rigid_link_geom)
@@ -1423,6 +1461,7 @@ class IPCCoupler(RBC):
                 slot_geom = abd_geom_slot.geometry()
                 link_T = gu.trans_quat_to_T(links_pos[env_idx, link.idx], links_quat[env_idx, link.idx])
                 uipc.view(slot_geom.transforms())[0] = link_T
+                init_transforms.append(np.asarray(link_T, dtype=gs.np_float))
 
                 # Initialize ref_dof_prev from the initial transform
                 if is_ext_art:
@@ -1441,10 +1480,14 @@ class IPCCoupler(RBC):
                 abd_geom_slots.append(abd_geom_slot)
 
             # ---- Store link data ----
+            # Seed ipc_transforms with the build pose (not identity): the first
+            # _pre_advance_write_ipc_attributes() runs before the first retrieve, and the
+            # monolithic wrench / ext_art ref_dof_prev writes read these — identity would
+            # mis-orient them on step 0.
             self._abd_data_by_link[link] = ABDLinkData(
                 slots=abd_geom_slots,
                 aim_transforms=np.tile(np.eye(4, dtype=gs.np_float), (self._B, 1, 1)),
-                ipc_transforms=np.tile(np.eye(4, dtype=gs.np_float), (self._B, 1, 1)),
+                ipc_transforms=np.asarray(init_transforms, dtype=gs.np_float),
                 ipc_velocities=np.zeros((self._B, 4, 4), dtype=gs.np_float),
             )
 
@@ -1567,33 +1610,24 @@ class IPCCoupler(RBC):
     def _add_ipc_monolithic_entities(self) -> None:
         """Add ipc_monolithic robots: IPC owns the articulation dynamics.
 
-        Each actuated (revolute) joint becomes an ``AffineBodyRevoluteJoint``
-        between the parent/child ABD bodies, plus an
-        ``AffineBodyRevoluteJointExternalForce`` whose per-joint scalar torque is
-        pushed by Genesis each step (zero at build). No ExternalArticulationConstraint
-        and no Genesis-side dynamics are involved — IPC integrates the bodies under
-        the joint constraints, joint torques, gravity, and contact.
+        Each actuated joint becomes an ``AffineBodyRevoluteJoint`` /
+        ``AffineBodyPrismaticJoint`` kinematic constraint between the parent/child
+        ABD bodies (plus an optional cubic joint limit). Actuation is applied NOT via
+        the joint-edge external force but as a per-body affine wrench
+        (``AffineBodyExternalBodyForce``), exactly like sim2sim: each step the per-joint
+        control torque is converted to equal/opposite world wrenches on the parent and
+        child bodies (see ``_pre_advance_write_ipc_attributes``). No
+        ExternalArticulationConstraint and no Genesis-side dynamics are involved — IPC
+        integrates the bodies under the joint constraints, body wrenches, gravity, and
+        contact.
 
         v1 invariant (validated in _setup_coupling_config): fixed base, revolute +
-        fixed joints, single env.
+        prismatic + fixed joints, single env.
         """
         assert gs.logger is not None
 
         if COUPLING_TYPE.IPC_MONOLITHIC not in self._coup_type_by_entity.values():
             return
-
-        # External-force + limit constitutions are created lazily per joint type
-        # (revolute uses torque, prismatic uses linear force).
-        def _ext_force(is_prismatic):
-            if is_prismatic:
-                if self._ipc_prism_ext_force is None:
-                    self._ipc_prism_ext_force = AffineBodyPrismaticJointExternalForce()
-                    self._ipc_constitution_tabular.insert(self._ipc_prism_ext_force)
-                return self._ipc_prism_ext_force
-            if self._ipc_rev_ext_force is None:
-                self._ipc_rev_ext_force = AffineBodyRevoluteJointExternalForce()
-                self._ipc_constitution_tabular.insert(self._ipc_rev_ext_force)
-            return self._ipc_rev_ext_force
 
         def _joint_limit(is_prismatic):
             if not self.options.monolithic_joint_limit_enable:
@@ -1611,6 +1645,9 @@ class IPCCoupler(RBC):
         joints_xaxis = qd_to_numpy(self.rigid_solver.joints_state.xaxis, transpose=True)
         joints_xanchor = qd_to_numpy(self.rigid_solver.joints_state.xanchor, transpose=True)
         qpos0 = qd_to_numpy(self.rigid_solver.qpos0, transpose=True)
+        # Build-pose body rotations, to express the world joint axis in each ABD body's
+        # frame (for the per-body wrench actuation at runtime).
+        links_quat = qd_to_numpy(self.rigid_solver.links_state.quat, transpose=True)
 
         for i_e, entity in enumerate(cast(list["RigidEntity"], self.rigid_solver.entities)):
             if self._coup_type_by_entity.get(entity) != COUPLING_TYPE.IPC_MONOLITHIC:
@@ -1643,8 +1680,10 @@ class IPCCoupler(RBC):
                     )
                 joints.append((joint, parent_link, child_link))
 
-            # ---- Create one revolute joint + external-force linemesh per joint, per env ----
+            # ---- Create one joint-constraint linemesh per joint, per env ----
             joint_slots_per_env: list[list[GeometrySlot]] = []
+            axes_parent_local: list[np.ndarray] = []  # build-pose joint axis in parent ABD frame
+            axes_child_local: list[np.ndarray] = []  # build-pose joint axis in child ABD frame
             for env_idx in range(self._B):
                 per_joint_slots: list[GeometrySlot] = []
                 for j, (joint, parent_link, child_link) in enumerate(joints):
@@ -1666,9 +1705,16 @@ class IPCCoupler(RBC):
                     joint_cons().apply_to(
                         joint_geom, [parent_abd_slot], [0], [child_abd_slot], [0], [self.options.joint_strength_ratio]
                     )
-                    # Actuation channel: per-joint scalar torque (revolute) / linear force
-                    # (prismatic), zero at build.
-                    _ext_force(is_prismatic).apply_to(joint_geom, 0.0)
+                    # Express the world joint axis in each ABD body's build frame, so the
+                    # actuation torque (applied as a per-body wrench) tracks the bodies'
+                    # current orientation at runtime. Actuation itself is the body wrench
+                    # written in _pre_advance_write_ipc_attributes (no joint-edge ext force).
+                    if env_idx == 0:
+                        axis_world = np.asarray(joint_axis, dtype=np.float64)
+                        r_parent = gu.quat_to_R(np.asarray(links_quat[env_idx, parent_link.idx], dtype=np.float64))
+                        r_child = gu.quat_to_R(np.asarray(links_quat[env_idx, child_link.idx], dtype=np.float64))
+                        axes_parent_local.append(r_parent.T @ axis_world)
+                        axes_child_local.append(r_child.T @ axis_world)
 
                     # Joint limit (cubic penalty). Bounds come from the URDF/MJCF joint
                     # limit, mapped into IPC's coordinate convention (the joint coordinate is
@@ -1689,12 +1735,6 @@ class IPCCoupler(RBC):
                     joint_obj = self._ipc_objects.create(f"ipc_auth_joint_{joint.idx}_{env_idx}")
                     joint_geom_slot, _ = joint_obj.geometries().create(joint_geom)
                     per_joint_slots.append(joint_geom_slot)
-
-                    # Drive the joint actuation via an animator (runs inside advance()).
-                    if self.options.monolithic_torque_enable:
-                        self._ipc_animator.insert(
-                            joint_obj, self._make_monolithic_torque_animator(entity, j, env_idx)
-                        )
                 joint_slots_per_env.append(per_joint_slots)
 
             n_joints = len(joints)
@@ -1713,6 +1753,8 @@ class IPCCoupler(RBC):
                 ],
                 joints_is_prismatic=[j.type == gs.constants.JOINT_TYPE.PRISMATIC for j, *_ in joints],
                 q0=qpos0[0, entity.q_start : entity.q_end].copy(),
+                joints_axis_parent_local=axes_parent_local,
+                joints_axis_child_local=axes_child_local,
                 torque=np.zeros((self._B, n_joints), dtype=np.float64),
             )
 
@@ -2963,29 +3005,6 @@ class IPCCoupler(RBC):
             geom_positions = np.stack(geom_positions, axis=0, dtype=gs.np_float)
             entity.set_pos(0, geom_positions)
 
-    def _make_monolithic_torque_animator(self, entity, j, env_idx):
-        """Build an animator callback that writes joint ``j``'s cached control torque
-        (``ad.torque``) into IPC during ``advance()``. One callback per (entity, joint, env)."""
-
-        def _cb(info):
-            ad = self._ipc_monolithic_data_by_entity.get(entity)
-            if ad is None:
-                return
-            slots = info.geo_slots()
-            if not slots:
-                return
-            geo = slots[0].geometry()
-            # Prismatic joints use a linear force attribute; revolute use a torque attribute.
-            name = "external_force" if ad.joints_is_prismatic[j] else "external_torque"
-            force_attr = geo.edges().find(name)
-            enable_attr = geo.edges().find(name + "/is_constrained")
-            if force_attr is None or enable_attr is None:
-                return
-            uipc.view(force_attr)[:] = float(ad.torque[env_idx, j])
-            uipc.view(enable_attr)[:] = 1
-
-        return _cb
-
     def capture_monolithic_control_torque(self):
         """Compute the per-joint control torque for ``ipc_monolithic`` entities.
 
@@ -2995,11 +3014,9 @@ class IPCCoupler(RBC):
 
         The per-DOF control force (PD law folding ctrl_mode/kp/kv + ``force_range``
         clamp, via ``get_dofs_control_force``) is mapped to a per-joint scalar torque
-        and cached in ``ad.torque``. The value is written into IPC during
-        ``advance()`` by a per-joint animator callback (see
-        ``_add_ipc_monolithic_entities``) — writing ``external_torque`` /
-        ``is_constrained`` directly on the joint geometry outside the animator
-        aborts the solver, so the animator is the supported actuation path.
+        and cached in ``ad.torque``. It is applied to IPC in
+        ``_pre_advance_write_ipc_attributes`` as equal/opposite per-body affine
+        wrenches on the joint's parent/child ABD bodies (sim2sim convention).
         """
         if not self._ipc_monolithic_data_by_entity:
             return
@@ -3145,6 +3162,56 @@ class IPCCoupler(RBC):
 
                 mass_matrix_attr = articulation_geom["joint_joint"].find("mass")
                 uipc.view(mass_matrix_attr).flat[:] = ad.mass_matrix[env_idx]
+
+        # 3b. Write per-body affine wrench actuation for ipc_monolithic (sim2sim convention).
+        # Each joint's control torque (ad.torque) is applied as equal/opposite world wrenches
+        # on its parent/child ABD bodies, projected onto the current joint axis (recovered
+        # from the bodies' current rotations). The reaction on a fixed base is absorbed by
+        # its fixity, so we only enable the wrench on non-fixed bodies.
+        if self._ipc_monolithic_data_by_entity:
+            for entity, ad in self._ipc_monolithic_data_by_entity.items():
+                if ad.torque is None or ad.joints_axis_parent_local is None:
+                    continue
+                entity_links = [lk for lk in self._abd_data_by_link if lk.entity is entity]
+                for env_idx in range(self._B):
+                    accum = {lk: np.zeros(12, dtype=np.float64) for lk in entity_links}
+                    for j in range(len(ad.joints_child_link)):
+                        tau = float(ad.torque[env_idx, j])
+                        if abs(tau) <= AFFINE_FORCE_ENABLE_EPS:
+                            continue
+                        parent_link = ad.joints_parent_link[j]
+                        child_link = ad.joints_child_link[j]
+                        r_parent = np.asarray(
+                            self._abd_data_by_link[parent_link].ipc_transforms[env_idx], dtype=np.float64
+                        )[:3, :3]
+                        r_child = np.asarray(
+                            self._abd_data_by_link[child_link].ipc_transforms[env_idx], dtype=np.float64
+                        )[:3, :3]
+                        e_parent = _normalize_or_zero(r_parent @ ad.joints_axis_parent_local[j])
+                        e_child = _normalize_or_zero(r_child @ ad.joints_axis_child_local[j])
+                        e_world = _normalize_or_zero(e_parent + e_child)
+                        if np.linalg.norm(e_world) <= 1e-8:
+                            e_world = e_parent if np.linalg.norm(e_parent) > 1e-8 else e_child
+                        if np.linalg.norm(e_world) <= 1e-8:
+                            continue
+                        if parent_link in accum:
+                            accum[parent_link] += _make_affine_torque_force_vector(-tau * e_world, r_parent)
+                        if child_link in accum:
+                            accum[child_link] += _make_affine_torque_force_vector(tau * e_world, r_child)
+                    for link, force12 in accum.items():
+                        geom = self._abd_data_by_link[link].slots[env_idx].geometry()
+                        force_attr = geom.instances().find("external_force")
+                        enable_attr = geom.instances().find(uipc.builtin.is_constrained)
+                        if force_attr is None or enable_attr is None:
+                            continue
+                        fv = uipc.view(force_attr)
+                        # A fixed base absorbs its reaction via fixity; never enable a wrench on it.
+                        if _link_is_fixed_for_ipc(link):
+                            fv[0] = np.zeros_like(np.asarray(fv[0]))
+                            uipc.view(enable_attr)[0] = 0
+                            continue
+                        fv[0] = force12.reshape(np.asarray(fv[0]).shape)
+                        uipc.view(enable_attr)[0] = int(np.linalg.norm(force12) > AFFINE_FORCE_ENABLE_EPS)
 
         # 4. Write FEM external forces
         for entity, forces in list(self._fem_external_forces.items()):

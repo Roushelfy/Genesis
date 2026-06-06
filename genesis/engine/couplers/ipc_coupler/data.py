@@ -148,4 +148,10 @@ class IpcMonolithicEntityData:
     joints_axis_local: list[np.ndarray]
     joints_is_prismatic: list[bool]
     q0: np.ndarray
+    # Build-pose joint axis expressed in the parent / child ABD body frames. Used at
+    # runtime to recover the world joint axis from the current body rotations when
+    # applying the actuation torque as a per-body affine wrench (sim2sim convention):
+    #   e_world = normalize(R_parent @ axis_parent_local + R_child @ axis_child_local)
+    joints_axis_parent_local: list[np.ndarray] | None = None
+    joints_axis_child_local: list[np.ndarray] | None = None
     torque: np.ndarray | None = None
