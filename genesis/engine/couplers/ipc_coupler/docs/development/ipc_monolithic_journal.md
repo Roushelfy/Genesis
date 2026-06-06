@@ -502,3 +502,30 @@ the modes on a real robot:
   M3 revolute position-control re-run PASS (no regression from the prismatic refactor).
 
 The example gained an `ipc_monolithic` choice in its `--coup_type` arg.
+
+## Merged-parent reconstruction fixed (2026-06-05)
+
+The Step 2a joint readback fell back to stale `links_state` when a joint's parent link
+was fixed-joint-merged into an ancestor ABD body (so the parent had no own IPC transform).
+The Franka triggers this: `hand` is fixed to `link7` (merged), and the gripper fingers are
+parented to `hand` → finger readback was wrong.
+
+Fix: at build, store the constant rigid offset `T = M_rest^-1 @ P_rest` for each merged
+link P → merge-target M (`_merged_link_world_offset`). In reconstruction, when the parent
+is merged, recover its pose as `parent_T = M_ipc_transform @ T` (instead of stale state).
+
+Validated (`/tmp/merged_readback.py`): teleport the Franka (arm + gripper) to a known pose,
+torque off / gravity off, step, read back → arm err 0, **finger err ~4e-7** (merged-parent),
+MERGED-PARENT READBACK PASS. M3 revolute (no-merge) re-run PASS. Side effect: the Franka
+grasp under ipc_monolithic got **2× faster** (5.58 vs 2.49 FPS) — correct finger readback
+makes the control/contact less stiff.
+
+### Separate finding — grasp fidelity (not the readback bug)
+
+With the fix, the ipc_monolithic Franka grasp still does **not lift the cube**
+(`cube_final_z=0.035`), whereas **external_articulation does** (`z=0.189`, ~78 FPS). So the
+grasp gap is ipc_monolithic-specific and orthogonal to merged-parent readback. Likely cause:
+ipc_monolithic uses **soft maximal-coordinate joints** (`joint_strength_ratio`, default 100)
++ explicit torque control, which tracks IK targets / holds grip less precisely than
+external_articulation's reduced-coordinate dynamics. Candidate levers to investigate:
+higher `joint_strength_ratio`, IPC-tuned PD gains, finger grip force. Tracked as next work.

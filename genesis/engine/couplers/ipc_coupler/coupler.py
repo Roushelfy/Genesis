@@ -1087,6 +1087,10 @@ class IPCCoupler(RBC):
         self._q_to_abd_link = [None] * self.rigid_solver.n_qs
         self._dof_to_abd_link = [None] * self.rigid_solver.n_dofs
         self._link_to_abd_link = [None] * self.rigid_solver.n_links
+        # For fixed-joint-merged links: constant rigid offset T s.t.
+        # link_world = merge_target_world @ T (used to recover a merged link's pose
+        # from its merge-target ABD body during joint-angle reconstruction).
+        self._merged_link_world_offset: dict["RigidLink", np.ndarray] = {}
 
         # ========== Build fixed-joint merge map for ext_art entities ==========
         # For external_articulation, fixed-joint child links must be folded into
@@ -1133,6 +1137,17 @@ class IPCCoupler(RBC):
         # ========== Process each link across environments ==========
         links_pos = qd_to_numpy(self.rigid_solver.links_state.pos, transpose=True)
         links_quat = qd_to_numpy(self.rigid_solver.links_state.quat, transpose=True)
+
+        # Precompute the constant rigid offset for each fixed-joint-merged link relative
+        # to its merge-target ABD body. P is rigidly fixed to its target M, so
+        # M_world^-1 @ P_world is configuration-independent; compute it from the build pose
+        # (env 0). At runtime: P_world = M_ipc @ offset (used in joint-angle reconstruction).
+        for merged_link, target in abd_merge_target.items():
+            p_rest = gu.trans_quat_to_T(links_pos[0, merged_link.idx], links_quat[0, merged_link.idx])
+            m_rest = gu.trans_quat_to_T(links_pos[0, target.idx], links_quat[0, target.idx])
+            self._merged_link_world_offset[merged_link] = (
+                np.linalg.inv(np.asarray(m_rest, dtype=np.float64)) @ np.asarray(p_rest, dtype=np.float64)
+            )
 
         for link in selected_links:
             entity = link.entity
@@ -3183,9 +3198,10 @@ class IPCCoupler(RBC):
         # ---- Step 2a: Two-way / monolithic child links — back-compute joint angles from IPC transforms ----
         # ipc_monolithic uses the identical signed-angle-from-transforms reconstruction as
         # two_way (M4 readback): the joint angle is the parent-relative rotation of the child
-        # ABD body about the joint axis. (Merged-parent robots, where the ABD parent differs
-        # from the true kinematic parent, are not yet handled — v1 test arm has no fixed-joint
-        # merge.)
+        # ABD body about the joint axis. When the joint's parent link was fixed-joint-merged
+        # into an ancestor ABD body (e.g. a Franka 'hand' fixed to 'link7', with the gripper
+        # fingers parented to 'hand'), the parent's pose is recovered from the merge-target
+        # ABD transform composed with the constant rigid offset (_merged_link_world_offset).
         _recon_types = (COUPLING_TYPE.TWO_WAY_SOFT_CONSTRAINT, COUPLING_TYPE.IPC_MONOLITHIC)
         if any(t in self._entities_by_coup_type for t in _recon_types):
             qpos0 = qd_to_numpy(self.rigid_solver.qpos0, transpose=True)
@@ -3213,10 +3229,21 @@ class IPCCoupler(RBC):
                         parent_T = parent_abd.ipc_transforms[env_idx]
                         parent_quat = gu.T_to_trans_quat(parent_T)[1]
                     else:
-                        parent_T = gu.trans_quat_to_T(
-                            links_pos[env_idx, parent_link.idx], links_quat[env_idx, parent_link.idx]
+                        # Parent was fixed-joint-merged: recover its pose from the merge
+                        # target's IPC transform + the constant rigid offset (not stale state).
+                        merge_target = self._link_to_abd_link[parent_link.idx]
+                        target_abd = (
+                            self._abd_data_by_link.get(merge_target) if merge_target is not None else None
                         )
-                        parent_quat = links_quat[env_idx, parent_link.idx]
+                        offset = self._merged_link_world_offset.get(parent_link)
+                        if target_abd is not None and target_abd.ipc_transforms is not None and offset is not None:
+                            parent_T = np.asarray(target_abd.ipc_transforms[env_idx], dtype=np.float64) @ offset
+                            parent_quat = gu.T_to_trans_quat(parent_T)[1]
+                        else:
+                            parent_T = gu.trans_quat_to_T(
+                                links_pos[env_idx, parent_link.idx], links_quat[env_idx, parent_link.idx]
+                            )
+                            parent_quat = links_quat[env_idx, parent_link.idx]
                     child_T = abd_data.ipc_transforms[env_idx]
                     child_quat_pre = gu.transform_quat_by_quat(
                         np.asarray(link.quat, dtype=parent_quat.dtype), parent_quat
