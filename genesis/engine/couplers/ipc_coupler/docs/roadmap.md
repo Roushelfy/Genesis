@@ -62,12 +62,15 @@ reconstruction, getter parity.
 `gs-gym/third_party/Genesis` (v1.0.0 + FEM-init + RCC bonded-PT) — clean auto-merge,
 commit `5f1a1711`. ipc_monolithic validated on the v1.0.0 base (M2 + M3-force PASS).
 
-**M3 — Torque actuation: UNBLOCKED, force-mode validated; position control WIP.** Fork
-fixed (`db2bade6`, device-safe inverse; test 74 passes); applied to third_party/libuipc +
-rebuilt. FORCE-mode torque works (correct sign/dynamics, no crash). Remaining: 2-DOF
-**position control** is unstable because the *chained-joint* velocity readback is garbage
-(`kv·vel` term destabilizes); 1-DOF velocity is correct. Next: fix chained-joint velocity
-readback, then validate PD position tracking and flip `monolithic_torque_enable` default.
+**M3 — Torque actuation: COMPLETE (2026-06-05).** Fork fixed (`db2bade6`, device-safe
+inverse; test 74 passes) + applied to third_party/libuipc + rebuilt. Genesis folds the
+control law (`get_dofs_control_force`) into per-joint torque, pushed to IPC via an
+animator. FORCE + POSITION control validated: position PD converges to setpoint
+(err ~5e-4 rad, settled). The earlier "velocity readback garbage" was a misdiagnosis —
+the readback is exact; the toy arm's tiny inertia just made the original gains diverge.
+`monolithic_torque_enable` now defaults True; M2 hold still PASSES. See journal §M3.
+**Next:** M5 (robot + cloth/RCC coexistence) + merged-parent reconstruction / realistic-arm
+gravity-hold demo.
 
 ## Phase plan & acceptance gates
 

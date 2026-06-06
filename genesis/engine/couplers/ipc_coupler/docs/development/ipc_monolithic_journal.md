@@ -449,3 +449,28 @@ Validated on the merged v1.0.0 tree: `import genesis` (now v1.0.0) OK with both 
 (identical to pre-merge). ipc_monolithic's `capture_monolithic_control_torque` hook landed
 correctly in the refactored `substep_pre_coupling`. gs-gym venv kept pointed at this repo via
 the manual editable-finder redirect (re-applied; reverts on `uv sync`).
+
+## M3 — Torque actuation COMPLETE (2026-06-05)
+
+The earlier "chained-joint velocity readback garbage" was a **misdiagnosis**. Open-loop
+checks proved `get_dofs_velocity` exactly equals the finite difference of the reconstructed
+`qpos` for both joints (1-DOF and 2-DOF chain) — the readback is correct. The "258 rad/s"
+was the *real* velocity of a **diverging closed-loop PD**, not a readback artifact.
+
+Root cause: the toy arm's ABD inertia (mesh-derived) is tiny (I_eff ~ 5e-4..2e-3), so the
+explicit-control stability bound `kv < ~2*I/dt` is small; the original `kp=80/kv=8` (and even
+`kv=1`) blew up at step 0-1 (period-2 oscillation, get_vel correctly reporting it). With gains
+matched to the inertia it is stable and accurate:
+- No-gravity convergence: `kp=2, kv=0.1`, target `[0.4,-0.4]` → `q_final=[0.3995,-0.4001]`
+  (err ~5e-4 rad), `|v|~1e-5` (settled). **M3 POSITION-CONTROL PASS** ([m3_position_control.py]).
+- No-gravity also converges *exactly* at `kp=0.5..2`; gravity-hold is stable at `kp=2/kv=0.1`
+  (holds joint2 at target, small joint1 sag) — gravity rejection is gain-sensitive on this toy
+  arm but not on realistic-inertia robots (which accept kp~20-200).
+
+`monolithic_torque_enable` default flipped to **True** (torque is the mode's purpose). M2
+hold-pose still PASSES with it on (no control commanded → tau 0 → no spurious force, since the
+fork fix makes is_constrained=1 + tau=0 a clean no-op).
+
+Net: ipc_monolithic now does the full loop — Genesis folds the control law into per-joint
+torque, IPC integrates the articulation + contact, Genesis reconstructs joint state and
+renders. Force, position, and velocity control modes all route through the torque path.

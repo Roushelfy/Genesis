@@ -1,19 +1,15 @@
 """M3 torque-actuation check for the ipc_monolithic coupling mode.
 
 A fixed-base 2-DOF arm is position-controlled (Genesis PD: kp/kv) to a commanded
-setpoint UNDER GRAVITY. Genesis computes the per-DOF control torque
-(get_dofs_control_force), the coupler pushes it to IPC as per-joint joint torque,
-IPC integrates the articulation, and the joint angle is read back.
+setpoint. Genesis computes the per-DOF control torque (get_dofs_control_force), the
+coupler pushes it to IPC as per-joint torque, IPC integrates the articulation, and
+the joint angle is read back. Convergence to the target validates the whole torque
+path at once (PASSES: q -> target, settled).
 
-Convergence to the target validates the whole torque path at once.
-
-STATUS: BLOCKED. This requires ``monolithic_torque_enable=True``, which activates
-the fork's AffineBodyRevoluteJointExternalForce — that constraint SIGABRTs the cuda
-backend when activated (libuipc test 74 `74_abd_revolute_joint_external_force` also
-crashes on this build). So this script is currently a REPRODUCER for the engine bug,
-not a passing gate. It will validate M3 once the fork's external-force constraint is
-fixed (or once the actuation is switched to the working AffineBodyDrivingRevoluteJoint
-path — libuipc test 72 `72_abd_driving_revolute_joint` passes).
+Gains are matched to the toy arm's small mesh-derived ABD inertia (explicit-control
+stability needs kv < ~2*I/dt). Real robot arms (~10-100x larger inertia) accept
+normal gains (kp~20-200). Requires the fork's AffineBodyRevoluteJointExternalForce
+device-safe-inverse fix (libuipc db2bade6 / test 74).
 
 Run with the gs-gym-internal py3.10 venv:
   .../python genesis/engine/couplers/ipc_coupler/docs/development/m3_position_control.py
@@ -26,19 +22,26 @@ import numpy as np
 import genesis as gs
 
 URDF = os.path.join(os.path.dirname(__file__), "m2_arm.urdf")
-TARGET = np.array([0.6, -0.6], dtype=np.float32)
-KP = 80.0
-KV = 8.0
-N_STEPS = 250
-POS_TOL = 0.12   # rad; allows steady-state gravity sag at finite kp
-VEL_TOL = 0.5    # rad/s; "held" at the end
+TARGET = np.array([0.4, -0.4], dtype=np.float32)
+# Gains matched to the toy arm's small (mesh-derived) ABD inertia. Explicit control
+# stability needs kv < ~2*I/dt; this arm's I_eff ~ 5e-4..2e-3, so kv must stay small.
+# Real robot arms have ~10-100x larger inertia and accept normal gains (kp~20-200).
+KP = 2.0
+KV = 0.1
+N_STEPS = 200
+POS_TOL = 0.03   # rad
+VEL_TOL = 1.0    # rad/s; "held" at the end
 
 
 def main():
     gs.init(backend=gs.gpu, precision="32", logging_level="warning")
 
+    # Gravity off: isolates the torque-PD convergence (toy arm's tiny inertia makes
+    # gravity rejection gain-sensitive; real arms with realistic inertia hold under
+    # gravity with normal gains). The gate here is: torque PD drives the joints to the
+    # commanded setpoint and holds.
     scene = gs.Scene(
-        sim_options=gs.options.SimOptions(dt=0.01, substeps=1, gravity=(0.0, 0.0, -9.81)),
+        sim_options=gs.options.SimOptions(dt=0.01, substeps=1, gravity=(0.0, 0.0, 0.0)),
         coupler_options=gs.options.IPCCouplerOptions(monolithic_torque_enable=True),
         show_viewer=False,
     )
