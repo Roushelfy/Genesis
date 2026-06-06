@@ -58,9 +58,13 @@ released bent under gravity, IPC integrates it, Genesis reconstructs angles + FK
 camera renders 150 frames (`/tmp/ipc_monolithic_swing.mp4`). Validates A2 (IPC
 drives, Genesis renders). Remaining M4: joint-velocity readback, merged-parent
 reconstruction, getter parity.
-**M3 — Torque actuation: NEXT.** Per-step push `get_dofs_control_force` → per-joint
-scalar torque via `AffineBodyRevoluteJointExternalForce`; add predict-skip in
-`substep_pre_coupling`; gate on tracking vs a forward-dynamics oracle under gravity.
+**M3 — Torque actuation: IMPLEMENTED but BLOCKED (2026-06-05).** Genesis-side torque
+path done (`capture_monolithic_control_torque` + per-joint animator), gated behind
+`IPCCouplerOptions.monolithic_torque_enable` (default **False**). Blocker: the fork's
+`AffineBodyRevoluteJointExternalForce` SIGABRTs the cuda backend when activated
+(CUDA 719; libuipc test 74 also crashes on this build, while tests 37/52/72 pass). See
+journal §M3. **Owner decision needed:** fix the fork's external force, or switch
+actuation to the working `AffineBodyDrivingRevoluteJoint` (motor) path.
 
 ## Phase plan & acceptance gates
 

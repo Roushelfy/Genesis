@@ -136,6 +136,10 @@ IPCBeforeWorldInitCallback = Callable[[IPCBeforeWorldInitContext, GenesisSolverC
 
 # Affine body stiffness in MPa
 ABD_KAPPA = 100.0
+# Sign mapping Genesis per-DOF joint torque -> AffineBodyRevoluteJointExternalForce
+# scalar torque. The external force applies +tau about the built joint axis to the
+# child body; this aligns with Genesis's DOF axis sign for the standard build, so +1.
+MONOLITHIC_TORQUE_SIGN = 1.0
 # Position-space threshold for detecting active IPC contact (restitution tracking)
 RESTITUTION_CONTACT_THRESHOLD = 1e-7
 COM_AABB_TOL = 2e-3
@@ -1529,7 +1533,7 @@ class IPCCoupler(RBC):
             joint_slots_per_env: list[list[GeometrySlot]] = []
             for env_idx in range(self._B):
                 per_joint_slots: list[GeometrySlot] = []
-                for joint, parent_link, child_link in joints:
+                for j, (joint, parent_link, child_link) in enumerate(joints):
                     joint_axis = joints_xaxis[env_idx, joint.idx]
                     joint_pos = joints_xanchor[env_idx, joint.idx]
 
@@ -1567,6 +1571,16 @@ class IPCCoupler(RBC):
                     joint_obj = self._ipc_objects.create(f"ipc_auth_joint_{joint.idx}_{env_idx}")
                     joint_geom_slot, _ = joint_obj.geometries().create(joint_geom)
                     per_joint_slots.append(joint_geom_slot)
+
+                    # Drive the external torque via an animator (runs inside advance()).
+                    # Gated off by default: the fork's AffineBodyRevoluteJointExternalForce
+                    # aborts the cuda backend when activated (is_constrained=1) — libuipc
+                    # test 74 also SIGABRTs on this build. Until that engine bug is fixed the
+                    # joint is left unactuated (is_constrained stays 0 from build = inactive).
+                    if self.options.monolithic_torque_enable:
+                        self._ipc_animator.insert(
+                            joint_obj, self._make_monolithic_torque_animator(entity, j, env_idx)
+                        )
                 joint_slots_per_env.append(per_joint_slots)
 
             n_joints = len(joints)
@@ -2827,6 +2841,59 @@ class IPCCoupler(RBC):
         for entity, geom_positions in fem_positions_by_entity.items():
             geom_positions = np.stack(geom_positions, axis=0, dtype=gs.np_float)
             entity.set_pos(0, geom_positions)
+
+    def _make_monolithic_torque_animator(self, entity, j, env_idx):
+        """Build an animator callback that writes joint ``j``'s cached control torque
+        (``ad.torque``) into IPC during ``advance()``. One callback per (entity, joint, env)."""
+
+        def _cb(info):
+            ad = self._ipc_monolithic_data_by_entity.get(entity)
+            if ad is None:
+                return
+            slots = info.geo_slots()
+            if not slots:
+                return
+            geo = slots[0].geometry()
+            torque_attr = geo.edges().find("external_torque")
+            enable_attr = geo.edges().find("external_torque/is_constrained")
+            if torque_attr is None or enable_attr is None:
+                return
+            uipc.view(torque_attr)[:] = float(ad.torque[env_idx, j])
+            uipc.view(enable_attr)[:] = 1
+
+        return _cb
+
+    def capture_monolithic_control_torque(self):
+        """Compute the per-joint control torque for ``ipc_monolithic`` entities.
+
+        Called by ``RigidSolver.substep_pre_coupling`` AFTER ``kernel_step_1`` and
+        BEFORE ``kernel_predict_integrate``, so the control law reads the true
+        current joint state (the Genesis prediction has not yet overwritten it).
+
+        The per-DOF control force (PD law folding ctrl_mode/kp/kv + ``force_range``
+        clamp, via ``get_dofs_control_force``) is mapped to a per-joint scalar torque
+        and cached in ``ad.torque``. The value is written into IPC during
+        ``advance()`` by a per-joint animator callback (see
+        ``_add_ipc_monolithic_entities``) — writing ``external_torque`` /
+        ``is_constrained`` directly on the joint geometry outside the animator
+        aborts the solver, so the animator is the supported actuation path.
+        """
+        if not self._ipc_monolithic_data_by_entity:
+            return
+        if self.options.ipc_monolithic_actuation != "torque":
+            return
+        if not self.options.monolithic_torque_enable:
+            return
+
+        # (B, n_dofs) PD-law control force from the current joint state.
+        ctrl_force = self.rigid_solver.get_dofs_control_force()  # torch tensor
+        cf = np.asarray(ctrl_force.detach().cpu().numpy()).reshape(self._B, -1)
+
+        for entity, ad in self._ipc_monolithic_data_by_entity.items():
+            dof_start = entity.dof_start
+            for env_idx in range(self._B):
+                for j, dof_local in enumerate(ad.joints_dof_idx_local):
+                    ad.torque[env_idx, j] = MONOLITHIC_TORQUE_SIGN * float(cf[env_idx, dof_start + dof_local])
 
     def _retrieve_ipc_rigid_states(self):
         """

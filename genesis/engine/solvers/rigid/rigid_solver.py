@@ -1311,6 +1311,12 @@ class RigidSolver(KinematicSolver):
                         self._is_backward,
                     )
                     self._func_constraint_force()
+                    # ipc_monolithic: capture the per-joint control torque from the CURRENT
+                    # (pre-prediction) joint state. Done here (not in couple()) so the PD law
+                    # sees the true current pos/vel, not the Genesis-predicted state that
+                    # kernel_predict_integrate is about to write. The torque is applied to IPC
+                    # during advance() by the joint animator callbacks.
+                    self.sim.coupler.capture_monolithic_control_torque()
                     # Sync any set_pos/set_qpos changes to IPC before prediction
                     self.sim.coupler.cache_pre_prediction_transforms()
                     # Predict: vel_prev=vel, vel=vel+acc*dt, qpos_prev=qpos, qpos=qpos+vel*dt

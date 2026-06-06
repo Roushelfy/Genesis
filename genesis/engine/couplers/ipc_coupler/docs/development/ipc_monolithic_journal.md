@@ -354,3 +354,63 @@ at 0.40), and overshoot **monotonically shrinks with strength** — consistent w
 cubic penalty (soft = small overshoot, stiff = near-exact). The limit is a soft
 penalty, not a hard stop (matches conventions.md rule on penalty-based limits).
 M2 hold-pose re-run PASS (no regression with limits on by default).
+
+---
+
+## M3 (torque actuation) — implemented but BLOCKED by a fork bug (2026-06-05)
+
+Implemented the Genesis-side torque path and traced a hard blocker in the engine.
+
+### What was built (correct, Genesis-side)
+
+- `coupler.capture_monolithic_control_torque()` — called from
+  `RigidSolver.substep_pre_coupling` after `kernel_step_1`, before
+  `kernel_predict_integrate`, so the PD law reads the true current state. Computes the
+  per-DOF control force via `get_dofs_control_force` (folds ctrl_mode/kp/kv +
+  `force_range`) and caches per-joint torque in `ad.torque`. (Verified safe.)
+- `_make_monolithic_torque_animator()` — a per-joint libuipc animator callback that
+  writes `external_torque` + `external_torque/is_constrained=1` from `ad.torque` during
+  `advance()` (test 74 drives the torque from an animator, so this mirrors the engine's
+  intended path).
+- Option `IPCCouplerOptions.monolithic_torque_enable` (default **False**) gates the
+  actuation; capture + animator only run when True.
+
+### The blocker (engine bug, not integration)
+
+Activating `AffineBodyRevoluteJointExternalForce` (`is_constrained=1`) aborts the cuda
+backend inside `advance()`:
+
+```
+CUDA error ... parallel_for.inl:201 code=719(cudaErrorLaunchFailure)
+terminate called after throwing an instance of 'muda::cuda_error<cudaError>'
+```
+
+719 is a sticky error from a prior kernel's illegal memory access — the external-force
+reporter's device kernel (`body_ids/rest_positions/qs`) OOBs when active. Confirmed it
+is **the fork, not this integration**, by running the libuipc C++ tests on this build:
+
+| libuipc `uipc_test_sim_case` | result |
+|---|---|
+| `37_abd_revolute_joint` | PASS |
+| `52_abd_revolute_joint_limit` | PASS |
+| `72_abd_driving_revolute_joint` (driving/motor) | PASS |
+| `74_abd_revolute_joint_external_force` (torque) | **SIGABRT** |
+
+Isolation (Genesis side): hook fully off → PASS; compute torque only, no IPC write →
+PASS; activate external force (direct write OR via animator) → SIGABRT. Single-joint
+crashes too, so it is not a multi-joint indexing issue.
+
+### State
+
+`monolithic_torque_enable=False` by default → external force stays inactive
+(`is_constrained=0`), so M2 hold-pose still PASSES and the M4 render path is unaffected.
+[m3_position_control.py](m3_position_control.py) sets the flag True and is currently a
+**reproducer** for the engine crash (not a passing gate).
+
+### Decision needed (owner)
+
+Either (a) fix the fork's `AffineBodyRevoluteJointExternalForce` (test 74 crash) — then
+the torque path works as designed; or (b) switch monolithic actuation to
+`AffineBodyDrivingRevoluteJoint` (test 72 passes) — a motor/PD-toward-target model (IPC
+does the PD), which changes B1 (Genesis-computed torque → IPC-side motor) but is the
+proven-working path on this build. M3 paused pending that choice.

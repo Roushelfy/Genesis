@@ -368,6 +368,12 @@ class IPCCouplerOptions(BaseCouplerOptions):
     """Actuation channel for ``coup_type='ipc_monolithic'`` entities. Currently only
     ``'torque'`` (per-joint scalar torque via AffineBodyRevoluteJointExternalForce, computed
     Genesis-side from the control law)."""
+    monolithic_torque_enable: StrictBool = False
+    """Activate the per-joint torque actuation for ``coup_type='ipc_monolithic'``.
+    Default False: the fork's AffineBodyRevoluteJointExternalForce aborts the cuda
+    backend when activated (libuipc test 74 also SIGABRTs on this build), so the
+    torque path is gated off until the engine bug is fixed. With it off, the robot is
+    built in IPC and reads back/renders, but joints are not actuated by control torque."""
     monolithic_joint_limit_enable: StrictBool = True
     """Whether ``coup_type='ipc_monolithic'`` revolute joints get an
     AffineBodyRevoluteJointLimit (cubic penalty) at their URDF/MJCF limits."""
