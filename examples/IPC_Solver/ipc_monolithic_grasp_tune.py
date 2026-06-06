@@ -114,6 +114,25 @@ def main():
 
     scene.build()
 
+    # --- Mass report: ground-truth URDF link masses to compare against IPC ---
+    # For ipc_monolithic the coupler injects each ABD body's true 12x12 mass matrix
+    # and logs "[IPC ABD] link=...: true-inertia ABD mass (m=... kg)". The sum of those
+    # injected masses should equal the TOTAL below (mass is conserved under fixed-joint
+    # merging); each per-body m should match the URDF link/merged-subtree mass, NOT
+    # rho*mesh_volume. With the old density model the fingers came out near-massless.
+    if not no_ipc:
+        link_masses = [(lk.name, float(lk.inertial_mass or 0.0)) for lk in franka.links]
+        total = sum(m for _, m in link_masses)
+        print("\n=== Franka URDF link inertial masses (ground truth) ===", flush=True)
+        for name, m in link_masses:
+            print(f"  {name:24s} {m:8.4f} kg", flush=True)
+        print(f"  {'TOTAL':24s} {total:8.4f} kg", flush=True)
+        print(
+            "Compare with the '[IPC ABD] ... true-inertia ABD mass (m=...)' lines above:\n"
+            "sum of injected ABD masses should equal this TOTAL.\n",
+            flush=True,
+        )
+
     motors_dof, fingers_dof = slice(0, 7), slice(7, 9)
     ee = franka.get_link("hand")
     ee_quat = [0.0, 1.0, 0.0, 0.0]

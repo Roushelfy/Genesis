@@ -15,7 +15,7 @@ import trimesh
 
 import genesis as gs
 import genesis.utils.geom as gu
-from genesis.engine.entities.rigid_entity.rigid_link import RHO_MUJOCO, RHO_OBJECT, RHO_ROBOT
+from genesis.engine.entities.rigid_entity.rigid_link import MASS_EPS, RHO_MUJOCO, RHO_OBJECT, RHO_ROBOT
 from genesis.engine.materials.FEM.cloth import Cloth
 from genesis.engine.materials.FEM.paper import Paper
 from genesis.engine.materials.FEM.rope import Rope
@@ -149,6 +149,21 @@ IPC_SURFACE_PREFIX = "ipc_surface"
 GENESIS_SURFACE_PREFIX = "genesis_surface"
 
 
+def _link_inertia_about_com(link: "RigidLink") -> np.ndarray:
+    """Inertia tensor about the link's COM, expressed in the LINK frame.
+
+    Genesis stores ``link.inertial_i`` in the inertial *principal* frame, with
+    ``link.inertial_quat`` giving that frame's orientation relative to the link
+    frame; the rigid solver rotates by it at runtime (forward_kinematics
+    ``qd_transform_inertia_by_trans_quat``). We must apply the same rotation so
+    the ABD mass matrix matches the reduced-coordinate dynamics for off-diagonal
+    or rotated inertia tensors.
+    """
+    I_principal = np.asarray(link.inertial_i, dtype=np.float64)
+    R = gu.quat_to_R(np.asarray(link.inertial_quat, dtype=np.float64))
+    return R @ I_principal @ R.T
+
+
 def _combine_inertials(
     parent_link: "RigidLink",
     children: "list[RigidLink]",
@@ -157,7 +172,8 @@ def _combine_inertials(
 
     Uses the parallel axis theorem to shift each body's inertia tensor to the
     parent link's origin, then sums mass, computes combined COM, and shifts
-    the total inertia tensor to the combined COM.
+    the total inertia tensor to the combined COM. All inertia tensors are first
+    rotated into their own link frame via :func:`_link_inertia_about_com`.
 
     Parameters
     ----------
@@ -169,14 +185,14 @@ def _combine_inertials(
     Returns
     -------
     tuple[float, np.ndarray, np.ndarray]
-        (total_mass, combined_com, combined_inertia) in parent-local frame.
+        (total_mass, combined_com, combined_inertia-about-COM) in parent-local frame.
     """
     total_mass = float(parent_link.inertial_mass)
     # Weighted COM accumulator (in parent-local frame)
     weighted_com = total_mass * np.asarray(parent_link.inertial_pos, dtype=np.float64)
     # Inertia at parent-link origin (parallel axis from parent COM)
     I_origin = _shift_inertia_to_origin(
-        np.asarray(parent_link.inertial_i, dtype=np.float64),
+        _link_inertia_about_com(parent_link),
         np.asarray(parent_link.inertial_pos, dtype=np.float64),
         total_mass,
     )
@@ -187,7 +203,8 @@ def _combine_inertials(
             continue
         m = float(child_mass)
         child_com_local = np.asarray(child.inertial_pos, dtype=np.float64)
-        child_I_local = np.asarray(child.inertial_i, dtype=np.float64)
+        # Inertia about the child COM, in the child link frame.
+        child_I_local = _link_inertia_about_com(child)
 
         # Transform child COM and inertia into parent frame
         rel_pos, rel_quat = compute_link_to_link_transform(child, parent_link)
@@ -1232,14 +1249,42 @@ class IPCCoupler(RBC):
             if is_proxy and has_plane_geom:
                 continue
 
+            # ---- ipc_monolithic: resolve the TRUE rigid-body inertials ----
+            # ipc_monolithic free-integrates each ABD body inside IPC (external_kinetic=0),
+            # so its mass/inertia must be physically correct. Robot links carry an
+            # authoritative URDF/MJCF <inertial>; use it (combined across fixed-joint
+            # children, rotated into the link frame) instead of the mesh*guessed-density
+            # approximation, and inject it as an explicit 12x12 ABD mass matrix below.
+            # Other coupling types keep the density model (objects are fine as uniform
+            # density; for external_kinetic=1 modes Genesis owns the dynamics).
+            mono_mass = mono_com = mono_inertia = None
+            if is_ipc_monolithic:
+                try:
+                    m_val, c_val, i_val = _combine_inertials(link, merged_children)
+                except (TypeError, ValueError, AttributeError):
+                    m_val = None
+                if m_val is not None and m_val > MASS_EPS:
+                    i_sym = 0.5 * (i_val + i_val.T)
+                    if float(np.linalg.eigvalsh(i_sym).min()) > gs.EPS:
+                        mono_mass, mono_com, mono_inertia = float(m_val), c_val, i_sym
+                if mono_mass is None:
+                    gs.logger.warning(
+                        f"[IPC monolithic] link '{link.name}' has degenerate inertials "
+                        f"(mass={m_val}); falling back to density-based ABD mass."
+                    )
+
             if is_proxy:
                 # No collision mesh — create a proxy ABD body from inertial properties
                 if self._ipc_abd is None:
                     self._ipc_abd = AffineBodyConstitution()
                     self._ipc_constitution_tabular.insert(self._ipc_abd)
-                mass_val = float(link.inertial_mass)
-                mass_center = np.asarray(link.inertial_pos, dtype=np.float64)
-                inertia = np.asarray(link.inertial_i, dtype=np.float64)
+                if mono_mass is not None:
+                    # True combined inertials (link frame, about COM) for ipc_monolithic.
+                    mass_val, mass_center, inertia = mono_mass, mono_com, mono_inertia
+                else:
+                    mass_val = float(link.inertial_mass)
+                    mass_center = np.asarray(link.inertial_pos, dtype=np.float64)
+                    inertia = np.asarray(link.inertial_i, dtype=np.float64)
                 volume = mass_val / rho if rho > 0 else 1.0
                 rigid_link_geom = self._ipc_abd.create_proxy(
                     kappa=ABD_KAPPA * uipc.unit.MPa,
@@ -1274,31 +1319,62 @@ class IPCCoupler(RBC):
                 else:
                     self._ipc_no_collision_contact.apply_to(rigid_link_geom)
 
-                # Apply ABD constitution — use AffineBodyShell for non-watertight meshes
-                # (open surfaces like gripper pads) where volume-based mass would be near-zero.
                 mesh_for_check = self._abd_merged_meshes.get(link)
-                is_watertight = mesh_for_check is not None and mesh_for_check.is_watertight
-                gs.logger.info(
-                    f"[IPC ABD] link={link.name}, is_watertight={is_watertight}, mesh_exists={mesh_for_check is not None}, rho={rho}"
-                )
 
-                if is_watertight:
+                if mono_mass is not None:
+                    # ipc_monolithic: inject the TRUE 12x12 ABD mass matrix from the
+                    # combined URDF/MJCF inertials. The explicit-mass overload works on
+                    # OPEN and closed meshes alike (the mass_density overload throws on
+                    # open trimeshes via compute_mesh_volume), so no watertight/shell
+                    # split is needed here. `volume` only scales the (near-rigid) ABD
+                    # elastic energy + a bookkeeping density — never the mass — so we use
+                    # the merged mesh's geometric volume to match the previous scale.
                     if self._ipc_abd is None:
                         self._ipc_abd = AffineBodyConstitution()
                         self._ipc_constitution_tabular.insert(self._ipc_abd)
-                    self._ipc_abd.apply_to(rigid_link_geom, kappa=ABD_KAPPA * uipc.unit.MPa, mass_density=rho)
-                    # Explicitly set thickness=0 so the sanity check merge doesn't
-                    # inherit a non-zero default from AffineBodyShell geometries.
+                    mass_matrix = uipc.geometry.affine_body.from_rigid_body(mono_mass, mono_com, mono_inertia)
+                    if mesh_for_check is not None and mesh_for_check.is_watertight:
+                        body_volume = abs(float(mesh_for_check.volume))
+                    elif mesh_for_check is not None:
+                        body_volume = float(mesh_for_check.area) * (self.options.contact_d_hat or 0.001)
+                    else:
+                        body_volume = mono_mass / rho if rho > 0 else 1.0
+                    body_volume = max(body_volume, 1e-9)
+                    self._ipc_abd.apply_to(rigid_link_geom, ABD_KAPPA * uipc.unit.MPa, mass_matrix, body_volume)
+                    # thickness is inert for ABD contact; keep it 0 so the sanity-check
+                    # merge stays consistent across all ABD geometries.
                     rigid_link_geom.vertices().create(uipc.builtin.thickness, 0.0)
-                else:
-                    if self._ipc_abd_shell is None:
-                        self._ipc_abd_shell = AffineBodyShell()
-                        self._ipc_constitution_tabular.insert(self._ipc_abd_shell)
-                    # Use contact_d_hat as shell thickness — a reasonable scale for thin rigid surfaces.
-                    shell_thickness = (self.options.contact_d_hat or 0.001) / 2
-                    self._ipc_abd_shell.apply_to(
-                        rigid_link_geom, kappa=ABD_KAPPA * uipc.unit.MPa, mass_density=rho, thickness=shell_thickness
+                    gs.logger.info(
+                        f"[IPC ABD] link={link.name}: true-inertia ABD mass "
+                        f"(m={mono_mass:.4f} kg, vol={body_volume:.3e})"
                     )
+                else:
+                    # Density-based mass (ipc_only / two_way / external_articulation, or
+                    # ipc_monolithic fallback for degenerate inertials). Use AffineBodyShell
+                    # for non-watertight meshes (open surfaces like gripper pads) where the
+                    # volumetric mass integral would throw / be near-zero.
+                    is_watertight = mesh_for_check is not None and mesh_for_check.is_watertight
+                    gs.logger.info(
+                        f"[IPC ABD] link={link.name}, is_watertight={is_watertight}, "
+                        f"mesh_exists={mesh_for_check is not None}, rho={rho}"
+                    )
+                    if is_watertight:
+                        if self._ipc_abd is None:
+                            self._ipc_abd = AffineBodyConstitution()
+                            self._ipc_constitution_tabular.insert(self._ipc_abd)
+                        self._ipc_abd.apply_to(rigid_link_geom, kappa=ABD_KAPPA * uipc.unit.MPa, mass_density=rho)
+                        # Explicitly set thickness=0 so the sanity check merge doesn't
+                        # inherit a non-zero default from AffineBodyShell geometries.
+                        rigid_link_geom.vertices().create(uipc.builtin.thickness, 0.0)
+                    else:
+                        if self._ipc_abd_shell is None:
+                            self._ipc_abd_shell = AffineBodyShell()
+                            self._ipc_constitution_tabular.insert(self._ipc_abd_shell)
+                        # Use contact_d_hat as shell thickness — a reasonable scale for thin rigid surfaces.
+                        shell_thickness = (self.options.contact_d_hat or 0.001) / 2
+                        self._ipc_abd_shell.apply_to(
+                            rigid_link_geom, kappa=ABD_KAPPA * uipc.unit.MPa, mass_density=rho, thickness=shell_thickness
+                        )
 
             # Per-entity d_hat override
             if entity.material.contact_d_hat is not None:
