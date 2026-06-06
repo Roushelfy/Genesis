@@ -474,3 +474,31 @@ fork fix makes is_constrained=1 + tau=0 a clean no-op).
 Net: ipc_monolithic now does the full loop — Genesis folds the control law into per-joint
 torque, IPC integrates the articulation + contact, Genesis reconstructs joint state and
 renders. Force, position, and velocity control modes all route through the torque path.
+
+## Prismatic joints + real-robot example (2026-06-05)
+
+`examples/IPC_Solver/ipc_robot_grasp_cube.py` (Franka grasps a cube) was used to test
+the modes on a real robot:
+- **external_articulation (as-is): PASS** — 410 frames, ~51 FPS, cube grasp/lift, no
+  errors, on the merged v1.0.0 tree.
+- **ipc_monolithic**: initially rejected the Franka because the gripper has PRISMATIC
+  finger joints (v1 was revolute-only). Confirmed the fork's prismatic external force is
+  sound on this build (libuipc test 73 `73_abd_prismatic_joint_external_force` PASSES,
+  401 assertions), then **extended ipc_monolithic to PRISMATIC joints**:
+  - build: per-joint `AffineBodyPrismaticJoint` + `AffineBodyPrismaticJointExternalForce`
+    + `AffineBodyPrismaticJointLimit` (lazy per-type creation), vs revolute equivalents.
+  - actuation: the animator writes `external_force`/`external_force/is_constrained` for
+    prismatic (linear force) vs `external_torque`/... for revolute. `IpcMonolithicEntityData`
+    gained `joints_is_prismatic`. Reconstruction (Step 2a) already had a prismatic branch.
+  - validation: allow REVOLUTE + PRISMATIC + FIXED.
+
+  Result: the grasp example runs **end to end with ipc_monolithic** (`--abd` rigid cube):
+  build OK (Genesis collision/constraint disabled), all 410 frames, exit 0, no
+  NaN/invalid/newton-maxout — the full Franka (revolute arm + prismatic gripper) is
+  simulated inside IPC and executes the grasp. **Caveat (gains):** the example's
+  Genesis-tuned `kp` (up to 4500) makes a very stiff implicit problem — newton 40–125
+  iters/frame, ~3–5 FPS (vs newton=1 / 51 FPS for external_articulation). Stable but
+  expensive; IPC-tuned (lower) gains would converge cheaply, same as the M3 finding.
+  M3 revolute position-control re-run PASS (no regression from the prismatic refactor).
+
+The example gained an `ipc_monolithic` choice in its `--coup_type` arg.

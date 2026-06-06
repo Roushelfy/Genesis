@@ -146,5 +146,6 @@ class IpcMonolithicEntityData:
     joints_qs_idx_local: list[int]
     joints_dof_idx_local: list[int]
     joints_axis_local: list[np.ndarray]
+    joints_is_prismatic: list[bool]
     q0: np.ndarray
     torque: np.ndarray | None = None

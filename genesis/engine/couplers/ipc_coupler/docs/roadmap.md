@@ -69,8 +69,16 @@ animator. FORCE + POSITION control validated: position PD converges to setpoint
 (err ~5e-4 rad, settled). The earlier "velocity readback garbage" was a misdiagnosis —
 the readback is exact; the toy arm's tiny inertia just made the original gains diverge.
 `monolithic_torque_enable` now defaults True; M2 hold still PASSES. See journal §M3.
-**Next:** M5 (robot + cloth/RCC coexistence) + merged-parent reconstruction / realistic-arm
-gravity-hold demo.
+**Prismatic joints supported (2026-06-05).** Extended ipc_monolithic to PRISMATIC joints
+(grippers): `AffineBodyPrismaticJoint(+ExternalForce/Limit)`, linear-force actuation
+(`external_force` attr), validated on the Franka grasp example
+(`examples/IPC_Solver/ipc_robot_grasp_cube.py --coup_type ipc_monolithic`) — full
+revolute-arm + prismatic-gripper robot runs end-to-end in IPC (stable; stiff/slow under
+the example's high Genesis-tuned gains). external_articulation on the same example also
+PASSES. M3 revolute re-validated (no regression).
+
+**Next:** IPC-tuned gains for real robots; merged-parent reconstruction; M5 robot +
+cloth/RCC coexistence (the grasp + FEM cube default already exercises robot+deformable).
 
 ## Phase plan & acceptance gates
 

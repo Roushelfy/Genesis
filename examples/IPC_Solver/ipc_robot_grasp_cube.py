@@ -14,7 +14,7 @@ def main():
         "--coup_type",
         type=str,
         default="external_articulation",
-        choices=["two_way_soft_constraint", "external_articulation"],
+        choices=["two_way_soft_constraint", "external_articulation", "ipc_monolithic"],
     )
     parser.add_argument("--use-al", action="store_true", help="Use AL-IPC contact constitution")
     parser.add_argument("--abd", action="store_true", help="Use ABD rigid cube instead of FEM")

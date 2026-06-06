@@ -45,6 +45,8 @@ if TYPE_CHECKING or UIPC_AVAILABLE:
         AffineBodyConstitution,
         AffineBodyShell,
         AffineBodyPrismaticJoint,
+        AffineBodyPrismaticJointExternalForce,
+        AffineBodyPrismaticJointLimit,
         AffineBodyRevoluteJoint,
         AffineBodyRevoluteJointExternalForce,
         AffineBodyRevoluteJointLimit,
@@ -547,6 +549,8 @@ class IPCCoupler(RBC):
         self._ipc_monolithic_data_by_entity: dict["RigidEntity", IpcMonolithicEntityData] = {}
         self._ipc_rev_ext_force: "AffineBodyRevoluteJointExternalForce | None" = None
         self._ipc_rev_joint_limit: "AffineBodyRevoluteJointLimit | None" = None
+        self._ipc_prism_ext_force: "AffineBodyPrismaticJointExternalForce | None" = None
+        self._ipc_prism_joint_limit: "AffineBodyPrismaticJointLimit | None" = None
         self._fem_slots_by_entity: dict["FEMEntity", list] = {}
 
         # ==== User hooks ====
@@ -667,10 +671,10 @@ class IPCCoupler(RBC):
                         f"robots only (free base is not yet implemented)."
                     )
                 for j in entity.joints:
-                    if j.type not in (gs.JOINT_TYPE.FIXED, gs.JOINT_TYPE.REVOLUTE):
+                    if j.type not in (gs.JOINT_TYPE.FIXED, gs.JOINT_TYPE.REVOLUTE, gs.JOINT_TYPE.PRISMATIC):
                         gs.raise_exception(
-                            f"Rigid entity {i_e} joint '{j.name}' has type {j.type}. 'ipc_monolithic' v1 "
-                            f"supports REVOLUTE and FIXED joints only."
+                            f"Rigid entity {i_e} joint '{j.name}' has type {j.type}. 'ipc_monolithic' "
+                            f"supports REVOLUTE, PRISMATIC and FIXED joints only."
                         )
                 if self._B > 1:
                     gs.raise_exception(
@@ -1487,12 +1491,31 @@ class IPCCoupler(RBC):
         if COUPLING_TYPE.IPC_MONOLITHIC not in self._coup_type_by_entity.values():
             return
 
-        self._ipc_rev_ext_force = AffineBodyRevoluteJointExternalForce()
-        self._ipc_constitution_tabular.insert(self._ipc_rev_ext_force)
+        # External-force + limit constitutions are created lazily per joint type
+        # (revolute uses torque, prismatic uses linear force).
+        def _ext_force(is_prismatic):
+            if is_prismatic:
+                if self._ipc_prism_ext_force is None:
+                    self._ipc_prism_ext_force = AffineBodyPrismaticJointExternalForce()
+                    self._ipc_constitution_tabular.insert(self._ipc_prism_ext_force)
+                return self._ipc_prism_ext_force
+            if self._ipc_rev_ext_force is None:
+                self._ipc_rev_ext_force = AffineBodyRevoluteJointExternalForce()
+                self._ipc_constitution_tabular.insert(self._ipc_rev_ext_force)
+            return self._ipc_rev_ext_force
 
-        if self.options.monolithic_joint_limit_enable:
-            self._ipc_rev_joint_limit = AffineBodyRevoluteJointLimit()
-            self._ipc_constitution_tabular.insert(self._ipc_rev_joint_limit)
+        def _joint_limit(is_prismatic):
+            if not self.options.monolithic_joint_limit_enable:
+                return None
+            if is_prismatic:
+                if self._ipc_prism_joint_limit is None:
+                    self._ipc_prism_joint_limit = AffineBodyPrismaticJointLimit()
+                    self._ipc_constitution_tabular.insert(self._ipc_prism_joint_limit)
+                return self._ipc_prism_joint_limit
+            if self._ipc_rev_joint_limit is None:
+                self._ipc_rev_joint_limit = AffineBodyRevoluteJointLimit()
+                self._ipc_constitution_tabular.insert(self._ipc_rev_joint_limit)
+            return self._ipc_rev_joint_limit
 
         joints_xaxis = qd_to_numpy(self.rigid_solver.joints_state.xaxis, transpose=True)
         joints_xanchor = qd_to_numpy(self.rigid_solver.joints_state.xanchor, transpose=True)
@@ -1504,13 +1527,13 @@ class IPCCoupler(RBC):
 
             gs.logger.debug(f"Adding ipc_monolithic entity {i_e} with {entity.n_joints} joints")
 
-            # ---- Collect actuated joints (revolute; fixed joints already merged) ----
+            # ---- Collect actuated joints (revolute/prismatic; fixed joints already merged) ----
             joints: list[tuple["RigidJoint", "RigidLink", "RigidLink"]] = []
             for joint in entity.joints:
                 if joint.type == gs.JOINT_TYPE.FIXED:
                     continue
-                if joint.type != gs.constants.JOINT_TYPE.REVOLUTE:
-                    gs.raise_exception(f"ipc_monolithic v1 supports REVOLUTE joints only, got {joint.type}.")
+                if joint.type not in (gs.constants.JOINT_TYPE.REVOLUTE, gs.constants.JOINT_TYPE.PRISMATIC):
+                    gs.raise_exception(f"ipc_monolithic supports REVOLUTE/PRISMATIC joints, got {joint.type}.")
 
                 child_link = joint.link
                 parent_link = entity.links[max(joint.link.parent_idx, 0) - entity.link_start]
@@ -1545,23 +1568,27 @@ class IPCCoupler(RBC):
                     if self._B > 1:
                         self._ipc_subscenes[env_idx].apply_to(joint_geom)
 
+                    is_prismatic = joint.type == gs.constants.JOINT_TYPE.PRISMATIC
                     parent_abd_slot = self._abd_data_by_link[parent_link].slots[env_idx]
                     child_abd_slot = self._abd_data_by_link[child_link].slots[env_idx]
-                    AffineBodyRevoluteJoint().apply_to(
+                    joint_cons = AffineBodyPrismaticJoint if is_prismatic else AffineBodyRevoluteJoint
+                    joint_cons().apply_to(
                         joint_geom, [parent_abd_slot], [0], [child_abd_slot], [0], [self.options.joint_strength_ratio]
                     )
-                    # Actuation channel: per-joint scalar torque, zero at build.
-                    self._ipc_rev_ext_force.apply_to(joint_geom, 0.0)
+                    # Actuation channel: per-joint scalar torque (revolute) / linear force
+                    # (prismatic), zero at build.
+                    _ext_force(is_prismatic).apply_to(joint_geom, 0.0)
 
                     # Joint limit (cubic penalty). Bounds come from the URDF/MJCF joint
-                    # limit, mapped into IPC's angle convention (angle is tracked relative
-                    # to the build pose, so subtract the build qpos for this joint).
-                    if self._ipc_rev_joint_limit is not None:
+                    # limit, mapped into IPC's coordinate convention (the joint coordinate is
+                    # tracked relative to the build pose, so subtract the build qpos).
+                    joint_limit = _joint_limit(is_prismatic)
+                    if joint_limit is not None:
                         lim = np.asarray(joint.dofs_limit, dtype=np.float64).reshape(-1, 2)[0]
                         lo, hi = float(lim[0]), float(lim[1])
                         if np.isfinite(lo) and np.isfinite(hi) and hi > lo:
                             q_build = float(qpos0[env_idx, entity.q_start + joint.qs_idx_local[0]])
-                            self._ipc_rev_joint_limit.apply_to(
+                            joint_limit.apply_to(
                                 joint_geom,
                                 lo - q_build,
                                 hi - q_build,
@@ -1572,11 +1599,7 @@ class IPCCoupler(RBC):
                     joint_geom_slot, _ = joint_obj.geometries().create(joint_geom)
                     per_joint_slots.append(joint_geom_slot)
 
-                    # Drive the external torque via an animator (runs inside advance()).
-                    # Gated off by default: the fork's AffineBodyRevoluteJointExternalForce
-                    # aborts the cuda backend when activated (is_constrained=1) — libuipc
-                    # test 74 also SIGABRTs on this build. Until that engine bug is fixed the
-                    # joint is left unactuated (is_constrained stays 0 from build = inactive).
+                    # Drive the joint actuation via an animator (runs inside advance()).
                     if self.options.monolithic_torque_enable:
                         self._ipc_animator.insert(
                             joint_obj, self._make_monolithic_torque_animator(entity, j, env_idx)
@@ -1590,7 +1613,14 @@ class IPCCoupler(RBC):
                 joints_parent_link=[pl for _, pl, _ in joints],
                 joints_qs_idx_local=[j.qs_idx_local[0] for j, *_ in joints],
                 joints_dof_idx_local=[j.dofs_idx_local[0] for j, *_ in joints],
-                joints_axis_local=[np.asarray(j._dofs_motion_ang[0], dtype=np.float64) for j, *_ in joints],
+                joints_axis_local=[
+                    np.asarray(
+                        (j._dofs_motion_vel if j.type == gs.constants.JOINT_TYPE.PRISMATIC else j._dofs_motion_ang)[0],
+                        dtype=np.float64,
+                    )
+                    for j, *_ in joints
+                ],
+                joints_is_prismatic=[j.type == gs.constants.JOINT_TYPE.PRISMATIC for j, *_ in joints],
                 q0=qpos0[0, entity.q_start : entity.q_end].copy(),
                 torque=np.zeros((self._B, n_joints), dtype=np.float64),
             )
@@ -2854,11 +2884,13 @@ class IPCCoupler(RBC):
             if not slots:
                 return
             geo = slots[0].geometry()
-            torque_attr = geo.edges().find("external_torque")
-            enable_attr = geo.edges().find("external_torque/is_constrained")
-            if torque_attr is None or enable_attr is None:
+            # Prismatic joints use a linear force attribute; revolute use a torque attribute.
+            name = "external_force" if ad.joints_is_prismatic[j] else "external_torque"
+            force_attr = geo.edges().find(name)
+            enable_attr = geo.edges().find(name + "/is_constrained")
+            if force_attr is None or enable_attr is None:
                 return
-            uipc.view(torque_attr)[:] = float(ad.torque[env_idx, j])
+            uipc.view(force_attr)[:] = float(ad.torque[env_idx, j])
             uipc.view(enable_attr)[:] = 1
 
         return _cb
