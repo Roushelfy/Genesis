@@ -383,10 +383,12 @@ class IPCCouplerOptions(BaseCouplerOptions):
     """Emulate Genesis's semi-implicit treatment of the velocity-damping term for
     ``coup_type='ipc_monolithic'``. The actuator kv and passive joint damping are applied
     EXPLICITLY (constant over the IPC advance) in monolithic, so they are only stable for
-    kv*dt/I < ~2 -- Franka's kv~200 blows up. With this on, the captured per-joint torque is
-    scaled by I_eff/(I_eff + (kv+damping)*dt) and the passive damping force is added, which
-    reproduces Genesis's (M + dt*D) implicit-damping velocity update and removes the kv*dt/I
-    stability bound. Set False to apply the raw explicit PD torque."""
+    kv*dt/I < ~2 -- Franka's kv~200 blows up. With this on, the position/feedforward part of
+    the control force is kept at full strength (so it still balances gravity) while ONLY the
+    velocity-damping part (actuator kv + passive joint damping) is applied with an effective
+    coefficient D*I_eff/(I_eff + D*dt) (D=kv+damping), which is A-stable for any kv -- removing
+    the kv*dt/I bound without attenuating the gravity-balancing torque. Set False to apply the
+    raw explicit PD torque (only stable for small kv*dt/I_eff)."""
     before_ipc_world_init: IPCBeforeWorldInitCallback | None = None
 
     # Verbose IPC log — bypass the digest and print full libuipc info log

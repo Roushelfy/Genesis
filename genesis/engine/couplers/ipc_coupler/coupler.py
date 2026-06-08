@@ -3115,9 +3115,18 @@ class IPCCoupler(RBC):
         use_implicit = self.options.monolithic_implicit_damping
         if use_implicit:
             dt = float(self.rigid_solver._substep_dt)
-            act_bias = np.asarray(qd_to_numpy(self.rigid_solver.dofs_info.act_bias)).reshape(-1, 3)
-            dof_damping = np.asarray(qd_to_numpy(self.rigid_solver.dofs_info.damping)).reshape(-1)
-            dof_vel = np.asarray(qd_to_numpy(self.rigid_solver.dofs_state.vel, transpose=True)).reshape(self._B, -1)
+            di = self.rigid_solver.dofs_info
+            ds = self.rigid_solver.dofs_state
+            act_gain = np.asarray(qd_to_numpy(di.act_gain)).reshape(-1)
+            act_bias = np.asarray(qd_to_numpy(di.act_bias)).reshape(-1, 3)
+            dof_damping = np.asarray(qd_to_numpy(di.damping)).reshape(-1)
+            force_range = np.asarray(qd_to_numpy(di.force_range)).reshape(-1, 2)
+            ctrl_mode = np.asarray(qd_to_numpy(ds.ctrl_mode, transpose=True)).reshape(self._B, -1)
+            ctrl_pos = np.asarray(qd_to_numpy(ds.ctrl_pos, transpose=True)).reshape(self._B, -1)
+            ctrl_vel = np.asarray(qd_to_numpy(ds.ctrl_vel, transpose=True)).reshape(self._B, -1)
+            dof_pos = np.asarray(qd_to_numpy(ds.pos, transpose=True)).reshape(self._B, -1)
+            dof_vel = np.asarray(qd_to_numpy(ds.vel, transpose=True)).reshape(self._B, -1)
+            POS_MODE, VEL_MODE = int(gs.CTRL_MODE.POSITION), int(gs.CTRL_MODE.VELOCITY)
 
         for entity, ad in self._ipc_monolithic_data_by_entity.items():
             dof_start = entity.dof_start
@@ -3126,15 +3135,39 @@ class IPCCoupler(RBC):
                     dof = dof_start + dof_local
                     f = float(cf[env_idx, dof])
                     if use_implicit and ad.joints_Ieff is not None:
+                        v = float(dof_vel[env_idx, dof])
                         kv = -float(act_bias[dof, 2])  # act_bias[2] = -kv
                         damp = float(dof_damping[dof])
                         i_eff = float(ad.joints_Ieff[j])
-                        # add the passive damping force Genesis includes but get_dofs_control_force omits
-                        f -= damp * float(dof_vel[env_idx, dof])
-                        # implicit-Euler emulation: scale by I_eff / (I_eff + (kv+damping)*dt)
-                        denom = i_eff + (kv + damp) * dt
-                        if denom > gs.EPS:
-                            f *= i_eff / denom
+                        D = kv + damp
+                        denom = i_eff + D * dt
+                        scale = (i_eff / denom) if denom > gs.EPS else 1.0
+                        # Decompose the control law (kernel_get_dofs_control_force) into its
+                        # velocity-INDEPENDENT part (f_pos: position/feedforward, computed from
+                        # the gains directly -- NOT by un-clamping cf, which would create
+                        # anti-damping when saturated) and its velocity-DEPENDENT part
+                        # (f_vel_act = act_bias[2]*v). Keep f_pos at FULL strength (it balances
+                        # gravity / sets position stiffness) and apply only the velocity damping
+                        # (actuator kv + passive) with the implicit scaling -- effective damping
+                        # coefficient D*scale <= I_eff/dt is A-stable for any kv. Finally clamp to
+                        # the effort limit.
+                        mode = int(ctrl_mode[env_idx, dof])
+                        if mode == POS_MODE:
+                            f_pos = (
+                                act_gain[dof] * (ctrl_pos[env_idx, dof] - dof_pos[env_idx, dof])
+                                + act_bias[dof, 0]
+                                + (act_gain[dof] + act_bias[dof, 1]) * dof_pos[env_idx, dof]
+                                - act_bias[dof, 2] * ctrl_vel[env_idx, dof]
+                            )
+                            f_vel_act = act_bias[dof, 2] * v
+                        elif mode == VEL_MODE:
+                            f_pos = -act_bias[dof, 2] * ctrl_vel[env_idx, dof]
+                            f_vel_act = act_bias[dof, 2] * v
+                        else:  # FORCE mode: no actuator velocity term
+                            f_pos = f
+                            f_vel_act = 0.0
+                        f = f_pos + (f_vel_act - damp * v) * scale
+                        f = min(max(f, float(force_range[dof, 0])), float(force_range[dof, 1]))
                     ad.torque[env_idx, j] = MONOLITHIC_TORQUE_SIGN * f
 
     def _retrieve_ipc_rigid_states(self):
