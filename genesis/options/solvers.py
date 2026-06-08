@@ -379,6 +379,14 @@ class IPCCouplerOptions(BaseCouplerOptions):
     monolithic_joint_limit_strength: PositiveFloat = 100.0
     """Strength (stiffness) of the monolithic revolute joint-limit cubic penalty.
     Higher = tighter enforcement / less overshoot past the limit."""
+    monolithic_implicit_damping: StrictBool = True
+    """Emulate Genesis's semi-implicit treatment of the velocity-damping term for
+    ``coup_type='ipc_monolithic'``. The actuator kv and passive joint damping are applied
+    EXPLICITLY (constant over the IPC advance) in monolithic, so they are only stable for
+    kv*dt/I < ~2 -- Franka's kv~200 blows up. With this on, the captured per-joint torque is
+    scaled by I_eff/(I_eff + (kv+damping)*dt) and the passive damping force is added, which
+    reproduces Genesis's (M + dt*D) implicit-damping velocity update and removes the kv*dt/I
+    stability bound. Set False to apply the raw explicit PD torque."""
     before_ipc_world_init: IPCBeforeWorldInitCallback | None = None
 
     # Verbose IPC log — bypass the digest and print full libuipc info log

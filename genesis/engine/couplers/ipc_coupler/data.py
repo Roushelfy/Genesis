@@ -154,4 +154,7 @@ class IpcMonolithicEntityData:
     #   e_world = normalize(R_parent @ axis_parent_local + R_child @ axis_child_local)
     joints_axis_parent_local: list[np.ndarray] | None = None
     joints_axis_child_local: list[np.ndarray] | None = None
+    # Per-joint effective inertia about the joint axis (incl. armature), used to scale the
+    # control torque into Genesis's semi-implicit damping update (monolithic_implicit_damping).
+    joints_Ieff: list[float] | None = None
     torque: np.ndarray | None = None

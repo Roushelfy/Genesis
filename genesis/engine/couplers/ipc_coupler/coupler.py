@@ -609,6 +609,9 @@ class IPCCoupler(RBC):
         # matching sim2sim — joint torques are applied as equal/opposite body wrenches, NOT
         # via AffineBodyRevoluteJointExternalForce.
         self._ipc_body_ext_force: "AffineBodyExternalBodyForce | None" = None
+        # ipc_monolithic: combined (mass, com, inertia-about-com, link frame, incl. armature)
+        # per ABD body, used to compute per-joint effective inertia for implicit damping.
+        self._monolithic_body_inertials: dict["RigidLink", tuple] = {}
         self._ipc_rev_joint_limit: "AffineBodyRevoluteJointLimit | None" = None
         self._ipc_prism_joint_limit: "AffineBodyPrismaticJointLimit | None" = None
         self._fem_slots_by_entity: dict["FEMEntity", list] = {}
@@ -1347,6 +1350,10 @@ class IPCCoupler(RBC):
                             # over-mass is absorbed by the prismatic joint constraint).
                             mono_mass = mono_mass + a
                         break
+                    # Cache the combined (mass, com, inertia-about-com) — incl. armature — so
+                    # _add_ipc_monolithic_entities can derive the per-joint effective inertia.
+                    self._monolithic_body_inertials[link] = (mono_mass, np.asarray(mono_com, dtype=np.float64),
+                                                             np.asarray(mono_inertia, dtype=np.float64))
 
             if is_proxy:
                 # No collision mesh — create a proxy ABD body from inertial properties
@@ -1784,6 +1791,28 @@ class IPCCoupler(RBC):
                     per_joint_slots.append(joint_geom_slot)
                 joint_slots_per_env.append(per_joint_slots)
 
+            # Per-joint effective inertia about the joint axis (incl. armature), for the
+            # implicit-damping torque scaling. Revolute: e^T·I_anchor·e with the parallel-axis
+            # shift to the joint origin (I_anchor = I_com + m(|c|^2 I - c c^T)); prismatic: the
+            # effective mass. Leaf/1-DOF exact; for a non-leaf chain joint this ignores the
+            # downstream composite (underestimate -> slightly over-damped, still stable).
+            joints_Ieff: list[float] = []
+            for j, (joint, parent_link, child_link) in enumerate(joints):
+                inert = self._monolithic_body_inertials.get(child_link)
+                if inert is None or j >= len(axes_child_local):
+                    joints_Ieff.append(0.0)
+                    continue
+                m_c, c_c, i_c = inert
+                if joint.type == gs.constants.JOINT_TYPE.PRISMATIC:
+                    ieff = float(m_c)
+                else:
+                    e = np.asarray(axes_child_local[j], dtype=np.float64)
+                    ne = np.linalg.norm(e)
+                    if ne > 1e-12:
+                        e = e / ne
+                    ieff = float(e @ i_c @ e + m_c * (float(c_c @ c_c) - float(e @ c_c) ** 2))
+                joints_Ieff.append(max(ieff, 1e-9))
+
             n_joints = len(joints)
             self._ipc_monolithic_data_by_entity[entity] = IpcMonolithicEntityData(
                 joint_slots=joint_slots_per_env,
@@ -1802,6 +1831,7 @@ class IPCCoupler(RBC):
                 q0=qpos0[0, entity.q_start : entity.q_end].copy(),
                 joints_axis_parent_local=axes_parent_local,
                 joints_axis_child_local=axes_child_local,
+                joints_Ieff=joints_Ieff,
                 torque=np.zeros((self._B, n_joints), dtype=np.float64),
             )
 
@@ -3076,11 +3106,36 @@ class IPCCoupler(RBC):
         ctrl_force = self.rigid_solver.get_dofs_control_force()  # torch tensor
         cf = np.asarray(ctrl_force.detach().cpu().numpy()).reshape(self._B, -1)
 
+        # Semi-implicit damping (matches Genesis's (M + dt*D) velocity update). The actuator
+        # kv and passive joint damping are applied EXPLICITLY in monolithic (constant over the
+        # IPC advance), so they are only stable for (kv+damping)*dt/I_eff < ~2. Genesis folds
+        # them onto the mass-matrix diagonal (implicit); we reproduce that by adding the missing
+        # passive-damping force and scaling the per-joint torque by I_eff/(I_eff+(kv+damping)*dt),
+        # which removes the kv*dt/I stability bound.
+        use_implicit = self.options.monolithic_implicit_damping
+        if use_implicit:
+            dt = float(self.rigid_solver._substep_dt)
+            act_bias = np.asarray(qd_to_numpy(self.rigid_solver.dofs_info.act_bias)).reshape(-1, 3)
+            dof_damping = np.asarray(qd_to_numpy(self.rigid_solver.dofs_info.damping)).reshape(-1)
+            dof_vel = np.asarray(qd_to_numpy(self.rigid_solver.dofs_state.vel, transpose=True)).reshape(self._B, -1)
+
         for entity, ad in self._ipc_monolithic_data_by_entity.items():
             dof_start = entity.dof_start
             for env_idx in range(self._B):
                 for j, dof_local in enumerate(ad.joints_dof_idx_local):
-                    ad.torque[env_idx, j] = MONOLITHIC_TORQUE_SIGN * float(cf[env_idx, dof_start + dof_local])
+                    dof = dof_start + dof_local
+                    f = float(cf[env_idx, dof])
+                    if use_implicit and ad.joints_Ieff is not None:
+                        kv = -float(act_bias[dof, 2])  # act_bias[2] = -kv
+                        damp = float(dof_damping[dof])
+                        i_eff = float(ad.joints_Ieff[j])
+                        # add the passive damping force Genesis includes but get_dofs_control_force omits
+                        f -= damp * float(dof_vel[env_idx, dof])
+                        # implicit-Euler emulation: scale by I_eff / (I_eff + (kv+damping)*dt)
+                        denom = i_eff + (kv + damp) * dt
+                        if denom > gs.EPS:
+                            f *= i_eff / denom
+                    ad.torque[env_idx, j] = MONOLITHIC_TORQUE_SIGN * f
 
     def _retrieve_ipc_rigid_states(self):
         """
