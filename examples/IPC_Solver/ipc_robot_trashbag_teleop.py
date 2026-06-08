@@ -7,6 +7,10 @@ Scene:
   - Franka robot with keyboard teleop
   - Ground plane
 
+Coupling (--coup_type): external_articulation (default) | two_way_soft_constraint |
+ipc_monolithic (IPC owns the full robot dynamics + gravity; gravity_compensation is
+forced to 0). All three drive the arm through the standard Genesis control API.
+
 Keyboard controls: see robot_teleop.py for the full keybind list.
 """
 
@@ -34,7 +38,7 @@ def main():
         "--coup_type",
         type=str,
         default="external_articulation",
-        choices=["two_way_soft_constraint", "external_articulation"],
+        choices=["two_way_soft_constraint", "external_articulation", "ipc_monolithic"],
     )
     parser.add_argument("--use-al", action="store_true", help="Use AL-IPC contact constitution")
     parser.add_argument("--verbose-ipc", action="store_true", help="Print full libuipc log")
@@ -81,9 +85,17 @@ def main():
     franka_material_kwargs = dict(
         coup_type=args.coup_type,
         coup_friction=1.0,
-        gravity_compensation=1.0,
         rho=20.0,
     )
+    if args.coup_type == "ipc_monolithic":
+        # ipc_monolithic: IPC owns the full robot dynamics + gravity (the arm is held by the
+        # per-joint control torque IPC integrates), so gravity_compensation must stay 0 -- it is
+        # forced/validated to 0 for this coup_type. Requires a fixed base + single env (both hold
+        # here). Joint actuation uses the standard Genesis control law via the teleop's PD gains.
+        pass
+    else:
+        # external_articulation / two_way: Genesis integrates the arm and compensates gravity.
+        franka_material_kwargs["gravity_compensation"] = 1.0
     if args.coup_type == "two_way_soft_constraint":
         franka_material_kwargs["coup_links"] = ("left_finger", "right_finger")
     franka = scene.add_entity(
