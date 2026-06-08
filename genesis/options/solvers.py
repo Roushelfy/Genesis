@@ -385,8 +385,10 @@ class IPCCouplerOptions(BaseCouplerOptions):
     joint damping are applied EXPLICITLY (constant over the IPC advance) in monolithic, so they
     are only stable for kv*dt/I < ~2 -- Franka's kv~200 blows up. With this on, the captured
     per-joint torque is set to ``scale*(cf - damping*v) + (1-scale)*qf_bias`` with
-    ``scale = I_eff/(I_eff + (kv+damping)*dt)``, where qf_bias is Genesis's gravity+Coriolis
-    bias. This reproduces Genesis's update ``a = (cf - damping*v - qf_bias)/(M + dt*D)`` while
+    ``scale = I_eff/(I_eff + (kv+damping)*dt)``, where I_eff is the joint-space effective
+    inertia from Genesis's mass-matrix diagonal (the CRB composite incl. all downstream links +
+    armature -- a per-joint leaf estimate would badly under-count proximal joints) and qf_bias
+    is Genesis's gravity+Coriolis bias. This reproduces Genesis's update ``a = (cf - damping*v - qf_bias)/(M + dt*D)`` while
     IPC integrates with the bare inertia M and applies gravity/Coriolis itself: the actuator
     transient + damping are attenuated exactly like Genesis (A-stable for any kv) while the
     (1-scale)*qf_bias term keeps the gravity-balancing torque un-attenuated (so the arm holds).

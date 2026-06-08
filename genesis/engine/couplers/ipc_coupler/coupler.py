@@ -3124,6 +3124,11 @@ class IPCCoupler(RBC):
             qf_bias = np.asarray(qd_to_numpy(ds.qf_bias, transpose=True)).reshape(self._B, -1)
             ctrl_mode = np.asarray(qd_to_numpy(ds.ctrl_mode, transpose=True)).reshape(self._B, -1)
             FORCE_MODE = int(gs.CTRL_MODE.FORCE)
+            # Genesis's joint-space mass matrix (n_dofs, n_dofs, B). The diagonal is the CRB
+            # composite effective inertia per joint (all downstream links + armature), and for
+            # the default approximate_implicitfast integrator it is already AUGMENTED with the
+            # implicit damping term (M_eff_diag = CRB + (kv+damping)*dt).
+            mass_mat = np.asarray(qd_to_numpy(self.rigid_solver.mass_mat))
 
         for entity, ad in self._ipc_monolithic_data_by_entity.items():
             dof_start = entity.dof_start
@@ -3136,10 +3141,19 @@ class IPCCoupler(RBC):
                         damp = float(dof_damping[dof])
                         # kv (actuator velocity gain) only applies in POSITION/VELOCITY modes.
                         kv = 0.0 if int(ctrl_mode[env_idx, dof]) == FORCE_MODE else -float(act_bias[dof, 2])
-                        i_eff = float(ad.joints_Ieff[j])
                         D = kv + damp
-                        denom = i_eff + D * dt
-                        scale = (i_eff / denom) if denom > gs.EPS else 1.0
+                        Ddt = D * dt
+                        # Use the TRUE joint-space effective inertia (CRB diagonal) so the scale
+                        # is correct for a chain -- the per-joint joints_Ieff leaf estimate badly
+                        # under-counts proximal joints (Franka shoulder ~20x), over-attenuating
+                        # them. scale = CRB/(CRB+D*dt) = 1 - D*dt/M_eff_diag for the augmented
+                        # diagonal; fall back to the leaf estimate if the matrix looks un-augmented.
+                        m_diag = float(mass_mat[dof, dof, env_idx]) if mass_mat.ndim == 3 else float(mass_mat[dof, dof])
+                        if m_diag > Ddt + gs.EPS:
+                            scale = 1.0 - Ddt / m_diag
+                        else:
+                            i_eff = float(ad.joints_Ieff[j])
+                            scale = (i_eff / (i_eff + Ddt)) if (i_eff + Ddt) > gs.EPS else 1.0
                         # Reproduce Genesis's semi-implicit velocity update
                         #   a = (cf - damp*v - qf_bias) / (M + dt*D)
                         # while IPC integrates with the bare inertia M and applies gravity +
