@@ -45,8 +45,9 @@ def main():
             dt=0.02,
         ),
         coupler_options=gs.options.IPCCouplerOptions(
-            constraint_strength_translation=100.0,
-            constraint_strength_rotation=100.0,
+            # NOTE: the soft-constraint strength is no longer a global coupler option --
+            # it moved to the per-entity material as `coup_stiffness=(translation, rotation)`
+            # (see the franka material below). Default is (100.0, 100.0).
             n_linesearch_iterations=8,
             linesearch_report_energy=False,
             newton_tolerance=1e-1,
@@ -75,6 +76,9 @@ def main():
     )
     if args.coup_type == "two_way_soft_constraint":
         franka_material_kwargs["coup_links"] = ("left_finger", "right_finger")
+        # soft-constraint strength (translation, rotation) -- formerly the global
+        # constraint_strength_translation/rotation coupler options.
+        franka_material_kwargs["coup_stiffness"] = (100.0, 100.0)
     franka = scene.add_entity(
         gs.morphs.MJCF(
             file="xml/franka_emika_panda/panda_non_overlap.xml",
