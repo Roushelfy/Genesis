@@ -15,8 +15,17 @@ Run (from the Genesis repo; uv env has the libuipc fork + cu129 torch):
   uv run examples/IPC_Solver/ipc_coupling_perf_bench.py --coup ipc_monolithic
   # harder: faster / bigger / with contact:
   uv run examples/IPC_Solver/ipc_coupling_perf_bench.py --freq 1.5 --amp-scale 1.2 --ground
+  # also write an mp4 per mode (coupling_perf_<mode>.mp4 in cwd):
+  uv run examples/IPC_Solver/ipc_coupling_perf_bench.py --video
 
-Knobs: --freq --amp-scale --steps --warmup --dt --kp --kv --ground --backend
+NOTE on timing: the GPU must be otherwise IDLE for the numbers to mean anything --
+the workload is deterministic, so run-to-run variance comes from other GPU processes
+contending for the device (check `nvidia-smi` shows ~0% util first). Rendering for
+--video happens OUTSIDE the timed region, but a video run is slower overall and may
+shift GPU clocks, so measure speed WITHOUT --video and use --video only to eyeball
+the motion / behaviour.
+
+Knobs: --freq --amp-scale --steps --warmup --dt --kp --kv --ground --backend --video
 """
 
 import argparse
@@ -57,6 +66,11 @@ def run_one(coup: str, args) -> dict:
         gs.morphs.MJCF(file="xml/franka_emika_panda/panda_non_overlap.xml"),
         material=gs.materials.Rigid(coup_type=coup),
     )
+    cam = None
+    if args.video_out:
+        cam = scene.add_camera(
+            res=(1280, 720), pos=(2.2, -1.6, 1.3), lookat=(0.2, 0.0, 0.45), fov=45, GUI=False
+        )
     scene.build()
 
     motors = slice(0, 7)
@@ -83,6 +97,9 @@ def run_one(coup: str, args) -> dict:
         scene.step()
     sync()
 
+    if cam is not None:
+        cam.start_recording()
+
     per_step = np.empty(args.steps, dtype=np.float64)
     max_qd = 0.0
     t_all = time.perf_counter()
@@ -93,10 +110,17 @@ def run_one(coup: str, args) -> dict:
         scene.step()
         sync()
         per_step[i] = (time.perf_counter() - t0) * 1000.0
+        if cam is not None:  # render is OUTSIDE the timed region (after the sync above)
+            cam.render()
         if i % 10 == 0:
             qd = np.abs(franka.get_dofs_velocity().cpu().numpy().reshape(-1)[:7])
             max_qd = max(max_qd, float(qd.max()))
     total_wall = time.perf_counter() - t_all
+
+    if cam is not None:
+        fps = max(1, round(1.0 / args.dt))  # real-time playback
+        cam.stop_recording(save_to_filename=args.video_out, fps=fps)
+        print(f"[{coup}] saved video -> {args.video_out}  ({fps} fps, {args.steps} frames)", flush=True)
 
     med = float(np.median(per_step))
     out = dict(
@@ -148,6 +172,9 @@ def main():
     p.add_argument("--steps", type=int, default=300, help="timed steps")
     p.add_argument("--warmup", type=int, default=50, help="warmup steps (JIT + transient, untimed)")
     p.add_argument("--ground", action="store_true", help="add a contact plane (else free-space)")
+    p.add_argument("--video", action="store_true",
+                   help="(driver) also write coupling_perf_<mode>.mp4 per mode (slower; for eyeballing motion)")
+    p.add_argument("--video-out", default=None, help="(worker) mp4 path to record this run to")
     p.add_argument("--out", default=None, help="(worker) npz path to dump per-step times")
     args = p.parse_args()
 
@@ -167,12 +194,17 @@ def main():
     if args.ground:
         common.append("--ground")
 
+    def video_args(mode):
+        return ["--video-out", os.path.abspath(f"coupling_perf_{mode}.mp4")] if args.video else []
+
     import tempfile
     with tempfile.TemporaryDirectory() as td:
         out_m = os.path.join(td, "mono.npz")
         out_e = os.path.join(td, "ext.npz")
-        subprocess.run(common + ["--coup", "ipc_monolithic", "--out", out_m], check=True)
-        subprocess.run(common + ["--coup", "external_articulation", "--out", out_e], check=True)
+        subprocess.run(common + ["--coup", "ipc_monolithic", "--out", out_m] + video_args("ipc_monolithic"),
+                       check=True)
+        subprocess.run(common + ["--coup", "external_articulation", "--out", out_e]
+                       + video_args("external_articulation"), check=True)
         a = {k: (np.load(out_m)[k] if k == "per_step" else float(np.load(out_m)[k])) for k in
              ("per_step", "mean", "median", "p95", "steps_per_s", "realtime_factor", "total_wall", "max_qd")}
         a["coup"] = "ipc_monolithic"
