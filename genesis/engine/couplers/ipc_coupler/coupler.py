@@ -3132,41 +3132,42 @@ class IPCCoupler(RBC):
 
         for entity, ad in self._ipc_monolithic_data_by_entity.items():
             dof_start = entity.dof_start
+            n_e = entity.n_dofs
             for env_idx in range(self._B):
-                for j, dof_local in enumerate(ad.joints_dof_idx_local):
-                    dof = dof_start + dof_local
-                    f = float(cf[env_idx, dof])
-                    if use_implicit and ad.joints_Ieff is not None:
-                        v = float(dof_vel[env_idx, dof])
-                        damp = float(dof_damping[dof])
-                        # kv (actuator velocity gain) only applies in POSITION/VELOCITY modes.
-                        kv = 0.0 if int(ctrl_mode[env_idx, dof]) == FORCE_MODE else -float(act_bias[dof, 2])
-                        D = kv + damp
-                        Ddt = D * dt
-                        # Use the TRUE joint-space effective inertia (CRB diagonal) so the scale
-                        # is correct for a chain -- the per-joint joints_Ieff leaf estimate badly
-                        # under-counts proximal joints (Franka shoulder ~20x), over-attenuating
-                        # them. scale = CRB/(CRB+D*dt) = 1 - D*dt/M_eff_diag for the augmented
-                        # diagonal; fall back to the leaf estimate if the matrix looks un-augmented.
-                        m_diag = float(mass_mat[dof, dof, env_idx]) if mass_mat.ndim == 3 else float(mass_mat[dof, dof])
-                        if m_diag > Ddt + gs.EPS:
-                            scale = 1.0 - Ddt / m_diag
-                        else:
-                            i_eff = float(ad.joints_Ieff[j])
-                            scale = (i_eff / (i_eff + Ddt)) if (i_eff + Ddt) > gs.EPS else 1.0
-                        # Reproduce Genesis's semi-implicit velocity update
-                        #   a = (cf - damp*v - qf_bias) / (M + dt*D)
-                        # while IPC integrates with the bare inertia M and applies gravity +
-                        # Coriolis (qf_bias) itself. Solving for the torque to inject:
-                        #   tau = scale*(cf - damp*v) + (1 - scale)*qf_bias,  scale = M/(M+dt*D).
-                        # The (1-scale)*qf_bias term compensates IPC's gravity so the gravity-
-                        # balancing torque is NOT attenuated (steady state cf=qf_bias holds), while
-                        # the actuator transient + damping are attenuated exactly like Genesis ->
-                        # consistent with external_articulation and A-stable for any kv. (cf is
-                        # already clamped to force_range; the bias term is not effort-limited, as
-                        # in Genesis.)
-                        f = scale * (f - damp * v) + (1.0 - scale) * float(qf_bias[env_idx, dof])
-                    ad.torque[env_idx, j] = MONOLITHIC_TORQUE_SIGN * f
+                if use_implicit and ad.joints_Ieff is not None and n_e > 0:
+                    # COUPLED implicit damping: reproduce Genesis's full velocity update
+                    #   a = M_aug^-1 @ (cf - damping*v - qf_bias),  M_aug = M_crb + dt*diag(kv+damping)
+                    # while IPC integrates with the bare inertia M_crb and applies gravity +
+                    # Coriolis (qf_bias) itself, so the torque to inject is
+                    #   tau = qf_bias + M_crb @ (M_aug^-1 @ f).
+                    # This is a per-ENTITY matrix solve, NOT a per-joint scalar -- essential for a
+                    # chain: low-inertia roll joints (e.g. Franka dof 2/6) have a tiny CRB diagonal,
+                    # so a scalar scale = CRB/(CRB+D*dt) -> ~0 would over-attenuate their position
+                    # actuator and they would drift; the full matrix keeps them coupled to the arm.
+                    # The default approximate_implicitfast integrator already stores the augmented
+                    # M_aug = M_crb + dt*diag(D) as mass_mat, so M_crb = mass_mat - dt*diag(D).
+                    sl = slice(dof_start, dof_start + n_e)
+                    m_aug = (mass_mat[sl, sl, env_idx] if mass_mat.ndim == 3 else mass_mat[sl, sl]).astype(np.float64)
+                    kv_vec = -act_bias[sl, 2].astype(np.float64)
+                    kv_vec[ctrl_mode[env_idx, sl] == FORCE_MODE] = 0.0  # no actuator kv in FORCE mode
+                    d_vec = kv_vec + dof_damping[sl].astype(np.float64)
+                    qb = qf_bias[env_idx, sl].astype(np.float64)
+                    f_tot = (
+                        cf[env_idx, sl].astype(np.float64)
+                        - dof_damping[sl].astype(np.float64) * dof_vel[env_idx, sl].astype(np.float64)
+                        - qb
+                    )
+                    m_crb = m_aug - dt * np.diag(d_vec)
+                    try:
+                        a_like = np.linalg.solve(m_aug, f_tot)
+                    except np.linalg.LinAlgError:
+                        a_like = f_tot / np.maximum(np.diag(m_aug), gs.EPS)
+                    tau_vec = qb + m_crb @ a_like
+                    for j, dof_local in enumerate(ad.joints_dof_idx_local):
+                        ad.torque[env_idx, j] = MONOLITHIC_TORQUE_SIGN * float(tau_vec[dof_local])
+                else:
+                    for j, dof_local in enumerate(ad.joints_dof_idx_local):
+                        ad.torque[env_idx, j] = MONOLITHIC_TORQUE_SIGN * float(cf[env_idx, dof_start + dof_local])
 
     def _retrieve_ipc_rigid_states(self):
         """

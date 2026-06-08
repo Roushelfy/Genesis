@@ -384,15 +384,16 @@ class IPCCouplerOptions(BaseCouplerOptions):
     it stays consistent with external_articulation at large gains. The actuator kv and passive
     joint damping are applied EXPLICITLY (constant over the IPC advance) in monolithic, so they
     are only stable for kv*dt/I < ~2 -- Franka's kv~200 blows up. With this on, the captured
-    per-joint torque is set to ``scale*(cf - damping*v) + (1-scale)*qf_bias`` with
-    ``scale = I_eff/(I_eff + (kv+damping)*dt)``, where I_eff is the joint-space effective
-    inertia from Genesis's mass-matrix diagonal (the CRB composite incl. all downstream links +
-    armature -- a per-joint leaf estimate would badly under-count proximal joints) and qf_bias
-    is Genesis's gravity+Coriolis bias. This reproduces Genesis's update ``a = (cf - damping*v - qf_bias)/(M + dt*D)`` while
-    IPC integrates with the bare inertia M and applies gravity/Coriolis itself: the actuator
-    transient + damping are attenuated exactly like Genesis (A-stable for any kv) while the
-    (1-scale)*qf_bias term keeps the gravity-balancing torque un-attenuated (so the arm holds).
-    Set False to apply the raw explicit PD torque (only stable for small kv*dt/I_eff)."""
+    per-joint torque comes from a per-ENTITY COUPLED solve reproducing Genesis's full velocity
+    update ``a = M_aug^-1 @ (cf - damping*v - qf_bias)`` (M_aug = CRB mass matrix + dt*diag(kv +
+    damping), read from rigid_solver.mass_mat; qf_bias = gravity+Coriolis bias), while IPC
+    integrates with the bare inertia and applies gravity/Coriolis itself:
+    ``tau = qf_bias + M_crb @ (M_aug^-1 @ f)``. The FULL matrix solve (not a per-joint scalar) is
+    required for a chain -- low-inertia roll joints (e.g. Franka dof 2/6) have a tiny CRB diagonal,
+    so a scalar scale would over-attenuate their position actuator and they would drift. The
+    qf_bias term keeps the gravity-balancing torque un-attenuated (the arm holds), and the result
+    is A-stable for any kv. Set False to apply the raw explicit PD torque (stable only for small
+    kv*dt/I_eff)."""
     before_ipc_world_init: IPCBeforeWorldInitCallback | None = None
 
     # Verbose IPC log — bypass the digest and print full libuipc info log
