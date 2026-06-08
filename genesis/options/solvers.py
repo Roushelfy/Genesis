@@ -380,15 +380,17 @@ class IPCCouplerOptions(BaseCouplerOptions):
     """Strength (stiffness) of the monolithic revolute joint-limit cubic penalty.
     Higher = tighter enforcement / less overshoot past the limit."""
     monolithic_implicit_damping: StrictBool = True
-    """Emulate Genesis's semi-implicit treatment of the velocity-damping term for
-    ``coup_type='ipc_monolithic'``. The actuator kv and passive joint damping are applied
-    EXPLICITLY (constant over the IPC advance) in monolithic, so they are only stable for
-    kv*dt/I < ~2 -- Franka's kv~200 blows up. With this on, the position/feedforward part of
-    the control force is kept at full strength (so it still balances gravity) while ONLY the
-    velocity-damping part (actuator kv + passive joint damping) is applied with an effective
-    coefficient D*I_eff/(I_eff + D*dt) (D=kv+damping), which is A-stable for any kv -- removing
-    the kv*dt/I bound without attenuating the gravity-balancing torque. Set False to apply the
-    raw explicit PD torque (only stable for small kv*dt/I_eff)."""
+    """Reproduce Genesis's semi-implicit velocity update for ``coup_type='ipc_monolithic'`` so
+    it stays consistent with external_articulation at large gains. The actuator kv and passive
+    joint damping are applied EXPLICITLY (constant over the IPC advance) in monolithic, so they
+    are only stable for kv*dt/I < ~2 -- Franka's kv~200 blows up. With this on, the captured
+    per-joint torque is set to ``scale*(cf - damping*v) + (1-scale)*qf_bias`` with
+    ``scale = I_eff/(I_eff + (kv+damping)*dt)``, where qf_bias is Genesis's gravity+Coriolis
+    bias. This reproduces Genesis's update ``a = (cf - damping*v - qf_bias)/(M + dt*D)`` while
+    IPC integrates with the bare inertia M and applies gravity/Coriolis itself: the actuator
+    transient + damping are attenuated exactly like Genesis (A-stable for any kv) while the
+    (1-scale)*qf_bias term keeps the gravity-balancing torque un-attenuated (so the arm holds).
+    Set False to apply the raw explicit PD torque (only stable for small kv*dt/I_eff)."""
     before_ipc_world_init: IPCBeforeWorldInitCallback | None = None
 
     # Verbose IPC log — bypass the digest and print full libuipc info log
