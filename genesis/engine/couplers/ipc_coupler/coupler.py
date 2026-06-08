@@ -169,6 +169,21 @@ def _make_affine_torque_force_vector(world_torque: np.ndarray, rotation: np.ndar
     return force
 
 
+def _make_affine_linear_force_vector(world_force: np.ndarray) -> np.ndarray:
+    """Pack a world-frame linear force into a 12D ABD generalized external force.
+
+    Used for PRISMATIC joint actuation: the slide force goes in the translation block
+    (force[:3]); the affine-matrix block is zero. The work this does on the body's
+    pure-slide mode is exactly ``F·δs`` regardless of application point, so it drives
+    the slide DOF correctly (any off-COM moment is absorbed by the prismatic joint
+    constraint). A torque about the slide axis (the revolute convention) would instead
+    be cancelled by that constraint and produce no sliding.
+    """
+    force = np.zeros(12, dtype=np.float64)
+    force[:3] = np.asarray(world_force, dtype=np.float64)
+    return force
+
+
 def _normalize_or_zero(vec: np.ndarray) -> np.ndarray:
     v = np.asarray(vec, dtype=np.float64)
     n = np.linalg.norm(v)
@@ -3226,10 +3241,18 @@ class IPCCoupler(RBC):
                             e_world = e_parent if np.linalg.norm(e_parent) > 1e-8 else e_child
                         if np.linalg.norm(e_world) <= 1e-8:
                             continue
+                        # Revolute: equal/opposite TORQUE about the joint axis.
+                        # Prismatic: equal/opposite linear FORCE along the slide axis.
+                        if ad.joints_is_prismatic[j]:
+                            w_parent = _make_affine_linear_force_vector(-tau * e_world)
+                            w_child = _make_affine_linear_force_vector(tau * e_world)
+                        else:
+                            w_parent = _make_affine_torque_force_vector(-tau * e_world, r_parent)
+                            w_child = _make_affine_torque_force_vector(tau * e_world, r_child)
                         if parent_link in accum:
-                            accum[parent_link] += _make_affine_torque_force_vector(-tau * e_world, r_parent)
+                            accum[parent_link] += w_parent
                         if child_link in accum:
-                            accum[child_link] += _make_affine_torque_force_vector(tau * e_world, r_child)
+                            accum[child_link] += w_child
                     for link, force12 in accum.items():
                         geom = self._abd_data_by_link[link].slots[env_idx].geometry()
                         force_attr = geom.instances().find("external_force")
