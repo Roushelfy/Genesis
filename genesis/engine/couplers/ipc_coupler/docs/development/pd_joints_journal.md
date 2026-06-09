@@ -1,0 +1,63 @@
+# Implicit-PD Joints — Development Journal
+
+Chronological log for `AffineBodyPDRevoluteJoint` / `AffineBodyPDPrismaticJoint`
+(roadmap §M6). Stable design: [../pd_joints.md](../pd_joints.md).
+
+## 2026-06-09 — Diagnosis that motivated M6
+
+**Symptom (user):** gs-gym-internal `pick-deformable-toy-pony` (and marvin gripper
+tasks) run with `--robot-coupling ipc_monolithic` show **whole-arm jitter**;
+default coupling (`external_articulation`/`two_way`) is smooth.
+
+**Integration audit:** the gs-gym wiring is correct — same `/home/zhaofeng/work/Genesis`
+coupler, `n_envs==1` gate, fixed base, correct material kwargs, no `gravity_compensation`
+for monolithic, dt/substeps unchanged. Not a wiring bug.
+
+**Latent bug found (separate):** `ipc_monolithic` jitters with `substeps>1` —
+`build_ipc_scene_config` ([utils.py:26]) sets the IPC world `dt` to the **full** dt but
+`couple()→advance()` runs once **per substep**, so the world over-integrates. Envs force
+`substeps=1` so it is not the pony issue, but it is real. (Tracked in memory
+`ipc-monolithic-substeps-bug`.)
+
+**Root cause (reproduced, no policy).** Held the reset pose in the real pony env and
+logged arm `|q̇|`:
+
+| config | arm `|q̇|max` by step ~50 | |
+|---|---|---|
+| `external_articulation`, kp=7200/kv=600 | → 0.0001 (settles) | ✅ |
+| `ipc_monolithic`, kp=7200/kv=600 | → 7.7 (grows) | ❌ diverges |
+| `ipc_monolithic`, kp=720/kv=600 (only kp↓) | → 2.4 | ❌ still diverges |
+| `ipc_monolithic`, kp=7200/kv=60 (only kv↓) | → 58 | ❌ worse |
+| `ipc_monolithic`, kp=720/kv=60 (both↓) | → 0.0006 | ✅ |
+
+Probe of the monolithic torque solve confirmed `mass_mat` *is* augmented
+(`diag(m_aug)`=7.31 at the shoulder, `m_crb`=1.31 positive — no negative inertia).
+So it is **not** a mass-matrix sign bug. The instability is **explicit PD on light
+per-body affine inertia**: the constant injected wrench makes both `kp` and `kv`
+explicit, bounded by `kp·dt²/I_body<4` and `kv·dt/I_body<2`, with `I_body` the light
+single-link affine inertia (~5e-3) rather than the composite `M_crb` (~1.3) the torque
+is computed with. external integrates the PD implicitly in joint space (`M_aug≈7.3`), so
+its `kp·dt²/M_aug≈0.1` is fine. Franka is stable only because its links are heavy.
+Lowering kp alone does not fix it (kv also explicit) → both gains must drop → loses the
+stiff tracking the 10× gains gave.
+
+**Decision (owner):** implement faithful **implicit** PD as IPC constitutions
+(`AffineBodyPDRevoluteJoint`/`Prismatic`), not lower gains and not the stiffness-only
+`AffineBodyDrivingRevoluteJoint` (which is mass-scaled, has no `kv`, no clamp — would
+change the controller). Support `v_des≠0`. Math + ladder: [../pd_joints.md](../pd_joints.md).
+
+**Fork capability confirmed.** `Roushelfy/libuipc` already exposes
+`AffineBodyDrivingRevoluteJoint`/`AffineBodyDrivingPrismaticJoint` to Python (verified
+import), with an implicit `½·κ·(θ−aim)²` energy (`κ=strength·body_mass`), `aim_angle`
+per-edge attribute, `compute_current_angles()`, and a `JointDofReporter`/`PredictDof`
+system — passing libuipc test `72_abd_driving_revolute_joint`. That is the scaffolding
+the PD constitutions extend (add the `(kv/dt)(θ−θₙ−v_des·dt)²` damping term + real kp/kv
+units + optional clamp). History: monolithic deliberately chose the explicit-torque path
+(option a) on 2026-06-05 after fixing a fork crash (`db2bade6`); §M6 revisits that for
+stiff-gain light-link robots.
+
+### Next: P0 prototype (coupler-only, no rebuild)
+Drive the existing `AffineBodyDrivingRevoluteJoint` with `κ_eff=kp+kv/dt`,
+`aim_eff=(kp·q_des+(kv/dt)(θₙ+v_des·dt))/κ_eff` to validate that implicit PD (a) fixes the
+pony/marvin divergence and (b) matches Genesis `integrator=implicit` `q(t)` on a 1-DOF
+hinge — before writing the C++ constitution. Gate in [../pd_joints.md](../pd_joints.md) §P0.

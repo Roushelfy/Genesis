@@ -80,6 +80,17 @@ PASSES. M3 revolute re-validated (no regression).
 **Next:** IPC-tuned gains for real robots; merged-parent reconstruction; M5 robot +
 cloth/RCC coexistence (the grasp + FEM cube default already exercises robot+deformable).
 
+**M6 — Faithful implicit-PD actuation: ACTIVE (2026-06-09).** The shipped torque path
+applies `kp`/`kv` **explicitly** on light per-body affine inertia, so stiff Genesis-tuned
+gains diverge on light-link robots (reproduced: gs-gym `pick-deformable-toy-pony` + marvin
+gripper, kp=7200/kv=600 → whole-arm jitter, no policy needed; Franka is fine because its
+links are heavy). Fix: new constitutions `AffineBodyPDRevoluteJoint` /
+`AffineBodyPDPrismaticJoint` that evaluate `kp·(q_des−q)+kv·(v_des−q̇)` **implicitly** in
+IPC's Newton solve — faithful PD (real kp/kv, `v_des` supported) + unconditionally stable.
+Equivalent to `gs.integrator.implicit`. Design + math + test ladder in
+[pd_joints.md](pd_joints.md). This **supersedes the "Torque path" actuation decision below
+for position/velocity DOFs** (FORCE mode keeps the torque path). Phases P0–P4 in pd_joints.md.
+
 ## Phase plan & acceptance gates
 
 Gates are runnable commands. Until M1 lands, every gate below is a **planned
@@ -92,6 +103,7 @@ gate** (see "Planned gates"); no gate is runnable today.
 | **M3 Actuation** | Genesis-side torque (`get_dofs_control_force`) → per-joint scalar torque → IPC; all 4 ctrl modes | A known constant-torque / step-position trajectory tracks an independent forward-dynamics oracle within tolerance (see test ladder) |
 | **M4 Readback+render** | signed-angle joint readback + finite-diff vel → `qpos`/`links_state`; getters + viewer/camera render IPC-driven robot | `get_dofs_position` round-trips IPC state; headless render smoke produces a frame of the moving arm |
 | **M5 Coexistence** | Robot + cloth/RCC in one scene; no double-solve; RCC adhesion intact | A gs-gym-internal deformable scene (arm + cloth) runs N steps and renders with the robot in `ipc_monolithic` |
+| **M6 Implicit-PD** | `AffineBodyPDRevoluteJoint`/`AffineBodyPDPrismaticJoint`: PD evaluated implicitly in IPC; faithful (kp/kv/v_des) + unconditionally stable | stiff-gain (kp=7200/kv=600) marvin/pony hold-pose stays bounded; Franka EE trajectory matches `external@integrator=implicit`; see [pd_joints.md](pd_joints.md) ladder |
 
 ## Next tasks (M1)
 
