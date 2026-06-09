@@ -78,10 +78,16 @@ def run_one(mode: str, args) -> dict:
 
     model_path = build_model(args.armature, args.damping, args.l1, args.l2)
 
-    coupler_options = gs.options.IPCCouplerOptions(
-        enable_rigid_rigid_contact=False,
-        enable_rigid_ground_contact=False,
-        monolithic_joint_limit_enable=not args.no_limit,
+    # mode="genesis" = pure Genesis rigid sim, NO IPC coupler (the ground-truth reference).
+    use_ipc = mode != "genesis"
+    coupler_options = (
+        gs.options.IPCCouplerOptions(
+            enable_rigid_rigid_contact=False,
+            enable_rigid_ground_contact=False,
+            monolithic_joint_limit_enable=not args.no_limit,
+        )
+        if use_ipc
+        else None
     )
     scene = gs.Scene(
         sim_options=gs.options.SimOptions(dt=args.dt),
@@ -93,7 +99,7 @@ def run_one(mode: str, args) -> dict:
     )
     robot = scene.add_entity(
         gs.morphs.MJCF(file=model_path),
-        material=gs.materials.Rigid(coup_type=mode),
+        material=gs.materials.Rigid(coup_type=mode) if use_ipc else gs.materials.Rigid(),
     )
     scene.build()
 
@@ -196,41 +202,51 @@ def run_one(mode: str, args) -> dict:
     return out
 
 
-def compare(a: dict, b: dict, args):
-    """Driver-side comparison: a=ipc_monolithic, b=external_articulation."""
-    t = a["t"]
+def compare(mono: dict, ext: dict, gen: dict, args):
+    """3-way: ipc_monolithic (pd) vs external_articulation vs pure Genesis (no IPC coupler)."""
+    t = mono["t"]
     n = len(t)
-    print("\n\n================= COMPARISON (monolithic vs external_articulation) =================", flush=True)
-    print(f"{'t':>6} | {'h_cmd':>7} {'h_mono':>8} {'h_ext':>8} {'dh':>7} | "
-          f"{'s_cmd':>7} {'s_mono':>8} {'s_ext':>8} {'ds':>7}", flush=True)
-    step = max(1, n // 22)
-    for i in range(0, n, step):
-        print(f"{t[i]:>6.3f} | {a['q_cmd'][i,0]:>7.3f} {a['q'][i,0]:>8.4f} {b['q'][i,0]:>8.4f} "
-              f"{a['q'][i,0]-b['q'][i,0]:>7.4f} | {a['q_cmd'][i,1]:>7.3f} {a['q'][i,1]:>8.4f} "
-              f"{b['q'][i,1]:>8.4f} {a['q'][i,1]-b['q'][i,1]:>7.4f}", flush=True)
 
-    print("\n----- summary -----", flush=True)
+    def rms(x):
+        return float(np.sqrt(np.mean(np.asarray(x) ** 2)))
+
+    print("\n\n========== 3-WAY CONSISTENCY: monolithic-pd | external | pure-Genesis ==========", flush=True)
+    print(f"{'t':>6} | {'h_cmd':>7} {'h_mono':>8} {'h_ext':>8} {'h_gen':>8} | "
+          f"{'s_cmd':>7} {'s_mono':>8} {'s_ext':>8} {'s_gen':>8}", flush=True)
+    step = max(1, n // 18)
+    for i in range(0, n, step):
+        print(f"{t[i]:>6.3f} | {mono['q_cmd'][i,0]:>7.3f} {mono['q'][i,0]:>8.4f} {ext['q'][i,0]:>8.4f} "
+              f"{gen['q'][i,0]:>8.4f} | {mono['q_cmd'][i,1]:>7.3f} {mono['q'][i,1]:>8.4f} "
+              f"{ext['q'][i,1]:>8.4f} {gen['q'][i,1]:>8.4f}", flush=True)
+
+    print("\n----- consistency: cross-mode RMS |Δq| over the run (vs pure-Genesis = ground truth) -----", flush=True)
     diag = []
     for d in range(2):
-        em = a["q"][:, d] - a["q_cmd"][:, d]
-        ee = b["q"][:, d] - b["q_cmd"][:, d]
-        cross = a["q"][:, d] - b["q"][:, d]
         amp = args.hinge_amp if d == 0 else args.slide_amp
-        print(f"  {DOF_NAMES[d]:10s} tracking RMS  mono={np.sqrt(np.mean(em**2)):.5f}  "
-              f"ext={np.sqrt(np.mean(ee**2)):.5f}  | cross-mode RMS |mono-ext|={np.sqrt(np.mean(cross**2)):.5f}",
-              flush=True)
-        if np.max(np.abs(a["q"][:, d])) < 0.1 * amp:
-            diag.append(f"{DOF_NAMES[d]} monolithic ~DEAD (barely moves) -> not actuated")
-        elif np.sqrt(np.mean(cross**2)) > 0.3 * amp:
-            diag.append(f"{DOF_NAMES[d]} monolithic differs strongly from ext_art")
-    print("  diagnosis: " + ("; ".join(diag) if diag else "both DOFs: monolithic tracks like ext_art (no gross anomaly)"),
+        mono_gen = rms(mono["q"][:, d] - gen["q"][:, d])
+        mono_ext = rms(mono["q"][:, d] - ext["q"][:, d])
+        ext_gen = rms(ext["q"][:, d] - gen["q"][:, d])
+        trk_m = rms(mono["q"][:, d] - mono["q_cmd"][:, d])
+        trk_e = rms(ext["q"][:, d] - ext["q_cmd"][:, d])
+        trk_g = rms(gen["q"][:, d] - gen["q_cmd"][:, d])
+        print(f"  {DOF_NAMES[d]:10s} | mono-genesis={mono_gen:.5f}  ext-genesis={ext_gen:.5f}  "
+              f"mono-ext={mono_ext:.5f}", flush=True)
+        print(f"  {'':10s}   tracking RMS: mono={trk_m:.5f}  ext={trk_e:.5f}  genesis={trk_g:.5f}  "
+              f"(amp {amp})", flush=True)
+        if np.max(np.abs(mono["q"][:, d])) < 0.1 * amp:
+            diag.append(f"{DOF_NAMES[d]} monolithic ~DEAD")
+        elif mono_gen > 0.3 * amp:
+            diag.append(f"{DOF_NAMES[d]} monolithic differs strongly from pure Genesis")
+    print("  diagnosis: " + ("; ".join(diag) if diag else "both DOFs: monolithic-pd tracks like pure Genesis (consistent)"),
           flush=True)
 
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("--coup", default=None, choices=["ipc_monolithic", "external_articulation"],
-                   help="worker mode: run a single coupling type. Omit for side-by-side driver.")
+    p.add_argument("--coup", default=None,
+                   choices=["ipc_monolithic", "external_articulation", "genesis"],
+                   help="worker mode: run a single mode (genesis = pure Genesis, no IPC). "
+                        "Omit for the 3-way driver.")
     p.add_argument("--backend", choices=["cpu", "gpu"], default="gpu")
     p.add_argument("--l1", type=float, default=0.4, help="hinge link length (m)")
     p.add_argument("--l2", type=float, default=0.3, help="slide link length (m)")
@@ -281,13 +297,12 @@ def main():
         common.append("--verbose")
 
     with tempfile.TemporaryDirectory() as td:
-        out_m = os.path.join(td, "mono.npz")
-        out_e = os.path.join(td, "ext.npz")
-        subprocess.run(common + ["--coup", "ipc_monolithic", "--out", out_m], check=True)
-        subprocess.run(common + ["--coup", "external_articulation", "--out", out_e], check=True)
-        a = dict(np.load(out_m))
-        b = dict(np.load(out_e))
-    compare(a, b, args)
+        outs = {}
+        for m in ("ipc_monolithic", "external_articulation", "genesis"):
+            o = os.path.join(td, f"{m}.npz")
+            subprocess.run(common + ["--coup", m, "--out", o], check=True)
+            outs[m] = dict(np.load(o))
+    compare(outs["ipc_monolithic"], outs["external_articulation"], outs["genesis"], args)
 
 
 if __name__ == "__main__":
