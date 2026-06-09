@@ -91,10 +91,10 @@ kp=7200/kv=600 → whole-arm jitter, no policy needed; Franka is fine because it
 (real kp/kv, `v_des` supported), unconditionally stable, **no new constitution / no CUDA build**.
 The implied PD force is **clamped to the joint's `force_range`** (cap `aim_angle`) — faithful to
 Genesis's torque clamp and needed for Newton convergence on large position errors. **Now the
-default**; **per-DOF routing**: revolute pos/vel → PD, prismatic + FORCE-mode → torque
-(`capture` runs in both modes, writing torque only for non-PD DOFs). Validated: 1-DOF agrees with
-Genesis PD (cross-RMS 0.0095 @ kp=2000); pony hold-pose settles (0.10→0.0001) where torque
-diverges; **Franka grasp regression: cube lifts to 0.177 (torque 0.188), no regression**. A
+default**; **per-DOF routing**: all pos/vel DOFs → PD (revolute via `AffineBodyDrivingRevoluteJoint`,
+prismatic via `AffineBodyDrivingPrismaticJoint`), only FORCE-mode → torque. Validated: 1-DOF agrees
+with Genesis PD (cross-RMS 0.0095 @ kp=2000); pony hold-pose (arm+gripper PD) settles (0.10→0.0000)
+where torque diverges; **Franka grasp regression: cube lifts to 0.196 (torque 0.188), no regression**. A
 dedicated `AffineBodyPD{Revolute,Prismatic}Joint` constitution is **deferred** (only for a
 kp/kv-direct API). Design + validation in [pd_joints.md](pd_joints.md). This **supersedes the
 "Torque path" actuation decision below** (now the non-default).

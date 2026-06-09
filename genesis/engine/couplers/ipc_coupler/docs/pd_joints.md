@@ -52,9 +52,11 @@ coupler sets, per step:
 
 So **M6 ships as a coupler-only path** (`ipc_monolithic_actuation="pd"`, now the **default**;
 `_write_monolithic_pd_drive`) — no new libuipc constitution, no CUDA rebuild — reusing tested
-code (libuipc test 72). **Per-DOF routing:** revolute position/velocity DOFs → PD folding;
-**prismatic + FORCE-mode DOFs → the torque path** (`capture_monolithic_control_torque` runs in
-both modes, writing torque only for non-PD DOFs). The implied PD start-force is **clamped to the
+code (libuipc test 72). **Per-DOF routing:** all position/velocity DOFs → PD folding — revolute
+via `AffineBodyDrivingRevoluteJoint` (`aim_angle`), prismatic via `AffineBodyDrivingPrismaticJoint`
+(`aim_distance`, `γ` halved since its energy is a two-term sum). **Only FORCE-mode DOFs use the
+torque path** (`capture_monolithic_control_torque` runs in both modes, writing torque only for
+FORCE-mode DOFs). The implied PD start-force is **clamped to the
 joint's `force_range`** (cap `aim_angle`): faithful to Genesis's torque clamp, and required for
 the Newton solve to converge on large position errors (a stiff `kp` × big initial reach error is
 otherwise unbounded). A **dedicated `AffineBodyPD{Revolute,Prismatic}Joint` constitution is
@@ -168,9 +170,10 @@ aim_angle                  = aim_eff
 driving/is_constrained     = 1
 ```
 
-reading `θₙ` from Genesis `qₙ`, `dt` from `substep_dt`. Revolute only; prismatic (gripper) and
-FORCE-mode DOFs keep the torque path (their gains are low/stable). This is **exact** (the merge
-is algebraic, not approximate) and is the **shipped** M6 actuation — the earlier "m_parent" form
+reading `θₙ` from Genesis `qₙ`, `dt` from `substep_dt`. Prismatic (slide) DOFs use the same scheme
+via `AffineBodyDrivingPrismaticJoint` (`aim_distance`, `γ = κ_eff/(2(m_i+m_j))` — its energy is a
+two-term sum → joint stiffness `2K`). Only FORCE-mode DOFs keep the torque path. This is **exact**
+(the merge is algebraic, not approximate) and is the **shipped** M6 actuation — the earlier "m_parent" form
 was a calibration bug, now `m_i+m_j`. Remaining gap vs a dedicated constitution: no `force_range`
 torque clamp, and the coupler must know the two link masses (folded into `γ`).
 
@@ -192,7 +195,7 @@ as an open question.
 | **Live, GPU (shipped path) ✅** | 1-DOF hinge: pd path tracks (RMS 0.008–0.023, max\|q\|≈amp) + agrees with Genesis PD (cross-RMS 0.0095 @ kp=2000); pony hold-pose settles (0.10→0.0001) where torque diverges (→7.7) | DONE 2026-06-09 |
 | **Live, GPU (deferred constitution)** | dedicated `AffineBodyPD*`: 2-DOF (hinge+slide) + `v_des≠0` ramp + Franka EE parity | only if built |
 | **Scene (live, GPU)** | pony / hang_cloth full policy run: robot stable, deformable contact intact | follow-up |
-| **Source-scan** | PD-driven revolute DOFs route through the driving-joint folding; FORCE-mode + prismatic DOFs stay on `…ExternalForce` | actuation routing |
+| **Source-scan** | PD-driven pos/vel DOFs route through `AffineBodyDriving{Revolute,Prismatic}Joint` folding; only FORCE-mode DOFs stay on `…ExternalForce` | actuation routing |
 
 ## Phase plan
 

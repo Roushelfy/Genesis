@@ -45,6 +45,7 @@ if TYPE_CHECKING or UIPC_AVAILABLE:
         AffineBodyConstitution,
         AffineBodyExternalBodyForce,
         AffineBodyShell,
+        AffineBodyDrivingPrismaticJoint,
         AffineBodyDrivingRevoluteJoint,
         AffineBodyPrismaticJoint,
         AffineBodyPrismaticJointExternalForce,
@@ -1760,13 +1761,16 @@ class IPCCoupler(RBC):
                     joint_cons().apply_to(
                         joint_geom, [parent_abd_slot], [0], [child_abd_slot], [0], [self.options.joint_strength_ratio]
                     )
-                    # M6 P0: implicit-PD servo prototype. Compose the existing driving-joint
-                    # constitution onto the same joint edge (revolute only). Its energy is
-                    # solved IMPLICITLY by IPC's Newton solve, so the PD is unconditionally
-                    # stable. strength_ratio / aim_angle are overwritten each step (see
-                    # _write_monolithic_pd_drive); the scalar here is a build placeholder.
-                    if self.options.ipc_monolithic_actuation == "pd" and not is_prismatic:
-                        AffineBodyDrivingRevoluteJoint().apply_to(joint_geom, 1.0)
+                    # M6: implicit-PD servo. Compose the existing driving-joint constitution onto
+                    # the same joint edge (revolute -> Driving Revolute, prismatic -> Driving
+                    # Prismatic). Its energy is solved IMPLICITLY by IPC's Newton solve, so the PD
+                    # is unconditionally stable. strength_ratio / aim_{angle,distance} are
+                    # overwritten each step (see _write_monolithic_pd_drive); scalar is a placeholder.
+                    if self.options.ipc_monolithic_actuation == "pd":
+                        if is_prismatic:
+                            AffineBodyDrivingPrismaticJoint().apply_to(joint_geom, 1.0)
+                        else:
+                            AffineBodyDrivingRevoluteJoint().apply_to(joint_geom, 1.0)
                     # Express the world joint axis in each ABD body's build frame, so the
                     # actuation torque (applied as a per-body wrench) tracks the bodies'
                     # current orientation at runtime. Actuation itself is the body wrench
@@ -3110,9 +3114,9 @@ class IPCCoupler(RBC):
         if not self.options.monolithic_torque_enable:
             return
 
-        # M6 per-DOF routing. In "pd" mode the revolute position/velocity DOFs are actuated by the
-        # implicit-PD driving joint (_write_monolithic_pd_drive) and so get ZERO torque here;
-        # prismatic + FORCE-mode DOFs still use the torque path. In "torque" mode every DOF uses
+        # M6 per-DOF routing. In "pd" mode all POSITION/VELOCITY DOFs (revolute AND prismatic) are
+        # actuated by the implicit-PD driving joint (_write_monolithic_pd_drive) and so get ZERO
+        # torque here; only FORCE-mode DOFs use the torque path. In "torque" mode every DOF uses
         # torque. (The coupled implicit-damping solve below still runs over the whole entity; only
         # the per-joint torque WRITE is zeroed for PD DOFs -- the small cross-coupling into the
         # remaining torque DOFs is negligible for a weakly-coupled gripper.)
@@ -3184,18 +3188,14 @@ class IPCCoupler(RBC):
                         a_like = f_tot / np.maximum(np.diag(m_aug), gs.EPS)
                     tau_vec = qb + m_crb @ a_like
                     for j, dof_local in enumerate(ad.joints_dof_idx_local):
-                        if pd_mode and not ad.joints_is_prismatic[j] and (
-                            ctrl_mode_all[env_idx, dof_start + dof_local] <= VELOCITY_MODE
-                        ):
-                            ad.torque[env_idx, j] = 0.0  # implicit-PD driving joint actuates this DOF
+                        if pd_mode and ctrl_mode_all[env_idx, dof_start + dof_local] <= VELOCITY_MODE:
+                            ad.torque[env_idx, j] = 0.0  # implicit-PD driving joint (rev/prism) actuates this DOF
                         else:
                             ad.torque[env_idx, j] = MONOLITHIC_TORQUE_SIGN * float(tau_vec[dof_local])
                 else:
                     for j, dof_local in enumerate(ad.joints_dof_idx_local):
-                        if pd_mode and not ad.joints_is_prismatic[j] and (
-                            ctrl_mode_all[env_idx, dof_start + dof_local] <= VELOCITY_MODE
-                        ):
-                            ad.torque[env_idx, j] = 0.0  # implicit-PD driving joint actuates this DOF
+                        if pd_mode and ctrl_mode_all[env_idx, dof_start + dof_local] <= VELOCITY_MODE:
+                            ad.torque[env_idx, j] = 0.0  # implicit-PD driving joint (rev/prism) actuates this DOF
                         else:
                             ad.torque[env_idx, j] = MONOLITHIC_TORQUE_SIGN * float(cf[env_idx, dof_start + dof_local])
 
@@ -3285,23 +3285,24 @@ class IPCCoupler(RBC):
             abd_data.aim_transforms[:] = links_transform[:, link.idx]
 
     def _write_monolithic_pd_drive(self):
-        """M6 P0: drive ipc_monolithic revolute joints as an *implicit* PD servo.
+        """M6: drive ipc_monolithic position/velocity joints as an *implicit* PD servo.
 
-        Writes per-revolute-joint ``AffineBodyDrivingRevoluteJoint`` edge attributes so IPC's
-        Newton solve evaluates Genesis's PD law ``kp*(q_des-q)+kv*(v_des-qd)`` implicitly:
+        Writes per-joint driving-joint edge attributes (``AffineBodyDrivingRevoluteJoint`` ->
+        ``aim_angle`` for hinges, ``AffineBodyDrivingPrismaticJoint`` -> ``aim_distance`` for
+        slides) so IPC's Newton solve evaluates Genesis's PD law ``kp*(q_des-q)+kv*(v_des-qd)``
+        implicitly:
 
             kappa_eff = kp + kv/dt
             aim_eff   = (kp*q_des + (kv/dt)*(q_n + v_des*dt)) / kappa_eff
 
-        and ``strength_ratio = kappa_eff / (m_parent + m_child)`` (the driving energy is
-        (K/2)(theta-aim)^2 with K = strength_ratio*(m_i+m_j), so this cancels the mass scaling
-        -> K = kappa_eff exactly, i.e. true joint-space gains kp,kv). This is EXACT implicit PD:
-        the gradient at convergence is kp(q_des-theta)+kv(v_des-thetadot), matching Genesis
-        integrator=implicit. Unconditionally stable for any kp,kv -- unlike the explicit torque
-        path which carries kp*dt^2/I<4, kv*dt/I<2 on light affine bodies. Revolute only;
-        prismatic / force-mode DOFs keep the torque path (ad.torque stays 0 here since
-        capture_monolithic_control_torque early-returns for non-'torque' actuation).
-        See docs/pd_joints.md.
+        The driving energy scales kappa by (m_i+m_j); revolute energy (K/2)(theta-aim)^2 has
+        joint stiffness K, prismatic (two-term) has 2K, so strength_ratio = kappa_eff/(m_i+m_j)
+        (revolute) or kappa_eff/(2*(m_i+m_j)) (prismatic) yields K_joint = kappa_eff exactly ->
+        true joint-space gains kp,kv. EXACT implicit PD: gradient at convergence is
+        kp(q_des-theta)+kv(v_des-thetadot). Unconditionally stable for any kp,kv -- unlike the
+        explicit torque path (kp*dt^2/I<4, kv*dt/I<2 on light affine bodies). The implied force is
+        clamped to the joint's force_range (cap aim). Only FORCE-mode DOFs (kappa_eff=0) are left
+        to the torque path. See docs/pd_joints.md.
         """
         if self.options.ipc_monolithic_actuation != "pd":
             return
@@ -3320,14 +3321,13 @@ class IPCCoupler(RBC):
             q_start = entity.q_start
             for env_idx in range(self._B):
                 for j in range(len(ad.joints_child_link)):
-                    if ad.joints_is_prismatic[j]:
-                        continue  # P0: prismatic (gripper) stays on the torque path
+                    is_prismatic = ad.joints_is_prismatic[j]
                     dof = dof_start + ad.joints_dof_idx_local[j]
                     kp = float(-act_bias[dof, 1])
                     kv = float(-act_bias[dof, 2])
                     kappa_eff = kp + kv / dt
                     if kappa_eff <= 0.0:
-                        continue
+                        continue  # FORCE mode (no kp/kv) -> torque path
                     q_des = float(ctrl_pos[env_idx, dof])
                     v_des = float(ctrl_vel[env_idx, dof])
                     q_n = float(qpos[env_idx, q_start + ad.joints_qs_idx_local[j]])
@@ -3341,21 +3341,27 @@ class IPCCoupler(RBC):
                     f_cl = min(max(f_imp, f_lo), f_hi)
                     if f_cl != f_imp:
                         aim_eff = q_n + f_cl / kappa_eff
-                    # AffineBodyDrivingRevoluteJoint energy is (K/2)(theta-aim)^2 with
-                    # K = strength_ratio * (m_i + m_j) (SUM of the two affine-body masses;
-                    # see the constitution spec). So the strength that yields K = kappa_eff is
-                    # kappa_eff / (m_parent + m_child) -- this cancels the mass scaling and makes
-                    # the implicit PD use the true joint-space gains kp, kv (N*m/rad). Exact.
+                    # The driving-joint energy scales kappa by the SUM of the two affine-body
+                    # masses (constitution spec: K = strength_ratio*(m_i+m_j)). Revolute energy is
+                    # (K/2)(theta-aim)^2 -> joint stiffness K; prismatic energy is a TWO-term sum
+                    # (one per body tangent) -> when aligned E=K(d-aim)^2 -> joint stiffness 2K.
+                    # So strength to realize the true gain kappa_eff is kappa_eff/(m_i+m_j) for
+                    # revolute and kappa_eff/(2*(m_i+m_j)) for prismatic. Exact implicit PD.
                     ip = self._monolithic_body_inertials.get(ad.joints_parent_link[j])
                     ic = self._monolithic_body_inertials.get(ad.joints_child_link[j])
                     m_sum = max(
                         (float(ip[0]) if ip is not None else 0.0) + (float(ic[0]) if ic is not None else 0.0),
                         1e-6,
                     )
-                    strength = kappa_eff / m_sum
+                    if is_prismatic:
+                        strength = kappa_eff / (2.0 * m_sum)
+                        aim_name = "aim_distance"
+                    else:
+                        strength = kappa_eff / m_sum
+                        aim_name = "aim_angle"
                     geom = ad.joint_slots[env_idx][j].geometry()
                     edges = geom.edges()
-                    aim_attr = edges.find("aim_angle")
+                    aim_attr = edges.find(aim_name)
                     str_attr = edges.find("driving/strength_ratio")
                     con_attr = edges.find("driving/is_constrained")
                     if aim_attr is None or str_attr is None or con_attr is None:

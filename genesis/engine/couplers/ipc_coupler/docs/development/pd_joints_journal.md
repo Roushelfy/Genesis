@@ -146,3 +146,25 @@ it's a safe drop-in:
 folded into the "Deferred" section of pd_joints.md). Trimmed pd_joints.md's deferred section to a
 short pointer. Renamed `pd_prototype→pd` across docs. Updated roadmap/conventions to default=`pd`,
 routing, and the now-shipped force_range clamp. M6 closed.
+
+## 2026-06-09 — Extended implicit PD to prismatic (slide) joints
+
+Slides now use `AffineBodyDrivingPrismaticJoint` (was: prismatic stayed on torque). So in `"pd"`
+mode **all position/velocity DOFs** (revolute + prismatic) are implicit-PD; only FORCE-mode DOFs
+remain on the torque path.
+- Build: apply `AffineBodyDrivingPrismaticJoint` to prismatic joints (alongside the base
+  `AffineBodyPrismaticJoint`); revolute → `AffineBodyDrivingRevoluteJoint` as before.
+- `_write_monolithic_pd_drive`: handles both — prismatic writes `aim_distance` with
+  `strength_ratio = κ_eff/(2(m_i+m_j))` (the prismatic energy is a **two-term** sum → joint
+  stiffness `2K`, vs revolute's single term `K`, per the constitution spec); revolute writes
+  `aim_angle` with `κ_eff/(m_i+m_j)`. Same `aim_eff`, force_range clamp, q_n-from-Genesis-qpos.
+- `capture` routing now zeros torque for **all** ctrl_mode≤VELOCITY DOFs (dropped the
+  `not prismatic` guard); only FORCE-mode keeps torque.
+
+Validated: Franka grasp (gripper = prismatic, now driving-prismatic) lifts cube to **0.196**
+(torque 0.188, revolute-only-PD 0.177) — gripper closes correctly, so `aim_distance` frame is
+consistent with Genesis qpos. Pony hold-pose (arm+gripper both PD) settles **0.10→0.0000**.
+
+This closes the deferred "C": torque path now serves only FORCE mode. (Follow-up still possible:
+the coupled implicit-damping solve in `capture` exists for kv — now only FORCE-mode DOFs use it,
+where kv=0, so it could be simplified to a plain force pass-through. Left as-is for now.)
