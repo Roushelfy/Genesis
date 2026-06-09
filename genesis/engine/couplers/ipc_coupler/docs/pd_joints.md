@@ -50,7 +50,12 @@ coupler sets, per step:
 θ̃ (aim_angle)             = (kp·q_des + (kv/dt)(θ_n + v_des·dt)) / (kp + kv/dt)
 ```
 
-So **M6 ships as a coupler-only path** (`ipc_monolithic_actuation="pd"`, now the **default**;
+> ⚠️ **pd is OPT-IN, not the default** — it **diverges under fast motion** (the stiff
+> `κ_eff=kp+kv/dt` energy makes IPC's Newton solve hit NEWTON_MAXOUT ≈ 70 s/step; see journal
+> 2026-06-09). Default is `"torque"`. Use pd only for light-link **slow** manipulation where
+> torque diverges; for light-link **fast** motion use `external_articulation`.
+
+So **M6 ships as a coupler-only path** (`ipc_monolithic_actuation="pd"`, opt-in;
 `_write_monolithic_pd_drive`) — no new libuipc constitution, no CUDA rebuild — reusing tested
 code (libuipc test 72). **Per-DOF routing:** all position/velocity DOFs → PD folding — revolute
 via `AffineBodyDrivingRevoluteJoint` (`aim_angle`), prismatic via `AffineBodyDrivingPrismaticJoint`

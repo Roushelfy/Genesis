@@ -168,3 +168,35 @@ consistent with Genesis qpos. Pony hold-pose (arm+gripper both PD) settles **0.1
 This closes the deferred "C": torque path now serves only FORCE mode. (Follow-up still possible:
 the coupled implicit-damping solve in `capture` exists for kv — now only FORCE-mode DOFs use it,
 where kv=0, so it could be simplified to a plain force pass-through. Left as-is for now.)
+
+## 2026-06-09 — pd FAILS under fast motion; reverted default to "torque"
+
+The `ipc_coupling_perf_bench` (Franka, large fast sinusoid, max|q̇|~12 rad/s) exposed a hard pd
+failure: at the fast part of the motion the IPC Newton solve **diverges** —
+`Line Search Exits Max Iteration 8` every iter, `Newton Iteration Exits Max Iteration 1024`,
+residual GROWS (0.6→2.1), `advance ≈ 72 s/step`, then SIGABRT. Not coupler overhead
+(`pre_coup=0.4 ms`); it's the IPC solve.
+
+**Cause:** the implicit-damping folding makes the driving-joint energy very stiff —
+`κ_eff = kp + kv/dt` is dominated by `kv/dt` (2000 + 100/0.01 = 12000). The spring pulls θ toward
+`aim_eff ≈ θ_n` with that stiffness. Under fast motion the inertial prediction `x̃ = x_n + dt·v_n`
+moves far while the stiff spring resists → ill-conditioned incremental potential → IPC's
+CCD-limited line search can't progress → Newton diverges. Slow/hold tests (grasp, pony) never hit
+it (spring stays near equilibrium). **Same energy stiffness exists in the deferred dedicated
+constitution** (the `(kv/dt)(θ−θ_n)²` term) — it's inherent to encoding velocity damping as a
+position-increment quadratic, not a folding artifact.
+
+**Confirmed contrast (same fast motion, Franka):**
+- torque: `newton=5`, `advance=20 ms/step`, no maxout — stable + fast.
+- pd: `newton=1024` (maxout), `advance≈72 s/step`, diverges → abort.
+
+So pd is **not** a strict improvement: it fixes light-link stiff-gain *stability* (pony, slow) but
+**regresses fast motion** (which torque handles). No monolithic actuation is universally best:
+- heavy links / fast motion → **torque** (fast, stable);
+- light links + stiff gains + slow manipulation → **pd** (torque diverges);
+- light links + fast motion, or max robustness → **external_articulation** (robust, slower).
+
+**Action:** reverted the default to `"torque"` (restores the validated fast-motion behavior; pd is
+opt-in). Open question: a kp-only driving joint (`K=kp`, drop the `kv/dt` stiffness, rely on
+backward-Euler numerical damping) might converge under fast motion at the cost of kv fidelity —
+not yet tried.

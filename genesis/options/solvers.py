@@ -364,9 +364,17 @@ class IPCCouplerOptions(BaseCouplerOptions):
     ignore_end_effector_check: StrictBool = False
     joint_strength_ratio: PositiveFloat = 100.0
     """Strength ratio for external articulation joint constraints. Higher = stiffer joints, less drift."""
-    ipc_monolithic_actuation: Literal["torque", "pd"] = "pd"
+    ipc_monolithic_actuation: Literal["torque", "pd"] = "torque"
     """Actuation channel for ``coup_type='ipc_monolithic'`` entities (per-DOF routing).
-    - ``'pd'`` (default, M6): **revolute position/velocity DOFs** are driven by the existing
+    Default ``'torque'``: explicit per-joint torque -- fast and robust under fast motion (the
+    IPC Newton solve stays cheap), but kp/kv are explicit so it diverges on LIGHT-link robots at
+    stiff gains (e.g. marvin kp=7200/kv=600). ``'pd'`` fixes that case (implicit, unconditionally
+    stable in the linear sense) but the implicit-damping folding makes the driving-joint energy
+    very stiff (kappa_eff=kp+kv/dt) and IPC's Newton solve DIVERGES under fast motion
+    (NEWTON_MAXOUT -> ~70 s/step); so pd is an opt-in for light-link SLOW manipulation only. For
+    light-link + fast motion, use ``coup_type='external_articulation'`` (robust, slower).
+    Details in docs/pd_joints.md.
+    - ``'pd'``: **revolute position/velocity DOFs** are driven by the existing
       ``AffineBodyDrivingRevoluteJoint`` as an *implicit* PD servo -- each step the coupler writes
       ``aim_angle = (kp*q_des + (kv/dt)*(q_n + v_des*dt))/(kp+kv/dt)`` and
       ``strength_ratio = (kp+kv/dt)/(m_i+m_j)``, so IPC's Newton solve evaluates
