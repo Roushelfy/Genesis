@@ -364,17 +364,18 @@ class IPCCouplerOptions(BaseCouplerOptions):
     ignore_end_effector_check: StrictBool = False
     joint_strength_ratio: PositiveFloat = 100.0
     """Strength ratio for external articulation joint constraints. Higher = stiffer joints, less drift."""
-    ipc_monolithic_actuation: Literal["torque", "pd_prototype"] = "torque"
-    """Actuation channel for ``coup_type='ipc_monolithic'`` entities.
-    - ``'torque'``: per-joint scalar torque via AffineBodyRevoluteJointExternalForce, computed
-      Genesis-side from the control law (kp/kv applied EXPLICITLY -> bounded stability on light
-      affine bodies; see docs/pd_joints.md).
-    - ``'pd_prototype'`` (M6 P0): drive each revolute joint with the existing
-      AffineBodyDrivingRevoluteJoint as an *implicit* PD servo -- each step write
-      ``aim_angle = aim_eff`` and ``strength_ratio = (kp+kv/dt)/m_parent`` so IPC's Newton solve
-      evaluates ``kp(q_des-q)+kv(v_des-qd)`` implicitly (unconditionally stable). Coupler-only
-      de-risk prototype for the AffineBodyPD{Revolute,Prismatic}Joint constitutions; revolute
-      only (prismatic/force-mode DOFs stay on the torque path)."""
+    ipc_monolithic_actuation: Literal["torque", "pd"] = "pd"
+    """Actuation channel for ``coup_type='ipc_monolithic'`` entities (per-DOF routing).
+    - ``'pd'`` (default, M6): **revolute position/velocity DOFs** are driven by the existing
+      ``AffineBodyDrivingRevoluteJoint`` as an *implicit* PD servo -- each step the coupler writes
+      ``aim_angle = (kp*q_des + (kv/dt)*(q_n + v_des*dt))/(kp+kv/dt)`` and
+      ``strength_ratio = (kp+kv/dt)/(m_i+m_j)``, so IPC's Newton solve evaluates
+      ``kp(q_des-q)+kv(v_des-qd)`` implicitly (faithful PD, unconditionally stable -- no
+      ``kp*dt^2/I<4`` / ``kv*dt/I<2`` bound). **Prismatic + FORCE-mode DOFs use the torque path**
+      (no kp/kv to fold). See docs/pd_joints.md.
+    - ``'torque'``: every DOF via per-joint scalar torque (AffineBodyRevoluteJointExternalForce),
+      kp/kv applied EXPLICITLY -> diverges on light affine bodies at stiff gains. Kept for
+      comparison / FORCE-only use."""
     monolithic_torque_enable: StrictBool = True
     """Activate the per-joint torque actuation for ``coup_type='ipc_monolithic'``: each
     step the Genesis control law (ctrl_mode/kp/kv/force_range) is folded into a per-joint

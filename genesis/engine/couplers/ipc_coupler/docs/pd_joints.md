@@ -50,12 +50,16 @@ coupler sets, per step:
 θ̃ (aim_angle)             = (kp·q_des + (kv/dt)(θ_n + v_des·dt)) / (kp + kv/dt)
 ```
 
-So **M6 ships as a coupler-only path** (`ipc_monolithic_actuation="pd_prototype"`,
+So **M6 ships as a coupler-only path** (`ipc_monolithic_actuation="pd"`, now the **default**;
 `_write_monolithic_pd_drive`) — no new libuipc constitution, no CUDA rebuild — reusing tested
-code (libuipc test 72). A **dedicated `AffineBodyPD{Revolute,Prismatic}Joint` constitution is
-deferred** (design preserved below + in the libuipc spec `affine_body_pd_revolute_joint.md`);
-it would only add ergonomics (pass `kp/kv` directly, no mass term in the coupler) and a
-`force_range` torque clamp — neither needed for the failing case.
+code (libuipc test 72). **Per-DOF routing:** revolute position/velocity DOFs → PD folding;
+**prismatic + FORCE-mode DOFs → the torque path** (`capture_monolithic_control_torque` runs in
+both modes, writing torque only for non-PD DOFs). The implied PD start-force is **clamped to the
+joint's `force_range`** (cap `aim_angle`): faithful to Genesis's torque clamp, and required for
+the Newton solve to converge on large position errors (a stiff `kp` × big initial reach error is
+otherwise unbounded). A **dedicated `AffineBodyPD{Revolute,Prismatic}Joint` constitution is
+deferred** (design sketched below) — it would only add a kp/kv-direct API (coupler not needing
+link masses); the folding already covers force_range + v_des, so it is not needed.
 
 **Validated (2026-06-09, exact `m_i+m_j` calibration):**
 - 1-DOF hinge: pd path tracks (RMS 0.008–0.023, max\|q\|≈amp) and **agrees with Genesis PD** —
@@ -121,23 +125,14 @@ all of which treat `kp` **explicitly** (`implicitfast`/`approximate_implicitfast
 - **Beyond that regime** (stiff gains on light bodies) the explicit-kp Genesis path / explicit
   torque diverges while the pd path stays stable — this is the whole point.
 
-## The two constitutions (DEFERRED — design reference only)
+## Deferred: a dedicated `AffineBodyPD{Revolute,Prismatic}Joint` constitution
 
-> **Not implemented.** M6 ships via the driving-joint folding (see Status above). This section
-> is the design for a future dedicated constitution, kept for when `force_range` clamping or a
-> cleaner `kp/kv`-direct API is wanted. The libuipc spec
-> `affine_body_pd_revolute_joint.md` (UID 31) documents the revolute one.
-
-| | joint coord `θ(x)` | reuses |
-|---|---|---|
-| `AffineBodyPDRevoluteJoint` (hinge) | signed angle about axis | `AffineBodyRevoluteJoint` connectivity, `current_angles`, `l_basis/r_basis`, `F01` symbolic block |
-| `AffineBodyPDPrismaticJoint` (slide) | signed displacement along axis | `AffineBodyPrismaticJoint` connectivity + displacement coord |
-
-The PD constitution **composes with** the existing connectivity joint (which keeps
-the links attached + enforces the axis), exactly as `AffineBodyDrivingRevoluteJoint`
-does — it only adds the actuation energy. Per-joint device attributes:
-`pd/kp`, `pd/kv`, `pd/aim_angle`, `pd/aim_velocity`, `pd/is_constrained`; `θₙ` is read from the
-joint's `current_angles`, `dt` from `info.dt()`.
+Not implemented (the folding above is exact and covers force_range + v_des). It would only add a
+**kp/kv-direct API** so the coupler need not fold gains/masses: a constitution composing onto the
+base revolute/prismatic joint (like `AffineBodyDrivingRevoluteJoint`) with edge attributes
+`pd/kp, pd/kv, pd/aim_angle, pd/aim_velocity, pd/is_constrained`, energy `½K(θ−θ̃)²` reusing the
+driving joint's symbolic `E/G/H` with `K=kp+kv/dt`, `θₙ` from the base `current_angles`, `dt`
+from `info.dt()`. Build it only if folding-in-the-coupler becomes a maintenance burden.
 
 ## Shipped path: implicit PD via the existing driving joint (coupler-only)
 
@@ -165,7 +160,7 @@ Two quadratics in `θ` combine into one:
 `AffineBodyDrivingRevoluteJoint` computes `½·K·(θ−θ̃)²` with `K = γ·(m_i+m_j)` (the SUM of the
 two affine-body masses — per its spec). So the **exact PD gradient** is reproduced with no C++
 change by setting, each step (`coupler._write_monolithic_pd_drive`, gated by
-`ipc_monolithic_actuation="pd_prototype"`):
+`ipc_monolithic_actuation="pd"`):
 
 ```
 γ (driving/strength_ratio) = κ_eff / (m_i + m_j)     # cancels the mass scaling → K = κ_eff
@@ -202,7 +197,7 @@ as an open question.
 ## Phase plan
 
 - **P0 — Implicit PD via driving-joint folding (coupler-only): ✅ DONE / SHIPPED (2026-06-09).**
-  `ipc_monolithic_actuation="pd_prototype"` + `_write_monolithic_pd_drive` (revolute, exact
+  `ipc_monolithic_actuation="pd"` + `_write_monolithic_pd_drive` (revolute, exact
   `γ = κ_eff/(m_i+m_j)`). Gate PASS: 1-DOF stable + tracks + agrees with Genesis PD
   (cross-RMS 0.0095 at kp=2000); pony hold-pose settles (0.10→0.0001) where torque diverges.
   This **is** the M6 solution — no new constitution, no CUDA build.
@@ -212,7 +207,7 @@ as an open question.
   driving-joint symbolic `½K(θ−θ̃)²`) → prismatic → coupler routing → clamp. The libuipc spec
   `affine_body_pd_revolute_joint.md` (UID 31) is written; implementation not started.
 
-Remaining polish on the shipped path (not blocking): expose `pd_prototype` through gs-gym's
+Remaining polish on the shipped path (not blocking): expose `pd` through gs-gym's
 SceneArgs so envs can opt in without patching defaults; optional `force_range` handling for the
 PD DOFs (currently unclamped — fine for tracking, FORCE-mode keeps the clamped torque path).
 

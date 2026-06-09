@@ -744,9 +744,9 @@ class IPCCoupler(RBC):
                     gs.raise_exception(
                         f"'ipc_monolithic' v1 supports a single environment only (got B={self._B})."
                     )
-                if self.options.ipc_monolithic_actuation not in ("torque", "pd_prototype"):
+                if self.options.ipc_monolithic_actuation not in ("torque", "pd"):
                     gs.raise_exception(
-                        f"'ipc_monolithic' supports actuation 'torque' or 'pd_prototype' "
+                        f"'ipc_monolithic' supports actuation 'torque' or 'pd' "
                         f"(got '{self.options.ipc_monolithic_actuation}')."
                     )
             gs.logger.debug(f"Rigid entity {i_e}: coupling type '{coup_type.name.lower()}'")
@@ -1765,7 +1765,7 @@ class IPCCoupler(RBC):
                     # solved IMPLICITLY by IPC's Newton solve, so the PD is unconditionally
                     # stable. strength_ratio / aim_angle are overwritten each step (see
                     # _write_monolithic_pd_drive); the scalar here is a build placeholder.
-                    if self.options.ipc_monolithic_actuation == "pd_prototype" and not is_prismatic:
+                    if self.options.ipc_monolithic_actuation == "pd" and not is_prismatic:
                         AffineBodyDrivingRevoluteJoint().apply_to(joint_geom, 1.0)
                     # Express the world joint axis in each ABD body's build frame, so the
                     # actuation torque (applied as a per-body wrench) tracks the bodies'
@@ -3105,10 +3105,22 @@ class IPCCoupler(RBC):
         """
         if not self._ipc_monolithic_data_by_entity:
             return
-        if self.options.ipc_monolithic_actuation != "torque":
+        if self.options.ipc_monolithic_actuation not in ("torque", "pd"):
             return
         if not self.options.monolithic_torque_enable:
             return
+
+        # M6 per-DOF routing. In "pd" mode the revolute position/velocity DOFs are actuated by the
+        # implicit-PD driving joint (_write_monolithic_pd_drive) and so get ZERO torque here;
+        # prismatic + FORCE-mode DOFs still use the torque path. In "torque" mode every DOF uses
+        # torque. (The coupled implicit-damping solve below still runs over the whole entity; only
+        # the per-joint torque WRITE is zeroed for PD DOFs -- the small cross-coupling into the
+        # remaining torque DOFs is negligible for a weakly-coupled gripper.)
+        pd_mode = self.options.ipc_monolithic_actuation == "pd"
+        VELOCITY_MODE = int(gs.CTRL_MODE.VELOCITY)
+        ctrl_mode_all = np.asarray(
+            qd_to_numpy(self.rigid_solver.dofs_state.ctrl_mode, transpose=True)
+        ).reshape(self._B, -1)
 
         # (B, n_dofs) PD-law control force from the current joint state.
         ctrl_force = self.rigid_solver.get_dofs_control_force()  # torch tensor
@@ -3172,10 +3184,20 @@ class IPCCoupler(RBC):
                         a_like = f_tot / np.maximum(np.diag(m_aug), gs.EPS)
                     tau_vec = qb + m_crb @ a_like
                     for j, dof_local in enumerate(ad.joints_dof_idx_local):
-                        ad.torque[env_idx, j] = MONOLITHIC_TORQUE_SIGN * float(tau_vec[dof_local])
+                        if pd_mode and not ad.joints_is_prismatic[j] and (
+                            ctrl_mode_all[env_idx, dof_start + dof_local] <= VELOCITY_MODE
+                        ):
+                            ad.torque[env_idx, j] = 0.0  # implicit-PD driving joint actuates this DOF
+                        else:
+                            ad.torque[env_idx, j] = MONOLITHIC_TORQUE_SIGN * float(tau_vec[dof_local])
                 else:
                     for j, dof_local in enumerate(ad.joints_dof_idx_local):
-                        ad.torque[env_idx, j] = MONOLITHIC_TORQUE_SIGN * float(cf[env_idx, dof_start + dof_local])
+                        if pd_mode and not ad.joints_is_prismatic[j] and (
+                            ctrl_mode_all[env_idx, dof_start + dof_local] <= VELOCITY_MODE
+                        ):
+                            ad.torque[env_idx, j] = 0.0  # implicit-PD driving joint actuates this DOF
+                        else:
+                            ad.torque[env_idx, j] = MONOLITHIC_TORQUE_SIGN * float(cf[env_idx, dof_start + dof_local])
 
     def _retrieve_ipc_rigid_states(self):
         """
@@ -3281,7 +3303,7 @@ class IPCCoupler(RBC):
         capture_monolithic_control_torque early-returns for non-'torque' actuation).
         See docs/pd_joints.md.
         """
-        if self.options.ipc_monolithic_actuation != "pd_prototype":
+        if self.options.ipc_monolithic_actuation != "pd":
             return
         if not self._ipc_monolithic_data_by_entity:
             return
@@ -3289,6 +3311,7 @@ class IPCCoupler(RBC):
         di = self.rigid_solver.dofs_info
         ds = self.rigid_solver.dofs_state
         act_bias = np.asarray(qd_to_numpy(di.act_bias)).reshape(-1, 3)
+        force_range = np.asarray(qd_to_numpy(di.force_range)).reshape(-1, 2)
         ctrl_pos = np.asarray(qd_to_numpy(ds.ctrl_pos, transpose=True)).reshape(self._B, -1)
         ctrl_vel = np.asarray(qd_to_numpy(ds.ctrl_vel, transpose=True)).reshape(self._B, -1)
         qpos = np.asarray(qd_to_numpy(self.rigid_solver.qpos, transpose=True)).reshape(self._B, -1)
@@ -3309,6 +3332,15 @@ class IPCCoupler(RBC):
                     v_des = float(ctrl_vel[env_idx, dof])
                     q_n = float(qpos[env_idx, q_start + ad.joints_qs_idx_local[j]])
                     aim_eff = (kp * q_des + (kv / dt) * (q_n + v_des * dt)) / kappa_eff
+                    # force_range clamp (faithful to Genesis's torque clamp, and keeps the
+                    # implicit Newton solve well-conditioned for large position errors): the
+                    # driving force at theta=q_n is kappa_eff*(aim_eff - q_n) = kp*(q_des-q_n)
+                    # + kv*v_des. Cap it into [lo, hi] by limiting how far aim_eff sits from q_n.
+                    f_lo, f_hi = float(force_range[dof, 0]), float(force_range[dof, 1])
+                    f_imp = kappa_eff * (aim_eff - q_n)
+                    f_cl = min(max(f_imp, f_lo), f_hi)
+                    if f_cl != f_imp:
+                        aim_eff = q_n + f_cl / kappa_eff
                     # AffineBodyDrivingRevoluteJoint energy is (K/2)(theta-aim)^2 with
                     # K = strength_ratio * (m_i + m_j) (SUM of the two affine-body masses;
                     # see the constitution spec). So the strength that yields K = kappa_eff is

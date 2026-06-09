@@ -84,17 +84,20 @@ cloth/RCC coexistence (the grasp + FEM cube default already exercises robot+defo
 `kp`/`kv` **explicitly** on light per-body affine inertia, so stiff Genesis-tuned gains diverge
 on light-link robots (reproduced: gs-gym `pick-deformable-toy-pony` + marvin gripper,
 kp=7200/kv=600 → whole-arm jitter, no policy needed; Franka is fine because its links are heavy).
-**Fix (shipped):** `ipc_monolithic_actuation="pd_prototype"` drives each revolute joint via the
+**Fix (shipped):** `ipc_monolithic_actuation="pd"` drives each revolute joint via the
 **existing** `AffineBodyDrivingRevoluteJoint` as an *implicit* PD servo. The PD energy
 `½kp(θ−q_des)²+½(kv/dt)(θ−θₙ−v_des·dt)²` is **algebraically exactly** the driving joint's
 `½K(θ−θ̃)²`, so the coupler sets `γ = (kp+kv/dt)/(m_i+m_j)`, `aim = θ̃` each step — faithful PD
 (real kp/kv, `v_des` supported), unconditionally stable, **no new constitution / no CUDA build**.
-Validated: 1-DOF agrees with Genesis PD (cross-RMS 0.0095 @ kp=2000); pony hold-pose settles
-(0.10→0.0001) where torque diverges. A dedicated `AffineBodyPD{Revolute,Prismatic}Joint`
-constitution is **deferred** (only for `force_range` clamp / kp/kv-direct API). FORCE-mode +
-prismatic DOFs keep the torque path. Design, validation + deferred-constitution spec in
-[pd_joints.md](pd_joints.md). This **supersedes the "Torque path" actuation decision below for
-position/velocity revolute DOFs**.
+The implied PD force is **clamped to the joint's `force_range`** (cap `aim_angle`) — faithful to
+Genesis's torque clamp and needed for Newton convergence on large position errors. **Now the
+default**; **per-DOF routing**: revolute pos/vel → PD, prismatic + FORCE-mode → torque
+(`capture` runs in both modes, writing torque only for non-PD DOFs). Validated: 1-DOF agrees with
+Genesis PD (cross-RMS 0.0095 @ kp=2000); pony hold-pose settles (0.10→0.0001) where torque
+diverges; **Franka grasp regression: cube lifts to 0.177 (torque 0.188), no regression**. A
+dedicated `AffineBodyPD{Revolute,Prismatic}Joint` constitution is **deferred** (only for a
+kp/kv-direct API). Design + validation in [pd_joints.md](pd_joints.md). This **supersedes the
+"Torque path" actuation decision below** (now the non-default).
 
 ## Phase plan & acceptance gates
 

@@ -64,8 +64,8 @@ hinge — before writing the C++ constitution. Gate in [../pd_joints.md](../pd_j
 
 ## 2026-06-09 — P0 prototype: IMPLEMENTED + PASSED (coupler-only, no fork rebuild)
 
-Wired `ipc_monolithic_actuation="pd_prototype"` (opt-in; default stays `"torque"`):
-- `solvers.py`: option extended to `Literal["torque","pd_prototype"]`.
+Wired `ipc_monolithic_actuation="pd"` (opt-in; default stays `"torque"`):
+- `solvers.py`: option extended to `Literal["torque","pd"]`.
 - `coupler.py`: import `AffineBodyDrivingRevoluteJoint`; in `_add_ipc_monolithic_entities`
   compose it onto each revolute joint edge (build placeholder strength); new
   `_write_monolithic_pd_drive()` (called from `_pre_advance_write_ipc_attributes`) writes per
@@ -76,7 +76,7 @@ Wired `ipc_monolithic_actuation="pd_prototype"` (opt-in; default stays `"torque"
 
 **Results (gate PASS):**
 
-| test | torque (explicit) | pd_prototype (implicit) |
+| test | torque (explicit) | pd (implicit) |
 |---|---|---|
 | 1-DOF hinge kp=100/kv=5, SHM amp 0.8 | RMS 0.024, max\|q\| 0.80 | RMS 0.024, max\|q\| 0.80 (tracks) |
 | 1-DOF hinge kp=7200/kv=600 (stiff) | RMS 0.119 (sluggish, bounded\*) | RMS **0.027**, max\|q\| 0.79 (stable) |
@@ -84,7 +84,7 @@ Wired `ipc_monolithic_actuation="pd_prototype"` (opt-in; default stays `"torque"
 
 \*the single-body 1-DOF doesn't reproduce the divergence (its M_crb/M_aug attenuation shrinks
 the effective explicit kp); the divergence is a multi-body affine/penalty-joint effect, which
-the pony reproduces and pd_prototype fixes. Implicit PD also tracks *better* (0.027 vs 0.119).
+the pony reproduces and pd fixes. Implicit PD also tracks *better* (0.027 vs 0.119).
 
 **Caveats (prototype, not the shipped path):** stiffness scaled by `body_mass` (driving-joint
 convention) and the symbolic energy's exact κ→joint-stiffness factor are not calibrated, so a
@@ -117,3 +117,32 @@ is exact, and the only P0 imperfection was using `m_parent` instead of `m_i+m_j`
 a `force_range` torque clamp or a kp/kv-direct API (coupler not needing link masses). The
 libuipc spec `affine_body_pd_revolute_joint.md` (UID 31) is kept as that design. Docs/roadmap/
 conventions re-scoped accordingly. **No CUDA build was needed.**
+
+## 2026-06-09 — Per-DOF routing + force_range clamp + made default ("pd"); A: doc cleanup
+
+**B — routing + clamp + default.** Made `"pd"` the **default** and added **per-DOF routing** so
+it's a safe drop-in:
+- `capture_monolithic_control_torque` no longer early-returns for non-`torque`; it runs in both
+  modes and writes torque only for **prismatic + FORCE-mode** DOFs (PD revolute DOFs get
+  `ad.torque=0`). Previously `"pd"` left the gripper (prismatic, `type="slide"`) **unactuated**.
+- `_write_monolithic_pd_drive` clamps the implied start-force `κ_eff·(aim_eff−q_n)` into the
+  joint's `force_range` (cap `aim_angle`). **Why:** the Franka grasp crashed IPC at frame 2 —
+  the start-of-step PD force is `kp·(q_des−q_n)` regardless of kv, and `kp=4500` × a large initial
+  IK reach error → unbounded stiff implicit spring → Newton/line-search non-convergence. The
+  torque path survives because `get_dofs_control_force` clamps to `force_range` (Franka: ±87/±12);
+  the clamp gives the PD path the same bound (faithful to Genesis). (`set_dofs_kp` does NOT zero
+  kv — arm kv stayed 450 from the MJCF; the failure was the unclamped force, not kv.)
+- Renamed `"pd_prototype" → "pd"`.
+
+**Validated:**
+- **Franka grasp+lift regression** (the hard case: contact + gripper + big IK jumps): default
+  `pd` lifts the cube to **0.177** (torque 0.188), Newton converges, arm stable. Without the clamp
+  it crashed at frame 2.
+- pony hold-pose (default pd, routing + clamp): settles **0.10→0.0000** (gripper now actuated via
+  torque routing).
+
+**A — doc cleanup.** Deleted the deferred libuipc spec
+`docs/specification/constitutions/affine_body_pd_revolute_joint.md` (unbuilt constitution; design
+folded into the "Deferred" section of pd_joints.md). Trimmed pd_joints.md's deferred section to a
+short pointer. Renamed `pd_prototype→pd` across docs. Updated roadmap/conventions to default=`pd`,
+routing, and the now-shipped force_range clamp. M6 closed.
