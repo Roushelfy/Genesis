@@ -3117,14 +3117,24 @@ class IPCCoupler(RBC):
         # M6 per-DOF routing. In "pd" mode all POSITION/VELOCITY DOFs (revolute AND prismatic) are
         # actuated by the implicit-PD driving joint (_write_monolithic_pd_drive) and so get ZERO
         # torque here; only FORCE-mode DOFs use the torque path. In "torque" mode every DOF uses
-        # torque. (The coupled implicit-damping solve below still runs over the whole entity; only
-        # the per-joint torque WRITE is zeroed for PD DOFs -- the small cross-coupling into the
-        # remaining torque DOFs is negligible for a weakly-coupled gripper.)
+        # torque (the coupled implicit-damping solve below makes its kv implicit).
         pd_mode = self.options.ipc_monolithic_actuation == "pd"
         VELOCITY_MODE = int(gs.CTRL_MODE.VELOCITY)
         ctrl_mode_all = np.asarray(
             qd_to_numpy(self.rigid_solver.dofs_state.ctrl_mode, transpose=True)
         ).reshape(self._B, -1)
+
+        # pd-mode fast path: if no monolithic DOF is in FORCE mode (the common case -- pure
+        # position/velocity control, all DOFs PD-driven), the torque path produces nothing, so
+        # skip the control-force read + the coupled implicit-damping solve entirely.
+        if pd_mode and not any(
+            bool((ctrl_mode_all[:, e.dof_start : e.dof_start + e.n_dofs] > VELOCITY_MODE).any())
+            for e in self._ipc_monolithic_data_by_entity
+        ):
+            for ad in self._ipc_monolithic_data_by_entity.values():
+                if ad.torque is not None:
+                    ad.torque[:] = 0.0
+            return
 
         # (B, n_dofs) PD-law control force from the current joint state.
         ctrl_force = self.rigid_solver.get_dofs_control_force()  # torch tensor
