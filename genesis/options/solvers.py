@@ -364,10 +364,17 @@ class IPCCouplerOptions(BaseCouplerOptions):
     ignore_end_effector_check: StrictBool = False
     joint_strength_ratio: PositiveFloat = 100.0
     """Strength ratio for external articulation joint constraints. Higher = stiffer joints, less drift."""
-    ipc_monolithic_actuation: Literal["torque"] = "torque"
-    """Actuation channel for ``coup_type='ipc_monolithic'`` entities. Currently only
-    ``'torque'`` (per-joint scalar torque via AffineBodyRevoluteJointExternalForce, computed
-    Genesis-side from the control law)."""
+    ipc_monolithic_actuation: Literal["torque", "pd_prototype"] = "torque"
+    """Actuation channel for ``coup_type='ipc_monolithic'`` entities.
+    - ``'torque'``: per-joint scalar torque via AffineBodyRevoluteJointExternalForce, computed
+      Genesis-side from the control law (kp/kv applied EXPLICITLY -> bounded stability on light
+      affine bodies; see docs/pd_joints.md).
+    - ``'pd_prototype'`` (M6 P0): drive each revolute joint with the existing
+      AffineBodyDrivingRevoluteJoint as an *implicit* PD servo -- each step write
+      ``aim_angle = aim_eff`` and ``strength_ratio = (kp+kv/dt)/m_parent`` so IPC's Newton solve
+      evaluates ``kp(q_des-q)+kv(v_des-qd)`` implicitly (unconditionally stable). Coupler-only
+      de-risk prototype for the AffineBodyPD{Revolute,Prismatic}Joint constitutions; revolute
+      only (prismatic/force-mode DOFs stay on the torque path)."""
     monolithic_torque_enable: StrictBool = True
     """Activate the per-joint torque actuation for ``coup_type='ipc_monolithic'``: each
     step the Genesis control law (ctrl_mode/kp/kv/force_range) is folded into a per-joint

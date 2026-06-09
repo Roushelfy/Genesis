@@ -61,3 +61,33 @@ Drive the existing `AffineBodyDrivingRevoluteJoint` with `κ_eff=kp+kv/dt`,
 `aim_eff=(kp·q_des+(kv/dt)(θₙ+v_des·dt))/κ_eff` to validate that implicit PD (a) fixes the
 pony/marvin divergence and (b) matches Genesis `integrator=implicit` `q(t)` on a 1-DOF
 hinge — before writing the C++ constitution. Gate in [../pd_joints.md](../pd_joints.md) §P0.
+
+## 2026-06-09 — P0 prototype: IMPLEMENTED + PASSED (coupler-only, no fork rebuild)
+
+Wired `ipc_monolithic_actuation="pd_prototype"` (opt-in; default stays `"torque"`):
+- `solvers.py`: option extended to `Literal["torque","pd_prototype"]`.
+- `coupler.py`: import `AffineBodyDrivingRevoluteJoint`; in `_add_ipc_monolithic_entities`
+  compose it onto each revolute joint edge (build placeholder strength); new
+  `_write_monolithic_pd_drive()` (called from `_pre_advance_write_ipc_attributes`) writes per
+  step `aim_angle = aim_eff`, `driving/strength_ratio = κ_eff/m_parent`,
+  `driving/is_constrained = 1`. `capture_monolithic_control_torque` already early-returns for
+  non-`torque` actuation, so `ad.torque` stays 0 → no explicit wrench. Prismatic stays on torque.
+- `ipc_monolithic_1dof_debug.py`: `--actuation` arg.
+
+**Results (gate PASS):**
+
+| test | torque (explicit) | pd_prototype (implicit) |
+|---|---|---|
+| 1-DOF hinge kp=100/kv=5, SHM amp 0.8 | RMS 0.024, max\|q\| 0.80 | RMS 0.024, max\|q\| 0.80 (tracks) |
+| 1-DOF hinge kp=7200/kv=600 (stiff) | RMS 0.119 (sluggish, bounded\*) | RMS **0.027**, max\|q\| 0.79 (stable) |
+| **pony hold-pose, arm \|q̇\| @ stiff gains** | **0.02 → 7.7 → diverges** | **0.10 → 0.0002 (settles)** ✅ |
+
+\*the single-body 1-DOF doesn't reproduce the divergence (its M_crb/M_aug attenuation shrinks
+the effective explicit kp); the divergence is a multi-body affine/penalty-joint effect, which
+the pony reproduces and pd_prototype fixes. Implicit PD also tracks *better* (0.027 vs 0.119).
+
+**Caveats (prototype, not the shipped path):** stiffness scaled by `body_mass` (driving-joint
+convention) and the symbolic energy's exact κ→joint-stiffness factor are not calibrated, so a
+bit-exact match to `integrator=implicit` is deferred to P1 (the real `AffineBodyPDRevoluteJoint`
+uses real kp/kv units). `force_range` clamp not yet applied. P0 confirms the **mechanism**:
+making the PD implicit removes the divergence and tracks faithfully. → proceed to P1.

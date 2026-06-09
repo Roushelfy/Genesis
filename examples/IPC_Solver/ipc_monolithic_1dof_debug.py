@@ -98,6 +98,7 @@ def run_one(mode: str, args) -> dict:
         enable_rigid_ground_contact=False,
         monolithic_joint_limit_enable=not args.no_limit,
         monolithic_implicit_damping=not args.no_implicit_damping,
+        ipc_monolithic_actuation=args.actuation,
     )
     scene = gs.Scene(
         sim_options=gs.options.SimOptions(dt=args.dt),
@@ -290,6 +291,8 @@ def main():
     p.add_argument("--no-limit", action="store_true", help="disable monolithic joint limit penalty")
     p.add_argument("--no-implicit-damping", action="store_true",
                    help="disable the monolithic implicit-damping torque scaling (apply raw explicit PD)")
+    p.add_argument("--actuation", choices=["torque", "pd_prototype"], default="torque",
+                   help="ipc_monolithic actuation: explicit torque (default) or implicit-PD driving-joint prototype (M6 P0)")
     p.add_argument("-v", "--vis", action="store_true", help="show the viewer (driver mode shows each mode in turn)")
     p.add_argument("--realtime", action="store_true", help="throttle stepping to ~real time (watchable)")
     p.add_argument("--verbose", action="store_true", help="print every --log-every steps")

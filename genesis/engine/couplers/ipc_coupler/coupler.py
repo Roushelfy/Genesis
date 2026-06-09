@@ -45,6 +45,7 @@ if TYPE_CHECKING or UIPC_AVAILABLE:
         AffineBodyConstitution,
         AffineBodyExternalBodyForce,
         AffineBodyShell,
+        AffineBodyDrivingRevoluteJoint,
         AffineBodyPrismaticJoint,
         AffineBodyPrismaticJointExternalForce,
         AffineBodyPrismaticJointLimit,
@@ -743,9 +744,9 @@ class IPCCoupler(RBC):
                     gs.raise_exception(
                         f"'ipc_monolithic' v1 supports a single environment only (got B={self._B})."
                     )
-                if self.options.ipc_monolithic_actuation != "torque":
+                if self.options.ipc_monolithic_actuation not in ("torque", "pd_prototype"):
                     gs.raise_exception(
-                        f"'ipc_monolithic' v1 only supports actuation='torque' "
+                        f"'ipc_monolithic' supports actuation 'torque' or 'pd_prototype' "
                         f"(got '{self.options.ipc_monolithic_actuation}')."
                     )
             gs.logger.debug(f"Rigid entity {i_e}: coupling type '{coup_type.name.lower()}'")
@@ -1759,6 +1760,13 @@ class IPCCoupler(RBC):
                     joint_cons().apply_to(
                         joint_geom, [parent_abd_slot], [0], [child_abd_slot], [0], [self.options.joint_strength_ratio]
                     )
+                    # M6 P0: implicit-PD servo prototype. Compose the existing driving-joint
+                    # constitution onto the same joint edge (revolute only). Its energy is
+                    # solved IMPLICITLY by IPC's Newton solve, so the PD is unconditionally
+                    # stable. strength_ratio / aim_angle are overwritten each step (see
+                    # _write_monolithic_pd_drive); the scalar here is a build placeholder.
+                    if self.options.ipc_monolithic_actuation == "pd_prototype" and not is_prismatic:
+                        AffineBodyDrivingRevoluteJoint().apply_to(joint_geom, 1.0)
                     # Express the world joint axis in each ABD body's build frame, so the
                     # actuation torque (applied as a per-body wrench) tracks the bodies'
                     # current orientation at runtime. Actuation itself is the body wrench
@@ -3254,6 +3262,64 @@ class IPCCoupler(RBC):
         for link, abd_data in self._abd_data_by_link.items():
             abd_data.aim_transforms[:] = links_transform[:, link.idx]
 
+    def _write_monolithic_pd_drive(self):
+        """M6 P0: drive ipc_monolithic revolute joints as an *implicit* PD servo.
+
+        Writes per-revolute-joint ``AffineBodyDrivingRevoluteJoint`` edge attributes so IPC's
+        Newton solve evaluates Genesis's PD law ``kp*(q_des-q)+kv*(v_des-qd)`` implicitly:
+
+            kappa_eff = kp + kv/dt
+            aim_eff   = (kp*q_des + (kv/dt)*(q_n + v_des*dt)) / kappa_eff
+
+        and ``strength_ratio = kappa_eff / m_parent`` (the driving energy scales kappa by the
+        parent body mass). Unconditionally stable for any kp,kv -- unlike the explicit torque
+        path which carries kp*dt^2/I<4, kv*dt/I<2 on light affine bodies. Revolute only;
+        prismatic / force-mode DOFs keep the torque path (ad.torque stays 0 here since
+        capture_monolithic_control_torque early-returns for non-'torque' actuation).
+        See docs/pd_joints.md.
+        """
+        if self.options.ipc_monolithic_actuation != "pd_prototype":
+            return
+        if not self._ipc_monolithic_data_by_entity:
+            return
+        dt = float(self.rigid_solver._substep_dt)
+        di = self.rigid_solver.dofs_info
+        ds = self.rigid_solver.dofs_state
+        act_bias = np.asarray(qd_to_numpy(di.act_bias)).reshape(-1, 3)
+        ctrl_pos = np.asarray(qd_to_numpy(ds.ctrl_pos, transpose=True)).reshape(self._B, -1)
+        ctrl_vel = np.asarray(qd_to_numpy(ds.ctrl_vel, transpose=True)).reshape(self._B, -1)
+        qpos = np.asarray(qd_to_numpy(self.rigid_solver.qpos, transpose=True)).reshape(self._B, -1)
+        for entity, ad in self._ipc_monolithic_data_by_entity.items():
+            dof_start = entity.dof_start
+            q_start = entity.q_start
+            for env_idx in range(self._B):
+                for j in range(len(ad.joints_child_link)):
+                    if ad.joints_is_prismatic[j]:
+                        continue  # P0: prismatic (gripper) stays on the torque path
+                    dof = dof_start + ad.joints_dof_idx_local[j]
+                    kp = float(-act_bias[dof, 1])
+                    kv = float(-act_bias[dof, 2])
+                    kappa_eff = kp + kv / dt
+                    if kappa_eff <= 0.0:
+                        continue
+                    q_des = float(ctrl_pos[env_idx, dof])
+                    v_des = float(ctrl_vel[env_idx, dof])
+                    q_n = float(qpos[env_idx, q_start + ad.joints_qs_idx_local[j]])
+                    aim_eff = (kp * q_des + (kv / dt) * (q_n + v_des * dt)) / kappa_eff
+                    inert = self._monolithic_body_inertials.get(ad.joints_parent_link[j])
+                    m_parent = max(float(inert[0]) if inert is not None else 1.0, 1e-6)
+                    strength = kappa_eff / m_parent
+                    geom = ad.joint_slots[env_idx][j].geometry()
+                    edges = geom.edges()
+                    aim_attr = edges.find("aim_angle")
+                    str_attr = edges.find("driving/strength_ratio")
+                    con_attr = edges.find("driving/is_constrained")
+                    if aim_attr is None or str_attr is None or con_attr is None:
+                        continue
+                    uipc.view(aim_attr)[:] = aim_eff
+                    uipc.view(str_attr)[:] = strength
+                    uipc.view(con_attr)[:] = 1
+
     def _pre_advance_write_ipc_attributes(self):
         """Write all per-frame IPC attributes before advance().
 
@@ -3261,6 +3327,9 @@ class IPCCoupler(RBC):
         ref_dof_prev (ext_art), delta_theta_tilde and mass_matrix (ext_art)
         directly to IPC geometries.
         """
+        # 0. ipc_monolithic implicit-PD servo prototype (M6 P0): write driving-joint targets.
+        self._write_monolithic_pd_drive()
+
         # 1. Write aim_transform for two_way_soft_constraint links
         for link, abd_data in self._abd_data_by_link.items():
             coup_type = self._coup_type_by_entity.get(link.entity)
