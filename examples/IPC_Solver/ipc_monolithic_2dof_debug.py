@@ -85,6 +85,7 @@ def run_one(mode: str, args) -> dict:
             enable_rigid_rigid_contact=False,
             enable_rigid_ground_contact=False,
             monolithic_joint_limit_enable=not args.no_limit,
+            ipc_monolithic_actuation=args.actuation,
         )
         if use_ipc
         else None
@@ -210,7 +211,8 @@ def compare(mono: dict, ext: dict, gen: dict, args):
     def rms(x):
         return float(np.sqrt(np.mean(np.asarray(x) ** 2)))
 
-    print("\n\n========== 3-WAY CONSISTENCY: monolithic-pd | external | pure-Genesis ==========", flush=True)
+    mono_label = f"monolithic-{args.actuation}"
+    print(f"\n\n========== 3-WAY CONSISTENCY: {mono_label} | external | pure-Genesis ==========", flush=True)
     print(f"{'t':>6} | {'h_cmd':>7} {'h_mono':>8} {'h_ext':>8} {'h_gen':>8} | "
           f"{'s_cmd':>7} {'s_mono':>8} {'s_ext':>8} {'s_gen':>8}", flush=True)
     step = max(1, n // 18)
@@ -234,10 +236,10 @@ def compare(mono: dict, ext: dict, gen: dict, args):
         print(f"  {'':10s}   tracking RMS: mono={trk_m:.5f}  ext={trk_e:.5f}  genesis={trk_g:.5f}  "
               f"(amp {amp})", flush=True)
         if np.max(np.abs(mono["q"][:, d])) < 0.1 * amp:
-            diag.append(f"{DOF_NAMES[d]} monolithic ~DEAD")
+            diag.append(f"{DOF_NAMES[d]} {mono_label} ~DEAD")
         elif mono_gen > 0.3 * amp:
-            diag.append(f"{DOF_NAMES[d]} monolithic differs strongly from pure Genesis")
-    print("  diagnosis: " + ("; ".join(diag) if diag else "both DOFs: monolithic-pd tracks like pure Genesis (consistent)"),
+            diag.append(f"{DOF_NAMES[d]} {mono_label} differs strongly from pure Genesis")
+    print("  diagnosis: " + ("; ".join(diag) if diag else f"both DOFs: {mono_label} tracks like pure Genesis (consistent)"),
           flush=True)
 
 
@@ -263,6 +265,8 @@ def main():
     p.add_argument("--slide-kv", type=float, default=10.0)
     p.add_argument("--dt", type=float, default=0.01)
     p.add_argument("--steps", type=int, default=300)
+    p.add_argument("--actuation", choices=["torque", "pd"], default="pd",
+                   help="ipc_monolithic actuation for the monolithic worker (default pd)")
     p.add_argument("--no-limit", action="store_true", help="disable monolithic joint limit penalty")
     p.add_argument("-v", "--vis", action="store_true", help="show the viewer (driver mode shows each mode in turn)")
     p.add_argument("--realtime", action="store_true", help="throttle stepping to ~real time")
@@ -286,6 +290,7 @@ def main():
         "--slide-amp", str(args.slide_amp), "--slide-freq", str(args.slide_freq),
         "--slide-kp", str(args.slide_kp), "--slide-kv", str(args.slide_kv),
         "--dt", str(args.dt), "--steps", str(args.steps), "--log-every", str(args.log_every),
+        "--actuation", str(args.actuation),
     ]
     if args.no_limit:
         common.append("--no-limit")
