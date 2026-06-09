@@ -90,11 +90,13 @@ kp=7200/kv=600 → whole-arm jitter, no policy needed; Franka is fine because it
 `½K(θ−θ̃)²`, so the coupler sets `γ = (kp+kv/dt)/(m_i+m_j)`, `aim = θ̃` each step — faithful PD
 (real kp/kv, `v_des` supported), unconditionally stable, **no new constitution / no CUDA build**.
 The implied PD force is **clamped to the joint's `force_range`** (cap `aim_angle`) — faithful to
-Genesis's torque clamp and needed for Newton convergence on large position errors. **Now the
-default**; **per-DOF routing**: all pos/vel DOFs → PD (revolute via `AffineBodyDrivingRevoluteJoint`,
-prismatic via `AffineBodyDrivingPrismaticJoint`), only FORCE-mode → torque. Validated: 1-DOF agrees
-with Genesis PD (cross-RMS 0.0095 @ kp=2000); pony hold-pose (arm+gripper PD) settles (0.10→0.0000)
-where torque diverges; **Franka grasp regression: cube lifts to 0.196 (torque 0.188), no regression**. A
+Genesis's torque clamp and needed for Newton convergence on large position errors. **Opt-in, NOT
+the default** — pd DIVERGES under fast motion (stiff `κ_eff=kp+kv/dt` → IPC NEWTON_MAXOUT ≈70 s/step;
+journal 2026-06-09), so the default reverted to `"torque"`. **per-DOF routing**: all pos/vel DOFs → PD
+(revolute via `AffineBodyDrivingRevoluteJoint`, prismatic via `AffineBodyDrivingPrismaticJoint`),
+only FORCE-mode → torque. Validated: 1-DOF agrees with Genesis PD (cross-RMS 0.0095 @ kp=2000); pony
+hold-pose (arm+gripper PD) settles (0.10→0.0000) where torque diverges; **Franka grasp regression:
+cube lifts to 0.196 (torque 0.188), no regression**. A
 dedicated `AffineBodyPD{Revolute,Prismatic}Joint` constitution is **deferred** (only for a
 kp/kv-direct API). Design + validation in [pd_joints.md](pd_joints.md). This **supersedes the
 "Torque path" actuation decision below** (now the non-default).
@@ -111,7 +113,7 @@ gate** (see "Planned gates"); no gate is runnable today.
 | **M3 Actuation** | Genesis-side torque (`get_dofs_control_force`) → per-joint scalar torque → IPC; all 4 ctrl modes | A known constant-torque / step-position trajectory tracks an independent forward-dynamics oracle within tolerance (see test ladder) |
 | **M4 Readback+render** | signed-angle joint readback + finite-diff vel → `qpos`/`links_state`; getters + viewer/camera render IPC-driven robot | `get_dofs_position` round-trips IPC state; headless render smoke produces a frame of the moving arm |
 | **M5 Coexistence** | Robot + cloth/RCC in one scene; no double-solve; RCC adhesion intact | A gs-gym-internal deformable scene (arm + cloth) runs N steps and renders with the robot in `ipc_monolithic` |
-| **M6 Implicit-PD** ✅ | Drive revolute joints via the existing `AffineBodyDrivingRevoluteJoint` as an implicit PD servo (`γ=(kp+kv/dt)/(m_i+m_j)`, `aim=θ̃`); faithful (real kp/kv/v_des) + unconditionally stable; no new constitution | DONE: stiff-gain (kp=7200/kv=600) pony hold-pose settles (0.10→0.0001) where torque diverges; 1-DOF agrees with Genesis PD (cross-RMS 0.0095). See [pd_joints.md](pd_joints.md) |
+| **M6 Implicit-PD** ⚠️ opt-in | Drive revolute joints via the existing `AffineBodyDrivingRevoluteJoint` as an implicit PD servo (`γ=(kp+kv/dt)/(m_i+m_j)`, `aim=θ̃`); faithful (real kp/kv/v_des) + unconditionally stable (linear); no new constitution | PARTIAL: fixes stiff-gain (kp=7200/kv=600) pony hold-pose (settles 0.10→0.0001 where torque diverges) + 1-DOF matches Genesis PD (cross-RMS 0.0095). **But DIVERGES under fast motion** (Franka perf bench: NEWTON_MAXOUT, ~70 s/step) → reverted to opt-in; default is `"torque"`. See [pd_joints.md](pd_joints.md) + journal 2026-06-09 |
 
 ## Next tasks (M1)
 

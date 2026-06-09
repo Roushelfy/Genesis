@@ -50,8 +50,8 @@ def main():
     p.add_argument("--rho", type=float, default=1000.0)
     p.add_argument("--kp-scale", type=float, default=1.0)
     p.add_argument("--joint-strength", type=float, default=100.0)
-    p.add_argument("--finger-kp", type=float, default=1.0)
-    p.add_argument("--finger-kv", type=float, default=1.0)
+    p.add_argument("--finger-kp", type=float, default=1000.0)
+    p.add_argument("--finger-kv", type=float, default=100.0)
     p.add_argument("--arm-kv", type=float, default=10.0,
                    help="arm joint damping kv. The Franka MJCF default (~200) is far over the "
                         "monolithic explicit-damping bound (kv*dt/I<2) and causes jitter; this overrides it.")
@@ -141,14 +141,13 @@ def main():
     ee = franka.get_link("hand")
     ee_quat = [0.0, 1.0, 0.0, 0.0]
 
-    base_kp = np.array([1000, 1000, 1000, 1000, 1000, 1000, 1000, args.finger_kp, args.finger_kp], dtype=np.float32)
-    franka.set_dofs_kp(base_kp * np.array([args.kp_scale] * 7 + [1.0, 1.0], dtype=np.float32))
+    # franka.set_dofs_kp(base_kp * np.array([args.kp_scale] * 7 + [100.0, 100.0], dtype=np.float32))
     # IMPORTANT: also override the ARM kv. The MJCF actuator bias (biasprm[2]) gives the arm
     # a default damping kv ~200, which set_dofs_kp does NOT touch. For ipc_monolithic that
     # explicit -kv*qd term blows the stability bound (kv*dt/I<2) and jitters at ANY kp.
-    franka.set_dofs_kv(np.array([args.arm_kv] * 7, dtype=np.float32), motors_dof)
-    franka.set_dofs_kv(np.array([args.finger_kv, args.finger_kv], dtype=np.float32), fingers_dof)
 
+    franka.set_dofs_kp([4500.0, 4500.0, 3500.0, 3500.0, 2000.0, 2000.0, 2000.0, 500.0, 500.0])
+    franka.set_dofs_kv([100.0, 100.0], fingers_dof)
     def diag(tag):
         ee_pos = ee.get_pos().cpu().numpy().reshape(-1)
         q = franka.get_dofs_position().cpu().numpy().reshape(-1)

@@ -55,6 +55,8 @@ def run_one(coup: str, args) -> dict:
         enable_rigid_rigid_contact=args.ground,
         enable_rigid_ground_contact=args.ground,
     )
+    if coup == "ipc_monolithic":
+        ipc_kwargs["ipc_monolithic_actuation"] = args.actuation
     scene = gs.Scene(
         sim_options=gs.options.SimOptions(dt=args.dt),
         coupler_options=gs.options.IPCCouplerOptions(**ipc_kwargs),
@@ -169,6 +171,10 @@ def main():
     p.add_argument("--dt", type=float, default=0.01)
     p.add_argument("--kp", type=float, default=2000.0)
     p.add_argument("--kv", type=float, default=100.0)
+    p.add_argument("--actuation", choices=["torque", "pd"], default="torque",
+                   help="(ipc_monolithic only) actuation channel. 'torque' (default) is fast under "
+                        "fast motion; 'pd' DIVERGES under fast motion (NEWTON_MAXOUT) -- use only for "
+                        "light-link slow manipulation.")
     p.add_argument("--steps", type=int, default=300, help="timed steps")
     p.add_argument("--warmup", type=int, default=50, help="warmup steps (JIT + transient, untimed)")
     p.add_argument("--ground", action="store_true", help="add a contact plane (else free-space)")
@@ -190,6 +196,7 @@ def main():
         "--backend", args.backend, "--freq", str(args.freq), "--amp-scale", str(args.amp_scale),
         "--dt", str(args.dt), "--kp", str(args.kp), "--kv", str(args.kv),
         "--steps", str(args.steps), "--warmup", str(args.warmup),
+        "--actuation", args.actuation,
     ]
     if args.ground:
         common.append("--ground")

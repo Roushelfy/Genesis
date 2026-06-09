@@ -15,15 +15,19 @@ check them. See [architecture.md](architecture.md) for design and
    logs once) — otherwise `_func_constraint_force` ([rigid_solver.py:1219])
    double-solves contacts against IPC.
 3. **Actuation channel — per-DOF routing (M6).** `IPCCouplerOptions.ipc_monolithic_actuation`:
-   - `"pd"` (**default**): **all position/velocity DOFs** are driven as an *implicit* PD servo —
+   - `"torque"` (**default**): every DOF via `AffineBodyRevoluteJointExternalForce` / prismatic
+     variant (kp/kv **explicit**). Fast + robust under fast motion, but diverges on LIGHT links at
+     stiff gains (marvin kp=7200/kv=600).
+   - `"pd"` (opt-in): **all position/velocity DOFs** are driven as an *implicit* PD servo —
      revolute via `AffineBodyDrivingRevoluteJoint` (`aim_angle`), prismatic via
      `AffineBodyDrivingPrismaticJoint` (`aim_distance`). Each step the coupler folds
      `kp,kv,q_des,v_des,θₙ,dt` into `γ` (`=(kp+kv/dt)/(m_i+m_j)` revolute, `/(2(m_i+m_j))` prismatic
      — its energy is a two-term sum) and `aim=θ̃`, in `_write_monolithic_pd_drive`. **Only
      FORCE-mode DOFs use the torque path** (no kp/kv to fold): `capture_monolithic_control_torque`
      runs in both modes and writes torque only for FORCE-mode DOFs (PD DOFs get `ad.torque=0`).
-   - `"torque"`: every DOF via `AffineBodyRevoluteJointExternalForce` / prismatic variant
-     (kp/kv **explicit** — diverges on light links at stiff gains; kept for comparison).
+     Fixes the light-link stiff-gain divergence but **the folded energy is stiff
+     (`κ_eff=kp+kv/dt`) and DIVERGES under fast motion** (IPC NEWTON_MAXOUT). Opt-in for light-link
+     **slow** manipulation only; for light-link **fast** motion use `external_articulation`.
    - Still forbidden: `ExternalArticulationConstraint`, `SoftTransformConstraint`.
    - A dedicated `AffineBodyPD{Revolute,Prismatic}Joint` constitution is **deferred** (would
      only add a kp/kv-direct API); the driving-joint folding is exact.
