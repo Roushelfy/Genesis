@@ -3271,8 +3271,11 @@ class IPCCoupler(RBC):
             kappa_eff = kp + kv/dt
             aim_eff   = (kp*q_des + (kv/dt)*(q_n + v_des*dt)) / kappa_eff
 
-        and ``strength_ratio = kappa_eff / m_parent`` (the driving energy scales kappa by the
-        parent body mass). Unconditionally stable for any kp,kv -- unlike the explicit torque
+        and ``strength_ratio = kappa_eff / (m_parent + m_child)`` (the driving energy is
+        (K/2)(theta-aim)^2 with K = strength_ratio*(m_i+m_j), so this cancels the mass scaling
+        -> K = kappa_eff exactly, i.e. true joint-space gains kp,kv). This is EXACT implicit PD:
+        the gradient at convergence is kp(q_des-theta)+kv(v_des-thetadot), matching Genesis
+        integrator=implicit. Unconditionally stable for any kp,kv -- unlike the explicit torque
         path which carries kp*dt^2/I<4, kv*dt/I<2 on light affine bodies. Revolute only;
         prismatic / force-mode DOFs keep the torque path (ad.torque stays 0 here since
         capture_monolithic_control_torque early-returns for non-'torque' actuation).
@@ -3306,9 +3309,18 @@ class IPCCoupler(RBC):
                     v_des = float(ctrl_vel[env_idx, dof])
                     q_n = float(qpos[env_idx, q_start + ad.joints_qs_idx_local[j]])
                     aim_eff = (kp * q_des + (kv / dt) * (q_n + v_des * dt)) / kappa_eff
-                    inert = self._monolithic_body_inertials.get(ad.joints_parent_link[j])
-                    m_parent = max(float(inert[0]) if inert is not None else 1.0, 1e-6)
-                    strength = kappa_eff / m_parent
+                    # AffineBodyDrivingRevoluteJoint energy is (K/2)(theta-aim)^2 with
+                    # K = strength_ratio * (m_i + m_j) (SUM of the two affine-body masses;
+                    # see the constitution spec). So the strength that yields K = kappa_eff is
+                    # kappa_eff / (m_parent + m_child) -- this cancels the mass scaling and makes
+                    # the implicit PD use the true joint-space gains kp, kv (N*m/rad). Exact.
+                    ip = self._monolithic_body_inertials.get(ad.joints_parent_link[j])
+                    ic = self._monolithic_body_inertials.get(ad.joints_child_link[j])
+                    m_sum = max(
+                        (float(ip[0]) if ip is not None else 0.0) + (float(ic[0]) if ic is not None else 0.0),
+                        1e-6,
+                    )
+                    strength = kappa_eff / m_sum
                     geom = ad.joint_slots[env_idx][j].geometry()
                     edges = geom.edges()
                     aim_attr = edges.find("aim_angle")

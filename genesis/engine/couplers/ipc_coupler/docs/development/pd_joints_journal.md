@@ -91,3 +91,29 @@ convention) and the symbolic energy's exact κ→joint-stiffness factor are not 
 bit-exact match to `integrator=implicit` is deferred to P1 (the real `AffineBodyPDRevoluteJoint`
 uses real kp/kv units). `force_range` clamp not yet applied. P0 confirms the **mechanism**:
 making the PD implicit removes the divergence and tracks faithfully. → proceed to P1.
+
+## 2026-06-09 — Hardened to exact PD; dedicated constitution DROPPED (M6 done)
+
+**Insight (owner):** since the PD energy collapses to the driving joint's *exact*
+`½K(θ−θ̃)²`, the original `AffineBodyDrivingRevoluteJoint` can realize faithful implicit PD
+directly — **no new constitution needed.** Read the libuipc spec: `E=(K/2)(θ−θ̃)²` with
+`K=γ(m_i+m_j)` (SUM of both affine-body masses) and the same raw `atan2` angle — so the combine
+is exact, and the only P0 imperfection was using `m_parent` instead of `m_i+m_j`. The "symbolic
+κ-factor" worry was unfounded.
+
+**Hardened P0 → exact PD:** `_write_monolithic_pd_drive` now sets
+`strength_ratio = κ_eff/(m_parent+m_child)` (was `/m_parent`). Default stays `"torque"`.
+
+**Re-validated (exact m_i+m_j):**
+- 1-DOF driver (pd vs `external_articulation`): cross-RMS **0.0095 rad @ kp=2000/kv=40**
+  (identical max\|q\|); @ kp=100/kv=5 cross-RMS 0.050 but pd tracks *tighter* (RMS 0.023 vs
+  0.073) — implicit kp removes lag. **Genesis has no full implicit-kp integrator** (only
+  `Euler`/`implicitfast`/`approximate_implicitfast`, all kp-explicit), so there is no bit-exact
+  reference; pd is the faithful implicit extension (same steady state, no lag, stable).
+- pony hold-pose @ kp=7200/kv=600: settles **0.10→0.0001** (torque → 7.7 diverges).
+
+**Decision:** the driving-joint folding **is** the shipped M6 actuation. The dedicated
+`AffineBodyPD{Revolute,Prismatic}Joint` constitution is **DEFERRED** — only worth building for
+a `force_range` torque clamp or a kp/kv-direct API (coupler not needing link masses). The
+libuipc spec `affine_body_pd_revolute_joint.md` (UID 31) is kept as that design. Docs/roadmap/
+conventions re-scoped accordingly. **No CUDA build was needed.**

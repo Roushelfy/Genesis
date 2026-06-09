@@ -316,6 +316,7 @@ def main():
         "--amp", str(args.amp), "--freq", str(args.freq),
         "--dt", str(args.dt), "--steps", str(args.steps),
         "--log-every", str(args.log_every),
+        "--actuation", str(args.actuation),
     ]
     if args.no_limit:
         common.append("--no-limit")

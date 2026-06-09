@@ -37,6 +37,38 @@ solved automatically because the Newton solve uses the true coupled Hessian.
 > `v_des`, units). Stability = it enters as a **convex quadratic** (SPD Hessian),
 > so it cannot destabilize the Newton solve at any gain.
 
+## Status & decision (2026-06-09): shipped via the existing driving joint — no new constitution
+
+The implicit-PD energy below is **algebraically exactly** the existing
+`AffineBodyDrivingRevoluteJoint`'s `½K(θ−θ̃)²` penalty (its spec confirms `E = (K/2)(θ−θ̃)²`,
+`K = γ(m_i+m_j)`, with the same raw `atan2` angle). Two PD quadratics in the same `θ` combine
+into one, so **the existing driving joint realizes faithful implicit PD exactly** when the
+coupler sets, per step:
+
+```
+γ (driving/strength_ratio) = (kp + kv/dt) / (m_i + m_j)   # cancels the mass scaling → K = kp + kv/dt
+θ̃ (aim_angle)             = (kp·q_des + (kv/dt)(θ_n + v_des·dt)) / (kp + kv/dt)
+```
+
+So **M6 ships as a coupler-only path** (`ipc_monolithic_actuation="pd_prototype"`,
+`_write_monolithic_pd_drive`) — no new libuipc constitution, no CUDA rebuild — reusing tested
+code (libuipc test 72). A **dedicated `AffineBodyPD{Revolute,Prismatic}Joint` constitution is
+deferred** (design preserved below + in the libuipc spec `affine_body_pd_revolute_joint.md`);
+it would only add ergonomics (pass `kp/kv` directly, no mass term in the coupler) and a
+`force_range` torque clamp — neither needed for the failing case.
+
+**Validated (2026-06-09, exact `m_i+m_j` calibration):**
+- 1-DOF hinge: pd path tracks (RMS 0.008–0.023, max\|q\|≈amp) and **agrees with Genesis PD** —
+  cross-RMS vs `external_articulation` = **0.0095 rad** at kp=2000 (identical max\|q\|); at
+  moderate gains pd tracks *tighter* (RMS 0.023 vs 0.073) because its kp is implicit, not worse.
+  Genesis has **no full implicit-kp integrator** (only `Euler`/`implicitfast`/
+  `approximate_implicitfast`, all kp-explicit), so there is no bit-exact reference — the pd path
+  is the faithful implicit extension (same steady state, no lag, unconditionally stable).
+- **pony hold-pose @ stiff kp=7200/kv=600**: explicit torque diverges (\|q̇\| 0.02→7.7); the pd
+  path **settles** (0.10→0.0001). Whole-arm jitter fixed.
+
+The math, the deferred-constitution design, and the test ladder below remain the reference.
+
 ## The math
 
 Let `θ(x)` be the joint coordinate as a function of the two affine bodies'
@@ -74,20 +106,40 @@ DOFs.)
 `∂θ/∂x` it contributes SPD blocks to the global Hessian, so the Newton system
 stays SPD for **any** `kp, kv ≥ 0`. No gain-dependent stability bound.
 
-### Relationship to Genesis integrators (fidelity contract)
+### Relationship to Genesis integrators (fidelity)
 
-Making both `kp` and `kv` implicit = Genesis's **`gs.integrator.implicit`**
-semantics (the default `approximate_implicitfast` has `kv` implicit but `kp`
-**explicit**). Consequences:
+Making both `kp` and `kv` implicit is the full-implicit-PD form. **Genesis ships no
+full implicit-kp integrator** — only `Euler`, `implicitfast`, `approximate_implicitfast`,
+all of which treat `kp` **explicitly** (`implicitfast`/`approximate_implicitfast` fold only
+`kv`). So there is no bit-exact Genesis reference. What holds:
 
-- **Steady state is integrator-independent**: `f = 0 ⇔ q = q_des ∧ q̇ = v_des`.
-  Identical equilibrium/tracking to any Genesis integrator.
-- **Transient differs only in `kp` damping** vs `approximate_implicitfast`
-  (implicit `kp` is slightly more damped). To compare bit-for-bit, run the
-  `external_articulation` reference with `integrator=gs.integrator.implicit` —
-  then monolithic-PD and external share the same controller exactly.
+- **Steady state is integrator-independent**: `f = 0 ⇔ q = q_des ∧ q̇ = v_des`. Identical
+  equilibrium/tracking to any Genesis integrator (verified: identical max\|q\|).
+- **In the regime where Genesis is stable** (moderate gains) the pd path agrees with
+  `external_articulation` closely (cross-RMS 0.0095 rad at kp=2000; tighter tracking at low
+  gains because implicit `kp` removes lag).
+- **Beyond that regime** (stiff gains on light bodies) the explicit-kp Genesis path / explicit
+  torque diverges while the pd path stays stable — this is the whole point.
 
-## The two constitutions
+## The two constitutions (DEFERRED — design reference only)
+
+> **Not implemented.** M6 ships via the driving-joint folding (see Status above). This section
+> is the design for a future dedicated constitution, kept for when `force_range` clamping or a
+> cleaner `kp/kv`-direct API is wanted. The libuipc spec
+> `affine_body_pd_revolute_joint.md` (UID 31) documents the revolute one.
+
+| | joint coord `θ(x)` | reuses |
+|---|---|---|
+| `AffineBodyPDRevoluteJoint` (hinge) | signed angle about axis | `AffineBodyRevoluteJoint` connectivity, `current_angles`, `l_basis/r_basis`, `F01` symbolic block |
+| `AffineBodyPDPrismaticJoint` (slide) | signed displacement along axis | `AffineBodyPrismaticJoint` connectivity + displacement coord |
+
+The PD constitution **composes with** the existing connectivity joint (which keeps
+the links attached + enforces the axis), exactly as `AffineBodyDrivingRevoluteJoint`
+does — it only adds the actuation energy. Per-joint device attributes:
+`pd/kp`, `pd/kv`, `pd/aim_angle`, `pd/aim_velocity`, `pd/is_constrained`; `θₙ` is read from the
+joint's `current_angles`, `dt` from `info.dt()`.
+
+## Shipped path: implicit PD via the existing driving joint (coupler-only)
 
 | | joint coord `θ(x)` | reuses |
 |---|---|---|
@@ -110,14 +162,22 @@ Two quadratics in `θ` combine into one:
     aim_eff = ( kp·q_des + (kv/dt)·(θₙ + v_des·dt) ) / κ_eff
 ```
 
-The shipped `AffineBodyDrivingRevoluteJoint` already computes `½·κ·(θ−aim)²` with
-`κ = strength_ratio · body_mass`. So we can reproduce the **exact PD gradient**
-without any C++ change by, each step, setting
-`strength_ratio = κ_eff / body_mass` and `aim_angle = aim_eff` (reading `θₙ` from
-Genesis `qₙ`). This validates the *math* (does implicit PD fix the marvin and
-match `integrator=implicit`?) before investing in the constitution.
-**Prototype only** — caveats: no `force_range` clamp, `body_mass` normalization
-bookkeeping, conflated kp/kv semantics. Not the shipped path.
+`AffineBodyDrivingRevoluteJoint` computes `½·K·(θ−θ̃)²` with `K = γ·(m_i+m_j)` (the SUM of the
+two affine-body masses — per its spec). So the **exact PD gradient** is reproduced with no C++
+change by setting, each step (`coupler._write_monolithic_pd_drive`, gated by
+`ipc_monolithic_actuation="pd_prototype"`):
+
+```
+γ (driving/strength_ratio) = κ_eff / (m_i + m_j)     # cancels the mass scaling → K = κ_eff
+aim_angle                  = aim_eff
+driving/is_constrained     = 1
+```
+
+reading `θₙ` from Genesis `qₙ`, `dt` from `substep_dt`. Revolute only; prismatic (gripper) and
+FORCE-mode DOFs keep the torque path (their gains are low/stable). This is **exact** (the merge
+is algebraic, not approximate) and is the **shipped** M6 actuation — the earlier "m_parent" form
+was a calibration bug, now `m_i+m_j`. Remaining gap vs a dedicated constitution: no `force_range`
+torque clamp, and the coupler must know the two link masses (folded into `γ`).
 
 ## `force_range` clamp (open)
 
@@ -134,26 +194,27 @@ as an open question.
 | **Unit (CPU oracle)** | combine-quadratic algebra: `κ_eff`/`aim_eff` reproduces `kp·(q_des−θ)+kv·(v_des−θ̇)` over sampled `(θ,q_des,v_des,kp,kv,θₙ,dt)` | PD-law correctness |
 | **Unit (symbolic)** | constitution `E/G/H` vs finite-difference of `E_PD(x)` on random transform pairs (incl. `v_des≠0`) | gradient/Hessian correctness |
 | **Contract** | building a PD joint creates `pd/*` attributes; FORCE-mode DOFs get **no** PD joint (stay on torque); SPD Hessian (positive `kp+kv/dt`) | API + composition |
-| **Prototype (live, GPU, coupler-only)** | 1-DOF hinge at stiff `kp/kv`: stable + tracks Genesis `integrator=implicit` `q(t)`; marvin/pony hold-pose no longer diverges | the math fixes it |
-| **Integration (live, GPU)** | real constitution: 1-DOF + 2-DOF (hinge+slide) match `external@implicit`; `v_des≠0` ramp tracks; Franka EE trajectory parity vs external | constitutions correct |
-| **Scene (live, GPU)** | pony / hang_cloth full run: robot stable, deformable contact intact, no whole-arm jitter | end-to-end |
-| **Source-scan** | PD-driven DOFs route through the PD constitution; FORCE-mode DOFs still through `…ExternalForce`; no explicit per-body PD wrench on PD DOFs | actuation routing |
+| **Live, GPU (shipped path) ✅** | 1-DOF hinge: pd path tracks (RMS 0.008–0.023, max\|q\|≈amp) + agrees with Genesis PD (cross-RMS 0.0095 @ kp=2000); pony hold-pose settles (0.10→0.0001) where torque diverges (→7.7) | DONE 2026-06-09 |
+| **Live, GPU (deferred constitution)** | dedicated `AffineBodyPD*`: 2-DOF (hinge+slide) + `v_des≠0` ramp + Franka EE parity | only if built |
+| **Scene (live, GPU)** | pony / hang_cloth full policy run: robot stable, deformable contact intact | follow-up |
+| **Source-scan** | PD-driven revolute DOFs route through the driving-joint folding; FORCE-mode + prismatic DOFs stay on `…ExternalForce` | actuation routing |
 
 ## Phase plan
 
-- **P0 Prototype (coupler-only):** drive the existing `AffineBodyDrivingRevoluteJoint`
-  with `κ_eff`/`aim_eff`. Gate: stiff-gain 1-DOF stable + matches `integrator=implicit`;
-  marvin/pony hold-pose stops diverging.
-- **P1 Revolute constitution:** `AffineBodyPDRevoluteJoint` (C++/CUDA + regenerated
-  symbolic `.inl` with the damping term + pybind + python). Gate: unit symbolic test +
-  1-DOF live parity.
-- **P2 Prismatic constitution:** `AffineBodyPDPrismaticJoint`. Gate: 2-DOF hinge+slide
-  parity (incl. `v_des≠0`).
-- **P3 Coupler integration:** route monolithic position/velocity DOFs to the PD joints;
-  keep FORCE-mode on the torque path. Gate: Franka EE parity vs `external@implicit`,
-  no regression on the existing grasp example.
-- **P4 Clamp + polish:** saturating-potential `force_range`; update conventions Rules 3–4
-  + source-scan; pony/marvin scene gate; commit.
+- **P0 — Implicit PD via driving-joint folding (coupler-only): ✅ DONE / SHIPPED (2026-06-09).**
+  `ipc_monolithic_actuation="pd_prototype"` + `_write_monolithic_pd_drive` (revolute, exact
+  `γ = κ_eff/(m_i+m_j)`). Gate PASS: 1-DOF stable + tracks + agrees with Genesis PD
+  (cross-RMS 0.0095 at kp=2000); pony hold-pose settles (0.10→0.0001) where torque diverges.
+  This **is** the M6 solution — no new constitution, no CUDA build.
+- **P1–P4 — Dedicated `AffineBodyPD{Revolute,Prismatic}Joint` constitution: DEFERRED.** Only
+  needed if a `force_range` torque clamp or a `kp/kv`-direct API (coupler not knowing link
+  masses) becomes necessary. Would be: revolute constitution (C++/CUDA + pybind, reusing the
+  driving-joint symbolic `½K(θ−θ̃)²`) → prismatic → coupler routing → clamp. The libuipc spec
+  `affine_body_pd_revolute_joint.md` (UID 31) is written; implementation not started.
+
+Remaining polish on the shipped path (not blocking): expose `pd_prototype` through gs-gym's
+SceneArgs so envs can opt in without patching defaults; optional `force_range` handling for the
+PD DOFs (currently unclamped — fine for tracking, FORCE-mode keeps the clamped torque path).
 
 ## Open questions
 

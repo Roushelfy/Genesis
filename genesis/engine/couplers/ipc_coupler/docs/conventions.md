@@ -14,22 +14,25 @@ check them. See [architecture.md](architecture.md) for design and
    `disable_constraint=True`. The coupler asserts this at build (or sets it and
    logs once) — otherwise `_func_constraint_force` ([rigid_solver.py:1219])
    double-solves contacts against IPC.
-3. **Actuation channel by control mode (revised M6).**
-   - **Position / velocity DOFs** actuate via the implicit-PD constitutions
-     `AffineBodyPDRevoluteJoint` / `AffineBodyPDPrismaticJoint` — IPC evaluates the
-     PD law implicitly (see [pd_joints.md](pd_joints.md)).
-   - **FORCE-mode DOFs** keep the torque path (`AffineBodyRevoluteJointExternalForce`
-     / prismatic variant) — there is no `kp`/`kv` to make implicit.
+3. **Actuation channel by control mode (revised M6).** Two opt-in modes via
+   `IPCCouplerOptions.ipc_monolithic_actuation`:
+   - `"torque"` (default): per-joint scalar torque via `AffineBodyRevoluteJointExternalForce`
+     / prismatic variant (kp/kv **explicit** — diverges on light links at stiff gains).
+   - `"pd_prototype"`: **position/velocity revolute DOFs** are driven by the existing
+     `AffineBodyDrivingRevoluteJoint` as an *implicit* PD servo (the coupler folds
+     `kp,kv,q_des,v_des,θₙ,dt` into `γ=(kp+kv/dt)/(m_i+m_j)`, `aim_angle=θ̃`, each step in
+     `_write_monolithic_pd_drive`; `ad.torque` stays 0 so no wrench is written). **FORCE-mode
+     and prismatic DOFs keep the torque path** (low/stable gains; no kp/kv to fold).
    - Still forbidden for these entities: `ExternalArticulationConstraint`,
-     `SoftTransformConstraint`. (Pre-M6: torque was the *only* channel; that held
-     for the Franka but diverges for light-link robots at stiff gains — see §M6.)
-4. **The PD law stays Genesis's; only its evaluation moves.** Gains (`kp`,`kv`),
-   targets (`q_des`,`v_des`), `ctrl_mode`, and `force_range` come from Genesis
-   (`get_dofs_control_force` / `act_bias` / `dofs_state`). The PD constitution must
-   reproduce `kp·(q_des−q)+kv·(v_des−q̇)` exactly at the converged state — it does
-   not invent a different controller. The coupler writes `q_des`/`v_des` (and gains)
-   into the constitution; it does not re-implement PD arithmetic Genesis-side for
-   PD DOFs.
+     `SoftTransformConstraint`. (Pre-M6: torque was the *only* channel; it held for the Franka
+     but diverges for light-link robots at stiff gains — see §M6 / [pd_joints.md](pd_joints.md).)
+   - A dedicated `AffineBodyPD{Revolute,Prismatic}Joint` constitution is **deferred** (would
+     only add `force_range` clamp / a kp/kv-direct API); the driving-joint folding is exact.
+4. **The PD law stays Genesis's; only its evaluation moves.** Gains (`kp`,`kv`), targets
+   (`q_des`,`v_des`), `ctrl_mode` come from Genesis (`act_bias` / `dofs_state.ctrl_pos/ctrl_vel`).
+   In `"pd_prototype"` the folded `γ`/`aim_angle` reproduce `kp·(q_des−q)+kv·(v_des−q̇)` exactly
+   at the converged state — the same controller, evaluated implicitly. (`force_range` is not
+   yet clamped on PD DOFs; FORCE-mode DOFs retain the clamped torque path.)
 5. **Readback is reconstruction.** Joint angle = signed-angle-about-axis from
    parent/child body transforms minus the per-joint build offset; joint velocity
    = finite difference `(qᵗ − qᵗ⁻¹)/dt` (zero on first step). No native joint
@@ -66,7 +69,7 @@ the `genesis_ref_runtime` style used in sim2sim).
 | **Unit (CPU oracle)** | `get_dofs_control_force` for each ctrl mode equals a NumPy PD oracle (kp/kv/force_range) | Rule 4 |
 | **Unit** | signed-angle reconstruction round-trips a synthetic parent/child transform pair to a known angle; degenerate axis (‖e‖≤1e-8) raises | Rule 5 |
 | **Contract** | building `ipc_monolithic` with free base / non-revolute joint / BDF2 / B>1 raises; building it flips `enable_collision`/`disable_constraint` off | Rules 2,6,7,8,9 |
-| **Source-scan** | the `ipc_monolithic` path contains no `kernel_predict_integrate` and no `ExternalArticulationConstraint`; PD-driven DOFs route through `AffineBodyPD{Revolute,Prismatic}Joint`, FORCE-mode DOFs through `…ExternalForce` | Rules 1,3 |
+| **Source-scan** | the `ipc_monolithic` path contains no `kernel_predict_integrate` and no `ExternalArticulationConstraint`; in `pd_prototype` mode PD revolute DOFs route through `AffineBodyDrivingRevoluteJoint` (folded), FORCE-mode + prismatic DOFs through `…ExternalForce` | Rules 1,3 |
 | **Integration (live, GPU)** | 1-DOF revolute pendulum under constant torque: IPC-integrated angle vs an independent forward-dynamics oracle within tol; step-position target converges to setpoint | Rules 3,4; M3 gate |
 | **Integration (live, GPU)** | `get_dofs_position` after a step equals reconstruction of `copy_to` transforms; loader-pose offset calibration within 1e-4 | Rules 5,10; M4 gate |
 | **Scene (live, GPU)** | fixed-base arm + cloth/RCC in one scene runs N steps and renders the arm | M5 gate |
