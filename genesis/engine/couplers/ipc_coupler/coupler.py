@@ -1494,7 +1494,13 @@ class IPCCoupler(RBC):
             # set_qpos teleportation causes a huge energy spike because q_prevs (IPC internal)
             # still holds the pre-teleport state.
             is_ext_art = entity_coup_type == COUPLING_TYPE.EXTERNAL_ARTICULATION
-            if is_ext_art:
+            # pd_eac also uses ref_dof_prev so EAC measures δθ against the EXACT start-of-step
+            # state (= Genesis qpos this step) rather than the q_prevs fallback, which can lag a
+            # step and inflate the δθ velocity estimate -> extra tracking lag.
+            _needs_ref_prev = is_ext_art or (
+                is_ipc_monolithic and self.options.ipc_monolithic_actuation == "pd_eac"
+            )
+            if _needs_ref_prev:
                 rigid_link_geom.instances().create("ref_dof_prev", np.zeros(12, dtype=np.float64))
 
             # ipc_monolithic actuation: a per-body affine wrench. Joint torques are applied
@@ -1520,7 +1526,7 @@ class IPCCoupler(RBC):
                 init_transforms.append(np.asarray(link_T, dtype=gs.np_float))
 
                 # Initialize ref_dof_prev from the initial transform
-                if is_ext_art:
+                if _needs_ref_prev:
                     ref_dof_prev_attr = slot_geom.instances().find("ref_dof_prev")
                     uipc.view(ref_dof_prev_attr)[0] = uipc.geometry.affine_body.transform_to_q(
                         link_T.astype(np.float64)
@@ -3413,12 +3419,12 @@ class IPCCoupler(RBC):
             mass (joint_joint, m×m)   = diag(kappa_eff)          # per-joint control stiffness
             delta_theta_tilde (joint) = aim_eff - q_n            # target joint INCREMENT
 
-        EAC measures δθ as the *incremental* angle vs IPC's previous-step state (q_prev fallback,
-        since monolithic links carry no ref_dof_prev), so δθ stays near 0 each step and never hits
-        the absolute-angle ±π branch cut that makes ``'pd'`` diverge under fast motion. Bodies are
-        external_kinetic=0 so IPC integrates their inertia; the EAC term adds only the PD stiffness
-        (no double-count). FORCE-mode DOFs get kappa_eff<=0 -> zero diagonal/increment (left to the
-        torque path). See docs/pd_joints.md.
+        EAC measures δθ as the *incremental* angle vs the start-of-step state (pinned via
+        ref_dof_prev, written in _pre_advance section 2), so δθ stays near 0 each step and never
+        hits the absolute-angle ±π branch cut that makes ``'pd'`` diverge under fast motion. Bodies
+        are external_kinetic=0 so IPC integrates their inertia; the EAC term adds only the PD
+        stiffness (no double-count). FORCE-mode DOFs get kappa_eff<=0 -> zero diagonal/increment
+        (left to the torque path). See docs/pd_joints.md.
         """
         if self.options.ipc_monolithic_actuation != "pd_eac":
             return
@@ -3490,12 +3496,15 @@ class IPCCoupler(RBC):
                 aim_transform_attr = geom.instances().find(uipc.builtin.aim_transform)
                 uipc.view(aim_transform_attr)[:] = abd_data.aim_transforms[env_idx]
 
-        # 2. Write ref_dof_prev for external_articulation links
-        # Uses ipc_transforms (synced from copy_from via libuipc's write_scene)
-        # instead of reading geom.transforms()
+        # 2. Write ref_dof_prev for external_articulation links (and pd_eac monolithic links):
+        # the exact start-of-step body state, so EAC measures δθ against it (not the q_prevs
+        # fallback, which can lag a step). Uses ipc_transforms (synced via libuipc's write_scene).
+        _mono_eac = self.options.ipc_monolithic_actuation == "pd_eac"
         for link, abd_data in self._abd_data_by_link.items():
             coup_type = self._coup_type_by_entity.get(link.entity)
-            if coup_type != COUPLING_TYPE.EXTERNAL_ARTICULATION:
+            if coup_type != COUPLING_TYPE.EXTERNAL_ARTICULATION and not (
+                coup_type == COUPLING_TYPE.IPC_MONOLITHIC and _mono_eac
+            ):
                 continue
             for env_idx in range(self._B):
                 geom = abd_data.slots[env_idx].geometry()
