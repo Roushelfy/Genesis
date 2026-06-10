@@ -200,3 +200,42 @@ So pd is **not** a strict improvement: it fixes light-link stiff-gain *stability
 opt-in). Open question: a kp-only driving joint (`K=kp`, drop the `kv/dt` stiffness, rely on
 backward-Euler numerical damping) might converge under fast motion at the cost of kv fidelity —
 not yet tried.
+
+## 2026-06-09 — δθ incremental angle: pd_eac prototype PROVES the fix (no build), then dedicated constitution
+
+**Insight (owner):** the absolute-angle ±π branch cut that makes `pd` diverge under fast motion is
+exactly what `ExternalArticulationConstraint` (EAC) avoids — it optimizes the *incremental* angle
+`δθ = atan2(sinθ·cosθᵗ − cosθ·sinθᵗ, …)` against the previous-step frame, so δθ stays near 0 and
+never hits the cut. Mathematically equivalent to the absolute form wherever both are well-defined.
+
+**Prototype `ipc_monolithic_actuation="pd_eac"` (coupler-only, NO fork build):** deliver the implicit
+PD through EAC with a DIAGONAL mass = `diag(κ_eff)` and `delta_theta_tilde = aim_eff − q_n`. Bodies
+stay `external_kinetic=0` (IPC keeps their inertia), so the EAC term is a pure control-stiffness
+penalty — no double-count. `ref_dof_prev` pinned to the start-of-step state.
+
+**Validated (the whole point):**
+| test (Franka kp2000/kv100) | torque | pd (abs θ) | pd_eac (δθ) |
+|---|---|---|---|
+| fast motion @ peak vel (frame 51) | newton 3–8 ✅ | NEWTON_MAXOUT 1024, 72 s → SIGABRT ❌ | newton=3, 20 ms ✅ |
+| pony hold @ stiff kp×10/kv×10 | →6 rad/s jitter ❌ | 0.0000 ✅ | **0.0000 ✅** |
+| hold q=0 vs gravity (max\|q\|) | 0.057 | 0.0008 | 0.0004 |
+
+`pd_eac` is the **only mode stable on BOTH the pony (light-link stiff gains) and fast motion** — the
+δθ idea is fully validated, reusing the already-compiled EAC constitution.
+
+**Tracking lag — investigated:** 1-DOF (no clamp) RMS ≈ 3× pd's (e.g. 0.069 vs 0.022 @ 0.5 Hz),
+*frequency-independent ratio*. NOT the reference (pinning `ref_dof_prev` → identical RMS to 5 digits;
+`q_prevs` was already correct), NOT damping (kv÷3 barely moved it). Theory-fit vs the implicit-PD
+model: pd_eac matches the model but at an **inertia that inflates ~4× at high gains** (kp2000: I_fit
+0.20 vs pd's 0.05), while matching pd exactly at low gains. Root mechanism (energy/gradient should be
+identical at convergence) remains analytically unexplained — empirically pd_eac is "heavier" at high
+κ_eff. Modest in practice: RMS/amp ~3–5 %, and the pony still holds at 0.0000.
+
+**Decision (owner):** build the dedicated **`AffineBodyPDRevoluteJoint` (UID 33) / `AffineBodyPDPrismaticJoint`
+(UID 34)** — a clean per-edge `½·κ_eff·(δθ − aim_increment)²` constraint reusing EAC's δθ kernels, with
+a **Gauss-Newton-only Hessian** (`κ_eff·J·Jᵀ`, no second-order `make_spd` term). Goals: (a) clean
+kp/kv semantics, no EAC mass-as-stiffness reuse; (b) self-contained branch-cut robustness in
+monolithic; (c) the GN Hessian is the lever to test whether it closes the high-gain inertia inflation.
+
+Committed: pd_eac path `16666e65` + ref_dof_prev `ad6a41c0`; gs-gym env knob `27befcb`
+(`GS_GYM_IPC_MONO_ACTUATION`).
