@@ -364,7 +364,7 @@ class IPCCouplerOptions(BaseCouplerOptions):
     ignore_end_effector_check: StrictBool = False
     joint_strength_ratio: PositiveFloat = 100.0
     """Strength ratio for external articulation joint constraints. Higher = stiffer joints, less drift."""
-    ipc_monolithic_actuation: Literal["torque", "pd"] = "torque"
+    ipc_monolithic_actuation: Literal["torque", "pd", "pd_eac"] = "torque"
     """Actuation channel for ``coup_type='ipc_monolithic'`` entities (per-DOF routing).
     Default ``'torque'``: explicit per-joint torque -- fast and robust under fast motion (the
     IPC Newton solve stays cheap), but kp/kv are explicit so it diverges on LIGHT-link robots at
@@ -383,7 +383,14 @@ class IPCCouplerOptions(BaseCouplerOptions):
       (no kp/kv to fold). See docs/pd_joints.md.
     - ``'torque'``: every DOF via per-joint scalar torque (AffineBodyRevoluteJointExternalForce),
       kp/kv applied EXPLICITLY -> diverges on light affine bodies at stiff gains. Kept for
-      comparison / FORCE-only use."""
+      comparison / FORCE-only use.
+    - ``'pd_eac'`` (M6, experimental): the SAME implicit PD as ``'pd'`` but delivered through
+      ``ExternalArticulationConstraint`` with a DIAGONAL mass = ``diag(kp+kv/dt)`` and target
+      increment ``delta_theta_tilde = aim_eff - q_n``. EAC measures the joint coordinate as the
+      *incremental* angle ``δθ = atan2(sinθ·cosθᵗ - cosθ·sinθᵗ, …)`` against IPC's previous-step
+      state, so it never crosses the absolute-angle ±π branch cut that makes ``'pd'`` diverge under
+      fast motion. Bodies keep ``external_kinetic=0`` (IPC integrates their inertia), so the EAC
+      term is a pure control-stiffness penalty -- no double-counting. See docs/pd_joints.md."""
     monolithic_torque_enable: StrictBool = True
     """Activate the per-joint torque actuation for ``coup_type='ipc_monolithic'``: each
     step the Genesis control law (ctrl_mode/kp/kv/force_range) is folded into a per-joint

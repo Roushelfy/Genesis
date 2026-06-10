@@ -745,9 +745,9 @@ class IPCCoupler(RBC):
                     gs.raise_exception(
                         f"'ipc_monolithic' v1 supports a single environment only (got B={self._B})."
                     )
-                if self.options.ipc_monolithic_actuation not in ("torque", "pd"):
+                if self.options.ipc_monolithic_actuation not in ("torque", "pd", "pd_eac"):
                     gs.raise_exception(
-                        f"'ipc_monolithic' supports actuation 'torque' or 'pd' "
+                        f"'ipc_monolithic' supports actuation 'torque', 'pd', or 'pd_eac' "
                         f"(got '{self.options.ipc_monolithic_actuation}')."
                     )
             gs.logger.debug(f"Rigid entity {i_e}: coupling type '{coup_type.name.lower()}'")
@@ -1803,6 +1803,27 @@ class IPCCoupler(RBC):
                     per_joint_slots.append(joint_geom_slot)
                 joint_slots_per_env.append(per_joint_slots)
 
+            # M6 "pd_eac": deliver implicit PD via ExternalArticulationConstraint over these
+            # joints (diagonal mass = diag(kp+kv/dt), target increment delta_theta_tilde written
+            # each step in _write_monolithic_eac_drive). EAC uses the branch-cut-robust incremental
+            # angle, so it survives fast motion where the absolute-angle driving joint diverges.
+            # Bodies stay external_kinetic=0 (IPC owns their inertia) -> the EAC term is a pure
+            # control-stiffness penalty, not a replacement inertia.
+            eac_slots: list[GeometrySlot] | None = None
+            if self.options.ipc_monolithic_actuation == "pd_eac" and joints:
+                if self._ipc_eac is None:
+                    self._ipc_eac = ExternalArticulationConstraint()
+                    self._ipc_constitution_tabular.insert(self._ipc_eac)
+                eac_slots = []
+                for env_idx in range(self._B):
+                    per_joint_slots = joint_slots_per_env[env_idx]
+                    art_geom = self._ipc_eac.create_geometry(per_joint_slots, [0] * len(per_joint_slots))
+                    if self._B > 1:
+                        self._ipc_subscenes[env_idx].apply_to(art_geom)
+                    art_obj = self._ipc_objects.create(f"ipc_mono_eac_{i_e}_{env_idx}")
+                    art_geom_slot, _ = art_obj.geometries().create(art_geom)
+                    eac_slots.append(art_geom_slot)
+
             # Per-joint effective inertia about the joint axis (incl. armature), for the
             # implicit-damping torque scaling. Revolute: e^T·I_anchor·e with the parallel-axis
             # shift to the joint origin (I_anchor = I_com + m(|c|^2 I - c c^T)); prismatic: the
@@ -1845,6 +1866,7 @@ class IPCCoupler(RBC):
                 joints_axis_child_local=axes_child_local,
                 joints_Ieff=joints_Ieff,
                 torque=np.zeros((self._B, n_joints), dtype=np.float64),
+                eac_slots=eac_slots,
             )
 
             gs.logger.debug(f"Successfully added ipc_monolithic entity {i_e} to IPC ({n_joints} joints).")
@@ -3109,16 +3131,17 @@ class IPCCoupler(RBC):
         """
         if not self._ipc_monolithic_data_by_entity:
             return
-        if self.options.ipc_monolithic_actuation not in ("torque", "pd"):
+        if self.options.ipc_monolithic_actuation not in ("torque", "pd", "pd_eac"):
             return
         if not self.options.monolithic_torque_enable:
             return
 
-        # M6 per-DOF routing. In "pd" mode all POSITION/VELOCITY DOFs (revolute AND prismatic) are
-        # actuated by the implicit-PD driving joint (_write_monolithic_pd_drive) and so get ZERO
-        # torque here; only FORCE-mode DOFs use the torque path. In "torque" mode every DOF uses
-        # torque (the coupled implicit-damping solve below makes its kv implicit).
-        pd_mode = self.options.ipc_monolithic_actuation == "pd"
+        # M6 per-DOF routing. In "pd"/"pd_eac" mode all POSITION/VELOCITY DOFs (revolute AND
+        # prismatic) are actuated by the implicit-PD path (_write_monolithic_pd_drive /
+        # _write_monolithic_eac_drive) and so get ZERO torque here; only FORCE-mode DOFs use the
+        # torque path. In "torque" mode every DOF uses torque (the coupled implicit-damping solve
+        # below makes its kv implicit).
+        pd_mode = self.options.ipc_monolithic_actuation in ("pd", "pd_eac")
         VELOCITY_MODE = int(gs.CTRL_MODE.VELOCITY)
         ctrl_mode_all = np.asarray(
             qd_to_numpy(self.rigid_solver.dofs_state.ctrl_mode, transpose=True)
@@ -3380,6 +3403,71 @@ class IPCCoupler(RBC):
                     uipc.view(str_attr)[:] = strength
                     uipc.view(con_attr)[:] = 1
 
+    def _write_monolithic_eac_drive(self):
+        """M6 "pd_eac": deliver implicit PD via ExternalArticulationConstraint.
+
+        Identical control law to _write_monolithic_pd_drive (kappa_eff=kp+kv/dt, aim_eff folds
+        the implicit damping, force_range clamp), but written to the EAC geometry as a DIAGONAL
+        kinetic penalty ``½ Σ κ_eff (δθ - δθ̃)²`` instead of the absolute-angle driving joint:
+
+            mass (joint_joint, m×m)   = diag(kappa_eff)          # per-joint control stiffness
+            delta_theta_tilde (joint) = aim_eff - q_n            # target joint INCREMENT
+
+        EAC measures δθ as the *incremental* angle vs IPC's previous-step state (q_prev fallback,
+        since monolithic links carry no ref_dof_prev), so δθ stays near 0 each step and never hits
+        the absolute-angle ±π branch cut that makes ``'pd'`` diverge under fast motion. Bodies are
+        external_kinetic=0 so IPC integrates their inertia; the EAC term adds only the PD stiffness
+        (no double-count). FORCE-mode DOFs get kappa_eff<=0 -> zero diagonal/increment (left to the
+        torque path). See docs/pd_joints.md.
+        """
+        if self.options.ipc_monolithic_actuation != "pd_eac":
+            return
+        if not self._ipc_monolithic_data_by_entity:
+            return
+        dt = float(self.rigid_solver._substep_dt)
+        di = self.rigid_solver.dofs_info
+        ds = self.rigid_solver.dofs_state
+        act_bias = np.asarray(qd_to_numpy(di.act_bias)).reshape(-1, 3)
+        force_range = np.asarray(qd_to_numpy(di.force_range)).reshape(-1, 2)
+        ctrl_pos = np.asarray(qd_to_numpy(ds.ctrl_pos, transpose=True)).reshape(self._B, -1)
+        ctrl_vel = np.asarray(qd_to_numpy(ds.ctrl_vel, transpose=True)).reshape(self._B, -1)
+        qpos = np.asarray(qd_to_numpy(self.rigid_solver.qpos, transpose=True)).reshape(self._B, -1)
+        for entity, ad in self._ipc_monolithic_data_by_entity.items():
+            if ad.eac_slots is None:
+                continue
+            dof_start = entity.dof_start
+            q_start = entity.q_start
+            n_j = len(ad.joints_child_link)
+            for env_idx in range(self._B):
+                dtt = np.zeros(n_j, dtype=np.float64)
+                mass = np.zeros((n_j, n_j), dtype=np.float64)
+                for j in range(n_j):
+                    dof = dof_start + ad.joints_dof_idx_local[j]
+                    kp = float(-act_bias[dof, 1])
+                    kv = float(-act_bias[dof, 2])
+                    kappa_eff = kp + kv / dt
+                    if kappa_eff <= 0.0:
+                        continue  # FORCE mode -> torque path
+                    q_des = float(ctrl_pos[env_idx, dof])
+                    v_des = float(ctrl_vel[env_idx, dof])
+                    q_n = float(qpos[env_idx, q_start + ad.joints_qs_idx_local[j]])
+                    aim_eff = (kp * q_des + (kv / dt) * (q_n + v_des * dt)) / kappa_eff
+                    # force_range clamp: cap the implied start-torque kappa_eff*(aim_eff-q_n).
+                    f_lo, f_hi = float(force_range[dof, 0]), float(force_range[dof, 1])
+                    f_imp = kappa_eff * (aim_eff - q_n)
+                    f_cl = min(max(f_imp, f_lo), f_hi)
+                    if f_cl != f_imp:
+                        aim_eff = q_n + f_cl / kappa_eff
+                    dtt[j] = aim_eff - q_n  # target INCREMENT (EAC measures δθ relative to q_prev)
+                    mass[j, j] = kappa_eff
+                art_geom = ad.eac_slots[env_idx].geometry()
+                dtt_attr = art_geom["joint"].find("delta_theta_tilde")
+                mass_attr = art_geom["joint_joint"].find("mass")
+                if dtt_attr is None or mass_attr is None:
+                    continue
+                uipc.view(dtt_attr)[:] = dtt
+                uipc.view(mass_attr).flat[:] = mass.reshape(-1)
+
     def _pre_advance_write_ipc_attributes(self):
         """Write all per-frame IPC attributes before advance().
 
@@ -3387,8 +3475,10 @@ class IPCCoupler(RBC):
         ref_dof_prev (ext_art), delta_theta_tilde and mass_matrix (ext_art)
         directly to IPC geometries.
         """
-        # 0. ipc_monolithic implicit-PD servo prototype (M6 P0): write driving-joint targets.
+        # 0. ipc_monolithic implicit-PD servo: write driving-joint targets ("pd") or the
+        #    EAC diagonal-stiffness incremental-angle penalty ("pd_eac").
         self._write_monolithic_pd_drive()
+        self._write_monolithic_eac_drive()
 
         # 1. Write aim_transform for two_way_soft_constraint links
         for link, abd_data in self._abd_data_by_link.items():

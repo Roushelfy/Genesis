@@ -158,3 +158,8 @@ class IpcMonolithicEntityData:
     # control torque into Genesis's semi-implicit damping update (monolithic_implicit_damping).
     joints_Ieff: list[float] | None = None
     torque: np.ndarray | None = None
+    # M6 "pd_eac" prototype: per-env ExternalArticulationConstraint geometry slot built over
+    # this entity's joints. When set, the implicit PD is delivered as an EAC kinetic penalty
+    # ``½ Σ κ_eff (δθ - δθ̃)²`` with a DIAGONAL mass = diag(κ_eff) and the incremental angle δθ
+    # (branch-cut-robust), instead of the absolute-angle AffineBodyDrivingRevoluteJoint.
+    eac_slots: list["GeometrySlot"] | None = None
