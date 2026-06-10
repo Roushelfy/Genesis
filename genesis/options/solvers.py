@@ -364,45 +364,26 @@ class IPCCouplerOptions(BaseCouplerOptions):
     ignore_end_effector_check: StrictBool = False
     joint_strength_ratio: PositiveFloat = 100.0
     """Strength ratio for external articulation joint constraints. Higher = stiffer joints, less drift."""
-    ipc_monolithic_actuation: Literal["torque", "pd", "pd_eac", "pd_native"] = "pd_native"
+    ipc_monolithic_actuation: Literal["torque", "pd_native"] = "pd_native"
     """Actuation channel for ``coup_type='ipc_monolithic'`` entities (per-DOF routing).
     Default ``'pd_native'``: the dedicated incremental-angle driving constitution
     (AffineBodyIncrementalDriving{Revolute,Prismatic}Joint, libuipc fork UID 33/34). It is the
     universal-safe choice -- robust under BOTH fast motion and LIGHT-link robots at stiff gains
     (the branch-cut-robust delta-theta energy never makes the Newton solve diverge), at the cost
-    of a modest tracking lag (~0.07-0.11 rad RMS at high stiffness). Requires the libuipc fork
-    that ships the constitution.
-    The alternatives trade robustness for tracking: ``'torque'`` is fast/cheap and handles heavy
-    loads but kp/kv are EXPLICIT, so it diverges on LIGHT-link robots at stiff gains (e.g. marvin
-    kp=7200/kv=600); ``'pd'`` tracks tightest (implicit, unconditionally stable in the linear
-    sense) but its very stiff driving-joint energy (kappa_eff=kp+kv/dt) makes IPC's Newton solve
-    DIVERGE under fast motion (NEWTON_MAXOUT -> ~70 s/step), so it is an opt-in for light-link
-    SLOW manipulation only. For that regime ``coup_type='external_articulation'`` is also robust
-    (slower). Details in docs/pd_joints.md.
-    - ``'pd'``: **revolute position/velocity DOFs** are driven by the existing
-      ``AffineBodyDrivingRevoluteJoint`` as an *implicit* PD servo -- each step the coupler writes
-      ``aim_angle = (kp*q_des + (kv/dt)*(q_n + v_des*dt))/(kp+kv/dt)`` and
-      ``strength_ratio = (kp+kv/dt)/(m_i+m_j)``, so IPC's Newton solve evaluates
-      ``kp(q_des-q)+kv(v_des-qd)`` implicitly (faithful PD, unconditionally stable -- no
-      ``kp*dt^2/I<4`` / ``kv*dt/I<2`` bound). **Prismatic + FORCE-mode DOFs use the torque path**
-      (no kp/kv to fold). See docs/pd_joints.md.
+    of a modest tracking lag. Requires the libuipc fork that ships the constitution.
+    - ``'pd_native'`` (default): the dedicated **AffineBodyIncrementalDriving{Revolute,Prismatic}Joint**
+      constitution (UID 33/34) composed onto each joint edge -- a clean per-edge
+      ``½·strength·(δθ - aim_increment)²`` energy in the *incremental* angle δθ (branch-cut-robust)
+      with a **Gauss-Newton-only Hessian**. Each step the coupler writes ``pd/strength = kp+kv/dt``
+      and ``pd/aim_increment = aim_eff - q_n`` (``aim_eff = (kp*q_des + (kv/dt)(q_n + v_des*dt))
+      /(kp+kv/dt)``), so IPC's Newton solve evaluates ``kp(q_des-q)+kv(v_des-qd)`` implicitly
+      (unconditionally stable -- no ``kp*dt^2/I<4`` / ``kv*dt/I<2`` bound). ``force_range`` clamps
+      the *converged* joint torque (inertia-scaled), not the step-initial value. Uses IPC's q_prev
+      directly (no ref_dof_prev). See docs/pd_joints.md.
     - ``'torque'``: every DOF via per-joint scalar torque (AffineBodyRevoluteJointExternalForce),
-      kp/kv applied EXPLICITLY -> diverges on light affine bodies at stiff gains. Kept for
-      comparison / FORCE-only use.
-    - ``'pd_eac'`` (M6, experimental): the SAME implicit PD as ``'pd'`` but delivered through
-      ``ExternalArticulationConstraint`` with a DIAGONAL mass = ``diag(kp+kv/dt)`` and target
-      increment ``delta_theta_tilde = aim_eff - q_n``. EAC measures the joint coordinate as the
-      *incremental* angle ``δθ = atan2(sinθ·cosθᵗ - cosθ·sinθᵗ, …)`` against IPC's previous-step
-      state, so it never crosses the absolute-angle ±π branch cut that makes ``'pd'`` diverge under
-      fast motion. Bodies keep ``external_kinetic=0`` (IPC integrates their inertia), so the EAC
-      term is a pure control-stiffness penalty -- no double-counting. See docs/pd_joints.md.
-    - ``'pd_native'`` (M6): the dedicated **AffineBodyIncrementalDriving{Revolute,Prismatic}Joint**
-      constitution (libuipc fork, UID 33/34) -- a clean per-edge ``½·strength·(δθ - aim_increment)²``
-      energy with a **Gauss-Newton-only Hessian** (no second-order ``make_spd`` term). Same δθ
-      branch-cut robustness as ``'pd_eac'`` but without the EAC mass-matrix machinery; aims to also
-      close ``pd_eac``'s high-gain effective-inertia inflation. Per-edge attributes
-      ``pd/strength = kp+kv/dt`` and ``pd/aim_increment = aim_eff - q_n``; uses IPC's q_prev directly
-      (no ref_dof_prev). See docs/pd_joints.md."""
+      kp/kv applied EXPLICITLY -- fast and handles heavy loads, but diverges on light affine bodies
+      at stiff gains (e.g. marvin kp=7200/kv=600). Opt-in for that fast/heavy regime; for light-link
+      fast motion ``coup_type='external_articulation'`` is also robust (slower)."""
     monolithic_torque_enable: StrictBool = True
     """Activate the per-joint torque actuation for ``coup_type='ipc_monolithic'``: each
     step the Genesis control law (ctrl_mode/kp/kv/force_range) is folded into a per-joint

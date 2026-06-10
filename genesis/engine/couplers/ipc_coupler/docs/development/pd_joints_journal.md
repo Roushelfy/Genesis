@@ -361,3 +361,28 @@ This bug was independent of, and stacked on top of, the δθ tracking lag (above
 0.137 vs 0.087 (≈1.6×) is still the intrinsic branch-cut-robustness lag; the clamp bug was the
 dominant high-gain failure and is now fixed. With it fixed, `pd_native` as the default actuation
 actually tracks at high gain instead of being velocity-throttled.
+
+## 2026-06-10 — consolidate to {torque, pd_native}; remove pd / pd_eac
+
+Decision: keep only **`torque`** and **`pd_native`** as ipc_monolithic actuation modes; remove
+the two experimental modes that the investigation superseded:
+
+- **`pd`** (absolute-angle `AffineBodyDriving{Revolute,Prismatic}Joint`): diverges under fast
+  motion at the ±π branch cut — the very failure `pd_native` was built to fix. Slow-only, redundant.
+- **`pd_eac`** (implicit PD delivered via `ExternalArticulationConstraint` with a diagonal
+  stiffness mass): the EAC-delivered twin of `pd_native`; proven bit-identical in tracking, but
+  carries the extra EAC mass-matrix machinery for no benefit. Redundant with the dedicated
+  constitution.
+
+Removed: `_write_monolithic_pd_drive`, `_write_monolithic_eac_drive`, the per-entity `eac_slots`
+geometry + its `IpcMonolithicEntityData` field, the pd_eac `ref_dof_prev` wiring, the
+`AffineBodyDriving{Revolute,Prismatic}Joint` imports, and the pd/pd_eac branches in the validators,
+the torque-routing `pd_mode` predicate, and the `_pre_advance` dispatch. `ExternalArticulationConstraint`
+is untouched for the separate `external_articulation` *coupling type*. Also cleaned two bits of
+investigation-era debug scaffolding: the "revert to Error after profiling" uipc-logger hack (now
+Error) and the unconditional `[IPC TELEPORT SYNC]` warning. `--actuation` choices in
+`ipc_monolithic_1dof_debug.py` / `ipc_coupling_perf_bench.py` reduced to `{torque, pd_native}`.
+
+Behavior-preserving for the kept modes: 1-DOF kp=2000 pd_native RMS 0.137 / torque 0.086 (both
+unchanged, track like ext_art 0.087); Franka bench mono 20.06 ms (qd 6.9) vs ext_art 28.60 ms (qd
+12.0), 1.43x — all identical to pre-cleanup.

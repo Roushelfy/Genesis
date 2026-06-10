@@ -297,10 +297,9 @@ def main():
     p.add_argument("--no-limit", action="store_true", help="disable monolithic joint limit penalty")
     p.add_argument("--no-implicit-damping", action="store_true",
                    help="disable the monolithic implicit-damping torque scaling (apply raw explicit PD)")
-    p.add_argument("--actuation", choices=["torque", "pd", "pd_eac", "pd_native"], default="torque",
-                   help="ipc_monolithic actuation: explicit torque (default), implicit-PD driving-joint (pd), "
-                        "implicit-PD via ExternalArticulationConstraint incremental-angle (pd_eac), or the "
-                        "dedicated AffineBodyIncrementalDriving constitution (pd_native)")
+    p.add_argument("--actuation", choices=["torque", "pd_native"], default="pd_native",
+                   help="ipc_monolithic actuation: the dedicated AffineBodyIncrementalDriving "
+                        "constitution (pd_native, default) or explicit per-joint torque (torque)")
     p.add_argument("-v", "--vis", action="store_true", help="show the viewer (driver mode shows each mode in turn)")
     p.add_argument("--realtime", action="store_true", help="throttle stepping to ~real time (watchable)")
     p.add_argument("--verbose", action="store_true", help="print every --log-every steps")
