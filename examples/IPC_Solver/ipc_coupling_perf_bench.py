@@ -171,10 +171,12 @@ def main():
     p.add_argument("--dt", type=float, default=0.01)
     p.add_argument("--kp", type=float, default=2000.0)
     p.add_argument("--kv", type=float, default=100.0)
-    p.add_argument("--actuation", choices=["torque", "pd"], default="torque",
-                   help="(ipc_monolithic only) actuation channel. 'torque' (default) is fast under "
-                        "fast motion; 'pd' DIVERGES under fast motion (NEWTON_MAXOUT) -- use only for "
-                        "light-link slow manipulation.")
+    p.add_argument("--actuation", choices=["torque", "pd", "pd_eac", "pd_native"], default="pd_native",
+                   help="(ipc_monolithic only) actuation channel. 'pd_native' (default) is the "
+                        "branch-cut-robust incremental-driving constitution -- robust under fast motion "
+                        "AND light-link stiff gains (force_range now clamps the converged torque, no "
+                        "velocity cap). 'pd_eac' is its EAC-delivered twin. 'torque' is fast/heavy but "
+                        "explicit-kp/kv diverges on light links; 'pd' DIVERGES under fast motion.")
     p.add_argument("--steps", type=int, default=300, help="timed steps")
     p.add_argument("--warmup", type=int, default=50, help="warmup steps (JIT + transient, untimed)")
     p.add_argument("--ground", action="store_true", help="add a contact plane (else free-space)")
