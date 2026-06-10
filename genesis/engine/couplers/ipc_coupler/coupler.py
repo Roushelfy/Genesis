@@ -3469,12 +3469,24 @@ class IPCCoupler(RBC):
                     v_des = float(ctrl_vel[env_idx, dof])
                     q_n = float(qpos[env_idx, q_start + ad.joints_qs_idx_local[j]])
                     aim_eff = (kp * q_des + (kv / dt) * (q_n + v_des * dt)) / kappa_eff
-                    # force_range clamp: cap the implied start-torque kappa_eff*(aim_eff-q_n).
+                    # force_range clamp on the CONVERGED constraint torque, NOT the step-initial
+                    # kappa_eff*(aim_eff-q_n). For an implicit PD on effective joint inertia I_eff,
+                    # BDF1 gives the converged torque  f_conv = kappa_eff*aim_inc * w/(kappa_eff+w)
+                    # with w = I_eff/dt^2 (Delta = aim_inc*kappa_eff/(kappa_eff+w)). Clamping the
+                    # delta_theta=0 start-torque kappa_eff*aim_inc instead over-restricts by
+                    # kappa_eff/w -- a ~1-2 order velocity cap qd_max=effort/(kappa_eff*dt) on light
+                    # links (see docs/pd_joints.md). So scale to f_conv, clamp, back-solve aim_eff.
+                    # I_eff is the per-joint axis inertia (joints_Ieff: leaf-exact, chain-underestimate
+                    # -> guard is slightly permissive for proximal joints); I_eff<=0 -> scale=1 falls
+                    # back to the start-torque clamp.
                     f_lo, f_hi = float(force_range[dof, 0]), float(force_range[dof, 1])
-                    f_imp = kappa_eff * (aim_eff - q_n)
-                    f_cl = min(max(f_imp, f_lo), f_hi)
-                    if f_cl != f_imp:
-                        aim_eff = q_n + f_cl / kappa_eff
+                    i_eff = float(ad.joints_Ieff[j]) if ad.joints_Ieff is not None else 0.0
+                    w = i_eff / (dt * dt)
+                    scale = w / (kappa_eff + w) if w > 0.0 else 1.0
+                    f_conv = scale * kappa_eff * (aim_eff - q_n)
+                    f_cl = min(max(f_conv, f_lo), f_hi)
+                    if f_cl != f_conv:
+                        aim_eff = q_n + f_cl / (scale * kappa_eff)
                     dtt[j] = aim_eff - q_n  # target INCREMENT (EAC measures δθ relative to q_prev)
                     mass[j, j] = kappa_eff
                 art_geom = ad.eac_slots[env_idx].geometry()
@@ -3531,12 +3543,24 @@ class IPCCoupler(RBC):
                     v_des = float(ctrl_vel[env_idx, dof])
                     q_n = float(qpos[env_idx, q_start + ad.joints_qs_idx_local[j]])
                     aim_eff = (kp * q_des + (kv / dt) * (q_n + v_des * dt)) / kappa_eff
-                    # force_range clamp: cap the implied start-torque kappa_eff*(aim_eff-q_n).
+                    # force_range clamp on the CONVERGED constraint torque, NOT the step-initial
+                    # kappa_eff*(aim_eff-q_n). For an implicit PD on effective joint inertia I_eff,
+                    # BDF1 gives the converged torque  f_conv = kappa_eff*aim_inc * w/(kappa_eff+w)
+                    # with w = I_eff/dt^2 (Delta = aim_inc*kappa_eff/(kappa_eff+w)). Clamping the
+                    # delta_theta=0 start-torque kappa_eff*aim_inc instead over-restricts by
+                    # kappa_eff/w -- a ~1-2 order velocity cap qd_max=effort/(kappa_eff*dt) on light
+                    # links (see docs/pd_joints.md). So scale to f_conv, clamp, back-solve aim_eff.
+                    # I_eff is the per-joint axis inertia (joints_Ieff: leaf-exact, chain-underestimate
+                    # -> guard is slightly permissive for proximal joints); I_eff<=0 -> scale=1 falls
+                    # back to the start-torque clamp.
                     f_lo, f_hi = float(force_range[dof, 0]), float(force_range[dof, 1])
-                    f_imp = kappa_eff * (aim_eff - q_n)
-                    f_cl = min(max(f_imp, f_lo), f_hi)
-                    if f_cl != f_imp:
-                        aim_eff = q_n + f_cl / kappa_eff
+                    i_eff = float(ad.joints_Ieff[j]) if ad.joints_Ieff is not None else 0.0
+                    w = i_eff / (dt * dt)
+                    scale = w / (kappa_eff + w) if w > 0.0 else 1.0
+                    f_conv = scale * kappa_eff * (aim_eff - q_n)
+                    f_cl = min(max(f_conv, f_lo), f_hi)
+                    if f_cl != f_conv:
+                        aim_eff = q_n + f_cl / (scale * kappa_eff)
                     geom = ad.joint_slots[env_idx][j].geometry()
                     edges = geom.edges()
                     str_attr = edges.find("pd/strength")

@@ -314,3 +314,50 @@ validated state: fast motion newton=2-3 (no maxout), pony settles 0.0000, hold 0
 (robust, modest lag). It remains the only monolithic actuation stable on BOTH light-link stiff gains
 and fast motion; `pd` (driving joint) is tighter-tracking for moderate motion that never nears the
 ±π branch cut. Self-ref experiment NOT committed (reverted); root-cause + tension recorded here.
+
+## 2026-06-10 — force_range velocity-cap bug (NEW) + inertia-scaled clamp fix
+
+**Finding (independent 1-DOF diagnosis, confirmed):** the `force_range` clamp in the
+`pd_native`/`pd_eac` drive writers clamped the **step-initial** implied torque
+`f_imp = κ_eff·(aim_eff − q_n)` (the δθ=0 value) into `[lo, hi]`, then back-solved
+`aim_eff`. That caps the per-step target increment at `effort/κ_eff`, i.e. an
+**implicit velocity cap `qd_max = effort/(κ_eff·dt)`**. Confirmed in code + experiment:
+
+- 1-DOF kp=2000/kv=100 (κ_eff=12000), effort=200: `max|qd|` pinned at **exactly**
+  `200/(12000·0.01)=1.66668 rad/s`; RMS 0.415 vs ext_art 0.087.
+- `--effort 1e9` (clamp off) → RMS 0.415→0.137, qd 1.67→3.07 (≈ext_art). Decisive.
+- Explains the Franka perf bench "arm barely moves": J1–4 forcerange ±87 →
+  `87/(12000·0.01)=0.725 rad/s` ≈ measured. So `pd_native` looked "fast" in the bench
+  only because the velocity cap kept the arm nearly stationary (cheap solve) — an artifact.
+
+**Root cause:** the clamp bounded the wrong quantity. For an implicit PD on effective
+joint inertia `I_eff`, BDF1 gives the **converged** torque
+`f_conv = κ_eff·aim_inc · w/(κ_eff+w)`, `w = I_eff/dt²` (since
+`Δ = aim_inc·κ_eff/(κ_eff+w)` and `f_conv = (I_eff/dt²)·Δ`). The start-torque
+`κ_eff·aim_inc` overstates `f_conv` by `κ_eff/w = κ_eff·dt²/I_eff` — for light links a
+1–2 order factor (here `w=I_eff/dt²=538.7`, over-clamp ≈ `12000/538.7 ≈ 22×`). The torque
+path was unaffected because it clamps the *actually-applied* torque (small for a light body),
+which is why RUN F (torque, same ±200) tracked fine (matches ext_art to 4e-4 rad).
+
+**Fix (user chose inertia-scaled clamp over removing the clamp):** clamp `f_conv`, not
+`f_imp`. In `_write_monolithic_incremental_drive` (pd_native) and `_write_monolithic_eac_drive`
+(pd_eac): `w=I_eff/dt²`, `scale=w/(κ_eff+w)`, `f_conv=scale·κ_eff·(aim_eff−q_n)`, clamp to
+`[lo,hi]`, back-solve `aim_eff=q_n+f_cl/(scale·κ_eff)`. `I_eff = ad.joints_Ieff[j]`
+(build-time per-joint axis inertia; leaf-exact, chain-underestimate → guard slightly permissive
+for proximal joints). `I_eff≤0 → scale=1` falls back to the start-torque clamp. The absolute-angle
+`pd` mode (`_write_monolithic_pd_drive`, mass-scaled driving joint, slow-only) was left unchanged.
+
+**Validation (1-DOF):**
+- C (kp=2000, effort=200): RMS **0.415→0.137**, qd **1.67→3.07** (≈ext_art); diagnosis flips to
+  "tracks like ext_art". Over-clamp gone.
+- E (kp=2000, 1 Hz fast): RMS **0.634→0.254**, qd **1.67→5.78**; SanityCheck 0 errors, **no
+  NEWTON_MAXOUT** — fast-motion robustness preserved.
+- effort=5 (saturating): qd **0.97 rad/s** (= converged-force cap, predicted 0.93–0.97), NOT the
+  old frozen 0.042 nor unclamped 3.07 → effort/saturation modelling still works, now on the
+  converged torque.
+- pd_eac C: RMS 0.137, identical to pd_native (twin consistency held).
+
+This bug was independent of, and stacked on top of, the δθ tracking lag (above): the residual
+0.137 vs 0.087 (≈1.6×) is still the intrinsic branch-cut-robustness lag; the clamp bug was the
+dominant high-gain failure and is now fixed. With it fixed, `pd_native` as the default actuation
+actually tracks at high gain instead of being velocity-throttled.
