@@ -235,6 +235,7 @@ explicit = true
 [tool.uv.sources]
 torch = { index = "pytorch-cu129" }
 torchvision = { index = "pytorch-cu129" }
-# Local libuipc fork (built cp310). Reused from the gs-gym checkout so its prebuilt
-# editable wheel is shared via the uv cache (no CUDA rebuild).
-pyuipc = { path = "../gs-gym-internal/third_party/libuipc", editable = true }
+# Local libuipc fork (built cp310). Points at the canonical ~/work/libuipc clone so
+# Genesis and gs-gym share one source-of-truth tree (its prebuilt editable wheel is
+# shared via the uv cache, no CUDA rebuild).
+pyuipc = { path = "../libuipc", editable = true }
