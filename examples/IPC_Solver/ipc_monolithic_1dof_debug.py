@@ -93,12 +93,18 @@ def run_one(mode: str, args) -> dict:
 
     model_path, i_com, i_joint = build_model(args.axis, args.mass, args.length, args.armature, args.damping)
 
+    _newton_kw = {}
+    if os.environ.get("GS_NEWTON_MAXIT"):
+        _newton_kw["newton_max_iterations"] = int(os.environ["GS_NEWTON_MAXIT"])
+    if os.environ.get("GS_NEWTON_TOL"):
+        _newton_kw["newton_tolerance"] = float(os.environ["GS_NEWTON_TOL"])
     coupler_options = gs.options.IPCCouplerOptions(
         enable_rigid_rigid_contact=False,
         enable_rigid_ground_contact=False,
         monolithic_joint_limit_enable=not args.no_limit,
         monolithic_implicit_damping=not args.no_implicit_damping,
         ipc_monolithic_actuation=args.actuation,
+        **_newton_kw,
     )
     scene = gs.Scene(
         sim_options=gs.options.SimOptions(dt=args.dt),

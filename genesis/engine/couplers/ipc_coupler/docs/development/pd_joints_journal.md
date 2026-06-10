@@ -270,3 +270,47 @@ a separate, research-y effort. **Recommendation:** pd_native is the clean canoni
 
 Commits: libuipc fork `78b7e358`; Genesis wiring `4fa3b2b1`; spec docs
 `docs/specification/constitutions/affine_body_incremental_driving_{revolute,prismatic}_joint.md`.
+
+## 2026-06-10 — Lag root-caused to a reference mismatch; FUNDAMENTAL tension (lag ⟺ robustness)
+
+Chased the pd_native (≡ pd_eac) ~3× tracking lag to ground. Ruled out, by direct experiment:
+- **angle parametrization** — a standalone host test (`/tmp/angle_test.cu`) called the ACTUAL libuipc
+  functions: the absolute `theta` (driving) and incremental `DeltaTheta` (EAC) AND their gradients
+  are IDENTICAL to machine precision, rigid AND non-rigid, at any angle. (My earlier "frame-anchoring"
+  explanation was WRONG — retracted.)
+- **Newton convergence** — tightening tol (300 iters, 1e-9) → no change.
+- **Hessian** — Gauss-Newton vs full make_spd'd (driving-joint style) → identical 1-DOF RMS.
+
+**Root cause (confirmed by a sim value-dump):** with identical κ_eff, K, start state, and target,
+`pd` advances ~1.5×/step more than `pd_native`. The coupler reconstructs the joint angle `q_n` via
+**quaternions** (`child_quat` vs `parent_quat` about the axis); the constitution measures `δθ` via
+**basis-dot atan2** (`compute_relative_angle`). For rigid bodies these agree; under the affine
+non-rigidity that develops during the stiff solve they DIVERGE. `pd_native`'s target
+`δθ̃ = aim_eff − q_n` drives the basis-dot `δθ` toward a quaternion-referenced target → the
+`(q_n − θ_basisdot)` discrepancy shifts the effective target each step → the lag (gain/motion-dependent).
+The driving joint (`pd`) is immune: its `½K(θ_basisdot − θ̃)²` is purely self-referenced in one
+convention (`θ̃ = aim − init`).
+
+**Self-referenced fix attempted:** capture `q_build`, compute `θᵗ = DeltaTheta(q_prev, q_build)`,
+write `δθ̃ = (aim_eff − q0) − θᵗ` (all basis-dot). Result: **1-DOF lag CLOSED — pd_native RMS became
+bit-identical to pd** (0.00396 / 0.02190 / 0.04343). BUT it **broke fast motion** (NEWTON_MAXOUT,
+both GN and full Hessian). Mechanism: the self-ref makes `r(x) = DeltaTheta(x, q_build) − (aim−q0)`,
+i.e. the angle relative to the FIXED build pose, whose `atan2` **wraps at ±π** once a joint's
+excursion from build exceeds π (the perf bench does this) → `θᵗ` jumps 2π → target lunges → x leaves
+the `q_prev` neighborhood → branch cut → divergence.
+
+**FUNDAMENTAL TENSION (the deliverable insight):** for a non-stateful δθ joint the target reference
+is forced to be one of —
+- *fixed* (build/rest): consistent target, but wraps under large excursion → diverges;
+- *recent + same convention* (`q_prev`, basis-dot): cancels to the absolute angle → also wraps;
+- *recent + different reconstruction* (the coupler's quaternion `q_n`): branch-cut-robust, but the
+  reconstruction difference IS the lag.
+So **the modest lag is the intrinsic price of branch-cut robustness.** Closing it needs stateful
+continuous-angle unwrapping (track winding so the absolute basis-dot angle never wraps) — a separate
+research effort, deferred.
+
+**Decision:** reverted to the robust original `pd_native` (GN Hessian, `δθ̃ = aim_eff − q_n`). Final
+validated state: fast motion newton=2-3 (no maxout), pony settles 0.0000, hold 0.0004, 1-DOF RMS 0.069
+(robust, modest lag). It remains the only monolithic actuation stable on BOTH light-link stiff gains
+and fast motion; `pd` (driving joint) is tighter-tracking for moderate motion that never nears the
+±π branch cut. Self-ref experiment NOT committed (reverted); root-cause + tension recorded here.
