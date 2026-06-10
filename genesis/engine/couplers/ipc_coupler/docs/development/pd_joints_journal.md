@@ -239,3 +239,34 @@ monolithic; (c) the GN Hessian is the lever to test whether it closes the high-g
 
 Committed: pd_eac path `16666e65` + ref_dof_prev `ad6a41c0`; gs-gym env knob `27befcb`
 (`GS_GYM_IPC_MONO_ACTUATION`).
+
+## 2026-06-09 — Dedicated δθ constitution BUILT (pd_native); GN-Hessian lever did NOT close the lag
+
+Built **AffineBodyIncrementalDriving{Revolute,Prismatic}Joint** (libuipc fork UID 33/34): a clean
+per-edge `½·strength·(δθ − aim_increment)²` constraint reusing EAC's δθ kernels, with a
+**Gauss-Newton-only Hessian** (`strength·J·Jᵀ`, PSD, no make_spd, no 2nd-order term). Co-located in
+`affine_body_revolute_joint.cu` / `affine_body_prismatic_joint.cu` (the driving-joint idiom) so it
+reuses the base joint's body_ids/basis by index; reads IPC `q_prev` directly (no ref_dof_prev).
+`strength` is the joint stiffness directly (single-term energy → no mass scaling, no prismatic ½).
+Wired as `ipc_monolithic_actuation="pd_native"`. Builds clean; UIDs register; imports.
+
+**Validated (pd_native):** fast motion newton=2-3, ~11-18 ms/step, ZERO maxout; hold q=0 max|q|=0.0004;
+pony @ stiff kp×10/kv×10 settles to 0.0000. Functionally equivalent to pd_eac, stable everywhere.
+
+**KEY NEGATIVE RESULT:** the Gauss-Newton-Hessian lever did **NOT** close the tracking lag.
+pd_native is **BIT-IDENTICAL to pd_eac** in 1-DOF (RMS 0.01266 / 0.06864 / 0.12912 at 0.1 / 0.5 / 1.0 Hz,
+same to 5 digits). So the ~3× lag vs the absolute-angle "pd" is **intrinsic to the incremental-δθ
+parametrization** — NOT the EAC mass-matrix machinery, NOT the Hessian's second-order term, NOT the
+reference timing (all ruled out). The dedicated constitution still delivers: clean kp/kv semantics,
+self-contained branch-cut robustness (no EAC mass-as-stiffness reuse), slightly faster newton.
+
+**Where the lag lives:** absolute-angle (vs rest) tracks tight (pd RMS 0.022) but hits the ±π branch
+cut → diverges under fast/near-limit motion. Incremental-δθ (vs prev step) is branch-cut-robust but
+carries the lag (theory-fit: effective inertia inflates ~4× at high gains). The two are a genuine
+trade; the GN constitution cannot escape it. Closing the lag would need a *different angle reference*
+— e.g. continuous-angle-vs-rest with per-step winding unwrap (good tracking + continuous energy) —
+a separate, research-y effort. **Recommendation:** pd_native is the clean canonical δθ mode
+(prefer over pd_eac); accept the modest lag, or pursue continuous-angle unwrap if it bites a task.
+
+Commits: libuipc fork `78b7e358`; Genesis wiring `4fa3b2b1`; spec docs
+`docs/specification/constitutions/affine_body_incremental_driving_{revolute,prismatic}_joint.md`.
