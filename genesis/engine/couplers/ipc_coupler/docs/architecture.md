@@ -124,7 +124,7 @@ is **readback → reconstruct → compute torque → push → advance**.
 | File | Change |
 |---|---|
 | `ipc_coupler/data.py` | add `COUPLING_TYPE.IPC_MONOLITHIC`; `ArticulatedEntityData` fields for torque/offset arrays |
-| `genesis/options/solvers.py` | `IPCCouplerOptions.ipc_monolithic_actuation` (default keeps current behavior) |
+| `genesis/options/solvers.py` | `IPCCouplerOptions.ipc_monolithic_actuation` (default `'pd_native'`: robust everywhere, modest lag; `'torque'`/`'pd'`/`'pd_eac'` opt-in) |
 | `ipc_coupler/coupler.py` `_setup_coupling_config` (~:604) | recognize new type; validate fixed base + revolute/fixed; assert/auto-set `enable_collision=False`, `disable_constraint=True`; assert BDF1 |
 | `ipc_coupler/coupler.py` build (~:1283) | `_add_ipc_monolithic_entities`: ABD + `AffineBodyRevoluteJoint(init_angle)` + `AffineBodyRevoluteJointExternalForce` |
 | `ipc_coupler/coupler.py` `couple()` (~:1878) | new branch: push torques (pre-advance), reconstruct joints (post-advance) |
