@@ -47,6 +47,8 @@ if TYPE_CHECKING or UIPC_AVAILABLE:
         AffineBodyShell,
         AffineBodyDrivingPrismaticJoint,
         AffineBodyDrivingRevoluteJoint,
+        AffineBodyIncrementalDrivingPrismaticJoint,
+        AffineBodyIncrementalDrivingRevoluteJoint,
         AffineBodyPrismaticJoint,
         AffineBodyPrismaticJointExternalForce,
         AffineBodyPrismaticJointLimit,
@@ -745,9 +747,9 @@ class IPCCoupler(RBC):
                     gs.raise_exception(
                         f"'ipc_monolithic' v1 supports a single environment only (got B={self._B})."
                     )
-                if self.options.ipc_monolithic_actuation not in ("torque", "pd", "pd_eac"):
+                if self.options.ipc_monolithic_actuation not in ("torque", "pd", "pd_eac", "pd_native"):
                     gs.raise_exception(
-                        f"'ipc_monolithic' supports actuation 'torque', 'pd', or 'pd_eac' "
+                        f"'ipc_monolithic' supports actuation 'torque', 'pd', 'pd_eac', or 'pd_native' "
                         f"(got '{self.options.ipc_monolithic_actuation}')."
                     )
             gs.logger.debug(f"Rigid entity {i_e}: coupling type '{coup_type.name.lower()}'")
@@ -1777,6 +1779,15 @@ class IPCCoupler(RBC):
                             AffineBodyDrivingPrismaticJoint().apply_to(joint_geom, 1.0)
                         else:
                             AffineBodyDrivingRevoluteJoint().apply_to(joint_geom, 1.0)
+                    elif self.options.ipc_monolithic_actuation == "pd_native":
+                        # Dedicated incremental-driving constitution (UID 33/34): clean per-edge
+                        # 1/2 strength (delta_theta - aim_increment)^2 with a Gauss-Newton Hessian.
+                        # pd/strength, pd/aim_increment, pd/is_constrained overwritten each step
+                        # (_write_monolithic_incremental_drive). apply_to takes no strength arg.
+                        if is_prismatic:
+                            AffineBodyIncrementalDrivingPrismaticJoint().apply_to(joint_geom)
+                        else:
+                            AffineBodyIncrementalDrivingRevoluteJoint().apply_to(joint_geom)
                     # Express the world joint axis in each ABD body's build frame, so the
                     # actuation torque (applied as a per-body wrench) tracks the bodies'
                     # current orientation at runtime. Actuation itself is the body wrench
@@ -3137,7 +3148,7 @@ class IPCCoupler(RBC):
         """
         if not self._ipc_monolithic_data_by_entity:
             return
-        if self.options.ipc_monolithic_actuation not in ("torque", "pd", "pd_eac"):
+        if self.options.ipc_monolithic_actuation not in ("torque", "pd", "pd_eac", "pd_native"):
             return
         if not self.options.monolithic_torque_enable:
             return
@@ -3147,7 +3158,7 @@ class IPCCoupler(RBC):
         # _write_monolithic_eac_drive) and so get ZERO torque here; only FORCE-mode DOFs use the
         # torque path. In "torque" mode every DOF uses torque (the coupled implicit-damping solve
         # below makes its kv implicit).
-        pd_mode = self.options.ipc_monolithic_actuation in ("pd", "pd_eac")
+        pd_mode = self.options.ipc_monolithic_actuation in ("pd", "pd_eac", "pd_native")
         VELOCITY_MODE = int(gs.CTRL_MODE.VELOCITY)
         ctrl_mode_all = np.asarray(
             qd_to_numpy(self.rigid_solver.dofs_state.ctrl_mode, transpose=True)
@@ -3474,6 +3485,69 @@ class IPCCoupler(RBC):
                 uipc.view(dtt_attr)[:] = dtt
                 uipc.view(mass_attr).flat[:] = mass.reshape(-1)
 
+    def _write_monolithic_incremental_drive(self):
+        """M6 "pd_native": drive ipc_monolithic joints via the dedicated
+        ``AffineBodyIncrementalDriving{Revolute,Prismatic}Joint`` constitution (UID 33/34).
+
+        Identical control law to _write_monolithic_pd_drive (kappa_eff=kp+kv/dt, aim_eff folds the
+        implicit damping, force_range clamp), but writes the per-edge attributes of the dedicated
+        constitution, whose energy is ``½·strength·(δθ - aim_increment)²`` with δθ the *incremental*
+        joint coordinate (branch-cut-robust) and a Gauss-Newton Hessian:
+
+            pd/strength      = kappa_eff = kp + kv/dt        # joint stiffness DIRECTLY (no mass scale)
+            pd/aim_increment = aim_eff - q_n                 # target joint INCREMENT
+            pd/is_constrained = 1
+
+        Unlike the driving-joint folding, ``strength`` is the joint stiffness directly (the energy
+        is single-term in the scalar δθ for BOTH revolute and prismatic -- no (m_i+m_j) scaling and
+        no prismatic ½). δθ is measured against IPC's own q_prev (the constitution reads
+        ``info.q_prevs()`` -- no ref_dof_prev needed). FORCE-mode DOFs (kappa_eff<=0) are left to the
+        torque path. See docs/pd_joints.md.
+        """
+        if self.options.ipc_monolithic_actuation != "pd_native":
+            return
+        if not self._ipc_monolithic_data_by_entity:
+            return
+        dt = float(self.rigid_solver._substep_dt)
+        di = self.rigid_solver.dofs_info
+        ds = self.rigid_solver.dofs_state
+        act_bias = np.asarray(qd_to_numpy(di.act_bias)).reshape(-1, 3)
+        force_range = np.asarray(qd_to_numpy(di.force_range)).reshape(-1, 2)
+        ctrl_pos = np.asarray(qd_to_numpy(ds.ctrl_pos, transpose=True)).reshape(self._B, -1)
+        ctrl_vel = np.asarray(qd_to_numpy(ds.ctrl_vel, transpose=True)).reshape(self._B, -1)
+        qpos = np.asarray(qd_to_numpy(self.rigid_solver.qpos, transpose=True)).reshape(self._B, -1)
+        for entity, ad in self._ipc_monolithic_data_by_entity.items():
+            dof_start = entity.dof_start
+            q_start = entity.q_start
+            for env_idx in range(self._B):
+                for j in range(len(ad.joints_child_link)):
+                    dof = dof_start + ad.joints_dof_idx_local[j]
+                    kp = float(-act_bias[dof, 1])
+                    kv = float(-act_bias[dof, 2])
+                    kappa_eff = kp + kv / dt
+                    if kappa_eff <= 0.0:
+                        continue  # FORCE mode -> torque path
+                    q_des = float(ctrl_pos[env_idx, dof])
+                    v_des = float(ctrl_vel[env_idx, dof])
+                    q_n = float(qpos[env_idx, q_start + ad.joints_qs_idx_local[j]])
+                    aim_eff = (kp * q_des + (kv / dt) * (q_n + v_des * dt)) / kappa_eff
+                    # force_range clamp: cap the implied start-torque kappa_eff*(aim_eff-q_n).
+                    f_lo, f_hi = float(force_range[dof, 0]), float(force_range[dof, 1])
+                    f_imp = kappa_eff * (aim_eff - q_n)
+                    f_cl = min(max(f_imp, f_lo), f_hi)
+                    if f_cl != f_imp:
+                        aim_eff = q_n + f_cl / kappa_eff
+                    geom = ad.joint_slots[env_idx][j].geometry()
+                    edges = geom.edges()
+                    str_attr = edges.find("pd/strength")
+                    inc_attr = edges.find("pd/aim_increment")
+                    con_attr = edges.find("pd/is_constrained")
+                    if str_attr is None or inc_attr is None or con_attr is None:
+                        continue
+                    uipc.view(str_attr)[:] = kappa_eff
+                    uipc.view(inc_attr)[:] = aim_eff - q_n
+                    uipc.view(con_attr)[:] = 1
+
     def _pre_advance_write_ipc_attributes(self):
         """Write all per-frame IPC attributes before advance().
 
@@ -3485,6 +3559,7 @@ class IPCCoupler(RBC):
         #    EAC diagonal-stiffness incremental-angle penalty ("pd_eac").
         self._write_monolithic_pd_drive()
         self._write_monolithic_eac_drive()
+        self._write_monolithic_incremental_drive()
 
         # 1. Write aim_transform for two_way_soft_constraint links
         for link, abd_data in self._abd_data_by_link.items():

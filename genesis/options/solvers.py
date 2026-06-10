@@ -364,7 +364,7 @@ class IPCCouplerOptions(BaseCouplerOptions):
     ignore_end_effector_check: StrictBool = False
     joint_strength_ratio: PositiveFloat = 100.0
     """Strength ratio for external articulation joint constraints. Higher = stiffer joints, less drift."""
-    ipc_monolithic_actuation: Literal["torque", "pd", "pd_eac"] = "torque"
+    ipc_monolithic_actuation: Literal["torque", "pd", "pd_eac", "pd_native"] = "torque"
     """Actuation channel for ``coup_type='ipc_monolithic'`` entities (per-DOF routing).
     Default ``'torque'``: explicit per-joint torque -- fast and robust under fast motion (the
     IPC Newton solve stays cheap), but kp/kv are explicit so it diverges on LIGHT-link robots at
@@ -390,7 +390,14 @@ class IPCCouplerOptions(BaseCouplerOptions):
       *incremental* angle ``δθ = atan2(sinθ·cosθᵗ - cosθ·sinθᵗ, …)`` against IPC's previous-step
       state, so it never crosses the absolute-angle ±π branch cut that makes ``'pd'`` diverge under
       fast motion. Bodies keep ``external_kinetic=0`` (IPC integrates their inertia), so the EAC
-      term is a pure control-stiffness penalty -- no double-counting. See docs/pd_joints.md."""
+      term is a pure control-stiffness penalty -- no double-counting. See docs/pd_joints.md.
+    - ``'pd_native'`` (M6): the dedicated **AffineBodyIncrementalDriving{Revolute,Prismatic}Joint**
+      constitution (libuipc fork, UID 33/34) -- a clean per-edge ``½·strength·(δθ - aim_increment)²``
+      energy with a **Gauss-Newton-only Hessian** (no second-order ``make_spd`` term). Same δθ
+      branch-cut robustness as ``'pd_eac'`` but without the EAC mass-matrix machinery; aims to also
+      close ``pd_eac``'s high-gain effective-inertia inflation. Per-edge attributes
+      ``pd/strength = kp+kv/dt`` and ``pd/aim_increment = aim_eff - q_n``; uses IPC's q_prev directly
+      (no ref_dof_prev). See docs/pd_joints.md."""
     monolithic_torque_enable: StrictBool = True
     """Activate the per-joint torque actuation for ``coup_type='ipc_monolithic'``: each
     step the Genesis control law (ctrl_mode/kp/kv/force_range) is folded into a per-joint
