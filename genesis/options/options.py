@@ -113,11 +113,12 @@ class Options(RBC, BaseModel):
         self_fields = set(self.__class__.model_fields)
         other_dump = other.model_dump()
         other_dump = {k: v for k, v in other_dump.items() if k in self_fields}
-        self_dump = self.model_dump()
-        # Do not include default None
-        for field, value in tuple(self_dump.items()):
-            if value is None and field not in self.model_fields_set:
-                del self_dump[field]
+        # 0.4.x-compat (eval branch): drop ALL None fields, set or not, matching upstream v0.4.4
+        # `model_dump(exclude_none=True)`. gs-core's option converters pass `**model_dump()`,
+        # which marks every None (e.g. ToolOptions.dt) as explicitly set; under the newer
+        # explicit-None-wins semantics those Nones survive the merge with sim_options and
+        # solvers crash on `options.dt / substeps`.
+        self_dump = self.model_dump(exclude_none=True)
         merged = {**self_dump, **other_dump} if override else {**other_dump, **self_dump}
         # Cannot use 'self.model_copy(update=merged)' because it bypasses validators
         return self.__class__(**merged)
