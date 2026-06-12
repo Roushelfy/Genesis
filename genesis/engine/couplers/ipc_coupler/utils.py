@@ -140,6 +140,9 @@ def build_ipc_scene_config(options, simulator):
     _set_if_not_none(config, ["rcc_bonded_pt_energy_model"], options.rcc_bonded_pt_energy_model)
     _set_if_not_none(config, ["rcc_bonded_pt_kappa"], options.rcc_bonded_pt_kappa)
     _set_if_not_none(config, ["rcc_bonded_pt_release_force"], options.rcc_bonded_pt_release_force)
+    _set_if_not_none(config, ["rcc_bonded_pt_distance_lock"], options.rcc_bonded_pt_distance_lock)
+    _set_if_not_none(config, ["rcc_bonded_pt_distance_lock_ratio"], options.rcc_bonded_pt_distance_lock_ratio)
+    _set_if_not_none(config, ["rcc_bonded_pt_lock_face_interior_only"], options.rcc_bonded_pt_lock_face_interior_only)
     _set_if_not_none(config, ["rcc_adhesion_normal_offset_coeff"], options.rcc_adhesion_normal_offset_coeff)
 
     # Sanity check is always enabled — never disable it; fix geometry issues instead.
