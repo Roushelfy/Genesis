@@ -1,7 +1,7 @@
-from typing import Any, Callable, Literal
+from typing import Annotated, Any, Callable, Literal
 
 import numpy as np
-from pydantic import PrivateAttr, StrictBool, model_validator
+from pydantic import Field, PrivateAttr, StrictBool, model_validator
 
 import genesis as gs
 from genesis.typing import NonNegativeFloat, NonNegativeInt, PositiveFloat, PositiveInt, UnitVec4FType, Vec3FType
@@ -271,6 +271,15 @@ class IPCCouplerOptions(BaseCouplerOptions):
         Stiffness for bonded PT constraints. Defaults to None (use libuipc default).
     rcc_bonded_pt_release_force : float, optional
         Restoring-force threshold for releasing bonded PT pairs. Defaults to None (use libuipc default).
+    rcc_bonded_pt_distance_lock : bool, optional
+        Replace beta-based adhesion energy with a hard geometric lock (d < xi + ratio*d_hat).
+        Defaults to None (use libuipc default: disabled).
+    rcc_bonded_pt_distance_lock_ratio : float, optional
+        Ratio c in the distance-lock gate d < xi + c*d_hat, clamped to [0, 1] by the engine.
+        Only used when rcc_bonded_pt_distance_lock is True. Defaults to None (use libuipc default: 0.5).
+    rcc_bonded_pt_lock_face_interior_only : bool, optional
+        Restrict distance-lock bonding to face-interior VTs (avoids skewed sliver tets at
+        edges/corners). Defaults to None (use libuipc default: False).
     rcc_adhesion_normal_offset_coeff : float, optional
         RCC soft normal-adhesion energy-minimum offset coefficient in [0, 1].
         Defaults to None (use libuipc default).
@@ -348,6 +357,9 @@ class IPCCouplerOptions(BaseCouplerOptions):
     rcc_bonded_pt_energy_model: Literal["abd_ortho"] | None = None
     rcc_bonded_pt_kappa: PositiveFloat | None = None
     rcc_bonded_pt_release_force: PositiveFloat | None = None
+    rcc_bonded_pt_distance_lock: StrictBool | None = None
+    rcc_bonded_pt_distance_lock_ratio: Annotated[float, Field(ge=0.0, le=1.0)] | None = None
+    rcc_bonded_pt_lock_face_interior_only: StrictBool | None = None
     rcc_adhesion_normal_offset_coeff: NonNegativeFloat | None = None
 
     # AL-IPC options
