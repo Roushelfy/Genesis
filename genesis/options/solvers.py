@@ -275,7 +275,8 @@ class IPCCouplerOptions(BaseCouplerOptions):
         Replace beta-based adhesion energy with a hard geometric lock (d < xi + ratio*d_hat).
         Defaults to None (use libuipc default: disabled).
     rcc_bonded_pt_distance_lock_ratio : float, optional
-        Ratio c in the distance-lock gate d < xi + c*d_hat, clamped to [0, 1] by the engine.
+        Band coefficient c in the distance-lock gate d < xi + c*d_hat. May exceed 1 (the
+        rest gap follows the band); must be non-negative.
         Only used when rcc_bonded_pt_distance_lock is True. Defaults to None (use libuipc default: 0.5).
     rcc_bonded_pt_lock_face_interior_only : bool, optional
         Restrict distance-lock bonding to face-interior VTs (avoids skewed sliver tets at
@@ -358,7 +359,7 @@ class IPCCouplerOptions(BaseCouplerOptions):
     rcc_bonded_pt_kappa: PositiveFloat | None = None
     rcc_bonded_pt_release_force: PositiveFloat | None = None
     rcc_bonded_pt_distance_lock: StrictBool | None = None
-    rcc_bonded_pt_distance_lock_ratio: Annotated[float, Field(ge=0.0, le=1.0)] | None = None
+    rcc_bonded_pt_distance_lock_ratio: Annotated[float, Field(ge=0.0)] | None = None
     rcc_bonded_pt_lock_face_interior_only: StrictBool | None = None
     rcc_adhesion_normal_offset_coeff: NonNegativeFloat | None = None
 
