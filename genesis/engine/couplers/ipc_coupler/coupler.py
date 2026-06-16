@@ -2043,6 +2043,8 @@ class IPCCoupler(RBC):
         p0: float,
         initial_beta: float,
         enabled: bool = True,
+        distance_lock: float | None = None,
+        distance_lock_ratio: float | None = None,
     ) -> None:
         """Register RCC adhesive contact from one IPC entity to one or more targets.
 
@@ -2082,6 +2084,12 @@ class IPCCoupler(RBC):
                 "p0": float(p0),
                 "initial_beta": float(initial_beta),
                 "enabled": bool(enabled),
+                # Per-pair adhesion mode (libuipc 00ae93c4): None = inherit the global
+                # rcc_bonded_pt_distance_lock; 0.0 = soft RCC (pure beta, no lock);
+                # >0 = distance-lock. Applied via set_bonded with lock_threshold=-1 so the
+                # pair is NOT bonded — it only fixes the mode for an otherwise-soft pair.
+                "distance_lock": None if distance_lock is None else float(distance_lock),
+                "distance_lock_ratio": None if distance_lock_ratio is None else float(distance_lock_ratio),
             }
         )
 
@@ -2281,6 +2289,21 @@ class IPCCoupler(RBC):
                             initial_beta=request["initial_beta"],
                             enabled=request["enabled"],
                         )
+                        # Per-pair adhesion mode: fix this (L, R) pair's distance-lock mode
+                        # without bonding it (lock_threshold=-1 -> unbonded). Lets one scene
+                        # mix global distance-lock pairs with explicit soft (beta) pairs.
+                        if request["distance_lock"] is not None:
+                            self._ipc_rcc_adhesive.set_bonded(
+                                self._ipc_contact_tabular,
+                                source_elem,
+                                target_elem,
+                                lock_threshold=-1.0,
+                                distance_lock=request["distance_lock"],
+                                distance_lock_ratio=(
+                                    -1.0 if request["distance_lock_ratio"] is None
+                                    else request["distance_lock_ratio"]
+                                ),
+                            )
                         n_pairs += 1
 
         gs.logger.info(f"[IPC RCC] Registered RCC adhesion on {n_pairs} contact pairs")
