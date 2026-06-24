@@ -2045,6 +2045,7 @@ class IPCCoupler(RBC):
         enabled: bool = True,
         distance_lock: float | None = None,
         distance_lock_ratio: float | None = None,
+        release_force: float | None = None,
     ) -> None:
         """Register RCC adhesive contact from one IPC entity to one or more targets.
 
@@ -2090,6 +2091,9 @@ class IPCCoupler(RBC):
                 # pair is NOT bonded — it only fixes the mode for an otherwise-soft pair.
                 "distance_lock": None if distance_lock is None else float(distance_lock),
                 "distance_lock_ratio": None if distance_lock_ratio is None else float(distance_lock_ratio),
+                # Per-pair bonded release-force threshold (libuipc RCCAdhesive::set_bonded supports
+                # it per contact pair; None -> inherit the global rcc_bonded_pt_release_force).
+                "release_force": None if release_force is None else float(release_force),
             }
         )
 
@@ -2293,16 +2297,23 @@ class IPCCoupler(RBC):
                         # without bonding it (lock_threshold=-1 -> unbonded). Lets one scene
                         # mix global distance-lock pairs with explicit soft (beta) pairs.
                         if request["distance_lock"] is not None:
-                            self._ipc_rcc_adhesive.set_bonded(
-                                self._ipc_contact_tabular,
-                                source_elem,
-                                target_elem,
+                            bonded_kwargs: dict[str, Any] = dict(
                                 lock_threshold=-1.0,
                                 distance_lock=request["distance_lock"],
                                 distance_lock_ratio=(
                                     -1.0 if request["distance_lock_ratio"] is None
                                     else request["distance_lock_ratio"]
                                 ),
+                            )
+                            # Per-pair release-force override (e.g. a weaker hand<->tape bond);
+                            # omitted -> set_bonded leaves the global rcc_bonded_pt_release_force.
+                            if request["release_force"] is not None:
+                                bonded_kwargs["release_force"] = request["release_force"]
+                            self._ipc_rcc_adhesive.set_bonded(
+                                self._ipc_contact_tabular,
+                                source_elem,
+                                target_elem,
+                                **bonded_kwargs,
                             )
                         n_pairs += 1
 
