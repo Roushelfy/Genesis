@@ -205,6 +205,20 @@ class QIPCCouplerOptions(BaseCouplerOptions):
         Initial broadphase pair buffer size. The solver reallocates automatically on
         overflow, but starting too low causes repeated graph rebuilds in contact-heavy
         scenes. Defaults to 1000.
+    contact_friction : float, optional
+        Default contact friction coefficient. Used for the QIPC default contact model
+        (ground half-planes and any geometry without a per-entity contact element) and
+        as the fallback when a material does not define a friction field. Must be > 0
+        for QIPC to wire the friction machinery at all. Defaults to 0.05.
+    contact_resistance : float, optional
+        Default contact resistance/stiffness. Used for the QIPC default contact model
+        and as the per-entity fallback when a material does not define
+        ``contact_resistance``. Per-pair values combine via harmonic mean.
+        Defaults to 1e4.
+    fem_constraint_strength : float, optional
+        Default strength ratio for FEM soft vertex constraints
+        (``FEMEntity.set_vertex_constraints`` with ``is_soft_constraint=True`` and
+        ``stiffness=0``). Mass-weighted quadratic penalty coefficient. Defaults to 100.0.
     debug_viewer : bool, optional
         Whether to show the QIPC debug viewer. Defaults to False.
     """
@@ -212,6 +226,9 @@ class QIPCCouplerOptions(BaseCouplerOptions):
     contact_enable: StrictBool = True
     contact_d_hat: PositiveFloat = 0.01
     init_collision_pair_capacity: PositiveInt = 1000
+    contact_friction: PositiveFloat = 0.05
+    contact_resistance: PositiveFloat = 1e4
+    fem_constraint_strength: PositiveFloat = 100.0
     debug_viewer: StrictBool = False
 
 

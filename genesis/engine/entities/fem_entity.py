@@ -266,6 +266,11 @@ class FEMEntity(Entity):
         if is_valid and self._tgt["pos"] is not None:
             self.set_pos(self._sim.cur_substep_local, self._tgt["pos"])
 
+            from genesis.engine.couplers import QIPCCoupler
+
+            if isinstance(self.sim.coupler, QIPCCoupler):
+                self.sim.coupler.fem_set_entity_position(self, self._tgt["pos"])
+
     def set_velocity(self, vel):
         """
         Set the target velocity(ies) for the FEM entity.
@@ -307,6 +312,11 @@ class FEMEntity(Entity):
                 is_valid = True
         if not is_valid:
             gs.raise_exception("Tensor shape not supported.")
+
+        from genesis.engine.couplers import QIPCCoupler
+
+        if isinstance(self.sim.coupler, QIPCCoupler):
+            self.sim.coupler.fem_set_entity_velocity(self, self._tgt["vel"])
 
     @assert_muscle
     def set_actuation(self, actu):
@@ -909,7 +919,7 @@ class FEMEntity(Entity):
             envs_idx : array_like, optional
                 List of environment indices to apply the constraints to. If None, applies to all environments.
         """
-        from genesis.engine.couplers import IPCCoupler
+        from genesis.engine.couplers import IPCCoupler, QIPCCoupler
 
         if self._solver._use_implicit_solver and not self._solver._enable_vertex_constraints:
             gs.raise_exception(
@@ -918,6 +928,14 @@ class FEMEntity(Entity):
 
         if isinstance(self.sim.coupler, IPCCoupler):
             gs.raise_exception("This method is only supported by IPC coupler.")
+
+        if isinstance(self.sim.coupler, QIPCCoupler):
+            if link is not None:
+                assert isinstance(link, RigidLink), "Only RigidLink is supported for vertex constraints."
+            self.sim.coupler.fem_set_vertex_constraints(
+                self, verts_idx_local, target_poss, link, is_soft_constraint, stiffness
+            )
+            return
 
         if not self._solver._constraints_initialized:
             self._solver.init_constraints()
@@ -958,6 +976,12 @@ class FEMEntity(Entity):
 
     def update_constraint_targets(self, verts_idx_local, target_poss, envs_idx=None):
         """Update target positions for existing constraints."""
+        from genesis.engine.couplers import QIPCCoupler
+
+        if isinstance(self.sim.coupler, QIPCCoupler):
+            self.sim.coupler.fem_update_constraint_targets(self, verts_idx_local, target_poss)
+            return
+
         if not self._solver._constraints_initialized:
             gs.logger.warning("Ignoring update_constraint_targets; constraints have not been initialized.")
             return
@@ -972,6 +996,12 @@ class FEMEntity(Entity):
 
     def remove_vertex_constraints(self, verts_idx_local=None, envs_idx=None):
         """Remove constraints from specified vertices, or all if None."""
+        from genesis.engine.couplers import QIPCCoupler
+
+        if isinstance(self.sim.coupler, QIPCCoupler):
+            self.sim.coupler.fem_remove_vertex_constraints(self, verts_idx_local)
+            return
+
         if not self._solver._constraints_initialized:
             gs.logger.warning("Ignoring remove_vertex_constraints; constraints have not been initialized.")
             return

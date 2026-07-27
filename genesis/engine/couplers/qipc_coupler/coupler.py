@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, NamedTuple
 
 import numpy as np
@@ -10,10 +11,11 @@ import genesis as gs
 import genesis.utils.array_class as array_class
 import genesis.utils.geom as gu
 from genesis.repr_base import RBC
-from genesis.utils.misc import qd_to_torch
+from genesis.utils.misc import geometric_mean, harmonic_mean, qd_to_torch, tensor_to_array
 
 
 if TYPE_CHECKING:
+    from genesis.engine.entities.fem_entity import FEMEntity
     from genesis.engine.entities.rigid_entity.rigid_entity import RigidEntity
     from genesis.engine.entities.rigid_entity.rigid_joint import RigidJoint
     from genesis.engine.entities.rigid_entity.rigid_link import RigidLink
@@ -57,6 +59,31 @@ class AbdEntityPreInit(NamedTuple):
     joint_collections: list[JointCollection]
     genesis_dof_indices: list[int]
     is_free_base: bool
+
+
+class FemEntityEntry(NamedTuple):
+    """Per-FEM-entity QIPC bookkeeping (resolved after scene.init())."""
+
+    entity: FEMEntity
+    slot: object  # qipc GeometrySlot
+    is_cloth: bool
+    offset: int  # fem_vert_offset into the global QIPC FEM vertex buffer
+    n_verts: int
+
+
+@dataclass
+class FemConstraintRecord:
+    """One set_vertex_constraints call on a FEM entity (QIPC backend).
+
+    Static-target constraints are written once at creation; link-following
+    constraints are refreshed every step in preprocess().
+    """
+
+    entity: FEMEntity
+    verts: torch.Tensor  # (n,) int64 cuda, entity-local vertex indices
+    is_soft: bool
+    link: RigidLink | None = None
+    link_offsets: torch.Tensor | None = None  # (n, 3) f64 cuda, in link frame
 
 
 # ---------------------------------------------------------------------------
@@ -280,9 +307,14 @@ class QIPCCoupler(RBC):
             },
         )
 
-        # --- Global default contact model (per-pair tabular deferred) ---
-        # ContactTabular already initializes default (friction_rate=0.05, resistance=1e4)
-        # which is reasonable for generic rigid contact. No override needed for now.
+        # --- Global default contact model ---
+        # Used by ground half-planes and any geometry without a per-entity contact
+        # element. NOTE: QIPC only wires the friction machinery when the *default*
+        # model's friction_rate > 0, so this must not be zero.
+        self._scene.contact_tabular.default_model(
+            friction_rate=self._options.contact_friction,
+            resistance=self._options.contact_resistance,
+        )
 
         # --- Ground planes ---
         for entity in plane_entities:
@@ -294,6 +326,12 @@ class QIPCCoupler(RBC):
         for entity in abd_entities:
             pre = self._build_abd_entity_pre_init(entity, abd, trimesh, JointCollection)
             all_pre_inits.append(pre)
+
+        # --- FEM entities (volumetric + cloth), pre-init ---
+        fem_pre_entries: list[tuple[FEMEntity, object, bool]] = self._build_fem_entities()
+
+        # --- Per-entity contact elements + pairwise contact models ---
+        self._setup_contact_tabular(all_pre_inits, fem_pre_entries, plane_entities)
 
         # --- Aggregate JointCollections and dof order (pre-init) ---
         all_jcs: list[JointCollection] = []
@@ -309,8 +347,18 @@ class QIPCCoupler(RBC):
             all_genesis_dof_indices, dtype=torch.int64, device=gs.device
         )
 
-        # --- Init QIPC (assigns abd_body_offset to each geometry) ---
+        # --- Init QIPC (assigns abd_body_offset / fem_vert_offset to each geometry) ---
         self._scene.init()
+
+        # --- FEM post-init: resolve vertex offsets into the global FEM buffer ---
+        self._fem_entries: list[FemEntityEntry] = []
+        self._fem_entry_by_entity: dict[FEMEntity, FemEntityEntry] = {}
+        for fem_entity, slot, is_cloth in fem_pre_entries:
+            offset = int(slot.geometry.meta["fem_vert_offset"].cpu()[0])
+            entry = FemEntityEntry(fem_entity, slot, is_cloth, offset, fem_entity.n_vertices)
+            self._fem_entries.append(entry)
+            self._fem_entry_by_entity[fem_entity] = entry
+        self._fem_constraints: list[FemConstraintRecord] = []
 
         # --- Phase 2 (post-init): resolve body offsets, build writeback tensors ---
         all_link_indices: list[int] = []
@@ -406,6 +454,8 @@ class QIPCCoupler(RBC):
         - Velocity control: kp = 0, target_velocity = user target
         - Force control: kp = 0, target_velocity = 0, use control_dofs_force
         """
+        self._preprocess_fem()
+
         if self._jc is None:
             return
 
@@ -418,6 +468,18 @@ class QIPCCoupler(RBC):
 
         self._jc.control_dofs_position(pos_targets)
         self._jc.control_dofs_velocity(vel_targets)
+
+    def _preprocess_fem(self) -> None:
+        """Refresh link-following FEM vertex constraint targets (device writes)."""
+        for record in self._fem_constraints:
+            if record.link is None:
+                continue
+            link = record.link
+            link_pos = link.get_pos().reshape(-1, 3)[0].to(torch.float64)
+            link_quat = link.get_quat().reshape(-1, 4)[0].to(torch.float64)
+            targets = gu.transform_by_quat(record.link_offsets, link_quat.expand(record.link_offsets.shape[0], 4))
+            targets = targets + link_pos
+            self._write_fem_constraint_targets(record, targets)
 
     def couple(self, f: int) -> None:
         self._substep_count += 1
@@ -435,6 +497,7 @@ class QIPCCoupler(RBC):
         self._scene.step()
 
         self._writeback_state()
+        self._writeback_fem_state(f + 1)
 
         gs.logger.debug(
             f"[QIPC] sim={self._scene.solver.step_ms:.2f}ms "
@@ -460,6 +523,10 @@ class QIPCCoupler(RBC):
         links_state.pos/quat, dofs_state.pos, dofs_state.vel, and free-base qpos.
         Joint velocity is finite-differenced from theta.
         """
+        if self._link_indices_t.numel() == 0 and self._dof_indices_t.numel() == 0:
+            # FEM-only scene: no ABD bodies/joints to write back.
+            return
+
         abd_q: torch.Tensor = self._scene.affine_body.q
 
         if self._jc is not None:
@@ -484,6 +551,330 @@ class QIPCCoupler(RBC):
             dofs_state=self._sim.rigid_solver.dyn_state.dofs,
             rigid_info=self._sim.rigid_solver.rigid_info,
         )
+
+    # -------------------------------------------------------------------------
+    # FEM: build, writeback, constraints (P1/P2)
+    # -------------------------------------------------------------------------
+
+    def _build_fem_entities(self) -> list[tuple[FEMEntity, object, bool]]:
+        """Create one QIPC FEM geometry per Genesis FEM entity (pre-init).
+
+        Volumetric entities become tetmeshes with StableNeoHookean; Cloth
+        entities become trimeshes with the QIPC Cloth preset (Baraff-Witkin
+        membrane + strain limiting + quadratic bending). Every FEM geometry
+        additionally gets a resident (inert) SoftPositionConstraint so vertex
+        constraints can be toggled at runtime via device writes.
+        """
+        fem_solver = self._sim.fem_solver
+        if not fem_solver.is_active:
+            return []
+
+        from qipc import tetmesh
+        from qipc import trimesh as qipc_trimesh
+        from qipc.constitution import Cloth as QipcCloth
+        from qipc.constitution import SoftPositionConstraint, StableNeoHookean
+
+        from genesis.engine.materials.FEM import Cloth as ClothMaterial
+        from genesis.engine.materials.FEM import Muscle as MuscleMaterial
+
+        pre_entries: list[tuple[FEMEntity, object, bool]] = []
+        for i_e, entity in enumerate(fem_solver.entities):
+            mat = entity.material
+            if isinstance(mat, MuscleMaterial):
+                gs.raise_exception(
+                    "QIPCCoupler: gs.materials.FEM.Muscle (actuation) is not supported by the QIPC backend."
+                )
+            is_cloth = isinstance(mat, ClothMaterial)
+            verts = np.ascontiguousarray(tensor_to_array(entity.init_positions), dtype=np.float64)
+
+            if is_cloth:
+                faces = np.ascontiguousarray(entity.surface_triangles, dtype=np.int32)
+                geo = qipc_trimesh(verts, faces)
+                # Baraff-Witkin membrane takes an effective (E, G) pair, not a
+                # Poisson ratio; derive isotropic shear modulus from (E, nu).
+                shear_modulus = float(mat.E) / (2.0 * (1.0 + float(mat.nu)))
+                has_bending = mat.bending_stiffness is not None and float(mat.bending_stiffness) > 0.0
+                QipcCloth().apply_to(
+                    geo,
+                    youngs_modulus=float(mat.E),
+                    shear_modulus=shear_modulus,
+                    thickness=float(mat.thickness),
+                    mass_density=float(mat.rho),
+                    bending="quadratic" if has_bending else None,
+                    bending_youngs_modulus=float(mat.bending_stiffness) if has_bending else None,
+                    contact_thickness=(
+                        float(mat.contact_thickness) if mat.contact_thickness is not None else None
+                    ),
+                )
+            else:
+                if mat.model != "stable_neohookean":
+                    gs.logger.warning(
+                        f"QIPCCoupler: FEM material model '{mat.model}' is not supported by the QIPC "
+                        "backend; falling back to stable_neohookean."
+                    )
+                elems = np.ascontiguousarray(entity.elems, dtype=np.int32)
+                geo = tetmesh(verts, elems)
+                StableNeoHookean().apply_to(
+                    geo,
+                    youngs_modulus=float(mat.E),
+                    poissons_ratio=float(mat.nu),
+                    mass_density=float(mat.rho),
+                )
+
+            # Resident soft-constraint channel: inert (is_constrained=0) until
+            # FEMEntity.set_vertex_constraints toggles vertices at runtime.
+            SoftPositionConstraint().apply_to(geo, strength_ratio=self._options.fem_constraint_strength)
+
+            slot = self._scene.geometries.create(f"fem_{i_e}", geo)
+            pre_entries.append((entity, slot, is_cloth))
+
+        return pre_entries
+
+    def _setup_contact_tabular(
+        self,
+        all_pre_inits: list[AbdEntityPreInit],
+        fem_pre_entries: list[tuple[FEMEntity, object, bool]],
+        plane_entities: list[RigidEntity],
+    ) -> None:
+        """Per-entity contact elements + pairwise contact models.
+
+        friction combines via geometric mean, resistance via harmonic mean
+        (matching IPCCoupler). Ground half-planes use the default element; the
+        (entity, default) pair carries the plane material's friction if a plane
+        exists.
+        """
+        tab = self._scene.contact_tabular
+        fallback_res = self._options.contact_resistance
+
+        infos: list[tuple[object, float, float]] = []
+        for i, pre in enumerate(all_pre_inits):
+            mat = pre.entity.material
+            mu = float(mat.coup_friction)
+            res = float(mat.contact_resistance) if mat.contact_resistance is not None else fallback_res
+            elem = tab.create(f"rigid_contact_{i}")
+            for slot in pre.group_slots.values():
+                elem.apply_to(slot.geometry)
+            infos.append((elem, mu, res))
+
+        for i, (fem_entity, slot, _is_cloth) in enumerate(fem_pre_entries):
+            mat = fem_entity.material
+            mu = float(mat.friction_mu)
+            res = float(mat.contact_resistance) if mat.contact_resistance is not None else fallback_res
+            elem = tab.create(f"fem_contact_{i}")
+            elem.apply_to(slot.geometry)
+            infos.append((elem, mu, res))
+
+        # Pairwise models, upper triangle including self-pairs (FEM/cloth
+        # self-contact stays enabled).
+        for i in range(len(infos)):
+            elem_i, mu_i, res_i = infos[i]
+            for j in range(i, len(infos)):
+                elem_j, mu_j, res_j = infos[j]
+                tab.insert(
+                    elem_i,
+                    elem_j,
+                    friction_rate=float(geometric_mean(mu_i, mu_j)),
+                    resistance=float(harmonic_mean(res_i, res_j)),
+                )
+
+        # Pairs against the default element (ground half-planes, unassigned geoms).
+        if plane_entities:
+            plane_mat = plane_entities[0].material
+            mu_g = float(plane_mat.coup_friction)
+            res_g = (
+                float(plane_mat.contact_resistance)
+                if plane_mat.contact_resistance is not None
+                else fallback_res
+            )
+        else:
+            mu_g = self._options.contact_friction
+            res_g = fallback_res
+        default_elem = tab.default_element()
+        for elem_i, mu_i, res_i in infos:
+            tab.insert(
+                elem_i,
+                default_elem,
+                friction_rate=float(geometric_mean(mu_i, mu_g)),
+                resistance=float(harmonic_mean(res_i, res_g)),
+            )
+
+    def _writeback_fem_state(self, f: int) -> None:
+        """Zero-copy QIPC FEM state -> Genesis elements_v[f] (pos AND vel).
+
+        fe.x / fe.velocities are CUDA float64 torch views over the native FEM
+        buffers; per-entity slices feed the quadrants kernels directly with no
+        host round trip. Written at frame f+1 of the step so save_ckpt's
+        copy_frame(substeps, 0) promotes it to the next frame 0 (renderer and
+        entity.get_state() both read frame 0 after the step).
+        """
+        if not self._fem_entries:
+            return
+        fe = self._scene.finite_element
+        x_all: torch.Tensor = fe.x
+        v_all: torch.Tensor = fe.velocities
+        for entry in self._fem_entries:
+            sl = slice(entry.offset, entry.offset + entry.n_verts)
+            entry.entity.set_pos(f, x_all[sl].unsqueeze(0).to(gs.tc_float))
+            entry.entity.set_vel(f, v_all[sl].unsqueeze(0).to(gs.tc_float))
+
+    def _fem_entry(self, entity: FEMEntity) -> FemEntityEntry:
+        entry = self._fem_entry_by_entity.get(entity)
+        if entry is None:
+            gs.raise_exception("QIPCCoupler: unknown FEM entity (was it added before scene.build()?).")
+        return entry
+
+    def fem_set_vertex_constraints(
+        self,
+        entity: FEMEntity,
+        verts_idx_local,
+        target_poss,
+        link: RigidLink | None,
+        is_soft_constraint: bool,
+        stiffness: float,
+    ) -> None:
+        """QIPC backend for FEMEntity.set_vertex_constraints.
+
+        Soft constraints drive vertices toward targets through the resident
+        SoftPositionConstraint (mass-weighted quadratic penalty; ``stiffness``
+        maps to its strength ratio). Hard constraints set ``is_fixed`` on the
+        QIPC vertices (DOF removed; note this bypasses the contact barrier) and
+        move them kinematically when following a link.
+        """
+        entry = self._fem_entry(entity)
+        fe = self._scene.finite_element
+        verts = torch.as_tensor(verts_idx_local, dtype=torch.int64, device="cuda").reshape(-1)
+
+        if target_poss is None:
+            targets = fe.x[entry.offset + verts].clone()
+        else:
+            targets = torch.as_tensor(target_poss, dtype=torch.float64, device="cuda").reshape(-1, 3)
+
+        link_offsets: torch.Tensor | None = None
+        if link is not None:
+            link_pos = link.get_pos().reshape(-1, 3)[0].to(device="cuda", dtype=torch.float64)
+            link_quat = link.get_quat().reshape(-1, 4)[0].to(device="cuda", dtype=torch.float64)
+            inv_quat = gu.inv_quat(link_quat)
+            link_offsets = gu.transform_by_quat(
+                targets - link_pos, inv_quat.expand(targets.shape[0], 4)
+            )
+
+        if is_soft_constraint:
+            geo = entry.slot.geometry
+            strength = float(stiffness) if stiffness else self._options.fem_constraint_strength
+            geo.vertices["strength_ratio"].gpu()[verts] = strength
+            geo.vertices["is_constrained"].gpu()[verts] = 1
+        else:
+            fe.is_fixed[entry.offset + verts] = 1
+
+        record = FemConstraintRecord(
+            entity=entity,
+            verts=verts,
+            is_soft=bool(is_soft_constraint),
+            link=link,
+            link_offsets=link_offsets,
+        )
+        self._write_fem_constraint_targets(record, targets)
+        self._fem_constraints.append(record)
+
+    def _write_fem_constraint_targets(self, record: FemConstraintRecord, targets: torch.Tensor) -> None:
+        entry = self._fem_entry(record.entity)
+        if record.is_soft:
+            geo = entry.slot.geometry
+            geo.vertices["aim_position"].gpu()[record.verts] = targets
+        else:
+            fe = self._scene.finite_element
+            idx = entry.offset + record.verts
+            fe.x[idx] = targets
+            fe.x_prev[idx] = targets
+            fe.velocities[idx] = 0.0
+
+    def fem_update_constraint_targets(self, entity: FEMEntity, verts_idx_local, target_poss) -> None:
+        """QIPC backend for FEMEntity.update_constraint_targets."""
+        entry = self._fem_entry(entity)
+        fe = self._scene.finite_element
+        verts = torch.as_tensor(verts_idx_local, dtype=torch.int64, device="cuda").reshape(-1)
+        targets = torch.as_tensor(target_poss, dtype=torch.float64, device="cuda").reshape(-1, 3)
+
+        # Soft channel: aim_position is inert for unconstrained vertices.
+        geo = entry.slot.geometry
+        geo.vertices["aim_position"].gpu()[verts] = targets
+
+        # Hard channel: only teleport vertices that are actually fixed.
+        idx = entry.offset + verts
+        fixed_mask = fe.is_fixed[idx] > 0
+        if bool(fixed_mask.any()):
+            sel = idx[fixed_mask]
+            fe.x[sel] = targets[fixed_mask]
+            fe.x_prev[sel] = targets[fixed_mask]
+            fe.velocities[sel] = 0.0
+
+    def fem_remove_vertex_constraints(self, entity: FEMEntity, verts_idx_local=None) -> None:
+        """QIPC backend for FEMEntity.remove_vertex_constraints."""
+        entry = self._fem_entry(entity)
+        fe = self._scene.finite_element
+        geo = entry.slot.geometry
+
+        if verts_idx_local is None:
+            geo.vertices["is_constrained"].gpu()[:] = 0
+            fe.is_fixed[entry.offset : entry.offset + entry.n_verts] = 0
+            self._fem_constraints = [r for r in self._fem_constraints if r.entity is not entity]
+            return
+
+        verts = torch.as_tensor(verts_idx_local, dtype=torch.int64, device="cuda").reshape(-1)
+        geo.vertices["is_constrained"].gpu()[verts] = 0
+        fe.is_fixed[entry.offset + verts] = 0
+
+        removed = set(int(v) for v in verts.tolist())
+        kept_records: list[FemConstraintRecord] = []
+        for record in self._fem_constraints:
+            if record.entity is not entity:
+                kept_records.append(record)
+                continue
+            keep_mask = torch.tensor(
+                [int(v) not in removed for v in record.verts.tolist()],
+                dtype=torch.bool,
+                device=record.verts.device,
+            )
+            if bool(keep_mask.all()):
+                kept_records.append(record)
+            elif bool(keep_mask.any()):
+                record.verts = record.verts[keep_mask]
+                if record.link_offsets is not None:
+                    record.link_offsets = record.link_offsets[keep_mask]
+                kept_records.append(record)
+        self._fem_constraints = kept_records
+
+    def fem_set_entity_position(self, entity: FEMEntity, pos) -> None:
+        """Teleport a FEM entity in QIPC: write x AND x_prev (zero velocity).
+
+        The QIPC predictor only reads x_prev/velocities, so writing x alone
+        would be physically undone within one step.
+        """
+        entry = self._fem_entry(entity)
+        fe = self._scene.finite_element
+        p = torch.as_tensor(pos, dtype=torch.float64, device="cuda").reshape(-1, entry.n_verts, 3)[0]
+        sl = slice(entry.offset, entry.offset + entry.n_verts)
+        fe.x[sl] = p
+        fe.x_prev[sl] = p
+        fe.velocities[sl] = 0.0
+
+    def fem_set_entity_velocity(self, entity: FEMEntity, vel) -> None:
+        """Set per-vertex velocities of a FEM entity in QIPC."""
+        entry = self._fem_entry(entity)
+        fe = self._scene.finite_element
+        v = torch.as_tensor(vel, dtype=torch.float64, device="cuda").reshape(-1, entry.n_verts, 3)[0]
+        fe.velocities[entry.offset : entry.offset + entry.n_verts] = v
+
+    def fem_set_external_acc(self, entity: FEMEntity, acc) -> None:
+        """Set an external acceleration (m/s^2) on a FEM entity's vertices.
+
+        Folded into the QIPC predictor as x_tilde = x_prev + dt*v + dt^2*(g + acc).
+        ``acc`` may be (3,) (uniform) or (n_verts, 3).
+        """
+        entry = self._fem_entry(entity)
+        fe = self._scene.finite_element
+        a = torch.as_tensor(acc, dtype=torch.float64, device="cuda")
+        fe.external_acc[entry.offset : entry.offset + entry.n_verts] = a
 
     # -------------------------------------------------------------------------
     # Build helpers: entity classification
@@ -516,7 +907,16 @@ class QIPCCoupler(RBC):
     # -------------------------------------------------------------------------
 
     def _create_ground(self, entity: RigidEntity, ground_factory) -> None:
-        """Convert a Genesis Plane entity to a QIPC half-plane ground."""
+        """Convert a Genesis Plane entity to a QIPC ground.
+
+        Uses the analytic half-plane normally. When FEM entities are present,
+        a large fixed ABD slab is used instead: the QIPC half-plane contact
+        path crashes (CUDA launch failure at SimEngine::init) whenever a scene
+        mixes half-plane + ABD + FEM (backend bug, minimal repro in
+        qipc-test/pure_matrix.py 'halfplane' variant).
+        """
+        use_abd_slab = self._sim.fem_solver.is_active
+
         for link in entity.links:
             for geom in link.geoms:
                 if geom.type != gs.GEOM_TYPE.PLANE:
@@ -529,8 +929,54 @@ class QIPCCoupler(RBC):
                     continue
                 normal = normal / n_len
                 height: float = float(np.dot(np.array(geom.init_pos, dtype=np.float64), normal))
-                geo = ground_factory(height=height, N=tuple(normal))
-                self._scene.geometries.create(f"ground_{entity.idx}", geo)
+                if use_abd_slab:
+                    self._create_ground_abd_slab(entity, normal, height)
+                else:
+                    geo = ground_factory(height=height, N=tuple(normal))
+                    self._scene.geometries.create(f"ground_{entity.idx}", geo)
+
+    def _create_ground_abd_slab(
+        self,
+        entity: RigidEntity,
+        normal: np.ndarray,
+        height: float,
+        half_extent: float = 20.0,
+        slab_thickness: float = 0.5,
+    ) -> None:
+        """Emulate an infinite plane with a large fixed ABD slab (top face at `height`)."""
+        from qipc import trimesh as qipc_trimesh
+        from qipc.constitution import AffineBodyConstitution
+
+        # Orthonormal frame (t1, t2, n)
+        n = normal / np.linalg.norm(normal)
+        ref = np.array([1.0, 0.0, 0.0]) if abs(n[0]) < 0.9 else np.array([0.0, 1.0, 0.0])
+        t1 = np.cross(n, ref)
+        t1 /= np.linalg.norm(t1)
+        t2 = np.cross(n, t1)
+
+        top_c = height * n
+        bot_c = top_c - slab_thickness * n
+        corners = []
+        for center in (top_c, bot_c):
+            for s1, s2 in ((-1, -1), (1, -1), (1, 1), (-1, 1)):
+                corners.append(center + s1 * half_extent * t1 + s2 * half_extent * t2)
+        verts = np.array(corners, dtype=np.float64)  # 0-3 top ring, 4-7 bottom ring
+        faces = np.array(
+            [
+                [0, 1, 2], [0, 2, 3],  # top (outward = +n)
+                [4, 6, 5], [4, 7, 6],  # bottom
+                [0, 4, 5], [0, 5, 1],
+                [1, 5, 6], [1, 6, 2],
+                [2, 6, 7], [2, 7, 3],
+                [3, 7, 4], [3, 4, 0],
+            ],
+            dtype=np.int32,
+        )
+        geo = qipc_trimesh(verts, faces)
+        AffineBodyConstitution().apply_to(
+            geo, kappa=1e8, mass_density=1e3, is_fixed=np.array([1], dtype=np.int32)
+        )
+        self._scene.geometries.create(f"ground_{entity.idx}", geo)
 
     # -------------------------------------------------------------------------
     # Build helpers: per-entity ABD construction
@@ -774,6 +1220,10 @@ class QIPCCoupler(RBC):
         for link in entity.links:
             for joint in link.joints:
                 if joint.type == gs.JOINT_TYPE.FIXED:
+                    if link.parent_idx < 0:
+                        # Fixed to the world (e.g. Box(fixed=True)): no intra-entity
+                        # merge edge; the body is anchored via link.is_fixed instead.
+                        continue
                     parent_local = link.parent_idx - entity.link_start
                     fixed_adj[link.idx_local].append(parent_local)
                     fixed_adj[parent_local].append(link.idx_local)
@@ -882,7 +1332,19 @@ class QIPCCoupler(RBC):
             geo.instances.resize(1)
             geo.transforms = T_rep.reshape(1, 4, 4)
 
-            if total_mass > 0:
+            # Degenerate inertia (e.g. fixed primitives with zeroed inertials)
+            # would make the explicit 12x12 ABD mass matrix singular; fall back
+            # to the mesh-integrated density path in that case.
+            has_valid_inertia = (
+                total_mass > 0 and float(np.linalg.eigvalsh(I_local).min()) > 1e-12 * float(total_mass)
+            )
+            if not has_valid_inertia and total_mass > 0:
+                gs.logger.debug(
+                    f"QIPCCoupler: merge group rep={rep} has degenerate inertia; "
+                    "using mesh-density ABD mass instead of explicit inertials."
+                )
+
+            if has_valid_inertia:
                 vol = self._compute_merged_volume(entity, members)
                 abd.apply_to(
                     geo,
@@ -894,7 +1356,9 @@ class QIPCCoupler(RBC):
                     is_fixed=is_fixed,
                 )
             else:
-                abd.apply_to(geo, kappa=abd_kappa, mass_density=1e3, is_fixed=is_fixed)
+                vol = self._compute_merged_volume(entity, members)
+                density = total_mass / vol if total_mass > 0 else 1e3
+                abd.apply_to(geo, kappa=abd_kappa, mass_density=density, is_fixed=is_fixed)
 
             rep_link = link_by_idx[rep]
             slot = self._scene.geometries.create(rep_link.name, geo)

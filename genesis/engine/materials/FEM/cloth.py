@@ -35,6 +35,11 @@ class Cloth(Base):
     bending_stiffness : float, optional
         Bending resistance coefficient. If None, no bending resistance.
         Default is None.
+    contact_thickness : float | None, optional
+        Contact offset (IPC gap) used for collision, decoupled from the elastic
+        ``thickness``. ``None`` means "same as thickness". Set to 0.0 for cloth
+        that starts in contact with other objects (QIPC coupler only).
+        Default is None.
     model : str, optional
         FEM material model (not used for cloth, kept for compatibility).
         Default is "stable_neohookean".
@@ -66,4 +71,5 @@ class Cloth(Base):
     rho: PositiveFloat = 200.0
     thickness: PositiveFloat = 0.001
     bending_stiffness: NonNegativeFloat | None = None
+    contact_thickness: NonNegativeFloat | None = None
     model: Literal["linear", "stable_neohookean", "linear_corotated"] = "stable_neohookean"

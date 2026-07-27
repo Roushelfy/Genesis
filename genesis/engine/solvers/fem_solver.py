@@ -985,6 +985,12 @@ class FEMSolver(Solver):
 
     def substep_post_coupling(self, f):
         if self.is_active:
+            from genesis.engine.couplers import QIPCCoupler
+
+            if isinstance(self.sim._coupler, QIPCCoupler):
+                # QIPC owns all FEM physics; the coupler writes pos AND vel at
+                # frame f+1 directly. compute_pos would overwrite that frame.
+                return
             self.compute_pos(f)
             if self._constraints_initialized and not self._use_implicit_solver:
                 self.apply_hard_constraints(f)
