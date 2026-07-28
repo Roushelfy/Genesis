@@ -58,7 +58,6 @@ class AbdEntityPreInit(NamedTuple):
     T_world: dict[int, np.ndarray]
     joint_collections: list[JointCollection]
     genesis_dof_indices: list[int]
-    genesis_q_indices: list[int]
     is_free_base: bool
 
 
@@ -180,7 +179,6 @@ def _kernel_qipc_writeback(
     dofs_pos: qd.types.ndarray(),
     dofs_vel: qd.types.ndarray(),
     dof_indices: qd.types.ndarray(),
-    joint_q_indices: qd.types.ndarray(),
     free_base_body_indices: qd.types.ndarray(),
     free_base_link_indices: qd.types.ndarray(),
     free_base_q_starts: qd.types.ndarray(),
@@ -231,9 +229,6 @@ def _kernel_qipc_writeback(
         idx = dof_indices[i]
         dofs_state.pos[idx, 0] = dofs_pos[i]
         dofs_state.vel[idx, 0] = dofs_vel[i]
-        # Keep rigid_info.qpos tracking the joint state so qpos-based consumers
-        # (IK seeding, get_qpos) see the actual arm configuration.
-        rigid_info.qpos[joint_q_indices[i], 0] = dofs_pos[i]
 
     for i in range(n_free):
         i_b = free_base_body_indices[i]
@@ -341,11 +336,9 @@ class QIPCCoupler(RBC):
         # --- Aggregate JointCollections and dof order (pre-init) ---
         all_jcs: list[JointCollection] = []
         all_genesis_dof_indices: list[int] = []
-        all_genesis_q_indices: list[int] = []
         for pre in all_pre_inits:
             all_jcs.extend(pre.joint_collections)
             all_genesis_dof_indices.extend(pre.genesis_dof_indices)
-            all_genesis_q_indices.extend(pre.genesis_q_indices)
 
         self._jc: JointCollection | None = (
             JointCollection.merge(all_jcs) if all_jcs else None
@@ -403,9 +396,6 @@ class QIPCCoupler(RBC):
         n_controlled_dofs = len(all_genesis_dof_indices)
         self._dof_indices_t: torch.Tensor = torch.tensor(
             all_genesis_dof_indices, dtype=torch.int32, device=gs.device
-        )
-        self._joint_q_indices_t: torch.Tensor = torch.tensor(
-            all_genesis_q_indices, dtype=torch.int32, device=gs.device
         )
         self._wb_dofs_pos: torch.Tensor = torch.zeros(
             n_controlled_dofs, dtype=gs.tc_float, device=gs.device
@@ -554,7 +544,6 @@ class QIPCCoupler(RBC):
             dofs_pos=self._wb_dofs_pos,
             dofs_vel=self._wb_dofs_vel,
             dof_indices=self._dof_indices_t,
-            joint_q_indices=self._joint_q_indices_t,
             free_base_body_indices=self._free_base_body_indices_t,
             free_base_link_indices=self._free_base_link_indices_t,
             free_base_q_starts=self._free_base_q_starts_t,
@@ -1041,7 +1030,6 @@ class QIPCCoupler(RBC):
         # --- Build joints (unified per type) ---
         per_joint_jcs: list[JointCollection] = []
         genesis_dof_indices: list[int] = []
-        genesis_q_indices: list[int] = []
 
         init_qpos = cfg.home_qpos if cfg.home_qpos is not None else entity.init_qpos
 
@@ -1053,7 +1041,6 @@ class QIPCCoupler(RBC):
             if jc is not None:
                 per_joint_jcs.append(jc)
                 genesis_dof_indices.append(dof_idx)
-                genesis_q_indices.append(joint.q_start)
 
         for joint in prismatic_joints:
             jc, dof_idx = self._create_joint(
@@ -1063,7 +1050,6 @@ class QIPCCoupler(RBC):
             if jc is not None:
                 per_joint_jcs.append(jc)
                 genesis_dof_indices.append(dof_idx)
-                genesis_q_indices.append(joint.q_start)
 
         return AbdEntityPreInit(
             entity=entity,
@@ -1072,7 +1058,6 @@ class QIPCCoupler(RBC):
             T_world=T_world,
             joint_collections=per_joint_jcs,
             genesis_dof_indices=genesis_dof_indices,
-            genesis_q_indices=genesis_q_indices,
             is_free_base=is_free_base,
         )
 
