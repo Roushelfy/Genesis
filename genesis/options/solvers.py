@@ -219,6 +219,40 @@ class QIPCCouplerOptions(BaseCouplerOptions):
         Default strength ratio for FEM soft vertex constraints
         (``FEMEntity.set_vertex_constraints`` with ``is_soft_constraint=True`` and
         ``stiffness=0``). Mass-weighted quadratic penalty coefficient. Defaults to 100.0.
+    contact_constitution : str, optional
+        QIPC contact constitution. 'auto' selects 'adhesive' when any adhesion is
+        declared (``QIPCCoupler.add_adhesion`` or bond options) and 'consistent'
+        otherwise. 'adhesive' with all-zero adhesion parameters is bit-identical to
+        'consistent' (at the cost of one extra lagged-position snapshot per step).
+        Defaults to 'auto'.
+    adhesion_bond_distance_lock : bool, optional
+        Master switch for Phase-2 distance bonds (locked virtual-tet bonds that
+        replace the contact barrier while alive). Requires
+        ``adhesion_bond_max_bonds > 0`` and at least one FEM entity in the scene.
+        Defaults to False.
+    adhesion_bond_distance_lock_ratio : float, optional
+        Scene-global bond lock reach ``c``: a bond may form while the pair distance
+        is inside ``xi + c * contact_d_hat``. Defaults to 0.5.
+    adhesion_bond_max_bonds : int, optional
+        Bond slot capacity. 0 keeps the bond system fully inert. Defaults to 0.
+    adhesion_bond_kappa : float, optional
+        Per-bond virtual-tet stiffness. Defaults to 1e8.
+    adhesion_bond_lock_margin : float, optional
+        Barycentric slack for the face-interior bond-creation gate. Defaults to 0.0.
+    adhesion_bond_release_strain : float, optional
+        Bond release threshold on ``||F F^T - I||_F`` (dimensionless, tension-gated).
+        Defaults to 1e30 (never).
+    adhesion_bond_release_force : float, optional
+        Bond release threshold on the nodal restoring force (Newtons, dt-independent,
+        tension-gated). Overridable per pair via ``add_adhesion``. Defaults to 1e30.
+    adhesion_bond_release_gap : float, optional
+        Bond release threshold on the normal opening (metres). Defaults to 1e30.
+    adhesion_bond_release_slip : float, optional
+        Bond release threshold on tangential slip (metres, not tension-gated).
+        Defaults to 1e30.
+    adhesion_occlusion : bool, optional
+        Cross-layer occlusion gate for bond creation (O(n_tris) per candidate pair).
+        Defaults to False.
     debug_viewer : bool, optional
         Whether to show the QIPC debug viewer. Defaults to False.
     """
@@ -229,6 +263,17 @@ class QIPCCouplerOptions(BaseCouplerOptions):
     contact_friction: PositiveFloat = 0.05
     contact_resistance: PositiveFloat = 1e4
     fem_constraint_strength: PositiveFloat = 100.0
+    contact_constitution: Literal["auto", "consistent", "adhesive"] = "auto"
+    adhesion_bond_distance_lock: StrictBool = False
+    adhesion_bond_distance_lock_ratio: NonNegativeFloat = 0.5
+    adhesion_bond_max_bonds: NonNegativeInt = 0
+    adhesion_bond_kappa: PositiveFloat = 1e8
+    adhesion_bond_lock_margin: NonNegativeFloat = 0.0
+    adhesion_bond_release_strain: PositiveFloat = 1e30
+    adhesion_bond_release_force: PositiveFloat = 1e30
+    adhesion_bond_release_gap: PositiveFloat = 1e30
+    adhesion_bond_release_slip: PositiveFloat = 1e30
+    adhesion_occlusion: StrictBool = False
     debug_viewer: StrictBool = False
 
 

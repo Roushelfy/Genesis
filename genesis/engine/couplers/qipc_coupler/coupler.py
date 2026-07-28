@@ -13,6 +13,8 @@ import genesis.utils.geom as gu
 from genesis.repr_base import RBC
 from genesis.utils.misc import geometric_mean, harmonic_mean, qd_to_torch, tensor_to_array
 
+from .adhesion import QIPCAdhesionManager
+
 
 if TYPE_CHECKING:
     from genesis.engine.entities.fem_entity import FEMEntity
@@ -264,6 +266,39 @@ class QIPCCoupler(RBC):
     def __init__(self, simulator: Simulator, options: QIPCCouplerOptions) -> None:
         self._sim: Simulator = simulator
         self._options: QIPCCouplerOptions = options
+        self._adhesion: QIPCAdhesionManager = QIPCAdhesionManager(options)
+        self._fem_rest_positions: dict = {}
+
+    @property
+    def adhesion(self) -> QIPCAdhesionManager:
+        """Adhesion declarations and runtime bond/beta state (see adhesion.py)."""
+        return self._adhesion
+
+    def add_adhesion(self, source_entity, target_entities=None, **kwargs) -> None:
+        """Declare soft adhesion (and per-pair bond overrides) between entities.
+
+        Convenience passthrough to ``self.adhesion.add_request`` — see
+        QIPCAdhesionManager.add_request for the full parameter list. Must be
+        called before scene.build().
+        """
+        self._adhesion.add_request(source_entity, target_entities, **kwargs)
+
+    def set_fem_rest_positions(self, entity: FEMEntity, rest_verts) -> None:
+        """Give a FEM entity rest positions that differ from its initial ones.
+
+        Must be called before scene.build(). QIPC derives the rest metric,
+        rest areas/volumes, lumped MASSES, and (for shells) the rest dihedral
+        angles from the rest mesh, while the simulation starts at the entity's
+        initial positions — the difference is stored as prestress (e.g. a wound
+        tape coil with a flat rest strip). The rest mesh must have identical
+        topology/vertex order; its absolute placement is irrelevant.
+        """
+        if hasattr(self, "_scene"):
+            gs.raise_exception("QIPCCoupler.set_fem_rest_positions must be called before scene.build().")
+        rest = np.ascontiguousarray(tensor_to_array(rest_verts) if torch.is_tensor(rest_verts) else rest_verts, dtype=np.float64)
+        if rest.ndim != 2 or rest.shape[1] != 3:
+            gs.raise_exception("QIPCCoupler.set_fem_rest_positions: rest_verts must have shape (n_verts, 3).")
+        self._fem_rest_positions[entity] = rest
 
     @property
     def sim(self) -> Simulator:
@@ -337,6 +372,9 @@ class QIPCCoupler(RBC):
 
         # --- Per-entity contact elements + pairwise contact models ---
         self._setup_contact_tabular(all_pre_inits, fem_pre_entries, plane_entities)
+
+        # --- Contact constitution (adhesion) ---
+        self._adhesion.apply_constitution(self._scene, has_fem_entities=bool(fem_pre_entries))
 
         # --- Aggregate JointCollections and dof order (pre-init) ---
         all_jcs: list[JointCollection] = []
@@ -595,22 +633,32 @@ class QIPCCoupler(RBC):
             if is_cloth:
                 faces = np.ascontiguousarray(entity.surface_triangles, dtype=np.int32)
                 geo = qipc_trimesh(verts, faces)
-                # Baraff-Witkin membrane takes an effective (E, G) pair, not a
-                # Poisson ratio; derive isotropic shear modulus from (E, nu).
-                shear_modulus = float(mat.E) / (2.0 * (1.0 + float(mat.nu)))
                 has_bending = mat.bending_stiffness is not None and float(mat.bending_stiffness) > 0.0
-                QipcCloth().apply_to(
-                    geo,
+                cloth_kwargs = dict(
                     youngs_modulus=float(mat.E),
-                    shear_modulus=shear_modulus,
                     thickness=float(mat.thickness),
                     mass_density=float(mat.rho),
-                    bending="quadratic" if has_bending else None,
+                    membrane=mat.membrane,
+                    bending=mat.bending_model if has_bending else None,
                     bending_youngs_modulus=float(mat.bending_stiffness) if has_bending else None,
                     contact_thickness=(
                         float(mat.contact_thickness) if mat.contact_thickness is not None else None
                     ),
                 )
+                if mat.membrane == "stvk":
+                    # Continuum membrane: uses (E, nu) directly (e.g. tape).
+                    cloth_kwargs["poissons_ratio"] = float(mat.nu)
+                else:
+                    # Baraff-Witkin takes an effective (E, G) pair, not a Poisson
+                    # ratio; derive the isotropic shear modulus when not given.
+                    cloth_kwargs["shear_modulus"] = (
+                        float(mat.shear_modulus)
+                        if mat.shear_modulus is not None
+                        else float(mat.E) / (2.0 * (1.0 + float(mat.nu)))
+                    )
+                if mat.strain_limit_multiplier is not None:
+                    cloth_kwargs["strain_limit_multiplier"] = float(mat.strain_limit_multiplier)
+                QipcCloth().apply_to(geo, **cloth_kwargs)
             else:
                 if mat.model != "stable_neohookean":
                     gs.logger.warning(
@@ -651,6 +699,8 @@ class QIPCCoupler(RBC):
         tab = self._scene.contact_tabular
         fallback_res = self._options.contact_resistance
 
+        self._contact_elem_by_entity: dict[object, tuple[object, float, float]] = {}
+
         infos: list[tuple[object, float, float]] = []
         for i, pre in enumerate(all_pre_inits):
             mat = pre.entity.material
@@ -660,6 +710,7 @@ class QIPCCoupler(RBC):
             for slot in pre.group_slots.values():
                 elem.apply_to(slot.geometry)
             infos.append((elem, mu, res))
+            self._contact_elem_by_entity[pre.entity] = (elem, mu, res)
 
         for i, (fem_entity, slot, _is_cloth) in enumerate(fem_pre_entries):
             mat = fem_entity.material
@@ -668,6 +719,7 @@ class QIPCCoupler(RBC):
             elem = tab.create(f"fem_contact_{i}")
             elem.apply_to(slot.geometry)
             infos.append((elem, mu, res))
+            self._contact_elem_by_entity[fem_entity] = (elem, mu, res)
 
         # Pairwise models, upper triangle including self-pairs (FEM/cloth
         # self-contact stays enabled).
@@ -702,6 +754,10 @@ class QIPCCoupler(RBC):
                 friction_rate=float(geometric_mean(mu_i, mu_g)),
                 resistance=float(harmonic_mean(res_i, res_g)),
             )
+
+        # Adhesion request rows LAST (insert is an upsert, so these override the
+        # plain friction/resistance rows written above).
+        self._adhesion.insert_tabular_rows(tab, self._contact_elem_by_entity)
 
     def _writeback_fem_state(self, f: int) -> None:
         """Zero-copy QIPC FEM state -> Genesis elements_v[f] (pos AND vel).

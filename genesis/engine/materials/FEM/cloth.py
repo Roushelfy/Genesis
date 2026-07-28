@@ -40,6 +40,20 @@ class Cloth(Base):
         ``thickness``. ``None`` means "same as thickness". Set to 0.0 for cloth
         that starts in contact with other objects (QIPC coupler only).
         Default is None.
+    membrane : str, optional
+        Membrane constitution (QIPC coupler only). "baraff_witkin" takes an
+        effective (E, shear_modulus) pair; "stvk" is a continuum StVK membrane
+        using (E, nu) directly (used e.g. for tape). Default is "baraff_witkin".
+    shear_modulus : float | None, optional
+        Baraff-Witkin effective shear modulus. None derives the isotropic value
+        E / (2 (1 + nu)). Ignored for membrane="stvk". Default is None.
+    strain_limit_multiplier : float | None, optional
+        Strain limiting multiplier (Baraff-Witkin membrane only; 0 disables).
+        None uses the QIPC constitution default. Default is None.
+    bending_model : str, optional
+        Bending constitution (QIPC coupler only): "quadratic" (Bergou) or
+        "hinge" (Grinspun discrete-shell, used e.g. for tape). Only active when
+        ``bending_stiffness`` is set. Default is "quadratic".
     model : str, optional
         FEM material model (not used for cloth, kept for compatibility).
         Default is "stable_neohookean".
@@ -72,4 +86,8 @@ class Cloth(Base):
     thickness: PositiveFloat = 0.001
     bending_stiffness: NonNegativeFloat | None = None
     contact_thickness: NonNegativeFloat | None = None
+    membrane: Literal["baraff_witkin", "stvk"] = "baraff_witkin"
+    shear_modulus: PositiveFloat | None = None
+    strain_limit_multiplier: NonNegativeFloat | None = None
+    bending_model: Literal["quadratic", "hinge"] = "quadratic"
     model: Literal["linear", "stable_neohookean", "linear_corotated"] = "stable_neohookean"
