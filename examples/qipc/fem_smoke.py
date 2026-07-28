@@ -117,7 +117,9 @@ def test_cloth_drape() -> bool:
     )
     scene.add_entity(gs.morphs.Plane())
     scene.add_entity(
-        morph=gs.morphs.Box(pos=(0.0, 0.0, 0.1), size=(0.2, 0.2, 0.2), fixed=True),
+        # Lifted d_hat above the ground: a vertex flush with a halfplane (d=0)
+        # trips a kernel assert in QIPC's halfplane query (device trap at init).
+        morph=gs.morphs.Box(pos=(0.0, 0.0, 0.104), size=(0.2, 0.2, 0.2), fixed=True),
         material=gs.materials.Rigid(rho=500, coup_friction=0.5),
         surface=gs.surfaces.Plastic(color=(0.8, 0.3, 0.2, 1.0)),
     )

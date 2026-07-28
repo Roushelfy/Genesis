@@ -317,6 +317,7 @@ class QIPCCoupler(RBC):
         )
 
         # --- Ground planes ---
+        self._ground_planes: list[tuple[np.ndarray, float]] = []
         for entity in plane_entities:
             self._create_ground(entity, qipc_ground)
 
@@ -329,6 +330,10 @@ class QIPCCoupler(RBC):
 
         # --- FEM entities (volumetric + cloth), pre-init ---
         fem_pre_entries: list[tuple[FEMEntity, object, bool]] = self._build_fem_entities()
+
+        # --- Reject vertices flush with / below a ground plane (readable error
+        # instead of a device trap inside QIPC's halfplane kernel) ---
+        self._preflight_ground_clearance(all_pre_inits, fem_pre_entries)
 
         # --- Per-entity contact elements + pairwise contact models ---
         self._setup_contact_tabular(all_pre_inits, fem_pre_entries, plane_entities)
@@ -907,16 +912,11 @@ class QIPCCoupler(RBC):
     # -------------------------------------------------------------------------
 
     def _create_ground(self, entity: RigidEntity, ground_factory) -> None:
-        """Convert a Genesis Plane entity to a QIPC ground.
+        """Convert a Genesis Plane entity to a QIPC half-plane ground.
 
-        Uses the analytic half-plane normally. When FEM entities are present,
-        a large fixed ABD slab is used instead: the QIPC half-plane contact
-        path crashes (CUDA launch failure at SimEngine::init) whenever a scene
-        mixes half-plane + ABD + FEM (backend bug, minimal repro in
-        qipc-test/pure_matrix.py 'halfplane' variant).
+        The plane definitions are also recorded for the build-time ground
+        clearance preflight (see _preflight_ground_clearance).
         """
-        use_abd_slab = self._sim.fem_solver.is_active
-
         for link in entity.links:
             for geom in link.geoms:
                 if geom.type != gs.GEOM_TYPE.PLANE:
@@ -929,54 +929,61 @@ class QIPCCoupler(RBC):
                     continue
                 normal = normal / n_len
                 height: float = float(np.dot(np.array(geom.init_pos, dtype=np.float64), normal))
-                if use_abd_slab:
-                    self._create_ground_abd_slab(entity, normal, height)
-                else:
-                    geo = ground_factory(height=height, N=tuple(normal))
-                    self._scene.geometries.create(f"ground_{entity.idx}", geo)
+                geo = ground_factory(height=height, N=tuple(normal))
+                self._scene.geometries.create(f"ground_{entity.idx}", geo)
+                self._ground_planes.append((normal, height))
 
-    def _create_ground_abd_slab(
+    def _preflight_ground_clearance(
         self,
-        entity: RigidEntity,
-        normal: np.ndarray,
-        height: float,
-        half_extent: float = 20.0,
-        slab_thickness: float = 0.5,
+        all_pre_inits: list[AbdEntityPreInit],
+        fem_pre_entries: list[tuple[FEMEntity, object, bool]],
     ) -> None:
-        """Emulate an infinite plane with a large fixed ABD slab (top face at `height`)."""
-        from qipc import trimesh as qipc_trimesh
-        from qipc.constitution import AffineBodyConstitution
+        """Reject vertices lying exactly on (or below) a ground half-plane.
 
-        # Orthonormal frame (t1, t2, n)
-        n = normal / np.linalg.norm(normal)
-        ref = np.array([1.0, 0.0, 0.0]) if abs(n[0]) < 0.9 else np.array([0.0, 1.0, 0.0])
-        t1 = np.cross(n, ref)
-        t1 /= np.linalg.norm(t1)
-        t2 = np.cross(n, t1)
+        QIPC's halfplane query kernel asserts d > 0 for every surface vertex
+        (halfplane_contact_kernels.cu, since #108); a vertex flush with the
+        ground -- e.g. Box(fixed=True) placed with pos_z == half_size -- trips
+        a device __trap() that surfaces only as an unreadable "CUDA error:
+        unspecified launch failure" at SimEngine::init. Catch it on the host
+        with a readable error instead. (Release builds compile the assert out
+        and silently skip such pairs -- equally undesirable.)
+        """
+        if not self._ground_planes or not self._options.contact_enable:
+            return
 
-        top_c = height * n
-        bot_c = top_c - slab_thickness * n
-        corners = []
-        for center in (top_c, bot_c):
-            for s1, s2 in ((-1, -1), (1, -1), (1, 1), (-1, 1)):
-                corners.append(center + s1 * half_extent * t1 + s2 * half_extent * t2)
-        verts = np.array(corners, dtype=np.float64)  # 0-3 top ring, 4-7 bottom ring
-        faces = np.array(
-            [
-                [0, 1, 2], [0, 2, 3],  # top (outward = +n)
-                [4, 6, 5], [4, 7, 6],  # bottom
-                [0, 4, 5], [0, 5, 1],
-                [1, 5, 6], [1, 6, 2],
-                [2, 6, 7], [2, 7, 3],
-                [3, 7, 4], [3, 4, 0],
-            ],
-            dtype=np.int32,
-        )
-        geo = qipc_trimesh(verts, faces)
-        AffineBodyConstitution().apply_to(
-            geo, kappa=1e8, mass_density=1e3, is_fixed=np.array([1], dtype=np.int32)
-        )
-        self._scene.geometries.create(f"ground_{entity.idx}", geo)
+        worst: tuple[float, str] | None = None
+
+        def check(verts_world: np.ndarray, name: str) -> None:
+            nonlocal worst
+            for normal, height in self._ground_planes:
+                d_min = float((verts_world @ normal).min() - height)
+                if worst is None or d_min < worst[0]:
+                    worst = (d_min, name)
+
+        for pre in all_pre_inits:
+            for link in pre.entity.links:
+                if not link.geoms:
+                    continue
+                T_link = pre.T_world[link.idx_local]
+                for geom in link.geoms:
+                    v = geom.init_verts.astype(np.float64, copy=True)
+                    R_geom = gu.quat_to_R(np.array(geom.init_quat, dtype=np.float64))
+                    v = (R_geom @ v.T).T + geom.init_pos
+                    v = (T_link[:3, :3] @ v.T).T + T_link[:3, 3]
+                    check(v, f"rigid entity {pre.entity.idx} link '{link.name}'")
+
+        for fem_entity, _slot, _is_cloth in fem_pre_entries:
+            verts = tensor_to_array(fem_entity.init_positions).astype(np.float64)
+            check(verts, f"FEM entity {fem_entity.idx}")
+
+        if worst is not None and worst[0] <= 0.0:
+            d_min, name = worst
+            gs.raise_exception(
+                f"QIPCCoupler: {name} has vertices at signed distance {d_min:.2e} from a ground "
+                "plane (must be strictly positive at build time; QIPC's halfplane kernel traps on "
+                "d <= 0). Lift the entity so its lowest vertex clears the ground, ideally by at "
+                f"least contact_d_hat ({self._options.contact_d_hat})."
+            )
 
     # -------------------------------------------------------------------------
     # Build helpers: per-entity ABD construction

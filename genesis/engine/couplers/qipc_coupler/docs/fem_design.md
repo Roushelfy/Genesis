@@ -10,13 +10,16 @@ frontend, and the Genesis `FEMSolver` internals.
 >   writeback + `substep_post_coupling` skip are in `coupler.py`; runtime vertex
 >   constraints (resident SoftPositionConstraint / `fe.is_fixed`), teleport
 >   (`x`+`x_prev`), and `external_acc` are wired through `FEMEntity`.
-> - **Backend bug found:** any scene mixing a qipc *half-plane* ground + ABD + FEM
->   with contact enabled crashes at `SimEngine::init()` (CUDA launch failure) —
->   ABD+FEM, halfplane+ABD, and halfplane+FEM pairs all work individually.
->   Minimal repro: `~/workspace/qipc-test/pure_matrix.py halfplane` (pure qipc, no
->   Genesis; reproduces on cgq origin/main c56de72, sm_120). The coupler works
->   around it by emulating Plane entities with a large fixed ABD slab whenever FEM
->   entities are present (`_create_ground_abd_slab`).
+> - **Halfplane ground clearance:** any vertex at (or below) signed distance 0
+>   from a halfplane — e.g. `Box(fixed=True)` placed flush on the ground — trips
+>   `QIPC_KERNEL_ASSERT(d > 0.0)` in `halfplane_query_kernel`: the device
+>   `__trap()` takes down the whole init CUDA graph as an unreadable
+>   "unspecified launch failure" (the printf diagnostic appears before the
+>   traceback), while release builds compile the assert out and silently skip
+>   such pairs. The coupler runs a build-time host preflight
+>   (`_preflight_ground_clearance`) that raises a readable error naming the
+>   offending entity; scenes must give every body a strictly positive ground
+>   clearance (ideally >= contact_d_hat).
 > - Two smaller fixes: world-anchored FIXED joints (e.g. `Box(fixed=True)`) no
 >   longer break merge-group construction; degenerate link inertials fall back to
 >   the mesh-density ABD mass path instead of producing a singular 12x12 mass.
