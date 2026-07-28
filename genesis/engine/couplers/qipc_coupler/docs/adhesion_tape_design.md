@@ -1,8 +1,18 @@
 # QIPCCoupler Adhesion + Tape Import — Design
 
-Status: design (2026-07-28), not yet implemented. Companion to
-[fem_design.md](fem_design.md) (its "P5 adhesion" phase, expanded) and
-[roadmap.md](roadmap.md). Based on cuda-graph-qipc @ `2050319`.
+Status: A5.1–A5.3 implemented (2026-07-28); A5.4 (bond/beta state transfer)
+deferred. Companion to [fem_design.md](fem_design.md) (its "P5 adhesion" phase,
+expanded) and [roadmap.md](roadmap.md). Based on cuda-graph-qipc @ `2050319`.
+
+> Implementation map: adhesion manager in `../adhesion.py` (options
+> `contact_constitution` + `adhesion_bond_*`, `coupler.add_adhesion`,
+> `coupler.adhesion` runtime state); tape import in `../tape.py`
+> (`TapeAsset.from_npz`, `add_tape_roll`, `recommended_coupler_options`) plus
+> `coupler.set_fem_rest_positions` and the `FEM.Cloth`
+> membrane/bending/strain-limit fields; kinematic driving via
+> `coupler.enable_soft_transform` / `set_soft_transform_target` and
+> `Rigid.qipc_d_hat`. Tests: `tests/test_qipc_adhesion.py`,
+> `tests/test_qipc_tape.py`, `tests/test_qipc_soft_transform.py`.
 
 ## 0. Scope and summary
 
