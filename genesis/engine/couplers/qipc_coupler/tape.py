@@ -144,7 +144,7 @@ def recommended_coupler_options(asset: TapeAsset) -> dict:
     return dict(
         contact_enable=True,
         contact_d_hat=asset.d_hat,
-        contact_friction=0.5,
+        contact_friction=float(params.get("MU", 0.5)),
         contact_resistance=1e7,
         init_collision_pair_capacity=600000,
         adhesion_bond_distance_lock=True,
@@ -204,7 +204,7 @@ def add_tape_roll(
     euler=(90.0, 0.0, 0.0),
     with_hub: bool = True,
     hub_fixed: bool = False,
-    friction: float = 0.5,
+    friction: float | None = None,
     tape_tape_adhesion: dict | None = None,
     tape_hub_adhesion: dict | None = None,
     tape_surface=None,
@@ -222,6 +222,22 @@ def add_tape_roll(
     coupler = scene.sim.coupler
     if not hasattr(coupler, "add_adhesion"):
         gs.raise_exception("add_tape_roll requires the QIPC coupler (QIPCCouplerOptions).")
+
+    # Adhesion/friction values follow the asset's wind-time params (env > preset
+    # resolution already happened at wind time); explicit overrides win.
+    params = asset.params
+    if friction is None:
+        friction = float(params.get("MU", 0.5))
+    cn = float(params.get("CN", 1.0))
+    asset_adhesion = dict(
+        Cn=cn,
+        Ct=float(params.get("CT", cn)),
+        W=float(params.get("ADH_W", 1.0)),
+        eta=float(params.get("ETA", 100.0)),
+        bonding_rate=float(params.get("BONDING_RATE", 1.0)),
+        beta0=1.0,  # imported coil holds from frame 0 (re-bond instead of state transfer)
+        friction=friction,
+    )
 
     tmp_dir = tempfile.mkdtemp(prefix="qipc_tape_")
     tape_obj = os.path.join(tmp_dir, "tape_roll.obj")
@@ -262,12 +278,14 @@ def add_tape_roll(
             surface=hub_surface,
         )
 
-    tape_tape = dict(Cn=1.0, Ct=1.0, W=1.0, eta=100.0, bonding_rate=1.0, beta0=1.0, friction=friction)
+    # cgq's wind/drop use ONE adhesion row for tape-tape and tape-hub alike; the
+    # rod-wind demos grade them (hub 10x, mandrel 100x) -- do that via overrides.
+    tape_tape = dict(asset_adhesion)
     tape_tape.update(tape_tape_adhesion or {})
     coupler.add_adhesion(tape, None, **tape_tape)
 
     if hub is not None:
-        tape_hub = dict(Cn=10.0, Ct=10.0, W=1.0, eta=100.0, bonding_rate=1.0, beta0=1.0, friction=friction)
+        tape_hub = dict(asset_adhesion)
         tape_hub.update(tape_hub_adhesion or {})
         coupler.add_adhesion(tape, hub, **tape_hub)
 

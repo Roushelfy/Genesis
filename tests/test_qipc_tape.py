@@ -229,6 +229,37 @@ def _build_roll_scene(show_viewer, *, sticky: bool):
 
 
 @needs_tape_asset
+def test_tape_roll_adhesion_follows_asset_params(show_viewer):
+    """add_tape_roll sources Phase-1 adhesion + friction from the asset params."""
+    tape_mod = _tape_module()
+    asset = tape_mod.TapeAsset.from_npz(TAPE_ASSET_PATH)
+    scene = gs.Scene(
+        sim_options=gs.options.SimOptions(dt=0.01),
+        coupler_options=gs.options.QIPCCouplerOptions(**tape_mod.recommended_coupler_options(asset)),
+        show_viewer=show_viewer,
+    )
+    tape_mod.add_tape_roll(scene, asset, pos=(0.0, 0.0, 0.2))
+    requests = scene.sim.coupler.adhesion._requests
+    assert len(requests) == 2  # tape-tape self + tape-hub
+    params = asset.params
+    for request in requests:
+        assert request.Cn == pytest.approx(float(params.get("CN", 1.0)))
+        assert request.eta == pytest.approx(float(params.get("ETA", 100.0)))
+        assert request.bonding_rate == pytest.approx(float(params.get("BONDING_RATE", 1.0)))
+        assert request.beta0 == 1.0
+        assert request.friction == pytest.approx(float(params.get("MU", 0.5)))
+
+    # explicit overrides still win
+    scene2 = gs.Scene(
+        sim_options=gs.options.SimOptions(dt=0.01),
+        coupler_options=gs.options.QIPCCouplerOptions(**tape_mod.recommended_coupler_options(asset)),
+        show_viewer=show_viewer,
+    )
+    tape_mod.add_tape_roll(scene2, asset, pos=(0.0, 0.0, 0.2), tape_tape_adhesion=dict(Cn=7.0))
+    assert scene2.sim.coupler.adhesion._requests[0].Cn == 7.0
+
+
+@needs_tape_asset
 @pytest.mark.required
 def test_tape_roll_import_holds(show_viewer):
     """Imported prestressed coil holds together via beta0=1 adhesion + bonds."""
