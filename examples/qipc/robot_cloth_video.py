@@ -143,45 +143,66 @@ def main():
     # --- Scripted EE trajectory ---
     # The trajectory starts at the ACTUAL post-build EE pose (zero jump: a
     # teleporting IK target makes the PD-driven arm whip through the scene and
-    # blows up the contact solve), then moves smoothly.
+    # blows up the contact solve), then moves smoothly. The target orientation
+    # likewise blends from the current EE quat to straight-down.
     down_quat = gu.xyz_to_quat(np.array([0.0, 180.0, 0.0], dtype=gs.np_float), degrees=True)
+    start_quat = ee_link.get_quat().reshape(-1)[:4].cpu().numpy().astype(gs.np_float)
+    if float(np.dot(start_quat, down_quat)) < 0.0:
+        down_quat = -down_quat
+
+    def nlerp(q0, q1, t):
+        q = (1.0 - t) * q0 + t * q1
+        return (q / np.linalg.norm(q)).astype(gs.np_float)
+
     pinch_z = CLOTH_TOP - 0.035  # pinch 3.5cm below the top edge (palm stays above the edge)
     retract = ee_link.get_pos().reshape(-1)[:3].cpu().numpy().astype(np.float64)
     hover = np.array([CLOTH_CENTER[0], 0.0, pinch_z + HAND_TO_PINCH + 0.15])
     grasp = np.array([CLOTH_CENTER[0], 0.0, pinch_z + HAND_TO_PINCH])
     print(f"start EE (retract): {retract}", flush=True)
     target_pos = retract.copy()
+    target_quat = start_quat.copy()
     gripper_target = 0.04  # open
     # Overshoot target (like the IPC teleop example's -0.03): the barrier stops
-    # the pads at the fabric surface and the PD residual provides ~10N of grip.
+    # the pads at the fabric surface and the PD residual provides the grip.
     # (0.001 was too weak -> slip; 0.0 with floppy cloth caused pinch squirt,
     # cured by bending_stiffness=5.)
-    GRIP_CLOSED = -0.02
+    GRIP_CLOSED = -0.01
 
-    PHASE = dict(settle=80, approach=180, descend=300, close=360, release=460, lift=620, drop=700, end=760)
+    # Release the pins right after the close: holding a pinch on the taut,
+    # strain-limited sheet squeezes the pads off the fabric ("wet watermelon
+    # seed"); once the pins are gone the fabric slackens and the pinch holds.
+    PHASE = dict(settle=80, approach=180, descend=300, close=360, release=380, lift=540, drop=620, end=680)
 
     def lerp(a, b, t):
         return a + (b - a) * np.clip(t, 0.0, 1.0)
 
     grasped_probe = []
-
-    # IK must be seeded with the previously commanded solution: the coupler
-    # writes joint state back to dofs_state but not rigid_info.qpos, so the
-    # default seed is stale; a moving target then makes IK flip between wrist
-    # branches (and resample randomly on failure) -> the arm flails.
     qpos_cmd = home.copy()
+    last_tgt_key = None
 
     cam.start_recording()
     for i in range(PHASE["end"]):
         if i < PHASE["settle"]:
+            # Blend orientation to straight-down while holding position
+            t = i / PHASE["settle"]
             target_pos = retract.copy()
+            target_quat = nlerp(start_quat, down_quat, t)
         elif i < PHASE["approach"]:
             t = (i - PHASE["settle"]) / (PHASE["approach"] - PHASE["settle"])
             target_pos = lerp(retract, hover, t)
+            target_quat = down_quat
         elif i < PHASE["descend"]:
             t = (i - PHASE["approach"]) / (PHASE["descend"] - PHASE["approach"])
             target_pos = lerp(hover, grasp, t)
         elif i < PHASE["close"]:
+            if i == PHASE["descend"]:
+                # Close the loop on PD steady-state error: measure where the EE
+                # actually settled and overdrive the target by the residual so
+                # the fingertips reach the intended pinch height.
+                ee_actual = ee_link.get_pos().reshape(-1)[:3].cpu().numpy().astype(np.float64)
+                residual = grasp - ee_actual
+                grasp = grasp + residual
+                print(f"[step {i}] EE residual before close: {residual} -> overdriven grasp {grasp}", flush=True)
             target_pos = grasp.copy()
             gripper_target = GRIP_CLOSED
         elif i == PHASE["release"]:
@@ -198,16 +219,28 @@ def main():
                 gripper_target = 0.04  # open -> drop the cloth
                 print(f"[step {i}] gripper opened", flush=True)
 
-        qpos = franka.inverse_kinematics(
-            link=ee_link,
-            pos=np.asarray(target_pos, dtype=gs.np_float),
-            quat=down_quat,
-            init_qpos=qpos_cmd,
-            max_samples=5,
-            dofs_idx_local=motor_dofs_idx,
-        )
-        qpos_np = qpos.cpu().numpy() if hasattr(qpos, "cpu") else np.asarray(qpos)
-        qpos_cmd[:7] = qpos_np[:7]
+        # Command-space IK servoing:
+        # - seed with the PREVIOUS COMMAND (init_qpos=qpos_cmd), not the
+        #   contact-perturbed measured state, so commands form a smooth chain;
+        # - max_samples=1 disables Genesis IK's random resampling (which
+        #   otherwise teleports the PD target to another arm branch on any
+        #   convergence miss -- the IPC teleop example dodges the same issue by
+        #   hardcoding its initial qpos);
+        # - skip IK entirely while the target is unchanged.
+        tgt_key = (tuple(np.round(target_pos, 6)), tuple(np.round(target_quat, 6)))
+        if tgt_key != last_tgt_key:
+            last_tgt_key = tgt_key
+            qpos = franka.inverse_kinematics(
+                link=ee_link,
+                pos=np.asarray(target_pos, dtype=gs.np_float),
+                quat=target_quat,
+                init_qpos=qpos_cmd,
+                max_samples=1,
+                max_solver_iters=30,
+                dofs_idx_local=motor_dofs_idx,
+            )
+            qpos_np = qpos.cpu().numpy() if hasattr(qpos, "cpu") else np.asarray(qpos)
+            qpos_cmd[:7] = qpos_np[:7]
         franka.control_dofs_position(qpos_cmd[:7], dofs_idx_local=motor_dofs_idx)
         franka.control_dofs_position(gripper_target, dofs_idx_local=finger_dofs_idx)
 

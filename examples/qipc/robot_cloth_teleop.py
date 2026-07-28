@@ -140,8 +140,10 @@ def main():
     top_right = int(np.argmin(np.linalg.norm(verts0 - [CLOTH_CENTER[0] + CLOTH_SIZE / 2, 0.0, CLOTH_TOP], axis=1)))
     cloth.set_vertex_constraints([top_left, top_right], is_soft_constraint=True)
 
+    # Start the target at the ACTUAL post-build EE pose (both position and
+    # orientation) so the first IK step is a no-op instead of a large jump.
     target_init_pos = ee_link.get_pos().reshape(-1)[:3].cpu().numpy().astype(gs.np_float).copy()
-    target_init_quat = gu.xyz_to_quat(np.array([0.0, 180.0, 0.0], dtype=gs.np_float), degrees=True)
+    target_init_quat = ee_link.get_quat().reshape(-1)[:4].cpu().numpy().astype(gs.np_float).copy()
     target_pos = target_init_pos.copy()
     target_quat = target_init_quat.copy()
     qpos_cmd = home.copy()
@@ -200,12 +202,18 @@ def main():
 
     try:
         while is_running and scene.viewer.is_alive():
+            # Command-space IK servoing: seed with the PREVIOUS COMMAND (not the
+            # contact-perturbed measured state) so commands form a smooth chain,
+            # and max_samples=1 to disable Genesis IK's random resampling (which
+            # otherwise teleports the PD target to another arm branch on any
+            # convergence miss -> flailing).
             qpos = franka.inverse_kinematics(
                 link=ee_link,
                 pos=target_pos,
                 quat=target_quat,
                 init_qpos=qpos_cmd,
-                max_samples=5,
+                max_samples=1,
+                max_solver_iters=30,
                 dofs_idx_local=motor_dofs_idx,
             )
             qpos_np = qpos.cpu().numpy() if hasattr(qpos, "cpu") else np.asarray(qpos)
