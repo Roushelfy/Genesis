@@ -11,6 +11,7 @@ Keyboard Controls:
     Backslash   - Reset to home pose
     Esc         - Quit
 """
+
 import argparse
 
 import numpy as np
@@ -143,11 +144,17 @@ def main():
     while is_running and scene.viewer.is_alive():
         scene.update_debug_objects((target_ik,), (gu.trans_quat_to_T(target_pos, target_quat),))
 
+        # Command-space servoing: seed with the previous command so the commands form a
+        # smooth chain, and max_samples=1 so a convergence miss cannot random-resample the
+        # PD target onto another arm branch. The pre-loop solve keeps the default sampling,
+        # which it needs to acquire a branch from scratch.
         qpos = franka.inverse_kinematics(
             link=ee_link,
             pos=target_pos,
             quat=target_quat,
             init_qpos=qpos,
+            max_samples=1,
+            max_solver_iters=30,
             dofs_idx_local=motor_dofs_idx,
         )
         franka.control_dofs_position(qpos[motor_dofs_idx], dofs_idx_local=motor_dofs_idx)
@@ -156,7 +163,6 @@ def main():
             franka.control_dofs_position(0.0, dofs_idx_local=finger_dofs_idx)
         else:
             franka.control_dofs_position(0.04, dofs_idx_local=finger_dofs_idx)
-            
 
         scene.step()
 
