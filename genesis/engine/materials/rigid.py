@@ -103,6 +103,11 @@ class Rigid(Kinematic["RigidEntity"]):
     qipc_home_qpos : list of float or None, optional
         Initial joint configuration for FK. When set, ``theta=0`` in QIPC corresponds
         to this pose. Only used by the QIPC coupler. Default is None.
+    qipc_d_hat : float or None, optional
+        Per-entity contact barrier band override (stamped as per-geometry d_hat on
+        the entity's ABD geometries). Useful when coarse rigid meshes meet much
+        thinner objects (e.g. a robot vs. 0.1mm tape). Only used by the QIPC
+        coupler. ``None`` uses the scene-global ``contact_d_hat``. Default is None.
     """
 
     use_visual_raycasting: StrictBool = False
@@ -131,6 +136,7 @@ class Rigid(Kinematic["RigidEntity"]):
     qipc_default_kp: NonNegativeFloat | None = None
     qipc_default_kv: float | str | None = None
     qipc_home_qpos: tuple[float, ...] | list[float] | None = None
+    qipc_d_hat: PositiveFloat | None = None
 
     @model_validator(mode="before")
     @classmethod

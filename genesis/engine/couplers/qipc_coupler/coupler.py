@@ -268,6 +268,8 @@ class QIPCCoupler(RBC):
         self._options: QIPCCouplerOptions = options
         self._adhesion: QIPCAdhesionManager = QIPCAdhesionManager(options)
         self._fem_rest_positions: dict = {}
+        self._stc_requests: list[tuple] = []
+        self._stc_geos: dict[tuple, object] = {}
 
     @property
     def adhesion(self) -> QIPCAdhesionManager:
@@ -299,6 +301,88 @@ class QIPCCoupler(RBC):
         if rest.ndim != 2 or rest.shape[1] != 3:
             gs.raise_exception("QIPCCoupler.set_fem_rest_positions: rest_verts must have shape (n_verts, 3).")
         self._fem_rest_positions[entity] = rest
+
+    def enable_soft_transform(self, entity: RigidEntity, link=None, strength=(1e3, 1e3)) -> None:
+        """Attach a SoftTransformConstraint to a rigid entity's ABD body (pre-build).
+
+        Inert until the first set_soft_transform_target call. ``link`` selects
+        which merged body (None = base link's group; a RigidLink or link name
+        otherwise). ``strength`` is the (translation, rotation) strength-ratio
+        pair of the mass-weighted penalty.
+        """
+        if hasattr(self, "_scene"):
+            gs.raise_exception("QIPCCoupler.enable_soft_transform must be called before scene.build().")
+        if isinstance(strength, (int, float)):
+            strength = (float(strength), float(strength))
+        self._stc_requests.append((entity, link, (float(strength[0]), float(strength[1]))))
+
+    @staticmethod
+    def _resolve_link_local(entity: RigidEntity, link) -> int:
+        if link is None:
+            return entity.links[0].idx_local
+        if isinstance(link, str):
+            for candidate in entity.links:
+                if candidate.name == link:
+                    return candidate.idx_local
+            gs.raise_exception(f"QIPCCoupler: entity has no link named '{link}'.")
+        return link.idx_local
+
+    def _apply_rigid_extras(self, all_pre_inits: list[AbdEntityPreInit]) -> None:
+        """Per-geometry d_hat overrides + queued SoftTransformConstraints (pre-init)."""
+        for pre in all_pre_inits:
+            d_hat_override = getattr(pre.entity.material, "qipc_d_hat", None)
+            if d_hat_override is not None:
+                for slot in pre.group_slots.values():
+                    geo = slot.geometry
+                    if "d_hat" not in geo.meta:
+                        geo.meta.create("d_hat", np.float64)
+                    geo.meta["d_hat"] = np.array([float(d_hat_override)], dtype=np.float64)
+
+        if not self._stc_requests:
+            return
+        from qipc.constitution import SoftTransformConstraint
+
+        pre_by_entity = {pre.entity: pre for pre in all_pre_inits}
+        for entity, link, strength in self._stc_requests:
+            pre = pre_by_entity.get(entity)
+            if pre is None:
+                gs.raise_exception(
+                    "QIPCCoupler.enable_soft_transform: entity is not a coupled ABD rigid entity."
+                )
+            link_local = self._resolve_link_local(entity, link)
+            rep = pre.link_to_rep.get(link_local)
+            slot = pre.group_slots.get(rep)
+            if slot is None:
+                gs.raise_exception(
+                    "QIPCCoupler.enable_soft_transform: the selected link's merge group has no ABD body."
+                )
+            SoftTransformConstraint().apply_to(slot.geometry, strength_ratio=strength)
+            key = (entity, None if link is None else str(link) if isinstance(link, str) else link.name)
+            self._stc_geos[key] = slot.geometry
+
+    def set_soft_transform_target(self, entity: RigidEntity, pos, quat, enabled: bool = True, link=None) -> None:
+        """Drive a SoftTransformConstraint target (graph-safe device writes).
+
+        ``enable_soft_transform`` must have been called for (entity, link)
+        before build. ``quat`` is (w, x, y, z).
+        """
+        key = (entity, None if link is None else str(link) if isinstance(link, str) else link.name)
+        geo = self._stc_geos.get(key)
+        if geo is None:
+            gs.raise_exception(
+                "QIPCCoupler.set_soft_transform_target: call enable_soft_transform for this "
+                "(entity, link) before scene.build()."
+            )
+        from qipc.solver.affine_body import transform_to_q
+
+        T = np.eye(4, dtype=np.float64)
+        T[:3, 3] = np.asarray(pos, dtype=np.float64).reshape(3)
+        T[:3, :3] = gu.quat_to_R(np.asarray(quat, dtype=np.float64).reshape(4))
+        q12 = np.asarray(transform_to_q(T), dtype=np.float64).reshape(-1)[:12]
+        geo.instances["aim_q"].gpu()[:] = torch.as_tensor(q12, device="cuda").reshape(
+            geo.instances["aim_q"].gpu().shape
+        )
+        geo.instances["is_constrained"].gpu()[:] = 1 if enabled else 0
 
     @property
     def sim(self) -> Simulator:
@@ -362,6 +446,9 @@ class QIPCCoupler(RBC):
         for entity in abd_entities:
             pre = self._build_abd_entity_pre_init(entity, abd, trimesh, JointCollection)
             all_pre_inits.append(pre)
+
+        # --- Rigid extras: per-geometry d_hat overrides + queued STCs ---
+        self._apply_rigid_extras(all_pre_inits)
 
         # --- FEM entities (volumetric + cloth), pre-init ---
         fem_pre_entries: list[tuple[FEMEntity, object, bool]] = self._build_fem_entities()
@@ -678,9 +765,29 @@ class QIPCCoupler(RBC):
             # FEMEntity.set_vertex_constraints toggles vertices at runtime.
             SoftPositionConstraint().apply_to(geo, strength_ratio=self._options.fem_constraint_strength)
 
-            slot = self._scene.geometries.create(f"fem_{i_e}", geo)
+            # Prestress channel: rest metric/masses come from the rest mesh,
+            # simulation starts at the (e.g. wound) initial positions.
+            rest_verts = self._fem_rest_positions.pop(entity, None)
+            if rest_verts is not None:
+                if rest_verts.shape != verts.shape:
+                    gs.raise_exception(
+                        f"QIPCCoupler: rest positions shape {rest_verts.shape} does not match FEM entity "
+                        f"vertex array {verts.shape}."
+                    )
+                if is_cloth:
+                    rest_geo = qipc_trimesh(rest_verts, faces)
+                else:
+                    rest_geo = tetmesh(rest_verts, elems)
+                slot = self._scene.geometries.create(f"fem_{i_e}", geo, rest_geometry=rest_geo)
+            else:
+                slot = self._scene.geometries.create(f"fem_{i_e}", geo)
             pre_entries.append((entity, slot, is_cloth))
 
+        if self._fem_rest_positions:
+            gs.raise_exception(
+                "QIPCCoupler.set_fem_rest_positions was called for an entity that is not a coupled "
+                "FEM entity in this scene."
+            )
         return pre_entries
 
     def _setup_contact_tabular(
