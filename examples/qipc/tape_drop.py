@@ -72,7 +72,7 @@ def main():
     for i in range(args.steps):
         scene.step()
         if i % 10 == 0:
-            gs.logger.info(f"step {i}: tape min_z={tape.get_state().pos[..., 2].min():.5f}")
+            gs.logger.info(f"step {i}: tape min_z={float(tape.get_state().pos[..., 2].min()):.5f}")
 
 
 if __name__ == "__main__":
