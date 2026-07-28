@@ -69,6 +69,33 @@ def test_soft_transform_requires_enable(show_viewer):
         scene.sim.coupler.set_soft_transform_target(box, (0.0, 0.0, 0.3), (1.0, 0.0, 0.0, 0.0))
 
 
+def test_solver_options_passthrough(show_viewer):
+    """solver_* options land in the QIPC scene config; unset ones keep defaults."""
+    scene = gs.Scene(
+        sim_options=gs.options.SimOptions(dt=DT),
+        coupler_options=gs.options.QIPCCouplerOptions(
+            contact_enable=False,
+            solver_newton_max_iter=300,
+            solver_newton_velocity_tol=5e-3,
+            solver_line_search_max_iter=16,
+            contact_ccd_partition=False,
+        ),
+        show_viewer=show_viewer,
+    )
+    scene.add_entity(
+        morph=gs.morphs.Box(pos=(0.0, 0.0, 0.3), size=(0.1, 0.1, 0.1)),
+        material=gs.materials.Rigid(rho=500.0),
+    )
+    scene.build()
+    config = scene.sim.coupler._scene.config
+    assert int(config["newton/max_iter"]) == 300
+    assert float(config["newton/velocity_tol"]) == pytest.approx(5e-3)
+    assert int(config["line_search/max_iter"]) == 16
+    assert int(config["contact/ccd_partition"]) == 0
+    # untouched knob keeps the QIPC default
+    assert int(config["linear_system/max_iter"]) == 1024
+
+
 def test_qipc_d_hat_stamped(show_viewer):
     """Rigid.qipc_d_hat lands as a per-geometry d_hat meta override."""
     scene = gs.Scene(

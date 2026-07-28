@@ -188,7 +188,16 @@ def test_tape_asset_parses():
     # the wound coil is wound: much shorter in extent than the strip length
     extent = asset.tape_positions.max(axis=0) - asset.tape_positions.min(axis=0)
     assert extent.max() < 0.8 * asset.tape_length
-    assert tape_mod.recommended_coupler_options(asset)["contact_d_hat"] == asset.d_hat
+    opts = tape_mod.recommended_coupler_options(asset)
+    assert opts["contact_d_hat"] == asset.d_hat
+    # the wind's SOLVER_CFG translates onto the solver_* passthrough fields
+    solver_cfg = asset.params.get("SOLVER_CFG") or {}
+    if "newton/max_iter" in solver_cfg:
+        assert opts["solver_newton_max_iter"] == int(solver_cfg["newton/max_iter"])
+    if "newton/velocity_tol" in solver_cfg:
+        assert opts["solver_newton_velocity_tol"] == pytest.approx(float(solver_cfg["newton/velocity_tol"]))
+    # and QIPCCouplerOptions accepts the full recommended dict
+    gs.options.QIPCCouplerOptions(**opts)
 
 
 ROLL_POS = np.array([0.0, 0.0, 0.2])

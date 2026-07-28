@@ -138,10 +138,26 @@ def make_ring_hub(r_out: float, r_in: float, height: float, n_sides: int = 48):
     return verts, np.array(tris, dtype=np.int32)
 
 
+_SOLVER_CFG_TO_OPTION = {
+    "newton/velocity_tol": ("solver_newton_velocity_tol", float),
+    "newton/max_iter": ("solver_newton_max_iter", int),
+    "linear_system/max_iter": ("solver_linear_max_iter", int),
+    "linear_system/tol_rate": ("solver_linear_tol_rate", float),
+    "linear_system/preconditioner": ("solver_linear_preconditioner", str),
+    "linear_system/solver": ("solver_linear_solver", str),
+    "line_search/max_iter": ("solver_line_search_max_iter", int),
+    "contact/ccd_partition": ("contact_ccd_partition", lambda v: bool(int(v))),
+}
+
+
 def recommended_coupler_options(asset: TapeAsset) -> dict:
-    """QIPCCouplerOptions fields matching the asset's wind-time configuration."""
+    """QIPCCouplerOptions fields matching the asset's wind-time configuration.
+
+    Includes the wind's solver configuration (SOLVER_CFG baked into the npz)
+    translated onto the coupler's solver_* passthrough fields.
+    """
     params = asset.params
-    return dict(
+    options = dict(
         contact_enable=True,
         contact_d_hat=asset.d_hat,
         contact_friction=float(params.get("MU", 0.5)),
@@ -153,6 +169,11 @@ def recommended_coupler_options(asset: TapeAsset) -> dict:
         adhesion_bond_kappa=float(params.get("RCC_KAPPA", 1e6)),
         adhesion_bond_release_force=float(params.get("RCC_RELEASE_FORCE", 0.5)),
     )
+    solver_cfg = params.get("SOLVER_CFG") or {}
+    for config_key, (field, cast) in _SOLVER_CFG_TO_OPTION.items():
+        if config_key in solver_cfg:
+            options[field] = cast(solver_cfg[config_key])
+    return options
 
 
 def _write_obj(path: str, verts: np.ndarray, faces: np.ndarray) -> None:

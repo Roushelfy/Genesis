@@ -253,6 +253,23 @@ class QIPCCouplerOptions(BaseCouplerOptions):
     adhesion_occlusion : bool, optional
         Cross-layer occlusion gate for bond creation (O(n_tris) per candidate pair).
         Defaults to False.
+    solver_newton_velocity_tol : float, optional
+        Newton velocity tolerance. None uses the QIPC default (5e-2).
+    solver_newton_max_iter : int, optional
+        Newton iteration cap. None uses the QIPC default (1024).
+    solver_linear_max_iter : int, optional
+        Linear-system (PCG) iteration cap. None uses the QIPC default (1024).
+    solver_linear_tol_rate : float, optional
+        Linear-system tolerance rate. None uses the QIPC default (1e-4).
+    solver_linear_preconditioner : str, optional
+        'mas' or 'diag'. None uses the QIPC default ('mas').
+    solver_linear_solver : str, optional
+        'partition_pcg' or 'linear_pcg'. None uses the QIPC default
+        ('partition_pcg'; note SealedVolumeGas requires 'partition_pcg').
+    solver_line_search_max_iter : int, optional
+        Line-search iteration cap. None uses the QIPC default (12).
+    contact_ccd_partition : bool, optional
+        CCD component partitioning. None uses the QIPC default (True).
     debug_viewer : bool, optional
         Whether to show the QIPC debug viewer. Defaults to False.
     """
@@ -274,6 +291,14 @@ class QIPCCouplerOptions(BaseCouplerOptions):
     adhesion_bond_release_gap: PositiveFloat = 1e30
     adhesion_bond_release_slip: PositiveFloat = 1e30
     adhesion_occlusion: StrictBool = False
+    solver_newton_velocity_tol: PositiveFloat | None = None
+    solver_newton_max_iter: PositiveInt | None = None
+    solver_linear_max_iter: PositiveInt | None = None
+    solver_linear_tol_rate: PositiveFloat | None = None
+    solver_linear_preconditioner: Literal["mas", "diag"] | None = None
+    solver_linear_solver: Literal["partition_pcg", "linear_pcg"] | None = None
+    solver_line_search_max_iter: PositiveInt | None = None
+    contact_ccd_partition: StrictBool | None = None
     debug_viewer: StrictBool = False
 
 

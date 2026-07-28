@@ -415,15 +415,29 @@ class QIPCCoupler(RBC):
             else:
                 abd_entities.append(entity)
 
-        # --- Create QIPC Scene with contact config ---
+        # --- Create QIPC Scene with contact + solver config ---
+        scene_config: dict = {
+            "contact/enable": self._options.contact_enable,
+            "contact/d_hat": self._options.contact_d_hat,
+            "contact/init_collision_pair_capacity": self._options.init_collision_pair_capacity,
+        }
+        solver_passthrough = {
+            "newton/velocity_tol": self._options.solver_newton_velocity_tol,
+            "newton/max_iter": self._options.solver_newton_max_iter,
+            "linear_system/max_iter": self._options.solver_linear_max_iter,
+            "linear_system/tol_rate": self._options.solver_linear_tol_rate,
+            "linear_system/preconditioner": self._options.solver_linear_preconditioner,
+            "linear_system/solver": self._options.solver_linear_solver,
+            "line_search/max_iter": self._options.solver_line_search_max_iter,
+            "contact/ccd_partition": (
+                None if self._options.contact_ccd_partition is None else int(self._options.contact_ccd_partition)
+            ),
+        }
+        scene_config.update({key: value for key, value in solver_passthrough.items() if value is not None})
         self._scene: QIPCScene = QIPCSceneCls(
             dt=self._sim.dt,
             gravity=tuple(self._sim._gravity),
-            **{
-                "contact/enable": self._options.contact_enable,
-                "contact/d_hat": self._options.contact_d_hat,
-                "contact/init_collision_pair_capacity": self._options.init_collision_pair_capacity,
-            },
+            **scene_config,
         )
 
         # --- Global default contact model ---
