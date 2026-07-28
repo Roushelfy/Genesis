@@ -150,29 +150,48 @@ _SOLVER_CFG_TO_OPTION = {
 }
 
 
+def solver_cfg_to_options(solver_cfg: dict) -> dict:
+    """Translate a qipc SOLVER_CFG dict onto the coupler's solver_* fields.
+
+    Opt-in only: recommended_coupler_options deliberately does NOT apply the
+    asset's wind-time solver configuration. Empirically the QIPC defaults
+    solve the imported-roll scene in ~2 Newton iterations / 10 ms per step,
+    while the wind's own values are pathological here — in particular
+    `line_search/max_iter=16` (vs default 12) lets the line search accept
+    ever-smaller steps until Newton stagnates at its iteration cap
+    (~85 s per step on the same scene).
+    """
+    options: dict = {}
+    for config_key, (field, cast) in _SOLVER_CFG_TO_OPTION.items():
+        if config_key in solver_cfg:
+            options[field] = cast(solver_cfg[config_key])
+    return options
+
+
 def recommended_coupler_options(asset: TapeAsset) -> dict:
     """QIPCCouplerOptions fields matching the asset's wind-time configuration.
 
-    Includes the wind's solver configuration (SOLVER_CFG baked into the npz)
-    translated onto the coupler's solver_* passthrough fields.
+    Solver knobs are NOT included (see solver_cfg_to_options for the opt-in
+    translation and why).
     """
     params = asset.params
+    # Respect the wind-time adhesion mode: LOCK=1 -> Phase-2 distance bonds
+    # (the coil holds itself, peel force = RCC_RELEASE_FORCE); LOCK=0 -> pure
+    # soft adhesion (the coil relies on beta-state stickiness alone and will
+    # gradually unroll, matching cgq's --no-lock behavior).
+    lock = bool(int(params.get("LOCK", 1)))
     options = dict(
         contact_enable=True,
         contact_d_hat=asset.d_hat,
         contact_friction=float(params.get("MU", 0.5)),
         contact_resistance=1e7,
         init_collision_pair_capacity=600000,
-        adhesion_bond_distance_lock=True,
+        adhesion_bond_distance_lock=lock,
         adhesion_bond_distance_lock_ratio=float(params.get("DISTANCE_LOCK_RATIO", 1.0)),
-        adhesion_bond_max_bonds=16384,
+        adhesion_bond_max_bonds=16384 if lock else 0,
         adhesion_bond_kappa=float(params.get("RCC_KAPPA", 1e6)),
         adhesion_bond_release_force=float(params.get("RCC_RELEASE_FORCE", 0.5)),
     )
-    solver_cfg = params.get("SOLVER_CFG") or {}
-    for config_key, (field, cast) in _SOLVER_CFG_TO_OPTION.items():
-        if config_key in solver_cfg:
-            options[field] = cast(solver_cfg[config_key])
     return options
 
 

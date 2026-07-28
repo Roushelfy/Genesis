@@ -190,14 +190,19 @@ def test_tape_asset_parses():
     assert extent.max() < 0.8 * asset.tape_length
     opts = tape_mod.recommended_coupler_options(asset)
     assert opts["contact_d_hat"] == asset.d_hat
-    # the wind's SOLVER_CFG translates onto the solver_* passthrough fields
+    # recommended options deliberately exclude solver knobs (defaults solve the
+    # imported-roll scene far better than the wind's own SOLVER_CFG)
+    assert not any(key.startswith("solver_") for key in opts)
+    # ... but the opt-in translation helper maps SOLVER_CFG onto option fields
     solver_cfg = asset.params.get("SOLVER_CFG") or {}
+    translated = tape_mod.solver_cfg_to_options(solver_cfg)
     if "newton/max_iter" in solver_cfg:
-        assert opts["solver_newton_max_iter"] == int(solver_cfg["newton/max_iter"])
-    if "newton/velocity_tol" in solver_cfg:
-        assert opts["solver_newton_velocity_tol"] == pytest.approx(float(solver_cfg["newton/velocity_tol"]))
-    # and QIPCCouplerOptions accepts the full recommended dict
+        assert translated["solver_newton_max_iter"] == int(solver_cfg["newton/max_iter"])
+    if "line_search/max_iter" in solver_cfg:
+        assert translated["solver_line_search_max_iter"] == int(solver_cfg["line_search/max_iter"])
+    # and QIPCCouplerOptions accepts both dicts
     gs.options.QIPCCouplerOptions(**opts)
+    gs.options.QIPCCouplerOptions(**{**opts, **translated})
 
 
 ROLL_POS = np.array([0.0, 0.0, 0.2])
