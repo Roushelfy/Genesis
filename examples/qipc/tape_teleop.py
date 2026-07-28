@@ -10,8 +10,9 @@ the ground next to the robot. Two adhesion modes:
                   beta-state stickiness (Cn=1 by default) and will gradually
                   unroll when disturbed -- matching cgq's --no-lock behavior.
 
-Assets: pass --asset, or set QIPC_TAPE_ASSET_BOND / QIPC_TAPE_ASSET_SOFT.
-Generate them with cgq's examples/adhesive_tape_wind.py:
+Assets ship in genesis/assets/qipc/ (tape_roll_lock.npz, tape_roll_soft.npz); override with --asset
+or QIPC_TAPE_ASSET_BOND / QIPC_TAPE_ASSET_SOFT. Regenerate them with cgq's
+examples/adhesive_tape_wind.py:
     python -m examples.adhesive_tape_wind --preset speed-r150-bend5k --lock    --save tape_roll_lock.npz
     python -m examples.adhesive_tape_wind --preset speed-r150-bend5k --no-lock --save tape_roll_soft.npz
 
@@ -36,6 +37,7 @@ import numpy as np
 
 import genesis as gs
 import genesis.utils.geom as gu
+from genesis.utils.misc import get_assets_dir
 from genesis.vis.keybindings import Key, KeyAction, Keybind
 
 DELTA_POS = 0.003
@@ -50,7 +52,7 @@ def _default_asset(mode: str) -> str:
     if env:
         return env
     suffix = {"bond": "lock", "soft": "soft"}[mode]
-    return f"/mnt/home/zhaofeng/workspace/qipc-test/assets/tape_roll_{suffix}.npz"
+    return os.path.join(get_assets_dir(), "qipc", f"tape_roll_{suffix}.npz")
 
 
 def main():
