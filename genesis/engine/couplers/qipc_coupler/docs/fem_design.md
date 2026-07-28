@@ -20,8 +20,9 @@ frontend, and the Genesis `FEMSolver` internals.
 > - Two smaller fixes: world-anchored FIXED joints (e.g. `Box(fixed=True)`) no
 >   longer break merge-group construction; degenerate link inertials fall back to
 >   the mesh-density ABD mass path instead of producing a singular 12x12 mass.
-> - Validation: `examples/qipc/fem_smoke.py` (box_drop / cloth_drape / cloth_pin)
->   and `examples/qipc/robot_cloth_video.py` (Franka pinch-grasps a hanging cloth).
+> - Validation: `examples/qipc/fem_smoke.py` (box_drop / cloth_drape / cloth_pin),
+>   `examples/qipc/objects_falling_video.py` (cloth + free rigid + soft ball), and
+>   `examples/qipc/robot_cloth_teleop.py` (viewer teleop: Franka + hanging cloth).
 
 ## 0. Summary
 
