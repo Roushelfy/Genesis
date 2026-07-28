@@ -26,6 +26,7 @@ import numpy as np
 
 import genesis as gs
 import genesis.utils.geom as gu
+from genesis.utils.misc import tensor_to_array
 from genesis.vis.keybindings import Key, KeyAction, Keybind
 
 DELTA_POS = 0.003
@@ -212,8 +213,7 @@ def main():
                 max_solver_iters=30,
                 dofs_idx_local=motor_dofs_idx,
             )
-            qpos_np = qpos.cpu().numpy() if hasattr(qpos, "cpu") else np.asarray(qpos)
-            qpos_cmd[:7] = qpos_np[:7]
+            qpos_cmd[:7] = tensor_to_array(qpos)[:7]
             franka.control_dofs_position(qpos_cmd[:7], dofs_idx_local=motor_dofs_idx)
             franka.control_dofs_position(-0.02 if is_gripper_closed[()] else 0.04, dofs_idx_local=finger_dofs_idx)
 
