@@ -305,3 +305,33 @@ Not needed for the drop-class demo; implement after A5.1/A5.2.
    defaults but document.
 10. Occlusion gates bond creation only (Phase-1 unaffected at current HEAD) and
     is O(n_tris) per candidate — off by default.
+11. **Distance locks resist rigid translation** (2026-07-29, reproduced with
+    cgq's own `adhesive_tape_drop --lock` elevated +2cm on the stock wheel):
+    an airborne locked coil HOVERS — gravity (mN) never reaches the per-pair
+    `release_force` (0.5 N), so the locks never break and Newton converges with
+    the roll floating; motion under large applied force proceeds by
+    break→re-freeze ratcheting. The bond doc describes a translation-invariant
+    virtual-tet energy, so this is engine-side (to report upstream). Consequence
+    for imports: **spawn locked rolls seated on the ground** (cgq drop
+    convention, `lowest vertex + thick + 0.5*d_hat`), never dropped from height.
+12. **Tape placement must be baked into the mesh** (`add_tape_roll` does this):
+    Genesis's FEM Mesh loader pivots `euler` about the vertex COM
+    (`fem_entity.py`), and the wound coil's COM is pulled off-axis by the free
+    tail (~9mm for the default preset), so morph-level pos/euler shifted the
+    coil vs the hub by ~7.4mm — the hub wall spawned EMBEDDED in the coil
+    (119 verts inside the bore), producing mutual pass-through and heavy
+    solver churn. The tape OBJ is therefore written in world coordinates with
+    an identity morph pose. The HUB deliberately keeps morph placement: the
+    ring is COM-centered at the file origin, so origin-pivot == COM-pivot
+    under either rigid `align` semantics — whereas baked world coordinates
+    would CANCEL under `align=True` auto-reframing (free simple bodies get a
+    COM frame and morph pos places that frame: a baked hub lands at the world
+    origin). `test_tape_roll_hub_concentric` (free hub) is the regression
+    guard on the actual hub geometry.
+13. The assembly-buffer capacity heuristic oscillates on this scene (resize ↔
+    post-frame padding shrink every few steps, `sim_engine.cu`
+    `handle_count_overflow`): the resize predicts `counted × fric_factor(2) ×
+    1.2` but the post-frame shrink floors padding at `1.2 × actual` where
+    actual ≈ counted — below the next prediction. Each early resize can cost a
+    CUDA-graph rebuild (first steps 0.7–50 s); steady state is unaffected
+    (~10 ms/step). Engine-side; worth reporting with the tape scene as repro.

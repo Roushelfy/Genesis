@@ -25,6 +25,7 @@ from dataclasses import dataclass
 import numpy as np
 
 import genesis as gs
+import genesis.utils.geom as gu
 
 
 @dataclass
@@ -257,11 +258,22 @@ def add_tape_roll(
     caller should configure the coupler with ``recommended_coupler_options``
     (adhesive constitution + distance bonds + the asset's d_hat).
 
+    Placement is applied analytically (``R(euler) @ v + pos``) by baking the
+    transform into the meshes and adding both entities with an identity morph
+    pose. Passing pos/euler through the morph instead would misalign the coil
+    and the hub: the FEM mesh loader pivots the rotation about the vertex COM
+    (fem_entity.py) while the rigid loader pivots about the file origin -- for
+    this asset that is a ~7mm relative offset, which embeds the hub in the coil
+    wall (the coil's free tail shifts its COM away from the hub axis).
+
     Returns (tape_entity, hub_entity_or_None).
     """
     coupler = scene.sim.coupler
     if not hasattr(coupler, "add_adhesion"):
         gs.raise_exception("add_tape_roll requires the QIPC coupler (QIPCCouplerOptions).")
+
+    R_place = gu.quat_to_R(gu.xyz_to_quat(np.asarray(euler, dtype=np.float64), degrees=True))
+    t_place = np.asarray(pos, dtype=np.float64)
 
     # Adhesion/friction values follow the asset's wind-time params (env > preset
     # resolution already happened at wind time); explicit overrides win.
@@ -281,10 +293,11 @@ def add_tape_roll(
 
     tmp_dir = tempfile.mkdtemp(prefix="qipc_tape_")
     tape_obj = os.path.join(tmp_dir, "tape_roll.obj")
-    _write_obj(tape_obj, asset.tape_positions, asset.tape_tris)
+    tape_world = asset.tape_positions @ R_place.T + t_place
+    _write_obj(tape_obj, tape_world, asset.tape_tris)
 
     tape = scene.add_entity(
-        morph=gs.morphs.Mesh(file=tape_obj, pos=tuple(pos), euler=tuple(euler), scale=1.0),
+        morph=gs.morphs.Mesh(file=tape_obj, scale=1.0),
         material=gs.materials.FEM.Cloth(
             E=asset.youngs,
             nu=asset.poisson,
@@ -304,13 +317,19 @@ def add_tape_roll(
     from genesis.utils.misc import tensor_to_array
 
     actual = tensor_to_array(tape.init_positions).astype(np.float64)
-    _verify_same_vertex_order(asset.tape_positions, actual)
+    _verify_same_vertex_order(tape_world, actual)
     coupler.set_fem_rest_positions(tape, asset.flat_rest_positions())
 
     hub = None
     if with_hub:
         hub_obj = os.path.join(tmp_dir, "tape_hub.obj")
         hub_verts, hub_tris = make_ring_hub(asset.hub_r_outer, asset.hub_r_inner, asset.hub_height)
+        # Unlike the tape, the hub keeps morph-level placement: the ring is
+        # COM-centered at the file origin by construction, so the rigid
+        # loader's pivot (file origin unaligned, COM frame under align=True
+        # auto-reframing for free bodies) coincides with the analytic
+        # R(euler) @ v + pos either way. Baking world coordinates instead
+        # would CANCEL under align=True (morph pos places the COM frame).
         _write_obj(hub_obj, hub_verts, hub_tris)
         hub = scene.add_entity(
             morph=gs.morphs.Mesh(file=hub_obj, pos=tuple(pos), euler=tuple(euler), scale=1.0, fixed=hub_fixed),

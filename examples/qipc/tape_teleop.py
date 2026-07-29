@@ -106,15 +106,15 @@ def main():
         ),
     )
 
-    # Stand the roll on the ground: clearance from the rotated coil's lowest
-    # vertex, plus a generous margin — the mesh loader's placement conventions
-    # can shift the entity by up to ~1cm vs this analytic estimate (the build
-    # preflight rejects any vertex at/below the ground). The roll drops the
-    # margin and settles.
+    # Seat the roll on the ground (cgq drop convention: lowest coil vertex one
+    # contact band above the plane). add_tape_roll bakes the transform into the
+    # meshes, so this analytic height is exact. Do NOT spawn the roll high and
+    # let it fall: in bond mode the distance locks resist rigid translation
+    # (qipc engine behavior), so an airborne locked coil hovers instead of falling.
     quat = gu.xyz_to_quat(np.asarray(ROLL_EULER, dtype=np.float64), degrees=True)
     rot = gu.quat_to_R(quat)
     coil_rot = asset.tape_positions @ rot.T
-    roll_z = -float(coil_rot[:, 2].min()) + 0.02
+    roll_z = -float(coil_rot[:, 2].min()) + asset.thick + 0.5 * asset.d_hat
     tape, hub = add_tape_roll(
         scene,
         asset,

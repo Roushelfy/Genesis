@@ -1,8 +1,8 @@
 """QIPC coupler tape-import tests: prestress (rest_geometry), Cloth membrane
 options, and wound-roll import (design: docs/adhesion_tape_design.md, A5.2).
 
-The wound-roll tests consume a real wind asset (cgq adhesive_tape_wind --save);
-set QIPC_TAPE_ASSET or place it at ~/workspace/qipc-test/assets/tape_roll.npz.
+The wound-roll tests default to the in-tree asset genesis/assets/qipc/
+tape_roll_lock.npz; override with QIPC_TAPE_ASSET (cgq adhesive_tape_wind --save).
 """
 
 import os
@@ -17,6 +17,7 @@ except ImportError:
     pytest.skip("QIPC coupler requires 'quadrants' and 'qipc' packages.", allow_module_level=True)
 
 import genesis as gs
+from genesis.utils.misc import get_assets_dir
 
 
 def _tape_module():
@@ -26,11 +27,13 @@ def _tape_module():
 
     return tape
 
-TAPE_ASSET_PATH = os.environ.get("QIPC_TAPE_ASSET", "")
+TAPE_ASSET_PATH = os.environ.get("QIPC_TAPE_ASSET", "") or os.path.join(
+    get_assets_dir(), "qipc", "tape_roll_lock.npz"
+)
 
 needs_tape_asset = pytest.mark.skipif(
-    not (TAPE_ASSET_PATH and os.path.exists(TAPE_ASSET_PATH)),
-    reason="set QIPC_TAPE_ASSET to a wound-roll npz (generate with cgq adhesive_tape_wind --save)",
+    not os.path.exists(TAPE_ASSET_PATH),
+    reason="wound-roll npz not found (in-tree genesis/assets/qipc/tape_roll_lock.npz or QIPC_TAPE_ASSET)",
 )
 
 
@@ -214,7 +217,7 @@ def _coil_max_radius(tape) -> float:
     return float(np.sqrt((pos[:, 0] - ROLL_POS[0]) ** 2 + (pos[:, 2] - ROLL_POS[2]) ** 2).max())
 
 
-def _build_roll_scene(show_viewer, *, sticky: bool):
+def _build_roll_scene(show_viewer, *, sticky: bool, hub_fixed: bool = True):
     tape_mod = _tape_module()
     asset = tape_mod.TapeAsset.from_npz(TAPE_ASSET_PATH)
     opts = tape_mod.recommended_coupler_options(asset)
@@ -234,12 +237,30 @@ def _build_roll_scene(show_viewer, *, sticky: bool):
         asset,
         pos=tuple(ROLL_POS),
         with_hub=True,
-        hub_fixed=True,
+        hub_fixed=hub_fixed,
         tape_tape_adhesion=None if sticky else adhesion_off,
         tape_hub_adhesion=None if sticky else adhesion_off,
     )
     scene.build()
     return scene, tape, hub, asset
+
+
+def _hub_world_verts(hub) -> np.ndarray:
+    """Hub collision-geometry vertices in world frame (same composition the
+    coupler's ABD build and the ground preflight use)."""
+    import genesis.utils.geom as gu
+    from genesis.utils.misc import tensor_to_array
+
+    out = []
+    for link in hub.links:
+        p_link = tensor_to_array(link.get_pos()).reshape(3).astype(np.float64)
+        R_link = gu.quat_to_R(tensor_to_array(link.get_quat()).reshape(4).astype(np.float64))
+        for geom in link.geoms:
+            v = geom.init_verts.astype(np.float64, copy=True)
+            R_geom = gu.quat_to_R(np.asarray(geom.init_quat, dtype=np.float64))
+            v = v @ R_geom.T + np.asarray(geom.init_pos, dtype=np.float64)
+            out.append(v @ R_link.T + p_link)
+    return np.concatenate(out, axis=0)
 
 
 @needs_tape_asset
@@ -271,6 +292,45 @@ def test_tape_roll_adhesion_follows_asset_params(show_viewer):
     )
     tape_mod.add_tape_roll(scene2, asset, pos=(0.0, 0.0, 0.2), tape_tape_adhesion=dict(Cn=7.0))
     assert scene2.sim.coupler.adhesion._requests[0].Cn == 7.0
+
+
+@needs_tape_asset
+def test_tape_roll_hub_concentric(show_viewer):
+    """Regression: the coil and the hub must land concentric.
+
+    add_tape_roll bakes R(euler) @ v + pos into the TAPE mesh because the FEM
+    loader pivots the morph rotation about the vertex COM -- with this asset's
+    off-center coil COM (free tail) that was a ~7mm shift, embedding the hub
+    wall inside the coil. The hub keeps morph placement (COM-centered ring:
+    origin-pivot == COM-pivot under either rigid align semantics); a FREE hub
+    exercises the align=True auto-reframing path, which cancels baked world
+    coordinates and is why the hub is NOT baked.
+    """
+    scene, tape, hub, asset = _build_roll_scene(show_viewer, sticky=True, hub_fixed=False)
+
+    # The hub's actual collision geometry must be centered at ROLL_POS (the
+    # misalignment regression left it at the world origin, 0.55 m away). AABB
+    # center: exact for the symmetric ring, robust to convex decomposition.
+    hub_verts = _hub_world_verts(hub)
+    hub_center = 0.5 * (hub_verts.min(axis=0) + hub_verts.max(axis=0))
+    assert np.linalg.norm(hub_center - ROLL_POS) < 2e-3, f"hub center {hub_center} != {ROLL_POS}"
+
+    # And the coil must be concentric with it. The wound asset's innermost turn
+    # can sit slightly BELOW the analytic r_out (it was wound against cgq's
+    # 48-gon hub, whose faces are inscribed), so the pass-through detector is
+    # the bore count plus a wall-embedding bound -- the misaligned import gave
+    # min_gap = -7 mm with 119 verts inside the bore.
+    pos = tape.get_state().pos[0].cpu().numpy()
+    d = pos - hub_center
+    axis = np.array([0.0, 1.0, 0.0])  # default euler=(90,0,0): asset +z -> world +y
+    axial = d @ axis
+    radial = np.linalg.norm(d - np.outer(axial, axis), axis=1)
+    in_hub_band = np.abs(axial) < 0.5 * asset.hub_height
+    assert in_hub_band.any()
+    inside_bore = int(((radial < asset.hub_r_inner) & in_hub_band).sum())
+    assert inside_bore == 0, f"{inside_bore} tape verts passed through the hub wall into the bore"
+    min_gap = float((radial[in_hub_band] - asset.hub_r_outer).min())
+    assert abs(min_gap) < 10 * asset.d_hat, f"innermost turn should seat near the hub (gap {min_gap:.6f} m)"
 
 
 @needs_tape_asset

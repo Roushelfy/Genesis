@@ -54,11 +54,13 @@ def main():
 
     scene.add_entity(gs.morphs.Plane())
 
-    # Drop height: clearance from the rotated coil's lowest vertex, plus a margin, since the
-    # mesh loader's placement conventions can shift the entity by up to ~1cm vs this analytic
-    # estimate and the build preflight rejects any vertex at/below the ground.
+    # Seat the roll on the ground (cgq drop convention: lowest coil vertex one
+    # contact band above the plane). add_tape_roll bakes the transform into the
+    # meshes, so this analytic height is exact. Do NOT spawn the roll high and
+    # let it fall: in bond mode the distance locks resist rigid translation
+    # (qipc engine behavior), so an airborne locked coil hovers instead of falling.
     coil_rot = asset.tape_positions @ gu.quat_to_R(gu.xyz_to_quat(np.array(ROLL_EULER), degrees=True)).T
-    roll_z = -float(coil_rot[:, 2].min()) + 0.02
+    roll_z = -float(coil_rot[:, 2].min()) + asset.thick + 0.5 * asset.d_hat
     tape, _hub = add_tape_roll(
         scene,
         asset,
