@@ -117,6 +117,18 @@ def main():
         help="override newton/velocity_tol (qipc default 0.05 m/s; converged when "
              "max vertex displacement per Newton step < tol*dt)",
     )
+    parser.add_argument(
+        "--linear-tol", type=float, default=None,
+        help="override linear_system/tol_rate (PCG relative residual, qipc default 1e-4)",
+    )
+    parser.add_argument(
+        "--linear-max-iter", type=int, default=None,
+        help="override linear_system/max_iter (qipc default 1024; cgq's tape SOLVER_CFG uses 800)",
+    )
+    parser.add_argument(
+        "--newton-max-iter", type=int, default=None,
+        help="override newton/max_iter (qipc default 1024; cgq's tape SOLVER_CFG uses 300)",
+    )
     args = parser.parse_args()
     headless = args.video is not None
 
@@ -140,6 +152,12 @@ def main():
     opts.update(fem_constraint_strength=SPC_STRENGTH_RATIO)  # cgq SPC_STRENGTH
     if args.newton_tol is not None:
         opts.update(solver_newton_velocity_tol=args.newton_tol)
+    if args.linear_tol is not None:
+        opts.update(solver_linear_tol_rate=args.linear_tol)
+    if args.linear_max_iter is not None:
+        opts.update(solver_linear_max_iter=args.linear_max_iter)
+    if args.newton_max_iter is not None:
+        opts.update(solver_newton_max_iter=args.newton_max_iter)
 
     scene = gs.Scene(
         sim_options=gs.options.SimOptions(dt=DT, gravity=(0.0, 0.0, -9.81)),
