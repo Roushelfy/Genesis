@@ -29,6 +29,7 @@ Keyboard Controls:
 import argparse
 import glob
 import os
+import time
 
 import numpy as np
 
@@ -106,6 +107,11 @@ def main():
                         help="headless step at which the right thumb/index start closing")
     parser.add_argument("--probe-release-step", type=int, default=None,
                         help="headless step at which the right thumb/index are released")
+    # Solver overrides on top of the tape profile (velocity_tol 0.01,
+    # newton/max_iter 300, linear/max_iter 800; linear tol_rate stays at qipc's 1e-4).
+    parser.add_argument("--newton-tol", type=float, default=None, help="override newton/velocity_tol")
+    parser.add_argument("--linear-tol", type=float, default=None, help="override linear_system/tol_rate")
+    parser.add_argument("--linear-max-iter", type=int, default=None, help="override linear_system/max_iter")
     args = parser.parse_args()
 
     gs.init(precision="64", logging_level="info")
@@ -118,8 +124,28 @@ def main():
     suffix = {"bond": "lock", "soft": "soft"}[args.mode]
     asset = TapeAsset.from_npz(os.path.join(get_assets_dir(), "qipc", f"tape_roll_{suffix}.npz"))
     opts = recommended_coupler_options(asset)
+    # Looser PCG tolerance than the tape profile's (qipc's 1e-4). This scene's
+    # linear system is ~10x the roll-only one (224 block rows) and PCG is
+    # tolerance-limited on most frames rather than cap-limited, so 3e-3 halves
+    # the iterations (median 739 -> 458, at-cap 50/120 -> 19/120) for a 36%
+    # faster median step (81 -> 52ms) with no behaviour change: sub-mm palm
+    # drift, same Newton counts, tape unmoved.
+    #
+    # It stays HERE rather than in the shared profile because the same change
+    # degrades the roll-only scene, where PCG is cap-limited: 2.2x faster but
+    # the pull-end spool height drops 0.120 -> 0.080 m (native reference 0.120)
+    # and Newton climbs from 2 to 18 iterations chasing the sloppier solve.
+    # Contact-heavy grasping here was not A/B'd; pass --linear-tol 1e-4 if a
+    # grasp looks wrong.
+    opts.update(solver_linear_tol_rate=3e-3)
     if args.mode == "soft":
         opts.update(adhesion_bond_distance_lock=False, adhesion_bond_max_bonds=0)
+    if args.newton_tol is not None:
+        opts.update(solver_newton_velocity_tol=args.newton_tol)
+    if args.linear_tol is not None:
+        opts.update(solver_linear_tol_rate=args.linear_tol)
+    if args.linear_max_iter is not None:
+        opts.update(solver_linear_max_iter=args.linear_max_iter)
 
     scene = gs.Scene(
         sim_options=gs.options.SimOptions(dt=DT, gravity=(0.0, 0.0, -9.8)),
@@ -303,6 +329,8 @@ def main():
 
     if args.headless_steps > 0:
         initial_palm = None
+        qs = coupler._scene.solver
+        step_ms, newtons, pcgs = [], [], []
         for step in range(args.headless_steps):
             if step == args.probe_close_step:
                 closed["right"] = True
@@ -311,7 +339,11 @@ def main():
             if step == args.probe_release_step:
                 closed["right"] = False
                 print("[probe] opening right thumb/index", flush=True)
+            t0 = time.perf_counter()
             servo_step()
+            step_ms.append((time.perf_counter() - t0) * 1e3)
+            newtons.append(int(qs.newton_iters))
+            pcgs.append(int(qs.max_pcg_iters))
             if step in {
                 args.probe_close_step,
                 args.probe_release_step,
@@ -324,7 +356,8 @@ def main():
                 print(
                     f"[probe] step={step:03d} palm={np.round(palm, 4)} "
                     f"hand=[{theta[rows].min():.3f},{theta[rows].max():.3f}] "
-                    f"max_tau={np.abs(torque[rows]).max():.3f}",
+                    f"max_tau={np.abs(torque[rows]).max():.3f} "
+                    f"newton={newtons[-1]} pcg={pcgs[-1]} {step_ms[-1]:.0f}ms",
                     flush=True,
                 )
         pos = tape.get_state().pos[0].cpu().numpy()
@@ -333,6 +366,11 @@ def main():
             if initial_palm is not None
             else 0.0
         )
+        cap = opts["solver_linear_max_iter"]
+        print(f"[headless] step ms median={np.median(step_ms):.0f} mean={np.mean(step_ms):.0f} "
+              f"max={max(step_ms):.0f} | newton max={max(newtons)} | pcg median={np.median(pcgs):.0f} "
+              f"max={max(pcgs)} at_cap={sum(p >= cap for p in pcgs)}/{len(pcgs)} "
+              f"(tol_rate={opts.get('solver_linear_tol_rate', 'qipc default 1e-4')})", flush=True)
         print(f"[headless] tape z=[{pos[:, 2].min():.4f},{pos[:, 2].max():.4f}] "
               f"finite={np.isfinite(pos).all()} palm_drift={drift:.4f}m "
               f"right_palm={np.round(palms['right'].get_pos().reshape(-1)[:3].cpu().numpy(), 3)}",
