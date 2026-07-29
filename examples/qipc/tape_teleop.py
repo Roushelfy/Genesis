@@ -1,7 +1,8 @@
 """QIPC coupler: keyboard teleoperation of a Franka Panda with a tape roll.
 
-A wound tape roll (imported from a cgq adhesive_tape_wind npz asset) stands on
-the ground next to the robot. Two adhesion modes:
+A wound tape roll (imported from a cgq adhesive_tape_wind npz asset) lies flat
+on the ground next to the robot, hub axis up and hole facing the gripper --
+the same resting pose cgq's adhesive_tape_drop uses. Two adhesion modes:
 
     --mode bond   Phase-2 distance bonds (default): the coil holds itself
                   firmly; peeling a layer takes ~RCC_RELEASE_FORCE (0.5 N with
@@ -45,7 +46,7 @@ DELTA_POS = 0.003
 DELTA_ROT = 0.02
 
 ROLL_XY = (0.55, 0.0)
-ROLL_EULER = (90.0, 0.0, 0.0)  # asset hub axis +z -> world +y (roll stands on its tread)
+ROLL_EULER = (0.0, 0.0, 0.0)  # asset hub axis stays +z: the roll lies flat (cgq drop pose)
 
 
 def _default_asset(mode: str) -> str:
@@ -107,16 +108,15 @@ def main():
         ),
     )
 
-    # Seat the roll on the ground (cgq drop convention: lowest coil vertex one
+    # Seat the roll on the ground (cgq drop convention: lowest vertex one
     # contact band above the plane). add_tape_roll bakes the transform into the
     # meshes, so this analytic height is exact. Do NOT spawn the roll high and
     # let it fall: this IS the settled pose, so dropping only adds a landing
     # transient. (An airborne locked coil also needs the tighter Newton
     # tolerance recommended_coupler_options now ships -- see tape_lift_drop.py.)
-    quat = gu.xyz_to_quat(np.asarray(ROLL_EULER, dtype=np.float64), degrees=True)
-    rot = gu.quat_to_R(quat)
-    coil_rot = asset.tape_positions @ rot.T
-    roll_z = -float(coil_rot[:, 2].min()) + asset.thick + 0.5 * asset.d_hat
+    # Lying flat, the hub (20mm tall, centered) reaches below the 19mm coil.
+    lowest = min(float(asset.tape_positions[:, 2].min()), -0.5 * asset.hub_height)
+    roll_z = -lowest + asset.thick + 0.5 * asset.d_hat
     tape, hub = add_tape_roll(
         scene,
         asset,
