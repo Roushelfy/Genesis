@@ -18,6 +18,7 @@ examples/adhesive_tape_wind.py:
 
 The gripper is adhesive against the tape (beta0=1: touch -> stick), so you can
 pick the roll up by touching it, and in bond mode peel the tail off by pulling.
+An RGB axis gizmo marks the IK target pose the keys drive.
 
 Keyboard Controls:
     Arrow keys  - Move in XY plane
@@ -190,6 +191,16 @@ def main():
         return
     scene.viewer.update(force=True)
 
+    # RGB gizmo on the IK target pose (panda_teleop convention): the tape's
+    # contact band is 0.18mm, so seeing where the target actually is -- and how
+    # far the gripper lags it -- is what makes the roll graspable by hand.
+    target_frame = scene.draw_debug_frame(
+        T=gu.trans_quat_to_T(target_pos, target_quat),
+        axis_length=0.15,
+        origin_size=0.01,
+        axis_radius=0.007,
+    )
+
     is_gripper_closed = np.array(False, dtype=gs.np_bool)
     is_running = True
 
@@ -234,6 +245,7 @@ def main():
 
     try:
         while is_running and scene.viewer.is_alive():
+            scene.update_debug_objects((target_frame,), (gu.trans_quat_to_T(target_pos, target_quat),))
             servo_step(bool(is_gripper_closed[()]))
     except KeyboardInterrupt:
         gs.logger.info("Simulation interrupted, exiting.")
