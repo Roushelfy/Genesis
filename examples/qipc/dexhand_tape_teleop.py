@@ -217,14 +217,6 @@ def main():
         )
 
     scene.build()
-    palm_now = robot.get_link(PALM_LINK["right"]).get_pos().reshape(-1)[:3].cpu().numpy()
-    if np.linalg.norm(palm_now[:2] - palm_home) > 0.05:
-        gs.logger.warning(
-            f"right palm rests at {np.round(palm_now[:2], 3)} but the roll was placed at "
-            f"{np.round(palm_home, 3)}: update ROLL_XY for this home pose or the roll is out of reach."
-        )
-    gs.logger.info(f"tape mode={args.mode} roll at {np.round(palm_home, 3)} z={roll_z:.4f} "
-                   f"right palm {np.round(palm_now, 3)}")
 
     # PD gains, mapped through the coupler's JointCollection row order.
     coupler = scene.sim.coupler
@@ -244,6 +236,19 @@ def main():
     robot.set_qpos(home)
     for key, idx in dofs.items():
         robot.control_dofs_position(home[idx], dofs_idx_local=idx)
+
+    # Check the roll landed under the hand only AFTER set_qpos: Scene.build's own
+    # reset leaves Genesis's link states at ITS init qpos (arms straight out),
+    # not at the coupler's home pose, so reading the palm any earlier reports a
+    # pose the simulation never has.
+    palm_now = robot.get_link(PALM_LINK["right"]).get_pos().reshape(-1)[:3].cpu().numpy()
+    if np.linalg.norm(palm_now[:2] - palm_home) > 0.05:
+        gs.logger.warning(
+            f"right palm rests at {np.round(palm_now[:2], 3)} but the roll was placed at "
+            f"{np.round(palm_home, 3)}: update ROLL_XY for this home pose or the roll is out of reach."
+        )
+    gs.logger.info(f"tape mode={args.mode} roll at {np.round(palm_home, 3)} z={roll_z:.4f} "
+                   f"right palm {np.round(palm_now, 3)}")
 
     # Thumb/index pinch postures. The other three fingers remain open.
     postures = {}
