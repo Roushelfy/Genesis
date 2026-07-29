@@ -20,11 +20,8 @@ import genesis as gs
 import genesis.utils.geom as gu
 from genesis.vis.keybindings import Key, KeyAction, Keybind
 
-DELTA_POS = 0.003  # per HOLD callback, i.e. per sim step (0.3 m/s at dt=0.01)
-DELTA_ROT = 0.02  # per sim step (2 rad/s at dt=0.01)
-# How far the IK target may run ahead of the measured end effector (see leash_target).
-LEASH_POS = 0.03
-LEASH_ROT = 0.25
+DELTA_POS = 0.003
+DELTA_ROT = 0.02
 
 
 def main():
@@ -144,32 +141,7 @@ def main():
         overwrite=True,
     )
 
-    def leash_target():
-        """Keep the target within reach of where the arm actually is.
-
-        HOLD keybinds fire once per sim step (scene.step -> visualizer.update ->
-        viewer.update -> update_on_sim_step), so a held key advances the target
-        0.3 m/s in sim time -- far faster than the arm tracks it. Unleashed the
-        target runs away (measured: 0.6 m of error after ~1.6 s of holding) and
-        the IK, asked for a pose the arm cannot reach, hops between arm
-        configurations: single-step command jumps up to 0.48 rad. Clamping the
-        target keeps every solve local (jumps drop ~50x, to <0.01 rad) and
-        leaves the release behaviour unchanged.
-        """
-        ee_pos = ee_link.get_pos().reshape(-1)[:3].cpu().numpy()
-        lag = target_pos - ee_pos
-        dist = float(np.linalg.norm(lag))
-        if dist > LEASH_POS:
-            target_pos[:] = ee_pos + lag * (LEASH_POS / dist)
-
-        ee_quat = ee_link.get_quat().reshape(-1)[:4].cpu().numpy()
-        # Geodesic angle between the two orientations, convention-free.
-        angle = 2.0 * np.arccos(min(1.0, abs(float(np.dot(target_quat, ee_quat)))))
-        if angle > LEASH_ROT:
-            target_quat[:] = gu.slerp(ee_quat, target_quat.copy(), LEASH_ROT / angle)
-
     while is_running and scene.viewer.is_alive():
-        leash_target()
         scene.update_debug_objects((target_ik,), (gu.trans_quat_to_T(target_pos, target_quat),))
 
         # Command-space servoing: seed with the previous command so the commands form a
