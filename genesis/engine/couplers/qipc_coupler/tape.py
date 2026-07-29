@@ -48,6 +48,13 @@ class TapeAsset:
     hub_height: float
     d_hat: float
     params: dict
+    # Wind-saved distance-lock topologies ((n, 4) vertex ids), present for
+    # locked winds. bond_topos_space "global" means ids live in the WIND
+    # scene's [ABD hub | FEM tape] global layout with bond_fem_gvo = its hub
+    # vertex count; legacy dumps are FEM-local (space None, gvo 0).
+    bond_topos: np.ndarray | None = None
+    bond_topos_space: str | None = None
+    bond_fem_gvo: int = 0
 
     @classmethod
     def from_npz(cls, path: str) -> "TapeAsset":
@@ -84,6 +91,13 @@ class TapeAsset:
             hub_height=float(data["hub_height"]),
             d_hat=float(data["d_hat"]),
             params=params,
+            bond_topos=(
+                np.ascontiguousarray(data["bond_topos"], dtype=np.int64).reshape(-1, 4)
+                if "bond_topos" in data
+                else None
+            ),
+            bond_topos_space=(str(data["bond_topos_space"]) if "bond_topos_space" in data else None),
+            bond_fem_gvo=(int(data["bond_fem_gvo"]) if "bond_fem_gvo" in data else 0),
         )
         n_expected = (asset.nx + 1) * (asset.nz + 1)
         if asset.tape_positions.shape != (n_expected, 3):
@@ -194,6 +208,49 @@ def recommended_coupler_options(asset: TapeAsset) -> dict:
         adhesion_bond_release_force=float(params.get("RCC_RELEASE_FORCE", 0.5)),
     )
     return options
+
+
+def seed_asset_locks(scene, tape_entity, asset: TapeAsset) -> tuple[int, int]:
+    """Re-lock the wind-saved bond topologies against the imported roll.
+
+    cgq's drop demo seeds the wind's lock pair set before the first step so the
+    coil does not re-form a DIFFERENT pair set at drop configuration (which
+    releases earlier under lift shear). Call after ``scene.build()`` and before
+    the first ``scene.step()``.
+
+    Only tape-tape (FEM-FEM) topologies transfer: hub-side vertex ids are tied
+    to the wind scene's hub tessellation, while Genesis rebuilds the hub through
+    the rigid pipeline (convex decomposition) with a different vertex layout —
+    those rows are dropped and the innermost turn re-bonds dynamically
+    (``beta0=1``). Returns ``(n_seeded, n_dropped_hub_rows)``.
+    """
+    if asset.bond_topos is None:
+        return 0, 0
+    coupler = scene.sim.coupler
+    adhesion = coupler._adhesion
+    entry = coupler._fem_entry(tape_entity)
+    our_base = adhesion.fem_global_vertex_offset() + entry.offset
+
+    topos = asset.bond_topos.astype(np.int64, copy=True)
+    if asset.bond_topos_space == "global":
+        src_gvo = int(asset.bond_fem_gvo)
+        fem_rows = (topos >= src_gvo).all(axis=1)
+        dropped = int((~fem_rows).sum())
+        topos = topos[fem_rows] - src_gvo
+    else:  # legacy dumps: FEM-local tape ids
+        dropped = 0
+    n_tape = asset.tape_positions.shape[0]
+    if topos.size and (topos.min() < 0 or topos.max() >= n_tape):
+        gs.raise_exception("seed_asset_locks: bond topologies index outside the tape vertex range.")
+    if topos.size == 0:
+        return 0, dropped
+
+    # Band-edge rest height, matching cgq's drop: xi(pair) + ratio * d_hat with
+    # xi = 2 * thick (point + max triangle thickness).
+    ratio = float(asset.params.get("DISTANCE_LOCK_RATIO", 1.0))
+    rest_height = 2.0 * asset.thick + ratio * asset.d_hat
+    adhesion.seed_bonds(topos + our_base, rest_height)
+    return int(topos.shape[0]), dropped
 
 
 def _write_obj(path: str, verts: np.ndarray, faces: np.ndarray) -> None:

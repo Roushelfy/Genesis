@@ -334,6 +334,20 @@ def test_tape_roll_hub_concentric(show_viewer):
 
 
 @needs_tape_asset
+def test_tape_seed_asset_locks(show_viewer):
+    """Wind-saved lock topologies re-seed into the imported roll (FEM-FEM rows)."""
+    tape_mod = _tape_module()
+    scene, tape, _hub, asset = _build_roll_scene(show_viewer, sticky=True)
+    assert asset.bond_topos is not None, "lock asset should carry wind-saved bond topologies"
+    n_seeded, n_dropped = tape_mod.seed_asset_locks(scene, tape, asset)
+    assert n_seeded > 0
+    assert n_seeded + n_dropped == asset.bond_topos.shape[0]
+    assert scene.sim.coupler.adhesion.get_bond_count() == n_seeded
+    scene.step()  # seeded locks must survive a step without tripping asserts
+    assert np.isfinite(tape.get_state().pos[0].cpu().numpy()).all()
+
+
+@needs_tape_asset
 @pytest.mark.required
 def test_tape_roll_import_holds(show_viewer):
     """Imported prestressed coil holds together via beta0=1 adhesion + bonds."""
