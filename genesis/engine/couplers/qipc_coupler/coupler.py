@@ -823,6 +823,8 @@ class QIPCCoupler(RBC):
         self._contact_elem_by_entity: dict[object, tuple[object, float, float]] = {}
 
         infos: list[tuple[object, float, float]] = []
+        # Entities opting out of self-contact (see Rigid.qipc_self_contact).
+        no_self_contact: set[int] = set()
         for i, pre in enumerate(all_pre_inits):
             mat = pre.entity.material
             mu = float(mat.coup_friction)
@@ -830,6 +832,8 @@ class QIPCCoupler(RBC):
             elem = tab.create(f"rigid_contact_{i}")
             for slot in pre.group_slots.values():
                 elem.apply_to(slot.geometry)
+            if not getattr(mat, "qipc_self_contact", True):
+                no_self_contact.add(len(infos))
             infos.append((elem, mu, res))
             self._contact_elem_by_entity[pre.entity] = (elem, mu, res)
 
@@ -848,6 +852,19 @@ class QIPCCoupler(RBC):
             elem_i, mu_i, res_i = infos[i]
             for j in range(i, len(infos)):
                 elem_j, mu_j, res_j = infos[j]
+                if i == j and i in no_self_contact:
+                    # enable=False masks the pair in QIPC's contact system
+                    # (ContactTabular is_enabled -> mask_table), sparing a robot
+                    # whose collision capsules overlap by construction from
+                    # fighting itself every step.
+                    tab.insert(
+                        elem_i,
+                        elem_j,
+                        friction_rate=float(mu_i),
+                        resistance=float(res_i),
+                        enable=False,
+                    )
+                    continue
                 tab.insert(
                     elem_i,
                     elem_j,

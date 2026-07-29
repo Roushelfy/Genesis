@@ -108,6 +108,14 @@ class Rigid(Kinematic["RigidEntity"]):
         the entity's ABD geometries). Useful when coarse rigid meshes meet much
         thinner objects (e.g. a robot vs. 0.1mm tape). Only used by the QIPC
         coupler. ``None`` uses the scene-global ``contact_d_hat``. Default is None.
+    qipc_self_contact : bool, optional
+        Whether this entity's own bodies collide with each other under the QIPC
+        coupler. Set False for robots whose collision geometry self-overlaps by
+        construction (capsule or convex-decomposition approximations): the IPC
+        barrier then fights those built-in overlaps every step and the arm cannot
+        track its PD targets. Genesis's own rigid solver filters such pairs at
+        qpos0; QIPC has no equivalent, so this masks the entity's self-pair in
+        the contact tabular. Only used by the QIPC coupler. Default is True.
     """
 
     use_visual_raycasting: StrictBool = False
@@ -137,6 +145,7 @@ class Rigid(Kinematic["RigidEntity"]):
     qipc_default_kv: float | str | None = None
     qipc_home_qpos: tuple[float, ...] | list[float] | None = None
     qipc_d_hat: PositiveFloat | None = None
+    qipc_self_contact: StrictBool = True
 
     @model_validator(mode="before")
     @classmethod
