@@ -224,7 +224,10 @@ def main():
         # Geodesic angle between the two orientations, convention-free.
         angle = 2.0 * np.arccos(min(1.0, abs(float(np.dot(target_quat, ee_quat)))))
         if angle > LEASH_ROT:
-            target_quat[:] = gu.slerp(ee_quat, target_quat.copy(), LEASH_ROT / angle)
+            # gu.slerp is numba-jitted and reshapes t to the quaternions' batch
+            # shape, so t must be a 1-element array, not a Python float.
+            frac = np.array([LEASH_ROT / angle], dtype=ee_quat.dtype)
+            target_quat[:] = gu.slerp(ee_quat, target_quat.copy(), frac)
 
     try:
         while is_running and scene.viewer.is_alive():
