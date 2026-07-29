@@ -124,6 +124,14 @@ def main():
     suffix = {"bond": "lock", "soft": "soft"}[args.mode]
     asset = TapeAsset.from_npz(os.path.join(get_assets_dir(), "qipc", f"tape_roll_{suffix}.npz"))
     opts = recommended_coupler_options(asset)
+    # Looser Newton tolerance than the tape profile's 3.8e-3, for interactive
+    # rate: this scene's linear system is ~10x the roll-only one (224 block
+    # rows), and at 3.8e-3 PCG runs into its cap on half the frames -- 228ms
+    # median step vs 50ms at 0.01, i.e. 4fps vs 20fps under the viewer. The
+    # tape here rests on a table rather than hanging from a lock, so the
+    # airborne-spool convergence artifact that tolerance guards against does
+    # not arise; palm drift while pinching stays sub-mm either way.
+    opts.update(solver_newton_velocity_tol=0.01)
     if args.mode == "soft":
         opts.update(adhesion_bond_distance_lock=False, adhesion_bond_max_bonds=0)
     if args.newton_tol is not None:

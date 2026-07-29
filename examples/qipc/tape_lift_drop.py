@@ -16,17 +16,18 @@ and the whole spool -- tape AND hub -- ratchets up as a unit. In soft mode the
 outer wrap peels off instead.
 
 Reference behavior (tape_roll_lock.npz, RTX PRO 6000): on the tape solver
-profile that recommended_coupler_options ships (velocity_tol 0.01) this port
-tracks cgq's native run closely -- mean_z 0.1196 at pull end (native 0.120),
-0.1250 mid-sway (0.127), and after release the spool falls and lands intact,
-END 0.0230/hub 0.0223 vs native 0.0232/0.0222, in ~100 s.
+profile that recommended_coupler_options ships (velocity_tol 3.8e-3, PCG
+tol_rate 3e-3) this port tracks cgq's native run closely -- mean_z 0.1201 at
+pull end (native 0.120), 0.1269 mid-sway (0.127), and after release the spool
+falls and lands intact, END 0.0228/hub 0.0223 vs native 0.0232/0.0222, in ~145 s.
 
-Pass --newton-tol 0.05 to see why that profile exists. At qipc's own default
-Newton's absolute tolerance is tol*dt = 0.5mm per iteration, more than the
-lock-stiffened spool's free-fall correction, so the solve reports convergence
-with the roll floating: it lags the pull (mean_z ~0.065 at pull end), ratchets
-up through the sway, and HOVERS at ~0.126 after release instead of dropping.
-cgq native does the same at the same tolerance -- it is not a port artifact.
+The Newton tolerance is what makes the release physical. It sets an absolute
+tolerance of tol*dt per iteration, and once that exceeds the lock-stiffened
+spool's free-fall correction the solve reports convergence with the roll
+floating: qipc's own default 0.05 lags the pull (mean_z ~0.065) and HOVERS at
+~0.126 after release, and 0.01 at this PCG tolerance still ends up 4cm up
+(mean_z 0.081, min_z 0.044). cgq native hovers the same way at 0.05 -- it is
+not a port artifact.
 
     python examples/qipc/tape_lift_drop.py                    # viewer
     python examples/qipc/tape_lift_drop.py --video out.mp4    # headless render
@@ -151,13 +152,10 @@ def main():
     else:
         opts.update(adhesion_bond_distance_lock=False, adhesion_bond_max_bonds=0)
     opts.update(fem_constraint_strength=SPC_STRENGTH_RATIO)  # cgq SPC_STRENGTH
-    # Tighter PCG than the shared tape profile's 3e-3. This scene is the fidelity
-    # reference, and its PCG runs to the iteration cap anyway, so the looser
-    # tolerance buys speed by losing accuracy: at 3e-3 the released spool ends at
-    # mean_z 0.081 / min_z 0.044 -- still floating 4cm up -- instead of landing
-    # (0.023 / 0.0003), i.e. the hover artifact comes back through the linear
-    # solve. Pass --linear-tol 3e-3 to see it (55s instead of 142s).
-    opts.update(solver_linear_tol_rate=1e-4)
+    # This scene runs on the shared tape profile as-is (velocity_tol 3.8e-3 +
+    # tol_rate 3e-3): the released spool lands and the trajectory tracks the
+    # native reference. Loosening velocity_tol to 0.01 at this tol_rate is what
+    # leaves it floating 4cm up -- try --newton-tol 0.01 to see that failure.
     if args.newton_tol is not None:
         opts.update(solver_newton_velocity_tol=args.newton_tol)
     if args.linear_tol is not None:

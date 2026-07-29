@@ -196,7 +196,7 @@ def test_tape_asset_parses():
     # Measured tape solver profile, NOT the wind's SOLVER_CFG: velocity_tol
     # 0.01 (qipc's 0.05 leaves released rolls hovering) and cgq's iteration
     # caps, but never its line_search/max_iter=16 (stalls imported rolls).
-    assert opts["solver_newton_velocity_tol"] == 0.01
+    assert opts["solver_newton_velocity_tol"] == 3.8e-3
     assert opts["solver_newton_max_iter"] == 300
     assert opts["solver_linear_max_iter"] == 800
     assert opts["solver_linear_tol_rate"] == 3e-3
