@@ -6,7 +6,7 @@ RoboWits arena geometry, driven through QIPC so the tape is a real FEM shell wit
 adhesive self-contact.
 
 Pick a hand with 1/2 (or 3 for both), fly its palm target with the keys, and
-close the fingers with Space. The hands are adhesive against the tape
+hold Space to pinch with its thumb and index finger. The hands are adhesive against the tape
 (``beta0=1``: touch -> stick), so a closing hand that reaches the roll holds it.
 RGB gizmos mark the two palm targets; the selected one is the larger.
 
@@ -21,7 +21,7 @@ Keyboard Controls:
     N/M         - Yaw left/right
     U/O         - Pitch up/down
     L/;         - Roll left/right
-    Space       - Toggle the selected hand(s) open/closed
+    Space       - Hold to close the selected thumb/index, release to open
     Backslash   - Reset targets to the current palm poses
     Esc         - Quit
 """
@@ -39,6 +39,10 @@ from genesis.vis.keybindings import Key, KeyAction, Keybind
 
 DELTA_POS = 0.003  # per HOLD callback, i.e. per sim step
 DELTA_ROT = 0.02
+DT = 0.01
+GRIP_SPEED = 2.0
+MAX_GRIP_STEP = GRIP_SPEED * DT
+MAX_ARM_COMMAND_STEP = 0.03
 
 # gs-gym-internal RoboWits arena: a 0.76m work table 0.6m in front of a torso
 # mounted at 1.08m (gs_gym/envs/robowits/robowits.py).
@@ -61,8 +65,9 @@ INIT_ARM_DEG = {"right": (-110, -75, 90, -110, -75, 0, 0), "left": (110, -75, -9
 # coupler leaves every joint at its kp=100 fallback and the arms sag.
 ARM_KP = (7200, 7200, 7200, 3600, 3600, 3600, 3600)
 ARM_KV = (600, 600, 600, 400, 200, 200, 200)
-HAND_KP, HAND_KV = 50.0, 5.0
-CLOSE_RAD = 1.0  # finger flexion when closed (limits run to ~1.55)
+HAND_KP, HAND_KV = 50.0, 0.5
+HAND_EFFORT_SCALE = 8.0
+ARM_FORCE_LIMIT = 2000.0
 
 
 def resolve_urdf(explicit: str | None) -> str:
@@ -97,6 +102,10 @@ def main():
                         help="adhesive contact between the hands and the tape (touch -> stick)")
     parser.add_argument("--headless-steps", type=int, default=0,
                         help="debug: run N steps without the viewer and exit")
+    parser.add_argument("--probe-close-step", type=int, default=None,
+                        help="headless step at which the right thumb/index start closing")
+    parser.add_argument("--probe-release-step", type=int, default=None,
+                        help="headless step at which the right thumb/index are released")
     args = parser.parse_args()
 
     gs.init(precision="64", logging_level="info")
@@ -113,7 +122,7 @@ def main():
         opts.update(adhesion_bond_distance_lock=False, adhesion_bond_max_bonds=0)
 
     scene = gs.Scene(
-        sim_options=gs.options.SimOptions(dt=0.01, gravity=(0.0, 0.0, -9.8)),
+        sim_options=gs.options.SimOptions(dt=DT, gravity=(0.0, 0.0, -9.8)),
         coupler_options=gs.options.QIPCCouplerOptions(**opts),
         viewer_options=gs.options.ViewerOptions(
             camera_pos=(1.1, -0.95, 1.35),
@@ -167,6 +176,11 @@ def main():
     for side in ("right", "left"):
         home[dofs[("arm", side)]] = np.deg2rad(INIT_ARM_DEG[side])
     robot.material.qipc_home_qpos = home.tolist()
+    hand_effort = {
+        (side, d): max(abs(float(v)) for v in robot.get_joint(name).dofs_force_range[0])
+        for side in ("right", "left")
+        for name, d in zip(HAND_JOINTS[side], dofs[("hand", side)], strict=True)
+    }
 
     scene.add_entity(
         morph=gs.morphs.Box(pos=TABLE_POS, size=TABLE_SIZE, fixed=True, collision=True),
@@ -220,24 +234,32 @@ def main():
         for k, d in enumerate(dofs[("arm", side)]):
             jc[jc_row[d]].set_dofs_kp(float(ARM_KP[k]))
             jc[jc_row[d]].set_dofs_kv(float(ARM_KV[k]))
+            jc[jc_row[d]].set_dofs_force_range(-ARM_FORCE_LIMIT, ARM_FORCE_LIMIT)
         for d in dofs[("hand", side)]:
             jc[jc_row[d]].set_dofs_kp(HAND_KP)
             jc[jc_row[d]].set_dofs_kv(HAND_KV)
+            effort = HAND_EFFORT_SCALE * hand_effort[(side, d)]
+            jc[jc_row[d]].set_dofs_force_range(-effort, effort)
 
     robot.set_qpos(home)
     for key, idx in dofs.items():
         robot.control_dofs_position(home[idx], dofs_idx_local=idx)
 
-    # Open/closed finger postures, clipped into each joint's real limits (the
-    # thumb's first joint has a positive lower bound, and joint2 of every finger
-    # is abduction, which stays neutral).
+    # Thumb/index pinch postures. The other three fingers remain open.
     postures = {}
     for side in ("right", "left"):
         for closed in (False, True):
             vals = []
             for name in HAND_JOINTS[side]:
+                finger = int(name.split("finger", 1)[1].split("_", 1)[0])
+                joint = int(name.rsplit("joint", 1)[1])
                 lo, hi = (float(v) for v in robot.get_joint(name).dofs_limit[0])
-                want = CLOSE_RAD if (closed and not name.endswith("joint2")) else 0.0
+                if closed and finger == 1:
+                    want = (0.9, 0.35, 0.9, 0.9)[joint - 1]
+                elif closed and finger == 2:
+                    want = (0.95, 0.0, 0.95, 0.95)[joint - 1]
+                else:
+                    want = 0.08 if (finger == 1 and joint == 1) else 0.0
                 vals.append(min(max(want, lo), hi))
             postures[(side, closed)] = np.array(vals)
 
@@ -250,6 +272,7 @@ def main():
         target_quat[side] = init_quat[side].copy()
     qpos_cmd = home.copy()
     closed = {"right": False, "left": False}
+    hand_cmd = {side: postures[(side, False)].copy() for side in ("right", "left")}
 
     def servo_step():
         for side in ("right", "left"):
@@ -264,18 +287,50 @@ def main():
                 dofs_idx_local=arm,
             )
             qn = qpos.cpu().numpy() if hasattr(qpos, "cpu") else np.asarray(qpos)
-            qpos_cmd[arm] = qn[arm]
+            delta = np.clip(qn[arm] - qpos_cmd[arm], -MAX_ARM_COMMAND_STEP, MAX_ARM_COMMAND_STEP)
+            qpos_cmd[arm] += delta
             robot.control_dofs_position(qpos_cmd[arm], dofs_idx_local=arm)
-            robot.control_dofs_position(postures[(side, closed[side])], dofs_idx_local=dofs[("hand", side)])
+            goal = postures[(side, closed[side])]
+            hand_cmd[side] += np.clip(goal - hand_cmd[side], -MAX_GRIP_STEP, MAX_GRIP_STEP)
+            robot.control_dofs_position(hand_cmd[side], dofs_idx_local=dofs[("hand", side)])
         scene.step()
         scene.rigid_solver._func_update_geoms(scene._envs_idx)
 
     if args.headless_steps > 0:
-        for _ in range(args.headless_steps):
+        initial_palm = None
+        for step in range(args.headless_steps):
+            if step == args.probe_close_step:
+                closed["right"] = True
+                initial_palm = palms["right"].get_pos().reshape(-1)[:3].cpu().numpy().copy()
+                print("[probe] closing right thumb/index", flush=True)
+            if step == args.probe_release_step:
+                closed["right"] = False
+                print("[probe] opening right thumb/index", flush=True)
             servo_step()
+            if step in {
+                args.probe_close_step,
+                args.probe_release_step,
+                args.headless_steps - 1,
+            }:
+                palm = palms["right"].get_pos().reshape(-1)[:3].cpu().numpy()
+                rows = [jc_row[d] for d in dofs[("hand", "right")]]
+                theta = jc.get_dofs_position().cpu().numpy()
+                torque = jc.get_dofs_applied_force().cpu().numpy()
+                print(
+                    f"[probe] step={step:03d} palm={np.round(palm, 4)} "
+                    f"hand=[{theta[rows].min():.3f},{theta[rows].max():.3f}] "
+                    f"max_tau={np.abs(torque[rows]).max():.3f}",
+                    flush=True,
+                )
         pos = tape.get_state().pos[0].cpu().numpy()
+        drift = (
+            float(np.linalg.norm(palms["right"].get_pos().reshape(-1)[:3].cpu().numpy() - initial_palm))
+            if initial_palm is not None
+            else 0.0
+        )
         print(f"[headless] tape z=[{pos[:, 2].min():.4f},{pos[:, 2].max():.4f}] "
-              f"finite={np.isfinite(pos).all()} right_palm={np.round(palms['right'].get_pos().reshape(-1)[:3].cpu().numpy(), 3)}",
+              f"finite={np.isfinite(pos).all()} palm_drift={drift:.4f}m "
+              f"right_palm={np.round(palms['right'].get_pos().reshape(-1)[:3].cpu().numpy(), 3)}",
               flush=True)
         return
 
@@ -293,6 +348,7 @@ def main():
         for side in ("right", "left")
     }
     is_running = True
+    space_active = set()
 
     def select(sides):
         active.clear()
@@ -314,9 +370,16 @@ def main():
             target_pos[side][:] = palms[side].get_pos().reshape(-1)[:3].cpu().numpy()
             target_quat[side][:] = palms[side].get_quat().reshape(-1)[:4].cpu().numpy()
 
-    def toggle_grip():
-        for side in active:
-            closed[side] = not closed[side]
+    def set_grip(is_closed):
+        if is_closed:
+            space_active.clear()
+            space_active.update(active)
+            for side in space_active:
+                closed[side] = True
+        else:
+            for side in space_active:
+                closed[side] = False
+            space_active.clear()
         gs.logger.info(f"grip: right={'closed' if closed['right'] else 'open'} "
                        f"left={'closed' if closed['left'] else 'open'}")
 
@@ -341,11 +404,15 @@ def main():
         Keybind("roll_left", Key.L, KeyAction.HOLD, callback=rotate, args=(0, DELTA_ROT)),
         Keybind("roll_right", Key.SEMICOLON, KeyAction.HOLD, callback=rotate, args=(0, -DELTA_ROT)),
         Keybind("reset_targets", Key.BACKSLASH, KeyAction.RELEASE, callback=reset_targets),
-        Keybind("toggle_grip", Key.SPACE, KeyAction.RELEASE, callback=toggle_grip),
+        Keybind("close_grip", Key.SPACE, KeyAction.PRESS, callback=set_grip, args=(True,)),
+        Keybind("open_grip", Key.SPACE, KeyAction.RELEASE, callback=set_grip, args=(False,)),
         Keybind("quit", Key.ESCAPE, KeyAction.RELEASE, callback=stop),
         overwrite=True,
     )
-    gs.logger.info("keys: 1/2/3 pick hand(s), arrows+J/K move, N/M U/O L/; rotate, Space grip, \\ reset, Esc quit")
+    gs.logger.info(
+        "keys: 1/2/3 pick hand(s), arrows+J/K move, N/M U/O L/; rotate, "
+        "hold Space to pinch, release to open, \\ reset, Esc quit"
+    )
 
     try:
         while is_running and scene.viewer.is_alive():
