@@ -334,14 +334,53 @@ def test_tape_roll_hub_concentric(show_viewer):
 
 
 @needs_tape_asset
+def test_tape_hub_mesh_is_exact(show_viewer):
+    """The ring hub reaches QIPC unprocessed: wind vertex count, order and mass.
+
+    add_tape_roll passes the hub through with convexify=False. Genesis's default
+    rigid processing would convex-decompose the annulus (8 hulls filling the
+    bore: 160 verts, mass +43%) and renumber its vertices, which both distorts
+    the contact surface and breaks the wind-time ids seed_asset_locks needs.
+    """
+    tape_mod = _tape_module()
+    scene, _tape, hub, asset = _build_roll_scene(show_viewer, sticky=True, hub_fixed=False)
+    src_verts, _src_tris = tape_mod.make_ring_hub(asset.hub_r_outer, asset.hub_r_inner, asset.hub_height)
+
+    geoms = [g for link in hub.links for g in link.geoms]
+    assert len(geoms) == 1, f"hub should stay a single un-decomposed geom (got {len(geoms)})"
+    assert len(geoms[0].init_verts) == len(src_verts), (
+        f"hub vertex count {len(geoms[0].init_verts)} != authored {len(src_verts)}"
+    )
+    # Vertex ORDER is what the wind-saved ids index; a rigid fit that lines the
+    # two meshes up vertex-for-vertex proves it survived (float32 geom storage
+    # sets the residual floor).
+    R, t = tape_mod._kabsch(src_verts, geoms[0].init_verts.astype(np.float64))
+    assert float(np.abs(src_verts @ R.T + t - geoms[0].init_verts).max()) < 1e-6
+
+    # ABD body sees exactly those vertices, and the mass is the polyhedral
+    # ring's (analytic annulus scaled by the 48-gon's inscribed-area ratio).
+    assert int(scene.sim.coupler._scene.affine_body.n_verts) == len(src_verts)
+    n_sides = len(src_verts) // 4
+    poly_ratio = n_sides / (2.0 * np.pi) * np.sin(2.0 * np.pi / n_sides)
+    exact_mass = np.pi * (asset.hub_r_outer**2 - asset.hub_r_inner**2) * asset.hub_height * 1000.0 * poly_ratio
+    link_mass = [link for link in hub.links if link.geoms][0].inertial_mass
+    assert link_mass == pytest.approx(exact_mass, rel=1e-3)
+
+
+@needs_tape_asset
 def test_tape_seed_asset_locks(show_viewer):
-    """Wind-saved lock topologies re-seed into the imported roll (FEM-FEM rows)."""
+    """Wind-saved lock topologies re-seed into the imported roll.
+
+    With the hub passed through unconvexified the ABD vertex layout matches the
+    wind scene's, so tape-tape AND tape-hub rows transfer -- the whole saved
+    set, no dropped rows.
+    """
     tape_mod = _tape_module()
     scene, tape, _hub, asset = _build_roll_scene(show_viewer, sticky=True)
     assert asset.bond_topos is not None, "lock asset should carry wind-saved bond topologies"
+    n_rows = asset.bond_topos.shape[0]
     n_seeded, n_dropped = tape_mod.seed_asset_locks(scene, tape, asset)
-    assert n_seeded > 0
-    assert n_seeded + n_dropped == asset.bond_topos.shape[0]
+    assert (n_seeded, n_dropped) == (n_rows, 0), f"expected all {n_rows} rows to transfer"
     assert scene.sim.coupler.adhesion.get_bond_count() == n_seeded
     scene.step()  # seeded locks must survive a step without tripping asserts
     assert np.isfinite(tape.get_state().pos[0].cpu().numpy()).all()

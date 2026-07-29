@@ -218,10 +218,13 @@ def seed_asset_locks(scene, tape_entity, asset: TapeAsset) -> tuple[int, int]:
     releases earlier under lift shear). Call after ``scene.build()`` and before
     the first ``scene.step()``.
 
-    Only tape-tape (FEM-FEM) topologies transfer: hub-side vertex ids are tied
-    to the wind scene's hub tessellation, while Genesis rebuilds the hub through
-    the rigid pipeline (convex decomposition) with a different vertex layout —
-    those rows are dropped and the innermost turn re-bonds dynamically
+    Saved ids live in the wind scene's global layout ``[ABD hub | FEM tape]``.
+    Tape-tape rows always transfer (shifted onto this scene's FEM range).
+    Hub-side rows transfer only when this scene's ABD vertex layout matches the
+    wind's — which holds because ``add_tape_roll`` passes the ring hub through
+    unconvexified (``convexify=False``), keeping the wind's 192 vertices in
+    order. If it does not match (a differently tessellated or processed hub),
+    those rows are dropped and the innermost turn re-bonds dynamically instead
     (``beta0=1``). Returns ``(n_seeded, n_dropped_hub_rows)``.
     """
     if asset.bond_topos is None:
@@ -229,27 +232,44 @@ def seed_asset_locks(scene, tape_entity, asset: TapeAsset) -> tuple[int, int]:
     coupler = scene.sim.coupler
     adhesion = coupler._adhesion
     entry = coupler._fem_entry(tape_entity)
-    our_base = adhesion.fem_global_vertex_offset() + entry.offset
+    fem_gvo = adhesion.fem_global_vertex_offset()
+    our_base = fem_gvo + entry.offset
 
     topos = asset.bond_topos.astype(np.int64, copy=True)
+    dropped = 0
     if asset.bond_topos_space == "global":
         src_gvo = int(asset.bond_fem_gvo)
-        fem_rows = (topos >= src_gvo).all(axis=1)
-        dropped = int((~fem_rows).sum())
-        topos = topos[fem_rows] - src_gvo
+        is_fem = topos >= src_gvo
+        # Hub (ABD) ids pass through only if the ABD range is identical: same
+        # vertex count AND the hub sitting at ABD offset 0, i.e. this scene's
+        # FEM global offset equals the wind's.
+        if src_gvo == fem_gvo and entry.offset == 0:
+            topos = np.where(is_fem, topos - src_gvo + our_base, topos)
+        else:
+            keep = is_fem.all(axis=1)
+            dropped = int((~keep).sum())
+            if dropped:
+                gs.logger.debug(
+                    f"seed_asset_locks: dropping {dropped} hub-side lock rows (wind ABD layout has "
+                    f"{src_gvo} vertices, this scene has {fem_gvo}); those pairs re-bond dynamically."
+                )
+            topos = topos[keep] - src_gvo + our_base
     else:  # legacy dumps: FEM-local tape ids
-        dropped = 0
-    n_tape = asset.tape_positions.shape[0]
-    if topos.size and (topos.min() < 0 or topos.max() >= n_tape):
-        gs.raise_exception("seed_asset_locks: bond topologies index outside the tape vertex range.")
+        topos = topos + our_base
     if topos.size == 0:
         return 0, dropped
+    n_global = fem_gvo + coupler._scene.finite_element.n_verts
+    if topos.min() < 0 or topos.max() >= n_global:
+        gs.raise_exception(
+            f"seed_asset_locks: bond topologies index outside this scene's global vertex range "
+            f"[0, {n_global}) (got [{topos.min()}, {topos.max()}])."
+        )
 
     # Band-edge rest height, matching cgq's drop: xi(pair) + ratio * d_hat with
     # xi = 2 * thick (point + max triangle thickness).
     ratio = float(asset.params.get("DISTANCE_LOCK_RATIO", 1.0))
     rest_height = 2.0 * asset.thick + ratio * asset.d_hat
-    adhesion.seed_bonds(topos + our_base, rest_height)
+    adhesion.seed_bonds(topos, rest_height)
     return int(topos.shape[0]), dropped
 
 
@@ -389,7 +409,25 @@ def add_tape_roll(
         # would CANCEL under align=True (morph pos places the COM frame).
         _write_obj(hub_obj, hub_verts, hub_tris)
         hub = scene.add_entity(
-            morph=gs.morphs.Mesh(file=hub_obj, pos=tuple(pos), euler=tuple(euler), scale=1.0, fixed=hub_fixed),
+            morph=gs.morphs.Mesh(
+                file=hub_obj,
+                pos=tuple(pos),
+                euler=tuple(euler),
+                scale=1.0,
+                fixed=hub_fixed,
+                # Keep the ring EXACTLY as authored. Genesis's default rigid
+                # processing targets its own collision system: convexification
+                # decomposes the annulus into 8 hulls that fill the bore (160
+                # verts, mass +43%), and the vertex count/order change breaks
+                # the wind-time vertex ids that seed_asset_locks transfers.
+                # QIPC takes arbitrary triangle meshes, so pass the ring
+                # through: 192 verts in source order, geometrically exact
+                # mass. (The ring is already watertight, so the wrap that
+                # watertighten=None disables is a no-op here -- it is set to
+                # make "do not touch this mesh" explicit.)
+                convexify=False,
+                watertighten=None,
+            ),
             material=gs.materials.Rigid(rho=1000.0, coup_friction=friction),
             surface=hub_surface,
         )

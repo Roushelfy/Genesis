@@ -337,7 +337,23 @@ Not needed for the drop-class demo; implement after A5.1/A5.2.
     COM frame and morph pos places that frame: a baked hub lands at the world
     origin). `test_tape_roll_hub_concentric` (free hub) is the regression
     guard on the actual hub geometry.
-13. The assembly-buffer capacity heuristic oscillates on this scene (resize ↔
+13. **Rigid meshes reach QIPC through Genesis's collision-asset pipeline, so
+    pass `convexify=False`** for anything QIPC should see exactly. The ABD
+    build reads `link.geoms[*].init_verts/init_faces`, i.e. post-processing
+    geometry: convexification decomposed the ring hub into 8 hulls that fill
+    its bore (192 → 160 verts, mass 5.28e-3 → 7.56e-3 kg, +43%) and renumbered
+    its vertices, which broke both the contact surface and the wind-time
+    vertex ids. With `convexify=False` (`add_tape_roll` sets it, plus
+    `watertighten=None` to make the intent explicit — the closed ring makes
+    the wrap a no-op anyway) the ring arrives with its 192 vertices in source
+    order and Genesis's own inertial is then geometrically exact (the 48-gon's
+    inscribed-area ratio 0.99715 × the analytic annulus). No coupler-side
+    override API is needed. Payoff measured on the lift-drop timeline: all 454
+    saved locks transfer instead of 265, the trajectory lands within ~2mm of
+    the native reference everywhere, and the run got 2.6x FASTER (269s → 102s;
+    PCG stops pegging its cap) — the bore-filling hulls had been fighting the
+    coil. Guard: `test_tape_hub_mesh_is_exact`.
+14. The assembly-buffer capacity heuristic oscillates on this scene (resize ↔
     post-frame padding shrink every few steps, `sim_engine.cu`
     `handle_count_overflow`): the resize predicts `counted × fric_factor(2) ×
     1.2` but the post-frame shrink floors padding at `1.2 × actual` where

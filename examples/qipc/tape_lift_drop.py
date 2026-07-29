@@ -9,12 +9,11 @@ SoftPositionConstraint (strength ratio 1e3, matching SPC_STRENGTH):
     top  600 frames   sway at the top: first half +/-x, second half +/-y
     drop 500 frames   release the constraint
 
-with dt=0.01 (1430 frames total). In bond mode the wind-saved lock topologies
-are re-seeded before the first step (tape-tape rows only: hub-side ids are tied
-to the wind scene's hub tessellation and cannot transfer through Genesis's
-convex-decomposed hub; the innermost turn re-bonds via beta0=1) and the whole
-spool -- tape AND hub -- ratchets up as a unit. In soft mode the outer wrap
-peels off instead.
+with dt=0.01 (1430 frames total). In bond mode all 454 wind-saved lock
+topologies are re-seeded before the first step (the hub passes through the
+rigid pipeline unconvexified, so its vertex ids still match the wind scene's)
+and the whole spool -- tape AND hub -- ratchets up as a unit. In soft mode the
+outer wrap peels off instead.
 
 Reference behavior (tape_roll_lock.npz, RTX PRO 6000). At qipc's DEFAULT
 newton/velocity_tol = 0.05 (Newton stops once the max per-iteration vertex
@@ -22,11 +21,10 @@ displacement < tol*dt = 0.5mm) both cgq native and this port show the same
 loose-convergence artifact: the spool lags the pull (mean_z ~0.065 at pull
 end), ratchets up during the sway, and after release HOVERS at ~0.126 --
 Newton stalls before resolving the fall of the lock-stiffened spool.
-Tightening to --newton-tol 0.01 recovers the physical run: the spool tracks
-the pull almost rigidly (mean_z ~0.12 at pull end) and after release falls
-and lands intact (tape_min_z -> 0.0003), at ~4x the wall time (PCG runs to
-its 1024-iteration cap on most frames). 0.005 gives the same trajectory
-(converged) at ~9x.
+Tightening to --newton-tol 0.01 recovers the physical run and tracks the
+native reference closely: mean_z 0.1196 at pull end (native 0.120), 0.1250
+mid-sway (0.127), and after release the spool falls and lands intact --
+END 0.0230/hub 0.0223 vs native 0.0232/0.0222 -- in 102 s.
 
     python examples/qipc/tape_lift_drop.py --newton-tol 0.01  # physical release
     python examples/qipc/tape_lift_drop.py --video out.mp4    # headless render
