@@ -16,12 +16,19 @@ convex-decomposed hub; the innermost turn re-bonds via beta0=1) and the whole
 spool -- tape AND hub -- ratchets up as a unit. In soft mode the outer wrap
 peels off instead.
 
-Expected reference behavior (cgq native, tape_roll_lock.npz, RTX PRO 6000):
-settle tape_mean 0.010 -> lift to ~0.13 -> sway -> after release the spool
-HOVERS at ~0.126 (qipc distance locks resist rigid translation; gravity never
-reaches the 0.5 N per-pair release force).
+Reference behavior (tape_roll_lock.npz, RTX PRO 6000). At qipc's DEFAULT
+newton/velocity_tol = 0.05 (Newton stops once the max per-iteration vertex
+displacement < tol*dt = 0.5mm) both cgq native and this port show the same
+loose-convergence artifact: the spool lags the pull (mean_z ~0.065 at pull
+end), ratchets up during the sway, and after release HOVERS at ~0.126 --
+Newton stalls before resolving the fall of the lock-stiffened spool.
+Tightening to --newton-tol 0.01 recovers the physical run: the spool tracks
+the pull almost rigidly (mean_z ~0.12 at pull end) and after release falls
+and lands intact (tape_min_z -> 0.0003), at ~4x the wall time (PCG runs to
+its 1024-iteration cap on most frames). 0.005 gives the same trajectory
+(converged) at ~9x.
 
-    python examples/qipc/tape_lift_drop.py                    # viewer
+    python examples/qipc/tape_lift_drop.py --newton-tol 0.01  # physical release
     python examples/qipc/tape_lift_drop.py --video out.mp4    # headless render
 """
 
@@ -105,6 +112,11 @@ def main():
     parser.add_argument("--settle-only", action="store_true")
     parser.add_argument("--video", type=str, default=None, help="headless: render to this mp4")
     parser.add_argument("--render-every", type=int, default=5)
+    parser.add_argument(
+        "--newton-tol", type=float, default=None,
+        help="override newton/velocity_tol (qipc default 0.05 m/s; converged when "
+             "max vertex displacement per Newton step < tol*dt)",
+    )
     args = parser.parse_args()
     headless = args.video is not None
 
@@ -126,6 +138,8 @@ def main():
     else:
         opts.update(adhesion_bond_distance_lock=False, adhesion_bond_max_bonds=0)
     opts.update(fem_constraint_strength=SPC_STRENGTH_RATIO)  # cgq SPC_STRENGTH
+    if args.newton_tol is not None:
+        opts.update(solver_newton_velocity_tol=args.newton_tol)
 
     scene = gs.Scene(
         sim_options=gs.options.SimOptions(dt=DT, gravity=(0.0, 0.0, -9.81)),
@@ -202,9 +216,11 @@ def main():
         if f % 20 == 0:
             pos = tape.get_state().pos[0].cpu().numpy()
             hub_z = float(hub.get_pos().reshape(-1)[2])
+            qs = scene.sim.coupler._scene.solver
             gs.logger.info(
                 f"f {f:4d} [{phase_at(f):8s}] dx={dx:+.3f} dy={dy:+.3f} lift={lift:.3f} "
-                f"tape_mean_z={pos[:, 2].mean():.4f} free_z={pos[free_id, 2]:.4f} hub_z={hub_z:.4f}"
+                f"tape_mean_z={pos[:, 2].mean():.4f} free_z={pos[free_id, 2]:.4f} hub_z={hub_z:.4f} "
+                f"newton={qs.newton_iters:3d} pcg={qs.max_pcg_iters:4d}"
             )
 
     if writer is not None:

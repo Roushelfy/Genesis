@@ -305,15 +305,24 @@ Not needed for the drop-class demo; implement after A5.1/A5.2.
    defaults but document.
 10. Occlusion gates bond creation only (Phase-1 unaffected at current HEAD) and
     is O(n_tris) per candidate — off by default.
-11. **Distance locks resist rigid translation** (2026-07-29, reproduced with
-    cgq's own `adhesive_tape_drop --lock` elevated +2cm on the stock wheel):
-    an airborne locked coil HOVERS — gravity (mN) never reaches the per-pair
-    `release_force` (0.5 N), so the locks never break and Newton converges with
-    the roll floating; motion under large applied force proceeds by
-    break→re-freeze ratcheting. The bond doc describes a translation-invariant
-    virtual-tet energy, so this is engine-side (to report upstream). Consequence
-    for imports: **spawn locked rolls seated on the ground** (cgq drop
-    convention, `lowest vertex + thick + 0.5*d_hat`), never dropped from height.
+11. **Airborne locked coils hover at the default `newton/velocity_tol=0.05` —
+    a convergence artifact, not lock physics** (2026-07-29). Newton's absolute
+    tolerance is `velocity_tol * dt` = 0.5 mm/iteration at dt=0.01; for a
+    lock-stiffened spool the free-fall correction stays under that and the
+    solve terminates with the spool floating (`newton=2`, "converged").
+    Reproduced with cgq's own `adhesive_tape_drop --lock` elevated +2 cm on
+    the stock wheel (hovers indefinitely at the shipped SOLVER_CFG, which
+    also uses 0.05); the demo's own FREEFALL release phase silently no-ops the
+    same way. **Tightening `velocity_tol` to 0.01 restores the physics on both
+    sides**: the native elevated coil lands within 80 frames, and the Genesis
+    `tape_lift_drop` port tracks the pull almost rigidly and lands intact
+    after release — at ~4x wall time (PCG then runs to its 1024-iteration cap
+    on most frames; 0.005 reproduces the same trajectory at ~9x, confirming
+    convergence). The lock energy is translation-invariant as documented; an
+    earlier "locks resist rigid translation" reading is superseded. Upstream
+    report: shipped-tolerance release phase produces nonphysics. Imports keep
+    the seated spawn as the cheap default; pass `solver_newton_velocity_tol=
+    0.01` when airborne locked-coil dynamics matter.
 12. **Tape placement must be baked into the mesh** (`add_tape_roll` does this):
     Genesis's FEM Mesh loader pivots `euler` about the vertex COM
     (`fem_entity.py`), and the wound coil's COM is pulled off-axis by the free

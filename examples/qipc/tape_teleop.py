@@ -109,8 +109,9 @@ def main():
     # Seat the roll on the ground (cgq drop convention: lowest coil vertex one
     # contact band above the plane). add_tape_roll bakes the transform into the
     # meshes, so this analytic height is exact. Do NOT spawn the roll high and
-    # let it fall: in bond mode the distance locks resist rigid translation
-    # (qipc engine behavior), so an airborne locked coil hovers instead of falling.
+    # let it fall: at the default newton/velocity_tol=0.05 the Newton solve stalls
+    # below abs_tol and an airborne locked coil hovers instead of falling (see
+    # tape_lift_drop.py; solver_newton_velocity_tol=0.01 restores the fall).
     quat = gu.xyz_to_quat(np.asarray(ROLL_EULER, dtype=np.float64), degrees=True)
     rot = gu.quat_to_R(quat)
     coil_rot = asset.tape_positions @ rot.T
