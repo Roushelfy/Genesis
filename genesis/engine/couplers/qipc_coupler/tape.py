@@ -194,12 +194,22 @@ def solver_cfg_to_options(solver_cfg: dict) -> dict:
 #   *_max_iter    cgq's tape values. The caps are hit on lock-heavy frames
 #                 either way, and the lower linear cap is the cheaper place
 #                 to stop.
+#   tol_rate      3e-3 instead of qipc's 1e-4. Wherever PCG is tolerance-limited
+#                 rather than cap-limited this halves its iterations for free:
+#                 on the bimanual dexhand scene (224 block rows) the median step
+#                 drops 81 -> 52ms with sub-mm end-effector difference. Scenes
+#                 where PCG already runs to its cap instead trade accuracy for
+#                 the speed -- the roll-only lift/sway timeline is 2.2x faster
+#                 but its pull-end spool height moves 0.120 -> 0.080 m against a
+#                 0.120 m native reference. Pass solver_linear_tol_rate=1e-4 to
+#                 restore the tighter solve when fidelity matters more.
 # line_search/max_iter is deliberately NOT set from the wind's 16: it stalls
 # Newton at its cap on imported rolls (see solver_cfg_to_options).
 _TAPE_SOLVER_PROFILE = dict(
     solver_newton_velocity_tol=0.01,
     solver_newton_max_iter=300,
     solver_linear_max_iter=800,
+    solver_linear_tol_rate=3e-3,
 )
 
 

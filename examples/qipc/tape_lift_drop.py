@@ -151,6 +151,13 @@ def main():
     else:
         opts.update(adhesion_bond_distance_lock=False, adhesion_bond_max_bonds=0)
     opts.update(fem_constraint_strength=SPC_STRENGTH_RATIO)  # cgq SPC_STRENGTH
+    # Tighter PCG than the shared tape profile's 3e-3. This scene is the fidelity
+    # reference, and its PCG runs to the iteration cap anyway, so the looser
+    # tolerance buys speed by losing accuracy: at 3e-3 the released spool ends at
+    # mean_z 0.081 / min_z 0.044 -- still floating 4cm up -- instead of landing
+    # (0.023 / 0.0003), i.e. the hover artifact comes back through the linear
+    # solve. Pass --linear-tol 3e-3 to see it (55s instead of 142s).
+    opts.update(solver_linear_tol_rate=1e-4)
     if args.newton_tol is not None:
         opts.update(solver_newton_velocity_tol=args.newton_tol)
     if args.linear_tol is not None:

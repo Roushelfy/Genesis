@@ -124,20 +124,6 @@ def main():
     suffix = {"bond": "lock", "soft": "soft"}[args.mode]
     asset = TapeAsset.from_npz(os.path.join(get_assets_dir(), "qipc", f"tape_roll_{suffix}.npz"))
     opts = recommended_coupler_options(asset)
-    # Looser PCG tolerance than the tape profile's (qipc's 1e-4). This scene's
-    # linear system is ~10x the roll-only one (224 block rows) and PCG is
-    # tolerance-limited on most frames rather than cap-limited, so 3e-3 halves
-    # the iterations (median 739 -> 458, at-cap 50/120 -> 19/120) for a 36%
-    # faster median step (81 -> 52ms) with no behaviour change: sub-mm palm
-    # drift, same Newton counts, tape unmoved.
-    #
-    # It stays HERE rather than in the shared profile because the same change
-    # degrades the roll-only scene, where PCG is cap-limited: 2.2x faster but
-    # the pull-end spool height drops 0.120 -> 0.080 m (native reference 0.120)
-    # and Newton climbs from 2 to 18 iterations chasing the sloppier solve.
-    # Contact-heavy grasping here was not A/B'd; pass --linear-tol 1e-4 if a
-    # grasp looks wrong.
-    opts.update(solver_linear_tol_rate=3e-3)
     if args.mode == "soft":
         opts.update(adhesion_bond_distance_lock=False, adhesion_bond_max_bonds=0)
     if args.newton_tol is not None:

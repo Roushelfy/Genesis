@@ -199,6 +199,7 @@ def test_tape_asset_parses():
     assert opts["solver_newton_velocity_tol"] == 0.01
     assert opts["solver_newton_max_iter"] == 300
     assert opts["solver_linear_max_iter"] == 800
+    assert opts["solver_linear_tol_rate"] == 3e-3
     assert "solver_line_search_max_iter" not in opts
     # ... but the opt-in translation helper maps SOLVER_CFG onto option fields
     solver_cfg = asset.params.get("SOLVER_CFG") or {}
