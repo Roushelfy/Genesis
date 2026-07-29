@@ -160,7 +160,8 @@ def main():
         opts.update(solver_newton_max_iter=args.newton_max_iter)
 
     scene = gs.Scene(
-        sim_options=gs.options.SimOptions(dt=DT, gravity=(0.0, 0.0, -9.81)),
+        # gravity -9.8 (not Genesis's usual -9.81): cgq's drop uses (0,-9.8,0)
+        sim_options=gs.options.SimOptions(dt=DT, gravity=(0.0, 0.0, -9.8)),
         coupler_options=gs.options.QIPCCouplerOptions(**opts),
         viewer_options=gs.options.ViewerOptions(
             camera_pos=(0.95, -0.55, 0.35),
@@ -169,7 +170,9 @@ def main():
         ),
         show_viewer=not headless,
     )
-    scene.add_entity(gs.morphs.Plane())
+    # Ground friction matches cgq's default_model friction_rate=0.5 (Genesis's
+    # Rigid default coup_friction=0.1 would give a tape-ground mu of ~0.22).
+    scene.add_entity(gs.morphs.Plane(), material=gs.materials.Rigid(coup_friction=float(asset.params.get("MU", 0.5))))
     cam = None
     if headless:
         cam = scene.add_camera(
