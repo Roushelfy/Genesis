@@ -193,9 +193,13 @@ def test_tape_asset_parses():
     assert extent.max() < 0.8 * asset.tape_length
     opts = tape_mod.recommended_coupler_options(asset)
     assert opts["contact_d_hat"] == asset.d_hat
-    # recommended options deliberately exclude solver knobs (defaults solve the
-    # imported-roll scene far better than the wind's own SOLVER_CFG)
-    assert not any(key.startswith("solver_") for key in opts)
+    # Measured tape solver profile, NOT the wind's SOLVER_CFG: velocity_tol
+    # 0.01 (qipc's 0.05 leaves released rolls hovering) and cgq's iteration
+    # caps, but never its line_search/max_iter=16 (stalls imported rolls).
+    assert opts["solver_newton_velocity_tol"] == 0.01
+    assert opts["solver_newton_max_iter"] == 300
+    assert opts["solver_linear_max_iter"] == 800
+    assert "solver_line_search_max_iter" not in opts
     # ... but the opt-in translation helper maps SOLVER_CFG onto option fields
     solver_cfg = asset.params.get("SOLVER_CFG") or {}
     translated = tape_mod.solver_cfg_to_options(solver_cfg)

@@ -15,19 +15,22 @@ rigid pipeline unconvexified, so its vertex ids still match the wind scene's)
 and the whole spool -- tape AND hub -- ratchets up as a unit. In soft mode the
 outer wrap peels off instead.
 
-Reference behavior (tape_roll_lock.npz, RTX PRO 6000). At qipc's DEFAULT
-newton/velocity_tol = 0.05 (Newton stops once the max per-iteration vertex
-displacement < tol*dt = 0.5mm) both cgq native and this port show the same
-loose-convergence artifact: the spool lags the pull (mean_z ~0.065 at pull
-end), ratchets up during the sway, and after release HOVERS at ~0.126 --
-Newton stalls before resolving the fall of the lock-stiffened spool.
-Tightening to --newton-tol 0.01 recovers the physical run and tracks the
-native reference closely: mean_z 0.1196 at pull end (native 0.120), 0.1250
-mid-sway (0.127), and after release the spool falls and lands intact --
-END 0.0230/hub 0.0223 vs native 0.0232/0.0222 -- in 102 s.
+Reference behavior (tape_roll_lock.npz, RTX PRO 6000): on the tape solver
+profile that recommended_coupler_options ships (velocity_tol 0.01) this port
+tracks cgq's native run closely -- mean_z 0.1196 at pull end (native 0.120),
+0.1250 mid-sway (0.127), and after release the spool falls and lands intact,
+END 0.0230/hub 0.0223 vs native 0.0232/0.0222, in ~100 s.
 
-    python examples/qipc/tape_lift_drop.py --newton-tol 0.01  # physical release
+Pass --newton-tol 0.05 to see why that profile exists. At qipc's own default
+Newton's absolute tolerance is tol*dt = 0.5mm per iteration, more than the
+lock-stiffened spool's free-fall correction, so the solve reports convergence
+with the roll floating: it lags the pull (mean_z ~0.065 at pull end), ratchets
+up through the sway, and HOVERS at ~0.126 after release instead of dropping.
+cgq native does the same at the same tolerance -- it is not a port artifact.
+
+    python examples/qipc/tape_lift_drop.py                    # viewer
     python examples/qipc/tape_lift_drop.py --video out.mp4    # headless render
+    python examples/qipc/tape_lift_drop.py --newton-tol 0.05  # the hover artifact
 """
 
 import argparse
@@ -110,22 +113,22 @@ def main():
     parser.add_argument("--settle-only", action="store_true")
     parser.add_argument("--video", type=str, default=None, help="headless: render to this mp4")
     parser.add_argument("--render-every", type=int, default=5)
+    # Solver overrides. Unset = the tape profile from recommended_coupler_options
+    # (velocity_tol 0.01, newton/max_iter 300, linear/max_iter 800).
     parser.add_argument(
         "--newton-tol", type=float, default=None,
-        help="override newton/velocity_tol (qipc default 0.05 m/s; converged when "
-             "max vertex displacement per Newton step < tol*dt)",
+        help="override newton/velocity_tol (tape default 0.01; qipc's own default 0.05 leaves "
+             "released rolls hovering -- Newton stops once max vertex displacement < tol*dt)",
     )
     parser.add_argument(
         "--linear-tol", type=float, default=None,
         help="override linear_system/tol_rate (PCG relative residual, qipc default 1e-4)",
     )
     parser.add_argument(
-        "--linear-max-iter", type=int, default=None,
-        help="override linear_system/max_iter (qipc default 1024; cgq's tape SOLVER_CFG uses 800)",
+        "--linear-max-iter", type=int, default=None, help="override linear_system/max_iter (tape default 800)",
     )
     parser.add_argument(
-        "--newton-max-iter", type=int, default=None,
-        help="override newton/max_iter (qipc default 1024; cgq's tape SOLVER_CFG uses 300)",
+        "--newton-max-iter", type=int, default=None, help="override newton/max_iter (tape default 300)",
     )
     args = parser.parse_args()
     headless = args.video is not None

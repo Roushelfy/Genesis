@@ -57,9 +57,9 @@ def main():
     # Seat the roll on the ground (cgq drop convention: lowest coil vertex one
     # contact band above the plane). add_tape_roll bakes the transform into the
     # meshes, so this analytic height is exact. Do NOT spawn the roll high and
-    # let it fall: at the default newton/velocity_tol=0.05 the Newton solve stalls
-    # below abs_tol and an airborne locked coil hovers instead of falling (see
-    # tape_lift_drop.py; solver_newton_velocity_tol=0.01 restores the fall).
+    # let it fall: this IS the settled pose, so dropping only adds a landing
+    # transient. (An airborne locked coil also needs the tighter Newton
+    # tolerance recommended_coupler_options now ships -- see tape_lift_drop.py.)
     coil_rot = asset.tape_positions @ gu.quat_to_R(gu.xyz_to_quat(np.array(ROLL_EULER), degrees=True)).T
     roll_z = -float(coil_rot[:, 2].min()) + asset.thick + 0.5 * asset.d_hat
     tape, _hub = add_tape_roll(

@@ -183,11 +183,33 @@ def solver_cfg_to_options(solver_cfg: dict) -> dict:
     return options
 
 
-def recommended_coupler_options(asset: TapeAsset) -> dict:
-    """QIPCCouplerOptions fields matching the asset's wind-time configuration.
+# Solver profile for imported tape rolls, measured on the lift/sway/release
+# timeline (examples/qipc/tape_lift_drop.py) rather than taken from the wind's
+# own SOLVER_CFG:
+#   velocity_tol  qipc's default 0.05 makes Newton's absolute tolerance
+#                 (tol*dt) 0.5mm per iteration, which a lock-stiffened coil's
+#                 free-fall correction stays under -- the solve reports
+#                 convergence with an airborne spool floating in place. 0.01
+#                 resolves the motion; 0.005 changes nothing but costs 2x.
+#   *_max_iter    cgq's tape values. The caps are hit on lock-heavy frames
+#                 either way, and the lower linear cap is the cheaper place
+#                 to stop.
+# line_search/max_iter is deliberately NOT set from the wind's 16: it stalls
+# Newton at its cap on imported rolls (see solver_cfg_to_options).
+_TAPE_SOLVER_PROFILE = dict(
+    solver_newton_velocity_tol=0.01,
+    solver_newton_max_iter=300,
+    solver_linear_max_iter=800,
+)
 
-    Solver knobs are NOT included (see solver_cfg_to_options for the opt-in
-    translation and why).
+
+def recommended_coupler_options(asset: TapeAsset) -> dict:
+    """QIPCCouplerOptions fields for importing this asset.
+
+    Contact/adhesion values come from the asset's wind-time parameters; the
+    solver fields are the measured tape profile (_TAPE_SOLVER_PROFILE), which
+    is what makes released rolls actually fall instead of hovering. Override
+    any of them by updating the returned dict.
     """
     params = asset.params
     # Respect the wind-time adhesion mode: LOCK=1 -> Phase-2 distance bonds
@@ -206,6 +228,7 @@ def recommended_coupler_options(asset: TapeAsset) -> dict:
         adhesion_bond_max_bonds=16384 if lock else 0,
         adhesion_bond_kappa=float(params.get("RCC_KAPPA", 1e6)),
         adhesion_bond_release_force=float(params.get("RCC_RELEASE_FORCE", 0.5)),
+        **_TAPE_SOLVER_PROFILE,
     )
     return options
 
