@@ -264,6 +264,9 @@ class QIPCTapeWorld:
     def tape_positions(self) -> np.ndarray:
         return self.tape.get_state().pos[0].cpu().numpy().copy()
 
+    def tape_velocities(self) -> np.ndarray:
+        return self.tape.get_state().vel[0].cpu().numpy().copy()
+
     def get_solver_statistics(self) -> QIPCSolverStatistics:
         return self.scene.sim.coupler.get_solver_statistics()
 

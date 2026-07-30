@@ -72,10 +72,13 @@ def test_tape_world_build_control_and_repeat_reset(show_viewer):
     )
     scene_identity = id(world.scene)
     initial_tape = world.tape_positions()
+    initial_tape_velocity = world.tape_velocities()
     initial_palm = world.palm_position("right")
     initial_hand = world.hand_dofs_position("right")
 
     assert np.isfinite(initial_tape).all()
+    assert initial_tape_velocity.shape == initial_tape.shape
+    assert np.isfinite(initial_tape_velocity).all()
     assert world.hub is not None
     assert world.table is not None
 
@@ -89,6 +92,7 @@ def test_tape_world_build_control_and_repeat_reset(show_viewer):
     assert np.linalg.norm(world.palm_position("right") - initial_palm) > 1e-4
     assert np.max(np.abs(world.hand_dofs_position("right") - initial_hand)) > 1e-2
     assert np.isfinite(world.tape_positions()).all()
+    assert np.isfinite(world.tape_velocities()).all()
 
     for _ in range(2):
         world.reset()
@@ -96,4 +100,5 @@ def test_tape_world_build_control_and_repeat_reset(show_viewer):
         assert world.reset_error() == 0.0
         assert not world.grip_is_closed("right")
         assert np.isfinite(world.tape_positions()).all()
+        assert np.isfinite(world.tape_velocities()).all()
         world.step()
