@@ -1,430 +1,176 @@
-"""QIPC coupler: bimanual dexhand teleoperation of a tape roll on a table.
-
-A bimanual Marvin torso with two 20-DoF Wuji hands (54 dofs) stands over a work
-table with a wound tape roll lying flat on it, hub axis up -- the gs-gym-internal
-RoboWits arena geometry, driven through QIPC so the tape is a real FEM shell with
-adhesive self-contact.
-
-Pick a hand with 1/2 (or 3 for both), fly its palm target with the keys, and
-hold Space to pinch with its thumb and index finger. The hands are adhesive against the tape
-(``beta0=1``: touch -> stick), so a closing hand that reaches the roll holds it.
-RGB gizmos mark the two palm targets; the selected one is the larger.
-
-The robot URDF is the gs-gym internal asset, resolved from --urdf,
-$QIPC_MARVIN_URDF, or the HuggingFace cache
-(``Genesis-Intelligence/internal_assets``: marvin_wuji_capsule_scaled.urdf).
+"""Keyboard teleoperation for the reusable Marvin Wuji QIPC tape world.
 
 Keyboard Controls:
     1 / 2 / 3   - control the right hand / left hand / both
-    Arrow keys  - Move the selected palm target in XY
-    J/K         - Move down/up
-    N/M         - Yaw left/right
-    U/O         - Pitch up/down
-    L/;         - Roll left/right
-    Space       - Hold to close the selected thumb/index, release to open
-    Backslash   - Reset targets to the current palm poses
-    Esc         - Quit
+    Arrow keys  - move the selected palm target in XY
+    J/K         - move down/up
+    N/M         - yaw left/right
+    U/O         - pitch up/down
+    L/;         - roll left/right
+    Space       - hold to close the selected thumb/index, release to open
+    Backslash   - reset targets to the current palm poses
+    Esc         - quit
 """
 
 import argparse
-import glob
-import os
 import time
 
 import numpy as np
 
 import genesis as gs
 import genesis.utils.geom as gu
-from genesis.utils.misc import get_assets_dir
 from genesis.vis.keybindings import Key, KeyAction, Keybind
 
-DELTA_POS = 0.003  # per HOLD callback, i.e. per sim step
+DELTA_POS = 0.003
 DELTA_ROT = 0.02
-DT = 0.01
-GRIP_SPEED = 2.0
-MAX_GRIP_STEP = GRIP_SPEED * DT
-MAX_ARM_COMMAND_STEP = 0.03
-
-# gs-gym-internal RoboWits arena: a 0.76m work table 0.6m in front of a torso
-# mounted at 1.08m (gs_gym/envs/robowits/robowits.py).
-TABLE_POS = (0.597, 0.0, 0.38)
-TABLE_SIZE = (0.85, 1.5, 0.76)
-TABLE_TOP = TABLE_POS[2] + 0.5 * TABLE_SIZE[2]
-ROBOT_POS = (0.0, 0.0, 1.08)
-# Right palm's resting xy at INIT_ARM_DEG (measured; see the build check below).
-ROLL_XY = (0.379, -0.25)
-
-ARM_JOINTS = {"right": [f"Joint{i}_R" for i in range(1, 8)], "left": [f"Joint{i}_L" for i in range(1, 8)]}
-HAND_JOINTS = {
-    side: [f"{side}_hand_finger{f}_joint{j}" for f in range(1, 6) for j in range(1, 5)]
-    for side in ("right", "left")
-}
-PALM_LINK = {"right": "right_hand_palm_link", "left": "left_hand_palm_link"}
-# gs-gym's reset pose (BimanualMarvinWujiRobot._INIT_{RIGHT,LEFT}_DEG)
-INIT_ARM_DEG = {"right": (-110, -75, 90, -110, -75, 0, 0), "left": (110, -75, -90, -110, 75, 0, 0)}
-# gs-gym's gains; the URDF carries no actuator gains, so without these the
-# coupler leaves every joint at its kp=100 fallback and the arms sag.
-ARM_KP = (7200, 7200, 7200, 3600, 3600, 3600, 3600)
-ARM_KV = (600, 600, 600, 400, 200, 200, 200)
-HAND_KP, HAND_KV = 50.0, 0.5
-HAND_EFFORT_SCALE = 8.0
-ARM_FORCE_LIMIT = 2000.0
 
 
-def resolve_urdf(explicit: str | None) -> str:
-    if explicit:
-        return explicit
-    env = os.environ.get("QIPC_MARVIN_URDF", "")
-    if env:
-        return env
-    roots = [
-        os.environ.get("HF_HOME", ""),
-        os.path.join(os.environ.get("XDG_CACHE_HOME", ""), "huggingface") if os.environ.get("XDG_CACHE_HOME") else "",
-        os.path.expanduser("~/.cache/huggingface"),
-    ]
-    for root in filter(None, roots):
-        hits = sorted(glob.glob(os.path.join(
-            root, "hub/datasets--Genesis-Intelligence--internal_assets/snapshots/*/"
-            "*/marvin_robots/assemble/marvin_wuji_capsule_scaled.urdf")))
-        if hits:
-            return hits[-1]
-    gs.raise_exception(
-        "Marvin/Wuji URDF not found. Pass --urdf, set QIPC_MARVIN_URDF, or download "
-        "Genesis-Intelligence/internal_assets from HuggingFace "
-        f"(searched: {[r for r in roots if r]})."
-    )
-
-
-def main():
+def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--urdf", type=str, default=None, help="marvin_wuji_capsule_scaled.urdf")
     parser.add_argument("--mode", choices=["bond", "soft"], default="bond", help="tape adhesion mode")
-    parser.add_argument("--sticky-hands", action=argparse.BooleanOptionalAction, default=True,
-                        help="adhesive contact between the hands and the tape (touch -> stick)")
-    parser.add_argument("--headless-steps", type=int, default=0,
-                        help="debug: run N steps without the viewer and exit")
-    parser.add_argument("--probe-close-step", type=int, default=None,
-                        help="headless step at which the right thumb/index start closing")
-    parser.add_argument("--probe-release-step", type=int, default=None,
-                        help="headless step at which the right thumb/index are released")
-    # Solver overrides on top of the tape profile (velocity_tol 0.01,
-    # newton/max_iter 300, linear/max_iter 800; linear tol_rate stays at qipc's 1e-4).
-    parser.add_argument("--newton-tol", type=float, default=None, help="override newton/velocity_tol")
-    parser.add_argument("--linear-tol", type=float, default=None, help="override linear_system/tol_rate")
-    parser.add_argument("--linear-max-iter", type=int, default=None, help="override linear_system/max_iter")
-    args = parser.parse_args()
-
-    gs.init(precision="64", logging_level="info")
-    from genesis.engine.couplers.qipc_coupler.tape import (
-        TapeAsset,
-        add_tape_roll,
-        recommended_coupler_options,
+    parser.add_argument(
+        "--sticky-hands",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="adhesive contact between the hands and tape",
     )
-
-    suffix = {"bond": "lock", "soft": "soft"}[args.mode]
-    asset = TapeAsset.from_npz(os.path.join(get_assets_dir(), "qipc", f"tape_roll_{suffix}.npz"))
-    opts = recommended_coupler_options(asset)
-    # Looser Newton tolerance than the tape profile's 3.8e-3, for interactive
-    # rate: this scene's linear system is ~10x the roll-only one (224 block
-    # rows), and at 3.8e-3 PCG runs into its cap on half the frames -- 228ms
-    # median step vs 50ms at 0.01, i.e. 4fps vs 20fps under the viewer. The
-    # tape here rests on a table rather than hanging from a lock, so the
-    # airborne-spool convergence artifact that tolerance guards against does
-    # not arise; palm drift while pinching stays sub-mm either way.
-    opts.update(solver_newton_velocity_tol=0.01)
-    if args.mode == "soft":
-        opts.update(adhesion_bond_distance_lock=False, adhesion_bond_max_bonds=0)
-    if args.newton_tol is not None:
-        opts.update(solver_newton_velocity_tol=args.newton_tol)
-    if args.linear_tol is not None:
-        opts.update(solver_linear_tol_rate=args.linear_tol)
-    if args.linear_max_iter is not None:
-        opts.update(solver_linear_max_iter=args.linear_max_iter)
-
-    scene = gs.Scene(
-        sim_options=gs.options.SimOptions(dt=DT, gravity=(0.0, 0.0, -9.8)),
-        coupler_options=gs.options.QIPCCouplerOptions(**opts),
-        viewer_options=gs.options.ViewerOptions(
-            camera_pos=(1.1, -0.95, 1.35),
-            camera_lookat=(0.45, 0.0, 0.85),
-            camera_fov=45,
-        ),
-        show_viewer=args.headless_steps == 0,
+    parser.add_argument(
+        "--headless-steps",
+        type=int,
+        default=0,
+        help="run N steps without the viewer and exit",
     )
-    # No ground Plane: the table box reaches down to z=0, and QIPC's halfplane
-    # kernel asserts d > 0 for every vertex, so a table flush on the ground trips
-    # the coupler's build preflight. Everything here rests on the table.
-
-    robot = scene.add_entity(
-        morph=gs.morphs.URDF(
-            file=resolve_urdf(args.urdf),
-            pos=ROBOT_POS,
-            euler=(0.0, 0.0, 0.0),
-            fixed=True,
-            merge_fixed_links=False,  # the palm links hang off fixed joints
-            requires_jac_and_IK=True,
-            convexify=True,
-            collision=True,
-            links_to_keep=list(PALM_LINK.values()),
-        ),
-        material=gs.materials.Rigid(
-            coup_friction=1.0,
-            qipc_abd_kappa=1e8,
-            qipc_kappa_pivot=1e7,
-            qipc_kappa_axis=1e7,
-            # Widen the robot's contact band: capsule collision meshes vs a
-            # 0.18mm tape band.
-            qipc_d_hat=1e-3,
-            # This robot's capsules overlap by construction (Genesis filters the
-            # same pairs for its own solver at qpos0). Left on, the IPC barrier
-            # fights those overlaps every step and the arms track their PD
-            # targets 3.5x worse (joint error 0.30 rad vs 0.085).
-            qipc_self_contact=False,
-        ),
+    parser.add_argument(
+        "--probe-close-step",
+        type=int,
+        default=None,
+        help="headless step at which the right thumb/index start closing",
     )
-
-    # Joint indices resolve before build, so the home pose can be mapped BY NAME
-    # into the entity's own dof order (Genesis orders dofs by tree traversal:
-    # right arm, right hand, left arm, left hand -- not the URDF's document
-    # order) and handed to the coupler, which builds the ABD bodies at that pose.
-    dofs = {
-        (kind, side): [robot.get_joint(n).dofs_idx_local[0] for n in names[side]]
-        for kind, names in (("arm", ARM_JOINTS), ("hand", HAND_JOINTS))
-        for side in ("right", "left")
-    }
-    home = np.zeros(robot.n_qs, dtype=np.float64)
-    for side in ("right", "left"):
-        home[dofs[("arm", side)]] = np.deg2rad(INIT_ARM_DEG[side])
-    robot.material.qipc_home_qpos = home.tolist()
-    hand_effort = {
-        (side, d): max(abs(float(v)) for v in robot.get_joint(name).dofs_force_range[0])
-        for side in ("right", "left")
-        for name, d in zip(HAND_JOINTS[side], dofs[("hand", side)], strict=True)
-    }
-
-    scene.add_entity(
-        morph=gs.morphs.Box(pos=TABLE_POS, size=TABLE_SIZE, fixed=True, collision=True),
-        material=gs.materials.Rigid(coup_friction=0.8),
-        surface=gs.surfaces.Default(color=(0.62, 0.6, 0.58)),
+    parser.add_argument(
+        "--probe-release-step",
+        type=int,
+        default=None,
+        help="headless step at which the right thumb/index are released",
     )
+    parser.add_argument("--newton-tol", type=float, default=0.01)
+    parser.add_argument("--linear-tol", type=float, default=None)
+    parser.add_argument("--linear-max-iter", type=int, default=None)
+    return parser.parse_args()
 
-    # Put the roll under the right palm's home position: the arm's workspace is
-    # smaller than the table, and a roll at the table centre (0.56m from the
-    # base) is out of reach -- IK stalls 15cm short there. FK needs a built
-    # scene, so this is the measured home palm xy for INIT_ARM_DEG; the build
-    # check below flags it if the home pose changes.
-    palm_home = np.array(ROLL_XY, dtype=np.float64)
-    lowest = min(float(asset.tape_positions[:, 2].min()), -0.5 * asset.hub_height)
-    roll_z = TABLE_TOP - lowest + asset.thick + 0.5 * asset.d_hat
-    tape, _hub = add_tape_roll(
-        scene, asset,
-        pos=(float(palm_home[0]), float(palm_home[1]), roll_z),
-        euler=(0.0, 0.0, 0.0),  # hub axis up: the roll lies flat
-        with_hub=True, hub_fixed=False,
-        tape_surface=gs.surfaces.Plastic(color=(0.85, 0.75, 0.3, 1.0)),
-        hub_surface=gs.surfaces.Plastic(color=(0.4, 0.25, 0.15, 1.0)),
-    )
-    if args.sticky_hands:
-        scene.sim.coupler.add_adhesion(
-            tape, robot,
-            Cn=float(asset.params.get("CN", 1.0)),
-            Ct=float(asset.params.get("CT", 1.0)),
-            W=float(asset.params.get("ADH_W", 1.0)),
-            eta=float(asset.params.get("ETA", 100.0)),
-            bonding_rate=1.0,
-            beta0=1.0,  # touch -> stick
-            friction=1.0,
-        )
 
-    scene.build()
+def _run_headless(world, args: argparse.Namespace) -> None:
+    initial_palm = None
+    step_ms = []
+    newton_iterations = []
+    pcg_iterations = []
 
-    # PD gains, mapped through the coupler's JointCollection row order.
-    coupler = scene.sim.coupler
-    jc = coupler._jc
-    jc_row = {int(d): i for i, d in enumerate(coupler._genesis_dof_order.cpu().numpy())}
-    for side in ("right", "left"):
-        for k, d in enumerate(dofs[("arm", side)]):
-            jc[jc_row[d]].set_dofs_kp(float(ARM_KP[k]))
-            jc[jc_row[d]].set_dofs_kv(float(ARM_KV[k]))
-            jc[jc_row[d]].set_dofs_force_range(-ARM_FORCE_LIMIT, ARM_FORCE_LIMIT)
-        for d in dofs[("hand", side)]:
-            jc[jc_row[d]].set_dofs_kp(HAND_KP)
-            jc[jc_row[d]].set_dofs_kv(HAND_KV)
-            effort = HAND_EFFORT_SCALE * hand_effort[(side, d)]
-            jc[jc_row[d]].set_dofs_force_range(-effort, effort)
+    for step in range(args.headless_steps):
+        if step == args.probe_close_step:
+            world.set_grip("right", True)
+            initial_palm = world.palm_position("right")
+            print("[probe] closing right thumb/index", flush=True)
+        if step == args.probe_release_step:
+            world.set_grip("right", False)
+            print("[probe] opening right thumb/index", flush=True)
 
-    robot.set_qpos(home)
-    for key, idx in dofs.items():
-        robot.control_dofs_position(home[idx], dofs_idx_local=idx)
+        start = time.perf_counter()
+        stats = world.step()
+        step_ms.append((time.perf_counter() - start) * 1e3)
+        newton_iterations.append(stats.newton_iters)
+        pcg_iterations.append(stats.max_pcg_iters)
 
-    # Check the roll landed under the hand only AFTER set_qpos: Scene.build's own
-    # reset leaves Genesis's link states at ITS init qpos (arms straight out),
-    # not at the coupler's home pose, so reading the palm any earlier reports a
-    # pose the simulation never has.
-    palm_now = robot.get_link(PALM_LINK["right"]).get_pos().reshape(-1)[:3].cpu().numpy()
-    if np.linalg.norm(palm_now[:2] - palm_home) > 0.05:
-        gs.logger.warning(
-            f"right palm rests at {np.round(palm_now[:2], 3)} but the roll was placed at "
-            f"{np.round(palm_home, 3)}: update ROLL_XY for this home pose or the roll is out of reach."
-        )
-    gs.logger.info(f"tape mode={args.mode} roll at {np.round(palm_home, 3)} z={roll_z:.4f} "
-                   f"right palm {np.round(palm_now, 3)}")
-
-    # Thumb/index pinch postures. The other three fingers remain open.
-    postures = {}
-    for side in ("right", "left"):
-        for closed in (False, True):
-            vals = []
-            for name in HAND_JOINTS[side]:
-                finger = int(name.split("finger", 1)[1].split("_", 1)[0])
-                joint = int(name.rsplit("joint", 1)[1])
-                lo, hi = (float(v) for v in robot.get_joint(name).dofs_limit[0])
-                if closed and finger == 1:
-                    want = (0.9, 0.35, 0.9, 0.9)[joint - 1]
-                elif closed and finger == 2:
-                    want = (0.95, 0.0, 0.95, 0.95)[joint - 1]
-                else:
-                    want = 0.08 if (finger == 1 and joint == 1) else 0.0
-                vals.append(min(max(want, lo), hi))
-            postures[(side, closed)] = np.array(vals)
-
-    palms = {side: robot.get_link(PALM_LINK[side]) for side in ("right", "left")}
-    target_pos, target_quat, init_pos, init_quat = {}, {}, {}, {}
-    for side, link in palms.items():
-        init_pos[side] = link.get_pos().reshape(-1)[:3].cpu().numpy().astype(gs.np_float).copy()
-        init_quat[side] = link.get_quat().reshape(-1)[:4].cpu().numpy().astype(gs.np_float).copy()
-        target_pos[side] = init_pos[side].copy()
-        target_quat[side] = init_quat[side].copy()
-    qpos_cmd = home.copy()
-    closed = {"right": False, "left": False}
-    hand_cmd = {side: postures[(side, False)].copy() for side in ("right", "left")}
-
-    def servo_step():
-        for side in ("right", "left"):
-            arm = dofs[("arm", side)]
-            qpos = robot.inverse_kinematics(
-                link=palms[side],
-                pos=target_pos[side],
-                quat=target_quat[side],
-                init_qpos=qpos_cmd,
-                max_samples=1,
-                max_solver_iters=30,
-                dofs_idx_local=arm,
+        if step in {
+            args.probe_close_step,
+            args.probe_release_step,
+            args.headless_steps - 1,
+        }:
+            hand = world.hand_dofs_position("right")
+            torque = world.hand_dofs_applied_force("right")
+            print(
+                f"[probe] step={step:03d} palm={np.round(world.palm_position('right'), 4)} "
+                f"hand=[{hand.min():.3f},{hand.max():.3f}] "
+                f"max_tau={np.abs(torque).max():.3f} "
+                f"newton={stats.newton_iters} pcg={stats.max_pcg_iters} "
+                f"{step_ms[-1]:.0f}ms",
+                flush=True,
             )
-            qn = qpos.cpu().numpy() if hasattr(qpos, "cpu") else np.asarray(qpos)
-            delta = np.clip(qn[arm] - qpos_cmd[arm], -MAX_ARM_COMMAND_STEP, MAX_ARM_COMMAND_STEP)
-            qpos_cmd[arm] += delta
-            robot.control_dofs_position(qpos_cmd[arm], dofs_idx_local=arm)
-            goal = postures[(side, closed[side])]
-            hand_cmd[side] += np.clip(goal - hand_cmd[side], -MAX_GRIP_STEP, MAX_GRIP_STEP)
-            robot.control_dofs_position(hand_cmd[side], dofs_idx_local=dofs[("hand", side)])
-        scene.step()
-        scene.rigid_solver._func_update_geoms(scene._envs_idx)
 
-    if args.headless_steps > 0:
-        initial_palm = None
-        qs = coupler._scene.solver
-        step_ms, newtons, pcgs = [], [], []
-        for step in range(args.headless_steps):
-            if step == args.probe_close_step:
-                closed["right"] = True
-                initial_palm = palms["right"].get_pos().reshape(-1)[:3].cpu().numpy().copy()
-                print("[probe] closing right thumb/index", flush=True)
-            if step == args.probe_release_step:
-                closed["right"] = False
-                print("[probe] opening right thumb/index", flush=True)
-            t0 = time.perf_counter()
-            servo_step()
-            step_ms.append((time.perf_counter() - t0) * 1e3)
-            newtons.append(int(qs.newton_iters))
-            pcgs.append(int(qs.max_pcg_iters))
-            if step in {
-                args.probe_close_step,
-                args.probe_release_step,
-                args.headless_steps - 1,
-            }:
-                palm = palms["right"].get_pos().reshape(-1)[:3].cpu().numpy()
-                rows = [jc_row[d] for d in dofs[("hand", "right")]]
-                theta = jc.get_dofs_position().cpu().numpy()
-                torque = jc.get_dofs_applied_force().cpu().numpy()
-                print(
-                    f"[probe] step={step:03d} palm={np.round(palm, 4)} "
-                    f"hand=[{theta[rows].min():.3f},{theta[rows].max():.3f}] "
-                    f"max_tau={np.abs(torque[rows]).max():.3f} "
-                    f"newton={newtons[-1]} pcg={pcgs[-1]} {step_ms[-1]:.0f}ms",
-                    flush=True,
-                )
-        pos = tape.get_state().pos[0].cpu().numpy()
-        drift = (
-            float(np.linalg.norm(palms["right"].get_pos().reshape(-1)[:3].cpu().numpy() - initial_palm))
-            if initial_palm is not None
-            else 0.0
-        )
-        cap = opts["solver_linear_max_iter"]
-        print(f"[headless] step ms median={np.median(step_ms):.0f} mean={np.mean(step_ms):.0f} "
-              f"max={max(step_ms):.0f} | newton max={max(newtons)} | pcg median={np.median(pcgs):.0f} "
-              f"max={max(pcgs)} at_cap={sum(p >= cap for p in pcgs)}/{len(pcgs)} "
-              f"(tol_rate={opts.get('solver_linear_tol_rate', 'qipc default 1e-4')})", flush=True)
-        print(f"[headless] tape z=[{pos[:, 2].min():.4f},{pos[:, 2].max():.4f}] "
-              f"finite={np.isfinite(pos).all()} palm_drift={drift:.4f}m "
-              f"right_palm={np.round(palms['right'].get_pos().reshape(-1)[:3].cpu().numpy(), 3)}",
-              flush=True)
-        return
+    tape_positions = world.tape_positions()
+    drift = float(np.linalg.norm(world.palm_position("right") - initial_palm)) if initial_palm is not None else 0.0
+    linear_cap = int(world.coupler_options["solver_linear_max_iter"])
+    print(
+        f"[headless] step ms median={np.median(step_ms):.0f} "
+        f"mean={np.mean(step_ms):.0f} max={max(step_ms):.0f} | "
+        f"newton max={max(newton_iterations)} | "
+        f"pcg median={np.median(pcg_iterations):.0f} max={max(pcg_iterations)} "
+        f"at_cap={sum(value >= linear_cap for value in pcg_iterations)}/{len(pcg_iterations)} "
+        f"(tol_rate={world.coupler_options['solver_linear_tol_rate']})",
+        flush=True,
+    )
+    print(
+        f"[headless] tape z=[{tape_positions[:, 2].min():.4f},"
+        f"{tape_positions[:, 2].max():.4f}] "
+        f"finite={np.isfinite(tape_positions).all()} palm_drift={drift:.4f}m "
+        f"right_palm={np.round(world.palm_position('right'), 3)}",
+        flush=True,
+    )
 
-    if scene.viewer is None:
+
+def _run_interactive(world) -> None:
+    if world.scene.viewer is None:
         gs.logger.warning("Viewer is not active. Keyboard input requires the Genesis viewer.")
         return
-    scene.viewer.update(force=True)
+    world.scene.viewer.update(force=True)
 
     active = {"right"}
-    gizmo = {
-        side: scene.draw_debug_frame(
-            T=gu.trans_quat_to_T(target_pos[side], target_quat[side]),
-            axis_length=0.12, origin_size=0.008, axis_radius=0.005,
+    gizmos = {
+        side: world.scene.draw_debug_frame(
+            T=gu.trans_quat_to_T(*world.palm_target(side)),
+            axis_length=0.12,
+            origin_size=0.008,
+            axis_radius=0.005,
         )
         for side in ("right", "left")
     }
-    is_running = True
-    space_active = set()
+    running = True
+    gripping = set()
 
-    def select(sides):
+    def select(sides) -> None:
         active.clear()
         active.update(sides)
-        gs.logger.info(f"controlling: {'+'.join(sorted(active))}")
+        gs.logger.info(f"Controlling: {'+'.join(sorted(active))}")
 
-    def move(dpos_xyz):
+    def move(delta) -> None:
         for side in active:
-            target_pos[side][:] += dpos_xyz
+            world.move_palm_target(side, delta)
 
-    def rotate(axis_idx, delta):
-        delta_xyz = np.zeros(3, dtype=gs.np_float)
-        delta_xyz[axis_idx] = delta
+    def rotate(axis: int, amount: float) -> None:
+        delta = np.zeros(3, dtype=gs.np_float)
+        delta[axis] = amount
         for side in active:
-            target_quat[side][:] = gu.transform_quat_by_quat(target_quat[side], gu.xyz_to_quat(delta_xyz))
+            world.rotate_palm_target(side, delta)
 
-    def reset_targets():
-        for side in ("right", "left"):
-            target_pos[side][:] = palms[side].get_pos().reshape(-1)[:3].cpu().numpy()
-            target_quat[side][:] = palms[side].get_quat().reshape(-1)[:4].cpu().numpy()
-
-    def set_grip(is_closed):
-        if is_closed:
-            space_active.clear()
-            space_active.update(active)
-            for side in space_active:
-                closed[side] = True
+    def set_grip(closed: bool) -> None:
+        if closed:
+            gripping.clear()
+            gripping.update(active)
+            for side in gripping:
+                world.set_grip(side, True)
         else:
-            for side in space_active:
-                closed[side] = False
-            space_active.clear()
-        gs.logger.info(f"grip: right={'closed' if closed['right'] else 'open'} "
-                       f"left={'closed' if closed['left'] else 'open'}")
+            for side in gripping:
+                world.set_grip(side, False)
+            gripping.clear()
+        gs.logger.info(
+            f"Grip: right={'closed' if world.grip_is_closed('right') else 'open'} "
+            f"left={'closed' if world.grip_is_closed('left') else 'open'}"
+        )
 
-    def stop():
-        nonlocal is_running
-        is_running = False
+    def stop() -> None:
+        nonlocal running
+        running = False
 
-    scene.viewer.register_keybinds(
+    world.scene.viewer.register_keybinds(
         Keybind("select_right", Key._1, KeyAction.RELEASE, callback=select, args=({"right"},)),
         Keybind("select_left", Key._2, KeyAction.RELEASE, callback=select, args=({"left"},)),
         Keybind("select_both", Key._3, KeyAction.RELEASE, callback=select, args=({"right", "left"},)),
@@ -440,28 +186,52 @@ def main():
         Keybind("pitch_down", Key.O, KeyAction.HOLD, callback=rotate, args=(1, -DELTA_ROT)),
         Keybind("roll_left", Key.L, KeyAction.HOLD, callback=rotate, args=(0, DELTA_ROT)),
         Keybind("roll_right", Key.SEMICOLON, KeyAction.HOLD, callback=rotate, args=(0, -DELTA_ROT)),
-        Keybind("reset_targets", Key.BACKSLASH, KeyAction.RELEASE, callback=reset_targets),
+        Keybind("reset_targets", Key.BACKSLASH, KeyAction.RELEASE, callback=world.reset_targets),
         Keybind("close_grip", Key.SPACE, KeyAction.PRESS, callback=set_grip, args=(True,)),
         Keybind("open_grip", Key.SPACE, KeyAction.RELEASE, callback=set_grip, args=(False,)),
         Keybind("quit", Key.ESCAPE, KeyAction.RELEASE, callback=stop),
         overwrite=True,
     )
     gs.logger.info(
-        "keys: 1/2/3 pick hand(s), arrows+J/K move, N/M U/O L/; rotate, "
-        "hold Space to pinch, release to open, \\ reset, Esc quit"
+        "Keys: 1/2/3 pick hand(s), arrows+J/K move, N/M U/O L/; rotate, "
+        "hold Space to pinch, release to open, \\ reset targets, Esc quit"
     )
 
     try:
-        while is_running and scene.viewer.is_alive():
-            scene.update_debug_objects(
-                tuple(gizmo[s] for s in ("right", "left")),
-                tuple(gu.trans_quat_to_T(target_pos[s], target_quat[s]) for s in ("right", "left")),
+        while running and world.scene.viewer.is_alive():
+            world.scene.update_debug_objects(
+                tuple(gizmos[side] for side in ("right", "left")),
+                tuple(gu.trans_quat_to_T(*world.palm_target(side)) for side in ("right", "left")),
             )
-            servo_step()
+            world.step()
     except KeyboardInterrupt:
         gs.logger.info("Simulation interrupted, exiting.")
-    finally:
-        gs.logger.info("Simulation finished.")
+
+
+def main() -> None:
+    args = _parse_args()
+    gs.init(precision="64", logging_level="info")
+
+    from genesis.engine.couplers.qipc_coupler.tape_world import (
+        TapeWorldConfig,
+        build_qipc_tape_world,
+    )
+
+    world = build_qipc_tape_world(
+        TapeWorldConfig(
+            mode=args.mode,
+            sticky_hands=args.sticky_hands,
+            newton_velocity_tol=args.newton_tol,
+            linear_tol_rate=args.linear_tol,
+            linear_max_iter=args.linear_max_iter,
+            show_viewer=args.headless_steps == 0,
+            urdf_path=args.urdf,
+        )
+    )
+    if args.headless_steps > 0:
+        _run_headless(world, args)
+    else:
+        _run_interactive(world)
 
 
 if __name__ == "__main__":

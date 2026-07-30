@@ -88,6 +88,15 @@ class FemConstraintRecord:
     link_offsets: torch.Tensor | None = None  # (n, 3) f64 cuda, in link frame
 
 
+class QIPCSolverStatistics(NamedTuple):
+    """Per-step QIPC solver statistics exposed without leaking the native solver."""
+
+    step_ms: float
+    newton_iters: int
+    max_pcg_iters: int
+    max_line_search_iters: int
+
+
 # ---------------------------------------------------------------------------
 # Rodrigues rotation
 # ---------------------------------------------------------------------------
@@ -101,9 +110,7 @@ def _rodrigues(axis: np.ndarray, theta: float) -> np.ndarray:
     axis = axis / np.linalg.norm(axis)
     c = np.cos(theta)
     s = np.sin(theta)
-    K = np.array([[0, -axis[2], axis[1]],
-                  [axis[2], 0, -axis[0]],
-                  [-axis[1], axis[0], 0]], dtype=np.float64)
+    K = np.array([[0, -axis[2], axis[1]], [axis[2], 0, -axis[0]], [-axis[1], axis[0], 0]], dtype=np.float64)
     return np.eye(3, dtype=np.float64) * c + (1 - c) * np.outer(axis, axis) + s * K
 
 
@@ -114,9 +121,15 @@ def _rodrigues(axis: np.ndarray, theta: float) -> np.ndarray:
 
 @qd.func
 def _func_mat3_to_quat(
-    r00: gs.qd_float, r01: gs.qd_float, r02: gs.qd_float,
-    r10: gs.qd_float, r11: gs.qd_float, r12: gs.qd_float,
-    r20: gs.qd_float, r21: gs.qd_float, r22: gs.qd_float,
+    r00: gs.qd_float,
+    r01: gs.qd_float,
+    r02: gs.qd_float,
+    r10: gs.qd_float,
+    r11: gs.qd_float,
+    r12: gs.qd_float,
+    r20: gs.qd_float,
+    r21: gs.qd_float,
+    r22: gs.qd_float,
 ):
     """3x3 matrix -> quaternion (w,x,y,z) via Shepperd's method."""
     trace = r00 + r11 + r22
@@ -166,9 +179,15 @@ def _func_q12_to_T(t, R):
 def _func_R_to_quat(R):
     """3x3 rotation matrix to quaternion (w,x,y,z) via Shepperd's method."""
     return _func_mat3_to_quat(
-        R[0, 0], R[0, 1], R[0, 2],
-        R[1, 0], R[1, 1], R[1, 2],
-        R[2, 0], R[2, 1], R[2, 2],
+        R[0, 0],
+        R[0, 1],
+        R[0, 2],
+        R[1, 0],
+        R[1, 1],
+        R[1, 2],
+        R[2, 0],
+        R[2, 1],
+        R[2, 2],
     )
 
 
@@ -202,20 +221,24 @@ def _kernel_qipc_writeback(
 
         T_body = _func_q12_to_T(
             qd.Vector([abd_q[i_b, 0], abd_q[i_b, 1], abd_q[i_b, 2]]),
-            qd.Matrix([
-                [abd_q[i_b, 3], abd_q[i_b, 4], abd_q[i_b, 5]],
-                [abd_q[i_b, 6], abd_q[i_b, 7], abd_q[i_b, 8]],
-                [abd_q[i_b, 9], abd_q[i_b, 10], abd_q[i_b, 11]],
-            ]),
+            qd.Matrix(
+                [
+                    [abd_q[i_b, 3], abd_q[i_b, 4], abd_q[i_b, 5]],
+                    [abd_q[i_b, 6], abd_q[i_b, 7], abd_q[i_b, 8]],
+                    [abd_q[i_b, 9], abd_q[i_b, 10], abd_q[i_b, 11]],
+                ]
+            ),
         )
 
         T_rel = _func_q12_to_T(
             qd.Vector([rel_transforms[i, 0], rel_transforms[i, 1], rel_transforms[i, 2]]),
-            qd.Matrix([
-                [rel_transforms[i, 3], rel_transforms[i, 4], rel_transforms[i, 5]],
-                [rel_transforms[i, 6], rel_transforms[i, 7], rel_transforms[i, 8]],
-                [rel_transforms[i, 9], rel_transforms[i, 10], rel_transforms[i, 11]],
-            ]),
+            qd.Matrix(
+                [
+                    [rel_transforms[i, 3], rel_transforms[i, 4], rel_transforms[i, 5]],
+                    [rel_transforms[i, 6], rel_transforms[i, 7], rel_transforms[i, 8]],
+                    [rel_transforms[i, 9], rel_transforms[i, 10], rel_transforms[i, 11]],
+                ]
+            ),
         )
 
         T_link = T_body @ T_rel
@@ -297,7 +320,9 @@ class QIPCCoupler(RBC):
         """
         if hasattr(self, "_scene"):
             gs.raise_exception("QIPCCoupler.set_fem_rest_positions must be called before scene.build().")
-        rest = np.ascontiguousarray(tensor_to_array(rest_verts) if torch.is_tensor(rest_verts) else rest_verts, dtype=np.float64)
+        rest = np.ascontiguousarray(
+            tensor_to_array(rest_verts) if torch.is_tensor(rest_verts) else rest_verts, dtype=np.float64
+        )
         if rest.ndim != 2 or rest.shape[1] != 3:
             gs.raise_exception("QIPCCoupler.set_fem_rest_positions: rest_verts must have shape (n_verts, 3).")
         self._fem_rest_positions[entity] = rest
@@ -346,9 +371,7 @@ class QIPCCoupler(RBC):
         for entity, link, strength in self._stc_requests:
             pre = pre_by_entity.get(entity)
             if pre is None:
-                gs.raise_exception(
-                    "QIPCCoupler.enable_soft_transform: entity is not a coupled ABD rigid entity."
-                )
+                gs.raise_exception("QIPCCoupler.enable_soft_transform: entity is not a coupled ABD rigid entity.")
             link_local = self._resolve_link_local(entity, link)
             rep = pre.link_to_rep.get(link_local)
             slot = pre.group_slots.get(rep)
@@ -484,9 +507,7 @@ class QIPCCoupler(RBC):
             all_jcs.extend(pre.joint_collections)
             all_genesis_dof_indices.extend(pre.genesis_dof_indices)
 
-        self._jc: JointCollection | None = (
-            JointCollection.merge(all_jcs) if all_jcs else None
-        )
+        self._jc: JointCollection | None = JointCollection.merge(all_jcs) if all_jcs else None
         self._genesis_dof_order: torch.Tensor = torch.tensor(
             all_genesis_dof_indices, dtype=torch.int64, device=gs.device
         )
@@ -511,9 +532,7 @@ class QIPCCoupler(RBC):
         free_base_entries: list[FreeBaseEntry] = []
 
         for pre in all_pre_inits:
-            link_indices, body_indices, rel_transforms, free_entry = (
-                self._resolve_post_init(pre)
-            )
+            link_indices, body_indices, rel_transforms, free_entry = self._resolve_post_init(pre)
             all_link_indices.extend(link_indices)
             all_body_indices.extend(body_indices)
             all_rel_transforms.extend(rel_transforms)
@@ -523,33 +542,19 @@ class QIPCCoupler(RBC):
         self._free_base_entries: list[FreeBaseEntry] = free_base_entries
 
         # --- Build GPU tensors for writeback ---
-        self._link_indices_t: torch.Tensor = torch.tensor(
-            all_link_indices, dtype=torch.int32, device=gs.device
-        )
-        self._body_indices_t: torch.Tensor = torch.tensor(
-            all_body_indices, dtype=torch.int64, device=gs.device
-        )
+        self._link_indices_t: torch.Tensor = torch.tensor(all_link_indices, dtype=torch.int32, device=gs.device)
+        self._body_indices_t: torch.Tensor = torch.tensor(all_body_indices, dtype=torch.int64, device=gs.device)
 
         rel_data = np.zeros((len(all_rel_transforms), 12), dtype=np.float64)
         for i, rt in enumerate(all_rel_transforms):
             rel_data[i] = rt
-        self._rel_transforms_t: torch.Tensor = torch.tensor(
-            rel_data, dtype=torch.float64, device=gs.device
-        )
+        self._rel_transforms_t: torch.Tensor = torch.tensor(rel_data, dtype=torch.float64, device=gs.device)
 
         n_controlled_dofs = len(all_genesis_dof_indices)
-        self._dof_indices_t: torch.Tensor = torch.tensor(
-            all_genesis_dof_indices, dtype=torch.int32, device=gs.device
-        )
-        self._wb_dofs_pos: torch.Tensor = torch.zeros(
-            n_controlled_dofs, dtype=gs.tc_float, device=gs.device
-        )
-        self._wb_dofs_vel: torch.Tensor = torch.zeros(
-            n_controlled_dofs, dtype=gs.tc_float, device=gs.device
-        )
-        self._prev_theta: torch.Tensor = torch.zeros(
-            n_controlled_dofs, dtype=torch.float64, device="cuda"
-        )
+        self._dof_indices_t: torch.Tensor = torch.tensor(all_genesis_dof_indices, dtype=torch.int32, device=gs.device)
+        self._wb_dofs_pos: torch.Tensor = torch.zeros(n_controlled_dofs, dtype=gs.tc_float, device=gs.device)
+        self._wb_dofs_vel: torch.Tensor = torch.zeros(n_controlled_dofs, dtype=gs.tc_float, device=gs.device)
+        self._prev_theta: torch.Tensor = torch.zeros(n_controlled_dofs, dtype=torch.float64, device="cuda")
 
         # Free-base tensors for unified kernel writeback
         fb_body_indices = [e.body_offset for e in free_base_entries]
@@ -557,13 +562,13 @@ class QIPCCoupler(RBC):
         fb_q_starts = [e.entity.q_start for e in free_base_entries]
         self._free_base_body_indices_t: torch.Tensor = torch.tensor(
             fb_body_indices or [0], dtype=torch.int64, device=gs.device
-        )[:len(free_base_entries)]
+        )[: len(free_base_entries)]
         self._free_base_link_indices_t: torch.Tensor = torch.tensor(
             fb_link_indices or [0], dtype=torch.int32, device=gs.device
-        )[:len(free_base_entries)]
+        )[: len(free_base_entries)]
         self._free_base_q_starts_t: torch.Tensor = torch.tensor(
             fb_q_starts or [0], dtype=torch.int32, device=gs.device
-        )[:len(free_base_entries)]
+        )[: len(free_base_entries)]
 
         # --- Debug viewer ---
         self._debug_viewer = None
@@ -584,10 +589,55 @@ class QIPCCoupler(RBC):
     # -------------------------------------------------------------------------
 
     def reset(self, envs_idx=None) -> None:
-        # At build time, Genesis calls reset() to initialize state. Since QIPC
-        # was just built from the same initial conditions, this is a no-op.
-        # Mid-simulation reset (restoring to a prior state) is not yet supported.
-        pass
+        if envs_idx is not None:
+            gs.raise_exception("QIPCCoupler.reset does not support partial environment reset.")
+
+        self._scene.reset()
+        self._writeback_state()
+        self._writeback_fem_state(0)
+
+    def _joint_rows(self, entity: RigidEntity, dofs_idx_local) -> list[int]:
+        local = np.asarray(dofs_idx_local, dtype=np.int64).reshape(-1)
+        global_indices = local + entity.dof_start
+        row_by_dof = {int(dof): row for row, dof in enumerate(self._genesis_dof_order.cpu().tolist())}
+        missing = [int(dof) for dof in global_indices if int(dof) not in row_by_dof]
+        if missing:
+            gs.raise_exception(f"QIPCCoupler: entity DOFs are not controlled by QIPC: {missing}.")
+        return [row_by_dof[int(dof)] for dof in global_indices]
+
+    def configure_dofs(
+        self,
+        entity: RigidEntity,
+        dofs_idx_local,
+        *,
+        kp,
+        kv,
+        force_lower,
+        force_upper,
+    ) -> None:
+        """Configure QIPC PD gains and force bounds using entity-local DOF indices."""
+        if self._jc is None:
+            gs.raise_exception("QIPCCoupler.configure_dofs requires a scene with controllable joints.")
+        rows = self._joint_rows(entity, dofs_idx_local)
+        self._jc[rows].set_dofs_kp(kp)
+        self._jc[rows].set_dofs_kv(kv)
+        self._jc[rows].set_dofs_force_range(force_lower, force_upper)
+
+    def get_dofs_applied_force(self, entity: RigidEntity, dofs_idx_local) -> torch.Tensor:
+        """Return QIPC applied forces for entity-local DOF indices."""
+        if self._jc is None:
+            gs.raise_exception("QIPCCoupler.get_dofs_applied_force requires controllable joints.")
+        return self._jc.get_dofs_applied_force()[self._joint_rows(entity, dofs_idx_local)]
+
+    def get_solver_statistics(self) -> QIPCSolverStatistics:
+        """Return the latest solver counters as stable Python scalar values."""
+        solver = self._scene.solver
+        return QIPCSolverStatistics(
+            step_ms=float(solver.step_ms),
+            newton_iters=int(solver.newton_iters),
+            max_pcg_iters=int(solver.max_pcg_iters),
+            max_line_search_iters=int(solver.max_ls_iters),
+        )
 
     def preprocess(self, f: int) -> None:
         """Forward Genesis control targets to QIPC joint controller.
@@ -642,6 +692,7 @@ class QIPCCoupler(RBC):
 
         self._writeback_state()
         self._writeback_fem_state(f + 1)
+        self._sim.rigid_solver._func_update_geoms(self._sim._scene._envs_idx)
 
         gs.logger.debug(
             f"[QIPC] sim={self._scene.solver.step_ms:.2f}ms "
@@ -676,6 +727,8 @@ class QIPCCoupler(RBC):
         if self._jc is not None:
             theta: torch.Tensor = self._jc.get_dofs_position()
             self._wb_dofs_pos[:] = theta.to(gs.tc_float)
+            if self._scene.frame == 0:
+                self._prev_theta[:] = theta
             # Finite-difference velocity: (theta - theta_prev) / dt
             self._wb_dofs_vel[:] = ((theta - self._prev_theta) / self._sim.dt).to(gs.tc_float)
             self._prev_theta[:] = theta
@@ -742,9 +795,7 @@ class QIPCCoupler(RBC):
                     membrane=mat.membrane,
                     bending=mat.bending_model if has_bending else None,
                     bending_youngs_modulus=float(mat.bending_stiffness) if has_bending else None,
-                    contact_thickness=(
-                        float(mat.contact_thickness) if mat.contact_thickness is not None else None
-                    ),
+                    contact_thickness=(float(mat.contact_thickness) if mat.contact_thickness is not None else None),
                 )
                 if mat.membrane == "stvk":
                     # Continuum membrane: uses (E, nu) directly (e.g. tape).
@@ -876,11 +927,7 @@ class QIPCCoupler(RBC):
         if plane_entities:
             plane_mat = plane_entities[0].material
             mu_g = float(plane_mat.coup_friction)
-            res_g = (
-                float(plane_mat.contact_resistance)
-                if plane_mat.contact_resistance is not None
-                else fallback_res
-            )
+            res_g = float(plane_mat.contact_resistance) if plane_mat.contact_resistance is not None else fallback_res
         else:
             mu_g = self._options.contact_friction
             res_g = fallback_res
@@ -953,9 +1000,7 @@ class QIPCCoupler(RBC):
             link_pos = link.get_pos().reshape(-1, 3)[0].to(device="cuda", dtype=torch.float64)
             link_quat = link.get_quat().reshape(-1, 4)[0].to(device="cuda", dtype=torch.float64)
             inv_quat = gu.inv_quat(link_quat)
-            link_offsets = gu.transform_by_quat(
-                targets - link_pos, inv_quat.expand(targets.shape[0], 4)
-            )
+            link_offsets = gu.transform_by_quat(targets - link_pos, inv_quat.expand(targets.shape[0], 4))
 
         if is_soft_constraint:
             geo = entry.slot.geometry
@@ -1200,7 +1245,12 @@ class QIPCCoupler(RBC):
 
         for rep, members in merge_groups:
             slot = self._create_merged_body(
-                entity, rep, members, T_world, abd, trimesh_factory,
+                entity,
+                rep,
+                members,
+                T_world,
+                abd,
+                trimesh_factory,
                 abd_kappa=cfg.abd_kappa,
             )
             if slot is None:
@@ -1236,8 +1286,14 @@ class QIPCCoupler(RBC):
 
         for joint in revolute_joints:
             jc, dof_idx = self._create_joint(
-                entity, joint, "revolute", link_to_rep, group_slots,
-                T_world, cfg, init_qpos,
+                entity,
+                joint,
+                "revolute",
+                link_to_rep,
+                group_slots,
+                T_world,
+                cfg,
+                init_qpos,
             )
             if jc is not None:
                 per_joint_jcs.append(jc)
@@ -1245,8 +1301,14 @@ class QIPCCoupler(RBC):
 
         for joint in prismatic_joints:
             jc, dof_idx = self._create_joint(
-                entity, joint, "prismatic", link_to_rep, group_slots,
-                T_world, cfg, init_qpos,
+                entity,
+                joint,
+                "prismatic",
+                link_to_rep,
+                group_slots,
+                T_world,
+                cfg,
+                init_qpos,
             )
             if jc is not None:
                 per_joint_jcs.append(jc)
@@ -1293,9 +1355,7 @@ class QIPCCoupler(RBC):
                 free_entry = FreeBaseEntry(entity=entity, body_offset=body_offset)
 
         # Build global-index arrays for writeback
-        active_links: list[RigidLink] = [
-            link for link in entity.links if link.idx_local in link_body_indices
-        ]
+        active_links: list[RigidLink] = [link for link in entity.links if link.idx_local in link_body_indices]
         link_indices: list[int] = []
         body_indices: list[int] = []
         rel_transforms_list: list[np.ndarray] = []
@@ -1345,10 +1405,7 @@ class QIPCCoupler(RBC):
             return None, -1
 
         if parent_rep not in group_slots or child_rep not in group_slots:
-            gs.logger.warning(
-                f"QIPCCoupler: skipping joint '{joint.name}' -- "
-                f"parent or child body not created."
-            )
+            gs.logger.warning(f"QIPCCoupler: skipping joint '{joint.name}' -- parent or child body not created.")
             return None, -1
 
         if jtype == "revolute":
@@ -1536,9 +1593,7 @@ class QIPCCoupler(RBC):
             # Degenerate inertia (e.g. fixed primitives with zeroed inertials)
             # would make the explicit 12x12 ABD mass matrix singular; fall back
             # to the mesh-integrated density path in that case.
-            has_valid_inertia = (
-                total_mass > 0 and float(np.linalg.eigvalsh(I_local).min()) > 1e-12 * float(total_mass)
-            )
+            has_valid_inertia = total_mass > 0 and float(np.linalg.eigvalsh(I_local).min()) > 1e-12 * float(total_mass)
             if not has_valid_inertia and total_mass > 0:
                 gs.logger.debug(
                     f"QIPCCoupler: merge group rep={rep} has degenerate inertia; "
