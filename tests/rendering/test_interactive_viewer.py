@@ -10,12 +10,38 @@ import genesis as gs
 from genesis.options.sensors import RasterizerCameraOptions
 from genesis.utils.misc import tensor_to_array
 from genesis.vis.keybindings import Key, KeyAction, Keybind, KeyMod, MouseButton
+from genesis.vis.visualizer import Visualizer
 
 from ..conftest import IS_INTERACTIVE_VIEWER_AVAILABLE, SKIP_NO_VIEWER
 from ..utils import assert_allclose
 from .conftest import RENDERER_TYPE
 
 CAM_RES = (480, 320)
+
+
+def test_destroy_releases_active_viewer_before_render_resources():
+    calls = []
+
+    class Resource:
+        def __init__(self, name):
+            self.name = name
+
+        def stop(self):
+            calls.append(self.name)
+
+        def destroy(self):
+            calls.append(self.name)
+
+    visualizer = Visualizer.__new__(Visualizer)
+    visualizer._viewer = Resource("viewer")
+    visualizer._rasterizer = Resource("rasterizer")
+    visualizer._batch_renderer = None
+    visualizer._raytracer = None
+    visualizer._context = None
+
+    visualizer.destroy()
+
+    assert calls == ["viewer", "rasterizer"]
 
 
 # Note that software emulation is so slow that it may takes minutes to render a single frame...
