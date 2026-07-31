@@ -63,6 +63,10 @@ def test_tape_world_config_maps_soft_and_bond_options():
 @needs_soft_tape_asset
 def test_tape_world_build_control_and_repeat_reset(show_viewer):
     tape_world = _world_module()
+    from genesis.engine.couplers.qipc_coupler.tape_world_controller import (
+        QIPCTapeRobotController,
+    )
+
     world = tape_world.build_qipc_tape_world(
         tape_world.TapeWorldConfig(
             mode="soft",
@@ -70,6 +74,7 @@ def test_tape_world_build_control_and_repeat_reset(show_viewer):
             tape_asset_path=SOFT_TAPE_ASSET_PATH,
         )
     )
+    controller = QIPCTapeRobotController(world)
     scene_identity = id(world.scene)
     initial_tape = world.tape_positions()
     initial_tape_velocity = world.tape_velocities()
@@ -82,9 +87,10 @@ def test_tape_world_build_control_and_repeat_reset(show_viewer):
     assert world.hub is not None
     assert world.table is not None
 
-    world.move_palm_target("right", (0.003, 0.0, 0.0))
-    world.set_grip("right", True)
+    controller.move_palm_target("right", (0.003, 0.0, 0.0))
+    controller.set_grip("right", True)
     for _ in range(3):
+        controller.apply()
         stats = world.step()
 
     assert stats.newton_iters > 0
@@ -96,9 +102,11 @@ def test_tape_world_build_control_and_repeat_reset(show_viewer):
 
     for _ in range(2):
         world.reset()
+        controller.reset()
         assert id(world.scene) == scene_identity
         assert world.reset_error() == 0.0
-        assert not world.grip_is_closed("right")
+        assert not controller.grip_is_closed("right")
         assert np.isfinite(world.tape_positions()).all()
         assert np.isfinite(world.tape_velocities()).all()
+        controller.apply()
         world.step()

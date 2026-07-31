@@ -1,7 +1,7 @@
 """Reusable Marvin Wuji + QIPC adhesive-tape world.
 
-Scene construction, QIPC-specific robot setup, control, stepping, and reset live
-here. Interactive applications own only input binding and presentation.
+Scene construction, QIPC-specific robot setup, physics stepping, and reset live
+here. Applications own robot command generation and rate limiting.
 """
 
 from __future__ import annotations
@@ -14,7 +14,6 @@ from typing import Literal
 import numpy as np
 
 import genesis as gs
-import genesis.utils.geom as gu
 from genesis.engine.couplers.qipc_coupler.coupler import QIPCSolverStatistics
 from genesis.engine.couplers.qipc_coupler.tape import (
     TapeAsset,
@@ -71,8 +70,6 @@ class TapeWorldConfig:
     viewer_camera_fov: float = 45.0
     urdf_path: str | None = None
     tape_asset_path: str | None = None
-    grip_speed: float = 2.0
-    max_arm_command_step: float = 0.03
 
     def __post_init__(self) -> None:
         if self.mode not in ("bond", "soft"):
@@ -85,10 +82,6 @@ class TapeWorldConfig:
             raise ValueError("linear_tol_rate must be positive.")
         if self.linear_max_iter is not None and self.linear_max_iter <= 0:
             raise ValueError("linear_max_iter must be positive.")
-        if self.grip_speed <= 0.0:
-            raise ValueError("grip_speed must be positive.")
-        if self.max_arm_command_step <= 0.0:
-            raise ValueError("max_arm_command_step must be positive.")
 
 
 def resolve_marvin_wuji_urdf(explicit_path: str | None) -> str:
@@ -155,7 +148,7 @@ def tape_world_coupler_options(config: TapeWorldConfig, asset: TapeAsset) -> dic
 
 
 class QIPCTapeWorld:
-    """Built tape world with a device-independent arm/hand control surface."""
+    """Built tape world with QIPC physics lifecycle and state access."""
 
     def __init__(
         self,
@@ -170,7 +163,6 @@ class QIPCTapeWorld:
         coupler_options: dict[str, object],
         dofs: dict[tuple[str, str], list[int]],
         home_qpos: np.ndarray,
-        hand_postures: dict[tuple[str, bool], np.ndarray],
     ) -> None:
         self.config = config
         self.scene = scene
@@ -182,73 +174,14 @@ class QIPCTapeWorld:
         self.coupler_options = coupler_options
         self.dofs = dofs
         self.home_qpos = home_qpos
-        self.hand_postures = hand_postures
         self.palms = {side: robot.get_link(PALM_LINK[side]) for side in ("right", "left")}
         self._initial_tape_positions = self.tape_positions()
-        self._qpos_command = home_qpos.copy()
-        self._closed = {"right": False, "left": False}
-        self._hand_command = {side: hand_postures[(side, False)].copy() for side in ("right", "left")}
-        self._target_position: dict[str, np.ndarray] = {}
-        self._target_quaternion: dict[str, np.ndarray] = {}
-        self.reset_targets()
-
-    @property
-    def max_grip_step(self) -> float:
-        return self.config.grip_speed * self.config.dt
 
     def palm_position(self, side: TapeWorldSide) -> np.ndarray:
         return self.palms[side].get_pos().reshape(-1)[:3].cpu().numpy().copy()
 
     def palm_quaternion(self, side: TapeWorldSide) -> np.ndarray:
         return self.palms[side].get_quat().reshape(-1)[:4].cpu().numpy().copy()
-
-    def palm_target(self, side: TapeWorldSide) -> tuple[np.ndarray, np.ndarray]:
-        return self._target_position[side].copy(), self._target_quaternion[side].copy()
-
-    def set_palm_target(
-        self,
-        side: TapeWorldSide,
-        position: np.ndarray | tuple[float, float, float],
-        quaternion: np.ndarray | tuple[float, float, float, float],
-    ) -> None:
-        position_array = np.asarray(position, dtype=gs.np_float)
-        quaternion_array = np.asarray(quaternion, dtype=gs.np_float)
-        if position_array.shape != (3,):
-            raise ValueError(f"Palm position must have shape (3,), got {position_array.shape}.")
-        if quaternion_array.shape != (4,):
-            raise ValueError(f"Palm quaternion must have shape (4,), got {quaternion_array.shape}.")
-        self._target_position[side] = position_array.copy()
-        self._target_quaternion[side] = quaternion_array.copy()
-
-    def move_palm_target(
-        self,
-        side: TapeWorldSide,
-        delta_position: np.ndarray | tuple[float, float, float],
-    ) -> None:
-        delta = np.asarray(delta_position, dtype=gs.np_float)
-        if delta.shape != (3,):
-            raise ValueError(f"Palm position delta must have shape (3,), got {delta.shape}.")
-        self._target_position[side] += delta
-
-    def rotate_palm_target(self, side: TapeWorldSide, delta_euler: np.ndarray) -> None:
-        delta = np.asarray(delta_euler, dtype=gs.np_float)
-        if delta.shape != (3,):
-            raise ValueError(f"Palm Euler delta must have shape (3,), got {delta.shape}.")
-        self._target_quaternion[side] = gu.transform_quat_by_quat(
-            self._target_quaternion[side],
-            gu.xyz_to_quat(delta),
-        )
-
-    def reset_targets(self) -> None:
-        for side in ("right", "left"):
-            self._target_position[side] = self.palm_position(side)
-            self._target_quaternion[side] = self.palm_quaternion(side)
-
-    def set_grip(self, side: TapeWorldSide, closed: bool) -> None:
-        self._closed[side] = closed
-
-    def grip_is_closed(self, side: TapeWorldSide) -> bool:
-        return self._closed[side]
 
     def hand_dofs_position(self, side: TapeWorldSide) -> np.ndarray:
         values = self.robot.get_dofs_position(dofs_idx_local=self.dofs[("hand", side)])
@@ -271,84 +204,16 @@ class QIPCTapeWorld:
         return self.scene.sim.coupler.get_solver_statistics()
 
     def step(self) -> QIPCSolverStatistics:
-        for side in ("right", "left"):
-            arm_dofs = self.dofs[("arm", side)]
-            qpos = self.robot.inverse_kinematics(
-                link=self.palms[side],
-                pos=self._target_position[side],
-                quat=self._target_quaternion[side],
-                init_qpos=self._qpos_command,
-                max_samples=1,
-                max_solver_iters=30,
-                dofs_idx_local=arm_dofs,
-            )
-            qpos_array = qpos.cpu().numpy() if hasattr(qpos, "cpu") else np.asarray(qpos)
-            delta = np.clip(
-                qpos_array[arm_dofs] - self._qpos_command[arm_dofs],
-                -self.config.max_arm_command_step,
-                self.config.max_arm_command_step,
-            )
-            self._qpos_command[arm_dofs] += delta
-            self.robot.control_dofs_position(
-                self._qpos_command[arm_dofs],
-                dofs_idx_local=arm_dofs,
-            )
-
-            goal = self.hand_postures[(side, self._closed[side])]
-            self._hand_command[side] += np.clip(
-                goal - self._hand_command[side],
-                -self.max_grip_step,
-                self.max_grip_step,
-            )
-            self.robot.control_dofs_position(
-                self._hand_command[side],
-                dofs_idx_local=self.dofs[("hand", side)],
-            )
-
         self.scene.step()
         return self.get_solver_statistics()
 
     def reset(self) -> None:
-        """Restore robot, tape, hub, controller commands, and palm targets."""
+        """Restore the built QIPC scene in place."""
         self.scene.reset()
-        self.robot.set_qpos(self.home_qpos)
-        self._qpos_command[:] = self.home_qpos
-        for side in ("right", "left"):
-            self._closed[side] = False
-            self._hand_command[side][:] = self.hand_postures[(side, False)]
-            self.robot.control_dofs_position(
-                self.home_qpos[self.dofs[("arm", side)]],
-                dofs_idx_local=self.dofs[("arm", side)],
-            )
-            self.robot.control_dofs_position(
-                self._hand_command[side],
-                dofs_idx_local=self.dofs[("hand", side)],
-            )
-        self.reset_targets()
 
     def reset_error(self) -> float:
         """Maximum absolute tape-position error from the built initial state."""
         return float(np.abs(self.tape_positions() - self._initial_tape_positions).max())
-
-
-def _hand_postures(robot) -> dict[tuple[str, bool], np.ndarray]:
-    postures: dict[tuple[str, bool], np.ndarray] = {}
-    for side in ("right", "left"):
-        for closed in (False, True):
-            values = []
-            for name in HAND_JOINTS[side]:
-                finger = int(name.split("finger", 1)[1].split("_", 1)[0])
-                joint = int(name.rsplit("joint", 1)[1])
-                lower, upper = (float(value) for value in robot.get_joint(name).dofs_limit[0])
-                if closed and finger == 1:
-                    desired = (0.9, 0.35, 0.9, 0.9)[joint - 1]
-                elif closed and finger == 2:
-                    desired = (0.95, 0.0, 0.95, 0.95)[joint - 1]
-                else:
-                    desired = 0.08 if finger == 1 and joint == 1 else 0.0
-                values.append(min(max(desired, lower), upper))
-            postures[(side, closed)] = np.asarray(values, dtype=np.float64)
-    return postures
 
 
 def build_qipc_tape_world(config: TapeWorldConfig) -> QIPCTapeWorld:
@@ -482,7 +347,6 @@ def build_qipc_tape_world(config: TapeWorldConfig) -> QIPCTapeWorld:
         coupler_options=coupler_options,
         dofs=dofs,
         home_qpos=home_qpos,
-        hand_postures=_hand_postures(robot),
     )
 
     palm = world.palm_position("right")

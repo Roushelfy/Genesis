@@ -59,7 +59,7 @@ def _parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def _run_headless(world, args: argparse.Namespace) -> None:
+def _run_headless(world, controller, args: argparse.Namespace) -> None:
     initial_palm = None
     step_ms = []
     newton_iterations = []
@@ -67,14 +67,15 @@ def _run_headless(world, args: argparse.Namespace) -> None:
 
     for step in range(args.headless_steps):
         if step == args.probe_close_step:
-            world.set_grip("right", True)
+            controller.set_grip("right", True)
             initial_palm = world.palm_position("right")
             print("[probe] closing right thumb/index", flush=True)
         if step == args.probe_release_step:
-            world.set_grip("right", False)
+            controller.set_grip("right", False)
             print("[probe] opening right thumb/index", flush=True)
 
         start = time.perf_counter()
+        controller.apply()
         stats = world.step()
         step_ms.append((time.perf_counter() - start) * 1e3)
         newton_iterations.append(stats.newton_iters)
@@ -117,7 +118,7 @@ def _run_headless(world, args: argparse.Namespace) -> None:
     )
 
 
-def _run_interactive(world) -> None:
+def _run_interactive(world, controller) -> None:
     if world.scene.viewer is None:
         gs.logger.warning("Viewer is not active. Keyboard input requires the Genesis viewer.")
         return
@@ -126,7 +127,7 @@ def _run_interactive(world) -> None:
     active = {"right"}
     gizmos = {
         side: world.scene.draw_debug_frame(
-            T=gu.trans_quat_to_T(*world.palm_target(side)),
+            T=gu.trans_quat_to_T(*controller.palm_target(side)),
             axis_length=0.12,
             origin_size=0.008,
             axis_radius=0.005,
@@ -143,27 +144,27 @@ def _run_interactive(world) -> None:
 
     def move(delta) -> None:
         for side in active:
-            world.move_palm_target(side, delta)
+            controller.move_palm_target(side, delta)
 
     def rotate(axis: int, amount: float) -> None:
         delta = np.zeros(3, dtype=gs.np_float)
         delta[axis] = amount
         for side in active:
-            world.rotate_palm_target(side, delta)
+            controller.rotate_palm_target(side, delta)
 
     def set_grip(closed: bool) -> None:
         if closed:
             gripping.clear()
             gripping.update(active)
             for side in gripping:
-                world.set_grip(side, True)
+                controller.set_grip(side, True)
         else:
             for side in gripping:
-                world.set_grip(side, False)
+                controller.set_grip(side, False)
             gripping.clear()
         gs.logger.info(
-            f"Grip: right={'closed' if world.grip_is_closed('right') else 'open'} "
-            f"left={'closed' if world.grip_is_closed('left') else 'open'}"
+            f"Grip: right={'closed' if controller.grip_is_closed('right') else 'open'} "
+            f"left={'closed' if controller.grip_is_closed('left') else 'open'}"
         )
 
     def stop() -> None:
@@ -186,7 +187,12 @@ def _run_interactive(world) -> None:
         Keybind("pitch_down", Key.O, KeyAction.HOLD, callback=rotate, args=(1, -DELTA_ROT)),
         Keybind("roll_left", Key.L, KeyAction.HOLD, callback=rotate, args=(0, DELTA_ROT)),
         Keybind("roll_right", Key.SEMICOLON, KeyAction.HOLD, callback=rotate, args=(0, -DELTA_ROT)),
-        Keybind("reset_targets", Key.BACKSLASH, KeyAction.RELEASE, callback=world.reset_targets),
+        Keybind(
+            "reset_targets",
+            Key.BACKSLASH,
+            KeyAction.RELEASE,
+            callback=controller.reset_targets,
+        ),
         Keybind("close_grip", Key.SPACE, KeyAction.PRESS, callback=set_grip, args=(True,)),
         Keybind("open_grip", Key.SPACE, KeyAction.RELEASE, callback=set_grip, args=(False,)),
         Keybind("quit", Key.ESCAPE, KeyAction.RELEASE, callback=stop),
@@ -201,8 +207,9 @@ def _run_interactive(world) -> None:
         while running and world.scene.viewer.is_alive():
             world.scene.update_debug_objects(
                 tuple(gizmos[side] for side in ("right", "left")),
-                tuple(gu.trans_quat_to_T(*world.palm_target(side)) for side in ("right", "left")),
+                tuple(gu.trans_quat_to_T(*controller.palm_target(side)) for side in ("right", "left")),
             )
+            controller.apply()
             world.step()
     except KeyboardInterrupt:
         gs.logger.info("Simulation interrupted, exiting.")
@@ -216,6 +223,9 @@ def main() -> None:
         TapeWorldConfig,
         build_qipc_tape_world,
     )
+    from genesis.engine.couplers.qipc_coupler.tape_world_controller import (
+        QIPCTapeRobotController,
+    )
 
     world = build_qipc_tape_world(
         TapeWorldConfig(
@@ -228,10 +238,11 @@ def main() -> None:
             urdf_path=args.urdf,
         )
     )
+    controller = QIPCTapeRobotController(world)
     if args.headless_steps > 0:
-        _run_headless(world, args)
+        _run_headless(world, controller, args)
     else:
-        _run_interactive(world)
+        _run_interactive(world, controller)
 
 
 if __name__ == "__main__":
