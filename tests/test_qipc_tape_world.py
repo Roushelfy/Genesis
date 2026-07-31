@@ -63,6 +63,7 @@ def test_tape_world_config_maps_soft_and_bond_options():
 @needs_soft_tape_asset
 def test_tape_world_build_control_and_repeat_reset(show_viewer):
     tape_world = _world_module()
+    from genesis.engine.couplers.qipc_coupler.marvin_wuji import ARM_JOINTS
     from genesis.engine.couplers.qipc_coupler.tape_world_controller import (
         QIPCTapeRobotController,
     )
@@ -81,9 +82,7 @@ def test_tape_world_build_control_and_repeat_reset(show_viewer):
     initial_palm = world.palm_position("right")
     initial_hand = world.hand_dofs_position("right")
     arm_q_indices = [
-        world.robot.get_joint(name).qs_idx_local[0]
-        for side in ("right", "left")
-        for name in tape_world.ARM_JOINTS[side]
+        world.robot.get_joint(name).qs_idx_local[0] for side in ("right", "left") for name in ARM_JOINTS[side]
     ]
 
     def assert_joint_qpos_matches_dofs():

@@ -7,10 +7,10 @@ import numpy as np
 import genesis as gs
 import genesis.utils.geom as gu
 from genesis.engine.couplers.qipc_coupler.tape_world import (
-    HAND_JOINTS,
     QIPCTapeWorld,
     TapeWorldSide,
 )
+from genesis.engine.couplers.qipc_coupler.marvin_wuji import HAND_JOINTS
 
 
 def _hand_postures(world: QIPCTapeWorld) -> dict[tuple[str, bool], np.ndarray]:

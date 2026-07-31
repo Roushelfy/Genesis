@@ -6,7 +6,6 @@ here. Applications own robot command generation and rate limiting.
 
 from __future__ import annotations
 
-import glob
 import os
 from dataclasses import dataclass
 from typing import Literal
@@ -15,6 +14,13 @@ import numpy as np
 
 import genesis as gs
 from genesis.engine.couplers.qipc_coupler.coupler import QIPCSolverStatistics
+from genesis.engine.couplers.qipc_coupler.marvin_wuji import (
+    DEFAULT_INIT_ARM_QPOS,
+    PALM_LINK,
+    add_marvin_wuji,
+    configure_marvin_wuji,
+    initialize_marvin_wuji,
+)
 from genesis.engine.couplers.qipc_coupler.tape import (
     TapeAsset,
     add_tape_roll,
@@ -24,29 +30,6 @@ from genesis.utils.misc import get_assets_dir
 
 TapeAdhesionMode = Literal["bond", "soft"]
 TapeWorldSide = Literal["right", "left"]
-
-ARM_JOINTS = {
-    "right": tuple(f"Joint{i}_R" for i in range(1, 8)),
-    "left": tuple(f"Joint{i}_L" for i in range(1, 8)),
-}
-HAND_JOINTS = {
-    side: tuple(f"{side}_hand_finger{finger}_joint{joint}" for finger in range(1, 6) for joint in range(1, 5))
-    for side in ("right", "left")
-}
-PALM_LINK = {
-    "right": "right_hand_palm_link",
-    "left": "left_hand_palm_link",
-}
-INIT_ARM_DEG = {
-    "right": (-110.0, -75.0, 90.0, -110.0, -75.0, 0.0, 0.0),
-    "left": (110.0, -75.0, -90.0, -110.0, 75.0, 0.0, 0.0),
-}
-ARM_KP = (7200.0, 7200.0, 7200.0, 3600.0, 3600.0, 3600.0, 3600.0)
-ARM_KV = (600.0, 600.0, 600.0, 400.0, 200.0, 200.0, 200.0)
-HAND_KP = 50.0
-HAND_KV = 0.5
-HAND_EFFORT_SCALE = 8.0
-ARM_FORCE_LIMIT = 2000.0
 
 
 @dataclass(frozen=True)
@@ -82,43 +65,6 @@ class TapeWorldConfig:
             raise ValueError("linear_tol_rate must be positive.")
         if self.linear_max_iter is not None and self.linear_max_iter <= 0:
             raise ValueError("linear_max_iter must be positive.")
-
-
-def resolve_marvin_wuji_urdf(explicit_path: str | None) -> str:
-    """Resolve the Marvin Wuji URDF from an explicit path, environment, or HF cache."""
-    if explicit_path:
-        path = os.path.abspath(os.path.expanduser(explicit_path))
-        if not os.path.isfile(path):
-            gs.raise_exception(f"Marvin/Wuji URDF does not exist: '{path}'.")
-        return path
-
-    environment_path = os.environ.get("QIPC_MARVIN_URDF")
-    if environment_path:
-        return resolve_marvin_wuji_urdf(environment_path)
-
-    roots = [
-        os.environ.get("HF_HOME", ""),
-        (os.path.join(os.environ["XDG_CACHE_HOME"], "huggingface") if os.environ.get("XDG_CACHE_HOME") else ""),
-        os.path.expanduser("~/.cache/huggingface"),
-    ]
-    for root in filter(None, roots):
-        matches = sorted(
-            glob.glob(
-                os.path.join(
-                    root,
-                    "hub/datasets--Genesis-Intelligence--internal_assets/snapshots/*/"
-                    "*/marvin_robots/assemble/marvin_wuji_capsule_scaled.urdf",
-                )
-            )
-        )
-        if matches:
-            return matches[-1]
-
-    gs.raise_exception(
-        "Marvin/Wuji URDF not found. Set TapeWorldConfig.urdf_path, set "
-        "QIPC_MARVIN_URDF, or download Genesis-Intelligence/internal_assets "
-        f"from HuggingFace (searched: {[root for root in roots if root]})."
-    )
 
 
 def resolve_tape_asset_path(config: TapeWorldConfig) -> str:
@@ -231,48 +177,15 @@ def build_qipc_tape_world(config: TapeWorldConfig) -> QIPCTapeWorld:
         show_viewer=config.show_viewer,
     )
 
-    robot = scene.add_entity(
-        morph=gs.morphs.URDF(
-            file=resolve_marvin_wuji_urdf(config.urdf_path),
-            pos=config.robot_position,
-            euler=(0.0, 0.0, 0.0),
-            fixed=True,
-            merge_fixed_links=False,
-            requires_jac_and_IK=True,
-            convexify=True,
-            collision=True,
-            links_to_keep=list(PALM_LINK.values()),
-        ),
-        material=gs.materials.Rigid(
-            coup_friction=1.0,
-            qipc_abd_kappa=1e8,
-            qipc_kappa_pivot=1e7,
-            qipc_kappa_axis=1e7,
-            qipc_d_hat=1e-3,
-            qipc_self_contact=False,
-        ),
+    built_robot = add_marvin_wuji(
+        scene,
+        urdf_path=config.urdf_path,
+        robot_position=config.robot_position,
+        initial_arm_qpos=DEFAULT_INIT_ARM_QPOS,
     )
-
-    dofs = {
-        (kind, side): [robot.get_joint(name).dofs_idx_local[0] for name in names[side]]
-        for kind, names in (("arm", ARM_JOINTS), ("hand", HAND_JOINTS))
-        for side in ("right", "left")
-    }
-    home_qpos = np.zeros(robot.n_qs, dtype=np.float64)
-    for side in ("right", "left"):
-        home_qpos[dofs[("arm", side)]] = np.deg2rad(INIT_ARM_DEG[side])
-    robot.material.qipc_home_qpos = home_qpos.tolist()
-
-    hand_effort = {
-        side: np.asarray(
-            [
-                max(abs(float(value)) for value in robot.get_joint(name).dofs_force_range[0])
-                for name in HAND_JOINTS[side]
-            ],
-            dtype=np.float64,
-        )
-        for side in ("right", "left")
-    }
+    robot = built_robot.robot
+    dofs = built_robot.dofs
+    home_qpos = built_robot.home_qpos
 
     table = scene.add_entity(
         morph=gs.morphs.Box(
@@ -313,28 +226,8 @@ def build_qipc_tape_world(config: TapeWorldConfig) -> QIPCTapeWorld:
 
     scene.build()
 
-    for side in ("right", "left"):
-        scene.sim.coupler.configure_dofs(
-            robot,
-            dofs[("arm", side)],
-            kp=np.asarray(ARM_KP),
-            kv=np.asarray(ARM_KV),
-            force_lower=-ARM_FORCE_LIMIT,
-            force_upper=ARM_FORCE_LIMIT,
-        )
-        effort = HAND_EFFORT_SCALE * hand_effort[side]
-        scene.sim.coupler.configure_dofs(
-            robot,
-            dofs[("hand", side)],
-            kp=HAND_KP,
-            kv=HAND_KV,
-            force_lower=-effort,
-            force_upper=effort,
-        )
-
-    robot.set_qpos(home_qpos)
-    for indices in dofs.values():
-        robot.control_dofs_position(home_qpos[indices], dofs_idx_local=indices)
+    configure_marvin_wuji(scene, built_robot)
+    initialize_marvin_wuji(built_robot)
 
     world = QIPCTapeWorld(
         config=config,
