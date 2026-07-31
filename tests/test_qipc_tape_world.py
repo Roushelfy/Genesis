@@ -80,12 +80,25 @@ def test_tape_world_build_control_and_repeat_reset(show_viewer):
     initial_tape_velocity = world.tape_velocities()
     initial_palm = world.palm_position("right")
     initial_hand = world.hand_dofs_position("right")
+    arm_q_indices = [
+        world.robot.get_joint(name).qs_idx_local[0]
+        for side in ("right", "left")
+        for name in tape_world.ARM_JOINTS[side]
+    ]
+
+    def assert_joint_qpos_matches_dofs():
+        qpos = world.robot.get_qpos().reshape(-1).cpu().numpy()
+        dofs = world.robot.get_dofs_position(
+            dofs_idx_local=[index for side in ("right", "left") for index in world.dofs[("arm", side)]]
+        )
+        np.testing.assert_allclose(qpos[arm_q_indices], dofs.cpu().numpy(), atol=1e-6)
 
     assert np.isfinite(initial_tape).all()
     assert initial_tape_velocity.shape == initial_tape.shape
     assert np.isfinite(initial_tape_velocity).all()
     assert world.hub is not None
     assert world.table is not None
+    assert_joint_qpos_matches_dofs()
 
     controller.move_palm_target("right", (0.003, 0.0, 0.0))
     controller.set_grip("right", True)
@@ -97,6 +110,7 @@ def test_tape_world_build_control_and_repeat_reset(show_viewer):
     assert stats.max_pcg_iters > 0
     assert np.linalg.norm(world.palm_position("right") - initial_palm) > 1e-4
     assert np.max(np.abs(world.hand_dofs_position("right") - initial_hand)) > 1e-2
+    assert_joint_qpos_matches_dofs()
     assert np.isfinite(world.tape_positions()).all()
     assert np.isfinite(world.tape_velocities()).all()
 
@@ -106,6 +120,7 @@ def test_tape_world_build_control_and_repeat_reset(show_viewer):
         assert id(world.scene) == scene_identity
         assert world.reset_error() == 0.0
         assert not controller.grip_is_closed("right")
+        assert_joint_qpos_matches_dofs()
         assert np.isfinite(world.tape_positions()).all()
         assert np.isfinite(world.tape_velocities()).all()
         controller.apply()
