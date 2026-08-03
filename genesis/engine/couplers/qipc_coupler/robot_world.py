@@ -21,11 +21,11 @@ from genesis.engine.couplers.qipc_coupler.marvin_wuji import (
 class RobotWorldConfig:
     """Configuration for a robot-only Marvin Wuji QIPC world."""
 
-    newton_velocity_tol: float = 0.02
-    linear_tol_rate: float | None = 1e-3
+    newton_velocity_tol: float = 0.01
+    linear_tol_rate: float | None = None
     linear_max_iter: int | None = None
     kappa_pivot: float = 1e7
-    kappa_axis: float = 3e6
+    kappa_axis: float = 1e7
     dt: float = 0.01
     gravity: tuple[float, float, float] = (0.0, 0.0, -9.8)
     robot_position: tuple[float, float, float] = (0.0, 0.0, 1.08)

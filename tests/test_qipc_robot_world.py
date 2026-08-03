@@ -34,14 +34,14 @@ def test_robot_world_config_maps_solver_options() -> None:
     }
 
 
-def test_robot_world_defaults_to_balanced_solver_tuning() -> None:
+def test_robot_world_uses_original_solver_defaults() -> None:
     robot_world = _world_module()
     config = robot_world.RobotWorldConfig()
 
-    assert config.newton_velocity_tol == 0.02
-    assert config.linear_tol_rate == 1e-3
+    assert config.newton_velocity_tol == 0.01
+    assert config.linear_tol_rate is None
     assert config.kappa_pivot == 1e7
-    assert config.kappa_axis == 3e6
+    assert config.kappa_axis == 1e7
 
 
 def test_robot_world_build_control_and_repeat_reset(show_viewer) -> None:

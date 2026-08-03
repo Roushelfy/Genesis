@@ -41,6 +41,8 @@ class TapeWorldConfig:
     newton_velocity_tol: float = 0.01
     linear_tol_rate: float | None = None
     linear_max_iter: int | None = None
+    kappa_pivot: float = 1e7
+    kappa_axis: float = 1e7
     dt: float = 0.01
     gravity: tuple[float, float, float] = (0.0, 0.0, -9.8)
     table_position: tuple[float, float, float] = (0.597, 0.0, 0.38)
@@ -65,6 +67,10 @@ class TapeWorldConfig:
             raise ValueError("linear_tol_rate must be positive.")
         if self.linear_max_iter is not None and self.linear_max_iter <= 0:
             raise ValueError("linear_max_iter must be positive.")
+        if self.kappa_pivot <= 0.0:
+            raise ValueError("kappa_pivot must be positive.")
+        if self.kappa_axis <= 0.0:
+            raise ValueError("kappa_axis must be positive.")
 
 
 def resolve_tape_asset_path(config: TapeWorldConfig) -> str:
@@ -182,8 +188,8 @@ def build_qipc_tape_world(config: TapeWorldConfig) -> QIPCTapeWorld:
         urdf_path=config.urdf_path,
         robot_position=config.robot_position,
         initial_arm_qpos=DEFAULT_INIT_ARM_QPOS,
-        kappa_pivot=1e7,
-        kappa_axis=1e7,
+        kappa_pivot=config.kappa_pivot,
+        kappa_axis=config.kappa_axis,
     )
     robot = built_robot.robot
     dofs = built_robot.dofs

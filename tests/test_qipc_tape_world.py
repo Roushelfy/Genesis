@@ -32,6 +32,16 @@ def _world_module():
     return tape_world
 
 
+def test_tape_world_uses_original_solver_defaults():
+    tape_world = _world_module()
+    config = tape_world.TapeWorldConfig()
+
+    assert config.newton_velocity_tol == 0.01
+    assert config.linear_tol_rate is None
+    assert config.kappa_pivot == 1e7
+    assert config.kappa_axis == 1e7
+
+
 @needs_tape_assets
 def test_tape_world_config_maps_soft_and_bond_options():
     tape_world = _world_module()
