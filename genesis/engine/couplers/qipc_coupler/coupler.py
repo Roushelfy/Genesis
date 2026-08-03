@@ -1451,6 +1451,11 @@ class QIPCCoupler(RBC):
 
         dof_local: int = joint.dofs_idx_local[0]
         global_dof_idx: int = entity.dof_start + dof_local
+        q_local: int = joint.q_start - entity.q_start
+        if not 0 <= q_local < len(init_qpos):
+            gs.raise_exception(
+                f"QIPCCoupler: joint '{joint.name}' qpos index {q_local} exceeds init_qpos length {len(init_qpos)}."
+            )
 
         jc: JointCollection = self._scene.add_joint(
             joint.name,
@@ -1467,7 +1472,7 @@ class QIPCCoupler(RBC):
             kv=kv,
             theta_lower=float(joint.dofs_limit[0, 0]),
             theta_upper=float(joint.dofs_limit[0, 1]),
-            init_theta=float(init_qpos[dof_local]),
+            init_theta=float(init_qpos[q_local]),
             **extra_kwargs,
         )
         return jc, global_dof_idx
@@ -1780,13 +1785,13 @@ class QIPCCoupler(RBC):
                 T_joint = np.eye(4, dtype=np.float64)
                 for joint in link.joints:
                     for d in range(joint.n_dofs):
-                        dof_local = joint.dofs_idx_local[d]
-                        if dof_local >= len(init_qpos):
+                        q_local = joint.q_start - entity.q_start + d
+                        if not 0 <= q_local < len(init_qpos):
                             gs.raise_exception(
-                                f"QIPCCoupler: joint '{joint.name}' DOF index {dof_local} "
+                                f"QIPCCoupler: joint '{joint.name}' qpos index {q_local} "
                                 f"exceeds init_qpos length {len(init_qpos)}."
                             )
-                        theta = init_qpos[dof_local]
+                        theta = init_qpos[q_local]
                         if joint.type == gs.JOINT_TYPE.REVOLUTE:
                             axis = np.array(joint.dofs_motion_ang[d], dtype=np.float64)
                             T_joint[:3, :3] = T_joint[:3, :3] @ _rodrigues(axis, float(theta))

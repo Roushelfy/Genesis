@@ -503,6 +503,38 @@ class TestJointLimits:
         )
 
 
+def test_free_base_nonzero_joint_home_qpos(show_viewer):
+    """A free base's 7D qpos must not shift articulated joint initialization."""
+    scene = gs.Scene(
+        sim_options=gs.options.SimOptions(dt=0.01, gravity=(0.0, 0.0, 0.0)),
+        coupler_options=gs.options.QIPCCouplerOptions(contact_enable=False),
+        show_viewer=show_viewer,
+    )
+    robot = scene.add_entity(
+        morph=gs.morphs.MJCF(
+            file=_build_two_cube_joint_mjcf("revolute", (-1.0, 1.0), fixed=False),
+            pos=(0.0, 0.0, 0.5),
+        ),
+        material=gs.materials.Rigid(
+            qipc_abd_kappa=1e8,
+            qipc_kappa_pivot=1e7,
+            qipc_kappa_axis=1e7,
+        ),
+    )
+    joint = robot.get_joint("joint1")
+    q_local = joint.q_start - robot.q_start
+    dof_local = joint.dofs_idx_local[0]
+    assert q_local == dof_local + 1
+
+    home_qpos = np.asarray(robot.init_qpos, dtype=np.float64).copy()
+    home_qpos[q_local] = 0.35
+    robot.material.qipc_home_qpos = home_qpos.tolist()
+    scene.build()
+
+    actual = float(robot.get_dofs_position(dofs_idx_local=[dof_local])[0])
+    assert actual == pytest.approx(0.35, abs=1e-5)
+
+
 class TestStackedFreeBodies:
     """Multiple free-base entities stacking on ground with IPC contact.
 
