@@ -4,12 +4,15 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass
-from typing import Literal
+from typing import TYPE_CHECKING, Literal
 
 import numpy as np
 
 import genesis as gs
 from genesis.engine.couplers.qipc_coupler.coupler import QIPCSolverStatistics
+
+if TYPE_CHECKING:
+    from genesis.engine.entities.rigid_entity import RigidEntity
 
 HandSide = Literal["right", "left"]
 HAND_SIDES: tuple[HandSide, ...] = ("right", "left")
@@ -82,7 +85,7 @@ class WujiHandsWorldConfig:
 
 @dataclass(frozen=True)
 class BuiltWujiHand:
-    entity: object
+    entity: RigidEntity
     finger_dofs: tuple[int, ...]
     home_qpos: np.ndarray
     home_finger_qpos: np.ndarray
