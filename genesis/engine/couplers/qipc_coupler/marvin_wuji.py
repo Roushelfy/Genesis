@@ -85,6 +85,8 @@ def add_marvin_wuji(
     urdf_path: str | None,
     robot_position: tuple[float, float, float],
     initial_arm_qpos: dict[str, tuple[float, ...]],
+    kappa_pivot: float,
+    kappa_axis: float,
 ) -> BuiltMarvinWuji:
     """Add the shared Marvin Wuji entity before a QIPC scene is built."""
     for side in ("right", "left"):
@@ -106,8 +108,8 @@ def add_marvin_wuji(
         material=gs.materials.Rigid(
             coup_friction=1.0,
             qipc_abd_kappa=1e8,
-            qipc_kappa_pivot=1e7,
-            qipc_kappa_axis=1e7,
+            qipc_kappa_pivot=kappa_pivot,
+            qipc_kappa_axis=kappa_axis,
             qipc_d_hat=1e-3,
             qipc_self_contact=False,
         ),

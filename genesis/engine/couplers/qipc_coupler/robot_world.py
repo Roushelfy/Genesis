@@ -21,9 +21,11 @@ from genesis.engine.couplers.qipc_coupler.marvin_wuji import (
 class RobotWorldConfig:
     """Configuration for a robot-only Marvin Wuji QIPC world."""
 
-    newton_velocity_tol: float = 0.01
-    linear_tol_rate: float | None = None
+    newton_velocity_tol: float = 0.02
+    linear_tol_rate: float | None = 1e-3
     linear_max_iter: int | None = None
+    kappa_pivot: float = 1e7
+    kappa_axis: float = 3e6
     dt: float = 0.01
     gravity: tuple[float, float, float] = (0.0, 0.0, -9.8)
     robot_position: tuple[float, float, float] = (0.0, 0.0, 1.08)
@@ -44,6 +46,10 @@ class RobotWorldConfig:
             raise ValueError("linear_tol_rate must be positive.")
         if self.linear_max_iter is not None and self.linear_max_iter <= 0:
             raise ValueError("linear_max_iter must be positive.")
+        if self.kappa_pivot <= 0.0:
+            raise ValueError("kappa_pivot must be positive.")
+        if self.kappa_axis <= 0.0:
+            raise ValueError("kappa_axis must be positive.")
         if len(self.initial_right_arm_qpos) != 7 or len(self.initial_left_arm_qpos) != 7:
             raise ValueError("Initial arm configurations must contain 7 joints per side.")
 
@@ -110,6 +116,8 @@ def build_qipc_robot_world(config: RobotWorldConfig) -> QIPCRobotWorld:
             "right": config.initial_right_arm_qpos,
             "left": config.initial_left_arm_qpos,
         },
+        kappa_pivot=config.kappa_pivot,
+        kappa_axis=config.kappa_axis,
     )
     scene.build()
     configure_marvin_wuji(scene, built_robot)

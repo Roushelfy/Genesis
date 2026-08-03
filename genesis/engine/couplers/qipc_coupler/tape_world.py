@@ -182,6 +182,8 @@ def build_qipc_tape_world(config: TapeWorldConfig) -> QIPCTapeWorld:
         urdf_path=config.urdf_path,
         robot_position=config.robot_position,
         initial_arm_qpos=DEFAULT_INIT_ARM_QPOS,
+        kappa_pivot=1e7,
+        kappa_axis=1e7,
     )
     robot = built_robot.robot
     dofs = built_robot.dofs

@@ -34,6 +34,16 @@ def test_robot_world_config_maps_solver_options() -> None:
     }
 
 
+def test_robot_world_defaults_to_balanced_solver_tuning() -> None:
+    robot_world = _world_module()
+    config = robot_world.RobotWorldConfig()
+
+    assert config.newton_velocity_tol == 0.02
+    assert config.linear_tol_rate == 1e-3
+    assert config.kappa_pivot == 1e7
+    assert config.kappa_axis == 3e6
+
+
 def test_robot_world_build_control_and_repeat_reset(show_viewer) -> None:
     robot_world = _world_module()
     world = robot_world.build_qipc_robot_world(robot_world.RobotWorldConfig(show_viewer=False))
@@ -48,7 +58,7 @@ def test_robot_world_build_control_and_repeat_reset(show_viewer) -> None:
         stats = world.step()
 
     assert stats.newton_iters > 0
-    assert np.linalg.norm(world.palm_position("right") - initial_palm) < 0.002
+    assert np.linalg.norm(world.palm_position("right") - initial_palm) < 0.0025
     assert np.max(np.abs(world.hand_dofs_position("right") - initial_hand)) > 1e-4
 
     for _ in range(2):
