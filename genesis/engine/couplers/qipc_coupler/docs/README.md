@@ -1,18 +1,32 @@
 # QIPCCoupler
 
-QIPC coupler integrates [cuda-graph-qipc](https://github.com/Genesis-Embodied-AI/cuda-graph-qipc) as the physics backend for rigid/articulated entities in Genesis.
+QIPC coupler integrates [cuda-graph-qipc](https://github.com/Genesis-Embodied-AI/cuda-graph-qipc) as the physics backend for rigid, articulated, volumetric FEM, cloth, and sealed-gas shell entities in Genesis.
 
 ## Installing cuda-graph-qipc
 
-Clone the repo and build into the genesis-world venv:
+Requirements are Python 3.12+, CUDA Toolkit 12.8+, `uv`, and a supported C++
+compiler. Clone QIPC and pass the Genesis checkout explicitly:
 
 ```bash
 git clone https://github.com/Genesis-Embodied-AI/cuda-graph-qipc.git
 cd cuda-graph-qipc
-python build.py --genesis
+python build.py
+python build.py --genesis /absolute/path/to/Genesis
 ```
 
-The `--genesis` flag installs the built package into the active genesis-world virtual environment. Rebuild after any changes to cuda-graph-qipc.
+The first build initializes QIPC's own build environment. `--genesis` then
+creates or uses `/absolute/path/to/Genesis/.venv`, installs Genesis there when
+needed, and installs the QIPC wheel into that environment. It does not target
+whichever virtual environment happens to be active.
+
+Run Genesis from the Genesis checkout: running from `cuda-graph-qipc` makes its
+source-only `qipc/` directory shadow the installed wheel and native extension.
+Rebuild after C++/CUDA changes, then run gates with the Genesis interpreter:
+
+```bash
+cd /absolute/path/to/Genesis
+.venv/bin/python -m pytest tests/test_qipc_sealed_gas.py --backend gpu -n 0 -x
+```
 
 ## Quick Start
 
@@ -54,3 +68,7 @@ for _ in range(100):
 ```
 
 See `examples/qipc/` for more examples.
+
+FEM material mapping, sealed-gas runtime semantics, and validation commands are
+documented in [fem_design.md](fem_design.md). Current implementation status and
+next work are tracked in [roadmap.md](roadmap.md).

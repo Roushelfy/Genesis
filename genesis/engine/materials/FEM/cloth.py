@@ -1,8 +1,4 @@
-"""
-Cloth material for IPC-based cloth simulation.
-
-This material is used with FEMEntity and IPCCoupler for shell/membrane simulation.
-"""
+"""Cloth material for IPC- and QIPC-based shell simulation."""
 
 from typing import Literal
 
@@ -13,7 +9,7 @@ from .base import Base
 
 class Cloth(Base):
     """
-    Cloth material for thin shell/membrane simulation using IPC.
+    Cloth material for thin shell/membrane simulation using IPC or QIPC.
 
     This material is designed for cloth, fabric, and other thin flexible materials.
     It uses shell-based FEM formulation (NeoHookeanShell) in the IPC backend.
@@ -65,7 +61,7 @@ class Cloth(Base):
 
     Notes
     -----
-    - Only works with IPCCoupler enabled
+    - Requires IPCCoupler or QIPCCoupler
     - Requires GPU backend
     - Only accepts surface mesh morphs (Mesh, etc.)
     - Uses FEMEntity infrastructure but simulated as 2D shell in IPC

@@ -265,7 +265,7 @@ class QIPCCouplerOptions(BaseCouplerOptions):
         'mas' or 'diag'. None uses the QIPC default ('mas').
     solver_linear_solver : str, optional
         'partition_pcg' or 'linear_pcg'. None uses the QIPC default
-        ('partition_pcg'; note SealedVolumeGas requires 'partition_pcg').
+        ('partition_pcg'). Both PCG solvers support SealedVolumeGas.
     solver_line_search_max_iter : int, optional
         Line-search iteration cap. None uses the QIPC default (12).
     contact_ccd_partition : bool, optional

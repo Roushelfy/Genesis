@@ -1,5 +1,6 @@
 from functools import wraps
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import igl
 import numpy as np
@@ -19,6 +20,10 @@ from genesis.repr_base import RBC
 from genesis.utils.misc import to_gs_tensor, tensor_to_array, broadcast_tensor
 
 from .base_entity import Entity
+
+
+if TYPE_CHECKING:
+    from genesis.engine.couplers.qipc_coupler.coupler import SealedGasState
 
 
 class FEMVisGeom(RBC):
@@ -135,6 +140,12 @@ class FEMEntity(Entity):
         self._el_start = el_start  # offset for element index
         self._s_start = s_start  # offset for surface triangles
         self._step_global_added = None
+
+        if isinstance(self.material, gs.materials.FEM.SealedGasShell):
+            from genesis.engine.couplers import QIPCCoupler
+
+            if not isinstance(self.sim.coupler, QIPCCoupler):
+                gs.raise_exception("gs.materials.FEM.SealedGasShell requires gs.options.QIPCCouplerOptions.")
         self.sample()
 
         if isinstance(self.material, gs.materials.FEM.Cloth):
@@ -1016,6 +1027,46 @@ class FEMEntity(Entity):
         verts_idx = verts_idx_local + self._v_start
 
         self._solver._kernel_remove_specific_constraints(verts_idx, envs_idx)
+
+    @gs.assert_built
+    def get_gas_state(self) -> "SealedGasState":
+        """Return `(p0, v0, enabled)` for a built sealed-gas shell.
+
+        `p0` is absolute reference pressure in Pa and `v0` is the gas
+        reference volume in m^3. Reading the state synchronizes the live QIPC
+        device views; it is intended for control and diagnostics, not hot-loop
+        telemetry.
+        """
+        from genesis.engine.couplers import QIPCCoupler
+
+        if not isinstance(self.sim.coupler, QIPCCoupler):
+            gs.raise_exception("FEMEntity.get_gas_state requires the QIPC coupler.")
+        return self.sim.coupler.fem_get_gas_state(self)
+
+    @gs.assert_built
+    def set_gas_state(
+        self,
+        *,
+        p0: float | None = None,
+        v0: float | None = None,
+        enabled: bool | None = None,
+    ) -> None:
+        """Update live sealed-gas state between simulation steps.
+
+        Args:
+            p0: New absolute reference pressure in Pa. Must be positive.
+            v0: New positive gas-law reference volume in m^3. The solver's
+                collapse floor remains tied to the authored initial volume.
+            enabled: False opens/disables the virtual gas chamber; True
+                re-enables it.
+
+        The initial material state is restored by `scene.reset()`.
+        """
+        from genesis.engine.couplers import QIPCCoupler
+
+        if not isinstance(self.sim.coupler, QIPCCoupler):
+            gs.raise_exception("FEMEntity.set_gas_state requires the QIPC coupler.")
+        self.sim.coupler.fem_set_gas_state(self, p0=p0, v0=v0, enabled=enabled)
 
     @qd.kernel
     def _kernel_get_verts_pos(self, f: qd.i32, pos: qd.types.ndarray(), verts_idx: qd.types.ndarray()):

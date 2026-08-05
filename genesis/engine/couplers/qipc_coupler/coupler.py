@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, NamedTuple
 
 import numpy as np
+import numpy.typing as npt
 import quadrants as qd
 import torch
 
@@ -98,6 +99,23 @@ class QIPCSolverStatistics(NamedTuple):
     max_line_search_iters: int
 
 
+class SealedGasState(NamedTuple):
+    """Runtime state of one sealed-gas FEM entity."""
+
+    p0: float
+    v0: float
+    enabled: bool
+
+
+class _SealedGasResetState(NamedTuple):
+    """Initial live state restored by `QIPCCoupler.reset`."""
+
+    p0: float
+    v0: float
+    v_min: float
+    enabled: float
+
+
 # ---------------------------------------------------------------------------
 # Rodrigues rotation
 # ---------------------------------------------------------------------------
@@ -113,6 +131,49 @@ def _rodrigues(axis: np.ndarray, theta: float) -> np.ndarray:
     s = np.sin(theta)
     K = np.array([[0, -axis[2], axis[1]], [axis[2], 0, -axis[0]], [-axis[1], axis[0], 0]], dtype=np.float64)
     return np.eye(3, dtype=np.float64) * c + (1 - c) * np.outer(axis, axis) + s * K
+
+
+def _triangle_component_count(triangles: npt.NDArray[np.int32]) -> int:
+    """Count components connected through shared triangle edges."""
+    n_triangles = len(triangles)
+    if n_triangles == 0:
+        return 0
+
+    parents = list(range(n_triangles))
+
+    def find(index: int) -> int:
+        while parents[index] != index:
+            parents[index] = parents[parents[index]]
+            index = parents[index]
+        return index
+
+    def union(left: int, right: int) -> None:
+        left_root = find(left)
+        right_root = find(right)
+        if left_root != right_root:
+            parents[right_root] = left_root
+
+    owner_by_edge: dict[tuple[int, int], int] = {}
+    for triangle_index, (i, j, k) in enumerate(triangles):
+        for a, b in ((i, j), (j, k), (k, i)):
+            a_int = int(a)
+            b_int = int(b)
+            edge = (min(a_int, b_int), max(a_int, b_int))
+            owner = owner_by_edge.setdefault(edge, triangle_index)
+            union(triangle_index, owner)
+    return len({find(index) for index in range(n_triangles)})
+
+
+def _positive_gas_scalar(name: str, value: float) -> float:
+    if isinstance(value, (bool, np.bool_)) or (torch.is_tensor(value) and value.dtype == torch.bool):
+        gs.raise_exception(f"FEMEntity.set_gas_state: {name} must be finite and positive.")
+    try:
+        scalar = float(value)
+    except (OverflowError, TypeError, ValueError):
+        gs.raise_exception(f"FEMEntity.set_gas_state: {name} must be finite and positive.")
+    if not np.isfinite(scalar) or scalar <= 0.0:
+        gs.raise_exception(f"FEMEntity.set_gas_state: {name} must be finite and positive.")
+    return scalar
 
 
 # ---------------------------------------------------------------------------
@@ -295,6 +356,8 @@ class QIPCCoupler(RBC):
         self._options: QIPCCouplerOptions = options
         self._adhesion: QIPCAdhesionManager = QIPCAdhesionManager(options)
         self._fem_rest_positions: dict = {}
+        self._sealed_gas_bag_by_entity: dict[FEMEntity, int] = {}
+        self._sealed_gas_reset_state: dict[FEMEntity, _SealedGasResetState] = {}
         self._stc_requests: list[tuple] = []
         self._stc_geos: dict[tuple, object] = {}
 
@@ -529,6 +592,7 @@ class QIPCCoupler(RBC):
             entry = FemEntityEntry(fem_entity, slot, is_cloth, offset, fem_entity.n_vertices)
             self._fem_entries.append(entry)
             self._fem_entry_by_entity[fem_entity] = entry
+        self._initialize_sealed_gas_state()
         self._fem_constraints: list[FemConstraintRecord] = []
 
         # --- Phase 2 (post-init): resolve body offsets, build writeback tensors ---
@@ -599,7 +663,14 @@ class QIPCCoupler(RBC):
         if envs_idx is not None:
             gs.raise_exception("QIPCCoupler.reset does not support partial environment reset.")
 
-        self._scene.reset()
+        runtime_gas_state = self._snapshot_sealed_gas_state()
+        self._restore_sealed_gas_state()
+        try:
+            self._scene.reset()
+        except RuntimeError:
+            self._write_sealed_gas_state(runtime_gas_state)
+            torch.cuda.synchronize()
+            raise
         self._writeback_state()
         self._writeback_fem_state(0)
 
@@ -645,6 +716,59 @@ class QIPCCoupler(RBC):
             max_pcg_iters=int(solver.max_pcg_iters),
             max_line_search_iters=int(solver.max_ls_iters),
         )
+
+    def _sealed_gas_data(self):
+        from qipc import SealedVolumeGas
+
+        data = self._scene._constitution_data.get(SealedVolumeGas)
+        if data is None:
+            gs.raise_exception("QIPCCoupler: sealed-gas backend state is unavailable.")
+        return data
+
+    def _sealed_gas_bag(self, entity: FEMEntity) -> int:
+        bag = self._sealed_gas_bag_by_entity.get(entity)
+        if bag is None:
+            gs.raise_exception(
+                "QIPCCoupler: gas state is only available for FEM entities using gs.materials.FEM.SealedGasShell."
+            )
+        return bag
+
+    def fem_get_gas_state(self, entity: FEMEntity) -> SealedGasState:
+        """Return absolute reference pressure, reference volume, and enable state."""
+        bag = self._sealed_gas_bag(entity)
+        data = self._sealed_gas_data()
+        return SealedGasState(
+            p0=float(data["p0"][bag].item()),
+            v0=float(data["v0"][bag].item()),
+            enabled=bool(data["enabled"][bag].item()),
+        )
+
+    def fem_set_gas_state(
+        self,
+        entity: FEMEntity,
+        *,
+        p0: float | None,
+        v0: float | None,
+        enabled: bool | None,
+    ) -> None:
+        """Update graph-safe live state for one sealed-gas FEM entity.
+
+        `p0` is absolute reference pressure in Pa. The line-search volume floor
+        remains tied to the authored initial geometry when `v0` changes.
+        """
+        p0_scalar = _positive_gas_scalar("p0", p0) if p0 is not None else None
+        v0_scalar = _positive_gas_scalar("v0", v0) if v0 is not None else None
+        if enabled is not None and not isinstance(enabled, (bool, np.bool_)):
+            gs.raise_exception("FEMEntity.set_gas_state: enabled must be a bool.")
+
+        bag = self._sealed_gas_bag(entity)
+        data = self._sealed_gas_data()
+        if p0_scalar is not None:
+            data["p0"][bag] = p0_scalar
+        if v0_scalar is not None:
+            data["v0"][bag] = v0_scalar
+        if enabled is not None:
+            data["enabled"][bag] = 1.0 if enabled else 0.0
 
     def preprocess(self, f: int) -> None:
         """Forward Genesis control targets to QIPC joint controller.
@@ -777,10 +901,12 @@ class QIPCCoupler(RBC):
         from qipc import tetmesh
         from qipc import trimesh as qipc_trimesh
         from qipc.constitution import Cloth as QipcCloth
-        from qipc.constitution import SoftPositionConstraint, StableNeoHookean
+        from qipc.constitution import SealedVolumeGas, SoftPositionConstraint, StableNeoHookean
+        from qipc.inflation import MeshValidationError, closed_surface_orientation
 
         from genesis.engine.materials.FEM import Cloth as ClothMaterial
         from genesis.engine.materials.FEM import Muscle as MuscleMaterial
+        from genesis.engine.materials.FEM import SealedGasShell
 
         pre_entries: list[tuple[FEMEntity, object, bool]] = []
         for i_e, entity in enumerate(fem_solver.entities):
@@ -819,6 +945,29 @@ class QIPCCoupler(RBC):
                 if mat.strain_limit_multiplier is not None:
                     cloth_kwargs["strain_limit_multiplier"] = float(mat.strain_limit_multiplier)
                 QipcCloth().apply_to(geo, **cloth_kwargs)
+                if isinstance(mat, SealedGasShell):
+                    try:
+                        closed_surface_orientation(verts, faces, auto_flip=mat.auto_flip)
+                    except MeshValidationError as error:
+                        gs.raise_exception_from(
+                            f"QIPCCoupler: sealed-gas entity '{entity.name}' must use a closed, "
+                            f"consistently wound triangle mesh: {error}",
+                            error,
+                        )
+                    component_count = _triangle_component_count(faces)
+                    if component_count != 1:
+                        gs.raise_exception(
+                            f"QIPCCoupler: sealed-gas entity '{entity.name}' has {component_count} disconnected "
+                            "closed shells; use one FEM entity per gas bag."
+                        )
+                    SealedVolumeGas().apply_to(
+                        geo,
+                        p_gauge0=float(mat.p_gauge0),
+                        p_atm=float(mat.p_atm),
+                        gamma=float(mat.gamma),
+                        v_min_rel=float(mat.v_min_rel),
+                        auto_flip=bool(mat.auto_flip),
+                    )
             else:
                 if mat.model != "stable_neohookean":
                     gs.logger.warning(
@@ -862,6 +1011,66 @@ class QIPCCoupler(RBC):
                 "FEM entity in this scene."
             )
         return pre_entries
+
+    def _initialize_sealed_gas_state(self) -> None:
+        """Resolve each Genesis entity to its native per-bag row after init."""
+        from genesis.engine.materials.FEM import SealedGasShell
+
+        sealed_entries = [entry for entry in self._fem_entries if isinstance(entry.entity.material, SealedGasShell)]
+        if not sealed_entries:
+            return
+
+        data = self._sealed_gas_data()
+        vert_index: torch.Tensor = data["vert_index"]
+        vert_bag: torch.Tensor = data["vert_bag"]
+        if data["p0"].numel() != len(sealed_entries):
+            gs.raise_exception(
+                f"QIPCCoupler: found {data['p0'].numel()} native gas bags for "
+                f"{len(sealed_entries)} sealed-gas FEM entities."
+            )
+        used_bags: set[int] = set()
+        for entry in sealed_entries:
+            in_entity = (vert_index >= entry.offset) & (vert_index < entry.offset + entry.n_verts)
+            bags = torch.unique(vert_bag[in_entity])
+            if bags.numel() != 1:
+                gs.raise_exception(
+                    f"QIPCCoupler: sealed-gas entity '{entry.entity.name}' mapped to {bags.numel()} gas bags; "
+                    "expected exactly one."
+                )
+            bag = int(bags.item())
+            if bag in used_bags:
+                gs.raise_exception(f"QIPCCoupler: gas bag row {bag} is shared by multiple FEM entities.")
+            used_bags.add(bag)
+            self._sealed_gas_bag_by_entity[entry.entity] = bag
+        self._sealed_gas_reset_state = self._snapshot_sealed_gas_state()
+
+    def _snapshot_sealed_gas_state(self) -> dict[FEMEntity, _SealedGasResetState]:
+        if not self._sealed_gas_bag_by_entity:
+            return {}
+        data = self._sealed_gas_data()
+        return {
+            entity: _SealedGasResetState(
+                p0=float(data["p0"][bag].item()),
+                v0=float(data["v0"][bag].item()),
+                v_min=float(data["v_min"][bag].item()),
+                enabled=float(data["enabled"][bag].item()),
+            )
+            for entity, bag in self._sealed_gas_bag_by_entity.items()
+        }
+
+    def _write_sealed_gas_state(self, states: dict[FEMEntity, _SealedGasResetState]) -> None:
+        if not states:
+            return
+        data = self._sealed_gas_data()
+        for entity, state in states.items():
+            bag = self._sealed_gas_bag_by_entity[entity]
+            data["p0"][bag] = state.p0
+            data["v0"][bag] = state.v0
+            data["v_min"][bag] = state.v_min
+            data["enabled"][bag] = state.enabled
+
+    def _restore_sealed_gas_state(self) -> None:
+        self._write_sealed_gas_state(self._sealed_gas_reset_state)
 
     def _setup_contact_tabular(
         self,

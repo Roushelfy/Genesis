@@ -1,256 +1,270 @@
-# QIPCCoupler FEM Support — Design
+# QIPCCoupler FEM Architecture
 
-Status: P1+P2 implemented on `feat/qipc-coupler-fem` (2026-07-27). Companion to
-[roadmap.md](roadmap.md). Based on a survey of the upstream `IPCCoupler` FEM path
-(identical on `origin/main` and this branch), the cuda-graph-qipc (`qipc`) FEM
-frontend, and the Genesis `FEMSolver` internals.
+Status: volumetric FEM, cloth, soft-constraint creation/target updates,
+per-entity contact, adhesion, prestress, native scene reset, and sealed-volume
+gas are implemented. Soft-constraint removal/reset, runtime hard vertex
+constraints, a public external-acceleration API, plasticity, and
+multi-environment simulation remain open; see [roadmap.md](roadmap.md).
 
-> **Implementation notes (P1/P2, 2026-07-27):**
-> - Volumetric SNH + Cloth preset + per-entity contact tabular + zero-copy pos/vel
->   writeback + `substep_post_coupling` skip are in `coupler.py`; runtime vertex
->   constraints (resident SoftPositionConstraint / `fe.is_fixed`), teleport
->   (`x`+`x_prev`), and `external_acc` are wired through `FEMEntity`.
-> - **Halfplane ground clearance:** any vertex at (or below) signed distance 0
->   from a halfplane — e.g. `Box(fixed=True)` placed flush on the ground — trips
->   `QIPC_KERNEL_ASSERT(d > 0.0)` in `halfplane_query_kernel`: the device
->   `__trap()` takes down the whole init CUDA graph as an unreadable
->   "unspecified launch failure" (the printf diagnostic appears before the
->   traceback), while release builds compile the assert out and silently skip
->   such pairs. The coupler runs a build-time host preflight
->   (`_preflight_ground_clearance`) that raises a readable error naming the
->   offending entity; scenes must give every body a strictly positive ground
->   clearance (ideally >= contact_d_hat).
-> - Two smaller fixes: world-anchored FIXED joints (e.g. `Box(fixed=True)`) no
->   longer break merge-group construction; degenerate link inertials fall back to
->   the mesh-density ABD mass path instead of producing a singular 12x12 mass.
-> - Validation: `examples/qipc/fem_smoke.py` (box_drop / cloth_drape / cloth_pin),
->   `examples/qipc/objects_falling_video.py` (cloth + free rigid + soft ball), and
->   `examples/qipc/robot_cloth_teleop.py` (viewer teleop: Franka + hanging cloth).
+## Core principle
 
-## 0. Summary
+Every FEM feature must be fully declared before QIPC `Scene.init()`. Runtime
+control may only mutate documented live device state, through a Genesis API
+that validates ownership, units, and reset behavior.
 
-The qipc backend's FEM feature set already exceeds the subset libuipc's coupler actually
-uses (StableNeoHookean volumetric + Baraff-Witkin cloth), and its frontend API is
-structurally isomorphic to libuipc (`constitution.apply_to(geo)` + ContactTabular +
-animator), so the `IPCCoupler` FEM code can be ported almost section-by-section. The
-design opportunities are fixing three structural weaknesses of the IPC FEM path:
+Consequences:
 
-1. **Writeback round-trips through the host** (SceneVisitor over all geometries +
-   numpy stack per substep). qipc exposes `scene.finite_element.x` / `.velocities` as
-   zero-copy CUDA float64 torch views — feed them straight into a quadrants kernel.
-2. **Velocities are never written back** (`entity.get_state().vel` is always zero under
-   IPC). qipc maintains `fe.velocities` natively; write them back alongside positions.
-3. **Vertex constraints/BCs unsupported** (`set_vertex_constraints` raises under IPC).
-   qipc's `aim_position` / `is_constrained` / `is_fixed` are CUDA-graph-safe live device
-   writes, enabling a *stronger* runtime constraint API than the libuipc coupler has.
+1. Genesis owns material configuration and entity identity.
+2. QIPC owns solver buffers and the authoritative simulated state.
+3. A Genesis entity never infers a native row from creation order.
+4. Live QIPC views are reacquired on every API call; they are never cached.
+5. A runtime feature is complete only when its reset behavior is explicit and
+   tested. Sealed gas meets that requirement; remaining constraint gaps are
+   tracked in the roadmap.
 
-Plasticity, `SealedVolumeGas`, and `AdhesiveIPCContact` all follow qipc's
-"declare at build, tune via live views at runtime" pattern and slot into the same frame.
+## Architecture and data flow
 
-## 1. Architecture and data flow
+During `QIPCCoupler.build()` entities are classified and converted before the
+QIPC scene freezes:
 
-### Build (`QIPCCoupler.build()` extension)
-
-Entity classification adds a FEM branch to the existing plane/ABD split:
-
-```
-plane → qipc ground                                   (existing)
-rigid → ABD + joints                                  (existing)
-FEM   → isinstance(material, Cloth) ? trimesh + shell
-                                    : tetmesh + volumetric   (new)
+```text
+Plane       -> QIPC half-plane
+Rigid       -> affine body dynamics geometry + joints
+FEM.Elastic -> tetmesh + StableNeoHookean
+FEM.Cloth   -> trimesh + QIPC Cloth preset
+SealedGasShell
+            -> trimesh + QIPC Cloth preset + SealedVolumeGas
 ```
 
-Per FEM entity (single env, see §8):
+Every FEM geometry also receives an initially inert
+`SoftPositionConstraint`. Contact elements and pairwise contact models are
+inserted before `Scene.init()`. After init, Genesis records each geometry's
+native FEM vertex offset and writes QIPC positions and velocities back into the
+corresponding `FEMEntity` after every QIPC step.
+
+Runtime teleports write `x`, `x_prev`, and velocity consistently. Soft vertex
+constraint creation and target updates write QIPC's live device views, but the
+current removal path also touches init-only `is_fixed` and fails. The hard-
+constraint path has the same incompatibility and must be migrated to
+`PositionDBC`. Sealed-gas controls write the gas constitution's live per-bag
+arrays directly between simulation steps.
+
+## Material mapping
+
+| Genesis material | QIPC primary constitution | Additional behavior |
+| --- | --- | --- |
+| `FEM.Elastic(model="stable_neohookean")` | `StableNeoHookean` | E, nu, and rho are forwarded |
+| `FEM.Elastic` with another model | `StableNeoHookean` | Emits a fallback warning |
+| `FEM.Cloth` | `Cloth` preset | Membrane, bending, strain limit, and contact thickness are forwarded |
+| `FEM.SealedGasShell` | `Cloth` preset | Stacks `SealedVolumeGas` |
+| `FEM.Muscle` | unsupported | Build raises instead of silently degrading |
+
+`SealedGasShell` subclasses `Cloth` so the existing surface-triangle sampling
+path remains the single shell implementation. It is QIPCCoupler-only; using it
+with another coupler raises while the entity is added.
+
+## State and boundary conditions
+
+QIPC's native float64 FEM views are the source of truth. Genesis reads those
+views on-device and writes them back at the current Genesis precision. Current
+runtime status is:
+
+| Genesis operation | Status and QIPC state |
+| --- | --- |
+| soft constraint create/update | supported through `aim_position`, `strength_ratio`, `is_constrained` |
+| soft constraint removal | broken; the current path also writes init-only `is_fixed` |
+| hard vertex constraint | unsupported at runtime; current `is_fixed` path is init-only |
+| entity teleport | `x`, `x_prev`, `velocities=0` |
+| entity velocity | `velocities` |
+| external acceleration | private coupler hook exists for `external_acc`; no public `FEMEntity` API or gate |
+| sealed-gas control | per-bag `p0`, `v0`, and `enabled`; build-time `v_min` is fixed |
+
+QIPC currently has no environment-batch abstraction, so the coupler rejects
+`n_envs > 1` and partial reset.
+
+## SealedVolumeGas
+
+### Physical model
+
+For current enclosed volume `V`, reference volume `v0`, reference absolute
+pressure `p0`, and polytropic exponent `gamma`, QIPC uses
+
+```text
+p_in(V) = p0 * (v0 / V) ** gamma
+delta_p(V) = p_in(V) - p_atm
+grad(E) = (p_atm - p_in(V)) * grad(V)
+```
+
+inside an implicit energy with an exact gradient and a matrix-free rank-1 gas
+Hessian. The shell loading is the internal-minus-ambient pressure `delta_p`, not
+unopposed absolute pressure. `gamma=1` is isothermal. `p0` is the pressure at
+`V=v0`; it is not a measurement of the current pressure after the bag deforms.
+
+The membrane remains the primary shell constitution. Gas is an extra
+constitution on the same triangle geometry.
+
+### User-facing material
 
 ```python
-# volumetric: geo = tetmesh(entity.init_positions → f64, entity.elems → i32)
-# cloth:      geo = trimesh(entity.init_positions → f64, entity.surface_triangles → i32)
-# 1) constitution from the material registry (§2)
-# 2) per-entity ContactElement.apply_to(geo) (§3)
-# 3) resident lazy SoftPositionConstraint (is_constrained=0) for runtime BCs (§5)
-slot = scene.geometries.create(f"fem_{i_e}", geo)
-# after scene.init(): record (entity.v_start, int(geo.meta["fem_vert_offset"]), entity.n_vertices)
+bag = scene.add_entity(
+    name="bag",
+    morph=gs.morphs.Mesh(file="closed_bag.obj"),
+    material=gs.materials.FEM.SealedGasShell(
+        E=1e7,
+        nu=0.3,
+        rho=910.0,
+        thickness=1e-4,
+        membrane="stvk",
+        p_gauge0=500.0,
+        p_atm=101325.0,
+        gamma=1.0,
+        v_min_rel=1e-4,
+        auto_flip=True,
+    ),
+)
 ```
 
-Key constraint: **the qipc Scene freezes at `init()`** — geometry, constitutions, the
-contact tabular, and adhesion pairs are uploaded once. All *feature declarations* must
-converge at build; runtime may only touch the documented live device buffers. This
-dictates the API split throughout: **declaration via materials/options, tuning via
-entity runtime APIs**.
+| Field | Unit and contract |
+| --- | --- |
+| `p_gauge0` | Pa, finite; initial `p0 = p_atm + p_gauge0` must be finite and positive |
+| `p_atm` | Pa absolute, positive |
+| `gamma` | positive; 1 is isothermal |
+| `v_min_rel` | dimensionless and strictly between 0 and 1 |
+| `auto_flip` | accepts globally inward winding by storing sign -1; topology is not rewritten |
 
-### Per step
+### Build order and mesh contract
 
-```
-preprocess(f):  rigid control forwarding (existing) + FEM runtime target flush:
-                _tgt set_position/set_velocity → fe.x[s] + fe.x_prev[s] + fe.velocities[s]  (teleport semantics)
-                constraint targets → geo.vertices["aim_position"].gpu()[:]                  (graph-safe)
-                gas state → scene._constitution_data[SealedVolumeGas]["p0"|"v0"|"enabled"]
-couple(f):      substep accumulation as today → scene.step() → unified writeback (§4)
-```
+The coupler performs these steps for each `SealedGasShell`:
 
-### Required upstream change (fem_solver.py)
+1. Create a QIPC trimesh from the Genesis initial positions and surface faces.
+2. Apply the configured QIPC Cloth preset.
+3. Run a host preflight with `closed_surface_orientation` so errors include the
+   Genesis entity name.
+4. Require exactly one edge-connected closed shell. Multiple bags must be
+   separate Genesis entities.
+5. Apply `SealedVolumeGas` with keyword arguments from the material.
+6. Apply the resident position constraint and create the geometry slot.
+7. Let QIPC validate the sealed geometry again during `Scene.init()`.
 
-`FEMSolver.substep_pre_coupling` already early-returns for `QIPCCoupler`
-(`fem_solver.py:962-963`), but **`substep_post_coupling` (`:986-990`) has no matching
-skip** — `compute_pos(f)` would overwrite our `f+1` frame with
-`pos[f] + dt·vel[f+1]`. Add the same `isinstance(coupler, QIPCCoupler): return`.
-(IPC survives without it by writing frame 0 and letting `compute_pos` propagate — at
-the cost of zeroed velocities. We do not take that path.)
+The preflight requires every directed triangle edge to appear once with its
+reverse, consistent global winding, nonzero signed volume, and one connected
+triangle component. With `auto_flip=True`, inward winding records a native sign
+coefficient rather than modifying the shared membrane/contact topology.
 
-## 2. Material mapping (registry pattern)
+This validation does not prove that the surface is free of self-intersection or
+that every triangle and enclosed volume is numerically well-conditioned. Those
+remain asset-quality requirements.
 
-Implement as an explicit registry (`dict[type[Material], ConstitutionBuilder]`) so new
-materials add one builder without touching the coupler body:
+### Initial geometry versus elastic rest geometry
 
-| Genesis material (fields) | qipc constitution | Notes |
-|---|---|---|
-| `FEM.Elastic(model="stable_neohookean")` E/nu/rho | `StableNeoHookean(youngs_modulus, poissons_ratio, mass_density)` | parity with IPC |
-| `FEM.Elastic(model="stvk_hencky")` **(new enum value)** | `StvkHencky(...)` | true Lamé; prerequisite for plasticity |
-| `FEM.Elastic(model="linear"/"linear_corotated")` | **warn + fall back to SNH** (or raise) | IPC silently ignores `model`; do better |
-| **new** `FEM.Plastic(Elastic)`: `yield_stress`, `hardening` ("none"/"linear"/"voce"), `hardening_coeff`, `yield_stress_sat` | `StvkHencky` + `VonMisesPlasticity` modifier | plasticity is a *modifier*, not a constitution; per-tet params let multiple plastic bodies share one backend |
-| `FEM.Cloth`: E, nu, rho, thickness, bending_stiffness + **new** `membrane` ("baraff_witkin"/"stvk"), `strain_limit_multiplier`, `contact_thickness`, `bending` ("quadratic"/"hinge"/None) | `Cloth` preset (`youngs_modulus, shear_modulus/poissons_ratio, thickness, bending_youngs_modulus, ...`) | two semantic traps: ① the BW membrane takes `shear_modulus`, not nu (only `membrane="stvk"` takes `poissons_ratio`); for BW derive `G = E/(2(1+nu))`. ② qipc decouples `thickness` (mass/elasticity) from `contact_thickness` (IPC gap) — garments starting in contact need `contact_thickness=0`; Genesis `Cloth` needs this field |
-| **new** `FEM.SealedGasShell(Cloth)`: `p_gauge0`, `p_atm`, `gamma`, `v_min_rel`, `auto_flip` | membrane constitution + `SealedVolumeGas().apply_to(geo, ...)` (extra/stacked constitution) | §6 |
-| `FEM.Muscle` | **raise explicitly** | qipc has no muscle actuation; IPC silently degrades it to plain SNH, which is worse |
-| `friction_mu` / `contact_resistance` | ContactTabular per-pair | §3 |
+The authored `geometry.positions` define the initial simulated configuration
+and the gas reference volume `v0`. An optional `rest_geometry` defines elastic
+rest areas, masses, and bending metrics only. Therefore
+`set_fem_rest_positions()` can create membrane/bending prestress but does not
+change how much gas was sealed into the authored bag.
 
-`gs.materials.Rigid` has a `qipc_*` field-prefix precedent, but the fields above are
-physical (not coupler tuning), so they should be first-class — the libuipc coupler can
-consume them later too.
+Only the simulated geometry is stamped with `SealedVolumeGas`; the rest geometry
+is not.
 
-## 3. Contact tabular: reuse IPCCoupler's formulas + fix the qipc gating trap
+### Entity-to-bag ownership
 
-- Per-entity `ContactElement` (`fem_contact_{i}` / `cloth_contact_{i}` / `abd_contact_{i}` /
-  ground); upper triangle *including* self-pairs (FEM self-contact on by default).
-- Pairwise formulas as in `ipc_coupler/coupler.py:675-691`:
-  `mu_ij = sqrt(mu_i * mu_j)`, `kappa_ij = 2*k_i*k_j/(k_i+k_j)`; ground pairs likewise.
-- **Trap**: qipc only wires the friction machinery when the *default* model's
-  `friction_rate > 0` (`qipc/solver/solver.py:485-491`); per-pair mu on top of a zero
-  default silently does nothing. Set
-  `default_model(friction_rate=max(min_mu, eps), resistance=options.contact_resistance)`.
-- The table freezes at init: `enable_rigid_rigid_contact`-style switches get baked in at
-  build, exactly as IPC does.
+QIPC stores gas parameters in compact per-bag arrays. A bag row is neither the
+Genesis FEM entity index nor its FEM vertex offset. After `Scene.init()`, the
+coupler reads the live `vert_index` and `vert_bag` tables, intersects them with
+each entity's native FEM vertex range, and requires exactly one unique bag row.
+It also rejects two entities resolving to the same row.
 
-This step also completes roadmap Priority 4 (rigid per-pair contact) — same mechanism.
+The resulting `FEMEntity -> bag row` map is the only mapping used by runtime
+APIs. Each access reacquires `LiveConstitutionData` because native buffers can
+be reallocated and an older DLPack tensor may become stale.
 
-## 4. State writeback (the core upgrade over IPC)
+### Runtime API
+
+`FEMEntity.get_gas_state()` returns a scalar snapshot:
 
 ```python
-# once after build (both sides keep creation order → pure offset mapping):
-#   per entity: (gs_v_start, qipc_fem_vert_offset, n_verts) → flat index arrays
-# in couple():
-fe = self._scene.finite_element
-self._kernel_fem_writeback(fe.x, fe.velocities, self._map_gs2qipc, f + 1)
+state = bag.get_gas_state()
+# state.p0: reference absolute pressure [Pa]
+# state.v0: reference volume [m^3]
+# state.enabled: whether the gas energy is active
 ```
 
-- `fe.x` / `fe.velocities` are DLPack torch views over native-owned CUDA float64
-  buffers; quadrants kernels accept `qd.types.ndarray` directly → **zero-copy, no host
-  round trip** (IPC walks every scene geometry + numpy-stacks per substep).
-- **Write frame `f+1`, both pos and vel**: `save_ckpt`'s `copy_frame(1, 0)` promotes it
-  to the next step's frame 0, so rendering (`get_state_render(cur_substep_local)`) and
-  `entity.get_state()` are automatically correct — FEM rendering is pull-based, there
-  is no analogue of the rigid `geoms_state` staleness problem.
-- Velocities come straight from qipc's `fe.velocities`; no finite differencing.
-- Precision: qipc is float64-only; cast to the `gs.init` precision inside the kernel
-  (QIPC examples already require `precision="64"`).
+The getter synchronizes device state and is intended for control and
+diagnostics, not per-frame high-rate telemetry.
 
-## 5. Boundary conditions / constraints (leapfrogging the libuipc coupler)
+`FEMEntity.set_gas_state()` changes any subset of the live controls:
 
-The libuipc coupler raises on `set_vertex_constraints`; qipc constraint targets are
-graph-safe runtime device writes, so the full runtime API is supportable:
+```python
+bag.set_gas_state(p0=102000.0)
+bag.set_gas_state(v0=1.1 * state.v0)
+bag.set_gas_state(enabled=False)
+```
 
-| Genesis API | qipc mechanism |
-|---|---|
-| `set_vertex_constraints(soft=True, stiffness)` | resident `SoftPositionConstraint` (applied to all FEM geoms at build with `is_constrained=0`); at runtime write `is_constrained` / `strength_ratio` / `aim_position` via `.gpu()[:]` |
-| `set_vertex_constraints(soft=False)` | `fe.is_fixed[idx] = 1` (live int32 view; note `is_fixed` ignores the contact barrier) or `PositionDBC` (kinematic, CCD-safe — right for mocap-driven verts) |
-| `update_constraint_targets` / `link=` following a rigid link | compute targets from the link pose in `preprocess` and write `aim_position` (equivalent of `_kernel_update_linked_vertex_constraints`) |
-| `set_position` (teleport) | write `fe.x` **and** `fe.x_prev` (the predictor reads only `x_prev`/`velocities`; writing `x` alone is physically undone — qipc's canonical teleport idiom) |
-| `set_velocity` | `fe.velocities[slice] = v` |
-| external forces (uniform force etc.) | `fe.external_acc` (live, enters the predictor) |
+- `p0` is an absolute reference pressure in Pa and must be finite and positive.
+- `v0` is a gas-law reference volume in m^3 and must be finite and positive. It
+  can model adding or removing gas without moving the mesh.
+- `v_min` remains the fixed collapse floor
+  `material.v_min_rel * authored_initial_volume`. It is a geometric line-search
+  safeguard, not a gas-quantity control, so changing `v0` does not move it.
+- `enabled` must be a bool and is written as exactly 0 or 1. Fractional values
+  are forbidden because QIPC's energy and derivative paths do not give them
+  matching semantics.
+- `enabled=False` disables the complete gas energy, including its collapse
+  barrier. It models opening/removing the virtual gas chamber, not gradual
+  leakage. Re-enable only while the shell remains closed, consistently oriented,
+  and above its volume floor.
+- Calls must occur between scene steps, not concurrently with a QIPC solve.
 
-Cost caveat: the resident SPC hangs a zero-strength energy term on every FEM vertex —
-confirm on the cgq side that `is_constrained=0` vertices are skipped in the kernel
-(intended); otherwise fall back to apply-at-build-on-demand and document that
-constraints must be declared before `scene.build()`.
+`p_atm`, `gamma`, orientation sign, and connectivity are build-time state and
+are not exposed as runtime controls.
 
-## 6. SealedVolumeGas
+### Reset semantics
 
-- Declaration: `FEM.SealedGasShell` material → membrane (StVKShell/Cloth) +
-  `SealedVolumeGas().apply_to(geo, p_gauge0, p_atm, gamma, v_min_rel, auto_flip)`
-  stacked as an extra constitution.
-- **Build-time validation**: requires a watertight, consistently wound trimesh (qipc's
-  `closed_surface_orientation` raises `MeshValidationError` — catch and re-raise with
-  the Genesis entity name). `V0` is taken from `geo.positions` (initial state), not
-  `rest_geometry`.
-- **Hard requirement**: `linear_system/solver == "partition_pcg"` (qipc default). If
-  `QIPCCouplerOptions` ever exposes the solver choice, validate the combination.
-- Runtime: `scene._constitution_data[SealedVolumeGas]` exposes live `p0`/`v0`/`enabled`
-  views → expose `entity.set_gas_state(p0=..., v0=..., enabled=...)` for
-  inflate/deflate (the `chip_bag_press` example pattern).
+Raw QIPC `Scene.reset()`, dump, and recover currently do not checkpoint the gas
+live arrays. Genesis therefore snapshots each managed bag's initial `p0`, `v0`,
+`v_min`, and `enabled` after init. `QIPCCoupler.reset()` reacquires the current
+views, restores those values, and then invokes QIPC reset. If native reset is
+refused before it changes the scene, Genesis rolls the gas arrays back to their
+pre-call runtime values. A successful Genesis reset returns gas control state to
+the material-defined build-time baseline.
 
-## 7. AdhesiveIPCContact
+### Linear solver compatibility
 
-- qipc's contact constitution is a **scene-level single choice** (consistent / gipc /
-  adhesive; a second `apply_to` raises) →
-  `QIPCCouplerOptions.contact_constitution: Literal["consistent","gipc","adhesive"] = "consistent"`
-  plus global adhesion params (`bond_distance_lock`, `bond_distance_lock_ratio`,
-  `bond_max_bonds`, `bond_kappa`, `bond_release_{force,strain,gap,slip}`, `occlusion`).
-- Per-pair adhesion params (`Cn, Ct, W, eta, bonding_rate, beta0, adhesion_enabled,
-  distance_lock, distance_lock_ratio, release_force`) go through ContactTabular insert →
-  provide **`coupler.add_adhesion(entity_a, entity_b, **params)` (called before
-  `scene.build()`)**, with naming aligned to the eval-branch IPCCoupler's
-  `add_rcc_adhesion` / `rcc_bonded_pt_distance_lock_*` API so both couplers present a
-  consistent user surface.
-- With all adhesion params zero, `AdhesiveIPCContact` reproduces C-IPC bit-for-bit —
-  defaulting to it would be low-risk, but keep it opt-in initially.
-- Mixed ABD–FEM adhesion is covered by cgq's `test_bond_abd_fem_mixed.py`; gripper–soft
-  scenarios work out of the box.
+The gas Hessian requires a PCG matvec hook. Both QIPC solvers exposed by Genesis
+are supported:
 
-## 8. reset, n_envs, substeps
+- `partition_pcg` (default)
+- `linear_pcg`
 
-- **reset** (roadmap P3): pass `workspace=` to the Scene, `scene.dump()` at end of
-  build (frame-0 checkpoint, mirroring IPC's `_finalize_ipc`), `reset()` →
-  `scene.recover(0)` + immediate writeback. dump/recover includes plastic state.
-  Restrict to `envs_idx is None`.
-- **n_envs > 1**: qipc has no batch/subscene concept (zero hits repo-wide). Emulating
-  env isolation with per-pair disables explodes the dense N×N tabular. **Phase 1 keeps
-  `n_envs <= 1`**; the long-term fix is a subscene/batch feature on the cgq side, not a
-  coupler-level workaround.
-- **substeps**: keep the existing rigid pattern (accumulate substeps, one qipc step per
-  Genesis step) + the `_is_first_step` guard for the build-time warm-up step.
+There is no sealed-gas-specific reason to force the partitioned solver.
 
-## 9. Phased plan
+### Validation ladder
 
-1. **P1 core volumetric + cloth**: classification/geometry, SNH + Cloth mapping,
-   per-entity contact tabular (completes roadmap P4 as a side effect), zero-copy
-   pos+vel writeback, `substep_post_coupling` skip → port `tests/ipc/test_deformable.py`
-   cloth corner-drag and biaxial-stretch (the latter is the only numeric validation of
-   the E/nu mapping).
-2. **P2 constraints/BC**: SPC/PositionDBC/is_fixed wiring, the full
-   `set_vertex_constraints` family + teleport + `external_acc`.
-3. **P3 plasticity**: `stvk_hencky` enum + `FEM.Plastic` + plastic-strain readback,
-   validated against cgq `test_tet_plasticity.py`.
-4. **P4 SealedVolumeGas**: material + validation + runtime inflate/deflate.
-5. **P5 adhesion**: `contact_constitution` option + `add_adhesion` + bond params.
-6. **P6 reset** (dump/recover).
+`tests/test_qipc_sealed_gas.py` provides the Genesis integration oracles:
 
-## 10. Risks and incidental findings
+| Layer | Contract |
+| --- | --- |
+| material | pressure and volume-floor parameter guards |
+| build validation | open and multi-component shells fail with the entity name |
+| solver contract | `linear_pcg` builds and steps |
+| rest geometry | elastic prestress does not replace the authored gas reference volume |
+| multi-bag integration | entity-scoped rows do not cross-write across an intervening ordinary cloth entity |
+| runtime/reset | `p0`, `v0`, and `enabled` update; fixed `v_min` and all controls reset correctly |
+| physics scene | overpressure inflates while a disabled control remains static |
 
-Risks:
+Run the gate in a Genesis development environment with a CUDA QIPC build:
 
-1. Contact-pair buffer regrow crash (deterministic `dynamic_exclusive_sum` failure
-   reproduced 2026-07-16 on cgq 022e621). cgq docs claim overflow yields to host and
-   reallocs; re-verify on current cgq main — this is the biggest stability risk for
-   contact-heavy scenes.
-2. qipc mandates Python ≥3.13 and float64; batched RL workloads are out of scope for now.
-3. Resident-SPC overhead needs measurement (§5 caveat).
+```bash
+pytest tests/test_qipc_sealed_gas.py --backend gpu -n 0 -x
+```
 
-Incidental Genesis bugs found during the survey (worth reporting independently):
+QIPC's own `tests/test_sealed_volume_gas.py` remains the oracle for the native
+energy, gradient, Hessian, winding, and squeeze physics. Genesis tests focus on
+configuration, ownership, lifecycle, and end-to-end wiring.
 
-1. `FEMSolver._kernel_get_el2v` indexes its per-entity output array with the *global*
-   element index — out-of-bounds for any FEM entity with `el_start > 0`
-   (`fem_solver.py:1339-1349`).
-2. `_kernel_add_cloth` never sets vertex `mass_inv`; `FEM.Cloth` under a non-IPC coupler
-   reads uninitialized data, and nothing validates the combination.
-3. `FEMSolver.save_ckpt` allocates fresh `(B, n, 3)` torch buffers under a new
-   `ckpt_name` every step, so `_ckpt` grows unboundedly even in non-grad mode — a
-   memory leak for long FEM runs.
+## Related subsystems
+
+Adhesion and tape-specific prestress are documented separately in
+[adhesion_tape_design.md](adhesion_tape_design.md). Current milestone status,
+known limitations, and runnable repository gates live in
+[roadmap.md](roadmap.md).

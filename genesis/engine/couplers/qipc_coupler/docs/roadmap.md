@@ -1,131 +1,133 @@
 # QIPCCoupler Roadmap
 
-## Current Status (2026-07-20)
+## Core principle
 
-Multi-entity support with IPC ground contact fully working. Unified writeback kernel, absolute joint position control, free-base qpos writeback, strong-typed code. PR #3043 on `feat/qipc-coupler`.
+Every Genesis feature mapped to QIPC must preserve a single authoritative
+native state while providing deterministic entity ownership, validated runtime
+controls, and explicit lifecycle behavior.
 
-### What Works
+Non-negotiable rules:
 
-- Multi-entity: N ABD robots + M ground planes in one scene
-- IPC contact enabled by default (halfplane ground auto-detection from Plane entities)
-- Unified writeback kernel (links_state + dofs_state + free-base qpos in single launch)
-- Entity classification upfront (plane vs abd), joint classification by type
-- FREE joint handled as free ABD body with qpos writeback
-- Fixed-joint merging (parallel axis theorem, relative-transform writeback)
-- Home pose via QIPC init_theta (absolute joint-angle frame)
-- Per-entity config via `gs.materials.Rigid(qipc_*=...)`
-- Actuator gain resolution (MJCF-parsed > material override > defaults)
-- Revolute, prismatic, and mixed joint configurations
-- IK-based end-effector teleop example
-- Strong-typed NamedTuples, full type annotations, no getattr/hasattr
-- Stacked free-base collision (passes where IPC coupler xfails)
+1. Geometry, constitutions, contact rows, and constraints are declared before
+   QIPC `Scene.init()`.
+2. Runtime APIs write only documented live views and validate units and shape
+   before the first write.
+3. Native compact rows are resolved from QIPC ownership tables, never guessed
+   from Genesis creation order.
+4. Genesis reads positions and velocities from QIPC and does not integrate a
+   second competing state.
+5. A runtime mutation is marked complete only after its reset contract has an
+   integration test.
 
-### What Remains
+## Current state (2026-08-04)
 
-1. `reset()` implementation
-2. `n_envs > 1` support
-3. Velocity control mode (requires cuda-graph-qipc kernel change)
-4. Per-pair contact tabular (per-entity ContactElement + friction/resistance)
-5. Observation API validation (`get_pos`, `get_quat` at entity level)
+### Rigid and articulation (complete)
 
----
+- [x] Multiple ABD entities and half-plane ground contact
+- [x] Fixed-joint merging and free-base writeback
+- [x] Revolute and prismatic joints
+- [x] Position, velocity, and direct-force control forwarding
+- [x] Per-entity gains, force ranges, and contact parameters
+- [x] Scene-level solver-option passthrough
+- [x] Soft transform constraints
 
-## Next: Velocity Control (Priority 1)
+### FEM and cloth (partial)
 
-QIPC currently supports position control and direct force control. Velocity
-control is needed for bang-bang limit testing, locomotion policies, and Genesis
-API compatibility (`control_dofs_velocity`).
+- [x] Stable Neo-Hookean volumetric FEM
+- [x] Cloth membrane, bending, strain limiting, and contact thickness
+- [x] Zero-copy native float64 reads with device-side Genesis writeback/cast
+- [x] Soft vertex constraint creation/target updates, link following, and teleport
+- [ ] Repair soft vertex-constraint removal without writing init-only `is_fixed`
+- [ ] Replace the broken runtime `is_fixed` hard-constraint path with QIPC `PositionDBC`
+- [ ] Define and test soft/hard constraint state restoration on `scene.reset()`
+- [ ] Expose and test external acceleration through a public `FEMEntity` API
+- [x] Distinct elastic rest geometry for prestress
+- [x] Per-entity contact tabular rows
 
-### Design (see `cuda-graph-qipc/docs/joint_controller.md`)
+### Adhesion (complete)
 
-Shift the implicit damping energy rest-velocity from zero to `target_velocity`:
+- [x] Soft adhesion and distance-bond declarations
+- [x] Runtime adhesion/bond state queries
 
-$$E_{\mathrm{damp}} = \Delta t \cdot \frac{1}{2}\,k_v\,(\Delta\theta - \dot\theta_{\mathrm{target}}\,\Delta t)^2$$
+### Lifecycle (partial)
 
-When `target_velocity=0`, reduces to current behavior. Variational stability
-preserved (Hessian structure unchanged).
+- [x] QIPC native reset with immediate Genesis writeback
+- [ ] Restore or explicitly preserve every coupler-owned live constraint state
 
-### Implementation tasks
+### Sealed-volume gas (complete)
 
-- [ ] `cuda-graph-qipc`: add `_joint_target_velocity` buffer to `Solver`
-- [ ] `cuda-graph-qipc`: modify `revolute_damping_assemble_kernel` to shift `s`
-- [ ] `cuda-graph-qipc`: modify `prismatic_damping_assemble_kernel` same shift
-- [ ] `cuda-graph-qipc`: add `JointCollection.control_dofs_velocity()` Python API
-- [ ] `genesis-world`: forward `dofs_state.ctrl_vel` in `QIPCCoupler.preprocess`
-- [ ] `genesis-world`: remove xfail from `test_joint_position_limits_bang_bang`
+- [x] `FEM.SealedGasShell` material and parameter validation
+- [x] QIPCCoupler-only backend guard
+- [x] Closed, consistently wound, single-component mesh preflight with entity-scoped errors
+- [x] QIPC Cloth + `SealedVolumeGas` composition before scene init
+- [x] Robust entity-to-bag mapping through native `vert_index`/`vert_bag`
+- [x] Typed runtime state snapshot and validated `p0`/`v0`/`enabled` writes
+- [x] Runtime `v0` control with a fixed authored-geometry `v_min` safety floor
+- [x] Genesis reset restoration for gas state omitted by raw QIPC reset
+- [x] Default `partition_pcg` and alternative `linear_pcg` coverage
+- [x] Elastic rest geometry and gas reference-volume separation
+- [x] Multi-bag isolation and overpressure-versus-disabled physics gate
 
----
+The stable contract is documented in [fem_design.md](fem_design.md).
 
-## Priority 2: Test Suite
+## Next milestones
 
-Restructure tests to `tests/qipc/` following the IPC pattern (`tests/ipc/`), and add physics-asserting test cases.
+### FEM plasticity
 
-### Test cases
+- [ ] Add an explicit plastic FEM material/configuration rather than extending
+      `Elastic` with nullable plastic fields.
+- [ ] Map StVK-Hencky elasticity and QIPC's plasticity modifier.
+- [ ] Expose plastic-strain diagnostics without leaking native buffers.
+- [ ] Add deterministic parameter, return-map, and reset integration tests.
 
-#### Alignment (current test_qipc.py)
+### Batch environments
 
-- [x] init state alignment (revolute, prismatic, mixed, fixed-joint merge)
-- [x] step alignment (gravity, no control)
-- [x] control alignment (target tracking)
-- [ ] alignment with home_qpos / init_theta
+- [ ] Define a QIPC-native subscene or batch abstraction.
+- [ ] Preserve contact isolation without an O(N^2) coupler-side disable table.
+- [ ] Add full and partial reset semantics for `n_envs > 1`.
 
-#### Rigid-body physics
+### Remaining compatibility coverage
 
-- [ ] `test_freefall` -- object in freefall matches `z = z0 - 0.5*g*t^2`
-- [x] `test_ground_contact` -- object on ground, `z > 0` (IPC no-penetration)
-- [ ] `test_fixed_base_holds` -- fixed-base robot does not move under gravity
-- [ ] `test_merged_body_coherence` -- links merged by fixed joints move as one rigid body
-- [x] `test_stacked_free_base_collision` -- multiple free-base entities stack on ground
+- [ ] Add systematic joint-type-by-base-type tests.
+- [ ] Expand observation parity for entity position, orientation, and velocity.
+- [ ] Add a long-running contact-capacity churn scene once a reproducible
+      benchmark protocol is agreed.
 
-#### Joint control
+## Known limitations
 
-- [ ] `test_single_joint_tracking` -- sinusoidal PD target, verify correlation and amplitude
-- [x] `test_joint_position_limits` -- bang-bang velocity command respects limits (xfail: velocity control not yet implemented)
-- [ ] `test_joint_type_matrix` -- parametrize over revolute/prismatic x fixed/free base
-- [ ] `test_actuator_gains_from_mjcf` -- verify kp/kv match MJCF actuator section
-- [ ] `test_home_qpos_offset` -- verify theta at init equals home_qpos, control at home_qpos holds pose
-- [ ] `test_velocity_control` -- direct velocity control tracking (blocked on Priority 1)
+- One QIPCCoupler scene supports one Genesis environment.
+- QIPC performs native FEM/ABD computations in float64; Genesis writeback is
+  cast to the configured Genesis precision.
+- `SealedGasShell` validates topology and connectivity, not self-intersection or
+  mesh conditioning.
+- Re-enabling disabled gas after shell collapse is not guaranteed safe because
+  disabling also removes the gas volume barrier.
+- QIPC topology changes cannot currently be crossed by Genesis reset.
+- Runtime hard FEM constraints currently fail because QIPC `is_fixed` is an
+  init-only buffer; use soft constraints until the path is migrated to
+  `PositionDBC`.
+- Removing a soft FEM constraint currently fails because the removal path also
+  writes init-only `is_fixed`.
+- Soft FEM constraint masks and targets currently survive `scene.reset()`.
 
-#### Multi-entity
+## Validation commands
 
-- [x] `test_multi_entity` -- two robots track opposite targets independently
+Run from the Genesis repository in a development environment where QIPC is
+installed and an NVIDIA GPU is available.
 
----
+| Gate | Command | Required result |
+| --- | --- | --- |
+| Sealed gas | `pytest tests/test_qipc_sealed_gas.py --backend gpu -n 0 -x` | all material, lifecycle, multi-bag, solver, and physics tests pass |
+| Core QIPC alignment | `pytest tests/test_qipc.py --backend gpu -n 0 -x` | standalone-QIPC alignment and control tests pass |
+| Adhesion | `pytest tests/test_qipc_adhesion.py --backend gpu -n 0 -x` | soft adhesion and distance-bond tests pass |
+| Tape/prestress | `pytest tests/test_qipc_tape.py --backend gpu -n 0 -x` | prestress, asset, and tape lifecycle tests pass or asset-marked cases skip explicitly |
 
-## Priority 3: Reset Implementation
+## Planned gates
 
-Implement `reset()` to restore QIPC scene state:
-- Reset ABD q to initial transforms
-- Reset joint theta to init_theta values
-- Reset target_theta, target_velocity
-- Writeback to Genesis
+These commands do not exist yet and must not be treated as current validation.
 
----
-
-## Priority 4: Per-pair Contact Tabular
-
-- Per-entity ContactElement registration
-- Pairwise friction/resistance via geometric/harmonic mean (matching IPCCoupler)
-- Genesis material `coup_friction` / `contact_resistance` forwarding
-
----
-
-## Priority 5: n_envs > 1
-
-- Batched simulation support
-
----
-
-## Resolved
-
-- Multi-entity support (2026-07-20)
-- Ground contact via halfplane auto-detection (2026-07-20)
-- Unified single-kernel writeback (2026-07-20)
-- Free-base qpos writeback from ABD transform (2026-07-20)
-- getattr/hasattr cleanup, strong typing (2026-07-20)
-- Joint theta direction alignment
-- Fixed-joint merging
-- Per-entity material config (moved from QIPCCouplerOptions)
-- Home pose via init_theta (removed offset hacking)
-- Sign-preserving FK rotation (_rodrigues)
-- MJCF prismatic FK body-quat bug (fixed in both coupler and cgq)
+| Gate | Target command | Missing piece |
+| --- | --- | --- |
+| FEM plasticity | `pytest tests/test_qipc_plasticity.py --backend gpu -n 0 -x` | material mapping and test module |
+| Batch isolation | `pytest tests/qipc/test_batch.py --backend gpu -n 0 -x` | QIPC batch/subscene support |
+| Contact churn benchmark | `pytest tests/benchmarks/test_qipc_contact_churn.py --backend gpu -n 0 -m benchmarks` | fixed workload, warmup, timers, and baseline record |
