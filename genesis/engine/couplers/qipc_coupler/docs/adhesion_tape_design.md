@@ -1,8 +1,9 @@
 # QIPCCoupler Adhesion + Tape Import — Design
 
 Status: A5.1–A5.3 implemented (2026-07-28); A5.4 (bond/beta state transfer)
-deferred. Companion to [fem_design.md](fem_design.md) (its "P5 adhesion" phase,
-expanded) and [roadmap.md](roadmap.md). Based on cuda-graph-qipc @ `2050319`.
+deferred. Companion to [fem_design.md](fem_design.md); current milestone status
+lives in [roadmap.md](roadmap.md). Last audited against cuda-graph-qipc @
+`9d04b459`.
 
 > Implementation map: adhesion manager in `../adhesion.py` (options
 > `contact_constitution` + `adhesion_bond_*`, `coupler.add_adhesion`,
@@ -244,11 +245,12 @@ inert for adhesion) — but the roll must clear the ground per the existing
 
 - v1: consume a cgq-produced npz directly (`adhesive_tape_wind.py --preset ...
   --save-roll`), copied into the Genesis assets dir or given by path.
-- v2 (optional): `examples/qipc/tape_wind.py` — a Genesis-side port of the wind
-  stage using the **already-shipped P2 machinery** (`set_vertex_constraints` /
-  `update_constraint_targets` implement exactly the SPC row-band guidance the
-  cgq wind uses), writing the same npz format. No new coupler features needed
-  beyond §1–§5; it is pure example code.
+- v2 (planned): `examples/qipc/tape_wind.py` — a Genesis-side port of the wind
+  stage using soft `set_vertex_constraints` / `update_constraint_targets` for
+  SPC row-band guidance, writing the same npz format. This remains gated on
+  working removal and explicit soft-constraint reset semantics; the current
+  runtime hard-constraint path writes QIPC's init-only `is_fixed` and is not a
+  usable fallback.
 
 ## 7. Kinematic rigid driving (wind/orbit class) — phase A5.3
 
@@ -313,16 +315,16 @@ Not needed for the drop-class demo; implement after A5.1/A5.2.
     Reproduced with cgq's own `adhesive_tape_drop --lock` elevated +2 cm on
     the stock wheel (hovers indefinitely at the shipped SOLVER_CFG, which
     also uses 0.05); the demo's own FREEFALL release phase silently no-ops the
-    same way. **Tightening `velocity_tol` to 0.01 restores the physics on both
-    sides**: the native elevated coil lands within 80 frames, and the Genesis
-    `tape_lift_drop` port tracks the pull almost rigidly and lands intact
-    after release — at ~4x wall time (PCG then runs to its 1024-iteration cap
-    on most frames; 0.005 reproduces the same trajectory at ~9x, confirming
-    convergence). The lock energy is translation-invariant as documented; an
-    earlier "locks resist rigid translation" reading is superseded. Upstream
-    report: shipped-tolerance release phase produces nonphysics. Imports keep
-    the seated spawn as the cheap default; pass `solver_newton_velocity_tol=
-    0.01` when airborne locked-coil dynamics matter.
+    same way. Tightening `velocity_tol` to 0.01 makes the native elevated coil
+    land within 80 frames. Historical Genesis measurements matched that result,
+    but the current `tape_lift_drop` port no longer reaches freefall because
+    `remove_vertex_constraints` writes QIPC's init-only `is_fixed` buffer and
+    raises. Treat the tolerance result as native evidence until soft-constraint
+    removal is repaired; the Genesis release example is not a current gate.
+    The lock energy is translation-invariant as documented; an earlier "locks
+    resist rigid translation" reading is superseded. Imports keep the seated
+    spawn as the cheap default; use `solver_newton_velocity_tol=0.01` once
+    airborne locked-coil release is restored.
 12. **Tape placement must be baked into the mesh** (`add_tape_roll` does this):
     Genesis's FEM Mesh loader pivots `euler` about the vertex COM
     (`fem_entity.py`), and the wound coil's COM is pulled off-axis by the free

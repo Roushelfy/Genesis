@@ -133,6 +133,13 @@ def _rodrigues(axis: np.ndarray, theta: float) -> np.ndarray:
     return np.eye(3, dtype=np.float64) * c + (1 - c) * np.outer(axis, axis) + s * K
 
 
+def _perpendicular_direction(axis: np.ndarray) -> np.ndarray:
+    """Return a stable unit direction perpendicular to an axis."""
+    candidate = np.array([1.0, 0.0, 0.0]) if abs(axis[0]) < 0.9 else np.array([0.0, 0.0, 1.0])
+    perpendicular = candidate - np.dot(candidate, axis) * axis
+    return perpendicular / np.linalg.norm(perpendicular)
+
+
 def _triangle_component_count(triangles: npt.NDArray[np.int32]) -> int:
     """Count components connected through shared triangle edges."""
     n_triangles = len(triangles)
@@ -1198,10 +1205,10 @@ class QIPCCoupler(RBC):
         """QIPC backend for FEMEntity.set_vertex_constraints.
 
         Soft constraints drive vertices toward targets through the resident
-        SoftPositionConstraint (mass-weighted quadratic penalty; ``stiffness``
-        maps to its strength ratio). Hard constraints set ``is_fixed`` on the
-        QIPC vertices (DOF removed; note this bypasses the contact barrier) and
-        move them kinematically when following a link.
+        SoftPositionConstraint (mass-weighted quadratic penalty; `stiffness`
+        maps to its strength ratio). Runtime hard constraints are not supported
+        by current QIPC because `is_fixed` is init-only; this legacy branch will
+        raise when it attempts the write.
         """
         entry = self._fem_entry(entity)
         fe = self._scene.finite_element
@@ -1655,6 +1662,14 @@ class QIPCCoupler(RBC):
 
         axis_left: np.ndarray = R_parent_rep_inv @ axis_world
         axis_right: np.ndarray = R_child_rep_inv @ axis_world
+
+        if jtype == "prismatic":
+            # Both local references must map to one world direction. Generating
+            # them independently in each body frame changes the joint's rest
+            # twist whenever the bodies start with a relative rotation.
+            n_perp_world = _perpendicular_direction(axis_world)
+            extra_kwargs["n_perp_left"] = (R_parent_rep_inv @ n_perp_world).tolist()
+            extra_kwargs["n_perp_right"] = (R_child_rep_inv @ n_perp_world).tolist()
 
         kp, kv = self._resolve_joint_gains(joint, entity)
 
