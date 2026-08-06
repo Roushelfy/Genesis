@@ -610,6 +610,7 @@ class QIPCCoupler(RBC):
 
         for pre in all_pre_inits:
             link_indices, body_indices, rel_transforms, free_entry = self._resolve_post_init(pre)
+            self._apply_gravity_compensation(pre.entity, body_indices)
             all_link_indices.extend(link_indices)
             all_body_indices.extend(body_indices)
             all_rel_transforms.extend(rel_transforms)
@@ -1609,6 +1610,19 @@ class QIPCCoupler(RBC):
             rel_transforms_list.append(rt)
 
         return link_indices, body_indices, rel_transforms_list, free_entry
+
+    def _apply_gravity_compensation(self, entity: RigidEntity, body_indices: list[int]) -> None:
+        """Match Genesis rigid-body gravity compensation for one QIPC entity."""
+        if not body_indices or entity.gravity_compensation == 0.0:
+            return
+        gravity = self._scene.affine_body.gravity
+        assert gravity is not None
+        unique_body_indices = torch.tensor(
+            sorted(set(body_indices)),
+            dtype=torch.int64,
+            device=gravity.device,
+        )
+        gravity[unique_body_indices] *= 1.0 - entity.gravity_compensation
 
     def _create_joint(
         self,

@@ -99,6 +99,7 @@ def add_marvin_wuji(
             pos=robot_position,
             euler=(0.0, 0.0, 0.0),
             fixed=True,
+            default_armature=None,
             merge_fixed_links=False,
             requires_jac_and_IK=True,
             convexify=True,
@@ -106,6 +107,7 @@ def add_marvin_wuji(
             links_to_keep=list(PALM_LINK.values()),
         ),
         material=gs.materials.Rigid(
+            gravity_compensation=1.0,
             coup_friction=1.0,
             qipc_abd_kappa=1e8,
             qipc_kappa_pivot=kappa_pivot,

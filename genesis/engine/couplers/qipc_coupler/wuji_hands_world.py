@@ -197,6 +197,7 @@ def _add_hand(scene, config: WujiHandsWorldConfig, side: HandSide) -> BuiltWujiH
             pos=position,
             quat=quaternion,
             fixed=False,
+            default_armature=None,
             merge_fixed_links=False,
             requires_jac_and_IK=False,
             convexify=True,

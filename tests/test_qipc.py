@@ -1,4 +1,5 @@
 """QIPC coupler alignment tests: verify coupler output matches standalone QIPC on identical URDFs."""
+
 import tempfile
 from pathlib import Path
 
@@ -89,6 +90,40 @@ FIXED_JOINT_URDF = """\
 </robot>
 """
 
+TWO_REVOLUTE_URDF = """\
+<?xml version="1.0"?>
+<robot name="test_two_revolute">
+  <link name="base">
+    <inertial><mass value="1.0"/><origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/></inertial>
+    <visual><geometry><mesh filename="base.stl"/></geometry></visual>
+    <collision><geometry><mesh filename="base.stl"/></geometry></collision>
+  </link>
+  <link name="link1">
+    <inertial><mass value="1.2"/><origin xyz="0.15 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.002" ixy="0" ixz="0" iyy="0.011" iyz="0" izz="0.011"/></inertial>
+    <visual><origin xyz="0.15 0 0"/><geometry><mesh filename="arm.stl"/></geometry></visual>
+    <collision><origin xyz="0.15 0 0"/><geometry><mesh filename="arm.stl"/></geometry></collision>
+  </link>
+  <link name="link2">
+    <inertial><mass value="0.8"/><origin xyz="0.12 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.005" iyz="0" izz="0.005"/></inertial>
+    <visual><origin xyz="0.12 0 0"/><geometry><mesh filename="forearm.stl"/></geometry></visual>
+    <collision><origin xyz="0.12 0 0"/><geometry><mesh filename="forearm.stl"/></geometry></collision>
+  </link>
+  <joint name="shoulder" type="revolute">
+    <parent link="base"/><child link="link1"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/><axis xyz="0 0 1"/>
+    <limit lower="-1.5" upper="1.5"/>
+  </joint>
+  <joint name="elbow" type="revolute">
+    <parent link="link1"/><child link="link2"/>
+    <origin xyz="0.3 0 0" rpy="0 0 0"/><axis xyz="0 0 1"/>
+    <limit lower="-1.5" upper="1.5"/>
+  </joint>
+</robot>
+"""
+
 
 def _write_box_stl(path, extents=(0.1, 0.1, 0.1)):
     box = trimesh.creation.box(extents=list(extents))
@@ -111,13 +146,33 @@ def fixed_joint_dir(tmp_path):
     return tmp_path
 
 
+@pytest.fixture
+def two_revolute_dir(tmp_path):
+    (tmp_path / "robot.urdf").write_text(TWO_REVOLUTE_URDF)
+    _write_box_stl(tmp_path / "base.stl")
+    _write_box_stl(tmp_path / "arm.stl", extents=(0.3, 0.05, 0.05))
+    _write_box_stl(tmp_path / "forearm.stl", extents=(0.24, 0.04, 0.04))
+    return tmp_path
+
+
+@pytest.fixture
+def marvin_wuji_urdf():
+    from genesis.engine.couplers.qipc_coupler.marvin_wuji import resolve_marvin_wuji_urdf
+
+    try:
+        return Path(resolve_marvin_wuji_urdf(None))
+    except gs.GenesisException as error:
+        pytest.skip(str(error))
+
+
 # ---------------------------------------------------------------------------
 # Scene builders
 # ---------------------------------------------------------------------------
 
 
-def build_genesis_scene(urdf_path, position=(0.0, 0.0, 0.0), is_fixed=True, kappa=1e8, kp=200.0, kv=50.0,
-                        kappa_pivot=1e8, kappa_axis=1e8):
+def build_genesis_scene(
+    urdf_path, position=(0.0, 0.0, 0.0), is_fixed=True, kappa=1e8, kp=200.0, kv=50.0, kappa_pivot=1e8, kappa_axis=1e8
+):
     scene = gs.Scene(
         sim_options=gs.options.SimOptions(
             dt=0.01,
@@ -147,8 +202,9 @@ def build_genesis_scene(urdf_path, position=(0.0, 0.0, 0.0), is_fixed=True, kapp
     return scene
 
 
-def build_standalone_scene(urdf_path, position=(0.0, 0.0, 0.0), is_fixed=True, kappa=1e8, kp=200.0, kv=50.0,
-                           kappa_pivot=1e8, kappa_axis=1e8):
+def build_standalone_scene(
+    urdf_path, position=(0.0, 0.0, 0.0), is_fixed=True, kappa=1e8, kp=200.0, kv=50.0, kappa_pivot=1e8, kappa_axis=1e8
+):
     scene = QIPCScene(
         dt=0.01,
         gravity=(0.0, 0.0, -9.81),
@@ -167,6 +223,121 @@ def build_standalone_scene(urdf_path, position=(0.0, 0.0, 0.0), is_fixed=True, k
     )
     scene.init()
     return scene, model
+
+
+def _joint_limit_safe_home_qpos(robot):
+    home_qpos = np.asarray(robot.init_qpos, dtype=np.float64).copy()
+    for joint in robot.joints:
+        if joint.n_qs != 1:
+            continue
+        lower, upper = joint.dofs_limit[0]
+        q_local = joint.q_start - robot.q_start
+        if not lower <= home_qpos[q_local] <= upper:
+            home_qpos[q_local] = 0.5 * (lower + upper)
+    return home_qpos
+
+
+def build_rigid_pd_scene(
+    urdf_path,
+    *,
+    dt,
+    kp,
+    kv,
+    default_armature,
+    initialize_within_limits=False,
+    gravity=(0.0, 0.0, 0.0),
+    gravity_compensation=0.0,
+):
+    scene = gs.Scene(
+        sim_options=gs.options.SimOptions(
+            dt=dt,
+            substeps=1,
+            gravity=gravity,
+        ),
+        rigid_options=gs.options.RigidOptions(
+            enable_collision=False,
+            enable_joint_limit=False,
+            integrator=gs.integrator.approximate_implicitfast,
+        ),
+        show_viewer=False,
+    )
+    robot = scene.add_entity(
+        morph=gs.morphs.URDF(
+            file=str(urdf_path),
+            fixed=True,
+            default_armature=default_armature,
+            merge_fixed_links=False,
+            requires_jac_and_IK=False,
+        ),
+        material=gs.materials.Rigid(gravity_compensation=gravity_compensation),
+    )
+    home_qpos = _joint_limit_safe_home_qpos(robot) if initialize_within_limits else None
+    scene.build()
+    if home_qpos is not None:
+        robot.set_qpos(home_qpos, zero_velocity=True)
+    kp_values = np.broadcast_to(np.asarray(kp, dtype=np.float64), (robot.n_dofs,)).copy()
+    kv_values = np.broadcast_to(np.asarray(kv, dtype=np.float64), (robot.n_dofs,)).copy()
+    robot.set_dofs_kp(kp_values)
+    robot.set_dofs_kv(kv_values)
+    robot.set_dofs_force_range(np.full(robot.n_dofs, -1e12), np.full(robot.n_dofs, 1e12))
+    return scene, robot
+
+
+def build_qipc_pd_scene(
+    urdf_path,
+    *,
+    dt,
+    kp,
+    kv,
+    default_armature,
+    initialize_within_limits=False,
+    gravity=(0.0, 0.0, 0.0),
+    gravity_compensation=0.0,
+):
+    scene = gs.Scene(
+        sim_options=gs.options.SimOptions(
+            dt=dt,
+            substeps=1,
+            gravity=gravity,
+        ),
+        coupler_options=gs.options.QIPCCouplerOptions(
+            contact_enable=False,
+            debug_viewer=False,
+        ),
+        show_viewer=False,
+    )
+    robot = scene.add_entity(
+        morph=gs.morphs.URDF(
+            file=str(urdf_path),
+            fixed=True,
+            default_armature=default_armature,
+            merge_fixed_links=False,
+            requires_jac_and_IK=False,
+        ),
+        material=gs.materials.Rigid(
+            gravity_compensation=gravity_compensation,
+            qipc_abd_kappa=1e8,
+            qipc_kappa_pivot=1e8,
+            qipc_kappa_axis=1e8,
+        ),
+    )
+    home_qpos = _joint_limit_safe_home_qpos(robot) if initialize_within_limits else None
+    if home_qpos is not None:
+        robot.material.qipc_home_qpos = home_qpos.tolist()
+    scene.build()
+    if home_qpos is not None:
+        robot.set_qpos(home_qpos, zero_velocity=True)
+    kp_values = np.broadcast_to(np.asarray(kp, dtype=np.float64), (robot.n_dofs,)).copy()
+    kv_values = np.broadcast_to(np.asarray(kv, dtype=np.float64), (robot.n_dofs,)).copy()
+    scene.sim.coupler.configure_dofs(
+        robot,
+        list(range(robot.n_dofs)),
+        kp=kp_values,
+        kv=kv_values,
+        force_lower=np.full(robot.n_dofs, -1e12),
+        force_upper=np.full(robot.n_dofs, 1e12),
+    )
+    return scene, robot
 
 
 def _get_constitution_data(scene, cls_name):
@@ -212,12 +383,8 @@ class TestQIPCAlignment:
         for key in ("anchor_left", "anchor_right", "axis_left", "axis_right", "kappa_pivot", "kappa_axis"):
             torch.testing.assert_close(rev_a[key], rev_b[key], atol=TOL_DOUBLE, rtol=0)
 
-        torch.testing.assert_close(
-            coupler_scene.joint_system.kp, standalone.joint_system.kp, atol=TOL_DOUBLE, rtol=0
-        )
-        torch.testing.assert_close(
-            coupler_scene.joint_system.kv, standalone.joint_system.kv, atol=TOL_DOUBLE, rtol=0
-        )
+        torch.testing.assert_close(coupler_scene.joint_system.kp, standalone.joint_system.kp, atol=TOL_DOUBLE, rtol=0)
+        torch.testing.assert_close(coupler_scene.joint_system.kv, standalone.joint_system.kv, atol=TOL_DOUBLE, rtol=0)
 
     def test_init_state_fixed_joint_merge(self, fixed_joint_dir):
         """Fixed joints cause link merging; merged body count and transforms must match standalone."""
@@ -245,7 +412,10 @@ class TestQIPCAlignment:
 
         torch.testing.assert_close(coupler_scene.affine_body.q, standalone.affine_body.q, atol=TOL_DOUBLE, rtol=0)
         torch.testing.assert_close(
-            coupler_scene.joint_system.theta, standalone.joint_system.theta, atol=TOL_DOUBLE, rtol=0,
+            coupler_scene.joint_system.theta,
+            standalone.joint_system.theta,
+            atol=TOL_DOUBLE,
+            rtol=0,
         )
 
     def test_control_alignment(self, simple_revolute_dir):
@@ -266,7 +436,298 @@ class TestQIPCAlignment:
             coupler.couple(0)
 
         torch.testing.assert_close(
-            coupler._scene.joint_system.theta, standalone.joint_system.theta, atol=TOL_DOUBLE, rtol=0,
+            coupler._scene.joint_system.theta,
+            standalone.joint_system.theta,
+            atol=TOL_DOUBLE,
+            rtol=0,
+        )
+
+
+class TestRigidQIPCPDAlignment:
+    @pytest.mark.parametrize(
+        "default_armature",
+        [
+            None,
+            pytest.param(
+                0.1,
+                marks=pytest.mark.xfail(
+                    strict=True,
+                    reason="QIPC does not include Genesis joint armature in its dynamics.",
+                ),
+            ),
+        ],
+    )
+    def test_single_revolute_position_control(self, simple_revolute_dir, default_armature):
+        dt = 0.01
+        kp = 2.0
+        kv = 5.0
+        target = 0.15
+        rigid_scene, rigid_robot = build_rigid_pd_scene(
+            simple_revolute_dir / "robot.urdf",
+            dt=dt,
+            kp=kp,
+            kv=kv,
+            default_armature=default_armature,
+        )
+        qipc_scene, qipc_robot = build_qipc_pd_scene(
+            simple_revolute_dir / "robot.urdf",
+            dt=dt,
+            kp=kp,
+            kv=kv,
+            default_armature=default_armature,
+        )
+        if default_armature is None:
+            np.testing.assert_array_equal(rigid_robot.get_dofs_armature().cpu().numpy(), 0.0)
+            np.testing.assert_array_equal(qipc_robot.get_dofs_armature().cpu().numpy(), 0.0)
+        rigid_robot.control_dofs_position(target)
+        qipc_robot.control_dofs_position(target)
+
+        rigid_trajectory = []
+        qipc_trajectory = []
+        for _ in range(20):
+            rigid_scene.step()
+            qipc_scene.step()
+            rigid_trajectory.append(
+                [
+                    float(rigid_robot.get_dofs_position()[0]),
+                    float(rigid_robot.get_dofs_velocity()[0]),
+                ]
+            )
+            qipc_trajectory.append(
+                [
+                    float(qipc_robot.get_dofs_position()[0]),
+                    float(qipc_robot.get_dofs_velocity()[0]),
+                ]
+            )
+
+        np.testing.assert_allclose(
+            qipc_trajectory,
+            rigid_trajectory,
+            atol=1e-5,
+            rtol=1e-3,
+        )
+
+    @pytest.mark.parametrize(
+        "kp,target",
+        [
+            ((1.0, 0.0), (0.1, 0.0)),
+            ((0.0, 1.0), (0.0, 0.1)),
+        ],
+        ids=("shoulder", "elbow"),
+    )
+    def test_two_revolute_single_joint_proportional_step(self, two_revolute_dir, kp, target):
+        dt = 0.005
+        rigid_scene, rigid_robot = build_rigid_pd_scene(
+            two_revolute_dir / "robot.urdf",
+            dt=dt,
+            kp=kp,
+            kv=(0.0, 0.0),
+            default_armature=None,
+        )
+        qipc_scene, qipc_robot = build_qipc_pd_scene(
+            two_revolute_dir / "robot.urdf",
+            dt=dt,
+            kp=kp,
+            kv=(0.0, 0.0),
+            default_armature=None,
+        )
+        target = np.asarray(target)
+        rigid_robot.control_dofs_position(target)
+        qipc_robot.control_dofs_position(target)
+        rigid_scene.step()
+        qipc_scene.step()
+
+        np.testing.assert_allclose(
+            qipc_robot.get_dofs_velocity().cpu().numpy(),
+            rigid_robot.get_dofs_velocity().cpu().numpy(),
+            atol=1e-5,
+            rtol=1e-3,
+        )
+
+    def test_two_revolute_velocity_target_step(self, two_revolute_dir):
+        dt = 0.005
+        rigid_scene, rigid_robot = build_rigid_pd_scene(
+            two_revolute_dir / "robot.urdf",
+            dt=dt,
+            kp=(0.0, 0.0),
+            kv=(1.0, 0.8),
+            default_armature=None,
+        )
+        qipc_scene, qipc_robot = build_qipc_pd_scene(
+            two_revolute_dir / "robot.urdf",
+            dt=dt,
+            kp=(0.0, 0.0),
+            kv=(1.0, 0.8),
+            default_armature=None,
+        )
+        position_target = np.zeros(2)
+        velocity_target = np.asarray([0.7853981634, -0.8643212580])
+        rigid_robot.control_dofs_position_velocity(position_target, velocity_target)
+        qipc_robot.control_dofs_position_velocity(position_target, velocity_target)
+        rigid_scene.step()
+        qipc_scene.step()
+
+        np.testing.assert_allclose(
+            qipc_robot.get_dofs_velocity().cpu().numpy(),
+            rigid_robot.get_dofs_velocity().cpu().numpy(),
+            atol=1e-5,
+            rtol=1e-3,
+        )
+
+    @pytest.mark.parametrize("gravity_compensation", [0.0, 0.35, 1.0])
+    def test_two_revolute_gravity_compensation(self, two_revolute_dir, gravity_compensation):
+        scene_args = {
+            "dt": 0.005,
+            "kp": (0.0, 0.0),
+            "kv": (0.0, 0.0),
+            "default_armature": None,
+            "gravity": (0.0, -9.81, 0.0),
+            "gravity_compensation": gravity_compensation,
+        }
+        rigid_scene, rigid_robot = build_rigid_pd_scene(
+            two_revolute_dir / "robot.urdf",
+            **scene_args,
+        )
+        qipc_scene, qipc_robot = build_qipc_pd_scene(
+            two_revolute_dir / "robot.urdf",
+            **scene_args,
+        )
+
+        rigid_trajectory = []
+        qipc_trajectory = []
+        for _ in range(20):
+            rigid_scene.step()
+            qipc_scene.step()
+            rigid_trajectory.append(rigid_robot.get_dofs_position().cpu().numpy())
+            qipc_trajectory.append(qipc_robot.get_dofs_position().cpu().numpy())
+
+        np.testing.assert_allclose(
+            qipc_trajectory,
+            rigid_trajectory,
+            atol=3e-4,
+            rtol=2e-3,
+        )
+
+    def test_two_revolute_dynamic_position_velocity_control(self, two_revolute_dir):
+        dt = 0.005
+        rigid_scene, rigid_robot = build_rigid_pd_scene(
+            two_revolute_dir / "robot.urdf",
+            dt=dt,
+            kp=(20.0, 12.0),
+            kv=(1.0, 0.8),
+            default_armature=None,
+        )
+        qipc_scene, qipc_robot = build_qipc_pd_scene(
+            two_revolute_dir / "robot.urdf",
+            dt=dt,
+            kp=(20.0, 12.0),
+            kv=(1.0, 0.8),
+            default_armature=None,
+        )
+
+        rigid_trajectory = []
+        qipc_trajectory = []
+        for frame in range(60):
+            time = frame * dt
+            position_target = np.asarray(
+                [
+                    0.25 * np.sin(2.0 * np.pi * 0.5 * time),
+                    -0.18 * np.sin(2.0 * np.pi * 0.8 * time + 0.3),
+                ]
+            )
+            velocity_target = np.asarray(
+                [
+                    0.25 * 2.0 * np.pi * 0.5 * np.cos(2.0 * np.pi * 0.5 * time),
+                    -0.18 * 2.0 * np.pi * 0.8 * np.cos(2.0 * np.pi * 0.8 * time + 0.3),
+                ]
+            )
+            rigid_robot.control_dofs_position_velocity(position_target, velocity_target)
+            qipc_robot.control_dofs_position_velocity(position_target, velocity_target)
+            rigid_scene.step()
+            qipc_scene.step()
+            rigid_trajectory.append(
+                np.concatenate(
+                    [
+                        rigid_robot.get_dofs_position().cpu().numpy(),
+                        rigid_robot.get_dofs_velocity().cpu().numpy(),
+                    ]
+                )
+            )
+            qipc_trajectory.append(
+                np.concatenate(
+                    [
+                        qipc_robot.get_dofs_position().cpu().numpy(),
+                        qipc_robot.get_dofs_velocity().cpu().numpy(),
+                    ]
+                )
+            )
+
+        np.testing.assert_allclose(
+            qipc_trajectory,
+            rigid_trajectory,
+            atol=2e-4,
+            rtol=2e-3,
+        )
+
+    @pytest.mark.parametrize(
+        "joint_name",
+        [
+            "Joint1_R",
+            "Joint2_R",
+        ],
+        ids=("root-arm-joint", "internal-arm-joint"),
+    )
+    def test_marvin_wuji_single_arm_joint_proportional_step(self, marvin_wuji_urdf, joint_name):
+        dt = 0.005
+        rigid_scene, rigid_robot = build_rigid_pd_scene(
+            marvin_wuji_urdf,
+            dt=dt,
+            kp=0.0,
+            kv=0.0,
+            default_armature=None,
+            initialize_within_limits=True,
+        )
+        qipc_scene, qipc_robot = build_qipc_pd_scene(
+            marvin_wuji_urdf,
+            dt=dt,
+            kp=0.0,
+            kv=0.0,
+            default_armature=None,
+            initialize_within_limits=True,
+        )
+        rigid_dof = rigid_robot.get_joint(joint_name).dofs_idx_local[0]
+        qipc_dof = qipc_robot.get_joint(joint_name).dofs_idx_local[0]
+        assert qipc_dof == rigid_dof
+
+        kp_values = np.zeros(rigid_robot.n_dofs)
+        kp_values[rigid_dof] = 1.0
+        force_lower = np.full(rigid_robot.n_dofs, -1e12)
+        force_upper = np.full(rigid_robot.n_dofs, 1e12)
+        rigid_robot.set_dofs_kp(kp_values)
+        qipc_scene.sim.coupler.configure_dofs(
+            qipc_robot,
+            list(range(qipc_robot.n_dofs)),
+            kp=kp_values,
+            kv=np.zeros(qipc_robot.n_dofs),
+            force_lower=force_lower,
+            force_upper=force_upper,
+        )
+
+        rigid_initial = rigid_robot.get_dofs_position().cpu().numpy()
+        qipc_initial = qipc_robot.get_dofs_position().cpu().numpy()
+        np.testing.assert_allclose(qipc_initial, rigid_initial, atol=1e-8, rtol=0.0)
+        target = rigid_initial.copy()
+        target[rigid_dof] += 0.01
+        rigid_robot.control_dofs_position(target)
+        qipc_robot.control_dofs_position(target)
+        rigid_scene.step()
+        qipc_scene.step()
+
+        np.testing.assert_allclose(
+            qipc_robot.get_dofs_velocity().cpu().numpy(),
+            rigid_robot.get_dofs_velocity().cpu().numpy(),
+            atol=2e-4,
+            rtol=2e-3,
         )
 
 
@@ -489,18 +950,10 @@ class TestJointLimits:
         lower, upper = limits
         tolerance = 0.05
 
-        assert pos_arr.min() >= lower - tolerance, (
-            f"Joint violated lower limit: min={pos_arr.min():.4f}, limit={lower}"
-        )
-        assert pos_arr.max() <= upper + tolerance, (
-            f"Joint violated upper limit: max={pos_arr.max():.4f}, limit={upper}"
-        )
-        assert pos_arr.max() > 0.1, (
-            f"Joint didn't reach positive excursion: max={pos_arr.max():.4f}"
-        )
-        assert pos_arr.min() < -0.1, (
-            f"Joint didn't reach negative excursion: min={pos_arr.min():.4f}"
-        )
+        assert pos_arr.min() >= lower - tolerance, f"Joint violated lower limit: min={pos_arr.min():.4f}, limit={lower}"
+        assert pos_arr.max() <= upper + tolerance, f"Joint violated upper limit: max={pos_arr.max():.4f}, limit={upper}"
+        assert pos_arr.max() > 0.1, f"Joint didn't reach positive excursion: max={pos_arr.max():.4f}"
+        assert pos_arr.min() < -0.1, f"Joint didn't reach negative excursion: min={pos_arr.min():.4f}"
 
 
 def test_free_base_nonzero_joint_home_qpos(show_viewer):
@@ -596,5 +1049,5 @@ class TestStackedFreeBodies:
 
         for i in range(len(base_z) - 1):
             assert base_z[i] < base_z[i + 1], (
-                f"Stacking order violated: robot {i} z={base_z[i]:.4f} >= robot {i+1} z={base_z[i+1]:.4f}"
+                f"Stacking order violated: robot {i} z={base_z[i]:.4f} >= robot {i + 1} z={base_z[i + 1]:.4f}"
             )
