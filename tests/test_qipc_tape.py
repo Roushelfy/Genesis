@@ -2,7 +2,8 @@
 options, and wound-roll import (design: docs/adhesion_tape_design.md, A5.2).
 
 The wound-roll tests default to the in-tree asset genesis/assets/qipc/
-tape_roll_lock.npz; override with QIPC_TAPE_ASSET (cgq adhesive_tape_wind --save).
+tape_roll_distance_bond.npz; override with QIPC_TAPE_ASSET (cgq
+adhesive_tape_wind --save).
 """
 
 import os
@@ -27,13 +28,14 @@ def _tape_module():
 
     return tape
 
+
 TAPE_ASSET_PATH = os.environ.get("QIPC_TAPE_ASSET", "") or os.path.join(
-    get_assets_dir(), "qipc", "tape_roll_lock.npz"
+    get_assets_dir(), "qipc", "tape_roll_distance_bond.npz"
 )
 
 needs_tape_asset = pytest.mark.skipif(
     not os.path.exists(TAPE_ASSET_PATH),
-    reason="wound-roll npz not found (in-tree genesis/assets/qipc/tape_roll_lock.npz or QIPC_TAPE_ASSET)",
+    reason=("wound-roll npz not found (in-tree genesis/assets/qipc/tape_roll_distance_bond.npz or QIPC_TAPE_ASSET)"),
 )
 
 
@@ -222,7 +224,13 @@ def _coil_max_radius(tape) -> float:
     return float(np.sqrt((pos[:, 0] - ROLL_POS[0]) ** 2 + (pos[:, 2] - ROLL_POS[2]) ** 2).max())
 
 
-def _build_roll_scene(show_viewer, *, sticky: bool, hub_fixed: bool = True):
+def _build_roll_scene(
+    show_viewer,
+    *,
+    sticky: bool,
+    hub_fixed: bool = True,
+    prepend_rigid: bool = False,
+):
     tape_mod = _tape_module()
     asset = tape_mod.TapeAsset.from_npz(TAPE_ASSET_PATH)
     opts = tape_mod.recommended_coupler_options(asset)
@@ -236,6 +244,15 @@ def _build_roll_scene(show_viewer, *, sticky: bool, hub_fixed: bool = True):
         coupler_options=gs.options.QIPCCouplerOptions(**opts),
         show_viewer=show_viewer,
     )
+    if prepend_rigid:
+        scene.add_entity(
+            morph=gs.morphs.Box(
+                pos=(0.5, 0.5, 0.5),
+                size=(0.02, 0.02, 0.02),
+                fixed=True,
+            ),
+            material=gs.materials.Rigid(rho=1000.0),
+        )
     adhesion_off = dict(Cn=0.0, Ct=0.0, bonding_rate=0.0, beta0=0.0, enabled=False, distance_lock=False)
     tape, hub = tape_mod.add_tape_roll(
         scene,
@@ -373,22 +390,51 @@ def test_tape_hub_mesh_is_exact(show_viewer):
 
 
 @needs_tape_asset
-def test_tape_seed_asset_locks(show_viewer):
-    """Wind-saved lock topologies re-seed into the imported roll.
+def test_tape_asset_locks_seed_automatically_and_survive_reset(show_viewer):
+    """Authored locks auto-seed, map shifted hub ids, and survive resets.
 
-    With the hub passed through unconvexified the ABD vertex layout matches the
-    wind scene's, so tape-tape AND tape-hub rows transfer -- the whole saved
-    set, no dropped rows.
+    A rigid entity deliberately precedes the tape hub, so source hub ids cannot
+    pass through unchanged. The importer must map them into the hub's shifted
+    QIPC vertex range while independently rebasing FEM ids.
     """
     tape_mod = _tape_module()
-    scene, tape, _hub, asset = _build_roll_scene(show_viewer, sticky=True)
+    scene, tape, _hub, asset = _build_roll_scene(
+        show_viewer,
+        sticky=True,
+        prepend_rigid=True,
+    )
     assert asset.bond_topos is not None, "lock asset should carry wind-saved bond topologies"
-    n_rows = asset.bond_topos.shape[0]
-    n_seeded, n_dropped = tape_mod.seed_asset_locks(scene, tape, asset)
-    assert (n_seeded, n_dropped) == (n_rows, 0), f"expected all {n_rows} rows to transfer"
-    assert scene.sim.coupler.adhesion.get_bond_count() == n_seeded
-    scene.step()  # seeded locks must survive a step without tripping asserts
-    assert np.isfinite(tape.get_state().pos[0].cpu().numpy()).all()
+    assert asset.bond_topos_space == "global"
+    assert asset.bond_fem_gvo > 0
+
+    adhesion = scene.sim.coupler.adhesion
+    fem_global_offset = adhesion.fem_global_vertex_offset()
+    hub_vertex_offset = fem_global_offset - asset.bond_fem_gvo
+    assert hub_vertex_offset > 0
+
+    source = asset.bond_topos.astype(np.int64)
+    source_is_fem = source >= asset.bond_fem_gvo
+    expected = np.where(
+        source_is_fem,
+        source - asset.bond_fem_gvo + fem_global_offset,
+        source + hub_vertex_offset,
+    ).astype(np.int32)
+
+    def rows(topologies: np.ndarray) -> set[tuple[int, int, int, int]]:
+        return {tuple(int(value) for value in row) for row in topologies}
+
+    assert adhesion.get_bond_count() == 454
+    assert rows(adhesion.get_bond_topos()) == rows(expected)
+    # Backward-compatible helper reports the automatic build result rather than
+    # trying to seed the same rows a second time.
+    assert tape_mod.seed_asset_locks(scene, tape, asset) == (454, 0)
+
+    for _ in range(2):
+        scene.step()
+        assert np.isfinite(tape.get_state().pos[0].cpu().numpy()).all()
+        scene.reset()
+        assert adhesion.get_bond_count() == 454
+        assert rows(adhesion.get_bond_topos()) == rows(expected)
 
 
 @needs_tape_asset

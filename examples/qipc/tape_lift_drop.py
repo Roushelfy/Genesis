@@ -117,19 +117,29 @@ def main():
     # Solver overrides. Unset = the tape profile from recommended_coupler_options
     # (velocity_tol 0.01, newton/max_iter 300, linear/max_iter 800).
     parser.add_argument(
-        "--newton-tol", type=float, default=None,
+        "--newton-tol",
+        type=float,
+        default=None,
         help="override newton/velocity_tol (tape default 0.01; qipc's own default 0.05 leaves "
-             "released rolls hovering -- Newton stops once max vertex displacement < tol*dt)",
+        "released rolls hovering -- Newton stops once max vertex displacement < tol*dt)",
     )
     parser.add_argument(
-        "--linear-tol", type=float, default=None,
+        "--linear-tol",
+        type=float,
+        default=None,
         help="override linear_system/tol_rate (PCG relative residual, qipc default 1e-4)",
     )
     parser.add_argument(
-        "--linear-max-iter", type=int, default=None, help="override linear_system/max_iter (tape default 800)",
+        "--linear-max-iter",
+        type=int,
+        default=None,
+        help="override linear_system/max_iter (tape default 800)",
     )
     parser.add_argument(
-        "--newton-max-iter", type=int, default=None, help="override newton/max_iter (tape default 300)",
+        "--newton-max-iter",
+        type=int,
+        default=None,
+        help="override newton/max_iter (tape default 300)",
     )
     args = parser.parse_args()
     headless = args.video is not None
@@ -140,10 +150,9 @@ def main():
         TapeAsset,
         add_tape_roll,
         recommended_coupler_options,
-        seed_asset_locks,
     )
 
-    suffix = {"bond": "lock", "soft": "soft"}[args.mode]
+    suffix = {"bond": "distance_bond", "soft": "soft"}[args.mode]
     asset_path = args.asset or os.path.join(get_assets_dir(), "qipc", f"tape_roll_{suffix}.npz")
     asset = TapeAsset.from_npz(asset_path)
     opts = recommended_coupler_options(asset)
@@ -203,8 +212,8 @@ def main():
     scene.build()
 
     if args.mode == "bond":
-        n_seeded, n_dropped = seed_asset_locks(scene, tape, asset)
-        gs.logger.info(f"seeded {n_seeded} wind-saved locks ({n_dropped} hub-side rows re-bond dynamically)")
+        n_seeded = scene.sim.coupler.adhesion.get_bond_count()
+        gs.logger.info(f"seeded {n_seeded} wind-saved distance bonds")
 
     # cgq drives a SINGLE free-end center vertex: vid(nx, nz//2).
     free_id = asset.nx * (asset.nz + 1) + asset.nz // 2

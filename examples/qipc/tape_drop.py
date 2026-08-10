@@ -4,7 +4,7 @@ The smallest scene exercising the tape import path -- ground plane, coil, ring h
 --mode picks which wound asset to drop, and the asset's wind-time LOCK flag selects the
 adhesion mode through recommended_coupler_options:
 
-    --mode bond   tape_roll_lock.npz: Phase-2 distance bonds, the coil holds itself firmly.
+    --mode bond   tape_roll_distance_bond.npz: Phase-2 distance bonds hold the coil firmly.
     --mode soft   tape_roll_soft.npz: only the beta-state stickiness holds the coil, so it
                   gradually unrolls once it lands.
 
@@ -37,7 +37,7 @@ def main():
     # The tape module annotates its kernels with gs.qd_float, which only exists after gs.init.
     from genesis.engine.couplers.qipc_coupler.tape import TapeAsset, add_tape_roll, recommended_coupler_options
 
-    suffix = {"bond": "lock", "soft": "soft"}[args.mode]
+    suffix = {"bond": "distance_bond", "soft": "soft"}[args.mode]
     asset_path = args.asset or os.path.join(get_assets_dir(), "qipc", f"tape_roll_{suffix}.npz")
     asset = TapeAsset.from_npz(asset_path)
 

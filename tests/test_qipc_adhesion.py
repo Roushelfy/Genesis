@@ -100,7 +100,9 @@ def test_soft_adhesion_holds(show_viewer):
 def test_no_adhesion_control_free_falls(show_viewer):
     """Without adhesion the same cube free-falls (and auto keeps consistent_ipc)."""
     scene, _slab, cube = _build_hanging_cube_scene(show_viewer)
-    assert scene.sim.coupler._scene.config["contact/constitution"] == "consistent_ipc"
+    constitution_names = {cls.__name__ for cls in scene.sim.coupler._scene.sim_systems}
+    assert "ConsistentIPCContactConstitution" in constitution_names
+    assert scene.sim.coupler._scene.contact_tabular.at(0, 0).bond is None
 
     drop = _run_and_measure_drop(scene, cube)
     assert drop > 0.5 * FREE_FALL_DROP, f"control cube should free-fall, dropped only {drop:.3f} m"
@@ -110,6 +112,11 @@ def test_no_adhesion_control_free_falls(show_viewer):
 def test_distance_bond_holds(show_viewer):
     """Pure Phase-2 lock (no soft adhesion) carries the cube; bonds are queryable."""
     scene, _slab, cube = _build_hanging_cube_scene(show_viewer, coupler_kwargs=BOND_OPTS)
+    default_model = scene.sim.coupler._scene.contact_tabular.at(0, 0)
+    assert default_model.adhesion is None
+    assert default_model.bond is not None
+    assert default_model.bond.ratio == BOND_OPTS["adhesion_bond_distance_lock_ratio"]
+    assert default_model.bond.kappa == BOND_OPTS["adhesion_bond_kappa"]
     drop = _run_and_measure_drop(scene, cube)
     assert drop < 0.1, f"cube fell {drop:.3f} m despite distance bonds"
 
@@ -175,9 +182,7 @@ def test_adhesion_validation(show_viewer):
     # Bonds in a FEM-less scene rejected
     scene = gs.Scene(
         sim_options=gs.options.SimOptions(dt=DT),
-        coupler_options=gs.options.QIPCCouplerOptions(
-            adhesion_bond_distance_lock=True, adhesion_bond_max_bonds=1024
-        ),
+        coupler_options=gs.options.QIPCCouplerOptions(adhesion_bond_distance_lock=True, adhesion_bond_max_bonds=1024),
         show_viewer=show_viewer,
     )
     scene.add_entity(

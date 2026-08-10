@@ -48,6 +48,7 @@ Non-negotiable rules:
 
 - [x] Soft adhesion and distance-bond declarations
 - [x] Runtime adhesion/bond state queries
+- [x] Authored tape bond seeding with current-scene id mapping and reset replay
 
 ### Lifecycle (partial)
 

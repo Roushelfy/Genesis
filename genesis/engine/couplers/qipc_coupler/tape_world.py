@@ -48,7 +48,7 @@ class TapeWorldConfig:
     table_position: tuple[float, float, float] = (0.597, 0.0, 0.38)
     table_size: tuple[float, float, float] = (0.85, 1.5, 0.76)
     robot_position: tuple[float, float, float] = (0.0, 0.0, 1.08)
-    roll_xy: tuple[float, float] = (0.379, -0.25)
+    roll_xy: tuple[float, float] = (0.379, 0.0)
     show_viewer: bool = True
     viewer_camera_position: tuple[float, float, float] = (1.1, -0.95, 1.35)
     viewer_camera_lookat: tuple[float, float, float] = (0.45, 0.0, 0.85)
@@ -78,8 +78,11 @@ def resolve_tape_asset_path(config: TapeWorldConfig) -> str:
     if config.tape_asset_path is not None:
         path = os.path.abspath(os.path.expanduser(config.tape_asset_path))
     else:
-        suffix = {"bond": "lock", "soft": "soft"}[config.mode]
-        path = os.path.join(get_assets_dir(), "qipc", f"tape_roll_{suffix}.npz")
+        filename = {
+            "bond": "tape_roll_distance_bond.npz",
+            "soft": "tape_roll_soft.npz",
+        }[config.mode]
+        path = os.path.join(get_assets_dir(), "qipc", filename)
     if not os.path.isfile(path):
         gs.raise_exception(f"QIPC tape asset does not exist: '{path}'.")
     return path
@@ -219,6 +222,13 @@ def build_qipc_tape_world(config: TapeWorldConfig) -> QIPCTapeWorld:
         tape_surface=gs.surfaces.Plastic(color=(0.85, 0.75, 0.3, 1.0)),
         hub_surface=gs.surfaces.Plastic(color=(0.4, 0.25, 0.15, 1.0)),
     )
+    scene.sim.coupler.add_adhesion(
+        tape,
+        table,
+        Cn=0.0,
+        enabled=False,
+        distance_lock=False,
+    )
     if config.sticky_hands:
         scene.sim.coupler.add_adhesion(
             tape,
@@ -230,6 +240,14 @@ def build_qipc_tape_world(config: TapeWorldConfig) -> QIPCTapeWorld:
             bonding_rate=1.0,
             beta0=1.0,
             friction=1.0,
+        )
+    else:
+        scene.sim.coupler.add_adhesion(
+            tape,
+            robot,
+            Cn=0.0,
+            enabled=False,
+            distance_lock=False,
         )
 
     scene.build()

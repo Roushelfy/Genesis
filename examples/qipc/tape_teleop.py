@@ -11,11 +11,14 @@ the same resting pose cgq's adhesive_tape_drop uses. Two adhesion modes:
                   beta-state stickiness (Cn=1 by default) and will gradually
                   unroll when disturbed -- matching cgq's --no-lock behavior.
 
-Assets ship in genesis/assets/qipc/ (tape_roll_lock.npz, tape_roll_soft.npz); override with --asset
-or QIPC_TAPE_ASSET_BOND / QIPC_TAPE_ASSET_SOFT. Regenerate them with cgq's
-examples/adhesive_tape_wind.py:
-    python -m examples.adhesive_tape_wind --preset speed-r150-bend5k --lock    --save tape_roll_lock.npz
-    python -m examples.adhesive_tape_wind --preset speed-r150-bend5k --no-lock --save tape_roll_soft.npz
+Assets ship in genesis/assets/qipc/ (tape_roll_distance_bond.npz,
+tape_roll_soft.npz); override with --asset
+or QIPC_TAPE_ASSET_BOND / QIPC_TAPE_ASSET_SOFT. Regenerate them from the cgq
+repository root with examples/adhesive_tape_wind.py:
+    python examples/adhesive_tape_wind.py --preset speed-r150-bend5k --lock \
+        --sticky-side 0 --save tape_roll_distance_bond.npz
+    python examples/adhesive_tape_wind.py --preset speed-r150-bend5k --no-lock \
+        --sticky-side 0 --save tape_roll_soft.npz
 
 The gripper is adhesive against the tape (beta0=1: touch -> stick), so you can
 pick the roll up by touching it, and in bond mode peel the tail off by pulling.
@@ -53,7 +56,7 @@ def _default_asset(mode: str) -> str:
     env = os.environ.get(f"QIPC_TAPE_ASSET_{mode.upper()}", "")
     if env:
         return env
-    suffix = {"bond": "lock", "soft": "soft"}[mode]
+    suffix = {"bond": "distance_bond", "soft": "soft"}[mode]
     return os.path.join(get_assets_dir(), "qipc", f"tape_roll_{suffix}.npz")
 
 
@@ -61,10 +64,13 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--mode", choices=["bond", "soft"], default="bond")
     parser.add_argument("--asset", type=str, default=None, help="tape roll npz (default per --mode)")
-    parser.add_argument("--sticky-gripper", action=argparse.BooleanOptionalAction, default=True,
-                        help="adhesive contact between the robot and the tape (touch -> stick)")
-    parser.add_argument("--headless-steps", type=int, default=0,
-                        help="debug: run N steps without the viewer and exit")
+    parser.add_argument(
+        "--sticky-gripper",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="adhesive contact between the robot and the tape (touch -> stick)",
+    )
+    parser.add_argument("--headless-steps", type=int, default=0, help="debug: run N steps without the viewer and exit")
     args = parser.parse_args()
 
     gs.init(precision="64", logging_level="info")
@@ -129,7 +135,8 @@ def main():
     )
     if args.sticky_gripper:
         scene.sim.coupler.add_adhesion(
-            tape, franka,
+            tape,
+            franka,
             Cn=float(asset.params.get("CN", 1.0)),
             Ct=float(asset.params.get("CT", 1.0)),
             W=float(asset.params.get("ADH_W", 1.0)),
@@ -182,8 +189,10 @@ def main():
         for i in range(args.headless_steps):
             servo_step(False)
         pos = tape.get_state().pos[0].cpu().numpy()
-        print(f"[headless] tape z=[{pos[:, 2].min():.4f},{pos[:, 2].max():.4f}] finite={np.isfinite(pos).all()}",
-              flush=True)
+        print(
+            f"[headless] tape z=[{pos[:, 2].min():.4f},{pos[:, 2].max():.4f}] finite={np.isfinite(pos).all()}",
+            flush=True,
+        )
         return
 
     if scene.viewer is None:

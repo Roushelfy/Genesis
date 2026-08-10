@@ -1,9 +1,9 @@
 # QIPCCoupler Adhesion + Tape Import — Design
 
-Status: A5.1–A5.3 implemented (2026-07-28); A5.4 (bond/beta state transfer)
-deferred. Companion to [fem_design.md](fem_design.md); current milestone status
-lives in [roadmap.md](roadmap.md). Last audited against cuda-graph-qipc @
-`9d04b459`.
+Status: A5.1–A5.3 and A5.4 authored bond-topology transfer implemented;
+per-pair beta import remains deferred. Companion to [fem_design.md](fem_design.md);
+current milestone status lives in [roadmap.md](roadmap.md). Last audited against
+cuda-graph-qipc @ `cde8775e`.
 
 > Implementation map: adhesion manager in `../adhesion.py` (options
 > `contact_constitution` + `adhesion_bond_*`, `coupler.add_adhesion`,
@@ -21,16 +21,21 @@ Two deliverables:
 
 1. **Adhesion**: expose qipc's two-layer adhesion stack through the coupler —
    *Phase-1 soft adhesion* (per-pair β-state RCC potential: `Cn/Ct/W/eta/
-   bonding_rate/p0/beta0/adhesion_enabled` on the contact tabular) and
+   bonding_rate/p0/beta0` in `Adhesion` contact-table groups) and
    *Phase-2 distance bonds* (locked virtual-tet bonds with per-pair
-   `distance_lock/distance_lock_ratio/release_force` and scene-global
-   create/release config on `AdhesiveIPCContact`).
+   `Bond` groups). The Genesis scene-level `adhesion_bond_*` compatibility
+   options synthesize the default `Bond`; QIPC manages bond capacity dynamically.
 2. **Tape import**: bring a wound tape roll into a Genesis scene as a first-class
    pair of entities (prestressed shell strip + ABD ring hub), loadable from the
    qipc tape asset format (`.npz` produced by cgq's `adhesive_tape_wind.py`).
 
 Key facts the design is built on (from the cgq source, references in §9):
 
+- This integration targets the current QIPC API: grouped
+  `qipc.contact.Adhesion`/`Bond`/`Release` models and `Scene.reset` are both
+  required. A build-time capability gate rejects legacy flat-contact wheels
+  with an upgrade message. Genesis's `qipc` extra is published only for its
+  supported Python 3.12 environment.
 - Everything adhesion-related is **frozen at `scene.init()`** (tables read once
   by `Solver._wire_contact_tabular`); the only runtime mutables are per-pair β
   (`dump/load_adhesion_pair_state`) and bond seeding (`seed_locks`). So the
@@ -54,10 +59,10 @@ contact_constitution: Literal["auto", "consistent", "adhesive"] = "auto"
 #   auto  -> "adhesive" iff any add_adhesion() request or bond option is set,
 #            else "consistent" (avoids the lagged-position cost when unused).
 
-# Phase-2 distance-bond globals (all map 1:1 onto AdhesiveIPCContact.apply_to)
+# Phase-2 distance-bond compatibility options (mapped into qipc Bond/Release)
 adhesion_bond_distance_lock: StrictBool = False
 adhesion_bond_distance_lock_ratio: NonNegativeFloat = 0.5   # band = xi + c*d_hat
-adhesion_bond_max_bonds: NonNegativeInt = 0                 # 0 = bonds inert
+adhesion_bond_max_bonds: NonNegativeInt = 0                 # 0 = inert; >0 = enable guard
 adhesion_bond_kappa: PositiveFloat = 1e8
 adhesion_bond_lock_margin: NonNegativeFloat = 0.0
 adhesion_bond_release_strain: PositiveFloat = 1e30
@@ -69,7 +74,8 @@ adhesion_occlusion: StrictBool = False                      # bond-create gate o
 
 Build-time validation in the coupler (all host-side, readable errors):
 - `adhesion_bond_distance_lock and adhesion_bond_max_bonds == 0` → raise
-  (upstream this is *silently* inert).
+  (the numeric positive value is retained for API compatibility; current QIPC
+  grows its bond SoA on demand and does not treat it as a capacity limit).
 - bonds requested but no FEM entities in the scene → raise (`BondSystem`
   requires FEM vertices; ABD-only scenes cannot bond).
 - `add_adhesion` targeting a Plane entity → raise (half-plane contacts never
@@ -96,12 +102,12 @@ def add_adhesion(
     bonding_rate: float = 0.0,        # beta growth under compression (0 = frozen)
     p0: float = 0.0,                  # compression saturation pressure
     beta0: float = 0.0,               # seed beta; 1.0 = pre-bonded on first contact
-    enabled: bool = True,             # per-pair adhesion_enabled mask
+    enabled: bool = True,             # False maps to adhesion=None
     friction: float | None = None,    # pair friction override (None = geometric mean)
     resistance: float | None = None,  # pair resistance override (None = harmonic mean)
-    distance_lock: bool | None = None,        # None = qipc default (True when bonds on)
-    distance_lock_ratio: float | None = None, # None = inherit global (sentinel -1)
-    release_force: float | None = None,       # None = inherit global (sentinel -1)
+    distance_lock: bool | None = None,        # None = follow the global bond switch
+    distance_lock_ratio: float | None = None, # None = use the global ratio
+    release_force: float | None = None,       # None = use the global threshold
 ) -> None
 ```
 
@@ -111,13 +117,11 @@ def add_adhesion(
   columns* to rows it already writes).
 - `target_entities=None` or `== source` → self-adhesion pair `(elem, elem)`
   (tape–tape).
-- Sentinel translation: `None → -1` only for `distance_lock_ratio` /
-  `release_force`; the Phase-1 columns have no sentinels (0 means 0).
-- **No `sticky_side`** (present in the libuipc RCC API): qipc PT adhesion is
-  side-symmetric. One-sided tape is approximated by geometry (the coil's
-  winding means only the inward face ever comes into PT range) — same approach
-  as cgq's own tape demos. A future per-vertex `contact_element_id` "sticky
-  region" channel could narrow this; deferred.
+- Requests are translated into grouped qipc objects. `enabled=False` writes
+  `adhesion=None`; a bond-enabled request writes a `Bond` whose optional ratio
+  and release-force overrides fall back to the scene options.
+- Genesis does not yet expose qipc's per-pair `Adhesion.sticky` truth table;
+  imported tape therefore uses qipc's all-side default.
 - Pairs *not* named in any request keep pure friction/resistance rows; note the
   qipc per-pair `distance_lock` default is **True** (opt-out), so when the
   global lock is on, unnamed pairs may bond — matching upstream semantics.
@@ -131,7 +135,7 @@ coupler.get_bond_topos() -> np.ndarray (n_bonds, 4) int32   # GLOBAL vertex ids
 coupler.get_bond_count() -> int
 coupler.dump_adhesion_state() -> (keys, betas)               # device tensors
 coupler.load_adhesion_state(keys, betas) -> None             # e.g. re-bond mid-run
-coupler.seed_bonds(topos, rest_height) -> None               # once, before 1st step
+coupler.seed_bonds(topos, rest_height) -> None               # post-build frame-zero seed
 ```
 
 - Bond topos are in qipc *global* vertex-id space; the coupler translates FEM
@@ -139,6 +143,10 @@ coupler.seed_bonds(topos, rest_height) -> None               # once, before 1st 
   ranges (ABD ids reported raw with the owning entity looked up from geometry
   slot metadata).
 - No bond clearing / per-bond mutation exists upstream; not exposed.
+- Authored and manual frame-zero seed batches are retained by the coupler and
+  replayed after QIPC `Scene.reset()`. QIPC's own reset snapshot is captured at
+  the end of `Scene.init()`, before Genesis resolves and applies asset seeds, so
+  replay is required to preserve the imported initial condition.
 - β keys hash global vertex ids → `load_adhesion_state` is only valid within
   the same built scene (documented; the tape importer re-forms bonds through
   `beta0=1` instead of transferring state, see §5).
@@ -195,6 +203,9 @@ class TapeAsset:
     hub_r_outer: float; hub_r_inner: float; hub_height: float
     d_hat: float
     params: dict                 # full effective preset (pickled dict in npz)
+    bond_topos: np.ndarray | None
+    bond_topos_space: str | None
+    bond_fem_gvo: int
 
     @classmethod
     def from_npz(cls, path) -> "TapeAsset"
@@ -205,7 +216,8 @@ Reads cgq's wind output (`_pc0716_winner.npz`-style). The flat rest strip is
 regenerated analytically from `nx/nz/tape_length/width` (same vertex layout as
 `make_tangent_tape`; absolute placement of the rest strip is irrelevant — only
 the rest metric and dihedral angles enter). Optional npz keys
-(`bond_topos`, `pair_state_*`) are parsed but **ignored in v1** (§8 A5.4).
+`bond_topos` is consumed for locked assets; `pair_state_*` remains parsed but
+is not imported because beta keys are tied to one built scene's global ids.
 
 ### 6.2 Scene builder
 
@@ -234,8 +246,14 @@ Steps (all on existing or §1–§5 plumbing):
      imported coil hold from frame 0** without any bond-state transfer;
    - `coupler.add_adhesion(tape, hub, Cn=10.0, ...)` (glue tab band);
 5. Caller enables Phase-2 in options for peel-force semantics
-   (`adhesion_bond_distance_lock=True, ratio=1.0, max_bonds=16384,
+   (`adhesion_bond_distance_lock=True, ratio=1.0, max_bonds>0,
    kappa=1e6, release_force=0.5`), matching the cgq production preset.
+6. For a `LOCK=1` asset carrying `bond_topos`, register an authored seed before
+   build. After QIPC assigns current global ids, FEM-local ids are rebased and
+   hub-side ids are mapped through the imported hub entity's actual ABD vertex
+   ids. If that mapping cannot be proved (for example a differently tessellated
+   hub), hub rows are dropped explicitly while all-FEM rows remain usable.
+   `LOCK=0` assets, including `tape_roll_soft.npz`, never register a seed.
 
 Ground contact needs no adhesion handling (half-plane pairs are inherently
 inert for adhesion) — but the roll must clear the ground per the existing
@@ -278,7 +296,7 @@ Not needed for the drop-class demo; implement after A5.1/A5.2.
 | **A5.1 adhesion core** | §1 options, §2 `add_adhesion`, constitution auto-select, §3 runtime APIs, host validation | port `adhesive_cloth_peel` (stick vs. no-stick assert); port `test_distance_bond` stick/hold/release-force thresholds; ABD+FEM mixed bond test |
 | **A5.2 tape import (drop class)** | §4 Cloth fields, §5 rest_geometry channel, §6 TapeAsset + `add_tape_roll` | prestress unit test (wound strip springs open without adhesion; holds with `beta0=1`); tape-drop port: lift roll by free tail → hub carried (the cgq drop diagnostic), rendered video |
 | **A5.3 kinematic driving** | §7 STC + `aim_q`, `qipc_d_hat` | orbit/pull demo; optional Genesis-side wind (§6.3 v2) |
-| **A5.4 state transfer** | `seed_bonds` + β import from npz (bit-exact pre-bonded roll) | deferred; `beta0=1` re-bonding covers the practical need |
+| **A5.4 state transfer** | automatic authored `bond_topos` mapping/seeding + reset replay; manual `seed_bonds` replay | shifted-hub-id test asserts all 454 rows at build and after repeated step/reset; β import remains deferred and `beta0=1` covers it |
 
 ## 9. Constraints & gotchas carried into the design (upstream facts)
 
@@ -303,8 +321,8 @@ Not needed for the drop-class demo; implement after A5.1/A5.2.
    is not available; at least one side must be FEM.
 8. One-step engagement lag (locks form at CP4, act next frame) — tests budget
    settle frames before asserting.
-9. `eta=0` silently disables debonding; `p0=0` everywhere upstream; keep both
-   defaults but document.
+9. `eta` must be positive (`add_adhesion` validates it); `p0=0` remains the
+   common upstream default.
 10. Occlusion gates bond creation only (Phase-1 unaffected at current HEAD) and
     is O(n_tris) per candidate — off by default.
 11. **Airborne locked coils hover at the default `newton/velocity_tol=0.05` —

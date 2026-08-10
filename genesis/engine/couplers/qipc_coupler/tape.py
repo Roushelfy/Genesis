@@ -60,9 +60,21 @@ class TapeAsset:
     def from_npz(cls, path: str) -> "TapeAsset":
         data = np.load(os.path.expanduser(path), allow_pickle=True)
         required = (
-            "tape_positions", "tape_tris", "nx", "nz", "thick", "tape_length", "width",
-            "youngs", "poisson", "density", "bending_e",
-            "hub_r_outer", "hub_r_inner", "hub_height", "d_hat",
+            "tape_positions",
+            "tape_tris",
+            "nx",
+            "nz",
+            "thick",
+            "tape_length",
+            "width",
+            "youngs",
+            "poisson",
+            "density",
+            "bending_e",
+            "hub_r_outer",
+            "hub_r_inner",
+            "hub_height",
+            "d_hat",
         )
         missing = [key for key in required if key not in data]
         if missing:
@@ -247,26 +259,30 @@ def recommended_coupler_options(asset: TapeAsset) -> dict:
 
 
 def seed_asset_locks(scene, tape_entity, asset: TapeAsset) -> tuple[int, int]:
-    """Re-lock the wind-saved bond topologies against the imported roll.
+    """Return or create the wind-saved bond topology seed for an imported roll.
 
-    cgq's drop demo seeds the wind's lock pair set before the first step so the
-    coil does not re-form a DIFFERENT pair set at drop configuration (which
-    releases earlier under lift shear). Call after ``scene.build()`` and before
-    the first ``scene.step()``.
+    ``add_tape_roll`` registers authored locks for automatic seeding during
+    ``scene.build()``. Calling this after build remains supported for callers
+    that used an older/manual import path; for an automatically seeded entity it
+    returns the recorded ``(n_seeded, n_dropped_hub_rows)`` without duplicating
+    bonds.
 
     Saved ids live in the wind scene's global layout ``[ABD hub | FEM tape]``.
-    Tape-tape rows always transfer (shifted onto this scene's FEM range).
-    Hub-side rows transfer only when this scene's ABD vertex layout matches the
-    wind's — which holds because ``add_tape_roll`` passes the ring hub through
-    unconvexified (``convexify=False``), keeping the wind's 192 vertices in
-    order. If it does not match (a differently tessellated or processed hub),
-    those rows are dropped and the innermost turn re-bonds dynamically instead
-    (``beta0=1``). Returns ``(n_seeded, n_dropped_hub_rows)``.
+    The automatic path rebases tape ids and maps hub ids through the imported
+    hub entity's actual QIPC vertex range, so unrelated preceding rigid bodies
+    do not invalidate the seed. It only accepts a hub with the authored vertex
+    count; otherwise hub rows are dropped and the innermost turn re-bonds
+    dynamically (`beta0=1`). The manual compatibility fallback below can only
+    retain hub rows when the whole ABD layout still matches the wind scene.
+    Returns `(n_seeded, n_dropped_hub_rows)`.
     """
     if asset.bond_topos is None:
         return 0, 0
     coupler = scene.sim.coupler
     adhesion = coupler._adhesion
+    automatic_result = adhesion.get_bond_seed_result(tape_entity)
+    if automatic_result is not None:
+        return automatic_result
     entry = coupler._fem_entry(tape_entity)
     fem_gvo = adhesion.fem_global_vertex_offset()
     our_base = fem_gvo + entry.offset
@@ -303,10 +319,14 @@ def seed_asset_locks(scene, tape_entity, asset: TapeAsset) -> tuple[int, int]:
 
     # Band-edge rest height, matching cgq's drop: xi(pair) + ratio * d_hat with
     # xi = 2 * thick (point + max triangle thickness).
-    ratio = float(asset.params.get("DISTANCE_LOCK_RATIO", 1.0))
-    rest_height = 2.0 * asset.thick + ratio * asset.d_hat
+    rest_height = _bond_rest_height(asset)
     adhesion.seed_bonds(topos, rest_height)
     return int(topos.shape[0]), dropped
+
+
+def _bond_rest_height(asset: TapeAsset) -> float:
+    ratio = float(asset.params.get("DISTANCE_LOCK_RATIO", 1.0))
+    return 2.0 * asset.thick + ratio * asset.d_hat
 
 
 def _write_obj(path: str, verts: np.ndarray, faces: np.ndarray) -> None:
@@ -434,9 +454,11 @@ def add_tape_roll(
     coupler.set_fem_rest_positions(tape, asset.flat_rest_positions())
 
     hub = None
+    hub_vertex_count = 0
     if with_hub:
         hub_obj = os.path.join(tmp_dir, "tape_hub.obj")
         hub_verts, hub_tris = make_ring_hub(asset.hub_r_outer, asset.hub_r_inner, asset.hub_height)
+        hub_vertex_count = len(hub_verts)
         # Unlike the tape, the hub keeps morph-level placement: the ring is
         # COM-centered at the file origin by construction, so the rigid
         # loader's pivot (file origin unaligned, COM frame under align=True
@@ -478,5 +500,25 @@ def add_tape_roll(
         tape_hub = dict(asset_adhesion)
         tape_hub.update(tape_hub_adhesion or {})
         coupler.add_adhesion(tape, hub, **tape_hub)
+
+    lock_asset = bool(int(params.get("LOCK", 1)))
+    if asset.bond_topos is not None and lock_asset and coupler.adhesion.bonds_enabled():
+        source_fem_global_offset = asset.bond_fem_gvo if asset.bond_topos_space == "global" else None
+        rigid_seed_entity = None
+        if source_fem_global_offset is not None and hub is not None:
+            if hub_vertex_count == source_fem_global_offset:
+                rigid_seed_entity = hub
+            else:
+                gs.logger.warning(
+                    f"Tape asset records {source_fem_global_offset} rigid-side vertices, but the imported "
+                    f"hub has {hub_vertex_count}; hub-side seed rows will be dropped."
+                )
+        coupler.adhesion.add_bond_seed_request(
+            tape,
+            topologies=asset.bond_topos,
+            source_fem_global_offset=source_fem_global_offset,
+            rest_height=_bond_rest_height(asset),
+            rigid_entity=rigid_seed_entity,
+        )
 
     return tape, hub

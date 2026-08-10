@@ -4,8 +4,11 @@ QIPC coupler integrates [cuda-graph-qipc](https://github.com/Genesis-Embodied-AI
 
 ## Installing cuda-graph-qipc
 
-Requirements are Python 3.12+, CUDA Toolkit 12.8+, `uv`, and a supported C++
-compiler. Clone QIPC and pass the Genesis checkout explicitly:
+Requirements are Python 3.12, CUDA Toolkit 12.8+, `uv`, and a supported C++
+compiler. The coupler requires a current QIPC build with the grouped
+`qipc.contact.Adhesion`/`Bond`/`Release` API and `Scene.reset`; legacy wheels
+with the flat contact-table API are rejected at scene build. Clone QIPC and
+pass the Genesis checkout explicitly:
 
 ```bash
 git clone https://github.com/Genesis-Embodied-AI/cuda-graph-qipc.git

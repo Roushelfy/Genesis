@@ -234,7 +234,10 @@ class QIPCCouplerOptions(BaseCouplerOptions):
         Scene-global bond lock reach ``c``: a bond may form while the pair distance
         is inside ``xi + c * contact_d_hat``. Defaults to 0.5.
     adhesion_bond_max_bonds : int, optional
-        Bond slot capacity. 0 keeps the bond system fully inert. Defaults to 0.
+        Compatibility enable guard for distance bonds. 0 keeps the bond system
+        inert; any positive value enables it when ``adhesion_bond_distance_lock``
+        is True. QIPC manages the actual slot capacity dynamically, so the
+        positive value is not a capacity limit. Defaults to 0.
     adhesion_bond_kappa : float, optional
         Per-bond virtual-tet stiffness. Defaults to 1e8.
     adhesion_bond_lock_margin : float, optional

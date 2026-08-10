@@ -599,6 +599,11 @@ class QIPCCoupler(RBC):
             entry = FemEntityEntry(fem_entity, slot, is_cloth, offset, fem_entity.n_vertices)
             self._fem_entries.append(entry)
             self._fem_entry_by_entity[fem_entity] = entry
+        if self._adhesion.has_bond_seed_requests():
+            self._adhesion.apply_bond_seed_requests(
+                {entry.entity: (entry.offset, entry.n_verts) for entry in self._fem_entries},
+                self._abd_vertex_ids_by_entity(all_pre_inits),
+            )
         self._initialize_sealed_gas_state()
         self._fem_constraints: list[FemConstraintRecord] = []
 
@@ -679,6 +684,7 @@ class QIPCCoupler(RBC):
             self._write_sealed_gas_state(runtime_gas_state)
             torch.cuda.synchronize()
             raise
+        self._adhesion.restore_seeded_bonds()
         self._writeback_state()
         self._writeback_fem_state(0)
 
@@ -1610,6 +1616,24 @@ class QIPCCoupler(RBC):
             rel_transforms_list.append(rt)
 
         return link_indices, body_indices, rel_transforms_list, free_entry
+
+    def _abd_vertex_ids_by_entity(
+        self,
+        all_pre_inits: list[AbdEntityPreInit],
+    ) -> dict[RigidEntity, np.ndarray]:
+        """Map each Genesis rigid entity's authored vertex order to QIPC global ids."""
+        body_id = np.asarray(self._scene.affine_body.host("body_id"), dtype=np.int64)
+        vertex_ids: dict[RigidEntity, np.ndarray] = {}
+        for pre in all_pre_inits:
+            entity_body_ids: list[int] = []
+            for slot in pre.group_slots.values():
+                body_offset = int(slot.geometry.meta["abd_body_offset"].cpu()[0])
+                entity_body_ids.extend(range(body_offset, body_offset + int(slot.geometry.instances.size)))
+            if entity_body_ids:
+                vertex_ids[pre.entity] = np.flatnonzero(
+                    np.isin(body_id, np.asarray(entity_body_ids, dtype=np.int64))
+                ).astype(np.int32)
+        return vertex_ids
 
     def _apply_gravity_compensation(self, entity: RigidEntity, body_indices: list[int]) -> None:
         """Match Genesis rigid-body gravity compensation for one QIPC entity."""

@@ -14,15 +14,15 @@ except ImportError:
 from genesis.utils.misc import get_assets_dir
 
 SOFT_TAPE_ASSET_PATH = os.path.join(get_assets_dir(), "qipc", "tape_roll_soft.npz")
-LOCK_TAPE_ASSET_PATH = os.path.join(get_assets_dir(), "qipc", "tape_roll_lock.npz")
+DISTANCE_BOND_TAPE_ASSET_PATH = os.path.join(get_assets_dir(), "qipc", "tape_roll_distance_bond.npz")
 
 needs_soft_tape_asset = pytest.mark.skipif(
     not os.path.exists(SOFT_TAPE_ASSET_PATH),
     reason="soft wound-roll asset not found",
 )
 needs_tape_assets = pytest.mark.skipif(
-    not os.path.exists(SOFT_TAPE_ASSET_PATH) or not os.path.exists(LOCK_TAPE_ASSET_PATH),
-    reason="soft or locked wound-roll asset not found",
+    not os.path.exists(SOFT_TAPE_ASSET_PATH) or not os.path.exists(DISTANCE_BOND_TAPE_ASSET_PATH),
+    reason="soft or distance-bond wound-roll asset not found",
 )
 
 
@@ -45,8 +45,11 @@ def test_tape_world_uses_original_solver_defaults():
 @needs_tape_assets
 def test_tape_world_config_maps_soft_and_bond_options():
     tape_world = _world_module()
-    locked_asset = tape_world.TapeAsset.from_npz(LOCK_TAPE_ASSET_PATH)
+    assert tape_world.resolve_tape_asset_path(tape_world.TapeWorldConfig(mode="bond")) == DISTANCE_BOND_TAPE_ASSET_PATH
+    locked_asset = tape_world.TapeAsset.from_npz(DISTANCE_BOND_TAPE_ASSET_PATH)
     soft_asset = tape_world.TapeAsset.from_npz(SOFT_TAPE_ASSET_PATH)
+    assert bool(int(soft_asset.params["LOCK"])) is False
+    assert soft_asset.bond_topos is None
 
     bond = tape_world.tape_world_coupler_options(
         tape_world.TapeWorldConfig(
@@ -81,6 +84,7 @@ def test_tape_world_build_control_and_repeat_reset(show_viewer):
     world = tape_world.build_qipc_tape_world(
         tape_world.TapeWorldConfig(
             mode="soft",
+            sticky_hands=False,
             show_viewer=False,
             tape_asset_path=SOFT_TAPE_ASSET_PATH,
         )
@@ -107,6 +111,19 @@ def test_tape_world_build_control_and_repeat_reset(show_viewer):
     assert np.isfinite(initial_tape_velocity).all()
     assert world.hub is not None
     assert world.table is not None
+    assert float(world.table.get_pos().reshape(-1)[1].item()) == pytest.approx(0.0, abs=1e-7)
+    assert float(world.hub.get_pos().reshape(-1)[1].item()) == pytest.approx(0.0, abs=1e-7)
+    assert not world.scene.sim.coupler.adhesion.has_bond_seed_requests()
+    hand_opt_out = world.scene.sim.coupler.adhesion._requests[-1]
+    table_opt_out = world.scene.sim.coupler.adhesion._requests[-2]
+    assert table_opt_out.source is world.tape
+    assert table_opt_out.targets == (world.table,)
+    assert table_opt_out.enabled is False
+    assert table_opt_out.distance_lock is False
+    assert hand_opt_out.source is world.tape
+    assert hand_opt_out.targets == (world.robot,)
+    assert hand_opt_out.enabled is False
+    assert hand_opt_out.distance_lock is False
     assert_joint_qpos_matches_dofs()
 
     controller.move_palm_target("right", (0.003, 0.0, 0.0))
