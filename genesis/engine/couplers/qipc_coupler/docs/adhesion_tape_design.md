@@ -136,6 +136,7 @@ adhesion = coupler.adhesion
 adhesion.get_contact_info() -> (n_pairs_pt, n_pairs_ee, n_active)
 adhesion.get_bond_topos() -> np.ndarray (n_bonds, 4) int32   # GLOBAL vertex ids
 adhesion.get_released_bond_topos() -> np.ndarray (n, 4) int32
+adhesion.get_bond_seed_topologies(fem_entity) -> np.ndarray | None
 adhesion.get_bond_count() -> int
 adhesion.release_bonds_by_vertices(vertex_ids, require_all=...) -> None
 adhesion.dump_adhesion_state() -> (keys, betas)
@@ -150,6 +151,9 @@ adhesion.seed_bonds(topos, rest_height) -> None              # frame-zero seed
 - The released feed contains only physics releases from the preceding QIPC
   step. Explicit `release_bonds_by_vertices` clearing does not append to that
   feed, so a cluster policy cannot excite itself recursively.
+- `get_bond_seed_topologies` returns a defensive copy of the exact authored
+  rows after scene-global FEM and rigid vertex-id mapping. It excludes dynamic
+  bonds and is therefore the provenance source for release-driven policies.
 - Authored and manual frame-zero seed batches are retained by the coupler and
   replayed after QIPC `Scene.reset()`. QIPC's own reset snapshot is captured at
   the end of `Scene.init()`, before Genesis resolves and applies asset seeds, so
@@ -304,18 +308,20 @@ with an independent ghost proxy whose initial membership is the deep
 bond-certified roll interior. The largest connected unbonded component is the
 payout front, small enclosed holes are filled, and a configurable number of
 graph rings behind the front remains ordinary FEM as a soft collar. Existing
-wind-authored distance bonds remain the only connection between that proxy and
-the imported rigid hub; the cluster does not merge tape mass or rest moments
-into the hub's intrinsic ABD body.
+wind-authored distance bonds remain the only authored/persistent structural
+connection between that proxy and the imported rigid hub; the cluster does not
+merge tape mass or rest moments into the hub's intrinsic ABD body.
 
 After build, `TapeBondClusterController.initialize()` records the tape in the
-cluster-proxy frame. Before each QIPC step, `before_step()` consumes only the
-native released-this-step bond feed. A released tape vertex advances the front
-after its cluster-frame displacement crosses the configured threshold;
-membership then shrinks monotonically and bonds touching vertices that fully
-left the cluster are cleared to avoid the bond/barrier deadlock. This is an
-optimization policy, not an alternate release criterion: QIPC distance bonds
-remain authoritative.
+cluster-proxy frame and caches the exact mapped topology set of that tape
+entity's authored seed. Before each QIPC step, `before_step()` consumes the
+native released-this-step bond feed but accepts only rows in that authored set.
+Dynamic tape-hand and tape-tape bond releases therefore cannot advance the
+front. An authored released tape vertex advances the front after its
+cluster-frame displacement crosses the configured threshold; membership then
+shrinks monotonically and bonds touching vertices that fully left the cluster
+are cleared to avoid the bond/barrier deadlock. This is an optimization policy,
+not an alternate release criterion: QIPC distance bonds remain authoritative.
 Cluster tape scenes must configure `adhesion_bond_lock_floor_ratio > 0`, so a
 cleared near-barrier bond cannot immediately re-lock. The cluster's `kappa`
 configures only its ghost proxy; the hub retains its ordinary rigid-material

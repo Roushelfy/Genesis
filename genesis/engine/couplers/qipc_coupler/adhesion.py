@@ -86,6 +86,7 @@ class QIPCAdhesionManager:
         self._bond_seed_requests: list[BondSeedRequest] = []
         self._bond_seed_batches: list[tuple[np.ndarray, float]] = []
         self._bond_seed_results: dict[object, tuple[int, int]] = {}
+        self._bond_seed_topologies_by_entity: dict[object, np.ndarray] = {}
         self._bond_dump_topologies: torch.Tensor | None = None
         self._bond_dump_count: torch.Tensor | None = None
         self._scene = None  # qipc Scene, set by the coupler at build
@@ -473,6 +474,7 @@ class QIPCAdhesionManager:
                 rigid_vertex_ids=rigid_vertex_ids.get(request.rigid_entity),
             )
             self.seed_bonds(mapped, request.rest_height)
+            self._bond_seed_topologies_by_entity[request.fem_entity] = mapped.copy()
             result = (len(mapped), n_dropped)
             self._bond_seed_results[request.fem_entity] = result
             gs.logger.info(
@@ -488,6 +490,11 @@ class QIPCAdhesionManager:
     def get_bond_seed_result(self, fem_entity) -> tuple[int, int] | None:
         """Return `(seeded, dropped_rigid_rows)` for an automatic asset seed."""
         return self._bond_seed_results.get(fem_entity)
+
+    def get_bond_seed_topologies(self, fem_entity) -> np.ndarray | None:
+        """Return mapped authored seed topologies for one FEM entity."""
+        topologies = self._bond_seed_topologies_by_entity.get(fem_entity)
+        return None if topologies is None else topologies.copy()
 
     def _seed_bond_batch(self, topologies: np.ndarray, rest_height: float) -> None:
         bond_system = self._bond_system()

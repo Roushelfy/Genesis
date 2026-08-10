@@ -417,13 +417,32 @@ def _bond_cluster_target(
     return deep[triangles].all(axis=1)
 
 
+def _bond_topology_keys(topologies: np.ndarray) -> frozenset[tuple[int, int, int, int]]:
+    rows = np.asarray(topologies, dtype=np.int32).reshape(-1, 4)
+    return frozenset((int(row[0]), int(row[1]), int(row[2]), int(row[3])) for row in rows)
+
+
+def _filter_authored_bond_releases(
+    released: np.ndarray,
+    authored: frozenset[tuple[int, int, int, int]],
+) -> np.ndarray:
+    rows = np.asarray(released, dtype=np.int32).reshape(-1, 4)
+    keep = np.fromiter(
+        ((int(row[0]), int(row[1]), int(row[2]), int(row[3])) in authored for row in rows),
+        dtype=bool,
+        count=len(rows),
+    )
+    return np.ascontiguousarray(rows[keep])
+
+
 class TapeBondClusterController:
     """Release-feed policy for a queued distance-bond tape cluster.
 
     The affine cluster is a mechanics optimization, not a second fracture
     model. Wind-authored bonds certify the initial rigid interior. A released
-    bond advances the free front only after one of its tape vertices has moved
-    ``detach_displacement`` relative to the rigidified tape interior; ``collar``
+    bond advances the free front only if its exact topology belongs to the
+    mapped authored seed and one of its tape vertices has moved
+    ``detach_displacement`` relative to the rigidified tape interior. ``collar``
     graph rings behind the front remain deformable. Membership can only shrink
     during an episode.
     """
@@ -432,6 +451,7 @@ class TapeBondClusterController:
         self,
         coupler,
         cluster,
+        tape_entity,
         asset: TapeAsset,
         *,
         collar: int,
@@ -446,6 +466,7 @@ class TapeBondClusterController:
         initial_member = _bond_cluster_target(triangles, bonded, ~bonded, adjacency, int(collar))
         self._coupler = coupler
         self._cluster = cluster
+        self._tape_entity = tape_entity
         self._triangles = triangles
         self._bonded = bonded
         self._adjacency = adjacency
@@ -457,6 +478,7 @@ class TapeBondClusterController:
         self._freed = ~bonded
         self._pending = np.zeros(len(bonded), dtype=bool)
         self._initial_proxy_positions: torch.Tensor | None = None
+        self._authored_bond_topology_keys: frozenset[tuple[int, int, int, int]] | None = None
         self._released_total = 0
         self._melted_total = 0
 
@@ -481,6 +503,12 @@ class TapeBondClusterController:
         vertex_range = self._cluster.fem_vertex_range
         if len(vertex_range) != len(self._bonded):
             gs.raise_exception("TapeBondClusterController: queued cluster vertex range does not match the tape asset.")
+        authored = self._coupler.adhesion.get_bond_seed_topologies(self._tape_entity)
+        if authored is None:
+            gs.raise_exception(
+                "TapeBondClusterController: mapped authored bond seed topologies are missing for the tape entity."
+            )
+        self._authored_bond_topology_keys = _bond_topology_keys(authored)
         self._initialized = True
         self.reset()
 
@@ -504,6 +532,8 @@ class TapeBondClusterController:
         """Advance the monotone peel front before the next QIPC step."""
         self._require_initialized()
         released = self._coupler.adhesion.get_released_bond_topos()
+        assert self._authored_bond_topology_keys is not None
+        released = _filter_authored_bond_releases(released, self._authored_bond_topology_keys)
         if len(released):
             self._released_total += len(released)
             local_vertices = self._tape_local_vertices(released)
@@ -608,6 +638,7 @@ def add_tape_bond_cluster(
     return TapeBondClusterController(
         coupler,
         cluster,
+        tape_entity,
         asset,
         collar=collar,
         detach_displacement=detach_displacement,

@@ -12,6 +12,7 @@ from types import SimpleNamespace
 
 import numpy as np
 import pytest
+import torch
 
 try:
     import quadrants as qd  # noqa: F401
@@ -128,6 +129,83 @@ def test_tape_bond_cluster_queues_configured_ghost_proxy():
         tape_mod.bond_cluster_member_triangles(asset, 3),
     )
     assert set(calls[0][1]) == {"kappa", "initial_tris"}
+
+
+@needs_tape_asset
+def test_tape_bond_cluster_ignores_foreign_released_bonds():
+    tape_mod = _tape_module()
+    asset = tape_mod.TapeAsset.from_npz(TAPE_ASSET_PATH)
+    tape = object()
+    authored = np.array([[0, 1, 2, 3]], dtype=np.int32)
+    foreign = np.array(
+        [
+            [20, 21, 0, 22],  # dynamic tape-hand bond sharing a tape vertex
+            [0, 1, 4, 5],  # dynamic tape-tape bond
+            [3, 2, 1, 0],  # reordered topology is not the authored row
+        ],
+        dtype=np.int32,
+    )
+    released = {"rows": foreign}
+    adhesion = SimpleNamespace(
+        get_bond_seed_topologies=lambda entity: authored.copy() if entity is tape else None,
+        get_released_bond_topos=lambda: released["rows"],
+        fem_global_vertex_offset=lambda: 0,
+    )
+    cluster = SimpleNamespace(
+        fem_vertex_range=range(len(asset.tape_positions)),
+        member_count=len(tape_mod.bond_cluster_member_triangles(asset, 3)),
+        proxy_body_index=0,
+    )
+    coupler = SimpleNamespace(
+        adhesion=adhesion,
+        _scene=SimpleNamespace(
+            finite_element=SimpleNamespace(x=torch.as_tensor(asset.tape_positions, dtype=torch.float64)),
+            affine_body=SimpleNamespace(
+                q=torch.tensor(
+                    [[0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]],
+                    dtype=torch.float64,
+                )
+            ),
+        ),
+    )
+    controller = tape_mod.TapeBondClusterController(
+        coupler,
+        cluster,
+        tape,
+        asset,
+        collar=3,
+        detach_displacement=5.0 * asset.d_hat,
+    )
+    controller.initialize()
+
+    assert controller.before_step() == 0
+    assert controller.released_total == 0
+    assert not controller._pending.any()
+
+    released["rows"] = np.concatenate((authored, foreign), axis=0)
+    assert controller.before_step() == 0
+    assert controller.released_total == 1
+    assert controller._pending[:4].all()
+
+
+@needs_tape_asset
+def test_tape_bond_cluster_requires_mapped_authored_seed():
+    tape_mod = _tape_module()
+    asset = tape_mod.TapeAsset.from_npz(TAPE_ASSET_PATH)
+    tape = object()
+    cluster = SimpleNamespace(fem_vertex_range=range(len(asset.tape_positions)))
+    coupler = SimpleNamespace(adhesion=SimpleNamespace(get_bond_seed_topologies=lambda _entity: None))
+    controller = tape_mod.TapeBondClusterController(
+        coupler,
+        cluster,
+        tape,
+        asset,
+        collar=3,
+        detach_displacement=5.0 * asset.d_hat,
+    )
+
+    with pytest.raises(Exception, match="mapped authored bond seed topologies are missing"):
+        controller.initialize()
 
 
 # ---------------------------------------------------------------------------
@@ -546,6 +624,11 @@ def test_tape_asset_locks_seed_automatically_and_survive_reset(show_viewer):
 
     assert adhesion.get_bond_count() == 454
     assert rows(adhesion.get_bond_topos()) == rows(expected)
+    mapped_seed = adhesion.get_bond_seed_topologies(tape)
+    assert mapped_seed is not None
+    np.testing.assert_array_equal(mapped_seed, expected)
+    mapped_seed.fill(-1)
+    np.testing.assert_array_equal(adhesion.get_bond_seed_topologies(tape), expected)
     # Backward-compatible helper reports the automatic build result rather than
     # trying to seed the same rows a second time.
     assert tape_mod.seed_asset_locks(scene, tape, asset) == (454, 0)
