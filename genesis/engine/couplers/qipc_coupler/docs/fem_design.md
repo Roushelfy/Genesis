@@ -1,8 +1,8 @@
 # QIPCCoupler FEM Architecture
 
 Status: volumetric FEM, cloth, soft-constraint creation/target updates,
-per-entity contact, adhesion, prestress, native scene reset, and sealed-volume
-gas are implemented. Soft-constraint removal/reset, runtime hard vertex
+per-entity contact, adhesion, prestress, native scene reset, sealed-volume gas,
+and affine clusters are implemented. Soft-constraint removal/reset, runtime hard vertex
 constraints, a public external-acceleration API, plasticity, and
 multi-environment simulation remain open; see [roadmap.md](roadmap.md).
 
@@ -48,6 +48,37 @@ current removal path also touches init-only `is_fixed` and fails. The hard-
 constraint path has the same incompatibility and must be migrated to
 `PositionDBC`. Sealed-gas controls write the gas constitution's live per-bag
 arrays directly between simulation steps.
+
+## Affine clusters
+
+`QIPCCoupler.add_affine_cluster` queues a pairing between one FEM entity and
+either an implicit QIPC proxy or a selected merged body of a Genesis rigid
+entity. The queue resolves in two phases required by QIPC:
+
+1. after rigid/FEM geometry conversion and before `Scene.init()`, declare the
+   proxy and FEM geometry with QIPC;
+2. after init assigns native offsets, validate the entity-local edge/triangle/
+   tet selections and apply authored initial membership.
+
+The returned `QIPCAffineCluster` remains stable across both phases and across
+reset. Its runtime `join`/`detach` methods accept entity-local primitive
+indices. `fem_vertex_range` identifies the entity in QIPC's FEM-local vertex
+buffer, `proxy_body_index` identifies its ABD row, and `member_count` reports
+the current number of clustered elements.
+
+Raw QIPC reset restores the snapshot captured at init, where membership is
+empty and post-init authored bonds do not yet exist. Genesis therefore restores
+authored state in strict dependency order:
+
+```text
+QIPC Scene.reset -> restore seeded bonds -> replay initial membership
+```
+
+Runtime membership changes are intentionally not preserved by reset; reset
+returns to the selection passed as `initial_edges`/`initial_tris`/
+`initial_tets`. The build-time capability gate requires QIPC's cluster API and
+its membership reset/restore state surface, so an older native extension fails
+with a host-side error rather than silently losing membership.
 
 ## Material mapping
 

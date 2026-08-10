@@ -70,6 +70,26 @@ for _ in range(100):
     scene.step()
 ```
 
+Affine clusters are queued after the FEM/rigid entities are added and before
+build. Initial selections and runtime operations use FEM-entity-local element
+indices:
+
+```python
+cluster = scene.sim.coupler.add_affine_cluster(
+    cloth,
+    proxy_entity=robot,       # omit for an implicit affine proxy
+    proxy_link="tool_link",
+    initial_tris=coil_tris,
+)
+scene.build()
+
+cluster.detach(tris=released_tris)
+cluster.join(tris=refrozen_tris)
+```
+
+The handle survives `scene.reset()`. Reset restores authored bonds first and
+then the `initial_*` membership; runtime join/detach changes are not retained.
+
 See `examples/qipc/` for more examples.
 
 FEM material mapping, sealed-gas runtime semantics, and validation commands are

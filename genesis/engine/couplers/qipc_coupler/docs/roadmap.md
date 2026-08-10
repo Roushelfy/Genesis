@@ -50,6 +50,13 @@ Non-negotiable rules:
 - [x] Runtime adhesion/bond state queries
 - [x] Authored tape bond seeding with current-scene id mapping and reset replay
 
+### Affine clusters (complete)
+
+- [x] Pre-build FEM/proxy declaration queue with rigid-link resolution
+- [x] Stable runtime handle with entity-local join/detach and native row ranges
+- [x] Build-time QIPC membership-reset capability gate
+- [x] Authored membership replay after seeded bonds on reset
+
 ### Lifecycle (partial)
 
 - [x] QIPC native reset with immediate Genesis writeback
@@ -121,6 +128,8 @@ installed and an NVIDIA GPU is available.
 | Sealed gas | `pytest tests/test_qipc_sealed_gas.py --backend gpu -n 0 -x` | all material, lifecycle, multi-bag, solver, and physics tests pass |
 | Core QIPC alignment | `pytest tests/test_qipc.py --backend gpu -n 0 -x` | standalone-QIPC alignment and control tests pass |
 | Adhesion | `pytest tests/test_qipc_adhesion.py --backend gpu -n 0 -x` | soft adhesion and distance-bond tests pass |
+| Affine clusters | `pytest tests/test_qipc_affine_cluster.py --backend gpu -n 0 -x` | ghost and rigid-link proxy lifecycle/reset tests pass |
+| Affine-cluster contracts | `pytest tests/test_qipc_affine_cluster_contract.py --backend cpu -n 0 -x` | declaration, validation, capability, and reset-order contracts pass |
 | Tape/prestress | `pytest tests/test_qipc_tape.py --backend gpu -n 0 -x` | prestress, asset, and tape lifecycle tests pass or asset-marked cases skip explicitly |
 
 ## Planned gates
