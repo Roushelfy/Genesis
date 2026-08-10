@@ -86,11 +86,48 @@ def test_tape_bond_cluster_requires_positive_relock_floor():
         tape_mod.add_tape_bond_cluster(
             scene,
             object(),
-            object(),
             asset,
+            kappa=1e8,
             collar=3,
             detach_displacement=5.0 * asset.d_hat,
         )
+
+
+@needs_tape_asset
+def test_tape_bond_cluster_queues_configured_ghost_proxy():
+    tape_mod = _tape_module()
+    asset = tape_mod.TapeAsset.from_npz(TAPE_ASSET_PATH)
+    calls = []
+    cluster = object()
+
+    def add_affine_cluster(entity, **kwargs):
+        calls.append((entity, kwargs))
+        return cluster
+
+    coupler = SimpleNamespace(
+        _options=SimpleNamespace(adhesion_bond_lock_floor_ratio=0.5),
+        add_affine_cluster=add_affine_cluster,
+    )
+    scene = SimpleNamespace(sim=SimpleNamespace(coupler=coupler))
+    tape = object()
+
+    controller = tape_mod.add_tape_bond_cluster(
+        scene,
+        tape,
+        asset,
+        kappa=2.5e7,
+        collar=3,
+        detach_displacement=5.0 * asset.d_hat,
+    )
+
+    assert controller._cluster is cluster
+    assert calls[0][0] is tape
+    assert calls[0][1]["kappa"] == 2.5e7
+    np.testing.assert_array_equal(
+        calls[0][1]["initial_tris"],
+        tape_mod.bond_cluster_member_triangles(asset, 3),
+    )
+    assert set(calls[0][1]) == {"kappa", "initial_tris"}
 
 
 # ---------------------------------------------------------------------------
@@ -337,13 +374,12 @@ def _build_cluster_roll_scene(show_viewer):
         pos=tuple(ROLL_POS),
         with_hub=True,
         hub_fixed=False,
-        hub_qipc_abd_kappa=5e7,
     )
     controller = tape_mod.add_tape_bond_cluster(
         scene,
         tape,
-        hub,
         asset,
+        kappa=5e7,
         collar=3,
         detach_displacement=5.0 * asset.d_hat,
     )
@@ -530,7 +566,8 @@ def test_tape_bond_cluster_releases_and_replays_after_reset(show_viewer):
     coupler = scene.sim.coupler
     cluster = controller._cluster
 
-    assert hub.material.qipc_abd_kappa == 5e7
+    hub_body_index = next(entry.body_offset for entry in coupler._free_base_entries if entry.entity is hub)
+    assert cluster.proxy_body_index != hub_body_index
     assert controller.initial_member_count == 983
     assert controller.member_count == 983
     assert cluster.member_count == 983
@@ -552,13 +589,21 @@ def test_tape_bond_cluster_releases_and_replays_after_reset(show_viewer):
     assert candidate is not None
 
     vertex_range = cluster.fem_vertex_range
-    global_vertex = coupler.adhesion.fem_global_vertex_offset() + vertex_range.start + candidate
     fem_position = coupler._scene.finite_element.x[vertex_range.start + candidate]
     fem_position[0] += 100.0 * asset.d_hat
     scene.step()
     released = coupler.adhesion.get_released_bond_topos()
-    assert global_vertex in released
-    fem_position[0] += 10.0 * asset.d_hat
+    released_vertices = controller._tape_local_vertices(released)
+    candidate = None
+    for vertex in released_vertices:
+        freed = ~bonded
+        freed[vertex] = True
+        target = tape_mod._bond_cluster_target(triangles, bonded, freed, adjacency, 3)
+        if (controller._member & ~target).any():
+            candidate = int(vertex)
+            break
+    assert candidate is not None
+    coupler._scene.finite_element.x[vertex_range.start + candidate, 0] += 10.0 * asset.d_hat
 
     bonds_before_melt = {tuple(int(value) for value in row) for row in coupler.adhesion.get_bond_topos()}
     melted = controller.before_step()

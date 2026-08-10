@@ -423,8 +423,9 @@ class TapeBondClusterController:
     The affine cluster is a mechanics optimization, not a second fracture
     model. Wind-authored bonds certify the initial rigid interior. A released
     bond advances the free front only after one of its tape vertices has moved
-    ``detach_displacement`` in the hub frame; ``collar`` graph rings behind the
-    front remain deformable. Membership can only shrink during an episode.
+    ``detach_displacement`` relative to the rigidified tape interior; ``collar``
+    graph rings behind the front remain deformable. Membership can only shrink
+    during an episode.
     """
 
     def __init__(
@@ -585,15 +586,13 @@ class TapeBondClusterController:
 def add_tape_bond_cluster(
     scene,
     tape_entity,
-    hub_entity,
     asset: TapeAsset,
     *,
+    kappa: float,
     collar: int,
     detach_displacement: float,
 ) -> TapeBondClusterController:
-    """Queue a hub-backed tape cluster and return its runtime peel policy."""
-    if hub_entity is None:
-        gs.raise_exception("add_tape_bond_cluster requires the tape roll's rigid hub entity.")
+    """Queue a ghost-proxy tape cluster and return its runtime peel policy."""
     coupler = scene.sim.coupler
     if coupler._options.adhesion_bond_lock_floor_ratio <= 0.0:
         gs.raise_exception(
@@ -603,7 +602,7 @@ def add_tape_bond_cluster(
     member_triangles = bond_cluster_member_triangles(asset, collar)
     cluster = coupler.add_affine_cluster(
         tape_entity,
-        proxy_entity=hub_entity,
+        kappa=kappa,
         initial_tris=member_triangles,
     )
     return TapeBondClusterController(
@@ -664,7 +663,6 @@ def add_tape_roll(
     euler=(90.0, 0.0, 0.0),
     with_hub: bool = True,
     hub_fixed: bool = False,
-    hub_qipc_abd_kappa: float | None = None,
     friction: float | None = None,
     tape_tape_adhesion: dict | None = None,
     tape_hub_adhesion: dict | None = None,
@@ -775,7 +773,6 @@ def add_tape_roll(
             material=gs.materials.Rigid(
                 rho=1000.0,
                 coup_friction=friction,
-                qipc_abd_kappa=hub_qipc_abd_kappa,
             ),
             surface=hub_surface,
         )

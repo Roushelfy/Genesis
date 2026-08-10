@@ -300,22 +300,28 @@ Not needed for the drop-class demo; implement after A5.1/A5.2.
 
 `add_tape_bond_cluster` is an optional layer over the ordinary distance-bond
 asset; `add_tape_roll` itself remains unchanged. It queues one affine cluster
-whose proxy is the imported hub and whose initial membership is the deep
+with an independent ghost proxy whose initial membership is the deep
 bond-certified roll interior. The largest connected unbonded component is the
 payout front, small enclosed holes are filled, and a configurable number of
-graph rings behind the front remains ordinary FEM as a soft collar.
+graph rings behind the front remains ordinary FEM as a soft collar. Existing
+wind-authored distance bonds remain the only connection between that proxy and
+the imported rigid hub; the cluster does not merge tape mass or rest moments
+into the hub's intrinsic ABD body.
 
 After build, `TapeBondClusterController.initialize()` records the tape in the
-hub frame. Before each QIPC step, `before_step()` consumes only the native
-released-this-step bond feed. A released tape vertex advances the front after
-its hub-frame displacement crosses the configured threshold; membership then
-shrinks monotonically and bonds touching vertices that fully left the cluster
-are cleared to avoid the bond/barrier deadlock. This is an optimization policy,
-not an alternate release criterion: QIPC distance bonds remain authoritative.
+cluster-proxy frame. Before each QIPC step, `before_step()` consumes only the
+native released-this-step bond feed. A released tape vertex advances the front
+after its cluster-frame displacement crosses the configured threshold;
+membership then shrinks monotonically and bonds touching vertices that fully
+left the cluster are cleared to avoid the bond/barrier deadlock. This is an
+optimization policy, not an alternate release criterion: QIPC distance bonds
+remain authoritative.
 Cluster tape scenes must configure `adhesion_bond_lock_floor_ratio > 0`, so a
-cleared near-barrier bond cannot immediately re-lock. With an explicit hub
-proxy, affine stiffness comes from the hub material's `qipc_abd_kappa`; the
-generic cluster's ghost-proxy `kappa` is not used.
+cleared near-barrier bond cannot immediately re-lock. The cluster's `kappa`
+configures only its ghost proxy; the hub retains its ordinary rigid-material
+ABD stiffness. A hub-side bond fracture that moves the whole wound interior
+rigidly does not by itself soften that interior; only payout motion relative to
+the cluster advances the release front.
 
 Raw QIPC reset returns to its pre-membership `Scene.init()` snapshot. Genesis
 therefore restores authored bonds first, replays queued membership second, and
