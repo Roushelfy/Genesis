@@ -20,9 +20,11 @@ from __future__ import annotations
 
 import os
 import tempfile
+from collections import deque
 from dataclasses import dataclass
 
 import numpy as np
+import torch
 
 import genesis as gs
 import genesis.utils.geom as gu
@@ -329,6 +331,290 @@ def _bond_rest_height(asset: TapeAsset) -> float:
     return 2.0 * asset.thick + ratio * asset.d_hat
 
 
+def bond_cluster_member_triangles(asset: TapeAsset, collar: int) -> np.ndarray:
+    """Select the bonded roll interior that may be represented by one cluster.
+
+    The wind-authored distance bonds form the rigid certificate. The largest
+    connected unbonded component is the payout front; smaller unbonded islands
+    enclosed by the certificate are filled. ``collar`` graph rings adjacent to
+    that front remain deformable, and a triangle joins only when all three of
+    its vertices lie deeper than the collar.
+
+    Returns entity-local triangle indices suitable for
+    ``QIPCCoupler.add_affine_cluster(..., tris=...)``.
+    """
+    if isinstance(collar, bool) or not isinstance(collar, (int, np.integer)) or collar < 0:
+        gs.raise_exception("bond_cluster_member_triangles: collar must be a non-negative integer.")
+    triangles, bonded, adjacency = _bond_cluster_certificate(asset)
+    member = _bond_cluster_target(triangles, bonded, ~bonded, adjacency, int(collar))
+    return np.flatnonzero(member).astype(np.int32)
+
+
+def _bond_cluster_certificate(asset: TapeAsset) -> tuple[np.ndarray, np.ndarray, list[set[int]]]:
+    if asset.bond_topos is None or asset.bond_topos.size == 0:
+        gs.raise_exception("bond_cluster_member_triangles requires wind-authored distance bonds.")
+
+    n_vertices = int(asset.tape_positions.shape[0])
+    topologies = np.asarray(asset.bond_topos, dtype=np.int64).reshape(-1)
+    if asset.bond_topos_space == "global":
+        topologies = topologies[topologies >= asset.bond_fem_gvo] - asset.bond_fem_gvo
+    tape_vertices = topologies[(topologies >= 0) & (topologies < n_vertices)]
+    if tape_vertices.size == 0:
+        gs.raise_exception("bond_cluster_member_triangles: authored bonds contain no tape vertices.")
+
+    bonded = np.zeros(n_vertices, dtype=bool)
+    bonded[np.unique(tape_vertices)] = True
+    adjacency: list[set[int]] = [set() for _ in range(n_vertices)]
+    triangles = np.asarray(asset.tape_tris, dtype=np.int64)
+    for a, b, c in triangles:
+        for left, right in ((a, b), (b, c), (c, a)):
+            adjacency[int(left)].add(int(right))
+            adjacency[int(right)].add(int(left))
+
+    free = ~bonded
+    component = np.full(n_vertices, -1, dtype=np.int32)
+    component_sizes: list[int] = []
+    for seed in np.flatnonzero(free):
+        if component[seed] >= 0:
+            continue
+        component_id = len(component_sizes)
+        frontier = [int(seed)]
+        component[seed] = component_id
+        size = 0
+        while frontier:
+            vertex = frontier.pop()
+            size += 1
+            for neighbor in adjacency[vertex]:
+                if free[neighbor] and component[neighbor] < 0:
+                    component[neighbor] = component_id
+                    frontier.append(neighbor)
+        component_sizes.append(size)
+    if component_sizes:
+        exterior_component = int(np.argmax(component_sizes))
+        bonded |= free & (component != exterior_component)
+    return triangles, bonded, adjacency
+
+
+def _bond_cluster_target(
+    triangles: np.ndarray,
+    bonded: np.ndarray,
+    freed: np.ndarray,
+    adjacency: list[set[int]],
+    collar: int,
+) -> np.ndarray:
+    distance = np.full(len(bonded), np.iinfo(np.int32).max, dtype=np.int64)
+    frontier = deque(int(vertex) for vertex in np.flatnonzero(freed))
+    distance[freed] = 0
+    while frontier:
+        vertex = frontier.popleft()
+        next_distance = distance[vertex] + 1
+        for neighbor in adjacency[vertex]:
+            if distance[neighbor] > next_distance:
+                distance[neighbor] = next_distance
+                frontier.append(neighbor)
+
+    deep = bonded & (distance > collar)
+    return deep[triangles].all(axis=1)
+
+
+class TapeBondClusterController:
+    """Release-feed policy for a queued distance-bond tape cluster.
+
+    The affine cluster is a mechanics optimization, not a second fracture
+    model. Wind-authored bonds certify the initial rigid interior. A released
+    bond advances the free front only after one of its tape vertices has moved
+    ``detach_displacement`` in the hub frame; ``collar`` graph rings behind the
+    front remain deformable. Membership can only shrink during an episode.
+    """
+
+    def __init__(
+        self,
+        coupler,
+        cluster,
+        asset: TapeAsset,
+        *,
+        collar: int,
+        detach_displacement: float,
+    ) -> None:
+        if not np.isfinite(detach_displacement) or detach_displacement <= 0.0:
+            gs.raise_exception("TapeBondClusterController: detach_displacement must be finite and positive.")
+        if isinstance(collar, bool) or not isinstance(collar, (int, np.integer)) or collar < 0:
+            gs.raise_exception("TapeBondClusterController: collar must be a non-negative integer.")
+
+        triangles, bonded, adjacency = _bond_cluster_certificate(asset)
+        initial_member = _bond_cluster_target(triangles, bonded, ~bonded, adjacency, int(collar))
+        self._coupler = coupler
+        self._cluster = cluster
+        self._triangles = triangles
+        self._bonded = bonded
+        self._adjacency = adjacency
+        self._collar = int(collar)
+        self._detach_displacement = float(detach_displacement)
+        self._initial_member = initial_member
+        self._initialized = False
+        self._member = initial_member.copy()
+        self._freed = ~bonded
+        self._pending = np.zeros(len(bonded), dtype=bool)
+        self._initial_proxy_positions: torch.Tensor | None = None
+        self._released_total = 0
+        self._melted_total = 0
+
+    @property
+    def initial_member_count(self) -> int:
+        return int(self._initial_member.sum())
+
+    @property
+    def member_count(self) -> int:
+        return int(self._member.sum())
+
+    @property
+    def released_total(self) -> int:
+        return self._released_total
+
+    @property
+    def melted_total(self) -> int:
+        return self._melted_total
+
+    def initialize(self) -> None:
+        """Bind runtime QIPC rows after ``scene.build()``."""
+        vertex_range = self._cluster.fem_vertex_range
+        if len(vertex_range) != len(self._bonded):
+            gs.raise_exception("TapeBondClusterController: queued cluster vertex range does not match the tape asset.")
+        self._initialized = True
+        self.reset()
+
+    def reset(self) -> None:
+        """Reset policy state after the coupler replays initial membership."""
+        self._require_initialized()
+        member_count = self._cluster.member_count
+        if member_count != self.initial_member_count:
+            gs.raise_exception(
+                "TapeBondClusterController: QIPC membership replay produced "
+                f"{member_count} elements, expected {self.initial_member_count}."
+            )
+        self._member = self._initial_member.copy()
+        self._freed = ~self._bonded
+        self._pending.fill(False)
+        self._released_total = 0
+        self._melted_total = 0
+        self._initial_proxy_positions = self._to_proxy_frame()
+
+    def before_step(self) -> int:
+        """Advance the monotone peel front before the next QIPC step."""
+        self._require_initialized()
+        released = self._coupler.adhesion.get_released_bond_topos()
+        if len(released):
+            self._released_total += len(released)
+            local_vertices = self._tape_local_vertices(released)
+            self._pending[local_vertices] = True
+
+        candidates = self._pending & ~self._freed
+        if not candidates.any():
+            return 0
+        assert self._initial_proxy_positions is not None
+        moved = (
+            (self._to_proxy_frame() - self._initial_proxy_positions)
+            .norm(dim=1)
+            .gt(self._detach_displacement)
+            .cpu()
+            .numpy()
+        )
+        candidates &= moved
+        if not candidates.any():
+            return 0
+
+        self._freed |= candidates
+        target = _bond_cluster_target(
+            self._triangles,
+            self._bonded,
+            self._freed,
+            self._adjacency,
+            self._collar,
+        )
+        if (target & ~self._member).any():
+            gs.raise_exception("TapeBondClusterController: peel membership must be monotone.")
+        melt = self._member & ~target
+        if not melt.any():
+            return 0
+
+        melted_triangles = np.flatnonzero(melt).astype(np.int32)
+        self._cluster.detach(tris=melted_triangles)
+        self._member = target
+        self._release_detached_bonds(melt)
+        melted_count = int(melt.sum())
+        self._melted_total += melted_count
+        return melted_count
+
+    def _to_proxy_frame(self) -> torch.Tensor:
+        vertex_range = self._cluster.fem_vertex_range
+        qipc_scene = self._coupler._scene
+        positions = qipc_scene.finite_element.x[vertex_range.start : vertex_range.stop].detach()
+        proxy_q = qipc_scene.affine_body.q[self._cluster.proxy_body_index].detach()
+        translation = proxy_q[:3]
+        affine = proxy_q[3:].reshape(3, 3)
+        return torch.linalg.solve(affine, (positions - translation).T).T
+
+    def _tape_local_vertices(self, topologies: np.ndarray) -> np.ndarray:
+        vertex_range = self._cluster.fem_vertex_range
+        global_start = self._coupler.adhesion.fem_global_vertex_offset() + vertex_range.start
+        local = np.asarray(topologies, dtype=np.int64).reshape(-1) - global_start
+        return np.unique(local[(local >= 0) & (local < len(self._bonded))])
+
+    def _release_detached_bonds(self, melt: np.ndarray) -> None:
+        detached_vertices = np.unique(self._triangles[melt].reshape(-1))
+        still_member_vertices = np.unique(self._triangles[self._member].reshape(-1))
+        released_vertices = np.setdiff1d(
+            detached_vertices,
+            still_member_vertices,
+            assume_unique=True,
+        )
+        if released_vertices.size == 0:
+            return
+        vertex_range = self._cluster.fem_vertex_range
+        global_start = self._coupler.adhesion.fem_global_vertex_offset() + vertex_range.start
+        self._coupler.adhesion.release_bonds_by_vertices(
+            released_vertices + global_start,
+            require_all=False,
+        )
+
+    def _require_initialized(self) -> None:
+        if not self._initialized:
+            gs.raise_exception("TapeBondClusterController.initialize must be called after scene.build().")
+
+
+def add_tape_bond_cluster(
+    scene,
+    tape_entity,
+    hub_entity,
+    asset: TapeAsset,
+    *,
+    collar: int,
+    detach_displacement: float,
+) -> TapeBondClusterController:
+    """Queue a hub-backed tape cluster and return its runtime peel policy."""
+    if hub_entity is None:
+        gs.raise_exception("add_tape_bond_cluster requires the tape roll's rigid hub entity.")
+    coupler = scene.sim.coupler
+    if coupler._options.adhesion_bond_lock_floor_ratio <= 0.0:
+        gs.raise_exception(
+            "add_tape_bond_cluster requires adhesion_bond_lock_floor_ratio > 0 "
+            "so cleared near-barrier bonds cannot immediately re-lock."
+        )
+    member_triangles = bond_cluster_member_triangles(asset, collar)
+    cluster = coupler.add_affine_cluster(
+        tape_entity,
+        proxy_entity=hub_entity,
+        initial_tris=member_triangles,
+    )
+    return TapeBondClusterController(
+        coupler,
+        cluster,
+        asset,
+        collar=collar,
+        detach_displacement=detach_displacement,
+    )
+
+
 def _write_obj(path: str, verts: np.ndarray, faces: np.ndarray) -> None:
     with open(path, "w") as fh:
         for v in verts:
@@ -378,6 +664,7 @@ def add_tape_roll(
     euler=(90.0, 0.0, 0.0),
     with_hub: bool = True,
     hub_fixed: bool = False,
+    hub_qipc_abd_kappa: float | None = None,
     friction: float | None = None,
     tape_tape_adhesion: dict | None = None,
     tape_hub_adhesion: dict | None = None,
@@ -423,7 +710,6 @@ def add_tape_roll(
         beta0=1.0,  # imported coil holds from frame 0 (re-bond instead of state transfer)
         friction=friction,
     )
-
     tmp_dir = tempfile.mkdtemp(prefix="qipc_tape_")
     tape_obj = os.path.join(tmp_dir, "tape_roll.obj")
     tape_world = asset.tape_positions @ R_place.T + t_place
@@ -486,7 +772,11 @@ def add_tape_roll(
                 convexify=False,
                 watertighten=None,
             ),
-            material=gs.materials.Rigid(rho=1000.0, coup_friction=friction),
+            material=gs.materials.Rigid(
+                rho=1000.0,
+                coup_friction=friction,
+                qipc_abd_kappa=hub_qipc_abd_kappa,
+            ),
             surface=hub_surface,
         )
 

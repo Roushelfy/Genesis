@@ -7,6 +7,8 @@ adhesive_tape_wind --save).
 """
 
 import os
+from dataclasses import replace
+from types import SimpleNamespace
 
 import numpy as np
 import pytest
@@ -37,6 +39,58 @@ needs_tape_asset = pytest.mark.skipif(
     not os.path.exists(TAPE_ASSET_PATH),
     reason=("wound-roll npz not found (in-tree genesis/assets/qipc/tape_roll_distance_bond.npz or QIPC_TAPE_ASSET)"),
 )
+
+
+@needs_tape_asset
+@pytest.mark.parametrize(
+    ("collar", "expected_count"),
+    [(0, 1019), (1, 1007), (2, 995), (3, 983)],
+)
+def test_bond_cluster_member_triangles_follow_authored_front(collar, expected_count):
+    tape_mod = _tape_module()
+    asset = tape_mod.TapeAsset.from_npz(TAPE_ASSET_PATH)
+
+    members = tape_mod.bond_cluster_member_triangles(asset, collar)
+
+    assert members.dtype == np.int32
+    assert members.shape == (expected_count,)
+    assert np.array_equal(members, np.unique(members))
+    assert int(members.min()) == 0
+    assert int(members.max()) < len(asset.tape_tris)
+
+
+@needs_tape_asset
+def test_bond_cluster_member_triangles_require_authored_bonds():
+    tape_mod = _tape_module()
+    asset = tape_mod.TapeAsset.from_npz(TAPE_ASSET_PATH)
+
+    with pytest.raises(Exception, match="wind-authored distance bonds"):
+        tape_mod.bond_cluster_member_triangles(replace(asset, bond_topos=None), 3)
+    with pytest.raises(Exception, match="non-negative integer"):
+        tape_mod.bond_cluster_member_triangles(asset, -1)
+
+
+@needs_tape_asset
+def test_tape_bond_cluster_requires_positive_relock_floor():
+    tape_mod = _tape_module()
+    asset = tape_mod.TapeAsset.from_npz(TAPE_ASSET_PATH)
+    scene = SimpleNamespace(
+        sim=SimpleNamespace(
+            coupler=SimpleNamespace(
+                _options=SimpleNamespace(adhesion_bond_lock_floor_ratio=0.0),
+            )
+        )
+    )
+
+    with pytest.raises(Exception, match="adhesion_bond_lock_floor_ratio > 0"):
+        tape_mod.add_tape_bond_cluster(
+            scene,
+            object(),
+            object(),
+            asset,
+            collar=3,
+            detach_displacement=5.0 * asset.d_hat,
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -267,6 +321,37 @@ def _build_roll_scene(
     return scene, tape, hub, asset
 
 
+def _build_cluster_roll_scene(show_viewer):
+    tape_mod = _tape_module()
+    asset = tape_mod.TapeAsset.from_npz(TAPE_ASSET_PATH)
+    coupler_options = tape_mod.recommended_coupler_options(asset)
+    coupler_options["adhesion_bond_lock_floor_ratio"] = 0.5
+    scene = gs.Scene(
+        sim_options=gs.options.SimOptions(dt=0.01, gravity=(0.0, 0.0, 0.0)),
+        coupler_options=gs.options.QIPCCouplerOptions(**coupler_options),
+        show_viewer=show_viewer,
+    )
+    tape, hub = tape_mod.add_tape_roll(
+        scene,
+        asset,
+        pos=tuple(ROLL_POS),
+        with_hub=True,
+        hub_fixed=False,
+        hub_qipc_abd_kappa=5e7,
+    )
+    controller = tape_mod.add_tape_bond_cluster(
+        scene,
+        tape,
+        hub,
+        asset,
+        collar=3,
+        detach_displacement=5.0 * asset.d_hat,
+    )
+    scene.build()
+    controller.initialize()
+    return scene, tape, hub, asset, controller
+
+
 def _hub_world_verts(hub) -> np.ndarray:
     """Hub collision-geometry vertices in world frame (same composition the
     coupler's ABD build and the ground preflight use)."""
@@ -435,6 +520,69 @@ def test_tape_asset_locks_seed_automatically_and_survive_reset(show_viewer):
         scene.reset()
         assert adhesion.get_bond_count() == 454
         assert rows(adhesion.get_bond_topos()) == rows(expected)
+
+
+@needs_tape_asset
+def test_tape_bond_cluster_releases_and_replays_after_reset(show_viewer):
+    """A released/moved front vertex melts the collar and reset restores it."""
+    tape_mod = _tape_module()
+    scene, tape, hub, asset, controller = _build_cluster_roll_scene(show_viewer)
+    coupler = scene.sim.coupler
+    cluster = controller._cluster
+
+    assert hub.material.qipc_abd_kappa == 5e7
+    assert controller.initial_member_count == 983
+    assert controller.member_count == 983
+    assert cluster.member_count == 983
+    assert coupler.adhesion.get_bond_count() == 454
+    initial_positions = tape.get_state().pos[0].clone()
+
+    triangles, bonded, adjacency = tape_mod._bond_cluster_certificate(asset)
+    member_vertices = np.unique(triangles[controller._member].reshape(-1))
+    is_member_vertex = np.zeros(len(bonded), dtype=bool)
+    is_member_vertex[member_vertices] = True
+    candidate = None
+    for vertex in np.flatnonzero(bonded & ~is_member_vertex):
+        freed = ~bonded
+        freed[vertex] = True
+        target = tape_mod._bond_cluster_target(triangles, bonded, freed, adjacency, 3)
+        if (controller._member & ~target).any():
+            candidate = int(vertex)
+            break
+    assert candidate is not None
+
+    vertex_range = cluster.fem_vertex_range
+    global_vertex = coupler.adhesion.fem_global_vertex_offset() + vertex_range.start + candidate
+    fem_position = coupler._scene.finite_element.x[vertex_range.start + candidate]
+    fem_position[0] += 100.0 * asset.d_hat
+    scene.step()
+    released = coupler.adhesion.get_released_bond_topos()
+    assert global_vertex in released
+    fem_position[0] += 10.0 * asset.d_hat
+
+    bonds_before_melt = {tuple(int(value) for value in row) for row in coupler.adhesion.get_bond_topos()}
+    melted = controller.before_step()
+    assert melted > 0
+    assert controller.member_count == 983 - melted
+    assert cluster.member_count == controller.member_count
+    assert controller.released_total > 0
+    bonds_after_melt = {tuple(int(value) for value in row) for row in coupler.adhesion.get_bond_topos()}
+    cleared_bonds = bonds_before_melt - bonds_after_melt
+    assert cleared_bonds
+
+    scene.reset()
+    controller.reset()
+    assert controller.member_count == 983
+    assert controller.released_total == 0
+    assert controller.melted_total == 0
+    assert cluster.member_count == 983
+    assert coupler.adhesion.get_bond_count() == 454
+    np.testing.assert_allclose(
+        tape.get_state().pos[0].cpu().numpy(),
+        initial_positions.cpu().numpy(),
+        rtol=0.0,
+        atol=0.0,
+    )
 
 
 @needs_tape_asset

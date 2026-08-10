@@ -29,7 +29,7 @@ Two deliverables:
    pair of entities (prestressed shell strip + ABD ring hub), loadable from the
    qipc tape asset format (`.npz` produced by cgq's `adhesive_tape_wind.py`).
 
-Key facts the design is built on (from the cgq source, references in §9):
+Key facts the design is built on (from the cgq source, references in §10):
 
 - This integration targets the current QIPC API: grouped
   `qipc.contact.Adhesion`/`Bond`/`Release` models and `Scene.reset` are both
@@ -65,6 +65,7 @@ adhesion_bond_distance_lock_ratio: NonNegativeFloat = 0.5   # band = xi + c*d_ha
 adhesion_bond_max_bonds: NonNegativeInt = 0                 # 0 = inert; >0 = enable guard
 adhesion_bond_kappa: PositiveFloat = 1e8
 adhesion_bond_lock_margin: NonNegativeFloat = 0.0
+adhesion_bond_lock_floor_ratio: NonNegativeFloat = 0.0  # floor = xi + c_f*d_hat
 adhesion_bond_release_strain: PositiveFloat = 1e30
 adhesion_bond_release_force: PositiveFloat = 1e30           # Newtons, dt-independent
 adhesion_bond_release_gap: PositiveFloat = 1e30             # metres
@@ -107,6 +108,7 @@ def add_adhesion(
     resistance: float | None = None,  # pair resistance override (None = harmonic mean)
     distance_lock: bool | None = None,        # None = follow the global bond switch
     distance_lock_ratio: float | None = None, # None = use the global ratio
+    distance_lock_floor_ratio: float | None = None, # None = use the global floor
     release_force: float | None = None,       # None = use the global threshold
 ) -> None
 ```
@@ -119,7 +121,7 @@ def add_adhesion(
   (tape–tape).
 - Requests are translated into grouped qipc objects. `enabled=False` writes
   `adhesion=None`; a bond-enabled request writes a `Bond` whose optional ratio
-  and release-force overrides fall back to the scene options.
+  and release-force/floor overrides fall back to the scene options.
 - Genesis does not yet expose qipc's per-pair `Adhesion.sticky` truth table;
   imported tape therefore uses qipc's all-side default.
 - Pairs *not* named in any request keep pure friction/resistance rows; note the
@@ -130,19 +132,24 @@ def add_adhesion(
 ## 3. Runtime APIs (post-build)
 
 ```python
-coupler.get_contact_info() -> (n_pairs_pt, n_pairs_ee, n_active)
-coupler.get_bond_topos() -> np.ndarray (n_bonds, 4) int32   # GLOBAL vertex ids
-coupler.get_bond_count() -> int
-coupler.dump_adhesion_state() -> (keys, betas)               # device tensors
-coupler.load_adhesion_state(keys, betas) -> None             # e.g. re-bond mid-run
-coupler.seed_bonds(topos, rest_height) -> None               # post-build frame-zero seed
+adhesion = coupler.adhesion
+adhesion.get_contact_info() -> (n_pairs_pt, n_pairs_ee, n_active)
+adhesion.get_bond_topos() -> np.ndarray (n_bonds, 4) int32   # GLOBAL vertex ids
+adhesion.get_released_bond_topos() -> np.ndarray (n, 4) int32
+adhesion.get_bond_count() -> int
+adhesion.release_bonds_by_vertices(vertex_ids, require_all=...) -> None
+adhesion.dump_adhesion_state() -> (keys, betas)
+adhesion.load_adhesion_state(keys, betas) -> None
+adhesion.seed_bonds(topos, rest_height) -> None              # frame-zero seed
 ```
 
 - Bond topos are in qipc *global* vertex-id space; the coupler translates FEM
   ids back to `(entity, local_vertex)` using the recorded `fem_vert_offset`
   ranges (ABD ids reported raw with the owning entity looked up from geometry
   slot metadata).
-- No bond clearing / per-bond mutation exists upstream; not exposed.
+- The released feed contains only physics releases from the preceding QIPC
+  step. Explicit `release_bonds_by_vertices` clearing does not append to that
+  feed, so a cluster policy cannot excite itself recursively.
 - Authored and manual frame-zero seed batches are retained by the coupler and
   replayed after QIPC `Scene.reset()`. QIPC's own reset snapshot is captured at
   the end of `Scene.init()`, before Genesis resolves and applies asset seeds, so
@@ -289,7 +296,34 @@ per-geometry override; the finger demo uses 1e-3 against 1.8e-4 tape).
 
 Not needed for the drop-class demo; implement after A5.1/A5.2.
 
-## 8. Implementation phases
+## 8. Distance-bond cluster optimization
+
+`add_tape_bond_cluster` is an optional layer over the ordinary distance-bond
+asset; `add_tape_roll` itself remains unchanged. It queues one affine cluster
+whose proxy is the imported hub and whose initial membership is the deep
+bond-certified roll interior. The largest connected unbonded component is the
+payout front, small enclosed holes are filled, and a configurable number of
+graph rings behind the front remains ordinary FEM as a soft collar.
+
+After build, `TapeBondClusterController.initialize()` records the tape in the
+hub frame. Before each QIPC step, `before_step()` consumes only the native
+released-this-step bond feed. A released tape vertex advances the front after
+its hub-frame displacement crosses the configured threshold; membership then
+shrinks monotonically and bonds touching vertices that fully left the cluster
+are cleared to avoid the bond/barrier deadlock. This is an optimization policy,
+not an alternate release criterion: QIPC distance bonds remain authoritative.
+Cluster tape scenes must configure `adhesion_bond_lock_floor_ratio > 0`, so a
+cleared near-barrier bond cannot immediately re-lock. With an explicit hub
+proxy, affine stiffness comes from the hub material's `qipc_abd_kappa`; the
+generic cluster's ghost-proxy `kappa` is not used.
+
+Raw QIPC reset returns to its pre-membership `Scene.init()` snapshot. Genesis
+therefore restores authored bonds first, replays queued membership second, and
+the tape controller resets its Python front state last. The base soft and
+distance-bond tape paths do not construct this controller and retain their
+existing mechanics.
+
+## 9. Implementation phases
 
 | phase | content | validation |
 |---|---|---|
@@ -297,8 +331,9 @@ Not needed for the drop-class demo; implement after A5.1/A5.2.
 | **A5.2 tape import (drop class)** | §4 Cloth fields, §5 rest_geometry channel, §6 TapeAsset + `add_tape_roll` | prestress unit test (wound strip springs open without adhesion; holds with `beta0=1`); tape-drop port: lift roll by free tail → hub carried (the cgq drop diagnostic), rendered video |
 | **A5.3 kinematic driving** | §7 STC + `aim_q`, `qipc_d_hat` | orbit/pull demo; optional Genesis-side wind (§6.3 v2) |
 | **A5.4 state transfer** | automatic authored `bond_topos` mapping/seeding + reset replay; manual `seed_bonds` replay | shifted-hub-id test asserts all 454 rows at build and after repeated step/reset; β import remains deferred and `beta0=1` covers it |
+| **A5.5 cluster optimization** | generic queued affine-cluster API + optional tape bond-front controller | 983 authored member triangles at collar 3; forced release/motion shrinks membership; reset restores 454 bonds and all 983 members |
 
-## 9. Constraints & gotchas carried into the design (upstream facts)
+## 10. Constraints & gotchas carried into the design (upstream facts)
 
 1. All tabular/constitution config is read once at `scene.init()`; post-init
    edits are silently ignored (or worse for re-wiring) → hence the

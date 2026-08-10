@@ -59,6 +59,7 @@ class AdhesionRequest(NamedTuple):
     resistance: float | None
     distance_lock: bool | None
     distance_lock_ratio: float | None
+    distance_lock_floor_ratio: float | None
     release_force: float | None
 
 
@@ -85,6 +86,8 @@ class QIPCAdhesionManager:
         self._bond_seed_requests: list[BondSeedRequest] = []
         self._bond_seed_batches: list[tuple[np.ndarray, float]] = []
         self._bond_seed_results: dict[object, tuple[int, int]] = {}
+        self._bond_dump_topologies: torch.Tensor | None = None
+        self._bond_dump_count: torch.Tensor | None = None
         self._scene = None  # qipc Scene, set by the coupler at build
 
     # -------------------------------------------------------------------------
@@ -108,6 +111,7 @@ class QIPCAdhesionManager:
         resistance: float | None = None,
         distance_lock: bool | None = None,
         distance_lock_ratio: float | None = None,
+        distance_lock_floor_ratio: float | None = None,
         release_force: float | None = None,
     ) -> None:
         """Queue an adhesion declaration (see QIPCCoupler.add_adhesion)."""
@@ -136,6 +140,8 @@ class QIPCAdhesionManager:
             gs.raise_exception("QIPCCoupler.add_adhesion: beta0 must be in [0, 1].")
         if distance_lock_ratio is not None and distance_lock_ratio <= 0:
             gs.raise_exception("QIPCCoupler.add_adhesion: distance_lock_ratio must be positive.")
+        if distance_lock_floor_ratio is not None and distance_lock_floor_ratio < 0:
+            gs.raise_exception("QIPCCoupler.add_adhesion: distance_lock_floor_ratio must be non-negative.")
         if release_force is not None and release_force < 0:
             gs.raise_exception("QIPCCoupler.add_adhesion: release_force must be non-negative.")
 
@@ -155,6 +161,7 @@ class QIPCAdhesionManager:
                 resistance=resistance,
                 distance_lock=distance_lock,
                 distance_lock_ratio=distance_lock_ratio,
+                distance_lock_floor_ratio=distance_lock_floor_ratio,
                 release_force=release_force,
             )
         )
@@ -300,6 +307,7 @@ class QIPCAdhesionManager:
                 if self.bonds_enabled() and req.distance_lock is not False:
                     bond = self._make_bond(
                         ratio=req.distance_lock_ratio,
+                        floor_ratio=req.distance_lock_floor_ratio,
                         release_force=req.release_force,
                     )
                 tab.insert(
@@ -311,7 +319,13 @@ class QIPCAdhesionManager:
                     bond=bond,
                 )
 
-    def _make_bond(self, *, ratio: float | None = None, release_force: float | None = None):
+    def _make_bond(
+        self,
+        *,
+        ratio: float | None = None,
+        floor_ratio: float | None = None,
+        release_force: float | None = None,
+    ):
         from qipc.contact import Bond, Release
 
         opt = self._options
@@ -319,6 +333,7 @@ class QIPCAdhesionManager:
             kappa=opt.adhesion_bond_kappa,
             ratio=opt.adhesion_bond_distance_lock_ratio if ratio is None else float(ratio),
             margin=opt.adhesion_bond_lock_margin,
+            floor_ratio=opt.adhesion_bond_lock_floor_ratio if floor_ratio is None else float(floor_ratio),
             occlusion=opt.adhesion_occlusion,
             release=Release(
                 strain=opt.adhesion_bond_release_strain,
@@ -368,16 +383,54 @@ class QIPCAdhesionManager:
         FEM vertex global id = fem_global_vertex_offset() + geometry
         fem_vert_offset + local index; ids below the offset are ABD vertices.
         """
+        return self._dump_bond_topologies("dump_lock_topos")
+
+    def get_released_bond_topos(self) -> np.ndarray:
+        """Distance bonds released by the preceding QIPC step.
+
+        The returned ``(n, 4)`` array uses GLOBAL vertex ids and remains valid
+        until the next QIPC step begins. This feed lets application policies
+        advance a peel or fracture front without scanning historical bonds.
+        """
+        return self._dump_bond_topologies("dump_released_topos")
+
+    def _dump_bond_topologies(self, method_name: str) -> np.ndarray:
         bond_system = self._bond_system()
-        out = torch.zeros(bond_system.max_bonds * 4, dtype=torch.int32, device="cuda")
-        cnt = torch.zeros(1, dtype=torch.int32, device="cuda")
-        bond_system.dump_lock_topos(out, cnt)
+        required = bond_system.max_bonds * 4
+        if self._bond_dump_topologies is None or self._bond_dump_topologies.numel() < required:
+            self._bond_dump_topologies = torch.empty(required, dtype=torch.int32, device="cuda")
+        if self._bond_dump_count is None:
+            self._bond_dump_count = torch.zeros(1, dtype=torch.int32, device="cuda")
+        out = self._bond_dump_topologies
+        cnt = self._bond_dump_count
+        cnt.zero_()
+        getattr(bond_system, method_name)(out, cnt)
         torch.cuda.synchronize()
         n = int(cnt.item())
         return out[: n * 4].reshape(n, 4).cpu().numpy()
 
     def get_bond_count(self) -> int:
         return int(self.get_bond_topos().shape[0])
+
+    def release_bonds_by_vertices(self, vertex_ids: np.ndarray, *, require_all: bool) -> None:
+        """Release locks selected by GLOBAL vertex ids.
+
+        With ``require_all=False`` a lock is removed when any stencil vertex is
+        selected; with ``True`` every stencil vertex must be selected. The
+        former is appropriate when a detached FEM region still shares bonds
+        with the cluster interior.
+        """
+        vertices = np.asarray(vertex_ids, dtype=np.int64).reshape(-1)
+        if vertices.size == 0:
+            return
+        scene = self._require_scene()
+        n_global = self.fem_global_vertex_offset() + int(scene.finite_element.n_verts)
+        if int(vertices.min()) < 0 or int(vertices.max()) >= n_global:
+            gs.raise_exception(f"QIPCCoupler.release_bonds_by_vertices: global vertex ids must lie in [0, {n_global}).")
+        mask = torch.zeros(n_global, dtype=torch.int32, device="cuda")
+        mask[torch.as_tensor(np.unique(vertices), dtype=torch.int64, device="cuda")] = 1
+        self._bond_system().release_locks_by_verts(mask, n_global, require_all=bool(require_all))
+        torch.cuda.synchronize()
 
     def seed_bonds(self, topos: np.ndarray, rest_height: float) -> None:
         """Seed distance bonds from (n, 4) GLOBAL vertex-id topologies.

@@ -35,6 +35,7 @@ BOND_OPTS = dict(
     adhesion_bond_distance_lock_ratio=1.5,
     adhesion_bond_max_bonds=4096,
     adhesion_bond_kappa=1e8,
+    adhesion_bond_lock_floor_ratio=0.25,
 )
 
 
@@ -117,6 +118,7 @@ def test_distance_bond_holds(show_viewer):
     assert default_model.bond is not None
     assert default_model.bond.ratio == BOND_OPTS["adhesion_bond_distance_lock_ratio"]
     assert default_model.bond.kappa == BOND_OPTS["adhesion_bond_kappa"]
+    assert default_model.bond.floor_ratio == BOND_OPTS["adhesion_bond_lock_floor_ratio"]
     drop = _run_and_measure_drop(scene, cube)
     assert drop < 0.1, f"cube fell {drop:.3f} m despite distance bonds"
 
@@ -159,6 +161,8 @@ def test_adhesion_validation(show_viewer):
         scene.sim.coupler.add_adhesion(cube, None, Cn=-1.0)
     with pytest.raises(Exception, match="beta0"):
         scene.sim.coupler.add_adhesion(cube, None, Cn=1.0, beta0=2.0)
+    with pytest.raises(Exception, match="distance_lock_floor_ratio"):
+        scene.sim.coupler.add_adhesion(cube, None, Cn=1.0, distance_lock_floor_ratio=-0.1)
 
     # Plane target rejected at build (before qipc scene.init)
     plane = scene.add_entity(gs.morphs.Plane())

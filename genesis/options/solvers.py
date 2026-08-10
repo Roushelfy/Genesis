@@ -242,6 +242,10 @@ class QIPCCouplerOptions(BaseCouplerOptions):
         Per-bond virtual-tet stiffness. Defaults to 1e8.
     adhesion_bond_lock_margin : float, optional
         Barycentric slack for the face-interior bond-creation gate. Defaults to 0.0.
+    adhesion_bond_lock_floor_ratio : float, optional
+        Bond-creation floor above contact thickness, as a multiple of `contact_d_hat`.
+        A positive value prevents a released near-barrier bond from immediately
+        re-locking. Defaults to 0.0.
     adhesion_bond_release_strain : float, optional
         Bond release threshold on ``||F F^T - I||_F`` (dimensionless, tension-gated).
         Defaults to 1e30 (never).
@@ -289,6 +293,7 @@ class QIPCCouplerOptions(BaseCouplerOptions):
     adhesion_bond_max_bonds: NonNegativeInt = 0
     adhesion_bond_kappa: PositiveFloat = 1e8
     adhesion_bond_lock_margin: NonNegativeFloat = 0.0
+    adhesion_bond_lock_floor_ratio: NonNegativeFloat = 0.0
     adhesion_bond_release_strain: PositiveFloat = 1e30
     adhesion_bond_release_force: PositiveFloat = 1e30
     adhesion_bond_release_gap: PositiveFloat = 1e30
