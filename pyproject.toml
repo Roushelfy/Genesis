@@ -155,6 +155,11 @@ include = ["genesis", "genesis.*"]
 [tool.setuptools.package-data]
 genesis = [
     "assets/*",
+    "assets/qipc/*.npz",
+    "assets/qipc/tape_dispenser_v2/*.json",
+    "assets/qipc/tape_dispenser_v2/*.npz",
+    "assets/qipc/tape_dispenser_v2/*.urdf",
+    "assets/qipc/tape_dispenser_v2/meshes/*.glb",
     "ext/pyrender/fonts/*",
     "ext/pyrender/shaders/*",
     "ext/VolumeSampling",

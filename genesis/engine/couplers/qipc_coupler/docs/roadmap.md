@@ -19,7 +19,7 @@ Non-negotiable rules:
 5. A runtime mutation is marked complete only after its reset contract has an
    integration test.
 
-## Current state (2026-08-04)
+## Current state (2026-08-11)
 
 ### Rigid and articulation (complete)
 
@@ -56,6 +56,15 @@ Non-negotiable rules:
 - [x] Stable runtime handle with entity-local join/detach and native row ranges
 - [x] Build-time QIPC membership-reset capability gate
 - [x] Authored membership replay after seeded bonds on reset
+
+### Composable rigid/FEM components (partial)
+
+- [x] Massless collision attachments sharing an existing ABD body
+- [x] Per-link and per-attachment contact regions with explicit pair overrides
+- [x] Named ABD/joint state overlays and reset-baseline promotion
+- [x] Complete frozen BondSystem slot restore with scene-local ID remapping
+- [x] Faithful post-f249 tape-dispenser import and reset gate
+- [ ] Add the carton/tape-dispenser scene to gs-core and validate Pika/Wuji composition
 
 ### Lifecycle (partial)
 
@@ -131,6 +140,8 @@ installed and an NVIDIA GPU is available.
 | Affine clusters | `pytest tests/test_qipc_affine_cluster.py --backend gpu -n 0 -x` | ghost and rigid-link proxy lifecycle/reset tests pass |
 | Affine-cluster contracts | `pytest tests/test_qipc_affine_cluster_contract.py --backend cpu -n 0 -x` | declaration, validation, capability, and reset-order contracts pass |
 | Tape/prestress | `pytest tests/test_qipc_tape.py --backend gpu -n 0 -x` | prestress, asset, and tape lifecycle tests pass or asset-marked cases skip explicitly |
+| Tape-dispenser asset | `pytest tests/test_qipc_tape_dispenser_contract.py --backend cpu -n 0 -x` | frozen artifact hashes, ringless canonical URDF, layout, and reference options pass |
+| Tape-dispenser scenes | `pytest tests/test_qipc_tape_dispenser.py --backend gpu -n 0 -x` | exact 64-bit f249 import plus ringless URDF-only counts, finite first steps, and resets pass |
 
 ## Planned gates
 

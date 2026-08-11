@@ -1,0 +1,141 @@
+<robot name="tape_dispenser_v2">
+  <link name="tape_wheel">
+    <inertial>
+      <origin xyz="0.0011 0.027871 -0.003426" rpy="0 0 0" />
+      <mass value="0.04" />
+      <inertia ixx="1.53801e-05" ixy="2.03558e-07" ixz="6.15375e-07" iyy="2.2514e-05" iyz="-9.42452e-07" izz="1.80812e-05" />
+      </inertial>
+    <visual name="tape_wheel_visual">
+      <origin xyz="-0.0423 -0.0078 0.071" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/tape_wheel.glb" />
+        </geometry>
+      </visual>
+    <collision name="tape_wheel_visual">
+      <origin xyz="-0.0423 -0.0078 0.071" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/tape_wheel.glb" />
+        </geometry>
+      </collision>
+    </link>
+  <link name="tape_cutter">
+    <inertial>
+      <origin xyz="-0.004431 0.031258 -0.055692" rpy="0 0 0" />
+      <mass value="0.27" />
+      <inertia ixx="0.00134273" ixy="1.32948e-05" ixz="-0.000302687" iyy="0.00143544" iyz="1.89919e-05" izz="0.000211265" />
+      </inertial>
+    <visual name="tape_cutter_visual">
+      <geometry>
+        <mesh filename="meshes/tape_cutter.glb" />
+        </geometry>
+      </visual>
+    <collision name="tape_cutter_visual">
+      <geometry>
+        <mesh filename="meshes/tape_cutter.glb" />
+        </geometry>
+      </collision>
+    </link>
+  <!-- Keep the second fixed root mesh in its own link: the QIPC URDF loader
+       accepts one collision mesh per link and merges fixed children into the
+       same affine body. -->
+  <link name="tape_dispenser_lower_mount">
+    <visual name="Cube_visual">
+      <geometry>
+        <mesh filename="meshes/Cube.glb" />
+        </geometry>
+      </visual>
+    <collision name="Cube_visual">
+      <geometry>
+        <mesh filename="meshes/Cube.glb" />
+        </geometry>
+      </collision>
+    </link>
+  <link name="sharp">
+    <inertial>
+      <origin xyz="-0.000457 -0.001489 -0.000483" rpy="0 0 0" />
+      <mass value="0.000128955" />
+      <inertia ixx="2.93057e-08" ixy="8.13304e-10" ixz="-1.68477e-10" iyy="3.45409e-10" iyz="7.82585e-10" izz="2.92622e-08" />
+      </inertial>
+    <visual name="sharp_visual">
+      <origin xyz="0.0517 -0.0325 0.0799" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/sharp.glb" />
+        </geometry>
+      </visual>
+    <collision name="sharp_visual">
+      <origin xyz="0.0517 -0.0325 0.0799" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/sharp.glb" />
+        </geometry>
+      </collision>
+    </link>
+  <link name="blade">
+    <inertial>
+      <origin xyz="-0.01114 0.000361 -0.008619" rpy="0 0 0" />
+      <mass value="0.003" />
+      <inertia ixx="2.21757e-07" ixy="-3.4177e-09" ixz="-1.17064e-07" iyy="2.61669e-07" iyz="1.22706e-09" izz="3.17428e-07" />
+      </inertial>
+    <visual name="blade_visual">
+      <origin xyz="0.0179 -0.0288 0.0075" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/blade.glb" />
+        </geometry>
+      </visual>
+    <collision name="blade_visual">
+      <origin xyz="0.0179 -0.0288 0.0075" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/blade.glb" />
+        </geometry>
+      </collision>
+    </link>
+  <link name="Cylinder">
+    <inertial>
+      <origin xyz="-0.000365 0.028271 -1.7e-05" rpy="0 0 0" />
+      <mass value="0.0433501" />
+      <inertia ixx="1.17428e-05" ixy="-3.58619e-07" ixz="6.9353e-08" iyy="8.36443e-06" iyz="-5.47399e-07" izz="1.17734e-05" />
+      </inertial>
+    <visual name="Cylinder_visual">
+      <origin xyz="0.043 -0.0033 0.044" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/cylinder.glb" />
+        </geometry>
+      </visual>
+    <collision name="Cylinder_visual">
+      <origin xyz="0.043 -0.0033 0.044" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="meshes/cylinder.glb" />
+        </geometry>
+      </collision>
+    </link>
+  <joint name="Cylinder_axle" type="continuous">
+    <origin xyz="-0.043 0.0033 -0.044" rpy="0 0 0" />
+    <parent link="tape_cutter" />
+    <child link="Cylinder" />
+    <axis xyz="-0.00199999 0.999997 0.0014" />
+    <limit effort="5" velocity="3" />
+    </joint>
+  <joint name="lower_mount_fixed" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="tape_cutter" />
+    <child link="tape_dispenser_lower_mount" />
+    </joint>
+  <joint name="blade_hinge" type="revolute">
+    <origin xyz="-0.0179 0.0288 -0.0075" rpy="0 0 0" />
+    <parent link="tape_cutter" />
+    <child link="blade" />
+    <axis xyz="0.0531974 0.998451 0.0162992" />
+    <limit effort="5" velocity="1" lower="-0.1" upper="0.1" />
+    </joint>
+  <joint name="tape_wheel_axle" type="continuous">
+    <origin xyz="0.0423 0.0078 -0.071" rpy="0 0 0" />
+    <parent link="tape_cutter" />
+    <child link="tape_wheel" />
+    <axis xyz="0.0014 0.999999 -9.99999e-05" />
+    <limit effort="5" velocity="3" />
+    </joint>
+  <joint name="sharp_fixed" type="fixed">
+    <origin xyz="-0.0517 0.0325 -0.0799" rpy="0 0 0" />
+    <parent link="tape_cutter" />
+    <child link="sharp" />
+    </joint>
+  </robot>

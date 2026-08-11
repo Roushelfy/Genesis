@@ -1,0 +1,34 @@
+{
+  "format": "genesis.qipc.tape_dispenser",
+  "version": 1,
+  "source": {
+    "repository": "cuda-graph-qipc",
+    "commit": "c66c312e682cdde1cbad885ff4774f274b48d02c",
+    "reference": "examples/tape_dispenser/run_sim.py"
+  },
+  "snapshot": {
+    "semantics": "post pre_step+scene.step for frames 0..249 inclusive, then zero velocities and release root/tape-end DBC without another physics step",
+    "authority": "frozen artifact; CUDA contact/bond atomics make regeneration non-bitwise-reproducible",
+    "tape_blade_contact": true,
+    "tape_cylinder_contact": true,
+    "tape_sharp_contact": false,
+    "actual_tape_vertices": 1936,
+    "omitted_cut_spare_vertices": 32,
+    "abd_vertices_with_ring": 142373,
+    "active_bonds": 969
+  },
+  "files_sha256": {
+    "tape_dispenser_machine.urdf": "57bd75c90c0b5335aa0d3fed7ce536b0d676bae9020841387ff0248ce762aadc",
+    "tape_dispenser.urdf": "6934ae2487cf4bfa3b860e3003433cf40654cf798111252fd60bf64be0bceecc",
+    "scotch3850_wound.npz": "2b1bbb79cb1dc1616ea4ed5c15c2fbf995c3399c8bbea6a6b5396042a6d82e41",
+    "post_f249_static.npz": "7d3f8b99b25e1f473b397e369cd32da5bd0ff2c66907aba142ec9ecefc629748",
+    "ring_local.npz": "0c7c1d5f1a445b5b2ea83c9280c16447539721a082b3556ac3f7f762f3d40ffd",
+    "meshes/Cube.glb": "b5915c1c663e84c51229c03dc830f71a6f492ff2b43bd3cfdc698e591d6c6763",
+    "meshes/blade.glb": "e30cadc38759cdfa782a6955d29558920dca6abe55468293cdd2c7aaac8b5bfd",
+    "meshes/cylinder.glb": "f900f999a43c3e5f397641b8fab69483a3a2073524c6ec0f7a8be45acfac9f74",
+    "meshes/scotch3850_ring.glb": "8057d24e4e0acfe1e6ef06b188f39f4a1ec97e8d9931fcbda015eb06b1c8a06a",
+    "meshes/sharp.glb": "f394cdbb37734cee598c81c7a8326dc9770ca1125b3e385af0a3c0c2c80075ba",
+    "meshes/tape_cutter.glb": "c18df376125008c8664948098fd3a8501eb4af513c5e61bde4dd50db7177767d",
+    "meshes/tape_wheel.glb": "0398de573715ef39d69767fa06a380e8e947f3955f92937cea9c326a6ba591f6"
+  }
+}

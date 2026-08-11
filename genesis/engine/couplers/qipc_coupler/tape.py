@@ -18,6 +18,7 @@ matching ``QIPCCouplerOptions`` fields.
 
 from __future__ import annotations
 
+import json
 import os
 import tempfile
 from collections import deque
@@ -59,8 +60,15 @@ class TapeAsset:
     bond_fem_gvo: int = 0
 
     @classmethod
-    def from_npz(cls, path: str) -> "TapeAsset":
-        data = np.load(os.path.expanduser(path), allow_pickle=True)
+    def from_npz(cls, path: str, *, allow_legacy_pickle: bool = True) -> TapeAsset:
+        """Load a tape asset.
+
+        New assets should store parameters as UTF-8 JSON in `params_json`.
+        `allow_legacy_pickle` exists only for trusted winding outputs that still
+        contain the historical object-array `params` field; untrusted component
+        importers must disable it.
+        """
+        data = np.load(os.path.expanduser(path), allow_pickle=allow_legacy_pickle)
         required = (
             "tape_positions",
             "tape_tris",
@@ -82,11 +90,22 @@ class TapeAsset:
         if missing:
             gs.raise_exception(f"TapeAsset.from_npz: missing keys {missing} in '{path}'.")
         params = {}
-        if "params" in data:
+        if "params_json" in data:
+            try:
+                params = json.loads(bytes(data["params_json"]).decode("utf-8"))
+            except (UnicodeDecodeError, json.JSONDecodeError, TypeError, ValueError) as error:
+                gs.raise_exception(f"TapeAsset.from_npz: invalid params_json in '{path}': {error}.")
+            if not isinstance(params, dict):
+                gs.raise_exception(f"TapeAsset.from_npz: params_json must contain an object in '{path}'.")
+        elif "params" in data:
+            if not allow_legacy_pickle:
+                gs.raise_exception(
+                    f"TapeAsset.from_npz: legacy pickled params are disabled for untrusted asset '{path}'."
+                )
             raw = data["params"]
             try:
                 params = dict(raw.reshape(-1)[0])
-            except Exception:
+            except (TypeError, ValueError):
                 params = {}
         asset = cls(
             tape_positions=np.ascontiguousarray(data["tape_positions"], dtype=np.float64),

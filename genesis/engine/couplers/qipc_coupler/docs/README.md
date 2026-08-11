@@ -93,5 +93,7 @@ then the `initial_*` membership; runtime join/detach changes are not retained.
 See `examples/qipc/` for more examples.
 
 FEM material mapping, sealed-gas runtime semantics, and validation commands are
-documented in [fem_design.md](fem_design.md). Current implementation status and
-next work are tracked in [roadmap.md](roadmap.md).
+documented in [fem_design.md](fem_design.md). The frozen post-f249 dispenser,
+ringless URDF-only variant, contact and reset contracts, and gs-core composition are
+documented in [tape_dispenser_design.md](tape_dispenser_design.md). Current
+implementation status and next work are tracked in [roadmap.md](roadmap.md).
