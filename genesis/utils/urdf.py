@@ -199,7 +199,10 @@ def parse_urdf(morph, surface):
                 mesh_path = urdfpy.utils.get_filename(parent_dir, geometry.filename)
                 tmeshes = geometry.meshes
                 metadatas = [{"mesh_path": mesh_path} for _ in tmeshes]
-                if mesh_path.lower().endswith(gs.options.morphs.GLTF_FORMATS):
+                preserve_collision_topology = (
+                    geom_is_col and isinstance(morph, gs.morphs.URDF) and morph.preserve_collision_mesh_topology
+                )
+                if mesh_path.lower().endswith(gs.options.morphs.GLTF_FORMATS) and not preserve_collision_topology:
                     meshes = gltf_utils.parse_mesh_glb(
                         mesh_path, group_by_material=False, scale=None, is_mesh_zup=True, surface=surface
                     )

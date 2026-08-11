@@ -1122,6 +1122,12 @@ class URDF(FileMorph):
         Sometimes a geom in a urdf file will be assigned a color, and the geom asset file also contains its own visual
         material. This parameter controls whether to prioritize the URDF-defined material over the asset's own material.
         Defaults to False.
+    preserve_collision_mesh_topology : bool, optional
+        Whether to retain collision-mesh vertices and faces exactly as loaded by ``urdfpy``. For collision GLB files,
+        this bypasses Genesis's material-aware GLB parser; it also disables all collision-mesh welding, repair,
+        merging, watertightening, convexification, and decimation. This is intended for backends that rely on authored
+        vertex indices. It requires ``convexify=False``, ``decimate=False``, and ``watertighten=None``. Defaults to
+        False.
     merge_fixed_links : bool, optional
         Whether to merge links connected via a fixed joint. Defaults to True.
     links_to_keep : list of str, optional
@@ -1141,6 +1147,7 @@ class URDF(FileMorph):
 
     fixed: StrictBool = False
     prioritize_urdf_material: StrictBool = False
+    preserve_collision_mesh_topology: StrictBool = False
     requires_jac_and_IK: StrictBool = True
     merge_fixed_links: StrictBool = True
     links_to_keep: StrArrayType = ()
@@ -1158,6 +1165,13 @@ class URDF(FileMorph):
         return data
 
     def model_post_init(self, context: Any) -> None:
+        if self.preserve_collision_mesh_topology and (
+            self.convexify is not False or self.decimate is not False or self.watertighten is not None
+        ):
+            gs.raise_exception(
+                "`preserve_collision_mesh_topology=True` requires `convexify=False`, `decimate=False`, and "
+                "`watertighten=None`."
+            )
         if self.is_format(XACRO_FORMAT):
             self.file = uu.load_xacro(self.file, self.xacro_args)
         elif not self.is_format(URDF_FORMAT):

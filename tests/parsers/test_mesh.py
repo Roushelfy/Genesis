@@ -28,6 +28,73 @@ from .conftest import (
 
 
 @pytest.mark.required
+def test_urdf_preserve_collision_mesh_topology(tmp_path):
+    glb_path = tmp_path / "collision.glb"
+    trimesh.Scene(
+        [
+            trimesh.creation.box(extents=(0.2, 0.3, 0.4)),
+            trimesh.creation.box(
+                extents=(0.1, 0.15, 0.25), transform=trimesh.transformations.translation_matrix((1, 0, 0))
+            ),
+        ]
+    ).export(glb_path)
+    urdf_path = tmp_path / "collision.urdf"
+    urdf_path.write_text(
+        f"""<robot name="preserved_collision">
+  <link name="base">
+    <collision>
+      <geometry><mesh filename="{glb_path}"/></geometry>
+    </collision>
+  </link>
+</robot>
+"""
+    )
+
+    # urdfpy combines all nodes in one collision asset into one mesh. The preserve mode must carry that exact indexed
+    # surface through Genesis instead of splitting the GLB by material/node or rewriting it during post-processing.
+    urdf_mesh = gs.ext.urdfpy.URDF.load(str(urdf_path)).links[0].collisions[0].geometry.meshes[0]
+    assert not gs.morphs.URDF(file=str(urdf_path)).preserve_collision_mesh_topology
+    scene = gs.Scene(show_viewer=False)
+    entity = scene.add_entity(
+        gs.morphs.URDF(
+            file=str(urdf_path),
+            fixed=True,
+            visualization=False,
+            convexify=False,
+            decimate=False,
+            watertighten=None,
+            preserve_collision_mesh_topology=True,
+        )
+    )
+
+    assert len(entity.geoms) == 1
+    assert np.array_equal(entity.geoms[0].init_verts, urdf_mesh.vertices)
+    assert np.array_equal(entity.geoms[0].init_faces, urdf_mesh.faces)
+
+
+@pytest.mark.required
+@pytest.mark.parametrize(
+    "mesh_options",
+    [
+        {},
+        {"convexify": None, "decimate": False, "watertighten": None},
+        {"convexify": False, "decimate": None, "watertighten": None},
+        {"convexify": False, "decimate": False, "watertighten": 0},
+    ],
+)
+def test_urdf_preserve_collision_mesh_topology_rejects_processing(mesh_options):
+    with pytest.raises(
+        gs.GenesisException,
+        match=r"requires `convexify=False`, `decimate=False`, and `watertighten=None`",
+    ):
+        gs.morphs.URDF(
+            file='<robot name="preserved_collision"><link name="base"/></robot>',
+            preserve_collision_mesh_topology=True,
+            **mesh_options,
+        )
+
+
+@pytest.mark.required
 @pytest.mark.parametrize("scale", [(0.5, 2.0, 8.0), (2.0, 2.0, 2.0)])
 @pytest.mark.parametrize("mesh_file", ["meshes/camera/camera.glb", "meshes/axis.obj"])
 def test_morph_scale(scale, mesh_file, mesh_urdf):
