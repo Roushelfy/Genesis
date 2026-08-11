@@ -63,6 +63,7 @@ contact_constitution: Literal["auto", "consistent", "adhesive"] = "auto"
 adhesion_bond_distance_lock: StrictBool = False
 adhesion_bond_distance_lock_ratio: NonNegativeFloat = 0.5   # band = xi + c*d_hat
 adhesion_bond_max_bonds: NonNegativeInt = 0                 # 0 = inert; >0 = enable guard
+adhesion_bond_default: StrictBool = True                     # unnamed pairs inherit Bond
 adhesion_bond_kappa: PositiveFloat = 1e8
 adhesion_bond_lock_margin: NonNegativeFloat = 0.0
 adhesion_bond_lock_floor_ratio: NonNegativeFloat = 0.0  # floor = xi + c_f*d_hat
@@ -103,6 +104,7 @@ def add_adhesion(
     bonding_rate: float = 0.0,        # beta growth under compression (0 = frozen)
     p0: float = 0.0,                  # compression saturation pressure
     beta0: float = 0.0,               # seed beta; 1.0 = pre-bonded on first contact
+    sticky: tuple[int, int, int, int] = (1, 1, 1, 1), # QIPC stencil-side mask
     enabled: bool = True,             # False maps to adhesion=None
     friction: float | None = None,    # pair friction override (None = geometric mean)
     resistance: float | None = None,  # pair resistance override (None = harmonic mean)
@@ -122,12 +124,13 @@ def add_adhesion(
 - Requests are translated into grouped qipc objects. `enabled=False` writes
   `adhesion=None`; a bond-enabled request writes a `Bond` whose optional ratio
   and release-force/floor overrides fall back to the scene options.
-- Genesis does not yet expose qipc's per-pair `Adhesion.sticky` truth table;
-  imported tape therefore uses qipc's all-side default.
-- Pairs *not* named in any request keep pure friction/resistance rows; note the
-  qipc per-pair `distance_lock` default is **True** (opt-out), so when the
-  global lock is on, unnamed pairs may bond — matching upstream semantics.
-  `add_adhesion(..., distance_lock=False)` opts a pair out.
+- `sticky` exposes qipc's four-entry per-stencil-side truth table. Values must
+  be exactly 0 or 1; the all-side default preserves existing scene behavior.
+- With `adhesion_bond_default=True`, unnamed pairs inherit the default Bond
+  when the global lock is on, matching upstream semantics.
+  `add_adhesion(..., distance_lock=False)` opts a named pair out. Component
+  scenes that enumerate every bond-capable pair set
+  `adhesion_bond_default=False`; their unnamed pairs remain ordinary contact.
 
 ## 3. Runtime APIs (post-build)
 

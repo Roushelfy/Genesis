@@ -238,6 +238,11 @@ class QIPCCouplerOptions(BaseCouplerOptions):
         inert; any positive value enables it when ``adhesion_bond_distance_lock``
         is True. QIPC manages the actual slot capacity dynamically, so the
         positive value is not a capacity limit. Defaults to 0.
+    adhesion_bond_default : bool, optional
+        Whether unnamed contact pairs inherit a distance-bond model from the
+        QIPC default contact row when distance bonds are enabled. Set False for
+        component scenes where every bond-capable pair is declared explicitly
+        through ``add_adhesion``. Defaults to True for compatibility.
     adhesion_bond_kappa : float, optional
         Per-bond virtual-tet stiffness. Defaults to 1e8.
     adhesion_bond_lock_margin : float, optional
@@ -291,6 +296,7 @@ class QIPCCouplerOptions(BaseCouplerOptions):
     adhesion_bond_distance_lock: StrictBool = False
     adhesion_bond_distance_lock_ratio: NonNegativeFloat = 0.5
     adhesion_bond_max_bonds: NonNegativeInt = 0
+    adhesion_bond_default: StrictBool = True
     adhesion_bond_kappa: PositiveFloat = 1e8
     adhesion_bond_lock_margin: NonNegativeFloat = 0.0
     adhesion_bond_lock_floor_ratio: NonNegativeFloat = 0.0

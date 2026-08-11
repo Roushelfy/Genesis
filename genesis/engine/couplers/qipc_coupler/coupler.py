@@ -9,25 +9,27 @@ import quadrants as qd
 import torch
 
 import genesis as gs
-import genesis.utils.array_class as array_class
 import genesis.utils.geom as gu
 from genesis.repr_base import RBC
+from genesis.utils import array_class
 from genesis.utils.misc import geometric_mean, harmonic_mean, qd_to_torch, tensor_to_array
 
 from .adhesion import QIPCAdhesionManager
 from .affine_cluster import QIPCAffineCluster, QIPCAffineClusterManager
-
+from .contact import QIPCContactManager, QIPCContactRegion
+from .initial_state import QIPCInitialStateManager
+from .rigid_attachment import QIPCRigidAttachment, QIPCRigidAttachmentManager
 
 if TYPE_CHECKING:
+    from qipc.scene.joint_collection import JointCollection
+    from qipc.scene.scene import Scene as QIPCScene
+
     from genesis.engine.entities.fem_entity import FEMEntity
     from genesis.engine.entities.rigid_entity.rigid_entity import RigidEntity
     from genesis.engine.entities.rigid_entity.rigid_joint import RigidJoint
     from genesis.engine.entities.rigid_entity.rigid_link import RigidLink
     from genesis.engine.simulator import Simulator
     from genesis.options.solvers import QIPCCouplerOptions
-
-    from qipc.scene.joint_collection import JointCollection
-    from qipc.scene.scene import Scene as QIPCScene
 
 
 # ---------------------------------------------------------------------------
@@ -59,6 +61,7 @@ class AbdEntityPreInit(NamedTuple):
     entity: RigidEntity
     group_slots: dict[int, object]
     link_to_rep: dict[int, int]
+    vertex_ranges: dict[object, tuple[int, range]]
     T_world: dict[int, np.ndarray]
     joint_collections: list[JointCollection]
     genesis_dof_indices: list[int]
@@ -364,6 +367,9 @@ class QIPCCoupler(RBC):
         self._options: QIPCCouplerOptions = options
         self._adhesion: QIPCAdhesionManager = QIPCAdhesionManager(options)
         self._affine_clusters = QIPCAffineClusterManager()
+        self._rigid_attachments = QIPCRigidAttachmentManager()
+        self._contact = QIPCContactManager()
+        self._initial_state = QIPCInitialStateManager()
         self._fem_rest_positions: dict = {}
         self._sealed_gas_bag_by_entity: dict[FEMEntity, int] = {}
         self._sealed_gas_reset_state: dict[FEMEntity, _SealedGasResetState] = {}
@@ -427,6 +433,106 @@ class QIPCCoupler(RBC):
             initial_edges=initial_edges,
             initial_tris=initial_tris,
             initial_tets=initial_tets,
+        )
+
+    def add_rigid_attachment(
+        self,
+        entity: RigidEntity,
+        *,
+        link: RigidLink | str,
+        name: str,
+        vertices,
+        triangles,
+    ) -> QIPCRigidAttachment:
+        """Append a massless collision mesh to one rigid link's QIPC affine body.
+
+        ``vertices`` are expressed in the selected Genesis link frame. The
+        attachment shares that link's affine transform and authored mass and
+        inertia; it does not create another body or joint. The stable handle can
+        be assigned a contact region and used as the rigid side of authored
+        bond state.
+        """
+        if hasattr(self, "_scene"):
+            gs.raise_exception("QIPCCoupler.add_rigid_attachment must be called before scene.build().")
+        if not any(candidate is entity for candidate in self._sim.rigid_solver.entities):
+            gs.raise_exception("QIPCCoupler.add_rigid_attachment: entity is not owned by this scene.")
+        link_local = self._resolve_link_local(entity, link)
+        return self._rigid_attachments.add_request(
+            entity,
+            link_local=link_local,
+            name=name,
+            vertices=vertices,
+            triangles=triangles,
+        )
+
+    def add_contact_region(
+        self,
+        name: str,
+        *,
+        friction: float,
+        resistance: float,
+    ) -> QIPCContactRegion:
+        """Declare a contact material for a rigid link or attachment."""
+        return self._contact.add_region(name=name, friction=friction, resistance=resistance)
+
+    def assign_contact_region(
+        self,
+        region: QIPCContactRegion,
+        entity: RigidEntity,
+        *,
+        link: RigidLink | str | None = None,
+        attachment: QIPCRigidAttachment | None = None,
+    ) -> None:
+        """Assign a queued contact region to exactly one link or attachment."""
+        if not any(candidate is entity for candidate in self._sim.rigid_solver.entities):
+            gs.raise_exception("QIPCCoupler.assign_contact_region: entity is not owned by this scene.")
+        link_local = None if link is None else self._resolve_link_local(entity, link)
+        self._contact.assign_region(
+            region,
+            entity,
+            link_local=link_local,
+            attachment=attachment,
+        )
+
+    def set_contact_pair(
+        self,
+        first,
+        second,
+        *,
+        enabled: bool,
+        friction: float | None = None,
+        resistance: float | None = None,
+    ) -> None:
+        """Override collision for two entity/contact-region endpoints.
+
+        This API controls collision only. It writes explicit ``adhesion=None``
+        and ``bond=None`` for the pair; use ``add_adhesion`` afterwards to opt a
+        selected pair into those constitutions.
+        """
+        self._contact.set_pair(
+            first,
+            second,
+            enabled=enabled,
+            friction=friction,
+            resistance=resistance,
+        )
+
+    def set_rigid_initial_state(
+        self,
+        entity: RigidEntity,
+        *,
+        body_q: dict[str, npt.NDArray[np.float64]],
+        joint_theta: dict[str, float],
+    ) -> None:
+        """Queue named post-init ABD and joint values as the scene reset state."""
+        if hasattr(self, "_scene"):
+            gs.raise_exception("QIPCCoupler.set_rigid_initial_state must be called before scene.build().")
+        if not any(candidate is entity for candidate in self._sim.rigid_solver.entities):
+            gs.raise_exception("QIPCCoupler.set_rigid_initial_state: entity is not owned by this scene.")
+        self._initial_state.add_rigid_request(
+            entity,
+            body_q=body_q,
+            joint_theta=joint_theta,
         )
 
     def set_fem_rest_positions(self, entity: FEMEntity, rest_verts) -> None:
@@ -679,11 +785,14 @@ class QIPCCoupler(RBC):
             entry = FemEntityEntry(fem_entity, slot, is_cloth, offset, fem_entity.n_vertices)
             self._fem_entries.append(entry)
             self._fem_entry_by_entity[fem_entity] = entry
+        initial_state_applied = self._initial_state.apply(self._scene, all_pre_inits, self._jc)
         if self._adhesion.has_bond_seed_requests():
             self._adhesion.apply_bond_seed_requests(
                 {entry.entity: (entry.offset, entry.n_verts) for entry in self._fem_entries},
                 self._abd_vertex_ids_by_entity(all_pre_inits),
             )
+        if initial_state_applied or self._adhesion.has_frozen_bond_state():
+            self._initial_state.rebuild_and_capture_reset(self._scene)
         # Membership is a post-init transaction. Seed bonds first so fully
         # internal bonds become dormant rather than being omitted/re-created.
         self._affine_clusters.initialize()
@@ -1020,15 +1129,15 @@ class QIPCCoupler(RBC):
                 faces = np.ascontiguousarray(entity.surface_triangles, dtype=np.int32)
                 geo = qipc_trimesh(verts, faces)
                 has_bending = mat.bending_stiffness is not None and float(mat.bending_stiffness) > 0.0
-                cloth_kwargs = dict(
-                    youngs_modulus=float(mat.E),
-                    thickness=float(mat.thickness),
-                    mass_density=float(mat.rho),
-                    membrane=mat.membrane,
-                    bending=mat.bending_model if has_bending else None,
-                    bending_youngs_modulus=float(mat.bending_stiffness) if has_bending else None,
-                    contact_thickness=(float(mat.contact_thickness) if mat.contact_thickness is not None else None),
-                )
+                cloth_kwargs = {
+                    "youngs_modulus": float(mat.E),
+                    "thickness": float(mat.thickness),
+                    "mass_density": float(mat.rho),
+                    "membrane": mat.membrane,
+                    "bending": mat.bending_model if has_bending else None,
+                    "bending_youngs_modulus": float(mat.bending_stiffness) if has_bending else None,
+                    "contact_thickness": (float(mat.contact_thickness) if mat.contact_thickness is not None else None),
+                }
                 if mat.membrane == "stvk":
                     # Continuum membrane: uses (E, nu) directly (e.g. tape).
                     cloth_kwargs["poissons_ratio"] = float(mat.nu)
@@ -1212,6 +1321,14 @@ class QIPCCoupler(RBC):
             infos.append((elem, mu, res))
             self._contact_elem_by_entity[fem_entity] = (elem, mu, res)
 
+        region_infos = self._contact.create_regions(tab)
+        self._contact_elem_by_entity.update(region_infos)
+        self._contact.apply_assignments(
+            {pre.entity: pre for pre in all_pre_inits},
+            self._contact_elem_by_entity,
+        )
+        infos.extend(region_infos.values())
+
         # Pairwise models, upper triangle including self-pairs (FEM/cloth
         # self-contact stays enabled).
         for i in range(len(infos)):
@@ -1254,6 +1371,12 @@ class QIPCCoupler(RBC):
                 friction_rate=float(geometric_mean(mu_i, mu_g)),
                 resistance=float(harmonic_mean(res_i, res_g)),
             )
+
+        # Explicit collision-only rows precede adhesion rows. The latter may
+        # intentionally opt selected pairs back into Adhesion/Bond, while all
+        # other overrides carry explicit None groups and cannot inherit the
+        # adhesive default model.
+        self._contact.insert_explicit_pairs(tab, self._contact_elem_by_entity)
 
         # Adhesion request rows LAST (insert is an upsert, so these override the
         # plain friction/resistance rows written above).
@@ -1383,7 +1506,7 @@ class QIPCCoupler(RBC):
         geo.vertices["is_constrained"].gpu()[verts] = 0
         fe.is_fixed[entry.offset + verts] = 0
 
-        removed = set(int(v) for v in verts.tolist())
+        removed = {int(v) for v in verts.tolist()}
         kept_records: list[FemConstraintRecord] = []
         for record in self._fem_constraints:
             if record.entity is not entity:
@@ -1557,9 +1680,10 @@ class QIPCCoupler(RBC):
         merge_groups, link_to_rep = self._build_merge_groups(entity)
 
         group_slots: dict[int, object] = {}
+        vertex_ranges: dict[object, tuple[int, range]] = {}
 
         for rep, members in merge_groups:
-            slot = self._create_merged_body(
+            created = self._create_merged_body(
                 entity,
                 rep,
                 members,
@@ -1568,9 +1692,11 @@ class QIPCCoupler(RBC):
                 trimesh_factory,
                 abd_kappa=cfg.abd_kappa,
             )
-            if slot is None:
+            if created is None:
                 continue
+            slot, group_vertex_ranges = created
             group_slots[rep] = slot
+            vertex_ranges.update(group_vertex_ranges)
 
         # --- Classify joints by type ---
         revolute_joints: list[RigidJoint] = []
@@ -1636,6 +1762,7 @@ class QIPCCoupler(RBC):
             entity=entity,
             group_slots=group_slots,
             link_to_rep=link_to_rep,
+            vertex_ranges=vertex_ranges,
             T_world=T_world,
             joint_collections=per_joint_jcs,
             genesis_dof_indices=genesis_dof_indices,
@@ -1704,10 +1831,10 @@ class QIPCCoupler(RBC):
     def _abd_vertex_ids_by_entity(
         self,
         all_pre_inits: list[AbdEntityPreInit],
-    ) -> dict[RigidEntity, np.ndarray]:
-        """Map each Genesis rigid entity's authored vertex order to QIPC global ids."""
+    ) -> dict[object, np.ndarray]:
+        """Map rigid entities and queued attachments to QIPC global vertex ids."""
         body_id = np.asarray(self._scene.affine_body.host("body_id"), dtype=np.int64)
-        vertex_ids: dict[RigidEntity, np.ndarray] = {}
+        vertex_ids: dict[object, np.ndarray] = {}
         for pre in all_pre_inits:
             entity_body_ids: list[int] = []
             for slot in pre.group_slots.values():
@@ -1717,6 +1844,20 @@ class QIPCCoupler(RBC):
                 vertex_ids[pre.entity] = np.flatnonzero(
                     np.isin(body_id, np.asarray(entity_body_ids, dtype=np.int64))
                 ).astype(np.int32)
+            for source, (rep, vertex_range) in pre.vertex_ranges.items():
+                if not isinstance(source, QIPCRigidAttachment):
+                    continue
+                slot = pre.group_slots[rep]
+                body_offset = int(slot.geometry.meta["abd_body_offset"].cpu()[0])
+                body_vertices = np.flatnonzero(body_id == body_offset)
+                if len(body_vertices) != int(slot.geometry.vertices.size):
+                    gs.raise_exception(
+                        "QIPCCoupler: rigid attachment vertex layout does not match its QIPC affine body."
+                    )
+                vertex_ids[source] = np.ascontiguousarray(
+                    body_vertices[vertex_range.start : vertex_range.stop],
+                    dtype=np.int32,
+                )
         return vertex_ids
 
     def _apply_gravity_compensation(self, entity: RigidEntity, body_indices: list[int]) -> None:
@@ -1906,8 +2047,8 @@ class QIPCCoupler(RBC):
         trimesh_factory: object,
         *,
         abd_kappa: float,
-    ) -> object | None:
-        """Create a single ABD body from a merge group. Returns geometry slot or None."""
+    ) -> tuple[object, dict[object, tuple[int, range]]] | None:
+        """Create one ABD body and record source-link/attachment vertex ranges."""
         T_rep: np.ndarray = T_world[rep]
         T_rep_inv: np.ndarray = np.linalg.inv(T_rep)
         R_rep: np.ndarray = T_rep[:3, :3]
@@ -1916,6 +2057,7 @@ class QIPCCoupler(RBC):
         all_verts: list[np.ndarray] = []
         all_faces: list[np.ndarray] = []
         vert_offset: int = 0
+        vertex_ranges: dict[object, tuple[int, range]] = {}
 
         link_by_idx: dict[int, RigidLink] = {link.idx_local: link for link in entity.links}
 
@@ -1925,6 +2067,7 @@ class QIPCCoupler(RBC):
                 continue
 
             T_member: np.ndarray = T_world[m_idx]
+            link_vertex_start = vert_offset
 
             for geom in link.geoms:
                 v = geom.init_verts.copy().astype(np.float64)
@@ -1938,6 +2081,20 @@ class QIPCCoupler(RBC):
                 all_verts.append(v_rep)
                 all_faces.append(geom.init_faces.copy() + vert_offset)
                 vert_offset += len(v_rep)
+
+            if vert_offset > link_vertex_start:
+                vertex_ranges[m_idx] = (rep, range(link_vertex_start, vert_offset))
+
+        for attachment, request in self._rigid_attachments.requests_for_group(entity, members):
+            T_member = T_world[request.link_local]
+            T_attachment_in_rep = T_rep_inv @ T_member
+            vertices_h = np.hstack([request.vertices, np.ones((len(request.vertices), 1))])
+            vertices_rep = (T_attachment_in_rep @ vertices_h.T).T[:, :3]
+            attachment_start = vert_offset
+            all_verts.append(vertices_rep)
+            all_faces.append(request.triangles + vert_offset)
+            vert_offset += len(vertices_rep)
+            vertex_ranges[attachment] = (rep, range(attachment_start, vert_offset))
 
         total_mass, com_world, I_world = self._merge_inertials(entity, members, T_world)
         com_local: np.ndarray = R_rep.T @ (com_world - t_rep)
@@ -1981,7 +2138,7 @@ class QIPCCoupler(RBC):
 
             rep_link = link_by_idx[rep]
             slot = self._scene.geometries.create(rep_link.name, geo)
-            return slot
+            return slot, vertex_ranges
         elif total_mass > 0:
             vol = total_mass / 1e3
             geo = abd.create_proxy(
@@ -1997,7 +2154,7 @@ class QIPCCoupler(RBC):
 
             rep_link = link_by_idx[rep]
             slot = self._scene.geometries.create(rep_link.name, geo)
-            return slot
+            return slot, vertex_ranges
 
         return None
 
