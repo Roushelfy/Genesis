@@ -24,6 +24,19 @@ def _sorted_rows(values: np.ndarray) -> np.ndarray:
     return rows[order]
 
 
+def _affine_tilt_degrees(current: torch.Tensor, initial: torch.Tensor) -> float:
+    current_affine = current[3:12].detach().cpu().numpy().reshape(3, 3)
+    initial_affine = initial[3:12].detach().cpu().numpy().reshape(3, 3)
+    relative = current_affine @ np.linalg.inv(initial_affine)
+    u, _, vt = np.linalg.svd(relative)
+    rotation = u @ vt
+    if np.linalg.det(rotation) < 0.0:
+        u[:, -1] *= -1.0
+        rotation = u @ vt
+    cosine = np.clip((np.trace(rotation) - 1.0) * 0.5, -1.0, 1.0)
+    return float(np.degrees(np.arccos(cosine)))
+
+
 @pytest.mark.required
 @pytest.mark.precision("64")
 def test_add_tape_dispenser_machine_is_ringless_urdf_only():
@@ -43,6 +56,9 @@ def test_add_tape_dispenser_machine_is_ringless_urdf_only():
 
     coupler = scene.sim.coupler
     native = coupler._scene
+    assert native.config["linear_system/solver"] == "partition_pcg"
+    assert native.config["linear_system/preconditioner"] == "mas"
+    assert native.config["linear_system/abd_preconditioner"] == "tree"
     assert native.affine_body.n_bodies == 4
     assert native.affine_body.n_verts == 142181
     assert native.finite_element.n_verts == 0
@@ -73,6 +89,59 @@ def test_add_tape_dispenser_machine_is_ringless_urdf_only():
 
 @pytest.mark.required
 @pytest.mark.precision("64")
+def test_add_tape_dispenser_machine_remains_upright_on_table():
+    module = _module()
+    scene = gs.Scene(
+        sim_options=gs.options.SimOptions(dt=0.01, gravity=(0.0, 0.0, -9.8)),
+        coupler_options=gs.options.QIPCCouplerOptions(**module.recommended_machine_coupler_options()),
+        show_viewer=False,
+    )
+    table = scene.add_entity(
+        morph=gs.morphs.Box(
+            pos=(0.597, 0.0, 0.38),
+            size=(0.85, 1.5, 0.76),
+            fixed=True,
+            collision=True,
+        ),
+        material=gs.materials.Rigid(coup_friction=0.8),
+    )
+    machine = module.add_tape_dispenser_machine(
+        scene,
+        pos=(0.5, 0.0, 0.86661028),
+        euler=(0.0, 0.0, 180.0),
+    )
+    scene.build()
+
+    native = scene.sim.coupler._scene
+    geometries = {slot.name: slot.geometry for slot in native.geometries}
+    root_body = int(np.asarray(geometries["tape_cutter"].meta["abd_body_offset"].cpu()).reshape(-1)[0])
+    q_initial = native.affine_body.q.detach().clone()
+    root_initial = q_initial[root_body]
+    table_top = float(table.get_AABB()[1, 2])
+    minimum_machine_z = float(machine.get_AABB()[0, 2])
+    maximum_tilt = 0.0
+
+    for _ in range(200):
+        scene.step()
+        assert torch.isfinite(native.affine_body.q).all()
+        maximum_tilt = max(
+            maximum_tilt,
+            _affine_tilt_degrees(native.affine_body.q[root_body], root_initial),
+        )
+        minimum_machine_z = min(minimum_machine_z, float(machine.get_AABB()[0, 2]))
+
+    final_tilt = _affine_tilt_degrees(native.affine_body.q[root_body], root_initial)
+    assert final_tilt < 5.0
+    assert maximum_tilt < 5.0
+    assert minimum_machine_z >= table_top - 0.005
+
+    scene.reset()
+    torch.testing.assert_close(native.affine_body.q, q_initial, rtol=0.0, atol=0.0)
+    assert float(native.affine_body.q_v.abs().max()) == 0.0
+
+
+@pytest.mark.required
+@pytest.mark.precision("64")
 def test_add_tape_dispenser_matches_f249_contact_and_reset():
     module = _module()
     asset = module.TapeDispenserAsset.packaged()
@@ -88,6 +157,9 @@ def test_add_tape_dispenser_matches_f249_contact_and_reset():
 
     coupler = scene.sim.coupler
     native = coupler._scene
+    assert native.config["linear_system/solver"] == "partition_pcg"
+    assert native.config["linear_system/preconditioner"] == "mas"
+    assert native.config["linear_system/abd_preconditioner"] == "tree"
     assert native.affine_body.n_bodies == 4
     assert native.affine_body.n_verts == 142373
     assert native.finite_element.n_verts == 1936

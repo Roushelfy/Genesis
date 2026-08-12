@@ -1,9 +1,12 @@
 <robot name="tape_dispenser_v2">
+  <!-- Masses are balanced for the examples/tape_dispenser pose (Rx=+90 deg).
+       Total dispenser-only mass: 0.313 kg.  The resulting world-space COM
+       projection is (x,z)=(0.118,-0.016) m, inside the base support polygon. -->
   <link name="tape_wheel">
     <inertial>
       <origin xyz="0.0011 0.027871 -0.003426" rpy="0 0 0" />
-      <mass value="0.04" />
-      <inertia ixx="1.53801e-05" ixy="2.03558e-07" ixz="6.15375e-07" iyy="2.2514e-05" iyz="-9.42452e-07" izz="1.80812e-05" />
+      <mass value="0.08800596439" />
+      <inertia ixx="3.38385133229e-05" ixy="4.47857952482e-07" ixz="1.35391675841e-06" iyy="4.95341570569e-05" iyz="-2.07353492878e-06" izz="3.97813360832e-05" />
       </inertial>
     <visual name="tape_wheel_visual">
       <origin xyz="-0.0423 -0.0078 0.071" rpy="0 0 0" />
@@ -27,8 +30,8 @@
   <link name="tape_cutter">
     <inertial>
       <origin xyz="-0.004431 0.031258 -0.055692" rpy="0 0 0" />
-      <mass value="0.27" />
-      <inertia ixx="0.00134273" ixy="1.32948e-05" ixz="-0.000302687" iyy="0.00143544" iyz="1.89919e-05" izz="0.000211265" />
+      <mass value="0.20046402301" />
+      <inertia ixx="0.000996922435616" ixy="9.87084849301e-06" ixz="-0.000224732791603" iyy="0.00106575584144" iyz="1.41007136245e-05" izz="0.000156855673412" />
       </inertial>
     <visual name="tape_cutter_visual">
       <geometry>
@@ -97,8 +100,8 @@
   <link name="Cylinder">
     <inertial>
       <origin xyz="-0.000365 0.028271 -1.7e-05" rpy="0 0 0" />
-      <mass value="0.0433501" />
-      <inertia ixx="1.17428e-05" ixy="-3.58619e-07" ixz="6.9353e-08" iyy="8.36443e-06" iyz="-5.47399e-07" izz="1.17734e-05" />
+      <mass value="0.02140105760" />
+      <inertia ixx="5.79718014919e-06" ixy="-1.77042864387e-07" ixz="3.42381574145e-08" iyy="4.12934798815e-06" iyz="-2.70239688702e-07" izz="5.81228674323e-06" />
       </inertial>
     <visual name="Cylinder_visual">
       <origin xyz="0.043 -0.0033 0.044" rpy="0 0 0" />

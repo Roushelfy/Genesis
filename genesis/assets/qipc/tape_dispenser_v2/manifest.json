@@ -6,6 +6,12 @@
     "commit": "c66c312e682cdde1cbad885ff4774f274b48d02c",
     "reference": "examples/tape_dispenser/run_sim.py"
   },
+  "urdf_inertials": {
+    "source_path": "assets/tape_dispenser_v2/tape_dispenser.urdf",
+    "source_sha256": "5ca5bc2c5a909f93fceef7d76e087162af19468fb33cbe0872134265d9082ae8",
+    "total_mass_kg": 0.313,
+    "semantics": "balanced for the upside-down Rx=+90 degree dispenser pose; independent of the frozen post-f249 state"
+  },
   "snapshot": {
     "semantics": "post pre_step+scene.step for frames 0..249 inclusive, then zero velocities and release root/tape-end DBC without another physics step",
     "authority": "frozen artifact; CUDA contact/bond atomics make regeneration non-bitwise-reproducible",
@@ -18,8 +24,8 @@
     "active_bonds": 969
   },
   "files_sha256": {
-    "tape_dispenser_machine.urdf": "57bd75c90c0b5335aa0d3fed7ce536b0d676bae9020841387ff0248ce762aadc",
-    "tape_dispenser.urdf": "6934ae2487cf4bfa3b860e3003433cf40654cf798111252fd60bf64be0bceecc",
+    "tape_dispenser_machine.urdf": "5ca5bc2c5a909f93fceef7d76e087162af19468fb33cbe0872134265d9082ae8",
+    "tape_dispenser.urdf": "eeb5dde84af1c41939335d7915a7b104dd62f54e1da04976217f39e7c5736cb8",
     "scotch3850_wound.npz": "2b1bbb79cb1dc1616ea4ed5c15c2fbf995c3399c8bbea6a6b5396042a6d82e41",
     "post_f249_static.npz": "7d3f8b99b25e1f473b397e369cd32da5bd0ff2c66907aba142ec9ecefc629748",
     "ring_local.npz": "0c7c1d5f1a445b5b2ea83c9280c16447539721a082b3556ac3f7f762f3d40ffd",

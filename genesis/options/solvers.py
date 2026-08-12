@@ -274,7 +274,14 @@ class QIPCCouplerOptions(BaseCouplerOptions):
     solver_linear_tol_rate : float, optional
         Linear-system tolerance rate. None uses the QIPC default (1e-4).
     solver_linear_preconditioner : str, optional
-        'mas' or 'diag'. None uses the QIPC default ('mas').
+        FEM-side preconditioner: 'mas' or 'diag'. None uses the QIPC default
+        ('mas'). This setting is ignored when the scene has no FEM degrees of
+        freedom.
+    solver_abd_preconditioner : str, optional
+        ABD-side preconditioner: 'tree' or 'diag'. 'tree' covers every
+        articulated ABD forest in the scene, including robots and articulated
+        objects; isolated rigid bodies reduce to the diagonal path. None uses
+        the QIPC default ('tree').
     solver_linear_solver : str, optional
         'partition_pcg' or 'linear_pcg'. None uses the QIPC default
         ('partition_pcg'). Both PCG solvers support SealedVolumeGas.
@@ -310,6 +317,7 @@ class QIPCCouplerOptions(BaseCouplerOptions):
     solver_linear_max_iter: PositiveInt | None = None
     solver_linear_tol_rate: PositiveFloat | None = None
     solver_linear_preconditioner: Literal["mas", "diag"] | None = None
+    solver_abd_preconditioner: Literal["tree", "diag"] | None = None
     solver_linear_solver: Literal["partition_pcg", "linear_pcg"] | None = None
     solver_line_search_max_iter: PositiveInt | None = None
     contact_ccd_partition: StrictBool | None = None

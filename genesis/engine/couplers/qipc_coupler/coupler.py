@@ -707,6 +707,7 @@ class QIPCCoupler(RBC):
             "linear_system/max_iter": self._options.solver_linear_max_iter,
             "linear_system/tol_rate": self._options.solver_linear_tol_rate,
             "linear_system/preconditioner": self._options.solver_linear_preconditioner,
+            "linear_system/abd_preconditioner": self._options.solver_abd_preconditioner,
             "linear_system/solver": self._options.solver_linear_solver,
             "line_search/max_iter": self._options.solver_line_search_max_iter,
             "contact/ccd_partition": (

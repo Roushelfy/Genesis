@@ -46,6 +46,17 @@ def _refresh_hash(directory, relative):
 def test_packaged_tape_dispenser_snapshot_contract():
     module = _module()
     asset = module.TapeDispenserAsset.packaged()
+    manifest = json.loads((asset.directory / "manifest.json").read_text())
+
+    assert manifest["source"]["commit"] == "c66c312e682cdde1cbad885ff4774f274b48d02c"
+    assert manifest["urdf_inertials"] == {
+        "source_path": "assets/tape_dispenser_v2/tape_dispenser.urdf",
+        "source_sha256": "5ca5bc2c5a909f93fceef7d76e087162af19468fb33cbe0872134265d9082ae8",
+        "total_mass_kg": 0.313,
+        "semantics": (
+            "balanced for the upside-down Rx=+90 degree dispenser pose; independent of the frozen post-f249 state"
+        ),
+    }
 
     assert asset.body_names == ("tape_cutter", "Cylinder", "blade", "tape_wheel")
     assert asset.joint_names == ("Cylinder_axle", "blade_hinge", "tape_wheel_axle")
@@ -66,15 +77,20 @@ def test_packaged_tape_dispenser_snapshot_contract():
     )
 
     options = module.recommended_coupler_options()
+    gs.options.QIPCCouplerOptions(**options)
     assert options["contact_d_hat"] == 8.0e-5
     assert options["adhesion_bond_default"] is False
     assert options["solver_linear_tol_rate"] == 1.0e-3
-    assert options["solver_linear_solver"] == "linear_pcg"
-    assert options["solver_linear_preconditioner"] == "diag"
+    assert options["solver_linear_solver"] == "partition_pcg"
+    assert options["solver_linear_preconditioner"] == "mas"
+    assert options["solver_abd_preconditioner"] == "tree"
 
     machine_options = module.recommended_machine_coupler_options()
     assert machine_options["contact_d_hat"] == 8.0e-5
     assert machine_options["contact_constitution"] == "consistent"
+    assert machine_options["solver_linear_solver"] == "partition_pcg"
+    assert machine_options["solver_linear_preconditioner"] == "mas"
+    assert machine_options["solver_abd_preconditioner"] == "tree"
     assert "adhesion_bond_distance_lock" not in machine_options
 
     with np.load(asset.directory / "scotch3850_wound.npz", allow_pickle=False) as roll:
@@ -82,11 +98,8 @@ def test_packaged_tape_dispenser_snapshot_contract():
         assert "params" not in roll.files
         assert json.loads(bytes(roll["params_json"]).decode("utf-8"))["LOCK"] == 1
 
-    wheel = next(
-        link
-        for link in ET.parse(asset.directory / "tape_dispenser.urdf").getroot().findall("link")
-        if link.get("name") == "tape_wheel"
-    )
+    full_root = ET.parse(asset.directory / "tape_dispenser.urdf").getroot()
+    wheel = next(link for link in full_root.findall("link") if link.get("name") == "tape_wheel")
     wheel_visuals = wheel.findall("visual")
     assert [mesh.get("filename") for mesh in wheel.findall("./visual/geometry/mesh")] == [
         "meshes/tape_wheel.glb",
@@ -108,7 +121,7 @@ def test_packaged_tape_dispenser_snapshot_contract():
 
     machine_urdf = asset.directory / "tape_dispenser_machine.urdf"
     assert hashlib.sha256(machine_urdf.read_bytes()).hexdigest() == (
-        "57bd75c90c0b5335aa0d3fed7ce536b0d676bae9020841387ff0248ce762aadc"
+        "5ca5bc2c5a909f93fceef7d76e087162af19468fb33cbe0872134265d9082ae8"
     )
     machine_root = ET.parse(machine_urdf).getroot()
     assert {link.get("name") for link in machine_root.findall("link")} == {
@@ -131,6 +144,51 @@ def test_packaged_tape_dispenser_snapshot_contract():
     assert [mesh.get("filename") for mesh in machine_wheel.findall("./visual/geometry/mesh")] == [
         "meshes/tape_wheel.glb"
     ]
+
+    machine_links = {link.get("name"): link for link in machine_root.findall("link")}
+    expected_masses = {
+        "tape_wheel": "0.08800596439",
+        "tape_cutter": "0.20046402301",
+        "sharp": "0.000128955",
+        "blade": "0.003",
+        "Cylinder": "0.02140105760",
+    }
+    assert {
+        name: machine_links[name].find("./inertial/mass").get("value") for name in expected_masses
+    } == expected_masses
+    assert sum(float(mass) for mass in expected_masses.values()) == pytest.approx(0.313, abs=1e-12)
+    assert {
+        name: machine_links[name].find("./inertial/inertia").attrib
+        for name in ("tape_wheel", "tape_cutter", "Cylinder")
+    } == {
+        "tape_wheel": {
+            "ixx": "3.38385133229e-05",
+            "ixy": "4.47857952482e-07",
+            "ixz": "1.35391675841e-06",
+            "iyy": "4.95341570569e-05",
+            "iyz": "-2.07353492878e-06",
+            "izz": "3.97813360832e-05",
+        },
+        "tape_cutter": {
+            "ixx": "0.000996922435616",
+            "ixy": "9.87084849301e-06",
+            "ixz": "-0.000224732791603",
+            "iyy": "0.00106575584144",
+            "iyz": "1.41007136245e-05",
+            "izz": "0.000156855673412",
+        },
+        "Cylinder": {
+            "ixx": "5.79718014919e-06",
+            "ixy": "-1.77042864387e-07",
+            "ixz": "3.42381574145e-08",
+            "iyy": "4.12934798815e-06",
+            "iyz": "-2.70239688702e-07",
+            "izz": "5.81228674323e-06",
+        },
+    }
+    full_links = {link.get("name"): link for link in full_root.findall("link")}
+    for name in expected_masses:
+        assert ET.tostring(full_links[name].find("inertial")) == ET.tostring(machine_links[name].find("inertial"))
 
 
 @pytest.mark.parametrize(

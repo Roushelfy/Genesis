@@ -1,8 +1,11 @@
 # QIPC Tape Dispenser Import Design
 
 Status: Genesis components, validation gates, and gs-core scene composition
-implemented. Last audited against cuda-graph-qipc commit
-`c66c312e682cdde1cbad885ff4774f274b48d02c`.
+implemented. The frozen post-f249 state was audited against cuda-graph-qipc
+commit `c66c312e682cdde1cbad885ff4774f274b48d02c`; the URDF inertials separately
+track the balanced source asset hash recorded in `manifest.json`. The
+fixed-topology solver profile tracks commit
+`003c2681d024d18ccaaf967d341b2703b94b6b47`.
 
 > Implementation: `../tape_dispenser.py`; frozen assets:
 > `genesis/assets/qipc/tape_dispenser_v2/`; tests:
@@ -123,7 +126,8 @@ correction.
 
 The returned `TapeDispenser` retains the machine and tape entities plus stable
 ring, Cylinder, blade, sharp, and ring-contact handles. The recommended options
-match the source scene but do not mutate or validate an already-created scene.
+match the current fixed-topology source solver profile but do not mutate or
+validate an already-created scene.
 
 ## 4. Coordinates and placement
 
@@ -159,6 +163,13 @@ URDF. The full `tape_dispenser.urdf` additionally references the ring's pure
 visual mesh. The ring uses the general queued rigid-attachment API. It contributes
 collision triangles to the `tape_wheel` geometry, shares that body's affine
 transform, and contributes no mass or fifth rigid body.
+
+Both URDF variants use the upstream balanced inertial distribution for the
+upside-down dispenser pose. The five inertial links total 0.313 kg; mass is
+rebalanced toward `tape_wheel` while the total is normalized from 0.356479 kg
+to 0.313 kg, keeping the combined center-of-mass projection inside the base
+support polygon. Full and machine-only variants must keep identical inertial
+elements because the visual/contact ring is massless.
 
 The URDF also references a visual-only GLB generated from the same 192 vertices
 and 384 triangles. It follows the `tape_wheel` link but is deliberately absent
@@ -199,7 +210,31 @@ not split the FEM mesh. There is no cut detector, triangle split, spare-vertex
 activation, or blade-triggered topology mutation. A distance bond releasing
 under its threshold is debonding, not cutting.
 
-## 7. Frozen bonds and reset
+## 7. Solver policy
+
+The imported component has fixed FEM topology: it does not register
+`BreakableShell`, `MutableTopo`, or parked cut vertices. Its recommendation
+therefore follows the current QIPC reference:
+
+| Degree-of-freedom block | Preconditioner |
+| --- | --- |
+| ABD robot and articulated rigid bodies | kinematic `tree` |
+| FEM tape vertices | `MAS` |
+| global linear solve | `partition_pcg` |
+
+QIPC builds the ABD and FEM preconditioners independently. They write disjoint
+segments of the global preconditioned vector, while ABD-FEM, contact, and bond
+off-diagonal coupling remains in the PCG matrix-vector product. `tree` applies
+to every ABD joint forest in the composed scene, not to a named robot alone;
+isolated rigid bodies reduce to the equivalent singleton diagonal solve.
+
+The mutable-topology cutting variant in the QIPC example deliberately falls
+back to `linear_pcg + diag`. That variant is outside this importer's scope and
+must not be inferred from blade collision alone. The rigid-only recommendation
+also selects `partition_pcg` and ABD `tree`; its FEM `MAS` value is inert because
+the scene has no FEM degrees of freedom.
+
+## 8. Frozen bonds and reset
 
 The importer restores slots through QIPC `BondSystem.restore_slots`; it does
 not recreate topology through `seed_locks`. Preserved fields are:
@@ -223,7 +258,7 @@ One scene currently accepts at most one frozen bond-state request. It cannot be
 mixed with authored or manual `seed_bonds` batches because restoring slots
 replaces the whole native `BondSystem` state.
 
-## 8. Validation ladder
+## 9. Validation ladder
 
 | Layer | Oracle | Assertions |
 | --- | --- | --- |
@@ -254,7 +289,7 @@ The integration test explicitly requests Genesis precision 64. A separate
 oracle's tolerance. The scene step asserts finite state and bounded initial
 motion; it does not incorrectly assert static equilibrium.
 
-## 9. Known limitations
+## 10. Known limitations
 
 - Dynamic cutting and the source's 32 parked cut-spare vertices are absent.
 - The root is free and unactuated; no permanent anchoring policy is included.
@@ -264,17 +299,19 @@ motion; it does not incorrectly assert static equilibrium.
 - Strict snapshot comparisons require Genesis precision 64.
 - The importer neither selects a robot nor adds surrounding scene objects.
 
-## 10. gs-core composition
+## 11. gs-core composition
 
-The follow-up gs-core scene should remain independent of robot choice:
+The gs-core scene remains independent of robot choice:
 
 ```text
 --robot-type marvin_pika|marvin_wuji
---scene-type carton_tape_dispenser_qipc
+--scene-type tape_dispenser_qipc
 ```
 
-Its scene builder should add the table and fixed carton, construct QIPC with
-the recommended options, call `add_tape_dispenser` before build, and place the
-`tape_cutter` root on the right. No dispenser controller or 250-frame warm-up
-is needed. Both Pika and Wuji should reuse this scene through compatibility
-validation rather than introducing combined environment types.
+Its scene builder adds only the standard table around this component, constructs
+QIPC with the recommended options, and calls `add_tape_dispenser` before build.
+The composed robot/table/component scene raises the initial collision-pair
+capacity from the standalone reference's 100,000 to 600,000 without changing
+physics. No dispenser controller or 250-frame warm-up is needed. Both Pika and
+Wuji reuse this scene through compatibility validation rather than introducing
+combined environment types.

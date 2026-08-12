@@ -506,8 +506,9 @@ def recommended_machine_coupler_options() -> dict[str, object]:
         "solver_newton_max_iter": 128,
         "solver_linear_max_iter": 800,
         "solver_linear_tol_rate": 1.0e-3,
-        "solver_linear_preconditioner": "diag",
-        "solver_linear_solver": "linear_pcg",
+        "solver_linear_preconditioner": "mas",
+        "solver_abd_preconditioner": "tree",
+        "solver_linear_solver": "partition_pcg",
         "solver_line_search_max_iter": 16,
     }
 
