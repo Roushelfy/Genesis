@@ -46,6 +46,15 @@ class ViewerOptions(Options):
         The up vector of the camera's extrinsic pose.
     camera_fov : float
         The field of view (in degrees) of the camera.
+    viewer_count : {1, 2}
+        Number of independently controlled viewports in the viewer window. With two viewports, the primary camera is
+        rendered on the left and the secondary camera is rendered on the right. Defaults to 1.
+    secondary_camera_pos : tuple of float, shape (3,)
+        The initial position of the secondary camera.
+    secondary_camera_lookat : tuple of float, shape (3,)
+        The initial lookat position of the secondary camera.
+    secondary_camera_up : tuple of float, shape (3,)
+        The up vector of the secondary camera's extrinsic pose.
     enable_help_text : bool
         Whether to enable the rendering of instructions text in the viewer.
     enable_default_keybinds : bool
@@ -67,6 +76,10 @@ class ViewerOptions(Options):
     camera_lookat: Vec3FType = (0.0, 0.0, 0.5)
     camera_up: Vec3FType = (0.0, 0.0, 1.0)
     camera_fov: float = 40
+    viewer_count: Literal[1, 2] = 1
+    secondary_camera_pos: Vec3FType = (3.5, -0.5, 2.5)
+    secondary_camera_lookat: Vec3FType = (0.0, 0.0, 0.5)
+    secondary_camera_up: Vec3FType = (0.0, 0.0, 1.0)
     enable_help_text: StrictBool = True
     enable_default_keybinds: StrictBool = True
     enable_gui: StrictBool = False

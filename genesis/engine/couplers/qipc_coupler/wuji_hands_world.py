@@ -50,6 +50,10 @@ class WujiHandsWorldConfig:
     show_viewer: bool = True
     viewer_camera_position: tuple[float, float, float] = (1.1, -0.95, 1.35)
     viewer_camera_lookat: tuple[float, float, float] = (0.4, 0.0, 0.9)
+    viewer_count: Literal[1, 2] = 1
+    secondary_camera_pos: tuple[float, float, float] = (1.1, 0.95, 1.35)
+    secondary_camera_lookat: tuple[float, float, float] = (0.4, 0.0, 0.9)
+    secondary_camera_up: tuple[float, float, float] = (0.0, 0.0, 1.0)
     viewer_camera_fov: float = 45.0
 
     def __post_init__(self) -> None:
@@ -263,6 +267,10 @@ def build_qipc_wuji_hands_world(config: WujiHandsWorldConfig) -> QIPCWujiHandsWo
             camera_pos=config.viewer_camera_position,
             camera_lookat=config.viewer_camera_lookat,
             camera_fov=config.viewer_camera_fov,
+            viewer_count=config.viewer_count,
+            secondary_camera_pos=config.secondary_camera_pos,
+            secondary_camera_lookat=config.secondary_camera_lookat,
+            secondary_camera_up=config.secondary_camera_up,
         ),
         show_viewer=config.show_viewer,
     )

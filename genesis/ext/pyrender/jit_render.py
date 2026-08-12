@@ -437,6 +437,7 @@ class JITRenderer:
                 nb.float32[:, :],
                 nb.int32,
                 nb.float32[:],
+                nb.float32[:],
                 nb.int32,
                 nb.int32[:],
                 nb.int32[:],
@@ -468,6 +469,7 @@ class JITRenderer:
             reflection_mat,
             floor_tex,
             screen_size,
+            viewport_origin,
             env_idx,
             model_buffer_id,
             inst_attr_start,
@@ -520,6 +522,7 @@ class JITRenderer:
                         set_uniform_1i(pid, "floor_tex", active_texture, gl)
                         set_uniform_1i(pid, "floor_flag", 1, gl)
                         set_uniform_2f(pid, "screen_size", screen_size[0], screen_size[1], gl)
+                        set_uniform_2f(pid, "viewport_origin", viewport_origin[0], viewport_origin[1], gl)
                         active_texture += 1
                     else:
                         set_uniform_1i(pid, "floor_tex", 0, gl)
@@ -977,9 +980,12 @@ class JITRenderer:
         color_list=None,
         reflection_mat=np.identity(4, np.float32),
         floor_tex=0,
+        viewport_origin=None,
         env_idx=-1,
         markers_only=False,
     ):
+        if viewport_origin is None:
+            viewport_origin = np.zeros(2, np.float32)
         self.load_programs(renderer, flags, program_flags)
         if self._forward_pass is None:
             self.gen_func_ptr()
@@ -1018,6 +1024,7 @@ class JITRenderer:
                 reflection_mat,
                 floor_tex,
                 screen_size,
+                viewport_origin,
                 env_idx,
                 self.model_buffer_id,
                 self.inst_attr_start,

@@ -67,6 +67,25 @@ if pyglet.options.get("dpi_scaling") != "real":
     pyglet.options["dpi_scaling"] = "real"
 
 
+def _viewport_rects(viewport_size, viewer_count):
+    """Return non-overlapping logical viewport rectangles, leaving one divider pixel for odd widths."""
+    width, height = viewport_size
+    if viewer_count == 1:
+        return ((0, 0, width, height),)
+    viewport_width = width // 2
+    return ((0, 0, viewport_width, height), (width - viewport_width, 0, viewport_width, height))
+
+
+def _viewport_index_at(x, viewport_size, viewer_count):
+    if viewer_count == 1:
+        return 0
+    return int(x >= _viewport_rects(viewport_size, viewer_count)[1][0])
+
+
+def _viewport_local_point(x, y, viewport_rect):
+    return np.array([x - viewport_rect[0], y - viewport_rect[1]])
+
+
 class Viewer(pyglet.window.Window):
     """An interactive viewer for 3D scenes.
 
@@ -176,6 +195,9 @@ class Viewer(pyglet.window.Window):
         self,
         context: "RasterizerContext",
         viewport_size=None,
+        viewer_count=1,
+        secondary_camera_pose=None,
+        secondary_view_center=None,
         render_flags=None,
         viewer_flags=None,
         run_in_thread=False,
@@ -199,6 +221,16 @@ class Viewer(pyglet.window.Window):
         # caller asked for so the offscreen renderer can always honor it regardless of window clamping.
         self._viewport_size = viewport_size
         self._offscreen_viewport_size = viewport_size
+        if viewer_count not in (1, 2):
+            raise ValueError("viewer_count must be either 1 or 2.")
+        self._viewer_count = viewer_count
+        self._secondary_default_camera_pose = (
+            None if secondary_camera_pose is None else np.asarray(secondary_camera_pose).copy()
+        )
+        self._secondary_view_center = (
+            None if secondary_view_center is None else np.asarray(secondary_view_center).copy()
+        )
+        self._active_viewport = None
         self._render_lock = RLock()
         self._initialized_event = Event()
         self._is_active = False
@@ -449,11 +481,13 @@ class Viewer(pyglet.window.Window):
         # Extract main camera from the current scene and set up our mirrored copy. Re-runnable so a rebind
         # to a rebuilt scene graph re-creates the camera node on the new scene.
         self._camera_node = None
+        self._secondary_camera_node = None
         self._prior_main_camera_node = None
         self._default_camera_pose = None
         self._default_persp_cam = None
         self._default_orth_cam = None
         self._trackball = None
+        self._secondary_trackball = None
 
         znear = None
         zfar = None
@@ -500,6 +534,13 @@ class Viewer(pyglet.window.Window):
         self._camera_node = Node(matrix=self._default_camera_pose, camera=camera)
         self.scene.add_node(self._camera_node)
         self.scene.main_camera_node = self._camera_node
+        if self._viewer_count == 2:
+            secondary_pose = self._secondary_default_camera_pose
+            if secondary_pose is None:
+                secondary_pose = self._default_camera_pose.copy()
+                self._secondary_default_camera_pose = secondary_pose
+            self._secondary_camera_node = Node(matrix=secondary_pose, camera=copy.copy(camera))
+            self.scene.add_node(self._secondary_camera_node)
         self._reset_view()
 
     def rebind(self, context, plugins):
@@ -673,6 +714,9 @@ class Viewer(pyglet.window.Window):
             if self._camera_node is not None:
                 self.scene.remove_node(self._camera_node)
             self._camera_node = None
+            if self._secondary_camera_node is not None:
+                self.scene.remove_node(self._secondary_camera_node)
+            self._secondary_camera_node = None
         except Exception:
             pass
         if self._prior_main_camera_node is not None:
@@ -813,13 +857,13 @@ class Viewer(pyglet.window.Window):
                     # below the requested resolution (e.g. a viewport larger than a macOS runner can allocate). Force
                     # it to the requested viewport size so the offscreen result matches what the caller asked for, then
                     # restore the live window size so on-screen drawing keeps following the window.
-                    saved_viewport = (target.viewport_width, target.viewport_height)
-                    target.viewport_width, target.viewport_height = self._offscreen_viewport_size
+                    saved_viewport = target.logical_viewport
+                    target.set_viewport(0, 0, *self._offscreen_viewport_size)
                     try:
                         self.clear()
                         retval = self._render(camera, target, normal)
                     finally:
-                        target.viewport_width, target.viewport_height = saved_viewport
+                        target.set_viewport(*saved_viewport)
                 else:
                     # A per-camera offscreen FBO is already sized to that camera's own resolution and is independent of
                     # the window, so its viewport is authoritative and must not be overridden with the window size.
@@ -855,7 +899,24 @@ class Viewer(pyglet.window.Window):
 
             # Render the scene
             self.clear()
-            self._render()
+            if self._viewer_count == 1:
+                self._render()
+            else:
+                viewport_rects = _viewport_rects(self._viewport_size, self._viewer_count)
+                try:
+                    self._render(viewport_rect=viewport_rects[0])
+                    self._render(
+                        camera_node=self._secondary_camera_node,
+                        trackball=self._secondary_trackball,
+                        viewport_rect=viewport_rects[1],
+                        is_first_pass=False,
+                        force_skip_shadows=True,
+                    )
+                finally:
+                    self.scene.main_camera_node = self._camera_node
+                    self._renderer.set_viewport(0, 0, *self._viewport_size)
+                    glDisable(GL_SCISSOR_TEST)
+                    glViewport(0, 0, self._renderer.viewport_width, self._renderer.viewport_height)
 
         # Capture the recording frame right after the scene render, before any on-screen overlay (captions, help
         # text, and the plugins' ImGui panel / gizmo) is drawn, so the video shows only the rendered scene.
@@ -895,52 +956,74 @@ class Viewer(pyglet.window.Window):
         self._renderer._delete_floor_framebuffer()
 
         self._viewport_size = (width, height)
-        self._trackball.resize(self._viewport_size)
-        self._renderer.viewport_width = width
-        self._renderer.viewport_height = height
+        viewport_rects = _viewport_rects(self._viewport_size, self._viewer_count)
+        self._trackball.resize(viewport_rects[0][2:])
+        if self._secondary_trackball is not None:
+            self._secondary_trackball.resize(viewport_rects[1][2:])
+        self._renderer.set_viewport(0, 0, width, height)
         self.on_draw()
 
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int) -> EVENT_HANDLE_STATE:
         """The mouse was moved with no buttons held down."""
         pass
 
+    def _trackball_for_viewport(self, viewport_idx):
+        if viewport_idx == 0:
+            return self._trackball
+        return self._secondary_trackball
+
+    def _camera_node_for_viewport(self, viewport_idx):
+        if viewport_idx == 0:
+            return self._camera_node
+        return self._secondary_camera_node
+
+    def _local_pointer(self, x, y, viewport_idx):
+        viewport_rect = _viewport_rects(self._viewport_size, self._viewer_count)[viewport_idx]
+        return _viewport_local_point(x, y, viewport_rect)
+
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int) -> EVENT_HANDLE_STATE:
         """Record an initial mouse press."""
         # Stop animating while using the mouse
         self.viewer_flags["mouse_pressed"] = True
 
-        self._trackball.set_state(Trackball.STATE_ROTATE)
+        self._active_viewport = _viewport_index_at(x, self._viewport_size, self._viewer_count)
+        trackball = self._trackball_for_viewport(self._active_viewport)
+        trackball.set_state(Trackball.STATE_ROTATE)
         if button == pyglet.window.mouse.LEFT:
             ctrl = modifiers & pyglet.window.key.MOD_CTRL
             shift = modifiers & pyglet.window.key.MOD_SHIFT
             alt = modifiers & pyglet.window.key.MOD_ALT
             if ctrl:
-                self._trackball.set_state(Trackball.STATE_ZOOM)
+                trackball.set_state(Trackball.STATE_ZOOM)
             elif alt or shift:
-                self._trackball.set_state(Trackball.STATE_PAN)
+                trackball.set_state(Trackball.STATE_PAN)
         elif button == pyglet.window.mouse.MIDDLE:
-            self._trackball.set_state(Trackball.STATE_PAN)
+            trackball.set_state(Trackball.STATE_PAN)
         elif button == pyglet.window.mouse.RIGHT:
-            self._trackball.set_state(Trackball.STATE_ZOOM)
+            trackball.set_state(Trackball.STATE_ZOOM)
 
-        self._trackball.down(np.array([x, y]))
+        trackball.down(self._local_pointer(x, y, self._active_viewport))
 
         return EVENT_HANDLED
 
     def on_mouse_drag(self, x: int, y: int, dx: int, dy: int, buttons: int, modifiers: int) -> EVENT_HANDLE_STATE:
         """The mouse was moved with one or more buttons held down."""
-        result = self._trackball.drag(np.array([x, y]))
+        viewport_idx = 0 if self._active_viewport is None else self._active_viewport
+        result = self._trackball_for_viewport(viewport_idx).drag(self._local_pointer(x, y, viewport_idx))
         return result
 
     def on_mouse_release(self, x: int, y: int, button: int, modifiers: int) -> EVENT_HANDLE_STATE:
         """Record a mouse release."""
         self.viewer_flags["mouse_pressed"] = False
+        self._active_viewport = None
         return EVENT_HANDLED
 
     def on_mouse_scroll(self, x, y, dx, dy) -> EVENT_HANDLE_STATE:
         """Record a mouse scroll."""
+        viewport_idx = _viewport_index_at(x, self._viewport_size, self._viewer_count)
+        trackball = self._trackball_for_viewport(viewport_idx)
         if self.viewer_flags["use_perspective_cam"]:
-            self._trackball.scroll(dy)
+            trackball.scroll(dy)
         else:
             spfc = 0.95
             dy_f = float(dy)
@@ -948,7 +1031,7 @@ class Viewer(pyglet.window.Window):
                 return EVENT_HANDLED
             sf = float(spfc**dy_f)
 
-            c = self._camera_node.camera
+            c = self._camera_node_for_viewport(viewport_idx).camera
             xmag = max(c.xmag * sf, 1e-8)
             ymag = max(c.ymag * sf, 1e-8 * c.ymag / c.xmag)
             c.xmag = xmag
@@ -1006,7 +1089,19 @@ class Viewer(pyglet.window.Window):
         self._camera_node.matrix = self._default_camera_pose
         oc = self._default_orth_cam
         oc.xmag, oc.ymag = self._orth_cam_reset_mags
-        self._trackball = Trackball(self._default_camera_pose, self.viewport_size, scale, centroid)
+        viewport_rects = _viewport_rects(self.viewport_size, self._viewer_count)
+        self._trackball = Trackball(self._default_camera_pose, viewport_rects[0][2:], scale, centroid)
+        if self._secondary_camera_node is not None:
+            self._secondary_camera_node.matrix = self._secondary_default_camera_pose
+            secondary_camera = self._secondary_camera_node.camera
+            if isinstance(secondary_camera, OrthographicCamera):
+                secondary_camera.xmag, secondary_camera.ymag = self._orth_cam_reset_mags
+            self._secondary_trackball = Trackball(
+                self._secondary_default_camera_pose,
+                viewport_rects[1][2:],
+                scale,
+                centroid if self._secondary_view_center is None else self._secondary_view_center,
+            )
 
     def _get_save_filename(self, file_exts):
         global root
@@ -1069,17 +1164,58 @@ class Viewer(pyglet.window.Window):
         az = self.viewer_flags["rotate_rate"] / self.viewer_flags["refresh_rate"]
         self._trackball.rotate(az, self.viewer_flags["rotate_axis"])
 
-    def _render(self, camera_node=None, renderer=None, normal=False):
+    def _render(
+        self,
+        camera_node=None,
+        renderer=None,
+        normal=False,
+        trackball=None,
+        viewport_rect=None,
+        is_first_pass=True,
+        force_skip_shadows=False,
+    ):
+        renderer_ = self._renderer if renderer is None else renderer
+        saved_camera_node = self.scene.main_camera_node
+        saved_viewport = renderer_.logical_viewport
+        try:
+            return self._render_impl(
+                camera_node,
+                renderer_,
+                normal,
+                trackball,
+                viewport_rect,
+                is_first_pass,
+                force_skip_shadows,
+            )
+        finally:
+            self.scene.main_camera_node = saved_camera_node
+            renderer_.set_viewport(*saved_viewport)
+
+    def _render_impl(
+        self,
+        camera_node=None,
+        renderer=None,
+        normal=False,
+        trackball=None,
+        viewport_rect=None,
+        is_first_pass=True,
+        force_skip_shadows=False,
+    ):
         """Render the scene into the framebuffer and flip."""
         scene = self.scene
-        self._camera_node.matrix = self._trackball.pose.copy()
+        if camera_node is None:
+            camera_node = self._camera_node
+            if trackball is None:
+                trackball = self._trackball
+        if trackball is not None:
+            camera_node.matrix = trackball.pose.copy()
 
         if renderer is None:
             renderer = self._renderer
 
-        if camera_node is not None:
-            saved_camera_node = self.scene.main_camera_node
-            self.scene.main_camera_node = camera_node
+        self.scene.main_camera_node = camera_node
+        if viewport_rect is not None:
+            renderer.set_viewport(*viewport_rect)
 
         # Set lighting
         vli = self.viewer_flags["lighting_intensity"]
@@ -1087,7 +1223,7 @@ class Viewer(pyglet.window.Window):
             for n in self._raymond_lights:
                 n.light.intensity = vli / 3.0
                 if not self.scene.has_node(n):
-                    scene.add_node(n, parent_node=self._camera_node)
+                    scene.add_node(n, parent_node=camera_node)
         else:
             self._direct_light.light.intensity = vli
             for n in self._raymond_lights:
@@ -1096,7 +1232,7 @@ class Viewer(pyglet.window.Window):
 
         if self.viewer_flags["use_direct_lighting"]:
             if not self.scene.has_node(self._direct_light):
-                scene.add_node(self._direct_light, parent_node=self._camera_node)
+                scene.add_node(self._direct_light, parent_node=camera_node)
         elif self.scene.has_node(self._direct_light):
             self.scene.remove_node(self._direct_light)
 
@@ -1140,7 +1276,13 @@ class Viewer(pyglet.window.Window):
 
         first_pass_done = False
         if self.render_flags["rgb"] or self.render_flags["depth"] or self.render_flags["seg"]:
-            retval = renderer.render(self.scene, flags, seg_node_map=seg_node_map)
+            retval = renderer.render(
+                self.scene,
+                flags,
+                seg_node_map=seg_node_map,
+                is_first_pass=is_first_pass,
+                force_skip_shadows=force_skip_shadows,
+            )
             first_pass_done = True
         else:
             retval = ()
@@ -1159,9 +1301,6 @@ class Viewer(pyglet.window.Window):
             retval = (*retval, normal_arr)
 
             renderer._program_cache = old_cache
-
-        if camera_node is not None:
-            self.scene.main_camera_node = saved_camera_node
 
         return retval
 

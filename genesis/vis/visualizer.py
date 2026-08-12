@@ -73,7 +73,7 @@ class Visualizer(RBC):
             if viewer_options.res is None:
                 viewer_height = (screen_height * screen_scale) * VIEWER_DEFAULT_HEIGHT_RATIO
                 viewer_width = viewer_height / VIEWER_DEFAULT_ASPECT_RATIO
-                viewer_options.res = (int(viewer_width), int(viewer_height))
+                viewer_options.res = (int(viewer_width) * viewer_options.viewer_count, int(viewer_height))
             if viewer_options.run_in_thread is None:
                 if sys.platform == "linux":
                     viewer_options.run_in_thread = True

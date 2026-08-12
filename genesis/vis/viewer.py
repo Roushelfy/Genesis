@@ -48,6 +48,10 @@ class Viewer(RBC):
         self._camera_init_lookat = np.asarray(options.camera_lookat, dtype=gs.np_float)
         self._camera_up = np.asarray(options.camera_up, dtype=gs.np_float)
         self._camera_fov = options.camera_fov
+        self._viewer_count = options.viewer_count
+        self._secondary_camera_init_pos = np.asarray(options.secondary_camera_pos, dtype=gs.np_float)
+        self._secondary_camera_init_lookat = np.asarray(options.secondary_camera_lookat, dtype=gs.np_float)
+        self._secondary_camera_up = np.asarray(options.secondary_camera_up, dtype=gs.np_float)
 
         self._enable_help_text = options.enable_help_text
         self._plugins: list["ViewerPlugin"] = []
@@ -57,7 +61,15 @@ class Viewer(RBC):
             self._plugins.append(ImGuiOverlayPlugin())
 
         # Validate viewer options
-        if any(e.shape != (3,) for e in (self._camera_init_pos, self._camera_init_lookat, self._camera_up)):
+        camera_vectors = (
+            self._camera_init_pos,
+            self._camera_init_lookat,
+            self._camera_up,
+            self._secondary_camera_init_pos,
+            self._secondary_camera_init_lookat,
+            self._secondary_camera_up,
+        )
+        if any(e.shape != (3,) for e in camera_vectors):
             gs.raise_exception("ViewerOptions.camera_(pos|lookat|up) must be sequences of length 3.")
 
         self._pyrender_viewer = None
@@ -128,6 +140,13 @@ class Viewer(RBC):
                     self._pyrender_viewer = pyrender.Viewer(
                         context=self.context,
                         viewport_size=self._res,
+                        viewer_count=self._viewer_count,
+                        secondary_camera_pose=gu.pos_lookat_up_to_T(
+                            self._secondary_camera_init_pos,
+                            self._secondary_camera_init_lookat,
+                            self._secondary_camera_up,
+                        ),
+                        secondary_view_center=self._secondary_camera_init_lookat,
                         run_in_thread=self._run_in_thread,
                         auto_start=False,
                         view_center=self._camera_init_lookat,

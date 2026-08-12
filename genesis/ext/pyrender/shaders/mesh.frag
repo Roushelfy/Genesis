@@ -105,6 +105,7 @@ uniform vec3 ambient_light;
 uniform sampler2D floor_tex;
 uniform int floor_flag;
 uniform vec2 screen_size;
+uniform vec2 viewport_origin;
 
 uniform mat4 reflection_mat;
 
@@ -483,7 +484,9 @@ void main()
 #endif
     color.xyz += emissive * material.emissive_factor;
 
-    vec3 floor_color = floor_flag != 0 ? texture(floor_tex, gl_FragCoord.xy/screen_size).rgb : vec3(0.0);
+    vec3 floor_color = floor_flag != 0
+        ? texture(floor_tex, (gl_FragCoord.xy - viewport_origin) / screen_size).rgb
+        : vec3(0.0);
 
     if (floor_flag != 0 && length(floor_color) > 1e-4) {
         //color.xyz *= 0;

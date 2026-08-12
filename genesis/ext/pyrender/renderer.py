@@ -59,8 +59,7 @@ class Renderer(object):
         if sys.platform == "darwin" and pyglet.version < "2.0":
             self.dpscale = 2
 
-        self.viewport_width = viewport_width
-        self.viewport_height = viewport_height
+        self.set_viewport(0, 0, viewport_width, viewport_height)
         self.point_size = point_size
 
         # Optional framebuffer for offscreen renders
@@ -73,6 +72,7 @@ class Renderer(object):
         self._main_fb_dims = (None, None)
         self._shadow_fb = None
         self._floor_fb = None
+        self._floor_fb_dims = (None, None)
         self._latest_znear = DEFAULT_Z_NEAR
         self._latest_zfar = DEFAULT_Z_FAR
 
@@ -107,6 +107,24 @@ class Renderer(object):
     @viewport_height.setter
     def viewport_height(self, value):
         self._viewport_height = self.dpscale * value
+
+    @property
+    def viewport_origin(self):
+        """Physical-pixel origin of the current on-screen viewport."""
+        return self._viewport_x, self._viewport_y
+
+    @property
+    def logical_viewport(self):
+        """Current viewport rectangle in logical window coordinates."""
+        return self._logical_viewport
+
+    def set_viewport(self, x, y, width, height):
+        """Set the viewport rectangle using logical window coordinates."""
+        self._logical_viewport = (x, y, width, height)
+        self._viewport_x = self.dpscale * x
+        self._viewport_y = self.dpscale * y
+        self._viewport_width = self.dpscale * width
+        self._viewport_height = self.dpscale * height
 
     @property
     def point_size(self):
@@ -406,6 +424,7 @@ class Renderer(object):
 
         floor_tex = self._floor_texture_color._texid if flags & RenderFlags.REFLECTIVE_FLOOR else 0
         screen_size = np.array([self.viewport_width, self.viewport_height], np.float32)
+        viewport_origin = np.array(self.viewport_origin, np.float32)
 
         common_kwargs = dict(env_idx=env_idx)
         if flags & RenderFlags.SEG:
@@ -418,6 +437,7 @@ class Renderer(object):
             common_kwargs["color_list"] = color_list
         else:
             common_kwargs["floor_tex"] = floor_tex
+            common_kwargs["viewport_origin"] = viewport_origin
 
         if flags & (RenderFlags.SEG | RenderFlags.DEPTH_ONLY | RenderFlags.SKIP_MARKERS):
             # No markers contribute to the output in these modes — single pass.
@@ -953,10 +973,13 @@ class Renderer(object):
                 glBindFramebuffer(GL_DRAW_FRAMEBUFFER, self._main_fb)
             else:
                 glBindFramebuffer(GL_DRAW_FRAMEBUFFER, self._main_fb_ms)
+            glDisable(GL_SCISSOR_TEST)
+            glViewport(0, 0, self.viewport_width, self.viewport_height)
         else:
             glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0)
-
-        glViewport(0, 0, self.viewport_width, self.viewport_height)
+            glEnable(GL_SCISSOR_TEST)
+            glScissor(*self.viewport_origin, self.viewport_width, self.viewport_height)
+            glViewport(*self.viewport_origin, self.viewport_width, self.viewport_height)
         glEnable(GL_DEPTH_TEST)
         glDepthMask(GL_TRUE)
         glDepthFunc(GL_LESS)
@@ -966,6 +989,7 @@ class Renderer(object):
         self._configure_floor_framebuffer()
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, self._floor_fb)
 
+        glDisable(GL_SCISSOR_TEST)
         glViewport(0, 0, self.viewport_width, self.viewport_height)
         glEnable(GL_DEPTH_TEST)
         glDepthMask(GL_TRUE)
@@ -979,6 +1003,7 @@ class Renderer(object):
         glDrawBuffer(GL_NONE)
         glReadBuffer(GL_NONE)
 
+        glDisable(GL_SCISSOR_TEST)
         glClear(GL_DEPTH_BUFFER_BIT)
         glViewport(0, 0, SHADOW_TEX_SZ, SHADOW_TEX_SZ)
         glEnable(GL_DEPTH_TEST)
@@ -994,6 +1019,7 @@ class Renderer(object):
         glDrawBuffer(GL_NONE)
         glReadBuffer(GL_NONE)
 
+        glDisable(GL_SCISSOR_TEST)
         glClear(GL_DEPTH_BUFFER_BIT)
         glViewport(0, 0, SHADOW_TEX_SZ, SHADOW_TEX_SZ)
         glEnable(GL_DEPTH_TEST)
@@ -1008,6 +1034,8 @@ class Renderer(object):
     ###########################################################################
 
     def _configure_floor_framebuffer(self):
+        if self._floor_fb is not None and self._floor_fb_dims != (self.viewport_width, self.viewport_height):
+            self._delete_floor_framebuffer()
         if self._floor_texture_depth is None:
             self._floor_texture_depth = Texture(
                 width=self.viewport_width, height=self.viewport_height, source_channels="D", data_format=GL_FLOAT
@@ -1023,6 +1051,7 @@ class Renderer(object):
             glBindFramebuffer(GL_DRAW_FRAMEBUFFER, self._floor_fb)
             self._floor_texture_color._bind_as_color_attachment()
             self._floor_texture_depth._bind_as_depth_attachment()
+            self._floor_fb_dims = (self.viewport_width, self.viewport_height)
 
     def _delete_floor_framebuffer(self):
         if self._floor_fb is not None:
@@ -1036,6 +1065,7 @@ class Renderer(object):
         if self._floor_texture_depth is not None:
             self._floor_texture_depth.delete()
             self._floor_texture_depth = None
+        self._floor_fb_dims = (None, None)
 
     def _configure_shadow_framebuffer(self):
         if self._shadow_fb is None:
