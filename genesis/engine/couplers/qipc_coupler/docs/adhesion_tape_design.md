@@ -346,7 +346,7 @@ existing mechanics.
 | **A5.2 tape import (drop class)** | §4 Cloth fields, §5 rest_geometry channel, §6 TapeAsset + `add_tape_roll` | prestress unit test (wound strip springs open without adhesion; holds with `beta0=1`); tape-drop port: lift roll by free tail → hub carried (the cgq drop diagnostic), rendered video |
 | **A5.3 kinematic driving** | §7 STC + `aim_q`, `qipc_d_hat` | orbit/pull demo; optional Genesis-side wind (§6.3 v2) |
 | **A5.4 state transfer** | automatic authored `bond_topos` mapping/seeding + reset replay; manual `seed_bonds` replay | shifted-hub-id test asserts all 454 rows at build and after repeated step/reset; β import remains deferred and `beta0=1` covers it |
-| **A5.5 cluster optimization** | generic queued affine-cluster API + optional tape bond-front controller | 983 authored member triangles at collar 3; forced release/motion shrinks membership; reset restores 454 bonds and all 983 members |
+| **A5.5 cluster optimization** | generic queued affine-cluster API + optional tape bond-front controller | 995 authored member triangles at collar 3; forced release/motion shrinks membership; reset restores 454 bonds and all 995 members |
 
 ## 10. Constraints & gotchas carried into the design (upstream facts)
 

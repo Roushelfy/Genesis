@@ -5,7 +5,9 @@ implemented. The frozen post-f249 state was audited against cuda-graph-qipc
 commit `c66c312e682cdde1cbad885ff4774f274b48d02c`; the URDF inertials separately
 track the balanced source asset hash recorded in `manifest.json`. The
 fixed-topology solver profile tracks commit
-`003c2681d024d18ccaaf967d341b2703b94b6b47`.
+`003c2681d024d18ccaaf967d341b2703b94b6b47`. The releasable cluster policy
+tracks `c6108108b70d92fbb51f21e7c4ab7e173e5f65d5`, and the default collision
+proxies track `5c41c4fa`.
 
 > Implementation: `../tape_dispenser.py`; frozen assets:
 > `genesis/assets/qipc/tape_dispenser_v2/`; tests:
@@ -90,6 +92,11 @@ component = add_tape_dispenser(
 scene.build()
 ```
 
+Set `rigid_cluster=True` to constrain the deeply wound tape triangles to the
+existing `tape_wheel` ABD. The returned `component.lifecycle` must be
+initialized after build and called before each step; composed environments do
+this automatically.
+
 The rigid-only ablation uses the canonical ringless URDF and the non-adhesive
 contact recommendation:
 
@@ -152,11 +159,17 @@ order is not the same as URDF link order.
 
 ## 5. Geometry and state construction
 
-Both machine URDF variants disable fixed-link merging, convexification, decimation,
-watertightening, alignment, and collision-mesh post-processing. The general
-`URDF(preserve_collision_mesh_topology=True)` contract retains the exact
-urdfpy collision vertices and faces. Exact topology is required because the
-frozen attachment, contact-region, and bond mappings depend on vertex identity.
+Both machine URDF variants disable fixed-link merging, convexification,
+decimation, watertightening, alignment, and collision-mesh post-processing.
+The default proxy URDFs preserve their authored collision topology exactly;
+passing `collision_proxies=False` selects the original high-resolution
+collision meshes instead. Visual meshes remain unchanged.
+
+The proxies reduce the rigid collision surface from 142,181 to 16,008 vertices
+for the ringless machine. The full component adds the same 192-vertex physical
+ring, for 16,200 rigid vertices instead of 142,373. They are generated from the
+source meshes with conservative shape-preserving error bounds and affect only
+collision geometry, not mass, joints, frozen tape state, or rendering.
 
 The ringless `tape_dispenser_machine.urdf` is the upstream canonical six-mesh
 URDF. The full `tape_dispenser.urdf` additionally references the ring's pure
@@ -258,13 +271,29 @@ One scene currently accepts at most one frozen bond-state request. It cannot be
 mixed with authored or manual `seed_bonds` batches because restoring slots
 replaces the whole native `BondSystem` state.
 
-## 9. Validation ladder
+## 9. Optional releasable wheel cluster
+
+The cluster variant uses the frozen 969 bond slots as a certificate for the
+wound interior. Bond occupancy is measured per structured tape row. The first
+run of four rows with at most 25 percent bonded vertices marks the payout
+front; the final row is always excluded. With the default three-ring collar,
+2,720 tape triangles initially ride the existing `tape_wheel` ABD.
+
+This is a hard affine membership constraint, not another bond or target
+penalty. The wheel remains dynamically driven by its articulation, contacts,
+and transferred FEM/bond forces. Released authored bonds advance the front
+only after an affected vertex has moved more than `5 * d_hat` in the wheel
+frame. Detachment is monotone, restores the released FEM elements, clears
+touching bonds, and preserves position and velocity continuity. Reset restores
+all 2,720 initial memberships and the frozen bonds.
+
+## 10. Validation ladder
 
 | Layer | Oracle | Assertions |
 | --- | --- | --- |
 | Asset contract | checked-in manifest and NPZ metadata | hashes, safe paths/no pickle, stable names, counts, finite arrays, joint values, solver options |
 | Parser contract | synthetic multi-node GLB | exact URDF collision vertices/faces and incompatible-option rejection |
-| GPU integration | frozen f249 artifact and ringless URDF | full transforms/tape/969 bonds plus machine-only 142,181 rigid vertices, zero FEM, one finite step, exact reset |
+| GPU integration | frozen f249 artifact and proxy URDFs | full transforms/tape/969 bonds, 16,200 full or 16,008 ringless rigid vertices, 2,720 optional cluster triangles, finite step, exact reset |
 | gs-core scenes | composed robot and table | placement, external pairs, Pika/Wuji compatibility, teleop reset |
 
 Run the implemented gates from the Genesis checkout:
@@ -289,7 +318,7 @@ The integration test explicitly requests Genesis precision 64. A separate
 oracle's tolerance. The scene step asserts finite state and bounded initial
 motion; it does not incorrectly assert static equilibrium.
 
-## 10. Known limitations
+## 11. Known limitations
 
 - Dynamic cutting and the source's 32 parked cut-spare vertices are absent.
 - The root is free and unactuated; no permanent anchoring policy is included.
@@ -299,13 +328,13 @@ motion; it does not incorrectly assert static equilibrium.
 - Strict snapshot comparisons require Genesis precision 64.
 - The importer neither selects a robot nor adds surrounding scene objects.
 
-## 11. gs-core composition
+## 12. gs-core composition
 
 The gs-core scene remains independent of robot choice:
 
 ```text
 --robot-type marvin_pika|marvin_wuji
---scene-type tape_dispenser_qipc
+--scene-type tape_dispenser_qipc|tape_dispenser_cluster_qipc
 ```
 
 Its scene builder adds only the standard table around this component, constructs

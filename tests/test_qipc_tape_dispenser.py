@@ -60,7 +60,7 @@ def test_add_tape_dispenser_machine_is_ringless_urdf_only():
     assert native.config["linear_system/preconditioner"] == "mas"
     assert native.config["linear_system/abd_preconditioner"] == "tree"
     assert native.affine_body.n_bodies == 4
-    assert native.affine_body.n_verts == 142181
+    assert native.affine_body.n_verts == 16008
     assert native.finite_element.n_verts == 0
     assert float(native.affine_body.q_v.abs().max()) == 0.0
     assert float(native.joint_system.theta.abs().max()) == 0.0
@@ -68,10 +68,10 @@ def test_add_tape_dispenser_machine_is_ringless_urdf_only():
     assert float(native.joint_system.kv.abs().max()) == 0.0
 
     geometries = {slot.name: slot.geometry for slot in native.geometries}
-    assert geometries["tape_cutter"].vertices.size == 97513
-    assert geometries["Cylinder"].vertices.size == 2981
-    assert geometries["blade"].vertices.size == 5209
-    assert geometries["tape_wheel"].vertices.size == 36478
+    assert geometries["tape_cutter"].vertices.size == 10646
+    assert geometries["Cylinder"].vertices.size == 512
+    assert geometries["blade"].vertices.size == 767
+    assert geometries["tape_wheel"].vertices.size == 4083
     wheel_link = next(link for link in machine.links if link.name == "tape_wheel")
     assert not any(
         str(vgeom.metadata.get("mesh_path", "")).endswith("/scotch3850_ring.glb") for vgeom in wheel_link.vgeoms
@@ -161,7 +161,7 @@ def test_add_tape_dispenser_matches_f249_contact_and_reset():
     assert native.config["linear_system/preconditioner"] == "mas"
     assert native.config["linear_system/abd_preconditioner"] == "tree"
     assert native.affine_body.n_bodies == 4
-    assert native.affine_body.n_verts == 142373
+    assert native.affine_body.n_verts == 16200
     assert native.finite_element.n_verts == 1936
     assert coupler.adhesion.get_bond_count() == 969
     assert coupler.adhesion.get_bond_seed_result(component.tape) == (969, 0)
@@ -200,10 +200,10 @@ def test_add_tape_dispenser_matches_f249_contact_and_reset():
         assert actual_joint_by_name[name] == pytest.approx(expected, abs=1e-14)
 
     geometries = {slot.name: slot.geometry for slot in native.geometries}
-    assert geometries["tape_cutter"].vertices.size == 97513
-    assert geometries["Cylinder"].vertices.size == 2981
-    assert geometries["blade"].vertices.size == 5209
-    assert geometries["tape_wheel"].vertices.size == 36670
+    assert geometries["tape_cutter"].vertices.size == 10646
+    assert geometries["Cylinder"].vertices.size == 512
+    assert geometries["blade"].vertices.size == 767
+    assert geometries["tape_wheel"].vertices.size == 4275
     wheel_link = next(link for link in component.machine.links if link.name == "tape_wheel")
     ring_visuals = [
         vgeom
@@ -261,3 +261,42 @@ def test_add_tape_dispenser_matches_f249_contact_and_reset():
     assert float(native.affine_body.q_v.abs().max()) == 0.0
     assert float(native.finite_element.velocities.abs().max()) == 0.0
     np.testing.assert_array_equal(_sorted_rows(coupler.adhesion.get_bond_topos()), bonds_initial)
+
+
+@pytest.mark.required
+@pytest.mark.precision("64")
+def test_add_tape_dispenser_cluster_uses_wheel_proxy_and_replays_membership():
+    module = _module()
+    scene = gs.Scene(
+        sim_options=gs.options.SimOptions(dt=0.01, gravity=(0.0, 0.0, -9.8)),
+        coupler_options=gs.options.QIPCCouplerOptions(**module.recommended_coupler_options()),
+        show_viewer=False,
+    )
+    component = module.add_tape_dispenser(
+        scene,
+        pos=(0.5, 0.0, 0.86661028),
+        euler=(0.0, 0.0, 180.0),
+        rigid_cluster=True,
+    )
+    scene.build()
+    assert component.lifecycle is not None
+    component.lifecycle.initialize()
+
+    coupler = scene.sim.coupler
+    native = coupler._scene
+    wheel_geometry = next(slot.geometry for slot in native.geometries if slot.name == "tape_wheel")
+    wheel_body = int(np.asarray(wheel_geometry.meta["abd_body_offset"].cpu()).reshape(-1)[0])
+    assert component.lifecycle._cluster.proxy_body_index == wheel_body
+    assert component.lifecycle.initial_member_count == 2720
+    assert component.lifecycle.member_count == 2720
+    assert coupler.adhesion.get_bond_count() == 969
+
+    scene.step()
+    component.lifecycle.before_step()
+    assert component.lifecycle.member_count == 2720
+    scene.reset()
+    component.lifecycle.reset()
+    assert component.lifecycle.member_count == 2720
+    assert component.lifecycle.released_total == 0
+    assert component.lifecycle.melted_total == 0
+    assert coupler.adhesion.get_bond_count() == 969

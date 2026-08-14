@@ -45,7 +45,7 @@ needs_tape_asset = pytest.mark.skipif(
 @needs_tape_asset
 @pytest.mark.parametrize(
     ("collar", "expected_count"),
-    [(0, 1019), (1, 1007), (2, 995), (3, 983)],
+    [(0, 1019), (1, 1019), (2, 1007), (3, 995)],
 )
 def test_bond_cluster_member_triangles_follow_authored_front(collar, expected_count):
     tape_mod = _tape_module()
@@ -651,9 +651,9 @@ def test_tape_bond_cluster_releases_and_replays_after_reset(show_viewer):
 
     hub_body_index = next(entry.body_offset for entry in coupler._free_base_entries if entry.entity is hub)
     assert cluster.proxy_body_index != hub_body_index
-    assert controller.initial_member_count == 983
-    assert controller.member_count == 983
-    assert cluster.member_count == 983
+    assert controller.initial_member_count == 995
+    assert controller.member_count == 995
+    assert cluster.member_count == 995
     assert coupler.adhesion.get_bond_count() == 454
     initial_positions = tape.get_state().pos[0].clone()
 
@@ -691,7 +691,7 @@ def test_tape_bond_cluster_releases_and_replays_after_reset(show_viewer):
     bonds_before_melt = {tuple(int(value) for value in row) for row in coupler.adhesion.get_bond_topos()}
     melted = controller.before_step()
     assert melted > 0
-    assert controller.member_count == 983 - melted
+    assert controller.member_count == 995 - melted
     assert cluster.member_count == controller.member_count
     assert controller.released_total > 0
     bonds_after_melt = {tuple(int(value) for value in row) for row in coupler.adhesion.get_bond_topos()}
@@ -700,10 +700,10 @@ def test_tape_bond_cluster_releases_and_replays_after_reset(show_viewer):
 
     scene.reset()
     controller.reset()
-    assert controller.member_count == 983
+    assert controller.member_count == 995
     assert controller.released_total == 0
     assert controller.melted_total == 0
-    assert cluster.member_count == 983
+    assert cluster.member_count == 995
     assert coupler.adhesion.get_bond_count() == 454
     np.testing.assert_allclose(
         tape.get_state().pos[0].cpu().numpy(),

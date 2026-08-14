@@ -23,6 +23,7 @@ import os
 import tempfile
 from collections import deque
 from dataclasses import dataclass
+from typing import Protocol
 
 import numpy as np
 import torch
@@ -154,6 +155,14 @@ class TapeAsset:
             for j in range(self.nz + 1):
                 verts[i * (self.nz + 1) + j] = (0.0, i * dy, j * dz - 0.5 * self.width)
         return verts
+
+
+class _TapeClusterAsset(Protocol):
+    tape_positions: np.ndarray
+    tape_tris: np.ndarray
+    bond_topos: np.ndarray | None
+    bond_topos_space: str | None
+    bond_fem_gvo: int
 
 
 def make_ring_hub(r_out: float, r_in: float, height: float, n_sides: int = 48):
@@ -350,7 +359,7 @@ def _bond_rest_height(asset: TapeAsset) -> float:
     return 2.0 * asset.thick + ratio * asset.d_hat
 
 
-def bond_cluster_member_triangles(asset: TapeAsset, collar: int) -> np.ndarray:
+def bond_cluster_member_triangles(asset: _TapeClusterAsset, collar: int) -> np.ndarray:
     """Select the bonded roll interior that may be represented by one cluster.
 
     The wind-authored distance bonds form the rigid certificate. The largest
@@ -369,7 +378,7 @@ def bond_cluster_member_triangles(asset: TapeAsset, collar: int) -> np.ndarray:
     return np.flatnonzero(member).astype(np.int32)
 
 
-def _bond_cluster_certificate(asset: TapeAsset) -> tuple[np.ndarray, np.ndarray, list[set[int]]]:
+def _bond_cluster_inputs(asset: _TapeClusterAsset) -> tuple[np.ndarray, np.ndarray, list[set[int]]]:
     if asset.bond_topos is None or asset.bond_topos.size == 0:
         gs.raise_exception("bond_cluster_member_triangles requires wind-authored distance bonds.")
 
@@ -390,7 +399,13 @@ def _bond_cluster_certificate(asset: TapeAsset) -> tuple[np.ndarray, np.ndarray,
             adjacency[int(left)].add(int(right))
             adjacency[int(right)].add(int(left))
 
+    return triangles, bonded, adjacency
+
+
+def _bond_cluster_certificate(asset: _TapeClusterAsset) -> tuple[np.ndarray, np.ndarray, list[set[int]]]:
+    triangles, bonded, adjacency = _bond_cluster_inputs(asset)
     free = ~bonded
+    n_vertices = len(bonded)
     component = np.full(n_vertices, -1, dtype=np.int32)
     component_sizes: list[int] = []
     for seed in np.flatnonzero(free):
@@ -414,6 +429,39 @@ def _bond_cluster_certificate(asset: TapeAsset) -> tuple[np.ndarray, np.ndarray,
     return triangles, bonded, adjacency
 
 
+def _structured_bond_cluster_certificate(
+    asset: _TapeClusterAsset,
+    *,
+    row_width: int,
+    never_member: np.ndarray,
+    free_run: int = 4,
+    max_bonded_fraction: float = 0.25,
+) -> tuple[np.ndarray, np.ndarray, list[set[int]]]:
+    """Build one continuous bonded prefix for a row-major wound tape."""
+    triangles, raw_bonded, adjacency = _bond_cluster_inputs(asset)
+    n_vertices = len(raw_bonded)
+    if row_width <= 0 or n_vertices % row_width:
+        gs.raise_exception("structured tape row_width must be positive and divide the vertex count.")
+    never = np.asarray(never_member, dtype=bool).reshape(-1)
+    if len(never) != n_vertices:
+        gs.raise_exception("structured tape never_member mask must match the tape vertex count.")
+    row_fraction = raw_bonded.reshape(-1, row_width).mean(axis=1)
+    free_row = len(row_fraction)
+    for row in range(len(row_fraction) - free_run + 1):
+        if np.all(row_fraction[row : row + free_run] <= max_bonded_fraction):
+            free_row = row
+            break
+    if free_row == len(row_fraction):
+        never_rows = np.flatnonzero(never.reshape(-1, row_width).any(axis=1))
+        if len(never_rows):
+            free_row = int(never_rows.min())
+
+    bonded = np.zeros(n_vertices, dtype=bool)
+    bonded[: free_row * row_width] = True
+    bonded &= ~never
+    return triangles, bonded, adjacency
+
+
 def _bond_cluster_target(
     triangles: np.ndarray,
     bonded: np.ndarray,
@@ -432,7 +480,7 @@ def _bond_cluster_target(
                 distance[neighbor] = next_distance
                 frontier.append(neighbor)
 
-    deep = bonded & (distance > collar)
+    deep = bonded & (distance >= collar)
     return deep[triangles].all(axis=1)
 
 
@@ -471,17 +519,18 @@ class TapeBondClusterController:
         coupler,
         cluster,
         tape_entity,
-        asset: TapeAsset,
+        asset: _TapeClusterAsset,
         *,
         collar: int,
         detach_displacement: float,
+        certificate: tuple[np.ndarray, np.ndarray, list[set[int]]] | None = None,
     ) -> None:
         if not np.isfinite(detach_displacement) or detach_displacement <= 0.0:
             gs.raise_exception("TapeBondClusterController: detach_displacement must be finite and positive.")
         if isinstance(collar, bool) or not isinstance(collar, (int, np.integer)) or collar < 0:
             gs.raise_exception("TapeBondClusterController: collar must be a non-negative integer.")
 
-        triangles, bonded, adjacency = _bond_cluster_certificate(asset)
+        triangles, bonded, adjacency = _bond_cluster_certificate(asset) if certificate is None else certificate
         initial_member = _bond_cluster_target(triangles, bonded, ~bonded, adjacency, int(collar))
         self._coupler = coupler
         self._cluster = cluster
@@ -635,22 +684,41 @@ class TapeBondClusterController:
 def add_tape_bond_cluster(
     scene,
     tape_entity,
-    asset: TapeAsset,
+    asset: _TapeClusterAsset,
     *,
     kappa: float,
     collar: int,
     detach_displacement: float,
+    proxy_entity=None,
+    proxy_link=None,
+    structured_row_width: int | None = None,
+    never_member: np.ndarray | None = None,
 ) -> TapeBondClusterController:
-    """Queue a ghost-proxy tape cluster and return its runtime peel policy."""
+    """Queue a releasable tape cluster and return its runtime peel policy."""
     coupler = scene.sim.coupler
     if coupler._options.adhesion_bond_lock_floor_ratio <= 0.0:
         gs.raise_exception(
             "add_tape_bond_cluster requires adhesion_bond_lock_floor_ratio > 0 "
             "so cleared near-barrier bonds cannot immediately re-lock."
         )
-    member_triangles = bond_cluster_member_triangles(asset, collar)
+    certificate = None
+    if structured_row_width is not None:
+        if never_member is None:
+            gs.raise_exception("structured tape clusters require a never_member mask.")
+        certificate = _structured_bond_cluster_certificate(
+            asset,
+            row_width=structured_row_width,
+            never_member=never_member,
+        )
+        triangles, bonded, adjacency = certificate
+        initial_member = _bond_cluster_target(triangles, bonded, ~bonded, adjacency, collar)
+        member_triangles = np.flatnonzero(initial_member).astype(np.int32)
+    else:
+        member_triangles = bond_cluster_member_triangles(asset, collar)
     cluster = coupler.add_affine_cluster(
         tape_entity,
+        proxy_entity=proxy_entity,
+        proxy_link=proxy_link,
         kappa=kappa,
         initial_tris=member_triangles,
     )
@@ -661,6 +729,7 @@ def add_tape_bond_cluster(
         asset,
         collar=collar,
         detach_displacement=detach_displacement,
+        certificate=certificate,
     )
 
 

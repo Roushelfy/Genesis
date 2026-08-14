@@ -28,7 +28,7 @@ from genesis.utils.misc import get_assets_dir, tensor_to_array
 
 from .contact import QIPCContactRegion
 from .rigid_attachment import QIPCRigidAttachment
-from .tape import TapeAsset, _verify_same_vertex_order, _write_obj
+from .tape import TapeAsset, TapeBondClusterController, _verify_same_vertex_order, _write_obj, add_tape_bond_cluster
 
 _ASSET_DIRECTORY = Path(get_assets_dir()) / "qipc" / "tape_dispenser_v2"
 _ASSET_FORMAT = "genesis.qipc.tape_dispenser"
@@ -40,7 +40,9 @@ _RING_VERSION = 1
 _BODY_NAMES = ("tape_cutter", "Cylinder", "blade", "tape_wheel")
 _JOINT_NAMES = ("Cylinder_axle", "blade_hinge", "tape_wheel_axle")
 _MACHINE_URDF = "tape_dispenser_machine.urdf"
+_MACHINE_PROXY_URDF = "tape_dispenser_machine_proxy.urdf"
 _FULL_URDF = "tape_dispenser.urdf"
+_FULL_PROXY_URDF = "tape_dispenser_proxy.urdf"
 _MACHINE_MESH_FILES = frozenset(
     {
         "meshes/Cube.glb",
@@ -52,9 +54,21 @@ _MACHINE_MESH_FILES = frozenset(
     }
 )
 _MESH_FILES = _MACHINE_MESH_FILES | {"meshes/scotch3850_ring.glb"}
+_PROXY_MESH_FILES = frozenset(
+    {
+        "meshes/collision_proxies/Cube.glb",
+        "meshes/collision_proxies/blade.glb",
+        "meshes/collision_proxies/cylinder.glb",
+        "meshes/collision_proxies/sharp.glb",
+        "meshes/collision_proxies/tape_cutter.glb",
+        "meshes/collision_proxies/tape_wheel.glb",
+    }
+)
 _URDF_MESH_FILES = {
     _FULL_URDF: _MESH_FILES,
     _MACHINE_URDF: _MACHINE_MESH_FILES,
+    _FULL_PROXY_URDF: _MESH_FILES | _PROXY_MESH_FILES,
+    _MACHINE_PROXY_URDF: _MACHINE_MESH_FILES | _PROXY_MESH_FILES,
 }
 _REQUIRED_FILES = frozenset(
     {
@@ -63,6 +77,7 @@ _REQUIRED_FILES = frozenset(
         "post_f249_static.npz",
         "ring_local.npz",
         *_MESH_FILES,
+        *_PROXY_MESH_FILES,
     }
 )
 _SHA256_PATTERN = re.compile(r"[0-9a-f]{64}")
@@ -226,6 +241,23 @@ class TapeDispenserAsset:
     bond_release_gap: np.ndarray
     bond_release_slip: np.ndarray
     bond_age: np.ndarray
+
+    @property
+    def bond_topos(self) -> np.ndarray:
+        """Frozen bond topology in compact `[ring | tape]` vertex space."""
+        return self.bond_topologies
+
+    @property
+    def bond_topos_space(self) -> str:
+        return "global"
+
+    @property
+    def bond_fem_gvo(self) -> int:
+        return len(self.ring_positions)
+
+    @property
+    def tape_tris(self) -> np.ndarray:
+        return self.tape_triangles
 
     @classmethod
     def packaged(cls) -> TapeDispenserAsset:
@@ -491,6 +523,7 @@ class TapeDispenser:
     sharp_region: QIPCContactRegion
     ring_region: QIPCContactRegion
     asset: TapeDispenserAsset
+    lifecycle: TapeBondClusterController | None
 
 
 def recommended_machine_coupler_options() -> dict[str, object]:
@@ -525,6 +558,7 @@ def recommended_coupler_options() -> dict[str, object]:
             "adhesion_bond_default": False,
             "adhesion_bond_kappa": 3.0e7,
             "adhesion_bond_release_force": 0.5,
+            "adhesion_bond_lock_floor_ratio": 0.5,
         }
     )
     return options
@@ -582,6 +616,7 @@ def add_tape_dispenser_machine(
     pos=(0.0, 0.0, 0.0),
     euler=(0.0, 0.0, 0.0),
     machine_surface=None,
+    collision_proxies: bool = True,
 ):
     """Add only the ringless rigid dispenser URDF before scene build.
 
@@ -597,7 +632,7 @@ def add_tape_dispenser_machine(
     return _add_machine_entity(
         scene,
         asset,
-        _MACHINE_URDF,
+        _MACHINE_PROXY_URDF if collision_proxies else _MACHINE_URDF,
         position,
         root_rotation,
         machine_surface,
@@ -612,6 +647,11 @@ def add_tape_dispenser(
     euler=(0.0, 0.0, 0.0),
     machine_surface=None,
     tape_surface=None,
+    rigid_cluster: bool = False,
+    cluster_kappa: float = 1.0e8,
+    cluster_collar: int = 3,
+    cluster_detach_displacement_ratio: float = 5.0,
+    collision_proxies: bool = True,
 ) -> TapeDispenser:
     """Add the upside-down canonical post-f249 dispenser before scene build.
 
@@ -641,7 +681,7 @@ def add_tape_dispenser(
     machine = _add_machine_entity(
         scene,
         asset,
-        _FULL_URDF,
+        _FULL_PROXY_URDF if collision_proxies else _FULL_URDF,
         position,
         root_rotation,
         machine_surface,
@@ -749,6 +789,24 @@ def add_tape_dispenser(
         age=asset.bond_age,
     )
 
+    lifecycle = None
+    if rigid_cluster:
+        never_member = np.zeros(len(asset.tape_positions), dtype=bool)
+        row_width = int(asset.roll.nz) + 1
+        never_member[-row_width:] = True
+        lifecycle = add_tape_bond_cluster(
+            scene,
+            tape,
+            asset,
+            kappa=cluster_kappa,
+            collar=cluster_collar,
+            detach_displacement=cluster_detach_displacement_ratio * asset.roll.d_hat,
+            proxy_entity=machine,
+            proxy_link="tape_wheel",
+            structured_row_width=row_width,
+            never_member=never_member,
+        )
+
     return TapeDispenser(
         machine=machine,
         tape=tape,
@@ -758,4 +816,5 @@ def add_tape_dispenser(
         sharp_region=sharp,
         ring_region=ring_region,
         asset=asset,
+        lifecycle=lifecycle,
     )

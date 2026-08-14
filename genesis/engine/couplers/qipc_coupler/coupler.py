@@ -371,6 +371,7 @@ class QIPCCoupler(RBC):
         self._contact = QIPCContactManager()
         self._initial_state = QIPCInitialStateManager()
         self._fem_rest_positions: dict = {}
+        self._fem_position_dbc: dict[FEMEntity, tuple[float, float]] = {}
         self._sealed_gas_bag_by_entity: dict[FEMEntity, int] = {}
         self._sealed_gas_reset_state: dict[FEMEntity, _SealedGasResetState] = {}
         self._stc_requests: list[tuple] = []
@@ -472,7 +473,7 @@ class QIPCCoupler(RBC):
         friction: float,
         resistance: float,
     ) -> QIPCContactRegion:
-        """Declare a contact material for a rigid link or attachment."""
+        """Declare a contact material for a rigid part or selected FEM vertices."""
         return self._contact.add_region(name=name, friction=friction, resistance=resistance)
 
     def assign_contact_region(
@@ -493,6 +494,18 @@ class QIPCCoupler(RBC):
             link_local=link_local,
             attachment=attachment,
         )
+
+    def assign_fem_contact_region(
+        self,
+        region: QIPCContactRegion,
+        entity: FEMEntity,
+        *,
+        verts_idx_local,
+    ) -> None:
+        """Assign a contact material to selected vertices of one QIPC FEM entity."""
+        if not any(candidate is entity for candidate in self._sim.fem_solver.entities):
+            gs.raise_exception("QIPCCoupler.assign_fem_contact_region: entity is not owned by this scene.")
+        self._contact.assign_fem_region(region, entity, verts_idx_local)
 
     def set_contact_pair(
         self,
@@ -553,6 +566,26 @@ class QIPCCoupler(RBC):
         if rest.ndim != 2 or rest.shape[1] != 3:
             gs.raise_exception("QIPCCoupler.set_fem_rest_positions: rest_verts must have shape (n_verts, 3).")
         self._fem_rest_positions[entity] = rest
+
+    def enable_fem_position_dbc(
+        self,
+        entity: FEMEntity,
+        *,
+        stiffness: float,
+        fix_tol: float,
+    ) -> None:
+        """Give one FEM entity a runtime-toggleable QIPC PositionDBC channel."""
+        if hasattr(self, "_scene"):
+            gs.raise_exception("QIPCCoupler.enable_fem_position_dbc must be called before scene.build().")
+        if not any(candidate is entity for candidate in self._sim.fem_solver.entities):
+            gs.raise_exception("QIPCCoupler.enable_fem_position_dbc: entity is not owned by this scene.")
+        stiffness = float(stiffness)
+        fix_tol = float(fix_tol)
+        if not np.isfinite(stiffness) or stiffness <= 0.0:
+            gs.raise_exception("QIPCCoupler.enable_fem_position_dbc: stiffness must be finite and positive.")
+        if not np.isfinite(fix_tol) or fix_tol <= 0.0:
+            gs.raise_exception("QIPCCoupler.enable_fem_position_dbc: fix_tol must be finite and positive.")
+        self._fem_position_dbc[entity] = (stiffness, fix_tol)
 
     def enable_soft_transform(self, entity: RigidEntity, link=None, strength=(1e3, 1e3)) -> None:
         """Attach a SoftTransformConstraint to a rigid entity's ABD body (pre-build).
@@ -1109,7 +1142,12 @@ class QIPCCoupler(RBC):
         from qipc import tetmesh
         from qipc import trimesh as qipc_trimesh
         from qipc.constitution import Cloth as QipcCloth
-        from qipc.constitution import SealedVolumeGas, SoftPositionConstraint, StableNeoHookean
+        from qipc.constitution import (
+            PositionDBC,
+            SealedVolumeGas,
+            SoftPositionConstraint,
+            StableNeoHookean,
+        )
         from qipc.inflation import MeshValidationError, closed_surface_orientation
 
         from genesis.engine.materials.FEM import Cloth as ClothMaterial
@@ -1191,9 +1229,18 @@ class QIPCCoupler(RBC):
                     mass_density=float(mat.rho),
                 )
 
-            # Resident soft-constraint channel: inert (is_constrained=0) until
-            # FEMEntity.set_vertex_constraints toggles vertices at runtime.
-            SoftPositionConstraint().apply_to(geo, strength_ratio=self._options.fem_constraint_strength)
+            position_dbc = self._fem_position_dbc.get(entity)
+            if position_dbc is None:
+                # Resident soft-constraint channel: inert (is_constrained=0) until
+                # FEMEntity.set_vertex_constraints toggles vertices at runtime.
+                SoftPositionConstraint().apply_to(geo, strength_ratio=self._options.fem_constraint_strength)
+            else:
+                PositionDBC().apply_to(
+                    geo,
+                    stiffness=position_dbc[0],
+                    fix_tol=position_dbc[1],
+                    is_constrained=False,
+                )
 
             # Prestress channel: rest metric/masses come from the rest mesh,
             # simulation starts at the (e.g. wound) initial positions.
@@ -1328,6 +1375,10 @@ class QIPCCoupler(RBC):
             {pre.entity: pre for pre in all_pre_inits},
             self._contact_elem_by_entity,
         )
+        self._contact.apply_fem_assignments(
+            {entity: slot for entity, slot, _is_cloth in fem_pre_entries},
+            self._contact_elem_by_entity,
+        )
         infos.extend(region_infos.values())
 
         # Pairwise models, upper triangle including self-pairs (FEM/cloth
@@ -1441,7 +1492,10 @@ class QIPCCoupler(RBC):
             inv_quat = gu.inv_quat(link_quat)
             link_offsets = gu.transform_by_quat(targets - link_pos, inv_quat.expand(targets.shape[0], 4))
 
-        if is_soft_constraint:
+        if entity in self._fem_position_dbc:
+            geo = entry.slot.geometry
+            geo.vertices["is_constrained"].gpu()[verts] = 1
+        elif is_soft_constraint:
             geo = entry.slot.geometry
             strength = float(stiffness) if stiffness else self._options.fem_constraint_strength
             geo.vertices["strength_ratio"].gpu()[verts] = strength
@@ -1461,7 +1515,7 @@ class QIPCCoupler(RBC):
 
     def _write_fem_constraint_targets(self, record: FemConstraintRecord, targets: torch.Tensor) -> None:
         entry = self._fem_entry(record.entity)
-        if record.is_soft:
+        if record.entity in self._fem_position_dbc or record.is_soft:
             geo = entry.slot.geometry
             geo.vertices["aim_position"].gpu()[record.verts] = targets
         else:
@@ -1481,6 +1535,8 @@ class QIPCCoupler(RBC):
         # Soft channel: aim_position is inert for unconstrained vertices.
         geo = entry.slot.geometry
         geo.vertices["aim_position"].gpu()[verts] = targets
+        if entity in self._fem_position_dbc:
+            return
 
         # Hard channel: only teleport vertices that are actually fixed.
         idx = entry.offset + verts
@@ -1499,13 +1555,15 @@ class QIPCCoupler(RBC):
 
         if verts_idx_local is None:
             geo.vertices["is_constrained"].gpu()[:] = 0
-            fe.is_fixed[entry.offset : entry.offset + entry.n_verts] = 0
+            if entity not in self._fem_position_dbc:
+                fe.is_fixed[entry.offset : entry.offset + entry.n_verts] = 0
             self._fem_constraints = [r for r in self._fem_constraints if r.entity is not entity]
             return
 
         verts = torch.as_tensor(verts_idx_local, dtype=torch.int64, device="cuda").reshape(-1)
         geo.vertices["is_constrained"].gpu()[verts] = 0
-        fe.is_fixed[entry.offset + verts] = 0
+        if entity not in self._fem_position_dbc:
+            fe.is_fixed[entry.offset + verts] = 0
 
         removed = {int(v) for v in verts.tolist()}
         kept_records: list[FemConstraintRecord] = []

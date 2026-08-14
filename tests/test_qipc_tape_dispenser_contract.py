@@ -92,6 +92,7 @@ def test_packaged_tape_dispenser_snapshot_contract():
     assert machine_options["solver_linear_preconditioner"] == "mas"
     assert machine_options["solver_abd_preconditioner"] == "tree"
     assert "adhesion_bond_distance_lock" not in machine_options
+    assert module.recommended_coupler_options()["adhesion_bond_lock_floor_ratio"] == 0.5
 
     with np.load(asset.directory / "scotch3850_wound.npz", allow_pickle=False) as roll:
         assert "params_json" in roll.files
@@ -144,6 +145,18 @@ def test_packaged_tape_dispenser_snapshot_contract():
     assert [mesh.get("filename") for mesh in machine_wheel.findall("./visual/geometry/mesh")] == [
         "meshes/tape_wheel.glb"
     ]
+
+    for filename in ("tape_dispenser_proxy.urdf", "tape_dispenser_machine_proxy.urdf"):
+        proxy_root = ET.parse(asset.directory / filename).getroot()
+        collision_meshes = {mesh.get("filename") for mesh in proxy_root.findall("./link/collision/geometry/mesh")}
+        assert collision_meshes == {
+            "meshes/collision_proxies/Cube.glb",
+            "meshes/collision_proxies/blade.glb",
+            "meshes/collision_proxies/cylinder.glb",
+            "meshes/collision_proxies/sharp.glb",
+            "meshes/collision_proxies/tape_cutter.glb",
+            "meshes/collision_proxies/tape_wheel.glb",
+        }
 
     machine_links = {link.get("name"): link for link in machine_root.findall("link")}
     expected_masses = {
