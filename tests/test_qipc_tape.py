@@ -100,14 +100,21 @@ def test_tape_bond_cluster_queues_configured_ghost_proxy():
     asset = tape_mod.TapeAsset.from_npz(TAPE_ASSET_PATH)
     calls = []
     cluster = object()
+    internal_seed = object()
 
     def add_affine_cluster(entity, **kwargs):
         calls.append((entity, kwargs))
         return cluster
 
+    def get_bond_seed_handle(entity, *, name):
+        assert entity is tape
+        assert name == "internal"
+        return internal_seed
+
     coupler = SimpleNamespace(
         _options=SimpleNamespace(adhesion_bond_lock_floor_ratio=0.5),
         add_affine_cluster=add_affine_cluster,
+        adhesion=SimpleNamespace(get_bond_seed_handle=get_bond_seed_handle),
     )
     scene = SimpleNamespace(sim=SimpleNamespace(coupler=coupler))
     tape = object()
@@ -122,13 +129,16 @@ def test_tape_bond_cluster_queues_configured_ghost_proxy():
     )
 
     assert controller._cluster is cluster
+    assert controller._bond_seed_handle is internal_seed
     assert calls[0][0] is tape
     assert calls[0][1]["kappa"] == 2.5e7
     np.testing.assert_array_equal(
         calls[0][1]["initial_tris"],
         tape_mod.bond_cluster_member_triangles(asset, 3),
     )
-    assert set(calls[0][1]) == {"kappa", "initial_tris"}
+    assert calls[0][1]["proxy_entity"] is None
+    assert calls[0][1]["proxy_link"] is None
+    assert set(calls[0][1]) == {"proxy_entity", "proxy_link", "kappa", "initial_tris"}
 
 
 @needs_tape_asset
@@ -136,6 +146,7 @@ def test_tape_bond_cluster_ignores_foreign_released_bonds():
     tape_mod = _tape_module()
     asset = tape_mod.TapeAsset.from_npz(TAPE_ASSET_PATH)
     tape = object()
+    internal_seed = object()
     authored = np.array([[0, 1, 2, 3]], dtype=np.int32)
     foreign = np.array(
         [
@@ -147,7 +158,7 @@ def test_tape_bond_cluster_ignores_foreign_released_bonds():
     )
     released = {"rows": foreign}
     adhesion = SimpleNamespace(
-        get_bond_seed_topologies=lambda entity: authored.copy() if entity is tape else None,
+        get_bond_seed_topologies=lambda seed: authored.copy() if seed is internal_seed else None,
         get_released_bond_topos=lambda: released["rows"],
         fem_global_vertex_offset=lambda: 0,
     )
@@ -175,6 +186,7 @@ def test_tape_bond_cluster_ignores_foreign_released_bonds():
         asset,
         collar=3,
         detach_displacement=5.0 * asset.d_hat,
+        bond_seed_handle=internal_seed,
     )
     controller.initialize()
 

@@ -139,12 +139,14 @@ adhesion = coupler.adhesion
 adhesion.get_contact_info() -> (n_pairs_pt, n_pairs_ee, n_active)
 adhesion.get_bond_topos() -> np.ndarray (n_bonds, 4) int32   # GLOBAL vertex ids
 adhesion.get_released_bond_topos() -> np.ndarray (n, 4) int32
-adhesion.get_bond_seed_topologies(fem_entity) -> np.ndarray | None
+seed = adhesion.add_bond_seed_request(..., name="internal") -> BondSeedHandle
+adhesion.get_bond_seed_topologies(seed) -> np.ndarray | None
+adhesion.get_bond_seed_result(seed) -> (n_seeded, n_dropped) | None
 adhesion.get_bond_count() -> int
 adhesion.release_bonds_by_vertices(vertex_ids, require_all=...) -> None
 adhesion.dump_adhesion_state() -> (keys, betas)
 adhesion.load_adhesion_state(keys, betas) -> None
-adhesion.seed_bonds(topos, rest_height) -> None              # frame-zero seed
+adhesion.seed_bonds(topos, rest_height) -> None              # one manual frame-zero transaction
 ```
 
 - Bond topos are in qipc *global* vertex-id space; the coupler translates FEM
@@ -154,13 +156,23 @@ adhesion.seed_bonds(topos, rest_height) -> None              # frame-zero seed
 - The released feed contains only physics releases from the preceding QIPC
   step. Explicit `release_bonds_by_vertices` clearing does not append to that
   feed, so a cluster policy cannot excite itself recursively.
-- `get_bond_seed_topologies` returns a defensive copy of the exact authored
-  rows after scene-global FEM and rigid vertex-id mapping. It excludes dynamic
-  bonds and is therefore the provenance source for release-driven policies.
-- Authored and manual frame-zero seed batches are retained by the coupler and
-  replayed after QIPC `Scene.reset()`. QIPC's own reset snapshot is captured at
-  the end of `Scene.init()`, before Genesis resolves and applies asset seeds, so
-  replay is required to preserve the imported initial condition.
+- Every queued batch has a stable handle carrying its name, FEM/rigid sources,
+  source offset, rest height, and strict-mapping policy. Multiple rigid sources
+  may target one FEM entity. Legacy lookup by FEM entity remains valid for one
+  batch and raises an explicit ambiguity error for multiple batches.
+- Each batch is mapped independently. Strict rigid mapping rejects a missing or
+  vertex-count-mismatched rigid source instead of dropping attachment rows.
+  Non-empty batches must share one exact `rest_height`; zero requests raw,
+  preload-free freezing. Duplicate canonical point-triangle rows are rejected.
+  The mapped union enters QIPC through one `seed_locks` slot transaction.
+- `get_bond_seed_topologies` returns a defensive copy of the exact rows mapped
+  for that handle. It excludes other authored batches and dynamic bonds, so a
+  cluster policy can bind only its `internal` certificate and never table bonds.
+- The one aggregated frame-zero transaction is retained for reset. When an
+  initial-state overlay causes Genesis to recapture QIPC's reset snapshot after
+  seeding, the snapshot owns the bond state and explicit replay is skipped.
+  Otherwise reset replays the union once. The manual post-build API accepts one
+  transaction only; multiple sources must be queued before build.
 - β keys hash global vertex ids → `load_adhesion_state` is only valid within
   the same built scene (documented; the tape importer re-forms bonds through
   `beta0=1` instead of transferring state, see §5).

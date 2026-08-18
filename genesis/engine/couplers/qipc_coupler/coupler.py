@@ -845,6 +845,7 @@ class QIPCCoupler(RBC):
             )
         if initial_state_applied or self._adhesion.has_frozen_bond_state():
             self._initial_state.rebuild_and_capture_reset(self._scene)
+            self._adhesion.mark_bond_state_captured_in_reset()
         # Membership is a post-init transaction. Seed bonds first so fully
         # internal bonds become dormant rather than being omitted/re-created.
         self._affine_clusters.initialize()

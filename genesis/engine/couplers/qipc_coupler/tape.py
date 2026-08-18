@@ -523,6 +523,7 @@ class TapeBondClusterController:
         *,
         collar: int,
         detach_displacement: float,
+        bond_seed_handle=None,
         certificate: tuple[np.ndarray, np.ndarray, list[set[int]]] | None = None,
     ) -> None:
         if not np.isfinite(detach_displacement) or detach_displacement <= 0.0:
@@ -535,6 +536,7 @@ class TapeBondClusterController:
         self._coupler = coupler
         self._cluster = cluster
         self._tape_entity = tape_entity
+        self._bond_seed_handle = bond_seed_handle
         self._triangles = triangles
         self._bonded = bonded
         self._adjacency = adjacency
@@ -571,7 +573,8 @@ class TapeBondClusterController:
         vertex_range = self._cluster.fem_vertex_range
         if len(vertex_range) != len(self._bonded):
             gs.raise_exception("TapeBondClusterController: queued cluster vertex range does not match the tape asset.")
-        authored = self._coupler.adhesion.get_bond_seed_topologies(self._tape_entity)
+        seed = self._tape_entity if self._bond_seed_handle is None else self._bond_seed_handle
+        authored = self._coupler.adhesion.get_bond_seed_topologies(seed)
         if authored is None:
             gs.raise_exception(
                 "TapeBondClusterController: mapped authored bond seed topologies are missing for the tape entity."
@@ -693,6 +696,7 @@ def add_tape_bond_cluster(
     proxy_link=None,
     structured_row_width: int | None = None,
     never_member: np.ndarray | None = None,
+    bond_seed_handle=None,
 ) -> TapeBondClusterController:
     """Queue a releasable tape cluster and return its runtime peel policy."""
     coupler = scene.sim.coupler
@@ -722,6 +726,9 @@ def add_tape_bond_cluster(
         kappa=kappa,
         initial_tris=member_triangles,
     )
+    adhesion = getattr(coupler, "adhesion", None)
+    if bond_seed_handle is None and hasattr(adhesion, "get_bond_seed_handle"):
+        bond_seed_handle = adhesion.get_bond_seed_handle(tape_entity, name="internal")
     return TapeBondClusterController(
         coupler,
         cluster,
@@ -729,6 +736,7 @@ def add_tape_bond_cluster(
         asset,
         collar=collar,
         detach_displacement=detach_displacement,
+        bond_seed_handle=bond_seed_handle,
         certificate=certificate,
     )
 
@@ -925,6 +933,7 @@ def add_tape_roll(
             source_fem_global_offset=source_fem_global_offset,
             rest_height=_bond_rest_height(asset),
             rigid_entity=rigid_seed_entity,
+            name="internal",
         )
 
     return tape, hub
