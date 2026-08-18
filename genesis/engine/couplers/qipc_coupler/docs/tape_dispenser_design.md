@@ -267,9 +267,15 @@ clears lagged/adhesive pair history, and promotes the composed state to the
 QIPC reset baseline. `scene.reset()` restores body transforms, tape positions,
 joint angles, zero velocities, and the frozen bond slots.
 
-One scene currently accepts at most one frozen bond-state request. It cannot be
-mixed with authored or manual `seed_bonds` batches because restoring slots
-replaces the whole native `BondSystem` state.
+A scene may register multiple named frozen bond-state batches for the same FEM
+entity, including batches whose rigid vertices come from different entities or
+attachments. The coupler remaps every batch, rejects duplicate PT stencils, and
+restores their concatenated state in one native transaction. Callers retain the
+returned handles when they need per-batch provenance or diagnostics; querying
+by FEM entity is deliberately ambiguous when more than one batch exists.
+
+Frozen state still cannot be mixed with authored or manual `seed_bonds`
+batches because restoring slots replaces the whole native `BondSystem` state.
 
 ## 9. Optional releasable wheel cluster
 

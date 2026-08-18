@@ -1,7 +1,8 @@
 # QIPCCoupler Adhesion + Tape Import — Design
 
-Status: A5.1–A5.3 and A5.4 authored bond-topology transfer implemented;
-per-pair beta import remains deferred. Companion to [fem_design.md](fem_design.md);
+Status: A5.1–A5.3, A5.4 authored bond-topology transfer, and portable frozen
+bond-state restoration implemented; per-pair beta import remains deferred.
+Companion to [fem_design.md](fem_design.md);
 current milestone status lives in [roadmap.md](roadmap.md). Last audited against
 cuda-graph-qipc @ `cde8775e`.
 
@@ -37,8 +38,9 @@ Key facts the design is built on (from the cgq source, references in §10):
   with an upgrade message. Genesis's `qipc` extra is published only for its
   supported Python 3.12 environment.
 - Everything adhesion-related is **frozen at `scene.init()`** (tables read once
-  by `Solver._wire_contact_tabular`); the only runtime mutables are per-pair β
-  (`dump/load_adhesion_pair_state`) and bond seeding (`seed_locks`). So the
+  by `Solver._wire_contact_tabular`); the runtime mutables are per-pair β
+  (`dump/load_adhesion_pair_state`) and BondSystem slot state (`seed_locks` or
+  exact `restore_slots`). So the
   coupler API is declarative-before-build, mirroring `IPCCoupler.add_rcc_adhesion`
   ("register before finalize").
 - `AdhesiveIPCContact` with all-zero adhesion params is **bit-identical** to
@@ -142,6 +144,9 @@ adhesion.get_released_bond_topos() -> np.ndarray (n, 4) int32
 seed = adhesion.add_bond_seed_request(..., name="internal") -> BondSeedHandle
 adhesion.get_bond_seed_topologies(seed) -> np.ndarray | None
 adhesion.get_bond_seed_result(seed) -> (n_seeded, n_dropped) | None
+state = adhesion.add_bond_state_request(..., name="internal") -> BondStateHandle
+adhesion.get_bond_state_topologies(state) -> np.ndarray | None
+adhesion.get_bond_state_result(state) -> (n_restored, n_dropped) | None
 adhesion.get_bond_count() -> int
 adhesion.release_bonds_by_vertices(vertex_ids, require_all=...) -> None
 adhesion.dump_adhesion_state() -> (keys, betas)
@@ -156,19 +161,30 @@ adhesion.seed_bonds(topos, rest_height) -> None              # one manual frame-
 - The released feed contains only physics releases from the preceding QIPC
   step. Explicit `release_bonds_by_vertices` clearing does not append to that
   feed, so a cluster policy cannot excite itself recursively.
-- Every queued batch has a stable handle carrying its name, FEM/rigid sources,
-  source offset, rest height, and strict-mapping policy. Multiple rigid sources
-  may target one FEM entity. Legacy lookup by FEM entity remains valid for one
-  batch and raises an explicit ambiguity error for multiple batches.
-- Each batch is mapped independently. Strict rigid mapping rejects a missing or
+- Every queued seed batch has a stable handle carrying its name, FEM/rigid
+  sources, source offset, rest height, and strict-mapping policy. Multiple rigid
+  sources may target one FEM entity. Legacy lookup by FEM entity remains valid
+  for one batch and raises an explicit ambiguity error for multiple batches.
+- Each seed batch is mapped independently. Strict rigid mapping rejects a missing or
   vertex-count-mismatched rigid source instead of dropping attachment rows.
   Non-empty batches must share one exact `rest_height`; zero requests raw,
   preload-free freezing. Duplicate canonical point-triangle rows are rejected.
   The mapped union enters QIPC through one `seed_locks` slot transaction.
+- `add_bond_state_request` is the exact-restore path for settled components. It
+  takes complete live-slot `Dm_inv`, `V0`, `d_rest`, `kappa`, release, and age
+  arrays, owns defensive copies, and returns a named `BondStateHandle`.
+  Multiple same-FEM batches (for example tape-hub `internal` and tape-table
+  `table`) are independently remapped, concatenated in declaration order, have
+  pair keys recomputed from mapped topology, and enter QIPC through one
+  `restore_slots` transaction. Frozen requests cannot mix with seed requests;
+  empty batches, invalid numeric domains, mixed-owner PT triangles, missing
+  rigid mappings, and duplicate canonical topology are rejected before native
+  state changes.
 - `get_bond_seed_topologies` returns a defensive copy of the exact rows mapped
   for that handle. It excludes other authored batches and dynamic bonds, so a
   cluster policy can bind only its `internal` certificate and never table bonds.
-- The one aggregated frame-zero transaction is retained for reset. When an
+- The one aggregated seed or frozen-state frame-zero transaction is retained
+  for reset. When an
   initial-state overlay causes Genesis to recapture QIPC's reset snapshot after
   seeding, the snapshot owns the bond state and explicit replay is skipped.
   Otherwise reset replays the union once. The manual post-build API accepts one

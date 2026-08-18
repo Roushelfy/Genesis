@@ -104,13 +104,24 @@ class BondSeedRequest(NamedTuple):
     topologies: np.ndarray
 
 
+@dataclass(frozen=True, eq=False)
+class BondStateHandle:
+    """Stable handle and provenance for one frozen bond-state batch."""
+
+    key: int
+    name: str
+    fem_entity: object = field(repr=False)
+    rigid_entity: object | None = field(repr=False)
+    source_fem_global_offset: int
+    strict_rigid_mapping: bool
+    _owner: object = field(repr=False)
+
+
 class BondStateRequest(NamedTuple):
     """Frozen bond slots resolved from component-local to scene-global IDs."""
 
-    fem_entity: object
-    rigid_source: object | None
+    handle: BondStateHandle
     topologies: np.ndarray
-    source_fem_global_offset: int
     Dm_inv: np.ndarray
     V0: np.ndarray
     d_rest: np.ndarray
@@ -137,10 +148,11 @@ class QIPCAdhesionManager:
         self._bond_seed_batch: tuple[np.ndarray, float] | None = None
         self._bond_state_batches: list[dict[str, np.ndarray]] = []
         self._bond_seed_handles_by_entity: dict[object, list[BondSeedHandle]] = {}
+        self._bond_state_handles_by_entity: dict[object, list[BondStateHandle]] = {}
         self._bond_seed_results: dict[BondSeedHandle, tuple[int, int]] = {}
         self._bond_seed_topologies_by_handle: dict[BondSeedHandle, np.ndarray] = {}
-        self._bond_state_results: dict[object, tuple[int, int]] = {}
-        self._bond_state_topologies_by_entity: dict[object, np.ndarray] = {}
+        self._bond_state_results: dict[BondStateHandle, tuple[int, int]] = {}
+        self._bond_state_topologies_by_handle: dict[BondStateHandle, np.ndarray] = {}
         self._bond_state_captured_in_reset = False
         self._bond_dump_topologies: torch.Tensor | None = None
         self._bond_dump_count: torch.Tensor | None = None
@@ -287,6 +299,7 @@ class QIPCAdhesionManager:
         fem_entity,
         *,
         rigid_source,
+        name: str = "default",
         topologies: np.ndarray,
         source_fem_global_offset: int,
         Dm_inv: np.ndarray,
@@ -298,58 +311,110 @@ class QIPCAdhesionManager:
         release_gap: np.ndarray,
         release_slip: np.ndarray,
         age: np.ndarray,
-    ) -> None:
+    ) -> BondStateHandle:
         """Queue a complete frozen BondSystem state for post-init remapping.
 
         Unlike ``add_bond_seed_request``, this preserves every per-slot rest,
-        stiffness, release, and age field. It replaces the BondSystem state, so
-        one scene may declare only one frozen request and cannot mix it with
-        ordinary authored bond seeds.
+        stiffness, release, and age field. Named requests are aggregated into
+        one native replacement transaction and cannot mix with ordinary
+        authored bond seeds.
         """
         if self._scene is not None:
             gs.raise_exception("QIPCCoupler.add_bond_state_request must be called before scene.build().")
-        if self._bond_state_requests or self._bond_seed_requests:
+        if self._bond_seed_requests:
+            gs.raise_exception("QIPCCoupler.add_bond_state_request cannot be combined with a seeded bond request.")
+        if not isinstance(name, str) or not name:
+            gs.raise_exception("QIPCCoupler.add_bond_state_request: name must be a non-empty string.")
+        entity_handles = self._bond_state_handles_by_entity.get(fem_entity, ())
+        if any(handle.name == name for handle in entity_handles):
             gs.raise_exception(
-                "QIPCCoupler.add_bond_state_request cannot be combined with another frozen or seeded bond request."
+                f"QIPCCoupler: frozen bond state name '{name}' is already registered for this FEM entity."
             )
         topos = np.ascontiguousarray(topologies, dtype=np.int32)
         if topos.ndim != 2 or topos.shape[1] != 4:
             gs.raise_exception("QIPCCoupler.add_bond_state_request: topologies must have shape (n, 4).")
         if topos.size and int(topos.min()) < 0:
             gs.raise_exception("QIPCCoupler.add_bond_state_request: topology IDs must be non-negative.")
+        if isinstance(source_fem_global_offset, bool) or not isinstance(source_fem_global_offset, (int, np.integer)):
+            gs.raise_exception("QIPCCoupler.add_bond_state_request: source_fem_global_offset must be an integer.")
+        source_fem_global_offset = int(source_fem_global_offset)
         if source_fem_global_offset <= 0:
             gs.raise_exception("QIPCCoupler.add_bond_state_request: source_fem_global_offset must be positive.")
 
         n_bonds = len(topos)
+        if n_bonds == 0:
+            gs.raise_exception("QIPCCoupler.add_bond_state_request: topologies must not be empty.")
+        is_fem = topos >= source_fem_global_offset
+        if np.any(is_fem.sum(axis=1) == 0):
+            gs.raise_exception("QIPCCoupler.add_bond_state_request: every topology must reference a FEM vertex.")
+        triangle_fem_count = is_fem[:, 1:].sum(axis=1)
+        if np.any((triangle_fem_count != 0) & (triangle_fem_count != 3)):
+            gs.raise_exception(
+                "QIPCCoupler.add_bond_state_request: each PT triangle must belong entirely to FEM or rigid vertices."
+            )
 
-        def vector(values, name: str, dtype) -> np.ndarray:
-            array = np.ascontiguousarray(values, dtype=dtype).reshape(-1)
+        def vector(
+            values,
+            name: str,
+            dtype,
+            *,
+            positive: bool = False,
+            non_negative: bool = False,
+        ) -> np.ndarray:
+            array = np.ascontiguousarray(values, dtype=dtype)
             if array.shape != (n_bonds,):
                 gs.raise_exception(f"QIPCCoupler.add_bond_state_request: {name} must have shape ({n_bonds},).")
             if array.dtype.kind == "f" and not np.isfinite(array).all():
                 gs.raise_exception(f"QIPCCoupler.add_bond_state_request: {name} must be finite.")
-            return array
+            if positive and np.any(array <= 0):
+                gs.raise_exception(f"QIPCCoupler.add_bond_state_request: {name} must be positive.")
+            if non_negative and np.any(array < 0):
+                gs.raise_exception(f"QIPCCoupler.add_bond_state_request: {name} must be non-negative.")
+            return array.copy()
 
         Dm_inv_array = np.ascontiguousarray(Dm_inv, dtype=np.float64)
         if Dm_inv_array.shape != (n_bonds, 9) or not np.isfinite(Dm_inv_array).all():
             gs.raise_exception(f"QIPCCoupler.add_bond_state_request: Dm_inv must be finite with shape ({n_bonds}, 9).")
-        self._bond_state_requests.append(
-            BondStateRequest(
-                fem_entity=fem_entity,
-                rigid_source=rigid_source,
-                topologies=topos.copy(),
-                source_fem_global_offset=int(source_fem_global_offset),
-                Dm_inv=Dm_inv_array.copy(),
-                V0=vector(V0, "V0", np.float64),
-                d_rest=vector(d_rest, "d_rest", np.float64),
-                kappa=vector(kappa, "kappa", np.float64),
-                release_force=vector(release_force, "release_force", np.float64),
-                release_strain=vector(release_strain, "release_strain", np.float64),
-                release_gap=vector(release_gap, "release_gap", np.float64),
-                release_slip=vector(release_slip, "release_slip", np.float64),
-                age=vector(age, "age", np.int32),
-            )
+        if np.any(np.linalg.matrix_rank(Dm_inv_array.reshape(-1, 3, 3)) < 3):
+            gs.raise_exception("QIPCCoupler.add_bond_state_request: every Dm_inv matrix must be invertible.")
+        request_topologies = topos.copy()
+        request_Dm_inv = Dm_inv_array.copy()
+        request_V0 = vector(V0, "V0", np.float64, positive=True)
+        expected_V0 = np.abs(1.0 / np.linalg.det(request_Dm_inv.reshape(-1, 3, 3))) / 6.0
+        if not np.allclose(request_V0, expected_V0, rtol=1.0e-10, atol=0.0):
+            gs.raise_exception("QIPCCoupler.add_bond_state_request: V0 must equal abs(1 / det(Dm_inv)) / 6.")
+        request_d_rest = vector(d_rest, "d_rest", np.float64)
+        request_kappa = vector(kappa, "kappa", np.float64, positive=True)
+        request_release_force = vector(release_force, "release_force", np.float64, non_negative=True)
+        request_release_strain = vector(release_strain, "release_strain", np.float64, non_negative=True)
+        request_release_gap = vector(release_gap, "release_gap", np.float64, non_negative=True)
+        request_release_slip = vector(release_slip, "release_slip", np.float64, non_negative=True)
+        request_age = vector(age, "age", np.int32, non_negative=True)
+        handle = BondStateHandle(
+            key=len(self._bond_state_requests),
+            name=name,
+            fem_entity=fem_entity,
+            rigid_entity=rigid_source,
+            source_fem_global_offset=source_fem_global_offset,
+            strict_rigid_mapping=True,
+            _owner=self,
         )
+        request = BondStateRequest(
+            handle=handle,
+            topologies=request_topologies,
+            Dm_inv=request_Dm_inv,
+            V0=request_V0,
+            d_rest=request_d_rest,
+            kappa=request_kappa,
+            release_force=request_release_force,
+            release_strain=request_release_strain,
+            release_gap=request_release_gap,
+            release_slip=request_release_slip,
+            age=request_age,
+        )
+        self._bond_state_handles_by_entity.setdefault(fem_entity, []).append(handle)
+        self._bond_state_requests.append(request)
+        return handle
 
     # -------------------------------------------------------------------------
     # Build hooks (called by the coupler)
@@ -614,7 +679,7 @@ class QIPCAdhesionManager:
             )
 
         height = float(rest_height)
-        self._require_nonoverlapping_seed_topologies((("manual", topologies),))
+        self._require_nonoverlapping_bond_topologies((("manual", topologies),), kind="seed")
         self._seed_bond_batch(topologies, height)
         self._bond_seed_batch = (topologies.copy(), height)
         self._bond_state_captured_in_reset = False
@@ -624,7 +689,7 @@ class QIPCAdhesionManager:
         fem_layout: dict[object, tuple[int, int]],
         rigid_vertex_ids: dict[object, np.ndarray],
     ) -> None:
-        """Resolve all authored batches, then seed their union in one native call."""
+        """Resolve all authored batches, then install one native transaction."""
         if not self._bond_seed_requests and not self._bond_state_requests:
             return
 
@@ -655,8 +720,9 @@ class QIPCAdhesionManager:
                     first_name=non_empty[0][0].handle.name,
                     second_name=request.handle.name,
                 )
-            self._require_nonoverlapping_seed_topologies(
-                tuple((request.handle.name, mapped) for request, mapped in non_empty)
+            self._require_nonoverlapping_bond_topologies(
+                tuple((request.handle.name, mapped) for request, mapped in non_empty),
+                kind="seed",
             )
             combined = np.concatenate([mapped for _, mapped in non_empty], axis=0)
             self._seed_bond_batch(combined, rest_height)
@@ -673,8 +739,10 @@ class QIPCAdhesionManager:
                 f"({result[1]} rows dropped because their rigid-side ids could not be mapped)."
             )
 
+        resolved_state: list[tuple[BondStateRequest, np.ndarray]] = []
         for request in self._bond_state_requests:
-            layout = fem_layout.get(request.fem_entity)
+            handle = request.handle
+            layout = fem_layout.get(handle.fem_entity)
             if layout is None:
                 gs.raise_exception("QIPCCoupler: frozen bond state FEM entity is not coupled in this scene.")
             fem_offset, n_fem_vertices = layout
@@ -683,29 +751,47 @@ class QIPCAdhesionManager:
                 fem_global_offset=fem_global_offset,
                 fem_offset=fem_offset,
                 n_fem_vertices=n_fem_vertices,
-                rigid_vertex_ids=rigid_vertex_ids.get(request.rigid_source),
+                rigid_vertex_ids=rigid_vertex_ids.get(handle.rigid_entity),
             )
             if n_dropped:
                 gs.raise_exception("QIPCCoupler: frozen bond state could not map its rigid attachment vertices.")
+            resolved_state.append((request, mapped))
+
+        if resolved_state:
+            self._require_nonoverlapping_bond_topologies(
+                tuple((request.handle.name, mapped) for request, mapped in resolved_state),
+                kind="frozen-state",
+            )
+            state_fields = (
+                "Dm_inv",
+                "V0",
+                "d_rest",
+                "kappa",
+                "release_force",
+                "release_strain",
+                "release_gap",
+                "release_slip",
+                "age",
+            )
             batch = {
-                "topo": mapped,
-                "Dm_inv": request.Dm_inv.copy(),
-                "V0": request.V0.copy(),
-                "d_rest": request.d_rest.copy(),
-                "kappa": request.kappa.copy(),
-                "release_force": request.release_force.copy(),
-                "release_strain": request.release_strain.copy(),
-                "release_gap": request.release_gap.copy(),
-                "release_slip": request.release_slip.copy(),
-                "age": request.age.copy(),
-                "pair_key": _contact_pt_keys(mapped),
+                "topo": np.ascontiguousarray(np.concatenate([mapped for _, mapped in resolved_state], axis=0)),
+                **{
+                    name: np.ascontiguousarray(
+                        np.concatenate([getattr(request, name) for request, _ in resolved_state], axis=0)
+                    )
+                    for name in state_fields
+                },
             }
+            batch["pair_key"] = _contact_pt_keys(batch["topo"])
             self._restore_bond_state_batch(batch)
             self._bond_state_batches.append(batch)
-            self._bond_state_topologies_by_entity[request.fem_entity] = mapped.copy()
-            self._bond_state_results[request.fem_entity] = (len(mapped), 0)
             self._bond_state_captured_in_reset = False
-            gs.logger.info(f"QIPCCoupler: restored {len(mapped)} frozen distance bonds.")
+
+        for request, mapped in resolved_state:
+            handle = request.handle
+            self._bond_state_topologies_by_handle[handle] = mapped.copy()
+            self._bond_state_results[handle] = (len(mapped), 0)
+            gs.logger.info(f"QIPCCoupler: mapped {len(mapped)} frozen distance bonds for batch '{handle.name}'.")
 
     def restore_seeded_bonds(self) -> None:
         """Replay authored/manual frame-zero bond batches after `Scene.reset`."""
@@ -726,21 +812,45 @@ class QIPCAdhesionManager:
         handles = self._bond_seed_handles_by_entity.get(fem_entity, ())
         return next((handle for handle in handles if handle.name == name), None)
 
-    def get_bond_seed_result(self, seed: BondSeedHandle | object) -> tuple[int, int] | None:
-        """Return `(seeded, dropped_rigid_rows)` for one handle or legacy FEM query."""
+    def get_bond_state_handle(self, fem_entity, *, name: str) -> BondStateHandle | None:
+        """Return a named frozen-state handle for one FEM entity."""
+        handles = self._bond_state_handles_by_entity.get(fem_entity, ())
+        return next((handle for handle in handles if handle.name == name), None)
+
+    def get_bond_seed_result(
+        self,
+        seed: BondSeedHandle | BondStateHandle | object,
+    ) -> tuple[int, int] | None:
+        """Return `(restored, dropped_rigid_rows)` for a handle or legacy FEM query."""
+        if isinstance(seed, BondStateHandle):
+            return self.get_bond_state_result(seed)
         handle = self._resolve_bond_seed_handle(seed)
         if handle is not None:
             return self._bond_seed_results.get(handle)
-        return self._bond_state_results.get(seed)
+        return self.get_bond_state_result(seed)
 
-    def get_bond_seed_topologies(self, seed: BondSeedHandle | object) -> np.ndarray | None:
+    def get_bond_seed_topologies(
+        self,
+        seed: BondSeedHandle | BondStateHandle | object,
+    ) -> np.ndarray | None:
         """Return mapped authored rows for one handle or an unambiguous legacy FEM query."""
+        if isinstance(seed, BondStateHandle):
+            return self.get_bond_state_topologies(seed)
         handle = self._resolve_bond_seed_handle(seed)
-        topologies = (
-            self._bond_seed_topologies_by_handle.get(handle)
-            if handle is not None
-            else self._bond_state_topologies_by_entity.get(seed)
-        )
+        if handle is None:
+            return self.get_bond_state_topologies(seed)
+        topologies = self._bond_seed_topologies_by_handle.get(handle)
+        return None if topologies is None else topologies.copy()
+
+    def get_bond_state_result(self, state: BondStateHandle | object) -> tuple[int, int] | None:
+        """Return `(restored, dropped_rigid_rows)` for one frozen-state batch."""
+        handle = self._resolve_bond_state_handle(state)
+        return None if handle is None else self._bond_state_results.get(handle)
+
+    def get_bond_state_topologies(self, state: BondStateHandle | object) -> np.ndarray | None:
+        """Return mapped authored rows for one frozen-state batch."""
+        handle = self._resolve_bond_state_handle(state)
+        topologies = None if handle is None else self._bond_state_topologies_by_handle.get(handle)
         return None if topologies is None else topologies.copy()
 
     def _resolve_bond_seed_handle(self, seed: BondSeedHandle | object) -> BondSeedHandle | None:
@@ -754,6 +864,20 @@ class QIPCAdhesionManager:
             gs.raise_exception(
                 "QIPCCoupler: bond seed query by FEM entity is ambiguous across batches "
                 f"{names}; pass the BondSeedHandle returned by add_bond_seed_request."
+            )
+        return handles[0] if handles else None
+
+    def _resolve_bond_state_handle(self, state: BondStateHandle | object) -> BondStateHandle | None:
+        if isinstance(state, BondStateHandle):
+            if state._owner is not self:
+                gs.raise_exception("QIPCCoupler: frozen bond state handle belongs to a different adhesion manager.")
+            return state
+        handles = self._bond_state_handles_by_entity.get(state, ())
+        if len(handles) > 1:
+            names = ", ".join(repr(handle.name) for handle in handles)
+            gs.raise_exception(
+                "QIPCCoupler: frozen bond state query by FEM entity is ambiguous across batches "
+                f"{names}; pass the BondStateHandle returned by add_bond_state_request."
             )
         return handles[0] if handles else None
 
@@ -777,7 +901,11 @@ class QIPCAdhesionManager:
         )
 
     @staticmethod
-    def _require_nonoverlapping_seed_topologies(batches: tuple[tuple[str, np.ndarray], ...]) -> None:
+    def _require_nonoverlapping_bond_topologies(
+        batches: tuple[tuple[str, np.ndarray], ...],
+        *,
+        kind: str,
+    ) -> None:
         seen: dict[tuple[int, int, int, int], str] = {}
         for name, topologies in batches:
             for row in topologies:
@@ -786,7 +914,7 @@ class QIPCAdhesionManager:
                 if previous is not None:
                     gs.raise_exception(
                         "QIPCCoupler: authored distance-bond topology occurs more than once "
-                        f"across seed batches '{previous}' and '{name}': {key}."
+                        f"across {kind} batches '{previous}' and '{name}': {key}."
                     )
                 seen[key] = name
 
@@ -833,9 +961,10 @@ class QIPCAdhesionManager:
             strict_rigid_mapping = handle.strict_rigid_mapping
             batch_name = handle.name
         else:
-            source_fem_offset = request.source_fem_global_offset
-            strict_rigid_mapping = True
-            batch_name = "frozen"
+            handle = request.handle
+            source_fem_offset = handle.source_fem_global_offset
+            strict_rigid_mapping = handle.strict_rigid_mapping
+            batch_name = handle.name
         destination_fem_offset = fem_global_offset + fem_offset
 
         if source_fem_offset is None:
