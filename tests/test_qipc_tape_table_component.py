@@ -1,9 +1,11 @@
 import json
+from pathlib import Path
 
 import numpy as np
 import pytest
 
 import genesis as gs
+from genesis.utils.misc import get_assets_dir
 
 
 def _module():
@@ -299,3 +301,29 @@ def test_tape_table_component_rejects_authoring_table_release_force(tmp_path):
 
     with pytest.raises(gs.GenesisException, match="must use params_json.RCC_RELEASE_FORCE"):
         module.TapeTableComponentAsset.from_npz(_save(tmp_path / "authoring-force.npz", payload))
+
+
+def test_packaged_tape_table_components_match_the_authoring_certificate():
+    module = _module()
+    directory = Path(get_assets_dir()) / "qipc" / "tape_table_component_v2"
+    assets = [
+        module.TapeTableComponentAsset.from_npz(directory / f"scotch3850_table_{inches}in_component.npz")
+        for inches in (3, 4, 5, 6)
+    ]
+
+    assert [
+        (
+            asset.attached_length,
+            len(asset.internal_bonds.topologies),
+            len(asset.table_bonds.topologies),
+            len(asset.table_surface_tris),
+            len(asset.tail_vertex_ids),
+        )
+        for asset in assets
+    ] == [
+        (0.0762, 870, 187, 5180, 187),
+        (0.1016, 761, 253, 5612, 253),
+        (0.127, 682, 308, 5972, 308),
+        (0.1524, 612, 363, 6332, 363),
+    ]
+    assert {asset.source_qipc_commit for asset in assets} == {"36f2816b52b414882db07acce51c3c30c31ba341"}
