@@ -25,7 +25,8 @@ _COMPONENT_SCHEMA_VERSION = 2
 _COMPONENT_SCHEMA_ABI = "qipc_tape_table_component_v2"
 _INTERNAL_TOPOLOGY_SPACE = "hub_tape_local_v2"
 _TABLE_TOPOLOGY_SPACE = "table_tape_local_v2"
-_BOND_STATE_MODE = "topology_seed_v2"
+_BOND_STATE_MODE = "grouped_frozen_state_v2"
+_DM_INV_TRANSFORM = "right_multiply_placement_rotation_transpose"
 _HEX_40 = re.compile(r"[0-9a-f]{40}")
 _HEX_64 = re.compile(r"[0-9a-f]{64}")
 
@@ -294,6 +295,16 @@ def _validate_indices(indices: np.ndarray, vertex_count: int, *, name: str) -> N
         _fail(f"{name} contains duplicate elements.")
 
 
+def _validate_pt_indices(indices: np.ndarray, vertex_count: int, *, name: str) -> None:
+    if indices.size and (int(indices.min()) < 0 or int(indices.max()) >= vertex_count):
+        _fail(f"{name} contains a vertex outside [0, {vertex_count}).")
+    if any(len(set(row.tolist())) != indices.shape[1] for row in indices):
+        _fail(f"{name} contains a degenerate element with repeated vertex IDs.")
+    canonical = np.concatenate((indices[:, :1], np.sort(indices[:, 1:], axis=1)), axis=1)
+    if len(np.unique(canonical, axis=0)) != len(indices):
+        _fail(f"{name} contains duplicate point-triangle elements.")
+
+
 def _validate_triangle_geometry(positions: np.ndarray, triangles: np.ndarray, *, name: str) -> None:
     edges_0 = positions[triangles[:, 1]] - positions[triangles[:, 0]]
     edges_1 = positions[triangles[:, 2]] - positions[triangles[:, 0]]
@@ -424,6 +435,7 @@ def _validate_bond_state_manifest(value: dict[str, Any]) -> None:
             "schema",
             "mode",
             "portable_exact_restore",
+            "dm_inv_transform",
             "groups",
             "captured_fields",
             "omitted_restore_fields",
@@ -437,12 +449,14 @@ def _validate_bond_state_manifest(value: dict[str, Any]) -> None:
     }
     if value["schema"] != "qipc_bond_state_manifest_v1":
         _fail("bond_state_manifest_json.schema must be 'qipc_bond_state_manifest_v1'.")
-    if value["mode"] != _BOND_STATE_MODE or value["portable_exact_restore"] is not False:
-        _fail("bond_state_manifest_json must declare non-portable topology_seed_v2 state.")
+    if value["mode"] != _BOND_STATE_MODE or value["portable_exact_restore"] is not True:
+        _fail("bond_state_manifest_json must declare portable grouped_frozen_state_v2 state.")
+    if value["dm_inv_transform"] != _DM_INV_TRANSFORM:
+        _fail("bond_state_manifest_json.dm_inv_transform must be 'right_multiply_placement_rotation_transpose'.")
     if value["groups"] != expected_groups:
         _fail("bond_state_manifest_json.groups does not match the v2 topology namespaces.")
     if value["captured_fields"] != list(_STATE_FIELDS):
-        _fail("bond_state_manifest_json.captured_fields does not match the diagnostic state arrays.")
+        _fail("bond_state_manifest_json.captured_fields does not match the frozen state arrays.")
     if value["omitted_restore_fields"] != ["slot_alive", "pair_key", "dead_slot_capacity"]:
         _fail("bond_state_manifest_json.omitted_restore_fields does not match the v2 contract.")
     if not isinstance(value["omission_reason"], str) or not value["omission_reason"].strip():
@@ -450,8 +464,8 @@ def _validate_bond_state_manifest(value: dict[str, Any]) -> None:
 
 
 @dataclass(frozen=True)
-class TapeTableBondDiagnosticState:
-    """Captured live rows for diagnostics, not a portable restore payload."""
+class TapeTableBondFrozenState:
+    """Portable live bond rows for exact restoration after topology remapping."""
 
     Dm_inv: np.ndarray
     V0: np.ndarray
@@ -474,12 +488,12 @@ class TapeTableBondBatch:
     seed_rest_height: float
     contact_policy: dict[str, Any]
     bond_policy: dict[str, Any]
-    diagnostic_state: TapeTableBondDiagnosticState
+    frozen_state: TapeTableBondFrozenState
 
 
 @dataclass(frozen=True)
 class TapeTableComponentPlacement:
-    """Component geometry after one explicit world placement transform."""
+    """Component geometry and frozen bond state after one world placement."""
 
     transform: np.ndarray
     tape_positions: np.ndarray
@@ -488,6 +502,26 @@ class TapeTableComponentPlacement:
     hub_transform: np.ndarray
     table_positions: np.ndarray
     table_transform: np.ndarray
+    internal_frozen_state: TapeTableBondFrozenState
+    table_frozen_state: TapeTableBondFrozenState
+
+
+def _placed_frozen_state(
+    state: TapeTableBondFrozenState,
+    rotation: np.ndarray,
+) -> TapeTableBondFrozenState:
+    transformed_Dm_inv = (state.Dm_inv.reshape(-1, 3, 3) @ rotation.T).reshape(-1, 9)
+    return TapeTableBondFrozenState(
+        Dm_inv=_readonly(np.ascontiguousarray(transformed_Dm_inv)),
+        V0=state.V0,
+        d_rest=state.d_rest,
+        kappa=state.kappa,
+        release_force=state.release_force,
+        release_strain=state.release_strain,
+        release_gap=state.release_gap,
+        release_slip=state.release_slip,
+        age=state.age,
+    )
 
 
 @dataclass(frozen=True)
@@ -618,6 +652,7 @@ class TapeTableComponentAsset:
                 _fail("tape_tris count must equal 2*nx*nz.")
             _validate_indices(tape_tris, tape_vertex_count, name="tape_tris")
             _validate_triangle_geometry(tape_rest_positions, tape_tris, name="rest tape mesh")
+            _validate_triangle_geometry(tape_positions, tape_tris, name="settled tape mesh")
 
             hub_positions = _point_array(archive, "hub_positions")
             hub_tris = _index_array(archive, "hub_tris", 3)
@@ -652,6 +687,13 @@ class TapeTableComponentAsset:
                 contact_policy=json_values["internal_contact_policy_json"],
                 bond_policy=json_values["internal_bond_policy_json"],
             )
+            _validate_internal_bond_faces(
+                internal_bonds.topologies,
+                hub_tris,
+                tape_tris,
+                hub_vertex_count=len(hub_positions),
+            )
+            _validate_internal_release_force(internal_bonds)
             table_bonds = _load_bond_batch(
                 archive,
                 group="table",
@@ -669,8 +711,8 @@ class TapeTableComponentAsset:
             )
             if _bytes_scalar(archive, "bond_state_mode") != _BOND_STATE_MODE:
                 _fail(f"bond_state_mode must be '{_BOND_STATE_MODE}'.")
-            if _int_scalar(archive, "bond_frozen_state_restore_supported") != 0:
-                _fail("bond_frozen_state_restore_supported must be 0 for the diagnostic live fields.")
+            if _int_scalar(archive, "bond_frozen_state_restore_supported") != 1:
+                _fail("bond_frozen_state_restore_supported must be 1 for portable exact restore.")
 
             tail_vertex_ids = _id_array(archive, "tail_vertex_ids")
             tail_rows = _id_array(archive, "tail_rows")
@@ -770,7 +812,7 @@ class TapeTableComponentAsset:
 
     def placed(self, transform: np.ndarray) -> TapeTableComponentPlacement:
         """Apply one explicit rigid transform without changing any vertex ID."""
-        transform = np.ascontiguousarray(transform, dtype=np.float64)
+        transform = np.array(transform, dtype=np.float64, order="C", copy=True)
         _validate_rigid_transform(transform, name="placement transform")
         rotation = transform[:3, :3]
         translation = transform[:3, 3]
@@ -786,6 +828,8 @@ class TapeTableComponentAsset:
             hub_transform=_readonly(np.ascontiguousarray(transform @ self.hub_transform)),
             table_positions=points(self.table_positions),
             table_transform=_readonly(np.ascontiguousarray(transform @ self.table_transform)),
+            internal_frozen_state=_placed_frozen_state(self.internal_bonds.frozen_state, rotation),
+            table_frozen_state=_placed_frozen_state(self.table_bonds.frozen_state, rotation),
         )
 
 
@@ -810,10 +854,13 @@ def _load_bond_batch(
         _fail(f"{group}_bond_fem_offset must equal the rigid vertex count {rigid_vertex_count}.")
     if seed_rest_height != 0.0:
         _fail(f"{group}_bond_seed_rest_height must be 0 to preserve the authored rest state.")
-    _validate_indices(topologies, rigid_vertex_count + tape_vertex_count, name=f"{group}_bond_topologies")
+    _validate_pt_indices(topologies, rigid_vertex_count + tape_vertex_count, name=f"{group}_bond_topologies")
     tape_mask = topologies >= fem_offset
     if np.any(tape_mask.sum(axis=1) == 0):
         _fail(f"every {group} bond must reference at least one tape vertex.")
+    triangle_tape_count = tape_mask[:, 1:].sum(axis=1)
+    if group == "internal" and np.any((triangle_tape_count != 0) & (triangle_tape_count != 3)):
+        _fail("every internal bond triangle must belong entirely to the hub or entirely to the tape.")
     if group == "table" and (
         np.any(~tape_mask[:, 0]) or np.any(tape_mask[:, 1:]) or np.any(tape_mask.sum(axis=1) != 1)
     ):
@@ -824,15 +871,19 @@ def _load_bond_batch(
     for field in _STATE_FIELDS:
         name = f"{group}_bond_state_{field}"
         if field == "Dm_inv":
-            state_values[field] = _float_array(archive, name, (count, 3, 3))
+            matrices = _float_array(archive, name, (count, 3, 3))
+            if np.any(np.linalg.det(matrices) == 0.0):
+                _fail(f"{group}_bond_state_Dm_inv must be invertible.")
+            state_values[field] = _readonly(np.ascontiguousarray(matrices.reshape(count, 9)))
         elif field == "age":
             state_values[field] = _int_array(archive, name, (count,))
         else:
             state_values[field] = _float_array(archive, name, (count,))
-    if np.any(np.linalg.det(state_values["Dm_inv"]) == 0.0):
-        _fail(f"{group}_bond_state_Dm_inv must be invertible.")
     if np.any(state_values["V0"] <= 0.0):
         _fail(f"{group}_bond_state_V0 must be positive.")
+    expected_V0 = np.abs(1.0 / np.linalg.det(state_values["Dm_inv"].reshape(-1, 3, 3))) / 6.0
+    if not np.allclose(state_values["V0"], expected_V0, rtol=1.0e-10, atol=0.0):
+        _fail(f"{group}_bond_state_V0 must equal abs(1 / det(Dm_inv)) / 6.")
     if np.any(state_values["kappa"] <= 0.0):
         _fail(f"{group}_bond_state_kappa must be positive.")
     for field in ("release_force", "release_strain", "release_gap", "release_slip"):
@@ -840,7 +891,7 @@ def _load_bond_batch(
             _fail(f"{group}_bond_state_{field} must be positive.")
     if np.any(state_values["age"] < 0):
         _fail(f"{group}_bond_state_age must be non-negative.")
-    diagnostic_state = TapeTableBondDiagnosticState(**state_values)
+    frozen_state = TapeTableBondFrozenState(**state_values)
     return TapeTableBondBatch(
         topologies=topologies,
         topology_space=topology_space,
@@ -848,8 +899,40 @@ def _load_bond_batch(
         seed_rest_height=seed_rest_height,
         contact_policy=contact_policy,
         bond_policy=bond_policy,
-        diagnostic_state=diagnostic_state,
+        frozen_state=frozen_state,
     )
+
+
+def _validate_internal_release_force(batch: TapeTableBondBatch) -> None:
+    release = batch.bond_policy["release"]
+    assert isinstance(release, dict)
+    policy_force = float(release["force"])
+    active_forces = np.unique(batch.frozen_state.release_force)
+    if active_forces.shape != (1,) or float(active_forces[0]) != policy_force:
+        _fail(
+            "internal_bond_policy_json.release.force must equal the unique value across all "
+            "active internal_bond_state_release_force rows."
+        )
+
+
+def _validate_internal_bond_faces(
+    topologies: np.ndarray,
+    hub_triangles: np.ndarray,
+    tape_triangles: np.ndarray,
+    *,
+    hub_vertex_count: int,
+) -> None:
+    hub_faces = {tuple(sorted(triangle.tolist())) for triangle in hub_triangles}
+    tape_faces = {tuple(sorted(triangle.tolist())) for triangle in tape_triangles}
+    for topology in topologies:
+        triangle = topology[1:]
+        if np.all(triangle < hub_vertex_count):
+            if tuple(sorted(triangle.tolist())) not in hub_faces:
+                _fail("internal bond hub PT triangles must reference hub_tris surface faces.")
+        else:
+            local_triangle = triangle - hub_vertex_count
+            if tuple(sorted(local_triangle.tolist())) not in tape_faces:
+                _fail("internal bond tape PT triangles must reference tape_tris surface faces.")
 
 
 def _validate_table_bond_faces(
