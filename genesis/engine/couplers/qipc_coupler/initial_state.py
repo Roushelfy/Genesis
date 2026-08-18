@@ -23,6 +23,29 @@ class QIPCInitialStateManager:
     def __init__(self) -> None:
         self._requests: list[_RigidInitialStateRequest] = []
 
+    @staticmethod
+    def _live_drstate_views(scene) -> dict[str, torch.Tensor]:
+        """Collect accepted live state views across supported QIPC APIs."""
+        legacy = getattr(scene, "_drstate_views", None)
+        if legacy is not None:
+            return legacy()
+
+        accessors = getattr(scene, "_drstate_accessors", None)
+        python_views = getattr(scene, "_drstate_python_views", None)
+        if accessors is None or python_views is None:
+            gs.raise_exception("QIPCCoupler initial-state overlays require QIPC DRInfo state accessors.")
+
+        from qipc._src.native.solver import DRInfo
+
+        views: dict[str, torch.Tensor] = {}
+        for key, accessor in accessors().items():
+            info = DRInfo()
+            view = accessor(info)
+            if info.accepted() and view is not None:
+                views[key] = view
+        views.update(python_views())
+        return views
+
     def add_rigid_request(self, entity, *, body_q: dict[str, np.ndarray], joint_theta: dict[str, float]) -> None:
         if any(request.entity is entity for request in self._requests):
             gs.raise_exception("QIPCCoupler.set_rigid_initial_state: entity already has an initial state request.")
@@ -135,7 +158,7 @@ class QIPCInitialStateManager:
         # contact candidates from the overlaid ABD/FEM state without advancing
         # physics. Bond slots have already been restored at this point.
         scene._solver.reset()
-        views = scene._drstate_views()
+        views = QIPCInitialStateManager._live_drstate_views(scene)
         positions = views["GlobalVertexManager/positions"]
         lagged = views.get("ContactSystem/lagged_positions")
         if lagged is not None:

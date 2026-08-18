@@ -755,6 +755,7 @@ def add_tape_dispenser(
         resistance=1.0e5,
         distance_lock=True,
         distance_lock_ratio=1.5,
+        distance_lock_rest_snap=False,
         release_force=0.5,
     )
     coupler.add_adhesion(
@@ -769,6 +770,7 @@ def add_tape_dispenser(
         resistance=1.0e5,
         distance_lock=True,
         distance_lock_ratio=1.5,
+        distance_lock_rest_snap=False,
         release_force=0.5,
     )
 

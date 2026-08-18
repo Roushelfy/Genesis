@@ -240,6 +240,8 @@ def test_add_tape_dispenser_matches_f249_contact_and_reset():
     assert not tape_machine.enable and tape_machine.adhesion is None and tape_machine.bond is None
     assert tape_ring.enable and tape_ring.adhesion is not None and tape_ring.bond is not None
     assert tape_self.enable and tape_self.adhesion is not None and tape_self.bond is not None
+    assert tape_ring.bond.rest_snap is False
+    assert tape_self.bond.rest_snap is False
     assert tape_default.enable and tape_default.adhesion is None and tape_default.bond is None
 
     q_initial = native.affine_body.q.detach().clone()

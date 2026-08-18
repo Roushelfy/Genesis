@@ -35,6 +35,14 @@ class _FEMContactAssignment:
 
 
 @dataclass(frozen=True)
+class _RigidVertexContactAssignment:
+    region: QIPCContactRegion
+    entity: object
+    link_local: int
+    vertices: np.ndarray
+
+
+@dataclass(frozen=True)
 class _ContactPairRequest:
     first: object
     second: object
@@ -73,6 +81,7 @@ class QIPCContactManager:
     def __init__(self) -> None:
         self._regions: list[_ContactRegionRequest] = []
         self._assignments: list[_ContactAssignment] = []
+        self._rigid_vertex_assignments: list[_RigidVertexContactAssignment] = []
         self._fem_assignments: list[_FEMContactAssignment] = []
         self._pairs: list[_ContactPairRequest] = []
         self._built = False
@@ -158,6 +167,30 @@ class QIPCContactManager:
             gs.raise_exception("QIPCCoupler.assign_fem_contact_region: vertices must be unique non-negative indices.")
         self._fem_assignments.append(_FEMContactAssignment(region=region, entity=entity, vertices=vertex_ids))
 
+    def assign_rigid_vertex_region(
+        self,
+        region: QIPCContactRegion,
+        entity,
+        *,
+        link_local: int,
+        vertices,
+    ) -> None:
+        self._require_unbuilt("assign_rigid_contact_region")
+        self._validate_region(region)
+        vertex_ids = np.asarray(vertices, dtype=np.int64).reshape(-1)
+        if len(vertex_ids) == 0:
+            gs.raise_exception("QIPCCoupler.assign_rigid_contact_region: vertices must not be empty.")
+        if np.any(vertex_ids < 0) or len(np.unique(vertex_ids)) != len(vertex_ids):
+            gs.raise_exception("QIPCCoupler.assign_rigid_contact_region: vertices must be unique non-negative indices.")
+        self._rigid_vertex_assignments.append(
+            _RigidVertexContactAssignment(
+                region=region,
+                entity=entity,
+                link_local=link_local,
+                vertices=vertex_ids,
+            )
+        )
+
     def create_regions(self, tab) -> dict[QIPCContactRegion, tuple[object, float, float]]:
         self._built = True
         infos: dict[QIPCContactRegion, tuple[object, float, float]] = {}
@@ -167,7 +200,7 @@ class QIPCContactManager:
         return infos
 
     def apply_assignments(self, pre_by_entity: dict, info_by_endpoint: dict) -> None:
-        assigned_by_slot: dict[int, list[range]] = {}
+        assigned_by_slot: dict[int, set[int]] = {}
         for assignment in self._assignments:
             pre = pre_by_entity.get(assignment.entity)
             if pre is None:
@@ -182,12 +215,11 @@ class QIPCContactManager:
             slot = pre.group_slots[rep]
             elem = info_by_endpoint[assignment.region][0]
             slot_id = int(slot.id)
-            ranges = assigned_by_slot.setdefault(slot_id, [])
-            if any(
-                max(vertex_range.start, existing.start) < min(vertex_range.stop, existing.stop) for existing in ranges
-            ):
+            assigned = assigned_by_slot.setdefault(slot_id, set())
+            vertex_ids = set(vertex_range)
+            if assigned.intersection(vertex_ids):
                 gs.raise_exception("QIPCCoupler.assign_contact_region: collision vertex ranges overlap.")
-            ranges.append(vertex_range)
+            assigned.update(vertex_ids)
 
             geo = slot.geometry
             if "contact_element_id" not in geo.vertices:
@@ -196,6 +228,41 @@ class QIPCContactManager:
             else:
                 element_ids = np.asarray(geo.vertices["contact_element_id"].cpu(), dtype=np.int32).copy()
             element_ids[vertex_range.start : vertex_range.stop] = np.int32(elem.id)
+            geo.vertices["contact_element_id"] = element_ids
+
+        for assignment in self._rigid_vertex_assignments:
+            pre = pre_by_entity.get(assignment.entity)
+            if pre is None:
+                gs.raise_exception(
+                    "QIPCCoupler.assign_rigid_contact_region: entity is not a coupled QIPC rigid entity."
+                )
+            location = pre.vertex_ranges.get(assignment.link_local)
+            if location is None:
+                gs.raise_exception(
+                    "QIPCCoupler.assign_rigid_contact_region: selected link has no QIPC collision vertices."
+                )
+            rep, vertex_range = location
+            if int(assignment.vertices.max()) >= len(vertex_range):
+                gs.raise_exception("QIPCCoupler.assign_rigid_contact_region: vertex index is out of range.")
+            slot = pre.group_slots[rep]
+            vertex_ids = assignment.vertices + vertex_range.start
+            assigned = assigned_by_slot.setdefault(int(slot.id), set())
+            overlap = assigned.intersection(int(vertex) for vertex in vertex_ids)
+            if overlap:
+                gs.raise_exception("QIPCCoupler.assign_rigid_contact_region: rigid contact vertex regions overlap.")
+            assigned.update(int(vertex) for vertex in vertex_ids)
+
+            geo = slot.geometry
+            if "contact_element_id" not in geo.vertices:
+                geo.vertices.create("contact_element_id", np.int32, default=-1)
+                element_ids = np.full(geo.vertices.size, -1, dtype=np.int32)
+            else:
+                element_ids = np.asarray(
+                    geo.vertices["contact_element_id"].cpu(),
+                    dtype=np.int32,
+                ).copy()
+            elem = info_by_endpoint[assignment.region][0]
+            element_ids[vertex_ids] = np.int32(elem.id)
             geo.vertices["contact_element_id"] = element_ids
 
     def apply_fem_assignments(self, slot_by_entity: dict, info_by_endpoint: dict) -> None:

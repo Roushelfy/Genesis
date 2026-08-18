@@ -78,6 +78,7 @@ class AdhesionRequest(NamedTuple):
     distance_lock: bool | None
     distance_lock_ratio: float | None
     distance_lock_floor_ratio: float | None
+    distance_lock_rest_snap: bool | None
     release_force: float | None
 
 
@@ -152,6 +153,7 @@ class QIPCAdhesionManager:
         distance_lock: bool | None = None,
         distance_lock_ratio: float | None = None,
         distance_lock_floor_ratio: float | None = None,
+        distance_lock_rest_snap: bool | None = None,
         release_force: float | None = None,
     ) -> None:
         """Queue an adhesion declaration (see QIPCCoupler.add_adhesion)."""
@@ -206,6 +208,7 @@ class QIPCAdhesionManager:
                 distance_lock=distance_lock,
                 distance_lock_ratio=distance_lock_ratio,
                 distance_lock_floor_ratio=distance_lock_floor_ratio,
+                distance_lock_rest_snap=distance_lock_rest_snap,
                 release_force=release_force,
             )
         )
@@ -427,6 +430,7 @@ class QIPCAdhesionManager:
                     bond = self._make_bond(
                         ratio=req.distance_lock_ratio,
                         floor_ratio=req.distance_lock_floor_ratio,
+                        rest_snap=req.distance_lock_rest_snap,
                         release_force=req.release_force,
                     )
                 tab.insert(
@@ -443,6 +447,7 @@ class QIPCAdhesionManager:
         *,
         ratio: float | None = None,
         floor_ratio: float | None = None,
+        rest_snap: bool | None = None,
         release_force: float | None = None,
     ):
         from qipc.contact import Bond, Release
@@ -453,6 +458,7 @@ class QIPCAdhesionManager:
             ratio=opt.adhesion_bond_distance_lock_ratio if ratio is None else float(ratio),
             margin=opt.adhesion_bond_lock_margin,
             floor_ratio=opt.adhesion_bond_lock_floor_ratio if floor_ratio is None else float(floor_ratio),
+            rest_snap=True if rest_snap is None else bool(rest_snap),
             occlusion=opt.adhesion_occlusion,
             release=Release(
                 strain=opt.adhesion_bond_release_strain,

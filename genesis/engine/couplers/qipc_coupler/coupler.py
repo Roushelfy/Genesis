@@ -507,6 +507,24 @@ class QIPCCoupler(RBC):
             gs.raise_exception("QIPCCoupler.assign_fem_contact_region: entity is not owned by this scene.")
         self._contact.assign_fem_region(region, entity, verts_idx_local)
 
+    def assign_rigid_contact_region(
+        self,
+        region: QIPCContactRegion,
+        entity: RigidEntity,
+        *,
+        verts_idx_local,
+        link: RigidLink | str | None = None,
+    ) -> None:
+        """Assign a contact material to selected collision vertices of one rigid link."""
+        if not any(candidate is entity for candidate in self._sim.rigid_solver.entities):
+            gs.raise_exception("QIPCCoupler.assign_rigid_contact_region: entity is not owned by this scene.")
+        self._contact.assign_rigid_vertex_region(
+            region,
+            entity,
+            link_local=self._resolve_link_local(entity, link),
+            vertices=verts_idx_local,
+        )
+
     def set_contact_pair(
         self,
         first,
