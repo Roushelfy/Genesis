@@ -464,7 +464,7 @@ def test_tape_table_component_rejects_missing_or_duplicate_tail_bond(tmp_path):
 @pytest.mark.parametrize(
     ("policy_release_force", "active_release_forces"),
     [
-        (0.5, [1.0e30, 1.0e30]),
+        (2.0e30, [1.0e30, 1.0e30]),
         (1.0e30, [1.0e30, 0.5]),
     ],
 )
@@ -490,14 +490,54 @@ def test_tape_table_component_rejects_inconsistent_internal_release_force(
         module.TapeTableComponentAsset.from_npz(_save(tmp_path / "inconsistent-internal-release.npz", payload))
 
 
+def test_tape_table_component_accepts_releasable_winding_and_skips_the_state_match(tmp_path):
+    module = _module()
+    payload = _component_payload()
+    payload["internal_bond_policy_json"] = _json_bytes(_bond_policy(calibratable=True, release_force=0.5))
+
+    asset = module.TapeTableComponentAsset.from_npz(_save(tmp_path / "releasable-winding.npz", payload))
+
+    assert asset.internal_bonds.bond_policy["release_force_calibratable"] is True
+    assert asset.internal_bonds.bond_policy["release"]["force"] == 0.5
+    np.testing.assert_array_equal(
+        asset.internal_bonds.frozen_state.release_force,
+        np.full(len(asset.internal_bonds.topologies), 1.0e30),
+    )
+
+
+def test_tape_table_component_rejects_uncoupled_release_calibration_flag(tmp_path):
+    module = _module()
+    payload = _component_payload()
+    payload["internal_bond_policy_json"] = _json_bytes(_bond_policy(calibratable=True, release_force=1.0e30))
+
+    with pytest.raises(
+        gs.GenesisException,
+        match="release_force_calibratable must be set exactly when the release force is a runtime value",
+    ):
+        module.TapeTableComponentAsset.from_npz(_save(tmp_path / "uncoupled-calibration.npz", payload))
+
+
 def test_tape_table_component_rejects_authoring_table_release_force(tmp_path):
+    module = _module()
+    payload = _component_payload()
+    policy = _bond_policy(calibratable=True, release_force=0.7)
+    payload["table_bond_policy_json"] = _json_bytes(policy)
+
+    with pytest.raises(gs.GenesisException, match="must use params_json.RCC_RELEASE_FORCE"):
+        module.TapeTableComponentAsset.from_npz(_save(tmp_path / "authoring-force.npz", payload))
+
+
+def test_tape_table_component_rejects_sentinel_table_release_force(tmp_path):
     module = _module()
     payload = _component_payload()
     policy = _bond_policy(calibratable=True, release_force=1.0e30)
     payload["table_bond_policy_json"] = _json_bytes(policy)
 
-    with pytest.raises(gs.GenesisException, match="must use params_json.RCC_RELEASE_FORCE"):
-        module.TapeTableComponentAsset.from_npz(_save(tmp_path / "authoring-force.npz", payload))
+    with pytest.raises(
+        gs.GenesisException,
+        match="release_force_calibratable must be set exactly when the release force is a runtime value",
+    ):
+        module.TapeTableComponentAsset.from_npz(_save(tmp_path / "sentinel-table-force.npz", payload))
 
 
 def test_packaged_tape_table_components_match_the_authoring_certificate():
@@ -535,6 +575,60 @@ def test_packaged_tape_table_builder_verifies_and_loads_manifest_asset():
     assert asset.path.name == "scotch3850_table_3in_component.npz"
     assert len(asset.internal_bonds.topologies) == 870
     assert len(asset.table_bonds.topologies) == 187
+
+
+def test_packaged_releasable_tape_table_components_carry_the_unwind_force():
+    module = _builder_module()
+    directory = Path(get_assets_dir()) / "qipc" / "tape_table_component_v2"
+    manifest = json.loads((directory / "manifest.json").read_text())
+
+    counts = {3: (870, 187), 4: (761, 253), 5: (682, 308), 6: (612, 363)}
+    for inches, (internal_count, table_count) in counts.items():
+        asset = module.packaged_asset(inches, winding="releasable")
+        filename = f"scotch3850_table_{inches}in_unwind_component.npz"
+        assert asset.path.name == filename
+        assert manifest["assets"][filename]["winding"] == "releasable"
+        assert hashlib.sha256(asset.path.read_bytes()).hexdigest() == manifest["assets"][filename]["sha256"]
+        assert len(asset.internal_bonds.topologies) == internal_count
+        assert len(asset.table_bonds.topologies) == table_count
+        assert asset.internal_bonds.bond_policy["release_force_calibratable"] is True
+        assert asset.internal_bonds.bond_policy["release"]["force"] == 0.5
+        np.testing.assert_array_equal(
+            asset.internal_bonds.frozen_state.release_force,
+            np.full(internal_count, 1.0e30),
+        )
+
+    with pytest.raises(gs.GenesisException, match="winding must be 'locked' or 'releasable'"):
+        module.packaged_asset(3, winding="unwound")
+
+
+def test_tape_table_builder_restamps_a_calibratable_internal_batch():
+    module = _builder_module()
+    asset = module.packaged_asset(3, winding="releasable")
+    scene = gs.Scene(
+        coupler_options=gs.options.QIPCCouplerOptions(**module.recommended_coupler_options(asset)),
+        show_viewer=False,
+    )
+    table = scene.add_entity(
+        morph=gs.morphs.Box(pos=(0.0, 0.0, 0.2), size=(0.8, 0.4, 0.4), fixed=True),
+        material=gs.materials.Rigid(
+            coup_friction=0.5,
+            contact_resistance=1.0e7,
+            qipc_d_hat=asset.d_hat,
+        ),
+    )
+
+    component = module.add_tape_table_component(
+        scene,
+        table,
+        asset,
+        transform=module.placement_transform_for_hub(asset, hub_xy=(-0.15, 0.0), table_top=0.4),
+    )
+
+    requests = {request.handle.name: request for request in scene.sim.coupler.adhesion._bond_state_requests}
+    assert requests.keys() == {component.internal_bonds.name, component.table_bonds.name}
+    np.testing.assert_array_equal(requests["internal"].release_force, np.full(870, 0.5))
+    np.testing.assert_array_equal(requests["table"].release_force, np.full(187, 0.5))
 
 
 def test_tape_table_builder_rejects_invalid_release_before_mutating_the_scene():

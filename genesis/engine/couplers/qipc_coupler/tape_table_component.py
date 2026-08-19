@@ -387,7 +387,7 @@ def _validate_contact_policy(policy: dict[str, Any], *, name: str) -> None:
         _fail(f"{name}.adhesion must be null for explicit authored topology.")
 
 
-def _validate_bond_policy(policy: dict[str, Any], *, name: str, calibratable: bool) -> None:
+def _validate_bond_policy(policy: dict[str, Any], *, name: str, calibratable: bool | None) -> None:
     _exact_keys(
         policy,
         {
@@ -419,7 +419,9 @@ def _validate_bond_policy(policy: dict[str, Any], *, name: str, calibratable: bo
     _exact_keys(release, {"force", "strain", "gap", "slip"}, name=f"{name}.release")
     for field in ("force", "strain", "gap", "slip"):
         _number(release[field], name=f"{name}.release.{field}", positive=True)
-    if policy["release_force_calibratable"] is not calibratable:
+    if policy["release_force_calibratable"] is not (float(release["force"]) < 1.0e29):
+        _fail(f"{name}.release_force_calibratable must be set exactly when the release force is a runtime value.")
+    if calibratable is not None and policy["release_force_calibratable"] is not calibratable:
         _fail(f"{name}.release_force_calibratable must be {str(calibratable).lower()}.")
 
 
@@ -630,7 +632,9 @@ class TapeTableComponentAsset:
             _validate_bond_policy(
                 json_values["internal_bond_policy_json"],
                 name="internal_bond_policy_json",
-                calibratable=False,
+                # The locked batch pins the winding with the sentinel force; the
+                # releasable batch hands a runtime unwind force to the loader.
+                calibratable=None,
             )
             _validate_bond_policy(
                 json_values["table_bond_policy_json"], name="table_bond_policy_json", calibratable=True
@@ -906,6 +910,10 @@ def _load_bond_batch(
 def _validate_internal_release_force(batch: TapeTableBondBatch) -> None:
     release = batch.bond_policy["release"]
     assert isinstance(release, dict)
+    if batch.bond_policy["release_force_calibratable"] is True:
+        # The loader restamps a calibratable batch from the policy force, so the
+        # frozen rows keep the authoring sentinel and need no uniformity check.
+        return
     policy_force = float(release["force"])
     active_forces = np.unique(batch.frozen_state.release_force)
     if active_forces.shape != (1,) or float(active_forces[0]) != policy_force:

@@ -31,6 +31,7 @@ from .tape_table_component import (
 _ASSET_DIRECTORY = Path(get_assets_dir()) / "qipc" / "tape_table_component_v2"
 _ASSET_MANIFEST = _ASSET_DIRECTORY / "manifest.json"
 _PACKAGED_LENGTHS = frozenset({3, 4, 5, 6})
+_PACKAGED_WINDINGS = frozenset({"locked", "releasable"})
 _QIPC_DEFAULT_LINEAR_TOL_RATE = 1.0e-4
 
 
@@ -48,11 +49,18 @@ class TapeTableComponent:
     asset: TapeTableComponentAsset
 
 
-def packaged_asset(attached_inches: int = 3) -> TapeTableComponentAsset:
-    """Load one of the packaged 3, 4, 5, or 6 inch component assets."""
+def packaged_asset(attached_inches: int = 3, winding: str = "locked") -> TapeTableComponentAsset:
+    """Load one of the packaged 3, 4, 5, or 6 inch component assets.
+
+    `winding` selects the batch: `locked` pins the wound core permanently while
+    `releasable` carries the product unwind release force for the loader.
+    """
     if isinstance(attached_inches, bool) or attached_inches not in _PACKAGED_LENGTHS:
         gs.raise_exception("packaged tape-table attached_inches must be one of 3, 4, 5, or 6.")
-    filename = f"scotch3850_table_{attached_inches}in_component.npz"
+    if winding not in _PACKAGED_WINDINGS:
+        gs.raise_exception("packaged tape-table winding must be 'locked' or 'releasable'.")
+    suffix = "" if winding == "locked" else "_unwind"
+    filename = f"scotch3850_table_{attached_inches}in{suffix}_component.npz"
     asset_path = _ASSET_DIRECTORY / filename
     expected_sha256 = _packaged_asset_sha256(filename)
     try:
@@ -351,6 +359,13 @@ def add_tape_table_component(
         **table_kwargs,
     )
 
+    # A calibratable batch stores the authoring sentinel in its frozen rows and
+    # publishes the runtime force through its policy, so restamp it on restore.
+    internal_release_force = (
+        float(_release_policy(asset.internal_bonds)["force"])
+        if asset.internal_bonds.bond_policy["release_force_calibratable"] is True
+        else None
+    )
     internal_bonds = _add_frozen_state_request(
         coupler,
         tape,
@@ -358,6 +373,7 @@ def add_tape_table_component(
         batch=asset.internal_bonds,
         state=placed.internal_frozen_state,
         name="internal",
+        release_force=internal_release_force,
     )
     table_bonds = _add_frozen_state_request(
         coupler,
