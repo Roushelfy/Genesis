@@ -602,6 +602,28 @@ def test_packaged_releasable_tape_table_components_carry_the_unwind_force():
         module.packaged_asset(3, winding="unwound")
 
 
+def test_placement_transform_for_hub_yaw_spins_the_tail_about_the_hub():
+    module = _builder_module()
+    asset = module.packaged_asset(3)
+    aligned = module.placement_transform_for_hub(asset, hub_xy=(0.4, -0.2), table_top=0.76)
+    yawed = module.placement_transform_for_hub(asset, hub_xy=(0.4, -0.2), table_top=0.76, yaw_degrees=90.0)
+
+    for transform in (aligned, yawed):
+        placed = asset.placed(transform)
+        np.testing.assert_allclose(placed.hub_positions.mean(axis=0)[:2], (0.4, -0.2), rtol=0.0, atol=1e-12)
+        assert placed.table_positions[:, 2].max() == pytest.approx(0.76)
+        assert np.linalg.det(transform[:3, :3]) == pytest.approx(1.0)
+
+    aligned_span = np.ptp(asset.placed(aligned).tape_positions, axis=0)
+    yawed_span = np.ptp(asset.placed(yawed).tape_positions, axis=0)
+    np.testing.assert_allclose(yawed_span[[1, 0, 2]], aligned_span, rtol=0.0, atol=1e-12)
+    assert aligned_span[0] > aligned_span[1]  # The tail runs along +x at zero yaw
+    assert yawed_span[1] > yawed_span[0]  # and across the table after a 90-degree yaw.
+
+    with pytest.raises(gs.GenesisException, match="yaw_degrees must be finite"):
+        module.placement_transform_for_hub(asset, hub_xy=(0.4, -0.2), table_top=0.76, yaw_degrees=float("nan"))
+
+
 def test_tape_table_builder_restamps_a_calibratable_internal_batch():
     module = _builder_module()
     asset = module.packaged_asset(3, winding="releasable")

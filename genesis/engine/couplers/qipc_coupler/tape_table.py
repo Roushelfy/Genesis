@@ -109,15 +109,32 @@ def placement_transform_for_hub(
     *,
     hub_xy,
     table_top: float,
+    yaw_degrees: float = 0.0,
 ) -> np.ndarray:
-    """Place the hub center at `hub_xy` while keeping the table at `table_top`."""
+    """Place the hub center at `hub_xy` while keeping the table at `table_top`.
+
+    `yaw_degrees` spins the component about the vertical axis through the hub
+    center; at zero the authored free tail points toward `+x`.
+    """
     target_xy = np.asarray(hub_xy, dtype=np.float64).reshape(-1)
     if target_xy.shape != (2,) or not np.isfinite(target_xy).all():
         gs.raise_exception("tape-table hub_xy must contain two finite values.")
     table_top = float(table_top)
     if not math.isfinite(table_top):
         gs.raise_exception("tape-table table_top must be finite.")
+    yaw = math.radians(float(yaw_degrees))
+    if not math.isfinite(yaw):
+        gs.raise_exception("tape-table yaw_degrees must be finite.")
     transform = qipc_y_up_to_genesis_z_up_transform()
+    yaw_rotation = np.array(
+        [
+            [math.cos(yaw), -math.sin(yaw), 0.0],
+            [math.sin(yaw), math.cos(yaw), 0.0],
+            [0.0, 0.0, 1.0],
+        ],
+        dtype=np.float64,
+    )
+    transform[:3, :3] = yaw_rotation @ transform[:3, :3]
     rotated_hub_center = transform[:3, :3] @ asset.hub_positions.mean(axis=0)
     transform[:2, 3] = target_xy - rotated_hub_center[:2]
     transform[2, 3] = table_top
