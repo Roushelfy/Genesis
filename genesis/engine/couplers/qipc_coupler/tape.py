@@ -402,8 +402,15 @@ def _bond_cluster_inputs(asset: _TapeClusterAsset) -> tuple[np.ndarray, np.ndarr
     return triangles, bonded, adjacency
 
 
-def _bond_cluster_certificate(asset: _TapeClusterAsset) -> tuple[np.ndarray, np.ndarray, list[set[int]]]:
+def _bond_cluster_certificate(
+    asset: _TapeClusterAsset,
+    never_member: np.ndarray | None = None,
+) -> tuple[np.ndarray, np.ndarray, list[set[int]]]:
     triangles, bonded, adjacency = _bond_cluster_inputs(asset)
+    if never_member is not None:
+        # Mask BEFORE hole-fill, mirroring the packaged driver's certificate
+        # (qipc.cluster_release_driver) so adopt_membership verification holds.
+        bonded &= ~np.asarray(never_member, dtype=bool).reshape(-1)
     free = ~bonded
     n_vertices = len(bonded)
     component = np.full(n_vertices, -1, dtype=np.int32)
@@ -445,6 +452,9 @@ def _structured_bond_cluster_certificate(
     never = np.asarray(never_member, dtype=bool).reshape(-1)
     if len(never) != n_vertices:
         gs.raise_exception("structured tape never_member mask must match the tape vertex count.")
+    # Mask BEFORE the row scan, mirroring the packaged driver's
+    # freeze/adopt structured path (qipc.cluster_release_driver).
+    raw_bonded = raw_bonded & ~never
     row_fraction = raw_bonded.reshape(-1, row_width).mean(axis=1)
     free_row = len(row_fraction)
     for row in range(len(row_fraction) - free_run + 1):
@@ -484,34 +494,22 @@ def _bond_cluster_target(
     return deep[triangles].all(axis=1)
 
 
-def _bond_topology_keys(topologies: np.ndarray) -> frozenset[tuple[int, int, int, int]]:
-    rows = np.asarray(topologies, dtype=np.int32).reshape(-1, 4)
-    return frozenset((int(row[0]), int(row[1]), int(row[2]), int(row[3])) for row in rows)
-
-
-def _filter_authored_bond_releases(
-    released: np.ndarray,
-    authored: frozenset[tuple[int, int, int, int]],
-) -> np.ndarray:
-    rows = np.asarray(released, dtype=np.int32).reshape(-1, 4)
-    keep = np.fromiter(
-        ((int(row[0]), int(row[1]), int(row[2]), int(row[3])) in authored for row in rows),
-        dtype=bool,
-        count=len(rows),
-    )
-    return np.ascontiguousarray(rows[keep])
-
-
 class TapeBondClusterController:
-    """Release-feed policy for a queued distance-bond tape cluster.
+    """Runtime peel policy for a queued distance-bond tape cluster.
 
     The affine cluster is a mechanics optimization, not a second fracture
-    model. Wind-authored bonds certify the initial rigid interior. A released
-    bond advances the free front only if its exact topology belongs to the
-    mapped authored seed and one of its tape vertices has moved
-    ``detach_displacement`` relative to the rigidified tape interior. ``collar``
-    graph rings behind the front remain deformable. Membership can only shrink
-    during an episode.
+    model. Wind-authored bonds certify the initial rigid interior; the release
+    policy itself is qipc's packaged ``ClusterReleaseDriver``
+    (``qipc.cluster_release_driver``): exact released-pair events with
+    organic-relock cancellation, live-bond support deferral, connected
+    monotone front advance, an optional structured per-column sloped front,
+    and a euclidean/radial peel-motion gate. ``collar`` graph rings behind the
+    front remain deformable. Membership can only shrink during an episode.
+
+    Genesis queues the initial membership before ``scene.build`` so authored
+    reset replay works; the driver therefore ADOPTS that membership at
+    ``initialize``/``reset`` (``ClusterReleaseDriver.adopt_membership``)
+    instead of joining it at activation the way the qipc examples do.
     """
 
     def __init__(
@@ -525,32 +523,63 @@ class TapeBondClusterController:
         detach_displacement: float,
         bond_seed_handle=None,
         certificate: tuple[np.ndarray, np.ndarray, list[set[int]]] | None = None,
+        activation_collar: int | None = None,
+        detach_gate: str = "euclidean",
+        radial_center: np.ndarray | tuple[float, float, float] | None = None,
+        radial_axis: np.ndarray | tuple[float, float, float] | None = None,
+        release_front_band: int | None = None,
+        clear_bonds_on_detach: bool = True,
+        structured_row_width: int | None = None,
+        structured_max_front_slope: int | None = None,
+        never_member: np.ndarray | None = None,
     ) -> None:
         if not np.isfinite(detach_displacement) or detach_displacement <= 0.0:
             gs.raise_exception("TapeBondClusterController: detach_displacement must be finite and positive.")
-        if isinstance(collar, bool) or not isinstance(collar, (int, np.integer)) or collar < 0:
-            gs.raise_exception("TapeBondClusterController: collar must be a non-negative integer.")
+        if isinstance(collar, bool) or not isinstance(collar, (int, np.integer)) or collar <= 0:
+            gs.raise_exception("TapeBondClusterController: collar must be a positive integer.")
+        collar = int(collar)
+        activation = collar if activation_collar is None else int(activation_collar)
+        if activation < collar:
+            gs.raise_exception("TapeBondClusterController: activation_collar must be at least collar.")
+        if detach_gate not in ("euclidean", "radial"):
+            gs.raise_exception("TapeBondClusterController: detach_gate must be 'euclidean' or 'radial'.")
 
-        triangles, bonded, adjacency = _bond_cluster_certificate(asset) if certificate is None else certificate
-        initial_member = _bond_cluster_target(triangles, bonded, ~bonded, adjacency, int(collar))
+        triangles, bonded, adjacency = (
+            _bond_cluster_certificate(asset, never_member) if certificate is None else certificate
+        )
+        n_vertices = len(bonded)
+        if never_member is None:
+            never = np.zeros(n_vertices, dtype=bool)
+        else:
+            never = np.asarray(never_member, dtype=bool).reshape(-1)
+            if len(never) != n_vertices:
+                gs.raise_exception("TapeBondClusterController: never_member mask must match the tape vertex count.")
+        initial_member = _bond_cluster_target(triangles, bonded, ~bonded, adjacency, activation)
+
         self._coupler = coupler
         self._cluster = cluster
         self._tape_entity = tape_entity
         self._bond_seed_handle = bond_seed_handle
         self._triangles = triangles
-        self._bonded = bonded
-        self._adjacency = adjacency
-        self._collar = int(collar)
+        self._never = never
+        self._collar = collar
+        self._activation_collar = activation
         self._detach_displacement = float(detach_displacement)
+        self._detach_gate = str(detach_gate)
+        self._radial_center = radial_center
+        self._radial_axis = radial_axis
+        self._release_front_band = release_front_band
+        self._clear_bonds_on_detach = bool(clear_bonds_on_detach)
+        self._structured_row_width = structured_row_width
+        self._structured_max_front_slope = structured_max_front_slope
         self._initial_member = initial_member
         self._initialized = False
-        self._member = initial_member.copy()
-        self._freed = ~bonded
-        self._pending = np.zeros(len(bonded), dtype=bool)
-        self._initial_proxy_positions: torch.Tensor | None = None
-        self._authored_bond_topology_keys: frozenset[tuple[int, int, int, int]] | None = None
-        self._released_total = 0
-        self._melted_total = 0
+        self._driver = None
+
+    @property
+    def driver(self):
+        """The bound ``qipc.cluster_release_driver.ClusterReleaseDriver`` (post-initialize)."""
+        return self._driver
 
     @property
     def initial_member_count(self) -> int:
@@ -558,125 +587,75 @@ class TapeBondClusterController:
 
     @property
     def member_count(self) -> int:
-        return int(self._member.sum())
+        if self._driver is None:
+            return int(self._initial_member.sum())
+        return int(self._driver.member.sum())
 
     @property
     def released_total(self) -> int:
-        return self._released_total
+        return 0 if self._driver is None else int(self._driver.released_total)
 
     @property
     def melted_total(self) -> int:
-        return self._melted_total
+        return 0 if self._driver is None else int(self._driver.melted_total)
+
+    @property
+    def cleared_bonds_total(self) -> int:
+        return 0 if self._driver is None else int(self._driver.cleared_bonds_total)
 
     def initialize(self) -> None:
         """Bind runtime QIPC rows after ``scene.build()``."""
         vertex_range = self._cluster.fem_vertex_range
-        if len(vertex_range) != len(self._bonded):
+        if len(vertex_range) != len(self._never):
             gs.raise_exception("TapeBondClusterController: queued cluster vertex range does not match the tape asset.")
-        seed = self._tape_entity if self._bond_seed_handle is None else self._bond_seed_handle
-        authored = self._coupler.adhesion.get_bond_seed_topologies(seed)
-        if authored is None:
-            gs.raise_exception(
-                "TapeBondClusterController: mapped authored bond seed topologies are missing for the tape entity."
-            )
-        self._authored_bond_topology_keys = _bond_topology_keys(authored)
         self._initialized = True
         self.reset()
 
     def reset(self) -> None:
-        """Reset policy state after the coupler replays initial membership."""
+        """Rebuild the driver against the replayed authored membership."""
         self._require_initialized()
+        driver = self._build_driver()
+        adopted = driver.adopt_membership(
+            self._initial_member,
+            structured_row_width=self._structured_row_width,
+            structured_max_front_slope=self._structured_max_front_slope,
+        )
         member_count = self._cluster.member_count
-        if member_count != self.initial_member_count:
+        if member_count != adopted:
             gs.raise_exception(
                 "TapeBondClusterController: QIPC membership replay produced "
-                f"{member_count} elements, expected {self.initial_member_count}."
+                f"{member_count} elements, expected {adopted}."
             )
-        self._member = self._initial_member.copy()
-        self._freed = ~self._bonded
-        self._pending.fill(False)
-        self._released_total = 0
-        self._melted_total = 0
-        self._initial_proxy_positions = self._to_proxy_frame()
+        self._driver = driver
 
     def before_step(self) -> int:
         """Advance the monotone peel front before the next QIPC step."""
         self._require_initialized()
-        released = self._coupler.adhesion.get_released_bond_topos()
-        assert self._authored_bond_topology_keys is not None
-        released = _filter_authored_bond_releases(released, self._authored_bond_topology_keys)
-        if len(released):
-            self._released_total += len(released)
-            local_vertices = self._tape_local_vertices(released)
-            self._pending[local_vertices] = True
+        return self._driver.step()
 
-        candidates = self._pending & ~self._freed
-        if not candidates.any():
-            return 0
-        assert self._initial_proxy_positions is not None
-        moved = (
-            (self._to_proxy_frame() - self._initial_proxy_positions)
-            .norm(dim=1)
-            .gt(self._detach_displacement)
-            .cpu()
-            .numpy()
-        )
-        candidates &= moved
-        if not candidates.any():
-            return 0
+    def _build_driver(self):
+        from qipc.cluster_release_driver import ClusterReleaseDriver
 
-        self._freed |= candidates
-        target = _bond_cluster_target(
-            self._triangles,
-            self._bonded,
-            self._freed,
-            self._adjacency,
-            self._collar,
-        )
-        if (target & ~self._member).any():
-            gs.raise_exception("TapeBondClusterController: peel membership must be monotone.")
-        melt = self._member & ~target
-        if not melt.any():
-            return 0
-
-        melted_triangles = np.flatnonzero(melt).astype(np.int32)
-        self._cluster.detach(tris=melted_triangles)
-        self._member = target
-        self._release_detached_bonds(melt)
-        melted_count = int(melt.sum())
-        self._melted_total += melted_count
-        return melted_count
-
-    def _to_proxy_frame(self) -> torch.Tensor:
+        scene = self._coupler._scene
+        # Unwrap the Genesis handle to the bound qipc AffineClusterCollection;
+        # raw collections (or test stubs exposing the same surface) pass through.
+        collection = getattr(self._cluster, "qipc_collection", self._cluster)
         vertex_range = self._cluster.fem_vertex_range
-        qipc_scene = self._coupler._scene
-        positions = qipc_scene.finite_element.x[vertex_range.start : vertex_range.stop].detach()
-        proxy_q = qipc_scene.affine_body.q[self._cluster.proxy_body_index].detach()
-        translation = proxy_q[:3]
-        affine = proxy_q[3:].reshape(3, 3)
-        return torch.linalg.solve(affine, (positions - translation).T).T
-
-    def _tape_local_vertices(self, topologies: np.ndarray) -> np.ndarray:
-        vertex_range = self._cluster.fem_vertex_range
-        global_start = self._coupler.adhesion.fem_global_vertex_offset() + vertex_range.start
-        local = np.asarray(topologies, dtype=np.int64).reshape(-1) - global_start
-        return np.unique(local[(local >= 0) & (local < len(self._bonded))])
-
-    def _release_detached_bonds(self, melt: np.ndarray) -> None:
-        detached_vertices = np.unique(self._triangles[melt].reshape(-1))
-        still_member_vertices = np.unique(self._triangles[self._member].reshape(-1))
-        released_vertices = np.setdiff1d(
-            detached_vertices,
-            still_member_vertices,
-            assume_unique=True,
-        )
-        if released_vertices.size == 0:
-            return
-        vertex_range = self._cluster.fem_vertex_range
-        global_start = self._coupler.adhesion.fem_global_vertex_offset() + vertex_range.start
-        self._coupler.adhesion.release_bonds_by_vertices(
-            released_vertices + global_start,
-            require_all=False,
+        return ClusterReleaseDriver(
+            scene,
+            collection,
+            np.asarray(self._triangles, dtype=np.int32),
+            n_verts=len(self._never),
+            collar=self._collar,
+            activation_collar=self._activation_collar,
+            never_member=self._never,
+            detach_disp=self._detach_displacement,
+            detach_gate=self._detach_gate,
+            radial_center=self._radial_center,
+            radial_axis=self._radial_axis,
+            release_front_band=self._release_front_band,
+            clear_bonds_on_detach=self._clear_bonds_on_detach,
+            fem_vertex_offset=vertex_range.start,
         )
 
     def _require_initialized(self) -> None:
@@ -697,6 +676,13 @@ def add_tape_bond_cluster(
     structured_row_width: int | None = None,
     never_member: np.ndarray | None = None,
     bond_seed_handle=None,
+    activation_collar: int | None = None,
+    detach_gate: str = "euclidean",
+    radial_center: np.ndarray | tuple[float, float, float] | None = None,
+    radial_axis: np.ndarray | tuple[float, float, float] | None = None,
+    release_front_band: int | None = None,
+    clear_bonds_on_detach: bool = True,
+    structured_max_front_slope: int | None = None,
 ) -> TapeBondClusterController:
     """Queue a releasable tape cluster and return its runtime peel policy."""
     coupler = scene.sim.coupler
@@ -705,6 +691,7 @@ def add_tape_bond_cluster(
             "add_tape_bond_cluster requires adhesion_bond_lock_floor_ratio > 0 "
             "so cleared near-barrier bonds cannot immediately re-lock."
         )
+    activation = collar if activation_collar is None else activation_collar
     certificate = None
     if structured_row_width is not None:
         if never_member is None:
@@ -715,10 +702,13 @@ def add_tape_bond_cluster(
             never_member=never_member,
         )
         triangles, bonded, adjacency = certificate
-        initial_member = _bond_cluster_target(triangles, bonded, ~bonded, adjacency, collar)
+        initial_member = _bond_cluster_target(triangles, bonded, ~bonded, adjacency, activation)
         member_triangles = np.flatnonzero(initial_member).astype(np.int32)
     else:
-        member_triangles = bond_cluster_member_triangles(asset, collar)
+        certificate = _bond_cluster_certificate(asset, never_member)
+        triangles, bonded, adjacency = certificate
+        initial_member = _bond_cluster_target(triangles, bonded, ~bonded, adjacency, activation)
+        member_triangles = np.flatnonzero(initial_member).astype(np.int32)
     cluster = coupler.add_affine_cluster(
         tape_entity,
         proxy_entity=proxy_entity,
@@ -738,6 +728,15 @@ def add_tape_bond_cluster(
         detach_displacement=detach_displacement,
         bond_seed_handle=bond_seed_handle,
         certificate=certificate,
+        activation_collar=activation_collar,
+        detach_gate=detach_gate,
+        radial_center=radial_center,
+        radial_axis=radial_axis,
+        release_front_band=release_front_band,
+        clear_bonds_on_detach=clear_bonds_on_detach,
+        structured_row_width=structured_row_width,
+        structured_max_front_slope=structured_max_front_slope,
+        never_member=never_member,
     )
 
 

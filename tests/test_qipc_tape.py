@@ -142,82 +142,99 @@ def test_tape_bond_cluster_queues_configured_ghost_proxy():
 
 
 @needs_tape_asset
-def test_tape_bond_cluster_ignores_foreign_released_bonds():
+def test_tape_bond_cluster_delegates_to_packaged_driver(monkeypatch):
+    """initialize/reset adopt the queued membership; before_step delegates."""
     tape_mod = _tape_module()
     asset = tape_mod.TapeAsset.from_npz(TAPE_ASSET_PATH)
     tape = object()
-    internal_seed = object()
-    authored = np.array([[0, 1, 2, 3]], dtype=np.int32)
-    foreign = np.array(
-        [
-            [20, 21, 0, 22],  # dynamic tape-hand bond sharing a tape vertex
-            [0, 1, 4, 5],  # dynamic tape-tape bond
-            [3, 2, 1, 0],  # reordered topology is not the authored row
-        ],
-        dtype=np.int32,
-    )
-    released = {"rows": foreign}
-    adhesion = SimpleNamespace(
-        get_bond_seed_topologies=lambda seed: authored.copy() if seed is internal_seed else None,
-        get_released_bond_topos=lambda: released["rows"],
-        fem_global_vertex_offset=lambda: 0,
-    )
+    initial_count = len(tape_mod.bond_cluster_member_triangles(asset, 3))
     cluster = SimpleNamespace(
         fem_vertex_range=range(len(asset.tape_positions)),
-        member_count=len(tape_mod.bond_cluster_member_triangles(asset, 3)),
+        member_count=initial_count,
         proxy_body_index=0,
     )
-    coupler = SimpleNamespace(
-        adhesion=adhesion,
-        _scene=SimpleNamespace(
-            finite_element=SimpleNamespace(x=torch.as_tensor(asset.tape_positions, dtype=torch.float64)),
-            affine_body=SimpleNamespace(
-                q=torch.tensor(
-                    [[0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]],
-                    dtype=torch.float64,
-                )
-            ),
-        ),
-    )
     controller = tape_mod.TapeBondClusterController(
-        coupler,
+        SimpleNamespace(),
         cluster,
         tape,
         asset,
         collar=3,
         detach_displacement=5.0 * asset.d_hat,
-        bond_seed_handle=internal_seed,
     )
+
+    class _FakeDriver:
+        def __init__(self):
+            self.adopted = None
+            self.steps = 0
+            self.member = np.zeros(1, dtype=bool)
+            self.released_total = 0
+            self.melted_total = 0
+            self.cleared_bonds_total = 0
+
+        def adopt_membership(self, member, **kwargs):
+            self.adopted = np.asarray(member, dtype=bool).copy()
+            self.member = self.adopted
+            return int(self.adopted.sum())
+
+        def step(self):
+            self.steps += 1
+            self.released_total += 2
+            self.melted_total += 1
+            return 1
+
+    fake = _FakeDriver()
+    monkeypatch.setattr(controller, "_build_driver", lambda: fake)
     controller.initialize()
 
-    assert controller.before_step() == 0
-    assert controller.released_total == 0
-    assert not controller._pending.any()
-
-    released["rows"] = np.concatenate((authored, foreign), axis=0)
-    assert controller.before_step() == 0
-    assert controller.released_total == 1
-    assert controller._pending[:4].all()
+    assert controller.driver is fake
+    assert int(fake.adopted.sum()) == initial_count
+    assert controller.member_count == initial_count
+    assert controller.before_step() == 1
+    assert controller.released_total == 2
+    assert controller.melted_total == 1
 
 
 @needs_tape_asset
-def test_tape_bond_cluster_requires_mapped_authored_seed():
+def test_tape_bond_cluster_rejects_membership_replay_mismatch(monkeypatch):
     tape_mod = _tape_module()
     asset = tape_mod.TapeAsset.from_npz(TAPE_ASSET_PATH)
-    tape = object()
-    cluster = SimpleNamespace(fem_vertex_range=range(len(asset.tape_positions)))
-    coupler = SimpleNamespace(adhesion=SimpleNamespace(get_bond_seed_topologies=lambda _entity: None))
+    initial_count = len(tape_mod.bond_cluster_member_triangles(asset, 3))
+    cluster = SimpleNamespace(
+        fem_vertex_range=range(len(asset.tape_positions)),
+        member_count=initial_count - 1,  # replay desync
+        proxy_body_index=0,
+    )
     controller = tape_mod.TapeBondClusterController(
-        coupler,
+        SimpleNamespace(),
         cluster,
-        tape,
+        object(),
         asset,
         collar=3,
         detach_displacement=5.0 * asset.d_hat,
     )
+    fake = SimpleNamespace(
+        adopt_membership=lambda member, **kwargs: int(np.asarray(member, dtype=bool).sum()),
+    )
+    monkeypatch.setattr(controller, "_build_driver", lambda: fake)
 
-    with pytest.raises(Exception, match="mapped authored bond seed topologies are missing"):
+    with pytest.raises(Exception, match="membership replay produced"):
         controller.initialize()
+
+
+@needs_tape_asset
+def test_tape_bond_cluster_requires_positive_collar():
+    tape_mod = _tape_module()
+    asset = tape_mod.TapeAsset.from_npz(TAPE_ASSET_PATH)
+    cluster = SimpleNamespace(fem_vertex_range=range(len(asset.tape_positions)))
+    with pytest.raises(Exception, match="collar must be a positive integer"):
+        tape_mod.TapeBondClusterController(
+            SimpleNamespace(),
+            cluster,
+            object(),
+            asset,
+            collar=0,
+            detach_displacement=5.0 * asset.d_hat,
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -670,34 +687,61 @@ def test_tape_bond_cluster_releases_and_replays_after_reset(show_viewer):
     initial_positions = tape.get_state().pos[0].clone()
 
     triangles, bonded, adjacency = tape_mod._bond_cluster_certificate(asset)
-    member_vertices = np.unique(triangles[controller._member].reshape(-1))
-    is_member_vertex = np.zeros(len(bonded), dtype=bool)
-    is_member_vertex[member_vertices] = True
+    driver = controller.driver
+    member_before = driver.member.copy()
+
+    # Graph distance from the structural payout front (freed = ~bonded).
+    freed0 = ~bonded
+    dist = np.full(len(bonded), np.iinfo(np.int32).max, dtype=np.int64)
+    frontier = [int(v) for v in np.flatnonzero(freed0)]
+    dist[freed0] = 0
+    while frontier:
+        nxt = []
+        for u in frontier:
+            du = dist[u] + 1
+            for nb in adjacency[u]:
+                if dist[nb] > du:
+                    dist[nb] = du
+                    nxt.append(nb)
+        frontier = nxt
+
+    # The packaged driver promotes only connected (dist == 1), unsupported,
+    # moved release evidence: pick a frontier vertex whose freeing melts
+    # membership and displace it past the peel gate so its locks break.
     candidate = None
-    for vertex in np.flatnonzero(bonded & ~is_member_vertex):
-        freed = ~bonded
+    for vertex in np.flatnonzero(bonded & (dist == 1)):
+        freed = freed0.copy()
         freed[vertex] = True
         target = tape_mod._bond_cluster_target(triangles, bonded, freed, adjacency, 3)
-        if (controller._member & ~target).any():
+        if (member_before & ~target).any():
             candidate = int(vertex)
             break
     assert candidate is not None
 
     vertex_range = cluster.fem_vertex_range
-    fem_position = coupler._scene.finite_element.x[vertex_range.start + candidate]
-    fem_position[0] += 100.0 * asset.d_hat
+    coupler._scene.finite_element.x[vertex_range.start + candidate, 0] += 100.0 * asset.d_hat
     scene.step()
     released = coupler.adhesion.get_released_bond_topos()
-    released_vertices = controller._tape_local_vertices(released)
+    assert len(released), "displaced frontier vertex must shed its locks"
+
+    # The elastic pull-back of the step can restore the displaced vertex, so
+    # re-displace a promotable released vertex right before the policy runs:
+    # the driver's peel gate measures live positions. Promotion additionally
+    # requires no remaining live-bond support and front connectivity.
+    support = driver.refresh_live_support()
+    local_released = np.unique(released.reshape(-1) - driver.g0)
+    local_released = local_released[(local_released >= 0) & (local_released < len(bonded))]
     candidate = None
-    for vertex in released_vertices:
-        freed = ~bonded
+    for vertex in local_released:
+        if dist[vertex] != 1 or support[vertex]:
+            continue
+        freed = freed0.copy()
         freed[vertex] = True
         target = tape_mod._bond_cluster_target(triangles, bonded, freed, adjacency, 3)
-        if (controller._member & ~target).any():
+        if (member_before & ~target).any():
             candidate = int(vertex)
             break
-    assert candidate is not None
+    assert candidate is not None, "no unsupported frontier release evidence"
     coupler._scene.finite_element.x[vertex_range.start + candidate, 0] += 10.0 * asset.d_hat
 
     bonds_before_melt = {tuple(int(value) for value in row) for row in coupler.adhesion.get_bond_topos()}

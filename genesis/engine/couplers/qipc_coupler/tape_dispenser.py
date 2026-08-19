@@ -82,6 +82,12 @@ _REQUIRED_FILES = frozenset(
 )
 _SHA256_PATTERN = re.compile(r"[0-9a-f]{64}")
 _REFERENCE_BASE_POSITION = np.array([0.1119, 0.10661028, -0.0485], dtype=np.float64)
+# Wound-roll axle frame in the same reference space (cgq build_scene
+# ROLL_CENTER_WORLD / AXLE_AXIS_WORLD): feeds the release driver's radial
+# peel gate, matching the validated cgq run_sim default (--cluster-detach-gate
+# radial).
+_REFERENCE_ROLL_CENTER = np.array([0.15423902, 0.17761307, -0.01282903], dtype=np.float64)
+_REFERENCE_AXLE_AXIS = np.array([1.40000002e-03, 1.00000002e-04, 9.99999015e-01], dtype=np.float64)
 _REFERENCE_TO_GENESIS = np.array(
     [
         [1.0, 0.0, 0.0],
@@ -796,6 +802,14 @@ def add_tape_dispenser(
         never_member = np.zeros(len(asset.tape_positions), dtype=bool)
         row_width = int(asset.roll.nz) + 1
         never_member[-row_width:] = True
+        # Radial peel gate: axle center/direction authored in the reference
+        # frame, mapped through the same transform as every other reference
+        # pose. Captured by the driver in the proxy frame at initialize/reset,
+        # so subsequent wheel motion carries the gate (run_sim parity).
+        radial_center = world_rotation @ (_REFERENCE_ROLL_CENTER - _REFERENCE_BASE_POSITION) + np.asarray(
+            position, dtype=np.float64
+        )
+        radial_axis = world_rotation @ _REFERENCE_AXLE_AXIS
         lifecycle = add_tape_bond_cluster(
             scene,
             tape,
@@ -807,6 +821,10 @@ def add_tape_dispenser(
             proxy_link="tape_wheel",
             structured_row_width=row_width,
             never_member=never_member,
+            detach_gate="radial",
+            radial_center=radial_center,
+            radial_axis=radial_axis,
+            release_front_band=2,
         )
 
     return TapeDispenser(

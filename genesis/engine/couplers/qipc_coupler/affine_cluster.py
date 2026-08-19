@@ -144,6 +144,16 @@ class QIPCAffineCluster:
         """Number of FEM elements currently represented by the cluster."""
         return self._manager._member_count(self._request_index)
 
+    @property
+    def qipc_collection(self):
+        """The bound qipc ``AffineClusterCollection`` (available post-build).
+
+        Release policies (``qipc.cluster_release_driver``) drive membership
+        through this raw handle; driver-internal element indices skip the
+        manager's user-input validation by design.
+        """
+        return self._manager._binding(self._request_index).collection
+
     def join(self, *, edges=None, tris=None, tets=None) -> None:
         """Join entity-local FEM elements to this cluster between steps."""
         self._manager._membership_event(
