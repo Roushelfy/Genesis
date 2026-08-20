@@ -598,8 +598,15 @@ class QIPCAdhesionManager:
         return self._require_scene().solver.get_contact_info()
 
     def fem_global_vertex_offset(self) -> int:
-        """Global vertex id at which the FEM block starts (== number of ABD verts)."""
-        return int(getattr(self._require_scene().affine_body, "n_verts", 0) or 0)
+        """Global vertex id at which the FEM block starts.
+
+        QIPC lays global vertices out as ``[ABD | RIGID | FEM | halfplane]``,
+        so the FEM block starts after both the affine and pure-rigid vertices.
+        """
+        scene = self._require_scene()
+        n_abd = int(getattr(scene.affine_body, "n_verts", 0) or 0)
+        n_rigid = int(getattr(getattr(scene, "rigid_body", None), "n_verts", 0) or 0)
+        return n_abd + n_rigid
 
     def get_bond_topos(self) -> np.ndarray:
         """Alive distance-bond topologies as (n, 4) GLOBAL vertex ids.
