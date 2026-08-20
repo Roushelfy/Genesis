@@ -116,6 +116,14 @@ class Rigid(Kinematic["RigidEntity"]):
         track its PD targets. Genesis's own rigid solver filters such pairs at
         qpos0; QIPC has no equivalent, so this masks the entity's self-pair in
         the contact tabular. Only used by the QIPC coupler. Default is True.
+    qipc_rigid_body : bool, optional
+        Couple this entity as a pure 6-DOF QIPC rigid body instead of an affine
+        (ABD) body: rigidity is exact by parametrization and the body costs 6
+        DOFs instead of 12 with no orthogonality stiffness. Only single-body
+        entities qualify (no revolute or prismatic joints), and QIPC rigid
+        bodies cannot be kinematically driven, gravity-compensated, used as
+        bond/cluster/attachment hosts, or given an initial-state override.
+        Only used by the QIPC coupler. Default is False.
     """
 
     use_visual_raycasting: StrictBool = False
@@ -146,6 +154,7 @@ class Rigid(Kinematic["RigidEntity"]):
     qipc_home_qpos: tuple[float, ...] | list[float] | None = None
     qipc_d_hat: PositiveFloat | None = None
     qipc_self_contact: StrictBool = True
+    qipc_rigid_body: StrictBool = False
 
     @model_validator(mode="before")
     @classmethod
