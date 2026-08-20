@@ -135,15 +135,24 @@ class QIPCInitialStateManager:
         # contact candidates from the overlaid ABD/FEM state without advancing
         # physics. Bond slots have already been restored at this point.
         scene._solver.reset()
-        views = scene._drstate_views()
-        positions = views["GlobalVertexManager/positions"]
-        lagged = views.get("ContactSystem/lagged_positions")
+        # qipc #294 replaced the tensor-valued _drstate_views() with accessors that
+        # resolve a field only when called with a DRInfo.
+        from qipc._src.native.solver import DRInfo
+
+        accessors = scene._drstate_accessors()
+
+        def field(key):
+            accessor = accessors.get(key)
+            return None if accessor is None else accessor(DRInfo())
+
+        positions = field("GlobalVertexManager/positions")
+        lagged = field("ContactSystem/lagged_positions")
         if lagged is not None:
             lagged.copy_(positions)
 
-        keys = views.get("AdhesiveIPCContactConstitution/pair_keys")
-        betas = views.get("AdhesiveIPCContactConstitution/pair_beta")
-        seen = views.get("AdhesiveIPCContactConstitution/pair_seen")
+        keys = field("AdhesiveIPCContactConstitution/pair_keys")
+        betas = field("AdhesiveIPCContactConstitution/pair_beta")
+        seen = field("AdhesiveIPCContactConstitution/pair_seen")
         if keys is not None:
             keys.fill_(-1)
         if betas is not None:
