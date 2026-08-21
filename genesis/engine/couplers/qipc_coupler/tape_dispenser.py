@@ -30,7 +30,11 @@ from .contact import QIPCContactRegion
 from .rigid_attachment import QIPCRigidAttachment
 from .tape import TapeAsset, TapeBondClusterController, _verify_same_vertex_order, _write_obj, add_tape_bond_cluster
 
-_ASSET_DIRECTORY = Path(get_assets_dir()) / "qipc" / "tape_dispenser_v2"
+# v3 re-exports the frozen post-f249 state from a 3M-TDS-calibrated roll
+# (cgq examples/tape_presets.py "scotch3850-tds": the BOPP backing's real
+# membrane and bending moduli, replacing the libuipc-kappa bending placeholder
+# that was ~5.7e4x too soft). v2 remains on disk for A/B and rollback.
+_ASSET_DIRECTORY = Path(get_assets_dir()) / "qipc" / "tape_dispenser_v3"
 _ASSET_FORMAT = "genesis.qipc.tape_dispenser"
 _ASSET_VERSION = 1
 _STATE_FORMAT = "qipc.tape_dispenser_component_state"

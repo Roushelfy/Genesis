@@ -48,7 +48,9 @@ def test_packaged_tape_dispenser_snapshot_contract():
     asset = module.TapeDispenserAsset.packaged()
     manifest = json.loads((asset.directory / "manifest.json").read_text())
 
-    assert manifest["source"]["commit"] == "c66c312e682cdde1cbad885ff4774f274b48d02c"
+    # v3: re-exported from a 3M-TDS-calibrated roll (cgq preset scotch3850-tds).
+    assert manifest["source"]["commit"] == "41847000a35b21227ba61046f2c9982bbf74aa9f"
+    assert manifest["source"]["wound_preset"] == "scotch3850-tds"
     assert manifest["urdf_inertials"] == {
         "source_path": "assets/tape_dispenser_v2/tape_dispenser.urdf",
         "source_sha256": "5ca5bc2c5a909f93fceef7d76e087162af19468fb33cbe0872134265d9082ae8",
@@ -65,13 +67,13 @@ def test_packaged_tape_dispenser_snapshot_contract():
     assert asset.ring_positions.shape == (192, 3)
     assert asset.ring_triangles.shape == (384, 3)
     assert asset.body_q.shape == (4, 12)
-    assert asset.bond_topologies.shape == (969, 4)
-    assert asset.bond_Dm_inv.shape == (969, 9)
+    assert asset.bond_topologies.shape == (1039, 4)
+    assert asset.bond_Dm_inv.shape == (1039, 9)
     assert int(asset.bond_topologies.min()) == 0
     assert int(asset.bond_topologies.max()) < 192 + 1936
     np.testing.assert_allclose(
         asset.joint_theta,
-        [-3.769009435060002, 0.10000000003512168, 2.258796965468916],
+        [-2.259993949195373, 0.10000000003512166, 2.17206721523378],
         rtol=0.0,
         atol=1e-14,
     )

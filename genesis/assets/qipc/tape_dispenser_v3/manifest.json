@@ -1,0 +1,52 @@
+{
+  "format": "genesis.qipc.tape_dispenser",
+  "version": 1,
+  "source": {
+    "repository": "cuda-graph-qipc",
+    "commit": "41847000a35b21227ba61046f2c9982bbf74aa9f",
+    "reference": "examples/tape_dispenser/run_sim.py --export-post-f249",
+    "cluster_commit": "c6108108b70d92fbb51f21e7c4ab7e173e5f65d5",
+    "collision_proxy_commit": "5c41c4fae806317e02a3d69e7f84231b26c65c0c",
+    "wound_preset": "scotch3850-tds"
+  },
+  "urdf_inertials": {
+    "source_path": "assets/tape_dispenser_v2/tape_dispenser.urdf",
+    "source_sha256": "5ca5bc2c5a909f93fceef7d76e087162af19468fb33cbe0872134265d9082ae8",
+    "total_mass_kg": 0.313,
+    "semantics": "balanced for the upside-down Rx=+90 degree dispenser pose; independent of the frozen post-f249 state"
+  },
+  "snapshot": {
+    "semantics": "post pre_step+scene.step for frames 0..249 inclusive, then zero velocities and release root/tape-end DBC without another physics step",
+    "authority": "frozen artifact; CUDA contact/bond atomics make regeneration non-bitwise-reproducible",
+    "tape_blade_contact": true,
+    "tape_cylinder_contact": true,
+    "tape_sharp_contact": false,
+    "actual_tape_vertices": 1936,
+    "omitted_cut_spare_vertices": 0,
+    "abd_vertices_with_ring": 142373,
+    "active_bonds": 1039,
+    "calibration": "3M-TDS-calibrated stiffness (examples/tape_presets.py scotch3850-tds): YOUNGS 2.8e9, BENDING_E 3.7e9 from the 375 TDS BOPP backing (0.051 mm backing / 0.079 mm caliper)"
+  },
+  "files_sha256": {
+    "tape_dispenser_machine.urdf": "5ca5bc2c5a909f93fceef7d76e087162af19468fb33cbe0872134265d9082ae8",
+    "tape_dispenser_machine_proxy.urdf": "5d64e355c8925b5206f176fc8793a574735c67a3691a1a5149999761892dd669",
+    "tape_dispenser.urdf": "eeb5dde84af1c41939335d7915a7b104dd62f54e1da04976217f39e7c5736cb8",
+    "tape_dispenser_proxy.urdf": "4263b8ed692a3bd935665a7e4de42d61fe0ec1b53c071c7ec862258056da8ac1",
+    "scotch3850_wound.npz": "7ffc64802dbd286a5d37cf85f70b819b07bc5aa478a05f8fefa05700596861d4",
+    "post_f249_static.npz": "3f8e1629855cc62cdfe420475fb86073f79fbae27d48b735559541fce85ca9f5",
+    "ring_local.npz": "c675d6f17bb3fdd32e1bfabf7e3d118d8c0b61529ca258d6b4ffcccbbf5531b4",
+    "meshes/Cube.glb": "b5915c1c663e84c51229c03dc830f71a6f492ff2b43bd3cfdc698e591d6c6763",
+    "meshes/blade.glb": "e30cadc38759cdfa782a6955d29558920dca6abe55468293cdd2c7aaac8b5bfd",
+    "meshes/cylinder.glb": "f900f999a43c3e5f397641b8fab69483a3a2073524c6ec0f7a8be45acfac9f74",
+    "meshes/scotch3850_ring.glb": "8057d24e4e0acfe1e6ef06b188f39f4a1ec97e8d9931fcbda015eb06b1c8a06a",
+    "meshes/sharp.glb": "f394cdbb37734cee598c81c7a8326dc9770ca1125b3e385af0a3c0c2c80075ba",
+    "meshes/tape_cutter.glb": "c18df376125008c8664948098fd3a8501eb4af513c5e61bde4dd50db7177767d",
+    "meshes/tape_wheel.glb": "0398de573715ef39d69767fa06a380e8e947f3955f92937cea9c326a6ba591f6",
+    "meshes/collision_proxies/Cube.glb": "5fcfb8f874dc6965df48af1272b48ca23c42b425ea8ac0e575ce039136e5e3e0",
+    "meshes/collision_proxies/blade.glb": "45708e4a805caf64afd342fe272bff98c31034ac541403818fbe350fa8ff66b7",
+    "meshes/collision_proxies/cylinder.glb": "5a232c1126f1adfd504e2c8d694c68f185f76803ea9735e2ee85324ebcb6f9fa",
+    "meshes/collision_proxies/sharp.glb": "d9d6314bd64d20382c5a25675d034e0dbd4f1637d0e8a957c883e58ad7f742bc",
+    "meshes/collision_proxies/tape_cutter.glb": "e9f6d681cf03ee07ee27ec5f16917e2d5beaadde772922a177501f298dc7f9fb",
+    "meshes/collision_proxies/tape_wheel.glb": "ceb661a14ea6335567e605bfaca41b71fe4be1bcbf30bee4f571c34024613bc9"
+  }
+}
