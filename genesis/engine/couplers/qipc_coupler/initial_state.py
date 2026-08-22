@@ -23,29 +23,6 @@ class QIPCInitialStateManager:
     def __init__(self) -> None:
         self._requests: list[_RigidInitialStateRequest] = []
 
-    @staticmethod
-    def _live_drstate_views(scene) -> dict[str, torch.Tensor]:
-        """Collect accepted live state views across supported QIPC APIs."""
-        legacy = getattr(scene, "_drstate_views", None)
-        if legacy is not None:
-            return legacy()
-
-        accessors = getattr(scene, "_drstate_accessors", None)
-        python_views = getattr(scene, "_drstate_python_views", None)
-        if accessors is None or python_views is None:
-            gs.raise_exception("QIPCCoupler initial-state overlays require QIPC DRInfo state accessors.")
-
-        from qipc._src.native.solver import DRInfo
-
-        views: dict[str, torch.Tensor] = {}
-        for key, accessor in accessors().items():
-            info = DRInfo()
-            view = accessor(info)
-            if info.accepted() and view is not None:
-                views[key] = view
-        views.update(python_views())
-        return views
-
     def add_rigid_request(self, entity, *, body_q: dict[str, np.ndarray], joint_theta: dict[str, float]) -> None:
         if any(request.entity is entity for request in self._requests):
             gs.raise_exception("QIPCCoupler.set_rigid_initial_state: entity already has an initial state request.")
@@ -151,27 +128,40 @@ class QIPCInitialStateManager:
     @staticmethod
     def rebuild_and_capture_reset(scene) -> None:
         """Rebuild derived positions/contact state and promote the overlay to reset."""
-        if not hasattr(scene, "_capture_reset_state"):
-            gs.raise_exception("QIPCCoupler initial-state overlays require QIPC Scene reset-state capture support.")
+        try:
+            from qipc._src.native.solver import DRInfo
+
+            reset_solver = scene._solver.reset
+            capture_reset_state = scene._capture_reset_state
+            accessors = scene._drstate_accessors()
+            positions_info = DRInfo()
+            positions = accessors["GlobalVertexManager/positions"](positions_info)
+            is_positions_accepted = positions_info.accepted()
+            clear_adhesion = None
+            for cls, system in scene.sim_systems.items():
+                if cls.__name__ == "AdhesiveIPCContactConstitution":
+                    clear_adhesion = system.clear_recover
+                    break
+        except (AttributeError, ImportError, KeyError, TypeError):
+            gs.raise_exception(
+                "QIPCCoupler initial-state overlays require a current cuda-graph-qipc build with "
+                "DRInfo state accessors and reset-state capture support."
+            )
+        if not is_positions_accepted or positions is None:
+            gs.raise_exception("QIPCCoupler initial-state overlays require live QIPC position state.")
 
         # The native reset pipeline recomputes global positions, BVHs, and
         # contact candidates from the overlaid ABD/FEM state without advancing
         # physics. Bond slots have already been restored at this point.
-        scene._solver.reset()
-        views = QIPCInitialStateManager._live_drstate_views(scene)
-        positions = views["GlobalVertexManager/positions"]
-        lagged = views.get("ContactSystem/lagged_positions")
-        if lagged is not None:
-            lagged.copy_(positions)
+        reset_solver()
+        lagged_accessor = accessors.get("ContactSystem/lagged_positions")
+        if lagged_accessor is not None:
+            lagged_info = DRInfo()
+            lagged = lagged_accessor(lagged_info)
+            if lagged_info.accepted() and lagged is not None:
+                lagged.copy_(positions)
 
-        keys = views.get("AdhesiveIPCContactConstitution/pair_keys")
-        betas = views.get("AdhesiveIPCContactConstitution/pair_beta")
-        seen = views.get("AdhesiveIPCContactConstitution/pair_seen")
-        if keys is not None:
-            keys.fill_(-1)
-        if betas is not None:
-            betas.zero_()
-        if seen is not None:
-            seen.zero_()
+        if clear_adhesion is not None:
+            clear_adhesion()
         torch.cuda.synchronize()
-        scene._capture_reset_state()
+        capture_reset_state()

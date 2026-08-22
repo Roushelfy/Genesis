@@ -356,6 +356,89 @@ def _kernel_qipc_writeback(
         rigid_info.qpos[q_start + 6, 0] = links_state.quat[link_idx, 0][3]
 
 
+@qd.kernel(fastcache=True)
+def _kernel_qipc_rigid_state_writeback(
+    body_indices: qd.types.ndarray(),
+    link_indices: qd.types.ndarray(),
+    free_base_body_indices: qd.types.ndarray(),
+    free_base_link_indices: qd.types.ndarray(),
+    free_base_dof_starts: qd.types.ndarray(),
+    rigid_t: qd.types.ndarray(),
+    rigid_v: qd.types.ndarray(),
+    rigid_omega: qd.types.ndarray(),
+    links_state: array_class.LinksState,
+    joints_state: array_class.JointsState,
+    dofs_state: array_class.DofsState,
+    dyn_info: array_class.DynInfo,
+    rigid_info: array_class.RigidInfo,
+    rigid_config: qd.template(),
+):
+    """Write QIPC rigid velocities and Genesis derived rigid state."""
+    for i in range(link_indices.shape[0]):
+        body_idx = body_indices[i]
+        link_idx = link_indices[i]
+        I_l = [link_idx, 0] if qd.static(rigid_config.batch_links_info) else link_idx
+
+        root_com = qd.Vector(
+            [rigid_t[body_idx, 0], rigid_t[body_idx, 1], rigid_t[body_idx, 2]],
+            dt=gs.qd_float,
+        )
+        com_velocity = qd.Vector(
+            [rigid_v[body_idx, 0], rigid_v[body_idx, 1], rigid_v[body_idx, 2]],
+            dt=gs.qd_float,
+        )
+        angular_velocity = qd.Vector(
+            [rigid_omega[body_idx, 0], rigid_omega[body_idx, 1], rigid_omega[body_idx, 2]],
+            dt=gs.qd_float,
+        )
+        com_world, inertial_quat_world = gu.qd_transform_pos_quat_by_trans_quat(
+            dyn_info.links.inertial_pos[I_l] + links_state.i_pos_shift[link_idx, 0],
+            dyn_info.links.inertial_quat[I_l],
+            links_state.pos[link_idx, 0],
+            links_state.quat[link_idx, 0],
+        )
+
+        links_state.i_pos_bw[link_idx, 0] = com_world
+        links_state.i_quat[link_idx, 0] = inertial_quat_world
+        links_state.root_COM[link_idx, 0] = root_com
+        links_state.i_pos[link_idx, 0] = com_world - root_com
+        links_state.cd_vel[link_idx, 0] = com_velocity
+        links_state.cd_ang[link_idx, 0] = angular_velocity
+
+    for i in range(free_base_body_indices.shape[0]):
+        body_idx = free_base_body_indices[i]
+        link_idx = free_base_link_indices[i]
+        dof_start = free_base_dof_starts[i]
+        I_l = [link_idx, 0] if qd.static(rigid_config.batch_links_info) else link_idx
+        joint_idx = dyn_info.links.joint_start[I_l]
+
+        root_com = qd.Vector(
+            [rigid_t[body_idx, 0], rigid_t[body_idx, 1], rigid_t[body_idx, 2]],
+            dt=gs.qd_float,
+        )
+        com_velocity = qd.Vector(
+            [rigid_v[body_idx, 0], rigid_v[body_idx, 1], rigid_v[body_idx, 2]],
+            dt=gs.qd_float,
+        )
+        angular_velocity = qd.Vector(
+            [rigid_omega[body_idx, 0], rigid_omega[body_idx, 1], rigid_omega[body_idx, 2]],
+            dt=gs.qd_float,
+        )
+        link_pos = links_state.pos[link_idx, 0]
+        link_quat = links_state.quat[link_idx, 0]
+        link_velocity = com_velocity + angular_velocity.cross(link_pos - root_com)
+        local_angular_velocity = gu.qd_inv_transform_by_quat(angular_velocity, link_quat)
+        link_xyz = gu.qd_quat_to_xyz(link_quat, rigid_info.EPS[None])
+        joints_state.xanchor[joint_idx, 0] = link_pos
+        joints_state.xaxis[joint_idx, 0] = qd.Vector([0.0, 0.0, 1.0], dt=gs.qd_float)
+
+        for j in qd.static(range(3)):
+            dofs_state.pos[dof_start + j, 0] = link_pos[j]
+            dofs_state.pos[dof_start + 3 + j, 0] = link_xyz[j]
+            dofs_state.vel[dof_start + j, 0] = link_velocity[j]
+            dofs_state.vel[dof_start + 3 + j, 0] = local_angular_velocity[j]
+
+
 # ---------------------------------------------------------------------------
 # QIPCCoupler
 # ---------------------------------------------------------------------------
@@ -381,6 +464,7 @@ class QIPCCoupler(RBC):
         self._rigid_attachments = QIPCRigidAttachmentManager()
         self._contact = QIPCContactManager()
         self._initial_state = QIPCInitialStateManager()
+        self._scene: QIPCScene | None = None
         self._fem_rest_positions: dict = {}
         self._fem_position_dbc: dict[FEMEntity, tuple[float, float]] = {}
         self._sealed_gas_bag_by_entity: dict[FEMEntity, int] = {}
@@ -424,7 +508,7 @@ class QIPCCoupler(RBC):
         ``initial_*`` selections starts with empty membership, while calling
         ``join()`` or ``detach()`` without a selection targets all FEM elements.
         """
-        if hasattr(self, "_scene"):
+        if self._scene is not None:
             gs.raise_exception("QIPCCoupler.add_affine_cluster must be called before scene.build().")
         if not any(entity is fem_entity for entity in self._sim.fem_solver.entities):
             gs.raise_exception("QIPCCoupler.add_affine_cluster: fem_entity is not a FEM entity owned by this scene.")
@@ -464,7 +548,7 @@ class QIPCCoupler(RBC):
         be assigned a contact region and used as the rigid side of authored
         bond state.
         """
-        if hasattr(self, "_scene"):
+        if self._scene is not None:
             gs.raise_exception("QIPCCoupler.add_rigid_attachment must be called before scene.build().")
         if not any(candidate is entity for candidate in self._sim.rigid_solver.entities):
             gs.raise_exception("QIPCCoupler.add_rigid_attachment: entity is not owned by this scene.")
@@ -567,11 +651,11 @@ class QIPCCoupler(RBC):
         joint_theta: dict[str, float],
     ) -> None:
         """Queue named post-init ABD and joint values as the scene reset state."""
-        if hasattr(self, "_scene"):
+        if self._scene is not None:
             gs.raise_exception("QIPCCoupler.set_rigid_initial_state must be called before scene.build().")
         if not any(candidate is entity for candidate in self._sim.rigid_solver.entities):
             gs.raise_exception("QIPCCoupler.set_rigid_initial_state: entity is not owned by this scene.")
-        if getattr(entity.material, "qipc_rigid_body", False):
+        if entity.material.qipc_rigid_body:
             gs.raise_exception(
                 "QIPCCoupler.set_rigid_initial_state: QIPC rigid bodies do not support an "
                 "initial-state override yet; place the entity through its morph pose instead."
@@ -592,7 +676,7 @@ class QIPCCoupler(RBC):
         tape coil with a flat rest strip). The rest mesh must have identical
         topology/vertex order; its absolute placement is irrelevant.
         """
-        if hasattr(self, "_scene"):
+        if self._scene is not None:
             gs.raise_exception("QIPCCoupler.set_fem_rest_positions must be called before scene.build().")
         rest = np.ascontiguousarray(
             tensor_to_array(rest_verts) if torch.is_tensor(rest_verts) else rest_verts, dtype=np.float64
@@ -609,7 +693,7 @@ class QIPCCoupler(RBC):
         fix_tol: float,
     ) -> None:
         """Give one FEM entity a runtime-toggleable QIPC PositionDBC channel."""
-        if hasattr(self, "_scene"):
+        if self._scene is not None:
             gs.raise_exception("QIPCCoupler.enable_fem_position_dbc must be called before scene.build().")
         if not any(candidate is entity for candidate in self._sim.fem_solver.entities):
             gs.raise_exception("QIPCCoupler.enable_fem_position_dbc: entity is not owned by this scene.")
@@ -629,9 +713,9 @@ class QIPCCoupler(RBC):
         otherwise). ``strength`` is the (translation, rotation) strength-ratio
         pair of the mass-weighted penalty.
         """
-        if hasattr(self, "_scene"):
+        if self._scene is not None:
             gs.raise_exception("QIPCCoupler.enable_soft_transform must be called before scene.build().")
-        if getattr(entity.material, "qipc_rigid_body", False):
+        if entity.material.qipc_rigid_body:
             gs.raise_exception(
                 "QIPCCoupler.enable_soft_transform: QIPC rigid bodies cannot be kinematically driven yet."
             )
@@ -687,7 +771,7 @@ class QIPCCoupler(RBC):
     def _apply_rigid_extras(self, all_pre_inits: list[AbdEntityPreInit]) -> None:
         """Per-geometry d_hat overrides + queued SoftTransformConstraints (pre-init)."""
         for pre in all_pre_inits:
-            d_hat_override = getattr(pre.entity.material, "qipc_d_hat", None)
+            d_hat_override = pre.entity.material.qipc_d_hat
             if d_hat_override is not None:
                 for slot in pre.group_slots.values():
                     geo = slot.geometry
@@ -794,7 +878,7 @@ class QIPCCoupler(RBC):
             ),
         }
         scene_config.update({key: value for key, value in solver_passthrough.items() if value is not None})
-        self._scene: QIPCScene = QIPCSceneCls(
+        self._scene = QIPCSceneCls(
             dt=self._sim.dt,
             gravity=tuple(self._sim._gravity),
             **scene_config,
@@ -939,22 +1023,17 @@ class QIPCCoupler(RBC):
         )[: len(free_base_entries)]
 
         # --- Pure rigid bodies: writeback tensors, frame data, reset snapshot ---
-        self._rigid_link_indices_t: torch.Tensor = torch.tensor(
-            rigid_link_indices, dtype=torch.int32, device=gs.device
-        )
-        self._rigid_body_indices_t: torch.Tensor = torch.tensor(
-            rigid_body_indices, dtype=torch.int64, device=gs.device
-        )
+        self._rigid_link_indices_t: torch.Tensor = torch.tensor(rigid_link_indices, dtype=torch.int32, device=gs.device)
+        self._rigid_body_indices_t: torch.Tensor = torch.tensor(rigid_body_indices, dtype=torch.int64, device=gs.device)
         rigid_rel_data = np.zeros((len(rigid_rel_transforms), 12), dtype=np.float64)
         for i, rt in enumerate(rigid_rel_transforms):
             rigid_rel_data[i] = rt
-        self._rigid_rel_transforms_t: torch.Tensor = torch.tensor(
-            rigid_rel_data, dtype=torch.float64, device=gs.device
-        )
+        self._rigid_rel_transforms_t: torch.Tensor = torch.tensor(rigid_rel_data, dtype=torch.float64, device=gs.device)
         self._rigid_empty_dofs_t: torch.Tensor = torch.zeros(0, dtype=torch.int32, device=gs.device)
         rigid_fb_bodies = [entry.body_offset for entry in rigid_free_base_entries]
         rigid_fb_links = [entry.entity.link_start for entry in rigid_free_base_entries]
         rigid_fb_q_starts = [entry.entity.q_start for entry in rigid_free_base_entries]
+        rigid_fb_dof_starts = [entry.entity.dof_start for entry in rigid_free_base_entries]
         self._rigid_free_base_body_indices_t: torch.Tensor = torch.tensor(
             rigid_fb_bodies or [0], dtype=torch.int64, device=gs.device
         )[: len(rigid_free_base_entries)]
@@ -963,6 +1042,9 @@ class QIPCCoupler(RBC):
         )[: len(rigid_free_base_entries)]
         self._rigid_free_base_q_starts_t: torch.Tensor = torch.tensor(
             rigid_fb_q_starts or [0], dtype=torch.int32, device=gs.device
+        )[: len(rigid_free_base_entries)]
+        self._rigid_free_base_dof_starts_t: torch.Tensor = torch.tensor(
+            rigid_fb_dof_starts or [0], dtype=torch.int32, device=gs.device
         )[: len(rigid_free_base_entries)]
         self._rigid_reset_state: tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor] | None = None
         rigid_collection = self._scene.rigid_body
@@ -1016,12 +1098,22 @@ class QIPCCoupler(RBC):
             gs.raise_exception("QIPCCoupler.reset does not support partial environment reset.")
 
         runtime_gas_state = self._snapshot_sealed_gas_state()
+        runtime_rigid_state: tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor] | None = None
         self._restore_sealed_gas_state()
         if self._rigid_reset_state is not None:
             # Rigid state is outside QIPC's dump/recover namespace; write the
             # frame-zero snapshot back first so Scene.reset()'s solver reset
             # rebuilds derived positions and BVHs from the restored pose.
             rigid_collection = self._scene.rigid_body
+            runtime_rigid_state = tuple(
+                buffer.detach().clone()
+                for buffer in (
+                    rigid_collection.t,
+                    rigid_collection.quat,
+                    rigid_collection.v,
+                    rigid_collection.omega,
+                )
+            )
             t0, quat0, v0, omega0 = self._rigid_reset_state
             rigid_collection.t[:] = t0
             rigid_collection.quat[:] = quat0
@@ -1031,6 +1123,19 @@ class QIPCCoupler(RBC):
             self._scene.reset()
         except RuntimeError:
             self._write_sealed_gas_state(runtime_gas_state)
+            if runtime_rigid_state is not None:
+                rigid_collection = self._scene.rigid_body
+                for buffer, runtime in zip(
+                    (
+                        rigid_collection.t,
+                        rigid_collection.quat,
+                        rigid_collection.v,
+                        rigid_collection.omega,
+                    ),
+                    runtime_rigid_state,
+                    strict=True,
+                ):
+                    buffer[:] = runtime
             torch.cuda.synchronize()
             raise
         self._adhesion.restore_seeded_bonds()
@@ -1207,11 +1312,11 @@ class QIPCCoupler(RBC):
     # -------------------------------------------------------------------------
 
     def _writeback_state(self) -> None:
-        """Write QIPC state -> Genesis buffers in a single kernel launch.
+        """Write QIPC state into Genesis observation buffers.
 
-        All state derives from ABD body transforms (first-class truth):
-        links_state.pos/quat, dofs_state.pos, dofs_state.vel, and free-base qpos.
-        Joint velocity is finite-differenced from theta.
+        Affine body dynamics (ABD) transforms supply link poses, joint degrees of freedom (DOFs), and free-base
+        generalized positions. Pure-rigid state also supplies derived link and free-base velocities. Joint velocity is
+        finite-differenced from theta.
         """
         if (
             self._link_indices_t.numel() == 0
@@ -1249,7 +1354,6 @@ class QIPCCoupler(RBC):
                 dofs_state=self._sim.rigid_solver.dyn_state.dofs,
                 rigid_info=self._sim.rigid_solver.rigid_info,
             )
-
         if self._rigid_link_indices_t.numel():
             # Pure rigid bodies reuse the same kernel through an equivalent
             # affine q of the authored geometry frame: A = R(quat) V^T,
@@ -1271,14 +1375,29 @@ class QIPCCoupler(RBC):
                 dofs_state=self._sim.rigid_solver.dyn_state.dofs,
                 rigid_info=self._sim.rigid_solver.rigid_info,
             )
+            rigid_collection = self._scene.rigid_body
+            _kernel_qipc_rigid_state_writeback(
+                body_indices=self._rigid_body_indices_t,
+                link_indices=self._rigid_link_indices_t,
+                free_base_body_indices=self._rigid_free_base_body_indices_t,
+                free_base_link_indices=self._rigid_free_base_link_indices_t,
+                free_base_dof_starts=self._rigid_free_base_dof_starts_t,
+                rigid_t=rigid_collection.t,
+                rigid_v=rigid_collection.v,
+                rigid_omega=rigid_collection.omega,
+                links_state=self._sim.rigid_solver.dyn_state.links,
+                joints_state=self._sim.rigid_solver.dyn_state.joints,
+                dofs_state=self._sim.rigid_solver.dyn_state.dofs,
+                dyn_info=self._sim.rigid_solver.dyn_info,
+                rigid_info=self._sim.rigid_solver.rigid_info,
+                rigid_config=self._sim.rigid_solver.rigid_config,
+            )
 
     def _fill_rigid_writeback_q(self) -> None:
         rigid_collection = self._scene.rigid_body
         rotation = _quat_to_rotation_matrices(rigid_collection.quat)
         alignment = rotation @ self._rigid_frame_rot_t.transpose(1, 2)
-        self._rigid_wb_q[:, :3] = rigid_collection.t - (
-            alignment @ self._rigid_frame_com_t.unsqueeze(-1)
-        ).squeeze(-1)
+        self._rigid_wb_q[:, :3] = rigid_collection.t - (alignment @ self._rigid_frame_com_t.unsqueeze(-1)).squeeze(-1)
         self._rigid_wb_q[:, 3:] = alignment.reshape(-1, 9)
 
     # -------------------------------------------------------------------------
@@ -1514,7 +1633,7 @@ class QIPCCoupler(RBC):
             elem = tab.create(f"rigid_contact_{i}")
             for slot in pre.group_slots.values():
                 elem.apply_to(slot.geometry)
-            if not getattr(mat, "qipc_self_contact", True):
+            if not mat.qipc_self_contact:
                 no_self_contact.add(len(infos))
             infos.append((elem, mu, res))
             self._contact_elem_by_entity[pre.entity] = (elem, mu, res)
@@ -1893,18 +2012,26 @@ class QIPCCoupler(RBC):
     ) -> AbdEntityPreInit:
         """Phase 1: create QIPC geometry/joints for one entity (before scene.init)."""
         cfg: EntityConfig = self._get_entity_config(entity)
-        is_rigid_body = bool(getattr(entity.material, "qipc_rigid_body", False))
+        is_rigid_body = bool(entity.material.qipc_rigid_body)
         if is_rigid_body and any(
-            joint.type in (gs.JOINT_TYPE.REVOLUTE, gs.JOINT_TYPE.PRISMATIC) for joint in entity.joints
+            joint.type != gs.JOINT_TYPE.FIXED
+            and (joint.type != gs.JOINT_TYPE.FREE or joint.link is not entity.links[0])
+            for joint in entity.joints
         ):
             gs.raise_exception(
-                f"QIPCCoupler: entity {entity.idx} requests qipc_rigid_body but has revolute or "
-                "prismatic joints; QIPC rigid bodies do not support joints yet."
+                f"QIPCCoupler: entity {entity.idx} requests qipc_rigid_body; only fixed joints and an optional "
+                "root free joint are supported."
             )
         if is_rigid_body and entity.gravity_compensation != 0.0:
             gs.raise_exception(
                 f"QIPCCoupler: entity {entity.idx} requests qipc_rigid_body with gravity "
                 "compensation; QIPC rigid bodies do not support gravity compensation."
+            )
+        free_joints = [joint for joint in entity.joints if joint.type == gs.JOINT_TYPE.FREE]
+        if len(free_joints) > 1 or any(joint.link is not entity.links[0] for joint in free_joints):
+            gs.raise_exception(
+                f"QIPCCoupler: entity {entity.idx} has multiple free joints or a free joint outside its first "
+                "root; each entity supports at most one free joint on its first root link."
             )
 
         T_world: dict[int, np.ndarray] = self._compute_initial_transforms(entity, cfg)
@@ -2533,18 +2660,20 @@ class QIPCCoupler(RBC):
     def _compute_initial_transforms(entity: RigidEntity, cfg: EntityConfig) -> dict[int, np.ndarray]:
         """Compute world-frame 4x4 transforms for each link via FK at init_qpos."""
         T_world: dict[int, np.ndarray] = {}
-
-        morph = entity.morph
-        T_root = np.eye(4, dtype=np.float64)
-        T_root[:3, 3] = np.array(morph.pos, dtype=np.float64)
-        if morph.quat is not None:
-            T_root[:3, :3] = gu.quat_to_R(np.array(morph.quat, dtype=np.float64))
-
         init_qpos = cfg.home_qpos if cfg.home_qpos is not None else entity.init_qpos
 
         for link in entity.links:
             if link.parent_idx < 0:
-                T_world[link.idx_local] = T_root.copy()
+                root_pos = link.pos
+                root_quat = link.quat
+                if not np.isfinite(root_pos).all() or not np.isfinite(root_quat).all():
+                    gs.raise_exception(f"QIPCCoupler: root link '{link.name}' initial pose must be finite.")
+                if np.dot(root_quat, root_quat) <= gs.EPS:
+                    gs.raise_exception(f"QIPCCoupler: root link '{link.name}' initial quaternion must be nonzero.")
+                T_root = np.eye(4, dtype=np.float64)
+                T_root[:3, 3] = root_pos
+                T_root[:3, :3] = gu.quat_to_R(root_quat)
+                T_world[link.idx_local] = T_root
             else:
                 parent_local: int = link.parent_idx - entity.link_start
                 T_parent: np.ndarray = T_world[parent_local]

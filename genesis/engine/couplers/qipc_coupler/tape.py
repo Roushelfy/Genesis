@@ -31,6 +31,8 @@ import torch
 import genesis as gs
 import genesis.utils.geom as gu
 
+from .coupler import QIPCCoupler
+
 
 @dataclass
 class TapeAsset:
@@ -250,12 +252,12 @@ def solver_cfg_to_options(solver_cfg: dict) -> dict:
 # step where 3.8e-3 gives 228ms (its PCG goes back to running into the cap).
 # line_search/max_iter is deliberately NOT set from the wind's 16: it stalls
 # Newton at its cap on imported rolls (see solver_cfg_to_options).
-_TAPE_SOLVER_PROFILE = dict(
-    solver_newton_velocity_tol=3.8e-3,
-    solver_newton_max_iter=300,
-    solver_linear_max_iter=800,
-    solver_linear_tol_rate=3e-3,
-)
+_TAPE_SOLVER_PROFILE = {
+    "solver_newton_velocity_tol": 3.8e-3,
+    "solver_newton_max_iter": 300,
+    "solver_linear_max_iter": 800,
+    "solver_linear_tol_rate": 3e-3,
+}
 
 
 def recommended_coupler_options(asset: TapeAsset) -> dict:
@@ -321,11 +323,11 @@ def seed_asset_locks(scene, tape_entity, asset: TapeAsset) -> tuple[int, int]:
     dropped = 0
     if asset.bond_topos_space == "global":
         src_gvo = int(asset.bond_fem_gvo)
+        n_affine_verts = int(coupler._scene.affine_body.n_verts)
         is_fem = topos >= src_gvo
-        # Hub (ABD) ids pass through only if the ABD range is identical: same
-        # vertex count AND the hub sitting at ABD offset 0, i.e. this scene's
-        # FEM global offset equals the wind's.
-        if src_gvo == fem_gvo and entry.offset == 0:
+        # Affine body dynamics (ABD) hub ids remain valid when the authored hub exactly occupies the
+        # current affine-body prefix. FEM ids rebase across the full non-FEM prefix.
+        if src_gvo == n_affine_verts and entry.offset == 0:
             topos = np.where(is_fem, topos - src_gvo + our_base, topos)
         else:
             keep = is_fem.all(axis=1)
@@ -333,7 +335,7 @@ def seed_asset_locks(scene, tape_entity, asset: TapeAsset) -> tuple[int, int]:
             if dropped:
                 gs.logger.debug(
                     f"seed_asset_locks: dropping {dropped} hub-side lock rows (wind ABD layout has "
-                    f"{src_gvo} vertices, this scene has {fem_gvo}); those pairs re-bond dynamically."
+                    f"{src_gvo} vertices, this scene has {n_affine_verts}); those pairs re-bond dynamically."
                 )
             topos = topos[keep] - src_gvo + our_base
     else:  # legacy dumps: FEM-local tape ids
@@ -494,6 +496,26 @@ def _bond_cluster_target(
     return deep[triangles].all(axis=1)
 
 
+def _normalize_tape_cluster_collars(collar: int, activation_collar: int | None) -> tuple[int, int]:
+    """Validate and normalize the runtime and initial-membership collars."""
+    if isinstance(collar, (bool, np.bool_)) or not isinstance(collar, (int, np.integer)) or collar <= 0:
+        gs.raise_exception("TapeBondClusterController: collar must be a positive integer.")
+    collar = int(collar)
+
+    if activation_collar is None:
+        activation = collar
+    else:
+        if isinstance(activation_collar, (bool, np.bool_)) or not isinstance(activation_collar, (int, np.integer)):
+            gs.raise_exception("TapeBondClusterController: activation_collar must be a positive integer.")
+        activation = int(activation_collar)
+        if activation <= 0:
+            gs.raise_exception("TapeBondClusterController: activation_collar must be a positive integer.")
+
+    if activation < collar:
+        gs.raise_exception("TapeBondClusterController: activation_collar must be at least collar.")
+    return collar, activation
+
+
 class TapeBondClusterController:
     """Runtime peel policy for a queued distance-bond tape cluster.
 
@@ -533,14 +555,9 @@ class TapeBondClusterController:
         structured_max_front_slope: int | None = None,
         never_member: np.ndarray | None = None,
     ) -> None:
+        collar, activation = _normalize_tape_cluster_collars(collar, activation_collar)
         if not np.isfinite(detach_displacement) or detach_displacement <= 0.0:
             gs.raise_exception("TapeBondClusterController: detach_displacement must be finite and positive.")
-        if isinstance(collar, bool) or not isinstance(collar, (int, np.integer)) or collar <= 0:
-            gs.raise_exception("TapeBondClusterController: collar must be a positive integer.")
-        collar = int(collar)
-        activation = collar if activation_collar is None else int(activation_collar)
-        if activation < collar:
-            gs.raise_exception("TapeBondClusterController: activation_collar must be at least collar.")
         if detach_gate not in ("euclidean", "radial"):
             gs.raise_exception("TapeBondClusterController: detach_gate must be 'euclidean' or 'radial'.")
 
@@ -637,9 +654,7 @@ class TapeBondClusterController:
         from qipc.cluster_release_driver import ClusterReleaseDriver
 
         scene = self._coupler._scene
-        # Unwrap the Genesis handle to the bound qipc AffineClusterCollection;
-        # raw collections (or test stubs exposing the same surface) pass through.
-        collection = getattr(self._cluster, "qipc_collection", self._cluster)
+        collection = self._cluster.qipc_collection
         vertex_range = self._cluster.fem_vertex_range
         return ClusterReleaseDriver(
             scene,
@@ -685,13 +700,13 @@ def add_tape_bond_cluster(
     structured_max_front_slope: int | None = None,
 ) -> TapeBondClusterController:
     """Queue a releasable tape cluster and return its runtime peel policy."""
+    collar, activation = _normalize_tape_cluster_collars(collar, activation_collar)
     coupler = scene.sim.coupler
     if coupler._options.adhesion_bond_lock_floor_ratio <= 0.0:
         gs.raise_exception(
             "add_tape_bond_cluster requires adhesion_bond_lock_floor_ratio > 0 "
             "so cleared near-barrier bonds cannot immediately re-lock."
         )
-    activation = collar if activation_collar is None else activation_collar
     certificate = None
     if structured_row_width is not None:
         if never_member is None:
@@ -716,9 +731,8 @@ def add_tape_bond_cluster(
         kappa=kappa,
         initial_tris=member_triangles,
     )
-    adhesion = getattr(coupler, "adhesion", None)
-    if bond_seed_handle is None and hasattr(adhesion, "get_bond_seed_handle"):
-        bond_seed_handle = adhesion.get_bond_seed_handle(tape_entity, name="internal")
+    if bond_seed_handle is None:
+        bond_seed_handle = coupler.adhesion.get_bond_seed_handle(tape_entity, name="internal")
     return TapeBondClusterController(
         coupler,
         cluster,
@@ -728,7 +742,7 @@ def add_tape_bond_cluster(
         detach_displacement=detach_displacement,
         bond_seed_handle=bond_seed_handle,
         certificate=certificate,
-        activation_collar=activation_collar,
+        activation_collar=activation,
         detach_gate=detach_gate,
         radial_center=radial_center,
         radial_axis=radial_axis,
@@ -742,10 +756,8 @@ def add_tape_bond_cluster(
 
 def _write_obj(path: str, verts: np.ndarray, faces: np.ndarray) -> None:
     with open(path, "w") as fh:
-        for v in verts:
-            fh.write(f"v {v[0]:.9f} {v[1]:.9f} {v[2]:.9f}\n")
-        for f in faces:
-            fh.write(f"f {f[0] + 1} {f[1] + 1} {f[2] + 1}\n")
+        fh.writelines(f"v {v[0]:.9f} {v[1]:.9f} {v[2]:.9f}\n" for v in verts)
+        fh.writelines(f"f {f[0] + 1} {f[1] + 1} {f[2] + 1}\n" for f in faces)
 
 
 def _kabsch(source: np.ndarray, target: np.ndarray):
@@ -813,7 +825,7 @@ def add_tape_roll(
     Returns (tape_entity, hub_entity_or_None).
     """
     coupler = scene.sim.coupler
-    if not hasattr(coupler, "add_adhesion"):
+    if not isinstance(coupler, QIPCCoupler):
         gs.raise_exception("add_tape_roll requires the QIPC coupler (QIPCCouplerOptions).")
 
     R_place = gu.quat_to_R(gu.xyz_to_quat(np.asarray(euler, dtype=np.float64), degrees=True))
@@ -825,15 +837,15 @@ def add_tape_roll(
     if friction is None:
         friction = float(params.get("MU", 0.5))
     cn = float(params.get("CN", 1.0))
-    asset_adhesion = dict(
-        Cn=cn,
-        Ct=float(params.get("CT", cn)),
-        W=float(params.get("ADH_W", 1.0)),
-        eta=float(params.get("ETA", 100.0)),
-        bonding_rate=float(params.get("BONDING_RATE", 1.0)),
-        beta0=1.0,  # imported coil holds from frame 0 (re-bond instead of state transfer)
-        friction=friction,
-    )
+    asset_adhesion = {
+        "Cn": cn,
+        "Ct": float(params.get("CT", cn)),
+        "W": float(params.get("ADH_W", 1.0)),
+        "eta": float(params.get("ETA", 100.0)),
+        "bonding_rate": float(params.get("BONDING_RATE", 1.0)),
+        "beta0": 1.0,  # imported coil holds from frame 0 (re-bond instead of state transfer)
+        "friction": friction,
+    }
     tmp_dir = tempfile.mkdtemp(prefix="qipc_tape_")
     tape_obj = os.path.join(tmp_dir, "tape_roll.obj")
     tape_world = asset.tape_positions @ R_place.T + t_place

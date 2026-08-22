@@ -15,8 +15,8 @@ import pytest
 import torch
 
 try:
-    import quadrants as qd  # noqa: F401
-    from qipc import Scene as QIPCScene  # noqa: F401
+    import quadrants as qd
+    from qipc import Scene as QIPCScene
 except ImportError:
     pytest.skip("QIPC coupler requires 'quadrants' and 'qipc' packages.", allow_module_level=True)
 
@@ -92,6 +92,43 @@ def test_tape_bond_cluster_requires_positive_relock_floor():
             collar=3,
             detach_displacement=5.0 * asset.d_hat,
         )
+
+
+@pytest.mark.parametrize(
+    ("activation_collar", "message"),
+    [
+        (True, "activation_collar must be a positive integer"),
+        (3.5, "activation_collar must be a positive integer"),
+        (np.nan, "activation_collar must be a positive integer"),
+        (2, "activation_collar must be at least collar"),
+    ],
+)
+def test_tape_bond_cluster_rejects_invalid_activation_before_queueing(activation_collar, message):
+    tape_mod = _tape_module()
+    calls = []
+
+    def add_affine_cluster(*args, **kwargs):
+        calls.append((args, kwargs))
+        return object()
+
+    coupler = SimpleNamespace(
+        _options=SimpleNamespace(adhesion_bond_lock_floor_ratio=0.5),
+        add_affine_cluster=add_affine_cluster,
+    )
+    scene = SimpleNamespace(sim=SimpleNamespace(coupler=coupler))
+
+    with pytest.raises(gs.GenesisException, match=message):
+        tape_mod.add_tape_bond_cluster(
+            scene,
+            object(),
+            object(),
+            kappa=1e8,
+            collar=3,
+            activation_collar=activation_collar,
+            detach_displacement=1.0,
+        )
+
+    assert calls == []
 
 
 @needs_tape_asset
@@ -283,10 +320,8 @@ def _strip_tris() -> np.ndarray:
 
 def _write_obj(path, verts, faces):
     with open(path, "w") as fh:
-        for v in verts:
-            fh.write(f"v {v[0]:.9f} {v[1]:.9f} {v[2]:.9f}\n")
-        for f in faces:
-            fh.write(f"f {f[0] + 1} {f[1] + 1} {f[2] + 1}\n")
+        fh.writelines(f"v {v[0]:.9f} {v[1]:.9f} {v[2]:.9f}\n" for v in verts)
+        fh.writelines(f"f {f[0] + 1} {f[1] + 1} {f[2] + 1}\n" for f in faces)
 
 
 def _build_arc_scene(tmp_path, show_viewer, with_flat_rest: bool):
@@ -451,7 +486,7 @@ def _build_roll_scene(
             ),
             material=gs.materials.Rigid(rho=1000.0),
         )
-    adhesion_off = dict(Cn=0.0, Ct=0.0, bonding_rate=0.0, beta0=0.0, enabled=False, distance_lock=False)
+    adhesion_off = {"Cn": 0.0, "Ct": 0.0, "bonding_rate": 0.0, "beta0": 0.0, "enabled": False, "distance_lock": False}
     tape, hub = tape_mod.add_tape_roll(
         scene,
         asset,
@@ -540,7 +575,7 @@ def test_tape_roll_adhesion_follows_asset_params(show_viewer):
         coupler_options=gs.options.QIPCCouplerOptions(**tape_mod.recommended_coupler_options(asset)),
         show_viewer=show_viewer,
     )
-    tape_mod.add_tape_roll(scene2, asset, pos=(0.0, 0.0, 0.2), tape_tape_adhesion=dict(Cn=7.0))
+    tape_mod.add_tape_roll(scene2, asset, pos=(0.0, 0.0, 0.2), tape_tape_adhesion={"Cn": 7.0})
     assert scene2.sim.coupler.adhesion._requests[0].Cn == 7.0
 
 
@@ -556,7 +591,7 @@ def test_tape_roll_hub_concentric(show_viewer):
     exercises the align=True auto-reframing path, which cancels baked world
     coordinates and is why the hub is NOT baked.
     """
-    scene, tape, hub, asset = _build_roll_scene(show_viewer, sticky=True, hub_fixed=False)
+    _scene, tape, hub, asset = _build_roll_scene(show_viewer, sticky=True, hub_fixed=False)
 
     # The hub's actual collision geometry must be centered at ROLL_POS (the
     # misalignment regression left it at the world origin, 0.55 m away). AABB
@@ -613,8 +648,97 @@ def test_tape_hub_mesh_is_exact(show_viewer):
     n_sides = len(src_verts) // 4
     poly_ratio = n_sides / (2.0 * np.pi) * np.sin(2.0 * np.pi / n_sides)
     exact_mass = np.pi * (asset.hub_r_outer**2 - asset.hub_r_inner**2) * asset.hub_height * 1000.0 * poly_ratio
-    link_mass = [link for link in hub.links if link.geoms][0].inertial_mass
+    link_mass = next(link for link in hub.links if link.geoms).inertial_mass
     assert link_mass == pytest.approx(exact_mass, rel=1e-3)
+
+
+def test_manual_global_seed_drops_hub_rows_when_prefix_is_pure_rigid():
+    tape_mod = _tape_module()
+    seeded = []
+    tape = object()
+    asset = SimpleNamespace(
+        bond_topos=np.array(
+            [
+                [0, 4, 5, 6],
+                [4, 5, 6, 7],
+            ],
+            dtype=np.int64,
+        ),
+        bond_topos_space="global",
+        bond_fem_gvo=4,
+        params={},
+        thick=1.0e-3,
+        d_hat=1.0e-3,
+    )
+    adhesion = SimpleNamespace(
+        get_bond_seed_result=lambda entity: None,
+        fem_global_vertex_offset=lambda: 4,
+        seed_bonds=lambda topologies, rest_height: seeded.append((topologies.copy(), rest_height)),
+    )
+    qipc_scene = SimpleNamespace(
+        affine_body=SimpleNamespace(n_verts=0),
+        rigid_body=SimpleNamespace(n_verts=4),
+        finite_element=SimpleNamespace(n_verts=4),
+    )
+    coupler = SimpleNamespace(
+        _adhesion=adhesion,
+        _scene=qipc_scene,
+        _fem_entry=lambda entity: SimpleNamespace(offset=0),
+    )
+    scene = SimpleNamespace(sim=SimpleNamespace(coupler=coupler))
+
+    assert tape_mod.seed_asset_locks(scene, tape, asset) == (1, 1)
+    assert len(seeded) == 1
+    np.testing.assert_array_equal(seeded[0][0], np.array([[4, 5, 6, 7]], dtype=np.int64))
+
+
+def test_manual_global_seed_keeps_hub_rows_before_pure_rigid_prefix():
+    tape_mod = _tape_module()
+    seeded = []
+    tape = object()
+    asset = SimpleNamespace(
+        bond_topos=np.array(
+            [
+                [0, 4, 5, 6],
+                [4, 5, 6, 7],
+            ],
+            dtype=np.int64,
+        ),
+        bond_topos_space="global",
+        bond_fem_gvo=4,
+        params={},
+        thick=1.0e-3,
+        d_hat=1.0e-3,
+    )
+    adhesion = SimpleNamespace(
+        get_bond_seed_result=lambda entity: None,
+        fem_global_vertex_offset=lambda: 7,
+        seed_bonds=lambda topologies, rest_height: seeded.append((topologies.copy(), rest_height)),
+    )
+    qipc_scene = SimpleNamespace(
+        affine_body=SimpleNamespace(n_verts=4),
+        rigid_body=SimpleNamespace(n_verts=3),
+        finite_element=SimpleNamespace(n_verts=4),
+    )
+    coupler = SimpleNamespace(
+        _adhesion=adhesion,
+        _scene=qipc_scene,
+        _fem_entry=lambda entity: SimpleNamespace(offset=0),
+    )
+    scene = SimpleNamespace(sim=SimpleNamespace(coupler=coupler))
+
+    assert tape_mod.seed_asset_locks(scene, tape, asset) == (2, 0)
+    assert len(seeded) == 1
+    np.testing.assert_array_equal(
+        seeded[0][0],
+        np.array(
+            [
+                [0, 7, 8, 9],
+                [7, 8, 9, 10],
+            ],
+            dtype=np.int64,
+        ),
+    )
 
 
 @needs_tape_asset

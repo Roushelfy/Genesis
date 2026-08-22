@@ -45,19 +45,19 @@ def _contact_pt_keys(topologies: np.ndarray) -> np.ndarray:
 
 
 def _require_current_qipc_api() -> None:
-    from qipc import Scene as QIPCScene
-    from qipc import contact
+    try:
+        from qipc import Scene as QIPCScene
+        from qipc.contact import Adhesion, Bond, Release
 
-    missing = [name for name in ("Adhesion", "Bond", "Release") if not hasattr(contact, name)]
-    if not hasattr(QIPCScene, "reset"):
-        missing.append("Scene.reset")
-    if missing:
+        required = (Adhesion, Bond, Release, QIPCScene.reset)
+    except (AttributeError, ImportError):
         gs.raise_exception(
             "QIPCCoupler requires a current cuda-graph-qipc build with the grouped "
-            f"contact API and reset support (missing: {', '.join(missing)}). Install "
-            "the Genesis 'qipc' extra in its supported Python 3.12 environment; "
-            "legacy flat-contact QIPC builds are not supported."
+            "contact API and reset support. Install the Genesis 'qipc' extra in its "
+            "supported Python 3.12 environment; legacy flat-contact QIPC builds are not supported."
         )
+    if any(value is None for value in required):
+        gs.raise_exception("QIPCCoupler requires callable grouped contact and reset APIs from cuda-graph-qipc.")
 
 
 class AdhesionRequest(NamedTuple):
@@ -578,7 +578,7 @@ class QIPCAdhesionManager:
 
     def _bond_system(self):
         scene = self._require_scene()
-        bond_system = getattr(scene, "_bond_system", None)
+        bond_system = scene._bond_system
         if bond_system is None or bond_system.max_bonds <= 0:
             gs.raise_exception(
                 "QIPCCoupler: distance bonds are not enabled "
@@ -604,17 +604,17 @@ class QIPCAdhesionManager:
         so the FEM block starts after both the affine and pure-rigid vertices.
         """
         scene = self._require_scene()
-        n_abd = int(getattr(scene.affine_body, "n_verts", 0) or 0)
-        n_rigid = int(getattr(getattr(scene, "rigid_body", None), "n_verts", 0) or 0)
+        n_abd = int(scene.affine_body.n_verts)
+        n_rigid = int(scene.rigid_body.n_verts)
         return n_abd + n_rigid
 
     def get_bond_topos(self) -> np.ndarray:
         """Alive distance-bond topologies as (n, 4) GLOBAL vertex ids.
 
         FEM vertex global id = fem_global_vertex_offset() + geometry
-        fem_vert_offset + local index; ids below the offset are ABD vertices.
+        fem_vert_offset + local index; ids below the offset are non-FEM prefix vertices.
         """
-        return self._dump_bond_topologies("dump_lock_topos")
+        return self._dump_bond_topologies(is_released=False)
 
     def get_released_bond_topos(self) -> np.ndarray:
         """Distance bonds released by the preceding QIPC step.
@@ -623,9 +623,9 @@ class QIPCAdhesionManager:
         until the next QIPC step begins. This feed lets application policies
         advance a peel or fracture front without scanning historical bonds.
         """
-        return self._dump_bond_topologies("dump_released_topos")
+        return self._dump_bond_topologies(is_released=True)
 
-    def _dump_bond_topologies(self, method_name: str) -> np.ndarray:
+    def _dump_bond_topologies(self, *, is_released: bool) -> np.ndarray:
         bond_system = self._bond_system()
         required = bond_system.max_bonds * 4
         if self._bond_dump_topologies is None or self._bond_dump_topologies.numel() < required:
@@ -635,7 +635,10 @@ class QIPCAdhesionManager:
         out = self._bond_dump_topologies
         cnt = self._bond_dump_count
         cnt.zero_()
-        getattr(bond_system, method_name)(out, cnt)
+        if is_released:
+            bond_system.dump_released_topos(out, cnt)
+        else:
+            bond_system.dump_lock_topos(out, cnt)
         torch.cuda.synchronize()
         n = int(cnt.item())
         return out[: n * 4].reshape(n, 4).cpu().numpy()
@@ -784,9 +787,9 @@ class QIPCAdhesionManager:
                 "topo": np.ascontiguousarray(np.concatenate([mapped for _, mapped in resolved_state], axis=0)),
                 **{
                     name: np.ascontiguousarray(
-                        np.concatenate([getattr(request, name) for request, _ in resolved_state], axis=0)
+                        np.concatenate([request[field_index] for request, _ in resolved_state], axis=0)
                     )
-                    for name in state_fields
+                    for field_index, name in enumerate(state_fields, start=2)
                 },
             }
             batch["pair_key"] = _contact_pt_keys(batch["topo"])

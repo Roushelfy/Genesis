@@ -199,6 +199,7 @@ def test_coupler_rejects_foreign_entities_links_and_late_declarations():
     owned_link = SimpleNamespace(name="owned", idx_local=0, geoms=[])
     proxy_entity = SimpleNamespace(links=[owned_link])
     coupler = object.__new__(QIPCCoupler)
+    coupler._scene = None
     coupler._sim = SimpleNamespace(
         fem_solver=SimpleNamespace(entities=[fem_entity]),
         rigid_solver=SimpleNamespace(entities=[proxy_entity]),
@@ -231,6 +232,7 @@ def test_reset_replays_bonds_before_initial_membership():
     coupler._affine_clusters = SimpleNamespace(replay_initial_membership=lambda: calls.append("membership"))
     coupler._sealed_gas_bag_by_entity = {}
     coupler._sealed_gas_reset_state = {}
+    coupler._rigid_reset_state = None
     coupler._writeback_state = lambda: calls.append("rigid writeback")
     coupler._writeback_fem_state = lambda frame: calls.append(f"fem writeback {frame}")
 

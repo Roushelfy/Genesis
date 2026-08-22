@@ -10,7 +10,10 @@ def _manager_with_scene(*, fem_global_offset: int = 20):
     from genesis.engine.couplers.qipc_coupler.adhesion import QIPCAdhesionManager
 
     manager = QIPCAdhesionManager(SimpleNamespace())
-    manager._scene = SimpleNamespace(affine_body=SimpleNamespace(n_verts=fem_global_offset))
+    manager._scene = SimpleNamespace(
+        affine_body=SimpleNamespace(n_verts=fem_global_offset),
+        rigid_body=SimpleNamespace(n_verts=0),
+    )
     calls: list[tuple[np.ndarray, float]] = []
     manager._seed_bond_batch = lambda topologies, rest_height: calls.append((topologies.copy(), rest_height))
     return manager, calls
@@ -42,7 +45,7 @@ def test_named_rigid_seed_batches_map_and_seed_as_one_transaction():
         strict_rigid_mapping=True,
     )
     calls: list[tuple[np.ndarray, float]] = []
-    manager._scene = SimpleNamespace(affine_body=SimpleNamespace(n_verts=20))
+    manager._scene = SimpleNamespace(affine_body=SimpleNamespace(n_verts=20), rigid_body=SimpleNamespace(n_verts=0))
     manager._seed_bond_batch = lambda topologies, rest_height: calls.append((topologies.copy(), rest_height))
 
     manager.apply_bond_seed_requests(
@@ -136,7 +139,7 @@ def test_named_frozen_state_batches_map_and_restore_as_one_transaction():
     internal_Dm_inv.fill(-1.0)
     internal_V0.fill(-1.0)
     calls: list[dict[str, np.ndarray]] = []
-    manager._scene = SimpleNamespace(affine_body=SimpleNamespace(n_verts=20))
+    manager._scene = SimpleNamespace(affine_body=SimpleNamespace(n_verts=20), rigid_body=SimpleNamespace(n_verts=0))
     manager._restore_bond_state_batch = lambda batch: calls.append(
         {name: values.copy() for name, values in batch.items()}
     )
@@ -263,7 +266,7 @@ def test_frozen_state_registration_is_atomic_owns_inputs_and_rejects_empty_batch
         )
 
     calls: list[dict[str, np.ndarray]] = []
-    manager._scene = SimpleNamespace(affine_body=SimpleNamespace(n_verts=10))
+    manager._scene = SimpleNamespace(affine_body=SimpleNamespace(n_verts=10), rigid_body=SimpleNamespace(n_verts=0))
     manager._restore_bond_state_batch = lambda batch: calls.append(
         {name: values.copy() for name, values in batch.items()}
     )
@@ -390,7 +393,7 @@ def test_strict_rigid_mapping_fails_before_native_seed():
         strict_rigid_mapping=True,
     )
     calls: list[tuple[np.ndarray, float]] = []
-    manager._scene = SimpleNamespace(affine_body=SimpleNamespace(n_verts=20))
+    manager._scene = SimpleNamespace(affine_body=SimpleNamespace(n_verts=20), rigid_body=SimpleNamespace(n_verts=0))
     manager._seed_bond_batch = lambda topologies, rest_height: calls.append((topologies.copy(), rest_height))
 
     with pytest.raises(Exception, match="batch 'table'.*4 source vertices.*missing"):
@@ -410,7 +413,7 @@ def test_non_strict_rigid_mapping_reports_dropped_rows_and_keeps_fem_rows():
         rest_height=0.0,
     )
     calls: list[tuple[np.ndarray, float]] = []
-    manager._scene = SimpleNamespace(affine_body=SimpleNamespace(n_verts=20))
+    manager._scene = SimpleNamespace(affine_body=SimpleNamespace(n_verts=20), rigid_body=SimpleNamespace(n_verts=0))
     manager._seed_bond_batch = lambda topologies, rest_height: calls.append((topologies.copy(), rest_height))
 
     manager.apply_bond_seed_requests({tape: (2, 8)}, {})
@@ -443,7 +446,7 @@ def test_incompatible_rest_heights_and_duplicate_topologies_fail_before_seed():
         rest_height=1.0e-4,
     )
     calls: list[tuple[np.ndarray, float]] = []
-    manager._scene = SimpleNamespace(affine_body=SimpleNamespace(n_verts=20))
+    manager._scene = SimpleNamespace(affine_body=SimpleNamespace(n_verts=20), rigid_body=SimpleNamespace(n_verts=0))
     manager._seed_bond_batch = lambda topologies, rest_height: calls.append((topologies.copy(), rest_height))
 
     with pytest.raises(Exception, match="compatible rest_height.*internal.*table"):
@@ -465,7 +468,7 @@ def test_incompatible_rest_heights_and_duplicate_topologies_fail_before_seed():
         source_fem_global_offset=None,
         rest_height=0.0,
     )
-    manager._scene = SimpleNamespace(affine_body=SimpleNamespace(n_verts=20))
+    manager._scene = SimpleNamespace(affine_body=SimpleNamespace(n_verts=20), rigid_body=SimpleNamespace(n_verts=0))
     manager._seed_bond_batch = lambda topologies, rest_height: calls.append((topologies.copy(), rest_height))
 
     with pytest.raises(Exception, match="more than once.*internal.*table"):

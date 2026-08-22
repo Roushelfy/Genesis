@@ -2,7 +2,7 @@
 
 Status: Genesis components, validation gates, and gs-core scene composition
 implemented. The frozen post-f249 state was audited against cuda-graph-qipc
-commit `c66c312e682cdde1cbad885ff4774f274b48d02c`; the URDF inertials separately
+commit `41847000a35b21227ba61046f2c9982bbf74aa9f`; the URDF inertials separately
 track the balanced source asset hash recorded in `manifest.json`. The
 fixed-topology solver profile tracks commit
 `003c2681d024d18ccaaf967d341b2703b94b6b47`. The releasable cluster policy
@@ -10,7 +10,7 @@ tracks `c6108108b70d92fbb51f21e7c4ab7e173e5f65d5`, and the default collision
 proxies track `5c41c4fa`.
 
 > Implementation: `../tape_dispenser.py`; frozen assets:
-> `genesis/assets/qipc/tape_dispenser_v2/`; tests:
+> `genesis/assets/qipc/tape_dispenser_v3/`; tests:
 > `tests/test_qipc_tape_dispenser_contract.py` and
 > `tests/test_qipc_tape_dispenser.py`.
 
@@ -29,7 +29,7 @@ The component contains:
 - 1,936 active tape vertices and 3,500 tape triangles;
 - a massless 192-vertex collision ring attached to the existing wheel ABD,
   with the same topology rendered as a visual-only cardboard core;
-- all 969 active distance-bond slots, including their rest, stiffness,
+- all 1,039 active distance-bond slots, including their rest, stiffness,
   release, and age fields;
 - tape collision with the Cylinder and blade; and
 - tape self-bonding and tape-to-ring bonding.
@@ -190,9 +190,9 @@ from the URDF collision list: QIPC's queued attachment remains the sole physical
 ring representation, so visualization cannot duplicate collision vertices,
 mass, contact regions, or frozen bond IDs.
 
-Only the 1,936 active tape vertices are imported. The source cuttable mesh has
-32 additional parked vertices, but they are deliberately omitted because this
-component has no topology-changing cutting constitution or DBC lifecycle.
+The snapshot contains 1,936 active tape vertices and zero parked cut-spare
+vertices. Dynamic cutting and its topology-changing lifecycle are outside this
+component.
 
 The full four-body affine state is stored instead of reconstructing it from
 the root and joint angles. The settled wheel contains a small non-rigid affine
@@ -279,11 +279,11 @@ batches because restoring slots replaces the whole native `BondSystem` state.
 
 ## 9. Optional releasable wheel cluster
 
-The cluster variant uses the frozen 969 bond slots as a certificate for the
+The cluster variant uses the frozen 1,039 bond slots as a certificate for the
 wound interior. Bond occupancy is measured per structured tape row. The first
 run of four rows with at most 25 percent bonded vertices marks the payout
 front; the final row is always excluded. With the default three-ring collar,
-2,720 tape triangles initially ride the existing `tape_wheel` ABD.
+2,760 tape triangles initially ride the existing `tape_wheel` ABD.
 
 This is a hard affine membership constraint, not another bond or target
 penalty. The wheel remains dynamically driven by its articulation, contacts,
@@ -291,7 +291,7 @@ and transferred FEM/bond forces. Released authored bonds advance the front
 only after an affected vertex has moved more than `5 * d_hat` in the wheel
 frame. Detachment is monotone, restores the released FEM elements, clears
 touching bonds, and preserves position and velocity continuity. Reset restores
-all 2,720 initial memberships and the frozen bonds.
+all 2,760 initial memberships and the frozen bonds.
 
 ## 10. Validation ladder
 
@@ -299,7 +299,7 @@ all 2,720 initial memberships and the frozen bonds.
 | --- | --- | --- |
 | Asset contract | checked-in manifest and NPZ metadata | hashes, safe paths/no pickle, stable names, counts, finite arrays, joint values, solver options |
 | Parser contract | synthetic multi-node GLB | exact URDF collision vertices/faces and incompatible-option rejection |
-| GPU integration | frozen f249 artifact and proxy URDFs | full transforms/tape/969 bonds, 16,200 full or 16,008 ringless rigid vertices, 2,720 optional cluster triangles, finite step, exact reset |
+| GPU integration | frozen f249 artifact and proxy URDFs | full transforms/tape/1,039 bonds, 16,200 full or 16,008 ringless rigid vertices, 2,760 optional cluster triangles, finite step, exact reset |
 | gs-core scenes | composed robot and table | placement, external pairs, Pika/Wuji compatibility, teleop reset |
 
 Run the implemented gates from the Genesis checkout:
@@ -326,7 +326,7 @@ motion; it does not incorrectly assert static equilibrium.
 
 ## 11. Known limitations
 
-- Dynamic cutting and the source's 32 parked cut-spare vertices are absent.
+- Dynamic cutting is outside scope; the snapshot topology contains 1,936 active tape vertices.
 - The root is free and unactuated; no permanent anchoring policy is included.
 - Runtime replay starts at the frozen snapshot instead of simulating frames
   0-249.

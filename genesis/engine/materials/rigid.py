@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Annotated, Any, Literal
 from pydantic import Field, StrictBool, model_validator
 
 import genesis as gs
-from genesis.typing import NonNegativeFloat, PositiveFloat, StrictInt, StrArrayType, ValidFloat
+from genesis.typing import NonNegativeFloat, PositiveFloat, StrArrayType, StrictInt, ValidFloat
 
 from .kinematic import Kinematic
 
@@ -119,11 +119,11 @@ class Rigid(Kinematic["RigidEntity"]):
     qipc_rigid_body : bool, optional
         Couple this entity as a pure 6-DOF QIPC rigid body instead of an affine
         (ABD) body: rigidity is exact by parametrization and the body costs 6
-        DOFs instead of 12 with no orthogonality stiffness. Only single-body
-        entities qualify (no revolute or prismatic joints), and QIPC rigid
+        DOFs instead of 12 with no orthogonality stiffness. Only fixed joints
+        and an optional free joint on the root link are supported. QIPC rigid
         bodies cannot be kinematically driven, gravity-compensated, used as
-        bond/cluster/attachment hosts, or given an initial-state override.
-        Only used by the QIPC coupler. Default is False.
+        bond/cluster/attachment hosts, or given an initial-state override. Only
+        used by the QIPC coupler. Default is False.
     """
 
     use_visual_raycasting: StrictBool = False

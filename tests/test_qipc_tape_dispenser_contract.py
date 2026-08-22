@@ -48,7 +48,6 @@ def test_packaged_tape_dispenser_snapshot_contract():
     asset = module.TapeDispenserAsset.packaged()
     manifest = json.loads((asset.directory / "manifest.json").read_text())
 
-    # v3: re-exported from a 3M-TDS-calibrated roll (cgq preset scotch3850-tds).
     assert manifest["source"]["commit"] == "41847000a35b21227ba61046f2c9982bbf74aa9f"
     assert manifest["source"]["wound_preset"] == "scotch3850-tds"
     assert manifest["urdf_inertials"] == {
@@ -67,10 +66,22 @@ def test_packaged_tape_dispenser_snapshot_contract():
     assert asset.ring_positions.shape == (192, 3)
     assert asset.ring_triangles.shape == (384, 3)
     assert asset.body_q.shape == (4, 12)
+    with np.load(asset.directory / "post_f249_static.npz", allow_pickle=False) as state:
+        state_manifest = json.loads(bytes(state["manifest_json"]).decode("utf-8"))
+        state_bond_arrays = tuple(state[name] for name in state.files if name.startswith("bond_"))
+    snapshot = manifest["snapshot"]
+    layout = state_manifest["layout"]
+    assert snapshot["omitted_cut_spare_vertices"] == layout["n_cut_spare_vertices"] == 0
+    assert snapshot["actual_tape_vertices"] == layout["n_original_tape_vertices"] == len(asset.tape_positions) == 1936
+    assert layout["n_tape_vertices"] == layout["n_original_tape_vertices"] + layout["n_cut_spare_vertices"]
+    assert snapshot["active_bonds"] == layout["active_bonds"] == len(asset.bond_topologies) == 1039
+    assert {len(array) for array in state_bond_arrays} == {snapshot["active_bonds"]}
     assert asset.bond_topologies.shape == (1039, 4)
     assert asset.bond_Dm_inv.shape == (1039, 9)
     assert int(asset.bond_topologies.min()) == 0
     assert int(asset.bond_topologies.max()) < 192 + 1936
+    assert asset.roll.youngs == 2.8e9
+    assert asset.roll.bending_e == 3.7e9
     np.testing.assert_allclose(
         asset.joint_theta,
         [-2.259993949195373, 0.10000000003512166, 2.17206721523378],

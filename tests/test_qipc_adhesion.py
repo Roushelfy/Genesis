@@ -11,8 +11,8 @@ import numpy as np
 import pytest
 
 try:
-    import quadrants as qd  # noqa: F401
-    from qipc import Scene as QIPCScene  # noqa: F401
+    import quadrants as qd
+    from qipc import Scene as QIPCScene
 except ImportError:
     pytest.skip("QIPC coupler requires 'quadrants' and 'qipc' packages.", allow_module_level=True)
 
@@ -30,16 +30,16 @@ CUBE_CENTER_Z = SLAB_CENTER_Z - SLAB_SIZE / 2 - GAP - CUBE_SIZE / 2
 N_STEPS = 60
 FREE_FALL_DROP = 0.5 * 9.8 * (N_STEPS * DT) ** 2  # ~1.76 m
 
-BOND_OPTS = dict(
-    adhesion_bond_distance_lock=True,
-    adhesion_bond_distance_lock_ratio=1.5,
-    adhesion_bond_max_bonds=4096,
-    adhesion_bond_kappa=1e8,
-    adhesion_bond_lock_floor_ratio=0.25,
-)
+BOND_OPTS = {
+    "adhesion_bond_distance_lock": True,
+    "adhesion_bond_distance_lock_ratio": 1.5,
+    "adhesion_bond_max_bonds": 4096,
+    "adhesion_bond_kappa": 1e8,
+    "adhesion_bond_lock_floor_ratio": 0.25,
+}
 
 
-def _build_hanging_cube_scene(show_viewer, coupler_kwargs=None, adhesion=None):
+def _build_hanging_cube_scene(show_viewer, coupler_kwargs=None, adhesion=None, initial_state=False):
     """Fixed ABD slab + FEM cube hanging beneath it with a GAP-wide air gap."""
     scene = gs.Scene(
         sim_options=gs.options.SimOptions(dt=DT, gravity=(0.0, 0.0, -9.8)),
@@ -65,6 +65,13 @@ def _build_hanging_cube_scene(show_viewer, coupler_kwargs=None, adhesion=None):
     )
     if adhesion is not None:
         scene.sim.coupler.add_adhesion(cube, slab, **adhesion)
+    if initial_state:
+        body_q = np.concatenate((np.array([0.0, 0.0, SLAB_CENTER_Z]), np.eye(3).reshape(-1)))
+        scene.sim.coupler.set_rigid_initial_state(
+            slab,
+            body_q={slab.links[0].name: body_q},
+            joint_theta={},
+        )
     scene.build()
     return scene, slab, cube
 
@@ -83,7 +90,7 @@ def test_soft_adhesion_holds(show_viewer):
     """beta0=1 soft adhesion carries the hanging cube."""
     scene, _slab, cube = _build_hanging_cube_scene(
         show_viewer,
-        adhesion=dict(Cn=1e6, Ct=0.0, W=1.0, eta=1.0, bonding_rate=0.0, beta0=1.0),
+        adhesion={"Cn": 1e6, "Ct": 0.0, "W": 1.0, "eta": 1.0, "bonding_rate": 0.0, "beta0": 1.0},
     )
     # auto constitution selection: adhesion declared -> adhesive_ipc
     assert scene.sim.coupler._scene.config["contact/constitution"] == "adhesive_ipc"
@@ -93,6 +100,32 @@ def test_soft_adhesion_holds(show_viewer):
 
     # beta state is populated and saturated (beta0=1 seeded pairs)
     keys, betas = scene.sim.coupler.adhesion.dump_adhesion_state()
+    assert keys.shape[0] > 0
+    assert betas.max() > 0.9
+
+
+@pytest.mark.required
+def test_initial_state_rebuild_clears_live_soft_adhesion(show_viewer):
+    scene, _slab, _cube = _build_hanging_cube_scene(
+        show_viewer,
+        adhesion={"Cn": 1e6, "Ct": 0.0, "W": 1.0, "eta": 1.0, "bonding_rate": 0.0, "beta0": 1.0},
+        initial_state=True,
+    )
+    coupler = scene.sim.coupler
+    keys, betas = coupler.adhesion.dump_adhesion_state()
+    assert keys.shape == betas.shape == (0,)
+
+    scene.step()
+    keys, betas = coupler.adhesion.dump_adhesion_state()
+    assert keys.shape[0] > 0
+    assert betas.max() > 0.9
+
+    scene.reset()
+    keys, betas = coupler.adhesion.dump_adhesion_state()
+    assert keys.shape == betas.shape == (0,)
+
+    scene.step()
+    keys, betas = coupler.adhesion.dump_adhesion_state()
     assert keys.shape[0] > 0
     assert betas.max() > 0.9
 

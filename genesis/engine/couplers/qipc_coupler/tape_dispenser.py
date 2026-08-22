@@ -5,8 +5,8 @@ frames 0 through 249 have each executed ``pre_step`` and one QIPC step. The
 dispenser is upside down, its tape end has been pulled 110 mm, all velocities
 are zeroed, root/tape-end constraints are released, and tape contact with the
 Cylinder and blade is enabled. Dynamic cutting is intentionally outside this
-component: the 32 parked cut-spare vertices are omitted, while blade collision
-is preserved.
+component; the snapshot contains 1,936 active tape vertices and preserves blade
+collision.
 """
 
 from __future__ import annotations
@@ -27,13 +27,10 @@ import genesis.utils.geom as gu
 from genesis.utils.misc import get_assets_dir, tensor_to_array
 
 from .contact import QIPCContactRegion
+from .coupler import QIPCCoupler
 from .rigid_attachment import QIPCRigidAttachment
 from .tape import TapeAsset, TapeBondClusterController, _verify_same_vertex_order, _write_obj, add_tape_bond_cluster
 
-# v3 re-exports the frozen post-f249 state from a 3M-TDS-calibrated roll
-# (cgq examples/tape_presets.py "scotch3850-tds": the BOPP backing's real
-# membrane and bending moduli, replacing the libuipc-kappa bending placeholder
-# that was ~5.7e4x too soft). v2 remains on disk for A/B and rollback.
 _ASSET_DIRECTORY = Path(get_assets_dir()) / "qipc" / "tape_dispenser_v3"
 _ASSET_FORMAT = "genesis.qipc.tape_dispenser"
 _ASSET_VERSION = 1
@@ -671,18 +668,8 @@ def add_tape_dispenser(
     initial velocity, not permanently fixed geometry.
     """
     coupler = scene.sim.coupler
-    required = (
-        "add_rigid_attachment",
-        "add_contact_region",
-        "assign_contact_region",
-        "set_contact_pair",
-        "set_rigid_initial_state",
-    )
-    missing = [name for name in required if not hasattr(coupler, name)]
-    if missing:
-        gs.raise_exception(
-            "add_tape_dispenser requires the QIPC coupler component APIs (missing: " + ", ".join(missing) + ")."
-        )
+    if not isinstance(coupler, QIPCCoupler):
+        gs.raise_exception("add_tape_dispenser requires the QIPC coupler (QIPCCouplerOptions).")
     asset = TapeDispenserAsset.packaged() if asset is None else asset
 
     position, world_rotation, body_q = _transformed_machine_state(asset, pos, euler)
