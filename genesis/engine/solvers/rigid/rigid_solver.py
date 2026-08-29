@@ -3037,6 +3037,17 @@ class RigidSolver(KinematicSolver):
         return len(self.geoms)
 
     @property
+    def vgeoms_state(self):
+        """Visual-geom render transforms, as `gs-nyx-plugin` 0.1.4 expects to find them.
+
+        Genesis moved this state under `dyn_state` without leaving an alias behind, so the
+        plugin -- which declares `genesis-world>=1.2.0,<1.3.0`, i.e. this version -- looks
+        for a `vgeoms_state` that no longer exists and dies with an AttributeError on the
+        first render. Same `VGeomsState` object either way; this is a name, not a copy.
+        """
+        return self.dyn_state.vgeoms
+
+    @property
     def n_cells(self):
         if self.is_built:
             return self._n_cells
