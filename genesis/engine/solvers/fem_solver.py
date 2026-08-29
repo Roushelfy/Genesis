@@ -223,6 +223,12 @@ class FEMSolver(Solver):
             pos=gs.qd_vec3,
         )
 
+        # Flattened surface triangles for renderers that need the topology alongside the
+        # positions. The Nyx plugin does; the rasterizer reads per-vgeom faces instead.
+        surface_state_render_f = qd.types.struct(
+            indices=gs.qd_int,
+        )
+
         self.surface = surface_state.field(
             shape=(n_surfaces_max),
             needs_grad=False,
@@ -234,6 +240,16 @@ class FEMSolver(Solver):
             needs_grad=False,
             layout=qd.Layout.SOA,
         )
+
+        self.surface_render_f = surface_state_render_f.field(
+            shape=(max(n_surfaces_max, 1) * 3),
+            needs_grad=False,
+            layout=qd.Layout.SOA,
+        )
+        # Per-vertex UVs, left zero: every FEM surface built in a QIPC scene is a flat
+        # colour, so nothing samples them. Populate from `entity.uvs` here if a textured
+        # FEM entity is ever added.
+        self.surface_render_uvs = qd.field(dtype=gs.qd_vec2, shape=(max(n_vertices_max, 1),))
 
     def _init_surface_info(self):
         self.vertices_on_surface = qd.field(dtype=gs.qd_bool, shape=(self.n_vertices,))
@@ -1098,9 +1114,21 @@ class FEMSolver(Solver):
         return state
 
     def get_state_render(self, f):
-        """Refresh and return the environment-offset vertex positions field, with shape (n_vertices, B)."""
+        """Refresh and return the render geometry.
+
+        Returns
+        -------
+        tuple
+            `(vertex_positions, triangle_indices, uvs)`: environment-offset positions with
+            shape (n_vertices, B), the surface triangles flattened in global vertex space,
+            and per-vertex UVs.
+
+        Note the order. `PBDSolver.get_state_render` returns positions/UVs/indices, the
+        other way round. That asymmetry is what gs-nyx-plugin 0.1.4 expects of each solver,
+        so do not "align" the two without bumping the plugin.
+        """
         self._kernel_get_state_render(f)
-        return self.verts_render.pos
+        return self.verts_render.pos, self.surface_render_f.indices, self.surface_render_uvs
 
     def get_forces(self):
         """
@@ -1376,6 +1404,12 @@ class FEMSolver(Solver):
             for j in qd.static(range(3)):
                 pos_j = qd.cast(self.elements_v[f, i_v, i_b].pos[j], qd.f32)
                 self.verts_render[i_v, i_b].pos[j] = pos_j + self.envs_offset[i_b][j]
+
+        # `surface.tri2v` already carries each entity's v_start, so these indices are
+        # global and the consumer needs no remapping.
+        for i_s in range(self.n_surfaces):
+            for j in qd.static(range(3)):
+                self.surface_render_f[i_s * 3 + j].indices = self.surface[i_s].tri2v[j]
 
     @qd.kernel
     def _kernel_set_state(

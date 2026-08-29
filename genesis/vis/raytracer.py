@@ -786,7 +786,7 @@ class Raytracer:
         # FEM entities
         if self.sim.fem_solver.is_active:
             vertices_all = miscu.qd_to_numpy(
-                self.sim.fem_solver.get_state_render(self.sim.cur_substep_local),
+                self.sim.fem_solver.get_state_render(self.sim.cur_substep_local)[0],
                 self.rendered_envs_idx[0],
                 keepdim=False,
                 transpose=True,

@@ -882,7 +882,7 @@ class RasterizerContext:
     def on_fem(self):
         if self.sim.fem_solver.is_active:
             vertices_all = qd_to_numpy(
-                self.sim.fem_solver.get_state_render(self.sim.cur_substep_local),
+                self.sim.fem_solver.get_state_render(self.sim.cur_substep_local)[0],
                 self.rendered_envs_idx,
                 transpose=True,
             )
@@ -910,7 +910,7 @@ class RasterizerContext:
     def update_fem(self):
         if self.sim.fem_solver.is_active:
             vertices_all = qd_to_numpy(
-                self.sim.fem_solver.get_state_render(self.sim.cur_substep_local),
+                self.sim.fem_solver.get_state_render(self.sim.cur_substep_local)[0],
                 self.rendered_envs_idx,
                 transpose=True,
             )
