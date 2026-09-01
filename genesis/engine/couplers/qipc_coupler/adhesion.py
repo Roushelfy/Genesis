@@ -81,6 +81,9 @@ class AdhesionRequest(NamedTuple):
     distance_lock_floor_ratio: float | None
     distance_lock_rest_snap: bool | None
     release_force: float | None
+    release_strain: float | None
+    release_gap: float | None
+    release_slip: float | None
 
 
 @dataclass(frozen=True, eq=False)
@@ -183,6 +186,9 @@ class QIPCAdhesionManager:
         distance_lock_floor_ratio: float | None = None,
         distance_lock_rest_snap: bool | None = None,
         release_force: float | None = None,
+        release_strain: float | None = None,
+        release_gap: float | None = None,
+        release_slip: float | None = None,
     ) -> None:
         """Queue an adhesion declaration (see QIPCCoupler.add_adhesion)."""
         if self._scene is not None:
@@ -215,8 +221,14 @@ class QIPCAdhesionManager:
             gs.raise_exception("QIPCCoupler.add_adhesion: distance_lock_ratio must be positive.")
         if distance_lock_floor_ratio is not None and distance_lock_floor_ratio < 0:
             gs.raise_exception("QIPCCoupler.add_adhesion: distance_lock_floor_ratio must be non-negative.")
-        if release_force is not None and release_force < 0:
-            gs.raise_exception("QIPCCoupler.add_adhesion: release_force must be non-negative.")
+        for value, name in (
+            (release_force, "release_force"),
+            (release_strain, "release_strain"),
+            (release_gap, "release_gap"),
+            (release_slip, "release_slip"),
+        ):
+            if value is not None and value < 0:
+                gs.raise_exception(f"QIPCCoupler.add_adhesion: {name} must be non-negative.")
 
         self._requests.append(
             AdhesionRequest(
@@ -238,6 +250,9 @@ class QIPCAdhesionManager:
                 distance_lock_floor_ratio=distance_lock_floor_ratio,
                 distance_lock_rest_snap=distance_lock_rest_snap,
                 release_force=release_force,
+                release_strain=release_strain,
+                release_gap=release_gap,
+                release_slip=release_slip,
             )
         )
 
@@ -531,6 +546,9 @@ class QIPCAdhesionManager:
                         floor_ratio=req.distance_lock_floor_ratio,
                         rest_snap=req.distance_lock_rest_snap,
                         release_force=req.release_force,
+                        release_strain=req.release_strain,
+                        release_gap=req.release_gap,
+                        release_slip=req.release_slip,
                     )
                 tab.insert(
                     elem_s,
@@ -548,6 +566,9 @@ class QIPCAdhesionManager:
         floor_ratio: float | None = None,
         rest_snap: bool | None = None,
         release_force: float | None = None,
+        release_strain: float | None = None,
+        release_gap: float | None = None,
+        release_slip: float | None = None,
     ):
         from qipc.contact import Bond, Release
 
@@ -560,10 +581,10 @@ class QIPCAdhesionManager:
             rest_snap=True if rest_snap is None else bool(rest_snap),
             occlusion=opt.adhesion_occlusion,
             release=Release(
-                strain=opt.adhesion_bond_release_strain,
+                strain=opt.adhesion_bond_release_strain if release_strain is None else float(release_strain),
                 force=opt.adhesion_bond_release_force if release_force is None else float(release_force),
-                gap=opt.adhesion_bond_release_gap,
-                slip=opt.adhesion_bond_release_slip,
+                gap=opt.adhesion_bond_release_gap if release_gap is None else float(release_gap),
+                slip=opt.adhesion_bond_release_slip if release_slip is None else float(release_slip),
             ),
         )
 
