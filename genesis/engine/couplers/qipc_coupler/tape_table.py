@@ -45,7 +45,8 @@ class TapeTableComponent:
     tail_region: QIPCContactRegion
     table_pad_region: QIPCContactRegion
     internal_bonds: BondStateHandle
-    table_bonds: BondStateHandle
+    table_bonds: BondStateHandle | None
+    """`None` when the tape/table interface is cohesive: there is no per-bond state."""
     asset: TapeTableComponentAsset
 
 
@@ -241,7 +242,12 @@ def add_tape_table_component(
     )
     if not math.isfinite(release_force) or release_force < 0.0:
         gs.raise_exception("table_bond_release_force must be finite and non-negative.")
-    table_kwargs = _bond_row_kwargs(asset.table_bonds, release_force=release_force)
+    cohesive_table = asset.table_adhesion is not None
+    table_kwargs = (
+        _adhesion_row_kwargs(asset.table_adhesion, asset.table_bonds)
+        if cohesive_table
+        else _bond_row_kwargs(asset.table_bonds, release_force=release_force)
+    )
 
     placed = asset.placed(transform)
     friction = float(asset.internal_bonds.contact_policy["friction_rate"])
@@ -392,14 +398,19 @@ def add_tape_table_component(
         name="internal",
         release_force=internal_release_force,
     )
-    table_bonds = _add_frozen_state_request(
-        coupler,
-        tape,
-        rigid_source=table_pad,
-        batch=asset.table_bonds,
-        state=placed.table_frozen_state,
-        name="table",
-        release_force=release_force,
+    # A cohesive interface has no frozen per-bond state to restore.
+    table_bonds = (
+        None
+        if cohesive_table
+        else _add_frozen_state_request(
+            coupler,
+            tape,
+            rigid_source=table_pad,
+            batch=asset.table_bonds,
+            state=placed.table_frozen_state,
+            name="table",
+            release_force=release_force,
+        )
     )
 
     return TapeTableComponent(
@@ -478,6 +489,30 @@ def _bond_row_kwargs(batch: TapeTableBondBatch, *, release_force: float | None =
         "distance_lock_floor_ratio": float(bond["floor_ratio"]),
         "distance_lock_rest_snap": bool(bond["rest_snap"]),
         "release_force": float(release["force"]) if release_force is None else release_force,
+    }
+
+
+def _adhesion_row_kwargs(policy: dict, batch: TapeTableBondBatch) -> dict[str, object]:
+    """A cohesive tape/table row: the adhesion law carries the interface, no locks.
+
+    Unlike `_bond_row_kwargs` this leaves the barrier alone -- a distance lock is
+    source-removed from the contact broad-phase and has to stand in for the barrier it
+    displaces, which forces it to be near-rigid; a cohesive row coexists with the barrier,
+    so its stiffness answers only to the peel force it is calibrated against.
+    """
+    contact = batch.contact_policy
+    return {
+        "Cn": float(policy["Cn"]),
+        "Ct": float(policy["Ct"]),
+        "W": float(policy["W"]),
+        "eta": float(policy["eta"]),
+        "bonding_rate": float(policy.get("bonding_rate", 1.0)),
+        "beta0": float(policy.get("beta0", 1.0)),
+        "sticky": tuple(int(flag) for flag in policy["sticky"]),
+        "enabled": True,
+        "friction": float(contact["friction_rate"]),
+        "resistance": float(contact["resistance"]),
+        "distance_lock": False,
     }
 
 

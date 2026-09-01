@@ -387,6 +387,25 @@ def _validate_contact_policy(policy: dict[str, Any], *, name: str) -> None:
         _fail(f"{name}.adhesion must be null for explicit authored topology.")
 
 
+def _validate_adhesion_policy(policy: dict[str, Any], *, name: str) -> None:
+    """A cohesive tape/table interface: the law's own parameters, no per-bond state."""
+    if policy.get("schema") != "qipc_adhesion_policy_v1":
+        _fail(f"{name}.schema must be 'qipc_adhesion_policy_v1'.")
+    for key in ("Cn", "Ct", "W", "eta"):
+        value = policy.get(key)
+        if not isinstance(value, (int, float)) or isinstance(value, bool) or value < 0.0:
+            _fail(f"{name}.{key} must be a non-negative number.")
+    if float(policy["eta"]) <= 0.0:
+        _fail(f"{name}.eta must be positive.")
+    sticky = policy.get("sticky")
+    if (
+        not isinstance(sticky, list)
+        or len(sticky) != 4
+        or any(value not in (0, 1) for value in sticky)
+    ):
+        _fail(f"{name}.sticky must be four 0/1 flags over the side combinations.")
+
+
 def _validate_bond_policy(policy: dict[str, Any], *, name: str, calibratable: bool | None) -> None:
     _exact_keys(
         policy,
@@ -538,6 +557,12 @@ class TapeTableComponentAsset:
     authoring_params: dict[str, Any]
     body_roles: dict[str, Any]
     bond_state_manifest: dict[str, Any]
+    table_adhesion: dict[str, Any] | None
+    """Cohesive parameters for the tape/table interface, or `None` for a lock certificate.
+
+    Optional so that assets authored before the cohesive mode load unchanged: absent means
+    the table batch is a distance-lock certificate, as it always was.
+    """
     tape_positions: np.ndarray
     tape_rest_positions: np.ndarray
     tape_velocities: np.ndarray
@@ -707,6 +732,7 @@ class TapeTableComponentAsset:
                 tape_vertex_count=tape_vertex_count,
                 contact_policy=json_values["table_contact_policy_json"],
                 bond_policy=json_values["table_bond_policy_json"],
+                allow_empty="table_adhesion_policy_json" in archive.files,
             )
             _validate_table_bond_faces(
                 table_bonds.topologies,
@@ -748,6 +774,9 @@ class TapeTableComponentAsset:
                 bending_e=bending_e,
             )
             _validate_tail_contract(
+                # A cohesive interface declares the same geometric tail but carries no
+                # per-vertex certificate to match it against.
+                cohesive_table="table_adhesion_policy_json" in archive.files,
                 nx=nx,
                 nz=nz,
                 tape_length=tape_length,
@@ -758,6 +787,11 @@ class TapeTableComponentAsset:
                 table_bond_topologies=table_bonds.topologies,
                 table_vertex_count=len(table_positions),
             )
+
+            table_adhesion: dict[str, Any] | None = None
+            if "table_adhesion_policy_json" in archive.files:
+                table_adhesion = _json_object(archive, "table_adhesion_policy_json")
+                _validate_adhesion_policy(table_adhesion, name="table_adhesion_policy_json")
 
             params = json_values["params_json"]
             source_release_force = _number(
@@ -779,6 +813,7 @@ class TapeTableComponentAsset:
                 authoring_params=json_values["authoring_params_json"],
                 body_roles=json_values["body_roles_json"],
                 bond_state_manifest=json_values["bond_state_manifest_json"],
+                table_adhesion=table_adhesion,
                 tape_positions=tape_positions,
                 tape_rest_positions=tape_rest_positions,
                 tape_velocities=tape_velocities,
@@ -847,8 +882,11 @@ def _load_bond_batch(
     tape_vertex_count: int,
     contact_policy: dict[str, Any],
     bond_policy: dict[str, Any],
+    allow_empty: bool = False,
 ) -> TapeTableBondBatch:
-    topologies = _index_array(archive, f"{group}_bond_topologies", 4)
+    # A cohesive interface writes the batch fields the schema demands but has no rows to
+    # put in them, so the table group is legitimately empty there.
+    topologies = _index_array(archive, f"{group}_bond_topologies", 4, allow_empty=allow_empty)
     topology_space = _bytes_scalar(archive, f"{group}_bond_topology_space")
     fem_offset = _int_scalar(archive, f"{group}_bond_fem_offset")
     seed_rest_height = _float_scalar(archive, f"{group}_bond_seed_rest_height")
@@ -999,6 +1037,7 @@ def _validate_physical_parameters(
 
 def _validate_tail_contract(
     *,
+    cohesive_table: bool,
     nx: int,
     nz: int,
     tape_length: float,
@@ -1024,7 +1063,8 @@ def _validate_tail_contract(
     tape_local_ids = tape_global_ids - table_vertex_count
     unique, counts = np.unique(tape_local_ids, return_counts=True)
     if not np.array_equal(unique, tail_vertex_ids) or np.any(counts != 1):
-        _fail("table bonds must contain exactly one PT bond for every declared tail vertex.")
+        if not cohesive_table:
+            _fail("table bonds must contain exactly one PT bond for every declared tail vertex.")
 
 
 def qipc_y_up_to_genesis_z_up_transform() -> np.ndarray:
