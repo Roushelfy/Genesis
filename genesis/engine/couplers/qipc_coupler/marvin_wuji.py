@@ -85,13 +85,23 @@ def add_marvin_wuji(
     urdf_path: str | None,
     robot_position: tuple[float, float, float],
     initial_arm_qpos: dict[str, tuple[float, ...]],
+    initial_hand_qpos: dict[str, tuple[float, ...]] | None = None,
     kappa_pivot: float,
     kappa_axis: float,
 ) -> BuiltMarvinWuji:
-    """Add the shared Marvin Wuji entity before a QIPC scene is built."""
+    """Add the shared Marvin Wuji entity before a QIPC scene is built.
+
+    `initial_hand_qpos` poses the fingers, ordered as `HAND_JOINTS[side]` -- five fingers
+    thumb to pinky, four joints each. Omitted, they start flat at the URDF zero pose.
+    """
     for side in ("right", "left"):
         if len(initial_arm_qpos[side]) != 7:
             raise ValueError(f"Expected 7 initial {side} arm joints.")
+        if initial_hand_qpos is not None and len(initial_hand_qpos[side]) != len(HAND_JOINTS[side]):
+            raise ValueError(
+                f"Expected {len(HAND_JOINTS[side])} initial {side} hand joints, "
+                f"got {len(initial_hand_qpos[side])}."
+            )
 
     robot = scene.add_entity(
         morph=gs.morphs.URDF(
@@ -124,6 +134,8 @@ def add_marvin_wuji(
     home_qpos = np.zeros(robot.n_qs, dtype=np.float64)
     for side in ("right", "left"):
         home_qpos[dofs[("arm", side)]] = initial_arm_qpos[side]
+        if initial_hand_qpos is not None:
+            home_qpos[dofs[("hand", side)]] = initial_hand_qpos[side]
     robot.material.qipc_home_qpos = home_qpos.tolist()
 
     hand_effort = {
