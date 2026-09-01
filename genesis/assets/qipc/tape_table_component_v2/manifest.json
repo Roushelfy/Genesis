@@ -8,7 +8,8 @@
     "reference": "examples/adhesive_tape_table_author.py",
     "tape_asset": "scotch3850_wound.npz",
     "tape_asset_sha256": "f015062ebc346c396c587cfddf7f91bc377846c4a9c35d5e06a7fcb7c9a6b758",
-    "releasable_commit": "04344d56acea0c725de24c5ae06226c037b2b343"
+    "releasable_commit": "04344d56acea0c725de24c5ae06226c037b2b343",
+    "vinyl19_tape_asset": "tape_roll_distance_bond.npz"
   },
   "coordinates": {
     "units": "m",
@@ -76,6 +77,29 @@
       "table_bonds": 363,
       "winding": "releasable",
       "sha256": "189d6fea1de725cd60d13ec6a598ca379fce7d5a5750979068db3a1ba97945a3"
+    },
+    "vinyl19_table_3in_unwind_component.npz": {
+      "requested_attached_length_m": 0.07619999999999999,
+      "internal_bonds": 350,
+      "table_bonds": 0,
+      "winding": "releasable",
+      "table_interface": "cohesive",
+      "table_adhesion_policy": {
+        "Cn": 2.5,
+        "Ct": 2.5,
+        "W": 1.0,
+        "beta0": 1.0,
+        "bonding_rate": 1.0,
+        "eta": 100.0,
+        "schema": "qipc_adhesion_policy_v1",
+        "sticky": [
+          0,
+          0,
+          1,
+          1
+        ]
+      },
+      "sha256": "45ea1072250df3da53d953b88d728753342bbede3f1b861c348427c8149e93b8"
     }
   }
 }

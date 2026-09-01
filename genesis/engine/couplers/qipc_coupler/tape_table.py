@@ -32,6 +32,15 @@ _ASSET_DIRECTORY = Path(get_assets_dir()) / "qipc" / "tape_table_component_v2"
 _ASSET_MANIFEST = _ASSET_DIRECTORY / "manifest.json"
 _PACKAGED_LENGTHS = frozenset({3, 4, 5, 6})
 _PACKAGED_WINDINGS = frozenset({"locked", "releasable"})
+# Which (attached_inches, winding) each roll was authored at. The 48 mm packing tape has the
+# full matrix; the 19 mm vinyl roll -- the one the dexterous-hand policies were recorded
+# with -- was authored only at the length and winding those scenes use.
+_PACKAGED_ROLLS = {
+    "scotch3850": frozenset(
+        (inches, winding) for inches in _PACKAGED_LENGTHS for winding in _PACKAGED_WINDINGS
+    ),
+    "vinyl19": frozenset({(3, "releasable")}),
+}
 _QIPC_DEFAULT_LINEAR_TOL_RATE = 1.0e-4
 
 
@@ -50,18 +59,30 @@ class TapeTableComponent:
     asset: TapeTableComponentAsset
 
 
-def packaged_asset(attached_inches: int = 3, winding: str = "locked") -> TapeTableComponentAsset:
+def packaged_asset(
+    attached_inches: int = 3, winding: str = "locked", roll: str = "scotch3850"
+) -> TapeTableComponentAsset:
     """Load one of the packaged 3, 4, 5, or 6 inch component assets.
 
     `winding` selects the batch: `locked` pins the wound core permanently while
-    `releasable` carries the product unwind release force for the loader.
+    `releasable` carries the product unwind release force for the loader. `roll` selects the
+    tape itself: `scotch3850` is 48 mm packing tape, `vinyl19` the 19 mm electrical tape.
     """
     if isinstance(attached_inches, bool) or attached_inches not in _PACKAGED_LENGTHS:
         gs.raise_exception("packaged tape-table attached_inches must be one of 3, 4, 5, or 6.")
     if winding not in _PACKAGED_WINDINGS:
         gs.raise_exception("packaged tape-table winding must be 'locked' or 'releasable'.")
+    if roll not in _PACKAGED_ROLLS:
+        gs.raise_exception(
+            f"packaged tape-table roll must be one of {sorted(_PACKAGED_ROLLS)}, got '{roll}'."
+        )
+    if (attached_inches, winding) not in _PACKAGED_ROLLS[roll]:
+        gs.raise_exception(
+            f"tape-table roll '{roll}' has no packaged {attached_inches}in '{winding}' component; "
+            f"authored combinations are {sorted(_PACKAGED_ROLLS[roll])}."
+        )
     suffix = "" if winding == "locked" else "_unwind"
-    filename = f"scotch3850_table_{attached_inches}in{suffix}_component.npz"
+    filename = f"{roll}_table_{attached_inches}in{suffix}_component.npz"
     asset_path = _ASSET_DIRECTORY / filename
     expected_sha256 = _packaged_asset_sha256(filename)
     try:
