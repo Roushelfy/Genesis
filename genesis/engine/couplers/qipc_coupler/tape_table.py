@@ -59,6 +59,34 @@ class TapeTableComponent:
     asset: TapeTableComponentAsset
 
 
+@dataclass(frozen=True)
+class ComponentClusterAsset:
+    """A `_TapeClusterAsset` view of the component's wound interior."""
+
+    tape_positions: np.ndarray
+    tape_tris: np.ndarray
+    bond_topos: np.ndarray
+    bond_topos_space: str
+    bond_fem_gvo: int
+
+
+def component_cluster_asset(asset: TapeTableComponentAsset) -> ComponentClusterAsset:
+    """Adapt the component for `add_tape_bond_cluster`.
+
+    Only the internal (hub<->tape / tape<->tape) batch enters the rigid certificate:
+    the table batch would mark the attached tail as bonded and pull it into the
+    cluster. The component's `[hub | tape]` id layout maps onto the cluster's
+    "global" convention (ids at or above the offset are tape rows, rebased by it).
+    """
+    return ComponentClusterAsset(
+        tape_positions=asset.tape_positions,
+        tape_tris=asset.tape_tris,
+        bond_topos=asset.internal_bonds.topologies,
+        bond_topos_space="global",
+        bond_fem_gvo=asset.internal_bonds.fem_offset,
+    )
+
+
 def packaged_asset(
     attached_inches: int = 3, winding: str = "locked", roll: str = "scotch3850"
 ) -> TapeTableComponentAsset:
