@@ -31,6 +31,7 @@ import torch
 import genesis as gs
 import genesis.utils.geom as gu
 
+from .cluster import AffineClusterProxy, ClusterProxy
 from .coupler import QIPCCoupler
 
 
@@ -371,7 +372,7 @@ def bond_cluster_member_triangles(asset: _TapeClusterAsset, collar: int) -> np.n
     its vertices lie deeper than the collar.
 
     Returns entity-local triangle indices suitable for
-    ``QIPCCoupler.add_affine_cluster(..., tris=...)``.
+    ``QIPCCoupler.add_affine_cluster`` / ``add_rigid_cluster(..., initial_tris=...)``.
     """
     if isinstance(collar, bool) or not isinstance(collar, (int, np.integer)) or collar < 0:
         gs.raise_exception("bond_cluster_member_triangles: collar must be a non-negative integer.")
@@ -519,7 +520,7 @@ def _normalize_tape_cluster_collars(collar: int, activation_collar: int | None) 
 class TapeBondClusterController:
     """Runtime peel policy for a queued distance-bond tape cluster.
 
-    The affine cluster is a mechanics optimization, not a second fracture
+    The cluster, whichever proxy carries it, is a mechanics optimization, not a second fracture
     model. Wind-authored bonds certify the initial rigid interior; the release
     policy itself is qipc's packaged ``ClusterReleaseDriver``
     (``qipc.cluster_release_driver``): exact released-pair events with
@@ -683,7 +684,7 @@ def add_tape_bond_cluster(
     tape_entity,
     asset: _TapeClusterAsset,
     *,
-    kappa: float,
+    proxy: ClusterProxy,
     collar: int,
     detach_displacement: float,
     proxy_entity=None,
@@ -699,7 +700,14 @@ def add_tape_bond_cluster(
     clear_bonds_on_detach: bool = True,
     structured_max_front_slope: int | None = None,
 ) -> TapeBondClusterController:
-    """Queue a releasable tape cluster and return its runtime peel policy."""
+    """Queue a releasable tape cluster and return its runtime peel policy.
+
+    ``proxy`` selects the body carrying the wound interior: ``AffineClusterProxy(kappa)``
+    a 12-DOF affine body, ``RigidClusterProxy()`` an exact 6-DOF rigid body.
+    ``proxy_entity`` attaches the cluster to an existing rigid entity of the matching
+    QIPC kind (ABD for affine, ``qipc_rigid_body`` for rigid); ``None`` creates a ghost
+    body of that kind.
+    """
     collar, activation = _normalize_tape_cluster_collars(collar, activation_collar)
     coupler = scene.sim.coupler
     if coupler._options.adhesion_bond_lock_floor_ratio <= 0.0:
@@ -724,13 +732,21 @@ def add_tape_bond_cluster(
         triangles, bonded, adjacency = certificate
         initial_member = _bond_cluster_target(triangles, bonded, ~bonded, adjacency, activation)
         member_triangles = np.flatnonzero(initial_member).astype(np.int32)
-    cluster = coupler.add_affine_cluster(
-        tape_entity,
-        proxy_entity=proxy_entity,
-        proxy_link=proxy_link,
-        kappa=kappa,
-        initial_tris=member_triangles,
-    )
+    if isinstance(proxy, AffineClusterProxy):
+        cluster = coupler.add_affine_cluster(
+            tape_entity,
+            proxy_entity=proxy_entity,
+            proxy_link=proxy_link,
+            kappa=proxy.kappa,
+            initial_tris=member_triangles,
+        )
+    else:
+        cluster = coupler.add_rigid_cluster(
+            tape_entity,
+            proxy_entity=proxy_entity,
+            proxy_link=proxy_link,
+            initial_tris=member_triangles,
+        )
     if bond_seed_handle is None:
         bond_seed_handle = coupler.adhesion.get_bond_seed_handle(tape_entity, name="internal")
     return TapeBondClusterController(

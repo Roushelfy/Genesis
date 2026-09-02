@@ -15,7 +15,14 @@ from genesis.utils import array_class
 from genesis.utils.misc import geometric_mean, harmonic_mean, qd_to_torch, tensor_to_array
 
 from .adhesion import QIPCAdhesionManager
-from .affine_cluster import QIPCAffineCluster, QIPCAffineClusterManager
+from .cluster import (
+    AffineClusterProxy,
+    ClusterProxy,
+    QIPCCluster,
+    QIPCClusterManager,
+    RigidClusterProxy,
+    cluster_entry_point,
+)
 from .contact import QIPCContactManager, QIPCContactRegion
 from .initial_state import QIPCInitialStateManager
 from .rigid_attachment import QIPCRigidAttachment, QIPCRigidAttachmentManager
@@ -460,7 +467,7 @@ class QIPCCoupler(RBC):
         self._sim: Simulator = simulator
         self._options: QIPCCouplerOptions = options
         self._adhesion: QIPCAdhesionManager = QIPCAdhesionManager(options)
-        self._affine_clusters = QIPCAffineClusterManager()
+        self._clusters = QIPCClusterManager()
         self._rigid_attachments = QIPCRigidAttachmentManager()
         self._contact = QIPCContactManager()
         self._initial_state = QIPCInitialStateManager()
@@ -497,34 +504,87 @@ class QIPCCoupler(RBC):
         initial_edges=None,
         initial_tris=None,
         initial_tets=None,
-    ) -> QIPCAffineCluster:
+    ) -> QIPCCluster:
         """Queue a QIPC affine cluster before ``scene.build()``.
 
         The returned handle remains stable across build and reset. Element
         selections are local to ``fem_entity``. An omitted ``proxy_entity``
         creates a ghost affine body using ``kappa`` and ``fixed``; an explicit
-        rigid proxy resolves ``proxy_link`` to its merged QIPC body, whose own
+        proxy resolves ``proxy_link`` to its merged QIPC affine body, whose own
         material/fixed-base configuration remains authoritative. Omitting all
         ``initial_*`` selections starts with empty membership, while calling
         ``join()`` or ``detach()`` without a selection targets all FEM elements.
         """
-        if self._scene is not None:
-            gs.raise_exception("QIPCCoupler.add_affine_cluster must be called before scene.build().")
-        if not any(entity is fem_entity for entity in self._sim.fem_solver.entities):
-            gs.raise_exception("QIPCCoupler.add_affine_cluster: fem_entity is not a FEM entity owned by this scene.")
-        if proxy_entity is not None:
-            if not any(entity is proxy_entity for entity in self._sim.rigid_solver.entities):
-                gs.raise_exception(
-                    "QIPCCoupler.add_affine_cluster: proxy_entity is not a rigid entity owned by this scene."
-                )
-            if self._is_plane_entity(proxy_entity):
-                gs.raise_exception("QIPCCoupler.add_affine_cluster: a Plane cannot be an affine-cluster proxy.")
-            self._resolve_link_local(proxy_entity, proxy_link)
-        return self._affine_clusters.add_request(
+        return self._queue_cluster(
             fem_entity,
+            proxy=AffineClusterProxy(kappa=kappa),
             proxy_entity=proxy_entity,
             proxy_link=proxy_link,
-            kappa=kappa,
+            fixed=fixed,
+            initial_edges=initial_edges,
+            initial_tris=initial_tris,
+            initial_tets=initial_tets,
+        )
+
+    def add_rigid_cluster(
+        self,
+        fem_entity: FEMEntity,
+        *,
+        proxy_entity: RigidEntity | None = None,
+        proxy_link: RigidLink | str | None = None,
+        fixed: bool = False,
+        initial_edges=None,
+        initial_tris=None,
+        initial_tets=None,
+    ) -> QIPCCluster:
+        """Queue a QIPC rigid cluster before ``scene.build()``.
+
+        Same lifecycle and selection semantics as ``add_affine_cluster``, with the
+        interior carried by an exact 6-DOF rigid body instead of a 12-DOF affine
+        one, so there is no stiffness to tune. An omitted ``proxy_entity`` creates
+        a ghost rigid body; an explicit proxy must be a ``qipc_rigid_body`` entity.
+        QIPC has no restore path for rigid-cluster membership yet, so
+        ``scene.reset()`` raises for a scene that declares one.
+        """
+        return self._queue_cluster(
+            fem_entity,
+            proxy=RigidClusterProxy(),
+            proxy_entity=proxy_entity,
+            proxy_link=proxy_link,
+            fixed=fixed,
+            initial_edges=initial_edges,
+            initial_tris=initial_tris,
+            initial_tets=initial_tets,
+        )
+
+    def _queue_cluster(
+        self,
+        fem_entity: FEMEntity,
+        *,
+        proxy: ClusterProxy,
+        proxy_entity: RigidEntity | None,
+        proxy_link: RigidLink | str | None,
+        fixed: bool,
+        initial_edges,
+        initial_tris,
+        initial_tets,
+    ) -> QIPCCluster:
+        entry = cluster_entry_point(proxy)
+        if self._scene is not None:
+            gs.raise_exception(f"QIPCCoupler.{entry} must be called before scene.build().")
+        if not any(entity is fem_entity for entity in self._sim.fem_solver.entities):
+            gs.raise_exception(f"QIPCCoupler.{entry}: fem_entity is not a FEM entity owned by this scene.")
+        if proxy_entity is not None:
+            if not any(entity is proxy_entity for entity in self._sim.rigid_solver.entities):
+                gs.raise_exception(f"QIPCCoupler.{entry}: proxy_entity is not a rigid entity owned by this scene.")
+            if self._is_plane_entity(proxy_entity):
+                gs.raise_exception(f"QIPCCoupler.{entry}: a Plane cannot be a cluster proxy.")
+            self._resolve_link_local(proxy_entity, proxy_link)
+        return self._clusters.add_request(
+            fem_entity,
+            proxy=proxy,
+            proxy_entity=proxy_entity,
+            proxy_link=proxy_link,
             fixed=fixed,
             initial_edges=initial_edges,
             initial_tris=initial_tris,
@@ -736,33 +796,33 @@ class QIPCCoupler(RBC):
             gs.raise_exception("QIPCCoupler: selected link does not belong to the proxy entity.")
         return link.idx_local
 
-    def _declare_affine_clusters(
+    def _declare_clusters(
         self,
         all_pre_inits: list[AbdEntityPreInit],
         fem_pre_entries: list[tuple[FEMEntity, object, bool]],
     ) -> None:
-        """Resolve Genesis entities and declare QIPC proxies before init."""
+        """Resolve Genesis entities and declare QIPC cluster proxies before init."""
         fem_slots = {entity: slot for entity, slot, _is_cloth in fem_pre_entries}
         pre_by_entity = {pre.entity: pre for pre in all_pre_inits}
 
-        def resolve_proxy_slot(entity: RigidEntity, link) -> object:
+        def resolve_proxy_slot(entity: RigidEntity, link, proxy: ClusterProxy) -> object:
+            entry = cluster_entry_point(proxy)
             pre = pre_by_entity.get(entity)
             if pre is None:
-                gs.raise_exception("QIPCCoupler.add_affine_cluster: proxy entity has no coupled QIPC rigid body.")
-            if pre.is_rigid_body:
-                gs.raise_exception(
-                    "QIPCCoupler.add_affine_cluster: a qipc_rigid_body entity cannot serve as a cluster proxy."
-                )
+                gs.raise_exception(f"QIPCCoupler.{entry}: proxy entity has no coupled QIPC rigid body.")
+            # QIPC types a cluster by the body it rides: an affine cluster attaches to an
+            # ABD body, a rigid cluster to a RigidBody constitution (qipc_rigid_body).
+            if pre.is_rigid_body != isinstance(proxy, RigidClusterProxy):
+                required = "a qipc_rigid_body" if isinstance(proxy, RigidClusterProxy) else "an ABD (affine)"
+                gs.raise_exception(f"QIPCCoupler.{entry}: the proxy entity must be {required} rigid entity.")
             link_local = self._resolve_link_local(entity, link)
             rep = pre.link_to_rep.get(link_local)
             slot = pre.group_slots.get(rep)
             if slot is None:
-                gs.raise_exception(
-                    "QIPCCoupler.add_affine_cluster: selected proxy link has no QIPC ABD collision body."
-                )
+                gs.raise_exception(f"QIPCCoupler.{entry}: selected proxy link has no QIPC collision body.")
             return slot
 
-        self._affine_clusters.declare(
+        self._clusters.declare(
             self._scene,
             fem_slots=fem_slots,
             resolve_proxy_slot=resolve_proxy_slot,
@@ -911,8 +971,8 @@ class QIPCCoupler(RBC):
         # --- FEM entities (volumetric + cloth), pre-init ---
         fem_pre_entries: list[tuple[FEMEntity, object, bool]] = self._build_fem_entities()
 
-        # --- Affine clusters: declare proxy/FEM pairings before QIPC init ---
-        self._declare_affine_clusters(all_pre_inits, fem_pre_entries)
+        # --- FEM clusters: declare proxy/FEM pairings before QIPC init ---
+        self._declare_clusters(all_pre_inits, fem_pre_entries)
 
         # --- Reject vertices flush with / below a ground plane (readable error
         # instead of a device trap inside QIPC's halfplane kernel) ---
@@ -960,7 +1020,7 @@ class QIPCCoupler(RBC):
             self._adhesion.mark_bond_state_captured_in_reset()
         # Membership is a post-init transaction. Seed bonds first so fully
         # internal bonds become dormant rather than being omitted/re-created.
-        self._affine_clusters.initialize()
+        self._clusters.initialize()
         self._initialize_sealed_gas_state()
         self._fem_constraints: list[FemConstraintRecord] = []
 
@@ -1096,6 +1156,15 @@ class QIPCCoupler(RBC):
     def reset(self, envs_idx=None) -> None:
         if envs_idx is not None:
             gs.raise_exception("QIPCCoupler.reset does not support partial environment reset.")
+        if self._clusters.has_rigid_proxy and self._scene.frame == 0:
+            # QIPC refuses Scene.reset() while a rigid cluster is declared (no membership
+            # restore path). At frame zero -- the reset Genesis issues right after build --
+            # the QIPC scene already holds the seeded, membership-joined state a reset
+            # would rebuild, so only the Genesis-side writeback is due. A reset after the
+            # first step surfaces QIPC's refusal.
+            self._writeback_state()
+            self._writeback_fem_state(0)
+            return
 
         runtime_gas_state = self._snapshot_sealed_gas_state()
         runtime_rigid_state: tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor] | None = None
@@ -1139,7 +1208,7 @@ class QIPCCoupler(RBC):
             torch.cuda.synchronize()
             raise
         self._adhesion.restore_seeded_bonds()
-        self._affine_clusters.replay_initial_membership()
+        self._clusters.replay_initial_membership()
         self._writeback_state()
         self._writeback_fem_state(0)
 

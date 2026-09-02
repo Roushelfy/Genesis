@@ -88,7 +88,7 @@ def test_tape_bond_cluster_requires_positive_relock_floor():
             scene,
             object(),
             asset,
-            kappa=1e8,
+            proxy=tape_mod.AffineClusterProxy(kappa=1e8),
             collar=3,
             detach_displacement=5.0 * asset.d_hat,
         )
@@ -122,7 +122,7 @@ def test_tape_bond_cluster_rejects_invalid_activation_before_queueing(activation
             scene,
             object(),
             object(),
-            kappa=1e8,
+            proxy=tape_mod.AffineClusterProxy(kappa=1e8),
             collar=3,
             activation_collar=activation_collar,
             detach_displacement=1.0,
@@ -160,7 +160,7 @@ def test_tape_bond_cluster_queues_configured_ghost_proxy():
         scene,
         tape,
         asset,
-        kappa=2.5e7,
+        proxy=tape_mod.AffineClusterProxy(kappa=2.5e7),
         collar=3,
         detach_displacement=5.0 * asset.d_hat,
     )
@@ -521,7 +521,7 @@ def _build_cluster_roll_scene(show_viewer):
         scene,
         tape,
         asset,
-        kappa=5e7,
+        proxy=tape_mod.AffineClusterProxy(kappa=5e7),
         collar=3,
         detach_displacement=5.0 * asset.d_hat,
     )

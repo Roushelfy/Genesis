@@ -26,6 +26,7 @@ import genesis as gs
 import genesis.utils.geom as gu
 from genesis.utils.misc import get_assets_dir, tensor_to_array
 
+from .cluster import AffineClusterProxy, ClusterProxy
 from .contact import QIPCContactRegion
 from .coupler import QIPCCoupler
 from .rigid_attachment import QIPCRigidAttachment
@@ -654,8 +655,7 @@ def add_tape_dispenser(
     euler=(0.0, 0.0, 0.0),
     machine_surface=None,
     tape_surface=None,
-    rigid_cluster: bool = False,
-    cluster_kappa: float = 1.0e8,
+    cluster: ClusterProxy | None = None,
     cluster_collar: int = 3,
     cluster_detach_displacement_ratio: float = 5.0,
     collision_proxies: bool = True,
@@ -666,6 +666,12 @@ def add_tape_dispenser(
     ``euler`` is an additional proper rotation applied around that origin. The
     returned machine has a free root and unactuated joints; "static" means zero
     initial velocity, not permanently fixed geometry.
+
+    ``cluster`` rides the wound interior on a releasable cluster with a radial peel
+    gate; ``None`` keeps the authored per-bond interior. An affine proxy attaches to
+    the ``tape_wheel`` link. A rigid proxy is a ghost 6-DOF body held to the wheel
+    by the authored bonds and contact, because the wheel is an ABD link and QIPC
+    rigid clusters attach only to ``qipc_rigid_body`` entities.
     """
     coupler = scene.sim.coupler
     if not isinstance(coupler, QIPCCoupler):
@@ -789,7 +795,7 @@ def add_tape_dispenser(
     )
 
     lifecycle = None
-    if rigid_cluster:
+    if cluster is not None:
         never_member = np.zeros(len(asset.tape_positions), dtype=bool)
         row_width = int(asset.roll.nz) + 1
         never_member[-row_width:] = True
@@ -801,15 +807,16 @@ def add_tape_dispenser(
             position, dtype=np.float64
         )
         radial_axis = world_rotation @ _REFERENCE_AXLE_AXIS
+        is_wheel_proxy = isinstance(cluster, AffineClusterProxy)
         lifecycle = add_tape_bond_cluster(
             scene,
             tape,
             asset,
-            kappa=cluster_kappa,
+            proxy=cluster,
             collar=cluster_collar,
             detach_displacement=cluster_detach_displacement_ratio * asset.roll.d_hat,
-            proxy_entity=machine,
-            proxy_link="tape_wheel",
+            proxy_entity=machine if is_wheel_proxy else None,
+            proxy_link="tape_wheel" if is_wheel_proxy else None,
             structured_row_width=row_width,
             never_member=never_member,
             detach_gate="radial",

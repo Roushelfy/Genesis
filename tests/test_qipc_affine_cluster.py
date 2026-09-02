@@ -18,7 +18,7 @@ def _write_square(path: Path) -> None:
     path.write_text("v -0.1 -0.1 0.0\nv 0.1 -0.1 0.0\nv 0.1 0.1 0.0\nv -0.1 0.1 0.0\nf 1 2 3\nf 1 3 4\n")
 
 
-def _cloth_scene(tmp_path: Path, show_viewer: bool, *, with_proxy: bool):
+def _cloth_scene(tmp_path: Path, show_viewer: bool, *, with_proxy: bool, rigid: bool = False):
     mesh_path = tmp_path / "cluster_square.obj"
     _write_square(mesh_path)
     scene = gs.Scene(
@@ -47,13 +47,17 @@ def _cloth_scene(tmp_path: Path, show_viewer: bool, *, with_proxy: bool):
             membrane="stvk",
         ),
     )
-    handle = scene.sim.coupler.add_affine_cluster(
-        cloth,
-        proxy_entity=proxy,
-        proxy_link=None if proxy is None else proxy.links[0].name,
-        kappa=1e8,
-        initial_tris=np.arange(len(cloth.surface_triangles), dtype=np.int32),
-    )
+    initial_tris = np.arange(len(cloth.surface_triangles), dtype=np.int32)
+    if rigid:
+        handle = scene.sim.coupler.add_rigid_cluster(cloth, initial_tris=initial_tris)
+    else:
+        handle = scene.sim.coupler.add_affine_cluster(
+            cloth,
+            proxy_entity=proxy,
+            proxy_link=None if proxy is None else proxy.links[0].name,
+            kappa=1e8,
+            initial_tris=initial_tris,
+        )
     scene.build()
     return scene, cloth, proxy, handle
 
@@ -76,6 +80,30 @@ def test_ghost_cluster_runtime_membership_and_reset(tmp_path, show_viewer):
     scene.reset()
     assert handle.member_count == n_triangles
     assert handle.proxy_body_index == proxy_body_index
+
+
+@pytest.mark.required
+def test_rigid_ghost_cluster_falls_as_one_body_and_refuses_reset(tmp_path, show_viewer):
+    scene, cloth, _proxy, handle = _cloth_scene(tmp_path, show_viewer, with_proxy=False, rigid=True)
+    n_triangles = len(cloth.surface_triangles)
+    initial = cloth.get_state().pos.clone()
+
+    assert handle.member_count == n_triangles
+    assert handle.proxy_body_index == 0
+    handle.detach(tris=[0])
+    assert handle.member_count == n_triangles - 1
+    handle.join(tris=[0])
+    assert handle.member_count == n_triangles
+
+    for _ in range(3):
+        scene.step()
+    # An exact rigid proxy in free fall: every riding vertex drops by the same amount.
+    drop = (initial - cloth.get_state().pos)[..., 2].cpu().numpy()
+    assert (drop > 0.0).all()
+    np.testing.assert_allclose(drop, drop.mean(), atol=1e-7, rtol=0.0)
+
+    with pytest.raises(RuntimeError, match="rigid FEM clusters"):
+        scene.reset()
 
 
 @pytest.mark.required

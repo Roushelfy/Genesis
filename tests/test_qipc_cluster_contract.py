@@ -1,4 +1,4 @@
-"""CPU-only contracts for queued QIPC affine clusters."""
+"""CPU-only contracts for queued QIPC FEM clusters (affine and rigid proxies)."""
 
 from types import SimpleNamespace
 
@@ -15,8 +15,8 @@ class _CpuScalar:
 
 
 class _Collection:
-    def __init__(self, events: list[tuple]) -> None:
-        self.bodies = [12]
+    def __init__(self, events: list[tuple], body_index: int) -> None:
+        self.bodies = [body_index]
         self.n_member_elems = [2]
         self.events = events
 
@@ -30,11 +30,16 @@ class _Collection:
 class _Scene:
     def __init__(self, events: list[tuple]) -> None:
         self.events = events
-        self.collection = _Collection(events)
+        self.collection = _Collection(events, body_index=12)
+        self.rigid_collection = _Collection(events, body_index=0)
 
     def add_affine_cluster(self, **kwargs):
         self.events.append(("declare", kwargs))
         return self.collection
+
+    def add_rigid_cluster(self, **kwargs):
+        self.events.append(("declare_rigid", kwargs))
+        return self.rigid_collection
 
     def reset(self) -> None:
         self.events.append(("scene.reset", {}))
@@ -51,10 +56,14 @@ def _triangle_slot(*, offset: int = 4, n_vertices: int = 6, n_triangles: int = 4
     return SimpleNamespace(id=3, geometry=geometry)
 
 
+def _cluster_module():
+    from genesis.engine.couplers.qipc_coupler import cluster
+
+    return cluster
+
+
 def test_capability_contract_reports_missing_state_surface():
-    from genesis.engine.couplers.qipc_coupler.affine_cluster import (
-        _missing_affine_cluster_capabilities,
-    )
+    cluster_module = _cluster_module()
 
     class IncompleteScene:
         def reset(self):
@@ -64,29 +73,30 @@ def test_capability_contract_reports_missing_state_surface():
         def drstate_proxy_member(self):
             pass
 
-    missing = _missing_affine_cluster_capabilities(IncompleteScene(), IncompleteManager)
+    missing = cluster_module._missing_cluster_capabilities(IncompleteScene(), IncompleteManager)
 
     assert missing == (
         "Scene.add_affine_cluster",
-        "FEMAffineClusterManager.drstate_fem_masses",
-        "FEMAffineClusterManager.drstate_abd_mass_inv",
-        "FEMAffineClusterManager.drstate_global_body_id",
-        "FEMAffineClusterManager.restore_drstate",
+        "Scene.add_rigid_cluster",
+        "FEMClusterManager.drstate_fem_masses",
+        "FEMClusterManager.drstate_abd_mass_inv",
+        "FEMClusterManager.drstate_global_body_id",
+        "FEMClusterManager.restore_drstate",
     )
 
 
 def test_queued_handle_binds_and_replays_initial_membership(monkeypatch):
-    from genesis.engine.couplers.qipc_coupler import affine_cluster as cluster_module
+    cluster_module = _cluster_module()
 
-    monkeypatch.setattr(cluster_module, "_require_affine_cluster_capability", lambda _scene: None)
+    monkeypatch.setattr(cluster_module, "_require_cluster_capability", lambda _scene: None)
     events: list[tuple] = []
     scene = _Scene(events)
     fem_entity = object()
     fem_slot = _triangle_slot()
-    manager = cluster_module.QIPCAffineClusterManager()
+    manager = cluster_module.QIPCClusterManager()
     handle = manager.add_request(
         fem_entity,
-        kappa=2.5e7,
+        proxy=cluster_module.AffineClusterProxy(kappa=2.5e7),
         fixed=False,
         initial_tris=np.array([1, 3], dtype=np.int64),
     )
@@ -97,7 +107,7 @@ def test_queued_handle_binds_and_replays_initial_membership(monkeypatch):
     manager.declare(
         scene,
         fem_slots={fem_entity: fem_slot},
-        resolve_proxy_slot=lambda _entity, _link: None,
+        resolve_proxy_slot=lambda _entity, _link, _proxy: None,
     )
     assert events[0][0] == "declare"
     assert events[0][1]["fem"] is fem_slot
@@ -123,18 +133,52 @@ def test_queued_handle_binds_and_replays_initial_membership(monkeypatch):
     assert events[3] == events[1]
 
 
-def test_omitted_initial_membership_is_empty_but_runtime_omission_targets_all(monkeypatch):
-    from genesis.engine.couplers.qipc_coupler import affine_cluster as cluster_module
+def test_rigid_request_declares_a_rigid_cluster_without_stiffness(monkeypatch):
+    cluster_module = _cluster_module()
 
-    monkeypatch.setattr(cluster_module, "_require_affine_cluster_capability", lambda _scene: None)
+    monkeypatch.setattr(cluster_module, "_require_cluster_capability", lambda _scene: None)
+    events: list[tuple] = []
+    scene = _Scene(events)
+    fem_entity = object()
+    resolved: list[tuple] = []
+    manager = cluster_module.QIPCClusterManager()
+    handle = manager.add_request(
+        fem_entity,
+        proxy=cluster_module.RigidClusterProxy(),
+        fixed=False,
+        initial_tris=[0, 2],
+    )
+    assert handle.proxy == cluster_module.RigidClusterProxy()
+
+    def resolve_proxy_slot(entity, link, proxy):
+        resolved.append((entity, link, proxy))
+        return None
+
+    manager.declare(scene, fem_slots={fem_entity: _triangle_slot()}, resolve_proxy_slot=resolve_proxy_slot)
+    # A ghost proxy never consults the resolver; the declaration carries no kappa.
+    assert resolved == []
+    assert events[0] == (
+        "declare_rigid",
+        {"name": "genesis_rigid_cluster_0", "proxy": None, "fem": events[0][1]["fem"], "fixed": False},
+    )
+
+    manager.initialize()
+    assert handle.proxy_body_index == 0
+    assert events[1] == ("join", {"edges": None, "tris": (0, 2), "tets": None})
+
+
+def test_omitted_initial_membership_is_empty_but_runtime_omission_targets_all(monkeypatch):
+    cluster_module = _cluster_module()
+
+    monkeypatch.setattr(cluster_module, "_require_cluster_capability", lambda _scene: None)
     events: list[tuple] = []
     fem_entity = object()
-    manager = cluster_module.QIPCAffineClusterManager()
-    handle = manager.add_request(fem_entity, kappa=1e8, fixed=False)
+    manager = cluster_module.QIPCClusterManager()
+    handle = manager.add_request(fem_entity, proxy=cluster_module.AffineClusterProxy(kappa=1e8), fixed=False)
     manager.declare(
         _Scene(events),
         fem_slots={fem_entity: _triangle_slot()},
-        resolve_proxy_slot=lambda _entity, _link: None,
+        resolve_proxy_slot=lambda _entity, _link, _proxy: None,
     )
 
     manager.initialize()
@@ -159,31 +203,32 @@ def test_omitted_initial_membership_is_empty_but_runtime_omission_targets_all(mo
     ],
 )
 def test_declaration_parameter_validation(kwargs, message):
-    from genesis.engine.couplers.qipc_coupler.affine_cluster import QIPCAffineClusterManager
+    cluster_module = _cluster_module()
 
     params = {"kappa": 1e8, "fixed": False, **kwargs}
+    proxy = cluster_module.AffineClusterProxy(kappa=params.pop("kappa"))
     with pytest.raises(Exception, match=message):
-        QIPCAffineClusterManager().add_request(object(), **params)
+        cluster_module.QIPCClusterManager().add_request(object(), proxy=proxy, **params)
 
 
 def test_initial_membership_range_is_validated_before_any_join(monkeypatch):
-    from genesis.engine.couplers.qipc_coupler import affine_cluster as cluster_module
+    cluster_module = _cluster_module()
 
-    monkeypatch.setattr(cluster_module, "_require_affine_cluster_capability", lambda _scene: None)
+    monkeypatch.setattr(cluster_module, "_require_cluster_capability", lambda _scene: None)
     events: list[tuple] = []
     scene = _Scene(events)
     fem_entity = object()
-    manager = cluster_module.QIPCAffineClusterManager()
+    manager = cluster_module.QIPCClusterManager()
     manager.add_request(
         fem_entity,
-        kappa=1e8,
+        proxy=cluster_module.AffineClusterProxy(kappa=1e8),
         fixed=False,
         initial_tris=[4],
     )
     manager.declare(
         scene,
         fem_slots={fem_entity: _triangle_slot(n_triangles=4)},
-        resolve_proxy_slot=lambda _entity, _link: None,
+        resolve_proxy_slot=lambda _entity, _link, _proxy: None,
     )
 
     with pytest.raises(Exception, match=r"out of range \[0, 4\)"):
@@ -192,7 +237,7 @@ def test_initial_membership_range_is_validated_before_any_join(monkeypatch):
 
 
 def test_coupler_rejects_foreign_entities_links_and_late_declarations():
-    from genesis.engine.couplers.qipc_coupler.affine_cluster import QIPCAffineClusterManager
+    from genesis.engine.couplers.qipc_coupler.cluster import QIPCClusterManager
     from genesis.engine.couplers.qipc_coupler.coupler import QIPCCoupler
 
     fem_entity = object()
@@ -204,44 +249,62 @@ def test_coupler_rejects_foreign_entities_links_and_late_declarations():
         fem_solver=SimpleNamespace(entities=[fem_entity]),
         rigid_solver=SimpleNamespace(entities=[proxy_entity]),
     )
-    coupler._affine_clusters = QIPCAffineClusterManager()
+    coupler._clusters = QIPCClusterManager()
 
-    with pytest.raises(Exception, match="fem_entity is not a FEM entity owned"):
+    with pytest.raises(Exception, match="add_affine_cluster: fem_entity is not a FEM entity owned"):
         coupler.add_affine_cluster(object())
+    with pytest.raises(Exception, match="add_rigid_cluster: fem_entity is not a FEM entity owned"):
+        coupler.add_rigid_cluster(object())
     with pytest.raises(Exception, match="proxy_entity is not a rigid entity owned"):
         coupler.add_affine_cluster(fem_entity, proxy_entity=object())
     with pytest.raises(Exception, match="selected link does not belong"):
-        coupler.add_affine_cluster(
+        coupler.add_rigid_cluster(
             fem_entity,
             proxy_entity=proxy_entity,
             proxy_link=SimpleNamespace(name="foreign", idx_local=1, geoms=[]),
         )
 
     coupler._scene = object()
-    with pytest.raises(Exception, match=r"before scene\.build"):
-        coupler.add_affine_cluster(fem_entity)
+    with pytest.raises(Exception, match=r"add_rigid_cluster must be called before scene\.build"):
+        coupler.add_rigid_cluster(fem_entity)
 
 
-def test_reset_replays_bonds_before_initial_membership():
+def _reset_probe(*, has_rigid_proxy: bool, frame: int) -> list[str]:
     from genesis.engine.couplers.qipc_coupler.coupler import QIPCCoupler
 
     calls: list[str] = []
     coupler = object.__new__(QIPCCoupler)
-    coupler._scene = SimpleNamespace(reset=lambda: calls.append("scene.reset"))
+    coupler._scene = SimpleNamespace(reset=lambda: calls.append("scene.reset"), frame=frame)
     coupler._adhesion = SimpleNamespace(restore_seeded_bonds=lambda: calls.append("bonds"))
-    coupler._affine_clusters = SimpleNamespace(replay_initial_membership=lambda: calls.append("membership"))
+    coupler._clusters = SimpleNamespace(
+        replay_initial_membership=lambda: calls.append("membership"),
+        has_rigid_proxy=has_rigid_proxy,
+    )
     coupler._sealed_gas_bag_by_entity = {}
     coupler._sealed_gas_reset_state = {}
     coupler._rigid_reset_state = None
     coupler._writeback_state = lambda: calls.append("rigid writeback")
     coupler._writeback_fem_state = lambda frame: calls.append(f"fem writeback {frame}")
-
     coupler.reset()
+    return calls
 
-    assert calls == [
+
+def test_reset_replays_bonds_before_initial_membership():
+    assert _reset_probe(has_rigid_proxy=False, frame=0) == [
         "scene.reset",
         "bonds",
         "membership",
         "rigid writeback",
         "fem writeback 0",
     ]
+    assert _reset_probe(has_rigid_proxy=True, frame=3) == [
+        "scene.reset",
+        "bonds",
+        "membership",
+        "rigid writeback",
+        "fem writeback 0",
+    ]
+
+
+def test_frame_zero_reset_with_a_rigid_cluster_only_writes_back():
+    assert _reset_probe(has_rigid_proxy=True, frame=0) == ["rigid writeback", "fem writeback 0"]

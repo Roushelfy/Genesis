@@ -334,9 +334,13 @@ Not needed for the drop-class demo; implement after A5.1/A5.2.
 ## 8. Distance-bond cluster optimization
 
 `add_tape_bond_cluster` is an optional layer over the ordinary distance-bond
-asset; `add_tape_roll` itself remains unchanged. It queues one affine cluster
-with an independent ghost proxy whose initial membership is the deep
-bond-certified roll interior. The largest connected unbonded component is the
+asset; `add_tape_roll` itself remains unchanged. It queues one cluster whose
+initial membership is the deep bond-certified roll interior; `proxy` picks the
+body that carries it, `AffineClusterProxy(kappa)` (12-DOF affine, the ghost
+body's stiffness set by `kappa`) or `RigidClusterProxy()` (exact 6-DOF rigid,
+no stiffness). An explicit `proxy_entity` must be of the matching QIPC kind:
+an ABD entity for affine, a `qipc_rigid_body` entity for rigid, so a rigid
+cluster beside an ABD hub rides its own ghost body. The largest connected unbonded component is the
 payout front, small enclosed holes are filled, and a configurable number of
 graph rings behind the front remains ordinary FEM as a soft collar. Existing
 wind-authored distance bonds remain the only authored/persistent structural
@@ -354,11 +358,21 @@ shrinks monotonically and bonds touching vertices that fully left the cluster
 are cleared to avoid the bond/barrier deadlock. This is an optimization policy,
 not an alternate release criterion: QIPC distance bonds remain authoritative.
 Cluster tape scenes must configure `adhesion_bond_lock_floor_ratio > 0`, so a
-cleared near-barrier bond cannot immediately re-lock. The cluster's `kappa`
+cleared near-barrier bond cannot immediately re-lock. An affine cluster's `kappa`
 configures only its ghost proxy; the hub retains its ordinary rigid-material
 ABD stiffness. A hub-side bond fracture that moves the whole wound interior
 rigidly does not by itself soften that interior; only payout motion relative to
-the cluster advances the release front.
+the cluster advances the release front. QIPC has no restore path for rigid
+cluster membership yet, so its reset pipeline refuses to run while a rigid
+cluster is declared. The coupler keeps such scenes buildable: the frame-zero
+reset Genesis issues right after `scene.build()` only writes back (the scene
+already holds the seeded, joined state), and an initial-state overlay asks for
+the pre-step contact rebuild instead of the native reset. Any later reset
+surfaces QIPC's refusal, so rigid-proxy tape scenes are single-episode until
+that lands. Their first step also pays a one-off contact-pair explosion
+(pt/ee candidates in the millions on the packaged wound roll, minutes of wall
+time) before settling to affine-like step costs; the state after that step is
+the resting coil.
 
 Raw QIPC reset returns to its pre-membership `Scene.init()` snapshot. Genesis
 therefore restores authored bonds first, replays queued membership second, and
