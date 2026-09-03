@@ -296,17 +296,20 @@ def test_add_tape_dispenser_keeps_the_roll_band_under_a_wider_scene_d_hat():
 @pytest.mark.required
 @pytest.mark.precision("64")
 def test_add_tape_dispenser_cluster_uses_wheel_proxy_and_replays_membership():
+    from genesis.engine.couplers.qipc_coupler.cluster import AffineClusterProxy
+
     module = _module()
     scene = gs.Scene(
         sim_options=gs.options.SimOptions(dt=0.01, gravity=(0.0, 0.0, -9.8)),
         coupler_options=gs.options.QIPCCouplerOptions(**module.recommended_coupler_options()),
         show_viewer=False,
     )
+    # The affine proxy attaches to the wheel body; a rigid proxy would be a ghost body of its own.
     component = module.add_tape_dispenser(
         scene,
         pos=(0.5, 0.0, 0.86661028),
         euler=(0.0, 0.0, 180.0),
-        rigid_cluster=True,
+        cluster=AffineClusterProxy(kappa=5.0e7),
     )
     scene.build()
     assert component.lifecycle is not None

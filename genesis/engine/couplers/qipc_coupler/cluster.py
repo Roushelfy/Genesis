@@ -218,16 +218,12 @@ class QIPCClusterManager:
         self._bindings: list[_ClusterBinding] = []
         self._scene = None
         self._initialized = False
+        self._membership_captured_in_reset = False
 
     @property
     def has_rigid_proxy(self) -> bool:
         """True when any queued cluster rides a rigid body."""
         return any(isinstance(request.proxy, RigidClusterProxy) for request in self._requests)
-
-    @property
-    def has_membership_requests(self) -> bool:
-        """True when authored membership is replayed after every reset."""
-        return any(request.initial.is_explicit for request in self._requests)
 
     def add_request(
         self,
@@ -343,9 +339,13 @@ class QIPCClusterManager:
                 )
         self._initialized = True
 
+    def mark_membership_captured(self) -> None:
+        """The QIPC reset snapshot now carries the live membership (it is drstate); reset must not replay."""
+        self._membership_captured_in_reset = True
+
     def replay_initial_membership(self) -> None:
-        """Replay authored membership after raw QIPC reset clears every cluster."""
-        if not self._requests:
+        """Replay authored membership after a QIPC reset to the pre-membership frame-zero snapshot."""
+        if not self._requests or self._membership_captured_in_reset:
             return
         self._require_initialized()
         for request, binding in zip(self._requests, self._bindings, strict=True):

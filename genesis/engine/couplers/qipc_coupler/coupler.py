@@ -1168,15 +1168,12 @@ class QIPCCoupler(RBC):
 
         Lets a scene settle once after build (a paper sagging into contact, boxes landing)
         and start every episode from the settled state instead of replaying the settling.
-        Bonds alive now belong to the snapshot, so the authored bond replay is disabled.
+        Bonds alive now and the live cluster membership belong to the snapshot (both are QIPC
+        drstate), so the authored bond replay and the membership replay are disabled.
         """
         if self._scene is None:
             gs.raise_exception("QIPCCoupler.capture_reset_state requires a built scene.")
-        if self._clusters.has_membership_requests:
-            gs.raise_exception(
-                "QIPCCoupler.capture_reset_state does not support scenes with authored cluster membership: "
-                "the membership replay after reset would join the members a second time."
-            )
+        self._clusters.mark_membership_captured()
         if self._rigid_reset_state is not None:
             rigid_collection = self._scene.rigid_body
             self._rigid_reset_state = tuple(

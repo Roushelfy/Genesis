@@ -108,6 +108,28 @@ def test_rigid_ghost_cluster_falls_as_one_body_and_resets(tmp_path, show_viewer)
 
 
 @pytest.mark.required
+def test_rigid_ghost_cluster_resets_to_a_captured_state(tmp_path, show_viewer):
+    scene, cloth, _proxy, handle = _cloth_scene(tmp_path, show_viewer, with_proxy=False, rigid=True)
+    n_triangles = len(cloth.surface_triangles)
+    for _ in range(3):
+        scene.step()
+    captured = cloth.get_state().pos.clone()
+
+    scene.sim.coupler.capture_reset_state()
+    for _ in range(3):
+        scene.step()
+    assert (captured - cloth.get_state().pos)[..., 2].min() > 0.0
+    scene.reset()
+
+    assert handle.member_count == n_triangles
+    np.testing.assert_allclose(cloth.get_state().pos.cpu().numpy(), captured.cpu().numpy(), atol=1e-9, rtol=0.0)
+    scene.step()
+    drop = (captured - cloth.get_state().pos)[..., 2].cpu().numpy()
+    assert (drop > 0.0).all()
+    np.testing.assert_allclose(drop, drop.mean(), atol=1e-7, rtol=0.0)
+
+
+@pytest.mark.required
 def test_rigid_link_proxy_uses_existing_fixed_body(tmp_path, show_viewer):
     scene, cloth, proxy, handle = _cloth_scene(tmp_path, show_viewer, with_proxy=True)
     coupler = scene.sim.coupler
