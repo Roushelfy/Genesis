@@ -211,7 +211,7 @@ class QIPCCouplerOptions(BaseCouplerOptions):
         backed by contact (a rigid FEM cluster before its first contact pairs exist) from
         sweeping the whole scene in one iteration, which otherwise costs minutes of broad
         phase and CCD; it also splits large motions over more Newton iterations. ``None``
-        enables the cap at 10 when a rigid cluster is declared and leaves it off otherwise.
+        enables the cap at 100 when a rigid cluster is declared and leaves it off otherwise.
     contact_friction : float, optional
         Default contact friction coefficient. Used for the QIPC default contact model
         (ground half-planes and any geometry without a per-entity contact element) and

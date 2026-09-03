@@ -368,7 +368,7 @@ proxy back to its zero-mass seed and the coupler replays the joins (requires a
 cuda-graph-qipc build with `RigidBodyDynamics` mass-state drstate). A rigid
 proxy's rotational stiffness is only its members' inertia until contact pairs
 exist, so the coupler enables QIPC's per-iteration displacement cap
-(`contact_max_step_in_d_hat`, 10 by default) whenever a rigid cluster is
+(`contact_max_step_in_d_hat`, 100 by default) whenever a rigid cluster is
 declared; without it the first Newton direction of a light coil sweeps the
 scene and the first step costs minutes of broad phase and CCD.
 

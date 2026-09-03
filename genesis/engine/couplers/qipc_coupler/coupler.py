@@ -923,10 +923,11 @@ class QIPCCoupler(RBC):
         # --- Create QIPC Scene with contact + solver config ---
         # A rigid cluster proxy's rotational stiffness is only its members' inertia until
         # contact pairs exist, so its first Newton direction can sweep the scene; the
-        # per-iteration displacement cap bounds that sweep (see QIPCCouplerOptions).
+        # per-iteration displacement cap bounds that sweep (see QIPCCouplerOptions). 100
+        # still bounds it, while 10 made every rigid-cluster scene 1.1-2.7x slower.
         max_step_in_d_hat = self._options.contact_max_step_in_d_hat
         if max_step_in_d_hat is None:
-            max_step_in_d_hat = 10.0 if self._clusters.has_rigid_proxy else -1.0
+            max_step_in_d_hat = 100.0 if self._clusters.has_rigid_proxy else -1.0
         scene_config: dict = {
             "contact/enable": self._options.contact_enable,
             "contact/d_hat": self._options.contact_d_hat,
