@@ -543,8 +543,6 @@ class QIPCCoupler(RBC):
         interior carried by an exact 6-DOF rigid body instead of a 12-DOF affine
         one, so there is no stiffness to tune. An omitted ``proxy_entity`` creates
         a ghost rigid body; an explicit proxy must be a ``qipc_rigid_body`` entity.
-        QIPC has no restore path for rigid-cluster membership yet, so
-        ``scene.reset()`` raises for a scene that declares one.
         """
         return self._queue_cluster(
             fem_entity,
@@ -919,10 +917,17 @@ class QIPCCoupler(RBC):
                 abd_entities.append(entity)
 
         # --- Create QIPC Scene with contact + solver config ---
+        # A rigid cluster proxy's rotational stiffness is only its members' inertia until
+        # contact pairs exist, so its first Newton direction can sweep the scene; the
+        # per-iteration displacement cap bounds that sweep (see QIPCCouplerOptions).
+        max_step_in_d_hat = self._options.contact_max_step_in_d_hat
+        if max_step_in_d_hat is None:
+            max_step_in_d_hat = 10.0 if self._clusters.has_rigid_proxy else -1.0
         scene_config: dict = {
             "contact/enable": self._options.contact_enable,
             "contact/d_hat": self._options.contact_d_hat,
             "contact/init_collision_pair_capacity": self._options.init_collision_pair_capacity,
+            "contact/max_step_in_d_hat": max_step_in_d_hat,
         }
         solver_passthrough = {
             "newton/velocity_tol": self._options.solver_newton_velocity_tol,
@@ -1156,15 +1161,6 @@ class QIPCCoupler(RBC):
     def reset(self, envs_idx=None) -> None:
         if envs_idx is not None:
             gs.raise_exception("QIPCCoupler.reset does not support partial environment reset.")
-        if self._clusters.has_rigid_proxy and self._scene.frame == 0:
-            # QIPC refuses Scene.reset() while a rigid cluster is declared (no membership
-            # restore path). At frame zero -- the reset Genesis issues right after build --
-            # the QIPC scene already holds the seeded, membership-joined state a reset
-            # would rebuild, so only the Genesis-side writeback is due. A reset after the
-            # first step surfaces QIPC's refusal.
-            self._writeback_state()
-            self._writeback_fem_state(0)
-            return
 
         runtime_gas_state = self._snapshot_sealed_gas_state()
         runtime_rigid_state: tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor] | None = None

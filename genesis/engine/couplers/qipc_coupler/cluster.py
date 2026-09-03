@@ -37,7 +37,6 @@ class RigidClusterProxy:
 
     Rigidity comes from the quaternion parameterization, so there is no
     stiffness knob. An explicit proxy must be a ``qipc_rigid_body`` entity.
-    QIPC cannot ``Scene.reset()`` a scene that declares a rigid cluster yet.
     """
 
 
@@ -222,7 +221,7 @@ class QIPCClusterManager:
 
     @property
     def has_rigid_proxy(self) -> bool:
-        """True when any queued cluster rides a rigid body; QIPC cannot reset such a scene yet."""
+        """True when any queued cluster rides a rigid body."""
         return any(isinstance(request.proxy, RigidClusterProxy) for request in self._requests)
 
     def add_request(

@@ -83,7 +83,7 @@ def test_ghost_cluster_runtime_membership_and_reset(tmp_path, show_viewer):
 
 
 @pytest.mark.required
-def test_rigid_ghost_cluster_falls_as_one_body_and_refuses_reset(tmp_path, show_viewer):
+def test_rigid_ghost_cluster_falls_as_one_body_and_resets(tmp_path, show_viewer):
     scene, cloth, _proxy, handle = _cloth_scene(tmp_path, show_viewer, with_proxy=False, rigid=True)
     n_triangles = len(cloth.surface_triangles)
     initial = cloth.get_state().pos.clone()
@@ -102,8 +102,9 @@ def test_rigid_ghost_cluster_falls_as_one_body_and_refuses_reset(tmp_path, show_
     assert (drop > 0.0).all()
     np.testing.assert_allclose(drop, drop.mean(), atol=1e-7, rtol=0.0)
 
-    with pytest.raises(RuntimeError, match="rigid FEM clusters"):
-        scene.reset()
+    scene.reset()
+    assert handle.member_count == n_triangles
+    np.testing.assert_allclose(cloth.get_state().pos.cpu().numpy(), initial.cpu().numpy(), atol=0.0, rtol=0.0)
 
 
 @pytest.mark.required

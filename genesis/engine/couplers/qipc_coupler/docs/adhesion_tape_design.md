@@ -362,17 +362,15 @@ cleared near-barrier bond cannot immediately re-lock. An affine cluster's `kappa
 configures only its ghost proxy; the hub retains its ordinary rigid-material
 ABD stiffness. A hub-side bond fracture that moves the whole wound interior
 rigidly does not by itself soften that interior; only payout motion relative to
-the cluster advances the release front. QIPC has no restore path for rigid
-cluster membership yet, so its reset pipeline refuses to run while a rigid
-cluster is declared. The coupler keeps such scenes buildable: the frame-zero
-reset Genesis issues right after `scene.build()` only writes back (the scene
-already holds the seeded, joined state), and an initial-state overlay asks for
-the pre-step contact rebuild instead of the native reset. Any later reset
-surfaces QIPC's refusal, so rigid-proxy tape scenes are single-episode until
-that lands. Their first step also pays a one-off contact-pair explosion
-(pt/ee candidates in the millions on the packaged wound roll, minutes of wall
-time) before settling to affine-like step costs; the state after that step is
-the resting coil.
+the cluster advances the release front. A rigid proxy resets like an affine
+one: QIPC's frame-zero snapshot predates membership, so the reset brings the
+proxy back to its zero-mass seed and the coupler replays the joins (requires a
+cuda-graph-qipc build with `RigidBodyDynamics` mass-state drstate). A rigid
+proxy's rotational stiffness is only its members' inertia until contact pairs
+exist, so the coupler enables QIPC's per-iteration displacement cap
+(`contact_max_step_in_d_hat`, 10 by default) whenever a rigid cluster is
+declared; without it the first Newton direction of a light coil sweeps the
+scene and the first step costs minutes of broad phase and CCD.
 
 Raw QIPC reset returns to its pre-membership `Scene.init()` snapshot. Genesis
 therefore restores authored bonds first, replays queued membership second, and

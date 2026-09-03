@@ -269,42 +269,26 @@ def test_coupler_rejects_foreign_entities_links_and_late_declarations():
         coupler.add_rigid_cluster(fem_entity)
 
 
-def _reset_probe(*, has_rigid_proxy: bool, frame: int) -> list[str]:
+def test_reset_replays_bonds_before_initial_membership():
     from genesis.engine.couplers.qipc_coupler.coupler import QIPCCoupler
 
     calls: list[str] = []
     coupler = object.__new__(QIPCCoupler)
-    coupler._scene = SimpleNamespace(reset=lambda: calls.append("scene.reset"), frame=frame)
+    coupler._scene = SimpleNamespace(reset=lambda: calls.append("scene.reset"))
     coupler._adhesion = SimpleNamespace(restore_seeded_bonds=lambda: calls.append("bonds"))
-    coupler._clusters = SimpleNamespace(
-        replay_initial_membership=lambda: calls.append("membership"),
-        has_rigid_proxy=has_rigid_proxy,
-    )
+    coupler._clusters = SimpleNamespace(replay_initial_membership=lambda: calls.append("membership"))
     coupler._sealed_gas_bag_by_entity = {}
     coupler._sealed_gas_reset_state = {}
     coupler._rigid_reset_state = None
     coupler._writeback_state = lambda: calls.append("rigid writeback")
     coupler._writeback_fem_state = lambda frame: calls.append(f"fem writeback {frame}")
+
     coupler.reset()
-    return calls
 
-
-def test_reset_replays_bonds_before_initial_membership():
-    assert _reset_probe(has_rigid_proxy=False, frame=0) == [
+    assert calls == [
         "scene.reset",
         "bonds",
         "membership",
         "rigid writeback",
         "fem writeback 0",
     ]
-    assert _reset_probe(has_rigid_proxy=True, frame=3) == [
-        "scene.reset",
-        "bonds",
-        "membership",
-        "rigid writeback",
-        "fem writeback 0",
-    ]
-
-
-def test_frame_zero_reset_with_a_rigid_cluster_only_writes_back():
-    assert _reset_probe(has_rigid_proxy=True, frame=0) == ["rigid writeback", "fem writeback 0"]

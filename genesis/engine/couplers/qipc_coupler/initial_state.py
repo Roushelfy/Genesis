@@ -132,7 +132,6 @@ class QIPCInitialStateManager:
             from qipc._src.native.solver import DRInfo
 
             reset_solver = scene._solver.reset
-            request_contact_rebuild = scene._solver._native.request_contact_rebuild
             capture_reset_state = scene._capture_reset_state
             accessors = scene._drstate_accessors()
             positions_info = DRInfo()
@@ -154,13 +153,7 @@ class QIPCInitialStateManager:
         # The native reset pipeline recomputes global positions, BVHs, and
         # contact candidates from the overlaid ABD/FEM state without advancing
         # physics. Bond slots have already been restored at this point.
-        if scene.rigid_clusters:
-            # QIPC refuses its reset pipeline while a rigid cluster is declared (no
-            # membership restore path), so the pre-step contact rebuild recomputes the
-            # same derived state from the overlay ahead of the first Newton iteration.
-            request_contact_rebuild()
-        else:
-            reset_solver()
+        reset_solver()
         lagged_accessor = accessors.get("ContactSystem/lagged_positions")
         if lagged_accessor is not None:
             lagged_info = DRInfo()

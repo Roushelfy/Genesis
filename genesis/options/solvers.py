@@ -205,6 +205,13 @@ class QIPCCouplerOptions(BaseCouplerOptions):
         Initial broadphase pair buffer size. The solver reallocates automatically on
         overflow, but starting too low causes repeated graph rebuilds in contact-heavy
         scenes. Defaults to 1000.
+    contact_max_step_in_d_hat : float, optional
+        Cap on the vertex displacement one Newton iteration may propose, as a multiple of
+        ``contact_d_hat``. A cap keeps a light body whose rotational stiffness is not yet
+        backed by contact (a rigid FEM cluster before its first contact pairs exist) from
+        sweeping the whole scene in one iteration, which otherwise costs minutes of broad
+        phase and CCD; it also splits large motions over more Newton iterations. ``None``
+        enables the cap at 10 when a rigid cluster is declared and leaves it off otherwise.
     contact_friction : float, optional
         Default contact friction coefficient. Used for the QIPC default contact model
         (ground half-planes and any geometry without a per-entity contact element) and
@@ -296,6 +303,7 @@ class QIPCCouplerOptions(BaseCouplerOptions):
     contact_enable: StrictBool = True
     contact_d_hat: PositiveFloat = 0.01
     init_collision_pair_capacity: PositiveInt = 1000
+    contact_max_step_in_d_hat: PositiveFloat | None = None
     contact_friction: PositiveFloat = 0.05
     contact_resistance: PositiveFloat = 1e4
     fem_constraint_strength: PositiveFloat = 100.0
