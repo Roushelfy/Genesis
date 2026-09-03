@@ -269,6 +269,32 @@ def test_add_tape_dispenser_matches_f249_contact_and_reset():
 
 @pytest.mark.required
 @pytest.mark.precision("64")
+def test_add_tape_dispenser_keeps_the_roll_band_under_a_wider_scene_d_hat():
+    module = _module()
+    asset = module.TapeDispenserAsset.packaged()
+    options = module.recommended_coupler_options()
+    options["contact_d_hat"] = 1e-3
+    scene = gs.Scene(
+        sim_options=gs.options.SimOptions(dt=0.01, gravity=(0.0, 0.0, -9.8)),
+        coupler_options=gs.options.QIPCCouplerOptions(**options),
+        show_viewer=False,
+    )
+    component = module.add_tape_dispenser(scene, asset, pos=(0.3, -0.2, 0.5), euler=(0.0, 0.0, 17.0))
+    scene.build()
+
+    coupler = scene.sim.coupler
+    native = coupler._scene
+    assert native.config["contact/d_hat"] == 1e-3
+    assert asset.roll.d_hat == 8e-5
+    assert component.tape.material.qipc_d_hat == asset.roll.d_hat
+    tape_geometry = coupler._fem_entry(component.tape).slot.geometry
+    assert float(tape_geometry.meta["d_hat"].cpu()[0]) == asset.roll.d_hat
+    machine_geometries = {slot.name: slot.geometry for slot in native.geometries}
+    assert float(machine_geometries["tape_wheel"].meta["d_hat"].cpu()[0]) == asset.roll.d_hat
+
+
+@pytest.mark.required
+@pytest.mark.precision("64")
 def test_add_tape_dispenser_cluster_uses_wheel_proxy_and_replays_membership():
     module = _module()
     scene = gs.Scene(

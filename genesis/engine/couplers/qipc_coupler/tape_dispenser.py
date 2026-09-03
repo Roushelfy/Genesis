@@ -720,6 +720,9 @@ def add_tape_dispenser(
             strain_limit_multiplier=0.0,
             friction_mu=0.5,
             contact_resistance=1.0e5,
+            # The wound roll's layer pitch is the asset's d_hat; a scene-global band ten
+            # times wider puts every neighbouring layer inside the barrier.
+            qipc_d_hat=asset.roll.d_hat,
         ),
         surface=tape_surface,
     )

@@ -153,6 +153,13 @@ def _perpendicular_direction(axis: np.ndarray) -> np.ndarray:
     return perpendicular / np.linalg.norm(perpendicular)
 
 
+def _stamp_geometry_d_hat(geo, d_hat: float) -> None:
+    """Give one QIPC geometry its own contact barrier band (per-vertex d_hat at wire time)."""
+    if "d_hat" not in geo.meta:
+        geo.meta.create("d_hat", np.float64)
+    geo.meta["d_hat"] = np.array([float(d_hat)], dtype=np.float64)
+
+
 def _triangle_component_count(triangles: npt.NDArray[np.int32]) -> int:
     """Count components connected through shared triangle edges."""
     n_triangles = len(triangles)
@@ -832,10 +839,7 @@ class QIPCCoupler(RBC):
             d_hat_override = pre.entity.material.qipc_d_hat
             if d_hat_override is not None:
                 for slot in pre.group_slots.values():
-                    geo = slot.geometry
-                    if "d_hat" not in geo.meta:
-                        geo.meta.create("d_hat", np.float64)
-                    geo.meta["d_hat"] = np.array([float(d_hat_override)], dtype=np.float64)
+                    _stamp_geometry_d_hat(slot.geometry, d_hat_override)
 
         if not self._stc_requests:
             return
@@ -1534,6 +1538,8 @@ class QIPCCoupler(RBC):
                 if mat.strain_limit_multiplier is not None:
                     cloth_kwargs["strain_limit_multiplier"] = float(mat.strain_limit_multiplier)
                 QipcCloth().apply_to(geo, **cloth_kwargs)
+                if mat.qipc_d_hat is not None:
+                    _stamp_geometry_d_hat(geo, mat.qipc_d_hat)
                 if isinstance(mat, SealedGasShell):
                     try:
                         closed_surface_orientation(verts, faces, auto_flip=mat.auto_flip)
@@ -1571,6 +1577,8 @@ class QIPCCoupler(RBC):
                     poissons_ratio=float(mat.nu),
                     mass_density=float(mat.rho),
                 )
+                if mat.qipc_d_hat is not None:
+                    _stamp_geometry_d_hat(geo, mat.qipc_d_hat)
 
             position_dbc = self._fem_position_dbc.get(entity)
             if position_dbc is None:

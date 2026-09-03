@@ -36,6 +36,12 @@ class Base(Material["FEMEntity"]):
     contact_resistance : float | None, optional
         IPC contact resistance/stiffness override for this material. ``None`` means
         use the IPC coupler global default (``IPCCouplerOptions.contact_resistance``).
+    qipc_d_hat : float or None, optional
+        Per-entity contact barrier band override (stamped as per-geometry d_hat on the
+        entity's QIPC geometry). Lets a thin shell such as a 0.08 mm tape keep the band
+        it was calibrated with while the scene runs a larger ``contact_d_hat`` for its
+        coarse bodies. Only used by the QIPC coupler. ``None`` uses the scene-global
+        ``contact_d_hat``. Default is None.
     hessian_invariant : bool, optional
         If True, Hessian is computed only once. Default is False.
     """
@@ -46,6 +52,7 @@ class Base(Material["FEMEntity"]):
     hydroelastic_modulus: PositiveFloat = 1e7
     friction_mu: NonNegativeFloat = 0.1
     contact_resistance: PositiveFloat | None = None
+    qipc_d_hat: PositiveFloat | None = None
     hessian_invariant: StrictBool = False
 
     # Dispatch fields — set by subclass model_post_init, not user-specified.
