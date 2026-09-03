@@ -1163,6 +1163,35 @@ class QIPCCoupler(RBC):
     # Runtime
     # -------------------------------------------------------------------------
 
+    def capture_reset_state(self) -> None:
+        """Promote the current simulation state to the state `reset()` restores.
+
+        Lets a scene settle once after build (a paper sagging into contact, boxes landing)
+        and start every episode from the settled state instead of replaying the settling.
+        Bonds alive now belong to the snapshot, so the authored bond replay is disabled.
+        """
+        if self._scene is None:
+            gs.raise_exception("QIPCCoupler.capture_reset_state requires a built scene.")
+        if self._clusters.has_membership_requests:
+            gs.raise_exception(
+                "QIPCCoupler.capture_reset_state does not support scenes with authored cluster membership: "
+                "the membership replay after reset would join the members a second time."
+            )
+        if self._rigid_reset_state is not None:
+            rigid_collection = self._scene.rigid_body
+            self._rigid_reset_state = tuple(
+                buffer.detach().clone()
+                for buffer in (
+                    rigid_collection.t,
+                    rigid_collection.quat,
+                    rigid_collection.v,
+                    rigid_collection.omega,
+                )
+            )
+        self._sealed_gas_reset_state = self._snapshot_sealed_gas_state()
+        self._initial_state.rebuild_and_capture_reset(self._scene)
+        self._adhesion.mark_bond_state_captured_in_reset()
+
     def reset(self, envs_idx=None) -> None:
         if envs_idx is not None:
             gs.raise_exception("QIPCCoupler.reset does not support partial environment reset.")

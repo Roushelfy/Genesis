@@ -224,6 +224,11 @@ class QIPCClusterManager:
         """True when any queued cluster rides a rigid body."""
         return any(isinstance(request.proxy, RigidClusterProxy) for request in self._requests)
 
+    @property
+    def has_membership_requests(self) -> bool:
+        """True when authored membership is replayed after every reset."""
+        return any(request.initial.is_explicit for request in self._requests)
+
     def add_request(
         self,
         fem_entity,
