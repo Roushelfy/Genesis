@@ -333,3 +333,74 @@ def test_add_tape_dispenser_cluster_uses_wheel_proxy_and_replays_membership():
     assert component.lifecycle.released_total == 0
     assert component.lifecycle.melted_total == 0
     assert coupler.adhesion.get_bond_count() == 1039
+
+    # A captured snapshot restores the interior itself; reset refreezes it from the restored bonds.
+    coupler.capture_reset_state()
+    component.lifecycle.mark_reset_state_captured()
+    scene.step()
+    component.lifecycle.before_step()
+    scene.reset()
+    component.lifecycle.reset()
+    assert component.lifecycle.member_count == 2760
+    assert coupler.adhesion.get_bond_count() == 1039
+
+
+@pytest.mark.required
+@pytest.mark.precision("64")
+def test_add_tape_dispenser_adhesion_hold_freezes_the_coil_once_its_pairs_exist():
+    from genesis.engine.couplers.qipc_coupler.cluster import RigidClusterProxy
+
+    module = _module()
+    scene = gs.Scene(
+        sim_options=gs.options.SimOptions(dt=0.01, gravity=(0.0, 0.0, -9.8)),
+        coupler_options=gs.options.QIPCCouplerOptions(**module.recommended_coupler_options()),
+        show_viewer=False,
+    )
+    component = module.add_tape_dispenser(
+        scene,
+        pos=(0.5, 0.0, 0.86661028),
+        euler=(0.0, 0.0, 180.0),
+        cluster=RigidClusterProxy(),
+        hold="adhesion",
+    )
+    scene.build()
+    assert component.lifecycle is not None
+    component.lifecycle.initialize()
+    coupler = scene.sim.coupler
+    # A bond-free roll: no bond system exists, and the interior waits for the first contact
+    # pass to certify it.
+    assert coupler._scene._bond_system is None
+    assert component.lifecycle.member_count == 0
+
+    scene.step()
+    component.lifecycle.before_step()
+    frozen = component.lifecycle.member_count
+    # The same interior the asset's bonds certify in bond mode: the cohesive certificate may not
+    # grow it into the strip resting on the coil past the payout tangent.
+    assert frozen == 2760
+    assert component.lifecycle.initial_member_count == frozen
+    scene.step()
+    component.lifecycle.before_step()
+    assert component.lifecycle.member_count == frozen
+    assert component.lifecycle.melted_total == 0
+
+    # The frame-zero snapshot predates the freeze, so the interior refreezes after reset.
+    scene.reset()
+    component.lifecycle.reset()
+    assert component.lifecycle.member_count == 0
+    scene.step()
+    component.lifecycle.before_step()
+    assert component.lifecycle.member_count == frozen
+
+    # A captured snapshot restores the frozen interior, but its pair stencils only come back at
+    # the next contact pass: the interior melts for one step and refreezes from them.
+    coupler.capture_reset_state()
+    component.lifecycle.mark_reset_state_captured()
+    scene.step()
+    component.lifecycle.before_step()
+    scene.reset()
+    component.lifecycle.reset()
+    assert component.lifecycle.member_count == 0
+    scene.step()
+    component.lifecycle.before_step()
+    assert component.lifecycle.member_count == frozen

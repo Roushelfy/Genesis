@@ -555,24 +555,37 @@ class TapeBondClusterController:
         structured_row_width: int | None = None,
         structured_max_front_slope: int | None = None,
         never_member: np.ndarray | None = None,
+        evidence: str = "bond",
     ) -> None:
         collar, activation = _normalize_tape_cluster_collars(collar, activation_collar)
         if not np.isfinite(detach_displacement) or detach_displacement <= 0.0:
             gs.raise_exception("TapeBondClusterController: detach_displacement must be finite and positive.")
         if detach_gate not in ("euclidean", "radial"):
             gs.raise_exception("TapeBondClusterController: detach_gate must be 'euclidean' or 'radial'.")
+        if evidence not in ("bond", "adhesion"):
+            gs.raise_exception("TapeBondClusterController: evidence must be 'bond' or 'adhesion'.")
 
-        triangles, bonded, adjacency = (
-            _bond_cluster_certificate(asset, never_member) if certificate is None else certificate
-        )
-        n_vertices = len(bonded)
+        if evidence == "bond":
+            triangles, bonded, adjacency = (
+                _bond_cluster_certificate(asset, never_member) if certificate is None else certificate
+            )
+            n_vertices = len(bonded)
+        else:
+            triangles = np.asarray(asset.tape_tris, dtype=np.int64)
+            n_vertices = int(asset.tape_positions.shape[0])
         if never_member is None:
             never = np.zeros(n_vertices, dtype=bool)
         else:
             never = np.asarray(never_member, dtype=bool).reshape(-1)
             if len(never) != n_vertices:
                 gs.raise_exception("TapeBondClusterController: never_member mask must match the tape vertex count.")
-        initial_member = _bond_cluster_target(triangles, bonded, ~bonded, adjacency, activation)
+        if evidence == "bond":
+            initial_member = _bond_cluster_target(triangles, bonded, ~bonded, adjacency, activation)
+        else:
+            # The cohesive certificate is the live adhesion pair set, which only exists once the
+            # first contact pass has run, so the interior starts free and freezes at the first
+            # step boundary that offers pairs (see `_freeze`).
+            initial_member = np.zeros(len(triangles), dtype=bool)
 
         self._coupler = coupler
         self._cluster = cluster
@@ -590,7 +603,10 @@ class TapeBondClusterController:
         self._clear_bonds_on_detach = bool(clear_bonds_on_detach)
         self._structured_row_width = structured_row_width
         self._structured_max_front_slope = structured_max_front_slope
+        self._evidence = evidence
         self._initial_member = initial_member
+        self._is_frozen = evidence == "bond"
+        self._member_at_capture: np.ndarray | None = None
         self._initialized = False
         self._driver = None
 
@@ -630,8 +646,11 @@ class TapeBondClusterController:
         self.reset()
 
     def reset(self) -> None:
-        """Rebuild the driver against the replayed authored membership."""
+        """Rebuild the driver against the membership QIPC restored."""
         self._require_initialized()
+        if self._member_at_capture is not None or self._evidence == "adhesion":
+            self._refreeze_interior()
+            return
         driver = self._build_driver()
         adopted = driver.adopt_membership(
             self._initial_member,
@@ -646,10 +665,47 @@ class TapeBondClusterController:
             )
         self._driver = driver
 
+    def mark_reset_state_captured(self) -> None:
+        """The QIPC reset snapshot now carries the live membership, so reset refreezes from it."""
+        self._member_at_capture = None if self._driver is None else self._driver.member.copy()
+
     def before_step(self) -> int:
         """Advance the monotone peel front before the next QIPC step."""
         self._require_initialized()
+        if not self._is_frozen:
+            self._freeze()
+            return 0
         return self._driver.step()
+
+    def _refreeze_interior(self) -> None:
+        # A captured snapshot restores the interior the driver last saw, but its certificate is the
+        # snapshot's own (bonds released during the captured stretch, cohesive pairs whose stencils
+        # only come back at the next contact pass): melt it and refreeze from the live certificate
+        # instead of re-deriving a membership to adopt. A bond-free interior starts free, so it
+        # takes this path from frame zero as well.
+        member_count = self._cluster.member_count
+        if member_count:
+            if self._member_at_capture is None or int(self._member_at_capture.sum()) != member_count:
+                gs.raise_exception(
+                    "TapeBondClusterController: QIPC restored a clustered interior whose membership was not captured."
+                )
+            self._cluster.detach(tris=np.flatnonzero(self._member_at_capture).astype(np.int32))
+        self._driver = self._build_driver()
+        self._is_frozen = False
+        self._freeze()
+
+    def _freeze(self) -> None:
+        """Freeze the wound interior from the live certificate; a no-op until it exists."""
+        if self._structured_row_width is None:
+            joined = self._driver.freeze()
+        else:
+            joined = self._driver.freeze_structured_rows(
+                self._structured_row_width,
+                max_front_slope=self._structured_max_front_slope,
+            )
+        if joined:
+            self._is_frozen = True
+            self._initial_member = self._driver.member.copy()
 
     def _build_driver(self):
         from qipc.cluster_release_driver import ClusterReleaseDriver
@@ -670,8 +726,9 @@ class TapeBondClusterController:
             radial_center=self._radial_center,
             radial_axis=self._radial_axis,
             release_front_band=self._release_front_band,
-            clear_bonds_on_detach=self._clear_bonds_on_detach,
+            clear_bonds_on_detach=self._clear_bonds_on_detach and self._evidence == "bond",
             fem_vertex_offset=vertex_range.start,
+            evidence=self._evidence,
         )
 
     def _require_initialized(self) -> None:
@@ -699,6 +756,7 @@ def add_tape_bond_cluster(
     release_front_band: int | None = None,
     clear_bonds_on_detach: bool = True,
     structured_max_front_slope: int | None = None,
+    evidence: str = "bond",
 ) -> TapeBondClusterController:
     """Queue a releasable tape cluster and return its runtime peel policy.
 
@@ -707,31 +765,46 @@ def add_tape_bond_cluster(
     ``proxy_entity`` attaches the cluster to an existing rigid entity of the matching
     QIPC kind (ABD for affine, ``qipc_rigid_body`` for rigid); ``None`` creates a ghost
     body of that kind.
+
+    ``evidence`` names what certifies the wound interior and feeds the release front:
+    ``"bond"`` reads the wind-authored distance locks and joins their interior before
+    ``scene.build``; ``"adhesion"`` reads the cohesive per-pair state of a bond-free roll,
+    so the interior joins at the first step boundary after the pairs exist and peeling is
+    settled by the detach gate alone. When the asset carries wind-authored bonds they still
+    bound the adhesion interior: only the rows they cover may ever ride the cluster.
     """
     collar, activation = _normalize_tape_cluster_collars(collar, activation_collar)
     coupler = scene.sim.coupler
-    if coupler._options.adhesion_bond_lock_floor_ratio <= 0.0:
+    if evidence == "bond" and coupler._options.adhesion_bond_lock_floor_ratio <= 0.0:
         gs.raise_exception(
             "add_tape_bond_cluster requires adhesion_bond_lock_floor_ratio > 0 "
             "so cleared near-barrier bonds cannot immediately re-lock."
         )
+    if structured_row_width is not None and never_member is None:
+        gs.raise_exception("structured tape clusters require a never_member mask.")
     certificate = None
-    if structured_row_width is not None:
-        if never_member is None:
-            gs.raise_exception("structured tape clusters require a never_member mask.")
-        certificate = _structured_bond_cluster_certificate(
-            asset,
-            row_width=structured_row_width,
-            never_member=never_member,
-        )
+    member_triangles = None
+    has_wound_bonds = asset.bond_topos is not None and asset.bond_topos.size > 0
+    if evidence == "bond" or has_wound_bonds:
+        if structured_row_width is not None:
+            certificate = _structured_bond_cluster_certificate(
+                asset,
+                row_width=structured_row_width,
+                never_member=never_member,
+            )
+        else:
+            certificate = _bond_cluster_certificate(asset, never_member)
+    if evidence == "bond":
         triangles, bonded, adjacency = certificate
         initial_member = _bond_cluster_target(triangles, bonded, ~bonded, adjacency, activation)
         member_triangles = np.flatnonzero(initial_member).astype(np.int32)
-    else:
-        certificate = _bond_cluster_certificate(asset, never_member)
-        triangles, bonded, adjacency = certificate
-        initial_member = _bond_cluster_target(triangles, bonded, ~bonded, adjacency, activation)
-        member_triangles = np.flatnonzero(initial_member).astype(np.int32)
+    elif certificate is not None:
+        # The cohesive certificate is pair existence, which also covers tape that merely rests on
+        # the coil (the strip past the payout tangent, a tail that sagged back onto the roll), so
+        # the wind-authored bonds bound what may ever ride: whatever they leave free stays free.
+        _, bonded, _ = certificate
+        never_member = ~bonded if never_member is None else np.asarray(never_member, dtype=bool).reshape(-1) | ~bonded
+        certificate = None
     if isinstance(proxy, AffineClusterProxy):
         cluster = coupler.add_affine_cluster(
             tape_entity,
@@ -747,7 +820,7 @@ def add_tape_bond_cluster(
             proxy_link=proxy_link,
             initial_tris=member_triangles,
         )
-    if bond_seed_handle is None:
+    if bond_seed_handle is None and evidence == "bond":
         bond_seed_handle = coupler.adhesion.get_bond_seed_handle(tape_entity, name="internal")
     return TapeBondClusterController(
         coupler,
@@ -767,6 +840,7 @@ def add_tape_bond_cluster(
         structured_row_width=structured_row_width,
         structured_max_front_slope=structured_max_front_slope,
         never_member=never_member,
+        evidence=evidence,
     )
 
 

@@ -56,6 +56,8 @@ _MACHINE_MESH_FILES = frozenset(
     }
 )
 _MESH_FILES = _MACHINE_MESH_FILES | {"meshes/scotch3850_ring.glb"}
+# Cohesive hold: how much stronger the core grips the hub ring than the layers grip each other.
+_ADHESION_HOLD_HUB_GRIP = 10.0
 _PROXY_MESH_FILES = frozenset(
     {
         "meshes/collision_proxies/Cube.glb",
@@ -647,6 +649,79 @@ def add_tape_dispenser_machine(
     )
 
 
+def _hold_roll_with_bonds(coupler, asset: TapeDispenserAsset, tape, ring, ring_region, world_rotation) -> None:
+    """Restore the asset's frozen distance locks between the layers and onto the hub ring."""
+    for target, sticky in ((tape, (0, 1, 1, 1)), (ring_region, (0, 0, 1, 1))):
+        coupler.add_adhesion(
+            tape,
+            target,
+            Cn=0.0,
+            Ct=0.0,
+            W=0.0,
+            eta=1.0,
+            sticky=sticky,
+            friction=0.5,
+            resistance=1.0e5,
+            distance_lock=True,
+            distance_lock_ratio=1.5,
+            distance_lock_rest_snap=False,
+            release_force=0.5,
+        )
+    transformed_Dm_inv = (asset.bond_Dm_inv.reshape(-1, 3, 3) @ world_rotation.T).reshape(-1, 9)
+    coupler.adhesion.add_bond_state_request(
+        tape,
+        rigid_source=ring,
+        topologies=asset.bond_topologies,
+        source_fem_global_offset=ring.n_vertices,
+        Dm_inv=transformed_Dm_inv,
+        V0=asset.bond_V0,
+        d_rest=asset.bond_d_rest,
+        kappa=asset.bond_kappa,
+        release_force=asset.bond_release_force,
+        release_strain=asset.bond_release_strain,
+        release_gap=asset.bond_release_gap,
+        release_slip=asset.bond_release_slip,
+        age=asset.bond_age,
+    )
+
+
+def _hold_roll_with_adhesion(coupler, asset: TapeDispenserAsset, tape, ring_region) -> None:
+    """Hold the layers and the hub ring through the cohesive law with the asset's wind parameters.
+
+    New pairs start fully bonded (``beta0=1``) so the imported coil holds from frame zero. The
+    ring row is graded ``_ADHESION_HOLD_HUB_GRIP`` times stronger than the layer row: the core
+    must turn with the wheel while the outer layer peels, the same grading the qipc rod-wind
+    scenes use between their hub and layer rows.
+    """
+    params = asset.roll.params
+    cn = float(params.get("CN", 1.0))
+    layer_row = {
+        "Cn": cn,
+        "Ct": float(params.get("CT", cn)),
+        "W": float(params.get("ADH_W", 1.0)),
+        "eta": float(params.get("ETA", 100.0)),
+        "bonding_rate": float(params.get("BONDING_RATE", 1.0)),
+    }
+    hub_row = {
+        **layer_row,
+        "Cn": _ADHESION_HOLD_HUB_GRIP * layer_row["Cn"],
+        "Ct": _ADHESION_HOLD_HUB_GRIP * layer_row["Ct"],
+    }
+    # The scene options may lock bonds globally (the sealing station does, for its label), so
+    # each cohesive row opts out explicitly.
+    for target, sticky, row in ((tape, (0, 1, 1, 1), layer_row), (ring_region, (0, 0, 1, 1), hub_row)):
+        coupler.add_adhesion(
+            tape,
+            target,
+            beta0=1.0,
+            sticky=sticky,
+            friction=0.5,
+            resistance=1.0e5,
+            distance_lock=False,
+            **row,
+        )
+
+
 def add_tape_dispenser(
     scene,
     asset: TapeDispenserAsset | None = None,
@@ -659,6 +734,8 @@ def add_tape_dispenser(
     cluster_collar: int = 3,
     cluster_detach_displacement_ratio: float = 5.0,
     collision_proxies: bool = True,
+    hold: str = "bond",
+    bending_stiffness: float | None = None,
 ) -> TapeDispenser:
     """Add the upside-down canonical post-f249 dispenser before scene build.
 
@@ -667,15 +744,27 @@ def add_tape_dispenser(
     returned machine has a free root and unactuated joints; "static" means zero
     initial velocity, not permanently fixed geometry.
 
+    ``hold`` is what keeps the roll wound: ``"bond"`` restores the asset's frozen
+    distance locks between the layers and onto the hub ring; ``"adhesion"`` is
+    bond-free and lets the layers and the ring hold through the cohesive adhesion
+    law with the wind parameters stored in the asset. A cohesive roll pays out only
+    where a layer lifts off the coil: a tangential pull presses the leaving layer
+    onto the roll and spins it instead, so a pulled end mostly straightens and
+    turns the roll rather than unwinding it. ``bending_stiffness`` overrides the
+    shell's bending modulus in Pa; ``None`` keeps the asset's calibrated value.
+
     ``cluster`` rides the wound interior on a releasable cluster with a radial peel
-    gate; ``None`` keeps the authored per-bond interior. An affine proxy attaches to
-    the ``tape_wheel`` link. A rigid proxy is a ghost 6-DOF body held to the wheel
-    by the authored bonds and contact, because the wheel is an ABD link and QIPC
-    rigid clusters attach only to ``qipc_rigid_body`` entities.
+    gate; ``None`` keeps the interior deformable. An affine proxy attaches to the
+    ``tape_wheel`` link. A rigid proxy is a ghost 6-DOF body held to the wheel by
+    the roll's hold and contact, because the wheel is an ABD link and QIPC rigid
+    clusters attach only to ``qipc_rigid_body`` entities. Under ``"adhesion"`` the
+    cluster reads the cohesive pair state as its release evidence.
     """
     coupler = scene.sim.coupler
     if not isinstance(coupler, QIPCCoupler):
         gs.raise_exception("add_tape_dispenser requires the QIPC coupler (QIPCCouplerOptions).")
+    if hold not in ("bond", "adhesion"):
+        gs.raise_exception("add_tape_dispenser: hold must be 'bond' or 'adhesion'.")
     asset = TapeDispenserAsset.packaged() if asset is None else asset
 
     position, world_rotation, body_q = _transformed_machine_state(asset, pos, euler)
@@ -714,7 +803,7 @@ def add_tape_dispenser(
             nu=asset.roll.poisson,
             rho=asset.roll.density,
             thickness=asset.roll.thick,
-            bending_stiffness=asset.roll.bending_e,
+            bending_stiffness=asset.roll.bending_e if bending_stiffness is None else bending_stiffness,
             membrane="stvk",
             bending_model="hinge",
             strain_limit_multiplier=0.0,
@@ -749,53 +838,10 @@ def add_tape_dispenser(
         for second in machine_regions[index:]:
             coupler.set_contact_pair(first, second, enabled=False, friction=0.0, resistance=1.0e5)
 
-    coupler.add_adhesion(
-        tape,
-        tape,
-        Cn=0.0,
-        Ct=0.0,
-        W=0.0,
-        eta=1.0,
-        sticky=(0, 1, 1, 1),
-        friction=0.5,
-        resistance=1.0e5,
-        distance_lock=True,
-        distance_lock_ratio=1.5,
-        distance_lock_rest_snap=False,
-        release_force=0.5,
-    )
-    coupler.add_adhesion(
-        tape,
-        ring_region,
-        Cn=0.0,
-        Ct=0.0,
-        W=0.0,
-        eta=1.0,
-        sticky=(0, 0, 1, 1),
-        friction=0.5,
-        resistance=1.0e5,
-        distance_lock=True,
-        distance_lock_ratio=1.5,
-        distance_lock_rest_snap=False,
-        release_force=0.5,
-    )
-
-    transformed_Dm_inv = (asset.bond_Dm_inv.reshape(-1, 3, 3) @ world_rotation.T).reshape(-1, 9)
-    coupler.adhesion.add_bond_state_request(
-        tape,
-        rigid_source=ring,
-        topologies=asset.bond_topologies,
-        source_fem_global_offset=ring.n_vertices,
-        Dm_inv=transformed_Dm_inv,
-        V0=asset.bond_V0,
-        d_rest=asset.bond_d_rest,
-        kappa=asset.bond_kappa,
-        release_force=asset.bond_release_force,
-        release_strain=asset.bond_release_strain,
-        release_gap=asset.bond_release_gap,
-        release_slip=asset.bond_release_slip,
-        age=asset.bond_age,
-    )
+    if hold == "bond":
+        _hold_roll_with_bonds(coupler, asset, tape, ring, ring_region, world_rotation)
+    else:
+        _hold_roll_with_adhesion(coupler, asset, tape, ring_region)
 
     lifecycle = None
     if cluster is not None:
@@ -810,6 +856,11 @@ def add_tape_dispenser(
             position, dtype=np.float64
         )
         radial_axis = world_rotation @ _REFERENCE_AXLE_AXIS
+        # Bond evidence advances the front on bond releases and only confirms with the radial
+        # gate. The cohesive hold has no release events: the gate is the whole arbiter, and a
+        # tangential pull presses the leaving rows onto the coil (belt tension) instead of
+        # lifting them, so it reads any displacement from the carried seat as the peel.
+        detach_gate = "radial" if hold == "bond" else "euclidean"
         is_wheel_proxy = isinstance(cluster, AffineClusterProxy)
         lifecycle = add_tape_bond_cluster(
             scene,
@@ -822,10 +873,11 @@ def add_tape_dispenser(
             proxy_link="tape_wheel" if is_wheel_proxy else None,
             structured_row_width=row_width,
             never_member=never_member,
-            detach_gate="radial",
+            detach_gate=detach_gate,
             radial_center=radial_center,
             radial_axis=radial_axis,
             release_front_band=2,
+            evidence=hold,
         )
 
     return TapeDispenser(
