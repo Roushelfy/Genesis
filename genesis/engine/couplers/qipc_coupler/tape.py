@@ -805,6 +805,13 @@ def add_tape_bond_cluster(
         _, bonded, _ = certificate
         never_member = ~bonded if never_member is None else np.asarray(never_member, dtype=bool).reshape(-1) | ~bonded
         certificate = None
+    if evidence == "adhesion":
+        # The structured front only advances through unsupported vertices, which bond releases
+        # yield and cohesive pairs never do (they stay supported until they cull), so cohesive
+        # evidence runs the organic front qipc's rigid-adhesion scenes use; the row layout above
+        # still bounds the interior.
+        structured_row_width = None
+        structured_max_front_slope = None
     if isinstance(proxy, AffineClusterProxy):
         cluster = coupler.add_affine_cluster(
             tape_entity,

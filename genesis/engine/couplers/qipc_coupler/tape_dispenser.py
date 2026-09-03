@@ -747,11 +747,10 @@ def add_tape_dispenser(
     ``hold`` is what keeps the roll wound: ``"bond"`` restores the asset's frozen
     distance locks between the layers and onto the hub ring; ``"adhesion"`` is
     bond-free and lets the layers and the ring hold through the cohesive adhesion
-    law with the wind parameters stored in the asset. A cohesive roll pays out only
-    where a layer lifts off the coil: a tangential pull presses the leaving layer
-    onto the roll and spins it instead, so a pulled end mostly straightens and
-    turns the roll rather than unwinding it. ``bending_stiffness`` overrides the
-    shell's bending modulus in Pa; ``None`` keeps the asset's calibrated value.
+    law with the wind parameters stored in the asset; a pulled end peels the
+    leaving rows off the coil and unwinds it like the bonded roll does.
+    ``bending_stiffness`` overrides the shell's bending modulus in Pa; ``None``
+    keeps the asset's calibrated value.
 
     ``cluster`` rides the wound interior on a releasable cluster with a radial peel
     gate; ``None`` keeps the interior deformable. An affine proxy attaches to the
@@ -856,11 +855,6 @@ def add_tape_dispenser(
             position, dtype=np.float64
         )
         radial_axis = world_rotation @ _REFERENCE_AXLE_AXIS
-        # Bond evidence advances the front on bond releases and only confirms with the radial
-        # gate. The cohesive hold has no release events: the gate is the whole arbiter, and a
-        # tangential pull presses the leaving rows onto the coil (belt tension) instead of
-        # lifting them, so it reads any displacement from the carried seat as the peel.
-        detach_gate = "radial" if hold == "bond" else "euclidean"
         is_wheel_proxy = isinstance(cluster, AffineClusterProxy)
         lifecycle = add_tape_bond_cluster(
             scene,
@@ -873,7 +867,11 @@ def add_tape_dispenser(
             proxy_link="tape_wheel" if is_wheel_proxy else None,
             structured_row_width=row_width,
             never_member=never_member,
-            detach_gate=detach_gate,
+            # Both evidences confirm the front with the radial peel gate: a taut pull lifts the
+            # leaving row off the coil at the peel point while belt tension keeps the still-wound
+            # rows pressed on, so the front tracks the payout. A euclidean gate reads the soft
+            # rows creeping over the spinning rigid core as peel and melts the whole interior.
+            detach_gate="radial",
             radial_center=radial_center,
             radial_axis=radial_axis,
             release_front_band=2,
