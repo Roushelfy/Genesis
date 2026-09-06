@@ -161,11 +161,20 @@ class TapeAsset:
 
 
 class _TapeClusterAsset(Protocol):
-    tape_positions: np.ndarray
-    tape_tris: np.ndarray
-    bond_topos: np.ndarray | None
-    bond_topos_space: str | None
-    bond_fem_gvo: int
+    @property
+    def tape_positions(self) -> np.ndarray: ...
+
+    @property
+    def tape_tris(self) -> np.ndarray: ...
+
+    @property
+    def bond_topos(self) -> np.ndarray | None: ...
+
+    @property
+    def bond_topos_space(self) -> str | None: ...
+
+    @property
+    def bond_fem_gvo(self) -> int: ...
 
 
 def make_ring_hub(r_out: float, r_in: float, height: float, n_sides: int = 48):
@@ -668,6 +677,10 @@ class TapeBondClusterController:
     def mark_reset_state_captured(self) -> None:
         """The QIPC reset snapshot now carries the live membership, so reset refreezes from it."""
         self._member_at_capture = None if self._driver is None else self._driver.member.copy()
+
+    def remap_after_cut(self, event) -> None:
+        self._require_initialized()
+        self._driver.remap_after_cut(event)
 
     def before_step(self) -> int:
         """Advance the monotone peel front before the next QIPC step."""

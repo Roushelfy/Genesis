@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import TYPE_CHECKING, NamedTuple
 
 import numpy as np
@@ -24,10 +24,12 @@ from .cluster import (
     cluster_entry_point,
 )
 from .contact import QIPCContactManager, QIPCContactRegion
+from genesis.engine.couplers.qipc_coupler.cutting import QIPCShellCutter
 from .initial_state import QIPCInitialStateManager
 from .rigid_attachment import QIPCRigidAttachment, QIPCRigidAttachmentManager
 
 if TYPE_CHECKING:
+    from qipc.geometry.geometry_slot import GeometrySlot
     from qipc.scene.joint_collection import JointCollection
     from qipc.scene.scene import Scene as QIPCScene
 
@@ -82,7 +84,7 @@ class FemEntityEntry(NamedTuple):
     """Per-FEM-entity QIPC bookkeeping (resolved after scene.init())."""
 
     entity: FEMEntity
-    slot: object  # qipc GeometrySlot
+    slot: GeometrySlot
     is_cloth: bool
     offset: int  # fem_vert_offset into the global QIPC FEM vertex buffer
     n_verts: int
@@ -102,6 +104,13 @@ class FemConstraintRecord:
     link: RigidLink | None = None
     link_offsets: torch.Tensor | None = None  # (n, 3) f64 cuda, in link frame
 
+    def _copy(self) -> FemConstraintRecord:
+        return replace(
+            self,
+            verts=self.verts.clone(),
+            link_offsets=None if self.link_offsets is None else self.link_offsets.clone(),
+        )
+
 
 class QIPCSolverStatistics(NamedTuple):
     """Per-step QIPC solver statistics exposed without leaking the native solver."""
@@ -110,6 +119,11 @@ class QIPCSolverStatistics(NamedTuple):
     newton_iters: int
     max_pcg_iters: int
     max_line_search_iters: int
+
+
+class _FemConstraintSnapshot(NamedTuple):
+    controls: tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]
+    records: tuple[FemConstraintRecord, ...]
 
 
 class SealedGasState(NamedTuple):
@@ -155,8 +169,14 @@ def _perpendicular_direction(axis: np.ndarray) -> np.ndarray:
 
 def _stamp_geometry_d_hat(geo, d_hat: float) -> None:
     """Give one QIPC geometry its own contact barrier band (per-vertex d_hat at wire time)."""
+    from qipc.geometry.attribute_desc import AttributeDesc
+
     if "d_hat" not in geo.meta:
-        geo.meta.create("d_hat", np.float64)
+        geo.meta.create(
+            "d_hat",
+            np.float64,
+            desc=AttributeDesc(doc="per-geometry contact barrier distance override (m)", gt=0.0, physical=True),
+        )
     geo.meta["d_hat"] = np.array([float(d_hat)], dtype=np.float64)
 
 
@@ -480,6 +500,7 @@ class QIPCCoupler(RBC):
         self._initial_state = QIPCInitialStateManager()
         self._scene: QIPCScene | None = None
         self._fem_rest_positions: dict = {}
+        self._cutting: QIPCShellCutter | None = None
         self._fem_position_dbc: dict[FEMEntity, tuple[float, float]] = {}
         self._sealed_gas_bag_by_entity: dict[FEMEntity, int] = {}
         self._sealed_gas_reset_state: dict[FEMEntity, _SealedGasResetState] = {}
@@ -731,6 +752,115 @@ class QIPCCoupler(RBC):
             joint_theta=joint_theta,
         )
 
+    def enable_shell_cutting(
+        self, target: FEMEntity, tool: RigidEntity, *, link: str, strength: float, kerf_width: float | None
+    ) -> QIPCShellCutter:
+        """Enable contact-pressure cutting by a serrated collision-mesh link."""
+        if self._scene is not None or self._cutting is not None:
+            gs.raise_exception("Declare one shell cutter before scene.build().")
+        self._cutting = QIPCShellCutter(self, target, tool, link, strength, kerf_width)
+        return self._cutting
+
+    def is_mutable_shell(self, entity: FEMEntity) -> bool:
+        return self._cutting is not None and self._cutting.target is entity
+
+    @property
+    def mesh_revision(self) -> int:
+        return 0 if self._cutting is None else self._cutting.epoch
+
+    def fem_mesh(self, entity: FEMEntity) -> tuple[torch.Tensor, torch.Tensor]:
+        """Live positions and entity-local triangles, including kerf births."""
+        entry = self._fem_entry(entity)
+        if not entry.is_cloth:
+            gs.raise_exception("fem_mesh requires a cloth shell.")
+        face_offset, face_count = self._fem_tri_ranges[entity]
+        fe = self._scene.finite_element
+        return (
+            fe.x[entry.offset : entry.offset + entry.n_verts],
+            fe.tri_indices.reshape(-1, 3)[face_offset : face_offset + face_count] - entry.offset,
+        )
+
+    def _refresh_fem_layout(self) -> None:
+        prefix = int(self._scene.affine_body.n_verts) + int(self._scene.rigid_body.n_verts)
+        blocks = {
+            (int(g), int(c)): (int(o), int(n))
+            for g, c, o, n, _ in self._scene.solver._native.topo_manager().layout_blocks()
+        }
+        entries = []
+        self._fem_tri_ranges = {}
+        for entry in self._fem_entries:
+            offset, count = blocks[int(entry.slot.id), 0]
+            entries.append(entry._replace(offset=offset - prefix, n_verts=count))
+            if entry.is_cloth:
+                self._fem_tri_ranges[entry.entity] = blocks[int(entry.slot.id), 2]
+        self._fem_entries = entries
+        self._fem_entry_by_entity = {entry.entity: entry for entry in entries}
+        if entries:
+            from qipc._src.native.solver import PositionDBC
+
+            ids = self._scene.sim_systems[PositionDBC].vert_indices_view().to(dtype=torch.int64)
+            self._fem_constraint_rows = torch.full(
+                (self._scene.finite_element.n_verts,), -1, dtype=torch.int64, device="cuda"
+            )
+            self._fem_constraint_rows[ids] = torch.arange(len(ids), device="cuda")
+            if bool((self._fem_constraint_rows < 0).any()):
+                gs.raise_exception("A coupled FEM vertex is missing its position-constraint channel.")
+
+    def _remap_after_cut(self, event) -> None:
+        prefix = int(self._scene.affine_body.n_verts) + int(self._scene.rigid_body.n_verts)
+        previous = self._fem_entry_by_entity
+        self._refresh_fem_layout()
+        mapping = torch.as_tensor(event.vert_map, dtype=torch.int64, device="cuda")
+        records = []
+        for record in self._fem_constraints:
+            old = previous[record.entity]
+            live = self._fem_entry(record.entity)
+            mapped = mapping[record.verts + old.offset + prefix]
+            keep = mapped >= 0
+            record.verts = mapped[keep] - live.offset - prefix
+            if record.link_offsets is not None:
+                record.link_offsets = record.link_offsets[keep]
+            if record.verts.numel():
+                records.append(record)
+        self._fem_constraints = records
+
+    def _constraint_rows(self, entity: FEMEntity, vertices: torch.Tensor) -> torch.Tensor:
+        entry = self._fem_entry(entity)
+        return self._fem_constraint_rows[entry.offset + vertices]
+
+    def _constraint_views(self, entity: FEMEntity, vertices: torch.Tensor):
+        from qipc._src.native.solver import PositionDBC
+
+        return self._scene.sim_systems[PositionDBC], self._constraint_rows(entity, vertices)
+
+    def _fem_constraint_control_views(self) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+        from qipc._src.native.solver import PositionDBC
+
+        system = self._scene.sim_systems[PositionDBC]
+        return (
+            system.x_target_view(),
+            system.is_constrained_view(),
+            system.strength_ratio_view(),
+            system.fix_tol_view(),
+        )
+
+    def _snapshot_fem_constraints(self) -> _FemConstraintSnapshot | None:
+        if not self._fem_entries:
+            return None
+        # PositionDBC control buffers are outside QIPC's drstate checkpoint.
+        target, enabled, strength, tolerance = self._fem_constraint_control_views()
+        return _FemConstraintSnapshot(
+            (target.clone(), enabled.clone(), strength.clone(), tolerance.clone()),
+            tuple(record._copy() for record in self._fem_constraints),
+        )
+
+    def _restore_fem_constraints(self, snapshot: _FemConstraintSnapshot | None) -> None:
+        if snapshot is None:
+            return
+        for live, saved in zip(self._fem_constraint_control_views(), snapshot.controls, strict=True):
+            live.copy_(saved)
+        self._fem_constraints = [record._copy() for record in snapshot.records]
+
     def set_fem_rest_positions(self, entity: FEMEntity, rest_verts) -> None:
         """Give a FEM entity rest positions that differ from its initial ones.
 
@@ -804,7 +934,7 @@ class QIPCCoupler(RBC):
     def _declare_clusters(
         self,
         all_pre_inits: list[AbdEntityPreInit],
-        fem_pre_entries: list[tuple[FEMEntity, object, bool]],
+        fem_pre_entries: list[tuple[FEMEntity, GeometrySlot, bool]],
     ) -> None:
         """Resolve Genesis entities and declare QIPC cluster proxies before init."""
         fem_slots = {entity: slot for entity, slot, _is_cloth in fem_pre_entries}
@@ -979,7 +1109,7 @@ class QIPCCoupler(RBC):
         self._apply_rigid_extras(all_pre_inits)
 
         # --- FEM entities (volumetric + cloth), pre-init ---
-        fem_pre_entries: list[tuple[FEMEntity, object, bool]] = self._build_fem_entities()
+        fem_pre_entries: list[tuple[FEMEntity, GeometrySlot, bool]] = self._build_fem_entities()
 
         # --- FEM clusters: declare proxy/FEM pairings before QIPC init ---
         self._declare_clusters(all_pre_inits, fem_pre_entries)
@@ -990,6 +1120,9 @@ class QIPCCoupler(RBC):
 
         # --- Per-entity contact elements + pairwise contact models ---
         self._setup_contact_tabular(all_pre_inits, fem_pre_entries, plane_entities)
+
+        if self._cutting is not None:
+            self._cutting.declare(all_pre_inits, fem_pre_entries)
 
         # --- Contact constitution (adhesion) ---
         self._adhesion.apply_constitution(self._scene, has_fem_entities=bool(fem_pre_entries))
@@ -1019,6 +1152,9 @@ class QIPCCoupler(RBC):
             entry = FemEntityEntry(fem_entity, slot, is_cloth, offset, fem_entity.n_vertices)
             self._fem_entries.append(entry)
             self._fem_entry_by_entity[fem_entity] = entry
+        self._refresh_fem_layout()
+        if self._cutting is not None:
+            self._cutting.initialize()
         initial_state_applied = self._initial_state.apply(self._scene, all_pre_inits, self._jc)
         if self._adhesion.has_bond_seed_requests():
             self._adhesion.apply_bond_seed_requests(
@@ -1033,6 +1169,7 @@ class QIPCCoupler(RBC):
         self._clusters.initialize()
         self._initialize_sealed_gas_state()
         self._fem_constraints: list[FemConstraintRecord] = []
+        self._fem_constraint_reset_state = self._snapshot_fem_constraints()
 
         # --- Phase 2 (post-init): resolve body offsets, build writeback tensors ---
         all_link_indices: list[int] = []
@@ -1118,7 +1255,7 @@ class QIPCCoupler(RBC):
         )[: len(rigid_free_base_entries)]
         self._rigid_reset_state: tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor] | None = None
         rigid_collection = self._scene.rigid_body
-        if rigid_link_indices:
+        if rigid_collection.n_bodies:
             self._rigid_wb_q: torch.Tensor = torch.zeros(
                 (rigid_collection.n_bodies, 12), dtype=torch.float64, device="cuda"
             )
@@ -1173,6 +1310,8 @@ class QIPCCoupler(RBC):
         """
         if self._scene is None:
             gs.raise_exception("QIPCCoupler.capture_reset_state requires a built scene.")
+        if self._scene.topo.version:
+            gs.raise_exception("Capture the reset state before the first topology change.")
         self._clusters.mark_membership_captured()
         if self._rigid_reset_state is not None:
             rigid_collection = self._scene.rigid_body
@@ -1188,11 +1327,29 @@ class QIPCCoupler(RBC):
         self._sealed_gas_reset_state = self._snapshot_sealed_gas_state()
         self._initial_state.rebuild_and_capture_reset(self._scene)
         self._adhesion.mark_bond_state_captured_in_reset()
+        self._fem_constraint_reset_state = self._snapshot_fem_constraints()
 
     def reset(self, envs_idx=None) -> None:
         if envs_idx is not None:
             gs.raise_exception("QIPCCoupler.reset does not support partial environment reset.")
 
+        constraint_snapshot = self._fem_constraint_reset_state
+        if self._scene.topo.version != self._scene._reset_topo_version:
+            # Rebuild the authored topology, then restore the episode snapshot
+            # (which may include a settled pose and partially released roll).
+            snapshot = self._scene._reset_state
+            rigid_snapshot = self._rigid_reset_state
+            gas_snapshot = self._sealed_gas_reset_state
+            captured_membership = self._clusters._membership_captured_in_reset
+            self.build()
+            self._scene._reset_state = snapshot
+            self._rigid_reset_state = rigid_snapshot
+            self._sealed_gas_reset_state = gas_snapshot
+            self._clusters._membership_captured_in_reset = captured_membership
+            self._is_first_step = False
+
+        runtime_constraints = self._snapshot_fem_constraints()
+        self._restore_fem_constraints(constraint_snapshot)
         runtime_gas_state = self._snapshot_sealed_gas_state()
         runtime_rigid_state: tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor] | None = None
         self._restore_sealed_gas_state()
@@ -1218,6 +1375,7 @@ class QIPCCoupler(RBC):
         try:
             self._scene.reset()
         except RuntimeError:
+            self._restore_fem_constraints(runtime_constraints)
             self._write_sealed_gas_state(runtime_gas_state)
             if runtime_rigid_state is not None:
                 rigid_collection = self._scene.rigid_body
@@ -1236,6 +1394,9 @@ class QIPCCoupler(RBC):
             raise
         self._adhesion.restore_seeded_bonds()
         self._clusters.replay_initial_membership()
+        self._fem_constraint_reset_state = constraint_snapshot
+        if self._cutting is not None:
+            self._cutting.initialize()
         self._writeback_state()
         self._writeback_fem_state(0)
 
@@ -1385,6 +1546,8 @@ class QIPCCoupler(RBC):
             return
 
         self._scene.step()
+        if self._cutting is not None:
+            self._cutting.update()
 
         self._writeback_state()
         self._writeback_fem_state(f + 1)
@@ -1500,7 +1663,7 @@ class QIPCCoupler(RBC):
     # FEM: build, writeback, constraints (P1/P2)
     # -------------------------------------------------------------------------
 
-    def _build_fem_entities(self) -> list[tuple[FEMEntity, object, bool]]:
+    def _build_fem_entities(self) -> list[tuple[FEMEntity, GeometrySlot, bool]]:
         """Create one QIPC FEM geometry per Genesis FEM entity (pre-init).
 
         Volumetric entities become tetmeshes with StableNeoHookean; Cloth
@@ -1528,7 +1691,7 @@ class QIPCCoupler(RBC):
         from genesis.engine.materials.FEM import Muscle as MuscleMaterial
         from genesis.engine.materials.FEM import SealedGasShell
 
-        pre_entries: list[tuple[FEMEntity, object, bool]] = []
+        pre_entries: list[tuple[FEMEntity, GeometrySlot, bool]] = []
         for i_e, entity in enumerate(fem_solver.entities):
             mat = entity.material
             if isinstance(mat, MuscleMaterial):
@@ -1622,7 +1785,7 @@ class QIPCCoupler(RBC):
 
             # Prestress channel: rest metric/masses come from the rest mesh,
             # simulation starts at the (e.g. wound) initial positions.
-            rest_verts = self._fem_rest_positions.pop(entity, None)
+            rest_verts = self._fem_rest_positions.get(entity)
             if rest_verts is not None:
                 if rest_verts.shape != verts.shape:
                     gs.raise_exception(
@@ -1638,7 +1801,7 @@ class QIPCCoupler(RBC):
                 slot = self._scene.geometries.create(f"fem_{i_e}", geo)
             pre_entries.append((entity, slot, is_cloth))
 
-        if self._fem_rest_positions:
+        if self._fem_rest_positions.keys() - {entity for entity, _, _ in pre_entries}:
             gs.raise_exception(
                 "QIPCCoupler.set_fem_rest_positions was called for an entity that is not a coupled "
                 "FEM entity in this scene."
@@ -1708,7 +1871,7 @@ class QIPCCoupler(RBC):
     def _setup_contact_tabular(
         self,
         all_pre_inits: list[AbdEntityPreInit],
-        fem_pre_entries: list[tuple[FEMEntity, object, bool]],
+        fem_pre_entries: list[tuple[FEMEntity, GeometrySlot, bool]],
         plane_entities: list[RigidEntity],
     ) -> None:
         """Per-entity contact elements + pairwise contact models.
@@ -1827,6 +1990,8 @@ class QIPCCoupler(RBC):
         x_all: torch.Tensor = fe.x
         v_all: torch.Tensor = fe.velocities
         for entry in self._fem_entries:
+            if self.is_mutable_shell(entry.entity):
+                continue
             sl = slice(entry.offset, entry.offset + entry.n_verts)
             entry.entity.set_pos(f, x_all[sl].unsqueeze(0).to(gs.tc_float))
             entry.entity.set_vel(f, v_all[sl].unsqueeze(0).to(gs.tc_float))
@@ -1870,14 +2035,13 @@ class QIPCCoupler(RBC):
             inv_quat = gu.inv_quat(link_quat)
             link_offsets = gu.transform_by_quat(targets - link_pos, inv_quat.expand(targets.shape[0], 4))
 
-        if entity in self._fem_position_dbc:
-            geo = entry.slot.geometry
-            geo.vertices["is_constrained"].gpu()[verts] = 1
-        elif is_soft_constraint:
-            geo = entry.slot.geometry
-            strength = float(stiffness) if stiffness else self._options.fem_constraint_strength
-            geo.vertices["strength_ratio"].gpu()[verts] = strength
-            geo.vertices["is_constrained"].gpu()[verts] = 1
+        if entity in self._fem_position_dbc or is_soft_constraint or self.is_mutable_shell(entity):
+            system, rows = self._constraint_views(entity, verts)
+            system.is_constrained_view()[rows] = 1
+            if entity not in self._fem_position_dbc:
+                system.strength_ratio_view()[rows] = (
+                    float(stiffness) if stiffness else self._options.fem_constraint_strength
+                )
         else:
             fe.is_fixed[entry.offset + verts] = 1
 
@@ -1893,9 +2057,9 @@ class QIPCCoupler(RBC):
 
     def _write_fem_constraint_targets(self, record: FemConstraintRecord, targets: torch.Tensor) -> None:
         entry = self._fem_entry(record.entity)
-        if record.entity in self._fem_position_dbc or record.is_soft:
-            geo = entry.slot.geometry
-            geo.vertices["aim_position"].gpu()[record.verts] = targets
+        if record.entity in self._fem_position_dbc or record.is_soft or self.is_mutable_shell(record.entity):
+            system, rows = self._constraint_views(record.entity, record.verts)
+            system.x_target_view().reshape(-1, 3)[rows] = targets
         else:
             fe = self._scene.finite_element
             idx = entry.offset + record.verts
@@ -1910,10 +2074,9 @@ class QIPCCoupler(RBC):
         verts = torch.as_tensor(verts_idx_local, dtype=torch.int64, device="cuda").reshape(-1)
         targets = torch.as_tensor(target_poss, dtype=torch.float64, device="cuda").reshape(-1, 3)
 
-        # Soft channel: aim_position is inert for unconstrained vertices.
-        geo = entry.slot.geometry
-        geo.vertices["aim_position"].gpu()[verts] = targets
-        if entity in self._fem_position_dbc:
+        system, rows = self._constraint_views(entity, verts)
+        system.x_target_view().reshape(-1, 3)[rows] = targets
+        if entity in self._fem_position_dbc or self.is_mutable_shell(entity):
             return
 
         # Hard channel: only teleport vertices that are actually fixed.
@@ -1929,19 +2092,18 @@ class QIPCCoupler(RBC):
         """QIPC backend for FEMEntity.remove_vertex_constraints."""
         entry = self._fem_entry(entity)
         fe = self._scene.finite_element
-        geo = entry.slot.geometry
-
+        verts = (
+            torch.arange(entry.n_verts, device="cuda")
+            if verts_idx_local is None
+            else torch.as_tensor(verts_idx_local, dtype=torch.int64, device="cuda").reshape(-1)
+        )
+        system, rows = self._constraint_views(entity, verts)
+        system.is_constrained_view()[rows] = 0
+        if entity not in self._fem_position_dbc and not self.is_mutable_shell(entity):
+            fe.is_fixed[entry.offset + verts] = 0
         if verts_idx_local is None:
-            geo.vertices["is_constrained"].gpu()[:] = 0
-            if entity not in self._fem_position_dbc:
-                fe.is_fixed[entry.offset : entry.offset + entry.n_verts] = 0
             self._fem_constraints = [r for r in self._fem_constraints if r.entity is not entity]
             return
-
-        verts = torch.as_tensor(verts_idx_local, dtype=torch.int64, device="cuda").reshape(-1)
-        geo.vertices["is_constrained"].gpu()[verts] = 0
-        if entity not in self._fem_position_dbc:
-            fe.is_fixed[entry.offset + verts] = 0
 
         removed = {int(v) for v in verts.tolist()}
         kept_records: list[FemConstraintRecord] = []
@@ -2050,7 +2212,7 @@ class QIPCCoupler(RBC):
     def _preflight_ground_clearance(
         self,
         all_pre_inits: list[AbdEntityPreInit],
-        fem_pre_entries: list[tuple[FEMEntity, object, bool]],
+        fem_pre_entries: list[tuple[FEMEntity, GeometrySlot, bool]],
     ) -> None:
         """Reject vertices lying exactly on (or below) a ground half-plane.
 

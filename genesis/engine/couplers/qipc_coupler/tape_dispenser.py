@@ -4,9 +4,9 @@ The packaged snapshot is the canonicalized state immediately after reference
 frames 0 through 249 have each executed ``pre_step`` and one QIPC step. The
 dispenser is upside down, its tape end has been pulled 110 mm, all velocities
 are zeroed, root/tape-end constraints are released, and tape contact with the
-Cylinder and blade is enabled. Dynamic cutting is intentionally outside this
-component; the snapshot contains 1,936 active tape vertices and preserves blade
-collision.
+Cylinder and blade is enabled. The initial snapshot contains 1,936 active tape
+vertices. The serrated sharp part cuts the free strip through contact-pressure
+kerf events, with dynamic state, constraints, rendering and reset support.
 """
 
 from __future__ import annotations
@@ -29,6 +29,7 @@ from genesis.utils.misc import get_assets_dir, tensor_to_array
 from .cluster import AffineClusterProxy, ClusterProxy
 from .contact import QIPCContactRegion
 from .coupler import QIPCCoupler
+from genesis.engine.couplers.qipc_coupler.cutting import QIPCShellCutter
 from .rigid_attachment import QIPCRigidAttachment
 from .tape import TapeAsset, TapeBondClusterController, _verify_same_vertex_order, _write_obj, add_tape_bond_cluster
 
@@ -534,6 +535,7 @@ class TapeDispenser:
     ring_region: QIPCContactRegion
     asset: TapeDispenserAsset
     lifecycle: TapeBondClusterController | None
+    cutting: QIPCShellCutter
 
 
 def recommended_machine_coupler_options() -> dict[str, object]:
@@ -736,6 +738,8 @@ def add_tape_dispenser(
     collision_proxies: bool = True,
     hold: str = "bond",
     bending_stiffness: float | None = None,
+    cut_strength: float = 1.0e3,
+    kerf_width: float | None = 0.0015,
 ) -> TapeDispenser:
     """Add the upside-down canonical post-f249 dispenser before scene build.
 
@@ -827,7 +831,7 @@ def add_tape_dispenser(
     coupler.assign_contact_region(ring_region, machine, attachment=ring)
 
     coupler.set_contact_pair(tape, machine, enabled=False, friction=0.0, resistance=1.0e5)
-    coupler.set_contact_pair(tape, sharp, enabled=False, friction=0.2, resistance=1.0e5)
+    coupler.set_contact_pair(tape, sharp, enabled=True, friction=0.2, resistance=1.0e5)
     coupler.set_contact_pair(tape, cylinder, enabled=True, friction=0.2, resistance=1.0e5)
     coupler.set_contact_pair(tape, blade, enabled=True, friction=0.2, resistance=1.0e5)
 
@@ -878,6 +882,10 @@ def add_tape_dispenser(
             evidence=hold,
         )
 
+    cutting = coupler.enable_shell_cutting(tape, machine, link="sharp", strength=cut_strength, kerf_width=kerf_width)
+    if lifecycle is not None:
+        cutting.on_cut(lifecycle.remap_after_cut)
+
     return TapeDispenser(
         machine=machine,
         tape=tape,
@@ -888,4 +896,5 @@ def add_tape_dispenser(
         ring_region=ring_region,
         asset=asset,
         lifecycle=lifecycle,
+        cutting=cutting,
     )

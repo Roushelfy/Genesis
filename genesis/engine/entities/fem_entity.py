@@ -406,6 +406,22 @@ class FEMEntity(Entity):
             self.set_muscle_direction(muscle_direction)
 
     def get_state(self):
+        from genesis.engine.couplers.qipc_coupler.coupler import QIPCCoupler
+
+        coupler = self.sim.coupler
+        if isinstance(coupler, QIPCCoupler) and coupler.is_mutable_shell(self):
+            positions, triangles = coupler.fem_mesh(self)
+            entry = coupler._fem_entry(self)
+            state = FEMEntityState(self, self._sim.cur_step_global, mesh_shape=(len(positions), len(triangles)))
+            state.pos[:] = positions.unsqueeze(0).to(dtype=gs.tc_float)
+            state.vel[:] = (
+                coupler._scene.finite_element.velocities[entry.offset : entry.offset + entry.n_verts]
+                .unsqueeze(0)
+                .to(dtype=gs.tc_float)
+            )
+            state.active[:] = gs.ACTIVE
+            self._queried_states.append(state)
+            return state
         state = FEMEntityState(self, self._sim.cur_step_global)
         self.get_frame(self._sim.cur_substep_local, state.pos, state.vel, state.active)
 

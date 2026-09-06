@@ -145,10 +145,11 @@ class FEMEntityState:
     Dynamic state queried from a genesis FEMEntity.
     """
 
-    def __init__(self, entity, s_global):
+    def __init__(self, entity, s_global, *, mesh_shape: tuple[int, int] | None = None):
         self._entity = entity
         self._s_global = s_global
-        base_shape = (self.entity.sim._B, self._entity.n_vertices, 3)
+        n_vertices, n_elements = mesh_shape or (entity.n_vertices, entity.n_elements)
+        base_shape = (self.entity.sim._B, n_vertices, 3)
 
         args = {
             "dtype": gs.tc_float,
@@ -160,7 +161,7 @@ class FEMEntityState:
 
         args["dtype"] = int
         args["requires_grad"] = False
-        self._active = gs.zeros((self.entity.sim._B, self.entity.n_elements), **args)
+        self._active = gs.zeros((self.entity.sim._B, n_elements), **args)
 
     def serializable(self):
         self._entity = None

@@ -879,7 +879,31 @@ class RasterizerContext:
                         if normal_data is not None:
                             self.jit.update_buffer(node, "normal", normal_data)
 
+    def _qipc_shell_mesh(self, entity):
+        from genesis.engine.couplers.qipc_coupler.coupler import QIPCCoupler
+
+        coupler = self.sim.coupler
+        if isinstance(coupler, QIPCCoupler) and coupler.is_mutable_shell(entity):
+            positions, triangles = coupler.fem_mesh(entity)
+            return positions.cpu().numpy(), triangles.cpu().numpy(), coupler.mesh_revision
+        return None
+
+    def _add_qipc_shell(self, entity, positions, triangles, revision):
+        vgeom = entity.vgeoms[0]
+        visual = mu.surface_uvs_to_trimesh_visual(vgeom.surface, uvs=None, n_verts=len(positions))
+        seg_key = (entity.idx, 0) if self.segmentation_level == "geom" else entity.idx
+        for i_b in self.rendered_envs_idx:
+            mesh = trimesh.Trimesh(positions, triangles, process=False)
+            mesh.visual = visual
+            node = self.add_node(
+                pyrender.Mesh.from_trimesh(mesh, smooth=vgeom.surface.smooth, double_sided=vgeom.surface.double_sided)
+            )
+            self.static_nodes[(i_b, vgeom.uid)] = node
+            self.create_node_seg(seg_key, node)
+        self._qipc_mesh_versions[entity.uid] = revision
+
     def on_fem(self):
+        self._qipc_mesh_versions = {}
         if self.sim.fem_solver.is_active:
             vertices_all = qd_to_numpy(
                 self.sim.fem_solver.get_state_render(self.sim.cur_substep_local)[0],
@@ -889,6 +913,11 @@ class RasterizerContext:
 
             for fem_entity in self.sim.fem_solver.entities:
                 if fem_entity.surface.vis_mode != "visual":
+                    continue
+
+                dynamic = self._qipc_shell_mesh(fem_entity)
+                if dynamic is not None:
+                    self._add_qipc_shell(fem_entity, *dynamic)
                     continue
 
                 sim_verts = vertices_all[:, fem_entity.v_start : fem_entity.v_start + fem_entity.n_vertices]
@@ -917,6 +946,26 @@ class RasterizerContext:
 
             for fem_entity in self.sim.fem_solver.entities:
                 if fem_entity.surface.vis_mode != "visual":
+                    continue
+
+                dynamic = self._qipc_shell_mesh(fem_entity)
+                if dynamic is not None:
+                    positions, triangles, revision = dynamic
+                    vgeom = fem_entity.vgeoms[0]
+                    if self._qipc_mesh_versions.get(fem_entity.uid) != revision:
+                        for i_b in self.rendered_envs_idx:
+                            node = self.static_nodes.pop((i_b, vgeom.uid))
+                            self.remove_node_seg(node)
+                            self.remove_node(node)
+                        self._add_qipc_shell(fem_entity, positions, triangles, revision)
+                    else:
+                        for i_b in self.rendered_envs_idx:
+                            node = self.static_nodes[(i_b, vgeom.uid)]
+                            update_data = self._scene.reorder_vertices(node, positions.astype(np.float32))
+                            self.jit.update_buffer(node, "pos", update_data)
+                            normal_data = self.jit.update_normal(node, update_data)
+                            if normal_data is not None:
+                                self.jit.update_buffer(node, "normal", normal_data)
                     continue
 
                 sim_verts = vertices_all[:, fem_entity.v_start : fem_entity.v_start + fem_entity.n_vertices]

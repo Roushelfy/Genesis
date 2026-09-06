@@ -283,6 +283,8 @@ class QIPCClusterManager:
             return
         _require_cluster_capability(scene)
         self._scene = scene
+        self._bindings = []
+        self._initialized = False
         used_proxy_slot_ids: set[int] = set()
         for index, request in enumerate(self._requests):
             entry = cluster_entry_point(request.proxy)
@@ -366,19 +368,20 @@ class QIPCClusterManager:
     def _validate_selection(self, binding: _ClusterBinding, selection: _ElementSelection) -> None:
         geometry = binding.fem_slot.geometry
         layouts = (
-            ("edges", selection.edges, "fem_edge_offset", int(geometry.edges.size)),
-            ("tris", selection.tris, "fem_tri_offset", int(geometry.triangles.size)),
-            ("tets", selection.tets, "fem_tet_offset", int(geometry.tetrahedra.size)),
+            ("edges", selection.edges, "fem_edge_offset", "edges"),
+            ("tris", selection.tris, "fem_tri_offset", "triangles"),
+            ("tets", selection.tets, "fem_tet_offset", "tetrahedra"),
         )
         if not selection.is_explicit:
             if not any(meta_name in geometry.meta for _, _, meta_name, _ in layouts):
                 gs.raise_exception("QIPCCoupler FEM cluster entity has no supported elements.")
             return
-        for name, indices, meta_name, count in layouts:
+        for name, indices, meta_name, collection_name in layouts:
             if indices is None:
                 continue
             if meta_name not in geometry.meta:
                 gs.raise_exception(f"QIPCCoupler FEM cluster entity has no QIPC {name} elements.")
+            count = int(geometry[collection_name].size)
             if indices and max(indices) >= count:
                 gs.raise_exception(f"QIPCCoupler FEM cluster {name} index {max(indices)} is out of range [0, {count}).")
 

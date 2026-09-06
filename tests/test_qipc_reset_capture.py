@@ -1,3 +1,4 @@
+import numpy as np
 import pytest
 import torch
 
@@ -12,6 +13,42 @@ import genesis as gs
 _TABLE_TOP = 0.4
 _BOX_HALF = 0.025
 _DROP_CLEARANCE = 0.06
+
+
+@pytest.mark.required
+@pytest.mark.precision("64")
+def test_reset_restores_released_link_constraints(tmp_path):
+    path = tmp_path / "sheet.obj"
+    path.write_text("v -0.1 -0.1 0\nv 0.1 -0.1 0\nv 0.1 0.1 0\nv -0.1 0.1 0\nf 1 2 3\nf 1 3 4\n")
+    scene = gs.Scene(
+        sim_options=gs.options.SimOptions(dt=0.01, gravity=(0.0, 0.0, 0.0)),
+        coupler_options=gs.options.QIPCCouplerOptions(contact_enable=False),
+        show_viewer=False,
+    )
+    tool = scene.add_entity(
+        morph=gs.morphs.Box(pos=(0.0, 0.0, 0.3), size=(0.05, 0.05, 0.05)),
+        material=gs.materials.Rigid(rho=1000.0),
+    )
+    cloth = scene.add_entity(
+        morph=gs.morphs.Mesh(file=str(path), pos=(0.0, 0.0, 0.5)),
+        material=gs.materials.FEM.Cloth(E=1e5, nu=0.3, rho=1000.0, thickness=1e-3, bending_stiffness=0.0),
+    )
+    coupler = scene.sim.coupler
+    coupler.enable_soft_transform(tool, strength=(1e6, 1e6))
+    coupler.enable_fem_position_dbc(cloth, stiffness=1e8, fix_tol=1e-5)
+    scene.build()
+    initial = cloth.get_state().pos.clone()
+    cloth.set_vertex_constraints([0, 1, 2, 3], link=tool.links[0], is_soft_constraint=True, stiffness=1e8)
+    coupler.capture_reset_state()
+
+    for displacement in (0.04, -0.04):
+        cloth.remove_vertex_constraints()
+        scene.reset()
+        coupler.set_soft_transform_target(tool, [displacement, 0.0, 0.3], [1.0, 0.0, 0.0, 0.0])
+        for _ in range(20):
+            scene.step()
+        actual = (cloth.get_state().pos - initial).cpu().numpy()
+        np.testing.assert_allclose(actual, np.broadcast_to([displacement, 0.0, 0.0], actual.shape), atol=1e-4)
 
 
 def _scene_with_dropped_boxes():

@@ -204,6 +204,15 @@ def test_add_tape_dispenser_matches_f249_contact_and_reset():
     assert geometries["Cylinder"].vertices.size == 512
     assert geometries["blade"].vertices.size == 767
     assert geometries["tape_wheel"].vertices.size == 4275
+    sharp_edges = np.asarray(geometries["tape_cutter"].edges["sharpness"].cpu())
+    assert np.count_nonzero(sharp_edges) == 179
+    assert coupler.is_mutable_shell(component.tape)
+    live_positions, live_triangles = coupler.fem_mesh(component.tape)
+    np.testing.assert_array_equal(component.tape.get_state().pos[0].cpu().numpy(), live_positions.cpu().numpy())
+    assert live_triangles.shape == (3500, 3)
+    assert int(live_triangles.min()) == 0
+    assert int(live_triangles.max()) == 1935
+    assert component.cutting.events == ()
     wheel_link = next(link for link in component.machine.links if link.name == "tape_wheel")
     ring_visuals = [
         vgeom
@@ -236,7 +245,7 @@ def test_add_tape_dispenser_matches_f249_contact_and_reset():
     tape_default = tab.at(info[component.tape][0].id, tab.default_element().id)
     assert tape_cylinder.enable and tape_cylinder.adhesion is None and tape_cylinder.bond is None
     assert tape_blade.enable and tape_blade.adhesion is None and tape_blade.bond is None
-    assert not tape_sharp.enable and tape_sharp.adhesion is None and tape_sharp.bond is None
+    assert tape_sharp.enable and tape_sharp.adhesion is None and tape_sharp.bond is None
     assert not tape_machine.enable and tape_machine.adhesion is None and tape_machine.bond is None
     assert tape_ring.enable and tape_ring.adhesion is not None and tape_ring.bond is not None
     assert tape_self.enable and tape_self.adhesion is not None and tape_self.bond is not None
