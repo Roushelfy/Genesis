@@ -76,7 +76,7 @@ dependencies = [
 
 [project.optional-dependencies]
 qipc = [
-    "cuda-graph-qipc>=0.0.1.dev945; python_version == '3.12' and sys_platform == 'linux' and platform_machine == 'x86_64'",
+    "cuda-graph-qipc[kerf]>=0.1.1.dev58; python_version == '3.12' and sys_platform == 'linux' and platform_machine == 'x86_64'",
 ]
 dev = [
     "black",
