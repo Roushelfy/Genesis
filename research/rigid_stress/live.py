@@ -170,4 +170,5 @@ class StressSubstepObserver:
         self.egg_a_count[:, environments] = 0
 
     def observation(self) -> torch.Tensor:
-        return torch.from_dlpack(self.peak_pa)
+        # Device-side gating prevents a finite but inadmissible pressure recovery from entering policy inputs.
+        return torch.from_dlpack(cp.where(self.is_accepted, self.peak_pa, cp.nan))

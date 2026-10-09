@@ -84,6 +84,7 @@ class TemporalRecoveryGPU(EggRecoveryGPU):
         natural_order: bool = False,
         inertia: str = "sparse",
         body_products: str = "cublas",
+        sparse_layout: str = "F",
     ) -> None:
         if history < 0 or strategy not in ("compact", "padded", "adaptive") or precision not in ("32", "64"):
             raise ValueError("Nonnegative history/refinement and explicit compact/padded, FP32/FP64 choices required")
@@ -98,6 +99,7 @@ class TemporalRecoveryGPU(EggRecoveryGPU):
             natural_order=natural_order,
             inertia=inertia,
             body_products=body_products,
+            sparse_layout=sparse_layout,
         )
         self.capacity, self.strategy, self.precision = history, strategy, precision
         self.refinements, self.chunk = refinements, environments if chunk is None else min(chunk, environments)

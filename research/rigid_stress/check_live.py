@@ -97,6 +97,17 @@ def main() -> None:
                 torch.testing.assert_close(observer.observation(), torch.from_dlpack(observer.peak_pa))
             if substeps > 1:
                 assert maximum_difference > 1
+            observer.diagnostic = None
+            radii[0, 0] = -1
+            scene.step(update_visualizer=False)
+            assert not observer.is_accepted[0].item()
+            assert observer.is_accepted[1].item()
+            assert torch.isnan(observer.observation()[0]).item()
+            assert torch.isfinite(observer.observation()[1]).item()
+            radii[0, 0] = 0.009
+            scene.step(update_visualizer=False)
+            assert cp.all(observer.is_accepted).item()
+            assert torch.all(torch.isfinite(observer.observation())).item()
             rows.append(
                 {
                     "substeps": substeps,
@@ -106,6 +117,8 @@ def main() -> None:
                     "moment_error_max_nm": max(moment_errors),
                     "maximum_peak_missed_by_last_substep_pa": maximum_difference,
                     "partial_reset_ids": [1],
+                    "invalid_footprint_device_observation_rejected": True,
+                    "rejection_validation_steps": 2,
                 }
             )
             print(json.dumps(rows[-1]), flush=True)

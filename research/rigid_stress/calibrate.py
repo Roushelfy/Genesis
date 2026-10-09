@@ -52,12 +52,20 @@ def variants(suite: str) -> list[Variant]:
             Variant("fused-graph", ("--graph",)),
             Variant("natural-order", ("--native-order", "natural")),
         ]
+    if suite == "sparse-layout":
+        return [
+            Variant(f"layout-{layout}-b{batch}", ("--envs", str(batch), "--sparse-layout", layout))
+            for batch in (8, 32, 128)
+            for layout in ("F", "C")
+        ]
     raise ValueError("Explicit calibration suite required")
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--suite", choices=("batches", "history", "precision", "chunks", "peak-graph"), required=True)
+    parser.add_argument(
+        "--suite", choices=("batches", "history", "precision", "chunks", "peak-graph", "sparse-layout"), required=True
+    )
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--replay", type=Path, required=True)
     parser.add_argument("--level", type=int, default=6)
@@ -102,7 +110,7 @@ def main() -> None:
             "--output",
             str(args.output / f"{variant.name}.json"),
         ]
-        if args.suite != "batches":
+        if args.suite not in ("batches", "sparse-layout"):
             command.extend(("--envs", str(args.envs)))
         command.extend(variant.arguments)
         print(json.dumps({"variant": variant.name, "command": command}), flush=True)

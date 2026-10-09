@@ -1,0 +1,32 @@
+{
+  "passed": true,
+  "GPU_tested": true,
+  "cases": [
+    {
+      "substeps": 1,
+      "steps": 30,
+      "recoveries": 60,
+      "peak_relative_error_max": 1.5507567997641675e-13,
+      "moment_error_max_nm": 1.8460931577791304e-19,
+      "maximum_peak_missed_by_last_substep_pa": 0.0,
+      "partial_reset_ids": [
+        1
+      ],
+      "invalid_footprint_device_observation_rejected": true,
+      "rejection_validation_steps": 2
+    },
+    {
+      "substeps": 4,
+      "steps": 30,
+      "recoveries": 240,
+      "peak_relative_error_max": 1.7306114366674327e-13,
+      "moment_error_max_nm": 9.135250071860174e-19,
+      "maximum_peak_missed_by_last_substep_pa": 385592.2907121256,
+      "partial_reset_ids": [
+        1
+      ],
+      "invalid_footprint_device_observation_rejected": true,
+      "rejection_validation_steps": 2
+    }
+  ]
+}

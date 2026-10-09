@@ -18,11 +18,12 @@ from threadpoolctl import threadpool_limits
 from .cpu import ContactBatch, EggConfig, EggRecoveryCPU
 from .cudss import SharedCuDSSFactor
 from .device_pressure import PadPressureGPU
+from .graph_gpu import CapturedDirectRecoveryGPU
 from .peak_tensor import P2PeakTensorGPU
 from .replay import ContactReplayGPU, ReplayRecoveryPipeline
 from .sparse_gpu import EggRecoveryGPU
 from .temporal_gpu import TemporalRecoveryGPU
-from .timing import DeviceMemorySampler, factor_metadata, source_hashes
+from .timing import DeviceMemorySampler, factor_metadata, host_metadata, source_hashes
 
 
 def main(
@@ -54,6 +55,8 @@ def main(
     parser.add_argument("--scatter", choices=("atomic", "warp"), default="atomic")
     parser.add_argument("--inertia", choices=("sparse", "quadratic"), default="sparse")
     parser.add_argument("--body-products", choices=("cublas", "fused"), default="cublas")
+    parser.add_argument("--sparse-layout", choices=("F", "C"), default="F")
+    parser.add_argument("--recovery-graph", action="store_true")
     parser.add_argument("--scope", choices=("stress", "assembled-rhs"), default="stress")
     parser.add_argument("--graph", action="store_true", help="Capture the direct assembled-RHS recovery scope")
     parser.add_argument("--async-allocator", action="store_true", help="Use the public cuDSS stream-ordered allocator")
@@ -86,6 +89,14 @@ def main(
         raise ValueError("FP32 requires explicit refinement and FP64 fallback")
     if args.graph and (args.scope != "assembled-rhs" or args.method != "direct"):
         raise ValueError("This graph experiment covers direct recovery of an assembled RHS")
+    if args.recovery_graph and (
+        args.method != "direct"
+        or args.factor_backend != "cudss"
+        or args.peak != "fused"
+        or args.graph
+        or shared_factor is not None
+    ):
+        raise ValueError("Pipeline recovery graphs require their owned native FP64 factors and fused full peak")
     args.output.parent.mkdir(parents=True, exist_ok=True)
     hashes = source_hashes()
     rows, validation = [], []
@@ -102,7 +113,11 @@ def main(
         stream = cp.cuda.Stream(non_blocking=True) if shared_stream is None else shared_stream
         with stream:
             rtol = 1e-6 if args.profile == "strict" else 1e-3
-            if args.method == "direct":
+            if args.recovery_graph:
+                recovery = CapturedDirectRecoveryGPU(
+                    model.fem, args.envs, rtol, args.inertia, args.body_products, args.sparse_layout
+                )
+            elif args.method == "direct":
                 recovery = EggRecoveryGPU(
                     model.fem,
                     args.envs,
@@ -113,6 +128,7 @@ def main(
                     shared_factor=shared_factor,
                     inertia=args.inertia,
                     body_products=args.body_products,
+                    sparse_layout=args.sparse_layout,
                 )
             else:
                 recovery = TemporalRecoveryGPU(
@@ -132,6 +148,7 @@ def main(
                     shared_factor=shared_factor,
                     inertia=args.inertia,
                     body_products=args.body_products,
+                    sparse_layout=args.sparse_layout,
                 )
             if args.peak == "tensor":
                 recovery.peak = P2PeakTensorGPU(model.fem.glambda, model.fem.elements, config.young_pa / 2 / 1.3)
@@ -148,7 +165,7 @@ def main(
             print(json.dumps({"setup_seconds": setup_s, "device_factors": factor_info}), flush=True)
             reference = (
                 recovery
-                if args.method == "direct"
+                if args.method == "direct" and not args.recovery_graph
                 else EggRecoveryGPU(
                     model.fem,
                     args.envs,
@@ -167,7 +184,7 @@ def main(
             )
             for tick in warmup_ticks:
                 out = pipeline.step(tick)
-                exact = out if args.method == "direct" else reference.recover(pipeline.last_rhs)
+                exact = out if reference is recovery else reference.recover(pipeline.last_rhs)
                 warmup_accepted &= out.is_accepted & exact.is_accepted & pipeline.mapping_accepted
                 difference = abs(out.peak_pa - exact.peak_pa)
                 peak_errors.append(cp.where(exact.peak_pa > 1, difference / cp.maximum(exact.peak_pa, 1), 0))
@@ -198,7 +215,13 @@ def main(
             warmup_s = perf_counter() - start
             graph, graphed, rhs_buffer = None, None, None
             capture_pool = None
-            graph_info = {"requested": args.graph, "supported": None}
+            graph_info = {
+                "requested": args.graph or args.recovery_graph,
+                "supported": True if args.recovery_graph else None,
+                "scope": "Full recovery of each changing complete RHS"
+                if args.recovery_graph
+                else "Assembled-RHS experiment",
+            }
             if args.graph:
                 rhs_buffer = cp.zeros_like(pipeline.last_rhs, order="F")
                 rhs_buffer[:] = snapshots[2]
@@ -417,6 +440,7 @@ def main(
             "source_frames": source.frames,
             "source_replicated_for_larger_batches": args.envs > source.source_environments,
             "GPU": gpu["name"].decode(),
+            "host": host_metadata(),
             "driver_version": cp.cuda.runtime.driverGetVersion(),
             "CUDA_runtime_version": cp.cuda.runtime.runtimeGetVersion(),
             "setup_seconds": setup_s,

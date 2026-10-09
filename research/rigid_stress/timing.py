@@ -1,6 +1,8 @@
 """Scoped benchmark metadata and sampled total device memory, including native library allocations."""
 
 import hashlib
+import os
+import platform
 from pathlib import Path
 from threading import Event, Thread
 from time import perf_counter
@@ -10,6 +12,21 @@ import cupy as cp
 from .cudss import SharedCuDSSFactor
 from .sparse_gpu import EggRecoveryGPU
 from .temporal_gpu import TemporalRecoveryGPU
+
+
+def host_metadata() -> dict:
+    path = Path("/proc/cpuinfo")
+    lines = path.read_text().splitlines() if path.is_file() else []
+    return {
+        "cpu_model": next((line.partition(":")[2].strip() for line in lines if line.startswith("model name")), None),
+        "platform": platform.platform(),
+        "python_version": platform.python_version(),
+        "slurm_job_id": os.environ.get("SLURM_JOB_ID"),
+        "slurm_cpus_per_task": os.environ.get("SLURM_CPUS_PER_TASK"),
+        "thread_environment": {
+            name: os.environ.get(name) for name in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS")
+        },
+    }
 
 
 class DeviceMemorySampler:

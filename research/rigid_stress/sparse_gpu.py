@@ -21,19 +21,43 @@ from .native_sparse import NativeSparseCalls
 class SparseMultiplyGPU:
     """Persistent public cuSPARSE SpMM descriptors, including capture-safe use of the owned native handle."""
 
-    def __init__(self, matrix: sparse.csr_matrix, columns: int) -> None:
+    def __init__(self, matrix: sparse.csr_matrix, columns: int, layout: str = "F") -> None:
+        if layout not in ("F", "C"):
+            raise ValueError("Sparse RHS layout must be column-major F or row-major C")
         self.matrix, self.stream = matrix, cp.cuda.get_current_stream()
         self.native = NativeSparseCalls()
         self.handle = descriptors.BaseDescriptor(cusparse.create(), destroyer=cusparse.destroy)
         cusparse.setStream(self.handle.desc, self.stream.ptr)
-        self.input = cp.zeros((matrix.shape[1], columns), dtype=matrix.dtype, order="F")
-        self.output = cp.zeros((matrix.shape[0], columns), dtype=matrix.dtype, order="F")
+        self.input = cp.zeros((matrix.shape[1], columns), dtype=matrix.dtype, order=layout)
+        self.output = cp.zeros((matrix.shape[0], columns), dtype=matrix.dtype, order=layout)
         self.matrix_descriptor = descriptors.SpMatDescriptor.create(matrix)
-        self.input_descriptor = descriptors.DnMatDescriptor.create(self.input)
-        self.output_descriptor = descriptors.DnMatDescriptor.create(self.output)
         self.alpha, self.beta = np.array(1, dtype=matrix.dtype), np.array(0, dtype=matrix.dtype)
         self.cuda_dtype = cp.cuda.runtime.CUDA_R_64F if matrix.dtype == np.float64 else cp.cuda.runtime.CUDA_R_32F
+        order = cusparse.CUSPARSE_ORDER_COL if layout == "F" else cusparse.CUSPARSE_ORDER_ROW
+        self.input_descriptor = descriptors.BaseDescriptor(
+            cusparse.createDnMat(
+                *self.input.shape,
+                matrix.shape[1] if layout == "F" else columns,
+                self.input.data.ptr,
+                self.cuda_dtype,
+                order,
+            ),
+            destroyer=cusparse.destroyDnMat,
+        )
+        self.output_descriptor = descriptors.BaseDescriptor(
+            cusparse.createDnMat(
+                *self.output.shape,
+                matrix.shape[0] if layout == "F" else columns,
+                self.output.data.ptr,
+                self.cuda_dtype,
+                order,
+            ),
+            destroyer=cusparse.destroyDnMat,
+        )
         self.operation, self.algorithm = cusparse.CUSPARSE_OPERATION_NON_TRANSPOSE, cusparse.CUSPARSE_MM_ALG_DEFAULT
+        if layout == "C":
+            # Public cusparseSpMMAlg_t value from the CUDA header; CuPy retains only some algorithm aliases.
+            self.algorithm = 6  # CUSPARSE_SPMM_CSR_ALG2, recommended for row-major dense RHS.
         self.workspace = cp.empty(
             cusparse.spMM_bufferSize(
                 self.handle.desc,
@@ -312,6 +336,7 @@ class EggRecoveryGPU:
         async_allocations: bool = False,
         inertia: str = "sparse",
         body_products: str = "cublas",
+        sparse_layout: str = "F",
     ):
         if environments < 1 or rtol <= 0 or atol_n <= 0:
             raise ValueError("Positive environment count and tolerances are required")
@@ -358,7 +383,7 @@ class EggRecoveryGPU:
         else:
             raise ValueError("Select exported SpSM or native cuDSS device factors")
         self.factor.prepare(environments)
-        self.stiffness_product = SparseMultiplyGPU(self.stiffness, environments)
+        self.stiffness_product = SparseMultiplyGPU(self.stiffness, environments, sparse_layout)
         self.peak = P2PeakGPU(fem.glambda, fem.elements, fem.young / (2 * (1 + fem.poisson)))
 
     def apply_stiffness(self, value: cp.ndarray) -> cp.ndarray:

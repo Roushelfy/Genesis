@@ -155,3 +155,51 @@ freeze on calibration data; complete saved identical-RHS CPU/mapping checks
 on the held-out fine contacts; report all fine stress/live/matched-policy
 repetitions, stages and memory; publish the selected strict/throughput profiles
 and final full acceptance audit. This checkpoint is not completion of GOAL.md.
+
+## Completed follow-up measurements at 22:00 UTC
+
+The exact fused-field path completes three full 1,200-step B=8 stress replays
+at 46.94, 47.08 and 46.83 recovery transitions/s (aggregate 46.9483), versus
+10.1571 for the original path. A separate stage pass measures approximately
+0.077 ms selection/reset, 41.58 ms warp pressure mapping, 2.74 ms body/inertia
+assembly and 127.58 ms recovery per batch. These contact inputs remain the
+declared earlier calibration rollout; they do not establish fine-collision
+held-out throughput. Quadratic caching alone still uses the slow dense
+products, so the fused field and nodal wrench operations matter separately.
+
+The native level-6 assembled-RHS graph experiment completes three repeats at
+70.17 recovery transitions/s, versus 62.24 for eager execution with the same
+asynchronous allocator. The maximum graph/eager peak error is 1.053e-13.
+Temporary-tensor peak evaluation measures 51.56/s. Natural native ordering
+measures 21.82/s; the faster automatic native ordering remains selected.
+
+Row-major cuSPARSE stiffness multiplication is exposed as an optional layout,
+with public descriptors and CSR_ALG2. The native factor's multi-RHS layout is
+unchanged. Complete CPU comparisons at B=1/3/8/17 pass. Fine assembled-RHS
+rates are F/C=61.60/59.95 at B=8, 69.16/74.90 at B=32, and 93.84/107.67 at
+B=128. Its benefit depends on batch size. No measured microbenchmark rate is
+relabeled as live simulator throughput.
+
+Full fine-collision live B=32 eager calibration runs finish at 60.4951,
+60.5106 and 60.5114 environment transitions/s (aggregate 60.5057). Each repeat
+contains 1,193 steps, 38,176 transitions and 32 resets. All full residuals pass;
+maximum above the absolute floor is 1.719e-10, absolute residual is 5.969e-12 N,
+and the near-zero relative maximum is 8.750e-6. Sampled total device memory is
+35.824 GB. The seeds are calibration seeds 510000--510031. Fine graph/layout
+and larger live batches still need all three repeats before selection.
+
+The reusable captured recovery now works on both the default live stream and
+nondefault consumer streams. Ninety-six changing-RHS CPU-oracle cases pass
+across F/C layouts, including zero-load environments and angular motion.
+Contact mapping and complete body loads stay outside the graph and are counted
+in live timing. Every recovery inside the graph retains the full residual and
+global peak. A separate actual one/four-substep observation regression rejects
+an invalid footprint as a NaN device observation for that environment, retains
+the independent valid environment and accepts the next restored step. The
+four-substep case would miss 385,592 Pa if only its final substep were sampled.
+
+The B=512 live row-major graph candidate actually exhausts device memory when
+allocating the first 10.066 GB complete mapped load, after successful setup and
+factorization. This establishes a limit for that graph pipeline, not all other
+pipelines. The direct B=512 live probe is separate. The CPU held-out oracle is
+still running; saved complete RHS comparisons are not declared complete here.

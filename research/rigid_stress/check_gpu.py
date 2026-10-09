@@ -56,10 +56,14 @@ def permutation_check() -> None:
 
 
 def mechanics_check(
-    model: EggRecoveryCPU, environments: int, inertia: str = "sparse", body_products: str = "cublas"
+    model: EggRecoveryCPU,
+    environments: int,
+    inertia: str = "sparse",
+    body_products: str = "cublas",
+    sparse_layout: str = "F",
 ) -> GPUCheck:
     fem = model.fem
-    gpu = EggRecoveryGPU(fem, environments, inertia=inertia, body_products=body_products)
+    gpu = EggRecoveryGPU(fem, environments, inertia=inertia, body_products=body_products, sparse_layout=sparse_layout)
     rng = np.random.default_rng(3913 + environments)
     raw = rng.normal(size=(fem.ndof, environments))
     omega = rng.uniform(-5, 5, (environments, 3))
@@ -126,6 +130,7 @@ def main() -> None:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--inertia", choices=("sparse", "quadratic"), default="sparse")
     parser.add_argument("--body-products", choices=("cublas", "fused"), default="cublas")
+    parser.add_argument("--sparse-layout", choices=("F", "C"), default="F")
     args = parser.parse_args()
     start = perf_counter()
     with threadpool_limits(limits=1):
@@ -136,7 +141,7 @@ def main() -> None:
             history=0,
         )
         checks = [
-            asdict(mechanics_check(model, environments, args.inertia, args.body_products))
+            asdict(mechanics_check(model, environments, args.inertia, args.body_products, args.sparse_layout))
             for environments in (1, 3, 8, 17)
         ]
     cp.cuda.get_current_stream().synchronize()
@@ -157,6 +162,7 @@ def main() -> None:
         "factor_nonzeros": model.fem.factor.L.nnz + model.fem.factor.U.nnz,
         "centrifugal_load": args.inertia,
         "body_products": args.body_products,
+        "sparse_layout": args.sparse_layout,
         "physical_mesh_converged": False,
         "checks": checks,
         "validation_seconds_including_build": perf_counter() - start,

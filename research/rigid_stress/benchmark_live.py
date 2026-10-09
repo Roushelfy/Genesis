@@ -17,11 +17,12 @@ from threadpoolctl import threadpool_limits
 import genesis as gs
 
 from .cpu import EggConfig, EggRecoveryCPU
+from .graph_gpu import CapturedDirectRecoveryGPU
 from .panda_scene import PandaConfig, PandaEggScene
 from .peak_tensor import P2PeakTensorGPU
 from .sparse_gpu import EggRecoveryGPU
 from .temporal_gpu import TemporalRecoveryGPU
-from .timing import DeviceMemorySampler, factor_metadata, source_hashes
+from .timing import DeviceMemorySampler, factor_metadata, host_metadata, source_hashes
 
 
 def main() -> None:
@@ -49,6 +50,8 @@ def main() -> None:
     parser.add_argument("--scatter", choices=("atomic", "warp"), default="atomic")
     parser.add_argument("--inertia", choices=("sparse", "quadratic"), default="sparse")
     parser.add_argument("--body-products", choices=("cublas", "fused"), default="cublas")
+    parser.add_argument("--sparse-layout", choices=("F", "C"), default="F")
+    parser.add_argument("--recovery-graph", action="store_true")
     parser.add_argument("--seconds", type=float, default=10)
     parser.add_argument("--repeats", type=int, default=3)
     parser.add_argument("--seed", type=int, default=610000)
@@ -58,6 +61,8 @@ def main() -> None:
         raise ValueError("Acceptance timings require at least ten seconds and three repetitions")
     if args.method == "direct" and args.precision != "64":
         raise ValueError("The direct baseline is FP64; FP32 uses explicit refinement/fallback")
+    if args.recovery_graph and (args.method != "direct" or args.factor_backend != "cudss" or args.peak != "fused"):
+        raise ValueError("Captured live recovery requires native FP64 direct factors and the fused full peak")
     args.output.parent.mkdir(parents=True, exist_ok=True)
     hashes = source_hashes()
     rows = []
@@ -79,7 +84,11 @@ def main() -> None:
         rtol = 1e-6 if args.profile == "strict" else 1e-3
         recovery = None
         if args.scope in ("live", "policy"):
-            if args.method == "direct":
+            if args.recovery_graph:
+                recovery = CapturedDirectRecoveryGPU(
+                    model.fem, args.envs, rtol, args.inertia, args.body_products, args.sparse_layout
+                )
+            elif args.method == "direct":
                 recovery = EggRecoveryGPU(
                     model.fem,
                     args.envs,
@@ -88,6 +97,7 @@ def main() -> None:
                     natural_order=args.native_order == "natural",
                     inertia=args.inertia,
                     body_products=args.body_products,
+                    sparse_layout=args.sparse_layout,
                 )
             else:
                 recovery = TemporalRecoveryGPU(
@@ -106,6 +116,7 @@ def main() -> None:
                     natural_order=args.native_order == "natural",
                     inertia=args.inertia,
                     body_products=args.body_products,
+                    sparse_layout=args.sparse_layout,
                 )
             if args.peak == "tensor":
                 recovery.peak = P2PeakTensorGPU(
@@ -142,11 +153,19 @@ def main() -> None:
                 .eval()
             )
         setup_s = perf_counter() - start
+        print(
+            json.dumps(
+                {"setup_seconds": setup_s, "device_factors": None if recovery is None else factor_metadata(recovery)}
+            ),
+            flush=True,
+        )
         with torch.inference_mode():
             start = perf_counter()
             warmup_steps = scene.config.episode_steps + int(scene.delay.max()) + 1
-            for _ in range(warmup_steps):
+            for warmup_tick in range(warmup_steps):
                 scene.step(None if policy is None else policy(scene.observation()))
+                if warmup_tick % 32 == 0:
+                    print(json.dumps({"warmup_step": warmup_tick}), flush=True)
             torch.cuda.synchronize()
             warmup_s = perf_counter() - start
             for repeat in range(args.repeats):
@@ -227,6 +246,7 @@ def main() -> None:
             "physical_mesh_converged": False,
             "CPU_or_host_solve_in_timed_loop": False,
             "hardware": {
+                **host_metadata(),
                 "gpu": gpu["name"].decode(),
                 "total_memory_bytes": gpu["totalGlobalMem"],
                 "driver_version": cp.cuda.runtime.driverGetVersion(),
