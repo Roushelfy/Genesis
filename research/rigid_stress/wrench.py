@@ -39,6 +39,7 @@ class PatchMapping:
     quadrature_idx: np.ndarray
     quadrature_force_n: np.ndarray
     diagnostics: WrenchDiagnostics
+    footprint_center_m: np.ndarray
 
 
 def project_coulomb(vectors: np.ndarray, normals: np.ndarray, friction: float) -> tuple[np.ndarray, np.ndarray]:
@@ -131,7 +132,7 @@ class WrenchFit:
         excess = np.linalg.norm(tangent, axis=1) - self.patch.friction * normal
         if force_error > 1e-8 * self.scale or moment_error > 1e-8 * self.scale * self.patch.radius_m:
             raise ValueError(
-                f"Contact wrench is infeasible or unresolved by this finite footprint: force error={force_error:.6g} N, "
+                f"Contact wrench infeasible or unresolved by the finite footprint: force error={force_error:.6g} N, "
                 f"moment error={moment_error:.6g} Nm; refine quadrature or supply a justified load model"
             )
         return sample_force, WrenchDiagnostics(force_error, moment_error, normal.min(), excess.max(), evaluations)
@@ -228,8 +229,9 @@ class FinitePatchMapper:
     moment is relative to center_m. P2 nodal weights remain signed; positivity applies to physical quadrature tractions.
     """
 
-    def __init__(self, geometry):
+    def __init__(self, geometry, anchor_to_surface: bool = False):
         self.geometry = geometry
+        self.anchor_to_surface = anchor_to_surface
         self.positions = geometry.coords.reshape(-1, 3)
         self.weights = geometry.integration_weights.reshape(-1)
         self.tree = cKDTree(self.positions)
@@ -238,6 +240,35 @@ class FinitePatchMapper:
         normals /= np.linalg.norm(normals, axis=1)[:, None]
         normals *= np.where(np.einsum("ij,ij->i", normals, vertices.mean(axis=1) - geometry.f.com) > 0, -1, 1)[:, None]
         self.normals = np.repeat(normals, geometry.shape.shape[0], axis=0)
+        self.face_vertices = vertices
+        self.face_normals = -normals
+        edges = vertices[:, 1:] - vertices[:, :1]
+        gram = np.einsum("fai,fbi->fab", edges, edges)
+        self.face_dual = np.einsum("fab,fbi->fai", np.linalg.inv(gram), edges)
+
+    def surface_anchor(self, center: np.ndarray, force: np.ndarray) -> np.ndarray:
+        """Intersect a force line with the outgoing exterior of the fixed convex reference shell.
+
+        Moving a point along its complete resultant leaves its wrench unchanged. This is an explicit footprint law,
+        useful when rigid collision points lie inside the reference surface during penetration. No force or radius is
+        changed. An absent intersection is a model failure, never a nearest-point or enlarged-radius fallback.
+        """
+        direction = -force / np.linalg.norm(force)
+        denominator = self.face_normals @ direction
+        outgoing = denominator > 1e-12
+        parameter = np.divide(
+            np.einsum("fi,fi->f", self.face_vertices[:, 0] - center, self.face_normals),
+            denominator,
+            out=np.full(len(denominator), -np.inf),
+            where=outgoing,
+        )
+        candidates = np.flatnonzero(outgoing)
+        relative = center + parameter[candidates, None] * direction - self.face_vertices[candidates, 0]
+        barycentric = np.einsum("fai,fi->fa", self.face_dual[candidates], relative)
+        inside = (barycentric >= -2e-12).all(axis=1) & (barycentric.sum(axis=1) <= 1 + 2e-12)
+        if not inside.any():
+            raise ValueError("The complete force line does not intersect the outgoing reference shell")
+        return center + parameter[candidates[inside]].max() * direction
 
     def map(self, patch: WrenchPatch) -> PatchMapping:
         if (
@@ -253,6 +284,33 @@ class FinitePatchMapper:
             or patch.source_epsilon < 0
         ):
             raise ValueError("Finite vectors, positive finite radius and nonnegative finite friction are required")
+        if patch.inward_normal is not None and (
+            np.asarray(patch.inward_normal).shape != (3,)
+            or not np.isfinite(patch.inward_normal).all()
+            or np.linalg.norm(patch.inward_normal) <= 1e-12
+        ):
+            raise ValueError("A finite nonzero inward pad normal is required")
+        if not np.any(patch.force_n) and not np.any(patch.moment_nm):
+            return PatchMapping(
+                np.zeros(self.geometry.f.ndof),
+                np.empty(0, dtype=np.int64),
+                np.empty((0, 3)),
+                WrenchDiagnostics(0, 0, 0, 0, 0),
+                patch.center_m.copy(),
+            )
+        if self.anchor_to_surface:
+            if patch.inward_normal is None or np.any(patch.moment_nm):
+                raise ValueError("Force-line anchoring requires the point-wrench pad law")
+            center = self.surface_anchor(patch.center_m, patch.force_n)
+            patch = WrenchPatch(
+                center,
+                patch.force_n,
+                patch.radius_m,
+                patch.friction,
+                patch.moment_nm,
+                patch.inward_normal,
+                patch.source_epsilon,
+            )
         ids = np.array(self.tree.query_ball_point(patch.center_m, patch.radius_m, return_sorted=True))
         if len(ids) < 3:
             raise ValueError("The footprint needs at least three quadrature samples; refine contact integration")
@@ -270,4 +328,4 @@ class FinitePatchMapper:
         contribution = self.geometry.shape[ids % samples_per_face, :, None] * force[:, None, :]
         nodal = np.zeros_like(self.geometry.f.xyz)
         np.add.at(nodal, self.geometry.nodes[ids // samples_per_face].reshape(-1), contribution.reshape(-1, 3))
-        return PatchMapping(nodal.reshape(-1), ids, force, diagnostics)
+        return PatchMapping(nodal.reshape(-1), ids, force, diagnostics, patch.center_m)

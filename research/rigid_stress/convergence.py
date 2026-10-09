@@ -10,7 +10,8 @@ from time import perf_counter
 import numpy as np
 from threadpoolctl import threadpool_limits
 
-from .cpu import ContactBatch, EggConfig, EggRecoveryCPU, reference
+from .cpu import ContactBatch, EggConfig, EggRecoveryCPU
+from .mechanics import SurfaceGeometry
 from .wrench import FinitePatchMapper
 
 
@@ -46,6 +47,9 @@ def main() -> None:
     parser.add_argument("--levels", type=int, nargs="+", default=[2, 3, 4])
     parser.add_argument("--quadratures", type=int, nargs="+", default=[6, 10, 16])
     parser.add_argument("--layers", type=int, default=2)
+    parser.add_argument("--ordering", choices=("mmd", "column-nd"), default="mmd")
+    parser.add_argument("--factor-backend", choices=("superlu", "cholmod"), default="superlu")
+    parser.add_argument("--footprint-anchor", choices=("raw", "force-line"), default="raw")
     parser.add_argument("--cases", type=int, default=12)
     parser.add_argument("--criterion", type=float, default=0.02)
     parser.add_argument("--reuse", type=Path)
@@ -59,6 +63,8 @@ def main() -> None:
     configurations = []
     if args.reuse is not None:
         previous = json.loads(args.reuse.read_text())
+        if previous.get("footprint_anchor", "raw") != args.footprint_anchor:
+            raise ValueError("Reused results require the identical physical footprint anchor law")
         for name, values in (
             ("position_m", contacts.position_m),
             ("force_n", contacts.force_n),
@@ -81,6 +87,7 @@ def main() -> None:
         ]
     report = {
         "status": "running",
+        "footprint_anchor": args.footprint_anchor,
         "physical_law": "Compact Gaussian, nonnegative pressure, constant pad traction ratio, exact point wrench",
         "contacts": {
             "position_m": contacts.position_m.tolist(),
@@ -100,9 +107,16 @@ def main() -> None:
             start = perf_counter()
             model = EggRecoveryCPU(
                 args.cases,
-                EggConfig(level=level, layers=args.layers, surface_quadrature=min(args.quadratures)),
+                EggConfig(
+                    level=level,
+                    layers=args.layers,
+                    surface_quadrature=min(args.quadratures),
+                    ordering=args.ordering,
+                    factor_backend=args.factor_backend,
+                ),
                 history=0,
                 direct=True,
+                anchor_to_surface=args.footprint_anchor == "force-line",
             )
             configurations.append(
                 {
@@ -110,13 +124,22 @@ def main() -> None:
                     "layers": args.layers,
                     "dofs": model.fem.ndof,
                     "tetrahedra": model.fem.ne,
-                    "factor_nnz": model.fem.factor.L.nnz + model.fem.factor.U.nnz,
+                    # Native CHOLMOD solves do not need an exported factor. Export failed on the current finest case.
+                    "factor_nnz": (
+                        model.fem.factor.L.nnz + model.fem.factor.U.nnz if args.factor_backend == "superlu" else None
+                    ),
+                    "factor_exported": args.factor_backend == "superlu",
                     "build_seconds": perf_counter() - start,
+                    "ordering": model.fem.ordering,
+                    "factor_backend": model.fem.factor_backend,
+                    "assembly_seconds": model.fem.assembly_s,
+                    "ordering_seconds": model.fem.ordering_s,
+                    "factor_seconds": model.fem.factor_s,
                 }
             )
             for quadrature in args.quadratures:
-                model.surface = reference.SurfaceGeometry(model.fem, quadrature)
-                model.mapper = FinitePatchMapper(model.surface)
+                model.surface = SurfaceGeometry(model.fem, quadrature)
+                model.mapper = FinitePatchMapper(model.surface, anchor_to_surface=args.footprint_anchor == "force-line")
                 loads = model.map_contacts(contacts)
                 rhs = model.compatible_rhs(loads.nodal_force_n)
                 recovered = model.recover(rhs)
@@ -172,7 +195,7 @@ def main() -> None:
             for row in comparisons
         ),
         comparisons=comparisons,
-        applicability="Synthetic asymmetric finite pad suite. Live replays and wall-layer convergence require separate checks",
+        applicability="Synthetic asymmetric finite pads; live replays and wall layers require separate checks",
     )
     args.output.write_text(json.dumps(report, indent=2) + "\n")
     with args.output.with_suffix(".csv").open("w", newline="") as stream:

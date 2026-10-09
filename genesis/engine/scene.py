@@ -266,6 +266,8 @@ class Scene(RBC):
         self._uid = gs.UID()
         self._is_built = False
         self._pre_step_callbacks: list = []
+        self._pre_substep_callbacks: list[Callable[[int], None]] = []
+        self._post_substep_callbacks: list[Callable[[int], None]] = []
 
         gs.logger.info(f"Scene ~~~<{self._uid}>~~~ created.")
 
@@ -1059,6 +1061,25 @@ class Scene(RBC):
         them opaquely; use this to drive a scene from an external controller without coupling the scene to it."""
         self._pre_step_callbacks.append(callback)
 
+    def register_pre_substep_callback(self, callback: Callable[[int], None]) -> None:
+        """Register an observer immediately before each forward physical substep.
+
+        The observer receives the zero-based substep index within the scene step and runs on the stepping thread.
+        Pair a copied pose here with contacts read by a post-substep observer to sample the same contact solve.
+        Observers run at the physics frequency, so device or host work they perform contributes to stepping cost.
+        """
+        self._pre_substep_callbacks.append(callback)
+
+    def register_post_substep_callback(self, callback: Callable[[int], None]) -> None:
+        """Register an observer immediately after each forward physical substep.
+
+        The observer receives the zero-based substep index within the scene step and runs on the stepping thread.
+        Rigid contact forces belong to the solve just completed, while entity poses include its integration.
+        Use a pre-substep observer for the pose that participated in that solve. Backward checkpoint replay omits
+        observers, and exported scene descriptions omit them with the other runtime callbacks.
+        """
+        self._post_substep_callbacks.append(callback)
+
     @gs.assert_built
     def step(self, update_visualizer=True, refresh_visualizer=True):
         """
@@ -1553,6 +1574,10 @@ class Scene(RBC):
             omitted_kinds.update(type(camera).__name__ for camera in self._visualizer.cameras)
         if self._pre_step_callbacks:
             omitted_kinds["pre_step_callback"] += len(self._pre_step_callbacks)
+        if self._pre_substep_callbacks:
+            omitted_kinds["pre_substep_callback"] += len(self._pre_substep_callbacks)
+        if self._post_substep_callbacks:
+            omitted_kinds["post_substep_callback"] += len(self._post_substep_callbacks)
         surfaces = [entity.surface for entity in self.entities]
         if isinstance(self.options.renderer, gs.renderers.RayTracer) and self.options.renderer.env_surface is not None:
             surfaces.append(self.options.renderer.env_surface)

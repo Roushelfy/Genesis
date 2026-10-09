@@ -10,6 +10,8 @@ from dataclasses import dataclass
 import cupy as cp
 import numpy as np
 
+from .wrench import FinitePatchMapper
+
 PRESSURE_SOURCE = r"""
 __device__ bool solve3(const double* g, const double* b, double* x) {
     double trace = g[0] + g[3] + g[5];
@@ -30,9 +32,18 @@ __device__ bool solve3(const double* g, const double* b, double* x) {
 __device__ void footprint(
     const double* positions, const double* weights, int samples, const double* center,
     const double* tangent, const double* bitangent, double radius, const double* multiplier,
-    double* scratch) {
+    double* scratch, const long long* grid_offsets, const long long* grid_order,
+    const int* grid_shape, const int* grid_start, const int* grid_size, bool grid) {
     double total[11] = {0};
-    for (int q = threadIdx.x; q < samples; q += blockDim.x) {
+    int cells = grid ? grid_size[0]*grid_size[1]*grid_size[2] : 1;
+    for (int cell = 0; cell < cells; ++cell) {
+        int z = cell % grid_size[2], y = (cell / grid_size[2]) % grid_size[1];
+        int x = cell / (grid_size[1]*grid_size[2]);
+        int index = ((x+grid_start[0])*grid_shape[1]+y+grid_start[1])*grid_shape[2]+z+grid_start[2];
+        long long lo = grid ? grid_offsets[index] : 0;
+        long long hi = grid ? grid_offsets[index+1] : samples;
+        for (long long entry = lo + threadIdx.x; entry < hi; entry += blockDim.x) {
+        long long q = grid ? grid_order[entry] : entry;
         double relative[3], distance = 0;
         for (int a = 0; a < 3; ++a) {
             relative[a] = (positions[3*q+a] - center[a]) / radius;
@@ -60,6 +71,7 @@ __device__ void footprint(
             total[10] += weight;
         }
     }
+    }
     for (int entry = 0; entry < 11; ++entry) scratch[entry*128+threadIdx.x] = total[entry];
     __syncthreads();
     for (int stride = 64; stride; stride /= 2) {
@@ -74,20 +86,24 @@ extern "C" __global__ void pressure(
     const double* position, const double* force, const double* radius, const double* normal,
     const double* friction, const bool* valid, double source_epsilon,
     const double* samples, const double* weights, const double* shape, const long long* nodes,
+    const double* vertices, const double* face_dual, const double* face_normal, int faces, bool anchor,
+    const long long* grid_offsets, const long long* grid_order, const int* grid_shape,
+    const double* grid_origin, double grid_width, bool grid,
     int quadrature, int sample_count, int contacts, int dofs, double* loads,
-    int* status, double* diagnostics) {
+    int* status, double* diagnostics, double* footprint_center) {
     int contact = blockIdx.x, environment = blockIdx.y, index = environment*contacts + contact;
     if (!valid[index]) return;
     __shared__ double scratch[11*128];
     __shared__ double center[3], complete_force[3], tangent[3], bitangent[3];
     __shared__ double multiplier[3], candidate[3], step[3], reduced[11];
     __shared__ double r, magnitude, normal_force, excess, allowance, objective, fraction;
-    __shared__ int flag, evaluations, is_accepted;
+    __shared__ int flag, evaluations, is_accepted, grid_start[3], grid_size[3];
     if (threadIdx.x == 0) {
         flag = 0; evaluations = 0; magnitude = 0; double normal_norm = 0;
         r = radius[index];
         for (int a = 0; a < 3; ++a) {
             center[a] = position[3*index+a];
+            footprint_center[3*index+a] = center[a];
             complete_force[a] = force[3*index+a];
             magnitude += complete_force[a] * complete_force[a];
             normal_norm += normal[3*index+a] * normal[3*index+a];
@@ -124,7 +140,53 @@ extern "C" __global__ void pressure(
         if (threadIdx.x == 0) status[index] = flag == 5 ? 0 : flag;
         return;
     }
-    footprint(samples, weights, sample_count, center, tangent, bitangent, r, multiplier, scratch);
+    if (anchor) {
+        double best = -1.7976931348623157e308;
+        for (int f = threadIdx.x; f < faces; f += blockDim.x) {
+            double denominator = 0, numerator = 0;
+            for (int a = 0; a < 3; ++a) {
+                denominator -= face_normal[3*f+a] * complete_force[a] / magnitude;
+                numerator += face_normal[3*f+a] * (vertices[9*f+a] - center[a]);
+            }
+            if (denominator > 1e-12) {
+                double parameter = numerator / denominator, bary1 = 0, bary2 = 0;
+                for (int a = 0; a < 3; ++a) {
+                    double relative = center[a] - parameter * complete_force[a] / magnitude - vertices[9*f+a];
+                    bary1 += face_dual[6*f+a] * relative;
+                    bary2 += face_dual[6*f+3+a] * relative;
+                }
+                if (bary1 >= -2e-12 && bary2 >= -2e-12 && bary1 + bary2 <= 1 + 2e-12)
+                    best = fmax(best, parameter);
+            }
+        }
+        scratch[threadIdx.x] = best;
+        __syncthreads();
+        for (int stride = 64; stride; stride /= 2) {
+            if (threadIdx.x < stride) scratch[threadIdx.x] = fmax(scratch[threadIdx.x], scratch[threadIdx.x+stride]);
+            __syncthreads();
+        }
+        if (threadIdx.x == 0) {
+            if (scratch[0] == -1.7976931348623157e308) flag = 6;
+            else for (int a = 0; a < 3; ++a) {
+                center[a] -= scratch[0] * complete_force[a] / magnitude;
+                footprint_center[3*index+a] = center[a];
+            }
+        }
+        __syncthreads();
+        if (flag) {
+            if (threadIdx.x == 0) status[index] = flag;
+            return;
+        }
+    }
+    if (threadIdx.x == 0) for (int a = 0; a < 3; ++a) {
+        int lo = grid ? (int)fmax(0., fmin((double)grid_shape[a], floor((center[a]-r-grid_origin[a])/grid_width))) : 0;
+        int hi = grid ? (int)fmax(-1., fmin((double)grid_shape[a]-1,
+            floor((center[a]+r-grid_origin[a])/grid_width))) : 0;
+        grid_start[a] = lo; grid_size[a] = max(0, hi-lo+1);
+    }
+    __syncthreads();
+    footprint(samples, weights, sample_count, center, tangent, bitangent, r, multiplier, scratch,
+        grid_offsets, grid_order, grid_shape, grid_start, grid_size, grid);
     if (threadIdx.x == 0) {
         for (int entry = 0; entry < 11; ++entry) reduced[entry] = scratch[entry*128];
         double right[3] = {reduced[6]-reduced[10], reduced[7], reduced[8]};
@@ -133,7 +195,8 @@ extern "C" __global__ void pressure(
     }
     __syncthreads();
     for (int iteration = 0; iteration < 80 && !flag; ++iteration) {
-        footprint(samples, weights, sample_count, center, tangent, bitangent, r, multiplier, scratch);
+        footprint(samples, weights, sample_count, center, tangent, bitangent, r, multiplier, scratch,
+        grid_offsets, grid_order, grid_shape, grid_start, grid_size, grid);
         if (threadIdx.x == 0) {
             for (int entry = 0; entry < 11; ++entry) reduced[entry] = scratch[entry*128];
             double right[3] = {reduced[6]-reduced[10], reduced[7], reduced[8]};
@@ -150,7 +213,8 @@ extern "C" __global__ void pressure(
             if (threadIdx.x == 0)
                 for (int a = 0; a < 3; ++a) candidate[a] = multiplier[a] + fraction * step[a];
             __syncthreads();
-            footprint(samples, weights, sample_count, center, tangent, bitangent, r, candidate, scratch);
+            footprint(samples, weights, sample_count, center, tangent, bitangent, r, candidate, scratch,
+                grid_offsets, grid_order, grid_shape, grid_start, grid_size, grid);
             if (threadIdx.x == 0) {
                 double gradient_dot_step = (reduced[10]-reduced[6])*step[0] - reduced[7]*step[1] - reduced[8]*step[2];
                 double value = scratch[9*128] + reduced[10] * candidate[0];
@@ -165,7 +229,8 @@ extern "C" __global__ void pressure(
         if (!is_accepted && threadIdx.x == 0) flag = 4;
         __syncthreads();
     }
-    footprint(samples, weights, sample_count, center, tangent, bitangent, r, multiplier, scratch);
+    footprint(samples, weights, sample_count, center, tangent, bitangent, r, multiplier, scratch,
+        grid_offsets, grid_order, grid_shape, grid_start, grid_size, grid);
     if (threadIdx.x == 0) {
         double force_error = fabs(scratch[6*128] / scratch[10*128] - 1) * magnitude;
         double moment_error = sqrt(scratch[7*128]*scratch[7*128] + scratch[8*128]*scratch[8*128])
@@ -181,7 +246,15 @@ extern "C" __global__ void pressure(
     __syncthreads();
     if (flag && flag != 5) return;
     double integral = scratch[10*128];
-    for (int q = threadIdx.x; q < sample_count; q += blockDim.x) {
+    int cells = grid ? grid_size[0]*grid_size[1]*grid_size[2] : 1;
+    for (int cell = 0; cell < cells; ++cell) {
+        int z = cell % grid_size[2], y = (cell / grid_size[2]) % grid_size[1];
+        int x = cell / (grid_size[1]*grid_size[2]);
+        int index = ((x+grid_start[0])*grid_shape[1]+y+grid_start[1])*grid_shape[2]+z+grid_start[2];
+        long long lo = grid ? grid_offsets[index] : 0;
+        long long hi = grid ? grid_offsets[index+1] : sample_count;
+        for (long long entry = lo + threadIdx.x; entry < hi; entry += blockDim.x) {
+        long long q = grid ? grid_order[entry] : entry;
         double relative[3], distance = 0, h1 = 0, h2 = 0;
         for (int a = 0; a < 3; ++a) {
             relative[a] = (samples[3*q+a] - center[a]) / r;
@@ -199,6 +272,7 @@ extern "C" __global__ void pressure(
                         pressure * shape[6*point+node] * complete_force[a]);
         }
     }
+    }
 }
 """
 
@@ -209,22 +283,52 @@ class DeviceMappedLoads:
     contact_status: cp.ndarray
     contact_diagnostics: cp.ndarray
     is_accepted: cp.ndarray
+    footprint_center_m: cp.ndarray
 
 
 class PadPressureGPU:
     """Integrate changing complete contacts with one shared full-shell surface operator.
 
     Status codes distinguish invalid force/cone data (1), empty footprint (2), deficient quadrature rank (3) and failed
-    wrench conservation (4). Inactive and exactly zero-force contacts contribute zero. Acceptance must gate observations.
+    wrench conservation (4). Inactive and zero-force contacts contribute zero. Acceptance must gate observations.
     """
 
-    def __init__(self, geometry):
+    def __init__(
+        self,
+        geometry,
+        anchor_to_surface: bool = False,
+        sampling: str = "scan",
+        grid_width_m: float = 0.003,
+    ):
+        if sampling not in ("scan", "grid") or not np.isfinite(grid_width_m) or grid_width_m <= 0:
+            raise ValueError("Select full scan or exact spatial grid with a finite positive cell width")
+        self.sampling = sampling
+        coordinates = geometry.coords.reshape(-1, 3)
+        origin = coordinates.min(axis=0) - 1e-12
+        grid_indices = np.floor((coordinates - origin) / grid_width_m).astype(np.int32)
+        grid_shape = grid_indices.max(axis=0) + 1
+        grid_ids = (grid_indices[:, 0] * grid_shape[1] + grid_indices[:, 1]) * grid_shape[2] + grid_indices[:, 2]
+        if sampling == "grid":
+            self.grid_order = cp.asarray(np.argsort(grid_ids, kind="stable"), dtype=np.int64)
+            offsets = np.r_[0, np.cumsum(np.bincount(grid_ids, minlength=int(np.prod(grid_shape))))]
+            self.grid_offsets = cp.asarray(offsets, dtype=np.int64)
+        else:
+            self.grid_order = cp.empty(0, dtype=np.int64)
+            self.grid_offsets = cp.empty(0, dtype=np.int64)
+        self.grid_shape = cp.asarray(grid_shape, dtype=np.int32)
+        self.grid_origin = cp.asarray(origin)
+        self.grid_width_m = grid_width_m
         self.positions = cp.asarray(geometry.coords.reshape(-1, 3))
         self.weights = cp.asarray(geometry.integration_weights.reshape(-1))
         self.shape = cp.asarray(geometry.shape)
         self.nodes = cp.asarray(geometry.nodes, dtype=np.int64)
         self.dofs = geometry.f.ndof
         self.quadrature = len(geometry.shape)
+        mapper = FinitePatchMapper(geometry)
+        self.face_vertices = cp.asarray(mapper.face_vertices)
+        self.face_dual = cp.asarray(mapper.face_dual)
+        self.face_normals = cp.asarray(mapper.face_normals)
+        self.anchor_to_surface = anchor_to_surface
         self.kernel = cp.RawKernel(PRESSURE_SOURCE, "pressure")
 
     def map(self, position, force, radius, normal, friction, valid, source_epsilon=0.0) -> DeviceMappedLoads:
@@ -243,6 +347,7 @@ class PadPressureGPU:
         loads = cp.zeros((self.dofs, environments), dtype=np.float64, order="F")
         status = cp.zeros(valid.shape, dtype=np.int32)
         diagnostics = cp.zeros((*valid.shape, 5), dtype=np.float64)
+        footprint_center = cp.zeros(position.shape, dtype=np.float64)
         if contacts:
             self.kernel(
                 (contacts, environments),
@@ -257,6 +362,17 @@ class PadPressureGPU:
                     self.weights,
                     self.shape,
                     self.nodes,
+                    self.face_vertices,
+                    self.face_dual,
+                    self.face_normals,
+                    np.int32(len(self.face_normals)),
+                    np.bool_(self.anchor_to_surface),
+                    self.grid_offsets,
+                    self.grid_order,
+                    self.grid_shape,
+                    self.grid_origin,
+                    np.float64(self.grid_width_m),
+                    np.bool_(self.sampling == "grid"),
                     self.quadrature,
                     len(self.positions),
                     contacts,
@@ -264,6 +380,7 @@ class PadPressureGPU:
                     loads,
                     status,
                     diagnostics,
+                    footprint_center,
                 ),
             )
-        return DeviceMappedLoads(loads, status, diagnostics, cp.all(status == 0, axis=1))
+        return DeviceMappedLoads(loads, status, diagnostics, cp.all(status == 0, axis=1), footprint_center)

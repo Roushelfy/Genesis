@@ -5,23 +5,13 @@ locations, directions, counts and radii are inputs at every call. This module
 does not impose physical supports or contact symmetry.
 """
 
-import sys
 from dataclasses import dataclass
-from pathlib import Path
 
 import numpy as np
 
-REFERENCE = Path(__file__).resolve().parent / "reference"
-sys.path[:0] = [
-    str(REFERENCE / "output"),
-    str(REFERENCE / "output/arbitrary_contact_cpu"),
-    str(REFERENCE / "output/smooth_friction_cpu"),
-    str(REFERENCE / "tmp/batch_history_validation"),
-]
-import arbitrary_contact_test as reference
-from benchmark import BatchRecovery, CachedHistory
-from general_peak import P2Peak
-
+from .history_cpu import BatchRecovery
+from .mechanics import P2Shell, SurfaceGeometry, shell_mesh
+from .peak_cpu import P2Peak
 from .wrench import FinitePatchMapper, WrenchDiagnostics, WrenchPatch
 
 
@@ -34,6 +24,8 @@ class EggConfig:
     poisson: float = 0.3
     density_kg_m3: float = 2000.0
     surface_quadrature: int = 10
+    ordering: str = "mmd"
+    factor_backend: str = "superlu"
 
 
 @dataclass(frozen=True)
@@ -61,6 +53,7 @@ class MappedLoads:
     resultant_moment_nm: np.ndarray
     input_moment_nm: np.ndarray
     contact_diagnostics: tuple[tuple[WrenchDiagnostics, ...], ...]
+    footprint_center_m: np.ndarray
 
 
 @dataclass(frozen=True)
@@ -72,33 +65,26 @@ class RecoveryResult:
 
 
 class EggRecoveryCPU:
-    def __init__(self, environments=1, config=None, history=8, rtol=1e-6, direct=False):
+    def __init__(self, environments=1, config=None, history=8, rtol=1e-6, direct=False, anchor_to_surface=False):
         if environments < 1 or history < 0 or rtol <= 0:
             raise ValueError("Positive environment count/tolerance and nonnegative history required")
         if config is None:
             config = EggConfig()
         self.config = config
         self.environments = environments
-        xyz, tetrahedra, outer, self.mesh_metadata = reference.egg.egg_mesh(
+        xyz, tetrahedra, outer, self.mesh_metadata = shell_mesh(
             config.level, config.layers, config.thickness_m
         )
-        self.fem = reference.conv.FEM(
-            xyz,
-            tetrahedra,
-            outer,
-            order=2,
-            quarter=False,
-            young=config.young_pa,
-            poisson=config.poisson,
-            density=config.density_kg_m3,
-            label="full-egg-recovery",
+        self.fem = P2Shell(
+            xyz, tetrahedra, outer, config.young_pa, config.poisson, config.density_kg_m3,
+            config.layers, config.ordering, config.factor_backend,
         )
-        self.surface = reference.SurfaceGeometry(self.fem, config.surface_quadrature)
-        self.mapper = FinitePatchMapper(self.surface)
+        self.surface = SurfaceGeometry(self.fem, config.surface_quadrature)
+        self.mapper = FinitePatchMapper(self.surface, anchor_to_surface=anchor_to_surface)
         self.peak = P2Peak(self.fem.glambda, self.fem.elements, config.young_pa / (2 * (1 + config.poisson)))
         self.peak.warmup(np.zeros(self.fem.ndof))
         self.solver = BatchRecovery(
-            self.fem, self.peak, environments, history, rtol, history="cached", strategy="compact", direct=direct
+            self.fem, self.peak, environments, history, rtol, direct=direct
         )
 
     def map_contacts(self, contacts: ContactBatch) -> MappedLoads:
@@ -118,6 +104,7 @@ class EggRecoveryCPU:
             raise ValueError("Active contact positions/forces must be finite")
         raw = np.zeros((self.fem.ndof, b), order="F")
         input_moment = np.zeros((b, 3))
+        footprint_centers = contacts.position_m.astype(np.float64).copy()
         diagnostics = []
         for env in range(b):
             environment_diagnostics = []
@@ -134,6 +121,7 @@ class EggRecoveryCPU:
                 )
                 mapped = self.mapper.map(patch)
                 raw[:, env] += mapped.nodal_force_n
+                footprint_centers[env, contact] = mapped.footprint_center_m
                 environment_diagnostics.append(mapped.diagnostics)
             diagnostics.append(tuple(environment_diagnostics))
             input_moment[env] = np.cross(
@@ -142,7 +130,8 @@ class EggRecoveryCPU:
             ).sum(axis=0)
         nodal = raw.reshape(-1, 3, b).transpose(2, 0, 1)
         return MappedLoads(
-            raw, nodal.sum(axis=1), np.cross(self.fem.xyz[None], nodal).sum(axis=1), input_moment, tuple(diagnostics)
+            raw, nodal.sum(axis=1), np.cross(self.fem.xyz[None], nodal).sum(axis=1), input_moment, tuple(diagnostics),
+            footprint_centers,
         )
 
     def compatible_rhs(self, raw_force_n, omega_rad_s=None):
@@ -164,8 +153,8 @@ class EggRecoveryCPU:
                 raw[:, env] -= self.fem.m @ centrifugal
         return self.fem.balance(raw)
 
-    def recover(self, compatible_rhs_n) -> RecoveryResult:
-        u, peaks, statistics = self.solver.step(compatible_rhs_n)
+    def recover(self, compatible_rhs_n, dt=1.0) -> RecoveryResult:
+        u, peaks, statistics = self.solver.step(compatible_rhs_n, dt)
         residual = np.linalg.norm(self.fem.k @ u - compatible_rhs_n, axis=0)
         norm = np.linalg.norm(compatible_rhs_n, axis=0)
         if not np.isfinite(u).all() or not np.isfinite(peaks).all():
@@ -174,13 +163,8 @@ class EggRecoveryCPU:
         if np.any(residual > allowed):
             raise ArithmeticError("Complete equilibrium residual failed, including gauge rows")
         relative = np.divide(residual, norm, out=np.zeros_like(residual), where=norm > 1e-12)
-        return RecoveryResult(peaks, u, relative, statistics["failed"])
+        return RecoveryResult(peaks, u, relative, statistics.failed)
 
     def reset(self, environments=None):
         ids = np.arange(self.environments) if environments is None else np.asarray(environments)
-        for env in ids:
-            self.solver.history[env] = CachedHistory(self.solver.K, self.solver.capacity)
-        if self.solver.last is not None:
-            self.solver.last[:, ids] = 0
-        if self.solver.before is not None:
-            self.solver.before[:, ids] = 0
+        self.solver.reset(ids)

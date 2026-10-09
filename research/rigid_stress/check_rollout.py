@@ -11,6 +11,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("rollout", type=Path)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--allow-grasp-failures", action="store_true")
     args = parser.parse_args()
     source = json.loads(args.rollout.read_text())
     frames = source["records"]
@@ -61,6 +62,7 @@ def main() -> None:
         "passed": equations_passed and output_passed and all(item["grasp_passed"] for item in environments),
         "equations_passed": equations_passed,
         "output_error_passed": output_passed,
+        "grasp_success_fraction": sum(item["grasp_passed"] for item in environments) / source["envs"],
         "absolute_residual_floor_n": 1e-11,
         "relative_residual_max_above_1pa": float((residual_n / np.maximum(rhs_norm, 1e-30))[above_one_pa].max()),
         "absolute_peak_error_max_pa": float(peak_error_pa.max()),
@@ -80,7 +82,7 @@ def main() -> None:
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2) + "\n")
     print(json.dumps(report, indent=2))
-    if not report["passed"]:
+    if not equations_passed or not output_passed or (not args.allow_grasp_failures and not report["passed"]):
         raise ArithmeticError("Recorded grasp or same-mesh numerical acceptance failed")
 
 

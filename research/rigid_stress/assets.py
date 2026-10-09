@@ -1,6 +1,8 @@
 """Generate the exterior rigid mesh and an explicit hollow-shell URDF inertia."""
 
 import argparse
+import json
+from dataclasses import asdict
 from pathlib import Path
 from xml.etree.ElementTree import Element, ElementTree, SubElement
 
@@ -14,7 +16,7 @@ def write_egg_assets(model, destination):
     destination.mkdir(parents=True, exist_ok=True)
     f = model.fem
     outer = f.outer_faces.copy()
-    vertices = f.base_xyz[: model.mesh_metadata["outer_surface_vertices"]]
+    vertices = f.base_xyz[: model.mesh_metadata.outer_surface_vertices]
     triangles = vertices[outer]
     normals = np.cross(triangles[:, 1] - triangles[:, 0], triangles[:, 2] - triangles[:, 0])
     inward = np.einsum("ij,ij->i", normals, triangles.mean(axis=1) - f.com) < 0
@@ -50,6 +52,20 @@ def write_egg_assets(model, destination):
         if kind == "visual":
             SubElement(SubElement(part, "material", name="shell"), "color", rgba="0.90 0.76 0.57 1")
     ElementTree(robot).write(urdf, encoding="utf-8", xml_declaration=True)
+    (destination / "egg_shell.metadata.json").write_text(
+        json.dumps(
+            {
+                "config": asdict(model.config),
+                "mass_kg": f.mass,
+                "com_m": f.com.tolist(),
+                "inertia_kg_m2": inertia.tolist(),
+                "dofs": f.ndof,
+                "tetrahedra": f.ne,
+            },
+            indent=2,
+        )
+        + "\n"
+    )
     return urdf
 
 

@@ -12,7 +12,8 @@ from pathlib import Path
 import numpy as np
 from threadpoolctl import threadpool_limits
 
-from .cpu import EggConfig, EggRecoveryCPU, reference
+from .cpu import EggConfig, EggRecoveryCPU
+from .oracle import reference
 from .wrench import FinitePatchMapper, PadPressureFit, WrenchFit, WrenchPatch
 
 

@@ -23,12 +23,14 @@ existing user fork: `Roushelfy/Genesis:rigid-stress-recovery`.
 | `sparse_gpu.py`, shared sparse L/U + cuSPARSE SpSM, fused full peak | Device validated on RTX PRO 6000 Blackwell |
 | `device_pressure.py`, changing finite pad wrenches | Device vs CPU FP64 validated, including an actual sliding snapshot |
 | `franka_egg.py` | Real 600-step GPU grasp and CPU direct comparison executed, contact-solve pose matched |
-| Full-shell mesh and surface quadrature convergence | Full levels 2/3/4 measured. Mesh criterion failed, finer work continuing |
-| GPU history, optimized precision, reset/substep/seed acceptance, policy/live timing | **Active work under GOAL.md** |
+| Full-shell mesh and quadrature convergence | Full levels 4/5/6 pass 2% for asymmetric, minimum-radius and nominal live loads |
+| GPU independent histories, FP32 refinement, native cuDSS, resets, substep observers | Device tested; strict/throughput math paths retain full residual |
+| Reusable Panda and full contact-replay/live/policy benchmarks | Runnable; fine-grid performance selection and held-out validation active |
 
 The live path preserves the complete contact wrench with a declared compliant
 pad model. See [docs/PAD_LAW.md](docs/PAD_LAW.md) and the scope-specific measured
-[progress report](docs/PROGRESS_20261009.md). The full acceptance and optimization
+[initial progress report](docs/PROGRESS_20261009.md) and the
+[new GPU acceptance checkpoint](docs/PROGRESS_20261009_GPU.md). The full acceptance and optimization
 goal remains active. Current coarse timings have a separate physical error.
 
 ## Start here
@@ -105,6 +107,28 @@ The timing includes verification, recording and first compilation. Use the
 separate warmed benchmark command for the explicitly assembled-RHS scope.
 The progress report lists reproducible allocated-node commands and remaining
 physical and live-throughput acceptance work.
+
+## Reusable device path
+
+Install the optional native dependencies for large full-shell operators:
+
+```bash
+python -m pip install -r research/rigid_stress/requirements-cholmod.txt \
+    -r research/rigid_stress/requirements-cudss.txt
+python -m research.rigid_stress.check_panda --envs 32 --steps 1200 --temporal \
+    --output "$RIGID_STRESS_DATA_ROOT/runs/check/panda32.json"
+python -m research.rigid_stress.benchmark_live --level 6 --cpu-factor none \
+    --factor-backend cudss --envs 8 --scope live \
+    --output "$RIGID_STRESS_DATA_ROOT/runs/benchmark/live8.json"
+python -m research.rigid_stress.benchmark_replay --level 6 --envs 8 \
+    --replay "$RIGID_STRESS_DATA_ROOT/runs/check/panda32.contacts.npz" \
+    --output "$RIGID_STRESS_DATA_ROOT/runs/benchmark/stress8.json"
+```
+
+CPU factor `none` skips only an unused offline factor in device timing. CPU
+oracle checks use `superlu` or native `cholmod`; they reject a missing factor.
+Benchmarks require at least three ten-second repeats and warm a complete grasp.
+Run all experiments on allocated hardware with explicit data/cache destinations.
 
 ## Boundaries
 

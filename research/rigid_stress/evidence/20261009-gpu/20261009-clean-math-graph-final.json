@@ -1,0 +1,24 @@
+{
+  "GPU_tested": true,
+  "cases": [
+    {
+      "method": "direct",
+      "graph_supported": true,
+      "reason": "",
+      "peak_relative_error_max": 7.025045134835753e-14
+    },
+    {
+      "method": "padded",
+      "graph_supported": false,
+      "reason": "Traceback (most recent call last):\n  File \"/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/check_graph.py\", line 47, in main\n    out = recovery.recover(rhs)\n  File \"/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/temporal_gpu.py\", line 179, in recover\n    displacement = cp.asfortranarray(self.last + cp.where(extrapolate, ratio, 0)[None] * (self.last - self.before))\n  File \"/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/cupy/_manipulation/kind.py\", line 64, in asfortranarray\n    return _core.asfortranarray(a, dtype)\n  File \"cupy/_core/core.pyx\", line 3242, in cupy._core.core.asfortranarray\n  File \"cupy/_core/core.pyx\", line 3260, in cupy._core.core.asfortranarray\n  File \"cupy/_core/core.pyx\", line 3210, in cupy._core.core._internal_asfortranarray\n  File \"cupy_backends/cuda/libs/cublas.pyx\", line 1420, in cupy_backends.cuda.libs.cublas.dgeam\n  File \"cupy_backends/cuda/libs/cublas.pyx\", line 1423, in cupy_backends.cuda.libs.cublas.dgeam\n  File \"cupy_backends/cuda/libs/cublas.pyx\", line 668, in cupy_backends.cuda.libs.cublas._setStream\n  File \"cupy_backends/cuda/libs/cublas.pyx\", line 649, in cupy_backends.cuda.libs.cublas.setStream\nNotImplementedError: calling cuBLAS API during stream capture is currently unsupported\n",
+      "peak_relative_error_max": 0.0
+    },
+    {
+      "method": "compact",
+      "graph_supported": false,
+      "reason": "Traceback (most recent call last):\n  File \"/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/check_graph.py\", line 47, in main\n    out = recovery.recover(rhs)\n  File \"/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/temporal_gpu.py\", line 179, in recover\n    displacement = cp.asfortranarray(self.last + cp.where(extrapolate, ratio, 0)[None] * (self.last - self.before))\n  File \"/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/cupy/_manipulation/kind.py\", line 64, in asfortranarray\n    return _core.asfortranarray(a, dtype)\n  File \"cupy/_core/core.pyx\", line 3242, in cupy._core.core.asfortranarray\n  File \"cupy/_core/core.pyx\", line 3260, in cupy._core.core.asfortranarray\n  File \"cupy/_core/core.pyx\", line 3210, in cupy._core.core._internal_asfortranarray\n  File \"cupy_backends/cuda/libs/cublas.pyx\", line 1420, in cupy_backends.cuda.libs.cublas.dgeam\n  File \"cupy_backends/cuda/libs/cublas.pyx\", line 1423, in cupy_backends.cuda.libs.cublas.dgeam\n  File \"cupy_backends/cuda/libs/cublas.pyx\", line 668, in cupy_backends.cuda.libs.cublas._setStream\n  File \"cupy_backends/cuda/libs/cublas.pyx\", line 649, in cupy_backends.cuda.libs.cublas.setStream\nNotImplementedError: calling cuBLAS API during stream capture is currently unsupported\n",
+      "peak_relative_error_max": 0.0
+    }
+  ],
+  "tensor_peak_passed": true
+}

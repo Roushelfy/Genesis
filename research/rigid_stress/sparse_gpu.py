@@ -12,6 +12,62 @@ from cupy_backends.cuda.libs import cusparse
 from cupyx import cusparse as descriptors
 from cupyx.scipy import sparse
 
+from .cudss import SharedCuDSSFactor
+from .native_sparse import NativeSparseCalls
+
+
+class SparseMultiplyGPU:
+    """Persistent public cuSPARSE SpMM descriptors, including capture-safe use of the owned native handle."""
+
+    def __init__(self, matrix: sparse.csr_matrix, columns: int) -> None:
+        self.matrix, self.stream = matrix, cp.cuda.get_current_stream()
+        self.native = NativeSparseCalls()
+        self.handle = descriptors.BaseDescriptor(cusparse.create(), destroyer=cusparse.destroy)
+        cusparse.setStream(self.handle.desc, self.stream.ptr)
+        self.input = cp.zeros((matrix.shape[1], columns), dtype=matrix.dtype, order="F")
+        self.output = cp.zeros((matrix.shape[0], columns), dtype=matrix.dtype, order="F")
+        self.matrix_descriptor = descriptors.SpMatDescriptor.create(matrix)
+        self.input_descriptor = descriptors.DnMatDescriptor.create(self.input)
+        self.output_descriptor = descriptors.DnMatDescriptor.create(self.output)
+        self.alpha, self.beta = np.array(1, dtype=matrix.dtype), np.array(0, dtype=matrix.dtype)
+        self.cuda_dtype = cp.cuda.runtime.CUDA_R_64F if matrix.dtype == np.float64 else cp.cuda.runtime.CUDA_R_32F
+        self.operation, self.algorithm = cusparse.CUSPARSE_OPERATION_NON_TRANSPOSE, cusparse.CUSPARSE_MM_ALG_DEFAULT
+        self.workspace = cp.empty(
+            cusparse.spMM_bufferSize(
+                self.handle.desc,
+                self.operation,
+                self.operation,
+                self.alpha.ctypes.data,
+                self.matrix_descriptor.desc,
+                self.input_descriptor.desc,
+                self.beta.ctypes.data,
+                self.output_descriptor.desc,
+                self.cuda_dtype,
+                self.algorithm,
+            ),
+            dtype=np.int8,
+        )
+
+    def __call__(self, value: cp.ndarray) -> cp.ndarray:
+        if value.shape != self.input.shape or value.dtype != self.input.dtype:
+            raise ValueError("Sparse product requires its analyzed matrix shape and precision")
+        if cp.cuda.get_current_stream().ptr != self.stream.ptr:
+            raise ValueError("Sparse product must execute on its creation stream")
+        self.input[:] = value
+        self.native.multiply(
+            self.handle.desc,
+            self.operation,
+            self.alpha.ctypes.data,
+            self.matrix_descriptor.desc,
+            self.input_descriptor.desc,
+            self.beta.ctypes.data,
+            self.output_descriptor.desc,
+            self.cuda_dtype,
+            self.algorithm,
+            self.workspace.data.ptr,
+        )
+        return self.output
+
 
 class SparseTriangularSolve:
     """Analyze a triangular factor once for an exact right-hand-side shape.
@@ -22,6 +78,7 @@ class SparseTriangularSolve:
 
     def __init__(self, matrix: sparse.csr_matrix, columns: int, is_lower: bool, is_unit_diagonal: bool):
         self.matrix = matrix
+        self.native = NativeSparseCalls()
         self.stream = cp.cuda.get_current_stream()
         self.handle = descriptors.BaseDescriptor(cusparse.create(), destroyer=cusparse.destroy)
         cusparse.setStream(self.handle.desc, self.stream.ptr)
@@ -67,9 +124,8 @@ class SparseTriangularSolve:
             raise ValueError("The triangular solve must run on its creation stream")
         self.input[...] = rhs
         self.output.fill(0)
-        cusparse.spSM_solve(
+        self.native.triangular(
             self.handle.desc,
-            self.operation,
             self.operation,
             self.alpha.ctypes.data,
             self.matrix_descriptor.desc,
@@ -78,7 +134,6 @@ class SparseTriangularSolve:
             self.cuda_dtype,
             self.algorithm,
             self.solve_descriptor.desc,
-            self.workspace.data.ptr,
         )
         return self.output
 
@@ -93,17 +148,18 @@ class FactorPlan:
 class SharedSparseFactor:
     """Upload one SuperLU factor pair and solve many columns without refactorization.
 
-    SuperLU permutations satisfy Pr A Pc = L U. Gather the right-hand side using inverse perm_r, then gather the solution
-    using perm_c. Factors are shared across all column counts; only analyzed descriptors and exact-sized scratch vary.
+    SuperLU permutations satisfy Pr A Pc = L U. Gather the RHS using inverse perm_r, then gather the solution
+    using perm_c. Factors are shared across column counts; analyzed descriptors and scratch vary.
     """
 
-    def __init__(self, factor, dtype=np.float64):
+    def __init__(self, factor, dtype=np.float64, unit_lower=True):
         if dtype not in (np.float64, np.float32):
             raise ValueError("Sparse recovery supports explicit FP64 or FP32 factors")
         self.lower = sparse.csr_matrix(factor.L.astype(dtype))
         self.upper = sparse.csr_matrix(factor.U.astype(dtype))
         self.row_gather = cp.asarray(np.argsort(factor.perm_r))
         self.column_gather = cp.asarray(factor.perm_c)
+        self.is_unit_lower = unit_lower
         self.plans: list[FactorPlan] = []
 
     def prepare(self, columns: int) -> None:
@@ -113,7 +169,7 @@ class SharedSparseFactor:
             self.plans.append(
                 FactorPlan(
                     columns,
-                    SparseTriangularSolve(self.lower, columns, is_lower=True, is_unit_diagonal=True),
+                    SparseTriangularSolve(self.lower, columns, is_lower=True, is_unit_diagonal=self.is_unit_lower),
                     SparseTriangularSolve(self.upper, columns, is_lower=False, is_unit_diagonal=False),
                 )
             )
@@ -223,19 +279,38 @@ class GPURecoveryResult:
     relative_residual: cp.ndarray
     absolute_residual_n: cp.ndarray
     is_accepted: cp.ndarray
+    rhs_norm_n: cp.ndarray
+
+
+@dataclass(frozen=True)
+class GPUWorkStatistics:
+    failed: cp.ndarray
+    refinement_count: cp.ndarray
+    used_fp64_fallback: cp.ndarray
+    rejected_direction: cp.ndarray
+    solved_columns: int
 
 
 class EggRecoveryGPU:
     """Recover stress with shared sparse factors and a complete FP64 residual.
 
-    Construction accepts the CPU oracle's immutable operators. Factorization and upload happen once. Runtime inputs and
-    outputs are CuPy device arrays. The caller must check is_accepted before consuming results as validated observations.
+    Construction accepts immutable CPU oracle operators. Factorization and upload happen once. Runtime inputs and
+    Outputs are CuPy device arrays. Check is_accepted before using a result as a validated observation.
     """
 
-    def __init__(self, fem, environments: int, rtol: float = 1e-6, atol_n: float = 1e-11):
+    def __init__(
+        self,
+        fem,
+        environments: int,
+        rtol: float = 1e-6,
+        atol_n: float = 1e-11,
+        factor_backend: str = "spsm",
+        shared_factor: SharedSparseFactor | SharedCuDSSFactor | None = None,
+    ):
         if environments < 1 or rtol <= 0 or atol_n <= 0:
             raise ValueError("Positive environment count and tolerances are required")
         self.environments = environments
+        self.statistics: GPUWorkStatistics | None = None
         self.rtol = rtol
         self.atol_n = atol_n
         self.stiffness = sparse.csr_matrix(fem.k)
@@ -245,9 +320,24 @@ class EggRecoveryGPU:
         self.mass_modes = cp.asarray(fem.mr)
         self.gram_inverse = cp.asarray(np.linalg.inv(fem.gram))
         self.relative_position = cp.asarray(fem.xyz - fem.com)
-        self.factor = SharedSparseFactor(fem.factor)
+        if shared_factor is not None:
+            if factor_backend == "cudss" and not isinstance(shared_factor, SharedCuDSSFactor):
+                raise ValueError("A reused cuDSS factor requires the cuDSS backend")
+            if factor_backend == "spsm" and not isinstance(shared_factor, SharedSparseFactor):
+                raise ValueError("A reused exported factor requires the SpSM backend")
+            self.factor = shared_factor
+        elif factor_backend == "spsm":
+            self.factor = SharedSparseFactor(fem.factor, unit_lower=fem.is_unit_lower)
+        elif factor_backend == "cudss":
+            self.factor = SharedCuDSSFactor(fem.k[fem.free][:, fem.free], environments)
+        else:
+            raise ValueError("Select exported SpSM or native cuDSS device factors")
         self.factor.prepare(environments)
+        self.stiffness_product = SparseMultiplyGPU(self.stiffness, environments)
         self.peak = P2PeakGPU(fem.glambda, fem.elements, fem.young / (2 * (1 + fem.poisson)))
+
+    def apply_stiffness(self, value: cp.ndarray) -> cp.ndarray:
+        return self.stiffness_product(value)
 
     def compatible_rhs(self, external_n: cp.ndarray, omega_rad_s: cp.ndarray | None = None) -> cp.ndarray:
         if external_n.shape != (self.stiffness.shape[0], self.environments):
@@ -260,12 +350,15 @@ class EggRecoveryGPU:
             force = external_n - self.mass @ centrifugal.reshape(self.environments, -1).T
         return force - self.mass_modes @ (self.gram_inverse @ (self.rigid_modes.T @ force))
 
-    def recover(self, rhs_n: cp.ndarray) -> GPURecoveryResult:
+    def reset(self, environments: cp.ndarray | None = None) -> None:
+        """The direct baseline has no temporal state; retain the same lifecycle API as temporal recovery."""
+
+    def recover(self, rhs_n: cp.ndarray, dt: float | cp.ndarray = 1.0) -> GPURecoveryResult:
         if rhs_n.shape != (self.stiffness.shape[0], self.environments) or rhs_n.dtype != np.float64:
             raise ValueError("The direct baseline requires FP64 [dof, environments] right-hand sides")
         displacement = cp.zeros_like(rhs_n, order="F")
         displacement[self.free] = self.factor.solve(rhs_n[self.free])
-        residual = rhs_n - self.stiffness @ displacement
+        residual = rhs_n - self.apply_stiffness(displacement)
         absolute = cp.linalg.norm(residual, axis=0)
         norm = cp.linalg.norm(rhs_n, axis=0)
         relative = absolute / cp.maximum(norm, self.atol_n)
@@ -276,4 +369,11 @@ class EggRecoveryGPU:
             & cp.isfinite(norm)
             & cp.isfinite(peaks)
         )
-        return GPURecoveryResult(peaks, displacement, relative, absolute, is_accepted)
+        self.statistics = GPUWorkStatistics(
+            cp.ones(self.environments, dtype=bool),
+            cp.zeros(self.environments, dtype=np.int32),
+            cp.zeros(self.environments, dtype=bool),
+            cp.zeros(self.environments, dtype=bool),
+            self.environments,
+        )
+        return GPURecoveryResult(peaks, displacement, relative, absolute, is_accepted, norm)

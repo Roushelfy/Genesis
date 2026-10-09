@@ -17,7 +17,8 @@ from scipy import sparse
 from scipy.sparse.linalg import splu
 from threadpoolctl import threadpool_limits
 
-from .cpu import EggConfig, EggRecoveryCPU, reference
+from .cpu import EggConfig, EggRecoveryCPU
+from .oracle import reference
 from .sparse_gpu import EggRecoveryGPU, SharedSparseFactor
 
 
@@ -112,12 +113,17 @@ def mechanics_check(model: EggRecoveryCPU, environments: int) -> GPUCheck:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--level", type=int, default=2)
+    parser.add_argument("--ordering", choices=("mmd", "column-nd"), default="mmd")
+    parser.add_argument("--factor-backend", choices=("superlu", "cholmod"), default="superlu")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     start = perf_counter()
     with threadpool_limits(limits=1):
         permutation_check()
-        model = EggRecoveryCPU(config=EggConfig(level=args.level), direct=True, history=0)
+        model = EggRecoveryCPU(
+            config=EggConfig(level=args.level, ordering=args.ordering, factor_backend=args.factor_backend),
+            direct=True, history=0,
+        )
         checks = [asdict(mechanics_check(model, environments)) for environments in (1, 3, 8, 17)]
     cp.cuda.get_current_stream().synchronize()
     properties = cp.cuda.runtime.getDeviceProperties(cp.cuda.runtime.getDevice())

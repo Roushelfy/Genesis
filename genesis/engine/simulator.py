@@ -355,15 +355,26 @@ class Simulator(RBC):
         if not in_backward:
             self._steps += 1
 
+        pre_substep_callbacks = () if in_backward else tuple(self._scene._pre_substep_callbacks)
+        post_substep_callbacks = () if in_backward else tuple(self._scene._post_substep_callbacks)
+
         with self._fps_tracker.phase("physics"):
             if self._rigid_only and not self._requires_grad:  # "Only Advance!" --Thomas Wade :P
-                for _ in range(self._substeps):
+                for i_substep in range(self._substeps):
+                    for callback in pre_substep_callbacks:
+                        callback(i_substep)
                     self.rigid_solver.substep(self.cur_substep_local)
+                    for callback in post_substep_callbacks:
+                        callback(i_substep)
                     self._cur_substep_global += 1
             else:
                 self.process_input(in_backward=in_backward)
-                for _ in range(self._substeps):
+                for i_substep in range(self._substeps):
+                    for callback in pre_substep_callbacks:
+                        callback(i_substep)
                     self.substep(self.cur_substep_local)
+                    for callback in post_substep_callbacks:
+                        callback(i_substep)
 
                     self._cur_substep_global += 1
                     if self.cur_substep_local == 0 and not in_backward:

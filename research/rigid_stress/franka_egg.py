@@ -38,8 +38,17 @@ def main():
     parser.add_argument("--stress", choices=("cpu", "gpu", "off"), default="cpu")
     parser.add_argument("--verify-gpu", action="store_true")
     parser.add_argument("--save-contacts", action="store_true")
+    parser.add_argument("--varied-seeds", action="store_true")
+    parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--egg-before-robot", action="store_true")
+    parser.add_argument("--rigid-iterations", type=int, default=25)
+    parser.add_argument("--rigid-tolerance", type=float)
+    parser.add_argument("--rigid-precision", choices=("32", "64"), default="32")
+    parser.add_argument("--contact-resolution", choices=("signorini", "convex"), default="signorini")
+    parser.add_argument("--footprint-anchor", choices=("raw", "force-line"), default="raw")
     parser.add_argument("--envs", type=int, default=1)
     parser.add_argument("--steps", type=int, default=600)
+    parser.add_argument("--stop-after", type=int)
     parser.add_argument("--dt", type=float, default=0.01)
     parser.add_argument("--level", type=int, default=2)
     parser.add_argument("--patch-radius-m", type=float, default=0.006)
@@ -55,11 +64,22 @@ def main():
     if args.verify_gpu and args.stress != "gpu":
         raise ValueError("GPU verification requires GPU stress")
     with threadpool_limits(limits=1):
-        model = EggRecoveryCPU(args.envs, EggConfig(level=args.level), rtol=args.rtol, history=0, direct=True)
+        anchor_to_surface = args.footprint_anchor == "force-line"
+        model = EggRecoveryCPU(
+            args.envs,
+            EggConfig(level=args.level),
+            rtol=args.rtol,
+            history=0,
+            direct=True,
+            anchor_to_surface=anchor_to_surface,
+        )
         assets = args.output.parent / "assets"
         urdf = write_egg_assets(model, assets)
-        gs.init(backend=gs.gpu if args.backend == "cuda" else gs.cpu, precision="32", seed=0)
-        gpu_mapper = PadPressureGPU(model.surface) if args.stress == "gpu" else None
+        gs.init(backend=gs.gpu if args.backend == "cuda" else gs.cpu, precision=args.rigid_precision, seed=args.seed)
+        source_epsilon = np.finfo(gs.np_float).eps
+        gpu_mapper = (
+            PadPressureGPU(model.surface, anchor_to_surface=anchor_to_surface) if args.stress == "gpu" else None
+        )
         gpu_recovery = EggRecoveryGPU(model.fem, args.envs, rtol=args.rtol) if args.stress == "gpu" else None
         scene = gs.Scene(
             sim_options=gs.options.SimOptions(
@@ -68,6 +88,13 @@ def main():
             ),
             rigid_options=gs.options.RigidOptions(
                 friction_cone=gs.friction_cone.elliptic,
+                contact_resolution=(
+                    gs.contact_resolution.signorini
+                    if args.contact_resolution == "signorini"
+                    else gs.contact_resolution.convex
+                ),
+                iterations=args.rigid_iterations,
+                tolerance=args.rigid_tolerance,
                 contact_pruning_tolerance=None,
                 enable_torsional_friction=False,
                 enable_rolling_friction=False,
@@ -82,26 +109,25 @@ def main():
         scene.add_entity(
             gs.morphs.Plane(),
         )
+        egg_morph = gs.morphs.URDF(
+            file=str(urdf.resolve()),
+            pos=(0.65, 0.0, 0.031),
+            fixed=False,
+            align=False,
+            convexify=True,
+            decimate=False,
+        )
+        egg_material = gs.materials.Rigid(friction=0.6)
+        if args.egg_before_robot:
+            egg = scene.add_entity(egg_morph, material=egg_material, vis_mode="collision")
         franka = scene.add_entity(
             gs.morphs.MJCF(
                 file="xml/franka_emika_panda/panda.xml",
             ),
             vis_mode="collision",
         )
-        egg = scene.add_entity(
-            gs.morphs.URDF(
-                file=str(urdf.resolve()),
-                pos=(0.65, 0.0, 0.031),
-                fixed=False,
-                align=False,
-                convexify=True,
-                decimate=False,
-            ),
-            material=gs.materials.Rigid(
-                friction=0.6,
-            ),
-            vis_mode="collision",
-        )
+        if not args.egg_before_robot:
+            egg = scene.add_entity(egg_morph, material=egg_material, vis_mode="collision")
         camera = None
         if args.video is not None:
             args.video.parent.mkdir(parents=True, exist_ok=True)
@@ -134,7 +160,37 @@ def main():
         # patch sizes, friction, contact transitions and environment phases.
         centers = torch.tensor([0.65, 0.0, 0.031], dtype=gs.tc_float, device=gs.device).repeat(args.envs, 1)
         centers[:, 1] += torch.linspace(-0.006, 0.006, args.envs, device=gs.device) if args.envs > 1 else 0
+        radii = np.full(args.envs, args.patch_radius_m)
+        egg_friction_ratio = np.ones(args.envs)
+        robot_friction_ratio = np.ones(args.envs)
+        initial_quat = np.tile([1.0, 0.0, 0.0, 0.0], (args.envs, 1))
+        if args.varied_seeds:
+            offsets = np.zeros((args.envs, 3))
+            for i_env in range(args.envs):
+                rng = np.random.default_rng(args.seed + i_env)
+                offsets[i_env] = rng.uniform([-0.003, -0.004, 0.0], [0.003, 0.004, 0.002])
+                roll, pitch, yaw = rng.uniform([-0.05, -0.05, -0.4], [0.05, 0.05, 0.4])
+                cr, cpitch, cy = np.cos(np.array([roll, pitch, yaw]) / 2)
+                sr, spitch, sy = np.sin(np.array([roll, pitch, yaw]) / 2)
+                initial_quat[i_env] = [
+                    cr * cpitch * cy + sr * spitch * sy,
+                    sr * cpitch * cy - cr * spitch * sy,
+                    cr * spitch * cy + sr * cpitch * sy,
+                    cr * cpitch * sy - sr * spitch * cy,
+                ]
+                radii[i_env] *= rng.uniform(0.8, 1.2)
+                egg_friction_ratio[i_env] = rng.uniform(0.7, 1.4)
+                robot_friction_ratio[i_env] = rng.uniform(0.7, 1.3)
+            centers += torch.as_tensor(offsets, dtype=gs.tc_float, device=gs.device)
         egg.set_pos(centers)
+        egg.set_quat(torch.as_tensor(initial_quat, dtype=gs.tc_float, device=gs.device))
+        egg.set_friction_ratio(torch.as_tensor(egg_friction_ratio[:, None], dtype=gs.tc_float, device=gs.device))
+        franka.set_friction_ratio(
+            torch.as_tensor(robot_friction_ratio[:, None], dtype=gs.tc_float, device=gs.device).expand(
+                -1, franka.n_links
+            )
+        )
+        device_radii = cp.asarray(radii[:, None]) if args.stress == "gpu" else None
         hand = franka.get_link("hand")
         orientation = torch.tensor([0.0, 1.0, 0.0, 0.0], dtype=gs.tc_float, device=gs.device).repeat(args.envs, 1)
         pickup = centers.clone()
@@ -152,7 +208,8 @@ def main():
         contact_records = []
         trace = args.output.with_suffix(".frames.jsonl").open("w")
         start = perf_counter()
-        for step in range(args.steps):
+        recorded_steps = args.steps if args.stop_after is None else min(args.steps, args.stop_after)
+        for step in range(recorded_steps):
             phase = step / (args.steps - 1)
             blend = np.clip((phase - 0.3) / 0.2, 0.0, 1.0)
             blend = blend**3 * (10 - 15 * blend + 6 * blend**2)
@@ -297,11 +354,11 @@ def main():
                 cpu_contacts = ContactBatch(
                     tensor_to_array(local_position),
                     tensor_to_array(local_force),
-                    np.full(contacts["valid_mask"].shape, args.patch_radius_m),
+                    np.broadcast_to(radii[:, None], contacts["valid_mask"].shape),
                     tensor_to_array(contacts["valid_mask"]),
                     tensor_to_array(contacts["friction"]),
                     tensor_to_array(local_normal),
-                    np.finfo(np.float32).eps,
+                    source_epsilon,
                 )
                 try:
                     loads = model.map_contacts(cpu_contacts)
@@ -337,6 +394,11 @@ def main():
                         "source_cone_excess_n_max": [
                             max((d.source_cone_excess_n for d in env), default=0.0) for env in loads.contact_diagnostics
                         ],
+                        "maximum_footprint_anchor_shift_m": np.linalg.norm(
+                            loads.footprint_center_m - cpu_contacts.position_m, axis=2
+                        )
+                        .max(axis=1)
+                        .tolist(),
                         "full_residual_absolute_n": np.linalg.norm(
                             model.fem.k @ result.displacement_m - cpu_rhs, axis=0
                         ).tolist(),
@@ -347,11 +409,11 @@ def main():
                 mapped = gpu_mapper.map(
                     cp.from_dlpack(local_position),
                     cp.from_dlpack(local_force),
-                    cp.full(contacts["valid_mask"].shape, args.patch_radius_m),
+                    cp.broadcast_to(device_radii, contacts["valid_mask"].shape),
                     cp.from_dlpack(local_normal),
                     cp.from_dlpack(contacts["friction"]),
                     cp.from_dlpack(contacts["valid_mask"]),
-                    np.finfo(np.float32).eps,
+                    source_epsilon,
                 )
                 external = (
                     mapped.nodal_force_n
@@ -401,8 +463,9 @@ def main():
                 omega_rad_s=np.stack([item[6] for item in contact_records]),
                 gravity_m_s2=np.stack([item[7] for item in contact_records]),
                 radius_m=args.patch_radius_m,
+                environment_radius_m=radii,
                 dt=args.dt,
-                source_epsilon=np.finfo(np.float32).eps,
+                source_epsilon=source_epsilon,
             )
         args.output.write_text(
             json.dumps(
@@ -411,17 +474,30 @@ def main():
                     "backend": args.backend,
                     "stress_backend": args.stress,
                     "envs": args.envs,
-                    "steps": args.steps,
+                    "steps": recorded_steps,
+                    "trajectory_horizon_steps": args.steps,
                     "dt": args.dt,
                     "substeps": 1,
+                    "seed": args.seed,
+                    "varied_seeds": args.varied_seeds,
+                    "egg_before_robot": args.egg_before_robot,
+                    "environment_radius_m": radii.tolist(),
+                    "initial_quaternion": initial_quat.tolist(),
+                    "egg_friction_ratio": egg_friction_ratio.tolist(),
+                    "robot_friction_ratio": robot_friction_ratio.tolist(),
                     "friction_cone": "elliptic",
+                    "contact_resolution": args.contact_resolution,
+                    "rigid_solver_iterations": args.rigid_iterations,
+                    "rigid_precision": args.rigid_precision,
+                    "rigid_solver_requested_tolerance": args.rigid_tolerance,
                     "footprint_law": "Gaussian nonnegative pad pressure with constant rigid-frame traction ratio",
-                    "friction_roundoff_allowance": "16 times FP32 epsilon times each complete contact force norm",
+                    "footprint_anchor": args.footprint_anchor,
+                    "friction_roundoff_allowance": "16 times rigid source epsilon times each complete force norm",
                     "seconds_with_first_compile": elapsed,
                     "env_steps_per_second_with_first_compile": args.steps * args.envs / elapsed,
                     "stress_mesh_converged": False,
                     "material_calibrated_to_real_egg": False,
-                    "sampling": "sole rigid contact solve, paired with pre-integration authored pose and angular velocity",
+                    "sampling": "single rigid solve, with matching pre-integration authored pose and angular velocity",
                     "limitations": "validate grasp success, wrench/footprint consistency and impacts before acceptance",
                     "records": records,
                 },

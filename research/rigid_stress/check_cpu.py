@@ -9,11 +9,11 @@ import json
 from pathlib import Path
 
 import numpy as np
+from general_peak import baseline_numpy
 from threadpoolctl import threadpool_limits
 
-# The reference path is registered by cpu before importing its numerical oracle
-from .cpu import ContactBatch, EggConfig, EggRecoveryCPU, reference  # isort: skip
-from general_peak import baseline_numpy
+from .cpu import ContactBatch, EggConfig, EggRecoveryCPU
+from .oracle import reference
 
 
 def main():
