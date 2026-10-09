@@ -201,5 +201,35 @@ four-substep case would miss 385,592 Pa if only its final substep were sampled.
 The B=512 live row-major graph candidate actually exhausts device memory when
 allocating the first 10.066 GB complete mapped load, after successful setup and
 factorization. This establishes a limit for that graph pipeline, not all other
-pipelines. The direct B=512 live probe is separate. The CPU held-out oracle is
-still running; saved complete RHS comparisons are not declared complete here.
+pipelines. The separate eager B=512 live probe also exhausts memory during
+complete centrifugal/body assembly. Both raw failure logs are retained. The
+CPU held-out oracle is still running; saved complete RHS comparisons are not
+declared complete here.
+
+The B=32 fine live graph run now completes all three repeats at 69.8753,
+69.8512 and 69.8095 environment transitions/s (aggregate 69.8453), versus
+60.5057 eager. All repeats pass with 39.198 GB sampled total device memory.
+Matched B=256 rigid/policy-rigid baselines complete at 31,533.66/30,245.54
+environment transitions/s. The allocated CPU is Intel Xeon Platinum 8562Y+;
+Slurm grants eight CPUs and the numerical thread settings are one. Driver
+595.71.05, CUDA runtime API 12090 and cuSPARSE integer version 12510 are
+independently recorded, alongside all installed numerical package versions.
+
+The one-command acceptance runner completes all thirteen selected checks in
+fresh subprocesses, including CPU-only startup without CUDA imports. Its
+actual coarse varied Panda suite repeats 5/32 keep-hold success and maximum
+CPU peak error 1.732e-6. Four nominal environments with four substeps and a
+partial reset all succeed, with maximum CPU peak error 4.556e-13. These are
+integration checks, separate from fine collision/elastic convergence.
+The earlier clean-process CPU reference import failure is fixed at its
+reference-only boundary. Setup, tests, demo, timing and oracle instructions
+are in [RUNNING.md](RUNNING.md).
+
+Final timing entrypoints also audit the complete warmup's actual contact
+counts, radii/friction, tangential forces and explicitly defined hold success.
+This quality instrumentation is outside steady-state timing. The coarse
+graph-policy regression passes and its contact histogram sums to every
+warmup environment step. `benchmark_suite` records a frozen configuration
+hash and runs scopes as explicit subprocesses; its rigid dispatch passes.
+Neither wrapper changes the mechanical or recovery kernels. Selection and
+final held-out timing remain active.

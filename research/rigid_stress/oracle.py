@@ -12,3 +12,4 @@ sys.path[:0] = [
 ]
 
 import arbitrary_contact_test as reference  # noqa: E402, F401
+from general_peak import baseline_numpy  # noqa: E402, F401

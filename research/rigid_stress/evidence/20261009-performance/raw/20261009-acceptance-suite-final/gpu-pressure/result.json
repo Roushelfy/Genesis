@@ -1,0 +1,370 @@
+{
+  "passed": true,
+  "scope": "Full-shell GPU pad mapping and direct recovery vs CPU FP64 for identical input contact wrenches",
+  "live_end_to_end_tested": false,
+  "physical_mesh_converged": false,
+  "tensile_rejected": true,
+  "zero_load_exact": true,
+  "cases": [
+    {
+      "label": "arbitrary_saturated_pad_wrenches",
+      "sampling": "scan",
+      "scatter": "atomic",
+      "environments": 8,
+      "contact_count": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "nodal_load_difference_max_n": 1.4432899320127035e-15,
+      "moment_error_max_nm": 1.0591761858187545e-16,
+      "peak_error_max_pa": 1.4062970876693726e-07,
+      "peak_error_relative_max": 9.05313422695069e-14,
+      "full_residual_relative_max": 1.344960923568406e-11,
+      "mapping_diagnostics_max": [
+        6.477011461634153e-16,
+        1.9077233244836472e-19,
+        4.440892098500626e-16,
+        1.087456227569743e-14,
+        1.0
+      ],
+      "force_line_anchoring": false,
+      "maximum_anchor_shift_m": 0.0
+    },
+    {
+      "label": "arbitrary_saturated_pad_wrenches",
+      "sampling": "scan",
+      "scatter": "warp",
+      "environments": 8,
+      "contact_count": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "nodal_load_difference_max_n": 1.1102230246251565e-15,
+      "moment_error_max_nm": 8.804469334467935e-17,
+      "peak_error_max_pa": 1.0384246706962585e-07,
+      "peak_error_relative_max": 6.684930240430477e-14,
+      "full_residual_relative_max": 1.31206814380549e-11,
+      "mapping_diagnostics_max": [
+        6.477011461634153e-16,
+        1.9077233244836472e-19,
+        4.440892098500626e-16,
+        1.087456227569743e-14,
+        1.0
+      ],
+      "force_line_anchoring": false,
+      "maximum_anchor_shift_m": 0.0
+    },
+    {
+      "label": "arbitrary_saturated_pad_wrenches",
+      "sampling": "grid",
+      "scatter": "atomic",
+      "environments": 8,
+      "contact_count": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "nodal_load_difference_max_n": 1.3322676295501878e-15,
+      "moment_error_max_nm": 9.335326988569946e-17,
+      "peak_error_max_pa": 7.660128176212311e-08,
+      "peak_error_relative_max": 4.9312601997794325e-14,
+      "full_residual_relative_max": 1.3241123027129908e-11,
+      "mapping_diagnostics_max": [
+        6.637433812628226e-16,
+        2.3101250489383236e-19,
+        4.440892098500626e-16,
+        1.087456227569743e-14,
+        1.0
+      ],
+      "force_line_anchoring": false,
+      "maximum_anchor_shift_m": 0.0
+    },
+    {
+      "label": "arbitrary_saturated_pad_wrenches",
+      "sampling": "grid",
+      "scatter": "warp",
+      "environments": 8,
+      "contact_count": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "nodal_load_difference_max_n": 9.992007221626409e-16,
+      "moment_error_max_nm": 8.121767085755589e-17,
+      "peak_error_max_pa": 1.234002411365509e-07,
+      "peak_error_relative_max": 7.94397539782097e-14,
+      "full_residual_relative_max": 1.3003969016292342e-11,
+      "mapping_diagnostics_max": [
+        6.637433812628226e-16,
+        2.3101250489383236e-19,
+        4.440892098500626e-16,
+        1.087456227569743e-14,
+        1.0
+      ],
+      "force_line_anchoring": false,
+      "maximum_anchor_shift_m": 0.0
+    },
+    {
+      "label": "same_wrenches_eight_mm_inside_reference",
+      "sampling": "scan",
+      "scatter": "atomic",
+      "environments": 8,
+      "contact_count": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "nodal_load_difference_max_n": 1.9984014443252818e-15,
+      "moment_error_max_nm": 1.1145513959121702e-16,
+      "peak_error_max_pa": 1.671724021434784e-07,
+      "peak_error_relative_max": 1.076183836912387e-13,
+      "full_residual_relative_max": 1.2791967426776071e-11,
+      "mapping_diagnostics_max": [
+        9.540962075311527e-16,
+        1.444852752492192e-19,
+        4.440892098500626e-16,
+        1.087456227569743e-14,
+        1.0
+      ],
+      "force_line_anchoring": true,
+      "maximum_anchor_shift_m": 0.008000000000000007
+    },
+    {
+      "label": "same_wrenches_eight_mm_inside_reference",
+      "sampling": "scan",
+      "scatter": "warp",
+      "environments": 8,
+      "contact_count": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "nodal_load_difference_max_n": 1.8596235662471372e-15,
+      "moment_error_max_nm": 1.0772060116306953e-16,
+      "peak_error_max_pa": 1.5273690223693848e-07,
+      "peak_error_relative_max": 9.832543133907046e-14,
+      "full_residual_relative_max": 1.3301228359344383e-11,
+      "mapping_diagnostics_max": [
+        9.540962075311527e-16,
+        1.444852752492192e-19,
+        4.440892098500626e-16,
+        1.087456227569743e-14,
+        1.0
+      ],
+      "force_line_anchoring": true,
+      "maximum_anchor_shift_m": 0.008000000000000007
+    },
+    {
+      "label": "same_wrenches_eight_mm_inside_reference",
+      "sampling": "grid",
+      "scatter": "atomic",
+      "environments": 8,
+      "contact_count": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "nodal_load_difference_max_n": 1.915134717478395e-15,
+      "moment_error_max_nm": 9.71445146547012e-17,
+      "peak_error_max_pa": 1.5669502317905426e-07,
+      "peak_error_relative_max": 1.0087349891950368e-13,
+      "full_residual_relative_max": 1.2895081670688654e-11,
+      "mapping_diagnostics_max": [
+        6.796601422310894e-16,
+        2.0449818530533046e-19,
+        4.440892098500626e-16,
+        1.087456227569743e-14,
+        1.0
+      ],
+      "force_line_anchoring": true,
+      "maximum_anchor_shift_m": 0.008000000000000007
+    },
+    {
+      "label": "same_wrenches_eight_mm_inside_reference",
+      "sampling": "grid",
+      "scatter": "warp",
+      "environments": 8,
+      "contact_count": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "nodal_load_difference_max_n": 1.887379141862766e-15,
+      "moment_error_max_nm": 9.020562075079397e-17,
+      "peak_error_max_pa": 1.5576370060443878e-07,
+      "peak_error_relative_max": 1.0027395360646057e-13,
+      "full_residual_relative_max": 1.3505043641450407e-11,
+      "mapping_diagnostics_max": [
+        6.796601422310894e-16,
+        2.0449818530533046e-19,
+        4.440892098500626e-16,
+        1.087456227569743e-14,
+        1.0
+      ],
+      "force_line_anchoring": true,
+      "maximum_anchor_shift_m": 0.008000000000000007
+    },
+    {
+      "label": "full_surface_radius",
+      "sampling": "scan",
+      "scatter": "atomic",
+      "environments": 8,
+      "contact_count": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "nodal_load_difference_max_n": 4.3021142204224816e-16,
+      "moment_error_max_nm": 1.1610990315520314e-16,
+      "peak_error_max_pa": 7.479684427380562e-09,
+      "peak_error_relative_max": 3.6492138917676727e-14,
+      "full_residual_relative_max": 2.246921065335727e-11,
+      "mapping_diagnostics_max": [
+        6.637433812628226e-16,
+        1.7270387178472137e-18,
+        4.440892098500626e-16,
+        1.087456227569743e-14,
+        5.0
+      ],
+      "force_line_anchoring": true,
+      "maximum_anchor_shift_m": 7.949501638480627e-18
+    },
+    {
+      "label": "full_surface_radius",
+      "sampling": "scan",
+      "scatter": "warp",
+      "environments": 8,
+      "contact_count": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "nodal_load_difference_max_n": 2.914335439641036e-16,
+      "moment_error_max_nm": 1.0031442548020353e-16,
+      "peak_error_max_pa": 2.3137545213103294e-09,
+      "peak_error_relative_max": 1.9336601660941448e-14,
+      "full_residual_relative_max": 2.2679855972149278e-11,
+      "mapping_diagnostics_max": [
+        6.637433812628226e-16,
+        1.7270387178472137e-18,
+        4.440892098500626e-16,
+        1.087456227569743e-14,
+        5.0
+      ],
+      "force_line_anchoring": true,
+      "maximum_anchor_shift_m": 7.949501638480627e-18
+    },
+    {
+      "label": "full_surface_radius",
+      "sampling": "grid",
+      "scatter": "atomic",
+      "environments": 8,
+      "contact_count": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "nodal_load_difference_max_n": 4.440892098500626e-16,
+      "moment_error_max_nm": 1.2118257228641695e-16,
+      "peak_error_max_pa": 4.5693013817071915e-09,
+      "peak_error_relative_max": 2.2292863074222747e-14,
+      "full_residual_relative_max": 2.219164997835308e-11,
+      "mapping_diagnostics_max": [
+        1.029525385039563e-15,
+        4.525541164470007e-18,
+        4.440892098500626e-16,
+        1.087456227569743e-14,
+        5.0
+      ],
+      "force_line_anchoring": true,
+      "maximum_anchor_shift_m": 7.949501638480627e-18
+    },
+    {
+      "label": "full_surface_radius",
+      "sampling": "grid",
+      "scatter": "warp",
+      "environments": 8,
+      "contact_count": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "nodal_load_difference_max_n": 3.3306690738754696e-16,
+      "moment_error_max_nm": 1.138063217752167e-16,
+      "peak_error_max_pa": 8.934875950217247e-09,
+      "peak_error_relative_max": 4.359177683940372e-14,
+      "full_residual_relative_max": 2.241603422097032e-11,
+      "mapping_diagnostics_max": [
+        1.029525385039563e-15,
+        4.525541164470007e-18,
+        4.440892098500626e-16,
+        1.087456227569743e-14,
+        5.0
+      ],
+      "force_line_anchoring": true,
+      "maximum_anchor_shift_m": 7.949501638480627e-18
+    }
+  ]
+}

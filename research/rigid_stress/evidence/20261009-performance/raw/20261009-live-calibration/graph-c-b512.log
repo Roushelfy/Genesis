@@ -1,0 +1,42 @@
+[38;5;226m[Genesis] [21:58:45] [WARNING] At least one of the meshes contain many faces (81920). Consider setting 'morph.decimate=True' to speed up collision detection and improve numerical stability.[0m
+[38;5;226m[Genesis] [21:58:46] [WARNING] Beware that SDF pre-processing of mesh (/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-live-calibration/assets/egg_outer.obj) having more than 50000 vertices may take a very long time (>10min) and require large RAM allocation (>20Gb). Please either enable convexify or decimation. (see FileMorph options)[0m
+[38;5;226m[Genesis] [21:58:46] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint1`[0m
+[38;5;226m[Genesis] [21:58:46] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint2`[0m
+[38;5;226m[Genesis] [21:58:47] [WARNING] Neutral robot position (qpos0) exceeds joint limits.[0m
+[38;5;226m[Genesis] [21:58:48] [WARNING] Constraint solver time constant should be greater than 2*substep_dt. timeconst is changed from `0.005` to `0.02`). Decrease simulation timestep or increase timeconst to avoid altering the original value.[0m
+[38;5;226m[Genesis] [21:58:50] [WARNING] Filtered out geometry pairs causing self-collision for the neutral configuration (qpos0): (7, 12), (8, 12), (15, 22), (16, 21), (17, 24), (18, 23). Consider tuning Morph option 'decompose_robot_error_threshold' or specify dedicated collision meshes. This behavior can be disabled by setting Morph option 'enable_neutral_collision=True'.[0m
+{"setup_seconds": 130.44928913703188, "device_factors": {"operator_groups": 1, "factor_precision_copies": 1, "factors": [{"backend": "cuDSS", "allocator": "cudaMallocAsync", "precision": "float64", "version": [0, 8, 0], "nnz": 2322190270, "analysis_seconds": 14.62099024199415, "factorization_seconds": 9.91661982703954, "memory_estimates_bytes": [22152136420, 22152136420, 223518272, 1003828016, 6361768884, 18801040432, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}]}}
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/benchmark_live.py", line 289, in <module>
+    main()
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/benchmark_live.py", line 166, in main
+    scene.step(None if policy is None else policy(scene.observation()))
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/panda_scene.py", line 257, in step
+    self.scene.step(update_visualizer=self.camera is not None)
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/misc.py", line 150, in wrapper
+    return method(self, *args, **kwargs)
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/scene.py", line 1103, in step
+    self._sim.step()
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/simulator.py", line 368, in step
+    callback(i_substep)
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/live.py", line 126, in after
+    mapped = self.mapper.map(
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/device_pressure.py", line 378, in map
+    loads = cp.zeros((self.dofs, environments), dtype=np.float64, order="F")
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/cupy/_creation/basic.py", line 252, in zeros
+    a = cupy.ndarray(shape, dtype, order=order)
+  File "cupy/_core/core.pyx", line 176, in cupy._core.core.ndarray.__new__
+  File "cupy/_core/core.pyx", line 282, in cupy._core.core._ndarray_base._init
+  File "cupy/cuda/memory.pyx", line 904, in cupy.cuda.memory.alloc
+  File "cupy/cuda/memory.pyx", line 1614, in cupy.cuda.memory.MemoryPool.malloc
+  File "cupy/cuda/memory.pyx", line 1635, in cupy.cuda.memory.MemoryPool.malloc
+  File "cupy/cuda/memory.pyx", line 1350, in cupy.cuda.memory.SingleDeviceMemoryPool.malloc
+  File "cupy/cuda/memory.pyx", line 1376, in cupy.cuda.memory.SingleDeviceMemoryPool._malloc
+  File "cupy/cuda/memory.pyx", line 1560, in cupy.cuda.memory.SingleDeviceMemoryPool._try_malloc
+cupy.cuda.memory.OutOfMemoryError: Out of memory allocating 10,066,452,480 bytes (allocated so far: 55,813,594,112 bytes).
+
+[38;5;9m[Genesis] [21:59:12] [ERROR] OutOfMemoryError: Out of memory allocating 10,066,452,480 bytes (allocated so far: 55,813,594,112 bytes).[0m

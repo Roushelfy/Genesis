@@ -97,6 +97,8 @@ def main(
         or shared_factor is not None
     ):
         raise ValueError("Pipeline recovery graphs require their owned native FP64 factors and fused full peak")
+    if args.recovery_graph and args.native_order != "auto":
+        raise ValueError("Captured recovery uses the validated automatic native ordering")
     args.output.parent.mkdir(parents=True, exist_ok=True)
     hashes = source_hashes()
     rows, validation = [], []

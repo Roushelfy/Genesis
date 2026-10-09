@@ -23,6 +23,7 @@ from .peak_tensor import P2PeakTensorGPU
 from .sparse_gpu import EggRecoveryGPU
 from .temporal_gpu import TemporalRecoveryGPU
 from .timing import DeviceMemorySampler, factor_metadata, host_metadata, source_hashes
+from .trajectory_metrics import PandaTrajectoryMetrics
 
 
 def main() -> None:
@@ -63,6 +64,8 @@ def main() -> None:
         raise ValueError("The direct baseline is FP64; FP32 uses explicit refinement/fallback")
     if args.recovery_graph and (args.method != "direct" or args.factor_backend != "cudss" or args.peak != "fused"):
         raise ValueError("Captured live recovery requires native FP64 direct factors and the fused full peak")
+    if args.recovery_graph and args.native_order != "auto":
+        raise ValueError("Captured recovery uses the validated automatic native ordering")
     args.output.parent.mkdir(parents=True, exist_ok=True)
     hashes = source_hashes()
     rows = []
@@ -160,14 +163,17 @@ def main() -> None:
             flush=True,
         )
         with torch.inference_mode():
+            quality = PandaTrajectoryMetrics(scene)
             start = perf_counter()
             warmup_steps = scene.config.episode_steps + int(scene.delay.max()) + 1
             for warmup_tick in range(warmup_steps):
                 scene.step(None if policy is None else policy(scene.observation()))
+                quality.update()
                 if warmup_tick % 32 == 0:
                     print(json.dumps({"warmup_step": warmup_tick}), flush=True)
             torch.cuda.synchronize()
             warmup_s = perf_counter() - start
+            quality_report = quality.report()
             for repeat in range(args.repeats):
                 scene.restart()
                 start_event, end_event = torch.cuda.Event(enable_timing=True), torch.cuda.Event(enable_timing=True)
@@ -268,6 +274,7 @@ def main() -> None:
             "setup_seconds": setup_s,
             "warmup_seconds": warmup_s,
             "warmup_steps": warmup_steps,
+            "warmup_quality": quality_report,
             "residual_atol_n": 1e-11,
             "residual_rtol": rtol,
             "mean_environment_transitions_s": sum(row["environment_transitions"] for row in rows)

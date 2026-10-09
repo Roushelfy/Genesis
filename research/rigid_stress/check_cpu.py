@@ -9,11 +9,10 @@ import json
 from pathlib import Path
 
 import numpy as np
-from general_peak import baseline_numpy
 from threadpoolctl import threadpool_limits
 
 from .cpu import ContactBatch, EggConfig, EggRecoveryCPU
-from .oracle import reference
+from .oracle import baseline_numpy, reference
 
 
 def main():

@@ -111,6 +111,10 @@ physical and live-throughput acceptance work.
 
 ## Reusable device path
 
+One-command setup, selected acceptance checks, an actual fine-shell video and
+scoped benchmark examples are in [docs/RUNNING.md](docs/RUNNING.md). All
+runtime/cache destinations are explicit; run numerical work on allocated nodes.
+
 Install the optional native dependencies for large full-shell operators:
 
 ```bash

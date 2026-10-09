@@ -1,0 +1,214 @@
+{
+  "passed": true,
+  "arguments": {
+    "output": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final",
+    "gpu": true,
+    "native": true,
+    "grasp": true,
+    "physical": false
+  },
+  "checks": [
+    {
+      "name": "cpu",
+      "command": [
+        "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python",
+        "-m",
+        "research.rigid_stress.check_cpu",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/cpu/result.json"
+      ],
+      "return_code": 0,
+      "wall_seconds": 2.7454530419781804,
+      "artifact": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/cpu/result.json",
+      "log": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/cpu/result.log"
+    },
+    {
+      "name": "mechanics",
+      "command": [
+        "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python",
+        "-m",
+        "research.rigid_stress.check_mechanics",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/mechanics/result.json"
+      ],
+      "return_code": 0,
+      "wall_seconds": 3.0898074628785253,
+      "artifact": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/mechanics/result.json",
+      "log": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/mechanics/result.log"
+    },
+    {
+      "name": "wrench",
+      "command": [
+        "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python",
+        "-m",
+        "research.rigid_stress.check_wrench",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/wrench/result.json"
+      ],
+      "return_code": 0,
+      "wall_seconds": 1.721488499082625,
+      "artifact": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/wrench/result.json",
+      "log": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/wrench/result.log"
+    },
+    {
+      "name": "history",
+      "command": [
+        "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python",
+        "-m",
+        "research.rigid_stress.check_history",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/history/result.json"
+      ],
+      "return_code": 0,
+      "wall_seconds": 6.6997939622960985,
+      "artifact": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/history/result.json",
+      "log": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/history/result.log"
+    },
+    {
+      "name": "gpu-fields",
+      "command": [
+        "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python",
+        "-m",
+        "research.rigid_stress.check_gpu",
+        "--inertia",
+        "quadratic",
+        "--body-products",
+        "fused",
+        "--sparse-layout",
+        "C",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/gpu-fields/result.json"
+      ],
+      "return_code": 0,
+      "wall_seconds": 11.088837146293372,
+      "artifact": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/gpu-fields/result.json",
+      "log": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/gpu-fields/result.log"
+    },
+    {
+      "name": "gpu-pressure",
+      "command": [
+        "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python",
+        "-m",
+        "research.rigid_stress.check_pressure",
+        "--force-line",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/gpu-pressure/result.json"
+      ],
+      "return_code": 0,
+      "wall_seconds": 12.354538307059556,
+      "artifact": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/gpu-pressure/result.json",
+      "log": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/gpu-pressure/result.log"
+    },
+    {
+      "name": "gpu-temporal",
+      "command": [
+        "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python",
+        "-m",
+        "research.rigid_stress.check_temporal_gpu",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/gpu-temporal/result.json"
+      ],
+      "return_code": 0,
+      "wall_seconds": 18.23637587018311,
+      "artifact": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/gpu-temporal/result.json",
+      "log": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/gpu-temporal/result.log"
+    },
+    {
+      "name": "gpu-substeps",
+      "command": [
+        "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python",
+        "-m",
+        "research.rigid_stress.check_live",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/gpu-substeps/result.json"
+      ],
+      "return_code": 0,
+      "wall_seconds": 38.00804890319705,
+      "artifact": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/gpu-substeps/result.json",
+      "log": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/gpu-substeps/result.log"
+    },
+    {
+      "name": "native-direct",
+      "command": [
+        "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python",
+        "-m",
+        "research.rigid_stress.check_cudss",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/native-direct/result.json"
+      ],
+      "return_code": 0,
+      "wall_seconds": 3.51804137788713,
+      "artifact": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/native-direct/result.json",
+      "log": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/native-direct/result.log"
+    },
+    {
+      "name": "native-temporal",
+      "command": [
+        "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python",
+        "-m",
+        "research.rigid_stress.check_temporal_gpu",
+        "--factor-backend",
+        "cudss",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/native-temporal/result.json"
+      ],
+      "return_code": 0,
+      "wall_seconds": 8.48974246578291,
+      "artifact": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/native-temporal/result.json",
+      "log": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/native-temporal/result.log"
+    },
+    {
+      "name": "native-graph",
+      "command": [
+        "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python",
+        "-m",
+        "research.rigid_stress.check_graph_recovery",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/native-graph/result.json"
+      ],
+      "return_code": 0,
+      "wall_seconds": 9.82552918791771,
+      "artifact": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/native-graph/result.json",
+      "log": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/native-graph/result.log"
+    },
+    {
+      "name": "panda-varied32",
+      "command": [
+        "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python",
+        "-m",
+        "research.rigid_stress.check_panda",
+        "--temporal",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/panda-varied32/result.json"
+      ],
+      "return_code": 0,
+      "wall_seconds": 464.70345793897286,
+      "artifact": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/panda-varied32/result.json",
+      "log": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/panda-varied32/result.log"
+    },
+    {
+      "name": "panda-nominal-substeps",
+      "command": [
+        "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python",
+        "-m",
+        "research.rigid_stress.check_panda",
+        "--envs",
+        "4",
+        "--steps",
+        "650",
+        "--nominal",
+        "--synchronous",
+        "--substeps",
+        "4",
+        "--partial-reset-step",
+        "107",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/panda-nominal-substeps/result.json"
+      ],
+      "return_code": 0,
+      "wall_seconds": 261.41130240028724,
+      "artifact": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/panda-nominal-substeps/result.json",
+      "log": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-acceptance-suite-final/panda-nominal-substeps/result.log"
+    }
+  ]
+}

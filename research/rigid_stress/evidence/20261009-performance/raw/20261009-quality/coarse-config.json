@@ -1,0 +1,19 @@
+{
+  "benchmark_arguments": [
+    "--level",
+    "2",
+    "--envs",
+    "8",
+    "--cpu-factor",
+    "none",
+    "--factor-backend",
+    "cudss",
+    "--inertia",
+    "quadratic",
+    "--body-products",
+    "fused",
+    "--sparse-layout",
+    "C",
+    "--recovery-graph"
+  ]
+}
