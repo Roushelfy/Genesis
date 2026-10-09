@@ -2,7 +2,11 @@
 
 This audit follows A--I in `GOAL.md` and keeps equation accuracy, load-model
 accuracy and physical discretization accuracy separate. Numerical runtime
-code is frozen at `80942f8ee9efa3ca002c3db142a1a30b95ed066e`. The final
+solver kernels are fixed at `80942f8ee9efa3ca002c3db142a1a30b95ed066e`. Later
+memory-lifetime fixes share immutable operators with the eager oracle,
+release temporary eager displacements and release the replay's previous RHS
+before mapping the next frame after measured B=256 memory failures. The
+current complete source commit is recorded separately. The final
 calibration selection, held-out oracle and timing results are still running;
 their pending items below must be completed before full-goal acceptance.
 

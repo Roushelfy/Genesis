@@ -2,6 +2,7 @@
 
 import json
 from dataclasses import dataclass
+from itertools import pairwise
 from pathlib import Path
 
 import cupy as cp
@@ -105,6 +106,8 @@ class ReplayRecoveryPipeline:
 
     def step(self, tick: int, measure: bool = False) -> GPURecoveryResult:
         begin = event() if measure else None
+        # The previous complete RHS is dead before mapping the next frame; live observers have the same lifetime.
+        self.last_rhs = None
         frame = self.source.frame(tick)
         if len(frame.reset_ids):
             self.recovery.reset(cp.asarray(frame.reset_ids))
@@ -133,7 +136,7 @@ class ReplayRecoveryPipeline:
         rows = []
         for sample in self.stage_samples:
             markers = (sample.begin, sample.loaded, sample.mapped, sample.relieved, sample.recovered)
-            rows.append([cp.cuda.get_elapsed_time(first, last) for first, last in zip(markers, markers[1:])])
+            rows.append([cp.cuda.get_elapsed_time(first, last) for first, last in pairwise(markers)])
         values = np.array(rows)
         return {
             "scope": "Separate warmed CUDA spans; event instrumentation outside throughput repeats",

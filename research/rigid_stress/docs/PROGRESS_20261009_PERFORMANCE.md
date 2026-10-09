@@ -262,3 +262,30 @@ varying contact counts and egg-as-A/B signs. Alternate gauge rows agree with
 CPU canonical displacement to 2.51e-10 relative; maximum complete RHS entry
 difference is 2.89e-15 N. The exact small QA script is retained without
 changing the frozen numerical runtime code.
+
+## Replay validation memory fix at 23:49 UTC
+
+The B=256 graph live point uses about 101.37 GB sampled device memory.
+Untimed replay validation initially fails with duplicated full-batch oracle
+operators; a 32-column oracle still does not fit. Sharing the existing
+immutable operators with the ungraphed direct baseline avoids those copies,
+but retained eager displacement and previous replay RHS references also
+occupy a full 5.033 GB array each. The harness releases eager displacement
+after validation and the replay releases its previous RHS before the next
+map. These lifetime fixes preserve every current RHS, physical load, sparse
+solve, complete residual and global peak. The live calibration path is
+unchanged; complete source hashes record the later replay/harness revision.
+
+The corrected actual CLI regression completes 1,200 warmup frames and three
+ten-second level-2 stress repeats. Graph/eager maximum peak error above 1 Pa
+is 3.710e-13 and near-zero absolute error is 7.647e-15 Pa. Its roughly
+9,355 recovery transitions/s is a coarse regression, not final fine FPS.
+Ninety-six changing-RHS graph and ungraphed direct cases also pass CPU oracle
+comparisons with default/nondefault streams and F/C layouts.
+
+The complete level-6 B=256 memory probe then passes six changing recorded
+calibration frames, maximum graph/eager peak error 1.550e-13, with device
+used memory 98.558 GB after the probe. This is an untimed memory/accuracy
+check, not a six-frame throughput result or the final 1,200-frame acceptance.
+All failed probe logs and the successful script/report are retained in
+[`raw/20261009-graph-replay`](../evidence/20261009-performance/raw/20261009-graph-replay/).

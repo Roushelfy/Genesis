@@ -117,6 +117,14 @@ is untimed validation; it does not claim CPU solves or transfers inside a
 GPU throughput loop. Sixty sampled frames are sixty CPU comparisons, not
 1,200 CPU comparisons. Graph replay warmup can separately compare every frame
 against eager FP64 direct recovery of the identical complete device RHS.
+The graph warmup invokes the ungraphed direct baseline with its existing
+immutable operators and shared factor. It releases each temporary eager
+displacement before the next mapped load. A second complete validation
+operator set would exceed memory at the measured B=256 live point; neither
+this sharing nor temporary release changes any timed recovery.
+The replay also releases its previous complete RHS before mapping the next
+frame, retaining the current RHS for same-input verification. This matches
+the live callback lifetime and avoids retaining an extra 5.03 GB at B=256.
 
 `benchmark_suite` reads a frozen JSON `benchmark_arguments` list and runs
 rigid, matched policy-rigid, stress replay, live and policy scopes. Each scope

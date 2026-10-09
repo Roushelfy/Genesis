@@ -167,7 +167,7 @@ def main(
             print(json.dumps({"setup_seconds": setup_s, "device_factors": factor_info}), flush=True)
             reference = (
                 recovery
-                if args.method == "direct" and not args.recovery_graph
+                if args.method == "direct"
                 else EggRecoveryGPU(
                     model.fem,
                     args.envs,
@@ -186,12 +186,19 @@ def main(
             )
             for tick in warmup_ticks:
                 out = pipeline.step(tick)
-                exact = out if reference is recovery else reference.recover(pipeline.last_rhs)
+                exact = (
+                    EggRecoveryGPU.recover(recovery, pipeline.last_rhs)
+                    if args.recovery_graph
+                    else out if reference is recovery else reference.recover(pipeline.last_rhs)
+                )
                 warmup_accepted &= out.is_accepted & exact.is_accepted & pipeline.mapping_accepted
                 difference = abs(out.peak_pa - exact.peak_pa)
                 peak_errors.append(cp.where(exact.peak_pa > 1, difference / cp.maximum(exact.peak_pa, 1), 0))
                 zero_errors.append(cp.where(exact.peak_pa <= 1, difference, 0))
                 positive_reference.append(exact.peak_pa > 1)
+                if args.recovery_graph:
+                    # Do not retain an untimed full-domain eager displacement during the next mapped load.
+                    del exact
                 if args.scope == "assembled-rhs":
                     snapshots.append(pipeline.last_rhs.copy())
                 if tick % 200 == 0:
@@ -206,6 +213,7 @@ def main(
             gpu_validation = {
                 "oracle": "Same complete device RHS, shared FP64 direct factor, independently CPU-tested backend",
                 "frames": len(warmup_ticks),
+                "eager_reference_shares_immutable_operators": args.recovery_graph,
                 "peak_relative_error_max": float(peak_errors.max()),
                 "peak_relative_error_p95": float(cp.percentile(nonzero_errors, 95)) if nonzero_errors.size else 0.0,
                 "peak_relative_error_mean": float(nonzero_errors.mean()) if nonzero_errors.size else 0.0,

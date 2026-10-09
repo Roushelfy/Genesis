@@ -10,6 +10,7 @@ from threadpoolctl import threadpool_limits
 
 from .cpu import EggRecoveryCPU
 from .graph_gpu import CapturedDirectRecoveryGPU
+from .sparse_gpu import EggRecoveryGPU
 
 
 def check(model: EggRecoveryCPU, rows: list[dict], layout: str) -> None:
@@ -30,6 +31,12 @@ def check(model: EggRecoveryCPU, rows: list[dict], layout: str) -> None:
         assert cp.all(actual.is_accepted).item()
         difference = np.max(abs(actual.peak_pa.get() - expected.peak_pa) / np.maximum(expected.peak_pa, 1))
         assert difference <= 1e-4
+        with recovery.capture_stream:
+            eager = EggRecoveryGPU.recover(recovery, device_rhs)
+            assert cp.all(eager.is_accepted).item()
+            eager_error = np.max(abs(eager.peak_pa.get() - expected.peak_pa) / np.maximum(expected.peak_pa, 1))
+            assert eager_error <= 1e-4
+            del eager
         rows.append(
             {
                 "frame": frame,
@@ -37,6 +44,7 @@ def check(model: EggRecoveryCPU, rows: list[dict], layout: str) -> None:
                 "consumer_stream": cp.cuda.get_current_stream().ptr,
                 "capture_stream": recovery.capture_stream.ptr,
                 "peak_relative_error_max": float(difference),
+                "eager_reference_peak_relative_error_max": float(eager_error),
                 "full_relative_residual_max": float(cp.max(actual.relative_residual)),
             }
         )
