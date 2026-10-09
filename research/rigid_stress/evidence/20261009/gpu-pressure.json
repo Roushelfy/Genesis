@@ -1,0 +1,55 @@
+{
+  "passed": true,
+  "scope": "Full-shell GPU pad mapping and direct recovery vs CPU FP64 for identical input contact wrenches",
+  "live_end_to_end_tested": false,
+  "physical_mesh_converged": false,
+  "tensile_rejected": true,
+  "zero_load_exact": true,
+  "cases": [
+    {
+      "label": "arbitrary_saturated_pad_wrenches",
+      "environments": 8,
+      "contact_count": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "nodal_load_difference_max_n": 1.4432899320127035e-15,
+      "moment_error_max_nm": 9.309503074677274e-17,
+      "peak_error_max_pa": 8.475035429000854e-08,
+      "peak_error_relative_max": 6.622636824696609e-14,
+      "full_residual_relative_max": 1.5334884794656946e-11,
+      "mapping_diagnostics_max": [
+        6.477011461634153e-16,
+        1.9077233244836472e-19,
+        4.440892098500626e-16,
+        1.087456227569743e-14,
+        1.0
+      ]
+    },
+    {
+      "label": "actual_sliding_step_424",
+      "environments": 1,
+      "contact_count": [
+        10
+      ],
+      "nodal_load_difference_max_n": 1.1275702593849246e-17,
+      "moment_error_max_nm": 2.947188576448425e-20,
+      "peak_error_max_pa": 1.5643308870494366e-09,
+      "peak_error_relative_max": 1.1034452558033237e-13,
+      "full_residual_relative_max": 1.709168362729923e-11,
+      "mapping_diagnostics_max": [
+        2.49274378411243e-19,
+        7.717654825249173e-22,
+        3.022163554133872e-09,
+        6.14790688091631e-08,
+        3.0
+      ]
+    }
+  ]
+}

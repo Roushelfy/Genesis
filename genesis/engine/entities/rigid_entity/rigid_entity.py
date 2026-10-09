@@ -3146,6 +3146,8 @@ class RigidEntity(KinematicEntity):
         - 'link_b'     : The global link index of link B (that contains geom B) in the contact pair.
                         (actual link object can be obtained by scene.rigid_solver.links[link_b])
         - 'position'   : The contact position in world frame.
+        - 'normal'     : The unit contact normal in world frame.
+        - 'friction'   : The sliding friction coefficient used for this contact, including per-link friction ratios.
         - 'force_a'    : The contact force applied to geom A.
         - 'force_b'    : The contact force applied to geom B.
         - 'valid_mask' : A boolean mask indicating whether the contact information is valid.

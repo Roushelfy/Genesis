@@ -3,6 +3,7 @@
 Run from repo root: python -m research.rigid_stress.check_cpu
 Optional: --torch to compare the CUDA-capable prototype on CPU, not GPU.
 """
+
 import argparse
 import json
 from pathlib import Path
@@ -10,7 +11,8 @@ from pathlib import Path
 import numpy as np
 from threadpoolctl import threadpool_limits
 
-from .cpu import ContactBatch, EggConfig, EggRecoveryCPU, reference
+# The reference path is registered by cpu before importing its numerical oracle
+from .cpu import ContactBatch, EggConfig, EggRecoveryCPU, reference  # isort: skip
 from general_peak import baseline_numpy
 
 
@@ -23,16 +25,23 @@ def main():
         model = EggRecoveryCPU(4, EggConfig(level=1, layers=2), rtol=1e-6)
         f = model.fem
         faces = [0, 13, 41, 75]
-        points = np.array([reference.surface_frame(f, i, [0.2, 0.3, 0.5])[0] for i in faces])
-        contacts = ContactBatch(points[:, None],
-                                np.array([[1., -0.2, 0.4], [-0.3, 2., 0.1], [0.2, 0.4, -3.], [0., 0., 0.]])[:, None],
-                                np.full((4, 1), 0.009), np.array([[True], [True], [True], [False]]))
+        frames = [reference.surface_frame(f, i, [0.2, 0.3, 0.5]) for i in faces]
+        points = np.array([frame[0] for frame in frames])
+        forces = np.array([-frame[1] * (1 + i) + frame[2] * 0.15 for i, frame in enumerate(frames)])
+        contacts = ContactBatch(
+            points[:, None],
+            forces[:, None],
+            np.full((4, 1), 0.009),
+            np.array([[True], [True], [True], [False]]),
+            np.full((4, 1), 0.6),
+        )
         loads = model.map_contacts(contacts)
         expected_force = (contacts.force_n * contacts.valid[..., None]).sum(axis=1)
         np.testing.assert_allclose(loads.resultant_force_n, expected_force, atol=1e-12)
+        np.testing.assert_allclose(loads.resultant_moment_nm, loads.input_moment_nm, atol=1e-12)
         # The same gravity vector is broadcast to each independent environment.
-        raw = loads.nodal_force_n + (f.m @ np.tile([0., 0., -9.81], len(f.xyz)))[:, None]
-        rhs = model.compatible_rhs(raw, np.array([[1., 2., 0.], [0., 0., 4.], [2., -1., 3.], [0., 0., 0.]]))
+        raw = loads.nodal_force_n + (f.m @ np.tile([0.0, 0.0, -9.81], len(f.xyz)))[:, None]
+        rhs = model.compatible_rhs(raw, np.array([[1.0, 2.0, 0.0], [0.0, 0.0, 4.0], [2.0, -1.0, 3.0], [0.0, 0.0, 0.0]]))
         np.testing.assert_allclose(f.r.T @ rhs, 0, atol=1e-11)
         expected = np.zeros_like(rhs)
         expected[f.free] = f.factor.solve(np.asfortranarray(rhs[f.free]))
@@ -43,12 +52,12 @@ def main():
         np.testing.assert_allclose(recovered.peak_pa, expected_peak, rtol=1e-8, atol=1e-6)
         # Unknown future contacts never enter the predictor; reuse only current
         # complete RHS plus each environment's own history.
-        maximum_error = 0.
+        maximum_error = 0.0
         for step in range(12):
             moving = rhs * (1 + 0.03 * np.sin(0.2 * step + np.arange(4)))
             out = model.recover(moving)
             truth = expected_peak * (1 + 0.03 * np.sin(0.2 * step + np.arange(4)))
-            maximum_error = max(maximum_error, np.max(abs(out.peak_pa - truth) / np.maximum(truth, 1.)))
+            maximum_error = max(maximum_error, np.max(abs(out.peak_pa - truth) / np.maximum(truth, 1.0)))
         model.reset([1, 3])
         np.testing.assert_array_equal(model.solver.last[:, [1, 3]], 0)
         assert not model.solver.history[1].order
@@ -59,16 +68,26 @@ def main():
         alternate, _, _ = f.solve(raw[:, 0], alternate_gauge=True)
         original, _, _ = f.solve(raw[:, 0])
         np.testing.assert_allclose(model.peak(alternate)[0], model.peak(original)[0], rtol=1e-8)
-        result = {"passed": True, "GPU_tested": False, "genesis_scene_tested": False,
-                  "ndof": f.ndof, "tets": f.ne, "full_model": True,
-                  "stress_mesh_converged": False, "max_temporal_peak_relative_error": float(maximum_error),
-                  "max_first_full_relative_residual": float(recovered.relative_residual.max()),
-                  "finite_patch_point_moment_difference_Nm":
-                      np.linalg.norm(loads.resultant_moment_nm - loads.input_moment_nm, axis=1).tolist()}
+        result = {
+            "passed": True,
+            "GPU_tested": False,
+            "genesis_scene_tested": False,
+            "ndof": f.ndof,
+            "tets": f.ne,
+            "full_model": True,
+            "stress_mesh_converged": False,
+            "max_temporal_peak_relative_error": float(maximum_error),
+            "max_first_full_relative_residual": float(recovered.relative_residual.max()),
+            "finite_patch_point_moment_difference_Nm": np.linalg.norm(
+                loads.resultant_moment_nm - loads.input_moment_nm, axis=1
+            ).tolist(),
+        }
         if args.torch:
             # Optional Torch dependency, isolated from the required CPU stack.
-            from .gpu_prototype import DenseDebugFactor, P2PeakTorch, compact_correct
             import torch
+
+            from .gpu_prototype import DenseDebugFactor, P2PeakTorch, compact_correct
+
             factor = DenseDebugFactor.build(f.k[f.free][:, f.free], device="cpu")
             torch_rhs = torch.tensor(rhs[f.free], dtype=torch.float64)
             x = factor.solve(torch_rhs)

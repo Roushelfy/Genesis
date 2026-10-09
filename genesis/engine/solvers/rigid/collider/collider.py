@@ -143,6 +143,7 @@ class Collider:
                     ("position", "pos"),
                     ("normal", "normal"),
                     ("force", "force"),
+                    ("friction", "friction"),
                 ):
                     self._contact_data[key] = qd_to_torch(
                         getattr(self.collider_state.contact_data, name), transpose=True, copy=False
@@ -998,10 +999,10 @@ class Collider:
         # Allocate output buffer
         if to_torch:
             iout = torch.full((out_size, 4), -1, dtype=gs.tc_int, device=gs.device)
-            fout = torch.zeros((out_size, 10), dtype=gs.tc_float, device=gs.device)
+            fout = torch.zeros((out_size, 11), dtype=gs.tc_float, device=gs.device)
         else:
             iout = np.full((out_size, 4), -1, dtype=gs.np_int)
-            fout = np.zeros((out_size, 10), dtype=gs.np_float)
+            fout = np.zeros((out_size, 11), dtype=gs.np_float)
 
         # Copy contact data
         if n_contacts_max > 0:
@@ -1011,17 +1012,17 @@ class Collider:
         if dense:
             nb = max(n_envs, 1)
             iout = iout.reshape((nb, n_contacts_max, 4))
-            fout = fout.reshape((nb, n_contacts_max, 10))
+            fout = fout.reshape((nb, n_contacts_max, 11))
             if padded:
                 # Widen from the live count to the fixed capacity the zero-copy path returns (contact buffers are
                 # sized max(max_candidate_contacts, 1)). New slots keep the sentinel (-1 ints / 0 floats).
                 capacity = max(self.collider_info.max_candidate_contacts[None], 1)
                 if to_torch:
                     iout_full = torch.full((nb, capacity, 4), -1, dtype=gs.tc_int, device=gs.device)
-                    fout_full = torch.zeros((nb, capacity, 10), dtype=gs.tc_float, device=gs.device)
+                    fout_full = torch.zeros((nb, capacity, 11), dtype=gs.tc_float, device=gs.device)
                 else:
                     iout_full = np.full((nb, capacity, 4), -1, dtype=gs.np_int)
-                    fout_full = np.zeros((nb, capacity, 10), dtype=gs.np_float)
+                    fout_full = np.zeros((nb, capacity, 11), dtype=gs.np_float)
                 iout_full[:, :n_contacts_max] = iout
                 fout_full[:, :n_contacts_max] = fout
                 iout, fout = iout_full, fout_full
@@ -1029,20 +1030,20 @@ class Collider:
                 iout, fout = iout[0], fout[0]
             if as_tensor or n_envs == 0:
                 iout_chunks = (iout[..., 0], iout[..., 1], iout[..., 2], iout[..., 3])
-                fout_chunks = (fout[..., 0], fout[..., 1:4], fout[..., 4:7], fout[..., 7:])
+                fout_chunks = (fout[..., 0], fout[..., 1:4], fout[..., 4:7], fout[..., 7:10], fout[..., 10])
                 values = (*iout_chunks, *fout_chunks)
             else:
                 # Ragged + padded, batched: one fixed-capacity slice per env (no host-side trim, no sync).
                 iout_envs = (iout[i : i + 1] if keep_batch_dim else iout[i] for i in range(n_envs))
                 fout_envs = (fout[i : i + 1] if keep_batch_dim else fout[i] for i in range(n_envs))
                 iout_chunks = ((io[..., 0], io[..., 1], io[..., 2], io[..., 3]) for io in iout_envs)
-                fout_chunks = ((fo[..., 0], fo[..., 1:4], fo[..., 4:7], fo[..., 7:]) for fo in fout_envs)
+                fout_chunks = ((fo[..., 0], fo[..., 1:4], fo[..., 4:7], fo[..., 7:10], fo[..., 10]) for fo in fout_envs)
                 values = (*zip(*iout_chunks), *zip(*fout_chunks))
         else:
             # Split smallest dimension first, then largest dimension
             if n_envs == 0:
                 iout_chunks = (iout[..., 0], iout[..., 1], iout[..., 2], iout[..., 3])
-                fout_chunks = (fout[..., 0], fout[..., 1:4], fout[..., 4:7], fout[..., 7:])
+                fout_chunks = (fout[..., 0], fout[..., 1:4], fout[..., 4:7], fout[..., 7:10], fout[..., 10])
                 values = (*iout_chunks, *fout_chunks)
             elif n_contacts_max >= n_envs:
                 if to_torch:
@@ -1052,11 +1053,13 @@ class Collider:
                     iout_chunks = np.split(iout, n_contacts_starts)
                     fout_chunks = np.split(fout, n_contacts_starts)
                 iout_chunks = ((out[..., 0], out[..., 1], out[..., 2], out[..., 3]) for out in iout_chunks)
-                fout_chunks = ((out[..., 0], out[..., 1:4], out[..., 4:7], out[..., 7:]) for out in fout_chunks)
+                fout_chunks = (
+                    (out[..., 0], out[..., 1:4], out[..., 4:7], out[..., 7:10], out[..., 10]) for out in fout_chunks
+                )
                 values = (*zip(*iout_chunks), *zip(*fout_chunks))
             else:
                 iout_chunks = (iout[..., 0], iout[..., 1], iout[..., 2], iout[..., 3])
-                fout_chunks = (fout[..., 0], fout[..., 1:4], fout[..., 4:7], fout[..., 7:])
+                fout_chunks = (fout[..., 0], fout[..., 1:4], fout[..., 4:7], fout[..., 7:10], fout[..., 10])
                 if n_envs == 1:
                     values = [(value,) for value in (*iout_chunks, *fout_chunks)]
                 else:
@@ -1070,7 +1073,10 @@ class Collider:
 
         # Store contact information in cache
         contact_data.update(
-            zip(("link_a", "link_b", "geom_a", "geom_b", "penetration", "position", "normal", "force"), values)
+            zip(
+                ("link_a", "link_b", "geom_a", "geom_b", "penetration", "position", "normal", "force", "friction"),
+                values,
+            )
         )
 
         if padded:

@@ -1,0 +1,192 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0
+rootdir: /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-friction-proof
+configfile: pyproject.toml
+plugins: anyio-4.15.1, forked-1.7.5, print-1.2.0, timeout-2.4.0, xdist-3.8.0, quadrants-1.3.3, syrupy-6.1.1
+timeout: 1200.0s
+timeout method: signal
+timeout func_only: False
+created: 1/1 worker
+1 worker [2 items]
+
+[31mF[0m[31mF[0m[31m                                                                       [100%][0m[I 10/09/26 17:52:26.736 610825] [shell.py:_shell_pop_print@25] Graphical python shell detected, using wrapped sys.stdout
+
+=================================== FAILURES ===================================
+[31m[1m___________________________ test_kinetic_friction[0] ___________________________[0m
+[gw0] linux -- Python 3.10.12 /mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python
+
+n_envs = 0, show_viewer = False
+
+    [0m[37m@pytest[39;49;00m.mark.required[90m[39;49;00m
+    [37m@pytest[39;49;00m.mark.parametrize([33m"[39;49;00m[33mn_envs[39;49;00m[33m"[39;49;00m, [[94m0[39;49;00m, [94m2[39;49;00m])[90m[39;49;00m
+    [94mdef[39;49;00m[90m [39;49;00m[92mtest_kinetic_friction[39;49;00m(n_envs, show_viewer):[90m[39;49;00m
+        GRAVITY = [94m9.81[39;49;00m[90m[39;49;00m
+        SIZE = [94m0.1[39;49;00m[90m[39;49;00m
+        [90m# A cube resting flat tips once friction can torque it over its leading edge, from mu = width / (2 * com_height).[39;49;00m[90m[39;49;00m
+        TIP_FRICTION = SIZE / ([94m2.0[39;49;00m * [94m0.5[39;49;00m * SIZE)[90m[39;49;00m
+        [90m# Friction coefficient and launch speed per box, spanning both sides of that threshold. 0.01 is the smallest[39;49;00m[90m[39;49;00m
+        [90m# coefficient the contact model applies, and the plane wears it so the pairwise max leaves each box its own.[39;49;00m[90m[39;49;00m
+        BOXES = (([94m0.01[39;49;00m, [94m6.0[39;49;00m), ([94m0.25[39;49;00m, [94m6.0[39;49;00m), ([94m0.5[39;49;00m, [94m2.0[39;49;00m), ([94m0.5[39;49;00m, [94m6.0[39;49;00m), ([94m0.5[39;49;00m, [94m20.0[39;49;00m), ([94m0.9[39;49;00m, [94m6.0[39;49;00m), ([94m1.2[39;49;00m, [94m6.0[39;49;00m), ([94m2.0[39;49;00m, [94m6.0[39;49;00m))[90m[39;49;00m
+        N_SETTLE = [94m40[39;49;00m[90m[39;49;00m
+        N_SLIDE = [94m40[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        scene = gs.Scene([90m[39;49;00m
+            sim_options=gs.options.SimOptions([90m[39;49;00m
+                dt=[94m0.005[39;49;00m,[90m[39;49;00m
+                gravity=([94m0.0[39;49;00m, [94m0.0[39;49;00m, -GRAVITY),[90m[39;49;00m
+            ),[90m[39;49;00m
+            rigid_options=gs.options.RigidOptions([90m[39;49;00m
+                friction_cone=gs.friction_cone.elliptic,[90m[39;49;00m
+            ),[90m[39;49;00m
+            viewer_options=gs.options.ViewerOptions([90m[39;49;00m
+                camera_pos=([94m1.0[39;49;00m, -[94m1.5[39;49;00m, [94m0.6[39;49;00m),[90m[39;49;00m
+                camera_lookat=([94m1.0[39;49;00m, [94m0.3[39;49;00m, [94m0.05[39;49;00m),[90m[39;49;00m
+            ),[90m[39;49;00m
+            show_viewer=show_viewer,[90m[39;49;00m
+        )[90m[39;49;00m
+        scene.add_entity([90m[39;49;00m
+            gs.morphs.Plane(),[90m[39;49;00m
+            material=gs.materials.Rigid([90m[39;49;00m
+                friction=[94m0.01[39;49;00m,[90m[39;49;00m
+            ),[90m[39;49;00m
+        )[90m[39;49;00m
+        [90m# Spaced far enough apart never to interact, so each box is its own contact island.[39;49;00m[90m[39;49;00m
+        boxes = [[90m[39;49;00m
+            scene.add_entity([90m[39;49;00m
+                gs.morphs.Box([90m[39;49;00m
+                    pos=([94m0.0[39;49;00m, [94m4.0[39;49;00m * SIZE * i_box, [94m0.5[39;49;00m * SIZE),[90m[39;49;00m
+                    size=(SIZE, SIZE, SIZE),[90m[39;49;00m
+                ),[90m[39;49;00m
+                material=gs.materials.Rigid([90m[39;49;00m
+                    friction=friction,[90m[39;49;00m
+                ),[90m[39;49;00m
+            )[90m[39;49;00m
+            [94mfor[39;49;00m i_box, (friction, _) [95min[39;49;00m [96menumerate[39;49;00m(BOXES)[90m[39;49;00m
+        ][90m[39;49;00m
+        scene.build(n_envs=n_envs)[90m[39;49;00m
+    [90m[39;49;00m
+        [94mfor[39;49;00m _ [95min[39;49;00m [96mrange[39;49;00m(N_SETTLE):[90m[39;49;00m
+            scene.step()[90m[39;49;00m
+    [90m[39;49;00m
+        [94mfor[39;49;00m box, (coefficient, _) [95min[39;49;00m [96mzip[39;49;00m(boxes, BOXES):[90m[39;49;00m
+            contacts = box.get_contacts(is_padded=[94mTrue[39;49;00m)[90m[39;49;00m
+            [94massert[39;49;00m contacts[[33m"[39;49;00m[33mvalid_mask[39;49;00m[33m"[39;49;00m].any()[90m[39;49;00m
+>           assert_allclose(contacts[[33m"[39;49;00m[33mfriction[39;49;00m[33m"[39;49;00m][contacts[[33m"[39;49;00m[33mvalid_mask[39;49;00m[33m"[39;49;00m]], coefficient, rtol=[94m1e-6[39;49;00m, atol=[94m0.0[39;49;00m)[90m[39;49;00m
+[1m[31mE           KeyError: 'friction'[0m
+
+[1m[31mtests/rigid/test_friction.py[0m:1052: KeyError
+---------------------------- Captured stdout setup -----------------------------
+[Genesis 17:52:47] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 17:52:47] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+----------------------------- Captured stdout call -----------------------------
+[Genesis 17:52:48] Scene <09cd826> created.
+[Genesis 17:52:54] Adding <gs.engine.entities.RigidEntity> 'plane_9057bd1'. idx: 0, morph: <gs.morphs.Plane>, material: <gs.materials.Rigid>.
+[Genesis 17:52:56] Adding <gs.engine.entities.RigidEntity> 'box_09ceb1e'. idx: 1, morph: <gs.morphs.Box>, material: <gs.materials.Rigid>.
+[Genesis 17:52:56] Adding <gs.engine.entities.RigidEntity> 'box_ce9b861'. idx: 2, morph: <gs.morphs.Box>, material: <gs.materials.Rigid>.
+[Genesis 17:52:56] Adding <gs.engine.entities.RigidEntity> 'box_6baf491'. idx: 3, morph: <gs.morphs.Box>, material: <gs.materials.Rigid>.
+[Genesis 17:52:56] Adding <gs.engine.entities.RigidEntity> 'box_21b279f'. idx: 4, morph: <gs.morphs.Box>, material: <gs.materials.Rigid>.
+[Genesis 17:52:56] Adding <gs.engine.entities.RigidEntity> 'box_c8250ba'. idx: 5, morph: <gs.morphs.Box>, material: <gs.materials.Rigid>.
+[Genesis 17:52:56] Adding <gs.engine.entities.RigidEntity> 'box_830415b'. idx: 6, morph: <gs.morphs.Box>, material: <gs.materials.Rigid>.
+[Genesis 17:52:56] Adding <gs.engine.entities.RigidEntity> 'box_74567cf'. idx: 7, morph: <gs.morphs.Box>, material: <gs.materials.Rigid>.
+[Genesis 17:52:56] Adding <gs.engine.entities.RigidEntity> 'box_ce770a4'. idx: 8, morph: <gs.morphs.Box>, material: <gs.materials.Rigid>.
+[Genesis 17:52:56] Building scene <09cd826>...
+[Genesis 17:53:02] Compiling simulation kernels...
+[Genesis 17:53:15] Building visualizer...
+----------------------------- Captured stderr call -----------------------------
+[W 10/09/26 17:52:59.062 612252] [frontend_ir.cpp:begin_frontend_struct_for_on_external_tensor@1551] qd.loop_config(serialize=True) does not have effect on the struct for. The execution order is not guaranteed.
+[W 10/09/26 17:52:59.072 612252] [frontend_ir.cpp:begin_frontend_struct_for_on_external_tensor@1551] qd.loop_config(serialize=True) does not have effect on the struct for. The execution order is not guaranteed.
+[W 10/09/26 17:52:59.235 612252] [frontend_ir.cpp:begin_frontend_struct_for_on_external_tensor@1551] qd.loop_config(serialize=True) does not have effect on the struct for. The execution order is not guaranteed.
+[W 10/09/26 17:52:59.247 612252] [frontend_ir.cpp:begin_frontend_struct_for_on_external_tensor@1551] qd.loop_config(serialize=True) does not have effect on the struct for. The execution order is not guaranteed.
+[W 10/09/26 17:52:59.283 612252] [frontend_ir.cpp:begin_frontend_struct_for_on_external_tensor@1551] qd.loop_config(serialize=True) does not have effect on the struct for. The execution order is not guaranteed.
+[W 10/09/26 17:52:59.288 612252] [frontend_ir.cpp:begin_frontend_struct_for_on_external_tensor@1551] qd.loop_config(serialize=True) does not have effect on the struct for. The execution order is not guaranteed.
+--------------------------- Captured stdout teardown ---------------------------
+[Genesis 17:53:21] Exiting Genesis and caching compiled kernels...
+[31m[1m___________________________ test_kinetic_friction[2] ___________________________[0m
+[gw0] linux -- Python 3.10.12 /mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python
+
+n_envs = 2, show_viewer = False
+
+    [0m[37m@pytest[39;49;00m.mark.required[90m[39;49;00m
+    [37m@pytest[39;49;00m.mark.parametrize([33m"[39;49;00m[33mn_envs[39;49;00m[33m"[39;49;00m, [[94m0[39;49;00m, [94m2[39;49;00m])[90m[39;49;00m
+    [94mdef[39;49;00m[90m [39;49;00m[92mtest_kinetic_friction[39;49;00m(n_envs, show_viewer):[90m[39;49;00m
+        GRAVITY = [94m9.81[39;49;00m[90m[39;49;00m
+        SIZE = [94m0.1[39;49;00m[90m[39;49;00m
+        [90m# A cube resting flat tips once friction can torque it over its leading edge, from mu = width / (2 * com_height).[39;49;00m[90m[39;49;00m
+        TIP_FRICTION = SIZE / ([94m2.0[39;49;00m * [94m0.5[39;49;00m * SIZE)[90m[39;49;00m
+        [90m# Friction coefficient and launch speed per box, spanning both sides of that threshold. 0.01 is the smallest[39;49;00m[90m[39;49;00m
+        [90m# coefficient the contact model applies, and the plane wears it so the pairwise max leaves each box its own.[39;49;00m[90m[39;49;00m
+        BOXES = (([94m0.01[39;49;00m, [94m6.0[39;49;00m), ([94m0.25[39;49;00m, [94m6.0[39;49;00m), ([94m0.5[39;49;00m, [94m2.0[39;49;00m), ([94m0.5[39;49;00m, [94m6.0[39;49;00m), ([94m0.5[39;49;00m, [94m20.0[39;49;00m), ([94m0.9[39;49;00m, [94m6.0[39;49;00m), ([94m1.2[39;49;00m, [94m6.0[39;49;00m), ([94m2.0[39;49;00m, [94m6.0[39;49;00m))[90m[39;49;00m
+        N_SETTLE = [94m40[39;49;00m[90m[39;49;00m
+        N_SLIDE = [94m40[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        scene = gs.Scene([90m[39;49;00m
+            sim_options=gs.options.SimOptions([90m[39;49;00m
+                dt=[94m0.005[39;49;00m,[90m[39;49;00m
+                gravity=([94m0.0[39;49;00m, [94m0.0[39;49;00m, -GRAVITY),[90m[39;49;00m
+            ),[90m[39;49;00m
+            rigid_options=gs.options.RigidOptions([90m[39;49;00m
+                friction_cone=gs.friction_cone.elliptic,[90m[39;49;00m
+            ),[90m[39;49;00m
+            viewer_options=gs.options.ViewerOptions([90m[39;49;00m
+                camera_pos=([94m1.0[39;49;00m, -[94m1.5[39;49;00m, [94m0.6[39;49;00m),[90m[39;49;00m
+                camera_lookat=([94m1.0[39;49;00m, [94m0.3[39;49;00m, [94m0.05[39;49;00m),[90m[39;49;00m
+            ),[90m[39;49;00m
+            show_viewer=show_viewer,[90m[39;49;00m
+        )[90m[39;49;00m
+        scene.add_entity([90m[39;49;00m
+            gs.morphs.Plane(),[90m[39;49;00m
+            material=gs.materials.Rigid([90m[39;49;00m
+                friction=[94m0.01[39;49;00m,[90m[39;49;00m
+            ),[90m[39;49;00m
+        )[90m[39;49;00m
+        [90m# Spaced far enough apart never to interact, so each box is its own contact island.[39;49;00m[90m[39;49;00m
+        boxes = [[90m[39;49;00m
+            scene.add_entity([90m[39;49;00m
+                gs.morphs.Box([90m[39;49;00m
+                    pos=([94m0.0[39;49;00m, [94m4.0[39;49;00m * SIZE * i_box, [94m0.5[39;49;00m * SIZE),[90m[39;49;00m
+                    size=(SIZE, SIZE, SIZE),[90m[39;49;00m
+                ),[90m[39;49;00m
+                material=gs.materials.Rigid([90m[39;49;00m
+                    friction=friction,[90m[39;49;00m
+                ),[90m[39;49;00m
+            )[90m[39;49;00m
+            [94mfor[39;49;00m i_box, (friction, _) [95min[39;49;00m [96menumerate[39;49;00m(BOXES)[90m[39;49;00m
+        ][90m[39;49;00m
+        scene.build(n_envs=n_envs)[90m[39;49;00m
+    [90m[39;49;00m
+        [94mfor[39;49;00m _ [95min[39;49;00m [96mrange[39;49;00m(N_SETTLE):[90m[39;49;00m
+            scene.step()[90m[39;49;00m
+    [90m[39;49;00m
+        [94mfor[39;49;00m box, (coefficient, _) [95min[39;49;00m [96mzip[39;49;00m(boxes, BOXES):[90m[39;49;00m
+            contacts = box.get_contacts(is_padded=[94mTrue[39;49;00m)[90m[39;49;00m
+            [94massert[39;49;00m contacts[[33m"[39;49;00m[33mvalid_mask[39;49;00m[33m"[39;49;00m].any()[90m[39;49;00m
+>           assert_allclose(contacts[[33m"[39;49;00m[33mfriction[39;49;00m[33m"[39;49;00m][contacts[[33m"[39;49;00m[33mvalid_mask[39;49;00m[33m"[39;49;00m]], coefficient, rtol=[94m1e-6[39;49;00m, atol=[94m0.0[39;49;00m)[90m[39;49;00m
+[1m[31mE           KeyError: 'friction'[0m
+
+[1m[31mtests/rigid/test_friction.py[0m:1052: KeyError
+---------------------------- Captured stdout setup -----------------------------
+[Genesis 17:53:24] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 17:53:24] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+----------------------------- Captured stdout call -----------------------------
+[Genesis 17:53:24] Scene <814a87a> created.
+[Genesis 17:53:24] Adding <gs.engine.entities.RigidEntity> 'plane_4d09c76'. idx: 0, morph: <gs.morphs.Plane>, material: <gs.materials.Rigid>.
+[Genesis 17:53:24] Adding <gs.engine.entities.RigidEntity> 'box_c8f528c'. idx: 1, morph: <gs.morphs.Box>, material: <gs.materials.Rigid>.
+[Genesis 17:53:24] Adding <gs.engine.entities.RigidEntity> 'box_96f6d51'. idx: 2, morph: <gs.morphs.Box>, material: <gs.materials.Rigid>.
+[Genesis 17:53:24] Adding <gs.engine.entities.RigidEntity> 'box_722a8c8'. idx: 3, morph: <gs.morphs.Box>, material: <gs.materials.Rigid>.
+[Genesis 17:53:24] Adding <gs.engine.entities.RigidEntity> 'box_a4dbaa7'. idx: 4, morph: <gs.morphs.Box>, material: <gs.materials.Rigid>.
+[Genesis 17:53:24] Adding <gs.engine.entities.RigidEntity> 'box_2d0440e'. idx: 5, morph: <gs.morphs.Box>, material: <gs.materials.Rigid>.
+[Genesis 17:53:24] Adding <gs.engine.entities.RigidEntity> 'box_dca4beb'. idx: 6, morph: <gs.morphs.Box>, material: <gs.materials.Rigid>.
+[Genesis 17:53:24] Adding <gs.engine.entities.RigidEntity> 'box_60647e8'. idx: 7, morph: <gs.morphs.Box>, material: <gs.materials.Rigid>.
+[Genesis 17:53:24] Adding <gs.engine.entities.RigidEntity> 'box_3749a14'. idx: 8, morph: <gs.morphs.Box>, material: <gs.materials.Rigid>.
+[Genesis 17:53:24] Building scene <814a87a>...
+[Genesis 17:53:25] Compiling simulation kernels...
+[Genesis 17:53:28] Building visualizer...
+--------------------------- Captured stdout teardown ---------------------------
+[Genesis 17:53:28] Exiting Genesis and caching compiled kernels...
+================================= Failed tests =================================
+tests/rigid/test_friction.py::test_kinetic_friction[0] - KeyError: 'friction'
+tests/rigid/test_friction.py::test_kinetic_friction[2] - KeyError: 'friction'
+============================== slowest durations ===============================
+
+(6 durations < 100s hidden.)
+[31m============================== [31m[1m2 failed[0m[31m in 56.83s[0m[31m ==============================[0m

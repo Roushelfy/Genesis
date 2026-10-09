@@ -1,0 +1,36 @@
+{
+  "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-matched-video/rollout.json",
+  "scope": "Recorded real rigid grasp with per-frame host CPU FP64 verification",
+  "physical_mesh_converged": false,
+  "passed": true,
+  "equations_passed": true,
+  "output_error_passed": true,
+  "absolute_residual_floor_n": 1e-11,
+  "relative_residual_max_above_1pa": 3.114041677282867e-11,
+  "absolute_peak_error_max_pa": 2.394049735081737e-07,
+  "relative_peak_error_max_above_1pa": 4.4036397171611773e-13,
+  "absolute_peak_error_max_at_or_below_1pa": 2.394049735081737e-07,
+  "near_zero_frames": 18,
+  "net_contact_force_difference_max_n": 5.960566795693012e-08,
+  "newton_balance_force_error_max_n": 2.1832976926816627e-05,
+  "euler_balance_torque_error_max_nm": 4.807852178601024e-07,
+  "finite_patch_moment_error_max_nm": 5.5907960505442795e-18,
+  "egg_as_a_samples": 0,
+  "egg_as_b_samples": 4263,
+  "environments": [
+    {
+      "environment": 0,
+      "grasp_passed": true,
+      "rest_com_height_m": 0.02775617130100727,
+      "maximum_lift_com_height_m": 0.1454567015171051,
+      "minimum_hold_com_height_m": 0.1456616073846817,
+      "hold_finger_contacts_present": true,
+      "weak_grip_tangent_speed_max_m_s": 0.012568136677145958,
+      "slip_observed": true,
+      "tangent_force_max_n": 0.6843863725662231,
+      "released_com_height_m": 0.025375517085194588,
+      "released_finger_contacts_max": 0,
+      "peak_max_pa": 518118.13641776674
+    }
+  ]
+}

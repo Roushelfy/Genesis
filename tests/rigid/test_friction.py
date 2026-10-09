@@ -1046,6 +1046,11 @@ def test_kinetic_friction(n_envs, show_viewer):
     for _ in range(N_SETTLE):
         scene.step()
 
+    for box, (coefficient, _) in zip(boxes, BOXES):
+        contacts = box.get_contacts(is_padded=True)
+        assert contacts["valid_mask"].any()
+        assert_allclose(contacts["friction"][contacts["valid_mask"]], coefficient, rtol=1e-6, atol=0.0)
+
     height_0 = torch.stack([box.get_pos()[..., 2] for box in boxes])
     for box, (_, speed) in zip(boxes, BOXES):
         velocity = box.get_dofs_velocity()

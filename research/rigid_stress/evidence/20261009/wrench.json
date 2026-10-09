@@ -1,0 +1,779 @@
+{
+  "passed": true,
+  "scope": "CPU full-shell finite patch wrench tests; no live Genesis contacts or physical mesh convergence",
+  "dofs": 9630,
+  "physical_mesh_converged": false,
+  "gpu_mapping_tested": false,
+  "known_distribution_moment_nm": [
+    0.0054,
+    -0.0054,
+    -0.0008100000000000001
+  ],
+  "known_distribution_diagnostics": {
+    "force_error_n": 1.159575385244009e-15,
+    "moment_error_nm": 6.597118501542439e-19,
+    "minimum_normal_force_n": 8.407833824423579e-13,
+    "maximum_cone_excess_n": -2.689750652249504e-13,
+    "constrained_evaluations": 0,
+    "source_cone_excess_n": 0.0,
+    "friction_roundoff_allowance_n": 0.0
+  },
+  "constrained_fit_diagnostics": {
+    "force_error_n": 1.734723475976807e-18,
+    "moment_error_nm": 0.0,
+    "minimum_normal_force_n": 0.0,
+    "maximum_cone_excess_n": 0.0,
+    "constrained_evaluations": 7,
+    "source_cone_excess_n": 0.0,
+    "friction_roundoff_allowance_n": 0.0
+  },
+  "constant_ratio_pad_diagnostics": {
+    "force_error_n": 2.482534153247273e-16,
+    "moment_error_nm": 7.130226551314056e-19,
+    "minimum_normal_force_n": 0.0,
+    "maximum_cone_excess_n": 0.0,
+    "constrained_evaluations": 2,
+    "source_cone_excess_n": 0.0,
+    "friction_roundoff_allowance_n": 7.418283949015283e-15
+  },
+  "pad_shell_cases": 16,
+  "tensile_wrench_rejected": true,
+  "cases": [
+    {
+      "case": 0,
+      "center_m": [
+        -0.01670499846903877,
+        -0.01167153664661878,
+        0.006516126563567004
+      ],
+      "force_n": [
+        1.5894568264903766,
+        1.2843105233768097,
+        -0.49191061870320935
+      ],
+      "radius_m": 0.004584651396530457,
+      "force_error_normalized": 4.482015207391782e-16,
+      "moment_error_normalized": 1.9024930095905435e-15,
+      "force_error_n": 1.1970346188077032e-15,
+      "moment_error_nm": 3.400250989493134e-19,
+      "minimum_normal_force_n": 1.3820274658370692e-08,
+      "maximum_cone_excess_n": -4.779720019705131e-09,
+      "constrained_evaluations": 0,
+      "source_cone_excess_n": 0.0,
+      "friction_roundoff_allowance_n": 0.0
+    },
+    {
+      "case": 1,
+      "center_m": [
+        -0.0013858360007842018,
+        -0.021932279336828623,
+        -0.006155642774591162
+      ],
+      "force_n": [
+        0.0,
+        0.695698192767755,
+        0.05981275690594077
+      ],
+      "radius_m": 0.004506004548033234,
+      "force_error_normalized": 1.5930769143314712e-16,
+      "moment_error_normalized": 6.905182433547284e-17,
+      "force_error_n": 2.224778632955915e-16,
+      "moment_error_nm": 7.962253831465567e-20,
+      "minimum_normal_force_n": 6.867316191733389e-09,
+      "maximum_cone_excess_n": -1.781115198696628e-09,
+      "constrained_evaluations": 0,
+      "source_cone_excess_n": 0.0,
+      "friction_roundoff_allowance_n": 0.0
+    },
+    {
+      "case": 2,
+      "center_m": [
+        0.013832650902120526,
+        0.014218163797354764,
+        0.008351138313823439
+      ],
+      "force_n": [
+        -1.1163685697215264,
+        -0.9926698062249606,
+        -0.5318639681284373
+      ],
+      "radius_m": 0.00871926340955108,
+      "force_error_normalized": 1.2928768521605127e-15,
+      "moment_error_normalized": 1.249363458943348e-15,
+      "force_error_n": 1.616509124176106e-15,
+      "moment_error_nm": 1.0143286500529003e-18,
+      "minimum_normal_force_n": 3.63241273573129e-12,
+      "maximum_cone_excess_n": -1.2886216262252931e-12,
+      "constrained_evaluations": 0,
+      "source_cone_excess_n": 0.0,
+      "friction_roundoff_allowance_n": 0.0
+    },
+    {
+      "case": 3,
+      "center_m": [
+        0.011091168307613829,
+        -0.0002546837163306841,
+        0.02388040751256784
+      ],
+      "force_n": [
+        -1.6102300948374824,
+        0.0,
+        -1.1685219066230392
+      ],
+      "radius_m": 0.007665069510276742,
+      "force_error_normalized": 2.232115959362541e-16,
+      "moment_error_normalized": 4.564515347640479e-16,
+      "force_error_n": 8.005932111609458e-16,
+      "moment_error_nm": 3.56537261295701e-18,
+      "minimum_normal_force_n": 2.7799819626083826e-10,
+      "maximum_cone_excess_n": 2.710505431213761e-20,
+      "constrained_evaluations": 3,
+      "source_cone_excess_n": 0.0,
+      "friction_roundoff_allowance_n": 0.0
+    },
+    {
+      "case": 4,
+      "center_m": [
+        0.004358346759054271,
+        0.015689458889539046,
+        0.016504198054330396
+      ],
+      "force_n": [
+        -0.21958216853484436,
+        -1.1617269986254188,
+        -0.6222117693628351
+      ],
+      "radius_m": 0.004643325569901227,
+      "force_error_normalized": 3.8080618959419143e-16,
+      "moment_error_normalized": 1.6178204864498057e-15,
+      "force_error_n": 5.558049685633556e-16,
+      "moment_error_nm": 5.937517935659148e-19,
+      "minimum_normal_force_n": 4.688767409869846e-11,
+      "maximum_cone_excess_n": -1.8166230660521996e-11,
+      "constrained_evaluations": 0,
+      "source_cone_excess_n": 0.0,
+      "friction_roundoff_allowance_n": 0.0
+    },
+    {
+      "case": 5,
+      "center_m": [
+        -0.00521246267743709,
+        0.013160265972291816,
+        -0.024337627197082514
+      ],
+      "force_n": [
+        0.2672516805169444,
+        -0.8907537695946688,
+        1.0721578742230133
+      ],
+      "radius_m": 0.008886818813349141,
+      "force_error_normalized": 3.6675366702357374e-14,
+      "moment_error_normalized": 1.0960148028419512e-13,
+      "force_error_n": 5.194562570722435e-14,
+      "moment_error_nm": 3.8647833510102816e-16,
+      "minimum_normal_force_n": 9.213909980343608e-11,
+      "maximum_cone_excess_n": 3.3881317890172014e-21,
+      "constrained_evaluations": 2,
+      "source_cone_excess_n": 0.0,
+      "friction_roundoff_allowance_n": 0.0
+    },
+    {
+      "case": 6,
+      "center_m": [
+        0.018824270265548348,
+        0.0038344555423168334,
+        0.00996913214259999
+      ],
+      "force_n": [
+        -1.4254475462534515,
+        -0.25429513573585194,
+        -0.5841269125585427
+      ],
+      "radius_m": 0.005702869042225962,
+      "force_error_normalized": 4.038114587409047e-16,
+      "moment_error_normalized": 1.899105448685845e-15,
+      "force_error_n": 9.485749680535094e-16,
+      "moment_error_nm": 5.260510086695849e-19,
+      "minimum_normal_force_n": 9.481346532402558e-11,
+      "maximum_cone_excess_n": -2.7360574157717123e-11,
+      "constrained_evaluations": 0,
+      "source_cone_excess_n": 0.0,
+      "friction_roundoff_allowance_n": 0.0
+    },
+    {
+      "case": 7,
+      "center_m": [
+        0.018944475090126835,
+        0.003169360802640827,
+        0.00995885188377959
+      ],
+      "force_n": [
+        -1.1194832318337185,
+        -0.20306874241679024,
+        -0.5197486778884405
+      ],
+      "radius_m": 0.008400061823075657,
+      "force_error_normalized": 6.465466705984134e-16,
+      "moment_error_normalized": 1.4003480097201235e-15,
+      "force_error_n": 4.585973723508303e-16,
+      "moment_error_nm": 6.721336709202353e-19,
+      "minimum_normal_force_n": 2.660708038189094e-10,
+      "maximum_cone_excess_n": -6.235148363263094e-11,
+      "constrained_evaluations": 0,
+      "source_cone_excess_n": 0.0,
+      "friction_roundoff_allowance_n": 0.0
+    },
+    {
+      "case": 8,
+      "center_m": [
+        -0.014104950761340706,
+        -0.016989999954854552,
+        -0.003865222371614263
+      ],
+      "force_n": [
+        0.6230012805656179,
+        0.8449605465236707,
+        -0.007046023872666277
+      ],
+      "radius_m": 0.0040960554300879595,
+      "force_error_normalized": 2.364705883945124e-16,
+      "moment_error_normalized": 1.2144239976344022e-15,
+      "force_error_n": 4.0029754394625323e-16,
+      "moment_error_nm": 1.8116516671561412e-19,
+      "minimum_normal_force_n": 9.758994373367001e-09,
+      "maximum_cone_excess_n": -4.8546033354502045e-09,
+      "constrained_evaluations": 0,
+      "source_cone_excess_n": 0.0,
+      "friction_roundoff_allowance_n": 0.0
+    },
+    {
+      "case": 9,
+      "center_m": [
+        -0.006471945565934062,
+        0.008352359744038706,
+        0.02439843931193749
+      ],
+      "force_n": [
+        1.0568230737675401,
+        -1.2366518758356408,
+        -1.3199160239901375
+      ],
+      "radius_m": 0.005852050635808217,
+      "force_error_normalized": 1.0493058181993152e-15,
+      "moment_error_normalized": 3.803402720882436e-15,
+      "force_error_n": 2.8608446115907795e-15,
+      "moment_error_nm": 1.2111899341620396e-18,
+      "minimum_normal_force_n": 4.4222485754445985e-10,
+      "maximum_cone_excess_n": -1.7193106612740182e-10,
+      "constrained_evaluations": 0,
+      "source_cone_excess_n": 0.0,
+      "friction_roundoff_allowance_n": 0.0
+    },
+    {
+      "case": 10,
+      "center_m": [
+        0.014870630268958861,
+        0.002966853476574002,
+        0.018452043055366275
+      ],
+      "force_n": [
+        -1.5263881953042204,
+        -0.2984307382155056,
+        -0.9713089124037195
+      ],
+      "radius_m": 0.008563124430534759,
+      "force_error_normalized": 7.871025039819018e-16,
+      "moment_error_normalized": 1.1220485926603504e-15,
+      "force_error_n": 1.7910412935974927e-15,
+      "moment_error_nm": 7.662276988388214e-19,
+      "minimum_normal_force_n": 2.928897000415036e-11,
+      "maximum_cone_excess_n": -6.04430367777016e-13,
+      "constrained_evaluations": 0,
+      "source_cone_excess_n": 0.0,
+      "friction_roundoff_allowance_n": 0.0
+    },
+    {
+      "case": 11,
+      "center_m": [
+        -0.01668767977251,
+        -0.013285663010272092,
+        -0.011521106803555087
+      ],
+      "force_n": [
+        1.5081190683295411,
+        1.1348851324506748,
+        0.5400389950045081
+      ],
+      "radius_m": 0.006931871788337747,
+      "force_error_normalized": 2.7705011396509645e-16,
+      "moment_error_normalized": 6.499933161988441e-16,
+      "force_error_n": 2.4525628233156873e-15,
+      "moment_error_nm": 2.8108863480607453e-18,
+      "minimum_normal_force_n": 1.9223479561452785e-09,
+      "maximum_cone_excess_n": -5.002251399898213e-10,
+      "constrained_evaluations": 0,
+      "source_cone_excess_n": 0.0,
+      "friction_roundoff_allowance_n": 0.0
+    },
+    {
+      "case": 12,
+      "center_m": [
+        -0.002141606697723014,
+        0.020890678706457447,
+        0.004016187008381806
+      ],
+      "force_n": [
+        0.22325216299965922,
+        -1.5934830508903206,
+        -0.37009725502508184
+      ],
+      "radius_m": 0.007306948179443159,
+      "force_error_normalized": 8.076163013257381e-16,
+      "moment_error_normalized": 6.980107263741242e-16,
+      "force_error_n": 2.2459732211981175e-15,
+      "moment_error_nm": 2.8655181018913146e-19,
+      "minimum_normal_force_n": 4.3556176147885374e-10,
+      "maximum_cone_excess_n": -1.7351357614390606e-10,
+      "constrained_evaluations": 0,
+      "source_cone_excess_n": 0.0,
+      "friction_roundoff_allowance_n": 0.0
+    },
+    {
+      "case": 13,
+      "center_m": [
+        -0.007527172792527483,
+        0.0035837227363424732,
+        -0.028185630956993685
+      ],
+      "force_n": [
+        1.0195199274857505,
+        0.0,
+        2.5201450394525136
+      ],
+      "radius_m": 0.004680233381716186,
+      "force_error_normalized": 3.367657076529965e-16,
+      "moment_error_normalized": 3.048662245110658e-16,
+      "force_error_n": 9.930147328125158e-16,
+      "moment_error_nm": 8.71544274493195e-19,
+      "minimum_normal_force_n": 1.662355172846163e-07,
+      "maximum_cone_excess_n": -4.1341383661963063e-08,
+      "constrained_evaluations": 0,
+      "source_cone_excess_n": 0.0,
+      "friction_roundoff_allowance_n": 0.0
+    },
+    {
+      "case": 14,
+      "center_m": [
+        0.014672965282197472,
+        -0.015670911800713602,
+        0.001704682973308078
+      ],
+      "force_n": [
+        -1.2367683281618207,
+        1.3729959387952804,
+        -0.24037536647598562
+      ],
+      "radius_m": 0.008575281379815045,
+      "force_error_normalized": 1.4355355898829773e-15,
+      "moment_error_normalized": 3.5188072760802994e-15,
+      "force_error_n": 2.3766294075641843e-15,
+      "moment_error_nm": 2.6637667627804192e-18,
+      "minimum_normal_force_n": 1.4424338949335656e-12,
+      "maximum_cone_excess_n": -2.1130757246105408e-13,
+      "constrained_evaluations": 0,
+      "source_cone_excess_n": 0.0,
+      "friction_roundoff_allowance_n": 0.0
+    },
+    {
+      "case": 15,
+      "center_m": [
+        -0.009263677816649425,
+        0.019833014615191033,
+        -0.0017652440210943823
+      ],
+      "force_n": [
+        0.4892510732794449,
+        -1.300865062296665,
+        -0.07465616108278754
+      ],
+      "radius_m": 0.0077347731264064655,
+      "force_error_normalized": 1.2875973359715902e-15,
+      "moment_error_normalized": 2.094012359103053e-15,
+      "force_error_n": 1.5548697241856944e-15,
+      "moment_error_nm": 7.304071222509946e-19,
+      "minimum_normal_force_n": 6.46030171435458e-10,
+      "maximum_cone_excess_n": -4.68204945110361e-11,
+      "constrained_evaluations": 0,
+      "source_cone_excess_n": 0.0,
+      "friction_roundoff_allowance_n": 0.0
+    },
+    {
+      "case": 16,
+      "center_m": [
+        -0.00014169382133739908,
+        -0.021439602522120193,
+        -0.010501667782539364
+      ],
+      "force_n": [
+        -0.0,
+        2.7305604944849393,
+        0.4687838075268726
+      ],
+      "radius_m": 0.007343119762258878,
+      "force_error_normalized": 1.6153899716075603e-16,
+      "moment_error_normalized": 5.1439172869279205e-16,
+      "force_error_n": 2.220446049536025e-16,
+      "moment_error_nm": 1.2525687802336129e-18,
+      "minimum_normal_force_n": 3.757572398944996e-08,
+      "maximum_cone_excess_n": -1.033518837169073e-08,
+      "constrained_evaluations": 0,
+      "source_cone_excess_n": 0.0,
+      "friction_roundoff_allowance_n": 0.0
+    },
+    {
+      "case": 17,
+      "center_m": [
+        0.01765476913882285,
+        -0.00807719882450426,
+        0.009484814458572263
+      ],
+      "force_n": [
+        -0.6063468691416546,
+        0.20044608332443928,
+        -0.21456665755409743
+      ],
+      "radius_m": 0.006381413319987483,
+      "force_error_normalized": 6.906145784530697e-16,
+      "moment_error_normalized": 1.681930830020997e-15,
+      "force_error_n": 3.433175098891678e-16,
+      "moment_error_nm": 4.400087204033877e-19,
+      "minimum_normal_force_n": 8.344669954136257e-09,
+      "maximum_cone_excess_n": -1.62938916162399e-09,
+      "constrained_evaluations": 0,
+      "source_cone_excess_n": 0.0,
+      "friction_roundoff_allowance_n": 0.0
+    },
+    {
+      "case": 18,
+      "center_m": [
+        -0.010277549004219177,
+        -0.012247497850764621,
+        0.016942663535236185
+      ],
+      "force_n": [
+        0.9237740901624736,
+        0.7377149280653503,
+        -0.675183622276713
+      ],
+      "radius_m": 0.005266704696619584,
+      "force_error_normalized": 4.3915540071544237e-16,
+      "moment_error_normalized": 5.543447497179473e-16,
+      "force_error_n": 1.0235750533041806e-15,
+      "moment_error_nm": 3.820686114308699e-19,
+      "minimum_normal_force_n": 3.4522767050078538e-09,
+      "maximum_cone_excess_n": -6.078209980927465e-10,
+      "constrained_evaluations": 0,
+      "source_cone_excess_n": 0.0,
+      "friction_roundoff_allowance_n": 0.0
+    },
+    {
+      "case": 19,
+      "center_m": [
+        0.012943998927665068,
+        -0.01739000507146232,
+        0.0006094746095229424
+      ],
+      "force_n": [
+        -2.018994147802621,
+        2.0695795019884082,
+        -0.3756647636558988
+      ],
+      "radius_m": 0.004383717945613142,
+      "force_error_normalized": 6.822403899603075e-16,
+      "moment_error_normalized": 1.1461597794973472e-15,
+      "force_error_n": 1.884928529521895e-15,
+      "moment_error_nm": 1.1014163263515297e-18,
+      "minimum_normal_force_n": 7.1842375782262e-09,
+      "maximum_cone_excess_n": -1.5700574593214006e-09,
+      "constrained_evaluations": 0,
+      "source_cone_excess_n": 0.0,
+      "friction_roundoff_allowance_n": 0.0
+    },
+    {
+      "case": 20,
+      "center_m": [
+        0.0008357498020269162,
+        0.013769733120597554,
+        0.020423332818457124
+      ],
+      "force_n": [
+        -0.0,
+        -1.0989185406389883,
+        -0.6964165027076102
+      ],
+      "radius_m": 0.0060139755154323795,
+      "force_error_normalized": 7.632657284931827e-16,
+      "moment_error_normalized": 4.522139507959872e-16,
+      "force_error_n": 9.420554938101124e-16,
+      "moment_error_nm": 7.416829925411756e-19,
+      "minimum_normal_force_n": 1.901423967326653e-09,
+      "maximum_cone_excess_n": -3.9283962822866496e-10,
+      "constrained_evaluations": 0,
+      "source_cone_excess_n": 0.0,
+      "friction_roundoff_allowance_n": 0.0
+    },
+    {
+      "case": 21,
+      "center_m": [
+        0.006120345797765945,
+        -0.017454904592054152,
+        0.011879913335706264
+      ],
+      "force_n": [
+        -0.4691130454215375,
+        1.460862614250119,
+        -0.46707017615523694
+      ],
+      "radius_m": 0.004730165791259141,
+      "force_error_normalized": 3.1150029244544497e-16,
+      "moment_error_normalized": 3.3363213643997094e-16,
+      "force_error_n": 1.4271872719387392e-15,
+      "moment_error_nm": 2.708456408657236e-19,
+      "minimum_normal_force_n": 7.842341746135504e-08,
+      "maximum_cone_excess_n": -2.877496478035219e-08,
+      "constrained_evaluations": 0,
+      "source_cone_excess_n": 0.0,
+      "friction_roundoff_allowance_n": 0.0
+    },
+    {
+      "case": 22,
+      "center_m": [
+        0.004835779676000302,
+        0.02024212100037275,
+        0.004942472665049855
+      ],
+      "force_n": [
+        -0.45944238059379544,
+        -1.365353707286141,
+        -0.3617010667153274
+      ],
+      "radius_m": 0.004675445297809831,
+      "force_error_normalized": 3.2150144912165666e-16,
+      "moment_error_normalized": 4.4158989550521745e-16,
+      "force_error_n": 4.965068306494546e-16,
+      "moment_error_nm": 2.30546693316245e-19,
+      "minimum_normal_force_n": 3.011395574777115e-09,
+      "maximum_cone_excess_n": -1.7835873095900692e-09,
+      "constrained_evaluations": 0,
+      "source_cone_excess_n": 0.0,
+      "friction_roundoff_allowance_n": 0.0
+    },
+    {
+      "case": 23,
+      "center_m": [
+        0.015997128300898195,
+        -0.002896572175791983,
+        0.01647651361049639
+      ],
+      "force_n": [
+        -1.8876975396080835,
+        0.3681595306368245,
+        -1.1899752503272178
+      ],
+      "radius_m": 0.007171683331412772,
+      "force_error_normalized": 1.0810827470559116e-15,
+      "moment_error_normalized": 3.1436649350979246e-15,
+      "force_error_n": 8.759511914735174e-16,
+      "moment_error_nm": 1.1762618617552507e-18,
+      "minimum_normal_force_n": 4.217970062222301e-10,
+      "maximum_cone_excess_n": -1.299756535465096e-10,
+      "constrained_evaluations": 0,
+      "source_cone_excess_n": 0.0,
+      "friction_roundoff_allowance_n": 0.0
+    },
+    {
+      "case": 24,
+      "center_m": [
+        0.009318804673643847,
+        0.016967402723784965,
+        0.009802086726239554
+      ],
+      "force_n": [
+        -0.4907122384817702,
+        -0.9052065902828215,
+        -0.4426742914710645
+      ],
+      "radius_m": 0.008930328381720157,
+      "force_error_normalized": 8.607193593967912e-16,
+      "moment_error_normalized": 1.7043262127295082e-15,
+      "force_error_n": 1.1443916996305594e-15,
+      "moment_error_nm": 3.5547479280132547e-19,
+      "minimum_normal_force_n": 1.4944984438282688e-11,
+      "maximum_cone_excess_n": -3.1532655679629247e-12,
+      "constrained_evaluations": 0,
+      "source_cone_excess_n": 0.0,
+      "friction_roundoff_allowance_n": 0.0
+    },
+    {
+      "case": 25,
+      "center_m": [
+        -0.007798562930892965,
+        0.003751965023050741,
+        0.026035738529294722
+      ],
+      "force_n": [
+        1.330583064597984,
+        -0.4561654759588669,
+        -1.684450434361005
+      ],
+      "radius_m": 0.007074519334432224,
+      "force_error_normalized": 6.404275411825569e-16,
+      "moment_error_normalized": 2.524016707887791e-15,
+      "force_error_n": 1.7377739072730912e-15,
+      "moment_error_nm": 1.6689643005962295e-18,
+      "minimum_normal_force_n": 1.4688822415409393e-09,
+      "maximum_cone_excess_n": 5.421010862427522e-20,
+      "constrained_evaluations": 3,
+      "source_cone_excess_n": 0.0,
+      "friction_roundoff_allowance_n": 0.0
+    },
+    {
+      "case": 26,
+      "center_m": [
+        0.003255743831541254,
+        -0.017784615690296483,
+        0.012657854515957502
+      ],
+      "force_n": [
+        -0.18506211465378183,
+        1.0932341412899558,
+        -0.3626855392551361
+      ],
+      "radius_m": 0.006867242589343477,
+      "force_error_normalized": 2.483947740026765e-16,
+      "moment_error_normalized": 8.182950881675955e-16,
+      "force_error_n": 2.435541875787129e-16,
+      "moment_error_nm": 6.182722669161412e-19,
+      "minimum_normal_force_n": 4.6851571038285034e-11,
+      "maximum_cone_excess_n": -2.1085368825096395e-11,
+      "constrained_evaluations": 0,
+      "source_cone_excess_n": 0.0,
+      "friction_roundoff_allowance_n": 0.0
+    },
+    {
+      "case": 27,
+      "center_m": [
+        -0.009298044425597451,
+        -3.662572329688548e-05,
+        -0.027372992011132063
+      ],
+      "force_n": [
+        0.4874518826069461,
+        0.0,
+        1.0642006351051656
+      ],
+      "radius_m": 0.005049376091997879,
+      "force_error_normalized": 3.0679207918260744e-21,
+      "moment_error_normalized": 3.735460069678737e-16,
+      "force_error_n": 3.951502370683334e-21,
+      "moment_error_nm": 2.2587695056009103e-19,
+      "minimum_normal_force_n": 6.732678261609441e-09,
+      "maximum_cone_excess_n": -4.0349799394249645e-09,
+      "constrained_evaluations": 0,
+      "source_cone_excess_n": 0.0,
+      "friction_roundoff_allowance_n": 0.0
+    },
+    {
+      "case": 28,
+      "center_m": [
+        0.001415439808536627,
+        0.010897002668522969,
+        -0.026630211340702793
+      ],
+      "force_n": [
+        -0.2732082656735464,
+        -1.1505295126673998,
+        2.059879956322485
+      ],
+      "radius_m": 0.007001113339417492,
+      "force_error_normalized": 7.569583381024223e-16,
+      "moment_error_normalized": 3.079315008007136e-15,
+      "force_error_n": 1.2412670766236366e-15,
+      "moment_error_nm": 8.090543929468528e-19,
+      "minimum_normal_force_n": 5.3690300897933916e-11,
+      "maximum_cone_excess_n": -8.492826349375976e-12,
+      "constrained_evaluations": 0,
+      "source_cone_excess_n": 0.0,
+      "friction_roundoff_allowance_n": 0.0
+    },
+    {
+      "case": 29,
+      "center_m": [
+        0.009387650112600215,
+        -0.0033490766268227837,
+        0.024935121614610867
+      ],
+      "force_n": [
+        -1.7326640041179953,
+        0.583750813103463,
+        -2.1328208339899106
+      ],
+      "radius_m": 0.005143867175903271,
+      "force_error_normalized": 6.286111244778288e-16,
+      "moment_error_normalized": 1.7332993751306905e-15,
+      "force_error_n": 2.2315206618374916e-15,
+      "moment_error_nm": 1.0545802324300088e-18,
+      "minimum_normal_force_n": 1.4807501605159334e-09,
+      "maximum_cone_excess_n": -3.329756382270052e-10,
+      "constrained_evaluations": 0,
+      "source_cone_excess_n": 0.0,
+      "friction_roundoff_allowance_n": 0.0
+    },
+    {
+      "case": 30,
+      "center_m": [
+        -0.007883453062400552,
+        -0.013477438788343744,
+        0.01758435442594577
+      ],
+      "force_n": [
+        0.9870080139877939,
+        1.578748008432758,
+        -0.9631160281972113
+      ],
+      "radius_m": 0.0072018083443295845,
+      "force_error_normalized": 3.0882230684690313e-16,
+      "moment_error_normalized": 5.082294743696036e-16,
+      "force_error_n": 3.1401849173675503e-16,
+      "moment_error_nm": 1.5004674281459112e-18,
+      "minimum_normal_force_n": 2.302642835434643e-10,
+      "maximum_cone_excess_n": -6.550720321125549e-11,
+      "constrained_evaluations": 0,
+      "source_cone_excess_n": 0.0,
+      "friction_roundoff_allowance_n": 0.0
+    },
+    {
+      "case": 31,
+      "center_m": [
+        0.019688154363820532,
+        0.009652493613595619,
+        -0.0028443401605600617
+      ],
+      "force_n": [
+        -1.6728238181557376,
+        -0.8639876239988267,
+        -0.01759777199694554
+      ],
+      "radius_m": 0.006869241578313943,
+      "force_error_normalized": 5.896618187422214e-16,
+      "moment_error_normalized": 6.656230063517986e-16,
+      "force_error_n": 8.082620083848447e-16,
+      "moment_error_nm": 1.128612924983683e-18,
+      "minimum_normal_force_n": 1.700141089466763e-12,
+      "maximum_cone_excess_n": -5.146171900928703e-13,
+      "constrained_evaluations": 0,
+      "source_cone_excess_n": 0.0,
+      "friction_roundoff_allowance_n": 0.0
+    }
+  ]
+}

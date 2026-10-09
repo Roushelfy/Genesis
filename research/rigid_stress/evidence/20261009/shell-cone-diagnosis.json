@@ -1,0 +1,1662 @@
+{
+  "snapshot": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-live-elliptic/rollout.failed-contact.npz",
+  "level": 2,
+  "cases": [
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 0,
+      "normal_model": "shell_faces",
+      "quadrature": 10,
+      "samples": 319,
+      "radius_m": 0.006,
+      "force_n": [
+        -5.7094030125881545e-06,
+        0.0007688228506594896,
+        0.0007842738996259868
+      ],
+      "center_m": [
+        -0.001522862003184855,
+        -0.022273322567343712,
+        -0.007763240020722151
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.0007765972226648487,
+      "rigid_tangent_ratio": 1.0000001901564837,
+      "shell_normal_angle_max_deg": 20.41131342055233,
+      "accepted": true,
+      "force_error_n": 3.2526506334566705e-19,
+      "moment_error_nm": 3.5376272585358016e-22,
+      "constrained_evaluations": 5,
+      "shell_compression_min_n": 1.5115819814675982e-12,
+      "shell_cone_excess_max_n": 1.6940658945086007e-21
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 0,
+      "normal_model": "rigid_pad_frame",
+      "quadrature": 10,
+      "samples": 319,
+      "radius_m": 0.006,
+      "force_n": [
+        -5.7094030125881545e-06,
+        0.0007688228506594896,
+        0.0007842738996259868
+      ],
+      "center_m": [
+        -0.001522862003184855,
+        -0.022273322567343712,
+        -0.007763240020722151
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.0007765972226648487,
+      "rigid_tangent_ratio": 1.0000001901564837,
+      "shell_normal_angle_max_deg": 20.41131342055233,
+      "accepted": false,
+      "error": "Contact wrench is infeasible or unresolved by this finite footprint: force error=1.034e-10 N, moment error=1.26531e-19 Nm; refine quadrature or supply a justified load model"
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 1,
+      "normal_model": "shell_faces",
+      "quadrature": 10,
+      "samples": 320,
+      "radius_m": 0.006,
+      "force_n": [
+        -1.0057020517706405e-05,
+        0.0015743979020044208,
+        0.0016007437370717525
+      ],
+      "center_m": [
+        -0.0015155969886109233,
+        -0.022278839722275734,
+        -0.007159381173551083
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.001587641383065146,
+      "rigid_tangent_ratio": 0.9999999856601868,
+      "shell_normal_angle_max_deg": 20.455478703031932,
+      "accepted": true,
+      "force_error_n": 2.168470518410302e-19,
+      "moment_error_nm": 4.462439659517255e-22,
+      "constrained_evaluations": 6,
+      "shell_compression_min_n": 4.380571014315922e-12,
+      "shell_cone_excess_max_n": 1.3552527156068805e-20
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 1,
+      "normal_model": "rigid_pad_frame",
+      "quadrature": 10,
+      "samples": 320,
+      "radius_m": 0.006,
+      "force_n": [
+        -1.0057020517706405e-05,
+        0.0015743979020044208,
+        0.0016007437370717525
+      ],
+      "center_m": [
+        -0.0015155969886109233,
+        -0.022278839722275734,
+        -0.007159381173551083
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.001587641383065146,
+      "rigid_tangent_ratio": 0.9999999856601868,
+      "shell_normal_angle_max_deg": 20.455478703031932,
+      "accepted": true,
+      "force_error_n": 1.1056852868644285e-18,
+      "moment_error_nm": 9.43318386988603e-22,
+      "constrained_evaluations": 43,
+      "shell_compression_min_n": 3.964004339207015e-12,
+      "shell_cone_excess_max_n": 2.6671586261551867e-06
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 2,
+      "normal_model": "shell_faces",
+      "quadrature": 10,
+      "samples": 257,
+      "radius_m": 0.006,
+      "force_n": [
+        -9.421169124834705e-06,
+        0.0011660110903903842,
+        0.001189459697343409
+      ],
+      "center_m": [
+        0.003746486734598875,
+        -0.022272173315286636,
+        -0.007764405105262995
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.001177812492736883,
+      "rigid_tangent_ratio": 1.0000001485921233,
+      "shell_normal_angle_max_deg": 24.031968202620156,
+      "accepted": true,
+      "force_error_n": 4.343288944400702e-19,
+      "moment_error_nm": 3.8758998694369727e-22,
+      "constrained_evaluations": 7,
+      "shell_compression_min_n": 2.6161476739362804e-11,
+      "shell_cone_excess_max_n": 6.776263578034403e-21
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 2,
+      "normal_model": "rigid_pad_frame",
+      "quadrature": 10,
+      "samples": 257,
+      "radius_m": 0.006,
+      "force_n": [
+        -9.421169124834705e-06,
+        0.0011660110903903842,
+        0.001189459697343409
+      ],
+      "center_m": [
+        0.003746486734598875,
+        -0.022272173315286636,
+        -0.007764405105262995
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.001177812492736883,
+      "rigid_tangent_ratio": 1.0000001485921233,
+      "shell_normal_angle_max_deg": 24.031968202620156,
+      "accepted": false,
+      "error": "Contact wrench is infeasible or unresolved by this finite footprint: force error=9.78156e-11 N, moment error=1.41787e-15 Nm; refine quadrature or supply a justified load model"
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 3,
+      "normal_model": "shell_faces",
+      "quadrature": 10,
+      "samples": 269,
+      "radius_m": 0.006,
+      "force_n": [
+        -1.3184188901504967e-05,
+        0.0018434652592986822,
+        0.0018734794575721025
+      ],
+      "center_m": [
+        0.0034877907019108534,
+        -0.022277211770415306,
+        -0.007219037972390652
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.001858556287399996,
+      "rigid_tangent_ratio": 1.0000000530023456,
+      "shell_normal_angle_max_deg": 24.014266306676202,
+      "accepted": true,
+      "force_error_n": 9.69887862891027e-19,
+      "moment_error_nm": 6.453191209004003e-22,
+      "constrained_evaluations": 7,
+      "shell_compression_min_n": 1.140595069972855e-11,
+      "shell_cone_excess_max_n": 6.776263578034403e-21
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 3,
+      "normal_model": "rigid_pad_frame",
+      "quadrature": 10,
+      "samples": 269,
+      "radius_m": 0.006,
+      "force_n": [
+        -1.3184188901504967e-05,
+        0.0018434652592986822,
+        0.0018734794575721025
+      ],
+      "center_m": [
+        0.0034877907019108534,
+        -0.022277211770415306,
+        -0.007219037972390652
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.001858556287399996,
+      "rigid_tangent_ratio": 1.0000000530023456,
+      "shell_normal_angle_max_deg": 24.014266306676202,
+      "accepted": false,
+      "error": "Contact wrench is infeasible or unresolved by this finite footprint: force error=1.2977e-10 N, moment error=1.6728e-15 Nm; refine quadrature or supply a justified load model"
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 4,
+      "normal_model": "shell_faces",
+      "quadrature": 10,
+      "samples": 530,
+      "radius_m": 0.006,
+      "force_n": [
+        3.3967889976338483e-06,
+        0.007819738239049911,
+        0.007950752973556519
+      ],
+      "center_m": [
+        -0.0014676228165626526,
+        -0.022315382957458496,
+        -0.0031588140409439802
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.007885517926260483,
+      "rigid_tangent_ratio": 1.0000000052323945,
+      "shell_normal_angle_max_deg": 26.430835791697522,
+      "accepted": true,
+      "force_error_n": 2.4676877523976394e-17,
+      "moment_error_nm": 1.268873107550218e-20,
+      "constrained_evaluations": 47,
+      "shell_compression_min_n": 0.0,
+      "shell_cone_excess_max_n": 5.421010862427522e-20
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 4,
+      "normal_model": "rigid_pad_frame",
+      "quadrature": 10,
+      "samples": 530,
+      "radius_m": 0.006,
+      "force_n": [
+        3.3967889976338483e-06,
+        0.007819738239049911,
+        0.007950752973556519
+      ],
+      "center_m": [
+        -0.0014676228165626526,
+        -0.022315382957458496,
+        -0.0031588140409439802
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.007885517926260483,
+      "rigid_tangent_ratio": 1.0000000052323945,
+      "shell_normal_angle_max_deg": 26.430835791697522,
+      "accepted": true,
+      "force_error_n": 1.3985788708741524e-17,
+      "moment_error_nm": 2.508246831451914e-21,
+      "constrained_evaluations": 97,
+      "shell_compression_min_n": 2.1830318485015833e-11,
+      "shell_cone_excess_max_n": 2.6296356868293197e-05
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 5,
+      "normal_model": "shell_faces",
+      "quadrature": 10,
+      "samples": 522,
+      "radius_m": 0.006,
+      "force_n": [
+        -1.5397964716612478e-06,
+        0.00797884352505207,
+        0.008108901791274548
+      ],
+      "center_m": [
+        0.0015791849000379443,
+        -0.02231438457965851,
+        -0.003195937955752015
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.008044135920711105,
+      "rigid_tangent_ratio": 0.9999999238188534,
+      "shell_normal_angle_max_deg": 26.401825700298858,
+      "accepted": true,
+      "force_error_n": 1.322730818873621e-17,
+      "moment_error_nm": 3.859828139420057e-21,
+      "constrained_evaluations": 35,
+      "shell_compression_min_n": 0.0,
+      "shell_cone_excess_max_n": 4.0657581468206416e-20
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 5,
+      "normal_model": "rigid_pad_frame",
+      "quadrature": 10,
+      "samples": 522,
+      "radius_m": 0.006,
+      "force_n": [
+        -1.5397964716612478e-06,
+        0.00797884352505207,
+        0.008108901791274548
+      ],
+      "center_m": [
+        0.0015791849000379443,
+        -0.02231438457965851,
+        -0.003195937955752015
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.008044135920711105,
+      "rigid_tangent_ratio": 0.9999999238188534,
+      "shell_normal_angle_max_deg": 26.401825700298858,
+      "accepted": true,
+      "force_error_n": 6.254634731743441e-18,
+      "moment_error_nm": 2.6904934485789434e-21,
+      "constrained_evaluations": 119,
+      "shell_compression_min_n": 4.062272307885883e-10,
+      "shell_cone_excess_max_n": 2.7744101504071733e-05
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 6,
+      "normal_model": "shell_faces",
+      "quadrature": 10,
+      "samples": 467,
+      "radius_m": 0.006,
+      "force_n": [
+        7.296280818991363e-05,
+        0.013151551596820354,
+        0.013416098430752754
+      ],
+      "center_m": [
+        4.958900717610959e-06,
+        -0.022345049306750298,
+        0.00012253157910890877
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.013284582216579136,
+      "rigid_tangent_ratio": 1.000000212671824,
+      "shell_normal_angle_max_deg": 23.21082725029007,
+      "accepted": false,
+      "error": "Contact wrench is infeasible or unresolved by this finite footprint: force error=0.000392293 N, moment error=8.67303e-07 Nm; refine quadrature or supply a justified load model"
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 6,
+      "normal_model": "rigid_pad_frame",
+      "quadrature": 10,
+      "samples": 467,
+      "radius_m": 0.006,
+      "force_n": [
+        7.296280818991363e-05,
+        0.013151551596820354,
+        0.013416098430752754
+      ],
+      "center_m": [
+        4.958900717610959e-06,
+        -0.022345049306750298,
+        0.00012253157910890877
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.013284582216579136,
+      "rigid_tangent_ratio": 1.000000212671824,
+      "shell_normal_angle_max_deg": 23.21082725029007,
+      "accepted": false,
+      "error": "Contact wrench is infeasible or unresolved by this finite footprint: force error=1.54256e-09 N, moment error=2.29626e-17 Nm; refine quadrature or supply a justified load model"
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 7,
+      "normal_model": "shell_faces",
+      "quadrature": 10,
+      "samples": 347,
+      "radius_m": 0.006,
+      "force_n": [
+        -0.0007754472899250686,
+        -0.006423344369977713,
+        0.006554755382239819
+      ],
+      "center_m": [
+        -0.0015352763002738357,
+        0.021397138014435768,
+        -0.006725846324115992
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.0065125067182731115,
+      "rigid_tangent_ratio": 1.000000055479262,
+      "shell_normal_angle_max_deg": 20.31257241034935,
+      "accepted": true,
+      "force_error_n": 8.0032922710786e-18,
+      "moment_error_nm": 3.1704689030842565e-21,
+      "constrained_evaluations": 6,
+      "shell_compression_min_n": 2.1893782477110126e-11,
+      "shell_cone_excess_max_n": 2.710505431213761e-20
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 7,
+      "normal_model": "rigid_pad_frame",
+      "quadrature": 10,
+      "samples": 347,
+      "radius_m": 0.006,
+      "force_n": [
+        -0.0007754472899250686,
+        -0.006423344369977713,
+        0.006554755382239819
+      ],
+      "center_m": [
+        -0.0015352763002738357,
+        0.021397138014435768,
+        -0.006725846324115992
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.0065125067182731115,
+      "rigid_tangent_ratio": 1.000000055479262,
+      "shell_normal_angle_max_deg": 20.31257241034935,
+      "accepted": false,
+      "error": "Contact wrench is infeasible or unresolved by this finite footprint: force error=8.77306e-10 N, moment error=3.52356e-16 Nm; refine quadrature or supply a justified load model"
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 8,
+      "normal_model": "shell_faces",
+      "quadrature": 10,
+      "samples": 320,
+      "radius_m": 0.006,
+      "force_n": [
+        -0.0007969086291268468,
+        -0.005921459756791592,
+        0.006035074591636658
+      ],
+      "center_m": [
+        0.0032254019752144814,
+        0.021398073062300682,
+        -0.006783133838325739
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.006005033426005002,
+      "rigid_tangent_ratio": 1.0000002160810424,
+      "shell_normal_angle_max_deg": 24.135144830616998,
+      "accepted": true,
+      "force_error_n": 3.551486221896847e-18,
+      "moment_error_nm": 2.698922361032648e-21,
+      "constrained_evaluations": 5,
+      "shell_compression_min_n": 2.0864441887351657e-11,
+      "shell_cone_excess_max_n": 4.0657581468206416e-20
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 8,
+      "normal_model": "rigid_pad_frame",
+      "quadrature": 10,
+      "samples": 320,
+      "radius_m": 0.006,
+      "force_n": [
+        -0.0007969086291268468,
+        -0.005921459756791592,
+        0.006035074591636658
+      ],
+      "center_m": [
+        0.0032254019752144814,
+        0.021398073062300682,
+        -0.006783133838325739
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.006005033426005002,
+      "rigid_tangent_ratio": 1.0000002160810424,
+      "shell_normal_angle_max_deg": 24.135144830616998,
+      "accepted": true,
+      "force_error_n": 1.670917790601539e-11,
+      "moment_error_nm": 5.460685687234228e-16,
+      "constrained_evaluations": 300,
+      "shell_compression_min_n": 2.02714925243872e-11,
+      "shell_cone_excess_max_n": 1.1041288337142904e-05
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 9,
+      "normal_model": "shell_faces",
+      "quadrature": 10,
+      "samples": 503,
+      "radius_m": 0.006,
+      "force_n": [
+        0.0015522576868534088,
+        -0.02301681600511074,
+        0.022511465474963188
+      ],
+      "center_m": [
+        5.328258339432068e-06,
+        0.021410053595900536,
+        1.5784507922944613e-06
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.022791985752922534,
+      "rigid_tangent_ratio": 1.0000001489049357,
+      "shell_normal_angle_max_deg": 22.494659845138376,
+      "accepted": true,
+      "force_error_n": 1.9893854278013796e-17,
+      "moment_error_nm": 2.0020184906854544e-20,
+      "constrained_evaluations": 48,
+      "shell_compression_min_n": 0.0,
+      "shell_cone_excess_max_n": 2.168404344971009e-19
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 9,
+      "normal_model": "rigid_pad_frame",
+      "quadrature": 10,
+      "samples": 503,
+      "radius_m": 0.006,
+      "force_n": [
+        0.0015522576868534088,
+        -0.02301681600511074,
+        0.022511465474963188
+      ],
+      "center_m": [
+        5.328258339432068e-06,
+        0.021410053595900536,
+        1.5784507922944613e-06
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.022791985752922534,
+      "rigid_tangent_ratio": 1.0000001489049357,
+      "shell_normal_angle_max_deg": 22.494659845138376,
+      "accepted": false,
+      "error": "Contact wrench is infeasible or unresolved by this finite footprint: force error=1.61146e-09 N, moment error=1.00202e-16 Nm; refine quadrature or supply a justified load model"
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 0,
+      "normal_model": "shell_faces",
+      "quadrature": 16,
+      "samples": 808,
+      "radius_m": 0.006,
+      "force_n": [
+        -5.7094030125881545e-06,
+        0.0007688228506594896,
+        0.0007842738996259868
+      ],
+      "center_m": [
+        -0.001522862003184855,
+        -0.022273322567343712,
+        -0.007763240020722151
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.0007765972226648487,
+      "rigid_tangent_ratio": 1.0000001901564837,
+      "shell_normal_angle_max_deg": 20.41131342055233,
+      "accepted": true,
+      "force_error_n": 2.1692148305035276e-19,
+      "moment_error_nm": 9.264662384284482e-23,
+      "constrained_evaluations": 5,
+      "shell_compression_min_n": 2.521140711157651e-15,
+      "shell_cone_excess_max_n": 8.470329472543003e-22
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 0,
+      "normal_model": "rigid_pad_frame",
+      "quadrature": 16,
+      "samples": 808,
+      "radius_m": 0.006,
+      "force_n": [
+        -5.7094030125881545e-06,
+        0.0007688228506594896,
+        0.0007842738996259868
+      ],
+      "center_m": [
+        -0.001522862003184855,
+        -0.022273322567343712,
+        -0.007763240020722151
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.0007765972226648487,
+      "rigid_tangent_ratio": 1.0000001901564837,
+      "shell_normal_angle_max_deg": 20.41131342055233,
+      "accepted": false,
+      "error": "Contact wrench is infeasible or unresolved by this finite footprint: force error=1.03398e-10 N, moment error=5.60159e-19 Nm; refine quadrature or supply a justified load model"
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 1,
+      "normal_model": "shell_faces",
+      "quadrature": 16,
+      "samples": 842,
+      "radius_m": 0.006,
+      "force_n": [
+        -1.0057020517706405e-05,
+        0.0015743979020044208,
+        0.0016007437370717525
+      ],
+      "center_m": [
+        -0.0015155969886109233,
+        -0.022278839722275734,
+        -0.007159381173551083
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.001587641383065146,
+      "rigid_tangent_ratio": 0.9999999856601868,
+      "shell_normal_angle_max_deg": 20.455478703031932,
+      "accepted": true,
+      "force_error_n": 8.941137922503674e-19,
+      "moment_error_nm": 6.641975357631731e-22,
+      "constrained_evaluations": 6,
+      "shell_compression_min_n": 9.207331510839298e-13,
+      "shell_cone_excess_max_n": 3.3881317890172014e-21
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 1,
+      "normal_model": "rigid_pad_frame",
+      "quadrature": 16,
+      "samples": 842,
+      "radius_m": 0.006,
+      "force_n": [
+        -1.0057020517706405e-05,
+        0.0015743979020044208,
+        0.0016007437370717525
+      ],
+      "center_m": [
+        -0.0015155969886109233,
+        -0.022278839722275734,
+        -0.007159381173551083
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.001587641383065146,
+      "rigid_tangent_ratio": 0.9999999856601868,
+      "shell_normal_angle_max_deg": 20.455478703031932,
+      "accepted": true,
+      "force_error_n": 2.173757866749225e-19,
+      "moment_error_nm": 1.5566678643215664e-21,
+      "constrained_evaluations": 43,
+      "shell_compression_min_n": 8.615779180605001e-13,
+      "shell_cone_excess_max_n": 1.1201044658141385e-06
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 2,
+      "normal_model": "shell_faces",
+      "quadrature": 16,
+      "samples": 664,
+      "radius_m": 0.006,
+      "force_n": [
+        -9.421169124834705e-06,
+        0.0011660110903903842,
+        0.001189459697343409
+      ],
+      "center_m": [
+        0.003746486734598875,
+        -0.022272173315286636,
+        -0.007764405105262995
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.001177812492736883,
+      "rigid_tangent_ratio": 1.0000001485921233,
+      "shell_normal_angle_max_deg": 24.031968202620156,
+      "accepted": true,
+      "force_error_n": 3.0817102794452086e-19,
+      "moment_error_nm": 4.450315107185304e-22,
+      "constrained_evaluations": 7,
+      "shell_compression_min_n": 7.580205881065784e-13,
+      "shell_cone_excess_max_n": 1.6940658945086007e-21
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 2,
+      "normal_model": "rigid_pad_frame",
+      "quadrature": 16,
+      "samples": 664,
+      "radius_m": 0.006,
+      "force_n": [
+        -9.421169124834705e-06,
+        0.0011660110903903842,
+        0.001189459697343409
+      ],
+      "center_m": [
+        0.003746486734598875,
+        -0.022272173315286636,
+        -0.007764405105262995
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.001177812492736883,
+      "rigid_tangent_ratio": 1.0000001485921233,
+      "shell_normal_angle_max_deg": 24.031968202620156,
+      "accepted": false,
+      "error": "Contact wrench is infeasible or unresolved by this finite footprint: force error=9.79435e-11 N, moment error=1.4221e-15 Nm; refine quadrature or supply a justified load model"
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 3,
+      "normal_model": "shell_faces",
+      "quadrature": 16,
+      "samples": 675,
+      "radius_m": 0.006,
+      "force_n": [
+        -1.3184188901504967e-05,
+        0.0018434652592986822,
+        0.0018734794575721025
+      ],
+      "center_m": [
+        0.0034877907019108534,
+        -0.022277211770415306,
+        -0.007219037972390652
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.001858556287399996,
+      "rigid_tangent_ratio": 1.0000000530023456,
+      "shell_normal_angle_max_deg": 24.014266306676202,
+      "accepted": true,
+      "force_error_n": 7.82051350869901e-19,
+      "moment_error_nm": 1.1354578777921835e-21,
+      "constrained_evaluations": 7,
+      "shell_compression_min_n": 6.005672230823403e-12,
+      "shell_cone_excess_max_n": 6.776263578034403e-21
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 3,
+      "normal_model": "rigid_pad_frame",
+      "quadrature": 16,
+      "samples": 675,
+      "radius_m": 0.006,
+      "force_n": [
+        -1.3184188901504967e-05,
+        0.0018434652592986822,
+        0.0018734794575721025
+      ],
+      "center_m": [
+        0.0034877907019108534,
+        -0.022277211770415306,
+        -0.007219037972390652
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.001858556287399996,
+      "rigid_tangent_ratio": 1.0000000530023456,
+      "shell_normal_angle_max_deg": 24.014266306676202,
+      "accepted": false,
+      "error": "Contact wrench is infeasible or unresolved by this finite footprint: force error=1.29768e-10 N, moment error=1.67194e-15 Nm; refine quadrature or supply a justified load model"
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 4,
+      "normal_model": "shell_faces",
+      "quadrature": 16,
+      "samples": 1352,
+      "radius_m": 0.006,
+      "force_n": [
+        3.3967889976338483e-06,
+        0.007819738239049911,
+        0.007950752973556519
+      ],
+      "center_m": [
+        -0.0014676228165626526,
+        -0.022315382957458496,
+        -0.0031588140409439802
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.007885517926260483,
+      "rigid_tangent_ratio": 1.0000000052323945,
+      "shell_normal_angle_max_deg": 26.430835791697522,
+      "accepted": true,
+      "force_error_n": 2.845465721096539e-17,
+      "moment_error_nm": 1.3736415978778823e-20,
+      "constrained_evaluations": 37,
+      "shell_compression_min_n": 0.0,
+      "shell_cone_excess_max_n": 2.710505431213761e-20
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 4,
+      "normal_model": "rigid_pad_frame",
+      "quadrature": 16,
+      "samples": 1352,
+      "radius_m": 0.006,
+      "force_n": [
+        3.3967889976338483e-06,
+        0.007819738239049911,
+        0.007950752973556519
+      ],
+      "center_m": [
+        -0.0014676228165626526,
+        -0.022315382957458496,
+        -0.0031588140409439802
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.007885517926260483,
+      "rigid_tangent_ratio": 1.0000000052323945,
+      "shell_normal_angle_max_deg": 26.430835791697522,
+      "accepted": true,
+      "force_error_n": 1.5993362024714494e-17,
+      "moment_error_nm": 1.0321676537806266e-20,
+      "constrained_evaluations": 85,
+      "shell_compression_min_n": 1.963833625197653e-14,
+      "shell_cone_excess_max_n": 1.0567335504731062e-05
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 5,
+      "normal_model": "shell_faces",
+      "quadrature": 16,
+      "samples": 1342,
+      "radius_m": 0.006,
+      "force_n": [
+        -1.5397964716612478e-06,
+        0.00797884352505207,
+        0.008108901791274548
+      ],
+      "center_m": [
+        0.0015791849000379443,
+        -0.02231438457965851,
+        -0.003195937955752015
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.008044135920711105,
+      "rigid_tangent_ratio": 0.9999999238188534,
+      "shell_normal_angle_max_deg": 26.401825700298858,
+      "accepted": true,
+      "force_error_n": 1.7088634554707365e-17,
+      "moment_error_nm": 1.7102358998473618e-20,
+      "constrained_evaluations": 35,
+      "shell_compression_min_n": 0.0,
+      "shell_cone_excess_max_n": 1.3552527156068805e-20
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 5,
+      "normal_model": "rigid_pad_frame",
+      "quadrature": 16,
+      "samples": 1342,
+      "radius_m": 0.006,
+      "force_n": [
+        -1.5397964716612478e-06,
+        0.00797884352505207,
+        0.008108901791274548
+      ],
+      "center_m": [
+        0.0015791849000379443,
+        -0.02231438457965851,
+        -0.003195937955752015
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.008044135920711105,
+      "rigid_tangent_ratio": 0.9999999238188534,
+      "shell_normal_angle_max_deg": 26.401825700298858,
+      "accepted": true,
+      "force_error_n": 1.743375554227542e-17,
+      "moment_error_nm": 9.252348534988945e-21,
+      "constrained_evaluations": 132,
+      "shell_compression_min_n": 0.0,
+      "shell_cone_excess_max_n": 1.109250139102769e-05
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 6,
+      "normal_model": "shell_faces",
+      "quadrature": 16,
+      "samples": 1204,
+      "radius_m": 0.006,
+      "force_n": [
+        7.296280818991363e-05,
+        0.013151551596820354,
+        0.013416098430752754
+      ],
+      "center_m": [
+        4.958900717610959e-06,
+        -0.022345049306750298,
+        0.00012253157910890877
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.013284582216579136,
+      "rigid_tangent_ratio": 1.000000212671824,
+      "shell_normal_angle_max_deg": 23.21082725029007,
+      "accepted": false,
+      "error": "Contact wrench is infeasible or unresolved by this finite footprint: force error=0.000331193 N, moment error=6.84339e-07 Nm; refine quadrature or supply a justified load model"
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 6,
+      "normal_model": "rigid_pad_frame",
+      "quadrature": 16,
+      "samples": 1204,
+      "radius_m": 0.006,
+      "force_n": [
+        7.296280818991363e-05,
+        0.013151551596820354,
+        0.013416098430752754
+      ],
+      "center_m": [
+        4.958900717610959e-06,
+        -0.022345049306750298,
+        0.00012253157910890877
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.013284582216579136,
+      "rigid_tangent_ratio": 1.000000212671824,
+      "shell_normal_angle_max_deg": 23.21082725029007,
+      "accepted": false,
+      "error": "Contact wrench is infeasible or unresolved by this finite footprint: force error=1.54034e-09 N, moment error=2.2475e-17 Nm; refine quadrature or supply a justified load model"
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 7,
+      "normal_model": "shell_faces",
+      "quadrature": 16,
+      "samples": 874,
+      "radius_m": 0.006,
+      "force_n": [
+        -0.0007754472899250686,
+        -0.006423344369977713,
+        0.006554755382239819
+      ],
+      "center_m": [
+        -0.0015352763002738357,
+        0.021397138014435768,
+        -0.006725846324115992
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.0065125067182731115,
+      "rigid_tangent_ratio": 1.000000055479262,
+      "shell_normal_angle_max_deg": 20.31257241034935,
+      "accepted": true,
+      "force_error_n": 4.5947664294029446e-18,
+      "moment_error_nm": 7.862868502877725e-21,
+      "constrained_evaluations": 6,
+      "shell_compression_min_n": 4.05473655598005e-15,
+      "shell_cone_excess_max_n": 2.710505431213761e-20
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 7,
+      "normal_model": "rigid_pad_frame",
+      "quadrature": 16,
+      "samples": 874,
+      "radius_m": 0.006,
+      "force_n": [
+        -0.0007754472899250686,
+        -0.006423344369977713,
+        0.006554755382239819
+      ],
+      "center_m": [
+        -0.0015352763002738357,
+        0.021397138014435768,
+        -0.006725846324115992
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.0065125067182731115,
+      "rigid_tangent_ratio": 1.000000055479262,
+      "shell_normal_angle_max_deg": 20.31257241034935,
+      "accepted": false,
+      "error": "Contact wrench is infeasible or unresolved by this finite footprint: force error=8.77251e-10 N, moment error=3.52372e-16 Nm; refine quadrature or supply a justified load model"
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 8,
+      "normal_model": "shell_faces",
+      "quadrature": 16,
+      "samples": 810,
+      "radius_m": 0.006,
+      "force_n": [
+        -0.0007969086291268468,
+        -0.005921459756791592,
+        0.006035074591636658
+      ],
+      "center_m": [
+        0.0032254019752144814,
+        0.021398073062300682,
+        -0.006783133838325739
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.006005033426005002,
+      "rigid_tangent_ratio": 1.0000002160810424,
+      "shell_normal_angle_max_deg": 24.135144830616998,
+      "accepted": true,
+      "force_error_n": 1.050054141971406e-17,
+      "moment_error_nm": 6.804002123579969e-21,
+      "constrained_evaluations": 5,
+      "shell_compression_min_n": 3.093537016281999e-12,
+      "shell_cone_excess_max_n": 1.3552527156068805e-20
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 8,
+      "normal_model": "rigid_pad_frame",
+      "quadrature": 16,
+      "samples": 810,
+      "radius_m": 0.006,
+      "force_n": [
+        -0.0007969086291268468,
+        -0.005921459756791592,
+        0.006035074591636658
+      ],
+      "center_m": [
+        0.0032254019752144814,
+        0.021398073062300682,
+        -0.006783133838325739
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.006005033426005002,
+      "rigid_tangent_ratio": 1.0000002160810424,
+      "shell_normal_angle_max_deg": 24.135144830616998,
+      "accepted": true,
+      "force_error_n": 1.1444939512457634e-11,
+      "moment_error_nm": 6.771560300964335e-16,
+      "constrained_evaluations": 300,
+      "shell_compression_min_n": 3.146570833243486e-12,
+      "shell_cone_excess_max_n": 4.480793837527286e-06
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 9,
+      "normal_model": "shell_faces",
+      "quadrature": 16,
+      "samples": 1277,
+      "radius_m": 0.006,
+      "force_n": [
+        0.0015522576868534088,
+        -0.02301681600511074,
+        0.022511465474963188
+      ],
+      "center_m": [
+        5.328258339432068e-06,
+        0.021410053595900536,
+        1.5784507922944613e-06
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.022791985752922534,
+      "rigid_tangent_ratio": 1.0000001489049357,
+      "shell_normal_angle_max_deg": 22.494659845138376,
+      "accepted": true,
+      "force_error_n": 7.235195562408715e-17,
+      "moment_error_nm": 9.403051883867775e-21,
+      "constrained_evaluations": 56,
+      "shell_compression_min_n": 0.0,
+      "shell_cone_excess_max_n": 5.421010862427522e-20
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 9,
+      "normal_model": "rigid_pad_frame",
+      "quadrature": 16,
+      "samples": 1277,
+      "radius_m": 0.006,
+      "force_n": [
+        0.0015522576868534088,
+        -0.02301681600511074,
+        0.022511465474963188
+      ],
+      "center_m": [
+        5.328258339432068e-06,
+        0.021410053595900536,
+        1.5784507922944613e-06
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.022791985752922534,
+      "rigid_tangent_ratio": 1.0000001489049357,
+      "shell_normal_angle_max_deg": 22.494659845138376,
+      "accepted": false,
+      "error": "Contact wrench is infeasible or unresolved by this finite footprint: force error=1.61165e-09 N, moment error=1.00323e-16 Nm; refine quadrature or supply a justified load model"
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 0,
+      "normal_model": "shell_faces",
+      "quadrature": 24,
+      "samples": 1821,
+      "radius_m": 0.006,
+      "force_n": [
+        -5.7094030125881545e-06,
+        0.0007688228506594896,
+        0.0007842738996259868
+      ],
+      "center_m": [
+        -0.001522862003184855,
+        -0.022273322567343712,
+        -0.007763240020722151
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.0007765972226648487,
+      "rigid_tangent_ratio": 1.0000001901564837,
+      "shell_normal_angle_max_deg": 20.41131342055233,
+      "accepted": true,
+      "force_error_n": 1.084731438893638e-19,
+      "moment_error_nm": 2.1082654055124481e-22,
+      "constrained_evaluations": 6,
+      "shell_compression_min_n": 1.66976642904955e-13,
+      "shell_cone_excess_max_n": 8.470329472543003e-22
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 0,
+      "normal_model": "rigid_pad_frame",
+      "quadrature": 24,
+      "samples": 1821,
+      "radius_m": 0.006,
+      "force_n": [
+        -5.7094030125881545e-06,
+        0.0007688228506594896,
+        0.0007842738996259868
+      ],
+      "center_m": [
+        -0.001522862003184855,
+        -0.022273322567343712,
+        -0.007763240020722151
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.0007765972226648487,
+      "rigid_tangent_ratio": 1.0000001901564837,
+      "shell_normal_angle_max_deg": 20.41131342055233,
+      "accepted": false,
+      "error": "Contact wrench is infeasible or unresolved by this finite footprint: force error=1.03405e-10 N, moment error=1.29749e-19 Nm; refine quadrature or supply a justified load model"
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 1,
+      "normal_model": "shell_faces",
+      "quadrature": 24,
+      "samples": 1881,
+      "radius_m": 0.006,
+      "force_n": [
+        -1.0057020517706405e-05,
+        0.0015743979020044208,
+        0.0016007437370717525
+      ],
+      "center_m": [
+        -0.0015155969886109233,
+        -0.022278839722275734,
+        -0.007159381173551083
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.001587641383065146,
+      "rigid_tangent_ratio": 0.9999999856601868,
+      "shell_normal_angle_max_deg": 20.455478703031932,
+      "accepted": true,
+      "force_error_n": 3.067007936068595e-19,
+      "moment_error_nm": 3.976510773140705e-22,
+      "constrained_evaluations": 6,
+      "shell_compression_min_n": 2.8146160433552115e-14,
+      "shell_cone_excess_max_n": 1.6940658945086007e-21
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 1,
+      "normal_model": "rigid_pad_frame",
+      "quadrature": 24,
+      "samples": 1881,
+      "radius_m": 0.006,
+      "force_n": [
+        -1.0057020517706405e-05,
+        0.0015743979020044208,
+        0.0016007437370717525
+      ],
+      "center_m": [
+        -0.0015155969886109233,
+        -0.022278839722275734,
+        -0.007159381173551083
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.001587641383065146,
+      "rigid_tangent_ratio": 0.9999999856601868,
+      "shell_normal_angle_max_deg": 20.455478703031932,
+      "accepted": true,
+      "force_error_n": 3.067007936068595e-19,
+      "moment_error_nm": 8.042135778652389e-22,
+      "constrained_evaluations": 47,
+      "shell_compression_min_n": 1.3689224929180618e-14,
+      "shell_cone_excess_max_n": 5.06776038060338e-07
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 2,
+      "normal_model": "shell_faces",
+      "quadrature": 24,
+      "samples": 1493,
+      "radius_m": 0.006,
+      "force_n": [
+        -9.421169124834705e-06,
+        0.0011660110903903842,
+        0.001189459697343409
+      ],
+      "center_m": [
+        0.003746486734598875,
+        -0.022272173315286636,
+        -0.007764405105262995
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.001177812492736883,
+      "rigid_tangent_ratio": 1.0000001485921233,
+      "shell_normal_angle_max_deg": 24.031968202620156,
+      "accepted": true,
+      "force_error_n": 8.94057620301069e-19,
+      "moment_error_nm": 5.015812498257939e-22,
+      "constrained_evaluations": 7,
+      "shell_compression_min_n": 1.896212375027671e-13,
+      "shell_cone_excess_max_n": 1.2705494208814505e-21
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 2,
+      "normal_model": "rigid_pad_frame",
+      "quadrature": 24,
+      "samples": 1493,
+      "radius_m": 0.006,
+      "force_n": [
+        -9.421169124834705e-06,
+        0.0011660110903903842,
+        0.001189459697343409
+      ],
+      "center_m": [
+        0.003746486734598875,
+        -0.022272173315286636,
+        -0.007764405105262995
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.001177812492736883,
+      "rigid_tangent_ratio": 1.0000001485921233,
+      "shell_normal_angle_max_deg": 24.031968202620156,
+      "accepted": false,
+      "error": "Contact wrench is infeasible or unresolved by this finite footprint: force error=9.78421e-11 N, moment error=1.42333e-15 Nm; refine quadrature or supply a justified load model"
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 3,
+      "normal_model": "shell_faces",
+      "quadrature": 24,
+      "samples": 1519,
+      "radius_m": 0.006,
+      "force_n": [
+        -1.3184188901504967e-05,
+        0.0018434652592986822,
+        0.0018734794575721025
+      ],
+      "center_m": [
+        0.0034877907019108534,
+        -0.022277211770415306,
+        -0.007219037972390652
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.001858556287399996,
+      "rigid_tangent_ratio": 1.0000000530023456,
+      "shell_normal_angle_max_deg": 24.014266306676202,
+      "accepted": true,
+      "force_error_n": 1.0937225808856692e-18,
+      "moment_error_nm": 1.5594779041897184e-21,
+      "constrained_evaluations": 7,
+      "shell_compression_min_n": 4.638301146007515e-14,
+      "shell_cone_excess_max_n": 1.6940658945086007e-21
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 3,
+      "normal_model": "rigid_pad_frame",
+      "quadrature": 24,
+      "samples": 1519,
+      "radius_m": 0.006,
+      "force_n": [
+        -1.3184188901504967e-05,
+        0.0018434652592986822,
+        0.0018734794575721025
+      ],
+      "center_m": [
+        0.0034877907019108534,
+        -0.022277211770415306,
+        -0.007219037972390652
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.001858556287399996,
+      "rigid_tangent_ratio": 1.0000000530023456,
+      "shell_normal_angle_max_deg": 24.014266306676202,
+      "accepted": false,
+      "error": "Contact wrench is infeasible or unresolved by this finite footprint: force error=1.29768e-10 N, moment error=1.67248e-15 Nm; refine quadrature or supply a justified load model"
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 4,
+      "normal_model": "shell_faces",
+      "quadrature": 24,
+      "samples": 3050,
+      "radius_m": 0.006,
+      "force_n": [
+        3.3967889976338483e-06,
+        0.007819738239049911,
+        0.007950752973556519
+      ],
+      "center_m": [
+        -0.0014676228165626526,
+        -0.022315382957458496,
+        -0.0031588140409439802
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.007885517926260483,
+      "rigid_tangent_ratio": 1.0000000052323945,
+      "shell_normal_angle_max_deg": 26.430835791697522,
+      "accepted": true,
+      "force_error_n": 2.119021834893675e-17,
+      "moment_error_nm": 5.2730569371836115e-21,
+      "constrained_evaluations": 40,
+      "shell_compression_min_n": 0.0,
+      "shell_cone_excess_max_n": 1.3552527156068805e-20
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 4,
+      "normal_model": "rigid_pad_frame",
+      "quadrature": 24,
+      "samples": 3050,
+      "radius_m": 0.006,
+      "force_n": [
+        3.3967889976338483e-06,
+        0.007819738239049911,
+        0.007950752973556519
+      ],
+      "center_m": [
+        -0.0014676228165626526,
+        -0.022315382957458496,
+        -0.0031588140409439802
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.007885517926260483,
+      "rigid_tangent_ratio": 1.0000000052323945,
+      "shell_normal_angle_max_deg": 26.430835791697522,
+      "accepted": true,
+      "force_error_n": 1.2268800603559176e-16,
+      "moment_error_nm": 1.4035600256006966e-20,
+      "constrained_evaluations": 130,
+      "shell_compression_min_n": 5.299849669704719e-14,
+      "shell_cone_excess_max_n": 4.806630235698137e-06
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 5,
+      "normal_model": "shell_faces",
+      "quadrature": 24,
+      "samples": 3013,
+      "radius_m": 0.006,
+      "force_n": [
+        -1.5397964716612478e-06,
+        0.00797884352505207,
+        0.008108901791274548
+      ],
+      "center_m": [
+        0.0015791849000379443,
+        -0.02231438457965851,
+        -0.003195937955752015
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.008044135920711105,
+      "rigid_tangent_ratio": 0.9999999238188534,
+      "shell_normal_angle_max_deg": 26.401825700298858,
+      "accepted": true,
+      "force_error_n": 2.4593190539447247e-17,
+      "moment_error_nm": 3.05441404778698e-20,
+      "constrained_evaluations": 35,
+      "shell_compression_min_n": 0.0,
+      "shell_cone_excess_max_n": 2.710505431213761e-20
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 5,
+      "normal_model": "rigid_pad_frame",
+      "quadrature": 24,
+      "samples": 3013,
+      "radius_m": 0.006,
+      "force_n": [
+        -1.5397964716612478e-06,
+        0.00797884352505207,
+        0.008108901791274548
+      ],
+      "center_m": [
+        0.0015791849000379443,
+        -0.02231438457965851,
+        -0.003195937955752015
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.008044135920711105,
+      "rigid_tangent_ratio": 0.9999999238188534,
+      "shell_normal_angle_max_deg": 26.401825700298858,
+      "accepted": true,
+      "force_error_n": 1.3985787915201426e-17,
+      "moment_error_nm": 4.7394452382980944e-21,
+      "constrained_evaluations": 143,
+      "shell_compression_min_n": 0.0,
+      "shell_cone_excess_max_n": 5.090578167339878e-06
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 6,
+      "normal_model": "shell_faces",
+      "quadrature": 24,
+      "samples": 2708,
+      "radius_m": 0.006,
+      "force_n": [
+        7.296280818991363e-05,
+        0.013151551596820354,
+        0.013416098430752754
+      ],
+      "center_m": [
+        4.958900717610959e-06,
+        -0.022345049306750298,
+        0.00012253157910890877
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.013284582216579136,
+      "rigid_tangent_ratio": 1.000000212671824,
+      "shell_normal_angle_max_deg": 23.21082725029007,
+      "accepted": false,
+      "error": "Contact wrench is infeasible or unresolved by this finite footprint: force error=0.000309195 N, moment error=6.24664e-07 Nm; refine quadrature or supply a justified load model"
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 6,
+      "normal_model": "rigid_pad_frame",
+      "quadrature": 24,
+      "samples": 2708,
+      "radius_m": 0.006,
+      "force_n": [
+        7.296280818991363e-05,
+        0.013151551596820354,
+        0.013416098430752754
+      ],
+      "center_m": [
+        4.958900717610959e-06,
+        -0.022345049306750298,
+        0.00012253157910890877
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.013284582216579136,
+      "rigid_tangent_ratio": 1.000000212671824,
+      "shell_normal_angle_max_deg": 23.21082725029007,
+      "accepted": false,
+      "error": "Contact wrench is infeasible or unresolved by this finite footprint: force error=1.54256e-09 N, moment error=2.48414e-17 Nm; refine quadrature or supply a justified load model"
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 7,
+      "normal_model": "shell_faces",
+      "quadrature": 24,
+      "samples": 1963,
+      "radius_m": 0.006,
+      "force_n": [
+        -0.0007754472899250686,
+        -0.006423344369977713,
+        0.006554755382239819
+      ],
+      "center_m": [
+        -0.0015352763002738357,
+        0.021397138014435768,
+        -0.006725846324115992
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.0065125067182731115,
+      "rigid_tangent_ratio": 1.000000055479262,
+      "shell_normal_angle_max_deg": 20.31257241034935,
+      "accepted": true,
+      "force_error_n": 5.2323286814430035e-18,
+      "moment_error_nm": 2.075842653425801e-21,
+      "constrained_evaluations": 6,
+      "shell_compression_min_n": 2.0651961555944123e-13,
+      "shell_cone_excess_max_n": 6.776263578034403e-21
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 7,
+      "normal_model": "rigid_pad_frame",
+      "quadrature": 24,
+      "samples": 1963,
+      "radius_m": 0.006,
+      "force_n": [
+        -0.0007754472899250686,
+        -0.006423344369977713,
+        0.006554755382239819
+      ],
+      "center_m": [
+        -0.0015352763002738357,
+        0.021397138014435768,
+        -0.006725846324115992
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.0065125067182731115,
+      "rigid_tangent_ratio": 1.000000055479262,
+      "shell_normal_angle_max_deg": 20.31257241034935,
+      "accepted": false,
+      "error": "Contact wrench is infeasible or unresolved by this finite footprint: force error=8.77319e-10 N, moment error=3.52376e-16 Nm; refine quadrature or supply a justified load model"
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 8,
+      "normal_model": "shell_faces",
+      "quadrature": 24,
+      "samples": 1799,
+      "radius_m": 0.006,
+      "force_n": [
+        -0.0007969086291268468,
+        -0.005921459756791592,
+        0.006035074591636658
+      ],
+      "center_m": [
+        0.0032254019752144814,
+        0.021398073062300682,
+        -0.006783133838325739
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.006005033426005002,
+      "rigid_tangent_ratio": 1.0000002160810424,
+      "shell_normal_angle_max_deg": 24.135144830616998,
+      "accepted": true,
+      "force_error_n": 2.6223352097530134e-18,
+      "moment_error_nm": 2.448980361893427e-21,
+      "constrained_evaluations": 6,
+      "shell_compression_min_n": 4.58174615058479e-13,
+      "shell_cone_excess_max_n": 5.082197683525802e-21
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 8,
+      "normal_model": "rigid_pad_frame",
+      "quadrature": 24,
+      "samples": 1799,
+      "radius_m": 0.006,
+      "force_n": [
+        -0.0007969086291268468,
+        -0.005921459756791592,
+        0.006035074591636658
+      ],
+      "center_m": [
+        0.0032254019752144814,
+        0.021398073062300682,
+        -0.006783133838325739
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.006005033426005002,
+      "rigid_tangent_ratio": 1.0000002160810424,
+      "shell_normal_angle_max_deg": 24.135144830616998,
+      "accepted": true,
+      "force_error_n": 1.0323623765294734e-11,
+      "moment_error_nm": 6.77110810999063e-16,
+      "constrained_evaluations": 300,
+      "shell_compression_min_n": 4.1539973618680824e-13,
+      "shell_cone_excess_max_n": 2.0568302460302596e-06
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 9,
+      "normal_model": "shell_faces",
+      "quadrature": 24,
+      "samples": 2873,
+      "radius_m": 0.006,
+      "force_n": [
+        0.0015522576868534088,
+        -0.02301681600511074,
+        0.022511465474963188
+      ],
+      "center_m": [
+        5.328258339432068e-06,
+        0.021410053595900536,
+        1.5784507922944613e-06
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.022791985752922534,
+      "rigid_tangent_ratio": 1.0000001489049357,
+      "shell_normal_angle_max_deg": 22.494659845138376,
+      "accepted": true,
+      "force_error_n": 9.109466395141278e-17,
+      "moment_error_nm": 6.856623395249667e-21,
+      "constrained_evaluations": 47,
+      "shell_compression_min_n": 0.0,
+      "shell_cone_excess_max_n": 1.0842021724855044e-19
+    },
+    {
+      "step": 424,
+      "environment": 0,
+      "contact": 9,
+      "normal_model": "rigid_pad_frame",
+      "quadrature": 24,
+      "samples": 2873,
+      "radius_m": 0.006,
+      "force_n": [
+        0.0015522576868534088,
+        -0.02301681600511074,
+        0.022511465474963188
+      ],
+      "center_m": [
+        5.328258339432068e-06,
+        0.021410053595900536,
+        1.5784507922944613e-06
+      ],
+      "friction": 1.0,
+      "rigid_normal_force_n": 0.022791985752922534,
+      "rigid_tangent_ratio": 1.0000001489049357,
+      "shell_normal_angle_max_deg": 22.494659845138376,
+      "accepted": false,
+      "error": "Contact wrench is infeasible or unresolved by this finite footprint: force error=1.61139e-09 N, moment error=1.00152e-16 Nm; refine quadrature or supply a justified load model"
+    }
+  ]
+}

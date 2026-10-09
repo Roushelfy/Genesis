@@ -359,6 +359,7 @@ def collider_kernel_get_contacts(
             iout[i_c, 2] = collider_state.contact_data.geom_a[i_col, i_b]
             iout[i_c, 3] = collider_state.contact_data.geom_b[i_col, i_b]
             fout[i_c, 0] = collider_state.contact_data.penetration[i_col, i_b]
+            fout[i_c, 10] = collider_state.contact_data.friction[i_col, i_b]
             for j in qd.static(range(3)):
                 fout[i_c, 1 + j] = collider_state.contact_data.pos[i_col, i_b][j]
                 fout[i_c, 4 + j] = collider_state.contact_data.normal[i_col, i_b][j]

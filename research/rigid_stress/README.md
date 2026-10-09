@@ -1,4 +1,4 @@
-# Fixed-shape rigid stress recovery: agent handoff
+# Fixed-shape rigid stress recovery
 
 Goal: maximize **measured aggregate environment transitions/s** for a Franka
 Panda grasping a hollow egg-shaped rigid entity, while returning its global
@@ -14,19 +14,22 @@ existing user fork: `Roushelfy/Genesis:rigid-stress-recovery`.
 | Component | Status |
 |---|---|
 | Full egg P2 FEM, consistent mass, inertia relief, shared CPU LU | Runnable, imported from tested experiments |
-| Arbitrary finite-area vector loads, spatial index, global corner maximum | CPU tested; no contact symmetry or fixed load basis |
+| Arbitrary finite-area vector loads, spatial index, global corner maximum | CPU tested, wrench-constrained admitted vector tractions |
 | Previous-frame predictor, compact failed RHS, per-env cached history | CPU tested; same-tolerance batching ablations included |
 | FP32 CPU accuracy study and one-step refinement | Code and measured evidence included |
 | `cpu.py`, resets, batched contact-facing adapter | CPU smoke checked; see `evidence/seed_cpu_validation.json` |
 | `assets.py`, exterior mesh plus shell mass/COM/inertia URDF | Generated and XML/numerical checked |
 | `gpu_prototype.py` | CUDA-capable Torch prototype checked on CPU; no CUDA test |
-| `franka_egg.py` | Current-public-API integration seed; not executed or accepted as a grasp/throughput benchmark in this environment |
-| Production sparse GPU backend, fused peak, GPU history, policy observation | **To implement and validate** |
-| Live-contact footprint/wrench fidelity and full-model mesh convergence | **To implement and validate** |
+| `sparse_gpu.py`, shared sparse L/U + cuSPARSE SpSM, fused full peak | Device validated on RTX PRO 6000 Blackwell |
+| `device_pressure.py`, changing finite pad wrenches | Device vs CPU FP64 validated, including an actual sliding snapshot |
+| `franka_egg.py` | Real 600-step GPU grasp and CPU direct comparison executed, contact-solve pose matched |
+| Full-shell mesh and surface quadrature convergence | Full levels 2/3/4 measured. Mesh criterion failed, finer work continuing |
+| GPU history, optimized precision, reset/substep/seed acceptance, policy/live timing | **Active work under GOAL.md** |
 
-The seed mapper preserves force, but reports the moment difference caused by
-replacing a point force with a finite patch. This is a known integration gap,
-not an acceptable hidden approximation. The `goal` requires resolving it.
+The live path preserves the complete contact wrench with a declared compliant
+pad model. See [docs/PAD_LAW.md](docs/PAD_LAW.md) and the scope-specific measured
+[progress report](docs/PROGRESS_20261009.md). The full acceptance and optimization
+goal remains active. Current coarse timings have a separate physical error.
 
 ## Start here
 
@@ -45,14 +48,14 @@ From repository root, in an isolated Python 3.10–3.13 environment:
 
 ```bash
 python -m pip install -r research/rigid_stress/requirements-cpu.txt
-python -m research.rigid_stress.check_cpu
-python -m research.rigid_stress.assets --level 1
+python -m research.rigid_stress.check_cpu --output "$RIGID_STRESS_DATA_ROOT/runs/check/cpu.json"
+python -m research.rigid_stress.assets --level 1 --output "$RIGID_STRESS_DATA_ROOT/assets/egg"
 ```
 
 Optional Torch prototype check (CPU, not GPU):
 
 ```bash
-python -m research.rigid_stress.check_cpu --torch
+python -m research.rigid_stress.check_cpu --torch --output "$RIGID_STRESS_DATA_ROOT/runs/check/cpu-torch.json"
 ```
 
 The optional check needs an installed PyTorch matching the local platform.
@@ -81,22 +84,27 @@ Core dependency versions used in the latest local check are recorded in
 `evidence/seed_environment.json`. Plot/report/convergence scripts can require
 Matplotlib, Pillow or pymetis in addition to the minimum numerical stack.
 
-## Franka integration seed
+## Franka integration diagnostic
 
 Install upstream Genesis and its assets as documented in the root README;
 PyTorch is a separate platform-dependent prerequisite. Then:
 
 ```bash
-python -m research.rigid_stress.franka_egg --backend cpu --envs 1 --stress cpu --vis
-python -m research.rigid_stress.franka_egg --backend cuda --envs 8 --stress off
-python -m research.rigid_stress.franka_egg --backend cuda --envs 8 --stress cpu
+python -m research.rigid_stress.franka_egg --backend cpu --envs 1 --stress cpu --vis \
+    --output "$RIGID_STRESS_DATA_ROOT/runs/cpu/rollout.json"
+python -m research.rigid_stress.franka_egg --backend cuda --envs 8 --stress off \
+    --output "$RIGID_STRESS_DATA_ROOT/runs/rigid/rollout.json"
+python -m research.rigid_stress.franka_egg --backend cuda --envs 1 --stress gpu --verify-gpu \
+    --save-contacts --video "$RIGID_STRESS_DATA_ROOT/runs/demo/grasp.mp4" \
+    --output "$RIGID_STRESS_DATA_ROOT/runs/demo/rollout.json"
 ```
 
-The last command transfers live contacts to CPU recovery for integration
-debugging. It is not the intended GPU hot path. The seed's timing includes
-first compilation and is labeled accordingly; it must not be used as steady
-RL throughput. The agent must add the sparse GPU backend, validate the grasp,
-run the complete suite, and replace this seed benchmark with warmed measurements.
+The last command checks GPU mapping/direct recovery against CPU FP64 every
+frame and records actual rigid motion. Its diagnostics transfer to host.
+The timing includes verification, recording and first compilation. Use the
+separate warmed benchmark command for the explicitly assembled-RHS scope.
+The progress report lists reproducible allocated-node commands and remaining
+physical and live-throughput acceptance work.
 
 ## Boundaries
 
@@ -107,7 +115,7 @@ Friction is required. Smooth contact history is a performance opportunity,
 not a correctness condition; failures/impacts/reset fall back independently.
 Output is a scalar maximum per environment, not a full stress field.
 
-This handoff makes no measured GPU/RL FPS claim. The old quarter-model
+Measured GPU recovery rates have an explicit microbenchmark scope. The old quarter-model
 convergence evidence is diagnostic only and cannot establish convergence for
 the required arbitrary-contact full model. No physical egg failure calibration
 or elasticity-to-rigid feedback is supplied.

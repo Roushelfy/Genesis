@@ -1,0 +1,149 @@
+bash: cannot set terminal process group (-1): Inappropriate ioctl for device
+bash: no job control in this shell
+Collecting pytest<9
+  Downloading pytest-8.4.2-py3-none-any.whl.metadata (7.7 kB)
+Collecting pytest-xdist
+  Downloading pytest_xdist-3.8.0-py3-none-any.whl.metadata (3.0 kB)
+Collecting pytest-forked
+  Downloading pytest_forked-1.7.5-py3-none-any.whl.metadata (3.7 kB)
+Collecting pytest-timeout
+  Downloading pytest_timeout-2.4.0-py3-none-any.whl.metadata (20 kB)
+Collecting pytest-print
+  Downloading pytest_print-1.3.0-py3-none-any.whl.metadata (10 kB)
+Collecting syrupy
+  Downloading syrupy-6.1.1-py3-none-any.whl.metadata (48 kB)
+Requirement already satisfied: nvidia-ml-py in /usr/local/lib/python3.10/dist-packages (13.580.65)
+Collecting setproctitle
+  Downloading setproctitle-1.3.8-cp310-cp310-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (10 kB)
+Collecting huggingface_hub<2
+  Downloading huggingface_hub-1.33.0-py3-none-any.whl.metadata (16 kB)
+Collecting ipython
+  Downloading ipython-8.39.0-py3-none-any.whl.metadata (5.1 kB)
+Requirement already satisfied: exceptiongroup>=1 in /mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages (from pytest<9) (1.3.1)
+Requirement already satisfied: iniconfig>=1 in /mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages (from pytest<9) (2.3.1)
+Requirement already satisfied: packaging>=20 in /usr/local/lib/python3.10/dist-packages (from pytest<9) (25.0)
+Requirement already satisfied: pluggy<2,>=1.5 in /mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages (from pytest<9) (1.6.0)
+Requirement already satisfied: pygments>=2.7.2 in /mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages (from pytest<9) (2.21.0)
+Requirement already satisfied: tomli>=1 in /mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages (from pytest<9) (2.5.0)
+Collecting click<9.0.0,>=8.4.2 (from huggingface_hub<2)
+  Using cached click-8.5.0-py3-none-any.whl.metadata (2.6 kB)
+Requirement already satisfied: filelock>=3.10.0 in /usr/local/lib/python3.10/dist-packages (from huggingface_hub<2) (3.18.0)
+Requirement already satisfied: fsspec>=2023.5.0 in /usr/local/lib/python3.10/dist-packages (from huggingface_hub<2) (2025.7.0)
+Collecting hf-xet<2.0.0,>=1.6.0 (from huggingface_hub<2)
+  Downloading hf_xet-1.7.0-cp38-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (4.9 kB)
+Collecting httpx<1,>=0.23.0 (from huggingface_hub<2)
+  Using cached httpx-0.28.1-py3-none-any.whl.metadata (7.1 kB)
+Requirement already satisfied: pyyaml>=5.1 in /mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages (from huggingface_hub<2) (6.0.3)
+Requirement already satisfied: tqdm>=4.42.1 in /usr/local/lib/python3.10/dist-packages (from huggingface_hub<2) (4.67.1)
+Requirement already satisfied: typing-extensions>=4.1.0 in /mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages (from huggingface_hub<2) (4.16.0)
+Collecting anyio (from httpx<1,>=0.23.0->huggingface_hub<2)
+  Using cached anyio-4.15.1-py3-none-any.whl.metadata (4.7 kB)
+Requirement already satisfied: certifi in /usr/local/lib/python3.10/dist-packages (from httpx<1,>=0.23.0->huggingface_hub<2) (2026.7.22)
+Collecting httpcore==1.* (from httpx<1,>=0.23.0->huggingface_hub<2)
+  Using cached httpcore-1.0.9-py3-none-any.whl.metadata (21 kB)
+Requirement already satisfied: idna in /usr/local/lib/python3.10/dist-packages (from httpx<1,>=0.23.0->huggingface_hub<2) (3.19)
+Collecting h11>=0.16 (from httpcore==1.*->httpx<1,>=0.23.0->huggingface_hub<2)
+  Using cached h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+Collecting execnet>=2.1 (from pytest-xdist)
+  Downloading execnet-2.1.2-py3-none-any.whl.metadata (2.9 kB)
+INFO: pip is looking at multiple versions of pytest-print to determine which version is compatible with other requirements. This could take a while.
+Collecting pytest-print
+  Downloading pytest_print-1.2.2-py3-none-any.whl.metadata (10 kB)
+  Downloading pytest_print-1.2.1-py3-none-any.whl.metadata (10 kB)
+  Downloading pytest_print-1.2.0-py3-none-any.whl.metadata (10 kB)
+Requirement already satisfied: decorator in /mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages (from ipython) (5.3.1)
+Collecting jedi>=0.16 (from ipython)
+  Using cached jedi-0.20.0-py2.py3-none-any.whl.metadata (23 kB)
+Collecting matplotlib-inline (from ipython)
+  Using cached matplotlib_inline-0.2.2-py3-none-any.whl.metadata (2.4 kB)
+Collecting pexpect>4.3 (from ipython)
+  Using cached pexpect-4.9.0-py2.py3-none-any.whl.metadata (2.5 kB)
+Collecting prompt_toolkit<3.1.0,>=3.0.41 (from ipython)
+  Using cached prompt_toolkit-3.0.53-py3-none-any.whl.metadata (6.4 kB)
+Collecting stack_data (from ipython)
+  Using cached stack_data-0.6.3-py3-none-any.whl.metadata (18 kB)
+Collecting traitlets>=5.13.0 (from ipython)
+  Using cached traitlets-5.16.1-py3-none-any.whl.metadata (10 kB)
+Collecting wcwidth>=0.1.4 (from prompt_toolkit<3.1.0,>=3.0.41->ipython)
+  Downloading wcwidth-0.9.2-cp310-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (23 kB)
+Collecting parso<0.9.0,>=0.8.6 (from jedi>=0.16->ipython)
+  Using cached parso-0.8.7-py2.py3-none-any.whl.metadata (8.2 kB)
+Collecting ptyprocess>=0.5 (from pexpect>4.3->ipython)
+  Using cached ptyprocess-0.7.0-py2.py3-none-any.whl.metadata (1.3 kB)
+Collecting executing>=1.2.0 (from stack_data->ipython)
+  Using cached executing-2.2.1-py2.py3-none-any.whl.metadata (8.9 kB)
+Collecting asttokens>=2.1.0 (from stack_data->ipython)
+  Using cached asttokens-3.0.2-py3-none-any.whl.metadata (5.7 kB)
+Collecting pure-eval (from stack_data->ipython)
+  Using cached pure_eval-0.2.4-py3-none-any.whl.metadata (6.4 kB)
+Downloading pytest-8.4.2-py3-none-any.whl (365 kB)
+Downloading huggingface_hub-1.33.0-py3-none-any.whl (846 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 846.4/846.4 kB 14.5 MB/s  0:00:00
+Using cached click-8.5.0-py3-none-any.whl (125 kB)
+Downloading hf_xet-1.7.0-cp38-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (4.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.2/4.2 MB 65.4 MB/s  0:00:00
+Using cached httpx-0.28.1-py3-none-any.whl (73 kB)
+Using cached httpcore-1.0.9-py3-none-any.whl (78 kB)
+Downloading pytest_xdist-3.8.0-py3-none-any.whl (46 kB)
+Downloading pytest_forked-1.7.5-py3-none-any.whl (6.3 kB)
+Downloading pytest_timeout-2.4.0-py3-none-any.whl (14 kB)
+Downloading pytest_print-1.2.0-py3-none-any.whl (7.2 kB)
+Downloading syrupy-6.1.1-py3-none-any.whl (63 kB)
+Downloading setproctitle-1.3.8-cp310-cp310-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (31 kB)
+Downloading ipython-8.39.0-py3-none-any.whl (831 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 831.8/831.8 kB 25.7 MB/s  0:00:00
+Using cached prompt_toolkit-3.0.53-py3-none-any.whl (392 kB)
+Downloading execnet-2.1.2-py3-none-any.whl (40 kB)
+Using cached h11-0.16.0-py3-none-any.whl (37 kB)
+Using cached jedi-0.20.0-py2.py3-none-any.whl (4.9 MB)
+Using cached parso-0.8.7-py2.py3-none-any.whl (107 kB)
+Using cached pexpect-4.9.0-py2.py3-none-any.whl (63 kB)
+Using cached ptyprocess-0.7.0-py2.py3-none-any.whl (13 kB)
+Using cached traitlets-5.16.1-py3-none-any.whl (86 kB)
+Downloading wcwidth-0.9.2-cp310-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (769 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 769.8/769.8 kB 23.3 MB/s  0:00:00
+Using cached anyio-4.15.1-py3-none-any.whl (132 kB)
+Using cached matplotlib_inline-0.2.2-py3-none-any.whl (9.5 kB)
+Using cached stack_data-0.6.3-py3-none-any.whl (24 kB)
+Using cached asttokens-3.0.2-py3-none-any.whl (28 kB)
+Using cached executing-2.2.1-py2.py3-none-any.whl (28 kB)
+Using cached pure_eval-0.2.4-py3-none-any.whl (11 kB)
+Installing collected packages: pure-eval, ptyprocess, wcwidth, traitlets, setproctitle, pexpect, parso, hf-xet, h11, executing, execnet, click, asttokens, stack_data, pytest, prompt_toolkit, matplotlib-inline, jedi, httpcore, anyio, syrupy, pytest-xdist, pytest-timeout, pytest-print, pytest-forked, ipython, httpx, huggingface_hub
+  Attempting uninstall: pytest
+    Found existing installation: pytest 9.1.1
+    Uninstalling pytest-9.1.1:
+      Successfully uninstalled pytest-9.1.1
+
+Successfully installed anyio-4.15.1 asttokens-3.0.2 click-8.5.0 execnet-2.1.2 executing-2.2.1 h11-0.16.0 hf-xet-1.7.0 httpcore-1.0.9 httpx-0.28.1 huggingface_hub-1.33.0 ipython-8.39.0 jedi-0.20.0 matplotlib-inline-0.2.2 parso-0.8.7 pexpect-4.9.0 prompt_toolkit-3.0.53 ptyprocess-0.7.0 pure-eval-0.2.4 pytest-8.4.2 pytest-forked-1.7.5 pytest-print-1.2.0 pytest-timeout-2.4.0 pytest-xdist-3.8.0 setproctitle-1.3.8 stack_data-0.6.3 syrupy-6.1.1 traitlets-5.16.1 wcwidth-0.9.2
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0
+rootdir: /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery
+configfile: pyproject.toml
+plugins: anyio-4.15.1, forked-1.7.5, print-1.2.0, timeout-2.4.0, xdist-3.8.0, quadrants-1.3.3, syrupy-6.1.1
+timeout: 1200.0s
+timeout method: signal
+timeout func_only: False
+collected 2 items
+
+tests/rigid/test_friction.py [32m.[0m[32m.[0m[32m                                          [100%][0m
+
+============================== slowest durations ===============================
+
+(6 durations < 100s hidden.)
+[32m======================== [32m[1m2 passed[0m[32m in 201.75s (0:03:21)[0m[32m =========================[0m
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0
+rootdir: /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery
+configfile: pyproject.toml
+plugins: anyio-4.15.1, forked-1.7.5, print-1.2.0, timeout-2.4.0, xdist-3.8.0, quadrants-1.3.3, syrupy-6.1.1
+timeout: 1200.0s
+timeout method: signal
+timeout func_only: False
+collected 2 items
+
+tests/rigid/test_friction.py [32m.[0m[32m.[0m[32m                                          [100%][0m
+
+============================== slowest durations ===============================
+
+(6 durations < 100s hidden.)
+[32m============================== [32m[1m2 passed[0m[32m in 54.57s[0m[32m ==============================[0m

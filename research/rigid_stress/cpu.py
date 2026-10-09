@@ -4,9 +4,10 @@ Only the reference mesh, material and mass distribution are cached. Contact
 locations, directions, counts and radii are inputs at every call. This module
 does not impose physical supports or contact symmetry.
 """
+
+import sys
 from dataclasses import dataclass
 from pathlib import Path
-import sys
 
 import numpy as np
 
@@ -20,7 +21,8 @@ sys.path[:0] = [
 import arbitrary_contact_test as reference
 from benchmark import BatchRecovery, CachedHistory
 from general_peak import P2Peak
-from indexed_contacts import IndexedContacts
+
+from .wrench import FinitePatchMapper, WrenchDiagnostics, WrenchPatch
 
 
 @dataclass(frozen=True)
@@ -42,10 +44,14 @@ class ContactBatch:
     already include normal and tangential components. A finite footprint is
     an explicit load model; rigid contacts alone do not identify its radius.
     """
+
     position_m: np.ndarray
     force_n: np.ndarray
     radius_m: np.ndarray
     valid: np.ndarray
+    friction: np.ndarray
+    inward_normal: np.ndarray | None = None
+    source_epsilon: float = 0.0
 
 
 @dataclass(frozen=True)
@@ -54,6 +60,7 @@ class MappedLoads:
     resultant_force_n: np.ndarray
     resultant_moment_nm: np.ndarray
     input_moment_nm: np.ndarray
+    contact_diagnostics: tuple[tuple[WrenchDiagnostics, ...], ...]
 
 
 @dataclass(frozen=True)
@@ -65,26 +72,34 @@ class RecoveryResult:
 
 
 class EggRecoveryCPU:
-    def __init__(self, environments=1, config=EggConfig(), history=8, rtol=1e-6, direct=False):
+    def __init__(self, environments=1, config=None, history=8, rtol=1e-6, direct=False):
         if environments < 1 or history < 0 or rtol <= 0:
             raise ValueError("Positive environment count/tolerance and nonnegative history required")
+        if config is None:
+            config = EggConfig()
         self.config = config
         self.environments = environments
         xyz, tetrahedra, outer, self.mesh_metadata = reference.egg.egg_mesh(
             config.level, config.layers, config.thickness_m
         )
         self.fem = reference.conv.FEM(
-            xyz, tetrahedra, outer, order=2, quarter=False,
-            young=config.young_pa, poisson=config.poisson,
-            density=config.density_kg_m3, label="full-egg-recovery",
+            xyz,
+            tetrahedra,
+            outer,
+            order=2,
+            quarter=False,
+            young=config.young_pa,
+            poisson=config.poisson,
+            density=config.density_kg_m3,
+            label="full-egg-recovery",
         )
         self.surface = reference.SurfaceGeometry(self.fem, config.surface_quadrature)
-        self.mapper = IndexedContacts(self.surface)
-        self.peak = P2Peak(self.fem.glambda, self.fem.elements,
-                           config.young_pa / (2 * (1 + config.poisson)))
+        self.mapper = FinitePatchMapper(self.surface)
+        self.peak = P2Peak(self.fem.glambda, self.fem.elements, config.young_pa / (2 * (1 + config.poisson)))
         self.peak.warmup(np.zeros(self.fem.ndof))
-        self.solver = BatchRecovery(self.fem, self.peak, environments, history, rtol,
-                                    history="cached", strategy="compact", direct=direct)
+        self.solver = BatchRecovery(
+            self.fem, self.peak, environments, history, rtol, history="cached", strategy="compact", direct=direct
+        )
 
     def map_contacts(self, contacts: ContactBatch) -> MappedLoads:
         b, c = contacts.valid.shape
@@ -92,26 +107,43 @@ class EggRecoveryCPU:
             raise ValueError("Contact batch must match environment count and [B,C,3] vector shapes")
         if contacts.radius_m.shape != (b, c):
             raise ValueError("radius_m must have shape [B,C]")
-        if not np.isfinite(contacts.position_m[contacts.valid]).all() or not np.isfinite(contacts.force_n[contacts.valid]).all():
+        if contacts.friction.shape != (b, c) or contacts.valid.dtype != np.bool_:
+            raise ValueError("friction must have shape [B,C] and valid must be boolean")
+        if contacts.inward_normal is not None and contacts.inward_normal.shape != (b, c, 3):
+            raise ValueError("Supplied inward pad normals must have shape [B,C,3]")
+        if (
+            not np.isfinite(contacts.position_m[contacts.valid]).all()
+            or not np.isfinite(contacts.force_n[contacts.valid]).all()
+        ):
             raise ValueError("Active contact positions/forces must be finite")
         raw = np.zeros((self.fem.ndof, b), order="F")
         input_moment = np.zeros((b, 3))
-        # This CPU adapter reuses the validated compact-support mapper. It
-        # conserves resultant force, but reports (rather than hides) the
-        # change of moment caused by replacing a point with a finite patch.
+        diagnostics = []
         for env in range(b):
-            patches = []
+            environment_diagnostics = []
             for contact in np.flatnonzero(contacts.valid[env]):
                 radius = contacts.radius_m[env, contact]
-                patches.append({"center_m": contacts.position_m[env, contact],
-                                "force_N": contacts.force_n[env, contact],
-                                "radius_m": radius, "sigma_m": 0.45 * radius})
-            raw[:, env] = self.mapper.load(patches)
-            input_moment[env] = np.cross(contacts.position_m[env, contacts.valid[env]],
-                                         contacts.force_n[env, contacts.valid[env]]).sum(axis=0)
+                patch = WrenchPatch(
+                    contacts.position_m[env, contact].astype(np.float64),
+                    contacts.force_n[env, contact].astype(np.float64),
+                    float(radius),
+                    float(contacts.friction[env, contact]),
+                    np.zeros(3),
+                    None if contacts.inward_normal is None else contacts.inward_normal[env, contact],
+                    contacts.source_epsilon,
+                )
+                mapped = self.mapper.map(patch)
+                raw[:, env] += mapped.nodal_force_n
+                environment_diagnostics.append(mapped.diagnostics)
+            diagnostics.append(tuple(environment_diagnostics))
+            input_moment[env] = np.cross(
+                contacts.position_m[env, contacts.valid[env]].astype(np.float64),
+                contacts.force_n[env, contacts.valid[env]].astype(np.float64),
+            ).sum(axis=0)
         nodal = raw.reshape(-1, 3, b).transpose(2, 0, 1)
-        return MappedLoads(raw, nodal.sum(axis=1),
-                           np.cross(self.fem.xyz[None], nodal).sum(axis=1), input_moment)
+        return MappedLoads(
+            raw, nodal.sum(axis=1), np.cross(self.fem.xyz[None], nodal).sum(axis=1), input_moment, tuple(diagnostics)
+        )
 
     def compatible_rhs(self, raw_force_n, omega_rad_s=None):
         """Inferred-acceleration inertia relief, including centrifugal inertia.
@@ -138,7 +170,7 @@ class EggRecoveryCPU:
         norm = np.linalg.norm(compatible_rhs_n, axis=0)
         if not np.isfinite(u).all() or not np.isfinite(peaks).all():
             raise FloatingPointError("Nonfinite displacement or stress")
-        allowed = np.maximum(1e-11, np.maximum(5 * self.solver.rtol, 1e-8) * norm)
+        allowed = np.maximum(1e-11, self.solver.rtol * norm)
         if np.any(residual > allowed):
             raise ArithmeticError("Complete equilibrium residual failed, including gauge rows")
         relative = np.divide(residual, norm, out=np.zeros_like(residual), where=norm > 1e-12)
