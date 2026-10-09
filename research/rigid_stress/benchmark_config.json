@@ -1,0 +1,11 @@
+{
+  "status": "initial_contract_not_a_measured_configuration",
+  "geometry": {"shape": "full_hollow_egg", "symmetry_reduction": false, "thickness_m": 0.0005, "initial_surface_level": 2, "initial_wall_layers": 2, "tet_order": 2, "curved_geometry": false},
+  "material": {"young_pa": 10000000000.0, "poisson": 0.3, "density_kg_m3": 2000.0, "calibrated": false},
+  "scene": {"robot": "Franka Panda", "dt_s": 0.01, "production_substeps_to_validate": [1, 4], "baseline_friction": 0.6, "spin_rolling_default": false, "seed": 20261009},
+  "contact": {"locations": "arbitrary runtime input", "counts": "varying", "directions": "normal plus tangential", "footprints": "runtime varying finite areas", "demo_radius_m": 0.006, "footprint_model_and_wrench_fidelity": "must be implemented and validated"},
+  "profiles": {"strict": {"full_relative_residual": 0.000001, "max_peak_relative_error": 0.0001}, "throughput": {"full_relative_residual": 0.001, "max_peak_relative_error": 0.01}, "relative_peak_error_reference_floor_pa": 1.0},
+  "sweep": {"environments": [1, 8, 32, 128, 512, 2048, 8192], "history": [0, 4, 8], "precision": ["fp64", "fp32", "scaled_fp32", "fp32_with_fp64_refinement"], "repetitions": 3, "minimum_timed_seconds": 10},
+  "sampling": "explicitly report step-end or maximum over all physical substeps",
+  "main_metric": "aggregate environment transitions per wall-clock second"
+}

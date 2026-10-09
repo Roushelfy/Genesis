@@ -1,0 +1,132 @@
+Full-body affine P2 shell; arbitrary patches and synthetic friction-cone-admissible snapshots, not Genesis/Coulomb dynamics.
+Geometry/K/M/contact integration FP64. FP32 LU computed from rounded K. Runtime FP32 includes six-mode inertia relief, LU solve and all-corner peak arithmetic. FP32 element assembly/contact mapping not tested.
+Not a GPU or TF32 measurement. Percentage summaries exclude reference peak <=1Pa.
+
+fp32_LU_rhs64_rounded_peak32
+{
+  "frames": 624,
+  "frames_reference_peak_above_1Pa": 570,
+  "peak_error_max_percent": 0.5920236475488648,
+  "peak_error_max_1Pa_floor_percent": 0.5920236475488648,
+  "zero_reference_spurious_peak_max_Pa": 0.0,
+  "peak_error_p95_percent": 0.14011526564198945,
+  "peak_error_mean_percent": 0.047837163207670924,
+  "fraction_above_0_1_percent": 0.07543859649122807,
+  "fraction_above_1_percent": 0.0,
+  "full_residual_max_active": 0.012755854370603196,
+  "full_residual_p95_active": 0.010778782784952748,
+  "worst_frame": {
+    "frame": 56,
+    "reference_peak_Pa": 2173759.419806073,
+    "peak_Pa": 2160890.25,
+    "peak_relative_error_1Pa_floor": 0.005920236475488648,
+    "full_relative_residual": 0.01242048773323552,
+    "FP32_balance_error_vs_rhs64": 1.8242182467315073e-07
+  }
+}
+fp32_runtime_balance_LU_peak
+{
+  "frames": 624,
+  "frames_reference_peak_above_1Pa": 570,
+  "peak_error_max_percent": 0.5922996670543046,
+  "peak_error_max_1Pa_floor_percent": 0.7164044305682182,
+  "zero_reference_spurious_peak_max_Pa": 0.007164044305682182,
+  "peak_error_p95_percent": 0.13983302961520488,
+  "peak_error_mean_percent": 0.04777775249907402,
+  "fraction_above_0_1_percent": 0.07543859649122807,
+  "fraction_above_1_percent": 0.0,
+  "full_residual_max_active": 0.012637272924753298,
+  "full_residual_p95_active": 0.010874105549804856,
+  "worst_frame": {
+    "frame": 56,
+    "reference_peak_Pa": 2173759.419806073,
+    "peak_Pa": 2160884.25,
+    "peak_relative_error_1Pa_floor": 0.005922996670543046,
+    "full_relative_residual": 0.012164935683793855,
+    "FP32_balance_error_vs_rhs64": 1.8242182467315073e-07
+  }
+}
+fp32_scaled_runtime_balance_LU_peak
+{
+  "frames": 624,
+  "frames_reference_peak_above_1Pa": 570,
+  "peak_error_max_percent": 0.37750441347195685,
+  "peak_error_max_1Pa_floor_percent": 0.7202484179288149,
+  "zero_reference_spurious_peak_max_Pa": 0.007202484179288149,
+  "peak_error_p95_percent": 0.15921183622719762,
+  "peak_error_mean_percent": 0.09672501387586536,
+  "fraction_above_0_1_percent": 0.4456140350877193,
+  "fraction_above_1_percent": 0.0,
+  "full_residual_max_active": 0.013627184894685831,
+  "full_residual_p95_active": 0.011651839814355795,
+  "worst_frame": {
+    "frame": 22,
+    "reference_peak_Pa": 1909801.9134880109,
+    "peak_Pa": 1917011.5,
+    "peak_relative_error_1Pa_floor": 0.0037750441347195684,
+    "full_relative_residual": 0.011195982509692842,
+    "FP32_balance_error_vs_rhs64": 8.998466833980805e-08
+  }
+}
+fp32_LU_one_FP64_residual_correction
+{
+  "frames": 624,
+  "frames_reference_peak_above_1Pa": 570,
+  "peak_error_max_percent": 0.0050114907662476066,
+  "peak_error_max_1Pa_floor_percent": 0.0050114907662476066,
+  "zero_reference_spurious_peak_max_Pa": 0.0,
+  "peak_error_p95_percent": 0.0006175578125216151,
+  "peak_error_mean_percent": 0.000355201867321948,
+  "fraction_above_0_1_percent": 0.0,
+  "fraction_above_1_percent": 0.0,
+  "full_residual_max_active": 0.00015331536101016803,
+  "full_residual_p95_active": 6.821601658786973e-05,
+  "worst_frame": {
+    "frame": 56,
+    "reference_peak_Pa": 2173759.419806073,
+    "peak_Pa": 2173650.482053469,
+    "peak_relative_error_1Pa_floor": 5.0114907662476065e-05,
+    "full_relative_residual": 0.00015331536101016803,
+    "FP32_balance_error_vs_rhs64": 1.8242182467315073e-07
+  }
+}
+
+Solve-only timing, matched ordering:
+{
+  "FP64_B1": {
+    "p50_ms": 6.999058000474179,
+    "p95_ms": 9.195689800071703,
+    "mean_ms": 7.11929344460158,
+    "queries_per_second": 140.46337712884701
+  },
+  "FP32_B1": {
+    "p50_ms": 4.856139999901643,
+    "p95_ms": 6.580304200360842,
+    "mean_ms": 5.0909681111887854,
+    "queries_per_second": 196.42629420565973
+  },
+  "FP32_plus_one_FP64_residual_B1": {
+    "p50_ms": 10.695525999835809,
+    "p95_ms": 12.881892199584398,
+    "mean_ms": 11.020450222127288,
+    "queries_per_second": 90.74039443435451
+  },
+  "FP64_B32": {
+    "p50_ms": 136.61908599988237,
+    "p95_ms": 169.1253577999305,
+    "mean_ms": 139.7691663333818,
+    "queries_per_second": 7.154653821249593
+  },
+  "FP32_B32": {
+    "p50_ms": 144.28651599973819,
+    "p95_ms": 188.64731000012398,
+    "mean_ms": 144.28462255556144,
+    "queries_per_second": 6.930745510422761
+  },
+  "FP32_plus_one_FP64_residual_B32": {
+    "p50_ms": 337.0415560002584,
+    "p95_ms": 391.64537860033306,
+    "mean_ms": 327.2258443334471,
+    "queries_per_second": 3.055993337069635
+  }
+}

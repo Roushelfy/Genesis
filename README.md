@@ -245,3 +245,13 @@ Pruned from Simulation Interface (same logic — labels/paths still valid):
 | [Close kinematic chain](./examples/rigid/closed_loop.py) | [Advanced: muscle](./examples/tutorials/advanced_muscle.py) | [Advanced: hybrid robot](./examples/tutorials/advanced_hybrid_robot.py) |
 | <img src="https://raw.githubusercontent.com/Genesis-Embodied-AI/genesis-world/readme-assets/videos/rigid_closed_loop.webp" width="240"> | <img src="https://raw.githubusercontent.com/Genesis-Embodied-AI/genesis-world/readme-assets/videos/tutorials_advanced_muscle.webp" width="240"> | <img src="https://raw.githubusercontent.com/Genesis-Embodied-AI/genesis-world/readme-assets/videos/tutorials_advanced_hybrid_robot.webp" width="240"> |
 -->
+
+## Rigid stress recovery research
+
+This fork adds a fixed-geometry linear-elastic peak-stress recovery handoff for
+Franka grasps of a hollow egg-shaped rigid entity. It includes runnable CPU
+references, measured CPU evidence, a Franka integration seed, a Torch device
+prototype, and a GPU implementation/validation plan. See
+[research/rigid_stress](research/rigid_stress/README.md) and
+[the agent goal](research/rigid_stress/GOAL.md). Production GPU and live-grasp
+acceptance remain implementation work; no GPU throughput is measured here.

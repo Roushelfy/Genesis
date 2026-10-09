@@ -1,0 +1,623 @@
+{
+  "scope": "Fixed full-body geometry, arbitrary current finite contact patches; known material inputs; coarse/unconverged P2 model",
+  "GPU_tested": false,
+  "mesh": {
+    "surface_refinement": 2,
+    "through_thickness_layers": 2,
+    "thickness_m": 0.0005,
+    "taper": 0.18,
+    "outer_dimensions_m": [
+      0.04440718294648414,
+      0.044,
+      0.06
+    ],
+    "outer_surface_vertices": 162,
+    "outer_surface_triangles": 320,
+    "minimum_tet_volume_m3": 9.118397181519732e-10,
+    "DOFs": 9630,
+    "nodes": 3210,
+    "tets": 1920,
+    "corner_samples": 7680,
+    "stress_converged": false
+  },
+  "spatial_index": {
+    "construction_s": 0.007390526996459812,
+    "quadrature_points": 32000,
+    "coordinates_bytes": 768000,
+    "integration_weights_bytes": 256000,
+    "scope": "All finite patches on stored surface geometry; centers, radius and force change each query"
+  },
+  "cases": {
+    "continuous_centers_forces_radii": {
+      "mapping_shared": {
+        "p50_ms": 5.609075495158322,
+        "p95_ms": 6.740127000739449,
+        "mean_ms": 5.683770375526365,
+        "queries_per_second": 175.93954961760602
+      },
+      "mapping_indexed": {
+        "p50_ms": 0.9723910006869119,
+        "p95_ms": 1.308331255131634,
+        "mean_ms": 0.9943824388756184,
+        "queries_per_second": 1005.6492963921744
+      },
+      "mapping_max_relative_load_error": 4.601724246914665e-16,
+      "frames": 16,
+      "pipeline": {
+        "shared_map_solve_numpy_peak": {
+          "p50_ms": 19.323470998642733,
+          "p95_ms": 21.239837654138682,
+          "mean_ms": 19.413229125348153,
+          "queries_per_second": 51.51126551606423
+        },
+        "indexed_map_solve_fused_peak": {
+          "p50_ms": 9.281381502660224,
+          "p95_ms": 10.520403546252055,
+          "mean_ms": 9.50114677016245,
+          "queries_per_second": 105.25045283380062
+        },
+        "incremental_fused_peak": {
+          "p50_ms": 7.644100496690953,
+          "p95_ms": 9.923342801266699,
+          "mean_ms": 7.991404188336068,
+          "queries_per_second": 125.13445402493342
+        },
+        "identical_rhs_cache_peak": {
+          "p50_ms": 7.542011997429654,
+          "p95_ms": 9.364404601001295,
+          "mean_ms": 7.736742687635949,
+          "queries_per_second": 129.2533615727062
+        }
+      },
+      "factor_solve_only": {
+        "p50_ms": 7.590559998789104,
+        "p95_ms": 8.516198000506847,
+        "mean_ms": 7.7252148964059115,
+        "queries_per_second": 129.44623721279797
+      },
+      "identical_rhs_hits": 0,
+      "scope_notes": {
+        "first_two": "Contact mapping, centrifugal inertia, inertia relief, solve and maximum included",
+        "last_two": "Already-assembled RHS supplied; excludes contact mapping and inertia relief; not comparable as full pipeline"
+      }
+    },
+    "position_count_direction_jumps": {
+      "mapping_shared": {
+        "p50_ms": 3.5829845000989735,
+        "p95_ms": 6.0770202544517815,
+        "mean_ms": 3.9961182505976467,
+        "queries_per_second": 250.2428450035089
+      },
+      "mapping_indexed": {
+        "p50_ms": 0.8241484974860214,
+        "p95_ms": 1.329345250269398,
+        "mean_ms": 0.8734338748581649,
+        "queries_per_second": 1144.906361872429
+      },
+      "mapping_max_relative_load_error": 4.949196801998348e-16,
+      "frames": 16,
+      "pipeline": {
+        "shared_map_solve_numpy_peak": {
+          "p50_ms": 17.97233500110451,
+          "p95_ms": 21.139417248923564,
+          "mean_ms": 18.22239372859258,
+          "queries_per_second": 54.87753227672333
+        },
+        "indexed_map_solve_fused_peak": {
+          "p50_ms": 9.476258499489632,
+          "p95_ms": 10.65166050029802,
+          "mean_ms": 9.531858604229152,
+          "queries_per_second": 104.91133382489686
+        },
+        "incremental_fused_peak": {
+          "p50_ms": 7.700540001678746,
+          "p95_ms": 10.488841298138139,
+          "mean_ms": 8.072466979986833,
+          "queries_per_second": 123.8778681262108
+        },
+        "identical_rhs_cache_peak": {
+          "p50_ms": 0.033104999602073804,
+          "p95_ms": 7.735307500479394,
+          "mean_ms": 1.5075968544806528,
+          "queries_per_second": 663.3073006407185
+        }
+      },
+      "factor_solve_only": {
+        "p50_ms": 7.64873149455525,
+        "p95_ms": 8.684463901590789,
+        "mean_ms": 7.780274020509144,
+        "queries_per_second": 128.53017739014797
+      },
+      "identical_rhs_hits": 39,
+      "scope_notes": {
+        "first_two": "Contact mapping, centrifugal inertia, inertia relief, solve and maximum included",
+        "last_two": "Already-assembled RHS supplied; excludes contact mapping and inertia relief; not comparable as full pipeline"
+      }
+    },
+    "random_unrestricted_patches": {
+      "mapping_shared": {
+        "p50_ms": 4.824625997571275,
+        "p95_ms": 5.879416246898472,
+        "mean_ms": 4.660394249185629,
+        "queries_per_second": 214.57412110032172
+      },
+      "mapping_indexed": {
+        "p50_ms": 0.9192915022140369,
+        "p95_ms": 1.2947989944223082,
+        "mean_ms": 0.9088656242965953,
+        "queries_per_second": 1100.2726621704246
+      },
+      "mapping_max_relative_load_error": 4.927078577184475e-16,
+      "frames": 16,
+      "pipeline": {
+        "shared_map_solve_numpy_peak": {
+          "p50_ms": 19.042484498640988,
+          "p95_ms": 23.036922549363226,
+          "mean_ms": 19.292859853673388,
+          "queries_per_second": 51.832647289437425
+        },
+        "indexed_map_solve_fused_peak": {
+          "p50_ms": 9.661790500103962,
+          "p95_ms": 12.764284951117588,
+          "mean_ms": 9.905151354663152,
+          "queries_per_second": 100.95756886432831
+        },
+        "incremental_fused_peak": {
+          "p50_ms": 7.664158500119811,
+          "p95_ms": 9.021080797538161,
+          "mean_ms": 7.806582270707925,
+          "queries_per_second": 128.09702957364937
+        },
+        "identical_rhs_cache_peak": {
+          "p50_ms": 7.585200000903569,
+          "p95_ms": 8.645138201245572,
+          "mean_ms": 7.714271916483995,
+          "queries_per_second": 129.6298614861089
+        }
+      },
+      "factor_solve_only": {
+        "p50_ms": 7.66603100055363,
+        "p95_ms": 10.88594850152731,
+        "mean_ms": 8.069458041215208,
+        "queries_per_second": 123.92405969427489
+      },
+      "identical_rhs_hits": 0,
+      "scope_notes": {
+        "first_two": "Contact mapping, centrifugal inertia, inertia relief, solve and maximum included",
+        "last_two": "Already-assembled RHS supplied; excludes contact mapping and inertia relief; not comparable as full pipeline"
+      }
+    },
+    "zero_unilateral_and_spin": {
+      "mapping_shared": {
+        "p50_ms": 1.2785109975084197,
+        "p95_ms": 2.309423502811114,
+        "mean_ms": 1.5684547506680246,
+        "queries_per_second": 637.5701942144568
+      },
+      "mapping_indexed": {
+        "p50_ms": 0.00652950257062912,
+        "p95_ms": 0.31168499845080067,
+        "mean_ms": 0.0962370013439795,
+        "queries_per_second": 10391.01370610774
+      },
+      "mapping_max_relative_load_error": 3.067152942242641e-16,
+      "frames": 4,
+      "pipeline": {
+        "shared_map_solve_numpy_peak": {
+          "p50_ms": 15.790051002113614,
+          "p95_ms": 21.36349245192832,
+          "mean_ms": 16.731766001006083,
+          "queries_per_second": 59.76655422624664
+        },
+        "indexed_map_solve_fused_peak": {
+          "p50_ms": 8.494220997818047,
+          "p95_ms": 8.735261649053427,
+          "mean_ms": 8.45915208265069,
+          "queries_per_second": 118.21515800040426
+        },
+        "incremental_fused_peak": {
+          "p50_ms": 3.6845225004071835,
+          "p95_ms": 8.184254403386147,
+          "mean_ms": 3.938249667044147,
+          "queries_per_second": 253.9199097426827
+        },
+        "identical_rhs_cache_peak": {
+          "p50_ms": 7.581208999908995,
+          "p95_ms": 8.892751598978066,
+          "mean_ms": 7.717030583080486,
+          "queries_per_second": 129.58352169712663
+        }
+      },
+      "factor_solve_only": {
+        "p50_ms": 7.505024997954024,
+        "p95_ms": 7.97313219991338,
+        "mean_ms": 7.592305665336123,
+        "queries_per_second": 131.71229453598778
+      },
+      "identical_rhs_hits": 0,
+      "scope_notes": {
+        "first_two": "Contact mapping, centrifugal inertia, inertia relief, solve and maximum included",
+        "last_two": "Already-assembled RHS supplied; excludes contact mapping and inertia relief; not comparable as full pipeline"
+      }
+    }
+  },
+  "postprocessing": {
+    "GPU_tested": false,
+    "result_type": "general_P2_maximum_postprocessing",
+    "fields": 17,
+    "repeats": 5,
+    "records": [
+      {
+        "mode": "numpy_full_strain_stress",
+        "timing": {
+          "mean_ms": 4.946295270757914,
+          "p50_ms": 4.89315500453813,
+          "p95_ms": 5.306037999980617,
+          "queries_per_second": 202.17151327619214
+        }
+      },
+      {
+        "mode": "onfly_serial",
+        "threads": 1,
+        "timing": {
+          "mean_ms": 0.1564867765409872,
+          "p50_ms": 0.14425699919229373,
+          "p95_ms": 0.21732000313932073,
+          "queries_per_second": 6390.3163072573025
+        },
+        "metadata": {
+          "mode": "onfly_serial",
+          "element_count": 1920,
+          "evaluated_corners_per_query": 7680,
+          "gradient_bytes": 184320,
+          "connectivity_bytes": 153600,
+          "cached_gradient_bytes": 0,
+          "block_maximum_workspace_bytes": 0,
+          "block_size": 256,
+          "construction_s": 5.9640005929395556e-05,
+          "fastmath": false,
+          "arithmetic_dtype": "float64",
+          "per_element_translation_centering": true,
+          "returns": [
+            "von_Mises_peak_Pa",
+            "element",
+            "corner"
+          ],
+          "scope": "All elements and all four P2 corners, arbitrary displacement field, isotropic linear elasticity, affine tetrahedral geometry",
+          "constitutive_identity": "sigma_vm = mu*sqrt(2*sum(diagonal_strain_differences**2)+3*sum(engineering_shear**2)); lambda cancels",
+          "first_query_including_JIT_s": 0.10189688700484112
+        },
+        "max_absolute_error_Pa": 7.264316082000732e-08,
+        "max_relative_error_1Pa_floor": 3.573162530934861e-14,
+        "all_hotspot_indices_match": true,
+        "passed_1e-8_scaled_error": true
+      },
+      {
+        "mode": "onfly_parallel",
+        "threads": 1,
+        "timing": {
+          "mean_ms": 0.15216215243152179,
+          "p50_ms": 0.14158299745758995,
+          "p95_ms": 0.19544140086509282,
+          "queries_per_second": 6571.936477108094
+        },
+        "metadata": {
+          "mode": "onfly_parallel",
+          "element_count": 1920,
+          "evaluated_corners_per_query": 7680,
+          "gradient_bytes": 184320,
+          "connectivity_bytes": 153600,
+          "cached_gradient_bytes": 0,
+          "block_maximum_workspace_bytes": 192,
+          "block_size": 256,
+          "construction_s": 0.0003896650014212355,
+          "fastmath": false,
+          "arithmetic_dtype": "float64",
+          "per_element_translation_centering": true,
+          "returns": [
+            "von_Mises_peak_Pa",
+            "element",
+            "corner"
+          ],
+          "scope": "All elements and all four P2 corners, arbitrary displacement field, isotropic linear elasticity, affine tetrahedral geometry",
+          "constitutive_identity": "sigma_vm = mu*sqrt(2*sum(diagonal_strain_differences**2)+3*sum(engineering_shear**2)); lambda cancels",
+          "first_query_including_JIT_s": 0.005020295997383073
+        },
+        "max_absolute_error_Pa": 7.264316082000732e-08,
+        "max_relative_error_1Pa_floor": 3.573162530934861e-14,
+        "all_hotspot_indices_match": true,
+        "passed_1e-8_scaled_error": true
+      },
+      {
+        "mode": "onfly_parallel",
+        "threads": 2,
+        "timing": {
+          "mean_ms": 0.09374364753431805,
+          "p50_ms": 0.07960000220919028,
+          "p95_ms": 0.10661880078259856,
+          "queries_per_second": 10667.38948507328
+        },
+        "metadata": {
+          "mode": "onfly_parallel",
+          "element_count": 1920,
+          "evaluated_corners_per_query": 7680,
+          "gradient_bytes": 184320,
+          "connectivity_bytes": 153600,
+          "cached_gradient_bytes": 0,
+          "block_maximum_workspace_bytes": 192,
+          "block_size": 256,
+          "construction_s": 0.0003896650014212355,
+          "fastmath": false,
+          "arithmetic_dtype": "float64",
+          "per_element_translation_centering": true,
+          "returns": [
+            "von_Mises_peak_Pa",
+            "element",
+            "corner"
+          ],
+          "scope": "All elements and all four P2 corners, arbitrary displacement field, isotropic linear elasticity, affine tetrahedral geometry",
+          "constitutive_identity": "sigma_vm = mu*sqrt(2*sum(diagonal_strain_differences**2)+3*sum(engineering_shear**2)); lambda cancels",
+          "first_query_including_JIT_s": 0.005020295997383073
+        },
+        "max_absolute_error_Pa": 7.264316082000732e-08,
+        "max_relative_error_1Pa_floor": 3.573162530934861e-14,
+        "all_hotspot_indices_match": true,
+        "passed_1e-8_scaled_error": true
+      },
+      {
+        "mode": "onfly_parallel",
+        "threads": 4,
+        "timing": {
+          "mean_ms": 0.07171677605262684,
+          "p50_ms": 0.04754200199386105,
+          "p95_ms": 0.18448500049998978,
+          "queries_per_second": 13943.738899615135
+        },
+        "metadata": {
+          "mode": "onfly_parallel",
+          "element_count": 1920,
+          "evaluated_corners_per_query": 7680,
+          "gradient_bytes": 184320,
+          "connectivity_bytes": 153600,
+          "cached_gradient_bytes": 0,
+          "block_maximum_workspace_bytes": 192,
+          "block_size": 256,
+          "construction_s": 0.0003896650014212355,
+          "fastmath": false,
+          "arithmetic_dtype": "float64",
+          "per_element_translation_centering": true,
+          "returns": [
+            "von_Mises_peak_Pa",
+            "element",
+            "corner"
+          ],
+          "scope": "All elements and all four P2 corners, arbitrary displacement field, isotropic linear elasticity, affine tetrahedral geometry",
+          "constitutive_identity": "sigma_vm = mu*sqrt(2*sum(diagonal_strain_differences**2)+3*sum(engineering_shear**2)); lambda cancels",
+          "first_query_including_JIT_s": 0.005020295997383073
+        },
+        "max_absolute_error_Pa": 7.264316082000732e-08,
+        "max_relative_error_1Pa_floor": 3.573162530934861e-14,
+        "all_hotspot_indices_match": true,
+        "passed_1e-8_scaled_error": true
+      },
+      {
+        "mode": "onfly_parallel",
+        "threads": 8,
+        "timing": {
+          "mean_ms": 0.0663931416484582,
+          "p50_ms": 0.046159999328665435,
+          "p95_ms": 0.13487020187312737,
+          "queries_per_second": 15061.796673139088
+        },
+        "metadata": {
+          "mode": "onfly_parallel",
+          "element_count": 1920,
+          "evaluated_corners_per_query": 7680,
+          "gradient_bytes": 184320,
+          "connectivity_bytes": 153600,
+          "cached_gradient_bytes": 0,
+          "block_maximum_workspace_bytes": 192,
+          "block_size": 256,
+          "construction_s": 0.0003896650014212355,
+          "fastmath": false,
+          "arithmetic_dtype": "float64",
+          "per_element_translation_centering": true,
+          "returns": [
+            "von_Mises_peak_Pa",
+            "element",
+            "corner"
+          ],
+          "scope": "All elements and all four P2 corners, arbitrary displacement field, isotropic linear elasticity, affine tetrahedral geometry",
+          "constitutive_identity": "sigma_vm = mu*sqrt(2*sum(diagonal_strain_differences**2)+3*sum(engineering_shear**2)); lambda cancels",
+          "first_query_including_JIT_s": 0.005020295997383073
+        },
+        "max_absolute_error_Pa": 7.264316082000732e-08,
+        "max_relative_error_1Pa_floor": 3.573162530934861e-14,
+        "all_hotspot_indices_match": true,
+        "passed_1e-8_scaled_error": true
+      },
+      {
+        "mode": "cached_serial",
+        "threads": 1,
+        "timing": {
+          "mean_ms": 0.19817848232752808,
+          "p50_ms": 0.18948400247609243,
+          "p95_ms": 0.23286620562430468,
+          "queries_per_second": 5045.956494647626
+        },
+        "metadata": {
+          "mode": "cached_serial",
+          "element_count": 1920,
+          "evaluated_corners_per_query": 7680,
+          "gradient_bytes": 184320,
+          "connectivity_bytes": 153600,
+          "cached_gradient_bytes": 1843200,
+          "block_maximum_workspace_bytes": 0,
+          "block_size": 256,
+          "construction_s": 0.0024764720001257956,
+          "fastmath": false,
+          "arithmetic_dtype": "float64",
+          "per_element_translation_centering": true,
+          "returns": [
+            "von_Mises_peak_Pa",
+            "element",
+            "corner"
+          ],
+          "scope": "All elements and all four P2 corners, arbitrary displacement field, isotropic linear elasticity, affine tetrahedral geometry",
+          "constitutive_identity": "sigma_vm = mu*sqrt(2*sum(diagonal_strain_differences**2)+3*sum(engineering_shear**2)); lambda cancels",
+          "first_query_including_JIT_s": 0.002996884999447502
+        },
+        "max_absolute_error_Pa": 7.264316082000732e-08,
+        "max_relative_error_1Pa_floor": 3.573162530934861e-14,
+        "all_hotspot_indices_match": true,
+        "passed_1e-8_scaled_error": true
+      },
+      {
+        "mode": "cached_parallel",
+        "threads": 1,
+        "timing": {
+          "mean_ms": 0.19779957673402832,
+          "p50_ms": 0.1885029996628873,
+          "p95_ms": 0.24699379864614449,
+          "queries_per_second": 5055.622547386198
+        },
+        "metadata": {
+          "mode": "cached_parallel",
+          "element_count": 1920,
+          "evaluated_corners_per_query": 7680,
+          "gradient_bytes": 184320,
+          "connectivity_bytes": 153600,
+          "cached_gradient_bytes": 1843200,
+          "block_maximum_workspace_bytes": 192,
+          "block_size": 256,
+          "construction_s": 0.001782450002792757,
+          "fastmath": false,
+          "arithmetic_dtype": "float64",
+          "per_element_translation_centering": true,
+          "returns": [
+            "von_Mises_peak_Pa",
+            "element",
+            "corner"
+          ],
+          "scope": "All elements and all four P2 corners, arbitrary displacement field, isotropic linear elasticity, affine tetrahedral geometry",
+          "constitutive_identity": "sigma_vm = mu*sqrt(2*sum(diagonal_strain_differences**2)+3*sum(engineering_shear**2)); lambda cancels",
+          "first_query_including_JIT_s": 0.004374675998406019
+        },
+        "max_absolute_error_Pa": 7.264316082000732e-08,
+        "max_relative_error_1Pa_floor": 3.573162530934861e-14,
+        "all_hotspot_indices_match": true,
+        "passed_1e-8_scaled_error": true
+      },
+      {
+        "mode": "cached_parallel",
+        "threads": 2,
+        "timing": {
+          "mean_ms": 0.12083451789187487,
+          "p50_ms": 0.10950500291073695,
+          "p95_ms": 0.17198819841723886,
+          "queries_per_second": 8275.780939473107
+        },
+        "metadata": {
+          "mode": "cached_parallel",
+          "element_count": 1920,
+          "evaluated_corners_per_query": 7680,
+          "gradient_bytes": 184320,
+          "connectivity_bytes": 153600,
+          "cached_gradient_bytes": 1843200,
+          "block_maximum_workspace_bytes": 192,
+          "block_size": 256,
+          "construction_s": 0.001782450002792757,
+          "fastmath": false,
+          "arithmetic_dtype": "float64",
+          "per_element_translation_centering": true,
+          "returns": [
+            "von_Mises_peak_Pa",
+            "element",
+            "corner"
+          ],
+          "scope": "All elements and all four P2 corners, arbitrary displacement field, isotropic linear elasticity, affine tetrahedral geometry",
+          "constitutive_identity": "sigma_vm = mu*sqrt(2*sum(diagonal_strain_differences**2)+3*sum(engineering_shear**2)); lambda cancels",
+          "first_query_including_JIT_s": 0.004374675998406019
+        },
+        "max_absolute_error_Pa": 7.264316082000732e-08,
+        "max_relative_error_1Pa_floor": 3.573162530934861e-14,
+        "all_hotspot_indices_match": true,
+        "passed_1e-8_scaled_error": true
+      },
+      {
+        "mode": "cached_parallel",
+        "threads": 4,
+        "timing": {
+          "mean_ms": 0.07908467018483754,
+          "p50_ms": 0.058748002629727125,
+          "p95_ms": 0.17898939986480397,
+          "queries_per_second": 12644.67560733059
+        },
+        "metadata": {
+          "mode": "cached_parallel",
+          "element_count": 1920,
+          "evaluated_corners_per_query": 7680,
+          "gradient_bytes": 184320,
+          "connectivity_bytes": 153600,
+          "cached_gradient_bytes": 1843200,
+          "block_maximum_workspace_bytes": 192,
+          "block_size": 256,
+          "construction_s": 0.001782450002792757,
+          "fastmath": false,
+          "arithmetic_dtype": "float64",
+          "per_element_translation_centering": true,
+          "returns": [
+            "von_Mises_peak_Pa",
+            "element",
+            "corner"
+          ],
+          "scope": "All elements and all four P2 corners, arbitrary displacement field, isotropic linear elasticity, affine tetrahedral geometry",
+          "constitutive_identity": "sigma_vm = mu*sqrt(2*sum(diagonal_strain_differences**2)+3*sum(engineering_shear**2)); lambda cancels",
+          "first_query_including_JIT_s": 0.004374675998406019
+        },
+        "max_absolute_error_Pa": 7.264316082000732e-08,
+        "max_relative_error_1Pa_floor": 3.573162530934861e-14,
+        "all_hotspot_indices_match": true,
+        "passed_1e-8_scaled_error": true
+      },
+      {
+        "mode": "cached_parallel",
+        "threads": 8,
+        "timing": {
+          "mean_ms": 0.10355694111614654,
+          "p50_ms": 0.061022001318633556,
+          "p95_ms": 0.3321933996630831,
+          "queries_per_second": 9656.523157423397
+        },
+        "metadata": {
+          "mode": "cached_parallel",
+          "element_count": 1920,
+          "evaluated_corners_per_query": 7680,
+          "gradient_bytes": 184320,
+          "connectivity_bytes": 153600,
+          "cached_gradient_bytes": 1843200,
+          "block_maximum_workspace_bytes": 192,
+          "block_size": 256,
+          "construction_s": 0.001782450002792757,
+          "fastmath": false,
+          "arithmetic_dtype": "float64",
+          "per_element_translation_centering": true,
+          "returns": [
+            "von_Mises_peak_Pa",
+            "element",
+            "corner"
+          ],
+          "scope": "All elements and all four P2 corners, arbitrary displacement field, isotropic linear elasticity, affine tetrahedral geometry",
+          "constitutive_identity": "sigma_vm = mu*sqrt(2*sum(diagonal_strain_differences**2)+3*sum(engineering_shear**2)); lambda cancels",
+          "first_query_including_JIT_s": 0.004374675998406019
+        },
+        "max_absolute_error_Pa": 7.264316082000732e-08,
+        "max_relative_error_1Pa_floor": 3.573162530934861e-14,
+        "all_hotspot_indices_match": true,
+        "passed_1e-8_scaled_error": true
+      }
+    ],
+    "scope": "Postprocessing only; load construction and linear solves excluded. All elements/corners evaluated; no contact basis or symmetry."
+  },
+  "full_original_peak_error_1Pa_floor": 5.2187933479853786e-14
+}

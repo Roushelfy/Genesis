@@ -1,0 +1,200 @@
+连续接触与摩擦下的时序应力恢复：算法、CPU验证与精度成本
+日期：2026-10-09
+
+结论
+
+可以利用一次抓取内部的时间连续性，接触位置不必固定，也不要求对称。
+应力恢复载荷必须同时包含法向压力和切向摩擦；固定刚度的线弹性系统
+可以处理二者。平滑变化有助于预测，但不保证只需局部求解、固定热点
+或固定小载荷基，也不保证在严格方程精度下时序复用必然更快。
+
+本次CPU测试表明：严格残差下没有可靠提速；明确放宽方程残差后，
+512点平滑合成序列上，4个历史方向约1.81x加速，最大观测峰值误差0.0673%；
+8个方向约2.05x加速，最大观测峰值误差0.1235%。这不是等精度加速，
+也不是任意真实抓取的误差保证。这些时间仅包括已组装RHS之后的位移恢复、
+历史维护和全域最大应力扫描，不包含接触模拟、载荷组装或RL。
+
+1. 摩擦如何进入应力恢复
+
+使用物体参考几何的材料坐标。每个表面点外法向为n，接触traction为：
+  t = -p*n + tau_t
+  p >= 0, tau_t dot n = 0。
+理想各向同性Coulomb静摩擦满足 ||tau_t|| <= mu_s*p；
+滑动时 tau_t = -mu_d*p*v_slip/||v_slip||，摩擦不向滑移注入功。
+静摩擦通常不是mu*p，而是由当前约束求解产生的锥内切向力。
+
+在线应力恢复应使用刚体solver已经求出的当前总接触力，包括摩擦，
+不要再独立求一套不一致的摩擦力。将当前有限接触面积上的向量traction
+按完整P2六节点表面形函数积分，再加入体力、全部反力与惯性释放。
+如果从点接触力扩展为接触斑，应匹配合力与力矩，并明确当前载荷分布。
+接触斑可以移动、变形、开闭；它不是固定的离线假设。
+
+线弹性中接触应力张量可叠加：sigma_contact=sigma_normal+sigma_friction；
+完整总应力还需加入其余外载与惯性载荷的响应。
+但von Mises不是线性的，不能把两个最大von Mises相加，也不能只使用
+接触合力的标量大小。法向和切向分量应一起通过完整线性系统恢复。
+在本次同一法向压力、有/无切向traction的快照比较中，忽略摩擦造成
+最大峰值相对变化5.2249%；
+normal-only/full峰值比范围约
+0.947751–1.006531。
+这里只是相同载荷快照的分量比较，不是两条动力学轨迹的比较。
+
+Genesis接入要点（latest官方文档）：get_contacts()提供逐接触position、
+normal、force_a/force_b；根据物体属于A还是B选择受力，并过滤valid_mask。
+坐标/力转换到材料系，保留切向力。get_links_net_contact_force()仅是每link
+合力，不能代替空间接触载荷做内部应力恢复。is_padded=True可避免裁切
+接触数组时的逐步device-to-host同步；固定padding slot不是稳定接触ID。
+当前运行版本、子步采样时机和实际摩擦模型应按接入代码核对。
+Genesis可使用pyramidal或elliptic cone；本合成测试采用圆形Euclidean cone，
+不能把它当成默认pyramidal solver的精确力学轨迹。
+
+2. 平滑假设应该作用于完整载荷
+
+如果只是接触点运动平滑，不能据此推导法向/摩擦力也平滑。粘着到滑动、
+接触启闭、速度反向、接触manifold重建都可能使求解载荷出现转折。
+若任务确实允许完整材料系载荷b(t)平滑变化，可利用这种时间相关性。
+接触状态改变时，不必丢弃整条算法，当前残差不通过就回退。
+即使所有应力分量平滑，两个峰值交叉时argmax也会跳变，因此仍扫描全域。
+
+这里数值刚度矩阵固定还要求当前已知材料不变；仅几何固定只保证
+几何算子和稀疏结构可复用。测试材料E=10GPa、nu=0.3、rho=2000kg/m3。
+刚体自由度的六个gauge仅去除零空间，不给接触处加固定支撑。
+
+3. 在线预测、历史方向与完整回退
+
+缩减系统为A*y_t=b_t，u_t=V*y_t。每帧完整组装当前b_t，包含摩擦、
+体力与惯性；不能只更新部分法向力或把Delta b当成完整residual。
+位移预测：
+  y_hat = y_prev + (dt_current/dt_previous)*(y_prev-y_before)。
+没有两帧历史时先使用上一帧。测试均匀采样使用2*y_prev-y_before。
+若前两帧准确且b(t)为C2，外推残差是O(dt^2)，零阶是O(dt)，
+但常数取决于载荷曲率和空间分辨率；该阶数不意味着实际容差已经满足。
+
+每帧算缩减残差r_reduced=b-A*y_hat，以及完整残差
+  u_hat=V*y_hat, r_full=f_eff-K*u_hat, r_reduced=V^T*r_full。
+接受了近似前帧后，这些残差包含已有误差；
+仅使用Delta b会漏掉它。保留最近4/8/16个实际完整求解产生的修正方向Q，
+以及它们在完整K下的KQ；Q采用完整DOF且gauge对应行均为0。
+两种小规模校正均使用完整残差：
+  energy:     (Q^T K Q)c = Q^T r_full
+  residual2:  ((KQ)^T(KQ))c = (KQ)^T r_full
+后者最小化完整节点力残差，前者最小化A-energy误差，二者不能混称。
+Q由本轨迹历史修正动态更新；不是预先限制接触位置的固定载荷基。
+方向用相应度量二次正交化，超出容量移除最旧方向。
+
+得到u_hat+Q*c后重新实际计算完整 rhs-K*u，包括6个gauge原始方程。
+若 ||r|| <= max(rtol*||rhs||, 1e-12 N) 就暂接受；否则用原FP64分解
+对free rows求解完整校正并加回，保存校正方向。
+每种方法都继续扫描全部1920个P2单元的7680个角点，不追踪固定热点。
+本模型为直边P2、单元内常量本构、未平均应力，四角点最大值规则适用。
+
+注意：普通节点力残差阈值不是严格峰值应力误差界，薄壳可能病态。
+本次对每一帧都另求完整FP64参考并比较全域峰值，但参考时间不计入优化。
+若要对训练过程在线保证峰值容限，应另提供可靠coercivity/output bound，
+或采用周期/事件触发的精确审计与回退。周期审计本身不能给所有中间帧严格证书。
+代码最终assert包含FP64误差floor，不能将fallback分支的assert解释成
+严格达到任意配置rtol；下表报告了每种方法实测最终残差。
+
+4. 验证范围
+
+CPU：AMD EPYC 9V74 80-Core Processor，容器CPU quota为8核，BLAS单线程。
+完整鸡蛋形空壳：3210节点、9630DOF、1920直边P2四面体，厚0.5mm；
+已知固定均匀材料；没有对称子域。该粗网格未完成任意接触应力收敛。
+
+合成曲线包含靠近、夹紧、抬起载荷、保持和松开；接触中心、方向、
+半径、强度和数量变化，使用有限支撑C-infinity压力与C2时间ramp。
+各求积点采用实际face法向、切向traction，mu=0.6；接触斑数量1–3，
+非对称；另有16个独立突变载荷作回退对照。添加一致质量矩阵的重力载荷，
+随后由总外载进行质量一致的惯性释放。
+
+这些是摩擦锥/耗散可接受的处方载荷快照，不是Genesis刚体接触求解结果，
+不是实际夹爪运动或时间一致的刚体/弹性动力学轨迹。特别是smooth_interpolation
+阶段的声明滑移速度非零但切向traction在锥内，不能称为精确Coulomb滑动。
+同一路径128/512点比较仅研究代数输入采样密度，不是实际动力学dt收敛。
+
+逐点非负压力、摩擦锥、切向性、声明耗散方向通过；一致节点映射
+与独立求积合力、力矩比较通过。最大相对摩擦锥超量1.666e-16，
+最大切向性残差/峰值压力1.386e-16，在FP64舍入范围内。
+峰值误差定义abs(peak-reference)/max(reference,1Pa)，避免零应力除零。
+
+5. 严格方程精度下的结果：没有可靠收益
+
+128点序列中，rtol=1e-8或1e-6，上一帧、外推和energy history4/8/16
+都没有跳过任何非零RHS帧的完整回代。多维护历史反而更慢。
+512点序列中，history8/16只省少量回代，总成本仍超过直接解。
+  N=128, direct, history=0, metric=energy, rtol=1e-08: 7.238955 ms, factor 114/114, peak error=0%
+  N=128, extrapolate, history=0, metric=energy, rtol=1e-06: 7.229176 ms, factor 114/114, peak error=9.38069e-09%
+  N=128, extrapolate, history=8, metric=energy, rtol=1e-06: 8.982691 ms, factor 114/114, peak error=7.9732e-10%
+  N=128, extrapolate, history=8, metric=residual, rtol=1e-08: 9.205099 ms, factor 114/114, peak error=1.09064e-09%
+  N=128, extrapolate, history=8, metric=residual, rtol=1e-06: 9.972098 ms, factor 114/114, peak error=1.09064e-09%
+  N=128, extrapolate, history=16, metric=residual, rtol=1e-06: 11.715163 ms, factor 114/114, peak error=1.10427e-09%
+  N=512, direct, history=0, metric=energy, rtol=1e-08: 7.102121 ms, factor 460/460, peak error=0%
+  N=512, extrapolate, history=0, metric=energy, rtol=1e-06: 7.275840 ms, factor 460/460, peak error=1.14781e-08%
+  N=512, extrapolate, history=8, metric=energy, rtol=1e-06: 9.821619 ms, factor 450/460, peak error=5.6221e-06%
+  N=512, extrapolate, history=8, metric=residual, rtol=1e-08: 10.003250 ms, factor 459/460, peak error=3.20544e-08%
+  N=512, extrapolate, history=8, metric=residual, rtol=1e-06: 9.907183 ms, factor 449/460, peak error=2.12976e-05%
+  N=512, extrapolate, history=16, metric=residual, rtol=1e-06: 10.236650 ms, factor 434/460, peak error=2.12976e-05%
+
+跳过初始未接触/最终自由落体的零有效RHS不是预测收益；
+本报告factor次数的分母只包括非零RHS（128点114帧、512点460帧）。
+首轮JSON的factor_skip_fraction包含零帧，不能作为有效预测命中率；
+请用后补的nonzero_factor_skip_fraction。
+
+6. 单独放宽方程容差后的精度成本结果
+
+这是另一组单独测量，所有方法在同一512点stick/slide/release输入下比较：
+  FP64 direct | RHS rtol=1e-08 | 7.257169 ms | speed=1.000x | factor=460/460 | max peak error=0.000000% | max final rel residual=6.971e-10
+  4 history directions | RHS rtol=1e-04 | 7.938757 ms | speed=0.914x | factor=353/460 | max peak error=0.006639% | max final rel residual=9.990e-05
+  4 history directions | RHS rtol=1e-03 | 4.014763 ms | speed=1.808x | factor=151/460 | max peak error=0.067291% | max final rel residual=9.961e-04
+  8 history directions | RHS rtol=1e-04 | 6.761753 ms | speed=1.073x | factor=279/460 | max peak error=0.008908% | max final rel residual=9.961e-05
+  8 history directions | RHS rtol=1e-03 | 3.541362 ms | speed=2.049x | factor=119/460 | max peak error=0.123450% | max final rel residual=9.988e-04
+
+rtol=1e-3、4方向：309/460个非零RHS帧省去回代；约1.81x，
+最大观测峰值误差0.0673%。8方向省去341/460帧；约2.05x，最大误差0.1235%。
+rtol=1e-4、8方向约1.07x、最大误差0.00891%；4方向虽然省回代但总时间更慢。
+所以“省回代次数”也不能自动等价于“更快”。历史维护、SpMV和投影必须计入。
+上述观测误差不保证所有后续接触路径，也不包含接触面积/材料/网格误差。
+
+突变对照：所有4/8方向、1e-4/1e-3配置都使用16/16次完整回代，
+恢复准确峰值，但额外历史开销使约7.45ms变为9.68–10.38ms。
+生产实现可监测实际节省率，在收益不足时关闭历史投影；这项策略尚未实测。
+
+本次处方载荷构造、完整cone/力矩检查和映射本身约10–12ms，单独记录，
+不是优化后的生产载荷映射路径；不要将上述3.5–7.3ms换算成完整流程或RL FPS。
+已有物理solver总接触向量时可省去测试用处方构造与验证；实际端到端收益还需测量。
+没有GPU，未测试RTX6000，也没有新的RTX6000/RL性能预测。
+
+7. 实现建议
+
+当前可保持精确的基础路线仍是完整分解复用、实际向量载荷、一致映射、
+多RHS回代和全域融合max。时间平滑性支持按轨迹维护少量修正方向；
+若允许近似，可根据峰值误差预算标定并在线残差控制，事件/失败立即回退。
+不要让下一次新抓取继承不合适的旧历史；多环境history是各自的，分解可以共享。
+
+CPU版本可只在需要时更新Q/KQ，避免每帧大数组重排；当前np.column_stack、
+二次正交化和Gram重算是清晰的原型。GPU可用ring buffer、共享常量几何/因子，
+批量SpMV/小矩阵乘法、按是否需回代分组；实际GPU数据布局与分组开销尚未验证。
+全部接触点进入实际RHS；批量环境无须共享接触位置、方向或对称性。
+history4的Q/KQ约2*9630*4*8=616320 bytes/环境；细网格需重新评估显存。
+
+8. 复现
+
+解压smooth_friction_temporal_cpu.zip，在根目录依次运行：
+  python smooth_friction_cpu/temporal_benchmark.py --frames 128 --repeats 2
+  python smooth_friction_cpu/sampling_study.py
+  python smooth_friction_cpu/approximation_budget.py
+  python smooth_friction_cpu/build_report.py
+不要同时运行性能脚本。requirements.txt记录所用版本。
+源码保持旧全物体FEM与应力内核；旧quarter或三载荷基流程不参与这些测试。
+
+官方资料
+
+Genesis逐接触字段、单位及net contact force区别：
+https://genesis-world.readthedocs.io/en/latest/user_guide/theory/rigid_solver/collision_detection.html
+Genesis get_contacts实现、force_a/force_b与padding：
+https://genesis-world.readthedocs.io/en/latest/_modules/genesis/engine/entities/rigid_entity/rigid_entity.html
+Genesis摩擦锥与contact resolution参数：
+https://genesis-world.readthedocs.io/en/latest/api_reference/engine/solvers/rigid_solver.html
+
+具体CPU数值来自附带实验；上述数学预测与修正是针对固定线性系统的推导，
+没有把官方文档作为本合成抓取的实验验证证据。

@@ -1,0 +1,135 @@
+{
+  "jobs": [
+    {
+      "label": "QP2-L5-T2",
+      "surface_level": 5,
+      "wall_layers": 2,
+      "adaptive_refinements": 0,
+      "nodes": 21125,
+      "elements": 12288,
+      "DOFs": 63375,
+      "stress_samples": 49152,
+      "mean_surface_edge_mm": 1.5050169890368434,
+      "minimum_surface_edge_mm": 0.8861520036815257,
+      "assembly_s": 0.7549667210005282,
+      "ordering_s": 0.21948715600228752,
+      "factor_s": 3.900364219000039,
+      "LU_nnz": 43823384,
+      "rhs_solve_s": 0.05206707999968785,
+      "rss_MB": 622.403584,
+      "geometry": {
+        "surface_refinement": 5,
+        "through_thickness_layers": 2,
+        "thickness_m": 0.0005,
+        "adaptive_refinements": 0,
+        "local_refinement_radius_m": 0.012,
+        "mesh_family": "octahedral quarter shell"
+      },
+      "metrics": {
+        "max_von_Mises_Pa": 7438813.729586797,
+        "hotspot_m": [
+          0.022,
+          0.0,
+          0.0
+        ],
+        "hotspot_element": 0,
+        "compliance_Nm": 2.3119648128175776e-05,
+        "strain_energy_J": 1.1559824064087888e-05,
+        "max_canonical_displacement_m": 1.4247008954631556e-05,
+        "scaled_equilibrium_residual": 6.75798075125349e-12,
+        "energy_consistency_error": 7.662980434023087e-13,
+        "volume_weighted_RMS_element_peak_Pa": 671796.0051353421
+      },
+      "relative_free_equilibrium_residual": 1.7754767276856946e-11
+    },
+    {
+      "label": "QP2-L6-T2",
+      "surface_level": 6,
+      "wall_layers": 2,
+      "adaptive_refinements": 0,
+      "nodes": 83205,
+      "elements": 49152,
+      "DOFs": 249615,
+      "stress_samples": 196608,
+      "mean_surface_edge_mm": 0.7527262568459113,
+      "minimum_surface_edge_mm": 0.4428452176579432,
+      "assembly_s": 2.9947916339988296,
+      "ordering_s": 1.1094757940009004,
+      "factor_s": 28.881465466001828,
+      "LU_nnz": 230069426,
+      "rhs_solve_s": 0.2590048009988095,
+      "rss_MB": 2829.35296,
+      "geometry": {
+        "surface_refinement": 6,
+        "through_thickness_layers": 2,
+        "thickness_m": 0.0005,
+        "adaptive_refinements": 0,
+        "local_refinement_radius_m": 0.012,
+        "mesh_family": "octahedral quarter shell"
+      },
+      "metrics": {
+        "max_von_Mises_Pa": 7632832.243825372,
+        "hotspot_m": [
+          0.022,
+          0.0,
+          0.0
+        ],
+        "hotspot_element": 0,
+        "compliance_Nm": 2.3306259255442828e-05,
+        "strain_energy_J": 1.1653129627721414e-05,
+        "max_canonical_displacement_m": 1.4435935379245518e-05,
+        "scaled_equilibrium_residual": 4.23622249572481e-12,
+        "energy_consistency_error": 8.918715053238854e-13,
+        "volume_weighted_RMS_element_peak_Pa": 652338.2737419929
+      },
+      "relative_free_equilibrium_residual": 2.165813590151225e-11
+    },
+    {
+      "label": "QP2-L6-T2-A1",
+      "surface_level": 6,
+      "wall_layers": 2,
+      "adaptive_refinements": 1,
+      "nodes": 117075,
+      "elements": 69372,
+      "DOFs": 351225,
+      "stress_samples": 277488,
+      "mean_surface_edge_mm": 0.6070442626238761,
+      "minimum_surface_edge_mm": 0.25891797421885343,
+      "assembly_s": 4.271660067002813,
+      "ordering_s": 1.511945509002544,
+      "factor_s": 43.35479323600157,
+      "LU_nnz": 338334804,
+      "rhs_solve_s": 0.3887950730022567,
+      "rss_MB": 4056.80128,
+      "geometry": {
+        "surface_refinement": 6,
+        "through_thickness_layers": 2,
+        "thickness_m": 0.0005,
+        "adaptive_refinements": 1,
+        "local_refinement_radius_m": 0.012,
+        "mesh_family": "octahedral quarter shell"
+      },
+      "metrics": {
+        "max_von_Mises_Pa": 7634103.11807281,
+        "hotspot_m": [
+          0.022,
+          0.0,
+          0.0
+        ],
+        "hotspot_element": 0,
+        "compliance_Nm": 2.3327661676696255e-05,
+        "strain_energy_J": 1.1663830838348127e-05,
+        "max_canonical_displacement_m": 1.4458859952079022e-05,
+        "scaled_equilibrium_residual": 2.985311983156941e-12,
+        "energy_consistency_error": 3.363780447485959e-13,
+        "volume_weighted_RMS_element_peak_Pa": 642625.8462854609
+      },
+      "relative_free_equilibrium_residual": 3.0182164388077634e-11
+    }
+  ],
+  "force_per_finger_N": 4.0,
+  "thickness_m": 0.0005,
+  "ordering": "METIS physical-node nested dissection then natural-order SuperLU",
+  "criterion": "Crossed surface/local/thickness changes; aim <1% peak and <0.5% compliance; not a rigorous true-error bound.",
+  "GPU_device_available": false
+}

@@ -1,0 +1,112 @@
+{
+  "scope": "Arbitrary vector traction at any stored outer-surface quadrature samples; no contact profile or symmetry basis. This is discrete integration validation, not continuum convergence.",
+  "mesh": {
+    "DOFs": 9630,
+    "tets": 1920,
+    "stress_converged": false
+  },
+  "GPU_tested": false,
+  "all_passed": true,
+  "records": [
+    {
+      "case": "dense_position_varying_vector_traction",
+      "samples": 32000,
+      "relative_mapping_error_1N_floor": 3.8441789784646576e-16,
+      "force_error_N": 2.72406290539969e-13,
+      "torque_error_Nm": 5.483605511678132e-15,
+      "fused_peak_error_1Pa_floor": 1.8623894256781774e-16,
+      "full_equilibrium_residual_1N_floor": 3.808215670415171e-11,
+      "full_equilibrium_relative_nonzero": 3.808215670415171e-11,
+      "balanced_six_mode_wrench": [
+        1.56472057533108e-14,
+        -1.0685896612017132e-15,
+        1.1051923265448238e-14,
+        -3.6917083973131426e-17,
+        -2.0596743152910256e-15,
+        -1.1045615532818751e-14
+      ],
+      "peak_relative_error_1Pa_floor": 0.0,
+      "energy_consistency_error": 2.976523269586238e-12,
+      "peak_Pa": 2500343.2734707007,
+      "hotspot_m": [
+        0.0,
+        0.0,
+        0.0295
+      ]
+    },
+    {
+      "case": "257_random_samples_vector_traction",
+      "samples": 257,
+      "relative_mapping_error_1N_floor": 8.074077573779209e-17,
+      "force_error_N": 1.336885555457667e-15,
+      "torque_error_Nm": 1.6930225707429498e-17,
+      "fused_peak_error_1Pa_floor": 2.398970498064995e-14,
+      "full_equilibrium_residual_1N_floor": 7.500097021465732e-12,
+      "full_equilibrium_relative_nonzero": 1.0285036716642619e-11,
+      "balanced_six_mode_wrench": [
+        -2.807433105433965e-15,
+        -7.740119309374016e-16,
+        1.590524587036235e-15,
+        3.2958051977664826e-18,
+        -1.0456587195301004e-16,
+        1.6147468978531223e-16
+      ],
+      "peak_relative_error_1Pa_floor": 0.0,
+      "energy_consistency_error": 3.549818723846839e-12,
+      "peak_Pa": 206240.60119269893,
+      "hotspot_m": [
+        0.003743228847879407,
+        -0.021913243358493383,
+        -0.007885966681787003
+      ]
+    },
+    {
+      "case": "duplicate_samples_additive",
+      "samples": 100,
+      "relative_mapping_error_1N_floor": 4.0234888960470213e-17,
+      "force_error_N": 5.551115123125783e-17,
+      "torque_error_Nm": 4.1142579709883216e-18,
+      "fused_peak_error_1Pa_floor": 8.279111854128437e-15,
+      "full_equilibrium_residual_1N_floor": 3.0475753411272285e-12,
+      "full_equilibrium_relative_nonzero": 8.357896986981699e-12,
+      "balanced_six_mode_wrench": [
+        2.0578157233774874e-16,
+        -1.0048927835681898e-15,
+        1.3452238455113896e-15,
+        7.994296956186087e-18,
+        -1.14068774972081e-18,
+        -2.885837019806928e-17
+      ],
+      "peak_relative_error_1Pa_floor": 0.0,
+      "energy_consistency_error": 1.7992578366179992e-12,
+      "peak_Pa": 121278.96910302284,
+      "hotspot_m": [
+        -0.012601853648862394,
+        -0.007788373876248841,
+        -0.02427050983124842
+      ]
+    },
+    {
+      "case": "zero_vector_traction",
+      "samples": 32000,
+      "relative_mapping_error_1N_floor": 0.0,
+      "force_error_N": 0.0,
+      "torque_error_Nm": 0.0,
+      "fused_peak_error_1Pa_floor": 0.0,
+      "full_equilibrium_residual_1N_floor": 0.0,
+      "full_equilibrium_relative_nonzero": null,
+      "balanced_six_mode_wrench": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "peak_relative_error_1Pa_floor": 0.0,
+      "energy_consistency_error": 0.0,
+      "peak_Pa": 0.0,
+      "hotspot_m": null
+    }
+  ]
+}

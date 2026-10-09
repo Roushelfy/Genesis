@@ -1,0 +1,395 @@
+{
+  "all_tests_passed": true,
+  "execution": {
+    "backend": "CPU NumPy/SciPy",
+    "genesis_integration_tested": false,
+    "gpu_implementation_tested": false,
+    "gpu_performance_measured": false,
+    "python": "3.12.14",
+    "numpy": "2.5.3",
+    "scipy": "1.17.0"
+  },
+  "model": {
+    "type": "fixed P1 tetrahedral isotropic small-strain elasticity",
+    "cube_side": 1.0,
+    "subdivisions_per_axis": 3,
+    "vertices": 64,
+    "tetrahedra": 162,
+    "scalar_DOFs": 192,
+    "young_modulus": 1000000.0,
+    "poisson_ratio": 0.3,
+    "density": 2.0,
+    "consistent_mass": true,
+    "stress_voigt_order": [
+      "xx",
+      "yy",
+      "zz",
+      "xy",
+      "yz",
+      "xz"
+    ],
+    "single_stress_shape": "(n_element, 6)",
+    "batched_stress_shape": "(n_rhs, n_element, 6)",
+    "single_displacement_and_load_shape": "(n_dof,)",
+    "batched_displacement_and_load_shape": "(n_dof, n_rhs)",
+    "point_load_coordinates": "same original body-local coordinates as xyz; not necessarily COM-centered",
+    "engineering_shear_strain": true,
+    "cached_stiffness_factorization": "SciPy SuperLU on gauge-fixed K",
+    "factorization_count_for_primary_body": 1,
+    "total_solve_calls_for_primary_body": 16,
+    "total_rhs_for_primary_body": 24
+  },
+  "tests": [
+    {
+      "name": "exact_mass_com_inertia_and_rigid_nullspace",
+      "passed": true,
+      "metrics": {
+        "volume": 1.0,
+        "mass": 2.0,
+        "COM": [
+          0.5000000000000002,
+          0.5000000000000001,
+          0.5000000000000001
+        ],
+        "inertia": [
+          [
+            0.3333333333333331,
+            -6.185038763729653e-18,
+            -9.654485715683268e-18
+          ],
+          [
+            -1.1069034920476701e-17,
+            0.33333333333333326,
+            -3.1492726807702407e-18
+          ],
+          [
+            -4.997502754557876e-18,
+            -4.016634418758644e-18,
+            0.33333333333333326
+          ]
+        ],
+        "mass_relative_error": 0.0,
+        "COM_absolute_error": 2.7194799110210365e-16,
+        "inertia_relative_error": 4.0904203709015014e-16,
+        "translation_rotation_mass_cross_norm": 9.348212194134814e-16,
+        "K_R_relative_error": 7.497687618866381e-18,
+        "K_symmetry_relative_error": 3.488664054569533e-17,
+        "gauge_rigid_mode_condition_number": 2.0
+      }
+    },
+    {
+      "name": "barycentric_surface_load_preserves_force_and_moment",
+      "passed": true,
+      "metrics": {
+        "loads": [
+          {
+            "point": [
+              0.26666666666666666,
+              0.16666666666666666,
+              0.0
+            ],
+            "force": [
+              40.0,
+              -15.0,
+              20.0
+            ],
+            "force_relative_error": 0.0,
+            "moment_relative_error": 0.0
+          },
+          {
+            "point": [
+              0.7333333333333334,
+              0.8499999999999999,
+              1.0
+            ],
+            "force": [
+              -10.0,
+              8.0,
+              -25.0
+            ],
+            "force_relative_error": 0.0,
+            "moment_relative_error": 1.3212299748501324e-16
+          }
+        ],
+        "contact_area_is_defined": false
+      }
+    },
+    {
+      "name": "inertia_relief_balance_and_full_residual_including_pins",
+      "passed": true,
+      "metrics": {
+        "eta_translation_and_angular_acceleration": [
+          14.999999999999986,
+          -3.499999999999972,
+          -2.499999999999997,
+          -80.75000000000004,
+          -43.5,
+          66.6
+        ],
+        "balanced_wrench": [
+          1.532107773982716e-14,
+          -1.2545520178264269e-14,
+          -1.7763568394002505e-15,
+          2.1760371282653068e-14,
+          5.6175571738896146e-15,
+          -2.478970389731392e-15
+        ],
+        "full_residual_relative": 5.138080549805637e-15,
+        "pinned_residual_relative": 4.146062986950762e-15,
+        "wrench_relative": 5.881304192877889e-17
+      }
+    },
+    {
+      "name": "freefall_has_zero_elastic_stress",
+      "passed": true,
+      "metrics": {
+        "maximum_absolute_stress": 4.617701157726263e-14,
+        "compatible_load_norm": 8.556151105677918e-16,
+        "translation_acceleration": [
+          -6.230143631938203e-32,
+          9.158693033693127e-32,
+          -9.809999999999999
+        ]
+      }
+    },
+    {
+      "name": "affine_strain_patch_matches_analytic_stress_tensor",
+      "passed": true,
+      "metrics": {
+        "strain_tensor": [
+          [
+            0.012,
+            0.003,
+            -0.002
+          ],
+          [
+            0.003,
+            -0.004,
+            0.0015
+          ],
+          [
+            -0.002,
+            0.0015,
+            0.005
+          ]
+        ],
+        "analytic_stress_tensor": [
+          [
+            16730.76923076923,
+            2307.6923076923076,
+            -1538.4615384615386
+          ],
+          [
+            2307.6923076923076,
+            4423.076923076923,
+            1153.8461538461538
+          ],
+          [
+            -1538.4615384615386,
+            1153.8461538461538,
+            11346.153846153846
+          ]
+        ],
+        "recovered_first_element_stress_tensor": [
+          [
+            16730.769230769452,
+            2307.692307692336,
+            -1538.4615384615308
+          ],
+          [
+            2307.692307692336,
+            4423.076923076989,
+            1153.8461538461515
+          ],
+          [
+            -1538.4615384615308,
+            1153.8461538461515,
+            11346.153846153913
+          ]
+        ],
+        "stress_relative_error": 3.491032403055087e-15,
+        "full_residual_relative": 3.1003425635598805e-15
+      }
+    },
+    {
+      "name": "gauge_choice_does_not_change_stress",
+      "passed": true,
+      "metrics": {
+        "first_pins": [
+          0,
+          1,
+          38,
+          45,
+          154,
+          146
+        ],
+        "second_pins": [
+          144,
+          47,
+          37,
+          141,
+          178,
+          155
+        ],
+        "stress_relative_difference": 7.0170310215230894e-15,
+        "mass_orthogonal_displacement_relative_difference": 7.562671839509594e-15,
+        "second_full_residual_relative": 2.088088529922477e-15,
+        "second_pinned_residual_relative": 1.4883032170183564e-15
+      }
+    },
+    {
+      "name": "superposition_and_batched_rhs_reuse_one_factorization",
+      "passed": true,
+      "metrics": {
+        "number_of_rhs_in_batched_call": 4,
+        "batched_vs_separate_stress_relative_error": 7.127668271818721e-16,
+        "superposition_stress_relative_error": 1.932799021837765e-15,
+        "factorization_count": 1,
+        "solve_call_count_so_far": 8,
+        "rhs_solved_so_far": 11,
+        "full_residual_relative": 3.0790602855169736e-15
+      }
+    },
+    {
+      "name": "uniform_E_times_ten_scales_u_but_not_force_driven_stress",
+      "passed": true,
+      "metrics": {
+        "young_modulus_multiplier": 10.0,
+        "stress_relative_difference": 1.1756165427049268e-14,
+        "ten_times_stiffer_displacement_relative_difference": 2.258367041044614e-14
+      }
+    },
+    {
+      "name": "rotation_centrifugal_stress_is_nonzero_and_balanced",
+      "passed": true,
+      "metrics": {
+        "angular_velocity": [
+          0.0,
+          0.0,
+          7.0
+        ],
+        "maximum_von_mises_stress": 11.442452310055945,
+        "compatible_load_norm": 4.743871601338683,
+        "balanced_force_and_torque": [
+          -1.1657341758564144e-15,
+          2.220446049250313e-16,
+          8.628166150854817e-32,
+          2.7755575615628914e-17,
+          4.1898228015623633e-17,
+          9.388923109484326e-18
+        ],
+        "eta": [
+          -1.1324274851176595e-14,
+          -5.3845816694320084e-15,
+          -2.808218728333945e-31,
+          -4.1633363423443035e-16,
+          8.8838401655653e-16,
+          2.779669498691123e-16
+        ],
+        "minus_M_c_relative_error_for_isotropic_inertia": 7.955746588645539e-16,
+        "full_residual_relative": 2.270246054071358e-15,
+        "pinned_residual_relative": 1.4264918830710295e-15,
+        "wrench_relative": 1.5985632524099373e-17
+      }
+    },
+    {
+      "name": "anisotropic_spin_obeys_newton_euler_gyroscopic_balance",
+      "passed": true,
+      "metrics": {
+        "cuboid_sides": [
+          1.0,
+          2.0,
+          3.0
+        ],
+        "mass": 12.0,
+        "inertia": [
+          [
+            13.000000000000005,
+            -6.245004513516506e-17,
+            -6.87721484698361e-17
+          ],
+          [
+            -3.469446951953614e-17,
+            10.000000000000005,
+            -5.4277570092785454e-17
+          ],
+          [
+            2.7755575615628914e-17,
+            0.0,
+            4.9999999999999964
+          ]
+        ],
+        "angular_velocity": [
+          2.0,
+          3.0,
+          4.0
+        ],
+        "gyroscopic_torque_omega_cross_Iomega": [
+          -60.0000000000001,
+          64.00000000000007,
+          -18.0
+        ],
+        "expected_angular_acceleration": [
+          4.615384615384621,
+          -6.400000000000004,
+          3.6000000000000028
+        ],
+        "recovered_angular_acceleration": [
+          4.615384615384613,
+          -6.399999999999997,
+          3.600000000000002
+        ],
+        "angular_acceleration_relative_error": 1.2373850245362132e-15,
+        "balanced_force_and_torque": [
+          0.0,
+          1.021405182655144e-14,
+          7.993605777301127e-15,
+          3.019806626980426e-14,
+          -4.013456234019941e-14,
+          -9.547918011776346e-15
+        ],
+        "full_residual_relative": 3.972326080927675e-15,
+        "pinned_residual_relative": 3.4023116028967016e-15
+      }
+    },
+    {
+      "name": "exactly_six_rhs_stress_tensor_and_von_mises_are_consistent",
+      "passed": true,
+      "metrics": {
+        "batch_stress_shape": [
+          6,
+          162,
+          6
+        ],
+        "batch_tensor_shape": [
+          6,
+          162,
+          3,
+          3
+        ],
+        "batch_von_mises_shape": [
+          6,
+          162
+        ],
+        "batched_vs_individual_stress_relative_error": 7.1277322362284465e-16,
+        "batched_vs_individual_tensor_relative_error": 7.571186991242668e-16,
+        "batched_vs_individual_von_mises_relative_error": 6.187237617552559e-16
+      }
+    }
+  ],
+  "diagnostics": {
+    "batch_norms": "Aggregate the entire batch, not individual RHS error bounds.",
+    "wrench_norm": "Combines force and torque in chosen units; internal algebra check only, not a physical relative error."
+  },
+  "limitations": [
+    "Mathematical CPU reference; no Genesis or GPU integration/performance validation.",
+    "Single floating material body: six null modes assumed; disconnected meshes need more gauges.",
+    "All external forces must use body-local axes; point_load positions use the original xyz coordinates, not necessarily COM-centered.",
+    "Quasi-static elastic perturbation ignores stress waves, elastic history and contact deformation feedback.",
+    "Rigid-reference inertia omits elastic acceleration, Coriolis terms and spin-dependent elastic stiffness.",
+    "Barycentric rigid point loads do not supply a physical contact patch or convergent peak stress.",
+    "Fixed linear material and mesh; near-incompressibility can cause P1 volumetric locking.",
+    "Use physical units consistently; stiffness and mass must represent the same body.",
+    "Force-driven stress is independent of a uniform E scale at fixed nu in this uncoupled model."
+  ]
+}
