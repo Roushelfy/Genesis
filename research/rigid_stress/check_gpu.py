@@ -55,9 +55,11 @@ def permutation_check() -> None:
     assert gpu_factor.solve(cp.zeros((41, 0))).shape == (41, 0)
 
 
-def mechanics_check(model: EggRecoveryCPU, environments: int) -> GPUCheck:
+def mechanics_check(
+    model: EggRecoveryCPU, environments: int, inertia: str = "sparse", body_products: str = "cublas"
+) -> GPUCheck:
     fem = model.fem
-    gpu = EggRecoveryGPU(fem, environments)
+    gpu = EggRecoveryGPU(fem, environments, inertia=inertia, body_products=body_products)
     rng = np.random.default_rng(3913 + environments)
     raw = rng.normal(size=(fem.ndof, environments))
     omega = rng.uniform(-5, 5, (environments, 3))
@@ -87,6 +89,12 @@ def mechanics_check(model: EggRecoveryCPU, environments: int) -> GPUCheck:
     rejected = gpu.recover(invalid_rhs)
     np.testing.assert_array_equal(cp.asnumpy(rejected.is_accepted), False)
     gravity = (fem.m @ np.tile([0, 0, -9.81], len(fem.xyz)))[:, None]
+    np.testing.assert_allclose(
+        gpu.gravity_load(cp.tile(cp.array([[0.0, 0.0, -9.81]]), (environments, 1))).get(),
+        np.repeat(gravity, environments, axis=1),
+        rtol=1e-12,
+        atol=1e-16,
+    )
     freefall = gpu.recover(gpu.compatible_rhs(cp.asarray(np.repeat(gravity, environments, axis=1))))
     assert cp.asnumpy(freefall.peak_pa).max() < 1e-3
     spin = gpu.recover(gpu.compatible_rhs(cp.zeros_like(device_rhs), cp.asarray(omega)))
@@ -116,15 +124,21 @@ def main() -> None:
     parser.add_argument("--ordering", choices=("mmd", "column-nd"), default="mmd")
     parser.add_argument("--factor-backend", choices=("superlu", "cholmod"), default="superlu")
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--inertia", choices=("sparse", "quadratic"), default="sparse")
+    parser.add_argument("--body-products", choices=("cublas", "fused"), default="cublas")
     args = parser.parse_args()
     start = perf_counter()
     with threadpool_limits(limits=1):
         permutation_check()
         model = EggRecoveryCPU(
             config=EggConfig(level=args.level, ordering=args.ordering, factor_backend=args.factor_backend),
-            direct=True, history=0,
+            direct=True,
+            history=0,
         )
-        checks = [asdict(mechanics_check(model, environments)) for environments in (1, 3, 8, 17)]
+        checks = [
+            asdict(mechanics_check(model, environments, args.inertia, args.body_products))
+            for environments in (1, 3, 8, 17)
+        ]
     cp.cuda.get_current_stream().synchronize()
     properties = cp.cuda.runtime.getDeviceProperties(cp.cuda.runtime.getDevice())
     result = {
@@ -141,6 +155,8 @@ def main() -> None:
         "dofs": model.fem.ndof,
         "tetrahedra": model.fem.ne,
         "factor_nonzeros": model.fem.factor.L.nnz + model.fem.factor.U.nnz,
+        "centrifugal_load": args.inertia,
+        "body_products": args.body_products,
         "physical_mesh_converged": False,
         "checks": checks,
         "validation_seconds_including_build": perf_counter() - start,

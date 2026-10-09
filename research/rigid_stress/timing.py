@@ -7,6 +7,10 @@ from time import perf_counter
 
 import cupy as cp
 
+from .cudss import SharedCuDSSFactor
+from .sparse_gpu import EggRecoveryGPU
+from .temporal_gpu import TemporalRecoveryGPU
+
 
 class DeviceMemorySampler:
     """Sample CUDA's device-wide memory accounting; report the interval and avoid claiming an exact peak.
@@ -58,7 +62,39 @@ def source_hashes() -> dict[str, str]:
         root / "genesis/engine/scene.py",
         root / "genesis/engine/simulator.py",
         root / "genesis/engine/solvers/rigid/collider/collider.py",
+        root / "genesis/engine/solvers/rigid/collider/contact.py",
+        root / "genesis/utils/geom.py",
         root / "genesis/engine/solvers/rigid/constraint/solver.py",
         root / "genesis/engine/entities/rigid_entity/rigid_entity.py",
     ]
     return {str(file.relative_to(root)): hashlib.sha256(file.read_bytes()).hexdigest() for file in files}
+
+
+def factor_metadata(recovery: EggRecoveryGPU) -> dict:
+    factors = [recovery.factor]
+    if isinstance(recovery, TemporalRecoveryGPU) and recovery.precision == "32":
+        factors.append(recovery.correction_factor.factor)
+    records = []
+    for factor in factors:
+        if isinstance(factor, SharedCuDSSFactor):
+            records.append(
+                {
+                    "backend": "cuDSS",
+                    "allocator": "cudaMallocAsync" if factor.allocator is not None else "default",
+                    "precision": str(factor.dtype),
+                    "version": factor.api.version,
+                    "nnz": factor.factor_nnz,
+                    "analysis_seconds": factor.analysis_s,
+                    "factorization_seconds": factor.factorization_s,
+                    "memory_estimates_bytes": factor.memory_estimates_bytes,
+                }
+            )
+        else:
+            records.append(
+                {
+                    "backend": "cuSPARSE SpSM",
+                    "precision": str(factor.lower.dtype),
+                    "nnz": factor.lower.nnz + factor.upper.nnz,
+                }
+            )
+    return {"operator_groups": 1, "factor_precision_copies": len(factors), "factors": records}

@@ -88,7 +88,7 @@ extern "C" __global__ void pressure(
     const double* samples, const double* weights, const double* shape, const long long* nodes,
     const double* vertices, const double* face_dual, const double* face_normal, int faces, bool anchor,
     const long long* grid_offsets, const long long* grid_order, const int* grid_shape,
-    const double* grid_origin, double grid_width, bool grid,
+    const double* grid_origin, double grid_width, bool grid, bool segmented,
     int quadrature, int sample_count, int contacts, int dofs, double* loads,
     int* status, double* diagnostics, double* footprint_center) {
     int contact = blockIdx.x, environment = blockIdx.y, index = environment*contacts + contact;
@@ -137,7 +137,11 @@ extern "C" __global__ void pressure(
     }
     __syncthreads();
     if (flag) {
-        if (threadIdx.x == 0) status[index] = flag == 5 ? 0 : flag;
+        if (threadIdx.x == 0) {
+            status[index] = flag == 5 ? 0 : flag;
+            diagnostics[5*index+2] = excess;
+            diagnostics[5*index+3] = allowance;
+        }
         return;
     }
     if (anchor) {
@@ -253,8 +257,10 @@ extern "C" __global__ void pressure(
         int index = ((x+grid_start[0])*grid_shape[1]+y+grid_start[1])*grid_shape[2]+z+grid_start[2];
         long long lo = grid ? grid_offsets[index] : 0;
         long long hi = grid ? grid_offsets[index+1] : sample_count;
-        for (long long entry = lo + threadIdx.x; entry < hi; entry += blockDim.x) {
-        long long q = grid ? grid_order[entry] : entry;
+        for (long long batch = lo; batch < hi; batch += blockDim.x) {
+        long long entry = batch + threadIdx.x;
+        bool present = entry < hi;
+        long long q = present ? (grid ? grid_order[entry] : entry) : 0;
         double relative[3], distance = 0, h1 = 0, h2 = 0;
         for (int a = 0; a < 3; ++a) {
             relative[a] = (samples[3*q+a] - center[a]) / r;
@@ -262,10 +268,31 @@ extern "C" __global__ void pressure(
             h1 += relative[a] * tangent[a];
             h2 += relative[a] * bitangent[a];
         }
-        if (distance < 1) {
+        double pressure = 0;
+        if (present && distance < 1) {
             double weight = exp(-0.5 * distance / (0.45*0.45)) * (1-distance) * (1-distance) * weights[q];
-            double pressure = weight / integral * fmax(0., 1-multiplier[0]-h1*multiplier[1]-h2*multiplier[2]);
-            int face = q / quadrature, point = q % quadrature;
+            pressure = weight / integral * fmax(0., 1-multiplier[0]-h1*multiplier[1]-h2*multiplier[2]);
+        }
+        int face = present ? q / quadrature : -1, point = q % quadrature;
+        if (segmented) {
+            // Stable geometry-grid ordering keeps equal face IDs contiguous inside each warp.
+            __syncwarp();
+            unsigned mask = 0xffffffff;
+            int lane = threadIdx.x % 32;
+            int preceding_face = __shfl_up_sync(mask, face, 1);
+            bool head = lane == 0 || preceding_face != face;
+            for (int node = 0; node < 6; ++node) {
+                double value = pressure * shape[6*point+node];
+                for (int offset = 16; offset; offset /= 2) {
+                    double tail = __shfl_down_sync(mask, value, offset);
+                    int tail_face = __shfl_down_sync(mask, face, offset);
+                    if (lane+offset < 32 && (mask & (1u << (lane+offset))) && tail_face == face) value += tail;
+                }
+                if (head && value != 0)
+                    for (int a = 0; a < 3; ++a)
+                        atomicAdd(loads + environment*dofs + 3*nodes[6*face+node]+a, value * complete_force[a]);
+            }
+        } else if (pressure != 0) {
             for (int node = 0; node < 6; ++node)
                 for (int a = 0; a < 3; ++a)
                     atomicAdd(loads + environment*dofs + 3*nodes[6*face+node]+a,
@@ -299,10 +326,14 @@ class PadPressureGPU:
         anchor_to_surface: bool = False,
         sampling: str = "scan",
         grid_width_m: float = 0.003,
+        scatter: str = "atomic",
     ):
         if sampling not in ("scan", "grid") or not np.isfinite(grid_width_m) or grid_width_m <= 0:
             raise ValueError("Select full scan or exact spatial grid with a finite positive cell width")
         self.sampling = sampling
+        if scatter not in ("atomic", "warp"):
+            raise ValueError("Select per-quadrature atomic or exact warp face-segment reduction")
+        self.scatter = scatter
         coordinates = geometry.coords.reshape(-1, 3)
         origin = coordinates.min(axis=0) - 1e-12
         grid_indices = np.floor((coordinates - origin) / grid_width_m).astype(np.int32)
@@ -373,6 +404,7 @@ class PadPressureGPU:
                     self.grid_origin,
                     np.float64(self.grid_width_m),
                     np.bool_(self.sampling == "grid"),
+                    np.bool_(self.scatter == "warp"),
                     self.quadrature,
                     len(self.positions),
                     contacts,

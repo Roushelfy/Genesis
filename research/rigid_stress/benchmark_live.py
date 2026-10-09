@@ -17,12 +17,11 @@ from threadpoolctl import threadpool_limits
 import genesis as gs
 
 from .cpu import EggConfig, EggRecoveryCPU
-from .cudss import SharedCuDSSFactor
 from .panda_scene import PandaConfig, PandaEggScene
 from .peak_tensor import P2PeakTensorGPU
 from .sparse_gpu import EggRecoveryGPU
 from .temporal_gpu import TemporalRecoveryGPU
-from .timing import DeviceMemorySampler, source_hashes
+from .timing import DeviceMemorySampler, factor_metadata, source_hashes
 
 
 def main() -> None:
@@ -33,6 +32,7 @@ def main() -> None:
     parser.add_argument("--level", type=int, default=2)
     parser.add_argument("--cpu-factor", choices=("superlu", "cholmod", "none"), default="superlu")
     parser.add_argument("--factor-backend", choices=("spsm", "cudss"), default="spsm")
+    parser.add_argument("--native-order", choices=("auto", "natural"), default="auto")
     parser.add_argument("--scope", choices=("rigid", "live", "policy-rigid", "policy"), default="live")
     parser.add_argument("--profile", choices=("strict", "throughput"), default="strict")
     parser.add_argument("--method", choices=("direct", "temporal"), default="direct")
@@ -46,6 +46,9 @@ def main() -> None:
     parser.add_argument("--rebuild-gram", action="store_true")
     parser.add_argument("--peak", choices=("fused", "tensor"), default="fused")
     parser.add_argument("--sampling", choices=("scan", "grid"), default="grid")
+    parser.add_argument("--scatter", choices=("atomic", "warp"), default="atomic")
+    parser.add_argument("--inertia", choices=("sparse", "quadratic"), default="sparse")
+    parser.add_argument("--body-products", choices=("cublas", "fused"), default="cublas")
     parser.add_argument("--seconds", type=float, default=10)
     parser.add_argument("--repeats", type=int, default=3)
     parser.add_argument("--seed", type=int, default=610000)
@@ -77,7 +80,15 @@ def main() -> None:
         recovery = None
         if args.scope in ("live", "policy"):
             if args.method == "direct":
-                recovery = EggRecoveryGPU(model.fem, args.envs, rtol=rtol, factor_backend=args.factor_backend)
+                recovery = EggRecoveryGPU(
+                    model.fem,
+                    args.envs,
+                    rtol=rtol,
+                    factor_backend=args.factor_backend,
+                    natural_order=args.native_order == "natural",
+                    inertia=args.inertia,
+                    body_products=args.body_products,
+                )
             else:
                 recovery = TemporalRecoveryGPU(
                     model.fem,
@@ -92,6 +103,9 @@ def main() -> None:
                     cached_gram=not args.rebuild_gram,
                     factor_backend=args.factor_backend,
                     layout=args.layout,
+                    natural_order=args.native_order == "natural",
+                    inertia=args.inertia,
+                    body_products=args.body_products,
                 )
             if args.peak == "tensor":
                 recovery.peak = P2PeakTensorGPU(
@@ -107,6 +121,7 @@ def main() -> None:
                 seed=args.seed,
                 substeps=args.substeps,
                 sampling=args.sampling,
+                scatter=args.scatter,
             ),
             recovery,
         )
@@ -241,22 +256,8 @@ def main() -> None:
             "runs": rows,
         }
         if recovery is not None:
-            metadata["shared_factor_groups"] = 1
             metadata["stiffness_nnz"] = recovery.stiffness.nnz
-            if isinstance(recovery.factor, SharedCuDSSFactor):
-                metadata["device_factor"] = {
-                    "backend": "cuDSS",
-                    "version": recovery.factor.api.version,
-                    "nnz": recovery.factor.factor_nnz,
-                    "factorization_seconds": recovery.factor.factorization_s,
-                    "analysis_seconds": recovery.factor.analysis_s,
-                    "memory_estimates_bytes": recovery.factor.memory_estimates_bytes,
-                }
-            else:
-                metadata["device_factor"] = {
-                    "backend": "cuSPARSE SpSM",
-                    "nnz": recovery.factor.lower.nnz + recovery.factor.upper.nnz,
-                }
+            metadata["device_factors"] = factor_metadata(recovery)
         args.output.write_text(json.dumps(metadata, indent=2) + "\n")
         with args.output.with_suffix(".csv").open("w", newline="") as stream:
             writer = csv.DictWriter(stream, fieldnames=list(rows[0]))

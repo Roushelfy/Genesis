@@ -133,7 +133,7 @@ class StressSubstepObserver:
             self.source_epsilon,
         )
         # The translation columns of M R integrate any constant gravity without materializing a nodal vector field.
-        external = mapped.nodal_force_n + self.recovery.mass_modes[:, :3] @ cp.from_dlpack(local.gravity_m_s2).T
+        external = mapped.nodal_force_n + self.recovery.gravity_load(cp.from_dlpack(local.gravity_m_s2))
         rhs = self.recovery.compatible_rhs(external, cp.from_dlpack(local.omega_rad_s))
         recovered = self.recovery.recover(rhs, self.substep_dt)
         accepted = mapped.is_accepted & recovered.is_accepted

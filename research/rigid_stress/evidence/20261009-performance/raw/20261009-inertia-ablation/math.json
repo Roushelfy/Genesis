@@ -1,0 +1,77 @@
+{
+  "passed": true,
+  "scope": "Synthetic full-shell mechanics and shared sparse CUDA direct baseline; no live scene or throughput",
+  "gpu_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "compute_capability": [
+    12,
+    0
+  ],
+  "vram_bytes": 101975851008,
+  "driver": 13020,
+  "cuda_runtime": 12090,
+  "cupy": "14.2.0",
+  "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+  "mesh": {
+    "level": 2,
+    "layers": 2,
+    "thickness_m": 0.0005,
+    "young_pa": 10000000000.0,
+    "poisson": 0.3,
+    "density_kg_m3": 2000.0,
+    "surface_quadrature": 10,
+    "ordering": "mmd",
+    "factor_backend": "superlu"
+  },
+  "dofs": 9630,
+  "tetrahedra": 1920,
+  "factor_nonzeros": 7308350,
+  "centrifugal_load": "quadratic",
+  "physical_mesh_converged": false,
+  "checks": [
+    {
+      "environments": 1,
+      "right_hand_sides": 1,
+      "maximum_full_relative_residual": 7.593790592763868e-12,
+      "maximum_peak_relative_error": 3.2319822335661657e-15,
+      "maximum_absolute_peak_error_pa": 5.587935447692871e-08,
+      "zero_peak_pa": 0.0,
+      "zero_residual_n": 0.0,
+      "freefall_peak_pa": 3.308946432330099e-11,
+      "centrifugal_peak_pa": 38.394673947145264
+    },
+    {
+      "environments": 3,
+      "right_hand_sides": 3,
+      "maximum_full_relative_residual": 7.02484900109156e-12,
+      "maximum_peak_relative_error": 1.1224590407231922e-14,
+      "maximum_absolute_peak_error_pa": 1.601874828338623e-07,
+      "zero_peak_pa": 0.0,
+      "zero_residual_n": 0.0,
+      "freefall_peak_pa": 3.864838284887458e-11,
+      "centrifugal_peak_pa": 12.857172142655074
+    },
+    {
+      "environments": 8,
+      "right_hand_sides": 8,
+      "maximum_full_relative_residual": 7.381948022957233e-12,
+      "maximum_peak_relative_error": 9.219626628773037e-15,
+      "maximum_absolute_peak_error_pa": 1.6391277313232422e-07,
+      "zero_peak_pa": 0.0,
+      "zero_residual_n": 0.0,
+      "freefall_peak_pa": 4.37521567355334e-11,
+      "centrifugal_peak_pa": 14.16483502487037
+    },
+    {
+      "environments": 17,
+      "right_hand_sides": 17,
+      "maximum_full_relative_residual": 7.77087111350066e-12,
+      "maximum_peak_relative_error": 3.347002463371584e-14,
+      "maximum_absolute_peak_error_pa": 5.271285772323608e-07,
+      "zero_peak_pa": 0.0,
+      "zero_residual_n": 0.0,
+      "freefall_peak_pa": 3.8648382848874536e-11,
+      "centrifugal_peak_pa": 2.59345800948438
+    }
+  ],
+  "validation_seconds_including_build": 8.987957161996746
+}

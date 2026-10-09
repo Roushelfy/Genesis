@@ -12,7 +12,9 @@ from cupy_backends.cuda.libs import cusparse
 from cupyx import cusparse as descriptors
 from cupyx.scipy import sparse
 
+from .body_gpu import FixedFieldProductGPU, NodalWrenchGPU
 from .cudss import SharedCuDSSFactor
+from .inertia_gpu import CentrifugalInertiaGPU
 from .native_sparse import NativeSparseCalls
 
 
@@ -306,6 +308,10 @@ class EggRecoveryGPU:
         atol_n: float = 1e-11,
         factor_backend: str = "spsm",
         shared_factor: SharedSparseFactor | SharedCuDSSFactor | None = None,
+        natural_order: bool = False,
+        async_allocations: bool = False,
+        inertia: str = "sparse",
+        body_products: str = "cublas",
     ):
         if environments < 1 or rtol <= 0 or atol_n <= 0:
             raise ValueError("Positive environment count and tolerances are required")
@@ -320,6 +326,20 @@ class EggRecoveryGPU:
         self.mass_modes = cp.asarray(fem.mr)
         self.gram_inverse = cp.asarray(np.linalg.inv(fem.gram))
         self.relative_position = cp.asarray(fem.xyz - fem.com)
+        if inertia not in ("sparse", "quadratic"):
+            raise ValueError("Select the original sparse or exact quadratic centrifugal mass load")
+        self.inertia = inertia
+        if body_products not in ("cublas", "fused"):
+            raise ValueError("Select public cuBLAS or exact fused fixed-field body products")
+        self.body_products = body_products
+        self.centrifugal_load = (
+            CentrifugalInertiaGPU(fem.m, fem.xyz - fem.com, fused=body_products == "fused")
+            if inertia == "quadratic"
+            else None
+        )
+        self.mass_mode_product = FixedFieldProductGPU(self.mass_modes) if body_products == "fused" else None
+        self.gravity_product = FixedFieldProductGPU(self.mass_modes[:, :3]) if body_products == "fused" else None
+        self.wrench_product = NodalWrenchGPU(self.relative_position) if body_products == "fused" else None
         if shared_factor is not None:
             if factor_backend == "cudss" and not isinstance(shared_factor, SharedCuDSSFactor):
                 raise ValueError("A reused cuDSS factor requires the cuDSS backend")
@@ -329,7 +349,12 @@ class EggRecoveryGPU:
         elif factor_backend == "spsm":
             self.factor = SharedSparseFactor(fem.factor, unit_lower=fem.is_unit_lower)
         elif factor_backend == "cudss":
-            self.factor = SharedCuDSSFactor(fem.k[fem.free][:, fem.free], environments)
+            self.factor = SharedCuDSSFactor(
+                fem.k[fem.free][:, fem.free],
+                environments,
+                natural_order=natural_order,
+                async_allocations=async_allocations,
+            )
         else:
             raise ValueError("Select exported SpSM or native cuDSS device factors")
         self.factor.prepare(environments)
@@ -339,6 +364,15 @@ class EggRecoveryGPU:
     def apply_stiffness(self, value: cp.ndarray) -> cp.ndarray:
         return self.stiffness_product(value)
 
+    def gravity_load(self, gravity_m_s2: cp.ndarray) -> cp.ndarray:
+        if gravity_m_s2.shape != (self.environments, 3):
+            raise ValueError("Gravity requires [environments, 3] material-frame accelerations")
+        return (
+            self.mass_modes[:, :3] @ gravity_m_s2.T
+            if self.gravity_product is None
+            else self.gravity_product(gravity_m_s2.T)
+        )
+
     def compatible_rhs(self, external_n: cp.ndarray, omega_rad_s: cp.ndarray | None = None) -> cp.ndarray:
         if external_n.shape != (self.stiffness.shape[0], self.environments):
             raise ValueError("Complete external nodal loads must have shape [dof, environments]")
@@ -346,9 +380,14 @@ class EggRecoveryGPU:
         if omega_rad_s is not None:
             if omega_rad_s.shape != (self.environments, 3):
                 raise ValueError("Angular velocities must have shape [environments, 3]")
-            centrifugal = cp.cross(omega_rad_s[:, None], cp.cross(omega_rad_s[:, None], self.relative_position))
-            force = external_n - self.mass @ centrifugal.reshape(self.environments, -1).T
-        return force - self.mass_modes @ (self.gram_inverse @ (self.rigid_modes.T @ force))
+            if self.centrifugal_load is None:
+                centrifugal = cp.cross(omega_rad_s[:, None], cp.cross(omega_rad_s[:, None], self.relative_position))
+                force = external_n - self.mass @ centrifugal.reshape(self.environments, -1).T
+            else:
+                force = external_n - self.centrifugal_load(omega_rad_s)
+        if self.wrench_product is None:
+            return force - self.mass_modes @ (self.gram_inverse @ (self.rigid_modes.T @ force))
+        return force - self.mass_mode_product(self.gram_inverse @ self.wrench_product(force))
 
     def reset(self, environments: cp.ndarray | None = None) -> None:
         """The direct baseline has no temporal state; retain the same lifecycle API as temporal recovery."""

@@ -30,7 +30,8 @@ existing user fork: `Roushelfy/Genesis:rigid-stress-recovery`.
 The live path preserves the complete contact wrench with a declared compliant
 pad model. See [docs/PAD_LAW.md](docs/PAD_LAW.md) and the scope-specific measured
 [initial progress report](docs/PROGRESS_20261009.md) and the
-[new GPU acceptance checkpoint](docs/PROGRESS_20261009_GPU.md). The full acceptance and optimization
+[new GPU acceptance checkpoint](docs/PROGRESS_20261009_GPU.md), and the
+[fine performance and real grasp checkpoint](docs/PROGRESS_20261009_PERFORMANCE.md). The full acceptance and optimization
 goal remains active. Current coarse timings have a separate physical error.
 
 ## Start here

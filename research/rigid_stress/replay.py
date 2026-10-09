@@ -24,6 +24,21 @@ class ReplayFrame:
     reset_ids: np.ndarray
 
 
+@dataclass(frozen=True)
+class ReplayStageSample:
+    begin: cp.cuda.Event
+    loaded: cp.cuda.Event
+    mapped: cp.cuda.Event
+    relieved: cp.cuda.Event
+    recovered: cp.cuda.Event
+
+
+def event() -> cp.cuda.Event:
+    marker = cp.cuda.Event()
+    marker.record()
+    return marker
+
+
 class ContactReplayGPU:
     def __init__(self, path: Path, environments: int) -> None:
         source = np.load(path)
@@ -86,12 +101,15 @@ class ReplayRecoveryPipeline:
         self.last_rhs: cp.ndarray | None = None
         self.mapping_accepted: cp.ndarray | None = None
         self.reset_count = 0
+        self.stage_samples: list[ReplayStageSample] = []
 
-    def step(self, tick: int) -> GPURecoveryResult:
+    def step(self, tick: int, measure: bool = False) -> GPURecoveryResult:
+        begin = event() if measure else None
         frame = self.source.frame(tick)
         if len(frame.reset_ids):
             self.recovery.reset(cp.asarray(frame.reset_ids))
             self.reset_count += len(frame.reset_ids)
+        loaded = event() if measure else None
         mapped = self.mapper.map(
             frame.position_m,
             frame.force_n,
@@ -101,7 +119,29 @@ class ReplayRecoveryPipeline:
             frame.valid,
             self.source.source_epsilon,
         )
-        external = mapped.nodal_force_n + self.recovery.mass_modes[:, :3] @ frame.gravity_m_s2.T
+        mapped_end = event() if measure else None
+        external = mapped.nodal_force_n + self.recovery.gravity_load(frame.gravity_m_s2)
         self.last_rhs = self.recovery.compatible_rhs(external, frame.omega_rad_s)
         self.mapping_accepted = mapped.is_accepted
-        return self.recovery.recover(self.last_rhs, self.source.dt_s)
+        relieved = event() if measure else None
+        out = self.recovery.recover(self.last_rhs, self.source.dt_s)
+        if measure:
+            self.stage_samples.append(ReplayStageSample(begin, loaded, mapped_end, relieved, event()))
+        return out
+
+    def stage_metadata(self) -> dict:
+        rows = []
+        for sample in self.stage_samples:
+            markers = (sample.begin, sample.loaded, sample.mapped, sample.relieved, sample.recovered)
+            rows.append([cp.cuda.get_elapsed_time(first, last) for first, last in zip(markers, markers[1:])])
+        values = np.array(rows)
+        return {
+            "scope": "Separate warmed CUDA spans; event instrumentation outside throughput repeats",
+            "samples": len(rows),
+            "stages": {
+                label: {"mean_ms": float(values[:, index].mean()), "p95_ms": float(np.percentile(values[:, index], 95))}
+                for index, label in enumerate(
+                    ("input_selection_and_reset", "pressure_mapping", "inertia_relief", "recovery")
+                )
+            },
+        }

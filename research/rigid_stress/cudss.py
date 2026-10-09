@@ -12,6 +12,31 @@ import cupy as cp
 import numpy as np
 from scipy import sparse
 
+ALLOCATE = ct.CFUNCTYPE(ct.c_int, ct.c_void_p, ct.POINTER(ct.c_void_p), ct.c_size_t, ct.c_void_p)
+FREE = ct.CFUNCTYPE(ct.c_int, ct.c_void_p, ct.c_void_p, ct.c_size_t, ct.c_void_p)
+
+
+@ALLOCATE
+def allocate_async(context, pointer, size, stream) -> int:
+    try:
+        pointer[0] = cp.cuda.runtime.mallocAsync(size, stream or 0)
+        return 0
+    except cp.cuda.runtime.CUDARuntimeError as error:
+        return error.status
+
+
+@FREE
+def free_async(context, pointer, size, stream) -> int:
+    try:
+        cp.cuda.runtime.freeAsync(pointer or 0, stream or 0)
+        return 0
+    except cp.cuda.runtime.CUDARuntimeError as error:
+        return error.status
+
+
+class DeviceMemHandler(ct.Structure):
+    _fields_ = [("ctx", ct.c_void_p), ("device_alloc", ALLOCATE), ("device_free", FREE), ("name", ct.c_char * 64)]
+
 
 def checked(status: int, operation: str) -> None:
     if status:
@@ -38,6 +63,7 @@ class CuDSSLibrary:
         self.library.cudssDataCreate.argtypes = [pointer, output]
         self.library.cudssDataDestroy.argtypes = [pointer, pointer]
         self.library.cudssSetStream.argtypes = [pointer, pointer]
+        self.library.cudssSetDeviceMemHandler.argtypes = [pointer, ct.POINTER(DeviceMemHandler)]
         self.library.cudssGetProperty.argtypes = [integer, ct.POINTER(integer)]
         self.library.cudssConfigSet.argtypes = [pointer, integer, pointer, size]
         self.library.cudssDataSet.argtypes = [pointer, pointer, integer, pointer, size]
@@ -65,7 +91,7 @@ class CuDSSPlan:
     solution: ct.c_void_p
 
 
-def release(library, handle, config, data, matrix, plans) -> None:
+def release(library, handle, config, data, matrix, plans, allocator) -> None:
     for plan in plans:
         library.cudssMatrixDestroy(plan.rhs)
         library.cudssMatrixDestroy(plan.solution)
@@ -89,6 +115,7 @@ class SharedCuDSSFactor:
         columns: int,
         dtype=np.float64,
         natural_order: bool = False,
+        async_allocations: bool = False,
     ) -> None:
         if dtype not in (np.float64, np.float32) or columns < 1 or matrix.shape[0] != matrix.shape[1]:
             raise ValueError("Square SPD matrix, positive RHS capacity and FP64/FP32 precision required")
@@ -106,6 +133,13 @@ class SharedCuDSSFactor:
         lib = self.api.library
         checked(lib.cudssCreate(ct.byref(self.handle)), "create")
         checked(lib.cudssSetStream(self.handle, self.stream.ptr), "set stream")
+        self.allocator = (
+            DeviceMemHandler(None, allocate_async, free_async, b"rigid-stress-cudaMallocAsync")
+            if async_allocations
+            else None
+        )
+        if self.allocator is not None:
+            checked(lib.cudssSetDeviceMemHandler(self.handle, ct.byref(self.allocator)), "set async allocator")
         checked(lib.cudssConfigCreate(ct.byref(self.config)), "create config")
         checked(lib.cudssDataCreate(self.handle, ct.byref(self.data)), "create data")
         # CUDA_R_64I=24, CUDA_R_64F=1, CUDA_R_32F=0; SPD=3, lower view=1, zero index base=0.
@@ -145,6 +179,7 @@ class SharedCuDSSFactor:
             self.data,
             self.matrix,
             self.plans,
+            self.allocator,
         )
         start = perf_counter()
         self.execute(3, self.plans[0])

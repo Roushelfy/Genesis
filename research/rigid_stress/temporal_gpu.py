@@ -49,11 +49,11 @@ class MixedFactor:
 class MixedCuDSSFactor:
     """Factor the congruence-scaled operator in FP32; all acceptance/refinement uses the unchanged FP64 operator."""
 
-    def __init__(self, fem, environments: int, scaling: bool) -> None:
+    def __init__(self, fem, environments: int, scaling: bool, natural_order: bool = False) -> None:
         matrix = fem.k[fem.free][:, fem.free]
         scale = 1 / np.sqrt(matrix.diagonal()) if scaling else np.ones(len(fem.free))
         scaled_matrix = sparse.diags(scale) @ matrix @ sparse.diags(scale)
-        self.factor = SharedCuDSSFactor(scaled_matrix, environments, dtype=np.float32)
+        self.factor = SharedCuDSSFactor(scaled_matrix, environments, dtype=np.float32, natural_order=natural_order)
         self.scale = cp.asarray(scale)
 
     def prepare(self, columns: int) -> None:
@@ -81,12 +81,24 @@ class TemporalRecoveryGPU(EggRecoveryGPU):
         layout: str = "history-major",
         dense_fraction: float = 0.5,
         shared_factor: SharedSparseFactor | SharedCuDSSFactor | None = None,
+        natural_order: bool = False,
+        inertia: str = "sparse",
+        body_products: str = "cublas",
     ) -> None:
         if history < 0 or strategy not in ("compact", "padded", "adaptive") or precision not in ("32", "64"):
             raise ValueError("Nonnegative history/refinement and explicit compact/padded, FP32/FP64 choices required")
         if refinements < 0 or layout not in ("history-major", "dof-major") or not 0 < dense_fraction <= 1:
             raise ValueError("Nonnegative refinement count, explicit history layout and density threshold required")
-        super().__init__(fem, environments, rtol=rtol, factor_backend=factor_backend, shared_factor=shared_factor)
+        super().__init__(
+            fem,
+            environments,
+            rtol=rtol,
+            factor_backend=factor_backend,
+            shared_factor=shared_factor,
+            natural_order=natural_order,
+            inertia=inertia,
+            body_products=body_products,
+        )
         self.capacity, self.strategy, self.precision = history, strategy, precision
         self.refinements, self.chunk = refinements, environments if chunk is None else min(chunk, environments)
         if self.chunk < 1:
@@ -98,7 +110,7 @@ class TemporalRecoveryGPU(EggRecoveryGPU):
         elif factor_backend == "spsm":
             self.correction_factor = MixedFactor(fem, scaling)
         else:
-            self.correction_factor = MixedCuDSSFactor(fem, environments, scaling)
+            self.correction_factor = MixedCuDSSFactor(fem, environments, scaling, natural_order)
         for count in range(1, self.chunk + 1):
             if count & (count - 1) == 0 or count == self.chunk:
                 self.correction_factor.prepare(count)

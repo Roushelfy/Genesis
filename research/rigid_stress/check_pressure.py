@@ -16,12 +16,18 @@ from .sparse_gpu import EggRecoveryGPU
 
 def compare(model, contacts, rows, label):
     for sampling in ("scan", "grid"):
-        compare_sampling(model, contacts, rows, label, sampling)
+        for scatter in ("atomic", "warp"):
+            compare_sampling(model, contacts, rows, label, sampling, scatter)
 
 
-def compare_sampling(model, contacts, rows, label, sampling):
+def compare_sampling(model, contacts, rows, label, sampling, scatter):
     expected_loads = model.map_contacts(contacts)
-    mapper = PadPressureGPU(model.surface, anchor_to_surface=model.mapper.anchor_to_surface, sampling=sampling)
+    mapper = PadPressureGPU(
+        model.surface,
+        anchor_to_surface=model.mapper.anchor_to_surface,
+        sampling=sampling,
+        scatter=scatter,
+    )
     device = mapper.map(
         *[cp.asarray(a) for a in (contacts.position_m, contacts.force_n, contacts.radius_m, contacts.inward_normal)],
         cp.asarray(contacts.friction),
@@ -55,6 +61,7 @@ def compare_sampling(model, contacts, rows, label, sampling):
         {
             "label": label,
             "sampling": sampling,
+            "scatter": scatter,
             "environments": model.environments,
             "contact_count": contacts.valid.sum(axis=1).tolist(),
             "nodal_load_difference_max_n": float(np.abs(actual_loads - expected_loads.nodal_force_n).max()),

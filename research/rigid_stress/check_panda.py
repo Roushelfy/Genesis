@@ -17,6 +17,7 @@ from .cpu import ContactBatch, EggConfig, EggRecoveryCPU
 from .panda_scene import PandaConfig, PandaEggScene
 from .sparse_gpu import EggRecoveryGPU
 from .temporal_gpu import TemporalRecoveryGPU
+from .timing import source_hashes
 
 
 def main() -> None:
@@ -37,7 +38,11 @@ def main() -> None:
     parser.add_argument("--factor-backend", choices=("spsm", "cudss"), default="spsm")
     parser.add_argument("--record-only", action="store_true", help="Record inputs without same-RHS CPU oracle solves")
     parser.add_argument("--video", type=Path)
+    parser.add_argument("--inertia", choices=("sparse", "quadratic"), default="sparse")
+    parser.add_argument("--body-products", choices=("cublas", "fused"), default="cublas")
+    parser.add_argument("--scatter", choices=("atomic", "warp"), default="atomic")
     args = parser.parse_args()
+    hashes = source_hashes()
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with threadpool_limits(limits=1):
         model = EggRecoveryCPU(
@@ -53,9 +58,22 @@ def main() -> None:
         )
         gs.init(backend=gs.gpu, precision="64", seed=args.seed, logging_level="warning")
         recovery = (
-            TemporalRecoveryGPU(model.fem, args.envs, history=4, factor_backend=args.factor_backend)
+            TemporalRecoveryGPU(
+                model.fem,
+                args.envs,
+                history=4,
+                factor_backend=args.factor_backend,
+                inertia=args.inertia,
+                body_products=args.body_products,
+            )
             if args.temporal
-            else EggRecoveryGPU(model.fem, args.envs, factor_backend=args.factor_backend)
+            else EggRecoveryGPU(
+                model.fem,
+                args.envs,
+                factor_backend=args.factor_backend,
+                inertia=args.inertia,
+                body_products=args.body_products,
+            )
         )
         scene = PandaEggScene(
             model,
@@ -69,6 +87,7 @@ def main() -> None:
                 iterations=args.rigid_iterations,
                 tolerance=args.rigid_tolerance,
                 video_path=None if args.video is None else str(args.video),
+                scatter=args.scatter,
             ),
             recovery,
         )
@@ -88,9 +107,18 @@ def main() -> None:
         def diagnostic(local, mapped, recovered, substep):
             snapshot = observer.adapter.snapshot
             full_residuals.append(cp.asnumpy(recovered.relative_residual))
+            cpu_contacts = ContactBatch(
+                local.position_m.cpu().numpy(),
+                local.force_n.cpu().numpy(),
+                np.broadcast_to(scene.radius_m.cpu().numpy(), tuple(local.is_valid.shape)),
+                local.is_valid.cpu().numpy(),
+                local.friction.cpu().numpy(),
+                local.inward_normal.cpu().numpy(),
+                np.finfo(np.float64).eps,
+            )
             if not args.record_only:
                 expected = np.zeros((model.fem.ndof, args.envs))
-                external = mapped.nodal_force_n + recovery.mass_modes[:, :3] @ cp.from_dlpack(local.gravity_m_s2).T
+                external = mapped.nodal_force_n + recovery.gravity_load(cp.from_dlpack(local.gravity_m_s2))
                 rhs = recovery.compatible_rhs(external, cp.from_dlpack(local.omega_rad_s))
                 rhs_cpu = cp.asnumpy(rhs)
                 expected[model.fem.free] = model.fem.factor.solve(rhs_cpu[model.fem.free])
@@ -98,21 +126,34 @@ def main() -> None:
                 actual = cp.asnumpy(recovered.peak_pa)
                 errors.append(abs(actual - truth) / np.maximum(truth, 1))
                 near_zero.extend(abs(actual - truth)[truth <= 1].tolist())
-                cpu_contacts = ContactBatch(
-                    local.position_m.cpu().numpy(),
-                    local.force_n.cpu().numpy(),
-                    np.broadcast_to(scene.radius_m.cpu().numpy(), tuple(local.is_valid.shape)),
-                    local.is_valid.cpu().numpy(),
-                    local.friction.cpu().numpy(),
-                    local.inward_normal.cpu().numpy(),
-                    np.finfo(np.float64).eps,
-                )
                 loads = model.map_contacts(cpu_contacts)
                 np.testing.assert_allclose(cp.asnumpy(mapped.nodal_force_n), loads.nodal_force_n, atol=1e-10, rtol=1e-8)
                 moment_errors.append(np.linalg.norm(loads.resultant_moment_nm - loads.input_moment_nm, axis=1))
             else:
                 moment_errors.append(cp.asnumpy(mapped.contact_diagnostics[:, :, 1].sum(axis=1)))
-            assert cp.all(mapped.is_accepted & recovered.is_accepted).item(), (scene.tick, substep)
+            if not cp.all(mapped.is_accepted & recovered.is_accepted).item():
+                failure = args.output.with_name(f"{args.output.stem}.failure-{scene.tick:06d}-{substep}.npz")
+                np.savez_compressed(
+                    failure,
+                    position_m=cpu_contacts.position_m,
+                    force_n=cpu_contacts.force_n,
+                    inward_normal=cpu_contacts.inward_normal,
+                    valid=cpu_contacts.valid,
+                    friction=cpu_contacts.friction,
+                    radius_m=cpu_contacts.radius_m,
+                    omega_rad_s=local.omega_rad_s.cpu().numpy(),
+                    gravity_m_s2=local.gravity_m_s2.cpu().numpy(),
+                    contact_status=mapped.contact_status.get(),
+                    contact_diagnostics=mapped.contact_diagnostics.get(),
+                    full_relative_residual=recovered.relative_residual.get(),
+                    full_absolute_residual_n=recovered.absolute_residual_n.get(),
+                    rhs_norm_n=recovered.rhs_norm_n.get(),
+                    peak_pa=recovered.peak_pa.get(),
+                    is_accepted=recovered.is_accepted.get(),
+                )
+                raise ArithmeticError(
+                    f"Rejected complete observation at frame {scene.tick}, substep {substep}: {failure}"
+                )
             post_offset = gu.transform_by_quat(scene.com_body, scene.egg.get_quat())
             alpha_world = scene.egg.get_links_acc_ang()[:, 0]
             spatial = (
@@ -163,7 +204,7 @@ def main() -> None:
             torque_relative_errors.append(
                 (torch.linalg.vector_norm(torque_balance, dim=-1) / torque_scale.clamp(min=1e-8)).cpu().numpy()
             )
-            valid = cpu_contacts.valid
+            valid = local.is_valid.cpu().numpy()
             ids = np.column_stack(np.nonzero(valid))
             contacts.append(
                 (
@@ -175,6 +216,7 @@ def main() -> None:
                     cpu_contacts.radius_m[valid],
                     local.omega_rad_s.cpu().numpy(),
                     local.gravity_m_s2.cpu().numpy(),
+                    local.is_egg_a.cpu().numpy()[valid],
                 )
             )
             offsets.append(offsets[-1] + len(ids))
@@ -223,6 +265,11 @@ def main() -> None:
             assert max(near_zero, default=0) <= 1e-3
         if scene.camera is not None:
             scene.camera.stop_recording()
+        recorded_force = np.concatenate([item[2] for item in contacts])
+        recorded_normal = np.concatenate([item[3] for item in contacts])
+        normal_force = np.einsum("ij,ij->i", recorded_force, recorded_normal)
+        tangent = recorded_force - normal_force[:, None] * recorded_normal
+        recorded_a = np.concatenate([item[8] for item in contacts])
         report = {
             "GPU_tested": True,
             "equations_passed": True,
@@ -233,6 +280,11 @@ def main() -> None:
             "varied": not args.nominal,
             "asynchronous": not args.synchronous,
             "temporal": args.temporal,
+            "mesh_level": args.level,
+            "source_sha256_at_start": hashes,
+            "tangential_force_max_n": float(np.linalg.norm(tangent, axis=1).max(initial=0)),
+            "egg_as_a_contacts": int(recorded_a.sum()),
+            "egg_as_b_contacts": int(len(recorded_a) - recorded_a.sum()),
             "physical_mesh_converged": False,
             "CPU_direct_verified": not args.record_only,
             "peak_relative_error_max": None if args.record_only else float(np.max(errors)),
@@ -264,6 +316,7 @@ def main() -> None:
             reset_delay=scene.delay,
             dt_s=scene.config.dt_s / args.substeps,
             source_epsilon=np.finfo(np.float64).eps,
+            is_egg_a=recorded_a,
         )
         args.output.write_text(json.dumps(report, indent=2) + "\n")
         print(json.dumps({key: value for key, value in report.items() if key != "records"}), flush=True)

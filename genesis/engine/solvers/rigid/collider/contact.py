@@ -449,6 +449,12 @@ def func_set_contact(
     if not (qd.abs(residual) < qd.math.inf):
         errno[i_b] = errno[i_b] | array_class.ErrorCode.INVALID_CONTACT_NAN
 
+    # Narrowphase approximations can drift from unit length. Constraint tangent frames assume a unit normal;
+    # preserving a scaled normal here changes the physical Coulomb cone when row forces are reconstructed.
+    normal_norm = qd.sqrt(normal.dot(normal))
+    if normal_norm > 0.0:
+        normal = normal / normal_norm
+
     # b to a
     collider_state.contact_data.geom_a[i_c, i_b] = i_ga
     collider_state.contact_data.geom_b[i_c, i_b] = i_gb

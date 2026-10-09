@@ -32,6 +32,7 @@ class PandaConfig:
     radius_m: float = 0.006
     radius_modulation: float = 0.15
     sampling: str = "grid"
+    scatter: str = "atomic"
     video_path: str | None = None
 
 
@@ -176,7 +177,9 @@ class PandaEggScene:
         self.phase = torch.zeros(config.environments, dtype=gs.tc_float, device=gs.device)
         self.observer: StressSubstepObserver | None = None
         if recovery is not None:
-            mapper = PadPressureGPU(model.surface, anchor_to_surface=True, sampling=config.sampling)
+            mapper = PadPressureGPU(
+                model.surface, anchor_to_surface=True, sampling=config.sampling, scatter=config.scatter
+            )
             self.observer = StressSubstepObserver(
                 self.scene,
                 self.egg,
