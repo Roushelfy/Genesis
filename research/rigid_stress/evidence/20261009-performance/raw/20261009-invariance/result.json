@@ -1,0 +1,113 @@
+{
+  "passed": true,
+  "scope": "Untimed synthetic GPU gauge/pose covariance QA; no actual grasp or FPS",
+  "layouts": [
+    "F",
+    "C"
+  ],
+  "dofs": 9630,
+  "tetrahedra": 1920,
+  "cpu_oracle": "Same-mesh FP64 full direct",
+  "cases": [
+    {
+      "layout": "F",
+      "pose": 0,
+      "environments": 7,
+      "peak_relative_error_max": 4.937147618390624e-11,
+      "complete_rhs_entry_error_max_n": 1.8318679906315083e-15,
+      "gauge_peak_relative_error_max": 4.38834411913782e-11,
+      "gauge_canonical_displacement_relative_error_max": 2.508114922632899e-10,
+      "gauge_full_absolute_residual_max_n": 2.7891123411482303e-11
+    },
+    {
+      "layout": "F",
+      "pose": 1,
+      "environments": 7,
+      "peak_relative_error_max": 4.3880743764470755e-11,
+      "complete_rhs_entry_error_max_n": 1.27675647831893e-15,
+      "gauge_peak_relative_error_max": 4.38834411913782e-11,
+      "gauge_canonical_displacement_relative_error_max": 2.508114922632899e-10,
+      "gauge_full_absolute_residual_max_n": 2.7891123411482303e-11
+    },
+    {
+      "layout": "F",
+      "pose": 2,
+      "environments": 7,
+      "peak_relative_error_max": 4.938989731422667e-11,
+      "complete_rhs_entry_error_max_n": 1.942890293094024e-15,
+      "gauge_peak_relative_error_max": 4.38834411913782e-11,
+      "gauge_canonical_displacement_relative_error_max": 2.508114922632899e-10,
+      "gauge_full_absolute_residual_max_n": 2.7891123411482303e-11
+    },
+    {
+      "layout": "F",
+      "pose": 3,
+      "environments": 7,
+      "peak_relative_error_max": 4.3835788935901296e-11,
+      "complete_rhs_entry_error_max_n": 1.5265566588595902e-15,
+      "gauge_peak_relative_error_max": 4.38834411913782e-11,
+      "gauge_canonical_displacement_relative_error_max": 2.508114922632899e-10,
+      "gauge_full_absolute_residual_max_n": 2.7891123411482303e-11
+    },
+    {
+      "layout": "F",
+      "pose": 4,
+      "environments": 7,
+      "peak_relative_error_max": 4.3835570092365704e-11,
+      "complete_rhs_entry_error_max_n": 1.5543122344752192e-15,
+      "gauge_peak_relative_error_max": 4.38834411913782e-11,
+      "gauge_canonical_displacement_relative_error_max": 2.508114922632899e-10,
+      "gauge_full_absolute_residual_max_n": 2.7891123411482303e-11
+    },
+    {
+      "layout": "C",
+      "pose": 0,
+      "environments": 7,
+      "peak_relative_error_max": 4.9366073333109834e-11,
+      "complete_rhs_entry_error_max_n": 2.4424906541753444e-15,
+      "gauge_peak_relative_error_max": 4.3883441191304746e-11,
+      "gauge_canonical_displacement_relative_error_max": 2.5081149226292483e-10,
+      "gauge_full_absolute_residual_max_n": 2.642009389166702e-11
+    },
+    {
+      "layout": "C",
+      "pose": 1,
+      "environments": 7,
+      "peak_relative_error_max": 4.3882685732320535e-11,
+      "complete_rhs_entry_error_max_n": 2.6645352591003757e-15,
+      "gauge_peak_relative_error_max": 4.3883441191304746e-11,
+      "gauge_canonical_displacement_relative_error_max": 2.5081149226292483e-10,
+      "gauge_full_absolute_residual_max_n": 2.642009389166702e-11
+    },
+    {
+      "layout": "C",
+      "pose": 2,
+      "environments": 7,
+      "peak_relative_error_max": 4.9390821464400346e-11,
+      "complete_rhs_entry_error_max_n": 1.942890293094024e-15,
+      "gauge_peak_relative_error_max": 4.3883441191304746e-11,
+      "gauge_canonical_displacement_relative_error_max": 2.5081149226292483e-10,
+      "gauge_full_absolute_residual_max_n": 2.642009389166702e-11
+    },
+    {
+      "layout": "C",
+      "pose": 3,
+      "environments": 7,
+      "peak_relative_error_max": 4.938795589947904e-11,
+      "complete_rhs_entry_error_max_n": 1.7208456881689926e-15,
+      "gauge_peak_relative_error_max": 4.3883441191304746e-11,
+      "gauge_canonical_displacement_relative_error_max": 2.5081149226292483e-10,
+      "gauge_full_absolute_residual_max_n": 2.642009389166702e-11
+    },
+    {
+      "layout": "C",
+      "pose": 4,
+      "environments": 7,
+      "peak_relative_error_max": 4.9371476184166515e-11,
+      "complete_rhs_entry_error_max_n": 2.886579864025407e-15,
+      "gauge_peak_relative_error_max": 4.3883441191304746e-11,
+      "gauge_canonical_displacement_relative_error_max": 2.5081149226292483e-10,
+      "gauge_full_absolute_residual_max_n": 2.642009389166702e-11
+    }
+  ]
+}

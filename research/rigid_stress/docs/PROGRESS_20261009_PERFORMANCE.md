@@ -5,6 +5,9 @@ chosen live throughput profile. Raw artifacts are in
 [`evidence/20261009-performance`](../evidence/20261009-performance/); large
 contact histories remain at the hashed paths in its runtime manifest.
 
+The detailed [acceptance audit](VALIDATION_RESULTS.md) links the mathematical,
+physical and actual-scene checks and marks final timing/oracle items pending.
+
 ## Physics acceptance and the contact-normal fix
 
 The complete level-6 shell has 2,457,630 DOFs and 491,520 affine P2 tetrahedra,
@@ -233,3 +236,29 @@ warmup environment step. `benchmark_suite` records a frozen configuration
 hash and runs scopes as explicit subprocesses; its rigid dispatch passes.
 Neither wrapper changes the mechanical or recovery kernels. Selection and
 final held-out timing remain active.
+
+## Completed follow-up measurements at 23:20 UTC
+
+The full fused-body level-6 history-h=4 replay completes three 1,200-frame
+repeats at aggregate 24.0630 recovery transitions/s. Each repeat corrects
+9,520 of 9,600 environment columns (99.17%); direct on the same calibration
+load path measures 46.9483/s. Maximum warmup peak relative error above 1 Pa
+is 8.512e-7 and maximum near-zero absolute error is 3.526e-7 Pa. The real
+load changes therefore provide little successful history reuse, and history
+remains slower even after body assembly is fused. The raw
+[JSON](../evidence/20261009-performance/raw/20261009-fine-calibration/history4-fused-unit.json)
+and CSV retain all corrections and complete residuals.
+
+The older nonfused history replay and the B=128 eager live allocation time
+out before three complete repeats. Their completed rows and Slurm statuses
+are [retained](../evidence/20261009-performance/raw/20261009-live-calibration/timeouts.json),
+and neither is an eligible primary three-repeat result. Fine graph/layout
+and B=256 candidates are still running; single completed rows do not choose
+the winner.
+
+An additional untimed native GPU [gauge/pose test](../evidence/20261009-performance/raw/20261009-invariance/result.json)
+passes five random world poses in each F/C layout with seven environments,
+varying contact counts and egg-as-A/B signs. Alternate gauge rows agree with
+CPU canonical displacement to 2.51e-10 relative; maximum complete RHS entry
+difference is 2.89e-15 N. The exact small QA script is retained without
+changing the frozen numerical runtime code.

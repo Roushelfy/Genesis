@@ -1,0 +1,8 @@
+{"setup_seconds": 131.46417462313548, "device_factors": {"operator_groups": 1, "factor_precision_copies": 1, "factors": [{"backend": "cuDSS", "allocator": "default", "precision": "float64", "version": [0, 8, 0], "nnz": 2322190270, "analysis_seconds": 14.422797249164432, "factorization_seconds": 9.522453606128693, "memory_estimates_bytes": [22152136420, 22152136420, 223518272, 1003828016, 6361768884, 18801040432, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}]}}
+{"warmup_frame": 0}
+{"warmup_frame": 200}
+{"warmup_frame": 400}
+{"warmup_frame": 600}
+{"warmup_frame": 800}
+{"warmup_frame": 1000}
+{"repeat": 0, "scope": "stress", "environments": 8, "steps": 1200, "recovery_transitions": 9600, "wall_seconds": 1139.249216821976, "cuda_span_seconds": 1139.251, "recovery_transitions_s": 8.426602237901855, "batch_steps_s": 1.053325279737732, "reset_environments": 16, "accepted": true, "peak_max_pa": 2085786.336671524, "full_relative_residual_max": 8.983063409340459e-05, "full_relative_residual_max_above_absolute_floor": 9.925054909375916e-07, "full_absolute_residual_max_n": 1.9298548396930248e-08, "correction_environment_events": 9520, "fp64_fallback_events": 0, "refinement_events": 0, "sampled_device_memory_peak_bytes": 37260296192, "device_memory_sample_count": 11375, "device_memory_sample_interval_s": 0.1, "device_memory_accounting": "CUDA device-wide used memory; sampled, includes native/context allocations"}
