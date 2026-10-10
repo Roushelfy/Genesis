@@ -1,8 +1,8 @@
 # Contact robustness development, 2026-10-10
 
 The active goal prioritizes legal contact recovery before performance tuning.
-This report records development results. Final trajectory acceptance and
-repeated throughput measurements remain in progress.
+This report records validated development checkpoints. Broad trajectory
+coverage and final repeated throughput selection remain in progress.
 
 ## Discrete model diagnosis
 
@@ -51,10 +51,10 @@ maximum-stress comparison. Six targeted GPU mapping cases pass in 45.44 s.
 
 The native retry set stays on device. The implementation recomputes actual
 loads independently for every environment and every recovery substep. All
-integration and fit work belongs in the new baseline's timing. The initial
-development evaluation counter records the final fit pass only. Retry flags
-identify affected contacts. Cumulative first-pass work will be added before
-final tail-cost reporting.
+integration and fit work belongs in the new baseline's timing. Retry flags
+identify affected contacts. Source e1fbf937 adds cumulative evaluations
+covering both initial and retry fits; the initial development counter recorded
+only the final pass.
 
 ## Workload change and pending validation
 
@@ -66,10 +66,74 @@ includes per-environment integration retries, final-pass fit iterations and
 contact force/moment errors. The original apex at effective friction 1 remains
 an exact regression fixture.
 
-Full CPU/GPU tests, actual varied-friction trajectories, multiple seeds and
-all measurement scopes are being evaluated. Neither the unsuccessful
-surface-normal trial nor targeted apex acceptance establishes completed
-trajectory robustness or a final throughput result.
+Checkpoint 6494f7f7 passes 17 GPU cases (199.84 s) and 15 CPU numerical cases
+(89.11 s). Actual B=2048 live measurement reaches 57,175.96 env-step/s and
+27.91795 batch steps/s over 1,200 timed steps, retaining all 2,048 resets.
+Warmup meets the bilateral-hold criterion in 1,880/2,048 environments.
+Remaining environments are retained in timing. Maximum sampled complete
+residual is 1.6744e-10 N. A separate every-step audit covers 4,300,800
+observations with zero invalid environment steps. This workload's sampled
+contacts need no local retries. The apex regression exercises the retry
+and complete elastic solve.
+
+## Complete exterior operator checkpoint
+
+Balance and elasticity are linear in the complete exterior P2 nodal force
+space and six centrifugal coefficients at the declared fixed geometry,
+material and mass. Construct their exact shared responses in Quadrants.
+This uses all 162 exterior nodes and three force components, retaining the
+complete 810-node displacement and global stress scan. Complete equilibrium
+checks and full-load correction/factor fallback remain active. Arbitrary
+interior-load validation uses the full inverse.
+
+At B=1024, native application microtiming falls from 7.2782 to 1.5147 ms.
+Relative displacement difference is 7.40e-15, maximum peak difference
+6.21e-8 Pa, and independent CPU FP64 complete residual at most 6.30e-12 N.
+Checkpoint e1fbf937 passes 18 GPU cases (305.01 s) and 16 CPU numerical cases
+(94.41 s), including arbitrary exterior loads, rotation and partial reset.
+
+On one RTX PRO 6000 Blackwell allocation (GPU UUID
+GPU-f30bd82d-756d-28ed-24af-a6dec8bbf9bc), B=1024 full inverse and complete
+exterior operator live rates are 41,310.81 and 54,137.61 env-step/s
+(one-repeat development comparison, +31.05%). The latter reaches 84,456.04
+at B=2048. Extra shared operator storage is 9,565,128 bytes.
+
+## Face reduction checkpoint
+
+Reduce all eligible sample loads within each complete exterior face before
+writing its six nodes. Conservative triangle bounds select faces, and every
+eligible Q10 sample, including seven-triangle local retries, is evaluated.
+Global force/moment checks remain unchanged.
+
+An actual B=1024 frozen snapshot measures scalar scatter 2.6750 ms versus
+face reduction 1.1553 ms. Nodal force difference is at most 3.33e-16 N.
+Source e0b6714c passes 18 GPU cases in 218.54 s. Its separate policy audit
+at B=2048 records zero invalid observations in 4,300,800 environment steps.
+On one GPU, live B=1024 scalar and face rates are 53,820.81 and 58,316.33
+(+8.35%, one development repeat). B=2048 reaches 86,897.68 env-step/s.
+
+An independent seed 623001 at B=4096 completes the full 1,200-step trajectory
+at 120,705.13 env-step/s (29.469 batch steps/s). Seed 510000 at B=8192 reaches
+150,361.28 env-step/s (18.355 batch steps/s). These are single-repeat
+development runs on separate allocations, not a selected maximum.
+
+The optimized B=1024 wall profile measures pressure 1.3950 ms, scatter
+1.2100 ms, exterior application 1.5650 ms and global peak 1.1174 ms. A
+separate 50-step CUPTI trace contains 22,098 GPU kernels and 5,496 copies;
+GPU kernel duration totals 544.24 ms and copies 2.75 ms. It records 3,296
+stream synchronizations and 9,598 runtime kernel launches. Most copies are
+small pageable host-to-device scalar transfers. This intrusive trace is
+excluded from throughput and motivates remaining scheduling/fusion work.
+
+These are validated development checkpoints. Final scopes, multiple seeds,
+larger batches, repeated measurements and additional applicable candidates
+remain required by the active goal. Original JSON, test logs, rejected trial
+and sampled whole-card memory are archived with hashes in
+`../evidence/20261010-contact-repair/`.
+
+The surface-normal cone's circumscribed 32-direction LP remains feasible
+for the rejected sliding input, leaving circular-cone feasibility undecided.
+That trial remains an unresolved fit/model failure.
 
 Runtime evidence is under
 `$RIGID_STRESS_DATA_ROOT/runs/20261010-contact-repair/`.

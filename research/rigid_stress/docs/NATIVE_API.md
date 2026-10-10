@@ -60,6 +60,12 @@ preserves force and the two independent moment constraints perpendicular to
 the force; nodal P2 loads may be signed even though physical pressure is
 nonnegative. The law is in [PAD_LAW.md](PAD_LAW.md).
 
+A sampled fit failure triggers native local Q10 integration on the anchor
+face. A central triangle whose centroid is the anchor plus six surrounding
+triangles partitions that face. Parent-face shape functions transfer the new
+samples, replacing the original face samples. Retry and cumulative fit work
+are included in live timing. See [CONTACT_REPAIR_20261010.md](CONTACT_REPAIR_20261010.md).
+
 Inferred rigid acceleration relief removes resultant force and torque using
 consistent mass. Uniform gravity cancels under this model. Six fixed fields
 represent consistent-mass centrifugal loads from the same substep angular
@@ -71,8 +77,9 @@ Finite pressure cannot represent every point wrench on every sampled
 footprint. A failed input, anchor, pressure solve, wrench check, unsupported
 applied/coupling load, or contact-pool overflow produces NaN and a rigid errno;
 `scene.rigid_solver.check_errno()` raises. The implementation neither clips
-friction forces nor silently expands a footprint. The B=2048 counterexample
-and independent CPU rejection are archived in the native evidence.
+friction forces nor silently expands a footprint. The original B=2048 apex
+counterexample is a successful local-integration regression with independent
+CPU wrench, complete residual and peak comparisons.
 
 Currently supported stress links are independent free roots with the standard
 rigid contact coupler, without autodiff, joint supports, rolling or torsional
@@ -97,6 +104,18 @@ the same law and wrench checks.
 The full inverse maps **every** nodal load, rather than a fixed contact-response
 basis. Level 1 requires 47,239,200 bytes in FP64. Explicit `method="inverse"`
 rejects an insufficient budget; it never allocates an unbounded dense inverse.
+
+`surface_inverse=True` additionally constructs exact responses for every
+exterior P2 node/force component and six centrifugal fields, within the
+shared inverse storage budget. It retains the complete displacement,
+equilibrium check and global stress scan. Arbitrary interior load validation
+and residual corrections use the full inverse. Level-1 extra storage is
+9,565,128 bytes. Disable the option for a full-load application ablation.
+
+`cooperative_scatter=True` reduces integration-point loads per face before
+node accumulation on CUDA, preserving all eligible Q10 and local retry
+samples. CPU and the disabled option use scalar scatter. The benchmark
+exposes `--full-inverse` and `--serial-scatter`.
 
 The native block LDL factor is shared across environments. Its symbolic
 minimum-degree ordering is Python topology work; every numeric factor value

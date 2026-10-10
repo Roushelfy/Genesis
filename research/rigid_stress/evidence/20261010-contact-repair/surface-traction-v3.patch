@@ -1,0 +1,457 @@
+diff --git a/genesis/engine/solvers/rigid/stress/contact.py b/genesis/engine/solvers/rigid/stress/contact.py
+index ede1c32e..f00ef5ac 100644
+--- a/genesis/engine/solvers/rigid/stress/contact.py
++++ b/genesis/engine/solvers/rigid/stress/contact.py
+@@ -1,4 +1,4 @@
+-"""Native finite, nonnegative pressure preserving each point-contact wrench."""
++"""Native finite surface tractions preserving point wrenches and local Coulomb cones."""
+ 
+ from dataclasses import dataclass
+ from typing import ClassVar
+@@ -47,16 +47,14 @@ def create_contacts(n_contacts: int, n_envs: int, radius: float, cooperative: bo
+         friction=V(dtype=gs.qd_float, shape=shape),
+         radius=V(dtype=gs.qd_float, shape=shape),
+         valid=V(dtype=gs.qd_bool, shape=shape),
+-        coefficient=V_VEC(3, dtype=gs.qd_float, shape=shape),
++        coefficient=V_VEC(6, dtype=gs.qd_float, shape=shape),
+         weight_sum=V(dtype=gs.qd_float, shape=shape),
+         status=V(dtype=gs.qd_int, shape=shape),
+         force_error=V(dtype=gs.qd_float, shape=shape),
+         moment_error=V(dtype=gs.qd_float, shape=shape),
+         candidate_count=V(dtype=gs.qd_int, shape=shape),
+         evaluations=V(dtype=gs.qd_int, shape=shape),
+-        active_pairs=V_VEC(
+-            2, dtype=gs.qd_int, shape=(n_contacts * n_envs if cooperative and gs.backend == gs.cuda else 0,)
+-        ),
++        active_pairs=V_VEC(2, dtype=gs.qd_int, shape=(n_contacts * n_envs,)),
+         active_count=V(dtype=gs.qd_int, shape=()),
+         frame_position=V_VEC(3, dtype=gs.qd_float, shape=(n_envs,)),
+         frame_quaternion=V_VEC(4, dtype=gs.qd_float, shape=(n_envs,)),
+@@ -150,35 +148,84 @@ def kernel_anchor(source_epsilon: float, contact_state: StressContactState, surf
+ 
+ 
+ @qd.func
+-def func_pressure_initial(gram: qd.types.matrix(3, 3)):
+-    weight_sum = gs.qd_float(0.0)
+-    coefficient = qd.Vector.zero(gs.qd_float, 3)
+-    accepted = False
+-    nonsingular = gram[0, 0] > 0.0 and gram.determinant() > 1e-14 * gram.trace() ** 3
+-    if nonsingular:
+-        weight_sum = gram[0, 0]
+-        gram /= weight_sum
+-        coefficient = gram.inverse() @ qd.Vector([1.0, 0.0, 0.0])
+-        margin = 1e-12
+-        if qd.static(gs.qd_float == qd.f32):
+-            margin = 1e-5
+-        positive = coefficient[0] - qd.sqrt(coefficient[1] ** 2 + coefficient[2] ** 2)
+-        accepted = (
+-            positive > margin * coefficient.norm() and (gram @ coefficient - qd.Vector([1.0, 0.0, 0.0])).norm() <= 2e-12
++def func_coulomb(vector: qd.types.vector(3), normal: qd.types.vector(3), friction: float):
++    compression = vector.dot(normal)
++    tangent = vector - compression * normal
++    magnitude = tangent.norm()
++    projected = qd.Vector.zero(gs.qd_float, 3)
++    derivative = qd.Matrix.zero(gs.qd_float, 3, 3)
++    if compression >= 0.0 and magnitude <= friction * compression:
++        projected = vector
++        derivative = qd.Matrix.identity(gs.qd_float, 3)
++    elif compression + friction * magnitude > 0.0:
++        direction = tangent / magnitude
++        pressure = (compression + friction * magnitude) / (1.0 + friction * friction)
++        generator = normal + friction * direction
++        projected = pressure * generator
++        derivative = generator.outer_product(generator) / (1.0 + friction * friction)
++        derivative += (
++            friction
++            * pressure
++            / magnitude
++            * (qd.Matrix.identity(gs.qd_float, 3) - normal.outer_product(normal) - direction.outer_product(direction))
+         )
+-        coefficient /= weight_sum
+-    status = 0 if accepted else (5 if nonsingular else 3)
+-    return coefficient, weight_sum, status
++    return projected, derivative
++
++
++@qd.func
++def func_traction_sample(
++    i_q: int,
++    center: qd.types.vector(3),
++    radius: float,
++    surface_info: StressSurfaceInfo,
++):
++    relative = (surface_info.positions[i_q] - center) / radius
++    distance = relative.dot(relative)
++    weight = gs.qd_float(0.0)
++    if distance < 1.0:
++        weight = qd.exp(-0.5 * distance / (0.45 * 0.45)) * (1.0 - distance) ** 2 * surface_info.weights[i_q]
++    operator = qd.Matrix.zero(gs.qd_float, 6, 3)
++    for i in qd.static(range(3)):
++        operator[i, i] = 1.0
++    operator[3, 1], operator[3, 2] = -relative[2], relative[1]
++    operator[4, 0], operator[4, 2] = relative[2], -relative[0]
++    operator[5, 0], operator[5, 1] = -relative[1], relative[0]
++    return operator, weight
++
++
++@qd.func
++def func_solve_traction(gram: qd.types.matrix(6, 6), right: qd.types.vector(6)):
++    # Positive diagonal regularization retains descent when active cone directions lose rank.
++    regularization = 1e-12 * qd.max(gram.trace() / 6.0, 1e-6)
++    diagonal = qd.Vector.zero(gs.qd_float, 6)
++    factor = qd.Matrix.zero(gs.qd_float, 6, 6)
++    value = qd.Vector.zero(gs.qd_float, 6)
++    for i in range(6):
++        pivot = gram[i, i] + regularization
++        for j in range(i):
++            pivot -= factor[i, j] * factor[i, j] * diagonal[j]
++        diagonal[i] = qd.max(pivot, regularization)
++        for j in range(i + 1, 6):
++            entry = gram[j, i]
++            for k in range(i):
++                entry -= factor[j, k] * factor[i, k] * diagonal[k]
++            factor[j, i] = entry / diagonal[i]
++        value[i] = right[i]
++        for j in range(i):
++            value[i] -= factor[i, j] * value[j]
++    for i in range(6):
++        value[i] /= diagonal[i]
++    for k in range(6):
++        i = 5 - k
++        for j in range(i + 1, 6):
++            value[i] -= factor[j, i] * value[j]
++    return value
+ 
+ 
+ def kernel_pressure(contact_state: StressContactState, surface_info: StressSurfaceInfo, cooperative: bool = True):
+-    if cooperative and gs.backend == gs.cuda:
+-        kernel_pack_contacts(contact_state)
+-        kernel_pressure_warp(contact_state, surface_info)
+-        kernel_pressure_correct_warp(contact_state, surface_info)
+-    else:
+-        kernel_pressure_serial(contact_state, surface_info)
+-        kernel_pressure_correct(contact_state, surface_info)
++    kernel_pack_contacts(contact_state)
++    kernel_traction_weights(contact_state, surface_info, cooperative and gs.backend == gs.cuda)
++    kernel_traction_fit(contact_state, surface_info, cooperative and gs.backend == gs.cuda)
+ 
+ 
+ @qd.kernel(graph=True)
+@@ -196,194 +243,118 @@ def kernel_pack_contacts(contact_state: StressContactState):
+ 
+ 
+ @qd.kernel
+-def kernel_pressure_warp(contact_state: StressContactState, surface_info: StressSurfaceInfo):
++def kernel_traction_weights(
++    contact_state: StressContactState, surface_info: StressSurfaceInfo, cooperative: qd.template()
++):
+     qd.loop_config(block_dim=128)
+-    for i_thread in range(contact_state.active_count[None] * 32):
+-        lane = i_thread % 32
+-        slot = i_thread // 32
++    for i_thread in range(contact_state.active_count[None] * (32 if cooperative else 1)):
++        width = 32 if qd.static(cooperative) else 1
++        lane, slot = i_thread % width, i_thread // width
+         pair = contact_state.active_pairs[slot]
+         i_c, i_b = pair[0], pair[1]
+-        first, second = func_force_frame(contact_state.force[i_c, i_b])
+         center, radius = contact_state.center[i_c, i_b], contact_state.radius[i_c, i_b]
+         low, dimensions = func_patch_grid(center, radius, surface_info.grid)
+-        gram = qd.Matrix.zero(gs.qd_float, 3, 3)
++        weight_sum = gs.qd_float(0.0)
+         candidates = 0
+         for i_cell in range(dimensions[0] * dimensions[1] * dimensions[2]):
+             start, end = func_patch_cell(i_cell, low, dimensions, surface_info.grid)
+-            for chunk in range((end - start + 31) // 32):
+-                entry = start + chunk * 32 + lane
++            for chunk in range((end - start + width - 1) // width):
++                entry = start + chunk * width + lane
+                 if entry < end:
+                     i_q = surface_info.grid.samples[entry]
+-                    coordinates, weight = func_patch_sample(i_q, center, first, second, radius, surface_info)
+-                    gram += weight * coordinates.outer_product(coordinates)
++                    _operator, weight = func_traction_sample(i_q, center, radius, surface_info)
++                    weight_sum += weight
+                     candidates += gs.qd_int(weight > 0.0)
+-        for i, j in qd.static(qd.ndrange(3, 3)):
+-            gram[i, j] = qd.simt.subgroup.reduce_all_add(gram[i, j])
+-        candidates = qd.simt.subgroup.reduce_all_add(candidates)
++        if qd.static(cooperative):
++            weight_sum = qd.simt.subgroup.reduce_all_add(weight_sum)
++            candidates = qd.simt.subgroup.reduce_all_add(candidates)
+         if lane == 0:
+-            contact_state.candidate_count[i_c, i_b] += candidates
+-            coefficient, weight_sum, status = func_pressure_initial(gram)
+-            contact_state.coefficient[i_c, i_b] = coefficient
+             contact_state.weight_sum[i_c, i_b] = weight_sum
+-            contact_state.status[i_c, i_b] = status
++            contact_state.candidate_count[i_c, i_b] = candidates
++            contact_state.coefficient[i_c, i_b] = qd.Vector.zero(gs.qd_float, 6)
++            if weight_sum <= 0.0:
++                contact_state.status[i_c, i_b] = 3
+ 
+ 
+ @qd.kernel
+-def kernel_pressure_correct_warp(contact_state: StressContactState, surface_info: StressSurfaceInfo):
++def kernel_traction_fit(contact_state: StressContactState, surface_info: StressSurfaceInfo, cooperative: qd.template()):
+     qd.loop_config(block_dim=128)
+-    for i_thread in range(contact_state.active_count[None] * 32):
+-        lane = i_thread % 32
+-        slot = i_thread // 32
++    for i_thread in range(contact_state.active_count[None] * (32 if cooperative else 1)):
++        width = 32 if qd.static(cooperative) else 1
++        lane, slot = i_thread % width, i_thread // width
+         pair = contact_state.active_pairs[slot]
+         i_c, i_b = pair[0], pair[1]
+-        if contact_state.status[i_c, i_b] == 5:
+-            first, second = func_force_frame(contact_state.force[i_c, i_b])
++        if contact_state.status[i_c, i_b] == 0:
+             center, radius = contact_state.center[i_c, i_b], contact_state.radius[i_c, i_b]
+             low, dimensions = func_patch_grid(center, radius, surface_info.grid)
+             weight_sum = contact_state.weight_sum[i_c, i_b]
+-            coefficient = contact_state.coefficient[i_c, i_b] * weight_sum
+-            accepted, line = False, False
++            direction = contact_state.force[i_c, i_b].normalized()
++            target = qd.Vector([direction[0], direction[1], direction[2], 0.0, 0.0, 0.0])
++            coefficient = qd.Vector.zero(gs.qd_float, 6)
++            step = qd.Vector.zero(gs.qd_float, 6)
++            is_accepted, is_line = False, False
+             iterations, line_evaluations = 0, 0
+-            fraction, reference_objective = gs.qd_float(1.0), gs.qd_float(0.0)
+-            step = qd.Vector.zero(gs.qd_float, 3)
+-            slope = gs.qd_float(0.0)
+-            # At most 80 Newton evaluations, each followed by at most 40 line evaluations.
+-            # One evaluator body avoids duplicating the integration helper in the kernel.
+-            for _ in range(80 * 41):
+-                if not accepted and (line or iterations < 80):
++            fraction, reference_objective, slope = gs.qd_float(1.0), gs.qd_float(0.0), gs.qd_float(0.0)
++            reference_residual = gs.qd_float(0.0)
++            for _ in range(200 * 41):
++                if not is_accepted and (is_line or iterations < 200):
+                     candidate = coefficient
+-                    if line:
++                    if is_line:
+                         candidate = coefficient - fraction * step
+                     objective = gs.qd_float(0.0)
+-                    gradient = qd.Vector.zero(gs.qd_float, 3)
+-                    hessian = qd.Matrix.zero(gs.qd_float, 3, 3)
++                    gradient = qd.Vector.zero(gs.qd_float, 6)
++                    hessian = qd.Matrix.zero(gs.qd_float, 6, 6)
+                     for i_cell in range(dimensions[0] * dimensions[1] * dimensions[2]):
+                         start, end = func_patch_cell(i_cell, low, dimensions, surface_info.grid)
+-                        for chunk in range((end - start + 31) // 32):
+-                            entry = start + chunk * 32 + lane
++                        for chunk in range((end - start + width - 1) // width):
++                            entry = start + chunk * width + lane
+                             if entry < end:
+                                 i_q = surface_info.grid.samples[entry]
+-                                coordinates, weight = func_patch_sample(
+-                                    i_q, center, first, second, radius, surface_info
+-                                )
++                                operator, weight = func_traction_sample(i_q, center, radius, surface_info)
+                                 weight /= weight_sum
+-                                profile = qd.max(0.0, coordinates.dot(candidate))
+-                                objective -= 0.5 * weight * profile * profile
+-                                if not line:
+-                                    gradient += weight * profile * coordinates
+-                                    if profile > 0.0:
+-                                        hessian += weight * coordinates.outer_product(coordinates)
+-                    objective = qd.simt.subgroup.reduce_all_add(objective) + candidate[0]
+-                    if not line:
+-                        for a in qd.static(range(3)):
++                                i_f = i_q // surface_info.shape.shape[0]
++                                normal = -surface_info.face_normal[i_f]
++                                vector = direction + operator.transpose() @ candidate
++                                projected, derivative = func_coulomb(vector, normal, contact_state.friction[i_c, i_b])
++                                objective += 0.5 * weight * projected.dot(projected)
++                                gradient += weight * (operator @ projected)
++                                if not is_line:
++                                    hessian += weight * (operator @ derivative @ operator.transpose())
++                    if qd.static(cooperative):
++                        objective = qd.simt.subgroup.reduce_all_add(objective)
++                        for a in qd.static(range(6)):
+                             gradient[a] = qd.simt.subgroup.reduce_all_add(gradient[a])
+-                        for a, b in qd.static(qd.ndrange(3, 3)):
+-                            hessian[a, b] = qd.simt.subgroup.reduce_all_add(hessian[a, b])
+-                        gradient[0] -= 1.0
++                        if not is_line:
++                            for a, b in qd.static(qd.ndrange(6, 6)):
++                                hessian[a, b] = qd.simt.subgroup.reduce_all_add(hessian[a, b])
++                    objective -= candidate.dot(target)
++                    gradient -= target
++                    if not is_line:
+                         iterations += 1
+-                        accepted = gradient.norm() <= 2e-12
+-                        if not accepted and hessian.determinant() > 1e-14 * hessian.trace() ** 3:
+-                            step = hessian.inverse() @ gradient
++                        is_accepted = gradient.norm() <= 2e-12
++                        if not is_accepted:
++                            step = func_solve_traction(hessian, gradient)
+                             slope = gradient.dot(step)
+                             reference_objective = objective
+-                            fraction, line = gs.qd_float(1.0), True
++                            reference_residual = gradient.norm()
++                            fraction, is_line = gs.qd_float(1.0), True
+                             line_evaluations = 0
+                     else:
+                         line_evaluations += 1
+-                        if objective >= reference_objective + 1e-4 * fraction * slope - 1e-15:
+-                            coefficient, line = candidate, False
++                        is_descent = objective <= reference_objective - 1e-4 * fraction * slope + 1e-15
++                        # The objective loses resolution near equilibrium before the wrench residual does.
++                        if reference_residual < 1e-4:
++                            is_descent = gradient.norm() <= (1.0 - 1e-4 * fraction) * reference_residual
++                        if is_descent:
++                            coefficient, is_line = candidate, False
+                         else:
+                             fraction *= 0.5
+                             if line_evaluations == 40:
+-                                line = False
++                                is_line = False
+             if lane == 0:
+-                contact_state.coefficient[i_c, i_b] = coefficient / weight_sum
+-                contact_state.status[i_c, i_b] = 0 if accepted else 3
+-                contact_state.evaluations[i_c, i_b] = iterations
+-
+-
+-@qd.kernel(graph=True)
+-def kernel_pressure_serial(contact_state: StressContactState, surface_info: StressSurfaceInfo):
+-    for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
+-        if contact_state.valid[i_c, i_b] and contact_state.status[i_c, i_b] == 0:
+-            force = contact_state.force[i_c, i_b]
+-            if force.norm() > 1e-30:
+-                first, second = func_force_frame(force)
+-                center = contact_state.center[i_c, i_b]
+-                radius = contact_state.radius[i_c, i_b]
+-                low, dimensions = func_patch_grid(center, radius, surface_info.grid)
+-                n_cells = dimensions[0] * dimensions[1] * dimensions[2]
+-                gram = qd.Matrix.zero(gs.qd_float, 3, 3)
+-                for i_cell in range(n_cells):
+-                    start, end = func_patch_cell(i_cell, low, dimensions, surface_info.grid)
+-                    for i_entry in range(start, end):
+-                        i_q = surface_info.grid.samples[i_entry]
+-                        coordinates, weight = func_patch_sample(i_q, center, first, second, radius, surface_info)
+-                        gram += weight * coordinates.outer_product(coordinates)
+-                        if weight > 0.0:
+-                            contact_state.candidate_count[i_c, i_b] += 1
+-                coefficient, weight_sum, status = func_pressure_initial(gram)
+                 contact_state.coefficient[i_c, i_b] = coefficient
+-                contact_state.weight_sum[i_c, i_b] = weight_sum
+-                contact_state.status[i_c, i_b] = status
+-
+-
+-@qd.kernel(graph=True)
+-def kernel_pressure_correct(contact_state: StressContactState, surface_info: StressSurfaceInfo):
+-    # Keep the uncommon constrained solve out of the integration kernel's register footprint.
+-    for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
+-        if contact_state.valid[i_c, i_b] and contact_state.status[i_c, i_b] == 5:
+-            first, second = func_force_frame(contact_state.force[i_c, i_b])
+-            center = contact_state.center[i_c, i_b]
+-            radius = contact_state.radius[i_c, i_b]
+-            low, dimensions = func_patch_grid(center, radius, surface_info.grid)
+-            n_cells = dimensions[0] * dimensions[1] * dimensions[2]
+-            weight_sum = contact_state.weight_sum[i_c, i_b]
+-            coefficient = contact_state.coefficient[i_c, i_b] * weight_sum
+-            accepted = False
+-            for iteration in range(80):
+-                if not accepted:
+-                    gradient = qd.Vector([-1.0, 0.0, 0.0])
+-                    hessian = qd.Matrix.zero(gs.qd_float, 3, 3)
+-                    objective = coefficient[0]
+-                    for i_cell in range(n_cells):
+-                        start, end = func_patch_cell(i_cell, low, dimensions, surface_info.grid)
+-                        for i_entry in range(start, end):
+-                            i_q = surface_info.grid.samples[i_entry]
+-                            coordinates, weight = func_patch_sample(i_q, center, first, second, radius, surface_info)
+-                            weight /= weight_sum
+-                            profile = qd.max(0.0, coordinates.dot(coefficient))
+-                            gradient += weight * profile * coordinates
+-                            objective -= 0.5 * weight * profile * profile
+-                            if profile > 0.0:
+-                                hessian += weight * coordinates.outer_product(coordinates)
+-                    contact_state.evaluations[i_c, i_b] = iteration + 1
+-                    accepted = gradient.norm() <= 2e-12
+-                    if not accepted and hessian.determinant() > 1e-14 * hessian.trace() ** 3:
+-                        step = hessian.inverse() @ gradient
+-                        fraction = gs.qd_float(1.0)
+-                        line_accepted = False
+-                        for _ in range(40):
+-                            if not line_accepted:
+-                                candidate = coefficient - fraction * step
+-                                candidate_objective = candidate[0]
+-                                for i_cell in range(n_cells):
+-                                    start, end = func_patch_cell(i_cell, low, dimensions, surface_info.grid)
+-                                    for i_entry in range(start, end):
+-                                        i_q = surface_info.grid.samples[i_entry]
+-                                        coordinates, weight = func_patch_sample(
+-                                            i_q, center, first, second, radius, surface_info
+-                                        )
+-                                        weight /= weight_sum
+-                                        profile = qd.max(0.0, coordinates.dot(candidate))
+-                                        candidate_objective -= 0.5 * weight * profile * profile
+-                                if candidate_objective >= objective + 1e-4 * fraction * gradient.dot(step) - 1e-15:
+-                                    coefficient = candidate
+-                                    line_accepted = True
+-                                else:
+-                                    fraction *= 0.5
+-            contact_state.coefficient[i_c, i_b] = coefficient / weight_sum
+-            contact_state.status[i_c, i_b] = 0 if accepted else 3
++                contact_state.status[i_c, i_b] = 0 if is_accepted else 3
++                contact_state.evaluations[i_c, i_b] = iterations
+ 
+ 
+ @qd.kernel(graph=True)
+@@ -400,31 +371,26 @@ def kernel_scatter(
+             force = contact_state.force[i_c, i_b]
+             magnitude = force.norm()
+             if magnitude > 1e-30:
+-                first, second = func_force_frame(force)
+-                low, dimensions = func_patch_grid(
+-                    contact_state.center[i_c, i_b], contact_state.radius[i_c, i_b], surface_info.grid
+-                )
+-                n_cells = dimensions[0] * dimensions[1] * dimensions[2]
++                center, radius = contact_state.center[i_c, i_b], contact_state.radius[i_c, i_b]
++                low, dimensions = func_patch_grid(center, radius, surface_info.grid)
+                 total = qd.Vector.zero(gs.qd_float, 3)
+                 moment = qd.Vector.zero(gs.qd_float, 3)
+-                for i_cell in range(n_cells):
++                for i_cell in range(dimensions[0] * dimensions[1] * dimensions[2]):
+                     start, end = func_patch_cell(i_cell, low, dimensions, surface_info.grid)
+                     for i_entry in range(start, end):
+                         i_q = surface_info.grid.samples[i_entry]
+-                        coordinates, weight = func_patch_sample(
+-                            i_q,
+-                            contact_state.center[i_c, i_b],
+-                            first,
+-                            second,
+-                            contact_state.radius[i_c, i_b],
+-                            surface_info,
+-                        )
+-                        fraction = weight * qd.max(0.0, coordinates.dot(contact_state.coefficient[i_c, i_b]))
+-                        sample_force = fraction * force
+-                        total += sample_force
+-                        moment += (surface_info.positions[i_q] - contact_state.position[i_c, i_b]).cross(sample_force)
++                        operator, weight = func_traction_sample(i_q, center, radius, surface_info)
+                         if weight > 0.0:
+                             i_face = i_q // surface_info.shape.shape[0]
++                            vector = force / magnitude + operator.transpose() @ contact_state.coefficient[i_c, i_b]
++                            sample_force, _derivative = func_coulomb(
++                                vector, -surface_info.face_normal[i_face], contact_state.friction[i_c, i_b]
++                            )
++                            sample_force *= weight * magnitude / contact_state.weight_sum[i_c, i_b]
++                            total += sample_force
++                            moment += (surface_info.positions[i_q] - contact_state.position[i_c, i_b]).cross(
++                                sample_force
++                            )
+                             i_shape = i_q % surface_info.shape.shape[0]
+                             for i_local in range(6):
+                                 i_n = stress_info.surface_nodes[i_face, i_local]
+@@ -433,7 +399,5 @@ def kernel_scatter(
+                                     qd.atomic_add(stress_state.force[i_n, i_b][i_a], value[i_a])
+                 contact_state.force_error[i_c, i_b] = (total - force).norm()
+                 contact_state.moment_error[i_c, i_b] = moment.norm()
+-                if (total - force).norm() > 1e-8 * magnitude or moment.norm() > 1e-8 * magnitude * contact_state.radius[
+-                    i_c, i_b
+-                ]:
++                if (total - force).norm() > 1e-8 * magnitude or moment.norm() > 1e-8 * magnitude * radius:
+                     contact_state.status[i_c, i_b] = 4

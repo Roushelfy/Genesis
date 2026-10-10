@@ -37,7 +37,7 @@ class StressSurfaceInverse:
             force_blocks=V_MAT(3, 3, dtype=gs.qd_float, shape=(n_nodes, n_surface)),
             centrifugal=V_MAT(3, 6, dtype=gs.qd_float, shape=(n_nodes,)),
         )
-        self.info.nodes.from_numpy(nodes)
+        self.info.nodes.from_numpy(nodes.astype(gs.np_int, copy=False))
         temporary = create_state(3 * n_surface + 6)
         kernel_surface_unit_loads(temporary, stress_info, self.info)
         factor.solve(1.0, temporary, stress_info)

@@ -19,8 +19,8 @@ python examples/speed_benchmark/rigid_stress.py \
 
 Set output and Genesis/Quadrants cache directories explicitly before running.
 Choose `rigid`, `recovery`, `live`, `policy-rigid` or `policy` in separate
-processes for their matched timing scopes. The default mesh is full-shell
-level 1, 2,430 DOFs; level 2 is also available. These are numerical and
+processes for their matched timing scopes. The current iteration mesh is
+full-shell level 1, 2,430 DOFs. These are numerical and
 performance-development meshes, without a physical convergence claim.
 Default throughput measurements use at least 1,200 steps, three repeats and
 ten seconds per repeat. Kernel profiling is a separate intrusive pass.
@@ -32,6 +32,13 @@ mesh. Compare `--method direct --serial-solve`, `--method direct`, and
 the full changing-contact measurement was faster and used less memory.
 `--serial-pressure` selects the native scalar pressure path for a matched
 pressure scheduling ablation. CUDA warp pressure is the selected default.
+`--full-inverse` disables the exact complete-exterior operator, and
+`--serial-scatter` disables face reduction. `--seed 623001` selects another
+independent varied workload; use the same seed for matched comparisons.
+The current adaptive-pad workload has actual combined contact friction
+between 0.42 and 0.84. It differs from the earlier fixed-friction benchmark.
+See [CONTACT_REPAIR_20261010.md](CONTACT_REPAIR_20261010.md) for checkpoint
+revisions, regression results and performance-development evidence.
 `--trace` exports a separate 50-step Torch/CUPTI CPU/CUDA trace after timing;
 its overhead is excluded from the reported rates. The pressure microkernels
 repeat query/integration/small-solve work to diagnose the hotspot and are
@@ -49,7 +56,7 @@ The MLP has tanh after the first two linear layers and a linear output.
 Use the same command with `--scope rigid`, `policy-rigid`, `recovery` and
 `policy`, changing the output name, to reproduce the five selected scopes.
 Use `--envs 8` for the serial-baseline comparison. The exact selected source
-is `dbfdf20d`; the evidence manifest records revisions and arguments for
+for the earlier fixed-friction milestone is `dbfdf20d`; the evidence manifest records revisions and arguments for
 earlier ablations, including the normalized baseline patch.
 
 Every-step validity is checked separately from throughput:
