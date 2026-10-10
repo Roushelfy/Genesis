@@ -41,6 +41,9 @@ class RigidStressOptions(Options):
     ``surface_inverse`` accelerates exterior contact loads using their complete
     nodal space and the rigid inertia fields. It adds shared storage within
     the inverse budget. Disable it to compare the full-load inverse path.
+    ``packed_surface_loads`` refreshes an exact list of nonzero boundary nodes
+    on the device before applying that operator. It skips only exactly zero
+    vectors and preserves node order. Disable it to measure dense application.
     CUDA meshes up to 1,024 P2 nodes use a cooperative warp solve when
     ``cooperative_solve`` is enabled; other cases use the serial native path.
     ``method="inverse"`` explicitly requests the inverse and rejects an
@@ -75,6 +78,7 @@ class RigidStressOptions(Options):
     inverse_max_bytes: PositiveInt = 64 * 1024 * 1024
     inverse_precision: Literal["64", "32"] = "64"
     surface_inverse: StrictBool = True
+    packed_surface_loads: StrictBool = True
     cached_peak: StrictBool = True
     cached_face_bounds: StrictBool = True
     inverse_corrections: Annotated[int, Field(ge=0, le=8)] = 2

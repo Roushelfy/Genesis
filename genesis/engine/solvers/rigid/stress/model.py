@@ -85,6 +85,8 @@ class StressModel:
         if (mids >= len(edge_keys)).any() or not np.array_equal(edge_keys[mids], face_keys):
             gs.raise_exception("Stress exterior faces must use tetrahedral mesh edges.")
         surface_nodes = np.column_stack((surface, len(vertices) + mids))
+        boundary_nodes = np.unique(surface_nodes)
+        self.n_boundary_nodes = len(boundary_nodes)
         pairs = np.stack(np.broadcast_arrays(elements[:, :, None], elements[:, None, :]), axis=-1)
         entries, inverse = np.unique(pairs.reshape((-1, 2)), axis=0, return_inverse=True)
         row_start = np.r_[0, np.cumsum(np.bincount(entries[:, 0], minlength=len(xyz)))]
@@ -96,7 +98,8 @@ class StressModel:
             surface_nodes=V(dtype=gs.qd_int, shape=(len(surface), 6)),
             edges=V(dtype=gs.qd_int, shape=(6, 2)),
             gradients=V_MAT(4, 3, dtype=gs.qd_float, shape=(n_elements,)),
-            corner_gradients=V_VEC(3, dtype=gs.qd_float, shape=(n_elements, 4, 10)),
+            corner_gradients=V_VEC(3, dtype=gs.qd_float, shape=(n_elements, 4, 7)),
+            corner_nodes=V(dtype=gs.qd_int, shape=(n_elements, 4, 7)),
             volumes=V(dtype=gs.qd_float, shape=(n_elements,)),
             row_start=V(dtype=gs.qd_int, shape=(n_nodes + 1,)),
             columns=V(dtype=gs.qd_int, shape=(n_entries,)),
@@ -156,7 +159,6 @@ class StressModel:
             else None
         )
         inverse_done = time.perf_counter()
-        boundary_nodes = np.unique(surface_nodes)
         boundary_bytes = (n_nodes * len(boundary_nodes) * 9 + n_nodes * 18) * np.dtype(gs.np_float).itemsize
         boundary_bytes += boundary_nodes.nbytes
         self.surface_inverse = None
@@ -186,6 +188,8 @@ class StressModel:
             direction=V_VEC(3, dtype=gs.qd_float, shape=(n_krylov_nodes, n_envs)),
             product=V_VEC(3, dtype=gs.qd_float, shape=(n_krylov_nodes, n_envs)),
             preconditioned=V_VEC(3, dtype=gs.qd_float, shape=(n_krylov_nodes, n_envs)),
+            boundary_columns=V(dtype=gs.qd_int, shape=(self.n_boundary_nodes, n_envs)),
+            boundary_count=V(dtype=gs.qd_int, shape=(n_envs,)),
             wrench=V_VEC(6, dtype=gs.qd_float, shape=(n_envs,)),
             rhs_norm_squared=V(dtype=gs.qd_float, shape=(n_envs,)),
             residual_norm_squared=V(dtype=gs.qd_float, shape=(n_envs,)),
@@ -272,7 +276,7 @@ class StressModel:
     ) -> None:
         if surface_load and self.surface_inverse is not None:
             assert omega is not None
-            self.surface_inverse.apply(options.young, omega, state)
+            self.surface_inverse.apply(options.young, omega, state, options.packed_surface_loads)
         elif self.inverse is not None:
             self.inverse.apply(options.young, state)
         else:

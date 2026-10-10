@@ -112,10 +112,35 @@ equilibrium check and global stress scan. Arbitrary interior load validation
 and residual corrections use the full inverse. Level-1 extra storage is
 9,565,128 bytes. Disable the option for a full-load application ablation.
 
+`packed_surface_loads=True` refreshes each environment's complete list of
+strictly nonzero boundary force vectors in Quadrants on CUDA. It preserves
+the original ascending node order, includes every nonzero component without
+a threshold, and evaluates all centrifugal terms. No contact or nonzero load
+is discarded. Mutable lists belong to each link's scratch state and are
+rebuilt on every recovery, including after reset or checkpoint restoration.
+CPU keeps the dense operator path. `--dense-surface-loads` measures its dense
+CUDA ablation, with the same model and acceptance budgets.
+
 `cooperative_scatter=True` reduces integration-point loads per face before
 node accumulation on CUDA, preserving all eligible Q10 and local retry
 samples. CPU and the disabled option use scalar scatter. The benchmark
 exposes `--full-inverse` and `--serial-scatter`.
+
+`cached_peak=True` reuses immutable P2 corner gradients while scanning every
+tetrahedron's four corners on CUDA. The cache contains four vertex and three
+incident-edge gradients per corner; the other three edge gradients are
+analytically zero at that corner. Its level-1 shared storage, including node
+indices, is 376,320 bytes. CPU retains the original ten-term evaluation order.
+`cached_face_bounds=True` stores conservative triangle bounds for the
+complete face scatter, adding 3,840 shared bytes. The benchmark exposes
+`--uncached-peak` and `--uncached-face-bounds` for matching ablations.
+
+Contact rejection reports the affected link, environment, contact slot,
+original radius and actual friction coefficient. The diagnostic distinguishes
+invalid input/friction, an absent force-line anchor, an unresolved sampled
+fit, and failure to preserve the contact force/moment. An unresolved fit does
+not establish physical infeasibility. Diagnostic host transfers occur only
+when the rigid solver reports an error.
 
 The native block LDL factor is shared across environments. Its symbolic
 minimum-degree ordering is Python topology work; every numeric factor value

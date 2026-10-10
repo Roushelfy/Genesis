@@ -201,6 +201,9 @@ def main() -> None:
     parser.add_argument("--method", choices=("auto", "direct", "inverse"), default="auto")
     parser.add_argument("--inverse-precision", choices=("64", "32"), default="64")
     parser.add_argument("--full-inverse", action="store_true", help="Compare the full nodal-load inverse application.")
+    parser.add_argument(
+        "--dense-surface-loads", action="store_true", help="Apply all boundary columns without packing."
+    )
     parser.add_argument("--history", type=int, choices=(0, 4), default=0)
     parser.add_argument("--trace", action="store_true", help="Export a separate intrusive CUDA/CPU trace pass.")
     parser.add_argument(
@@ -224,6 +227,7 @@ def main() -> None:
         cooperative_pressure=not args.serial_pressure,
         conditions=args.conditions,
         surface_inverse=not args.full_inverse,
+        packed_surface_loads=not args.dense_surface_loads,
         cooperative_scatter=not args.serial_scatter,
         cached_peak=not args.uncached_peak,
         cached_face_bounds=not args.uncached_face_bounds,
@@ -336,6 +340,7 @@ def main() -> None:
             "method": args.method,
             "inverse_precision": args.inverse_precision,
             "surface_inverse": not args.full_inverse,
+            "packed_surface_loads": not args.dense_surface_loads,
             "history": args.history,
             "host": platform.node(),
             "slurm_job_id": os.environ.get("SLURM_JOB_ID"),

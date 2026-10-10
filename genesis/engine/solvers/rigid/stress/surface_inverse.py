@@ -44,8 +44,43 @@ class StressSurfaceInverse:
         kernel_surface_store(temporary, self.info)
         qd.sync()
 
-    def apply(self, young: float, omega: qd.Tensor, state: StressState) -> None:
-        kernel_surface_apply(young, omega, state, self.info)
+    def apply(self, young: float, omega: qd.Tensor, state: StressState, packed: bool = True) -> None:
+        if packed and gs.backend == gs.cuda:
+            kernel_surface_pack(state, self.info)
+            kernel_surface_apply_packed(young, omega, state, self.info)
+        else:
+            kernel_surface_apply(young, omega, state, self.info)
+
+
+@qd.kernel
+def kernel_surface_pack(stress_state: StressState, surface_inverse_info: StressSurfaceInverseInfo):
+    for i_b in range(stress_state.active.shape[0]):
+        count = 0
+        for j in range(surface_inverse_info.nodes.shape[0]):
+            node = surface_inverse_info.nodes[j]
+            force = stress_state.force[node, i_b]
+            if force[0] != 0.0 or force[1] != 0.0 or force[2] != 0.0:
+                stress_state.boundary_columns[count, i_b] = j
+                count += 1
+        stress_state.boundary_count[i_b] = count
+
+
+@qd.kernel(graph=True)
+def kernel_surface_apply_packed(
+    young: float, omega: qd.Tensor, stress_state: StressState, surface_inverse_info: StressSurfaceInverseInfo
+):
+    for i_n, i_b in qd.ndrange(stress_state.rhs.shape[0], stress_state.active.shape[0]):
+        w = omega[i_b]
+        terms = qd.Vector([w[0] * w[0], w[1] * w[1], w[2] * w[2], w[0] * w[1], w[0] * w[2], w[1] * w[2]])
+        value = surface_inverse_info.centrifugal[i_n] @ terms
+        for slot in range(stress_state.boundary_count[i_b]):
+            j = stress_state.boundary_columns[slot, i_b]
+            node = surface_inverse_info.nodes[j]
+            value += surface_inverse_info.force_blocks[i_n, j] @ stress_state.force[node, i_b]
+        stress_state.displacement[i_n, i_b] = value / young
+    for i_b in range(stress_state.active.shape[0]):
+        stress_state.active[i_b] = 1
+        stress_state.valid[i_b] = True
 
 
 @qd.kernel(graph=True)

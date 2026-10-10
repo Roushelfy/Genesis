@@ -16,6 +16,7 @@ class StressInfo:
     edges: qd.Tensor
     gradients: qd.Tensor
     corner_gradients: qd.Tensor
+    corner_nodes: qd.Tensor
     volumes: qd.Tensor
     row_start: qd.Tensor
     columns: qd.Tensor
@@ -45,6 +46,8 @@ class StressState:
     direction: qd.Tensor
     product: qd.Tensor
     preconditioned: qd.Tensor
+    boundary_columns: qd.Tensor
+    boundary_count: qd.Tensor
     wrench: qd.Tensor
     rhs_norm_squared: qd.Tensor
     residual_norm_squared: qd.Tensor

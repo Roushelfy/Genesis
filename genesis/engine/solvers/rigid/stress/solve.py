@@ -189,10 +189,8 @@ def kernel_full_residual(
             )
 
 
-def kernel_peak(
-    young: float, poisson: float, stress_state: StressState, stress_info: StressInfo, cached: bool = True
-):
-    kernel_peak_impl(young, poisson, stress_state, stress_info, cached)
+def kernel_peak(young: float, poisson: float, stress_state: StressState, stress_info: StressInfo, cached: bool = True):
+    kernel_peak_impl(young, poisson, stress_state, stress_info, cached and gs.backend == gs.cuda)
 
 
 @qd.kernel(graph=True)
@@ -209,10 +207,11 @@ def kernel_peak_impl(
             bary = qd.Vector.zero(gs.qd_float, 4)
             bary[i_corner] = 1.0
             derivative = qd.Matrix.zero(gs.qd_float, 3, 3)
-            for i_local in range(10):
+            for i_local in range(7 if cached else 10):
                 i_n = stress_info.elements[i_e, i_local]
                 gradient = qd.Vector.zero(gs.qd_float, 3)
                 if qd.static(cached):
+                    i_n = stress_info.corner_nodes[i_e, i_corner, i_local]
                     gradient = stress_info.corner_gradients[i_e, i_corner, i_local]
                 else:
                     gradient = func_shape_gradient(i_local, bary, stress_info.gradients[i_e], stress_info.edges)

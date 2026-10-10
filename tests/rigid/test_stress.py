@@ -137,6 +137,28 @@ def test_native_batched_recovery_against_full_fp64_direct(
             np.testing.assert_array_equal(qd_to_numpy(state.fallbacks), [0, 1, 1, 1, 1])
     assert (residual <= np.maximum(1e-11, 1e-7 * np.linalg.norm(rhs, axis=0))).all()
     np.testing.assert_array_equal(recovered[:, 0], 0.0)
+    if surface_load:
+        # Refresh dense, sparse and empty loads in the same state; no stale
+        # column or environment may survive a changed contact/reset load.
+        boundary = qd_to_numpy(model.surface_inverse.info.nodes)
+        for refresh in range(3):
+            updated = force.copy()
+            if refresh == 1:
+                updated.fill(0.0)
+                for i_b in range(1, n_envs):
+                    updated[boundary[3 * i_b], i_b] = force[boundary[3 * i_b], i_b]
+            elif refresh == 2:
+                updated.fill(0.0)
+            state.force.from_numpy(updated)
+            model.surface_inverse.apply(model.options.young, omega, state, packed=False)
+            dense = qd_to_numpy(state.displacement, copy=True)
+            model.surface_inverse.apply(model.options.young, omega, state, packed=True)
+            np.testing.assert_array_equal(qd_to_numpy(state.displacement), dense)
+            if gs.backend == gs.cuda:
+                count = np.count_nonzero(np.any(updated[boundary] != 0.0, axis=2), axis=0)
+                np.testing.assert_array_equal(qd_to_numpy(state.boundary_count), count)
+            model.recover(omega, state, surface_load=True)
+            assert qd_to_numpy(state.valid).all()
 
 
 @pytest.mark.required
@@ -155,7 +177,7 @@ def test_native_finite_pressure_matches_independent_cpu(tmp_path, cooperative):
         qd_to_numpy(surface.info.weights), geometry.integration_weights.reshape((-1,)), rtol=2e-13
     )
     mapper = FinitePatchMapper(geometry, anchor_to_surface=True, adaptive_integration=True)
-    n_contacts, n_envs = 3, 4
+    n_contacts, n_envs = 3, 5
     contacts = create_contacts(n_contacts, n_envs, 0.006, cooperative)
     state = model.create_state(n_envs)
     random = np.random.default_rng(7143)
@@ -164,10 +186,10 @@ def test_native_finite_pressure_matches_independent_cpu(tmp_path, cooperative):
     normal = np.zeros_like(position)
     radius = random.uniform(0.0048, 0.0075, size=(n_contacts, n_envs))
     valid = np.zeros((n_contacts, n_envs), dtype=bool)
-    friction = np.broadcast_to([0.0, 0.3, 0.6, 1.4], (n_contacts, n_envs)).copy()
+    friction = np.broadcast_to([0.0, 0.0, 0.3, 0.6, 1.4], (n_contacts, n_envs)).copy()
     expected = np.zeros((len(oracle.xyz), n_envs, 3))
     for i_b in range(1, n_envs):
-        for i_c in range(i_b):
+        for i_c in range(min(i_b, n_contacts)):
             i_f = random.integers(len(faces))
             bary = random.uniform(0.2, 0.5, size=3)
             bary /= bary.sum()
@@ -175,7 +197,8 @@ def test_native_finite_pressure_matches_independent_cpu(tmp_path, cooperative):
             inward = -mapper.face_normals[i_f]
             tangent = np.cross(inward, np.eye(3)[np.argmin(np.abs(inward))])
             tangent /= np.linalg.norm(tangent)
-            traction = (0.1 + random.random()) * (inward + 0.25 * tangent)
+            tangent_scale = 0.0 if friction[0, i_b] == 0.0 else 0.25
+            traction = (0.1 + random.random()) * (inward + tangent_scale * tangent)
             patch = WrenchPatch(point, traction, radius[i_c, i_b], friction[i_c, i_b], np.zeros(3), inward)
             mapped = mapper.map(patch)
             position[i_c, i_b], force[i_c, i_b], normal[i_c, i_b] = point, traction, inward

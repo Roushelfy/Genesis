@@ -35,6 +35,9 @@ pressure scheduling ablation. CUDA warp pressure is the selected default.
 `--full-inverse` disables the exact complete-exterior operator, and
 `--serial-scatter` disables face reduction. `--seed 623001` selects another
 independent varied workload; use the same seed for matched comparisons.
+`--uncached-peak` and `--uncached-face-bounds` disable the tested immutable
+geometry reuse variants. `--source-revision` records the declared checkout;
+the benchmark also records exact numerical source hashes and GPU UUID.
 The current adaptive-pad workload has actual combined contact friction
 between 0.42 and 0.84. It differs from the earlier fixed-friction benchmark.
 See [CONTACT_REPAIR_20261010.md](CONTACT_REPAIR_20261010.md) for checkpoint
@@ -75,7 +78,7 @@ python -m pytest tests/rigid/test_stress.py --backend cpu \
 The audit keeps native failure counters across independent resets, reading
 them once at the end. It checks every one of the 2,150,400 environment steps
 per scope, including warmup, and publishes no throughput rate.
-GPU tests include the actual rigid lifecycle checks; CPU runs the 14
+GPU tests include the actual rigid lifecycle checks; CPU runs the 18
 numerical cases. Do not run CPU numerical work on a login node on the cluster.
 
 Allocate the measured cluster hardware before sourcing the environment:
