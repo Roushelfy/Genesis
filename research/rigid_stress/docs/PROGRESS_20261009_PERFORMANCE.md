@@ -289,3 +289,13 @@ used memory 98.558 GB after the probe. This is an untimed memory/accuracy
 check, not a six-frame throughput result or the final 1,200-frame acceptance.
 All failed probe logs and the successful script/report are retained in
 [`raw/20261009-graph-replay`](../evidence/20261009-performance/raw/20261009-graph-replay/).
+
+The earlier full B=128 row-major graph calibration replay completes all three
+1,200-frame repeats at aggregate 100.5030 recovery transitions/s, with every
+warmup frame compared against eager direct recovery. Maximum/p95/mean peak
+relative errors above 1 Pa are 2.372e-13 / 8.302e-14 / 3.081e-14; near-zero
+maximum absolute error is 1.017e-14 Pa. Sampled memory is 74.638 GB. These
+inputs remain the earlier calibration contacts; final fine held-out rates
+remain pending. The artifact manifest distinguishes large original trajectory
+records retained on data from their checked-in summaries and hashes each
+independently.
