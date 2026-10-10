@@ -1,0 +1,332 @@
+{
+  "scope": "live",
+  "envs": 2048,
+  "warmup_steps": 900,
+  "trajectory_steps": 2400,
+  "seed": 623001,
+  "load_model": "finite_pad_adaptive_q10",
+  "condition_count": 2048,
+  "source_revision": "2c6e5ecc5ec7025e3d9963fce9ae1051ae845c6d",
+  "source_sha256": {
+    "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/native_validity_probe.py": "b7e0c43ec39479edf4d81c73c70a6d6e548ef4e58bfc77500e6dc4de98cc553b",
+    "examples/rigid/franka_egg_stress.py": "d1c4405a0c6ace0ef8bce54e0ef96bb41659525162c8415f1100412762105861",
+    "genesis/engine/solvers/rigid/stress/__init__.py": "17b4fa6e4eb64175b87586a6c7142b9fd2f5e88ba4321129d18e07e296adc5a6",
+    "genesis/engine/solvers/rigid/stress/association.py": "fd2f31fd5c2cdcc19bec827a559a4617e0bc87f47d758be25b7b16a75f9ebf0d",
+    "genesis/engine/solvers/rigid/stress/contact.py": "527583fb4b053fc63d7c37b2ad303fe6820a2441cba6cf5b201779411954cd99",
+    "genesis/engine/solvers/rigid/stress/data.py": "0a5559db6e1f6a83c172888109404eafa3cc81b28000bffd2b3cf3b4a6284825",
+    "genesis/engine/solvers/rigid/stress/factor.py": "5bfc336c0ff00a5388fbf663590f4a5680629fae1686688a8992b8224eb9e15c",
+    "genesis/engine/solvers/rigid/stress/grid.py": "f451674d257339ece41a258f22c7b95fe25d6fc51888854855de4320e26b9a90",
+    "genesis/engine/solvers/rigid/stress/history.py": "559e046d3405afc260be5cd5a0de5712e490518e73aafc288642261c3959657c",
+    "genesis/engine/solvers/rigid/stress/inverse.py": "9b1fef956961c1ec9cd3c989129b0ce38c88eba7db8ffed995b637cb884da0db",
+    "genesis/engine/solvers/rigid/stress/model.py": "89536abe854cc7df99102386cad771c9b4c433b35cee78975804ac73d3c71b81",
+    "genesis/engine/solvers/rigid/stress/operators.py": "40ad5e488e928a8f22efe0833f447afba7ef0e258bc3cffb5a0fe30bc1d416ff",
+    "genesis/engine/solvers/rigid/stress/recovery.py": "e596ffd926b5d91a4aa9b7ad1ac77aa5b054ad4e33fee8d009e6ae0687e2136c",
+    "genesis/engine/solvers/rigid/stress/solve.py": "618f5c71d0338e53b556f56d22f202f6e0f14b521fc9ed03096ce5af99fafc68",
+    "genesis/engine/solvers/rigid/stress/surface.py": "ed42707ee7c589db942a15835d40aba5194d2415b2c576ae0196987b94bb4fc1",
+    "genesis/engine/solvers/rigid/stress/surface_inverse.py": "2515e85093aa05b275164fc1b40891e83647f8f48a592bdbd808ccdeeb84b151",
+    "genesis/options/rigid_stress.py": "668b87b0f8f19c82d7b26a8ce4b983dcbe23f59880d371f1c7c199d8c8dd2660"
+  },
+  "command": [
+    "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python",
+    "research/rigid_stress/native_validity_probe.py",
+    "--scope",
+    "live",
+    "--envs",
+    "2048",
+    "--warmup",
+    "900",
+    "--steps",
+    "2400",
+    "--seed",
+    "623001",
+    "--output",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-contact-repair/final-2c-audit-live-b2048-seed623001.json"
+  ],
+  "host": "rtx-209-099",
+  "slurm_job_id": "704636",
+  "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "gpu_uuid": "GPU-1ee87cd8-c05b-6109-afb0-8803fcc68852",
+  "quadrants": [
+    1,
+    3,
+    3
+  ],
+  "torch": "2.8.0",
+  "conditions": null,
+  "every_step_failures": {
+    "array_length": 2048,
+    "finite_count": 2048,
+    "minimum": 0,
+    "maximum": 0,
+    "mean": 0.0,
+    "maximum_indices": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  "failed_environment_steps": 0,
+  "counter_columns": [
+    "nonzero_contacts",
+    "local_retries",
+    "fit_evaluations_total",
+    "fit_evaluations_max",
+    "corrections",
+    "fallbacks",
+    "bilateral_lift_steps",
+    "failed_hold_checks"
+  ],
+  "per_environment_counters": {
+    "array_length": 2048,
+    "columns": [
+      {
+        "array_length": 2048,
+        "finite_count": 2048,
+        "minimum": 4723,
+        "maximum": 27575,
+        "mean": 10048.05615234375,
+        "maximum_indices": [
+          1347,
+          1186,
+          213,
+          311,
+          487
+        ]
+      },
+      {
+        "array_length": 2048,
+        "finite_count": 2048,
+        "minimum": 0,
+        "maximum": 0,
+        "mean": 0.0,
+        "maximum_indices": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      {
+        "array_length": 2048,
+        "finite_count": 2048,
+        "minimum": 0,
+        "maximum": 4283,
+        "mean": 212.72705078125,
+        "maximum_indices": [
+          378,
+          1323,
+          221,
+          216,
+          1963
+        ]
+      },
+      {
+        "array_length": 2048,
+        "finite_count": 2048,
+        "minimum": 0,
+        "maximum": 5,
+        "mean": 2.53466796875,
+        "maximum_indices": [
+          10,
+          118,
+          425,
+          548,
+          669
+        ]
+      },
+      {
+        "array_length": 2048,
+        "finite_count": 2048,
+        "minimum": 0,
+        "maximum": 0,
+        "mean": 0.0,
+        "maximum_indices": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      {
+        "array_length": 2048,
+        "finite_count": 2048,
+        "minimum": 0,
+        "maximum": 0,
+        "mean": 0.0,
+        "maximum_indices": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      {
+        "array_length": 2048,
+        "finite_count": 2048,
+        "minimum": 475,
+        "maximum": 756,
+        "mean": 625.68310546875,
+        "maximum_indices": [
+          0,
+          600,
+          1200,
+          1800,
+          373
+        ]
+      },
+      {
+        "array_length": 2048,
+        "finite_count": 2048,
+        "minimum": 36,
+        "maximum": 54,
+        "mean": 42.18701171875,
+        "maximum_indices": [
+          0,
+          1,
+          17,
+          33,
+          49
+        ]
+      }
+    ]
+  },
+  "error_columns": [
+    "full_residual_budget_ratio_max",
+    "global_peak_max_Pa",
+    "wrench_force_relative_max",
+    "wrench_moment_relative_max",
+    "actual_mu_max",
+    "actual_mu_min"
+  ],
+  "per_environment_errors": {
+    "array_length": 2048,
+    "columns": [
+      {
+        "array_length": 2048,
+        "finite_count": 2048,
+        "minimum": 0.0042430001625320644,
+        "maximum": 0.009592571146088066,
+        "mean": 0.006081816450387794,
+        "maximum_indices": [
+          1285,
+          1137,
+          1263,
+          1436,
+          1341
+        ]
+      },
+      {
+        "array_length": 2048,
+        "finite_count": 2048,
+        "minimum": 117436.43160292774,
+        "maximum": 357513.07816153875,
+        "mean": 259820.4698416409,
+        "maximum_indices": [
+          1309,
+          1618,
+          717,
+          1739,
+          1289
+        ]
+      },
+      {
+        "array_length": 2048,
+        "finite_count": 2048,
+        "minimum": 4.354410907834591e-16,
+        "maximum": 1.0055125372611151e-12,
+        "mean": 2.7572230711254786e-15,
+        "maximum_indices": [
+          105,
+          1323,
+          819,
+          1449,
+          1274
+        ]
+      },
+      {
+        "array_length": 2048,
+        "finite_count": 2048,
+        "minimum": 2.1794339108183463e-16,
+        "maximum": 9.967913495983947e-13,
+        "mean": 2.3800242698411605e-15,
+        "maximum_indices": [
+          105,
+          1323,
+          819,
+          1449,
+          1274
+        ]
+      },
+      {
+        "array_length": 2048,
+        "finite_count": 2048,
+        "minimum": 0.4208279434776781,
+        "maximum": 0.8397745198559449,
+        "mean": 0.631095947880222,
+        "maximum_indices": [
+          212,
+          1374,
+          1896,
+          356,
+          569
+        ]
+      },
+      {
+        "array_length": 2048,
+        "finite_count": 2048,
+        "minimum": 0.4208279434776781,
+        "maximum": 0.8397745198559449,
+        "mean": 0.631095947880222,
+        "maximum_indices": [
+          212,
+          1374,
+          1896,
+          356,
+          569
+        ]
+      }
+    ]
+  },
+  "environments_with_bilateral_lift": 2048,
+  "environments_without_bilateral_lift": 0,
+  "per_environment_work_quantiles": {
+    "quantiles": [
+      0.5,
+      0.9,
+      0.99,
+      1.0
+    ],
+    "fit_evaluations_total": [
+      108.0,
+      507.29999999999995,
+      1785.3599999999997,
+      4283.0
+    ],
+    "local_retries": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "note": "Work counts proxy per-environment tails; GPU shared execution is not individually timed."
+  },
+  "policy": {
+    "layers": [
+      26,
+      128,
+      128,
+      7
+    ],
+    "dtype": "float64",
+    "seed": 99173,
+    "residual_scale_rad": 0.0001,
+    "scope": "inference rollout"
+  },
+  "note": "Separate untimed native check of every observation, surviving per-environment resets; no rate claimed.",
+  "publication_note": "Long environment arrays summarized. Exact original remains at runtime_path with original_sha256."
+}

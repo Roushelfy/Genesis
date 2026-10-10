@@ -1,0 +1,166 @@
+{
+  "source_revision": "b08e866ab35b43d1b162f25ab8853dab2058f7f8-plus-packed-corners",
+  "memory_period_seconds": 0.5,
+  "measurements": [
+    {
+      "scope": "live",
+      "envs": 49152,
+      "seed": 510000,
+      "command": [
+        "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python",
+        "examples/speed_benchmark/rigid_stress.py",
+        "--scope",
+        "live",
+        "--envs",
+        "49152",
+        "--seed",
+        "510000",
+        "--steps",
+        "1200",
+        "--warmup",
+        "900",
+        "--repetitions",
+        "1",
+        "--minimum-seconds",
+        "10",
+        "--level",
+        "1",
+        "--varied",
+        "--compact-log",
+        "--source-revision",
+        "b08e866ab35b43d1b162f25ab8853dab2058f7f8-plus-packed-corners",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-contact-repair/packed-large-selection-v1/live-b49152-seed510000.json"
+      ],
+      "returncode": 0,
+      "total_process_seconds": 634.2197351586074,
+      "result": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-contact-repair/packed-large-selection-v1/live-b49152-seed510000.json",
+      "memory_samples": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-contact-repair/packed-large-selection-v1/live-b49152-seed510000.memory.csv",
+      "repeats": [
+        {
+          "steps": 1200,
+          "seconds": 203.7244207430631,
+          "transitions_per_second": 289520.5188698929,
+          "batch_steps_per_second": 5.890310035601662,
+          "resets": 49152
+        }
+      ],
+      "valid_env_steps_per_second": 289520.5188698929,
+      "batch_steps_per_second": 5.890310035601662,
+      "gpu_uuid": "GPU-4e7dc608-00fa-44a9-28c7-6a4948c1dae7",
+      "source_sha256": {
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/speed_benchmark/rigid_stress.py": "11ba3161faa64e2f55d077254a9f656f7cab2223b2d14905bbc1bc407dce4bde",
+        "examples/rigid/franka_egg_stress.py": "d1c4405a0c6ace0ef8bce54e0ef96bb41659525162c8415f1100412762105861",
+        "genesis/engine/solvers/rigid/rigid_solver.py": "639210a260da02b0b59b3814ae6a6cf27c6f8d540ce8800cdb36ea652b9cc510",
+        "genesis/engine/solvers/rigid/stress/__init__.py": "17b4fa6e4eb64175b87586a6c7142b9fd2f5e88ba4321129d18e07e296adc5a6",
+        "genesis/engine/solvers/rigid/stress/association.py": "fd2f31fd5c2cdcc19bec827a559a4617e0bc87f47d758be25b7b16a75f9ebf0d",
+        "genesis/engine/solvers/rigid/stress/contact.py": "527583fb4b053fc63d7c37b2ad303fe6820a2441cba6cf5b201779411954cd99",
+        "genesis/engine/solvers/rigid/stress/data.py": "0a5559db6e1f6a83c172888109404eafa3cc81b28000bffd2b3cf3b4a6284825",
+        "genesis/engine/solvers/rigid/stress/factor.py": "5bfc336c0ff00a5388fbf663590f4a5680629fae1686688a8992b8224eb9e15c",
+        "genesis/engine/solvers/rigid/stress/grid.py": "f451674d257339ece41a258f22c7b95fe25d6fc51888854855de4320e26b9a90",
+        "genesis/engine/solvers/rigid/stress/history.py": "559e046d3405afc260be5cd5a0de5712e490518e73aafc288642261c3959657c",
+        "genesis/engine/solvers/rigid/stress/inverse.py": "9b1fef956961c1ec9cd3c989129b0ce38c88eba7db8ffed995b637cb884da0db",
+        "genesis/engine/solvers/rigid/stress/model.py": "89536abe854cc7df99102386cad771c9b4c433b35cee78975804ac73d3c71b81",
+        "genesis/engine/solvers/rigid/stress/operators.py": "40ad5e488e928a8f22efe0833f447afba7ef0e258bc3cffb5a0fe30bc1d416ff",
+        "genesis/engine/solvers/rigid/stress/recovery.py": "e596ffd926b5d91a4aa9b7ad1ac77aa5b054ad4e33fee8d009e6ae0687e2136c",
+        "genesis/engine/solvers/rigid/stress/solve.py": "618f5c71d0338e53b556f56d22f202f6e0f14b521fc9ed03096ce5af99fafc68",
+        "genesis/engine/solvers/rigid/stress/surface.py": "ed42707ee7c589db942a15835d40aba5194d2415b2c576ae0196987b94bb4fc1",
+        "genesis/engine/solvers/rigid/stress/surface_inverse.py": "2515e85093aa05b275164fc1b40891e83647f8f48a592bdbd808ccdeeb84b151",
+        "genesis/options/rigid_stress.py": "668b87b0f8f19c82d7b26a8ce4b983dcbe23f59880d371f1c7c199d8c8dd2660"
+      },
+      "policy_range": {
+        "layers": [
+          26,
+          128,
+          128,
+          7
+        ],
+        "seed": 99173,
+        "dtype": "float64",
+        "residual_scale_rad": 0.0001
+      },
+      "native_buffer_bytes": 10786664805,
+      "sampled_whole_card_peak_MiB": 58139.0
+    },
+    {
+      "scope": "live",
+      "envs": 61440,
+      "seed": 510000,
+      "command": [
+        "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python",
+        "examples/speed_benchmark/rigid_stress.py",
+        "--scope",
+        "live",
+        "--envs",
+        "61440",
+        "--seed",
+        "510000",
+        "--steps",
+        "1200",
+        "--warmup",
+        "900",
+        "--repetitions",
+        "1",
+        "--minimum-seconds",
+        "10",
+        "--level",
+        "1",
+        "--varied",
+        "--compact-log",
+        "--source-revision",
+        "b08e866ab35b43d1b162f25ab8853dab2058f7f8-plus-packed-corners",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-contact-repair/packed-large-selection-v1/live-b61440-seed510000.json"
+      ],
+      "returncode": 0,
+      "total_process_seconds": 783.2277422212064,
+      "result": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-contact-repair/packed-large-selection-v1/live-b61440-seed510000.json",
+      "memory_samples": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-contact-repair/packed-large-selection-v1/live-b61440-seed510000.memory.csv",
+      "repeats": [
+        {
+          "steps": 1200,
+          "seconds": 251.7922239676118,
+          "transitions_per_second": 292812.85513203015,
+          "batch_steps_per_second": 4.765834230664553,
+          "resets": 61440
+        }
+      ],
+      "valid_env_steps_per_second": 292812.85513203015,
+      "batch_steps_per_second": 4.765834230664553,
+      "gpu_uuid": "GPU-4e7dc608-00fa-44a9-28c7-6a4948c1dae7",
+      "source_sha256": {
+        "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/speed_benchmark/rigid_stress.py": "11ba3161faa64e2f55d077254a9f656f7cab2223b2d14905bbc1bc407dce4bde",
+        "examples/rigid/franka_egg_stress.py": "d1c4405a0c6ace0ef8bce54e0ef96bb41659525162c8415f1100412762105861",
+        "genesis/engine/solvers/rigid/rigid_solver.py": "639210a260da02b0b59b3814ae6a6cf27c6f8d540ce8800cdb36ea652b9cc510",
+        "genesis/engine/solvers/rigid/stress/__init__.py": "17b4fa6e4eb64175b87586a6c7142b9fd2f5e88ba4321129d18e07e296adc5a6",
+        "genesis/engine/solvers/rigid/stress/association.py": "fd2f31fd5c2cdcc19bec827a559a4617e0bc87f47d758be25b7b16a75f9ebf0d",
+        "genesis/engine/solvers/rigid/stress/contact.py": "527583fb4b053fc63d7c37b2ad303fe6820a2441cba6cf5b201779411954cd99",
+        "genesis/engine/solvers/rigid/stress/data.py": "0a5559db6e1f6a83c172888109404eafa3cc81b28000bffd2b3cf3b4a6284825",
+        "genesis/engine/solvers/rigid/stress/factor.py": "5bfc336c0ff00a5388fbf663590f4a5680629fae1686688a8992b8224eb9e15c",
+        "genesis/engine/solvers/rigid/stress/grid.py": "f451674d257339ece41a258f22c7b95fe25d6fc51888854855de4320e26b9a90",
+        "genesis/engine/solvers/rigid/stress/history.py": "559e046d3405afc260be5cd5a0de5712e490518e73aafc288642261c3959657c",
+        "genesis/engine/solvers/rigid/stress/inverse.py": "9b1fef956961c1ec9cd3c989129b0ce38c88eba7db8ffed995b637cb884da0db",
+        "genesis/engine/solvers/rigid/stress/model.py": "89536abe854cc7df99102386cad771c9b4c433b35cee78975804ac73d3c71b81",
+        "genesis/engine/solvers/rigid/stress/operators.py": "40ad5e488e928a8f22efe0833f447afba7ef0e258bc3cffb5a0fe30bc1d416ff",
+        "genesis/engine/solvers/rigid/stress/recovery.py": "e596ffd926b5d91a4aa9b7ad1ac77aa5b054ad4e33fee8d009e6ae0687e2136c",
+        "genesis/engine/solvers/rigid/stress/solve.py": "618f5c71d0338e53b556f56d22f202f6e0f14b521fc9ed03096ce5af99fafc68",
+        "genesis/engine/solvers/rigid/stress/surface.py": "ed42707ee7c589db942a15835d40aba5194d2415b2c576ae0196987b94bb4fc1",
+        "genesis/engine/solvers/rigid/stress/surface_inverse.py": "2515e85093aa05b275164fc1b40891e83647f8f48a592bdbd808ccdeeb84b151",
+        "genesis/options/rigid_stress.py": "668b87b0f8f19c82d7b26a8ce4b983dcbe23f59880d371f1c7c199d8c8dd2660"
+      },
+      "policy_range": {
+        "layers": [
+          26,
+          128,
+          128,
+          7
+        ],
+        "seed": 99173,
+        "dtype": "float64",
+        "residual_scale_rad": 0.0001
+      },
+      "native_buffer_bytes": 13466849637,
+      "sampled_whole_card_peak_MiB": 72093.0
+    }
+  ]
+}

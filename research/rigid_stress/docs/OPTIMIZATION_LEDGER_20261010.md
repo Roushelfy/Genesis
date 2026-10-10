@@ -215,6 +215,47 @@ complete residual 0.3474, complete peak 0.2500 and acceptance 0.0273 ms.
 This is diagnostic sequential stage timing, not additive rollout throughput;
 full tail dispatch and ordinary rigid/controller costs remain in live rates.
 
+Source 2c6e5ecc, with additional declared material input coverage, passes
+21 GPU cases in 346.32 s and 19 CPU cases in 123.58 s. The second assembly
+input is E=3.2e9 Pa, nu=0.22 and density=1100 kg/m^3, independently compared
+against CPU FP64 stiffness, consistent mass, mass modes and gauge Gram.
+
+The actual failure-compaction pair at B=32768, 2,400 steps after 900 warmup,
+gives 265,559.74 versus 265,915.49 env-step/s: about 0.13%. Together with
+the small measured tail and slower B=1024 microcase, this does not justify
+an additional default numerical path.
+
+The B=61440 randomized development trajectory completes at 292,812.86
+env-step/s, 4.76583 batch steps/s, with 72,093 MiB sampled whole-card peak.
+B=49152 on the same allocation gives 289,520.52, a 1.14% lower throughput
+with 58,139 MiB sampled peak. These single repeats suggest a platform;
+two-seed, three-repeat long trajectories are running before final selection.
+
+A separate 50-step intrusive trace has 453.214 ms kernel interval union
+within 1094.074 ms of CPU step ranges for live, and 461.011/1113.492 ms
+for policy. CUDA stream synchronization counts are 3334/3434; copy/memset
+counts are 5584/5834. GPU range annotations mirror each CPU range on both
+streams and must not be added to the CPU wall ranges. The parser now
+counts the 50 original CPU annotations once. These are trace measurements,
+not unprofiled utilization or training rates.
+
+The full serial association-to-acceptance graph prototype passes three
+actual B=1024 2,400-step repeats. Separate mean is 58,487.56 env-step/s
+(58,354.27/58,657.03/58,452.18); fused is 59,066.35
+(58,719.79/59,188.61/59,293.82), about 0.99% faster. A static typed engine
+implementation is being validated in an isolated worktree; ongoing primary
+measurements retain the 2c6e5ecc numerical source. Its API-preserving
+wrapper refactor passes 21 GPU and 19 CPU cases, with actual paired rollout
+and independent trajectory oracle checks still in progress.
+
+Policy FP32 is evaluated separately; every stress calculation remains
+Quadrants FP64. B=1024 three-repeat rates are 56,174.90 FP64 and 56,646.91
+FP32 (+0.84%). B=32768 one-repeat rates are 258,626.69 and 260,512.84
+(+0.73%). The same seeded network's warmup output is independently checked
+against an FP64 policy copy; maximum scaled control error is 2.78e-11 rad,
+below the declared 1e-9 rad policy budget. Casting observations and writing
+actions are included. Further selection and lifecycle evidence remain open.
+
 ## Still required
 
 Repair and regress any newly found normal contacts before selecting larger
@@ -225,10 +266,20 @@ multiple seeds, longer trajectories, every-step audit, per-environment tails,
 grasp outcomes, sampled whole-card setup/rollout memory, and final profiling.
 The active goal remains open.
 
-Additional development probes find fused serial/parallel elasticity times
-2.4969/2.4268 ms against separate 2.6544 ms, with equal peaks and complete
-residual below 7.60e-12 N. A seven-node corner-gradient representation skips
-only the three analytically zero nonincident-edge gradients, reducing the
-cached scan from 0.3109 to 0.2482 ms with exactly equal peaks. Bounded nested
-Newton/line loops give pressure 1.2456 versus 1.2794 ms with nodal difference
-5.56e-17 N. End-to-end selection remains required before retaining these.
+The isolated serial/parallel elastic graphs cost 2.4969/2.4268 ms against
+separate 2.6544 ms and preserve snapshot peaks/residuals. The serial variant
+improves three-repeat live throughput by only 0.14%. The parallel variant
+raises a CUDA illegal-address error during actual warmup; its failed log is
+retained and no throughput is claimed. The full serial pipeline above is a
+separate candidate. The seven-node gradient cache is retained in 2c6e5ecc.
+Bounded nested Newton/line loops reduce B=1024 pressure from 1.2794 to
+1.2456 ms, but B=32768 gives only 11.6812 to 11.5923 ms. Nodal differences
+stay below 8.33e-17 N; the marginal large-batch cost reduction does not justify
+another default pressure scheduling path.
+
+The current evidence manifest contains 252 completed artifacts, 33,289,689
+publication bytes. Every artifact and original runtime SHA256 was checked.
+Long numerical arrays remain complete in their explicitly recorded data-side
+originals; compact publications preserve source/configuration and summarize
+those arrays. Final large runs and pipeline selection are still pending and
+are not included in this checkpoint.

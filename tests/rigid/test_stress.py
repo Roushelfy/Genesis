@@ -21,13 +21,14 @@ from research.rigid_stress.wrench import FinitePatchMapper, WrenchPatch
 
 @pytest.mark.required
 @pytest.mark.precision("64")
-def test_native_p2_shared_operators(tmp_path):
+@pytest.mark.parametrize("young,poisson,density", ((1e10, 0.3, 2000.0), (3.2e9, 0.22, 1100.0)))
+def test_native_p2_shared_operators(tmp_path, young, poisson, density):
     vertices, tetrahedra, surface, _ = shell_mesh(1, 2, 0.0005)
     mesh = tmp_path / "shell.npz"
     np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=surface)
-    options = RigidStressOptions(mesh=mesh)
+    options = RigidStressOptions(mesh=mesh, young=young, poisson=poisson, density=density)
     model = StressModel(options)
-    oracle = P2Shell(vertices, tetrahedra, surface, 1e10, 0.3, 2000.0, 2, factor_backend="none")
+    oracle = P2Shell(vertices, tetrahedra, surface, young, poisson, density, 2, factor_backend="none")
     columns = qd_to_numpy(model.info.columns)
     rows = qd_to_numpy(model.info.row_start)
     stiffness = sparse.bsr_matrix((qd_to_numpy(model.info.stiffness), columns, rows)).tocsr()

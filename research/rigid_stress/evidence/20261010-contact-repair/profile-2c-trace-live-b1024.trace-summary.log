@@ -1,0 +1,135 @@
+{
+  "trace_path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-contact-repair/profile-2c-trace-live-b1024.trace.json",
+  "trace_sha256": "8a8f55adde6e95e4e7abdb1680bf77eb91e2eed7c9d60f2ad6727e23003e7f44",
+  "trace_bytes": 40697525,
+  "step_count": 50,
+  "step_wall_sum_ms": 1094.0744869999996,
+  "kernel_count": 22192,
+  "kernel_sum_ms": 453.21348000001814,
+  "kernel_interval_union_ms": 453.21351904296876,
+  "copy_or_memset_count": 5584,
+  "copy_or_memset_sum_ms": 2.914166000000065,
+  "top_kernel_total_ms": [
+    [
+      "kernel_substep_collision_c704_0_kernel_11_range_for",
+      61.053777000000004
+    ],
+    [
+      "kernel_forward_kinematics_links_geoms_c336_0_kernel_1_range_for",
+      43.35173300000002
+    ],
+    [
+      "kernel_scatter_warp_c726_0_kernel_3_range_for",
+      43.156021
+    ],
+    [
+      "kernel_surface_apply_packed_c790_0_kernel_1_range_for",
+      36.184802000000005
+    ],
+    [
+      "kernel_pressure_correct_warp_c718_0_kernel_1_range_for",
+      29.38305600000003
+    ],
+    [
+      "kernel_forward_kinematics_links_geoms_c336_1_kernel_1_range_for",
+      24.300599000000005
+    ],
+    [
+      "kernel_pressure_warp_c716_0_kernel_1_range_for",
+      23.031673
+    ],
+    [
+      "kernel_substep_collision_c704_0_kernel_10_range_for",
+      21.599577
+    ],
+    [
+      "kernel_full_residual_c762_0_kernel_3_range_for",
+      16.143141
+    ],
+    [
+      "kernel_peak_impl_c786_0_kernel_3_range_for",
+      11.267503000000005
+    ],
+    [
+      "kernel_balance_c732_0_kernel_3_range_for",
+      11.136015
+    ],
+    [
+      "kernel_step_2_c756_0_kernel_12_sweep_links_by_level_range_for",
+      8.575959
+    ],
+    [
+      "kernel_anchor_c710_0_kernel_1_range_for",
+      6.193492
+    ],
+    [
+      "func_solve_init_c690_0_kernel_23_island_tiled_factor_solve_range_for",
+      5.406453000000003
+    ],
+    [
+      "func_solve_init_c690_0_kernel_25_wrap_cone_hessian_range_for",
+      3.5733029999999992
+    ],
+    [
+      "kernel_substep_collision_c704_0_kernel_25_add_collision_constraints_range_for",
+      3.562203
+    ],
+    [
+      "func_solve_init_c690_0_kernel_19_wrap_cone_hessian_range_for",
+      3.523095
+    ],
+    [
+      "kernel_reset_c750_0_kernel_1_range_for",
+      3.3415340000000033
+    ],
+    [
+      "kernel_reset_c750_0_kernel_2_range_for",
+      3.336853000000002
+    ],
+    [
+      "_kernel_solve_graph_c696_0_kernel_15_island_tiled_factor_solve_range_for",
+      3.3207019999999994
+    ],
+    [
+      "kernel_surface_pack_c788_0_kernel_1_range_for",
+      3.188059000000001
+    ],
+    [
+      "kernel_balance_c732_0_kernel_4_range_for",
+      3.097115000000001
+    ],
+    [
+      "kernel_step_2_c756_0_kernel_5_range_for",
+      3.027769
+    ],
+    [
+      "_kernel_solve_graph_c696_0_kernel_1_islands_linesearch_range_for",
+      2.9974659999999997
+    ],
+    [
+      "void at::native::index_elementwise_kernel<128, 4, at::native::gpu_index_kernel<at::native::index_put_kernel_impl<at::native::OpaqueType<8> >(at::TensorIterator&, c10::ArrayRef<long>, c10::ArrayRef<long>)::{lambda(char*, char const*, long)#1}>(at::TensorIteratorBase&, c10::ArrayRef<long>, c10::ArrayRef<long>, at::native::index_put_kernel_impl<at::native::OpaqueType<8> >(at::TensorIterator&, c10::ArrayRef<long>, c10::ArrayRef<long>)::{lambda(char*, char const*, long)#1} const&, bool)::{lambda(int)#1}>(long, at::native::gpu_index_kernel<at::native::index_put_kernel_impl<at::native::OpaqueType<8> >(at::TensorIterator&, c10::ArrayRef<long>, c10::ArrayRef<long>)::{lambda(char*, char const*, long)#1}>(at::TensorIteratorBase&, c10::ArrayRef<long>, c10::ArrayRef<long>, at::native::index_put_kernel_impl<at::native::OpaqueType<8> >(at::TensorIterator&, c10::ArrayRef<long>, c10::ArrayRef<long>)::{lambda(char*, char const*, long)#1} const&, bool)::{lambda(int)#1})",
+      1.9286779999999968
+    ],
+    [
+      "void at::native::vectorized_elementwise_kernel<4, at::native::compare_scalar_kernel<int>(at::TensorIteratorBase&, at::native::(anonymous namespace)::OpType, int)::{lambda(int)#1}, std::array<char*, 2ul> >(int, at::native::compare_scalar_kernel<int>(at::TensorIteratorBase&, at::native::(anonymous namespace)::OpType, int)::{lambda(int)#1}, std::array<char*, 2ul>)",
+      1.7960139999999845
+    ],
+    [
+      "kernel_resolve_stress_contacts_c764_0_kernel_5_range_for",
+      1.5903009999999995
+    ],
+    [
+      "kernel_substep_collision_c704_0_kernel_13_range_for",
+      1.50089
+    ],
+    [
+      "kernel_substep_dynamics_c702_1_kernel_24_factor_mass_range_for",
+      1.4230690000000004
+    ],
+    [
+      "kernel_step_2_c756_0_kernel_1_sweep_links_by_level_range_for",
+      1.407839
+    ]
+  ],
+  "note": "Intrusive trace includes controller, rigid, stress and scope-dependent policy/observation. Interval union is trace occupancy, not unprofiled GPU utilization or training throughput."
+}

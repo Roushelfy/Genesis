@@ -78,7 +78,7 @@ python -m pytest tests/rigid/test_stress.py --backend cpu \
 The audit keeps native failure counters across independent resets, reading
 them once at the end. It checks every one of the 2,150,400 environment steps
 per scope, including warmup, and publishes no throughput rate.
-GPU tests include the actual rigid lifecycle checks; CPU runs the 18
+GPU tests include the actual rigid lifecycle checks; CPU runs the 19
 numerical cases. Do not run CPU numerical work on a login node on the cluster.
 
 Allocate the measured cluster hardware before sourcing the environment:

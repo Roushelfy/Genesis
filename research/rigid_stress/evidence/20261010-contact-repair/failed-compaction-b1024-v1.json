@@ -1,0 +1,34 @@
+{
+  "envs": 1024,
+  "zero_failure_correction_and_residual_ms": {
+    "masked": 0.0790835078805685,
+    "packed": 0.08969162125140429
+  },
+  "source_sha256": {
+    "inverse.py": "9b1fef956961c1ec9cd3c989129b0ce38c88eba7db8ffed995b637cb884da0db",
+    "solve.py": "618f5c71d0338e53b556f56d22f202f6e0f14b521fc9ed03096ce5af99fafc68"
+  },
+  "numerical_cases": [
+    {
+      "perturbed_envs": 0,
+      "failed_before_correction": 0,
+      "full_residual_max_N": 2.9988533299175774e-11
+    },
+    {
+      "perturbed_envs": 1,
+      "failed_before_correction": 1,
+      "full_residual_max_N": 2.9988533299175774e-11
+    },
+    {
+      "perturbed_envs": 32,
+      "failed_before_correction": 32,
+      "full_residual_max_N": 2.998853329917577e-11
+    },
+    {
+      "perturbed_envs": 1024,
+      "failed_before_correction": 1020,
+      "full_residual_max_N": 8.108943263911101e-12
+    }
+  ],
+  "note": "Includes device packing; no host failure count read or dropped environment."
+}

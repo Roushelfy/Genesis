@@ -27,7 +27,13 @@ def main():
     kernels = [event for event in timed if event.get("cat") == "kernel"]
     copies = [event for event in timed if event.get("cat") in ("gpu_memcpy", "gpu_memset")]
     runtime = [event for event in timed if event.get("cat") == "cuda_runtime"]
-    steps = [event for event in timed if event.get("name") == "rigid_stress_trace_step"]
+    # GPU annotations mirror each CPU range on every participating stream;
+    # count the original CPU ranges once rather than adding the mirrors.
+    steps = [
+        event
+        for event in timed
+        if event.get("name") == "rigid_stress_trace_step" and event.get("cat") == "user_annotation"
+    ]
     counts = Counter(event["name"] for event in runtime)
     kernel_totals = Counter()
     for event in kernels:
