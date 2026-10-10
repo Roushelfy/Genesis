@@ -1,0 +1,90 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0
+rootdir: /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery
+configfile: pyproject.toml
+plugins: anyio-4.15.1, forked-1.7.5, print-1.2.0, timeout-2.4.0, xdist-3.8.0, quadrants-1.3.3, syrupy-6.1.1
+timeout: 1200.0s
+timeout method: signal
+timeout func_only: False
+collected 2 items
+
+tests/rigid/test_stress.py [Genesis 04:31:59] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 04:31:59] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 04:31:59] Exiting Genesis and caching compiled kernels...
+[Genesis 04:32:00] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 04:32:00] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[W 10/10/26 04:32:00.861 2091748] QuadrantsWarning
+While compiling `fill_ndarray_c2_1`, File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/_kernels.py", line 29, in fill_ndarray:
+        ndarray[I] = val
+        ^^^^^^^^^^^^^^^^
+Assign may lose precision: u1 <- i32
+native iterations [   0 4000 4000 4000 4000] full residual [0.00000000e+00 1.20290643e-05 1.71797461e-05 6.87424630e-06
+ 5.09966375e-06]
+[31mF[0m[Genesis 04:32:06] Exiting Genesis and caching compiled kernels...
+
+
+=================================== FAILURES ===================================
+[31m[1m____________ test_native_batched_recovery_against_full_fp64_direct _____________[0m
+
+tmp_path = PosixPath('/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-native-iteration/tmp/pytest-of-zhaofeng/pytest-1/test_native_batched_recovery_a0')
+
+    [0m[37m@pytest[39;49;00m.mark.required[90m[39;49;00m
+    [37m@pytest[39;49;00m.mark.precision([33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [94mdef[39;49;00m[90m [39;49;00m[92mtest_native_batched_recovery_against_full_fp64_direct[39;49;00m(tmp_path):[90m[39;49;00m
+        vertices, tetrahedra, surface, _ = shell_mesh([94m1[39;49;00m, [94m2[39;49;00m, [94m0.0005[39;49;00m)[90m[39;49;00m
+        mesh = tmp_path / [33m"[39;49;00m[33mshell.npz[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=surface)[90m[39;49;00m
+        model = StressModel(RigidStressOptions(mesh=mesh, tolerance=[94m1e-7[39;49;00m, max_iterations=[94m4000[39;49;00m))[90m[39;49;00m
+        oracle = P2Shell(vertices, tetrahedra, surface, [94m1e10[39;49;00m, [94m0.3[39;49;00m, [94m2000.0[39;49;00m, [94m2[39;49;00m, factor_backend=[33m"[39;49;00m[33mnone[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        n_envs = [94m5[39;49;00m[90m[39;49;00m
+        state = model.create_state(n_envs)[90m[39;49;00m
+        random = np.random.default_rng([94m8231[39;49;00m)[90m[39;49;00m
+        force = random.normal(size=([96mlen[39;49;00m(oracle.xyz), n_envs, [94m3[39;49;00m)) * [94m0.01[39;49;00m[90m[39;49;00m
+        force[:, [94m0[39;49;00m] = [94m0.0[39;49;00m[90m[39;49;00m
+        angular_velocity = random.normal(size=(n_envs, [94m3[39;49;00m)) * [94m2.0[39;49;00m[90m[39;49;00m
+        angular_velocity[[94m0[39;49;00m] = [94m0.0[39;49;00m[90m[39;49;00m
+        state.force.from_numpy(force)[90m[39;49;00m
+        omega = V_VEC([94m3[39;49;00m, dtype=gs.qd_float, shape=(n_envs,))[90m[39;49;00m
+        omega.from_numpy(angular_velocity)[90m[39;49;00m
+        model.recover(omega, state)[90m[39;49;00m
+        rhs = qd_to_numpy(state.rhs, transpose=[94mTrue[39;49;00m).reshape((n_envs, -[94m1[39;49;00m)).T[90m[39;49;00m
+        relative = oracle.xyz - oracle.com[90m[39;49;00m
+        centrifugal = -np.cross(angular_velocity[:, [94mNone[39;49;00m], np.cross(angular_velocity[:, [94mNone[39;49;00m], relative[[94mNone[39;49;00m]))[90m[39;49;00m
+        raw = force.transpose(([94m1[39;49;00m, [94m0[39;49;00m, [94m2[39;49;00m)).reshape((n_envs, -[94m1[39;49;00m)).T + oracle.m @ centrifugal.reshape((n_envs, -[94m1[39;49;00m)).T[90m[39;49;00m
+        expected_rhs = raw - oracle.mr @ np.linalg.solve(oracle.gram, oracle.r.T @ raw)[90m[39;49;00m
+        np.testing.assert_allclose(rhs, expected_rhs, atol=[94m2e-16[39;49;00m)[90m[39;49;00m
+        free = np.setdiff1d(np.arange(oracle.ndof), qd_to_numpy(model.info.pins))[90m[39;49;00m
+        displacement = np.zeros_like(rhs)[90m[39;49;00m
+        displacement[free] = splu(oracle.k[free][:, free].tocsc()).solve(rhs[free])[90m[39;49;00m
+        peak_scan = P2Peak(oracle.glambda, oracle.elements, model.options.young / ([94m2.0[39;49;00m * ([94m1.0[39;49;00m + model.options.poisson)))[90m[39;49;00m
+        peak = np.array([peak_scan(displacement[:, i])[[94m0[39;49;00m] [94mfor[39;49;00m i [95min[39;49;00m [96mrange[39;49;00m(n_envs)])[90m[39;49;00m
+        np.testing.assert_allclose(qd_to_numpy(state.peak), peak, rtol=[94m1e-4[39;49;00m, atol=[94m1e-3[39;49;00m)[90m[39;49;00m
+        recovered = qd_to_numpy(state.displacement, transpose=[94mTrue[39;49;00m).reshape((n_envs, -[94m1[39;49;00m)).T[90m[39;49;00m
+        residual = np.linalg.norm(oracle.k @ recovered - rhs, axis=[94m0[39;49;00m)[90m[39;49;00m
+        [96mprint[39;49;00m([33m"[39;49;00m[33mnative iterations[39;49;00m[33m"[39;49;00m, qd_to_numpy(state.iterations), [33m"[39;49;00m[33mfull residual[39;49;00m[33m"[39;49;00m, residual)[90m[39;49;00m
+>       [94massert[39;49;00m qd_to_numpy(state.valid).all()[90m[39;49;00m
+[1m[31mE       assert np.False_[0m
+[1m[31mE        +  where np.False_ = <built-in method all of numpy.ndarray object at 0x774271126eb0>()[0m
+[1m[31mE        +    where <built-in method all of numpy.ndarray object at 0x774271126eb0> = array([ True, False, False, False, False]).all[0m
+[1m[31mE        +      where array([ True, False, False, False, False]) = qd_to_numpy(Tensor(shape=(5,), dtype=<quadrants._lib.core.quadrants_python.DataTypeCxx object at 0x7745ad47f2b0>, backend=NDARRAY))[0m
+[1m[31mE        +        where Tensor(shape=(5,), dtype=<quadrants._lib.core.quadrants_python.DataTypeCxx object at 0x7745ad47f2b0>, backend=NDARRAY) = StressState(force=Tensor(shape=(810, 5), dtype=<quadrants._lib.core.quadrants_python.DataTypeCxx object at 0x7745ad47f...Tensor(shape=(5,), dtype=<quadrants._lib.core.quadrants_python.DataTypeCxx object at 0x7745ad47f2b0>, backend=NDARRAY)).valid[0m
+
+[1m[31mtests/rigid/test_stress.py[0m:75: AssertionError
+[33m=============================== warnings summary ===============================[0m
+tests/rigid/test_stress.py::test_native_p2_shared_operators
+tests/rigid/test_stress.py::test_native_p2_shared_operators
+tests/rigid/test_stress.py::test_native_batched_recovery_against_full_fp64_direct
+tests/rigid/test_stress.py::test_native_batched_recovery_against_full_fp64_direct
+  /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/operators.py:140: SyntaxWarning: You are unrolling more than
+                          32 iterations, so the compile time may be extremely long.
+                          You can use a non-static for loop if you want to decrease the compile time.
+                          You can disable this warning by setting qd.init(unrolling_limit=0).
+    for i_a, i_c in qd.static(qd.ndrange(6, 6)):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================================= Failed tests =================================
+tests/rigid/test_stress.py::test_native_batched_recovery_against_full_fp64_di...
+============================== slowest durations ===============================
+
+(6 durations < 100s hidden.)
+[31m=================== [31m[1m1 failed[0m, [32m1 passed[0m, [33m4 warnings[0m[31m in 8.38s[0m[31m ====================[0m

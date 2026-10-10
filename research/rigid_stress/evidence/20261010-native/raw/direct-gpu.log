@@ -1,0 +1,36 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0
+rootdir: /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery
+configfile: pyproject.toml
+plugins: anyio-4.15.1, forked-1.7.5, print-1.2.0, timeout-2.4.0, xdist-3.8.0, quadrants-1.3.3, syrupy-6.1.1
+timeout: 1200.0s
+timeout method: signal
+timeout func_only: False
+collected 2 items
+
+tests/rigid/test_stress.py [Genesis 04:35:22] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 04:35:22] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 04:35:37] Exiting Genesis and caching compiled kernels...
+[Genesis 04:35:37] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 04:35:37] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+native iterations [1 1 1 1 1] full residual [0.00000000e+00 4.28059687e-12 7.46105695e-12 6.60365986e-12
+ 5.19431384e-12]
+[32m.[0m[Genesis 04:35:53] Exiting Genesis and caching compiled kernels...
+
+
+[33m=============================== warnings summary ===============================[0m
+tests/rigid/test_stress.py::test_native_p2_shared_operators
+tests/rigid/test_stress.py::test_native_p2_shared_operators
+tests/rigid/test_stress.py::test_native_batched_recovery_against_full_fp64_direct
+tests/rigid/test_stress.py::test_native_batched_recovery_against_full_fp64_direct
+  /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/operators.py:140: SyntaxWarning: You are unrolling more than
+                          32 iterations, so the compile time may be extremely long.
+                          You can use a non-static for loop if you want to decrease the compile time.
+                          You can disable this warning by setting qd.init(unrolling_limit=0).
+    for i_a, i_c in qd.static(qd.ndrange(6, 6)):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+============================== slowest durations ===============================
+
+(6 durations < 100s hidden.)
+[33m======================== [32m2 passed[0m, [33m[1m4 warnings[0m[33m in 31.29s[0m[33m ========================[0m

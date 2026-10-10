@@ -1,0 +1,713 @@
+{
+  "jobs": [
+    {
+      "account": "root",
+      "comment": {
+        "administrator": "",
+        "job": "",
+        "system": ""
+      },
+      "allocation_nodes": 1,
+      "array": {
+        "job_id": 0,
+        "limits": {
+          "max": {
+            "running": {
+              "tasks": 0
+            }
+          }
+        },
+        "task_id": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "task": ""
+      },
+      "association": {
+        "account": "",
+        "cluster": "slurm",
+        "partition": "",
+        "user": "",
+        "id": 77
+      },
+      "block": "",
+      "cluster": "slurm",
+      "constraints": "",
+      "container": "",
+      "derived_exit_code": {
+        "status": [
+          "SIGNALED"
+        ],
+        "return_code": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "signal": {
+          "id": {
+            "set": true,
+            "infinite": false,
+            "number": 15
+          },
+          "name": "TERM"
+        }
+      },
+      "time": {
+        "elapsed": 12194,
+        "eligible": 1791593885,
+        "end": 1791606079,
+        "planned": {
+          "set": true,
+          "infinite": false,
+          "number": 0
+        },
+        "start": 1791593885,
+        "submission": 1791593885,
+        "suspended": 0,
+        "system": {
+          "seconds": 0,
+          "microseconds": 0
+        },
+        "limit": {
+          "set": true,
+          "infinite": false,
+          "number": 360
+        },
+        "total": {
+          "seconds": 0,
+          "microseconds": 0
+        },
+        "user": {
+          "seconds": 0,
+          "microseconds": 0
+        }
+      },
+      "exit_code": {
+        "status": [
+          "SUCCESS"
+        ],
+        "return_code": {
+          "set": true,
+          "infinite": false,
+          "number": 0
+        },
+        "signal": {
+          "id": {
+            "set": false,
+            "infinite": false,
+            "number": 0
+          },
+          "name": ""
+        }
+      },
+      "extra": "",
+      "failed_node": "",
+      "flags": [
+        "STARTED_ON_SUBMIT",
+        "START_RECEIVED"
+      ],
+      "group": "zhaofeng",
+      "het": {
+        "job_id": 0,
+        "job_offset": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        }
+      },
+      "job_id": 703330,
+      "name": "bash",
+      "licenses": "",
+      "mcs": {
+        "label": ""
+      },
+      "nodes": "rtx-209-115",
+      "partition": "rtx-mid",
+      "hold": false,
+      "priority": {
+        "set": true,
+        "infinite": false,
+        "number": 1
+      },
+      "qos": "normal",
+      "qosreq": "",
+      "required": {
+        "CPUs": 8,
+        "memory_per_cpu": {
+          "set": false,
+          "infinite": false,
+          "number": 0
+        },
+        "memory_per_node": {
+          "set": true,
+          "infinite": false,
+          "number": 131072
+        }
+      },
+      "kill_request_user": "zhaofeng",
+      "restart_cnt": 0,
+      "reservation": {
+        "id": 0,
+        "name": "",
+        "requested": ""
+      },
+      "script": "",
+      "segment_size": 0,
+      "stdin_expanded": "",
+      "stdout_expanded": "",
+      "stderr_expanded": "",
+      "stdout": "",
+      "stderr": "",
+      "stdin": "",
+      "state": {
+        "current": [
+          "CANCELLED"
+        ],
+        "reason": "None"
+      },
+      "steps": [
+        {
+          "time": {
+            "elapsed": 12194,
+            "end": {
+              "set": true,
+              "infinite": false,
+              "number": 1791606080
+            },
+            "start": {
+              "set": true,
+              "infinite": false,
+              "number": 1791593886
+            },
+            "suspended": 0,
+            "system": {
+              "seconds": 0,
+              "microseconds": 0
+            },
+            "limit": {
+              "set": false,
+              "infinite": true,
+              "number": 0
+            },
+            "total": {
+              "seconds": 0,
+              "microseconds": 0
+            },
+            "user": {
+              "seconds": 0,
+              "microseconds": 0
+            }
+          },
+          "exit_code": {
+            "status": [
+              "SIGNALED"
+            ],
+            "return_code": {
+              "set": false,
+              "infinite": false,
+              "number": 0
+            },
+            "signal": {
+              "id": {
+                "set": true,
+                "infinite": false,
+                "number": 15
+              },
+              "name": "TERM"
+            }
+          },
+          "nodes": {
+            "count": 1,
+            "range": "rtx-209-115",
+            "list": [
+              "rtx-209-115"
+            ]
+          },
+          "tasks": {
+            "count": 1
+          },
+          "pid": "",
+          "CPU": {
+            "requested_frequency": {
+              "min": {
+                "set": false,
+                "infinite": false,
+                "number": 0
+              },
+              "max": {
+                "set": false,
+                "infinite": false,
+                "number": 0
+              }
+            },
+            "governor": "Unknown"
+          },
+          "kill_request_user": "",
+          "state": [
+            "CANCELLED"
+          ],
+          "statistics": {
+            "CPU": {
+              "actual_frequency": 0
+            },
+            "energy": {
+              "consumed": {
+                "set": true,
+                "infinite": false,
+                "number": 0
+              }
+            }
+          },
+          "step": {
+            "id": "703330.0",
+            "name": "bash",
+            "stderr": "",
+            "stdin": "",
+            "stdout": "",
+            "stderr_expanded": "",
+            "stdin_expanded": "",
+            "stdout_expanded": ""
+          },
+          "task": {
+            "distribution": "Cyclic"
+          },
+          "tres": {
+            "requested": {
+              "max": [
+                {
+                  "type": "cpu",
+                  "name": "",
+                  "id": 1,
+                  "count": 12191732,
+                  "task": 0,
+                  "node": "rtx-209-115"
+                },
+                {
+                  "type": "mem",
+                  "name": "",
+                  "id": 2,
+                  "count": 19371786240,
+                  "task": 0,
+                  "node": "rtx-209-115"
+                },
+                {
+                  "type": "energy",
+                  "name": "",
+                  "id": 3,
+                  "count": 0,
+                  "task": 0,
+                  "node": "rtx-209-115"
+                },
+                {
+                  "type": "fs",
+                  "name": "disk",
+                  "id": 6,
+                  "count": 6327141340,
+                  "task": 0,
+                  "node": "rtx-209-115"
+                },
+                {
+                  "type": "vmem",
+                  "name": "",
+                  "id": 7,
+                  "count": 0,
+                  "task": 0,
+                  "node": "rtx-209-115"
+                },
+                {
+                  "type": "pages",
+                  "name": "",
+                  "id": 8,
+                  "count": 956,
+                  "task": 0,
+                  "node": "rtx-209-115"
+                },
+                {
+                  "type": "gres",
+                  "name": "gpumem",
+                  "id": 1002,
+                  "count": 98605989888,
+                  "task": 0,
+                  "node": "rtx-209-115"
+                },
+                {
+                  "type": "gres",
+                  "name": "gpuutil",
+                  "id": 1003,
+                  "count": 100,
+                  "task": 0,
+                  "node": "rtx-209-115"
+                }
+              ],
+              "min": [
+                {
+                  "type": "cpu",
+                  "name": "",
+                  "id": 1,
+                  "count": 12191732,
+                  "task": 0,
+                  "node": "rtx-209-115"
+                },
+                {
+                  "type": "mem",
+                  "name": "",
+                  "id": 2,
+                  "count": 19371786240,
+                  "task": 0,
+                  "node": "rtx-209-115"
+                },
+                {
+                  "type": "energy",
+                  "name": "",
+                  "id": 3,
+                  "count": 0,
+                  "task": 0,
+                  "node": "rtx-209-115"
+                },
+                {
+                  "type": "fs",
+                  "name": "disk",
+                  "id": 6,
+                  "count": 6327141340,
+                  "task": 0,
+                  "node": "rtx-209-115"
+                },
+                {
+                  "type": "vmem",
+                  "name": "",
+                  "id": 7,
+                  "count": 0,
+                  "task": 0,
+                  "node": "rtx-209-115"
+                },
+                {
+                  "type": "pages",
+                  "name": "",
+                  "id": 8,
+                  "count": 956,
+                  "task": 0,
+                  "node": "rtx-209-115"
+                },
+                {
+                  "type": "gres",
+                  "name": "gpumem",
+                  "id": 1002,
+                  "count": 98605989888,
+                  "task": 0,
+                  "node": "rtx-209-115"
+                },
+                {
+                  "type": "gres",
+                  "name": "gpuutil",
+                  "id": 1003,
+                  "count": 100,
+                  "task": 0,
+                  "node": "rtx-209-115"
+                }
+              ],
+              "average": [
+                {
+                  "type": "cpu",
+                  "name": "",
+                  "id": 1,
+                  "count": 12191732
+                },
+                {
+                  "type": "mem",
+                  "name": "",
+                  "id": 2,
+                  "count": 19371786240
+                },
+                {
+                  "type": "energy",
+                  "name": "",
+                  "id": 3,
+                  "count": 0
+                },
+                {
+                  "type": "fs",
+                  "name": "disk",
+                  "id": 6,
+                  "count": 6327141340
+                },
+                {
+                  "type": "vmem",
+                  "name": "",
+                  "id": 7,
+                  "count": 0
+                },
+                {
+                  "type": "pages",
+                  "name": "",
+                  "id": 8,
+                  "count": 956
+                },
+                {
+                  "type": "gres",
+                  "name": "gpumem",
+                  "id": 1002,
+                  "count": 98605989888
+                },
+                {
+                  "type": "gres",
+                  "name": "gpuutil",
+                  "id": 1003,
+                  "count": 100
+                }
+              ],
+              "total": [
+                {
+                  "type": "cpu",
+                  "name": "",
+                  "id": 1,
+                  "count": 12191732
+                },
+                {
+                  "type": "mem",
+                  "name": "",
+                  "id": 2,
+                  "count": 19371786240
+                },
+                {
+                  "type": "energy",
+                  "name": "",
+                  "id": 3,
+                  "count": 0
+                },
+                {
+                  "type": "fs",
+                  "name": "disk",
+                  "id": 6,
+                  "count": 6327141340
+                },
+                {
+                  "type": "vmem",
+                  "name": "",
+                  "id": 7,
+                  "count": 0
+                },
+                {
+                  "type": "pages",
+                  "name": "",
+                  "id": 8,
+                  "count": 956
+                },
+                {
+                  "type": "gres",
+                  "name": "gpumem",
+                  "id": 1002,
+                  "count": 98605989888
+                },
+                {
+                  "type": "gres",
+                  "name": "gpuutil",
+                  "id": 1003,
+                  "count": 100
+                }
+              ]
+            },
+            "consumed": {
+              "max": [
+                {
+                  "type": "energy",
+                  "name": "",
+                  "id": 3,
+                  "count": 0,
+                  "task": 0,
+                  "node": "rtx-209-115"
+                },
+                {
+                  "type": "fs",
+                  "name": "disk",
+                  "id": 6,
+                  "count": 708747,
+                  "task": 0,
+                  "node": "rtx-209-115"
+                }
+              ],
+              "min": [
+                {
+                  "type": "energy",
+                  "name": "",
+                  "id": 3,
+                  "count": 0,
+                  "task": 0,
+                  "node": "rtx-209-115"
+                },
+                {
+                  "type": "fs",
+                  "name": "disk",
+                  "id": 6,
+                  "count": 708747,
+                  "task": 0,
+                  "node": "rtx-209-115"
+                }
+              ],
+              "average": [
+                {
+                  "type": "energy",
+                  "name": "",
+                  "id": 3,
+                  "count": 0
+                },
+                {
+                  "type": "fs",
+                  "name": "disk",
+                  "id": 6,
+                  "count": 708747
+                }
+              ],
+              "total": [
+                {
+                  "type": "energy",
+                  "name": "",
+                  "id": 3,
+                  "count": 0
+                },
+                {
+                  "type": "fs",
+                  "name": "disk",
+                  "id": 6,
+                  "count": 708747
+                }
+              ]
+            },
+            "allocated": [
+              {
+                "type": "cpu",
+                "name": "",
+                "id": 1,
+                "count": 8
+              },
+              {
+                "type": "mem",
+                "name": "",
+                "id": 2,
+                "count": 131072
+              },
+              {
+                "type": "node",
+                "name": "",
+                "id": 4,
+                "count": 1
+              },
+              {
+                "type": "gres",
+                "name": "gpu",
+                "id": 1001,
+                "count": 1
+              }
+            ]
+          }
+        }
+      ],
+      "submit_line": "srun --container-image=\/mnt\/data\/images\/genesis-v1_26.sqsh --container-env=CUDA_VISIBLE_DEVICES --container-name='genesis-v1_26-zhaofeng' --container-mounts=\/etc\/slurm:\/etc\/slurm,\/run\/munge:\/run\/munge,\/usr\/local\/lib\/slurm:\/usr\/local\/lib\/slurm,\/usr\/include\/slurm:\/usr\/include\/slurm,\/usr\/lib\/x86_64-linux-gnu\/slurm:\/usr\/lib\/x86_64-linux-gnu\/slurm,\/usr\/lib\/x86_64-linux-gnu\/libmunge.so.2:\/usr\/lib\/x86_64-linux-gnu\/libmunge.so.2,\/usr\/lib\/x86_64-linux-gnu\/libmunge.so.2.0.0:\/usr\/lib\/x86_64-linux-gnu\/libmunge.so.2.0.0,\/usr\/bin\/scontrol:\/usr\/bin\/scontrol,\/usr\/bin\/scancel:\/usr\/bin\/scancel,\/usr\/bin\/sbatch:\/usr\/bin\/sbatch,\/usr\/bin\/squeue:\/usr\/bin\/squeue,\/usr\/bin\/sinfo:\/usr\/bin\/sinfo,\/usr\/bin\/sacct:\/usr\/bin\/sacct,\/usr\/bin\/srun:\/usr\/bin\/srun,\/mnt\/data:\/mnt\/data,\/mnt\/data\/shared\/config\/nvoptix.bin:\/usr\/share\/nvidia\/nvoptix.bin,\/mnt\/home\/zhaofeng\/.cache\/gs-srun\/nss.1fe1d84d79c2e3eff80b994960a12e6f85bb88641200399871230e1c3010569b\/passwd:\/etc\/passwd:ro,\/mnt\/home\/zhaofeng\/.cache\/gs-srun\/nss.1fe1d84d79c2e3eff80b994960a12e6f85bb88641200399871230e1c3010569b\/group:\/etc\/group:ro,\/mnt\/home\/zhaofeng:\/mnt\/home\/zhaofeng --container-workdir=\/mnt\/home\/zhaofeng --export=ALL,TERM=linux,GENESIS_IMAGE_VER=1_26,GENESIS_CONFIG_DIR=\/mnt\/data\/shared\/config,SSH_AUTH_TCP_PORT=,SSH_AUTH_BRIDGE_HOST=10.0.15.186,LOGIN_NODE_IP=10.0.15.186,XDG_DATA_HOME=\/mnt\/home\/zhaofeng\/.local\/share,XDG_CACHE_HOME=\/mnt\/home\/zhaofeng\/.cache,,HOME=\/mnt\/home\/zhaofeng,USER=zhaofeng,LOGNAME=zhaofeng,HISTFILE=\/mnt\/home\/zhaofeng\/.bash_history,BASH_ENV=\/mnt\/data\/shared\/config\/zhaofeng\/.bash_profile,PIP_CONFIG_FILE=\/mnt\/data\/shared\/config\/pip.conf,SLURM_USER=zhaofeng,TI_OFFLINE_CACHE_FILE_PATH=\/mnt\/home\/zhaofeng\/.cache\/taichi,GS_CACHE_FILE_PATH=\/mnt\/home\/zhaofeng\/.cache\/genesis,OTEL_EXPORTER_OTLP_ENDPOINT=http:\/\/datadog-agent.datadog.svc.cluster.local:4318,HF_HOME=\/mnt\/data\/hf_cache\/zhaofeng\/ --no-container-remap-root --no-container-mount-home --partition=rtx-mid --ntasks=1 --gpus=1 --cpus-per-task=8 --mem=128G --time=06:00:00 bash -lc cd \/mnt\/home\/zhaofeng\/workspace\/Genesis\/.worktrees\/rigid-stress-recovery && source research\/rigid_stress\/scripts\/cluster_env.sh && \/mnt\/data\/zhaofeng\/venvs\/rigid-stress-recovery\/bin\/python -m research.rigid_stress.benchmark_replay --level 6 --envs 256 --cpu-factor none --factor-backend cudss --method direct --precision 64 --inertia quadratic --body-products fused --sparse-layout C --sampling grid --scatter atomic --native-order auto --profile strict --seconds 10 --repeats 3 --recovery-graph --scope stress --stages --replay \/mnt\/data\/zhaofeng\/projects\/workspace\/Genesis\/rigid-stress-recovery\/runs\/20261009-fine-heldout\/varied32-unit.contacts.npz --output \/mnt\/data\/zhaofeng\/projects\/workspace\/Genesis\/rigid-stress-recovery\/runs\/20261010-final\/stress\/result.json",
+      "tres": {
+        "allocated": [
+          {
+            "type": "cpu",
+            "name": "",
+            "id": 1,
+            "count": 8
+          },
+          {
+            "type": "mem",
+            "name": "",
+            "id": 2,
+            "count": 131072
+          },
+          {
+            "type": "node",
+            "name": "",
+            "id": 4,
+            "count": 1
+          },
+          {
+            "type": "billing",
+            "name": "",
+            "id": 5,
+            "count": 8
+          },
+          {
+            "type": "gres",
+            "name": "gpu",
+            "id": 1001,
+            "count": 1
+          }
+        ],
+        "requested": [
+          {
+            "type": "cpu",
+            "name": "",
+            "id": 1,
+            "count": 8
+          },
+          {
+            "type": "mem",
+            "name": "",
+            "id": 2,
+            "count": 131072
+          },
+          {
+            "type": "node",
+            "name": "",
+            "id": 4,
+            "count": 1
+          },
+          {
+            "type": "billing",
+            "name": "",
+            "id": 5,
+            "count": 8
+          },
+          {
+            "type": "gres",
+            "name": "gpu",
+            "id": 1001,
+            "count": 1
+          }
+        ]
+      },
+      "used_gres": "",
+      "user": "zhaofeng",
+      "wckey": {
+        "wckey": "",
+        "flags": [
+        ]
+      },
+      "working_directory": "\/mnt\/home\/zhaofeng\/workspace\/Genesis"
+    }
+  ],
+  "meta": {
+    "plugin": {
+      "type": "",
+      "name": "",
+      "data_parser": "data_parser\/v0.0.43",
+      "accounting_storage": "accounting_storage\/slurmdbd"
+    },
+    "client": {
+      "source": "",
+      "user": "zhaofeng",
+      "group": "zhaofeng"
+    },
+    "command": [
+      "sacct",
+      "-j",
+      "703330"
+    ],
+    "slurm": {
+      "version": {
+        "major": "25",
+        "micro": "3",
+        "minor": "05"
+      },
+      "release": "25.05.3",
+      "cluster": "slurm"
+    }
+  },
+  "errors": [
+  ],
+  "warnings": [
+  ]
+}

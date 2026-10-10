@@ -1,3 +1,9 @@
+> Superseded by the 2026-10-10 [native Quadrants brief](NATIVE_QUADRANTS_PLAN.md).
+> These checks validate the historical prototype, not the new production feature.
+> The old final stress replay was cancelled after two accepted repeats when the
+> user changed direction; its third repeat and stage pass are not complete.
+> Native iteration evidence is recorded in [PROGRESS_20261010_NATIVE.md](PROGRESS_20261010_NATIVE.md).
+
 # Acceptance evidence for rigid full-shell stress recovery
 
 This audit follows A--I in `GOAL.md` and keeps equation accuracy, load-model

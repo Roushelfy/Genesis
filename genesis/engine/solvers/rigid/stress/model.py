@@ -1,0 +1,163 @@
+from pathlib import Path
+
+import numpy as np
+
+import genesis as gs
+from genesis.options.rigid_stress import RigidStressOptions
+from genesis.utils.array_class import V_MAT, V_VEC, V
+from genesis.utils.misc import qd_to_numpy
+
+from .data import StressInfo, StressState
+from .factor import StressFactor
+from .operators import (
+    kernel_assemble,
+    kernel_diagonal,
+    kernel_gauge,
+    kernel_geometry,
+    kernel_gram_inverse,
+    kernel_mass_modes,
+    kernel_mass_properties,
+    kernel_modes,
+)
+from .solve import (
+    kernel_active,
+    kernel_balance,
+    kernel_direct_init,
+    kernel_full_residual,
+    kernel_pcg_chunk,
+    kernel_pcg_init,
+    kernel_peak,
+)
+
+
+class StressModel:
+    """Own shared immutable operators assembled from a tetrahedral mesh asset."""
+
+    def __init__(self, options: RigidStressOptions):
+        self.options = options.model_copy(deep=True)
+        with np.load(Path(options.mesh), allow_pickle=False) as asset:
+            vertices = asset["vertices"]
+            tetrahedra = asset["tetrahedra"]
+            surface = asset["surface_triangles"]
+        if vertices.ndim != 2 or vertices.shape[1] != 3 or not np.isfinite(vertices).all():
+            gs.raise_exception("Stress mesh vertices must be a finite (n, 3) array.")
+        if tetrahedra.ndim != 2 or tetrahedra.shape[1] != 4 or not len(tetrahedra):
+            gs.raise_exception("Stress mesh tetrahedra must be a nonempty (n, 4) array.")
+        if surface.ndim != 2 or surface.shape[1] != 3 or not len(surface):
+            gs.raise_exception("Stress mesh surface_triangles must be a nonempty (n, 3) array.")
+        for indices in (tetrahedra, surface):
+            if not np.issubdtype(indices.dtype, np.integer) or indices.min() < 0 or indices.max() >= len(vertices):
+                gs.raise_exception("Stress mesh connectivity must contain in-range integer vertex indices.")
+        if len(np.unique(tetrahedra)) != len(vertices):
+            gs.raise_exception("Every stress mesh vertex must belong to a tetrahedron.")
+
+        # Connectivity processing handles asset topology; physical operators are assembled in Quadrants below.
+        edges = np.array([[0, 1], [0, 2], [0, 3], [1, 2], [1, 3], [2, 3]], dtype=gs.np_int)
+        edge_vertices, edge_inverse = np.unique(
+            np.sort(tetrahedra[:, edges].reshape((-1, 2)), axis=1), axis=0, return_inverse=True
+        )
+        elements = np.column_stack((tetrahedra, len(vertices) + edge_inverse.reshape((-1, 6))))
+        xyz = np.concatenate((vertices, vertices[edge_vertices].mean(axis=1)))
+        face_edges = np.sort(surface[:, [[0, 1], [0, 2], [1, 2]]], axis=2)
+        edge_keys = edge_vertices[:, 0] * len(vertices) + edge_vertices[:, 1]
+        face_keys = face_edges[:, :, 0] * len(vertices) + face_edges[:, :, 1]
+        mids = np.searchsorted(edge_keys, face_keys)
+        if (mids >= len(edge_keys)).any() or not np.array_equal(edge_keys[mids], face_keys):
+            gs.raise_exception("Stress exterior faces must use tetrahedral mesh edges.")
+        surface_nodes = np.column_stack((surface, len(vertices) + mids))
+        pairs = np.stack(np.broadcast_arrays(elements[:, :, None], elements[:, None, :]), axis=-1)
+        entries, inverse = np.unique(pairs.reshape((-1, 2)), axis=0, return_inverse=True)
+        row_start = np.r_[0, np.cumsum(np.bincount(entries[:, 0], minlength=len(xyz)))]
+        n_nodes, n_elements, n_entries = len(xyz), len(elements), len(entries)
+
+        self.info = StressInfo(
+            vertices=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes,)),
+            elements=V(dtype=gs.qd_int, shape=(n_elements, 10)),
+            surface_nodes=V(dtype=gs.qd_int, shape=(len(surface), 6)),
+            edges=V(dtype=gs.qd_int, shape=(6, 2)),
+            gradients=V_MAT(4, 3, dtype=gs.qd_float, shape=(n_elements,)),
+            volumes=V(dtype=gs.qd_float, shape=(n_elements,)),
+            row_start=V(dtype=gs.qd_int, shape=(n_nodes + 1,)),
+            columns=V(dtype=gs.qd_int, shape=(n_entries,)),
+            element_entries=V(dtype=gs.qd_int, shape=(n_elements, 10, 10)),
+            stiffness=V_MAT(3, 3, dtype=gs.qd_float, shape=(n_entries,)),
+            mass=V(dtype=gs.qd_float, shape=(n_entries,)),
+            modes=V_MAT(3, 6, dtype=gs.qd_float, shape=(n_nodes,)),
+            mass_modes=V_MAT(3, 6, dtype=gs.qd_float, shape=(n_nodes,)),
+            centrifugal=V_MAT(3, 6, dtype=gs.qd_float, shape=(n_nodes,)),
+            gram=V_MAT(6, 6, dtype=gs.qd_float, shape=()),
+            gram_inverse=V_MAT(6, 6, dtype=gs.qd_float, shape=()),
+            pins=V(dtype=gs.qd_int, shape=(6,)),
+            is_free=V_VEC(3, dtype=gs.qd_int, shape=(n_nodes,)),
+            diagonal_inverse=V_MAT(3, 3, dtype=gs.qd_float, shape=(n_nodes,)),
+            mass_properties=V(dtype=gs.qd_float, shape=(4,)),
+        )
+        self.info.vertices.from_numpy(xyz.astype(gs.np_float, copy=False))
+        self.info.elements.from_numpy(elements.astype(gs.np_int, copy=False))
+        self.info.surface_nodes.from_numpy(surface_nodes.astype(gs.np_int, copy=False))
+        self.info.edges.from_numpy(edges)
+        self.info.row_start.from_numpy(row_start.astype(gs.np_int, copy=False))
+        self.info.columns.from_numpy(entries[:, 1].astype(gs.np_int, copy=False))
+        self.info.element_entries.from_numpy(inverse.reshape((n_elements, 10, 10)).astype(gs.np_int, copy=False))
+        self.info.stiffness.fill(0)
+        self.info.mass.fill(0)
+        self.info.mass_properties.fill(0)
+        self.info.gram.fill(0)
+        self.info.is_free.fill(1)
+        kernel_geometry(self.info)
+        if not (qd_to_numpy(self.info.volumes) > 0).all():
+            gs.raise_exception("Stress tetrahedra must have positive volume.")
+        kernel_assemble(options.poisson, options.density, self.info)
+        kernel_mass_properties(self.info)
+        kernel_modes(self.info)
+        kernel_mass_modes(self.info)
+        kernel_gram_inverse(self.info)
+        kernel_gauge(self.info)
+        kernel_diagonal(self.info)
+        self.factor = StressFactor(self.info) if options.method == "direct" else None
+
+    def create_state(self, n_envs: int) -> StressState:
+        n_nodes = self.info.vertices.shape[0]
+        state = StressState(
+            force=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes, n_envs)),
+            rhs=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes, n_envs)),
+            displacement=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes, n_envs)),
+            residual=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes, n_envs)),
+            direction=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes, n_envs)),
+            product=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes, n_envs)),
+            preconditioned=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes, n_envs)),
+            wrench=V_VEC(6, dtype=gs.qd_float, shape=(n_envs,)),
+            rhs_norm_squared=V(dtype=gs.qd_float, shape=(n_envs,)),
+            residual_norm_squared=V(dtype=gs.qd_float, shape=(n_envs,)),
+            residual_preconditioned=V(dtype=gs.qd_float, shape=(n_envs,)),
+            next_residual_preconditioned=V(dtype=gs.qd_float, shape=(n_envs,)),
+            direction_product=V(dtype=gs.qd_float, shape=(n_envs,)),
+            active=V(dtype=gs.qd_int, shape=(n_envs,)),
+            iterations=V(dtype=gs.qd_int, shape=(n_envs,)),
+            peak=V(dtype=gs.qd_float, shape=(n_envs,)),
+            step_peak=V(dtype=gs.qd_float, shape=(n_envs,)),
+            valid=V(dtype=gs.qd_bool, shape=(n_envs,)),
+        )
+        state.displacement.fill(0)
+        state.step_peak.fill(0)
+        state.valid.fill(1)
+        return state
+
+    def recover(self, omega, state: StressState) -> None:
+        """Balance the complete load, recover displacement and scan the full-domain peak."""
+        options = self.options
+        block = options.preconditioner == "block"
+        kernel_balance(omega, state, self.info)
+        if self.factor is not None:
+            kernel_direct_init(state)
+            self.factor.solve(options.young, state, self.info)
+        else:
+            kernel_pcg_init(options.young, state, self.info, block, options.warm_start)
+            for _ in range((options.max_iterations + 15) // 16):
+                kernel_pcg_chunk(
+                    options.young, 0.01 * options.tolerance, options.absolute_tolerance, state, self.info, block
+                )
+                if not kernel_active(state):
+                    break
+        kernel_full_residual(options.young, options.tolerance, options.absolute_tolerance, state, self.info)
+        kernel_peak(options.young, options.poisson, state, self.info)

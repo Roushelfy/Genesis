@@ -1,5 +1,6 @@
 from .misc import CoacdOptions, FoamOptions
 from .profiling import ProfilingOptions
+from .rigid_stress import RigidStressOptions
 from .scene import SceneOptions
 from .solvers import (
     KinematicOptions,
@@ -30,6 +31,7 @@ __all__ = [
     "PBDOptions",
     "ProfilingOptions",
     "RigidOptions",
+    "RigidStressOptions",
     "SAPCouplerOptions",
     "SceneOptions",
     "SFOptions",
