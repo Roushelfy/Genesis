@@ -240,22 +240,24 @@ def main() -> None:
                 source_force = qd_to_numpy(collider.contact_data.force, transpose=True)
                 source_normal = qd_to_numpy(collider.contact_data.normal, transpose=True)
                 source_order = qd_to_numpy(collider.contact_sort_idx, transpose=True)
-                finger_contacts = np.zeros((args.envs, 2), dtype=int)
-                tangential = np.zeros(args.envs)
-                nonzero_contacts = np.zeros(args.envs, dtype=int)
-                for i_b in range(args.envs):
-                    ids = source_order[i_b, : counts[i_b]]
-                    egg_contacts = (source_a[i_b, ids] == workload.link.idx) | (source_b[i_b, ids] == workload.link.idx)
-                    ids = ids[egg_contacts]
-                    forces, normals = source_force[i_b, ids], source_normal[i_b, ids]
-                    nonzero = np.linalg.norm(forces, axis=1) > 1e-12
-                    nonzero_contacts[i_b] = np.count_nonzero(nonzero)
-                    for i_f, i_link in enumerate(finger_links):
-                        finger_contacts[i_b, i_f] = np.count_nonzero(
-                            ((source_a[i_b, ids] == i_link) | (source_b[i_b, ids] == i_link)) & nonzero
+                i_b, i_col = np.nonzero(np.arange(source_order.shape[1])[None, :] < counts[:, None])
+                ids = source_order[i_b, i_col]
+                egg_contacts = (source_a[i_b, ids] == workload.link.idx) | (source_b[i_b, ids] == workload.link.idx)
+                i_b, ids = i_b[egg_contacts], ids[egg_contacts]
+                forces, normals = source_force[i_b, ids], source_normal[i_b, ids]
+                nonzero = np.linalg.norm(forces, axis=1) > 1e-12
+                nonzero_contacts = np.bincount(i_b[nonzero], minlength=args.envs)
+                finger_contacts = np.column_stack(
+                    [
+                        np.bincount(
+                            i_b[((source_a[i_b, ids] == i_link) | (source_b[i_b, ids] == i_link)) & nonzero],
+                            minlength=args.envs,
                         )
-                    tangent = forces - np.sum(forces * normals, axis=1)[:, None] * normals
-                    tangential[i_b] = np.linalg.norm(tangent, axis=1).sum()
+                        for i_link in finger_links
+                    ]
+                )
+                tangent = forces - np.sum(forces * normals, axis=1)[:, None] * normals
+                tangential = np.bincount(i_b, weights=np.linalg.norm(tangent, axis=1), minlength=args.envs)
                 row["finger_contacts"] = finger_contacts.tolist()
                 row["nonzero_egg_contacts"] = nonzero_contacts.tolist()
                 row["tangential_force_N"] = tangential.tolist()
