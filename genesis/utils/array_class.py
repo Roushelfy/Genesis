@@ -3629,7 +3629,8 @@ class ShellScratch:
     faces_stress: qd.Tensor
     faces_stiffness: qd.Tensor
     faces_fracture_stress: qd.Tensor
-    faces_damage: qd.Tensor
+    # A checkpoint carries it for the damage getters to read between steps
+    faces_damage: qd.Tensor = of_kind(DataKind.DERIVED)
     hinges_grad: qd.Tensor
     hinges_stiffness: qd.Tensor
     corners_render_pos: qd.Tensor
@@ -3764,7 +3765,8 @@ class ShellContactScratch:
     verts_rhs_base: qd.Tensor
     verts_diag_base: qd.Tensor
     verts_dv_prev: qd.Tensor
-    verts_contact_force: qd.Tensor
+    # A checkpoint carries it for the contact force getter to read between steps
+    verts_contact_force: qd.Tensor = of_kind(DataKind.STATE)
     envs_step: qd.Tensor
     envs_n_newton_iterations: qd.Tensor
     envs_is_nonlinear: qd.Tensor

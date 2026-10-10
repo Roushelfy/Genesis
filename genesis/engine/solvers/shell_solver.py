@@ -1,3 +1,4 @@
+from collections.abc import Iterator
 from enum import IntEnum
 from typing import TYPE_CHECKING
 
@@ -10,7 +11,7 @@ import genesis as gs
 import genesis.utils.array_class as array_class
 import genesis.utils.geom as gu
 import genesis.utils.sdf as sdf
-from genesis.engine.entities.shell_entity import ShellEntity
+from genesis.engine.entities.shell_entity import ShellEntity, ShellEntityDescription
 from genesis.engine.materials.shell import Shell
 from genesis.engine.states.solvers import ShellSolverState
 from genesis.utils.misc import broadcast_tensor, qd_to_torch
@@ -150,17 +151,17 @@ class ShellSolver(GravityMixin, TimeBasedMixin, Solver):
         self._errno: qd.Tensor | None = None
 
     def add_entity(self, idx, material, morph, surface, visualize_contact=False, name=None, desc=None) -> ShellEntity:
+        """Create a shell entity from its description, resolved from the other arguments when none is given."""
+        if desc is None:
+            desc = ShellEntityDescription.resolve(morph, material, surface, name)
         entity = ShellEntity(
             scene=self._scene,
             solver=self,
-            material=material,
-            morph=morph,
-            surface=surface,
             idx=idx,
+            desc=desc,
             vert_start=self.n_verts,
             face_start=self.n_faces,
             hinge_start=self.n_hinges,
-            name=name,
         )
         self._entities.append(entity)
         return entity
@@ -599,6 +600,16 @@ class ShellSolver(GravityMixin, TimeBasedMixin, Solver):
             self._coarse_update_interval,
             self._errno,
         )
+
+    @property
+    def data(self) -> Iterator[array_class.DataItem]:
+        yield from array_class.iter_data(self._static_config, "static_config")
+        yield from array_class.iter_data(self._errno, "errno", array_class.DataKind.STATE)
+        yield from array_class.iter_data(self._shell_info, "shell_info")
+        yield from array_class.iter_data(self._shell_state, "shell_state")
+        yield from array_class.iter_data(self._shell_scratch, "shell_scratch")
+        if self._shell_contact is not None:
+            yield from array_class.iter_data(self._shell_contact, "shell_contact")
 
     def check_errno(self):
         """Raise if the linear solve of any environment produced non-finite values since the last reset."""

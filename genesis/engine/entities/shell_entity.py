@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, NamedTuple
 
 import numpy as np
@@ -7,7 +8,9 @@ import trimesh
 import genesis as gs
 import genesis.utils.geom as gu
 import genesis.utils.mesh as mu
-from genesis.engine.entities.base_entity import Entity
+from genesis.engine.entities.base_entity import Entity, EntityDescription
+from genesis.options.morphs import Morph
+from genesis.options.surfaces import Surface
 from genesis.utils.misc import qd_to_torch
 
 if TYPE_CHECKING:
@@ -202,6 +205,49 @@ def build_shell_topology(verts: np.ndarray, faces: np.ndarray, rho: float, thick
     )
 
 
+@dataclass
+class ShellEntityDescription(EntityDescription):
+    """Describe one shell entity as its resolution left it, its rest mesh welded, consistently wound and placed.
+
+    The morph, material and surface it was given stand here too. An entity created from it reads no asset and processes
+    no mesh again, so that a scene holding sheets is exported and checkpointed as a rigid one is (see 'Scene.export').
+    """
+
+    morph: Morph
+    surface: Surface
+    verts: np.ndarray
+    faces: np.ndarray
+    name: str | None = None
+
+    @classmethod
+    def resolve(
+        cls, morph: Morph, material: "Shell", surface: Surface, name: str | None = None
+    ) -> "ShellEntityDescription":
+        """Resolve what a shell entity is created with into the description it is built from, reading its mesh."""
+        if not isinstance(morph, (gs.options.morphs.Mesh, gs.options.morphs.Box, gs.options.morphs.Sphere)):
+            gs.raise_exception(
+                f"Shell entities are created from a 'Mesh', 'Box' or 'Sphere' morph, got {type(morph).__name__}."
+            )
+        meshes = gs.Mesh.from_morph_surface(morph, surface)
+        verts, faces, _ = mu.merge_submeshes([mesh.verts for mesh in meshes], [mesh.faces for mesh in meshes])
+        mesh = trimesh.Trimesh(vertices=verts, faces=faces, process=False)
+        trimesh.repair.fix_winding(mesh)
+        pos, quat = gu.transform_pos_quat_by_trans_quat(
+            np.array(morph.offset_pos, dtype=gs.np_float),
+            np.array(morph.offset_quat, dtype=gs.np_float),
+            np.array(morph.pos, dtype=gs.np_float),
+            np.array(morph.quat, dtype=gs.np_float),
+        )
+        return cls(
+            material=material,
+            morph=morph,
+            surface=meshes[0].surface,
+            verts=gu.transform_by_trans_quat(np.asarray(mesh.vertices, dtype=gs.np_float), pos, quat),
+            faces=np.asarray(mesh.faces, dtype=gs.np_int),
+            name=name,
+        )
+
+
 class ShellEntity(Entity):
     """
     A thin sheet simulated by the shell solver, which can stretch, bend, yield plastically, and tear.
@@ -216,36 +262,19 @@ class ShellEntity(Entity):
         self,
         scene,
         solver: "ShellSolver",
-        material: "Shell",
-        morph,
-        surface,
         idx: int,
+        desc: ShellEntityDescription,
         vert_start: int,
         face_start: int,
         hinge_start: int,
-        name: str | None = None,
     ):
-        super().__init__(idx, scene, morph, solver, material, surface, name=name)
-
-        if not isinstance(morph, (gs.options.morphs.Mesh, gs.options.morphs.Box, gs.options.morphs.Sphere)):
-            gs.raise_exception(
-                f"Shell entities are created from a 'Mesh', 'Box' or 'Sphere' morph, got {type(morph).__name__}."
-            )
-        meshes = gs.Mesh.from_morph_surface(morph, surface)
-        verts, faces, _ = mu.merge_submeshes([mesh.verts for mesh in meshes], [mesh.faces for mesh in meshes])
-        mesh = trimesh.Trimesh(vertices=verts, faces=faces, process=False)
-        trimesh.repair.fix_winding(mesh)
-        self._surface = meshes[0].surface
-
-        pos, quat = gu.transform_pos_quat_by_trans_quat(
-            np.array(morph.offset_pos, dtype=gs.np_float),
-            np.array(morph.offset_quat, dtype=gs.np_float),
-            np.array(morph.pos, dtype=gs.np_float),
-            np.array(morph.quat, dtype=gs.np_float),
+        super().__init__(idx, scene, desc.morph, solver, desc.material, desc.surface, name=desc.name)
+        self._desc = desc
+        self._init_verts = desc.verts
+        self._faces = desc.faces
+        self._topology = build_shell_topology(
+            self._init_verts, self._faces, self._material.rho, self._material.thickness
         )
-        self._init_verts = gu.transform_by_trans_quat(np.asarray(mesh.vertices, dtype=gs.np_float), pos, quat)
-        self._faces = np.asarray(mesh.faces, dtype=gs.np_int)
-        self._topology = build_shell_topology(self._init_verts, self._faces, material.rho, material.thickness)
         self._patches = None
         if solver.n_coarse_patches > 0:
             n_patches = min(solver.n_coarse_patches, max(1, len(self._init_verts) // 32))
@@ -253,7 +282,7 @@ class ShellEntity(Entity):
 
         n_verts = len(self._init_verts)
         n_split_verts = 0
-        if material.tensile_strength is not None and material.fracture:
+        if self._material.tensile_strength is not None and self._material.fracture:
             n_split_verts = int(np.ceil(solver.fracture_capacity * n_verts))
         self._idx_in_solver = solver.n_entities
         self._vert_start = vert_start
@@ -261,6 +290,11 @@ class ShellEntity(Entity):
         self._n_verts_max = n_verts + n_split_verts
         self._face_start = face_start
         self._hinge_start = hinge_start
+
+    @property
+    def desc(self) -> ShellEntityDescription:
+        """The description this entity was created from, holding its rest mesh."""
+        return self._desc
 
     def _get_morph_identifier(self) -> str:
         if isinstance(self._morph, gs.options.morphs.Mesh):

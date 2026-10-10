@@ -1591,11 +1591,11 @@ class Scene(RBC):
         simulation had run to, so the simulated state has to be reproduced by stepping it again. Adding an entity
         resolves its description, so a scene is exported before it is built as readily as after.
 
-        Only a rigid or a kinematic entity carries a description. A scene
-        holding anything that alters the simulation raises, naming it: an emitter and a force field. Everything else
-        a description leaves out is written without, with a warning naming it: a camera, a sensor, a callback Genesis
-        calls at every step, a texture read from an HDR or EXR file, and the visual vertices an entity was given at
-        runtime. A recorder neither simulates nor draws, so it is left out without a word.
+        Only a rigid, a kinematic or a shell entity carries a description. A scene holding anything that alters the
+        simulation raises, naming it: an emitter and a force field. Everything else a description leaves out is written
+        without, with a warning naming it: a camera, a sensor, a callback Genesis calls at every step, a texture read
+        from an HDR or EXR file, and the visual vertices an entity was given at runtime. A recorder neither simulates
+        nor draws, so it is left out without a word.
 
         Parameters
         ----------

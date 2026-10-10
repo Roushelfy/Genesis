@@ -138,11 +138,14 @@ def main():
     trajectory_reset = run_grasp(scene, egg, franka, keyframes_qpos, clock, args.snapshot_step + args.steps)
     print("full reset against the fresh run:", max_deviation(trajectory_fresh, trajectory_reset, all_envs))
 
-    # A snapshot mid-grasp, the run that continues it, then the run from the snapshot restored
+    # A snapshot and a checkpoint mid-grasp, the run that continues them, then the runs from either one restored. The
+    # snapshot holds the reduced state, from which the rigid solver restarts its constraint solve cold, and the
+    # checkpoint the whole state of every solver.
     scene.reset(state=state_init)
     clock[:] = 0
     run_grasp(scene, egg, franka, keyframes_qpos, clock, args.snapshot_step)
     snapshot = scene.get_state()
+    checkpoint = scene.__getstate__()
     trajectory_continued = run_grasp(scene, egg, franka, keyframes_qpos, clock, args.steps)
     scene.reset(state=snapshot)
     clock[:] = args.snapshot_step
@@ -150,6 +153,13 @@ def main():
     print(
         "restored snapshot against the continued run:",
         max_deviation(trajectory_continued, trajectory_restored, all_envs),
+    )
+    scene.__setstate__(checkpoint)
+    clock[:] = args.snapshot_step
+    trajectory_checkpoint = run_grasp(scene, egg, franka, keyframes_qpos, clock, args.steps)
+    print(
+        "restored checkpoint against the continued run:",
+        max_deviation(trajectory_continued, trajectory_checkpoint, all_envs),
     )
 
     # One step from the same state, twice: the variation of the arithmetic alone
