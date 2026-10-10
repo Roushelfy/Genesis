@@ -1,0 +1,341 @@
+{
+  "scope": "policy",
+  "envs": 2048,
+  "warmup_steps": 900,
+  "trajectory_steps": 2400,
+  "seed": 510000,
+  "load_model": "finite_pad_adaptive_q10",
+  "output_mode": "max",
+  "condition_count": 2048,
+  "source_revision": "7f5a63e5fceec0ebbb6edf36097bba212cecef38",
+  "source_sha256": {
+    "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery-output/research/rigid_stress/native_validity_probe.py": "c978ae83d245ff42862af486ba59701464e91ab3ce8fc55cfa89039bfbe6c110",
+    "examples/rigid/franka_egg_stress.py": "e6710b91cd546c02dc4e0a0eca8ccb0357e3515f648426e85e16a4fe859eaa31",
+    "genesis/engine/solvers/rigid/stress/__init__.py": "17b4fa6e4eb64175b87586a6c7142b9fd2f5e88ba4321129d18e07e296adc5a6",
+    "genesis/engine/solvers/rigid/stress/association.py": "0c265ddde597bb03f6f56da0f4c6063a3a530ce2a19f2dceaf3378e987f811b3",
+    "genesis/engine/solvers/rigid/stress/contact.py": "41c854526f13ae37e07882026df021461c9020da0eb33e2bf87c27c9d7ae1936",
+    "genesis/engine/solvers/rigid/stress/data.py": "a11112172da6d3716333da06dd478fb7e117697b3faa16c507b9bb6c5e12db7a",
+    "genesis/engine/solvers/rigid/stress/factor.py": "f2a059e88cf03b35a5fba2f88c3ac3f631a899d52cd841a6d268d9ccf087f81c",
+    "genesis/engine/solvers/rigid/stress/grid.py": "f451674d257339ece41a258f22c7b95fe25d6fc51888854855de4320e26b9a90",
+    "genesis/engine/solvers/rigid/stress/history.py": "559e046d3405afc260be5cd5a0de5712e490518e73aafc288642261c3959657c",
+    "genesis/engine/solvers/rigid/stress/inverse.py": "b15ef055df018d96b92aa2b0be3d39d258b4cc59c83dbccdd9dcf0c173eb2a43",
+    "genesis/engine/solvers/rigid/stress/lifecycle.py": "aec6ccc09b9da6fc15ea1c64e6716dee9325b3d05edaa7ac19b4419861c192fa",
+    "genesis/engine/solvers/rigid/stress/model.py": "5bb085d2ef78ff80c575109429dc4fbe444010b72ec173902165a3d0000837b9",
+    "genesis/engine/solvers/rigid/stress/operators.py": "40ad5e488e928a8f22efe0833f447afba7ef0e258bc3cffb5a0fe30bc1d416ff",
+    "genesis/engine/solvers/rigid/stress/pipeline.py": "e174d7ebeb9a085f79987f95858e707ce1a32150a28b50e7a722e6fc0e7cf98a",
+    "genesis/engine/solvers/rigid/stress/recovery.py": "dfacfbe854de8e1fd849c9a34faf2eb7b335667beb854746653b0253586be7d7",
+    "genesis/engine/solvers/rigid/stress/solve.py": "4a965590022790d6b6bf7ff62ed4e0ee24cc227b5901f48139895409db29c807",
+    "genesis/engine/solvers/rigid/stress/surface.py": "ed42707ee7c589db942a15835d40aba5194d2415b2c576ae0196987b94bb4fc1",
+    "genesis/engine/solvers/rigid/stress/surface_inverse.py": "904a001a9c5a178399e770baa427b06f89f604fc1c48638ff870e2491f405bf4",
+    "genesis/options/rigid_stress.py": "9421937ddc1b30e62fd82004a3313f86c16ccdb343cfe6b26e6f3c6ea8403732"
+  },
+  "command": [
+    "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python",
+    "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery-output/research/rigid_stress/native_validity_probe.py",
+    "--envs",
+    "2048",
+    "--seed",
+    "510000",
+    "--scope",
+    "policy",
+    "--steps",
+    "2400",
+    "--output",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-contact-repair/final-7f-audit-policy-b2048-seed510000.json"
+  ],
+  "host": "rtx-209-187",
+  "slurm_job_id": "704733",
+  "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "gpu_uuid": "GPU-46adcad5-6c6e-1013-cf33-5b956ba93598",
+  "quadrants": [
+    1,
+    3,
+    3
+  ],
+  "torch": "2.8.0",
+  "conditions": null,
+  "every_step_failures": {
+    "array_length": 2048,
+    "finite_count": 2048,
+    "minimum": 0,
+    "maximum": 0,
+    "mean": 0.0,
+    "maximum_indices": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  "failed_environment_steps": 0,
+  "counter_columns": [
+    "nonzero_contacts",
+    "local_retries",
+    "fit_evaluations_total",
+    "fit_evaluations_max",
+    "corrections",
+    "fallbacks",
+    "bilateral_lift_steps",
+    "failed_hold_checks"
+  ],
+  "per_environment_counters": {
+    "array_length": 2048,
+    "columns": [
+      {
+        "array_length": 2048,
+        "finite_count": 2048,
+        "minimum": 4705,
+        "maximum": 26667,
+        "mean": 10094.466796875,
+        "maximum_indices": [
+          1398,
+          1460,
+          2045,
+          892,
+          1573
+        ]
+      },
+      {
+        "array_length": 2048,
+        "finite_count": 2048,
+        "minimum": 0,
+        "maximum": 0,
+        "mean": 0.0,
+        "maximum_indices": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      {
+        "array_length": 2048,
+        "finite_count": 2048,
+        "minimum": 0,
+        "maximum": 4477,
+        "mean": 218.05810546875,
+        "maximum_indices": [
+          1628,
+          55,
+          1028,
+          733,
+          1449
+        ]
+      },
+      {
+        "array_length": 2048,
+        "finite_count": 2048,
+        "minimum": 0,
+        "maximum": 6,
+        "mean": 2.568359375,
+        "maximum_indices": [
+          605,
+          543,
+          624,
+          846,
+          874
+        ]
+      },
+      {
+        "array_length": 2048,
+        "finite_count": 2048,
+        "minimum": 0,
+        "maximum": 0,
+        "mean": 0.0,
+        "maximum_indices": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      {
+        "array_length": 2048,
+        "finite_count": 2048,
+        "minimum": 0,
+        "maximum": 0,
+        "mean": 0.0,
+        "maximum_indices": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      {
+        "array_length": 2048,
+        "finite_count": 2048,
+        "minimum": 475,
+        "maximum": 756,
+        "mean": 625.68310546875,
+        "maximum_indices": [
+          0,
+          600,
+          1200,
+          1800,
+          373
+        ]
+      },
+      {
+        "array_length": 2048,
+        "finite_count": 2048,
+        "minimum": 36,
+        "maximum": 54,
+        "mean": 42.18701171875,
+        "maximum_indices": [
+          0,
+          1,
+          17,
+          33,
+          49
+        ]
+      }
+    ]
+  },
+  "error_columns": [
+    "full_residual_budget_ratio_max",
+    "global_peak_max_Pa",
+    "wrench_force_relative_max",
+    "wrench_moment_relative_max",
+    "actual_mu_max",
+    "actual_mu_min"
+  ],
+  "per_environment_errors": {
+    "array_length": 2048,
+    "columns": [
+      {
+        "array_length": 2048,
+        "finite_count": 2048,
+        "minimum": 0.004415504750193831,
+        "maximum": 0.01068148626913316,
+        "mean": 0.006400687100881479,
+        "maximum_indices": [
+          709,
+          1392,
+          988,
+          1857,
+          172
+        ]
+      },
+      {
+        "array_length": 2048,
+        "finite_count": 2048,
+        "minimum": 135902.92056468126,
+        "maximum": 365764.0554430502,
+        "mean": 260155.14720116483,
+        "maximum_indices": [
+          804,
+          1960,
+          912,
+          484,
+          690
+        ]
+      },
+      {
+        "array_length": 2048,
+        "finite_count": 2048,
+        "minimum": 4.565472158667184e-16,
+        "maximum": 1.4643926127481811e-12,
+        "mean": 3.857274623265279e-15,
+        "maximum_indices": [
+          647,
+          887,
+          1977,
+          677,
+          331
+        ]
+      },
+      {
+        "array_length": 2048,
+        "finite_count": 2048,
+        "minimum": 2.220547963186247e-16,
+        "maximum": 1.2916235694445495e-12,
+        "mean": 3.3784458844878792e-15,
+        "maximum_indices": [
+          647,
+          887,
+          1977,
+          677,
+          331
+        ]
+      },
+      {
+        "array_length": 2048,
+        "finite_count": 2048,
+        "minimum": 0.42016939247288454,
+        "maximum": 0.8399671874551206,
+        "mean": 0.6369580927914646,
+        "maximum_indices": [
+          1436,
+          154,
+          1704,
+          824,
+          992
+        ]
+      },
+      {
+        "array_length": 2048,
+        "finite_count": 2048,
+        "minimum": 0.42016939247288454,
+        "maximum": 0.8399671874551206,
+        "mean": 0.6369580927914646,
+        "maximum_indices": [
+          1436,
+          154,
+          1704,
+          824,
+          992
+        ]
+      }
+    ]
+  },
+  "environments_with_bilateral_lift": 2048,
+  "environments_without_bilateral_lift": 0,
+  "hold_check_count": 1367798,
+  "bilateral_lift_check_count": 1281399,
+  "failed_hold_check_count": 86399,
+  "hold_check_success_fraction": 0.9368335090415397,
+  "environments_with_failed_hold_checks": 2048,
+  "hold_check_note": "Height >0.09 m and both fingers in nonzero contact during phase [0.4,0.65]; this is a per-step lift/hold proxy, not an episode-level success certificate.",
+  "per_environment_work_quantiles": {
+    "quantiles": [
+      0.5,
+      0.9,
+      0.99,
+      1.0
+    ],
+    "fit_evaluations_total": [
+      112.0,
+      445.29999999999995,
+      2255.369999999999,
+      4477.0
+    ],
+    "local_retries": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "note": "Work counts proxy per-environment tails; GPU shared execution is not individually timed."
+  },
+  "policy": {
+    "layers": [
+      26,
+      128,
+      128,
+      7
+    ],
+    "dtype": "float32",
+    "seed": 99173,
+    "residual_scale_rad": 0.0001,
+    "scope": "inference rollout",
+    "reference_max_control_error_rad": 1.6208760375557853e-11,
+    "control_error_budget_rad": 1e-09
+  },
+  "note": "Separate untimed native check of every observation, surviving per-environment resets; no rate claimed.",
+  "publication_note": "Long environment arrays summarized. Exact original remains at runtime_path with original_sha256."
+}

@@ -1,5 +1,14 @@
 # Native Quadrants low-resolution performance, 2026-10-10
 
+> Historical milestone: the original tables and coefficient-1 workload below
+> precede contact repair and the current optimization round. The repaired
+> Q10 local-integration model, actual coefficient variation, later numerical
+> checks and selection status are documented in
+> [CONTACT_REPAIR_20261010.md](CONTACT_REPAIR_20261010.md) and
+> [OPTIMIZATION_LEDGER_20261010.md](OPTIMIZATION_LEDGER_20261010.md).
+> Final acceptance remains open. In particular, the old 2c6e5ecc B=49152
+> policy trajectory rejects an unresolved contact fit and has no valid rate.
+
 This milestone integrates auxiliary stress observation into the existing
 rigid solver. All production numerical work uses owned Quadrants kernels;
 there is no external stress numerical backend. The normal Panda example

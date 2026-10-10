@@ -327,3 +327,51 @@ Long numerical arrays remain complete in their explicitly recorded data-side
 originals; compact publications preserve source/configuration and summarize
 those arrays. Final large runs and pipeline selection are still pending and
 are not included in this checkpoint.
+
+## Reset and face-task checkpoint, 20:27 UTC
+
+Source 7f5a63e5 is pushed with the validated serial pipeline and full output.
+The evidence manifest now contains 307 completed artifacts, retaining earlier
+provenance and adding the 25 CPU/25 GPU tests, three full-field CPU FP64
+trajectory oracles, all eight B=1024/2048 every-step audits and research trials.
+The latest audits contain zero numerical failures; their bilateral lift/hold
+step proxy succeeds for approximately 93.68% of checked steps. Every environment
+also has transient failed hold checks, which remain disclosed; this is not an
+episode-level grasp certificate.
+
+Saving the fully initialized public Scene state once and calling
+`Scene.reset(state=initial_state, envs_idx=ids)` avoids a reset followed by four
+separate pose/friction setters. Native reset/invalidation remains active.
+Matched B=1024, seed 623001, 900 warmup, three 2400-step repeats give
+58,884.93 / 58,864.45 / 58,903.76 env-step/s for the individual setters and
+72,534.96 / 72,606.05 / 72,320.80 for the saved state (approximately +23.1%).
+An independent full-field CPU FP64 trajectory passes 192 samples. Paired
+B=16 trajectories for both seeds pass position, quaternion, qpos, mapped load,
+actual coefficient, validity, tensor and peak comparisons through 48
+environment resets. Large-batch selection and final memory costs are pending.
+
+The bounded face-task trial assigns one CUDA warp to each eligible contact
+face instead of looping all faces in one contact warp. It keeps every fixed
+or locally partitioned Q10 sample. B=32768 snapshot scatter including task
+packing and contact-wrench checking changes 21.1350 to 15.4792 ms. A task
+capacity overflow skips the partial face path and completely recomputes the
+original scatter on device; forced-overflow testing preserves all loads.
+The initial contact-slot wrench workspace costs 1,188,036,612 bytes at that
+batch. A compact active-slot workspace reduces the B=1024 workspace to
+1,835,016 bytes while preserving its approximately 0.547 ms scatter and
+independent residual/peak checks. The complete face pipeline passes 192
+full-field CPU FP64 trajectory samples. Large live comparisons, compact
+large-batch validation and production selection are still running.
+
+The old 2c6e5ecc B=49152 policy run (seed 510000, FP64 policy) rejects a normal
+contact in environment 12271, slot 1: status 3 after local integration,
+radius 0.00546090089 m and actual mu 0.76912725. No valid policy rate is claimed
+for it. Its raw failure remains preserved. Contact capture, LP/conditioning
+diagnosis and regression repair take priority over final throughput acceptance.
+The matching B=32768 face comparison's original native path also rejects a
+contact with seed 623001, environment 13456, slot 0, radius 0.00411071168 m and
+actual mu 0.813451501. This occurs before the face candidate is run; it cannot
+be attributed to that scheduling variant. The failed comparison has no rate.
+The benchmark runner now records an in-progress case before launch and
+propagates a nonzero child exit code; a scheduler COMPLETED status cannot
+substitute for a successfully completed measurement artifact.

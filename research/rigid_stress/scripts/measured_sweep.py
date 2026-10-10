@@ -95,22 +95,31 @@ def main():
                 sampler.start()
                 print("Starting", scope, "B", envs, "seed", seed, flush=True)
                 started = time.perf_counter()
+                measurement = {
+                    "scope": scope,
+                    "envs": envs,
+                    "seed": seed,
+                    "command": command,
+                    "status": "running",
+                    "returncode": None,
+                    "result": str(result_path),
+                    "memory_samples": str(memory_path),
+                }
+                summary["measurements"].append(measurement)
+                (args.output / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
                 try:
                     with prefix.with_suffix(".log").open("w") as log:
                         process = subprocess.run(command, stdout=log, stderr=subprocess.STDOUT, check=False)
                 finally:
                     done.set()
                     sampler.join()
-                measurement = {
-                    "scope": scope,
-                    "envs": envs,
-                    "seed": seed,
-                    "command": command,
-                    "returncode": process.returncode,
-                    "total_process_seconds": time.perf_counter() - started,
-                    "result": str(result_path),
-                    "memory_samples": str(memory_path),
-                }
+                measurement.update(
+                    {
+                        "status": "completed" if process.returncode == 0 else "failed",
+                        "returncode": process.returncode,
+                        "total_process_seconds": time.perf_counter() - started,
+                    }
+                )
                 if process.returncode == 0:
                     result = json.loads(result_path.read_text())
                     steps = sum(row["steps"] for row in result["repeats"])
@@ -138,10 +147,9 @@ def main():
                     print("Completed", scope, envs, measurement["valid_env_steps_per_second"], flush=True)
                 else:
                     print("Failed", scope, envs, "see", prefix.with_suffix(".log"), flush=True)
-                summary["measurements"].append(measurement)
                 (args.output / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
                 if process.returncode != 0:
-                    return
+                    raise SystemExit(process.returncode if process.returncode > 0 else 128 - process.returncode)
 
 
 if __name__ == "__main__":

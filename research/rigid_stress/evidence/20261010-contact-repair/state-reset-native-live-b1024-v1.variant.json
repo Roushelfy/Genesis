@@ -1,0 +1,6 @@
+{
+  "state_reset": false,
+  "oracle": false,
+  "source_sha256": "a17095bbb4259173c6d1a305a232fe26f102d507ce5c0f5f68efd17a90337027",
+  "note": "Same saved per-environment qpos, velocity, pose and actual friction; one public Scene.reset(state=...) replaces reset followed by individual setters. Native state-change invalidation remains enabled. Capture/storage are setup costs; all reset work remains in live timing."
+}

@@ -1,0 +1,21 @@
+[Quadrants] version 1.3.3, llvm 22.1.0, commit 00423caa, linux, python 3.10.12
+usage: rigid_stress_benchmark [-h] --scope
+                              {profile,rigid,recovery,live,policy,policy-rigid}
+                              [--envs ENVS] [--level {1,2}] [--steps STEPS]
+                              [--warmup WARMUP] [--repetitions REPETITIONS]
+                              [--minimum-seconds MINIMUM_SECONDS] [--varied]
+                              [--seed SEED]
+                              [--source-revision SOURCE_REVISION]
+                              [--conditions CONDITIONS]
+                              [--save-conditions SAVE_CONDITIONS]
+                              [--serial-solve] [--serial-pressure]
+                              [--serial-scatter] [--uncached-peak]
+                              [--uncached-face-bounds]
+                              [--method {auto,direct,inverse}]
+                              [--inverse-precision {64,32}] [--full-inverse]
+                              [--dense-surface-loads] [--history {0,4}]
+                              [--unfused-pipeline]
+                              [--policy-precision {64,32}]
+                              [--output-mode {max,full}] [--trace]
+                              [--compact-log] --output OUTPUT
+rigid_stress_benchmark: error: the following arguments are required: --scope
