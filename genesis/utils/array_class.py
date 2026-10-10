@@ -3419,6 +3419,9 @@ class ShellStaticConfig(metaclass=AutoInitMeta):
     # Lanes cooperating on the dense coarse algebra of one entity in one environment: a warp on GPU, 1 on CPU where
     # the lanes of a block would run one after the other
     coarse_block_dim: int
+    # Lanes of the single block that lists the environments still solving, by a scan over their counts: a full block
+    # on GPU, 1 on CPU where one lane lists them in order
+    envs_block_dim: int
 
 
 @dataclasses.dataclass(eq=True, kw_only=False, frozen=True)
@@ -3603,15 +3606,17 @@ class ShellScratch:
     envs_coarse_age counts the substeps since the coarse matrices of an environment were factorized.
 
     An environment solves while envs_needs_solve holds (every environment at the start of a substep, then the ones still
-    iterating on their contacts, see kernel_shell_rigid_contact_solve). The PCG state of an environment is its mode
+    iterating on their contacts, see kernel_shell_rigid_contact_solve), envs_needs_solve_idx listing the
+    n_envs_needs_solve such environments in increasing order. The PCG state of an environment is its mode
     (envs_pcg_mode, see PCG_MODE in shell_solver.py), the iterations it ran over the substep (envs_n_iterations) and
     over its current linear solve (envs_n_solve_iterations), the union of its statuses (see SHELL_SOLVE_STATUS), the
     inner product of its residual and preconditioned residual (envs_rz) driving the conjugate gradient, and its two
     convergence measures with their thresholds (see func_pcg_prepare): the residual in the norm of the block-Jacobi
     preconditioner (envs_residual, envs_residual_checked holding it at the last restart of the conjugate gradient) and
-    the bound r^T M^-1 r on the mass-weighted squared error of the velocity change (envs_vel_error). pcg_flag keeps the
-    device loop of the solve running while any environment iterates. faces_damage is the damage index of every face
-    after the last substep.
+    the bound r^T M^-1 r on the mass-weighted squared error of the velocity change (envs_vel_error). envs_solving_idx
+    lists the n_envs_solving environments still solving in increasing order, the passes of an iteration running over
+    them alone. pcg_flag keeps the device loop of the solve running while any environment iterates. faces_damage is
+    the damage index of every face after the last substep.
     """
 
     kind: ClassVar[DataKind] = DataKind.SCRATCH
@@ -3654,7 +3659,11 @@ class ShellScratch:
     envs_vel_error_threshold: qd.Tensor
     envs_step: qd.Tensor
     envs_needs_solve: qd.Tensor
+    envs_needs_solve_idx: qd.Tensor
+    n_envs_needs_solve: qd.Tensor
     envs_is_solving: qd.Tensor
+    envs_solving_idx: qd.Tensor
+    n_envs_solving: qd.Tensor
     envs_pcg_mode: qd.Tensor
     envs_n_iterations: qd.Tensor
     envs_n_solve_iterations: qd.Tensor
@@ -3702,7 +3711,11 @@ def get_shell_scratch(n_verts, n_faces, n_hinges, n_coarse_dofs, n_coarse_entrie
         envs_vel_error_threshold=V(dtype=gs.qd_float, shape=(B,)),
         envs_step=V(dtype=gs.qd_float, shape=(B,)),
         envs_needs_solve=V(dtype=gs.qd_bool, shape=(B,)),
+        envs_needs_solve_idx=V(dtype=gs.qd_int, shape=(B,)),
+        n_envs_needs_solve=V(dtype=gs.qd_int, shape=()),
         envs_is_solving=V(dtype=gs.qd_bool, shape=(B,)),
+        envs_solving_idx=V(dtype=gs.qd_int, shape=(B,)),
+        n_envs_solving=V(dtype=gs.qd_int, shape=()),
         envs_pcg_mode=V(dtype=gs.qd_int, shape=(B,)),
         envs_n_iterations=V(dtype=gs.qd_int, shape=(B,)),
         envs_n_solve_iterations=V(dtype=gs.qd_int, shape=(B,)),
