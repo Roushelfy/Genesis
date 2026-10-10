@@ -21,6 +21,9 @@ class RigidStressOptions(Options):
     ``quadrature`` controls surface integration cost and accuracy.
     ``cooperative_pressure`` assigns a CUDA warp to each active contact;
     CPU and disabled cooperation use the same native serial pressure law.
+    ``cooperative_scatter`` reduces loads on each surface face before node
+    accumulation. CUDA contacts benefit from fewer writes. Disable it for
+    a scalar scheduling comparison. CPU uses the scalar path.
 
     ``tolerance`` bounds the complete equilibrium residual relative to the
     load norm; ``absolute_tolerance`` supplies the force floor near zero.
@@ -66,6 +69,7 @@ class RigidStressOptions(Options):
     method: Literal["auto", "direct", "inverse", "pcg"] = "auto"
     cooperative_solve: StrictBool = True
     cooperative_pressure: StrictBool = True
+    cooperative_scatter: StrictBool = True
     inverse_max_bytes: PositiveInt = 64 * 1024 * 1024
     inverse_precision: Literal["64", "32"] = "64"
     surface_inverse: StrictBool = True

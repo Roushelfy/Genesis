@@ -39,7 +39,9 @@ class StressContactState:
     frame_quaternion: qd.Tensor
 
 
-def create_contacts(n_contacts: int, n_envs: int, radius: float, cooperative: bool = True) -> StressContactState:
+def create_contacts(
+    n_contacts: int, n_envs: int, radius: float, cooperative: bool = True, cooperative_scatter: bool = True
+) -> StressContactState:
     shape = (n_contacts, n_envs)
     state = StressContactState(
         position=V_VEC(3, dtype=gs.qd_float, shape=shape),
@@ -59,7 +61,9 @@ def create_contacts(n_contacts: int, n_envs: int, radius: float, cooperative: bo
         candidate_count=V(dtype=gs.qd_int, shape=shape),
         evaluations=V(dtype=gs.qd_int, shape=shape),
         active_pairs=V_VEC(
-            2, dtype=gs.qd_int, shape=(n_contacts * n_envs if cooperative and gs.backend == gs.cuda else 0,)
+            2,
+            dtype=gs.qd_int,
+            shape=(n_contacts * n_envs if (cooperative or cooperative_scatter) and gs.backend == gs.cuda else 0,),
         ),
         active_count=V(dtype=gs.qd_int, shape=()),
         frame_position=V_VEC(3, dtype=gs.qd_float, shape=(n_envs,)),
@@ -522,7 +526,7 @@ def kernel_pressure_correct(contact_state: StressContactState, surface_info: Str
 
 
 @qd.kernel(graph=True)
-def kernel_scatter(
+def kernel_scatter_serial(
     contact_state: StressContactState,
     stress_state: StressState,
     stress_info: StressInfo,
@@ -564,4 +568,79 @@ def kernel_scatter(
                 if (total - force).norm() > 1e-8 * magnitude or moment.norm() > 1e-8 * magnitude * contact_state.radius[
                     i_c, i_b
                 ]:
+                    contact_state.status[i_c, i_b] = 4
+
+
+def kernel_scatter(
+    contact_state: StressContactState,
+    stress_state: StressState,
+    stress_info: StressInfo,
+    surface_info: StressSurfaceInfo,
+    cooperative: bool = True,
+):
+    if cooperative and gs.backend == gs.cuda:
+        kernel_pack_contacts(contact_state)
+        kernel_scatter_warp(contact_state, stress_state, stress_info, surface_info)
+    else:
+        kernel_scatter_serial(contact_state, stress_state, stress_info, surface_info)
+
+
+@qd.kernel(graph=True)
+def kernel_scatter_warp(
+    contact_state: StressContactState,
+    stress_state: StressState,
+    stress_info: StressInfo,
+    surface_info: StressSurfaceInfo,
+):
+    for i_n, i_b in qd.ndrange(stress_state.force.shape[0], stress_state.active.shape[0]):
+        stress_state.force[i_n, i_b] = qd.Vector.zero(gs.qd_float, 3)
+    qd.loop_config(block_dim=128)
+    for i_thread in range(contact_state.active_count[None] * 32):
+        lane, slot = i_thread % 32, i_thread // 32
+        pair = contact_state.active_pairs[slot]
+        i_c, i_b = pair[0], pair[1]
+        if contact_state.status[i_c, i_b] == 0:
+            force = contact_state.force[i_c, i_b]
+            first, second = func_force_frame(force)
+            center, radius = contact_state.center[i_c, i_b], contact_state.radius[i_c, i_b]
+            total = qd.Vector.zero(gs.qd_float, 3)
+            moment = qd.Vector.zero(gs.qd_float, 3)
+            for i_f in range(surface_info.face_origin.shape[0]):
+                x = surface_info.face_origin[i_f]
+                a = x + surface_info.face_edges[i_f][0, :]
+                b = x + surface_info.face_edges[i_f][1, :]
+                low, high = qd.min(x, a, b), qd.max(x, a, b)
+                distance = qd.max(low - center, 0.0) + qd.max(center - high, 0.0)
+                if distance.dot(distance) < radius * radius:
+                    n_q = surface_info.shape.shape[0]
+                    start, count = i_f * n_q, n_q
+                    if contact_state.is_refined[i_c, i_b] and i_f == contact_state.anchor_face[i_c, i_b]:
+                        start, count = surface_info.positions.shape[0], 7 * n_q
+                    load = qd.Matrix.zero(gs.qd_float, 6, 3)
+                    for chunk in range((count + 31) // 32):
+                        i_sample = chunk * 32 + lane
+                        if i_sample < count:
+                            coordinates, weight, position, shape, _face = func_contact_sample(
+                                start + i_sample, i_c, i_b, first, second, contact_state, surface_info
+                            )
+                            sample_force = (
+                                weight * qd.max(0.0, coordinates.dot(contact_state.coefficient[i_c, i_b])) * force
+                            )
+                            total += sample_force
+                            moment += (position - contact_state.position[i_c, i_b]).cross(sample_force)
+                            load += shape.outer_product(sample_force)
+                    for a, b in qd.static(qd.ndrange(6, 3)):
+                        load[a, b] = qd.simt.subgroup.reduce_all_add(load[a, b])
+                    if lane == 0:
+                        for i_local in range(6):
+                            i_n = stress_info.surface_nodes[i_f, i_local]
+                            for a in qd.static(range(3)):
+                                qd.atomic_add(stress_state.force[i_n, i_b][a], load[i_local, a])
+            for a in qd.static(range(3)):
+                total[a] = qd.simt.subgroup.reduce_all_add(total[a])
+                moment[a] = qd.simt.subgroup.reduce_all_add(moment[a])
+            if lane == 0:
+                contact_state.force_error[i_c, i_b] = (total - force).norm()
+                contact_state.moment_error[i_c, i_b] = moment.norm()
+                if (total - force).norm() > 1e-8 * force.norm() or moment.norm() > 1e-8 * force.norm() * radius:
                     contact_state.status[i_c, i_b] = 4

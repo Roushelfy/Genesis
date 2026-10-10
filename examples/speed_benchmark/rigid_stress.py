@@ -110,7 +110,9 @@ def profile(workload: FrankaEgg, repetitions: int) -> dict:
         "candidate_weights_constraints": lambda: kernel_pressure(
             entry.contacts, entry.surface.info, options.cooperative_pressure
         ),
-        "nodal_scatter": lambda: kernel_scatter(entry.contacts, entry.state, entry.model.info, entry.surface.info),
+        "nodal_scatter": lambda: kernel_scatter(
+            entry.contacts, entry.state, entry.model.info, entry.surface.info, options.cooperative_scatter
+        ),
         "inertia_relief_centrifugal": lambda: kernel_balance(entry.omega, entry.state, entry.model.info),
         "rhs_reduction": lambda: kernel_direct_init(entry.state),
         "linear_solve": lambda: entry.model.solve(options, entry.state, entry.omega, surface_load=True),
@@ -183,6 +185,7 @@ def main() -> None:
     parser.add_argument("--save-conditions", type=Path, help="Save the constructed condition bank before warmup.")
     parser.add_argument("--serial-solve", action="store_true")
     parser.add_argument("--serial-pressure", action="store_true")
+    parser.add_argument("--serial-scatter", action="store_true")
     parser.add_argument("--method", choices=("auto", "direct", "inverse"), default="auto")
     parser.add_argument("--inverse-precision", choices=("64", "32"), default="64")
     parser.add_argument("--full-inverse", action="store_true", help="Compare the full nodal-load inverse application.")
@@ -209,6 +212,7 @@ def main() -> None:
         cooperative_pressure=not args.serial_pressure,
         conditions=args.conditions,
         surface_inverse=not args.full_inverse,
+        cooperative_scatter=not args.serial_scatter,
     )
     if args.save_conditions is not None:
         workload.save_conditions(args.save_conditions)
@@ -312,6 +316,7 @@ def main() -> None:
             else None,
             "cooperative_solve": not args.serial_solve,
             "cooperative_pressure": not args.serial_pressure,
+            "cooperative_scatter": not args.serial_scatter,
             "method": args.method,
             "inverse_precision": args.inverse_precision,
             "surface_inverse": not args.full_inverse,

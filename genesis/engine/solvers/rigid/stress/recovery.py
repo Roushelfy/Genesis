@@ -81,6 +81,7 @@ class RigidStressRecovery:
                                 solver._B,
                                 options.contact_radius,
                                 options.cooperative_pressure,
+                                options.cooperative_scatter,
                             ),
                             V_VEC(3, dtype=gs.qd_float, shape=(solver._B,)),
                             StressHistory(model.info.vertices.shape[0], solver._B) if options.history_size else None,
@@ -114,7 +115,13 @@ class RigidStressRecovery:
             )
             kernel_anchor(self.source_epsilon, entry.contacts, entry.surface.info)
             kernel_pressure(entry.contacts, entry.surface.info, entry.link.stress_options.cooperative_pressure)
-            kernel_scatter(entry.contacts, entry.state, entry.model.info, entry.surface.info)
+            kernel_scatter(
+                entry.contacts,
+                entry.state,
+                entry.model.info,
+                entry.surface.info,
+                entry.link.stress_options.cooperative_scatter,
+            )
             entry.model.recover(entry.omega, entry.state, entry.link.stress_options, entry.history, surface_load=True)
             kernel_accept(entry.state, entry.contacts, solver._errno)
             if entry.history is not None:
