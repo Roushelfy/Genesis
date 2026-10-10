@@ -281,6 +281,26 @@ def func_pressure_initial(gram: qd.types.matrix(3, 3)):
     return coefficient, weight_sum, status
 
 
+@qd.func
+def func_pressure_step(hessian: qd.types.matrix(3, 3), gradient: qd.types.vector(3)):
+    # Normalize dual coordinates before testing/inverting a small active footprint.
+    # This leaves the pressure objective, target wrench and convergence budget unchanged.
+    scale = qd.Vector.zero(gs.qd_float, 3)
+    positive = True
+    for a in qd.static(range(3)):
+        positive = positive and hessian[a, a] > 0.0
+        if hessian[a, a] > 0.0:
+            scale[a] = 1.0 / qd.sqrt(hessian[a, a])
+    balanced = qd.Matrix.zero(gs.qd_float, 3, 3)
+    for a, b in qd.static(qd.ndrange(3, 3)):
+        balanced[a, b] = scale[a] * hessian[a, b] * scale[b]
+    nonsingular = positive and balanced.determinant() > 1e-14 * balanced.trace() ** 3
+    step = qd.Vector.zero(gs.qd_float, 3)
+    if nonsingular:
+        step = scale * (balanced.inverse() @ (scale * gradient))
+    return step, nonsingular
+
+
 def kernel_pressure(contact_state: StressContactState, surface_info: StressSurfaceInfo, cooperative: bool = True):
     if cooperative and gs.backend == gs.cuda:
         kernel_pack_contacts(contact_state)
@@ -410,8 +430,9 @@ def kernel_pressure_correct_warp(contact_state: StressContactState, surface_info
                         gradient[0] -= 1.0
                         iterations += 1
                         accepted = gradient.norm() <= 2e-12
-                        if not accepted and hessian.determinant() > 1e-14 * hessian.trace() ** 3:
-                            step = hessian.inverse() @ gradient
+                        proposed_step, nonsingular = func_pressure_step(hessian, gradient)
+                        if not accepted and nonsingular:
+                            step = proposed_step
                             slope = gradient.dot(step)
                             reference_objective = objective
                             fraction, line = gs.qd_float(1.0), True
@@ -496,8 +517,8 @@ def kernel_pressure_correct(contact_state: StressContactState, surface_info: Str
                                 hessian += weight * coordinates.outer_product(coordinates)
                     contact_state.evaluations[i_c, i_b] = previous_evaluations + iteration + 1
                     accepted = gradient.norm() <= 2e-12
-                    if not accepted and hessian.determinant() > 1e-14 * hessian.trace() ** 3:
-                        step = hessian.inverse() @ gradient
+                    step, nonsingular = func_pressure_step(hessian, gradient)
+                    if not accepted and nonsingular:
                         fraction = gs.qd_float(1.0)
                         line_accepted = False
                         for _ in range(40):

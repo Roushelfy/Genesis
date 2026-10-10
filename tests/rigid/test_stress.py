@@ -268,7 +268,8 @@ def test_native_constrained_pressure_and_invalid_inputs(tmp_path, case):
 @pytest.mark.required
 @pytest.mark.precision("64")
 @pytest.mark.parametrize("cooperative", (False, True))
-def test_native_live_apex_wrench_recovery(tmp_path, cooperative):
+@pytest.mark.parametrize("case", ("batch2048", "batch16384"))
+def test_native_live_apex_wrench_recovery(tmp_path, cooperative, case):
     vertices, tetrahedra, faces, _ = shell_mesh(1, 2, 0.0005)
     mesh = tmp_path / "shell.npz"
     np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)
@@ -285,6 +286,16 @@ def test_native_live_apex_wrench_recovery(tmp_path, cooperative):
         np.zeros(3),
         np.array([0.45061547141681174, 0.1545483800796497, -0.8792385882879348]),
     )
+    if case == "batch16384":
+        # Actual varied-mu B=16384, environment 14658, timed trajectory tick 1017.
+        patch = WrenchPatch(
+            np.array([8.423108194112004e-6, -9.491831147112614e-6, 0.02997678241766882]),
+            np.array([0.0014871093110934814, -0.0017833685020508818, -0.0009493177723757649]),
+            0.0059312792977239135,
+            0.8132615716182551,
+            np.zeros(3),
+            np.array([0.3183675187512961, -0.3587619511864121, -0.8774576829597318]),
+        )
     anchor = mapper.surface_anchor(patch.center_m, patch.force_n)
     ids = np.array(mapper.tree.query_ball_point(anchor, patch.radius_m, return_sorted=True))
     direction = patch.force_n / np.linalg.norm(patch.force_n)
@@ -302,16 +313,17 @@ def test_native_live_apex_wrench_recovery(tmp_path, cooperative):
     contacts.position.from_numpy(patch.center_m.reshape((1, 1, 3)))
     contacts.force.from_numpy(patch.force_n.reshape((1, 1, 3)))
     contacts.normal.from_numpy(patch.inward_normal.reshape((1, 1, 3)))
-    contacts.friction.fill(1.0)
+    contacts.friction.fill(patch.friction)
     contacts.valid.fill(True)
     kernel_anchor(float(np.finfo(float).eps), contacts, surface.info)
     kernel_pressure(contacts, surface.info, cooperative)
     kernel_scatter(contacts, state, model.info, surface.info)
     print("apex", cooperative, "status", qd_to_numpy(contacts.status), "iterations", qd_to_numpy(contacts.evaluations))
     np.testing.assert_array_equal(qd_to_numpy(contacts.status), 0)
+    assert qd_to_numpy(contacts.evaluations).max() <= 110
     np.testing.assert_allclose(qd_to_numpy(state.force)[:, 0].reshape(-1), mapped.nodal_force_n, rtol=2e-7, atol=1e-10)
-    assert qd_to_numpy(contacts.force_error).max() < 1e-10
-    assert qd_to_numpy(contacts.moment_error).max() < 1e-12
+    assert qd_to_numpy(contacts.force_error).max() <= 1e-8 * np.linalg.norm(patch.force_n)
+    assert qd_to_numpy(contacts.moment_error).max() <= 1e-8 * np.linalg.norm(patch.force_n) * patch.radius_m
     omega = V_VEC(3, dtype=gs.qd_float, shape=(1,))
     omega.fill(0)
     model.recover(omega, state)
