@@ -1090,6 +1090,65 @@ def func_pcg_direction(
 
 
 @qd.func
+def func_element_product(
+    i_e_: int,
+    i_b: int,
+    shell_state: array_class.ShellState,
+    shell_scratch: array_class.ShellScratch,
+    shell_info: array_class.ShellInfo,
+):
+    """Add the stiffness of one face or hinge times x to verts_Ap, and its share of x^T K x to envs_pAp.
+
+    The faces come first in the index i_e_, then the hinges, and x is the vector func_pcg_direction selects.
+    """
+    n_faces = shell_state.faces_thickness.shape[0]
+
+    if i_e_ < n_faces:
+        i_f = i_e_
+        i_e = shell_info.faces_entity[i_f]
+        i_v0 = shell_state.corners_vert[3 * i_f, i_b]
+        i_v1 = shell_state.corners_vert[3 * i_f + 1, i_b]
+        i_v2 = shell_state.corners_vert[3 * i_f + 2, i_b]
+        x0 = func_pcg_direction(i_v0, i_b, shell_state, shell_scratch)
+        x1 = func_pcg_direction(i_v1, i_b, shell_state, shell_scratch)
+        x2 = func_pcg_direction(i_v2, i_b, shell_state, shell_scratch)
+        Y = shell_info.faces_Dm_inv[i_f] @ shell_state.faces_plastic[i_f, i_b]
+        stiffness = shell_scratch.faces_stiffness[i_f, i_b]
+        Kp0, Kp1, Kp2 = func_membrane_stiffness_product(
+            x0,
+            x1,
+            x2,
+            shell_scratch.faces_F[i_f, i_b],
+            shell_scratch.faces_stress[i_f, i_b],
+            Y,
+            shell_info.entities_stretching_modulus[i_e] * shell_state.faces_thickness[i_f, i_b],
+            shell_info.entities_nu[i_e],
+        )
+        shell_scratch.verts_Ap[i_v0, i_b] += stiffness * Kp0
+        shell_scratch.verts_Ap[i_v1, i_b] += stiffness * Kp1
+        shell_scratch.verts_Ap[i_v2, i_b] += stiffness * Kp2
+        shell_scratch.envs_pAp[i_b] += stiffness * (x0.dot(Kp0) + x1.dot(Kp1) + x2.dot(Kp2))
+    else:
+        i_h = i_e_ - n_faces
+        stiffness = shell_scratch.hinges_stiffness[i_h, i_b]
+        if stiffness > 0.0:
+            i_va, i_vb, i_vc, i_vd, _ = func_hinge_verts(i_h, i_b, shell_state, shell_info)
+            grad = shell_scratch.hinges_grad[i_h, i_b]
+            rate = (
+                grad[:, 0].dot(func_pcg_direction(i_va, i_b, shell_state, shell_scratch))
+                + grad[:, 1].dot(func_pcg_direction(i_vb, i_b, shell_state, shell_scratch))
+                + grad[:, 2].dot(func_pcg_direction(i_vc, i_b, shell_state, shell_scratch))
+                + grad[:, 3].dot(func_pcg_direction(i_vd, i_b, shell_state, shell_scratch))
+            )
+            coeff = stiffness * rate
+            shell_scratch.verts_Ap[i_va, i_b] += coeff * grad[:, 0]
+            shell_scratch.verts_Ap[i_vb, i_b] += coeff * grad[:, 1]
+            shell_scratch.verts_Ap[i_vc, i_b] += coeff * grad[:, 2]
+            shell_scratch.verts_Ap[i_vd, i_b] += coeff * grad[:, 3]
+            shell_scratch.envs_pAp[i_b] += coeff * rate
+
+
+@qd.func
 def func_system_product(
     shell_state: array_class.ShellState, shell_scratch: array_class.ShellScratch, shell_info: array_class.ShellInfo
 ):
@@ -1106,49 +1165,7 @@ def func_system_product(
 
     for i_e_, i_b in qd.ndrange(n_faces + n_hinges, B):
         if shell_scratch.envs_is_solving[i_b]:
-            if i_e_ < n_faces:
-                i_f = i_e_
-                i_e = shell_info.faces_entity[i_f]
-                i_v0 = shell_state.corners_vert[3 * i_f, i_b]
-                i_v1 = shell_state.corners_vert[3 * i_f + 1, i_b]
-                i_v2 = shell_state.corners_vert[3 * i_f + 2, i_b]
-                x0 = func_pcg_direction(i_v0, i_b, shell_state, shell_scratch)
-                x1 = func_pcg_direction(i_v1, i_b, shell_state, shell_scratch)
-                x2 = func_pcg_direction(i_v2, i_b, shell_state, shell_scratch)
-                Y = shell_info.faces_Dm_inv[i_f] @ shell_state.faces_plastic[i_f, i_b]
-                stiffness = shell_scratch.faces_stiffness[i_f, i_b]
-                Kp0, Kp1, Kp2 = func_membrane_stiffness_product(
-                    x0,
-                    x1,
-                    x2,
-                    shell_scratch.faces_F[i_f, i_b],
-                    shell_scratch.faces_stress[i_f, i_b],
-                    Y,
-                    shell_info.entities_stretching_modulus[i_e] * shell_state.faces_thickness[i_f, i_b],
-                    shell_info.entities_nu[i_e],
-                )
-                shell_scratch.verts_Ap[i_v0, i_b] += stiffness * Kp0
-                shell_scratch.verts_Ap[i_v1, i_b] += stiffness * Kp1
-                shell_scratch.verts_Ap[i_v2, i_b] += stiffness * Kp2
-                shell_scratch.envs_pAp[i_b] += stiffness * (x0.dot(Kp0) + x1.dot(Kp1) + x2.dot(Kp2))
-            else:
-                i_h = i_e_ - n_faces
-                stiffness = shell_scratch.hinges_stiffness[i_h, i_b]
-                if stiffness > 0.0:
-                    i_va, i_vb, i_vc, i_vd, _ = func_hinge_verts(i_h, i_b, shell_state, shell_info)
-                    grad = shell_scratch.hinges_grad[i_h, i_b]
-                    rate = (
-                        grad[:, 0].dot(func_pcg_direction(i_va, i_b, shell_state, shell_scratch))
-                        + grad[:, 1].dot(func_pcg_direction(i_vb, i_b, shell_state, shell_scratch))
-                        + grad[:, 2].dot(func_pcg_direction(i_vc, i_b, shell_state, shell_scratch))
-                        + grad[:, 3].dot(func_pcg_direction(i_vd, i_b, shell_state, shell_scratch))
-                    )
-                    coeff = stiffness * rate
-                    shell_scratch.verts_Ap[i_va, i_b] += coeff * grad[:, 0]
-                    shell_scratch.verts_Ap[i_vb, i_b] += coeff * grad[:, 1]
-                    shell_scratch.verts_Ap[i_vc, i_b] += coeff * grad[:, 2]
-                    shell_scratch.verts_Ap[i_vd, i_b] += coeff * grad[:, 3]
-                    shell_scratch.envs_pAp[i_b] += coeff * rate
+            func_element_product(i_e_, i_b, shell_state, shell_scratch, shell_info)
 
 
 @qd.func
@@ -2997,43 +3014,51 @@ def func_contact_assemble(
 
 
 @qd.func
-def func_contact_product(
+def func_system_contact_product(
     shell_state: array_class.ShellState,
     shell_scratch: array_class.ShellScratch,
     shell_contact: array_class.ShellContactScratch,
+    shell_info: array_class.ShellInfo,
     dyn_info: array_class.DynInfo,
     rigid_info: array_class.RigidInfo,
 ):
-    """Add the contacts to the system product of every environment still solving, their rigid part excepted.
+    """Add the stiffness of the faces, hinges and contacts of the sheet to the system product of every environment still
+    solving, their rigid part excepted.
 
-    The contact stiffness of the sheet J_s^T H J_s x goes to verts_Ap and its share x^T J_s^T H J_s x to envs_pAp,
-    while the generalized forces C^T x of the rigid contacts gather in the Schur accumulator of the iteration (see
-    func_contact_schur_product).
+    The faces and hinges add K x as func_system_product does, and the contacts their stiffness J_s^T H J_s x, both to
+    verts_Ap, with their shares of x^T A x to envs_pAp. The generalized forces C^T x of the rigid contacts gather in the
+    Schur accumulator of the iteration (see func_contact_schur_product). The elements and the contacts share one
+    parallel loop, so that the product costs a single launch.
     """
     B = shell_state.verts_pos.shape[1]
+    n_elements = shell_state.faces_thickness.shape[0] + shell_scratch.hinges_stiffness.shape[0]
     n_slots = shell_contact.contacts_geom.shape[0]
     n_dofs = shell_contact.dofs_schur_rhs.shape[0]
 
-    for i_c, i_b in qd.ndrange(n_slots, B):
-        if shell_scratch.envs_is_solving[i_b] and shell_contact.contacts_geom[i_c, i_b] >= 0:
-            i_f = i_c // 2
-            bary = shell_contact.contacts_bary[i_c, i_b]
-            vel = qd.Vector.zero(gs.qd_float, 3)
-            for k in qd.static(range(3)):
-                i_v = shell_state.corners_vert[3 * i_f + k, i_b]
-                if func_is_vert_free(i_v, i_b, shell_state):
-                    vel += bary[k] * func_pcg_direction(i_v, i_b, shell_state, shell_scratch)
-            impulse = shell_contact.contacts_hessian[i_c, i_b] @ vel
-            func_contact_add_to_verts(i_c, i_b, impulse, shell_scratch.verts_Ap, shell_state, shell_contact)
-            shell_scratch.envs_pAp[i_b] += vel.dot(impulse)
-            i_t = func_contact_tree(i_c, i_b, shell_contact, dyn_info, rigid_info)
-            if i_t >= 0:
-                i_d_offset = (shell_scratch.envs_n_solve_iterations[i_b] % 2) * n_dofs
-                i_d_start = rigid_info.trees_dof_start[i_t]
-                for k in range(rigid_info.trees_n_dofs[i_t]):
-                    shell_contact.dofs_schur_product[i_d_offset + i_d_start + k, i_b] += shell_contact.contacts_jac[
-                        i_c, k, i_b
-                    ].dot(impulse)
+    for i_e_, i_b in qd.ndrange(n_elements + n_slots, B):
+        if shell_scratch.envs_is_solving[i_b]:
+            i_c = i_e_ - n_elements
+            if i_e_ < n_elements:
+                func_element_product(i_e_, i_b, shell_state, shell_scratch, shell_info)
+            elif shell_contact.contacts_geom[i_c, i_b] >= 0:
+                i_f = i_c // 2
+                bary = shell_contact.contacts_bary[i_c, i_b]
+                vel = qd.Vector.zero(gs.qd_float, 3)
+                for k in qd.static(range(3)):
+                    i_v = shell_state.corners_vert[3 * i_f + k, i_b]
+                    if func_is_vert_free(i_v, i_b, shell_state):
+                        vel += bary[k] * func_pcg_direction(i_v, i_b, shell_state, shell_scratch)
+                impulse = shell_contact.contacts_hessian[i_c, i_b] @ vel
+                func_contact_add_to_verts(i_c, i_b, impulse, shell_scratch.verts_Ap, shell_state, shell_contact)
+                shell_scratch.envs_pAp[i_b] += vel.dot(impulse)
+                i_t = func_contact_tree(i_c, i_b, shell_contact, dyn_info, rigid_info)
+                if i_t >= 0:
+                    i_d_offset = (shell_scratch.envs_n_solve_iterations[i_b] % 2) * n_dofs
+                    i_d_start = rigid_info.trees_dof_start[i_t]
+                    for k in range(rigid_info.trees_n_dofs[i_t]):
+                        shell_contact.dofs_schur_product[i_d_offset + i_d_start + k, i_b] += shell_contact.contacts_jac[
+                            i_c, k, i_b
+                        ].dot(impulse)
 
 
 @qd.func
@@ -3478,8 +3503,7 @@ def kernel_shell_rigid_contact_solve(
         func_contact_assemble(shell_state, shell_scratch, shell_contact, dyn_info, rigid_info)
         func_pcg_prepare(pcg_flag, shell_state, shell_scratch, shell_static_config, tolerance, velocity_tolerance)
         while qd.graph.do_while(pcg_flag):
-            func_system_product(shell_state, shell_scratch, shell_info)
-            func_contact_product(shell_state, shell_scratch, shell_contact, dyn_info, rigid_info)
+            func_system_contact_product(shell_state, shell_scratch, shell_contact, shell_info, dyn_info, rigid_info)
             func_contact_schur_product(shell_state, shell_scratch, shell_contact, dyn_info, rigid_info)
             func_pcg_residual(pcg_flag, shell_state, shell_scratch, shell_info, shell_static_config)
             if qd.static(shell_static_config.has_coarse_space):

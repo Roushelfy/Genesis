@@ -17,6 +17,10 @@ if TYPE_CHECKING:
     from genesis.engine.materials.shell import Shell
     from genesis.engine.solvers.shell_solver import ShellSolver
 
+# Fewest vertices a patch of the coarse space holds on average. Its affine motion takes 9 degrees of freedom, which a
+# patch of fewer vertices would barely constrain, while the coarse matrix grows with the square of the patch count.
+MIN_VERTS_PER_COARSE_PATCH = 8
+
 
 class ShellTopology(NamedTuple):
     """The rest mesh of a shell entity, as the shell solver consumes it (see ShellInfo in array_class.py).
@@ -57,17 +61,21 @@ class ShellPatches(NamedTuple):
 
 def build_shell_patches(verts: np.ndarray, n_patches: int) -> ShellPatches:
     """Partition the rest vertices of a shell into compact patches by k-means, seeded by farthest point sampling."""
+    # The patches read the vertices relative to the sheet, rounded at a billionth of its size, so that the ties of a
+    # regular mesh break by vertex index and a sheet placed elsewhere gets the same patches
+    extent = max(np.ptp(verts, axis=0).max(), gs.EPS)
+    verts_rel = np.round((verts - verts.min(axis=0)) / extent, 9) * extent
     centers_idx = [0]
-    dist_sq = np.square(verts - verts[0]).sum(axis=1)
+    dist_sq = np.square(verts_rel - verts_rel[0]).sum(axis=1)
     for _ in range(n_patches - 1):
         centers_idx.append(int(np.argmax(dist_sq)))
-        dist_sq = np.minimum(dist_sq, np.square(verts - verts[centers_idx[-1]]).sum(axis=1))
-    centers = verts[centers_idx]
+        dist_sq = np.minimum(dist_sq, np.square(verts_rel - verts_rel[centers_idx[-1]]).sum(axis=1))
+    centers = verts_rel[centers_idx]
     for _ in range(20):
-        verts_patch = np.argmin(np.square(verts[:, None] - centers[None]).sum(axis=-1), axis=1)
+        verts_patch = np.argmin(np.square(verts_rel[:, None] - centers[None]).sum(axis=-1), axis=1)
         counts = np.bincount(verts_patch, minlength=n_patches)
         sums = np.zeros_like(centers)
-        np.add.at(sums, verts_patch, verts)
+        np.add.at(sums, verts_patch, verts_rel)
         centers = np.where(counts[:, None] > 0, sums / np.maximum(counts, 1)[:, None], centers)
     # Patches left empty by the iterations are dropped, renumbering the others contiguously
     patches_used, verts_patch = np.unique(verts_patch, return_inverse=True)
@@ -75,7 +83,7 @@ def build_shell_patches(verts: np.ndarray, n_patches: int) -> ShellPatches:
     verts_phi = np.ones((len(verts), 3), dtype=gs.np_float)
     for i_p in range(len(patches_used)):
         verts_mask = verts_patch == i_p
-        offsets = verts[verts_mask] - verts[verts_mask].mean(axis=0)
+        offsets = verts_rel[verts_mask] - verts_rel[verts_mask].mean(axis=0)
         _, _, axes = np.linalg.svd(offsets, full_matrices=False)
         coords = offsets @ axes[:2].T
         radius = np.sqrt(np.square(coords).sum(axis=1).mean())
@@ -277,7 +285,7 @@ class ShellEntity(Entity):
         )
         self._patches = None
         if solver.n_coarse_patches > 0:
-            n_patches = min(solver.n_coarse_patches, max(1, len(self._init_verts) // 32))
+            n_patches = min(solver.n_coarse_patches, max(1, len(self._init_verts) // MIN_VERTS_PER_COARSE_PATCH))
             self._patches = build_shell_patches(self._init_verts, n_patches)
 
         n_verts = len(self._init_verts)
