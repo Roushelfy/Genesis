@@ -66,9 +66,7 @@ def generate_fallback():
         + ast.unparse(ast.fix_missing_locations(node))
         + "\n"
     )
-    directory = (
-        Path(os.environ["RIGID_STRESS_DATA_ROOT"]) / "cache" / "face_tasks" / os.environ.get("SLURM_JOB_ID", "local")
-    )
+    directory = Path(os.environ["RIGID_STRESS_DATA_ROOT"]) / "cache" / "face_tasks"
     directory.mkdir(parents=True, exist_ok=True)
     module_path = directory / "scatter_fallback_generated.py"
     module_path.write_text(generated)
@@ -113,11 +111,6 @@ def func_scatter_faces(
         i_c, i_b = pair[0], pair[1]
         if contacts.status[i_c, i_b] == 0:
             low, high = surface.face_bounds_low[face], surface.face_bounds_high[face]
-            if qd.static(not cached):
-                origin = surface.face_origin[face]
-                first = origin + surface.face_edges[face][0, :]
-                second = origin + surface.face_edges[face][1, :]
-                low, high = qd.min(origin, first, second), qd.max(origin, first, second)
             center = contacts.center[i_c, i_b]
             distance = qd.max(low - center, 0.0) + qd.max(center - high, 0.0)
             if distance.dot(distance) < contacts.radius[i_c, i_b] ** 2:

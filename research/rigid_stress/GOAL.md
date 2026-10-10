@@ -1,5 +1,14 @@
 # Agent goal: native Quadrants rigid stress recovery
 
+## Internal stopping budget, 2026-10-10 follow-up
+
+Match internal contact fitting termination to the actual error budget. The
+historical 2e-12 normalized dual threshold is not an acceptance requirement.
+An internal relaxation must pass unchanged final contact force/moment,
+complete equilibrium including all gauge rows, and independent CPU FP64
+stress consistency checks before selection. Sampling/physical infeasibility
+must still be distinguished from numerical stagnation.
+
 ## Additional output requirement, 2026-10-10
 
 Add a build-time option selecting maximum-only or complete stress-field

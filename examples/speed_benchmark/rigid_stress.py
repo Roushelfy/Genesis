@@ -209,6 +209,7 @@ def main() -> None:
     parser.add_argument("--unfused-pipeline", action="store_true", help="Compare separate native recovery passes.")
     parser.add_argument("--policy-precision", choices=("64", "32"), default="32")
     parser.add_argument("--output-mode", choices=("max", "full"), default="max")
+    parser.add_argument("--legacy-reset", action="store_true", help="Compare reset followed by separate pose setters.")
     parser.add_argument("--trace", action="store_true", help="Export a separate intrusive CUDA/CPU trace pass.")
     parser.add_argument(
         "--compact-log", action="store_true", help="Keep full per-environment diagnostics in JSON only."
@@ -234,6 +235,7 @@ def main() -> None:
         packed_surface_loads=not args.dense_surface_loads,
         fused_pipeline=not args.unfused_pipeline,
         output_mode=args.output_mode,
+        saved_reset=not args.legacy_reset,
         cooperative_scatter=not args.serial_scatter,
         cached_peak=not args.uncached_peak,
         cached_face_bounds=not args.uncached_face_bounds,
@@ -361,6 +363,7 @@ def main() -> None:
             "packed_surface_loads": not args.dense_surface_loads,
             "fused_pipeline": not args.unfused_pipeline,
             "output_mode": args.output_mode,
+            "reset_mode": "individual_setters" if args.legacy_reset else "saved_initial_state",
             "history": args.history,
             "host": platform.node(),
             "slurm_job_id": os.environ.get("SLURM_JOB_ID"),
@@ -483,6 +486,17 @@ def main() -> None:
             result["native_buffer_bytes"] = sum(item["bytes"] for item in buffers)
             result["native_allocation_count"] = len(buffers)
         result["torch_peak_allocated_bytes"] = torch.cuda.max_memory_allocated()
+        result["saved_reset_state_bytes"] = (
+            sum(
+                value.numel() * value.element_size()
+                for state in workload.reset_state.solvers_state
+                if state is not None
+                for value in vars(state).values()
+                if isinstance(value, torch.Tensor)
+            )
+            if workload.reset_state is not None
+            else 0
+        )
         result["device_free_bytes"] = torch.cuda.mem_get_info()[0]
         if args.trace:
             qd.sync()

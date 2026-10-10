@@ -33,6 +33,7 @@ class FrankaEgg:
         cooperative_scatter: bool = True,
         cached_peak: bool = True,
         cached_face_bounds: bool = True,
+        saved_reset: bool = True,
     ):
         self.n_envs = n_envs
         self.tick = 0
@@ -146,6 +147,7 @@ class FrankaEgg:
         self.device_delays = torch.as_tensor(self.delays, dtype=gs.tc_float, device=gs.device)
         self.phase = torch.zeros(n_envs, dtype=gs.tc_float, device=gs.device)
         self.stress = stress
+        self.reset_state = self.scene.get_state() if saved_reset else None
 
     def save_conditions(self, path: Path) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -164,11 +166,14 @@ class FrankaEgg:
 
     def reset(self, envs_idx=None) -> None:
         ids = np.arange(self.n_envs) if envs_idx is None else envs_idx
-        self.scene.reset(envs_idx=ids)
-        self.robot.set_qpos(self.initial_joints[ids], envs_idx=ids)
-        self.egg.set_pos(self.initial_position[ids], envs_idx=ids)
-        self.egg.set_quat(self.initial_quaternion[ids], envs_idx=ids)
-        self.egg.set_friction_ratio(self.friction[ids], envs_idx=ids)
+        if self.reset_state is not None:
+            self.scene.reset(state=self.reset_state, envs_idx=ids)
+        else:
+            self.scene.reset(envs_idx=ids)
+            self.robot.set_qpos(self.initial_joints[ids], envs_idx=ids)
+            self.egg.set_pos(self.initial_position[ids], envs_idx=ids)
+            self.egg.set_quat(self.initial_quaternion[ids], envs_idx=ids)
+            self.egg.set_friction_ratio(self.friction[ids], envs_idx=ids)
         self.phase[ids] = 0.0
         self.reset_count += len(ids)
 
@@ -228,10 +233,17 @@ def main() -> None:
     parser.add_argument("--varied", action="store_true")
     parser.add_argument("--viewer", action="store_true")
     parser.add_argument("--output-mode", choices=("max", "full"), default="max")
+    parser.add_argument("--legacy-reset", action="store_true", help="Compare reset followed by separate pose setters.")
     args = parser.parse_args()
     gs.init(backend=gs.gpu, precision="64")
     workload = FrankaEgg(
-        args.envs, args.level, not args.no_stress, varied=args.varied, viewer=args.viewer, output_mode=args.output_mode
+        args.envs,
+        args.level,
+        not args.no_stress,
+        varied=args.varied,
+        viewer=args.viewer,
+        output_mode=args.output_mode,
+        saved_reset=not args.legacy_reset,
     )
     for _ in range(args.steps):
         workload.step()

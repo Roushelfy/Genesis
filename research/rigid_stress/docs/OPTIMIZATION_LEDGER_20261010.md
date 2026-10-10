@@ -7,7 +7,59 @@ Q10x10 quadrature. All production physical arithmetic uses Quadrants FP64.
 The finite pad load and actual combined contact friction change are described
 in [CONTACT_REPAIR_20261010.md](CONTACT_REPAIR_20261010.md).
 
+## Error-budget and reset checkpoint, 20:58 UTC
+
+Internal pressure termination is selected at normalized residual 1e-9,
+with the final 1e-8 force/moment, full-gauge equilibrium and independent
+FP64 stress checks unchanged. The newly captured B=32768 seed-623001
+apex input passes serial, warp and fused-graph regression. CPU/GPU each
+pass the existing 27 cases; three additional graph cases and 480 full-field
+oracle snapshots pass. See the contact report for the strict-trial failure,
+actual errors and unchanged acceptance budgets.
+
+The example now saves its fully initialized scene state and uses one
+`Scene.reset(state=..., envs_idx=...)` call. Both seeds pass the 2400-step
+saved/legacy physics, loads, actual friction and complete-field equivalence
+comparison, with 48 partial environment resets each. The previous small
+batch paired trial gains about 23%. At B=32768, the matched three-repeat
+2400-step seed-510000 comparison yields 259765.35 env-step/s for individual
+setters and 268994.42 for the saved state (about 3.55%); all transitions
+are valid. The saved state adds 42467328 bytes at that batch. Retain this
+end-to-end improvement, expose `--legacy-reset` for the ablation, and
+include its state storage and reset cost in final measurements.
+
+The compact face-task trial uses 58720264 bytes at B=32768, versus the
+previous 1188036612-byte workspace. It retains all fixed/local Q10 samples
+and fully recomputes the original scatter on capacity overflow. Its
+snapshot scatter is 21.10169 -> 15.52726 ms, with force/peak/full-residual
+checks passing, including forced overflow. On the new stopping-budget and
+saved-reset baseline, B=1024 actual three-repeat live rates are
+71076.75 -> 72489.54 env-step/s (about 1.99%), with no invalid transitions.
+Its independent 192-snapshot full-field oracle passes. The B=32768 actual
+comparison remains in flight, so production face scheduling is pending.
+
+The independent packed-application block-512 trial on the prior 7f source
+at B=32768 yields 268715.93 -> 273219.47 env-step/s (about 1.68%), all valid.
+Small-batch microtiming was worse. Re-evaluate its large-batch benefit on
+the selected final scheduling/reset baseline before enabling it.
+
+The old 2c B=49152 FP64 policy failure remains preserved with no valid
+throughput row. A separate full-size replay and the focused replay do not
+reproduce it; neither establishes repair of that particular uncaptured
+input. New-source long policy measurements remain required. The owned
+old failed-sweep allocation was cancelled after it stopped producing
+results. Final acceptance and throughput-plateau work remain open.
+
 ## Validated changes
+
+The rebuilt 1e-9 stopping-budget baseline profiles actual seed-623001 Q10
+contacts after 900 warmup steps, with 50 isolated stage repetitions.
+At B=1024 / B=32768, pressure including retry costs 1.13326 / 10.12758 ms,
+scatter 0.92149 / 20.78146 ms, packed inverse application
+0.81120 / 22.38534 ms, complete residual 0.34856 / 10.92890 ms, and full
+global peak 0.25094 / 6.58309 ms. The exact sources and raw stage evidence
+are `internal-budget-baseline-profile-b*-v2`. Isolated synchronized stage
+times diagnose bottlenecks; ordinary live timing determines retention.
 
 | Candidate | Matched native microtiming at B=1024 | Same-device live development comparison | Decision |
 |---|---:|---:|---|

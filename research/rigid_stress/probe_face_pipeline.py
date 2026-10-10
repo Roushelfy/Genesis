@@ -86,7 +86,9 @@ def generate():
         + ast.unparse(ast.fix_missing_locations(recover))
         + "\n"
     )
-    directory = Path(os.environ["RIGID_STRESS_DATA_ROOT"]) / "cache" / "face_pipeline"
+    directory = (
+        Path(os.environ["RIGID_STRESS_DATA_ROOT"]) / "cache" / "face_pipeline" / os.environ.get("SLURM_JOB_ID", "local")
+    )
     directory.mkdir(parents=True, exist_ok=True)
     path = directory / "face_pipeline_generated.py"
     path.write_text(generated)

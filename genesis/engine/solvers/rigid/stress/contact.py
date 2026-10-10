@@ -12,6 +12,11 @@ from .data import StressInfo, StressState
 from .grid import func_patch_cell, func_patch_grid
 from .surface import StressSurfaceInfo
 
+# The normalized dual gradient bounds relative resultant force and moment/radius.
+# Stop at 10% of the independently checked 1e-8 contact wrench budget; the final
+# scatter acceptance and complete elastic residual/stress checks remain mandatory.
+_PRESSURE_FIT_TOLERANCE = 1e-9
+
 
 @dataclass(frozen=True)
 class StressContactState:
@@ -279,7 +284,8 @@ def func_pressure_initial(gram: qd.types.matrix(3, 3)):
             margin = 1e-5
         positive = coefficient[0] - qd.sqrt(coefficient[1] ** 2 + coefficient[2] ** 2)
         accepted = (
-            positive > margin * coefficient.norm() and (gram @ coefficient - qd.Vector([1.0, 0.0, 0.0])).norm() <= 2e-12
+            positive > margin * coefficient.norm()
+            and (gram @ coefficient - qd.Vector([1.0, 0.0, 0.0])).norm() <= _PRESSURE_FIT_TOLERANCE
         )
         coefficient /= weight_sum
     status = 0 if accepted else (5 if nonsingular else 3)
@@ -454,7 +460,7 @@ def func_pressure_correct_warp(contact_state: StressContactState, surface_info: 
                             hessian[a, b] = qd.simt.subgroup.reduce_all_add(hessian[a, b])
                         gradient[0] -= 1.0
                         iterations += 1
-                        accepted = gradient.norm() <= 2e-12
+                        accepted = gradient.norm() <= _PRESSURE_FIT_TOLERANCE
                         proposed_step, nonsingular = func_pressure_step(hessian, gradient)
                         if not accepted and nonsingular:
                             step = proposed_step
@@ -541,7 +547,7 @@ def kernel_pressure_correct(contact_state: StressContactState, surface_info: Str
                             if profile > 0.0:
                                 hessian += weight * coordinates.outer_product(coordinates)
                     contact_state.evaluations[i_c, i_b] = previous_evaluations + iteration + 1
-                    accepted = gradient.norm() <= 2e-12
+                    accepted = gradient.norm() <= _PRESSURE_FIT_TOLERANCE
                     step, nonsingular = func_pressure_step(hessian, gradient)
                     if not accepted and nonsingular:
                         fraction = gs.qd_float(1.0)

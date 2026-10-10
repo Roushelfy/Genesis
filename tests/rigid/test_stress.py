@@ -1,5 +1,6 @@
 import numpy as np
 import pytest
+import quadrants as qd
 import trimesh
 from scipy import sparse
 from scipy.optimize import linprog
@@ -7,12 +8,25 @@ from scipy.sparse.linalg import splu
 from scipy.spatial.transform import Rotation
 
 import genesis as gs
-from genesis.engine.solvers.rigid.stress.contact import create_contacts, kernel_anchor, kernel_pressure, kernel_scatter
+from genesis.engine.solvers.rigid.stress.contact import (
+    StressContactState,
+    create_contacts,
+    func_anchor,
+    func_pack_contacts,
+    func_pressure_correct_warp,
+    func_pressure_warp,
+    func_refine_contacts,
+    func_scatter_warp,
+    kernel_anchor,
+    kernel_pressure,
+    kernel_scatter,
+)
+from genesis.engine.solvers.rigid.stress.data import StressInfo, StressState
 from genesis.engine.solvers.rigid.stress.history import StressHistory
 from genesis.engine.solvers.rigid.stress.model import StressModel
 from genesis.engine.solvers.rigid.stress.recovery import kernel_accept
 from genesis.engine.solvers.rigid.stress.solve import kernel_peak
-from genesis.engine.solvers.rigid.stress.surface import StressSurface
+from genesis.engine.solvers.rigid.stress.surface import StressSurface, StressSurfaceInfo
 from genesis.options.rigid_stress import RigidStressOptions
 from genesis.utils.array_class import V_VEC
 from genesis.utils.misc import qd_to_numpy, tensor_to_array
@@ -20,6 +34,24 @@ from research.rigid_stress.field_cpu import stress_field
 from research.rigid_stress.mechanics import P2Shell, SurfaceGeometry, shell_mesh
 from research.rigid_stress.peak_cpu import P2Peak
 from research.rigid_stress.wrench import FinitePatchMapper, WrenchPatch
+
+
+@qd.kernel(graph=True)
+def kernel_apex_contact_graph(
+    epsilon: float,
+    contacts: StressContactState,
+    state: StressState,
+    info: StressInfo,
+    surface: StressSurfaceInfo,
+):
+    func_anchor(epsilon, contacts, surface)
+    func_pack_contacts(contacts)
+    func_pressure_warp(contacts, surface, False)
+    func_pressure_correct_warp(contacts, surface)
+    func_refine_contacts(contacts)
+    func_pressure_warp(contacts, surface, True)
+    func_pressure_correct_warp(contacts, surface)
+    func_scatter_warp(contacts, state, info, surface, True)
 
 
 @pytest.mark.required
@@ -380,9 +412,12 @@ def test_native_constrained_pressure_and_invalid_inputs(tmp_path, case):
 
 @pytest.mark.required
 @pytest.mark.precision("64")
-@pytest.mark.parametrize("cooperative", (False, True))
-@pytest.mark.parametrize("case", ("batch2048", "batch16384"))
-def test_native_live_apex_wrench_recovery(tmp_path, cooperative, case):
+@pytest.mark.parametrize("execution", ("serial", "warp", "graph"))
+@pytest.mark.parametrize("case", ("batch2048", "batch16384", "batch32768"))
+def test_native_live_apex_wrench_recovery(tmp_path, execution, case):
+    if execution == "graph" and gs.backend != gs.cuda:
+        pytest.skip("The native fused contact graph runs on CUDA.")
+    cooperative = execution != "serial"
     vertices, tetrahedra, faces, _ = shell_mesh(1, 2, 0.0005)
     mesh = tmp_path / "shell.npz"
     np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)
@@ -409,6 +444,17 @@ def test_native_live_apex_wrench_recovery(tmp_path, cooperative, case):
             np.zeros(3),
             np.array([0.3183675187512961, -0.3587619511864121, -0.8774576829597318]),
         )
+    elif case == "batch32768":
+        # Actual seed 623001, environment 13456, trajectory tick 943, radius unchanged.
+        # Local Q10 is LP-feasible; ordinary FP64 dual fitting stalls numerically.
+        patch = WrenchPatch(
+            np.array([2.5870448174229687e-6, -2.0128764122128245e-6, 0.029993827413302653]),
+            np.array([0.003926793922944923, -0.00281597196231237, -0.0020435164841347774]),
+            0.004110711675411422,
+            0.8134515011539788,
+            np.zeros(3),
+            np.array([0.37028065349108424, -0.28810061127035297, -0.8831139651459852]),
+        )
     anchor = mapper.surface_anchor(patch.center_m, patch.force_n)
     ids = np.array(mapper.tree.query_ball_point(anchor, patch.radius_m, return_sorted=True))
     direction = patch.force_n / np.linalg.norm(patch.force_n)
@@ -428,9 +474,12 @@ def test_native_live_apex_wrench_recovery(tmp_path, cooperative, case):
     contacts.normal.from_numpy(patch.inward_normal.reshape((1, 1, 3)))
     contacts.friction.fill(patch.friction)
     contacts.valid.fill(True)
-    kernel_anchor(float(np.finfo(float).eps), contacts, surface.info)
-    kernel_pressure(contacts, surface.info, cooperative)
-    kernel_scatter(contacts, state, model.info, surface.info)
+    if execution == "graph":
+        kernel_apex_contact_graph(float(np.finfo(float).eps), contacts, state, model.info, surface.info)
+    else:
+        kernel_anchor(float(np.finfo(float).eps), contacts, surface.info)
+        kernel_pressure(contacts, surface.info, cooperative)
+        kernel_scatter(contacts, state, model.info, surface.info)
     print("apex", cooperative, "status", qd_to_numpy(contacts.status), "iterations", qd_to_numpy(contacts.evaluations))
     np.testing.assert_array_equal(qd_to_numpy(contacts.status), 0)
     assert qd_to_numpy(contacts.evaluations).max() <= 110

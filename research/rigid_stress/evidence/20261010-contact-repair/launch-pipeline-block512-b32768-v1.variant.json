@@ -1,0 +1,7 @@
+{
+  "block_dim": 512,
+  "original_source_sha256": "904a001a9c5a178399e770baa427b06f89f604fc1c48638ff870e2491f405bf4",
+  "generated_source_sha256": "a370c1ae0c799ea55dbfcd21a517b7f101f639505fc426bb135c2b62ae5fbabd",
+  "generated_source": "from genesis.engine.solvers.rigid.stress.surface_inverse import *\n\n@qd.func\ndef func_surface_apply_packed(young: float, omega: qd.Tensor, stress_state: StressState, surface_inverse_info: StressSurfaceInverseInfo):\n    qd.loop_config(block_dim=512)\n    for (i_n, i_b) in qd.ndrange(stress_state.rhs.shape[0], stress_state.active.shape[0]):\n        w = omega[i_b]\n        terms = qd.Vector([w[0] * w[0], w[1] * w[1], w[2] * w[2], w[0] * w[1], w[0] * w[2], w[1] * w[2]])\n        value = surface_inverse_info.centrifugal[i_n] @ terms\n        for slot in range(stress_state.boundary_count[i_b]):\n            j = stress_state.boundary_columns[slot, i_b]\n            node = surface_inverse_info.nodes[j]\n            value += surface_inverse_info.force_blocks[i_n, j] @ stress_state.force[node, i_b]\n        stress_state.displacement[i_n, i_b] = value / young\n    for i_b in range(stress_state.active.shape[0]):\n        stress_state.active[i_b] = 1\n        stress_state.valid[i_b] = True\n",
+  "note": "Research scheduling override. Numerical body, contact model, precision and acceptance unchanged; full native fallback, observations and reset costs counted by ordinary live benchmark."
+}

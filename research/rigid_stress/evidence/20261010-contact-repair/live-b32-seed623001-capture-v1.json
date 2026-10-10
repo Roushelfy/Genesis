@@ -1,0 +1,48 @@
+{
+  "envs": 32768,
+  "seed": 623001,
+  "phase": "trajectory",
+  "tick": 943,
+  "error": "Native stress contact recovery rejected a load. link=12, env=13456, contact=0, status=3: nonnegative sampled pad fit unresolved after local integration; physical infeasibility is not established; radius=0.00411071168 m, mu=0.813451501",
+  "cases": [
+    {
+      "env": 13456,
+      "slot": 0,
+      "status": 3,
+      "position": [
+        2.5870448174229687e-06,
+        -2.0128764122128245e-06,
+        0.029993827413302653
+      ],
+      "center": [
+        -4.167549549903641e-06,
+        2.8309602465034214e-06,
+        0.029997342526446896
+      ],
+      "anchor_face": 24,
+      "is_refined": true,
+      "candidate_count": 474,
+      "weight_sum": 9.3476381919172e-06,
+      "force": [
+        0.003926793922944923,
+        -0.00281597196231237,
+        -0.0020435164841347774
+      ],
+      "normal": [
+        0.37028065349108424,
+        -0.28810061127035297,
+        -0.8831139651459852
+      ],
+      "friction": 0.8134515011539788,
+      "radius": 0.004110711675411422,
+      "coefficient": [
+        217059597974.5575,
+        56484020889806.19,
+        -235042792424786.75
+      ],
+      "evaluations": 160,
+      "force_error": 0.0,
+      "moment_error": 0.0
+    }
+  ]
+}

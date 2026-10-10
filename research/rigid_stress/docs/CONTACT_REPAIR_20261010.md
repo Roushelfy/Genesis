@@ -4,6 +4,45 @@ The active goal prioritizes legal contact recovery before performance tuning.
 This report records validated development checkpoints. Broad trajectory
 coverage and final repeated throughput selection remain in progress.
 
+## Internal stopping budget update
+
+The B=32768 seed-623001 trajectory rejects environment 13456, slot 0 at
+tick 943 under the historical 2e-12 dual threshold. Its fixed 82 samples
+are LP-infeasible; the local 474 samples are feasible. The CPU FP64 pad
+fit preserves the original wrench after 80 evaluations despite numerical
+stagnation. This is separate from the earlier sampling inadequacy.
+
+Following the user's error-budget instruction, the internal normalized
+dual threshold is now 1e-9, one tenth of the independent 1e-8 final wrench
+budget. Both the initial Gram fit and the serial/warp constrained fits use
+it. The final scatter still checks relative resultant force and moment
+divided by force magnitude times the original radius against 1e-8.
+Complete equilibrium still includes all six gauge rows and uses
+max(1e-11 N, 1e-8 times RHS norm). Independent maximum-stress consistency
+still uses rtol=1e-4, atol=1e-3 Pa. Friction admission, geometry, sample
+selection, footprint radius, pressure law and Newton limits are unchanged.
+
+A trial at 1e-10 still rejects the cooperative GPU fit: its measured
+normalized residual is about 1.3e-10, while the final force/moment checks
+pass. At 1e-9, serial and warp GPU paths accept the captured input in
+106 total evaluations, including the failed fixed-sample attempt. Their
+force errors are 9.37e-14 / 2.17e-13 N and moment errors
+3.32e-15 / 2.59e-15 Nm. These diagnostic coefficients are also covered
+by the unchanged CPU-oracle nodal-load, complete-residual and peak checks
+in the native regression.
+
+CPU and GPU each pass all 27 regression cases (134.58 / 391.40 s).
+Three additional CUDA fused-contact-graph variants pass in 55.33 s,
+including the B=32768 captured input in 106 evaluations. They repeat the
+same unchanged force, moment, nodal-load, full-gauge and peak assertions.
+Independent full-field trajectories pass 192 samples per seed for
+510000 and 623001, plus 96 samples with four substeps. Saved-state versus
+individual-setter reset comparisons also pass both seeds for 2400 steps
+and 48 partial environment resets each. The full fields, wrench frames,
+actual friction and complete gauge residual checks remain mandatory.
+The oracle retains its independent stopping algorithm. These checks
+select the internal threshold; they do not establish a throughput optimum.
+
 ## Discrete model diagnosis
 
 The original B=2048, tick 632, environment 1996, slot 1 input has 132 positive
