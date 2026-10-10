@@ -25,6 +25,7 @@ class FrankaEgg:
         inverse_precision: str = "64",
         history_size: int = 0,
         cooperative_pressure: bool = True,
+        conditions: Path | None = None,
     ):
         self.n_envs = n_envs
         self.tick = 0
@@ -78,11 +79,26 @@ class FrankaEgg:
             dtype=gs.tc_float,
             device=gs.device,
         ).repeat(n_envs, 1)
-        positions = np.tile([0.65, 0.0, 0.031], (n_envs, 1))
-        quaternions = np.tile([1.0, 0.0, 0.0, 0.0], (n_envs, 1))
-        radii = np.full(n_envs, 0.006)
-        friction = np.ones(n_envs)
-        if varied:
+        self.condition_count = n_envs
+        if conditions is not None:
+            with np.load(conditions, allow_pickle=False) as bank:
+                self.condition_count = len(bank["position"])
+                case_ids = np.arange(n_envs) % self.condition_count
+                self.initial_joints = torch.as_tensor(bank["initial_joints"][case_ids], device=gs.device)
+                positions = bank["position"][case_ids]
+                quaternions = bank["quaternion"][case_ids]
+                radii = bank["radius"][case_ids]
+                friction = bank["friction"][case_ids, 0]
+                self.pick_joints = torch.as_tensor(bank["pick_joints"][case_ids], device=gs.device)
+                self.lift_joints = torch.as_tensor(bank["lift_joints"][case_ids], device=gs.device)
+                self.slide_joints = torch.as_tensor(bank["slide_joints"][case_ids], device=gs.device)
+                self.delays = bank["delays"][case_ids]
+        else:
+            positions = np.tile([0.65, 0.0, 0.031], (n_envs, 1))
+            quaternions = np.tile([1.0, 0.0, 0.0, 0.0], (n_envs, 1))
+            radii = np.full(n_envs, 0.006)
+            friction = np.ones(n_envs)
+        if varied and conditions is None:
             for i_b in range(n_envs):
                 random = np.random.default_rng(seed + i_b)
                 positions[i_b] += random.uniform([-0.003, -0.004, 0], [0.003, 0.004, 0.002])
@@ -106,13 +122,29 @@ class FrankaEgg:
         raised[:, 2] += 0.12
         slide = raised.clone()
         slide[:, 1] += 0.025
-        self.pick_joints = self.robot.inverse_kinematics(link=self.hand, pos=pickup, quat=orientation)
-        self.lift_joints = self.robot.inverse_kinematics(link=self.hand, pos=raised, quat=orientation)
-        self.slide_joints = self.robot.inverse_kinematics(link=self.hand, pos=slide, quat=orientation)
-        self.delays = (np.arange(n_envs) * 37) % 600 if varied else np.zeros(n_envs, dtype=np.int64)
+        if conditions is None:
+            self.pick_joints = self.robot.inverse_kinematics(link=self.hand, pos=pickup, quat=orientation)
+            self.lift_joints = self.robot.inverse_kinematics(link=self.hand, pos=raised, quat=orientation)
+            self.slide_joints = self.robot.inverse_kinematics(link=self.hand, pos=slide, quat=orientation)
+            self.delays = (np.arange(n_envs) * 37) % 600 if varied else np.zeros(n_envs, dtype=np.int64)
         self.device_delays = torch.as_tensor(self.delays, dtype=gs.tc_float, device=gs.device)
         self.phase = torch.zeros(n_envs, dtype=gs.tc_float, device=gs.device)
         self.stress = stress
+
+    def save_conditions(self, path: Path) -> None:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        np.savez(
+            path,
+            initial_joints=tensor_to_array(self.initial_joints),
+            position=tensor_to_array(self.initial_position),
+            quaternion=tensor_to_array(self.initial_quaternion),
+            radius=tensor_to_array(self.base_radius),
+            friction=tensor_to_array(self.friction),
+            pick_joints=tensor_to_array(self.pick_joints),
+            lift_joints=tensor_to_array(self.lift_joints),
+            slide_joints=tensor_to_array(self.slide_joints),
+            delays=self.delays,
+        )
 
     def reset(self, envs_idx=None) -> None:
         ids = np.arange(self.n_envs) if envs_idx is None else envs_idx

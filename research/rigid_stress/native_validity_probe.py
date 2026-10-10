@@ -27,11 +27,12 @@ def main():
     parser.add_argument("--envs", type=int, default=1024)
     parser.add_argument("--steps", type=int, default=1200)
     parser.add_argument("--warmup", type=int, default=900)
+    parser.add_argument("--conditions", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.parent.mkdir(parents=True, exist_ok=True)
     gs.init(backend=gs.gpu, precision="64", seed=510000, logging_level="warning")
-    workload = FrankaEgg(args.envs, varied=True)
+    workload = FrankaEgg(args.envs, varied=True, conditions=args.conditions)
     torch.manual_seed(99173)
     policy = (
         torch.nn.Sequential(
@@ -60,6 +61,8 @@ def main():
         "envs": args.envs,
         "warmup_steps": args.warmup,
         "trajectory_steps": args.steps,
+        "condition_count": workload.condition_count,
+        "conditions": str(args.conditions) if args.conditions is not None else None,
         "every_step_failures": counts.tolist(),
         "failed_environment_steps": int(counts.sum()),
         "note": "Separate untimed native check of every observation, surviving per-environment resets; no rate claimed.",

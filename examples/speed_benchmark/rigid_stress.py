@@ -4,6 +4,7 @@ Set QD_KERNEL_PROFILER=1 for --scope profile. Use separate processes for matched
 """
 
 import argparse
+import hashlib
 import json
 import platform
 import time
@@ -177,12 +178,17 @@ def main() -> None:
     parser.add_argument("--repetitions", type=int, default=3)
     parser.add_argument("--minimum-seconds", type=float, default=10.0)
     parser.add_argument("--varied", action="store_true")
+    parser.add_argument("--conditions", type=Path, help="Repeat a frozen condition bank, including controller targets.")
+    parser.add_argument("--save-conditions", type=Path, help="Save the constructed condition bank before warmup.")
     parser.add_argument("--serial-solve", action="store_true")
     parser.add_argument("--serial-pressure", action="store_true")
     parser.add_argument("--method", choices=("auto", "direct", "inverse"), default="auto")
     parser.add_argument("--inverse-precision", choices=("64", "32"), default="64")
     parser.add_argument("--history", type=int, choices=(0, 4), default=0)
     parser.add_argument("--trace", action="store_true", help="Export a separate intrusive CUDA/CPU trace pass.")
+    parser.add_argument(
+        "--compact-log", action="store_true", help="Keep full per-environment diagnostics in JSON only."
+    )
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.parent.mkdir(parents=True, exist_ok=True)
@@ -198,7 +204,10 @@ def main() -> None:
         inverse_precision=args.inverse_precision,
         history_size=args.history,
         cooperative_pressure=not args.serial_pressure,
+        conditions=args.conditions,
     )
+    if args.save_conditions is not None:
+        workload.save_conditions(args.save_conditions)
     setup_seconds = time.perf_counter() - start
     finger_links = np.array([workload.robot.get_link(name).idx for name in ("left_finger", "right_finger")])
     torch.manual_seed(99173)
@@ -278,6 +287,11 @@ def main() -> None:
             "substeps": 1,
             "varied": args.varied,
             "seed": 510000,
+            "condition_count": workload.condition_count,
+            "conditions": str(args.conditions) if args.conditions is not None else None,
+            "conditions_sha256": hashlib.sha256(args.conditions.read_bytes()).hexdigest()
+            if args.conditions is not None
+            else None,
             "cooperative_solve": not args.serial_solve,
             "cooperative_pressure": not args.serial_pressure,
             "method": args.method,
@@ -370,6 +384,9 @@ def main() -> None:
             profiler.export_chrome_trace(str(trace_path))
             result["trace"] = trace_path.name
     args.output.write_text(json.dumps(result, indent=2) + "\n")
+    if args.compact_log:
+        for key in ("warmup_quality", "egg_position_m", "maximum_stress_Pa"):
+            result.pop(key, None)
     print(json.dumps(result, indent=2), flush=True)
 
 
