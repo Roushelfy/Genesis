@@ -1,0 +1,13 @@
+{
+  "collected_utc": "2026-10-10T04:09:11.521678+00:00",
+  "command": [
+    "sacct",
+    "-n",
+    "-P",
+    "-j",
+    "703331",
+    "--format=JobIDRaw,State,Elapsed,Start,End,ExitCode,NodeList"
+  ],
+  "stdout": "703331|COMPLETED|03:07:49|2026-10-10T00:58:39|2026-10-10T04:06:28|0:0|rtx-209-115\n703331.0|COMPLETED|03:07:48|2026-10-10T00:58:40|2026-10-10T04:06:28|0:0|rtx-209-115\n",
+  "elapsed_seconds": 11269
+}

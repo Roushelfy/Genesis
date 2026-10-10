@@ -1,0 +1,59 @@
+{
+  "passed": true,
+  "scope": "Untimed selected C-layout/native-graph full level-6 same-RHS FP64 CPU direct/mapping validation; all 32 distinct source columns",
+  "raw_report_sha256": "7cdb51cc276561ae5269018b70bbcec4f33a1d9d0fcf267c1b46fdcdc17adbd7",
+  "frames": 60,
+  "environments": 32,
+  "environment_frame_comparisons": 1920,
+  "source_frame_count": 1200,
+  "sampled_frame_stride": 20,
+  "frame_range": [
+    0,
+    1180
+  ],
+  "nonzero_reference_above_1pa_count": 1884,
+  "near_zero_reference_at_most_1pa_count": 36,
+  "peak_relative_error_max": 8.677246347803347e-12,
+  "peak_relative_error_p95": 2.0597267391144545e-12,
+  "peak_relative_error_mean": 7.496538915946416e-13,
+  "near_zero_absolute_peak_error_max_pa": 2.1605170400039005e-09,
+  "full_absolute_residual_max_n": 2.884218298437166e-12,
+  "full_relative_residual_max_including_near_zero": 8.767424223166667e-06,
+  "full_relative_residual_max_above_absolute_floor": 1.5430333394936434e-10,
+  "complete_rhs_entry_difference_max_n": 3.9898639947466563e-17,
+  "complete_rhs_difference_relative_norm_max_above_absolute_floor": 2.3496794415453678e-14,
+  "CPU_mapping_comparison_tolerance": {
+    "rtol": 1e-07,
+    "atol_n": 1e-12
+  },
+  "CPU_moment_error_max_nm": 4.639182511452858e-16,
+  "strict_passed": true,
+  "throughput_passed": true,
+  "setup_seconds": 713.3747263750993,
+  "saved_RHS_directory": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-final/selected-oracle/rhs32",
+  "host": {
+    "cpu_model": "INTEL(R) XEON(R) PLATINUM 8562Y+",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "python_version": "3.10.12",
+    "slurm_job_id": "703331",
+    "slurm_cpus_per_task": "8",
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1"
+    }
+  },
+  "GPU_direct_validation": {
+    "oracle": "Same complete device RHS, shared FP64 direct factor, independently CPU-tested backend",
+    "frames": 6,
+    "eager_reference_shares_immutable_operators": true,
+    "peak_relative_error_max": 1.1876166272061627e-13,
+    "peak_relative_error_p95": 6.469075823257936e-14,
+    "peak_relative_error_mean": 2.5108441679384666e-14,
+    "relative_error_scope": "Reference global peak >1 Pa; near-zero cases reported separately",
+    "nonzero_environment_frames": 160,
+    "near_zero_environment_frames": 32,
+    "near_zero_absolute_peak_error_max_pa": 8.271806125530277e-25
+  },
+  "oracle_job_elapsed_seconds": 11269
+}

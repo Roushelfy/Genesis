@@ -346,3 +346,27 @@ recorded source columns and sixty complete same-RHS CPU comparisons. This
 closes the fine C-layout/graph oracle coverage beyond the completed F-layout
 oracle; it does not alter selection. It saves all sampled complete RHS on data.
 The final report remains a draft until all of these jobs complete.
+
+## Selected C-layout/graph CPU oracle complete, 2026-10-10 04:07 UTC
+
+Job 703331 completes in 03:07:49, exit 0, with original host/thread/job
+metadata captured. All sixty frames (stride 20, 0--1180), 32 source columns
+each, pass CPU complete mapping and identical-RHS full FP64 direct peak
+comparison. For 1,884 references >1 Pa, max/p95/mean peak relative errors
+are 8.677246e-12 / 2.059727e-12 / 7.496539e-13. The 36 near-zero references
+have maximum absolute error 2.160517e-9 Pa. Complete absolute residual
+maximum is 2.884218e-12 N; relative maximum above the absolute floor is
+1.543033e-10. Maximum full RHS entry difference is 3.989864e-17 N. Both
+strict and throughput budgets pass.
+
+The selected oracle's sixty exact full RHS NPZ files occupy
+35,542,531,438 compressed bytes and 37,749,196,800 logical RHS bytes.
+Every completed file is independently hashed. Large files stay on data;
+raw report, per-frame JSONL, per-column CSV, summary, accounting/command
+record and RHS manifest are committed under `evidence/20261010-final/raw/selected-oracle`.
+The original F-layout oracle and its separate exact RHS archive remain intact.
+No oracle result changes the frozen performance selection.
+
+Final live/policy currently have two accepted full repeats each; stress
+replay also has two. The third repeats and replay stage pass remain active,
+so full-goal throughput acceptance is still pending.

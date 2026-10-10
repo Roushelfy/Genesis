@@ -7,8 +7,8 @@ memory-lifetime fixes share immutable operators with the eager oracle,
 release temporary eager displacements and release the replay's previous RHS
 before mapping the next frame after measured B=256 memory failures. The
 current complete source commit is recorded separately. The final
-calibration selection is frozen, the F-layout held-out CPU oracle is complete,
-and final timing plus the selected C-layout/graph CPU comparison are running;
+calibration selection is frozen, both F-layout and selected C-layout/graph
+held-out CPU oracles are complete, and final timing is running;
 their pending items below must be completed before full-goal acceptance.
 
 Reproduction commands and allocation requirements are in
@@ -194,8 +194,17 @@ C layout, native FP64 direct graph recovery at 108.0596 calibration env/s.
 Six candidates have three accepted complete repeats; the two-repeat timeout
 is ineligible. Selection uses no final held-out throughput.
 
-Pending: finish the selected C-layout/graph CPU same-RHS comparison and rigid, matched policy-rigid,
-stress replay, live and policy held-out scopes. Each primary scope requires
+The [selected C-layout/graph CPU oracle](../evidence/20261010-final/raw/selected-oracle/summary.json)
+also passes all sixty frames and 1,920 columns: nonzero max/p95/mean peak
+error 8.677e-12 / 2.060e-12 / 7.497e-13, near-zero absolute maximum
+2.161e-9 Pa, complete absolute residual 2.884e-12 N and relative residual
+above the absolute floor 1.543e-10. Complete RHS entry difference remains
+3.990e-17 N. Original job metadata, raw JSON/CSV, per-frame JSONL and all
+sixty [full RHS hashes](../evidence/20261010-final/raw/selected-oracle/rhs-manifest.json)
+are retained. Both declared budgets pass; no result changes the frozen choice.
+
+Rigid and matched policy-rigid complete three accepted full repeats.
+Pending: finish stress replay, live and policy held-out scopes. Each primary scope requires
 three complete independently phased grasps with at least ten seconds per
 repeat. Full replay warmup separately compares every GPU frame with eager
 same-RHS FP64 direct recovery; sixty CPU samples are not 1,200 CPU solves.
