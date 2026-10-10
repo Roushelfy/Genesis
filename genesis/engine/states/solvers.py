@@ -149,6 +149,12 @@ class RigidSolverState:
         self.links_pos = gs.zeros((_B, scene.sim.rigid_solver.n_links, 3), **args)
         self.links_quat = gs.zeros((_B, scene.sim.rigid_solver.n_links, 4), **args)
         self.friction_ratio = gs.ones((_B, scene.sim.rigid_solver.n_geoms), **args)
+        # The warm start of the constraint solve, an initial guess the solve checks against its cold start, so that a
+        # restored state resumes the solve its original continued
+        args["requires_grad"] = False
+        self.qacc_ws = gs.zeros((_B, scene.sim.rigid_solver.n_dofs), **args)
+        args["dtype"] = gs.tc_bool
+        self.is_warmstart = gs.zeros((_B,), **args)
 
     @property
     def s_global(self):

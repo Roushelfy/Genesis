@@ -1320,7 +1320,8 @@ class RigidSolver(GravityMixin, TimeBasedMixin, KinematicSolver):
                     self.rigid_info,
                     self.rigid_config,
                     self._is_backward,
-                    self._errno,
+                    refresh_kinematics=True,
+                    errno=self._errno,
                 )
         else:
             # The work before the constraint solve is captured as two graphs cut ahead of the collision detection, since
@@ -1726,6 +1727,7 @@ class RigidSolver(GravityMixin, TimeBasedMixin, KinematicSolver):
             self.rigid_info,
             self.rigid_config,
             is_backward=True,
+            refresh_kinematics=True,
             errno=self._errno,
         )
 
@@ -1763,6 +1765,8 @@ class RigidSolver(GravityMixin, TimeBasedMixin, KinematicSolver):
             return
 
         if isinstance(self.sim.coupler, LegacyCoupler) and self.sim.coupler.has_rigid_shell_contact:
+            # The Cartesian space is refreshed by the kernel 'set_state' runs, so that a state restored between two
+            # steps continues as the original run did: the same kinematics compiled into different kernels round apart
             kernel_step_2(
                 self.dyn_state,
                 self.constraint_solver.constraint_state,
@@ -1770,8 +1774,13 @@ class RigidSolver(GravityMixin, TimeBasedMixin, KinematicSolver):
                 self.rigid_info,
                 self.rigid_config,
                 self._is_backward,
-                self._errno,
+                refresh_kinematics=False,
+                errno=self._errno,
             )
+            if not self._enable_mujoco_compatibility:
+                kernel_forward_kinematics_links_geoms(
+                    self.scene._envs_idx, self.dyn_state, self.dyn_info, self.rigid_info, self.rigid_config
+                )
             self._is_forward_pos_updated = not self._enable_mujoco_compatibility
             self._is_forward_vel_updated = not self._enable_mujoco_compatibility
 
@@ -1784,7 +1793,8 @@ class RigidSolver(GravityMixin, TimeBasedMixin, KinematicSolver):
                 self.rigid_info,
                 self.rigid_config,
                 self._is_backward,
-                self._errno,
+                refresh_kinematics=True,
+                errno=self._errno,
             )
         elif isinstance(self.sim.coupler, IPCCoupler):
             # If any rigid entity is coupled to IPC, perform rigid simulation in post-coupling phase.
@@ -1817,7 +1827,10 @@ class RigidSolver(GravityMixin, TimeBasedMixin, KinematicSolver):
                 state.links_pos,
                 state.links_quat,
                 state.friction_ratio,
+                state.qacc_ws,
+                state.is_warmstart,
                 self.dyn_state,
+                self.constraint_solver.constraint_state,
                 self.rigid_info,
                 self.rigid_config,
             )
@@ -1854,6 +1867,8 @@ class RigidSolver(GravityMixin, TimeBasedMixin, KinematicSolver):
             cfrc_vel_dst = qd_to_torch(self.dyn_state.links.cfrc_applied_vel, transpose=True, copy=False)
             cfrc_ang_dst = qd_to_torch(self.dyn_state.links.cfrc_applied_ang, transpose=True, copy=False)
             fric_dst = qd_to_torch(self.dyn_state.geoms.friction_ratio, transpose=True, copy=False)
+            qacc_ws_dst = qd_to_torch(self.constraint_solver.constraint_state.qacc_ws, transpose=True, copy=False)
+            is_warmstart_dst = qd_to_torch(self.constraint_solver.constraint_state.is_warmstart, copy=False)
             # Setting the state is a discontinuity: wake every body in the affected envs (a body left hibernated would
             # stay frozen), restoring the flags and the awake-dof count alongside the other state buffers.
             if self._use_hibernation:
@@ -1880,10 +1895,12 @@ class RigidSolver(GravityMixin, TimeBasedMixin, KinematicSolver):
                     envs_mask[envs_idx] = True
 
                 errno.masked_fill_(envs_mask, 0)
+                torch.where(envs_mask, state.is_warmstart, is_warmstart_dst, out=is_warmstart_dst)
                 if self.n_qs:
                     torch.where(envs_mask[:, None], state.qpos, qpos_dst, out=qpos_dst)
                     torch.where(envs_mask[:, None], state.dofs_vel, vel_dst, out=vel_dst)
                     torch.where(envs_mask[:, None], state.dofs_acc, acc_dst, out=acc_dst)
+                    torch.where(envs_mask[:, None], state.qacc_ws, qacc_ws_dst, out=qacc_ws_dst)
                     ctrl_force_dst.masked_fill_(envs_mask[:, None], 0.0)
                     ctrl_mode_dst.masked_fill_(envs_mask[:, None], gs.CTRL_MODE.FORCE)
                 torch.where(envs_mask[:, None, None], state.links_pos, pos_dst, out=pos_dst)
@@ -1902,11 +1919,13 @@ class RigidSolver(GravityMixin, TimeBasedMixin, KinematicSolver):
                     islands_next_link_dst.masked_fill_(envs_mask[:, None], -1)
                     n_awake_dofs_dst.masked_fill_(envs_mask, self.n_dofs)
             else:
+                is_warmstart_dst[envs_idx] = state.is_warmstart[envs_idx]
                 if self.n_qs:
                     errno[envs_idx] = 0
                     qpos_dst[envs_idx] = state.qpos[envs_idx]
                     vel_dst[envs_idx] = state.dofs_vel[envs_idx]
                     acc_dst[envs_idx] = state.dofs_acc[envs_idx]
+                    qacc_ws_dst[envs_idx] = state.qacc_ws[envs_idx]
                     ctrl_force_dst[envs_idx] = 0.0
                     ctrl_mode_dst[envs_idx] = gs.CTRL_MODE.FORCE
                 pos_dst[envs_idx] = state.links_pos[envs_idx]
@@ -1937,7 +1956,10 @@ class RigidSolver(GravityMixin, TimeBasedMixin, KinematicSolver):
                 state.links_pos,
                 state.links_quat,
                 state.friction_ratio,
+                state.qacc_ws,
+                state.is_warmstart,
                 self.dyn_state,
+                self.constraint_solver.constraint_state,
                 self.rigid_info,
                 self.rigid_config,
             )
@@ -3563,6 +3585,7 @@ def func_step_2(
     rigid_info: array_class.RigidInfo,
     rigid_config: qd.template(),
     is_backward: qd.template(),
+    refresh_kinematics: qd.template(),
     errno: qd.Tensor,
 ):
     # Position, Velocity and Acceleration data must be consistent when computing links acceleration, otherwise it
@@ -3580,7 +3603,7 @@ def func_step_2(
     if qd.static(not is_backward):
         func_copy_next_to_curr(dyn_state, rigid_info, rigid_config, errno)
 
-        if qd.static(not rigid_config.enable_mujoco_compatibility):
+        if qd.static(not rigid_config.enable_mujoco_compatibility and refresh_kinematics):
             func_update_cartesian_space(
                 dyn_state, dyn_info, rigid_info, rigid_config, force_update_all_geoms=False, is_backward=is_backward
             )
@@ -3595,10 +3618,15 @@ def kernel_step_2(
     rigid_info: array_class.RigidInfo,
     rigid_config: qd.template(),
     is_backward: qd.template(),
+    refresh_kinematics: qd.template(),
     errno: qd.Tensor,
 ):
-    """Run the second half of a substep on its own (see func_step_2)."""
-    func_step_2(dyn_state, constraint_state, dyn_info, rigid_info, rigid_config, is_backward, errno)
+    """Run the second half of a substep on its own (see func_step_2).
+
+    refresh_kinematics selects the update of the Cartesian space and the velocities of the links after the integration,
+    which a caller running its own leaves out.
+    """
+    func_step_2(dyn_state, constraint_state, dyn_info, rigid_info, rigid_config, is_backward, refresh_kinematics, errno)
 
 
 @qd.kernel(graph=True, fastcache=True)
@@ -3717,4 +3745,13 @@ def kernel_substep_post(
             dyn_state, collider_state, constraint_state, dyn_info, rigid_info, rigid_config, noslip, errno
         )
     if qd.static(integrate):
-        func_step_2(dyn_state, constraint_state, dyn_info, rigid_info, rigid_config, is_backward, errno)
+        func_step_2(
+            dyn_state,
+            constraint_state,
+            dyn_info,
+            rigid_info,
+            rigid_config,
+            is_backward,
+            refresh_kinematics=True,
+            errno=errno,
+        )

@@ -100,7 +100,10 @@ def kernel_get_state(
     links_pos: qd.types.ndarray(),
     links_quat: qd.types.ndarray(),
     friction_ratio: qd.types.ndarray(),
+    qacc_ws: qd.types.ndarray(),
+    is_warmstart: qd.types.ndarray(),
     dyn_state: array_class.DynState,
+    constraint_state: array_class.ConstraintState,
     rigid_info: array_class.RigidInfo,
     rigid_config: qd.template(),
 ):
@@ -118,6 +121,11 @@ def kernel_get_state(
     for i_d, i_b in qd.ndrange(n_dofs, _B):
         vel[i_b, i_d] = dyn_state.dofs.vel[i_d, i_b]
         acc[i_b, i_d] = dyn_state.dofs.acc[i_d, i_b]
+        qacc_ws[i_b, i_d] = constraint_state.qacc_ws[i_d, i_b]
+
+    qd.loop_config(serialize=rigid_config.para_level < gs.PARA_LEVEL.PARTIAL)
+    for i_b in range(_B):
+        is_warmstart[i_b] = constraint_state.is_warmstart[i_b]
 
     qd.loop_config(serialize=rigid_config.para_level < gs.PARA_LEVEL.PARTIAL)
     for i_l, i_b in qd.ndrange(n_links, _B):
@@ -140,7 +148,10 @@ def kernel_set_state(
     links_pos: qd.types.ndarray(),
     links_quat: qd.types.ndarray(),
     friction_ratio: qd.types.ndarray(),
+    qacc_ws: qd.types.ndarray(),
+    is_warmstart: qd.types.ndarray(),
     dyn_state: array_class.DynState,
+    constraint_state: array_class.ConstraintState,
     rigid_info: array_class.RigidInfo,
     rigid_config: qd.template(),
 ):
@@ -160,6 +171,12 @@ def kernel_set_state(
         dyn_state.dofs.acc[i_d, envs_idx[i_b_]] = dofs_acc[envs_idx[i_b_], i_d]
         dyn_state.dofs.ctrl_force[i_d, envs_idx[i_b_]] = gs.qd_float(0.0)
         dyn_state.dofs.ctrl_mode[i_d, envs_idx[i_b_]] = gs.CTRL_MODE.FORCE
+        constraint_state.qacc_ws[i_d, envs_idx[i_b_]] = qacc_ws[envs_idx[i_b_], i_d]
+
+    qd.loop_config(serialize=rigid_config.para_level < gs.PARA_LEVEL.PARTIAL)
+    for i_b_ in range(_B):
+        i_b = envs_idx[i_b_]
+        constraint_state.is_warmstart[i_b] = is_warmstart[i_b]
 
     qd.loop_config(serialize=rigid_config.para_level < gs.PARA_LEVEL.PARTIAL)
     for i_l, i_b_ in qd.ndrange(n_links, _B):
