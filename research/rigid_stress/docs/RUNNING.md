@@ -139,6 +139,26 @@ uses its own subprocess and artifact directory. `--scope` runs one scope in
 its own allocation; the default `all` runs them sequentially on one GPU.
 The command manifest records the configuration SHA256 and literal arguments.
 
+The checked-in selected full level-6 configuration is
+[`configs/blackwell_level6.json`](../configs/blackwell_level6.json): B=256,
+C layout, strict FP64 native graph recovery. Run each scope in a separate
+GPU allocation with eight CPUs, 128 GiB host memory and six hours, for example:
+
+```bash
+"$RIGID_STRESS_ENV/bin/python" -m research.rigid_stress.benchmark_suite \
+    --config research/rigid_stress/configs/blackwell_level6.json \
+    --scope live --seed 610000 \
+    --output "$RIGID_STRESS_DATA_ROOT/runs/final-reproduction"
+```
+
+Use `--scope rigid`, `policy-rigid`, or `policy` for the other live scopes.
+For `--scope stress`, also supply
+`--replay research/rigid_stress/evidence/20261010-final/inputs/heldout32.contacts.npz`.
+The default sequential `all` needs the sum of scope durations in its allocation.
+The final stress measurement adds `--stages` through the replay CLI, recording
+a separate full 1,200-frame stage pass and 100 CUDA-event samples; its exact
+literal command is retained in the final launch manifest.
+
 The fine model has 2,457,630 DOFs; exported CPU factors may exceed the public
 export API's limits. Fine GPU timings use native cuDSS and `--cpu-factor none`
 to skip an unused offline CPU factor. CPU oracle checks use `cholmod`, and

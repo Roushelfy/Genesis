@@ -322,3 +322,27 @@ published as a 6.27 MB exact NPZ plus its phase/reset companion under
 replay command has its actual source available with the repository.
 
 The final selection and full five-scope held-out timing still remain active.
+
+## Frozen selection, 2026-10-10 00:58 UTC
+
+Both B=256 candidates complete all three 1,200-step repeats, 307,200
+transitions and 256 resets each, accepted throughout. Eager F-layout direct
+gives aggregate 92.1161000 env/s; C-layout direct graph gives 108.0596115
+env/s (108.0723156, 107.9815630, 108.1250534). Sampled memory is
+76.070 GB / 101.377 GB. Complete raw JSON/CSV/logs are committed.
+
+[`blackwell_level6.json`](../configs/blackwell_level6.json) freezes B=256,
+C layout, FP64 direct graph recovery at 00:58:05 UTC from source `4b988faa`,
+with SHA256 `840c91cb9959dc2536a22f0b293060193e38b97271115c1f6e8e702ba4c674f5`.
+Six complete accepted candidates are eligible; direct B=128 remains
+ineligible after its two-repeat timeout. All eligible mesh/material,
+quadrature, precision, time/substep, sampling and calibration seeds match.
+No final held-out throughput participates in ranking.
+
+Final rigid, policy-rigid, live, policy and stress jobs are 703326--703330,
+each on rtx-mid with one GPU, eight CPUs, 128 GiB and six hours.
+Selected-layout/graph CPU validation is job 703331, using all 32 distinct
+recorded source columns and sixty complete same-RHS CPU comparisons. This
+closes the fine C-layout/graph oracle coverage beyond the completed F-layout
+oracle; it does not alter selection. It saves all sampled complete RHS on data.
+The final report remains a draft until all of these jobs complete.

@@ -7,7 +7,8 @@ memory-lifetime fixes share immutable operators with the eager oracle,
 release temporary eager displacements and release the replay's previous RHS
 before mapping the next frame after measured B=256 memory failures. The
 current complete source commit is recorded separately. The final
-calibration selection, held-out oracle and timing results are still running;
+calibration selection is frozen, the F-layout held-out CPU oracle is complete,
+and final timing plus the selected C-layout/graph CPU comparison are running;
 their pending items below must be completed before full-goal acceptance.
 
 Reproduction commands and allocation requirements are in
@@ -188,7 +189,12 @@ per-column CSV and [RHS manifest](../evidence/20261009-performance/raw/20261009-
 retain all samples and sixty complete RHS files on data (35.543 GB compressed,
 37.749 GB logical RHS). Every compressed file is independently hashed.
 
-Pending: freeze the fastest eligible complete calibration candidate, and finish rigid, matched policy-rigid,
+The [frozen configuration](../configs/blackwell_level6.json) chooses B=256,
+C layout, native FP64 direct graph recovery at 108.0596 calibration env/s.
+Six candidates have three accepted complete repeats; the two-repeat timeout
+is ineligible. Selection uses no final held-out throughput.
+
+Pending: finish the selected C-layout/graph CPU same-RHS comparison and rigid, matched policy-rigid,
 stress replay, live and policy held-out scopes. Each primary scope requires
 three complete independently phased grasps with at least ten seconds per
 repeat. Full replay warmup separately compares every GPU frame with eager
