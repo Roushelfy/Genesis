@@ -102,13 +102,20 @@ contact snapshot; stress observations retain the maximum over all substeps.
 For saved fine contacts, independently compare the complete device RHS with
 CPU mapping/body assembly and same-mesh FP64 CPU direct peaks:
 
+The committed actual fine held-out input is
+`research/rigid_stress/evidence/20261010-final/inputs/heldout32.contacts.npz`.
+Its companion `heldout32.json` contains the exact phase/reset records. The
+archive preserves 68,928 actual contacts from 1,200 frames and 32 independent
+seeds; its manifest hashes both files. Use this input directly or create a
+new actual rollout with `check_panda`.
+
 ```bash
 "$RIGID_STRESS_ENV/bin/python" -m research.rigid_stress.benchmark_replay \
     --level 6 --envs 32 --cpu-factor cholmod --factor-backend cudss \
     --inertia quadratic --body-products fused --validation-only \
     --verify-frames 60 --verify-stride 20 --verify-mapping \
     --save-rhs "$RIGID_STRESS_DATA_ROOT/runs/oracle/rhs" \
-    --replay "$RIGID_STRESS_DATA_ROOT/runs/check/varied32.contacts.npz" \
+    --replay research/rigid_stress/evidence/20261010-final/inputs/heldout32.contacts.npz \
     --output "$RIGID_STRESS_DATA_ROOT/runs/oracle/strict.json"
 ```
 

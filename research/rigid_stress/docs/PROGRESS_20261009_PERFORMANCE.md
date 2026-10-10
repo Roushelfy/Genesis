@@ -299,3 +299,26 @@ inputs remain the earlier calibration contacts; final fine held-out rates
 remain pending. The artifact manifest distinguishes large original trajectory
 records retained on data from their checked-in summaries and hashes each
 independently.
+
+## Held-out CPU oracle completed at 00:18 UTC on 2026-10-10
+
+The level-6 CPU mapping/direct job completes all sixty stride-20 frames,
+32 columns each, in 03:00:25. Its 1,884 reference peaks above 1 Pa have
+maximum/p95/mean relative errors 8.670e-12 / 2.095e-12 / 7.480e-13. The 36
+near-zero cases have maximum absolute error 2.161e-9 Pa. Complete RHS entry
+difference is at most 3.990e-17 N, full absolute residual 2.865e-12 N and
+relative residual above the absolute floor 1.557e-10. Both declared profiles
+pass on these evaluated columns. This is sixty CPU frame comparisons, not
+1,200 CPU frame comparisons or a universal output-error bound.
+
+The [raw report](../evidence/20261009-performance/raw/20261009-heldout-oracle/strict-cpu.json),
+summary and per-column CSV are committed alongside a sixty-file RHS manifest.
+Full arrays remain on data: 35.543 GB compressed, 37.749 GB logical RHS.
+Original node rtx-209-201 hardware metadata is collected in a later same-node
+allocation, explicitly marked as such: Intel Xeon Platinum 8562Y+, eight
+allocated CPUs and one numerical thread. The contact input is separately
+published as a 6.27 MB exact NPZ plus its phase/reset companion under
+[`evidence/20261010-final/inputs`](../evidence/20261010-final/inputs/), so a
+replay command has its actual source available with the repository.
+
+The final selection and full five-scope held-out timing still remain active.

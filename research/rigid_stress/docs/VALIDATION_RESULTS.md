@@ -176,9 +176,19 @@ No quarter model or shrinking point-load footprint is used for acceptance.
 
 ## G--H. Final numerical and throughput acceptance
 
-Pending: finish all sixty sampled level-6 held-out CPU direct/mapping
-comparisons, archive identical complete RHS hashes, freeze the fastest eligible
-complete calibration candidate, and finish rigid, matched policy-rigid,
+The [held-out CPU oracle](../evidence/20261009-performance/raw/20261009-heldout-oracle/summary.json)
+completes all sixty level-6 frames at stride 20, 32 columns each. Its 1,884
+reference peaks above 1 Pa have maximum/p95/mean relative error
+8.670e-12 / 2.095e-12 / 7.480e-13. The 36 near-zero cases have maximum
+absolute error 2.161e-9 Pa. Maximum complete RHS entry difference is
+3.990e-17 N, maximum complete absolute residual 2.865e-12 N and maximum
+relative residual above the absolute floor 1.557e-10. Both budgets pass.
+The [raw report](../evidence/20261009-performance/raw/20261009-heldout-oracle/strict-cpu.json),
+per-column CSV and [RHS manifest](../evidence/20261009-performance/raw/20261009-heldout-oracle/rhs-manifest.json)
+retain all samples and sixty complete RHS files on data (35.543 GB compressed,
+37.749 GB logical RHS). Every compressed file is independently hashed.
+
+Pending: freeze the fastest eligible complete calibration candidate, and finish rigid, matched policy-rigid,
 stress replay, live and policy held-out scopes. Each primary scope requires
 three complete independently phased grasps with at least ten seconds per
 repeat. Full replay warmup separately compares every GPU frame with eager

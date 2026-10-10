@@ -1,0 +1,35 @@
+{
+  "passed": true,
+  "scope": "Untimed same-mesh full FP64 CPU direct/mapping oracle, 60 sampled frames x32 columns; no throughput claim",
+  "raw_report_sha256": "4ca477776b821e56c2d4134b51d9412a718f5b58bc891102dadaae27219fb786",
+  "frames": 60,
+  "environments": 32,
+  "environment_frame_comparisons": 1920,
+  "source_frame_count": 1200,
+  "sampled_frame_stride": 20,
+  "frame_range": [
+    0,
+    1180
+  ],
+  "nonzero_reference_above_1pa_count": 1884,
+  "near_zero_reference_at_most_1pa_count": 36,
+  "peak_relative_error_max": 8.670069138251855e-12,
+  "peak_relative_error_p95": 2.094967526963842e-12,
+  "peak_relative_error_mean": 7.480084937654746e-13,
+  "near_zero_absolute_peak_error_max_pa": 2.160517040003511e-09,
+  "full_absolute_residual_max_n": 2.864595981864086e-12,
+  "full_relative_residual_max_including_near_zero": 8.767424223164914e-06,
+  "full_relative_residual_max_above_absolute_floor": 1.5567034090116363e-10,
+  "complete_rhs_entry_difference_max_n": 3.9898639947466563e-17,
+  "complete_rhs_difference_relative_norm_max_above_absolute_floor": 2.3498083859451813e-14,
+  "CPU_mapping_comparison_tolerance": {
+    "rtol": 1e-07,
+    "atol_n": 1e-12
+  },
+  "CPU_moment_error_max_nm": 4.639182511452858e-16,
+  "strict_passed": true,
+  "throughput_passed": true,
+  "setup_seconds": 703.2971458230168,
+  "oracle_job_elapsed_seconds": 10825,
+  "saved_RHS_directory": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-heldout-oracle/rhs32"
+}
