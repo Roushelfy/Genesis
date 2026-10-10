@@ -7,6 +7,61 @@ Q10x10 quadrature. All production physical arithmetic uses Quadrants FP64.
 The finite pad load and actual combined contact friction change are described
 in [CONTACT_REPAIR_20261010.md](CONTACT_REPAIR_20261010.md).
 
+## Production face scheduling and relief checkpoint, 22:09 UTC
+
+The production B=32768, seed-623001 comparison now completes on one GPU,
+UUID `GPU-e3ae17a2-8c3a-b59e-e80d-ac03599051ab`. With 900 warmup steps and
+three 2400-step repeats, contact scheduling gives 266958.92 env-step/s
+(repeat standard deviation 107.70); bounded face scheduling gives 278477.20
+(496.07), a 4.31% gain. Both have zero invalid transitions. Native storage
+changes from 7213379957 to 7272100213 bytes. This is production evidence,
+separate from the earlier generated research implementation's 4.18% result.
+
+On the selected face/reset/1e-9 budget, packed application block size 512
+gives 279638.54 -> 281943.87 env-step/s at B=32768, seed 510000. The repeat
+standard deviations are 833.08 and 49.66; all transitions are valid. This
+0.82% result is below the prior source's 1.68% result. Selection remains
+pending an interaction check with the new inertia-relief reduction; small
+batch microtiming was worse, so no universal block-size default is inferred.
+
+The shared immutable relief projection alone reduces B=1024 / 32768
+snapshot balance from 0.30385 / 5.12686 to 0.27863 / 4.45316 ms. Adding an
+8-node, 32-environment CUDA reduction changes 0.30386 / 5.12703 to
+0.12052 / 3.20779 ms. It keeps every nodal load and six wrench components.
+Complete residual and peak checks pass, as do 192 independent full-field
+FP64 snapshots. Its ordinary same-device B=1024 seed-623001 prototype pair
+gives 73109.00 -> 74040.04 env-step/s, a 1.27% gain (standard deviations
+64.25 / 226.75), with zero invalid transitions. Native integration is being
+validated and measured separately before retention.
+
+The first shared reduction lacked a barrier before grid-stride storage
+reuse. Small batch tests passed, but B=32768 failed RHS consistency with
+maximum difference 2.85e-5 N. That version is rejected and preserved. The
+corrected version adds the barrier and passes the large comparison. At
+B=32768, node tiles 4 / 8 / 16 cost 3.03884 / 3.20779 / 3.21453 ms. Only
+tile 8 currently has actual rollout evidence; these isolated times do not
+establish an end-to-end tile choice. The native regression includes odd
+B=2051 and 32771 to exercise padding and repeated shared-storage reuse.
+
+All eight matched ordinary max/full B=1024 measurements complete on GPU
+`GPU-56ea077b-99d7-8845-1f28-8cfa2174feb6`, source `e6094ff9`. Each uses
+900 warmup steps and three 2400-step repeats with no invalid transitions.
+Full output costs 107520 bytes/environment, 110100480 bytes at B=1024.
+Its live/policy rates are 72895.53 / 72750.94 for seed 510000 and
+72622.83 / 72220.09 for seed 623001. Matched maximum-only rates are
+73909.92 / 73521.04 and 73250.64 / 72625.25. The four paired costs range
+from 0.56% to 1.37%. Final optimized-source cost/profile measurements and
+all-scope larger-batch selection remain open; no plateau is claimed.
+
+This checkpoint publishes 520 completed artifacts. Streaming verification
+checks every publication and data-side original SHA256; all 520 + 520
+checks pass. Manifest SHA256 is
+`31fc905c157be0774e80b79f7718ba2e8b7e42091886b49fb9b747ad94029727`.
+Rejected frontend/shared-storage trials and the baseline metadata correction
+are preserved with their original sources. The generated relief probes
+reproduce the pre-integration `e6094ff9` balance body; native integration
+uses its own ordinary benchmark rather than those source overrides.
+
 ## Face scheduling checkpoint, 21:35 UTC
 
 The compact research implementation completes the same-device B=32768
