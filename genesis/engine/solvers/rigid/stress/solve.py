@@ -183,7 +183,10 @@ def kernel_full_residual(
             budget = qd.max(
                 absolute_tolerance * absolute_tolerance, tolerance * tolerance * stress_state.rhs_norm_squared[i_b]
             )
-            stress_state.valid[i_b] = stress_state.valid[i_b] and stress_state.residual_norm_squared[i_b] <= budget
+            norm = stress_state.residual_norm_squared[i_b]
+            stress_state.valid[i_b] = (
+                stress_state.valid[i_b] and not qd.math.isinf(norm) and not qd.math.isnan(norm) and norm <= budget
+            )
 
 
 @qd.kernel(graph=True)

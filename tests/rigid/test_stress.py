@@ -7,6 +7,7 @@ from scipy.spatial.transform import Rotation
 
 import genesis as gs
 from genesis.engine.solvers.rigid.stress.contact import create_contacts, kernel_anchor, kernel_pressure, kernel_scatter
+from genesis.engine.solvers.rigid.stress.history import StressHistory
 from genesis.engine.solvers.rigid.stress.model import StressModel
 from genesis.engine.solvers.rigid.stress.surface import StressSurface
 from genesis.options.rigid_stress import RigidStressOptions
@@ -321,7 +322,7 @@ def test_native_rigid_lifecycle_and_partial_reset(tmp_path, substeps, monkeypatc
     scene.add_entity(gs.morphs.Plane())
     egg = scene.add_entity(gs.morphs.Mesh(file=collision, pos=(0, 0, 0.031), convexify=True, decimate=False))
     link = egg.base_link
-    link.configure_stress_recovery(RigidStressOptions(mesh=mesh, tolerance=1e-7))
+    link.configure_stress_recovery(RigidStressOptions(mesh=mesh, tolerance=1e-7, history_size=4))
     scene.build(n_envs=3)
     assert not scene._pre_substep_callbacks and not scene._post_substep_callbacks
     egg.set_pos(np.array([[0.0, 0.0, 0.031], [0.0, 0.0, 0.045], [0.0, 0.0, 0.061]]))
@@ -408,6 +409,7 @@ def test_native_rigid_lifecycle_and_partial_reset(tmp_path, substeps, monkeypatc
         np.testing.assert_array_equal(qd_to_numpy(entry.contacts.radius, transpose=True)[1], 0.007)
     before_u = qd_to_numpy(entry.state.displacement, transpose=True, copy=True)
     before_peak = tensor_to_array(link.get_max_stress())
+    before_count = qd_to_numpy(entry.history.state.count, copy=True)
     scene.reset(envs_idx=np.array([1]))
     after_u = qd_to_numpy(entry.state.displacement, transpose=True)
     after_peak = tensor_to_array(link.get_max_stress())
@@ -415,6 +417,9 @@ def test_native_rigid_lifecycle_and_partial_reset(tmp_path, substeps, monkeypatc
     np.testing.assert_array_equal(after_peak[[0, 2]], before_peak[[0, 2]])
     np.testing.assert_array_equal(after_u[1], 0.0)
     assert after_peak[1] == 0.0
+    after_count = qd_to_numpy(entry.history.state.count)
+    np.testing.assert_array_equal(after_count[[0, 2]], before_count[[0, 2]])
+    assert after_count[1] == 0
     with pytest.raises(gs.GenesisException, match="fixed link mass"):
         link.set_mass(0.01)
     with pytest.raises(gs.GenesisException, match="finite surface loads"):
@@ -436,3 +441,40 @@ def test_native_rigid_lifecycle_and_partial_reset(tmp_path, substeps, monkeypatc
     np.testing.assert_allclose(
         tensor_to_array(egg.get_pos())[[0, 2]], tensor_to_array(bare_egg.get_pos())[[0, 2]], rtol=0, atol=1e-10
     )
+
+
+@pytest.mark.required
+@pytest.mark.precision("64")
+def test_native_history_reuse_abrupt_load_and_reset(tmp_path):
+    vertices, tetrahedra, faces, _ = shell_mesh(1, 2, 0.0005)
+    mesh = tmp_path / "shell.npz"
+    np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)
+    model = StressModel(RigidStressOptions(mesh=mesh))
+    state = model.create_state(3)
+    history = StressHistory(model.info.vertices.shape[0], 3)
+    omega = V_VEC(3, dtype=gs.qd_float, shape=(3,))
+    omega.fill(0)
+    random = np.random.default_rng(9137)
+    loads = random.normal(size=(5, model.info.vertices.shape[0], 3, 3)) * 0.01
+    oracle = P2Shell(vertices, tetrahedra, faces, 1e10, 0.3, 2000.0, 2, factor_backend="none")
+    free = np.setdiff1d(np.arange(oracle.ndof), qd_to_numpy(model.info.pins))
+    factor = splu(oracle.k[free][:, free].tocsc())
+    scan = P2Peak(oracle.glambda, oracle.elements, 1e10 / 2.6)
+    sequence = [*loads[:4], 0.2 * loads[0] + 0.7 * loads[1] - 0.3 * loads[2] + 0.8 * loads[3], loads[4]]
+    for tick, load in enumerate(sequence):
+        state.force.from_numpy(load)
+        model.recover(omega, state, history=history)
+        history.append(state)
+        rhs = qd_to_numpy(state.rhs, transpose=True).reshape((3, -1)).T
+        displacement = np.zeros_like(rhs)
+        displacement[free] = factor.solve(rhs[free])
+        peak = np.array([scan(displacement[:, i_b])[0] for i_b in range(3)])
+        np.testing.assert_allclose(qd_to_numpy(state.peak), peak, rtol=1e-4, atol=1e-3)
+        assert qd_to_numpy(state.valid).all()
+        np.testing.assert_array_equal(qd_to_numpy(history.state.hit), tick == 4)
+    before = qd_to_numpy(history.state.count, copy=True)
+    history.reset(np.array([1], dtype=gs.np_int))
+    np.testing.assert_array_equal(qd_to_numpy(history.state.count)[[0, 2]], before[[0, 2]])
+    state.force.from_numpy(loads[4])
+    model.recover(omega, state, history=history)
+    np.testing.assert_array_equal(qd_to_numpy(history.state.hit), [True, False, True])

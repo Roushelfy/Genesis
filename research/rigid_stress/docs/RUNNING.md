@@ -9,10 +9,10 @@ repository root with Genesis and its regular dependencies installed:
 python examples/rigid/franka_egg_stress.py --envs 8 --steps 600
 python -m pytest tests/rigid/test_stress.py --backend gpu -q
 QD_KERNEL_PROFILER=1 python examples/speed_benchmark/rigid_stress.py \
-    --scope profile --envs 8 --steps 100 --warmup 300 \
+    --scope profile --envs 1024 --varied --steps 100 --warmup 900 \
     --output "$RIGID_STRESS_DATA_ROOT/runs/native/profile.json"
 python examples/speed_benchmark/rigid_stress.py \
-    --scope live --envs 8 --varied \
+    --scope live --envs 1024 --varied \
     --output "$RIGID_STRESS_DATA_ROOT/runs/native/live.json"
 ```
 
@@ -23,6 +23,39 @@ level 1, 2,430 DOFs; level 2 is also available. These are numerical and
 performance-development meshes, without a physical convergence claim.
 Default throughput measurements use at least 1,200 steps, three repeats and
 ten seconds per repeat. Kernel profiling is a separate intrusive pass.
+
+The default `auto` method uses a memory-bounded shared inverse on this small
+mesh. Compare `--method direct --serial-solve`, `--method direct`, and
+`--method inverse --inverse-precision 32` at identical mesh/tolerances.
+`--trace` exports a separate 50-step Torch/CUPTI CPU/CUDA trace after timing;
+its overhead is excluded from the reported rates. The pressure microkernels
+repeat query/integration/small-solve work to diagnose the hotspot and are
+excluded from the additive pipeline table. Captured Quadrants graph kernels
+are omitted by its kernel profiler, so use wall stages and the optional trace.
+
+`recovery` repeats a frozen actual contact snapshot with its matching
+pre-integration frame; it is not changing-contact trajectory throughput.
+`live` includes the whole rigid trajectory, changing contacts/radii, slip,
+release and independently delayed resets. `policy` adds device observations
+and a fixed seeded FP64 26->128->128->7 tanh MLP; it measures inference and
+rollouts, not completed reinforcement-learning training.
+
+Warmup quality checks are outside steady-state timing. They record actual
+nonzero egg contacts, both finger contacts, tangential force, radii, friction,
+height, complete residual and correction/fallback counts. They do not certify
+stress discretization convergence. See [NATIVE_API.md](NATIVE_API.md) for the
+finite-footprint contract and current support boundaries.
+
+An independent untimed temporal-load probe is reproducible with:
+
+```bash
+python -m research.rigid_stress.native_history_probe --envs 8 --steps 1200 \
+    --output "$RIGID_STRESS_DATA_ROOT/runs/native/history.json"
+```
+
+It stores actual complete RHS arrays under the requested data path and checks
+optimistic h=0/1/4 load-subspace acceptance offline. It does not run production
+NumPy recovery or contribute a throughput rate.
 
 ## Historical external-library prototype
 

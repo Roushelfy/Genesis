@@ -1,6 +1,9 @@
+import time
+from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
+import quadrants as qd
 
 import genesis as gs
 from genesis.options.rigid_stress import RigidStressOptions
@@ -9,6 +12,7 @@ from genesis.utils.misc import qd_to_numpy
 
 from .data import StressInfo, StressState
 from .factor import StressFactor
+from .history import StressHistory
 from .inverse import StressInverse
 from .operators import (
     kernel_assemble,
@@ -33,10 +37,19 @@ from .solve import (
 )
 
 
+@dataclass(frozen=True)
+class StressBuildTimings:
+    topology_seconds: float
+    operators_seconds: float
+    factor_seconds: float
+    inverse_seconds: float
+
+
 class StressModel:
     """Own shared immutable operators assembled from a tetrahedral mesh asset."""
 
     def __init__(self, options: RigidStressOptions):
+        started = time.perf_counter()
         self.options = options.model_copy(deep=True)
         with np.load(Path(options.mesh), allow_pickle=False) as asset:
             vertices = asset["vertices"]
@@ -109,6 +122,7 @@ class StressModel:
         self.info.mass_properties.fill(0)
         self.info.gram.fill(0)
         self.info.is_free.fill(1)
+        topology_done = time.perf_counter()
         kernel_midpoints(len(vertices), edge_vertices.astype(gs.np_int, copy=False), self.info)
         kernel_geometry(self.info)
         if kernel_valid_geometry(self.info):
@@ -120,11 +134,15 @@ class StressModel:
         kernel_gram_inverse(self.info)
         kernel_gauge(self.info)
         kernel_diagonal(self.info)
+        qd.sync()
+        operators_done = time.perf_counter()
         inverse_bytes = n_nodes * n_nodes * 9 * (8 if options.inverse_precision == "64" else 4)
         self.selected_method = options.method
         if options.method == "auto":
             self.selected_method = "inverse" if inverse_bytes <= options.inverse_max_bytes else "direct"
         self.factor = StressFactor(self.info) if self.selected_method != "pcg" else None
+        qd.sync()
+        factor_done = time.perf_counter()
         self.inverse = (
             StressInverse(
                 self.info, self.factor, self.create_state, options.inverse_max_bytes, options.inverse_precision
@@ -132,17 +150,24 @@ class StressModel:
             if self.selected_method == "inverse"
             else None
         )
+        self.build_timings = StressBuildTimings(
+            topology_done - started,
+            operators_done - topology_done,
+            factor_done - operators_done,
+            time.perf_counter() - factor_done,
+        )
 
     def create_state(self, n_envs: int) -> StressState:
         n_nodes = self.info.vertices.shape[0]
+        n_krylov_nodes = n_nodes if self.selected_method == "pcg" else 0
         state = StressState(
             force=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes, n_envs)),
             rhs=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes, n_envs)),
             displacement=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes, n_envs)),
             residual=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes, n_envs)),
-            direction=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes, n_envs)),
-            product=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes, n_envs)),
-            preconditioned=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes, n_envs)),
+            direction=V_VEC(3, dtype=gs.qd_float, shape=(n_krylov_nodes, n_envs)),
+            product=V_VEC(3, dtype=gs.qd_float, shape=(n_krylov_nodes, n_envs)),
+            preconditioned=V_VEC(3, dtype=gs.qd_float, shape=(n_krylov_nodes, n_envs)),
             wrench=V_VEC(6, dtype=gs.qd_float, shape=(n_envs,)),
             rhs_norm_squared=V(dtype=gs.qd_float, shape=(n_envs,)),
             residual_norm_squared=V(dtype=gs.qd_float, shape=(n_envs,)),
@@ -164,7 +189,13 @@ class StressModel:
         state.step_valid.fill(True)
         return state
 
-    def recover(self, omega, state: StressState, options: RigidStressOptions | None = None) -> None:
+    def recover(
+        self,
+        omega,
+        state: StressState,
+        options: RigidStressOptions | None = None,
+        history: StressHistory | None = None,
+    ) -> None:
         """Balance the complete load, recover displacement and scan the full-domain peak."""
         if options is None:
             options = self.options
@@ -172,7 +203,18 @@ class StressModel:
         kernel_balance(omega, state, self.info)
         if self.factor is not None:
             kernel_direct_init(state)
-            self.solve(options, state)
+            if history is None:
+                self.solve(options, state)
+            else:
+                history.predict(state)
+                kernel_full_residual(
+                    options.young, options.tolerance, options.absolute_tolerance, state, self.info, False
+                )
+                history.mark_hits(state)
+                if self.inverse is not None:
+                    self.inverse.apply(options.young, state, only_failed=True)
+                else:
+                    self.factor.solve(options.young, state, self.info, options.cooperative_solve, only_failed=True)
         else:
             kernel_pcg_init(options.young, state, self.info, block, options.warm_start)
             for _ in range((options.max_iterations + 15) // 16):
@@ -187,7 +229,9 @@ class StressModel:
                 )
                 if not kernel_active(state):
                     break
-        kernel_full_residual(options.young, options.tolerance, options.absolute_tolerance, state, self.info, False)
+        kernel_full_residual(
+            options.young, options.tolerance, options.absolute_tolerance, state, self.info, history is not None
+        )
         if self.inverse is not None:
             for _ in range(options.inverse_corrections):
                 self.inverse.apply(options.young, state, correction=True)

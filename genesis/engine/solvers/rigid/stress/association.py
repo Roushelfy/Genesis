@@ -44,6 +44,7 @@ def kernel_associate(
             or dyn_state.links.cfrc_applied_vel[i_l, i_b].norm() > 0.0
             or dyn_state.links.cfrc_coupling_ang[i_l, i_b].norm() > 0.0
             or dyn_state.links.cfrc_coupling_vel[i_l, i_b].norm() > 0.0
+            or collider_state.n_contacts[i_b] > contact_state.valid.shape[0]
         )
         if unsupported:
             step_valid[i_b] = False

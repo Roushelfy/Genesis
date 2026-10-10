@@ -26,7 +26,18 @@ class RigidStressOptions(Options):
     a stress error. Invalid loads or unresolved observations set the rigid
     solver error flag and produce a NaN observation.
 
-    ``method="direct"`` builds a shared native sparse block factor once.
+    ``method="auto"`` uses a full pinned inverse when its storage fits
+    ``inverse_max_bytes`` (64 MiB by default), otherwise a shared sparse
+    block factor. Both are constructed and applied in Quadrants. The inverse
+    handles arbitrary nodal loads and costs quadratic shared storage; it is
+    intended for small meshes. ``method="direct"`` forces the sparse factor.
+    CUDA meshes up to 1,024 P2 nodes use a cooperative warp solve when
+    ``cooperative_solve`` is enabled; other cases use the serial native path.
+    ``method="inverse"`` explicitly requests the inverse and rejects an
+    insufficient storage budget. ``inverse_precision="32"`` stores it in
+    FP32 while keeping arithmetic in scene precision. Failed complete
+    residuals receive up to ``inverse_corrections`` corrections, then a
+    masked sparse solve. The default inverse uses scene precision.
     ``method="pcg"`` trades factor storage for iterative work, bounded by
     ``max_iterations``; thin shells can require many iterations. Its
     ``warm_start`` reuses only the same environment's preceding displacement
@@ -43,6 +54,7 @@ class RigidStressOptions(Options):
     absolute_tolerance: PositiveFloat = 1e-11
     max_iterations: PositiveInt = 2000
     warm_start: StrictBool = True
+    history_size: Literal[0, 4] = 0
     method: Literal["auto", "direct", "inverse", "pcg"] = "auto"
     cooperative_solve: StrictBool = True
     inverse_max_bytes: PositiveInt = 64 * 1024 * 1024

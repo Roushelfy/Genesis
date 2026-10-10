@@ -44,8 +44,8 @@ class StressInverse:
         kernel_store_inverse(temporary, self.info)
         qd.sync()
 
-    def apply(self, young: float, state: StressState, correction: bool = False) -> None:
-        kernel_apply_inverse(young, state, self.info, correction)
+    def apply(self, young: float, state: StressState, correction: bool = False, only_failed: bool = False) -> None:
+        kernel_apply_inverse(young, state, self.info, correction, only_failed)
 
 
 @qd.kernel
@@ -68,10 +68,14 @@ def kernel_store_inverse(stress_state: StressState, inverse_info: StressInverseI
 
 @qd.kernel(graph=True)
 def kernel_apply_inverse(
-    young: float, stress_state: StressState, inverse_info: StressInverseInfo, correction: qd.template()
+    young: float,
+    stress_state: StressState,
+    inverse_info: StressInverseInfo,
+    correction: qd.template(),
+    only_failed: qd.template(),
 ):
     for i_n, i_b in qd.ndrange(stress_state.rhs.shape[0], stress_state.active.shape[0]):
-        if qd.static(not correction) or not stress_state.valid[i_b]:
+        if qd.static(not correction and not only_failed) or not stress_state.valid[i_b]:
             value = qd.Vector.zero(gs.qd_float, 3)
             for j in range(inverse_info.blocks.shape[1]):
                 source = stress_state.rhs[j, i_b]
@@ -86,6 +90,6 @@ def kernel_apply_inverse(
         stress_state.active[i_b] = 1
         if qd.static(correction) and not stress_state.valid[i_b]:
             stress_state.corrections[i_b] += 1
-        if qd.static(correction):
+        if qd.static(correction or only_failed):
             stress_state.active[i_b] = gs.qd_int(not stress_state.valid[i_b])
         stress_state.valid[i_b] = True

@@ -17,6 +17,7 @@ from genesis.utils.misc import assign_indexed_tensor, broadcast_tensor, indices_
 from .association import kernel_associate
 from .contact import StressContactState, create_contacts, kernel_anchor, kernel_pressure, kernel_scatter
 from .data import StressState
+from .history import StressHistory
 from .model import StressModel
 from .surface import StressSurface
 
@@ -33,6 +34,7 @@ class StressLink:
     state: StressState
     contacts: StressContactState
     omega: qd.Tensor
+    history: StressHistory | None
 
 
 class RigidStressRecovery:
@@ -43,6 +45,8 @@ class RigidStressRecovery:
             for link in entity.links:
                 options = link.stress_options
                 if options is not None:
+                    if options.history_size and options.method == "pcg":
+                        gs.raise_exception("The native load history requires a direct or inverse stress method.")
                     # Equal geometry, constitutive parameters and mass share physical operators and factors.
                     model = None
                     surface = None
@@ -77,6 +81,7 @@ class RigidStressRecovery:
                                 options.contact_radius,
                             ),
                             V_VEC(3, dtype=gs.qd_float, shape=(solver._B,)),
+                            StressHistory(model.info.vertices.shape[0], solver._B) if options.history_size else None,
                         )
                     )
         self.subscriber = Subscriber(
@@ -108,13 +113,17 @@ class RigidStressRecovery:
             kernel_anchor(self.source_epsilon, entry.contacts, entry.surface.info)
             kernel_pressure(entry.contacts, entry.surface.info)
             kernel_scatter(entry.contacts, entry.state, entry.model.info, entry.surface.info)
-            entry.model.recover(entry.omega, entry.state, entry.link.stress_options)
+            entry.model.recover(entry.omega, entry.state, entry.link.stress_options, entry.history)
             kernel_accept(entry.state, entry.contacts, solver._errno)
+            if entry.history is not None:
+                entry.history.append(entry.state)
 
     def reset(self, change: StateChange, envs_idx) -> None:
         envs_idx = self.solver.scene._sanitize_envs_idx(envs_idx)
         for entry in self.links:
             kernel_reset(envs_idx, entry.state)
+            if entry.history is not None:
+                entry.history.reset(envs_idx)
 
     @property
     def data(self) -> Iterator[DataItem]:
@@ -131,8 +140,12 @@ class RigidStressRecovery:
             if id(entry.surface) not in seen_surfaces:
                 yield from iter_data(entry.surface.info, f"stress.{i}.surface")
                 seen_surfaces.add(id(entry.surface))
-            yield from iter_data(entry.state, f"stress.{i}.state")
+            for item in iter_data(entry.state, f"stress.{i}.state"):
+                if 0 not in item.value.shape:
+                    yield item
             yield from iter_data(entry.contacts, f"stress.{i}.contacts")
+            if entry.history is not None:
+                yield from iter_data(entry.history.state, f"stress.{i}.history")
             yield DataItem(f"stress.{i}.omega", entry.omega, entry.state.kind)
 
     def get_peak(self, link_idx: int, envs_idx=None, *, copy: bool = True) -> torch.Tensor:

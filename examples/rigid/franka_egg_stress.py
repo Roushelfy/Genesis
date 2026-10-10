@@ -23,6 +23,7 @@ class FrankaEgg:
         cooperative_solve: bool = True,
         method: str = "auto",
         inverse_precision: str = "64",
+        history_size: int = 0,
     ):
         self.n_envs = n_envs
         self.tick = 0
@@ -62,6 +63,7 @@ class FrankaEgg:
                     cooperative_solve=cooperative_solve,
                     method=method,
                     inverse_precision=inverse_precision,
+                    history_size=history_size,
                 )
             )
         self.scene.build(n_envs=n_envs)
