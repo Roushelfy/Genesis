@@ -1,0 +1,49 @@
+{
+  "envs": 1024,
+  "reports": [
+    {
+      "name": "native64",
+      "milliseconds": {
+        "application": 1.5136488806456327,
+        "checked": 2.109520761296153
+      },
+      "initial_failed_envs": 0,
+      "initial_max_residual_N": 7.218389197979737e-12,
+      "peak_error_Pa": 0.0,
+      "corrected_max_residual_N": 7.218389197979738e-12
+    },
+    {
+      "name": "arithmetic32-False-paired-False",
+      "milliseconds": {
+        "application": 3.1095184572041035,
+        "checked": 11.28331083804369
+      },
+      "initial_failed_envs": 1024,
+      "initial_max_residual_N": 0.00017055113164876203,
+      "peak_error_Pa": 7.359558367170393e-07,
+      "corrected_max_residual_N": 2.500409887272125e-12
+    },
+    {
+      "name": "arithmetic32-True-paired-False",
+      "milliseconds": {
+        "application": 1.0940678417682648,
+        "checked": 9.270018814131618
+      },
+      "initial_failed_envs": 1024,
+      "initial_max_residual_N": 0.003517735780261799,
+      "peak_error_Pa": 6.391819624695927e-07,
+      "corrected_max_residual_N": 2.78624726936282e-12
+    },
+    {
+      "name": "arithmetic32-False-paired-True",
+      "milliseconds": {
+        "application": 6.277903318405151,
+        "checked": 6.88041009940207
+      },
+      "initial_failed_envs": 0,
+      "initial_max_residual_N": 7.817748183642923e-12,
+      "peak_error_Pa": 4.361936589702964e-09,
+      "corrected_max_residual_N": 7.817748183642921e-12
+    }
+  ]
+}

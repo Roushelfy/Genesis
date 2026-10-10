@@ -1,7 +1,11 @@
 """Untimed every-step validity audit across warmup and a complete reset trajectory."""
 
 import argparse
+import hashlib
 import json
+import os
+import platform
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -136,6 +140,25 @@ def main():
         "seed": args.seed,
         "load_model": "finite_pad_adaptive_q10",
         "condition_count": workload.condition_count,
+        "source_revision": os.environ.get("RIGID_STRESS_SOURCE_REVISION", "unrecorded"),
+        "source_sha256": {
+            str(path): hashlib.sha256(path.read_bytes()).hexdigest()
+            for path in sorted(
+                [
+                    *Path("genesis/engine/solvers/rigid/stress").glob("*.py"),
+                    Path("genesis/options/rigid_stress.py"),
+                    Path("examples/rigid/franka_egg_stress.py"),
+                    Path(__file__),
+                ]
+            )
+        },
+        "command": [sys.executable, *sys.argv],
+        "host": platform.node(),
+        "slurm_job_id": os.environ.get("SLURM_JOB_ID"),
+        "gpu": torch.cuda.get_device_name(),
+        "gpu_uuid": "GPU-" + str(torch.cuda.get_device_properties(gs.device).uuid),
+        "quadrants": qd.__version__,
+        "torch": torch.__version__,
         "conditions": str(args.conditions) if args.conditions is not None else None,
         "every_step_failures": counts.tolist(),
         "failed_environment_steps": int(counts.sum()),
@@ -161,6 +184,19 @@ def main():
         "per_environment_errors": accuracy.tolist(),
         "environments_with_bilateral_lift": int((tail[:, 6] > 0).sum()),
         "environments_without_bilateral_lift": int((tail[:, 6] == 0).sum()),
+        "per_environment_work_quantiles": {
+            "quantiles": [0.5, 0.9, 0.99, 1.0],
+            "fit_evaluations_total": np.quantile(tail[:, 2], [0.5, 0.9, 0.99, 1.0]).tolist(),
+            "local_retries": np.quantile(tail[:, 1], [0.5, 0.9, 0.99, 1.0]).tolist(),
+            "note": "Work counts proxy per-environment tails; GPU shared execution is not individually timed.",
+        },
+        "policy": {
+            "layers": [26, 128, 128, 7],
+            "dtype": "float64",
+            "seed": 99173,
+            "residual_scale_rad": 1e-4,
+            "scope": "inference rollout",
+        },
         "note": "Separate untimed native check of every observation, surviving per-environment resets; no rate claimed.",
     }
     args.output.write_text(json.dumps(result, indent=2) + "\n")

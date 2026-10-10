@@ -1,0 +1,145 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0
+rootdir: /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery
+configfile: pyproject.toml
+plugins: anyio-4.15.1, forked-1.7.5, print-1.2.0, timeout-2.4.0, xdist-3.8.0, quadrants-1.3.3, syrupy-6.1.1
+timeout: 1200.0s
+timeout method: signal
+timeout func_only: False
+collected 18 items
+
+tests/rigid/test_stress.py [Genesis 17:12:59] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 17:12:59] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 17:13:13] Exiting Genesis and caching compiled kernels...
+[Genesis 17:13:14] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 17:13:14] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+native method direct False 64 full residual [0.00000000e+00 4.37518274e-12 7.06802871e-12 5.05674454e-12
+ 4.85451220e-12] relative displacement error [0.00000000e+00 1.52434116e-11 2.61743749e-11 2.53986300e-11
+ 1.99450311e-11] peak absolute error Pa [0.00000000e+00 2.09409336e-07 7.67540769e-08 7.82238203e-08
+ 2.54447514e-07] corrections [0 0 0 0 0] fallbacks [0 0 0 0 0]
+[32m.[0m[Genesis 17:13:29] Exiting Genesis and caching compiled kernels...
+[Genesis 17:13:30] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 17:13:30] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+native method direct True 64 full residual [0.00000000e+00 4.58974589e-12 7.08866019e-12 5.58859729e-12
+ 4.78905146e-12] relative displacement error [0.00000000e+00 1.64428007e-11 3.43622987e-11 2.60533270e-11
+ 2.04981144e-11] peak absolute error Pa [0.00000000e+00 1.01696060e-07 2.26573320e-07 4.13885573e-07
+ 3.85989551e-07] corrections [0 0 0 0 0] fallbacks [0 0 0 0 0]
+[32m.[0m[Genesis 17:13:44] Exiting Genesis and caching compiled kernels...
+[Genesis 17:13:45] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 17:13:45] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+native method inverse True 64 full residual [0.00000000e+00 2.20226491e-11 4.51816304e-11 3.40009606e-11
+ 3.45004962e-11] relative displacement error [0.00000000e+00 1.43130258e-11 3.63870877e-11 2.68851326e-11
+ 1.54923224e-11] peak absolute error Pa [0.00000000e+00 2.86046998e-07 1.44427759e-07 1.51521817e-07
+ 9.06948117e-08] corrections [0 0 0 0 0] fallbacks [0 0 0 0 0]
+[32m.[0m[Genesis 17:14:00] Exiting Genesis and caching compiled kernels...
+[Genesis 17:14:00] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 17:14:00] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+native method inverse True 64 full residual [0.00000000e+00 4.95258053e-12 5.10436239e-12 4.96989531e-12
+ 6.22913720e-12] relative displacement error [0.00000000e+00 2.17995571e-11 1.22132434e-11 2.76633874e-11
+ 3.36226742e-11] peak absolute error Pa [0.00000000e+00 6.94490154e-08 4.56966518e-08 2.24463292e-08
+ 1.30145054e-07] corrections [0 0 0 0 0] fallbacks [0 0 0 0 0]
+[32m.[0m[Genesis 17:14:15] Exiting Genesis and caching compiled kernels...
+[Genesis 17:14:15] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 17:14:15] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[W 10/10/26 17:14:30.239 1726919] QuadrantsWarning
+While compiling `kernel_store_inverse_c748_1`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/inverse.py", line 66, in kernel_store_inverse:
+        inverse_info.blocks[i, j] = block
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+native method inverse True 32 full residual [0.00000000e+00 3.83199750e-09 4.62607672e-09 4.92016784e-09
+ 4.20182897e-09] relative displacement error [0.00000000e+00 1.94639919e-11 2.04020896e-11 1.75414546e-11
+ 1.54666893e-11] peak absolute error Pa [0.00000000e+00 4.17610863e-07 4.82548785e-07 1.71428110e-06
+ 2.68191798e-08] corrections [0 2 2 2 2] fallbacks [0 0 0 0 0]
+[32m.[0m[Genesis 17:14:31] Exiting Genesis and caching compiled kernels...
+[Genesis 17:14:31] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 17:14:31] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+native method inverse True 32 full residual [0.00000000e+00 4.44147546e-12 6.55595592e-12 6.24791083e-12
+ 4.63442569e-12] relative displacement error [0.00000000e+00 1.48537402e-11 3.10172501e-11 3.52615172e-11
+ 1.88323660e-11] peak absolute error Pa [0.00000000e+00 1.81848009e-07 9.36634024e-08 2.09765858e-07
+ 3.17035301e-07] corrections [0 0 0 0 0] fallbacks [0 1 1 1 1]
+[32m.[0m[Genesis 17:14:46] Exiting Genesis and caching compiled kernels...
+[Genesis 17:14:46] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 17:14:46] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+patch statuses [[0 0 0 0]
+ [0 0 0 0]
+ [0 0 0 0]] evaluations [[0 0 0 0]
+ [0 0 0 0]
+ [0 0 0 0]]
+[32m.[0m[Genesis 17:14:49] Exiting Genesis and caching compiled kernels...
+[Genesis 17:14:49] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 17:14:49] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+patch statuses [[0 0 0 0]
+ [0 0 0 0]
+ [0 0 0 0]] evaluations [[0 0 0 0]
+ [0 0 0 0]
+ [0 0 0 0]]
+[32m.[0m[Genesis 17:14:51] Exiting Genesis and caching compiled kernels...
+[Genesis 17:14:52] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 17:14:52] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 17:14:54] Exiting Genesis and caching compiled kernels...
+[Genesis 17:14:54] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 17:14:54] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 17:14:56] Exiting Genesis and caching compiled kernels...
+[Genesis 17:14:56] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 17:14:56] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+apex False status [[0]] iterations [[92]]
+[32m.[0m[Genesis 17:15:13] Exiting Genesis and caching compiled kernels...
+[Genesis 17:15:13] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 17:15:13] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+apex True status [[0]] iterations [[92]]
+[32m.[0m[Genesis 17:15:29] Exiting Genesis and caching compiled kernels...
+[Genesis 17:15:30] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 17:15:30] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 17:15:34] Exiting Genesis and caching compiled kernels...
+[Genesis 17:15:34] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 17:15:34] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 17:15:39] Exiting Genesis and caching compiled kernels...
+[Genesis 17:15:39] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 17:15:39] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[Genesis 17:15:40] Scene <ca1e8c5> created.
+[Genesis 17:15:40] Adding <gs.engine.entities.RigidEntity> 'plane_fc349c1'. idx: 0, morph: <gs.morphs.Plane>, material: <gs.materials.Rigid>.
+[Genesis 17:15:40] Adding <gs.engine.entities.RigidEntity> 'shell_d709750'. idx: 1, morph: <gs.morphs.Mesh(file='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-contact-repair/tmp/pytest-of-zhaofeng/pytest-9/test_native_rigid_lifecycle_an0/shell.obj')>, material: <gs.materials.Rigid>.
+[Genesis 17:15:40] Building scene <ca1e8c5>...
+[Genesis 17:16:00] Compiling simulation kernels...
+[Genesis 17:17:02] Building visualizer...
+[Genesis 17:17:08] Running at 934.03 FPS (311.34 FPS per env, 3 envs).
+actual rotated contacts substeps 1 peak error Pa [-2.06928235e-06 -2.06469849e-06 -2.02628144e-06]
+[Genesis 17:17:08] Scene <a4e1aa7> created.
+[Genesis 17:17:08] Adding <gs.engine.entities.RigidEntity> 'plane_17b5b01'. idx: 0, morph: <gs.morphs.Plane>, material: <gs.materials.Rigid>.
+[Genesis 17:17:08] Adding <gs.engine.entities.RigidEntity> 'shell_4bd1d50'. idx: 1, morph: <gs.morphs.Mesh(file='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-contact-repair/tmp/pytest-of-zhaofeng/pytest-9/test_native_rigid_lifecycle_an0/shell.obj')>, material: <gs.materials.Rigid>.
+[Genesis 17:17:08] Building scene <a4e1aa7>...
+[Genesis 17:17:08] Compiling simulation kernels...
+[Genesis 17:17:12] Building visualizer...
+[32m.[0m[Genesis 17:17:12] Exiting Genesis and caching compiled kernels...
+[Genesis 17:17:14] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 17:17:14] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[Genesis 17:17:14] Scene <4a4037b> created.
+[Genesis 17:17:14] Adding <gs.engine.entities.RigidEntity> 'plane_b6b15e7'. idx: 0, morph: <gs.morphs.Plane>, material: <gs.materials.Rigid>.
+[Genesis 17:17:14] Adding <gs.engine.entities.RigidEntity> 'shell_6dd382e'. idx: 1, morph: <gs.morphs.Mesh(file='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-contact-repair/tmp/pytest-of-zhaofeng/pytest-9/test_native_rigid_lifecycle_an1/shell.obj')>, material: <gs.materials.Rigid>.
+[Genesis 17:17:14] Building scene <4a4037b>...
+[Genesis 17:17:30] Compiling simulation kernels...
+[Genesis 17:17:35] Building visualizer...
+[Genesis 17:17:35] Running at 254.91 FPS (84.97 FPS per env, 3 envs).
+[Genesis 17:17:35] Running at 254.81 FPS (84.94 FPS per env, 3 envs).
+[Genesis 17:17:35] Running at 254.71 FPS (84.90 FPS per env, 3 envs).
+[Genesis 17:17:35] Running at 254.88 FPS (84.96 FPS per env, 3 envs).
+[Genesis 17:17:35] Running at 254.97 FPS (84.99 FPS per env, 3 envs).
+actual rotated contacts substeps 4 peak error Pa [-1.58586772e-06 -1.59950287e-06 -1.66651444e-06]
+[Genesis 17:17:36] Scene <c77cbb3> created.
+[Genesis 17:17:36] Adding <gs.engine.entities.RigidEntity> 'plane_7cc7d1e'. idx: 0, morph: <gs.morphs.Plane>, material: <gs.materials.Rigid>.
+[Genesis 17:17:36] Adding <gs.engine.entities.RigidEntity> 'shell_c561323'. idx: 1, morph: <gs.morphs.Mesh(file='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-contact-repair/tmp/pytest-of-zhaofeng/pytest-9/test_native_rigid_lifecycle_an1/shell.obj')>, material: <gs.materials.Rigid>.
+[Genesis 17:17:36] Building scene <c77cbb3>...
+[Genesis 17:17:36] Compiling simulation kernels...
+[Genesis 17:17:37] Building visualizer...
+[Genesis 17:17:37] Running at 711.86 FPS (237.29 FPS per env, 3 envs).
+[Genesis 17:17:37] Running at 712.02 FPS (237.34 FPS per env, 3 envs).
+[32m.[0m[Genesis 17:17:37] Exiting Genesis and caching compiled kernels...
+[Genesis 17:17:38] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 17:17:38] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 17:17:53] Exiting Genesis and caching compiled kernels...
+
+
+============================== slowest durations ===============================
+
+(54 durations < 100s hidden.)
+[32m======================== [32m[1m18 passed[0m[32m in 295.65s (0:04:55)[0m[32m ========================[0m

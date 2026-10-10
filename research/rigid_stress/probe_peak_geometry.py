@@ -14,7 +14,7 @@ from genesis.engine.solvers.rigid.stress.model import StressModel
 from genesis.engine.solvers.rigid.stress.operators import func_shape_gradient
 from genesis.engine.solvers.rigid.stress.solve import kernel_balance, kernel_peak
 from genesis.options.rigid_stress import RigidStressOptions
-from genesis.utils.array_class import V_VEC
+from genesis.utils.array_class import V_VEC, V
 from genesis.utils.misc import qd_to_numpy
 
 
@@ -24,6 +24,24 @@ def kernel_prepare(gradients: qd.Tensor, stress_info: StressInfo):
         bary = qd.Vector.zero(gs.qd_float, 4)
         bary[corner] = 1.0
         gradients[i_e, corner, local] = func_shape_gradient(local, bary, stress_info.gradients[i_e], stress_info.edges)
+
+
+@qd.kernel
+def kernel_prepare_compact(gradients: qd.Tensor, nodes: qd.Tensor, stress_info: StressInfo):
+    for i_e, corner in qd.ndrange(stress_info.elements.shape[0], 4):
+        bary = qd.Vector.zero(gs.qd_float, 4)
+        bary[corner] = 1.0
+        slot = 0
+        for local in range(10):
+            active = local < 4
+            if local >= 4:
+                active = stress_info.edges[local - 4, 0] == corner or stress_info.edges[local - 4, 1] == corner
+            if active:
+                nodes[i_e, corner, slot] = stress_info.elements[i_e, local]
+                gradients[i_e, corner, slot] = func_shape_gradient(
+                    local, bary, stress_info.gradients[i_e], stress_info.edges
+                )
+                slot += 1
 
 
 @qd.func
@@ -37,9 +55,11 @@ def func_corner(
     stress_state: StressState,
     stress_info: StressInfo,
     cached: qd.template(),
+    nodes: qd.Tensor,
+    compact: qd.template(),
 ):
     derivative = qd.Matrix.zero(gs.qd_float, 3, 3)
-    for local in range(10):
+    for local in range(7 if compact else 10):
         gradient = qd.Vector.zero(gs.qd_float, 3)
         if qd.static(cached):
             gradient = gradients[i_e, corner, local]
@@ -47,7 +67,10 @@ def func_corner(
             bary = qd.Vector.zero(gs.qd_float, 4)
             bary[corner] = 1.0
             gradient = func_shape_gradient(local, bary, stress_info.gradients[i_e], stress_info.edges)
-        derivative += stress_state.displacement[stress_info.elements[i_e, local], i_b].outer_product(gradient)
+        node = stress_info.elements[i_e, local]
+        if qd.static(compact):
+            node = nodes[i_e, corner, local]
+        derivative += stress_state.displacement[node, i_b].outer_product(gradient)
     mu = young / (2.0 * (1.0 + poisson))
     lam = young * poisson / ((1.0 + poisson) * (1.0 - 2.0 * poisson))
     sigma = mu * (derivative + derivative.transpose())
@@ -69,6 +92,8 @@ def kernel_candidate(
     stress_info: StressInfo,
     cached: qd.template(),
     parallel_corners: qd.template(),
+    nodes: qd.Tensor,
+    compact: qd.template(),
 ):
     for i_b in range(stress_state.active.shape[0]):
         stress_state.peak[i_b] = 0.0
@@ -77,11 +102,16 @@ def kernel_candidate(
     ):
         value = gs.qd_float(0.0)
         if qd.static(parallel_corners):
-            value = func_corner(young, poisson, item // 4, item % 4, i_b, gradients, stress_state, stress_info, cached)
+            value = func_corner(
+                young, poisson, item // 4, item % 4, i_b, gradients, stress_state, stress_info, cached, nodes, compact
+            )
         else:
             for corner in range(4):
                 value = qd.max(
-                    value, func_corner(young, poisson, item, corner, i_b, gradients, stress_state, stress_info, cached)
+                    value,
+                    func_corner(
+                        young, poisson, item, corner, i_b, gradients, stress_state, stress_info, cached, nodes, compact
+                    ),
                 )
         qd.atomic_max(stress_state.peak[i_b], qd.sqrt(value))
     for i_b in range(stress_state.active.shape[0]):
@@ -106,6 +136,9 @@ def main():
     model.solve(model.options, state)
     gradients = V_VEC(3, dtype=gs.qd_float, shape=(model.info.elements.shape[0], 4, 10))
     kernel_prepare(gradients, model.info)
+    compact_gradients = V_VEC(3, dtype=gs.qd_float, shape=(model.info.elements.shape[0], 4, 7))
+    compact_nodes = V(dtype=gs.qd_int, shape=(model.info.elements.shape[0], 4, 7))
+    kernel_prepare_compact(compact_gradients, compact_nodes, model.info)
     kernel_peak(model.options.young, model.options.poisson, state, model.info, False)
     expected = qd_to_numpy(state.peak, copy=True)
     operations = [("native", lambda: kernel_peak(model.options.young, model.options.poisson, state, model.info, False))]
@@ -114,10 +147,26 @@ def main():
             (
                 f"cached-{cached}-corners-{corners}",
                 lambda c=cached, p=corners: kernel_candidate(
-                    model.options.young, model.options.poisson, gradients, state, model.info, c, p
+                    model.options.young, model.options.poisson, gradients, state, model.info, c, p, compact_nodes, False
                 ),
             )
         )
+    operations.append(
+        (
+            "cached-compact-seven",
+            lambda: kernel_candidate(
+                model.options.young,
+                model.options.poisson,
+                compact_gradients,
+                state,
+                model.info,
+                True,
+                False,
+                compact_nodes,
+                True,
+            ),
+        )
+    )
     reports = []
     for name, operation in operations:
         operation()

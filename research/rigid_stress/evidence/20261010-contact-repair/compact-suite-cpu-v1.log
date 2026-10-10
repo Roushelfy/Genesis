@@ -1,0 +1,577 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0
+rootdir: /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery
+configfile: pyproject.toml
+plugins: anyio-4.15.1, forked-1.7.5, print-1.2.0, timeout-2.4.0, xdist-3.8.0, quadrants-1.3.3, syrupy-6.1.1
+timeout: 1200.0s
+timeout method: signal
+timeout func_only: False
+collected 20 items / 2 deselected / 18 selected
+
+tests/rigid/test_stress.py [Genesis 17:55:15] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.31 GB.
+[Genesis 17:55:15] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 17:55:20] Exiting Genesis and caching compiled kernels...
+[Genesis 17:55:23] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.31 GB.
+[Genesis 17:55:23] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[31mF[0m[Genesis 17:55:25] Exiting Genesis and caching compiled kernels...
+[Genesis 17:55:28] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.31 GB.
+[Genesis 17:55:28] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[31mF[0m[Genesis 17:55:30] Exiting Genesis and caching compiled kernels...
+[Genesis 17:55:32] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.31 GB.
+[Genesis 17:55:32] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[31mF[0m[Genesis 17:55:37] Exiting Genesis and caching compiled kernels...
+[Genesis 17:55:39] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.31 GB.
+[Genesis 17:55:39] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[31mF[0m[Genesis 17:55:44] Exiting Genesis and caching compiled kernels...
+[Genesis 17:55:46] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.31 GB.
+[Genesis 17:55:46] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[W 10/10/26 17:55:49.917 3488086] QuadrantsWarning
+While compiling `kernel_store_inverse_c748_1`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/inverse.py", line 66, in kernel_store_inverse:
+        inverse_info.blocks[i, j] = block
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+[31mF[0m[Genesis 17:55:50] Exiting Genesis and caching compiled kernels...
+[Genesis 17:55:53] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.31 GB.
+[Genesis 17:55:53] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[31mF[0m[Genesis 17:55:57] Exiting Genesis and caching compiled kernels...
+[Genesis 17:55:59] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.31 GB.
+[Genesis 17:55:59] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+patch statuses [[0 0 0 0 0]
+ [0 0 0 0 0]
+ [0 0 0 0 0]] evaluations [[0 0 0 0 0]
+ [0 0 0 0 0]
+ [0 0 0 0 0]]
+[32m.[0m[Genesis 17:56:02] Exiting Genesis and caching compiled kernels...
+[Genesis 17:56:05] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.31 GB.
+[Genesis 17:56:05] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+patch statuses [[0 0 0 0 0]
+ [0 0 0 0 0]
+ [0 0 0 0 0]] evaluations [[0 0 0 0 0]
+ [0 0 0 0 0]
+ [0 0 0 0 0]]
+[32m.[0m[Genesis 17:56:07] Exiting Genesis and caching compiled kernels...
+[Genesis 17:56:09] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.31 GB.
+[Genesis 17:56:09] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 17:56:11] Exiting Genesis and caching compiled kernels...
+[Genesis 17:56:14] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.31 GB.
+[Genesis 17:56:14] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 17:56:16] Exiting Genesis and caching compiled kernels...
+[Genesis 17:56:19] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.31 GB.
+[Genesis 17:56:19] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+apex False status [[0]] iterations [[92]]
+[32m.[0m[Genesis 17:56:24] Exiting Genesis and caching compiled kernels...
+[Genesis 17:56:27] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.31 GB.
+[Genesis 17:56:27] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+apex True status [[0]] iterations [[92]]
+[32m.[0m[Genesis 17:56:33] Exiting Genesis and caching compiled kernels...
+[Genesis 17:56:35] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.31 GB.
+[Genesis 17:56:35] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+apex False status [[0]] iterations [[94]]
+[32m.[0m[Genesis 17:56:41] Exiting Genesis and caching compiled kernels...
+[Genesis 17:56:43] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.31 GB.
+[Genesis 17:56:43] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+apex True status [[0]] iterations [[94]]
+[32m.[0m[Genesis 17:56:49] Exiting Genesis and caching compiled kernels...
+[Genesis 17:56:51] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.31 GB.
+[Genesis 17:56:51] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 17:56:55] Exiting Genesis and caching compiled kernels...
+[Genesis 17:56:57] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.31 GB.
+[Genesis 17:56:57] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 17:57:01] Exiting Genesis and caching compiled kernels...
+[Genesis 17:57:03] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.31 GB.
+[Genesis 17:57:03] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 17:57:08] Exiting Genesis and caching compiled kernels...
+
+
+=================================== FAILURES ===================================
+[31m[1m_ test_native_batched_recovery_against_full_fp64_direct[direct-False-64-2-False] _[0m
+
+tmp_path = PosixPath('/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-contact-repair/tmp/pytest-of-zhaofeng/pytest-14/test_native_batched_recovery_a0')
+method = 'direct', cooperative = False, inverse_precision = '64'
+inverse_corrections = 2, surface_load = False
+
+    [0m[37m@pytest[39;49;00m.mark.required[90m[39;49;00m
+    [37m@pytest[39;49;00m.mark.precision([33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [37m@pytest[39;49;00m.mark.parametrize([90m[39;49;00m
+        [33m"[39;49;00m[33mmethod,cooperative,inverse_precision,inverse_corrections,surface_load[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+        ([90m[39;49;00m
+            ([33m"[39;49;00m[33mdirect[39;49;00m[33m"[39;49;00m, [94mFalse[39;49;00m, [33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m, [94m2[39;49;00m, [94mFalse[39;49;00m),[90m[39;49;00m
+            ([33m"[39;49;00m[33mdirect[39;49;00m[33m"[39;49;00m, [94mTrue[39;49;00m, [33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m, [94m2[39;49;00m, [94mFalse[39;49;00m),[90m[39;49;00m
+            ([33m"[39;49;00m[33minverse[39;49;00m[33m"[39;49;00m, [94mTrue[39;49;00m, [33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m, [94m2[39;49;00m, [94mFalse[39;49;00m),[90m[39;49;00m
+            ([33m"[39;49;00m[33minverse[39;49;00m[33m"[39;49;00m, [94mTrue[39;49;00m, [33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m, [94m2[39;49;00m, [94mTrue[39;49;00m),[90m[39;49;00m
+            ([33m"[39;49;00m[33minverse[39;49;00m[33m"[39;49;00m, [94mTrue[39;49;00m, [33m"[39;49;00m[33m32[39;49;00m[33m"[39;49;00m, [94m2[39;49;00m, [94mFalse[39;49;00m),[90m[39;49;00m
+            ([33m"[39;49;00m[33minverse[39;49;00m[33m"[39;49;00m, [94mTrue[39;49;00m, [33m"[39;49;00m[33m32[39;49;00m[33m"[39;49;00m, [94m0[39;49;00m, [94mFalse[39;49;00m),[90m[39;49;00m
+        ),[90m[39;49;00m
+    )[90m[39;49;00m
+    [94mdef[39;49;00m[90m [39;49;00m[92mtest_native_batched_recovery_against_full_fp64_direct[39;49;00m([90m[39;49;00m
+        tmp_path, method, cooperative, inverse_precision, inverse_corrections, surface_load[90m[39;49;00m
+    ):[90m[39;49;00m
+        vertices, tetrahedra, surface, _ = shell_mesh([94m1[39;49;00m, [94m2[39;49;00m, [94m0.0005[39;49;00m)[90m[39;49;00m
+        mesh = tmp_path / [33m"[39;49;00m[33mshell.npz[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=surface)[90m[39;49;00m
+        model = StressModel([90m[39;49;00m
+            RigidStressOptions([90m[39;49;00m
+                mesh=mesh,[90m[39;49;00m
+                tolerance=[94m1e-7[39;49;00m,[90m[39;49;00m
+                max_iterations=[94m4000[39;49;00m,[90m[39;49;00m
+                cooperative_solve=cooperative,[90m[39;49;00m
+                method=method,[90m[39;49;00m
+                inverse_precision=inverse_precision,[90m[39;49;00m
+                inverse_corrections=inverse_corrections,[90m[39;49;00m
+            )[90m[39;49;00m
+        )[90m[39;49;00m
+        oracle = P2Shell(vertices, tetrahedra, surface, [94m1e10[39;49;00m, [94m0.3[39;49;00m, [94m2000.0[39;49;00m, [94m2[39;49;00m, factor_backend=[33m"[39;49;00m[33mnone[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        n_envs = [94m5[39;49;00m[90m[39;49;00m
+        state = model.create_state(n_envs)[90m[39;49;00m
+        random = np.random.default_rng([94m8231[39;49;00m)[90m[39;49;00m
+        force = random.normal(size=([96mlen[39;49;00m(oracle.xyz), n_envs, [94m3[39;49;00m)) * [94m0.01[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m surface_load:[90m[39;49;00m
+            interior = np.setdiff1d(np.arange([96mlen[39;49;00m(force)), np.unique(qd_to_numpy(model.info.surface_nodes)))[90m[39;49;00m
+            force[interior] = [94m0.0[39;49;00m[90m[39;49;00m
+        force[:, [94m0[39;49;00m] = [94m0.0[39;49;00m[90m[39;49;00m
+        angular_velocity = random.normal(size=(n_envs, [94m3[39;49;00m)) * [94m2.0[39;49;00m[90m[39;49;00m
+        angular_velocity[[94m0[39;49;00m] = [94m0.0[39;49;00m[90m[39;49;00m
+        state.force.from_numpy(force)[90m[39;49;00m
+        omega = V_VEC([94m3[39;49;00m, dtype=gs.qd_float, shape=(n_envs,))[90m[39;49;00m
+        omega.from_numpy(angular_velocity)[90m[39;49;00m
+        model.recover(omega, state, surface_load=surface_load)[90m[39;49;00m
+        rhs = qd_to_numpy(state.rhs, transpose=[94mTrue[39;49;00m).reshape((n_envs, -[94m1[39;49;00m)).T[90m[39;49;00m
+        relative = oracle.xyz - oracle.com[90m[39;49;00m
+        centrifugal = -np.cross(angular_velocity[:, [94mNone[39;49;00m], np.cross(angular_velocity[:, [94mNone[39;49;00m], relative[[94mNone[39;49;00m]))[90m[39;49;00m
+        raw = force.transpose(([94m1[39;49;00m, [94m0[39;49;00m, [94m2[39;49;00m)).reshape((n_envs, -[94m1[39;49;00m)).T + oracle.m @ centrifugal.reshape((n_envs, -[94m1[39;49;00m)).T[90m[39;49;00m
+        expected_rhs = raw - oracle.mr @ np.linalg.solve(oracle.gram, oracle.r.T @ raw)[90m[39;49;00m
+        np.testing.assert_allclose(rhs, expected_rhs, atol=[94m2e-16[39;49;00m)[90m[39;49;00m
+        free = np.setdiff1d(np.arange(oracle.ndof), qd_to_numpy(model.info.pins))[90m[39;49;00m
+        displacement = np.zeros_like(rhs)[90m[39;49;00m
+        displacement[free] = splu(oracle.k[free][:, free].tocsc()).solve(rhs[free])[90m[39;49;00m
+        peak_scan = P2Peak(oracle.glambda, oracle.elements, model.options.young / ([94m2.0[39;49;00m * ([94m1.0[39;49;00m + model.options.poisson)))[90m[39;49;00m
+        peak = np.array([peak_scan(displacement[:, i])[[94m0[39;49;00m] [94mfor[39;49;00m i [95min[39;49;00m [96mrange[39;49;00m(n_envs)])[90m[39;49;00m
+        np.testing.assert_allclose(qd_to_numpy(state.peak), peak, rtol=[94m1e-4[39;49;00m, atol=[94m1e-3[39;49;00m)[90m[39;49;00m
+        cached_peak = qd_to_numpy(state.peak, copy=[94mTrue[39;49;00m)[90m[39;49;00m
+        [94mfrom[39;49;00m[90m [39;49;00m[04m[96mgenesis[39;49;00m[04m[96m.[39;49;00m[04m[96mengine[39;49;00m[04m[96m.[39;49;00m[04m[96msolvers[39;49;00m[04m[96m.[39;49;00m[04m[96mrigid[39;49;00m[04m[96m.[39;49;00m[04m[96mstress[39;49;00m[04m[96m.[39;49;00m[04m[96msolve[39;49;00m[90m [39;49;00m[94mimport[39;49;00m kernel_peak[90m[39;49;00m
+    [90m[39;49;00m
+        kernel_peak(model.options.young, model.options.poisson, state, model.info, [94mFalse[39;49;00m)[90m[39;49;00m
+>       np.testing.assert_array_equal(qd_to_numpy(state.peak), cached_peak)[90m[39;49;00m
+[1m[31mE       AssertionError: [0m
+[1m[31mE       Arrays are not equal[0m
+[1m[31mE       [0m
+[1m[31mE       Mismatched elements: 4 / 5 (80%)[0m
+[1m[31mE       Max absolute difference among violations: 3.63797881e-10[0m
+[1m[31mE       Max relative difference among violations: 6.43781857e-15[0m
+[1m[31mE        ACTUAL: array([    0.      , 40101.220958, 61991.770118, 56509.495669,[0m
+[1m[31mE              50791.015493])[0m
+[1m[31mE        DESIRED: array([    0.      , 40101.220958, 61991.770118, 56509.495669,[0m
+[1m[31mE              50791.015493])[0m
+
+[1m[31mtests/rigid/test_stress.py[0m:109: AssertionError
+[31m[1m_ test_native_batched_recovery_against_full_fp64_direct[direct-True-64-2-False] _[0m
+
+tmp_path = PosixPath('/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-contact-repair/tmp/pytest-of-zhaofeng/pytest-14/test_native_batched_recovery_a1')
+method = 'direct', cooperative = True, inverse_precision = '64'
+inverse_corrections = 2, surface_load = False
+
+    [0m[37m@pytest[39;49;00m.mark.required[90m[39;49;00m
+    [37m@pytest[39;49;00m.mark.precision([33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [37m@pytest[39;49;00m.mark.parametrize([90m[39;49;00m
+        [33m"[39;49;00m[33mmethod,cooperative,inverse_precision,inverse_corrections,surface_load[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+        ([90m[39;49;00m
+            ([33m"[39;49;00m[33mdirect[39;49;00m[33m"[39;49;00m, [94mFalse[39;49;00m, [33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m, [94m2[39;49;00m, [94mFalse[39;49;00m),[90m[39;49;00m
+            ([33m"[39;49;00m[33mdirect[39;49;00m[33m"[39;49;00m, [94mTrue[39;49;00m, [33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m, [94m2[39;49;00m, [94mFalse[39;49;00m),[90m[39;49;00m
+            ([33m"[39;49;00m[33minverse[39;49;00m[33m"[39;49;00m, [94mTrue[39;49;00m, [33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m, [94m2[39;49;00m, [94mFalse[39;49;00m),[90m[39;49;00m
+            ([33m"[39;49;00m[33minverse[39;49;00m[33m"[39;49;00m, [94mTrue[39;49;00m, [33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m, [94m2[39;49;00m, [94mTrue[39;49;00m),[90m[39;49;00m
+            ([33m"[39;49;00m[33minverse[39;49;00m[33m"[39;49;00m, [94mTrue[39;49;00m, [33m"[39;49;00m[33m32[39;49;00m[33m"[39;49;00m, [94m2[39;49;00m, [94mFalse[39;49;00m),[90m[39;49;00m
+            ([33m"[39;49;00m[33minverse[39;49;00m[33m"[39;49;00m, [94mTrue[39;49;00m, [33m"[39;49;00m[33m32[39;49;00m[33m"[39;49;00m, [94m0[39;49;00m, [94mFalse[39;49;00m),[90m[39;49;00m
+        ),[90m[39;49;00m
+    )[90m[39;49;00m
+    [94mdef[39;49;00m[90m [39;49;00m[92mtest_native_batched_recovery_against_full_fp64_direct[39;49;00m([90m[39;49;00m
+        tmp_path, method, cooperative, inverse_precision, inverse_corrections, surface_load[90m[39;49;00m
+    ):[90m[39;49;00m
+        vertices, tetrahedra, surface, _ = shell_mesh([94m1[39;49;00m, [94m2[39;49;00m, [94m0.0005[39;49;00m)[90m[39;49;00m
+        mesh = tmp_path / [33m"[39;49;00m[33mshell.npz[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=surface)[90m[39;49;00m
+        model = StressModel([90m[39;49;00m
+            RigidStressOptions([90m[39;49;00m
+                mesh=mesh,[90m[39;49;00m
+                tolerance=[94m1e-7[39;49;00m,[90m[39;49;00m
+                max_iterations=[94m4000[39;49;00m,[90m[39;49;00m
+                cooperative_solve=cooperative,[90m[39;49;00m
+                method=method,[90m[39;49;00m
+                inverse_precision=inverse_precision,[90m[39;49;00m
+                inverse_corrections=inverse_corrections,[90m[39;49;00m
+            )[90m[39;49;00m
+        )[90m[39;49;00m
+        oracle = P2Shell(vertices, tetrahedra, surface, [94m1e10[39;49;00m, [94m0.3[39;49;00m, [94m2000.0[39;49;00m, [94m2[39;49;00m, factor_backend=[33m"[39;49;00m[33mnone[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        n_envs = [94m5[39;49;00m[90m[39;49;00m
+        state = model.create_state(n_envs)[90m[39;49;00m
+        random = np.random.default_rng([94m8231[39;49;00m)[90m[39;49;00m
+        force = random.normal(size=([96mlen[39;49;00m(oracle.xyz), n_envs, [94m3[39;49;00m)) * [94m0.01[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m surface_load:[90m[39;49;00m
+            interior = np.setdiff1d(np.arange([96mlen[39;49;00m(force)), np.unique(qd_to_numpy(model.info.surface_nodes)))[90m[39;49;00m
+            force[interior] = [94m0.0[39;49;00m[90m[39;49;00m
+        force[:, [94m0[39;49;00m] = [94m0.0[39;49;00m[90m[39;49;00m
+        angular_velocity = random.normal(size=(n_envs, [94m3[39;49;00m)) * [94m2.0[39;49;00m[90m[39;49;00m
+        angular_velocity[[94m0[39;49;00m] = [94m0.0[39;49;00m[90m[39;49;00m
+        state.force.from_numpy(force)[90m[39;49;00m
+        omega = V_VEC([94m3[39;49;00m, dtype=gs.qd_float, shape=(n_envs,))[90m[39;49;00m
+        omega.from_numpy(angular_velocity)[90m[39;49;00m
+        model.recover(omega, state, surface_load=surface_load)[90m[39;49;00m
+        rhs = qd_to_numpy(state.rhs, transpose=[94mTrue[39;49;00m).reshape((n_envs, -[94m1[39;49;00m)).T[90m[39;49;00m
+        relative = oracle.xyz - oracle.com[90m[39;49;00m
+        centrifugal = -np.cross(angular_velocity[:, [94mNone[39;49;00m], np.cross(angular_velocity[:, [94mNone[39;49;00m], relative[[94mNone[39;49;00m]))[90m[39;49;00m
+        raw = force.transpose(([94m1[39;49;00m, [94m0[39;49;00m, [94m2[39;49;00m)).reshape((n_envs, -[94m1[39;49;00m)).T + oracle.m @ centrifugal.reshape((n_envs, -[94m1[39;49;00m)).T[90m[39;49;00m
+        expected_rhs = raw - oracle.mr @ np.linalg.solve(oracle.gram, oracle.r.T @ raw)[90m[39;49;00m
+        np.testing.assert_allclose(rhs, expected_rhs, atol=[94m2e-16[39;49;00m)[90m[39;49;00m
+        free = np.setdiff1d(np.arange(oracle.ndof), qd_to_numpy(model.info.pins))[90m[39;49;00m
+        displacement = np.zeros_like(rhs)[90m[39;49;00m
+        displacement[free] = splu(oracle.k[free][:, free].tocsc()).solve(rhs[free])[90m[39;49;00m
+        peak_scan = P2Peak(oracle.glambda, oracle.elements, model.options.young / ([94m2.0[39;49;00m * ([94m1.0[39;49;00m + model.options.poisson)))[90m[39;49;00m
+        peak = np.array([peak_scan(displacement[:, i])[[94m0[39;49;00m] [94mfor[39;49;00m i [95min[39;49;00m [96mrange[39;49;00m(n_envs)])[90m[39;49;00m
+        np.testing.assert_allclose(qd_to_numpy(state.peak), peak, rtol=[94m1e-4[39;49;00m, atol=[94m1e-3[39;49;00m)[90m[39;49;00m
+        cached_peak = qd_to_numpy(state.peak, copy=[94mTrue[39;49;00m)[90m[39;49;00m
+        [94mfrom[39;49;00m[90m [39;49;00m[04m[96mgenesis[39;49;00m[04m[96m.[39;49;00m[04m[96mengine[39;49;00m[04m[96m.[39;49;00m[04m[96msolvers[39;49;00m[04m[96m.[39;49;00m[04m[96mrigid[39;49;00m[04m[96m.[39;49;00m[04m[96mstress[39;49;00m[04m[96m.[39;49;00m[04m[96msolve[39;49;00m[90m [39;49;00m[94mimport[39;49;00m kernel_peak[90m[39;49;00m
+    [90m[39;49;00m
+        kernel_peak(model.options.young, model.options.poisson, state, model.info, [94mFalse[39;49;00m)[90m[39;49;00m
+>       np.testing.assert_array_equal(qd_to_numpy(state.peak), cached_peak)[90m[39;49;00m
+[1m[31mE       AssertionError: [0m
+[1m[31mE       Arrays are not equal[0m
+[1m[31mE       [0m
+[1m[31mE       Mismatched elements: 4 / 5 (80%)[0m
+[1m[31mE       Max absolute difference among violations: 3.63797881e-10[0m
+[1m[31mE       Max relative difference among violations: 6.43781857e-15[0m
+[1m[31mE        ACTUAL: array([    0.      , 40101.220958, 61991.770118, 56509.495669,[0m
+[1m[31mE              50791.015493])[0m
+[1m[31mE        DESIRED: array([    0.      , 40101.220958, 61991.770118, 56509.495669,[0m
+[1m[31mE              50791.015493])[0m
+
+[1m[31mtests/rigid/test_stress.py[0m:109: AssertionError
+[31m[1m_ test_native_batched_recovery_against_full_fp64_direct[inverse-True-64-2-False] _[0m
+
+tmp_path = PosixPath('/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-contact-repair/tmp/pytest-of-zhaofeng/pytest-14/test_native_batched_recovery_a2')
+method = 'inverse', cooperative = True, inverse_precision = '64'
+inverse_corrections = 2, surface_load = False
+
+    [0m[37m@pytest[39;49;00m.mark.required[90m[39;49;00m
+    [37m@pytest[39;49;00m.mark.precision([33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [37m@pytest[39;49;00m.mark.parametrize([90m[39;49;00m
+        [33m"[39;49;00m[33mmethod,cooperative,inverse_precision,inverse_corrections,surface_load[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+        ([90m[39;49;00m
+            ([33m"[39;49;00m[33mdirect[39;49;00m[33m"[39;49;00m, [94mFalse[39;49;00m, [33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m, [94m2[39;49;00m, [94mFalse[39;49;00m),[90m[39;49;00m
+            ([33m"[39;49;00m[33mdirect[39;49;00m[33m"[39;49;00m, [94mTrue[39;49;00m, [33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m, [94m2[39;49;00m, [94mFalse[39;49;00m),[90m[39;49;00m
+            ([33m"[39;49;00m[33minverse[39;49;00m[33m"[39;49;00m, [94mTrue[39;49;00m, [33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m, [94m2[39;49;00m, [94mFalse[39;49;00m),[90m[39;49;00m
+            ([33m"[39;49;00m[33minverse[39;49;00m[33m"[39;49;00m, [94mTrue[39;49;00m, [33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m, [94m2[39;49;00m, [94mTrue[39;49;00m),[90m[39;49;00m
+            ([33m"[39;49;00m[33minverse[39;49;00m[33m"[39;49;00m, [94mTrue[39;49;00m, [33m"[39;49;00m[33m32[39;49;00m[33m"[39;49;00m, [94m2[39;49;00m, [94mFalse[39;49;00m),[90m[39;49;00m
+            ([33m"[39;49;00m[33minverse[39;49;00m[33m"[39;49;00m, [94mTrue[39;49;00m, [33m"[39;49;00m[33m32[39;49;00m[33m"[39;49;00m, [94m0[39;49;00m, [94mFalse[39;49;00m),[90m[39;49;00m
+        ),[90m[39;49;00m
+    )[90m[39;49;00m
+    [94mdef[39;49;00m[90m [39;49;00m[92mtest_native_batched_recovery_against_full_fp64_direct[39;49;00m([90m[39;49;00m
+        tmp_path, method, cooperative, inverse_precision, inverse_corrections, surface_load[90m[39;49;00m
+    ):[90m[39;49;00m
+        vertices, tetrahedra, surface, _ = shell_mesh([94m1[39;49;00m, [94m2[39;49;00m, [94m0.0005[39;49;00m)[90m[39;49;00m
+        mesh = tmp_path / [33m"[39;49;00m[33mshell.npz[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=surface)[90m[39;49;00m
+        model = StressModel([90m[39;49;00m
+            RigidStressOptions([90m[39;49;00m
+                mesh=mesh,[90m[39;49;00m
+                tolerance=[94m1e-7[39;49;00m,[90m[39;49;00m
+                max_iterations=[94m4000[39;49;00m,[90m[39;49;00m
+                cooperative_solve=cooperative,[90m[39;49;00m
+                method=method,[90m[39;49;00m
+                inverse_precision=inverse_precision,[90m[39;49;00m
+                inverse_corrections=inverse_corrections,[90m[39;49;00m
+            )[90m[39;49;00m
+        )[90m[39;49;00m
+        oracle = P2Shell(vertices, tetrahedra, surface, [94m1e10[39;49;00m, [94m0.3[39;49;00m, [94m2000.0[39;49;00m, [94m2[39;49;00m, factor_backend=[33m"[39;49;00m[33mnone[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        n_envs = [94m5[39;49;00m[90m[39;49;00m
+        state = model.create_state(n_envs)[90m[39;49;00m
+        random = np.random.default_rng([94m8231[39;49;00m)[90m[39;49;00m
+        force = random.normal(size=([96mlen[39;49;00m(oracle.xyz), n_envs, [94m3[39;49;00m)) * [94m0.01[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m surface_load:[90m[39;49;00m
+            interior = np.setdiff1d(np.arange([96mlen[39;49;00m(force)), np.unique(qd_to_numpy(model.info.surface_nodes)))[90m[39;49;00m
+            force[interior] = [94m0.0[39;49;00m[90m[39;49;00m
+        force[:, [94m0[39;49;00m] = [94m0.0[39;49;00m[90m[39;49;00m
+        angular_velocity = random.normal(size=(n_envs, [94m3[39;49;00m)) * [94m2.0[39;49;00m[90m[39;49;00m
+        angular_velocity[[94m0[39;49;00m] = [94m0.0[39;49;00m[90m[39;49;00m
+        state.force.from_numpy(force)[90m[39;49;00m
+        omega = V_VEC([94m3[39;49;00m, dtype=gs.qd_float, shape=(n_envs,))[90m[39;49;00m
+        omega.from_numpy(angular_velocity)[90m[39;49;00m
+        model.recover(omega, state, surface_load=surface_load)[90m[39;49;00m
+        rhs = qd_to_numpy(state.rhs, transpose=[94mTrue[39;49;00m).reshape((n_envs, -[94m1[39;49;00m)).T[90m[39;49;00m
+        relative = oracle.xyz - oracle.com[90m[39;49;00m
+        centrifugal = -np.cross(angular_velocity[:, [94mNone[39;49;00m], np.cross(angular_velocity[:, [94mNone[39;49;00m], relative[[94mNone[39;49;00m]))[90m[39;49;00m
+        raw = force.transpose(([94m1[39;49;00m, [94m0[39;49;00m, [94m2[39;49;00m)).reshape((n_envs, -[94m1[39;49;00m)).T + oracle.m @ centrifugal.reshape((n_envs, -[94m1[39;49;00m)).T[90m[39;49;00m
+        expected_rhs = raw - oracle.mr @ np.linalg.solve(oracle.gram, oracle.r.T @ raw)[90m[39;49;00m
+        np.testing.assert_allclose(rhs, expected_rhs, atol=[94m2e-16[39;49;00m)[90m[39;49;00m
+        free = np.setdiff1d(np.arange(oracle.ndof), qd_to_numpy(model.info.pins))[90m[39;49;00m
+        displacement = np.zeros_like(rhs)[90m[39;49;00m
+        displacement[free] = splu(oracle.k[free][:, free].tocsc()).solve(rhs[free])[90m[39;49;00m
+        peak_scan = P2Peak(oracle.glambda, oracle.elements, model.options.young / ([94m2.0[39;49;00m * ([94m1.0[39;49;00m + model.options.poisson)))[90m[39;49;00m
+        peak = np.array([peak_scan(displacement[:, i])[[94m0[39;49;00m] [94mfor[39;49;00m i [95min[39;49;00m [96mrange[39;49;00m(n_envs)])[90m[39;49;00m
+        np.testing.assert_allclose(qd_to_numpy(state.peak), peak, rtol=[94m1e-4[39;49;00m, atol=[94m1e-3[39;49;00m)[90m[39;49;00m
+        cached_peak = qd_to_numpy(state.peak, copy=[94mTrue[39;49;00m)[90m[39;49;00m
+        [94mfrom[39;49;00m[90m [39;49;00m[04m[96mgenesis[39;49;00m[04m[96m.[39;49;00m[04m[96mengine[39;49;00m[04m[96m.[39;49;00m[04m[96msolvers[39;49;00m[04m[96m.[39;49;00m[04m[96mrigid[39;49;00m[04m[96m.[39;49;00m[04m[96mstress[39;49;00m[04m[96m.[39;49;00m[04m[96msolve[39;49;00m[90m [39;49;00m[94mimport[39;49;00m kernel_peak[90m[39;49;00m
+    [90m[39;49;00m
+        kernel_peak(model.options.young, model.options.poisson, state, model.info, [94mFalse[39;49;00m)[90m[39;49;00m
+>       np.testing.assert_array_equal(qd_to_numpy(state.peak), cached_peak)[90m[39;49;00m
+[1m[31mE       AssertionError: [0m
+[1m[31mE       Arrays are not equal[0m
+[1m[31mE       [0m
+[1m[31mE       Mismatched elements: 4 / 5 (80%)[0m
+[1m[31mE       Max absolute difference among violations: 1.01863407e-10[0m
+[1m[31mE       Max relative difference among violations: 2.00553987e-15[0m
+[1m[31mE        ACTUAL: array([    0.      , 40101.220958, 61991.770118, 56509.495669,[0m
+[1m[31mE              50791.015493])[0m
+[1m[31mE        DESIRED: array([    0.      , 40101.220958, 61991.770118, 56509.495669,[0m
+[1m[31mE              50791.015493])[0m
+
+[1m[31mtests/rigid/test_stress.py[0m:109: AssertionError
+[31m[1m_ test_native_batched_recovery_against_full_fp64_direct[inverse-True-64-2-True] _[0m
+
+tmp_path = PosixPath('/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-contact-repair/tmp/pytest-of-zhaofeng/pytest-14/test_native_batched_recovery_a3')
+method = 'inverse', cooperative = True, inverse_precision = '64'
+inverse_corrections = 2, surface_load = True
+
+    [0m[37m@pytest[39;49;00m.mark.required[90m[39;49;00m
+    [37m@pytest[39;49;00m.mark.precision([33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [37m@pytest[39;49;00m.mark.parametrize([90m[39;49;00m
+        [33m"[39;49;00m[33mmethod,cooperative,inverse_precision,inverse_corrections,surface_load[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+        ([90m[39;49;00m
+            ([33m"[39;49;00m[33mdirect[39;49;00m[33m"[39;49;00m, [94mFalse[39;49;00m, [33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m, [94m2[39;49;00m, [94mFalse[39;49;00m),[90m[39;49;00m
+            ([33m"[39;49;00m[33mdirect[39;49;00m[33m"[39;49;00m, [94mTrue[39;49;00m, [33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m, [94m2[39;49;00m, [94mFalse[39;49;00m),[90m[39;49;00m
+            ([33m"[39;49;00m[33minverse[39;49;00m[33m"[39;49;00m, [94mTrue[39;49;00m, [33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m, [94m2[39;49;00m, [94mFalse[39;49;00m),[90m[39;49;00m
+            ([33m"[39;49;00m[33minverse[39;49;00m[33m"[39;49;00m, [94mTrue[39;49;00m, [33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m, [94m2[39;49;00m, [94mTrue[39;49;00m),[90m[39;49;00m
+            ([33m"[39;49;00m[33minverse[39;49;00m[33m"[39;49;00m, [94mTrue[39;49;00m, [33m"[39;49;00m[33m32[39;49;00m[33m"[39;49;00m, [94m2[39;49;00m, [94mFalse[39;49;00m),[90m[39;49;00m
+            ([33m"[39;49;00m[33minverse[39;49;00m[33m"[39;49;00m, [94mTrue[39;49;00m, [33m"[39;49;00m[33m32[39;49;00m[33m"[39;49;00m, [94m0[39;49;00m, [94mFalse[39;49;00m),[90m[39;49;00m
+        ),[90m[39;49;00m
+    )[90m[39;49;00m
+    [94mdef[39;49;00m[90m [39;49;00m[92mtest_native_batched_recovery_against_full_fp64_direct[39;49;00m([90m[39;49;00m
+        tmp_path, method, cooperative, inverse_precision, inverse_corrections, surface_load[90m[39;49;00m
+    ):[90m[39;49;00m
+        vertices, tetrahedra, surface, _ = shell_mesh([94m1[39;49;00m, [94m2[39;49;00m, [94m0.0005[39;49;00m)[90m[39;49;00m
+        mesh = tmp_path / [33m"[39;49;00m[33mshell.npz[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=surface)[90m[39;49;00m
+        model = StressModel([90m[39;49;00m
+            RigidStressOptions([90m[39;49;00m
+                mesh=mesh,[90m[39;49;00m
+                tolerance=[94m1e-7[39;49;00m,[90m[39;49;00m
+                max_iterations=[94m4000[39;49;00m,[90m[39;49;00m
+                cooperative_solve=cooperative,[90m[39;49;00m
+                method=method,[90m[39;49;00m
+                inverse_precision=inverse_precision,[90m[39;49;00m
+                inverse_corrections=inverse_corrections,[90m[39;49;00m
+            )[90m[39;49;00m
+        )[90m[39;49;00m
+        oracle = P2Shell(vertices, tetrahedra, surface, [94m1e10[39;49;00m, [94m0.3[39;49;00m, [94m2000.0[39;49;00m, [94m2[39;49;00m, factor_backend=[33m"[39;49;00m[33mnone[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        n_envs = [94m5[39;49;00m[90m[39;49;00m
+        state = model.create_state(n_envs)[90m[39;49;00m
+        random = np.random.default_rng([94m8231[39;49;00m)[90m[39;49;00m
+        force = random.normal(size=([96mlen[39;49;00m(oracle.xyz), n_envs, [94m3[39;49;00m)) * [94m0.01[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m surface_load:[90m[39;49;00m
+            interior = np.setdiff1d(np.arange([96mlen[39;49;00m(force)), np.unique(qd_to_numpy(model.info.surface_nodes)))[90m[39;49;00m
+            force[interior] = [94m0.0[39;49;00m[90m[39;49;00m
+        force[:, [94m0[39;49;00m] = [94m0.0[39;49;00m[90m[39;49;00m
+        angular_velocity = random.normal(size=(n_envs, [94m3[39;49;00m)) * [94m2.0[39;49;00m[90m[39;49;00m
+        angular_velocity[[94m0[39;49;00m] = [94m0.0[39;49;00m[90m[39;49;00m
+        state.force.from_numpy(force)[90m[39;49;00m
+        omega = V_VEC([94m3[39;49;00m, dtype=gs.qd_float, shape=(n_envs,))[90m[39;49;00m
+        omega.from_numpy(angular_velocity)[90m[39;49;00m
+        model.recover(omega, state, surface_load=surface_load)[90m[39;49;00m
+        rhs = qd_to_numpy(state.rhs, transpose=[94mTrue[39;49;00m).reshape((n_envs, -[94m1[39;49;00m)).T[90m[39;49;00m
+        relative = oracle.xyz - oracle.com[90m[39;49;00m
+        centrifugal = -np.cross(angular_velocity[:, [94mNone[39;49;00m], np.cross(angular_velocity[:, [94mNone[39;49;00m], relative[[94mNone[39;49;00m]))[90m[39;49;00m
+        raw = force.transpose(([94m1[39;49;00m, [94m0[39;49;00m, [94m2[39;49;00m)).reshape((n_envs, -[94m1[39;49;00m)).T + oracle.m @ centrifugal.reshape((n_envs, -[94m1[39;49;00m)).T[90m[39;49;00m
+        expected_rhs = raw - oracle.mr @ np.linalg.solve(oracle.gram, oracle.r.T @ raw)[90m[39;49;00m
+        np.testing.assert_allclose(rhs, expected_rhs, atol=[94m2e-16[39;49;00m)[90m[39;49;00m
+        free = np.setdiff1d(np.arange(oracle.ndof), qd_to_numpy(model.info.pins))[90m[39;49;00m
+        displacement = np.zeros_like(rhs)[90m[39;49;00m
+        displacement[free] = splu(oracle.k[free][:, free].tocsc()).solve(rhs[free])[90m[39;49;00m
+        peak_scan = P2Peak(oracle.glambda, oracle.elements, model.options.young / ([94m2.0[39;49;00m * ([94m1.0[39;49;00m + model.options.poisson)))[90m[39;49;00m
+        peak = np.array([peak_scan(displacement[:, i])[[94m0[39;49;00m] [94mfor[39;49;00m i [95min[39;49;00m [96mrange[39;49;00m(n_envs)])[90m[39;49;00m
+        np.testing.assert_allclose(qd_to_numpy(state.peak), peak, rtol=[94m1e-4[39;49;00m, atol=[94m1e-3[39;49;00m)[90m[39;49;00m
+        cached_peak = qd_to_numpy(state.peak, copy=[94mTrue[39;49;00m)[90m[39;49;00m
+        [94mfrom[39;49;00m[90m [39;49;00m[04m[96mgenesis[39;49;00m[04m[96m.[39;49;00m[04m[96mengine[39;49;00m[04m[96m.[39;49;00m[04m[96msolvers[39;49;00m[04m[96m.[39;49;00m[04m[96mrigid[39;49;00m[04m[96m.[39;49;00m[04m[96mstress[39;49;00m[04m[96m.[39;49;00m[04m[96msolve[39;49;00m[90m [39;49;00m[94mimport[39;49;00m kernel_peak[90m[39;49;00m
+    [90m[39;49;00m
+        kernel_peak(model.options.young, model.options.poisson, state, model.info, [94mFalse[39;49;00m)[90m[39;49;00m
+>       np.testing.assert_array_equal(qd_to_numpy(state.peak), cached_peak)[90m[39;49;00m
+[1m[31mE       AssertionError: [0m
+[1m[31mE       Arrays are not equal[0m
+[1m[31mE       [0m
+[1m[31mE       Mismatched elements: 3 / 5 (60%)[0m
+[1m[31mE       Max absolute difference among violations: 2.54658516e-10[0m
+[1m[31mE       Max relative difference among violations: 9.08800493e-15[0m
+[1m[31mE        ACTUAL: array([    0.      , 28021.38845 , 27201.182679, 23110.173248,[0m
+[1m[31mE              28178.282015])[0m
+[1m[31mE        DESIRED: array([    0.      , 28021.38845 , 27201.182679, 23110.173248,[0m
+[1m[31mE              28178.282015])[0m
+
+[1m[31mtests/rigid/test_stress.py[0m:109: AssertionError
+[31m[1m_ test_native_batched_recovery_against_full_fp64_direct[inverse-True-32-2-False] _[0m
+
+tmp_path = PosixPath('/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-contact-repair/tmp/pytest-of-zhaofeng/pytest-14/test_native_batched_recovery_a4')
+method = 'inverse', cooperative = True, inverse_precision = '32'
+inverse_corrections = 2, surface_load = False
+
+    [0m[37m@pytest[39;49;00m.mark.required[90m[39;49;00m
+    [37m@pytest[39;49;00m.mark.precision([33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [37m@pytest[39;49;00m.mark.parametrize([90m[39;49;00m
+        [33m"[39;49;00m[33mmethod,cooperative,inverse_precision,inverse_corrections,surface_load[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+        ([90m[39;49;00m
+            ([33m"[39;49;00m[33mdirect[39;49;00m[33m"[39;49;00m, [94mFalse[39;49;00m, [33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m, [94m2[39;49;00m, [94mFalse[39;49;00m),[90m[39;49;00m
+            ([33m"[39;49;00m[33mdirect[39;49;00m[33m"[39;49;00m, [94mTrue[39;49;00m, [33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m, [94m2[39;49;00m, [94mFalse[39;49;00m),[90m[39;49;00m
+            ([33m"[39;49;00m[33minverse[39;49;00m[33m"[39;49;00m, [94mTrue[39;49;00m, [33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m, [94m2[39;49;00m, [94mFalse[39;49;00m),[90m[39;49;00m
+            ([33m"[39;49;00m[33minverse[39;49;00m[33m"[39;49;00m, [94mTrue[39;49;00m, [33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m, [94m2[39;49;00m, [94mTrue[39;49;00m),[90m[39;49;00m
+            ([33m"[39;49;00m[33minverse[39;49;00m[33m"[39;49;00m, [94mTrue[39;49;00m, [33m"[39;49;00m[33m32[39;49;00m[33m"[39;49;00m, [94m2[39;49;00m, [94mFalse[39;49;00m),[90m[39;49;00m
+            ([33m"[39;49;00m[33minverse[39;49;00m[33m"[39;49;00m, [94mTrue[39;49;00m, [33m"[39;49;00m[33m32[39;49;00m[33m"[39;49;00m, [94m0[39;49;00m, [94mFalse[39;49;00m),[90m[39;49;00m
+        ),[90m[39;49;00m
+    )[90m[39;49;00m
+    [94mdef[39;49;00m[90m [39;49;00m[92mtest_native_batched_recovery_against_full_fp64_direct[39;49;00m([90m[39;49;00m
+        tmp_path, method, cooperative, inverse_precision, inverse_corrections, surface_load[90m[39;49;00m
+    ):[90m[39;49;00m
+        vertices, tetrahedra, surface, _ = shell_mesh([94m1[39;49;00m, [94m2[39;49;00m, [94m0.0005[39;49;00m)[90m[39;49;00m
+        mesh = tmp_path / [33m"[39;49;00m[33mshell.npz[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=surface)[90m[39;49;00m
+        model = StressModel([90m[39;49;00m
+            RigidStressOptions([90m[39;49;00m
+                mesh=mesh,[90m[39;49;00m
+                tolerance=[94m1e-7[39;49;00m,[90m[39;49;00m
+                max_iterations=[94m4000[39;49;00m,[90m[39;49;00m
+                cooperative_solve=cooperative,[90m[39;49;00m
+                method=method,[90m[39;49;00m
+                inverse_precision=inverse_precision,[90m[39;49;00m
+                inverse_corrections=inverse_corrections,[90m[39;49;00m
+            )[90m[39;49;00m
+        )[90m[39;49;00m
+        oracle = P2Shell(vertices, tetrahedra, surface, [94m1e10[39;49;00m, [94m0.3[39;49;00m, [94m2000.0[39;49;00m, [94m2[39;49;00m, factor_backend=[33m"[39;49;00m[33mnone[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        n_envs = [94m5[39;49;00m[90m[39;49;00m
+        state = model.create_state(n_envs)[90m[39;49;00m
+        random = np.random.default_rng([94m8231[39;49;00m)[90m[39;49;00m
+        force = random.normal(size=([96mlen[39;49;00m(oracle.xyz), n_envs, [94m3[39;49;00m)) * [94m0.01[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m surface_load:[90m[39;49;00m
+            interior = np.setdiff1d(np.arange([96mlen[39;49;00m(force)), np.unique(qd_to_numpy(model.info.surface_nodes)))[90m[39;49;00m
+            force[interior] = [94m0.0[39;49;00m[90m[39;49;00m
+        force[:, [94m0[39;49;00m] = [94m0.0[39;49;00m[90m[39;49;00m
+        angular_velocity = random.normal(size=(n_envs, [94m3[39;49;00m)) * [94m2.0[39;49;00m[90m[39;49;00m
+        angular_velocity[[94m0[39;49;00m] = [94m0.0[39;49;00m[90m[39;49;00m
+        state.force.from_numpy(force)[90m[39;49;00m
+        omega = V_VEC([94m3[39;49;00m, dtype=gs.qd_float, shape=(n_envs,))[90m[39;49;00m
+        omega.from_numpy(angular_velocity)[90m[39;49;00m
+        model.recover(omega, state, surface_load=surface_load)[90m[39;49;00m
+        rhs = qd_to_numpy(state.rhs, transpose=[94mTrue[39;49;00m).reshape((n_envs, -[94m1[39;49;00m)).T[90m[39;49;00m
+        relative = oracle.xyz - oracle.com[90m[39;49;00m
+        centrifugal = -np.cross(angular_velocity[:, [94mNone[39;49;00m], np.cross(angular_velocity[:, [94mNone[39;49;00m], relative[[94mNone[39;49;00m]))[90m[39;49;00m
+        raw = force.transpose(([94m1[39;49;00m, [94m0[39;49;00m, [94m2[39;49;00m)).reshape((n_envs, -[94m1[39;49;00m)).T + oracle.m @ centrifugal.reshape((n_envs, -[94m1[39;49;00m)).T[90m[39;49;00m
+        expected_rhs = raw - oracle.mr @ np.linalg.solve(oracle.gram, oracle.r.T @ raw)[90m[39;49;00m
+        np.testing.assert_allclose(rhs, expected_rhs, atol=[94m2e-16[39;49;00m)[90m[39;49;00m
+        free = np.setdiff1d(np.arange(oracle.ndof), qd_to_numpy(model.info.pins))[90m[39;49;00m
+        displacement = np.zeros_like(rhs)[90m[39;49;00m
+        displacement[free] = splu(oracle.k[free][:, free].tocsc()).solve(rhs[free])[90m[39;49;00m
+        peak_scan = P2Peak(oracle.glambda, oracle.elements, model.options.young / ([94m2.0[39;49;00m * ([94m1.0[39;49;00m + model.options.poisson)))[90m[39;49;00m
+        peak = np.array([peak_scan(displacement[:, i])[[94m0[39;49;00m] [94mfor[39;49;00m i [95min[39;49;00m [96mrange[39;49;00m(n_envs)])[90m[39;49;00m
+        np.testing.assert_allclose(qd_to_numpy(state.peak), peak, rtol=[94m1e-4[39;49;00m, atol=[94m1e-3[39;49;00m)[90m[39;49;00m
+        cached_peak = qd_to_numpy(state.peak, copy=[94mTrue[39;49;00m)[90m[39;49;00m
+        [94mfrom[39;49;00m[90m [39;49;00m[04m[96mgenesis[39;49;00m[04m[96m.[39;49;00m[04m[96mengine[39;49;00m[04m[96m.[39;49;00m[04m[96msolvers[39;49;00m[04m[96m.[39;49;00m[04m[96mrigid[39;49;00m[04m[96m.[39;49;00m[04m[96mstress[39;49;00m[04m[96m.[39;49;00m[04m[96msolve[39;49;00m[90m [39;49;00m[94mimport[39;49;00m kernel_peak[90m[39;49;00m
+    [90m[39;49;00m
+        kernel_peak(model.options.young, model.options.poisson, state, model.info, [94mFalse[39;49;00m)[90m[39;49;00m
+>       np.testing.assert_array_equal(qd_to_numpy(state.peak), cached_peak)[90m[39;49;00m
+[1m[31mE       AssertionError: [0m
+[1m[31mE       Arrays are not equal[0m
+[1m[31mE       [0m
+[1m[31mE       Mismatched elements: 3 / 5 (60%)[0m
+[1m[31mE       Max absolute difference among violations: 1.45519152e-10[0m
+[1m[31mE       Max relative difference among violations: 2.57512743e-15[0m
+[1m[31mE        ACTUAL: array([    0.      , 40101.220958, 61991.770118, 56509.495668,[0m
+[1m[31mE              50791.015494])[0m
+[1m[31mE        DESIRED: array([    0.      , 40101.220958, 61991.770118, 56509.495668,[0m
+[1m[31mE              50791.015494])[0m
+
+[1m[31mtests/rigid/test_stress.py[0m:109: AssertionError
+[31m[1m_ test_native_batched_recovery_against_full_fp64_direct[inverse-True-32-0-False] _[0m
+
+tmp_path = PosixPath('/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-contact-repair/tmp/pytest-of-zhaofeng/pytest-14/test_native_batched_recovery_a5')
+method = 'inverse', cooperative = True, inverse_precision = '32'
+inverse_corrections = 0, surface_load = False
+
+    [0m[37m@pytest[39;49;00m.mark.required[90m[39;49;00m
+    [37m@pytest[39;49;00m.mark.precision([33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [37m@pytest[39;49;00m.mark.parametrize([90m[39;49;00m
+        [33m"[39;49;00m[33mmethod,cooperative,inverse_precision,inverse_corrections,surface_load[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+        ([90m[39;49;00m
+            ([33m"[39;49;00m[33mdirect[39;49;00m[33m"[39;49;00m, [94mFalse[39;49;00m, [33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m, [94m2[39;49;00m, [94mFalse[39;49;00m),[90m[39;49;00m
+            ([33m"[39;49;00m[33mdirect[39;49;00m[33m"[39;49;00m, [94mTrue[39;49;00m, [33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m, [94m2[39;49;00m, [94mFalse[39;49;00m),[90m[39;49;00m
+            ([33m"[39;49;00m[33minverse[39;49;00m[33m"[39;49;00m, [94mTrue[39;49;00m, [33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m, [94m2[39;49;00m, [94mFalse[39;49;00m),[90m[39;49;00m
+            ([33m"[39;49;00m[33minverse[39;49;00m[33m"[39;49;00m, [94mTrue[39;49;00m, [33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m, [94m2[39;49;00m, [94mTrue[39;49;00m),[90m[39;49;00m
+            ([33m"[39;49;00m[33minverse[39;49;00m[33m"[39;49;00m, [94mTrue[39;49;00m, [33m"[39;49;00m[33m32[39;49;00m[33m"[39;49;00m, [94m2[39;49;00m, [94mFalse[39;49;00m),[90m[39;49;00m
+            ([33m"[39;49;00m[33minverse[39;49;00m[33m"[39;49;00m, [94mTrue[39;49;00m, [33m"[39;49;00m[33m32[39;49;00m[33m"[39;49;00m, [94m0[39;49;00m, [94mFalse[39;49;00m),[90m[39;49;00m
+        ),[90m[39;49;00m
+    )[90m[39;49;00m
+    [94mdef[39;49;00m[90m [39;49;00m[92mtest_native_batched_recovery_against_full_fp64_direct[39;49;00m([90m[39;49;00m
+        tmp_path, method, cooperative, inverse_precision, inverse_corrections, surface_load[90m[39;49;00m
+    ):[90m[39;49;00m
+        vertices, tetrahedra, surface, _ = shell_mesh([94m1[39;49;00m, [94m2[39;49;00m, [94m0.0005[39;49;00m)[90m[39;49;00m
+        mesh = tmp_path / [33m"[39;49;00m[33mshell.npz[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=surface)[90m[39;49;00m
+        model = StressModel([90m[39;49;00m
+            RigidStressOptions([90m[39;49;00m
+                mesh=mesh,[90m[39;49;00m
+                tolerance=[94m1e-7[39;49;00m,[90m[39;49;00m
+                max_iterations=[94m4000[39;49;00m,[90m[39;49;00m
+                cooperative_solve=cooperative,[90m[39;49;00m
+                method=method,[90m[39;49;00m
+                inverse_precision=inverse_precision,[90m[39;49;00m
+                inverse_corrections=inverse_corrections,[90m[39;49;00m
+            )[90m[39;49;00m
+        )[90m[39;49;00m
+        oracle = P2Shell(vertices, tetrahedra, surface, [94m1e10[39;49;00m, [94m0.3[39;49;00m, [94m2000.0[39;49;00m, [94m2[39;49;00m, factor_backend=[33m"[39;49;00m[33mnone[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        n_envs = [94m5[39;49;00m[90m[39;49;00m
+        state = model.create_state(n_envs)[90m[39;49;00m
+        random = np.random.default_rng([94m8231[39;49;00m)[90m[39;49;00m
+        force = random.normal(size=([96mlen[39;49;00m(oracle.xyz), n_envs, [94m3[39;49;00m)) * [94m0.01[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m surface_load:[90m[39;49;00m
+            interior = np.setdiff1d(np.arange([96mlen[39;49;00m(force)), np.unique(qd_to_numpy(model.info.surface_nodes)))[90m[39;49;00m
+            force[interior] = [94m0.0[39;49;00m[90m[39;49;00m
+        force[:, [94m0[39;49;00m] = [94m0.0[39;49;00m[90m[39;49;00m
+        angular_velocity = random.normal(size=(n_envs, [94m3[39;49;00m)) * [94m2.0[39;49;00m[90m[39;49;00m
+        angular_velocity[[94m0[39;49;00m] = [94m0.0[39;49;00m[90m[39;49;00m
+        state.force.from_numpy(force)[90m[39;49;00m
+        omega = V_VEC([94m3[39;49;00m, dtype=gs.qd_float, shape=(n_envs,))[90m[39;49;00m
+        omega.from_numpy(angular_velocity)[90m[39;49;00m
+        model.recover(omega, state, surface_load=surface_load)[90m[39;49;00m
+        rhs = qd_to_numpy(state.rhs, transpose=[94mTrue[39;49;00m).reshape((n_envs, -[94m1[39;49;00m)).T[90m[39;49;00m
+        relative = oracle.xyz - oracle.com[90m[39;49;00m
+        centrifugal = -np.cross(angular_velocity[:, [94mNone[39;49;00m], np.cross(angular_velocity[:, [94mNone[39;49;00m], relative[[94mNone[39;49;00m]))[90m[39;49;00m
+        raw = force.transpose(([94m1[39;49;00m, [94m0[39;49;00m, [94m2[39;49;00m)).reshape((n_envs, -[94m1[39;49;00m)).T + oracle.m @ centrifugal.reshape((n_envs, -[94m1[39;49;00m)).T[90m[39;49;00m
+        expected_rhs = raw - oracle.mr @ np.linalg.solve(oracle.gram, oracle.r.T @ raw)[90m[39;49;00m
+        np.testing.assert_allclose(rhs, expected_rhs, atol=[94m2e-16[39;49;00m)[90m[39;49;00m
+        free = np.setdiff1d(np.arange(oracle.ndof), qd_to_numpy(model.info.pins))[90m[39;49;00m
+        displacement = np.zeros_like(rhs)[90m[39;49;00m
+        displacement[free] = splu(oracle.k[free][:, free].tocsc()).solve(rhs[free])[90m[39;49;00m
+        peak_scan = P2Peak(oracle.glambda, oracle.elements, model.options.young / ([94m2.0[39;49;00m * ([94m1.0[39;49;00m + model.options.poisson)))[90m[39;49;00m
+        peak = np.array([peak_scan(displacement[:, i])[[94m0[39;49;00m] [94mfor[39;49;00m i [95min[39;49;00m [96mrange[39;49;00m(n_envs)])[90m[39;49;00m
+        np.testing.assert_allclose(qd_to_numpy(state.peak), peak, rtol=[94m1e-4[39;49;00m, atol=[94m1e-3[39;49;00m)[90m[39;49;00m
+        cached_peak = qd_to_numpy(state.peak, copy=[94mTrue[39;49;00m)[90m[39;49;00m
+        [94mfrom[39;49;00m[90m [39;49;00m[04m[96mgenesis[39;49;00m[04m[96m.[39;49;00m[04m[96mengine[39;49;00m[04m[96m.[39;49;00m[04m[96msolvers[39;49;00m[04m[96m.[39;49;00m[04m[96mrigid[39;49;00m[04m[96m.[39;49;00m[04m[96mstress[39;49;00m[04m[96m.[39;49;00m[04m[96msolve[39;49;00m[90m [39;49;00m[94mimport[39;49;00m kernel_peak[90m[39;49;00m
+    [90m[39;49;00m
+        kernel_peak(model.options.young, model.options.poisson, state, model.info, [94mFalse[39;49;00m)[90m[39;49;00m
+>       np.testing.assert_array_equal(qd_to_numpy(state.peak), cached_peak)[90m[39;49;00m
+[1m[31mE       AssertionError: [0m
+[1m[31mE       Arrays are not equal[0m
+[1m[31mE       [0m
+[1m[31mE       Mismatched elements: 4 / 5 (80%)[0m
+[1m[31mE       Max absolute difference among violations: 3.63797881e-10[0m
+[1m[31mE       Max relative difference among violations: 6.43781857e-15[0m
+[1m[31mE        ACTUAL: array([    0.      , 40101.220958, 61991.770118, 56509.495669,[0m
+[1m[31mE              50791.015493])[0m
+[1m[31mE        DESIRED: array([    0.      , 40101.220958, 61991.770118, 56509.495669,[0m
+[1m[31mE              50791.015493])[0m
+
+[1m[31mtests/rigid/test_stress.py[0m:109: AssertionError
+================================= Failed tests =================================
+tests/rigid/test_stress.py::test_native_batched_recovery_against_full_fp64_di...
+tests/rigid/test_stress.py::test_native_batched_recovery_against_full_fp64_di...
+tests/rigid/test_stress.py::test_native_batched_recovery_against_full_fp64_di...
+tests/rigid/test_stress.py::test_native_batched_recovery_against_full_fp64_di...
+tests/rigid/test_stress.py::test_native_batched_recovery_against_full_fp64_di...
+tests/rigid/test_stress.py::test_native_batched_recovery_against_full_fp64_di...
+============================== slowest durations ===============================
+
+(54 durations < 100s hidden.)
+[31m============ [31m[1m6 failed[0m, [32m12 passed[0m, [33m2 deselected[0m[31m in 116.27s (0:01:56)[0m[31m ============[0m

@@ -1,0 +1,108 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0
+rootdir: /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery
+configfile: pyproject.toml
+plugins: anyio-4.15.1, forked-1.7.5, print-1.2.0, timeout-2.4.0, xdist-3.8.0, quadrants-1.3.3, syrupy-6.1.1
+timeout: 1200.0s
+timeout method: signal
+timeout func_only: False
+collected 20 items / 2 deselected / 18 selected
+
+tests/rigid/test_stress.py [Genesis 18:05:42] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 18:05:42] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 18:05:46] Exiting Genesis and caching compiled kernels...
+[Genesis 18:05:48] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 18:05:48] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+native method direct False 64 full residual [0.00000000e+00 4.50251366e-12 6.95293732e-12 6.25453517e-12
+ 6.40478730e-12] relative displacement error [0.00000000e+00 1.80627613e-11 3.67095799e-11 3.99142775e-11
+ 3.52940387e-11] peak absolute error Pa [0.00000000e+00 5.91026037e-08 4.00847057e-07 3.64911102e-07
+ 8.74351826e-07] corrections [0 0 0 0 0] fallbacks [0 0 0 0 0]
+[32m.[0m[Genesis 18:05:51] Exiting Genesis and caching compiled kernels...
+[Genesis 18:05:53] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 18:05:53] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+native method direct True 64 full residual [0.00000000e+00 4.50251366e-12 6.95293732e-12 6.25453517e-12
+ 6.40478730e-12] relative displacement error [0.00000000e+00 1.80627613e-11 3.67095799e-11 3.99142775e-11
+ 3.52940387e-11] peak absolute error Pa [0.00000000e+00 5.91026037e-08 4.00847057e-07 3.64911102e-07
+ 8.74351826e-07] corrections [0 0 0 0 0] fallbacks [0 0 0 0 0]
+[32m.[0m[Genesis 18:05:55] Exiting Genesis and caching compiled kernels...
+[Genesis 18:05:58] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 18:05:58] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+native method inverse True 64 full residual [0.00000000e+00 1.61363207e-11 2.00371225e-11 1.80396369e-11
+ 1.63439098e-11] relative displacement error [0.00000000e+00 1.80620776e-11 3.67134942e-11 3.99145441e-11
+ 3.52973995e-11] peak absolute error Pa [0.00000000e+00 6.20202627e-08 4.07977495e-07 3.61069397e-07
+ 8.74446414e-07] corrections [0 0 0 0 0] fallbacks [0 0 0 0 0]
+[32m.[0m[Genesis 18:06:02] Exiting Genesis and caching compiled kernels...
+[Genesis 18:06:05] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 18:06:05] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+native method inverse True 64 full residual [0.00000000e+00 3.46608258e-12 4.03454155e-12 3.49835260e-12
+ 4.77068253e-12] relative displacement error [0.00000000e+00 3.87506966e-11 2.51230542e-11 1.92151832e-11
+ 3.76385189e-11] peak absolute error Pa [0.00000000e+00 1.45646482e-07 1.17281161e-07 6.40975486e-08
+ 2.95374775e-07] corrections [0 0 0 0 0] fallbacks [0 0 0 0 0]
+[32m.[0m[Genesis 18:06:09] Exiting Genesis and caching compiled kernels...
+[Genesis 18:06:12] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 18:06:12] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+native method inverse True 32 full residual [0.00000000e+00 3.86497458e-09 4.69178363e-09 4.91181217e-09
+ 4.33708624e-09] relative displacement error [0.00000000e+00 2.65473671e-11 1.11365097e-11 2.03488220e-11
+ 1.28042674e-11] peak absolute error Pa [0.00000000e+00 4.51422238e-07 6.36457116e-07 1.73378066e-06
+ 1.54890586e-07] corrections [0 2 2 2 2] fallbacks [0 0 0 0 0]
+[32m.[0m[Genesis 18:06:15] Exiting Genesis and caching compiled kernels...
+[Genesis 18:06:18] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 18:06:18] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+native method inverse True 32 full residual [0.00000000e+00 4.50251366e-12 6.95293732e-12 6.25453517e-12
+ 6.40478730e-12] relative displacement error [0.00000000e+00 1.80627613e-11 3.67095799e-11 3.99142775e-11
+ 3.52940387e-11] peak absolute error Pa [0.00000000e+00 5.91026037e-08 4.00847057e-07 3.64911102e-07
+ 8.74351826e-07] corrections [0 0 0 0 0] fallbacks [0 1 1 1 1]
+[32m.[0m[Genesis 18:06:22] Exiting Genesis and caching compiled kernels...
+[Genesis 18:06:24] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 18:06:24] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+patch statuses [[0 0 0 0 0]
+ [0 0 0 0 0]
+ [0 0 0 0 0]] evaluations [[0 0 0 0 0]
+ [0 0 0 0 0]
+ [0 0 0 0 0]]
+[32m.[0m[Genesis 18:06:26] Exiting Genesis and caching compiled kernels...
+[Genesis 18:06:29] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 18:06:29] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+patch statuses [[0 0 0 0 0]
+ [0 0 0 0 0]
+ [0 0 0 0 0]] evaluations [[0 0 0 0 0]
+ [0 0 0 0 0]
+ [0 0 0 0 0]]
+[32m.[0m[Genesis 18:06:31] Exiting Genesis and caching compiled kernels...
+[Genesis 18:06:34] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 18:06:34] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 18:06:36] Exiting Genesis and caching compiled kernels...
+[Genesis 18:06:38] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 18:06:38] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 18:06:40] Exiting Genesis and caching compiled kernels...
+[Genesis 18:06:43] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 18:06:43] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+apex False status [[0]] iterations [[92]]
+[32m.[0m[Genesis 18:06:49] Exiting Genesis and caching compiled kernels...
+[Genesis 18:06:51] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 18:06:51] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+apex True status [[0]] iterations [[92]]
+[32m.[0m[Genesis 18:06:57] Exiting Genesis and caching compiled kernels...
+[Genesis 18:06:59] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 18:06:59] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+apex False status [[0]] iterations [[94]]
+[32m.[0m[Genesis 18:07:05] Exiting Genesis and caching compiled kernels...
+[Genesis 18:07:07] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 18:07:07] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+apex True status [[0]] iterations [[94]]
+[32m.[0m[Genesis 18:07:13] Exiting Genesis and caching compiled kernels...
+[Genesis 18:07:15] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 18:07:15] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 18:07:18] Exiting Genesis and caching compiled kernels...
+[Genesis 18:07:20] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 18:07:20] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 18:07:23] Exiting Genesis and caching compiled kernels...
+[Genesis 18:07:25] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 18:07:25] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 18:07:30] Exiting Genesis and caching compiled kernels...
+
+
+============================== slowest durations ===============================
+
+(54 durations < 100s hidden.)
+[32m================= [32m[1m18 passed[0m, [33m2 deselected[0m[32m in 110.87s (0:01:50)[0m[32m =================[0m

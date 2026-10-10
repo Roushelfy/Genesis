@@ -1,0 +1,29 @@
+{
+  "envs": 1024,
+  "source_hashes": {
+    "solve.py": "bc0c9d439004e424afc45389008f2173d0b71442d1be38720bb266f3abcc0095",
+    "surface_inverse.py": "b95fba63925c15fc2da52eceac7e6955df92d8aea42e50869f030387a906c068",
+    "inverse.py": "9b1fef956961c1ec9cd3c989129b0ce38c88eba7db8ffed995b637cb884da0db",
+    "factor.py": "5bfc336c0ff00a5388fbf663590f4a5680629fae1686688a8992b8224eb9e15c"
+  },
+  "reports": [
+    {
+      "name": "separate",
+      "milliseconds": 2.6543827122077346,
+      "peak_error_Pa": 0.0,
+      "complete_residual_max_N": 7.599277857152377e-12
+    },
+    {
+      "name": "combined",
+      "milliseconds": 2.496890570037067,
+      "peak_error_Pa": 0.0,
+      "complete_residual_max_N": 7.59927783008451e-12
+    },
+    {
+      "name": "combined-parallel",
+      "milliseconds": 2.426793766207993,
+      "peak_error_Pa": 0.0,
+      "complete_residual_max_N": 7.599277953377873e-12
+    }
+  ]
+}

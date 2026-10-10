@@ -1,0 +1,10 @@
+[Quadrants] version 1.3.3, llvm 22.1.0, commit 00423caa, linux, python 3.10.12
+Traceback (most recent call last):
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/probe_pressure_loops.py", line 125, in <module>
+    main()
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/probe_pressure_loops.py", line 80, in main
+    nested, source_hash = generate(args.output.parent)
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/probe_pressure_loops.py", line 45, in generate
+    evaluator = original.body[0].body
+AttributeError: 'Assign' object has no attribute 'body'
+
