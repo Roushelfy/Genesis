@@ -1,5 +1,20 @@
 # Fixed-shape rigid stress recovery
 
+## Current direction: native Quadrants feature
+
+The user's 2026-10-10 direction is in [GOAL.md](GOAL.md) and
+[docs/NATIVE_QUADRANTS_PLAN.md](docs/NATIVE_QUADRANTS_PLAN.md). Implement stress
+recovery inside Genesis's existing rigid solver, with all production numerical
+computation in Quadrants. Prioritize detailed profiling and throughput
+optimization on low-resolution full-shell meshes; defer physical mesh and
+quadrature convergence until the applicable performance work is complete.
+Same-mesh numerical consistency remains required throughout.
+
+The code, status table, native-library setup and fine-mesh commands below
+describe the existing research prototype and historical evidence. They do not
+establish that the requested native feature exists, and are not the new default
+implementation or iteration workflow. Read the new plan before using them.
+
 Goal: maximize **measured aggregate environment transitions/s** for a Franka
 Panda grasping a hollow egg-shaped rigid entity, while returning its global
 maximum von Mises stress at each requested simulation step. Geometry stays
@@ -36,7 +51,9 @@ goal remains active. Current coarse timings have a separate physical error.
 
 ## Start here
 
-Read [GOAL.md](GOAL.md), [AGENTS.md](AGENTS.md), then:
+Read [GOAL.md](GOAL.md), [AGENTS.md](AGENTS.md) and
+[docs/NATIVE_QUADRANTS_PLAN.md](docs/NATIVE_QUADRANTS_PLAN.md), then consult the
+relevant historical references:
 
 1. [docs/ASSUMPTIONS.md](docs/ASSUMPTIONS.md): binding scope and proposed accuracy profiles.
 2. [docs/ALGORITHM.md](docs/ALGORITHM.md): equations and predictor/corrector.

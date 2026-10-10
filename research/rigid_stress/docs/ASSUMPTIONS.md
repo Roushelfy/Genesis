@@ -1,5 +1,11 @@
 # Model assumptions and required scope
 
+> Development order changed on 2026-10-10. See
+> [NATIVE_QUADRANTS_PLAN.md](NATIVE_QUADRANTS_PLAN.md): use low-resolution full
+> meshes for numerical consistency, detailed profiling and optimization first.
+> The model/contact assumptions below remain applicable; physical mesh and
+> quadrature convergence criteria apply only to the separate later study.
+
 ## What the user permits
 
 The reference egg geometry is fixed. Its world pose may translate and rotate.
@@ -85,7 +91,7 @@ check margin to a production acceptance budget. A residual tolerance alone
 does **not** certify a peak error on unseen loads. Calibration is empirical;
 rigorous output error certification is a separate optional project.
 
-Physical discretization acceptance: require at least three successively finer
+Later physical discretization study, after the performance milestone: use at least three successively finer
 full-model meshes and surface quadrature refinement with unchanged finite load
 models; initial proposed criterion is <=2% peak change in the final refinement
 for a representative asymmetric frictional suite. Report monotonicity, hot

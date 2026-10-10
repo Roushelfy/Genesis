@@ -1,41 +1,35 @@
-# Instructions for implementing this handoff
+# Instructions for the native rigid stress feature
 
-Read `GOAL.md` and all six docs before implementing the production path.
-Follow the root `CLAUDE.md` and `CODING_GUIDELINES.md` when adding engine code.
-The imported research scripts are reproducible historical references, not
-production design/style templates. Keep the originals recognizable; write
-clean, typed integration modules and compare them against these references.
+Read `GOAL.md` and `docs/NATIVE_QUADRANTS_PLAN.md` first. They record the user's
+2026-10-10 change of direction and supersede older implementation choices and
+validation ordering. Follow the root `CLAUDE.md` and `CODING_GUIDELINES.md` for
+engine code. Existing research modules and measurements are references; the
+production feature belongs to Genesis's existing rigid solver.
 
-Binding user assumptions:
+- Use Quadrants for the complete production numerical path, including recovery
+  solves. External numerical backends in the research prototype are reference
+  paths, not acceptable substitutes for the requested native implementation.
+- Develop and tune on inexpensive low-resolution full-shell meshes. Complete
+  detailed profiling and the applicable performance optimizations before
+  spending GPU time on physical mesh/quadrature convergence studies.
+- Keep same-mesh numerical consistency checks throughout optimization. Check
+  complete residuals including the six gauge rows, scalar peak error, contact
+  wrench/frame consistency, environment independence and partial resets.
+- Preserve arbitrary changing contacts, full geometry, normal plus tangential
+  friction, support loads and enabled moments. Smooth histories are a reuse
+  opportunity; correctness must survive their invalidation.
+- Keep rigid dynamics rigid and make stress recovery optional. Geometry,
+  constitutive parameters and mass identify shared immutable operators.
+- Maximize measured aggregate environment transitions/s. Count contact/load
+  work, solve, residual, global peak, history, selection, resets and policy work
+  within their stated benchmark scopes; do not silently change fidelity.
 
-- Full fixed reference geometry; no quarter/half symmetry reduction.
-- Runtime contact locations, directions, counts, footprints and symmetry are unrestricted.
-- Normal plus tangential frictional forces; keep pure contact moments when enabled.
-- Complete grasp trajectories may be smooth; sudden changes and environment resets must remain correct.
-- Global maximum stress only, with no fixed hotspot, fixed contact basis or per-task learned surrogate as the correctness path.
-- Maximize total environment transitions/s; allow and tune parallel environments.
-- Use a Franka Panda and a hollow egg-shaped **rigid** entity in Genesis.
-- Elastic recovery is auxiliary; do not silently substitute deformable FEM dynamics.
+Use the math, CPU FP64 references and archived device evidence as needed, not
+as a requirement to rerun the old expensive acceptance sequence. In particular,
+the old cuDSS/cuSPARSE implementation, level-6 preset and convergence commands
+do not define the new production path or the current iteration workload.
 
-The repository currently contains validated CPU math, evidence, an unaccepted
-Franka seed and a Torch prototype, not a complete GPU implementation. Do not
-report a TODO, host NumPy solve, CPU transfer, dense-debug factor, or synthetic
-load benchmark as finished GPU/live-contact work.
-
-Respect measured evidence boundaries and accuracy profiles in `docs/VALIDATION.md`.
-Never silently relax physics timestep, contact sampling, residual tolerance,
-mesh resolution or output error to create a speedup. Report fidelity tradeoffs
-as separate profiles. Keep a CPU FP64/direct correctness oracle and a GPU
-direct baseline. If hardware is unavailable, finish CPU integration and
-buildable GPU code, record the blocker and reproducible commands, and label
-GPU results unmeasured. Do not invent throughput or claim device validation.
-
-Offline preprocessing can use CPU FP64. Runtime shared factors, per-env
-histories, contact mapping, residuals and scalar maxima should reside on GPU.
-Never reuse history across environment IDs or reset boundaries. Check complete
-residuals including the six gauge rows; a reduced residual alone is insufficient.
-Physical patch resolution/convergence and equation solve accuracy are distinct.
-
-Do not introduce new approval pauses for routine implementation, tests,
-commits or updates on this task branch. Do not overwrite the user's other
-branches or push to the upstream organization repository.
+Choose algorithms, placement and tuning based on evidence. Routine tests,
+commits and updates to this task branch need no new approval pause. Preserve
+unrelated work and upstream branches. Label unavailable hardware tests and
+unmeasured throughput honestly.

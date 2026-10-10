@@ -1,5 +1,12 @@
 # Genesis integration audit and scene work
 
+> Current architecture, 2026-10-10: follow
+> [NATIVE_QUADRANTS_PLAN.md](NATIVE_QUADRANTS_PLAN.md). Implement an optional
+> native feature of the existing rigid solver, including substep/state/reset
+> handling and public observation. The public-getter/callback research adapter
+> below is a reference, not the requested final integration. All production
+> numerical computation uses Quadrants.
+
 Audit baseline: `e9e1214d192914ddec85ca28014c459cfbc6c860` from upstream main.
 The root package is Genesis World 1.4.3 plus later main commits. It uses
 Quadrants 1.3.3, not the older Taichi-only API. Re-audit if the base changes.

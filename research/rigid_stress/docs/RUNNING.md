@@ -1,5 +1,12 @@
 # Reproducing the device implementation
 
+> Historical prototype commands, 2026-10-10. The new feature and workflow are
+> specified in [NATIVE_QUADRANTS_PLAN.md](NATIVE_QUADRANTS_PLAN.md) and `../GOAL.md`.
+> Use low-resolution numerical checks and detailed performance iteration first.
+> Do not run the fine-mesh replay, level-6 presets or physical convergence below
+> during this phase. These commands reproduce the older external-library path;
+> the native Quadrants feature should provide its own normal Genesis entrypoints.
+
 Run numerical work on allocated hardware. The measured cluster image is
 `genesis:1_26`, Python 3.10.12; the device is NVIDIA RTX PRO 6000 Blackwell
 Server Edition with 95 GiB VRAM. This is different from RTX 6000 Ada.

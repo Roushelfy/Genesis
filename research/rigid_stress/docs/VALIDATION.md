@@ -1,5 +1,12 @@
 # Acceptance and throughput measurement contract
 
+> Current validation order, 2026-10-10: see
+> [NATIVE_QUADRANTS_PLAN.md](NATIVE_QUADRANTS_PLAN.md). Same-mesh numerical
+> consistency is checked during low-resolution performance development.
+> Physical mesh/quadrature convergence and high-resolution acceptance runs are
+> deferred until detailed profiling and applicable optimizations are complete.
+> The full acceptance workload below is a later reference, not an immediate gate.
+
 ## Separate three kinds of error
 
 1. **Equation/precision error**: same mesh and same assembled complete RHS,
@@ -56,7 +63,7 @@ At minimum include:
 - Contacts where the egg occurs as A and as B; per-env frame/pose consistency.
 - Contact resultants vs link net force and moment, shell mass/COM/inertia,
   classical acceleration and the rigid Newton-Euler balance.
-- Fixed physical footprint law over at least three full-model mesh levels,
+- Later physical validation: fixed footprint law over at least three full-model mesh levels,
   independently refined quadrature and the stated <=2% proposed criterion.
 - No pruned load/contact capacity overflow silently discarded; compare pruning
   options under the same stress model.

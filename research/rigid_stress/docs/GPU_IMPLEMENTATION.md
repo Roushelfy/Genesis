@@ -1,5 +1,11 @@
 # Proposed GPU implementation and optimization plan
 
+> Superseded architecture, 2026-10-10: follow
+> [NATIVE_QUADRANTS_PLAN.md](NATIVE_QUADRANTS_PLAN.md) and `../GOAL.md`.
+> All production numerical work now uses Quadrants inside the rigid solver.
+> The external-library backends and tuning order below are historical reference
+> material; they do not define the new implementation or require fine-mesh runs.
+
 This is a design to implement and measure, not a measured GPU result. The
 CUDA-capable Torch code in `gpu_prototype.py` was checked on CPU only. Its dense
 factor is deliberately restricted to small debug meshes and is not scalable.
