@@ -949,28 +949,26 @@ class ShellOptions(GravityMixin, TimeBasedMixin):
     Parameters
     ----------
     pcg_tolerance : float, optional
-        Relative accuracy of the linear solves of each substep: an environment stops iterating once its residual, in
-        the norm of the preconditioner, falls below this fraction of the right-hand side. A lower value makes stiff
-        sheets (metal, glass, paper) behave closer to their material, and the stress and damage they report converge,
-        at the cost of more iterations. A higher one makes them softer and more damped. Single precision resolves a
-        stiff sheet down to about 1e-5, below which its solves stall at the floor of the precision, as accurate as it
-        allows. Defaults to 1e-4.
+        Relative accuracy of the velocity update every substep solves for, as a fraction of the forces at play. A lower
+        value makes stiff sheets (metal, glass, paper) behave closer to their material, and the stress and damage they
+        report converge, at the cost of more iterations. A higher one runs faster, the sheets turning softer and more
+        damped. Single precision resolves a stiff sheet down to about 1e-5, a lower value only costing iterations.
+        Defaults to 1e-4.
     pcg_velocity_tolerance : float, optional
-        Absolute accuracy of the linear solve, as the mass-weighted root-mean-square error of the vertex velocities it
-        accepts, in m/s, bounded from its residual. It stops the solve of a sheet near rest, whose right-hand side is
-        too small for the relative tolerance to be reached in floating point. A lower value resolves slow motions and
-        small stresses more accurately, at the cost of more iterations. The contact solve converges within the impulse
-        that would change the velocity of a contact point by as much. Defaults to 1e-4.
+        Absolute accuracy of the velocity update every substep solves for, as the mass-weighted root-mean-square error
+        of the vertex velocities it accepts, in m/s, which also bounds the velocity error of the contacts. It ends the
+        solve of a sheet near rest, whose forces nearly balance. A lower value resolves slow motions, small stresses
+        and contact sliding more accurately, at the cost of more iterations. Defaults to 1e-4.
     contact_stiffness : float, optional
         Stiffness of the contacts between the sheets and the rigid geoms, as a multiple of the mass of the contact
         point over the square of the substep. A static load leaves a penetration of at most 1 / contact_stiffness of
-        the deflection it gives the sheet and the rigid body. A higher value lets less penetration in, which matters
+        the deflection it gives the sheet and the rigid link. A higher value lets less penetration in, which matters
         when a displacement is imposed, as by a position-controlled gripper squeezing a sheet, the penetration taking
-        a share of it from the deformation of the sheet, at the cost of more solver iterations. A lower one runs faster
-        with softer contacts, the force a load transmits staying the same. Defaults to 25.
+        a share of it from the deformation of the sheet, at the cost of more iterations. A lower one runs faster with
+        softer contacts, the force a load transmits staying the same. Defaults to 25.
     pcg_max_iterations : int, optional
-        Maximum number of iterations of every linear solve, a substep running one per iteration of its contact solve,
-        a safety limit for the environments whose solve does not reach its tolerance. Such an environment keeps the
+        Maximum number of iterations of every solve of a velocity update, of which a substep with contacts runs several,
+        a safety limit for the environments whose solve does not reach its tolerance. Such an environment keeps its
         last iterate and reports the failure (see `ShellSolver.get_envs_solver_failure`). Defaults to 1000.
     fracture_capacity : float, optional
         Number of vertices a fracturable sheet can create by splitting, as a fraction of its own vertex count. Each one

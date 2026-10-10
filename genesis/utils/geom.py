@@ -589,10 +589,11 @@ def qd_nowhere():
 def qd_closest_point_barycentric(
     pos: qd.types.vector(3), a: qd.types.vector(3), b: qd.types.vector(3), c: qd.types.vector(3)
 ):
-    """Return the barycentric coordinates of the point of triangle abc closest to a point.
+    """Return the barycentric coordinates of the point of a triangle closest to a query point.
 
-    The coordinates of a point on an edge or at a vertex are exactly zero for the vertices it does not depend on, the
-    Voronoi region of the point being resolved feature by feature (vertices, edges, then the face).
+    The query point is pos and the triangle has the vertices a, b and c. The coordinates of a point on an edge or at a
+    vertex are exactly zero for the vertices it does not depend on, the Voronoi region of the point being resolved
+    feature by feature (vertices, edges, then the face), as in Real-Time Collision Detection (Ericson), section 5.1.5.
     """
     ab = b - a
     ac = c - a
@@ -605,27 +606,27 @@ def qd_closest_point_barycentric(
     vc = d1 * d4 - d3 * d2
     vb = d5 * d2 - d1 * d6
     va = d3 * d6 - d5 * d4
+    # The region of vertex a, unless the point lies past it
     bary = qd.Vector([1.0, 0.0, 0.0], dt=gs.qd_float)
-    if d1 <= 0.0 and d2 <= 0.0:
-        bary = qd.Vector([1.0, 0.0, 0.0], dt=gs.qd_float)
-    elif d3 >= 0.0 and d4 <= d3:
-        bary = qd.Vector([0.0, 1.0, 0.0], dt=gs.qd_float)
-    elif vc <= 0.0 and d1 >= 0.0 and d3 <= 0.0:
-        v = d1 / (d1 - d3)
-        bary = qd.Vector([1.0 - v, v, 0.0], dt=gs.qd_float)
-    elif d6 >= 0.0 and d5 <= d6:
-        bary = qd.Vector([0.0, 0.0, 1.0], dt=gs.qd_float)
-    elif vb <= 0.0 and d2 >= 0.0 and d6 <= 0.0:
-        w = d2 / (d2 - d6)
-        bary = qd.Vector([1.0 - w, 0.0, w], dt=gs.qd_float)
-    elif va <= 0.0 and d4 - d3 >= 0.0 and d5 - d6 >= 0.0:
-        w = (d4 - d3) / ((d4 - d3) + (d5 - d6))
-        bary = qd.Vector([0.0, 1.0 - w, w], dt=gs.qd_float)
-    else:
-        denom = 1.0 / (va + vb + vc)
-        v = vb * denom
-        w = vc * denom
-        bary = qd.Vector([1.0 - v - w, v, w], dt=gs.qd_float)
+    if d1 > 0.0 or d2 > 0.0:
+        if d3 >= 0.0 and d4 <= d3:
+            bary = qd.Vector([0.0, 1.0, 0.0], dt=gs.qd_float)
+        elif vc <= 0.0 and d1 >= 0.0 and d3 <= 0.0:
+            v = d1 / (d1 - d3)
+            bary = qd.Vector([1.0 - v, v, 0.0], dt=gs.qd_float)
+        elif d6 >= 0.0 and d5 <= d6:
+            bary = qd.Vector([0.0, 0.0, 1.0], dt=gs.qd_float)
+        elif vb <= 0.0 and d2 >= 0.0 and d6 <= 0.0:
+            w = d2 / (d2 - d6)
+            bary = qd.Vector([1.0 - w, 0.0, w], dt=gs.qd_float)
+        elif va <= 0.0 and d4 - d3 >= 0.0 and d5 - d6 >= 0.0:
+            w = (d4 - d3) / ((d4 - d3) + (d5 - d6))
+            bary = qd.Vector([0.0, 1.0 - w, w], dt=gs.qd_float)
+        else:
+            denom = 1.0 / (va + vb + vc)
+            v = vb * denom
+            w = vc * denom
+            bary = qd.Vector([1.0 - v - w, v, w], dt=gs.qd_float)
     return bary
 
 

@@ -16,6 +16,9 @@ def main():
     parser.add_argument("-b", "--num-envs", type=int, default=1024, help="Number of parallel environments")
     parser.add_argument("-s", "--steps", type=int, default=60, help="Number of timed steps, the egg held and lifted")
     parser.add_argument("--rigid-egg", action="store_true", help="Grasp a rigid egg instead, as a baseline")
+    parser.add_argument("--substeps", type=int, default=10, help="Number of substeps per control step")
+    parser.add_argument("--pcg-tolerance", type=float, default=1e-4, help="Relative tolerance of the linear solves")
+    parser.add_argument("--contact-stiffness", type=float, default=25.0, help="Stiffness ratio of the egg contacts")
     args = parser.parse_args()
 
     # The benchmark measures the throughput of a thousand parallel environments, which needs a GPU.
@@ -32,13 +35,16 @@ def main():
     scene = gs.Scene(
         sim_options=gs.options.SimOptions(
             dt=1e-2,
-            substeps=10,
+            substeps=args.substeps,
         ),
         rigid_options=gs.options.RigidOptions(
             batch_dofs_info=True,
         ),
+        shell_options=gs.options.ShellOptions(
+            pcg_tolerance=args.pcg_tolerance,
+            contact_stiffness=args.contact_stiffness,
+        ),
         show_viewer=False,
-        show_FPS=False,
     )
     scene.add_entity(
         morph=gs.morphs.Plane(),
@@ -93,9 +99,7 @@ def main():
     grasp_offset = np.stack((rng.uniform(-0.015, 0.015, n_envs), rng.uniform(-0.004, 0.004, n_envs)), axis=-1)
     grasp_yaw = rng.uniform(-0.3, 0.3, n_envs)
     grip_force = rng.uniform(5.0, 40.0, n_envs)
-    franka.set_dofs_force_range(
-        -np.stack((grip_force, grip_force), -1), np.stack((grip_force, grip_force), -1), finger_dofs
-    )
+    franka.set_dofs_force_range(-np.stack((grip_force,) * 2, -1), np.stack((grip_force,) * 2, -1), finger_dofs)
     hand = franka.get_link("hand")
     hand_quat = np.stack(
         (np.zeros(n_envs), np.cos(0.5 * grasp_yaw), np.sin(0.5 * grasp_yaw), np.zeros(n_envs)), axis=-1
@@ -106,7 +110,7 @@ def main():
         franka.inverse_kinematics(link=hand, pos=grasp_pos + (0.0, 0.0, 0.08), quat=hand_quat, init_qpos=qpos_seed)
     )
     qpos_grasp = tensor_to_array(
-        franka.inverse_kinematics(link=hand, pos=grasp_pos, quat=hand_quat, init_qpos=qpos_above[0])
+        franka.inverse_kinematics(link=hand, pos=grasp_pos, quat=hand_quat, init_qpos=qpos_above)
     )
     qpos = qpos_above.copy()
     qpos[:, 7:] = 0.04
@@ -118,16 +122,14 @@ def main():
     device = pynvml.nvmlDeviceGetHandleByIndex(torch.cuda.current_device())
     iterations = []
     for i_step in range(n_steps_grasp + args.steps):
-        time_step = i_step * 1e-2
+        time_step = i_step * scene.dt
         ratio = min(time_step / 0.5, 1.0)
         qpos = (1.0 - ratio) * qpos_above + ratio * qpos_grasp
         if time_step >= 1.2:
             ratio = min((time_step - 1.2) / 0.6, 1.0)
             qpos = (1.0 - ratio) * qpos_grasp + ratio * qpos_above
         franka.control_dofs_position(qpos[:, arm_dofs], arm_dofs)
-        franka.control_dofs_position(
-            np.full((n_envs, 2), 0.04 * min(max((1.2 - time_step) / 0.4, 0.0), 1.0)), finger_dofs
-        )
+        franka.control_dofs_position(0.04 * min(max((1.2 - time_step) / 0.4, 0.0), 1.0), finger_dofs)
         if i_step == n_steps_grasp:
             torch.cuda.synchronize()
             time_start = time.perf_counter()
@@ -146,7 +148,8 @@ def main():
     print(f"device {torch.cuda.get_device_name()}, {n_envs} environments, {'rigid' if args.rigid_egg else 'shell'} egg")
     print(f"timed steps {args.steps}, wall time {elapsed:.3f} s, compilation and grasp approach excluded")
     print(
-        f"scene steps per second {args.steps / elapsed:.2f}, environment steps per second {n_envs * args.steps / elapsed:.1f}"
+        f"scene steps per second {args.steps / elapsed:.2f}, "
+        f"environment steps per second {n_envs * args.steps / elapsed:.1f}"
     )
     print(f"GPU memory of the process {memory_used / 2**20:.0f} MiB")
     if not args.rigid_egg:
@@ -155,10 +158,9 @@ def main():
             f"PCG iterations of the last substep of a step: mean {iterations.mean():.1f}, slowest environment "
             f"{iterations.max(axis=-1).mean():.1f}"
         )
-        print(
-            f"environments whose solver failed {int((tensor_to_array(scene.sim.shell_solver.get_envs_solver_failure()) > 0).sum())}"
-        )
-        print(f"environments whose egg failed {int((tensor_to_array(egg.get_peak_damage()) >= 1.0).sum())}")
+        envs_solver_failure = tensor_to_array(scene.sim.shell_solver.get_envs_solver_failure())
+        print(f"environments whose solver failed {(envs_solver_failure > 0).sum()}")
+        print(f"environments whose egg failed {(tensor_to_array(egg.get_peak_damage()) >= 1.0).sum()}")
 
 
 if __name__ == "__main__":

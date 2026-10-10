@@ -249,6 +249,7 @@ class ErrorCode(IntEnum):
     INVALID_CONTACT_NAN = 0b00000000000000000000000000010000
     INVALID_FORCE_NAN = 0b00000000000000000000000000100000
     INVALID_ACC_NAN = 0b00000000000000000000000001000000
+    INVALID_SHELL_SOLVE_NAN = 0b00000000000000000000000010000000
 
 
 # =========================================== RigidInfo ===========================================
@@ -3609,8 +3610,8 @@ class ShellScratch:
     convergence measures with their thresholds (see func_pcg_prepare): the residual in the norm of the block-Jacobi
     preconditioner (envs_residual, envs_residual_checked holding it at the last restart of the conjugate gradient) and
     the bound r^T M^-1 r on the mass-weighted squared error of the velocity change (envs_vel_error). pcg_flag keeps the
-    device loop of the solve running while any environment iterates, and errno flags the environments whose solve
-    produced non-finite values. faces_damage is the damage index of every face after the last substep.
+    device loop of the solve running while any environment iterates. faces_damage is the damage index of every face
+    after the last substep.
     """
 
     kind: ClassVar[DataKind] = DataKind.SCRATCH
@@ -3634,11 +3635,13 @@ class ShellScratch:
     corners_render_pos: qd.Tensor
     corners_render_normal: qd.Tensor
     coarse_assembly: qd.Tensor
-    coarse_matrix: qd.Tensor
+    # The coarse inverse of an environment and its age outlive a substep until the next update, the next solves reading
+    # them as their preconditioner
+    coarse_matrix: qd.Tensor = of_kind(DataKind.WARMSTART)
     coarse_factor_inv: qd.Tensor
     coarse_vec: qd.Tensor
     coarse_sol: qd.Tensor
-    envs_coarse_age: qd.Tensor
+    envs_coarse_age: qd.Tensor = of_kind(DataKind.WARMSTART)
     envs_free_mass: qd.Tensor
     envs_rz: qd.Tensor
     envs_rz_new: qd.Tensor
@@ -3655,8 +3658,7 @@ class ShellScratch:
     envs_n_iterations: qd.Tensor
     envs_n_solve_iterations: qd.Tensor
     envs_solve_status: qd.Tensor
-    errno: qd.Tensor
-    # Always ndarray (not field): graph.do_while requires the same physical ndarray on every call.
+    # An ndarray, as graph_counter of the constraint solver
     pcg_flag: qd.types.ndarray()
 
 
@@ -3704,7 +3706,6 @@ def get_shell_scratch(n_verts, n_faces, n_hinges, n_coarse_dofs, n_coarse_entrie
         envs_n_iterations=V(dtype=gs.qd_int, shape=(B,)),
         envs_n_solve_iterations=V(dtype=gs.qd_int, shape=(B,)),
         envs_solve_status=V(dtype=gs.qd_int, shape=(B,)),
-        errno=V(dtype=gs.qd_int, shape=(B,)),
         pcg_flag=qd.ndarray(qd.i32, shape=()),
     )
 
@@ -3713,38 +3714,36 @@ def get_shell_scratch(n_verts, n_faces, n_hinges, n_coarse_dofs, n_coarse_entrie
 class ShellContactScratch:
     """The contacts between the shell faces and the rigid geoms in one substep, and their solution.
 
-    A face holds at most one contact per side of its mid-surface, at index 2 * i_f + side, side 0 being the side its
-    normal points to. The contact lies at the point of the face deepest into a rigid geom (contacts_geom, -1 when
-    none), given by its barycentric coordinates in the face, and pushes the face along the outward normal of the geom.
-    contacts_gap is the signed distance from the surface of the sheet, half its thickness off the mid-surface, to the
-    geom at the start of the substep, negative in contact, contacts_vel the relative velocity of the face point against
-    the rigid point at the same position before the contacts act, and contacts_stiffness the penalty stiffness of the
-    contact times dt^2, in kg.
+    A face holds at most one contact per side of its mid-surface, at index 2 * i_f + side, side 0 holding a geom that
+    pushes the face along its normal, from behind it, and side 1 one that pushes it the other way. The contact lies at
+    the point of the face deepest into a rigid geom (contacts_geom, -1 when none), given by its barycentric coordinates
+    in the face, and pushes the face along the outward normal of the geom. contacts_gap is the signed distance from the
+    surface of the sheet, half its thickness off the mid-surface, to the geom at the start of the substep, negative in
+    contact, contacts_vel the relative velocity of the face point against the rigid point at the same position before
+    the contacts act, and contacts_stiffness the penalty stiffness of the contact times dt^2, in kg.
 
     The contact solve iterates on the velocity change of the sheet (verts_dv in ShellState, verts_dv_prev holding the
     iterate) and of the rigid degrees of freedom (dofs_dv). At the iterate, every contact holds the change of its
     relative velocity (contacts_vel_change), the impulse it applies to the sheet over the substep (contacts_impulse),
     the Hessian of its potential with respect to the relative velocity (contacts_hessian, in kg) and the friction bound
-    it holds (contacts_friction_bound, see kernel_shell_rigid_contact_detect in shell_solver.py). The
-    step from the iterate changes the relative velocity by contacts_dir and the rigid velocities by dofs_dir, and an
-    environment takes the fraction envs_step of it, from the line search terms envs_line_terms, the slope
-    envs_line_slope and curvature envs_line_curvature of the contact potentials along the step, and the bracket
-    envs_line_bracket of the minimum along the step, refined over the passes envs_line_pass while line_flag keeps their
-    device loop running (see func_contact_line_search_update in shell_solver.py). verts_rhs_base and verts_diag_base
-    keep the system of the sheet without contacts, which every iteration adds the contacts to anew. newton_flag keeps
-    the device loop of the solve running while any environment iterates, envs_n_newton_iterations counts its iterations
-    and envs_is_nonlinear flags a contact whose impulse left the linear model of the previous iteration or whose
-    friction bound changed. Once solved, verts_contact_force holds the distribution of the contact forces on the
-    vertices, in N.
+    it holds (contacts_friction_bound, see kernel_shell_rigid_contact_detect in shell_solver.py). The step from the
+    iterate changes the relative velocity by contacts_dir and the rigid velocities by dofs_dir, and an environment takes
+    the fraction envs_step of it, from the line search terms envs_line_terms, the slope envs_line_slope and curvature
+    envs_line_curvature of the contact potentials along the step, and the bracket envs_line_bracket of the minimum along
+    the step, refined over the passes envs_line_pass while line_flag keeps their device loop running (see
+    func_contact_line_search_update in shell_solver.py). verts_rhs_base and verts_diag_base keep the system of the sheet
+    without contacts, which every iteration adds the contacts to anew. newton_flag keeps the device loop of the solve
+    running while any environment iterates, envs_n_newton_iterations counts its iterations and envs_is_nonlinear flags
+    an environment with a contact whose impulse left the linear model of the previous iteration. Once solved,
+    verts_contact_force holds the distribution of the contact forces on the vertices, in N.
 
     The rigid degrees of freedom the contacts move are eliminated from every linear solve by their Schur complement: a
     contact with a movable link holds the Jacobian of its rigid point over the degrees of freedom of its kinematic tree
     (contacts_jac, indexed from the first one of the tree), trees_is_coupled marks the trees the contacts touch,
     dofs_schur_inv holds the inverse of the mass matrix of those trees plus the contact stiffness, dofs_schur_rhs the
     rigid right-hand side, dofs_schur_product the generalized forces of the system product in two halves alternating
-    with the iterations of the solve, and dofs_schur_vec a work vector. A geom is bounded
-    by the sphere of radius geoms_bound_radius around geoms_bound_center in its own frame, a negative radius standing
-    for an unbounded geom.
+    with the iterations of the solve, and dofs_schur_vec a work vector. A geom is bounded by the sphere of radius
+    geoms_bound_radius around geoms_bound_center in its own frame, a negative radius standing for an unbounded geom.
     """
 
     kind: ClassVar[DataKind] = DataKind.SCRATCH
@@ -3782,13 +3781,22 @@ class ShellContactScratch:
     dofs_schur_vec: qd.Tensor
     dofs_dv: qd.Tensor
     dofs_dir: qd.Tensor
-    # Always ndarray (not field): graph.do_while requires the same physical ndarray on every call.
+    # Ndarrays, as graph_counter of the constraint solver
     newton_flag: qd.types.ndarray()
     line_flag: qd.types.ndarray()
 
 
 def get_shell_contact_scratch(
-    n_verts, n_faces, n_geoms, n_trees, n_dofs, max_tree_dofs, n_line_search_terms, n_line_search_points, B
+    n_verts,
+    n_faces,
+    n_geoms,
+    n_trees,
+    n_dofs,
+    max_tree_dofs,
+    n_line_search_terms,
+    n_line_search_points,
+    n_line_search_bracket,
+    B,
 ):
     return ShellContactScratch(
         geoms_bound_center=V(dtype=gs.qd_vec3, shape=(n_geoms,)),
@@ -3814,7 +3822,7 @@ def get_shell_contact_scratch(
         envs_line_terms=V(dtype=gs.qd_float, shape=(B, n_line_search_terms)),
         envs_line_slope=V(dtype=gs.qd_float, shape=(B, n_line_search_points)),
         envs_line_curvature=V(dtype=gs.qd_float, shape=(B, n_line_search_points)),
-        envs_line_bracket=V(dtype=gs.qd_float, shape=(B, 6)),
+        envs_line_bracket=V(dtype=gs.qd_float, shape=(B, n_line_search_bracket)),
         envs_line_pass=V(dtype=gs.qd_int, shape=(B,)),
         contacts_jac=V(dtype=gs.qd_vec3, shape=(2 * n_faces, max(max_tree_dofs, 1), B)),
         trees_is_coupled=V(dtype=gs.qd_bool, shape=(n_trees, B)),

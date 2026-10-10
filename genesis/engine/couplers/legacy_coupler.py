@@ -1,11 +1,11 @@
 from typing import TYPE_CHECKING
 
 import numpy as np
+
 import quadrants as qd
 
 import genesis as gs
 import genesis.utils.sdf as sdf
-
 from genesis.options.solvers import LegacyCouplerOptions
 from genesis.repr_base import RBC
 from genesis.utils import array_class
@@ -64,8 +64,10 @@ class LegacyCoupler(RBC):
             self.rigid_solver.collider._sdf.activate()
 
         if self._rigid_shell:
-            if self.rigid_solver._use_hibernation:
+            if self.sim.scene.options.rigid.use_hibernation:
                 gs.raise_exception("Shell entities cannot touch rigid entities whose solver uses hibernation.")
+            if self.sim.requires_grad:
+                gs.raise_exception("Shell entities touching rigid entities do not support differentiable simulation.")
             geoms_bound_center = np.zeros((self.rigid_solver.n_geoms, 3), dtype=gs.np_float)
             geoms_bound_radius = np.full(self.rigid_solver.n_geoms, -1.0, dtype=gs.np_float)
             for i_g, geom in enumerate(self.rigid_solver.geoms):

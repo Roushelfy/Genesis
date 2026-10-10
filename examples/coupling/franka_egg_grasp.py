@@ -18,6 +18,8 @@ def main():
     parser.add_argument("--substeps", type=int, default=10, help="Number of substeps per control step")
     parser.add_argument("--fracture", action="store_true", help="Tear the shell where it fails instead of reporting it")
     args = parser.parse_args()
+    if "PYTEST_VERSION" in os.environ:
+        args.seconds = 0.05
 
     gs.init(backend=gs.gpu if args.gpu else gs.cpu, precision="32", logging_level="warning")
 
@@ -100,16 +102,12 @@ def main():
     # Hand positions of the motion keyframes: above the egg, at the grasp, lifted, then carried sideways
     keyframes_offset = np.array([[0.0, 0.0, 0.08], [0.0, 0.0, 0.0], [0.0, 0.0, 0.08], [0.0, 0.12, 0.08]])
     # Seeding the inverse kinematics with an elbow-up configuration keeps every environment on the same arm branch
-    keyframes_qpos = [np.array([0.0, -0.3, 0.0, -2.4, 0.0, 2.1, 0.8, 0.04, 0.04])]
+    qpos_seed = np.array([0.0, -0.3, 0.0, -2.4, 0.0, 2.1, 0.8, 0.04, 0.04])
+    keyframes_qpos = []
     for offset in keyframes_offset:
-        qpos = franka.inverse_kinematics(
-            link=hand,
-            pos=grasp_pos + offset,
-            quat=hand_quat,
-            init_qpos=keyframes_qpos[-1][0] if keyframes_qpos[-1].ndim > 1 else keyframes_qpos[-1],
-        )
+        qpos = franka.inverse_kinematics(link=hand, pos=grasp_pos + offset, quat=hand_quat, init_qpos=qpos_seed)
         keyframes_qpos.append(tensor_to_array(qpos))
-    keyframes_qpos = keyframes_qpos[1:]
+        qpos_seed = keyframes_qpos[-1]
     # Phases as (end time, start keyframe, end keyframe, finger opening at the start and the end, grip force): the
     # descent, a pause for the arm to settle, the closing, the lift, the carry, the loosened carry, and the release
     phases = (
@@ -137,7 +135,7 @@ def main():
                 qpos = (1.0 - ratio) * keyframes_qpos[i_k0] + ratio * keyframes_qpos[i_k1]
                 opening = (1.0 - ratio) * opening_0 + ratio * opening_1
                 franka.control_dofs_position(qpos[:, arm_dofs], arm_dofs)
-                franka.control_dofs_position(np.full((n_envs, 2), opening), finger_dofs)
+                franka.control_dofs_position(opening, finger_dofs)
                 if i_phase != i_phase_prev:
                     forces = np.stack((force, force), axis=-1)
                     franka.set_dofs_force_range(-forces, forces, finger_dofs)

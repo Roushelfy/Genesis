@@ -61,8 +61,10 @@ LINE_SEARCH_SLOPE_TOLERANCE = 1e-2
 # step to be taken, a Newton step overshooting the minimum along it by a tenth at most
 FULL_STEP_SLOPE_RATIO = 0.1
 
-# Terms of the line search accumulated per environment (see func_contact_line_search_start)
+# Terms of the line search accumulated per environment (see func_contact_line_search_start), and values of the bracket
+# of its minimum (see func_contact_line_search_update)
 N_LINE_SEARCH_TERMS = 6
+N_LINE_SEARCH_BRACKET = 6
 
 # Iterations of the projected gradient descent locating the deepest point of a face in a geom, the step halving from
 # half the longest edge of the face, which bounds the error on the position of the point to its 2^-N.
@@ -72,6 +74,12 @@ N_DEEPEST_POINT_ITERATIONS = 10
 # its longest edge. A face lying flat on a geom starts at its centroid, and one tilted by more than this slope at its
 # deepest vertex.
 DEEPEST_POINT_SOFTMIN_WIDTH = 1e-3
+
+# Barycentric coordinate below which the deepest point of a face lies on the edge opposite that corner, and sine of the
+# angle by which the push of a geom on an edge may lean past the normal cone of the surface there (see
+# func_contact_is_in_normal_cone)
+EDGE_BARY_TOLERANCE = 1e-3
+NORMAL_CONE_TOLERANCE = 1e-2
 
 
 class PCG_MODE(IntEnum):
@@ -138,6 +146,8 @@ class ShellSolver(GravityMixin, TimeBasedMixin, Solver):
         self._shell_scratch: array_class.ShellScratch | None = None
         # Allocated by the coupler when the sheets touch rigid geoms, whose contacts then join the linear solve
         self._shell_contact: array_class.ShellContactScratch | None = None
+        # The environments whose solve produced non-finite values since their last reset (see check_errno)
+        self._errno: qd.Tensor | None = None
 
     def add_entity(self, idx, material, morph, surface, visualize_contact=False, name=None, desc=None) -> ShellEntity:
         entity = ShellEntity(
@@ -222,6 +232,7 @@ class ShellSolver(GravityMixin, TimeBasedMixin, Solver):
             max_tree_dofs,
             N_LINE_SEARCH_TERMS,
             N_LINE_SEARCH_POINTS,
+            N_LINE_SEARCH_BRACKET,
             self._B,
         )
         self._shell_contact.geoms_bound_center.from_numpy(geoms_bound_center)
@@ -393,7 +404,8 @@ class ShellSolver(GravityMixin, TimeBasedMixin, Solver):
         state.hinges_plastic_angle.from_numpy(np.zeros((max(n_hinges, 1), B), dtype=gs.np_float))
         # The coarse matrices of every environment are due at the first substep
         self._shell_scratch.envs_coarse_age.from_numpy(np.full(B, self._coarse_update_interval, dtype=gs.np_int))
-        self._shell_scratch.errno.from_numpy(np.zeros(B, dtype=gs.np_int))
+        self._errno = array_class.V(dtype=gs.qd_int, shape=(B,))
+        self._errno.from_numpy(np.zeros(B, dtype=gs.np_int))
 
     # ------------------------------------------------------------------------------------
     # ------------------------------------ stepping --------------------------------------
@@ -433,6 +445,7 @@ class ShellSolver(GravityMixin, TimeBasedMixin, Solver):
                 self._pcg_max_iterations,
                 self._pcg_tolerance,
                 self._pcg_velocity_tolerance,
+                self._errno,
             )
             kernel_shell_apply_dv(self._shell_state, self._shell_scratch)
 
@@ -448,7 +461,6 @@ class ShellSolver(GravityMixin, TimeBasedMixin, Solver):
         """
         kernel_shell_rigid_contact_detect(
             self._substep_dt,
-            self._contact_stiffness,
             self._shell_state,
             self._shell_scratch,
             self._shell_contact,
@@ -456,9 +468,10 @@ class ShellSolver(GravityMixin, TimeBasedMixin, Solver):
             self._shell_info,
             rigid_solver.dyn_info,
             rigid_solver.rigid_info,
-            rigid_solver.collider._sdf._sdf_info,
+            rigid_solver.collider.collider_info.sdf,
             rigid_solver.rigid_config,
             rigid_solver.collider.collider_config,
+            self._contact_stiffness,
         )
         kernel_shell_rigid_contact_solve(
             self._substep_dt,
@@ -479,10 +492,12 @@ class ShellSolver(GravityMixin, TimeBasedMixin, Solver):
             self._contact_stiffness,
             self._pcg_tolerance,
             self._pcg_velocity_tolerance,
+            self._errno,
         )
         kernel_shell_rigid_contact_finalize(
             self._substep_dt,
             self._shell_state,
+            self._shell_scratch,
             self._shell_contact,
             rigid_solver.dyn_state,
             rigid_solver.dyn_info,
@@ -552,7 +567,7 @@ class ShellSolver(GravityMixin, TimeBasedMixin, Solver):
         )
 
     def set_state(self, f, state: ShellSolverState, envs_idx=None):
-        """Restore the state of some environments, the warm start of their next linear solve included.
+        """Restore some environments, the warm start of their next linear solve included.
 
         The coarse preconditioner of a restored environment is rebuilt at its next substep, so that an environment
         reset to a state starts from the same numerical history as a fresh scene in that state.
@@ -582,11 +597,12 @@ class ShellSolver(GravityMixin, TimeBasedMixin, Solver):
             self._shell_state,
             self._shell_scratch,
             self._coarse_update_interval,
+            self._errno,
         )
 
     def check_errno(self):
         """Raise if the linear solve of any environment produced non-finite values since the last reset."""
-        if (qd_to_torch(self._shell_scratch.errno) > 0).any():
+        if (qd_to_torch(self._errno) > 0).any():
             gs.raise_exception(
                 "The linear solve of the shell solver produced non-finite values. Decrease the shell simulation "
                 "timestep, or check the material parameters and the contacts of the sheets."
@@ -657,8 +673,8 @@ class ShellSolver(GravityMixin, TimeBasedMixin, Solver):
         """
         Get the number of system products the linear solves of the last substep ran in every environment.
 
-        The count sums the solves of every iteration of the contact solve, the products checking the true residual of the
-        warm start and of the converged solution included.
+        The count sums the solves of every iteration of the contact solve, the products checking the true residual of
+        the warm start and of the converged solution included.
 
         Parameters
         ----------
@@ -721,22 +737,6 @@ class ShellSolver(GravityMixin, TimeBasedMixin, Solver):
     @property
     def shell_contact(self) -> array_class.ShellContactScratch | None:
         return self._shell_contact
-
-    @property
-    def static_config(self) -> array_class.ShellStaticConfig:
-        return self._static_config
-
-    @property
-    def pcg_tolerance(self) -> float:
-        return self._pcg_tolerance
-
-    @property
-    def pcg_velocity_tolerance(self) -> float:
-        return self._pcg_velocity_tolerance
-
-    @property
-    def pcg_max_iterations(self) -> int:
-        return self._pcg_max_iterations
 
 
 # ------------------------------------------------------------------------------------
@@ -1170,8 +1170,10 @@ def func_pcg_prepare(
     tolerance: float,
     velocity_tolerance: float,
 ):
-    """Invert the block-Jacobi preconditioner, set the thresholds every environment to solve converges below, and set up
-    the product of the warm start, whose true residual every environment checks first (see PCG_MODE).
+    """Set up the linear solve of every environment from its warm start, whose true residual it checks first.
+
+    The block-Jacobi preconditioner is inverted, the convergence thresholds set and the product of the warm start
+    prepared (see PCG_MODE).
 
     An environment converges once either its residual r in the norm of the block-Jacobi preconditioner D^-1 falls below
     the relative tolerance, r^T D^-1 r <= tolerance^2 * b^T D^-1 b for its right-hand side b, or the mass-weighted
@@ -1274,9 +1276,11 @@ def func_pcg_residual(
 
 @qd.func
 def func_pcg_coarse_solve(shell_scratch: array_class.ShellScratch, shell_info: array_class.ShellInfo):
-    """Solve the coarse system of every environment still solving for the restricted residual coarse_vec, leaving the
-    coarse correction in coarse_sol and its share of r^T z in envs_rz_new (see the coarse space in
-    kernel_shell_coarse_factorize)."""
+    """Solve the coarse system of every environment still solving for its restricted residual.
+
+    The coarse correction goes to coarse_sol and its share of r^T z to envs_rz_new (see the coarse space in
+    kernel_shell_coarse_factorize).
+    """
     B = shell_scratch.coarse_vec.shape[1]
 
     for i_d, i_b in qd.ndrange(shell_scratch.coarse_vec.shape[0], B):
@@ -1298,6 +1302,7 @@ def func_pcg_decide(
     shell_scratch: array_class.ShellScratch,
     static_config: qd.template(),
     max_iterations: int,
+    errno: qd.Tensor,
 ):
     """Decide the next iteration of every environment still solving, from the measures of the current one.
 
@@ -1325,7 +1330,7 @@ def func_pcg_decide(
             elif qd.math.isnan(rz_new) or qd.math.isinf(rz_new):
                 shell_scratch.envs_is_solving[i_b] = False
                 shell_scratch.envs_solve_status[i_b] |= SHELL_SOLVE_STATUS.NON_FINITE
-                shell_scratch.errno[i_b] = shell_scratch.errno[i_b] | SHELL_SOLVE_STATUS.NON_FINITE
+                errno[i_b] = errno[i_b] | array_class.ErrorCode.INVALID_SHELL_SOLVE_NAN
             elif (
                 residual <= shell_scratch.envs_residual_threshold[i_b]
                 or shell_scratch.envs_vel_error[i_b] <= shell_scratch.envs_vel_error_threshold[i_b]
@@ -1361,9 +1366,11 @@ def func_pcg_advance(
     shell_info: array_class.ShellInfo,
     static_config: qd.template(),
 ):
-    """Set the vector the next system product of every environment still solving applies to, and its mass part M x in
-    verts_Ap: the search direction p = z + beta p for z the preconditioned residual, or the solution while its true
-    residual is checked. The mass part of p^T A p goes to envs_pAp."""
+    """Set the vector the next system product of every environment still solving applies to, with its mass part.
+
+    The vector is the search direction p = z + beta p for z the preconditioned residual, or the solution while its true
+    residual is checked. Its mass part M x goes to verts_Ap, and the mass part of p^T A p to envs_pAp.
+    """
     n_verts, B = shell_state.verts_pos.shape[0], shell_state.verts_pos.shape[1]
 
     for i_v, i_b in qd.ndrange(n_verts, B):
@@ -1393,9 +1400,10 @@ def kernel_shell_pcg_solve(
     max_iterations: int,
     tolerance: float,
     velocity_tolerance: float,
+    errno: qd.Tensor,
 ):
-    """Solve the velocity update of every environment by PCG, warm-started from verts_dv, until each one converges or
-    fails (see func_pcg_prepare and func_pcg_decide).
+    """Solve the velocity update of every environment by preconditioned conjugate gradient (PCG), warm-started from
+    verts_dv, until each one converges or fails (see func_pcg_prepare and func_pcg_decide).
 
     The iterations loop on the device while any environment iterates, so that the solve costs the iterations of its
     slowest environment, with no host synchronization. An iteration fuses its reductions into the passes that produce
@@ -1407,7 +1415,7 @@ def kernel_shell_pcg_solve(
         func_pcg_residual(pcg_flag, shell_state, shell_scratch, shell_info, static_config)
         if qd.static(static_config.has_coarse_space):
             func_pcg_coarse_solve(shell_scratch, shell_info)
-        func_pcg_decide(pcg_flag, shell_scratch, static_config, max_iterations)
+        func_pcg_decide(pcg_flag, shell_scratch, static_config, max_iterations, errno)
         func_pcg_advance(shell_state, shell_scratch, shell_info, static_config)
 
 
@@ -1844,7 +1852,7 @@ def func_face_damage(i_f: int, i_b: int, shell_state: array_class.ShellState, sh
         F = func_face_deformation(i_f, i_b, shell_state, shell_info)[0]
         membrane = func_membrane_stress(F, shell_info.entities_stretching_modulus[i_e], nu)
         curvature = func_face_curvature(i_f, i_b, shell_state, shell_info)
-        # 6 M / h^2 for the plate moment M = D ((1 - nu) S + nu tr(S) I), D being bending_modulus * h^3
+        # The outer-fiber bending stress (see kernel_shell_damage), D being bending_modulus * h^3
         bending = (
             6.0
             * shell_info.entities_bending_modulus[i_e]
@@ -2194,8 +2202,8 @@ def kernel_shell_fracture(
 # normal impulse proportional to the penetration of the surface of the sheet, half its thickness off its mid-surface,
 # and a regularized Coulomb friction, both linearized over the substep and added to the implicit system of the sheets.
 # The degrees of freedom of the movable rigid links the contacts touch join that system through their mass matrix, then
-# are eliminated by their Schur complement, so that a contact moves the articulated rigid body as much as the sheet in
-# the same substep, and the rigid body receives the exact opposite of the impulse the sheet receives.
+# are eliminated by their Schur complement, so that a contact moves the articulated rigid links as much as the sheet in
+# the same substep, and the rigid link receives the exact opposite of the impulse the sheet receives.
 
 
 @qd.func
@@ -2211,7 +2219,8 @@ def func_geom_distance(
 ):
     """Return the signed distance from a point to the surface of a geom, in m, and the outward unit normal there.
 
-    Spheres, planes, boxes and capsules are exact, the other geoms reading the signed distance field of their mesh.
+    Boxes and capsules are exact, the other geoms reading the signed distance of the rigid collider, exact for spheres
+    and planes, sampled from a grid for meshes.
     """
     geom_pos = dyn_state.geoms.pos[i_g, i_b]
     geom_quat = dyn_state.geoms.quat[i_g, i_b]
@@ -2219,14 +2228,7 @@ def func_geom_distance(
     data = dyn_info.geoms.data[i_g]
     dist = gs.qd_float(0.0)
     normal = qd.Vector([0.0, 0.0, 1.0], dt=gs.qd_float)
-    if geom_type == gs.GEOM_TYPE.SPHERE:
-        offset = pos - geom_pos
-        dist = offset.norm() - data[0]
-        normal = offset / qd.max(offset.norm(), NORM_FLOOR)
-    elif geom_type == gs.GEOM_TYPE.PLANE:
-        normal = gu.qd_transform_by_quat(qd.Vector([data[0], data[1], data[2]], dt=gs.qd_float), geom_quat)
-        dist = normal.dot(pos - geom_pos)
-    elif geom_type == gs.GEOM_TYPE.BOX:
+    if geom_type == gs.GEOM_TYPE.BOX:
         pos_local = gu.qd_inv_transform_by_trans_quat(pos, geom_pos, geom_quat)
         signs = qd.select(pos_local >= 0.0, 1.0, -1.0)
         excess = qd.abs(pos_local) - 0.5 * qd.Vector([data[0], data[1], data[2]], dt=gs.qd_float)
@@ -2273,70 +2275,140 @@ def func_face_deepest_point(
     sdf_info: array_class.SDFInfo,
     collider_config: qd.template(),
 ):
-    """Return the barycentric coordinates of the point of a triangle deepest into a geom, the signed distance from
-    that point to the geom, and the outward normal of the geom there.
+    """Return the barycentric coordinates of the point of a triangle deepest into a geom, the signed distance from that
+    point to the geom, and the outward normal of the geom there.
 
-    The signed distance of a convex geom is convex, so that its minimum over the triangle is found by projected
-    gradient descent, exact for a sphere (the closest point to its center) and a plane (the deepest vertex, or a blend
-    of the vertices lying level with it). The descent starts from a soft minimum of the vertices, which keeps the point
-    of a face lying flat against a geom at its centroid rather than at an arbitrary vertex.
+    The signed distance of a convex geom is convex, so that its minimum over the triangle of vertices x0, x1 and x2 is
+    found by projected gradient descent, exact for a sphere (the closest point to its center) and a plane (the deepest
+    vertex, or a blend of the vertices lying level with it). The descent starts from a soft minimum of the vertices,
+    which keeps the point of a face lying flat against a geom at its centroid rather than at an arbitrary vertex.
     """
     edge_len = qd.max(qd.max((x1 - x0).norm(), (x2 - x1).norm()), (x0 - x2).norm())
-    dist_0 = func_geom_distance(i_g, i_b, x0, dyn_state, dyn_info, rigid_info, sdf_info, collider_config)[0]
-    dist_1 = func_geom_distance(i_g, i_b, x1, dyn_state, dyn_info, rigid_info, sdf_info, collider_config)[0]
-    dist_2 = func_geom_distance(i_g, i_b, x2, dyn_state, dyn_info, rigid_info, sdf_info, collider_config)[0]
-    dist_min = qd.min(qd.min(dist_0, dist_1), dist_2)
     width = qd.max(DEEPEST_POINT_SOFTMIN_WIDTH * edge_len, NORM_FLOOR)
-    bary = qd.Vector(
-        [qd.exp((dist_min - dist_0) / width), qd.exp((dist_min - dist_1) / width), qd.exp((dist_min - dist_2) / width)],
-        dt=gs.qd_float,
-    )
-    bary = bary / bary.sum()
 
     geom_type = dyn_info.geoms.type[i_g]
+    n_vertices = 3
+    n_descent_iterations = N_DEEPEST_POINT_ITERATIONS
+    bary = qd.Vector([1.0, 1.0, 1.0], dt=gs.qd_float) / 3.0
     if geom_type == gs.GEOM_TYPE.SPHERE:
         bary = gu.qd_closest_point_barycentric(dyn_state.geoms.pos[i_g, i_b], x0, x1, x2)
-    elif geom_type != gs.GEOM_TYPE.PLANE:
-        step = 0.5 * edge_len
-        for i_iter_ in range(N_DEEPEST_POINT_ITERATIONS):
-            pos = bary[0] * x0 + bary[1] * x1 + bary[2] * x2
-            normal = func_geom_distance(i_g, i_b, pos, dyn_state, dyn_info, rigid_info, sdf_info, collider_config)[1]
+        n_vertices = 0
+        n_descent_iterations = 0
+    elif geom_type == gs.GEOM_TYPE.PLANE:
+        n_descent_iterations = 0
+
+    # Every iteration evaluates the distance at one point, first at the vertices, whose soft minimum it accumulates
+    # relative to the smallest distance so far, then at the iterates of the descent, the last one being returned. All of
+    # them share one call site, which keeps a single inlined instance of the distance query.
+    dist_min = gs.qd_float(0.0)
+    weight_sum = gs.qd_float(0.0)
+    bary_sum = qd.Vector.zero(gs.qd_float, 3)
+    step = 0.5 * edge_len
+    dist = gs.qd_float(0.0)
+    normal = qd.Vector([0.0, 0.0, 1.0], dt=gs.qd_float)
+    for i_iter_ in range(n_vertices + n_descent_iterations + 1):
+        bary_point = bary
+        if i_iter_ < n_vertices:
+            bary_point = func_select3(
+                i_iter_,
+                qd.Vector([1.0, 0.0, 0.0], dt=gs.qd_float),
+                qd.Vector([0.0, 1.0, 0.0], dt=gs.qd_float),
+                qd.Vector([0.0, 0.0, 1.0], dt=gs.qd_float),
+            )
+        pos = bary_point[0] * x0 + bary_point[1] * x1 + bary_point[2] * x2
+        dist, normal = func_geom_distance(i_g, i_b, pos, dyn_state, dyn_info, rigid_info, sdf_info, collider_config)
+        if i_iter_ < n_vertices:
+            weight = gs.qd_float(1.0)
+            if i_iter_ == 0:
+                dist_min = dist
+            elif dist < dist_min:
+                scale = qd.exp((dist - dist_min) / width)
+                weight_sum = scale * weight_sum
+                bary_sum = scale * bary_sum
+                dist_min = dist
+            else:
+                weight = qd.exp((dist_min - dist) / width)
+            weight_sum += weight
+            bary_sum += weight * bary_point
+            bary = bary_sum / weight_sum
+        elif i_iter_ < n_vertices + n_descent_iterations:
             bary = gu.qd_closest_point_barycentric(pos - step * normal, x0, x1, x2)
             step = 0.5 * step
-
-    pos = bary[0] * x0 + bary[1] * x1 + bary[2] * x2
-    dist, normal = func_geom_distance(i_g, i_b, pos, dyn_state, dyn_info, rigid_info, sdf_info, collider_config)
     return bary, dist, normal
+
+
+@qd.func
+def func_contact_is_in_normal_cone(
+    i_f: int,
+    i_b: int,
+    bary: qd.types.vector(3),
+    normal: qd.types.vector(3),
+    shell_state: array_class.ShellState,
+    shell_info: array_class.ShellInfo,
+):
+    """Whether a geom pushing a face at a point of its edges pushes within the normal cone of the surface there.
+
+    The point of a face closest to a geom lies on an edge when the geom lies beyond it, over the neighbor face. The
+    push of the geom, along its outward normal, may then lean into the face by the dihedral angle of a convex edge at
+    most, as on a ridge it touches both faces. A larger lean, or any lean across a flat or concave edge, puts the
+    neighbor face between the geom and the face. A boundary edge, or the edge of a hinge fracture broke, bounds the
+    surface, so that any push on it holds.
+    """
+    is_in_cone = True
+    faces_hinge = shell_info.faces_hinge[i_f]
+    for k in range(3):
+        # Edge k joins corners k and k + 1 of the face, opposite corner k + 2
+        i_h = faces_hinge[0]
+        bary_opposite = bary[2]
+        if k == 1:
+            i_h = faces_hinge[1]
+            bary_opposite = bary[0]
+        elif k == 2:
+            i_h = faces_hinge[2]
+            bary_opposite = bary[1]
+        if i_h >= 0 and bary_opposite < EDGE_BARY_TOLERANCE:
+            i_va, i_vb, i_vc, i_vd, is_intact = func_hinge_verts(i_h, i_b, shell_state, shell_info)
+            if is_intact:
+                x_a = shell_state.verts_pos[i_va, i_b]
+                edge = shell_state.verts_pos[i_vb, i_b] - x_a
+                edge = edge / qd.max(edge.norm(), NORM_FLOOR)
+                # The opposite vertices of the face and of its neighbor, as the hinge lists its faces in either order
+                i_c = shell_info.hinges_opposite_corner[i_h][0]
+                i_v_face = i_vc
+                i_v_neighbor = i_vd
+                if i_c // 3 != i_f:
+                    i_v_face = i_vd
+                    i_v_neighbor = i_vc
+                dir_face = shell_state.verts_pos[i_v_face, i_b] - x_a
+                dir_face = dir_face - dir_face.dot(edge) * edge
+                dir_face = dir_face / qd.max(dir_face.norm(), NORM_FLOOR)
+                dir_neighbor = shell_state.verts_pos[i_v_neighbor, i_b] - x_a
+                dir_neighbor = dir_neighbor - dir_neighbor.dot(edge) * edge
+                dir_neighbor = dir_neighbor / qd.max(dir_neighbor.norm(), NORM_FLOOR)
+                # The normal of the face on the side of the geom, against its push
+                normal_side = edge.cross(dir_face)
+                if normal_side.dot(normal) > 0.0:
+                    normal_side = -normal_side
+                # Across the edge, in the basis of the direction into the face and of the normal on the side of the
+                # geom, the push of the geom on the neighbor face bounds the cone of a convex edge
+                neighbor_x = dir_neighbor.dot(dir_face)
+                neighbor_y = dir_neighbor.dot(normal_side)
+                bound_x = gs.qd_float(0.0)
+                bound_y = gs.qd_float(-1.0)
+                if neighbor_y < 0.0:
+                    bound_x = -neighbor_y
+                    bound_y = neighbor_x
+                push_x = normal.dot(dir_face)
+                push_y = normal.dot(normal_side)
+                lean = bound_x * push_y - bound_y * push_x
+                if lean > NORMAL_CONE_TOLERANCE * qd.sqrt(push_x * push_x + push_y * push_y):
+                    is_in_cone = False
+    return is_in_cone
 
 
 # ------------------------------------------------------------------------------------
 # ------------------------------ rigid contact chains --------------------------------
 # ------------------------------------------------------------------------------------
-
-
-@qd.func
-def func_chain_point_velocity(
-    i_l: int,
-    i_b: int,
-    pos: qd.types.vector(3),
-    dofs_vec: qd.template(),
-    dyn_state: array_class.DynState,
-    dyn_info: array_class.DynInfo,
-    rigid_config: qd.template(),
-):
-    """Return the velocity of the point of a link at a world position, for the velocities dofs_vec of the degrees of
-    freedom of its kinematic chain."""
-    vel = qd.Vector.zero(gs.qd_float, 3)
-    offset = pos - dyn_state.links.root_COM[i_l, i_b]
-    i_l_ = i_l
-    for i_depth_ in range(dyn_info.links.parent_idx.shape[0]):
-        if i_l_ >= 0:
-            I_l = [i_l_, i_b] if qd.static(rigid_config.batch_links_info) else i_l_
-            for i_d in range(dyn_info.links.dof_start[I_l], dyn_info.links.dof_end[I_l]):
-                jac = dyn_state.dofs.cdof_vel[i_d, i_b] + dyn_state.dofs.cdof_ang[i_d, i_b].cross(offset)
-                vel += jac * dofs_vec[i_d, i_b]
-            i_l_ = dyn_info.links.parent_idx[I_l]
-    return vel
 
 
 @qd.func
@@ -2348,7 +2420,8 @@ def func_contact_tree(
     rigid_info: array_class.RigidInfo,
 ):
     """The kinematic tree a contact moves, -1 for a contact with a static link."""
-    return rigid_info.links_tree_idx[func_contact_link(i_c, i_b, shell_contact, dyn_info)]
+    i_l = func_contact_link(i_c, i_b, shell_contact, dyn_info)
+    return rigid_info.links_tree_idx[i_l]
 
 
 @qd.func
@@ -2390,7 +2463,7 @@ def func_contact_rigid_velocity(
     shell_contact: array_class.ShellContactScratch,
     rigid_info: array_class.RigidInfo,
 ):
-    """Velocity of the rigid point of a contact for the velocities dofs_vec of the degrees of freedom of its tree."""
+    """Velocity of the rigid point of a contact for given velocities of the degrees of freedom of its tree."""
     i_d_start = rigid_info.trees_dof_start[i_t]
     vel = qd.Vector.zero(gs.qd_float, 3)
     for k in range(rigid_info.trees_n_dofs[i_t]):
@@ -2403,13 +2476,16 @@ def func_contact_rigid_response(
     i_c: int,
     i_b: int,
     i_t: int,
-    dofs_vec: qd.template(),
     i_d_offset: int,
+    dofs_vec: qd.template(),
     shell_contact: array_class.ShellContactScratch,
     rigid_info: array_class.RigidInfo,
 ):
-    """Velocity of the rigid point of a contact for the rigid velocities S^-1 f of the generalized forces f read from
-    dofs_vec at i_d_offset, S being the Schur matrix of its tree (see func_contact_assemble)."""
+    """Velocity of the rigid point of a contact for the rigid velocities given generalized forces impose on its tree.
+
+    The forces f are read from dofs_vec from index i_d_offset on, and the rigid velocities are S^-1 f, S being the
+    Schur matrix of the tree (see func_contact_assemble).
+    """
     i_d_start = rigid_info.trees_dof_start[i_t]
     n_tree_dofs = rigid_info.trees_n_dofs[i_t]
     vel = qd.Vector.zero(gs.qd_float, 3)
@@ -2458,7 +2534,7 @@ def func_contact_shell_velocity(
     shell_state: array_class.ShellState,
     shell_contact: array_class.ShellContactScratch,
 ):
-    """Velocity of the face point of a contact, interpolated from the vertex velocities vel of its face."""
+    """Velocity of the face point of a contact, interpolated from given velocities of the vertices of its face."""
     i_f = i_c // 2
     bary = shell_contact.contacts_bary[i_c, i_b]
     vel_point = qd.Vector.zero(gs.qd_float, 3)
@@ -2489,10 +2565,11 @@ def func_contact_add_to_verts(
 
 @qd.func
 def func_contact_stick_velocity(stiffness: float, friction_bound: float):
-    """Slip velocity below which a contact sticks: FRICTION_STICK_VELOCITY, widened to 2 * friction_bound / stiffness.
+    """Slip velocity below which a contact sticks, at least FRICTION_STICK_VELOCITY.
 
-    The stuck friction is then no stiffer than the normal penalty, which keeps the linear system of the contacts as
-    well conditioned as their normal stiffness alone, and the creep of a held contact proportional to its penetration.
+    It widens to 2 * friction_bound / stiffness, so that the stuck friction is no stiffer than the normal penalty,
+    which keeps the linear system of the contacts as well conditioned as their normal stiffness alone, and the creep of
+    a held contact proportional to its penetration.
     """
     return qd.max(FRICTION_STICK_VELOCITY, 2.0 * friction_bound / qd.max(stiffness, NORM_FLOOR))
 
@@ -2510,8 +2587,8 @@ def func_contact_potential(
 
     The normal potential is the penalty stiffness / (2 * dt^2) * max(0, -g)^2 of the penetration -g at the end of the
     substep, g = gap + dt * n.u. The friction potential is friction_bound * F0(|u_t|), friction_bound being mu times a
-    normal impulse (see kernel_shell_rigid_contact_detect), and F0 the smoothed Coulomb potential whose slope f1(y) = 2 y / eps -
-    y^2 / eps^2 grows from zero to one as the slip velocity y reaches the stick velocity eps (see
+    normal impulse (see kernel_shell_rigid_contact_detect), and F0 the smoothed Coulomb potential whose slope
+    f1(y) = 2 y / eps - y^2 / eps^2 grows from zero to one as the slip velocity y reaches the stick velocity eps (see
     func_contact_stick_velocity), so that the friction impulse never exceeds friction_bound and sticks below eps.
     """
     vel_normal = vel.dot(normal)
@@ -2577,7 +2654,6 @@ def func_contact_vel(i_c: int, i_b: int, shell_contact: array_class.ShellContact
 @qd.kernel
 def kernel_shell_rigid_contact_detect(
     dt: float,
-    contact_stiffness: float,
     shell_state: array_class.ShellState,
     shell_scratch: array_class.ShellScratch,
     shell_contact: array_class.ShellContactScratch,
@@ -2588,20 +2664,24 @@ def kernel_shell_rigid_contact_detect(
     sdf_info: array_class.SDFInfo,
     rigid_config: qd.template(),
     collider_config: qd.template(),
+    contact_stiffness: float,
 ):
     """Detect the contacts of every face with the rigid geoms at the start of the substep, and start the contact solve
-    from the warm start of the sheet and the free motion of the rigid bodies.
+    from the warm start of the sheet and the free motion of the rigid links.
 
     A face keeps, on either side of its mid-surface, the geom its surface penetrates deepest (see
-    func_face_deepest_point), at the signed distance gap from it. The contact is linearized about that point: its normal
-    is the outward normal of the geom there, and its relative velocity the velocity of the face point minus the velocity
-    of the rigid point at the same position, starting from the end velocity the rigid solver found before the contacts
-    of the sheets. Its penalty stiffness is contact_stiffness times the mass of the contact point over dt^2, from the
-    diagonal blocks of the system of the sheet and the inverse weight of the rigid link, so that it scales with the
-    local stiffness and mass of either side. Its friction bound lags: a contact slot that touched the same geom over the
-    previous substep keeps mu times the normal impulse it received then, as the Coulomb friction of a steady contact,
-    and a new contact takes its bound at the first iterate of the solve it pushes at (see func_contact_linearize). The
-    system of the sheet without contacts is kept for every iteration of the solve.
+    func_face_deepest_point), at the signed distance gap from it, unless the geom has not reached that point yet and it
+    lies on an edge the geom pushes past the normal cone of the surface, leaving the contact to the neighbor face (see
+    func_contact_is_in_normal_cone). The contact is linearized about that point: its normal is the outward normal of the
+    geom there, and its relative velocity the velocity of the face point minus the velocity of the rigid point at the
+    same position, starting from the end velocity the rigid solver found before the contacts of the sheets. Its penalty
+    stiffness is contact_stiffness times the mass of the contact point over dt^2, from the diagonal blocks of the system
+    of the sheet and the inverse weight of the rigid link, so that it scales with the local stiffness and mass of either
+    side. Its friction bound lags: a contact slot that touched the same geom over the previous substep keeps mu times
+    the normal impulse it received then, as the Coulomb friction of a steady contact, so that a contact starts to rub
+    one substep after it starts to push. A bound taken from an iterate of the solve instead would overestimate friction,
+    an early iterate pushing far more than the solution. The system of the sheet without contacts is kept for every
+    iteration of the solve.
     """
     n_verts, B = shell_state.verts_pos.shape[0], shell_state.verts_pos.shape[1]
     n_faces = shell_state.faces_thickness.shape[0]
@@ -2673,7 +2753,12 @@ def kernel_shell_rigid_contact_detect(
                         i_g, i_b, x0, x1, x2, dyn_state, dyn_info, rigid_info, sdf_info, collider_config
                     )
                     gap = dist - half_thickness
-                    if gap < margin:
+                    # A contact the geom has not reached yet leaves an edge it pushes past the normal cone of the
+                    # surface to the neighbor face: linearized about the edge, its gap would close on a corner the
+                    # neighbor face covers, which brakes a geom sliding across the edge
+                    if gap < margin and (
+                        gap <= 0.0 or func_contact_is_in_normal_cone(i_f, i_b, bary, normal, shell_state, shell_info)
+                    ):
                         if normal.dot(normal_face) >= 0.0:
                             if geom_front < 0 or gap < gap_front:
                                 geom_front = i_g
@@ -2710,13 +2795,18 @@ def kernel_shell_rigid_contact_detect(
             I_l = [i_l, i_b] if qd.static(rigid_config.batch_links_info) else i_l
             compliance += dyn_info.links.invweight[I_l][0]
             if compliance > 0.0:
-                pos = func_contact_point(i_c, i_b, shell_state, shell_contact)
                 shell_contact.contacts_stiffness[i_c, i_b] = contact_stiffness / compliance
-                shell_contact.contacts_vel[i_c, i_b] = func_contact_shell_velocity(
-                    i_c, i_b, shell_state.verts_vel, shell_state, shell_contact
-                ) - func_chain_point_velocity(
-                    i_l, i_b, pos, shell_contact.dofs_schur_vec, dyn_state, dyn_info, rigid_config
-                )
+                vel = func_contact_shell_velocity(i_c, i_b, shell_state.verts_vel, shell_state, shell_contact)
+                # The rigid point moves with the kinematic tree of its link, whose Jacobian holds over the substep
+                i_t = rigid_info.links_tree_idx[i_l]
+                if i_t >= 0:
+                    func_contact_jacobian(
+                        i_c, i_b, shell_state, shell_contact, dyn_state, dyn_info, rigid_info, rigid_config
+                    )
+                    vel = vel - func_contact_rigid_velocity(
+                        i_c, i_b, i_t, shell_contact.dofs_schur_vec, shell_contact, rigid_info
+                    )
+                shell_contact.contacts_vel[i_c, i_b] = vel
                 shell_contact.contacts_vel_change[i_c, i_b] = func_contact_shell_velocity(
                     i_c, i_b, shell_state.verts_dv, shell_state, shell_contact
                 )
@@ -2733,7 +2823,6 @@ def func_contact_linearize(
     dt: float,
     shell_scratch: array_class.ShellScratch,
     shell_contact: array_class.ShellContactScratch,
-    dyn_info: array_class.DynInfo,
     contact_stiffness: float,
     velocity_tolerance: float,
     max_iterations: int,
@@ -2742,12 +2831,10 @@ def func_contact_linearize(
     which environments iterate again.
 
     The friction bound of a contact stays fixed over the iterations, so that they minimize one convex potential (see
-    kernel_shell_rigid_contact_detect), except for a new contact, which takes mu times its normal impulse as its bound
-    at the first iterate it pushes at, mu being the coupling friction of its geom. An environment stops iterating once
-    its last step was full, no contact started to push, and the impulse of every contact matches the linear model of the
-    previous iteration within the impulse that would change the velocity of the contact point by velocity_tolerance, the
-    contact potential then being quadratic along the step. It also stops once it ran max_iterations iterations, which
-    its solve status reports.
+    kernel_shell_rigid_contact_detect). An environment stops iterating once its last step was full and the impulse of
+    every contact matches the linear model of the previous iteration within the impulse that would change the velocity
+    of the contact point by velocity_tolerance, the contact potential then being quadratic along the step. It also stops
+    once it ran max_iterations iterations, which its solve status reports.
     """
     B = shell_contact.envs_step.shape[0]
     n_slots = shell_contact.contacts_geom.shape[0]
@@ -2772,12 +2859,6 @@ def func_contact_linearize(
             impulse_tolerance = velocity_tolerance * stiffness / contact_stiffness
             if (impulse - model).norm() > impulse_tolerance:
                 shell_contact.envs_is_nonlinear[i_b] = True
-            if friction_bound <= 0.0:
-                friction_bound = dyn_info.geoms.coup_friction[i_g] * impulse.dot(normal)
-                if friction_bound > 0.0:
-                    shell_contact.envs_is_nonlinear[i_b] = True
-                    impulse = func_contact_potential(dt, vel, gap, normal, stiffness, friction_bound)[1]
-                    shell_contact.contacts_friction_bound[i_c, i_b] = friction_bound
             shell_contact.contacts_impulse[i_c, i_b] = impulse
             shell_contact.contacts_hessian[i_c, i_b] = func_contact_hessian(
                 dt, vel, gap, normal, stiffness, friction_bound
@@ -2800,10 +2881,8 @@ def func_contact_assemble(
     shell_state: array_class.ShellState,
     shell_scratch: array_class.ShellScratch,
     shell_contact: array_class.ShellContactScratch,
-    dyn_state: array_class.DynState,
     dyn_info: array_class.DynInfo,
     rigid_info: array_class.RigidInfo,
-    rigid_config: qd.template(),
 ):
     """Add the contacts, linearized about the current iterate, to the linear system of the sheet in every environment
     still solving, then eliminate the movable rigid degrees of freedom.
@@ -2812,8 +2891,9 @@ def func_contact_assemble(
     p_lin = p + H u_change for the relative velocity change u_change of the iterate. The rigid system of every
     kinematic tree the contacts touch is its mass matrix plus the contact stiffness, S = M_r + sum J_r^T H J_r, whose
     inverse corrects the right-hand side of the sheet by C S^-1 b_r, C = sum J_s^T H J_r, and whose Schur complement
-    func_contact_schur_product applies. Every contact keeps the Jacobian of its rigid point over the degrees of freedom
-    of its tree (see func_contact_jacobian), so that the products of the solve run in parallel over the contacts.
+    func_contact_schur_product applies. Every contact reads the Jacobian of its rigid point over the degrees of freedom
+    of its tree from the detection (see func_contact_jacobian), so that the products of the solve run in parallel over
+    the contacts.
     """
     n_verts, B = shell_state.verts_pos.shape[0], shell_state.verts_pos.shape[1]
     n_slots = shell_contact.contacts_geom.shape[0]
@@ -2855,14 +2935,11 @@ def func_contact_assemble(
             i_t = func_contact_tree(i_c, i_b, shell_contact, dyn_info, rigid_info)
             if i_t >= 0:
                 shell_contact.trees_is_coupled[i_t, i_b] = True
-                func_contact_jacobian(
-                    i_c, i_b, shell_state, shell_contact, dyn_state, dyn_info, rigid_info, rigid_config
-                )
                 i_d_start = rigid_info.trees_dof_start[i_t]
                 n_tree_dofs = rigid_info.trees_n_dofs[i_t]
                 for k in range(n_tree_dofs):
                     jac_k = shell_contact.contacts_jac[i_c, k, i_b]
-                    # The rigid body receives the opposite of the impulse of the sheet
+                    # The rigid link receives the opposite of the impulse of the sheet
                     shell_contact.dofs_schur_rhs[i_d_start + k, i_b] -= jac_k.dot(impulse)
                     row = hessian @ jac_k
                     for l in range(n_tree_dofs):
@@ -2896,7 +2973,7 @@ def func_contact_assemble(
             i_t = func_contact_tree(i_c, i_b, shell_contact, dyn_info, rigid_info)
             if i_t >= 0:
                 vel_rigid = func_contact_rigid_response(
-                    i_c, i_b, i_t, shell_contact.dofs_schur_rhs, 0, shell_contact, rigid_info
+                    i_c, i_b, i_t, 0, shell_contact.dofs_schur_rhs, shell_contact, rigid_info
                 )
                 func_contact_add_to_verts(
                     i_c,
@@ -2916,9 +2993,12 @@ def func_contact_product(
     dyn_info: array_class.DynInfo,
     rigid_info: array_class.RigidInfo,
 ):
-    """Add the contact stiffness of the sheet, J_s^T H J_s x, to the system product verts_Ap of every environment still
-    solving and its share x^T J_s^T H J_s x to envs_pAp, and gather the generalized forces C^T x of the rigid contacts
-    in the Schur accumulator of the iteration (see func_contact_schur_product)."""
+    """Add the contacts to the system product of every environment still solving, their rigid part excepted.
+
+    The contact stiffness of the sheet J_s^T H J_s x goes to verts_Ap and its share x^T J_s^T H J_s x to envs_pAp,
+    while the generalized forces C^T x of the rigid contacts gather in the Schur accumulator of the iteration (see
+    func_contact_schur_product).
+    """
     B = shell_state.verts_pos.shape[1]
     n_slots = shell_contact.contacts_geom.shape[0]
     n_dofs = shell_contact.dofs_schur_rhs.shape[0]
@@ -2973,7 +3053,7 @@ def func_contact_schur_product(
                     i_t = func_contact_tree(i_c, i_b, shell_contact, dyn_info, rigid_info)
                     if i_t >= 0:
                         vel_rigid = func_contact_rigid_response(
-                            i_c, i_b, i_t, shell_contact.dofs_schur_product, i_d_offset, shell_contact, rigid_info
+                            i_c, i_b, i_t, i_d_offset, shell_contact.dofs_schur_product, shell_contact, rigid_info
                         )
                         func_contact_add_to_verts(
                             i_c,
@@ -3154,9 +3234,11 @@ def func_contact_line_search_points(
     dt: float,
     shell_contact: array_class.ShellContactScratch,
 ):
-    """Add the slope and curvature of every contact potential along the step at the step lengths the current line
-    search pass of its environment evaluates: N_LINE_SEARCH_POINTS evenly spaced points of the bracket for the
-    bracketing passes, the candidate step length for the refining ones (see func_contact_line_search_update)."""
+    """Add the slope and curvature of every contact potential along the step at the step lengths of the current pass.
+
+    A bracketing pass evaluates N_LINE_SEARCH_POINTS evenly spaced points of the bracket, a refining pass its candidate
+    step length (see func_contact_line_search_update).
+    """
     n_slots, B = shell_contact.contacts_geom.shape[0], shell_contact.contacts_geom.shape[1]
     n_points = shell_contact.envs_line_slope.shape[1]
 
@@ -3194,9 +3276,10 @@ def func_contact_line_search_update(
     line_flag: qd.types.ndarray(qd.i32, ndim=0),
     shell_contact: array_class.ShellContactScratch,
 ):
-    """Narrow the bracket of the minimum of the incremental potential along the step from the slopes of the current
-    pass, and choose the step length once it is narrow enough, keeping the device loop running while any environment
-    still searches.
+    """Narrow the bracket of the minimum of the potential along the step from the slopes of the current pass.
+
+    The step length is chosen once the bracket is narrow enough, and the device loop keeps running while any
+    environment still searches.
 
     The bracket holds its lower end, the slope there, its upper end, the slope and curvature there, and the candidate
     step length of the next refining pass. The full step is taken when the slope at its end stays below
@@ -3365,22 +3448,23 @@ def kernel_shell_rigid_contact_solve(
     contact_stiffness: float,
     tolerance: float,
     velocity_tolerance: float,
+    errno: qd.Tensor,
 ):
     """Solve the velocity update of the sheets jointly with their rigid contacts, by Newton iterations on the
     incremental potential of the substep, until every environment converges or fails.
 
     Every iteration linearizes the contacts about the current iterate (func_contact_linearize), solves the linearized
-    system by the PCG of kernel_shell_pcg_solve on the Schur complement of the rigid degrees of freedom, and steps
-    to the minimum of the potential towards its solution (func_contact_line_search_update). The three loops run on the
-    device while any environment iterates.
+    system by the preconditioned conjugate gradient (PCG) of kernel_shell_pcg_solve on the Schur complement of the rigid
+    degrees of freedom, and steps to the minimum of the potential towards its solution
+    (func_contact_line_search_update). The three loops run on the device while any environment iterates.
     """
     for _ in range(1):
         newton_flag[()] = 1
     while qd.graph.do_while(newton_flag):
         func_contact_linearize(
-            dt, shell_scratch, shell_contact, dyn_info, contact_stiffness, velocity_tolerance, max_newton_iterations
+            dt, shell_scratch, shell_contact, contact_stiffness, velocity_tolerance, max_newton_iterations
         )
-        func_contact_assemble(shell_state, shell_scratch, shell_contact, dyn_state, dyn_info, rigid_info, rigid_config)
+        func_contact_assemble(shell_state, shell_scratch, shell_contact, dyn_info, rigid_info)
         func_pcg_prepare(pcg_flag, shell_state, shell_scratch, shell_static_config, tolerance, velocity_tolerance)
         while qd.graph.do_while(pcg_flag):
             func_system_product(shell_state, shell_scratch, shell_info)
@@ -3389,7 +3473,7 @@ def kernel_shell_rigid_contact_solve(
             func_pcg_residual(pcg_flag, shell_state, shell_scratch, shell_info, shell_static_config)
             if qd.static(shell_static_config.has_coarse_space):
                 func_pcg_coarse_solve(shell_scratch, shell_info)
-            func_pcg_decide(pcg_flag, shell_scratch, shell_static_config, max_iterations)
+            func_pcg_decide(pcg_flag, shell_scratch, shell_static_config, max_iterations, errno)
             func_pcg_advance(shell_state, shell_scratch, shell_info, shell_static_config)
         func_contact_direction(shell_state, shell_scratch, shell_contact, shell_info, dyn_info, rigid_info)
         func_contact_line_search_start(line_flag, shell_state, shell_scratch, shell_contact, rigid_info)
@@ -3404,14 +3488,19 @@ def kernel_shell_rigid_contact_solve(
 def kernel_shell_rigid_contact_finalize(
     dt: float,
     shell_state: array_class.ShellState,
+    shell_scratch: array_class.ShellScratch,
     shell_contact: array_class.ShellContactScratch,
     dyn_state: array_class.DynState,
     dyn_info: array_class.DynInfo,
 ):
-    """Apply the solved contacts at the last iterate: the rigid degrees of freedom accelerate by their velocity change
-    over the substep, which the rigid solver then integrates, and every contact spreads its force on the vertices of its
-    face and adds the opposite force to the contact force of its rigid link. Every contact slot records its geom and mu
-    times its normal impulse, the friction bound of the next substep (see kernel_shell_rigid_contact_detect)."""
+    """Apply the solved contacts at the last iterate to the sheets and the rigid links.
+
+    The rigid degrees of freedom accelerate by their velocity change over the substep, which the rigid solver then
+    integrates, and every contact spreads its force on the vertices of its face and adds the opposite force to the
+    contact force of its rigid link. Every contact slot records its geom and mu times its normal impulse, the friction
+    bound of the next substep (see kernel_shell_rigid_contact_detect). An environment whose solve produced non-finite
+    values applies nothing, errno halting the simulation at its next check.
+    """
     n_verts, B = shell_state.verts_pos.shape[0], shell_state.verts_pos.shape[1]
     n_slots = shell_contact.contacts_geom.shape[0]
 
@@ -3419,10 +3508,13 @@ def kernel_shell_rigid_contact_finalize(
         shell_contact.verts_contact_force[i_v, i_b] = qd.Vector.zero(gs.qd_float, 3)
 
     for i_d, i_b in qd.ndrange(dyn_state.dofs.acc.shape[0], B):
-        dyn_state.dofs.acc[i_d, i_b] += shell_contact.dofs_dv[i_d, i_b] / dt
+        if not shell_scratch.envs_solve_status[i_b] & SHELL_SOLVE_STATUS.NON_FINITE:
+            dyn_state.dofs.acc[i_d, i_b] += shell_contact.dofs_dv[i_d, i_b] / dt
 
     for i_c, i_b in qd.ndrange(n_slots, B):
         i_g = shell_contact.contacts_geom[i_c, i_b]
+        if shell_scratch.envs_solve_status[i_b] & SHELL_SOLVE_STATUS.NON_FINITE:
+            i_g = -1
         shell_state.contacts_geom_prev[i_c, i_b] = i_g
         shell_state.contacts_friction_bound_prev[i_c, i_b] = gs.qd_float(0.0)
         if i_g >= 0:
@@ -3547,6 +3639,7 @@ def kernel_shell_set_state(
     shell_state: array_class.ShellState,
     shell_scratch: array_class.ShellScratch,
     coarse_update_interval: int,
+    errno: qd.Tensor,
 ):
     """Write the state of some environments, whose coarse matrices become due and whose errors clear."""
     n_verts = shell_state.verts_pos.shape[0]
@@ -3585,4 +3678,4 @@ def kernel_shell_set_state(
         i_b = envs_idx[i_b_]
         shell_state.envs_solver_failure[i_b] = envs_solver_failure[i_b_]
         shell_scratch.envs_coarse_age[i_b] = coarse_update_interval
-        shell_scratch.errno[i_b] = 0
+        errno[i_b] = 0

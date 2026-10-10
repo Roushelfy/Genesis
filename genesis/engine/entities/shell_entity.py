@@ -364,7 +364,7 @@ class ShellEntity(Entity):
         Returns
         -------
         damage : torch.Tensor, shape (n_faces,) or (n_envs, n_faces)
-            Zero for a material without tensile strength.
+            The damage index of every triangle (see `get_faces`).
         """
         if self._material.tensile_strength is None:
             gs.raise_exception("The damage of a sheet is only evaluated for a material with a tensile strength.")
