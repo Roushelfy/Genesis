@@ -1,5 +1,34 @@
 # Agent goal: native Quadrants rigid stress recovery
 
+## Current acceptance, 2026-10-10 follow-up
+
+Prioritize legal-contact robustness before further optimization. The actual
+B=2048 apex contact is infeasible under the Q10 constant-ratio sampled pad
+law (132 eligible samples, transverse hull gap 10.9 micrometres). Improve the
+declared load representation or local integration and turn that fixture into
+successful recovery. Distinguish sampling, fitting failure and physical
+incompatibility. Keep force, moment, frames and friction constraints explicit.
+Vary actual combined contact coefficients in the live workload.
+
+Use only the low-resolution full hollow shell in this phase. Rebuild a matched
+baseline after any load-model change. Profile and evaluate applicable batch
+tiling/reuse, scatter/reduction, scheduling, device conditions, failure packing,
+shared operators, precision/correction, history and global peak candidates.
+Record a measured result or concrete cost/profile reason for each decision.
+
+Final GPU evidence covers effective rigid-only, recovery-only, live and policy
+rates, batch steps/s, numerical failures, grasp outcomes, tail work and memory.
+Use changing contacts, different seeds, partial resets and repeated trajectories
+at B=1024,2048 and larger batches. Resume peak exploration after contact repair.
+The earlier copied-condition scan was stopped at the user's request and is
+preliminary historical evidence. Policy inference defines rollout scope only.
+
+Complete and push only after contact, numerical and lifecycle checks pass and
+measured optimization reaches a plateau with no unresolved actionable major
+bottleneck. Missing resources must leave their tests explicitly unverified.
+
+## Implementation objective
+
 Implement auxiliary fixed-geometry linear-elastic stress recovery as an
 optional, native feature of Genesis's existing rigid solver in
 `Roushelfy/Genesis`, branch `rigid-stress-recovery`. Return the global maximum

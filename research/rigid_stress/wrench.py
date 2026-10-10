@@ -229,9 +229,17 @@ class FinitePatchMapper:
     moment is relative to center_m. P2 nodal weights remain signed; positivity applies to physical quadrature tractions.
     """
 
-    def __init__(self, geometry, anchor_to_surface: bool = False):
+    def __init__(
+        self,
+        geometry,
+        anchor_to_surface: bool = False,
+        surface_traction: bool = False,
+        adaptive_integration: bool = False,
+    ):
         self.geometry = geometry
         self.anchor_to_surface = anchor_to_surface
+        self.surface_traction = surface_traction
+        self.adaptive_integration = adaptive_integration
         self.positions = geometry.coords.reshape(-1, 3)
         self.weights = geometry.integration_weights.reshape(-1)
         self.tree = cKDTree(self.positions)
@@ -245,6 +253,56 @@ class FinitePatchMapper:
         edges = vertices[:, 1:] - vertices[:, :1]
         gram = np.einsum("fai,fbi->fab", edges, edges)
         self.face_dual = np.einsum("fab,fbi->fai", np.linalg.inv(gram), edges)
+
+    def refined_quadrature(self, patch: WrenchPatch):
+        """Partition the anchor face around a central triangle whose centroid is the anchor."""
+        local = np.einsum("fai,fi->fa", self.face_dual, patch.center_m - self.face_vertices[:, 0])
+        plane = np.einsum("fi,fi->f", self.face_normals, patch.center_m - self.face_vertices[:, 0])
+        eligible = (abs(plane) < 1e-12) & (local.min(axis=1) >= -2e-12) & (local.sum(axis=1) <= 1 + 2e-12)
+        faces = np.flatnonzero(eligible)
+        if not len(faces):
+            raise ValueError("The anchored footprint needs an exterior containing face")
+        i_face = faces[0]
+        anchor = np.r_[1 - local[i_face].sum(), local[i_face]]
+        inner = (1 - anchor[:, None]) * anchor[None] + np.diag(anchor)
+        unit = np.eye(3)
+        triangles = np.stack(
+            (
+                inner,
+                np.stack((unit[0], unit[1], inner[1])),
+                np.stack((unit[0], inner[1], inner[0])),
+                np.stack((unit[1], unit[2], inner[2])),
+                np.stack((unit[1], inner[2], inner[1])),
+                np.stack((unit[2], unit[0], inner[0])),
+                np.stack((unit[2], inner[0], inner[2])),
+            )
+        )
+        bary = np.einsum("qa,tai->tqi", self.geometry.bary, triangles)
+        vertices = triangles @ self.face_vertices[i_face]
+        jacobian = np.linalg.norm(np.cross(vertices[:, 1] - vertices[:, 0], vertices[:, 2] - vertices[:, 0]), axis=1)
+        positions = bary @ self.face_vertices[i_face]
+        weights = jacobian[:, None] * self.geometry.weights[None] / 2
+        shape = np.concatenate(
+            (
+                bary * (2 * bary - 1),
+                (4 * bary[:, :, 0] * bary[:, :, 1])[:, :, None],
+                (4 * bary[:, :, 0] * bary[:, :, 2])[:, :, None],
+                (4 * bary[:, :, 1] * bary[:, :, 2])[:, :, None],
+            ),
+            axis=2,
+        )
+        count = self.geometry.shape.shape[0]
+        ids = np.array(self.tree.query_ball_point(patch.center_m, patch.radius_m, return_sorted=True))
+        ids = ids[ids // count != i_face]
+        sample_ids = np.r_[ids, len(self.positions) + np.arange(7 * count)]
+        positions = np.concatenate((self.positions[ids], positions.reshape(-1, 3)))
+        weights = np.r_[self.weights[ids], weights.reshape(-1)]
+        shape = np.concatenate((self.geometry.shape[ids % count], shape.reshape(-1, 6)))
+        nodes = self.geometry.nodes[np.r_[ids // count, np.full(7 * count, i_face)]]
+        distance = np.sum((positions - patch.center_m) ** 2, axis=1) / patch.radius_m**2
+        weights *= np.exp(-0.5 * distance / 0.45**2) * np.maximum(0, 1 - distance) ** 2
+        active = (distance < 1) & (weights > 0)
+        return positions[active], weights[active], shape[active], nodes[active], sample_ids[active]
 
     def surface_anchor(self, center: np.ndarray, force: np.ndarray) -> np.ndarray:
         """Intersect a force line with the outgoing exterior of the fixed convex reference shell.
@@ -320,12 +378,20 @@ class FinitePatchMapper:
         ids, weights = ids[is_active], weights[is_active]
         if weights.sum() <= 0:
             raise ValueError("The finite footprint has no resolved area")
-        if patch.inward_normal is None:
+        samples_per_face = self.geometry.shape.shape[0]
+        shape = self.geometry.shape[ids % samples_per_face]
+        nodes = self.geometry.nodes[ids // samples_per_face]
+        if patch.inward_normal is None or self.surface_traction:
             force, diagnostics = WrenchFit(self.positions[ids], weights, self.normals[ids], patch).solve()
         else:
-            force, diagnostics = PadPressureFit(self.positions[ids], weights, patch).solve()
-        samples_per_face = self.geometry.shape.shape[0]
-        contribution = self.geometry.shape[ids % samples_per_face, :, None] * force[:, None, :]
+            try:
+                force, diagnostics = PadPressureFit(self.positions[ids], weights, patch).solve()
+            except ValueError:
+                if not self.adaptive_integration:
+                    raise
+                positions, weights, shape, nodes, ids = self.refined_quadrature(patch)
+                force, diagnostics = PadPressureFit(positions, weights, patch).solve()
+        contribution = shape[:, :, None] * force[:, None, :]
         nodal = np.zeros_like(self.geometry.f.xyz)
-        np.add.at(nodal, self.geometry.nodes[ids // samples_per_face].reshape(-1), contribution.reshape(-1, 3))
+        np.add.at(nodal, nodes.reshape(-1), contribution.reshape(-1, 3))
         return PatchMapping(nodal.reshape(-1), ids, force, diagnostics, patch.center_m)

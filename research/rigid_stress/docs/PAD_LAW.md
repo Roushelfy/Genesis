@@ -1,5 +1,12 @@
 # Finite pad traction model
 
+Current native development retains this pad law and adds checked local
+contact integration after a sampled fit failure. See
+[CONTACT_REPAIR_20261010.md](CONTACT_REPAIR_20261010.md) for the exact face
+partition, model diagnosis and current validation status. The historical
+prototype and physical convergence results below precede that integration
+repair and define no new physical accuracy claim.
+
 The live adapter accepts the complete point position, force, inward contact
 normal, effective solver friction coefficient and an explicitly supplied
 finite radius at every contact. All finger, table and other egg contacts enter

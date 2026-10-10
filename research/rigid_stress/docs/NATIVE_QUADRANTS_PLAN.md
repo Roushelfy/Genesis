@@ -50,6 +50,12 @@ existing rigid solver instead of registering another physics solver.
 
 ## Model and contact scope
 
+The 2026-10-10 follow-up prioritizes the sampled pad model's genuine apex
+infeasibility. Repair its load representation or integration before further
+throughput tuning. Preserve original wrench and friction acceptance and
+validate actual combined coefficients that vary. Rebuild all baselines
+after a model/integration change. See [CONTACT_REPAIR_20261010.md](CONTACT_REPAIR_20261010.md).
+
 The benchmark is a Franka Panda grasping a full hollow egg-shaped rigid link.
 The shell is hollow for elastic stiffness and mass, and rigid for dynamics and
 collision. Use the existing fixed-geometry, small-strain, quasi-static elastic

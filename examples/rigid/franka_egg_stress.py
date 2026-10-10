@@ -49,8 +49,10 @@ class FrankaEgg:
             profiling_options=gs.options.ProfilingOptions(show_FPS=False),
             show_viewer=viewer,
         )
-        self.scene.add_entity(gs.morphs.Plane())
-        self.robot = self.scene.add_entity(gs.morphs.MJCF(file="xml/franka_emika_panda/panda.xml"))
+        self.scene.add_entity(gs.morphs.Plane(), material=gs.materials.Rigid(friction=0.1))
+        self.robot = self.scene.add_entity(
+            gs.morphs.MJCF(file="xml/franka_emika_panda/panda.xml"), material=gs.materials.Rigid(friction=0.1)
+        )
         self.egg = self.scene.add_entity(
             gs.morphs.URDF(
                 file=assets / "egg_shell.urdf", pos=(0.65, 0, 0.031), align=False, convexify=True, decimate=False

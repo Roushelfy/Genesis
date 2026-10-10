@@ -22,6 +22,7 @@ class StressSurfaceInfo:
     weights: qd.Tensor
     shape: qd.Tensor
     face_origin: qd.Tensor
+    face_edges: qd.Tensor
     face_dual: qd.Tensor
     face_normal: qd.Tensor
     grid: StressGridInfo
@@ -38,6 +39,7 @@ class StressSurface:
             weights=V(dtype=gs.qd_float, shape=(n_faces * n_quadrature,)),
             shape=V_VEC(6, dtype=gs.qd_float, shape=(n_quadrature,)),
             face_origin=V_VEC(3, dtype=gs.qd_float, shape=(n_faces,)),
+            face_edges=V_MAT(2, 3, dtype=gs.qd_float, shape=(n_faces,)),
             face_dual=V_MAT(2, 3, dtype=gs.qd_float, shape=(n_faces,)),
             face_normal=V_VEC(3, dtype=gs.qd_float, shape=(n_faces,)),
             grid=allocate_grid(n_faces * n_quadrature),
@@ -75,6 +77,7 @@ def kernel_surface(stress_info: StressInfo, surface_info: StressSurfaceInfo):
         first, second = stress_info.vertices[i_1] - x, stress_info.vertices[i_2] - x
         gram = qd.Matrix([[first.dot(first), first.dot(second)], [second.dot(first), second.dot(second)]])
         surface_info.face_origin[i_f] = x
+        surface_info.face_edges[i_f] = qd.Matrix.rows([first, second])
         surface_info.face_dual[i_f] = gram.inverse() @ qd.Matrix.rows([first, second])
         normal = first.cross(second).normalized()
         com = qd.Vector([stress_info.mass_properties[1 + i_a] for i_a in qd.static(range(3))])

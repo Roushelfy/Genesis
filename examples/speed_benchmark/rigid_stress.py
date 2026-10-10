@@ -178,6 +178,7 @@ def main() -> None:
     parser.add_argument("--repetitions", type=int, default=3)
     parser.add_argument("--minimum-seconds", type=float, default=10.0)
     parser.add_argument("--varied", action="store_true")
+    parser.add_argument("--seed", type=int, default=510000)
     parser.add_argument("--conditions", type=Path, help="Repeat a frozen condition bank, including controller targets.")
     parser.add_argument("--save-conditions", type=Path, help="Save the constructed condition bank before warmup.")
     parser.add_argument("--serial-solve", action="store_true")
@@ -192,12 +193,13 @@ def main() -> None:
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    gs.init(backend=gs.gpu, precision="64", seed=510000, logging_level="warning")
+    gs.init(backend=gs.gpu, precision="64", seed=args.seed, logging_level="warning")
     start = time.perf_counter()
     workload = FrankaEgg(
         args.envs,
         args.level,
         args.scope not in ("rigid", "policy-rigid"),
+        seed=args.seed,
         varied=args.varied,
         cooperative_solve=not args.serial_solve,
         method=args.method,
@@ -270,6 +272,17 @@ def main() -> None:
                     row["rhs_N"] = np.sqrt(qd_to_numpy(entry.state.rhs_norm_squared)).tolist()
                     row["corrections"] = qd_to_numpy(entry.state.corrections).tolist()
                     row["fallbacks"] = qd_to_numpy(entry.state.fallbacks).tolist()
+                    row["contact_integration_retries"] = (
+                        qd_to_numpy(entry.contacts.is_refined, transpose=True).sum(axis=1).tolist()
+                    )
+                    evaluations = qd_to_numpy(entry.contacts.evaluations, transpose=True)
+                    row["contact_fit_iterations_max"] = evaluations.max(axis=1).tolist()
+                    row["contact_wrench_force_error_N"] = (
+                        qd_to_numpy(entry.contacts.force_error, transpose=True).max(axis=1).tolist()
+                    )
+                    row["contact_wrench_moment_error_Nm"] = (
+                        qd_to_numpy(entry.contacts.moment_error, transpose=True).max(axis=1).tolist()
+                    )
                     if entry.history is not None:
                         row["history_hits"] = qd_to_numpy(entry.history.state.hit).tolist()
                     radii = qd_to_numpy(entry.contacts.radius, transpose=True)[valid]
@@ -288,7 +301,8 @@ def main() -> None:
             "dt": 0.01,
             "substeps": 1,
             "varied": args.varied,
-            "seed": 510000,
+            "seed": args.seed,
+            "load_model": "finite_pad_adaptive_q10",
             "condition_count": workload.condition_count,
             "conditions": str(args.conditions) if args.conditions is not None else None,
             "conditions_sha256": hashlib.sha256(args.conditions.read_bytes()).hexdigest()

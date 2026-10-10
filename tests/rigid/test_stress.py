@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 import trimesh
 from scipy import sparse
+from scipy.optimize import linprog
 from scipy.sparse.linalg import splu
 from scipy.spatial.transform import Rotation
 
@@ -144,7 +145,7 @@ def test_native_finite_pressure_matches_independent_cpu(tmp_path, cooperative):
     np.testing.assert_allclose(
         qd_to_numpy(surface.info.weights), geometry.integration_weights.reshape((-1,)), rtol=2e-13
     )
-    mapper = FinitePatchMapper(geometry, anchor_to_surface=True)
+    mapper = FinitePatchMapper(geometry, anchor_to_surface=True, adaptive_integration=True)
     n_contacts, n_envs = 3, 4
     contacts = create_contacts(n_contacts, n_envs, 0.006, cooperative)
     state = model.create_state(n_envs)
@@ -196,7 +197,7 @@ def test_native_constrained_pressure_and_invalid_inputs(tmp_path, case):
     model = StressModel(RigidStressOptions(mesh=mesh, method="pcg"))
     surface = StressSurface(10, model.info)
     oracle = P2Shell(vertices, tetrahedra, faces, 1e10, 0.3, 2000.0, 2, factor_backend="none")
-    mapper = FinitePatchMapper(SurfaceGeometry(oracle, 10), anchor_to_surface=True)
+    mapper = FinitePatchMapper(SurfaceGeometry(oracle, 10), anchor_to_surface=True, adaptive_integration=True)
     random = np.random.default_rng(8125)
     selected = None
     for _ in range(200):
@@ -256,14 +257,15 @@ def test_native_constrained_pressure_and_invalid_inputs(tmp_path, case):
 
 @pytest.mark.required
 @pytest.mark.precision("64")
-def test_native_unrepresentable_live_patch_is_rejected(tmp_path):
+@pytest.mark.parametrize("cooperative", (False, True))
+def test_native_live_apex_wrench_recovery(tmp_path, cooperative):
     vertices, tetrahedra, faces, _ = shell_mesh(1, 2, 0.0005)
     mesh = tmp_path / "shell.npz"
     np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)
-    model = StressModel(RigidStressOptions(mesh=mesh, method="pcg"))
+    model = StressModel(RigidStressOptions(mesh=mesh))
     surface = StressSurface(10, model.info)
     oracle = P2Shell(vertices, tetrahedra, faces, 1e10, 0.3, 2000.0, 2, factor_backend="none")
-    mapper = FinitePatchMapper(SurfaceGeometry(oracle, 10), anchor_to_surface=True)
+    mapper = FinitePatchMapper(SurfaceGeometry(oracle, 10), anchor_to_surface=True, adaptive_integration=True)
     # Actual B=2048 rollout, environment 1996, tick 632. Do not widen its footprint to accept it.
     patch = WrenchPatch(
         np.array([4.0606709579473816e-5, 1.3926954540923124e-5, 0.0299207658748014]),
@@ -273,17 +275,45 @@ def test_native_unrepresentable_live_patch_is_rejected(tmp_path):
         np.zeros(3),
         np.array([0.45061547141681174, 0.1545483800796497, -0.8792385882879348]),
     )
-    with pytest.raises(ValueError, match="cannot preserve"):
-        mapper.map(patch)
-    contacts = create_contacts(1, 1, patch.radius_m)
+    anchor = mapper.surface_anchor(patch.center_m, patch.force_n)
+    ids = np.array(mapper.tree.query_ball_point(anchor, patch.radius_m, return_sorted=True))
+    direction = patch.force_n / np.linalg.norm(patch.force_n)
+    first = np.cross(direction, np.eye(3)[np.argmin(np.abs(direction))])
+    first /= np.linalg.norm(first)
+    transverse = (mapper.positions[ids] - anchor) @ np.stack((first, np.cross(direction, first))).T
+    operator = np.column_stack((np.ones(len(ids)), transverse / patch.radius_m))
+    feasibility = linprog(np.zeros(len(ids)), A_eq=operator.T, b_eq=[1, 0, 0], bounds=(0, None))
+    assert feasibility.status == 2
+    mapped = mapper.map(patch)
+    assert mapped.diagnostics.minimum_normal_force_n >= -1e-15
+    assert mapped.diagnostics.maximum_cone_excess_n < 1e-14
+    contacts = create_contacts(1, 1, patch.radius_m, cooperative)
+    state = model.create_state(1)
     contacts.position.from_numpy(patch.center_m.reshape((1, 1, 3)))
     contacts.force.from_numpy(patch.force_n.reshape((1, 1, 3)))
     contacts.normal.from_numpy(patch.inward_normal.reshape((1, 1, 3)))
     contacts.friction.fill(1.0)
     contacts.valid.fill(True)
     kernel_anchor(float(np.finfo(float).eps), contacts, surface.info)
-    kernel_pressure(contacts, surface.info)
-    np.testing.assert_array_equal(qd_to_numpy(contacts.status), 3)
+    kernel_pressure(contacts, surface.info, cooperative)
+    kernel_scatter(contacts, state, model.info, surface.info)
+    print("apex", cooperative, "status", qd_to_numpy(contacts.status), "iterations", qd_to_numpy(contacts.evaluations))
+    np.testing.assert_array_equal(qd_to_numpy(contacts.status), 0)
+    np.testing.assert_allclose(qd_to_numpy(state.force)[:, 0].reshape(-1), mapped.nodal_force_n, rtol=2e-7, atol=1e-10)
+    assert qd_to_numpy(contacts.force_error).max() < 1e-10
+    assert qd_to_numpy(contacts.moment_error).max() < 1e-12
+    omega = V_VEC(3, dtype=gs.qd_float, shape=(1,))
+    omega.fill(0)
+    model.recover(omega, state)
+    rhs = mapped.nodal_force_n - oracle.mr @ np.linalg.solve(oracle.gram, oracle.r.T @ mapped.nodal_force_n)
+    free = np.setdiff1d(np.arange(oracle.ndof), qd_to_numpy(model.info.pins))
+    displacement = np.zeros_like(rhs)
+    displacement[free] = splu(oracle.k[free][:, free].tocsc()).solve(rhs[free])
+    recovered = qd_to_numpy(state.displacement)[:, 0].reshape(-1)
+    assert np.linalg.norm(oracle.k @ recovered - rhs) <= max(1e-11, 1e-8 * np.linalg.norm(rhs))
+    scan = P2Peak(oracle.glambda, oracle.elements, 1e10 / 2.6)
+    np.testing.assert_allclose(qd_to_numpy(state.peak), scan(displacement)[0], rtol=1e-4, atol=1e-3)
+    assert qd_to_numpy(state.valid).all()
 
 
 @pytest.mark.required
@@ -380,7 +410,7 @@ def test_native_rigid_lifecycle_and_partial_reset(tmp_path, substeps, monkeypatc
             local_normals[i_b, i_c], inverse.apply(-sign * source_normals[i_b, source]), atol=1e-14
         )
     oracle = P2Shell(vertices, tetrahedra, faces, 1e10, 0.3, 2000.0, 2, factor_backend="none")
-    mapper = FinitePatchMapper(SurfaceGeometry(oracle, 10), anchor_to_surface=True)
+    mapper = FinitePatchMapper(SurfaceGeometry(oracle, 10), anchor_to_surface=True, adaptive_integration=True)
     radius = qd_to_numpy(entry.contacts.radius, transpose=True)
     friction = qd_to_numpy(entry.contacts.friction, transpose=True)
     expected_force = np.zeros((oracle.ndof, 3))
