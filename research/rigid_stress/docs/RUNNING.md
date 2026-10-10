@@ -1,5 +1,31 @@
 # Reproducing the device implementation
 
+## Current native low-resolution workflow
+
+The normal example and benchmark use only the engine feature. From the
+repository root with Genesis and its regular dependencies installed:
+
+```bash
+python examples/rigid/franka_egg_stress.py --envs 8 --steps 600
+python -m pytest tests/rigid/test_stress.py --backend gpu -q
+QD_KERNEL_PROFILER=1 python examples/speed_benchmark/rigid_stress.py \
+    --scope profile --envs 8 --steps 100 --warmup 300 \
+    --output "$RIGID_STRESS_DATA_ROOT/runs/native/profile.json"
+python examples/speed_benchmark/rigid_stress.py \
+    --scope live --envs 8 --varied \
+    --output "$RIGID_STRESS_DATA_ROOT/runs/native/live.json"
+```
+
+Set output and Genesis/Quadrants cache directories explicitly before running.
+Choose `rigid`, `recovery`, `live`, `policy-rigid` or `policy` in separate
+processes for their matched timing scopes. The default mesh is full-shell
+level 1, 2,430 DOFs; level 2 is also available. These are numerical and
+performance-development meshes, without a physical convergence claim.
+Default throughput measurements use at least 1,200 steps, three repeats and
+ten seconds per repeat. Kernel profiling is a separate intrusive pass.
+
+## Historical external-library prototype
+
 > Historical prototype commands, 2026-10-10. The new feature and workflow are
 > specified in [NATIVE_QUADRANTS_PLAN.md](NATIVE_QUADRANTS_PLAN.md) and `../GOAL.md`.
 > Use low-resolution numerical checks and detailed performance iteration first.

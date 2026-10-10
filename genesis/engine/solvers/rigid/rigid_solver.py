@@ -2,19 +2,18 @@ from collections.abc import Iterator
 from typing import TYPE_CHECKING
 
 import numpy as np
+import quadrants as qd
 import torch
 
-import quadrants as qd
-
 import genesis as gs
-import genesis.utils.array_class as array_class
 import genesis.utils.geom as gu
 from genesis.constants import link_ref_frame
 from genesis.engine.entities import DroneEntity, RigidEntity, TerrainEntity
 from genesis.engine.materials import Rigid
 from genesis.engine.states import KinematicSolverCheckpoint, RigidSolverState
 from genesis.options.morphs import Drone, Morph, Terrain
-from genesis.options.solvers import RigidOptions
+from genesis.options.solvers import LegacyCouplerOptions, RigidOptions
+from genesis.utils import array_class
 from genesis.utils.misc import (
     DeprecationError,
     assign_indexed_tensor,
@@ -155,6 +154,7 @@ from .constraint.solver import (
     func_resolve_post,
     func_solve_body,
 )
+from .stress.recovery import RigidStressRecovery
 
 if TYPE_CHECKING:
     from genesis.engine.scene import Scene
@@ -298,6 +298,7 @@ class RigidSolver(GravityMixin, TimeBasedMixin, KinematicSolver):
 
         self.collider = None
         self.constraint_solver = None
+        self.stress_recovery: RigidStressRecovery | None = None
 
         self.qpos: qd.Tensor | qd.Field | qd.Ndarray | None = None
 
@@ -361,6 +362,22 @@ class RigidSolver(GravityMixin, TimeBasedMixin, KinematicSolver):
 
         self._init_collider()
         self._init_constraint_solver()
+        stress_links = [link for link in self.links if link.stress_options is not None]
+        if stress_links:
+            if not isinstance(self.scene.options.coupler, LegacyCouplerOptions):
+                gs.raise_exception("Native rigid stress observation requires the standard rigid contact solver.")
+            if self._requires_grad:
+                gs.raise_exception("Auxiliary rigid stress recovery does not support differentiable scenes.")
+            if self._options.enable_torsional_friction or self._options.enable_rolling_friction:
+                gs.raise_exception(
+                    "The finite pressure model supports contact forces; disable torsional and rolling friction."
+                )
+            if any(
+                link.parent_idx >= 0 or link.is_fixed or any(other.parent_idx == link.idx for other in self.links)
+                for link in stress_links
+            ):
+                gs.raise_exception("Stress observation currently requires a free root link without joint supports.")
+            self.stress_recovery = RigidStressRecovery(self)
         self._refresh_invweight_and_meaninertia(force_update=False, in_place=True)
 
         # Fill in the default rotor inertia (see 'KinematicVariantDescription'), one variant per environment. It is
@@ -748,7 +765,7 @@ class RigidSolver(GravityMixin, TimeBasedMixin, KinematicSolver):
                 gs.raise_exception(
                     "Only approximate_implicitfast integrator is supported yet when requires_grad is True."
                 )
-            from genesis.engine.couplers import SAPCoupler, IPCCoupler
+            from genesis.engine.couplers import IPCCoupler, SAPCoupler
 
             if isinstance(self.sim.coupler, (SAPCoupler, IPCCoupler)):
                 gs.raise_exception(
@@ -1355,18 +1372,41 @@ class RigidSolver(GravityMixin, TimeBasedMixin, KinematicSolver):
                     self.rigid_config,
                     constraint_solver._n_iterations,
                 )
-            kernel_substep_post(
-                self.dyn_state,
-                collider.collider_state,
-                constraint_solver.constraint_state,
-                self.dyn_info,
-                self.rigid_info,
-                self.rigid_config,
-                self._is_backward,
-                not self._disable_constraint,
-                self._options.noslip_iterations > 0,
-                self._errno,
-            )
+            if self.stress_recovery is None:
+                kernel_substep_post(
+                    self.dyn_state,
+                    collider.collider_state,
+                    constraint_solver.constraint_state,
+                    self.dyn_info,
+                    self.rigid_info,
+                    self.rigid_config,
+                    self._is_backward,
+                    not self._disable_constraint,
+                    self._options.noslip_iterations > 0,
+                    self._errno,
+                )
+            else:
+                if not self._disable_constraint:
+                    kernel_resolve_stress_contacts(
+                        self.dyn_state,
+                        collider.collider_state,
+                        constraint_solver.constraint_state,
+                        self.dyn_info,
+                        self.rigid_info,
+                        self.rigid_config,
+                        self._options.noslip_iterations > 0,
+                        self._errno,
+                    )
+                self.stress_recovery.recover(f % self.substeps)
+                kernel_step_2(
+                    self.dyn_state,
+                    constraint_solver.constraint_state,
+                    self.dyn_info,
+                    self.rigid_info,
+                    self.rigid_config,
+                    self._is_backward,
+                    self._errno,
+                )
 
         if not isinstance(self.sim.coupler, SAPCoupler):
             self._is_forward_pos_updated = not self._enable_mujoco_compatibility
@@ -1412,6 +1452,10 @@ class RigidSolver(GravityMixin, TimeBasedMixin, KinematicSolver):
             gs.raise_exception("Invalid constraint forces causing 'nan'. Please decrease Rigid simulation timestep.")
         if errno & array_class.ErrorCode.INVALID_ACC_NAN:
             gs.raise_exception("Invalid accelerations causing 'nan'. Please decrease Rigid simulation timestep.")
+        if errno & array_class.ErrorCode.INVALID_STRESS_LOAD:
+            gs.raise_exception("A finite stress footprint cannot preserve its contact wrench or friction cone.")
+        if errno & array_class.ErrorCode.INVALID_STRESS_SOLVE:
+            gs.raise_exception("Rigid stress recovery did not satisfy the complete equilibrium residual budget.")
 
     def _kernel_detect_collision(self):
         self.collider.clear()
@@ -1736,7 +1780,7 @@ class RigidSolver(GravityMixin, TimeBasedMixin, KinematicSolver):
         self._is_backward = False
 
     def substep_post_coupling(self, f):
-        from genesis.engine.couplers import SAPCoupler, IPCCoupler
+        from genesis.engine.couplers import IPCCoupler, SAPCoupler
 
         if not self.is_active:
             return
@@ -1938,6 +1982,8 @@ class RigidSolver(GravityMixin, TimeBasedMixin, KinematicSolver):
         yield from super().data
         yield from self.collider.data
         yield from self.constraint_solver.data
+        if self.stress_recovery is not None:
+            yield from self.stress_recovery.data
 
     def _restart(self):
         """Clear the contact and equality caches of the last query and re-arm the once-per-step propeller guard of
@@ -3681,3 +3727,18 @@ def kernel_substep_post(
             dyn_state, collider_state, constraint_state, dyn_info, rigid_info, rigid_config, noslip, errno
         )
     func_step_2(dyn_state, constraint_state, dyn_info, rigid_info, rigid_config, is_backward, errno)
+
+
+@qd.kernel(graph=True, fastcache=True)
+def kernel_resolve_stress_contacts(
+    dyn_state: array_class.DynState,
+    collider_state: array_class.ColliderState,
+    constraint_state: array_class.ConstraintState,
+    dyn_info: array_class.DynInfo,
+    rigid_info: array_class.RigidInfo,
+    rigid_config: qd.template(),
+    noslip: qd.template(),
+    errno: qd.Tensor,
+):
+    """Finalize contact forces while preserving their pre-integration material frame."""
+    func_resolve_post(dyn_state, collider_state, constraint_state, dyn_info, rigid_info, rigid_config, noslip, errno)

@@ -15,7 +15,7 @@ def func_precondition(i_n: int, residual: qd.types.vector(3), stress_info: Stres
         value = stress_info.diagonal_inverse[i_n] @ residual
     else:
         for i_a in qd.static(range(3)):
-            value[i_a] = stress_info.diagonal_inverse[i_n][i_a, i_a] * residual[i_a]
+            value[i_a] = stress_info.scalar_diagonal_inverse[i_n][i_a] * residual[i_a]
     return value
 
 
@@ -81,6 +81,7 @@ def func_pcg_iteration(
     young: float,
     tolerance: float,
     absolute_tolerance: float,
+    max_iterations: int,
     stress_state: StressState,
     stress_info: StressInfo,
     block: qd.template(),
@@ -89,7 +90,7 @@ def func_pcg_iteration(
         budget = qd.max(
             absolute_tolerance * absolute_tolerance, tolerance * tolerance * stress_state.rhs_norm_squared[i_b]
         )
-        if stress_state.residual_norm_squared[i_b] <= budget:
+        if stress_state.residual_norm_squared[i_b] <= budget or stress_state.iterations[i_b] >= max_iterations:
             stress_state.active[i_b] = 0
         stress_state.direction_product[i_b] = 0.0
         stress_state.next_residual_preconditioned[i_b] = 0.0
@@ -135,12 +136,13 @@ def kernel_pcg_chunk(
     young: float,
     tolerance: float,
     absolute_tolerance: float,
+    max_iterations: int,
     stress_state: StressState,
     stress_info: StressInfo,
     block: qd.template(),
 ):
     for _ in qd.static(range(16)):
-        func_pcg_iteration(young, tolerance, absolute_tolerance, stress_state, stress_info, block)
+        func_pcg_iteration(young, tolerance, absolute_tolerance, max_iterations, stress_state, stress_info, block)
 
 
 @qd.kernel

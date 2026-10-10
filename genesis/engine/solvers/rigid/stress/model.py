@@ -90,6 +90,7 @@ class StressModel:
             pins=V(dtype=gs.qd_int, shape=(6,)),
             is_free=V_VEC(3, dtype=gs.qd_int, shape=(n_nodes,)),
             diagonal_inverse=V_MAT(3, 3, dtype=gs.qd_float, shape=(n_nodes,)),
+            scalar_diagonal_inverse=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes,)),
             mass_properties=V(dtype=gs.qd_float, shape=(4,)),
         )
         self.info.vertices.from_numpy(xyz.astype(gs.np_float, copy=False))
@@ -136,16 +137,19 @@ class StressModel:
             iterations=V(dtype=gs.qd_int, shape=(n_envs,)),
             peak=V(dtype=gs.qd_float, shape=(n_envs,)),
             step_peak=V(dtype=gs.qd_float, shape=(n_envs,)),
+            step_valid=V(dtype=gs.qd_bool, shape=(n_envs,)),
             valid=V(dtype=gs.qd_bool, shape=(n_envs,)),
         )
         state.displacement.fill(0)
         state.step_peak.fill(0)
-        state.valid.fill(1)
+        state.valid.fill(True)
+        state.step_valid.fill(True)
         return state
 
-    def recover(self, omega, state: StressState) -> None:
+    def recover(self, omega, state: StressState, options: RigidStressOptions | None = None) -> None:
         """Balance the complete load, recover displacement and scan the full-domain peak."""
-        options = self.options
+        if options is None:
+            options = self.options
         block = options.preconditioner == "block"
         kernel_balance(omega, state, self.info)
         if self.factor is not None:
@@ -155,7 +159,13 @@ class StressModel:
             kernel_pcg_init(options.young, state, self.info, block, options.warm_start)
             for _ in range((options.max_iterations + 15) // 16):
                 kernel_pcg_chunk(
-                    options.young, 0.01 * options.tolerance, options.absolute_tolerance, state, self.info, block
+                    options.young,
+                    0.01 * options.tolerance,
+                    options.absolute_tolerance,
+                    options.max_iterations,
+                    state,
+                    self.info,
+                    block,
                 )
                 if not kernel_active(state):
                     break

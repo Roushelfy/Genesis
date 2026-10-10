@@ -23,9 +23,14 @@ class RigidStressOptions(Options):
     ``tolerance`` bounds the complete equilibrium residual relative to the
     load norm; ``absolute_tolerance`` supplies the force floor near zero.
     A smaller tolerance costs more solve work and does not by itself certify
-    a stress error. ``max_iterations`` bounds correction work; unresolved
-    observations halt the simulation. ``warm_start`` reuses only the same
-    environment's preceding displacement and is invalidated by state changes.
+    a stress error. Invalid loads or unresolved observations set the rigid
+    solver error flag and produce a NaN observation.
+
+    ``method="direct"`` builds a shared native sparse block factor once.
+    ``method="pcg"`` trades factor storage for iterative work, bounded by
+    ``max_iterations``; thin shells can require many iterations. Its
+    ``warm_start`` reuses only the same environment's preceding displacement
+    and is invalidated by state changes.
     """
 
     mesh: PathType

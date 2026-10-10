@@ -5,6 +5,7 @@ import torch
 
 import genesis as gs
 from genesis.constants import link_ref_frame
+from genesis.options.rigid_stress import RigidStressOptions
 from genesis.repr_base import RBC
 from genesis.typing import LaxPositiveFArrayType
 from genesis.utils.misc import DeprecationError, qd_to_torch
@@ -454,6 +455,35 @@ class RigidLink(KinematicLink):
 
         # Heterogeneous collision-geom variant tracking (None = not heterogeneous)
         self._variant_geom_ranges: list[tuple[int, int]] | None = None
+        self._stress_options: RigidStressOptions | None = None
+
+    def configure_stress_recovery(self, options: RigidStressOptions) -> None:
+        """Enable auxiliary stress observation on this link before building its scene."""
+        if self.is_built:
+            gs.raise_exception("Configure stress recovery before building the scene.")
+        if not isinstance(options, RigidStressOptions):
+            gs.raise_exception("Stress recovery requires RigidStressOptions.")
+        self._stress_options = options.model_copy(deep=True)
+
+    @property
+    def stress_options(self) -> RigidStressOptions | None:
+        return self._stress_options
+
+    @gs.assert_built
+    def get_max_stress(self, envs_idx=None, *, copy: bool = True) -> torch.Tensor:
+        """Return global maximum von Mises stress in Pa over this scene step's physical substeps."""
+        recovery = self._solver.stress_recovery
+        if recovery is None:
+            gs.raise_exception("Stress recovery is not enabled for this link.")
+        return recovery.get_peak(self.idx, envs_idx, copy=copy)
+
+    @gs.assert_built
+    def set_stress_contact_radius(self, radius, envs_idx=None) -> None:
+        """Set finite pressure radii in metres, per environment or sorted rigid contact slot."""
+        recovery = self._solver.stress_recovery
+        if recovery is None:
+            gs.raise_exception("Stress recovery is not enabled for this link.")
+        recovery.set_radius(self.idx, radius, envs_idx)
 
     def _init_variant_tracking(self):
         """Start tracking heterogeneous variants. Records first variant from current state."""

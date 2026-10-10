@@ -3,7 +3,7 @@ from typing import ClassVar
 
 import quadrants as qd
 
-from genesis.utils.array_class import DataKind
+from genesis.utils.array_class import DataKind, of_kind
 
 
 @dataclass(frozen=True)
@@ -29,6 +29,7 @@ class StressInfo:
     pins: qd.Tensor
     is_free: qd.Tensor
     diagonal_inverse: qd.Tensor
+    scalar_diagonal_inverse: qd.Tensor
     mass_properties: qd.Tensor
 
 
@@ -38,7 +39,7 @@ class StressState:
 
     force: qd.Tensor
     rhs: qd.Tensor
-    displacement: qd.Tensor
+    displacement: qd.Tensor = of_kind(DataKind.WARMSTART)  # noqa: RUF009 - typed array metadata
     residual: qd.Tensor
     direction: qd.Tensor
     product: qd.Tensor
@@ -52,5 +53,6 @@ class StressState:
     active: qd.Tensor
     iterations: qd.Tensor
     peak: qd.Tensor
-    step_peak: qd.Tensor
+    step_peak: qd.Tensor = of_kind(DataKind.DERIVED)  # noqa: RUF009 - typed array metadata
+    step_valid: qd.Tensor = of_kind(DataKind.DERIVED)  # noqa: RUF009 - typed array metadata
     valid: qd.Tensor

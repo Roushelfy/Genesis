@@ -10,7 +10,15 @@ optimization on low-resolution full-shell meshes; defer physical mesh and
 quadrature convergence until the applicable performance work is complete.
 Same-mesh numerical consistency remains required throughout.
 
-The code, status table, native-library setup and fine-mesh commands below
+The native implementation is in `genesis/engine/solvers/rigid/stress/`, with
+`RigidLink.configure_stress_recovery`, `get_max_stress` and
+`set_stress_contact_radius`. The normal example is
+`examples/rigid/franka_egg_stress.py`; it imports no research implementation.
+Initial same-mesh operator, direct solve, finite-pressure and lifecycle checks
+pass. Performance profiling and optimization are in progress; see the
+[native journal](docs/PROGRESS_20261010_NATIVE.md).
+
+The research code, historical status table, native-library setup and fine-mesh commands below
 describe the existing research prototype and historical evidence. They do not
 establish that the requested native feature exists, and are not the new default
 implementation or iteration workflow. Read the new plan before using them.
@@ -24,7 +32,7 @@ Upstream baseline: `Genesis-Embodied-AI/genesis-world`, main commit
 `e9e1214d192914ddec85ca28014c459cfbc6c860`, 2026-10-08. Work branch in the
 existing user fork: `Roushelfy/Genesis:rigid-stress-recovery`.
 
-## What is ready, and what remains
+## Historical research prototype status
 
 | Component | Status |
 |---|---|

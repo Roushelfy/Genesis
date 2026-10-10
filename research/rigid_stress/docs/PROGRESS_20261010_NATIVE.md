@@ -48,3 +48,27 @@ residual acceptance (5.10e-6 to 1.72e-5 N); its log is retained. This motivates
 the sparse direct baseline and stronger preconditioners. The PCG path explicitly
 marks unresolved solves invalid. Contact mapping, native lifecycle integration,
 profiling and end-to-end optimization remain active.
+
+## Native contact/lifecycle integration, 04:52 UTC
+
+The rigid solver now resolves contact forces, recovers stress from that same
+pre-integration state and then performs its ordinary integration. Link opt-in,
+device observations and selected-environment invalidation use the existing
+solver lifecycle. No research callback runs in the engine. Unsupported joint
+supports, nonstandard couplers and rolling/torsional contact moments are
+explicitly rejected. Disabled scenes retain the existing fused rigid kernel.
+
+Quadrants surface quadrature, force-line anchoring, nonnegative constant-ratio
+pad pressure, P2 scatter and force/moment checks match six independent CPU
+patches to the specified same-mesh budgets. Three environments with distinct
+contact onset pass actual 1- and 4-substep scenes, and resetting environment 1
+preserves environments 0 and 2 bitwise. These are focused numerical checks;
+the printed scene FPS from these tests includes diagnostic synchronization
+and is not a benchmark rate.
+
+Added the normal Panda example with small hollow-mass/inertia URDF assets,
+changing footprints, friction, slip/release phases and independent resets.
+Detailed baseline profiling is running on level 1. The first profiling
+attempt failed because engine source was edited during delayed compilation;
+the rerun freezes its source. Baseline measurements must precede optimization.
+No new high-resolution physical convergence workload has been run.

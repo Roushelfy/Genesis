@@ -137,7 +137,7 @@ def kernel_mass_modes(stress_info: StressInfo):
         stress_info.mass_modes[i_n] = mass_modes
         stress_info.centrifugal[i_n] = centrifugal
         gram = stress_info.modes[i_n].transpose() @ mass_modes
-        for i_a, i_c in qd.static(qd.ndrange(6, 6)):
+        for i_a, i_c in qd.ndrange(6, 6):
             qd.atomic_add(stress_info.gram[None][i_a, i_c], gram[i_a, i_c])
 
 
@@ -212,3 +212,5 @@ def kernel_diagonal(stress_info: StressInfo):
             if stress_info.is_free[i_n][i_a] == 0:
                 diagonal[i_a, i_a] = 1.0
         stress_info.diagonal_inverse[i_n] = diagonal.inverse()
+        for i_a in qd.static(range(3)):
+            stress_info.scalar_diagonal_inverse[i_n][i_a] = 1.0 / diagonal[i_a, i_a]
