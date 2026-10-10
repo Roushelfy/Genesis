@@ -203,8 +203,17 @@ above the absolute floor 1.543e-10. Complete RHS entry difference remains
 sixty [full RHS hashes](../evidence/20261010-final/raw/selected-oracle/rhs-manifest.json)
 are retained. Both declared budgets pass; no result changes the frozen choice.
 
-Rigid and matched policy-rigid complete three accepted full repeats.
-Pending: finish stress replay, live and policy held-out scopes. Each primary scope requires
+All four live held-out scopes complete three accepted full repeats. Live
+aggregate throughput is 106.9150 env/s; policy-stress is 107.4295 env/s.
+Each executes 1,200 steps, 307,200 recoveries and 256 resets per repeat,
+with zero refinement/fallback and complete numerical acceptance. Sampled
+memory peaks are 101.532 / 101.542 GB. Warmups each achieve 15/256 keep-hold,
+with arbitrary observed contact counts through 14/13 and nonzero tangential
+forces. The [raw live](../evidence/20261010-final/raw/live/result.json) and
+[policy](../evidence/20261010-final/raw/policy/result.json) reports retain
+full quality and source/hardware data.
+
+Pending: finish the third stress replay repeat and complete stage pass. Each primary scope requires
 three complete independently phased grasps with at least ten seconds per
 repeat. Full replay warmup separately compares every GPU frame with eager
 same-RHS FP64 direct recovery; sixty CPU samples are not 1,200 CPU solves.

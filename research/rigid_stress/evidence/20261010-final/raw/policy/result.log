@@ -1,0 +1,49 @@
+[38;5;226m[Genesis] [00:59:59] [WARNING] At least one of the meshes contain many faces (81920). Consider setting 'morph.decimate=True' to speed up collision detection and improve numerical stability.[0m
+[38;5;226m[Genesis] [01:00:00] [WARNING] Beware that SDF pre-processing of mesh (/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-final/policy/assets/egg_outer.obj) having more than 50000 vertices may take a very long time (>10min) and require large RAM allocation (>20Gb). Please either enable convexify or decimation. (see FileMorph options)[0m
+[38;5;226m[Genesis] [01:00:00] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint1`[0m
+[38;5;226m[Genesis] [01:00:00] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint2`[0m
+[38;5;226m[Genesis] [01:00:01] [WARNING] Neutral robot position (qpos0) exceeds joint limits.[0m
+[38;5;226m[Genesis] [01:00:01] [WARNING] Constraint solver time constant should be greater than 2*substep_dt. timeconst is changed from `0.005` to `0.02`). Decrease simulation timestep or increase timeconst to avoid altering the original value.[0m
+[38;5;226m[Genesis] [01:00:03] [WARNING] Filtered out geometry pairs causing self-collision for the neutral configuration (qpos0): (7, 12), (8, 12), (15, 22), (16, 21), (17, 24), (18, 23). Consider tuning Morph option 'decompose_robot_error_threshold' or specify dedicated collision meshes. This behavior can be disabled by setting Morph option 'enable_neutral_collision=True'.[0m
+{"setup_seconds": 111.3414011481218, "device_factors": {"operator_groups": 1, "factor_precision_copies": 1, "factors": [{"backend": "cuDSS", "allocator": "cudaMallocAsync", "precision": "float64", "version": [0, 8, 0], "nnz": 2322190270, "analysis_seconds": 14.785780963022262, "factorization_seconds": 9.632473278325051, "memory_estimates_bytes": [22152136420, 22152136420, 223518272, 1003828016, 6361768884, 18801040432, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}]}}
+{"warmup_step": 0}
+{"warmup_step": 32}
+{"warmup_step": 64}
+{"warmup_step": 96}
+{"warmup_step": 128}
+{"warmup_step": 160}
+{"warmup_step": 192}
+{"warmup_step": 224}
+{"warmup_step": 256}
+{"warmup_step": 288}
+{"warmup_step": 320}
+{"warmup_step": 352}
+{"warmup_step": 384}
+{"warmup_step": 416}
+{"warmup_step": 448}
+{"warmup_step": 480}
+{"warmup_step": 512}
+{"warmup_step": 544}
+{"warmup_step": 576}
+{"warmup_step": 608}
+{"warmup_step": 640}
+{"warmup_step": 672}
+{"warmup_step": 704}
+{"warmup_step": 736}
+{"warmup_step": 768}
+{"warmup_step": 800}
+{"warmup_step": 832}
+{"warmup_step": 864}
+{"warmup_step": 896}
+{"warmup_step": 928}
+{"warmup_step": 960}
+{"warmup_step": 992}
+{"warmup_step": 1024}
+{"warmup_step": 1056}
+{"warmup_step": 1088}
+{"warmup_step": 1120}
+{"warmup_step": 1152}
+{"warmup_step": 1184}
+{"sampled_device_memory_peak_bytes": 101542330368, "device_memory_sample_count": 28495, "device_memory_sample_interval_s": 0.1, "device_memory_accounting": "CUDA device-wide used memory; sampled, includes native/context allocations", "repeat": 0, "scope": "policy", "environments": 256, "steps": 1200, "environment_transitions": 307200, "wall_seconds": 2857.724419519771, "cuda_span_seconds": 2857.717, "environment_transitions_s": 107.49811909842018, "batch_steps_s": 0.4199145277282038, "policy_transitions": 307200, "stress_recoveries": 307200, "reset_environments": 256, "accepted": true, "full_relative_residual_max_including_near_zero": 1.0233552527364443e-05, "full_relative_residual_max_above_absolute_floor": 1.825401311532495e-10, "full_absolute_residual_max_n": 1.5811451732016988e-11, "peak_max_pa": 7341695.921900087, "correction_environment_events": 307200, "fp64_fallback_events": 0, "refinement_events": 0, "torch_peak_allocated_bytes": 64695808, "torch_peak_reserved_bytes": 203423744, "cupy_pool_total_bytes_after_run": 60937183744, "cupy_pool_used_bytes_after_run": 30644411904}
+{"sampled_device_memory_peak_bytes": 101542330368, "device_memory_sample_count": 28561, "device_memory_sample_interval_s": 0.1, "device_memory_accounting": "CUDA device-wide used memory; sampled, includes native/context allocations", "repeat": 1, "scope": "policy", "environments": 256, "steps": 1200, "environment_transitions": 307200, "wall_seconds": 2860.6183348279446, "cuda_span_seconds": 2860.611, "environment_transitions_s": 107.3893697246672, "batch_steps_s": 0.41948972548698127, "policy_transitions": 307200, "stress_recoveries": 307200, "reset_environments": 256, "accepted": true, "full_relative_residual_max_including_near_zero": 1.0233552527364443e-05, "full_relative_residual_max_above_absolute_floor": 1.8253512722814128e-10, "full_absolute_residual_max_n": 1.580744863317624e-11, "peak_max_pa": 7341695.921900287, "correction_environment_events": 307200, "fp64_fallback_events": 0, "refinement_events": 0, "torch_peak_allocated_bytes": 64693760, "torch_peak_reserved_bytes": 203423744, "cupy_pool_total_bytes_after_run": 60937183744, "cupy_pool_used_bytes_after_run": 30644411904}
+{"sampled_device_memory_peak_bytes": 101542330368, "device_memory_sample_count": 28512, "device_memory_sample_interval_s": 0.1, "device_memory_accounting": "CUDA device-wide used memory; sampled, includes native/context allocations", "repeat": 2, "scope": "policy", "environments": 256, "steps": 1200, "environment_transitions": 307200, "wall_seconds": 2860.303309113253, "cuda_span_seconds": 2860.29625, "environment_transitions_s": 107.40119728604506, "batch_steps_s": 0.4195359268986135, "policy_transitions": 307200, "stress_recoveries": 307200, "reset_environments": 256, "accepted": true, "full_relative_residual_max_including_near_zero": 1.0233552527364446e-05, "full_relative_residual_max_above_absolute_floor": 1.824828475961139e-10, "full_absolute_residual_max_n": 1.5812821969947228e-11, "peak_max_pa": 7341695.921900391, "correction_environment_events": 307200, "fp64_fallback_events": 0, "refinement_events": 0, "torch_peak_allocated_bytes": 64693760, "torch_peak_reserved_bytes": 203423744, "cupy_pool_total_bytes_after_run": 60937183744, "cupy_pool_used_bytes_after_run": 30644411904}

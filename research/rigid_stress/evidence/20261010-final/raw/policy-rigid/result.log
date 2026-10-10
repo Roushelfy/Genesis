@@ -1,0 +1,49 @@
+[38;5;226m[Genesis] [00:59:13] [WARNING] At least one of the meshes contain many faces (81920). Consider setting 'morph.decimate=True' to speed up collision detection and improve numerical stability.[0m
+[38;5;226m[Genesis] [00:59:13] [WARNING] Beware that SDF pre-processing of mesh (/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-final/policy-rigid/assets/egg_outer.obj) having more than 50000 vertices may take a very long time (>10min) and require large RAM allocation (>20Gb). Please either enable convexify or decimation. (see FileMorph options)[0m
+[38;5;226m[Genesis] [00:59:14] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint1`[0m
+[38;5;226m[Genesis] [00:59:14] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint2`[0m
+[38;5;226m[Genesis] [00:59:15] [WARNING] Neutral robot position (qpos0) exceeds joint limits.[0m
+[38;5;226m[Genesis] [00:59:15] [WARNING] Constraint solver time constant should be greater than 2*substep_dt. timeconst is changed from `0.005` to `0.02`). Decrease simulation timestep or increase timeconst to avoid altering the original value.[0m
+[38;5;226m[Genesis] [00:59:16] [WARNING] Filtered out geometry pairs causing self-collision for the neutral configuration (qpos0): (7, 12), (8, 12), (15, 22), (16, 21), (17, 24), (18, 23). Consider tuning Morph option 'decompose_robot_error_threshold' or specify dedicated collision meshes. This behavior can be disabled by setting Morph option 'enable_neutral_collision=True'.[0m
+{"setup_seconds": 63.61476954864338, "device_factors": null}
+{"warmup_step": 0}
+{"warmup_step": 32}
+{"warmup_step": 64}
+{"warmup_step": 96}
+{"warmup_step": 128}
+{"warmup_step": 160}
+{"warmup_step": 192}
+{"warmup_step": 224}
+{"warmup_step": 256}
+{"warmup_step": 288}
+{"warmup_step": 320}
+{"warmup_step": 352}
+{"warmup_step": 384}
+{"warmup_step": 416}
+{"warmup_step": 448}
+{"warmup_step": 480}
+{"warmup_step": 512}
+{"warmup_step": 544}
+{"warmup_step": 576}
+{"warmup_step": 608}
+{"warmup_step": 640}
+{"warmup_step": 672}
+{"warmup_step": 704}
+{"warmup_step": 736}
+{"warmup_step": 768}
+{"warmup_step": 800}
+{"warmup_step": 832}
+{"warmup_step": 864}
+{"warmup_step": 896}
+{"warmup_step": 928}
+{"warmup_step": 960}
+{"warmup_step": 992}
+{"warmup_step": 1024}
+{"warmup_step": 1056}
+{"warmup_step": 1088}
+{"warmup_step": 1120}
+{"warmup_step": 1152}
+{"warmup_step": 1184}
+{"sampled_device_memory_peak_bytes": 3125018624, "device_memory_sample_count": 100, "device_memory_sample_interval_s": 0.1, "device_memory_accounting": "CUDA device-wide used memory; sampled, includes native/context allocations", "repeat": 0, "scope": "policy-rigid", "environments": 256, "steps": 1200, "environment_transitions": 307200, "wall_seconds": 10.164426827803254, "cuda_span_seconds": 10.164365234375, "environment_transitions_s": 30223.051944227765, "batch_steps_s": 118.05879665713971, "policy_transitions": 307200, "stress_recoveries": 0, "reset_environments": 256, "accepted": true, "full_relative_residual_max_including_near_zero": 0.0, "full_relative_residual_max_above_absolute_floor": 0.0, "full_absolute_residual_max_n": 0.0, "peak_max_pa": 0.0, "correction_environment_events": 0, "fp64_fallback_events": 0, "refinement_events": 0, "torch_peak_allocated_bytes": 10833920, "torch_peak_reserved_bytes": 203423744, "cupy_pool_total_bytes_after_run": 15872, "cupy_pool_used_bytes_after_run": 14848}
+{"sampled_device_memory_peak_bytes": 3125018624, "device_memory_sample_count": 100, "device_memory_sample_interval_s": 0.1, "device_memory_accounting": "CUDA device-wide used memory; sampled, includes native/context allocations", "repeat": 1, "scope": "policy-rigid", "environments": 256, "steps": 1200, "environment_transitions": 307200, "wall_seconds": 10.189982469659299, "cuda_span_seconds": 10.189919921875, "environment_transitions_s": 30147.25500408748, "batch_steps_s": 117.76271485971672, "policy_transitions": 307200, "stress_recoveries": 0, "reset_environments": 256, "accepted": true, "full_relative_residual_max_including_near_zero": 0.0, "full_relative_residual_max_above_absolute_floor": 0.0, "full_absolute_residual_max_n": 0.0, "peak_max_pa": 0.0, "correction_environment_events": 0, "fp64_fallback_events": 0, "refinement_events": 0, "torch_peak_allocated_bytes": 10831872, "torch_peak_reserved_bytes": 203423744, "cupy_pool_total_bytes_after_run": 22016, "cupy_pool_used_bytes_after_run": 14848}
+{"sampled_device_memory_peak_bytes": 3125018624, "device_memory_sample_count": 102, "device_memory_sample_interval_s": 0.1, "device_memory_accounting": "CUDA device-wide used memory; sampled, includes native/context allocations", "repeat": 2, "scope": "policy-rigid", "environments": 256, "steps": 1200, "environment_transitions": 307200, "wall_seconds": 10.30777513468638, "cuda_span_seconds": 10.3077119140625, "environment_transitions_s": 29802.74559601622, "batch_steps_s": 116.41697498443835, "policy_transitions": 307200, "stress_recoveries": 0, "reset_environments": 256, "accepted": true, "full_relative_residual_max_including_near_zero": 0.0, "full_relative_residual_max_above_absolute_floor": 0.0, "full_absolute_residual_max_n": 0.0, "peak_max_pa": 0.0, "correction_environment_events": 0, "fp64_fallback_events": 0, "refinement_events": 0, "torch_peak_allocated_bytes": 10831872, "torch_peak_reserved_bytes": 203423744, "cupy_pool_total_bytes_after_run": 22016, "cupy_pool_used_bytes_after_run": 14848}

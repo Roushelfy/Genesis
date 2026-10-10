@@ -370,3 +370,38 @@ No oracle result changes the frozen performance selection.
 Final live/policy currently have two accepted full repeats each; stress
 replay also has two. The third repeats and replay stage pass remain active,
 so full-goal throughput acceptance is still pending.
+
+## Four held-out live scopes complete, 2026-10-10 04:14 UTC
+
+All four three-repeat reports are complete and accepted at the frozen full
+level-6 B=256 profile. Aggregate rates (sample repeat standard deviations)
+are rigid 30,893.3531 (161.5995) env/s, policy-rigid 30,056.5670
+(224.0124), live 106.9150393 (0.0301853), policy-stress 107.4295400
+(0.0596660). Live/policy repeat rates are
+106.9480379 / 106.9082823 / 106.8888146 and
+107.4981191 / 107.3893697 / 107.4011973. Each stress-bearing repeat executes
+1,200 steps, 307,200 recoveries, 256 resets; policy adds 307,200 inferences.
+No repeat refines or falls back; the direct correction count records all
+307,200 complete solves. Raw JSON/CSV/closed logs and literal suite commands
+are committed under `evidence/20261010-final/raw`.
+
+Live/policy full relative residual maxima above the absolute floor are
+1.774985e-10 / 1.825401e-10 and absolute maxima
+1.312820e-11 / 1.581282e-11 N. Sampled device memory peaks are
+101,531,844,608 / 101,542,330,368 bytes. Setup/warmup are
+110.699 / 2,877.570 s and 111.341 / 2,861.575 s.
+
+Both full warmups have actual keep-hold success 15/256, with maximum
+tangential force 2.25856 / 2.33264 N and arbitrary observed contact counts
+0--14 / 0--13. Live has 591,924 contact events (1,933 A, 589,991 B);
+policy has 594,872 (2,372 A, 592,500 B). Both physical radii range
+4.0874--8.2665 mm and actual friction coefficients 0.70228--1.29985.
+The live quality record exactly equals its matched rigid record. Policy
+changes actions and contact trajectories; its rate includes that resulting
+workload and inference. Failed trajectories remain counted.
+
+Only the final stress-replay third repeat and separate complete stage pass
+remain. The first two replay rates are 107.8026916 / 107.7553803
+recovery transitions/s, both accepted, with 512 reset-column events each
+(archive wrap/start markers plus recorded episode resets). Full-goal
+completion remains pending until replay/stage evidence and final report finish.
