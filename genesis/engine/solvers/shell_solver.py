@@ -1311,15 +1311,19 @@ def func_pcg_coarse_solve(shell_scratch: array_class.ShellScratch, shell_info: a
     """
     B = shell_scratch.coarse_vec.shape[1]
 
-    for i_d, i_b in qd.ndrange(shell_scratch.coarse_vec.shape[0], B):
+    # The lanes of an environment read the columns of its inverse, which is symmetric, so that a warp reads entries
+    # side by side
+    for i_b, i_d in qd.ndrange(B, shell_scratch.coarse_vec.shape[0]):
         if shell_scratch.envs_is_solving[i_b]:
             i_e = shell_info.coarse_dofs_entity[i_d]
             dof_start = shell_info.entities_coarse_dof_start[i_e]
             dim = shell_info.entities_coarse_dim[i_e]
-            row_start = shell_info.entities_coarse_matrix_start[i_e] + (i_d - dof_start) * dim
+            col_start = shell_info.entities_coarse_matrix_start[i_e] + i_d - dof_start
             value = gs.qd_float(0.0)
             for j in range(dim):
-                value += shell_scratch.coarse_matrix[i_b, row_start + j] * shell_scratch.coarse_vec[dof_start + j, i_b]
+                value += (
+                    shell_scratch.coarse_matrix[i_b, col_start + j * dim] * shell_scratch.coarse_vec[dof_start + j, i_b]
+                )
             shell_scratch.coarse_sol[i_d, i_b] = value
             shell_scratch.envs_rz_new[i_b] += shell_scratch.coarse_vec[i_d, i_b] * value
 
