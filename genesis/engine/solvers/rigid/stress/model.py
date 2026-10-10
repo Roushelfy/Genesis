@@ -9,6 +9,7 @@ from genesis.utils.misc import qd_to_numpy
 
 from .data import StressInfo, StressState
 from .factor import StressFactor
+from .inverse import StressInverse
 from .operators import (
     kernel_assemble,
     kernel_diagonal,
@@ -17,7 +18,9 @@ from .operators import (
     kernel_gram_inverse,
     kernel_mass_modes,
     kernel_mass_properties,
+    kernel_midpoints,
     kernel_modes,
+    kernel_valid_geometry,
 )
 from .solve import (
     kernel_active,
@@ -57,7 +60,8 @@ class StressModel:
             np.sort(tetrahedra[:, edges].reshape((-1, 2)), axis=1), axis=0, return_inverse=True
         )
         elements = np.column_stack((tetrahedra, len(vertices) + edge_inverse.reshape((-1, 6))))
-        xyz = np.concatenate((vertices, vertices[edge_vertices].mean(axis=1)))
+        xyz = np.zeros((len(vertices) + len(edge_vertices), 3), dtype=gs.np_float)
+        xyz[: len(vertices)] = vertices
         face_edges = np.sort(surface[:, [[0, 1], [0, 2], [1, 2]]], axis=2)
         edge_keys = edge_vertices[:, 0] * len(vertices) + edge_vertices[:, 1]
         face_keys = face_edges[:, :, 0] * len(vertices) + face_edges[:, :, 1]
@@ -105,8 +109,9 @@ class StressModel:
         self.info.mass_properties.fill(0)
         self.info.gram.fill(0)
         self.info.is_free.fill(1)
+        kernel_midpoints(len(vertices), edge_vertices.astype(gs.np_int, copy=False), self.info)
         kernel_geometry(self.info)
-        if not (qd_to_numpy(self.info.volumes) > 0).all():
+        if kernel_valid_geometry(self.info):
             gs.raise_exception("Stress tetrahedra must have positive volume.")
         kernel_assemble(options.poisson, options.density, self.info)
         kernel_mass_properties(self.info)
@@ -115,7 +120,18 @@ class StressModel:
         kernel_gram_inverse(self.info)
         kernel_gauge(self.info)
         kernel_diagonal(self.info)
-        self.factor = StressFactor(self.info) if options.method == "direct" else None
+        inverse_bytes = n_nodes * n_nodes * 9 * (8 if options.inverse_precision == "64" else 4)
+        self.selected_method = options.method
+        if options.method == "auto":
+            self.selected_method = "inverse" if inverse_bytes <= options.inverse_max_bytes else "direct"
+        self.factor = StressFactor(self.info) if self.selected_method != "pcg" else None
+        self.inverse = (
+            StressInverse(
+                self.info, self.factor, self.create_state, options.inverse_max_bytes, options.inverse_precision
+            )
+            if self.selected_method == "inverse"
+            else None
+        )
 
     def create_state(self, n_envs: int) -> StressState:
         n_nodes = self.info.vertices.shape[0]
@@ -139,6 +155,8 @@ class StressModel:
             step_peak=V(dtype=gs.qd_float, shape=(n_envs,)),
             step_valid=V(dtype=gs.qd_bool, shape=(n_envs,)),
             valid=V(dtype=gs.qd_bool, shape=(n_envs,)),
+            corrections=V(dtype=gs.qd_int, shape=(n_envs,)),
+            fallbacks=V(dtype=gs.qd_int, shape=(n_envs,)),
         )
         state.displacement.fill(0)
         state.step_peak.fill(0)
@@ -154,7 +172,7 @@ class StressModel:
         kernel_balance(omega, state, self.info)
         if self.factor is not None:
             kernel_direct_init(state)
-            self.factor.solve(options.young, state, self.info)
+            self.solve(options, state)
         else:
             kernel_pcg_init(options.young, state, self.info, block, options.warm_start)
             for _ in range((options.max_iterations + 15) // 16):
@@ -169,5 +187,21 @@ class StressModel:
                 )
                 if not kernel_active(state):
                     break
-        kernel_full_residual(options.young, options.tolerance, options.absolute_tolerance, state, self.info)
+        kernel_full_residual(options.young, options.tolerance, options.absolute_tolerance, state, self.info, False)
+        if self.inverse is not None:
+            for _ in range(options.inverse_corrections):
+                self.inverse.apply(options.young, state, correction=True)
+                kernel_full_residual(
+                    options.young, options.tolerance, options.absolute_tolerance, state, self.info, only_active=True
+                )
+            self.factor.solve(options.young, state, self.info, options.cooperative_solve, only_failed=True)
+            kernel_full_residual(
+                options.young, options.tolerance, options.absolute_tolerance, state, self.info, only_active=True
+            )
         kernel_peak(options.young, options.poisson, state, self.info)
+
+    def solve(self, options: RigidStressOptions, state: StressState) -> None:
+        if self.inverse is not None:
+            self.inverse.apply(options.young, state)
+        else:
+            self.factor.solve(options.young, state, self.info, options.cooperative_solve)

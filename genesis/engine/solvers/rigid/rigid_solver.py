@@ -1605,6 +1605,11 @@ class RigidSolver(GravityMixin, TimeBasedMixin, KinematicSolver):
         """
         if force is None and torque is None:
             gs.raise_exception("Either 'force' or 'torque' must be specified.")
+        if self.stress_recovery is not None:
+            self.stress_recovery.reject_link_mutation(
+                links_idx,
+                "Stress observation requires finite surface loads; applied link wrenches are unsupported.",
+            )
         if force is None and pos is not None:
             gs.raise_exception("'pos' requires 'force', as a torque acts the same wherever it is applied.")
         ref_frame = self._sanitize_ref_frame(ref, has_root_COM=False)
@@ -2317,6 +2322,10 @@ class RigidSolver(GravityMixin, TimeBasedMixin, KinematicSolver):
             self._is_forward_vel_updated = False
 
     def _set_links_info(self, values, links_idx, name, envs_idx=None, *, scale_inertia=False):
+        if self.stress_recovery is not None and name in ("mass", "inertia", "COM"):
+            self.stress_recovery.reject_link_mutation(
+                links_idx, "Stress operators require fixed link mass, inertia and center of mass."
+            )
         """Write one inertial property of the given links, then recompute the inverse weights of their trees once.
 
         The property is the mass, the center of mass or the inertia, selected by `name`. The inverse weights are per

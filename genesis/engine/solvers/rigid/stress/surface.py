@@ -9,6 +9,7 @@ import genesis as gs
 from genesis.utils.array_class import V_MAT, V_VEC, DataKind, V
 
 from .data import StressInfo
+from .grid import StressGridInfo, allocate_grid, build_grid
 
 
 @dataclass(frozen=True)
@@ -23,6 +24,7 @@ class StressSurfaceInfo:
     face_origin: qd.Tensor
     face_dual: qd.Tensor
     face_normal: qd.Tensor
+    grid: StressGridInfo
 
 
 class StressSurface:
@@ -38,9 +40,11 @@ class StressSurface:
             face_origin=V_VEC(3, dtype=gs.qd_float, shape=(n_faces,)),
             face_dual=V_MAT(2, 3, dtype=gs.qd_float, shape=(n_faces,)),
             face_normal=V_VEC(3, dtype=gs.qd_float, shape=(n_faces,)),
+            grid=allocate_grid(n_faces * n_quadrature),
         )
         kernel_gauss(self.info)
         kernel_surface(stress_info, self.info)
+        build_grid(self.info.positions, self.info.grid)
 
 
 @qd.kernel

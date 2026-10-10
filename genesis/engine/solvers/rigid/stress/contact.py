@@ -9,6 +9,7 @@ import genesis as gs
 from genesis.utils.array_class import V_VEC, DataKind, V, of_kind
 
 from .data import StressInfo, StressState
+from .grid import func_patch_cell, func_patch_grid
 from .surface import StressSurfaceInfo
 
 
@@ -29,6 +30,8 @@ class StressContactState:
     moment_error: qd.Tensor
     candidate_count: qd.Tensor
     evaluations: qd.Tensor
+    frame_position: qd.Tensor
+    frame_quaternion: qd.Tensor
 
 
 def create_contacts(n_contacts: int, n_envs: int, radius: float) -> StressContactState:
@@ -47,6 +50,8 @@ def create_contacts(n_contacts: int, n_envs: int, radius: float) -> StressContac
         moment_error=V(dtype=gs.qd_float, shape=shape),
         candidate_count=V(dtype=gs.qd_int, shape=shape),
         evaluations=V(dtype=gs.qd_int, shape=shape),
+        frame_position=V_VEC(3, dtype=gs.qd_float, shape=(n_envs,)),
+        frame_quaternion=V_VEC(4, dtype=gs.qd_float, shape=(n_envs,)),
     )
     state.radius.fill(radius)
     state.valid.fill(False)
@@ -145,32 +150,51 @@ def kernel_pressure(contact_state: StressContactState, surface_info: StressSurfa
                 first, second = func_force_frame(force)
                 center = contact_state.center[i_c, i_b]
                 radius = contact_state.radius[i_c, i_b]
+                low, dimensions = func_patch_grid(center, radius, surface_info.grid)
+                n_cells = dimensions[0] * dimensions[1] * dimensions[2]
                 gram = qd.Matrix.zero(gs.qd_float, 3, 3)
-                for i_q in range(surface_info.positions.shape[0]):
-                    coordinates, weight = func_patch_sample(i_q, center, first, second, radius, surface_info)
-                    gram += weight * coordinates.outer_product(coordinates)
-                    if weight > 0.0:
-                        contact_state.candidate_count[i_c, i_b] += 1
+                for i_cell in range(n_cells):
+                    start, end = func_patch_cell(i_cell, low, dimensions, surface_info.grid)
+                    for i_entry in range(start, end):
+                        i_q = surface_info.grid.samples[i_entry]
+                        coordinates, weight = func_patch_sample(i_q, center, first, second, radius, surface_info)
+                        gram += weight * coordinates.outer_product(coordinates)
+                        if weight > 0.0:
+                            contact_state.candidate_count[i_c, i_b] += 1
                 coefficient = qd.Vector.zero(gs.qd_float, 3)
                 accepted = False
                 nonsingular = gram[0, 0] > 0.0 and gram.determinant() > 1e-14 * gram.trace() ** 3
                 if nonsingular:
+                    weight_sum = gram[0, 0]
+                    gram /= weight_sum
                     coefficient = gram.inverse() @ qd.Vector([1.0, 0.0, 0.0])
+                    margin = 1e-12
+                    if qd.static(gs.qd_float == qd.f32):
+                        margin = 1e-5
+                    positive = coefficient[0] - qd.sqrt(coefficient[1] ** 2 + coefficient[2] ** 2)
+                    accepted = (
+                        positive > margin * coefficient.norm()
+                        and (gram @ coefficient - qd.Vector([1.0, 0.0, 0.0])).norm() <= 2e-12
+                    )
                     # A negative physical pressure activates a constrained dual correction.
                     for iteration in range(80):
                         if not accepted:
                             gradient = qd.Vector([-1.0, 0.0, 0.0])
                             hessian = qd.Matrix.zero(gs.qd_float, 3, 3)
                             objective = coefficient[0]
-                            for i_q in range(surface_info.positions.shape[0]):
-                                coordinates, weight = func_patch_sample(
-                                    i_q, center, first, second, radius, surface_info
-                                )
-                                profile = qd.max(0.0, coordinates.dot(coefficient))
-                                gradient += weight * profile * coordinates
-                                objective -= 0.5 * weight * profile * profile
-                                if profile > 0.0:
-                                    hessian += weight * coordinates.outer_product(coordinates)
+                            for i_cell in range(n_cells):
+                                start, end = func_patch_cell(i_cell, low, dimensions, surface_info.grid)
+                                for i_entry in range(start, end):
+                                    i_q = surface_info.grid.samples[i_entry]
+                                    coordinates, weight = func_patch_sample(
+                                        i_q, center, first, second, radius, surface_info
+                                    )
+                                    weight /= weight_sum
+                                    profile = qd.max(0.0, coordinates.dot(coefficient))
+                                    gradient += weight * profile * coordinates
+                                    objective -= 0.5 * weight * profile * profile
+                                    if profile > 0.0:
+                                        hessian += weight * coordinates.outer_product(coordinates)
                             contact_state.evaluations[i_c, i_b] = iteration + 1
                             accepted = gradient.norm() <= 2e-12
                             if not accepted and hessian.determinant() > 1e-14 * hessian.trace() ** 3:
@@ -181,20 +205,25 @@ def kernel_pressure(contact_state: StressContactState, surface_info: StressSurfa
                                     if not line_accepted:
                                         candidate = coefficient - fraction * step
                                         candidate_objective = candidate[0]
-                                        for i_q in range(surface_info.positions.shape[0]):
-                                            coordinates, weight = func_patch_sample(
-                                                i_q, center, first, second, radius, surface_info
-                                            )
-                                            profile = qd.max(0.0, coordinates.dot(candidate))
-                                            candidate_objective -= 0.5 * weight * profile * profile
+                                        for i_cell in range(n_cells):
+                                            start, end = func_patch_cell(i_cell, low, dimensions, surface_info.grid)
+                                            for i_entry in range(start, end):
+                                                i_q = surface_info.grid.samples[i_entry]
+                                                coordinates, weight = func_patch_sample(
+                                                    i_q, center, first, second, radius, surface_info
+                                                )
+                                                weight /= weight_sum
+                                                profile = qd.max(0.0, coordinates.dot(candidate))
+                                                candidate_objective -= 0.5 * weight * profile * profile
                                         if (
                                             candidate_objective
-                                            >= objective + 1e-4 * fraction * gradient.dot(step) - 1e-12
+                                            >= objective + 1e-4 * fraction * gradient.dot(step) - 1e-15
                                         ):
                                             coefficient = candidate
                                             line_accepted = True
                                         else:
                                             fraction *= 0.5
+                    coefficient /= weight_sum
                 contact_state.coefficient[i_c, i_b] = coefficient
                 if not accepted:
                     contact_state.status[i_c, i_b] = 3
@@ -215,24 +244,36 @@ def kernel_scatter(
             magnitude = force.norm()
             if magnitude > 1e-30:
                 first, second = func_force_frame(force)
+                low, dimensions = func_patch_grid(
+                    contact_state.center[i_c, i_b], contact_state.radius[i_c, i_b], surface_info.grid
+                )
+                n_cells = dimensions[0] * dimensions[1] * dimensions[2]
                 total = qd.Vector.zero(gs.qd_float, 3)
                 moment = qd.Vector.zero(gs.qd_float, 3)
-                for i_q in range(surface_info.positions.shape[0]):
-                    coordinates, weight = func_patch_sample(
-                        i_q, contact_state.center[i_c, i_b], first, second, contact_state.radius[i_c, i_b], surface_info
-                    )
-                    fraction = weight * qd.max(0.0, coordinates.dot(contact_state.coefficient[i_c, i_b]))
-                    sample_force = fraction * force
-                    total += sample_force
-                    moment += (surface_info.positions[i_q] - contact_state.position[i_c, i_b]).cross(sample_force)
-                    if weight > 0.0:
-                        i_face = i_q // surface_info.shape.shape[0]
-                        i_shape = i_q % surface_info.shape.shape[0]
-                        for i_local in range(6):
-                            i_n = stress_info.surface_nodes[i_face, i_local]
-                            value = surface_info.shape[i_shape][i_local] * sample_force
-                            for i_a in qd.static(range(3)):
-                                qd.atomic_add(stress_state.force[i_n, i_b][i_a], value[i_a])
+                for i_cell in range(n_cells):
+                    start, end = func_patch_cell(i_cell, low, dimensions, surface_info.grid)
+                    for i_entry in range(start, end):
+                        i_q = surface_info.grid.samples[i_entry]
+                        coordinates, weight = func_patch_sample(
+                            i_q,
+                            contact_state.center[i_c, i_b],
+                            first,
+                            second,
+                            contact_state.radius[i_c, i_b],
+                            surface_info,
+                        )
+                        fraction = weight * qd.max(0.0, coordinates.dot(contact_state.coefficient[i_c, i_b]))
+                        sample_force = fraction * force
+                        total += sample_force
+                        moment += (surface_info.positions[i_q] - contact_state.position[i_c, i_b]).cross(sample_force)
+                        if weight > 0.0:
+                            i_face = i_q // surface_info.shape.shape[0]
+                            i_shape = i_q % surface_info.shape.shape[0]
+                            for i_local in range(6):
+                                i_n = stress_info.surface_nodes[i_face, i_local]
+                                value = surface_info.shape[i_shape][i_local] * sample_force
+                                for i_a in qd.static(range(3)):
+                                    qd.atomic_add(stress_state.force[i_n, i_b][i_a], value[i_a])
                 contact_state.force_error[i_c, i_b] = (total - force).norm()
                 contact_state.moment_error[i_c, i_b] = moment.norm()
                 if (total - force).norm() > 1e-8 * magnitude or moment.norm() > 1e-8 * magnitude * contact_state.radius[

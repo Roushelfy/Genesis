@@ -103,8 +103,18 @@ class StressFactor:
         if not qd_to_numpy(self.info.valid):
             gs.raise_exception("Native stress factorization has a nonpositive or nonfinite pivot.")
 
-    def solve(self, young: float, state: StressState, stress_info: StressInfo) -> None:
-        kernel_solve(young, state, stress_info, self.info)
+    def solve(
+        self,
+        young: float,
+        state: StressState,
+        stress_info: StressInfo,
+        cooperative: bool = True,
+        only_failed: bool = False,
+    ) -> None:
+        if cooperative and gs.backend == gs.cuda and self.info.order.shape[0] <= 1024:
+            kernel_solve_cooperative(young, state, stress_info, self.info, self.info.order.shape[0], only_failed)
+        else:
+            kernel_solve(young, state, stress_info, self.info, only_failed)
 
 
 @qd.kernel
@@ -175,28 +185,112 @@ def kernel_factor(stress_info: StressInfo, factor_info: StressFactorInfo):
 
 
 @qd.kernel
-def kernel_solve(young: float, stress_state: StressState, stress_info: StressInfo, factor_info: StressFactorInfo):
+def kernel_solve(
+    young: float,
+    stress_state: StressState,
+    stress_info: StressInfo,
+    factor_info: StressFactorInfo,
+    only_failed: qd.template(),
+):
     for i_b in range(stress_state.active.shape[0]):
-        for i in range(factor_info.order.shape[0]):
-            node = factor_info.order[i]
-            value = stress_state.rhs[node, i_b] * stress_info.is_free[node] / young
-            for entry in range(factor_info.row_start[i], factor_info.row_start[i + 1]):
-                j = factor_info.columns[entry]
-                other = factor_info.order[j]
-                value -= factor_info.lower[entry] @ stress_state.displacement[other, i_b]
-            stress_state.displacement[node, i_b] = value
-        for i in range(factor_info.order.shape[0]):
-            node = factor_info.order[i]
-            stress_state.displacement[node, i_b] = (
-                factor_info.diagonal_inverse[i] @ stress_state.displacement[node, i_b]
-            )
-        for reverse in range(factor_info.order.shape[0]):
-            i = factor_info.order.shape[0] - reverse - 1
-            node = factor_info.order[i]
-            value = stress_state.displacement[node, i_b]
-            for entry in range(factor_info.column_start[i], factor_info.column_start[i + 1]):
-                j = factor_info.rows[entry]
-                other = factor_info.order[j]
-                lower_entry = factor_info.transpose_entries[entry]
-                value -= factor_info.lower[lower_entry].transpose() @ stress_state.displacement[other, i_b]
-            stress_state.displacement[node, i_b] = value
+        if qd.static(not only_failed) or not stress_state.valid[i_b]:
+            for i in range(factor_info.order.shape[0]):
+                node = factor_info.order[i]
+                value = stress_state.rhs[node, i_b] * stress_info.is_free[node] / young
+                for entry in range(factor_info.row_start[i], factor_info.row_start[i + 1]):
+                    j = factor_info.columns[entry]
+                    other = factor_info.order[j]
+                    value -= factor_info.lower[entry] @ stress_state.displacement[other, i_b]
+                stress_state.displacement[node, i_b] = value
+
+            for i in range(factor_info.order.shape[0]):
+                node = factor_info.order[i]
+                stress_state.displacement[node, i_b] = (
+                    factor_info.diagonal_inverse[i] @ stress_state.displacement[node, i_b]
+                )
+            for reverse in range(factor_info.order.shape[0]):
+                i = factor_info.order.shape[0] - reverse - 1
+                node = factor_info.order[i]
+                value = stress_state.displacement[node, i_b]
+                for entry in range(factor_info.column_start[i], factor_info.column_start[i + 1]):
+                    j = factor_info.rows[entry]
+                    other = factor_info.order[j]
+                    lower_entry = factor_info.transpose_entries[entry]
+                    value -= factor_info.lower[lower_entry].transpose() @ stress_state.displacement[other, i_b]
+                stress_state.displacement[node, i_b] = value
+    for i_b in range(stress_state.active.shape[0]):
+        if qd.static(only_failed):
+            stress_state.active[i_b] = gs.qd_int(not stress_state.valid[i_b])
+            if not stress_state.valid[i_b]:
+                stress_state.fallbacks[i_b] += 1
+            stress_state.valid[i_b] = True
+
+
+@qd.kernel
+def kernel_solve_cooperative(
+    young: float,
+    stress_state: StressState,
+    stress_info: StressInfo,
+    factor_info: StressFactorInfo,
+    n_nodes: qd.template(),
+    only_failed: qd.template(),
+):
+    qd.loop_config(block_dim=32)
+    for i_thread in range(stress_state.active.shape[0] * 32):
+        lane = i_thread % 32
+        i_b = i_thread // 32
+        if qd.static(not only_failed) or not stress_state.valid[i_b]:
+            work = qd.simt.block.SharedArray((n_nodes, 3), gs.qd_float)
+            for i in range(factor_info.order.shape[0]):
+                start, end = factor_info.row_start[i], factor_info.row_start[i + 1]
+                product = qd.Vector.zero(gs.qd_float, 3)
+                for chunk in range((end - start + 31) // 32):
+                    entry = start + 32 * chunk + lane
+                    if entry < end:
+                        j = factor_info.columns[entry]
+                        vector = qd.Vector([work[j, a] for a in qd.static(range(3))])
+                        product += factor_info.lower[entry] @ vector
+                for a in qd.static(range(3)):
+                    product[a] = qd.simt.subgroup.reduce_all_add(product[a])
+                if lane == 0:
+                    node = factor_info.order[i]
+                    value = stress_state.rhs[node, i_b] * stress_info.is_free[node] / young - product
+                    for a in qd.static(range(3)):
+                        work[i, a] = value[a]
+                qd.simt.subgroup.sync()
+            for chunk in range((factor_info.order.shape[0] + 31) // 32):
+                i = 32 * chunk + lane
+                if i < factor_info.order.shape[0]:
+                    vector = qd.Vector([work[i, a] for a in qd.static(range(3))])
+                    value = factor_info.diagonal_inverse[i] @ vector
+                    for a in qd.static(range(3)):
+                        work[i, a] = value[a]
+            qd.simt.subgroup.sync()
+            for reverse in range(factor_info.order.shape[0]):
+                i = factor_info.order.shape[0] - reverse - 1
+                start, end = factor_info.column_start[i], factor_info.column_start[i + 1]
+                product = qd.Vector.zero(gs.qd_float, 3)
+                for chunk in range((end - start + 31) // 32):
+                    entry = start + 32 * chunk + lane
+                    if entry < end:
+                        j = factor_info.rows[entry]
+                        lower_entry = factor_info.transpose_entries[entry]
+                        vector = qd.Vector([work[j, a] for a in qd.static(range(3))])
+                        product += factor_info.lower[lower_entry].transpose() @ vector
+                for a in qd.static(range(3)):
+                    product[a] = qd.simt.subgroup.reduce_all_add(product[a])
+                if lane == 0:
+                    for a in qd.static(range(3)):
+                        work[i, a] -= product[a]
+                qd.simt.subgroup.sync()
+            for chunk in range((factor_info.order.shape[0] + 31) // 32):
+                i = 32 * chunk + lane
+                if i < factor_info.order.shape[0]:
+                    node = factor_info.order[i]
+                    stress_state.displacement[node, i_b] = qd.Vector([work[i, a] for a in qd.static(range(3))])
+    for i_b in range(stress_state.active.shape[0]):
+        if qd.static(only_failed):
+            stress_state.active[i_b] = gs.qd_int(not stress_state.valid[i_b])
+            if not stress_state.valid[i_b]:
+                stress_state.fallbacks[i_b] += 1
+            stress_state.valid[i_b] = True

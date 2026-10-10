@@ -7,6 +7,24 @@ import genesis as gs
 from .data import StressInfo
 
 
+@qd.kernel
+def kernel_midpoints(n_vertices: int, edge_vertices: qd.types.ndarray(), stress_info: StressInfo):
+    for i_edge in range(edge_vertices.shape[0]):
+        stress_info.vertices[n_vertices + i_edge] = 0.5 * (
+            stress_info.vertices[edge_vertices[i_edge, 0]] + stress_info.vertices[edge_vertices[i_edge, 1]]
+        )
+
+
+@qd.kernel
+def kernel_valid_geometry(stress_info: StressInfo) -> int:
+    invalid = 0
+    for i in range(stress_info.volumes.shape[0]):
+        volume = stress_info.volumes[i]
+        if not (volume > 0.0) or qd.math.isinf(volume) or qd.math.isnan(volume):
+            invalid += 1
+    return invalid
+
+
 @qd.func
 def func_shape_gradient(i_n: int, bary: qd.types.vector(4), gradient: qd.types.matrix(4, 3), edges: qd.Tensor):
     value = qd.Vector.zero(gs.qd_float, 3)

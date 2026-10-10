@@ -20,6 +20,9 @@ class FrankaEgg:
         varied: bool = False,
         substeps: int = 1,
         viewer: bool = False,
+        cooperative_solve: bool = True,
+        method: str = "auto",
+        inverse_precision: str = "64",
     ):
         self.n_envs = n_envs
         self.tick = 0
@@ -53,7 +56,14 @@ class FrankaEgg:
         )
         self.link = self.egg.base_link
         if stress:
-            self.link.configure_stress_recovery(gs.options.RigidStressOptions(mesh=assets / "elastic.npz"))
+            self.link.configure_stress_recovery(
+                gs.options.RigidStressOptions(
+                    mesh=assets / "elastic.npz",
+                    cooperative_solve=cooperative_solve,
+                    method=method,
+                    inverse_precision=inverse_precision,
+                )
+            )
         self.scene.build(n_envs=n_envs)
         self.robot.set_dofs_kp([4500, 4500, 3500, 3500, 2000, 2000, 2000], self.arm)
         self.robot.set_dofs_kv([450, 450, 350, 350, 200, 200, 200], self.arm)

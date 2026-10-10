@@ -43,5 +43,9 @@ class RigidStressOptions(Options):
     absolute_tolerance: PositiveFloat = 1e-11
     max_iterations: PositiveInt = 2000
     warm_start: StrictBool = True
-    method: Literal["direct", "pcg"] = "direct"
+    method: Literal["auto", "direct", "inverse", "pcg"] = "auto"
+    cooperative_solve: StrictBool = True
+    inverse_max_bytes: PositiveInt = 64 * 1024 * 1024
+    inverse_precision: Literal["64", "32"] = "64"
+    inverse_corrections: Annotated[int, Field(ge=0, le=8)] = 2
     preconditioner: Literal["diagonal", "block"] = "block"

@@ -1,0 +1,53 @@
+diff --git a/examples/speed_benchmark/rigid_stress.py b/examples/speed_benchmark/rigid_stress.py
+index 4a622ccb..ad61aec1 100644
+--- a/examples/speed_benchmark/rigid_stress.py
++++ b/examples/speed_benchmark/rigid_stress.py
+@@ -100,6 +100,7 @@ def main() -> None:
+     start = time.perf_counter()
+     workload = FrankaEgg(args.envs, args.level, args.scope not in ("rigid", "policy-rigid"), varied=args.varied)
+     setup_seconds = time.perf_counter() - start
++    torch.manual_seed(99173)
+     policy = (
+         torch.nn.Sequential(
+             torch.nn.Linear(26, 128),
+diff --git a/genesis/engine/solvers/rigid/stress/contact.py b/genesis/engine/solvers/rigid/stress/contact.py
+index 2de7b291..80c3e6b3 100644
+--- a/genesis/engine/solvers/rigid/stress/contact.py
++++ b/genesis/engine/solvers/rigid/stress/contact.py
+@@ -155,6 +155,8 @@ def kernel_pressure(contact_state: StressContactState, surface_info: StressSurfa
+                 accepted = False
+                 nonsingular = gram[0, 0] > 0.0 and gram.determinant() > 1e-14 * gram.trace() ** 3
+                 if nonsingular:
++                    weight_sum = gram[0, 0]
++                    gram /= weight_sum
+                     coefficient = gram.inverse() @ qd.Vector([1.0, 0.0, 0.0])
+                     # A negative physical pressure activates a constrained dual correction.
+                     for iteration in range(80):
+@@ -166,6 +168,7 @@ def kernel_pressure(contact_state: StressContactState, surface_info: StressSurfa
+                                 coordinates, weight = func_patch_sample(
+                                     i_q, center, first, second, radius, surface_info
+                                 )
++                                weight /= weight_sum
+                                 profile = qd.max(0.0, coordinates.dot(coefficient))
+                                 gradient += weight * profile * coordinates
+                                 objective -= 0.5 * weight * profile * profile
+@@ -185,16 +188,18 @@ def kernel_pressure(contact_state: StressContactState, surface_info: StressSurfa
+                                             coordinates, weight = func_patch_sample(
+                                                 i_q, center, first, second, radius, surface_info
+                                             )
++                                            weight /= weight_sum
+                                             profile = qd.max(0.0, coordinates.dot(candidate))
+                                             candidate_objective -= 0.5 * weight * profile * profile
+                                         if (
+                                             candidate_objective
+-                                            >= objective + 1e-4 * fraction * gradient.dot(step) - 1e-12
++                                            >= objective + 1e-4 * fraction * gradient.dot(step) - 1e-15
+                                         ):
+                                             coefficient = candidate
+                                             line_accepted = True
+                                         else:
+                                             fraction *= 0.5
++                    coefficient /= weight_sum
+                 contact_state.coefficient[i_c, i_b] = coefficient
+                 if not accepted:
+                     contact_state.status[i_c, i_b] = 3

@@ -12,7 +12,7 @@ import torch
 import genesis as gs
 from genesis.engine.solvers.base_solver import StateChange, Subscriber
 from genesis.utils.array_class import V_VEC, DataItem, ErrorCode, iter_data
-from genesis.utils.misc import assign_indexed_tensor, broadcast_tensor, indices_to_mask, qd_to_torch
+from genesis.utils.misc import assign_indexed_tensor, broadcast_tensor, indices_to_mask, qd_to_torch, tensor_to_array
 
 from .association import kernel_associate
 from .contact import StressContactState, create_contacts, kernel_anchor, kernel_pressure, kernel_scatter
@@ -54,6 +54,8 @@ class RigidStressRecovery:
                             and previous.poisson == options.poisson
                             and previous.density == options.density
                             and previous.method == options.method
+                            and previous.inverse_precision == options.inverse_precision
+                            and previous.inverse_max_bytes == options.inverse_max_bytes
                         ):
                             model = existing.model
                             if previous.quadrature == options.quadrature:
@@ -100,6 +102,8 @@ class RigidStressRecovery:
                 solver.collider.collider_state,
                 solver._links_offset_quat.ndim == 3,
                 not solver._disable_constraint,
+                entry.state.step_valid,
+                solver._errno,
             )
             kernel_anchor(self.source_epsilon, entry.contacts, entry.surface.info)
             kernel_pressure(entry.contacts, entry.surface.info)
@@ -121,6 +125,8 @@ class RigidStressRecovery:
                 yield from iter_data(entry.model.info, f"stress.{i}.info")
                 if entry.model.factor is not None:
                     yield from iter_data(entry.model.factor.info, f"stress.{i}.factor")
+                if entry.model.inverse is not None:
+                    yield from iter_data(entry.model.inverse.info, f"stress.{i}.inverse")
                 seen.add(id(entry.model))
             if id(entry.surface) not in seen_surfaces:
                 yield from iter_data(entry.surface.info, f"stress.{i}.surface")
@@ -153,9 +159,16 @@ class RigidStressRecovery:
                 else:
                     envs = self.solver.scene._sanitize_envs_idx(envs_idx)
                     values = broadcast_tensor(radius, gs.tc_float, (envs.shape[0], entry.contacts.radius.shape[0]))
-                    kernel_set_radius(envs, values, entry.contacts)
+                    kernel_set_radius(envs, values.contiguous(), entry.contacts)
                 return
         gs.raise_exception("Stress recovery is not enabled for this link.")
+
+    def reject_link_mutation(self, links_idx, reason: str) -> None:
+        if isinstance(links_idx, torch.Tensor):
+            links_idx = tensor_to_array(links_idx)
+        selected = np.atleast_1d(np.arange(self.solver.n_links)[indices_to_mask(links_idx)]).ravel()
+        if any(entry.link.idx in selected for entry in self.links):
+            gs.raise_exception(reason)
 
 
 @qd.kernel
@@ -163,6 +176,8 @@ def kernel_begin_step(stress_state: StressState):
     for i_b in range(stress_state.active.shape[0]):
         stress_state.step_peak[i_b] = 0.0
         stress_state.step_valid[i_b] = True
+        stress_state.corrections[i_b] = 0
+        stress_state.fallbacks[i_b] = 0
 
 
 @qd.kernel(graph=True)

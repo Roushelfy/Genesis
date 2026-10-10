@@ -3,6 +3,7 @@ import pytest
 import trimesh
 from scipy import sparse
 from scipy.sparse.linalg import splu
+from scipy.spatial.transform import Rotation
 
 import genesis as gs
 from genesis.engine.solvers.rigid.stress.contact import create_contacts, kernel_anchor, kernel_pressure, kernel_scatter
@@ -44,11 +45,24 @@ def test_native_p2_shared_operators(tmp_path):
 
 @pytest.mark.required
 @pytest.mark.precision("64")
-def test_native_batched_recovery_against_full_fp64_direct(tmp_path):
+@pytest.mark.parametrize(
+    "method,cooperative,inverse_precision",
+    (("direct", False, "64"), ("direct", True, "64"), ("inverse", True, "64"), ("inverse", True, "32")),
+)
+def test_native_batched_recovery_against_full_fp64_direct(tmp_path, method, cooperative, inverse_precision):
     vertices, tetrahedra, surface, _ = shell_mesh(1, 2, 0.0005)
     mesh = tmp_path / "shell.npz"
     np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=surface)
-    model = StressModel(RigidStressOptions(mesh=mesh, tolerance=1e-7, max_iterations=4000))
+    model = StressModel(
+        RigidStressOptions(
+            mesh=mesh,
+            tolerance=1e-7,
+            max_iterations=4000,
+            cooperative_solve=cooperative,
+            method=method,
+            inverse_precision=inverse_precision,
+        )
+    )
     oracle = P2Shell(vertices, tetrahedra, surface, 1e10, 0.3, 2000.0, 2, factor_backend="none")
     n_envs = 5
     state = model.create_state(n_envs)
@@ -75,7 +89,26 @@ def test_native_batched_recovery_against_full_fp64_direct(tmp_path):
     np.testing.assert_allclose(qd_to_numpy(state.peak), peak, rtol=1e-4, atol=1e-3)
     recovered = qd_to_numpy(state.displacement, transpose=True).reshape((n_envs, -1)).T
     residual = np.linalg.norm(oracle.k @ recovered - rhs, axis=0)
-    print("native iterations", qd_to_numpy(state.iterations), "full residual", residual)
+    displacement_error = np.linalg.norm(recovered - displacement, axis=0) / np.maximum(
+        np.linalg.norm(displacement, axis=0), 1e-30
+    )
+    print(
+        "native method",
+        method,
+        cooperative,
+        inverse_precision,
+        "full residual",
+        residual,
+        "relative displacement error",
+        displacement_error,
+        "peak absolute error Pa",
+        np.abs(qd_to_numpy(state.peak) - peak),
+        "corrections",
+        qd_to_numpy(state.corrections),
+        "fallbacks",
+        qd_to_numpy(state.fallbacks),
+    )
+    assert displacement_error.max() < 1e-4
     assert qd_to_numpy(state.valid).all()
     assert (residual <= np.maximum(1e-11, 1e-7 * np.linalg.norm(rhs, axis=0))).all()
     np.testing.assert_array_equal(recovered[:, 0], 0.0)
@@ -139,7 +172,8 @@ def test_native_finite_pressure_matches_independent_cpu(tmp_path):
 
 @pytest.mark.required
 @pytest.mark.precision("64")
-def test_native_constrained_pressure_and_invalid_inputs(tmp_path):
+@pytest.mark.parametrize("case", ("random", "live_sliding"))
+def test_native_constrained_pressure_and_invalid_inputs(tmp_path, case):
     vertices, tetrahedra, faces, _ = shell_mesh(1, 2, 0.0005)
     mesh = tmp_path / "shell.npz"
     np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)
@@ -167,6 +201,16 @@ def test_native_constrained_pressure_and_invalid_inputs(tmp_path):
             break
     assert selected is not None, "Fixture must exercise the constrained pressure correction."
     patch, mapped = selected
+    if case == "live_sliding":
+        patch = WrenchPatch(
+            np.array([-0.010732644239792082, -0.018915982500044032, 8.744938177757137e-7]),
+            np.array([-0.0024097694624780827, 0.010202571207786422, -0.007137609867135896]),
+            0.00721357873242662,
+            1.0,
+            np.zeros(3),
+            np.array([0.273174876142152, 0.9616158684519065, 0.025892249539301006]),
+        )
+        mapped = mapper.map(patch)
     contacts = create_contacts(6, 1, patch.radius_m)
     state = model.create_state(1)
     position = np.tile(patch.center_m, (6, 1, 1))
@@ -192,6 +236,38 @@ def test_native_constrained_pressure_and_invalid_inputs(tmp_path):
     np.testing.assert_allclose(
         qd_to_numpy(state.force)[:, 0], mapped.nodal_force_n.reshape((-1, 3)), rtol=2e-7, atol=1e-10
     )
+
+
+@pytest.mark.required
+@pytest.mark.precision("64")
+def test_native_unrepresentable_live_patch_is_rejected(tmp_path):
+    vertices, tetrahedra, faces, _ = shell_mesh(1, 2, 0.0005)
+    mesh = tmp_path / "shell.npz"
+    np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)
+    model = StressModel(RigidStressOptions(mesh=mesh, method="pcg"))
+    surface = StressSurface(10, model.info)
+    oracle = P2Shell(vertices, tetrahedra, faces, 1e10, 0.3, 2000.0, 2, factor_backend="none")
+    mapper = FinitePatchMapper(SurfaceGeometry(oracle, 10), anchor_to_surface=True)
+    # Actual B=2048 rollout, environment 1996, tick 632. Do not widen its footprint to accept it.
+    patch = WrenchPatch(
+        np.array([4.0606709579473816e-5, 1.3926954540923124e-5, 0.0299207658748014]),
+        np.array([0.004688181349230815, 0.0023709449777518836, -0.0015963625737377865]),
+        0.005998121586384792,
+        1.0,
+        np.zeros(3),
+        np.array([0.45061547141681174, 0.1545483800796497, -0.8792385882879348]),
+    )
+    with pytest.raises(ValueError, match="cannot preserve"):
+        mapper.map(patch)
+    contacts = create_contacts(1, 1, patch.radius_m)
+    contacts.position.from_numpy(patch.center_m.reshape((1, 1, 3)))
+    contacts.force.from_numpy(patch.force_n.reshape((1, 1, 3)))
+    contacts.normal.from_numpy(patch.inward_normal.reshape((1, 1, 3)))
+    contacts.friction.fill(1.0)
+    contacts.valid.fill(True)
+    kernel_anchor(float(np.finfo(float).eps), contacts, surface.info)
+    kernel_pressure(contacts, surface.info)
+    np.testing.assert_array_equal(qd_to_numpy(contacts.status), 3)
 
 
 @pytest.mark.required
@@ -226,7 +302,7 @@ def test_native_pcg_iteration_limit_and_freefall(tmp_path, preconditioner):
 @pytest.mark.required
 @pytest.mark.precision("64")
 @pytest.mark.parametrize("substeps", (1, 4))
-def test_native_rigid_lifecycle_and_partial_reset(tmp_path, substeps):
+def test_native_rigid_lifecycle_and_partial_reset(tmp_path, substeps, monkeypatch):
     vertices, tetrahedra, faces, _ = shell_mesh(1, 2, 0.0005)
     mesh = tmp_path / "shell.npz"
     np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)
@@ -249,6 +325,9 @@ def test_native_rigid_lifecycle_and_partial_reset(tmp_path, substeps):
     scene.build(n_envs=3)
     assert not scene._pre_substep_callbacks and not scene._post_substep_callbacks
     egg.set_pos(np.array([[0.0, 0.0, 0.031], [0.0, 0.0, 0.045], [0.0, 0.0, 0.061]]))
+    angles = np.array([0.23, -0.31, 0.47])
+    quaternions = np.column_stack((np.cos(angles / 2), np.zeros((3, 2)), np.sin(angles / 2)))
+    egg.set_quat(quaternions)
     entry = scene.rigid_solver.stress_recovery.links[0]
     reached_contact = np.zeros(3, dtype=bool)
     for _ in range(30):
@@ -259,6 +338,74 @@ def test_native_rigid_lifecycle_and_partial_reset(tmp_path, substeps):
         reached_contact |= peak > 1.0
         assert (peak >= qd_to_numpy(entry.state.peak)).all()
     assert reached_contact.all()
+    # Independent frame/contact audit of the actual final solved contact snapshot.
+    frame_quat = qd_to_numpy(entry.contacts.frame_quaternion)
+    frame_pos = qd_to_numpy(entry.contacts.frame_position)
+    rotations = Rotation.from_quat(frame_quat[:, [1, 2, 3, 0]])
+    collider = scene.rigid_solver.collider.collider_state
+    sorted_indices = qd_to_numpy(collider.contact_sort_idx, transpose=True)
+    source_positions = qd_to_numpy(collider.contact_data.pos, transpose=True)
+    source_forces = qd_to_numpy(collider.contact_data.force, transpose=True)
+    source_normals = qd_to_numpy(collider.contact_data.normal, transpose=True)
+    source_a = qd_to_numpy(collider.contact_data.link_a, transpose=True)
+    local_positions = qd_to_numpy(entry.contacts.position, transpose=True)
+    local_forces = qd_to_numpy(entry.contacts.force, transpose=True)
+    local_normals = qd_to_numpy(entry.contacts.normal, transpose=True)
+    valid = qd_to_numpy(entry.contacts.valid, transpose=True)
+    for i_b, i_c in np.argwhere(valid):
+        source = sorted_indices[i_b, i_c]
+        sign = -1.0 if source_a[i_b, source] == link.idx else 1.0
+        inverse = rotations[i_b].inv()
+        np.testing.assert_allclose(
+            local_positions[i_b, i_c], inverse.apply(source_positions[i_b, source] - frame_pos[i_b]), atol=1e-15
+        )
+        np.testing.assert_allclose(local_forces[i_b, i_c], inverse.apply(sign * source_forces[i_b, source]), atol=1e-14)
+        np.testing.assert_allclose(
+            local_normals[i_b, i_c], inverse.apply(-sign * source_normals[i_b, source]), atol=1e-14
+        )
+    oracle = P2Shell(vertices, tetrahedra, faces, 1e10, 0.3, 2000.0, 2, factor_backend="none")
+    mapper = FinitePatchMapper(SurfaceGeometry(oracle, 10), anchor_to_surface=True)
+    radius = qd_to_numpy(entry.contacts.radius, transpose=True)
+    friction = qd_to_numpy(entry.contacts.friction, transpose=True)
+    expected_force = np.zeros((oracle.ndof, 3))
+    for i_b, i_c in np.argwhere(valid):
+        if np.linalg.norm(local_forces[i_b, i_c]) > 1e-30:
+            patch = WrenchPatch(
+                local_positions[i_b, i_c],
+                local_forces[i_b, i_c],
+                radius[i_b, i_c],
+                friction[i_b, i_c],
+                np.zeros(3),
+                local_normals[i_b, i_c],
+            )
+            expected_force[:, i_b] += mapper.map(patch).nodal_force_n
+    np.testing.assert_allclose(
+        qd_to_numpy(entry.state.force, transpose=True).reshape((3, -1)).T, expected_force, rtol=2e-7, atol=1e-10
+    )
+    angular_velocity = qd_to_numpy(entry.omega)
+    centrifugal = -np.cross(
+        angular_velocity[:, None], np.cross(angular_velocity[:, None], (oracle.xyz - oracle.com)[None])
+    )
+    raw = expected_force + oracle.m @ centrifugal.reshape((3, -1)).T
+    expected_rhs = raw - oracle.mr @ np.linalg.solve(oracle.gram, oracle.r.T @ raw)
+    actual_rhs = qd_to_numpy(entry.state.rhs, transpose=True).reshape((3, -1)).T
+    np.testing.assert_allclose(actual_rhs, expected_rhs, rtol=2e-7, atol=1e-10)
+    free = np.setdiff1d(np.arange(oracle.ndof), qd_to_numpy(entry.model.info.pins))
+    displacement = np.zeros_like(expected_rhs)
+    displacement[free] = splu(oracle.k[free][:, free].tocsc()).solve(expected_rhs[free])
+    scan = P2Peak(oracle.glambda, oracle.elements, 1e10 / 2.6)
+    expected_peak = np.array([scan(displacement[:, i_b])[0] for i_b in range(3)])
+    np.testing.assert_allclose(qd_to_numpy(entry.state.peak), expected_peak, rtol=1e-4, atol=1e-3)
+    print("actual rotated contacts substeps", substeps, "peak error Pa", qd_to_numpy(entry.state.peak) - expected_peak)
+    link.set_stress_contact_radius(np.array([[0.004], [0.008]]), envs_idx=[0, 2])
+    radius = qd_to_numpy(entry.contacts.radius, transpose=True)
+    np.testing.assert_array_equal(radius[0], 0.004)
+    np.testing.assert_array_equal(radius[1], 0.006)
+    np.testing.assert_array_equal(radius[2], 0.008)
+    with monkeypatch.context() as patch:
+        patch.setattr(gs, "use_zerocopy", False)
+        link.set_stress_contact_radius(0.007, envs_idx=[1])
+        np.testing.assert_array_equal(qd_to_numpy(entry.contacts.radius, transpose=True)[1], 0.007)
     before_u = qd_to_numpy(entry.state.displacement, transpose=True, copy=True)
     before_peak = tensor_to_array(link.get_max_stress())
     scene.reset(envs_idx=np.array([1]))
@@ -268,3 +415,24 @@ def test_native_rigid_lifecycle_and_partial_reset(tmp_path, substeps):
     np.testing.assert_array_equal(after_peak[[0, 2]], before_peak[[0, 2]])
     np.testing.assert_array_equal(after_u[1], 0.0)
     assert after_peak[1] == 0.0
+    with pytest.raises(gs.GenesisException, match="fixed link mass"):
+        link.set_mass(0.01)
+    with pytest.raises(gs.GenesisException, match="finite surface loads"):
+        link.apply_external_wrench(force=(0, 0, 1))
+    baseline = gs.Scene(
+        sim_options=gs.options.SimOptions(dt=0.01, substeps=substeps),
+        rigid_options=scene.rigid_solver._options.model_copy(deep=True),
+        show_viewer=False,
+    )
+    baseline.add_entity(gs.morphs.Plane())
+    bare_egg = baseline.add_entity(gs.morphs.Mesh(file=collision, pos=(0, 0, 0.031), convexify=True, decimate=False))
+    baseline.build(n_envs=3)
+    assert baseline.rigid_solver.stress_recovery is None
+    bare_egg.set_pos(np.array([[0.0, 0.0, 0.031], [0.0, 0.0, 0.045], [0.0, 0.0, 0.061]]))
+    bare_egg.set_quat(quaternions)
+    for _ in range(30):
+        baseline.step()
+    # The partial reset above changed only environment 1; compare the other actual trajectories.
+    np.testing.assert_allclose(
+        tensor_to_array(egg.get_pos())[[0, 2]], tensor_to_array(bare_egg.get_pos())[[0, 2]], rtol=0, atol=1e-10
+    )

@@ -19,16 +19,35 @@ def kernel_associate(
     collider_state: array_class.ColliderState,
     batch_offsets: qd.template(),
     enable_constraint: bool,
+    step_valid: qd.Tensor,
+    errno: qd.Tensor,
 ):
     for i_b in range(omega.shape[0]):
+        offset_pos = qd.Vector.zero(gs.qd_float, 3)
         offset_quat = qd.Vector.zero(gs.qd_float, 4)
+        for i_a in qd.static(range(3)):
+            if qd.static(batch_offsets):
+                offset_pos[i_a] = links_offset_pos[i_b, i_l, i_a]
+            else:
+                offset_pos[i_a] = links_offset_pos[i_l, i_a]
         for i_a in qd.static(range(4)):
             if qd.static(batch_offsets):
                 offset_quat[i_a] = links_offset_quat[i_b, i_l, i_a]
             else:
                 offset_quat[i_a] = links_offset_quat[i_l, i_a]
         quat = geom.qd_transform_quat_by_quat(geom.qd_inv_quat(offset_quat), dyn_state.links.quat[i_l, i_b])
+        contact_state.frame_quaternion[i_b] = quat
+        contact_state.frame_position[i_b] = dyn_state.links.pos[i_l, i_b] - geom.qd_transform_by_quat(offset_pos, quat)
         omega[i_b] = geom.qd_inv_transform_by_quat(dyn_state.links.cd_ang[i_l, i_b], quat)
+        unsupported = (
+            dyn_state.links.cfrc_applied_ang[i_l, i_b].norm() > 0.0
+            or dyn_state.links.cfrc_applied_vel[i_l, i_b].norm() > 0.0
+            or dyn_state.links.cfrc_coupling_ang[i_l, i_b].norm() > 0.0
+            or dyn_state.links.cfrc_coupling_vel[i_l, i_b].norm() > 0.0
+        )
+        if unsupported:
+            step_valid[i_b] = False
+            qd.atomic_or(errno[i_b], array_class.ErrorCode.INVALID_STRESS_LOAD)
     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
         contact_state.valid[i_c, i_b] = False
         if enable_constraint and i_c < collider_state.n_contacts[i_b]:
@@ -39,20 +58,8 @@ def kernel_associate(
                 sign = gs.qd_float(1.0)
                 if i_a == i_l:
                     sign = -1.0
-                offset_pos = qd.Vector.zero(gs.qd_float, 3)
-                offset_quat = qd.Vector.zero(gs.qd_float, 4)
-                for i_axis in qd.static(range(3)):
-                    if qd.static(batch_offsets):
-                        offset_pos[i_axis] = links_offset_pos[i_b, i_l, i_axis]
-                    else:
-                        offset_pos[i_axis] = links_offset_pos[i_l, i_axis]
-                for i_axis in qd.static(range(4)):
-                    if qd.static(batch_offsets):
-                        offset_quat[i_axis] = links_offset_quat[i_b, i_l, i_axis]
-                    else:
-                        offset_quat[i_axis] = links_offset_quat[i_l, i_axis]
-                quat = geom.qd_transform_quat_by_quat(geom.qd_inv_quat(offset_quat), dyn_state.links.quat[i_l, i_b])
-                pos = dyn_state.links.pos[i_l, i_b] - geom.qd_transform_by_quat(offset_pos, quat)
+                quat = contact_state.frame_quaternion[i_b]
+                pos = contact_state.frame_position[i_b]
                 contact_state.position[i_c, i_b] = geom.qd_inv_transform_by_quat(
                     collider_state.contact_data.pos[i_contact, i_b] - pos, quat
                 )
