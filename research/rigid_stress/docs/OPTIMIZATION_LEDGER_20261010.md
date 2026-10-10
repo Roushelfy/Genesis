@@ -7,6 +7,118 @@ Q10x10 quadrature. All production physical arithmetic uses Quadrants FP64.
 The finite pad load and actual combined contact friction change are described
 in [CONTACT_REPAIR_20261010.md](CONTACT_REPAIR_20261010.md).
 
+## Validated scheduling controls, 23:57 UTC
+
+The native integrated-wrench, packed-block, immutable-options and coalesced
+complete-residual candidate passes all 41 GPU cases, 27 CPU cases (14 CUDA
+skips), and 480 independent CPU FP64 full-field trajectory samples, including
+forced overflow and four substeps. Its source is preserved in
+`native-wrench-block-residual-v3.patch` and the separately preserved balance
+module. Complete residuals include every gauge row; all final budgets remain
+unchanged. Ordinary native interaction timing remains required.
+
+The contact-moment research path passes 192 normal and 96 forced-overflow,
+four-substep full-field oracle samples. At B=32768, snapshot fit plus scatter
+changes 27.32849 -> 23.34712 ms. The matched B=1024 actual rollout changes
+73319.00 -> 73397.59 env-step/s, +0.11%, with repeat standard deviations
+358.13/930.95 and no invalid transitions. This is insufficient evidence for
+a small-batch default. The large matched pair is still running. Native
+integration is being tested with the three captured apex fixtures, illegal
+inputs, constrained pressures, partial resets and state restoration. The
+first integration attempt fails at module import because a Quadrants kernel
+argument had a default; its Python-wrapper correction is being validated.
+No numerical acceptance is inferred from that rejected import attempt.
+
+The packed-traversal control isolates launch size from loop order. At
+B=32768, original block 512 takes 22.66150 ms, compared with
+22.59740/22.61802/22.65073 ms for environment tiles 32/64/128 at the same
+block size. The best additional saving is 0.06410 ms (0.28% of the stage),
+roughly 0.06% of measured whole-rollout time at this checkpoint. Retaining
+the original traversal avoids padding and added tuning for this small
+snapshot difference. The earlier 3.9% apparent gain mostly came from block
+512; that block choice remains a separately validated candidate.
+
+The native tiled-balance B=49152 policy inference rollout completes both
+seeds with 900 warmup steps and three 2400-step repeats: 292279.47 and
+291954.53 valid env-step/s (5.94644 and 5.93983 batch-step/s), repeat
+standard deviations 832.04 and 831.36, zero invalid transitions. Native
+buffers occupy 10875304213 bytes and the saved reset state 63700992 bytes.
+These use `e6094ff9-native-balance-t8-v2`, not the newer scheduling candidate;
+they do not establish a final-source throughput optimum or RL training rate.
+
+The single-writer publication contains 824 terminal artifacts; all 824
+publication hashes and all 824 original hashes pass. Manifest SHA256:
+`76c595e3bf60be28ac8f0f94f4c25483d272cc6c03ad2c40f186e346867dc1ad`.
+Active jobs are excluded. Historical research overrides should run against
+their recorded source revision or preserved generated source; final native
+benchmark flags provide the production ablations after integration.
+
+## Research scheduling and contact-moment checkpoint, 23:21 UTC
+
+The matched B=32768 seed-623001 integrated-wrench trial completes on GPU
+`GPU-7aa59c7f-652c-7945-af70-929e66498148`: baseline 286060.20 env-step/s
+(repeat standard deviation 242.18), reuse 288826.55 (556.44), +0.97%,
+zero invalid transitions. The B=1024 pair remains -0.33%. Mid-batch
+snapshot balance at B=2048/4096/8192/16384 changes
+0.21095/0.40331/0.81676/1.62629 to
+0.15269/0.24912/0.43260/0.80238 ms; full residual and original peak
+budgets pass. These are scheduling diagnostics, not mid-batch rollout rates.
+
+The full-residual layout trial completes on GPU
+`GPU-eec6c32a-fe0b-5322-8219-698fede93860`: 284528.87 -> 285770.41
+env-step/s, +0.44%, standard deviations 379.25/459.42 and zero invalid
+transitions. It also passes 192 independent full-field oracle samples;
+snapshot residual vectors are bit-identical. Native interaction measurements
+are still required for both scheduling choices.
+
+The pressure/scatter repeated-footprint candidate is different from caching
+only nonlinear iterations. For an affine pressure accepted as positive on
+the entire footprint, integrate `sum(weight * P2_shape * dual_coordinate)`
+alongside the pressure Gram matrix, then contract these nodal moments with
+the fitted coefficient. Affine geometry and P2 partition of unity preserve
+the wrench; actual final wrench checks remain mandatory. Nonpositive,
+constrained, locally refined and overflowing cases retain their complete
+original integration. No radius, point, sample or acceptance budget changes.
+The bounded research cache adds 217 bytes/task capacity and refreshes every
+recovery, without contact-history assumptions. B=1024 snapshot combined
+fit/scatter changes 1.76455 -> 1.55635 ms; nodal differences are below
+7.91e-8 of the unchanged load budget, and full residual/peak checks pass.
+Its independent trajectory oracle and large timing are running. Actual
+end-to-end benefit and production selection remain open.
+
+The native wrench/block/immutable-options integration passes 480 independent
+CPU FP64 full-field samples, including forced complete overflow and four
+substeps. Forty GPU cases pass; the remaining new test initially omitted
+the required `cached_bounds` template argument. Its corrected invocation
+passes both pressure scheduling cases. Full CPU testing is running; no
+production numerical failure was inferred from that test invocation error.
+Build-time options are copied per link and mutation now requires rebuilding,
+preventing stale material/mass/shared-operator or workspace configurations.
+
+The B=32768 normal every-step wrench-reuse audit covers 108134400
+environment observations with zero invalid steps. It observes five local
+integration retries among 327387629 nonzero contacts, a maximum 90 counted
+Newton evaluations, and no correction, factor or scatter overflow. Complete
+residual uses at most 0.011539 of budget; force and radius-normalized moment
+errors remain below 7.77e-10 and 6.99e-10. The forced B=1024 full-field policy
+audit covers 3379200 observations, executes 3296 complete scatter fallbacks
+and has zero invalid steps. Fit counters count Newton evaluations; line
+search work is not separately counted, so their mean is not a measured
+fraction of stage time. All per-environment tails remain preserved.
+
+The completed-episode audit passes all 114 completed episodes in each
+B=32 live/policy case for both seeds. Restart-aborted and unfinished episodes
+are reported separately, and weak-grip height drops remain recorded. These
+are stated scripted lift/hold/release criteria, not fracture or measured
+tangential-slip validation. Larger final-source episode audits remain open.
+
+The published manifest contains 723 artifacts; all 723 publication and
+723 original hashes pass. SHA256:
+`72855fdecc61ea4fdd7323ecaa13c73ba182428b8ec0fa455a452eb35f4dd602`.
+Later ongoing trials above have their data-side originals and will be
+published when terminal. Performance plateau and final batch choice remain
+unresolved while the applicable contact-moment candidate is evaluated.
+
 ## Native balance checkpoint, 23:03 UTC
 
 The native 8-node/32-environment reduction and shared mass-mode projection
@@ -66,10 +178,11 @@ Conditional initialization of unused contact diagnostics saves only
 0.00588/0.19084 ms at B=1024/32768. It leaves stale scratch diagnostics
 unless every consumer adds validity masking. Its large endpoint ceiling is
 about 0.17%, so it is rejected on cost and diagnostic-maintenance evidence.
-Pressure-footprint caching would add work on all changing contacts to save
-the measured rare nonlinear iterations (about 2.1% of the pressure stage
-before cache construction); no high-gain full-contact cache is indicated.
-These bounds do not rule out an unknown future optimization. Final plateau,
+Caching only nonlinear iterations would add work on all changing contacts
+to save rare iterations. Their mean counter is about 0.021/contact, with
+line-search work not separately counted; this is an amortization concern,
+not a measured 2.1% stage-time bound. Reusing footprint moments across
+pressure and scatter is being evaluated separately above. Final plateau,
 max/full costs, completed episodes and larger four-scope runs remain open.
 
 This checkpoint archives 660 completed artifacts, including all sixteen

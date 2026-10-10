@@ -1,0 +1,23 @@
+{
+  "command": [
+    "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python",
+    "research/rigid_stress/probe_contact_initialization.py",
+    "--micro",
+    "--envs",
+    "32768",
+    "--seed",
+    "623001",
+    "--warmup",
+    "900",
+    "--repetitions",
+    "100",
+    "--output",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-contact-repair/contact-init-micro-b32768-v1.json"
+  ],
+  "valid_slots": false,
+  "source_revision": "59b16811-native-balance-t8-contact-init-v1",
+  "probe_source_sha256": "8c03e83befd90492f3cd7ae28a5c126d1ea4bee722fdc2392cbf4c71ae4cfc85",
+  "generated_source_sha256": "8413f93c5dfbaec562369d3940831c51e0e4dfa386b05fe5483952458a3a7307",
+  "generated_source": "from genesis.engine.solvers.rigid.stress.contact import *\n\n@qd.func\ndef func_anchor_valid(source_epsilon: float, contact_state: StressContactState, surface_info: StressSurfaceInfo):\n    for (i_c, i_b) in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):\n        contact_state.status[i_c, i_b] = 0\n        if contact_state.valid[i_c, i_b]:\n            contact_state.force_error[i_c, i_b] = 0.0\n            contact_state.moment_error[i_c, i_b] = 0.0\n            contact_state.candidate_count[i_c, i_b] = 0\n            contact_state.evaluations[i_c, i_b] = 0\n            contact_state.is_refined[i_c, i_b] = False\n            force = contact_state.force[i_c, i_b]\n            magnitude = force.norm()\n            normal = contact_state.normal[i_c, i_b]\n            radius = contact_state.radius[i_c, i_b]\n            admitted = radius > 0.0 and normal.norm() > 0.0 and (contact_state.friction[i_c, i_b] >= 0.0)\n            admitted = admitted and (not qd.math.isnan(magnitude)) and (not qd.math.isinf(magnitude))\n            admitted = admitted and (not qd.math.isinf(radius)) and (not qd.math.isinf(normal.norm()))\n            admitted = admitted and (not qd.math.isinf(contact_state.friction[i_c, i_b]))\n            for i_a in qd.static(range(3)):\n                value = contact_state.position[i_c, i_b][i_a]\n                admitted = admitted and (not qd.math.isnan(value)) and (not qd.math.isinf(value))\n            if admitted:\n                normal = normal.normalized()\n                compression = force.dot(normal)\n                tangent = force - compression * normal\n                allowance = 16.0 * source_epsilon * magnitude\n                admitted = compression >= -allowance and tangent.norm() <= contact_state.friction[i_c, i_b] * compression + allowance\n            if not admitted:\n                contact_state.status[i_c, i_b] = 1\n            elif magnitude > 1e-30:\n                direction = -force / magnitude\n                point = contact_state.position[i_c, i_b]\n                best = gs.qd_float(-1e+30)\n                for i_f in range(surface_info.face_origin.shape[0]):\n                    denominator = surface_info.face_normal[i_f].dot(direction)\n                    if denominator > 1e-12:\n                        parameter = surface_info.face_normal[i_f].dot(surface_info.face_origin[i_f] - point) / denominator\n                        bary = surface_info.face_dual[i_f] @ (point + parameter * direction - surface_info.face_origin[i_f])\n                        if bary[0] >= -2e-12 and bary[1] >= -2e-12 and (bary.sum() <= 1.0 + 2e-12):\n                            if parameter > best:\n                                contact_state.anchor_face[i_c, i_b] = i_f\n                            best = qd.max(best, parameter)\n                if best > -1e+30:\n                    contact_state.center[i_c, i_b] = point + best * direction\n                else:\n                    contact_state.status[i_c, i_b] = 2\n\n@qd.kernel\ndef kernel_anchor_valid(source_epsilon: float, contact_state: StressContactState, surface_info: StressSurfaceInfo):\n    func_anchor_valid(source_epsilon, contact_state, surface_info)\n",
+  "note": "Every slot's diagnostic status is cleared. Other fit scratch fields are reset for every valid contact before anchor/friction checks, including zero loads. Absent slots retain unread scratch; reappearing contacts initialize it again. No contact/search/sample/budget changes."
+}

@@ -1,0 +1,23 @@
+{
+  "command": [
+    "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python",
+    "research/rigid_stress/probe_residual_layout.py",
+    "--micro",
+    "--envs",
+    "1024",
+    "--seed",
+    "623001",
+    "--warmup",
+    "900",
+    "--repetitions",
+    "100",
+    "--output",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-contact-repair/residual-layout-micro-b1024-v1.json"
+  ],
+  "tiled": false,
+  "source_revision": "59b16811-native-balance-t8-residual-layout-v1",
+  "probe_source_sha256": "c55c781068f172f8e8e063c48de012cde818d2bd5893a5f6f96be335cfc89c76",
+  "generated_source_sha256": "2e81deed2580969c663353209941bc76d5d74d20140dfa5db08c162b9c19c391",
+  "generated_source": "from genesis.engine.solvers.rigid.stress.solve import *\n\n@qd.func\ndef func_residual_tiled(young: float, tolerance: float, absolute_tolerance: float, stress_state: StressState, stress_info: StressInfo, only_active: qd.template()):\n    for i_b in range(stress_state.active.shape[0]):\n        if qd.static(not only_active) or stress_state.active[i_b]:\n            stress_state.residual_norm_squared[i_b] = 0.0\n    qd.loop_config(block_dim=256)\n    for i_thread in range(stress_info.vertices.shape[0] * ((stress_state.active.shape[0] + 31) // 32) * 32):\n        i_index = i_thread // 32\n        i_n = i_index % stress_info.vertices.shape[0]\n        i_b = i_index // stress_info.vertices.shape[0] * 32 + i_thread % 32\n        if i_b < stress_state.active.shape[0]:\n            if qd.static(not only_active) or stress_state.active[i_b]:\n                product = qd.Vector.zero(gs.qd_float, 3)\n                for i_entry in range(stress_info.row_start[i_n], stress_info.row_start[i_n + 1]):\n                    j_n = stress_info.columns[i_entry]\n                    product += young * stress_info.stiffness[i_entry] @ stress_state.displacement[j_n, i_b]\n                residual = stress_state.rhs[i_n, i_b] - product\n                stress_state.residual[i_n, i_b] = residual\n                qd.atomic_add(stress_state.residual_norm_squared[i_b], residual.dot(residual))\n    for i_b in range(stress_state.active.shape[0]):\n        if qd.static(not only_active) or stress_state.active[i_b]:\n            budget = qd.max(absolute_tolerance * absolute_tolerance, tolerance * tolerance * stress_state.rhs_norm_squared[i_b])\n            norm = stress_state.residual_norm_squared[i_b]\n            stress_state.valid[i_b] = stress_state.valid[i_b] and (not qd.math.isinf(norm)) and (not qd.math.isnan(norm)) and (norm <= budget)\n\n@qd.kernel(graph=True)\ndef kernel_residual_tiled(\n    young: float, tolerance: float, absolute_tolerance: float,\n    stress_state: StressState, stress_info: StressInfo, only_active: qd.template(),\n):\n    func_residual_tiled(young, tolerance, absolute_tolerance, stress_state, stress_info, only_active)\n",
+  "note": "Only node/environment traversal changes. Every matrix row, gauge row, FP64 operation order within a row, acceptance budget, contact and stress sample is retained."
+}

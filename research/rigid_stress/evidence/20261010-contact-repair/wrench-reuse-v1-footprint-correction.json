@@ -1,0 +1,6 @@
+{
+  "note": "Preserve original v1 companion metadata. Its additional_immutable_bytes=288 describes the candidate cache size; a --reuse-wrench-disabled ordinary benchmark does not allocate that cache and its actual additional immutable bytes are zero. Micro and enabled/oracle/audit candidates allocate 288 bytes. Native_buffer_bytes in ordinary result JSON is the engine inventory and remains authoritative for that inventory.",
+  "disabled_ordinary_benchmark_additional_immutable_bytes": 0,
+  "enabled_candidate_additional_immutable_bytes": 288,
+  "numerics_or_timings_changed": false
+}

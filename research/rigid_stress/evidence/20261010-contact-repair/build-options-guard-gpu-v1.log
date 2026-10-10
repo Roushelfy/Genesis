@@ -1,0 +1,77 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0
+rootdir: /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery-final-dev
+configfile: pyproject.toml
+plugins: anyio-4.15.1, forked-1.7.5, print-1.2.0, timeout-2.4.0, xdist-3.8.0, quadrants-1.3.3, syrupy-6.1.1
+timeout: 1200.0s
+timeout method: signal
+timeout func_only: False
+collected 41 items / 40 deselected / 1 selected
+
+tests/rigid/test_stress.py [Genesis 22:55:03] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 22:55:03] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[Genesis 22:55:05] Scene <32c337c> created.
+[Genesis 22:55:10] Adding <gs.engine.entities.RigidEntity> 'shell_ecd9ff2'. idx: 0, morph: <gs.morphs.Mesh(file='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-contact-repair/tmp/pytest-of-zhaofeng/pytest-45/test_native_full_field_unbatch0/shell.obj')>, material: <gs.materials.Rigid>.
+[Genesis 22:55:10] Adding <gs.engine.entities.RigidEntity> 'shell_4780172'. idx: 1, morph: <gs.morphs.Mesh(file='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-contact-repair/tmp/pytest-of-zhaofeng/pytest-45/test_native_full_field_unbatch0/shell.obj')>, material: <gs.materials.Rigid>.
+[Genesis 22:55:10] Building scene <32c337c>...
+[Genesis 22:55:36] Compiling simulation kernels...
+[Genesis 22:56:30] Building visualizer...
+[31mF[0m[Genesis 22:56:39] Exiting Genesis and caching compiled kernels...
+
+
+=================================== FAILURES ===================================
+[31m[1m_______________ test_native_full_field_unbatched_shared_operator _______________[0m
+
+tmp_path = PosixPath('/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-contact-repair/tmp/pytest-of-zhaofeng/pytest-45/test_native_full_field_unbatch0')
+
+    [0m[37m@pytest[39;49;00m.mark.required[90m[39;49;00m
+    [37m@pytest[39;49;00m.mark.precision([33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [94mdef[39;49;00m[90m [39;49;00m[92mtest_native_full_field_unbatched_shared_operator[39;49;00m(tmp_path):[90m[39;49;00m
+        vertices, tetrahedra, faces, _ = shell_mesh([94m1[39;49;00m, [94m2[39;49;00m, [94m0.0005[39;49;00m)[90m[39;49;00m
+        mesh = tmp_path / [33m"[39;49;00m[33mshell.npz[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)[90m[39;49;00m
+        collision = tmp_path / [33m"[39;49;00m[33mshell.obj[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        trimesh.Trimesh(vertices=vertices, faces=faces, process=[94mFalse[39;49;00m).export(collision)[90m[39;49;00m
+        scene = gs.Scene(show_viewer=[94mFalse[39;49;00m)[90m[39;49;00m
+        maximum = scene.add_entity(gs.morphs.Mesh(file=collision, pos=(-[94m0.1[39;49;00m, [94m0[39;49;00m, [94m1[39;49;00m), convexify=[94mTrue[39;49;00m, decimate=[94mFalse[39;49;00m))[90m[39;49;00m
+        complete = scene.add_entity(gs.morphs.Mesh(file=collision, pos=([94m0.1[39;49;00m, [94m0[39;49;00m, [94m1[39;49;00m), convexify=[94mTrue[39;49;00m, decimate=[94mFalse[39;49;00m))[90m[39;49;00m
+        maximum.base_link.configure_stress_recovery(RigidStressOptions(mesh=mesh))[90m[39;49;00m
+        complete.base_link.configure_stress_recovery(RigidStressOptions(mesh=mesh, output_mode=[33m"[39;49;00m[33mfull[39;49;00m[33m"[39;49;00m))[90m[39;49;00m
+        scene.build()[90m[39;49;00m
+        entries = scene.rigid_solver.stress_recovery.links[90m[39;49;00m
+        [94massert[39;49;00m entries[[94m0[39;49;00m].model [95mis[39;49;00m entries[[94m1[39;49;00m].model[90m[39;49;00m
+        [94massert[39;49;00m entries[[94m0[39;49;00m].state.stress_tensor.shape[[94m0[39;49;00m] == [94m0[39;49;00m[90m[39;49;00m
+        tensor, vm = complete.base_link.get_stress_field(copy=[94mFalse[39;49;00m)[90m[39;49;00m
+        [94massert[39;49;00m tensor.shape == ([96mlen[39;49;00m(tetrahedra), [94m4[39;49;00m, [94m6[39;49;00m) [95mand[39;49;00m vm.shape == ([96mlen[39;49;00m(tetrahedra), [94m4[39;49;00m)[90m[39;49;00m
+        [94massert[39;49;00m np.isnan(tensor_to_array(tensor)).all()[90m[39;49;00m
+        scene.step()[90m[39;49;00m
+        scene.rigid_solver.check_errno()[90m[39;49;00m
+        np.testing.assert_array_equal(tensor_to_array(vm), [94m0.0[39;49;00m)[90m[39;49;00m
+        np.testing.assert_array_equal(tensor_to_array(tensor), [94m0.0[39;49;00m)[90m[39;49;00m
+        [94massert[39;49;00m complete.base_link.get_stress_field(copy=[94mFalse[39;49;00m)[[94m0[39;49;00m].data_ptr() == tensor.data_ptr()[90m[39;49;00m
+        [94massert[39;49;00m complete.base_link.get_stress_field(copy=[94mTrue[39;49;00m)[[94m0[39;49;00m].data_ptr() != tensor.data_ptr()[90m[39;49;00m
+        scene.reset()[90m[39;49;00m
+        [94massert[39;49;00m np.isnan(tensor_to_array(tensor)).all()[90m[39;49;00m
+        [94mwith[39;49;00m pytest.raises(gs.GenesisException, match=[33m"[39;49;00m[33mbefore building[39;49;00m[33m"[39;49;00m):[90m[39;49;00m
+            complete.base_link.configure_stress_recovery(RigidStressOptions(mesh=mesh))[90m[39;49;00m
+        complete.base_link.stress_options.output_mode = [33m"[39;49;00m[33mmax[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        [94mwith[39;49;00m pytest.raises(gs.GenesisException, match=[33m"[39;49;00m[33mrebuilding[39;49;00m[33m"[39;49;00m):[90m[39;49;00m
+            scene.step()[90m[39;49;00m
+        complete.base_link.stress_options.output_mode = [33m"[39;49;00m[33mfull[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        complete.base_link.stress_options.poisson = [94m0.22[39;49;00m[90m[39;49;00m
+        [94mwith[39;49;00m pytest.raises(gs.GenesisException, match=[33m"[39;49;00m[33mrebuilding[39;49;00m[33m"[39;49;00m):[90m[39;49;00m
+            scene.step()[90m[39;49;00m
+        [94mwith[39;49;00m pytest.raises(gs.GenesisException, match=[33m"[39;49;00m[33mrebuilding[39;49;00m[33m"[39;49;00m):[90m[39;49;00m
+            complete.base_link.get_max_stress()[90m[39;49;00m
+        [94mwith[39;49;00m pytest.raises(gs.GenesisException, match=[33m"[39;49;00m[33mrebuilding[39;49;00m[33m"[39;49;00m):[90m[39;49;00m
+            complete.base_link.get_stress_field()[90m[39;49;00m
+>       [94mwith[39;49;00m pytest.raises(gs.GenesisException, match=[33m"[39;49;00m[33mrebuilding[39;49;00m[33m"[39;49;00m):[90m[39;49;00m
+[1m[31mE       Failed: DID NOT RAISE <class 'genesis.GenesisException'>[0m
+
+[1m[31mtests/rigid/test_stress.py[0m:150: Failed
+================================= Failed tests =================================
+tests/rigid/test_stress.py::test_native_full_field_unbatched_shared_operator ...
+============================== slowest durations ===============================
+
+(3 durations < 100s hidden.)
+[31m================= [31m[1m1 failed[0m, [33m40 deselected[0m[31m in 98.07s (0:01:38)[0m[31m ==================[0m

@@ -1,0 +1,45 @@
+{
+  "envs": 32768,
+  "seed": 623001,
+  "reports": [
+    {
+      "name": "original",
+      "milliseconds_including_pack": 23.46623538993299
+    },
+    {
+      "name": "original-block-512",
+      "milliseconds_including_pack": 22.661502909613773
+    },
+    {
+      "name": "env-tile-32-block-256",
+      "milliseconds_including_pack": 22.937908900203183
+    },
+    {
+      "name": "env-tile-32-block-512",
+      "milliseconds_including_pack": 22.597401649691164
+    },
+    {
+      "name": "env-tile-64-block-256",
+      "milliseconds_including_pack": 22.98412404023111
+    },
+    {
+      "name": "env-tile-64-block-512",
+      "milliseconds_including_pack": 22.61801733984612
+    },
+    {
+      "name": "env-tile-128-block-256",
+      "milliseconds_including_pack": 23.161262630019337
+    },
+    {
+      "name": "env-tile-128-block-512",
+      "milliseconds_including_pack": 22.650730629684404
+    }
+  ],
+  "source_revision": "468f1d5f-packed-traversal-block-control-v2",
+  "source_sha256": "904a001a9c5a178399e770baa427b06f89f604fc1c48638ff870e2491f405bf4",
+  "probe_sha256": "958258b57906cab6c44b87dba949004db4b72774a83276385bccd4aa0681202b",
+  "generated_sha256": "6b4cddcad7c991ade627e32792ad58435e368380d505fd17c3ede100b26f8fe2",
+  "generated_source": "from genesis.engine.solvers.rigid.stress.surface_inverse import *\n\n@qd.func\ndef func_original_block(young: float, omega: qd.Tensor, stress_state: StressState, surface_inverse_info: StressSurfaceInverseInfo, block_dim: qd.template()):\n    qd.loop_config(block_dim=block_dim)\n    for (i_n, i_b) in qd.ndrange(stress_state.rhs.shape[0], stress_state.active.shape[0]):\n        w = omega[i_b]\n        terms = qd.Vector([w[0] * w[0], w[1] * w[1], w[2] * w[2], w[0] * w[1], w[0] * w[2], w[1] * w[2]])\n        value = surface_inverse_info.centrifugal[i_n] @ terms\n        for slot in range(stress_state.boundary_count[i_b]):\n            j = stress_state.boundary_columns[slot, i_b]\n            node = surface_inverse_info.nodes[j]\n            value += surface_inverse_info.force_blocks[i_n, j] @ stress_state.force[node, i_b]\n        stress_state.displacement[i_n, i_b] = value / young\n    for i_b in range(stress_state.active.shape[0]):\n        stress_state.active[i_b] = 1\n        stress_state.valid[i_b] = True\n\n@qd.func\ndef func_traversal(young: float, omega: qd.Tensor, stress_state: StressState, surface_inverse_info: StressSurfaceInverseInfo, env_tile: qd.template(), block_dim: qd.template()):\n    qd.loop_config(block_dim=block_dim)\n    for i_thread in range(stress_state.rhs.shape[0] * ((stress_state.active.shape[0] + env_tile - 1) // env_tile) * env_tile):\n        i_index = i_thread // env_tile\n        i_n = i_index % stress_state.rhs.shape[0]\n        i_b = i_index // stress_state.rhs.shape[0] * env_tile + i_thread % env_tile\n        if i_b < stress_state.active.shape[0]:\n            w = omega[i_b]\n            terms = qd.Vector([w[0] * w[0], w[1] * w[1], w[2] * w[2], w[0] * w[1], w[0] * w[2], w[1] * w[2]])\n            value = surface_inverse_info.centrifugal[i_n] @ terms\n            for slot in range(stress_state.boundary_count[i_b]):\n                j = stress_state.boundary_columns[slot, i_b]\n                node = surface_inverse_info.nodes[j]\n                value += surface_inverse_info.force_blocks[i_n, j] @ stress_state.force[node, i_b]\n            stress_state.displacement[i_n, i_b] = value / young\n    for i_b in range(stress_state.active.shape[0]):\n        stress_state.active[i_b] = 1\n        stress_state.valid[i_b] = True\n\n@qd.kernel(graph=True)\ndef kernel_traversal(young: float, omega: qd.Tensor, stress_state: StressState, surface_inverse_info: StressSurfaceInverseInfo, env_tile: qd.template(), block_dim: qd.template()):\n    func_traversal(young, omega, stress_state, surface_inverse_info, env_tile, block_dim)\n\n@qd.kernel(graph=True)\ndef kernel_original_block(young: float, omega: qd.Tensor, stress_state: StressState, surface_inverse_info: StressSurfaceInverseInfo, block_dim: qd.template()):\n    func_original_block(young, omega, stress_state, surface_inverse_info, block_dim)\n",
+  "gpu_uuid": "GPU-9897254d-b78b-5427-f5ac-48c0f31b431c",
+  "note": "All nodes and exact packed nonzero forces, identical displacement and peak, complete residual unchanged. Snapshot diagnostic, not actual rollout throughput."
+}

@@ -1,0 +1,846 @@
+diff --git a/examples/rigid/franka_egg_stress.py b/examples/rigid/franka_egg_stress.py
+index 5d3bebb6..c3a514e2 100644
+--- a/examples/rigid/franka_egg_stress.py
++++ b/examples/rigid/franka_egg_stress.py
+@@ -36,6 +36,10 @@ class FrankaEgg:
+         saved_reset: bool = True,
+         face_parallel_scatter: bool = True,
+         scatter_tasks_per_env: int = 32,
++        cooperative_balance: bool = True,
++        contact_wrench_reuse: bool | None = None,
++        packed_block_size: int | None = None,
++        coalesced_residual: bool | None = None,
+     ):
+         self.n_envs = n_envs
+         self.tick = 0
+@@ -84,6 +88,10 @@ class FrankaEgg:
+                     fused_pipeline=fused_pipeline,
+                     output_mode=output_mode,
+                     cooperative_scatter=cooperative_scatter,
++                    cooperative_balance=cooperative_balance,
++                    contact_wrench_reuse=contact_wrench_reuse,
++                    packed_block_size=packed_block_size,
++                    coalesced_residual=coalesced_residual,
+                     face_parallel_scatter=face_parallel_scatter,
+                     scatter_tasks_per_env=scatter_tasks_per_env,
+                     cached_peak=cached_peak,
+diff --git a/examples/speed_benchmark/rigid_stress.py b/examples/speed_benchmark/rigid_stress.py
+index ff084bde..ef55077e 100644
+--- a/examples/speed_benchmark/rigid_stress.py
++++ b/examples/speed_benchmark/rigid_stress.py
+@@ -22,6 +22,7 @@ import genesis as gs
+ from examples.rigid.franka_egg_stress import FrankaEgg
+ from examples.speed_benchmark.stress_stages import kernel_query, kernel_small_solve, kernel_weights_gram
+ from genesis.engine.solvers.rigid.stress.association import kernel_associate
++from genesis.engine.solvers.rigid.stress.balance import kernel_balance_contacts
+ from genesis.engine.solvers.rigid.stress.contact import (
+     StressContactState,
+     kernel_anchor,
+@@ -133,11 +134,21 @@ def profile(workload: FrankaEgg, repetitions: int) -> dict:
+                 options.cached_face_bounds,
+             )
+         ),
+-        "inertia_relief_centrifugal": lambda: kernel_balance(entry.omega, entry.state, entry.model.info),
++        "inertia_relief_centrifugal": lambda: (
++            kernel_balance_contacts(entry.omega, entry.state, entry.model.info, entry.contacts, entry.scatter)
++            if entry.reuse_contact_wrench and entry.scatter.tasks.shape[0] > 0 and options.cooperative_balance
++            else kernel_balance(entry.omega, entry.state, entry.model.info, options.cooperative_balance)
++        ),
+         "rhs_reduction": lambda: kernel_direct_init(entry.state),
+         "linear_solve": lambda: entry.model.solve(options, entry.state, entry.omega, surface_load=True),
+         "complete_residual": lambda: kernel_full_residual(
+-            options.young, options.tolerance, options.absolute_tolerance, entry.state, entry.model.info, False
++            options.young,
++            options.tolerance,
++            options.absolute_tolerance,
++            entry.state,
++            entry.model.info,
++            False,
++            entry.coalesced_residual,
+         ),
+         "global_peak": lambda: kernel_peak(
+             options.young, options.poisson, entry.state, entry.model.info, options.cached_peak
+@@ -209,6 +220,10 @@ def main() -> None:
+     parser.add_argument("--serial-solve", action="store_true")
+     parser.add_argument("--serial-pressure", action="store_true")
+     parser.add_argument("--serial-scatter", action="store_true")
++    parser.add_argument("--serial-balance", action="store_true", help="Compare original rigid inertia relief.")
++    parser.add_argument("--contact-wrench-reuse", choices=("auto", "on", "off"), default="auto")
++    parser.add_argument("--packed-block-size", choices=(0, 256, 512), type=int, default=None)
++    parser.add_argument("--coalesced-residual", choices=("auto", "on", "off"), default="auto")
+     parser.add_argument(
+         "--contact-warp-scatter", action="store_true", help="Compare the original contact-warp scatter."
+     )
+@@ -258,11 +273,16 @@ def main() -> None:
+         output_mode=args.output_mode,
+         saved_reset=not args.legacy_reset,
+         cooperative_scatter=not args.serial_scatter,
++        cooperative_balance=not args.serial_balance,
++        contact_wrench_reuse={"auto": None, "on": True, "off": False}[args.contact_wrench_reuse],
++        packed_block_size=args.packed_block_size,
++        coalesced_residual={"auto": None, "on": True, "off": False}[args.coalesced_residual],
+         face_parallel_scatter=not args.contact_warp_scatter,
+         scatter_tasks_per_env=args.scatter_tasks_per_env,
+         cached_peak=not args.uncached_peak,
+         cached_face_bounds=not args.uncached_face_bounds,
+     )
++    solver = workload.scene.rigid_solver
+     if args.save_conditions is not None:
+         workload.save_conditions(args.save_conditions)
+     setup_seconds = time.perf_counter() - start
+@@ -378,6 +398,22 @@ def main() -> None:
+             "cooperative_solve": not args.serial_solve,
+             "cooperative_pressure": not args.serial_pressure,
+             "cooperative_scatter": not args.serial_scatter,
++            "cooperative_balance": not args.serial_balance,
++            "contact_wrench_reuse": args.contact_wrench_reuse,
++            "packed_block_size": args.packed_block_size,
++            "coalesced_residual": args.coalesced_residual,
++            "effective_contact_wrench_reuse": [
++                entry.fused_pipeline
++                and entry.reuse_contact_wrench
++                and entry.scatter.tasks.shape[0] > 0
++                and entry.options.cooperative_balance
++                for entry in solver.stress_recovery.links
++            ]
++            if solver.stress_recovery is not None
++            else [],
++            "effective_packed_block_sizes": [entry.packed_block_size for entry in solver.stress_recovery.links]
++            if solver.stress_recovery is not None
++            else [],
+             "face_parallel_scatter": not args.contact_warp_scatter,
+             "scatter_tasks_per_env": args.scatter_tasks_per_env,
+             "cached_peak": not args.uncached_peak,
+diff --git a/genesis/engine/solvers/rigid/stress/data.py b/genesis/engine/solvers/rigid/stress/data.py
+index 33a496b0..2c52d4c3 100644
+--- a/genesis/engine/solvers/rigid/stress/data.py
++++ b/genesis/engine/solvers/rigid/stress/data.py
+@@ -25,7 +25,9 @@ class StressInfo:
+     mass: qd.Tensor
+     modes: qd.Tensor
+     mass_modes: qd.Tensor
++    relief: qd.Tensor
+     centrifugal: qd.Tensor
++    centrifugal_wrench: qd.Tensor
+     gram: qd.Tensor
+     gram_inverse: qd.Tensor
+     pins: qd.Tensor
+diff --git a/genesis/engine/solvers/rigid/stress/model.py b/genesis/engine/solvers/rigid/stress/model.py
+index 9226f88c..2bdbb86c 100644
+--- a/genesis/engine/solvers/rigid/stress/model.py
++++ b/genesis/engine/solvers/rigid/stress/model.py
+@@ -10,6 +10,7 @@ from genesis.options.rigid_stress import RigidStressOptions
+ from genesis.utils.array_class import V_MAT, V_VEC, V
+ from genesis.utils.misc import qd_to_numpy
+ 
++from .balance import kernel_centrifugal_wrench, kernel_relief_projection
+ from .data import StressInfo, StressState
+ from .factor import StressFactor
+ from .history import StressHistory
+@@ -108,7 +109,9 @@ class StressModel:
+             mass=V(dtype=gs.qd_float, shape=(n_entries,)),
+             modes=V_MAT(3, 6, dtype=gs.qd_float, shape=(n_nodes,)),
+             mass_modes=V_MAT(3, 6, dtype=gs.qd_float, shape=(n_nodes,)),
++            relief=V_MAT(3, 6, dtype=gs.qd_float, shape=(n_nodes,)),
+             centrifugal=V_MAT(3, 6, dtype=gs.qd_float, shape=(n_nodes,)),
++            centrifugal_wrench=V_MAT(6, 6, dtype=gs.qd_float, shape=()),
+             gram=V_MAT(6, 6, dtype=gs.qd_float, shape=()),
+             gram_inverse=V_MAT(6, 6, dtype=gs.qd_float, shape=()),
+             pins=V(dtype=gs.qd_int, shape=(6,)),
+@@ -140,6 +143,8 @@ class StressModel:
+         kernel_modes(self.info)
+         kernel_mass_modes(self.info)
+         kernel_gram_inverse(self.info)
++        kernel_relief_projection(self.info)
++        kernel_centrifugal_wrench(self.info)
+         kernel_gauge(self.info)
+         kernel_diagonal(self.info)
+         qd.sync()
+@@ -233,7 +238,10 @@ class StressModel:
+         if options is None:
+             options = self.options
+         block = options.preconditioner == "block"
+-        kernel_balance(omega, state, self.info)
++        coalesced = options.coalesced_residual
++        if coalesced is None:
++            coalesced = state.active.shape[0] >= 8192
++        kernel_balance(omega, state, self.info, options.cooperative_balance)
+         if self.factor is not None:
+             kernel_direct_init(state)
+             if history is None:
+@@ -241,7 +249,7 @@ class StressModel:
+             else:
+                 history.predict(state)
+                 kernel_full_residual(
+-                    options.young, options.tolerance, options.absolute_tolerance, state, self.info, False
++                    options.young, options.tolerance, options.absolute_tolerance, state, self.info, False, coalesced
+                 )
+                 history.mark_hits(state)
+                 if self.inverse is not None:
+@@ -263,17 +271,35 @@ class StressModel:
+                 if not kernel_active(state):
+                     break
+         kernel_full_residual(
+-            options.young, options.tolerance, options.absolute_tolerance, state, self.info, history is not None
++            options.young,
++            options.tolerance,
++            options.absolute_tolerance,
++            state,
++            self.info,
++            history is not None,
++            coalesced,
+         )
+         if self.inverse is not None:
+             for _ in range(options.inverse_corrections):
+                 self.inverse.apply(options.young, state, correction=True)
+                 kernel_full_residual(
+-                    options.young, options.tolerance, options.absolute_tolerance, state, self.info, only_active=True
++                    options.young,
++                    options.tolerance,
++                    options.absolute_tolerance,
++                    state,
++                    self.info,
++                    only_active=True,
++                    coalesced=coalesced,
+                 )
+             self.factor.solve(options.young, state, self.info, options.cooperative_solve, only_failed=True)
+             kernel_full_residual(
+-                options.young, options.tolerance, options.absolute_tolerance, state, self.info, only_active=True
++                options.young,
++                options.tolerance,
++                options.absolute_tolerance,
++                state,
++                self.info,
++                only_active=True,
++                coalesced=coalesced,
+             )
+         kernel_peak(options.young, options.poisson, state, self.info, options.cached_peak)
+ 
+@@ -286,7 +312,10 @@ class StressModel:
+     ) -> None:
+         if surface_load and self.surface_inverse is not None:
+             assert omega is not None
+-            self.surface_inverse.apply(options.young, omega, state, options.packed_surface_loads)
++            block_size = options.packed_block_size
++            if block_size is None:
++                block_size = 512 if state.active.shape[0] >= 8192 else 0
++            self.surface_inverse.apply(options.young, omega, state, options.packed_surface_loads, block_size)
+         elif self.inverse is not None:
+             self.inverse.apply(options.young, state)
+         else:
+diff --git a/genesis/engine/solvers/rigid/stress/pipeline.py b/genesis/engine/solvers/rigid/stress/pipeline.py
+index 9adfb373..5baf4dc3 100644
+--- a/genesis/engine/solvers/rigid/stress/pipeline.py
++++ b/genesis/engine/solvers/rigid/stress/pipeline.py
+@@ -5,6 +5,7 @@ import quadrants as qd
+ from genesis.utils import array_class
+ 
+ from .association import func_associate
++from .balance import func_balance_contacts
+ from .contact import (
+     StressContactState,
+     func_anchor,
+@@ -55,6 +56,10 @@ def kernel_pipeline(
+     n_nodes: qd.template(),
+     full: qd.template(),
+     face_parallel: qd.template(),
++    is_cooperative_balance: qd.template(),
++    reuse_contact_wrench: qd.template(),
++    packed_block_size: qd.template(),
++    coalesced_residual: qd.template(),
+ ):
+     if qd.static(first):
+         func_begin_step(state)
+@@ -72,15 +77,18 @@ def kernel_pipeline(
+         func_scatter_faces(contacts, state, info, surface, scatter, cached_bounds)
+     else:
+         func_scatter_warp(contacts, state, info, surface, cached_bounds)
+-    func_balance(omega, state, info)
++    if qd.static(face_parallel and is_cooperative_balance and reuse_contact_wrench):
++        func_balance_contacts(omega, state, info, contacts, scatter)
++    else:
++        func_balance(omega, state, info, is_cooperative_balance)
+     func_direct_init(state)
+     func_surface_pack(state, boundary)
+-    func_surface_apply_packed(young, omega, state, boundary)
+-    func_full_residual(young, tolerance, absolute, state, info, False)
++    func_surface_apply_packed(young, omega, state, boundary, packed_block_size)
++    func_full_residual(young, tolerance, absolute, state, info, False, coalesced_residual)
+     for _ in qd.static(range(corrections)):
+         func_apply_inverse(young, state, inverse, True, False)
+-        func_full_residual(young, tolerance, absolute, state, info, True)
++        func_full_residual(young, tolerance, absolute, state, info, True, coalesced_residual)
+     func_solve_cooperative(young, state, info, factor, n_nodes, True)
+-    func_full_residual(young, tolerance, absolute, state, info, True)
++    func_full_residual(young, tolerance, absolute, state, info, True, coalesced_residual)
+     func_peak_impl(young, poisson, state, info, cached_peak, full)
+     func_accept(state, contacts, errno, full)
+diff --git a/genesis/engine/solvers/rigid/stress/recovery.py b/genesis/engine/solvers/rigid/stress/recovery.py
+index 921c6895..22254608 100644
+--- a/genesis/engine/solvers/rigid/stress/recovery.py
++++ b/genesis/engine/solvers/rigid/stress/recovery.py
+@@ -11,6 +11,7 @@ import torch
+ 
+ import genesis as gs
+ from genesis.engine.solvers.base_solver import StateChange, Subscriber
++from genesis.options.rigid_stress import RigidStressOptions
+ from genesis.utils.array_class import V_VEC, DataItem, DataKind, iter_data
+ from genesis.utils.misc import (
+     assign_indexed_tensor,
+@@ -47,6 +48,11 @@ class StressLink:
+     history: StressHistory | None
+     output_mode: str
+     scatter: StressScatterWorkspace
++    options: RigidStressOptions
++    reuse_contact_wrench: bool
++    packed_block_size: int
++    fused_pipeline: bool
++    coalesced_residual: bool
+ 
+ 
+ class RigidStressRecovery:
+@@ -106,6 +112,25 @@ class RigidStressRecovery:
+                                 and gs.backend == gs.cuda
+                                 else 0,
+                             ),
++                            options.model_copy(deep=True),
++                            options.contact_wrench_reuse
++                            if options.contact_wrench_reuse is not None
++                            else solver._B >= 8192,
++                            options.packed_block_size
++                            if options.packed_block_size is not None
++                            else 512
++                            if solver._B >= 8192
++                            else 0,
++                            gs.backend == gs.cuda
++                            and options.fused_pipeline
++                            and model.surface_inverse is not None
++                            and options.packed_surface_loads
++                            and options.cooperative_pressure
++                            and options.cooperative_scatter
++                            and options.cooperative_solve
++                            and model.info.vertices.shape[0] <= 1024
++                            and not options.history_size,
++                            options.coalesced_residual if options.coalesced_residual is not None else solver._B >= 8192,
+                         )
+                     )
+         self.subscriber = Subscriber(
+@@ -120,19 +145,9 @@ class RigidStressRecovery:
+         solver = self.solver
+         for entry in self.links:
+             options = entry.link.stress_options
+-            if options.output_mode != entry.output_mode:
+-                gs.raise_exception("Changing stress output mode requires rebuilding the scene.")
+-            if (
+-                gs.backend == gs.cuda
+-                and options.fused_pipeline
+-                and entry.model.surface_inverse is not None
+-                and options.packed_surface_loads
+-                and options.cooperative_pressure
+-                and options.cooperative_scatter
+-                and options.cooperative_solve
+-                and entry.model.info.vertices.shape[0] <= 1024
+-                and entry.history is None
+-            ):
++            if options != entry.options:
++                gs.raise_exception("Changing stress recovery options requires rebuilding the scene.")
++            if entry.fused_pipeline:
+                 kernel_pipeline(
+                     options.young,
+                     options.poisson,
+@@ -163,6 +178,10 @@ class RigidStressRecovery:
+                     entry.model.info.vertices.shape[0],
+                     entry.output_mode == "full",
+                     entry.scatter.tasks.shape[0] > 0,
++                    options.cooperative_balance,
++                    entry.reuse_contact_wrench,
++                    entry.packed_block_size,
++                    entry.coalesced_residual,
+                 )
+                 continue
+             if i_substep == 0:
+@@ -248,11 +267,11 @@ class RigidStressRecovery:
+         seen = set()
+         seen_surfaces = set()
+         for i, entry in enumerate(self.links):
++            if entry.link.stress_options != entry.options:
++                gs.raise_exception("Changing stress recovery options requires rebuilding the scene.")
+             yield DataItem(
+                 f"stress.{i}.options",
+-                entry.link.stress_options.model_copy(
+-                    update={"mesh": str(Path(entry.link.stress_options.mesh).resolve())}
+-                ),
++                entry.options.model_copy(update={"mesh": str(Path(entry.options.mesh).resolve())}),
+                 DataKind.CONFIG,
+             )
+             if id(entry.model) not in seen:
+@@ -283,6 +302,8 @@ class RigidStressRecovery:
+     def get_peak(self, link_idx: int, envs_idx=None, *, copy: bool = True) -> torch.Tensor:
+         for entry in self.links:
+             if entry.link.idx == link_idx:
++                if entry.link.stress_options != entry.options:
++                    gs.raise_exception("Changing stress recovery options requires rebuilding the scene.")
+                 tensor = qd_to_torch(entry.state.step_peak, envs_idx, transpose=True, copy=copy)
+                 return tensor[0] if self.solver.n_envs == 0 else tensor
+         gs.raise_exception("Stress recovery is not enabled for this link.")
+@@ -290,8 +311,8 @@ class RigidStressRecovery:
+     def get_field(self, link_idx: int, envs_idx=None, *, copy: bool = True) -> tuple[torch.Tensor, torch.Tensor]:
+         for entry in self.links:
+             if entry.link.idx == link_idx:
+-                if entry.link.stress_options.output_mode != entry.output_mode:
+-                    gs.raise_exception("Changing stress output mode requires rebuilding the scene.")
++                if entry.link.stress_options != entry.options:
++                    gs.raise_exception("Changing stress recovery options requires rebuilding the scene.")
+                 if entry.output_mode != "full":
+                     gs.raise_exception("Configure output_mode='full' before building to observe the stress field.")
+                 tensor = qd_to_torch(entry.state.stress_tensor, envs_idx, transpose=True, copy=copy)
+diff --git a/genesis/engine/solvers/rigid/stress/solve.py b/genesis/engine/solvers/rigid/stress/solve.py
+index 26c0580d..bc71a9b0 100644
+--- a/genesis/engine/solvers/rigid/stress/solve.py
++++ b/genesis/engine/solvers/rigid/stress/solve.py
+@@ -4,6 +4,7 @@ import quadrants as qd
+ 
+ import genesis as gs
+ 
++from .balance import func_balance_cooperative
+ from .data import StressInfo, StressState
+ from .operators import func_shape_gradient
+ 
+@@ -19,26 +20,37 @@ def func_precondition(i_n: int, residual: qd.types.vector(3), stress_info: Stres
+     return value
+ 
+ 
++def kernel_balance(omega: qd.Tensor, stress_state: StressState, stress_info: StressInfo, is_cooperative: bool = False):
++    kernel_balance_impl(omega, stress_state, stress_info, is_cooperative)
++
++
+ @qd.kernel(graph=True)
+-def kernel_balance(omega: qd.Tensor, stress_state: StressState, stress_info: StressInfo):
+-    func_balance(omega, stress_state, stress_info)
++def kernel_balance_impl(
++    omega: qd.Tensor, stress_state: StressState, stress_info: StressInfo, is_cooperative: qd.template()
++):
++    func_balance(omega, stress_state, stress_info, is_cooperative)
+ 
+ 
+ @qd.func
+-def func_balance(omega: qd.Tensor, stress_state: StressState, stress_info: StressInfo):
+-    for i_b in range(stress_state.active.shape[0]):
+-        stress_state.wrench[i_b] = qd.Vector.zero(gs.qd_float, 6)
+-    for i_n, i_b in qd.ndrange(stress_info.vertices.shape[0], stress_state.active.shape[0]):
+-        w = omega[i_b]
+-        terms = qd.Vector([w[0] * w[0], w[1] * w[1], w[2] * w[2], w[0] * w[1], w[0] * w[2], w[1] * w[2]])
+-        load = stress_state.force[i_n, i_b] + stress_info.centrifugal[i_n] @ terms
+-        stress_state.rhs[i_n, i_b] = load
+-        wrench = stress_info.modes[i_n].transpose() @ load
+-        for i_a in qd.static(range(6)):
+-            qd.atomic_add(stress_state.wrench[i_b][i_a], wrench[i_a])
+-    for i_n, i_b in qd.ndrange(stress_info.vertices.shape[0], stress_state.active.shape[0]):
+-        acceleration = stress_info.gram_inverse[None] @ stress_state.wrench[i_b]
+-        stress_state.rhs[i_n, i_b] -= stress_info.mass_modes[i_n] @ acceleration
++def func_balance(
++    omega: qd.Tensor, stress_state: StressState, stress_info: StressInfo, is_cooperative: qd.template() = False
++):
++    if qd.static(is_cooperative and gs.backend == gs.cuda):
++        func_balance_cooperative(omega, stress_state, stress_info)
++    else:
++        for i_b in range(stress_state.active.shape[0]):
++            stress_state.wrench[i_b] = qd.Vector.zero(gs.qd_float, 6)
++        for i_n, i_b in qd.ndrange(stress_info.vertices.shape[0], stress_state.active.shape[0]):
++            w = omega[i_b]
++            terms = qd.Vector([w[0] * w[0], w[1] * w[1], w[2] * w[2], w[0] * w[1], w[0] * w[2], w[1] * w[2]])
++            load = stress_state.force[i_n, i_b] + stress_info.centrifugal[i_n] @ terms
++            stress_state.rhs[i_n, i_b] = load
++            wrench = stress_info.modes[i_n].transpose() @ load
++            for i_a in qd.static(range(6)):
++                qd.atomic_add(stress_state.wrench[i_b][i_a], wrench[i_a])
++        for i_n, i_b in qd.ndrange(stress_info.vertices.shape[0], stress_state.active.shape[0]):
++            acceleration = stress_info.gram_inverse[None] @ stress_state.wrench[i_b]
++            stress_state.rhs[i_n, i_b] -= stress_info.mass_modes[i_n] @ acceleration
+ 
+ 
+ @qd.kernel(graph=True)
+@@ -167,16 +179,48 @@ def kernel_active(stress_state: StressState) -> int:
+     return count
+ 
+ 
+-@qd.kernel(graph=True)
+ def kernel_full_residual(
++    young: float,
++    tolerance: float,
++    absolute_tolerance: float,
++    stress_state: StressState,
++    stress_info: StressInfo,
++    only_active: bool,
++    coalesced: bool = False,
++):
++    kernel_full_residual_impl(
++        young,
++        tolerance,
++        absolute_tolerance,
++        stress_state,
++        stress_info,
++        only_active,
++        coalesced and gs.backend == gs.cuda,
++    )
++
++
++@qd.kernel(graph=True)
++def kernel_full_residual_impl(
+     young: float,
+     tolerance: float,
+     absolute_tolerance: float,
+     stress_state: StressState,
+     stress_info: StressInfo,
+     only_active: qd.template(),
++    coalesced: qd.template(),
+ ):
+-    func_full_residual(young, tolerance, absolute_tolerance, stress_state, stress_info, only_active)
++    func_full_residual(young, tolerance, absolute_tolerance, stress_state, stress_info, only_active, coalesced)
++
++
++@qd.func
++def func_residual_row(young: float, stress_state: StressState, stress_info: StressInfo, i_n: int, i_b: int):
++    product = qd.Vector.zero(gs.qd_float, 3)
++    for i_entry in range(stress_info.row_start[i_n], stress_info.row_start[i_n + 1]):
++        j_n = stress_info.columns[i_entry]
++        product += young * stress_info.stiffness[i_entry] @ stress_state.displacement[j_n, i_b]
++    residual = stress_state.rhs[i_n, i_b] - product
++    stress_state.residual[i_n, i_b] = residual
++    qd.atomic_add(stress_state.residual_norm_squared[i_b], residual.dot(residual))
+ 
+ 
+ @qd.func
+@@ -187,19 +231,24 @@ def func_full_residual(
+     stress_state: StressState,
+     stress_info: StressInfo,
+     only_active: qd.template(),
++    coalesced: qd.template() = False,
+ ):
+     for i_b in range(stress_state.active.shape[0]):
+         if qd.static(not only_active) or stress_state.active[i_b]:
+             stress_state.residual_norm_squared[i_b] = 0.0
+-    for i_n, i_b in qd.ndrange(stress_info.vertices.shape[0], stress_state.active.shape[0]):
+-        if qd.static(not only_active) or stress_state.active[i_b]:
+-            product = qd.Vector.zero(gs.qd_float, 3)
+-            for i_entry in range(stress_info.row_start[i_n], stress_info.row_start[i_n + 1]):
+-                j_n = stress_info.columns[i_entry]
+-                product += young * stress_info.stiffness[i_entry] @ stress_state.displacement[j_n, i_b]
+-            residual = stress_state.rhs[i_n, i_b] - product
+-            stress_state.residual[i_n, i_b] = residual
+-            qd.atomic_add(stress_state.residual_norm_squared[i_b], residual.dot(residual))
++    if qd.static(coalesced):
++        qd.loop_config(block_dim=256)
++        for i_thread in range(stress_info.vertices.shape[0] * ((stress_state.active.shape[0] + 31) // 32) * 32):
++            i_index = i_thread // 32
++            i_n = i_index % stress_info.vertices.shape[0]
++            i_b = (i_index // stress_info.vertices.shape[0]) * 32 + i_thread % 32
++            if i_b < stress_state.active.shape[0]:  # noqa: SIM102 - bound padding before tensor indexing
++                if qd.static(not only_active) or stress_state.active[i_b]:
++                    func_residual_row(young, stress_state, stress_info, i_n, i_b)
++    else:
++        for i_n, i_b in qd.ndrange(stress_info.vertices.shape[0], stress_state.active.shape[0]):
++            if qd.static(not only_active) or stress_state.active[i_b]:
++                func_residual_row(young, stress_state, stress_info, i_n, i_b)
+     for i_b in range(stress_state.active.shape[0]):
+         if qd.static(not only_active) or stress_state.active[i_b]:
+             budget = qd.max(
+diff --git a/genesis/engine/solvers/rigid/stress/surface_inverse.py b/genesis/engine/solvers/rigid/stress/surface_inverse.py
+index d6e4ce94..18b530fa 100644
+--- a/genesis/engine/solvers/rigid/stress/surface_inverse.py
++++ b/genesis/engine/solvers/rigid/stress/surface_inverse.py
+@@ -44,10 +44,15 @@ class StressSurfaceInverse:
+         kernel_surface_store(temporary, self.info)
+         qd.sync()
+ 
+-    def apply(self, young: float, omega: qd.Tensor, state: StressState, packed: bool = True) -> None:
++    def apply(
++        self, young: float, omega: qd.Tensor, state: StressState, packed: bool = True, block_size: int = 0
++    ) -> None:
+         if packed and gs.backend == gs.cuda:
+             kernel_surface_pack(state, self.info)
+-            kernel_surface_apply_packed(young, omega, state, self.info)
++            if block_size:
++                kernel_surface_apply_packed_block(young, omega, state, self.info, block_size)
++            else:
++                kernel_surface_apply_packed(young, omega, state, self.info)
+         else:
+             kernel_surface_apply(young, omega, state, self.info)
+ 
+@@ -79,8 +84,14 @@ def kernel_surface_apply_packed(
+ 
+ @qd.func
+ def func_surface_apply_packed(
+-    young: float, omega: qd.Tensor, stress_state: StressState, surface_inverse_info: StressSurfaceInverseInfo
++    young: float,
++    omega: qd.Tensor,
++    stress_state: StressState,
++    surface_inverse_info: StressSurfaceInverseInfo,
++    block_size: qd.template() = 0,
+ ):
++    if qd.static(block_size):
++        qd.loop_config(block_dim=block_size)
+     for i_n, i_b in qd.ndrange(stress_state.rhs.shape[0], stress_state.active.shape[0]):
+         w = omega[i_b]
+         terms = qd.Vector([w[0] * w[0], w[1] * w[1], w[2] * w[2], w[0] * w[1], w[0] * w[2], w[1] * w[2]])
+@@ -95,6 +106,17 @@ def func_surface_apply_packed(
+         stress_state.valid[i_b] = True
+ 
+ 
++@qd.kernel(graph=True)
++def kernel_surface_apply_packed_block(
++    young: float,
++    omega: qd.Tensor,
++    stress_state: StressState,
++    surface_inverse_info: StressSurfaceInverseInfo,
++    block_size: qd.template(),
++):
++    func_surface_apply_packed(young, omega, stress_state, surface_inverse_info, block_size)
++
++
+ @qd.kernel(graph=True)
+ def kernel_surface_unit_loads(
+     stress_state: StressState, stress_info: StressInfo, surface_inverse_info: StressSurfaceInverseInfo
+diff --git a/genesis/options/rigid_stress.py b/genesis/options/rigid_stress.py
+index 7c52e64c..16fc30ea 100644
+--- a/genesis/options/rigid_stress.py
++++ b/genesis/options/rigid_stress.py
+@@ -31,6 +31,9 @@ class RigidStressOptions(Options):
+     it to compare scheduling. Both options select storage at scene build.
+     ``cached_peak`` reuses shared immutable P2 corner gradients in the full
+     global stress scan. Disable it for a geometry reuse comparison.
++    ``cooperative_balance`` reduces the complete rigid-mode wrench in CUDA
++    node tiles and applies a shared mass-mode projection. CPU uses its
++    original balance order. Disable it to compare scheduling and projection.
+ 
+     ``tolerance`` bounds the complete equilibrium residual relative to the
+     load norm; ``absolute_tolerance`` supplies the force floor near zero.
+@@ -91,12 +94,16 @@ class RigidStressOptions(Options):
+     cooperative_solve: StrictBool = True
+     cooperative_pressure: StrictBool = True
+     cooperative_scatter: StrictBool = True
++    cooperative_balance: StrictBool = True
++    contact_wrench_reuse: StrictBool | None = None
+     face_parallel_scatter: StrictBool = True
+     scatter_tasks_per_env: PositiveInt = 32
+     inverse_max_bytes: PositiveInt = 64 * 1024 * 1024
+     inverse_precision: Literal["64", "32"] = "64"
+     surface_inverse: StrictBool = True
+     packed_surface_loads: StrictBool = True
++    packed_block_size: Literal[0, 256, 512] | None = None
++    coalesced_residual: StrictBool | None = None
+     fused_pipeline: StrictBool = True
+     cached_peak: StrictBool = True
+     cached_face_bounds: StrictBool = True
+diff --git a/research/rigid_stress/native_trajectory_oracle.py b/research/rigid_stress/native_trajectory_oracle.py
+index 2acb8ab5..86fc6fda 100644
+--- a/research/rigid_stress/native_trajectory_oracle.py
++++ b/research/rigid_stress/native_trajectory_oracle.py
+@@ -30,6 +30,9 @@ def main():
+     parser.add_argument("--substeps", type=int, default=1)
+     parser.add_argument("--scatter-tasks-per-env", type=int, default=32)
+     parser.add_argument("--contact-warp-scatter", action="store_true")
++    parser.add_argument("--contact-wrench-reuse", choices=("auto", "on", "off"), default="auto")
++    parser.add_argument("--packed-block-size", choices=(0, 256, 512), type=int, default=None)
++    parser.add_argument("--coalesced-residual", choices=("auto", "on", "off"), default="auto")
+     parser.add_argument("--output", type=Path, required=True)
+     args = parser.parse_args()
+     args.output.parent.mkdir(parents=True, exist_ok=True)
+@@ -42,6 +45,9 @@ def main():
+         substeps=args.substeps,
+         face_parallel_scatter=not args.contact_warp_scatter,
+         scatter_tasks_per_env=args.scatter_tasks_per_env,
++        contact_wrench_reuse={"auto": None, "on": True, "off": False}[args.contact_wrench_reuse],
++        packed_block_size=args.packed_block_size,
++        coalesced_residual={"auto": None, "on": True, "off": False}[args.coalesced_residual],
+     )
+     entry = workload.scene.rigid_solver.stress_recovery.links[0]
+     with np.load("examples/rigid/assets/hollow_egg/level1/elastic.npz") as asset:
+diff --git a/tests/rigid/test_stress.py b/tests/rigid/test_stress.py
+index 5d721c1e..79f96a67 100644
+--- a/tests/rigid/test_stress.py
++++ b/tests/rigid/test_stress.py
+@@ -8,6 +8,7 @@ from scipy.sparse.linalg import splu
+ from scipy.spatial.transform import Rotation
+ 
+ import genesis as gs
++from genesis.engine.solvers.rigid.stress.balance import kernel_balance_contacts
+ from genesis.engine.solvers.rigid.stress.contact import (
+     StressContactState,
+     create_contacts,
+@@ -26,7 +27,7 @@ from genesis.engine.solvers.rigid.stress.history import StressHistory
+ from genesis.engine.solvers.rigid.stress.model import StressModel
+ from genesis.engine.solvers.rigid.stress.recovery import kernel_accept
+ from genesis.engine.solvers.rigid.stress.scatter import create_scatter_workspace, kernel_scatter_faces
+-from genesis.engine.solvers.rigid.stress.solve import kernel_peak
++from genesis.engine.solvers.rigid.stress.solve import kernel_balance, kernel_full_residual, kernel_peak
+ from genesis.engine.solvers.rigid.stress.surface import StressSurface, StressSurfaceInfo
+ from genesis.options.rigid_stress import RigidStressOptions
+ from genesis.utils.array_class import V_VEC
+@@ -139,6 +140,28 @@ def test_native_full_field_unbatched_shared_operator(tmp_path):
+     complete.base_link.stress_options.output_mode = "max"
+     with pytest.raises(gs.GenesisException, match="rebuilding"):
+         scene.step()
++    complete.base_link.stress_options.output_mode = "full"
++    complete.base_link.stress_options.poisson = 0.22
++    with pytest.raises(gs.GenesisException, match="rebuilding"):
++        scene.step()
++    with pytest.raises(gs.GenesisException, match="rebuilding"):
++        complete.base_link.get_max_stress()
++    with pytest.raises(gs.GenesisException, match="rebuilding"):
++        complete.base_link.get_stress_field()
++    with pytest.raises(gs.GenesisException, match="rebuilding"):
++        tuple(scene.rigid_solver.stress_recovery.data)
++    complete.base_link.stress_options.poisson = 0.3
++    complete.base_link.stress_options.density = 2100.0
++    with pytest.raises(gs.GenesisException, match="rebuilding"):
++        scene.step()
++    complete.base_link.stress_options.density = 2000.0
++    complete.base_link.stress_options.cooperative_pressure = False
++    with pytest.raises(gs.GenesisException, match="rebuilding"):
++        scene.step()
++    complete.base_link.stress_options.cooperative_pressure = True
++    scene.reset()
++    scene.step()
++    np.testing.assert_array_equal(tensor_to_array(complete.base_link.get_stress_field(copy=False)[1]), 0.0)
+ 
+ 
+ @pytest.mark.required
+@@ -163,11 +186,77 @@ def test_native_p2_shared_operators(tmp_path, young, poisson, density):
+     np.testing.assert_allclose(qd_to_numpy(model.info.gram), oracle.gram, atol=1e-17)
+     gram_inverse = qd_to_numpy(model.info.gram_inverse)
+     np.testing.assert_allclose(gram_inverse @ oracle.gram, np.eye(6), atol=2e-12)
++    np.testing.assert_allclose(
++        qd_to_numpy(model.info.relief).reshape((-1, 6)),
++        oracle.mr @ np.linalg.inv(oracle.gram),
++        rtol=2e-11,
++        atol=1e-13,
++    )
+     pins = qd_to_numpy(model.info.pins)
+     assert len(np.unique(pins)) == 6
+     assert np.linalg.matrix_rank(oracle.r[pins]) == 6
+ 
+ 
++@pytest.mark.required
++@pytest.mark.precision("64")
++@pytest.mark.parametrize("n_envs", (2051, 32771))
++def test_native_batched_inertia_relief_and_partial_load_reset(tmp_path, n_envs):
++    if gs.backend != gs.cuda:
++        pytest.skip("The coalesced shared-memory reduction runs on CUDA.")
++    vertices, tetrahedra, surface, _ = shell_mesh(1, 2, 0.0005)
++    mesh = tmp_path / "shell.npz"
++    np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=surface)
++    options = RigidStressOptions(mesh=mesh)
++    model = StressModel(options)
++    oracle = P2Shell(
++        vertices, tetrahedra, surface, options.young, options.poisson, options.density, 2, factor_backend="none"
++    )
++    random = np.random.default_rng(39731)
++    force = np.zeros((len(oracle.xyz), n_envs, 3))
++    nodes = qd_to_numpy(model.surface_inverse.info.nodes)[[0, 37, 80, 161]]
++    force[nodes] = random.normal(size=(4, n_envs, 3)) * 0.01
++    angular_velocity = random.normal(size=(n_envs, 3)) * 0.4
++    omega = V_VEC(3, dtype=gs.qd_float, shape=(n_envs,))
++    omega.from_numpy(angular_velocity)
++    state = model.create_state(n_envs)
++    state.force.from_numpy(force)
++    model.recover(omega, state, surface_load=True)
++    assert qd_to_numpy(state.valid).all()
++    kernel_full_residual(options.young, options.tolerance, options.absolute_tolerance, state, model.info, False)
++    original_residual = qd_to_numpy(state.residual, copy=True)
++    kernel_full_residual(options.young, options.tolerance, options.absolute_tolerance, state, model.info, False, True)
++    np.testing.assert_array_equal(qd_to_numpy(state.residual), original_residual)
++    del original_residual
++    rhs = qd_to_numpy(state.rhs, copy=True)
++    displacement = qd_to_numpy(state.displacement, copy=True)
++    peak = qd_to_numpy(state.peak, copy=True)
++    peak_scan = P2Peak(oracle.glambda, oracle.elements, options.young / (2.0 * (1.0 + options.poisson)))
++    free = np.setdiff1d(np.arange(oracle.ndof), qd_to_numpy(model.info.pins))
++    factor = splu(oracle.k[free][:, free].tocsc())
++    for i_b in (0, 31, n_envs // 2, n_envs - 1):
++        centrifugal = -np.cross(angular_velocity[i_b], np.cross(angular_velocity[i_b], oracle.xyz - oracle.com))
++        raw = force[:, i_b].reshape(oracle.ndof) + oracle.m @ centrifugal.reshape(oracle.ndof)
++        expected_rhs = raw - oracle.mr @ np.linalg.solve(oracle.gram, oracle.r.T @ raw)
++        np.testing.assert_allclose(rhs[:, i_b].reshape(oracle.ndof), expected_rhs, rtol=2e-8, atol=1e-12)
++        budget = max(options.absolute_tolerance, options.tolerance * np.linalg.norm(expected_rhs))
++        assert np.linalg.norm(oracle.k @ displacement[:, i_b].reshape(oracle.ndof) - expected_rhs) <= budget
++        expected = np.zeros(oracle.ndof)
++        expected[free] = factor.solve(expected_rhs[free])
++        np.testing.assert_allclose(peak[i_b], peak_scan(expected)[0], rtol=1e-4, atol=1e-3)
++    selected = [0, n_envs // 2, n_envs - 1]
++    force[:, selected] = 0.0
++    angular_velocity[selected] = 0.0
++    state.force.from_numpy(force)
++    omega.from_numpy(angular_velocity)
++    model.recover(omega, state, surface_load=True)
++    assert qd_to_numpy(state.valid).all()
++    changed_peak = qd_to_numpy(state.peak)
++    np.testing.assert_array_equal(changed_peak[selected], 0.0)
++    untouched = np.ones(n_envs, dtype=bool)
++    untouched[selected] = False
++    np.testing.assert_array_equal(changed_peak[untouched], peak[untouched])
++
++
+ @pytest.mark.required
+ @pytest.mark.precision("64")
+ @pytest.mark.parametrize(
+@@ -278,6 +367,9 @@ def test_native_batched_recovery_against_full_fp64_direct(
+             model.surface_inverse.apply(model.options.young, omega, state, packed=True)
+             np.testing.assert_array_equal(qd_to_numpy(state.displacement), dense)
+             if gs.backend == gs.cuda:
++                for block_size in (256, 512):
++                    model.surface_inverse.apply(model.options.young, omega, state, packed=True, block_size=block_size)
++                    np.testing.assert_array_equal(qd_to_numpy(state.displacement), dense)
+                 count = np.count_nonzero(np.any(updated[boundary] != 0.0, axis=2), axis=0)
+                 np.testing.assert_array_equal(qd_to_numpy(state.boundary_count), count)
+             model.recover(omega, state, surface_load=True)
+@@ -342,6 +434,34 @@ def test_native_finite_pressure_matches_independent_cpu(tmp_path, cooperative):
+     assert qd_to_numpy(contacts.force_error).max() < 1e-9
+     assert qd_to_numpy(contacts.moment_error).max() < 1e-11
+ 
++    if cooperative and gs.backend == gs.cuda:
++        omega = V_VEC(3, dtype=gs.qd_float, shape=(n_envs,))
++        angular_velocity = random.normal(size=(n_envs, 3))
++        omega.from_numpy(angular_velocity)
++        kernel_balance(omega, state, model.info, True)
++        expected_rhs = qd_to_numpy(state.rhs, copy=True)
++        expected_wrench = qd_to_numpy(state.wrench, copy=True)
++        centrifugal = -np.cross(
++            angular_velocity[:, None], np.cross(angular_velocity[:, None], (oracle.xyz - oracle.com)[None])
++        )
++        raw = expected.transpose((1, 0, 2)).reshape((n_envs, oracle.ndof)).T
++        raw += oracle.m @ centrifugal.reshape((n_envs, oracle.ndof)).T
++        independent_rhs = raw - oracle.mr @ np.linalg.solve(oracle.gram, oracle.r.T @ raw)
++        for capacity in (32, 1):
++            scatter = create_scatter_workspace(n_envs, capacity)
++            kernel_scatter_faces(contacts, state, model.info, surface.info, scatter, True)
++            kernel_balance_contacts(omega, state, model.info, contacts, scatter)
++            actual = qd_to_numpy(state.rhs)
++            np.testing.assert_allclose(actual, expected_rhs, atol=1e-15, rtol=1e-10)
++            np.testing.assert_allclose(qd_to_numpy(state.wrench), expected_wrench, atol=1e-15, rtol=1e-10)
++            np.testing.assert_allclose(
++                actual.transpose((1, 0, 2)).reshape((n_envs, oracle.ndof)).T,
++                independent_rhs,
++                atol=1e-12,
++                rtol=2e-10,
++            )
++            assert int(qd_to_numpy(scatter.overflow_calls)) == (1 if capacity == 1 else 0)
++
+ 
+ @pytest.mark.required
+ @pytest.mark.precision("64")
+@@ -560,7 +680,13 @@ def test_native_rigid_lifecycle_and_partial_reset(tmp_path, substeps, output_mod
+     link = egg.base_link
+     link.configure_stress_recovery(
+         RigidStressOptions(
+-            mesh=mesh, tolerance=1e-7, history_size=4 if output_mode == "max" else 0, output_mode=output_mode
++            mesh=mesh,
++            tolerance=1e-7,
++            history_size=4 if output_mode == "max" else 0,
++            output_mode=output_mode,
++            contact_wrench_reuse=True,
++            packed_block_size=512,
++            coalesced_residual=True,
+         )
+     )
+     scene.build(n_envs=3)

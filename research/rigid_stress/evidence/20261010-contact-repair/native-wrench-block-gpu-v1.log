@@ -1,0 +1,146 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0
+rootdir: /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery-final-dev
+configfile: pyproject.toml
+plugins: anyio-4.15.1, forked-1.7.5, print-1.2.0, timeout-2.4.0, xdist-3.8.0, quadrants-1.3.3, syrupy-6.1.1
+timeout: 1200.0s
+timeout method: signal
+timeout func_only: False
+created: 4/4 workers
+4 workers [41 items]
+
+[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31mF[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m                                [100%][0m
+=================================== FAILURES ===================================
+[31m[1m__________ test_native_finite_pressure_matches_independent_cpu[True] ___________[0m
+[gw1] linux -- Python 3.10.12 /mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python
+
+tmp_path = PosixPath('/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-contact-repair/tmp/pytest-of-zhaofeng/pytest-48/popen-gw1/test_native_finite_pressure_ma0')
+cooperative = True
+
+    [0m[37m@pytest[39;49;00m.mark.required[90m[39;49;00m
+    [37m@pytest[39;49;00m.mark.precision([33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [37m@pytest[39;49;00m.mark.parametrize([33m"[39;49;00m[33mcooperative[39;49;00m[33m"[39;49;00m, ([94mFalse[39;49;00m, [94mTrue[39;49;00m))[90m[39;49;00m
+    [94mdef[39;49;00m[90m [39;49;00m[92mtest_native_finite_pressure_matches_independent_cpu[39;49;00m(tmp_path, cooperative):[90m[39;49;00m
+        vertices, tetrahedra, faces, _ = shell_mesh([94m1[39;49;00m, [94m2[39;49;00m, [94m0.0005[39;49;00m)[90m[39;49;00m
+        mesh = tmp_path / [33m"[39;49;00m[33mshell.npz[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)[90m[39;49;00m
+        model = StressModel(RigidStressOptions(mesh=mesh, method=[33m"[39;49;00m[33mpcg[39;49;00m[33m"[39;49;00m))[90m[39;49;00m
+        surface = StressSurface([94m10[39;49;00m, model.info)[90m[39;49;00m
+        oracle = P2Shell(vertices, tetrahedra, faces, [94m1e10[39;49;00m, [94m0.3[39;49;00m, [94m2000.0[39;49;00m, [94m2[39;49;00m, factor_backend=[33m"[39;49;00m[33mnone[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        geometry = SurfaceGeometry(oracle, [94m10[39;49;00m)[90m[39;49;00m
+        np.testing.assert_allclose(qd_to_numpy(surface.info.positions), geometry.coords.reshape((-[94m1[39;49;00m, [94m3[39;49;00m)), atol=[94m2e-17[39;49;00m)[90m[39;49;00m
+        np.testing.assert_allclose([90m[39;49;00m
+            qd_to_numpy(surface.info.weights), geometry.integration_weights.reshape((-[94m1[39;49;00m,)), rtol=[94m2e-13[39;49;00m[90m[39;49;00m
+        )[90m[39;49;00m
+        mapper = FinitePatchMapper(geometry, anchor_to_surface=[94mTrue[39;49;00m, adaptive_integration=[94mTrue[39;49;00m)[90m[39;49;00m
+        n_contacts, n_envs = [94m3[39;49;00m, [94m5[39;49;00m[90m[39;49;00m
+        contacts = create_contacts(n_contacts, n_envs, [94m0.006[39;49;00m, cooperative)[90m[39;49;00m
+        state = model.create_state(n_envs)[90m[39;49;00m
+        random = np.random.default_rng([94m7143[39;49;00m)[90m[39;49;00m
+        position = np.zeros((n_contacts, n_envs, [94m3[39;49;00m))[90m[39;49;00m
+        force = np.zeros_like(position)[90m[39;49;00m
+        normal = np.zeros_like(position)[90m[39;49;00m
+        radius = random.uniform([94m0.0048[39;49;00m, [94m0.0075[39;49;00m, size=(n_contacts, n_envs))[90m[39;49;00m
+        valid = np.zeros((n_contacts, n_envs), dtype=[96mbool[39;49;00m)[90m[39;49;00m
+        friction = np.broadcast_to([[94m0.0[39;49;00m, [94m0.0[39;49;00m, [94m0.3[39;49;00m, [94m0.6[39;49;00m, [94m1.4[39;49;00m], (n_contacts, n_envs)).copy()[90m[39;49;00m
+        expected = np.zeros(([96mlen[39;49;00m(oracle.xyz), n_envs, [94m3[39;49;00m))[90m[39;49;00m
+        [94mfor[39;49;00m i_b [95min[39;49;00m [96mrange[39;49;00m([94m1[39;49;00m, n_envs):[90m[39;49;00m
+            [94mfor[39;49;00m i_c [95min[39;49;00m [96mrange[39;49;00m([96mmin[39;49;00m(i_b, n_contacts)):[90m[39;49;00m
+                i_f = random.integers([96mlen[39;49;00m(faces))[90m[39;49;00m
+                bary = random.uniform([94m0.2[39;49;00m, [94m0.5[39;49;00m, size=[94m3[39;49;00m)[90m[39;49;00m
+                bary /= bary.sum()[90m[39;49;00m
+                point = bary @ vertices[faces[i_f]][90m[39;49;00m
+                inward = -mapper.face_normals[i_f][90m[39;49;00m
+                tangent = np.cross(inward, np.eye([94m3[39;49;00m)[np.argmin(np.abs(inward))])[90m[39;49;00m
+                tangent /= np.linalg.norm(tangent)[90m[39;49;00m
+                tangent_scale = [94m0.0[39;49;00m [94mif[39;49;00m friction[[94m0[39;49;00m, i_b] == [94m0.0[39;49;00m [94melse[39;49;00m [94m0.25[39;49;00m[90m[39;49;00m
+                traction = ([94m0.1[39;49;00m + random.random()) * (inward + tangent_scale * tangent)[90m[39;49;00m
+                patch = WrenchPatch(point, traction, radius[i_c, i_b], friction[i_c, i_b], np.zeros([94m3[39;49;00m), inward)[90m[39;49;00m
+                mapped = mapper.map(patch)[90m[39;49;00m
+                position[i_c, i_b], force[i_c, i_b], normal[i_c, i_b] = point, traction, inward[90m[39;49;00m
+                valid[i_c, i_b] = [94mTrue[39;49;00m[90m[39;49;00m
+                expected[:, i_b] += mapped.nodal_force_n.reshape((-[94m1[39;49;00m, [94m3[39;49;00m))[90m[39;49;00m
+        contacts.position.from_numpy(position)[90m[39;49;00m
+        contacts.force.from_numpy(force)[90m[39;49;00m
+        contacts.normal.from_numpy(normal)[90m[39;49;00m
+        contacts.radius.from_numpy(radius)[90m[39;49;00m
+        contacts.friction.from_numpy(friction)[90m[39;49;00m
+        contacts.valid.from_numpy(valid)[90m[39;49;00m
+        kernel_anchor([96mfloat[39;49;00m(np.finfo([96mfloat[39;49;00m).eps), contacts, surface.info)[90m[39;49;00m
+        kernel_pressure(contacts, surface.info, cooperative)[90m[39;49;00m
+        kernel_scatter(contacts, state, model.info, surface.info)[90m[39;49;00m
+        [96mprint[39;49;00m([33m"[39;49;00m[33mpatch statuses[39;49;00m[33m"[39;49;00m, qd_to_numpy(contacts.status), [33m"[39;49;00m[33mevaluations[39;49;00m[33m"[39;49;00m, qd_to_numpy(contacts.evaluations))[90m[39;49;00m
+        np.testing.assert_array_equal(qd_to_numpy(contacts.status), [94m0[39;49;00m)[90m[39;49;00m
+        np.testing.assert_allclose(qd_to_numpy(state.force), expected, atol=[94m1e-12[39;49;00m, rtol=[94m2e-10[39;49;00m)[90m[39;49;00m
+        [94massert[39;49;00m qd_to_numpy(contacts.force_error).max() < [94m1e-9[39;49;00m[90m[39;49;00m
+        [94massert[39;49;00m qd_to_numpy(contacts.moment_error).max() < [94m1e-11[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        [94mif[39;49;00m cooperative [95mand[39;49;00m gs.backend == gs.cuda:[90m[39;49;00m
+            omega = V_VEC([94m3[39;49;00m, dtype=gs.qd_float, shape=(n_envs,))[90m[39;49;00m
+            angular_velocity = random.normal(size=(n_envs, [94m3[39;49;00m))[90m[39;49;00m
+            omega.from_numpy(angular_velocity)[90m[39;49;00m
+            kernel_balance(omega, state, model.info, [94mTrue[39;49;00m)[90m[39;49;00m
+            expected_rhs = qd_to_numpy(state.rhs, copy=[94mTrue[39;49;00m)[90m[39;49;00m
+            expected_wrench = qd_to_numpy(state.wrench, copy=[94mTrue[39;49;00m)[90m[39;49;00m
+            centrifugal = -np.cross([90m[39;49;00m
+                angular_velocity[:, [94mNone[39;49;00m], np.cross(angular_velocity[:, [94mNone[39;49;00m], (oracle.xyz - oracle.com)[[94mNone[39;49;00m])[90m[39;49;00m
+            )[90m[39;49;00m
+            raw = expected.transpose(([94m1[39;49;00m, [94m0[39;49;00m, [94m2[39;49;00m)).reshape((n_envs, oracle.ndof)).T[90m[39;49;00m
+            raw += oracle.m @ centrifugal.reshape((n_envs, oracle.ndof)).T[90m[39;49;00m
+            independent_rhs = raw - oracle.mr @ np.linalg.solve(oracle.gram, oracle.r.T @ raw)[90m[39;49;00m
+            [94mfor[39;49;00m capacity [95min[39;49;00m ([94m32[39;49;00m, [94m1[39;49;00m):[90m[39;49;00m
+                scatter = create_scatter_workspace(n_envs, capacity)[90m[39;49;00m
+>               kernel_scatter_faces(contacts, state, model.info, surface.info, scatter)[90m[39;49;00m
+
+[1m[31mtests/rigid/test_stress.py[0m:447: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/_quadrants_callable.py[0m:101: in __call__
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m.wrapper.[92m__call__[39;49;00m(*args, **kwargs)[90m[39;49;00m
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = (StressContactState(position=Tensor(shape=(3, 5), dtype=<quadrants._lib.core.quadrants_python.DataTypeCxx object at 0x...=Tensor(shape=(), dtype=<quadrants._lib.core.quadrants_python.DataTypeCxx object at 0x704c9d3072d0>, backend=NDARRAY)))
+kwargs = {}
+
+    [0m[37m@wraps[39;49;00m(_func)[90m[39;49;00m
+    [94mdef[39;49;00m[90m [39;49;00m[92mwrapped_func[39;49;00m(*args, **kwargs):[90m[39;49;00m
+        [94mtry[39;49;00m:[90m[39;49;00m
+            [94mreturn[39;49;00m primal(*args, **kwargs)[90m[39;49;00m
+        [94mexcept[39;49;00m (QuadrantsCompilationError, QuadrantsRuntimeError) [94mas[39;49;00m e:[90m[39;49;00m
+            [94mif[39;49;00m impl.get_runtime().print_full_traceback:[90m[39;49;00m
+                [94mraise[39;49;00m e[90m[39;49;00m
+>           [94mraise[39;49;00m [96mtype[39;49;00m(e)([33m"[39;49;00m[33m\n[39;49;00m[33m"[39;49;00m + [96mstr[39;49;00m(e)) [94mfrom[39;49;00m[90m [39;49;00m[94mNone[39;49;00m[90m[39;49;00m
+[1m[31mE           quadrants.lang.exception.QuadrantsSyntaxError: [0m
+[1m[31mE           Missing argument 'cached_bounds'.[0m
+
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel_impl.py[0m:184: QuadrantsSyntaxError
+---------------------------- Captured stdout setup -----------------------------
+[Genesis 23:12:15] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 23:12:15] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+----------------------------- Captured stdout call -----------------------------
+patch statuses [[0 0 0 0 0]
+ [0 0 0 0 0]
+ [0 0 0 0 0]] evaluations [[0 0 0 0 0]
+ [0 0 0 0 0]
+ [0 0 0 0 0]]
+--------------------------- Captured stdout teardown ---------------------------
+[Genesis 23:12:18] Exiting Genesis and caching compiled kernels...
+[33m=============================== warnings summary ===============================[0m
+tests/rigid/test_stress.py: 82 warnings
+  /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery-final-dev/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                          32 iterations, so the compile time may be extremely long.
+                          You can use a non-static for loop if you want to decrease the compile time.
+                          You can disable this warning by setting qd.init(unrolling_limit=0).
+    for a, b in qd.static(qd.ndrange(6, 6)):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================================= Failed tests =================================
+tests/rigid/test_stress.py::test_native_finite_pressure_matches_independent_c...
+============================== slowest durations ===============================
+142.66s call     tests/rigid/test_stress.py::test_native_full_field_unbatched_shared_operator
+139.15s call     tests/rigid/test_stress.py::test_native_rigid_lifecycle_and_partial_reset[full-1]
+138.05s call     tests/rigid/test_stress.py::test_native_rigid_lifecycle_and_partial_reset[full-4]
+109.34s call     tests/rigid/test_stress.py::test_native_rigid_lifecycle_and_partial_reset[max-1]
+
+(119 durations < 100s hidden.)
+[31m============ [31m[1m1 failed[0m, [32m40 passed[0m, [33m82 warnings[0m[31m in 594.28s (0:09:54)[0m[31m =============[0m
+[I 10/10/26 23:08:03.836 2321808] [shell.py:_shell_pop_print@25] Graphical python shell detected, using wrapped sys.stdout

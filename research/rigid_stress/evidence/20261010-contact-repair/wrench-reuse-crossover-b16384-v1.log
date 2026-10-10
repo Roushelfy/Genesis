@@ -1,0 +1,18 @@
+[Quadrants] version 1.3.3, llvm 22.1.0, commit 00423caa, linux, python 3.10.12
+[38;5;226m[Genesis] [23:08:13] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint1`[0m
+[38;5;226m[Genesis] [23:08:13] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint2`[0m
+[38;5;226m[Genesis] [23:08:14] [WARNING] Neutral robot position (qpos0) exceeds joint limits.[0m
+[38;5;226m[Genesis] [23:08:14] [WARNING] Constraint solver time constant should be greater than 2*substep_dt. timeconst is changed from `0.005` to `0.02`). Decrease simulation timestep or increase timeconst to avoid altering the original value.[0m
+[38;5;226m[Genesis] [23:08:15] [WARNING] Filtered out geometry pairs causing self-collision for the neutral configuration (qpos0): (6, 11), (7, 11), (14, 21), (15, 20), (16, 23), (17, 22). Consider tuning Morph option 'decompose_robot_error_threshold' or specify dedicated collision meshes. This behavior can be disabled by setting Morph option 'enable_neutral_collision=True'.[0m
+/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/cache/wrench_reuse_trials/705007/wrench_reuse_generated.py:46: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/cache/wrench_reuse_trials/705007/wrench_reuse_generated.py:46: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+{"name": "native_node_tiles", "milliseconds": 1.6262856032699347, "rhs_difference_budget_ratio_max": 1.2223289526410415e-08, "complete_wrench_difference_max": 2.220446049250313e-16, "complete_residual_max_N": 2.6083945777477512e-11}
+{"name": "integrated_wrench", "milliseconds": 0.8023817278444767, "rhs_difference_budget_ratio_max": 1.8980921426491817e-08, "complete_wrench_difference_max": 1.5543122344752192e-15, "complete_residual_max_N": 2.6083946201819686e-11}

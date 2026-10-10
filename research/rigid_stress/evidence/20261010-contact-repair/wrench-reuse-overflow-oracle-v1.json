@@ -1,0 +1,3068 @@
+{
+  "envs": 8,
+  "steps": 1200,
+  "seed": 510000,
+  "output_mode": "full",
+  "substeps": 1,
+  "source_revision": "59b16811-native-balance-t8-wrench-reuse-v1",
+  "source_sha256": {
+    "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/native_trajectory_oracle.py": "d1fdc30e045394831a39192238f16ff2ce91ad0ae2d5f3bc76871dd60ea1146a",
+    "examples/rigid/franka_egg_stress.py": "6031e5a035645014f3daa4d532662342a267d495443bfe198f93081e4e187363",
+    "genesis/engine/solvers/rigid/stress/__init__.py": "17b4fa6e4eb64175b87586a6c7142b9fd2f5e88ba4321129d18e07e296adc5a6",
+    "genesis/engine/solvers/rigid/stress/association.py": "0c265ddde597bb03f6f56da0f4c6063a3a530ce2a19f2dceaf3378e987f811b3",
+    "genesis/engine/solvers/rigid/stress/balance.py": "a0ec6b8e110270f34bf56369cfc94129b6e5fdd2fc091efd6f6f7ac2d15a5ed5",
+    "genesis/engine/solvers/rigid/stress/contact.py": "728a465e6c1b4f6f28280d1543a5a35a12d63d5f5967c0df8c174c6ebfba0630",
+    "genesis/engine/solvers/rigid/stress/data.py": "44874f9cee2dffc882a06a4b7f99272eb9d24aa2ab3c0e009b7650eaa918f532",
+    "genesis/engine/solvers/rigid/stress/factor.py": "f2a059e88cf03b35a5fba2f88c3ac3f631a899d52cd841a6d268d9ccf087f81c",
+    "genesis/engine/solvers/rigid/stress/grid.py": "f451674d257339ece41a258f22c7b95fe25d6fc51888854855de4320e26b9a90",
+    "genesis/engine/solvers/rigid/stress/history.py": "559e046d3405afc260be5cd5a0de5712e490518e73aafc288642261c3959657c",
+    "genesis/engine/solvers/rigid/stress/inverse.py": "b15ef055df018d96b92aa2b0be3d39d258b4cc59c83dbccdd9dcf0c173eb2a43",
+    "genesis/engine/solvers/rigid/stress/lifecycle.py": "aec6ccc09b9da6fc15ea1c64e6716dee9325b3d05edaa7ac19b4419861c192fa",
+    "genesis/engine/solvers/rigid/stress/model.py": "ba4964cb5d01eb8fcd7c9fbb02bbe64dcc2976fdfab653e2c4ba4efd8ac20b51",
+    "genesis/engine/solvers/rigid/stress/operators.py": "40ad5e488e928a8f22efe0833f447afba7ef0e258bc3cffb5a0fe30bc1d416ff",
+    "genesis/engine/solvers/rigid/stress/pipeline.py": "11e7882e9b0a219de84f35be8c2f8db2e8af01163705a7bf50c7aaee1531aed6",
+    "genesis/engine/solvers/rigid/stress/recovery.py": "f94048638e4b64418b83d1ad37120f94441132e10075503b2a4cd460bebee9b6",
+    "genesis/engine/solvers/rigid/stress/scatter.py": "7f80586484f6c4ce9f84bfdfc800eb6de6613b567a5d08e581f2817a0d0f0ee0",
+    "genesis/engine/solvers/rigid/stress/solve.py": "b9aa7951dd5f5d6cd4fcdc719723fd07abf4ad359e7729e9f38f26adfc7fda59",
+    "genesis/engine/solvers/rigid/stress/surface.py": "ed42707ee7c589db942a15835d40aba5194d2415b2c576ae0196987b94bb4fc1",
+    "genesis/engine/solvers/rigid/stress/surface_inverse.py": "904a001a9c5a178399e770baa427b06f89f604fc1c48638ff870e2491f405bf4",
+    "genesis/options/rigid_stress.py": "53e7a2cb8613ff63938e51c43fe10e9f8a9a0099f04e6161e5d06c77064ee098"
+  },
+  "command": [
+    "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python",
+    "wrench_reuse_override",
+    "--envs",
+    "8",
+    "--steps",
+    "1200",
+    "--seed",
+    "510000",
+    "--output-mode",
+    "full",
+    "--scatter-tasks-per-env",
+    "1",
+    "--output",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-contact-repair/wrench-reuse-overflow-oracle-v1.json"
+  ],
+  "resets": 8,
+  "actual_contact_mu_range": [
+    0.4248546426701934,
+    0.7912395187079685
+  ],
+  "load_model": "finite_pad_adaptive_q10",
+  "oracle_rows": [
+    {
+      "tick": 49,
+      "env": 0,
+      "contacts": [
+        {
+          "mu": 0.7912395187079685,
+          "force_N": 0.06405781080513016,
+          "wrench_force_error_N": 9.92601573531065e-35,
+          "wrench_moment_error_Nm": 4.187582713518715e-21,
+          "cone_excess_N": -5.414697840790992e-06
+        }
+      ],
+      "full_gauge_residual_N": 9.674856496405673e-13,
+      "residual_budget_N": 3.9954787164283286e-10,
+      "global_peak_error_Pa": 3.7814788811374456e-07,
+      "global_peak_reference_Pa": 14321.351938522332,
+      "tensor_max_absolute_error_Pa": 2.4741348170209676e-07,
+      "von_mises_field_max_absolute_error_Pa": 3.783607098739594e-07
+    },
+    {
+      "tick": 49,
+      "env": 7,
+      "contacts": [
+        {
+          "mu": 0.5292197087214413,
+          "force_N": 0.06405781080866547,
+          "wrench_force_error_N": 1.3877787807814457e-17,
+          "wrench_moment_error_Nm": 2.3664397475850832e-20,
+          "cone_excess_N": -4.1977153763599426e-08
+        }
+      ],
+      "full_gauge_residual_N": 9.374688560226525e-13,
+      "residual_budget_N": 3.8487631911700927e-10,
+      "global_peak_error_Pa": 3.6311757867224514e-07,
+      "global_peak_reference_Pa": 13708.745355598527,
+      "tensor_max_absolute_error_Pa": 2.3917345970403403e-07,
+      "von_mises_field_max_absolute_error_Pa": 3.6336859920993447e-07
+    },
+    {
+      "tick": 49,
+      "env": 6,
+      "contacts": [
+        {
+          "mu": 0.510305889692648,
+          "force_N": 0.06405781082975984,
+          "wrench_force_error_N": 1.3877787807814457e-17,
+          "wrench_moment_error_Nm": 1.0358108752133742e-20,
+          "cone_excess_N": -3.143728157616359e-07
+        }
+      ],
+      "full_gauge_residual_N": 9.854636316028953e-13,
+      "residual_budget_N": 4.140716185878684e-10,
+      "global_peak_error_Pa": 3.777367965085432e-07,
+      "global_peak_reference_Pa": 14907.29533129118,
+      "tensor_max_absolute_error_Pa": 2.5287954485975206e-07,
+      "von_mises_field_max_absolute_error_Pa": 3.776967787416652e-07
+    },
+    {
+      "tick": 49,
+      "env": 5,
+      "contacts": [
+        {
+          "mu": 0.7621486036916064,
+          "force_N": 0.06405781079957924,
+          "wrench_force_error_N": 7.52316384526264e-37,
+          "wrench_moment_error_Nm": 6.023023712757643e-21,
+          "cone_excess_N": -1.8912269210395517e-06
+        }
+      ],
+      "full_gauge_residual_N": 9.892836439307665e-13,
+      "residual_budget_N": 3.7892562159202705e-10,
+      "global_peak_error_Pa": 3.58035322278738e-07,
+      "global_peak_reference_Pa": 13454.587861486725,
+      "tensor_max_absolute_error_Pa": 2.3598113330081105e-07,
+      "von_mises_field_max_absolute_error_Pa": 3.580789780244231e-07
+    },
+    {
+      "tick": 99,
+      "env": 1,
+      "contacts": [
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.06405781094403676,
+          "wrench_force_error_N": 4.163336342344337e-17,
+          "wrench_moment_error_Nm": 1.7319631636851346e-20,
+          "cone_excess_N": -2.1628878071655264e-08
+        }
+      ],
+      "full_gauge_residual_N": 9.827667288239998e-13,
+      "residual_budget_N": 3.731689003822249e-10,
+      "global_peak_error_Pa": 3.5954690247308463e-07,
+      "global_peak_reference_Pa": 13205.70011307451,
+      "tensor_max_absolute_error_Pa": 2.38240318140015e-07,
+      "von_mises_field_max_absolute_error_Pa": 3.5963421396445483e-07
+    },
+    {
+      "tick": 99,
+      "env": 0,
+      "contacts": [
+        {
+          "mu": 0.7912395187079685,
+          "force_N": 0.06405781094404929,
+          "wrench_force_error_N": 1.541496088312951e-34,
+          "wrench_moment_error_Nm": 1.6030112513455035e-20,
+          "cone_excess_N": -4.79165601650381e-07
+        }
+      ],
+      "full_gauge_residual_N": 1.006838700107902e-12,
+      "residual_budget_N": 3.9037681480532654e-10,
+      "global_peak_error_Pa": 3.720724635059014e-07,
+      "global_peak_reference_Pa": 13940.937896360783,
+      "tensor_max_absolute_error_Pa": 2.4314795155078173e-07,
+      "von_mises_field_max_absolute_error_Pa": 3.7211066228337586e-07
+    },
+    {
+      "tick": 99,
+      "env": 7,
+      "contacts": [
+        {
+          "mu": 0.5292197087214413,
+          "force_N": 0.06405781094404926,
+          "wrench_force_error_N": 1.3877787807814457e-17,
+          "wrench_moment_error_Nm": 8.52376224318306e-21,
+          "cone_excess_N": -4.197715385231658e-08
+        }
+      ],
+      "full_gauge_residual_N": 9.379183973644495e-13,
+      "residual_budget_N": 3.848763199304311e-10,
+      "global_peak_error_Pa": 3.6552228266373277e-07,
+      "global_peak_reference_Pa": 13708.745384573927,
+      "tensor_max_absolute_error_Pa": 2.413853508187458e-07,
+      "von_mises_field_max_absolute_error_Pa": 3.6513301893137395e-07
+    },
+    {
+      "tick": 99,
+      "env": 6,
+      "contacts": [
+        {
+          "mu": 0.510305889692648,
+          "force_N": 0.06405781094404828,
+          "wrench_force_error_N": 3.8523300578197105e-34,
+          "wrench_moment_error_Nm": 1.3264925388721138e-20,
+          "cone_excess_N": -3.1437281632252264e-07
+        }
+      ],
+      "full_gauge_residual_N": 1.1451889133771078e-12,
+      "residual_budget_N": 4.140716193266319e-10,
+      "global_peak_error_Pa": 3.78146069124341e-07,
+      "global_peak_reference_Pa": 14907.295357888494,
+      "tensor_max_absolute_error_Pa": 2.4868677428457886e-07,
+      "von_mises_field_max_absolute_error_Pa": 3.781806299230084e-07
+    },
+    {
+      "tick": 149,
+      "env": 2,
+      "contacts": [
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.06405781094405372,
+          "wrench_force_error_N": 8.326672684688674e-17,
+          "wrench_moment_error_Nm": 1.8133788981686063e-20,
+          "cone_excess_N": -8.011324220515253e-07
+        }
+      ],
+      "full_gauge_residual_N": 9.693043229755245e-13,
+      "residual_budget_N": 3.880197931381303e-10,
+      "global_peak_error_Pa": 3.675377229228616e-07,
+      "global_peak_reference_Pa": 13841.806521573113,
+      "tensor_max_absolute_error_Pa": 2.4282417143695056e-07,
+      "von_mises_field_max_absolute_error_Pa": 3.6737401387654245e-07
+    },
+    {
+      "tick": 149,
+      "env": 1,
+      "contacts": [
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.054935019961648714,
+          "wrench_force_error_N": 1.2695817633565476e-17,
+          "wrench_moment_error_Nm": 1.0497818772487585e-20,
+          "cone_excess_N": 1.0133581027298275e-19
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.0800249051118343,
+          "wrench_force_error_N": 2.8714782907777404e-17,
+          "wrench_moment_error_Nm": 3.059665562828778e-20,
+          "cone_excess_N": -3.6397251832459425e-25
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.11687339857522762,
+          "wrench_force_error_N": 2.79717856929232e-17,
+          "wrench_moment_error_Nm": 2.968500467731676e-20,
+          "cone_excess_N": -1.037361506356308e-08
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.11616594473472991,
+          "wrench_force_error_N": 1.962885079083901e-17,
+          "wrench_moment_error_Nm": 1.2186725804156079e-20,
+          "cone_excess_N": -3.5131346543244457e-09
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.01987195475481179,
+          "wrench_force_error_N": 6.992893892674703e-18,
+          "wrench_moment_error_Nm": 9.686366176948933e-21,
+          "cone_excess_N": -1.0370298670834307e-23
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.019189965653541457,
+          "wrench_force_error_N": 7.757919228897728e-18,
+          "wrench_moment_error_Nm": 1.8534777784555285e-21,
+          "cone_excess_N": 0.0
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.05359843508501516,
+          "wrench_force_error_N": 6.942281208919283e-18,
+          "wrench_moment_error_Nm": 2.3331471314133053e-20,
+          "cone_excess_N": 2.1267143955001372e-19
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.0795642001985365,
+          "wrench_force_error_N": 3.705370968959021e-18,
+          "wrench_moment_error_Nm": 1.86999705041665e-20,
+          "cone_excess_N": 1.1526887920462947e-19
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.20015292981817442,
+          "wrench_force_error_N": 1.1316993474494503e-16,
+          "wrench_moment_error_Nm": 6.251367805102006e-20,
+          "cone_excess_N": -7.044251564577403e-10
+        }
+      ],
+      "full_gauge_residual_N": 1.146768693565164e-11,
+      "residual_budget_N": 2.2922834030235694e-09,
+      "global_peak_error_Pa": 8.93182004801929e-07,
+      "global_peak_reference_Pa": 66788.61645760071,
+      "tensor_max_absolute_error_Pa": 1.7977217794395983e-06,
+      "von_mises_field_max_absolute_error_Pa": 1.9751896616071463e-06
+    },
+    {
+      "tick": 149,
+      "env": 0,
+      "contacts": [
+        {
+          "mu": 0.7912395187079685,
+          "force_N": 0.0857789218534902,
+          "wrench_force_error_N": 1.3904866443919908e-17,
+          "wrench_moment_error_Nm": 1.2496779695999151e-20,
+          "cone_excess_N": -5.562697397355755e-09
+        },
+        {
+          "mu": 0.7912395187079685,
+          "force_N": 0.09540424785205562,
+          "wrench_force_error_N": 1.3189888700125507e-18,
+          "wrench_moment_error_Nm": 3.0083789942783445e-20,
+          "cone_excess_N": -8.073014306709085e-09
+        },
+        {
+          "mu": 0.7912395187079685,
+          "force_N": 0.17971600389043252,
+          "wrench_force_error_N": 2.8613079272610746e-17,
+          "wrench_moment_error_Nm": 3.614227170188355e-20,
+          "cone_excess_N": -1.935283240822412e-09
+        },
+        {
+          "mu": 0.7912395187079685,
+          "force_N": 0.026823273621141213,
+          "wrench_force_error_N": 7.204847710556568e-18,
+          "wrench_moment_error_Nm": 2.3713745278187836e-21,
+          "cone_excess_N": -5.145433389294789e-09
+        },
+        {
+          "mu": 0.7912395187079685,
+          "force_N": 0.24917556257492085,
+          "wrench_force_error_N": 1.9518530096400704e-16,
+          "wrench_moment_error_Nm": 1.0708546935189089e-19,
+          "cone_excess_N": -1.257714128427854e-05
+        }
+      ],
+      "full_gauge_residual_N": 1.1076581879959613e-11,
+      "residual_budget_N": 2.182706314258235e-09,
+      "global_peak_error_Pa": 3.181921783834696e-07,
+      "global_peak_reference_Pa": 62072.18072222173,
+      "tensor_max_absolute_error_Pa": 1.6343692550435662e-06,
+      "von_mises_field_max_absolute_error_Pa": 2.357293851673603e-06
+    },
+    {
+      "tick": 149,
+      "env": 7,
+      "contacts": [
+        {
+          "mu": 0.5292197087214413,
+          "force_N": 0.06405781094403766,
+          "wrench_force_error_N": 4.163336342344337e-17,
+          "wrench_moment_error_Nm": 1.3598049035119595e-20,
+          "cone_excess_N": -4.1977153852308975e-08
+        }
+      ],
+      "full_gauge_residual_N": 1.004278134963399e-12,
+      "residual_budget_N": 3.8487631993036133e-10,
+      "global_peak_error_Pa": 3.6600977182388306e-07,
+      "global_peak_reference_Pa": 13708.74538457127,
+      "tensor_max_absolute_error_Pa": 2.390206645941362e-07,
+      "von_mises_field_max_absolute_error_Pa": 3.66226231562905e-07
+    },
+    {
+      "tick": 199,
+      "env": 3,
+      "contacts": [
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.06405781094403744,
+          "wrench_force_error_N": 2.7755575615628914e-17,
+          "wrench_moment_error_Nm": 7.685956433161925e-21,
+          "cone_excess_N": -2.125046294452973e-07
+        }
+      ],
+      "full_gauge_residual_N": 9.927189458538814e-13,
+      "residual_budget_N": 3.6001042814144984e-10,
+      "global_peak_error_Pa": 3.504392225295305e-07,
+      "global_peak_reference_Pa": 12622.485207281241,
+      "tensor_max_absolute_error_Pa": 2.3344364308286458e-07,
+      "von_mises_field_max_absolute_error_Pa": 3.501954779494554e-07
+    },
+    {
+      "tick": 199,
+      "env": 2,
+      "contacts": [
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.07975349386646863,
+          "wrench_force_error_N": 1.3884562417838567e-17,
+          "wrench_moment_error_Nm": 1.7666218557933644e-20,
+          "cone_excess_N": -8.792374719838717e-07
+        },
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.0974261725263158,
+          "wrench_force_error_N": 1.3965601408046626e-17,
+          "wrench_moment_error_Nm": 6.66694795323323e-21,
+          "cone_excess_N": -4.533000497466172e-08
+        },
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.1614942935660362,
+          "wrench_force_error_N": 5.561988846578201e-17,
+          "wrench_moment_error_Nm": 1.443704972081284e-20,
+          "cone_excess_N": -9.65733664646287e-09
+        },
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.011565154347239908,
+          "wrench_force_error_N": 5.209814253933303e-18,
+          "wrench_moment_error_Nm": 4.5350570626898824e-21,
+          "cone_excess_N": -8.933420857572958e-10
+        },
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.03219945899868707,
+          "wrench_force_error_N": 1.3904866443919908e-17,
+          "wrench_moment_error_Nm": 1.8907820137402344e-21,
+          "cone_excess_N": -2.2986616666617612e-11
+        },
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.011564933919564183,
+          "wrench_force_error_N": 5.434005713344058e-18,
+          "wrench_moment_error_Nm": 6.50529198535672e-21,
+          "cone_excess_N": -2.0215174394330583e-25
+        },
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.2280758589144681,
+          "wrench_force_error_N": 2.969368287472575e-17,
+          "wrench_moment_error_Nm": 4.0229820186312955e-20,
+          "cone_excess_N": -2.9722162743231004e-07
+        }
+      ],
+      "full_gauge_residual_N": 1.0191309151292682e-11,
+      "residual_budget_N": 2.0549610480201122e-09,
+      "global_peak_error_Pa": 3.2838579500094056e-07,
+      "global_peak_reference_Pa": 59607.14581459012,
+      "tensor_max_absolute_error_Pa": 1.5540208551101387e-06,
+      "von_mises_field_max_absolute_error_Pa": 1.922337105497718e-06
+    },
+    {
+      "tick": 199,
+      "env": 1,
+      "contacts": [
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.04479539875136343,
+          "wrench_force_error_N": 2.0834744531680432e-17,
+          "wrench_moment_error_Nm": 2.0455948177746652e-20,
+          "cone_excess_N": -8.947792556970189e-09
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.059726293558657044,
+          "wrench_force_error_N": 2.4532694666933987e-18,
+          "wrench_moment_error_Nm": 3.12224230705925e-20,
+          "cone_excess_N": -2.2268400946880515e-11
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.09096747596772707,
+          "wrench_force_error_N": 1.5048163733240194e-17,
+          "wrench_moment_error_Nm": 2.6450924881523328e-20,
+          "cone_excess_N": -9.870952673691478e-10
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.09064779909632263,
+          "wrench_force_error_N": 4.336808689942018e-18,
+          "wrench_moment_error_Nm": 3.35243034119624e-20,
+          "cone_excess_N": -6.122166656198825e-09
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.016344773101347423,
+          "wrench_force_error_N": 3.5448603089953e-18,
+          "wrench_moment_error_Nm": 2.830513682092396e-21,
+          "cone_excess_N": 0.0
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.01573150668549997,
+          "wrench_force_error_N": 2.1926631968597357e-18,
+          "wrench_moment_error_Nm": 4.477127664169507e-21,
+          "cone_excess_N": 2.772955603923326e-20
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.03787780271239348,
+          "wrench_force_error_N": 2.789077162073787e-17,
+          "wrench_moment_error_Nm": 1.7401066154078847e-20,
+          "cone_excess_N": -1.957446416053406e-10
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.0598531033123905,
+          "wrench_force_error_N": 1.9627353582474638e-17,
+          "wrench_moment_error_Nm": 1.637598291910405e-20,
+          "cone_excess_N": -6.913518356109453e-08
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.1785354549404756,
+          "wrench_force_error_N": 8.326736211917381e-17,
+          "wrench_moment_error_Nm": 5.94212824838003e-20,
+          "cone_excess_N": -3.764383257160946e-11
+        }
+      ],
+      "full_gauge_residual_N": 1.1063674521175179e-11,
+      "residual_budget_N": 1.8661570418148096e-09,
+      "global_peak_error_Pa": 7.223279681056738e-07,
+      "global_peak_reference_Pa": 57569.839275500504,
+      "tensor_max_absolute_error_Pa": 1.5321202226914465e-06,
+      "von_mises_field_max_absolute_error_Pa": 1.6059057088568807e-06
+    },
+    {
+      "tick": 199,
+      "env": 0,
+      "contacts": [
+        {
+          "mu": 0.7912395187079685,
+          "force_N": 0.09584439838647466,
+          "wrench_force_error_N": 1.4304896245381992e-17,
+          "wrench_moment_error_Nm": 2.7772098752833414e-20,
+          "cone_excess_N": -5.758982999588154e-09
+        },
+        {
+          "mu": 0.7912395187079685,
+          "force_N": 0.1816797316594944,
+          "wrench_force_error_N": 5.658496737247252e-17,
+          "wrench_moment_error_Nm": 1.2417345739871985e-20,
+          "cone_excess_N": -1.6178933244965537e-10
+        },
+        {
+          "mu": 0.7912395187079685,
+          "force_N": 0.030788522988658026,
+          "wrench_force_error_N": 1.1765467043548785e-17,
+          "wrench_moment_error_Nm": 7.445728376340921e-21,
+          "cone_excess_N": -2.6755987317068027e-12
+        },
+        {
+          "mu": 0.7912395187079685,
+          "force_N": 0.24972208407235066,
+          "wrench_force_error_N": 3.1080126089379415e-17,
+          "wrench_moment_error_Nm": 3.522253579023485e-20,
+          "cone_excess_N": -6.652946907954332e-06
+        }
+      ],
+      "full_gauge_residual_N": 1.1003982080474528e-11,
+      "residual_budget_N": 2.1494172493693353e-09,
+      "global_peak_error_Pa": 1.776090357452631e-06,
+      "global_peak_reference_Pa": 62095.47648225911,
+      "tensor_max_absolute_error_Pa": 1.597902155481279e-06,
+      "von_mises_field_max_absolute_error_Pa": 2.0102597773075104e-06
+    },
+    {
+      "tick": 249,
+      "env": 4,
+      "contacts": [
+        {
+          "mu": 0.5206918899740468,
+          "force_N": 0.06405781094403744,
+          "wrench_force_error_N": 1.3877787807814457e-17,
+          "wrench_moment_error_Nm": 5.251999722548792e-21,
+          "cone_excess_N": -1.4118795690245826e-07
+        }
+      ],
+      "full_gauge_residual_N": 9.918187146964933e-13,
+      "residual_budget_N": 3.649530557822871e-10,
+      "global_peak_error_Pa": 3.5266930353827775e-07,
+      "global_peak_reference_Pa": 12844.064526170912,
+      "tensor_max_absolute_error_Pa": 2.3275606508832425e-07,
+      "von_mises_field_max_absolute_error_Pa": 3.5276025300845504e-07
+    },
+    {
+      "tick": 249,
+      "env": 3,
+      "contacts": [
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.11606211043574693,
+          "wrench_force_error_N": 2.7756422635651865e-17,
+          "wrench_moment_error_Nm": 2.804545911643579e-20,
+          "cone_excess_N": -7.430470280707893e-10
+        },
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.06288512782580127,
+          "wrench_force_error_N": 1.431146867680866e-17,
+          "wrench_moment_error_Nm": 2.575761495820053e-20,
+          "cone_excess_N": -8.810520443643367e-10
+        },
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.1962431030528764,
+          "wrench_force_error_N": 8.333897564733124e-17,
+          "wrench_moment_error_Nm": 4.220501149388309e-20,
+          "cone_excess_N": -9.438579341595763e-08
+        },
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.062072013445755976,
+          "wrench_force_error_N": 4.8643839367706493e-17,
+          "wrench_moment_error_Nm": 1.35326995963143e-20,
+          "cone_excess_N": -8.302276254512994e-11
+        },
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.02618183608846479,
+          "wrench_force_error_N": 0.0,
+          "wrench_moment_error_Nm": 1.9215882774789425e-21,
+          "cone_excess_N": -9.315776127585228e-10
+        },
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.20219599960509607,
+          "wrench_force_error_N": 1.1316993474494503e-16,
+          "wrench_moment_error_Nm": 4.407480262235206e-20,
+          "cone_excess_N": -4.7079123147086635e-09
+        }
+      ],
+      "full_gauge_residual_N": 1.0305989017584722e-11,
+      "residual_budget_N": 2.0186174946042746e-09,
+      "global_peak_error_Pa": 1.6925259842537344e-06,
+      "global_peak_reference_Pa": 62200.56767801368,
+      "tensor_max_absolute_error_Pa": 1.6708727343939245e-06,
+      "von_mises_field_max_absolute_error_Pa": 1.7056081560440361e-06
+    },
+    {
+      "tick": 249,
+      "env": 2,
+      "contacts": [
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.07904901699256812,
+          "wrench_force_error_N": 1.3878211317825933e-17,
+          "wrench_moment_error_Nm": 2.653069918012944e-20,
+          "cone_excess_N": -8.800694637404989e-07
+        },
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.09870194085484905,
+          "wrench_force_error_N": 4.170558093378777e-17,
+          "wrench_moment_error_Nm": 3.2738100322528125e-20,
+          "cone_excess_N": -3.725235364530409e-08
+        },
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.16349376631616508,
+          "wrench_force_error_N": 8.355541755833213e-17,
+          "wrench_moment_error_Nm": 2.5231993490941123e-20,
+          "cone_excess_N": -3.197726640277949e-09
+        },
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.014479271817373499,
+          "wrench_force_error_N": 6.2546344413855015e-18,
+          "wrench_moment_error_Nm": 5.541856397437543e-21,
+          "cone_excess_N": -3.7309272519836e-27
+        },
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.03219746607177117,
+          "wrench_force_error_N": 1.3965601408046626e-17,
+          "wrench_moment_error_Nm": 9.953870721344558e-21,
+          "cone_excess_N": -9.700964941024984e-13
+        },
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.01190392012252151,
+          "wrench_force_error_N": 4.44390651272216e-18,
+          "wrench_moment_error_Nm": 6.341707208132427e-22,
+          "cone_excess_N": 0.0
+        },
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.2277789335428611,
+          "wrench_force_error_N": 1.9432000404524038e-16,
+          "wrench_moment_error_Nm": 5.911009054322336e-20,
+          "cone_excess_N": -2.5989746624747403e-07
+        }
+      ],
+      "full_gauge_residual_N": 1.0689618418553401e-11,
+      "residual_budget_N": 2.0624301742695192e-09,
+      "global_peak_error_Pa": 3.1683885026723146e-07,
+      "global_peak_reference_Pa": 60346.73887433771,
+      "tensor_max_absolute_error_Pa": 1.500804501120001e-06,
+      "von_mises_field_max_absolute_error_Pa": 1.8790306057780981e-06
+    },
+    {
+      "tick": 249,
+      "env": 1,
+      "contacts": [
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.059907952632840995,
+          "wrench_force_error_N": 2.1527352202911037e-17,
+          "wrench_moment_error_Nm": 6.806229545846215e-21,
+          "cone_excess_N": -2.4062971812268263e-11
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.09091227215206305,
+          "wrench_force_error_N": 8.845388854693243e-18,
+          "wrench_moment_error_Nm": 1.9841469213585635e-20,
+          "cone_excess_N": -4.771856424648714e-08
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.09058633987294679,
+          "wrench_force_error_N": 1.3985787785349405e-17,
+          "wrench_moment_error_Nm": 4.933800289144745e-20,
+          "cone_excess_N": -5.3395431599335196e-11
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.016309969538277236,
+          "wrench_force_error_N": 1.0748375914472586e-17,
+          "wrench_moment_error_Nm": 1.0340703477568341e-20,
+          "cone_excess_N": 0.0
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.015684607123760234,
+          "wrench_force_error_N": 3.602423855278284e-18,
+          "wrench_moment_error_Nm": 6.921535568121751e-21,
+          "cone_excess_N": 4.432199514628132e-20
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.03918737232040187,
+          "wrench_force_error_N": 7.204847710556568e-18,
+          "wrench_moment_error_Nm": 1.5899312122477843e-20,
+          "cone_excess_N": -1.622989493846366e-14
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.059829270921539515,
+          "wrench_force_error_N": 2.841188977517478e-17,
+          "wrench_moment_error_Nm": 4.404446868570845e-20,
+          "cone_excess_N": -1.2335638992304303e-12
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.17950560168161867,
+          "wrench_force_error_N": 5.93873657494515e-17,
+          "wrench_moment_error_Nm": 8.252625518555888e-20,
+          "cone_excess_N": -3.4618092797702363e-09
+        }
+      ],
+      "full_gauge_residual_N": 9.416325647177072e-12,
+      "residual_budget_N": 1.8742778448980637e-09,
+      "global_peak_error_Pa": 7.11428583599627e-07,
+      "global_peak_reference_Pa": 58669.81553279399,
+      "tensor_max_absolute_error_Pa": 1.5179903130047023e-06,
+      "von_mises_field_max_absolute_error_Pa": 1.6480335034430027e-06
+    },
+    {
+      "tick": 299,
+      "env": 5,
+      "contacts": [
+        {
+          "mu": 0.7621486036916064,
+          "force_N": 0.14719625239899067,
+          "wrench_force_error_N": 8.333897567423435e-17,
+          "wrench_moment_error_Nm": 3.981511095257627e-20,
+          "cone_excess_N": -4.57510582279602e-06
+        },
+        {
+          "mu": 0.7621486036916064,
+          "force_N": 0.3026574215196221,
+          "wrench_force_error_N": 0.0,
+          "wrench_moment_error_Nm": 7.721892006254127e-20,
+          "cone_excess_N": -3.106650270642742e-07
+        },
+        {
+          "mu": 0.7621486036916064,
+          "force_N": 0.31311951554017686,
+          "wrench_force_error_N": 2.2247786681778235e-16,
+          "wrench_moment_error_Nm": 2.600518627956669e-19,
+          "cone_excess_N": -3.2717134846460546e-07
+        }
+      ],
+      "full_gauge_residual_N": 1.3240698315772641e-11,
+      "residual_budget_N": 2.5074031295674345e-09,
+      "global_peak_error_Pa": 1.968073775060475e-06,
+      "global_peak_reference_Pa": 66603.73179823175,
+      "tensor_max_absolute_error_Pa": 1.8905993783846498e-06,
+      "von_mises_field_max_absolute_error_Pa": 2.235552528873086e-06
+    },
+    {
+      "tick": 299,
+      "env": 4,
+      "contacts": [
+        {
+          "mu": 0.5206918899740468,
+          "force_N": 0.07959124051777369,
+          "wrench_force_error_N": 5.56465114693644e-17,
+          "wrench_moment_error_Nm": 1.4198723950604655e-20,
+          "cone_excess_N": -1.018467899332023e-08
+        },
+        {
+          "mu": 0.5206918899740468,
+          "force_N": 0.04003696219755794,
+          "wrench_force_error_N": 3.496446946337351e-18,
+          "wrench_moment_error_Nm": 6.081296806640919e-21,
+          "cone_excess_N": 0.0
+        },
+        {
+          "mu": 0.5206918899740468,
+          "force_N": 0.26502307649714985,
+          "wrench_force_error_N": 5.572756979560851e-17,
+          "wrench_moment_error_Nm": 6.589277996526212e-20,
+          "cone_excess_N": -4.732783150526867e-09
+        },
+        {
+          "mu": 0.5206918899740468,
+          "force_N": 0.2795504492319342,
+          "wrench_force_error_N": 5.594987467379873e-17,
+          "wrench_moment_error_Nm": 9.0322425236844e-20,
+          "cone_excess_N": -5.130795681793992e-09
+        }
+      ],
+      "full_gauge_residual_N": 1.2593536383475348e-11,
+      "residual_budget_N": 2.240159895465406e-09,
+      "global_peak_error_Pa": 1.981483364943415e-06,
+      "global_peak_reference_Pa": 62707.60146652899,
+      "tensor_max_absolute_error_Pa": 1.6749836504459381e-06,
+      "von_mises_field_max_absolute_error_Pa": 2.3303073248825967e-06
+    },
+    {
+      "tick": 299,
+      "env": 3,
+      "contacts": [
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.06754312227217253,
+          "wrench_force_error_N": 2.9130960879202487e-17,
+          "wrench_moment_error_Nm": 2.88284501747431e-20,
+          "cone_excess_N": -2.1643760315708855e-12
+        },
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.20326767814107569,
+          "wrench_force_error_N": 1.1113066979184075e-16,
+          "wrench_moment_error_Nm": 5.39279020871975e-20,
+          "cone_excess_N": -1.0767445217419735e-09
+        },
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.06044577544474905,
+          "wrench_force_error_N": 9.85133562538035e-18,
+          "wrench_moment_error_Nm": 1.9371547139479226e-20,
+          "cone_excess_N": -1.097356632098182e-12
+        },
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.027822653118813344,
+          "wrench_force_error_N": 1.5612511283791264e-17,
+          "wrench_moment_error_Nm": 7.209033130582295e-21,
+          "cone_excess_N": -5.334210971779879e-25
+        },
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.19826592485188302,
+          "wrench_force_error_N": 6.938893903907228e-18,
+          "wrench_moment_error_Nm": 7.119455594146236e-20,
+          "cone_excess_N": -1.241099431012964e-07
+        }
+      ],
+      "full_gauge_residual_N": 1.1125161546229465e-11,
+      "residual_budget_N": 1.9193558949852926e-09,
+      "global_peak_error_Pa": 1.6361227608285844e-06,
+      "global_peak_reference_Pa": 59152.60541885828,
+      "tensor_max_absolute_error_Pa": 1.5684854588471353e-06,
+      "von_mises_field_max_absolute_error_Pa": 1.6359117580577731e-06
+    },
+    {
+      "tick": 299,
+      "env": 2,
+      "contacts": [
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.10049852556834697,
+          "wrench_force_error_N": 1.5899003276961254e-17,
+          "wrench_moment_error_Nm": 3.542640974096953e-20,
+          "cone_excess_N": -6.654713393174096e-09
+        },
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.1651783980848443,
+          "wrench_force_error_N": 0.0,
+          "wrench_moment_error_Nm": 2.6466100046585394e-20,
+          "cone_excess_N": -4.173550903247466e-08
+        },
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.01353828475552411,
+          "wrench_force_error_N": 1.0124381827632909e-17,
+          "wrench_moment_error_Nm": 2.1271587961959478e-21,
+          "cone_excess_N": 0.0
+        },
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.03297088977319536,
+          "wrench_force_error_N": 1.5636586103463754e-18,
+          "wrench_moment_error_Nm": 7.95140382829645e-21,
+          "cone_excess_N": -1.1048907040741728e-10
+        },
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.012495310414797707,
+          "wrench_force_error_N": 1.734723475976807e-18,
+          "wrench_moment_error_Nm": 6.587344312032871e-21,
+          "cone_excess_N": 8.533620220838757e-20
+        },
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.22751101706633078,
+          "wrench_force_error_N": 3.1031676915590914e-17,
+          "wrench_moment_error_Nm": 6.821976552126964e-20,
+          "cone_excess_N": -7.830507853033235e-06
+        }
+      ],
+      "full_gauge_residual_N": 9.485713342840792e-12,
+      "residual_budget_N": 2.043852429763037e-09,
+      "global_peak_error_Pa": 3.3417745726183057e-07,
+      "global_peak_reference_Pa": 60071.827680363574,
+      "tensor_max_absolute_error_Pa": 1.5337791410274804e-06,
+      "von_mises_field_max_absolute_error_Pa": 1.995329512283206e-06
+    },
+    {
+      "tick": 349,
+      "env": 6,
+      "contacts": [
+        {
+          "mu": 0.510305889692648,
+          "force_N": 0.08005168604525321,
+          "wrench_force_error_N": 1.4304897850348038e-17,
+          "wrench_moment_error_Nm": 1.5689145472152672e-20,
+          "cone_excess_N": -1.311847197995898e-07
+        },
+        {
+          "mu": 0.510305889692648,
+          "force_N": 0.28985412409609235,
+          "wrench_force_error_N": 5.551138945876306e-17,
+          "wrench_moment_error_Nm": 1.3089756096310848e-19,
+          "cone_excess_N": -6.610833412845173e-06
+        },
+        {
+          "mu": 0.510305889692648,
+          "force_N": 0.3153544084374677,
+          "wrench_force_error_N": 1.6656962513097076e-16,
+          "wrench_moment_error_Nm": 5.793246286024971e-20,
+          "cone_excess_N": -6.705573313850499e-06
+        }
+      ],
+      "full_gauge_residual_N": 1.4411211798547434e-11,
+      "residual_budget_N": 2.6049308928830884e-09,
+      "global_peak_error_Pa": 1.9052677089348435e-06,
+      "global_peak_reference_Pa": 75294.70634309485,
+      "tensor_max_absolute_error_Pa": 1.8867795006372035e-06,
+      "von_mises_field_max_absolute_error_Pa": 2.2706808522343636e-06
+    },
+    {
+      "tick": 349,
+      "env": 5,
+      "contacts": [
+        {
+          "mu": 0.7621486036916064,
+          "force_N": 0.1395735764140971,
+          "wrench_force_error_N": 8.342919866459441e-17,
+          "wrench_moment_error_Nm": 2.3680600544976967e-20,
+          "cone_excess_N": -4.635776515051648e-08
+        },
+        {
+          "mu": 0.7621486036916064,
+          "force_N": 0.30112699314048474,
+          "wrench_force_error_N": 5.72195853827695e-17,
+          "wrench_moment_error_Nm": 2.1645598647007299e-19,
+          "cone_excess_N": -8.79402966994132e-07
+        },
+        {
+          "mu": 0.7621486036916064,
+          "force_N": 0.31165679272081737,
+          "wrench_force_error_N": 1.6667795184563816e-16,
+          "wrench_moment_error_Nm": 1.1203093126541045e-19,
+          "cone_excess_N": -9.231826373107618e-07
+        }
+      ],
+      "full_gauge_residual_N": 1.2513160796210771e-11,
+      "residual_budget_N": 2.4734979002162977e-09,
+      "global_peak_error_Pa": 2.170942025259137e-06,
+      "global_peak_reference_Pa": 66169.38520209186,
+      "tensor_max_absolute_error_Pa": 1.8328355508856475e-06,
+      "von_mises_field_max_absolute_error_Pa": 2.4022883735597134e-06
+    },
+    {
+      "tick": 349,
+      "env": 4,
+      "contacts": [
+        {
+          "mu": 0.5206918899740468,
+          "force_N": 0.0333217366258052,
+          "wrench_force_error_N": 8.182674270850422e-18,
+          "wrench_moment_error_Nm": 1.4774014926903017e-20,
+          "cone_excess_N": -2.3817588582918143e-10
+        },
+        {
+          "mu": 0.5206918899740468,
+          "force_N": 0.25987889088912297,
+          "wrench_force_error_N": 1.1102420827028943e-16,
+          "wrench_moment_error_Nm": 4.066391572769622e-20,
+          "cone_excess_N": -9.032786889528232e-08
+        },
+        {
+          "mu": 0.5206918899740468,
+          "force_N": 0.29161020298559526,
+          "wrench_force_error_N": 1.1376665187738385e-16,
+          "wrench_moment_error_Nm": 1.0731090842277122e-20,
+          "cone_excess_N": -2.2917278497997145e-08
+        }
+      ],
+      "full_gauge_residual_N": 1.0992290928987596e-11,
+      "residual_budget_N": 2.232762468629681e-09,
+      "global_peak_error_Pa": 1.9454892026260495e-06,
+      "global_peak_reference_Pa": 66319.21225408989,
+      "tensor_max_absolute_error_Pa": 1.72900763573125e-06,
+      "von_mises_field_max_absolute_error_Pa": 2.308217517565936e-06
+    },
+    {
+      "tick": 349,
+      "env": 3,
+      "contacts": [
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.06828165161073138,
+          "wrench_force_error_N": 1.0408376148840475e-17,
+          "wrench_moment_error_Nm": 6.92293112682148e-21,
+          "cone_excess_N": -2.8434566829128385e-09
+        },
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.20448754246910658,
+          "wrench_force_error_N": 8.362734666696147e-17,
+          "wrench_moment_error_Nm": 3.702059610942764e-20,
+          "cone_excess_N": -1.660067053116309e-08
+        },
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.057665884905030815,
+          "wrench_force_error_N": 3.4738487309526884e-17,
+          "wrench_moment_error_Nm": 2.5739085046449648e-20,
+          "cone_excess_N": -5.74372813551879e-09
+        },
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.02166452091277512,
+          "wrench_force_error_N": 8.679713874558332e-18,
+          "wrench_moment_error_Nm": 8.53776670192645e-21,
+          "cone_excess_N": -1.438158973343187e-10
+        },
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.1950482270101264,
+          "wrench_force_error_N": 5.690316088760835e-17,
+          "wrench_moment_error_Nm": 1.977063588023046e-20,
+          "cone_excess_N": -3.916683230756256e-07
+        }
+      ],
+      "full_gauge_residual_N": 1.0588275800882633e-11,
+      "residual_budget_N": 1.9388501636117974e-09,
+      "global_peak_error_Pa": 1.5721525414846838e-06,
+      "global_peak_reference_Pa": 57884.67055344695,
+      "tensor_max_absolute_error_Pa": 1.5209225239232183e-06,
+      "von_mises_field_max_absolute_error_Pa": 1.7000711522996426e-06
+    },
+    {
+      "tick": 399,
+      "env": 7,
+      "contacts": [
+        {
+          "mu": 0.5292197087214413,
+          "force_N": 0.0784461417805221,
+          "wrench_force_error_N": 1.5515838480915858e-17,
+          "wrench_moment_error_Nm": 1.3569867871896017e-20,
+          "cone_excess_N": -1.1421369401574366e-07
+        },
+        {
+          "mu": 0.5292197087214413,
+          "force_N": 0.29529988641340904,
+          "wrench_force_error_N": 1.6656960362894373e-16,
+          "wrench_moment_error_Nm": 1.1140307790962774e-19,
+          "cone_excess_N": -9.11484052257521e-09
+        },
+        {
+          "mu": 0.5292197087214413,
+          "force_N": 0.3128419743189126,
+          "wrench_force_error_N": 2.7833528704240246e-16,
+          "wrench_moment_error_Nm": 2.3264244277356953e-19,
+          "cone_excess_N": -5.785850901164092e-10
+        }
+      ],
+      "full_gauge_residual_N": 1.2609558451693936e-11,
+      "residual_budget_N": 2.413277352512841e-09,
+      "global_peak_error_Pa": 2.1058949641883373e-06,
+      "global_peak_reference_Pa": 68691.05591135524,
+      "tensor_max_absolute_error_Pa": 1.9178842194378376e-06,
+      "von_mises_field_max_absolute_error_Pa": 2.5004264898598194e-06
+    },
+    {
+      "tick": 399,
+      "env": 6,
+      "contacts": [
+        {
+          "mu": 0.510305889692648,
+          "force_N": 0.07702706632699297,
+          "wrench_force_error_N": 4.336808689942018e-17,
+          "wrench_moment_error_Nm": 1.464065978520823e-20,
+          "cone_excess_N": -2.226025220042914e-07
+        },
+        {
+          "mu": 0.510305889692648,
+          "force_N": 0.29479216502441835,
+          "wrench_force_error_N": 2.220450350585332e-16,
+          "wrench_moment_error_Nm": 1.2214544967597948e-19,
+          "cone_excess_N": -6.16537842958102e-06
+        },
+        {
+          "mu": 0.510305889692648,
+          "force_N": 0.3103762798717787,
+          "wrench_force_error_N": 5.553827612821233e-17,
+          "wrench_moment_error_Nm": 1.8717405467855645e-20,
+          "cone_excess_N": -6.365311351037432e-06
+        }
+      ],
+      "full_gauge_residual_N": 1.2157699368191677e-11,
+      "residual_budget_N": 2.6016999546154736e-09,
+      "global_peak_error_Pa": 2.241387846879661e-06,
+      "global_peak_reference_Pa": 74404.63469574643,
+      "tensor_max_absolute_error_Pa": 1.940155925694853e-06,
+      "von_mises_field_max_absolute_error_Pa": 2.7018104447051883e-06
+    },
+    {
+      "tick": 399,
+      "env": 5,
+      "contacts": [
+        {
+          "mu": 0.7621486036916064,
+          "force_N": 0.30534093003167795,
+          "wrench_force_error_N": 1.3878449536528033e-17,
+          "wrench_moment_error_Nm": 1.6522668400409794e-19,
+          "cone_excess_N": -1.27574727776426e-08
+        },
+        {
+          "mu": 0.7621486036916064,
+          "force_N": 0.30653738662393465,
+          "wrench_force_error_N": 6.206337750646792e-17,
+          "wrench_moment_error_Nm": 5.1633072404343255e-20,
+          "cone_excess_N": -2.466827153644432e-10
+        }
+      ],
+      "full_gauge_residual_N": 1.268119654824765e-11,
+      "residual_budget_N": 2.3824926366633663e-09,
+      "global_peak_error_Pa": 2.041735569946468e-06,
+      "global_peak_reference_Pa": 67933.39748028315,
+      "tensor_max_absolute_error_Pa": 1.804808562155813e-06,
+      "von_mises_field_max_absolute_error_Pa": 2.483793650753796e-06
+    },
+    {
+      "tick": 399,
+      "env": 4,
+      "contacts": [
+        {
+          "mu": 0.5206918899740468,
+          "force_N": 0.03349201840777151,
+          "wrench_force_error_N": 1.4409695421113136e-17,
+          "wrench_moment_error_Nm": 1.806211462657395e-20,
+          "cone_excess_N": -3.5323774194152695e-14
+        },
+        {
+          "mu": 0.5206918899740468,
+          "force_N": 0.2599955589821772,
+          "wrench_force_error_N": 5.551157474611588e-17,
+          "wrench_moment_error_Nm": 1.6244949905215442e-19,
+          "cone_excess_N": -5.1235851334184055e-09
+        },
+        {
+          "mu": 0.5206918899740468,
+          "force_N": 0.2914315922649369,
+          "wrench_force_error_N": 5.605063087764203e-17,
+          "wrench_moment_error_Nm": 1.2745467888371105e-19,
+          "cone_excess_N": -8.240578362180733e-08
+        }
+      ],
+      "full_gauge_residual_N": 1.1549413213117941e-11,
+      "residual_budget_N": 2.281722027741332e-09,
+      "global_peak_error_Pa": 1.9485014490783215e-06,
+      "global_peak_reference_Pa": 68093.29943549715,
+      "tensor_max_absolute_error_Pa": 1.8026330508291721e-06,
+      "von_mises_field_max_absolute_error_Pa": 2.3759857867844403e-06
+    },
+    {
+      "tick": 449,
+      "env": 0,
+      "contacts": [
+        {
+          "mu": 0.7912395187079685,
+          "force_N": 0.05688054682067457,
+          "wrench_force_error_N": 7.757919228897728e-18,
+          "wrench_moment_error_Nm": 6.618834417969284e-21,
+          "cone_excess_N": 1.0420695081156272e-18
+        },
+        {
+          "mu": 0.7912395187079685,
+          "force_N": 0.05643414602202358,
+          "wrench_force_error_N": 3.878959614448864e-18,
+          "wrench_moment_error_Nm": 9.036602871167406e-21,
+          "cone_excess_N": -5.307806671531614e-10
+        }
+      ],
+      "full_gauge_residual_N": 1.6696447734475695e-12,
+      "residual_budget_N": 5.707366071427878e-10,
+      "global_peak_error_Pa": 3.2913885661400855e-07,
+      "global_peak_reference_Pa": 15167.90964604651,
+      "tensor_max_absolute_error_Pa": 2.8573322197189555e-07,
+      "von_mises_field_max_absolute_error_Pa": 3.824497980531305e-07
+    },
+    {
+      "tick": 449,
+      "env": 7,
+      "contacts": [
+        {
+          "mu": 0.5292197087214413,
+          "force_N": 0.30523520679686755,
+          "wrench_force_error_N": 2.2204460657939253e-16,
+          "wrench_moment_error_Nm": 8.689403668146997e-20,
+          "cone_excess_N": -1.221659109488923e-10
+        },
+        {
+          "mu": 0.5292197087214413,
+          "force_N": 0.3065829664239006,
+          "wrench_force_error_N": 5.721958658649408e-17,
+          "wrench_moment_error_Nm": 1.928343634855048e-19,
+          "cone_excess_N": -2.1479151804175833e-07
+        }
+      ],
+      "full_gauge_residual_N": 1.1823665284445533e-11,
+      "residual_budget_N": 2.400657015565776e-09,
+      "global_peak_error_Pa": 1.9137951312586665e-06,
+      "global_peak_reference_Pa": 68549.30111705794,
+      "tensor_max_absolute_error_Pa": 1.7825441318564117e-06,
+      "von_mises_field_max_absolute_error_Pa": 2.3529064492322505e-06
+    },
+    {
+      "tick": 449,
+      "env": 6,
+      "contacts": [
+        {
+          "mu": 0.510305889692648,
+          "force_N": 0.3037926655785178,
+          "wrench_force_error_N": 1.6653348898680922e-16,
+          "wrench_moment_error_Nm": 6.081071970768661e-20,
+          "cone_excess_N": -1.626183451501027e-07
+        },
+        {
+          "mu": 0.510305889692648,
+          "force_N": 0.30492323809148036,
+          "wrench_force_error_N": 5.551116612050686e-17,
+          "wrench_moment_error_Nm": 2.965497184019612e-20,
+          "cone_excess_N": -1.3866673643376242e-07
+        }
+      ],
+      "full_gauge_residual_N": 1.2370660526015254e-11,
+      "residual_budget_N": 2.619096429783326e-09,
+      "global_peak_error_Pa": 1.9804429030045867e-06,
+      "global_peak_reference_Pa": 75285.40613161013,
+      "tensor_max_absolute_error_Pa": 1.9038125174120069e-06,
+      "von_mises_field_max_absolute_error_Pa": 2.359069185331464e-06
+    },
+    {
+      "tick": 449,
+      "env": 5,
+      "contacts": [
+        {
+          "mu": 0.7621486036916064,
+          "force_N": 0.30532445896691585,
+          "wrench_force_error_N": 1.6711077356722939e-16,
+          "wrench_moment_error_Nm": 2.1553848236984087e-20,
+          "cone_excess_N": -7.418991027063312e-08
+        },
+        {
+          "mu": 0.7621486036916064,
+          "force_N": 0.30625885587657625,
+          "wrench_force_error_N": 2.775562855513763e-17,
+          "wrench_moment_error_Nm": 8.666856852159675e-20,
+          "cone_excess_N": -1.310279565769447e-07
+        }
+      ],
+      "full_gauge_residual_N": 1.1105939612070471e-11,
+      "residual_budget_N": 2.4495041446006273e-09,
+      "global_peak_error_Pa": 2.0104198483750224e-06,
+      "global_peak_reference_Pa": 70073.76762887578,
+      "tensor_max_absolute_error_Pa": 1.8920982256531715e-06,
+      "von_mises_field_max_absolute_error_Pa": 2.5161862140521407e-06
+    },
+    {
+      "tick": 499,
+      "env": 1,
+      "contacts": [
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.061629791892260324,
+          "wrench_force_error_N": 1.5519247325175873e-17,
+          "wrench_moment_error_Nm": 1.1711045944506119e-20,
+          "cone_excess_N": -2.75733477550533e-10
+        }
+      ],
+      "full_gauge_residual_N": 7.847368695850422e-13,
+      "residual_budget_N": 3.8531930205835035e-10,
+      "global_peak_error_Pa": 1.1125848686788231e-07,
+      "global_peak_reference_Pa": 13718.895921719366,
+      "tensor_max_absolute_error_Pa": 1.1008523870259523e-07,
+      "von_mises_field_max_absolute_error_Pa": 1.4129909686744213e-07
+    },
+    {
+      "tick": 499,
+      "env": 0,
+      "contacts": [
+        {
+          "mu": 0.7912395187079685,
+          "force_N": 0.05667482222036229,
+          "wrench_force_error_N": 3.736960380813366e-17,
+          "wrench_moment_error_Nm": 6.0618296644896594e-21,
+          "cone_excess_N": -6.048163166193876e-06
+        }
+      ],
+      "full_gauge_residual_N": 7.166856043806014e-13,
+      "residual_budget_N": 3.6969196492416916e-10,
+      "global_peak_error_Pa": 1.048756530508399e-07,
+      "global_peak_reference_Pa": 13290.769206397734,
+      "tensor_max_absolute_error_Pa": 1.0559415386524051e-07,
+      "von_mises_field_max_absolute_error_Pa": 1.3408498489297926e-07
+    },
+    {
+      "tick": 499,
+      "env": 7,
+      "contacts": [
+        {
+          "mu": 0.5292197087214413,
+          "force_N": 0.30528559234211416,
+          "wrench_force_error_N": 1.1188630556596727e-16,
+          "wrench_moment_error_Nm": 2.2305324420134203e-19,
+          "cone_excess_N": -2.172809248234252e-08
+        },
+        {
+          "mu": 0.5292197087214413,
+          "force_N": 0.3063099029687246,
+          "wrench_force_error_N": 2.2301831149576767e-16,
+          "wrench_moment_error_Nm": 3.7824038658079205e-20,
+          "cone_excess_N": -5.072662460943036e-08
+        }
+      ],
+      "full_gauge_residual_N": 1.0930252245805328e-11,
+      "residual_budget_N": 2.4520899909223557e-09,
+      "global_peak_error_Pa": 2.207903889939189e-06,
+      "global_peak_reference_Pa": 70146.67142335678,
+      "tensor_max_absolute_error_Pa": 1.873708242783323e-06,
+      "von_mises_field_max_absolute_error_Pa": 2.7432761271484196e-06
+    },
+    {
+      "tick": 499,
+      "env": 6,
+      "contacts": [
+        {
+          "mu": 0.510305889692648,
+          "force_N": 0.30365518045492407,
+          "wrench_force_error_N": 1.040834140731457e-17,
+          "wrench_moment_error_Nm": 7.706254023020701e-20,
+          "cone_excess_N": -2.0152523628458808e-06
+        },
+        {
+          "mu": 0.510305889692648,
+          "force_N": 0.304751360974463,
+          "wrench_force_error_N": 6.942281208919283e-18,
+          "wrench_moment_error_Nm": 9.40190211816407e-20,
+          "cone_excess_N": -1.377596242492478e-06
+        }
+      ],
+      "full_gauge_residual_N": 1.206069615367287e-11,
+      "residual_budget_N": 2.6931927634129734e-09,
+      "global_peak_error_Pa": 2.0285515347495675e-06,
+      "global_peak_reference_Pa": 77476.47328331709,
+      "tensor_max_absolute_error_Pa": 1.8428618204779923e-06,
+      "von_mises_field_max_absolute_error_Pa": 2.46442505158484e-06
+    },
+    {
+      "tick": 549,
+      "env": 2,
+      "contacts": [
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.018912050686586534,
+          "wrench_force_error_N": 1.011508913927959e-17,
+          "wrench_moment_error_Nm": 1.2230103730885827e-20,
+          "cone_excess_N": -6.0818656989389875e-09
+        }
+      ],
+      "full_gauge_residual_N": 1.748002517450132e-13,
+      "residual_budget_N": 1.138583938007332e-10,
+      "global_peak_error_Pa": 3.957211447414011e-09,
+      "global_peak_reference_Pa": 5487.09129282501,
+      "tensor_max_absolute_error_Pa": 3.9336867985184654e-08,
+      "von_mises_field_max_absolute_error_Pa": 4.016669663542416e-08
+    },
+    {
+      "tick": 549,
+      "env": 1,
+      "contacts": [
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.06098891728462526,
+          "wrench_force_error_N": 1.7395955440150154e-17,
+          "wrench_moment_error_Nm": 1.0219429209423127e-20,
+          "cone_excess_N": -1.0262556345186747e-11
+        }
+      ],
+      "full_gauge_residual_N": 1.0362951785668797e-12,
+      "residual_budget_N": 3.7177350470326157e-10,
+      "global_peak_error_Pa": 9.156792657449841e-09,
+      "global_peak_reference_Pa": 15983.010201724499,
+      "tensor_max_absolute_error_Pa": 1.5397841934827738e-07,
+      "von_mises_field_max_absolute_error_Pa": 1.0890562407439575e-07
+    },
+    {
+      "tick": 549,
+      "env": 0,
+      "contacts": [
+        {
+          "mu": 0.7912395187079685,
+          "force_N": 0.05352176644253451,
+          "wrench_force_error_N": 9.341771812940338e-18,
+          "wrench_moment_error_Nm": 7.744675404520204e-21,
+          "cone_excess_N": -1.1067360296288642e-08
+        }
+      ],
+      "full_gauge_residual_N": 8.451756448494764e-13,
+      "residual_budget_N": 3.5490593930342084e-10,
+      "global_peak_error_Pa": 7.533708412665874e-08,
+      "global_peak_reference_Pa": 13607.046545167763,
+      "tensor_max_absolute_error_Pa": 8.856845568061544e-08,
+      "von_mises_field_max_absolute_error_Pa": 1.02628291642759e-07
+    },
+    {
+      "tick": 549,
+      "env": 7,
+      "contacts": [
+        {
+          "mu": 0.5292197087214413,
+          "force_N": 0.3050509203858764,
+          "wrench_force_error_N": 5.561988846578201e-17,
+          "wrench_moment_error_Nm": 7.831298399755553e-20,
+          "cone_excess_N": -1.0866074910236727e-07
+        },
+        {
+          "mu": 0.5292197087214413,
+          "force_N": 0.30625842847010715,
+          "wrench_force_error_N": 2.775557680676897e-16,
+          "wrench_moment_error_Nm": 6.557526375108254e-20,
+          "cone_excess_N": -2.2488231934049516e-08
+        }
+      ],
+      "full_gauge_residual_N": 1.2913153222584104e-11,
+      "residual_budget_N": 2.5339966369191204e-09,
+      "global_peak_error_Pa": 1.9212166080251336e-06,
+      "global_peak_reference_Pa": 72731.40339930294,
+      "tensor_max_absolute_error_Pa": 1.9177314243279397e-06,
+      "von_mises_field_max_absolute_error_Pa": 2.349086571484804e-06
+    },
+    {
+      "tick": 599,
+      "env": 3,
+      "contacts": [
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.045615006115326054,
+          "wrench_force_error_N": 3.122502256758253e-17,
+          "wrench_moment_error_Nm": 1.3864881546538705e-20,
+          "cone_excess_N": -1.6996975083938924e-07
+        }
+      ],
+      "full_gauge_residual_N": 8.696974381637543e-13,
+      "residual_budget_N": 2.8985296301356956e-10,
+      "global_peak_error_Pa": 1.0951589501928538e-07,
+      "global_peak_reference_Pa": 10571.006179364958,
+      "tensor_max_absolute_error_Pa": 1.1934935173485428e-07,
+      "von_mises_field_max_absolute_error_Pa": 1.2797681847587228e-07
+    },
+    {
+      "tick": 599,
+      "env": 2,
+      "contacts": [
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.04986350897214752,
+          "wrench_force_error_N": 2.7318452618149036e-17,
+          "wrench_moment_error_Nm": 1.3414903307753457e-20,
+          "cone_excess_N": -2.6113817710073506e-08
+        }
+      ],
+      "full_gauge_residual_N": 6.918181062842656e-13,
+      "residual_budget_N": 3.0547490010419166e-10,
+      "global_peak_error_Pa": 5.322362994775176e-09,
+      "global_peak_reference_Pa": 14446.266020242365,
+      "tensor_max_absolute_error_Pa": 1.8542004909249954e-07,
+      "von_mises_field_max_absolute_error_Pa": 1.8326181816519238e-07
+    },
+    {
+      "tick": 599,
+      "env": 1,
+      "contacts": [
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.02663796983840201,
+          "wrench_force_error_N": 6.1331736667334966e-18,
+          "wrench_moment_error_Nm": 3.634854213087893e-21,
+          "cone_excess_N": -8.564592150984049e-08
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.02230997882796542,
+          "wrench_force_error_N": 1.241873016165035e-17,
+          "wrench_moment_error_Nm": 5.567574911264263e-21,
+          "cone_excess_N": -5.5117348527119034e-08
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.015109644278714668,
+          "wrench_force_error_N": 3.576224061345498e-18,
+          "wrench_moment_error_Nm": 5.6178632861722604e-21,
+          "cone_excess_N": -3.3936159457221375e-10
+        }
+      ],
+      "full_gauge_residual_N": 1.0642133604182759e-12,
+      "residual_budget_N": 2.2407303785878196e-10,
+      "global_peak_error_Pa": 8.0414793046657e-08,
+      "global_peak_reference_Pa": 6255.738803596856,
+      "tensor_max_absolute_error_Pa": 1.2447389963199385e-07,
+      "von_mises_field_max_absolute_error_Pa": 1.3233875506557524e-07
+    },
+    {
+      "tick": 599,
+      "env": 0,
+      "contacts": [
+        {
+          "mu": 0.7912395187079685,
+          "force_N": 0.06262754756785002,
+          "wrench_force_error_N": 3.8005887153050735e-17,
+          "wrench_moment_error_Nm": 7.79525162149339e-21,
+          "cone_excess_N": -2.2759178565371645e-08
+        }
+      ],
+      "full_gauge_residual_N": 1.1039168628692493e-12,
+      "residual_budget_N": 3.8243774191059995e-10,
+      "global_peak_error_Pa": 1.297266862820834e-07,
+      "global_peak_reference_Pa": 16455.69611077275,
+      "tensor_max_absolute_error_Pa": 1.765620254445821e-07,
+      "von_mises_field_max_absolute_error_Pa": 1.350581442238763e-07
+    },
+    {
+      "tick": 649,
+      "env": 4,
+      "contacts": [
+        {
+          "mu": 0.5206918899740468,
+          "force_N": 0.06180456128919803,
+          "wrench_force_error_N": 2.2096455226066133e-17,
+          "wrench_moment_error_Nm": 2.55529541586235e-20,
+          "cone_excess_N": -5.170267938178323e-09
+        }
+      ],
+      "full_gauge_residual_N": 1.1984933404584821e-12,
+      "residual_budget_N": 3.6539707796724316e-10,
+      "global_peak_error_Pa": 1.1057272786274552e-07,
+      "global_peak_reference_Pa": 16248.794306034495,
+      "tensor_max_absolute_error_Pa": 1.7640491023485083e-07,
+      "von_mises_field_max_absolute_error_Pa": 1.8110495147993788e-07
+    },
+    {
+      "tick": 649,
+      "env": 3,
+      "contacts": [
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.05075476458503962,
+          "wrench_force_error_N": 1.9628027340371563e-17,
+          "wrench_moment_error_Nm": 8.270915369485792e-21,
+          "cone_excess_N": -1.2657464690623983e-07
+        }
+      ],
+      "full_gauge_residual_N": 1.009861351188189e-12,
+      "residual_budget_N": 2.8910530500996693e-10,
+      "global_peak_error_Pa": 8.95124685484916e-08,
+      "global_peak_reference_Pa": 12610.916082156602,
+      "tensor_max_absolute_error_Pa": 1.4704733075632248e-07,
+      "von_mises_field_max_absolute_error_Pa": 1.5123987395782024e-07
+    },
+    {
+      "tick": 649,
+      "env": 2,
+      "contacts": [
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.06177538184058029,
+          "wrench_force_error_N": 1.5636586103463754e-18,
+          "wrench_moment_error_Nm": 5.552128022182614e-21,
+          "cone_excess_N": -8.034874028751103e-11
+        }
+      ],
+      "full_gauge_residual_N": 1.266982386678961e-12,
+      "residual_budget_N": 3.9244227784841964e-10,
+      "global_peak_error_Pa": 1.1926022125408053e-07,
+      "global_peak_reference_Pa": 15688.024975813829,
+      "tensor_max_absolute_error_Pa": 2.8679096431005746e-07,
+      "von_mises_field_max_absolute_error_Pa": 2.387587301200256e-07
+    },
+    {
+      "tick": 649,
+      "env": 1,
+      "contacts": [
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.06369643349202621,
+          "wrench_force_error_N": 1.361838123766445e-34,
+          "wrench_moment_error_Nm": 1.5662327622922903e-20,
+          "cone_excess_N": -7.777531136514215e-09
+        }
+      ],
+      "full_gauge_residual_N": 9.383006340357063e-13,
+      "residual_budget_N": 3.8326951359706474e-10,
+      "global_peak_error_Pa": 3.645163815235719e-07,
+      "global_peak_reference_Pa": 13655.364416493789,
+      "tensor_max_absolute_error_Pa": 2.3955908545758575e-07,
+      "von_mises_field_max_absolute_error_Pa": 3.6474739317782223e-07
+    },
+    {
+      "tick": 699,
+      "env": 5,
+      "contacts": [
+        {
+          "mu": 0.7621486036916064,
+          "force_N": 0.061949649873457,
+          "wrench_force_error_N": 6.95581393367055e-18,
+          "wrench_moment_error_Nm": 2.359338952561812e-21,
+          "cone_excess_N": -5.339896099870532e-07
+        }
+      ],
+      "full_gauge_residual_N": 1.4476157366095088e-12,
+      "residual_budget_N": 3.8506113633493075e-10,
+      "global_peak_error_Pa": 1.69477061717771e-07,
+      "global_peak_reference_Pa": 16158.437760345048,
+      "tensor_max_absolute_error_Pa": 2.0649531506933272e-07,
+      "von_mises_field_max_absolute_error_Pa": 1.9786239136010408e-07
+    },
+    {
+      "tick": 699,
+      "env": 4,
+      "contacts": [
+        {
+          "mu": 0.5206918899740468,
+          "force_N": 0.09360191935028703,
+          "wrench_force_error_N": 5.0515910130503314e-17,
+          "wrench_moment_error_Nm": 2.783986613485539e-20,
+          "cone_excess_N": -9.546683723227497e-09
+        }
+      ],
+      "full_gauge_residual_N": 1.7103840132094273e-12,
+      "residual_budget_N": 5.622675687623301e-10,
+      "global_peak_error_Pa": 1.9366416381672025e-07,
+      "global_peak_reference_Pa": 25679.576371195,
+      "tensor_max_absolute_error_Pa": 3.117716005363036e-07,
+      "von_mises_field_max_absolute_error_Pa": 2.7111491363029927e-07
+    },
+    {
+      "tick": 699,
+      "env": 3,
+      "contacts": [
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.0552374784619201,
+          "wrench_force_error_N": 2.2215299868541707e-17,
+          "wrench_moment_error_Nm": 1.8366102880095614e-20,
+          "cone_excess_N": -1.4408256993898792e-08
+        }
+      ],
+      "full_gauge_residual_N": 9.686957317960629e-13,
+      "residual_budget_N": 3.2105149094319607e-10,
+      "global_peak_error_Pa": 2.893466444220394e-08,
+      "global_peak_reference_Pa": 14225.486209779432,
+      "tensor_max_absolute_error_Pa": 1.39761596074095e-07,
+      "von_mises_field_max_absolute_error_Pa": 1.182133928523399e-07
+    },
+    {
+      "tick": 699,
+      "env": 2,
+      "contacts": [
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.06405485289956547,
+          "wrench_force_error_N": 1.925929944387236e-34,
+          "wrench_moment_error_Nm": 1.5267350344961305e-20,
+          "cone_excess_N": -4.784539749447838e-06
+        }
+      ],
+      "full_gauge_residual_N": 1.1313861933453493e-12,
+      "residual_budget_N": 3.9942233007018187e-10,
+      "global_peak_error_Pa": 3.678796929307282e-07,
+      "global_peak_reference_Pa": 14316.296831345502,
+      "tensor_max_absolute_error_Pa": 2.4399378162343055e-07,
+      "von_mises_field_max_absolute_error_Pa": 3.681179805425927e-07
+    },
+    {
+      "tick": 749,
+      "env": 6,
+      "contacts": [
+        {
+          "mu": 0.510305889692648,
+          "force_N": 0.10087851542284838,
+          "wrench_force_error_N": 2.0816681711721685e-17,
+          "wrench_moment_error_Nm": 9.556873511131291e-21,
+          "cone_excess_N": -8.226924984642484e-07
+        }
+      ],
+      "full_gauge_residual_N": 2.726302036387318e-12,
+      "residual_budget_N": 6.637924607153598e-10,
+      "global_peak_error_Pa": 2.670421963557601e-07,
+      "global_peak_reference_Pa": 29353.638549581603,
+      "tensor_max_absolute_error_Pa": 4.5306387619348243e-07,
+      "von_mises_field_max_absolute_error_Pa": 4.122957761865109e-07
+    },
+    {
+      "tick": 749,
+      "env": 5,
+      "contacts": [
+        {
+          "mu": 0.7621486036916064,
+          "force_N": 0.01837421546374128,
+          "wrench_force_error_N": 1.399251010623041e-17,
+          "wrench_moment_error_Nm": 5.503711168186676e-21,
+          "cone_excess_N": -1.511202459703328e-10
+        },
+        {
+          "mu": 0.7621486036916064,
+          "force_N": 0.020754437835058575,
+          "wrench_force_error_N": 3.9747508192403134e-18,
+          "wrench_moment_error_Nm": 7.294049182598649e-21,
+          "cone_excess_N": -2.2077127169645637e-09
+        },
+        {
+          "mu": 0.7621486036916064,
+          "force_N": 0.024889968480317475,
+          "wrench_force_error_N": 1.399251010623041e-17,
+          "wrench_moment_error_Nm": 3.469480671213699e-21,
+          "cone_excess_N": -1.0767633320330998e-09
+        }
+      ],
+      "full_gauge_residual_N": 9.53949264597763e-13,
+      "residual_budget_N": 2.1745207084137002e-10,
+      "global_peak_error_Pa": 1.1146948963869363e-07,
+      "global_peak_reference_Pa": 6185.293637929419,
+      "tensor_max_absolute_error_Pa": 1.069336121872766e-07,
+      "von_mises_field_max_absolute_error_Pa": 1.2881355360150337e-07
+    },
+    {
+      "tick": 749,
+      "env": 4,
+      "contacts": [],
+      "full_gauge_residual_N": 0.0,
+      "residual_budget_N": 1e-11,
+      "global_peak_error_Pa": 0.0,
+      "global_peak_reference_Pa": 0.0,
+      "tensor_max_absolute_error_Pa": 0.0,
+      "von_mises_field_max_absolute_error_Pa": 0.0
+    },
+    {
+      "tick": 749,
+      "env": 3,
+      "contacts": [
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.06405780942641265,
+          "wrench_force_error_N": 2.7755575615628914e-17,
+          "wrench_moment_error_Nm": 7.043731925311378e-21,
+          "cone_excess_N": -9.956357392387545e-08
+        }
+      ],
+      "full_gauge_residual_N": 1.0048818655063004e-12,
+      "residual_budget_N": 3.701672228708097e-10,
+      "global_peak_error_Pa": 3.58728357241489e-07,
+      "global_peak_reference_Pa": 13074.4841756122,
+      "tensor_max_absolute_error_Pa": 2.3610482458025217e-07,
+      "von_mises_field_max_absolute_error_Pa": 3.5856828617397696e-07
+    },
+    {
+      "tick": 799,
+      "env": 7,
+      "contacts": [
+        {
+          "mu": 0.5292197087214413,
+          "force_N": 0.05686902109607139,
+          "wrench_force_error_N": 1.388289553532661e-17,
+          "wrench_moment_error_Nm": 1.764952051943064e-20,
+          "cone_excess_N": -2.4451638563193788e-08
+        }
+      ],
+      "full_gauge_residual_N": 1.5602425162926708e-12,
+      "residual_budget_N": 3.5109169899972636e-10,
+      "global_peak_error_Pa": 3.7717109080404043e-07,
+      "global_peak_reference_Pa": 14025.334609568863,
+      "tensor_max_absolute_error_Pa": 3.319255483802408e-07,
+      "von_mises_field_max_absolute_error_Pa": 4.472694854484871e-07
+    },
+    {
+      "tick": 799,
+      "env": 6,
+      "contacts": [
+        {
+          "mu": 0.510305889692648,
+          "force_N": 0.058761955970541,
+          "wrench_force_error_N": 9.813077866773595e-18,
+          "wrench_moment_error_Nm": 1.7709884911643127e-20,
+          "cone_excess_N": -5.625002017045884e-10
+        }
+      ],
+      "full_gauge_residual_N": 1.4628829929931431e-12,
+      "residual_budget_N": 3.7458592976719846e-10,
+      "global_peak_error_Pa": 1.6718695405870676e-07,
+      "global_peak_reference_Pa": 16538.894527335735,
+      "tensor_max_absolute_error_Pa": 1.9924209482269362e-07,
+      "von_mises_field_max_absolute_error_Pa": 2.2205131244845688e-07
+    },
+    {
+      "tick": 799,
+      "env": 5,
+      "contacts": [
+        {
+          "mu": 0.7621486036916064,
+          "force_N": 0.06379781846489459,
+          "wrench_force_error_N": 2.7755575615628914e-17,
+          "wrench_moment_error_Nm": 1.1147844023406566e-20,
+          "cone_excess_N": -1.9697556686590375e-08
+        }
+      ],
+      "full_gauge_residual_N": 1.0606348610538636e-12,
+      "residual_budget_N": 3.735121932877927e-10,
+      "global_peak_error_Pa": 3.553814167389646e-07,
+      "global_peak_reference_Pa": 13232.79837666554,
+      "tensor_max_absolute_error_Pa": 2.3599386622663587e-07,
+      "von_mises_field_max_absolute_error_Pa": 3.5554876376409084e-07
+    },
+    {
+      "tick": 799,
+      "env": 4,
+      "contacts": [
+        {
+          "mu": 0.5206918899740468,
+          "force_N": 0.06405781094321426,
+          "wrench_force_error_N": 1.3877787807814457e-17,
+          "wrench_moment_error_Nm": 3.02919952135864e-20,
+          "cone_excess_N": -1.1638543935492849e-08
+        }
+      ],
+      "full_gauge_residual_N": 1.0142397702335504e-12,
+      "residual_budget_N": 3.7377919275690766e-10,
+      "global_peak_error_Pa": 3.599070623749867e-07,
+      "global_peak_reference_Pa": 13232.25071403068,
+      "tensor_max_absolute_error_Pa": 2.3781285563018173e-07,
+      "von_mises_field_max_absolute_error_Pa": 3.597633622121066e-07
+    },
+    {
+      "tick": 849,
+      "env": 0,
+      "contacts": [
+        {
+          "mu": 0.7912395187079685,
+          "force_N": 0.0960741570848776,
+          "wrench_force_error_N": 1.4331167885963448e-17,
+          "wrench_moment_error_Nm": 2.9293581616486886e-20,
+          "cone_excess_N": -8.978890553864794e-13
+        },
+        {
+          "mu": 0.7912395187079685,
+          "force_N": 0.18184513123079227,
+          "wrench_force_error_N": 3.5381555418772973e-17,
+          "wrench_moment_error_Nm": 8.196022750343482e-20,
+          "cone_excess_N": -9.467710170142957e-10
+        },
+        {
+          "mu": 0.7912395187079685,
+          "force_N": 0.03162976528942533,
+          "wrench_force_error_N": 1.4513737894400392e-17,
+          "wrench_moment_error_Nm": 1.1180818342752447e-20,
+          "cone_excess_N": 0.0
+        },
+        {
+          "mu": 0.7912395187079685,
+          "force_N": 0.24894456050391195,
+          "wrench_force_error_N": 1.665695898455916e-16,
+          "wrench_moment_error_Nm": 4.203307030314624e-20,
+          "cone_excess_N": -1.51709817248392e-06
+        }
+      ],
+      "full_gauge_residual_N": 9.842489349473025e-12,
+      "residual_budget_N": 2.181586096588074e-09,
+      "global_peak_error_Pa": 2.2074164007790387e-06,
+      "global_peak_reference_Pa": 63441.37139290956,
+      "tensor_max_absolute_error_Pa": 1.670261553954333e-06,
+      "von_mises_field_max_absolute_error_Pa": 2.491680788807571e-06
+    },
+    {
+      "tick": 849,
+      "env": 7,
+      "contacts": [
+        {
+          "mu": 0.5292197087214413,
+          "force_N": 0.06289890942175638,
+          "wrench_force_error_N": 3.538305043863908e-17,
+          "wrench_moment_error_Nm": 1.8278912901460643e-20,
+          "cone_excess_N": -1.902206171181493e-09
+        }
+      ],
+      "full_gauge_residual_N": 1.0260218346330764e-12,
+      "residual_budget_N": 3.6152406225993607e-10,
+      "global_peak_error_Pa": 1.3689714251086116e-07,
+      "global_peak_reference_Pa": 14776.269145919061,
+      "tensor_max_absolute_error_Pa": 1.726950245029002e-07,
+      "von_mises_field_max_absolute_error_Pa": 1.968037395272404e-07
+    },
+    {
+      "tick": 849,
+      "env": 6,
+      "contacts": [
+        {
+          "mu": 0.510305889692648,
+          "force_N": 0.06405686710104211,
+          "wrench_force_error_N": 2.8895217788897575e-34,
+          "wrench_moment_error_Nm": 1.2120500229196669e-20,
+          "cone_excess_N": -1.0883392095654742e-07
+        }
+      ],
+      "full_gauge_residual_N": 1.132752262842731e-12,
+      "residual_budget_N": 4.0690732862588704e-10,
+      "global_peak_error_Pa": 3.768800524994731e-07,
+      "global_peak_reference_Pa": 14620.645811074686,
+      "tensor_max_absolute_error_Pa": 2.4665496312081814e-07,
+      "von_mises_field_max_absolute_error_Pa": 3.7724385038018227e-07
+    },
+    {
+      "tick": 849,
+      "env": 5,
+      "contacts": [
+        {
+          "mu": 0.7621486036916064,
+          "force_N": 0.06405781094372856,
+          "wrench_force_error_N": 1.926062182961808e-34,
+          "wrench_moment_error_Nm": 3.5712543680069797e-20,
+          "cone_excess_N": -1.4639694133966064e-07
+        }
+      ],
+      "full_gauge_residual_N": 1.0371227284882464e-12,
+      "residual_budget_N": 3.629310018639958e-10,
+      "global_peak_error_Pa": 3.554596332833171e-07,
+      "global_peak_reference_Pa": 12753.804730634783,
+      "tensor_max_absolute_error_Pa": 2.3371467250399292e-07,
+      "von_mises_field_max_absolute_error_Pa": 3.557288437150419e-07
+    },
+    {
+      "tick": 899,
+      "env": 1,
+      "contacts": [
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.06088976142323364,
+          "wrench_force_error_N": 2.083474391183281e-17,
+          "wrench_moment_error_Nm": 4.216648004089627e-21,
+          "cone_excess_N": -1.128644443706412e-09
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.09054368681690847,
+          "wrench_force_error_N": 2.829248368623626e-17,
+          "wrench_moment_error_Nm": 1.6806985654020152e-20,
+          "cone_excess_N": -1.1804846702930312e-08
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.09007967982845405,
+          "wrench_force_error_N": 2.8185920280518337e-17,
+          "wrench_moment_error_Nm": 1.0374333753176928e-20,
+          "cone_excess_N": -7.844299891403318e-11
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.016306292599524767,
+          "wrench_force_error_N": 3.903127820947816e-18,
+          "wrench_moment_error_Nm": 4.4642806375439574e-21,
+          "cone_excess_N": -8.950777045114698e-25
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.015728217199966588,
+          "wrench_force_error_N": 3.556447555475522e-18,
+          "wrench_moment_error_Nm": 4.3869421573984984e-21,
+          "cone_excess_N": 1.499684730980666e-20
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.03970980408194064,
+          "wrench_force_error_N": 1.3906557107971864e-17,
+          "wrench_moment_error_Nm": 4.6143482031369425e-21,
+          "cone_excess_N": -3.2657090754361103e-10
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.05495085323081918,
+          "wrench_force_error_N": 1.4012657719410507e-17,
+          "wrench_moment_error_Nm": 2.2086120904284523e-21,
+          "cone_excess_N": 1.3224814361802997e-19
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.17882207410846174,
+          "wrench_force_error_N": 2.9895683046506926e-17,
+          "wrench_moment_error_Nm": 3.1881221819572383e-20,
+          "cone_excess_N": -6.715859246079228e-08
+        }
+      ],
+      "full_gauge_residual_N": 8.537424533609308e-12,
+      "residual_budget_N": 1.8974383614509142e-09,
+      "global_peak_error_Pa": 8.086863090284169e-07,
+      "global_peak_reference_Pa": 58633.50226036255,
+      "tensor_max_absolute_error_Pa": 1.4684046618640423e-06,
+      "von_mises_field_max_absolute_error_Pa": 1.6900594346225262e-06
+    },
+    {
+      "tick": 899,
+      "env": 0,
+      "contacts": [
+        {
+          "mu": 0.7912395187079685,
+          "force_N": 0.09489242381978694,
+          "wrench_force_error_N": 1.962615573354719e-17,
+          "wrench_moment_error_Nm": 1.9395026884661267e-20,
+          "cone_excess_N": -1.0200034688522665e-07
+        },
+        {
+          "mu": 0.7912395187079685,
+          "force_N": 0.18231893331012322,
+          "wrench_force_error_N": 2.797157557069881e-17,
+          "wrench_moment_error_Nm": 6.487821310633428e-20,
+          "cone_excess_N": -5.937484439382877e-08
+        },
+        {
+          "mu": 0.7912395187079685,
+          "force_N": 0.030790955429365295,
+          "wrench_force_error_N": 4.2491873609703695e-18,
+          "wrench_moment_error_Nm": 4.881970361017421e-21,
+          "cone_excess_N": -2.5759705152887858e-09
+        },
+        {
+          "mu": 0.7912395187079685,
+          "force_N": 0.2490773052997224,
+          "wrench_force_error_N": 1.6885062636659607e-16,
+          "wrench_moment_error_Nm": 4.017372385756768e-20,
+          "cone_excess_N": -1.4201436058250296e-09
+        }
+      ],
+      "full_gauge_residual_N": 9.683404757326082e-12,
+      "residual_budget_N": 2.2273737164817696e-09,
+      "global_peak_error_Pa": 1.6872945707291365e-06,
+      "global_peak_reference_Pa": 65417.2464749572,
+      "tensor_max_absolute_error_Pa": 1.654552761465311e-06,
+      "von_mises_field_max_absolute_error_Pa": 1.9740837160497904e-06
+    },
+    {
+      "tick": 899,
+      "env": 7,
+      "contacts": [
+        {
+          "mu": 0.5292197087214413,
+          "force_N": 0.06405780552558613,
+          "wrench_force_error_N": 2.7755575615628914e-17,
+          "wrench_moment_error_Nm": 3.9787348020212053e-20,
+          "cone_excess_N": -4.894888296317597e-09
+        }
+      ],
+      "full_gauge_residual_N": 1.0191220406349537e-12,
+      "residual_budget_N": 3.742080112882032e-10,
+      "global_peak_error_Pa": 3.5908669815398753e-07,
+      "global_peak_reference_Pa": 13250.88163955639,
+      "tensor_max_absolute_error_Pa": 2.3588108888361603e-07,
+      "von_mises_field_max_absolute_error_Pa": 3.5898847272619605e-07
+    },
+    {
+      "tick": 899,
+      "env": 6,
+      "contacts": [
+        {
+          "mu": 0.510305889692648,
+          "force_N": 0.06405781094402285,
+          "wrench_force_error_N": 1.3877787807814457e-17,
+          "wrench_moment_error_Nm": 1.386824481427196e-20,
+          "cone_excess_N": -4.369860589133666e-09
+        }
+      ],
+      "full_gauge_residual_N": 1.1111456053751606e-12,
+      "residual_budget_N": 3.957551971305144e-10,
+      "global_peak_error_Pa": 3.7001154851168394e-07,
+      "global_peak_reference_Pa": 14165.040688470117,
+      "tensor_max_absolute_error_Pa": 2.43595422944054e-07,
+      "von_mises_field_max_absolute_error_Pa": 3.7002791941631585e-07
+    },
+    {
+      "tick": 949,
+      "env": 2,
+      "contacts": [
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.10081780135374589,
+          "wrench_force_error_N": 4.185862945154403e-17,
+          "wrench_moment_error_Nm": 3.226473061010784e-20,
+          "cone_excess_N": -1.7702215266950094e-08
+        },
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.16780380546401424,
+          "wrench_force_error_N": 1.2509268882771003e-17,
+          "wrench_moment_error_Nm": 1.2038811074240806e-20,
+          "cone_excess_N": -1.2090848528875153e-08
+        },
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.007795547996717242,
+          "wrench_force_error_N": 3.476216610979977e-18,
+          "wrench_moment_error_Nm": 9.146806773092543e-22,
+          "cone_excess_N": -8.226511675977141e-24
+        },
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.03349325848506322,
+          "wrench_force_error_N": 7.046480070129584e-18,
+          "wrench_moment_error_Nm": 3.669975376187712e-21,
+          "cone_excess_N": -2.7612203762982044e-08
+        },
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.012413220545224984,
+          "wrench_force_error_N": 5.822478602598276e-18,
+          "wrench_moment_error_Nm": 4.217878634065372e-21,
+          "cone_excess_N": -1.9908406054306526e-27
+        },
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.22704571820811964,
+          "wrench_force_error_N": 3.470530984772429e-17,
+          "wrench_moment_error_Nm": 1.5024934512862407e-20,
+          "cone_excess_N": -7.792651061660719e-07
+        }
+      ],
+      "full_gauge_residual_N": 1.0127168932832179e-11,
+      "residual_budget_N": 2.086790442294672e-09,
+      "global_peak_error_Pa": 3.595268935896456e-07,
+      "global_peak_reference_Pa": 60949.91513076578,
+      "tensor_max_absolute_error_Pa": 1.5836121747270226e-06,
+      "von_mises_field_max_absolute_error_Pa": 2.0821316866204143e-06
+    },
+    {
+      "tick": 949,
+      "env": 1,
+      "contacts": [
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.060568475164404924,
+          "wrench_force_error_N": 7.949501638480627e-18,
+          "wrench_moment_error_Nm": 8.222519193908311e-21,
+          "cone_excess_N": -1.3425740270497402e-09
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.08990983972542652,
+          "wrench_force_error_N": 4.166948782366562e-17,
+          "wrench_moment_error_Nm": 1.9470503170083568e-20,
+          "cone_excess_N": -8.002477154891098e-09
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.08943980709506927,
+          "wrench_force_error_N": 4.2349997174859565e-17,
+          "wrench_moment_error_Nm": 3.1600534180620515e-20,
+          "cone_excess_N": -2.4696664740225773e-08
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.016555266491496447,
+          "wrench_force_error_N": 3.730663897181825e-18,
+          "wrench_moment_error_Nm": 5.991181278199613e-21,
+          "cone_excess_N": -4.064067120367816e-24
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.0159964429481198,
+          "wrench_force_error_N": 8.943189343290706e-18,
+          "wrench_moment_error_Nm": 5.637346052958759e-21,
+          "cone_excess_N": 0.0
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.04104442265765622,
+          "wrench_force_error_N": 7.165583942981724e-18,
+          "wrench_moment_error_Nm": 1.1398792798123851e-20,
+          "cone_excess_N": -6.544639773919793e-13
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.050243023171442094,
+          "wrench_force_error_N": 2.787728152484798e-17,
+          "wrench_moment_error_Nm": 7.584080497451344e-21,
+          "cone_excess_N": -2.1738292385689044e-09
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.18475606295548797,
+          "wrench_force_error_N": 5.605063087764203e-17,
+          "wrench_moment_error_Nm": 1.447633756471544e-19,
+          "cone_excess_N": -1.869293119760376e-09
+        }
+      ],
+      "full_gauge_residual_N": 9.31706343839796e-12,
+      "residual_budget_N": 1.954605262854482e-09,
+      "global_peak_error_Pa": 8.681090548634529e-07,
+      "global_peak_reference_Pa": 61087.61373337926,
+      "tensor_max_absolute_error_Pa": 1.5950645320117474e-06,
+      "von_mises_field_max_absolute_error_Pa": 1.6732883523218334e-06
+    },
+    {
+      "tick": 949,
+      "env": 0,
+      "contacts": [
+        {
+          "mu": 0.7912395187079685,
+          "force_N": 0.0953108246810291,
+          "wrench_force_error_N": 2.7769124835677133e-17,
+          "wrench_moment_error_Nm": 1.3130325603954349e-20,
+          "cone_excess_N": -2.1554697020293047e-07
+        },
+        {
+          "mu": 0.7912395187079685,
+          "force_N": 0.18199786694851314,
+          "wrench_force_error_N": 8.42011259293812e-17,
+          "wrench_moment_error_Nm": 1.4172780045821773e-20,
+          "cone_excess_N": -5.239661466116899e-08
+        },
+        {
+          "mu": 0.7912395187079685,
+          "force_N": 0.031162033812762613,
+          "wrench_force_error_N": 3.878959614448864e-18,
+          "wrench_moment_error_Nm": 3.4730428814358085e-21,
+          "cone_excess_N": -7.891461007778984e-11
+        },
+        {
+          "mu": 0.7912395187079685,
+          "force_N": 0.24877955030471996,
+          "wrench_force_error_N": 3.469446951953614e-18,
+          "wrench_moment_error_Nm": 1.0129496935966511e-20,
+          "cone_excess_N": -1.291908458612417e-06
+        }
+      ],
+      "full_gauge_residual_N": 1.0111969124466284e-11,
+      "residual_budget_N": 2.2794552777985853e-09,
+      "global_peak_error_Pa": 2.014377969317138e-06,
+      "global_peak_reference_Pa": 67441.87536570679,
+      "tensor_max_absolute_error_Pa": 1.6684061847627163e-06,
+      "von_mises_field_max_absolute_error_Pa": 2.3137545213103294e-06
+    },
+    {
+      "tick": 949,
+      "env": 7,
+      "contacts": [
+        {
+          "mu": 0.5292197087214413,
+          "force_N": 0.06405781094404922,
+          "wrench_force_error_N": 1.9264588442217387e-34,
+          "wrench_moment_error_Nm": 3.0090338580522934e-21,
+          "cone_excess_N": -7.61281320351055e-09
+        }
+      ],
+      "full_gauge_residual_N": 1.0831524882300213e-12,
+      "residual_budget_N": 3.64287234312195e-10,
+      "global_peak_error_Pa": 3.568329702829942e-07,
+      "global_peak_reference_Pa": 12814.400955650604,
+      "tensor_max_absolute_error_Pa": 2.344477252336219e-07,
+      "von_mises_field_max_absolute_error_Pa": 3.568729880498722e-07
+    },
+    {
+      "tick": 999,
+      "env": 3,
+      "contacts": [
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.0680961623031381,
+          "wrench_force_error_N": 3.469552829456483e-18,
+          "wrench_moment_error_Nm": 6.899181238648435e-21,
+          "cone_excess_N": -8.917528912760706e-09
+        },
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.2038465621267338,
+          "wrench_force_error_N": 8.362734666696147e-17,
+          "wrench_moment_error_Nm": 4.2904172134225164e-20,
+          "cone_excess_N": -1.004613310799388e-06
+        },
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.058263826590824457,
+          "wrench_force_error_N": 2.082119873069895e-17,
+          "wrench_moment_error_Nm": 1.6467975790210734e-21,
+          "cone_excess_N": -7.930640828390423e-10
+        },
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.017511111080762955,
+          "wrench_force_error_N": 7.152653555406064e-18,
+          "wrench_moment_error_Nm": 2.577719412658063e-21,
+          "cone_excess_N": -4.4765663992551506e-11
+        },
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.19865104612401308,
+          "wrench_force_error_N": 3.508261114975577e-17,
+          "wrench_moment_error_Nm": 1.3264596902751607e-19,
+          "cone_excess_N": -8.846860351974837e-10
+        }
+      ],
+      "full_gauge_residual_N": 9.253253806948669e-12,
+      "residual_budget_N": 1.9852653330289544e-09,
+      "global_peak_error_Pa": 1.637730747461319e-06,
+      "global_peak_reference_Pa": 59124.03191432527,
+      "tensor_max_absolute_error_Pa": 1.538646756671369e-06,
+      "von_mises_field_max_absolute_error_Pa": 1.6348640201613307e-06
+    },
+    {
+      "tick": 999,
+      "env": 2,
+      "contacts": [
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.10033455575462612,
+          "wrench_force_error_N": 4.221655498667222e-17,
+          "wrench_moment_error_Nm": 9.375295190070539e-21,
+          "cone_excess_N": -4.6520891644854625e-08
+        },
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.1679775870051783,
+          "wrench_force_error_N": 4.9065389333867974e-18,
+          "wrench_moment_error_Nm": 5.145903225092854e-20,
+          "cone_excess_N": -9.026206966130913e-14
+        },
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.007001079493001153,
+          "wrench_force_error_N": 3.805534180917389e-18,
+          "wrench_moment_error_Nm": 9.478454885349293e-22,
+          "cone_excess_N": 0.0
+        },
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.033475165019827904,
+          "wrench_force_error_N": 6.952433221959954e-18,
+          "wrench_moment_error_Nm": 1.274624333347388e-20,
+          "cone_excess_N": -3.4857681088771227e-09
+        },
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.012635397216453112,
+          "wrench_force_error_N": 6.269651592512721e-18,
+          "wrench_moment_error_Nm": 1.3679745320497121e-21,
+          "cone_excess_N": 0.0
+        },
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.22688549195284777,
+          "wrench_force_error_N": 8.355534721610419e-17,
+          "wrench_moment_error_Nm": 4.784284900223365e-20,
+          "cone_excess_N": -8.870459524205226e-08
+        }
+      ],
+      "full_gauge_residual_N": 1.0012917714515479e-11,
+      "residual_budget_N": 2.1343661104276364e-09,
+      "global_peak_error_Pa": 3.486566129140556e-07,
+      "global_peak_reference_Pa": 61349.723860437145,
+      "tensor_max_absolute_error_Pa": 1.5404730220325291e-06,
+      "von_mises_field_max_absolute_error_Pa": 2.037493686657399e-06
+    },
+    {
+      "tick": 999,
+      "env": 1,
+      "contacts": [
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.06064768907477144,
+          "wrench_force_error_N": 1.3985787785349405e-17,
+          "wrench_moment_error_Nm": 1.8420563021327672e-20,
+          "cone_excess_N": -3.379866808180901e-09
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.08965908460274058,
+          "wrench_force_error_N": 2.829248368623626e-17,
+          "wrench_moment_error_Nm": 3.167998995027383e-20,
+          "cone_excess_N": -4.974057282188479e-08
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.08917178801041378,
+          "wrench_force_error_N": 6.941061969544858e-17,
+          "wrench_moment_error_Nm": 1.9133996350049235e-20,
+          "cone_excess_N": -2.583867954693671e-07
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.016782682108635125,
+          "wrench_force_error_N": 3.582791971490862e-18,
+          "wrench_moment_error_Nm": 7.799304087165536e-21,
+          "cone_excess_N": 8.044309198547122e-20
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.016204804298447076,
+          "wrench_force_error_N": 1.2266347333466993e-18,
+          "wrench_moment_error_Nm": 2.781974197166705e-21,
+          "cone_excess_N": -2.814382807157183e-26
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.04154476187457063,
+          "wrench_force_error_N": 7.949501638480627e-18,
+          "wrench_moment_error_Nm": 5.228853555010844e-21,
+          "cone_excess_N": -1.652968526001238e-09
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.0508326198072659,
+          "wrench_force_error_N": 9.813077866773595e-18,
+          "wrench_moment_error_Nm": 2.0117090182170697e-20,
+          "cone_excess_N": -4.042065911871271e-07
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.18647895002123488,
+          "wrench_force_error_N": 8.384297404680616e-17,
+          "wrench_moment_error_Nm": 3.007259625772721e-20,
+          "cone_excess_N": -5.986405244030145e-08
+        }
+      ],
+      "full_gauge_residual_N": 8.642612103676395e-12,
+      "residual_budget_N": 2.0042678778225784e-09,
+      "global_peak_error_Pa": 7.679336704313755e-07,
+      "global_peak_reference_Pa": 62815.92487113132,
+      "tensor_max_absolute_error_Pa": 1.5427831385750324e-06,
+      "von_mises_field_max_absolute_error_Pa": 1.6707272152416408e-06
+    },
+    {
+      "tick": 999,
+      "env": 0,
+      "contacts": [
+        {
+          "mu": 0.7912395187079685,
+          "force_N": 0.09580833377364768,
+          "wrench_force_error_N": 1.3904866443919908e-17,
+          "wrench_moment_error_Nm": 1.615604416316343e-20,
+          "cone_excess_N": -8.982598100153364e-07
+        },
+        {
+          "mu": 0.7912395187079685,
+          "force_N": 0.18160752244596914,
+          "wrench_force_error_N": 7.757919228897728e-18,
+          "wrench_moment_error_Nm": 1.2370584597433454e-20,
+          "cone_excess_N": -3.7092414726284024e-09
+        },
+        {
+          "mu": 0.7912395187079685,
+          "force_N": 0.03135762089425257,
+          "wrench_force_error_N": 4.2491873609703695e-18,
+          "wrench_moment_error_Nm": 5.135219320561864e-21,
+          "cone_excess_N": -2.340748496075765e-10
+        },
+        {
+          "mu": 0.7912395187079685,
+          "force_N": 0.24825220774880358,
+          "wrench_force_error_N": 5.722615854522149e-17,
+          "wrench_moment_error_Nm": 8.120562845204415e-20,
+          "cone_excess_N": -7.41781655640851e-08
+        }
+      ],
+      "full_gauge_residual_N": 1.0177563541005902e-11,
+      "residual_budget_N": 2.31749163413073e-09,
+      "global_peak_error_Pa": 1.8409191397950053e-06,
+      "global_peak_reference_Pa": 68869.78145954252,
+      "tensor_max_absolute_error_Pa": 1.6461999621242285e-06,
+      "von_mises_field_max_absolute_error_Pa": 2.0620645955204964e-06
+    },
+    {
+      "tick": 1049,
+      "env": 4,
+      "contacts": [
+        {
+          "mu": 0.5206918899740468,
+          "force_N": 0.03338716895477039,
+          "wrench_force_error_N": 1.4092960140259168e-17,
+          "wrench_moment_error_Nm": 9.474937597398393e-21,
+          "cone_excess_N": -1.3411413580749326e-09
+        },
+        {
+          "mu": 0.5206918899740468,
+          "force_N": 0.2593600724951783,
+          "wrench_force_error_N": 2.7755609496926123e-16,
+          "wrench_moment_error_Nm": 4.428572118419587e-20,
+          "cone_excess_N": -2.5590333167317746e-08
+        },
+        {
+          "mu": 0.5206918899740468,
+          "force_N": 0.29143380804461483,
+          "wrench_force_error_N": 2.779512082358541e-16,
+          "wrench_moment_error_Nm": 1.2971745192432255e-19,
+          "cone_excess_N": -9.069593971683403e-06
+        }
+      ],
+      "full_gauge_residual_N": 1.1620776127380738e-11,
+      "residual_budget_N": 2.3501058943194585e-09,
+      "global_peak_error_Pa": 1.979220542125404e-06,
+      "global_peak_reference_Pa": 70697.40257943564,
+      "tensor_max_absolute_error_Pa": 1.8326754798181355e-06,
+      "von_mises_field_max_absolute_error_Pa": 2.393193426541984e-06
+    },
+    {
+      "tick": 1049,
+      "env": 3,
+      "contacts": [
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.06810895317797777,
+          "wrench_force_error_N": 4.1670052018933814e-17,
+          "wrench_moment_error_Nm": 5.919263557958436e-21,
+          "cone_excess_N": -2.997569390987069e-09
+        },
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.2033526855463045,
+          "wrench_force_error_N": 1.8683543625880677e-17,
+          "wrench_moment_error_Nm": 4.112846083981209e-20,
+          "cone_excess_N": -3.1552622831510647e-06
+        },
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.059909984599750846,
+          "wrench_force_error_N": 6.942281208919283e-18,
+          "wrench_moment_error_Nm": 1.6497732199023575e-20,
+          "cone_excess_N": -1.925973326916354e-08
+        },
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.01875985374633006,
+          "wrench_force_error_N": 4.982613841084488e-18,
+          "wrench_moment_error_Nm": 5.4442160610031234e-21,
+          "cone_excess_N": -5.92881702305292e-25
+        },
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.20127212738124584,
+          "wrench_force_error_N": 5.96906223549092e-17,
+          "wrench_moment_error_Nm": 5.227616998541962e-20,
+          "cone_excess_N": -1.969084300807004e-07
+        }
+      ],
+      "full_gauge_residual_N": 9.805074976177242e-12,
+      "residual_budget_N": 2.044779336186849e-09,
+      "global_peak_error_Pa": 1.6430421965196729e-06,
+      "global_peak_reference_Pa": 61099.56186319701,
+      "tensor_max_absolute_error_Pa": 1.578984665684402e-06,
+      "von_mises_field_max_absolute_error_Pa": 1.694774255156517e-06
+    },
+    {
+      "tick": 1049,
+      "env": 2,
+      "contacts": [
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.10045637550362443,
+          "wrench_force_error_N": 1.4409695421113136e-17,
+          "wrench_moment_error_Nm": 9.025067264489359e-21,
+          "cone_excess_N": -1.0303098417915135e-07
+        },
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.16780603266982835,
+          "wrench_force_error_N": 3.7043556597280256e-17,
+          "wrench_moment_error_Nm": 2.517644982606943e-20,
+          "cone_excess_N": -1.1398803936375686e-08
+        },
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.007569422111977133,
+          "wrench_force_error_N": 2.3354429532350846e-18,
+          "wrench_moment_error_Nm": 8.085555041696078e-22,
+          "cone_excess_N": 0.0
+        },
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.033511867856963695,
+          "wrench_force_error_N": 7.152448122690996e-18,
+          "wrench_moment_error_Nm": 4.128293942538912e-21,
+          "cone_excess_N": -8.56383834651353e-07
+        },
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.013006271843807411,
+          "wrench_force_error_N": 7.866258489732282e-18,
+          "wrench_moment_error_Nm": 1.873336510495413e-21,
+          "cone_excess_N": 0.0
+        },
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.22601079331170096,
+          "wrench_force_error_N": 5.738369816482254e-17,
+          "wrench_moment_error_Nm": 1.2873670905968437e-20,
+          "cone_excess_N": -8.068687304528088e-07
+        }
+      ],
+      "full_gauge_residual_N": 9.866655325531347e-12,
+      "residual_budget_N": 2.175237277224228e-09,
+      "global_peak_error_Pa": 2.7430360205471516e-07,
+      "global_peak_reference_Pa": 61988.06370469179,
+      "tensor_max_absolute_error_Pa": 1.5808218449819833e-06,
+      "von_mises_field_max_absolute_error_Pa": 2.3347893147729337e-06
+    },
+    {
+      "tick": 1049,
+      "env": 1,
+      "contacts": [
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.0607957548883724,
+          "wrench_force_error_N": 2.0816681711721685e-17,
+          "wrench_moment_error_Nm": 1.2157901863623319e-20,
+          "cone_excess_N": -2.277191801309288e-08
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.08937980162750601,
+          "wrench_force_error_N": 1.717288626685379e-17,
+          "wrench_moment_error_Nm": 2.2924876936478874e-20,
+          "cone_excess_N": -5.670666764189049e-08
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.08886082567247976,
+          "wrench_force_error_N": 1.49226555887273e-17,
+          "wrench_moment_error_Nm": 2.278809471751185e-20,
+          "cone_excess_N": -1.7739451891465485e-07
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.016975374233195714,
+          "wrench_force_error_N": 1.0489340839012054e-17,
+          "wrench_moment_error_Nm": 1.4075863575848823e-21,
+          "cone_excess_N": 5.529639447221568e-20
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.016380822774703898,
+          "wrench_force_error_N": 2.168404344971009e-19,
+          "wrench_moment_error_Nm": 6.113753237740954e-21,
+          "cone_excess_N": 1.6981668543557188e-20
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.041561040057688924,
+          "wrench_force_error_N": 1.4304896245381992e-17,
+          "wrench_moment_error_Nm": 3.602202043887047e-21,
+          "cone_excess_N": -4.951702577120937e-10
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.050636916413600165,
+          "wrench_force_error_N": 7.806255641895632e-18,
+          "wrench_moment_error_Nm": 4.503229600678704e-21,
+          "cone_excess_N": -3.307767711212478e-08
+        },
+        {
+          "mu": 0.4248546426701934,
+          "force_N": 0.1865700825219023,
+          "wrench_force_error_N": 3.469446951953614e-17,
+          "wrench_moment_error_Nm": 4.21910614511831e-20,
+          "cone_excess_N": -1.8632296300201375e-09
+        }
+      ],
+      "full_gauge_residual_N": 9.515090951746516e-12,
+      "residual_budget_N": 2.0326268816856746e-09,
+      "global_peak_error_Pa": 6.713307811878622e-07,
+      "global_peak_reference_Pa": 63666.684006085496,
+      "tensor_max_absolute_error_Pa": 1.5599653124809265e-06,
+      "von_mises_field_max_absolute_error_Pa": 1.697037077974528e-06
+    },
+    {
+      "tick": 1099,
+      "env": 5,
+      "contacts": [
+        {
+          "mu": 0.7621486036916064,
+          "force_N": 0.3052129627087775,
+          "wrench_force_error_N": 5.551138945876306e-17,
+          "wrench_moment_error_Nm": 8.2147991651484e-20,
+          "cone_excess_N": -4.532885951301104e-07
+        },
+        {
+          "mu": 0.7621486036916064,
+          "force_N": 0.3063866847756474,
+          "wrench_force_error_N": 1.1188630228279524e-16,
+          "wrench_moment_error_Nm": 2.5660317909026532e-20,
+          "cone_excess_N": -4.7325196448308355e-07
+        }
+      ],
+      "full_gauge_residual_N": 1.2908913202042459e-11,
+      "residual_budget_N": 2.541109410224518e-09,
+      "global_peak_error_Pa": 2.131593646481633e-06,
+      "global_peak_reference_Pa": 72923.5752367683,
+      "tensor_max_absolute_error_Pa": 1.838765456341207e-06,
+      "von_mises_field_max_absolute_error_Pa": 2.650034730322659e-06
+    },
+    {
+      "tick": 1099,
+      "env": 4,
+      "contacts": [
+        {
+          "mu": 0.5206918899740468,
+          "force_N": 0.03458947987644632,
+          "wrench_force_error_N": 7.757919228897728e-18,
+          "wrench_moment_error_Nm": 7.884759137263551e-21,
+          "cone_excess_N": -5.7864866519653e-11
+        },
+        {
+          "mu": 0.5206918899740468,
+          "force_N": 0.25823464330381446,
+          "wrench_force_error_N": 2.224782857940255e-16,
+          "wrench_moment_error_Nm": 9.521732683926611e-20,
+          "cone_excess_N": -9.485038931241675e-08
+        },
+        {
+          "mu": 0.5206918899740468,
+          "force_N": 0.2912627439029437,
+          "wrench_force_error_N": 5.67177649439248e-17,
+          "wrench_moment_error_Nm": 6.583376491788481e-20,
+          "cone_excess_N": -1.34421506695029e-07
+        }
+      ],
+      "full_gauge_residual_N": 1.1368588784354394e-11,
+      "residual_budget_N": 2.4220659755956867e-09,
+      "global_peak_error_Pa": 2.0631705410778522e-06,
+      "global_peak_reference_Pa": 73370.10813051861,
+      "tensor_max_absolute_error_Pa": 1.8119826563633978e-06,
+      "von_mises_field_max_absolute_error_Pa": 2.4400651454925537e-06
+    },
+    {
+      "tick": 1099,
+      "env": 3,
+      "contacts": [
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.06846660504892303,
+          "wrench_force_error_N": 1.3986208025063007e-17,
+          "wrench_moment_error_Nm": 2.4121932043563365e-20,
+          "cone_excess_N": -7.919383462778104e-08
+        },
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.20325664385490397,
+          "wrench_force_error_N": 7.757919228897728e-18,
+          "wrench_moment_error_Nm": 1.0678962269554397e-19,
+          "cone_excess_N": -4.289375693328753e-08
+        },
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.0599911373035932,
+          "wrench_force_error_N": 2.088996224982865e-17,
+          "wrench_moment_error_Nm": 8.682852067612309e-21,
+          "cone_excess_N": -1.0459808693918898e-08
+        },
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.019051726547139214,
+          "wrench_force_error_N": 3.576224061345498e-18,
+          "wrench_moment_error_Nm": 7.196389989324758e-21,
+          "cone_excess_N": -5.941193326251774e-26
+        },
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.20073404806767361,
+          "wrench_force_error_N": 3.929062510380681e-17,
+          "wrench_moment_error_Nm": 7.185958563277984e-20,
+          "cone_excess_N": -2.8497872863126403e-06
+        }
+      ],
+      "full_gauge_residual_N": 1.0015488314101623e-11,
+      "residual_budget_N": 2.085685978790838e-09,
+      "global_peak_error_Pa": 1.555941707920283e-06,
+      "global_peak_reference_Pa": 61718.0029970207,
+      "tensor_max_absolute_error_Pa": 1.5138430171646178e-06,
+      "von_mises_field_max_absolute_error_Pa": 1.6441263142041862e-06
+    },
+    {
+      "tick": 1099,
+      "env": 2,
+      "contacts": [
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.012086087503674365,
+          "wrench_force_error_N": 3.0046291974743185e-18,
+          "wrench_moment_error_Nm": 2.8920581268257305e-22,
+          "cone_excess_N": -4.748692514653242e-25
+        },
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.047531273791888325,
+          "wrench_force_error_N": 1.3879481770324007e-17,
+          "wrench_moment_error_Nm": 9.401617889302856e-21,
+          "cone_excess_N": -2.3319921340452742e-23
+        },
+        {
+          "mu": 0.6827480160167408,
+          "force_N": 0.05767048418120085,
+          "wrench_force_error_N": 1.471961680016039e-17,
+          "wrench_moment_error_Nm": 4.924815584490362e-21,
+          "cone_excess_N": -4.808564223447468e-09
+        }
+      ],
+      "full_gauge_residual_N": 1.998992434276085e-12,
+      "residual_budget_N": 5.30999306135869e-10,
+      "global_peak_error_Pa": 2.999895514221862e-07,
+      "global_peak_reference_Pa": 14715.33099400797,
+      "tensor_max_absolute_error_Pa": 3.1121271604206413e-07,
+      "von_mises_field_max_absolute_error_Pa": 4.102275852346793e-07
+    },
+    {
+      "tick": 1149,
+      "env": 6,
+      "contacts": [
+        {
+          "mu": 0.510305889692648,
+          "force_N": 0.3036344338938858,
+          "wrench_force_error_N": 5.594315114139762e-17,
+          "wrench_moment_error_Nm": 7.885498457594521e-20,
+          "cone_excess_N": -1.018955536496675e-08
+        },
+        {
+          "mu": 0.510305889692648,
+          "force_N": 0.3048744821445058,
+          "wrench_force_error_N": 1.1188631541548284e-16,
+          "wrench_moment_error_Nm": 1.5134148050337615e-20,
+          "cone_excess_N": -1.5078794867816222e-07
+        }
+      ],
+      "full_gauge_residual_N": 1.2747123356372378e-11,
+      "residual_budget_N": 2.782885809171413e-09,
+      "global_peak_error_Pa": 2.24237737711519e-06,
+      "global_peak_reference_Pa": 80067.41128806208,
+      "tensor_max_absolute_error_Pa": 1.8737264326773584e-06,
+      "von_mises_field_max_absolute_error_Pa": 2.7698988560587168e-06
+    },
+    {
+      "tick": 1149,
+      "env": 5,
+      "contacts": [
+        {
+          "mu": 0.7621486036916064,
+          "force_N": 0.3054201128790051,
+          "wrench_force_error_N": 1.1123914289701275e-16,
+          "wrench_moment_error_Nm": 1.0517322858743659e-19,
+          "cone_excess_N": -3.974571184349451e-07
+        },
+        {
+          "mu": 0.7621486036916064,
+          "force_N": 0.30623664576965953,
+          "wrench_force_error_N": 1.1102251422055052e-16,
+          "wrench_moment_error_Nm": 3.055821200495327e-20,
+          "cone_excess_N": -3.771545682286735e-07
+        }
+      ],
+      "full_gauge_residual_N": 1.16426788367525e-11,
+      "residual_budget_N": 2.6331964541293444e-09,
+      "global_peak_error_Pa": 2.152330125682056e-06,
+      "global_peak_reference_Pa": 75686.08784165999,
+      "tensor_max_absolute_error_Pa": 1.8677455955184996e-06,
+      "von_mises_field_max_absolute_error_Pa": 2.609580405987799e-06
+    },
+    {
+      "tick": 1149,
+      "env": 4,
+      "contacts": [
+        {
+          "mu": 0.5206918899740468,
+          "force_N": 0.03575120867559047,
+          "wrench_force_error_N": 7.152448122690996e-18,
+          "wrench_moment_error_Nm": 4.5075968065493796e-21,
+          "cone_excess_N": -4.399597318811532e-09
+        },
+        {
+          "mu": 0.5206918899740468,
+          "force_N": 0.2570675109480842,
+          "wrench_force_error_N": 6.206941440966717e-17,
+          "wrench_moment_error_Nm": 4.9508286570317905e-20,
+          "cone_excess_N": -9.166374521570265e-08
+        },
+        {
+          "mu": 0.5206918899740468,
+          "force_N": 0.2908727445120149,
+          "wrench_force_error_N": 1.112930229387288e-16,
+          "wrench_moment_error_Nm": 3.007668247171671e-20,
+          "cone_excess_N": -2.75639337516296e-07
+        }
+      ],
+      "full_gauge_residual_N": 1.2032052828330413e-11,
+      "residual_budget_N": 2.4737005398126864e-09,
+      "global_peak_error_Pa": 2.0888401195406914e-06,
+      "global_peak_reference_Pa": 75270.72013717555,
+      "tensor_max_absolute_error_Pa": 1.8261998775415123e-06,
+      "von_mises_field_max_absolute_error_Pa": 2.5402841856703162e-06
+    },
+    {
+      "tick": 1149,
+      "env": 3,
+      "contacts": [
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.04553315810435897,
+          "wrench_force_error_N": 7.949501638480627e-18,
+          "wrench_moment_error_Nm": 4.2037290245754344e-21,
+          "cone_excess_N": 0.0
+        },
+        {
+          "mu": 0.7449631993462368,
+          "force_N": 0.06003065234085195,
+          "wrench_force_error_N": 3.6055550369691825e-17,
+          "wrench_moment_error_Nm": 1.2301128477149852e-20,
+          "cone_excess_N": -2.583623096444884e-25
+        }
+      ],
+      "full_gauge_residual_N": 1.3854929745849992e-12,
+      "residual_budget_N": 4.6217843191121005e-10,
+      "global_peak_error_Pa": 4.512003215495497e-08,
+      "global_peak_reference_Pa": 12814.555475868223,
+      "tensor_max_absolute_error_Pa": 1.8959508452098817e-07,
+      "von_mises_field_max_absolute_error_Pa": 1.6579906514380127e-07
+    },
+    {
+      "tick": 1199,
+      "env": 7,
+      "contacts": [
+        {
+          "mu": 0.5292197087214413,
+          "force_N": 0.30514820021074507,
+          "wrench_force_error_N": 5.594317740676816e-17,
+          "wrench_moment_error_Nm": 2.0082991607653582e-20,
+          "cone_excess_N": -3.755728240561148e-07
+        },
+        {
+          "mu": 0.5292197087214413,
+          "force_N": 0.30637517721617674,
+          "wrench_force_error_N": 2.230182587873384e-16,
+          "wrench_moment_error_Nm": 6.581081957438106e-20,
+          "cone_excess_N": -3.2959592087410567e-07
+        }
+      ],
+      "full_gauge_residual_N": 1.1772001409480022e-11,
+      "residual_budget_N": 2.630419095957455e-09,
+      "global_peak_error_Pa": 2.3725151550024748e-06,
+      "global_peak_reference_Pa": 75617.27167821754,
+      "tensor_max_absolute_error_Pa": 1.9219733076170087e-06,
+      "von_mises_field_max_absolute_error_Pa": 2.9031361918896437e-06
+    },
+    {
+      "tick": 1199,
+      "env": 6,
+      "contacts": [
+        {
+          "mu": 0.510305889692648,
+          "force_N": 0.3040075343289853,
+          "wrench_force_error_N": 1.1443917317298815e-16,
+          "wrench_moment_error_Nm": 3.401697008228265e-20,
+          "cone_excess_N": -1.1576527938080648e-08
+        },
+        {
+          "mu": 0.510305889692648,
+          "force_N": 0.3044751038553058,
+          "wrench_force_error_N": 2.221546919182835e-16,
+          "wrench_moment_error_Nm": 4.9509541017821286e-20,
+          "cone_excess_N": -8.180985559346828e-08
+        }
+      ],
+      "full_gauge_residual_N": 1.2392812586160199e-11,
+      "residual_budget_N": 2.8614498533059248e-09,
+      "global_peak_error_Pa": 2.252840204164386e-06,
+      "global_peak_reference_Pa": 82205.9967763192,
+      "tensor_max_absolute_error_Pa": 1.9370490917935967e-06,
+      "von_mises_field_max_absolute_error_Pa": 2.6979687390848994e-06
+    },
+    {
+      "tick": 1199,
+      "env": 5,
+      "contacts": [
+        {
+          "mu": 0.7621486036916064,
+          "force_N": 0.30523780653979604,
+          "wrench_force_error_N": 2.081675229768095e-17,
+          "wrench_moment_error_Nm": 1.0361311809626233e-19,
+          "cone_excess_N": -6.627844528295874e-06
+        },
+        {
+          "mu": 0.7621486036916064,
+          "force_N": 0.3064107428905579,
+          "wrench_force_error_N": 5.928603464096932e-17,
+          "wrench_moment_error_Nm": 3.976133220160622e-20,
+          "cone_excess_N": -5.1060360646661044e-06
+        }
+      ],
+      "full_gauge_residual_N": 1.3266184655427749e-11,
+      "residual_budget_N": 2.6950806213241884e-09,
+      "global_peak_error_Pa": 2.1838932298123837e-06,
+      "global_peak_reference_Pa": 77522.37080461188,
+      "tensor_max_absolute_error_Pa": 1.9965082174167037e-06,
+      "von_mises_field_max_absolute_error_Pa": 2.7205387596040964e-06
+    },
+    {
+      "tick": 1199,
+      "env": 4,
+      "contacts": [
+        {
+          "mu": 0.5206918899740468,
+          "force_N": 0.056768012102536965,
+          "wrench_force_error_N": 6.952433221959954e-18,
+          "wrench_moment_error_Nm": 5.150805254783568e-21,
+          "cone_excess_N": -1.0769887215104073e-07
+        }
+      ],
+      "full_gauge_residual_N": 1.0129110549142572e-12,
+      "residual_budget_N": 3.683705674113466e-10,
+      "global_peak_error_Pa": 2.1730920707341284e-07,
+      "global_peak_reference_Pa": 13739.843878366097,
+      "tensor_max_absolute_error_Pa": 2.459373718011193e-07,
+      "von_mises_field_max_absolute_error_Pa": 3.416917024878785e-07
+    }
+  ]
+}

@@ -25,18 +25,20 @@ def generate(directory):
     node = next(
         item
         for item in ast.parse(source).body
-        if isinstance(item, ast.FunctionDef) and item.name == "kernel_surface_apply_packed"
+        if isinstance(item, ast.FunctionDef) and item.name == "func_surface_apply_packed"
     )
-    node.name = "kernel_layout"
-    node.args.args.append(ast.arg(arg="block_dim", annotation=ast.parse("qd.template()", mode="eval").body))
-    node.body.insert(0, ast.parse("qd.loop_config(block_dim=block_dim)").body[0])
+    node.name = "func_layout"
+    if not any(argument.arg == "block_size" for argument in node.args.args):
+        node.args.args.append(ast.arg(arg="block_dim", annotation=ast.parse("qd.template()", mode="eval").body))
+        node.body.insert(0, ast.parse("qd.loop_config(block_dim=block_dim)").body[0])
     generated = directory / "packed_layout_generated.py"
     generated.write_text(
-        "import quadrants as qd\nimport genesis as gs\n"
-        "from genesis.engine.solvers.rigid.stress.data import StressState\n"
-        "from genesis.engine.solvers.rigid.stress.surface_inverse import StressSurfaceInverseInfo\n"
-        + ast.unparse(node)
-        + "\n"
+        "from genesis.engine.solvers.rigid.stress.surface_inverse import *\n"
+        + ast.unparse(ast.fix_missing_locations(node))
+        + "\n\n@qd.kernel(graph=True)\n"
+        "def kernel_layout(young: float, omega: qd.Tensor, stress_state: StressState, "
+        "surface_inverse_info: StressSurfaceInverseInfo, block_dim: qd.template()):\n"
+        "    func_layout(young, omega, stress_state, surface_inverse_info, block_dim)\n"
     )
     spec = importlib.util.spec_from_file_location("packed_layout_generated", generated)
     module = importlib.util.module_from_spec(spec)
