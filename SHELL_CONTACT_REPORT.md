@@ -25,7 +25,8 @@ below). Every number below was measured, on the machine and with the commands gi
 | Full reset vs fresh run (grasp, CPU) | 63 mm apart | bitwise identical |
 | One step repeated from the same state (CPU) | 0.45 mm apart | bitwise identical |
 | Partially reset environment vs fresh run (CPU) | 1.9 mm apart | bitwise identical |
-| Snapshot restore vs continuation (CPU) | 38 mm apart | shell state complete; bitwise identical once the rigid solver keeps its warm start (see below) |
+| Checkpoint restore vs continuation (grasp, CPU) | a scene holding a sheet cannot be checkpointed | bitwise identical, the rigid warm start included |
+| Reduced-state snapshot (`get_state`) vs continuation (CPU) | 38 mm apart | shell state complete, the rigid constraint solve restarting cold by design: 2.7 mm |
 | PCG stopping | fixed iteration count, failures unreported | tolerance-driven device loop, true residual checked, statuses reported |
 | Damage | fracture criterion only, topology always mutated | Rankine damage index, damage-only mode, peak and first failure face |
 
@@ -108,12 +109,17 @@ rigid reaction in the next substep. Contacts now join the implicit step of the s
 - The coarse preconditioner age was global. It is per environment, invalidated by `set_state`, and rebuilt every
   substep by default (`coarse_update_interval=1`, a negligible cost), so that a restored state replays exactly.
 - The lagged friction bound and its geom per contact slot are part of the state.
-- The rigid solver clears its constraint warm start on `set_state` by design (a restored state is a discontinuity), and
-  recomputes the inertia of the links by another code path than the step. With an active joint limit, a restored
-  Franka alone then differs from its continuation by 7e-9 m/s after one step. In the grasp, the next step after a
-  restored snapshot differs by 0.26 um on the egg. Writing back the three rigid arrays involved (`qacc_ws`,
-  `is_warmstart`, `cinr_inertial`) alongside the snapshot makes the restored grasp bitwise identical, a bisection over
-  every array of both solvers finding no shell array missing from the state.
+- A scene holding a sheet could not be checkpointed: the shell entity had no description and the shell solver did
+  not list its arrays. A shell entity now keeps its description (its resolved rest mesh with its morph, material and
+  surface, `ShellEntityDescription`), and the shell solver lists its arrays by kind (`ShellSolver.data`), so that
+  `Scene.__getstate__` / `Scene.__setstate__`, pickling, `save_checkpoint`, `export` and `load` cover sheets. A
+  checkpoint holds every array a step reads from one step to the next, the rigid constraint warm start included, and
+  the grasp restored from one replays its continuation bit for bit on CPU.
+- `get_state` / `set_state` restore the reduced state. The shell part of it is complete (a bisection over every array
+  of both solvers found no shell array missing), and the rigid solver restarts its constraint solve cold from it by
+  design (a restored reduced state is a discontinuity, its warm start and inertia rounding left behind). With an
+  active joint limit, a restored Franka alone differs from its continuation by 7e-9 m/s after one step, and the grasp
+  by 0.26 um on the egg after one step. Restoring the same snapshot twice gives the same run.
 
 ### Damage
 
@@ -131,27 +137,29 @@ connectivity and no split-vertex reserve: an episode ends on `get_peak_damage() 
 | --- | --- |
 | `test_rigid_contact_forces[0,2]` | ball inside a pinned triangle: height within 10 um, reaction = weight within 0.2%; hinged lever: reaction = m g x_com / L within 0.2% at rest; mu = 0.6 box sticks on a 20 degree incline (< 1e-4 m/s), mu = 0.2 box slides at g (sin - mu cos) within 0.5% while crossing a row of vertices |
 | `test_rigid_contact_conserves_momentum[0,2]` | 3 m/s ball hits a free sheet off center: momentum conserved to 1e-9, ball stays above the sheet, no vertex inside it |
-| `test_state_restore_reproduces_contact[0,2]` | full reset, snapshot restore and partial reset replay the trajectory within 1e-9 (fails if the warm start is not restored) |
+| `test_state_restore_reproduces_contact[0,2]` | full reset, snapshot restore, checkpoint restore, a pickled copy of the scene and partial reset replay the trajectory within 1e-9 (fails if the warm start is not restored, or if a scene holding a sheet cannot be checkpointed) |
 | `test_tearing_at_tensile_strength` | damage-only strip: damage index = E G / tensile strength within 2%, equal to the fracturing strip before failure (1e-9), mesh unchanged |
 
 Before the fixes of the last two defects above, the incline box accelerated 21% slower than Coulomb friction allows over
 the window crossing the vertex row (phantom corner), or stopped there (friction with no normal force), both failing the
 0.5% assertion. It now accelerates within 0.2% of it. The tactile and raycaster sensor tests
 (`tests/sensors/test_tactile.py`, `tests/sensors/test_raycaster.py`, 37 tests) pass on CPU, as do all deformable and
-coupling tests (`tests/deformable`, `tests/coupling`: 49 passed, 1 expected failure) and the example runs of the four
-shell examples (`tests/test_examples.py -m examples`).
+coupling tests (`tests/deformable`, `tests/coupling`: 49 passed, 1 expected failure), the serialization tests the
+shell description shares its machinery with (`tests/rigid/test_serialization.py`, 14 tests) and the example runs of the
+four shell examples (`tests/test_examples.py -m examples`).
 
 ### Consistency (`examples/coupling/shell_egg_consistency.py`, 4 environments, 160 steps)
 
 Maximum deviation of the egg vertex positions:
 
-| Comparison | Source, CPU | This branch, CPU | This branch, GPU (two runs) |
+| Comparison | Source, CPU | This branch, CPU | This branch, GPU (separate runs) |
 | --- | --- | --- | --- |
-| Full reset vs fresh run | 63 mm | 0 | 0.59 mm, 4.3 mm |
-| Snapshot restore vs continuation | 38 mm | 2.7 mm (rigid warm start, see above) | 58 um, 0.77 mm |
-| One step repeated from the same state | 0.45 mm | 0 | 0.06 um, 0.06 um |
-| Partially reset environment vs fresh run | 1.9 mm | 0 | 50 um, 54 um |
-| Other environments vs continuation | 59 mm | 5.8 um (rigid warm start) | 0.87 um, 3.5 um |
+| Full reset vs fresh run | 63 mm | 0 | 0.59 mm, 4.3 mm, 1.9 mm |
+| Checkpoint restore vs continuation | not supported | 0 | 1.6 mm |
+| Reduced-state snapshot restore vs continuation | 38 mm | 2.7 mm (rigid restarts cold, see above) | 58 um, 0.77 mm, 2.1 mm |
+| One step repeated from the same state | 0.45 mm | 0 | 0.06 um in every run |
+| Partially reset environment vs fresh run | 1.9 mm | 0 | 50 um, 54 um, 155 um |
+| Other environments vs continuation | 59 mm | 5.8 um (rigid restarts cold) | 0.87 um, 3.5 um, 4.8 um |
 
 The CPU backend is bitwise deterministic. On the GPU, float atomics reorder reductions: one step from the same state
 differs by 0.06 um (the solver tolerance level). Over the whole grasp the difference grows to millimeters, and it
@@ -258,6 +266,12 @@ roughly 90 us + 0.055 us per environment:
 - The slowest environment runs 3.8x the PCG iterations of the mean one, mostly through more Newton iterations (15.8
   against 3.7 per substep), its contacts leaving the linear model of the previous iteration.
 
+Gained in the last round of changes, chiefly the friction bound no longer taken from an early iterate (see Contact
+response), which drove extra Newton iterations: against the same benchmark before them, environment steps per second
+went from 100 to 114 at 64 environments, 266 to 338 at 256, 737 to 759 at 1024 and 829 to 1108 at 4096. In the
+profile at 256 environments, the step went from 1699 to 1204 ms, the Newton iterations of the slowest environment from
+16.2 to 11.0 per substep, and the substeps reaching the Newton limit from 19 to 3.
+
 Measured and rejected: a larger coarse space (12 or 20 patches gave the same iterations and time as the default 6,
 and none or 3 patches ran 18% slower), inexact Newton (a looser PCG tolerance in the early Newton iterations ran slower
 overall), and the compaction of active environments (see above).
@@ -278,7 +292,8 @@ overall), and the compaction of active environments (see above).
 - The Newton iteration limit is reached by about 0.5% of the environments of the grasp benchmark over 60 steps,
   reported as a solver failure.
 - Impacts need the default 1 ms substep: at 2 ms, the peak damage index of a drop comes out about half.
-- A snapshot restore replays the shell exactly but not the rigid constraint warm start (see History).
+- A reduced-state snapshot (`get_state`) restarts the rigid constraint solve cold, as the rigid solver does by design.
+  A checkpoint restores the run exactly (see History).
 - Shell-rigid contact refuses hibernation and differentiable mode (an explicit error).
 - Run-to-run GPU differences grow in sensitive scenarios as described above.
 - Large spatial mesh-convergence studies were deferred, as the goal asks.
@@ -294,6 +309,7 @@ Examples write their meshes under `out/`.
 pytest -n 4 tests/deformable/test_shell.py --backend cpu
 pytest -n 4 tests/deformable/test_shell.py --backend gpu
 pytest -n 8 tests/sensors/test_tactile.py tests/sensors/test_raycaster.py --backend cpu
+pytest -n 8 tests/rigid/test_serialization.py --backend cpu
 
 # Consistency of resets, restores and repeated steps (drop -g for the CPU)
 python examples/coupling/shell_egg_consistency.py -g
