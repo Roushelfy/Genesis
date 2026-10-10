@@ -31,6 +31,9 @@ class RigidStressOptions(Options):
     it to compare scheduling. Both options select storage at scene build.
     ``cached_peak`` reuses shared immutable P2 corner gradients in the full
     global stress scan. Disable it for a geometry reuse comparison.
+    ``cooperative_balance`` reduces the complete rigid-mode wrench in CUDA
+    node tiles and applies a shared mass-mode projection. CPU uses its
+    original balance order. Disable it to compare scheduling and projection.
 
     ``tolerance`` bounds the complete equilibrium residual relative to the
     load norm; ``absolute_tolerance`` supplies the force floor near zero.
@@ -91,6 +94,7 @@ class RigidStressOptions(Options):
     cooperative_solve: StrictBool = True
     cooperative_pressure: StrictBool = True
     cooperative_scatter: StrictBool = True
+    cooperative_balance: StrictBool = True
     face_parallel_scatter: StrictBool = True
     scatter_tasks_per_env: PositiveInt = 32
     inverse_max_bytes: PositiveInt = 64 * 1024 * 1024

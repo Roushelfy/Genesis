@@ -60,7 +60,9 @@ the full changing-contact measurement was faster and used less memory.
 `--serial-pressure` selects the native scalar pressure path for a matched
 pressure scheduling ablation. CUDA warp pressure is the selected default.
 `--full-inverse` disables the exact complete-exterior operator, and
-`--serial-scatter` disables face reduction. `--seed 623001` selects another
+`--serial-scatter` disables face reduction. `--serial-balance` compares
+the original complete nodal rigid-mode reduction and projection.
+`--seed 623001` selects another
 independent varied workload; use the same seed for matched comparisons.
 `--contact-warp-scatter` compares the original cooperative contact scheduling
 against bounded face tasks. `--scatter-tasks-per-env 1` deliberately exercises

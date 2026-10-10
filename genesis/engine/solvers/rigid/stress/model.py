@@ -10,6 +10,7 @@ from genesis.options.rigid_stress import RigidStressOptions
 from genesis.utils.array_class import V_MAT, V_VEC, V
 from genesis.utils.misc import qd_to_numpy
 
+from .balance import kernel_relief_projection
 from .data import StressInfo, StressState
 from .factor import StressFactor
 from .history import StressHistory
@@ -108,6 +109,7 @@ class StressModel:
             mass=V(dtype=gs.qd_float, shape=(n_entries,)),
             modes=V_MAT(3, 6, dtype=gs.qd_float, shape=(n_nodes,)),
             mass_modes=V_MAT(3, 6, dtype=gs.qd_float, shape=(n_nodes,)),
+            relief=V_MAT(3, 6, dtype=gs.qd_float, shape=(n_nodes,)),
             centrifugal=V_MAT(3, 6, dtype=gs.qd_float, shape=(n_nodes,)),
             gram=V_MAT(6, 6, dtype=gs.qd_float, shape=()),
             gram_inverse=V_MAT(6, 6, dtype=gs.qd_float, shape=()),
@@ -140,6 +142,7 @@ class StressModel:
         kernel_modes(self.info)
         kernel_mass_modes(self.info)
         kernel_gram_inverse(self.info)
+        kernel_relief_projection(self.info)
         kernel_gauge(self.info)
         kernel_diagonal(self.info)
         qd.sync()
@@ -233,7 +236,7 @@ class StressModel:
         if options is None:
             options = self.options
         block = options.preconditioner == "block"
-        kernel_balance(omega, state, self.info)
+        kernel_balance(omega, state, self.info, options.cooperative_balance)
         if self.factor is not None:
             kernel_direct_init(state)
             if history is None:

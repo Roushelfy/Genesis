@@ -36,6 +36,7 @@ class FrankaEgg:
         saved_reset: bool = True,
         face_parallel_scatter: bool = True,
         scatter_tasks_per_env: int = 32,
+        cooperative_balance: bool = True,
     ):
         self.n_envs = n_envs
         self.tick = 0
@@ -84,6 +85,7 @@ class FrankaEgg:
                     fused_pipeline=fused_pipeline,
                     output_mode=output_mode,
                     cooperative_scatter=cooperative_scatter,
+                    cooperative_balance=cooperative_balance,
                     face_parallel_scatter=face_parallel_scatter,
                     scatter_tasks_per_env=scatter_tasks_per_env,
                     cached_peak=cached_peak,

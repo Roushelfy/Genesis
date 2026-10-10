@@ -4,6 +4,7 @@ import quadrants as qd
 
 import genesis as gs
 
+from .balance import func_balance_cooperative
 from .data import StressInfo, StressState
 from .operators import func_shape_gradient
 
@@ -19,26 +20,37 @@ def func_precondition(i_n: int, residual: qd.types.vector(3), stress_info: Stres
     return value
 
 
+def kernel_balance(omega: qd.Tensor, stress_state: StressState, stress_info: StressInfo, is_cooperative: bool = False):
+    kernel_balance_impl(omega, stress_state, stress_info, is_cooperative)
+
+
 @qd.kernel(graph=True)
-def kernel_balance(omega: qd.Tensor, stress_state: StressState, stress_info: StressInfo):
-    func_balance(omega, stress_state, stress_info)
+def kernel_balance_impl(
+    omega: qd.Tensor, stress_state: StressState, stress_info: StressInfo, is_cooperative: qd.template()
+):
+    func_balance(omega, stress_state, stress_info, is_cooperative)
 
 
 @qd.func
-def func_balance(omega: qd.Tensor, stress_state: StressState, stress_info: StressInfo):
-    for i_b in range(stress_state.active.shape[0]):
-        stress_state.wrench[i_b] = qd.Vector.zero(gs.qd_float, 6)
-    for i_n, i_b in qd.ndrange(stress_info.vertices.shape[0], stress_state.active.shape[0]):
-        w = omega[i_b]
-        terms = qd.Vector([w[0] * w[0], w[1] * w[1], w[2] * w[2], w[0] * w[1], w[0] * w[2], w[1] * w[2]])
-        load = stress_state.force[i_n, i_b] + stress_info.centrifugal[i_n] @ terms
-        stress_state.rhs[i_n, i_b] = load
-        wrench = stress_info.modes[i_n].transpose() @ load
-        for i_a in qd.static(range(6)):
-            qd.atomic_add(stress_state.wrench[i_b][i_a], wrench[i_a])
-    for i_n, i_b in qd.ndrange(stress_info.vertices.shape[0], stress_state.active.shape[0]):
-        acceleration = stress_info.gram_inverse[None] @ stress_state.wrench[i_b]
-        stress_state.rhs[i_n, i_b] -= stress_info.mass_modes[i_n] @ acceleration
+def func_balance(
+    omega: qd.Tensor, stress_state: StressState, stress_info: StressInfo, is_cooperative: qd.template() = False
+):
+    if qd.static(is_cooperative and gs.backend == gs.cuda):
+        func_balance_cooperative(omega, stress_state, stress_info)
+    else:
+        for i_b in range(stress_state.active.shape[0]):
+            stress_state.wrench[i_b] = qd.Vector.zero(gs.qd_float, 6)
+        for i_n, i_b in qd.ndrange(stress_info.vertices.shape[0], stress_state.active.shape[0]):
+            w = omega[i_b]
+            terms = qd.Vector([w[0] * w[0], w[1] * w[1], w[2] * w[2], w[0] * w[1], w[0] * w[2], w[1] * w[2]])
+            load = stress_state.force[i_n, i_b] + stress_info.centrifugal[i_n] @ terms
+            stress_state.rhs[i_n, i_b] = load
+            wrench = stress_info.modes[i_n].transpose() @ load
+            for i_a in qd.static(range(6)):
+                qd.atomic_add(stress_state.wrench[i_b][i_a], wrench[i_a])
+        for i_n, i_b in qd.ndrange(stress_info.vertices.shape[0], stress_state.active.shape[0]):
+            acceleration = stress_info.gram_inverse[None] @ stress_state.wrench[i_b]
+            stress_state.rhs[i_n, i_b] -= stress_info.mass_modes[i_n] @ acceleration
 
 
 @qd.kernel(graph=True)

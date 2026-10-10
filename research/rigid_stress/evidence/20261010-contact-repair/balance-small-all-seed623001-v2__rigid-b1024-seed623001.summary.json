@@ -1,0 +1,8511 @@
+{
+  "scope": "rigid",
+  "envs": 1024,
+  "level": 1,
+  "precision": "64",
+  "quadrature": 10,
+  "dt": 0.01,
+  "substeps": 1,
+  "varied": true,
+  "seed": 623001,
+  "load_model": "finite_pad_adaptive_q10",
+  "condition_count": 1024,
+  "conditions": null,
+  "conditions_sha256": null,
+  "cooperative_solve": true,
+  "cooperative_pressure": true,
+  "cooperative_scatter": true,
+  "cooperative_balance": true,
+  "face_parallel_scatter": true,
+  "scatter_tasks_per_env": 32,
+  "cached_peak": true,
+  "cached_face_bounds": true,
+  "method": "auto",
+  "inverse_precision": "64",
+  "surface_inverse": true,
+  "packed_surface_loads": true,
+  "fused_pipeline": true,
+  "output_mode": "max",
+  "reset_mode": "saved_initial_state",
+  "history": 0,
+  "host": "rtx-209-099",
+  "slurm_job_id": "704946",
+  "source_revision": "e6094ff9-native-balance-t8-v2",
+  "arguments": {
+    "scope": "rigid",
+    "envs": 1024,
+    "level": 1,
+    "steps": 2400,
+    "warmup": 900,
+    "repetitions": 3,
+    "minimum_seconds": 10.0,
+    "varied": true,
+    "seed": 623001,
+    "source_revision": "e6094ff9-native-balance-t8-v2",
+    "conditions": null,
+    "save_conditions": null,
+    "serial_solve": false,
+    "serial_pressure": false,
+    "serial_scatter": false,
+    "serial_balance": false,
+    "contact_warp_scatter": false,
+    "scatter_tasks_per_env": 32,
+    "uncached_peak": false,
+    "uncached_face_bounds": false,
+    "method": "auto",
+    "inverse_precision": "64",
+    "full_inverse": false,
+    "dense_surface_loads": false,
+    "history": 0,
+    "unfused_pipeline": false,
+    "policy_precision": "32",
+    "output_mode": "max",
+    "legacy_reset": false,
+    "trace": false,
+    "compact_log": true,
+    "output": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-contact-repair/balance-small-all-seed623001-v2/rigid-b1024-seed623001.json"
+  },
+  "command": [
+    "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python",
+    "examples/speed_benchmark/rigid_stress.py",
+    "--scope",
+    "rigid",
+    "--envs",
+    "1024",
+    "--seed",
+    "623001",
+    "--steps",
+    "2400",
+    "--warmup",
+    "900",
+    "--repetitions",
+    "3",
+    "--minimum-seconds",
+    "10",
+    "--level",
+    "1",
+    "--varied",
+    "--compact-log",
+    "--source-revision",
+    "e6094ff9-native-balance-t8-v2",
+    "--output",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-contact-repair/balance-small-all-seed623001-v2/rigid-b1024-seed623001.json"
+  ],
+  "source_sha256": {
+    "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery-relief-dev/examples/speed_benchmark/rigid_stress.py": "cc2df9ab06a2b72cf77c30b88941e18c3ae4f030190cc225bb9b2ec369319bac",
+    "examples/rigid/franka_egg_stress.py": "6031e5a035645014f3daa4d532662342a267d495443bfe198f93081e4e187363",
+    "genesis/engine/solvers/rigid/rigid_solver.py": "639210a260da02b0b59b3814ae6a6cf27c6f8d540ce8800cdb36ea652b9cc510",
+    "genesis/engine/solvers/rigid/stress/__init__.py": "17b4fa6e4eb64175b87586a6c7142b9fd2f5e88ba4321129d18e07e296adc5a6",
+    "genesis/engine/solvers/rigid/stress/association.py": "0c265ddde597bb03f6f56da0f4c6063a3a530ce2a19f2dceaf3378e987f811b3",
+    "genesis/engine/solvers/rigid/stress/balance.py": "a0ec6b8e110270f34bf56369cfc94129b6e5fdd2fc091efd6f6f7ac2d15a5ed5",
+    "genesis/engine/solvers/rigid/stress/contact.py": "728a465e6c1b4f6f28280d1543a5a35a12d63d5f5967c0df8c174c6ebfba0630",
+    "genesis/engine/solvers/rigid/stress/data.py": "44874f9cee2dffc882a06a4b7f99272eb9d24aa2ab3c0e009b7650eaa918f532",
+    "genesis/engine/solvers/rigid/stress/factor.py": "f2a059e88cf03b35a5fba2f88c3ac3f631a899d52cd841a6d268d9ccf087f81c",
+    "genesis/engine/solvers/rigid/stress/grid.py": "f451674d257339ece41a258f22c7b95fe25d6fc51888854855de4320e26b9a90",
+    "genesis/engine/solvers/rigid/stress/history.py": "559e046d3405afc260be5cd5a0de5712e490518e73aafc288642261c3959657c",
+    "genesis/engine/solvers/rigid/stress/inverse.py": "b15ef055df018d96b92aa2b0be3d39d258b4cc59c83dbccdd9dcf0c173eb2a43",
+    "genesis/engine/solvers/rigid/stress/lifecycle.py": "aec6ccc09b9da6fc15ea1c64e6716dee9325b3d05edaa7ac19b4419861c192fa",
+    "genesis/engine/solvers/rigid/stress/model.py": "ba4964cb5d01eb8fcd7c9fbb02bbe64dcc2976fdfab653e2c4ba4efd8ac20b51",
+    "genesis/engine/solvers/rigid/stress/operators.py": "40ad5e488e928a8f22efe0833f447afba7ef0e258bc3cffb5a0fe30bc1d416ff",
+    "genesis/engine/solvers/rigid/stress/pipeline.py": "11e7882e9b0a219de84f35be8c2f8db2e8af01163705a7bf50c7aaee1531aed6",
+    "genesis/engine/solvers/rigid/stress/recovery.py": "f94048638e4b64418b83d1ad37120f94441132e10075503b2a4cd460bebee9b6",
+    "genesis/engine/solvers/rigid/stress/scatter.py": "7f80586484f6c4ce9f84bfdfc800eb6de6613b567a5d08e581f2817a0d0f0ee0",
+    "genesis/engine/solvers/rigid/stress/solve.py": "b9aa7951dd5f5d6cd4fcdc719723fd07abf4ad359e7729e9f38f26adfc7fda59",
+    "genesis/engine/solvers/rigid/stress/surface.py": "ed42707ee7c589db942a15835d40aba5194d2415b2c576ae0196987b94bb4fc1",
+    "genesis/engine/solvers/rigid/stress/surface_inverse.py": "904a001a9c5a178399e770baa427b06f89f604fc1c48638ff870e2491f405bf4",
+    "genesis/options/rigid_stress.py": "53e7a2cb8613ff63938e51c43fe10e9f8a9a0099f04e6161e5d06c77064ee098"
+  },
+  "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "gpu_uuid": "GPU-a84194fe-4866-e5ab-389f-5c0715e30913",
+  "gpu_total_bytes": 101975851008,
+  "quadrants": [
+    1,
+    3,
+    3
+  ],
+  "torch": "2.8.0",
+  "setup_seconds": 55.01889925915748,
+  "warmup_steps": 900,
+  "warmup_quality": [
+    {
+      "tick": 0,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.0,
+        "mean": 0.0,
+        "maximum_indices": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.03051370148699132,
+        "maximum": 0.032506826596768075,
+        "mean": 0.03151709839913191,
+        "maximum_indices": [
+          479,
+          547,
+          126,
+          821,
+          510
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 0,
+            "mean": 0.0,
+            "maximum_indices": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 0,
+            "mean": 0.0,
+            "maximum_indices": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 0,
+        "mean": 0.0,
+        "maximum_indices": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 0,
+        "mean": 0.0,
+        "maximum_indices": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      }
+    },
+    {
+      "tick": 10,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.01669449081803005,
+        "mean": 0.00015814117278797993,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.029532706599845266,
+        "maximum": 0.029639243722882007,
+        "mean": 0.029594236873273082,
+        "maximum_indices": [
+          277,
+          36,
+          461,
+          518,
+          828
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 0,
+            "mean": 0.0,
+            "maximum_indices": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 0,
+            "mean": 0.0,
+            "maximum_indices": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 1,
+        "mean": 1.0,
+        "maximum_indices": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.3158417637969228e-18,
+        "mean": 6.690249997893643e-19,
+        "maximum_indices": [
+          168,
+          258,
+          656,
+          214,
+          773
+        ]
+      }
+    },
+    {
+      "tick": 20,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.0333889816360601,
+        "mean": 0.0005918066569282136,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.02963124860457392,
+        "maximum": 0.029632924432487204,
+        "mean": 0.02963220270595586,
+        "maximum_indices": [
+          277,
+          36,
+          461,
+          518,
+          828
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 0,
+            "mean": 0.0,
+            "maximum_indices": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 0,
+            "mean": 0.0,
+            "maximum_indices": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 1,
+        "mean": 1.0,
+        "maximum_indices": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.314609381893867e-18,
+        "mean": 6.754403193161144e-19,
+        "maximum_indices": [
+          168,
+          258,
+          656,
+          214,
+          773
+        ]
+      }
+    },
+    {
+      "tick": 30,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.05008347245409015,
+        "mean": 0.0013107783806343906,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.029632791486452346,
+        "maximum": 0.029632819249845593,
+        "mean": 0.029632807289284142,
+        "maximum_indices": [
+          277,
+          36,
+          461,
+          518,
+          828
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 0,
+            "mean": 0.0,
+            "maximum_indices": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 0,
+            "mean": 0.0,
+            "maximum_indices": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 1,
+        "mean": 1.0,
+        "maximum_indices": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.3145932293535235e-18,
+        "mean": 6.755081421674671e-19,
+        "maximum_indices": [
+          258,
+          975,
+          656,
+          732,
+          852
+        ]
+      }
+    },
+    {
+      "tick": 40,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.0667779632721202,
+        "mean": 0.0023166866652754585,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.02963281704534618,
+        "maximum": 0.02963281750568801,
+        "mean": 0.0296328173073702,
+        "maximum_indices": [
+          277,
+          36,
+          461,
+          518,
+          828
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 0,
+            "mean": 0.0,
+            "maximum_indices": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 0,
+            "mean": 0.0,
+            "maximum_indices": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 1,
+        "mean": 1.0,
+        "maximum_indices": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.3145933652742977e-18,
+        "mean": 6.755089621194973e-19,
+        "maximum_indices": [
+          975,
+          333,
+          313,
+          781,
+          852
+        ]
+      }
+    },
+    {
+      "tick": 50,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.08347245409015025,
+        "mean": 0.003598119261268781,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0296328174691349,
+        "maximum": 0.029632817476767884,
+        "mean": 0.029632817473479563,
+        "maximum_indices": [
+          277,
+          36,
+          461,
+          518,
+          828
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 0,
+            "mean": 0.0,
+            "maximum_indices": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 0,
+            "mean": 0.0,
+            "maximum_indices": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 1,
+        "mean": 1.0,
+        "maximum_indices": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.314593367026386e-18,
+        "mean": 6.755089707593941e-19,
+        "maximum_indices": [
+          975,
+          333,
+          313,
+          781,
+          852
+        ]
+      }
+    },
+    {
+      "tick": 60,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.1001669449081803,
+        "mean": 0.0051615974540901504,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.029632817476161793,
+        "maximum": 0.029632817476288355,
+        "mean": 0.029632817476233805,
+        "maximum_indices": [
+          277,
+          36,
+          461,
+          518,
+          828
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 0,
+            "mean": 0.0,
+            "maximum_indices": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 0,
+            "mean": 0.0,
+            "maximum_indices": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 1,
+        "mean": 1.0,
+        "maximum_indices": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.3145933670388748e-18,
+        "mean": 6.755089708206033e-19,
+        "maximum_indices": [
+          975,
+          333,
+          313,
+          781,
+          852
+        ]
+      }
+    },
+    {
+      "tick": 70,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.11686143572621036,
+        "mean": 0.007010381886477464,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.029632817476278304,
+        "maximum": 0.02963281747628042,
+        "mean": 0.029632817476279622,
+        "maximum_indices": [
+          36,
+          277,
+          461,
+          513,
+          518
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 0,
+            "mean": 0.0,
+            "maximum_indices": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 0,
+            "mean": 0.0,
+            "maximum_indices": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 1,
+        "mean": 1.0,
+        "maximum_indices": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.314593367165538e-18,
+        "mean": 6.755089708167807e-19,
+        "maximum_indices": [
+          975,
+          333,
+          313,
+          781,
+          852
+        ]
+      }
+    },
+    {
+      "tick": 80,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.1335559265442404,
+        "mean": 0.009144472558430723,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.02963281747628022,
+        "maximum": 0.02963281747628033,
+        "mean": 0.029632817476279938,
+        "maximum_indices": [
+          926,
+          247,
+          768,
+          214,
+          263
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 0,
+            "mean": 0.0,
+            "maximum_indices": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 0,
+            "mean": 0.0,
+            "maximum_indices": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 1,
+        "mean": 1.0,
+        "maximum_indices": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.3145933670564196e-18,
+        "mean": 6.755089708088646e-19,
+        "maximum_indices": [
+          975,
+          333,
+          313,
+          781,
+          852
+        ]
+      }
+    },
+    {
+      "tick": 90,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.15025041736227046,
+        "mean": 0.011549196577629383,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.029632817476280212,
+        "maximum": 0.02963281747628032,
+        "mean": 0.029632817476279938,
+        "maximum_indices": [
+          968,
+          193,
+          337,
+          829,
+          545
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 0,
+            "mean": 0.0,
+            "maximum_indices": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 0,
+            "mean": 0.0,
+            "maximum_indices": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 1,
+        "mean": 1.0,
+        "maximum_indices": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.3145933669318624e-18,
+        "mean": 6.755089707847576e-19,
+        "maximum_indices": [
+          975,
+          333,
+          313,
+          781,
+          852
+        ]
+      }
+    },
+    {
+      "tick": 100,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.1669449081803005,
+        "mean": 0.014224553944073457,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.029632817476280215,
+        "maximum": 0.02963281747628032,
+        "mean": 0.029632817476279938,
+        "maximum_indices": [
+          862,
+          1004,
+          10,
+          307,
+          390
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 0,
+            "mean": 0.0,
+            "maximum_indices": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 0,
+            "mean": 0.0,
+            "maximum_indices": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 1,
+        "mean": 1.0,
+        "maximum_indices": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.3145933668965033e-18,
+        "mean": 6.755089707597657e-19,
+        "maximum_indices": [
+          975,
+          333,
+          313,
+          781,
+          852
+        ]
+      }
+    },
+    {
+      "tick": 110,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.18363939899833057,
+        "mean": 0.017185217550083464,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.02944343070578207,
+        "maximum": 0.029632817476280316,
+        "mean": 0.029632330624726602,
+        "maximum_indices": [
+          277,
+          81,
+          92,
+          168,
+          558
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 3,
+            "mean": 0.0068359375,
+            "maximum_indices": [
+              0,
+              146,
+              373,
+              746,
+              973
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 4,
+            "mean": 0.005859375,
+            "maximum_indices": [
+              600,
+              0,
+              373,
+              1,
+              2
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 5,
+        "mean": 1.0126953125,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          146,
+          746
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.29199784404995244,
+        "mean": 0.0008801888668084891,
+        "maximum_indices": [
+          600,
+          0,
+          373,
+          146,
+          746
+        ]
+      }
+    },
+    {
+      "tick": 120,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.2003338898163606,
+        "mean": 0.020429557074290484,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.02931600749408306,
+        "maximum": 0.029658536046482897,
+        "mean": 0.02963077319058654,
+        "maximum_indices": [
+          584,
+          700,
+          32,
+          73,
+          136
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 0.048828125,
+            "maximum_indices": [
+              146,
+              519,
+              584,
+              0,
+              292
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 0.044921875,
+            "maximum_indices": [
+              519,
+              0,
+              130,
+              146,
+              584
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 11,
+        "mean": 1.09375,
+        "maximum_indices": [
+          519,
+          146,
+          584,
+          0,
+          600
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.44287049074856577,
+        "mean": 0.0035910519483505934,
+        "maximum_indices": [
+          130,
+          600,
+          519,
+          584,
+          211
+        ]
+      }
+    },
+    {
+      "tick": 130,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.21702838063439064,
+        "mean": 0.02394126930300502,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.029335639961479015,
+        "maximum": 0.029740799904421553,
+        "mean": 0.02962975768674451,
+        "maximum_indices": [
+          341,
+          941,
+          114,
+          487,
+          260
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 8,
+            "mean": 0.11328125,
+            "maximum_indices": [
+              487,
+              422,
+              941,
+              49,
+              146
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 0.091796875,
+            "maximum_indices": [
+              49,
+              519,
+              795,
+              487,
+              0
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 13,
+        "mean": 1.205078125,
+        "maximum_indices": [
+          487,
+          49,
+          519,
+          795,
+          422
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.36483075134664567,
+        "mean": 0.006208492065618496,
+        "maximum_indices": [
+          795,
+          49,
+          487,
+          649,
+          130
+        ]
+      }
+    },
+    {
+      "tick": 140,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.2337228714524207,
+        "mean": 0.027728505843071787,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.029326273373653153,
+        "maximum": 0.029738620163472246,
+        "mean": 0.029628274594394825,
+        "maximum_indices": [
+          341,
+          941,
+          114,
+          487,
+          260
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 8,
+            "mean": 0.16796875,
+            "maximum_indices": [
+              487,
+              698,
+              941,
+              422,
+              49
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 0.14453125,
+            "maximum_indices": [
+              49,
+              325,
+              487,
+              519,
+              633
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 14,
+        "mean": 1.3125,
+        "maximum_indices": [
+          487,
+          698,
+          49,
+          325,
+          519
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.3764209247360206,
+        "mean": 0.008208608367775129,
+        "maximum_indices": [
+          844,
+          617,
+          552,
+          779,
+          600
+        ]
+      }
+    },
+    {
+      "tick": 150,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.25041736227045075,
+        "mean": 0.031802678944073445,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.029331749466172494,
+        "maximum": 0.029737534877525444,
+        "mean": 0.0296271920132511,
+        "maximum_indices": [
+          341,
+          909,
+          941,
+          520,
+          114
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 8,
+            "mean": 0.2236328125,
+            "maximum_indices": [
+              487,
+              941,
+              422,
+              698,
+              909
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 0.197265625,
+            "maximum_indices": [
+              1,
+              49,
+              228,
+              325,
+              487
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 14,
+        "mean": 1.4208984375,
+        "maximum_indices": [
+          487,
+          1,
+          49,
+          228,
+          325
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.3477288469897812,
+        "mean": 0.010013722590491124,
+        "maximum_indices": [
+          747,
+          1,
+          228,
+          147,
+          600
+        ]
+      }
+    },
+    {
+      "tick": 160,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.2671118530884808,
+        "mean": 0.036155636999165304,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.029324074244969637,
+        "maximum": 0.029736869418826223,
+        "mean": 0.029625698047736834,
+        "maximum_indices": [
+          341,
+          941,
+          909,
+          487,
+          114
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 8,
+            "mean": 0.2666015625,
+            "maximum_indices": [
+              487,
+              941,
+              422,
+              698,
+              909
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 0.236328125,
+            "maximum_indices": [
+              1,
+              49,
+              228,
+              325,
+              487
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 14,
+        "mean": 1.5029296875,
+        "maximum_indices": [
+          487,
+          1,
+          49,
+          228,
+          325
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.29982436225645626,
+        "mean": 0.010858180739311284,
+        "maximum_indices": [
+          439,
+          212,
+          974,
+          50,
+          958
+        ]
+      }
+    },
+    {
+      "tick": 170,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.2838063439065109,
+        "mean": 0.040774337437395676,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.02932912095489087,
+        "maximum": 0.02973635238887347,
+        "mean": 0.029624361748187812,
+        "maximum_indices": [
+          341,
+          941,
+          909,
+          487,
+          114
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 8,
+            "mean": 0.30859375,
+            "maximum_indices": [
+              487,
+              941,
+              422,
+              698,
+              909
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 0.2783203125,
+            "maximum_indices": [
+              1,
+              34,
+              49,
+              228,
+              325
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 14,
+        "mean": 1.5869140625,
+        "maximum_indices": [
+          487,
+          1,
+          34,
+          49,
+          228
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.34784399316019743,
+        "mean": 0.012751710943245419,
+        "maximum_indices": [
+          1007,
+          634,
+          861,
+          34,
+          261
+        ]
+      }
+    },
+    {
+      "tick": 180,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.3005008347245409,
+        "mean": 0.045676713793823,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.029332548702755017,
+        "maximum": 0.02973588901998332,
+        "mean": 0.029622995942774507,
+        "maximum_indices": [
+          341,
+          941,
+          909,
+          487,
+          114
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 8,
+            "mean": 0.34765625,
+            "maximum_indices": [
+              487,
+              941,
+              422,
+              698,
+              909
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 0.32421875,
+            "maximum_indices": [
+              1,
+              34,
+              49,
+              228,
+              310
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 14,
+        "mean": 1.671875,
+        "maximum_indices": [
+          487,
+          1,
+          34,
+          49,
+          228
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.2802916343830699,
+        "mean": 0.013947300137168035,
+        "maximum_indices": [
+          310,
+          764,
+          245,
+          439,
+          618
+        ]
+      }
+    },
+    {
+      "tick": 190,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.31719532554257096,
+        "mean": 0.050862766068447425,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.029335433711719497,
+        "maximum": 0.030274424166430475,
+        "mean": 0.02962631220165859,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          146,
+          973
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 8,
+            "mean": 0.39453125,
+            "maximum_indices": [
+              487,
+              83,
+              941,
+              422,
+              698
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 0.3583984375,
+            "maximum_indices": [
+              1,
+              34,
+              49,
+              148,
+              228
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 14,
+        "mean": 1.7470703125,
+        "maximum_indices": [
+          487,
+          1,
+          34,
+          49,
+          83
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.5450502594843485,
+        "mean": 0.015674775995551123,
+        "maximum_indices": [
+          67,
+          310,
+          894,
+          148,
+          748
+        ]
+      }
+    },
+    {
+      "tick": 200,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.333889816360601,
+        "mean": 0.05632271233305511,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.029336412506731222,
+        "maximum": 0.03387200259516635,
+        "mean": 0.029667022929515344,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 0.443359375,
+            "maximum_indices": [
+              213,
+              487,
+              83,
+              941,
+              422
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 0.3994140625,
+            "maximum_indices": [
+              1,
+              34,
+              49,
+              148,
+              213
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 15,
+        "mean": 1.8203125,
+        "maximum_indices": [
+          213,
+          487,
+          1,
+          34,
+          49
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.36347527408519614,
+        "mean": 0.017084278600894804,
+        "maximum_indices": [
+          310,
+          586,
+          67,
+          878,
+          51
+        ]
+      }
+    },
+    {
+      "tick": 210,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.35058430717863104,
+        "mean": 0.062051661623539214,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.029327420032558477,
+        "maximum": 0.04091628133208849,
+        "mean": 0.02979923472941775,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 0.4833984375,
+            "maximum_indices": [
+              213,
+              487,
+              83,
+              941,
+              422
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 0.439453125,
+            "maximum_indices": [
+              1,
+              34,
+              49,
+              148,
+              213
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 15,
+        "mean": 1.8828125,
+        "maximum_indices": [
+          213,
+          487,
+          1,
+          34,
+          83
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.4234556760764043,
+        "mean": 0.01882961692734572,
+        "maximum_indices": [
+          927,
+          700,
+          262,
+          781,
+          327
+        ]
+      }
+    },
+    {
+      "tick": 220,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.36727879799666113,
+        "mean": 0.06806591715358933,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.029332861498655893,
+        "maximum": 0.0510098613330003,
+        "mean": 0.030080039943271224,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 0.5302734375,
+            "maximum_indices": [
+              213,
+              311,
+              487,
+              83,
+              941
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 6,
+            "mean": 0.48046875,
+            "maximum_indices": [
+              67,
+              1,
+              34,
+              49,
+              148
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 15,
+        "mean": 1.953125,
+        "maximum_indices": [
+          213,
+          311,
+          487,
+          67,
+          1
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.42865713651402376,
+        "mean": 0.020115773507457562,
+        "maximum_indices": [
+          457,
+          830,
+          84,
+          262,
+          684
+        ]
+      }
+    },
+    {
+      "tick": 230,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.38397328881469117,
+        "mean": 0.07436384860183641,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.029336500271006864,
+        "maximum": 0.06344604128245504,
+        "mean": 0.030554693349873218,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 0.5830078125,
+            "maximum_indices": [
+              213,
+              311,
+              487,
+              83,
+              941
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 0.51953125,
+            "maximum_indices": [
+              1,
+              34,
+              49,
+              67,
+              148
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 15,
+        "mean": 2.029296875,
+        "maximum_indices": [
+          213,
+          311,
+          487,
+          34,
+          67
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.4493416032575791,
+        "mean": 0.02196396035595843,
+        "maximum_indices": [
+          960,
+          814,
+          587,
+          976,
+          214
+        ]
+      }
+    },
+    {
+      "tick": 240,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.4006677796327212,
+        "mean": 0.08092915275459098,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.02933953904135686,
+        "maximum": 0.07741553775411822,
+        "mean": 0.03125505194768799,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 0.6328125,
+            "maximum_indices": [
+              213,
+              311,
+              117,
+              487,
+              83
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 0.56640625,
+            "maximum_indices": [
+              1,
+              34,
+              49,
+              67,
+              148
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 15,
+        "mean": 2.109375,
+        "maximum_indices": [
+          213,
+          311,
+          117,
+          487,
+          34
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.39394706618562025,
+        "mean": 0.023493040788173405,
+        "maximum_indices": [
+          717,
+          117,
+          490,
+          571,
+          198
+        ]
+      }
+    },
+    {
+      "tick": 250,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.41736227045075125,
+        "mean": 0.08776998121869783,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.02934237905295743,
+        "maximum": 0.09207502758800394,
+        "mean": 0.0321978166263294,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 0.6767578125,
+            "maximum_indices": [
+              213,
+              311,
+              117,
+              487,
+              83
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 0.6083984375,
+            "maximum_indices": [
+              1,
+              34,
+              49,
+              67,
+              117
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 15,
+        "mean": 2.17578125,
+        "maximum_indices": [
+          213,
+          311,
+          117,
+          487,
+          67
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.4807957088624303,
+        "mean": 0.025507975874913144,
+        "maximum_indices": [
+          847,
+          620,
+          20,
+          182,
+          247
+        ]
+      }
+    },
+    {
+      "tick": 260,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.4340567612687813,
+        "mean": 0.09489611592237061,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.029345143863369883,
+        "maximum": 0.10657417284971474,
+        "mean": 0.033388281182260914,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 0.70703125,
+            "maximum_indices": [
+              213,
+              311,
+              117,
+              487,
+              83
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 0.64453125,
+            "maximum_indices": [
+              1,
+              34,
+              49,
+              67,
+              117
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 15,
+        "mean": 2.2265625,
+        "maximum_indices": [
+          213,
+          311,
+          117,
+          487,
+          67
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.2875408803884919,
+        "mean": 0.026451615489538068,
+        "maximum_indices": [
+          604,
+          312,
+          377,
+          685,
+          393
+        ]
+      }
+    },
+    {
+      "tick": 270,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.4507512520868114,
+        "mean": 0.10230429622287149,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.029347869862440062,
+        "maximum": 0.12006970716291011,
+        "mean": 0.03481594204529043,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 0.7470703125,
+            "maximum_indices": [
+              213,
+              311,
+              117,
+              487,
+              83
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 0.6787109375,
+            "maximum_indices": [
+              1,
+              34,
+              49,
+              67,
+              117
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 15,
+        "mean": 2.283203125,
+        "maximum_indices": [
+          311,
+          117,
+          213,
+          487,
+          182
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.4799976258459594,
+        "mean": 0.028415702517357557,
+        "maximum_indices": [
+          507,
+          134,
+          896,
+          215,
+          280
+        ]
+      }
+    },
+    {
+      "tick": 280,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.4674457429048414,
+        "mean": 0.10997658858514188,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.029318819343382638,
+        "maximum": 0.1317333964301094,
+        "mean": 0.0364539014946554,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 0.78515625,
+            "maximum_indices": [
+              213,
+              311,
+              117,
+              487,
+              83
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 0.7177734375,
+            "maximum_indices": [
+              1,
+              34,
+              49,
+              67,
+              117
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 15,
+        "mean": 2.345703125,
+        "maximum_indices": [
+          311,
+          117,
+          213,
+          487,
+          182
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.7019637310071447,
+        "mean": 0.030485252203880486,
+        "maximum_indices": [
+          637,
+          410,
+          896,
+          1010,
+          799
+        ]
+      }
+    },
+    {
+      "tick": 290,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.48414023372287146,
+        "mean": 0.11793092654424037,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0293261089045566,
+        "maximum": 0.14075408208394422,
+        "mean": 0.0382622743824635,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 0.833984375,
+            "maximum_indices": [
+              213,
+              311,
+              117,
+              487,
+              83
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 0.7548828125,
+            "maximum_indices": [
+              1,
+              34,
+              49,
+              67,
+              117
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 15,
+        "mean": 2.4130859375,
+        "maximum_indices": [
+          311,
+          117,
+          213,
+          487,
+          182
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.2992061665326007,
+        "mean": 0.031839989239497705,
+        "maximum_indices": [
+          394,
+          783,
+          637,
+          21,
+          167
+        ]
+      }
+    },
+    {
+      "tick": 300,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.5008347245409015,
+        "mean": 0.1261705707429048,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.029315615150828277,
+        "maximum": 0.14633309122235225,
+        "mean": 0.04018886434901787,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 0.8828125,
+            "maximum_indices": [
+              213,
+              311,
+              117,
+              487,
+              83
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 0.7978515625,
+            "maximum_indices": [
+              1,
+              34,
+              49,
+              67,
+              117
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 14,
+        "mean": 2.48828125,
+        "maximum_indices": [
+          117,
+          213,
+          311,
+          487,
+          182
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.4402102003982476,
+        "mean": 0.033502199119813225,
+        "maximum_indices": [
+          70,
+          297,
+          670,
+          605,
+          524
+        ]
+      }
+    },
+    {
+      "tick": 310,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.5175292153589316,
+        "mean": 0.13468573925292152,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.029332516871885025,
+        "maximum": 0.14848956322355467,
+        "mean": 0.0421740932199318,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          146,
+          973
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 0.9267578125,
+            "maximum_indices": [
+              213,
+              311,
+              117,
+              487,
+              83
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 6,
+            "mean": 0.833984375,
+            "maximum_indices": [
+              795,
+              1,
+              34,
+              49,
+              67
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 14,
+        "mean": 2.5517578125,
+        "maximum_indices": [
+          117,
+          213,
+          311,
+          487,
+          795
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.32534623258084894,
+        "mean": 0.03462594688083571,
+        "maximum_indices": [
+          427,
+          443,
+          654,
+          70,
+          54
+        ]
+      }
+    },
+    {
+      "tick": 320,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.5342237061769616,
+        "mean": 0.14346828046744575,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.02933478044254568,
+        "maximum": 0.1491739950266957,
+        "mean": 0.04417545181636401,
+        "maximum_indices": [
+          0,
+          146,
+          373,
+          746,
+          600
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 0.982421875,
+            "maximum_indices": [
+              213,
+              311,
+              117,
+              487,
+              83
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 0.876953125,
+            "maximum_indices": [
+              1,
+              34,
+              49,
+              67,
+              117
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 14,
+        "mean": 2.634765625,
+        "maximum_indices": [
+          213,
+          311,
+          117,
+          487,
+          182
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.46598941485060025,
+        "mean": 0.03655293155281273,
+        "maximum_indices": [
+          557,
+          930,
+          184,
+          865,
+          265
+        ]
+      }
+    },
+    {
+      "tick": 330,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.5509181969949917,
+        "mean": 0.15253449760016694,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.02933691408141187,
+        "maximum": 0.1494205989360457,
+        "mean": 0.04617847773575204,
+        "maximum_indices": [
+          146,
+          0,
+          373,
+          892,
+          746
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 1.0224609375,
+            "maximum_indices": [
+              213,
+              311,
+              117,
+              487,
+              83
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 0.916015625,
+            "maximum_indices": [
+              1,
+              34,
+              49,
+              67,
+              117
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 14,
+        "mean": 2.697265625,
+        "maximum_indices": [
+          213,
+          311,
+          117,
+          487,
+          215
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.2698300617106421,
+        "mean": 0.03728620645143982,
+        "maximum_indices": [
+          233,
+          914,
+          687,
+          70,
+          460
+        ]
+      }
+    },
+    {
+      "tick": 340,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.5676126878130218,
+        "mean": 0.16188602097245408,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.029338999939167793,
+        "maximum": 0.14951650894788365,
+        "mean": 0.048179132216504945,
+        "maximum_indices": [
+          584,
+          146,
+          892,
+          373,
+          0
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 1.0634765625,
+            "maximum_indices": [
+              213,
+              311,
+              71,
+              117,
+              487
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 0.9521484375,
+            "maximum_indices": [
+              1,
+              34,
+              49,
+              67,
+              71
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 14,
+        "mean": 2.7568359375,
+        "maximum_indices": [
+          71,
+          213,
+          311,
+          117,
+          487
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.323733778384185,
+        "mean": 0.03897857924819735,
+        "maximum_indices": [
+          817,
+          71,
+          590,
+          525,
+          217
+        ]
+      }
+    },
+    {
+      "tick": 350,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.5843071786310517,
+        "mean": 0.1715065473706177,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.029343746019536848,
+        "maximum": 0.14960627787363295,
+        "mean": 0.0501785451476509,
+        "maximum_indices": [
+          341,
+          941,
+          584,
+          487,
+          114
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 1.0966796875,
+            "maximum_indices": [
+              213,
+              311,
+              71,
+              117,
+              487
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 0.9853515625,
+            "maximum_indices": [
+              1,
+              34,
+              49,
+              67,
+              71
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 14,
+        "mean": 2.80859375,
+        "maximum_indices": [
+          71,
+          213,
+          311,
+          117,
+          487
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.3469483015294511,
+        "mean": 0.040514761598336745,
+        "maximum_indices": [
+          493,
+          120,
+          347,
+          947,
+          896
+        ]
+      }
+    },
+    {
+      "tick": 360,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.6010016694490818,
+        "mean": 0.18140096775876463,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.029347553206188766,
+        "maximum": 0.14965381484252113,
+        "mean": 0.052174909707723344,
+        "maximum_indices": [
+          341,
+          941,
+          487,
+          114,
+          633
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 1.1416015625,
+            "maximum_indices": [
+              213,
+              311,
+              704,
+              71,
+              117
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.0263671875,
+            "maximum_indices": [
+              1,
+              34,
+              49,
+              67,
+              71
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 15,
+        "mean": 2.876953125,
+        "maximum_indices": [
+          704,
+          71,
+          213,
+          311,
+          117
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.26977786661495246,
+        "mean": 0.04137471157900661,
+        "maximum_indices": [
+          120,
+          250,
+          931,
+          104,
+          785
+        ]
+      }
+    },
+    {
+      "tick": 370,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.6176961602671118,
+        "mean": 0.19157906406510858,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.029349666058837015,
+        "maximum": 0.14966798323253874,
+        "mean": 0.05416798081384015,
+        "maximum_indices": [
+          341,
+          941,
+          487,
+          114,
+          633
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 1.1748046875,
+            "maximum_indices": [
+              213,
+              311,
+              704,
+              71,
+              117
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.0634765625,
+            "maximum_indices": [
+              1,
+              34,
+              49,
+              67,
+              71
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 15,
+        "mean": 2.9306640625,
+        "maximum_indices": [
+          704,
+          71,
+          213,
+          311,
+          117
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.3507894893871626,
+        "mean": 0.04337693247369377,
+        "maximum_indices": [
+          7,
+          980,
+          461,
+          153,
+          380
+        ]
+      }
+    },
+    {
+      "tick": 380,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.6343906510851419,
+        "mean": 0.20204083628964944,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.02938053394514748,
+        "maximum": 0.1496713865170114,
+        "mean": 0.05616120504730317,
+        "maximum_indices": [
+          341,
+          941,
+          487,
+          909,
+          633
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 1.220703125,
+            "maximum_indices": [
+              213,
+              311,
+              704,
+              71,
+              72
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.1015625,
+            "maximum_indices": [
+              1,
+              34,
+              49,
+              67,
+              71
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 15,
+        "mean": 2.998046875,
+        "maximum_indices": [
+          704,
+          71,
+          213,
+          311,
+          72
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.5912946363764102,
+        "mean": 0.04438928259585104,
+        "maximum_indices": [
+          137,
+          737,
+          364,
+          218,
+          72
+        ]
+      }
+    },
+    {
+      "tick": 390,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.651085141903172,
+        "mean": 0.2127683508973289,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.029386521014010885,
+        "maximum": 0.14966951813709303,
+        "mean": 0.05815545291011883,
+        "maximum_indices": [
+          341,
+          941,
+          909,
+          487,
+          520
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 1.2607421875,
+            "maximum_indices": [
+              213,
+              311,
+              704,
+              71,
+              72
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.1416015625,
+            "maximum_indices": [
+              1,
+              34,
+              49,
+              67,
+              71
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 15,
+        "mean": 3.060546875,
+        "maximum_indices": [
+          704,
+          71,
+          213,
+          311,
+          72
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.30536909687354363,
+        "mean": 0.04585089852438659,
+        "maximum_indices": [
+          867,
+          865,
+          299,
+          494,
+          721
+        ]
+      }
+    },
+    {
+      "tick": 400,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.667779632721202,
+        "mean": 0.2237746504590985,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.029379987117770928,
+        "maximum": 0.14966672524957,
+        "mean": 0.060148449404173236,
+        "maximum_indices": [
+          341,
+          909,
+          941,
+          487,
+          520
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 1.3173828125,
+            "maximum_indices": [
+              213,
+              311,
+              704,
+              71,
+              72
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.1923828125,
+            "maximum_indices": [
+              1,
+              34,
+              49,
+              67,
+              71
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 15,
+        "mean": 3.15234375,
+        "maximum_indices": [
+          704,
+          71,
+          213,
+          311,
+          72
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.27477653559545295,
+        "mean": 0.04787020280924452,
+        "maximum_indices": [
+          770,
+          786,
+          624,
+          397,
+          170
+        ]
+      }
+    },
+    {
+      "tick": 410,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.6844741235392321,
+        "mean": 0.23506788658180303,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.029384596254619155,
+        "maximum": 0.1496641607738052,
+        "mean": 0.06214029837709398,
+        "maximum_indices": [
+          341,
+          909,
+          941,
+          487,
+          520
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 1.349609375,
+            "maximum_indices": [
+              213,
+              311,
+              704,
+              71,
+              72
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.232421875,
+            "maximum_indices": [
+              1,
+              34,
+              49,
+              67,
+              71
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 15,
+        "mean": 3.2060546875,
+        "maximum_indices": [
+          704,
+          71,
+          213,
+          311,
+          72
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.3667782412624009,
+        "mean": 0.04943898334892855,
+        "maximum_indices": [
+          527,
+          300,
+          73,
+          154,
+          754
+        ]
+      }
+    },
+    {
+      "tick": 420,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.7011686143572621,
+        "mean": 0.2466366470158598,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.029345525570470384,
+        "maximum": 0.14966165761228212,
+        "mean": 0.06413297774142478,
+        "maximum_indices": [
+          341,
+          294,
+          909,
+          941,
+          83
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 1.3916015625,
+            "maximum_indices": [
+              213,
+              311,
+              704,
+              71,
+              72
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.265625,
+            "maximum_indices": [
+              1,
+              34,
+              49,
+              67,
+              71
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 15,
+        "mean": 3.2666015625,
+        "maximum_indices": [
+          704,
+          213,
+          311,
+          71,
+          72
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.4438689335765469,
+        "mean": 0.05061266303018441,
+        "maximum_indices": [
+          884,
+          657,
+          57,
+          284,
+          430
+        ]
+      }
+    },
+    {
+      "tick": 430,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.7178631051752922,
+        "mean": 0.25847278015442404,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.02930514294833201,
+        "maximum": 0.14965908758326849,
+        "mean": 0.06611425835687847,
+        "maximum_indices": [
+          341,
+          294,
+          83,
+          909,
+          941
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 1.41796875,
+            "maximum_indices": [
+              213,
+              311,
+              704,
+              787,
+              71
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.2861328125,
+            "maximum_indices": [
+              1,
+              34,
+              49,
+              67,
+              71
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 1,
+        "maximum": 15,
+        "mean": 3.296875,
+        "maximum_indices": [
+          704,
+          787,
+          213,
+          311,
+          71
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.7011809123826618,
+        "mean": 0.05253164823611247,
+        "maximum_indices": [
+          187,
+          576,
+          560,
+          641,
+          787
+        ]
+      }
+    },
+    {
+      "tick": 440,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.7345575959933223,
+        "mean": 0.2705925892111852,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.029313945884951606,
+        "maximum": 0.14965830400271912,
+        "mean": 0.06786443966747259,
+        "maximum_indices": [
+          294,
+          83,
+          213,
+          651,
+          132
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 1.4482421875,
+            "maximum_indices": [
+              213,
+              311,
+              704,
+              787,
+              71
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.3046875,
+            "maximum_indices": [
+              1,
+              34,
+              67,
+              71,
+              106
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 15,
+        "mean": 3.3271484375,
+        "maximum_indices": [
+          787,
+          213,
+          311,
+          704,
+          71
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.42167908436519075,
+        "mean": 0.05365988926058236,
+        "maximum_indices": [
+          90,
+          576,
+          917,
+          398,
+          690
+        ]
+      }
+    },
+    {
+      "tick": 450,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.7512520868113522,
+        "mean": 0.2829977045075126,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.019106655752145287,
+        "maximum": 0.14965615258328088,
+        "mean": 0.06885950333785915,
+        "maximum_indices": [
+          294,
+          83,
+          19,
+          651,
+          213
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 1.4443359375,
+            "maximum_indices": [
+              213,
+              311,
+              704,
+              787,
+              71
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 6,
+            "mean": 1.3046875,
+            "maximum_indices": [
+              770,
+              1,
+              34,
+              67,
+              71
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 15,
+        "mean": 3.3095703125,
+        "maximum_indices": [
+          787,
+          213,
+          311,
+          704,
+          71
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.5319941218586871,
+        "mean": 0.05415749983662373,
+        "maximum_indices": [
+          220,
+          528,
+          447,
+          820,
+          674
+        ]
+      }
+    },
+    {
+      "tick": 460,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.7679465776293823,
+        "mean": 0.2956734531510852,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.011587305457481633,
+        "maximum": 0.1496525366597796,
+        "mean": 0.06919599708934929,
+        "maximum_indices": [
+          294,
+          19,
+          311,
+          83,
+          651
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 1.4306640625,
+            "maximum_indices": [
+              213,
+              311,
+              704,
+              787,
+              71
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 6,
+            "mean": 1.2890625,
+            "maximum_indices": [
+              299,
+              34,
+              67,
+              71,
+              106
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 15,
+        "mean": 3.2744140625,
+        "maximum_indices": [
+          787,
+          213,
+          311,
+          704,
+          71
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.3148993858472763,
+        "mean": 0.05489281669272183,
+        "maximum_indices": [
+          950,
+          204,
+          350,
+          730,
+          220
+        ]
+      }
+    },
+    {
+      "tick": 470,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.7846410684474123,
+        "mean": 0.30861983514190316,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.013003808629005735,
+        "maximum": 0.14964889433726372,
+        "mean": 0.06950234597261593,
+        "maximum_indices": [
+          294,
+          19,
+          311,
+          83,
+          651
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 1.4462890625,
+            "maximum_indices": [
+              213,
+              311,
+              704,
+              787,
+              71
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.2978515625,
+            "maximum_indices": [
+              34,
+              67,
+              71,
+              106,
+              117
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 15,
+        "mean": 3.29296875,
+        "maximum_indices": [
+          787,
+          213,
+          311,
+          704,
+          71
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.46426241159106674,
+        "mean": 0.05509147694948452,
+        "maximum_indices": [
+          707,
+          934,
+          496,
+          561,
+          220
+        ]
+      }
+    },
+    {
+      "tick": 480,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.8013355592654424,
+        "mean": 0.32185152337228723,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.015785450134701503,
+        "maximum": 0.14964511234612016,
+        "mean": 0.06977935738434296,
+        "maximum_indices": [
+          294,
+          19,
+          311,
+          83,
+          651
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 1.4599609375,
+            "maximum_indices": [
+              213,
+              311,
+              704,
+              787,
+              71
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.3232421875,
+            "maximum_indices": [
+              49,
+              67,
+              71,
+              106,
+              117
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 15,
+        "mean": 3.33203125,
+        "maximum_indices": [
+          787,
+          213,
+          311,
+          704,
+          71
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.4706149379555302,
+        "mean": 0.056112869177600166,
+        "maximum_indices": [
+          918,
+          237,
+          934,
+          383,
+          837
+        ]
+      }
+    },
+    {
+      "tick": 490,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.8180300500834725,
+        "mean": 0.3353668875208681,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.019143271647209175,
+        "maximum": 0.14964110115862758,
+        "mean": 0.07018836723797317,
+        "maximum_indices": [
+          294,
+          19,
+          311,
+          83,
+          651
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 1.4833984375,
+            "maximum_indices": [
+              213,
+              311,
+              704,
+              787,
+              71
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.326171875,
+            "maximum_indices": [
+              49,
+              67,
+              71,
+              106,
+              117
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 15,
+        "mean": 3.35546875,
+        "maximum_indices": [
+          787,
+          213,
+          311,
+          704,
+          71
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.3966967671222714,
+        "mean": 0.055829330375705415,
+        "maximum_indices": [
+          594,
+          934,
+          918,
+          221,
+          302
+        ]
+      }
+    },
+    {
+      "tick": 500,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.8347245409015025,
+        "mean": 0.34914962437395664,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.017283497381400184,
+        "maximum": 0.14963653615353065,
+        "mean": 0.07028864426831467,
+        "maximum_indices": [
+          19,
+          311,
+          651,
+          213,
+          35
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 1.4833984375,
+            "maximum_indices": [
+              213,
+              311,
+              704,
+              787,
+              71
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.33203125,
+            "maximum_indices": [
+              49,
+              71,
+              106,
+              117,
+              120
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 15,
+        "mean": 3.35546875,
+        "maximum_indices": [
+          787,
+          213,
+          311,
+          704,
+          71
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.30439466212327654,
+        "mean": 0.05604467127196873,
+        "maximum_indices": [
+          934,
+          497,
+          270,
+          439,
+          870
+        ]
+      }
+    },
+    {
+      "tick": 510,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.8514190317195326,
+        "mean": 0.3632078855383974,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.01975902864656411,
+        "maximum": 0.14963389633646113,
+        "mean": 0.0704912779310362,
+        "maximum_indices": [
+          19,
+          311,
+          264,
+          35,
+          295
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 1.4814453125,
+            "maximum_indices": [
+              311,
+              704,
+              787,
+              71,
+              72
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.34375,
+            "maximum_indices": [
+              49,
+              71,
+              106,
+              117,
+              120
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 14,
+        "mean": 3.3681640625,
+        "maximum_indices": [
+          311,
+          704,
+          787,
+          71,
+          117
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.44047570679664694,
+        "mean": 0.05658886550001187,
+        "maximum_indices": [
+          400,
+          854,
+          173,
+          108,
+          627
+        ]
+      }
+    },
+    {
+      "tick": 520,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.8681135225375626,
+        "mean": 0.37755308326377274,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.018609265895862488,
+        "maximum": 0.1496313800878585,
+        "mean": 0.0705396067915591,
+        "maximum_indices": [
+          264,
+          19,
+          311,
+          945,
+          913
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 1.4990234375,
+            "maximum_indices": [
+              311,
+              704,
+              787,
+              71,
+              72
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.3515625,
+            "maximum_indices": [
+              49,
+              71,
+              106,
+              117,
+              120
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 14,
+        "mean": 3.388671875,
+        "maximum_indices": [
+          311,
+          704,
+          787,
+          71,
+          117
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.44250163269506965,
+        "mean": 0.05720335196245316,
+        "maximum_indices": [
+          530,
+          757,
+          838,
+          984,
+          854
+        ]
+      }
+    },
+    {
+      "tick": 530,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.8848080133555927,
+        "mean": 0.39217706594323903,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.017532851464735932,
+        "maximum": 0.14963828083582031,
+        "mean": 0.0709239752357568,
+        "maximum_indices": [
+          913,
+          264,
+          848,
+          945,
+          296
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 1.4990234375,
+            "maximum_indices": [
+              704,
+              787,
+              71,
+              72,
+              117
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.35546875,
+            "maximum_indices": [
+              49,
+              71,
+              106,
+              117,
+              120
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 14,
+        "mean": 3.392578125,
+        "maximum_indices": [
+          704,
+          787,
+          71,
+          117,
+          72
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.29117244323073366,
+        "mean": 0.057111382901554375,
+        "maximum_indices": [
+          618,
+          213,
+          359,
+          968,
+          854
+        ]
+      }
+    },
+    {
+      "tick": 540,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.9015025041736228,
+        "mean": 0.4070667910058426,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.019357712698702654,
+        "maximum": 0.14964518167769666,
+        "mean": 0.07106140347240644,
+        "maximum_indices": [
+          913,
+          264,
+          848,
+          945,
+          86
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 1.48828125,
+            "maximum_indices": [
+              704,
+              787,
+              71,
+              72,
+              117
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.3583984375,
+            "maximum_indices": [
+              49,
+              67,
+              71,
+              106,
+              117
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 14,
+        "mean": 3.3857421875,
+        "maximum_indices": [
+          704,
+          787,
+          71,
+          117,
+          72
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.3968522180036742,
+        "mean": 0.05761508160406417,
+        "maximum_indices": [
+          44,
+          417,
+          1023,
+          1017,
+          67
+        ]
+      }
+    },
+    {
+      "tick": 550,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.9181969949916527,
+        "mean": 0.4222401919866451,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.018453540476057594,
+        "maximum": 0.1496454148027895,
+        "mean": 0.07133643332145913,
+        "maximum_indices": [
+          913,
+          264,
+          800,
+          848,
+          654
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 1.482421875,
+            "maximum_indices": [
+              704,
+              787,
+              71,
+              72,
+              117
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.3408203125,
+            "maximum_indices": [
+              49,
+              67,
+              71,
+              106,
+              120
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 14,
+        "mean": 3.357421875,
+        "maximum_indices": [
+          704,
+          787,
+          71,
+          72,
+          117
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.261714563922384,
+        "mean": 0.05724573064855911,
+        "maximum_indices": [
+          1001,
+          44,
+          547,
+          401,
+          174
+        ]
+      }
+    },
+    {
+      "tick": 560,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.9348914858096828,
+        "mean": 0.43769726888564214,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.01113758489225408,
+        "maximum": 0.14964303722936506,
+        "mean": 0.07123656530963036,
+        "maximum_indices": [
+          913,
+          800,
+          654,
+          264,
+          848
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 1.48046875,
+            "maximum_indices": [
+              704,
+              787,
+              71,
+              72,
+              677
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.3359375,
+            "maximum_indices": [
+              67,
+              71,
+              106,
+              120,
+              148
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 14,
+        "mean": 3.3515625,
+        "maximum_indices": [
+          677,
+          704,
+          787,
+          71,
+          72
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.3647578089434014,
+        "mean": 0.05848586105071432,
+        "maximum_indices": [
+          77,
+          927,
+          677,
+          304,
+          700
+        ]
+      }
+    },
+    {
+      "tick": 570,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.9515859766277129,
+        "mean": 0.4534282397746249,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.016311001276322058,
+        "maximum": 0.14964068061548066,
+        "mean": 0.07115196801891381,
+        "maximum_indices": [
+          913,
+          800,
+          654,
+          264,
+          995
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 1.4697265625,
+            "maximum_indices": [
+              677,
+              704,
+              787,
+              71,
+              72
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.330078125,
+            "maximum_indices": [
+              67,
+              71,
+              106,
+              120,
+              148
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 15,
+        "mean": 3.341796875,
+        "maximum_indices": [
+          677,
+          704,
+          787,
+          71,
+          72
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.427762717791005,
+        "mean": 0.05801095401666461,
+        "maximum_indices": [
+          807,
+          596,
+          3,
+          742,
+          207
+        ]
+      }
+    },
+    {
+      "tick": 580,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.9682804674457429,
+        "mean": 0.46942821368948207,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.019145692466895174,
+        "maximum": 0.14963840221142594,
+        "mean": 0.07085470404551301,
+        "maximum_indices": [
+          913,
+          800,
+          654,
+          995,
+          249
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 9,
+            "mean": 1.4755859375,
+            "maximum_indices": [
+              677,
+              704,
+              787,
+              71,
+              72
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.322265625,
+            "maximum_indices": [
+              67,
+              71,
+              106,
+              120,
+              148
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 15,
+        "mean": 3.3505859375,
+        "maximum_indices": [
+          677,
+          704,
+          787,
+          71,
+          72
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.39456788680780164,
+        "mean": 0.058262239489727786,
+        "maximum_indices": [
+          937,
+          110,
+          823,
+          45,
+          872
+        ]
+      }
+    },
+    {
+      "tick": 590,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.984974958263773,
+        "mean": 0.4857134938439068,
+        "maximum_indices": [
+          0,
+          600,
+          373,
+          973,
+          146
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.01400575584238742,
+        "maximum": 0.1496388907188011,
+        "mean": 0.07034571683086295,
+        "maximum_indices": [
+          558,
+          913,
+          800,
+          639,
+          654
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 10,
+            "mean": 1.470703125,
+            "maximum_indices": [
+              402,
+              677,
+              704,
+              787,
+              71
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.326171875,
+            "maximum_indices": [
+              67,
+              71,
+              106,
+              120,
+              148
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 16,
+        "mean": 3.357421875,
+        "maximum_indices": [
+          402,
+          677,
+          704,
+          787,
+          71
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.5672367714823097,
+        "mean": 0.05829934009444905,
+        "maximum_indices": [
+          467,
+          402,
+          474,
+          240,
+          94
+        ]
+      }
+    },
+    {
+      "tick": 600,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "mean": 0.5003260642737893,
+        "maximum_indices": [
+          373,
+          973,
+          146,
+          746,
+          519
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.011814225112584984,
+        "maximum": 0.1496509928212099,
+        "mean": 0.070229494239349,
+        "maximum_indices": [
+          558,
+          639,
+          913,
+          704,
+          800
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 10,
+            "mean": 1.4912109375,
+            "maximum_indices": [
+              402,
+              677,
+              704,
+              787,
+              71
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.3359375,
+            "maximum_indices": [
+              13,
+              67,
+              71,
+              106,
+              120
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 16,
+        "mean": 3.419921875,
+        "maximum_indices": [
+          402,
+          677,
+          704,
+          787,
+          71
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.33764622531750427,
+        "mean": 0.05824788790185556,
+        "maximum_indices": [
+          717,
+          759,
+          386,
+          224,
+          13
+        ]
+      }
+    },
+    {
+      "tick": 610,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "mean": 0.5003912771285475,
+        "maximum_indices": [
+          503,
+          276,
+          876,
+          49,
+          649
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.01709017860740192,
+        "maximum": 0.14965330336847632,
+        "mean": 0.07031140691400312,
+        "maximum_indices": [
+          558,
+          704,
+          639,
+          800,
+          347
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 10,
+            "mean": 1.4912109375,
+            "maximum_indices": [
+              402,
+              677,
+              704,
+              787,
+              71
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 6,
+            "mean": 1.3330078125,
+            "maximum_indices": [
+              921,
+              13,
+              67,
+              71,
+              106
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 16,
+        "mean": 3.4208984375,
+        "maximum_indices": [
+          402,
+          677,
+          704,
+          787,
+          71
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.2898398296471174,
+        "mean": 0.05803516635290033,
+        "maximum_indices": [
+          516,
+          727,
+          500,
+          581,
+          954
+        ]
+      }
+    },
+    {
+      "tick": 620,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "mean": 0.5004564899833059,
+        "maximum_indices": [
+          33,
+          633,
+          406,
+          1006,
+          179
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.01976856805469868,
+        "maximum": 0.1496505498196688,
+        "mean": 0.07023677882447661,
+        "maximum_indices": [
+          558,
+          704,
+          267,
+          639,
+          218
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 10,
+            "mean": 1.498046875,
+            "maximum_indices": [
+              402,
+              677,
+              704,
+              787,
+              71
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.345703125,
+            "maximum_indices": [
+              13,
+              71,
+              106,
+              120,
+              182
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 16,
+        "mean": 3.4375,
+        "maximum_indices": [
+          402,
+          677,
+          704,
+          787,
+          71
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.41871937272631343,
+        "mean": 0.059479783626341834,
+        "maximum_indices": [
+          630,
+          717,
+          857,
+          1019,
+          53
+        ]
+      }
+    },
+    {
+      "tick": 630,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "mean": 0.49954351001669434,
+        "maximum_indices": [
+          163,
+          763,
+          536,
+          309,
+          909
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.012537995619385596,
+        "maximum": 0.14965291627261787,
+        "mean": 0.07015981112845254,
+        "maximum_indices": [
+          267,
+          558,
+          40,
+          948,
+          704
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 10,
+            "mean": 1.484375,
+            "maximum_indices": [
+              402,
+              677,
+              704,
+              787,
+              71
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 6,
+            "mean": 1.341796875,
+            "maximum_indices": [
+              823,
+              13,
+              71,
+              95,
+              106
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 16,
+        "mean": 3.421875,
+        "maximum_indices": [
+          402,
+          677,
+          95,
+          704,
+          787
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.3201960522502592,
+        "mean": 0.059315684963405085,
+        "maximum_indices": [
+          760,
+          313,
+          387,
+          1003,
+          95
+        ]
+      }
+    },
+    {
+      "tick": 640,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "mean": 0.4996087228714528,
+        "maximum_indices": [
+          293,
+          893,
+          66,
+          666,
+          439
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.01724872643230106,
+        "maximum": 0.14965715595341922,
+        "mean": 0.07027756464540695,
+        "maximum_indices": [
+          267,
+          40,
+          558,
+          948,
+          704
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 10,
+            "mean": 1.4765625,
+            "maximum_indices": [
+              402,
+              677,
+              704,
+              787,
+              71
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.3271484375,
+            "maximum_indices": [
+              13,
+              71,
+              95,
+              106,
+              120
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 16,
+        "mean": 3.3916015625,
+        "maximum_indices": [
+          402,
+          95,
+          677,
+          704,
+          787
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.539891781452484,
+        "mean": 0.058052418226306274,
+        "maximum_indices": [
+          517,
+          971,
+          744,
+          679,
+          816
+        ]
+      }
+    },
+    {
+      "tick": 650,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "mean": 0.49967393572620994,
+        "maximum_indices": [
+          423,
+          1023,
+          196,
+          796,
+          569
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.01384559800415644,
+        "maximum": 0.14965542640811688,
+        "mean": 0.06989410793335879,
+        "maximum_indices": [
+          267,
+          40,
+          558,
+          948,
+          704
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 10,
+            "mean": 1.4931640625,
+            "maximum_indices": [
+              402,
+              677,
+              704,
+              787,
+              71
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.3173828125,
+            "maximum_indices": [
+              13,
+              45,
+              95,
+              106,
+              120
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 16,
+        "mean": 3.400390625,
+        "maximum_indices": [
+          402,
+          95,
+          677,
+          704,
+          787
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.33208763152704146,
+        "mean": 0.0583212493488728,
+        "maximum_indices": [
+          501,
+          874,
+          70,
+          647,
+          492
+        ]
+      }
+    },
+    {
+      "tick": 660,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "mean": 0.49876095575959956,
+        "maximum_indices": [
+          553,
+          326,
+          926,
+          99,
+          699
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.014219291257665608,
+        "maximum": 0.14965204734432555,
+        "mean": 0.06950105313007203,
+        "maximum_indices": [
+          267,
+          40,
+          948,
+          558,
+          704
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 10,
+            "mean": 1.48828125,
+            "maximum_indices": [
+              402,
+              677,
+              704,
+              787,
+              72
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.32421875,
+            "maximum_indices": [
+              13,
+              95,
+              106,
+              128,
+              182
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 16,
+        "mean": 3.40234375,
+        "maximum_indices": [
+          402,
+          95,
+          677,
+          704,
+          787
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.46473680784706684,
+        "mean": 0.058843959741806784,
+        "maximum_indices": [
+          777,
+          1004,
+          550,
+          930,
+          177
+        ]
+      }
+    },
+    {
+      "tick": 670,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "mean": 0.4988261686143569,
+        "maximum_indices": [
+          83,
+          683,
+          456,
+          229,
+          829
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.01570123292037961,
+        "maximum": 0.14964884736535713,
+        "mean": 0.069363048702971,
+        "maximum_indices": [
+          267,
+          40,
+          948,
+          268,
+          365
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 10,
+            "mean": 1.4833984375,
+            "maximum_indices": [
+              402,
+              677,
+              704,
+              787,
+              72
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.328125,
+            "maximum_indices": [
+              13,
+              95,
+              106,
+              128,
+              182
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 15,
+        "mean": 3.40625,
+        "maximum_indices": [
+          402,
+          95,
+          677,
+          787,
+          971
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.4862484535925314,
+        "mean": 0.05775544865959333,
+        "maximum_indices": [
+          80,
+          907,
+          534,
+          939,
+          501
+        ]
+      }
+    },
+    {
+      "tick": 680,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "mean": 0.4988913814691152,
+        "maximum_indices": [
+          213,
+          813,
+          586,
+          359,
+          959
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.01794349376552109,
+        "maximum": 0.14964573312737564,
+        "mean": 0.06912390391212606,
+        "maximum_indices": [
+          267,
+          40,
+          268,
+          948,
+          365
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 10,
+            "mean": 1.4794921875,
+            "maximum_indices": [
+              402,
+              677,
+              787,
+              72,
+              95
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.3095703125,
+            "maximum_indices": [
+              13,
+              95,
+              106,
+              128,
+              190
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 15,
+        "mean": 3.400390625,
+        "maximum_indices": [
+          402,
+          95,
+          677,
+          787,
+          971
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.3407362938858505,
+        "mean": 0.05764290336329586,
+        "maximum_indices": [
+          437,
+          972,
+          664,
+          80,
+          52
+        ]
+      }
+    },
+    {
+      "tick": 690,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "mean": 0.49993478714524214,
+        "maximum_indices": [
+          343,
+          943,
+          116,
+          716,
+          489
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.018148806924009327,
+        "maximum": 0.14964254335706803,
+        "mean": 0.06912062361767915,
+        "maximum_indices": [
+          267,
+          40,
+          268,
+          948,
+          755
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 10,
+            "mean": 1.4892578125,
+            "maximum_indices": [
+              402,
+              677,
+              787,
+              95,
+              971
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 6,
+            "mean": 1.322265625,
+            "maximum_indices": [
+              787,
+              13,
+              95,
+              106,
+              128
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 15,
+        "mean": 3.423828125,
+        "maximum_indices": [
+          402,
+          787,
+          95,
+          677,
+          971
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.5025827381479336,
+        "mean": 0.058547920357258004,
+        "maximum_indices": [
+          567,
+          340,
+          356,
+          185,
+          639
+        ]
+      }
+    },
+    {
+      "tick": 700,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "mean": 0.4990218071786309,
+        "maximum_indices": [
+          473,
+          246,
+          846,
+          19,
+          619
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.014697080761334486,
+        "maximum": 0.1496360615459873,
+        "mean": 0.0693201380429304,
+        "maximum_indices": [
+          267,
+          40,
+          268,
+          755,
+          334
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 10,
+            "mean": 1.4716796875,
+            "maximum_indices": [
+              402,
+              97,
+              677,
+              787,
+              95
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.30859375,
+            "maximum_indices": [
+              13,
+              95,
+              97,
+              106,
+              120
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 15,
+        "mean": 3.369140625,
+        "maximum_indices": [
+          97,
+          402,
+          95,
+          677,
+          787
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.27469266323132047,
+        "mean": 0.05736822632092335,
+        "maximum_indices": [
+          97,
+          697,
+          356,
+          859,
+          866
+        ]
+      }
+    },
+    {
+      "tick": 710,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "mean": 0.49908702003338956,
+        "maximum_indices": [
+          3,
+          603,
+          376,
+          976,
+          149
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.013636322414494497,
+        "maximum": 0.1496408187018513,
+        "mean": 0.06899081507181028,
+        "maximum_indices": [
+          334,
+          480,
+          869,
+          268,
+          755
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 10,
+            "mean": 1.4716796875,
+            "maximum_indices": [
+              402,
+              97,
+              677,
+              787,
+              95
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.310546875,
+            "maximum_indices": [
+              13,
+              95,
+              97,
+              106,
+              120
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 15,
+        "mean": 3.3671875,
+        "maximum_indices": [
+          97,
+          402,
+          677,
+          787,
+          971
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.42803291244819214,
+        "mean": 0.058531816933345776,
+        "maximum_indices": [
+          454,
+          162,
+          600,
+          0,
+          81
+        ]
+      }
+    },
+    {
+      "tick": 720,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "mean": 0.4991522328881466,
+        "maximum_indices": [
+          133,
+          733,
+          506,
+          279,
+          879
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.015921371124790886,
+        "maximum": 0.14964537502103092,
+        "mean": 0.06918146560344206,
+        "maximum_indices": [
+          334,
+          480,
+          869,
+          268,
+          529
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 10,
+            "mean": 1.4765625,
+            "maximum_indices": [
+              402,
+              97,
+              677,
+              787,
+              95
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.3173828125,
+            "maximum_indices": [
+              7,
+              13,
+              95,
+              97,
+              106
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 15,
+        "mean": 3.3828125,
+        "maximum_indices": [
+          97,
+          402,
+          677,
+          787,
+          95
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.4428738346184174,
+        "mean": 0.05846868033709228,
+        "maximum_indices": [
+          130,
+          600,
+          519,
+          162,
+          584
+        ]
+      }
+    },
+    {
+      "tick": 730,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "mean": 0.500195638564274,
+        "maximum_indices": [
+          263,
+          863,
+          36,
+          636,
+          409
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.018328224374059055,
+        "maximum": 0.14964426406630935,
+        "mean": 0.06936988973362995,
+        "maximum_indices": [
+          334,
+          480,
+          529,
+          869,
+          268
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 10,
+            "mean": 1.4912109375,
+            "maximum_indices": [
+              402,
+              97,
+              677,
+              787,
+              95
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 6,
+            "mean": 1.31640625,
+            "maximum_indices": [
+              190,
+              7,
+              13,
+              49,
+              95
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 15,
+        "mean": 3.416015625,
+        "maximum_indices": [
+          97,
+          402,
+          677,
+          787,
+          95
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.3648386663671922,
+        "mean": 0.05881665775944389,
+        "maximum_indices": [
+          795,
+          49,
+          487,
+          649,
+          130
+        ]
+      }
+    },
+    {
+      "tick": 740,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "mean": 0.49928265859766235,
+        "maximum_indices": [
+          393,
+          993,
+          166,
+          766,
+          539
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.01696482707224191,
+        "maximum": 0.14964183647764043,
+        "mean": 0.06951208668082295,
+        "maximum_indices": [
+          334,
+          480,
+          529,
+          659,
+          869
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 10,
+            "mean": 1.501953125,
+            "maximum_indices": [
+              402,
+              97,
+              677,
+              95,
+              487
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 6,
+            "mean": 1.3427734375,
+            "maximum_indices": [
+              190,
+              7,
+              13,
+              45,
+              49
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 15,
+        "mean": 3.451171875,
+        "maximum_indices": [
+          97,
+          402,
+          487,
+          677,
+          95
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.37642693145653194,
+        "mean": 0.060088448859761806,
+        "maximum_indices": [
+          844,
+          617,
+          552,
+          779,
+          600
+        ]
+      }
+    },
+    {
+      "tick": 750,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "mean": 0.49836967863105175,
+        "maximum_indices": [
+          523,
+          296,
+          896,
+          69,
+          669
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.013924590809387509,
+        "maximum": 0.14963956161297137,
+        "mean": 0.06959852121263042,
+        "maximum_indices": [
+          334,
+          480,
+          529,
+          935,
+          659
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 10,
+            "mean": 1.515625,
+            "maximum_indices": [
+              402,
+              97,
+              677,
+              95,
+              487
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 6,
+            "mean": 1.3408203125,
+            "maximum_indices": [
+              190,
+              1,
+              7,
+              13,
+              49
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 15,
+        "mean": 3.447265625,
+        "maximum_indices": [
+          97,
+          402,
+          487,
+          677,
+          95
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.34773043025999095,
+        "mean": 0.059744940301464704,
+        "maximum_indices": [
+          747,
+          1,
+          228,
+          147,
+          600
+        ]
+      }
+    },
+    {
+      "tick": 760,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "mean": 0.4994130843071787,
+        "maximum_indices": [
+          53,
+          653,
+          426,
+          199,
+          799
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.015995576980951495,
+        "maximum": 0.14963731212332548,
+        "mean": 0.06949647466806337,
+        "maximum_indices": [
+          334,
+          384,
+          935,
+          480,
+          984
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 10,
+            "mean": 1.5234375,
+            "maximum_indices": [
+              402,
+              97,
+              677,
+              95,
+              487
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 6,
+            "mean": 1.349609375,
+            "maximum_indices": [
+              190,
+              1,
+              7,
+              13,
+              49
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 15,
+        "mean": 3.466796875,
+        "maximum_indices": [
+          97,
+          402,
+          487,
+          677,
+          95
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.29982689395072054,
+        "mean": 0.05956039866659087,
+        "maximum_indices": [
+          439,
+          212,
+          974,
+          997,
+          50
+        ]
+      }
+    },
+    {
+      "tick": 770,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "mean": 0.4994782971619365,
+        "maximum_indices": [
+          183,
+          783,
+          556,
+          329,
+          929
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.019128955073044282,
+        "maximum": 0.14964749996972976,
+        "mean": 0.06987859383409188,
+        "maximum_indices": [
+          271,
+          384,
+          334,
+          76,
+          984
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 10,
+            "mean": 1.5205078125,
+            "maximum_indices": [
+              402,
+              97,
+              95,
+              487,
+              677
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.35546875,
+            "maximum_indices": [
+              1,
+              7,
+              13,
+              34,
+              45
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 15,
+        "mean": 3.4658203125,
+        "maximum_indices": [
+          97,
+          402,
+          487,
+          95,
+          677
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.347844712498443,
+        "mean": 0.05949016205970285,
+        "maximum_indices": [
+          1007,
+          634,
+          861,
+          34,
+          261
+        ]
+      }
+    },
+    {
+      "tick": 780,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "mean": 0.49954351001669484,
+        "maximum_indices": [
+          313,
+          913,
+          86,
+          686,
+          459
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.01359051971331605,
+        "maximum": 0.14966051995189164,
+        "mean": 0.06961511744996399,
+        "maximum_indices": [
+          271,
+          384,
+          76,
+          984,
+          449
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 10,
+            "mean": 1.509765625,
+            "maximum_indices": [
+              402,
+              97,
+              487,
+              677,
+              971
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 6,
+            "mean": 1.365234375,
+            "maximum_indices": [
+              95,
+              190,
+              1,
+              7,
+              13
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 15,
+        "mean": 3.4677734375,
+        "maximum_indices": [
+          402,
+          97,
+          487,
+          677,
+          971
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.2802934850716766,
+        "mean": 0.05906906466968006,
+        "maximum_indices": [
+          310,
+          764,
+          245,
+          162,
+          439
+        ]
+      }
+    },
+    {
+      "tick": 790,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "mean": 0.4986305300500833,
+        "maximum_indices": [
+          443,
+          216,
+          816,
+          589,
+          362
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.01956632858337231,
+        "maximum": 0.1496627432967042,
+        "mean": 0.06983484451843532,
+        "maximum_indices": [
+          271,
+          384,
+          774,
+          76,
+          984
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 10,
+            "mean": 1.509765625,
+            "maximum_indices": [
+              402,
+              97,
+              487,
+              677,
+              971
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.3525390625,
+            "maximum_indices": [
+              1,
+              7,
+              13,
+              34,
+              49
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 15,
+        "mean": 3.4560546875,
+        "maximum_indices": [
+          402,
+          97,
+          487,
+          677,
+          971
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.5450550674687717,
+        "mean": 0.05898328526396021,
+        "maximum_indices": [
+          67,
+          310,
+          894,
+          148,
+          748
+        ]
+      }
+    },
+    {
+      "tick": 800,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "mean": 0.4996739357262107,
+        "maximum_indices": [
+          573,
+          346,
+          946,
+          119,
+          719
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.015018601381782383,
+        "maximum": 0.14965965076764554,
+        "mean": 0.07009377993950663,
+        "maximum_indices": [
+          271,
+          774,
+          531,
+          384,
+          76
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 10,
+            "mean": 1.529296875,
+            "maximum_indices": [
+              402,
+              97,
+              213,
+              487,
+              677
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 6,
+            "mean": 1.3681640625,
+            "maximum_indices": [
+              190,
+              1,
+              13,
+              34,
+              49
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 15,
+        "mean": 3.4951171875,
+        "maximum_indices": [
+          213,
+          402,
+          97,
+          487,
+          677
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.36348590532830793,
+        "mean": 0.05896782375122853,
+        "maximum_indices": [
+          310,
+          586,
+          67,
+          878,
+          51
+        ]
+      }
+    },
+    {
+      "tick": 810,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "mean": 0.49973914858096785,
+        "maximum_indices": [
+          103,
+          703,
+          476,
+          249,
+          849
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.01443049713977187,
+        "maximum": 0.1496555775106516,
+        "mean": 0.07028745774693496,
+        "maximum_indices": [
+          271,
+          531,
+          774,
+          384,
+          76
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 10,
+            "mean": 1.52734375,
+            "maximum_indices": [
+              402,
+              97,
+              213,
+              487,
+              677
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 6,
+            "mean": 1.3720703125,
+            "maximum_indices": [
+              795,
+              1,
+              13,
+              34,
+              49
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 15,
+        "mean": 3.4951171875,
+        "maximum_indices": [
+          213,
+          402,
+          97,
+          487,
+          677
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.42346156682157443,
+        "mean": 0.059505812186699904,
+        "maximum_indices": [
+          927,
+          700,
+          496,
+          399,
+          262
+        ]
+      }
+    },
+    {
+      "tick": 820,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "mean": 0.49980436143572626,
+        "maximum_indices": [
+          233,
+          833,
+          6,
+          606,
+          379
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.015358721345196854,
+        "maximum": 0.14965167657785133,
+        "mean": 0.07033732132921702,
+        "maximum_indices": [
+          271,
+          531,
+          774,
+          645,
+          384
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 10,
+            "mean": 1.5341796875,
+            "maximum_indices": [
+              402,
+              97,
+              213,
+              311,
+              487
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 6,
+            "mean": 1.376953125,
+            "maximum_indices": [
+              67,
+              190,
+              1,
+              13,
+              34
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 15,
+        "mean": 3.5126953125,
+        "maximum_indices": [
+          213,
+          311,
+          402,
+          97,
+          487
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.4286643833746356,
+        "mean": 0.059068324887027165,
+        "maximum_indices": [
+          457,
+          830,
+          84,
+          262,
+          684
+        ]
+      }
+    },
+    {
+      "tick": 830,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "mean": 0.499869574290484,
+        "maximum_indices": [
+          363,
+          963,
+          136,
+          736,
+          509
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.018839957319937928,
+        "maximum": 0.14964779063853023,
+        "mean": 0.07037951209672802,
+        "maximum_indices": [
+          271,
+          531,
+          645,
+          774,
+          337
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 10,
+            "mean": 1.537109375,
+            "maximum_indices": [
+              402,
+              97,
+              213,
+              311,
+              487
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 6,
+            "mean": 1.3642578125,
+            "maximum_indices": [
+              190,
+              1,
+              13,
+              34,
+              49
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 15,
+        "mean": 3.49609375,
+        "maximum_indices": [
+          213,
+          311,
+          402,
+          97,
+          487
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.44934387357150263,
+        "mean": 0.059359886631432504,
+        "maximum_indices": [
+          960,
+          814,
+          805,
+          587,
+          976
+        ]
+      }
+    },
+    {
+      "tick": 840,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "mean": 0.499934787145242,
+        "maximum_indices": [
+          493,
+          266,
+          866,
+          39,
+          639
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.014836507625142171,
+        "maximum": 0.1496438072811246,
+        "mean": 0.07023059934566439,
+        "maximum_indices": [
+          271,
+          531,
+          337,
+          645,
+          774
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 10,
+            "mean": 1.529296875,
+            "maximum_indices": [
+              402,
+              97,
+              213,
+              311,
+              117
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.37890625,
+            "maximum_indices": [
+              1,
+              13,
+              34,
+              49,
+              67
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 15,
+        "mean": 3.5078125,
+        "maximum_indices": [
+          213,
+          311,
+          402,
+          97,
+          117
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.39394526360905585,
+        "mean": 0.05904044790411723,
+        "maximum_indices": [
+          717,
+          117,
+          490,
+          571,
+          332
+        ]
+      }
+    },
+    {
+      "tick": 850,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "mean": 0.5000000000000003,
+        "maximum_indices": [
+          23,
+          623,
+          396,
+          996,
+          169
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.010607448753399331,
+        "maximum": 0.14963241170720726,
+        "mean": 0.070233656971049,
+        "maximum_indices": [
+          531,
+          337,
+          645,
+          451,
+          774
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 10,
+            "mean": 1.5439453125,
+            "maximum_indices": [
+              402,
+              97,
+              213,
+              311,
+              117
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.37890625,
+            "maximum_indices": [
+              1,
+              13,
+              34,
+              49,
+              67
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 15,
+        "mean": 3.515625,
+        "maximum_indices": [
+          213,
+          311,
+          402,
+          97,
+          117
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.48079636444246043,
+        "mean": 0.058967384400378964,
+        "maximum_indices": [
+          847,
+          620,
+          20,
+          182,
+          247
+        ]
+      }
+    },
+    {
+      "tick": 860,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "mean": 0.49908702003338884,
+        "maximum_indices": [
+          153,
+          753,
+          526,
+          299,
+          899
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.011278200933659152,
+        "maximum": 0.14963079385386757,
+        "mean": 0.0702840213530816,
+        "maximum_indices": [
+          841,
+          531,
+          127,
+          337,
+          645
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 10,
+            "mean": 1.5263671875,
+            "maximum_indices": [
+              402,
+              97,
+              213,
+              311,
+              117
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.390625,
+            "maximum_indices": [
+              1,
+              13,
+              34,
+              49,
+              67
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 15,
+        "mean": 3.509765625,
+        "maximum_indices": [
+          213,
+          311,
+          402,
+          97,
+          117
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.368505963128718,
+        "mean": 0.05857424743653873,
+        "maximum_indices": [
+          481,
+          592,
+          604,
+          312,
+          377
+        ]
+      }
+    },
+    {
+      "tick": 870,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "mean": 0.5001304257095162,
+        "maximum_indices": [
+          283,
+          883,
+          56,
+          656,
+          429
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.014264083939682436,
+        "maximum": 0.14964440428309764,
+        "mean": 0.07027013550731777,
+        "maximum_indices": [
+          841,
+          127,
+          337,
+          645,
+          451
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 10,
+            "mean": 1.517578125,
+            "maximum_indices": [
+              402,
+              97,
+              213,
+              311,
+              117
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.376953125,
+            "maximum_indices": [
+              1,
+              13,
+              34,
+              49,
+              67
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 15,
+        "mean": 3.48828125,
+        "maximum_indices": [
+          311,
+          402,
+          97,
+          117,
+          213
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.48000185158014536,
+        "mean": 0.058371642025070954,
+        "maximum_indices": [
+          507,
+          134,
+          896,
+          215,
+          725
+        ]
+      }
+    },
+    {
+      "tick": 880,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "mean": 0.5001956385642734,
+        "maximum_indices": [
+          413,
+          1013,
+          186,
+          786,
+          559
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.01542990043594607,
+        "maximum": 0.14964726901374853,
+        "mean": 0.0699671259197603,
+        "maximum_indices": [
+          841,
+          890,
+          127,
+          337,
+          645
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 10,
+            "mean": 1.5107421875,
+            "maximum_indices": [
+              402,
+              97,
+              213,
+              311,
+              117
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.3740234375,
+            "maximum_indices": [
+              1,
+              13,
+              34,
+              49,
+              67
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 15,
+        "mean": 3.453125,
+        "maximum_indices": [
+          311,
+          402,
+          97,
+          117,
+          213
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.7019708299884417,
+        "mean": 0.05874160106832725,
+        "maximum_indices": [
+          637,
+          410,
+          896,
+          1010,
+          799
+        ]
+      }
+    },
+    {
+      "tick": 890,
+      "phase": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 1.0,
+        "mean": 0.49928265859766285,
+        "maximum_indices": [
+          543,
+          316,
+          916,
+          89,
+          689
+        ]
+      },
+      "height_m": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.015430841836948218,
+        "maximum": 0.1496447719265867,
+        "mean": 0.06996757242177779,
+        "maximum_indices": [
+          841,
+          890,
+          193,
+          127,
+          337
+        ]
+      },
+      "finger_contacts": {
+        "array_length": 1024,
+        "columns": [
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 10,
+            "mean": 1.53125,
+            "maximum_indices": [
+              402,
+              97,
+              213,
+              311,
+              117
+            ]
+          },
+          {
+            "array_length": 1024,
+            "finite_count": 1024,
+            "minimum": 0,
+            "maximum": 5,
+            "mean": 1.37890625,
+            "maximum_indices": [
+              1,
+              13,
+              34,
+              49,
+              67
+            ]
+          }
+        ]
+      },
+      "nonzero_egg_contacts": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0,
+        "maximum": 15,
+        "mean": 3.5,
+        "maximum_indices": [
+          311,
+          402,
+          97,
+          117,
+          213
+        ]
+      },
+      "tangential_force_N": {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.0,
+        "maximum": 0.29921223769063865,
+        "mean": 0.05898596788540518,
+        "maximum_indices": [
+          394,
+          783,
+          93,
+          239,
+          547
+        ]
+      }
+    }
+  ],
+  "policy": {
+    "layers": [
+      26,
+      128,
+      128,
+      7
+    ],
+    "seed": 99173,
+    "dtype": "float32",
+    "residual_scale_rad": 0.0001,
+    "scope": "inference rollout",
+    "control_error_budget_rad": 1e-09,
+    "warmup_reference_max_error_rad": 0.0
+  },
+  "repeats": [
+    {
+      "steps": 2400,
+      "seconds": 24.351694860029966,
+      "transitions_per_second": 100921.10689321342,
+      "attempted_transitions_per_second": 100921.10689321342,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "failed_steps_per_environment": null,
+      "batch_steps_per_second": 98.55576845040373,
+      "resets": 3072
+    },
+    {
+      "steps": 2400,
+      "seconds": 23.976221336983144,
+      "transitions_per_second": 102501.55624853072,
+      "attempted_transitions_per_second": 102501.55624853072,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "failed_steps_per_environment": null,
+      "batch_steps_per_second": 100.09917602395578,
+      "resets": 3072
+    },
+    {
+      "steps": 2400,
+      "seconds": 24.1473702439107,
+      "transitions_per_second": 101775.05770508235,
+      "attempted_transitions_per_second": 101775.05770508235,
+      "invalid_environment_steps": 0,
+      "scatter_overflow_calls": 0,
+      "failed_steps_per_environment": null,
+      "batch_steps_per_second": 99.38970479011948,
+      "resets": 3072
+    }
+  ],
+  "egg_position_m": {
+    "array_length": 1024,
+    "columns": [
+      {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.464623465353046,
+        "maximum": 0.7307976622061819,
+        "mean": 0.64607727447843,
+        "maximum_indices": [
+          1006,
+          780,
+          115,
+          829,
+          309
+        ]
+      },
+      {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": -0.21088586772644838,
+        "maximum": 0.25959814120077435,
+        "mean": 0.007399014592412367,
+        "maximum_indices": [
+          730,
+          876,
+          213,
+          211,
+          440
+        ]
+      },
+      {
+        "array_length": 1024,
+        "finite_count": 1024,
+        "minimum": 0.017862395036094932,
+        "maximum": 0.1496503611837094,
+        "mean": 0.0702455178732602,
+        "maximum_indices": [
+          558,
+          639,
+          913,
+          704,
+          800
+        ]
+      }
+    ]
+  },
+  "torch_peak_allocated_bytes": 3831808,
+  "saved_reset_state_bytes": 1327104,
+  "device_free_bytes": 98551005184,
+  "publication_note": "Long environment arrays summarized. Exact original remains at runtime_path with original_sha256."
+}

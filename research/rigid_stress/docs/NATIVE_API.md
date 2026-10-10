@@ -186,6 +186,17 @@ indices, is 376,320 bytes. CPU retains the original ten-term evaluation order.
 complete face scatter, adding 3,840 shared bytes. The benchmark exposes
 `--uncached-peak` and `--uncached-face-bounds` for matching ablations.
 
+`cooperative_balance=True` computes the complete six-component rigid-mode
+wrench using CUDA node/environment tiles, including every nodal contact
+load and all centrifugal terms. It applies the shared immutable projection
+`mass_modes @ gram_inverse` to remove inferred acceleration. The projection
+adds 116640 shared bytes on the low mesh; it depends on the declared geometry
+and mass, rather than contact locations or histories. CPU uses the original
+reduction/projection order. `--serial-balance` selects the CUDA comparison.
+Both paths keep the original full-equilibrium acceptance, including gauge
+rows. Odd batches and partial changes to force/angular velocity are tested
+against independent CPU FP64 recovery.
+
 Contact rejection reports the affected link, environment, contact slot,
 original radius and actual friction coefficient. The diagnostic distinguishes
 invalid input/friction, an absent force-line anchor, an unresolved sampled

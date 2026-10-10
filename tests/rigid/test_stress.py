@@ -163,9 +163,70 @@ def test_native_p2_shared_operators(tmp_path, young, poisson, density):
     np.testing.assert_allclose(qd_to_numpy(model.info.gram), oracle.gram, atol=1e-17)
     gram_inverse = qd_to_numpy(model.info.gram_inverse)
     np.testing.assert_allclose(gram_inverse @ oracle.gram, np.eye(6), atol=2e-12)
+    np.testing.assert_allclose(
+        qd_to_numpy(model.info.relief).reshape((-1, 6)),
+        oracle.mr @ np.linalg.inv(oracle.gram),
+        rtol=2e-11,
+        atol=1e-13,
+    )
     pins = qd_to_numpy(model.info.pins)
     assert len(np.unique(pins)) == 6
     assert np.linalg.matrix_rank(oracle.r[pins]) == 6
+
+
+@pytest.mark.required
+@pytest.mark.precision("64")
+@pytest.mark.parametrize("n_envs", (2051, 32771))
+def test_native_batched_inertia_relief_and_partial_load_reset(tmp_path, n_envs):
+    if gs.backend != gs.cuda:
+        pytest.skip("The coalesced shared-memory reduction runs on CUDA.")
+    vertices, tetrahedra, surface, _ = shell_mesh(1, 2, 0.0005)
+    mesh = tmp_path / "shell.npz"
+    np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=surface)
+    options = RigidStressOptions(mesh=mesh)
+    model = StressModel(options)
+    oracle = P2Shell(
+        vertices, tetrahedra, surface, options.young, options.poisson, options.density, 2, factor_backend="none"
+    )
+    random = np.random.default_rng(39731)
+    force = np.zeros((len(oracle.xyz), n_envs, 3))
+    nodes = qd_to_numpy(model.surface_inverse.info.nodes)[[0, 37, 80, 161]]
+    force[nodes] = random.normal(size=(4, n_envs, 3)) * 0.01
+    angular_velocity = random.normal(size=(n_envs, 3)) * 0.4
+    omega = V_VEC(3, dtype=gs.qd_float, shape=(n_envs,))
+    omega.from_numpy(angular_velocity)
+    state = model.create_state(n_envs)
+    state.force.from_numpy(force)
+    model.recover(omega, state, surface_load=True)
+    assert qd_to_numpy(state.valid).all()
+    rhs = qd_to_numpy(state.rhs, copy=True)
+    displacement = qd_to_numpy(state.displacement, copy=True)
+    peak = qd_to_numpy(state.peak, copy=True)
+    peak_scan = P2Peak(oracle.glambda, oracle.elements, options.young / (2.0 * (1.0 + options.poisson)))
+    free = np.setdiff1d(np.arange(oracle.ndof), qd_to_numpy(model.info.pins))
+    factor = splu(oracle.k[free][:, free].tocsc())
+    for i_b in (0, 31, n_envs // 2, n_envs - 1):
+        centrifugal = -np.cross(angular_velocity[i_b], np.cross(angular_velocity[i_b], oracle.xyz - oracle.com))
+        raw = force[:, i_b].reshape(oracle.ndof) + oracle.m @ centrifugal.reshape(oracle.ndof)
+        expected_rhs = raw - oracle.mr @ np.linalg.solve(oracle.gram, oracle.r.T @ raw)
+        np.testing.assert_allclose(rhs[:, i_b].reshape(oracle.ndof), expected_rhs, rtol=2e-8, atol=1e-12)
+        budget = max(options.absolute_tolerance, options.tolerance * np.linalg.norm(expected_rhs))
+        assert np.linalg.norm(oracle.k @ displacement[:, i_b].reshape(oracle.ndof) - expected_rhs) <= budget
+        expected = np.zeros(oracle.ndof)
+        expected[free] = factor.solve(expected_rhs[free])
+        np.testing.assert_allclose(peak[i_b], peak_scan(expected)[0], rtol=1e-4, atol=1e-3)
+    selected = [0, n_envs // 2, n_envs - 1]
+    force[:, selected] = 0.0
+    angular_velocity[selected] = 0.0
+    state.force.from_numpy(force)
+    omega.from_numpy(angular_velocity)
+    model.recover(omega, state, surface_load=True)
+    assert qd_to_numpy(state.valid).all()
+    changed_peak = qd_to_numpy(state.peak)
+    np.testing.assert_array_equal(changed_peak[selected], 0.0)
+    untouched = np.ones(n_envs, dtype=bool)
+    untouched[selected] = False
+    np.testing.assert_array_equal(changed_peak[untouched], peak[untouched])
 
 
 @pytest.mark.required

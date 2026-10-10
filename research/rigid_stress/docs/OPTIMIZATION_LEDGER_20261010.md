@@ -7,6 +7,77 @@ Q10x10 quadrature. All production physical arithmetic uses Quadrants FP64.
 The finite pad load and actual combined contact friction change are described
 in [CONTACT_REPAIR_20261010.md](CONTACT_REPAIR_20261010.md).
 
+## Native balance checkpoint, 23:03 UTC
+
+The native 8-node/32-environment reduction and shared mass-mode projection
+pass 27 CPU cases (14 CUDA-only skips), all 41 GPU cases, and 480 independent
+CPU FP64 full-field trajectory snapshots. Two additional odd-batch tests at
+B=2051/32771 exercise padding and repeated shared-storage reuse, all six
+gauge rows, centrifugal loads and isolated partial load resets. A subsequent
+test-name/explicit-array-shape cleanup passes those two GPU cases again.
+The immutable projection costs 116640 bytes per shared L1 operator.
+
+Matched ordinary production live measurements use 900 warmup steps and
+three 2400-step repeats. At B=32768, seed 623001, on GPU
+`GPU-40b7c172-fb9d-63ea-58c7-0677967a8583`, the original balance gives
+284089.82 env-step/s (repeat standard deviation 361.36); native tiled
+balance gives 288803.04 (91.49), a 1.66% gain with zero invalid transitions.
+Matched B=1024 pairs on GPU `GPU-56ea077b-99d7-8845-1f28-8cfa2174feb6`
+give 73786.42 -> 73984.84 for seed 510000 and 72835.28 -> 74144.69 for
+seed 623001, gains of 0.27% and 1.80%. This implementation is retained.
+
+Separate allocations complete all four ordinary scopes at B=1024/2048
+for both seeds, again three 2400-step repeats after 900 warmup, with zero
+invalid transitions. These source `e6094ff9-native-balance-t8-v2` rates
+are a development checkpoint; candidate combinations and final larger-batch
+selection remain required.
+
+| B | Seed | Rigid | Recovery snapshot | Live | Policy inference rollout |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 1024 | 510000 | 102209.75 | 283453.79 | 72355.73 | 72304.46 |
+| 1024 | 623001 | 101728.47 | 293048.62 | 74125.26 | 73022.38 |
+| 2048 | 510000 | 169433.23 | 357404.03 | 112824.23 | 111986.67 |
+| 2048 | 623001 | 172834.38 | 370078.78 | 114854.78 | 114380.60 |
+
+The eight untimed every-step live/policy audits at these batches cover
+40550400 environment observations with zero invalid steps, overflow calls,
+local integration retries, corrections or factor fallbacks. All environments
+remain included. Mean pressure fitting uses 0.0209--0.0216 evaluations per
+nonzero contact; per-contact maxima are 5--9. Actual combined friction ranges
+approximately 0.42--0.84. The existing hold-step proxy remains explicitly
+separate from completed-episode outcomes, for which a new audit is running.
+
+The new contact-wrench reuse candidate saves about 1.68 ms of B=32768
+snapshot balance and passes 192 normal plus 96 forced-overflow full-field
+oracle samples, as well as large every-step audits. Its B=1024 actual pair
+gives 73570.12 -> 73330.79 env-step/s, about -0.33%; a universal default
+would not be justified. Its large actual comparison remains in progress.
+The complete residual layout candidate preserves residual vectors exactly
+but changes B=1024 timing from 0.35050 to 0.38672 ms; at B=32768 it changes
+10.90294 to 10.30419 ms. Actual large rollout selection remains in progress.
+
+On native tiled balance, a matched B=32768 seed-623001 research launch
+ablation gives 288973.19 -> 290872.91 env-step/s for packed block 0/512
+(standard deviations 26.73/1051.91), a 0.66% gain. Together with the earlier
+seed-510000 +0.82% result this warrants evaluating a large-batch production
+path, while retaining the original small-batch scheduling.
+
+Conditional initialization of unused contact diagnostics saves only
+0.00588/0.19084 ms at B=1024/32768. It leaves stale scratch diagnostics
+unless every consumer adds validity masking. Its large endpoint ceiling is
+about 0.17%, so it is rejected on cost and diagnostic-maintenance evidence.
+Pressure-footprint caching would add work on all changing contacts to save
+the measured rare nonlinear iterations (about 2.1% of the pressure stage
+before cache construction); no high-gain full-contact cache is indicated.
+These bounds do not rule out an unknown future optimization. Final plateau,
+max/full costs, completed episodes and larger four-scope runs remain open.
+
+This checkpoint archives 660 completed artifacts, including all sixteen
+ordinary small-batch scope measurements, the matched native large pair,
+eight full-environment audits and native max/full stage profiles. All 660
+publication and 660 original hashes pass streaming verification. Manifest
+SHA256: `03db7c59b2d92080d93054a73e9b0d87c897c7f7e683049f9a56569b69b2c438`.
+
 ## Production face scheduling and relief checkpoint, 22:09 UTC
 
 The production B=32768, seed-623001 comparison now completes on one GPU,

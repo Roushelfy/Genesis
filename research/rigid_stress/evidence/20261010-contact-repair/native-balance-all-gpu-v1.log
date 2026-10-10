@@ -1,0 +1,32 @@
+ImportError while loading conftest '/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery-relief-dev/tests/rigid/conftest.py'.
+tests/rigid/conftest.py:9: in <module>
+    from genesis.utils.misc import get_assets_dir
+genesis/__init__.py:488: in <module>
+    from .engine.scene import Scene
+genesis/engine/scene.py:48: in <module>
+    from genesis.recorders import RecorderManager
+genesis/recorders/__init__.py:5: in <module>
+    from . import trajectory
+genesis/recorders/trajectory.py:26: in <module>
+    from genesis.engine.solvers import KinematicSolver
+genesis/engine/solvers/__init__.py:5: in <module>
+    from .rigid.rigid_solver import RigidSolver
+genesis/engine/solvers/rigid/rigid_solver.py:157: in <module>
+    from .stress.recovery import RigidStressRecovery
+genesis/engine/solvers/rigid/stress/recovery.py:29: in <module>
+    from .model import StressModel
+genesis/engine/solvers/rigid/stress/model.py:31: in <module>
+    from .solve import (
+genesis/engine/solvers/rigid/stress/solve.py:24: in <module>
+    def kernel_balance(
+/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel_impl.py:281: in decorator
+    wrapped = _kernel_impl(fn, level_of_class_stackframe=level, graph=graph, checkpoints=checkpoints)
+/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel_impl.py:169: in _kernel_impl
+    primal = Kernel(_func, autodiff_mode=_NONE, _is_classkernel=is_classkernel)
+/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel.py:308: in __init__
+    super().__init__(
+/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/_func_base.py:234: in __init__
+    self.check_parameter_annotations()
+/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/_func_base.py:279: in check_parameter_annotations
+    raise QuadrantsSyntaxError("Quadrants kernels do not support default values for arguments")
+E   quadrants.lang.exception.QuadrantsSyntaxError: Quadrants kernels do not support default values for arguments

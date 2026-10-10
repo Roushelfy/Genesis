@@ -133,7 +133,9 @@ def profile(workload: FrankaEgg, repetitions: int) -> dict:
                 options.cached_face_bounds,
             )
         ),
-        "inertia_relief_centrifugal": lambda: kernel_balance(entry.omega, entry.state, entry.model.info),
+        "inertia_relief_centrifugal": lambda: kernel_balance(
+            entry.omega, entry.state, entry.model.info, options.cooperative_balance
+        ),
         "rhs_reduction": lambda: kernel_direct_init(entry.state),
         "linear_solve": lambda: entry.model.solve(options, entry.state, entry.omega, surface_load=True),
         "complete_residual": lambda: kernel_full_residual(
@@ -209,6 +211,7 @@ def main() -> None:
     parser.add_argument("--serial-solve", action="store_true")
     parser.add_argument("--serial-pressure", action="store_true")
     parser.add_argument("--serial-scatter", action="store_true")
+    parser.add_argument("--serial-balance", action="store_true", help="Compare original rigid inertia relief.")
     parser.add_argument(
         "--contact-warp-scatter", action="store_true", help="Compare the original contact-warp scatter."
     )
@@ -258,6 +261,7 @@ def main() -> None:
         output_mode=args.output_mode,
         saved_reset=not args.legacy_reset,
         cooperative_scatter=not args.serial_scatter,
+        cooperative_balance=not args.serial_balance,
         face_parallel_scatter=not args.contact_warp_scatter,
         scatter_tasks_per_env=args.scatter_tasks_per_env,
         cached_peak=not args.uncached_peak,
@@ -378,6 +382,7 @@ def main() -> None:
             "cooperative_solve": not args.serial_solve,
             "cooperative_pressure": not args.serial_pressure,
             "cooperative_scatter": not args.serial_scatter,
+            "cooperative_balance": not args.serial_balance,
             "face_parallel_scatter": not args.contact_warp_scatter,
             "scatter_tasks_per_env": args.scatter_tasks_per_env,
             "cached_peak": not args.uncached_peak,

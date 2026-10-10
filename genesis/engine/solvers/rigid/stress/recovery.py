@@ -163,6 +163,7 @@ class RigidStressRecovery:
                     entry.model.info.vertices.shape[0],
                     entry.output_mode == "full",
                     entry.scatter.tasks.shape[0] > 0,
+                    options.cooperative_balance,
                 )
                 continue
             if i_substep == 0:

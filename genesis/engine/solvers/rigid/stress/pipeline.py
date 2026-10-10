@@ -55,6 +55,7 @@ def kernel_pipeline(
     n_nodes: qd.template(),
     full: qd.template(),
     face_parallel: qd.template(),
+    is_cooperative_balance: qd.template(),
 ):
     if qd.static(first):
         func_begin_step(state)
@@ -72,7 +73,7 @@ def kernel_pipeline(
         func_scatter_faces(contacts, state, info, surface, scatter, cached_bounds)
     else:
         func_scatter_warp(contacts, state, info, surface, cached_bounds)
-    func_balance(omega, state, info)
+    func_balance(omega, state, info, is_cooperative_balance)
     func_direct_init(state)
     func_surface_pack(state, boundary)
     func_surface_apply_packed(young, omega, state, boundary)
