@@ -16,6 +16,7 @@ from .history import StressHistory
 from .inverse import StressInverse
 from .operators import (
     kernel_assemble,
+    kernel_corner_gradients,
     kernel_diagonal,
     kernel_gauge,
     kernel_geometry,
@@ -95,6 +96,7 @@ class StressModel:
             surface_nodes=V(dtype=gs.qd_int, shape=(len(surface), 6)),
             edges=V(dtype=gs.qd_int, shape=(6, 2)),
             gradients=V_MAT(4, 3, dtype=gs.qd_float, shape=(n_elements,)),
+            corner_gradients=V_VEC(3, dtype=gs.qd_float, shape=(n_elements, 4, 10)),
             volumes=V(dtype=gs.qd_float, shape=(n_elements,)),
             row_start=V(dtype=gs.qd_int, shape=(n_nodes + 1,)),
             columns=V(dtype=gs.qd_int, shape=(n_entries,)),
@@ -127,6 +129,7 @@ class StressModel:
         topology_done = time.perf_counter()
         kernel_midpoints(len(vertices), edge_vertices.astype(gs.np_int, copy=False), self.info)
         kernel_geometry(self.info)
+        kernel_corner_gradients(self.info)
         if kernel_valid_geometry(self.info):
             gs.raise_exception("Stress tetrahedra must have positive volume.")
         kernel_assemble(options.poisson, options.density, self.info)
@@ -258,7 +261,7 @@ class StressModel:
             kernel_full_residual(
                 options.young, options.tolerance, options.absolute_tolerance, state, self.info, only_active=True
             )
-        kernel_peak(options.young, options.poisson, state, self.info)
+        kernel_peak(options.young, options.poisson, state, self.info, options.cached_peak)
 
     def solve(
         self,

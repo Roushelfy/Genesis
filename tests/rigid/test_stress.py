@@ -102,6 +102,11 @@ def test_native_batched_recovery_against_full_fp64_direct(
     peak_scan = P2Peak(oracle.glambda, oracle.elements, model.options.young / (2.0 * (1.0 + model.options.poisson)))
     peak = np.array([peak_scan(displacement[:, i])[0] for i in range(n_envs)])
     np.testing.assert_allclose(qd_to_numpy(state.peak), peak, rtol=1e-4, atol=1e-3)
+    cached_peak = qd_to_numpy(state.peak, copy=True)
+    from genesis.engine.solvers.rigid.stress.solve import kernel_peak
+
+    kernel_peak(model.options.young, model.options.poisson, state, model.info, False)
+    np.testing.assert_array_equal(qd_to_numpy(state.peak), cached_peak)
     recovered = qd_to_numpy(state.displacement, transpose=True).reshape((n_envs, -1)).T
     residual = np.linalg.norm(oracle.k @ recovered - rhs, axis=0)
     displacement_error = np.linalg.norm(recovered - displacement, axis=0) / np.maximum(

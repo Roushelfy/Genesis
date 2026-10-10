@@ -64,6 +64,16 @@ def func_mass_weight(i_n: int, j_n: int, edges: qd.Tensor):
 
 
 @qd.kernel
+def kernel_corner_gradients(stress_info: StressInfo):
+    for i_e, i_corner, i_local in qd.ndrange(stress_info.elements.shape[0], 4, 10):
+        bary = qd.Vector.zero(gs.qd_float, 4)
+        bary[i_corner] = 1.0
+        stress_info.corner_gradients[i_e, i_corner, i_local] = func_shape_gradient(
+            i_local, bary, stress_info.gradients[i_e], stress_info.edges
+        )
+
+
+@qd.kernel
 def kernel_geometry(stress_info: StressInfo):
     for i_e in range(stress_info.elements.shape[0]):
         i_0 = stress_info.elements[i_e, 0]

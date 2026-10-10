@@ -119,7 +119,9 @@ def profile(workload: FrankaEgg, repetitions: int) -> dict:
         "complete_residual": lambda: kernel_full_residual(
             options.young, options.tolerance, options.absolute_tolerance, entry.state, entry.model.info, False
         ),
-        "global_peak": lambda: kernel_peak(options.young, options.poisson, entry.state, entry.model.info),
+        "global_peak": lambda: kernel_peak(
+            options.young, options.poisson, entry.state, entry.model.info, options.cached_peak
+        ),
         "accept": lambda: kernel_accept(entry.state, entry.contacts, solver._errno),
     }
     for stage in stages.values():
@@ -186,6 +188,7 @@ def main() -> None:
     parser.add_argument("--serial-solve", action="store_true")
     parser.add_argument("--serial-pressure", action="store_true")
     parser.add_argument("--serial-scatter", action="store_true")
+    parser.add_argument("--uncached-peak", action="store_true")
     parser.add_argument("--method", choices=("auto", "direct", "inverse"), default="auto")
     parser.add_argument("--inverse-precision", choices=("64", "32"), default="64")
     parser.add_argument("--full-inverse", action="store_true", help="Compare the full nodal-load inverse application.")
@@ -213,6 +216,7 @@ def main() -> None:
         conditions=args.conditions,
         surface_inverse=not args.full_inverse,
         cooperative_scatter=not args.serial_scatter,
+        cached_peak=not args.uncached_peak,
     )
     if args.save_conditions is not None:
         workload.save_conditions(args.save_conditions)
@@ -317,6 +321,7 @@ def main() -> None:
             "cooperative_solve": not args.serial_solve,
             "cooperative_pressure": not args.serial_pressure,
             "cooperative_scatter": not args.serial_scatter,
+            "cached_peak": not args.uncached_peak,
             "method": args.method,
             "inverse_precision": args.inverse_precision,
             "surface_inverse": not args.full_inverse,

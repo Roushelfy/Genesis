@@ -24,6 +24,8 @@ class RigidStressOptions(Options):
     ``cooperative_scatter`` reduces loads on each surface face before node
     accumulation. CUDA contacts benefit from fewer writes. Disable it for
     a scalar scheduling comparison. CPU uses the scalar path.
+    ``cached_peak`` reuses shared immutable P2 corner gradients in the full
+    global stress scan. Disable it for a geometry reuse comparison.
 
     ``tolerance`` bounds the complete equilibrium residual relative to the
     load norm; ``absolute_tolerance`` supplies the force floor near zero.
@@ -73,5 +75,6 @@ class RigidStressOptions(Options):
     inverse_max_bytes: PositiveInt = 64 * 1024 * 1024
     inverse_precision: Literal["64", "32"] = "64"
     surface_inverse: StrictBool = True
+    cached_peak: StrictBool = True
     inverse_corrections: Annotated[int, Field(ge=0, le=8)] = 2
     preconditioner: Literal["diagonal", "block"] = "block"

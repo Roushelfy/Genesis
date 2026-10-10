@@ -28,6 +28,7 @@ class FrankaEgg:
         conditions: Path | None = None,
         surface_inverse: bool = True,
         cooperative_scatter: bool = True,
+        cached_peak: bool = True,
     ):
         self.n_envs = n_envs
         self.tick = 0
@@ -73,6 +74,7 @@ class FrankaEgg:
                     cooperative_pressure=cooperative_pressure,
                     surface_inverse=surface_inverse,
                     cooperative_scatter=cooperative_scatter,
+                    cached_peak=cached_peak,
                 )
             )
         self.scene.build(n_envs=n_envs)

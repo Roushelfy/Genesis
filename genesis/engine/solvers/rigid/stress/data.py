@@ -15,6 +15,7 @@ class StressInfo:
     surface_nodes: qd.Tensor
     edges: qd.Tensor
     gradients: qd.Tensor
+    corner_gradients: qd.Tensor
     volumes: qd.Tensor
     row_start: qd.Tensor
     columns: qd.Tensor

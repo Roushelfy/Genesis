@@ -189,8 +189,16 @@ def kernel_full_residual(
             )
 
 
+def kernel_peak(
+    young: float, poisson: float, stress_state: StressState, stress_info: StressInfo, cached: bool = True
+):
+    kernel_peak_impl(young, poisson, stress_state, stress_info, cached)
+
+
 @qd.kernel(graph=True)
-def kernel_peak(young: float, poisson: float, stress_state: StressState, stress_info: StressInfo):
+def kernel_peak_impl(
+    young: float, poisson: float, stress_state: StressState, stress_info: StressInfo, cached: qd.template()
+):
     for i_b in range(stress_state.active.shape[0]):
         stress_state.peak[i_b] = 0.0
     for i_e, i_b in qd.ndrange(stress_info.elements.shape[0], stress_state.active.shape[0]):
@@ -203,7 +211,11 @@ def kernel_peak(young: float, poisson: float, stress_state: StressState, stress_
             derivative = qd.Matrix.zero(gs.qd_float, 3, 3)
             for i_local in range(10):
                 i_n = stress_info.elements[i_e, i_local]
-                gradient = func_shape_gradient(i_local, bary, stress_info.gradients[i_e], stress_info.edges)
+                gradient = qd.Vector.zero(gs.qd_float, 3)
+                if qd.static(cached):
+                    gradient = stress_info.corner_gradients[i_e, i_corner, i_local]
+                else:
+                    gradient = func_shape_gradient(i_local, bary, stress_info.gradients[i_e], stress_info.edges)
                 derivative += stress_state.displacement[i_n, i_b].outer_product(gradient)
             sigma = mu * (derivative + derivative.transpose())
             for i_a in qd.static(range(3)):
