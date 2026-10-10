@@ -1,0 +1,63 @@
+{
+  "scope": "live",
+  "condition_bank": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-copy-scaling/discovery/conditions1024.npz",
+  "measurements": [
+    {
+      "envs": 1024,
+      "command": [
+        "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python",
+        "examples/speed_benchmark/rigid_stress.py",
+        "--scope",
+        "live",
+        "--envs",
+        "1024",
+        "--level",
+        "1",
+        "--varied",
+        "--warmup",
+        "900",
+        "--steps",
+        "1200",
+        "--repetitions",
+        "3",
+        "--minimum-seconds",
+        "10",
+        "--compact-log",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-copy-scaling/final-region/live-b1024.json",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-copy-scaling/discovery/conditions1024.npz"
+      ],
+      "returncode": 0,
+      "total_process_seconds": 146.47244751872495,
+      "result": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-copy-scaling/final-region/live-b1024.json",
+      "transitions_per_second": 41610.07580925689,
+      "repeats": [
+        {
+          "steps": 1200,
+          "seconds": 29.59100015833974,
+          "transitions_per_second": 41526.13948243594,
+          "batch_steps_per_second": 40.552870588316345,
+          "resets": 1024
+        },
+        {
+          "steps": 1200,
+          "seconds": 29.52318204380572,
+          "transitions_per_second": 41621.529758436576,
+          "batch_steps_per_second": 40.64602515472322,
+          "resets": 1024
+        },
+        {
+          "steps": 1200,
+          "seconds": 29.47974434820935,
+          "transitions_per_second": 41682.8580833551,
+          "batch_steps_per_second": 40.70591609702647,
+          "resets": 1024
+        }
+      ],
+      "stress_bytes": 274817437,
+      "device_free_bytes": 98330738688
+    }
+  ],
+  "conditions_sha256": "1d924b60c65d3e092c4c6aac27966da2f2482ca376df04c877253a13bef780b8"
+}

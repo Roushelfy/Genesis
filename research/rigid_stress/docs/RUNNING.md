@@ -104,6 +104,32 @@ It stores actual complete RHS arrays under the requested data path and checks
 optimistic h=0/1/4 load-subspace acceptance offline. It does not run production
 NumPy recovery or contribute a throughput rate.
 
+## Copied-condition native batch scaling
+
+To scale the batch without introducing new randomized contacts, first save
+the verified 1024-condition bank, including all three IK targets and reset
+delays. Subsequent scenes repeat every bank row modulo its row count. Every
+environment still runs independent rigid dynamics and complete stress recovery.
+
+```bash
+"$RIGID_STRESS_ENV/bin/python" research/rigid_stress/scripts/copied_condition_sweep.py \
+    --output "$RIGID_STRESS_DATA_ROOT/runs/copied-scaling/discovery" \
+    --envs 1024 2048 4096 8192 16384 32768 65536
+```
+
+The runner records commands, exit statuses, per-repeat rates and the bank
+SHA256 after each process. Discovery uses one full repeat per point. Repeat
+the best points with `--repetitions 3 --bank .../conditions1024.npz`, changing
+the output directory. Use `--scope policy`, `rigid` or `policy-rigid` with
+the identical bank for matched scopes. The underlying benchmark also accepts
+`--conditions bank.npz` and `--save-conditions bank.npz`; `--compact-log`
+keeps full diagnostics in JSON while shortening stdout.
+
+The separate every-step validity probe accepts `--conditions bank.npz`.
+Copies preserve declared inputs/control targets; floating-point trajectories
+must still be checked at each batch size. A copied batch is a scaling study,
+not additional coverage of randomized contact configurations.
+
 ## Historical external-library prototype
 
 > Historical prototype commands, 2026-10-10. The new feature and workflow are

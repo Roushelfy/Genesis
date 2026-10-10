@@ -1,0 +1,289 @@
+{
+  "scope": "live",
+  "condition_bank": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-copy-scaling/discovery/conditions1024.npz",
+  "measurements": [
+    {
+      "envs": 1024,
+      "command": [
+        "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python",
+        "examples/speed_benchmark/rigid_stress.py",
+        "--scope",
+        "live",
+        "--envs",
+        "1024",
+        "--level",
+        "1",
+        "--varied",
+        "--warmup",
+        "900",
+        "--steps",
+        "1200",
+        "--repetitions",
+        "1",
+        "--minimum-seconds",
+        "10",
+        "--compact-log",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-copy-scaling/discovery/live-b1024.json",
+        "--save-conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-copy-scaling/discovery/conditions1024.npz"
+      ],
+      "returncode": 0,
+      "total_process_seconds": 89.60050911502913,
+      "result": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-copy-scaling/discovery/live-b1024.json",
+      "transitions_per_second": 41010.4964461345,
+      "repeats": [
+        {
+          "steps": 1200,
+          "seconds": 29.96306083770469,
+          "transitions_per_second": 41010.4964461345,
+          "batch_steps_per_second": 40.04931293567822,
+          "resets": 1024
+        }
+      ],
+      "stress_bytes": 274817437,
+      "device_free_bytes": 98263629824
+    },
+    {
+      "envs": 2048,
+      "command": [
+        "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python",
+        "examples/speed_benchmark/rigid_stress.py",
+        "--scope",
+        "live",
+        "--envs",
+        "2048",
+        "--level",
+        "1",
+        "--varied",
+        "--warmup",
+        "900",
+        "--steps",
+        "1200",
+        "--repetitions",
+        "1",
+        "--minimum-seconds",
+        "10",
+        "--compact-log",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-copy-scaling/discovery/live-b2048.json",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-copy-scaling/discovery/conditions1024.npz"
+      ],
+      "returncode": 0,
+      "total_process_seconds": 115.04308490362018,
+      "result": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-copy-scaling/discovery/live-b2048.json",
+      "transitions_per_second": 58492.4121339805,
+      "repeats": [
+        {
+          "steps": 1200,
+          "seconds": 42.015706146135926,
+          "transitions_per_second": 58492.4121339805,
+          "batch_steps_per_second": 28.560748112295165,
+          "resets": 2048
+        }
+      ],
+      "stress_bytes": 493658525,
+      "device_free_bytes": 97187790848
+    },
+    {
+      "envs": 4096,
+      "command": [
+        "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python",
+        "examples/speed_benchmark/rigid_stress.py",
+        "--scope",
+        "live",
+        "--envs",
+        "4096",
+        "--level",
+        "1",
+        "--varied",
+        "--warmup",
+        "900",
+        "--steps",
+        "1200",
+        "--repetitions",
+        "1",
+        "--minimum-seconds",
+        "10",
+        "--compact-log",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-copy-scaling/discovery/live-b4096.json",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-copy-scaling/discovery/conditions1024.npz"
+      ],
+      "returncode": 0,
+      "total_process_seconds": 168.7383480798453,
+      "result": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-copy-scaling/discovery/live-b4096.json",
+      "transitions_per_second": 74011.1092876057,
+      "repeats": [
+        {
+          "steps": 1200,
+          "seconds": 66.41165153868496,
+          "transitions_per_second": 74011.1092876057,
+          "batch_steps_per_second": 18.06911847841936,
+          "resets": 4096
+        }
+      ],
+      "stress_bytes": 931340701,
+      "device_free_bytes": 94872535040
+    },
+    {
+      "envs": 8192,
+      "command": [
+        "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python",
+        "examples/speed_benchmark/rigid_stress.py",
+        "--scope",
+        "live",
+        "--envs",
+        "8192",
+        "--level",
+        "1",
+        "--varied",
+        "--warmup",
+        "900",
+        "--steps",
+        "1200",
+        "--repetitions",
+        "1",
+        "--minimum-seconds",
+        "10",
+        "--compact-log",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-copy-scaling/discovery/live-b8192.json",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-copy-scaling/discovery/conditions1024.npz"
+      ],
+      "returncode": 0,
+      "total_process_seconds": 281.11747252196074,
+      "result": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-copy-scaling/discovery/live-b8192.json",
+      "transitions_per_second": 84203.01741477214,
+      "repeats": [
+        {
+          "steps": 1200,
+          "seconds": 116.74641006719321,
+          "transitions_per_second": 84203.01741477214,
+          "batch_steps_per_second": 10.278688649264177,
+          "resets": 8192
+        }
+      ],
+      "stress_bytes": 1806705053,
+      "device_free_bytes": 90271383552
+    },
+    {
+      "envs": 16384,
+      "command": [
+        "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python",
+        "examples/speed_benchmark/rigid_stress.py",
+        "--scope",
+        "live",
+        "--envs",
+        "16384",
+        "--level",
+        "1",
+        "--varied",
+        "--warmup",
+        "900",
+        "--steps",
+        "1200",
+        "--repetitions",
+        "1",
+        "--minimum-seconds",
+        "10",
+        "--compact-log",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-copy-scaling/discovery/live-b16384.json",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-copy-scaling/discovery/conditions1024.npz"
+      ],
+      "returncode": 0,
+      "total_process_seconds": 521.5158440186642,
+      "result": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-copy-scaling/discovery/live-b16384.json",
+      "transitions_per_second": 88726.19761931701,
+      "repeats": [
+        {
+          "steps": 1200,
+          "seconds": 221.58957024570554,
+          "transitions_per_second": 88726.19761931701,
+          "batch_steps_per_second": 5.415417335163392,
+          "resets": 16384
+        }
+      ],
+      "stress_bytes": 3557433757,
+      "device_free_bytes": 81062789120
+    },
+    {
+      "envs": 32768,
+      "command": [
+        "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python",
+        "examples/speed_benchmark/rigid_stress.py",
+        "--scope",
+        "live",
+        "--envs",
+        "32768",
+        "--level",
+        "1",
+        "--varied",
+        "--warmup",
+        "900",
+        "--steps",
+        "1200",
+        "--repetitions",
+        "1",
+        "--minimum-seconds",
+        "10",
+        "--compact-log",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-copy-scaling/discovery/live-b32768.json",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-copy-scaling/discovery/conditions1024.npz"
+      ],
+      "returncode": 0,
+      "total_process_seconds": 938.2267348556779,
+      "result": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-copy-scaling/discovery/live-b32768.json",
+      "transitions_per_second": 89352.90998453791,
+      "repeats": [
+        {
+          "steps": 1200,
+          "seconds": 440.0707263681106,
+          "transitions_per_second": 89352.90998453791,
+          "batch_steps_per_second": 2.726834411149228,
+          "resets": 32768
+        }
+      ],
+      "stress_bytes": 7058891165,
+      "device_free_bytes": 62635114496
+    },
+    {
+      "envs": 65536,
+      "command": [
+        "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python",
+        "examples/speed_benchmark/rigid_stress.py",
+        "--scope",
+        "live",
+        "--envs",
+        "65536",
+        "--level",
+        "1",
+        "--varied",
+        "--warmup",
+        "900",
+        "--steps",
+        "1200",
+        "--repetitions",
+        "1",
+        "--minimum-seconds",
+        "10",
+        "--compact-log",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-copy-scaling/discovery/live-b65536.json",
+        "--conditions",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-copy-scaling/discovery/conditions1024.npz"
+      ],
+      "returncode": 1,
+      "total_process_seconds": 14.057744834106416,
+      "result": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-copy-scaling/discovery/live-b65536.json"
+    }
+  ],
+  "conditions_sha256": "1d924b60c65d3e092c4c6aac27966da2f2482ca376df04c877253a13bef780b8"
+}
