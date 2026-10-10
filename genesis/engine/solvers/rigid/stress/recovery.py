@@ -11,7 +11,7 @@ import torch
 
 import genesis as gs
 from genesis.engine.solvers.base_solver import StateChange, Subscriber
-from genesis.utils.array_class import V_VEC, DataItem, ErrorCode, iter_data
+from genesis.utils.array_class import V_VEC, DataItem, DataKind, ErrorCode, iter_data
 from genesis.utils.misc import assign_indexed_tensor, broadcast_tensor, indices_to_mask, qd_to_torch, tensor_to_array
 
 from .association import kernel_associate
@@ -79,6 +79,7 @@ class RigidStressRecovery:
                                 solver.collider.collider_state.contact_sort_idx.shape[0],
                                 solver._B,
                                 options.contact_radius,
+                                options.cooperative_pressure,
                             ),
                             V_VEC(3, dtype=gs.qd_float, shape=(solver._B,)),
                             StressHistory(model.info.vertices.shape[0], solver._B) if options.history_size else None,
@@ -111,7 +112,7 @@ class RigidStressRecovery:
                 solver._errno,
             )
             kernel_anchor(self.source_epsilon, entry.contacts, entry.surface.info)
-            kernel_pressure(entry.contacts, entry.surface.info)
+            kernel_pressure(entry.contacts, entry.surface.info, entry.link.stress_options.cooperative_pressure)
             kernel_scatter(entry.contacts, entry.state, entry.model.info, entry.surface.info)
             entry.model.recover(entry.omega, entry.state, entry.link.stress_options, entry.history)
             kernel_accept(entry.state, entry.contacts, solver._errno)
@@ -130,6 +131,13 @@ class RigidStressRecovery:
         seen = set()
         seen_surfaces = set()
         for i, entry in enumerate(self.links):
+            yield DataItem(
+                f"stress.{i}.options",
+                entry.link.stress_options.model_copy(
+                    update={"mesh": str(Path(entry.link.stress_options.mesh).resolve())}
+                ),
+                DataKind.CONFIG,
+            )
             if id(entry.model) not in seen:
                 yield from iter_data(entry.model.info, f"stress.{i}.info")
                 if entry.model.factor is not None:
@@ -143,7 +151,9 @@ class RigidStressRecovery:
             for item in iter_data(entry.state, f"stress.{i}.state"):
                 if 0 not in item.value.shape:
                     yield item
-            yield from iter_data(entry.contacts, f"stress.{i}.contacts")
+            for item in iter_data(entry.contacts, f"stress.{i}.contacts"):
+                if 0 not in item.value.shape:
+                    yield item
             if entry.history is not None:
                 yield from iter_data(entry.history.state, f"stress.{i}.history")
             yield DataItem(f"stress.{i}.omega", entry.omega, entry.state.kind)
@@ -179,7 +189,7 @@ class RigidStressRecovery:
     def reject_link_mutation(self, links_idx, reason: str) -> None:
         if isinstance(links_idx, torch.Tensor):
             links_idx = tensor_to_array(links_idx)
-        selected = np.atleast_1d(np.arange(self.solver.n_links)[indices_to_mask(links_idx)]).ravel()
+        selected = np.atleast_1d(np.arange(self.solver.n_links)[indices_to_mask(links_idx)])
         if any(entry.link.idx in selected for entry in self.links):
             gs.raise_exception(reason)
 

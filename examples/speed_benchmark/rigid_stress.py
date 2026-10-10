@@ -32,7 +32,7 @@ from genesis.engine.solvers.rigid.stress.solve import (
     kernel_peak,
 )
 from genesis.utils import array_class, geom
-from genesis.utils.array_class import V_MAT, V_VEC, V
+from genesis.utils.array_class import V_MAT, V_VEC, DataKind, V
 from genesis.utils.misc import qd_to_numpy, qd_to_torch, tensor_to_array
 
 
@@ -106,7 +106,9 @@ def profile(workload: FrankaEgg, repetitions: int) -> dict:
             solver._errno,
         ),
         "anchor_search": lambda: kernel_anchor(recovery.source_epsilon, entry.contacts, entry.surface.info),
-        "candidate_weights_constraints": lambda: kernel_pressure(entry.contacts, entry.surface.info),
+        "candidate_weights_constraints": lambda: kernel_pressure(
+            entry.contacts, entry.surface.info, options.cooperative_pressure
+        ),
         "nodal_scatter": lambda: kernel_scatter(entry.contacts, entry.state, entry.model.info, entry.surface.info),
         "inertia_relief_centrifugal": lambda: kernel_balance(entry.omega, entry.state, entry.model.info),
         "rhs_reduction": lambda: kernel_direct_init(entry.state),
@@ -130,7 +132,7 @@ def profile(workload: FrankaEgg, repetitions: int) -> dict:
         times[name] = (time.perf_counter() - start) * 1e3 / repetitions
     qd.profiler.print_kernel_profiler_info()
     kernel_anchor(recovery.source_epsilon, entry.contacts, entry.surface.info)
-    kernel_pressure(entry.contacts, entry.surface.info)
+    kernel_pressure(entry.contacts, entry.surface.info, options.cooperative_pressure)
     solver.check_errno()
     contacts = qd_to_numpy(entry.contacts.valid, transpose=True)
     # Diagnostic subdivision repeats work and is excluded from the additive pipeline stages above.
@@ -176,6 +178,7 @@ def main() -> None:
     parser.add_argument("--minimum-seconds", type=float, default=10.0)
     parser.add_argument("--varied", action="store_true")
     parser.add_argument("--serial-solve", action="store_true")
+    parser.add_argument("--serial-pressure", action="store_true")
     parser.add_argument("--method", choices=("auto", "direct", "inverse"), default="auto")
     parser.add_argument("--inverse-precision", choices=("64", "32"), default="64")
     parser.add_argument("--history", type=int, choices=(0, 4), default=0)
@@ -194,6 +197,7 @@ def main() -> None:
         method=args.method,
         inverse_precision=args.inverse_precision,
         history_size=args.history,
+        cooperative_pressure=not args.serial_pressure,
     )
     setup_seconds = time.perf_counter() - start
     finger_links = np.array([workload.robot.get_link(name).idx for name in ("left_finger", "right_finger")])
@@ -275,6 +279,7 @@ def main() -> None:
             "varied": args.varied,
             "seed": 510000,
             "cooperative_solve": not args.serial_solve,
+            "cooperative_pressure": not args.serial_pressure,
             "method": args.method,
             "inverse_precision": args.inverse_precision,
             "history": args.history,
@@ -330,17 +335,22 @@ def main() -> None:
             result["build_timings_including_JIT"] = asdict(entry.model.build_timings)
             result["maximum_stress_Pa"] = tensor_to_array(workload.link.get_max_stress()).tolist()
             buffers = []
+            configurations = []
             for item in workload.scene.rigid_solver.stress_recovery.data:
-                view = qd_to_torch(item.value, copy=False)
-                buffers.append(
-                    {
-                        "name": item.name,
-                        "shape": list(view.shape),
-                        "dtype": str(view.dtype),
-                        "bytes": view.numel() * view.element_size(),
-                        "kind": int(item.kind),
-                    }
-                )
+                if item.kind == DataKind.CONFIG:
+                    configurations.append(item.value.model_dump(mode="json"))
+                else:
+                    view = qd_to_torch(item.value, copy=False)
+                    buffers.append(
+                        {
+                            "name": item.name,
+                            "shape": list(view.shape),
+                            "dtype": str(view.dtype),
+                            "bytes": view.numel() * view.element_size(),
+                            "kind": int(item.kind),
+                        }
+                    )
+            result["stress_configurations"] = configurations
             result["native_buffers"] = buffers
             result["native_buffer_bytes"] = sum(item["bytes"] for item in buffers)
             result["native_allocation_count"] = len(buffers)

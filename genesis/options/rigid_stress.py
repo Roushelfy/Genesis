@@ -57,6 +57,7 @@ class RigidStressOptions(Options):
     history_size: Literal[0, 4] = 0
     method: Literal["auto", "direct", "inverse", "pcg"] = "auto"
     cooperative_solve: StrictBool = True
+    cooperative_pressure: StrictBool = True
     inverse_max_bytes: PositiveInt = 64 * 1024 * 1024
     inverse_precision: Literal["64", "32"] = "64"
     inverse_corrections: Annotated[int, Field(ge=0, le=8)] = 2

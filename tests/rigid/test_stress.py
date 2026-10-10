@@ -47,10 +47,18 @@ def test_native_p2_shared_operators(tmp_path):
 @pytest.mark.required
 @pytest.mark.precision("64")
 @pytest.mark.parametrize(
-    "method,cooperative,inverse_precision",
-    (("direct", False, "64"), ("direct", True, "64"), ("inverse", True, "64"), ("inverse", True, "32")),
+    "method,cooperative,inverse_precision,inverse_corrections",
+    (
+        ("direct", False, "64", 2),
+        ("direct", True, "64", 2),
+        ("inverse", True, "64", 2),
+        ("inverse", True, "32", 2),
+        ("inverse", True, "32", 0),
+    ),
 )
-def test_native_batched_recovery_against_full_fp64_direct(tmp_path, method, cooperative, inverse_precision):
+def test_native_batched_recovery_against_full_fp64_direct(
+    tmp_path, method, cooperative, inverse_precision, inverse_corrections
+):
     vertices, tetrahedra, surface, _ = shell_mesh(1, 2, 0.0005)
     mesh = tmp_path / "shell.npz"
     np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=surface)
@@ -62,6 +70,7 @@ def test_native_batched_recovery_against_full_fp64_direct(tmp_path, method, coop
             cooperative_solve=cooperative,
             method=method,
             inverse_precision=inverse_precision,
+            inverse_corrections=inverse_corrections,
         )
     )
     oracle = P2Shell(vertices, tetrahedra, surface, 1e10, 0.3, 2000.0, 2, factor_backend="none")
@@ -111,13 +120,19 @@ def test_native_batched_recovery_against_full_fp64_direct(tmp_path, method, coop
     )
     assert displacement_error.max() < 1e-4
     assert qd_to_numpy(state.valid).all()
+    if inverse_precision == "32":
+        if inverse_corrections == 2:
+            np.testing.assert_array_equal(qd_to_numpy(state.fallbacks), 0)
+        else:
+            np.testing.assert_array_equal(qd_to_numpy(state.fallbacks), [0, 1, 1, 1, 1])
     assert (residual <= np.maximum(1e-11, 1e-7 * np.linalg.norm(rhs, axis=0))).all()
     np.testing.assert_array_equal(recovered[:, 0], 0.0)
 
 
 @pytest.mark.required
 @pytest.mark.precision("64")
-def test_native_finite_pressure_matches_independent_cpu(tmp_path):
+@pytest.mark.parametrize("cooperative", (False, True))
+def test_native_finite_pressure_matches_independent_cpu(tmp_path, cooperative):
     vertices, tetrahedra, faces, _ = shell_mesh(1, 2, 0.0005)
     mesh = tmp_path / "shell.npz"
     np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)
@@ -131,7 +146,7 @@ def test_native_finite_pressure_matches_independent_cpu(tmp_path):
     )
     mapper = FinitePatchMapper(geometry, anchor_to_surface=True)
     n_contacts, n_envs = 3, 4
-    contacts = create_contacts(n_contacts, n_envs, 0.006)
+    contacts = create_contacts(n_contacts, n_envs, 0.006, cooperative)
     state = model.create_state(n_envs)
     random = np.random.default_rng(7143)
     position = np.zeros((n_contacts, n_envs, 3))
@@ -162,7 +177,7 @@ def test_native_finite_pressure_matches_independent_cpu(tmp_path):
     contacts.friction.fill(0.8)
     contacts.valid.from_numpy(valid)
     kernel_anchor(float(np.finfo(float).eps), contacts, surface.info)
-    kernel_pressure(contacts, surface.info)
+    kernel_pressure(contacts, surface.info, cooperative)
     kernel_scatter(contacts, state, model.info, surface.info)
     print("patch statuses", qd_to_numpy(contacts.status), "evaluations", qd_to_numpy(contacts.evaluations))
     np.testing.assert_array_equal(qd_to_numpy(contacts.status), 0)
@@ -410,6 +425,9 @@ def test_native_rigid_lifecycle_and_partial_reset(tmp_path, substeps, monkeypatc
     before_u = qd_to_numpy(entry.state.displacement, transpose=True, copy=True)
     before_peak = tensor_to_array(link.get_max_stress())
     before_count = qd_to_numpy(entry.history.state.count, copy=True)
+    checkpoint = scene.rigid_solver.__getstate__()
+    assert checkpoint.configs["stress.0.options"].mesh == str(mesh.resolve())
+    json.dumps(vars(checkpoint.configs["stress.0.options"]))
     scene.reset(envs_idx=np.array([1]))
     after_u = qd_to_numpy(entry.state.displacement, transpose=True)
     after_peak = tensor_to_array(link.get_max_stress())
@@ -420,6 +438,11 @@ def test_native_rigid_lifecycle_and_partial_reset(tmp_path, substeps, monkeypatc
     after_count = qd_to_numpy(entry.history.state.count)
     np.testing.assert_array_equal(after_count[[0, 2]], before_count[[0, 2]])
     assert after_count[1] == 0
+    scene.rigid_solver.__setstate__(checkpoint)
+    # Restoring state broadcasts the ordinary geometry/dynamics notices, invalidating derived observations.
+    np.testing.assert_array_equal(tensor_to_array(checkpoint.arrays["stress.0.state.step_peak"]), before_peak)
+    np.testing.assert_array_equal(tensor_to_array(link.get_max_stress()), 0.0)
+    np.testing.assert_array_equal(qd_to_numpy(entry.history.state.count), 0)
     with pytest.raises(gs.GenesisException, match="fixed link mass"):
         link.set_mass(0.01)
     with pytest.raises(gs.GenesisException, match="finite surface loads"):
@@ -478,3 +501,6 @@ def test_native_history_reuse_abrupt_load_and_reset(tmp_path):
     state.force.from_numpy(loads[4])
     model.recover(omega, state, history=history)
     np.testing.assert_array_equal(qd_to_numpy(history.state.hit), [True, False, True])
+
+
+import json

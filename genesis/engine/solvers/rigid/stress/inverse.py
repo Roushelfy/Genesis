@@ -80,7 +80,7 @@ def kernel_apply_inverse(
             for j in range(inverse_info.blocks.shape[1]):
                 source = stress_state.rhs[j, i_b]
                 if qd.static(correction):
-                    source = -stress_state.residual[j, i_b]
+                    source = stress_state.residual[j, i_b]
                 value += inverse_info.blocks[i_n, j] @ source
             if qd.static(correction):
                 stress_state.displacement[i_n, i_b] += value / young
