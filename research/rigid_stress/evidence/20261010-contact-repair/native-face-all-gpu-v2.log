@@ -1,0 +1,27 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0
+rootdir: /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery
+configfile: pyproject.toml
+plugins: anyio-4.15.1, forked-1.7.5, print-1.2.0, timeout-2.4.0, xdist-3.8.0, quadrants-1.3.3, syrupy-6.1.1
+timeout: 1200.0s
+timeout method: signal
+timeout func_only: False
+created: 4/4 workers
+4 workers [39 items]
+
+[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[W 10/10/26 21:15:02.300 3729134] QuadrantsWarning
+While compiling `kernel_store_inverse_c748_1`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/inverse.py", line 66, in kernel_store_inverse:
+        inverse_info.blocks[i, j] = block
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[W 10/10/26 21:21:14.414 3729134] [offline_cache.h:run@165] Lock /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/cache/quadrants/kernel_compilation_manager/qdcache.lock failed. You can run 'qd cache clean -p /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/cache/quadrants/kernel_compilation_manager' and try again.
+[W 10/10/26 21:21:14.616 3729134] [kernel_compilation_manager.cpp:dump@88] Lock /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/cache/quadrants/kernel_compilation_manager/qdcache.lock failed. Please run 'qd cache clean -p /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/cache/quadrants/kernel_compilation_manager' and try again.
+[32m.[0m[32m.[0m[32m.[0m[32m.[0m
+============================== slowest durations ===============================
+137.13s call     tests/rigid/test_stress.py::test_native_full_field_unbatched_shared_operator
+135.86s call     tests/rigid/test_stress.py::test_native_rigid_lifecycle_and_partial_reset[full-1]
+127.27s call     tests/rigid/test_stress.py::test_native_rigid_lifecycle_and_partial_reset[max-4]
+124.91s call     tests/rigid/test_stress.py::test_native_rigid_lifecycle_and_partial_reset[max-1]
+
+(113 durations < 100s hidden.)
+[32m======================== [32m[1m39 passed[0m[32m in 566.36s (0:09:26)[0m[32m ========================[0m

@@ -109,7 +109,15 @@ def main():
     output, _ = output_parser.parse_known_args(remaining)
     generated = {}
     module = None
-    if args.face_tasks:
+    pipeline_kernel = next(
+        item
+        for item in ast.parse(Path("genesis/engine/solvers/rigid/stress/pipeline.py").read_text()).body
+        if isinstance(item, ast.FunctionDef) and item.name == "kernel_pipeline"
+    )
+    is_native_faces = any(argument.arg == "face_parallel" for argument in pipeline_kernel.args.args)
+    if is_native_faces and not args.face_tasks:
+        remaining.append("--contact-warp-scatter")
+    if args.face_tasks and not is_native_faces:
         module, generated = generate()
         original_init = RigidStressRecovery.__init__
 
@@ -128,17 +136,20 @@ def main():
     metadata = {
         "face_tasks": args.face_tasks,
         "oracle": args.oracle,
+        "native_face_configuration": is_native_faces,
         "generated_sources": generated,
         "generated_sha256": {name: hashlib.sha256(source.encode()).hexdigest() for name, source in generated.items()},
         "overflow_fallback_calls_including_warmup": sum(
             int(qd_to_numpy(counter)) for _, counter in module.workspaces.values()
         )
         if module
+        else None
+        if is_native_faces
         else 0,
         "last_face_counts": [int(qd_to_numpy(workspace.count)) for workspace, _ in module.workspaces.values()]
         if module
         else [],
-        "note": "Bounded task buffer of 32*B entries; all eligible faces counted. Overflow fully recomputes native scatter, with no load/contact/sample truncation. Complete solve/check/peak, observation, update, reset and fallback costs remain in ordinary live timing.",
+        "note": "Native configurations use production flags and report per-repeat overflow calls in benchmark output. Historical configurations retain the generated scheduling override. All eligible faces are counted. Overflow fully recomputes native scatter. Complete solve/check/peak, observation, update, reset and fallback costs remain in ordinary live timing.",
     }
     output.output.with_suffix(".variant.json").write_text(json.dumps(metadata, indent=2) + "\n")
 

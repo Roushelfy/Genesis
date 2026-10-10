@@ -7,6 +7,40 @@ Q10x10 quadrature. All production physical arithmetic uses Quadrants FP64.
 The finite pad load and actual combined contact friction change are described
 in [CONTACT_REPAIR_20261010.md](CONTACT_REPAIR_20261010.md).
 
+## Face scheduling checkpoint, 21:35 UTC
+
+The compact research implementation completes the same-device B=32768
+seed-623001 pair with 900 warmup steps and three 2400-step trajectories.
+Contact scheduling gives 278,903.62 env-step/s (repeat standard deviation
+83.33). Compact face scheduling gives 290,569.24 (627.03), a 4.18% gain.
+Both have zero invalid transitions. This checkpoint uses the recorded
+`943ffbd0-internal-1e-9-face-compact-v5` generated-source override. The
+production implementation adds explicit admission guards and is undergoing
+its own matched B=32768 comparison before claiming that gain for production.
+
+Production v2 passes all 39 GPU cases, 27 CPU cases and 672 independent
+FP64 full-field snapshots. Its B=1024 same-device actual gain is 2.50%.
+The local-name-only v3 additionally passes all 18 captured-contact cases
+and every-step audits of 67,200 observations each for normal live and
+forced-overflow full-field policy. The latter executes 2096 complete
+scatter fallback calls with zero invalid observations. Normal live has
+zero overflow calls. The benchmark and audit expose these counters.
+
+Production v3 diagnostic stage times at B=1024 / 32768 are pressure
+1.33801 / 10.63019 ms, face scatter 0.58365 / 15.80074 ms, packed inverse
+0.86262 / 22.94848 ms, complete residual 0.34474 / 10.92872 ms, global
+peak 0.24884 / 6.76030 ms and inertia relief 0.30335 / 5.11516 ms.
+Exact sources and raw wall times are preserved. These separate allocations
+provide diagnostic profiles, not matched retention percentages.
+
+The unchanged-final-budget block-512 comparison is still running. A
+new shared inertia-relief projection trial evaluates the repeated nodal
+mass-mode/rigid-mode Gram product. Its first global-wrapper prototype
+has a Quadrants frontend error and no valid numerical or timing result.
+The explicit tensor-parameter version is under evaluation. Final four-scope
+batch selection, matched max/full ordinary timing and final tail/memory
+measurements remain required. Performance plateau is not yet established.
+
 ## Error-budget and reset checkpoint, 20:58 UTC
 
 Internal pressure termination is selected at normalized residual 1e-9,
@@ -51,6 +85,25 @@ old failed-sweep allocation was cancelled after it stopped producing
 results. Final acceptance and throughput-plateau work remain open.
 
 ## Validated changes
+
+Production face scheduling checkpoint (`562597f1-native-face-v2`) passes
+27 CPU cases (12 CUDA-only skips), all 39 CUDA cases, and 672 independent
+full-field FP64 oracle snapshots. Those snapshots include two seeds,
+four physical substeps and deliberately forced complete-scatter overflow.
+The workspace bounds memory while its overflow path recomputes all original
+contacts and integration samples on the device. Force/moment, complete
+gauge residual and peak/tensor consistency assertions retain their budgets.
+
+Same-device B=1024 seed-623001 live timing uses 900 warmup steps and three
+2400-step varied trajectories. Original contact scheduling gives
+70,491.40 env-step/s (repeat standard deviation 391.05); production face
+scheduling gives 72,253.15 (126.48), a 2.50% gain. Both include all reset,
+observation, contact-radius and fallback work, with zero invalid transitions
+and zero scatter overflow calls. Default workspace adds 1,835,008 bytes at
+B=1024. The saved initial-state reset cost is identical in both cases.
+The actual production B=32768 matched pair and updated block-512 ablation
+remain in progress. Exact tested v2 scatter source and tracked patch are
+preserved separately from the subsequent local-variable naming cleanup.
 
 The rebuilt 1e-9 stopping-budget baseline profiles actual seed-623001 Q10
 contacts after 900 warmup steps, with 50 isolated stage repetitions.

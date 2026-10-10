@@ -2,8 +2,9 @@
 
 User requirement, 2026-10-10: let the caller choose before simulation
 between the complete stress field and its global maximum. This is an
-implementation requirement; the current public feature exposes the maximum
-only. Add this option to the existing native rigid solver feature.
+implemented build-time option in the existing native rigid solver feature.
+Both output APIs and their numerical/lifecycle checks are available. Matched
+ordinary live/policy throughput and memory measurements remain in progress.
 
 ## Configuration and API
 

@@ -17,6 +17,7 @@ import genesis as gs
 from examples.rigid.franka_egg_stress import FrankaEgg
 from genesis.engine.solvers.rigid.stress.contact import StressContactState
 from genesis.engine.solvers.rigid.stress.data import StressState
+from genesis.engine.solvers.rigid.stress.scatter import StressScatterWorkspace
 from genesis.utils import array_class
 from genesis.utils.array_class import V_VEC, V
 from genesis.utils.misc import qd_to_numpy
@@ -26,6 +27,7 @@ from genesis.utils.misc import qd_to_numpy
 def kernel_audit(
     state: StressState,
     contacts: StressContactState,
+    scatter: StressScatterWorkspace,
     failures: qd.Tensor,
     counters: qd.Tensor,
     errors: qd.Tensor,
@@ -37,12 +39,15 @@ def kernel_audit(
     right: int,
     relative_tolerance: float,
     absolute_tolerance: float,
+    face_parallel: qd.template(),
 ):
     for i_b in range(failures.shape[0]):
         if not state.step_valid[i_b]:
             failures[i_b] += 1
         counters[i_b][4] += state.corrections[i_b]
         counters[i_b][5] += state.fallbacks[i_b]
+        if qd.static(face_parallel):
+            counters[i_b][8] += gs.qd_int(scatter.count[None] > scatter.tasks.shape[0])
         errors[i_b][0] = qd.max(
             errors[i_b][0],
             qd.sqrt(state.residual_norm_squared[i_b])
@@ -83,12 +88,20 @@ def main():
     parser.add_argument("--policy-precision", choices=("64", "32"), default="32")
     parser.add_argument("--output-mode", choices=("max", "full"), default="max")
     parser.add_argument("--conditions", type=Path)
+    parser.add_argument("--contact-warp-scatter", action="store_true")
+    parser.add_argument("--scatter-tasks-per-env", type=int, default=32)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.parent.mkdir(parents=True, exist_ok=True)
     gs.init(backend=gs.gpu, precision="64", seed=args.seed, logging_level="warning")
     workload = FrankaEgg(
-        args.envs, seed=args.seed, varied=True, conditions=args.conditions, output_mode=args.output_mode
+        args.envs,
+        seed=args.seed,
+        varied=True,
+        conditions=args.conditions,
+        output_mode=args.output_mode,
+        face_parallel_scatter=not args.contact_warp_scatter,
+        scatter_tasks_per_env=args.scatter_tasks_per_env,
     )
     torch.manual_seed(99173)
     policy = (
@@ -108,7 +121,7 @@ def main():
     policy_error_rad = 0.0
     failures = V(dtype=gs.qd_int, shape=(args.envs,))
     failures.fill(0)
-    counters = V_VEC(8, dtype=qd.i64, shape=(args.envs,))
+    counters = V_VEC(9, dtype=qd.i64, shape=(args.envs,))
     errors = V_VEC(6, dtype=gs.qd_float, shape=(args.envs,))
     counters.fill(0)
     initial = np.zeros((args.envs, 6))
@@ -133,6 +146,7 @@ def main():
                 kernel_audit(
                     entry.state,
                     entry.contacts,
+                    entry.scatter,
                     failures,
                     counters,
                     errors,
@@ -144,6 +158,7 @@ def main():
                     right,
                     entry.link.stress_options.tolerance,
                     entry.link.stress_options.absolute_tolerance,
+                    entry.scatter.tasks.shape[0] > 0,
                 )
             workload.restart()
     counts = qd_to_numpy(failures)
@@ -157,6 +172,10 @@ def main():
         "seed": args.seed,
         "load_model": "finite_pad_adaptive_q10",
         "output_mode": args.output_mode,
+        "face_parallel_scatter": not args.contact_warp_scatter,
+        "scatter_tasks_per_env": args.scatter_tasks_per_env,
+        "scatter_task_capacity": entry.scatter.tasks.shape[0],
+        "scatter_overflow_calls": int(qd_to_numpy(entry.scatter.overflow_calls)),
         "condition_count": workload.condition_count,
         "source_revision": os.environ.get("RIGID_STRESS_SOURCE_REVISION", "unrecorded"),
         "source_sha256": {
@@ -189,6 +208,7 @@ def main():
             "fallbacks",
             "bilateral_lift_steps",
             "failed_hold_checks",
+            "batch_scatter_fallback_steps",
         ],
         "per_environment_counters": tail.tolist(),
         "error_columns": [
@@ -212,6 +232,8 @@ def main():
             "quantiles": [0.5, 0.9, 0.99, 1.0],
             "fit_evaluations_total": np.quantile(tail[:, 2], [0.5, 0.9, 0.99, 1.0]).tolist(),
             "local_retries": np.quantile(tail[:, 1], [0.5, 0.9, 0.99, 1.0]).tolist(),
+            "fit_evaluations_max": np.quantile(tail[:, 3], [0.5, 0.9, 0.99, 1.0]).tolist(),
+            "batch_scatter_fallback_steps": np.quantile(tail[:, 8], [0.5, 0.9, 0.99, 1.0]).tolist(),
             "note": "Work counts proxy per-environment tails; GPU shared execution is not individually timed.",
         },
         "policy": {

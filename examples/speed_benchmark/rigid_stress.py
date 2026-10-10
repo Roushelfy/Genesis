@@ -29,6 +29,7 @@ from genesis.engine.solvers.rigid.stress.contact import (
     kernel_scatter,
 )
 from genesis.engine.solvers.rigid.stress.recovery import kernel_accept, kernel_begin_step
+from genesis.engine.solvers.rigid.stress.scatter import kernel_scatter_faces
 from genesis.engine.solvers.rigid.stress.solve import (
     kernel_balance,
     kernel_direct_init,
@@ -113,13 +114,24 @@ def profile(workload: FrankaEgg, repetitions: int) -> dict:
         "candidate_weights_constraints": lambda: kernel_pressure(
             entry.contacts, entry.surface.info, options.cooperative_pressure
         ),
-        "nodal_scatter": lambda: kernel_scatter(
-            entry.contacts,
-            entry.state,
-            entry.model.info,
-            entry.surface.info,
-            options.cooperative_scatter,
-            options.cached_face_bounds,
+        "nodal_scatter": lambda: (
+            kernel_scatter_faces(
+                entry.contacts,
+                entry.state,
+                entry.model.info,
+                entry.surface.info,
+                entry.scatter,
+                options.cached_face_bounds,
+            )
+            if entry.scatter.tasks.shape[0]
+            else kernel_scatter(
+                entry.contacts,
+                entry.state,
+                entry.model.info,
+                entry.surface.info,
+                options.cooperative_scatter,
+                options.cached_face_bounds,
+            )
         ),
         "inertia_relief_centrifugal": lambda: kernel_balance(entry.omega, entry.state, entry.model.info),
         "rhs_reduction": lambda: kernel_direct_init(entry.state),
@@ -197,6 +209,15 @@ def main() -> None:
     parser.add_argument("--serial-solve", action="store_true")
     parser.add_argument("--serial-pressure", action="store_true")
     parser.add_argument("--serial-scatter", action="store_true")
+    parser.add_argument(
+        "--contact-warp-scatter", action="store_true", help="Compare the original contact-warp scatter."
+    )
+    parser.add_argument(
+        "--scatter-tasks-per-env",
+        type=int,
+        default=32,
+        help="Bound face-task workspace; overflow fully recomputes native scatter.",
+    )
     parser.add_argument("--uncached-peak", action="store_true")
     parser.add_argument("--uncached-face-bounds", action="store_true")
     parser.add_argument("--method", choices=("auto", "direct", "inverse"), default="auto")
@@ -237,6 +258,8 @@ def main() -> None:
         output_mode=args.output_mode,
         saved_reset=not args.legacy_reset,
         cooperative_scatter=not args.serial_scatter,
+        face_parallel_scatter=not args.contact_warp_scatter,
+        scatter_tasks_per_env=args.scatter_tasks_per_env,
         cached_peak=not args.uncached_peak,
         cached_face_bounds=not args.uncached_face_bounds,
     )
@@ -355,6 +378,8 @@ def main() -> None:
             "cooperative_solve": not args.serial_solve,
             "cooperative_pressure": not args.serial_pressure,
             "cooperative_scatter": not args.serial_scatter,
+            "face_parallel_scatter": not args.contact_warp_scatter,
+            "scatter_tasks_per_env": args.scatter_tasks_per_env,
             "cached_peak": not args.uncached_peak,
             "cached_face_bounds": not args.uncached_face_bounds,
             "method": args.method,
@@ -412,7 +437,11 @@ def main() -> None:
                 if args.scope != "recovery":
                     workload.restart()
                 failure_before = None
+                scatter_overflow_before = 0
                 if workload.stress:
+                    scatter_overflow_before = int(
+                        qd_to_numpy(workload.scene.rigid_solver.stress_recovery.links[0].scatter.overflow_calls)
+                    )
                     failure_before = qd_to_numpy(
                         workload.scene.rigid_solver.stress_recovery.links[0].state.invalid_steps
                     )
@@ -448,6 +477,12 @@ def main() -> None:
                         "transitions_per_second": (args.envs * steps - invalid_environment_steps) / elapsed,
                         "attempted_transitions_per_second": args.envs * steps / elapsed,
                         "invalid_environment_steps": invalid_environment_steps,
+                        "scatter_overflow_calls": int(
+                            qd_to_numpy(workload.scene.rigid_solver.stress_recovery.links[0].scatter.overflow_calls)
+                        )
+                        - scatter_overflow_before
+                        if workload.stress
+                        else 0,
                         "failed_steps_per_environment": failed_per_environment.tolist()
                         if failed_per_environment is not None
                         else None,

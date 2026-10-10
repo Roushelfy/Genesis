@@ -28,6 +28,7 @@ from .history import StressHistory
 from .lifecycle import func_accept, func_begin_step
 from .model import StressModel
 from .pipeline import kernel_pipeline
+from .scatter import StressScatterWorkspace, create_scatter_workspace, kernel_scatter_faces
 from .surface import StressSurface
 
 if TYPE_CHECKING:
@@ -45,6 +46,7 @@ class StressLink:
     omega: qd.Tensor
     history: StressHistory | None
     output_mode: str
+    scatter: StressScatterWorkspace
 
 
 class RigidStressRecovery:
@@ -96,6 +98,14 @@ class RigidStressRecovery:
                             V_VEC(3, dtype=gs.qd_float, shape=(solver._B,)),
                             StressHistory(model.info.vertices.shape[0], solver._B) if options.history_size else None,
                             options.output_mode,
+                            create_scatter_workspace(
+                                solver._B,
+                                options.scatter_tasks_per_env
+                                if options.face_parallel_scatter
+                                and options.cooperative_scatter
+                                and gs.backend == gs.cuda
+                                else 0,
+                            ),
                         )
                     )
         self.subscriber = Subscriber(
@@ -142,6 +152,7 @@ class RigidStressRecovery:
                     entry.model.surface_inverse.info,
                     entry.model.inverse.info,
                     entry.model.factor.info,
+                    entry.scatter,
                     solver._errno,
                     solver._links_offset_quat.ndim == 3,
                     i_substep == 0,
@@ -151,6 +162,7 @@ class RigidStressRecovery:
                     options.cached_face_bounds,
                     entry.model.info.vertices.shape[0],
                     entry.output_mode == "full",
+                    entry.scatter.tasks.shape[0] > 0,
                 )
                 continue
             if i_substep == 0:
@@ -170,14 +182,24 @@ class RigidStressRecovery:
             )
             kernel_anchor(self.source_epsilon, entry.contacts, entry.surface.info)
             kernel_pressure(entry.contacts, entry.surface.info, entry.link.stress_options.cooperative_pressure)
-            kernel_scatter(
-                entry.contacts,
-                entry.state,
-                entry.model.info,
-                entry.surface.info,
-                entry.link.stress_options.cooperative_scatter,
-                entry.link.stress_options.cached_face_bounds,
-            )
+            if entry.scatter.tasks.shape[0] and options.cooperative_scatter:
+                kernel_scatter_faces(
+                    entry.contacts,
+                    entry.state,
+                    entry.model.info,
+                    entry.surface.info,
+                    entry.scatter,
+                    options.cached_face_bounds,
+                )
+            else:
+                kernel_scatter(
+                    entry.contacts,
+                    entry.state,
+                    entry.model.info,
+                    entry.surface.info,
+                    options.cooperative_scatter,
+                    options.cached_face_bounds,
+                )
             entry.model.recover(entry.omega, entry.state, entry.link.stress_options, entry.history, surface_load=True)
             kernel_accept(entry.state, entry.contacts, solver._errno)
             if entry.history is not None:
@@ -249,6 +271,9 @@ class RigidStressRecovery:
                 if 0 not in item.value.shape:
                     yield item
             for item in iter_data(entry.contacts, f"stress.{i}.contacts"):
+                if 0 not in item.value.shape:
+                    yield item
+            for item in iter_data(entry.scatter, f"stress.{i}.scatter"):
                 if 0 not in item.value.shape:
                     yield item
             if entry.history is not None:

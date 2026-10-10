@@ -164,6 +164,19 @@ node accumulation on CUDA, preserving all eligible Q10 and local retry
 samples. CPU and the disabled option use scalar scatter. The benchmark
 exposes `--full-inverse` and `--serial-scatter`.
 
+`face_parallel_scatter=True` additionally assigns one CUDA warp to each
+eligible contact/face pair. A bounded device task buffer is refreshed on
+every recovery, with `scatter_tasks_per_env=32` as its build-time capacity
+per environment. Its task and wrench storage adds 1,792 bytes per environment
+plus two eight-byte counters. All contacts and conservative face bounds are
+examined. If either active-contact storage or task capacity is insufficient,
+the complete contact-warp scatter runs in Quadrants on the device. Final
+force and moment checks retain their original budgets. There is no host
+count read in recovery. CPU, scalar scatter and the disabled option retain
+their existing paths. `--contact-warp-scatter` selects the CUDA ablation,
+and `--scatter-tasks-per-env` measures buffer/fallback tradeoffs. Ordinary
+benchmark repeats report every full-batch scatter overflow call.
+
 `cached_peak=True` reuses immutable P2 corner gradients while scanning every
 tetrahedron's four corners on CUDA. The cache contains four vertex and three
 incident-edge gradients per corner; the other three edge gradients are

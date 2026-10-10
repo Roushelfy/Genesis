@@ -24,6 +24,11 @@ class RigidStressOptions(Options):
     ``cooperative_scatter`` reduces loads on each surface face before node
     accumulation. CUDA contacts benefit from fewer writes. Disable it for
     a scalar scheduling comparison. CPU uses the scalar path.
+    ``face_parallel_scatter`` additionally schedules CUDA contact faces in
+    parallel. ``scatter_tasks_per_env`` bounds its workspace, independently
+    of the actual contacts. On overflow the device fully recomputes the
+    original contact-warp scatter; no load or sample is truncated. Disable
+    it to compare scheduling. Both options select storage at scene build.
     ``cached_peak`` reuses shared immutable P2 corner gradients in the full
     global stress scan. Disable it for a geometry reuse comparison.
 
@@ -86,6 +91,8 @@ class RigidStressOptions(Options):
     cooperative_solve: StrictBool = True
     cooperative_pressure: StrictBool = True
     cooperative_scatter: StrictBool = True
+    face_parallel_scatter: StrictBool = True
+    scatter_tasks_per_env: PositiveInt = 32
     inverse_max_bytes: PositiveInt = 64 * 1024 * 1024
     inverse_precision: Literal["64", "32"] = "64"
     surface_inverse: StrictBool = True

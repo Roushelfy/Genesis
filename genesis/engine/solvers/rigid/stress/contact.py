@@ -656,11 +656,12 @@ def func_scatter_warp(
     stress_info: StressInfo,
     surface_info: StressSurfaceInfo,
     cached_bounds: qd.template(),
+    enabled: bool = True,
 ):
-    for i_n, i_b in qd.ndrange(stress_state.force.shape[0], stress_state.active.shape[0]):
+    for i_n, i_b in qd.ndrange(qd.select(enabled, stress_state.force.shape[0], 0), stress_state.active.shape[0]):
         stress_state.force[i_n, i_b] = qd.Vector.zero(gs.qd_float, 3)
     qd.loop_config(block_dim=128)
-    for i_thread in range(contact_state.active_count[None] * 32):
+    for i_thread in range(qd.select(enabled, contact_state.active_count[None] * 32, 0)):
         lane, slot = i_thread % 32, i_thread // 32
         pair = contact_state.active_pairs[slot]
         i_c, i_b = pair[0], pair[1]

@@ -34,6 +34,8 @@ class FrankaEgg:
         cached_peak: bool = True,
         cached_face_bounds: bool = True,
         saved_reset: bool = True,
+        face_parallel_scatter: bool = True,
+        scatter_tasks_per_env: int = 32,
     ):
         self.n_envs = n_envs
         self.tick = 0
@@ -82,6 +84,8 @@ class FrankaEgg:
                     fused_pipeline=fused_pipeline,
                     output_mode=output_mode,
                     cooperative_scatter=cooperative_scatter,
+                    face_parallel_scatter=face_parallel_scatter,
+                    scatter_tasks_per_env=scatter_tasks_per_env,
                     cached_peak=cached_peak,
                     cached_face_bounds=cached_face_bounds,
                 )

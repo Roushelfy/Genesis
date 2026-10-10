@@ -18,6 +18,7 @@ from .data import StressInfo, StressState
 from .factor import StressFactorInfo, func_solve_cooperative
 from .inverse import StressInverseInfo, func_apply_inverse
 from .lifecycle import func_accept, func_begin_step
+from .scatter import StressScatterWorkspace, func_scatter_faces
 from .solve import func_balance, func_direct_init, func_full_residual, func_peak_impl
 from .surface import StressSurfaceInfo
 from .surface_inverse import StressSurfaceInverseInfo, func_surface_apply_packed, func_surface_pack
@@ -43,6 +44,7 @@ def kernel_pipeline(
     boundary: StressSurfaceInverseInfo,
     inverse: StressInverseInfo,
     factor: StressFactorInfo,
+    scatter: StressScatterWorkspace,
     errno: qd.Tensor,
     batch_offsets: qd.template(),
     first: qd.template(),
@@ -52,6 +54,7 @@ def kernel_pipeline(
     cached_bounds: qd.template(),
     n_nodes: qd.template(),
     full: qd.template(),
+    face_parallel: qd.template(),
 ):
     if qd.static(first):
         func_begin_step(state)
@@ -65,7 +68,10 @@ def kernel_pipeline(
     func_refine_contacts(contacts)
     func_pressure_warp(contacts, surface, True)
     func_pressure_correct_warp(contacts, surface)
-    func_scatter_warp(contacts, state, info, surface, cached_bounds)
+    if qd.static(face_parallel):
+        func_scatter_faces(contacts, state, info, surface, scatter, cached_bounds)
+    else:
+        func_scatter_warp(contacts, state, info, surface, cached_bounds)
     func_balance(omega, state, info)
     func_direct_init(state)
     func_surface_pack(state, boundary)

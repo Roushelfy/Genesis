@@ -1,0 +1,385 @@
+diff --git a/examples/rigid/franka_egg_stress.py b/examples/rigid/franka_egg_stress.py
+index 1b4ad6b5..5d3bebb6 100644
+--- a/examples/rigid/franka_egg_stress.py
++++ b/examples/rigid/franka_egg_stress.py
+@@ -34,6 +34,8 @@ class FrankaEgg:
+         cached_peak: bool = True,
+         cached_face_bounds: bool = True,
+         saved_reset: bool = True,
++        face_parallel_scatter: bool = True,
++        scatter_tasks_per_env: int = 32,
+     ):
+         self.n_envs = n_envs
+         self.tick = 0
+@@ -82,6 +84,8 @@ class FrankaEgg:
+                     fused_pipeline=fused_pipeline,
+                     output_mode=output_mode,
+                     cooperative_scatter=cooperative_scatter,
++                    face_parallel_scatter=face_parallel_scatter,
++                    scatter_tasks_per_env=scatter_tasks_per_env,
+                     cached_peak=cached_peak,
+                     cached_face_bounds=cached_face_bounds,
+                 )
+diff --git a/examples/speed_benchmark/rigid_stress.py b/examples/speed_benchmark/rigid_stress.py
+index 06154397..ff084bde 100644
+--- a/examples/speed_benchmark/rigid_stress.py
++++ b/examples/speed_benchmark/rigid_stress.py
+@@ -29,6 +29,7 @@ from genesis.engine.solvers.rigid.stress.contact import (
+     kernel_scatter,
+ )
+ from genesis.engine.solvers.rigid.stress.recovery import kernel_accept, kernel_begin_step
++from genesis.engine.solvers.rigid.stress.scatter import kernel_scatter_faces
+ from genesis.engine.solvers.rigid.stress.solve import (
+     kernel_balance,
+     kernel_direct_init,
+@@ -113,13 +114,24 @@ def profile(workload: FrankaEgg, repetitions: int) -> dict:
+         "candidate_weights_constraints": lambda: kernel_pressure(
+             entry.contacts, entry.surface.info, options.cooperative_pressure
+         ),
+-        "nodal_scatter": lambda: kernel_scatter(
+-            entry.contacts,
+-            entry.state,
+-            entry.model.info,
+-            entry.surface.info,
+-            options.cooperative_scatter,
+-            options.cached_face_bounds,
++        "nodal_scatter": lambda: (
++            kernel_scatter_faces(
++                entry.contacts,
++                entry.state,
++                entry.model.info,
++                entry.surface.info,
++                entry.scatter,
++                options.cached_face_bounds,
++            )
++            if entry.scatter.tasks.shape[0]
++            else kernel_scatter(
++                entry.contacts,
++                entry.state,
++                entry.model.info,
++                entry.surface.info,
++                options.cooperative_scatter,
++                options.cached_face_bounds,
++            )
+         ),
+         "inertia_relief_centrifugal": lambda: kernel_balance(entry.omega, entry.state, entry.model.info),
+         "rhs_reduction": lambda: kernel_direct_init(entry.state),
+@@ -197,6 +209,15 @@ def main() -> None:
+     parser.add_argument("--serial-solve", action="store_true")
+     parser.add_argument("--serial-pressure", action="store_true")
+     parser.add_argument("--serial-scatter", action="store_true")
++    parser.add_argument(
++        "--contact-warp-scatter", action="store_true", help="Compare the original contact-warp scatter."
++    )
++    parser.add_argument(
++        "--scatter-tasks-per-env",
++        type=int,
++        default=32,
++        help="Bound face-task workspace; overflow fully recomputes native scatter.",
++    )
+     parser.add_argument("--uncached-peak", action="store_true")
+     parser.add_argument("--uncached-face-bounds", action="store_true")
+     parser.add_argument("--method", choices=("auto", "direct", "inverse"), default="auto")
+@@ -237,6 +258,8 @@ def main() -> None:
+         output_mode=args.output_mode,
+         saved_reset=not args.legacy_reset,
+         cooperative_scatter=not args.serial_scatter,
++        face_parallel_scatter=not args.contact_warp_scatter,
++        scatter_tasks_per_env=args.scatter_tasks_per_env,
+         cached_peak=not args.uncached_peak,
+         cached_face_bounds=not args.uncached_face_bounds,
+     )
+@@ -355,6 +378,8 @@ def main() -> None:
+             "cooperative_solve": not args.serial_solve,
+             "cooperative_pressure": not args.serial_pressure,
+             "cooperative_scatter": not args.serial_scatter,
++            "face_parallel_scatter": not args.contact_warp_scatter,
++            "scatter_tasks_per_env": args.scatter_tasks_per_env,
+             "cached_peak": not args.uncached_peak,
+             "cached_face_bounds": not args.uncached_face_bounds,
+             "method": args.method,
+@@ -412,7 +437,11 @@ def main() -> None:
+                 if args.scope != "recovery":
+                     workload.restart()
+                 failure_before = None
++                scatter_overflow_before = 0
+                 if workload.stress:
++                    scatter_overflow_before = int(
++                        qd_to_numpy(workload.scene.rigid_solver.stress_recovery.links[0].scatter.overflow_calls)
++                    )
+                     failure_before = qd_to_numpy(
+                         workload.scene.rigid_solver.stress_recovery.links[0].state.invalid_steps
+                     )
+@@ -448,6 +477,12 @@ def main() -> None:
+                         "transitions_per_second": (args.envs * steps - invalid_environment_steps) / elapsed,
+                         "attempted_transitions_per_second": args.envs * steps / elapsed,
+                         "invalid_environment_steps": invalid_environment_steps,
++                        "scatter_overflow_calls": int(
++                            qd_to_numpy(workload.scene.rigid_solver.stress_recovery.links[0].scatter.overflow_calls)
++                        )
++                        - scatter_overflow_before
++                        if workload.stress
++                        else 0,
+                         "failed_steps_per_environment": failed_per_environment.tolist()
+                         if failed_per_environment is not None
+                         else None,
+diff --git a/genesis/engine/solvers/rigid/stress/contact.py b/genesis/engine/solvers/rigid/stress/contact.py
+index 678e401c..88cd6f27 100644
+--- a/genesis/engine/solvers/rigid/stress/contact.py
++++ b/genesis/engine/solvers/rigid/stress/contact.py
+@@ -656,11 +656,12 @@ def func_scatter_warp(
+     stress_info: StressInfo,
+     surface_info: StressSurfaceInfo,
+     cached_bounds: qd.template(),
++    enabled: bool = True,
+ ):
+-    for i_n, i_b in qd.ndrange(stress_state.force.shape[0], stress_state.active.shape[0]):
++    for i_n, i_b in qd.ndrange(qd.select(enabled, stress_state.force.shape[0], 0), stress_state.active.shape[0]):
+         stress_state.force[i_n, i_b] = qd.Vector.zero(gs.qd_float, 3)
+     qd.loop_config(block_dim=128)
+-    for i_thread in range(contact_state.active_count[None] * 32):
++    for i_thread in range(qd.select(enabled, contact_state.active_count[None] * 32, 0)):
+         lane, slot = i_thread % 32, i_thread // 32
+         pair = contact_state.active_pairs[slot]
+         i_c, i_b = pair[0], pair[1]
+diff --git a/genesis/engine/solvers/rigid/stress/pipeline.py b/genesis/engine/solvers/rigid/stress/pipeline.py
+index 8f827b69..9adfb373 100644
+--- a/genesis/engine/solvers/rigid/stress/pipeline.py
++++ b/genesis/engine/solvers/rigid/stress/pipeline.py
+@@ -18,6 +18,7 @@ from .data import StressInfo, StressState
+ from .factor import StressFactorInfo, func_solve_cooperative
+ from .inverse import StressInverseInfo, func_apply_inverse
+ from .lifecycle import func_accept, func_begin_step
++from .scatter import StressScatterWorkspace, func_scatter_faces
+ from .solve import func_balance, func_direct_init, func_full_residual, func_peak_impl
+ from .surface import StressSurfaceInfo
+ from .surface_inverse import StressSurfaceInverseInfo, func_surface_apply_packed, func_surface_pack
+@@ -43,6 +44,7 @@ def kernel_pipeline(
+     boundary: StressSurfaceInverseInfo,
+     inverse: StressInverseInfo,
+     factor: StressFactorInfo,
++    scatter: StressScatterWorkspace,
+     errno: qd.Tensor,
+     batch_offsets: qd.template(),
+     first: qd.template(),
+@@ -52,6 +54,7 @@ def kernel_pipeline(
+     cached_bounds: qd.template(),
+     n_nodes: qd.template(),
+     full: qd.template(),
++    face_parallel: qd.template(),
+ ):
+     if qd.static(first):
+         func_begin_step(state)
+@@ -65,7 +68,10 @@ def kernel_pipeline(
+     func_refine_contacts(contacts)
+     func_pressure_warp(contacts, surface, True)
+     func_pressure_correct_warp(contacts, surface)
+-    func_scatter_warp(contacts, state, info, surface, cached_bounds)
++    if qd.static(face_parallel):
++        func_scatter_faces(contacts, state, info, surface, scatter, cached_bounds)
++    else:
++        func_scatter_warp(contacts, state, info, surface, cached_bounds)
+     func_balance(omega, state, info)
+     func_direct_init(state)
+     func_surface_pack(state, boundary)
+diff --git a/genesis/engine/solvers/rigid/stress/recovery.py b/genesis/engine/solvers/rigid/stress/recovery.py
+index 47a81308..921c6895 100644
+--- a/genesis/engine/solvers/rigid/stress/recovery.py
++++ b/genesis/engine/solvers/rigid/stress/recovery.py
+@@ -28,6 +28,7 @@ from .history import StressHistory
+ from .lifecycle import func_accept, func_begin_step
+ from .model import StressModel
+ from .pipeline import kernel_pipeline
++from .scatter import StressScatterWorkspace, create_scatter_workspace, kernel_scatter_faces
+ from .surface import StressSurface
+ 
+ if TYPE_CHECKING:
+@@ -45,6 +46,7 @@ class StressLink:
+     omega: qd.Tensor
+     history: StressHistory | None
+     output_mode: str
++    scatter: StressScatterWorkspace
+ 
+ 
+ class RigidStressRecovery:
+@@ -96,6 +98,14 @@ class RigidStressRecovery:
+                             V_VEC(3, dtype=gs.qd_float, shape=(solver._B,)),
+                             StressHistory(model.info.vertices.shape[0], solver._B) if options.history_size else None,
+                             options.output_mode,
++                            create_scatter_workspace(
++                                solver._B,
++                                options.scatter_tasks_per_env
++                                if options.face_parallel_scatter
++                                and options.cooperative_scatter
++                                and gs.backend == gs.cuda
++                                else 0,
++                            ),
+                         )
+                     )
+         self.subscriber = Subscriber(
+@@ -142,6 +152,7 @@ class RigidStressRecovery:
+                     entry.model.surface_inverse.info,
+                     entry.model.inverse.info,
+                     entry.model.factor.info,
++                    entry.scatter,
+                     solver._errno,
+                     solver._links_offset_quat.ndim == 3,
+                     i_substep == 0,
+@@ -151,6 +162,7 @@ class RigidStressRecovery:
+                     options.cached_face_bounds,
+                     entry.model.info.vertices.shape[0],
+                     entry.output_mode == "full",
++                    entry.scatter.tasks.shape[0] > 0,
+                 )
+                 continue
+             if i_substep == 0:
+@@ -170,14 +182,24 @@ class RigidStressRecovery:
+             )
+             kernel_anchor(self.source_epsilon, entry.contacts, entry.surface.info)
+             kernel_pressure(entry.contacts, entry.surface.info, entry.link.stress_options.cooperative_pressure)
+-            kernel_scatter(
+-                entry.contacts,
+-                entry.state,
+-                entry.model.info,
+-                entry.surface.info,
+-                entry.link.stress_options.cooperative_scatter,
+-                entry.link.stress_options.cached_face_bounds,
+-            )
++            if entry.scatter.tasks.shape[0] and options.cooperative_scatter:
++                kernel_scatter_faces(
++                    entry.contacts,
++                    entry.state,
++                    entry.model.info,
++                    entry.surface.info,
++                    entry.scatter,
++                    options.cached_face_bounds,
++                )
++            else:
++                kernel_scatter(
++                    entry.contacts,
++                    entry.state,
++                    entry.model.info,
++                    entry.surface.info,
++                    options.cooperative_scatter,
++                    options.cached_face_bounds,
++                )
+             entry.model.recover(entry.omega, entry.state, entry.link.stress_options, entry.history, surface_load=True)
+             kernel_accept(entry.state, entry.contacts, solver._errno)
+             if entry.history is not None:
+@@ -251,6 +273,9 @@ class RigidStressRecovery:
+             for item in iter_data(entry.contacts, f"stress.{i}.contacts"):
+                 if 0 not in item.value.shape:
+                     yield item
++            for item in iter_data(entry.scatter, f"stress.{i}.scatter"):
++                if 0 not in item.value.shape:
++                    yield item
+             if entry.history is not None:
+                 yield from iter_data(entry.history.state, f"stress.{i}.history")
+             yield DataItem(f"stress.{i}.omega", entry.omega, entry.state.kind)
+diff --git a/genesis/options/rigid_stress.py b/genesis/options/rigid_stress.py
+index cdc42a8c..7c52e64c 100644
+--- a/genesis/options/rigid_stress.py
++++ b/genesis/options/rigid_stress.py
+@@ -24,6 +24,11 @@ class RigidStressOptions(Options):
+     ``cooperative_scatter`` reduces loads on each surface face before node
+     accumulation. CUDA contacts benefit from fewer writes. Disable it for
+     a scalar scheduling comparison. CPU uses the scalar path.
++    ``face_parallel_scatter`` additionally schedules CUDA contact faces in
++    parallel. ``scatter_tasks_per_env`` bounds its workspace, independently
++    of the actual contacts. On overflow the device fully recomputes the
++    original contact-warp scatter; no load or sample is truncated. Disable
++    it to compare scheduling. Both options select storage at scene build.
+     ``cached_peak`` reuses shared immutable P2 corner gradients in the full
+     global stress scan. Disable it for a geometry reuse comparison.
+ 
+@@ -86,6 +91,8 @@ class RigidStressOptions(Options):
+     cooperative_solve: StrictBool = True
+     cooperative_pressure: StrictBool = True
+     cooperative_scatter: StrictBool = True
++    face_parallel_scatter: StrictBool = True
++    scatter_tasks_per_env: PositiveInt = 32
+     inverse_max_bytes: PositiveInt = 64 * 1024 * 1024
+     inverse_precision: Literal["64", "32"] = "64"
+     surface_inverse: StrictBool = True
+diff --git a/research/rigid_stress/native_trajectory_oracle.py b/research/rigid_stress/native_trajectory_oracle.py
+index 8ae6eee9..2acb8ab5 100644
+--- a/research/rigid_stress/native_trajectory_oracle.py
++++ b/research/rigid_stress/native_trajectory_oracle.py
+@@ -28,11 +28,21 @@ def main():
+     parser.add_argument("--seed", type=int, default=510000)
+     parser.add_argument("--output-mode", choices=("max", "full"), default="max")
+     parser.add_argument("--substeps", type=int, default=1)
++    parser.add_argument("--scatter-tasks-per-env", type=int, default=32)
++    parser.add_argument("--contact-warp-scatter", action="store_true")
+     parser.add_argument("--output", type=Path, required=True)
+     args = parser.parse_args()
+     args.output.parent.mkdir(parents=True, exist_ok=True)
+     gs.init(backend=gs.gpu, precision="64", seed=args.seed, logging_level="warning")
+-    workload = FrankaEgg(args.envs, varied=True, seed=args.seed, output_mode=args.output_mode, substeps=args.substeps)
++    workload = FrankaEgg(
++        args.envs,
++        varied=True,
++        seed=args.seed,
++        output_mode=args.output_mode,
++        substeps=args.substeps,
++        face_parallel_scatter=not args.contact_warp_scatter,
++        scatter_tasks_per_env=args.scatter_tasks_per_env,
++    )
+     entry = workload.scene.rigid_solver.stress_recovery.links[0]
+     with np.load("examples/rigid/assets/hollow_egg/level1/elastic.npz") as asset:
+         oracle = P2Shell(
+diff --git a/research/rigid_stress/probe_face_tasks.py b/research/rigid_stress/probe_face_tasks.py
+index 15894d19..157c6d51 100644
+--- a/research/rigid_stress/probe_face_tasks.py
++++ b/research/rigid_stress/probe_face_tasks.py
+@@ -53,6 +53,9 @@ def generate_fallback():
+         if isinstance(item, ast.FunctionDef) and item.name == "func_scatter_warp"
+     )
+     node.name = "func_scatter_fallback"
++    if any(arg.arg == "enabled" for arg in node.args.args):
++        node.args.args = [arg for arg in node.args.args if arg.arg != "enabled"]
++        node.args.defaults = []
+     node.args.args.append(ast.arg(arg="workspace", annotation=ast.Name(id="FaceTasks", ctx=ast.Load())))
+     overflow = "workspace.count[None] > workspace.tasks.shape[0]"
+     loops = [item for item in node.body if isinstance(item, ast.For)]
+diff --git a/tests/rigid/test_stress.py b/tests/rigid/test_stress.py
+index d9d0efcf..5d721c1e 100644
+--- a/tests/rigid/test_stress.py
++++ b/tests/rigid/test_stress.py
+@@ -25,6 +25,7 @@ from genesis.engine.solvers.rigid.stress.data import StressInfo, StressState
+ from genesis.engine.solvers.rigid.stress.history import StressHistory
+ from genesis.engine.solvers.rigid.stress.model import StressModel
+ from genesis.engine.solvers.rigid.stress.recovery import kernel_accept
++from genesis.engine.solvers.rigid.stress.scatter import create_scatter_workspace, kernel_scatter_faces
+ from genesis.engine.solvers.rigid.stress.solve import kernel_peak
+ from genesis.engine.solvers.rigid.stress.surface import StressSurface, StressSurfaceInfo
+ from genesis.options.rigid_stress import RigidStressOptions
+@@ -412,11 +413,11 @@ def test_native_constrained_pressure_and_invalid_inputs(tmp_path, case):
+ 
+ @pytest.mark.required
+ @pytest.mark.precision("64")
+-@pytest.mark.parametrize("execution", ("serial", "warp", "graph"))
++@pytest.mark.parametrize("execution", ("serial", "warp", "graph", "faces", "faces_overflow", "faces_uncached"))
+ @pytest.mark.parametrize("case", ("batch2048", "batch16384", "batch32768"))
+ def test_native_live_apex_wrench_recovery(tmp_path, execution, case):
+-    if execution == "graph" and gs.backend != gs.cuda:
+-        pytest.skip("The native fused contact graph runs on CUDA.")
++    if execution not in ("serial", "warp") and gs.backend != gs.cuda:
++        pytest.skip("The native graph and face-parallel contact paths run on CUDA.")
+     cooperative = execution != "serial"
+     vertices, tetrahedra, faces, _ = shell_mesh(1, 2, 0.0005)
+     mesh = tmp_path / "shell.npz"
+@@ -479,7 +480,12 @@ def test_native_live_apex_wrench_recovery(tmp_path, execution, case):
+     else:
+         kernel_anchor(float(np.finfo(float).eps), contacts, surface.info)
+         kernel_pressure(contacts, surface.info, cooperative)
+-        kernel_scatter(contacts, state, model.info, surface.info)
++        if execution.startswith("faces"):
++            workspace = create_scatter_workspace(1, 1 if execution == "faces_overflow" else 32)
++            kernel_scatter_faces(contacts, state, model.info, surface.info, workspace, execution != "faces_uncached")
++            assert bool(qd_to_numpy(workspace.overflow_calls)) == (execution == "faces_overflow")
++        else:
++            kernel_scatter(contacts, state, model.info, surface.info)
+     print("apex", cooperative, "status", qd_to_numpy(contacts.status), "iterations", qd_to_numpy(contacts.evaluations))
+     np.testing.assert_array_equal(qd_to_numpy(contacts.status), 0)
+     assert qd_to_numpy(contacts.evaluations).max() <= 110

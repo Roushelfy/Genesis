@@ -62,6 +62,11 @@ pressure scheduling ablation. CUDA warp pressure is the selected default.
 `--full-inverse` disables the exact complete-exterior operator, and
 `--serial-scatter` disables face reduction. `--seed 623001` selects another
 independent varied workload; use the same seed for matched comparisons.
+`--contact-warp-scatter` compares the original cooperative contact scheduling
+against bounded face tasks. `--scatter-tasks-per-env 1` deliberately exercises
+the complete device-side overflow fallback while preserving the contact law,
+samples and final acceptance budgets. The ordinary timing includes that
+fallback, and each repeat records `scatter_overflow_calls`.
 `--uncached-peak` and `--uncached-face-bounds` disable the tested immutable
 geometry reuse variants. `--source-revision` records the declared checkout;
 the benchmark also records exact numerical source hashes and GPU UUID.

@@ -53,6 +53,9 @@ def generate_fallback():
         if isinstance(item, ast.FunctionDef) and item.name == "func_scatter_warp"
     )
     node.name = "func_scatter_fallback"
+    if any(arg.arg == "enabled" for arg in node.args.args):
+        node.args.args = [arg for arg in node.args.args if arg.arg != "enabled"]
+        node.args.defaults = []
     node.args.args.append(ast.arg(arg="workspace", annotation=ast.Name(id="FaceTasks", ctx=ast.Load())))
     overflow = "workspace.count[None] > workspace.tasks.shape[0]"
     loops = [item for item in node.body if isinstance(item, ast.For)]

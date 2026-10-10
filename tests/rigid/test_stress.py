@@ -25,6 +25,7 @@ from genesis.engine.solvers.rigid.stress.data import StressInfo, StressState
 from genesis.engine.solvers.rigid.stress.history import StressHistory
 from genesis.engine.solvers.rigid.stress.model import StressModel
 from genesis.engine.solvers.rigid.stress.recovery import kernel_accept
+from genesis.engine.solvers.rigid.stress.scatter import create_scatter_workspace, kernel_scatter_faces
 from genesis.engine.solvers.rigid.stress.solve import kernel_peak
 from genesis.engine.solvers.rigid.stress.surface import StressSurface, StressSurfaceInfo
 from genesis.options.rigid_stress import RigidStressOptions
@@ -412,11 +413,11 @@ def test_native_constrained_pressure_and_invalid_inputs(tmp_path, case):
 
 @pytest.mark.required
 @pytest.mark.precision("64")
-@pytest.mark.parametrize("execution", ("serial", "warp", "graph"))
+@pytest.mark.parametrize("execution", ("serial", "warp", "graph", "faces", "faces_overflow", "faces_uncached"))
 @pytest.mark.parametrize("case", ("batch2048", "batch16384", "batch32768"))
 def test_native_live_apex_wrench_recovery(tmp_path, execution, case):
-    if execution == "graph" and gs.backend != gs.cuda:
-        pytest.skip("The native fused contact graph runs on CUDA.")
+    if execution not in ("serial", "warp") and gs.backend != gs.cuda:
+        pytest.skip("The native graph and face-parallel contact paths run on CUDA.")
     cooperative = execution != "serial"
     vertices, tetrahedra, faces, _ = shell_mesh(1, 2, 0.0005)
     mesh = tmp_path / "shell.npz"
@@ -479,7 +480,12 @@ def test_native_live_apex_wrench_recovery(tmp_path, execution, case):
     else:
         kernel_anchor(float(np.finfo(float).eps), contacts, surface.info)
         kernel_pressure(contacts, surface.info, cooperative)
-        kernel_scatter(contacts, state, model.info, surface.info)
+        if execution.startswith("faces"):
+            workspace = create_scatter_workspace(1, 1 if execution == "faces_overflow" else 32)
+            kernel_scatter_faces(contacts, state, model.info, surface.info, workspace, execution != "faces_uncached")
+            assert bool(qd_to_numpy(workspace.overflow_calls)) == (execution == "faces_overflow")
+        else:
+            kernel_scatter(contacts, state, model.info, surface.info)
     print("apex", cooperative, "status", qd_to_numpy(contacts.status), "iterations", qd_to_numpy(contacts.evaluations))
     np.testing.assert_array_equal(qd_to_numpy(contacts.status), 0)
     assert qd_to_numpy(contacts.evaluations).max() <= 110

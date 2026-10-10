@@ -43,6 +43,29 @@ actual friction and complete gauge residual checks remain mandatory.
 The oracle retains its independent stopping algorithm. These checks
 select the internal threshold; they do not establish a throughput optimum.
 
+## Bounded native face scheduling checks
+
+The production scatter can schedule complete eligible contact/face tasks
+independently, preserving the same fixed Q10 and local replacement samples.
+Its build-time buffer is bounded. Capacity overflow triggers a complete
+native contact-warp integration on the device. Incomplete task lists never
+contribute partial loads. Wrench checks retain the original 1e-8 budgets.
+
+The integrated v2 source passes 27 CPU cases (12 CUDA-only skips), all
+39 CUDA cases, and 672 independent FP64 full-field oracle snapshots.
+The snapshots cover both seeds, four substeps and forced task overflow.
+The captured B=2048, B=16384 and B=32768 fixtures pass serial, cooperative,
+graph, face, forced-overflow and uncached-face tests. A local-variable
+naming cleanup repeats all 18 CUDA fixture cases successfully.
+
+Two additional v3 every-step audits each validate 67,200 observations:
+normal live recovery with zero overflow, and policy plus full-field output
+with 2096 deliberately forced complete-scatter fallback calls. They include
+contact changes and partial resets. Final full-residual, force/moment and
+friction checks are unchanged. These development checks establish numerical
+and lifecycle correctness. Final large-batch throughput and policy coverage
+remain in progress, as recorded in the optimization ledger.
+
 ## Discrete model diagnosis
 
 The original B=2048, tick 632, environment 1996, slot 1 input has 132 positive
