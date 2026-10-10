@@ -76,5 +76,6 @@ class RigidStressOptions(Options):
     inverse_precision: Literal["64", "32"] = "64"
     surface_inverse: StrictBool = True
     cached_peak: StrictBool = True
+    cached_face_bounds: StrictBool = True
     inverse_corrections: Annotated[int, Field(ge=0, le=8)] = 2
     preconditioner: Literal["diagonal", "block"] = "block"

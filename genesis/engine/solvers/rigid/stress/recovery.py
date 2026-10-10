@@ -12,7 +12,14 @@ import torch
 import genesis as gs
 from genesis.engine.solvers.base_solver import StateChange, Subscriber
 from genesis.utils.array_class import V_VEC, DataItem, DataKind, ErrorCode, iter_data
-from genesis.utils.misc import assign_indexed_tensor, broadcast_tensor, indices_to_mask, qd_to_torch, tensor_to_array
+from genesis.utils.misc import (
+    assign_indexed_tensor,
+    broadcast_tensor,
+    indices_to_mask,
+    qd_to_numpy,
+    qd_to_torch,
+    tensor_to_array,
+)
 
 from .association import kernel_associate
 from .contact import StressContactState, create_contacts, kernel_anchor, kernel_pressure, kernel_scatter
@@ -121,6 +128,7 @@ class RigidStressRecovery:
                 entry.model.info,
                 entry.surface.info,
                 entry.link.stress_options.cooperative_scatter,
+                entry.link.stress_options.cached_face_bounds,
             )
             entry.model.recover(entry.omega, entry.state, entry.link.stress_options, entry.history, surface_load=True)
             kernel_accept(entry.state, entry.contacts, solver._errno)
@@ -133,6 +141,37 @@ class RigidStressRecovery:
             kernel_reset(envs_idx, entry.state)
             if entry.history is not None:
                 entry.history.reset(envs_idx)
+
+    def describe_load_failures(self) -> str:
+        reasons = {
+            1: "invalid input or force outside the supplied unilateral friction cone",
+            2: "force line has no admissible exterior anchor",
+            3: "nonnegative sampled pad fit unresolved after local integration; physical infeasibility is not established",
+            4: "integrated contact force or moment exceeds its preservation budget",
+            5: "constrained pressure fit unresolved",
+        }
+        details = []
+        for entry in self.links:
+            status = qd_to_numpy(entry.contacts.status, transpose=True)
+            failed = np.argwhere(status != 0)
+            if not len(failed):
+                continue
+            radius = qd_to_numpy(entry.contacts.radius, transpose=True)
+            friction = qd_to_numpy(entry.contacts.friction, transpose=True)
+            for env, contact in failed[:8]:
+                code = int(status[env, contact])
+                details.append(
+                    f"link={entry.link.idx}, env={env}, contact={contact}, status={code}: {reasons[code]}; "
+                    f"radius={radius[env, contact]:.9g} m, mu={friction[env, contact]:.9g}"
+                )
+            if len(failed) > 8:
+                details.append(f"{len(failed) - 8} additional current contact failures on this link")
+        if not details:
+            details.append(
+                "No failed contact remains in the current buffers; the error may precede the latest recovery "
+                "or involve incompatible applied rigid loads or mass properties."
+            )
+        return "; ".join(details)
 
     @property
     def data(self) -> Iterator[DataItem]:

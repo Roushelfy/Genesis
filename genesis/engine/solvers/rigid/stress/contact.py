@@ -577,10 +577,11 @@ def kernel_scatter(
     stress_info: StressInfo,
     surface_info: StressSurfaceInfo,
     cooperative: bool = True,
+    cached_bounds: bool = True,
 ):
     if cooperative and gs.backend == gs.cuda:
         kernel_pack_contacts(contact_state)
-        kernel_scatter_warp(contact_state, stress_state, stress_info, surface_info)
+        kernel_scatter_warp(contact_state, stress_state, stress_info, surface_info, cached_bounds)
     else:
         kernel_scatter_serial(contact_state, stress_state, stress_info, surface_info)
 
@@ -591,6 +592,7 @@ def kernel_scatter_warp(
     stress_state: StressState,
     stress_info: StressInfo,
     surface_info: StressSurfaceInfo,
+    cached_bounds: qd.template(),
 ):
     for i_n, i_b in qd.ndrange(stress_state.force.shape[0], stress_state.active.shape[0]):
         stress_state.force[i_n, i_b] = qd.Vector.zero(gs.qd_float, 3)
@@ -606,10 +608,14 @@ def kernel_scatter_warp(
             total = qd.Vector.zero(gs.qd_float, 3)
             moment = qd.Vector.zero(gs.qd_float, 3)
             for i_f in range(surface_info.face_origin.shape[0]):
-                x = surface_info.face_origin[i_f]
-                a = x + surface_info.face_edges[i_f][0, :]
-                b = x + surface_info.face_edges[i_f][1, :]
-                low, high = qd.min(x, a, b), qd.max(x, a, b)
+                low, high = qd.Vector.zero(gs.qd_float, 3), qd.Vector.zero(gs.qd_float, 3)
+                if qd.static(cached_bounds):
+                    low, high = surface_info.face_bounds_low[i_f], surface_info.face_bounds_high[i_f]
+                else:
+                    x = surface_info.face_origin[i_f]
+                    a = x + surface_info.face_edges[i_f][0, :]
+                    b = x + surface_info.face_edges[i_f][1, :]
+                    low, high = qd.min(x, a, b), qd.max(x, a, b)
                 distance = qd.max(low - center, 0.0) + qd.max(center - high, 0.0)
                 if distance.dot(distance) < radius * radius:
                     n_q = surface_info.shape.shape[0]

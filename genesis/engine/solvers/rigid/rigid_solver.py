@@ -1453,7 +1453,10 @@ class RigidSolver(GravityMixin, TimeBasedMixin, KinematicSolver):
         if errno & array_class.ErrorCode.INVALID_ACC_NAN:
             gs.raise_exception("Invalid accelerations causing 'nan'. Please decrease Rigid simulation timestep.")
         if errno & array_class.ErrorCode.INVALID_STRESS_LOAD:
-            gs.raise_exception("A finite stress footprint cannot preserve its contact wrench or friction cone.")
+            assert self.stress_recovery is not None
+            gs.raise_exception(
+                "Native stress contact recovery rejected a load. " + self.stress_recovery.describe_load_failures()
+            )
         if errno & array_class.ErrorCode.INVALID_STRESS_SOLVE:
             gs.raise_exception("Rigid stress recovery did not satisfy the complete equilibrium residual budget.")
 

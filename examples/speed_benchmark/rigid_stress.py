@@ -6,7 +6,9 @@ Set QD_KERNEL_PROFILER=1 for --scope profile. Use separate processes for matched
 import argparse
 import hashlib
 import json
+import os
 import platform
+import sys
 import time
 from dataclasses import asdict
 from pathlib import Path
@@ -111,7 +113,12 @@ def profile(workload: FrankaEgg, repetitions: int) -> dict:
             entry.contacts, entry.surface.info, options.cooperative_pressure
         ),
         "nodal_scatter": lambda: kernel_scatter(
-            entry.contacts, entry.state, entry.model.info, entry.surface.info, options.cooperative_scatter
+            entry.contacts,
+            entry.state,
+            entry.model.info,
+            entry.surface.info,
+            options.cooperative_scatter,
+            options.cached_face_bounds,
         ),
         "inertia_relief_centrifugal": lambda: kernel_balance(entry.omega, entry.state, entry.model.info),
         "rhs_reduction": lambda: kernel_direct_init(entry.state),
@@ -183,12 +190,14 @@ def main() -> None:
     parser.add_argument("--minimum-seconds", type=float, default=10.0)
     parser.add_argument("--varied", action="store_true")
     parser.add_argument("--seed", type=int, default=510000)
+    parser.add_argument("--source-revision", default=os.environ.get("RIGID_STRESS_SOURCE_REVISION", "unrecorded"))
     parser.add_argument("--conditions", type=Path, help="Repeat a frozen condition bank, including controller targets.")
     parser.add_argument("--save-conditions", type=Path, help="Save the constructed condition bank before warmup.")
     parser.add_argument("--serial-solve", action="store_true")
     parser.add_argument("--serial-pressure", action="store_true")
     parser.add_argument("--serial-scatter", action="store_true")
     parser.add_argument("--uncached-peak", action="store_true")
+    parser.add_argument("--uncached-face-bounds", action="store_true")
     parser.add_argument("--method", choices=("auto", "direct", "inverse"), default="auto")
     parser.add_argument("--inverse-precision", choices=("64", "32"), default="64")
     parser.add_argument("--full-inverse", action="store_true", help="Compare the full nodal-load inverse application.")
@@ -217,6 +226,7 @@ def main() -> None:
         surface_inverse=not args.full_inverse,
         cooperative_scatter=not args.serial_scatter,
         cached_peak=not args.uncached_peak,
+        cached_face_bounds=not args.uncached_face_bounds,
     )
     if args.save_conditions is not None:
         workload.save_conditions(args.save_conditions)
@@ -322,12 +332,30 @@ def main() -> None:
             "cooperative_pressure": not args.serial_pressure,
             "cooperative_scatter": not args.serial_scatter,
             "cached_peak": not args.uncached_peak,
+            "cached_face_bounds": not args.uncached_face_bounds,
             "method": args.method,
             "inverse_precision": args.inverse_precision,
             "surface_inverse": not args.full_inverse,
             "history": args.history,
             "host": platform.node(),
+            "slurm_job_id": os.environ.get("SLURM_JOB_ID"),
+            "source_revision": args.source_revision,
+            "arguments": {key: str(value) if isinstance(value, Path) else value for key, value in vars(args).items()},
+            "command": [sys.executable, *sys.argv],
+            "source_sha256": {
+                str(path): hashlib.sha256(path.read_bytes()).hexdigest()
+                for path in sorted(
+                    [
+                        *Path("genesis/engine/solvers/rigid/stress").glob("*.py"),
+                        Path("genesis/engine/solvers/rigid/rigid_solver.py"),
+                        Path("genesis/options/rigid_stress.py"),
+                        Path("examples/rigid/franka_egg_stress.py"),
+                        Path(__file__),
+                    ]
+                )
+            },
             "gpu": torch.cuda.get_device_name(),
+            "gpu_uuid": "GPU-" + str(torch.cuda.get_device_properties(gs.device).uuid),
             "gpu_total_bytes": torch.cuda.get_device_properties(gs.device).total_memory,
             "quadrants": qd.__version__,
             "torch": torch.__version__,
