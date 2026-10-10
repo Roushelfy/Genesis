@@ -1,0 +1,127 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0 -- /mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python
+cachedir: .pytest_cache
+rootdir: /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery
+configfile: pyproject.toml
+plugins: anyio-4.15.1, forked-1.7.5, print-1.2.0, timeout-2.4.0, xdist-3.8.0, quadrants-1.3.3, syrupy-6.1.1
+timeout: 1200.0s
+timeout method: signal
+timeout func_only: False
+[1mcollecting ... [0mcollected 17 items / 11 deselected / 6 selected
+
+tests/rigid/test_stress.py::test_native_finite_pressure_matches_independent_cpu[False] [Genesis 16:12:23] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 16:12:23] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+patch statuses [[0 0 0 0]
+ [0 0 0 0]
+ [0 0 0 0]] evaluations [[0 2 3 3]
+ [0 0 2 2]
+ [0 0 0 2]]
+[32mPASSED[0m[Genesis 16:12:25] Exiting Genesis and caching compiled kernels...
+
+tests/rigid/test_stress.py::test_native_finite_pressure_matches_independent_cpu[True] [Genesis 16:12:26] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 16:12:26] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+patch statuses [[0 0 0 0]
+ [0 0 0 0]
+ [0 0 0 0]] evaluations [[0 2 3 3]
+ [0 0 2 2]
+ [0 0 0 2]]
+[32mPASSED[0m[Genesis 16:12:28] Exiting Genesis and caching compiled kernels...
+
+tests/rigid/test_stress.py::test_native_constrained_pressure_and_invalid_inputs[random] [Genesis 16:12:29] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 16:12:29] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32mPASSED[0m[Genesis 16:12:31] Exiting Genesis and caching compiled kernels...
+
+tests/rigid/test_stress.py::test_native_constrained_pressure_and_invalid_inputs[live_sliding] [Genesis 16:12:31] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 16:12:31] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32mPASSED[0m[Genesis 16:12:33] Exiting Genesis and caching compiled kernels...
+
+tests/rigid/test_stress.py::test_native_live_apex_wrench_recovery[False] [Genesis 16:12:33] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 16:12:33] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[31mFAILED[0m[Genesis 16:12:54] Exiting Genesis and caching compiled kernels...
+
+tests/rigid/test_stress.py::test_native_live_apex_wrench_recovery[True] [Genesis 16:12:54] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 16:12:54] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32mPASSED[0m[Genesis 16:13:10] Exiting Genesis and caching compiled kernels...
+
+
+=================================== FAILURES ===================================
+[31m[1m_________________ test_native_live_apex_wrench_recovery[False] _________________[0m
+
+tmp_path = PosixPath('/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-contact-repair/tmp/pytest-of-zhaofeng/pytest-0/test_native_live_apex_wrench_r0')
+cooperative = False
+
+    [0m[37m@pytest[39;49;00m.mark.required[90m[39;49;00m
+    [37m@pytest[39;49;00m.mark.precision([33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [37m@pytest[39;49;00m.mark.parametrize([33m"[39;49;00m[33mcooperative[39;49;00m[33m"[39;49;00m, ([94mFalse[39;49;00m, [94mTrue[39;49;00m))[90m[39;49;00m
+    [94mdef[39;49;00m[90m [39;49;00m[92mtest_native_live_apex_wrench_recovery[39;49;00m(tmp_path, cooperative):[90m[39;49;00m
+        vertices, tetrahedra, faces, _ = shell_mesh([94m1[39;49;00m, [94m2[39;49;00m, [94m0.0005[39;49;00m)[90m[39;49;00m
+        mesh = tmp_path / [33m"[39;49;00m[33mshell.npz[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)[90m[39;49;00m
+        model = StressModel(RigidStressOptions(mesh=mesh))[90m[39;49;00m
+        surface = StressSurface([94m10[39;49;00m, model.info)[90m[39;49;00m
+        oracle = P2Shell(vertices, tetrahedra, faces, [94m1e10[39;49;00m, [94m0.3[39;49;00m, [94m2000.0[39;49;00m, [94m2[39;49;00m, factor_backend=[33m"[39;49;00m[33mnone[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        mapper = FinitePatchMapper(SurfaceGeometry(oracle, [94m10[39;49;00m), anchor_to_surface=[94mTrue[39;49;00m, surface_traction=[94mTrue[39;49;00m)[90m[39;49;00m
+        [90m# Actual B=2048 rollout, environment 1996, tick 632. Do not widen its footprint to accept it.[39;49;00m[90m[39;49;00m
+        patch = WrenchPatch([90m[39;49;00m
+            np.array([[94m4.0606709579473816e-5[39;49;00m, [94m1.3926954540923124e-5[39;49;00m, [94m0.0299207658748014[39;49;00m]),[90m[39;49;00m
+            np.array([[94m0.004688181349230815[39;49;00m, [94m0.0023709449777518836[39;49;00m, -[94m0.0015963625737377865[39;49;00m]),[90m[39;49;00m
+            [94m0.005998121586384792[39;49;00m,[90m[39;49;00m
+            [94m1.0[39;49;00m,[90m[39;49;00m
+            np.zeros([94m3[39;49;00m),[90m[39;49;00m
+            np.array([[94m0.45061547141681174[39;49;00m, [94m0.1545483800796497[39;49;00m, -[94m0.8792385882879348[39;49;00m]),[90m[39;49;00m
+        )[90m[39;49;00m
+        anchor = mapper.surface_anchor(patch.center_m, patch.force_n)[90m[39;49;00m
+        ids = np.array(mapper.tree.query_ball_point(anchor, patch.radius_m, return_sorted=[94mTrue[39;49;00m))[90m[39;49;00m
+        direction = patch.force_n / np.linalg.norm(patch.force_n)[90m[39;49;00m
+        first = np.cross(direction, np.eye([94m3[39;49;00m)[np.argmin(np.abs(direction))])[90m[39;49;00m
+        first /= np.linalg.norm(first)[90m[39;49;00m
+        transverse = (mapper.positions[ids] - anchor) @ np.stack((first, np.cross(direction, first))).T[90m[39;49;00m
+        operator = np.column_stack((np.ones([96mlen[39;49;00m(ids)), transverse / patch.radius_m))[90m[39;49;00m
+        feasibility = linprog(np.zeros([96mlen[39;49;00m(ids)), A_eq=operator.T, b_eq=[[94m1[39;49;00m, [94m0[39;49;00m, [94m0[39;49;00m], bounds=([94m0[39;49;00m, [94mNone[39;49;00m))[90m[39;49;00m
+        [94massert[39;49;00m feasibility.status == [94m2[39;49;00m[90m[39;49;00m
+        mapped = mapper.map(patch)[90m[39;49;00m
+        [94massert[39;49;00m mapped.diagnostics.minimum_normal_force_n >= -[94m1e-15[39;49;00m[90m[39;49;00m
+        [94massert[39;49;00m mapped.diagnostics.maximum_cone_excess_n < [94m1e-14[39;49;00m[90m[39;49;00m
+        contacts = create_contacts([94m1[39;49;00m, [94m1[39;49;00m, patch.radius_m, cooperative)[90m[39;49;00m
+        state = model.create_state([94m1[39;49;00m)[90m[39;49;00m
+        contacts.position.from_numpy(patch.center_m.reshape(([94m1[39;49;00m, [94m1[39;49;00m, [94m3[39;49;00m)))[90m[39;49;00m
+        contacts.force.from_numpy(patch.force_n.reshape(([94m1[39;49;00m, [94m1[39;49;00m, [94m3[39;49;00m)))[90m[39;49;00m
+        contacts.normal.from_numpy(patch.inward_normal.reshape(([94m1[39;49;00m, [94m1[39;49;00m, [94m3[39;49;00m)))[90m[39;49;00m
+        contacts.friction.fill([94m1.0[39;49;00m)[90m[39;49;00m
+        contacts.valid.fill([94mTrue[39;49;00m)[90m[39;49;00m
+        kernel_anchor([96mfloat[39;49;00m(np.finfo([96mfloat[39;49;00m).eps), contacts, surface.info)[90m[39;49;00m
+        kernel_pressure(contacts, surface.info, cooperative)[90m[39;49;00m
+        kernel_scatter(contacts, state, model.info, surface.info)[90m[39;49;00m
+>       np.testing.assert_array_equal(qd_to_numpy(contacts.status), [94m0[39;49;00m)[90m[39;49;00m
+[1m[31mE       AssertionError: [0m
+[1m[31mE       Arrays are not equal[0m
+[1m[31mE       [0m
+[1m[31mE       Mismatched elements: 1 / 1 (100%)[0m
+[1m[31mE       Max absolute difference among violations: 3[0m
+[1m[31mE       Max relative difference among violations: inf[0m
+[1m[31mE        ACTUAL: array([[3]], dtype=int32)[0m
+[1m[31mE        DESIRED: array(0)[0m
+
+[1m[31mtests/rigid/test_stress.py[0m:300: AssertionError
+[33m=============================== warnings summary ===============================[0m
+tests/rigid/test_stress.py::test_native_finite_pressure_matches_independent_cpu[True]
+tests/rigid/test_stress.py::test_native_finite_pressure_matches_independent_cpu[True]
+tests/rigid/test_stress.py::test_native_constrained_pressure_and_invalid_inputs[random]
+tests/rigid/test_stress.py::test_native_constrained_pressure_and_invalid_inputs[random]
+tests/rigid/test_stress.py::test_native_constrained_pressure_and_invalid_inputs[live_sliding]
+tests/rigid/test_stress.py::test_native_constrained_pressure_and_invalid_inputs[live_sliding]
+tests/rigid/test_stress.py::test_native_live_apex_wrench_recovery[True]
+tests/rigid/test_stress.py::test_native_live_apex_wrench_recovery[True]
+  /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/contact.py:327: SyntaxWarning: You are unrolling more than
+                          32 iterations, so the compile time may be extremely long.
+                          You can use a non-static for loop if you want to decrease the compile time.
+                          You can disable this warning by setting qd.init(unrolling_limit=0).
+    for a, b in qd.static(qd.ndrange(6, 6)):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================================= Failed tests =================================
+tests/rigid/test_stress.py::test_native_live_apex_wrench_recovery[False] - As...
+============================== slowest durations ===============================
+
+(18 durations < 100s hidden.)
+[31m=========== [31m[1m1 failed[0m, [32m5 passed[0m, [33m11 deselected[0m, [33m8 warnings[0m[31m in 48.36s[0m[31m ============[0m

@@ -1,0 +1,108 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0 -- /mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python
+cachedir: .pytest_cache
+rootdir: /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery
+configfile: pyproject.toml
+plugins: anyio-4.15.1, forked-1.7.5, print-1.2.0, timeout-2.4.0, xdist-3.8.0, quadrants-1.3.3, syrupy-6.1.1
+timeout: 1200.0s
+timeout method: signal
+timeout func_only: False
+[1mcollecting ... [0mcollected 17 items / 2 deselected / 15 selected
+
+tests/rigid/test_stress.py::test_native_p2_shared_operators [Genesis 16:26:47] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 16:26:47] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32mPASSED[0m[Genesis 16:26:50] Exiting Genesis and caching compiled kernels...
+
+tests/rigid/test_stress.py::test_native_batched_recovery_against_full_fp64_direct[direct-False-64-2] [Genesis 16:26:53] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 16:26:53] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+native method direct False 64 full residual [0.00000000e+00 4.50251366e-12 6.95293732e-12 6.25453517e-12
+ 6.40478730e-12] relative displacement error [0.00000000e+00 1.80627613e-11 3.67095799e-11 3.99142775e-11
+ 3.52940387e-11] peak absolute error Pa [0.00000000e+00 5.91026037e-08 4.00847057e-07 3.64911102e-07
+ 8.74351826e-07] corrections [0 0 0 0 0] fallbacks [0 0 0 0 0]
+[32mPASSED[0m[Genesis 16:26:55] Exiting Genesis and caching compiled kernels...
+
+tests/rigid/test_stress.py::test_native_batched_recovery_against_full_fp64_direct[direct-True-64-2] [Genesis 16:26:58] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 16:26:58] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+native method direct True 64 full residual [0.00000000e+00 4.50251366e-12 6.95293732e-12 6.25453517e-12
+ 6.40478730e-12] relative displacement error [0.00000000e+00 1.80627613e-11 3.67095799e-11 3.99142775e-11
+ 3.52940387e-11] peak absolute error Pa [0.00000000e+00 5.91026037e-08 4.00847057e-07 3.64911102e-07
+ 8.74351826e-07] corrections [0 0 0 0 0] fallbacks [0 0 0 0 0]
+[32mPASSED[0m[Genesis 16:27:00] Exiting Genesis and caching compiled kernels...
+
+tests/rigid/test_stress.py::test_native_batched_recovery_against_full_fp64_direct[inverse-True-64-2] [Genesis 16:27:03] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 16:27:03] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+native method inverse True 64 full residual [0.00000000e+00 1.61363207e-11 2.00371225e-11 1.80396369e-11
+ 1.63439098e-11] relative displacement error [0.00000000e+00 1.80620776e-11 3.67134942e-11 3.99145441e-11
+ 3.52973995e-11] peak absolute error Pa [0.00000000e+00 6.20202627e-08 4.07977495e-07 3.61069397e-07
+ 8.74446414e-07] corrections [0 0 0 0 0] fallbacks [0 0 0 0 0]
+[32mPASSED[0m[Genesis 16:27:06] Exiting Genesis and caching compiled kernels...
+
+tests/rigid/test_stress.py::test_native_batched_recovery_against_full_fp64_direct[inverse-True-32-2] [Genesis 16:27:09] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 16:27:09] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+native method inverse True 32 full residual [0.00000000e+00 3.86497458e-09 4.69178363e-09 4.91181217e-09
+ 4.33708624e-09] relative displacement error [0.00000000e+00 2.65473671e-11 1.11365097e-11 2.03488220e-11
+ 1.28042674e-11] peak absolute error Pa [0.00000000e+00 4.51422238e-07 6.36457116e-07 1.73378066e-06
+ 1.54890586e-07] corrections [0 2 2 2 2] fallbacks [0 0 0 0 0]
+[32mPASSED[0m[Genesis 16:27:13] Exiting Genesis and caching compiled kernels...
+
+tests/rigid/test_stress.py::test_native_batched_recovery_against_full_fp64_direct[inverse-True-32-0] [Genesis 16:27:15] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 16:27:15] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+native method inverse True 32 full residual [0.00000000e+00 4.50251366e-12 6.95293732e-12 6.25453517e-12
+ 6.40478730e-12] relative displacement error [0.00000000e+00 1.80627613e-11 3.67095799e-11 3.99142775e-11
+ 3.52940387e-11] peak absolute error Pa [0.00000000e+00 5.91026037e-08 4.00847057e-07 3.64911102e-07
+ 8.74351826e-07] corrections [0 0 0 0 0] fallbacks [0 1 1 1 1]
+[32mPASSED[0m[Genesis 16:27:19] Exiting Genesis and caching compiled kernels...
+
+tests/rigid/test_stress.py::test_native_finite_pressure_matches_independent_cpu[False] [Genesis 16:27:22] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 16:27:22] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+patch statuses [[0 0 0 0]
+ [0 0 0 0]
+ [0 0 0 0]] evaluations [[0 0 0 0]
+ [0 0 0 0]
+ [0 0 0 0]]
+[32mPASSED[0m[Genesis 16:27:24] Exiting Genesis and caching compiled kernels...
+
+tests/rigid/test_stress.py::test_native_finite_pressure_matches_independent_cpu[True] [Genesis 16:27:27] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 16:27:27] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+patch statuses [[0 0 0 0]
+ [0 0 0 0]
+ [0 0 0 0]] evaluations [[0 0 0 0]
+ [0 0 0 0]
+ [0 0 0 0]]
+[32mPASSED[0m[Genesis 16:27:29] Exiting Genesis and caching compiled kernels...
+
+tests/rigid/test_stress.py::test_native_constrained_pressure_and_invalid_inputs[random] [Genesis 16:27:32] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 16:27:32] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32mPASSED[0m[Genesis 16:27:34] Exiting Genesis and caching compiled kernels...
+
+tests/rigid/test_stress.py::test_native_constrained_pressure_and_invalid_inputs[live_sliding] [Genesis 16:27:36] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 16:27:36] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32mPASSED[0m[Genesis 16:27:38] Exiting Genesis and caching compiled kernels...
+
+tests/rigid/test_stress.py::test_native_live_apex_wrench_recovery[False] [Genesis 16:27:41] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 16:27:41] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+apex False status [[0]] iterations [[12]]
+[32mPASSED[0m[Genesis 16:27:46] Exiting Genesis and caching compiled kernels...
+
+tests/rigid/test_stress.py::test_native_live_apex_wrench_recovery[True] [Genesis 16:27:49] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 16:27:49] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+apex True status [[0]] iterations [[12]]
+[32mPASSED[0m[Genesis 16:27:54] Exiting Genesis and caching compiled kernels...
+
+tests/rigid/test_stress.py::test_native_pcg_iteration_limit_and_freefall[diagonal] [Genesis 16:27:56] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 16:27:56] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32mPASSED[0m[Genesis 16:27:59] Exiting Genesis and caching compiled kernels...
+
+tests/rigid/test_stress.py::test_native_pcg_iteration_limit_and_freefall[block] [Genesis 16:28:02] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 16:28:02] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32mPASSED[0m[Genesis 16:28:05] Exiting Genesis and caching compiled kernels...
+
+tests/rigid/test_stress.py::test_native_history_reuse_abrupt_load_and_reset [Genesis 16:28:08] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 16:28:08] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32mPASSED[0m[Genesis 16:28:13] Exiting Genesis and caching compiled kernels...
+
+
+============================== slowest durations ===============================
+
+(45 durations < 100s hidden.)
+[32m================= [32m[1m15 passed[0m, [33m2 deselected[0m[32m in 89.11s (0:01:29)[0m[32m ==================[0m
