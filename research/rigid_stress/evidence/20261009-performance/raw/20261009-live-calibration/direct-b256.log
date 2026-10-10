@@ -1,0 +1,42 @@
+[38;5;226m[Genesis] [21:14:53] [WARNING] At least one of the meshes contain many faces (81920). Consider setting 'morph.decimate=True' to speed up collision detection and improve numerical stability.[0m
+[38;5;226m[Genesis] [21:14:54] [WARNING] Beware that SDF pre-processing of mesh (/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261009-live-calibration/assets/egg_outer.obj) having more than 50000 vertices may take a very long time (>10min) and require large RAM allocation (>20Gb). Please either enable convexify or decimation. (see FileMorph options)[0m
+[38;5;226m[Genesis] [21:14:55] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint1`[0m
+[38;5;226m[Genesis] [21:14:55] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint2`[0m
+[38;5;226m[Genesis] [21:14:55] [WARNING] Neutral robot position (qpos0) exceeds joint limits.[0m
+[38;5;226m[Genesis] [21:14:55] [WARNING] Constraint solver time constant should be greater than 2*substep_dt. timeconst is changed from `0.005` to `0.02`). Decrease simulation timestep or increase timeconst to avoid altering the original value.[0m
+[38;5;226m[Genesis] [21:14:57] [WARNING] Filtered out geometry pairs causing self-collision for the neutral configuration (qpos0): (7, 12), (8, 12), (15, 22), (16, 21), (17, 24), (18, 23). Consider tuning Morph option 'decompose_robot_error_threshold' or specify dedicated collision meshes. This behavior can be disabled by setting Morph option 'enable_neutral_collision=True'.[0m
+libEGL warning: failed to open /dev/dri/renderD135: Permission denied
+
+libEGL warning: failed to open /dev/dri/card8: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD134: Permission denied
+
+libEGL warning: failed to open /dev/dri/card7: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD133: Permission denied
+
+libEGL warning: failed to open /dev/dri/card6: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD132: Permission denied
+
+libEGL warning: failed to open /dev/dri/card5: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD131: Permission denied
+
+libEGL warning: failed to open /dev/dri/card4: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD130: Permission denied
+
+libEGL warning: failed to open /dev/dri/card3: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD129: Permission denied
+
+libEGL warning: failed to open /dev/dri/card2: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD128: Permission denied
+
+libEGL warning: failed to open /dev/dri/card1: Permission denied
+
+{"sampled_device_memory_peak_bytes": 76068159488, "device_memory_sample_count": 33268, "device_memory_sample_interval_s": 0.1, "device_memory_accounting": "CUDA device-wide used memory; sampled, includes native/context allocations", "repeat": 0, "scope": "live", "environments": 256, "steps": 1200, "environment_transitions": 307200, "wall_seconds": 3334.4826603643596, "cuda_span_seconds": 3334.4755, "environment_transitions_s": 92.12823435897916, "batch_steps_s": 0.35987591546476233, "policy_transitions": 0, "stress_recoveries": 307200, "reset_environments": 256, "accepted": true, "full_relative_residual_max_including_near_zero": 1.0218914450236885e-05, "full_relative_residual_max_above_absolute_floor": 1.7699459301715576e-10, "full_absolute_residual_max_n": 1.859127025865722e-11, "peak_max_pa": 6233032.701435348, "correction_environment_events": 307200, "fp64_fallback_events": 0, "refinement_events": 0, "torch_peak_allocated_bytes": 55095808, "torch_peak_reserved_bytes": 69206016, "cupy_pool_total_bytes_after_run": 50811507200, "cupy_pool_used_bytes_after_run": 25551953408}
+{"sampled_device_memory_peak_bytes": 76070256640, "device_memory_sample_count": 33182, "device_memory_sample_interval_s": 0.1, "device_memory_accounting": "CUDA device-wide used memory; sampled, includes native/context allocations", "repeat": 1, "scope": "live", "environments": 256, "steps": 1200, "environment_transitions": 307200, "wall_seconds": 3335.6390916728415, "cuda_span_seconds": 3335.6315, "environment_transitions_s": 92.09629446030311, "batch_steps_s": 0.35975115023555904, "policy_transitions": 0, "stress_recoveries": 307200, "reset_environments": 256, "accepted": true, "full_relative_residual_max_including_near_zero": 1.0218914450236881e-05, "full_relative_residual_max_above_absolute_floor": 1.769839867809946e-10, "full_absolute_residual_max_n": 1.8593881198381096e-11, "peak_max_pa": 6233032.701435148, "correction_environment_events": 307200, "fp64_fallback_events": 0, "refinement_events": 0, "torch_peak_allocated_bytes": 55093760, "torch_peak_reserved_bytes": 69206016, "cupy_pool_total_bytes_after_run": 50811507200, "cupy_pool_used_bytes_after_run": 25551953408}
+{"sampled_device_memory_peak_bytes": 76070256640, "device_memory_sample_count": 33270, "device_memory_sample_interval_s": 0.1, "device_memory_accounting": "CUDA device-wide used memory; sampled, includes native/context allocations", "repeat": 2, "scope": "live", "environments": 256, "steps": 1200, "environment_transitions": 307200, "wall_seconds": 3334.6439677351154, "cuda_span_seconds": 3334.63675, "environment_transitions_s": 92.1237778222692, "batch_steps_s": 0.3598585071182391, "policy_transitions": 0, "stress_recoveries": 307200, "reset_environments": 256, "accepted": true, "full_relative_residual_max_including_near_zero": 1.0218914450236883e-05, "full_relative_residual_max_above_absolute_floor": 1.7696462448857204e-10, "full_absolute_residual_max_n": 1.858439158327435e-11, "peak_max_pa": 6233032.701434667, "correction_environment_events": 307200, "fp64_fallback_events": 0, "refinement_events": 0, "torch_peak_allocated_bytes": 55093760, "torch_peak_reserved_bytes": 69206016, "cupy_pool_total_bytes_after_run": 50811507200, "cupy_pool_used_bytes_after_run": 25551953408}
