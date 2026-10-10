@@ -21,6 +21,11 @@ def func_precondition(i_n: int, residual: qd.types.vector(3), stress_info: Stres
 
 @qd.kernel(graph=True)
 def kernel_balance(omega: qd.Tensor, stress_state: StressState, stress_info: StressInfo):
+    func_balance(omega, stress_state, stress_info)
+
+
+@qd.func
+def func_balance(omega: qd.Tensor, stress_state: StressState, stress_info: StressInfo):
     for i_b in range(stress_state.active.shape[0]):
         stress_state.wrench[i_b] = qd.Vector.zero(gs.qd_float, 6)
     for i_n, i_b in qd.ndrange(stress_info.vertices.shape[0], stress_state.active.shape[0]):
@@ -38,6 +43,11 @@ def kernel_balance(omega: qd.Tensor, stress_state: StressState, stress_info: Str
 
 @qd.kernel(graph=True)
 def kernel_direct_init(stress_state: StressState):
+    func_direct_init(stress_state)
+
+
+@qd.func
+def func_direct_init(stress_state: StressState):
     for i_b in range(stress_state.active.shape[0]):
         stress_state.valid[i_b] = True
         stress_state.iterations[i_b] = 1
@@ -166,6 +176,18 @@ def kernel_full_residual(
     stress_info: StressInfo,
     only_active: qd.template(),
 ):
+    func_full_residual(young, tolerance, absolute_tolerance, stress_state, stress_info, only_active)
+
+
+@qd.func
+def func_full_residual(
+    young: float,
+    tolerance: float,
+    absolute_tolerance: float,
+    stress_state: StressState,
+    stress_info: StressInfo,
+    only_active: qd.template(),
+):
     for i_b in range(stress_state.active.shape[0]):
         if qd.static(not only_active) or stress_state.active[i_b]:
             stress_state.residual_norm_squared[i_b] = 0.0
@@ -190,12 +212,36 @@ def kernel_full_residual(
 
 
 def kernel_peak(young: float, poisson: float, stress_state: StressState, stress_info: StressInfo, cached: bool = True):
-    kernel_peak_impl(young, poisson, stress_state, stress_info, cached and gs.backend == gs.cuda)
+    kernel_peak_impl(
+        young,
+        poisson,
+        stress_state,
+        stress_info,
+        cached and gs.backend == gs.cuda,
+        stress_state.stress_tensor.shape[0] > 0,
+    )
 
 
 @qd.kernel(graph=True)
 def kernel_peak_impl(
-    young: float, poisson: float, stress_state: StressState, stress_info: StressInfo, cached: qd.template()
+    young: float,
+    poisson: float,
+    stress_state: StressState,
+    stress_info: StressInfo,
+    cached: qd.template(),
+    full: qd.template(),
+):
+    func_peak_impl(young, poisson, stress_state, stress_info, cached, full)
+
+
+@qd.func
+def func_peak_impl(
+    young: float,
+    poisson: float,
+    stress_state: StressState,
+    stress_info: StressInfo,
+    cached: qd.template(),
+    full: qd.template() = False,
 ):
     for i_b in range(stress_state.active.shape[0]):
         stress_state.peak[i_b] = 0.0
@@ -223,6 +269,14 @@ def kernel_peak_impl(
                 (sigma[0, 0] - sigma[1, 1]) ** 2 + (sigma[1, 1] - sigma[2, 2]) ** 2 + (sigma[2, 2] - sigma[0, 0]) ** 2
             )
             value += 3.0 * (sigma[0, 1] ** 2 + sigma[0, 2] ** 2 + sigma[1, 2] ** 2)
+            if qd.static(full):
+                components = qd.Vector([sigma[0, 0], sigma[1, 1], sigma[2, 2], sigma[0, 1], sigma[0, 2], sigma[1, 2]])
+                von_mises = qd.sqrt(value)
+                if not stress_state.valid[i_b]:
+                    components = qd.Vector([float("nan") for _ in qd.static(range(6))])
+                    von_mises = float("nan")
+                stress_state.stress_tensor[i_e, i_corner, i_b] = components
+                stress_state.von_mises[i_e, i_corner, i_b] = qd.Vector([von_mises])
             peak_squared = qd.max(peak_squared, value)
         qd.atomic_max(stress_state.peak[i_b], qd.sqrt(peak_squared))
     for i_b in range(stress_state.active.shape[0]):

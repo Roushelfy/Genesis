@@ -50,20 +50,37 @@ ordinary geometry/dynamics notices: stress peaks, displacement and history
 are invalidated for all restored environments. The next physical step
 recomputes the observation. A saved peak is not a valid restored observation.
 
-## Required extension: build-time output selection
+## Build-time output selection
 
-The current API returns the maximum only. The user requires a pre-build
-`RigidStressOptions` setting selecting `"max"` (default) or `"full"`;
-the proposed option name is `output_mode`. This is a pending implementation
-requirement, not an already available constructor argument.
+Set `RigidStressOptions(output_mode="full", ...)` before `scene.build()` to
+enable `tensor_pa, von_mises_pa = link.get_stress_field(copy=False)`.
+The default `output_mode="max"` keeps the existing maximum observation,
+allocates no full-field storage and compiles out full-field writes.
+Reconfiguring a built link or changing its output mode requires rebuilding.
+Links with different output modes can share the same immutable operators.
 
-Full mode must expose the complete device-side stress tensor and von Mises
-field, with documented sampling/layout/frame, while preserving
-`get_max_stress()`. Max mode must avoid full-field buffers and writes.
-Specify last-recovery field timing separately from the existing
-scene-step maximum across substeps. Follow
-[OUTPUT_MODES.md](OUTPUT_MODES.md) for lifecycle, numerical and performance
-acceptance.
+The returned layouts are `[B, n_tets, 4, 6]` and `[B, n_tets, 4]`, or
+`[n_tets, 4, 6]` and `[n_tets, 4]` for an unbatched scene. Tensor components
+are `xx, yy, zz, xy, xz, yz` in Pa, in the **authored link frame**. Tetrahedra
+and their four corners follow the NPZ connectivity order. These are all
+unaveraged affine-P2 corner stresses, determining the entire affine tensor
+field in each element; duplicated shared corners intentionally retain their
+element stresses. Device views may be strided; `copy=False` views are read-only
+and change when the next recovery writes their buffers.
+
+The field describes the latest physical recovery substep. Its von Mises
+maximum equals the maximum-only result for that recovered state. With
+multiple substeps, `get_max_stress()` retains the temporal maximum over the
+scene step, which may exceed the latest field maximum. Before first recovery,
+after reset/restoration or following an invalid recovery, full fields contain
+NaNs. A partial reset invalidates only its selected environments. Observations
+are recomputed on the next physical step; checkpointed fields do not become
+valid merely by restoring a checkpoint. The level-1 FP64 tensor plus von
+Mises storage is 107,520 bytes per environment, versus zero in max mode.
+
+The same corner scan computes both modes in Quadrants. Full mode changes
+observation writes, not loads, displacement, equilibrium budgets or rigid
+motion. See [OUTPUT_MODES.md](OUTPUT_MODES.md) for acceptance requirements.
 
 ## Model and errors
 
@@ -135,6 +152,12 @@ is discarded. Mutable lists belong to each link's scratch state and are
 rebuilt on every recovery, including after reset or checkpoint restoration.
 CPU keeps the dense operator path. `--dense-surface-loads` measures its dense
 CUDA ablation, with the same model and acceptance budgets.
+
+`fused_pipeline=True` captures the serial association, pressure, scatter,
+complete solve/residual/peak and acceptance stages in one native CUDA graph
+when cooperative exterior inverse recovery is available without load history.
+Both output modes use it. Other configurations retain the independently
+callable native passes. `--unfused-pipeline` supplies the matched ablation.
 
 `cooperative_scatter=True` reduces integration-point loads per face before
 node accumulation on CUDA, preserving all eligible Q10 and local retry

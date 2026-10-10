@@ -235,12 +235,24 @@ def kernel_solve_cooperative(
     n_nodes: qd.template(),
     only_failed: qd.template(),
 ):
+    func_solve_cooperative(young, stress_state, stress_info, factor_info, n_nodes, only_failed)
+
+
+@qd.func
+def func_solve_cooperative(
+    young: float,
+    stress_state: StressState,
+    stress_info: StressInfo,
+    factor_info: StressFactorInfo,
+    n_nodes: qd.template(),
+    only_failed: qd.template(),
+):
     qd.loop_config(block_dim=32)
     for i_thread in range(stress_state.active.shape[0] * 32):
         lane = i_thread % 32
         i_b = i_thread // 32
         if qd.static(not only_failed) or not stress_state.valid[i_b]:
-            work = qd.simt.block.SharedArray((n_nodes, 3), gs.qd_float)
+            sh_work = qd.simt.block.SharedArray((n_nodes, 3), gs.qd_float)
             for i in range(factor_info.order.shape[0]):
                 start, end = factor_info.row_start[i], factor_info.row_start[i + 1]
                 product = qd.Vector.zero(gs.qd_float, 3)
@@ -248,7 +260,7 @@ def kernel_solve_cooperative(
                     entry = start + 32 * chunk + lane
                     if entry < end:
                         j = factor_info.columns[entry]
-                        vector = qd.Vector([work[j, a] for a in qd.static(range(3))])
+                        vector = qd.Vector([sh_work[j, a] for a in qd.static(range(3))])
                         product += factor_info.lower[entry] @ vector
                 for a in qd.static(range(3)):
                     product[a] = qd.simt.subgroup.reduce_all_add(product[a])
@@ -256,15 +268,15 @@ def kernel_solve_cooperative(
                     node = factor_info.order[i]
                     value = stress_state.rhs[node, i_b] * stress_info.is_free[node] / young - product
                     for a in qd.static(range(3)):
-                        work[i, a] = value[a]
+                        sh_work[i, a] = value[a]
                 qd.simt.subgroup.sync()
             for chunk in range((factor_info.order.shape[0] + 31) // 32):
                 i = 32 * chunk + lane
                 if i < factor_info.order.shape[0]:
-                    vector = qd.Vector([work[i, a] for a in qd.static(range(3))])
+                    vector = qd.Vector([sh_work[i, a] for a in qd.static(range(3))])
                     value = factor_info.diagonal_inverse[i] @ vector
                     for a in qd.static(range(3)):
-                        work[i, a] = value[a]
+                        sh_work[i, a] = value[a]
             qd.simt.subgroup.sync()
             for reverse in range(factor_info.order.shape[0]):
                 i = factor_info.order.shape[0] - reverse - 1
@@ -275,19 +287,19 @@ def kernel_solve_cooperative(
                     if entry < end:
                         j = factor_info.rows[entry]
                         lower_entry = factor_info.transpose_entries[entry]
-                        vector = qd.Vector([work[j, a] for a in qd.static(range(3))])
+                        vector = qd.Vector([sh_work[j, a] for a in qd.static(range(3))])
                         product += factor_info.lower[lower_entry].transpose() @ vector
                 for a in qd.static(range(3)):
                     product[a] = qd.simt.subgroup.reduce_all_add(product[a])
                 if lane == 0:
                     for a in qd.static(range(3)):
-                        work[i, a] -= product[a]
+                        sh_work[i, a] -= product[a]
                 qd.simt.subgroup.sync()
             for chunk in range((factor_info.order.shape[0] + 31) // 32):
                 i = 32 * chunk + lane
                 if i < factor_info.order.shape[0]:
                     node = factor_info.order[i]
-                    stress_state.displacement[node, i_b] = qd.Vector([work[i, a] for a in qd.static(range(3))])
+                    stress_state.displacement[node, i_b] = qd.Vector([sh_work[i, a] for a in qd.static(range(3))])
     for i_b in range(stress_state.active.shape[0]):
         if qd.static(only_failed):
             stress_state.active[i_b] = gs.qd_int(not stress_state.valid[i_b])

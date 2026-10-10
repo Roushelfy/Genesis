@@ -10,13 +10,102 @@ import genesis as gs
 from genesis.engine.solvers.rigid.stress.contact import create_contacts, kernel_anchor, kernel_pressure, kernel_scatter
 from genesis.engine.solvers.rigid.stress.history import StressHistory
 from genesis.engine.solvers.rigid.stress.model import StressModel
+from genesis.engine.solvers.rigid.stress.recovery import kernel_accept
+from genesis.engine.solvers.rigid.stress.solve import kernel_peak
 from genesis.engine.solvers.rigid.stress.surface import StressSurface
 from genesis.options.rigid_stress import RigidStressOptions
 from genesis.utils.array_class import V_VEC
 from genesis.utils.misc import qd_to_numpy, tensor_to_array
+from research.rigid_stress.field_cpu import stress_field
 from research.rigid_stress.mechanics import P2Shell, SurfaceGeometry, shell_mesh
 from research.rigid_stress.peak_cpu import P2Peak
 from research.rigid_stress.wrench import FinitePatchMapper, WrenchPatch
+
+
+@pytest.mark.required
+@pytest.mark.precision("64")
+def test_native_full_field_same_state_and_invalid_solve(tmp_path):
+    vertices, tetrahedra, faces, _ = shell_mesh(1, 2, 0.0005)
+    mesh = tmp_path / "shell.npz"
+    np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)
+    model = StressModel(RigidStressOptions(mesh=mesh))
+    maximum = model.create_state(3)
+    complete = model.create_state(3, "full")
+    assert maximum.stress_tensor.shape[0] == maximum.von_mises.shape[0] == 0
+    random = np.random.default_rng(10102026)
+    forces = random.normal(size=(model.info.vertices.shape[0], 3, 3)) * 1e-4
+    omega = V_VEC(3, dtype=gs.qd_float, shape=(3,))
+    omega.from_numpy(np.array([[0.2, -0.3, 0.4], [0.8, 0.1, -0.5], [-0.6, 0.9, 0.2]]))
+    for state in (maximum, complete):
+        state.force.from_numpy(forces)
+        model.recover(omega, state)
+        assert qd_to_numpy(state.valid).all()
+    # Separate CUDA load reductions may differ by rounding. Compare output modes on one identical recovered state.
+    complete.displacement.from_numpy(qd_to_numpy(maximum.displacement))
+    kernel_peak(1e10, 0.3, complete, model.info)
+    np.testing.assert_array_equal(qd_to_numpy(maximum.peak), qd_to_numpy(complete.peak))
+    tensor = qd_to_numpy(complete.stress_tensor, transpose=True)
+    vm = qd_to_numpy(complete.von_mises, transpose=True)[..., 0]
+    np.testing.assert_array_equal(vm.max(axis=(1, 2)), qd_to_numpy(maximum.peak))
+    oracle = P2Shell(vertices, tetrahedra, faces, 1e10, 0.3, 2000.0, 2, factor_backend="none")
+    free = np.setdiff1d(np.arange(oracle.ndof), qd_to_numpy(model.info.pins))
+    rhs = qd_to_numpy(complete.rhs, transpose=True).reshape((3, -1)).T
+    reference = np.zeros_like(rhs)
+    reference[free] = splu(oracle.k[free][:, free].tocsc()).solve(rhs[free])
+    for i_b in range(3):
+        expected_tensor, expected_vm = stress_field(oracle.glambda, oracle.elements, reference[:, i_b], 1e10, 0.3)
+        np.testing.assert_allclose(tensor[i_b], expected_tensor, rtol=2e-9, atol=2e-6)
+        np.testing.assert_allclose(vm[i_b], expected_vm, rtol=2e-9, atol=2e-6)
+    contacts = create_contacts(1, 3, 0.006)
+    contacts.valid.fill(False)
+    complete.valid.from_numpy(np.array([True, False, True]))
+    from genesis.utils.array_class import V
+
+    errno = V(dtype=gs.qd_int, shape=(3,))
+    errno.fill(0)
+    kernel_accept(complete, contacts, errno)
+    np.testing.assert_array_equal(qd_to_numpy(complete.stress_tensor, transpose=True)[[0, 2]], tensor[[0, 2]])
+    assert np.isnan(qd_to_numpy(complete.stress_tensor, transpose=True)[1]).all()
+    assert np.isnan(qd_to_numpy(complete.von_mises, transpose=True)[1]).all()
+    assert qd_to_numpy(errno)[1] != 0
+    np.testing.assert_array_equal(qd_to_numpy(complete.invalid_steps), [0, 1, 0])
+    kernel_accept(complete, contacts, errno)
+    np.testing.assert_array_equal(qd_to_numpy(complete.invalid_steps), [0, 1, 0])
+
+
+@pytest.mark.required
+@pytest.mark.precision("64")
+def test_native_full_field_unbatched_shared_operator(tmp_path):
+    vertices, tetrahedra, faces, _ = shell_mesh(1, 2, 0.0005)
+    mesh = tmp_path / "shell.npz"
+    np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)
+    collision = tmp_path / "shell.obj"
+    trimesh.Trimesh(vertices=vertices, faces=faces, process=False).export(collision)
+    scene = gs.Scene(show_viewer=False)
+    maximum = scene.add_entity(gs.morphs.Mesh(file=collision, pos=(-0.1, 0, 1), convexify=True, decimate=False))
+    complete = scene.add_entity(gs.morphs.Mesh(file=collision, pos=(0.1, 0, 1), convexify=True, decimate=False))
+    maximum.base_link.configure_stress_recovery(RigidStressOptions(mesh=mesh))
+    complete.base_link.configure_stress_recovery(RigidStressOptions(mesh=mesh, output_mode="full"))
+    scene.build()
+    entries = scene.rigid_solver.stress_recovery.links
+    assert entries[0].model is entries[1].model
+    assert entries[0].state.stress_tensor.shape[0] == 0
+    tensor, vm = complete.base_link.get_stress_field(copy=False)
+    assert tensor.shape == (len(tetrahedra), 4, 6) and vm.shape == (len(tetrahedra), 4)
+    assert np.isnan(tensor_to_array(tensor)).all()
+    scene.step()
+    scene.rigid_solver.check_errno()
+    np.testing.assert_array_equal(tensor_to_array(vm), 0.0)
+    np.testing.assert_array_equal(tensor_to_array(tensor), 0.0)
+    assert complete.base_link.get_stress_field(copy=False)[0].data_ptr() == tensor.data_ptr()
+    assert complete.base_link.get_stress_field(copy=True)[0].data_ptr() != tensor.data_ptr()
+    scene.reset()
+    assert np.isnan(tensor_to_array(tensor)).all()
+    with pytest.raises(gs.GenesisException, match="before building"):
+        complete.base_link.configure_stress_recovery(RigidStressOptions(mesh=mesh))
+    complete.base_link.stress_options.output_mode = "max"
+    with pytest.raises(gs.GenesisException, match="rebuilding"):
+        scene.step()
 
 
 @pytest.mark.required
@@ -394,7 +483,8 @@ def test_native_pcg_iteration_limit_and_freefall(tmp_path, preconditioner):
 @pytest.mark.required
 @pytest.mark.precision("64")
 @pytest.mark.parametrize("substeps", (1, 4))
-def test_native_rigid_lifecycle_and_partial_reset(tmp_path, substeps, monkeypatch):
+@pytest.mark.parametrize("output_mode", ("max", "full"))
+def test_native_rigid_lifecycle_and_partial_reset(tmp_path, substeps, output_mode, monkeypatch):
     vertices, tetrahedra, faces, _ = shell_mesh(1, 2, 0.0005)
     mesh = tmp_path / "shell.npz"
     np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)
@@ -413,7 +503,11 @@ def test_native_rigid_lifecycle_and_partial_reset(tmp_path, substeps, monkeypatc
     scene.add_entity(gs.morphs.Plane())
     egg = scene.add_entity(gs.morphs.Mesh(file=collision, pos=(0, 0, 0.031), convexify=True, decimate=False))
     link = egg.base_link
-    link.configure_stress_recovery(RigidStressOptions(mesh=mesh, tolerance=1e-7, history_size=4))
+    link.configure_stress_recovery(
+        RigidStressOptions(
+            mesh=mesh, tolerance=1e-7, history_size=4 if output_mode == "max" else 0, output_mode=output_mode
+        )
+    )
     scene.build(n_envs=3)
     assert not scene._pre_substep_callbacks and not scene._post_substep_callbacks
     egg.set_pos(np.array([[0.0, 0.0, 0.031], [0.0, 0.0, 0.045], [0.0, 0.0, 0.061]]))
@@ -489,6 +583,27 @@ def test_native_rigid_lifecycle_and_partial_reset(tmp_path, substeps, monkeypatc
     expected_peak = np.array([scan(displacement[:, i_b])[0] for i_b in range(3)])
     np.testing.assert_allclose(qd_to_numpy(entry.state.peak), expected_peak, rtol=1e-4, atol=1e-3)
     print("actual rotated contacts substeps", substeps, "peak error Pa", qd_to_numpy(entry.state.peak) - expected_peak)
+    before_field = None
+    if output_mode == "full":
+        field, vm = link.get_stress_field(copy=False)
+        assert field.shape == (3, len(tetrahedra), 4, 6)
+        assert vm.shape == (3, len(tetrahedra), 4)
+        before_field = (tensor_to_array(field).copy(), tensor_to_array(vm).copy())
+        for i_b in range(3):
+            expected_tensor, expected_vm = stress_field(
+                oracle.glambda, oracle.elements, displacement[:, i_b], 1e10, 0.3
+            )
+            np.testing.assert_allclose(before_field[0][i_b], expected_tensor, rtol=1e-4, atol=1e-3)
+            np.testing.assert_allclose(before_field[1][i_b], expected_vm, rtol=1e-4, atol=1e-3)
+        np.testing.assert_allclose(before_field[1].max(axis=(1, 2)), qd_to_numpy(entry.state.peak), rtol=2e-15)
+        if substeps == 1:
+            np.testing.assert_array_equal(before_field[1].max(axis=(1, 2)), tensor_to_array(link.get_max_stress()))
+        else:
+            assert (tensor_to_array(link.get_max_stress()) >= before_field[1].max(axis=(1, 2))).all()
+    else:
+        assert entry.state.stress_tensor.shape[0] == entry.state.von_mises.shape[0] == 0
+        with pytest.raises(gs.GenesisException, match="output_mode='full'"):
+            link.get_stress_field()
     link.set_stress_contact_radius(np.array([[0.004], [0.008]]), envs_idx=[0, 2])
     radius = qd_to_numpy(entry.contacts.radius, transpose=True)
     np.testing.assert_array_equal(radius[0], 0.004)
@@ -500,7 +615,7 @@ def test_native_rigid_lifecycle_and_partial_reset(tmp_path, substeps, monkeypatc
         np.testing.assert_array_equal(qd_to_numpy(entry.contacts.radius, transpose=True)[1], 0.007)
     before_u = qd_to_numpy(entry.state.displacement, transpose=True, copy=True)
     before_peak = tensor_to_array(link.get_max_stress())
-    before_count = qd_to_numpy(entry.history.state.count, copy=True)
+    before_count = qd_to_numpy(entry.history.state.count, copy=True) if entry.history is not None else None
     checkpoint = scene.rigid_solver.__getstate__()
     assert checkpoint.configs["stress.0.options"].mesh == str(mesh.resolve())
     json.dumps(vars(checkpoint.configs["stress.0.options"]))
@@ -511,14 +626,23 @@ def test_native_rigid_lifecycle_and_partial_reset(tmp_path, substeps, monkeypatc
     np.testing.assert_array_equal(after_peak[[0, 2]], before_peak[[0, 2]])
     np.testing.assert_array_equal(after_u[1], 0.0)
     assert after_peak[1] == 0.0
-    after_count = qd_to_numpy(entry.history.state.count)
-    np.testing.assert_array_equal(after_count[[0, 2]], before_count[[0, 2]])
-    assert after_count[1] == 0
+    if entry.history is not None:
+        after_count = qd_to_numpy(entry.history.state.count)
+        np.testing.assert_array_equal(after_count[[0, 2]], before_count[[0, 2]])
+        assert after_count[1] == 0
+    if before_field is not None:
+        for actual, previous in zip(link.get_stress_field(copy=False), before_field):
+            actual = tensor_to_array(actual)
+            np.testing.assert_array_equal(actual[[0, 2]], previous[[0, 2]])
+            assert np.isnan(actual[1]).all()
     scene.rigid_solver.__setstate__(checkpoint)
     # Restoring state broadcasts the ordinary geometry/dynamics notices, invalidating derived observations.
     np.testing.assert_array_equal(tensor_to_array(checkpoint.arrays["stress.0.state.step_peak"]), before_peak)
     np.testing.assert_array_equal(tensor_to_array(link.get_max_stress()), 0.0)
-    np.testing.assert_array_equal(qd_to_numpy(entry.history.state.count), 0)
+    if entry.history is not None:
+        np.testing.assert_array_equal(qd_to_numpy(entry.history.state.count), 0)
+    if before_field is not None:
+        assert all(np.isnan(tensor_to_array(value)).all() for value in link.get_stress_field(copy=False))
     with pytest.raises(gs.GenesisException, match="fixed link mass"):
         link.set_mass(0.01)
     with pytest.raises(gs.GenesisException, match="finite surface loads"):

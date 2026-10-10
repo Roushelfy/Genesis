@@ -59,6 +59,10 @@ class StressState:
     peak: qd.Tensor
     step_peak: qd.Tensor = of_kind(DataKind.DERIVED)  # noqa: RUF009 - typed array metadata
     step_valid: qd.Tensor = of_kind(DataKind.DERIVED)  # noqa: RUF009 - typed array metadata
+    stress_tensor: qd.Tensor = of_kind(DataKind.DERIVED)  # noqa: RUF009 - typed array metadata
+    von_mises: qd.Tensor = of_kind(DataKind.DERIVED)  # noqa: RUF009 - typed array metadata
     valid: qd.Tensor
     corrections: qd.Tensor
     fallbacks: qd.Tensor
+    invalid_steps: qd.Tensor
+    invalid_reported: qd.Tensor

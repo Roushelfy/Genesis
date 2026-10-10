@@ -44,6 +44,10 @@ class RigidStressOptions(Options):
     ``packed_surface_loads`` refreshes an exact list of nonzero boundary nodes
     on the device before applying that operator. It skips only exactly zero
     vectors and preserves node order. Disable it to measure dense application.
+    ``fused_pipeline`` captures the serial CUDA association, contact fit,
+    complete solve/residual/peak and acceptance passes in one native graph
+    for cooperative exterior inverse recovery without load history. Other
+    configurations retain the independently callable native passes.
     CUDA meshes up to 1,024 P2 nodes use a cooperative warp solve when
     ``cooperative_solve`` is enabled; other cases use the serial native path.
     ``method="inverse"`` explicitly requests the inverse and rejects an
@@ -58,9 +62,16 @@ class RigidStressOptions(Options):
     ``history_size=4`` enables a checked four-column load/displacement
     predictor per environment. The default zero avoids its extra memory
     and basis maintenance cost on changing-contact workloads.
+
+    ``output_mode="max"`` stores only the global von Mises maximum.
+    ``output_mode="full"`` also stores the authored-frame symmetric stress
+    tensor and von Mises value at all four corners of every tetrahedron.
+    Full fields describe the latest recovery substep. Select the mode before
+    building the scene; changing it requires rebuilding.
     """
 
     mesh: PathType
+    output_mode: Literal["max", "full"] = "max"
     young: PositiveFloat = 1e10
     poisson: Annotated[ValidFloat, Field(gt=-1.0, lt=0.5)] = 0.3
     density: PositiveFloat = 2000.0
@@ -79,6 +90,7 @@ class RigidStressOptions(Options):
     inverse_precision: Literal["64", "32"] = "64"
     surface_inverse: StrictBool = True
     packed_surface_loads: StrictBool = True
+    fused_pipeline: StrictBool = True
     cached_peak: StrictBool = True
     cached_face_bounds: StrictBool = True
     inverse_corrections: Annotated[int, Field(ge=0, le=8)] = 2

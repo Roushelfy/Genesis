@@ -478,6 +478,23 @@ class RigidLink(KinematicLink):
         return recovery.get_peak(self.idx, envs_idx, copy=copy)
 
     @gs.assert_built
+    def get_stress_field(self, envs_idx=None, *, copy: bool = True) -> tuple[torch.Tensor, torch.Tensor]:
+        """Return the latest full stress snapshot in Pa, requiring pre-build ``output_mode='full'``.
+
+        Returns tensors shaped ``[B, n_tets, 4, 6]`` and von Mises values
+        ``[B, n_tets, 4]`` (without B for unbatched scenes). Corner order is
+        mesh tetrahedron vertex order; components are xx, yy, zz, xy, xz, yz
+        in the authored link frame. Fields are NaN before recovery or after
+        reset, restore or invalid recovery. ``copy=False`` aliases read-only
+        observation buffers. Fields describe the last physical substep,
+        while ``get_max_stress`` aggregates all substeps of the scene step.
+        """
+        recovery = self._solver.stress_recovery
+        if recovery is None:
+            gs.raise_exception("Stress recovery is not enabled for this link.")
+        return recovery.get_field(self.idx, envs_idx, copy=copy)
+
+    @gs.assert_built
     def set_stress_contact_radius(self, radius, envs_idx=None) -> None:
         """Set finite pressure radii in metres, per environment or sorted rigid contact slot."""
         recovery = self._solver.stress_recovery

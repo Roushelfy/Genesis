@@ -7,6 +7,7 @@ repository root with Genesis and its regular dependencies installed:
 
 ```bash
 python examples/rigid/franka_egg_stress.py --envs 8 --steps 600
+python examples/rigid/franka_egg_stress.py --envs 8 --steps 600 --output-mode full
 python -m pytest tests/rigid/test_stress.py --backend gpu -q
 QD_KERNEL_PROFILER=1 python examples/speed_benchmark/rigid_stress.py \
     --scope profile --envs 1024 --varied --steps 100 --warmup 900 \
@@ -24,6 +25,32 @@ full-shell level 1, 2,430 DOFs. These are numerical and
 performance-development meshes, without a physical convergence claim.
 Default throughput measurements use at least 1,200 steps, three repeats and
 ten seconds per repeat. Kernel profiling is a separate intrusive pass.
+
+`--output-mode full` additionally writes all tetrahedral corner tensors and
+von Mises values; the default `max` allocates no complete field. Both modes
+retain the same complete load and residual budgets. `--unfused-pipeline`
+compares separate native passes. The policy benchmark defaults to FP32
+inference, with identical seeded weights and a declared 1e-9 rad control
+error budget against an FP64 reference during warmup. `--policy-precision 64`
+supplies its matched ablation; all stress arithmetic remains Quadrants FP64.
+
+The `recovery` timing scope repeatedly processes a frozen actual snapshot;
+it is a kernel diagnostic and omits changing rigid trajectories. Supplement
+it with synchronized stress-stage costs on a complete changing trajectory:
+
+```bash
+python -m research.rigid_stress.native_recovery_trajectory_profile \
+    --envs 1024 --seed 510000 --warmup 900 --steps 2400 --repetitions 3 \
+    --output-mode max --output "$RIGID_STRESS_DATA_ROOT/runs/native/dynamic-recovery-max.json"
+python -m research.rigid_stress.native_trajectory_oracle \
+    --envs 32 --steps 2400 --seed 623001 --output-mode full \
+    --output "$RIGID_STRESS_DATA_ROOT/runs/native/full-field-oracle.json"
+```
+
+The dynamic profile includes native recovery, contact-radius writes and stress
+invalidation during partial resets. Its synchronizations are intrusive;
+actual aggregate rates come from ordinary `live`/`policy` timing, including
+controller, observation, all reset motion and contact parameter updates.
 
 The default `auto` method uses a memory-bounded shared inverse on this small
 mesh. Compare `--method direct --serial-solve`, `--method direct`, and

@@ -4,6 +4,7 @@ Set QD_KERNEL_PROFILER=1 for --scope profile. Use separate processes for matched
 """
 
 import argparse
+import copy
 import hashlib
 import json
 import os
@@ -205,6 +206,9 @@ def main() -> None:
         "--dense-surface-loads", action="store_true", help="Apply all boundary columns without packing."
     )
     parser.add_argument("--history", type=int, choices=(0, 4), default=0)
+    parser.add_argument("--unfused-pipeline", action="store_true", help="Compare separate native recovery passes.")
+    parser.add_argument("--policy-precision", choices=("64", "32"), default="32")
+    parser.add_argument("--output-mode", choices=("max", "full"), default="max")
     parser.add_argument("--trace", action="store_true", help="Export a separate intrusive CUDA/CPU trace pass.")
     parser.add_argument(
         "--compact-log", action="store_true", help="Keep full per-environment diagnostics in JSON only."
@@ -228,6 +232,8 @@ def main() -> None:
         conditions=args.conditions,
         surface_inverse=not args.full_inverse,
         packed_surface_loads=not args.dense_surface_loads,
+        fused_pipeline=not args.unfused_pipeline,
+        output_mode=args.output_mode,
         cooperative_scatter=not args.serial_scatter,
         cached_peak=not args.uncached_peak,
         cached_face_bounds=not args.uncached_face_bounds,
@@ -248,10 +254,22 @@ def main() -> None:
         .to(device=gs.device, dtype=gs.tc_float)
         .eval()
     )
+    policy_dtype = torch.float32 if args.policy_precision == "32" else torch.float64
+    policy_reference = copy.deepcopy(policy) if args.policy_precision == "32" else None
+    policy = policy.to(dtype=policy_dtype)
+    policy_error_rad = 0.0
     with torch.inference_mode():
         quality = []
         for tick in range(args.warmup):
-            action = policy(workload.observation()) if args.scope.startswith("policy") else None
+            action = None
+            if args.scope.startswith("policy"):
+                observation = workload.observation()
+                action = policy(observation.to(dtype=policy_dtype))
+                if policy_reference is not None and tick % 100 == 0:
+                    expected = policy_reference(observation)
+                    difference = (action.to(dtype=torch.float64) - expected).abs().max().item()
+                    policy_error_rad = max(policy_error_rad, 1e-4 * difference)
+                    assert policy_error_rad < 1e-9
             workload.step(action)
             if tick % 10 == 0:
                 row = {
@@ -341,6 +359,8 @@ def main() -> None:
             "inverse_precision": args.inverse_precision,
             "surface_inverse": not args.full_inverse,
             "packed_surface_loads": not args.dense_surface_loads,
+            "fused_pipeline": not args.unfused_pipeline,
+            "output_mode": args.output_mode,
             "history": args.history,
             "host": platform.node(),
             "slurm_job_id": os.environ.get("SLURM_JOB_ID"),
@@ -367,8 +387,17 @@ def main() -> None:
             "setup_seconds": setup_seconds,
             "warmup_steps": args.warmup,
             "warmup_quality": quality,
-            "policy": {"layers": [26, 128, 128, 7], "seed": 99173, "dtype": "float64", "residual_scale_rad": 1e-4},
+            "policy": {
+                "layers": [26, 128, 128, 7],
+                "seed": 99173,
+                "dtype": "float32" if args.policy_precision == "32" else "float64",
+                "residual_scale_rad": 1e-4,
+                "scope": "inference rollout",
+                "control_error_budget_rad": 1e-9,
+                "warmup_reference_max_error_rad": policy_error_rad,
+            },
         }
+        policy_reference = None
         if args.scope == "profile":
             result.update(profile(workload, args.steps))
         else:
@@ -379,6 +408,11 @@ def main() -> None:
             for _ in range(args.repetitions):
                 if args.scope != "recovery":
                     workload.restart()
+                failure_before = None
+                if workload.stress:
+                    failure_before = qd_to_numpy(
+                        workload.scene.rigid_solver.stress_recovery.links[0].state.invalid_steps
+                    )
                 qd.sync()
                 start = time.perf_counter()
                 steps = 0
@@ -386,17 +420,34 @@ def main() -> None:
                     if args.scope == "recovery":
                         workload.scene.rigid_solver.stress_recovery.recover(0)
                     else:
-                        action = policy(workload.observation()) if args.scope.startswith("policy") else None
+                        action = (
+                            policy(workload.observation().to(dtype=policy_dtype))
+                            if args.scope.startswith("policy")
+                            else None
+                        )
                         workload.step(action)
                     steps += 1
                 qd.sync()
                 elapsed = time.perf_counter() - start
+                invalid_environment_steps = 0
+                failed_per_environment = None
+                if failure_before is not None:
+                    failed_per_environment = (
+                        qd_to_numpy(workload.scene.rigid_solver.stress_recovery.links[0].state.invalid_steps)
+                        - failure_before
+                    )
+                    invalid_environment_steps = int(failed_per_environment.sum())
                 workload.scene.rigid_solver.check_errno()
                 rows.append(
                     {
                         "steps": steps,
                         "seconds": elapsed,
-                        "transitions_per_second": args.envs * steps / elapsed,
+                        "transitions_per_second": (args.envs * steps - invalid_environment_steps) / elapsed,
+                        "attempted_transitions_per_second": args.envs * steps / elapsed,
+                        "invalid_environment_steps": invalid_environment_steps,
+                        "failed_steps_per_environment": failed_per_environment.tolist()
+                        if failed_per_environment is not None
+                        else None,
                         "batch_steps_per_second": steps / elapsed,
                         "resets": workload.reset_count,
                     }
@@ -440,7 +491,11 @@ def main() -> None:
             ) as profiler:
                 for _ in range(50):
                     with torch.profiler.record_function("rigid_stress_trace_step"):
-                        action = policy(workload.observation()) if args.scope.startswith("policy") else None
+                        action = (
+                            policy(workload.observation().to(dtype=policy_dtype))
+                            if args.scope.startswith("policy")
+                            else None
+                        )
                         workload.step(action)
                 qd.sync()
             trace_path = args.output.with_suffix(".trace.json")

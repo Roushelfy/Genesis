@@ -206,6 +206,11 @@ def func_contact_index(i_entry: int, i_cell: int, dimensions: qd.types.vector(3)
 
 @qd.kernel
 def kernel_anchor(source_epsilon: float, contact_state: StressContactState, surface_info: StressSurfaceInfo):
+    func_anchor(source_epsilon, contact_state, surface_info)
+
+
+@qd.func
+def func_anchor(source_epsilon: float, contact_state: StressContactState, surface_info: StressSurfaceInfo):
     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
         contact_state.status[i_c, i_b] = 0
         contact_state.force_error[i_c, i_b] = 0.0
@@ -319,6 +324,11 @@ def kernel_pressure(contact_state: StressContactState, surface_info: StressSurfa
 
 @qd.kernel
 def kernel_refine_contacts(contact_state: StressContactState):
+    func_refine_contacts(contact_state)
+
+
+@qd.func
+def func_refine_contacts(contact_state: StressContactState):
     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
         if contact_state.valid[i_c, i_b] and contact_state.status[i_c, i_b] == 3:
             contact_state.is_refined[i_c, i_b] = True
@@ -328,6 +338,11 @@ def kernel_refine_contacts(contact_state: StressContactState):
 
 @qd.kernel(graph=True)
 def kernel_pack_contacts(contact_state: StressContactState):
+    func_pack_contacts(contact_state)
+
+
+@qd.func
+def func_pack_contacts(contact_state: StressContactState):
     for _ in range(1):
         contact_state.active_count[None] = 0
     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
@@ -342,6 +357,11 @@ def kernel_pack_contacts(contact_state: StressContactState):
 
 @qd.kernel
 def kernel_pressure_warp(contact_state: StressContactState, surface_info: StressSurfaceInfo, refinement: bool):
+    func_pressure_warp(contact_state, surface_info, refinement)
+
+
+@qd.func
+def func_pressure_warp(contact_state: StressContactState, surface_info: StressSurfaceInfo, refinement: bool):
     qd.loop_config(block_dim=128)
     for i_thread in range(contact_state.active_count[None] * 32):
         lane = i_thread % 32
@@ -378,6 +398,11 @@ def kernel_pressure_warp(contact_state: StressContactState, surface_info: Stress
 
 @qd.kernel
 def kernel_pressure_correct_warp(contact_state: StressContactState, surface_info: StressSurfaceInfo):
+    func_pressure_correct_warp(contact_state, surface_info)
+
+
+@qd.func
+def func_pressure_correct_warp(contact_state: StressContactState, surface_info: StressSurfaceInfo):
     qd.loop_config(block_dim=128)
     for i_thread in range(contact_state.active_count[None] * 32):
         lane = i_thread % 32
@@ -609,6 +634,17 @@ def kernel_scatter(
 
 @qd.kernel(graph=True)
 def kernel_scatter_warp(
+    contact_state: StressContactState,
+    stress_state: StressState,
+    stress_info: StressInfo,
+    surface_info: StressSurfaceInfo,
+    cached_bounds: qd.template(),
+):
+    func_scatter_warp(contact_state, stress_state, stress_info, surface_info, cached_bounds)
+
+
+@qd.func
+def func_scatter_warp(
     contact_state: StressContactState,
     stress_state: StressState,
     stress_info: StressInfo,

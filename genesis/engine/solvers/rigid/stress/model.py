@@ -177,9 +177,10 @@ class StressModel:
             time.perf_counter() - inverse_done,
         )
 
-    def create_state(self, n_envs: int) -> StressState:
+    def create_state(self, n_envs: int, output_mode: str = "max") -> StressState:
         n_nodes = self.info.vertices.shape[0]
         n_krylov_nodes = n_nodes if self.selected_method == "pcg" else 0
+        n_output_elements = self.info.elements.shape[0] if output_mode == "full" else 0
         state = StressState(
             force=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes, n_envs)),
             rhs=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes, n_envs)),
@@ -201,14 +202,23 @@ class StressModel:
             peak=V(dtype=gs.qd_float, shape=(n_envs,)),
             step_peak=V(dtype=gs.qd_float, shape=(n_envs,)),
             step_valid=V(dtype=gs.qd_bool, shape=(n_envs,)),
+            stress_tensor=V_VEC(6, dtype=gs.qd_float, shape=(n_output_elements, 4, n_envs)),
+            von_mises=V_VEC(1, dtype=gs.qd_float, shape=(n_output_elements, 4, n_envs)),
             valid=V(dtype=gs.qd_bool, shape=(n_envs,)),
             corrections=V(dtype=gs.qd_int, shape=(n_envs,)),
             fallbacks=V(dtype=gs.qd_int, shape=(n_envs,)),
+            invalid_steps=V(dtype=qd.i64, shape=(n_envs,)),
+            invalid_reported=V(dtype=gs.qd_bool, shape=(n_envs,)),
         )
         state.displacement.fill(0)
         state.step_peak.fill(0)
         state.valid.fill(True)
         state.step_valid.fill(True)
+        state.invalid_steps.fill(0)
+        state.invalid_reported.fill(False)
+        if n_output_elements:
+            state.stress_tensor.fill(float("nan"))
+            state.von_mises.fill(float("nan"))
         return state
 
     def recover(

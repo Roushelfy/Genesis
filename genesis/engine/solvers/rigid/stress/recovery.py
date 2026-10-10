@@ -11,7 +11,7 @@ import torch
 
 import genesis as gs
 from genesis.engine.solvers.base_solver import StateChange, Subscriber
-from genesis.utils.array_class import V_VEC, DataItem, DataKind, ErrorCode, iter_data
+from genesis.utils.array_class import V_VEC, DataItem, DataKind, iter_data
 from genesis.utils.misc import (
     assign_indexed_tensor,
     broadcast_tensor,
@@ -25,7 +25,9 @@ from .association import kernel_associate
 from .contact import StressContactState, create_contacts, kernel_anchor, kernel_pressure, kernel_scatter
 from .data import StressState
 from .history import StressHistory
+from .lifecycle import func_accept, func_begin_step
 from .model import StressModel
+from .pipeline import kernel_pipeline
 from .surface import StressSurface
 
 if TYPE_CHECKING:
@@ -42,6 +44,7 @@ class StressLink:
     contacts: StressContactState
     omega: qd.Tensor
     history: StressHistory | None
+    output_mode: str
 
 
 class RigidStressRecovery:
@@ -82,7 +85,7 @@ class RigidStressRecovery:
                             link,
                             model,
                             surface,
-                            model.create_state(solver._B),
+                            model.create_state(solver._B, options.output_mode),
                             create_contacts(
                                 solver.collider.collider_state.contact_sort_idx.shape[0],
                                 solver._B,
@@ -92,6 +95,7 @@ class RigidStressRecovery:
                             ),
                             V_VEC(3, dtype=gs.qd_float, shape=(solver._B,)),
                             StressHistory(model.info.vertices.shape[0], solver._B) if options.history_size else None,
+                            options.output_mode,
                         )
                     )
         self.subscriber = Subscriber(
@@ -105,6 +109,50 @@ class RigidStressRecovery:
     def recover(self, i_substep: int) -> None:
         solver = self.solver
         for entry in self.links:
+            options = entry.link.stress_options
+            if options.output_mode != entry.output_mode:
+                gs.raise_exception("Changing stress output mode requires rebuilding the scene.")
+            if (
+                gs.backend == gs.cuda
+                and options.fused_pipeline
+                and entry.model.surface_inverse is not None
+                and options.packed_surface_loads
+                and options.cooperative_pressure
+                and options.cooperative_scatter
+                and options.cooperative_solve
+                and entry.model.info.vertices.shape[0] <= 1024
+                and entry.history is None
+            ):
+                kernel_pipeline(
+                    options.young,
+                    options.poisson,
+                    options.tolerance,
+                    options.absolute_tolerance,
+                    self.source_epsilon,
+                    entry.link.idx,
+                    solver._links_offset_pos,
+                    solver._links_offset_quat,
+                    entry.omega,
+                    solver.dyn_state,
+                    solver.collider.collider_state,
+                    entry.state,
+                    entry.contacts,
+                    entry.model.info,
+                    entry.surface.info,
+                    entry.model.surface_inverse.info,
+                    entry.model.inverse.info,
+                    entry.model.factor.info,
+                    solver._errno,
+                    solver._links_offset_quat.ndim == 3,
+                    i_substep == 0,
+                    not solver._disable_constraint,
+                    options.inverse_corrections,
+                    options.cached_peak,
+                    options.cached_face_bounds,
+                    entry.model.info.vertices.shape[0],
+                    entry.output_mode == "full",
+                )
+                continue
             if i_substep == 0:
                 kernel_begin_step(entry.state)
             kernel_associate(
@@ -214,6 +262,20 @@ class RigidStressRecovery:
                 return tensor[0] if self.solver.n_envs == 0 else tensor
         gs.raise_exception("Stress recovery is not enabled for this link.")
 
+    def get_field(self, link_idx: int, envs_idx=None, *, copy: bool = True) -> tuple[torch.Tensor, torch.Tensor]:
+        for entry in self.links:
+            if entry.link.idx == link_idx:
+                if entry.link.stress_options.output_mode != entry.output_mode:
+                    gs.raise_exception("Changing stress output mode requires rebuilding the scene.")
+                if entry.output_mode != "full":
+                    gs.raise_exception("Configure output_mode='full' before building to observe the stress field.")
+                tensor = qd_to_torch(entry.state.stress_tensor, envs_idx, transpose=True, copy=copy)
+                von_mises = qd_to_torch(entry.state.von_mises, envs_idx, transpose=True, copy=copy).squeeze(-1)
+                if self.solver.n_envs == 0:
+                    tensor, von_mises = tensor[0], von_mises[0]
+                return tensor, von_mises
+        gs.raise_exception("Stress recovery is not enabled for this link.")
+
     def set_radius(self, link_idx: int, radius, envs_idx=None) -> None:
         if envs_idx is not None and self.solver.n_envs == 0:
             gs.raise_exception("`envs_idx` is not supported for a scene without parallel environments.")
@@ -245,29 +307,26 @@ class RigidStressRecovery:
 
 @qd.kernel
 def kernel_begin_step(stress_state: StressState):
-    for i_b in range(stress_state.active.shape[0]):
-        stress_state.step_peak[i_b] = 0.0
-        stress_state.step_valid[i_b] = True
-        stress_state.corrections[i_b] = 0
-        stress_state.fallbacks[i_b] = 0
+    func_begin_step(stress_state)
+
+
+def kernel_accept(stress_state: StressState, contact_state: StressContactState, errno: qd.Tensor):
+    kernel_accept_impl(stress_state, contact_state, errno, stress_state.stress_tensor.shape[0] > 0)
 
 
 @qd.kernel(graph=True)
-def kernel_accept(stress_state: StressState, contact_state: StressContactState, errno: qd.Tensor):
-    for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
-        if contact_state.valid[i_c, i_b] and contact_state.status[i_c, i_b] != 0:
-            stress_state.step_valid[i_b] = False
-            qd.atomic_or(errno[i_b], ErrorCode.INVALID_STRESS_LOAD)
-    for i_b in range(stress_state.active.shape[0]):
-        stress_state.step_valid[i_b] = stress_state.step_valid[i_b] and stress_state.valid[i_b]
-        if not stress_state.valid[i_b]:
-            qd.atomic_or(errno[i_b], ErrorCode.INVALID_STRESS_SOLVE)
-        if not stress_state.step_valid[i_b]:
-            stress_state.step_peak[i_b] = float("nan")
+def kernel_accept_impl(
+    stress_state: StressState, contact_state: StressContactState, errno: qd.Tensor, full: qd.template()
+):
+    func_accept(stress_state, contact_state, errno, full)
+
+
+def kernel_reset(envs_idx: qd.types.ndarray(), stress_state: StressState):
+    kernel_reset_impl(envs_idx, stress_state, stress_state.stress_tensor.shape[0] > 0)
 
 
 @qd.kernel
-def kernel_reset(envs_idx: qd.types.ndarray(), stress_state: StressState):
+def kernel_reset_impl(envs_idx: qd.types.ndarray(), stress_state: StressState, full: qd.template()):
     for i_n, i_selected in qd.ndrange(stress_state.displacement.shape[0], envs_idx.shape[0]):
         i_b = envs_idx[i_selected]
         stress_state.displacement[i_n, i_b] = qd.Vector.zero(gs.qd_float, 3)
@@ -277,6 +336,11 @@ def kernel_reset(envs_idx: qd.types.ndarray(), stress_state: StressState):
         stress_state.step_peak[i_b] = 0.0
         stress_state.valid[i_b] = True
         stress_state.step_valid[i_b] = True
+    if qd.static(full):
+        for i_e, i_corner, i_selected in qd.ndrange(stress_state.stress_tensor.shape[0], 4, envs_idx.shape[0]):
+            i_b = envs_idx[i_selected]
+            stress_state.stress_tensor[i_e, i_corner, i_b] = qd.Vector([float("nan") for _ in qd.static(range(6))])
+            stress_state.von_mises[i_e, i_corner, i_b] = qd.Vector([float("nan")])
 
 
 @qd.kernel

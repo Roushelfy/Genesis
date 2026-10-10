@@ -115,10 +115,12 @@ def main():
                     result = json.loads(result_path.read_text())
                     steps = sum(row["steps"] for row in result["repeats"])
                     seconds = sum(row["seconds"] for row in result["repeats"])
+                    invalid = sum(row.get("invalid_environment_steps", 0) for row in result["repeats"])
                     measurement.update(
                         {
                             "repeats": result["repeats"],
-                            "valid_env_steps_per_second": envs * steps / seconds,
+                            "valid_env_steps_per_second": (envs * steps - invalid) / seconds,
+                            "invalid_environment_steps": invalid,
                             "batch_steps_per_second": steps / seconds,
                             "gpu_uuid": result["gpu_uuid"],
                             "source_sha256": result["source_sha256"],

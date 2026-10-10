@@ -266,6 +266,50 @@ multiple seeds, longer trajectories, every-step audit, per-environment tails,
 grasp outcomes, sampled whole-card setup/rollout memory, and final profiling.
 The active goal remains open.
 
+## Serial pipeline and full-field implementation checkpoint
+
+The original-decorator pipeline comparison uses one GPU UUID
+GPU-46adcad5-6c6e-1013-cf33-5b956ba93598, B=1024, 900 warmup and three
+2,400-step varied repeats. Original rates are
+57,400.18 / 57,540.75 / 57,460.68 env-step/s; refactored separate passes
+give 57,413.48 / 57,531.76 / 57,244.94. The fused serial pipeline gives
+58,210.32 / 58,346.91 / 58,395.69, approximately 1.5% above the original.
+This preserves the original public passes and includes every residual,
+correction, fallback, contact update and reset.
+
+The output extension from remote commit 1d1a5ca5 is implemented as
+`output_mode="max"|"full"` and `RigidLink.get_stress_field()`. Full mode
+stores all four corners of all 480 low-mesh tetrahedra, tensor components
+xx/yy/zz/xy/xz/yz plus von Mises, in the authored link frame. The same native
+scan computes both modes. Max uses zero-length compound fields because
+this Quadrants version rejects zero-length scalar ndarrays; full-mode writes
+and invalidation are selected by explicit compile-time templates. Initial
+scalar-allocation and template/default-argument failures remain in raw logs.
+
+The implementation passes **25 CPU cases in 84.97 s and 25 GPU cases in
+372.59 s**. Full mode covers independent FP64 tensor/von-Mises recovery,
+max/full reduction on one identical recovered state, rotated actual contacts,
+1/4 substeps, independent partial reset, checkpoint invalidation, unbatched
+views, shared operators across different output modes and invalid solves.
+Separate CUDA load reductions differ by at most 4.11e-24 m in the development
+same-state test; sharing the recovered displacement correctly isolates the
+output comparison without changing any production acceptance budget.
+
+Two full-field Panda trajectories (seeds 510000/623001, B=32, 2,400 steps)
+pass 192 independent CPU FP64 snapshots each, including all corner tensor
+components, wrench/frame/friction, full gauge residual and peak. A four-
+substep B=8, 1,200-step trajectory passes another 96 snapshots. The max
+observation retains scene-step temporal reduction; fields are latest-substep
+snapshots and become NaN after reset/restoration or failure.
+
+Native diagnostic counters now count invalid environment scene steps once,
+even with multiple substeps, and survive ordinary environment resets. Final
+benchmark records report attempted and valid transitions and per-environment
+failure counts. Their maintenance belongs to timing. Final repeated full/max
+cost and large-batch measurements remain required. Face-parallel scatter and
+larger packed-application block scheduling are being measured before freezing
+the final throughput selection.
+
 The isolated serial/parallel elastic graphs cost 2.4969/2.4268 ms against
 separate 2.6544 ms and preserve snapshot peaks/residuals. The serial variant
 improves three-repeat live throughput by only 0.14%. The parallel variant

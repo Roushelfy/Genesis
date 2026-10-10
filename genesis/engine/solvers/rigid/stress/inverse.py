@@ -74,6 +74,17 @@ def kernel_apply_inverse(
     correction: qd.template(),
     only_failed: qd.template(),
 ):
+    func_apply_inverse(young, stress_state, inverse_info, correction, only_failed)
+
+
+@qd.func
+def func_apply_inverse(
+    young: float,
+    stress_state: StressState,
+    inverse_info: StressInverseInfo,
+    correction: qd.template(),
+    only_failed: qd.template(),
+):
     for i_n, i_b in qd.ndrange(stress_state.rhs.shape[0], stress_state.active.shape[0]):
         if qd.static(not correction and not only_failed) or not stress_state.valid[i_b]:
             value = qd.Vector.zero(gs.qd_float, 3)

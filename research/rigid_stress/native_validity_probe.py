@@ -1,6 +1,7 @@
 """Untimed every-step validity audit across warmup and a complete reset trajectory."""
 
 import argparse
+import copy
 import hashlib
 import json
 import os
@@ -79,12 +80,16 @@ def main():
     parser.add_argument("--steps", type=int, default=1200)
     parser.add_argument("--warmup", type=int, default=900)
     parser.add_argument("--seed", type=int, default=510000)
+    parser.add_argument("--policy-precision", choices=("64", "32"), default="32")
+    parser.add_argument("--output-mode", choices=("max", "full"), default="max")
     parser.add_argument("--conditions", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.parent.mkdir(parents=True, exist_ok=True)
     gs.init(backend=gs.gpu, precision="64", seed=args.seed, logging_level="warning")
-    workload = FrankaEgg(args.envs, seed=args.seed, varied=True, conditions=args.conditions)
+    workload = FrankaEgg(
+        args.envs, seed=args.seed, varied=True, conditions=args.conditions, output_mode=args.output_mode
+    )
     torch.manual_seed(99173)
     policy = (
         torch.nn.Sequential(
@@ -97,6 +102,10 @@ def main():
         .to(device=gs.device, dtype=gs.tc_float)
         .eval()
     )
+    policy_dtype = torch.float32 if args.policy_precision == "32" else torch.float64
+    reference = copy.deepcopy(policy) if args.policy_precision == "32" else None
+    policy = policy.to(dtype=policy_dtype)
+    policy_error_rad = 0.0
     failures = V(dtype=gs.qd_int, shape=(args.envs,))
     failures.fill(0)
     counters = V_VEC(8, dtype=qd.i64, shape=(args.envs,))
@@ -110,8 +119,16 @@ def main():
     left, right = [workload.robot.get_link(name).idx for name in ("left_finger", "right_finger")]
     with torch.inference_mode():
         for count in (args.warmup, args.steps):
-            for _ in range(count):
-                action = policy(workload.observation()) if args.scope == "policy" else None
+            for tick in range(count):
+                action = None
+                if args.scope == "policy":
+                    observation = workload.observation()
+                    action = policy(observation.to(dtype=policy_dtype))
+                    if reference is not None and tick % 100 == 0:
+                        expected = reference(observation)
+                        difference = (action.to(dtype=torch.float64) - expected).abs().max().item()
+                        policy_error_rad = max(policy_error_rad, 1e-4 * difference)
+                        assert policy_error_rad < 1e-9
                 workload.step(action)
                 kernel_audit(
                     entry.state,
@@ -139,6 +156,7 @@ def main():
         "trajectory_steps": args.steps,
         "seed": args.seed,
         "load_model": "finite_pad_adaptive_q10",
+        "output_mode": args.output_mode,
         "condition_count": workload.condition_count,
         "source_revision": os.environ.get("RIGID_STRESS_SOURCE_REVISION", "unrecorded"),
         "source_sha256": {
@@ -184,6 +202,12 @@ def main():
         "per_environment_errors": accuracy.tolist(),
         "environments_with_bilateral_lift": int((tail[:, 6] > 0).sum()),
         "environments_without_bilateral_lift": int((tail[:, 6] == 0).sum()),
+        "hold_check_count": int(tail[:, 6].sum() + tail[:, 7].sum()),
+        "bilateral_lift_check_count": int(tail[:, 6].sum()),
+        "failed_hold_check_count": int(tail[:, 7].sum()),
+        "hold_check_success_fraction": float(tail[:, 6].sum() / max(1, tail[:, 6].sum() + tail[:, 7].sum())),
+        "environments_with_failed_hold_checks": int((tail[:, 7] > 0).sum()),
+        "hold_check_note": "Height >0.09 m and both fingers in nonzero contact during phase [0.4,0.65]; this is a per-step lift/hold proxy, not an episode-level success certificate.",
         "per_environment_work_quantiles": {
             "quantiles": [0.5, 0.9, 0.99, 1.0],
             "fit_evaluations_total": np.quantile(tail[:, 2], [0.5, 0.9, 0.99, 1.0]).tolist(),
@@ -192,10 +216,12 @@ def main():
         },
         "policy": {
             "layers": [26, 128, 128, 7],
-            "dtype": "float64",
+            "dtype": "float32" if args.policy_precision == "32" else "float64",
             "seed": 99173,
             "residual_scale_rad": 1e-4,
             "scope": "inference rollout",
+            "reference_max_control_error_rad": policy_error_rad,
+            "control_error_budget_rad": 1e-9,
         },
         "note": "Separate untimed native check of every observation, surviving per-environment resets; no rate claimed.",
     }

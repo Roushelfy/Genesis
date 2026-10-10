@@ -28,6 +28,8 @@ class FrankaEgg:
         conditions: Path | None = None,
         surface_inverse: bool = True,
         packed_surface_loads: bool = True,
+        fused_pipeline: bool = True,
+        output_mode: str = "max",
         cooperative_scatter: bool = True,
         cached_peak: bool = True,
         cached_face_bounds: bool = True,
@@ -76,6 +78,8 @@ class FrankaEgg:
                     cooperative_pressure=cooperative_pressure,
                     surface_inverse=surface_inverse,
                     packed_surface_loads=packed_surface_loads,
+                    fused_pipeline=fused_pipeline,
+                    output_mode=output_mode,
                     cooperative_scatter=cooperative_scatter,
                     cached_peak=cached_peak,
                     cached_face_bounds=cached_face_bounds,
@@ -223,9 +227,12 @@ def main() -> None:
     parser.add_argument("--no-stress", action="store_true")
     parser.add_argument("--varied", action="store_true")
     parser.add_argument("--viewer", action="store_true")
+    parser.add_argument("--output-mode", choices=("max", "full"), default="max")
     args = parser.parse_args()
     gs.init(backend=gs.gpu, precision="64")
-    workload = FrankaEgg(args.envs, args.level, not args.no_stress, varied=args.varied, viewer=args.viewer)
+    workload = FrankaEgg(
+        args.envs, args.level, not args.no_stress, varied=args.varied, viewer=args.viewer, output_mode=args.output_mode
+    )
     for _ in range(args.steps):
         workload.step()
     workload.scene.rigid_solver.check_errno()

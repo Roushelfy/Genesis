@@ -54,6 +54,11 @@ class StressSurfaceInverse:
 
 @qd.kernel
 def kernel_surface_pack(stress_state: StressState, surface_inverse_info: StressSurfaceInverseInfo):
+    func_surface_pack(stress_state, surface_inverse_info)
+
+
+@qd.func
+def func_surface_pack(stress_state: StressState, surface_inverse_info: StressSurfaceInverseInfo):
     for i_b in range(stress_state.active.shape[0]):
         count = 0
         for j in range(surface_inverse_info.nodes.shape[0]):
@@ -67,6 +72,13 @@ def kernel_surface_pack(stress_state: StressState, surface_inverse_info: StressS
 
 @qd.kernel(graph=True)
 def kernel_surface_apply_packed(
+    young: float, omega: qd.Tensor, stress_state: StressState, surface_inverse_info: StressSurfaceInverseInfo
+):
+    func_surface_apply_packed(young, omega, stress_state, surface_inverse_info)
+
+
+@qd.func
+def func_surface_apply_packed(
     young: float, omega: qd.Tensor, stress_state: StressState, surface_inverse_info: StressSurfaceInverseInfo
 ):
     for i_n, i_b in qd.ndrange(stress_state.rhs.shape[0], stress_state.active.shape[0]):

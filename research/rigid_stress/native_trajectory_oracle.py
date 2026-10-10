@@ -1,7 +1,10 @@
 """Independent FP64 oracle on changing native Panda contacts, friction and partial resets."""
 
 import argparse
+import hashlib
 import json
+import os
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -12,6 +15,7 @@ from scipy.spatial.transform import Rotation
 import genesis as gs
 from examples.rigid.franka_egg_stress import FrankaEgg
 from genesis.utils.misc import qd_to_numpy
+from research.rigid_stress.field_cpu import stress_field
 from research.rigid_stress.mechanics import P2Shell, SurfaceGeometry
 from research.rigid_stress.peak_cpu import P2Peak
 from research.rigid_stress.wrench import FinitePatchMapper, WrenchPatch
@@ -22,11 +26,13 @@ def main():
     parser.add_argument("--envs", type=int, default=32)
     parser.add_argument("--steps", type=int, default=1800)
     parser.add_argument("--seed", type=int, default=510000)
+    parser.add_argument("--output-mode", choices=("max", "full"), default="max")
+    parser.add_argument("--substeps", type=int, default=1)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.parent.mkdir(parents=True, exist_ok=True)
     gs.init(backend=gs.gpu, precision="64", seed=args.seed, logging_level="warning")
-    workload = FrankaEgg(args.envs, varied=True, seed=args.seed)
+    workload = FrankaEgg(args.envs, varied=True, seed=args.seed, output_mode=args.output_mode, substeps=args.substeps)
     entry = workload.scene.rigid_solver.stress_recovery.links[0]
     with np.load("examples/rigid/assets/hollow_egg/level1/elastic.npz") as asset:
         oracle = P2Shell(
@@ -72,6 +78,13 @@ def main():
         }
         omega = qd_to_numpy(entry.omega)
         native_peak = qd_to_numpy(entry.state.peak)
+        native_fields = None
+        if args.output_mode == "full":
+            native_fields = (
+                qd_to_numpy(entry.state.stress_tensor, transpose=True),
+                qd_to_numpy(entry.state.von_mises, transpose=True)[..., 0],
+            )
+            np.testing.assert_array_equal(native_fields[1].max(axis=(1, 2)), native_peak)
         frame_position = qd_to_numpy(entry.contacts.frame_position)
         rotations = Rotation.from_quat(qd_to_numpy(entry.contacts.frame_quaternion)[:, [1, 2, 3, 0]])
         # Rotate the sampled environments over the trajectory rather than always selecting the same rows.
@@ -120,6 +133,19 @@ def main():
             assert residual <= budget, (tick, env, residual, budget)
             peak = peak_scan(displacement)[0]
             np.testing.assert_allclose(native_peak[env], peak, rtol=1e-4, atol=1e-3)
+            tensor_error = vm_error = None
+            if native_fields is not None:
+                reference_tensor, reference_vm = stress_field(
+                    oracle.glambda,
+                    oracle.elements,
+                    displacement,
+                    entry.model.options.young,
+                    entry.model.options.poisson,
+                )
+                np.testing.assert_allclose(native_fields[0][env], reference_tensor, rtol=1e-4, atol=1e-3)
+                np.testing.assert_allclose(native_fields[1][env], reference_vm, rtol=1e-4, atol=1e-3)
+                tensor_error = float(np.max(np.abs(native_fields[0][env] - reference_tensor)))
+                vm_error = float(np.max(np.abs(native_fields[1][env] - reference_vm)))
             rows.append(
                 {
                     "tick": tick,
@@ -129,6 +155,8 @@ def main():
                     "residual_budget_N": float(budget),
                     "global_peak_error_Pa": float(abs(native_peak[env] - peak)),
                     "global_peak_reference_Pa": float(peak),
+                    "tensor_max_absolute_error_Pa": tensor_error,
+                    "von_mises_field_max_absolute_error_Pa": vm_error,
                 }
             )
         print("Oracle accepted tick", tick, "samples", len(rows), flush=True)
@@ -137,6 +165,21 @@ def main():
         "envs": args.envs,
         "steps": args.steps,
         "seed": args.seed,
+        "output_mode": args.output_mode,
+        "substeps": args.substeps,
+        "source_revision": os.environ.get("RIGID_STRESS_SOURCE_REVISION", "unrecorded"),
+        "source_sha256": {
+            str(path): hashlib.sha256(path.read_bytes()).hexdigest()
+            for path in sorted(
+                [
+                    *Path("genesis/engine/solvers/rigid/stress").glob("*.py"),
+                    Path("genesis/options/rigid_stress.py"),
+                    Path("examples/rigid/franka_egg_stress.py"),
+                    Path(__file__),
+                ]
+            )
+        },
+        "command": [sys.executable, *sys.argv],
         "resets": workload.reset_count,
         "actual_contact_mu_range": coefficient_range,
         "load_model": "finite_pad_adaptive_q10",

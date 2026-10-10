@@ -22,6 +22,35 @@ def kernel_associate(
     step_valid: qd.Tensor,
     errno: qd.Tensor,
 ):
+    func_associate(
+        i_l,
+        links_offset_pos,
+        links_offset_quat,
+        omega,
+        dyn_state,
+        contact_state,
+        collider_state,
+        batch_offsets,
+        enable_constraint,
+        step_valid,
+        errno,
+    )
+
+
+@qd.func
+def func_associate(
+    i_l: int,
+    links_offset_pos: qd.types.ndarray(),
+    links_offset_quat: qd.types.ndarray(),
+    omega: qd.Tensor,
+    dyn_state: array_class.DynState,
+    contact_state: StressContactState,
+    collider_state: array_class.ColliderState,
+    batch_offsets: qd.template(),
+    enable_constraint: bool,
+    step_valid: qd.Tensor,
+    errno: qd.Tensor,
+):
     for i_b in range(omega.shape[0]):
         offset_pos = qd.Vector.zero(gs.qd_float, 3)
         offset_quat = qd.Vector.zero(gs.qd_float, 4)
