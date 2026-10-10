@@ -976,10 +976,12 @@ class ShellOptions(GravityMixin, TimeBasedMixin):
     n_coarse_patches : int, optional
         Maximum number of patches each sheet is split into to accelerate the linear solve, each one moving as a whole
         in a coarse correction of every iteration, a sheet taking at most one patch per 8 vertices. Stiff sheets
-        (paper, plastic, metal, glass) converge in several times fewer iterations with it, at a memory cost growing
-        with the square of the number of patches in every environment, and a dense factorization and product of that
-        size per substep and per iteration, which outweigh the iterations they save past a few tens of patches. 0
-        disables it, which suits soft sheets (cloth, rubber) whose solve converges quickly anyway. Defaults to 12.
+        (paper, plastic, metal, glass) converge in several times fewer iterations with it, at a memory and per-iteration
+        cost growing with the square of the number of patches in every environment, and a factorization cost per
+        substep growing with its cube. Past about a dozen patches, these costs outweigh the iterations saved when
+        thousands of environments run in parallel, while a few tens of environments still gain a little up to about
+        twenty. 0 disables it, which suits soft sheets (cloth, rubber) whose solve converges quickly anyway. Defaults
+        to 12.
     coarse_update_interval : int, optional
         Number of substeps between two updates of the coarse correction above, which then lags behind the deformation
         of the sheets. Updating it less often saves the cost of rebuilding it, which grows with the square of the

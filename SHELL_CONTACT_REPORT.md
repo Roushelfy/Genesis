@@ -20,15 +20,16 @@ below). Every number below was measured, on the machine and with the commands gi
 | --- | --- | --- |
 | Ball resting inside a triangle, away from its vertices | falls through, 0 N reaction | rests at the exact height (10 um), reaction = weight within 0.2% |
 | Torque through a hinge (lever on a sheet) | not supported (one-way velocity projection) | reaction = m g x_com / L within 0.2% |
-| Coulomb friction on an incline | velocity projection only | stick below 1e-4 m/s; slip acceleration within 0.5%, across mesh edges |
+| Coulomb friction on an incline | velocity projection only | stick below 1e-4 m/s, slip acceleration within 0.5% across mesh edges |
 | Momentum through a 3 m/s impact | not conserved (lagged reaction, no penetration correction) | conserved to 1e-9 kg m/s, no tunneling |
-| Full reset vs fresh run (grasp, CPU) | 63 mm apart | bitwise identical |
-| One step repeated from the same state (CPU) | 0.45 mm apart | bitwise identical |
-| Partially reset environment vs fresh run (CPU) | 1.9 mm apart | bitwise identical |
-| Checkpoint restore vs continuation (grasp, CPU) | a scene holding a sheet cannot be checkpointed | bitwise identical, the rigid warm start included |
-| Reduced-state snapshot (`get_state`) vs continuation (CPU) | 38 mm apart | shell state complete, the rigid constraint solve restarting cold by design: 2.7 mm |
+| Full reset vs fresh run (grasp, CPU) | 63 mm apart | identical (0) |
+| One step repeated from the same state (CPU) | 0.45 mm apart | identical (0) |
+| Partially reset environment vs fresh run (CPU) | 1.9 mm apart | identical (0) |
+| Snapshot restore (`get_state` / `reset(state)`) vs continuation (grasp, CPU) | 38 mm apart | identical (0) |
+| Checkpoint restore (`__getstate__`, pickle, `save_checkpoint`) vs continuation (CPU) | a scene holding a sheet cannot be checkpointed | identical (0) |
 | PCG stopping | fixed iteration count, failures unreported | tolerance-driven device loop, true residual checked, statuses reported |
 | Damage | fracture criterion only, topology always mutated | Rankine damage index, damage-only mode, peak and first failure face |
+| Franka egg grasp throughput (env-steps/s at 64 / 1024 / 4096 environments) | 1658 / 22045 / 31229 with 50 fixed PCG iterations and no contact solve | 155 / 977 / 1193 at the accuracy above, 2.2x with a softer contact (see Performance) |
 
 ## Root causes and fixes
 
@@ -88,9 +89,16 @@ rigid reaction in the next substep. Contacts now join the implicit step of the s
 
 ### Linear solver (PCG)
 
-- The iterations loop on the device (`qd.graph.do_while`, CUDA graph conditional nodes), so that converged
-  environments stop costing work and the host never synchronizes per iteration. An iteration is 5 fused kernels (7 with
-  rigid contacts), since a graph node costs about 8.5 us here.
+- The iterations loop on the device (`qd.graph.do_while`, CUDA graph conditional nodes), so that the host never
+  synchronizes per iteration and a converged environment only launches threads that test its flag and exit (measured
+  at about 25-35 ns per iteration, see Performance). An iteration is 5 fused kernels (6 with rigid contacts, whose
+  product joins the one of the faces and hinges), since a graph node costs about 8.5 us here.
+- Preconditioner: block-Jacobi plus a coarse correction in which every patch of a sheet moves affinely (9 degrees of
+  freedom per patch), its dense inverse rebuilt every substep. A sheet takes up to 12 patches by default, at most one
+  per 8 vertices: the cap of one per 32 vertices it replaces held the 162-vertex egg at 5 patches, and 12 cut its
+  iterations by 30% (see Performance). The patches read the vertices relative to the sheet, so that two copies of a
+  sheet placed apart get the same ones. The coarse solve of an iteration reads the columns of the inverse (symmetric)
+  across the lanes of an environment, so that a warp reads it side by side.
 - Stopping: the residual in the block-Jacobi norm below `pcg_tolerance` times the right-hand side, or the rigorous
   bound r^T M^-1 r on the mass-weighted velocity error below `pcg_velocity_tolerance`. The coarse correction is left
   out of the stopping norm: it weights rigid motions about 1e4 above deformation, which made the damage error 2.5x
@@ -107,19 +115,25 @@ rigid reaction in the next substep. Contacts now join the implicit step of the s
 
 - The warm start `verts_dv` was neither saved nor cleared by `get_state` / `set_state`. It is now part of the state.
 - The coarse preconditioner age was global. It is per environment, invalidated by `set_state`, and rebuilt every
-  substep by default (`coarse_update_interval=1`, a negligible cost), so that a restored state replays exactly.
+  substep by default (`coarse_update_interval=1`, 4% of the grasp step at 4096 environments), so that a restored state
+  replays exactly.
 - The lagged friction bound and its geom per contact slot are part of the state.
+- A restored snapshot (`get_state` / `reset(state)`) differed from its continuation by 0.26 um on the egg after one
+  step, then 2.7 mm after 60, through the rigid solver. A bisection over every array of both solvers found the shell
+  state complete and two rigid causes. The rigid state left out the warm start of the constraint solve, which the solve
+  read on, and the forward kinematics `set_state` runs round the inertia of the links (1e-9) apart from those of the
+  step, the same arithmetic compiled into different kernels rounding apart. The rigid state now carries the warm start
+  (`qacc_ws`, `is_warmstart`), an initial guess the solve checks against its cold start, so that a restored state
+  resumes the solve its original continued whatever was edited in it. A substep coupled to sheets refreshes the
+  Cartesian space of the links with the kernel `set_state` runs. A restored snapshot then continues bit for bit on CPU
+  in the grasp, full, partial or mid-grasp. A rigid scene without sheets keeps its own refresh, so that its restore
+  still rounds the inertia apart (a Franka with an active joint limit: 1e-10 m/s after one step with the warm start,
+  7e-9 without).
 - A scene holding a sheet could not be checkpointed: the shell entity had no description and the shell solver did
   not list its arrays. A shell entity now keeps its description (its resolved rest mesh with its morph, material and
   surface, `ShellEntityDescription`), and the shell solver lists its arrays by kind (`ShellSolver.data`), so that
-  `Scene.__getstate__` / `Scene.__setstate__`, pickling, `save_checkpoint`, `export` and `load` cover sheets. A
-  checkpoint holds every array a step reads from one step to the next, the rigid constraint warm start included, and
-  the grasp restored from one replays its continuation bit for bit on CPU.
-- `get_state` / `set_state` restore the reduced state. The shell part of it is complete (a bisection over every array
-  of both solvers found no shell array missing), and the rigid solver restarts its constraint solve cold from it by
-  design (a restored reduced state is a discontinuity, its warm start and inertia rounding left behind). With an
-  active joint limit, a restored Franka alone differs from its continuation by 7e-9 m/s after one step, and the grasp
-  by 0.26 um on the egg after one step. Restoring the same snapshot twice gives the same run.
+  `Scene.__getstate__` / `Scene.__setstate__`, pickling, `save_checkpoint`, `export` and `load` cover sheets, and a
+  scene restored from a checkpoint continues bit for bit on CPU.
 
 ### Damage
 
@@ -152,21 +166,24 @@ four shell examples (`tests/test_examples.py -m examples`).
 
 Maximum deviation of the egg vertex positions:
 
-| Comparison | Source, CPU | This branch, CPU | This branch, GPU (separate runs) |
+| Comparison | Source, CPU | This branch, CPU | This branch, GPU (separate runs, the last at the final commit) |
 | --- | --- | --- | --- |
-| Full reset vs fresh run | 63 mm | 0 | 0.59 mm, 4.3 mm, 1.9 mm |
-| Checkpoint restore vs continuation | not supported | 0 | 1.6 mm |
-| Reduced-state snapshot restore vs continuation | 38 mm | 2.7 mm (rigid restarts cold, see above) | 58 um, 0.77 mm, 2.1 mm |
+| Full reset vs fresh run | 63 mm | 0 | 0.59 mm, 4.3 mm, 1.9 mm, 3.6 mm |
+| Snapshot restore vs continuation | 38 mm | 0 | 58 um, 0.77 mm, 2.1 mm, 1.0 mm |
+| Checkpoint restore vs continuation | not supported | 0 | 1.6 mm, 2.4 mm |
 | One step repeated from the same state | 0.45 mm | 0 | 0.06 um in every run |
-| Partially reset environment vs fresh run | 1.9 mm | 0 | 50 um, 54 um, 155 um |
-| Other environments vs continuation | 59 mm | 5.8 um (rigid restarts cold) | 0.87 um, 3.5 um, 4.8 um |
+| Partially reset environment vs fresh run | 1.9 mm | 0 | 50 um, 54 um, 155 um, 6.1 um |
+| Other environments vs continuation | 59 mm | 0 | 0.87 um, 3.5 um, 4.8 um, 7.8 um |
 
-The CPU backend is bitwise deterministic. On the GPU, float atomics reorder reductions: one step from the same state
-differs by 0.06 um (the solver tolerance level). Over the whole grasp the difference grows to millimeters, and it
-varies from run to run. A deterministic CPU run whose egg starts 1 nm higher diverges the same way (above 1 um by step
-6, above 100 um by step 99, 1.3 mm at the end): the grasp scene itself amplifies perturbations (the egg rocks on the
-ground before the grasp, then contact timing decides the impact peak). This is a property of the scenario rather than
-of the solver. The remaining lever is a bitwise deterministic GPU reduction order, which the review rules out of scope.
+Every CPU comparison of the grasp came out identical. The CPU backend runs parallel loops on several threads, whose
+atomic additions may still reorder at the last bit (the shell unit test measured 1e-14 relative between a fresh run and
+a full reset), so that this is observed rather than guaranteed. On the GPU, float atomics reorder reductions: one step
+from the same state differs by 0.06 um (the solver tolerance level). Over the whole grasp the difference grows to
+millimeters, and it varies from run to run. A CPU run whose egg starts 1 nm higher diverges the same way (above 1 um by
+step 6, above 100 um by step 99, 1.3 mm at the end): the grasp scene itself amplifies perturbations (the egg rocks on
+the ground before the grasp, then contact timing decides the impact peak). This is a property of the scenario rather
+than of the solver. The remaining lever is a bitwise deterministic GPU reduction order, which the review rules out of
+scope.
 
 ### Tolerance and time step sweeps (same mesh)
 
@@ -191,8 +208,9 @@ at any tolerance. With a fixed iteration count and the old stopping test, some i
 
 ### End-to-end grasp (`examples/coupling/franka_egg_grasp.py -g -b 8`)
 
-All 8 eggs are lifted 80 mm and carried. Of the 4 environments whose grip loosens to 2% while carrying, 2 let their egg
-slip out before the release, and every egg falls on release. Before the release, the peak damage index exceeds 1 from
+All 8 eggs are lifted 80 mm and carried. Of the 4 environments whose grip loosens to 2% while carrying, one lets its egg
+slip out before the release and the others let theirs slide 3 to 12 mm down between the fingers, and every egg falls on
+release. Before the release, the peak damage index exceeds 1 from
 a grip of 29 N on (0.78 at 5 N, 2.1 at 52 N), the drop on the ground breaking every egg. In the benchmark scene at 256
 environments over 180 steps, one substep of one environment reached the Newton iteration limit (reported as a solver
 failure), and 13.6% of the substeps of an environment had a solve stop at the floating-point floor (STAGNATION, not a
@@ -206,38 +224,68 @@ control step is one policy transition, so environment steps per second are polic
 
 ### Throughput and memory (`examples/speed_benchmark/franka_egg.py`)
 
-| Environments | This branch, shell egg | Rigid egg baseline | Source engine, 50 PCG iterations | Source engine, 200 PCG iterations |
-| --- | --- | --- | --- | --- |
-| 64 | 114 env-steps/s (1.79 scene steps/s), 1650 MiB | 3482, 1646 MiB | 1658, 1648 MiB | 444 |
-| 256 | 338 (1.32), 1820 MiB | 12118, 1774 MiB | 6609, 1782 MiB | 1768 |
-| 1024 | 759 (0.74), 2490 MiB | 43611, 2318 MiB | 22045, 2308 MiB | 7183 |
-| 4096 | 1108 (0.27), 5174 MiB | 141469, 4502 MiB | 31229, 4482 MiB | 17768 |
+| Environments | This branch, shell egg | Before the solver changes below | Rigid egg baseline | Source engine, 50 PCG iterations | Source engine, 200 PCG iterations |
+| --- | --- | --- | --- | --- | --- |
+| 64 | 155 env-steps/s (2.43 scene steps/s), 1682 MiB | 114, 1650 MiB | 3482, 1646 MiB | 1658, 1648 MiB | 444 |
+| 256 | 423 (1.65), 1852 MiB | 338, 1820 MiB | 12118, 1774 MiB | 6609, 1782 MiB | 1768 |
+| 1024 | 977 (0.95), 2586 MiB | 759, 2490 MiB | 43611, 2318 MiB | 22045, 2308 MiB | 7183 |
+| 4096 | 1193 (0.29), 5622 MiB | 1108, 5174 MiB | 141469, 4502 MiB | 31229, 4482 MiB | 17768 |
 
-Memory is that of the process (the CUDA context and allocator pools included): the shell egg adds 672 MiB to the rigid
-scene at 4096 environments, 168 KiB per environment. The source engine is faster because it runs a fixed number of
-iterations with no contact solve, at an accuracy this branch cannot be matched against: its ball falls through a
-triangle, its friction is a velocity projection, its reaction lags a substep, and its fixed iteration count produced
-1e5 N impact forces. The comparison at matched accuracy is between the settings of this branch below. Throughput keeps
-growing up to 4096 environments, by 1.5x from 1024, as the solve becomes bound by the memory traffic of its products.
+Memory is that of the process (the CUDA context and allocator pools included): the shell egg adds 1120 MiB to the
+rigid scene at 4096 environments, 280 KiB per environment, of which the coarse space of 12 patches takes 137 KiB (its
+assembled matrix, its factor and its inverse, 108 x 108 each, against 24 KiB with the 5 patches before). The source
+engine is faster because it runs a fixed number of iterations with no contact solve, at an accuracy this branch cannot
+be matched against: its ball falls through a triangle, its friction is a velocity projection, its reaction lags a
+substep, and its fixed iteration count produced 1e5 N impact forces. The comparison at matched accuracy is between the
+settings of this branch below. Throughput keeps growing up to 4096 environments, by 1.2x from 1024, as the solve
+becomes bound by the memory traffic of its products.
 
-At 4096 environments, 20 environments (0.5%) report a solver failure over the 60 steps. In the profiled window below,
+At 4096 environments, 23 environments (0.6%) report a solver failure over the 60 steps. In the profiled window below,
 every failure is the Newton iteration limit, no PCG solve reaching its own.
+
+### Gains, at unchanged accuracy
+
+Step time of the profile below (30 steps from the closing of the fingers), at the default tolerances. The press force
+(10.885 N at 100 um) and the impact damage (median error 0.06%, max 0.7%) are the same before and after.
+
+| Change | 64 environments | 256 | 1024 | 4096 |
+| --- | --- | --- | --- | --- |
+| before (5 patches, the contacts in a product of their own) | 904 ms | 1195 ms | 1753 ms | 4016 ms |
+| the contacts join the product of the faces and hinges | 846 ms | 1177 ms | 1725 ms | 4169 ms |
+| up to one coarse patch per 8 vertices (12 on the egg instead of 5) | 637 ms | 842 ms | 1294 ms | 3853 ms |
+| the coarse inverse read side by side | 638 ms | 847 ms | 1292 ms | 3449 ms |
+| total | -29% | -29% | -26% | -14% |
+
+- Fusing the contact product into the product of the faces and hinges saves a graph node per iteration: the fixed cost
+  of an iteration went from 92.0 to 86.6 us. Repeated on the final code, fusing takes the step from 697 to 633 ms at
+  64 environments and leaves it at 3440 ms (3444 ms unfused) at 4096, the slower 4096 entry of the second row above
+  not reproducing.
+- The finer coarse space cuts the PCG iterations of the slowest environment by 27 to 31% (922 to 672 per substep at 64
+  environments, 1330 to 918 at 4096). The cap of one patch per 32 vertices held the 162-vertex egg at 5 patches
+  whatever `n_coarse_patches` asked, which is why the earlier sweep of that option saw no difference. With the coarse
+  solve below, 12 patches is within 5% of the fastest count at both ends: at 64 environments, 5, 8, 12, 16 and 20
+  patches take 861, 725, 639, 609 and 618 ms, and at 4096, 4129, 3533, 3447, 3629 and 4145 ms. The dense factorization
+  of the coarse matrix grows with the cube of the patch count, to 65 ms per substep for 20 patches at 4096.
+- The coarse solve gave every lane a row of the inverse of its environment, so that the lanes of a warp read 432 bytes
+  apart: 46 KiB per environment and iteration at 12 patches, read poorly coalesced. The lanes now read columns of the
+  (symmetric) inverse, side by side: the cost of an active environment-iteration went from 235 to 185 ns (see below).
 
 ### Speed and accuracy settings (1024 environments)
 
 | Setting | env-steps/s | Speedup | Press force error | Impact damage error (median / max) |
 | --- | --- | --- | --- | --- |
-| default: 10 substeps, `pcg_tolerance=1e-4`, `contact_stiffness=25` | 759 | 1.0x | 0.2% | 0.07% / 0.7% |
-| `contact_stiffness=5` | 1590 | 2.1x | 2.3% | 0.3% / 0.6% |
-| `pcg_tolerance=1e-3` | 918 | 1.2x | 0.2% | 15% / 83% |
-| 5 substeps | 1034 | 1.4x | 0.8% | 47% / 54% |
-| all three | 2644 | 3.5x | 5.1% | 52% / 91% |
+| default: 10 substeps, `pcg_tolerance=1e-4`, `contact_stiffness=25` | 977 | 1.0x | 0.2% | 0.06% / 0.7% |
+| `contact_stiffness=5` | 2148 | 2.2x | 2.3% | 0.3% / 0.7% |
+| `pcg_tolerance=1e-3` | 1173 | 1.2x | 0.2% | 11% / 68% |
+| 5 substeps | 1381 | 1.4x | 0.8% | 49% / 57% |
+| all three | 3649 | 3.7x | 5.1% | 52% / 73% |
 
 The press force error is that of the force at 100 um of compression against the double precision reference, and the
 impact damage error that of the peak damage index of the 16 drops of `shell_egg_drop.py` against its double precision
 reference. A softer contact is the cheap lever: it lets 5x more penetration in, which takes a few percent of an imposed
 displacement from the deformation of the egg, and leaves impacts accurate. A 2 ms substep under-resolves the impacts
-(about half the peak damage), and a looser tolerance makes impact damage unreliable.
+(about half the peak damage), and a looser tolerance makes impact damage unreliable. A tighter tolerance (1e-5) brings
+the impact error to 0.01% / 0.05%.
 
 ### Profile
 
@@ -245,36 +293,45 @@ Per substep, timing 30 steps from the closing of the fingers on (every kernel sy
 
 | Environments | Step | Contact solve | PCG iterations per substep (mean / slowest environment) | Newton iterations (mean / slowest) | Contact solve per iteration of the slowest environment |
 | --- | --- | --- | --- | --- | --- |
-| 64 | 898 ms | 97.4% | 351 / 911 | 3.9 / 9.2 | 96 us |
-| 256 | 1204 ms | 97.8% | 331 / 1043 | 3.7 / 11.0 | 113 us |
-| 1024 | 1742 ms | 97.7% | 323 / 1163 | 3.6 / 13.7 | 146 us |
-| 4096 | 4004 ms | 97.6% | 327 / 1242 | 3.7 / 15.8 | 315 us |
+| 64 | 638 ms | 95.0% | 259 / 670 | 3.9 / 9.4 | 90 us |
+| 256 | 847 ms | 95.8% | 239 / 750 | 3.7 / 10.9 | 108 us |
+| 1024 | 1292 ms | 94.7% | 239 / 842 | 3.7 / 13.2 | 145 us |
+| 4096 | 3449 ms | 93.7% | 241 / 918 | 3.7 / 16.6 | 352 us |
 
-At 4096 environments, the rest of the substep is the elastic forces (2.6 ms), the coarse space assembly and
-factorization (2.3 and 1.0 ms), contact detection (1.7 ms), the rigid substep (1.1 ms), and the contact finalization,
-damage, integration and update (0.5 ms together). The cost of an iteration of the slowest environment grows as
-roughly 90 us + 0.055 us per environment:
+At 4096 environments, the rest of the substep is the coarse space factorization and assembly (12.4 and 2.6 ms), the
+elastic forces (2.6 ms), contact detection (1.7 ms), the rigid substep (1.4 ms), and the contact finalization, damage,
+integration and update (0.6 ms together).
 
-- The fixed part is the launch of the graph nodes, about 8.5 us each, 7 per PCG iteration with rigid contacts, plus the
-  nodes of the Newton iterations and line searches spread over them. Fusing the reductions of an iteration into the
-  passes that produce their terms cut the cost of an iteration 3x.
-- The variable part is the work of the environments still solving: run alone, the system product (stiffness of the
-  faces and hinges) takes 271 us at 4096 environments over the 16.5 us of an empty launch, against 5 us with a single
-  environment solving. Converged environments cost nothing measurable, so compacting the active environments would not
-  pay. The product reads and atomically accumulates an estimated 0.5 GB per pass at 4096 environments, which bounds it
-  by the memory bandwidth of the GPU.
-- The slowest environment runs 3.8x the PCG iterations of the mean one, mostly through more Newton iterations (15.8
-  against 3.7 per substep), its contacts leaving the linear model of the previous iteration.
+A least-squares fit of the contact solve time of every profiled substep (1200 substeps, 64 to 4096 environments,
+R^2 = 0.995) gives its cost as 83 us per PCG iteration of the slowest environment, plus 185 ns per iteration of every
+environment still solving, plus 23 ns per iteration of every environment that has converged while another solves:
 
-Gained in the last round of changes, chiefly the friction bound no longer taken from an early iterate (see Contact
-response), which drove extra Newton iterations: against the same benchmark before them, environment steps per second
-went from 100 to 114 at 64 environments, 266 to 338 at 256, 737 to 759 at 1024 and 829 to 1108 at 4096. In the
-profile at 256 environments, the step went from 1699 to 1204 ms, the Newton iterations of the slowest environment from
-16.2 to 11.0 per substep, and the substeps reaching the Newton limit from 19 to 3.
+- The fixed part is the launch of the graph nodes, about 8.5 us each, 6 per PCG iteration with rigid contacts, plus the
+  nodes of the Newton iterations and line searches spread over them.
+- The active part is the memory traffic of the environments still solving, chiefly the system product, which reads the
+  linearized faces and hinges and scatters its result to their vertices by atomic additions. Timed alone with every
+  environment solving at 4096 environments, the product takes 287 us per iteration, and 212 us with its atomic
+  additions dropped (giving wrong results). At 4096 environments, the active part is 183 of the 323 ms of the contact
+  solve of a substep.
+- Converged environments do cost something, which an earlier version of this report denied from a timing of the system
+  product alone: their lanes share warps with those of the environments still solving, the batch being the fastest
+  index of every array. At 4096 environments, they take 63 of the 323 ms, at 1024 environments 14 of 122 ms. Measured
+  directly, with one environment grasping and every other one holding its egg at rest (28 iterations against its 92),
+  an iteration of the grasping environment takes 80 us alone, 132 us among 1024 environments and 298 us among 4096.
+  Compacting the environments still solving would recover part of it, at the cost of scattering the accesses of a warp
+  across environments that the batch-last layout keeps side by side.
+- The slowest environment runs 3.8x the PCG iterations of the mean one, mostly through more Newton iterations (16.6
+  against 3.7 per substep at 4096 environments), its contacts leaving the linear model of the previous iteration.
 
-Measured and rejected: a larger coarse space (12 or 20 patches gave the same iterations and time as the default 6,
-and none or 3 patches ran 18% slower), inexact Newton (a looser PCG tolerance in the early Newton iterations ran slower
-overall), and the compaction of active environments (see above).
+The round before these changes gained from the friction bound no longer taken from an early iterate (see Contact
+response), which drove extra Newton iterations: environment steps per second went from 100 to 114 at 64 environments,
+266 to 338 at 256, 737 to 759 at 1024 and 829 to 1108 at 4096.
+
+Measured and rejected: inexact Newton (a looser PCG tolerance in the early Newton iterations ran slower overall), a
+Newton iteration limit of 8 (14% faster, but 3% of the substeps then end at the limit, reported as solver failures),
+recomputing the linearized faces and hinges in every product instead of reading them (no faster), more than 12 coarse
+patches (see above), and a sparse direct solve of the egg (an estimated 9 MFLOP and 180 KiB per environment and
+factorization, set aside for the iterative solve).
 
 ## Remaining limits
 
@@ -289,11 +346,13 @@ overall), and the compaction of active environments (see above).
 - Backward Euler does not conserve the angular momentum of a freely spinning sheet, an integrator property. The contact
   impulses themselves are equal and opposite at one point.
 - Single precision resolves the stiff egg to a relative residual of about 1e-5 (STAGNATION, see above).
-- The Newton iteration limit is reached by about 0.5% of the environments of the grasp benchmark over 60 steps,
+- The Newton iteration limit is reached by about 0.6% of the environments of the grasp benchmark over 60 steps,
   reported as a solver failure.
+- An environment that has converged still costs about 23 ns per PCG iteration while another one solves, a fifth of the
+  contact solve at 4096 environments (see Profile).
+- The coarse space takes 137 KiB per environment with 12 patches on the egg, half of the memory the sheet adds.
 - Impacts need the default 1 ms substep: at 2 ms, the peak damage index of a drop comes out about half.
-- A reduced-state snapshot (`get_state`) restarts the rigid constraint solve cold, as the rigid solver does by design.
-  A checkpoint restores the run exactly (see History).
+- A rigid scene without sheets restores its snapshots to the rounding of the inertia of its links (see History).
 - Shell-rigid contact refuses hibernation and differentiable mode (an explicit error).
 - Run-to-run GPU differences grow in sensitive scenarios as described above.
 - Large spatial mesh-convergence studies were deferred, as the goal asks.
@@ -335,5 +394,8 @@ python examples/speed_benchmark/franka_egg.py -b 1024 --substeps 5 --pcg-toleran
 The source engine runs the same benchmark from a checkout of `fd051fe3`, adapted to its API: `ShellOptions` takes
 `n_pcg_iterations=50` (or 200) instead of the tolerances and the contact stiffness, and the egg material has no
 `tensile_strength` or `fracture` (no damage-only mode there). The per-phase profile wraps every kernel of the shell
-solve and both halves of the rigid substep with a synchronized timer (diagnostic script `profile_egg.py`, outside the
-repository), timing 30 steps from the closing of the gripper (t = 1.0 s) on.
+solve and both halves of the rigid substep with a synchronized timer, timing 30 steps from the closing of the gripper
+(t = 1.0 s) on and recording the PCG iterations of every environment and substep. The cost fit regresses the contact
+solve time of every recorded substep on its iteration counts, and the converged-environment measurement runs one
+grasping environment among resting ones (diagnostic scripts `profile_egg_record.py`, `fit_costs.py` and
+`idle_envs.py`, outside the repository).
