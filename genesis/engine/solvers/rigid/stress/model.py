@@ -35,6 +35,7 @@ from .solve import (
     kernel_pcg_init,
     kernel_peak,
 )
+from .surface_inverse import StressSurfaceInverse
 
 
 @dataclass(frozen=True)
@@ -43,6 +44,7 @@ class StressBuildTimings:
     operators_seconds: float
     factor_seconds: float
     inverse_seconds: float
+    surface_inverse_seconds: float
 
 
 class StressModel:
@@ -150,11 +152,24 @@ class StressModel:
             if self.selected_method == "inverse"
             else None
         )
+        inverse_done = time.perf_counter()
+        boundary_nodes = np.unique(surface_nodes)
+        boundary_bytes = (n_nodes * len(boundary_nodes) * 9 + n_nodes * 18) * np.dtype(gs.np_float).itemsize
+        boundary_bytes += boundary_nodes.nbytes
+        self.surface_inverse = None
+        if (
+            self.inverse is not None
+            and options.surface_inverse
+            and options.inverse_precision == "64"
+            and inverse_bytes + boundary_bytes <= options.inverse_max_bytes
+        ):
+            self.surface_inverse = StressSurfaceInverse(self.info, self.factor, self.create_state, boundary_nodes)
         self.build_timings = StressBuildTimings(
             topology_done - started,
             operators_done - topology_done,
             factor_done - operators_done,
-            time.perf_counter() - factor_done,
+            inverse_done - factor_done,
+            time.perf_counter() - inverse_done,
         )
 
     def create_state(self, n_envs: int) -> StressState:
@@ -195,6 +210,7 @@ class StressModel:
         state: StressState,
         options: RigidStressOptions | None = None,
         history: StressHistory | None = None,
+        surface_load: bool = False,
     ) -> None:
         """Balance the complete load, recover displacement and scan the full-domain peak."""
         if options is None:
@@ -204,7 +220,7 @@ class StressModel:
         if self.factor is not None:
             kernel_direct_init(state)
             if history is None:
-                self.solve(options, state)
+                self.solve(options, state, omega, surface_load)
             else:
                 history.predict(state)
                 kernel_full_residual(
@@ -244,8 +260,17 @@ class StressModel:
             )
         kernel_peak(options.young, options.poisson, state, self.info)
 
-    def solve(self, options: RigidStressOptions, state: StressState) -> None:
-        if self.inverse is not None:
+    def solve(
+        self,
+        options: RigidStressOptions,
+        state: StressState,
+        omega: qd.Tensor | None = None,
+        surface_load: bool = False,
+    ) -> None:
+        if surface_load and self.surface_inverse is not None:
+            assert omega is not None
+            self.surface_inverse.apply(options.young, omega, state)
+        elif self.inverse is not None:
             self.inverse.apply(options.young, state)
         else:
             self.factor.solve(options.young, state, self.info, options.cooperative_solve)

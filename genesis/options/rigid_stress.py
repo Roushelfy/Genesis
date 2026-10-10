@@ -33,6 +33,9 @@ class RigidStressOptions(Options):
     block factor. Both are constructed and applied in Quadrants. The inverse
     handles arbitrary nodal loads and costs quadratic shared storage; it is
     intended for small meshes. ``method="direct"`` forces the sparse factor.
+    ``surface_inverse`` accelerates exterior contact loads using their complete
+    nodal space and the rigid inertia fields. It adds shared storage within
+    the inverse budget. Disable it to compare the full-load inverse path.
     CUDA meshes up to 1,024 P2 nodes use a cooperative warp solve when
     ``cooperative_solve`` is enabled; other cases use the serial native path.
     ``method="inverse"`` explicitly requests the inverse and rejects an
@@ -65,5 +68,6 @@ class RigidStressOptions(Options):
     cooperative_pressure: StrictBool = True
     inverse_max_bytes: PositiveInt = 64 * 1024 * 1024
     inverse_precision: Literal["64", "32"] = "64"
+    surface_inverse: StrictBool = True
     inverse_corrections: Annotated[int, Field(ge=0, le=8)] = 2
     preconditioner: Literal["diagonal", "block"] = "block"

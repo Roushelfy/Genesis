@@ -113,7 +113,7 @@ def profile(workload: FrankaEgg, repetitions: int) -> dict:
         "nodal_scatter": lambda: kernel_scatter(entry.contacts, entry.state, entry.model.info, entry.surface.info),
         "inertia_relief_centrifugal": lambda: kernel_balance(entry.omega, entry.state, entry.model.info),
         "rhs_reduction": lambda: kernel_direct_init(entry.state),
-        "linear_solve": lambda: entry.model.solve(options, entry.state),
+        "linear_solve": lambda: entry.model.solve(options, entry.state, entry.omega, surface_load=True),
         "complete_residual": lambda: kernel_full_residual(
             options.young, options.tolerance, options.absolute_tolerance, entry.state, entry.model.info, False
         ),
@@ -185,6 +185,7 @@ def main() -> None:
     parser.add_argument("--serial-pressure", action="store_true")
     parser.add_argument("--method", choices=("auto", "direct", "inverse"), default="auto")
     parser.add_argument("--inverse-precision", choices=("64", "32"), default="64")
+    parser.add_argument("--full-inverse", action="store_true", help="Compare the full nodal-load inverse application.")
     parser.add_argument("--history", type=int, choices=(0, 4), default=0)
     parser.add_argument("--trace", action="store_true", help="Export a separate intrusive CUDA/CPU trace pass.")
     parser.add_argument(
@@ -207,6 +208,7 @@ def main() -> None:
         history_size=args.history,
         cooperative_pressure=not args.serial_pressure,
         conditions=args.conditions,
+        surface_inverse=not args.full_inverse,
     )
     if args.save_conditions is not None:
         workload.save_conditions(args.save_conditions)
@@ -312,6 +314,7 @@ def main() -> None:
             "cooperative_pressure": not args.serial_pressure,
             "method": args.method,
             "inverse_precision": args.inverse_precision,
+            "surface_inverse": not args.full_inverse,
             "history": args.history,
             "host": platform.node(),
             "gpu": torch.cuda.get_device_name(),
@@ -362,6 +365,7 @@ def main() -> None:
             result["dofs"] = entry.model.info.vertices.shape[0] * 3
             result["tetrahedra"] = entry.model.info.elements.shape[0]
             result["method_selected"] = entry.model.selected_method
+            result["surface_inverse_selected"] = entry.model.surface_inverse is not None
             result["build_timings_including_JIT"] = asdict(entry.model.build_timings)
             result["maximum_stress_Pa"] = tensor_to_array(workload.link.get_max_stress()).tolist()
             buffers = []

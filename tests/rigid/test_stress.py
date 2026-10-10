@@ -48,17 +48,18 @@ def test_native_p2_shared_operators(tmp_path):
 @pytest.mark.required
 @pytest.mark.precision("64")
 @pytest.mark.parametrize(
-    "method,cooperative,inverse_precision,inverse_corrections",
+    "method,cooperative,inverse_precision,inverse_corrections,surface_load",
     (
-        ("direct", False, "64", 2),
-        ("direct", True, "64", 2),
-        ("inverse", True, "64", 2),
-        ("inverse", True, "32", 2),
-        ("inverse", True, "32", 0),
+        ("direct", False, "64", 2, False),
+        ("direct", True, "64", 2, False),
+        ("inverse", True, "64", 2, False),
+        ("inverse", True, "64", 2, True),
+        ("inverse", True, "32", 2, False),
+        ("inverse", True, "32", 0, False),
     ),
 )
 def test_native_batched_recovery_against_full_fp64_direct(
-    tmp_path, method, cooperative, inverse_precision, inverse_corrections
+    tmp_path, method, cooperative, inverse_precision, inverse_corrections, surface_load
 ):
     vertices, tetrahedra, surface, _ = shell_mesh(1, 2, 0.0005)
     mesh = tmp_path / "shell.npz"
@@ -79,13 +80,16 @@ def test_native_batched_recovery_against_full_fp64_direct(
     state = model.create_state(n_envs)
     random = np.random.default_rng(8231)
     force = random.normal(size=(len(oracle.xyz), n_envs, 3)) * 0.01
+    if surface_load:
+        interior = np.setdiff1d(np.arange(len(force)), np.unique(qd_to_numpy(model.info.surface_nodes)))
+        force[interior] = 0.0
     force[:, 0] = 0.0
     angular_velocity = random.normal(size=(n_envs, 3)) * 2.0
     angular_velocity[0] = 0.0
     state.force.from_numpy(force)
     omega = V_VEC(3, dtype=gs.qd_float, shape=(n_envs,))
     omega.from_numpy(angular_velocity)
-    model.recover(omega, state)
+    model.recover(omega, state, surface_load=surface_load)
     rhs = qd_to_numpy(state.rhs, transpose=True).reshape((n_envs, -1)).T
     relative = oracle.xyz - oracle.com
     centrifugal = -np.cross(angular_velocity[:, None], np.cross(angular_velocity[:, None], relative[None]))
@@ -155,6 +159,7 @@ def test_native_finite_pressure_matches_independent_cpu(tmp_path, cooperative):
     normal = np.zeros_like(position)
     radius = random.uniform(0.0048, 0.0075, size=(n_contacts, n_envs))
     valid = np.zeros((n_contacts, n_envs), dtype=bool)
+    friction = np.broadcast_to([0.0, 0.3, 0.6, 1.4], (n_contacts, n_envs)).copy()
     expected = np.zeros((len(oracle.xyz), n_envs, 3))
     for i_b in range(1, n_envs):
         for i_c in range(i_b):
@@ -166,7 +171,7 @@ def test_native_finite_pressure_matches_independent_cpu(tmp_path, cooperative):
             tangent = np.cross(inward, np.eye(3)[np.argmin(np.abs(inward))])
             tangent /= np.linalg.norm(tangent)
             traction = (0.1 + random.random()) * (inward + 0.25 * tangent)
-            patch = WrenchPatch(point, traction, radius[i_c, i_b], 0.8, np.zeros(3), inward)
+            patch = WrenchPatch(point, traction, radius[i_c, i_b], friction[i_c, i_b], np.zeros(3), inward)
             mapped = mapper.map(patch)
             position[i_c, i_b], force[i_c, i_b], normal[i_c, i_b] = point, traction, inward
             valid[i_c, i_b] = True
@@ -175,7 +180,7 @@ def test_native_finite_pressure_matches_independent_cpu(tmp_path, cooperative):
     contacts.force.from_numpy(force)
     contacts.normal.from_numpy(normal)
     contacts.radius.from_numpy(radius)
-    contacts.friction.fill(0.8)
+    contacts.friction.from_numpy(friction)
     contacts.valid.from_numpy(valid)
     kernel_anchor(float(np.finfo(float).eps), contacts, surface.info)
     kernel_pressure(contacts, surface.info, cooperative)

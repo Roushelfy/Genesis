@@ -60,6 +60,7 @@ class RigidStressRecovery:
                             and previous.method == options.method
                             and previous.inverse_precision == options.inverse_precision
                             and previous.inverse_max_bytes == options.inverse_max_bytes
+                            and previous.surface_inverse == options.surface_inverse
                         ):
                             model = existing.model
                             if previous.quadrature == options.quadrature:
@@ -114,7 +115,7 @@ class RigidStressRecovery:
             kernel_anchor(self.source_epsilon, entry.contacts, entry.surface.info)
             kernel_pressure(entry.contacts, entry.surface.info, entry.link.stress_options.cooperative_pressure)
             kernel_scatter(entry.contacts, entry.state, entry.model.info, entry.surface.info)
-            entry.model.recover(entry.omega, entry.state, entry.link.stress_options, entry.history)
+            entry.model.recover(entry.omega, entry.state, entry.link.stress_options, entry.history, surface_load=True)
             kernel_accept(entry.state, entry.contacts, solver._errno)
             if entry.history is not None:
                 entry.history.append(entry.state)
@@ -144,6 +145,8 @@ class RigidStressRecovery:
                     yield from iter_data(entry.model.factor.info, f"stress.{i}.factor")
                 if entry.model.inverse is not None:
                     yield from iter_data(entry.model.inverse.info, f"stress.{i}.inverse")
+                if entry.model.surface_inverse is not None:
+                    yield from iter_data(entry.model.surface_inverse.info, f"stress.{i}.surface_inverse")
                 seen.add(id(entry.model))
             if id(entry.surface) not in seen_surfaces:
                 yield from iter_data(entry.surface.info, f"stress.{i}.surface")

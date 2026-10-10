@@ -423,7 +423,7 @@ def kernel_pressure_correct_warp(contact_state: StressContactState, surface_info
             if lane == 0:
                 contact_state.coefficient[i_c, i_b] = coefficient / weight_sum
                 contact_state.status[i_c, i_b] = 0 if accepted else 3
-                contact_state.evaluations[i_c, i_b] = iterations
+                contact_state.evaluations[i_c, i_b] += iterations
 
 
 @qd.kernel(graph=True)
@@ -471,6 +471,7 @@ def kernel_pressure_correct(contact_state: StressContactState, surface_info: Str
             weight_sum = contact_state.weight_sum[i_c, i_b]
             coefficient = contact_state.coefficient[i_c, i_b] * weight_sum
             accepted = False
+            previous_evaluations = contact_state.evaluations[i_c, i_b]
             for iteration in range(80):
                 if not accepted:
                     gradient = qd.Vector([-1.0, 0.0, 0.0])
@@ -489,7 +490,7 @@ def kernel_pressure_correct(contact_state: StressContactState, surface_info: Str
                             objective -= 0.5 * weight * profile * profile
                             if profile > 0.0:
                                 hessian += weight * coordinates.outer_product(coordinates)
-                    contact_state.evaluations[i_c, i_b] = iteration + 1
+                    contact_state.evaluations[i_c, i_b] = previous_evaluations + iteration + 1
                     accepted = gradient.norm() <= 2e-12
                     if not accepted and hessian.determinant() > 1e-14 * hessian.trace() ** 3:
                         step = hessian.inverse() @ gradient
