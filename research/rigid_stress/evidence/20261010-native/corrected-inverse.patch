@@ -1,0 +1,13 @@
+diff --git a/genesis/engine/solvers/rigid/stress/inverse.py b/genesis/engine/solvers/rigid/stress/inverse.py
+index bfb34b22..2249e277 100644
+--- a/genesis/engine/solvers/rigid/stress/inverse.py
++++ b/genesis/engine/solvers/rigid/stress/inverse.py
+@@ -80,7 +80,7 @@ def kernel_apply_inverse(
+             for j in range(inverse_info.blocks.shape[1]):
+                 source = stress_state.rhs[j, i_b]
+                 if qd.static(correction):
+-                    source = -stress_state.residual[j, i_b]
++                    source = stress_state.residual[j, i_b]
+                 value += inverse_info.blocks[i_n, j] @ source
+             if qd.static(correction):
+                 stress_state.displacement[i_n, i_b] += value / young

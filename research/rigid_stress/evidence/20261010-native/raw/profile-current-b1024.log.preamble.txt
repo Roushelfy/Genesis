@@ -1,0 +1,24 @@
+[Quadrants] version 1.3.3, llvm 22.1.0, commit 00423caa, linux, python 3.10.12
+[38;5;226m[Genesis] [06:11:29] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint1`[0m
+[38;5;226m[Genesis] [06:11:29] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint2`[0m
+[38;5;226m[Genesis] [06:11:30] [WARNING] Neutral robot position (qpos0) exceeds joint limits.[0m
+[38;5;226m[Genesis] [06:11:31] [WARNING] Constraint solver time constant should be greater than 2*substep_dt. timeconst is changed from `0.005` to `0.02`). Decrease simulation timestep or increase timeconst to avoid altering the original value.[0m
+[38;5;226m[Genesis] [06:11:34] [WARNING] Filtered out geometry pairs causing self-collision for the neutral configuration (qpos0): (6, 11), (7, 11), (14, 21), (15, 20), (16, 23), (17, 22). Consider tuning Morph option 'decompose_robot_error_threshold' or specify dedicated collision meshes. This behavior can be disabled by setting Morph option 'enable_neutral_collision=True'.[0m
+======================================================================================
+Kernel Profiler(count, default) @ CUDA on NVIDIA RTX PRO 6000 Blackwell Server Edition
+======================================================================================
+[      %     total   count |      min       avg       max   ] Kernel name
+--------------------------------------------------------------------------------------
+[ 97.25%   0.734 s    100x |    7.338     7.341     7.354 ms] kernel_pressure_c712_0_kernel_1_range_for
+[  1.66%   0.013 s    100x |    0.123     0.125     0.129 ms] kernel_anchor_c710_0_kernel_1_range_for
+[  0.22%   0.002 s    100x |    0.013     0.016     0.023 ms] kernel_associate_c716_0_kernel_3_range_for
+[  0.21%   0.002 s    100x |    0.014     0.016     0.025 ms] kernel_associate_c716_0_kernel_1_range_for
+[  0.18%   0.001 s    100x |    0.012     0.013     0.016 ms] kernel_begin_step_c766_0_kernel_1_range_for
+[  0.11%   0.001 s    100x |    0.006     0.008     0.012 ms] kernel_pressure_c712_0_kernel_0_serial
+[  0.10%   0.001 s    100x |    0.006     0.008     0.011 ms] kernel_associate_c716_0_kernel_0_serial
+[  0.10%   0.001 s    100x |    0.006     0.008     0.015 ms] kernel_anchor_c710_0_kernel_0_serial
+[  0.10%   0.001 s    100x |    0.006     0.007     0.017 ms] kernel_begin_step_c766_0_kernel_0_serial
+[  0.08%   0.001 s    100x |    0.004     0.006     0.010 ms] kernel_associate_c716_0_kernel_2_serial
+--------------------------------------------------------------------------------------
+[100.00%] Total execution time:   0.755 s   number of results: 10
+======================================================================================

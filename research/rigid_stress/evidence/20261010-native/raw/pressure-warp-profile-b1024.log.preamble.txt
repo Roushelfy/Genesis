@@ -1,0 +1,56 @@
+[Quadrants] version 1.3.3, llvm 22.1.0, commit 00423caa, linux, python 3.10.12
+[38;5;226m[Genesis] [07:04:24] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint1`[0m
+[38;5;226m[Genesis] [07:04:24] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint2`[0m
+[38;5;226m[Genesis] [07:04:25] [WARNING] Neutral robot position (qpos0) exceeds joint limits.[0m
+[38;5;226m[Genesis] [07:04:25] [WARNING] Constraint solver time constant should be greater than 2*substep_dt. timeconst is changed from `0.005` to `0.02`). Decrease simulation timestep or increase timeconst to avoid altering the original value.[0m
+[38;5;226m[Genesis] [07:04:27] [WARNING] Filtered out geometry pairs causing self-collision for the neutral configuration (qpos0): (6, 11), (7, 11), (14, 21), (15, 20), (16, 23), (17, 22). Consider tuning Morph option 'decompose_robot_error_threshold' or specify dedicated collision meshes. This behavior can be disabled by setting Morph option 'enable_neutral_collision=True'.[0m
+libEGL warning: failed to open /dev/dri/renderD135: Permission denied
+
+libEGL warning: failed to open /dev/dri/card8: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD134: Permission denied
+
+libEGL warning: failed to open /dev/dri/card7: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD133: Permission denied
+
+libEGL warning: failed to open /dev/dri/card6: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD132: Permission denied
+
+libEGL warning: failed to open /dev/dri/card5: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD131: Permission denied
+
+libEGL warning: failed to open /dev/dri/card4: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD130: Permission denied
+
+libEGL warning: failed to open /dev/dri/card3: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD129: Permission denied
+
+libEGL warning: failed to open /dev/dri/card2: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD128: Permission denied
+
+libEGL warning: failed to open /dev/dri/card1: Permission denied
+
+======================================================================================
+Kernel Profiler(count, default) @ CUDA on NVIDIA RTX PRO 6000 Blackwell Server Edition
+======================================================================================
+[      %     total   count |      min       avg       max   ] Kernel name
+--------------------------------------------------------------------------------------
+[ 68.53%   0.045 s    100x |    0.415     0.453     0.497 ms] kernel_pressure_warp_c714_0_kernel_1_range_for
+[ 18.69%   0.012 s    100x |    0.122     0.123     0.127 ms] kernel_anchor_c710_0_kernel_1_range_for
+[  2.44%   0.002 s    100x |    0.015     0.016     0.020 ms] kernel_associate_c716_0_kernel_3_range_for
+[  2.42%   0.002 s    100x |    0.014     0.016     0.022 ms] kernel_associate_c716_0_kernel_1_range_for
+[  2.08%   0.001 s    100x |    0.012     0.014     0.020 ms] kernel_begin_step_c766_0_kernel_1_range_for
+[  1.45%   0.001 s    100x |    0.006     0.010     0.030 ms] kernel_pressure_warp_c714_0_kernel_0_serial
+[  1.21%   0.001 s    100x |    0.006     0.008     0.011 ms] kernel_anchor_c710_0_kernel_0_serial
+[  1.20%   0.001 s    100x |    0.006     0.008     0.011 ms] kernel_associate_c716_0_kernel_0_serial
+[  1.11%   0.001 s    100x |    0.006     0.007     0.013 ms] kernel_begin_step_c766_0_kernel_0_serial
+[  0.88%   0.001 s    100x |    0.005     0.006     0.010 ms] kernel_associate_c716_0_kernel_2_serial
+--------------------------------------------------------------------------------------
+[100.00%] Total execution time:   0.066 s   number of results: 10
+======================================================================================

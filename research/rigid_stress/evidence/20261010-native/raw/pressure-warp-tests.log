@@ -1,0 +1,206 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0
+rootdir: /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-pressure
+configfile: pyproject.toml
+plugins: anyio-4.15.1, forked-1.7.5, print-1.2.0, timeout-2.4.0, xdist-3.8.0, quadrants-1.3.3, syrupy-6.1.1
+timeout: 1200.0s
+timeout method: signal
+timeout func_only: False
+collected 15 items / 9 deselected / 6 selected
+
+tests/rigid/test_stress.py [Genesis 07:02:43] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 07:02:43] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+patch statuses [[0 0 0 0]
+ [0 0 0 0]
+ [0 0 0 0]] evaluations [[0 0 0 0]
+ [0 0 0 0]
+ [0 0 0 0]]
+[32m.[0m[Genesis 07:02:45] Exiting Genesis and caching compiled kernels...
+[Genesis 07:02:46] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 07:02:46] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 07:02:47] Exiting Genesis and caching compiled kernels...
+[Genesis 07:02:48] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 07:02:48] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 07:02:49] Exiting Genesis and caching compiled kernels...
+[Genesis 07:02:50] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 07:02:50] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 07:02:51] Exiting Genesis and caching compiled kernels...
+[Genesis 07:02:51] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 07:02:51] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[Genesis 07:02:53] Scene <ed0612d> created.
+[Genesis 07:02:58] Adding <gs.engine.entities.RigidEntity> 'plane_9690f31'. idx: 0, morph: <gs.morphs.Plane>, material: <gs.materials.Rigid>.
+[Genesis 07:03:00] Adding <gs.engine.entities.RigidEntity> 'shell_bbf95e1'. idx: 1, morph: <gs.morphs.Mesh(file='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-native-iteration/tmp/pytest-of-zhaofeng/pytest-24/test_native_rigid_lifecycle_an0/shell.obj')>, material: <gs.materials.Rigid>.
+[Genesis 07:03:00] Building scene <ed0612d>...
+[Genesis 07:03:20] Compiling simulation kernels...
+[Genesis 07:03:39] Building visualizer...
+libEGL warning: failed to open /dev/dri/renderD135: Permission denied
+
+libEGL warning: failed to open /dev/dri/card8: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD134: Permission denied
+
+libEGL warning: failed to open /dev/dri/card7: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD133: Permission denied
+
+libEGL warning: failed to open /dev/dri/card6: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD132: Permission denied
+
+libEGL warning: failed to open /dev/dri/card5: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD131: Permission denied
+
+libEGL warning: failed to open /dev/dri/card4: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD130: Permission denied
+
+libEGL warning: failed to open /dev/dri/card3: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD129: Permission denied
+
+libEGL warning: failed to open /dev/dri/card2: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD128: Permission denied
+
+libEGL warning: failed to open /dev/dri/card1: Permission denied
+
+[Genesis 07:03:44] Software rendering context detected. Shadows and plane reflection not supported. Beware rendering will be extremely slow.
+[Genesis 07:03:47] Running at 903.54 FPS (301.18 FPS per env, 3 envs).
+actual rotated contacts substeps 1 peak error Pa [-1.47210085e-06 -1.52671419e-06 -1.47949322e-06]
+[Genesis 07:03:47] Scene <a67c198> created.
+[Genesis 07:03:47] Adding <gs.engine.entities.RigidEntity> 'plane_ba4235a'. idx: 0, morph: <gs.morphs.Plane>, material: <gs.materials.Rigid>.
+[Genesis 07:03:47] Adding <gs.engine.entities.RigidEntity> 'shell_bbe36d2'. idx: 1, morph: <gs.morphs.Mesh(file='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-native-iteration/tmp/pytest-of-zhaofeng/pytest-24/test_native_rigid_lifecycle_an0/shell.obj')>, material: <gs.materials.Rigid>.
+[Genesis 07:03:47] Building scene <a67c198>...
+[Genesis 07:03:48] Compiling simulation kernels...
+[Genesis 07:03:50] Building visualizer...
+libEGL warning: failed to open /dev/dri/renderD135: Permission denied
+
+libEGL warning: failed to open /dev/dri/card8: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD134: Permission denied
+
+libEGL warning: failed to open /dev/dri/card7: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD133: Permission denied
+
+libEGL warning: failed to open /dev/dri/card6: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD132: Permission denied
+
+libEGL warning: failed to open /dev/dri/card5: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD131: Permission denied
+
+libEGL warning: failed to open /dev/dri/card4: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD130: Permission denied
+
+libEGL warning: failed to open /dev/dri/card3: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD129: Permission denied
+
+libEGL warning: failed to open /dev/dri/card2: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD128: Permission denied
+
+libEGL warning: failed to open /dev/dri/card1: Permission denied
+
+[Genesis 07:03:50] Software rendering context detected. Shadows and plane reflection not supported. Beware rendering will be extremely slow.
+[32m.[0m[Genesis 07:03:50] Exiting Genesis and caching compiled kernels...
+[Genesis 07:03:51] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 07:03:51] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[Genesis 07:03:51] Scene <862d511> created.
+[Genesis 07:03:51] Adding <gs.engine.entities.RigidEntity> 'plane_45f58ba'. idx: 0, morph: <gs.morphs.Plane>, material: <gs.materials.Rigid>.
+[Genesis 07:03:51] Adding <gs.engine.entities.RigidEntity> 'shell_af0298c'. idx: 1, morph: <gs.morphs.Mesh(file='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-native-iteration/tmp/pytest-of-zhaofeng/pytest-24/test_native_rigid_lifecycle_an1/shell.obj')>, material: <gs.materials.Rigid>.
+[Genesis 07:03:51] Building scene <862d511>...
+[Genesis 07:04:06] Compiling simulation kernels...
+[Genesis 07:04:09] Building visualizer...
+libEGL warning: failed to open /dev/dri/renderD135: Permission denied
+
+libEGL warning: failed to open /dev/dri/card8: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD134: Permission denied
+
+libEGL warning: failed to open /dev/dri/card7: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD133: Permission denied
+
+libEGL warning: failed to open /dev/dri/card6: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD132: Permission denied
+
+libEGL warning: failed to open /dev/dri/card5: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD131: Permission denied
+
+libEGL warning: failed to open /dev/dri/card4: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD130: Permission denied
+
+libEGL warning: failed to open /dev/dri/card3: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD129: Permission denied
+
+libEGL warning: failed to open /dev/dri/card2: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD128: Permission denied
+
+libEGL warning: failed to open /dev/dri/card1: Permission denied
+
+[Genesis 07:04:09] Software rendering context detected. Shadows and plane reflection not supported. Beware rendering will be extremely slow.
+[Genesis 07:04:09] Running at 246.68 FPS (82.23 FPS per env, 3 envs).
+[Genesis 07:04:09] Running at 246.34 FPS (82.11 FPS per env, 3 envs).
+[Genesis 07:04:09] Running at 246.15 FPS (82.05 FPS per env, 3 envs).
+[Genesis 07:04:09] Running at 245.99 FPS (82.00 FPS per env, 3 envs).
+[Genesis 07:04:09] Running at 245.84 FPS (81.95 FPS per env, 3 envs).
+[Genesis 07:04:09] Running at 245.68 FPS (81.89 FPS per env, 3 envs).
+actual rotated contacts substeps 4 peak error Pa [-1.94419408e-06 -1.94687163e-06 -1.96740439e-06]
+[Genesis 07:04:09] Scene <672d394> created.
+[Genesis 07:04:09] Adding <gs.engine.entities.RigidEntity> 'plane_df1e4fb'. idx: 0, morph: <gs.morphs.Plane>, material: <gs.materials.Rigid>.
+[Genesis 07:04:09] Adding <gs.engine.entities.RigidEntity> 'shell_595fc40'. idx: 1, morph: <gs.morphs.Mesh(file='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-native-iteration/tmp/pytest-of-zhaofeng/pytest-24/test_native_rigid_lifecycle_an1/shell.obj')>, material: <gs.materials.Rigid>.
+[Genesis 07:04:09] Building scene <672d394>...
+[Genesis 07:04:10] Compiling simulation kernels...
+[Genesis 07:04:10] Building visualizer...
+libEGL warning: failed to open /dev/dri/renderD135: Permission denied
+
+libEGL warning: failed to open /dev/dri/card8: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD134: Permission denied
+
+libEGL warning: failed to open /dev/dri/card7: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD133: Permission denied
+
+libEGL warning: failed to open /dev/dri/card6: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD132: Permission denied
+
+libEGL warning: failed to open /dev/dri/card5: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD131: Permission denied
+
+libEGL warning: failed to open /dev/dri/card4: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD130: Permission denied
+
+libEGL warning: failed to open /dev/dri/card3: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD129: Permission denied
+
+libEGL warning: failed to open /dev/dri/card2: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD128: Permission denied
+
+libEGL warning: failed to open /dev/dri/card1: Permission denied
+
+[Genesis 07:04:10] Software rendering context detected. Shadows and plane reflection not supported. Beware rendering will be extremely slow.
+[Genesis 07:04:10] Running at 703.86 FPS (234.62 FPS per env, 3 envs).
+[Genesis 07:04:10] Running at 704.15 FPS (234.72 FPS per env, 3 envs).
+[32m.[0m[Genesis 07:04:11] Exiting Genesis and caching compiled kernels...
+
+
+============================== slowest durations ===============================
+
+(18 durations < 100s hidden.)
+[32m================== [32m[1m6 passed[0m, [33m9 deselected[0m[32m in 88.24s (0:01:28)[0m[32m ==================[0m

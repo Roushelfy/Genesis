@@ -1,0 +1,460 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0
+rootdir: /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery
+configfile: pyproject.toml
+plugins: anyio-4.15.1, forked-1.7.5, print-1.2.0, timeout-2.4.0, xdist-3.8.0, quadrants-1.3.3, syrupy-6.1.1
+timeout: 1200.0s
+timeout method: signal
+timeout func_only: False
+collected 15 items
+
+tests/rigid/test_stress.py [Genesis 06:51:28] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 06:51:28] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 06:51:42] Exiting Genesis and caching compiled kernels...
+[Genesis 06:51:43] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 06:51:43] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+native method direct False 64 full residual [0.00000000e+00 4.81778967e-12 8.51929173e-12 6.08884147e-12
+ 5.09550368e-12] relative displacement error [0.00000000e+00 1.49839352e-11 4.21143949e-11 2.84424233e-11
+ 1.91254789e-11] peak absolute error Pa [0.00000000e+00 2.60144589e-07 2.50875019e-08 2.22571543e-08
+ 2.53305188e-07] corrections [0 0 0 0 0] fallbacks [0 0 0 0 0]
+[32m.[0m[Genesis 06:51:57] Exiting Genesis and caching compiled kernels...
+[Genesis 06:51:58] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 06:51:58] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+native method direct True 64 full residual [0.00000000e+00 5.22309852e-12 7.68552533e-12 6.49677618e-12
+ 4.88949742e-12] relative displacement error [0.00000000e+00 1.74171439e-11 3.76393409e-11 3.50863588e-11
+ 2.04593174e-11] peak absolute error Pa [0.00000000e+00 1.71632564e-07 3.85698513e-08 1.07211235e-07
+ 4.46816557e-07] corrections [0 0 0 0 0] fallbacks [0 0 0 0 0]
+[32m.[0m[Genesis 06:52:12] Exiting Genesis and caching compiled kernels...
+[Genesis 06:52:13] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 06:52:13] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+native method inverse True 64 full residual [0.00000000e+00 2.14275173e-11 3.81492869e-11 3.35998741e-11
+ 3.87275693e-11] relative displacement error [0.00000000e+00 1.75259113e-11 2.82266629e-11 2.78282410e-11
+ 1.77003439e-11] peak absolute error Pa [0.00000000e+00 2.02213414e-07 1.13075657e-07 4.55693225e-08
+ 2.77017534e-07] corrections [0 0 0 0 0] fallbacks [0 0 0 0 0]
+[32m.[0m[Genesis 06:52:27] Exiting Genesis and caching compiled kernels...
+[Genesis 06:52:28] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 06:52:28] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+native method inverse True 32 full residual [0.00000000e+00 3.85241545e-09 4.59252385e-09 4.90719663e-09
+ 4.21896922e-09] relative displacement error [0.00000000e+00 3.33639167e-11 1.19850237e-11 2.16429924e-11
+ 1.98709230e-11] peak absolute error Pa [0.00000000e+00 3.14787030e-07 6.28482667e-07 1.47489482e-06
+ 1.54206646e-07] corrections [0 2 2 2 2] fallbacks [0 0 0 0 0]
+[32m.[0m[Genesis 06:52:43] Exiting Genesis and caching compiled kernels...
+[Genesis 06:52:43] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 06:52:43] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+native method inverse True 32 full residual [0.00000000e+00 4.64202285e-12 8.11604833e-12 5.45633650e-12
+ 4.45325465e-12] relative displacement error [0.00000000e+00 1.12095946e-11 4.48948950e-11 2.38654105e-11
+ 1.88584972e-11] peak absolute error Pa [0.00000000e+00 1.38279574e-07 1.64698577e-07 2.49339791e-07
+ 1.64298399e-07] corrections [0 0 0 0 0] fallbacks [0 1 1 1 1]
+[32m.[0m[Genesis 06:52:58] Exiting Genesis and caching compiled kernels...
+[Genesis 06:52:58] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 06:52:58] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+patch statuses [[0 0 0 0]
+ [0 0 0 0]
+ [0 0 0 0]] evaluations [[0 0 0 0]
+ [0 0 0 0]
+ [0 0 0 0]]
+[32m.[0m[Genesis 06:52:59] Exiting Genesis and caching compiled kernels...
+[Genesis 06:53:00] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 06:53:00] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 06:53:01] Exiting Genesis and caching compiled kernels...
+[Genesis 06:53:02] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 06:53:02] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 06:53:03] Exiting Genesis and caching compiled kernels...
+[Genesis 06:53:03] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 06:53:03] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 06:53:05] Exiting Genesis and caching compiled kernels...
+[Genesis 06:53:05] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 06:53:05] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 06:53:07] Exiting Genesis and caching compiled kernels...
+[Genesis 06:53:07] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 06:53:07] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 06:53:09] Exiting Genesis and caching compiled kernels...
+[Genesis 06:53:09] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 06:53:09] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[Genesis 06:53:10] Scene <fb65403> created.
+[Genesis 06:53:10] Adding <gs.engine.entities.RigidEntity> 'plane_193f995'. idx: 0, morph: <gs.morphs.Plane>, material: <gs.materials.Rigid>.
+[Genesis 06:53:10] Adding <gs.engine.entities.RigidEntity> 'shell_743ea92'. idx: 1, morph: <gs.morphs.Mesh(file='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-native-iteration/tmp/pytest-of-zhaofeng/pytest-23/test_native_rigid_lifecycle_an0/shell.obj')>, material: <gs.materials.Rigid>.
+[Genesis 06:53:10] Building scene <fb65403>...
+[Genesis 06:53:26] Compiling simulation kernels...
+[Genesis 06:53:29] Building visualizer...
+libEGL warning: failed to open /dev/dri/renderD135: Permission denied
+
+libEGL warning: failed to open /dev/dri/card8: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD134: Permission denied
+
+libEGL warning: failed to open /dev/dri/card7: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD133: Permission denied
+
+libEGL warning: failed to open /dev/dri/card6: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD132: Permission denied
+
+libEGL warning: failed to open /dev/dri/card5: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD131: Permission denied
+
+libEGL warning: failed to open /dev/dri/card4: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD130: Permission denied
+
+libEGL warning: failed to open /dev/dri/card3: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD129: Permission denied
+
+libEGL warning: failed to open /dev/dri/card2: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD128: Permission denied
+
+libEGL warning: failed to open /dev/dri/card1: Permission denied
+
+[Genesis 06:53:29] Software rendering context detected. Shadows and plane reflection not supported. Beware rendering will be extremely slow.
+[Genesis 06:53:32] Running at 847.40 FPS (282.47 FPS per env, 3 envs).
+actual rotated contacts substeps 1 peak error Pa [-1.78630580e-06 -1.76169851e-06 -1.79506605e-06]
+[31mF[0m[Genesis 06:53:32] Exiting Genesis and caching compiled kernels...
+[Genesis 06:53:33] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 06:53:33] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[Genesis 06:53:33] Scene <f943d1d> created.
+[Genesis 06:53:33] Adding <gs.engine.entities.RigidEntity> 'plane_f66d980'. idx: 0, morph: <gs.morphs.Plane>, material: <gs.materials.Rigid>.
+[Genesis 06:53:33] Adding <gs.engine.entities.RigidEntity> 'shell_83d4710'. idx: 1, morph: <gs.morphs.Mesh(file='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-native-iteration/tmp/pytest-of-zhaofeng/pytest-23/test_native_rigid_lifecycle_an1/shell.obj')>, material: <gs.materials.Rigid>.
+[Genesis 06:53:33] Building scene <f943d1d>...
+[Genesis 06:53:48] Compiling simulation kernels...
+[Genesis 06:53:51] Building visualizer...
+libEGL warning: failed to open /dev/dri/renderD135: Permission denied
+
+libEGL warning: failed to open /dev/dri/card8: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD134: Permission denied
+
+libEGL warning: failed to open /dev/dri/card7: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD133: Permission denied
+
+libEGL warning: failed to open /dev/dri/card6: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD132: Permission denied
+
+libEGL warning: failed to open /dev/dri/card5: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD131: Permission denied
+
+libEGL warning: failed to open /dev/dri/card4: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD130: Permission denied
+
+libEGL warning: failed to open /dev/dri/card3: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD129: Permission denied
+
+libEGL warning: failed to open /dev/dri/card2: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD128: Permission denied
+
+libEGL warning: failed to open /dev/dri/card1: Permission denied
+
+[Genesis 06:53:51] Software rendering context detected. Shadows and plane reflection not supported. Beware rendering will be extremely slow.
+[Genesis 06:53:51] Running at 234.96 FPS (78.32 FPS per env, 3 envs).
+[Genesis 06:53:51] Running at 234.39 FPS (78.13 FPS per env, 3 envs).
+[Genesis 06:53:51] Running at 233.91 FPS (77.97 FPS per env, 3 envs).
+[Genesis 06:53:51] Running at 233.51 FPS (77.84 FPS per env, 3 envs).
+[Genesis 06:53:51] Running at 233.24 FPS (77.75 FPS per env, 3 envs).
+[Genesis 06:53:51] Running at 232.99 FPS (77.66 FPS per env, 3 envs).
+[Genesis 06:53:51] Running at 232.66 FPS (77.55 FPS per env, 3 envs).
+actual rotated contacts substeps 4 peak error Pa [-1.58288458e-06 -1.49529660e-06 -1.57879549e-06]
+[31mF[0m[Genesis 06:53:51] Exiting Genesis and caching compiled kernels...
+[Genesis 06:53:52] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 06:53:52] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 06:54:07] Exiting Genesis and caching compiled kernels...
+
+
+=================================== FAILURES ===================================
+[31m[1m_______________ test_native_rigid_lifecycle_and_partial_reset[1] _______________[0m
+
+tmp_path = PosixPath('/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-native-iteration/tmp/pytest-of-zhaofeng/pytest-23/test_native_rigid_lifecycle_an0')
+substeps = 1
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x731a97cfcd30>
+
+    [0m[37m@pytest[39;49;00m.mark.required[90m[39;49;00m
+    [37m@pytest[39;49;00m.mark.precision([33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [37m@pytest[39;49;00m.mark.parametrize([33m"[39;49;00m[33msubsteps[39;49;00m[33m"[39;49;00m, ([94m1[39;49;00m, [94m4[39;49;00m))[90m[39;49;00m
+    [94mdef[39;49;00m[90m [39;49;00m[92mtest_native_rigid_lifecycle_and_partial_reset[39;49;00m(tmp_path, substeps, monkeypatch):[90m[39;49;00m
+        vertices, tetrahedra, faces, _ = shell_mesh([94m1[39;49;00m, [94m2[39;49;00m, [94m0.0005[39;49;00m)[90m[39;49;00m
+        mesh = tmp_path / [33m"[39;49;00m[33mshell.npz[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)[90m[39;49;00m
+        collision = tmp_path / [33m"[39;49;00m[33mshell.obj[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        trimesh.Trimesh(vertices=vertices, faces=faces, process=[94mFalse[39;49;00m).export(collision)[90m[39;49;00m
+        scene = gs.Scene([90m[39;49;00m
+            sim_options=gs.options.SimOptions(dt=[94m0.01[39;49;00m, substeps=substeps),[90m[39;49;00m
+            rigid_options=gs.options.RigidOptions([90m[39;49;00m
+                friction_cone=gs.friction_cone.elliptic,[90m[39;49;00m
+                iterations=[94m100[39;49;00m,[90m[39;49;00m
+                tolerance=[94m1e-12[39;49;00m,[90m[39;49;00m
+                contact_pruning_tolerance=[94mNone[39;49;00m,[90m[39;49;00m
+            ),[90m[39;49;00m
+            show_viewer=[94mFalse[39;49;00m,[90m[39;49;00m
+        )[90m[39;49;00m
+        scene.add_entity(gs.morphs.Plane())[90m[39;49;00m
+        egg = scene.add_entity(gs.morphs.Mesh(file=collision, pos=([94m0[39;49;00m, [94m0[39;49;00m, [94m0.031[39;49;00m), convexify=[94mTrue[39;49;00m, decimate=[94mFalse[39;49;00m))[90m[39;49;00m
+        link = egg.base_link[90m[39;49;00m
+        link.configure_stress_recovery(RigidStressOptions(mesh=mesh, tolerance=[94m1e-7[39;49;00m, history_size=[94m4[39;49;00m))[90m[39;49;00m
+        scene.build(n_envs=[94m3[39;49;00m)[90m[39;49;00m
+        [94massert[39;49;00m [95mnot[39;49;00m scene._pre_substep_callbacks [95mand[39;49;00m [95mnot[39;49;00m scene._post_substep_callbacks[90m[39;49;00m
+        egg.set_pos(np.array([[[94m0.0[39;49;00m, [94m0.0[39;49;00m, [94m0.031[39;49;00m], [[94m0.0[39;49;00m, [94m0.0[39;49;00m, [94m0.045[39;49;00m], [[94m0.0[39;49;00m, [94m0.0[39;49;00m, [94m0.061[39;49;00m]]))[90m[39;49;00m
+        angles = np.array([[94m0.23[39;49;00m, -[94m0.31[39;49;00m, [94m0.47[39;49;00m])[90m[39;49;00m
+        quaternions = np.column_stack((np.cos(angles / [94m2[39;49;00m), np.zeros(([94m3[39;49;00m, [94m2[39;49;00m)), np.sin(angles / [94m2[39;49;00m)))[90m[39;49;00m
+        egg.set_quat(quaternions)[90m[39;49;00m
+        entry = scene.rigid_solver.stress_recovery.links[[94m0[39;49;00m][90m[39;49;00m
+        reached_contact = np.zeros([94m3[39;49;00m, dtype=[96mbool[39;49;00m)[90m[39;49;00m
+        [94mfor[39;49;00m _ [95min[39;49;00m [96mrange[39;49;00m([94m30[39;49;00m):[90m[39;49;00m
+            scene.step()[90m[39;49;00m
+            scene.rigid_solver.check_errno()[90m[39;49;00m
+            peak = tensor_to_array(link.get_max_stress(copy=[94mFalse[39;49;00m))[90m[39;49;00m
+            [94massert[39;49;00m np.isfinite(peak).all()[90m[39;49;00m
+            reached_contact |= peak > [94m1.0[39;49;00m[90m[39;49;00m
+            [94massert[39;49;00m (peak >= qd_to_numpy(entry.state.peak)).all()[90m[39;49;00m
+        [94massert[39;49;00m reached_contact.all()[90m[39;49;00m
+        [90m# Independent frame/contact audit of the actual final solved contact snapshot.[39;49;00m[90m[39;49;00m
+        frame_quat = qd_to_numpy(entry.contacts.frame_quaternion)[90m[39;49;00m
+        frame_pos = qd_to_numpy(entry.contacts.frame_position)[90m[39;49;00m
+        rotations = Rotation.from_quat(frame_quat[:, [[94m1[39;49;00m, [94m2[39;49;00m, [94m3[39;49;00m, [94m0[39;49;00m]])[90m[39;49;00m
+        collider = scene.rigid_solver.collider.collider_state[90m[39;49;00m
+        sorted_indices = qd_to_numpy(collider.contact_sort_idx, transpose=[94mTrue[39;49;00m)[90m[39;49;00m
+        source_positions = qd_to_numpy(collider.contact_data.pos, transpose=[94mTrue[39;49;00m)[90m[39;49;00m
+        source_forces = qd_to_numpy(collider.contact_data.force, transpose=[94mTrue[39;49;00m)[90m[39;49;00m
+        source_normals = qd_to_numpy(collider.contact_data.normal, transpose=[94mTrue[39;49;00m)[90m[39;49;00m
+        source_a = qd_to_numpy(collider.contact_data.link_a, transpose=[94mTrue[39;49;00m)[90m[39;49;00m
+        local_positions = qd_to_numpy(entry.contacts.position, transpose=[94mTrue[39;49;00m)[90m[39;49;00m
+        local_forces = qd_to_numpy(entry.contacts.force, transpose=[94mTrue[39;49;00m)[90m[39;49;00m
+        local_normals = qd_to_numpy(entry.contacts.normal, transpose=[94mTrue[39;49;00m)[90m[39;49;00m
+        valid = qd_to_numpy(entry.contacts.valid, transpose=[94mTrue[39;49;00m)[90m[39;49;00m
+        [94mfor[39;49;00m i_b, i_c [95min[39;49;00m np.argwhere(valid):[90m[39;49;00m
+            source = sorted_indices[i_b, i_c][90m[39;49;00m
+            sign = -[94m1.0[39;49;00m [94mif[39;49;00m source_a[i_b, source] == link.idx [94melse[39;49;00m [94m1.0[39;49;00m[90m[39;49;00m
+            inverse = rotations[i_b].inv()[90m[39;49;00m
+            np.testing.assert_allclose([90m[39;49;00m
+                local_positions[i_b, i_c], inverse.apply(source_positions[i_b, source] - frame_pos[i_b]), atol=[94m1e-15[39;49;00m[90m[39;49;00m
+            )[90m[39;49;00m
+            np.testing.assert_allclose(local_forces[i_b, i_c], inverse.apply(sign * source_forces[i_b, source]), atol=[94m1e-14[39;49;00m)[90m[39;49;00m
+            np.testing.assert_allclose([90m[39;49;00m
+                local_normals[i_b, i_c], inverse.apply(-sign * source_normals[i_b, source]), atol=[94m1e-14[39;49;00m[90m[39;49;00m
+            )[90m[39;49;00m
+        oracle = P2Shell(vertices, tetrahedra, faces, [94m1e10[39;49;00m, [94m0.3[39;49;00m, [94m2000.0[39;49;00m, [94m2[39;49;00m, factor_backend=[33m"[39;49;00m[33mnone[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        mapper = FinitePatchMapper(SurfaceGeometry(oracle, [94m10[39;49;00m), anchor_to_surface=[94mTrue[39;49;00m)[90m[39;49;00m
+        radius = qd_to_numpy(entry.contacts.radius, transpose=[94mTrue[39;49;00m)[90m[39;49;00m
+        friction = qd_to_numpy(entry.contacts.friction, transpose=[94mTrue[39;49;00m)[90m[39;49;00m
+        expected_force = np.zeros((oracle.ndof, [94m3[39;49;00m))[90m[39;49;00m
+        [94mfor[39;49;00m i_b, i_c [95min[39;49;00m np.argwhere(valid):[90m[39;49;00m
+            [94mif[39;49;00m np.linalg.norm(local_forces[i_b, i_c]) > [94m1e-30[39;49;00m:[90m[39;49;00m
+                patch = WrenchPatch([90m[39;49;00m
+                    local_positions[i_b, i_c],[90m[39;49;00m
+                    local_forces[i_b, i_c],[90m[39;49;00m
+                    radius[i_b, i_c],[90m[39;49;00m
+                    friction[i_b, i_c],[90m[39;49;00m
+                    np.zeros([94m3[39;49;00m),[90m[39;49;00m
+                    local_normals[i_b, i_c],[90m[39;49;00m
+                )[90m[39;49;00m
+                expected_force[:, i_b] += mapper.map(patch).nodal_force_n[90m[39;49;00m
+        np.testing.assert_allclose([90m[39;49;00m
+            qd_to_numpy(entry.state.force, transpose=[94mTrue[39;49;00m).reshape(([94m3[39;49;00m, -[94m1[39;49;00m)).T, expected_force, rtol=[94m2e-7[39;49;00m, atol=[94m1e-10[39;49;00m[90m[39;49;00m
+        )[90m[39;49;00m
+        angular_velocity = qd_to_numpy(entry.omega)[90m[39;49;00m
+        centrifugal = -np.cross([90m[39;49;00m
+            angular_velocity[:, [94mNone[39;49;00m], np.cross(angular_velocity[:, [94mNone[39;49;00m], (oracle.xyz - oracle.com)[[94mNone[39;49;00m])[90m[39;49;00m
+        )[90m[39;49;00m
+        raw = expected_force + oracle.m @ centrifugal.reshape(([94m3[39;49;00m, -[94m1[39;49;00m)).T[90m[39;49;00m
+        expected_rhs = raw - oracle.mr @ np.linalg.solve(oracle.gram, oracle.r.T @ raw)[90m[39;49;00m
+        actual_rhs = qd_to_numpy(entry.state.rhs, transpose=[94mTrue[39;49;00m).reshape(([94m3[39;49;00m, -[94m1[39;49;00m)).T[90m[39;49;00m
+        np.testing.assert_allclose(actual_rhs, expected_rhs, rtol=[94m2e-7[39;49;00m, atol=[94m1e-10[39;49;00m)[90m[39;49;00m
+        free = np.setdiff1d(np.arange(oracle.ndof), qd_to_numpy(entry.model.info.pins))[90m[39;49;00m
+        displacement = np.zeros_like(expected_rhs)[90m[39;49;00m
+        displacement[free] = splu(oracle.k[free][:, free].tocsc()).solve(expected_rhs[free])[90m[39;49;00m
+        scan = P2Peak(oracle.glambda, oracle.elements, [94m1e10[39;49;00m / [94m2.6[39;49;00m)[90m[39;49;00m
+        expected_peak = np.array([scan(displacement[:, i_b])[[94m0[39;49;00m] [94mfor[39;49;00m i_b [95min[39;49;00m [96mrange[39;49;00m([94m3[39;49;00m)])[90m[39;49;00m
+        np.testing.assert_allclose(qd_to_numpy(entry.state.peak), expected_peak, rtol=[94m1e-4[39;49;00m, atol=[94m1e-3[39;49;00m)[90m[39;49;00m
+        [96mprint[39;49;00m([33m"[39;49;00m[33mactual rotated contacts substeps[39;49;00m[33m"[39;49;00m, substeps, [33m"[39;49;00m[33mpeak error Pa[39;49;00m[33m"[39;49;00m, qd_to_numpy(entry.state.peak) - expected_peak)[90m[39;49;00m
+        link.set_stress_contact_radius(np.array([[[94m0.004[39;49;00m], [[94m0.008[39;49;00m]]), envs_idx=[[94m0[39;49;00m, [94m2[39;49;00m])[90m[39;49;00m
+        radius = qd_to_numpy(entry.contacts.radius, transpose=[94mTrue[39;49;00m)[90m[39;49;00m
+        np.testing.assert_array_equal(radius[[94m0[39;49;00m], [94m0.004[39;49;00m)[90m[39;49;00m
+        np.testing.assert_array_equal(radius[[94m1[39;49;00m], [94m0.006[39;49;00m)[90m[39;49;00m
+        np.testing.assert_array_equal(radius[[94m2[39;49;00m], [94m0.008[39;49;00m)[90m[39;49;00m
+        [94mwith[39;49;00m monkeypatch.context() [94mas[39;49;00m patch:[90m[39;49;00m
+            patch.setattr(gs, [33m"[39;49;00m[33muse_zerocopy[39;49;00m[33m"[39;49;00m, [94mFalse[39;49;00m)[90m[39;49;00m
+            link.set_stress_contact_radius([94m0.007[39;49;00m, envs_idx=[[94m1[39;49;00m])[90m[39;49;00m
+            np.testing.assert_array_equal(qd_to_numpy(entry.contacts.radius, transpose=[94mTrue[39;49;00m)[[94m1[39;49;00m], [94m0.007[39;49;00m)[90m[39;49;00m
+        before_u = qd_to_numpy(entry.state.displacement, transpose=[94mTrue[39;49;00m, copy=[94mTrue[39;49;00m)[90m[39;49;00m
+        before_peak = tensor_to_array(link.get_max_stress())[90m[39;49;00m
+        before_count = qd_to_numpy(entry.history.state.count, copy=[94mTrue[39;49;00m)[90m[39;49;00m
+        checkpoint = scene.rigid_solver.__getstate__()[90m[39;49;00m
+        [94massert[39;49;00m checkpoint.configs[[33m"[39;49;00m[33mstress.0.options[39;49;00m[33m"[39;49;00m].mesh == [96mstr[39;49;00m(mesh.resolve())[90m[39;49;00m
+        json.dumps([96mvars[39;49;00m(checkpoint.configs[[33m"[39;49;00m[33mstress.0.options[39;49;00m[33m"[39;49;00m]))[90m[39;49;00m
+        scene.reset(envs_idx=np.array([[94m1[39;49;00m]))[90m[39;49;00m
+        after_u = qd_to_numpy(entry.state.displacement, transpose=[94mTrue[39;49;00m)[90m[39;49;00m
+        after_peak = tensor_to_array(link.get_max_stress())[90m[39;49;00m
+        np.testing.assert_array_equal(after_u[[[94m0[39;49;00m, [94m2[39;49;00m]], before_u[[[94m0[39;49;00m, [94m2[39;49;00m]])[90m[39;49;00m
+        np.testing.assert_array_equal(after_peak[[[94m0[39;49;00m, [94m2[39;49;00m]], before_peak[[[94m0[39;49;00m, [94m2[39;49;00m]])[90m[39;49;00m
+        np.testing.assert_array_equal(after_u[[94m1[39;49;00m], [94m0.0[39;49;00m)[90m[39;49;00m
+        [94massert[39;49;00m after_peak[[94m1[39;49;00m] == [94m0.0[39;49;00m[90m[39;49;00m
+        after_count = qd_to_numpy(entry.history.state.count)[90m[39;49;00m
+        np.testing.assert_array_equal(after_count[[[94m0[39;49;00m, [94m2[39;49;00m]], before_count[[[94m0[39;49;00m, [94m2[39;49;00m]])[90m[39;49;00m
+        [94massert[39;49;00m after_count[[94m1[39;49;00m] == [94m0[39;49;00m[90m[39;49;00m
+        scene.rigid_solver.__setstate__(checkpoint)[90m[39;49;00m
+>       np.testing.assert_array_equal(tensor_to_array(link.get_max_stress()), before_peak)[90m[39;49;00m
+[1m[31mE       AssertionError: [0m
+[1m[31mE       Arrays are not equal[0m
+[1m[31mE       [0m
+[1m[31mE       Mismatched elements: 3 / 3 (100%)[0m
+[1m[31mE       Max absolute difference among violations: 70014.84340868[0m
+[1m[31mE       Max relative difference among violations: 1.[0m
+[1m[31mE        ACTUAL: array([0., 0., 0.])[0m
+[1m[31mE        DESIRED: array([70014.843409, 70006.634712, 70001.99468 ])[0m
+
+[1m[31mtests/rigid/test_stress.py[0m:441: AssertionError
+[31m[1m_______________ test_native_rigid_lifecycle_and_partial_reset[4] _______________[0m
+
+tmp_path = PosixPath('/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-native-iteration/tmp/pytest-of-zhaofeng/pytest-23/test_native_rigid_lifecycle_an1')
+substeps = 4
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7317bf32e4d0>
+
+    [0m[37m@pytest[39;49;00m.mark.required[90m[39;49;00m
+    [37m@pytest[39;49;00m.mark.precision([33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [37m@pytest[39;49;00m.mark.parametrize([33m"[39;49;00m[33msubsteps[39;49;00m[33m"[39;49;00m, ([94m1[39;49;00m, [94m4[39;49;00m))[90m[39;49;00m
+    [94mdef[39;49;00m[90m [39;49;00m[92mtest_native_rigid_lifecycle_and_partial_reset[39;49;00m(tmp_path, substeps, monkeypatch):[90m[39;49;00m
+        vertices, tetrahedra, faces, _ = shell_mesh([94m1[39;49;00m, [94m2[39;49;00m, [94m0.0005[39;49;00m)[90m[39;49;00m
+        mesh = tmp_path / [33m"[39;49;00m[33mshell.npz[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)[90m[39;49;00m
+        collision = tmp_path / [33m"[39;49;00m[33mshell.obj[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        trimesh.Trimesh(vertices=vertices, faces=faces, process=[94mFalse[39;49;00m).export(collision)[90m[39;49;00m
+        scene = gs.Scene([90m[39;49;00m
+            sim_options=gs.options.SimOptions(dt=[94m0.01[39;49;00m, substeps=substeps),[90m[39;49;00m
+            rigid_options=gs.options.RigidOptions([90m[39;49;00m
+                friction_cone=gs.friction_cone.elliptic,[90m[39;49;00m
+                iterations=[94m100[39;49;00m,[90m[39;49;00m
+                tolerance=[94m1e-12[39;49;00m,[90m[39;49;00m
+                contact_pruning_tolerance=[94mNone[39;49;00m,[90m[39;49;00m
+            ),[90m[39;49;00m
+            show_viewer=[94mFalse[39;49;00m,[90m[39;49;00m
+        )[90m[39;49;00m
+        scene.add_entity(gs.morphs.Plane())[90m[39;49;00m
+        egg = scene.add_entity(gs.morphs.Mesh(file=collision, pos=([94m0[39;49;00m, [94m0[39;49;00m, [94m0.031[39;49;00m), convexify=[94mTrue[39;49;00m, decimate=[94mFalse[39;49;00m))[90m[39;49;00m
+        link = egg.base_link[90m[39;49;00m
+        link.configure_stress_recovery(RigidStressOptions(mesh=mesh, tolerance=[94m1e-7[39;49;00m, history_size=[94m4[39;49;00m))[90m[39;49;00m
+        scene.build(n_envs=[94m3[39;49;00m)[90m[39;49;00m
+        [94massert[39;49;00m [95mnot[39;49;00m scene._pre_substep_callbacks [95mand[39;49;00m [95mnot[39;49;00m scene._post_substep_callbacks[90m[39;49;00m
+        egg.set_pos(np.array([[[94m0.0[39;49;00m, [94m0.0[39;49;00m, [94m0.031[39;49;00m], [[94m0.0[39;49;00m, [94m0.0[39;49;00m, [94m0.045[39;49;00m], [[94m0.0[39;49;00m, [94m0.0[39;49;00m, [94m0.061[39;49;00m]]))[90m[39;49;00m
+        angles = np.array([[94m0.23[39;49;00m, -[94m0.31[39;49;00m, [94m0.47[39;49;00m])[90m[39;49;00m
+        quaternions = np.column_stack((np.cos(angles / [94m2[39;49;00m), np.zeros(([94m3[39;49;00m, [94m2[39;49;00m)), np.sin(angles / [94m2[39;49;00m)))[90m[39;49;00m
+        egg.set_quat(quaternions)[90m[39;49;00m
+        entry = scene.rigid_solver.stress_recovery.links[[94m0[39;49;00m][90m[39;49;00m
+        reached_contact = np.zeros([94m3[39;49;00m, dtype=[96mbool[39;49;00m)[90m[39;49;00m
+        [94mfor[39;49;00m _ [95min[39;49;00m [96mrange[39;49;00m([94m30[39;49;00m):[90m[39;49;00m
+            scene.step()[90m[39;49;00m
+            scene.rigid_solver.check_errno()[90m[39;49;00m
+            peak = tensor_to_array(link.get_max_stress(copy=[94mFalse[39;49;00m))[90m[39;49;00m
+            [94massert[39;49;00m np.isfinite(peak).all()[90m[39;49;00m
+            reached_contact |= peak > [94m1.0[39;49;00m[90m[39;49;00m
+            [94massert[39;49;00m (peak >= qd_to_numpy(entry.state.peak)).all()[90m[39;49;00m
+        [94massert[39;49;00m reached_contact.all()[90m[39;49;00m
+        [90m# Independent frame/contact audit of the actual final solved contact snapshot.[39;49;00m[90m[39;49;00m
+        frame_quat = qd_to_numpy(entry.contacts.frame_quaternion)[90m[39;49;00m
+        frame_pos = qd_to_numpy(entry.contacts.frame_position)[90m[39;49;00m
+        rotations = Rotation.from_quat(frame_quat[:, [[94m1[39;49;00m, [94m2[39;49;00m, [94m3[39;49;00m, [94m0[39;49;00m]])[90m[39;49;00m
+        collider = scene.rigid_solver.collider.collider_state[90m[39;49;00m
+        sorted_indices = qd_to_numpy(collider.contact_sort_idx, transpose=[94mTrue[39;49;00m)[90m[39;49;00m
+        source_positions = qd_to_numpy(collider.contact_data.pos, transpose=[94mTrue[39;49;00m)[90m[39;49;00m
+        source_forces = qd_to_numpy(collider.contact_data.force, transpose=[94mTrue[39;49;00m)[90m[39;49;00m
+        source_normals = qd_to_numpy(collider.contact_data.normal, transpose=[94mTrue[39;49;00m)[90m[39;49;00m
+        source_a = qd_to_numpy(collider.contact_data.link_a, transpose=[94mTrue[39;49;00m)[90m[39;49;00m
+        local_positions = qd_to_numpy(entry.contacts.position, transpose=[94mTrue[39;49;00m)[90m[39;49;00m
+        local_forces = qd_to_numpy(entry.contacts.force, transpose=[94mTrue[39;49;00m)[90m[39;49;00m
+        local_normals = qd_to_numpy(entry.contacts.normal, transpose=[94mTrue[39;49;00m)[90m[39;49;00m
+        valid = qd_to_numpy(entry.contacts.valid, transpose=[94mTrue[39;49;00m)[90m[39;49;00m
+        [94mfor[39;49;00m i_b, i_c [95min[39;49;00m np.argwhere(valid):[90m[39;49;00m
+            source = sorted_indices[i_b, i_c][90m[39;49;00m
+            sign = -[94m1.0[39;49;00m [94mif[39;49;00m source_a[i_b, source] == link.idx [94melse[39;49;00m [94m1.0[39;49;00m[90m[39;49;00m
+            inverse = rotations[i_b].inv()[90m[39;49;00m
+            np.testing.assert_allclose([90m[39;49;00m
+                local_positions[i_b, i_c], inverse.apply(source_positions[i_b, source] - frame_pos[i_b]), atol=[94m1e-15[39;49;00m[90m[39;49;00m
+            )[90m[39;49;00m
+            np.testing.assert_allclose(local_forces[i_b, i_c], inverse.apply(sign * source_forces[i_b, source]), atol=[94m1e-14[39;49;00m)[90m[39;49;00m
+            np.testing.assert_allclose([90m[39;49;00m
+                local_normals[i_b, i_c], inverse.apply(-sign * source_normals[i_b, source]), atol=[94m1e-14[39;49;00m[90m[39;49;00m
+            )[90m[39;49;00m
+        oracle = P2Shell(vertices, tetrahedra, faces, [94m1e10[39;49;00m, [94m0.3[39;49;00m, [94m2000.0[39;49;00m, [94m2[39;49;00m, factor_backend=[33m"[39;49;00m[33mnone[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        mapper = FinitePatchMapper(SurfaceGeometry(oracle, [94m10[39;49;00m), anchor_to_surface=[94mTrue[39;49;00m)[90m[39;49;00m
+        radius = qd_to_numpy(entry.contacts.radius, transpose=[94mTrue[39;49;00m)[90m[39;49;00m
+        friction = qd_to_numpy(entry.contacts.friction, transpose=[94mTrue[39;49;00m)[90m[39;49;00m
+        expected_force = np.zeros((oracle.ndof, [94m3[39;49;00m))[90m[39;49;00m
+        [94mfor[39;49;00m i_b, i_c [95min[39;49;00m np.argwhere(valid):[90m[39;49;00m
+            [94mif[39;49;00m np.linalg.norm(local_forces[i_b, i_c]) > [94m1e-30[39;49;00m:[90m[39;49;00m
+                patch = WrenchPatch([90m[39;49;00m
+                    local_positions[i_b, i_c],[90m[39;49;00m
+                    local_forces[i_b, i_c],[90m[39;49;00m
+                    radius[i_b, i_c],[90m[39;49;00m
+                    friction[i_b, i_c],[90m[39;49;00m
+                    np.zeros([94m3[39;49;00m),[90m[39;49;00m
+                    local_normals[i_b, i_c],[90m[39;49;00m
+                )[90m[39;49;00m
+                expected_force[:, i_b] += mapper.map(patch).nodal_force_n[90m[39;49;00m
+        np.testing.assert_allclose([90m[39;49;00m
+            qd_to_numpy(entry.state.force, transpose=[94mTrue[39;49;00m).reshape(([94m3[39;49;00m, -[94m1[39;49;00m)).T, expected_force, rtol=[94m2e-7[39;49;00m, atol=[94m1e-10[39;49;00m[90m[39;49;00m
+        )[90m[39;49;00m
+        angular_velocity = qd_to_numpy(entry.omega)[90m[39;49;00m
+        centrifugal = -np.cross([90m[39;49;00m
+            angular_velocity[:, [94mNone[39;49;00m], np.cross(angular_velocity[:, [94mNone[39;49;00m], (oracle.xyz - oracle.com)[[94mNone[39;49;00m])[90m[39;49;00m
+        )[90m[39;49;00m
+        raw = expected_force + oracle.m @ centrifugal.reshape(([94m3[39;49;00m, -[94m1[39;49;00m)).T[90m[39;49;00m
+        expected_rhs = raw - oracle.mr @ np.linalg.solve(oracle.gram, oracle.r.T @ raw)[90m[39;49;00m
+        actual_rhs = qd_to_numpy(entry.state.rhs, transpose=[94mTrue[39;49;00m).reshape(([94m3[39;49;00m, -[94m1[39;49;00m)).T[90m[39;49;00m
+        np.testing.assert_allclose(actual_rhs, expected_rhs, rtol=[94m2e-7[39;49;00m, atol=[94m1e-10[39;49;00m)[90m[39;49;00m
+        free = np.setdiff1d(np.arange(oracle.ndof), qd_to_numpy(entry.model.info.pins))[90m[39;49;00m
+        displacement = np.zeros_like(expected_rhs)[90m[39;49;00m
+        displacement[free] = splu(oracle.k[free][:, free].tocsc()).solve(expected_rhs[free])[90m[39;49;00m
+        scan = P2Peak(oracle.glambda, oracle.elements, [94m1e10[39;49;00m / [94m2.6[39;49;00m)[90m[39;49;00m
+        expected_peak = np.array([scan(displacement[:, i_b])[[94m0[39;49;00m] [94mfor[39;49;00m i_b [95min[39;49;00m [96mrange[39;49;00m([94m3[39;49;00m)])[90m[39;49;00m
+        np.testing.assert_allclose(qd_to_numpy(entry.state.peak), expected_peak, rtol=[94m1e-4[39;49;00m, atol=[94m1e-3[39;49;00m)[90m[39;49;00m
+        [96mprint[39;49;00m([33m"[39;49;00m[33mactual rotated contacts substeps[39;49;00m[33m"[39;49;00m, substeps, [33m"[39;49;00m[33mpeak error Pa[39;49;00m[33m"[39;49;00m, qd_to_numpy(entry.state.peak) - expected_peak)[90m[39;49;00m
+        link.set_stress_contact_radius(np.array([[[94m0.004[39;49;00m], [[94m0.008[39;49;00m]]), envs_idx=[[94m0[39;49;00m, [94m2[39;49;00m])[90m[39;49;00m
+        radius = qd_to_numpy(entry.contacts.radius, transpose=[94mTrue[39;49;00m)[90m[39;49;00m
+        np.testing.assert_array_equal(radius[[94m0[39;49;00m], [94m0.004[39;49;00m)[90m[39;49;00m
+        np.testing.assert_array_equal(radius[[94m1[39;49;00m], [94m0.006[39;49;00m)[90m[39;49;00m
+        np.testing.assert_array_equal(radius[[94m2[39;49;00m], [94m0.008[39;49;00m)[90m[39;49;00m
+        [94mwith[39;49;00m monkeypatch.context() [94mas[39;49;00m patch:[90m[39;49;00m
+            patch.setattr(gs, [33m"[39;49;00m[33muse_zerocopy[39;49;00m[33m"[39;49;00m, [94mFalse[39;49;00m)[90m[39;49;00m
+            link.set_stress_contact_radius([94m0.007[39;49;00m, envs_idx=[[94m1[39;49;00m])[90m[39;49;00m
+            np.testing.assert_array_equal(qd_to_numpy(entry.contacts.radius, transpose=[94mTrue[39;49;00m)[[94m1[39;49;00m], [94m0.007[39;49;00m)[90m[39;49;00m
+        before_u = qd_to_numpy(entry.state.displacement, transpose=[94mTrue[39;49;00m, copy=[94mTrue[39;49;00m)[90m[39;49;00m
+        before_peak = tensor_to_array(link.get_max_stress())[90m[39;49;00m
+        before_count = qd_to_numpy(entry.history.state.count, copy=[94mTrue[39;49;00m)[90m[39;49;00m
+        checkpoint = scene.rigid_solver.__getstate__()[90m[39;49;00m
+        [94massert[39;49;00m checkpoint.configs[[33m"[39;49;00m[33mstress.0.options[39;49;00m[33m"[39;49;00m].mesh == [96mstr[39;49;00m(mesh.resolve())[90m[39;49;00m
+        json.dumps([96mvars[39;49;00m(checkpoint.configs[[33m"[39;49;00m[33mstress.0.options[39;49;00m[33m"[39;49;00m]))[90m[39;49;00m
+        scene.reset(envs_idx=np.array([[94m1[39;49;00m]))[90m[39;49;00m
+        after_u = qd_to_numpy(entry.state.displacement, transpose=[94mTrue[39;49;00m)[90m[39;49;00m
+        after_peak = tensor_to_array(link.get_max_stress())[90m[39;49;00m
+        np.testing.assert_array_equal(after_u[[[94m0[39;49;00m, [94m2[39;49;00m]], before_u[[[94m0[39;49;00m, [94m2[39;49;00m]])[90m[39;49;00m
+        np.testing.assert_array_equal(after_peak[[[94m0[39;49;00m, [94m2[39;49;00m]], before_peak[[[94m0[39;49;00m, [94m2[39;49;00m]])[90m[39;49;00m
+        np.testing.assert_array_equal(after_u[[94m1[39;49;00m], [94m0.0[39;49;00m)[90m[39;49;00m
+        [94massert[39;49;00m after_peak[[94m1[39;49;00m] == [94m0.0[39;49;00m[90m[39;49;00m
+        after_count = qd_to_numpy(entry.history.state.count)[90m[39;49;00m
+        np.testing.assert_array_equal(after_count[[[94m0[39;49;00m, [94m2[39;49;00m]], before_count[[[94m0[39;49;00m, [94m2[39;49;00m]])[90m[39;49;00m
+        [94massert[39;49;00m after_count[[94m1[39;49;00m] == [94m0[39;49;00m[90m[39;49;00m
+        scene.rigid_solver.__setstate__(checkpoint)[90m[39;49;00m
+>       np.testing.assert_array_equal(tensor_to_array(link.get_max_stress()), before_peak)[90m[39;49;00m
+[1m[31mE       AssertionError: [0m
+[1m[31mE       Arrays are not equal[0m
+[1m[31mE       [0m
+[1m[31mE       Mismatched elements: 3 / 3 (100%)[0m
+[1m[31mE       Max absolute difference among violations: 70015.17395955[0m
+[1m[31mE       Max relative difference among violations: 1.[0m
+[1m[31mE        ACTUAL: array([0., 0., 0.])[0m
+[1m[31mE        DESIRED: array([70015.17396 , 70015.165495, 70015.098146])[0m
+
+[1m[31mtests/rigid/test_stress.py[0m:441: AssertionError
+================================= Failed tests =================================
+tests/rigid/test_stress.py::test_native_rigid_lifecycle_and_partial_reset[1] ...
+tests/rigid/test_stress.py::test_native_rigid_lifecycle_and_partial_reset[4] ...
+============================== slowest durations ===============================
+
+(45 durations < 100s hidden.)
+[31m=================== [31m[1m2 failed[0m, [32m13 passed[0m[31m in 159.68s (0:02:39)[0m[31m ===================[0m

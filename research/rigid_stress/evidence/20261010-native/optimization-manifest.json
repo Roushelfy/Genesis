@@ -1,0 +1,1686 @@
+{
+  "scope": "Completed native L1 numerical/performance milestone; physical convergence deferred",
+  "data_root": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-native-iteration",
+  "baseline_revision": "65c2f25f plus baseline-normalization.patch",
+  "optimization_checkpoint": "dbfdf20d",
+  "files": [
+    {
+      "runtime_name": "operators-gpu.log",
+      "artifact": "raw/operators-gpu.log",
+      "sha256": "c2bfe6de299270a24113070205ff3132ce40d256860c3a10e1d15dc639e1dcec",
+      "original_sha256": "c2bfe6de299270a24113070205ff3132ce40d256860c3a10e1d15dc639e1dcec",
+      "original_bytes": 1709,
+      "archived_bytes": 1709,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "solve-gpu.log",
+      "artifact": "raw/solve-gpu.log",
+      "sha256": "7882fe5380c6a2dc573584e2abe8a80c1e7c1ac370ec67d6872f159c5fda5472",
+      "original_sha256": "7882fe5380c6a2dc573584e2abe8a80c1e7c1ac370ec67d6872f159c5fda5472",
+      "original_bytes": 8204,
+      "archived_bytes": 8204,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "direct-gpu.log",
+      "artifact": "raw/direct-gpu.log",
+      "sha256": "d69f2e36cf4ad0ce966ae58d9ac73139135f79fa702a79d9d947d4cc429bb21e",
+      "original_sha256": "d69f2e36cf4ad0ce966ae58d9ac73139135f79fa702a79d9d947d4cc429bb21e",
+      "original_bytes": 2463,
+      "archived_bytes": 2463,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "native-suite-v8.log",
+      "artifact": "raw/native-suite-v8.log",
+      "sha256": "f62a36402e25405449c3a3785b7d32c17753d5bbb8b5293afac03be54e022219",
+      "original_sha256": "f62a36402e25405449c3a3785b7d32c17753d5bbb8b5293afac03be54e022219",
+      "original_bytes": 5206,
+      "archived_bytes": 5206,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "native-suite-v9.log",
+      "artifact": "raw/native-suite-v9.log",
+      "sha256": "00544ef8455cab00c4e59ffd6b6559c44f86e92b54d28e1f56fb05f4f18645ea",
+      "original_sha256": "00544ef8455cab00c4e59ffd6b6559c44f86e92b54d28e1f56fb05f4f18645ea",
+      "original_bytes": 10231,
+      "archived_bytes": 10231,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "native-suite-v10.log",
+      "artifact": "raw/native-suite-v10.log",
+      "sha256": "ae0b944f4b9d58b83feb974683da1be45b8d171032bde6b14a456d5df92c2cb3",
+      "original_sha256": "ae0b944f4b9d58b83feb974683da1be45b8d171032bde6b14a456d5df92c2cb3",
+      "original_bytes": 10572,
+      "archived_bytes": 10572,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "native-cpu-v2.log",
+      "artifact": "raw/native-cpu-v2.log",
+      "sha256": "fb1f8df8c11b745e8de9aac4b56bb70eaac456b8491cdd25060e9e3ac4a88447",
+      "original_sha256": "fb1f8df8c11b745e8de9aac4b56bb70eaac456b8491cdd25060e9e3ac4a88447",
+      "original_bytes": 5007,
+      "archived_bytes": 5007,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "native-cpu-v3.log",
+      "artifact": "raw/native-cpu-v3.log",
+      "sha256": "7270aede9aa11cc78c2dc4fd10da49aae01650f764d6a2ba29e1937b45c2c8b1",
+      "original_sha256": "7270aede9aa11cc78c2dc4fd10da49aae01650f764d6a2ba29e1937b45c2c8b1",
+      "original_bytes": 5969,
+      "archived_bytes": 5969,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "debug-live-large.json",
+      "artifact": "raw/debug-live-large.json",
+      "sha256": "511002eca39747ed06a0c27f5684e138d5e91f58b76ad3e500ed9b15be11cdc2",
+      "original_sha256": "511002eca39747ed06a0c27f5684e138d5e91f58b76ad3e500ed9b15be11cdc2",
+      "original_bytes": 854,
+      "archived_bytes": 854,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "debug-live-large.log",
+      "artifact": "raw/debug-live-large.log",
+      "sha256": "c4414046b66ef1642626181690d8f3bc508db9a1963dda1675a735bd0a8f1552",
+      "original_sha256": "c4414046b66ef1642626181690d8f3bc508db9a1963dda1675a735bd0a8f1552",
+      "original_bytes": 1907,
+      "archived_bytes": 1907,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "debug-oracle-large.log",
+      "artifact": "raw/debug-oracle-large.log",
+      "sha256": "2e22acef8d0b9c44f0144a6e3ed80071a0ee5fb25bf3c96e787c3ef700d541b8",
+      "original_sha256": "2e22acef8d0b9c44f0144a6e3ed80071a0ee5fb25bf3c96e787c3ef700d541b8",
+      "original_bytes": 126,
+      "archived_bytes": 126,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "history-rhs-b8.json",
+      "artifact": "raw/history-rhs-b8.json",
+      "sha256": "4755545777954fbb63de78984f730dcb9d305b09999c7911349c71c41e657077",
+      "original_sha256": "4755545777954fbb63de78984f730dcb9d305b09999c7911349c71c41e657077",
+      "original_bytes": 458,
+      "archived_bytes": 458,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "history-rhs-b8.log",
+      "artifact": "raw/history-rhs-b8.log",
+      "sha256": "044480031a0004022a6571b6a24dd6f913cab4093ef542279cb5fbe270ae1bd1",
+      "original_sha256": "044480031a0004022a6571b6a24dd6f913cab4093ef542279cb5fbe270ae1bd1",
+      "original_bytes": 2052,
+      "archived_bytes": 2052,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "history-cost-b1024.json",
+      "artifact": "raw/history-cost-b1024.json",
+      "sha256": "f98dab9a79a9278c923510a50b9b501ffeb8a9a8a6a1d038439a0c7f95c17cc7",
+      "original_sha256": "f98dab9a79a9278c923510a50b9b501ffeb8a9a8a6a1d038439a0c7f95c17cc7",
+      "original_bytes": 333,
+      "archived_bytes": 333,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "history-cost-b1024.log",
+      "artifact": "raw/history-cost-b1024.log",
+      "sha256": "7874f6b53347139def508a55ce1c0cd160064e83c1a0f2b7d16f503f75d0d59f",
+      "original_sha256": "7874f6b53347139def508a55ce1c0cd160064e83c1a0f2b7d16f503f75d0d59f",
+      "original_bytes": 394,
+      "archived_bytes": 394,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "trace-summary-cdf0-b1024.json",
+      "artifact": "raw/trace-summary-cdf0-b1024.json",
+      "sha256": "cf21ed904fae03a9b97e44456f5d4ca274099edf45274ec6436d267fd247211e",
+      "original_sha256": "cf21ed904fae03a9b97e44456f5d4ca274099edf45274ec6436d267fd247211e",
+      "original_bytes": 746,
+      "archived_bytes": 746,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "profile-baseline-v2-b8.json",
+      "artifact": "raw/profile-baseline-v2-b8.json",
+      "sha256": "d38557b8783a806fd6b0dca6f7f491297f1017eff08f0f6910776ab5f3cc3e22",
+      "original_sha256": "d38557b8783a806fd6b0dca6f7f491297f1017eff08f0f6910776ab5f3cc3e22",
+      "original_bytes": 2931,
+      "archived_bytes": 2931,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "profile-baseline-v2-b8.log",
+      "artifact": "raw/profile-baseline-v2-b8.log",
+      "sha256": "200122fa73e370ef1e6d0734a2d9ecefd21ca97284c925ca25ca5ba3e1ea6555",
+      "original_sha256": "200122fa73e370ef1e6d0734a2d9ecefd21ca97284c925ca25ca5ba3e1ea6555",
+      "original_bytes": 5856,
+      "archived_bytes": 5856,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "profile-cooperative-v2-b8.json",
+      "artifact": "raw/profile-cooperative-v2-b8.json",
+      "sha256": "446a1ad12cde044d4c70cfb7a6e31e67140f6d672a8bcd24b64367a5c76beffb",
+      "original_sha256": "446a1ad12cde044d4c70cfb7a6e31e67140f6d672a8bcd24b64367a5c76beffb",
+      "original_bytes": 2943,
+      "archived_bytes": 2943,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "profile-cooperative-v2-b8.log",
+      "artifact": "raw/profile-cooperative-v2-b8.log",
+      "sha256": "c0fc1062381d4752c96f008160cf4f6d80fbdc6346dae81f8007f37bb2c75b75",
+      "original_sha256": "c0fc1062381d4752c96f008160cf4f6d80fbdc6346dae81f8007f37bb2c75b75",
+      "original_bytes": 6988,
+      "archived_bytes": 6988,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "profile-grid-v1-b8.json",
+      "artifact": "raw/profile-grid-v1-b8.json",
+      "sha256": "db84cf37db74388864ba2189849df2eeb72c8e5f9505bfc82c83bce06cafc730",
+      "original_sha256": "db84cf37db74388864ba2189849df2eeb72c8e5f9505bfc82c83bce06cafc730",
+      "original_bytes": 2933,
+      "archived_bytes": 2933,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "profile-grid-v1-b8.log",
+      "artifact": "raw/profile-grid-v1-b8.log",
+      "sha256": "520ed94ddf3035de8972cbe05db8ef235b383251e2377e9e98605606a189b9a0",
+      "original_sha256": "520ed94ddf3035de8972cbe05db8ef235b383251e2377e9e98605606a189b9a0",
+      "original_bytes": 6978,
+      "archived_bytes": 6978,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "profile-inverse64-b8.json",
+      "artifact": "raw/profile-inverse64-b8.json",
+      "sha256": "35c918034cc1b1f1efa00688bf6752c0a31ac81ddfb613f4eb37c0f72222fe56",
+      "original_sha256": "35c918034cc1b1f1efa00688bf6752c0a31ac81ddfb613f4eb37c0f72222fe56",
+      "original_bytes": 60102,
+      "archived_bytes": 60102,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "profile-inverse64-b8.log",
+      "artifact": "raw/profile-inverse64-b8.log",
+      "sha256": "23e9026d11c278dae240a0cc2a013c39c40f2cb6937fe50502b30f1a5723040b",
+      "original_sha256": "23e9026d11c278dae240a0cc2a013c39c40f2cb6937fe50502b30f1a5723040b",
+      "original_bytes": 63924,
+      "archived_bytes": 63924,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "profile-current-b1024.json",
+      "artifact": "raw/profile-current-b1024.json.gz",
+      "sha256": "a85a5450a549e10d5bd498f7ece7fb412406096ab53d15f65df23d7e9c9462d0",
+      "original_sha256": "2547e560bfed5b4350eba6485640760f96020ede41e0213421330c7ace6113c7",
+      "original_bytes": 16243661,
+      "archived_bytes": 3620297,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "profile-current-b1024.log",
+      "artifact": "raw/profile-current-b1024.log.preamble.txt",
+      "sha256": "cecfdd5fa505914865689bdf35871ecfa9cc827dd34c1fe1ee90ae34cf01ec27",
+      "original_sha256": "8da480f7bf32096d40f886f01d36fb10f02fc5593f1d6ee97746e45e8c2f017b",
+      "original_bytes": 16246387,
+      "archived_bytes": 2726,
+      "representation": "Exact log preamble; duplicated printed JSON is preserved in the separate original JSON artifact.",
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "profile-split-v2-b1024.json",
+      "artifact": "raw/profile-split-v2-b1024.json.gz",
+      "sha256": "7dd64afb089b890363f956e75d405160867b7d58e652d9f98ad49a7f86124bbd",
+      "original_sha256": "d84d5960c648a8da3b9f0dccd5034930ed361d8360599fb49fd93dd2c91f7796",
+      "original_bytes": 24237519,
+      "archived_bytes": 4574304,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "profile-split-v2-b1024.log",
+      "artifact": "raw/profile-split-v2-b1024.log.preamble.txt",
+      "sha256": "c9d9a38ec4a58be3b6b28e5e5c202c2d4fcc0ffe054c1d5153567d263b84ed15",
+      "original_sha256": "325932a308fb8d5407acfc99e6cf75477eaf8ea08b7e14ab9ab3763879866366",
+      "original_bytes": 24240039,
+      "archived_bytes": 2520,
+      "representation": "Exact log preamble; duplicated printed JSON is preserved in the separate original JSON artifact.",
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "live-baseline-normalized-b8.json",
+      "artifact": "raw/live-baseline-normalized-b8.json",
+      "sha256": "7b278b6333d18f6982f236b6bfdc3ce1fd852909fb43aabb08c15fc264072504",
+      "original_sha256": "7b278b6333d18f6982f236b6bfdc3ce1fd852909fb43aabb08c15fc264072504",
+      "original_bytes": 2092,
+      "archived_bytes": 2092,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "live-baseline-normalized-b8.log",
+      "artifact": "raw/live-baseline-normalized-b8.log",
+      "sha256": "5bce63280102ea99d70a05d4538f6beecf4701bcd9d5fcdcb6da2e4174a1e1cb",
+      "original_sha256": "5bce63280102ea99d70a05d4538f6beecf4701bcd9d5fcdcb6da2e4174a1e1cb",
+      "original_bytes": 4223,
+      "archived_bytes": 4223,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "live-grid-normalized-b8.json",
+      "artifact": "raw/live-grid-normalized-b8.json",
+      "sha256": "a50560ee7736d96f68e2ad4c770f2061e28010301b1f842b981438f051b76834",
+      "original_sha256": "a50560ee7736d96f68e2ad4c770f2061e28010301b1f842b981438f051b76834",
+      "original_bytes": 144333,
+      "archived_bytes": 144333,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "live-grid-normalized-b8.log",
+      "artifact": "raw/live-grid-normalized-b8.log",
+      "sha256": "a957e8642296bba8a06379ad20be927beab0b5b5f78261c01de2bc8dc3ad2971",
+      "original_sha256": "a957e8642296bba8a06379ad20be927beab0b5b5f78261c01de2bc8dc3ad2971",
+      "original_bytes": 145368,
+      "archived_bytes": 145368,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "live-inverse64-v2-b1.json",
+      "artifact": "raw/live-inverse64-v2-b1.json",
+      "sha256": "47f3208a44e7394e8d33fa5100803c79cf1c9483c63f3bc19629ac17999e0ee9",
+      "original_sha256": "47f3208a44e7394e8d33fa5100803c79cf1c9483c63f3bc19629ac17999e0ee9",
+      "original_bytes": 47271,
+      "archived_bytes": 47271,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "live-inverse64-v2-b1.log",
+      "artifact": "raw/live-inverse64-v2-b1.log",
+      "sha256": "9b99fceed4c6bf0415f06256aa2594b37b0037fd673bf4ec7b7a7ea7968f3e6d",
+      "original_sha256": "9b99fceed4c6bf0415f06256aa2594b37b0037fd673bf4ec7b7a7ea7968f3e6d",
+      "original_bytes": 48306,
+      "archived_bytes": 48306,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "live-inverse64-v2-b8.json",
+      "artifact": "raw/live-inverse64-v2-b8.json",
+      "sha256": "f87bf777489155661c386a975f556954a209a5c506a638b11b91bfd8a8301a58",
+      "original_sha256": "f87bf777489155661c386a975f556954a209a5c506a638b11b91bfd8a8301a58",
+      "original_bytes": 144808,
+      "archived_bytes": 144808,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "live-inverse64-v2-b8.log",
+      "artifact": "raw/live-inverse64-v2-b8.log",
+      "sha256": "203d863e2278dcca4fc960634bf67f75a89cd0b80fdea9a0447e8630b25e1945",
+      "original_sha256": "203d863e2278dcca4fc960634bf67f75a89cd0b80fdea9a0447e8630b25e1945",
+      "original_bytes": 146939,
+      "archived_bytes": 146939,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "live-inverse64-v2-b32.json",
+      "artifact": "raw/live-inverse64-v2-b32.json",
+      "sha256": "52854440dde3bbd3d1eedefcd00a3274ca644b189ac66cd2abe9e15400e038e3",
+      "original_sha256": "52854440dde3bbd3d1eedefcd00a3274ca644b189ac66cd2abe9e15400e038e3",
+      "original_bytes": 470686,
+      "archived_bytes": 470686,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "live-inverse64-v2-b32.log",
+      "artifact": "raw/live-inverse64-v2-b32.log",
+      "sha256": "d253ee5593c71014e763d3e2ee1f0f23bfb0515ac7729fd9e1c8b32826b1ea9a",
+      "original_sha256": "d253ee5593c71014e763d3e2ee1f0f23bfb0515ac7729fd9e1c8b32826b1ea9a",
+      "original_bytes": 471721,
+      "archived_bytes": 471721,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "live-inverse64-v2-b128.json",
+      "artifact": "raw/live-inverse64-v2-b128.json.gz",
+      "sha256": "5d05055a1eb5614d268af16321836fc2098744aeeebbb89f13895117c0b3b86e",
+      "original_sha256": "9714ff5fce54fa1c8b202893b9e1cbadc497a9e41a504f8c48ff4351c93c383b",
+      "original_bytes": 1782330,
+      "archived_bytes": 441230,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "live-inverse64-v2-b128.log",
+      "artifact": "raw/live-inverse64-v2-b128.log.preamble.txt",
+      "sha256": "62583b6fd9caaca011631f31e536054c2188143dcda9b4f4924d076036afb277",
+      "original_sha256": "14e48f1183a1a0fbd762085185719af0189e1f4bcfe22424ebe90be2e272221e",
+      "original_bytes": 1783365,
+      "archived_bytes": 1035,
+      "representation": "Exact log preamble; duplicated printed JSON is preserved in the separate original JSON artifact.",
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "live-auto-v3-b512.json",
+      "artifact": "raw/live-auto-v3-b512.json.gz",
+      "sha256": "c44c6cf32a4e65c48d675439f2e12192d133ada966669326ea980ca10383d184",
+      "original_sha256": "bda05943bd5124bd82c130e794ef3e468ac1b22fb118b6d1f16a701f8d27f54c",
+      "original_bytes": 8048569,
+      "archived_bytes": 1905603,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "live-auto-v3-b512.log",
+      "artifact": "raw/live-auto-v3-b512.log.preamble.txt",
+      "sha256": "6e7b75f9f47034e89ad3edc4bd7323e9e81f95ea1931e0bae30f71c72c96019e",
+      "original_sha256": "a09f4b54aab67b8c964b00d1535735d7080894198201335cf6a8257ddd2d58b4",
+      "original_bytes": 8050700,
+      "archived_bytes": 2131,
+      "representation": "Exact log preamble; duplicated printed JSON is preserved in the separate original JSON artifact.",
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "live-auto-v3-b1024.json",
+      "artifact": "raw/live-auto-v3-b1024.json.gz",
+      "sha256": "a08c5c795039773dbe91e3e1b50481e8b9b0413520b19a4a29a2114afd3da66c",
+      "original_sha256": "fabe4f1489044e63b98bce026ac6d1d22e6e4084d4006248136e2b2802a08358",
+      "original_bytes": 16055648,
+      "archived_bytes": 3584746,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "live-auto-v3-b1024.log",
+      "artifact": "raw/live-auto-v3-b1024.log.preamble.txt",
+      "sha256": "32bfcd431c1bd01bdc0ca427c09f64518d283923862a3e24dbdc2e583bb800fe",
+      "original_sha256": "29b0578200ddad3667da265a6fc363504017d67ded27deddff90f314a9336723",
+      "original_bytes": 16057779,
+      "archived_bytes": 2131,
+      "representation": "Exact log preamble; duplicated printed JSON is preserved in the separate original JSON artifact.",
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "live-split-v2-b1024.json",
+      "artifact": "raw/live-split-v2-b1024.json.gz",
+      "sha256": "e2065fcca60a74e007b8010d5bbeab6a9c7f15e2465ce5c7077ea009eec8a5c2",
+      "original_sha256": "f269cd599cf0b6868a8aec1ae92db6a3b25543ebd14423d32a4d9e488524f117",
+      "original_bytes": 24049141,
+      "archived_bytes": 4534765,
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "live-split-v2-b1024.log",
+      "artifact": "raw/live-split-v2-b1024.log.preamble.txt",
+      "sha256": "42d4d750581d0a38e755ffe484ae9fda5eefb90727eab94db9df9ca3c18fcc1b",
+      "original_sha256": "1e0a8aeb289530277418d6bdafc720e03aef82749393bbaafa4ea5326a81969e",
+      "original_bytes": 24050176,
+      "archived_bytes": 1035,
+      "representation": "Exact log preamble; duplicated printed JSON is preserved in the separate original JSON artifact.",
+      "source_revision": "Development working iteration; not an immutable final-source measurement"
+    },
+    {
+      "runtime_name": "compare-cdf0-auto-b1024.json",
+      "artifact": "raw/compare-cdf0-auto-b1024.json.gz",
+      "sha256": "121260e35fbb7e8da42e289510bc62956b360a9e4366478d75c8a92214e4bd9c",
+      "original_sha256": "2d01a794ce9646f3a6faf3da94367d59d314174df5cb7e7d4c6b1ba3c84dda3f",
+      "original_bytes": 16055856,
+      "archived_bytes": 3582139,
+      "source_revision": "cdf0bc17"
+    },
+    {
+      "runtime_name": "compare-cdf0-auto-b1024.log",
+      "artifact": "raw/compare-cdf0-auto-b1024.log.preamble.txt",
+      "sha256": "41d7dc5d415eb37dc9fca4ce7c1cb542ba5a59e2c8301a46244ffd6dd24b38c1",
+      "original_sha256": "a6501559ec219ebc465eb712f3310683b1dd382c71928a2e830600fecde4a5d0",
+      "original_bytes": 16056891,
+      "archived_bytes": 1035,
+      "representation": "Exact log preamble; duplicated printed JSON is preserved in the separate original JSON artifact.",
+      "source_revision": "cdf0bc17"
+    },
+    {
+      "runtime_name": "compare-cdf0-direct-b1024.json",
+      "artifact": "raw/compare-cdf0-direct-b1024.json.gz",
+      "sha256": "82053a3533602a11fc204833afbf6c06c14bc5ed74cf1d5c14f7d5ab2c9365fc",
+      "original_sha256": "6ea8d80bef11ed8556c6e6d7a51c84934c8b077c74d91deebbc36d7a44ad2ca0",
+      "original_bytes": 16064266,
+      "archived_bytes": 3571856,
+      "source_revision": "cdf0bc17"
+    },
+    {
+      "runtime_name": "compare-cdf0-direct-b1024.log",
+      "artifact": "raw/compare-cdf0-direct-b1024.log.preamble.txt",
+      "sha256": "f059b14ba46d728ec30760ceb402bea9f01dcb9ba524214850fef5aa5ba4977f",
+      "original_sha256": "18aa67ecaa5e1c15a9e00c47657ca9f2bbc7b309a5d5b75b928bf7ca542d8b42",
+      "original_bytes": 16065301,
+      "archived_bytes": 1035,
+      "representation": "Exact log preamble; duplicated printed JSON is preserved in the separate original JSON artifact.",
+      "source_revision": "cdf0bc17"
+    },
+    {
+      "runtime_name": "compare-cdf0-fp32-b1024.json",
+      "artifact": "raw/compare-cdf0-fp32-b1024.json.gz",
+      "sha256": "8ba12d2c1e61a2876f903e29fa8a5bb64b289e5888407e8ff3aa16f1e6173a4b",
+      "original_sha256": "dbed071c6daf71aad6446480313634e6a60b4464b6406a110b0ffcaf0e3f1db1",
+      "original_bytes": 16074990,
+      "archived_bytes": 3577818,
+      "source_revision": "cdf0bc17"
+    },
+    {
+      "runtime_name": "compare-cdf0-fp32-b1024.log",
+      "artifact": "raw/compare-cdf0-fp32-b1024.log.preamble.txt",
+      "sha256": "f932cdef59bbf2918e05e41dfcb51c8d2baf343855d5074100c62b650401649e",
+      "original_sha256": "a0250585cfc2a90d02123d74269da8ab3382ac3e5821a7ed88195d48a7c539ef",
+      "original_bytes": 16076412,
+      "archived_bytes": 1422,
+      "representation": "Exact log preamble; duplicated printed JSON is preserved in the separate original JSON artifact.",
+      "source_revision": "cdf0bc17"
+    },
+    {
+      "runtime_name": "final-rigid-b1024.json",
+      "artifact": "raw/final-rigid-b1024.json.gz",
+      "sha256": "547340b7487a2cd29b999c6925bc9931da43b2bf423b1a8e745cd3a2a253e631",
+      "original_sha256": "3f9d507d2e57994ddbaa5f50a3a7f74e24136b590aa561b60dc42b0fd7f4cf98",
+      "original_bytes": 12913373,
+      "archived_bytes": 1740879,
+      "source_revision": "6a048825",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "final-rigid-b1024.log",
+      "artifact": "raw/final-rigid-b1024.log.preamble.txt",
+      "sha256": "e4d10b542af950b78fe3f86f0a004fc0032ec9a965e56df76dd79c930b46c797",
+      "original_sha256": "3680bf1afcbd9505ad53192c9493ecc35357c890efdc5d1224f170fd2fd3a3f1",
+      "original_bytes": 12914408,
+      "archived_bytes": 1035,
+      "source_revision": "6a048825",
+      "representation": "Exact preamble; duplicated printed JSON is archived in its original JSON file."
+    },
+    {
+      "runtime_name": "final-policy-rigid-b1024.json",
+      "artifact": "raw/final-policy-rigid-b1024.json.gz",
+      "sha256": "67ee77a777c866b6e5ea97594d1f6409f21e5ace14c983f45787ff298f520cf5",
+      "original_sha256": "58d5a87a678f190a11085d07055cc6d1f686ee4719534ed7eb4109aa5877c306",
+      "original_bytes": 12913622,
+      "archived_bytes": 1740303,
+      "source_revision": "6a048825",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "final-policy-rigid-b1024.log",
+      "artifact": "raw/final-policy-rigid-b1024.log.preamble.txt",
+      "sha256": "315dfdccf954bc1051efc5c4bf7f0c4fb1f163ba61f68fbd15b6eae10381eac2",
+      "original_sha256": "b5094b896506d46d1ffd669b6b251a156eb2ba56f79296c98cca9e68c56c01cb",
+      "original_bytes": 12914657,
+      "archived_bytes": 1035,
+      "source_revision": "6a048825",
+      "representation": "Exact preamble; duplicated printed JSON is archived in its original JSON file."
+    },
+    {
+      "runtime_name": "final-live-b1024.json",
+      "artifact": "raw/final-live-b1024.json.gz",
+      "sha256": "0e141409ced77af844a3b14b1f5639057bfeabf9958b3bedea2384332cd8fe18",
+      "original_sha256": "9b6a8b286b09540cd23493ad342de7c83c82c7b451ac4c87ae09ffc13b367686",
+      "original_bytes": 24050261,
+      "archived_bytes": 4534460,
+      "source_revision": "6a048825",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "final-live-b1024.log",
+      "artifact": "raw/final-live-b1024.log.preamble.txt",
+      "sha256": "c1430262bc9be44c15c6a222bc17e51435ab97acf36afaa78f068c9eac837e85",
+      "original_sha256": "2a590411a74077d9f1a6ff0a6b28f337e79952edc067b739ce25481abefb1ea0",
+      "original_bytes": 24051296,
+      "archived_bytes": 1035,
+      "source_revision": "6a048825",
+      "representation": "Exact preamble; duplicated printed JSON is archived in its original JSON file."
+    },
+    {
+      "runtime_name": "final-policy-b1024.json",
+      "artifact": "raw/final-policy-b1024.json.gz",
+      "sha256": "22c60ba9d60bd2bea13f8b403b2cd3cda4dccea631dd3915e38eedc540212c0c",
+      "original_sha256": "551631876e1834c4135e9d7fa3d79f581296b36873bcb0b4587c6b96cd0bc2e8",
+      "original_bytes": 24049600,
+      "archived_bytes": 4532561,
+      "source_revision": "6a048825",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "final-policy-b1024.log",
+      "artifact": "raw/final-policy-b1024.log.preamble.txt",
+      "sha256": "70056bb924dc39e3aa64fcdf7c688177e405475aee394ffedd293f6a739e9f6e",
+      "original_sha256": "ecd8ac05d3e65a683037eed3ad1df10d5c02b79db6631dccb65ec560c380d8fc",
+      "original_bytes": 24050635,
+      "archived_bytes": 1035,
+      "source_revision": "6a048825",
+      "representation": "Exact preamble; duplicated printed JSON is archived in its original JSON file."
+    },
+    {
+      "runtime_name": "final-recovery-b1024.json",
+      "artifact": "raw/final-recovery-b1024.json.gz",
+      "sha256": "a40383240d12dfa475097937bbd0ca485f5ea8fbfa5fdf11fe8880445e99ec89",
+      "original_sha256": "2c523cc562bfd96badc657e42959195ff5bece90ca5eda923843f67e38188d7b",
+      "original_bytes": 24049521,
+      "archived_bytes": 4533711,
+      "source_revision": "6a048825",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "final-recovery-b1024.log",
+      "artifact": "raw/final-recovery-b1024.log.preamble.txt",
+      "sha256": "dc8e2a3783856322f4ff37f34f1e7b0ef3ee66ea769ef4a9053d87d9eedf447c",
+      "original_sha256": "fa94c4acceedb5b5b81cee65c587aa2d37edc5419b033ae1f704068546462c2c",
+      "original_bytes": 24050556,
+      "archived_bytes": 1035,
+      "source_revision": "6a048825",
+      "representation": "Exact preamble; duplicated printed JSON is archived in its original JSON file."
+    },
+    {
+      "runtime_name": "final-live-b8.json",
+      "artifact": "raw/final-live-b8.json",
+      "sha256": "1299d00d527be7ccdf5969105283b4617ae4006a86e10f9a4597da80f3504c26",
+      "original_sha256": "1299d00d527be7ccdf5969105283b4617ae4006a86e10f9a4597da80f3504c26",
+      "original_bytes": 253652,
+      "archived_bytes": 253652,
+      "source_revision": "6a048825",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "final-live-b8.log",
+      "artifact": "raw/final-live-b8.log",
+      "sha256": "6c6df75fe6922e0322c98ecbefeeab1ee71d93b9a424641cd39aa976dd3bbfa6",
+      "original_sha256": "6c6df75fe6922e0322c98ecbefeeab1ee71d93b9a424641cd39aa976dd3bbfa6",
+      "original_bytes": 254687,
+      "archived_bytes": 254687,
+      "source_revision": "6a048825",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "live-history0-b1024.json",
+      "artifact": "raw/live-history0-b1024.json.gz",
+      "sha256": "90a0a04018763aeffb72e62990b20dcdff0a9a21f462526e23a3249553d57654",
+      "original_sha256": "2bfe174ca5afb02a0947d436f86a9298bffa241437bc4c92c78d7ff3660ed1f6",
+      "original_bytes": 24050126,
+      "archived_bytes": 4533265,
+      "source_revision": "6a048825",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "live-history0-b1024.log",
+      "artifact": "raw/live-history0-b1024.log.preamble.txt",
+      "sha256": "bf4cfe131e72129a252ff8353b1667d62c420ca1ab072d89f38cea5726cb9042",
+      "original_sha256": "dd9b7596869cad9d0120121a5851a33c45e201645b38c62bb10a99e9a0f3fd96",
+      "original_bytes": 24051161,
+      "archived_bytes": 1035,
+      "source_revision": "6a048825",
+      "representation": "Exact preamble; duplicated printed JSON is archived in its original JSON file."
+    },
+    {
+      "runtime_name": "live-history4-b1024.json",
+      "artifact": "raw/live-history4-b1024.json.gz",
+      "sha256": "b3ae005bdc96a75c654850266d1b6589880c5bba90f70955737cd57edfba4609",
+      "original_sha256": "fd4dd4767af0e3f472e05b3fb8248939e704032c620db0eaaac4df41cdad1b99",
+      "original_bytes": 25394198,
+      "archived_bytes": 4579217,
+      "source_revision": "6a048825",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "live-history4-b1024.log",
+      "artifact": "raw/live-history4-b1024.log.preamble.txt",
+      "sha256": "9b4322d3be8858258e2618dcefcf1d27eb4419070b6d0e917393256bff509cec",
+      "original_sha256": "f844542f2571acc2f449c66d2fdeb84a6a1f065a081b2edd0ad24d6dd5a7b848",
+      "original_bytes": 25395233,
+      "archived_bytes": 1035,
+      "source_revision": "6a048825",
+      "representation": "Exact preamble; duplicated printed JSON is archived in its original JSON file."
+    },
+    {
+      "runtime_name": "native-cpu-v4.log",
+      "artifact": "raw/native-cpu-v4.log",
+      "sha256": "fa9aac061548f57cbc19020d03cb760751c89f38b42d2a32aec01f7cfd526c02",
+      "original_sha256": "fa9aac061548f57cbc19020d03cb760751c89f38b42d2a32aec01f7cfd526c02",
+      "original_bytes": 6299,
+      "archived_bytes": 6299,
+      "source_revision": "6a048825",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "final-memory-summary.json",
+      "artifact": "raw/final-memory-summary.json",
+      "sha256": "ecae37bcfe0d0897888b50f4cdff66d9a58b113029179ea88172f815bc0bbf62",
+      "original_sha256": "ecae37bcfe0d0897888b50f4cdff66d9a58b113029179ea88172f815bc0bbf62",
+      "original_bytes": 509,
+      "archived_bytes": 509,
+      "source_revision": "6a048825",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "final-memory-gpu.csv",
+      "artifact": "raw/final-memory-gpu.csv",
+      "sha256": "34a57444e5250a646ab3417caf8772f8ffb17c437128c1b83f72853857caa61b",
+      "original_sha256": "34a57444e5250a646ab3417caf8772f8ffb17c437128c1b83f72853857caa61b",
+      "original_bytes": 78274,
+      "archived_bytes": 78274,
+      "source_revision": "6a048825",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "selected-live-b1024.json",
+      "artifact": "raw/selected-live-b1024.json.gz",
+      "sha256": "a59dd12a19ab4b38f539c6207d064bd7228d3fffcaba4eca3d36a9c00e39c7d1",
+      "original_sha256": "82c1502a4a4e87a05ea6db12eebd3a17712554fc626af86908c019f2402c53b6",
+      "original_bytes": 24050783,
+      "archived_bytes": 4533354,
+      "source_revision": "dbfdf20d (audit helper committed with completion evidence)",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "selected-live-b1024.log",
+      "artifact": "raw/selected-live-b1024.log.preamble.txt",
+      "sha256": "59633419d4f24c114291d3c83a8a1627a3cbd2a7c204be63c01db3584dba6abd",
+      "original_sha256": "6ca9dd85bb22716de1f7f7e16dd71d244c802d3db55a594ce481a4792462bdd9",
+      "original_bytes": 24051818,
+      "archived_bytes": 1035,
+      "source_revision": "dbfdf20d (audit helper committed with completion evidence)",
+      "representation": "Exact preamble; duplicated printed JSON is archived in its original JSON file."
+    },
+    {
+      "runtime_name": "selected-policy-b1024.json",
+      "artifact": "raw/selected-policy-b1024.json.gz",
+      "sha256": "15834a57d1275d7015adcb545e5a7bdc66b0f1a1c90aa560184eee9660562b0f",
+      "original_sha256": "cf308259a09b46f6435dcf4eaed69fefb776887c35e501d941e631ec08e9c89e",
+      "original_bytes": 24051428,
+      "archived_bytes": 4534312,
+      "source_revision": "dbfdf20d (audit helper committed with completion evidence)",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "selected-policy-b1024.log",
+      "artifact": "raw/selected-policy-b1024.log.preamble.txt",
+      "sha256": "a573ef168c64cdfc16f1c5ae431671cb66eebcba76acbbc24e87d2ab4087e27d",
+      "original_sha256": "22b4b3821bf722fb6efdfd2bc0978a2d460be25c9bf2ea80b88581b209bb71c5",
+      "original_bytes": 24052463,
+      "archived_bytes": 1035,
+      "source_revision": "dbfdf20d (audit helper committed with completion evidence)",
+      "representation": "Exact preamble; duplicated printed JSON is archived in its original JSON file."
+    },
+    {
+      "runtime_name": "selected-recovery-b1024.json",
+      "artifact": "raw/selected-recovery-b1024.json.gz",
+      "sha256": "5615dd60eae58d5a70e0fab771986e110cd07e99c40d1c14f7c88ae3c2892aae",
+      "original_sha256": "608b49df1d9934fae30b4b2fa65eb5afcd5ef20071587be691e04d187998ea7f",
+      "original_bytes": 24050901,
+      "archived_bytes": 4534235,
+      "source_revision": "dbfdf20d (audit helper committed with completion evidence)",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "selected-recovery-b1024.log",
+      "artifact": "raw/selected-recovery-b1024.log.preamble.txt",
+      "sha256": "9b8d2669b1926b5ce97598264d49dda9aa1ed1f322387521156acafadad8f6ff",
+      "original_sha256": "bb08b1f66be1103aaa7210496d130b12ebb4905d8f2afcec93e1d975591d54c3",
+      "original_bytes": 24051936,
+      "archived_bytes": 1035,
+      "source_revision": "dbfdf20d (audit helper committed with completion evidence)",
+      "representation": "Exact preamble; duplicated printed JSON is archived in its original JSON file."
+    },
+    {
+      "runtime_name": "selected-live-b8.json",
+      "artifact": "raw/selected-live-b8.json",
+      "sha256": "4ea90f3b35192840c833d7312c3b79dc8612a0d9ef12b79e8d8f7e7fc4233645",
+      "original_sha256": "4ea90f3b35192840c833d7312c3b79dc8612a0d9ef12b79e8d8f7e7fc4233645",
+      "original_bytes": 254684,
+      "archived_bytes": 254684,
+      "source_revision": "dbfdf20d (audit helper committed with completion evidence)",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "selected-live-b8.log",
+      "artifact": "raw/selected-live-b8.log",
+      "sha256": "81aae5ac10ffc70af99354184a082bb6eac9dbe4ada490912efc5a009b8fbaac",
+      "original_sha256": "81aae5ac10ffc70af99354184a082bb6eac9dbe4ada490912efc5a009b8fbaac",
+      "original_bytes": 255719,
+      "archived_bytes": 255719,
+      "source_revision": "dbfdf20d (audit helper committed with completion evidence)",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "selected-profile-b1024.json",
+      "artifact": "raw/selected-profile-b1024.json.gz",
+      "sha256": "37613ba471adb9fc816e6b8a35729d90cdfc951b658187b0d96c9895a009473b",
+      "original_sha256": "f405e56a9bb50370769730b8804399febfcd4b62a24b1143aba9404de1f13eed",
+      "original_bytes": 24238416,
+      "archived_bytes": 4571424,
+      "source_revision": "dbfdf20d (audit helper committed with completion evidence)",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "selected-profile-b1024.log",
+      "artifact": "raw/selected-profile-b1024.log.preamble.txt",
+      "sha256": "70bda774c62a0e7b7127e836b03ddfa2e04a442846df43aa120adb8a9e825890",
+      "original_sha256": "3d6eea8876d7cdcc447cc9b44ac92b65a5136b34c66af1e25463281f45c772a0",
+      "original_bytes": 24241383,
+      "archived_bytes": 2967,
+      "source_revision": "dbfdf20d (audit helper committed with completion evidence)",
+      "representation": "Exact preamble; duplicated printed JSON is archived in its original JSON file."
+    },
+    {
+      "runtime_name": "validity-live-b1024.json",
+      "artifact": "raw/validity-live-b1024.json",
+      "sha256": "d25f183bb940e2d8db972044d34b478260e236740a0f00ae8d16c08ab58aafce",
+      "original_sha256": "d25f183bb940e2d8db972044d34b478260e236740a0f00ae8d16c08ab58aafce",
+      "original_bytes": 7437,
+      "archived_bytes": 7437,
+      "source_revision": "dbfdf20d (audit helper committed with completion evidence)",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "validity-live-b1024.log",
+      "artifact": "raw/validity-live-b1024.log",
+      "sha256": "46179dc036ec32c3e2731b22e5b6a616461e5176c87a3db4c5371abe8f5b7246",
+      "original_sha256": "46179dc036ec32c3e2731b22e5b6a616461e5176c87a3db4c5371abe8f5b7246",
+      "original_bytes": 1079,
+      "archived_bytes": 1079,
+      "source_revision": "dbfdf20d (audit helper committed with completion evidence)",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "validity-policy-b1024.json",
+      "artifact": "raw/validity-policy-b1024.json",
+      "sha256": "7031f0e0cd74fc78645e5ad17e45a35f1444bf7bd4ab248c64b24b3eef95c0f3",
+      "original_sha256": "7031f0e0cd74fc78645e5ad17e45a35f1444bf7bd4ab248c64b24b3eef95c0f3",
+      "original_bytes": 7439,
+      "archived_bytes": 7439,
+      "source_revision": "dbfdf20d (audit helper committed with completion evidence)",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "validity-policy-b1024.log",
+      "artifact": "raw/validity-policy-b1024.log",
+      "sha256": "39cc61df4dec3a8ef60fa508a82c709fa64d6b222e6eba9eb7e7d429f2dc0de2",
+      "original_sha256": "39cc61df4dec3a8ef60fa508a82c709fa64d6b222e6eba9eb7e7d429f2dc0de2",
+      "original_bytes": 1079,
+      "archived_bytes": 1079,
+      "source_revision": "dbfdf20d (audit helper committed with completion evidence)",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "verified-live-b1024.json",
+      "artifact": "raw/verified-live-b1024.json.gz",
+      "sha256": "776f437785acd94351c87d5b88e5b291651a72b5db974eb9f53c2bd2d101bf83",
+      "original_sha256": "91b2a90812ffda8abcc673acd21fcb4c5afb620742a6088597327d19439a06d1",
+      "original_bytes": 24050030,
+      "archived_bytes": 4534371,
+      "source_revision": "6a048825 plus final-code-before-pressure.patch",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "verified-live-b1024.log",
+      "artifact": "raw/verified-live-b1024.log.preamble.txt",
+      "sha256": "986f11a2fb446cb2af59d95655e17105163eac2d41acd62ae18dc9b4b2cd81b5",
+      "original_sha256": "4b680af877fbbeeabd4b86310af3d9897c8bb6d64023f00dff3c692b01541c37",
+      "original_bytes": 24052161,
+      "archived_bytes": 2131,
+      "source_revision": "6a048825 plus final-code-before-pressure.patch",
+      "representation": "Exact preamble; duplicated printed JSON is archived in its original JSON file."
+    },
+    {
+      "runtime_name": "verified-policy-b1024.json",
+      "artifact": "raw/verified-policy-b1024.json.gz",
+      "sha256": "d23ae23828c763ae23e67d6b085e60b1bea98eb68798aa627a9398b6e7ccabdd",
+      "original_sha256": "da906024e048606cf76c5bfb9de0a33607491f0333b25a913ca7c4b9379921a0",
+      "original_bytes": 24050637,
+      "archived_bytes": 4532353,
+      "source_revision": "6a048825 plus final-code-before-pressure.patch",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "verified-policy-b1024.log",
+      "artifact": "raw/verified-policy-b1024.log.preamble.txt",
+      "sha256": "673ed1498db6cd8e2f0fd53b603a00cdd9fb74708a439954938897a7cc9a3abb",
+      "original_sha256": "80df7254f01e20b6ebd58815013e76c0fbcb5adbfdea5ca512ece7285e1dea7a",
+      "original_bytes": 24052768,
+      "archived_bytes": 2131,
+      "source_revision": "6a048825 plus final-code-before-pressure.patch",
+      "representation": "Exact preamble; duplicated printed JSON is archived in its original JSON file."
+    },
+    {
+      "runtime_name": "verified-recovery-b1024.json",
+      "artifact": "raw/verified-recovery-b1024.json.gz",
+      "sha256": "bb44ab86a23f109f651f1e1820d0a5cda1d8792b34c36cef177fa71863d0dc31",
+      "original_sha256": "4e7ea8688a3d5d3c284b4321ee1431abf39e8e9afdcba30a75bb6c61eef66a58",
+      "original_bytes": 24051442,
+      "archived_bytes": 4534101,
+      "source_revision": "6a048825 plus final-code-before-pressure.patch",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "verified-recovery-b1024.log",
+      "artifact": "raw/verified-recovery-b1024.log.preamble.txt",
+      "sha256": "e347cbdc057bb80f481e5ef025297582b1252fd9cf3d398ba7abda4df61d86c4",
+      "original_sha256": "41522995f9f2f87a7248d4b07fa9d4eab54d3b4ca86472d72468cc3ed6bd9c88",
+      "original_bytes": 24053573,
+      "archived_bytes": 2131,
+      "source_revision": "6a048825 plus final-code-before-pressure.patch",
+      "representation": "Exact preamble; duplicated printed JSON is archived in its original JSON file."
+    },
+    {
+      "runtime_name": "verified-live-b8.json",
+      "artifact": "raw/verified-live-b8.json",
+      "sha256": "dda52ecaee21199ff4e2163f286814baae96a0af1821c6db6afabda099b00ef1",
+      "original_sha256": "dda52ecaee21199ff4e2163f286814baae96a0af1821c6db6afabda099b00ef1",
+      "original_bytes": 254321,
+      "archived_bytes": 254321,
+      "source_revision": "6a048825 plus final-code-before-pressure.patch",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "verified-live-b8.log",
+      "artifact": "raw/verified-live-b8.log",
+      "sha256": "3bddc5c904147ac785d70b9c3f3b967c78e9f5f41dfee0db2c100c648812e331",
+      "original_sha256": "3bddc5c904147ac785d70b9c3f3b967c78e9f5f41dfee0db2c100c648812e331",
+      "original_bytes": 256452,
+      "archived_bytes": 256452,
+      "source_revision": "6a048825 plus final-code-before-pressure.patch",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "correction-fp32-b1024.json",
+      "artifact": "raw/correction-fp32-b1024.json.gz",
+      "sha256": "8a99668de2439f30ed144fdf6b5eb763b9e66f1ec8b0928667903017ceacbdec",
+      "original_sha256": "e887e66af6a7479c4fd91d21a76bf14788e1fa7a9f88c9d8f0e24531f10c1db2",
+      "original_bytes": 24074725,
+      "archived_bytes": 4556191,
+      "source_revision": "6a048825 plus corrected-inverse.patch",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "correction-fp32-b1024.log",
+      "artifact": "raw/correction-fp32-b1024.log.preamble.txt",
+      "sha256": "8e7cdc154fcf79ea14f9a73473aaf857cebe86afa54e5439df5e5fb32a7420f1",
+      "original_sha256": "62db16865f07c83cce8c8a2f858d02ea8fd11310c985f1cd825afe87cf33ba2d",
+      "original_bytes": 24076856,
+      "archived_bytes": 2131,
+      "source_revision": "6a048825 plus corrected-inverse.patch",
+      "representation": "Exact preamble; duplicated printed JSON is archived in its original JSON file."
+    },
+    {
+      "runtime_name": "pressure-warp-live-b1024.json",
+      "artifact": "raw/pressure-warp-live-b1024.json.gz",
+      "sha256": "529aa5af7ec4e1f805cfa441b53ba68d134ca7a60e01cc52a98d2fecebb72627",
+      "original_sha256": "3d72b19d745fb4a2f6eaf80d4424b416b7e75abd7aef1f135ece2b21e86ce71f",
+      "original_bytes": 24049519,
+      "archived_bytes": 4533804,
+      "source_revision": "6a048825 plus pressure-warp-trial.patch (v2); v1 earlier working iteration",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "pressure-warp-live-b1024.log",
+      "artifact": "raw/pressure-warp-live-b1024.log.preamble.txt",
+      "sha256": "167d19a19bed8ec3bc60a5dff061b10bc69879c9390c96049b9db68fced2e832",
+      "original_sha256": "10404214d7ccd3c28c38773694c0233a0f8edc83f4da06497f398f5788398c80",
+      "original_bytes": 24051650,
+      "archived_bytes": 2131,
+      "source_revision": "6a048825 plus pressure-warp-trial.patch (v2); v1 earlier working iteration",
+      "representation": "Exact preamble; duplicated printed JSON is archived in its original JSON file."
+    },
+    {
+      "runtime_name": "pressure-warp-profile-b1024.json",
+      "artifact": "raw/pressure-warp-profile-b1024.json.gz",
+      "sha256": "8e7e9121773318612746a8ed62ed8930cd7c2efaf3b5d07f04dc5dfa1ed77999",
+      "original_sha256": "e0231e390849d3b5bc4b7b87d9de5120bc47785546fb2d26000c537784faa835",
+      "original_bytes": 24238402,
+      "archived_bytes": 4571170,
+      "source_revision": "6a048825 plus pressure-warp-trial.patch (v2); v1 earlier working iteration",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "pressure-warp-profile-b1024.log",
+      "artifact": "raw/pressure-warp-profile-b1024.log.preamble.txt",
+      "sha256": "1c37f224e6e32a5bf52f003e8e772f6c3676bd81f0c1584e3769d9a136151f48",
+      "original_sha256": "09d441d4536895e68ea93c299d1a8dc9e29420fd6fc5a86d374ec36469fd9446",
+      "original_bytes": 24242234,
+      "archived_bytes": 3832,
+      "source_revision": "6a048825 plus pressure-warp-trial.patch (v2); v1 earlier working iteration",
+      "representation": "Exact preamble; duplicated printed JSON is archived in its original JSON file."
+    },
+    {
+      "runtime_name": "pressure-warp-v2-live-b1024.json",
+      "artifact": "raw/pressure-warp-v2-live-b1024.json.gz",
+      "sha256": "5dff2b4a6aa8644154139cee59e5ccf6a063c30df73240fbe4c839be66ceb455",
+      "original_sha256": "acf03a36229c736fe808c7a9391043bdddfad1949550cb9b8d67fe69b7af3e54",
+      "original_bytes": 24050318,
+      "archived_bytes": 4533168,
+      "source_revision": "6a048825 plus pressure-warp-trial.patch (v2); v1 earlier working iteration",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "pressure-warp-v2-live-b1024.log",
+      "artifact": "raw/pressure-warp-v2-live-b1024.log.preamble.txt",
+      "sha256": "613be2ec1519fa1fb35797681ac19d464e3192f20b86e34ce2a72182b463efd3",
+      "original_sha256": "b5b09095df6e9a0a23a47c30b434ea793d5e4888fa9697b6ba9b3b5986bf24b9",
+      "original_bytes": 24051353,
+      "archived_bytes": 1035,
+      "source_revision": "6a048825 plus pressure-warp-trial.patch (v2); v1 earlier working iteration",
+      "representation": "Exact preamble; duplicated printed JSON is archived in its original JSON file."
+    },
+    {
+      "runtime_name": "pressure-warp-v2-profile-b1024.json",
+      "artifact": "raw/pressure-warp-v2-profile-b1024.json.gz",
+      "sha256": "66a53a83fb58b9fbcb97bbe2052261a58b304a30a3363a137a19908523a8ab2f",
+      "original_sha256": "5bc54f89fd95e3bea00fecef8e53351e268cd6a53ba630e552eec5b96cc4e865",
+      "original_bytes": 24240357,
+      "archived_bytes": 4572753,
+      "source_revision": "6a048825 plus pressure-warp-trial.patch (v2); v1 earlier working iteration",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "pressure-warp-v2-profile-b1024.log",
+      "artifact": "raw/pressure-warp-v2-profile-b1024.log.preamble.txt",
+      "sha256": "f3107e0a61b3fb100a24250065afaf40e6a5425fd90d04ac1349cbfab3c3c964",
+      "original_sha256": "14fa2cd0b4bca1e0ba0f4f4711d686b76f0407c3949149d76abe1a5b7b83aac9",
+      "original_bytes": 24243324,
+      "archived_bytes": 2967,
+      "source_revision": "6a048825 plus pressure-warp-trial.patch (v2); v1 earlier working iteration",
+      "representation": "Exact preamble; duplicated printed JSON is archived in its original JSON file."
+    },
+    {
+      "runtime_name": "selected-trace-summary.json",
+      "artifact": "raw/selected-trace-summary.json",
+      "sha256": "6c8ff8f3253f7c47a475350bcbae0b1f37cd9cbdb8a9029d93aabca0cd9598cc",
+      "original_sha256": "6c8ff8f3253f7c47a475350bcbae0b1f37cd9cbdb8a9029d93aabca0cd9598cc",
+      "original_bytes": 40170,
+      "archived_bytes": 40170,
+      "source_revision": "dbfdf20d (audit helper committed with completion evidence)",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "native-selected-gpu.log",
+      "artifact": "raw/native-selected-gpu.log",
+      "sha256": "2ce238aa32b7f9702d847fa056007276ddf667acab17d77f97da1f96965be702",
+      "original_sha256": "2ce238aa32b7f9702d847fa056007276ddf667acab17d77f97da1f96965be702",
+      "original_bytes": 11654,
+      "archived_bytes": 11654,
+      "source_revision": "dbfdf20d (audit helper committed with completion evidence)",
+      "representation": "Complete original artifact.",
+      "role": "Final 16 GPU cases passed"
+    },
+    {
+      "runtime_name": "native-selected-cpu.log",
+      "artifact": "raw/native-selected-cpu.log",
+      "sha256": "ccc691ae72c99f33a11bbfcdd860ede6c0e3b7552834232281f455fc48f34cbd",
+      "original_sha256": "ccc691ae72c99f33a11bbfcdd860ede6c0e3b7552834232281f455fc48f34cbd",
+      "original_bytes": 7429,
+      "archived_bytes": 7429,
+      "source_revision": "dbfdf20d (audit helper committed with completion evidence)",
+      "representation": "Complete original artifact.",
+      "role": "Final 14 CPU numerical cases passed"
+    },
+    {
+      "runtime_name": "pressure-warp-tests.log",
+      "artifact": "raw/pressure-warp-tests.log",
+      "sha256": "6329449129923d71fea4b2c1596c5cc65f36052f30991613b9f1bc9c2442c28f",
+      "original_sha256": "6329449129923d71fea4b2c1596c5cc65f36052f30991613b9f1bc9c2442c28f",
+      "original_bytes": 11260,
+      "archived_bytes": 11260,
+      "source_revision": "Per-file source/role in manifest notes",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "pressure-warp-v2-tests.log",
+      "artifact": "raw/pressure-warp-v2-tests.log",
+      "sha256": "baabf54b4b659df7b73173ae00c1f4fc2cee677b05a60b430f42f411c601b840",
+      "original_sha256": "baabf54b4b659df7b73173ae00c1f4fc2cee677b05a60b430f42f411c601b840",
+      "original_bytes": 2204,
+      "archived_bytes": 2204,
+      "source_revision": "Per-file source/role in manifest notes",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "correction-math-gpu.log",
+      "artifact": "raw/correction-math-gpu.log",
+      "sha256": "67e1a3f74f16e66c482d4162b937b6683961d8b7e7225e04932fc6555c04ec4a",
+      "original_sha256": "67e1a3f74f16e66c482d4162b937b6683961d8b7e7225e04932fc6555c04ec4a",
+      "original_bytes": 3610,
+      "archived_bytes": 3610,
+      "source_revision": "Per-file source/role in manifest notes",
+      "representation": "Complete original artifact.",
+      "role": "Corrected inverse32 numerical check"
+    },
+    {
+      "runtime_name": "native-cpu-final.log",
+      "artifact": "raw/native-cpu-final.log",
+      "sha256": "296971e274b45feef5f46462af574196e9c896a0884343f32e672c76ee86b901",
+      "original_sha256": "296971e274b45feef5f46462af574196e9c896a0884343f32e672c76ee86b901",
+      "original_bytes": 7004,
+      "archived_bytes": 7004,
+      "source_revision": "Per-file source/role in manifest notes",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "checkpoint-lifecycle-final.log",
+      "artifact": "raw/checkpoint-lifecycle-final.log",
+      "sha256": "c3921105ec74e837b9c0d045af3443aad3dc7bc71427deb063340e914673cd63",
+      "original_sha256": "c3921105ec74e837b9c0d045af3443aad3dc7bc71427deb063340e914673cd63",
+      "original_bytes": 9942,
+      "archived_bytes": 9942,
+      "source_revision": "Per-file source/role in manifest notes",
+      "representation": "Complete original artifact."
+    },
+    {
+      "runtime_name": "native-suite-final.log",
+      "artifact": "raw/native-suite-final.log",
+      "sha256": "9c0857547769502cfd66bd719e3f9a271b136f58277108e202c602d564288e05",
+      "original_sha256": "9c0857547769502cfd66bd719e3f9a271b136f58277108e202c602d564288e05",
+      "original_bytes": 39965,
+      "archived_bytes": 39965,
+      "source_revision": "Per-file source/role in manifest notes",
+      "representation": "Complete original artifact.",
+      "role": "Superseded checkpoint-test expectation failure"
+    }
+  ],
+  "selected_source_revision": "dbfdf20dc002602294936a5af657f703973d6837",
+  "hardware_and_environment": {
+    "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+    "gpu_total_bytes": 101975851008,
+    "cpu": "Intel Xeon Platinum 8562Y+",
+    "partition": "rtx-mid",
+    "container": "genesis:1_26",
+    "python": "3.10.12",
+    "genesis": "1.4.3",
+    "quadrants": "1.3.3 00423caa",
+    "torch": "2.8.0",
+    "threads": 1,
+    "environment_script": "research/rigid_stress/scripts/cluster_env.sh"
+  },
+  "selected_configuration": {
+    "mesh": "examples/rigid/assets/hollow_egg/level1/elastic.npz",
+    "young": 10000000000.0,
+    "poisson": 0.3,
+    "density": 2000.0,
+    "contact_radius": 0.006,
+    "quadrature": 10,
+    "tolerance": 1e-08,
+    "absolute_tolerance": 1e-11,
+    "max_iterations": 2000,
+    "warm_start": true,
+    "history_size": 0,
+    "method": "auto",
+    "cooperative_solve": true,
+    "cooperative_pressure": true,
+    "inverse_max_bytes": 67108864,
+    "inverse_precision": "64",
+    "inverse_corrections": 2,
+    "preconditioner": "block"
+  },
+  "commands": [
+    {
+      "label": "selected-live-b1024",
+      "source_revision": "dbfdf20d",
+      "argv": [
+        "$RIGID_STRESS_ENV/bin/python",
+        "examples/speed_benchmark/rigid_stress.py",
+        "--scope",
+        "live",
+        "--envs",
+        "1024",
+        "--level",
+        "1",
+        "--varied",
+        "--warmup",
+        "900",
+        "--steps",
+        "1200",
+        "--repetitions",
+        "3",
+        "--minimum-seconds",
+        "10",
+        "--method",
+        "auto",
+        "--inverse-precision",
+        "64",
+        "--history",
+        "0",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-native-iteration/selected-live-b1024.json"
+      ],
+      "environment": {},
+      "working_directory": "Repository root of the indicated checkout",
+      "purpose": "Reproduction command with explicit measurement parameters"
+    },
+    {
+      "label": "selected-policy-b1024",
+      "source_revision": "dbfdf20d",
+      "argv": [
+        "$RIGID_STRESS_ENV/bin/python",
+        "examples/speed_benchmark/rigid_stress.py",
+        "--scope",
+        "policy",
+        "--envs",
+        "1024",
+        "--level",
+        "1",
+        "--varied",
+        "--warmup",
+        "900",
+        "--steps",
+        "1200",
+        "--repetitions",
+        "3",
+        "--minimum-seconds",
+        "10",
+        "--method",
+        "auto",
+        "--inverse-precision",
+        "64",
+        "--history",
+        "0",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-native-iteration/selected-policy-b1024.json"
+      ],
+      "environment": {},
+      "working_directory": "Repository root of the indicated checkout",
+      "purpose": "Reproduction command with explicit measurement parameters"
+    },
+    {
+      "label": "selected-recovery-b1024",
+      "source_revision": "dbfdf20d",
+      "argv": [
+        "$RIGID_STRESS_ENV/bin/python",
+        "examples/speed_benchmark/rigid_stress.py",
+        "--scope",
+        "recovery",
+        "--envs",
+        "1024",
+        "--level",
+        "1",
+        "--varied",
+        "--warmup",
+        "900",
+        "--steps",
+        "1200",
+        "--repetitions",
+        "3",
+        "--minimum-seconds",
+        "10",
+        "--method",
+        "auto",
+        "--inverse-precision",
+        "64",
+        "--history",
+        "0",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-native-iteration/selected-recovery-b1024.json"
+      ],
+      "environment": {},
+      "working_directory": "Repository root of the indicated checkout",
+      "purpose": "Reproduction command with explicit measurement parameters"
+    },
+    {
+      "label": "final-rigid-b1024",
+      "source_revision": "6a048825 (disabled path unchanged at dbfdf20d)",
+      "argv": [
+        "$RIGID_STRESS_ENV/bin/python",
+        "examples/speed_benchmark/rigid_stress.py",
+        "--scope",
+        "rigid",
+        "--envs",
+        "1024",
+        "--varied",
+        "--warmup",
+        "900",
+        "--steps",
+        "1200",
+        "--repetitions",
+        "3",
+        "--minimum-seconds",
+        "10",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-native-iteration/final-rigid-b1024.json"
+      ],
+      "environment": {},
+      "working_directory": "Repository root of the indicated checkout",
+      "purpose": "Reproduction command with explicit measurement parameters"
+    },
+    {
+      "label": "final-policy-rigid-b1024",
+      "source_revision": "6a048825 (disabled path unchanged at dbfdf20d)",
+      "argv": [
+        "$RIGID_STRESS_ENV/bin/python",
+        "examples/speed_benchmark/rigid_stress.py",
+        "--scope",
+        "policy-rigid",
+        "--envs",
+        "1024",
+        "--varied",
+        "--warmup",
+        "900",
+        "--steps",
+        "1200",
+        "--repetitions",
+        "3",
+        "--minimum-seconds",
+        "10",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-native-iteration/final-policy-rigid-b1024.json"
+      ],
+      "environment": {},
+      "working_directory": "Repository root of the indicated checkout",
+      "purpose": "Reproduction command with explicit measurement parameters"
+    },
+    {
+      "label": "selected-live-b8",
+      "source_revision": "dbfdf20d",
+      "argv": [
+        "$RIGID_STRESS_ENV/bin/python",
+        "examples/speed_benchmark/rigid_stress.py",
+        "--scope",
+        "live",
+        "--envs",
+        "8",
+        "--varied",
+        "--warmup",
+        "900",
+        "--steps",
+        "1200",
+        "--repetitions",
+        "3",
+        "--minimum-seconds",
+        "10",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-native-iteration/selected-live-b8.json"
+      ],
+      "environment": {},
+      "working_directory": "Repository root of the indicated checkout",
+      "purpose": "Reproduction command with explicit measurement parameters"
+    },
+    {
+      "label": "normalized serial baseline",
+      "source_revision": "65c2f25f + baseline-normalization.patch (detached 4bbad428)",
+      "argv": [
+        "$RIGID_STRESS_ENV/bin/python",
+        "examples/speed_benchmark/rigid_stress.py",
+        "--scope",
+        "live",
+        "--envs",
+        "8",
+        "--varied",
+        "--warmup",
+        "900",
+        "--steps",
+        "1200",
+        "--repetitions",
+        "3",
+        "--minimum-seconds",
+        "10",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-native-iteration/live-baseline-normalized-b8.json"
+      ],
+      "environment": {},
+      "working_directory": "Repository root of the indicated checkout",
+      "purpose": "Reproduction command with explicit measurement parameters"
+    },
+    {
+      "label": "selected stage profile + trace",
+      "source_revision": "dbfdf20d",
+      "argv": [
+        "$RIGID_STRESS_ENV/bin/python",
+        "examples/speed_benchmark/rigid_stress.py",
+        "--scope",
+        "profile",
+        "--envs",
+        "1024",
+        "--varied",
+        "--warmup",
+        "900",
+        "--steps",
+        "100",
+        "--trace",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-native-iteration/selected-profile-b1024.json"
+      ],
+      "environment": {
+        "QD_KERNEL_PROFILER": "1"
+      },
+      "working_directory": "Repository root of the indicated checkout",
+      "purpose": "Reproduction command with explicit measurement parameters"
+    },
+    {
+      "label": "GPU full numerical/lifecycle suite",
+      "source_revision": "dbfdf20d",
+      "argv": [
+        "$RIGID_STRESS_ENV/bin/python",
+        "-m",
+        "pytest",
+        "tests/rigid/test_stress.py",
+        "--backend",
+        "gpu",
+        "-n",
+        "0",
+        "-s",
+        "-q"
+      ],
+      "environment": {},
+      "working_directory": "Repository root of the indicated checkout",
+      "purpose": "Reproduction command with explicit measurement parameters"
+    },
+    {
+      "label": "CPU numerical suite",
+      "source_revision": "dbfdf20d",
+      "argv": [
+        "$RIGID_STRESS_ENV/bin/python",
+        "-m",
+        "pytest",
+        "tests/rigid/test_stress.py",
+        "--backend",
+        "cpu",
+        "-k",
+        "not lifecycle",
+        "-n",
+        "0",
+        "-s",
+        "-q"
+      ],
+      "environment": {},
+      "working_directory": "Repository root of the indicated checkout",
+      "purpose": "Reproduction command with explicit measurement parameters"
+    },
+    {
+      "label": "Every-step validity live",
+      "source_revision": "dbfdf20d + committed native_validity_probe.py (engine unchanged)",
+      "argv": [
+        "$RIGID_STRESS_ENV/bin/python",
+        "-m",
+        "research.rigid_stress.native_validity_probe",
+        "--scope",
+        "live",
+        "--envs",
+        "1024",
+        "--warmup",
+        "900",
+        "--steps",
+        "1200",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-native-iteration/validity-live-b1024.json"
+      ],
+      "environment": {},
+      "working_directory": "Repository root of the indicated checkout",
+      "purpose": "Reproduction command with explicit measurement parameters"
+    },
+    {
+      "label": "Every-step validity policy",
+      "source_revision": "dbfdf20d + committed native_validity_probe.py (engine unchanged)",
+      "argv": [
+        "$RIGID_STRESS_ENV/bin/python",
+        "-m",
+        "research.rigid_stress.native_validity_probe",
+        "--scope",
+        "policy",
+        "--envs",
+        "1024",
+        "--warmup",
+        "900",
+        "--steps",
+        "1200",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-native-iteration/validity-policy-b1024.json"
+      ],
+      "environment": {},
+      "working_directory": "Repository root of the indicated checkout",
+      "purpose": "Reproduction command with explicit measurement parameters"
+    },
+    {
+      "label": "corrected serial pressure live",
+      "source_revision": "6a048825 + final-code-before-pressure.patch",
+      "argv": [
+        "$RIGID_STRESS_ENV/bin/python",
+        "examples/speed_benchmark/rigid_stress.py",
+        "--scope",
+        "live",
+        "--envs",
+        "1024",
+        "--varied",
+        "--warmup",
+        "900",
+        "--steps",
+        "1200",
+        "--repetitions",
+        "3",
+        "--minimum-seconds",
+        "10",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-native-iteration/verified-live-b1024.json"
+      ],
+      "environment": {},
+      "working_directory": "Repository root of the indicated checkout",
+      "purpose": "Reproduction command with explicit measurement parameters"
+    },
+    {
+      "label": "corrected serial pressure policy",
+      "source_revision": "6a048825 + final-code-before-pressure.patch",
+      "argv": [
+        "$RIGID_STRESS_ENV/bin/python",
+        "examples/speed_benchmark/rigid_stress.py",
+        "--scope",
+        "policy",
+        "--envs",
+        "1024",
+        "--varied",
+        "--warmup",
+        "900",
+        "--steps",
+        "1200",
+        "--repetitions",
+        "3",
+        "--minimum-seconds",
+        "10",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-native-iteration/verified-policy-b1024.json"
+      ],
+      "environment": {},
+      "working_directory": "Repository root of the indicated checkout",
+      "purpose": "Reproduction command with explicit measurement parameters"
+    },
+    {
+      "label": "corrected serial pressure recovery",
+      "source_revision": "6a048825 + final-code-before-pressure.patch",
+      "argv": [
+        "$RIGID_STRESS_ENV/bin/python",
+        "examples/speed_benchmark/rigid_stress.py",
+        "--scope",
+        "recovery",
+        "--envs",
+        "1024",
+        "--varied",
+        "--warmup",
+        "900",
+        "--steps",
+        "1200",
+        "--repetitions",
+        "3",
+        "--minimum-seconds",
+        "10",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-native-iteration/verified-recovery-b1024.json"
+      ],
+      "environment": {},
+      "working_directory": "Repository root of the indicated checkout",
+      "purpose": "Reproduction command with explicit measurement parameters"
+    },
+    {
+      "label": "corrected mixed inverse",
+      "source_revision": "6a048825 + corrected-inverse.patch",
+      "argv": [
+        "$RIGID_STRESS_ENV/bin/python",
+        "examples/speed_benchmark/rigid_stress.py",
+        "--scope",
+        "live",
+        "--envs",
+        "1024",
+        "--varied",
+        "--warmup",
+        "900",
+        "--steps",
+        "1200",
+        "--repetitions",
+        "1",
+        "--inverse-precision",
+        "32",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-native-iteration/correction-fp32-b1024.json"
+      ],
+      "environment": {},
+      "working_directory": "Repository root of the indicated checkout",
+      "purpose": "Reproduction command with explicit measurement parameters"
+    },
+    {
+      "label": "history selection h0",
+      "source_revision": "6a048825",
+      "argv": [
+        "$RIGID_STRESS_ENV/bin/python",
+        "examples/speed_benchmark/rigid_stress.py",
+        "--scope",
+        "live",
+        "--envs",
+        "1024",
+        "--varied",
+        "--warmup",
+        "900",
+        "--steps",
+        "1200",
+        "--repetitions",
+        "1",
+        "--history",
+        "0",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-native-iteration/live-history0-b1024.json"
+      ],
+      "environment": {},
+      "working_directory": "Repository root of the indicated checkout",
+      "purpose": "Reproduction command with explicit measurement parameters"
+    },
+    {
+      "label": "history selection h4",
+      "source_revision": "6a048825",
+      "argv": [
+        "$RIGID_STRESS_ENV/bin/python",
+        "examples/speed_benchmark/rigid_stress.py",
+        "--scope",
+        "live",
+        "--envs",
+        "1024",
+        "--varied",
+        "--warmup",
+        "900",
+        "--steps",
+        "1200",
+        "--repetitions",
+        "1",
+        "--history",
+        "4",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-native-iteration/live-history4-b1024.json"
+      ],
+      "environment": {},
+      "working_directory": "Repository root of the indicated checkout",
+      "purpose": "Reproduction command with explicit measurement parameters"
+    },
+    {
+      "label": "history ideal probe",
+      "source_revision": "cdf0bc17 + checked-in native_history_probe.py",
+      "argv": [
+        "$RIGID_STRESS_ENV/bin/python",
+        "-m",
+        "research.rigid_stress.native_history_probe",
+        "--envs",
+        "8",
+        "--steps",
+        "1200",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-native-iteration/history-rhs-b8.json"
+      ],
+      "environment": {},
+      "working_directory": "Repository root of the indicated checkout",
+      "purpose": "Reproduction command with explicit measurement parameters"
+    },
+    {
+      "label": "history QR cost",
+      "source_revision": "cdf0bc17 + checked-in native_history_cost.py",
+      "argv": [
+        "$RIGID_STRESS_ENV/bin/python",
+        "-m",
+        "research.rigid_stress.native_history_cost",
+        "--rhs",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-native-iteration/history-rhs-b8.rhs.npy",
+        "--envs",
+        "1024",
+        "--output",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-native-iteration/history-cost-b1024.json"
+      ],
+      "environment": {},
+      "working_directory": "Repository root of the indicated checkout",
+      "purpose": "Reproduction command with explicit measurement parameters"
+    }
+  ],
+  "launch_template": "source /mnt/data/shared/config/env.sh && GENESIS_IMAGE_VER=1_26 gs-srun --partition=rtx-mid --ntasks=1 --gpus=1 --cpus-per-task=8 --mem=64G --time=00:20:00 bash; cd indicated checkout; source research/rigid_stress/scripts/cluster_env.sh; run argv with stdout/stderr redirected under data_root. CPU tests omit --gpus=1.",
+  "notes": [
+    "Final engine/example/benchmark numerical source is dbfdf20d; later completion commit changes documentation, evidence, optional audit/archive helpers and option docstrings only.",
+    "Selected throughput includes resets, controller, changing footprints, all recovery stages and stated policy work. Frozen recovery is not live throughput.",
+    "Early profile-baseline/cooperative/grid B8 tables re-associated post-integration pose and are development hotspot diagnostics, not identical-input final ablations.",
+    "compare-cdf0-fp32 is a superseded debugging run with wrong inverse correction sign; corrected mixed measurement is correction-fp32-b1024.",
+    "pressure-warp v1 source was superseded in a working checkout. The archived pressure-warp-trial.patch reproduces the v2 numerical implementation on 6a048825. Final dbfdf20d adds explicit serial pressure option and conditional pair allocation.",
+    "native-suite-final.log contains the two checkpoint-test assumption failures. checkpoint-lifecycle-final.log verifies corrected expectations. native-selected-gpu/cpu are the final accepted complete suites.",
+    "final-memory sampler is a preceding 6a048825 whole-card sampled footprint, not the exact final high-water mark. Final per-buffer ledger is in selected JSON.",
+    "Full traces and diagnostic RHS arrays are runtime data, not Git artifacts. Their names/hashes are recorded below.",
+    "Large log preambles omit duplicated printed JSON; the complete original JSON is separately gzip archived. Original and archive byte counts/hashes are distinct."
+  ],
+  "provenance_files": {
+    "selected-summary.json": {
+      "sha256": "e3189e9aa63a6d10defdf5c4c0ff863d04763e297f9070fec4dccef342a2e48d",
+      "bytes": 13293
+    },
+    "baseline-normalization.patch": {
+      "sha256": "2ef441c68e0e9b34c16b1c7710c8da3aa46fc53164578af78a9c4969161ea55d",
+      "bytes": 3392
+    },
+    "corrected-inverse.patch": {
+      "sha256": "6e8a5695c7784001205a57e0df021739bdbeccda3ccc43e5763a29be2805caf1",
+      "bytes": 737
+    },
+    "pressure-warp-trial.patch": {
+      "sha256": "b62d9a40ba2b37ed89157483c1c4c9cbf7ff1f3c024c310e6e5399eff9bbdd95",
+      "bytes": 20536
+    },
+    "final-code-before-pressure.patch": {
+      "sha256": "07fddd73e4868d444e0431867f35a9de32b32a308500a17d0c6bc1acaa3b1e99",
+      "bytes": 8565
+    }
+  },
+  "runtime_only_files": {
+    "history-rhs-b8.rhs.npy": {
+      "sha256": "6f5c6baeee79c9e506f9d25f497d2befd6ad847ca3a404bebaa335ce6e0cb31c",
+      "bytes": 186624128
+    },
+    "profile-current-b1024.trace.json": {
+      "sha256": "7e2e91ea7e0e5abeb188ce0f8be5522e34e4375f78c466311b1dd800bc54ff57",
+      "bytes": 39819425
+    },
+    "selected-profile-b1024.trace.json": {
+      "sha256": "f850d09be096b6dbb26221408c7682cec6acb4420ca54e03013833723b9ee4f8",
+      "bytes": 39852949
+    }
+  },
+  "asset_sha256": {
+    "examples/rigid/assets/hollow_egg/level1/egg_outer.obj": "e011a260d4e3ff88f438a14d32ecd45dd5ee73e96a765be04ab8efbaef5dd51b",
+    "examples/rigid/assets/hollow_egg/level1/egg_shell.metadata.json": "22fe599d3f3fd851b84156b599d5576141b7f25e8ddf1d1daf59358af8a5a59c",
+    "examples/rigid/assets/hollow_egg/level1/egg_shell.urdf": "6d5ee34c3aa095e13a9353ad8964fb384aa017ace6cd158a1b1c08addc5a9cb9",
+    "examples/rigid/assets/hollow_egg/level1/elastic.npz": "3b2b90d7ee39562a296422dab1e5ee66e87265949ee38eefd27c729633a995a4"
+  }
+}

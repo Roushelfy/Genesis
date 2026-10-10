@@ -1,0 +1,44 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0
+rootdir: /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-correction
+configfile: pyproject.toml
+plugins: anyio-4.15.1, forked-1.7.5, print-1.2.0, timeout-2.4.0, xdist-3.8.0, quadrants-1.3.3, syrupy-6.1.1
+timeout: 1200.0s
+timeout method: signal
+timeout func_only: False
+collected 14 items / 10 deselected / 4 selected
+
+tests/rigid/test_stress.py [Genesis 06:47:36] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 06:47:36] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+native method direct False 64 full residual [0.00000000e+00 4.59960036e-12 6.98050974e-12 5.81537332e-12
+ 5.10296006e-12] relative displacement error [0.00000000e+00 1.50061707e-11 2.99388245e-11 2.69075300e-11
+ 2.08589159e-11] peak absolute error Pa [0.00000000e+00 2.21021764e-07 5.51517587e-09 3.30546754e-08
+ 3.26108420e-07] corrections [0 0 0 0 0] fallbacks [0 0 0 0 0]
+[32m.[0m[Genesis 06:47:52] Exiting Genesis and caching compiled kernels...
+[Genesis 06:47:52] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 06:47:52] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+native method direct True 64 full residual [0.00000000e+00 4.31202489e-12 6.96036901e-12 5.41591313e-12
+ 4.49488683e-12] relative displacement error [0.00000000e+00 1.72118763e-11 3.23665349e-11 2.56488786e-11
+ 1.41956926e-11] peak absolute error Pa [0.00000000e+00 2.60304660e-07 5.99757186e-08 1.41328201e-07
+ 1.19107426e-07] corrections [0 0 0 0 0] fallbacks [0 0 0 0 0]
+[32m.[0m[Genesis 06:48:07] Exiting Genesis and caching compiled kernels...
+[Genesis 06:48:07] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 06:48:07] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+native method inverse True 64 full residual [0.00000000e+00 2.23092232e-11 4.31469515e-11 3.29169100e-11
+ 3.93205121e-11] relative displacement error [0.00000000e+00 1.80577118e-11 3.34524325e-11 3.00225758e-11
+ 1.69975961e-11] peak absolute error Pa [0.00000000e+00 2.89946911e-07 2.07561243e-07 8.09741323e-08
+ 2.70862074e-07] corrections [0 0 0 0 0] fallbacks [0 0 0 0 0]
+[32m.[0m[Genesis 06:48:23] Exiting Genesis and caching compiled kernels...
+[Genesis 06:48:23] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 06:48:23] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+native method inverse True 32 full residual [0.00000000e+00 3.83102506e-09 4.61490853e-09 4.91056389e-09
+ 4.21990435e-09] relative displacement error [0.00000000e+00 2.23097215e-11 1.69316615e-11 2.05216366e-11
+ 1.74989944e-11] peak absolute error Pa [0.00000000e+00 2.87982402e-07 5.16141881e-07 1.62282231e-06
+ 1.62930519e-07] corrections [0 2 2 2 2] fallbacks [0 0 0 0 0]
+[32m.[0m[Genesis 06:48:38] Exiting Genesis and caching compiled kernels...
+
+
+============================== slowest durations ===============================
+
+(12 durations < 100s hidden.)
+[32m================= [32m[1m4 passed[0m, [33m10 deselected[0m[32m in 63.68s (0:01:03)[0m[32m ==================[0m

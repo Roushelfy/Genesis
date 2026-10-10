@@ -1,0 +1,168 @@
+diff --git a/examples/speed_benchmark/rigid_stress.py b/examples/speed_benchmark/rigid_stress.py
+index 15b6e8e3..253407a8 100644
+--- a/examples/speed_benchmark/rigid_stress.py
++++ b/examples/speed_benchmark/rigid_stress.py
+@@ -32,7 +32,7 @@ from genesis.engine.solvers.rigid.stress.solve import (
+     kernel_peak,
+ )
+ from genesis.utils import array_class, geom
+-from genesis.utils.array_class import V_MAT, V_VEC, V
++from genesis.utils.array_class import V_MAT, V_VEC, DataKind, V
+ from genesis.utils.misc import qd_to_numpy, qd_to_torch, tensor_to_array
+ 
+ 
+@@ -330,17 +330,22 @@ def main() -> None:
+             result["build_timings_including_JIT"] = asdict(entry.model.build_timings)
+             result["maximum_stress_Pa"] = tensor_to_array(workload.link.get_max_stress()).tolist()
+             buffers = []
++            configurations = []
+             for item in workload.scene.rigid_solver.stress_recovery.data:
+-                view = qd_to_torch(item.value, copy=False)
+-                buffers.append(
+-                    {
+-                        "name": item.name,
+-                        "shape": list(view.shape),
+-                        "dtype": str(view.dtype),
+-                        "bytes": view.numel() * view.element_size(),
+-                        "kind": int(item.kind),
+-                    }
+-                )
++                if item.kind == DataKind.CONFIG:
++                    configurations.append(item.value.model_dump(mode="json"))
++                else:
++                    view = qd_to_torch(item.value, copy=False)
++                    buffers.append(
++                        {
++                            "name": item.name,
++                            "shape": list(view.shape),
++                            "dtype": str(view.dtype),
++                            "bytes": view.numel() * view.element_size(),
++                            "kind": int(item.kind),
++                        }
++                    )
++            result["stress_configurations"] = configurations
+             result["native_buffers"] = buffers
+             result["native_buffer_bytes"] = sum(item["bytes"] for item in buffers)
+             result["native_allocation_count"] = len(buffers)
+diff --git a/genesis/engine/solvers/rigid/stress/inverse.py b/genesis/engine/solvers/rigid/stress/inverse.py
+index bfb34b22..2249e277 100644
+--- a/genesis/engine/solvers/rigid/stress/inverse.py
++++ b/genesis/engine/solvers/rigid/stress/inverse.py
+@@ -80,7 +80,7 @@ def kernel_apply_inverse(
+             for j in range(inverse_info.blocks.shape[1]):
+                 source = stress_state.rhs[j, i_b]
+                 if qd.static(correction):
+-                    source = -stress_state.residual[j, i_b]
++                    source = stress_state.residual[j, i_b]
+                 value += inverse_info.blocks[i_n, j] @ source
+             if qd.static(correction):
+                 stress_state.displacement[i_n, i_b] += value / young
+diff --git a/genesis/engine/solvers/rigid/stress/recovery.py b/genesis/engine/solvers/rigid/stress/recovery.py
+index 0f6615b7..39d390f5 100644
+--- a/genesis/engine/solvers/rigid/stress/recovery.py
++++ b/genesis/engine/solvers/rigid/stress/recovery.py
+@@ -11,7 +11,7 @@ import torch
+ 
+ import genesis as gs
+ from genesis.engine.solvers.base_solver import StateChange, Subscriber
+-from genesis.utils.array_class import V_VEC, DataItem, ErrorCode, iter_data
++from genesis.utils.array_class import V_VEC, DataItem, DataKind, ErrorCode, iter_data
+ from genesis.utils.misc import assign_indexed_tensor, broadcast_tensor, indices_to_mask, qd_to_torch, tensor_to_array
+ 
+ from .association import kernel_associate
+@@ -130,6 +130,13 @@ class RigidStressRecovery:
+         seen = set()
+         seen_surfaces = set()
+         for i, entry in enumerate(self.links):
++            yield DataItem(
++                f"stress.{i}.options",
++                entry.link.stress_options.model_copy(
++                    update={"mesh": str(Path(entry.link.stress_options.mesh).resolve())}
++                ),
++                DataKind.CONFIG,
++            )
+             if id(entry.model) not in seen:
+                 yield from iter_data(entry.model.info, f"stress.{i}.info")
+                 if entry.model.factor is not None:
+@@ -179,7 +186,7 @@ class RigidStressRecovery:
+     def reject_link_mutation(self, links_idx, reason: str) -> None:
+         if isinstance(links_idx, torch.Tensor):
+             links_idx = tensor_to_array(links_idx)
+-        selected = np.atleast_1d(np.arange(self.solver.n_links)[indices_to_mask(links_idx)]).ravel()
++        selected = np.atleast_1d(np.arange(self.solver.n_links)[indices_to_mask(links_idx)])
+         if any(entry.link.idx in selected for entry in self.links):
+             gs.raise_exception(reason)
+ 
+diff --git a/tests/rigid/test_stress.py b/tests/rigid/test_stress.py
+index fe8a0a9e..bdd5cfe3 100644
+--- a/tests/rigid/test_stress.py
++++ b/tests/rigid/test_stress.py
+@@ -47,10 +47,18 @@ def test_native_p2_shared_operators(tmp_path):
+ @pytest.mark.required
+ @pytest.mark.precision("64")
+ @pytest.mark.parametrize(
+-    "method,cooperative,inverse_precision",
+-    (("direct", False, "64"), ("direct", True, "64"), ("inverse", True, "64"), ("inverse", True, "32")),
++    "method,cooperative,inverse_precision,inverse_corrections",
++    (
++        ("direct", False, "64", 2),
++        ("direct", True, "64", 2),
++        ("inverse", True, "64", 2),
++        ("inverse", True, "32", 2),
++        ("inverse", True, "32", 0),
++    ),
+ )
+-def test_native_batched_recovery_against_full_fp64_direct(tmp_path, method, cooperative, inverse_precision):
++def test_native_batched_recovery_against_full_fp64_direct(
++    tmp_path, method, cooperative, inverse_precision, inverse_corrections
++):
+     vertices, tetrahedra, surface, _ = shell_mesh(1, 2, 0.0005)
+     mesh = tmp_path / "shell.npz"
+     np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=surface)
+@@ -62,6 +70,7 @@ def test_native_batched_recovery_against_full_fp64_direct(tmp_path, method, coop
+             cooperative_solve=cooperative,
+             method=method,
+             inverse_precision=inverse_precision,
++            inverse_corrections=inverse_corrections,
+         )
+     )
+     oracle = P2Shell(vertices, tetrahedra, surface, 1e10, 0.3, 2000.0, 2, factor_backend="none")
+@@ -111,6 +120,11 @@ def test_native_batched_recovery_against_full_fp64_direct(tmp_path, method, coop
+     )
+     assert displacement_error.max() < 1e-4
+     assert qd_to_numpy(state.valid).all()
++    if inverse_precision == "32":
++        if inverse_corrections == 2:
++            np.testing.assert_array_equal(qd_to_numpy(state.fallbacks), 0)
++        else:
++            np.testing.assert_array_equal(qd_to_numpy(state.fallbacks), [0, 1, 1, 1, 1])
+     assert (residual <= np.maximum(1e-11, 1e-7 * np.linalg.norm(rhs, axis=0))).all()
+     np.testing.assert_array_equal(recovered[:, 0], 0.0)
+ 
+@@ -410,6 +424,9 @@ def test_native_rigid_lifecycle_and_partial_reset(tmp_path, substeps, monkeypatc
+     before_u = qd_to_numpy(entry.state.displacement, transpose=True, copy=True)
+     before_peak = tensor_to_array(link.get_max_stress())
+     before_count = qd_to_numpy(entry.history.state.count, copy=True)
++    checkpoint = scene.rigid_solver.__getstate__()
++    assert checkpoint.configs["stress.0.options"].mesh == str(mesh.resolve())
++    json.dumps(vars(checkpoint.configs["stress.0.options"]))
+     scene.reset(envs_idx=np.array([1]))
+     after_u = qd_to_numpy(entry.state.displacement, transpose=True)
+     after_peak = tensor_to_array(link.get_max_stress())
+@@ -420,6 +437,9 @@ def test_native_rigid_lifecycle_and_partial_reset(tmp_path, substeps, monkeypatc
+     after_count = qd_to_numpy(entry.history.state.count)
+     np.testing.assert_array_equal(after_count[[0, 2]], before_count[[0, 2]])
+     assert after_count[1] == 0
++    scene.rigid_solver.__setstate__(checkpoint)
++    np.testing.assert_array_equal(tensor_to_array(link.get_max_stress()), before_peak)
++    np.testing.assert_array_equal(qd_to_numpy(entry.history.state.count), before_count)
+     with pytest.raises(gs.GenesisException, match="fixed link mass"):
+         link.set_mass(0.01)
+     with pytest.raises(gs.GenesisException, match="finite surface loads"):
+@@ -478,3 +498,6 @@ def test_native_history_reuse_abrupt_load_and_reset(tmp_path):
+     state.force.from_numpy(loads[4])
+     model.recover(omega, state, history=history)
+     np.testing.assert_array_equal(qd_to_numpy(history.state.hit), [True, False, True])
++
++
++import json

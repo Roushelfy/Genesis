@@ -1,0 +1,389 @@
+diff --git a/examples/speed_benchmark/rigid_stress.py b/examples/speed_benchmark/rigid_stress.py
+index 15b6e8e3..253407a8 100644
+--- a/examples/speed_benchmark/rigid_stress.py
++++ b/examples/speed_benchmark/rigid_stress.py
+@@ -32,7 +32,7 @@ from genesis.engine.solvers.rigid.stress.solve import (
+     kernel_peak,
+ )
+ from genesis.utils import array_class, geom
+-from genesis.utils.array_class import V_MAT, V_VEC, V
++from genesis.utils.array_class import V_MAT, V_VEC, DataKind, V
+ from genesis.utils.misc import qd_to_numpy, qd_to_torch, tensor_to_array
+ 
+ 
+@@ -330,17 +330,22 @@ def main() -> None:
+             result["build_timings_including_JIT"] = asdict(entry.model.build_timings)
+             result["maximum_stress_Pa"] = tensor_to_array(workload.link.get_max_stress()).tolist()
+             buffers = []
++            configurations = []
+             for item in workload.scene.rigid_solver.stress_recovery.data:
+-                view = qd_to_torch(item.value, copy=False)
+-                buffers.append(
+-                    {
+-                        "name": item.name,
+-                        "shape": list(view.shape),
+-                        "dtype": str(view.dtype),
+-                        "bytes": view.numel() * view.element_size(),
+-                        "kind": int(item.kind),
+-                    }
+-                )
++                if item.kind == DataKind.CONFIG:
++                    configurations.append(item.value.model_dump(mode="json"))
++                else:
++                    view = qd_to_torch(item.value, copy=False)
++                    buffers.append(
++                        {
++                            "name": item.name,
++                            "shape": list(view.shape),
++                            "dtype": str(view.dtype),
++                            "bytes": view.numel() * view.element_size(),
++                            "kind": int(item.kind),
++                        }
++                    )
++            result["stress_configurations"] = configurations
+             result["native_buffers"] = buffers
+             result["native_buffer_bytes"] = sum(item["bytes"] for item in buffers)
+             result["native_allocation_count"] = len(buffers)
+diff --git a/genesis/engine/solvers/rigid/stress/contact.py b/genesis/engine/solvers/rigid/stress/contact.py
+index eb6cedc9..58cf994c 100644
+--- a/genesis/engine/solvers/rigid/stress/contact.py
++++ b/genesis/engine/solvers/rigid/stress/contact.py
+@@ -31,6 +31,8 @@ class StressContactState:
+     moment_error: qd.Tensor
+     candidate_count: qd.Tensor
+     evaluations: qd.Tensor
++    active_pairs: qd.Tensor
++    active_count: qd.Tensor
+     frame_position: qd.Tensor
+     frame_quaternion: qd.Tensor
+ 
+@@ -52,6 +54,8 @@ def create_contacts(n_contacts: int, n_envs: int, radius: float) -> StressContac
+         moment_error=V(dtype=gs.qd_float, shape=shape),
+         candidate_count=V(dtype=gs.qd_int, shape=shape),
+         evaluations=V(dtype=gs.qd_int, shape=shape),
++        active_pairs=V_VEC(2, dtype=gs.qd_int, shape=(n_contacts * n_envs,)),
++        active_count=V(dtype=gs.qd_int, shape=()),
+         frame_position=V_VEC(3, dtype=gs.qd_float, shape=(n_envs,)),
+         frame_quaternion=V_VEC(4, dtype=gs.qd_float, shape=(n_envs,)),
+     )
+@@ -143,8 +147,161 @@ def kernel_anchor(source_epsilon: float, contact_state: StressContactState, surf
+                     contact_state.status[i_c, i_b] = 2
+ 
+ 
+-@qd.kernel(graph=True)
++@qd.func
++def func_pressure_initial(gram: qd.types.matrix(3, 3)):
++    weight_sum = gs.qd_float(0.0)
++    coefficient = qd.Vector.zero(gs.qd_float, 3)
++    accepted = False
++    nonsingular = gram[0, 0] > 0.0 and gram.determinant() > 1e-14 * gram.trace() ** 3
++    if nonsingular:
++        weight_sum = gram[0, 0]
++        gram /= weight_sum
++        coefficient = gram.inverse() @ qd.Vector([1.0, 0.0, 0.0])
++        margin = 1e-12
++        if qd.static(gs.qd_float == qd.f32):
++            margin = 1e-5
++        positive = coefficient[0] - qd.sqrt(coefficient[1] ** 2 + coefficient[2] ** 2)
++        accepted = (
++            positive > margin * coefficient.norm() and (gram @ coefficient - qd.Vector([1.0, 0.0, 0.0])).norm() <= 2e-12
++        )
++        coefficient /= weight_sum
++    status = 0 if accepted else (5 if nonsingular else 3)
++    return coefficient, weight_sum, status
++
++
+ def kernel_pressure(contact_state: StressContactState, surface_info: StressSurfaceInfo):
++    if gs.backend == gs.cuda:
++        kernel_pack_contacts(contact_state)
++        kernel_pressure_warp(contact_state, surface_info)
++        kernel_pressure_correct_warp(contact_state, surface_info)
++    else:
++        kernel_pressure_serial(contact_state, surface_info)
++        kernel_pressure_correct(contact_state, surface_info)
++
++
++@qd.kernel(graph=True)
++def kernel_pack_contacts(contact_state: StressContactState):
++    for _ in range(1):
++        contact_state.active_count[None] = 0
++    for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
++        if (
++            contact_state.valid[i_c, i_b]
++            and contact_state.status[i_c, i_b] == 0
++            and contact_state.force[i_c, i_b].norm() > 1e-30
++        ):
++            slot = qd.atomic_add(contact_state.active_count[None], 1)
++            contact_state.active_pairs[slot] = qd.Vector([i_c, i_b])
++
++
++@qd.kernel
++def kernel_pressure_warp(contact_state: StressContactState, surface_info: StressSurfaceInfo):
++    qd.loop_config(block_dim=128)
++    for i_thread in range(contact_state.active_count[None] * 32):
++        lane = i_thread % 32
++        slot = i_thread // 32
++        pair = contact_state.active_pairs[slot]
++        i_c, i_b = pair[0], pair[1]
++        first, second = func_force_frame(contact_state.force[i_c, i_b])
++        center, radius = contact_state.center[i_c, i_b], contact_state.radius[i_c, i_b]
++        low, dimensions = func_patch_grid(center, radius, surface_info.grid)
++        gram = qd.Matrix.zero(gs.qd_float, 3, 3)
++        candidates = 0
++        for i_cell in range(dimensions[0] * dimensions[1] * dimensions[2]):
++            start, end = func_patch_cell(i_cell, low, dimensions, surface_info.grid)
++            for chunk in range((end - start + 31) // 32):
++                entry = start + chunk * 32 + lane
++                if entry < end:
++                    i_q = surface_info.grid.samples[entry]
++                    coordinates, weight = func_patch_sample(i_q, center, first, second, radius, surface_info)
++                    gram += weight * coordinates.outer_product(coordinates)
++                    candidates += gs.qd_int(weight > 0.0)
++        for i, j in qd.static(qd.ndrange(3, 3)):
++            gram[i, j] = qd.simt.subgroup.reduce_all_add(gram[i, j])
++        candidates = qd.simt.subgroup.reduce_all_add(candidates)
++        if lane == 0:
++            contact_state.candidate_count[i_c, i_b] += candidates
++            coefficient, weight_sum, status = func_pressure_initial(gram)
++            contact_state.coefficient[i_c, i_b] = coefficient
++            contact_state.weight_sum[i_c, i_b] = weight_sum
++            contact_state.status[i_c, i_b] = status
++
++
++@qd.kernel
++def kernel_pressure_correct_warp(contact_state: StressContactState, surface_info: StressSurfaceInfo):
++    qd.loop_config(block_dim=128)
++    for i_thread in range(contact_state.active_count[None] * 32):
++        lane = i_thread % 32
++        slot = i_thread // 32
++        pair = contact_state.active_pairs[slot]
++        i_c, i_b = pair[0], pair[1]
++        if contact_state.status[i_c, i_b] == 5:
++            first, second = func_force_frame(contact_state.force[i_c, i_b])
++            center, radius = contact_state.center[i_c, i_b], contact_state.radius[i_c, i_b]
++            low, dimensions = func_patch_grid(center, radius, surface_info.grid)
++            weight_sum = contact_state.weight_sum[i_c, i_b]
++            coefficient = contact_state.coefficient[i_c, i_b] * weight_sum
++            accepted, line = False, False
++            iterations, line_evaluations = 0, 0
++            fraction, reference_objective = gs.qd_float(1.0), gs.qd_float(0.0)
++            step = qd.Vector.zero(gs.qd_float, 3)
++            slope = gs.qd_float(0.0)
++            # At most 80 Newton evaluations, each followed by at most 40 line evaluations.
++            # One evaluator body avoids duplicating the integration helper in the kernel.
++            for _ in range(80 * 41):
++                if not accepted and (line or iterations < 80):
++                    candidate = coefficient
++                    if line:
++                        candidate = coefficient - fraction * step
++                    objective = gs.qd_float(0.0)
++                    gradient = qd.Vector.zero(gs.qd_float, 3)
++                    hessian = qd.Matrix.zero(gs.qd_float, 3, 3)
++                    for i_cell in range(dimensions[0] * dimensions[1] * dimensions[2]):
++                        start, end = func_patch_cell(i_cell, low, dimensions, surface_info.grid)
++                        for chunk in range((end - start + 31) // 32):
++                            entry = start + chunk * 32 + lane
++                            if entry < end:
++                                i_q = surface_info.grid.samples[entry]
++                                coordinates, weight = func_patch_sample(
++                                    i_q, center, first, second, radius, surface_info
++                                )
++                                weight /= weight_sum
++                                profile = qd.max(0.0, coordinates.dot(candidate))
++                                objective -= 0.5 * weight * profile * profile
++                                if not line:
++                                    gradient += weight * profile * coordinates
++                                    if profile > 0.0:
++                                        hessian += weight * coordinates.outer_product(coordinates)
++                    objective = qd.simt.subgroup.reduce_all_add(objective) + candidate[0]
++                    if not line:
++                        for a in qd.static(range(3)):
++                            gradient[a] = qd.simt.subgroup.reduce_all_add(gradient[a])
++                        for a, b in qd.static(qd.ndrange(3, 3)):
++                            hessian[a, b] = qd.simt.subgroup.reduce_all_add(hessian[a, b])
++                        gradient[0] -= 1.0
++                        iterations += 1
++                        accepted = gradient.norm() <= 2e-12
++                        if not accepted and hessian.determinant() > 1e-14 * hessian.trace() ** 3:
++                            step = hessian.inverse() @ gradient
++                            slope = gradient.dot(step)
++                            reference_objective = objective
++                            fraction, line = gs.qd_float(1.0), True
++                            line_evaluations = 0
++                    else:
++                        line_evaluations += 1
++                        if objective >= reference_objective + 1e-4 * fraction * slope - 1e-15:
++                            coefficient, line = candidate, False
++                        else:
++                            fraction *= 0.5
++                            if line_evaluations == 40:
++                                line = False
++            if lane == 0:
++                contact_state.coefficient[i_c, i_b] = coefficient / weight_sum
++                contact_state.status[i_c, i_b] = 0 if accepted else 3
++                contact_state.evaluations[i_c, i_b] = iterations
++
++
++@qd.kernel(graph=True)
++def kernel_pressure_serial(contact_state: StressContactState, surface_info: StressSurfaceInfo):
+     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
+         if contact_state.valid[i_c, i_b] and contact_state.status[i_c, i_b] == 0:
+             force = contact_state.force[i_c, i_b]
+@@ -163,26 +320,14 @@ def kernel_pressure(contact_state: StressContactState, surface_info: StressSurfa
+                         gram += weight * coordinates.outer_product(coordinates)
+                         if weight > 0.0:
+                             contact_state.candidate_count[i_c, i_b] += 1
+-                coefficient = qd.Vector.zero(gs.qd_float, 3)
+-                accepted = False
+-                nonsingular = gram[0, 0] > 0.0 and gram.determinant() > 1e-14 * gram.trace() ** 3
+-                if nonsingular:
+-                    weight_sum = gram[0, 0]
+-                    gram /= weight_sum
+-                    coefficient = gram.inverse() @ qd.Vector([1.0, 0.0, 0.0])
+-                    margin = 1e-12
+-                    if qd.static(gs.qd_float == qd.f32):
+-                        margin = 1e-5
+-                    positive = coefficient[0] - qd.sqrt(coefficient[1] ** 2 + coefficient[2] ** 2)
+-                    accepted = (
+-                        positive > margin * coefficient.norm()
+-                        and (gram @ coefficient - qd.Vector([1.0, 0.0, 0.0])).norm() <= 2e-12
+-                    )
+-                    contact_state.weight_sum[i_c, i_b] = weight_sum
+-                    coefficient /= weight_sum
++                coefficient, weight_sum, status = func_pressure_initial(gram)
+                 contact_state.coefficient[i_c, i_b] = coefficient
+-                if not accepted:
+-                    contact_state.status[i_c, i_b] = 5 if nonsingular else 3
++                contact_state.weight_sum[i_c, i_b] = weight_sum
++                contact_state.status[i_c, i_b] = status
++
++
++@qd.kernel(graph=True)
++def kernel_pressure_correct(contact_state: StressContactState, surface_info: StressSurfaceInfo):
+     # Keep the uncommon constrained solve out of the integration kernel's register footprint.
+     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
+         if contact_state.valid[i_c, i_b] and contact_state.status[i_c, i_b] == 5:
+diff --git a/genesis/engine/solvers/rigid/stress/inverse.py b/genesis/engine/solvers/rigid/stress/inverse.py
+index bfb34b22..2249e277 100644
+--- a/genesis/engine/solvers/rigid/stress/inverse.py
++++ b/genesis/engine/solvers/rigid/stress/inverse.py
+@@ -80,7 +80,7 @@ def kernel_apply_inverse(
+             for j in range(inverse_info.blocks.shape[1]):
+                 source = stress_state.rhs[j, i_b]
+                 if qd.static(correction):
+-                    source = -stress_state.residual[j, i_b]
++                    source = stress_state.residual[j, i_b]
+                 value += inverse_info.blocks[i_n, j] @ source
+             if qd.static(correction):
+                 stress_state.displacement[i_n, i_b] += value / young
+diff --git a/genesis/engine/solvers/rigid/stress/recovery.py b/genesis/engine/solvers/rigid/stress/recovery.py
+index 0f6615b7..39d390f5 100644
+--- a/genesis/engine/solvers/rigid/stress/recovery.py
++++ b/genesis/engine/solvers/rigid/stress/recovery.py
+@@ -11,7 +11,7 @@ import torch
+ 
+ import genesis as gs
+ from genesis.engine.solvers.base_solver import StateChange, Subscriber
+-from genesis.utils.array_class import V_VEC, DataItem, ErrorCode, iter_data
++from genesis.utils.array_class import V_VEC, DataItem, DataKind, ErrorCode, iter_data
+ from genesis.utils.misc import assign_indexed_tensor, broadcast_tensor, indices_to_mask, qd_to_torch, tensor_to_array
+ 
+ from .association import kernel_associate
+@@ -130,6 +130,13 @@ class RigidStressRecovery:
+         seen = set()
+         seen_surfaces = set()
+         for i, entry in enumerate(self.links):
++            yield DataItem(
++                f"stress.{i}.options",
++                entry.link.stress_options.model_copy(
++                    update={"mesh": str(Path(entry.link.stress_options.mesh).resolve())}
++                ),
++                DataKind.CONFIG,
++            )
+             if id(entry.model) not in seen:
+                 yield from iter_data(entry.model.info, f"stress.{i}.info")
+                 if entry.model.factor is not None:
+@@ -179,7 +186,7 @@ class RigidStressRecovery:
+     def reject_link_mutation(self, links_idx, reason: str) -> None:
+         if isinstance(links_idx, torch.Tensor):
+             links_idx = tensor_to_array(links_idx)
+-        selected = np.atleast_1d(np.arange(self.solver.n_links)[indices_to_mask(links_idx)]).ravel()
++        selected = np.atleast_1d(np.arange(self.solver.n_links)[indices_to_mask(links_idx)])
+         if any(entry.link.idx in selected for entry in self.links):
+             gs.raise_exception(reason)
+ 
+diff --git a/tests/rigid/test_stress.py b/tests/rigid/test_stress.py
+index fe8a0a9e..628089cb 100644
+--- a/tests/rigid/test_stress.py
++++ b/tests/rigid/test_stress.py
+@@ -47,10 +47,18 @@ def test_native_p2_shared_operators(tmp_path):
+ @pytest.mark.required
+ @pytest.mark.precision("64")
+ @pytest.mark.parametrize(
+-    "method,cooperative,inverse_precision",
+-    (("direct", False, "64"), ("direct", True, "64"), ("inverse", True, "64"), ("inverse", True, "32")),
++    "method,cooperative,inverse_precision,inverse_corrections",
++    (
++        ("direct", False, "64", 2),
++        ("direct", True, "64", 2),
++        ("inverse", True, "64", 2),
++        ("inverse", True, "32", 2),
++        ("inverse", True, "32", 0),
++    ),
+ )
+-def test_native_batched_recovery_against_full_fp64_direct(tmp_path, method, cooperative, inverse_precision):
++def test_native_batched_recovery_against_full_fp64_direct(
++    tmp_path, method, cooperative, inverse_precision, inverse_corrections
++):
+     vertices, tetrahedra, surface, _ = shell_mesh(1, 2, 0.0005)
+     mesh = tmp_path / "shell.npz"
+     np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=surface)
+@@ -62,6 +70,7 @@ def test_native_batched_recovery_against_full_fp64_direct(tmp_path, method, coop
+             cooperative_solve=cooperative,
+             method=method,
+             inverse_precision=inverse_precision,
++            inverse_corrections=inverse_corrections,
+         )
+     )
+     oracle = P2Shell(vertices, tetrahedra, surface, 1e10, 0.3, 2000.0, 2, factor_backend="none")
+@@ -111,6 +120,11 @@ def test_native_batched_recovery_against_full_fp64_direct(tmp_path, method, coop
+     )
+     assert displacement_error.max() < 1e-4
+     assert qd_to_numpy(state.valid).all()
++    if inverse_precision == "32":
++        if inverse_corrections == 2:
++            np.testing.assert_array_equal(qd_to_numpy(state.fallbacks), 0)
++        else:
++            np.testing.assert_array_equal(qd_to_numpy(state.fallbacks), [0, 1, 1, 1, 1])
+     assert (residual <= np.maximum(1e-11, 1e-7 * np.linalg.norm(rhs, axis=0))).all()
+     np.testing.assert_array_equal(recovered[:, 0], 0.0)
+ 
+@@ -410,6 +424,9 @@ def test_native_rigid_lifecycle_and_partial_reset(tmp_path, substeps, monkeypatc
+     before_u = qd_to_numpy(entry.state.displacement, transpose=True, copy=True)
+     before_peak = tensor_to_array(link.get_max_stress())
+     before_count = qd_to_numpy(entry.history.state.count, copy=True)
++    checkpoint = scene.rigid_solver.__getstate__()
++    assert checkpoint.configs["stress.0.options"].mesh == str(mesh.resolve())
++    json.dumps(vars(checkpoint.configs["stress.0.options"]))
+     scene.reset(envs_idx=np.array([1]))
+     after_u = qd_to_numpy(entry.state.displacement, transpose=True)
+     after_peak = tensor_to_array(link.get_max_stress())
+@@ -420,6 +437,11 @@ def test_native_rigid_lifecycle_and_partial_reset(tmp_path, substeps, monkeypatc
+     after_count = qd_to_numpy(entry.history.state.count)
+     np.testing.assert_array_equal(after_count[[0, 2]], before_count[[0, 2]])
+     assert after_count[1] == 0
++    scene.rigid_solver.__setstate__(checkpoint)
++    # Restoring state broadcasts the ordinary geometry/dynamics notices, invalidating derived observations.
++    np.testing.assert_array_equal(tensor_to_array(checkpoint.arrays["stress.0.state.step_peak"]), before_peak)
++    np.testing.assert_array_equal(tensor_to_array(link.get_max_stress()), 0.0)
++    np.testing.assert_array_equal(qd_to_numpy(entry.history.state.count), 0)
+     with pytest.raises(gs.GenesisException, match="fixed link mass"):
+         link.set_mass(0.01)
+     with pytest.raises(gs.GenesisException, match="finite surface loads"):
+@@ -478,3 +500,6 @@ def test_native_history_reuse_abrupt_load_and_reset(tmp_path):
+     state.force.from_numpy(loads[4])
+     model.recover(omega, state, history=history)
+     np.testing.assert_array_equal(qd_to_numpy(history.state.hit), [True, False, True])
++
++
++import json

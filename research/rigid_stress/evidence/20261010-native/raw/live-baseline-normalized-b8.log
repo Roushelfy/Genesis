@@ -1,0 +1,139 @@
+[Quadrants] version 1.3.3, llvm 22.1.0, commit 00423caa, linux, python 3.10.12
+[38;5;226m[Genesis] [05:21:55] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint1`[0m
+[38;5;226m[Genesis] [05:21:55] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint2`[0m
+[38;5;226m[Genesis] [05:21:56] [WARNING] Neutral robot position (qpos0) exceeds joint limits.[0m
+[38;5;226m[Genesis] [05:21:56] [WARNING] Constraint solver time constant should be greater than 2*substep_dt. timeconst is changed from `0.005` to `0.02`). Decrease simulation timestep or increase timeconst to avoid altering the original value.[0m
+[38;5;226m[Genesis] [05:21:57] [WARNING] Filtered out geometry pairs causing self-collision for the neutral configuration (qpos0): (6, 11), (7, 11), (14, 21), (15, 20), (16, 23), (17, 22). Consider tuning Morph option 'decompose_robot_error_threshold' or specify dedicated collision meshes. This behavior can be disabled by setting Morph option 'enable_neutral_collision=True'.[0m
+libEGL warning: failed to open /dev/dri/renderD135: Permission denied
+
+libEGL warning: failed to open /dev/dri/card8: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD134: Permission denied
+
+libEGL warning: failed to open /dev/dri/card7: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD133: Permission denied
+
+libEGL warning: failed to open /dev/dri/card6: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD132: Permission denied
+
+libEGL warning: failed to open /dev/dri/card5: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD131: Permission denied
+
+libEGL warning: failed to open /dev/dri/card4: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD130: Permission denied
+
+libEGL warning: failed to open /dev/dri/card3: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD129: Permission denied
+
+libEGL warning: failed to open /dev/dri/card2: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD128: Permission denied
+
+libEGL warning: failed to open /dev/dri/card1: Permission denied
+
+{
+  "scope": "live",
+  "envs": 8,
+  "level": 1,
+  "precision": "64",
+  "quadrature": 10,
+  "dt": 0.01,
+  "substeps": 1,
+  "varied": true,
+  "seed": 510000,
+  "host": "rtx-210-023",
+  "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "gpu_total_bytes": 101975851008,
+  "quadrants": [
+    1,
+    3,
+    3
+  ],
+  "torch": "2.8.0",
+  "setup_seconds": 21.173947249073535,
+  "warmup_steps": 900,
+  "repeats": [
+    {
+      "steps": 1200,
+      "seconds": 167.11648756091017,
+      "transitions_per_second": 57.44496033942203,
+      "batch_steps_per_second": 7.180620042427754,
+      "resets": 8
+    },
+    {
+      "steps": 1200,
+      "seconds": 167.16043981001712,
+      "transitions_per_second": 57.42985607665719,
+      "batch_steps_per_second": 7.1787320095821485,
+      "resets": 8
+    },
+    {
+      "steps": 1200,
+      "seconds": 166.90677286009304,
+      "transitions_per_second": 57.517138672659186,
+      "batch_steps_per_second": 7.189642334082398,
+      "resets": 8
+    }
+  ],
+  "egg_position_m": [
+    [
+      0.5888444583064696,
+      -0.055303770247385295,
+      0.024179755559429177
+    ],
+    [
+      0.6355068362795067,
+      0.020185792591243885,
+      0.026625699969395705
+    ],
+    [
+      0.6509195704131456,
+      0.024152610207768804,
+      0.1434151986254231
+    ],
+    [
+      0.6516031483086998,
+      0.02424207363780527,
+      0.1409306242343741
+    ],
+    [
+      0.6491062839519584,
+      0.027188781353893934,
+      0.14891021480831967
+    ],
+    [
+      0.6514447336627657,
+      0.008780962453106798,
+      0.14916634107059887
+    ],
+    [
+      0.651936405423067,
+      -0.0010083047250614488,
+      0.14937540971310043
+    ],
+    [
+      0.6506823738965041,
+      0.002084914604570314,
+      0.14935769612857266
+    ]
+  ],
+  "dofs": 2430,
+  "tetrahedra": 480,
+  "maximum_stress_Pa": [
+    13951.882227759841,
+    10691.577210461423,
+    58727.63779279403,
+    65837.51016068221,
+    16134.17274601227,
+    77521.32647902975,
+    82215.08882602326,
+    75613.99894737669
+  ],
+  "torch_peak_allocated_bytes": 1286144,
+  "device_free_bytes": 99526180864
+}

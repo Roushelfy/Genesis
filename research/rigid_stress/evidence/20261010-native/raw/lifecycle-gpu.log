@@ -1,0 +1,92 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0
+rootdir: /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery
+configfile: pyproject.toml
+plugins: anyio-4.15.1, forked-1.7.5, print-1.2.0, timeout-2.4.0, xdist-3.8.0, quadrants-1.3.3, syrupy-6.1.1
+timeout: 1200.0s
+timeout method: signal
+timeout func_only: False
+collected 5 items / 3 deselected / 2 selected
+
+tests/rigid/test_stress.py [Genesis 04:48:22] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 04:48:22] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[Genesis 04:48:24] Scene <cc4dcd4> created.
+[Genesis 04:48:24] Adding <gs.engine.entities.RigidEntity> 'plane_f2a4b24'. idx: 0, morph: <gs.morphs.Plane>, material: <gs.materials.Rigid>.
+[Genesis 04:48:24] Adding <gs.engine.entities.RigidEntity> 'shell_02b85ac'. idx: 1, morph: <gs.morphs.Mesh(file='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-native-iteration/tmp/pytest-of-zhaofeng/pytest-5/test_native_rigid_lifecycle_an0/shell.obj')>, material: <gs.materials.Rigid>.
+[Genesis 04:48:24] Building scene <cc4dcd4>...
+[Genesis 04:48:46] Compiling simulation kernels...
+[Genesis 04:49:40] Building visualizer...
+[Genesis 04:49:49] Running at 42.41 FPS (14.14 FPS per env, 3 envs).
+[Genesis 04:49:49] Running at 41.66 FPS (13.89 FPS per env, 3 envs).
+[Genesis 04:49:49] Running at 40.93 FPS (13.64 FPS per env, 3 envs).
+[Genesis 04:49:49] Running at 40.25 FPS (13.42 FPS per env, 3 envs).
+[Genesis 04:49:49] Running at 39.60 FPS (13.20 FPS per env, 3 envs).
+[Genesis 04:49:49] Running at 38.99 FPS (13.00 FPS per env, 3 envs).
+[Genesis 04:49:49] Running at 38.40 FPS (12.80 FPS per env, 3 envs).
+[Genesis 04:49:49] Running at 37.85 FPS (12.62 FPS per env, 3 envs).
+[Genesis 04:49:49] Running at 37.33 FPS (12.44 FPS per env, 3 envs).
+[Genesis 04:49:50] Running at 36.84 FPS (12.28 FPS per env, 3 envs).
+[Genesis 04:49:50] Running at 36.37 FPS (12.12 FPS per env, 3 envs).
+[Genesis 04:49:50] Running at 35.93 FPS (11.98 FPS per env, 3 envs).
+[Genesis 04:49:50] Running at 35.51 FPS (11.84 FPS per env, 3 envs).
+[Genesis 04:49:50] Running at 35.11 FPS (11.70 FPS per env, 3 envs).
+[Genesis 04:49:50] Running at 34.72 FPS (11.57 FPS per env, 3 envs).
+[Genesis 04:49:50] Running at 34.36 FPS (11.45 FPS per env, 3 envs).
+[Genesis 04:49:50] Running at 34.01 FPS (11.34 FPS per env, 3 envs).
+[Genesis 04:49:50] Running at 33.69 FPS (11.23 FPS per env, 3 envs).
+[Genesis 04:49:50] Running at 33.38 FPS (11.13 FPS per env, 3 envs).
+[Genesis 04:49:51] Running at 33.08 FPS (11.03 FPS per env, 3 envs).
+[Genesis 04:49:51] Running at 32.81 FPS (10.94 FPS per env, 3 envs).
+[Genesis 04:49:51] Running at 32.54 FPS (10.85 FPS per env, 3 envs).
+[Genesis 04:49:51] Running at 32.28 FPS (10.76 FPS per env, 3 envs).
+[Genesis 04:49:51] Running at 32.04 FPS (10.68 FPS per env, 3 envs).
+[Genesis 04:49:51] Running at 31.81 FPS (10.60 FPS per env, 3 envs).
+[Genesis 04:49:51] Running at 31.59 FPS (10.53 FPS per env, 3 envs).
+[Genesis 04:49:51] Running at 31.38 FPS (10.46 FPS per env, 3 envs).
+[Genesis 04:49:51] Running at 31.19 FPS (10.40 FPS per env, 3 envs).
+[Genesis 04:49:52] Running at 31.01 FPS (10.34 FPS per env, 3 envs).
+[32m.[0m[Genesis 04:49:52] Exiting Genesis and caching compiled kernels...
+[Genesis 04:49:53] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 04:49:53] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[Genesis 04:49:53] Scene <b2f88fd> created.
+[Genesis 04:49:53] Adding <gs.engine.entities.RigidEntity> 'plane_8b3e5d4'. idx: 0, morph: <gs.morphs.Plane>, material: <gs.materials.Rigid>.
+[Genesis 04:49:53] Adding <gs.engine.entities.RigidEntity> 'shell_fd0ed6f'. idx: 1, morph: <gs.morphs.Mesh(file='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-native-iteration/tmp/pytest-of-zhaofeng/pytest-5/test_native_rigid_lifecycle_an1/shell.obj')>, material: <gs.materials.Rigid>.
+[Genesis 04:49:53] Building scene <b2f88fd>...
+[Genesis 04:50:08] Compiling simulation kernels...
+[Genesis 04:50:13] Building visualizer...
+[Genesis 04:50:14] Running at 8.34 FPS (2.78 FPS per env, 3 envs).
+[Genesis 04:50:14] Running at 8.27 FPS (2.76 FPS per env, 3 envs).
+[Genesis 04:50:14] Running at 8.20 FPS (2.73 FPS per env, 3 envs).
+[Genesis 04:50:15] Running at 8.13 FPS (2.71 FPS per env, 3 envs).
+[Genesis 04:50:15] Running at 8.06 FPS (2.69 FPS per env, 3 envs).
+[Genesis 04:50:16] Running at 8.00 FPS (2.67 FPS per env, 3 envs).
+[Genesis 04:50:16] Running at 7.94 FPS (2.65 FPS per env, 3 envs).
+[Genesis 04:50:17] Running at 7.89 FPS (2.63 FPS per env, 3 envs).
+[Genesis 04:50:17] Running at 7.84 FPS (2.61 FPS per env, 3 envs).
+[Genesis 04:50:18] Running at 7.80 FPS (2.60 FPS per env, 3 envs).
+[Genesis 04:50:18] Running at 7.75 FPS (2.58 FPS per env, 3 envs).
+[Genesis 04:50:18] Running at 7.71 FPS (2.57 FPS per env, 3 envs).
+[Genesis 04:50:19] Running at 7.67 FPS (2.56 FPS per env, 3 envs).
+[Genesis 04:50:19] Running at 7.64 FPS (2.55 FPS per env, 3 envs).
+[Genesis 04:50:20] Running at 7.60 FPS (2.53 FPS per env, 3 envs).
+[Genesis 04:50:20] Running at 7.57 FPS (2.52 FPS per env, 3 envs).
+[Genesis 04:50:21] Running at 7.53 FPS (2.51 FPS per env, 3 envs).
+[Genesis 04:50:21] Running at 7.50 FPS (2.50 FPS per env, 3 envs).
+[Genesis 04:50:21] Running at 7.47 FPS (2.49 FPS per env, 3 envs).
+[Genesis 04:50:22] Running at 7.44 FPS (2.48 FPS per env, 3 envs).
+[Genesis 04:50:22] Running at 7.42 FPS (2.47 FPS per env, 3 envs).
+[Genesis 04:50:23] Running at 7.39 FPS (2.46 FPS per env, 3 envs).
+[Genesis 04:50:23] Running at 7.37 FPS (2.46 FPS per env, 3 envs).
+[Genesis 04:50:24] Running at 7.35 FPS (2.45 FPS per env, 3 envs).
+[Genesis 04:50:24] Running at 7.32 FPS (2.44 FPS per env, 3 envs).
+[Genesis 04:50:24] Running at 7.30 FPS (2.43 FPS per env, 3 envs).
+[Genesis 04:50:25] Running at 7.29 FPS (2.43 FPS per env, 3 envs).
+[Genesis 04:50:25] Running at 7.27 FPS (2.42 FPS per env, 3 envs).
+[Genesis 04:50:26] Running at 7.25 FPS (2.42 FPS per env, 3 envs).
+[32m.[0m[Genesis 04:50:26] Exiting Genesis and caching compiled kernels...
+
+
+============================== slowest durations ===============================
+
+(6 durations < 100s hidden.)
+[32m================= [32m[1m2 passed[0m, [33m3 deselected[0m[32m in 124.71s (0:02:04)[0m[32m ==================[0m

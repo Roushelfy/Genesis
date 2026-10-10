@@ -19,6 +19,8 @@ class RigidStressOptions(Options):
     larger footprint spreads the same contact wrench over more shell area;
     choose it from the contact model rather than the elastic mesh resolution.
     ``quadrature`` controls surface integration cost and accuracy.
+    ``cooperative_pressure`` assigns a CUDA warp to each active contact;
+    CPU and disabled cooperation use the same native serial pressure law.
 
     ``tolerance`` bounds the complete equilibrium residual relative to the
     load norm; ``absolute_tolerance`` supplies the force floor near zero.
@@ -42,6 +44,9 @@ class RigidStressOptions(Options):
     ``max_iterations``; thin shells can require many iterations. Its
     ``warm_start`` reuses only the same environment's preceding displacement
     and is invalidated by state changes.
+    ``history_size=4`` enables a checked four-column load/displacement
+    predictor per environment. The default zero avoids its extra memory
+    and basis maintenance cost on changing-contact workloads.
     """
 
     mesh: PathType

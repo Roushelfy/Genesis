@@ -14,14 +14,18 @@ The native implementation is in `genesis/engine/solvers/rigid/stress/`, with
 `RigidLink.configure_stress_recovery`, `get_max_stress` and
 `set_stress_contact_radius`. The normal example is
 `examples/rigid/franka_egg_stress.py`; it imports no research implementation.
-Initial same-mesh operator, direct solve, finite-pressure and lifecycle checks
-pass. Performance profiling and optimization are in progress; see the
-[native journal](docs/PROGRESS_20261010_NATIVE.md).
+The low-resolution native implementation, profiling and performance selection
+are complete. All 16 GPU tests and 14 CPU numerical tests pass. On the measured
+Blackwell GPU, B=1024 full live recovery achieves 42,867 environment steps/s;
+the matched policy workload achieves 42,515. See the
+[results and ablations](docs/NATIVE_RESULTS_20261010.md),
+[native API](docs/NATIVE_API.md), [reproduction commands](docs/RUNNING.md)
+and [iteration journal](docs/PROGRESS_20261010_NATIVE.md).
 
 The research code, historical status table, native-library setup and fine-mesh commands below
 describe the existing research prototype and historical evidence. They do not
-establish that the requested native feature exists, and are not the new default
-implementation or iteration workflow. Read the new plan before using them.
+measure the current native feature. They remain separate from the current
+implementation and iteration workflow. Read the new plan before using them.
 
 Goal: maximize **measured aggregate environment transitions/s** for a Franka
 Panda grasping a hollow egg-shaped rigid entity, while returning its global

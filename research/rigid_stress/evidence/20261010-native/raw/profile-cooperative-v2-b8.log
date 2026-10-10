@@ -1,0 +1,215 @@
+[Quadrants] version 1.3.3, llvm 22.1.0, commit 00423caa, linux, python 3.10.12
+[38;5;226m[Genesis] [05:06:54] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint1`[0m
+[38;5;226m[Genesis] [05:06:54] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint2`[0m
+[38;5;226m[Genesis] [05:06:55] [WARNING] Neutral robot position (qpos0) exceeds joint limits.[0m
+[38;5;226m[Genesis] [05:06:55] [WARNING] Constraint solver time constant should be greater than 2*substep_dt. timeconst is changed from `0.005` to `0.02`). Decrease simulation timestep or increase timeconst to avoid altering the original value.[0m
+[38;5;226m[Genesis] [05:06:57] [WARNING] Filtered out geometry pairs causing self-collision for the neutral configuration (qpos0): (6, 11), (7, 11), (14, 21), (15, 20), (16, 23), (17, 22). Consider tuning Morph option 'decompose_robot_error_threshold' or specify dedicated collision meshes. This behavior can be disabled by setting Morph option 'enable_neutral_collision=True'.[0m
+libEGL warning: failed to open /dev/dri/renderD135: Permission denied
+
+libEGL warning: failed to open /dev/dri/card8: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD134: Permission denied
+
+libEGL warning: failed to open /dev/dri/card7: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD133: Permission denied
+
+libEGL warning: failed to open /dev/dri/card6: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD132: Permission denied
+
+libEGL warning: failed to open /dev/dri/card5: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD131: Permission denied
+
+libEGL warning: failed to open /dev/dri/card4: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD130: Permission denied
+
+libEGL warning: failed to open /dev/dri/card3: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD129: Permission denied
+
+libEGL warning: failed to open /dev/dri/card2: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD128: Permission denied
+
+libEGL warning: failed to open /dev/dri/card1: Permission denied
+
+======================================================================================
+Kernel Profiler(count, default) @ CUDA on NVIDIA RTX PRO 6000 Blackwell Server Edition
+======================================================================================
+[      %     total   count |      min       avg       max   ] Kernel name
+--------------------------------------------------------------------------------------
+[ 82.41%   2.580 s    100x |   25.790    25.805    25.818 ms] kernel_pressure_c704_0_kernel_1_range_for
+[ 16.97%   0.531 s    100x |    5.308     5.313     5.322 ms] kernel_solve_cooperative_c716_0_kernel_1_range_for
+[  0.34%   0.011 s    100x |    0.105     0.108     0.114 ms] kernel_anchor_c702_0_kernel_1_range_for
+[  0.05%   0.002 s    100x |    0.015     0.016     0.030 ms] kernel_associate_c708_0_kernel_3_range_for
+[  0.04%   0.001 s    100x |    0.011     0.014     0.026 ms] kernel_associate_c708_0_kernel_1_range_for
+[  0.04%   0.001 s    100x |    0.013     0.014     0.016 ms] kernel_begin_step_c746_0_kernel_1_range_for
+[  0.03%   0.001 s    100x |    0.006     0.008     0.042 ms] kernel_associate_c708_0_kernel_0_serial
+[  0.03%   0.001 s    100x |    0.006     0.008     0.020 ms] kernel_solve_cooperative_c716_0_kernel_0_serial
+[  0.03%   0.001 s    100x |    0.006     0.008     0.026 ms] kernel_pressure_c704_0_kernel_0_serial
+[  0.02%   0.001 s    100x |    0.006     0.007     0.011 ms] kernel_anchor_c702_0_kernel_0_serial
+[  0.02%   0.001 s    100x |    0.006     0.007     0.011 ms] kernel_begin_step_c746_0_kernel_0_serial
+[  0.02%   0.001 s    100x |    0.005     0.005     0.015 ms] kernel_associate_c708_0_kernel_2_serial
+--------------------------------------------------------------------------------------
+[100.00%] Total execution time:   3.131 s   number of results: 12
+======================================================================================
+{
+  "scope": "profile",
+  "envs": 8,
+  "level": 1,
+  "precision": "64",
+  "quadrature": 10,
+  "dt": 0.01,
+  "substeps": 1,
+  "varied": false,
+  "seed": 510000,
+  "host": "rtx-209-113",
+  "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "gpu_total_bytes": 101975851008,
+  "quadrants": [
+    1,
+    3,
+    3
+  ],
+  "torch": "2.8.0",
+  "setup_seconds": 21.537196130026132,
+  "warmup_steps": 300,
+  "stage_wall_ms": {
+    "begin_step": 0.04910826217383146,
+    "association_transform": 0.16792102251201868,
+    "anchor_search": 0.17491201870143414,
+    "candidate_weights_constraints": 25.850063329562545,
+    "nodal_scatter": 14.392664106562734,
+    "inertia_relief_centrifugal": 0.050926958210766315,
+    "rhs_reduction": 0.026938756927847862,
+    "linear_solve": 5.386149538680911,
+    "complete_residual": 0.06065881345421076,
+    "global_peak": 0.07625221740454435,
+    "accept": 0.026861377991735935
+  },
+  "contacts_per_environment": [
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
+  ],
+  "candidate_count": [
+    12500,
+    12500,
+    12500,
+    12500,
+    12500,
+    12500,
+    12500,
+    12500,
+    12500,
+    12500,
+    12500,
+    12500,
+    12500,
+    12500,
+    12500,
+    12500
+  ],
+  "pressure_evaluations": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "complete_residual_N": [
+    7.468145225534109e-12,
+    7.468145225534109e-12,
+    7.418782435303272e-12,
+    7.44478493788142e-12,
+    7.44478493788142e-12,
+    7.232921483159492e-12,
+    7.316144735191599e-12,
+    7.316144735191599e-12
+  ],
+  "rhs_norm_N": [
+    0.26292409987048637,
+    0.26292409987048637,
+    0.26292409987048637,
+    0.26292409987048637,
+    0.26292409987048637,
+    0.26292409987048637,
+    0.26292409987048637,
+    0.26292409987048637
+  ],
+  "egg_position_m": [
+    [
+      0.6517056384960248,
+      -0.00046917811488640275,
+      0.14578976131024043
+    ],
+    [
+      0.6517056384960248,
+      -0.00046917811488640275,
+      0.14578976131024043
+    ],
+    [
+      0.6517056384960248,
+      -0.00046917811488640275,
+      0.14578976131024043
+    ],
+    [
+      0.6517056384960248,
+      -0.00046917811488640275,
+      0.14578976131024043
+    ],
+    [
+      0.6517056384960248,
+      -0.00046917811488640275,
+      0.14578976131024043
+    ],
+    [
+      0.6517056384960248,
+      -0.00046917811488640275,
+      0.14578976131024043
+    ],
+    [
+      0.6517056384960248,
+      -0.00046917811488640275,
+      0.14578976131024043
+    ],
+    [
+      0.6517056384960248,
+      -0.00046917811488640275,
+      0.14578976131024043
+    ]
+  ],
+  "dofs": 2430,
+  "tetrahedra": 480,
+  "maximum_stress_Pa": [
+    75122.56014045062,
+    75122.56014045062,
+    75122.56014045059,
+    75122.56014044987,
+    75122.56014044987,
+    75122.56014045065,
+    75122.56014044923,
+    75122.56014044923
+  ],
+  "torch_peak_allocated_bytes": 1286144,
+  "device_free_bytes": 99526180864
+}

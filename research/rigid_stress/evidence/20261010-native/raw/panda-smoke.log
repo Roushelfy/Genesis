@@ -1,0 +1,49 @@
+[38;5;159m[Genesis] [04:53:44] [INFO] [38;5;121m╭───────────────────────────────────────────────╮[0m[38;5;159m[0m
+[38;5;159m[Genesis] [04:53:44] [INFO] [38;5;121m│┈┉┈┉┈┉┈┉┈┉┈┉┈┉┈┉┈┉┈[0m[38;5;159m [38;5;121m[1m[3mGenesis[0m[38;5;159m [38;5;121m┈┉┈┉┈┉┈┉┈┉┈┉┈┉┈┉┈┉┈│[0m[38;5;159m[0m
+[38;5;159m[Genesis] [04:53:44] [INFO] [38;5;121m╰───────────────────────────────────────────────╯[0m[38;5;159m[0m
+[38;5;159m[Genesis] [04:53:44] [INFO] Running on [38;5;121m[NVIDIA RTX PRO 6000 Blackwell Server Edition][0m[38;5;159m with backend [38;5;121mgs.cuda[0m[38;5;159m. Device memory: [38;5;121m94.97[0m[38;5;159m GB.[0m
+[38;5;159m[Genesis] [04:53:44] [INFO] 🚀 Genesis initialized. 🔖 version: [38;5;121m1.4.3[0m[38;5;159m, 🎨 theme: [38;5;121mdark[0m[38;5;159m, 🌱 seed: [38;5;121mNone[0m[38;5;159m, 🐛 debug: [38;5;121mFalse[0m[38;5;159m, 📏 precision: [38;5;121m64[0m[38;5;159m, 🔥 performance: [38;5;121mFalse[0m[38;5;159m, 💬 verbose: [38;5;121mINFO[0m[38;5;159m[0m
+[38;5;159m[Genesis] [04:53:45] [INFO] Scene [38;5;121m[3m<c0b46e7>[0m[38;5;159m created.[0m
+[38;5;159m[Genesis] [04:53:45] [INFO] Adding [38;5;121m<gs.engine.entities.RigidEntity>[0m[38;5;159m [38;5;121m[3mplane_f62b5dc[0m[38;5;159m. idx: [38;5;121m0[0m[38;5;159m, morph: [38;5;121m<gs.morphs.Plane>[0m[38;5;159m, material: [38;5;121m<gs.materials.Rigid>[0m[38;5;159m.[0m
+[38;5;226m[Genesis] [04:53:45] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint1`[0m
+[38;5;226m[Genesis] [04:53:45] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint2`[0m
+[38;5;159m[Genesis] [04:53:45] [INFO] Adding [38;5;121m<gs.engine.entities.RigidEntity>[0m[38;5;159m [38;5;121m[3mpanda_828a0bf[0m[38;5;159m. idx: [38;5;121m1[0m[38;5;159m, morph: [38;5;121m<gs.morphs.MJCF(file='/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/assets/xml/franka_emika_panda/panda.xml')>[0m[38;5;159m, material: [38;5;121m<gs.materials.Rigid>[0m[38;5;159m.[0m
+[38;5;159m[Genesis] [04:53:45] [INFO] Adding [38;5;121m<gs.engine.entities.RigidEntity>[0m[38;5;159m [38;5;121m[3megg_shell_8cd09ee[0m[38;5;159m. idx: [38;5;121m2[0m[38;5;159m, morph: [38;5;121m<gs.morphs.URDF(file='/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/assets/hollow_egg/level1/egg_shell.urdf')>[0m[38;5;159m, material: [38;5;121m<gs.materials.Rigid>[0m[38;5;159m.[0m
+[38;5;159m[Genesis] [04:53:45] [INFO] Building scene [38;5;121m[3m<c0b46e7>[0m[38;5;159m...[0m
+[38;5;226m[Genesis] [04:53:46] [WARNING] Neutral robot position (qpos0) exceeds joint limits.[0m
+[38;5;226m[Genesis] [04:53:46] [WARNING] Constraint solver time constant should be greater than 2*substep_dt. timeconst is changed from `0.005` to `0.02`). Decrease simulation timestep or increase timeconst to avoid altering the original value.[0m
+[38;5;226m[Genesis] [04:53:48] [WARNING] Filtered out geometry pairs causing self-collision for the neutral configuration (qpos0): (6, 11), (7, 11), (14, 21), (15, 20), (16, 23), (17, 22). Consider tuning Morph option 'decompose_robot_error_threshold' or specify dedicated collision meshes. This behavior can be disabled by setting Morph option 'enable_neutral_collision=True'.[0m
+[38;5;159m[Genesis] [04:54:02] [INFO] Compiling simulation kernels...[0m
+[38;5;159m[Genesis] [04:54:19] [INFO] Building visualizer...[0m
+Traceback (most recent call last):
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/misc.py", line 1376, in assign_indexed_tensor
+    tensor[indices] = value
+RuntimeError: shape mismatch: value tensor of shape [8, 2] cannot be broadcast to indexing result of shape [2]
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/franka_egg_stress.py", line 178, in <module>
+    main()
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/franka_egg_stress.py", line 171, in main
+    workload.step()
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/franka_egg_stress.py", line 150, in step
+    self.robot.set_dofs_force_range(-limit, limit, self.fingers)
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/misc.py", line 150, in wrapper
+    return method(self, *args, **kwargs)
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/entities/rigid_entity/rigid_entity.py", line 2650, in set_dofs_force_range
+    self._solver.set_dofs_force_range(lower, upper, dofs_idx, envs_idx)
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/rigid_solver.py", line 2728, in set_dofs_force_range
+    self._set_dofs_info([lower, upper], dofs_idx, "force_range", envs_idx)
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/rigid_solver.py", line 2672, in _set_dofs_info
+    assign_indexed_tensor(data, mask_j, tensor_list[j])
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/misc.py", line 1380, in assign_indexed_tensor
+    tensor[indices] = broadcast_tensor(value, tensor.dtype, indexed_shape, dim_names)
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/misc.py", line 1262, in broadcast_tensor
+    gs.raise_exception(f"Invalid input shape: {tensor_shape}. Expecting at most {expected_ndim}D tensor.")
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/misc.py", line 43, in raise_exception
+    raise gs.GenesisException(msg)
+genesis.GenesisException: Invalid input shape: torch.Size([8, 2]). Expecting at most 1D tensor.
+
+[38;5;9m[Genesis] [04:54:21] [ERROR] GenesisException: Invalid input shape: torch.Size([8, 2]). Expecting at most 1D tensor.[0m
+[38;5;159m[Genesis] [04:54:21] [INFO] 💤 Exiting Genesis and caching compiled kernels...[0m

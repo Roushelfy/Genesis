@@ -12,7 +12,8 @@ QD_KERNEL_PROFILER=1 python examples/speed_benchmark/rigid_stress.py \
     --scope profile --envs 1024 --varied --steps 100 --warmup 900 \
     --output "$RIGID_STRESS_DATA_ROOT/runs/native/profile.json"
 python examples/speed_benchmark/rigid_stress.py \
-    --scope live --envs 1024 --varied \
+    --scope live --envs 1024 --varied --warmup 900 \
+    --steps 1200 --repetitions 3 --minimum-seconds 10 \
     --output "$RIGID_STRESS_DATA_ROOT/runs/native/live.json"
 ```
 
@@ -27,6 +28,10 @@ ten seconds per repeat. Kernel profiling is a separate intrusive pass.
 The default `auto` method uses a memory-bounded shared inverse on this small
 mesh. Compare `--method direct --serial-solve`, `--method direct`, and
 `--method inverse --inverse-precision 32` at identical mesh/tolerances.
+`--history 4` enables the tested temporal variant; h=0 is selected because
+the full changing-contact measurement was faster and used less memory.
+`--serial-pressure` selects the native scalar pressure path for a matched
+pressure scheduling ablation. CUDA warp pressure is the selected default.
 `--trace` exports a separate 50-step Torch/CUPTI CPU/CUDA trace after timing;
 its overhead is excluded from the reported rates. The pressure microkernels
 repeat query/integration/small-solve work to diagnose the hotspot and are
@@ -39,6 +44,48 @@ pre-integration frame; it is not changing-contact trajectory throughput.
 release and independently delayed resets. `policy` adds device observations
 and a fixed seeded FP64 26->128->128->7 tanh MLP; it measures inference and
 rollouts, not completed reinforcement-learning training.
+
+The MLP has tanh after the first two linear layers and a linear output.
+Use the same command with `--scope rigid`, `policy-rigid`, `recovery` and
+`policy`, changing the output name, to reproduce the five selected scopes.
+Use `--envs 8` for the serial-baseline comparison. The exact selected source
+is `dbfdf20d`; the evidence manifest records revisions and arguments for
+earlier ablations, including the normalized baseline patch.
+
+Every-step validity is checked separately from throughput:
+
+```bash
+python -m research.rigid_stress.native_validity_probe --scope live \
+    --envs 1024 --warmup 900 --steps 1200 \
+    --output "$RIGID_STRESS_DATA_ROOT/runs/native/validity-live.json"
+python -m research.rigid_stress.native_validity_probe --scope policy \
+    --envs 1024 --warmup 900 --steps 1200 \
+    --output "$RIGID_STRESS_DATA_ROOT/runs/native/validity-policy.json"
+python -m pytest tests/rigid/test_stress.py --backend cpu \
+    -k 'not lifecycle' -n 0 -s -q
+```
+
+The audit keeps native failure counters across independent resets, reading
+them once at the end. It checks every one of the 2,150,400 environment steps
+per scope, including warmup, and publishes no throughput rate.
+GPU tests include the actual rigid lifecycle checks; CPU runs the 14
+numerical cases. Do not run CPU numerical work on a login node on the cluster.
+
+Allocate the measured cluster hardware before sourcing the environment:
+
+```bash
+source /mnt/data/shared/config/env.sh
+GENESIS_IMAGE_VER=1_26 gs-srun --partition=rtx-mid --ntasks=1 --gpus=1 \
+    --cpus-per-task=8 --mem=64G --time=00:20:00 bash
+export RIGID_STRESS_DATA_ROOT=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery
+export RIGID_STRESS_ENV=/mnt/data/zhaofeng/venvs/rigid-stress-recovery
+source research/rigid_stress/scripts/cluster_env.sh
+mkdir -p "$RIGID_STRESS_DATA_ROOT/runs/native"
+```
+
+Run the commands from the repository root with the environment Python
+(`"$RIGID_STRESS_ENV/bin/python"`); place redirected stdout/stderr in that
+run directory. CPU tests use the same partition without `--gpus=1`.
 
 Warmup quality checks are outside steady-state timing. They record actual
 nonzero egg contacts, both finger contacts, tangential force, radii, friction,

@@ -11,6 +11,7 @@ the SciPy/Numba research implementation is an independent test oracle.
 Configure a link before `scene.build()`:
 
 ```python
+gs.init(backend=gs.gpu, precision="64")
 egg.base_link.configure_stress_recovery(
     gs.options.RigidStressOptions(mesh="elastic.npz", contact_radius=0.006)
 )
@@ -42,6 +43,12 @@ slots, whose identities may change. Persistent contact-specific pad metadata
 should be supplied again after such changes. Radii are INFO and persist
 through reset; displacement and observed stress are invalidated only for
 selected environments. Reset and state mutations use native solver notices.
+
+Solver checkpoint export includes stress configuration, contact radii, warm
+displacement and derived observations. Restoring rigid state triggers the
+ordinary geometry/dynamics notices: stress peaks, displacement and history
+are invalidated for all restored environments. The next physical step
+recomputes the observation. A saved peak is not a valid restored observation.
 
 ## Model and errors
 
@@ -78,6 +85,13 @@ independent. Disabled scenes retain the original fused rigid step.
 
 ## Numerical methods
 
+`cooperative_pressure=True` packs active contact/environment pairs on CUDA
+with a device counter, then assigns one warp to each pair. Warp reductions
+integrate the pressure Gram and constrained Newton/line-search evaluations.
+There is no host count read or candidate truncation. CPU and
+`cooperative_pressure=False` use the serial native pressure kernels with
+the same law and wrench checks.
+
 `method="auto"` uses a full pinned inverse if its shared storage fits
 `inverse_max_bytes` (64 MiB default); otherwise it selects sparse direct.
 The full inverse maps **every** nodal load, rather than a fixed contact-response
@@ -93,15 +107,23 @@ is correct but has no large-mesh performance claim in this milestone.
 
 `inverse_precision="32"` halves inverse storage while retaining scene
 arithmetic. Residual failures receive masked inverse corrections followed by
-the native factor fallback. Two corrections alone were insufficient on
-arbitrary asymmetric loads; the fallback is essential. Default scene-precision
-inverse storage is the conservative configuration selected by measurement.
+the native factor fallback if necessary. Default scene-precision inverse
+storage is the conservative configuration selected by measurement.
 
 `method="pcg"` supports scalar-diagonal or block preconditioning, independent
 environment convergence and a strict iteration limit. `warm_start=True`
 reuses the same environment's displacement. Thin-shell conditioning made
 the simple PCG path slower and unresolved at 4,000 iterations in the probe;
 it is retained as an explicit option with residual rejection, not the default.
+
+`history_size=4` enables four corrected load/displacement columns per
+environment. A stable cached native basis predicts displacement; the complete
+residual rejects unsuccessful predictions and the original solve handles
+them. Only corrected accepted environments append. Geometry/dynamics changes
+and reset invalidate the selected environments. This cost/memory tradeoff
+regressed the measured changing-contact workload, so `history_size=0` is the
+default and selected benchmark configuration. CPU/CUDA FP64 scene precision
+and FP32 mixed inverse storage are validated in this milestone.
 
 Use [RUNNING.md](RUNNING.md) for reproducible commands and the native results
 report for measurements. These low-resolution checks establish numerical

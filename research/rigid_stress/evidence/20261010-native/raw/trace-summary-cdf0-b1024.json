@@ -1,0 +1,21 @@
+{
+  "source_revision": "cdf0bc17",
+  "trace_steps": 50,
+  "intrusive_wall_ms": 2058.2958450927736,
+  "kernel_busy_ms": 1221.9958587646483,
+  "kernel_busy_fraction": 0.5936930114677317,
+  "kernel_launch_count": 21398,
+  "memcpy_count": 5196,
+  "memcpy_bytes": 1077406,
+  "memcpy_categories": {
+    "Memcpy HtoD (Pageable -> Device)": 4896,
+    "Memcpy DtoH (Device -> Pageable)": 150,
+    "Memcpy DtoH (Device -> Pinned)": 100,
+    "Memcpy DtoD (Device -> Device)": 50
+  },
+  "synchronization_calls": {
+    "cudaStreamSynchronize": 3296,
+    "cudaDeviceSynchronize": 1
+  },
+  "note": "Intrusive trace, separate from throughput; kernel interval union within 50 CPU annotations, copies include Quadrants metadata and ordinary rigid/control work."
+}
