@@ -1,5 +1,14 @@
 # Agent goal: native Quadrants rigid stress recovery
 
+## Additional output requirement, 2026-10-10
+
+Add a build-time option selecting maximum-only or complete stress-field
+output, with maximum-only remaining the default. Full mode exposes the
+complete device-side tensor/von Mises field and preserves the existing
+maximum observation. Validate same-state numerical agreement, lifecycle
+semantics and matched throughput/memory costs for both modes on the low mesh.
+See [docs/OUTPUT_MODES.md](docs/OUTPUT_MODES.md) for the required contract.
+
 ## Current acceptance, 2026-10-10 follow-up
 
 Prioritize legal-contact robustness before further optimization. The actual

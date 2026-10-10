@@ -50,6 +50,21 @@ ordinary geometry/dynamics notices: stress peaks, displacement and history
 are invalidated for all restored environments. The next physical step
 recomputes the observation. A saved peak is not a valid restored observation.
 
+## Required extension: build-time output selection
+
+The current API returns the maximum only. The user requires a pre-build
+`RigidStressOptions` setting selecting `"max"` (default) or `"full"`;
+the proposed option name is `output_mode`. This is a pending implementation
+requirement, not an already available constructor argument.
+
+Full mode must expose the complete device-side stress tensor and von Mises
+field, with documented sampling/layout/frame, while preserving
+`get_max_stress()`. Max mode must avoid full-field buffers and writes.
+Specify last-recovery field timing separately from the existing
+scene-step maximum across substeps. Follow
+[OUTPUT_MODES.md](OUTPUT_MODES.md) for lifecycle, numerical and performance
+acceptance.
+
 ## Model and errors
 
 Each solved point contact includes its complete normal and tangential force.
