@@ -355,8 +355,11 @@ class Simulator(RBC):
         # This will trigger GPU sync, but it is not a big deal at the point, since we are going to enqueue very large
         # kernel right away. Moreover, if computations are still not done at this point, then the queue will just
         # continue growing endlessly, which will not make the simulation faster either.
-        if self.rigid_solver.is_active and self._cur_substep_global % RATE_CHECK_ERRNO == 0:
-            self.rigid_solver.check_errno()
+        if self._cur_substep_global % RATE_CHECK_ERRNO == 0:
+            if self.rigid_solver.is_active:
+                self.rigid_solver.check_errno()
+            if self.shell_solver.is_active:
+                self.shell_solver.check_errno()
 
         # Reconstructing a checkpoint window replays steps the environments already simulated, so only a forward step
         # advances their clock. The backward pass winds it down again through `_step_grad`.

@@ -1,3 +1,5 @@
+import xml.etree.ElementTree as ET
+
 import numpy as np
 import pytest
 import scipy.sparse as sp
@@ -32,6 +34,17 @@ def grid_sheet_path(asset_tmp_path):
         return str(path)
 
     return make
+
+
+@pytest.fixture
+def lever_mjcf():
+    # A bar hinged about the y-axis at the origin of its body, with a ball at its free end, 0.2 m away
+    mjcf = ET.Element("mujoco", model="lever")
+    body = ET.SubElement(ET.SubElement(mjcf, "worldbody"), "body", name="lever", pos="0 0 0.3")
+    ET.SubElement(body, "joint", name="hinge", type="hinge", axis="0 1 0")
+    ET.SubElement(body, "geom", type="box", size="0.1 0.01 0.005", pos="0.1 0 0", density="1000")
+    ET.SubElement(body, "geom", type="sphere", size="0.01", pos="0.2 0 0", density="1000")
+    return ET.tostring(mjcf, encoding="unicode")
 
 
 @pytest.mark.required
@@ -143,9 +156,11 @@ def test_stiff_sheet_bending(grid_sheet_path, show_viewer):
 @pytest.mark.required
 @pytest.mark.parametrize("precision", ["64"])
 def test_tearing_at_tensile_strength(grid_sheet_path, show_viewer):
-    # Two strips are pulled apart at their ends, faster in the second environment. Fracture splits a strip once its
+    # Three strips are pulled apart at their ends, faster in the second environment. Fracture splits a strip once its
     # membrane stress E * G (Green strain G, Poisson's ratio zero) reaches the tensile strength, and the weak strip
-    # breaks into separate pieces while the strong one stays whole. Resetting an environment restores its mesh.
+    # breaks into separate pieces while the strong one stays whole. The third strip is as weak but evaluates its damage
+    # alone, so that it reports the same damage index as the weak one up to their failure, then keeps its mesh.
+    # Resetting an environment restores its mesh.
     E, TENSILE_STRENGTH, LENGTH = 1e6, 3e4, 0.4
     PULL_SPEEDS = (0.05, 0.1)
 
@@ -170,9 +185,12 @@ def test_tearing_at_tensile_strength(grid_sheet_path, show_viewer):
                 E=E,
                 nu=0.0,
                 tensile_strength=tensile_strength,
+                fracture=fracture,
             ),
         )
-        for i, tensile_strength in enumerate((TENSILE_STRENGTH, 1e3 * TENSILE_STRENGTH))
+        for i, (tensile_strength, fracture) in enumerate(
+            ((TENSILE_STRENGTH, True), (1e3 * TENSILE_STRENGTH, True), (TENSILE_STRENGTH, False))
+        )
     ]
     scene.build(n_envs=2)
 
@@ -203,12 +221,21 @@ def test_tearing_at_tensile_strength(grid_sheet_path, show_viewer):
     for i in range(int(1.15 * max(steps_break))):
         scene.step()
         n_pieces = count_pieces(strips[0])
+        strain = (i + 1) * scene.sim.dt * np.array(PULL_SPEEDS) / LENGTH
+        damage = tensor_to_array(strips[2].get_peak_damage())
         for i_b in range(2):
             if i + 1 < 0.9 * steps_break[i_b]:
                 assert n_pieces[i_b] == 1
+                assert_allclose(strips[0].get_peak_damage()[i_b], damage[i_b], tol=1e-9)
+            if 0.5 * steps_break[i_b] < i + 1 < 0.9 * steps_break[i_b]:
+                assert_allclose(damage[i_b], E * (strain[i_b] + 0.5 * strain[i_b] ** 2) / TENSILE_STRENGTH, rtol=0.02)
     assert (count_pieces(strips[0]) >= 2).all()
     assert_equal(count_pieces(strips[1]), 1)
     assert_equal(strips[1].get_n_verts(), strips[1].n_verts)
+    assert (tensor_to_array(strips[2].get_peak_damage()) > 1.0).all()
+    assert (tensor_to_array(strips[2].get_failure_face()) >= 0).all()
+    assert_equal(count_pieces(strips[2]), 1)
+    assert_equal(strips[2].get_faces(), np.broadcast_to(strips[2].init_faces, (2, *strips[2].init_faces.shape)))
 
     scene.reset(envs_idx=[1])
     assert_equal(count_pieces(strips[0]), (count_pieces(strips[0])[0], 1))
@@ -219,10 +246,13 @@ def test_tearing_at_tensile_strength(grid_sheet_path, show_viewer):
 @pytest.mark.required
 @pytest.mark.parametrize("precision", ["64"])
 @pytest.mark.parametrize("n_envs", [0, 2])
-def test_rigid_coupling_transmits_weight(n_envs, grid_sheet_path, show_viewer):
+def test_rigid_coupling_transmits_weight(n_envs, grid_sheet_path, lever_mjcf, show_viewer):
     # A sheet dropped on a free box resting on the ground settles half its thickness above the box top, and the
-    # ground then carries the weight of both.
-    GRAVITY, SIZE, THICKNESS, RHO, BOX_HEIGHT = 9.81, 0.15, 2e-3, 1000.0, 0.05
+    # ground then carries the weight of both. Aside, a ball rests inside a triangle of a sheet pinned at its corners,
+    # away from its vertices and edges: the triangle holds it half the sheet thickness above its surface and carries its
+    # weight. Further aside, the ball at the end of a hinged lever rests on another pinned triangle, whose reaction
+    # balances the moment of the weight of the lever about its hinge.
+    GRAVITY, SIZE, THICKNESS, RHO, BOX_HEIGHT, BALL_RADIUS = 9.81, 0.15, 2e-3, 1000.0, 0.05, 0.01
 
     scene = gs.Scene(
         sim_options=gs.options.SimOptions(
@@ -235,7 +265,7 @@ def test_rigid_coupling_transmits_weight(n_envs, grid_sheet_path, show_viewer):
         ),
         show_viewer=show_viewer,
     )
-    scene.add_entity(
+    plane = scene.add_entity(
         morph=gs.morphs.Plane(),
     )
     box = scene.add_entity(
@@ -259,7 +289,44 @@ def test_rigid_coupling_transmits_weight(n_envs, grid_sheet_path, show_viewer):
             damping=0.01,
         ),
     )
+    # The first triangle of a one-cell sheet spans its corners (-0.05, -0.05), (0.05, -0.05) and (0.05, 0.05)
+    support = scene.add_entity(
+        morph=gs.morphs.Mesh(
+            file=grid_sheet_path(1, 1, 0.1, 0.1),
+            pos=(1.0, 0.0, 0.2),
+        ),
+        material=gs.materials.Shell(
+            rho=RHO,
+            thickness=THICKNESS,
+        ),
+    )
+    ball_center = np.array((1.0 + 0.05 / 3.0, -0.05 / 3.0, 0.2 + 0.5 * THICKNESS + BALL_RADIUS))
+    ball = scene.add_entity(
+        morph=gs.morphs.Sphere(
+            radius=BALL_RADIUS,
+            pos=ball_center,
+        ),
+    )
+    # The ball of the lever, at (2.2, 0.0, 0.3) once placed, lies above the centroid of the first triangle
+    lever = scene.add_entity(
+        morph=gs.morphs.MJCF(
+            file=lever_mjcf,
+            pos=(2.0, 0.0, 0.0),
+        ),
+    )
+    lever_support = scene.add_entity(
+        morph=gs.morphs.Mesh(
+            file=grid_sheet_path(1, 1, 0.1, 0.1),
+            pos=(2.2 - 0.05 / 3.0, 0.05 / 3.0, 0.3 - BALL_RADIUS - 0.5 * THICKNESS),
+        ),
+        material=gs.materials.Shell(
+            rho=RHO,
+            thickness=THICKNESS,
+        ),
+    )
     scene.build(n_envs=n_envs)
+    support.fix_verts()
+    lever_support.fix_verts()
 
     for _ in range(100):
         scene.step()
@@ -268,8 +335,223 @@ def test_rigid_coupling_transmits_weight(n_envs, grid_sheet_path, show_viewer):
     verts_height = tensor_to_array(sheet.get_verts_pos())[..., 2] - box_top[..., None]
     assert_allclose(verts_height, 0.5 * THICKNESS, atol=5e-4)
     sheet_mass = RHO * THICKNESS * SIZE**2
-    ground_force = tensor_to_array(box.get_links_net_contact_force())[..., 0, 2]
+    ground_force = -tensor_to_array(plane.get_links_net_contact_force())[..., 0, 2]
     assert_allclose(ground_force, (box.get_mass() + sheet_mass) * GRAVITY, rtol=2e-3)
+    assert_allclose(ball.get_pos(), np.broadcast_to(ball_center, ball.get_pos().shape), atol=1e-5)
+    ball_force = tensor_to_array(ball.get_links_net_contact_force())[..., 0, :]
+    assert_allclose(ball_force[..., :2], 0.0, atol=1e-9)
+    assert_allclose(ball_force[..., 2], ball.get_mass() * GRAVITY, rtol=2e-3)
+    lever_link = lever.get_link("lever")
+    assert_allclose(lever.get_dofs_velocity(), 0.0, atol=1e-6)
+    lever_force = tensor_to_array(lever.get_links_net_contact_force())[..., lever_link.idx_local, 2]
+    lever_com = lever.get_links_pos(ref=gs.link_ref_frame.link_COM)
+    lever_arm = tensor_to_array(lever_com)[..., lever_link.idx_local, 0] - 2.0
+    assert_allclose(lever_force, tensor_to_array(lever.get_mass()) * GRAVITY * lever_arm / 0.2, rtol=2e-3)
+
+
+@pytest.mark.required
+@pytest.mark.parametrize("precision", ["64"])
+def test_rigid_contact_friction(grid_sheet_path, show_viewer):
+    # Two boxes rest on a pinned sheet inclined by THETA. The one whose friction coefficient exceeds tan(THETA) sticks,
+    # the other slides down at the acceleration g * (sin(THETA) - mu * cos(THETA)) of Coulomb friction.
+    GRAVITY, THETA, THICKNESS, BOX_SIZE = 9.81, np.deg2rad(20.0), 2e-3, 0.06
+    FRICTIONS = (0.6, 0.2)
+
+    scene = gs.Scene(
+        sim_options=gs.options.SimOptions(
+            dt=2e-3,
+            gravity=(0.0, 0.0, -GRAVITY),
+        ),
+        viewer_options=gs.options.ViewerOptions(
+            camera_pos=(0.0, -0.8, 0.6),
+            camera_lookat=(0.0, 0.0, 0.2),
+        ),
+        show_viewer=show_viewer,
+    )
+    incline = scene.add_entity(
+        morph=gs.morphs.Mesh(
+            file=grid_sheet_path(16, 16, 0.4, 0.4),
+            pos=(0.0, 0.0, 0.2),
+            euler=(np.rad2deg(THETA), 0.0, 0.0),
+        ),
+        material=gs.materials.Shell(
+            thickness=THICKNESS,
+        ),
+    )
+    normal = np.array((0.0, -np.sin(THETA), np.cos(THETA)))
+    downhill = np.array((0.0, -np.cos(THETA), -np.sin(THETA)))
+    boxes = [
+        scene.add_entity(
+            morph=gs.morphs.Box(
+                size=(BOX_SIZE, BOX_SIZE, BOX_SIZE),
+                pos=np.array((pos_x, 0.0, 0.2)) - 0.05 * downhill + (0.5 * THICKNESS + 0.5 * BOX_SIZE) * normal,
+                euler=(np.rad2deg(THETA), 0.0, 0.0),
+            ),
+            material=gs.materials.Rigid(
+                rho=500.0,
+                coup_friction=friction,
+            ),
+        )
+        for pos_x, friction in zip((-0.1, 0.1), FRICTIONS)
+    ]
+    scene.build()
+    incline.fix_verts()
+
+    vels = []
+    for i in range(50):
+        scene.step()
+        if i + 1 in (25, 50):
+            vels.append([tensor_to_array(box.get_vel()) for box in boxes])
+
+    assert_allclose(vels[1][0], 0.0, atol=1e-4)
+    accel = GRAVITY * (np.sin(THETA) - FRICTIONS[1] * np.cos(THETA))
+    assert_allclose((vels[1][1] - vels[0][1]) @ downhill, accel * 25 * scene.sim.dt, rtol=5e-3)
+    assert_allclose((vels[1][1] - vels[0][1]) @ normal, 0.0, atol=1e-4)
+
+
+@pytest.mark.required
+@pytest.mark.parametrize("precision", ["64"])
+def test_rigid_contact_conserves_momentum(grid_sheet_path, show_viewer):
+    # Without gravity, a fast ball hits a free sheet off its center: the contact impulses on the ball and the sheet are
+    # opposite, so that the momentum of the pair is conserved through the impact, up to the residual of the linear
+    # solves, which the tight tolerances bring to the floating-point floor. The ball, which crosses the thickness of the
+    # sheet within a substep, never passes through it.
+    SIZE, THICKNESS, RHO, BALL_RADIUS = 0.2, 2e-3, 1000.0, 0.02
+
+    scene = gs.Scene(
+        sim_options=gs.options.SimOptions(
+            dt=1e-3,
+            gravity=(0.0, 0.0, 0.0),
+        ),
+        shell_options=gs.options.ShellOptions(
+            pcg_tolerance=1e-10,
+            pcg_velocity_tolerance=1e-10,
+        ),
+        viewer_options=gs.options.ViewerOptions(
+            camera_pos=(0.4, -0.4, 0.3),
+            camera_lookat=(0.0, 0.0, 0.0),
+        ),
+        show_viewer=show_viewer,
+    )
+    sheet = scene.add_entity(
+        morph=gs.morphs.Mesh(
+            file=grid_sheet_path(8, 8, SIZE, SIZE),
+        ),
+        material=gs.materials.Shell(
+            rho=RHO,
+            E=1e6,
+            thickness=THICKNESS,
+        ),
+    )
+    ball = scene.add_entity(
+        morph=gs.morphs.Sphere(
+            radius=BALL_RADIUS,
+            pos=(0.05, 0.02, 0.03),
+        ),
+        material=gs.materials.Rigid(
+            rho=1000.0,
+        ),
+    )
+    scene.build()
+    ball.set_dofs_velocity([0.0, 0.0, -3.0, 0.0, 0.0, 0.0])
+
+    # Lumped vertex masses: a third of the mass of every adjacent triangle
+    init_verts, init_faces = sheet.init_verts, sheet.init_faces
+    faces_area = 0.5 * np.linalg.norm(
+        np.cross(
+            init_verts[init_faces[:, 1]] - init_verts[init_faces[:, 0]],
+            init_verts[init_faces[:, 2]] - init_verts[init_faces[:, 0]],
+        ),
+        axis=-1,
+    )
+    verts_mass = np.bincount(init_faces.reshape(-1), np.repeat(RHO * THICKNESS * faces_area / 3.0, 3), sheet.n_verts)
+    ball_mass = tensor_to_array(ball.get_mass())
+    momentum_start = ball_mass * tensor_to_array(ball.get_vel())
+    for _ in range(40):
+        scene.step()
+
+    verts_pos = tensor_to_array(sheet.get_verts_pos())[: sheet.n_verts]
+    verts_vel = tensor_to_array(sheet.get_verts_vel())[: sheet.n_verts]
+    assert (
+        np.linalg.norm(verts_pos - tensor_to_array(ball.get_pos()), axis=-1).min()
+        > BALL_RADIUS + 0.5 * THICKNESS - 1e-4
+    )
+    assert_allclose(verts_mass @ verts_vel + ball_mass * tensor_to_array(ball.get_vel()), momentum_start, atol=1e-9)
+
+
+@pytest.mark.required
+@pytest.mark.parametrize("precision", ["64"])
+@pytest.mark.parametrize("n_envs", [0, 2])
+def test_state_restore_reproduces_contact(n_envs, grid_sheet_path, show_viewer):
+    # A ball rolls and slides on a sheet pinned at its edges, which it sags into. Restoring a snapshot replays the
+    # motion that followed it, the warm start of the solver included. Resetting one environment to the initial state
+    # replays its motion from the start while the other one carries on.
+    THICKNESS, BALL_RADIUS = 2e-3, 0.02
+
+    scene = gs.Scene(
+        sim_options=gs.options.SimOptions(
+            dt=2e-3,
+        ),
+        viewer_options=gs.options.ViewerOptions(
+            camera_pos=(0.4, -0.4, 0.3),
+            camera_lookat=(0.0, 0.0, 0.0),
+        ),
+        show_viewer=show_viewer,
+    )
+    sheet = scene.add_entity(
+        morph=gs.morphs.Mesh(
+            file=grid_sheet_path(8, 8, 0.2, 0.2),
+        ),
+        material=gs.materials.Shell(
+            E=1e6,
+            thickness=THICKNESS,
+            damping=0.01,
+        ),
+    )
+    ball = scene.add_entity(
+        morph=gs.morphs.Sphere(
+            radius=BALL_RADIUS,
+            pos=(0.0, 0.0, 0.5 * THICKNESS + BALL_RADIUS),
+        ),
+        material=gs.materials.Rigid(
+            rho=1000.0,
+            coup_friction=0.5,
+        ),
+    )
+    scene.build(n_envs=n_envs)
+    init_verts = sheet.init_verts
+    sheet.fix_verts(np.flatnonzero(np.abs(init_verts[:, :2]).max(axis=-1) > 0.1 - gs.EPS))
+    ball.set_dofs_velocity([0.2, 0.1, 0.0, 0.0, 0.0, 3.0])
+    state_init = scene.get_state()
+
+    def run(n_steps):
+        trajectory = []
+        for _ in range(n_steps):
+            scene.step()
+            trajectory.append((tensor_to_array(sheet.get_verts_pos()), tensor_to_array(ball.get_pos())))
+        return trajectory
+
+    fresh = run(30)
+    scene.reset(state=state_init)
+    for (sheet_a, ball_a), (sheet_b, ball_b) in zip(fresh[:15], run(15)):
+        assert_allclose(sheet_b, sheet_a, tol=1e-9)
+        assert_allclose(ball_b, ball_a, tol=1e-9)
+    state_mid = scene.get_state()
+    for (sheet_a, ball_a), (sheet_b, ball_b) in zip(fresh[15:], run(15)):
+        assert_allclose(sheet_b, sheet_a, tol=1e-9)
+        assert_allclose(ball_b, ball_a, tol=1e-9)
+    scene.reset(state=state_mid)
+    for (sheet_a, ball_a), (sheet_b, ball_b) in zip(fresh[15:], run(15)):
+        assert_allclose(sheet_b, sheet_a, tol=1e-9)
+        assert_allclose(ball_b, ball_a, tol=1e-9)
+    if n_envs > 0:
+        scene.reset(state=state_mid)
+        scene.reset(state=state_init, envs_idx=[1])
+        for (sheet_a, ball_a), (sheet_c, ball_c), (sheet_b, ball_b) in zip(fresh[:15], fresh[15:], run(15)):
+            assert_allclose(sheet_b[1], sheet_a[1], tol=1e-9)
+            assert_allclose(ball_b[1], ball_a[1], tol=1e-9)
+            assert_allclose(sheet_b[0], sheet_c[0], tol=1e-9)
+            assert_allclose(ball_b[0], ball_c[0], tol=1e-9)
 
 
 @pytest.mark.required

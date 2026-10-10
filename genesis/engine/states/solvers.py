@@ -297,8 +297,8 @@ class PBDSolverState:
 
 class ShellSolverState:
     """
-    Dynamic state queried from a ShellSolver, topology included, every tensor having the environments first (see
-    ShellState in array_class.py for the meaning of each one).
+    Dynamic state queried from a ShellSolver, topology and history included, every tensor having the environments
+    first (see ShellState in array_class.py for the meaning of each one).
     """
 
     def __init__(
@@ -308,10 +308,16 @@ class ShellSolverState:
         verts_pos_cell,
         verts_pos_offset,
         verts_vel,
+        verts_dv,
         verts_origin,
         verts_is_fixed,
         corners_vert,
+        contacts_geom_prev,
+        contacts_friction_bound_prev,
         entities_n_verts,
+        entities_peak_damage,
+        entities_failure_face,
+        envs_solver_failure,
         faces_plastic,
         faces_thickness,
         hinges_plastic_angle,
@@ -321,10 +327,16 @@ class ShellSolverState:
         self.verts_pos_cell = verts_pos_cell
         self.verts_pos_offset = verts_pos_offset
         self.verts_vel = verts_vel
+        self.verts_dv = verts_dv
         self.verts_origin = verts_origin
         self.verts_is_fixed = verts_is_fixed
         self.corners_vert = corners_vert
+        self.contacts_geom_prev = contacts_geom_prev
+        self.contacts_friction_bound_prev = contacts_friction_bound_prev
         self.entities_n_verts = entities_n_verts
+        self.entities_peak_damage = entities_peak_damage
+        self.entities_failure_face = entities_failure_face
+        self.envs_solver_failure = envs_solver_failure
         self.faces_plastic = faces_plastic
         self.faces_thickness = faces_thickness
         self.hinges_plastic_angle = hinges_plastic_angle

@@ -1273,7 +1273,13 @@ class RigidSolver(GravityMixin, TimeBasedMixin, KinematicSolver):
 
     def substep(self, f):
         # from genesis.utils.tools import create_timer
-        from genesis.engine.couplers import SAPCoupler
+        from genesis.engine.couplers import LegacyCoupler, SAPCoupler
+
+        # The contacts of the shell entities join the substep between the constraint solve and the integration (see
+        # ShellSolver.solve_rigid_contact), so that they act on the velocities this substep integrates.
+        is_integration_deferred = (
+            isinstance(self.sim.coupler, LegacyCoupler) and self.sim.coupler.has_rigid_shell_contact
+        )
 
         if self._requires_grad and f == 0:
             kernel_save_adjoint_cache(f, self.dyn_state, self._rigid_adjoint_cache, self.rigid_info, self.rigid_config)
@@ -1289,6 +1295,8 @@ class RigidSolver(GravityMixin, TimeBasedMixin, KinematicSolver):
                 self.rigid_config,
             )
 
+        if is_integration_deferred and self._requires_grad:
+            gs.raise_exception("Shell entities touching rigid entities do not support differentiable simulation.")
         if isinstance(self.sim.coupler, SAPCoupler) or self._requires_grad:
             # A SAP-coupled substep replaces the constraint solve by the coupler's own, so it keeps its own launches.
             # FIXME: quadrants#946 - a graph refuses the ndarrays that own a gradient, so a scene tracking gradients
@@ -1379,10 +1387,11 @@ class RigidSolver(GravityMixin, TimeBasedMixin, KinematicSolver):
                 self._is_backward,
                 not self._disable_constraint,
                 self._options.noslip_iterations > 0,
+                not is_integration_deferred,
                 self._errno,
             )
 
-        if not isinstance(self.sim.coupler, SAPCoupler):
+        if not isinstance(self.sim.coupler, SAPCoupler) and not is_integration_deferred:
             self._is_forward_pos_updated = not self._enable_mujoco_compatibility
             self._is_forward_vel_updated = not self._enable_mujoco_compatibility
             if self._requires_grad:
@@ -1750,10 +1759,23 @@ class RigidSolver(GravityMixin, TimeBasedMixin, KinematicSolver):
         self._is_backward = False
 
     def substep_post_coupling(self, f):
-        from genesis.engine.couplers import SAPCoupler, IPCCoupler
+        from genesis.engine.couplers import IPCCoupler, LegacyCoupler, SAPCoupler
 
         if not self.is_active:
             return
+
+        if isinstance(self.sim.coupler, LegacyCoupler) and self.sim.coupler.has_rigid_shell_contact:
+            kernel_step_2(
+                self.dyn_state,
+                self.constraint_solver.constraint_state,
+                self.dyn_info,
+                self.rigid_info,
+                self.rigid_config,
+                self._is_backward,
+                self._errno,
+            )
+            self._is_forward_pos_updated = not self._enable_mujoco_compatibility
+            self._is_forward_vel_updated = not self._enable_mujoco_compatibility
 
         if isinstance(self.sim.coupler, SAPCoupler):
             update_qacc_from_qvel_delta(self.dyn_state, self.rigid_info, self.rigid_config)
@@ -3683,15 +3705,18 @@ def kernel_substep_post(
     is_backward: qd.template(),
     enable_constraint: qd.template(),
     noslip: qd.template(),
+    integrate: qd.template(),
     errno: qd.Tensor,
 ):
     """Run the part of a substep that follows the constraint solve, captured as one graph.
 
     It updates the accelerations and the contact forces from the solved constraint forces when enable_constraint is set
-    (see func_resolve_post for noslip), then integrates.
+    (see func_resolve_post for noslip), then integrates when integrate is set, the coupler of the shell entities
+    integrating after its contacts otherwise (see kernel_step_2).
     """
     if qd.static(enable_constraint):
         func_resolve_post(
             dyn_state, collider_state, constraint_state, dyn_info, rigid_info, rigid_config, noslip, errno
         )
-    func_step_2(dyn_state, constraint_state, dyn_info, rigid_info, rigid_config, is_backward, errno)
+    if qd.static(integrate):
+        func_step_2(dyn_state, constraint_state, dyn_info, rigid_info, rigid_config, is_backward, errno)

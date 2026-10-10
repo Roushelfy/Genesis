@@ -411,11 +411,6 @@ class KinematicOptions(Options):
     IK_max_targets : int, optional
         Maximum number of IK targets. Increasing this doesn't affect IK solving speed, but will increase memory usage.
         Defaults to 6.
-    coarse_update_interval : int, optional
-        Number of substeps between two updates of the coarse correction above, which then lags behind the deformation
-        of the sheets. Updating it less often saves the cost of rebuilding it, which grows with the square of the
-        number of patches times the number of triangles, at the cost of more iterations for sheets that rotate or tear
-        quickly. Defaults to 10.
     """
 
     batch_links_info: StrictBool = False
@@ -948,18 +943,35 @@ class ShellOptions(GravityMixin, TimeBasedMixin):
     """
     Options configuring the ShellSolver, which simulates thin sheets that stretch, bend, yield and fracture.
 
-    Each substep integrates the sheets implicitly, solving a linear system whose accuracy the iterative solver below
-    trades for speed.
+    Each substep integrates the sheets implicitly, solving a linear system with an iterative solver that stops once the
+    error of its solution falls below the tolerances below.
 
     Parameters
     ----------
-    n_pcg_iterations : int, optional
-        Maximum number of iterations of the linear solve of each substep. More iterations resolve stiff sheets
-        (metal, glass, paper) more accurately, while fewer make them softer and more damped than their material says,
-        at a lower runtime cost. Defaults to 50.
-    pcg_threshold : float, optional
-        Residual of the linear solve, relative to its initial value, at which an environment stops iterating. A lower
-        value is more accurate and slower. Defaults to 1e-4.
+    pcg_tolerance : float, optional
+        Relative accuracy of the linear solves of each substep: an environment stops iterating once its residual, in
+        the norm of the preconditioner, falls below this fraction of the right-hand side. A lower value makes stiff
+        sheets (metal, glass, paper) behave closer to their material, and the stress and damage they report converge,
+        at the cost of more iterations. A higher one makes them softer and more damped. Single precision resolves a
+        stiff sheet down to about 1e-5, below which its solves stall at the floor of the precision, as accurate as it
+        allows. Defaults to 1e-4.
+    pcg_velocity_tolerance : float, optional
+        Absolute accuracy of the linear solve, as the mass-weighted root-mean-square error of the vertex velocities it
+        accepts, in m/s, bounded from its residual. It stops the solve of a sheet near rest, whose right-hand side is
+        too small for the relative tolerance to be reached in floating point. A lower value resolves slow motions and
+        small stresses more accurately, at the cost of more iterations. The contact solve converges within the impulse
+        that would change the velocity of a contact point by as much. Defaults to 1e-4.
+    contact_stiffness : float, optional
+        Stiffness of the contacts between the sheets and the rigid geoms, as a multiple of the mass of the contact
+        point over the square of the substep. A static load leaves a penetration of at most 1 / contact_stiffness of
+        the deflection it gives the sheet and the rigid body. A higher value lets less penetration in, which matters
+        when a displacement is imposed, as by a position-controlled gripper squeezing a sheet, the penetration taking
+        a share of it from the deformation of the sheet, at the cost of more solver iterations. A lower one runs faster
+        with softer contacts, the force a load transmits staying the same. Defaults to 25.
+    pcg_max_iterations : int, optional
+        Maximum number of iterations of every linear solve, a substep running one per iteration of its contact solve,
+        a safety limit for the environments whose solve does not reach its tolerance. Such an environment keeps the
+        last iterate and reports the failure (see `ShellSolver.get_envs_solver_failure`). Defaults to 1000.
     fracture_capacity : float, optional
         Number of vertices a fracturable sheet can create by splitting, as a fraction of its own vertex count. Each one
         costs memory in every environment. Fracture stops in an environment that exhausted it. Defaults to 1.0.
@@ -974,14 +986,17 @@ class ShellOptions(GravityMixin, TimeBasedMixin):
         Number of substeps between two updates of the coarse correction above, which then lags behind the deformation
         of the sheets. Updating it less often saves the cost of rebuilding it, which grows with the square of the
         number of patches times the number of triangles, at the cost of more iterations for sheets that rotate or tear
-        quickly. Defaults to 10.
+        quickly. A restored state rebuilds it, so that past one substep a restored simulation follows the original
+        one within the tolerances of the solver rather than exactly. Defaults to 1.
     """
 
-    n_pcg_iterations: PositiveInt = 50
-    pcg_threshold: PositiveFloat = 1e-4
+    pcg_tolerance: PositiveFloat = 1e-4
+    pcg_velocity_tolerance: PositiveFloat = 1e-4
+    contact_stiffness: PositiveFloat = 25.0
+    pcg_max_iterations: PositiveInt = 1000
     fracture_capacity: NonNegativeFloat = 1.0
     n_coarse_patches: NonNegativeInt = 6
-    coarse_update_interval: PositiveInt = 10
+    coarse_update_interval: PositiveInt = 1
 
 
 class SFOptions(TimeBasedMixin):

@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING, Any
 
+from pydantic import StrictBool
+
 import genesis as gs
 from genesis.typing import NonNegativeFloat, PositiveFloat
 
@@ -36,8 +38,14 @@ class Shell(Material["ShellEntity"]):
         Stiffness-proportional damping, in seconds. Larger values dissipate the vibration of stiff sheets faster at the
         cost of a slower, more viscous motion. Default is 0.0.
     tensile_strength : float or None, optional
-        Stress at which the material fractures, in Pa. A lower value tears more easily. None disables fracture.
-        Default is None.
+        Stress at which the material fails, in Pa. A lower value fails more easily. The sheet reports its damage index,
+        the largest principal stress of its two outer surfaces over this strength, which reaches one where it fails
+        (see `ShellEntity.get_faces_damage`). None disables damage and fracture. Default is None.
+    fracture : bool, optional
+        Whether the sheet tears where it fails, splitting its vertices along the mesh edges. Tearing changes the mesh
+        of every environment independently and reserves vertex slots for it (see `ShellOptions.fracture_capacity`).
+        False keeps the mesh intact and only reports the damage and the first failure, which costs less memory and
+        compute and suits an episode that ends at the first failure. Default is True.
     bending_fracture_scale : float, optional
         Weight of the bending strain in the fracture criterion. 1.0 treats the outer layer of a bent sheet as the
         stressed one, which makes brittle sheets (glass, ceramics) crack under bending. 0.0 makes the sheet tear under
@@ -60,6 +68,7 @@ class Shell(Material["ShellEntity"]):
     bending_scale: NonNegativeFloat = 1.0
     damping: NonNegativeFloat = 0.0
     tensile_strength: PositiveFloat | None = None
+    fracture: StrictBool = True
     bending_fracture_scale: NonNegativeFloat = 1.0
     yield_stress: PositiveFloat | None = None
     plastic_flow_rate: PositiveFloat = 100.0

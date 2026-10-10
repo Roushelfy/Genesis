@@ -252,7 +252,9 @@ class ShellEntity(Entity):
             self._patches = build_shell_patches(self._init_verts, n_patches)
 
         n_verts = len(self._init_verts)
-        n_split_verts = int(np.ceil(solver.fracture_capacity * n_verts)) if material.tensile_strength else 0
+        n_split_verts = 0
+        if material.tensile_strength is not None and material.fracture:
+            n_split_verts = int(np.ceil(solver.fracture_capacity * n_verts))
         self._idx_in_solver = solver.n_entities
         self._vert_start = vert_start
         self._n_verts = n_verts
@@ -343,6 +345,102 @@ class ShellEntity(Entity):
         tensor = qd_to_torch(self._solver.shell_state.corners_vert, envs_idx, transpose=True, copy=True)
         tensor = tensor[:, 3 * self._face_start : 3 * (self._face_start + self.n_faces)] - self._vert_start
         tensor = tensor.reshape((tensor.shape[0], self.n_faces, 3))
+        return tensor[0] if self._scene.n_envs == 0 else tensor
+
+    @gs.assert_built
+    def get_faces_damage(self, envs_idx=None) -> torch.Tensor:
+        """
+        Get the damage index of every triangle of the sheet after the last substep.
+
+        The damage index is the largest principal stress of the two outer surfaces of the sheet, membrane plus or minus
+        bending stress, over the tensile strength of its material: the Rankine criterion of brittle failure, which
+        reaches one where the material fails. Multiply it by the tensile strength to read the stress, in Pa.
+
+        Parameters
+        ----------
+        envs_idx : None | array_like, optional
+            The indices of the environments. If None, all environments are returned. Defaults to None.
+
+        Returns
+        -------
+        damage : torch.Tensor, shape (n_faces,) or (n_envs, n_faces)
+            Zero for a material without tensile strength.
+        """
+        if self._material.tensile_strength is None:
+            gs.raise_exception("The damage of a sheet is only evaluated for a material with a tensile strength.")
+        tensor = qd_to_torch(self._solver.shell_scratch.faces_damage, envs_idx, transpose=True, copy=True)
+        tensor = tensor[:, self._face_start : self._face_start + self.n_faces]
+        return tensor[0] if self._scene.n_envs == 0 else tensor
+
+    @gs.assert_built
+    def get_peak_damage(self, envs_idx=None) -> torch.Tensor:
+        """
+        Get the largest damage index any triangle of the sheet reached since the last reset (see `get_faces_damage`).
+
+        The sheet has failed once it reaches one, which ends an episode that avoids damage.
+
+        Parameters
+        ----------
+        envs_idx : None | array_like, optional
+            The indices of the environments. If None, all environments are returned. Defaults to None.
+
+        Returns
+        -------
+        damage : torch.Tensor, shape () or (n_envs,)
+        """
+        if self._material.tensile_strength is None:
+            gs.raise_exception("The damage of a sheet is only evaluated for a material with a tensile strength.")
+        tensor = qd_to_torch(self._solver.shell_state.entities_peak_damage, envs_idx, transpose=True, copy=True)
+        tensor = tensor[:, self._idx_in_solver]
+        return tensor[0] if self._scene.n_envs == 0 else tensor
+
+    @gs.assert_built
+    def get_failure_face(self, envs_idx=None) -> torch.Tensor:
+        """
+        Get the triangle where the sheet first failed since the last reset, the one of largest damage index in the
+        substep its peak damage reached one.
+
+        Parameters
+        ----------
+        envs_idx : None | array_like, optional
+            The indices of the environments. If None, all environments are returned. Defaults to None.
+
+        Returns
+        -------
+        face : torch.Tensor, shape () or (n_envs,)
+            The index of the triangle (see `get_faces`), -1 before the sheet fails.
+        """
+        if self._material.tensile_strength is None:
+            gs.raise_exception("The damage of a sheet is only evaluated for a material with a tensile strength.")
+        tensor = qd_to_torch(self._solver.shell_state.entities_failure_face, envs_idx, transpose=True, copy=True)
+        tensor = tensor[:, self._idx_in_solver]
+        return tensor[0] if self._scene.n_envs == 0 else tensor
+
+    @gs.assert_built
+    def get_verts_contact_force(self, envs_idx=None) -> torch.Tensor:
+        """
+        Get the force the rigid contacts applied on every vertex slot of the sheet over the last substep, in N.
+
+        A contact at a point of a triangle spreads its force on the three vertices by the barycentric coordinates of the
+        point, so that the forces sum up to the total contact force, and their moments about any point to its moment.
+
+        Parameters
+        ----------
+        envs_idx : None | array_like, optional
+            The indices of the environments. If None, all environments are returned. Defaults to None.
+
+        Returns
+        -------
+        force : torch.Tensor, shape (n_verts_max, 3) or (n_envs, n_verts_max, 3)
+            Zero in a scene without rigid contact.
+        """
+        shell_contact = self._solver.shell_contact
+        if shell_contact is None:
+            n_envs = max(self._scene.n_envs, 1) if envs_idx is None else len(self._scene._sanitize_envs_idx(envs_idx))
+            tensor = torch.zeros((n_envs, self._n_verts_max, 3), dtype=gs.tc_float, device=gs.device)
+        else:
+            tensor = qd_to_torch(shell_contact.verts_contact_force, envs_idx, transpose=True, copy=True)
+            tensor = tensor[:, self._vert_start : self._vert_start + self._n_verts_max]
         return tensor[0] if self._scene.n_envs == 0 else tensor
 
     @gs.assert_built
