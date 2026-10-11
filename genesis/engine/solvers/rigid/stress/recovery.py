@@ -30,6 +30,7 @@ from .history import StressHistory
 from .lifecycle import func_accept, func_begin_step
 from .model import StressModel
 from .pipeline import kernel_pipeline
+from .post import create_post_kernel
 from .scatter import StressScatterWorkspace, create_scatter_workspace, kernel_pressure_moments, kernel_scatter_faces
 from .surface import StressSurface
 
@@ -159,6 +160,70 @@ class RigidStressRecovery:
         for subscriber in self.subscribers:
             solver.subscribe(subscriber)
         self.source_epsilon = float(np.finfo(gs.np_float).eps)
+        self.post_kernel = None
+        if len(self.links) == 1:
+            entry = self.links[0]
+            requested = entry.options.fused_rigid_post
+            selected = requested if requested is not None else solver._B < 8192
+            if entry.fused_pipeline and selected:
+                self.post_kernel = create_post_kernel()
+
+    def _pipeline_arguments(self, entry: StressLink, i_substep: int):
+        solver = self.solver
+        options = entry.options
+        return (
+            options.young,
+            options.poisson,
+            options.tolerance,
+            options.absolute_tolerance,
+            self.source_epsilon,
+            entry.link.idx,
+            solver._links_offset_pos,
+            solver._links_offset_quat,
+            entry.omega,
+            solver.dyn_state,
+            solver.collider.collider_state,
+            entry.state,
+            entry.contacts,
+            entry.model.info,
+            entry.surface.info,
+            entry.model.surface_inverse.info,
+            entry.model.inverse.info,
+            entry.model.factor.info,
+            entry.scatter,
+            solver._errno,
+            solver._links_offset_quat.ndim == 3,
+            i_substep == 0,
+            not solver._disable_constraint,
+            options.inverse_corrections,
+            options.cached_peak,
+            options.cached_face_bounds,
+            entry.model.info.vertices.shape[0],
+            entry.output_mode == "full",
+            entry.scatter.tasks.shape[0] > 0,
+            options.cooperative_balance,
+            entry.reuse_contact_wrench,
+            entry.packed_block_size,
+            entry.coalesced_residual,
+            entry.reuse_contact_moments,
+        )
+
+    def recover_and_integrate(self, i_substep: int) -> None:
+        """Serial post graph; ordinary recover() remains stress-only."""
+        entry = self.links[0]
+        if entry.link.stress_options != entry.options:
+            gs.raise_exception("Changing stress recovery options requires rebuilding the scene.")
+        solver = self.solver
+        self.post_kernel(
+            *self._pipeline_arguments(entry, i_substep),
+            solver.constraint_solver.constraint_state,
+            solver.dyn_info,
+            solver.rigid_info,
+            solver.rigid_config,
+            solver._options.noslip_iterations > 0,
+            solver._is_backward,
+            not solver._disable_constraint,
+        )
 
     def recover(self, i_substep: int) -> None:
         solver = self.solver
@@ -167,42 +232,7 @@ class RigidStressRecovery:
             if options != entry.options:
                 gs.raise_exception("Changing stress recovery options requires rebuilding the scene.")
             if entry.fused_pipeline:
-                kernel_pipeline(
-                    options.young,
-                    options.poisson,
-                    options.tolerance,
-                    options.absolute_tolerance,
-                    self.source_epsilon,
-                    entry.link.idx,
-                    solver._links_offset_pos,
-                    solver._links_offset_quat,
-                    entry.omega,
-                    solver.dyn_state,
-                    solver.collider.collider_state,
-                    entry.state,
-                    entry.contacts,
-                    entry.model.info,
-                    entry.surface.info,
-                    entry.model.surface_inverse.info,
-                    entry.model.inverse.info,
-                    entry.model.factor.info,
-                    entry.scatter,
-                    solver._errno,
-                    solver._links_offset_quat.ndim == 3,
-                    i_substep == 0,
-                    not solver._disable_constraint,
-                    options.inverse_corrections,
-                    options.cached_peak,
-                    options.cached_face_bounds,
-                    entry.model.info.vertices.shape[0],
-                    entry.output_mode == "full",
-                    entry.scatter.tasks.shape[0] > 0,
-                    options.cooperative_balance,
-                    entry.reuse_contact_wrench,
-                    entry.packed_block_size,
-                    entry.coalesced_residual,
-                    entry.reuse_contact_moments,
-                )
+                kernel_pipeline(*self._pipeline_arguments(entry, i_substep))
                 continue
             if i_substep == 0:
                 kernel_begin_step(entry.state)

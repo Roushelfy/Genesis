@@ -36,7 +36,7 @@ def main():
     args = parser.parse_args()
     args.output.parent.mkdir(parents=True, exist_ok=True)
     gs.init(backend=gs.gpu, precision="64", seed=args.seed, logging_level="warning")
-    workload = FrankaEgg(args.envs, seed=args.seed, varied=True, output_mode=args.output_mode)
+    workload = FrankaEgg(args.envs, seed=args.seed, varied=True, output_mode=args.output_mode, fused_rigid_post=False)
     recovery = workload.scene.rigid_solver.stress_recovery
     durations = {"recover": [], "reset": [], "set_radius": []}
     recording = False
@@ -102,6 +102,8 @@ def main():
             )
     result = {
         "scope": "synchronized recovery on live changing trajectory",
+        "rigid_post_fusion": False,
+        "fusion_note": "Fusion is disabled to expose the stress-only interval. Native physical functions, loads and budgets remain unchanged. Ordinary live/policy measurements include the selected graph route.",
         "note": "Includes native contact association, pressure retries, complete solve/check/peak, stress reset and radius writes. Rigid/controller/reset motion costs are in instrumented_live_seconds, outside the recovery stage rate. Every-step synchronization is intrusive; use the ordinary live/policy benchmark for actual aggregate throughput.",
         "envs": args.envs,
         "seed": args.seed,

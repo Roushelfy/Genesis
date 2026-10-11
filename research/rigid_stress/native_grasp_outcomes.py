@@ -39,8 +39,10 @@ def kernel_episode(
     flags: qd.Tensor,
     geometry: qd.Tensor,
     outcomes: qd.Tensor,
+    counters: qd.Tensor,
 ):
     for i_b in range(flags.shape[0]):
+        counters[i_b][9] += gs.qd_int(state.valid[i_b] and state.rhs_norm_squared[i_b] == 0.0)
         if tick >= delays[i_b]:
             local_tick = (tick - delays[i_b]) % 600
             phase = gs.qd_float(local_tick) / 599.0
@@ -169,7 +171,7 @@ def main():
     geometry = V_VEC(3, dtype=gs.qd_float, shape=(args.envs,))
     outcomes = V_VEC(10, dtype=qd.i64, shape=(args.envs,))
     failures = V(dtype=gs.qd_int, shape=(args.envs,))
-    counters = V_VEC(9, dtype=qd.i64, shape=(args.envs,))
+    counters = V_VEC(10, dtype=qd.i64, shape=(args.envs,))
     errors = V_VEC(6, dtype=gs.qd_float, shape=(args.envs,))
     tail_counts = V_VEC(4, dtype=qd.i64, shape=(args.envs,))
     tail_totals = V_VEC(7, dtype=qd.i64, shape=(args.envs,))
@@ -228,6 +230,7 @@ def main():
                     flags,
                     geometry,
                     outcomes,
+                    counters,
                 )
                 kernel_tail_work(
                     entry.contacts,
@@ -300,8 +303,10 @@ def main():
             "hold_proxy_success_steps",
             "hold_proxy_failed_steps",
             "batch_scatter_overflow_affected_steps",
+            "valid_exact_zero_rhs_steps",
         ],
         "tail_cost_scope": "Per-environment work counters; these are not individual GPU latency measurements. Line-search scans are not separately counted.",
+        "exact_zero_rhs_fraction": float(work[:, 9].sum() / (args.envs * (args.warmup + args.steps))),
         "contact_moment_reuse_requested": args.contact_moment_reuse,
         "effective_contact_moment_reuse": entry.reuse_contact_moments,
         "scatter_tasks_per_env": args.scatter_tasks_per_env,

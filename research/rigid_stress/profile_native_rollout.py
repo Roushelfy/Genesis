@@ -91,7 +91,11 @@ def main():
             (workload, "observation", "observation"),
             (policy, "forward", "policy_inference"),
             (workload.link, "set_stress_contact_radius", "contact_parameter_update"),
-            (recovery, "recover", "native_stress_recovery"),
+            (
+                recovery,
+                "recover_and_integrate" if recovery.post_kernel is not None else "recover",
+                "native_stress_and_rigid_post" if recovery.post_kernel is not None else "native_stress_recovery",
+            ),
             (rigid_module, "kernel_resolve_stress_contacts", "rigid_contact_force_postprocess"),
             (rigid_module, "kernel_step_2", "rigid_integration_after_stress"),
             (solver, "substep", "rigid_substep_including_recovery"),

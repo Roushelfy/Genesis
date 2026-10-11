@@ -278,6 +278,7 @@ def main() -> None:
         "--torch-controller", action="store_true", help="Compare the original scripted input scheduling."
     )
     parser.add_argument("--host-reset-indices", action="store_true", help="Compare uncached reset index transfers.")
+    parser.add_argument("--rigid-post-fusion", choices=("auto", "on", "off"), default="auto")
     parser.add_argument("--trace", action="store_true", help="Export a separate intrusive CUDA/CPU trace pass.")
     parser.add_argument(
         "--compact-log", action="store_true", help="Keep full per-environment diagnostics in JSON only."
@@ -312,6 +313,7 @@ def main() -> None:
         contact_moment_reuse={"auto": None, "on": True, "off": False}[args.contact_moment_reuse],
         native_controller=not args.torch_controller,
         resident_reset_indices=not args.host_reset_indices,
+        fused_rigid_post={"auto": None, "on": True, "off": False}[args.rigid_post_fusion],
         face_parallel_scatter=not args.contact_warp_scatter,
         scatter_tasks_per_env=args.scatter_tasks_per_env,
         cached_peak=not args.uncached_peak,
@@ -465,6 +467,9 @@ def main() -> None:
             "output_mode": args.output_mode,
             "reset_mode": "individual_setters" if args.legacy_reset else "saved_initial_state",
             "native_controller": workload.controller_inputs is not None,
+            "rigid_post_fusion": args.rigid_post_fusion,
+            "effective_rigid_post_fusion": workload.stress
+            and workload.scene.rigid_solver.stress_recovery.post_kernel is not None,
             "reset_index_cache": workload.reset_indices.describe(),
             "controller_buffers": {
                 name: {

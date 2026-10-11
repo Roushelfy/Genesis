@@ -1385,6 +1385,8 @@ class RigidSolver(GravityMixin, TimeBasedMixin, KinematicSolver):
                     self._options.noslip_iterations > 0,
                     self._errno,
                 )
+            elif self.stress_recovery.post_kernel is not None:
+                self.stress_recovery.recover_and_integrate(f % self.substeps)
             else:
                 if not self._disable_constraint:
                     kernel_resolve_stress_contacts(

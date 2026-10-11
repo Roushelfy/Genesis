@@ -25,8 +25,8 @@ from .surface import StressSurfaceInfo
 from .surface_inverse import StressSurfaceInverseInfo, func_surface_apply_packed, func_surface_pack
 
 
-@qd.kernel(graph=True)
-def kernel_pipeline(
+@qd.func
+def func_pipeline(
     young: float,
     poisson: float,
     tolerance: float,
@@ -96,3 +96,78 @@ def kernel_pipeline(
     func_full_residual(young, tolerance, absolute, state, info, True, coalesced_residual)
     func_peak_impl(young, poisson, state, info, cached_peak, full)
     func_accept(state, contacts, errno, full)
+
+
+@qd.kernel(graph=True)
+def kernel_pipeline(
+    young: float,
+    poisson: float,
+    tolerance: float,
+    absolute: float,
+    epsilon: float,
+    link: int,
+    offsets_pos: qd.types.ndarray(),
+    offsets_quat: qd.types.ndarray(),
+    omega: qd.Tensor,
+    dyn: array_class.DynState,
+    collider: array_class.ColliderState,
+    state: StressState,
+    contacts: StressContactState,
+    info: StressInfo,
+    surface: StressSurfaceInfo,
+    boundary: StressSurfaceInverseInfo,
+    inverse: StressInverseInfo,
+    factor: StressFactorInfo,
+    scatter: StressScatterWorkspace,
+    errno: qd.Tensor,
+    batch_offsets: qd.template(),
+    first: qd.template(),
+    enable: bool,
+    corrections: qd.template(),
+    cached_peak: qd.template(),
+    cached_bounds: qd.template(),
+    n_nodes: qd.template(),
+    full: qd.template(),
+    face_parallel: qd.template(),
+    is_cooperative_balance: qd.template(),
+    reuse_contact_wrench: qd.template(),
+    packed_block_size: qd.template(),
+    coalesced_residual: qd.template(),
+    reuse_contact_moments: qd.template(),
+):
+    func_pipeline(
+        young,
+        poisson,
+        tolerance,
+        absolute,
+        epsilon,
+        link,
+        offsets_pos,
+        offsets_quat,
+        omega,
+        dyn,
+        collider,
+        state,
+        contacts,
+        info,
+        surface,
+        boundary,
+        inverse,
+        factor,
+        scatter,
+        errno,
+        batch_offsets,
+        first,
+        enable,
+        corrections,
+        cached_peak,
+        cached_bounds,
+        n_nodes,
+        full,
+        face_parallel,
+        is_cooperative_balance,
+        reuse_contact_wrench,
+        packed_block_size,
+        coalesced_residual,
+        reuse_contact_moments,
+    )

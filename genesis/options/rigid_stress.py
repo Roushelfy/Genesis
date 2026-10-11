@@ -118,6 +118,7 @@ class RigidStressOptions(Options):
     packed_block_size: Literal[0, 256, 512] | None = None
     coalesced_residual: StrictBool | None = None
     fused_pipeline: StrictBool = True
+    fused_rigid_post: StrictBool | None = None
     cached_peak: StrictBool = True
     cached_face_bounds: StrictBool = True
     inverse_corrections: Annotated[int, Field(ge=0, le=8)] = 2

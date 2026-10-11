@@ -793,7 +793,8 @@ def test_native_pcg_iteration_limit_and_freefall(tmp_path, preconditioner):
 @pytest.mark.precision("64")
 @pytest.mark.parametrize("substeps", (1, 4))
 @pytest.mark.parametrize("output_mode", ("max", "full"))
-def test_native_rigid_lifecycle_and_partial_reset(tmp_path, substeps, output_mode, monkeypatch):
+@pytest.mark.parametrize("fused_rigid_post", (False, True))
+def test_native_rigid_lifecycle_and_partial_reset(tmp_path, substeps, output_mode, fused_rigid_post, monkeypatch):
     vertices, tetrahedra, faces, _ = shell_mesh(1, 2, 0.0005)
     mesh = tmp_path / "shell.npz"
     np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)
@@ -816,15 +817,17 @@ def test_native_rigid_lifecycle_and_partial_reset(tmp_path, substeps, output_mod
         RigidStressOptions(
             mesh=mesh,
             tolerance=1e-7,
-            history_size=4 if output_mode == "max" else 0,
+            history_size=4 if output_mode == "max" and not fused_rigid_post else 0,
             output_mode=output_mode,
             contact_wrench_reuse=True,
             packed_block_size=512,
             coalesced_residual=True,
             contact_moment_reuse=True,
+            fused_rigid_post=fused_rigid_post,
         )
     )
     scene.build(n_envs=3)
+    assert (scene.rigid_solver.stress_recovery.post_kernel is not None) == (fused_rigid_post and gs.backend == gs.cuda)
     assert not scene._pre_substep_callbacks and not scene._post_substep_callbacks
     egg.set_pos(np.array([[0.0, 0.0, 0.031], [0.0, 0.0, 0.045], [0.0, 0.0, 0.061]]))
     angles = np.array([0.23, -0.31, 0.47])

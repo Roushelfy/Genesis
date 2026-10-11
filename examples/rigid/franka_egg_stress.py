@@ -44,6 +44,7 @@ class FrankaEgg:
         contact_moment_reuse: bool | None = None,
         native_controller: bool = True,
         resident_reset_indices: bool = True,
+        fused_rigid_post: bool | None = None,
     ):
         self.n_envs = n_envs
         self.tick = 0
@@ -97,6 +98,7 @@ class FrankaEgg:
                     packed_block_size=packed_block_size,
                     coalesced_residual=coalesced_residual,
                     contact_moment_reuse=contact_moment_reuse,
+                    fused_rigid_post=fused_rigid_post,
                     face_parallel_scatter=face_parallel_scatter,
                     scatter_tasks_per_env=scatter_tasks_per_env,
                     cached_peak=cached_peak,
@@ -261,6 +263,9 @@ def main() -> None:
         "--torch-controller", action="store_true", help="Compare the original scripted input scheduling."
     )
     parser.add_argument("--host-reset-indices", action="store_true", help="Compare uncached reset index transfers.")
+    parser.add_argument(
+        "--unfused-rigid-post", action="store_true", help="Separate rigid postprocessing from recovery."
+    )
     args = parser.parse_args()
     gs.init(backend=gs.gpu, precision="64")
     workload = FrankaEgg(
@@ -273,6 +278,7 @@ def main() -> None:
         saved_reset=not args.legacy_reset,
         native_controller=not args.torch_controller,
         resident_reset_indices=not args.host_reset_indices,
+        fused_rigid_post=False if args.unfused_rigid_post else None,
     )
     for _ in range(args.steps):
         workload.step()

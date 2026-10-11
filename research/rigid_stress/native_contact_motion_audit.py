@@ -22,7 +22,7 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     gs.init(backend=gs.gpu, precision="64", seed=args.seed, logging_level="warning")
-    workload = FrankaEgg(args.envs, varied=True, seed=args.seed)
+    workload = FrankaEgg(args.envs, varied=True, seed=args.seed, fused_rigid_post=False)
     solver = workload.scene.rigid_solver
     recovery = solver.stress_recovery
     entry = recovery.links[0]
@@ -121,7 +121,10 @@ def main():
                     for path in sorted(
                         [
                             *Path("genesis/engine/solvers/rigid/stress").glob("*.py"),
+                            Path("genesis/engine/solvers/rigid/rigid_solver.py"),
+                            Path("genesis/options/rigid_stress.py"),
                             Path("examples/rigid/franka_egg_stress.py"),
+                            Path("examples/rigid/egg_stress_controller.py"),
                             Path(__file__),
                         ]
                     )
@@ -155,6 +158,8 @@ def main():
                 "per_environment_maxima": maxima.tolist(),
                 "global_maxima": maxima.max(axis=0).tolist(),
                 "actual_mu_range": [float(minimum_mu.min()), float(maxima[:, 3].max())],
+                "rigid_post_fusion": False,
+                "fusion_note": "Fusion is disabled to expose raw pre-integration values. Separate on/off trajectory comparisons verify unchanged physical motion. Native physical functions are preserved.",
                 "scope_note": "Offline, untimed every-environment diagnostics immediately after stress recovery and before rigid integration. Contact point velocity = cd_vel + cd_ang cross (world_point - root_COM), using the same source contact frame. Sliding threshold 1e-5 m/s is diagnostic, not a numerical acceptance change or grasp success criterion. Establishment/disappearance counts track loaded egg-other-link pairs in left/right/support groups, not unstable manifold slot identities. All environments and transient/release steps are included; no production numerical code is replaced.",
             },
             indent=2,
