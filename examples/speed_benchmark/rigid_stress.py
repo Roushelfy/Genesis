@@ -7,6 +7,7 @@ import argparse
 import copy
 import hashlib
 import json
+import math
 import os
 import platform
 import sys
@@ -29,6 +30,7 @@ from genesis.engine.solvers.rigid.stress.contact import (
     kernel_pressure,
     kernel_scatter,
 )
+from genesis.engine.solvers.rigid.stress.provenance import kernel_capture_rigid_sources
 from genesis.engine.solvers.rigid.stress.recovery import kernel_accept, kernel_begin_step
 from genesis.engine.solvers.rigid.stress.scatter import kernel_fit_scatter_moments, kernel_scatter_faces
 from genesis.engine.solvers.rigid.stress.solve import (
@@ -72,6 +74,7 @@ def kernel_restore_frame(
 
 
 def restore_frame(workload: FrankaEgg) -> None:
+    """Match frozen solved contacts to their saved pre-integration body frame."""
     solver = workload.scene.rigid_solver
     entry = solver.stress_recovery.links[0]
     kernel_restore_frame(
@@ -85,8 +88,47 @@ def restore_frame(workload: FrankaEgg) -> None:
     )
 
 
-def profile(workload: FrankaEgg, repetitions: int) -> dict:
+def prepare_recovery_snapshot(workload: FrankaEgg) -> dict:
+    """Check the independent recovery route before timing its frozen input."""
+    solver = workload.scene.rigid_solver
+    entry = solver.stress_recovery.links[0]
+    original_force = qd_to_numpy(entry.state.force, transpose=True, copy=True)
+    original_peak = qd_to_numpy(entry.state.peak, copy=True)
+    original_point = qd_to_numpy(entry.contacts.position, transpose=True, copy=True)
+    original_wrench_force = qd_to_numpy(entry.contacts.force, transpose=True, copy=True)
     restore_frame(workload)
+    solver.stress_recovery.recover(0)
+    qd.sync()
+    solver.check_errno()
+    force = qd_to_numpy(entry.state.force, transpose=True)
+    peak = qd_to_numpy(entry.state.peak)
+    point = qd_to_numpy(entry.contacts.position, transpose=True)
+    wrench_force = qd_to_numpy(entry.contacts.force, transpose=True)
+    valid = qd_to_numpy(entry.contacts.valid, transpose=True)
+    np.testing.assert_allclose(point[valid], original_point[valid], rtol=0, atol=1e-13)
+    np.testing.assert_allclose(wrench_force[valid], original_wrench_force[valid], rtol=1e-12, atol=1e-13)
+    np.testing.assert_allclose(peak, original_peak, rtol=1e-4, atol=1e-3)
+    loaded = valid & (np.linalg.norm(wrench_force, axis=2) > 0)
+    scale = np.linalg.norm(wrench_force[loaded], axis=1)
+    radius = qd_to_numpy(entry.contacts.radius, transpose=True)[loaded]
+    force_error = qd_to_numpy(entry.contacts.force_error, transpose=True)[loaded] / scale
+    moment_error = qd_to_numpy(entry.contacts.moment_error, transpose=True)[loaded] / (radius * scale)
+    assert (force_error <= 1e-8).all() and (moment_error <= 1e-8).all()
+    residual = np.sqrt(qd_to_numpy(entry.state.residual_norm_squared))
+    rhs_norm = np.sqrt(qd_to_numpy(entry.state.rhs_norm_squared))
+    assert (residual <= np.maximum(entry.options.absolute_tolerance, entry.options.tolerance * rhs_norm)).all()
+    return {
+        "nodal_force_max_difference_N": float(np.max(np.abs(force - original_force))),
+        "peak_max_difference_Pa": float(np.max(np.abs(peak - original_peak))),
+        "original_point_max_difference_m": float(np.max(np.abs(point[valid] - original_point[valid]), initial=0)),
+        "normalized_force_error_max": float(force_error.max(initial=0)),
+        "normalized_moment_error_max": float(moment_error.max(initial=0)),
+        "complete_residual_max_N": float(residual.max()),
+    }
+
+
+def profile(workload: FrankaEgg, repetitions: int) -> dict:
+    snapshot_check = prepare_recovery_snapshot(workload)
     recovery = workload.scene.rigid_solver.stress_recovery
     entry = recovery.links[0]
     solver = workload.scene.rigid_solver
@@ -182,6 +224,30 @@ def profile(workload: FrankaEgg, repetitions: int) -> dict:
             ]
             + list(stages.items())[2:]
         )
+    if entry.intrinsic is not None:
+        intrinsic_stages = {
+            "source_capture": lambda: kernel_capture_rigid_sources(
+                entry.link.idx, entry.contacts, entry.intrinsic.raw_sources, solver.collider.collider_state
+            ),
+            "intrinsic_contact_pipeline": lambda: entry.intrinsic.scatter(
+                entry.contacts,
+                entry.state,
+                entry.model.info,
+                entry.surface.info,
+                options,
+                recovery.source_epsilon,
+                solver._errno,
+            ),
+        }
+        stages = dict(
+            list(stages.items())[:2]
+            + list(intrinsic_stages.items())
+            + [
+                (name, stage)
+                for name, stage in list(stages.items())[2:]
+                if name not in ("anchor_search", "candidate_weights_constraints", "nodal_scatter")
+            ]
+        )
     for stage in stages.values():
         stage()
     qd.sync()
@@ -194,8 +260,9 @@ def profile(workload: FrankaEgg, repetitions: int) -> dict:
         qd.sync()
         times[name] = (time.perf_counter() - start) * 1e3 / repetitions
     qd.profiler.print_kernel_profiler_info()
-    kernel_anchor(recovery.source_epsilon, entry.contacts, entry.surface.info)
-    kernel_pressure(entry.contacts, entry.surface.info, options.cooperative_pressure)
+    if entry.intrinsic is None:
+        kernel_anchor(recovery.source_epsilon, entry.contacts, entry.surface.info)
+        kernel_pressure(entry.contacts, entry.surface.info, options.cooperative_pressure)
     solver.check_errno()
     contacts = qd_to_numpy(entry.contacts.valid, transpose=True)
     # Diagnostic subdivision repeats work and is excluded from the additive pipeline stages above.
@@ -204,6 +271,8 @@ def profile(workload: FrankaEgg, repetitions: int) -> dict:
         "query_weights_gram": lambda: kernel_weights_gram(entry.contacts, entry.surface.info, grams),
         "small_closed_form_solve": lambda: kernel_small_solve(entry.contacts, grams, coefficients),
     }
+    if entry.intrinsic is not None:
+        subdivisions = {}
     micro_times = {}
     for name, stage in subdivisions.items():
         stage()
@@ -214,13 +283,18 @@ def profile(workload: FrankaEgg, repetitions: int) -> dict:
         qd.sync()
         micro_times[name] = (time.perf_counter() - start) * 1e3 / repetitions
     return {
+        "recovery_snapshot_check": snapshot_check,
         "stage_wall_ms": times,
         "contacts_per_environment": contacts.sum(axis=1).tolist(),
         "candidate_count": qd_to_numpy(entry.contacts.candidate_count, transpose=True)[contacts].tolist(),
         "pressure_evaluations": qd_to_numpy(entry.contacts.evaluations, transpose=True)[contacts].tolist(),
         "pressure_subdivision_wall_ms": micro_times,
-        "grid_samples_visited": qd_to_numpy(visited, transpose=True)[contacts].tolist(),
-        "grid_samples_inside": qd_to_numpy(inside, transpose=True)[contacts].tolist(),
+        "grid_samples_visited": qd_to_numpy(visited, transpose=True)[contacts].tolist()
+        if entry.intrinsic is None
+        else [],
+        "grid_samples_inside": qd_to_numpy(inside, transpose=True)[contacts].tolist()
+        if entry.intrinsic is None
+        else [],
         "full_surface_samples": entry.surface.info.positions.shape[0],
         "complete_residual_N": np.sqrt(qd_to_numpy(entry.state.residual_norm_squared)).tolist(),
         "rhs_norm_N": np.sqrt(qd_to_numpy(entry.state.rhs_norm_squared)).tolist(),
@@ -241,6 +315,10 @@ def main() -> None:
     parser.add_argument("--minimum-seconds", type=float, default=10.0)
     parser.add_argument("--varied", action="store_true")
     parser.add_argument("--seed", type=int, default=510000)
+    parser.add_argument("--contact-model", choices=("pressure", "intrinsic"), default="pressure")
+    parser.add_argument("--contact-block-size", type=int, default=16)
+    parser.add_argument("--egg-geometry", choices=("urdf", "mesh64"), default="urdf")
+    parser.add_argument("--collision-method", choices=("auto", "mpr", "gjk"), default="auto")
     parser.add_argument("--source-revision", default=os.environ.get("RIGID_STRESS_SOURCE_REVISION", "unrecorded"))
     parser.add_argument("--conditions", type=Path, help="Repeat a frozen condition bank, including controller targets.")
     parser.add_argument("--save-conditions", type=Path, help="Save the constructed condition bank before warmup.")
@@ -318,6 +396,10 @@ def main() -> None:
         scatter_tasks_per_env=args.scatter_tasks_per_env,
         cached_peak=not args.uncached_peak,
         cached_face_bounds=not args.uncached_face_bounds,
+        contact_model=args.contact_model,
+        contact_block_size=args.contact_block_size,
+        egg_geometry=args.egg_geometry,
+        use_gjk_collision={"auto": None, "mpr": False, "gjk": True}[args.collision_method],
     )
     solver = workload.scene.rigid_solver
     if args.save_conditions is not None:
@@ -426,7 +508,13 @@ def main() -> None:
             "substeps": 1,
             "varied": args.varied,
             "seed": args.seed,
-            "load_model": "finite_pad_adaptive_q10",
+            "load_model": "intrinsic_surface_fan_q10_ports8_adjacent_unfolding"
+            if args.contact_model == "intrinsic"
+            else "finite_pad_adaptive_q10",
+            "contact_model": args.contact_model,
+            "contact_block_size": args.contact_block_size,
+            "egg_geometry": args.egg_geometry,
+            "collision_method": args.collision_method,
             "condition_count": workload.condition_count,
             "conditions": str(args.conditions) if args.conditions is not None else None,
             "conditions_sha256": hashlib.sha256(args.conditions.read_bytes()).hexdigest()
@@ -492,6 +580,8 @@ def main() -> None:
                         *Path("genesis/engine/solvers/rigid/stress").glob("*.py"),
                         Path("genesis/engine/solvers/rigid/rigid_solver.py"),
                         Path("genesis/options/rigid_stress.py"),
+                        Path("genesis/options/morphs.py"),
+                        Path("genesis/engine/entities/rigid_entity/description.py"),
                         Path("examples/rigid/franka_egg_stress.py"),
                         Path("examples/rigid/egg_stress_controller.py"),
                         Path(__file__),
@@ -522,12 +612,9 @@ def main() -> None:
         else:
             if args.scope == "recovery":
                 prepare_start = time.perf_counter()
-                restore_frame(workload)
                 # Live warmup may only compile the combined rigid-post graph.
                 # Compile/capture this standalone path before timing its repeats.
-                workload.scene.rigid_solver.stress_recovery.recover(0)
-                qd.sync()
-                workload.scene.rigid_solver.check_errno()
+                result["recovery_snapshot_check"] = prepare_recovery_snapshot(workload)
                 result["recovery_preparation_steps"] = 1
                 result["recovery_preparation_seconds_including_JIT"] = time.perf_counter() - prepare_start
                 result["recovery_input"] = "Frozen actual contact snapshot with its matching pre-integration frame."
@@ -601,24 +688,53 @@ def main() -> None:
             result["maximum_stress_Pa"] = tensor_to_array(workload.link.get_max_stress()).tolist()
             buffers = []
             configurations = []
+            allocations = {}
             for item in workload.scene.rigid_solver.stress_recovery.data:
                 if item.kind == DataKind.CONFIG:
                     configurations.append(item.value.model_dump(mode="json"))
                 else:
-                    view = qd_to_torch(item.value, copy=False)
+                    if math.prod(item.value.shape) == 0:
+                        # Disabled native workspaces have no device allocation;
+                        # their null pointer cannot be exported through DLPack.
+                        element_shape = (
+                            item.value.element_shape
+                            if isinstance(item.value, (qd.VectorTensor, qd.MatrixTensor))
+                            else ()
+                        )
+                        buffers.append(
+                            {
+                                "name": item.name,
+                                "shape": [*item.value.shape, *element_shape],
+                                "dtype": str(item.value.dtype),
+                                "bytes": 0,
+                                "kind": int(item.kind),
+                            }
+                        )
+                        continue
+                    try:
+                        view = qd_to_torch(item.value, copy=False)
+                    except (ValueError, RuntimeError) as error:
+                        raise RuntimeError(f"Cannot inspect native buffer {item.name}: {error}") from error
+                    pointer = view.data_ptr()
+                    size = view.numel() * view.element_size()
+                    alias_of = allocations[pointer][0] if pointer in allocations else None
+                    if alias_of is None:
+                        allocations[pointer] = (item.name, size)
                     buffers.append(
                         {
                             "name": item.name,
                             "shape": list(view.shape),
                             "dtype": str(view.dtype),
-                            "bytes": view.numel() * view.element_size(),
+                            "bytes": size,
+                            "alias_of": alias_of,
                             "kind": int(item.kind),
                         }
                     )
             result["stress_configurations"] = configurations
             result["native_buffers"] = buffers
-            result["native_buffer_bytes"] = sum(item["bytes"] for item in buffers)
-            result["native_allocation_count"] = len(buffers)
+            result["native_logical_buffer_bytes"] = sum(item["bytes"] for item in buffers)
+            result["native_buffer_bytes"] = sum(size for _, size in allocations.values())
+            result["native_allocation_count"] = len(allocations)
         result["torch_peak_allocated_bytes"] = torch.cuda.max_memory_allocated()
         result["saved_reset_state_bytes"] = (
             sum(

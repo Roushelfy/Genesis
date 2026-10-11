@@ -1,5 +1,8 @@
 # Native finite surface-fan recovery checkpoint
 
+The subsequent [source-robustness and profiling record](NATIVE_SOURCE_PROFILE_PROGRESS_20261011.md)
+adds the first new-law profile and the B=16 producer-force diagnosis.
+
 This continues the nonconvex contract introduced by
 `1d6babf77848c46ba616da8bbb7062260a7ccd09` from source base
 `463ac6c010d0c1b3e4cf58d599f727ce16966f9b`. The new contact law passes the

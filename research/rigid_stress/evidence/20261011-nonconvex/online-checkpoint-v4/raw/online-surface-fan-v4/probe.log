@@ -1,0 +1,88 @@
+[Quadrants] version 1.3.3, llvm 22.1.0, commit 00423caa, linux, python 3.10.12
+[38;5;159m[Genesis] [20:17:34] [INFO] [38;5;121m╭───────────────────────────────────────────────╮[0m[38;5;159m[0m
+[38;5;159m[Genesis] [20:17:34] [INFO] [38;5;121m│┈┉┈┉┈┉┈┉┈┉┈┉┈┉┈┉┈┉┈[0m[38;5;159m [38;5;121m[1m[3mGenesis[0m[38;5;159m [38;5;121m┈┉┈┉┈┉┈┉┈┉┈┉┈┉┈┉┈┉┈│[0m[38;5;159m[0m
+[38;5;159m[Genesis] [20:17:34] [INFO] [38;5;121m╰───────────────────────────────────────────────╯[0m[38;5;159m[0m
+[38;5;159m[Genesis] [20:17:34] [INFO] Running on [38;5;121m[NVIDIA RTX PRO 6000 Blackwell Server Edition][0m[38;5;159m with backend [38;5;121mgs.cuda[0m[38;5;159m. Device memory: [38;5;121m94.97[0m[38;5;159m GB.[0m
+[38;5;159m[Genesis] [20:17:34] [INFO] 🚀 Genesis initialized. 🔖 version: [38;5;121m1.4.3[0m[38;5;159m, 🎨 theme: [38;5;121mdark[0m[38;5;159m, 🌱 seed: [38;5;121mNone[0m[38;5;159m, 🐛 debug: [38;5;121mFalse[0m[38;5;159m, 📏 precision: [38;5;121m64[0m[38;5;159m, 🔥 performance: [38;5;121mFalse[0m[38;5;159m, 💬 verbose: [38;5;121mINFO[0m[38;5;159m[0m
+[38;5;159m[Genesis] [20:17:35] [INFO] Scene [38;5;121m[3m<4639523>[0m[38;5;159m created.[0m
+[38;5;159m[Genesis] [20:17:35] [INFO] Adding [38;5;121m<gs.engine.entities.RigidEntity>[0m[38;5;159m [38;5;121m[3mplane_01e676a[0m[38;5;159m. idx: [38;5;121m0[0m[38;5;159m, morph: [38;5;121m<gs.morphs.Plane>[0m[38;5;159m, material: [38;5;121m<gs.materials.Rigid>[0m[38;5;159m.[0m
+[38;5;226m[Genesis] [20:17:35] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint1`[0m
+[38;5;226m[Genesis] [20:17:35] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint2`[0m
+[38;5;159m[Genesis] [20:17:35] [INFO] Adding [38;5;121m<gs.engine.entities.RigidEntity>[0m[38;5;159m [38;5;121m[3mpanda_2dde426[0m[38;5;159m. idx: [38;5;121m1[0m[38;5;159m, morph: [38;5;121m<gs.morphs.MJCF(file='/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/assets/xml/franka_emika_panda/panda.xml')>[0m[38;5;159m, material: [38;5;121m<gs.materials.Rigid>[0m[38;5;159m.[0m
+[38;5;159m[Genesis] [20:17:35] [INFO] Adding [38;5;121m<gs.engine.entities.RigidEntity>[0m[38;5;159m [38;5;121m[3megg_shell_617ed07[0m[38;5;159m. idx: [38;5;121m2[0m[38;5;159m, morph: [38;5;121m<gs.morphs.URDF(file='/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/assets/hollow_egg/level1/egg_shell.urdf')>[0m[38;5;159m, material: [38;5;121m<gs.materials.Rigid>[0m[38;5;159m.[0m
+[38;5;159m[Genesis] [20:17:35] [INFO] Building scene [38;5;121m[3m<4639523>[0m[38;5;159m...[0m
+[38;5;226m[Genesis] [20:17:37] [WARNING] Neutral robot position (qpos0) exceeds joint limits.[0m
+[38;5;226m[Genesis] [20:17:37] [WARNING] Constraint solver time constant should be greater than 2*substep_dt. timeconst is changed from `0.005` to `0.02`). Decrease simulation timestep or increase timeconst to avoid altering the original value.[0m
+[38;5;226m[Genesis] [20:17:40] [WARNING] Filtered out geometry pairs causing self-collision for the neutral configuration (qpos0): (6, 11), (7, 11), (14, 21), (15, 20), (16, 23), (17, 22). Consider tuning Morph option 'decompose_robot_error_threshold' or specify dedicated collision meshes. This behavior can be disabled by setting Morph option 'enable_neutral_collision=True'.[0m
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+[38;5;159m[Genesis] [20:18:00] [INFO] Compiling simulation kernels...[0m
+[38;5;159m[Genesis] [20:18:50] [INFO] Building visualizer...[0m
+libEGL warning: failed to open /dev/dri/renderD135: Permission denied
+
+libEGL warning: failed to open /dev/dri/card8: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD134: Permission denied
+
+libEGL warning: failed to open /dev/dri/card7: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD133: Permission denied
+
+libEGL warning: failed to open /dev/dri/card6: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD132: Permission denied
+
+libEGL warning: failed to open /dev/dri/card5: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD131: Permission denied
+
+libEGL warning: failed to open /dev/dri/card4: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD130: Permission denied
+
+libEGL warning: failed to open /dev/dri/card3: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD129: Permission denied
+
+libEGL warning: failed to open /dev/dri/card2: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD128: Permission denied
+
+libEGL warning: failed to open /dev/dri/card1: Permission denied
+
+[38;5;159m[Genesis] [20:18:51] [INFO] Software rendering context detected. Shadows and plane reflection not supported. Beware rendering will be extremely slow.[0m
+[W 10/11/26 20:18:52.638 2537447] QuadrantsWarning
+While compiling `kernel_inputs_c940_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/egg_stress_controller.py", line 107, in kernel_inputs:
+        grip[i_b] = 0.04 if value < 0.15 or value > 0.9 else 0.018
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+[W 10/11/26 20:18:52.638 2537447] QuadrantsWarning
+While compiling `kernel_inputs_c940_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/egg_stress_controller.py", line 108, in kernel_inputs:
+        limit[i_b] = 0.055 if value >= 0.7 and value < 0.76 else 4.0
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+{"tick": 0, "loaded_contacts": 0, "contact_count_per_env": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "contact_slot_changes": 0, "mu_values": [], "max_force_error": 0.0, "max_moment_error": 0.0, "max_evaluations": 0, "max_samples": 0, "reset_environments": 0, "full_residual_max_N": 0.0, "cpu_peaks_Pa": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}
+{"tick": 160, "loaded_contacts": 32, "contact_count_per_env": [7, 11, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], "contact_slot_changes": 0, "mu_values": [0.5084417820601791, 0.5127239705117185, 0.5167974671311121, 0.6054935315460935, 0.6408926424106237, 0.6531024606382921, 0.6746881909245573, 0.6862538373716479, 0.7065159419289353, 0.7191016138165071, 0.734051812248577, 0.7635019915792053, 0.8061586974312177, 0.8154345701003987, 0.8187780312788028, 0.8281275278888517], "max_force_error": 7.657531431399534e-09, "max_moment_error": 5.759661021953436e-09, "max_evaluations": 10, "max_samples": 925, "reset_environments": 0, "full_residual_max_N": 1.014795245247179e-11, "cpu_peaks_Pa": [59108.73457670283, 56945.26762334867, 12794.41985824231, 12752.570936493104, 15167.16267272677, 13723.378355762467, 15464.00669842278, 15679.033427518063, 14090.803472840611, 13724.247694649363, 15301.239707421519, 14760.779183524452, 14278.209947944135, 15674.249157426384, 13963.948883087092, 13206.686291858396]}
+{"tick": 320, "loaded_contacts": 47, "contact_count_per_env": [6, 10, 3, 6, 3, 9, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], "contact_slot_changes": 0, "mu_values": [0.5084417820601791, 0.5127239705117185, 0.5167974671311121, 0.6054935315460935, 0.6408926424106237, 0.6531024606382921, 0.6746881909245573, 0.6862538373716479, 0.7065159419289353, 0.7191016138165071, 0.734051812248577, 0.7635019915792053, 0.8061586974312177, 0.8154345701003987, 0.8187780312788028, 0.8281275278888517], "max_force_error": 7.663405167267852e-09, "max_moment_error": 6.5360145698209046e-09, "max_evaluations": 13, "max_samples": 1131, "reset_environments": 0, "full_residual_max_N": 1.5837885880504624e-11, "cpu_peaks_Pa": [58360.87399563272, 46279.75223601158, 68779.2579365602, 55548.138624224324, 76831.25017642592, 55624.743624118215, 14619.36124699382, 15079.605992821225, 13824.270650373439, 13724.247694657237, 15301.239707426104, 14760.779183524184, 14278.20994794723, 15674.249157426053, 13963.948883081155, 13206.686291860447]}
+{"tick": 480, "loaded_contacts": 50, "contact_count_per_env": [1, 5, 3, 6, 2, 8, 3, 6, 5, 3, 3, 1, 1, 1, 1, 1], "contact_slot_changes": 0, "mu_values": [0.5084417820601791, 0.5127239705117185, 0.5167974671311121, 0.6054935315460935, 0.6408926424106237, 0.6531024606382921, 0.6746881909245573, 0.6862538373716479, 0.7065159419289353, 0.7191016138165071, 0.734051812248577, 0.7635019915792053, 0.8061586974312177, 0.8154345701003987, 0.8187780312788028, 0.8281275278888517], "max_force_error": 9.795210302905221e-10, "max_moment_error": 6.319955749365989e-10, "max_evaluations": 18, "max_samples": 907, "reset_environments": 0, "full_residual_max_N": 1.3114240824957421e-11, "cpu_peaks_Pa": [13235.779418705286, 14488.229172460797, 75902.2836346179, 58924.755119831614, 82574.65573718799, 58658.711279713025, 76883.02027427673, 61781.35723676146, 62464.15219810481, 67325.36252169705, 73090.22340820597, 14076.58918276502, 13894.677468390928, 15674.249157431086, 13963.948883084571, 13206.686291864207]}
+Traceback (most recent call last):
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/probe_nonconvex_online.py", line 216, in <module>
+    main()
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/probe_nonconvex_online.py", line 77, in main
+    solver.check_errno()
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/rigid_solver.py", line 1459, in check_errno
+    gs.raise_exception(
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/misc.py", line 43, in raise_exception
+    raise gs.GenesisException(msg)
+genesis.GenesisException: Native stress contact recovery rejected a load. link=12, env=13, contact=2, status=35: force is incompatible with the continuous reference-surface friction cones inside the physical radius; radius=0.00556481372 m, mu=0.605493532
+
+[38;5;9m[Genesis] [20:20:36] [ERROR] GenesisException: Native stress contact recovery rejected a load. link=12, env=13, contact=2, status=35: force is incompatible with the continuous reference-surface friction cones inside the physical radius; radius=0.00556481372 m, mu=0.605493532[0m
+[38;5;159m[Genesis] [20:20:36] [INFO] 💤 Exiting Genesis and caching compiled kernels...[0m
