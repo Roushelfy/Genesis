@@ -50,6 +50,7 @@ class FrankaEgg:
         egg_geometry: str = "urdf",
         use_gjk_collision: bool | None = None,
         enable_contact_patch: bool | None = None,
+        intrinsic_support: str = "contact",
     ):
         self.n_envs = n_envs
         self.tick = 0
@@ -100,6 +101,7 @@ class FrankaEgg:
                     mesh=assets / "elastic.npz",
                     contact_model=contact_model,
                     contact_block_size=contact_block_size,
+                    intrinsic_support=intrinsic_support,
                     cooperative_solve=cooperative_solve,
                     method=method,
                     inverse_precision=inverse_precision,
@@ -276,6 +278,7 @@ def main() -> None:
     parser.add_argument("--viewer", action="store_true")
     parser.add_argument("--output-mode", choices=("max", "full"), default="max")
     parser.add_argument("--contact-model", choices=("pressure", "intrinsic"), default="pressure")
+    parser.add_argument("--intrinsic-support", choices=("contact", "pair_union"), default="contact")
     parser.add_argument("--contact-block-size", type=int, default=16)
     parser.add_argument("--egg-geometry", choices=("urdf", "mesh64"), default="urdf")
     parser.add_argument("--collision-method", choices=("auto", "mpr", "gjk"), default="auto")
@@ -306,6 +309,7 @@ def main() -> None:
         egg_geometry=args.egg_geometry,
         use_gjk_collision={"auto": None, "mpr": False, "gjk": True}[args.collision_method],
         enable_contact_patch={"auto": None, "on": True, "off": False}[args.contact_patch],
+        intrinsic_support=args.intrinsic_support,
     )
     for _ in range(args.steps):
         workload.step()

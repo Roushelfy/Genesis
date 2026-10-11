@@ -7,7 +7,12 @@ import genesis as gs
 from .contact import StressContactState
 from .provenance import func_closest_triangle
 from .surface import StressSurfaceInfo
-from .traction import StressTractionState, StressTractionStatus
+from .traction import (
+    StressTractionState,
+    StressTractionStatus,
+    func_traction_source_friction,
+    func_traction_support_range,
+)
 
 
 @qd.kernel
@@ -48,15 +53,22 @@ def kernel_certify_continuous_force(
                     ray = (tangent / tangent.norm() - friction * normal) / qd.sqrt(1.0 + friction**2)
                     ray = (ray - 1024.0 * epsilon * (1.0 + friction) * normal).normalized()
                     roundoff = 64.0 * epsilon * (1.0 + friction)
-                    geometric_roundoff = 64.0 * epsilon * (anchor.norm() + radius)
                     maximum_support = gs.qd_float(-float("inf"))
-                    for i_f in range(surface_info.face_normal.shape[0]):
-                        closest, _ = func_closest_triangle(i_f, anchor, surface_info)
-                        if (closest - anchor).norm() <= radius + geometric_roundoff:
-                            inward = -surface_info.face_normal[i_f]
-                            component = ray.dot(inward)
-                            support = component + friction * (ray - component * inward).norm()
-                            maximum_support = qd.max(maximum_support, support)
+                    start, end = func_traction_support_range(i_c, i_b, traction_state)
+                    for i_s in range(start, end):
+                        source_anchor, source_radius = anchor, radius
+                        if qd.static(len(traction_state.support.center.shape) == 2):
+                            source_anchor = traction_state.support.center[i_s, i_b]
+                            source_radius = traction_state.support.radius[i_s, i_b]
+                        source_friction = func_traction_source_friction(i_s, i_b, friction, traction_state)
+                        geometric_roundoff = 64.0 * epsilon * (source_anchor.norm() + source_radius)
+                        for i_f in range(surface_info.face_normal.shape[0]):
+                            closest, _ = func_closest_triangle(i_f, source_anchor, surface_info)
+                            if (closest - source_anchor).norm() <= source_radius + geometric_roundoff:
+                                inward = -surface_info.face_normal[i_f]
+                                component = ray.dot(inward)
+                                support = component + source_friction * (ray - component * inward).norm()
+                                maximum_support = qd.max(maximum_support, support)
                     margin = unit_force.dot(ray)
                     if maximum_support < -roundoff and margin > force_tolerance + roundoff:
                         traction_state.status[i_c, i_b] = StressTractionStatus.CONTINUOUS_FORCE_INFEASIBLE

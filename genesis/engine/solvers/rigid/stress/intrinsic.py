@@ -1,6 +1,6 @@
 """Stream all witnessed rigid contacts through intrinsic finite-area traction recovery."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, ClassVar
 
 import quadrants as qd
@@ -30,8 +30,10 @@ from .traction import (
     StressTractionInfo,
     StressTractionState,
     create_traction_info,
-    func_sample_traction,
+    func_source_traction,
     func_traction_geometry,
+    func_traction_source_friction,
+    func_traction_support_range,
     kernel_fit_tractions,
     kernel_scatter_tractions,
 )
@@ -51,6 +53,8 @@ class StressContactPacking:
     indices: qd.Tensor
     count: qd.Tensor
     maximum: qd.Tensor
+    block_start: qd.Tensor = field(default_factory=lambda: V(dtype=gs.qd_int, shape=()))
+    block_end: qd.Tensor = field(default_factory=lambda: V(dtype=gs.qd_int, shape=()))
 
 
 @dataclass(frozen=True)
@@ -73,6 +77,20 @@ class IntrinsicContacts:
     ):
         n_contacts, n_envs = raw_contacts.valid.shape
         n_chunk = min(n_contacts, options.contact_block_size)
+        shared_support = options.intrinsic_support == "pair_union"
+        if shared_support:
+            collider = link.solver.collider
+            geom_indices = {geom.idx for geom in link.geoms}
+            has_large_pair = any(
+                is_large and (i_a in geom_indices or i_b in geom_indices)
+                for (i_a, i_b), is_large in zip(collider._valid_collision_pairs, collider._large_contact_pair_mask)
+            )
+            pair_capacity = (
+                collider.collider_config.n_contacts_per_nonconvex_pair
+                if has_large_pair
+                else collider.collider_config.n_contacts_per_convex_pair
+            )
+            n_chunk = min(n_contacts, max(n_chunk, pair_capacity))
         self.paths = paths if paths is not None else StressSurfacePaths(stress_info, options.surface_edge_subdivisions)
         self.vertices = StressSourceVertices(link, stress_info, options.source_geometry_tolerance)
         self.traction_info = create_traction_info(surface_info)
@@ -84,9 +102,11 @@ class IntrinsicContacts:
         self.sources = create_sources(n_chunk, n_envs)
         self.footprints = create_footprints(self.paths.info.positions.shape[0], n_chunk, n_envs)
         self.tractions = (
-            create_surface_fan_tractions(surface_info, n_chunk, n_envs)
+            create_surface_fan_tractions(surface_info, n_chunk, n_envs, shared_support=shared_support)
             if options.intrinsic_integration == "surface_fan"
-            else create_anchor_fan_tractions(surface_info, n_chunk, n_envs, compact=True, packed=True)
+            else create_anchor_fan_tractions(
+                surface_info, n_chunk, n_envs, compact=True, packed=True, shared_support=shared_support
+            )
         )
         self.certificates = StressWrenchCertificates(
             ray=V_VEC(6, dtype=gs.qd_float, shape=(n_contacts, n_envs)),
@@ -96,6 +116,8 @@ class IntrinsicContacts:
             indices=V(dtype=gs.qd_int, shape=(n_contacts, n_envs)),
             count=V(dtype=gs.qd_int, shape=(n_envs,)),
             maximum=V(dtype=gs.qd_int, shape=()),
+            block_start=V(dtype=gs.qd_int, shape=(n_contacts, n_envs) if shared_support else ()),
+            block_end=V(dtype=gs.qd_int, shape=(n_contacts, n_envs) if shared_support else ()),
         )
 
     def scatter(
@@ -109,9 +131,12 @@ class IntrinsicContacts:
         errno: qd.Tensor,
     ) -> None:
         kernel_pack_intrinsic_contacts(raw_contacts, self.packing, self.certificates, state)
-        n_contacts = int(qd_to_numpy(self.packing.maximum, transpose=True))
         n_chunk = self.contacts.valid.shape[0]
-        for i_start in range(0, n_contacts, n_chunk):
+        if options.intrinsic_support == "pair_union":
+            kernel_pack_contact_groups(raw_contacts, self.raw_sources, self.packing, n_chunk)
+        n_work = int(qd_to_numpy(self.packing.maximum, transpose=True))
+        stride = 1 if options.intrinsic_support == "pair_union" else n_chunk
+        for i_start in range(0, n_work, stride):
             kernel_load_intrinsic_contacts(
                 i_start, raw_contacts, self.raw_sources, self.contacts, self.sources, self.packing
             )
@@ -135,6 +160,8 @@ class IntrinsicContacts:
                 kernel_anchor_fan_profiles(
                     self.contacts, self.footprints, self.tractions, stress_info, surface_info, self.paths.info
                 )
+            if options.intrinsic_support == "pair_union":
+                kernel_bind_traction_support(self.contacts, self.sources, self.footprints, self.tractions)
             kernel_fit_tractions(
                 self.contacts, self.sources, self.tractions, self.traction_info, epsilon, _TRACTION_FIT_TOLERANCE, 128
             )
@@ -208,6 +235,89 @@ def kernel_pack_intrinsic_contacts(
 
 
 @qd.kernel
+def kernel_pack_contact_groups(
+    raw_contacts: StressContactState,
+    raw_sources: StressSourceState,
+    packing: StressContactPacking,
+    n_chunk: int,
+):
+    """Pack complete geom/pair groups without padding the raw contact index array."""
+    for _ in range(1):
+        packing.maximum[None] = 0
+    for i_c, i_b in qd.ndrange(packing.indices.shape[0], packing.indices.shape[1]):
+        packing.block_start[i_c, i_b] = 0
+        packing.block_end[i_c, i_b] = 0
+    for i_b in range(packing.count.shape[0]):
+        n_contacts = packing.count[i_b]
+        # Sort only actual contacts. Raw input indices stay intact for commit.
+        for i_c in range(1, n_contacts):
+            for i_reverse in range(i_c):
+                i_right = i_c - i_reverse
+                i_a = packing.indices[i_right - 1, i_b]
+                i_z = packing.indices[i_right, i_b]
+                pair_a, pair_z = raw_sources.pair[i_a, i_b], raw_sources.pair[i_z, i_b]
+                geom_a, geom_z = raw_sources.geom[i_a, i_b], raw_sources.geom[i_z, i_b]
+                if pair_a > pair_z or (pair_a == pair_z and geom_a > geom_z):
+                    packing.indices[i_right - 1, i_b] = i_z
+                    packing.indices[i_right, i_b] = i_a
+        n_blocks, block_size, group_start = 0, 0, 0
+        for i_c in range(n_contacts):
+            i_raw = packing.indices[i_c, i_b]
+            is_end = i_c + 1 == n_contacts
+            if not is_end:
+                i_next = packing.indices[i_c + 1, i_b]
+                pair, geom = raw_sources.pair[i_raw, i_b], raw_sources.geom[i_raw, i_b]
+                is_end = pair < 0 or geom < 0
+                is_end = is_end or pair != raw_sources.pair[i_next, i_b] or geom != raw_sources.geom[i_next, i_b]
+            if is_end:
+                group_size = i_c + 1 - group_start
+                # Scene construction uses the collider's authoritative pair cap.
+                assert group_size <= n_chunk
+                if block_size == 0 or block_size + group_size > n_chunk:
+                    packing.block_start[n_blocks, i_b] = group_start
+                    n_blocks += 1
+                    block_size = 0
+                block_size += group_size
+                packing.block_end[n_blocks - 1, i_b] = i_c + 1
+                group_start = i_c + 1
+        qd.atomic_max(packing.maximum[None], n_blocks)
+
+
+@qd.kernel
+def kernel_bind_traction_support(
+    contact_state: StressContactState,
+    source_state: StressSourceState,
+    footprint_state: StressFootprintState,
+    traction_state: StressTractionState,
+):
+    """Bind complete pair-union sources, including valid zero-load witnesses."""
+    for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
+        start, end = i_c, i_c + 1
+        valid = contact_state.valid[i_c, i_b] and source_state.status[i_c, i_b] == 0
+        valid = valid and footprint_state.status[i_c, i_b] == 0
+        pair, geom = source_state.pair[i_c, i_b], source_state.geom[i_c, i_b]
+        if contact_state.valid[i_c, i_b] and pair >= 0 and geom >= 0:
+            for i_s in range(contact_state.valid.shape[0]):
+                if (
+                    contact_state.valid[i_s, i_b]
+                    and pair == source_state.pair[i_s, i_b]
+                    and geom == source_state.geom[i_s, i_b]
+                ):
+                    start, end = qd.min(start, i_s), qd.max(end, i_s + 1)
+            for i_s in range(start, end):
+                # The packer establishes contiguity; a malformed standalone
+                # subproblem must fail rather than borrow another pair's samples.
+                valid = valid and contact_state.valid[i_s, i_b]
+                valid = valid and pair == source_state.pair[i_s, i_b] and geom == source_state.geom[i_s, i_b]
+        traction_state.support.start[i_c, i_b] = start
+        traction_state.support.end[i_c, i_b] = end
+        traction_state.support.valid[i_c, i_b] = valid
+        traction_state.support.center[i_c, i_b] = contact_state.center[i_c, i_b]
+        traction_state.support.radius[i_c, i_b] = contact_state.radius[i_c, i_b]
+        traction_state.support.friction[i_c, i_b] = contact_state.friction[i_c, i_b]
+
+
+@qd.kernel
 def kernel_load_intrinsic_contacts(
     i_start: int,
     raw_contacts: StressContactState,
@@ -222,8 +332,11 @@ def kernel_load_intrinsic_contacts(
     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
         contact_state.valid[i_c, i_b] = False
         contact_state.status[i_c, i_b] = 0
-        if i_start + i_c < packing.count[i_b]:
-            i_raw = packing.indices[i_start + i_c, i_b]
+        start, end = i_start, packing.count[i_b]
+        if qd.static(len(packing.block_start.shape) == 2):
+            start, end = packing.block_start[i_start, i_b], packing.block_end[i_start, i_b]
+        if start + i_c < end:
+            i_raw = packing.indices[start + i_c, i_b]
             contact_state.valid[i_c, i_b] = True
             contact_state.position[i_c, i_b] = raw_contacts.position[i_raw, i_b]
             contact_state.force[i_c, i_b] = raw_contacts.force[i_raw, i_b]
@@ -258,7 +371,10 @@ def kernel_commit_intrinsic_contacts(
 ):
     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
         if contact_state.valid[i_c, i_b]:
-            i_raw = packing.indices[i_start + i_c, i_b]
+            start = i_start
+            if qd.static(len(packing.block_start.shape) == 2):
+                start = packing.block_start[i_start, i_b]
+            i_raw = packing.indices[start + i_c, i_b]
             raw_contacts.center[i_raw, i_b] = contact_state.center[i_c, i_b]
             raw_contacts.anchor_face[i_raw, i_b] = contact_state.anchor_face[i_c, i_b]
             raw_sources.barycentric[i_raw, i_b] = source_state.barycentric[i_c, i_b]
@@ -287,17 +403,18 @@ def kernel_commit_intrinsic_contacts(
                 scale = qd.max(contact_state.force[i_c, i_b].norm(), traction_state.scale[i_c, i_b])
                 cone_tolerance = 64.0 * epsilon * scale
                 cone_valid = True
-                for i_q in range(traction_state.sample_count[i_c, i_b]):
-                    force = func_sample_traction(i_q, i_c, i_b, contact_state, traction_state, traction_info)
-                    position, normal = func_traction_geometry(i_q, i_c, i_b, traction_state, traction_info)
-                    compression = force.dot(normal)
-                    tangent = force - compression * normal
-                    cone_valid = cone_valid and compression >= -cone_tolerance
-                    cone_valid = (
-                        cone_valid and tangent.norm() <= contact_state.friction[i_c, i_b] * compression + cone_tolerance
-                    )
-                    total += force
-                    moment += (position - contact_state.position[i_c, i_b]).cross(force)
+                first, last = func_traction_support_range(i_c, i_b, traction_state)
+                for i_s in range(first, last):
+                    friction = func_traction_source_friction(i_s, i_b, contact_state.friction[i_c, i_b], traction_state)
+                    for i_q in range(traction_state.sample_count[i_s, i_b]):
+                        force = func_source_traction(i_q, i_s, i_c, i_b, contact_state, traction_state, traction_info)
+                        position, normal = func_traction_geometry(i_q, i_s, i_b, traction_state, traction_info)
+                        compression = force.dot(normal)
+                        tangent = force - compression * normal
+                        cone_valid = cone_valid and compression >= -cone_tolerance
+                        cone_valid = cone_valid and tangent.norm() <= friction * compression + cone_tolerance
+                        total += force
+                        moment += (position - contact_state.position[i_c, i_b]).cross(force)
                 force_error = (total - contact_state.force[i_c, i_b]).norm()
                 moment_error = (moment - source_state.free_moment[i_c, i_b]).norm()
                 raw_contacts.force_error[i_raw, i_b] = force_error

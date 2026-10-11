@@ -2,7 +2,7 @@ from pathlib import Path
 
 import numpy as np
 import pytest
-from scipy.optimize import minimize
+from scipy.optimize import minimize, root
 from scipy.sparse.linalg import splu
 
 import genesis as gs
@@ -109,7 +109,18 @@ def cpu_resolved_wrench_fit(positions, profiles, normals, patch):
         method="trust-exact",
         options={"gtol": 1e-11, "maxiter": 1024, "initial_trust_radius": 1.0, "max_trust_radius": 1e9},
     )
-    vectors = normalized.force_n - np.einsum("qij,i->qj", fitter.operator, result.x)
+    multiplier = result.x
+    if np.linalg.norm(fitter.residual(multiplier)) * fitter.scale > 1e-11:
+        polished = root(
+            fitter.residual,
+            multiplier,
+            jac=fitter.jacobian,
+            method="hybr",
+            options={"xtol": 1e-12, "maxfev": 4096},
+        )
+        if np.linalg.norm(fitter.residual(polished.x)) < np.linalg.norm(fitter.residual(multiplier)):
+            multiplier = polished.x
+    vectors = normalized.force_n - np.einsum("qij,i->qj", fitter.operator, multiplier)
     projected, _ = project_coulomb(vectors, normals, patch.friction)
     force = scale * fitter.weights[:, None] * projected
     mismatch = np.einsum("qij,qj->i", fitter.operator, force) - scale * fitter.target

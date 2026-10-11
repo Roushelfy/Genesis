@@ -32,8 +32,17 @@ class RigidStressOptions(Options):
     ``"anchor_fan"`` rule partitions only the witnessed face and remains an
     explicit integration comparison. Neither rule changes the physical radius.
     Adjacent faces additionally use a verified two-triangle unfolded path.
+    ``intrinsic_support="pair_union"`` explicitly partitions each original
+    point wrench over the union of all finite witnessed disks from that
+    collision geom/pair. Each component retains its original force, point,
+    free moment and moment budget. Every destination retains its own radius,
+    material normal and friction coefficient. The default ``"contact"``
+    confines each component to its own disk. Pair unions may contain separate
+    islands; they do not create surface adjacency or enlarge any disk.
     ``contact_block_size`` bounds the concurrent workspace. All
-    contacts are processed, including subsequent blocks when needed.
+    contacts are processed, including subsequent blocks when needed. Pair-union
+    blocks keep complete pairs together; their workspace is at least the
+    collider's applicable per-pair capacity to prevent truncating a union.
     ``source_projection_limit`` bounds collision-witness projection onto the
     reference boundary. ``source_geometry_tolerance`` declares mesh/reference
     vertex correspondence. ``source_uncertainty`` bounds ambiguity around the
@@ -119,6 +128,7 @@ class RigidStressOptions(Options):
     contact_radius: PositiveFloat = 0.006
     contact_model: Literal["pressure", "intrinsic"] = "pressure"
     intrinsic_integration: Literal["surface_fan", "anchor_fan"] = "surface_fan"
+    intrinsic_support: Literal["contact", "pair_union"] = "contact"
     contact_block_size: PositiveInt = 16
     surface_edge_subdivisions: PositiveInt = 8
     source_projection_limit: PositiveFloat = 1e-4

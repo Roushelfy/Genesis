@@ -16,7 +16,7 @@ class WrenchPatch:
     center_m: np.ndarray
     force_n: np.ndarray
     radius_m: float
-    friction: float
+    friction: float | np.ndarray
     moment_nm: np.ndarray
     inward_normal: np.ndarray | None = None
     source_epsilon: float = 0.0
@@ -42,7 +42,9 @@ class PatchMapping:
     footprint_center_m: np.ndarray
 
 
-def project_coulomb(vectors: np.ndarray, normals: np.ndarray, friction: float) -> tuple[np.ndarray, np.ndarray]:
+def project_coulomb(
+    vectors: np.ndarray, normals: np.ndarray, friction: float | np.ndarray
+) -> tuple[np.ndarray, np.ndarray]:
     """Return Euclidean projection and its Jacobian for local inward circular friction cones.
 
     Vectors are sample force densities or forces in N/m2 or N. Normals must be unit inward directions. The cone requires
@@ -50,15 +52,16 @@ def project_coulomb(vectors: np.ndarray, normals: np.ndarray, friction: float) -
     """
 
     normal = np.einsum("qi,qi->q", vectors, normals)
+    friction = np.broadcast_to(friction, normal.shape)
     tangent = vectors - normal[:, None] * normals
     magnitude = np.linalg.norm(tangent, axis=1)
     direction = tangent / np.maximum(magnitude[:, None], np.finfo(float).tiny)
     compression = (normal + friction * magnitude) / (1 + friction**2)
-    cone_direction = normals + friction * direction
+    cone_direction = normals + friction[:, None] * direction
     projected = compression[:, None] * cone_direction
     normal_projector = normals[:, :, None] * normals[:, None, :]
     tangent_projector = direction[:, :, None] * direction[:, None, :]
-    jacobian = cone_direction[:, :, None] * cone_direction[:, None, :] / (1 + friction**2)
+    jacobian = cone_direction[:, :, None] * cone_direction[:, None, :] / (1 + friction**2)[:, None, None]
     derivative_scale = np.divide(friction * compression, magnitude, out=np.zeros_like(magnitude), where=magnitude > 0)
     jacobian += derivative_scale[:, None, None] * (np.eye(3) - normal_projector - tangent_projector)
     is_interior = (normal >= 0) & (magnitude <= friction * normal)
@@ -67,6 +70,9 @@ def project_coulomb(vectors: np.ndarray, normals: np.ndarray, friction: float) -
     jacobian[is_interior] = np.eye(3)
     projected[is_polar] = 0
     jacobian[is_polar] = 0
+    frictionless = friction == 0
+    projected[frictionless] = np.maximum(normal[frictionless, None], 0) * normals[frictionless]
+    jacobian[frictionless] = (normal[frictionless] > 0)[:, None, None] * normal_projector[frictionless]
     return projected, jacobian
 
 
