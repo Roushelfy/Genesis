@@ -11,13 +11,14 @@ quadrature convergence until the applicable performance work is complete.
 Same-mesh numerical consistency remains required throughout.
 
 The native implementation is in `genesis/engine/solvers/rigid/stress/`, with
-`RigidLink.configure_stress_recovery`, `get_max_stress` and
+`RigidLink.configure_stress_recovery`, `get_max_stress`, `get_stress_field` and
 `set_stress_contact_radius`. The normal example is
 `examples/rigid/franka_egg_stress.py`; it imports no research implementation.
 The repaired low-resolution implementation passes 52 GPU cases, 31 CPU cases
-and 432 independent CPU FP64 full-field trajectory samples. Its final
-same-source four-scope measurements and last large-batch graph comparison are
-in progress. The original coefficient-1 workload and earlier rates are a
+and 432 independent CPU FP64 full-field trajectory samples. All 40 final
+same-source four-scope measurements, 16 max/full output-cost cases and
+16 graph-composition pairs are complete; final aggregation/publication
+verification is in progress. The original coefficient-1 workload and earlier rates are a
 historical milestone. See the
 [current results and status](docs/NATIVE_RESULTS_20261011.md),
 [optimization coverage](docs/OPTIMIZATION_COVERAGE_20261011.md),

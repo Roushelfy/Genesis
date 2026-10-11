@@ -6,8 +6,10 @@
 > checks and selection status are documented in
 > [CONTACT_REPAIR_20261010.md](CONTACT_REPAIR_20261010.md) and
 > [OPTIMIZATION_LEDGER_20261010.md](OPTIMIZATION_LEDGER_20261010.md).
-> Final acceptance remains open. In particular, the old 2c6e5ecc B=49152
-> policy trajectory rejects an unresolved contact fit and has no valid rate.
+> See [the repaired results](NATIVE_RESULTS_20261011.md) for the current
+> workload and selection. The old 2c6e5ecc B=49152 policy trajectory rejects
+> a contact fit and has no valid rate; that captured contact is now a
+> successful recovery regression. Historical numbers below remain unchanged.
 
 This milestone integrates auxiliary stress observation into the existing
 rigid solver. All production numerical work uses owned Quadrants kernels;

@@ -7,6 +7,21 @@ Q10x10 quadrature. All production physical arithmetic uses Quadrants FP64.
 The finite pad load and actual combined contact friction change are described
 in [CONTACT_REPAIR_20261010.md](CONTACT_REPAIR_20261010.md).
 
+## Final aggregation source identity, 2026-10-11 05:12 UTC
+
+All 40 final four-scope cases and 16 max/full cases are closed. The first
+aggregation stops at source identity because benchmark `__file__` keys are
+absolute worktree paths, whereas the setup-only exception compared a relative
+path. The original failure log, exact old summarizer and 40-case key audit
+are retained; this is a metadata failure, not a physical/numerical failure.
+The corrected aggregator recognizes that exact benchmark suffix and admits
+only the two pinned benchmark byte hashes from `f3e92c62` and `1f22f6a2`.
+It keeps every other path/hash exact and additionally checks full-output
+cases against the final matrix. An allocated-node validator passes all 56
+cases and demonstrates rejection of an unreviewed engine or benchmark change.
+No measured result, timed operation or numerical budget changes. Final
+aggregation and publication use a new immutable v14 output name.
+
 ## Final post-graph selection, 2026-10-11 04:34 UTC
 
 All 16 prototype/ordinary production pairs are closed in

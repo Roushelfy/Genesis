@@ -13,6 +13,28 @@ from research.rigid_stress.scripts.summarize_native_audits import columns
 BATCHES = (1024, 2048, 32768, 49152, 61440)
 SEEDS = (510000, 623001)
 SCOPES = ("rigid", "recovery", "live", "policy")
+BENCHMARK_SOURCE = "examples/speed_benchmark/rigid_stress.py"
+BENCHMARK_PREPARATION_HASHES = {
+    "baseline_f3e92c62": "e6ee8669598b9a94207fe229aa5f1f069696d4d577ee139910c95c167b50df36",
+    "prepared_1f22f6a2": "26f5195f60b62bcd4669f503312a4d42ff56237f85bb3e9f99b197311d410800",
+}
+
+
+def numerical_sources(row, prepared_recovery=False):
+    hashes = dict(row["source_sha256"])
+    # __file__ is absolute in benchmark records; its worktree prefix is provenance,
+    # not a difference in numerical code. All other recorded paths remain exact.
+    paths = [path for path in hashes if path == BENCHMARK_SOURCE or path.endswith("/" + BENCHMARK_SOURCE)]
+    assert len(paths) == 1, "Expected one benchmark source identity."
+    digest = hashes.pop(paths[0])
+    if prepared_recovery:
+        # Permit only the audited eight-line untimed preparation fix, not an
+        # arbitrary change to workload configuration in the benchmark file.
+        key = "prepared_1f22f6a2" if row["scope"] == "recovery" else "baseline_f3e92c62"
+        assert digest == BENCHMARK_PREPARATION_HASHES[key], "Unexpected benchmark source change."
+    else:
+        hashes[BENCHMARK_SOURCE] = digest
+    return hashes
 
 
 def read(path):
@@ -104,19 +126,12 @@ def main():
                     measurements.append(row)
     result["measurements"] = measurements
     if measurements:
-
-        def numerical_sources(row):
-            # The recovery-only benchmark fix adds one untimed JIT/capture call.
-            # Every engine, controller, asset input and option source must match.
-            return {
-                path: digest
-                for path, digest in row["source_sha256"].items()
-                if path != "examples/speed_benchmark/rigid_stress.py"
-            }
-
-        reference_hashes = numerical_sources(measurements[0])
-        assert all(numerical_sources(row) == reference_hashes for row in measurements), "Mixed numerical source."
+        prepared = args.recovery_version is not None
+        reference_hashes = numerical_sources(measurements[0], prepared)
+        assert all(numerical_sources(row, prepared) == reference_hashes for row in measurements), "Mixed numerical source."
         result["numerical_and_configuration_source_sha256"] = reference_hashes
+        if prepared:
+            result["audited_benchmark_preparation_source_sha256"] = BENCHMARK_PREPARATION_HASHES
     invalid_timing = [
         {
             "envs": row["envs"],
@@ -191,6 +206,11 @@ def main():
                     continue
                 assert paired["max"]["gpu_uuid"] == paired["full"]["gpu_uuid"]
                 assert paired["max"]["source_sha256"] == paired["full"]["source_sha256"]
+                if measurements:
+                    assert all(
+                        numerical_sources(row, args.recovery_version is not None) == reference_hashes
+                        for row in paired.values()
+                    ), "Output-cost source differs from the final matrix."
                 fullcost.append(
                     {
                         "envs": batch,
