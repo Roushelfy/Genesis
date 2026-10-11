@@ -1,0 +1,17 @@
+[Quadrants] version 1.3.3, llvm 22.1.0, commit 00423caa, linux, python 3.10.12
+Traceback (most recent call last):
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/probe_actual_nonconvex_producers_v2.py", line 94, in <module>
+    scene.build(n_envs=3)
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/misc.py", line 140, in wrapper
+    return method(self, *args, **kwargs)
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/scene.py", line 875, in build
+    self._sim.build()
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/simulator.py", line 224, in build
+    solver.build()
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/rigid_solver.py", line 379, in build
+    gs.raise_exception("Stress observation currently requires a free root link without joint supports.")
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/misc.py", line 43, in raise_exception
+    raise gs.GenesisException(msg)
+genesis.GenesisException: Stress observation currently requires a free root link without joint supports.
+
+[38;5;9m[Genesis] [22:29:22] [ERROR] GenesisException: Stress observation currently requires a free root link without joint supports.[0m

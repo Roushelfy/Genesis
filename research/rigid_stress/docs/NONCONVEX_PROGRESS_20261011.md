@@ -14,6 +14,11 @@ checks and complete B16/B32 trajectories are recorded in
 [the native pair-support checkpoint](NATIVE_PAIR_SUPPORT_PROGRESS_20261011.md).
 Its opt-in streamed path is now connected to rigid recovery; the sections below
 retain the earlier immutable checkpoint history and its then-current limits.
+Actual primitive/authored-decomposition/SDF coverage, cooperative scheduling
+profiles and the exact first B1024 fitting failure are recorded in
+[the scheduling and diagnosis checkpoint](NATIVE_SCHEDULING_DIAGNOSIS_20261011.md).
+Its CPU oracle establishes first-frame feasibility; adaptive Newton repair and
+large-batch validation remain in progress.
 
 ## Required evidence and current work
 

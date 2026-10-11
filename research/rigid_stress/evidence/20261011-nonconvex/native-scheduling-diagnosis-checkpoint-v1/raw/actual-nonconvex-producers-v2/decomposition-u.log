@@ -1,0 +1,17 @@
+[Quadrants] version 1.3.3, llvm 22.1.0, commit 00423caa, linux, python 3.10.12
+Traceback (most recent call last):
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/probe_actual_nonconvex_producers_v2.py", line 81, in <module>
+    target = scene.add_entity(gs.morphs.MJCF(file=ET.tostring(mjcf, encoding='unicode'), fixed=True), material=material)
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/options/morphs.py", line 668, in __init__
+    super().__init__(**kwargs)
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/misc.py", line 129, in new_init
+    original_init(self, *args, **kwargs)
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/options/options.py", line 35, in __init__
+    self._validation_error(e)
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/options/options.py", line 110, in _validation_error
+    gs.raise_exception_from(trace_msg, None)
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/misc.py", line 47, in raise_exception_from
+    raise gs.GenesisException(msg) from cause
+genesis.GenesisException: Validation error for <gs.morphs.MJCF>: Unrecognized attribute 'fixed'.
+
+[38;5;9m[Genesis] [22:29:10] [ERROR] GenesisException: Validation error for <gs.morphs.MJCF>: Unrecognized attribute 'fixed'.[0m
