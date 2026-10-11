@@ -107,19 +107,21 @@ assertion. The failed outputs remain in the raw run directory.
 
 The combined checkpoint passes all **12 CPU and 12 CUDA cases** (58.86 s and
 28.20 s). The existing stress suite also passes all **52 CUDA cases**
-(1100.34 s); its new CPU regression run is still active at this checkpoint.
+(1100.34 s) and **31 CPU cases, 21 CUDA-only skips** (444.28 s).
 These counts establish the stated geometry/source/elastic tests, not live
 vector contact acceptance. Raw runs are under
 `/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex`.
 
 Source checkpoint: `2bb3d2e423ef1e69cd00733118b14bb2a9e05614`.
-The [publication manifest](../evidence/20261011-nonconvex/geometry-checkpoint-v1/manifest.json)
+The [completed publication manifest](../evidence/20261011-nonconvex/geometry-checkpoint-v2/manifest.json)
 records the exact tested source hashes, closed logs, fault-injection programs
-and launchers. All **46 publication artifacts and their originals** pass
+and launchers. All **48 publication artifacts and their originals** pass
 SHA256 verification; manifest SHA256 is
-`ccf57bd147857e768bf9ff686b429c8a78cd3b9fec1942719c9bbd74e2c3079b`.
-The still-active existing CPU run is deliberately excluded from that immutable
-checkpoint. No new-law live/policy rate is reported.
+`3a9b84695c2fa23805b75f0ff3ee0841511a728edb11f2c48a2dfa2fcd8ab696`.
+The immutable [earlier checkpoint](../evidence/20261011-nonconvex/geometry-checkpoint-v1/manifest.json)
+contains 46 verified artifacts and records the existing CPU run as still
+pending at its publication time; the completed checkpoint adds its now-closed
+CPU and allocation logs. No new-law live/policy rate is reported.
 
 ## Next integration work
 
