@@ -1,5 +1,9 @@
 # Squared contact integration and short surface segments
 
+The subsequent explicit shared-support candidate and its per-original-wrench
+oracle checks are recorded in
+[the shared-support checkpoint](NATIVE_SHARED_SUPPORT_PROGRESS_20261011.md).
+
 This follows [the patch/refinement checkpoint](NATIVE_PATCH_REFINEMENT_PROGRESS_20261011.md),
 base source `897b5172fca34125046e0c1c6544e3e2ba742bc8`. The active
 nonconvex goal remains incomplete. This checkpoint selects a validated local
@@ -88,7 +92,8 @@ RIGID_STRESS_RUN_DIR="$RIGID_STRESS_DATA_ROOT/runs/<id>/cuda" \
 
 The squared-coordinate B=32, seed 623101, GJK/direct-patch trajectory passes
 the old tick594 case and completes 710 of 1280 requested steps. Five preceding
-CPU captures check 160 complete fields; the run includes three partial resets.
+CPU captures check 160 complete fields; six environment resets occur before
+the failure (three had occurred at the last CPU capture at tick640).
 The experimental warp B=16, seed 623001 run passes tick1076 and completes
 1160 of 1280 steps. Neither is a completed acceptance or throughput result.
 All environments and failures remain in the evidence.
