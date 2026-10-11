@@ -1,0 +1,3002 @@
+[38;5;226m[Genesis] [22:16:26] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint1`[0m
+[38;5;226m[Genesis] [22:16:26] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint2`[0m
+[38;5;226m[Genesis] [22:16:27] [WARNING] Neutral robot position (qpos0) exceeds joint limits.[0m
+[38;5;226m[Genesis] [22:16:27] [WARNING] Constraint solver time constant should be greater than 2*substep_dt. timeconst is changed from `0.005` to `0.02`). Decrease simulation timestep or increase timeconst to avoid altering the original value.[0m
+[38;5;226m[Genesis] [22:16:29] [WARNING] Filtered out geometry pairs causing self-collision for the neutral configuration (qpos0): (6, 11), (7, 11), (14, 21), (15, 20), (16, 23), (17, 22). Consider tuning Morph option 'decompose_robot_error_threshold' or specify dedicated collision meshes. This behavior can be disabled by setting Morph option 'enable_neutral_collision=True'.[0m
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+libEGL warning: failed to open /dev/dri/renderD135: Permission denied
+
+libEGL warning: failed to open /dev/dri/card8: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD134: Permission denied
+
+libEGL warning: failed to open /dev/dri/card7: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD133: Permission denied
+
+libEGL warning: failed to open /dev/dri/card6: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD132: Permission denied
+
+libEGL warning: failed to open /dev/dri/card5: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD131: Permission denied
+
+libEGL warning: failed to open /dev/dri/card4: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD130: Permission denied
+
+libEGL warning: failed to open /dev/dri/card3: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD129: Permission denied
+
+libEGL warning: failed to open /dev/dri/card2: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD128: Permission denied
+
+libEGL warning: failed to open /dev/dri/card1: Permission denied
+
+/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/traction_warp_candidate_v2.py:68: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/traction_warp_candidate_v2.py:68: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+[W 10/11/26 22:16:51.488 2607983] QuadrantsWarning
+While compiling `kernel_fit_tractions_warp_c944_0`, File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/traction_warp_candidate_v2.py", line 133, in kernel_fit_tractions_warp:
+            is_valid = qd.simt.subgroup.all_true(is_valid)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: u1 <- i32
+======================================================================================
+Kernel Profiler(count, default) @ CUDA on NVIDIA RTX PRO 6000 Blackwell Server Edition
+======================================================================================
+[      %     total   count |      min       avg       max   ] Kernel name
+--------------------------------------------------------------------------------------
+[ 35.19%   0.200 s     20x |    9.981     9.993    10.003 ms] kernel_scatter_tractions_c754_0_kernel_4_range_for
+[ 34.85%   0.198 s     20x |    9.885     9.895     9.905 ms] kernel_commit_intrinsic_contacts_c780_0_kernel_1_range_for
+[ 20.10%   0.114 s     20x |    5.664     5.707     5.760 ms] kernel_fit_tractions_warp_c944_0_kernel_1_range_for
+[  2.71%   0.015 s     20x |    0.755     0.769     0.781 ms] kernel_surface_fan_profiles_c760_0_kernel_5_range_for
+[  2.57%   0.015 s     20x |    0.724     0.730     0.734 ms] kernel_resolve_sources_c746_0_kernel_1_range_for
+[  2.31%   0.013 s     20x |    0.650     0.655     0.659 ms] kernel_pack_intrinsic_contacts_c772_0_kernel_2_range_for
+[  0.47%   0.003 s     20x |    0.130     0.133     0.135 ms] kernel_footprint_ports_c758_0_kernel_3_range_for
+[  0.23%   0.001 s     20x |    0.063     0.065     0.067 ms] kernel_surface_pack_c844_0_kernel_1_range_for
+[  0.13%   0.001 s     20x |    0.034     0.036     0.036 ms] kernel_bind_source_vertices_c770_0_kernel_1_range_for
+[  0.06%   0.000 s     20x |    0.014     0.017     0.052 ms] kernel_pack_contact_groups_c774_0_kernel_4_range_for
+[  0.05%   0.000 s     20x |    0.014     0.015     0.016 ms] kernel_capture_rigid_sources_c744_0_kernel_1_range_for
+[  0.05%   0.000 s     20x |    0.013     0.015     0.017 ms] kernel_surface_fan_profiles_c760_0_kernel_3_range_for
+[  0.05%   0.000 s     20x |    0.012     0.014     0.027 ms] kernel_scatter_tractions_c754_0_kernel_3_range_for
+[  0.05%   0.000 s     20x |    0.012     0.014     0.016 ms] kernel_pack_intrinsic_contacts_c772_0_kernel_4_range_for
+[  0.05%   0.000 s     20x |    0.013     0.014     0.015 ms] kernel_associate_c728_0_kernel_3_range_for
+[  0.05%   0.000 s     20x |    0.013     0.014     0.015 ms] kernel_associate_c728_0_kernel_1_range_for
+[  0.05%   0.000 s     20x |    0.011     0.014     0.016 ms] kernel_bind_traction_support_c776_0_kernel_1_range_for
+[  0.05%   0.000 s     20x |    0.012     0.014     0.016 ms] kernel_surface_fan_profiles_c760_0_kernel_1_range_for
+[  0.05%   0.000 s     20x |    0.012     0.014     0.015 ms] kernel_begin_step_c858_0_kernel_1_range_for
+[  0.05%   0.000 s     20x |    0.012     0.014     0.021 ms] kernel_certify_continuous_force_c756_0_kernel_1_range_for
+[  0.05%   0.000 s     20x |    0.012     0.014     0.015 ms] kernel_pack_contact_groups_c774_0_kernel_2_range_for
+[  0.05%   0.000 s     20x |    0.012     0.014     0.015 ms] kernel_load_intrinsic_contacts_c778_0_kernel_3_range_for
+[  0.05%   0.000 s     20x |    0.012     0.013     0.014 ms] kernel_footprint_ports_c758_0_kernel_1_range_for
+[  0.05%   0.000 s     20x |    0.012     0.013     0.014 ms] kernel_surface_fan_profiles_c760_0_kernel_6_range_for
+[  0.05%   0.000 s     20x |    0.011     0.013     0.016 ms] kernel_load_intrinsic_contacts_c778_0_kernel_1_range_for
+[  0.05%   0.000 s     20x |    0.012     0.013     0.019 ms] kernel_scatter_tractions_c754_0_kernel_1_range_for
+[  0.03%   0.000 s     20x |    0.006     0.008     0.015 ms] kernel_scatter_tractions_c754_0_kernel_0_serial
+[  0.03%   0.000 s     20x |    0.006     0.008     0.010 ms] kernel_associate_c728_0_kernel_0_serial
+[  0.03%   0.000 s     20x |    0.006     0.008     0.009 ms] kernel_capture_rigid_sources_c744_0_kernel_0_serial
+[  0.03%   0.000 s     20x |    0.006     0.008     0.010 ms] kernel_bind_source_vertices_c770_0_kernel_0_serial
+[  0.03%   0.000 s     20x |    0.005     0.008     0.011 ms] kernel_footprint_ports_c758_0_kernel_0_serial
+[  0.03%   0.000 s     20x |    0.006     0.008     0.014 ms] kernel_begin_step_c858_0_kernel_0_serial
+[  0.03%   0.000 s     20x |    0.006     0.008     0.011 ms] kernel_resolve_sources_c746_0_kernel_0_serial
+[  0.03%   0.000 s     20x |    0.006     0.008     0.027 ms] kernel_scatter_tractions_c754_0_kernel_2_serial
+[  0.03%   0.000 s     20x |    0.006     0.008     0.013 ms] kernel_pack_intrinsic_contacts_c772_0_kernel_0_range_for
+[  0.02%   0.000 s     20x |    0.006     0.007     0.009 ms] kernel_bind_traction_support_c776_0_kernel_0_serial
+[  0.02%   0.000 s     20x |    0.005     0.007     0.010 ms] kernel_pack_contact_groups_c774_0_kernel_3_serial
+[  0.02%   0.000 s     20x |    0.006     0.007     0.009 ms] kernel_fit_tractions_warp_c944_0_kernel_0_serial
+[  0.02%   0.000 s     20x |    0.006     0.007     0.010 ms] kernel_commit_intrinsic_contacts_c780_0_kernel_0_serial
+[  0.02%   0.000 s     20x |    0.006     0.007     0.009 ms] kernel_pack_contact_groups_c774_0_kernel_0_range_for
+[  0.02%   0.000 s     20x |    0.006     0.007     0.010 ms] kernel_surface_fan_profiles_c760_0_kernel_0_serial
+[  0.02%   0.000 s     20x |    0.005     0.007     0.009 ms] kernel_load_intrinsic_contacts_c778_0_kernel_0_serial
+[  0.02%   0.000 s     20x |    0.006     0.007     0.010 ms] kernel_certify_continuous_force_c756_0_kernel_0_serial
+[  0.02%   0.000 s     20x |    0.005     0.006     0.009 ms] kernel_load_intrinsic_contacts_c778_0_kernel_2_serial
+[  0.02%   0.000 s     20x |    0.005     0.006     0.007 ms] kernel_surface_fan_profiles_c760_0_kernel_4_serial
+[  0.02%   0.000 s     20x |    0.005     0.006     0.008 ms] kernel_footprint_ports_c758_0_kernel_2_serial
+[  0.02%   0.000 s     20x |    0.005     0.006     0.009 ms] kernel_pack_intrinsic_contacts_c772_0_kernel_1_serial
+[  0.02%   0.000 s     20x |    0.005     0.006     0.007 ms] kernel_surface_fan_profiles_c760_0_kernel_2_serial
+[  0.02%   0.000 s     20x |    0.005     0.006     0.008 ms] kernel_pack_contact_groups_c774_0_kernel_1_serial
+[  0.02%   0.000 s     20x |    0.005     0.006     0.006 ms] kernel_pack_intrinsic_contacts_c772_0_kernel_3_serial
+[  0.02%   0.000 s     20x |    0.005     0.006     0.007 ms] kernel_associate_c728_0_kernel_2_serial
+[  0.01%   0.000 s     20x |    0.003     0.003     0.006 ms] kernel_surface_pack_c844_0_kernel_0_serial
+--------------------------------------------------------------------------------------
+[100.00%] Total execution time:   0.568 s   number of results: 52
+======================================================================================
+{
+  "scope": "profile",
+  "envs": 32,
+  "level": 1,
+  "precision": "64",
+  "quadrature": 10,
+  "dt": 0.01,
+  "substeps": 1,
+  "varied": true,
+  "seed": 623101,
+  "load_model": "intrinsic_surface_fan_q10_squared_coordinates_ports8_adjacent_unfolding",
+  "contact_model": "intrinsic",
+  "contact_block_size": 4,
+  "intrinsic_support": "pair_union",
+  "effective_contact_block_size": 8,
+  "egg_geometry": "mesh64",
+  "collision_method": "gjk",
+  "contact_patch": "on",
+  "condition_count": 32,
+  "conditions": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/warp-candidate-pair-v2/conditions.npz",
+  "conditions_sha256": "156d956bc5fc3827da8df236cf1695a4bf30a9a1e1d939c672f6a57d69d10930",
+  "cooperative_solve": true,
+  "cooperative_pressure": true,
+  "cooperative_scatter": true,
+  "cooperative_balance": true,
+  "contact_wrench_reuse": "auto",
+  "packed_block_size": null,
+  "coalesced_residual": "auto",
+  "contact_moment_reuse": "auto",
+  "effective_contact_moment_reuse": [
+    false
+  ],
+  "effective_contact_wrench_reuse": [
+    false
+  ],
+  "effective_packed_block_sizes": [
+    0
+  ],
+  "face_parallel_scatter": true,
+  "scatter_tasks_per_env": 32,
+  "cached_peak": true,
+  "cached_face_bounds": true,
+  "method": "auto",
+  "inverse_precision": "64",
+  "surface_inverse": true,
+  "packed_surface_loads": true,
+  "fused_pipeline": true,
+  "output_mode": "max",
+  "reset_mode": "saved_initial_state",
+  "native_controller": true,
+  "rigid_post_fusion": "auto",
+  "effective_rigid_post_fusion": false,
+  "reset_index_cache": {
+    "enabled": true,
+    "capacity_elements": 32,
+    "stored_elements": 0,
+    "bytes": 0,
+    "selectors": 0,
+    "hits": 0,
+    "misses": 0,
+    "evictions": 0,
+    "single_selections": 0
+  },
+  "controller_buffers": {
+    "target": {
+      "shape": [
+        32,
+        9
+      ],
+      "dtype": "torch.float64",
+      "bytes": 2304
+    },
+    "grip": {
+      "shape": [
+        32
+      ],
+      "dtype": "torch.float32",
+      "bytes": 128
+    },
+    "limit": {
+      "shape": [
+        32
+      ],
+      "dtype": "torch.float32",
+      "bytes": 128
+    },
+    "radius": {
+      "shape": [
+        32
+      ],
+      "dtype": "torch.float64",
+      "bytes": 256
+    },
+    "zero_action": {
+      "shape": [
+        32,
+        7
+      ],
+      "dtype": "torch.float64",
+      "bytes": 1792
+    },
+    "arm_indices": {
+      "shape": [
+        7
+      ],
+      "dtype": "torch.int32",
+      "bytes": 28
+    }
+  },
+  "history": 0,
+  "host": "rtx-210-029",
+  "slurm_job_id": "706402",
+  "source_revision": "1977fca5+native-pair-support+experimental-warp",
+  "arguments": {
+    "scope": "profile",
+    "envs": 32,
+    "level": 1,
+    "steps": 20,
+    "warmup": 600,
+    "repetitions": 3,
+    "minimum_seconds": 10.0,
+    "varied": true,
+    "seed": 623101,
+    "contact_model": "intrinsic",
+    "intrinsic_support": "pair_union",
+    "contact_block_size": 4,
+    "egg_geometry": "mesh64",
+    "collision_method": "gjk",
+    "contact_patch": "on",
+    "source_revision": "1977fca5+native-pair-support+experimental-warp",
+    "conditions": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/warp-candidate-pair-v2/conditions.npz",
+    "save_conditions": null,
+    "serial_solve": false,
+    "serial_pressure": false,
+    "serial_scatter": false,
+    "serial_balance": false,
+    "contact_wrench_reuse": "auto",
+    "packed_block_size": null,
+    "coalesced_residual": "auto",
+    "contact_moment_reuse": "auto",
+    "contact_warp_scatter": false,
+    "scatter_tasks_per_env": 32,
+    "uncached_peak": false,
+    "uncached_face_bounds": false,
+    "method": "auto",
+    "inverse_precision": "64",
+    "full_inverse": false,
+    "dense_surface_loads": false,
+    "history": 0,
+    "unfused_pipeline": false,
+    "policy_precision": "32",
+    "output_mode": "max",
+    "legacy_reset": false,
+    "torch_controller": false,
+    "host_reset_indices": false,
+    "rigid_post_fusion": "auto",
+    "trace": false,
+    "compact_log": true,
+    "output": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/warp-candidate-pair-v2/warp.json"
+  },
+  "command": [
+    "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/probe_warp_candidate_profile_v2.py",
+    "--scope",
+    "profile",
+    "--envs",
+    "32",
+    "--warmup",
+    "600",
+    "--steps",
+    "20",
+    "--seed",
+    "623101",
+    "--varied",
+    "--contact-model",
+    "intrinsic",
+    "--intrinsic-support",
+    "pair_union",
+    "--contact-block-size",
+    "4",
+    "--egg-geometry",
+    "mesh64",
+    "--collision-method",
+    "gjk",
+    "--contact-patch",
+    "on",
+    "--conditions",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/warp-candidate-pair-v2/conditions.npz",
+    "--compact-log",
+    "--source-revision",
+    "1977fca5+native-pair-support+experimental-warp",
+    "--output",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/warp-candidate-pair-v2/warp.json"
+  ],
+  "source_sha256": {
+    "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/speed_benchmark/rigid_stress.py": "c49445867c92624993ac476d332b62b6743877bb3e61eb95c5284746b3a6c71d",
+    "examples/rigid/egg_stress_controller.py": "2760c2d6a89dbf0a3ec28f1a7c6030d6d73b71b43c6a4b55a5d5ab745e7de33d",
+    "examples/rigid/franka_egg_stress.py": "f644313d9abb493cd6d0bed76823d8f1f284d8bd5fd8eaf840291a6e6cefdb6a",
+    "genesis/engine/entities/rigid_entity/description.py": "3bb64792b62103e490166405ecc381aeb73f8f08b724a789f0f64e3bdeafccd6",
+    "genesis/engine/solvers/rigid/rigid_solver.py": "cf3a4710ffb51ba0b278868e5737c564741b0e714a7ca5bf4a7637844e6cce18",
+    "genesis/engine/solvers/rigid/stress/__init__.py": "17b4fa6e4eb64175b87586a6c7142b9fd2f5e88ba4321129d18e07e296adc5a6",
+    "genesis/engine/solvers/rigid/stress/association.py": "0c265ddde597bb03f6f56da0f4c6063a3a530ce2a19f2dceaf3378e987f811b3",
+    "genesis/engine/solvers/rigid/stress/balance.py": "9b9cb6916d198f823b6e6af495c8cea6d0836f07243f3f4bda0b25a48a616712",
+    "genesis/engine/solvers/rigid/stress/compatibility.py": "696187e687fc4e2612bb94c795947dae55114ee09615feab040bc3035ea0a0f6",
+    "genesis/engine/solvers/rigid/stress/contact.py": "7ebfe4210a819036edc18fcc6b9a3e94273f8644dc7c2a50904079c9100886b8",
+    "genesis/engine/solvers/rigid/stress/data.py": "081ee50334a918f8bef23fb891de3c4a6e5fa4964826069268497c0fa1cece19",
+    "genesis/engine/solvers/rigid/stress/factor.py": "f2a059e88cf03b35a5fba2f88c3ac3f631a899d52cd841a6d268d9ccf087f81c",
+    "genesis/engine/solvers/rigid/stress/footprint.py": "555a556b8abb99b28a317b7f7fd47322f5d1c80efda7408f4e19391e250e0053",
+    "genesis/engine/solvers/rigid/stress/grid.py": "f451674d257339ece41a258f22c7b95fe25d6fc51888854855de4320e26b9a90",
+    "genesis/engine/solvers/rigid/stress/history.py": "559e046d3405afc260be5cd5a0de5712e490518e73aafc288642261c3959657c",
+    "genesis/engine/solvers/rigid/stress/intrinsic.py": "2fe0d8c47cf103b773ee66b9a62b80aec64fb6623fb55e5f201ae1d67d7a2bc5",
+    "genesis/engine/solvers/rigid/stress/inverse.py": "b15ef055df018d96b92aa2b0be3d39d258b4cc59c83dbccdd9dcf0c173eb2a43",
+    "genesis/engine/solvers/rigid/stress/lifecycle.py": "aec6ccc09b9da6fc15ea1c64e6716dee9325b3d05edaa7ac19b4419861c192fa",
+    "genesis/engine/solvers/rigid/stress/model.py": "02deae6f14789dfe8c6470432a5ad8cdd372f27008a5f6ea902a07dff6dda97f",
+    "genesis/engine/solvers/rigid/stress/operators.py": "40ad5e488e928a8f22efe0833f447afba7ef0e258bc3cffb5a0fe30bc1d416ff",
+    "genesis/engine/solvers/rigid/stress/paths.py": "a4d9f4a3b407d5d153b4ba00612cea9888ad9299692fd381eff33ab738bcb352",
+    "genesis/engine/solvers/rigid/stress/pipeline.py": "5677953121fc287950a1a86ab80a781929032b13ffae3d9698b0d28426722de9",
+    "genesis/engine/solvers/rigid/stress/post.py": "e19a87869e01403119880a16e6d7e221a6e3653b24fff174cc01a9390458901e",
+    "genesis/engine/solvers/rigid/stress/provenance.py": "cdb00916ffa41aa7b29ed2ba03759d6ae7ec899900aa59dc16abce4c8c036a1a",
+    "genesis/engine/solvers/rigid/stress/recovery.py": "32808c73c3fda7eede2bb42bc4f55db715f980c00bdb83c78d3e339a883be93b",
+    "genesis/engine/solvers/rigid/stress/scatter.py": "f1aec3bdf7f1f8c0e6dc2a587874afe6dcefd1e9dc5147859711098736a7b399",
+    "genesis/engine/solvers/rigid/stress/solve.py": "7a69e5aace87d1c9a642698ad3381c2bdfc27c765f27447d97d5a18a2916393c",
+    "genesis/engine/solvers/rigid/stress/source_vertices.py": "4bb61a95aeb8fbe6577daadff68abd5bc25e1da19b97a39bf04b39243b99c8cf",
+    "genesis/engine/solvers/rigid/stress/surface.py": "b83ee1d677294001d0da2613b99fbfe689a014c27bd01bdd06c703d39b32f30e",
+    "genesis/engine/solvers/rigid/stress/surface_inverse.py": "aab910a4172d681a3184f9b8f40d3f2727e80fa81061dc0b50a0f3dbee36ed17",
+    "genesis/engine/solvers/rigid/stress/topology.py": "0e6c421b6fcd66e456417cded1f6b7403474b957d263b4ae5d52b1a9f5b12cd2",
+    "genesis/engine/solvers/rigid/stress/traction.py": "d26c4cb775eeb148a425f852290225eb165f8de591bf2eedacb1c71abbb75ee3",
+    "genesis/options/morphs.py": "3a6fda0b9150a9fe8feaf173eb46a096c06fe6b057580ced7f93d32654aafc7f",
+    "genesis/options/rigid_stress.py": "3a040ae3b7eba34e15d33f8815b5b336dfe8477455ee0bf420e3f2490375c692"
+  },
+  "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "gpu_uuid": "GPU-5c0d0cca-f892-19d7-d4f3-b68ab73a520b",
+  "gpu_total_bytes": 101975851008,
+  "quadrants": [
+    1,
+    3,
+    3
+  ],
+  "torch": "2.8.0",
+  "setup_seconds": 24.27454016916454,
+  "warmup_steps": 600,
+  "policy": {
+    "layers": [
+      26,
+      128,
+      128,
+      7
+    ],
+    "seed": 99173,
+    "dtype": "float32",
+    "residual_scale_rad": 0.0001,
+    "scope": "inference rollout",
+    "control_error_budget_rad": 1e-09,
+    "warmup_reference_max_error_rad": 0.0
+  },
+  "recovery_snapshot_check": {
+    "nodal_force_max_difference_N": 1.6930901125533637e-15,
+    "peak_max_difference_Pa": 1.201988197863102e-08,
+    "original_point_max_difference_m": 0.0,
+    "normalized_force_error_max": 6.576967745708933e-09,
+    "normalized_moment_error_max": 2.009059332509723e-09,
+    "complete_residual_max_N": 1.1458653162692931e-11
+  },
+  "stage_wall_ms": {
+    "begin_step": 0.05524430889636278,
+    "association_transform": 0.1778932986781001,
+    "source_capture": 0.06049498915672302,
+    "intrinsic_contact_pipeline": 29.247753717936575,
+    "inertia_relief_centrifugal": 0.041248067282140255,
+    "rhs_reduction": 0.03102109767496586,
+    "linear_solve": 0.1907797995954752,
+    "complete_residual": 0.06547265220433474,
+    "global_peak": 0.09790640324354172,
+    "accept": 0.02789911814033985
+  },
+  "contacts_per_environment": [
+    1,
+    2,
+    1,
+    1,
+    1,
+    2,
+    6,
+    2,
+    6,
+    4,
+    4,
+    5,
+    3,
+    4,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    6,
+    2,
+    5,
+    5,
+    6,
+    4,
+    4,
+    6,
+    7,
+    3,
+    1,
+    1
+  ],
+  "candidate_count": [
+    545,
+    481,
+    580,
+    481,
+    701,
+    300,
+    472,
+    472,
+    512,
+    671,
+    732,
+    496,
+    772,
+    729,
+    490,
+    490,
+    454,
+    518,
+    675,
+    361,
+    707,
+    664,
+    470,
+    676,
+    481,
+    549,
+    544,
+    774,
+    522,
+    549,
+    457,
+    304,
+    458,
+    665,
+    666,
+    574,
+    804,
+    554,
+    576,
+    557,
+    603,
+    796,
+    580,
+    534,
+    560,
+    328,
+    300,
+    607,
+    437,
+    464,
+    669,
+    346,
+    697,
+    658,
+    523,
+    523,
+    472,
+    677,
+    674,
+    379,
+    304,
+    353,
+    481,
+    351,
+    680,
+    661,
+    574,
+    723,
+    753,
+    516,
+    728,
+    695,
+    680,
+    805,
+    700,
+    557,
+    466,
+    537,
+    442,
+    741,
+    552,
+    779,
+    757,
+    586,
+    706,
+    737,
+    552,
+    524,
+    700,
+    765,
+    521,
+    792,
+    845,
+    534,
+    525,
+    525,
+    558,
+    544
+  ],
+  "pressure_evaluations": [
+    2,
+    9,
+    9,
+    2,
+    2,
+    4,
+    2,
+    2,
+    2,
+    3,
+    4,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    4,
+    2,
+    2,
+    2,
+    2,
+    4,
+    5,
+    3,
+    2,
+    2,
+    3,
+    2,
+    2,
+    2,
+    2,
+    7,
+    2,
+    3,
+    2,
+    2,
+    2,
+    2,
+    6,
+    2,
+    1,
+    1,
+    1,
+    2,
+    2,
+    3,
+    2,
+    4,
+    4,
+    12,
+    5,
+    4,
+    3,
+    3,
+    3,
+    3,
+    7,
+    2,
+    4,
+    2,
+    4,
+    2,
+    9,
+    3,
+    2,
+    4,
+    20,
+    2,
+    4,
+    3,
+    2,
+    4,
+    5,
+    4,
+    3,
+    2,
+    2,
+    2,
+    2,
+    3,
+    4,
+    3,
+    7,
+    3,
+    4,
+    3,
+    2,
+    2,
+    2,
+    2,
+    3,
+    4,
+    2,
+    2,
+    1,
+    1
+  ],
+  "pressure_subdivision_wall_ms": {},
+  "grid_samples_visited": [],
+  "grid_samples_inside": [],
+  "full_surface_samples": 8000,
+  "complete_residual_N": [
+    1.0292837541450176e-12,
+    1.069835793203346e-12,
+    1.729819171348189e-12,
+    7.351693788622066e-13,
+    2.8280680210682246e-13,
+    1.0945493234899817e-11,
+    6.300640662309207e-12,
+    7.835738718966467e-12,
+    6.3954022231320255e-12,
+    1.051799427217278e-11,
+    7.149623898443747e-12,
+    7.845769148857778e-12,
+    9.864428810533135e-12,
+    9.792177354479982e-12,
+    1.3993275775346757e-12,
+    1.4865498485848439e-12,
+    1.413449680462192e-12,
+    9.429692652251097e-13,
+    8.363652915657551e-13,
+    9.664288312800149e-13,
+    5.194190973075858e-12,
+    2.9529677862199736e-12,
+    6.293156758875998e-12,
+    8.555061901843241e-12,
+    6.800892854503797e-12,
+    8.453485080450125e-12,
+    1.0087997715452705e-11,
+    6.482242017593862e-12,
+    7.562897656132712e-12,
+    1.1099625390304554e-11,
+    1.387147415767193e-12,
+    1.4320328953320215e-12
+  ],
+  "rhs_norm_N": [
+    0.03642343446141235,
+    0.0313954204827307,
+    0.06454013835128232,
+    0.022205927064504066,
+    0.022141735176887795,
+    0.30348363726148775,
+    0.17455940568262168,
+    0.2786421435401829,
+    0.1844633690791222,
+    0.2275410195242657,
+    0.2095461282143113,
+    0.21333088438382194,
+    0.2417247558485462,
+    0.23301116109461367,
+    0.03561116057314362,
+    0.041801992140864073,
+    0.03670502506635816,
+    0.03475948694431719,
+    0.031887781687336775,
+    0.039819378871662384,
+    0.17142943461166513,
+    0.08122034965359833,
+    0.2163180364163221,
+    0.2257604894335672,
+    0.19838109796684164,
+    0.21552321144411818,
+    0.22310372325447925,
+    0.17065436120176852,
+    0.17431577266838913,
+    0.2684960950709022,
+    0.0367938192840376,
+    0.03734425026373163
+  ],
+  "profiler_note": "Captured Quadrants graphs are omitted by the kernel profiler; stage wall times include them.",
+  "dofs": 2430,
+  "tetrahedra": 480,
+  "method_selected": "inverse",
+  "surface_inverse_selected": true,
+  "build_timings_including_JIT": {
+    "topology_seconds": 0.09439153037965298,
+    "operators_seconds": 0.6684943786822259,
+    "factor_seconds": 13.651025826111436,
+    "inverse_seconds": 0.2149515300989151,
+    "surface_inverse_seconds": 0.13008653884753585
+  },
+  "stress_configurations": [
+    {
+      "mesh": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/assets/hollow_egg/level1/elastic.npz",
+      "output_mode": "max",
+      "young": 10000000000.0,
+      "poisson": 0.3,
+      "density": 2000.0,
+      "contact_radius": 0.006,
+      "contact_model": "intrinsic",
+      "intrinsic_integration": "surface_fan",
+      "intrinsic_support": "pair_union",
+      "contact_block_size": 4,
+      "surface_edge_subdivisions": 8,
+      "source_projection_limit": 0.0001,
+      "source_geometry_tolerance": 1e-08,
+      "source_uncertainty": 0.0,
+      "quadrature": 10,
+      "tolerance": 1e-08,
+      "absolute_tolerance": 1e-11,
+      "max_iterations": 2000,
+      "warm_start": true,
+      "history_size": 0,
+      "method": "auto",
+      "cooperative_solve": true,
+      "cooperative_pressure": true,
+      "cooperative_scatter": true,
+      "cooperative_balance": true,
+      "contact_wrench_reuse": null,
+      "face_parallel_scatter": true,
+      "scatter_tasks_per_env": 32,
+      "contact_moment_reuse": null,
+      "inverse_max_bytes": 67108864,
+      "inverse_precision": "64",
+      "surface_inverse": true,
+      "packed_surface_loads": true,
+      "packed_block_size": null,
+      "coalesced_residual": null,
+      "fused_pipeline": true,
+      "fused_rigid_post": null,
+      "cached_peak": true,
+      "cached_face_bounds": true,
+      "inverse_corrections": 2,
+      "preconditioner": "block"
+    }
+  ],
+  "native_buffers": [
+    {
+      "name": "stress.0.info.vertices",
+      "shape": [
+        810,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 19440,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.elements",
+      "shape": [
+        480,
+        10
+      ],
+      "dtype": "torch.int32",
+      "bytes": 19200,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.surface_nodes",
+      "shape": [
+        80,
+        6
+      ],
+      "dtype": "torch.int32",
+      "bytes": 1920,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.surface_owners",
+      "shape": [
+        80
+      ],
+      "dtype": "torch.int32",
+      "bytes": 320,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.surface_opposite_vertices",
+      "shape": [
+        80
+      ],
+      "dtype": "torch.int32",
+      "bytes": 320,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.surface_neighbors",
+      "shape": [
+        80,
+        3
+      ],
+      "dtype": "torch.int32",
+      "bytes": 960,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.edges",
+      "shape": [
+        6,
+        2
+      ],
+      "dtype": "torch.int32",
+      "bytes": 48,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.gradients",
+      "shape": [
+        480,
+        4,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 46080,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.corner_gradients",
+      "shape": [
+        480,
+        4,
+        7,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 322560,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.corner_nodes",
+      "shape": [
+        480,
+        4,
+        7
+      ],
+      "dtype": "torch.int32",
+      "bytes": 53760,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.volumes",
+      "shape": [
+        480
+      ],
+      "dtype": "torch.float64",
+      "bytes": 3840,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.row_start",
+      "shape": [
+        811
+      ],
+      "dtype": "torch.int32",
+      "bytes": 3244,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.columns",
+      "shape": [
+        20274
+      ],
+      "dtype": "torch.int32",
+      "bytes": 81096,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.element_entries",
+      "shape": [
+        480,
+        10,
+        10
+      ],
+      "dtype": "torch.int32",
+      "bytes": 192000,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.stiffness",
+      "shape": [
+        20274,
+        3,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 1459728,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.mass",
+      "shape": [
+        20274
+      ],
+      "dtype": "torch.float64",
+      "bytes": 162192,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.modes",
+      "shape": [
+        810,
+        3,
+        6
+      ],
+      "dtype": "torch.float64",
+      "bytes": 116640,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.mass_modes",
+      "shape": [
+        810,
+        3,
+        6
+      ],
+      "dtype": "torch.float64",
+      "bytes": 116640,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.relief",
+      "shape": [
+        810,
+        3,
+        6
+      ],
+      "dtype": "torch.float64",
+      "bytes": 116640,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.centrifugal",
+      "shape": [
+        810,
+        3,
+        6
+      ],
+      "dtype": "torch.float64",
+      "bytes": 116640,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.centrifugal_wrench",
+      "shape": [
+        6,
+        6
+      ],
+      "dtype": "torch.float64",
+      "bytes": 288,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.gram",
+      "shape": [
+        6,
+        6
+      ],
+      "dtype": "torch.float64",
+      "bytes": 288,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.gram_inverse",
+      "shape": [
+        6,
+        6
+      ],
+      "dtype": "torch.float64",
+      "bytes": 288,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.pins",
+      "shape": [
+        6
+      ],
+      "dtype": "torch.int32",
+      "bytes": 24,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.is_free",
+      "shape": [
+        810,
+        3
+      ],
+      "dtype": "torch.int32",
+      "bytes": 9720,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.diagonal_inverse",
+      "shape": [
+        810,
+        3,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 58320,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.scalar_diagonal_inverse",
+      "shape": [
+        810,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 19440,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.info.mass_properties",
+      "shape": [
+        4
+      ],
+      "dtype": "torch.float64",
+      "bytes": 32,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.factor.order",
+      "shape": [
+        810
+      ],
+      "dtype": "torch.int32",
+      "bytes": 3240,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.factor.row_start",
+      "shape": [
+        811
+      ],
+      "dtype": "torch.int32",
+      "bytes": 3244,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.factor.columns",
+      "shape": [
+        66669
+      ],
+      "dtype": "torch.int32",
+      "bytes": 266676,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.factor.sources",
+      "shape": [
+        66669
+      ],
+      "dtype": "torch.int32",
+      "bytes": 266676,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.factor.column_start",
+      "shape": [
+        811
+      ],
+      "dtype": "torch.int32",
+      "bytes": 3244,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.factor.rows",
+      "shape": [
+        66669
+      ],
+      "dtype": "torch.int32",
+      "bytes": 266676,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.factor.transpose_entries",
+      "shape": [
+        66669
+      ],
+      "dtype": "torch.int32",
+      "bytes": 266676,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.factor.lower",
+      "shape": [
+        66669,
+        3,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 4800168,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.factor.diagonal",
+      "shape": [
+        810,
+        3,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 58320,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.factor.diagonal_inverse",
+      "shape": [
+        810,
+        3,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 58320,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.factor.valid",
+      "shape": [],
+      "dtype": "torch.bool",
+      "bytes": 1,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.inverse.blocks",
+      "shape": [
+        810,
+        810,
+        3,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 47239200,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface_inverse.nodes",
+      "shape": [
+        162
+      ],
+      "dtype": "torch.int32",
+      "bytes": 648,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface_inverse.force_blocks",
+      "shape": [
+        810,
+        162,
+        3,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 9447840,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface_inverse.centrifugal",
+      "shape": [
+        810,
+        3,
+        6
+      ],
+      "dtype": "torch.float64",
+      "bytes": 116640,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface.gauss",
+      "shape": [
+        10
+      ],
+      "dtype": "torch.float64",
+      "bytes": 80,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface.gauss_weights",
+      "shape": [
+        10
+      ],
+      "dtype": "torch.float64",
+      "bytes": 80,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface.positions",
+      "shape": [
+        8000,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 192000,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface.weights",
+      "shape": [
+        8000
+      ],
+      "dtype": "torch.float64",
+      "bytes": 64000,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface.shape",
+      "shape": [
+        100,
+        6
+      ],
+      "dtype": "torch.float64",
+      "bytes": 4800,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface.face_origin",
+      "shape": [
+        80,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 1920,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface.face_edges",
+      "shape": [
+        80,
+        2,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 3840,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface.face_dual",
+      "shape": [
+        80,
+        2,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 3840,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface.face_normal",
+      "shape": [
+        80,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 1920,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface.face_bounds_low",
+      "shape": [
+        80,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 1920,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface.face_bounds_high",
+      "shape": [
+        80,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 1920,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface.grid.bounds",
+      "shape": [
+        2,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 48,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface.grid.cell_size",
+      "shape": [],
+      "dtype": "torch.float64",
+      "bytes": 8,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface.grid.starts",
+      "shape": [
+        4097
+      ],
+      "dtype": "torch.int32",
+      "bytes": 16388,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.surface.grid.samples",
+      "shape": [
+        8000
+      ],
+      "dtype": "torch.int32",
+      "bytes": 32000,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.state.force",
+      "shape": [
+        810,
+        32,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 622080,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.rhs",
+      "shape": [
+        810,
+        32,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 622080,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.displacement",
+      "shape": [
+        810,
+        32,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 622080,
+      "alias_of": null,
+      "kind": 4
+    },
+    {
+      "name": "stress.0.state.residual",
+      "shape": [
+        810,
+        32,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 622080,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.boundary_columns",
+      "shape": [
+        162,
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 20736,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.boundary_count",
+      "shape": [
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 128,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.wrench",
+      "shape": [
+        32,
+        6
+      ],
+      "dtype": "torch.float64",
+      "bytes": 1536,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.rhs_norm_squared",
+      "shape": [
+        32
+      ],
+      "dtype": "torch.float64",
+      "bytes": 256,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.residual_norm_squared",
+      "shape": [
+        32
+      ],
+      "dtype": "torch.float64",
+      "bytes": 256,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.residual_preconditioned",
+      "shape": [
+        32
+      ],
+      "dtype": "torch.float64",
+      "bytes": 256,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.next_residual_preconditioned",
+      "shape": [
+        32
+      ],
+      "dtype": "torch.float64",
+      "bytes": 256,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.direction_product",
+      "shape": [
+        32
+      ],
+      "dtype": "torch.float64",
+      "bytes": 256,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.active",
+      "shape": [
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 128,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.iterations",
+      "shape": [
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 128,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.peak",
+      "shape": [
+        32
+      ],
+      "dtype": "torch.float64",
+      "bytes": 256,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.step_peak",
+      "shape": [
+        32
+      ],
+      "dtype": "torch.float64",
+      "bytes": 256,
+      "alias_of": null,
+      "kind": 5
+    },
+    {
+      "name": "stress.0.state.step_valid",
+      "shape": [
+        32
+      ],
+      "dtype": "torch.bool",
+      "bytes": 32,
+      "alias_of": null,
+      "kind": 5
+    },
+    {
+      "name": "stress.0.state.valid",
+      "shape": [
+        32
+      ],
+      "dtype": "torch.bool",
+      "bytes": 32,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.corrections",
+      "shape": [
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 128,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.fallbacks",
+      "shape": [
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 128,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.invalid_steps",
+      "shape": [
+        32
+      ],
+      "dtype": "torch.int64",
+      "bytes": 256,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.state.invalid_reported",
+      "shape": [
+        32
+      ],
+      "dtype": "torch.bool",
+      "bytes": 32,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.position",
+      "shape": [
+        1200,
+        32,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 921600,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.center",
+      "shape": [
+        1200,
+        32,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 921600,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.anchor_face",
+      "shape": [
+        1200,
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 153600,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.is_refined",
+      "shape": [
+        1200,
+        32
+      ],
+      "dtype": "torch.bool",
+      "bytes": 38400,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.force",
+      "shape": [
+        1200,
+        32,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 921600,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.normal",
+      "shape": [
+        1200,
+        32,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 921600,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.friction",
+      "shape": [
+        1200,
+        32
+      ],
+      "dtype": "torch.float64",
+      "bytes": 307200,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.radius",
+      "shape": [
+        1200,
+        32
+      ],
+      "dtype": "torch.float64",
+      "bytes": 307200,
+      "alias_of": null,
+      "kind": 2
+    },
+    {
+      "name": "stress.0.contacts.valid",
+      "shape": [
+        1200,
+        32
+      ],
+      "dtype": "torch.bool",
+      "bytes": 38400,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.coefficient",
+      "shape": [
+        1200,
+        32,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 921600,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.weight_sum",
+      "shape": [
+        1200,
+        32
+      ],
+      "dtype": "torch.float64",
+      "bytes": 307200,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.status",
+      "shape": [
+        1200,
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 153600,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.force_error",
+      "shape": [
+        1200,
+        32
+      ],
+      "dtype": "torch.float64",
+      "bytes": 307200,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.moment_error",
+      "shape": [
+        1200,
+        32
+      ],
+      "dtype": "torch.float64",
+      "bytes": 307200,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.candidate_count",
+      "shape": [
+        1200,
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 153600,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.evaluations",
+      "shape": [
+        1200,
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 153600,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.active_count",
+      "shape": [],
+      "dtype": "torch.int32",
+      "bytes": 4,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.frame_position",
+      "shape": [
+        32,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 768,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.contacts.frame_quaternion",
+      "shape": [
+        32,
+        4
+      ],
+      "dtype": "torch.float64",
+      "bytes": 1024,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.scatter.count",
+      "shape": [],
+      "dtype": "torch.int64",
+      "bytes": 8,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.scatter.overflow_calls",
+      "shape": [],
+      "dtype": "torch.int64",
+      "bytes": 8,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.scatter.affine_pressure",
+      "shape": [
+        1
+      ],
+      "dtype": "torch.bool",
+      "bytes": 1,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.paths.positions",
+      "shape": [
+        882,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 21168,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.paths.face_ports",
+      "shape": [
+        80,
+        24
+      ],
+      "dtype": "torch.int32",
+      "bytes": 7680,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.paths.starts",
+      "shape": [
+        883
+      ],
+      "dtype": "torch.int32",
+      "bytes": 3532,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.paths.neighbors",
+      "shape": [
+        35520
+      ],
+      "dtype": "torch.int32",
+      "bytes": 142080,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.paths.lengths",
+      "shape": [
+        35520
+      ],
+      "dtype": "torch.float64",
+      "bytes": 284160,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.paths.distances",
+      "shape": [
+        882,
+        882
+      ],
+      "dtype": "torch.float64",
+      "bytes": 6223392,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.vertices.geom",
+      "shape": [
+        42
+      ],
+      "dtype": "torch.int32",
+      "bytes": 168,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.vertices.positions",
+      "shape": [
+        42,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 1008,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.vertices.reference_vertex",
+      "shape": [
+        42
+      ],
+      "dtype": "torch.int32",
+      "bytes": 168,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.vertices.reference_face",
+      "shape": [
+        42
+      ],
+      "dtype": "torch.int32",
+      "bytes": 168,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.vertices.barycentric",
+      "shape": [
+        42,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 1008,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.vertices.offset",
+      "shape": [
+        42
+      ],
+      "dtype": "torch.float64",
+      "bytes": 336,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.vertices.status",
+      "shape": [
+        42
+      ],
+      "dtype": "torch.int32",
+      "bytes": 168,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.traction_info.positions",
+      "shape": [
+        8000,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 192000,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.traction_info.inward_normals",
+      "shape": [
+        8000,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 192000,
+      "alias_of": null,
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.traction_info.face_origin",
+      "shape": [
+        80,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 1920,
+      "alias_of": "stress.0.surface.face_origin",
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.traction_info.face_edges",
+      "shape": [
+        80,
+        2,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 3840,
+      "alias_of": "stress.0.surface.face_edges",
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.traction_info.face_dual",
+      "shape": [
+        80,
+        2,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 3840,
+      "alias_of": "stress.0.surface.face_dual",
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.traction_info.gauss",
+      "shape": [
+        10
+      ],
+      "dtype": "torch.float64",
+      "bytes": 80,
+      "alias_of": "stress.0.surface.gauss",
+      "kind": 1
+    },
+    {
+      "name": "stress.0.intrinsic.raw_sources.geom",
+      "shape": [
+        1200,
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 153600,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.raw_sources.pair",
+      "shape": [
+        1200,
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 153600,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.raw_sources.method",
+      "shape": [
+        1200,
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 153600,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.raw_sources.vertex",
+      "shape": [
+        1200,
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 153600,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.raw_sources.has_vertex_ambiguity",
+      "shape": [
+        1200,
+        32
+      ],
+      "dtype": "torch.bool",
+      "bytes": 38400,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.raw_sources.witness",
+      "shape": [
+        1200,
+        32,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 921600,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.raw_sources.witness_face",
+      "shape": [
+        1200,
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 153600,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.raw_sources.witness_barycentric",
+      "shape": [
+        1200,
+        32,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 921600,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.raw_sources.uncertainty",
+      "shape": [
+        1200,
+        32
+      ],
+      "dtype": "torch.float64",
+      "bytes": 307200,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.raw_sources.free_moment",
+      "shape": [
+        1200,
+        32,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 921600,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.raw_sources.anchor_moment",
+      "shape": [
+        1200,
+        32,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 921600,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.raw_sources.barycentric",
+      "shape": [
+        1200,
+        32,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 921600,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.raw_sources.status",
+      "shape": [
+        1200,
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 153600,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.position",
+      "shape": [
+        8,
+        32,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 6144,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.center",
+      "shape": [
+        8,
+        32,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 6144,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.anchor_face",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 1024,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.is_refined",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.bool",
+      "bytes": 256,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.force",
+      "shape": [
+        8,
+        32,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 6144,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.normal",
+      "shape": [
+        8,
+        32,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 6144,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.friction",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.float64",
+      "bytes": 2048,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.radius",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.float64",
+      "bytes": 2048,
+      "alias_of": null,
+      "kind": 2
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.valid",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.bool",
+      "bytes": 256,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.coefficient",
+      "shape": [
+        8,
+        32,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 6144,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.weight_sum",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.float64",
+      "bytes": 2048,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.status",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 1024,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.force_error",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.float64",
+      "bytes": 2048,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.moment_error",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.float64",
+      "bytes": 2048,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.candidate_count",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 1024,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.evaluations",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 1024,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.active_pairs",
+      "shape": [
+        0,
+        2
+      ],
+      "dtype": "i32",
+      "bytes": 0,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.active_count",
+      "shape": [],
+      "dtype": "torch.int32",
+      "bytes": 4,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.frame_position",
+      "shape": [
+        32,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 768,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.contacts.frame_quaternion",
+      "shape": [
+        32,
+        4
+      ],
+      "dtype": "torch.float64",
+      "bytes": 1024,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.sources.geom",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 1024,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.sources.pair",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 1024,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.sources.method",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 1024,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.sources.vertex",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 1024,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.sources.has_vertex_ambiguity",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.bool",
+      "bytes": 256,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.sources.witness",
+      "shape": [
+        8,
+        32,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 6144,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.sources.witness_face",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 1024,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.sources.witness_barycentric",
+      "shape": [
+        8,
+        32,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 6144,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.sources.uncertainty",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.float64",
+      "bytes": 2048,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.sources.free_moment",
+      "shape": [
+        8,
+        32,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 6144,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.sources.anchor_moment",
+      "shape": [
+        8,
+        32,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 6144,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.sources.barycentric",
+      "shape": [
+        8,
+        32,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 6144,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.sources.status",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 1024,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.footprints.port_distance",
+      "shape": [
+        882,
+        8,
+        32
+      ],
+      "dtype": "torch.float64",
+      "bytes": 1806336,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.footprints.status",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 1024,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.footprints.candidates",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 1024,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.footprints.samples",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 1024,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.footprints.maximum_distance",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.float64",
+      "bytes": 2048,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.profile",
+      "shape": [
+        24000,
+        8,
+        32
+      ],
+      "dtype": "torch.float64",
+      "bytes": 49152000,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.dual",
+      "shape": [
+        8,
+        32,
+        6
+      ],
+      "dtype": "torch.float64",
+      "bytes": 12288,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.weight_sum",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.float64",
+      "bytes": 2048,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.scale",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.float64",
+      "bytes": 2048,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.status",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 1024,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.force_error",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.float64",
+      "bytes": 2048,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.moment_error",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.float64",
+      "bytes": 2048,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.evaluations",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 1024,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.certificate",
+      "shape": [
+        8,
+        32,
+        6
+      ],
+      "dtype": "torch.float64",
+      "bytes": 12288,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.certificate_margin",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.float64",
+      "bytes": 2048,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.sample_positions",
+      "shape": [
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 24,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.sample_normals",
+      "shape": [
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 24,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.sample_faces",
+      "shape": [],
+      "dtype": "torch.int32",
+      "bytes": 4,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.sample_shape",
+      "shape": [
+        6
+      ],
+      "dtype": "torch.float64",
+      "bytes": 48,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.sample_count",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 1024,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.sample_indices",
+      "shape": [
+        24000,
+        8,
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 24576000,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.fan_barycentric",
+      "shape": [
+        80,
+        8,
+        32,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 491520,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.fan_coordinate_power",
+      "shape": [],
+      "dtype": "torch.int32",
+      "bytes": 4,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.support.start",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 1024,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.support.end",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 1024,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.support.valid",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.bool",
+      "bytes": 256,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.support.center",
+      "shape": [
+        8,
+        32,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 6144,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.support.radius",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.float64",
+      "bytes": 2048,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.tractions.support.friction",
+      "shape": [
+        8,
+        32
+      ],
+      "dtype": "torch.float64",
+      "bytes": 2048,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.packing.indices",
+      "shape": [
+        1200,
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 153600,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.packing.count",
+      "shape": [
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 128,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.packing.maximum",
+      "shape": [],
+      "dtype": "torch.int32",
+      "bytes": 4,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.packing.block_start",
+      "shape": [
+        1200,
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 153600,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.packing.block_end",
+      "shape": [
+        1200,
+        32
+      ],
+      "dtype": "torch.int32",
+      "bytes": 153600,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.certificates.ray",
+      "shape": [
+        1200,
+        32,
+        6
+      ],
+      "dtype": "torch.float64",
+      "bytes": 1843200,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.intrinsic.certificates.margin",
+      "shape": [
+        1200,
+        32
+      ],
+      "dtype": "torch.float64",
+      "bytes": 307200,
+      "alias_of": null,
+      "kind": 6
+    },
+    {
+      "name": "stress.0.omega",
+      "shape": [
+        32,
+        3
+      ],
+      "dtype": "torch.float64",
+      "bytes": 768,
+      "alias_of": null,
+      "kind": 6
+    }
+  ],
+  "native_logical_buffer_bytes": 167128450,
+  "native_buffer_bytes": 167118770,
+  "native_allocation_count": 199,
+  "torch_peak_allocated_bytes": 1286144,
+  "saved_reset_state_bytes": 41472,
+  "device_free_bytes": 98500673536,
+  "reset_index_cache_at_end": {
+    "enabled": true,
+    "capacity_elements": 32,
+    "stored_elements": 0,
+    "bytes": 0,
+    "selectors": 0,
+    "hits": 0,
+    "misses": 0,
+    "evictions": 0,
+    "single_selections": 0
+  }
+}
+{"experimental_fit_scheduler": "cuda_warp_candidate_v2"}

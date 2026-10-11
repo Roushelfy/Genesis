@@ -1,0 +1,81 @@
+[Quadrants] version 1.3.3, llvm 22.1.0, commit 00423caa, linux, python 3.10.12
+[38;5;159m[Genesis] [21:58:32] [INFO] [38;5;121m╭───────────────────────────────────────────────╮[0m[38;5;159m[0m
+[38;5;159m[Genesis] [21:58:32] [INFO] [38;5;121m│┈┉┈┉┈┉┈┉┈┉┈┉┈┉┈┉┈┉┈[0m[38;5;159m [38;5;121m[1m[3mGenesis[0m[38;5;159m [38;5;121m┈┉┈┉┈┉┈┉┈┉┈┉┈┉┈┉┈┉┈│[0m[38;5;159m[0m
+[38;5;159m[Genesis] [21:58:32] [INFO] [38;5;121m╰───────────────────────────────────────────────╯[0m[38;5;159m[0m
+[38;5;159m[Genesis] [21:58:32] [INFO] Running on [38;5;121m[NVIDIA RTX PRO 6000 Blackwell Server Edition][0m[38;5;159m with backend [38;5;121mgs.cuda[0m[38;5;159m. Device memory: [38;5;121m94.97[0m[38;5;159m GB.[0m
+[38;5;159m[Genesis] [21:58:32] [INFO] 🚀 Genesis initialized. 🔖 version: [38;5;121m1.4.3[0m[38;5;159m, 🎨 theme: [38;5;121mdark[0m[38;5;159m, 🌱 seed: [38;5;121mNone[0m[38;5;159m, 🐛 debug: [38;5;121mFalse[0m[38;5;159m, 📏 precision: [38;5;121m64[0m[38;5;159m, 🔥 performance: [38;5;121mFalse[0m[38;5;159m, 💬 verbose: [38;5;121mINFO[0m[38;5;159m[0m
+[38;5;159m[Genesis] [21:58:33] [INFO] Scene [38;5;121m[3m<4fda859>[0m[38;5;159m created.[0m
+[38;5;159m[Genesis] [21:58:33] [INFO] Adding [38;5;121m<gs.engine.entities.RigidEntity>[0m[38;5;159m [38;5;121m[3mplane_8e8a05b[0m[38;5;159m. idx: [38;5;121m0[0m[38;5;159m, morph: [38;5;121m<gs.morphs.Plane>[0m[38;5;159m, material: [38;5;121m<gs.materials.Rigid>[0m[38;5;159m.[0m
+[38;5;226m[Genesis] [21:58:33] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint1`[0m
+[38;5;226m[Genesis] [21:58:33] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint2`[0m
+[38;5;159m[Genesis] [21:58:33] [INFO] Adding [38;5;121m<gs.engine.entities.RigidEntity>[0m[38;5;159m [38;5;121m[3mpanda_5491133[0m[38;5;159m. idx: [38;5;121m1[0m[38;5;159m, morph: [38;5;121m<gs.morphs.MJCF(file='/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/assets/xml/franka_emika_panda/panda.xml')>[0m[38;5;159m, material: [38;5;121m<gs.materials.Rigid>[0m[38;5;159m.[0m
+[38;5;159m[Genesis] [21:58:34] [INFO] Adding [38;5;121m<gs.engine.entities.RigidEntity>[0m[38;5;159m [38;5;121m[3megg_shell_290be4f[0m[38;5;159m. idx: [38;5;121m2[0m[38;5;159m, morph: [38;5;121m<gs.morphs.URDF(file='/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/assets/hollow_egg/level1/egg_shell.urdf')>[0m[38;5;159m, material: [38;5;121m<gs.materials.Rigid>[0m[38;5;159m.[0m
+[38;5;159m[Genesis] [21:58:34] [INFO] Building scene [38;5;121m[3m<4fda859>[0m[38;5;159m...[0m
+[38;5;226m[Genesis] [21:58:35] [WARNING] Neutral robot position (qpos0) exceeds joint limits.[0m
+[38;5;226m[Genesis] [21:58:35] [WARNING] Constraint solver time constant should be greater than 2*substep_dt. timeconst is changed from `0.005` to `0.02`). Decrease simulation timestep or increase timeconst to avoid altering the original value.[0m
+[38;5;226m[Genesis] [21:58:38] [WARNING] Filtered out geometry pairs causing self-collision for the neutral configuration (qpos0): (6, 11), (7, 11), (14, 21), (15, 20), (16, 23), (17, 22). Consider tuning Morph option 'decompose_robot_error_threshold' or specify dedicated collision meshes. This behavior can be disabled by setting Morph option 'enable_neutral_collision=True'.[0m
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+[38;5;159m[Genesis] [21:59:15] [INFO] Compiling simulation kernels...[0m
+[38;5;159m[Genesis] [22:00:07] [INFO] Building visualizer...[0m
+libEGL warning: failed to open /dev/dri/renderD135: Permission denied
+
+libEGL warning: failed to open /dev/dri/card8: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD134: Permission denied
+
+libEGL warning: failed to open /dev/dri/card7: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD133: Permission denied
+
+libEGL warning: failed to open /dev/dri/card6: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD132: Permission denied
+
+libEGL warning: failed to open /dev/dri/card5: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD131: Permission denied
+
+libEGL warning: failed to open /dev/dri/card4: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD130: Permission denied
+
+libEGL warning: failed to open /dev/dri/card3: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD129: Permission denied
+
+libEGL warning: failed to open /dev/dri/card2: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD128: Permission denied
+
+libEGL warning: failed to open /dev/dri/card1: Permission denied
+
+[38;5;159m[Genesis] [22:00:07] [INFO] Software rendering context detected. Shadows and plane reflection not supported. Beware rendering will be extremely slow.[0m
+[W 10/11/26 22:00:09.398 2377808] QuadrantsWarning
+While compiling `kernel_inputs_c944_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/egg_stress_controller.py", line 107, in kernel_inputs:
+        grip[i_b] = 0.04 if value < 0.15 or value > 0.9 else 0.018
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+[W 10/11/26 22:00:09.398 2377808] QuadrantsWarning
+While compiling `kernel_inputs_c944_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/egg_stress_controller.py", line 108, in kernel_inputs:
+        limit[i_b] = 0.055 if value >= 0.7 and value < 0.76 else 4.0
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+{"tick": 0, "loaded_contacts": 0, "contact_count_per_env": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "contact_slot_changes": 0, "mu_values": [], "max_force_error": 0.0, "max_moment_error": 0.0, "max_evaluations": 0, "max_samples": 0, "reset_environments": 0, "full_residual_max_N": 0.0, "cpu_peaks_Pa": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}
+{"tick": 160, "loaded_contacts": 28, "contact_count_per_env": [7, 7, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], "contact_slot_changes": 0, "mu_values": [0.5084417820601791, 0.5127239705117185, 0.5167974671311121, 0.6054935315460935, 0.6408926424106237, 0.6531024606382921, 0.6746881909245573, 0.6862538373716479, 0.7065159419289353, 0.7191016138165071, 0.734051812248577, 0.7635019915792053, 0.8061586974312177, 0.8154345701003987, 0.8187780312788028, 0.8281275278888517], "max_force_error": 6.082161800297017e-09, "max_moment_error": 4.306487301731898e-09, "max_evaluations": 7, "max_samples": 788, "reset_environments": 0, "full_residual_max_N": 7.853422028013612e-12, "cpu_peaks_Pa": [59103.390194478314, 48971.803317018865, 12783.889928248405, 12745.383170350391, 15262.57467313203, 13677.762771724822, 15526.868778366788, 15701.335853199409, 14082.243548573488, 13678.6823791574, 15385.6466526962, 14849.29971105778, 14298.175028495294, 15697.57895967095, 13939.367047573318, 13164.296517776516]}
+{"tick": 320, "loaded_contacts": 41, "contact_count_per_env": [6, 6, 3, 6, 3, 7, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], "contact_slot_changes": 0, "mu_values": [0.5084417820601791, 0.5127239705117185, 0.5167974671311121, 0.6054935315460935, 0.6408926424106237, 0.6531024606382921, 0.6746881909245573, 0.6862538373716479, 0.7065159419289353, 0.7191016138165071, 0.734051812248577, 0.7635019915792053, 0.8061586974312177, 0.8154345701003987, 0.8187780312788028, 0.8281275278888517], "max_force_error": 5.293324949472077e-09, "max_moment_error": 4.291095831871869e-09, "max_evaluations": 12, "max_samples": 906, "reset_environments": 0, "full_residual_max_N": 1.144900977741179e-11, "cpu_peaks_Pa": [58363.673910823636, 56227.60792443438, 68825.84701480766, 55451.47417736215, 76883.33204528799, 58524.13970455136, 14691.980310229708, 15178.634938739438, 13785.734279608516, 13678.68237916276, 15385.646652695166, 14849.299711062138, 14298.175028497566, 15697.578959671473, 13939.367047582258, 13164.296517773566]}
+{"tick": 480, "loaded_contacts": 45, "contact_count_per_env": [1, 2, 3, 6, 2, 6, 3, 6, 5, 3, 3, 1, 1, 1, 1, 1], "contact_slot_changes": 0, "mu_values": [0.5084417820601791, 0.5127239705117185, 0.5167974671311121, 0.6054935315460935, 0.6408926424106237, 0.6531024606382921, 0.6746881909245573, 0.6862538373716479, 0.7065159419289353, 0.7191016138165071, 0.734051812248577, 0.7635019915792053, 0.8061586974312177, 0.8154345701003987, 0.8187780312788028, 0.8281275278888517], "max_force_error": 2.6269376273086653e-09, "max_moment_error": 1.2328509670558648e-09, "max_evaluations": 18, "max_samples": 787, "reset_environments": 0, "full_residual_max_N": 1.2731070646934973e-11, "cpu_peaks_Pa": [15617.613337378347, 17167.542486578983, 75913.34005580722, 58925.817212778944, 82508.59535743356, 57429.192802431855, 76873.6461605303, 61771.59377209148, 62468.76716865751, 67234.24241414177, 73127.41606185707, 14066.090742278862, 13862.597980920536, 15697.578959672526, 13939.36704758581, 13164.296517775845]}
+{"tick": 640, "loaded_contacts": 53, "contact_count_per_env": [1, 1, 3, 6, 1, 0, 4, 6, 4, 2, 4, 4, 3, 7, 6, 1], "contact_slot_changes": 1, "mu_values": [0.5084417820601791, 0.5127239705117185, 0.5167974671311121, 0.6054935315460935, 0.6408926424106237, 0.6531024606382921, 0.6746881909245573, 0.7065159419289353, 0.7191016138165071, 0.734051812248577, 0.7635019915792053, 0.8061586974312177, 0.8154345701003987, 0.8187780312788028, 0.8281275278888517], "max_force_error": 6.6954068373296274e-09, "max_moment_error": 3.8939969497213186e-09, "max_evaluations": 13, "max_samples": 785, "reset_environments": 2, "full_residual_max_N": 1.1977684488314267e-11, "cpu_peaks_Pa": [14420.514445778024, 64711.781781257305, 6630.0479211865195, 57262.39371116111, 16397.990220229727, 9.175763045267177, 81974.32723242155, 65066.13920465372, 67824.25789533342, 73790.99540249065, 75306.23389537318, 62445.21570838238, 69026.50646256075, 55731.61724373068, 59421.33584829472, 12310.025402076897]}
+{"tick": 800, "loaded_contacts": 47, "contact_count_per_env": [6, 7, 3, 1, 1, 1, 1, 0, 1, 1, 1, 4, 3, 6, 5, 6], "contact_slot_changes": 6, "mu_values": [0.5084417820601791, 0.5127239705117185, 0.5167974671311121, 0.6054935315460935, 0.6408926424106237, 0.6531024606382921, 0.6746881909245573, 0.6862538373716479, 0.7065159419289353, 0.7191016138165071, 0.734051812248577, 0.7635019915792053, 0.8061586974312177, 0.8154345701003987, 0.8281275278888517], "max_force_error": 6.4128838843373635e-09, "max_moment_error": 2.4227806697085695e-09, "max_evaluations": 7, "max_samples": 943, "reset_environments": 6, "full_residual_max_N": 1.178433572001254e-11, "cpu_peaks_Pa": [56601.77054025015, 52351.100859848586, 66741.6825161948, 12411.052319939137, 14862.488145514335, 13467.788641181241, 14979.266948683693, 0.010615672927429933, 12355.247888535487, 10053.165424704208, 16959.21177422944, 69414.44030733996, 76097.97272520735, 56333.27869832999, 63261.7480773755, 53757.845241511684]}
+{"tick": 960, "loaded_contacts": 45, "contact_count_per_env": [6, 6, 3, 6, 2, 7, 3, 1, 1, 1, 2, 0, 1, 1, 0, 6], "contact_slot_changes": 1, "mu_values": [0.5127239705117185, 0.5167974671311121, 0.6054935315460935, 0.6408926424106237, 0.6531024606382921, 0.6746881909245573, 0.6862538373716479, 0.7065159419289353, 0.7191016138165071, 0.734051812248577, 0.7635019915792053, 0.8061586974312177, 0.8187780312788028, 0.8281275278888517], "max_force_error": 5.255240911584858e-09, "max_moment_error": 2.3983225379385602e-09, "max_evaluations": 13, "max_samples": 847, "reset_environments": 10, "full_residual_max_N": 1.3471070318193494e-11, "cpu_peaks_Pa": [58779.47768775363, 58791.59826681265, 70869.29574777724, 53946.18585326656, 77244.70779554057, 58111.47459079253, 73594.01783859794, 14912.576382857984, 13370.536247247224, 13355.612244816824, 25635.55560705702, 0.11737931828670914, 15370.55840318997, 16243.269002597317, 26.06509217573636, 59209.05047021532]}
+{"tick": 1120, "loaded_contacts": 48, "contact_count_per_env": [1, 4, 0, 6, 2, 6, 3, 6, 4, 3, 5, 5, 1, 1, 1, 1], "contact_slot_changes": 1, "mu_values": [0.5084417820601791, 0.5127239705117185, 0.5167974671311121, 0.6054935315460935, 0.6408926424106237, 0.6746881909245573, 0.6862538373716479, 0.7065159419289353, 0.7191016138165071, 0.734051812248577, 0.7635019915792053, 0.8061586974312177, 0.8154345701003987, 0.8187780312788028, 0.8281275278888517], "max_force_error": 4.66806694914687e-09, "max_moment_error": 3.458307746817527e-09, "max_evaluations": 15, "max_samples": 783, "reset_environments": 15, "full_residual_max_N": 1.393509368249523e-11, "cpu_peaks_Pa": [15647.809081926669, 62757.96290438016, 39.41077299057115, 59539.31246429009, 84199.37893651036, 59660.2740324639, 78641.8647100007, 61357.49577520663, 62662.76213887042, 68382.89313597587, 73417.82670464917, 63992.82598122404, 13479.268354195283, 15358.299974302869, 43769.87115161653, 11059.266749984325]}
+{"tick": 1279, "loaded_contacts": 48, "contact_count_per_env": [1, 1, 1, 1, 1, 1, 1, 6, 4, 2, 4, 4, 3, 6, 6, 7], "contact_slot_changes": 0, "mu_values": [0.5084417820601791, 0.5127239705117185, 0.5167974671311121, 0.6054935315460935, 0.6408926424106237, 0.6531024606382921, 0.6746881909245573, 0.6862538373716479, 0.7065159419289353, 0.7191016138165071, 0.734051812248577, 0.7635019915792053, 0.8061586974312177, 0.8154345701003987, 0.8187780312788028, 0.8281275278888517], "max_force_error": 8.196028564074873e-09, "max_moment_error": 2.8707602639688325e-09, "max_evaluations": 11, "max_samples": 1013, "reset_environments": 19, "full_residual_max_N": 1.0719914927117099e-11, "cpu_peaks_Pa": [14052.85195477412, 14027.552925975675, 12364.319001876896, 26973.034281355252, 16798.042110663544, 13312.07969565063, 15610.035092116816, 44645.17649383991, 69194.00645900614, 75942.2806798012, 76909.25673014272, 64056.05517705242, 70243.73863291537, 55444.627109552915, 61112.41670511929, 57297.09399045453]}
+[38;5;159m[Genesis] [22:05:48] [INFO] 💤 Exiting Genesis and caching compiled kernels...[0m

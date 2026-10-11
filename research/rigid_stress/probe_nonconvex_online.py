@@ -22,6 +22,7 @@ def main():
     parser.add_argument("--steps", type=int, default=640)
     parser.add_argument("--seed", type=int, default=623001)
     parser.add_argument("--contact-block-size", type=int, default=2)
+    parser.add_argument("--intrinsic-support", choices=("contact", "pair_union"), default="contact")
     parser.add_argument("--oracle-stride", type=int, default=20)
     parser.add_argument("--egg-geometry", choices=("urdf", "mesh64"), default="urdf")
     parser.add_argument("--collision-method", choices=("auto", "mpr", "gjk"), default="auto")
@@ -47,6 +48,7 @@ def main():
         egg_geometry=args.egg_geometry,
         use_gjk_collision={"auto": None, "mpr": False, "gjk": True}[args.collision_method],
         enable_contact_patch={"auto": None, "on": True, "off": False}[args.contact_patch],
+        intrinsic_support=args.intrinsic_support,
     )
     solver = workload.scene.rigid_solver
     entry = solver.stress_recovery.links[0]

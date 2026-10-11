@@ -1,0 +1,134 @@
+[Quadrants] version 1.3.3, llvm 22.1.0, commit 00423caa, linux, python 3.10.12
+[38;5;226m[Genesis] [22:09:38] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint1`[0m
+[38;5;226m[Genesis] [22:09:38] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint2`[0m
+[38;5;226m[Genesis] [22:09:39] [WARNING] Neutral robot position (qpos0) exceeds joint limits.[0m
+[38;5;226m[Genesis] [22:09:39] [WARNING] Constraint solver time constant should be greater than 2*substep_dt. timeconst is changed from `0.005` to `0.02`). Decrease simulation timestep or increase timeconst to avoid altering the original value.[0m
+[38;5;226m[Genesis] [22:09:42] [WARNING] Filtered out geometry pairs causing self-collision for the neutral configuration (qpos0): (6, 11), (7, 11), (14, 21), (15, 20), (16, 23), (17, 22). Consider tuning Morph option 'decompose_robot_error_threshold' or specify dedicated collision meshes. This behavior can be disabled by setting Morph option 'enable_neutral_collision=True'.[0m
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+libEGL warning: failed to open /dev/dri/renderD135: Permission denied
+
+libEGL warning: failed to open /dev/dri/card8: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD134: Permission denied
+
+libEGL warning: failed to open /dev/dri/card7: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD133: Permission denied
+
+libEGL warning: failed to open /dev/dri/card6: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD132: Permission denied
+
+libEGL warning: failed to open /dev/dri/card5: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD131: Permission denied
+
+libEGL warning: failed to open /dev/dri/card4: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD130: Permission denied
+
+libEGL warning: failed to open /dev/dri/card3: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD129: Permission denied
+
+libEGL warning: failed to open /dev/dri/card2: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD128: Permission denied
+
+libEGL warning: failed to open /dev/dri/card1: Permission denied
+
+[W 10/11/26 22:10:46.291 2385917] QuadrantsWarning
+While compiling `kernel_inputs_c944_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/egg_stress_controller.py", line 107, in kernel_inputs:
+        grip[i_b] = 0.04 if value < 0.15 or value > 0.9 else 0.018
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+[W 10/11/26 22:10:46.291 2385917] QuadrantsWarning
+While compiling `kernel_inputs_c944_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/egg_stress_controller.py", line 108, in kernel_inputs:
+        limit[i_b] = 0.055 if value >= 0.7 and value < 0.76 else 4.0
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+======================================================================================
+Kernel Profiler(count, default) @ CUDA on NVIDIA RTX PRO 6000 Blackwell Server Edition
+======================================================================================
+[      %     total   count |      min       avg       max   ] Kernel name
+--------------------------------------------------------------------------------------
+[ 85.53%   2.679 s     20x |  133.872   133.928   134.007 ms] kernel_fit_tractions_c752_0_kernel_1_range_for
+[  6.36%   0.199 s     20x |    9.953     9.959     9.971 ms] kernel_scatter_tractions_c754_0_kernel_4_range_for
+[  6.31%   0.198 s     20x |    9.873     9.882     9.894 ms] kernel_commit_intrinsic_contacts_c780_0_kernel_1_range_for
+[  0.49%   0.015 s     20x |    0.760     0.771     0.784 ms] kernel_surface_fan_profiles_c760_0_kernel_5_range_for
+[  0.47%   0.015 s     20x |    0.725     0.731     0.737 ms] kernel_resolve_sources_c746_0_kernel_1_range_for
+[  0.42%   0.013 s     20x |    0.649     0.653     0.655 ms] kernel_pack_intrinsic_contacts_c772_0_kernel_2_range_for
+[  0.08%   0.003 s     20x |    0.130     0.133     0.136 ms] kernel_footprint_ports_c758_0_kernel_3_range_for
+[  0.04%   0.001 s     20x |    0.063     0.064     0.069 ms] kernel_surface_pack_c844_0_kernel_1_range_for
+[  0.02%   0.001 s     20x |    0.034     0.036     0.039 ms] kernel_bind_source_vertices_c770_0_kernel_1_range_for
+[  0.01%   0.000 s     20x |    0.014     0.016     0.019 ms] kernel_pack_contact_groups_c774_0_kernel_4_range_for
+[  0.01%   0.000 s     20x |    0.014     0.016     0.019 ms] kernel_capture_rigid_sources_c744_0_kernel_1_range_for
+[  0.01%   0.000 s     20x |    0.014     0.015     0.020 ms] kernel_scatter_tractions_c754_0_kernel_3_range_for
+[  0.01%   0.000 s     20x |    0.013     0.014     0.017 ms] kernel_surface_fan_profiles_c760_0_kernel_1_range_for
+[  0.01%   0.000 s     20x |    0.013     0.014     0.017 ms] kernel_bind_traction_support_c776_0_kernel_1_range_for
+[  0.01%   0.000 s     20x |    0.012     0.014     0.017 ms] kernel_pack_intrinsic_contacts_c772_0_kernel_4_range_for
+[  0.01%   0.000 s     20x |    0.013     0.014     0.017 ms] kernel_associate_c728_0_kernel_1_range_for
+[  0.01%   0.000 s     20x |    0.012     0.014     0.016 ms] kernel_pack_contact_groups_c774_0_kernel_2_range_for
+[  0.01%   0.000 s     20x |    0.013     0.014     0.016 ms] kernel_surface_fan_profiles_c760_0_kernel_3_range_for
+[  0.01%   0.000 s     20x |    0.012     0.014     0.020 ms] kernel_load_intrinsic_contacts_c778_0_kernel_1_range_for
+[  0.01%   0.000 s     20x |    0.012     0.014     0.016 ms] kernel_load_intrinsic_contacts_c778_0_kernel_3_range_for
+[  0.01%   0.000 s     20x |    0.012     0.014     0.016 ms] kernel_surface_fan_profiles_c760_0_kernel_6_range_for
+[  0.01%   0.000 s     20x |    0.012     0.014     0.016 ms] kernel_certify_continuous_force_c756_0_kernel_1_range_for
+[  0.01%   0.000 s     20x |    0.012     0.014     0.017 ms] kernel_begin_step_c858_0_kernel_1_range_for
+[  0.01%   0.000 s     20x |    0.012     0.014     0.015 ms] kernel_footprint_ports_c758_0_kernel_1_range_for
+[  0.01%   0.000 s     20x |    0.013     0.014     0.014 ms] kernel_associate_c728_0_kernel_3_range_for
+[  0.01%   0.000 s     20x |    0.012     0.014     0.016 ms] kernel_scatter_tractions_c754_0_kernel_1_range_for
+[  0.01%   0.000 s     20x |    0.007     0.011     0.021 ms] kernel_certify_continuous_force_c756_0_kernel_0_serial
+[  0.01%   0.000 s     20x |    0.007     0.009     0.014 ms] kernel_associate_c728_0_kernel_0_serial
+[  0.01%   0.000 s     20x |    0.007     0.009     0.012 ms] kernel_scatter_tractions_c754_0_kernel_0_serial
+[  0.01%   0.000 s     20x |    0.007     0.008     0.011 ms] kernel_bind_source_vertices_c770_0_kernel_0_serial
+[  0.01%   0.000 s     20x |    0.006     0.008     0.014 ms] kernel_resolve_sources_c746_0_kernel_0_serial
+[  0.01%   0.000 s     20x |    0.006     0.008     0.010 ms] kernel_footprint_ports_c758_0_kernel_0_serial
+[  0.00%   0.000 s     20x |    0.006     0.008     0.010 ms] kernel_fit_tractions_c752_0_kernel_0_serial
+[  0.00%   0.000 s     20x |    0.006     0.008     0.011 ms] kernel_commit_intrinsic_contacts_c780_0_kernel_0_serial
+[  0.00%   0.000 s     20x |    0.006     0.008     0.016 ms] kernel_begin_step_c858_0_kernel_0_serial
+[  0.00%   0.000 s     20x |    0.006     0.007     0.012 ms] kernel_bind_traction_support_c776_0_kernel_0_serial
+[  0.00%   0.000 s     20x |    0.006     0.007     0.010 ms] kernel_capture_rigid_sources_c744_0_kernel_0_serial
+[  0.00%   0.000 s     20x |    0.006     0.007     0.009 ms] kernel_load_intrinsic_contacts_c778_0_kernel_0_serial
+[  0.00%   0.000 s     20x |    0.006     0.007     0.009 ms] kernel_pack_intrinsic_contacts_c772_0_kernel_0_range_for
+[  0.00%   0.000 s     20x |    0.006     0.007     0.010 ms] kernel_pack_contact_groups_c774_0_kernel_3_serial
+[  0.00%   0.000 s     20x |    0.006     0.007     0.009 ms] kernel_surface_fan_profiles_c760_0_kernel_0_serial
+[  0.00%   0.000 s     20x |    0.006     0.007     0.009 ms] kernel_pack_contact_groups_c774_0_kernel_0_range_for
+[  0.00%   0.000 s     20x |    0.005     0.007     0.011 ms] kernel_pack_intrinsic_contacts_c772_0_kernel_1_serial
+[  0.00%   0.000 s     20x |    0.006     0.007     0.009 ms] kernel_surface_fan_profiles_c760_0_kernel_2_serial
+[  0.00%   0.000 s     20x |    0.005     0.007     0.010 ms] kernel_pack_intrinsic_contacts_c772_0_kernel_3_serial
+[  0.00%   0.000 s     20x |    0.005     0.007     0.009 ms] kernel_footprint_ports_c758_0_kernel_2_serial
+[  0.00%   0.000 s     20x |    0.005     0.007     0.012 ms] kernel_pack_contact_groups_c774_0_kernel_1_serial
+[  0.00%   0.000 s     20x |    0.005     0.006     0.009 ms] kernel_surface_fan_profiles_c760_0_kernel_4_serial
+[  0.00%   0.000 s     20x |    0.005     0.006     0.010 ms] kernel_scatter_tractions_c754_0_kernel_2_serial
+[  0.00%   0.000 s     20x |    0.005     0.006     0.009 ms] kernel_load_intrinsic_contacts_c778_0_kernel_2_serial
+[  0.00%   0.000 s     20x |    0.005     0.006     0.008 ms] kernel_associate_c728_0_kernel_2_serial
+[  0.00%   0.000 s     20x |    0.003     0.003     0.012 ms] kernel_surface_pack_c844_0_kernel_0_serial
+--------------------------------------------------------------------------------------
+[100.00%] Total execution time:   3.132 s   number of results: 52
+======================================================================================
+Traceback (most recent call last):
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/speed_benchmark/rigid_stress.py", line 786, in <module>
+    main()
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/speed_benchmark/rigid_stress.py", line 701, in main
+    for item in workload.scene.rigid_solver.stress_recovery.data:
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/recovery.py", line 417, in data
+    yield from entry.intrinsic.data(f"stress.{i}.intrinsic")
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/intrinsic.py", line 206, in data
+    yield from iter_data(value, f"{prefix}.{name}")
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/array_class.py", line 189, in iter_data
+    yield from iter_data(value, f"{name}.{member}", kind if stated_kind is None else stated_kind)
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/array_class.py", line 188, in iter_data
+    stated_kind = type(struct).kind
+AttributeError: type object 'StressTractionSupport' has no attribute 'kind'
+
+[38;5;9m[Genesis] [22:11:55] [ERROR] AttributeError: type object 'StressTractionSupport' has no attribute 'kind'[0m

@@ -316,6 +316,7 @@ def main() -> None:
     parser.add_argument("--varied", action="store_true")
     parser.add_argument("--seed", type=int, default=510000)
     parser.add_argument("--contact-model", choices=("pressure", "intrinsic"), default="pressure")
+    parser.add_argument("--intrinsic-support", choices=("contact", "pair_union"), default="contact")
     parser.add_argument("--contact-block-size", type=int, default=16)
     parser.add_argument("--egg-geometry", choices=("urdf", "mesh64"), default="urdf")
     parser.add_argument("--collision-method", choices=("auto", "mpr", "gjk"), default="auto")
@@ -402,6 +403,7 @@ def main() -> None:
         egg_geometry=args.egg_geometry,
         use_gjk_collision={"auto": None, "mpr": False, "gjk": True}[args.collision_method],
         enable_contact_patch={"auto": None, "on": True, "off": False}[args.contact_patch],
+        intrinsic_support=args.intrinsic_support,
     )
     solver = workload.scene.rigid_solver
     if args.save_conditions is not None:
@@ -515,6 +517,10 @@ def main() -> None:
             else "finite_pad_adaptive_q10",
             "contact_model": args.contact_model,
             "contact_block_size": args.contact_block_size,
+            "intrinsic_support": args.intrinsic_support,
+            "effective_contact_block_size": solver.stress_recovery.links[0].intrinsic.contacts.valid.shape[0]
+            if args.contact_model == "intrinsic" and workload.stress
+            else args.contact_block_size,
             "egg_geometry": args.egg_geometry,
             "collision_method": args.collision_method,
             "contact_patch": args.contact_patch,

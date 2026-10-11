@@ -154,7 +154,12 @@ def func_footprint_point_distance(
 
 
 def create_surface_fan_tractions(
-    surface_info: StressSurfaceInfo, n_contacts: int, n_envs: int, *, coordinate_power: int = 2
+    surface_info: StressSurfaceInfo,
+    n_contacts: int,
+    n_envs: int,
+    *,
+    coordinate_power: int = 2,
+    shared_support: bool = False,
 ) -> StressTractionState:
     """Partition every boundary face about its closest point to the anchor.
 
@@ -172,6 +177,7 @@ def create_surface_fan_tractions(
         packed_samples=True,
         fan_faces=n_faces,
         fan_coordinate_power=coordinate_power,
+        shared_support=shared_support,
     )
 
 
@@ -245,6 +251,7 @@ def create_anchor_fan_tractions(
     *,
     compact: bool = False,
     packed: bool = False,
+    shared_support: bool = False,
 ) -> StressTractionState:
     """Integrate the witnessed face as three finite triangles incident to its anchor.
 
@@ -260,6 +267,7 @@ def create_anchor_fan_tractions(
         local_samples=True,
         local_sample_count=3 * surface_info.shape.shape[0] if compact else None,
         packed_samples=packed,
+        shared_support=shared_support,
     )
 
 

@@ -60,6 +60,20 @@ def kernel_traction_geometry(surface_info: StressSurfaceInfo, traction_info: Str
 
 
 @dataclass(frozen=True)
+class StressTractionSupport:
+    """Declared source ranges for componentwise fitting on a pair's finite support."""
+
+    kind: ClassVar[DataKind] = DataKind.SCRATCH
+
+    start: qd.Tensor
+    end: qd.Tensor
+    valid: qd.Tensor
+    center: qd.Tensor
+    radius: qd.Tensor
+    friction: qd.Tensor
+
+
+@dataclass(frozen=True)
 class StressTractionState:
     kind: ClassVar[DataKind] = DataKind.SCRATCH
 
@@ -81,6 +95,7 @@ class StressTractionState:
     sample_indices: qd.Tensor
     fan_barycentric: qd.Tensor
     fan_coordinate_power: qd.Tensor
+    support: StressTractionSupport
 
 
 def create_tractions(
@@ -93,6 +108,7 @@ def create_tractions(
     packed_samples: bool = False,
     fan_faces: int = 0,
     fan_coordinate_power: int = 1,
+    shared_support: bool = False,
 ) -> StressTractionState:
     """Allocate the exact supplied quadrature subproblem, without a force cloud.
 
@@ -123,10 +139,34 @@ def create_tractions(
         sample_indices=V(dtype=gs.qd_int, shape=(n_samples, n_contacts, n_envs) if packed_samples else ()),
         fan_barycentric=V_VEC(3, dtype=gs.qd_float, shape=(fan_faces, n_contacts, n_envs) if fan_faces else ()),
         fan_coordinate_power=V(dtype=gs.qd_int, shape=()),
+        support=StressTractionSupport(
+            start=V(dtype=gs.qd_int, shape=shape if shared_support else ()),
+            end=V(dtype=gs.qd_int, shape=shape if shared_support else ()),
+            valid=V(dtype=gs.qd_bool, shape=shape if shared_support else ()),
+            center=V_VEC(3, dtype=gs.qd_float, shape=shape if shared_support else ()),
+            radius=V(dtype=gs.qd_float, shape=shape if shared_support else ()),
+            friction=V(dtype=gs.qd_float, shape=shape if shared_support else ()),
+        ),
     )
     state.sample_count.fill(0 if packed_samples else n_samples)
     state.fan_coordinate_power.fill(fan_coordinate_power)
     return state
+
+
+@qd.func
+def func_traction_support_range(i_c: int, i_b: int, traction_state: StressTractionState):
+    start, end = i_c, i_c + 1
+    if qd.static(len(traction_state.support.start.shape) == 2):
+        start = traction_state.support.start[i_c, i_b]
+        end = traction_state.support.end[i_c, i_b]
+    return start, end
+
+
+@qd.func
+def func_traction_source_friction(i_s: int, i_b: int, friction: float, traction_state: StressTractionState):
+    if qd.static(len(traction_state.support.friction.shape) == 2):
+        friction = traction_state.support.friction[i_s, i_b]
+    return friction
 
 
 @qd.func
@@ -326,25 +366,27 @@ def func_traction_dual(
     energy = target.dot(dual)
     gradient = target
     hessian = qd.Matrix.zero(gs.qd_float, 6, 6)
-    n_samples = traction_state.sample_count[i_c, i_b]
-    for i_q in range(n_samples):
-        weight = traction_state.profile[i_q, i_c, i_b] / traction_state.weight_sum[i_c, i_b]
-        if weight > 0.0:
-            position, normal = func_traction_geometry(i_q, i_c, i_b, traction_state, traction_info)
-            relative = (position - anchor) / radius
-            value = force - dual[0:3] - dual[3:6].cross(relative)
-            projected, jacobian = func_coulomb_projection(value, normal, friction)
-            moment = relative.cross(projected)
-            wrench = qd.Vector([projected[0], projected[1], projected[2], moment[0], moment[1], moment[2]])
-            operator = qd.Matrix.zero(gs.qd_float, 6, 3)
-            for a in qd.static(range(3)):
-                operator[a, a] = 1.0
-            operator[3, 1], operator[3, 2] = -relative[2], relative[1]
-            operator[4, 0], operator[4, 2] = relative[2], -relative[0]
-            operator[5, 0], operator[5, 1] = -relative[1], relative[0]
-            energy += 0.5 * weight * projected.dot(projected)
-            gradient -= weight * wrench
-            hessian += weight * (operator @ jacobian @ operator.transpose())
+    start, end = func_traction_support_range(i_c, i_b, traction_state)
+    for i_s in range(start, end):
+        source_friction = func_traction_source_friction(i_s, i_b, friction, traction_state)
+        for i_q in range(traction_state.sample_count[i_s, i_b]):
+            weight = traction_state.profile[i_q, i_s, i_b] / traction_state.weight_sum[i_c, i_b]
+            if weight > 0.0:
+                position, normal = func_traction_geometry(i_q, i_s, i_b, traction_state, traction_info)
+                relative = (position - anchor) / radius
+                value = force - dual[0:3] - dual[3:6].cross(relative)
+                projected, jacobian = func_coulomb_projection(value, normal, source_friction)
+                moment = relative.cross(projected)
+                wrench = qd.Vector([projected[0], projected[1], projected[2], moment[0], moment[1], moment[2]])
+                operator = qd.Matrix.zero(gs.qd_float, 6, 3)
+                for a in qd.static(range(3)):
+                    operator[a, a] = 1.0
+                operator[3, 1], operator[3, 2] = -relative[2], relative[1]
+                operator[4, 0], operator[4, 2] = relative[2], -relative[0]
+                operator[5, 0], operator[5, 1] = -relative[1], relative[0]
+                energy += 0.5 * weight * projected.dot(projected)
+                gradient -= weight * wrench
+                hessian += weight * (operator @ jacobian @ operator.transpose())
     return energy, gradient, hessian
 
 
@@ -412,18 +454,33 @@ def kernel_fit_tractions(
             is_valid = is_valid and qd.abs(finite) < qd.math.inf
             weight_sum = gs.qd_float(0.0)
             lipschitz = gs.qd_float(0.0)
-            n_samples = traction_state.sample_count[i_c, i_b]
-            is_valid = is_valid and 0 <= n_samples <= traction_state.profile.shape[0]
-            for i_q in range(n_samples):
-                weight = traction_state.profile[i_q, i_c, i_b]
-                is_valid = is_valid and weight >= 0.0 and weight < qd.math.inf
-                if weight > 0.0 and is_valid:
-                    position, normal = func_traction_geometry(i_q, i_c, i_b, traction_state, traction_info)
-                    relative = (position - anchor) / radius
-                    is_valid = is_valid and qd.abs(normal.dot(normal) - 1.0) <= 64.0 * epsilon
-                    is_valid = is_valid and relative.norm() <= 1.0 + 64.0 * epsilon
-                    weight_sum += weight
-                    lipschitz += weight * (1.0 + relative.dot(relative))
+            start, end = func_traction_support_range(i_c, i_b, traction_state)
+            is_valid = is_valid and 0 <= start < end <= contact_state.valid.shape[0]
+            for i_s in range(start, end):
+                support_center, support_radius = anchor, radius
+                if qd.static(len(traction_state.support.valid.shape) == 2):
+                    is_valid = is_valid and traction_state.support.valid[i_s, i_b]
+                    support_center = traction_state.support.center[i_s, i_b]
+                    support_radius = traction_state.support.radius[i_s, i_b]
+                source_friction = func_traction_source_friction(i_s, i_b, friction, traction_state)
+                is_valid = is_valid and source_friction >= 0.0 and source_friction < qd.math.inf
+                is_valid = is_valid and support_radius > 0.0 and support_radius < qd.math.inf
+                n_samples = traction_state.sample_count[i_s, i_b]
+                is_valid = is_valid and 0 <= n_samples <= traction_state.profile.shape[0]
+                for i_q in range(n_samples):
+                    weight = traction_state.profile[i_q, i_s, i_b]
+                    is_valid = is_valid and weight >= 0.0 and weight < qd.math.inf
+                    if weight > 0.0 and is_valid:
+                        position, normal = func_traction_geometry(i_q, i_s, i_b, traction_state, traction_info)
+                        relative = (position - anchor) / radius
+                        is_valid = is_valid and qd.abs(normal.dot(normal) - 1.0) <= 64.0 * epsilon
+                        # Shared support validates each destination's unchanged disk,
+                        # while moments retain the original target radius and anchor.
+                        is_valid = is_valid and (position - support_center).norm() <= support_radius * (
+                            1.0 + 64.0 * epsilon
+                        )
+                        weight_sum += weight
+                        lipschitz += weight * (1.0 + relative.dot(relative))
             if not is_valid:
                 traction_state.status[i_c, i_b] = StressTractionStatus.INVALID_INPUT
             elif weight_sum <= 0.0:
@@ -513,14 +570,18 @@ def kernel_fit_tractions(
                         # Continuous-footprint incompatibility requires a separate geometry certificate.
                         ray = -current / current.norm()
                         polar_max = gs.qd_float(-float("inf"))
-                        for i_q in range(n_samples):
-                            if traction_state.profile[i_q, i_c, i_b] > 0.0:
-                                position, normal = func_traction_geometry(i_q, i_c, i_b, traction_state, traction_info)
-                                relative = (position - anchor) / radius
-                                value = ray[0:3] + ray[3:6].cross(relative)
-                                compression = value.dot(normal)
-                                polar = compression + friction * (value - compression * normal).norm()
-                                polar_max = qd.max(polar_max, polar)
+                        for i_s in range(start, end):
+                            source_friction = func_traction_source_friction(i_s, i_b, friction, traction_state)
+                            for i_q in range(traction_state.sample_count[i_s, i_b]):
+                                if traction_state.profile[i_q, i_s, i_b] > 0.0:
+                                    position, normal = func_traction_geometry(
+                                        i_q, i_s, i_b, traction_state, traction_info
+                                    )
+                                    relative = (position - anchor) / radius
+                                    value = ray[0:3] + ray[3:6].cross(relative)
+                                    compression = value.dot(normal)
+                                    polar = compression + source_friction * (value - compression * normal).norm()
+                                    polar_max = qd.max(polar_max, polar)
                         margin = target.dot(ray)
                         if polar_max < -64.0 * epsilon and margin > fit_tolerance:
                             traction_state.status[i_c, i_b] = StressTractionStatus.SAMPLED_WRENCH_INFEASIBLE
@@ -537,20 +598,35 @@ def func_sample_traction(
     traction_state: StressTractionState,
     traction_info: StressTractionInfo,
 ):
+    return func_source_traction(i_q, i_c, i_c, i_b, contact_state, traction_state, traction_info)
+
+
+@qd.func
+def func_source_traction(
+    i_q: int,
+    i_s: int,
+    i_c: int,
+    i_b: int,
+    contact_state: StressContactState,
+    traction_state: StressTractionState,
+    traction_info: StressTractionInfo,
+):
+    """Evaluate an original wrench component at one actual destination source."""
     result = qd.Vector.zero(gs.qd_float, 3)
     if (
-        i_q < traction_state.sample_count[i_c, i_b]
+        i_q < traction_state.sample_count[i_s, i_b]
         and traction_state.status[i_c, i_b] == StressTractionStatus.SUCCESS
         and traction_state.scale[i_c, i_b] > 0.0
     ):
-        weight = traction_state.profile[i_q, i_c, i_b] / traction_state.weight_sum[i_c, i_b]
+        weight = traction_state.profile[i_q, i_s, i_b] / traction_state.weight_sum[i_c, i_b]
         if weight > 0.0:
-            position, normal = func_traction_geometry(i_q, i_c, i_b, traction_state, traction_info)
+            position, normal = func_traction_geometry(i_q, i_s, i_b, traction_state, traction_info)
             relative = (position - contact_state.center[i_c, i_b]) / contact_state.radius[i_c, i_b]
             dual = traction_state.dual[i_c, i_b]
             value = contact_state.force[i_c, i_b] / traction_state.scale[i_c, i_b]
             value -= dual[0:3] + dual[3:6].cross(relative)
-            projected, _ = func_coulomb_projection(value, normal, contact_state.friction[i_c, i_b])
+            friction = func_traction_source_friction(i_s, i_b, contact_state.friction[i_c, i_b], traction_state)
+            projected, _ = func_coulomb_projection(value, normal, friction)
             result = weight * traction_state.scale[i_c, i_b] * projected
     return result
 
@@ -573,13 +649,16 @@ def kernel_scatter_tractions(
         if contact_state.valid[i_c, i_b] and traction_state.status[i_c, i_b] != StressTractionStatus.SUCCESS:
             state.step_valid[i_b] = False
             qd.atomic_or(errno[i_b], array_class.ErrorCode.INVALID_STRESS_LOAD)
-    for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
-        if contact_state.valid[i_c, i_b]:
-            n_samples = traction_state.sample_count[i_c, i_b]
+    for i_s, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
+        if contact_state.valid[i_s, i_b]:
+            n_samples = traction_state.sample_count[i_s, i_b]
+            start, end = func_traction_support_range(i_s, i_b, traction_state)
             for i_q in range(n_samples):
-                if traction_state.profile[i_q, i_c, i_b] > 0.0:
-                    force = func_sample_traction(i_q, i_c, i_b, contact_state, traction_state, traction_info)
-                    i_face, basis = func_traction_shape(i_q, i_c, i_b, traction_state, surface_info, traction_info)
+                if traction_state.profile[i_q, i_s, i_b] > 0.0:
+                    force = qd.Vector.zero(gs.qd_float, 3)
+                    for i_c in range(start, end):
+                        force += func_source_traction(i_q, i_s, i_c, i_b, contact_state, traction_state, traction_info)
+                    i_face, basis = func_traction_shape(i_q, i_s, i_b, traction_state, surface_info, traction_info)
                     for a in qd.static(range(6)):
                         i_node = stress_info.surface_nodes[i_face, a]
                         for k in qd.static(range(3)):
