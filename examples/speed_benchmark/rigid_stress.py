@@ -319,6 +319,7 @@ def main() -> None:
     parser.add_argument("--contact-block-size", type=int, default=16)
     parser.add_argument("--egg-geometry", choices=("urdf", "mesh64"), default="urdf")
     parser.add_argument("--collision-method", choices=("auto", "mpr", "gjk"), default="auto")
+    parser.add_argument("--contact-patch", choices=("auto", "on", "off"), default="auto")
     parser.add_argument("--source-revision", default=os.environ.get("RIGID_STRESS_SOURCE_REVISION", "unrecorded"))
     parser.add_argument("--conditions", type=Path, help="Repeat a frozen condition bank, including controller targets.")
     parser.add_argument("--save-conditions", type=Path, help="Save the constructed condition bank before warmup.")
@@ -400,6 +401,7 @@ def main() -> None:
         contact_block_size=args.contact_block_size,
         egg_geometry=args.egg_geometry,
         use_gjk_collision={"auto": None, "mpr": False, "gjk": True}[args.collision_method],
+        enable_contact_patch={"auto": None, "on": True, "off": False}[args.contact_patch],
     )
     solver = workload.scene.rigid_solver
     if args.save_conditions is not None:
@@ -508,13 +510,14 @@ def main() -> None:
             "substeps": 1,
             "varied": args.varied,
             "seed": args.seed,
-            "load_model": "intrinsic_surface_fan_q10_ports8_adjacent_unfolding"
+            "load_model": "intrinsic_surface_fan_q10_squared_coordinates_ports8_adjacent_unfolding"
             if args.contact_model == "intrinsic"
             else "finite_pad_adaptive_q10",
             "contact_model": args.contact_model,
             "contact_block_size": args.contact_block_size,
             "egg_geometry": args.egg_geometry,
             "collision_method": args.collision_method,
+            "contact_patch": args.contact_patch,
             "condition_count": workload.condition_count,
             "conditions": str(args.conditions) if args.conditions is not None else None,
             "conditions_sha256": hashlib.sha256(args.conditions.read_bytes()).hexdigest()

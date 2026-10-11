@@ -144,16 +144,20 @@ def func_surface_segment(
     scale = qd.max(direction.norm(), 1e-30)
     normal = surface_info.face_normal[i_anchor]
     tolerance = gs.qd_float(2e-12)
+    epsilon = gs.qd_float(2.220446049250313e-16)
     if qd.static(gs.qd_float == qd.f32):
         tolerance = 2e-5
+        epsilon = 1.1920928955078125e-7
     current, parameter = i_anchor, gs.qd_float(0.0)
     active, accepted = True, False
     for _ in range(stress_info.surface_nodes.shape[0]):
         if active:
             origin = surface_info.face_origin[current]
+            # Plane subtraction/dot products round at the coordinate scale, even for a very short segment.
+            plane_tolerance = tolerance * scale + 32.0 * epsilon * (anchor.norm() + target.norm() + origin.norm())
             coplanar = (surface_info.face_normal[current] - normal).norm() <= tolerance
-            coplanar = coplanar and qd.abs(normal.dot(anchor - origin)) <= tolerance * scale
-            coplanar = coplanar and qd.abs(normal.dot(direction)) <= tolerance * scale
+            coplanar = coplanar and qd.abs(normal.dot(anchor - origin)) <= plane_tolerance
+            coplanar = coplanar and qd.abs(normal.dot(direction)) <= plane_tolerance
             start = surface_info.face_dual[current] @ (anchor - origin)
             delta = surface_info.face_dual[current] @ direction
             bary = qd.Vector([1.0 - start.sum(), start[0], start[1]])

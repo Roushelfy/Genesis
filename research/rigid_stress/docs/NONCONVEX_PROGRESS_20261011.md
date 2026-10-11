@@ -6,7 +6,9 @@ not yet established. The initial branch source is `1d6babf7`.
 
 Current integration work and the every-step contact diagnoses are recorded in
 [the surface-fan checkpoint](NATIVE_SURFACE_FAN_PROGRESS_20261011.md) and
-[the source/profile checkpoint](NATIVE_SOURCE_PROFILE_PROGRESS_20261011.md).
+[the source/profile checkpoint](NATIVE_SOURCE_PROFILE_PROGRESS_20261011.md),
+with selected squared-coordinate integration and the latest source failures in
+[the squared-fan checkpoint](NATIVE_SQUARED_FAN_PROGRESS_20261011.md).
 Its opt-in streamed path is now connected to rigid recovery; the sections below
 retain the earlier immutable checkpoint history and its then-current limits.
 
@@ -19,9 +21,9 @@ retain the earlier immutable checkpoint history and its then-current limits.
 | Intrinsic finite footprint | Verified paths, hole/gap exclusion, explicit radius/profile and distance error | Finite surface fans, adjacent unfolding and streamed live integration pass targeted CPU/CUDA and B4 checks; general refinement pending |
 | Six-component vector fit | Original/projected/P2 wrench, local cones, offset tangential load and constrained corner fits | Native dual and signed scatter pass CPU/CUDA and every-step B4 checks; broader live acceptance pending |
 | Failure diagnostics | Ambiguity, unresolved integration/distance, numerical fitting and physical incompatibility | Standalone statuses and independent sampled-cone feasibility checks; general continuous-model diagnostics pending |
-| Same-mesh numerical recovery | Independent CPU FP64 nodal loads, complete residual/gauge rows, full/max stress | 40 CPU/40 CUDA cases and 132 B4 live CPU full fields pass; larger complete trajectories pending |
+| Same-mesh numerical recovery | Independent CPU FP64 nodal loads, complete residual/gauge rows, full/max stress | Selected squared-fan source passes 45 CPU/45 CUDA cases, including saved tick594/1076 and varied actual mu; larger complete trajectories pending |
 | Dynamic lifecycle | Motion, slip/release, rotations, source changes, batch isolation, partial reset/state restore | B4 640 steps and two resets pass; actual recovery leaves 213 rigid fields byte-identical at 17 checks; broader lifecycle pending |
-| Existing Franka egg | Legal changing contacts, actual varied combined friction, rigid trajectory isolation | B4 new-law trajectory passes; B16 default producer emits continuously incompatible force at tick591; source remedy pending |
+| Existing Franka egg | Legal changing contacts, actual varied combined friction, rigid trajectory isolation | Squared-fan B32 passes tick594 but fails plane contact at710; experimental warp B16 passes1076 but fails1160; continuous incompatibility/source remedy pending |
 | Matched performance | New-law four-scope baseline, detailed profiles, measured candidate decisions and repeated throughput | First B4 intrinsic profile complete; constrained fit/scatter/commit dominate; larger matched measurements pending |
 | Reproducible delivery | Native code/example/tests, source and artifact identities, committed/pushed evidence | In progress |
 
