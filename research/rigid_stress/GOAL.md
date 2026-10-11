@@ -1,5 +1,17 @@
 # Agent goal: native Quadrants rigid stress recovery
 
+## Completion record, 2026-10-11
+
+The low-shell native feature, contact repair, unchanged-budget numerical and
+lifecycle validation, measured optimization plateau and reproducible four-scope
+GPU evidence are complete. See [the final report](docs/NATIVE_RESULTS_20261011.md)
+and [generated measurement tables](docs/FINAL_MEASUREMENTS_20261011.md).
+Production engine is `f3e92c62`, standalone timing preparation is `1f22f6a2`;
+52 GPU cases, 31 CPU cases and 432 independent CPU FP64 full-field samples pass.
+All 2004 publication artifacts and their originals pass verification. The
+requirements below are preserved as the original brief; physical convergence
+remains a separate later study.
+
 ## Internal stopping budget, 2026-10-10 follow-up
 
 Match internal contact fitting termination to the actual error budget. The

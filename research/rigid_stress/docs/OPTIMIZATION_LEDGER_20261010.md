@@ -1,11 +1,35 @@
 # Native low-mesh optimization ledger
 
-This is an active development ledger, not a completion or maximum-throughput
-claim. The reference is the full hollow L1 mesh: 810 P2 nodes, 2,430 DOFs,
+This ledger retains development checkpoints and their original status. Final
+low-shell completion is recorded below; it is a practical plateau, not a global
+maximum-throughput proof. The reference is 810 P2 nodes, 2,430 DOFs,
 480 tetrahedra, 162 exterior P2 nodes, 80 exterior faces and fixed positive
 Q10x10 quadrature. All production physical arithmetic uses Quadrants FP64.
 The finite pad load and actual combined contact friction change are described
 in [CONTACT_REPAIR_20261010.md](CONTACT_REPAIR_20261010.md).
+
+## Completed low-shell feature, 2026-10-11 05:30 UTC
+
+The complete final summary `native-final-comprehensive-complete-v14-v9-v10-summary.json`
+passes all 40 measurements, eight same-GPU max/full pairs, sixteen all-environment
+episode audits and ten profiles. It contains zero missing/selected-invalid-timing
+cases and 8,436,997,120 attempted timed env-steps with zero invalid steps.
+Summary SHA256:
+`b44198c77caf8f3c4aaea93f08a16a4f313114d638a91f97403330b787962100`.
+Publication v14 verifies all 2004 artifacts and all 2004 originals; manifest:
+`07059dc5f7a23c35dd52cab335c576886d03d5dbc5905b87c2f41610456fbf2f`.
+
+B61440 two-seed live/policy aggregates are 329512.88/329178.40 env-step/s
+(5.3632/5.3577 batch step/s); six-repeat spreads and memory remain in the
+[final generated tables](FINAL_MEASUREMENTS_20261011.md). Adding 25% environments
+over B49152 gains only 1.5518%/1.5252%. All 22 candidate families have a measured
+decision or concrete profile/cost/backend reason; no identified applicable
+high-return candidate remains unevaluated. Retained small-batch post fusion and
+rejected ordinary large-batch fusion are based on matched production pairs.
+The [final report](NATIVE_RESULTS_20261011.md) discloses the physical model,
+unchanged budgets, 52 GPU/31 CPU tests, 432 independent FP64 samples, weak-grip
+drops, unfinished episodes, tails, remaining compute and i32 capacity limits.
+No high-resolution physical convergence study ran in this round.
 
 ## Final aggregation source identity, 2026-10-11 05:12 UTC
 

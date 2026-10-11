@@ -17,8 +17,10 @@ The native implementation is in `genesis/engine/solvers/rigid/stress/`, with
 The repaired low-resolution implementation passes 52 GPU cases, 31 CPU cases
 and 432 independent CPU FP64 full-field trajectory samples. All 40 final
 same-source four-scope measurements, 16 max/full output-cost cases and
-16 graph-composition pairs are complete; final aggregation/publication
-verification is in progress. The original coefficient-1 workload and earlier rates are a
+16 graph-composition pairs are complete. All 2004 publication artifacts and
+their 2004 originals pass hash verification. B61440 achieves 329512.88 live
+and 329178.40 policy valid env-step/s on RTX PRO 6000 Blackwell, with zero
+invalid steps and a measured practical throughput plateau. The original coefficient-1 workload and earlier rates are a
 historical milestone. See the
 [current results and status](docs/NATIVE_RESULTS_20261011.md),
 [optimization coverage](docs/OPTIMIZATION_COVERAGE_20261011.md),
@@ -62,7 +64,8 @@ pad model. See [docs/PAD_LAW.md](docs/PAD_LAW.md) and the scope-specific measure
 [initial progress report](docs/PROGRESS_20261009.md) and the
 [new GPU acceptance checkpoint](docs/PROGRESS_20261009_GPU.md), and the
 [fine performance and real grasp checkpoint](docs/PROGRESS_20261009_PERFORMANCE.md). The full acceptance and optimization
-goal remains active. Current coarse timings have a separate physical error.
+goal of that historical prototype has separate physical-error limits.
+The current native low-shell completion is described in the linked results.
 
 ## Start here
 
