@@ -48,6 +48,7 @@ class FrankaEgg:
         contact_model: str = "pressure",
         contact_block_size: int = 16,
         egg_geometry: str = "urdf",
+        use_gjk_collision: bool | None = None,
     ):
         self.n_envs = n_envs
         self.tick = 0
@@ -67,6 +68,7 @@ class FrankaEgg:
                 enable_torsional_friction=False,
                 enable_rolling_friction=False,
                 use_hibernation=False,
+                use_gjk_collision=use_gjk_collision,
             ),
             profiling_options=gs.options.ProfilingOptions(show_FPS=False),
             show_viewer=viewer,
@@ -274,6 +276,7 @@ def main() -> None:
     parser.add_argument("--contact-model", choices=("pressure", "intrinsic"), default="pressure")
     parser.add_argument("--contact-block-size", type=int, default=16)
     parser.add_argument("--egg-geometry", choices=("urdf", "mesh64"), default="urdf")
+    parser.add_argument("--collision-method", choices=("auto", "mpr", "gjk"), default="auto")
     parser.add_argument("--legacy-reset", action="store_true", help="Compare reset followed by separate pose setters.")
     parser.add_argument(
         "--torch-controller", action="store_true", help="Compare the original scripted input scheduling."
@@ -298,6 +301,7 @@ def main() -> None:
         contact_model=args.contact_model,
         contact_block_size=args.contact_block_size,
         egg_geometry=args.egg_geometry,
+        use_gjk_collision={"auto": None, "mpr": False, "gjk": True}[args.collision_method],
     )
     for _ in range(args.steps):
         workload.step()

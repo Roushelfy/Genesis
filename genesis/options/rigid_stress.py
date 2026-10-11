@@ -26,8 +26,12 @@ class RigidStressOptions(Options):
     follow shared topological edge ports. Verified covered planar segments
     use their exact length. ``surface_edge_subdivisions`` declares the port
     discretization. Its graph distances can overestimate continuous distance.
-    The witnessed face uses three finite anchor/edge triangles with the same
-    quadrature. ``contact_block_size`` bounds the concurrent workspace. All
+    ``intrinsic_integration="surface_fan"`` partitions each face around its
+    closest point to the anchor using three finite triangles. The earlier
+    ``"anchor_fan"`` rule partitions only the witnessed face and remains an
+    explicit integration comparison. Neither rule changes the physical radius.
+    Adjacent faces additionally use a verified two-triangle unfolded path.
+    ``contact_block_size`` bounds the concurrent workspace. All
     contacts are processed, including subsequent blocks when needed.
     ``source_projection_limit`` bounds collision-witness projection onto the
     reference boundary. ``source_geometry_tolerance`` declares mesh/reference
@@ -113,8 +117,9 @@ class RigidStressOptions(Options):
     density: PositiveFloat = 2000.0
     contact_radius: PositiveFloat = 0.006
     contact_model: Literal["pressure", "intrinsic"] = "pressure"
+    intrinsic_integration: Literal["surface_fan", "anchor_fan"] = "surface_fan"
     contact_block_size: PositiveInt = 16
-    surface_edge_subdivisions: PositiveInt = 2
+    surface_edge_subdivisions: PositiveInt = 8
     source_projection_limit: PositiveFloat = 1e-4
     source_geometry_tolerance: PositiveFloat = 1e-8
     source_uncertainty: Annotated[ValidFloat, Field(ge=0)] = 0.0

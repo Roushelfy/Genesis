@@ -1,6 +1,6 @@
 """Native six-dimensional dual fitting of finite local Coulomb tractions."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import IntEnum
 from typing import ClassVar
 
@@ -8,7 +8,7 @@ import quadrants as qd
 
 import genesis as gs
 from genesis.utils import array_class
-from genesis.utils.array_class import V_VEC, DataKind, V
+from genesis.utils.array_class import V_MAT, V_VEC, DataKind, V
 
 from .contact import StressContactState
 from .data import StressInfo, StressState
@@ -31,6 +31,10 @@ class StressTractionInfo:
 
     positions: qd.Tensor
     inward_normals: qd.Tensor
+    face_origin: qd.Tensor = field(default_factory=lambda: V_VEC(3, dtype=gs.qd_float, shape=()))
+    face_edges: qd.Tensor = field(default_factory=lambda: V_MAT(2, 3, dtype=gs.qd_float, shape=()))
+    face_dual: qd.Tensor = field(default_factory=lambda: V_MAT(2, 3, dtype=gs.qd_float, shape=()))
+    gauss: qd.Tensor = field(default_factory=lambda: V(dtype=gs.qd_float, shape=()))
 
 
 def create_traction_info(surface_info: StressSurfaceInfo) -> StressTractionInfo:
@@ -38,6 +42,10 @@ def create_traction_info(surface_info: StressSurfaceInfo) -> StressTractionInfo:
     info = StressTractionInfo(
         positions=V_VEC(3, dtype=gs.qd_float, shape=shape),
         inward_normals=V_VEC(3, dtype=gs.qd_float, shape=shape),
+        face_origin=surface_info.face_origin,
+        face_edges=surface_info.face_edges,
+        face_dual=surface_info.face_dual,
+        gauss=surface_info.gauss,
     )
     kernel_traction_geometry(surface_info, info)
     return info
@@ -71,6 +79,7 @@ class StressTractionState:
     sample_shape: qd.Tensor
     sample_count: qd.Tensor
     sample_indices: qd.Tensor
+    fan_centers: qd.Tensor
 
 
 def create_tractions(
@@ -81,6 +90,7 @@ def create_tractions(
     local_samples: bool = False,
     local_sample_count: int | None = None,
     packed_samples: bool = False,
+    fan_faces: int = 0,
 ) -> StressTractionState:
     """Allocate the exact supplied quadrature subproblem, without a force cloud.
 
@@ -109,9 +119,28 @@ def create_tractions(
         sample_shape=V_VEC(6, dtype=gs.qd_float, shape=sample_shape),
         sample_count=V(dtype=gs.qd_int, shape=shape),
         sample_indices=V(dtype=gs.qd_int, shape=(n_samples, n_contacts, n_envs) if packed_samples else ()),
+        fan_centers=V_VEC(3, dtype=gs.qd_float, shape=(fan_faces, n_contacts, n_envs) if fan_faces else ()),
     )
     state.sample_count.fill(0 if packed_samples else n_samples)
     return state
+
+
+@qd.func
+def func_surface_fan_bary(
+    i_sample: int, i_c: int, i_b: int, traction_state: StressTractionState, traction_info: StressTractionInfo
+):
+    n = traction_info.gauss.shape[0]
+    n_quadrature = n * n
+    i_face = i_sample // (3 * n_quadrature)
+    i_fan = (i_sample // n_quadrature) % 3
+    i_q = i_sample % n_quadrature
+    u, v = traction_info.gauss[i_q // n], traction_info.gauss[i_q % n]
+    center = traction_state.fan_centers[i_face, i_c, i_b]
+    local = traction_info.face_dual[i_face] @ (center - traction_info.face_origin[i_face])
+    bary = (1.0 - u) * qd.Vector([1.0 - local.sum(), local[0], local[1]])
+    bary[i_fan] += u * (1.0 - v)
+    bary[(i_fan + 1) % 3] += u * v
+    return i_face, bary
 
 
 @qd.func
@@ -143,7 +172,12 @@ def func_traction_geometry(
 ):
     position, normal = qd.Vector.zero(gs.qd_float, 3), qd.Vector.zero(gs.qd_float, 3)
     i_sample = func_traction_sample_index(i_q, i_c, i_b, traction_state)
-    if qd.static(len(traction_state.sample_faces.shape) == 2):
+    if qd.static(len(traction_state.fan_centers.shape) == 3):
+        i_face, bary = func_surface_fan_bary(i_sample, i_c, i_b, traction_state, traction_info)
+        edges = traction_info.face_edges[i_face]
+        position = traction_info.face_origin[i_face] + bary[1] * edges[0, :] + bary[2] * edges[1, :]
+        normal = traction_info.inward_normals[i_face * traction_info.gauss.shape[0] ** 2]
+    elif qd.static(len(traction_state.sample_faces.shape) == 2):
         i_local = func_traction_local_index(i_sample, i_c, i_b, traction_state, traction_info)
         if i_local >= 0:
             position = traction_state.sample_positions[i_local, i_c, i_b]
@@ -173,7 +207,19 @@ def func_traction_shape(
     n_quadrature = surface_info.shape.shape[0]
     i_face = i_sample // n_quadrature
     basis = qd.Vector.zero(gs.qd_float, 6)
-    if qd.static(len(traction_state.sample_faces.shape) == 2):
+    if qd.static(len(traction_state.fan_centers.shape) == 3):
+        i_face, bary = func_surface_fan_bary(i_sample, i_c, i_b, traction_state, traction_info)
+        basis = qd.Vector(
+            [
+                bary[0] * (2.0 * bary[0] - 1.0),
+                bary[1] * (2.0 * bary[1] - 1.0),
+                bary[2] * (2.0 * bary[2] - 1.0),
+                4.0 * bary[0] * bary[1],
+                4.0 * bary[0] * bary[2],
+                4.0 * bary[1] * bary[2],
+            ]
+        )
+    elif qd.static(len(traction_state.sample_faces.shape) == 2):
         i_local = func_traction_local_index(i_sample, i_c, i_b, traction_state, traction_info)
         if i_local >= 0:
             i_face = traction_state.sample_faces[i_c, i_b]
@@ -416,7 +462,13 @@ def kernel_fit_tractions(
                             )
                             traction_state.evaluations[i_c, i_b] += 1
                             trial_squared = trial_gradient.dot(trial_gradient)
-                            allowance = 32.0 * epsilon * (1.0 + qd.abs(energy))
+                            # The dual's small energy can cancel large wrench
+                            # products. Bound comparison roundoff from those
+                            # operands, not only the already-cancelled result.
+                            comparison_scale = 1.0 + qd.abs(energy) + qd.abs(trial_energy)
+                            comparison_scale += (qd.abs(current) * qd.abs(target)).sum()
+                            comparison_scale += (qd.abs(proposal) * qd.abs(target)).sum()
+                            allowance = 32.0 * epsilon * comparison_scale
                             is_accepted = not is_trial or trial_energy <= energy - 1e-4 * alpha * slope
                             is_accepted = is_accepted or (
                                 trial_energy <= energy + allowance and trial_squared < gradient_squared
