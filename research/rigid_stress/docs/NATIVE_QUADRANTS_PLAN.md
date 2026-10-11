@@ -6,6 +6,21 @@ native CUDA-library recommendations, mandatory GPU direct-backend choice and
 convergence-first acceptance sequence. Earlier code and evidence remain useful
 for mathematics, numerical comparisons and bottleneck diagnosis.
 
+## Active extension, 2026-10-11
+
+The new [nonconvex contact contract](NONCONVEX_CONTACT_REQUIREMENTS.md)
+supplements this plan. Preserve contact surface provenance, true material
+normals, topology-aware finite footprints, all six wrench components and local
+friction admissibility. Integrate it into the existing rigid stress feature
+using Quadrants; reuse its elastic recovery and output lifecycle.
+
+The earlier egg-workload completion milestone is historical evidence, not
+acceptance of this extension. Keep inexpensive geometry/contact fixtures and
+same-mesh consistency checks, then profile and optimize aggregate throughput
+before high-resolution physical convergence work. Rebuild matched benchmarks
+after the footprint law changes and separate distance approximation error
+from wrench conservation and elastic-solver error.
+
 ## Result to build
 
 Add optional auxiliary linear-elastic stress recovery to Genesis's existing

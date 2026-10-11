@@ -1,5 +1,28 @@
 # Agent goal: native Quadrants rigid stress recovery
 
+## Active extension: nonconvex contact mapping, 2026-10-11
+
+Implement the contact mapping contract in
+[docs/NONCONVEX_CONTACT_REQUIREMENTS.md](docs/NONCONVEX_CONTACT_REQUIREMENTS.md).
+Preserve surface provenance, orient normals from the material boundary, select
+a finite footprint along surface topology, and fit vector tractions preserving
+the original six-component wrench and local friction constraints. Support
+concave surfaces, cavities, narrow gaps and changing contacts without convexity
+or symmetry assumptions.
+
+Integrate this into the existing rigid stress feature using Quadrants for the
+complete production numerical path. Keep the Franka/full hollow egg workload,
+full/max output options, fixed elastic operators and global peak calculation.
+Use small nonconvex fixtures for contact checks and inexpensive meshes for
+detailed profiling and aggregate throughput optimization. Validate same-mesh
+CPU consistency and lifecycle semantics; physical convergence remains a later,
+separate study. Choose the distance algorithm, scheduling and tuning from
+evidence rather than copying the Python prototype or fixing its port count.
+
+This is a new requirement after the milestone below. Its prior completion
+record does not establish native nonconvex-contact acceptance. Record and push
+validated progress, including unfinished work and unavailable device checks.
+
 ## Completion record, 2026-10-11
 
 The low-shell native feature, contact repair, unchanged-budget numerical and

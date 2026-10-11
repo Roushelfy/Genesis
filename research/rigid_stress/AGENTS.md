@@ -6,6 +6,10 @@ validation ordering. Follow the root `CLAUDE.md` and `CODING_GUIDELINES.md` for
 engine code. Existing research modules and measurements are references; the
 production feature belongs to Genesis's existing rigid solver.
 
+Read docs/NONCONVEX_CONTACT_REQUIREMENTS.md for the 2026-10-11 active
+extension. The previous low-shell completion record does not cover this new
+nonconvex contact contract. Keep its implementation native and performance-first.
+
 - Use Quadrants for the complete production numerical path, including recovery
   solves. External numerical backends in the research prototype are reference
   paths, not acceptable substitutes for the requested native implementation.
