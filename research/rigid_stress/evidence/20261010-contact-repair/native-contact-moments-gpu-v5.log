@@ -1,0 +1,60 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0 -- /mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python
+cachedir: .pytest_cache
+rootdir: /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery-final-dev
+configfile: pyproject.toml
+plugins: anyio-4.15.1, forked-1.7.5, print-1.2.0, timeout-2.4.0, xdist-3.8.0, quadrants-1.3.3, syrupy-6.1.1
+timeout: 1200.0s
+timeout method: signal
+timeout func_only: False
+created: 4/4 workers
+4 workers [47 items]
+
+scheduling tests via WorkStealingScheduling
+
+tests/rigid/test_stress.py::test_native_p2_shared_operators[10000000000.0-0.3-2000.0] 
+tests/rigid/test_stress.py::test_native_p2_shared_operators[3200000000.0-0.22-1100.0] 
+tests/rigid/test_stress.py::test_native_full_field_same_state_and_invalid_solve 
+tests/rigid/test_stress.py::test_native_full_field_unbatched_shared_operator 
+[gw0][36m [  2%] [0m[32mPASSED[0m tests/rigid/test_stress.py::test_native_p2_shared_operators[3200000000.0-0.22-1100.0] 
+[gw2][36m [  4%] [0m[32mPASSED[0m tests/rigid/test_stress.py::test_native_p2_shared_operators[10000000000.0-0.3-2000.0] 
+tests/rigid/test_stress.py::test_native_batched_recovery_against_full_fp64_direct[direct-True-64-2-False] 
+tests/rigid/test_stress.py::test_native_batched_recovery_against_full_fp64_direct[direct-False-64-2-False] 
+[gw1][36m [  6%] [0m[32mPASSED[0m tests/rigid/test_stress.py::test_native_full_field_same_state_and_invalid_solve 
+tests/rigid/test_stress.py::test_native_batched_inertia_relief_and_partial_load_reset[2051] 
+[gw3][36m [  8%] [0m[31mFAILED[0m tests/rigid/test_stress.py::test_native_full_field_unbatched_shared_operator 
+tests/rigid/test_stress.py::test_native_batched_inertia_relief_and_partial_load_reset[32771] 
+[gw0][36m [ 10%] [0m[32mPASSED[0m tests/rigid/test_stress.py::test_native_batched_recovery_against_full_fp64_direct[direct-True-64-2-False] 
+[gw2][36m [ 12%] [0m[32mPASSED[0m tests/rigid/test_stress.py::test_native_batched_recovery_against_full_fp64_direct[direct-False-64-2-False] 
+tests/rigid/test_stress.py::test_native_batched_recovery_against_full_fp64_direct[inverse-True-32-0-False] 
+tests/rigid/test_stress.py::test_native_batched_recovery_against_full_fp64_direct[inverse-True-32-2-False] 
+[gw1][36m [ 14%] [0m[32mPASSED[0m tests/rigid/test_stress.py::test_native_batched_inertia_relief_and_partial_load_reset[2051] 
+tests/rigid/test_stress.py::test_native_batched_recovery_against_full_fp64_direct[inverse-True-64-2-False] 
+[gw3][36m [ 17%] [0m[32mPASSED[0m tests/rigid/test_stress.py::test_native_batched_inertia_relief_and_partial_load_reset[32771] 
+tests/rigid/test_stress.py::test_native_batched_recovery_against_full_fp64_direct[inverse-True-64-2-True] 
+[gw0][36m [ 19%] [0m[32mPASSED[0m tests/rigid/test_stress.py::test_native_batched_recovery_against_full_fp64_direct[inverse-True-32-0-False] 
+tests/rigid/test_stress.py::test_native_constrained_pressure_and_invalid_inputs[live_sliding] 
+[gw2][36m [ 21%] [0m[32mPASSED[0m tests/rigid/test_stress.py::test_native_batched_recovery_against_full_fp64_direct[inverse-True-32-2-False] 
+tests/rigid/test_stress.py::test_native_constrained_pressure_and_invalid_inputs[random] 
+[gw1][36m [ 23%] [0m[32mPASSED[0m tests/rigid/test_stress.py::test_native_batched_recovery_against_full_fp64_direct[inverse-True-64-2-False] 
+tests/rigid/test_stress.py::test_native_finite_pressure_matches_independent_cpu[False] 
+[gw3][36m [ 25%] [0m[32mPASSED[0m tests/rigid/test_stress.py::test_native_batched_recovery_against_full_fp64_direct[inverse-True-64-2-True] 
+tests/rigid/test_stress.py::test_native_finite_pressure_matches_independent_cpu[True] 
+[gw1][36m [ 27%] [0m[32mPASSED[0m tests/rigid/test_stress.py::test_native_finite_pressure_matches_independent_cpu[False] 
+tests/rigid/test_stress.py::test_native_live_apex_wrench_recovery[batch2048-serial] 
+[gw3][36m [ 29%] [0m[31mFAILED[0m tests/rigid/test_stress.py::test_native_finite_pressure_matches_independent_cpu[True] 
+tests/rigid/test_stress.py::test_native_live_apex_wrench_recovery[batch2048-warp] 
+[gw0][36m [ 31%] [0m[32mPASSED[0m tests/rigid/test_stress.py::test_native_constrained_pressure_and_invalid_inputs[live_sliding] 
+[gw2][36m [ 34%] [0m[32mPASSED[0m tests/rigid/test_stress.py::test_native_constrained_pressure_and_invalid_inputs[random] 
+tests/rigid/test_stress.py::test_native_live_apex_wrench_recovery[batch2048-faces] 
+tests/rigid/test_stress.py::test_native_live_apex_wrench_recovery[batch2048-graph] 
+[gw1][36m [ 36%] [0m[32mPASSED[0m tests/rigid/test_stress.py::test_native_live_apex_wrench_recovery[batch2048-serial] 
+tests/rigid/test_stress.py::test_native_live_apex_wrench_recovery[batch2048-faces_overflow] 
+[gw3][36m [ 38%] [0m[32mPASSED[0m tests/rigid/test_stress.py::test_native_live_apex_wrench_recovery[batch2048-warp] 
+tests/rigid/test_stress.py::test_native_live_apex_wrench_recovery[batch2048-faces_uncached] 
+[gw0][36m [ 40%] [0m[31mFAILED[0m tests/rigid/test_stress.py::test_native_live_apex_wrench_recovery[batch2048-faces] 
+tests/rigid/test_stress.py::test_native_live_apex_wrench_recovery[batch2048-moments_overflow] 
+[gw2][36m [ 42%] [0m[32mPASSED[0m tests/rigid/test_stress.py::test_native_live_apex_wrench_recovery[batch2048-graph] 
+tests/rigid/test_stress.py::test_native_live_apex_wrench_recovery[batch2048-moments] 
+[gw1][36m [ 44%] [0m[31mFAILED[0m tests/rigid/test_stress.py::test_native_live_apex_wrench_recovery[batch2048-faces_overflow] 
+tests/rigid/test_stress.py::test_native_live_apex_wrench_recovery[batch16384-serial] 

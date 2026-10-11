@@ -7,6 +7,72 @@ Q10x10 quadrature. All production physical arithmetic uses Quadrants FP64.
 The finite pad load and actual combined contact friction change are described
 in [CONTACT_REPAIR_20261010.md](CONTACT_REPAIR_20261010.md).
 
+## Native current-footprint reuse checkpoint, 2026-10-11 00:30 UTC
+
+The matched B=32768 contact-moment pair completes on GPU
+`GPU-e869c013-9bdf-a217-9938-536a954a188d`: 286557.11 -> 296888.30
+valid env-step/s, +3.61%, repeat standard deviations 390.93/159.50,
+zero invalid transitions. These are three 2400-step actual changing-contact
+repeats after 900 warmup steps. The bounded research cache is outside the
+native inventory in that trial; add 227540992 bytes at B=32768 (217 bytes
+per 32-per-environment task capacity). The native integration includes all
+its fields in the inventory. Small B=1024 still has no clear benefit.
+
+The native combined candidate passes 47 GPU cases, 27 CPU cases (20 CUDA
+skips), and 432 independent CPU FP64 full-field oracle samples. The three
+captured apex fixtures pass both moment reuse and forced complete overflow.
+Illegal inputs retain diagnostic status; constrained and refined contacts
+use complete integration. An empty scalar-bool ndarray allocation fails
+when reuse is disabled; an unused one-byte placeholder fixes this backend
+compatibility issue. The rejected import and allocation attempts, cancelled
+partial test run, corrected source and successful tests remain published.
+Native ordinary interaction/ablation timing is still running on two seeds.
+
+Deriving Gram from integrated P2 moments is rejected by matched snapshot
+cost. At B=1024, explicit Gram plus load moments takes 1.55215 ms versus
+1.69080 ms for derived Gram; B=32768 takes 23.19926 versus 27.55953 ms.
+Both preserve nodal loads, full residual and peak within the existing
+budgets. The reduced sample arithmetic does not offset the added device
+construction cost. It introduces no production code.
+
+The full-rollout interval profiler is validated over 1200 unmodified
+changing-contact policy steps, including partial resets, with a full
+CPU/CUDA trace. CUDA intervals include host-induced gaps; nested recovery,
+substep and scene intervals must not be added. These intrusive diagnostics
+are not ordinary throughput. Larger profiles remain required.
+
+An independently measured controller-input fusion computes the same
+phase, arm target, FP32-default scalar grip/force limit and radius schedule
+in one Quadrants kernel, retaining the existing public setters and reset
+path. With resident arm indices, matched B=1024 policy timing is
+72813.03 -> 74690.84 env-step/s, +2.58%, repeat standard deviations
+205.49/109.32 and zero invalid steps. An earlier CPU-index variant gives
+only +0.89%. The independent CPU NumPy FP64 input oracle checks 1211
+environments, 22 boundary/reset/delay ticks and no/FP32/FP64 residuals:
+maximum arm-target error 4.69e-15 rad, radius error 1.73e-18 m, and exact
+grip/force-limit scalar values. A full-field trajectory oracle also passes
+144 snapshots. A second seed, large-batch benefit and native composition
+are still being evaluated; final source selection remains open.
+
+The small B=1024/2048 two-seed live/policy completed-episode audits have
+zero numerical failures and no failed completed episodes under the stated
+lift/hold/release criteria. New outputs provide trajectory-only counts by
+subtracting warmup, plus per-environment packed-column, admitted-face,
+affine contraction and sample-visit counts. Overflow and nonlinear pressure
+work are separately identified; these are work counters, not individual
+GPU latency. Larger audits are running.
+
+The publication contains 885 terminal artifacts. All 885 publication and
+885 original hashes pass; manifest SHA256:
+`07c1ff8189f1d174891787a697e3889171335cf85614afdb22400f1b567ab6d4`.
+The Chrome trace is preserved as a 28 MiB lossless gzip. The first unpublished
+checkpoint used a 582 MiB JSON summary and GitHub rejected that push. Trace
+events are dictionary records, so numeric-array summarization does not reduce
+them; the archive helper now compresses trace JSON directly. Every publication
+and original hash was checked again after this packaging correction.
+The ongoing ordinary ablations, large audits and later controller results
+are excluded from this publication checkpoint.
+
 ## Validated scheduling controls, 23:57 UTC
 
 The native integrated-wrench, packed-block, immutable-options and coalesced

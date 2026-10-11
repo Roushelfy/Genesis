@@ -1,0 +1,36 @@
+[Quadrants] version 1.3.3, llvm 22.1.0, commit 00423caa, linux, python 3.10.12
+Traceback (most recent call last):
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery-final-dev/research/rigid_stress/native_trajectory_oracle.py", line 15, in <module>
+    import genesis as gs
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery-final-dev/genesis/__init__.py", line 488, in <module>
+    from .engine.scene import Scene
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery-final-dev/genesis/engine/scene.py", line 48, in <module>
+    from genesis.recorders import RecorderManager
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery-final-dev/genesis/recorders/__init__.py", line 5, in <module>
+    from . import trajectory
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery-final-dev/genesis/recorders/trajectory.py", line 26, in <module>
+    from genesis.engine.solvers import KinematicSolver
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery-final-dev/genesis/engine/solvers/__init__.py", line 5, in <module>
+    from .rigid.rigid_solver import RigidSolver
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery-final-dev/genesis/engine/solvers/rigid/rigid_solver.py", line 157, in <module>
+    from .stress.recovery import RigidStressRecovery
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery-final-dev/genesis/engine/solvers/rigid/stress/recovery.py", line 30, in <module>
+    from .model import StressModel
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery-final-dev/genesis/engine/solvers/rigid/stress/model.py", line 13, in <module>
+    from .balance import kernel_centrifugal_wrench, kernel_relief_projection
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery-final-dev/genesis/engine/solvers/rigid/stress/balance.py", line 9, in <module>
+    from .scatter import StressScatterWorkspace
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery-final-dev/genesis/engine/solvers/rigid/stress/scatter.py", line 262, in <module>
+    def kernel_scatter_faces(
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel_impl.py", line 281, in decorator
+    wrapped = _kernel_impl(fn, level_of_class_stackframe=level, graph=graph, checkpoints=checkpoints)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel_impl.py", line 169, in _kernel_impl
+    primal = Kernel(_func, autodiff_mode=_NONE, _is_classkernel=is_classkernel)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel.py", line 308, in __init__
+    super().__init__(
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/_func_base.py", line 234, in __init__
+    self.check_parameter_annotations()
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/_func_base.py", line 279, in check_parameter_annotations
+    raise QuadrantsSyntaxError("Quadrants kernels do not support default values for arguments")
+quadrants.lang.exception.QuadrantsSyntaxError: Quadrants kernels do not support default values for arguments
+

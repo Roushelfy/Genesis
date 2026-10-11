@@ -1,0 +1,1324 @@
+diff --git a/examples/rigid/franka_egg_stress.py b/examples/rigid/franka_egg_stress.py
+index 5d3bebb6..b972a3f6 100644
+--- a/examples/rigid/franka_egg_stress.py
++++ b/examples/rigid/franka_egg_stress.py
+@@ -36,6 +36,11 @@ class FrankaEgg:
+         saved_reset: bool = True,
+         face_parallel_scatter: bool = True,
+         scatter_tasks_per_env: int = 32,
++        cooperative_balance: bool = True,
++        contact_wrench_reuse: bool | None = None,
++        packed_block_size: int | None = None,
++        coalesced_residual: bool | None = None,
++        contact_moment_reuse: bool | None = None,
+     ):
+         self.n_envs = n_envs
+         self.tick = 0
+@@ -84,6 +89,11 @@ class FrankaEgg:
+                     fused_pipeline=fused_pipeline,
+                     output_mode=output_mode,
+                     cooperative_scatter=cooperative_scatter,
++                    cooperative_balance=cooperative_balance,
++                    contact_wrench_reuse=contact_wrench_reuse,
++                    packed_block_size=packed_block_size,
++                    coalesced_residual=coalesced_residual,
++                    contact_moment_reuse=contact_moment_reuse,
+                     face_parallel_scatter=face_parallel_scatter,
+                     scatter_tasks_per_env=scatter_tasks_per_env,
+                     cached_peak=cached_peak,
+diff --git a/examples/speed_benchmark/rigid_stress.py b/examples/speed_benchmark/rigid_stress.py
+index ff084bde..98d6cc68 100644
+--- a/examples/speed_benchmark/rigid_stress.py
++++ b/examples/speed_benchmark/rigid_stress.py
+@@ -22,6 +22,7 @@ import genesis as gs
+ from examples.rigid.franka_egg_stress import FrankaEgg
+ from examples.speed_benchmark.stress_stages import kernel_query, kernel_small_solve, kernel_weights_gram
+ from genesis.engine.solvers.rigid.stress.association import kernel_associate
++from genesis.engine.solvers.rigid.stress.balance import kernel_balance_contacts
+ from genesis.engine.solvers.rigid.stress.contact import (
+     StressContactState,
+     kernel_anchor,
+@@ -29,7 +30,7 @@ from genesis.engine.solvers.rigid.stress.contact import (
+     kernel_scatter,
+ )
+ from genesis.engine.solvers.rigid.stress.recovery import kernel_accept, kernel_begin_step
+-from genesis.engine.solvers.rigid.stress.scatter import kernel_scatter_faces
++from genesis.engine.solvers.rigid.stress.scatter import kernel_fit_scatter_moments, kernel_scatter_faces
+ from genesis.engine.solvers.rigid.stress.solve import (
+     kernel_balance,
+     kernel_direct_init,
+@@ -133,17 +134,54 @@ def profile(workload: FrankaEgg, repetitions: int) -> dict:
+                 options.cached_face_bounds,
+             )
+         ),
+-        "inertia_relief_centrifugal": lambda: kernel_balance(entry.omega, entry.state, entry.model.info),
++        "inertia_relief_centrifugal": lambda: (
++            kernel_balance_contacts(entry.omega, entry.state, entry.model.info, entry.contacts, entry.scatter)
++            if entry.reuse_contact_wrench and entry.scatter.tasks.shape[0] > 0 and options.cooperative_balance
++            else kernel_balance(entry.omega, entry.state, entry.model.info, options.cooperative_balance)
++        ),
+         "rhs_reduction": lambda: kernel_direct_init(entry.state),
+         "linear_solve": lambda: entry.model.solve(options, entry.state, entry.omega, surface_load=True),
+         "complete_residual": lambda: kernel_full_residual(
+-            options.young, options.tolerance, options.absolute_tolerance, entry.state, entry.model.info, False
++            options.young,
++            options.tolerance,
++            options.absolute_tolerance,
++            entry.state,
++            entry.model.info,
++            False,
++            entry.coalesced_residual,
+         ),
+         "global_peak": lambda: kernel_peak(
+             options.young, options.poisson, entry.state, entry.model.info, options.cached_peak
+         ),
+         "accept": lambda: kernel_accept(entry.state, entry.contacts, solver._errno),
+     }
++    if entry.reuse_contact_moments:
++        # These stages share current-footprint scratch and must refresh together.
++        stages = {
++            name: stage
++            for name, stage in stages.items()
++            if name not in ("anchor_search", "candidate_weights_constraints", "nodal_scatter")
++        }
++        stages = dict(
++            list(stages.items())[:2]
++            + [
++                (
++                    "anchor_search_candidate_weights_constraints_nodal_scatter",
++                    lambda: (
++                        kernel_anchor(recovery.source_epsilon, entry.contacts, entry.surface.info),
++                        kernel_fit_scatter_moments(
++                            entry.contacts,
++                            entry.state,
++                            entry.model.info,
++                            entry.surface.info,
++                            entry.scatter,
++                            options.cached_face_bounds,
++                        ),
++                    ),
++                )
++            ]
++            + list(stages.items())[2:]
++        )
+     for stage in stages.values():
+         stage()
+     qd.sync()
+@@ -209,6 +247,11 @@ def main() -> None:
+     parser.add_argument("--serial-solve", action="store_true")
+     parser.add_argument("--serial-pressure", action="store_true")
+     parser.add_argument("--serial-scatter", action="store_true")
++    parser.add_argument("--serial-balance", action="store_true", help="Compare original rigid inertia relief.")
++    parser.add_argument("--contact-wrench-reuse", choices=("auto", "on", "off"), default="auto")
++    parser.add_argument("--packed-block-size", choices=(0, 256, 512), type=int, default=None)
++    parser.add_argument("--coalesced-residual", choices=("auto", "on", "off"), default="auto")
++    parser.add_argument("--contact-moment-reuse", choices=("auto", "on", "off"), default="auto")
+     parser.add_argument(
+         "--contact-warp-scatter", action="store_true", help="Compare the original contact-warp scatter."
+     )
+@@ -258,11 +301,17 @@ def main() -> None:
+         output_mode=args.output_mode,
+         saved_reset=not args.legacy_reset,
+         cooperative_scatter=not args.serial_scatter,
++        cooperative_balance=not args.serial_balance,
++        contact_wrench_reuse={"auto": None, "on": True, "off": False}[args.contact_wrench_reuse],
++        packed_block_size=args.packed_block_size,
++        coalesced_residual={"auto": None, "on": True, "off": False}[args.coalesced_residual],
++        contact_moment_reuse={"auto": None, "on": True, "off": False}[args.contact_moment_reuse],
+         face_parallel_scatter=not args.contact_warp_scatter,
+         scatter_tasks_per_env=args.scatter_tasks_per_env,
+         cached_peak=not args.uncached_peak,
+         cached_face_bounds=not args.uncached_face_bounds,
+     )
++    solver = workload.scene.rigid_solver
+     if args.save_conditions is not None:
+         workload.save_conditions(args.save_conditions)
+     setup_seconds = time.perf_counter() - start
+@@ -378,6 +427,26 @@ def main() -> None:
+             "cooperative_solve": not args.serial_solve,
+             "cooperative_pressure": not args.serial_pressure,
+             "cooperative_scatter": not args.serial_scatter,
++            "cooperative_balance": not args.serial_balance,
++            "contact_wrench_reuse": args.contact_wrench_reuse,
++            "packed_block_size": args.packed_block_size,
++            "coalesced_residual": args.coalesced_residual,
++            "contact_moment_reuse": args.contact_moment_reuse,
++            "effective_contact_moment_reuse": [entry.reuse_contact_moments for entry in solver.stress_recovery.links]
++            if solver.stress_recovery is not None
++            else [],
++            "effective_contact_wrench_reuse": [
++                entry.fused_pipeline
++                and entry.reuse_contact_wrench
++                and entry.scatter.tasks.shape[0] > 0
++                and entry.options.cooperative_balance
++                for entry in solver.stress_recovery.links
++            ]
++            if solver.stress_recovery is not None
++            else [],
++            "effective_packed_block_sizes": [entry.packed_block_size for entry in solver.stress_recovery.links]
++            if solver.stress_recovery is not None
++            else [],
+             "face_parallel_scatter": not args.contact_warp_scatter,
+             "scatter_tasks_per_env": args.scatter_tasks_per_env,
+             "cached_peak": not args.uncached_peak,
+diff --git a/genesis/engine/solvers/rigid/stress/contact.py b/genesis/engine/solvers/rigid/stress/contact.py
+index 88cd6f27..00f87eb3 100644
+--- a/genesis/engine/solvers/rigid/stress/contact.py
++++ b/genesis/engine/solvers/rigid/stress/contact.py
+@@ -367,9 +367,11 @@ def kernel_pressure_warp(contact_state: StressContactState, surface_info: Stress
+ 
+ 
+ @qd.func
+-def func_pressure_warp(contact_state: StressContactState, surface_info: StressSurfaceInfo, refinement: bool):
++def func_pressure_warp(
++    contact_state: StressContactState, surface_info: StressSurfaceInfo, refinement: bool, enabled: bool = True
++):
+     qd.loop_config(block_dim=128)
+-    for i_thread in range(contact_state.active_count[None] * 32):
++    for i_thread in range(qd.select(enabled, contact_state.active_count[None] * 32, 0)):
+         lane = i_thread % 32
+         slot = i_thread // 32
+         pair = contact_state.active_pairs[slot]
+diff --git a/genesis/engine/solvers/rigid/stress/data.py b/genesis/engine/solvers/rigid/stress/data.py
+index 33a496b0..2c52d4c3 100644
+--- a/genesis/engine/solvers/rigid/stress/data.py
++++ b/genesis/engine/solvers/rigid/stress/data.py
+@@ -25,7 +25,9 @@ class StressInfo:
+     mass: qd.Tensor
+     modes: qd.Tensor
+     mass_modes: qd.Tensor
++    relief: qd.Tensor
+     centrifugal: qd.Tensor
++    centrifugal_wrench: qd.Tensor
+     gram: qd.Tensor
+     gram_inverse: qd.Tensor
+     pins: qd.Tensor
+diff --git a/genesis/engine/solvers/rigid/stress/model.py b/genesis/engine/solvers/rigid/stress/model.py
+index 9226f88c..2bdbb86c 100644
+--- a/genesis/engine/solvers/rigid/stress/model.py
++++ b/genesis/engine/solvers/rigid/stress/model.py
+@@ -10,6 +10,7 @@ from genesis.options.rigid_stress import RigidStressOptions
+ from genesis.utils.array_class import V_MAT, V_VEC, V
+ from genesis.utils.misc import qd_to_numpy
+ 
++from .balance import kernel_centrifugal_wrench, kernel_relief_projection
+ from .data import StressInfo, StressState
+ from .factor import StressFactor
+ from .history import StressHistory
+@@ -108,7 +109,9 @@ class StressModel:
+             mass=V(dtype=gs.qd_float, shape=(n_entries,)),
+             modes=V_MAT(3, 6, dtype=gs.qd_float, shape=(n_nodes,)),
+             mass_modes=V_MAT(3, 6, dtype=gs.qd_float, shape=(n_nodes,)),
++            relief=V_MAT(3, 6, dtype=gs.qd_float, shape=(n_nodes,)),
+             centrifugal=V_MAT(3, 6, dtype=gs.qd_float, shape=(n_nodes,)),
++            centrifugal_wrench=V_MAT(6, 6, dtype=gs.qd_float, shape=()),
+             gram=V_MAT(6, 6, dtype=gs.qd_float, shape=()),
+             gram_inverse=V_MAT(6, 6, dtype=gs.qd_float, shape=()),
+             pins=V(dtype=gs.qd_int, shape=(6,)),
+@@ -140,6 +143,8 @@ class StressModel:
+         kernel_modes(self.info)
+         kernel_mass_modes(self.info)
+         kernel_gram_inverse(self.info)
++        kernel_relief_projection(self.info)
++        kernel_centrifugal_wrench(self.info)
+         kernel_gauge(self.info)
+         kernel_diagonal(self.info)
+         qd.sync()
+@@ -233,7 +238,10 @@ class StressModel:
+         if options is None:
+             options = self.options
+         block = options.preconditioner == "block"
+-        kernel_balance(omega, state, self.info)
++        coalesced = options.coalesced_residual
++        if coalesced is None:
++            coalesced = state.active.shape[0] >= 8192
++        kernel_balance(omega, state, self.info, options.cooperative_balance)
+         if self.factor is not None:
+             kernel_direct_init(state)
+             if history is None:
+@@ -241,7 +249,7 @@ class StressModel:
+             else:
+                 history.predict(state)
+                 kernel_full_residual(
+-                    options.young, options.tolerance, options.absolute_tolerance, state, self.info, False
++                    options.young, options.tolerance, options.absolute_tolerance, state, self.info, False, coalesced
+                 )
+                 history.mark_hits(state)
+                 if self.inverse is not None:
+@@ -263,17 +271,35 @@ class StressModel:
+                 if not kernel_active(state):
+                     break
+         kernel_full_residual(
+-            options.young, options.tolerance, options.absolute_tolerance, state, self.info, history is not None
++            options.young,
++            options.tolerance,
++            options.absolute_tolerance,
++            state,
++            self.info,
++            history is not None,
++            coalesced,
+         )
+         if self.inverse is not None:
+             for _ in range(options.inverse_corrections):
+                 self.inverse.apply(options.young, state, correction=True)
+                 kernel_full_residual(
+-                    options.young, options.tolerance, options.absolute_tolerance, state, self.info, only_active=True
++                    options.young,
++                    options.tolerance,
++                    options.absolute_tolerance,
++                    state,
++                    self.info,
++                    only_active=True,
++                    coalesced=coalesced,
+                 )
+             self.factor.solve(options.young, state, self.info, options.cooperative_solve, only_failed=True)
+             kernel_full_residual(
+-                options.young, options.tolerance, options.absolute_tolerance, state, self.info, only_active=True
++                options.young,
++                options.tolerance,
++                options.absolute_tolerance,
++                state,
++                self.info,
++                only_active=True,
++                coalesced=coalesced,
+             )
+         kernel_peak(options.young, options.poisson, state, self.info, options.cached_peak)
+ 
+@@ -286,7 +312,10 @@ class StressModel:
+     ) -> None:
+         if surface_load and self.surface_inverse is not None:
+             assert omega is not None
+-            self.surface_inverse.apply(options.young, omega, state, options.packed_surface_loads)
++            block_size = options.packed_block_size
++            if block_size is None:
++                block_size = 512 if state.active.shape[0] >= 8192 else 0
++            self.surface_inverse.apply(options.young, omega, state, options.packed_surface_loads, block_size)
+         elif self.inverse is not None:
+             self.inverse.apply(options.young, state)
+         else:
+diff --git a/genesis/engine/solvers/rigid/stress/pipeline.py b/genesis/engine/solvers/rigid/stress/pipeline.py
+index 9adfb373..0c1c0feb 100644
+--- a/genesis/engine/solvers/rigid/stress/pipeline.py
++++ b/genesis/engine/solvers/rigid/stress/pipeline.py
+@@ -5,6 +5,7 @@ import quadrants as qd
+ from genesis.utils import array_class
+ 
+ from .association import func_associate
++from .balance import func_balance_contacts
+ from .contact import (
+     StressContactState,
+     func_anchor,
+@@ -18,7 +19,7 @@ from .data import StressInfo, StressState
+ from .factor import StressFactorInfo, func_solve_cooperative
+ from .inverse import StressInverseInfo, func_apply_inverse
+ from .lifecycle import func_accept, func_begin_step
+-from .scatter import StressScatterWorkspace, func_scatter_faces
++from .scatter import StressScatterWorkspace, func_pressure_moments, func_scatter_faces
+ from .solve import func_balance, func_direct_init, func_full_residual, func_peak_impl
+ from .surface import StressSurfaceInfo
+ from .surface_inverse import StressSurfaceInverseInfo, func_surface_apply_packed, func_surface_pack
+@@ -55,6 +56,11 @@ def kernel_pipeline(
+     n_nodes: qd.template(),
+     full: qd.template(),
+     face_parallel: qd.template(),
++    is_cooperative_balance: qd.template(),
++    reuse_contact_wrench: qd.template(),
++    packed_block_size: qd.template(),
++    coalesced_residual: qd.template(),
++    reuse_contact_moments: qd.template(),
+ ):
+     if qd.static(first):
+         func_begin_step(state)
+@@ -63,24 +69,30 @@ def kernel_pipeline(
+     )
+     func_anchor(epsilon, contacts, surface)
+     func_pack_contacts(contacts)
+-    func_pressure_warp(contacts, surface, False)
++    if qd.static(reuse_contact_moments):
++        func_pressure_moments(contacts, state, info, surface, scatter, cached_bounds)
++    else:
++        func_pressure_warp(contacts, surface, False)
+     func_pressure_correct_warp(contacts, surface)
+     func_refine_contacts(contacts)
+     func_pressure_warp(contacts, surface, True)
+     func_pressure_correct_warp(contacts, surface)
+     if qd.static(face_parallel):
+-        func_scatter_faces(contacts, state, info, surface, scatter, cached_bounds)
++        func_scatter_faces(contacts, state, info, surface, scatter, cached_bounds, reuse_contact_moments)
+     else:
+         func_scatter_warp(contacts, state, info, surface, cached_bounds)
+-    func_balance(omega, state, info)
++    if qd.static(face_parallel and is_cooperative_balance and reuse_contact_wrench):
++        func_balance_contacts(omega, state, info, contacts, scatter)
++    else:
++        func_balance(omega, state, info, is_cooperative_balance)
+     func_direct_init(state)
+     func_surface_pack(state, boundary)
+-    func_surface_apply_packed(young, omega, state, boundary)
+-    func_full_residual(young, tolerance, absolute, state, info, False)
++    func_surface_apply_packed(young, omega, state, boundary, packed_block_size)
++    func_full_residual(young, tolerance, absolute, state, info, False, coalesced_residual)
+     for _ in qd.static(range(corrections)):
+         func_apply_inverse(young, state, inverse, True, False)
+-        func_full_residual(young, tolerance, absolute, state, info, True)
++        func_full_residual(young, tolerance, absolute, state, info, True, coalesced_residual)
+     func_solve_cooperative(young, state, info, factor, n_nodes, True)
+-    func_full_residual(young, tolerance, absolute, state, info, True)
++    func_full_residual(young, tolerance, absolute, state, info, True, coalesced_residual)
+     func_peak_impl(young, poisson, state, info, cached_peak, full)
+     func_accept(state, contacts, errno, full)
+diff --git a/genesis/engine/solvers/rigid/stress/recovery.py b/genesis/engine/solvers/rigid/stress/recovery.py
+index 921c6895..d92e3e2b 100644
+--- a/genesis/engine/solvers/rigid/stress/recovery.py
++++ b/genesis/engine/solvers/rigid/stress/recovery.py
+@@ -11,6 +11,7 @@ import torch
+ 
+ import genesis as gs
+ from genesis.engine.solvers.base_solver import StateChange, Subscriber
++from genesis.options.rigid_stress import RigidStressOptions
+ from genesis.utils.array_class import V_VEC, DataItem, DataKind, iter_data
+ from genesis.utils.misc import (
+     assign_indexed_tensor,
+@@ -28,7 +29,7 @@ from .history import StressHistory
+ from .lifecycle import func_accept, func_begin_step
+ from .model import StressModel
+ from .pipeline import kernel_pipeline
+-from .scatter import StressScatterWorkspace, create_scatter_workspace, kernel_scatter_faces
++from .scatter import StressScatterWorkspace, create_scatter_workspace, kernel_pressure_moments, kernel_scatter_faces
+ from .surface import StressSurface
+ 
+ if TYPE_CHECKING:
+@@ -47,6 +48,12 @@ class StressLink:
+     history: StressHistory | None
+     output_mode: str
+     scatter: StressScatterWorkspace
++    options: RigidStressOptions
++    reuse_contact_wrench: bool
++    packed_block_size: int
++    fused_pipeline: bool
++    coalesced_residual: bool
++    reuse_contact_moments: bool
+ 
+ 
+ class RigidStressRecovery:
+@@ -82,6 +89,17 @@ class RigidStressRecovery:
+                         model = StressModel(options)
+                     if surface is None:
+                         surface = StressSurface(options.quadrature, model.info)
++                    reuse_contact_moments = (
++                        gs.backend == gs.cuda
++                        and options.face_parallel_scatter
++                        and options.cooperative_pressure
++                        and options.cooperative_scatter
++                        and (
++                            options.contact_moment_reuse
++                            if options.contact_moment_reuse is not None
++                            else solver._B >= 8192
++                        )
++                    )
+                     self.links.append(
+                         StressLink(
+                             link,
+@@ -105,7 +123,28 @@ class RigidStressRecovery:
+                                 and options.cooperative_scatter
+                                 and gs.backend == gs.cuda
+                                 else 0,
++                                reuse_contact_moments,
+                             ),
++                            options.model_copy(deep=True),
++                            options.contact_wrench_reuse
++                            if options.contact_wrench_reuse is not None
++                            else solver._B >= 8192,
++                            options.packed_block_size
++                            if options.packed_block_size is not None
++                            else 512
++                            if solver._B >= 8192
++                            else 0,
++                            gs.backend == gs.cuda
++                            and options.fused_pipeline
++                            and model.surface_inverse is not None
++                            and options.packed_surface_loads
++                            and options.cooperative_pressure
++                            and options.cooperative_scatter
++                            and options.cooperative_solve
++                            and model.info.vertices.shape[0] <= 1024
++                            and not options.history_size,
++                            options.coalesced_residual if options.coalesced_residual is not None else solver._B >= 8192,
++                            reuse_contact_moments,
+                         )
+                     )
+         self.subscriber = Subscriber(
+@@ -120,19 +159,9 @@ class RigidStressRecovery:
+         solver = self.solver
+         for entry in self.links:
+             options = entry.link.stress_options
+-            if options.output_mode != entry.output_mode:
+-                gs.raise_exception("Changing stress output mode requires rebuilding the scene.")
+-            if (
+-                gs.backend == gs.cuda
+-                and options.fused_pipeline
+-                and entry.model.surface_inverse is not None
+-                and options.packed_surface_loads
+-                and options.cooperative_pressure
+-                and options.cooperative_scatter
+-                and options.cooperative_solve
+-                and entry.model.info.vertices.shape[0] <= 1024
+-                and entry.history is None
+-            ):
++            if options != entry.options:
++                gs.raise_exception("Changing stress recovery options requires rebuilding the scene.")
++            if entry.fused_pipeline:
+                 kernel_pipeline(
+                     options.young,
+                     options.poisson,
+@@ -163,6 +192,11 @@ class RigidStressRecovery:
+                     entry.model.info.vertices.shape[0],
+                     entry.output_mode == "full",
+                     entry.scatter.tasks.shape[0] > 0,
++                    options.cooperative_balance,
++                    entry.reuse_contact_wrench,
++                    entry.packed_block_size,
++                    entry.coalesced_residual,
++                    entry.reuse_contact_moments,
+                 )
+                 continue
+             if i_substep == 0:
+@@ -181,7 +215,17 @@ class RigidStressRecovery:
+                 solver._errno,
+             )
+             kernel_anchor(self.source_epsilon, entry.contacts, entry.surface.info)
+-            kernel_pressure(entry.contacts, entry.surface.info, entry.link.stress_options.cooperative_pressure)
++            if entry.reuse_contact_moments:
++                kernel_pressure_moments(
++                    entry.contacts,
++                    entry.state,
++                    entry.model.info,
++                    entry.surface.info,
++                    entry.scatter,
++                    options.cached_face_bounds,
++                )
++            else:
++                kernel_pressure(entry.contacts, entry.surface.info, options.cooperative_pressure)
+             if entry.scatter.tasks.shape[0] and options.cooperative_scatter:
+                 kernel_scatter_faces(
+                     entry.contacts,
+@@ -190,6 +234,7 @@ class RigidStressRecovery:
+                     entry.surface.info,
+                     entry.scatter,
+                     options.cached_face_bounds,
++                    entry.reuse_contact_moments,
+                 )
+             else:
+                 kernel_scatter(
+@@ -248,11 +293,11 @@ class RigidStressRecovery:
+         seen = set()
+         seen_surfaces = set()
+         for i, entry in enumerate(self.links):
++            if entry.link.stress_options != entry.options:
++                gs.raise_exception("Changing stress recovery options requires rebuilding the scene.")
+             yield DataItem(
+                 f"stress.{i}.options",
+-                entry.link.stress_options.model_copy(
+-                    update={"mesh": str(Path(entry.link.stress_options.mesh).resolve())}
+-                ),
++                entry.options.model_copy(update={"mesh": str(Path(entry.options.mesh).resolve())}),
+                 DataKind.CONFIG,
+             )
+             if id(entry.model) not in seen:
+@@ -283,6 +328,8 @@ class RigidStressRecovery:
+     def get_peak(self, link_idx: int, envs_idx=None, *, copy: bool = True) -> torch.Tensor:
+         for entry in self.links:
+             if entry.link.idx == link_idx:
++                if entry.link.stress_options != entry.options:
++                    gs.raise_exception("Changing stress recovery options requires rebuilding the scene.")
+                 tensor = qd_to_torch(entry.state.step_peak, envs_idx, transpose=True, copy=copy)
+                 return tensor[0] if self.solver.n_envs == 0 else tensor
+         gs.raise_exception("Stress recovery is not enabled for this link.")
+@@ -290,8 +337,8 @@ class RigidStressRecovery:
+     def get_field(self, link_idx: int, envs_idx=None, *, copy: bool = True) -> tuple[torch.Tensor, torch.Tensor]:
+         for entry in self.links:
+             if entry.link.idx == link_idx:
+-                if entry.link.stress_options.output_mode != entry.output_mode:
+-                    gs.raise_exception("Changing stress output mode requires rebuilding the scene.")
++                if entry.link.stress_options != entry.options:
++                    gs.raise_exception("Changing stress recovery options requires rebuilding the scene.")
+                 if entry.output_mode != "full":
+                     gs.raise_exception("Configure output_mode='full' before building to observe the stress field.")
+                 tensor = qd_to_torch(entry.state.stress_tensor, envs_idx, transpose=True, copy=copy)
+diff --git a/genesis/engine/solvers/rigid/stress/scatter.py b/genesis/engine/solvers/rigid/stress/scatter.py
+index e9974cf8..f5aa0e57 100644
+--- a/genesis/engine/solvers/rigid/stress/scatter.py
++++ b/genesis/engine/solvers/rigid/stress/scatter.py
+@@ -6,9 +6,19 @@ from typing import ClassVar
+ import quadrants as qd
+ 
+ import genesis as gs
+-from genesis.utils.array_class import V_VEC, DataKind, V
++from genesis.utils.array_class import V_MAT, V_VEC, DataKind, V
+ 
+-from .contact import StressContactState, func_contact_sample, func_force_frame, func_pack_contacts, func_scatter_warp
++from .contact import (
++    StressContactState,
++    func_contact_sample,
++    func_force_frame,
++    func_pack_contacts,
++    func_pressure_correct_warp,
++    func_pressure_initial,
++    func_pressure_warp,
++    func_refine_contacts,
++    func_scatter_warp,
++)
+ from .data import StressInfo, StressState
+ from .surface import StressSurfaceInfo
+ 
+@@ -21,9 +31,12 @@ class StressScatterWorkspace:
+     count: qd.Tensor
+     wrench: qd.Tensor
+     overflow_calls: qd.Tensor
++    pressure_gram: qd.Tensor
++    load_moments: qd.Tensor
++    affine_pressure: qd.Tensor
+ 
+ 
+-def create_scatter_workspace(n_envs: int, tasks_per_env: int) -> StressScatterWorkspace:
++def create_scatter_workspace(n_envs: int, tasks_per_env: int, reuse_moments: bool = False) -> StressScatterWorkspace:
+     # Every task uses one warp. Bound the thread index as well as allocated storage.
+     capacity = min(n_envs * tasks_per_env, 2147483647 // 32)
+     workspace = StressScatterWorkspace(
+@@ -31,6 +44,9 @@ def create_scatter_workspace(n_envs: int, tasks_per_env: int) -> StressScatterWo
+         count=V(dtype=qd.i64, shape=()),
+         wrench=V_VEC(6, dtype=gs.qd_float, shape=(capacity,)),
+         overflow_calls=V(dtype=qd.i64, shape=()),
++        pressure_gram=V_MAT(3, 3, dtype=gs.qd_float, shape=(capacity if reuse_moments else 0,)),
++        load_moments=V_MAT(6, 3, dtype=gs.qd_float, shape=(capacity if reuse_moments else 0,)),
++        affine_pressure=V(dtype=gs.qd_bool, shape=(capacity if reuse_moments else 0,)),
+     )
+     workspace.count.fill(0)
+     workspace.overflow_calls.fill(0)
+@@ -38,7 +54,7 @@ def create_scatter_workspace(n_envs: int, tasks_per_env: int) -> StressScatterWo
+ 
+ 
+ @qd.func
+-def func_scatter_faces(
++def func_prepare_scatter(
+     contacts: StressContactState,
+     state: StressState,
+     info: StressInfo,
+@@ -72,6 +88,96 @@ def func_scatter_faces(
+                 i_t_out = qd.atomic_add(workspace.count[None], 1)
+                 if i_t_out < workspace.tasks.shape[0]:
+                     workspace.tasks[i_t_out] = qd.Vector([i_pair, i_f])
++
++
++@qd.func
++def func_pressure_moments(
++    contacts: StressContactState,
++    state: StressState,
++    info: StressInfo,
++    surface: StressSurfaceInfo,
++    workspace: StressScatterWorkspace,
++    cached_bounds: qd.template(),
++):
++    # Task identities stay fixed until scatter; repacking changes atomic order.
++    func_prepare_scatter(contacts, state, info, surface, workspace, cached_bounds)
++    is_admitted = workspace.count[None] <= workspace.tasks.shape[0]
++    for i_pair in range(qd.select(is_admitted, contacts.active_count[None], 0)):
++        workspace.pressure_gram[i_pair] = qd.Matrix.zero(gs.qd_float, 3, 3)
++        workspace.affine_pressure[i_pair] = False
++        pair = contacts.active_pairs[i_pair]
++        contacts.candidate_count[pair[0], pair[1]] = 0
++    qd.loop_config(block_dim=128)
++    for i_thread in range(qd.i32(qd.select(is_admitted, workspace.count[None] * 32, 0))):
++        lane, i_t = i_thread % 32, i_thread // 32
++        i_pair, i_f = workspace.tasks[i_t][0], workspace.tasks[i_t][1]
++        pair = contacts.active_pairs[i_pair]
++        i_c, i_b = pair[0], pair[1]
++        first, second = func_force_frame(contacts.force[i_c, i_b])
++        gram = qd.Matrix.zero(gs.qd_float, 3, 3)
++        load = qd.Matrix.zero(gs.qd_float, 6, 3)
++        candidates = 0
++        n_q = surface.shape.shape[0]
++        for chunk in range((n_q + 31) // 32):
++            i_q = chunk * 32 + lane
++            if i_q < n_q:
++                coordinates, weight, _position, shape, _face = func_contact_sample(
++                    i_f * n_q + i_q, i_c, i_b, first, second, contacts, surface
++                )
++                gram += weight * coordinates.outer_product(coordinates)
++                load += shape.outer_product(weight * coordinates)
++                candidates += gs.qd_int(weight > 0.0)
++        for a, b in qd.static(qd.ndrange(3, 3)):
++            gram[a, b] = qd.simt.subgroup.reduce_all_add(gram[a, b])
++        for a, b in qd.static(qd.ndrange(6, 3)):
++            load[a, b] = qd.simt.subgroup.reduce_all_add(load[a, b])
++        candidates = qd.simt.subgroup.reduce_all_add(candidates)
++        if lane == 0:
++            workspace.load_moments[i_t] = load
++            for a, b in qd.static(qd.ndrange(3, 3)):
++                qd.atomic_add(workspace.pressure_gram[i_pair][a, b], gram[a, b])
++            qd.atomic_add(contacts.candidate_count[i_c, i_b], candidates)
++    for i_pair in range(qd.select(is_admitted, contacts.active_count[None], 0)):
++        pair = contacts.active_pairs[i_pair]
++        i_c, i_b = pair[0], pair[1]
++        coefficient, weight_sum, status = func_pressure_initial(workspace.pressure_gram[i_pair])
++        contacts.coefficient[i_c, i_b] = coefficient
++        contacts.weight_sum[i_c, i_b] = weight_sum
++        contacts.status[i_c, i_b] = status
++        workspace.affine_pressure[i_pair] = status == 0
++    # Overflow recomputes the complete original pressure, with no cache accesses.
++    func_pressure_warp(contacts, surface, False, not is_admitted)
++
++
++@qd.kernel(graph=True)
++def kernel_pressure_moments(
++    contacts: StressContactState,
++    state: StressState,
++    info: StressInfo,
++    surface: StressSurfaceInfo,
++    workspace: StressScatterWorkspace,
++    cached_bounds: qd.template(),
++):
++    func_pack_contacts(contacts)
++    func_pressure_moments(contacts, state, info, surface, workspace, cached_bounds)
++    func_pressure_correct_warp(contacts, surface)
++    func_refine_contacts(contacts)
++    func_pressure_warp(contacts, surface, True)
++    func_pressure_correct_warp(contacts, surface)
++
++
++@qd.func
++def func_scatter_faces(
++    contacts: StressContactState,
++    state: StressState,
++    info: StressInfo,
++    surface: StressSurfaceInfo,
++    workspace: StressScatterWorkspace,
++    cached_bounds: qd.template(),
++    reuse_moments: qd.template() = False,
++):
++    if qd.static(not reuse_moments):
++        func_prepare_scatter(contacts, state, info, surface, workspace, cached_bounds)
+     qd.loop_config(block_dim=128)
+     for i_thread in range(
+         qd.i32(qd.select(workspace.count[None] <= workspace.tasks.shape[0], workspace.count[None] * 32, 0))
+@@ -86,18 +192,37 @@ def func_scatter_faces(
+         i_q_start, n_q_current = i_f * n_q, n_q
+         if contacts.is_refined[i_c, i_b] and i_f == contacts.anchor_face[i_c, i_b]:
+             i_q_start, n_q_current = surface.positions.shape[0], 7 * n_q
++        if qd.static(reuse_moments):
++            n_q_current = qd.select(contacts.status[i_c, i_b] == 0, n_q_current, 0)
+         total, moment = qd.Vector.zero(gs.qd_float, 3), qd.Vector.zero(gs.qd_float, 3)
+         load = qd.Matrix.zero(gs.qd_float, 6, 3)
+-        for i_q_block in range((n_q_current + 31) // 32):
+-            i_q_ = i_q_block * 32 + i_lane
+-            if i_q_ < n_q_current:
+-                coordinates, weight, position, shape, _face = func_contact_sample(
+-                    i_q_start + i_q_, i_c, i_b, first, second, contacts, surface
+-                )
+-                sample_force = weight * qd.max(0.0, coordinates.dot(contacts.coefficient[i_c, i_b])) * force
+-                total += sample_force
+-                moment += (position - contacts.position[i_c, i_b]).cross(sample_force)
+-                load += shape.outer_product(sample_force)
++        use_moments = False
++        if qd.static(reuse_moments):
++            use_moments = (
++                workspace.affine_pressure[i_pair]
++                and not contacts.is_refined[i_c, i_b]
++                and contacts.status[i_c, i_b] == 0
++            )
++        if use_moments:
++            if i_lane < 6:
++                row = qd.Vector([workspace.load_moments[i_t][i_lane, a] for a in qd.static(range(3))])
++                nodal_force = row.dot(contacts.coefficient[i_c, i_b]) * force
++                load[i_lane, :] = nodal_force
++                total = nodal_force
++                node = info.surface_nodes[i_f, i_lane]
++                # P2 partition of unity and linear completeness preserve the wrench.
++                moment = (info.vertices[node] - contacts.position[i_c, i_b]).cross(nodal_force)
++        else:
++            for i_q_block in range((n_q_current + 31) // 32):
++                i_q_ = i_q_block * 32 + i_lane
++                if i_q_ < n_q_current:
++                    coordinates, weight, position, shape, _face = func_contact_sample(
++                        i_q_start + i_q_, i_c, i_b, first, second, contacts, surface
++                    )
++                    sample_force = weight * qd.max(0.0, coordinates.dot(contacts.coefficient[i_c, i_b])) * force
++                    total += sample_force
++                    moment += (position - contacts.position[i_c, i_b]).cross(sample_force)
++                    load += shape.outer_product(sample_force)
+         for a, b in qd.static(qd.ndrange(6, 3)):
+             load[a, b] = qd.simt.subgroup.reduce_all_add(load[a, b])
+         for a in qd.static(range(3)):
+@@ -133,8 +258,35 @@ def func_scatter_faces(
+     func_scatter_warp(contacts, state, info, surface, cached_bounds, is_overflow)
+ 
+ 
+-@qd.kernel(graph=True)
+ def kernel_scatter_faces(
++    contacts: StressContactState,
++    state: StressState,
++    info: StressInfo,
++    surface: StressSurfaceInfo,
++    workspace: StressScatterWorkspace,
++    cached_bounds: bool,
++    reuse_moments: bool = False,
++):
++    kernel_scatter_faces_impl(contacts, state, info, surface, workspace, cached_bounds, reuse_moments)
++
++
++@qd.kernel(graph=True)
++def kernel_scatter_faces_impl(
++    contacts: StressContactState,
++    state: StressState,
++    info: StressInfo,
++    surface: StressSurfaceInfo,
++    workspace: StressScatterWorkspace,
++    cached_bounds: qd.template(),
++    reuse_moments: qd.template(),
++):
++    if qd.static(not reuse_moments):
++        func_pack_contacts(contacts)
++    func_scatter_faces(contacts, state, info, surface, workspace, cached_bounds, reuse_moments)
++
++
++@qd.kernel(graph=True)
++def kernel_fit_scatter_moments(
+     contacts: StressContactState,
+     state: StressState,
+     info: StressInfo,
+@@ -143,4 +295,9 @@ def kernel_scatter_faces(
+     cached_bounds: qd.template(),
+ ):
+     func_pack_contacts(contacts)
+-    func_scatter_faces(contacts, state, info, surface, workspace, cached_bounds)
++    func_pressure_moments(contacts, state, info, surface, workspace, cached_bounds)
++    func_pressure_correct_warp(contacts, surface)
++    func_refine_contacts(contacts)
++    func_pressure_warp(contacts, surface, True)
++    func_pressure_correct_warp(contacts, surface)
++    func_scatter_faces(contacts, state, info, surface, workspace, cached_bounds, True)
+diff --git a/genesis/engine/solvers/rigid/stress/solve.py b/genesis/engine/solvers/rigid/stress/solve.py
+index 26c0580d..bc71a9b0 100644
+--- a/genesis/engine/solvers/rigid/stress/solve.py
++++ b/genesis/engine/solvers/rigid/stress/solve.py
+@@ -4,6 +4,7 @@ import quadrants as qd
+ 
+ import genesis as gs
+ 
++from .balance import func_balance_cooperative
+ from .data import StressInfo, StressState
+ from .operators import func_shape_gradient
+ 
+@@ -19,26 +20,37 @@ def func_precondition(i_n: int, residual: qd.types.vector(3), stress_info: Stres
+     return value
+ 
+ 
++def kernel_balance(omega: qd.Tensor, stress_state: StressState, stress_info: StressInfo, is_cooperative: bool = False):
++    kernel_balance_impl(omega, stress_state, stress_info, is_cooperative)
++
++
+ @qd.kernel(graph=True)
+-def kernel_balance(omega: qd.Tensor, stress_state: StressState, stress_info: StressInfo):
+-    func_balance(omega, stress_state, stress_info)
++def kernel_balance_impl(
++    omega: qd.Tensor, stress_state: StressState, stress_info: StressInfo, is_cooperative: qd.template()
++):
++    func_balance(omega, stress_state, stress_info, is_cooperative)
+ 
+ 
+ @qd.func
+-def func_balance(omega: qd.Tensor, stress_state: StressState, stress_info: StressInfo):
+-    for i_b in range(stress_state.active.shape[0]):
+-        stress_state.wrench[i_b] = qd.Vector.zero(gs.qd_float, 6)
+-    for i_n, i_b in qd.ndrange(stress_info.vertices.shape[0], stress_state.active.shape[0]):
+-        w = omega[i_b]
+-        terms = qd.Vector([w[0] * w[0], w[1] * w[1], w[2] * w[2], w[0] * w[1], w[0] * w[2], w[1] * w[2]])
+-        load = stress_state.force[i_n, i_b] + stress_info.centrifugal[i_n] @ terms
+-        stress_state.rhs[i_n, i_b] = load
+-        wrench = stress_info.modes[i_n].transpose() @ load
+-        for i_a in qd.static(range(6)):
+-            qd.atomic_add(stress_state.wrench[i_b][i_a], wrench[i_a])
+-    for i_n, i_b in qd.ndrange(stress_info.vertices.shape[0], stress_state.active.shape[0]):
+-        acceleration = stress_info.gram_inverse[None] @ stress_state.wrench[i_b]
+-        stress_state.rhs[i_n, i_b] -= stress_info.mass_modes[i_n] @ acceleration
++def func_balance(
++    omega: qd.Tensor, stress_state: StressState, stress_info: StressInfo, is_cooperative: qd.template() = False
++):
++    if qd.static(is_cooperative and gs.backend == gs.cuda):
++        func_balance_cooperative(omega, stress_state, stress_info)
++    else:
++        for i_b in range(stress_state.active.shape[0]):
++            stress_state.wrench[i_b] = qd.Vector.zero(gs.qd_float, 6)
++        for i_n, i_b in qd.ndrange(stress_info.vertices.shape[0], stress_state.active.shape[0]):
++            w = omega[i_b]
++            terms = qd.Vector([w[0] * w[0], w[1] * w[1], w[2] * w[2], w[0] * w[1], w[0] * w[2], w[1] * w[2]])
++            load = stress_state.force[i_n, i_b] + stress_info.centrifugal[i_n] @ terms
++            stress_state.rhs[i_n, i_b] = load
++            wrench = stress_info.modes[i_n].transpose() @ load
++            for i_a in qd.static(range(6)):
++                qd.atomic_add(stress_state.wrench[i_b][i_a], wrench[i_a])
++        for i_n, i_b in qd.ndrange(stress_info.vertices.shape[0], stress_state.active.shape[0]):
++            acceleration = stress_info.gram_inverse[None] @ stress_state.wrench[i_b]
++            stress_state.rhs[i_n, i_b] -= stress_info.mass_modes[i_n] @ acceleration
+ 
+ 
+ @qd.kernel(graph=True)
+@@ -167,16 +179,48 @@ def kernel_active(stress_state: StressState) -> int:
+     return count
+ 
+ 
+-@qd.kernel(graph=True)
+ def kernel_full_residual(
++    young: float,
++    tolerance: float,
++    absolute_tolerance: float,
++    stress_state: StressState,
++    stress_info: StressInfo,
++    only_active: bool,
++    coalesced: bool = False,
++):
++    kernel_full_residual_impl(
++        young,
++        tolerance,
++        absolute_tolerance,
++        stress_state,
++        stress_info,
++        only_active,
++        coalesced and gs.backend == gs.cuda,
++    )
++
++
++@qd.kernel(graph=True)
++def kernel_full_residual_impl(
+     young: float,
+     tolerance: float,
+     absolute_tolerance: float,
+     stress_state: StressState,
+     stress_info: StressInfo,
+     only_active: qd.template(),
++    coalesced: qd.template(),
+ ):
+-    func_full_residual(young, tolerance, absolute_tolerance, stress_state, stress_info, only_active)
++    func_full_residual(young, tolerance, absolute_tolerance, stress_state, stress_info, only_active, coalesced)
++
++
++@qd.func
++def func_residual_row(young: float, stress_state: StressState, stress_info: StressInfo, i_n: int, i_b: int):
++    product = qd.Vector.zero(gs.qd_float, 3)
++    for i_entry in range(stress_info.row_start[i_n], stress_info.row_start[i_n + 1]):
++        j_n = stress_info.columns[i_entry]
++        product += young * stress_info.stiffness[i_entry] @ stress_state.displacement[j_n, i_b]
++    residual = stress_state.rhs[i_n, i_b] - product
++    stress_state.residual[i_n, i_b] = residual
++    qd.atomic_add(stress_state.residual_norm_squared[i_b], residual.dot(residual))
+ 
+ 
+ @qd.func
+@@ -187,19 +231,24 @@ def func_full_residual(
+     stress_state: StressState,
+     stress_info: StressInfo,
+     only_active: qd.template(),
++    coalesced: qd.template() = False,
+ ):
+     for i_b in range(stress_state.active.shape[0]):
+         if qd.static(not only_active) or stress_state.active[i_b]:
+             stress_state.residual_norm_squared[i_b] = 0.0
+-    for i_n, i_b in qd.ndrange(stress_info.vertices.shape[0], stress_state.active.shape[0]):
+-        if qd.static(not only_active) or stress_state.active[i_b]:
+-            product = qd.Vector.zero(gs.qd_float, 3)
+-            for i_entry in range(stress_info.row_start[i_n], stress_info.row_start[i_n + 1]):
+-                j_n = stress_info.columns[i_entry]
+-                product += young * stress_info.stiffness[i_entry] @ stress_state.displacement[j_n, i_b]
+-            residual = stress_state.rhs[i_n, i_b] - product
+-            stress_state.residual[i_n, i_b] = residual
+-            qd.atomic_add(stress_state.residual_norm_squared[i_b], residual.dot(residual))
++    if qd.static(coalesced):
++        qd.loop_config(block_dim=256)
++        for i_thread in range(stress_info.vertices.shape[0] * ((stress_state.active.shape[0] + 31) // 32) * 32):
++            i_index = i_thread // 32
++            i_n = i_index % stress_info.vertices.shape[0]
++            i_b = (i_index // stress_info.vertices.shape[0]) * 32 + i_thread % 32
++            if i_b < stress_state.active.shape[0]:  # noqa: SIM102 - bound padding before tensor indexing
++                if qd.static(not only_active) or stress_state.active[i_b]:
++                    func_residual_row(young, stress_state, stress_info, i_n, i_b)
++    else:
++        for i_n, i_b in qd.ndrange(stress_info.vertices.shape[0], stress_state.active.shape[0]):
++            if qd.static(not only_active) or stress_state.active[i_b]:
++                func_residual_row(young, stress_state, stress_info, i_n, i_b)
+     for i_b in range(stress_state.active.shape[0]):
+         if qd.static(not only_active) or stress_state.active[i_b]:
+             budget = qd.max(
+diff --git a/genesis/engine/solvers/rigid/stress/surface_inverse.py b/genesis/engine/solvers/rigid/stress/surface_inverse.py
+index d6e4ce94..18b530fa 100644
+--- a/genesis/engine/solvers/rigid/stress/surface_inverse.py
++++ b/genesis/engine/solvers/rigid/stress/surface_inverse.py
+@@ -44,10 +44,15 @@ class StressSurfaceInverse:
+         kernel_surface_store(temporary, self.info)
+         qd.sync()
+ 
+-    def apply(self, young: float, omega: qd.Tensor, state: StressState, packed: bool = True) -> None:
++    def apply(
++        self, young: float, omega: qd.Tensor, state: StressState, packed: bool = True, block_size: int = 0
++    ) -> None:
+         if packed and gs.backend == gs.cuda:
+             kernel_surface_pack(state, self.info)
+-            kernel_surface_apply_packed(young, omega, state, self.info)
++            if block_size:
++                kernel_surface_apply_packed_block(young, omega, state, self.info, block_size)
++            else:
++                kernel_surface_apply_packed(young, omega, state, self.info)
+         else:
+             kernel_surface_apply(young, omega, state, self.info)
+ 
+@@ -79,8 +84,14 @@ def kernel_surface_apply_packed(
+ 
+ @qd.func
+ def func_surface_apply_packed(
+-    young: float, omega: qd.Tensor, stress_state: StressState, surface_inverse_info: StressSurfaceInverseInfo
++    young: float,
++    omega: qd.Tensor,
++    stress_state: StressState,
++    surface_inverse_info: StressSurfaceInverseInfo,
++    block_size: qd.template() = 0,
+ ):
++    if qd.static(block_size):
++        qd.loop_config(block_dim=block_size)
+     for i_n, i_b in qd.ndrange(stress_state.rhs.shape[0], stress_state.active.shape[0]):
+         w = omega[i_b]
+         terms = qd.Vector([w[0] * w[0], w[1] * w[1], w[2] * w[2], w[0] * w[1], w[0] * w[2], w[1] * w[2]])
+@@ -95,6 +106,17 @@ def func_surface_apply_packed(
+         stress_state.valid[i_b] = True
+ 
+ 
++@qd.kernel(graph=True)
++def kernel_surface_apply_packed_block(
++    young: float,
++    omega: qd.Tensor,
++    stress_state: StressState,
++    surface_inverse_info: StressSurfaceInverseInfo,
++    block_size: qd.template(),
++):
++    func_surface_apply_packed(young, omega, stress_state, surface_inverse_info, block_size)
++
++
+ @qd.kernel(graph=True)
+ def kernel_surface_unit_loads(
+     stress_state: StressState, stress_info: StressInfo, surface_inverse_info: StressSurfaceInverseInfo
+diff --git a/genesis/options/rigid_stress.py b/genesis/options/rigid_stress.py
+index 7c52e64c..6b28a864 100644
+--- a/genesis/options/rigid_stress.py
++++ b/genesis/options/rigid_stress.py
+@@ -31,6 +31,21 @@ class RigidStressOptions(Options):
+     it to compare scheduling. Both options select storage at scene build.
+     ``cached_peak`` reuses shared immutable P2 corner gradients in the full
+     global stress scan. Disable it for a geometry reuse comparison.
++    ``cooperative_balance`` reduces the complete rigid-mode wrench in CUDA
++    node tiles and applies a shared mass-mode projection. CPU uses its
++    original balance order. Disable it to compare scheduling and projection.
++    ``contact_wrench_reuse`` optionally projects the actual integrated contact
++    wrench instead of reducing it again from all nodes. Overflow retains the
++    complete nodal reduction. ``contact_moment_reuse`` integrates current-step
++    P2 load moments alongside the pressure Gram matrix. Strictly positive
++    affine pressures reuse those moments; constrained, refined and overflowing
++    cases retain complete sampling. It needs CUDA cooperative pressure and
++    face scatter, adds 217 bytes per task capacity, and assumes no contact
++    history. ``packed_block_size`` selects the CUDA inverse block size;
++    ``coalesced_residual`` changes only the complete residual row scheduling.
++    These four options default to their original routes below 8,192 environments
++    and enable their large-batch routes above that size. Set explicit values
++    to compare scheduling. All options are fixed when building the scene.
+ 
+     ``tolerance`` bounds the complete equilibrium residual relative to the
+     load norm; ``absolute_tolerance`` supplies the force floor near zero.
+@@ -91,12 +106,17 @@ class RigidStressOptions(Options):
+     cooperative_solve: StrictBool = True
+     cooperative_pressure: StrictBool = True
+     cooperative_scatter: StrictBool = True
++    cooperative_balance: StrictBool = True
++    contact_wrench_reuse: StrictBool | None = None
+     face_parallel_scatter: StrictBool = True
+     scatter_tasks_per_env: PositiveInt = 32
++    contact_moment_reuse: StrictBool | None = None
+     inverse_max_bytes: PositiveInt = 64 * 1024 * 1024
+     inverse_precision: Literal["64", "32"] = "64"
+     surface_inverse: StrictBool = True
+     packed_surface_loads: StrictBool = True
++    packed_block_size: Literal[0, 256, 512] | None = None
++    coalesced_residual: StrictBool | None = None
+     fused_pipeline: StrictBool = True
+     cached_peak: StrictBool = True
+     cached_face_bounds: StrictBool = True
+diff --git a/research/rigid_stress/native_trajectory_oracle.py b/research/rigid_stress/native_trajectory_oracle.py
+index 2acb8ab5..d799136c 100644
+--- a/research/rigid_stress/native_trajectory_oracle.py
++++ b/research/rigid_stress/native_trajectory_oracle.py
+@@ -30,6 +30,10 @@ def main():
+     parser.add_argument("--substeps", type=int, default=1)
+     parser.add_argument("--scatter-tasks-per-env", type=int, default=32)
+     parser.add_argument("--contact-warp-scatter", action="store_true")
++    parser.add_argument("--contact-wrench-reuse", choices=("auto", "on", "off"), default="auto")
++    parser.add_argument("--packed-block-size", choices=(0, 256, 512), type=int, default=None)
++    parser.add_argument("--coalesced-residual", choices=("auto", "on", "off"), default="auto")
++    parser.add_argument("--contact-moment-reuse", choices=("auto", "on", "off"), default="auto")
+     parser.add_argument("--output", type=Path, required=True)
+     args = parser.parse_args()
+     args.output.parent.mkdir(parents=True, exist_ok=True)
+@@ -42,6 +46,10 @@ def main():
+         substeps=args.substeps,
+         face_parallel_scatter=not args.contact_warp_scatter,
+         scatter_tasks_per_env=args.scatter_tasks_per_env,
++        contact_wrench_reuse={"auto": None, "on": True, "off": False}[args.contact_wrench_reuse],
++        packed_block_size=args.packed_block_size,
++        coalesced_residual={"auto": None, "on": True, "off": False}[args.coalesced_residual],
++        contact_moment_reuse={"auto": None, "on": True, "off": False}[args.contact_moment_reuse],
+     )
+     entry = workload.scene.rigid_solver.stress_recovery.links[0]
+     with np.load("examples/rigid/assets/hollow_egg/level1/elastic.npz") as asset:
+diff --git a/tests/rigid/test_stress.py b/tests/rigid/test_stress.py
+index 5d721c1e..ebf8eb0d 100644
+--- a/tests/rigid/test_stress.py
++++ b/tests/rigid/test_stress.py
+@@ -8,6 +8,7 @@ from scipy.sparse.linalg import splu
+ from scipy.spatial.transform import Rotation
+ 
+ import genesis as gs
++from genesis.engine.solvers.rigid.stress.balance import kernel_balance_contacts
+ from genesis.engine.solvers.rigid.stress.contact import (
+     StressContactState,
+     create_contacts,
+@@ -25,8 +26,12 @@ from genesis.engine.solvers.rigid.stress.data import StressInfo, StressState
+ from genesis.engine.solvers.rigid.stress.history import StressHistory
+ from genesis.engine.solvers.rigid.stress.model import StressModel
+ from genesis.engine.solvers.rigid.stress.recovery import kernel_accept
+-from genesis.engine.solvers.rigid.stress.scatter import create_scatter_workspace, kernel_scatter_faces
+-from genesis.engine.solvers.rigid.stress.solve import kernel_peak
++from genesis.engine.solvers.rigid.stress.scatter import (
++    create_scatter_workspace,
++    kernel_fit_scatter_moments,
++    kernel_scatter_faces,
++)
++from genesis.engine.solvers.rigid.stress.solve import kernel_balance, kernel_full_residual, kernel_peak
+ from genesis.engine.solvers.rigid.stress.surface import StressSurface, StressSurfaceInfo
+ from genesis.options.rigid_stress import RigidStressOptions
+ from genesis.utils.array_class import V_VEC
+@@ -139,6 +144,28 @@ def test_native_full_field_unbatched_shared_operator(tmp_path):
+     complete.base_link.stress_options.output_mode = "max"
+     with pytest.raises(gs.GenesisException, match="rebuilding"):
+         scene.step()
++    complete.base_link.stress_options.output_mode = "full"
++    complete.base_link.stress_options.poisson = 0.22
++    with pytest.raises(gs.GenesisException, match="rebuilding"):
++        scene.step()
++    with pytest.raises(gs.GenesisException, match="rebuilding"):
++        complete.base_link.get_max_stress()
++    with pytest.raises(gs.GenesisException, match="rebuilding"):
++        complete.base_link.get_stress_field()
++    with pytest.raises(gs.GenesisException, match="rebuilding"):
++        tuple(scene.rigid_solver.stress_recovery.data)
++    complete.base_link.stress_options.poisson = 0.3
++    complete.base_link.stress_options.density = 2100.0
++    with pytest.raises(gs.GenesisException, match="rebuilding"):
++        scene.step()
++    complete.base_link.stress_options.density = 2000.0
++    complete.base_link.stress_options.cooperative_pressure = False
++    with pytest.raises(gs.GenesisException, match="rebuilding"):
++        scene.step()
++    complete.base_link.stress_options.cooperative_pressure = True
++    scene.reset()
++    scene.step()
++    np.testing.assert_array_equal(tensor_to_array(complete.base_link.get_stress_field(copy=False)[1]), 0.0)
+ 
+ 
+ @pytest.mark.required
+@@ -163,11 +190,77 @@ def test_native_p2_shared_operators(tmp_path, young, poisson, density):
+     np.testing.assert_allclose(qd_to_numpy(model.info.gram), oracle.gram, atol=1e-17)
+     gram_inverse = qd_to_numpy(model.info.gram_inverse)
+     np.testing.assert_allclose(gram_inverse @ oracle.gram, np.eye(6), atol=2e-12)
++    np.testing.assert_allclose(
++        qd_to_numpy(model.info.relief).reshape((-1, 6)),
++        oracle.mr @ np.linalg.inv(oracle.gram),
++        rtol=2e-11,
++        atol=1e-13,
++    )
+     pins = qd_to_numpy(model.info.pins)
+     assert len(np.unique(pins)) == 6
+     assert np.linalg.matrix_rank(oracle.r[pins]) == 6
+ 
+ 
++@pytest.mark.required
++@pytest.mark.precision("64")
++@pytest.mark.parametrize("n_envs", (2051, 32771))
++def test_native_batched_inertia_relief_and_partial_load_reset(tmp_path, n_envs):
++    if gs.backend != gs.cuda:
++        pytest.skip("The coalesced shared-memory reduction runs on CUDA.")
++    vertices, tetrahedra, surface, _ = shell_mesh(1, 2, 0.0005)
++    mesh = tmp_path / "shell.npz"
++    np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=surface)
++    options = RigidStressOptions(mesh=mesh)
++    model = StressModel(options)
++    oracle = P2Shell(
++        vertices, tetrahedra, surface, options.young, options.poisson, options.density, 2, factor_backend="none"
++    )
++    random = np.random.default_rng(39731)
++    force = np.zeros((len(oracle.xyz), n_envs, 3))
++    nodes = qd_to_numpy(model.surface_inverse.info.nodes)[[0, 37, 80, 161]]
++    force[nodes] = random.normal(size=(4, n_envs, 3)) * 0.01
++    angular_velocity = random.normal(size=(n_envs, 3)) * 0.4
++    omega = V_VEC(3, dtype=gs.qd_float, shape=(n_envs,))
++    omega.from_numpy(angular_velocity)
++    state = model.create_state(n_envs)
++    state.force.from_numpy(force)
++    model.recover(omega, state, surface_load=True)
++    assert qd_to_numpy(state.valid).all()
++    kernel_full_residual(options.young, options.tolerance, options.absolute_tolerance, state, model.info, False)
++    original_residual = qd_to_numpy(state.residual, copy=True)
++    kernel_full_residual(options.young, options.tolerance, options.absolute_tolerance, state, model.info, False, True)
++    np.testing.assert_array_equal(qd_to_numpy(state.residual), original_residual)
++    del original_residual
++    rhs = qd_to_numpy(state.rhs, copy=True)
++    displacement = qd_to_numpy(state.displacement, copy=True)
++    peak = qd_to_numpy(state.peak, copy=True)
++    peak_scan = P2Peak(oracle.glambda, oracle.elements, options.young / (2.0 * (1.0 + options.poisson)))
++    free = np.setdiff1d(np.arange(oracle.ndof), qd_to_numpy(model.info.pins))
++    factor = splu(oracle.k[free][:, free].tocsc())
++    for i_b in (0, 31, n_envs // 2, n_envs - 1):
++        centrifugal = -np.cross(angular_velocity[i_b], np.cross(angular_velocity[i_b], oracle.xyz - oracle.com))
++        raw = force[:, i_b].reshape(oracle.ndof) + oracle.m @ centrifugal.reshape(oracle.ndof)
++        expected_rhs = raw - oracle.mr @ np.linalg.solve(oracle.gram, oracle.r.T @ raw)
++        np.testing.assert_allclose(rhs[:, i_b].reshape(oracle.ndof), expected_rhs, rtol=2e-8, atol=1e-12)
++        budget = max(options.absolute_tolerance, options.tolerance * np.linalg.norm(expected_rhs))
++        assert np.linalg.norm(oracle.k @ displacement[:, i_b].reshape(oracle.ndof) - expected_rhs) <= budget
++        expected = np.zeros(oracle.ndof)
++        expected[free] = factor.solve(expected_rhs[free])
++        np.testing.assert_allclose(peak[i_b], peak_scan(expected)[0], rtol=1e-4, atol=1e-3)
++    selected = [0, n_envs // 2, n_envs - 1]
++    force[:, selected] = 0.0
++    angular_velocity[selected] = 0.0
++    state.force.from_numpy(force)
++    omega.from_numpy(angular_velocity)
++    model.recover(omega, state, surface_load=True)
++    assert qd_to_numpy(state.valid).all()
++    changed_peak = qd_to_numpy(state.peak)
++    np.testing.assert_array_equal(changed_peak[selected], 0.0)
++    untouched = np.ones(n_envs, dtype=bool)
++    untouched[selected] = False
++    np.testing.assert_array_equal(changed_peak[untouched], peak[untouched])
++
++
+ @pytest.mark.required
+ @pytest.mark.precision("64")
+ @pytest.mark.parametrize(
+@@ -278,6 +371,9 @@ def test_native_batched_recovery_against_full_fp64_direct(
+             model.surface_inverse.apply(model.options.young, omega, state, packed=True)
+             np.testing.assert_array_equal(qd_to_numpy(state.displacement), dense)
+             if gs.backend == gs.cuda:
++                for block_size in (256, 512):
++                    model.surface_inverse.apply(model.options.young, omega, state, packed=True, block_size=block_size)
++                    np.testing.assert_array_equal(qd_to_numpy(state.displacement), dense)
+                 count = np.count_nonzero(np.any(updated[boundary] != 0.0, axis=2), axis=0)
+                 np.testing.assert_array_equal(qd_to_numpy(state.boundary_count), count)
+             model.recover(omega, state, surface_load=True)
+@@ -342,6 +438,43 @@ def test_native_finite_pressure_matches_independent_cpu(tmp_path, cooperative):
+     assert qd_to_numpy(contacts.force_error).max() < 1e-9
+     assert qd_to_numpy(contacts.moment_error).max() < 1e-11
+ 
++    if cooperative and gs.backend == gs.cuda:
++        omega = V_VEC(3, dtype=gs.qd_float, shape=(n_envs,))
++        angular_velocity = random.normal(size=(n_envs, 3))
++        omega.from_numpy(angular_velocity)
++        kernel_balance(omega, state, model.info, True)
++        expected_rhs = qd_to_numpy(state.rhs, copy=True)
++        expected_wrench = qd_to_numpy(state.wrench, copy=True)
++        centrifugal = -np.cross(
++            angular_velocity[:, None], np.cross(angular_velocity[:, None], (oracle.xyz - oracle.com)[None])
++        )
++        raw = expected.transpose((1, 0, 2)).reshape((n_envs, oracle.ndof)).T
++        raw += oracle.m @ centrifugal.reshape((n_envs, oracle.ndof)).T
++        independent_rhs = raw - oracle.mr @ np.linalg.solve(oracle.gram, oracle.r.T @ raw)
++        for capacity in (32, 1):
++            scatter = create_scatter_workspace(n_envs, capacity)
++            kernel_scatter_faces(contacts, state, model.info, surface.info, scatter, True)
++            kernel_balance_contacts(omega, state, model.info, contacts, scatter)
++            actual = qd_to_numpy(state.rhs)
++            np.testing.assert_allclose(actual, expected_rhs, atol=1e-15, rtol=1e-10)
++            np.testing.assert_allclose(qd_to_numpy(state.wrench), expected_wrench, atol=1e-15, rtol=1e-10)
++            np.testing.assert_allclose(
++                actual.transpose((1, 0, 2)).reshape((n_envs, oracle.ndof)).T,
++                independent_rhs,
++                atol=1e-12,
++                rtol=2e-10,
++            )
++            assert int(qd_to_numpy(scatter.overflow_calls)) == (1 if capacity == 1 else 0)
++            cache = create_scatter_workspace(n_envs, capacity, reuse_moments=True)
++            kernel_anchor(float(np.finfo(float).eps), contacts, surface.info)
++            kernel_fit_scatter_moments(contacts, state, model.info, surface.info, cache, True)
++            np.testing.assert_array_equal(qd_to_numpy(contacts.status), 0)
++            np.testing.assert_allclose(qd_to_numpy(state.force), expected, atol=1e-12, rtol=2e-10)
++            kernel_balance_contacts(omega, state, model.info, contacts, cache)
++            np.testing.assert_allclose(qd_to_numpy(state.rhs), expected_rhs, atol=1e-15, rtol=1e-10)
++            np.testing.assert_allclose(qd_to_numpy(state.wrench), expected_wrench, atol=1e-15, rtol=1e-10)
++            assert int(qd_to_numpy(cache.overflow_calls)) == (1 if capacity == 1 else 0)
++
+ 
+ @pytest.mark.required
+ @pytest.mark.precision("64")
+@@ -409,11 +542,22 @@ def test_native_constrained_pressure_and_invalid_inputs(tmp_path, case):
+     np.testing.assert_allclose(
+         qd_to_numpy(state.force)[:, 0], mapped.nodal_force_n.reshape((-1, 3)), rtol=2e-7, atol=1e-10
+     )
++    if gs.backend == gs.cuda:
++        cache = create_scatter_workspace(1, 32, reuse_moments=True)
++        kernel_anchor(float(np.finfo(float).eps), contacts, surface.info)
++        kernel_fit_scatter_moments(contacts, state, model.info, surface.info, cache, True)
++        np.testing.assert_array_equal(qd_to_numpy(contacts.status).reshape(-1), [0, 0, 1, 1, 1, 1])
++        assert qd_to_numpy(contacts.evaluations)[0, 0] > 1
++        np.testing.assert_allclose(
++            qd_to_numpy(state.force)[:, 0], mapped.nodal_force_n.reshape((-1, 3)), rtol=2e-7, atol=1e-10
++        )
+ 
+ 
+ @pytest.mark.required
+ @pytest.mark.precision("64")
+-@pytest.mark.parametrize("execution", ("serial", "warp", "graph", "faces", "faces_overflow", "faces_uncached"))
++@pytest.mark.parametrize(
++    "execution", ("serial", "warp", "graph", "faces", "faces_overflow", "faces_uncached", "moments", "moments_overflow")
++)
+ @pytest.mark.parametrize("case", ("batch2048", "batch16384", "batch32768"))
+ def test_native_live_apex_wrench_recovery(tmp_path, execution, case):
+     if execution not in ("serial", "warp") and gs.backend != gs.cuda:
+@@ -479,12 +623,17 @@ def test_native_live_apex_wrench_recovery(tmp_path, execution, case):
+         kernel_apex_contact_graph(float(np.finfo(float).eps), contacts, state, model.info, surface.info)
+     else:
+         kernel_anchor(float(np.finfo(float).eps), contacts, surface.info)
+-        kernel_pressure(contacts, surface.info, cooperative)
+-        if execution.startswith("faces"):
++        if execution.startswith("moments"):
++            workspace = create_scatter_workspace(1, 1 if execution == "moments_overflow" else 32, reuse_moments=True)
++            kernel_fit_scatter_moments(contacts, state, model.info, surface.info, workspace, True)
++            assert bool(qd_to_numpy(workspace.overflow_calls)) == (execution == "moments_overflow")
++        elif execution.startswith("faces"):
++            kernel_pressure(contacts, surface.info, cooperative)
+             workspace = create_scatter_workspace(1, 1 if execution == "faces_overflow" else 32)
+             kernel_scatter_faces(contacts, state, model.info, surface.info, workspace, execution != "faces_uncached")
+             assert bool(qd_to_numpy(workspace.overflow_calls)) == (execution == "faces_overflow")
+         else:
++            kernel_pressure(contacts, surface.info, cooperative)
+             kernel_scatter(contacts, state, model.info, surface.info)
+     print("apex", cooperative, "status", qd_to_numpy(contacts.status), "iterations", qd_to_numpy(contacts.evaluations))
+     np.testing.assert_array_equal(qd_to_numpy(contacts.status), 0)
+@@ -560,7 +709,14 @@ def test_native_rigid_lifecycle_and_partial_reset(tmp_path, substeps, output_mod
+     link = egg.base_link
+     link.configure_stress_recovery(
+         RigidStressOptions(
+-            mesh=mesh, tolerance=1e-7, history_size=4 if output_mode == "max" else 0, output_mode=output_mode
++            mesh=mesh,
++            tolerance=1e-7,
++            history_size=4 if output_mode == "max" else 0,
++            output_mode=output_mode,
++            contact_wrench_reuse=True,
++            packed_block_size=512,
++            coalesced_residual=True,
++            contact_moment_reuse=True,
+         )
+     )
+     scene.build(n_envs=3)

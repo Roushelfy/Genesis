@@ -27,7 +27,13 @@ def main():
         original_hash = hashlib.sha256(content).hexdigest()
         artifact = args.output / name.replace("/", "__")
         format_name = "complete"
-        if name.endswith(".json") and original_bytes > 500_000:
+        if name.endswith(".trace.json") and original_bytes > 500_000:
+            # Chrome trace lists contain dictionaries rather than numeric arrays.
+            # Summarizing arrays leaves hundreds of MB of event records in Git.
+            content = gzip.compress(content, mtime=0)
+            artifact = artifact.with_suffix(artifact.suffix + ".gz")
+            format_name = "gzip"
+        elif name.endswith(".json") and original_bytes > 500_000:
             result = compact_arrays(json.loads(content))
             result["publication_note"] = (
                 "Long environment arrays summarized. Exact original remains at runtime_path with original_sha256."

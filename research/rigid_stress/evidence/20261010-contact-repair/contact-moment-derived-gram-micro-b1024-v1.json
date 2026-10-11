@@ -1,0 +1,27 @@
+{
+  "envs": 1024,
+  "seed": 623001,
+  "reports": [
+    {
+      "name": "native_fit_scatter",
+      "milliseconds": 1.758689726702869,
+      "force_difference_budget_ratio_max": 2.7249326029710563e-08,
+      "force_error_max_N": 4.0262082547229607e-13,
+      "moment_error_max_Nm": 3.1611977363048605e-15
+    },
+    {
+      "name": "moments_with_integrated_gram",
+      "milliseconds": 1.5521514089778066,
+      "force_difference_budget_ratio_max": 5.836116338535003e-08,
+      "force_error_max_N": 4.026173570134998e-13,
+      "moment_error_max_Nm": 3.161184156046943e-15
+    },
+    {
+      "name": "moments_with_derived_gram",
+      "milliseconds": 1.6907954681664705,
+      "force_difference_budget_ratio_max": 5.9397812376701915e-08,
+      "force_error_max_N": 4.0257782972103903e-13,
+      "moment_error_max_Nm": 3.1612045255041047e-15
+    }
+  ]
+}

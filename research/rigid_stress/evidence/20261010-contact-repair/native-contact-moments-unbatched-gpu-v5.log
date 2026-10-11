@@ -1,0 +1,550 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0 -- /mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python
+cachedir: .pytest_cache
+rootdir: /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery-final-dev
+configfile: pyproject.toml
+plugins: anyio-4.15.1, forked-1.7.5, print-1.2.0, timeout-2.4.0, xdist-3.8.0, quadrants-1.3.3, syrupy-6.1.1
+timeout: 600.0s
+timeout method: signal
+timeout func_only: False
+[1mcollecting ... [0mcollected 1 item
+
+tests/rigid/test_stress.py::test_native_full_field_unbatched_shared_operator [31mFAILED[0m[31m [100%][0m
+
+=================================== FAILURES ===================================
+[31m[1m_______________ test_native_full_field_unbatched_shared_operator _______________[0m
+
+tmp_path = PosixPath('/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-contact-repair/tmp/pytest-of-zhaofeng/pytest-54/test_native_full_field_unbatch0')
+
+    [0m[37m@pytest[39;49;00m.mark.required[90m[39;49;00m
+    [37m@pytest[39;49;00m.mark.precision([33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [94mdef[39;49;00m[90m [39;49;00m[92mtest_native_full_field_unbatched_shared_operator[39;49;00m(tmp_path):[90m[39;49;00m
+        vertices, tetrahedra, faces, _ = shell_mesh([94m1[39;49;00m, [94m2[39;49;00m, [94m0.0005[39;49;00m)[90m[39;49;00m
+        mesh = tmp_path / [33m"[39;49;00m[33mshell.npz[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)[90m[39;49;00m
+        collision = tmp_path / [33m"[39;49;00m[33mshell.obj[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        trimesh.Trimesh(vertices=vertices, faces=faces, process=[94mFalse[39;49;00m).export(collision)[90m[39;49;00m
+        scene = gs.Scene(show_viewer=[94mFalse[39;49;00m)[90m[39;49;00m
+        maximum = scene.add_entity(gs.morphs.Mesh(file=collision, pos=(-[94m0.1[39;49;00m, [94m0[39;49;00m, [94m1[39;49;00m), convexify=[94mTrue[39;49;00m, decimate=[94mFalse[39;49;00m))[90m[39;49;00m
+        complete = scene.add_entity(gs.morphs.Mesh(file=collision, pos=([94m0.1[39;49;00m, [94m0[39;49;00m, [94m1[39;49;00m), convexify=[94mTrue[39;49;00m, decimate=[94mFalse[39;49;00m))[90m[39;49;00m
+        maximum.base_link.configure_stress_recovery(RigidStressOptions(mesh=mesh))[90m[39;49;00m
+        complete.base_link.configure_stress_recovery(RigidStressOptions(mesh=mesh, output_mode=[33m"[39;49;00m[33mfull[39;49;00m[33m"[39;49;00m))[90m[39;49;00m
+>       scene.build()[90m[39;49;00m
+
+[1m[31mtests/rigid/test_stress.py[0m:127: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = ────────────────────────────────────── <gs.engine.scene.Scene> ──────────────────────────────────────
+                ... 0
+                          'visualizer': <gs.vis.Visualizer>
+               'segmentation_idx_dict': <dict>: {0: -1}
+
+args = (), kwargs = {}
+
+    [0m[37m@functools[39;49;00m.wraps(method)[90m[39;49;00m
+    [94mdef[39;49;00m[90m [39;49;00m[92mwrapper[39;49;00m([96mself[39;49;00m, *args, **kwargs):[90m[39;49;00m
+        [94mif[39;49;00m [96mself[39;49;00m.is_built:[90m[39;49;00m
+            gs.raise_exception([33m"[39;49;00m[33mScene is already built.[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+>       [94mreturn[39;49;00m method([96mself[39;49;00m, *args, **kwargs)[90m[39;49;00m
+
+[1m[31mgenesis/utils/misc.py[0m:140: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = ────────────────────────────────────── <gs.engine.scene.Scene> ──────────────────────────────────────
+                ... 0
+                          'visualizer': <gs.vis.Visualizer>
+               'segmentation_idx_dict': <dict>: {0: -1}
+
+n_envs = 0, env_spacing = (0.0, 0.0), n_envs_per_row = None
+center_envs_at_origin = True
+
+    [0m[37m@gs[39;49;00m.assert_unbuilt[90m[39;49;00m
+    [94mdef[39;49;00m[90m [39;49;00m[92mbuild[39;49;00m([90m[39;49;00m
+        [96mself[39;49;00m,[90m[39;49;00m
+        n_envs=[94m0[39;49;00m,[90m[39;49;00m
+        env_spacing=([94m0.0[39;49;00m, [94m0.0[39;49;00m),[90m[39;49;00m
+        n_envs_per_row: [96mint[39;49;00m | [94mNone[39;49;00m = [94mNone[39;49;00m,[90m[39;49;00m
+        center_envs_at_origin=[94mTrue[39;49;00m,[90m[39;49;00m
+    ):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""[39;49;00m
+    [33m    Builds the scene once all entities have been added. This operation is required before running the simulation.[39;49;00m
+    [33m[39;49;00m
+    [33m    Parameters[39;49;00m
+    [33m    ----------[39;49;00m
+    [33m    n_envs : int[39;49;00m
+    [33m        Number of parallel environments to create.[39;49;00m
+    [33m        If `n_envs` is 0, the scene will not have a batching dimension. When greater than 0, the first dimension of[39;49;00m
+    [33m        all the input and returned states will be the batch dimension.[39;49;00m
+    [33m    env_spacing : tuple of float, shape (2,)[39;49;00m
+    [33m        The spacing between adjacent environments in the scene.[39;49;00m
+    [33m        This is for visualization purposes only and does not change simulation-related poses.[39;49;00m
+    [33m    n_envs_per_row : int[39;49;00m
+    [33m        The number of environments per row for visualization. If None, it will be set to `sqrt(n_envs)`.[39;49;00m
+    [33m    center_envs_at_origin : bool[39;49;00m
+    [33m        Whether to put the center of all the environments at the origin (for visualization only).[39;49;00m
+    [33m    """[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Start tracking the scene right away, so that destroy is called even if some error fires during build[39;49;00m[90m[39;49;00m
+        [94mdef[39;49;00m[90m [39;49;00m[92m_destroy_callback[39;49;00m(scene_ref: weakref.ReferenceType[[33m"[39;49;00m[33mScene[39;49;00m[33m"[39;49;00m]):[90m[39;49;00m
+            scene = scene_ref()[90m[39;49;00m
+            [94mfor[39;49;00m i, scene_ref_i [95min[39;49;00m [96menumerate[39;49;00m(gs._scene_registry):[90m[39;49;00m
+                [94mif[39;49;00m scene [95mis[39;49;00m scene_ref_i():[90m[39;49;00m
+                    [94mdel[39;49;00m gs._scene_registry[i][90m[39;49;00m
+                    [94mbreak[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        gs._scene_registry.append(weakref.ref([96mself[39;49;00m, _destroy_callback))[90m[39;49;00m
+    [90m[39;49;00m
+        [94mwith[39;49;00m gs.logger.timer([33mf[39;49;00m[33m"[39;49;00m[33mBuilding scene ~~~<[39;49;00m[33m{[39;49;00m[96mself[39;49;00m._uid[33m}[39;49;00m[33m>~~~...[39;49;00m[33m"[39;49;00m):[90m[39;49;00m
+            [96mself[39;49;00m._parallelize(n_envs, env_spacing, n_envs_per_row, center_envs_at_origin)[90m[39;49;00m
+    [90m[39;49;00m
+            [90m# simulator[39;49;00m[90m[39;49;00m
+>           [96mself[39;49;00m._sim.build()[90m[39;49;00m
+
+[1m[31mgenesis/engine/scene.py[0m:875: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = ─────────────────────────────────── <gs.engine.simulator.Simulator> ───────────────────────────────────
+              ...uires_grad': <bool>: False
+                         'substeps': <int>: 1
+                   'substeps_local': <int>: 1
+
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mbuild[39;49;00m([96mself[39;49;00m):[90m[39;49;00m
+        [96mself[39;49;00m.n_envs = [96mself[39;49;00m.scene.n_envs[90m[39;49;00m
+        [96mself[39;49;00m._fps_tracker.n_envs = [96mself[39;49;00m.n_envs[90m[39;49;00m
+        [96mself[39;49;00m._B = [96mself[39;49;00m.scene._B[90m[39;49;00m
+        [96mself[39;49;00m._para_level = [96mself[39;49;00m.scene._para_level[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Settled before any solver builds: a solver fills its own buffers with the interval it holds, so a rate[39;49;00m[90m[39;49;00m
+        [90m# settled afterwards would leave those buffers describing an interval the loop does not run at. Whether a[39;49;00m[90m[39;49;00m
+        [90m# solver is active follows from the entities added to it, which is already known at this point. A solver that[39;49;00m[90m[39;49;00m
+        [90m# integrates over no interval of its own has no rate to agree on.[39;49;00m[90m[39;49;00m
+        integrating_solvers = [[90m[39;49;00m
+            solver [94mfor[39;49;00m solver [95min[39;49;00m [96mself[39;49;00m._solvers [94mif[39;49;00m [96misinstance[39;49;00m(solver, TimeBasedMixin) [95mand[39;49;00m solver.is_active[90m[39;49;00m
+        ][90m[39;49;00m
+        [90m# A solver given an interval asks for a rate of its own, whatever that interval works out to. A solver left[39;49;00m[90m[39;49;00m
+        [90m# unset takes the rate the shorthand of SimOptions decides, and has nothing to reconcile.[39;49;00m[90m[39;49;00m
+        asking_solvers = [solver [94mfor[39;49;00m solver [95min[39;49;00m integrating_solvers [94mif[39;49;00m [33m"[39;49;00m[33mdt[39;49;00m[33m"[39;49;00m [95min[39;49;00m solver._options.model_fields_set][90m[39;49;00m
+        [94mfor[39;49;00m solver [95min[39;49;00m asking_solvers:[90m[39;49;00m
+            interval = solver._options.dt[90m[39;49;00m
+            n_substeps = solver.substeps[90m[39;49;00m
+            [94mif[39;49;00m [96mabs[39;49;00m(n_substeps * interval - [96mself[39;49;00m._dt) > gs.EPS * [96mself[39;49;00m._dt:[90m[39;49;00m
+                gs.raise_exception([90m[39;49;00m
+                    [33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00m[96mtype[39;49;00m(solver).[91m__name__[39;49;00m[33m}[39;49;00m[33m dt=[39;49;00m[33m{[39;49;00minterval[33m}[39;49;00m[33m does not divide the step dt=[39;49;00m[33m{[39;49;00m[96mself[39;49;00m._dt[33m}[39;49;00m[33m an integer number [39;49;00m[33m"[39;49;00m[90m[39;49;00m
+                    [33m"[39;49;00m[33mof times.[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+                )[90m[39;49;00m
+            [90m# Asked for, rather than left at its default, which is what tells a count of one from no count at all.[39;49;00m[90m[39;49;00m
+            [94mif[39;49;00m [33m"[39;49;00m[33msubsteps[39;49;00m[33m"[39;49;00m [95min[39;49;00m [96mself[39;49;00m.options.model_fields_set [95mand[39;49;00m n_substeps != [96mself[39;49;00m._substeps:[90m[39;49;00m
+                gs.raise_exception([90m[39;49;00m
+                    [33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00m[96mtype[39;49;00m(solver).[91m__name__[39;49;00m[33m}[39;49;00m[33m dt=[39;49;00m[33m{[39;49;00minterval[33m}[39;49;00m[33m implies [39;49;00m[33m{[39;49;00mn_substeps[33m}[39;49;00m[33m substep(s) per step, conflicting with [39;49;00m[33m"[39;49;00m[90m[39;49;00m
+                    [33mf[39;49;00m[33m"[39;49;00m[33mthe requested substeps=[39;49;00m[33m{[39;49;00m[96mself[39;49;00m._substeps[33m}[39;49;00m[33m. Set one or the other.[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+                )[90m[39;49;00m
+        rates = {solver.substeps [94mfor[39;49;00m solver [95min[39;49;00m asking_solvers}[90m[39;49;00m
+        [94mif[39;49;00m [96mlen[39;49;00m(rates) > [94m1[39;49;00m:[90m[39;49;00m
+            gs.raise_exception([90m[39;49;00m
+                [33m"[39;49;00m[33mSolvers integrating at different rates are not supported yet, got [39;49;00m[33m"[39;49;00m[90m[39;49;00m
+                + [33m"[39;49;00m[33m, [39;49;00m[33m"[39;49;00m.join([33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00m[96mtype[39;49;00m(solver).[91m__name__[39;49;00m[33m}[39;49;00m[33m at dt=[39;49;00m[33m{[39;49;00msolver._options.dt[33m}[39;49;00m[33m"[39;49;00m [94mfor[39;49;00m solver [95min[39;49;00m asking_solvers)[90m[39;49;00m
+                + [33m"[39;49;00m[33m.[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+            )[90m[39;49;00m
+        substeps = [96mnext[39;49;00m([96miter[39;49;00m(rates), [96mself[39;49;00m._substeps)[90m[39;49;00m
+        [90m# The differentiable window was sized from the authored substeps before the solvers allocated their buffers,[39;49;00m[90m[39;49;00m
+        [90m# so a rate derived afterwards would leave the tape describing a step of a different length than the one run.[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m [96mself[39;49;00m._requires_grad [95mand[39;49;00m substeps != [96mself[39;49;00m._substeps:[90m[39;49;00m
+            gs.raise_exception([90m[39;49;00m
+                [33mf[39;49;00m[33m"[39;49;00m[33mA solver dt deriving [39;49;00m[33m{[39;49;00msubsteps[33m}[39;49;00m[33m substep(s) per step is not supported in differentiable mode, which [39;49;00m[33m"[39;49;00m[90m[39;49;00m
+                [33mf[39;49;00m[33m"[39;49;00m[33mis recording [39;49;00m[33m{[39;49;00m[96mself[39;49;00m._substeps[33m}[39;49;00m[33m. Ask for the rate through `SimOptions.substeps=[39;49;00m[33m{[39;49;00msubsteps[33m}[39;49;00m[33m` instead.[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+            )[90m[39;49;00m
+        [96mself[39;49;00m._substeps = substeps[90m[39;49;00m
+        [96mself[39;49;00m._substep_dt = [96mself[39;49;00m._dt / [96mself[39;49;00m._substeps[90m[39;49;00m
+        [90m# The substep loop advances every active solver once per iteration, so the rate one of them asks for is the[39;49;00m[90m[39;49;00m
+        [90m# rate they all take, the ones asking for nothing included.[39;49;00m[90m[39;49;00m
+        [94mfor[39;49;00m solver [95min[39;49;00m integrating_solvers:[90m[39;49;00m
+            solver._substeps = [96mself[39;49;00m._substeps[90m[39;49;00m
+            solver._substep_dt = [96mself[39;49;00m._substep_dt[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Counted per environment to support per-env reset, as steps rather than seconds to avoid drifting over time.[39;49;00m[90m[39;49;00m
+        [96mself[39;49;00m._steps = torch.zeros(([96mself[39;49;00m._B,), dtype=gs.tc_int, device=gs.device)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# solvers[39;49;00m[90m[39;49;00m
+        [90m# IPCCoupler needs full substep flow for pre/post coupling phases[39;49;00m[90m[39;49;00m
+        [96mself[39;49;00m._rigid_only = [96mself[39;49;00m.rigid_solver.is_active [95mand[39;49;00m [95mnot[39;49;00m [96misinstance[39;49;00m([96mself[39;49;00m._coupler, (SAPCoupler, IPCCoupler))[90m[39;49;00m
+        [94mfor[39;49;00m solver [95min[39;49;00m [96mself[39;49;00m._solvers:[90m[39;49;00m
+>           solver.build()[90m[39;49;00m
+
+[1m[31mgenesis/engine/simulator.py[0m:224: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = ─────────────────────────────────────── <gs.engine.solvers.rigid.rigid_solver.RigidSolver> ───────────────────────────...    ])
+                             'substeps': <int>: 1
+                           'equalities': <gs.List>(len=0, [])
+
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mbuild[39;49;00m([96mself[39;49;00m):[90m[39;49;00m
+        [96mself[39;49;00m._n_geoms = [96mself[39;49;00m.n_geoms[90m[39;49;00m
+        [96mself[39;49;00m._n_cells = [96mself[39;49;00m.n_cells[90m[39;49;00m
+        [96mself[39;49;00m._n_verts = [96mself[39;49;00m.n_verts[90m[39;49;00m
+        [96mself[39;49;00m._n_free_verts = [96mself[39;49;00m.n_free_verts[90m[39;49;00m
+        [96mself[39;49;00m._n_fixed_verts = [96mself[39;49;00m.n_fixed_verts[90m[39;49;00m
+        [96mself[39;49;00m._n_faces = [96mself[39;49;00m.n_faces[90m[39;49;00m
+        [96mself[39;49;00m._n_edges = [96mself[39;49;00m.n_edges[90m[39;49;00m
+        [96mself[39;49;00m._n_equalities = [96mself[39;49;00m.n_equalities[90m[39;49;00m
+    [90m[39;49;00m
+        [96mself[39;49;00m._geoms = [96mself[39;49;00m.geoms[90m[39;49;00m
+        [96mself[39;49;00m._equalities = [96mself[39;49;00m.equalities[90m[39;49;00m
+    [90m[39;49;00m
+        [96mself[39;49;00m.n_geoms_ = [96mmax[39;49;00m([94m1[39;49;00m, [96mself[39;49;00m.n_geoms)[90m[39;49;00m
+        [96mself[39;49;00m.n_cells_ = [96mmax[39;49;00m([94m1[39;49;00m, [96mself[39;49;00m.n_cells)[90m[39;49;00m
+        [96mself[39;49;00m.n_verts_ = [96mmax[39;49;00m([94m1[39;49;00m, [96mself[39;49;00m.n_verts)[90m[39;49;00m
+        [96mself[39;49;00m.n_faces_ = [96mmax[39;49;00m([94m1[39;49;00m, [96mself[39;49;00m.n_faces)[90m[39;49;00m
+        [96mself[39;49;00m.n_edges_ = [96mmax[39;49;00m([94m1[39;49;00m, [96mself[39;49;00m.n_edges)[90m[39;49;00m
+        [96mself[39;49;00m.n_free_verts_ = [96mmax[39;49;00m([94m1[39;49;00m, [96mself[39;49;00m.n_free_verts)[90m[39;49;00m
+        [96mself[39;49;00m.n_fixed_verts_ = [96mmax[39;49;00m([94m1[39;49;00m, [96mself[39;49;00m.n_fixed_verts)[90m[39;49;00m
+        [96mself[39;49;00m.n_candidate_equalities_ = [96mmax[39;49;00m([94m1[39;49;00m, [96mself[39;49;00m.n_equalities + [96mself[39;49;00m._options.max_dynamic_constraints)[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Resolve precision-dependent tolerance default. The convergence thresholds reference the scene's free-motion[39;49;00m[90m[39;49;00m
+        [90m# cost (see func_exit_decision in linesearch.py), which stands an order of magnitude above the bare inertia[39;49;00m[90m[39;49;00m
+        [90m# for a metre-scale scene under standard gravity, so the ratio drops by as much to leave the thresholds where[39;49;00m[90m[39;49;00m
+        [90m# they stood. Reproducing the reference behaviour compares against the inertia and keeps its value.[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m [96mself[39;49;00m._options.tolerance [95mis[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+            [96mself[39;49;00m._options.tolerance = [94m1e-5[39;49;00m [94mif[39;49;00m gs.qd_float == qd.f32 [94melse[39;49;00m [94m1e-8[39;49;00m[90m[39;49;00m
+            [94mif[39;49;00m [95mnot[39;49;00m [96mself[39;49;00m._enable_mujoco_compatibility:[90m[39;49;00m
+                [96mself[39;49;00m._options.tolerance *= [94m0.1[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        [96msuper[39;49;00m().build()[90m[39;49;00m
+    [90m[39;49;00m
+        [96mself[39;49;00m._init_vert_fields()[90m[39;49;00m
+        [96mself[39;49;00m._init_geom_fields()[90m[39;49;00m
+        [96mself[39;49;00m._init_equality_fields()[90m[39;49;00m
+        [96mself[39;49;00m._init_dof_length()[90m[39;49;00m
+    [90m[39;49;00m
+        [90m# Compute the pose of every link in the neutral configuration and update the pose of all the geometries,[39;49;00m[90m[39;49;00m
+        [90m# including inactive variants for a given env: the step updates the active variant alone, so this is the only[39;49;00m[90m[39;49;00m
+        [90m# pose the inactive ones get (see func_update_geoms_link). The collider built next relies on these updated poses[39;49;00m[90m[39;49;00m
+        [90m# to determine whether some collision pairs must be filtered out.[39;49;00m[90m[39;49;00m
+        kernel_update_cartesian_space([90m[39;49;00m
+            [96mself[39;49;00m.dyn_state,[90m[39;49;00m
+            [96mself[39;49;00m.dyn_info,[90m[39;49;00m
+            [96mself[39;49;00m.rigid_info,[90m[39;49;00m
+            [96mself[39;49;00m.rigid_config,[90m[39;49;00m
+            force_update_all_geoms=[94mTrue[39;49;00m,[90m[39;49;00m
+            is_backward=[94mFalse[39;49;00m,[90m[39;49;00m
+        )[90m[39;49;00m
+    [90m[39;49;00m
+        [96mself[39;49;00m._init_collider()[90m[39;49;00m
+        [96mself[39;49;00m._init_constraint_solver()[90m[39;49;00m
+        stress_links = [link [94mfor[39;49;00m link [95min[39;49;00m [96mself[39;49;00m.links [94mif[39;49;00m link.stress_options [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m][90m[39;49;00m
+        [94mif[39;49;00m stress_links:[90m[39;49;00m
+            [94mif[39;49;00m [95mnot[39;49;00m [96misinstance[39;49;00m([96mself[39;49;00m.scene.options.coupler, LegacyCouplerOptions):[90m[39;49;00m
+                gs.raise_exception([33m"[39;49;00m[33mNative rigid stress observation requires the standard rigid contact solver.[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+            [94mif[39;49;00m [96mself[39;49;00m._requires_grad:[90m[39;49;00m
+                gs.raise_exception([33m"[39;49;00m[33mAuxiliary rigid stress recovery does not support differentiable scenes.[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+            [94mif[39;49;00m [96mself[39;49;00m._options.enable_torsional_friction [95mor[39;49;00m [96mself[39;49;00m._options.enable_rolling_friction:[90m[39;49;00m
+                gs.raise_exception([90m[39;49;00m
+                    [33m"[39;49;00m[33mThe finite pressure model supports contact forces; disable torsional and rolling friction.[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+                )[90m[39;49;00m
+            [94mif[39;49;00m [96many[39;49;00m([90m[39;49;00m
+                link.parent_idx >= [94m0[39;49;00m [95mor[39;49;00m link.is_fixed [95mor[39;49;00m [96many[39;49;00m(other.parent_idx == link.idx [94mfor[39;49;00m other [95min[39;49;00m [96mself[39;49;00m.links)[90m[39;49;00m
+                [94mfor[39;49;00m link [95min[39;49;00m stress_links[90m[39;49;00m
+            ):[90m[39;49;00m
+                gs.raise_exception([33m"[39;49;00m[33mStress observation currently requires a free root link without joint supports.[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+>           [96mself[39;49;00m.stress_recovery = RigidStressRecovery([96mself[39;49;00m)[90m[39;49;00m
+
+[1m[31mgenesis/engine/solvers/rigid/rigid_solver.py[0m:380: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <genesis.engine.solvers.rigid.stress.recovery.RigidStressRecovery object at 0x756f0c01ffa0>
+solver = ─────────────────────────────────────── <gs.engine.solvers.rigid.rigid_solver.RigidSolver> ───────────────────────────...    ])
+                             'substeps': <int>: 1
+                           'equalities': <gs.List>(len=0, [])
+
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92m__init__[39;49;00m([96mself[39;49;00m, solver: [33m"[39;49;00m[33mRigidSolver[39;49;00m[33m"[39;49;00m):[90m[39;49;00m
+        [96mself[39;49;00m.solver = solver[90m[39;49;00m
+        [96mself[39;49;00m.links: [96mlist[39;49;00m[StressLink] = [][90m[39;49;00m
+        [94mfor[39;49;00m entity [95min[39;49;00m solver.entities:[90m[39;49;00m
+            [94mfor[39;49;00m link [95min[39;49;00m entity.links:[90m[39;49;00m
+                options = link.stress_options[90m[39;49;00m
+                [94mif[39;49;00m options [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+                    [94mif[39;49;00m options.history_size [95mand[39;49;00m options.method == [33m"[39;49;00m[33mpcg[39;49;00m[33m"[39;49;00m:[90m[39;49;00m
+                        gs.raise_exception([33m"[39;49;00m[33mThe native load history requires a direct or inverse stress method.[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+                    [90m# Equal geometry, constitutive parameters and mass share physical operators and factors.[39;49;00m[90m[39;49;00m
+                    model = [94mNone[39;49;00m[90m[39;49;00m
+                    surface = [94mNone[39;49;00m[90m[39;49;00m
+                    [94mfor[39;49;00m existing [95min[39;49;00m [96mself[39;49;00m.links:[90m[39;49;00m
+                        previous = existing.model.options[90m[39;49;00m
+                        [94mif[39;49;00m ([90m[39;49;00m
+                            Path(previous.mesh).resolve() == Path(options.mesh).resolve()[90m[39;49;00m
+                            [95mand[39;49;00m previous.young == options.young[90m[39;49;00m
+                            [95mand[39;49;00m previous.poisson == options.poisson[90m[39;49;00m
+                            [95mand[39;49;00m previous.density == options.density[90m[39;49;00m
+                            [95mand[39;49;00m previous.method == options.method[90m[39;49;00m
+                            [95mand[39;49;00m previous.inverse_precision == options.inverse_precision[90m[39;49;00m
+                            [95mand[39;49;00m previous.inverse_max_bytes == options.inverse_max_bytes[90m[39;49;00m
+                            [95mand[39;49;00m previous.surface_inverse == options.surface_inverse[90m[39;49;00m
+                        ):[90m[39;49;00m
+                            model = existing.model[90m[39;49;00m
+                            [94mif[39;49;00m previous.quadrature == options.quadrature:[90m[39;49;00m
+                                surface = existing.surface[90m[39;49;00m
+                            [94mbreak[39;49;00m[90m[39;49;00m
+                    [94mif[39;49;00m model [95mis[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+                        model = StressModel(options)[90m[39;49;00m
+                    [94mif[39;49;00m surface [95mis[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+                        surface = StressSurface(options.quadrature, model.info)[90m[39;49;00m
+                    reuse_contact_moments = ([90m[39;49;00m
+                        gs.backend == gs.cuda[90m[39;49;00m
+                        [95mand[39;49;00m options.face_parallel_scatter[90m[39;49;00m
+                        [95mand[39;49;00m options.cooperative_pressure[90m[39;49;00m
+                        [95mand[39;49;00m options.cooperative_scatter[90m[39;49;00m
+                        [95mand[39;49;00m ([90m[39;49;00m
+                            options.contact_moment_reuse[90m[39;49;00m
+                            [94mif[39;49;00m options.contact_moment_reuse [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m[90m[39;49;00m
+                            [94melse[39;49;00m solver._B >= [94m8192[39;49;00m[90m[39;49;00m
+                        )[90m[39;49;00m
+                    )[90m[39;49;00m
+                    [96mself[39;49;00m.links.append([90m[39;49;00m
+                        StressLink([90m[39;49;00m
+                            link,[90m[39;49;00m
+                            model,[90m[39;49;00m
+                            surface,[90m[39;49;00m
+                            model.create_state(solver._B, options.output_mode),[90m[39;49;00m
+                            create_contacts([90m[39;49;00m
+                                solver.collider.collider_state.contact_sort_idx.shape[[94m0[39;49;00m],[90m[39;49;00m
+                                solver._B,[90m[39;49;00m
+                                options.contact_radius,[90m[39;49;00m
+                                options.cooperative_pressure,[90m[39;49;00m
+                                options.cooperative_scatter,[90m[39;49;00m
+                            ),[90m[39;49;00m
+                            V_VEC([94m3[39;49;00m, dtype=gs.qd_float, shape=(solver._B,)),[90m[39;49;00m
+                            StressHistory(model.info.vertices.shape[[94m0[39;49;00m], solver._B) [94mif[39;49;00m options.history_size [94melse[39;49;00m [94mNone[39;49;00m,[90m[39;49;00m
+                            options.output_mode,[90m[39;49;00m
+>                           create_scatter_workspace([90m[39;49;00m
+                                solver._B,[90m[39;49;00m
+                                options.scatter_tasks_per_env[90m[39;49;00m
+                                [94mif[39;49;00m options.face_parallel_scatter[90m[39;49;00m
+                                [95mand[39;49;00m options.cooperative_scatter[90m[39;49;00m
+                                [95mand[39;49;00m gs.backend == gs.cuda[90m[39;49;00m
+                                [94melse[39;49;00m [94m0[39;49;00m,[90m[39;49;00m
+                                reuse_contact_moments,[90m[39;49;00m
+                            ),[90m[39;49;00m
+                            options.model_copy(deep=[94mTrue[39;49;00m),[90m[39;49;00m
+                            options.contact_wrench_reuse[90m[39;49;00m
+                            [94mif[39;49;00m options.contact_wrench_reuse [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m[90m[39;49;00m
+                            [94melse[39;49;00m solver._B >= [94m8192[39;49;00m,[90m[39;49;00m
+                            options.packed_block_size[90m[39;49;00m
+                            [94mif[39;49;00m options.packed_block_size [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m[90m[39;49;00m
+                            [94melse[39;49;00m [94m512[39;49;00m[90m[39;49;00m
+                            [94mif[39;49;00m solver._B >= [94m8192[39;49;00m[90m[39;49;00m
+                            [94melse[39;49;00m [94m0[39;49;00m,[90m[39;49;00m
+                            gs.backend == gs.cuda[90m[39;49;00m
+                            [95mand[39;49;00m options.fused_pipeline[90m[39;49;00m
+                            [95mand[39;49;00m model.surface_inverse [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m[90m[39;49;00m
+                            [95mand[39;49;00m options.packed_surface_loads[90m[39;49;00m
+                            [95mand[39;49;00m options.cooperative_pressure[90m[39;49;00m
+                            [95mand[39;49;00m options.cooperative_scatter[90m[39;49;00m
+                            [95mand[39;49;00m options.cooperative_solve[90m[39;49;00m
+                            [95mand[39;49;00m model.info.vertices.shape[[94m0[39;49;00m] <= [94m1024[39;49;00m[90m[39;49;00m
+                            [95mand[39;49;00m [95mnot[39;49;00m options.history_size,[90m[39;49;00m
+                            options.coalesced_residual [94mif[39;49;00m options.coalesced_residual [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m [94melse[39;49;00m solver._B >= [94m8192[39;49;00m,[90m[39;49;00m
+                            reuse_contact_moments,[90m[39;49;00m
+                        )[90m[39;49;00m
+                    )[90m[39;49;00m
+
+[1m[31mgenesis/engine/solvers/rigid/stress/recovery.py[0m:119: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+n_envs = 1, tasks_per_env = 32, reuse_moments = False
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mcreate_scatter_workspace[39;49;00m(n_envs: [96mint[39;49;00m, tasks_per_env: [96mint[39;49;00m, reuse_moments: [96mbool[39;49;00m = [94mFalse[39;49;00m) -> StressScatterWorkspace:[90m[39;49;00m
+        [90m# Every task uses one warp. Bound the thread index as well as allocated storage.[39;49;00m[90m[39;49;00m
+        capacity = [96mmin[39;49;00m(n_envs * tasks_per_env, [94m2147483647[39;49;00m // [94m32[39;49;00m)[90m[39;49;00m
+        workspace = StressScatterWorkspace([90m[39;49;00m
+            tasks=V_VEC([94m2[39;49;00m, dtype=gs.qd_int, shape=(capacity,)),[90m[39;49;00m
+            count=V(dtype=qd.i64, shape=()),[90m[39;49;00m
+            wrench=V_VEC([94m6[39;49;00m, dtype=gs.qd_float, shape=(capacity,)),[90m[39;49;00m
+            overflow_calls=V(dtype=qd.i64, shape=()),[90m[39;49;00m
+            pressure_gram=V_MAT([94m3[39;49;00m, [94m3[39;49;00m, dtype=gs.qd_float, shape=(capacity [94mif[39;49;00m reuse_moments [94melse[39;49;00m [94m0[39;49;00m,)),[90m[39;49;00m
+            load_moments=V_MAT([94m6[39;49;00m, [94m3[39;49;00m, dtype=gs.qd_float, shape=(capacity [94mif[39;49;00m reuse_moments [94melse[39;49;00m [94m0[39;49;00m,)),[90m[39;49;00m
+>           affine_pressure=V(dtype=gs.qd_bool, shape=(capacity [94mif[39;49;00m reuse_moments [94melse[39;49;00m [94m0[39;49;00m,)),[90m[39;49;00m
+        )[90m[39;49;00m
+
+[1m[31mgenesis/engine/solvers/rigid/stress/scatter.py[0m:49: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = ()
+kwargs = {'dtype': <quadrants._lib.core.quadrants_python.DataTypeCxx object at 0x75726fa972b0>, 'shape': (0,)}
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mV[39;49;00m(*args, **kwargs):[90m[39;49;00m
+>       [94mreturn[39;49;00m qd.tensor(*args, backend=_tensor_backend(), **kwargs)[90m[39;49;00m
+
+[1m[31mgenesis/utils/array_class.py[0m:24: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dtype = <quadrants._lib.core.quadrants_python.DataTypeCxx object at 0x75726fa972b0>
+shape = (0,), backend = <Backend.NDARRAY: 1>, layout = None, kwargs = {}
+Ndarray = <class 'quadrants.lang._ndarray.Ndarray'>
+Field = <class 'quadrants.lang.field.Field'>, forwarded = {}
+impl = <module 'quadrants.lang.impl' from '/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/impl.py'>
+
+    [0m[94mdef[39;49;00m[90m [39;49;00m[92mtensor[39;49;00m(dtype, shape, *, backend=Backend.NDARRAY, layout=[94mNone[39;49;00m, **kwargs):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Allocate a tensor on the chosen backend, optionally with a custom physical layout.[39;49;00m
+    [33m[39;49;00m
+    [33m    Thin dispatcher over :func:`quadrants.field` and :func:`quadrants.ndarray` that selects between the two via the[39;49;00m
+    [33m    :class:`Backend` enum.[39;49;00m
+    [33m[39;49;00m
+    [33m    Args:[39;49;00m
+    [33m        dtype: Element data type (e.g. ``qd.f32``, ``qd.i32``, or a compound type from ``qd.types``).[39;49;00m
+    [33m        shape: Shape of the tensor as an ``int`` or tuple of ``int``.[39;49;00m
+    [33m        backend (Backend, optional): Storage backend. Defaults to :attr:`Backend.NDARRAY`.[39;49;00m
+    [33m        layout (tuple of int, optional): Permutation of canonical axes describing the physical memory nesting order,[39;49;00m
+    [33m            outermost first. For a rank-N tensor, must be a permutation of ``range(N)``. ``None`` (default) and the[39;49;00m
+    [33m            identity permutation both mean "natural row-major-like layout" (no permutation is applied).[39;49;00m
+    [33m[39;49;00m
+    [33m            ``shape`` is always interpreted as the **canonical** shape (the shape you index inside kernels). The[39;49;00m
+    [33m            underlying allocation is automatically sized to the permuted *physical* shape, and kernel subscripts[39;49;00m
+    [33m            ``x[i, j, ...]`` are rewritten to hit the right physical slot. Supported on both ``Backend.FIELD`` and[39;49;00m
+    [33m            ``Backend.NDARRAY``.[39;49;00m
+    [33m[39;49;00m
+    [33m    Returns:[39;49;00m
+    [33m        A ``ScalarField`` when ``backend == Backend.FIELD``, or an ``Ndarray`` when ``backend == Backend.NDARRAY``. In[39;49;00m
+    [33m        both cases ``.shape`` reports the canonical shape; the physical layout is managed transparently.[39;49;00m
+    [33m[39;49;00m
+    [33m    Example::[39;49;00m
+    [33m[39;49;00m
+    [33m        >>> import quadrants as qd[39;49;00m
+    [33m        >>> qd.init(arch=qd.x64)[39;49;00m
+    [33m        >>> a = qd.tensor(qd.f32, shape=(4, 5))                       # default layout[39;49;00m
+    [33m        >>> b = qd.tensor(qd.f32, shape=(4, 5), layout=(1, 0))        # transposed storage[39;49;00m
+    [33m        >>> c = qd.tensor(qd.f32, shape=(4, 5), backend=qd.Backend.NDARRAY)[39;49;00m
+    [33m        >>> d = qd.tensor(qd.f32, shape=(4, 5), backend=qd.Backend.NDARRAY,[39;49;00m
+    [33m        ...               layout=(1, 0))                              # transposed ndarray[39;49;00m
+    [33m[39;49;00m
+    [33m    Raises:[39;49;00m
+    [33m        ValueError: If ``backend`` is not a valid :class:`Backend` member, or if ``layout`` is not a permutation of[39;49;00m
+    [33m            ``range(len(shape))``.[39;49;00m
+    [33m        TypeError: If any keyword argument outside the accepted set is passed (see ``_SCALAR_ACCEPTED_KWARGS``).[39;49;00m
+    [33m    """[39;49;00m[90m[39;49;00m
+        [94mfrom[39;49;00m[90m [39;49;00m[04m[96mquadrants[39;49;00m[04m[96m.[39;49;00m[04m[96mlang[39;49;00m[04m[96m.[39;49;00m[04m[96m_ndarray[39;49;00m[90m [39;49;00m[94mimport[39;49;00m ([90m[39;49;00m
+            Ndarray,  [90m# pylint: disable=import-outside-toplevel[39;49;00m[90m[39;49;00m
+        )[90m[39;49;00m
+        [94mfrom[39;49;00m[90m [39;49;00m[04m[96mquadrants[39;49;00m[04m[96m.[39;49;00m[04m[96mlang[39;49;00m[04m[96m.[39;49;00m[04m[96mfield[39;49;00m[90m [39;49;00m[94mimport[39;49;00m Field  [90m# pylint: disable=import-outside-toplevel[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        [94mif[39;49;00m [96misinstance[39;49;00m(dtype, (Ndarray, Field, Tensor)):[90m[39;49;00m
+            [94mraise[39;49;00m [96mTypeError[39;49;00m([90m[39;49;00m
+                [33mf[39;49;00m[33m"[39;49;00m[33mqd.tensor() allocates a new tensor; to wrap an existing [39;49;00m[33m{[39;49;00m[96mtype[39;49;00m(dtype).[91m__name__[39;49;00m[33m}[39;49;00m[33m, use qd.wrap(impl) instead[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+            )[90m[39;49;00m
+        [94mif[39;49;00m layout [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+            [94mfrom[39;49;00m[90m [39;49;00m[04m[96mquadrants[39;49;00m[04m[96m.[39;49;00m[04m[96mlang[39;49;00m[04m[96m.[39;49;00m[04m[96mmatrix[39;49;00m[90m [39;49;00m[94mimport[39;49;00m ([90m[39;49;00m
+                MatrixType,  [90m# pylint: disable=import-outside-toplevel[39;49;00m[90m[39;49;00m
+            )[90m[39;49;00m
+    [90m[39;49;00m
+            [94mif[39;49;00m [96misinstance[39;49;00m(dtype, MatrixType):[90m[39;49;00m
+                [94mraise[39;49;00m [96mTypeError[39;49;00m([90m[39;49;00m
+                    [33m"[39;49;00m[33mlayout= is not supported with compound dtypes (vector/matrix). [39;49;00m[33m"[39;49;00m[90m[39;49;00m
+                    [33m"[39;49;00m[33mUse qd.Vector.tensor(...) or qd.Matrix.tensor(...) without layout= instead.[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+                )[90m[39;49;00m
+        _validate_kwargs(kwargs, factory_name=[33m"[39;49;00m[33mqd.tensor[39;49;00m[33m"[39;49;00m, accepted=_SCALAR_ACCEPTED_KWARGS)[90m[39;49;00m
+        backend = _coerce_backend(backend)[90m[39;49;00m
+        forwarded = {k: v [94mfor[39;49;00m k, v [95min[39;49;00m kwargs.items() [94mif[39;49;00m k != [33m"[39;49;00m[33mbackend[39;49;00m[33m"[39;49;00m}[90m[39;49;00m
+        [90m# pylint: disable-next=import-outside-toplevel  # late import to break circular dependency[39;49;00m[90m[39;49;00m
+        [94mfrom[39;49;00m[90m [39;49;00m[04m[96mquadrants[39;49;00m[04m[96m.[39;49;00m[04m[96mlang[39;49;00m[90m [39;49;00m[94mimport[39;49;00m impl[90m[39;49;00m
+    [90m[39;49;00m
+        shape_t = (shape,) [94mif[39;49;00m [96misinstance[39;49;00m(shape, [96mint[39;49;00m) [94melse[39;49;00m [96mtuple[39;49;00m(shape)[90m[39;49;00m
+        order = _layout_to_order(layout, [96mlen[39;49;00m(shape_t)) [94mif[39;49;00m layout [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m [94melse[39;49;00m [94mNone[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+        [94mif[39;49;00m backend [95mis[39;49;00m Backend.FIELD:[90m[39;49;00m
+            [94mif[39;49;00m order [95mis[39;49;00m [95mnot[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+                forwarded[[33m"[39;49;00m[33morder[39;49;00m[33m"[39;49;00m] = order[90m[39;49;00m
+            f = impl.field(dtype, shape, **forwarded)[90m[39;49;00m
+            [90m# The canonical->physical layout permutation is attached by ``_field`` itself via ``_qd_layout`` (identical[39;49;00m[90m[39;49;00m
+            [90m# attribute to the one ``Ndarray`` uses). The AST subscript rewrite in ``build_Subscript`` /[39;49;00m[90m[39;49;00m
+            [90m# ``build_struct_for`` reads it to permute user-supplied canonical indices into physical storage order;[39;49;00m[90m[39;49;00m
+            [90m# ``Field.layout`` reads the same attribute for introspection.[39;49;00m[90m[39;49;00m
+            [94mreturn[39;49;00m _wrap_impl(f)[90m[39;49;00m
+        [94mif[39;49;00m backend [95mis[39;49;00m Backend.NDARRAY:[90m[39;49;00m
+            [94mif[39;49;00m order [95mis[39;49;00m [94mNone[39;49;00m:[90m[39;49;00m
+>               [94mreturn[39;49;00m _wrap_impl(impl.ndarray(dtype, shape, **forwarded))[90m[39;49;00m
+
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/_tensor.py[0m:228: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = (<quadrants._lib.core.quadrants_python.DataTypeCxx object at 0x75726fa972b0>, (0,))
+kwargs = {}, @py_assert1 = None
+
+    [0m[37m@functools[39;49;00m.wraps(func)[90m[39;49;00m
+    [94mdef[39;49;00m[90m [39;49;00m[92mwrapped[39;49;00m(*args, **kwargs):[90m[39;49;00m
+        [94massert[39;49;00m in_python_scope(), [33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00mfunc.[91m__name__[39;49;00m[33m}[39;49;00m[33m cannot be called in Quadrants-scope[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+>       [94mreturn[39;49;00m func(*args, **kwargs)[90m[39;49;00m
+
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/util.py[0m:325: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dtype = <quadrants._lib.core.quadrants_python.DataTypeCxx object at 0x75726fa972b0>
+shape = (0,), needs_grad = False
+
+    [0m[37m@python_scope[39;49;00m[90m[39;49;00m
+    [94mdef[39;49;00m[90m [39;49;00m[92mndarray[39;49;00m(dtype, shape, needs_grad=[94mFalse[39;49;00m):[90m[39;49;00m
+    [90m    [39;49;00m[33m"""Defines a Quadrants ndarray with scalar elements.[39;49;00m
+    [33m[39;49;00m
+    [33m    Args:[39;49;00m
+    [33m        dtype (Union[DataType, MatrixType]): Data type of each element. This can be either a scalar type like qd.f32 or a compound type like qd.types.vector(3, qd.i32).[39;49;00m
+    [33m        shape (Union[int, tuple[int]]): Shape of the ndarray.[39;49;00m
+    [33m[39;49;00m
+    [33m    Example:[39;49;00m
+    [33m        The code below shows how a Quadrants ndarray with scalar elements can be declared and defined::[39;49;00m
+    [33m[39;49;00m
+    [33m            >>> x = qd.ndarray(qd.f32, shape=(16, 8))  # ndarray of shape (16, 8), each element is qd.f32 scalar.[39;49;00m
+    [33m            >>> vec3 = qd.types.vector(3, qd.i32)[39;49;00m
+    [33m            >>> y = qd.ndarray(vec3, shape=(10, 2))  # ndarray of shape (10, 2), each element is a vector of 3 qd.i32 scalars.[39;49;00m
+    [33m            >>> matrix_ty = qd.types.matrix(3, 4, float)[39;49;00m
+    [33m            >>> z = qd.ndarray(matrix_ty, shape=(4, 5))  # ndarray of shape (4, 5), each element is a matrix of (3, 4) qd.float scalars.[39;49;00m
+    [33m    """[39;49;00m[90m[39;49;00m
+        [90m# primal[39;49;00m[90m[39;49;00m
+        [94mif[39;49;00m [96misinstance[39;49;00m(shape, numbers.Number):[90m[39;49;00m
+            shape = (shape,)[90m[39;49;00m
+        [94mif[39;49;00m is_python_backend():[90m[39;49;00m
+            [94mfrom[39;49;00m[90m [39;49;00m[04m[96m.[39;49;00m[90m [39;49;00m[94mimport[39;49;00m _py_tensor [94mas[39;49;00m py_tensor  [90m# pylint: disable=C0415[39;49;00m[90m[39;49;00m
+            [94mfrom[39;49;00m[90m [39;49;00m[04m[96m.[39;49;00m[04m[96mutil[39;49;00m[90m [39;49;00m[94mimport[39;49;00m dtype_to_torch_dtype  [90m# pylint: disable=C0415[39;49;00m[90m[39;49;00m
+    [90m[39;49;00m
+            batch_ndim = [96mlen[39;49;00m(shape)[90m[39;49;00m
+            [94mif[39;49;00m [96mtype[39;49;00m(dtype) [95mis[39;49;00m VectorType:[90m[39;49;00m
+                shape = (*shape, dtype.n)[90m[39;49;00m
+                dtype = dtype.dtype[90m[39;49;00m
+            [94melif[39;49;00m [96mtype[39;49;00m(dtype) [95mis[39;49;00m MatrixType:[90m[39;49;00m
+                shape = (*shape, dtype.n, dtype.m)[90m[39;49;00m
+                dtype = dtype.dtype[90m[39;49;00m
+            [94mif[39;49;00m [96mtype[39;49;00m(shape) == [96mint[39;49;00m:[90m[39;49;00m
+                shape = (shape,)[90m[39;49;00m
+            dtype = dtype_to_torch_dtype(dtype)[90m[39;49;00m
+            [94mreturn[39;49;00m py_tensor.create_tensor(shape, dtype, batch_ndim=batch_ndim)[90m[39;49;00m
+        [94mif[39;49;00m [95mnot[39;49;00m [96mall[39;49;00m(([96misinstance[39;49;00m(x, [96mint[39;49;00m) [95mor[39;49;00m [96misinstance[39;49;00m(x, np.integer)) [95mand[39;49;00m x > [94m0[39;49;00m [95mand[39;49;00m x <= [94m2[39;49;00m**[94m31[39;49;00m - [94m1[39;49;00m [94mfor[39;49;00m x [95min[39;49;00m shape):[90m[39;49;00m
+>           [94mraise[39;49;00m QuadrantsRuntimeError([33mf[39;49;00m[33m"[39;49;00m[33m{[39;49;00mshape[33m}[39;49;00m[33m is not a valid shape for ndarray[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+[1m[31mE           quadrants.lang.exception.QuadrantsRuntimeError: (0,) is not a valid shape for ndarray[0m
+
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/impl.py[0m:1036: QuadrantsRuntimeError
+---------------------------- Captured stdout setup -----------------------------
+[Genesis 00:00:21] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:00:21] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+----------------------------- Captured stdout call -----------------------------
+[Genesis 00:00:22] Scene <5a96e82> created.
+[Genesis 00:00:22] Adding <gs.engine.entities.RigidEntity> 'shell_b3d33ac'. idx: 0, morph: <gs.morphs.Mesh(file='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-contact-repair/tmp/pytest-of-zhaofeng/pytest-54/test_native_full_field_unbatch0/shell.obj')>, material: <gs.materials.Rigid>.
+[Genesis 00:00:22] Adding <gs.engine.entities.RigidEntity> 'shell_6f8c6aa'. idx: 1, morph: <gs.morphs.Mesh(file='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-contact-repair/tmp/pytest-of-zhaofeng/pytest-54/test_native_full_field_unbatch0/shell.obj')>, material: <gs.materials.Rigid>.
+[Genesis 00:00:22] Building scene <5a96e82>...
+--------------------------- Captured stdout teardown ---------------------------
+[Genesis 00:00:42 WARNING] Scene.show_FPS is deprecated. Please use Scene.options.profiling.show_FPS
+[Genesis 00:00:42] Exiting Genesis and caching compiled kernels...
+[33m=============================== warnings summary ===============================[0m
+tests/rigid/test_stress.py::test_native_full_field_unbatched_shared_operator
+tests/rigid/test_stress.py::test_native_full_field_unbatched_shared_operator
+  /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery-final-dev/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                          32 iterations, so the compile time may be extremely long.
+                          You can use a non-static for loop if you want to decrease the compile time.
+                          You can disable this warning by setting qd.init(unrolling_limit=0).
+    for a, b in qd.static(qd.ndrange(6, 6)):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================================= Failed tests =================================
+tests/rigid/test_stress.py::test_native_full_field_unbatched_shared_operator ...
+============================== slowest durations ===============================
+
+(3 durations < 100s hidden.)
+[31m======================== [31m[1m1 failed[0m, [33m2 warnings[0m[31m in 22.45s[0m[31m ========================[0m
