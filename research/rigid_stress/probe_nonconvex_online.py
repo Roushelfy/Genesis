@@ -170,6 +170,8 @@ def main():
                 force=force,
                 radius=radius,
                 friction=qd_to_numpy(entry.contacts.friction, transpose=True),
+                frame_position=qd_to_numpy(entry.contacts.frame_position, transpose=True),
+                frame_quaternion=qd_to_numpy(entry.contacts.frame_quaternion, transpose=True),
                 raw_status=statuses,
                 traction_status=np.maximum(statuses - 30, 0),
                 source_status=qd_to_numpy(entry.intrinsic.raw_sources.status, transpose=True),
