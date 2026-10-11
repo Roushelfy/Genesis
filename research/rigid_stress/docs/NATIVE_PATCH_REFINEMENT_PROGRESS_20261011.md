@@ -1,5 +1,10 @@
 # Contact-patch input, finite support and cooperative fitting
 
+The selected squared-coordinate integration, completed CPU/CUDA regressions
+and subsequent plane-contact source diagnosis are in
+[the squared-fan checkpoint](NATIVE_SQUARED_FAN_PROGRESS_20261011.md).
+The records below retain the preceding source epoch and its then-pending checks.
+
 This continues the [initial source/profile checkpoint](NATIVE_SOURCE_PROFILE_PROGRESS_20261011.md),
 source `1fe4f804d19425772cdb6c6faf53326f2fbf2a00`. The active nonconvex goal
 remains incomplete. The evidence below separates a defective collision normal,

@@ -27,7 +27,8 @@ class RigidStressOptions(Options):
     use their exact length. ``surface_edge_subdivisions`` declares the port
     discretization. Its graph distances can overestimate continuous distance.
     ``intrinsic_integration="surface_fan"`` partitions each face around its
-    closest point to the anchor using three finite triangles. The earlier
+    closest point to the anchor using three finite triangles with squared
+    integration coordinates to resolve support close to edges. The earlier
     ``"anchor_fan"`` rule partitions only the witnessed face and remains an
     explicit integration comparison. Neither rule changes the physical radius.
     Adjacent faces additionally use a verified two-triangle unfolded path.

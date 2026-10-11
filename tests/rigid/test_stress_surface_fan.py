@@ -35,31 +35,39 @@ from tests.rigid.test_stress_traction import kernel_traction_queries
 from tests.utils.assertions import assert_allclose, assert_equal
 
 
-def cpu_surface_fan_geometry(anchor, vertices, faces, quadrature):
+def cpu_surface_fan_geometry(anchor, vertices, faces, quadrature, coordinate_power=2):
     """Independent nearest points, finite triangle partitions and signed P2 bases."""
     triangles = vertices[faces]
     edges = np.stack((triangles[:, 1] - triangles[:, 0], triangles[:, 2] - triangles[:, 0]), axis=-1)
     uv = np.einsum("fij,fj->fi", np.linalg.pinv(edges), anchor - triangles[:, 0])
     inside = (uv >= 0).all(axis=1) & (uv.sum(axis=1) <= 1)
-    centers = triangles[:, 0] + np.einsum("fij,fj->fi", edges, uv)
+    center_bary = np.column_stack((1 - uv.sum(axis=1), uv))
     first, second = triangles[:, [0, 1, 2]], triangles[:, [1, 2, 0]]
     boundary_edges = second - first
     fraction = np.einsum("fei,fei->fe", anchor - first, boundary_edges)
     fraction /= np.einsum("fei,fei->fe", boundary_edges, boundary_edges)
-    boundary_points = first + np.clip(fraction, 0, 1)[..., None] * boundary_edges
+    fraction = np.clip(fraction, 0, 1)
+    boundary_points = first + fraction[..., None] * boundary_edges
     closest = np.argmin(np.linalg.norm(boundary_points - anchor, axis=2), axis=1)
-    centers[~inside] = boundary_points[np.arange(len(faces)), closest][~inside]
+    boundary_bary = np.zeros((len(faces), 3))
+    boundary_bary[np.arange(len(faces)), closest] = 1 - fraction[np.arange(len(faces)), closest]
+    boundary_bary[np.arange(len(faces)), (closest + 1) % 3] = fraction[np.arange(len(faces)), closest]
+    center_bary[~inside] = boundary_bary[~inside]
     gauss, weights = np.polynomial.legendre.leggauss(quadrature)
     gauss, weights = (gauss + 1) / 2, weights / 2
+    weights *= coordinate_power * gauss ** (coordinate_power - 1)
+    gauss **= coordinate_power
     u, v = np.meshgrid(gauss, gauss, indexing="ij")
     u, v = u.reshape(-1, 1), v.reshape(-1, 1)
-    points = (1 - u) * centers[:, None, None] + u * (1 - v) * first[:, :, None] + u * v * second[:, :, None]
-    area = np.linalg.norm(np.cross(first - centers[:, None], second - centers[:, None]), axis=2)
+    bary = (1 - u) * center_bary[:, None, None] + u * (1 - v) * np.eye(3)[None, :, None]
+    bary += u * v * np.eye(3)[[1, 2, 0]][None, :, None]
+    points = np.einsum("fkqa,fai->fkqi", bary, triangles)
+    area = np.linalg.norm(np.cross(boundary_edges[:, 0], -boundary_edges[:, 2]), axis=1)
+    area = area[:, None] * center_bary[:, [2, 0, 1]]
     area_weights = area[..., None] * (u[:, 0] * (weights[:, None] * weights[None]).reshape(-1))
     points = points.reshape(-1, 3)
     indices = np.repeat(np.arange(len(faces)), 3 * quadrature**2)
-    uv = np.einsum("qij,qj->qi", np.linalg.pinv(edges)[indices], points - triangles[indices, 0])
-    bary = np.column_stack((1 - uv.sum(axis=1), uv))
+    bary = bary.reshape(-1, 3)
     basis = np.column_stack((bary * (2 * bary - 1), 4 * bary[:, [0, 0, 1]] * bary[:, [1, 2, 2]]))
     return points, area_weights.reshape(-1), indices, basis
 
@@ -112,8 +120,10 @@ def cpu_resolved_wrench_fit(positions, profiles, normals, patch):
 
 @pytest.mark.required
 @pytest.mark.precision("64")
-@pytest.mark.parametrize("tick", (147, 427, 454))
-def test_saved_edge_contact_uses_neighbor_finite_area_and_cpu_oracle(tick):
+@pytest.mark.parametrize(
+    "tick,coordinate_power", ((147, 1), (427, 1), (454, 1), (147, 2), (427, 2), (454, 2), (594, 2), (1076, 2))
+)
+def test_saved_edge_contact_uses_neighbor_finite_area_and_cpu_oracle(tick, coordinate_power):
     with np.load(Path(__file__).with_name("assets") / f"nonconvex_mesh64_tick{tick}.npz") as saved:
         point, anchor, force = (saved[key] for key in ("position", "anchor", "force"))
         radius, friction = float(saved["radius"]), float(saved["friction"])
@@ -125,7 +135,7 @@ def test_saved_edge_contact_uses_neighbor_finite_area_and_cpu_oracle(tick):
     info = create_traction_info(surface.info)
     contacts, sources = create_contacts(1, n_envs, radius), create_sources(1, n_envs)
     footprints = create_footprints(paths.info.positions.shape[0], 1, n_envs)
-    tractions = create_surface_fan_tractions(surface.info, 1, n_envs)
+    tractions = create_surface_fan_tractions(surface.info, 1, n_envs, coordinate_power=coordinate_power)
     contacts.position.from_numpy(np.broadcast_to(point, (1, n_envs, 3)).copy())
     contacts.force.from_numpy(np.broadcast_to(force, (1, n_envs, 3)).copy())
     contacts.friction.from_numpy(np.array([[friction, 0.85, 1.2]]))
@@ -154,7 +164,7 @@ def test_saved_edge_contact_uses_neighbor_finite_area_and_cpu_oracle(tick):
     anchor_face = qd_to_numpy(contacts.anchor_face, transpose=True)[:, 0]
     with np.load(mesh) as asset:
         vertices, tets, faces = (asset[key] for key in ("vertices", "tetrahedra", "surface_triangles"))
-    positions, weights, cpu_faces, basis = cpu_surface_fan_geometry(anchor, vertices, faces, 10)
+    positions, weights, cpu_faces, basis = cpu_surface_fan_geometry(anchor, vertices, faces, 10, coordinate_power)
     candidates = (weights > 0) & (np.linalg.norm(positions - anchor, axis=1) < radius)
     cpu_distances = cpu_intrinsic_distances(
         anchor[None],

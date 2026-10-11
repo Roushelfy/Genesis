@@ -1,0 +1,97 @@
+[38;5;159m[Genesis] [21:07:10] [INFO] [38;5;121m╭───────────────────────────────────────────────╮[0m[38;5;159m[0m
+[38;5;159m[Genesis] [21:07:10] [INFO] [38;5;121m│┈┉┈┉┈┉┈┉┈┉┈┉┈┉┈┉┈┉┈[0m[38;5;159m [38;5;121m[1m[3mGenesis[0m[38;5;159m [38;5;121m┈┉┈┉┈┉┈┉┈┉┈┉┈┉┈┉┈┉┈│[0m[38;5;159m[0m
+[38;5;159m[Genesis] [21:07:10] [INFO] [38;5;121m╰───────────────────────────────────────────────╯[0m[38;5;159m[0m
+[38;5;159m[Genesis] [21:07:10] [INFO] Running on [38;5;121m[NVIDIA RTX PRO 6000 Blackwell Server Edition][0m[38;5;159m with backend [38;5;121mgs.cuda[0m[38;5;159m. Device memory: [38;5;121m94.97[0m[38;5;159m GB.[0m
+[38;5;159m[Genesis] [21:07:10] [INFO] 🚀 Genesis initialized. 🔖 version: [38;5;121m1.4.3[0m[38;5;159m, 🎨 theme: [38;5;121mdark[0m[38;5;159m, 🌱 seed: [38;5;121mNone[0m[38;5;159m, 🐛 debug: [38;5;121mFalse[0m[38;5;159m, 📏 precision: [38;5;121m64[0m[38;5;159m, 🔥 performance: [38;5;121mFalse[0m[38;5;159m, 💬 verbose: [38;5;121mINFO[0m[38;5;159m[0m
+[38;5;159m[Genesis] [21:07:11] [INFO] Scene [38;5;121m[3m<8c48362>[0m[38;5;159m created.[0m
+[38;5;159m[Genesis] [21:07:11] [INFO] Adding [38;5;121m<gs.engine.entities.RigidEntity>[0m[38;5;159m [38;5;121m[3mplane_d5db13b[0m[38;5;159m. idx: [38;5;121m0[0m[38;5;159m, morph: [38;5;121m<gs.morphs.Plane>[0m[38;5;159m, material: [38;5;121m<gs.materials.Rigid>[0m[38;5;159m.[0m
+[38;5;226m[Genesis] [21:07:12] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint1`[0m
+[38;5;226m[Genesis] [21:07:12] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint2`[0m
+[38;5;159m[Genesis] [21:07:12] [INFO] Adding [38;5;121m<gs.engine.entities.RigidEntity>[0m[38;5;159m [38;5;121m[3mpanda_9f09444[0m[38;5;159m. idx: [38;5;121m1[0m[38;5;159m, morph: [38;5;121m<gs.morphs.MJCF(file='/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/assets/xml/franka_emika_panda/panda.xml')>[0m[38;5;159m, material: [38;5;121m<gs.materials.Rigid>[0m[38;5;159m.[0m
+[38;5;159m[Genesis] [21:07:12] [INFO] Adding [38;5;121m<gs.engine.entities.RigidEntity>[0m[38;5;159m [38;5;121m[3megg_shell_2a5f849[0m[38;5;159m. idx: [38;5;121m2[0m[38;5;159m, morph: [38;5;121m<gs.morphs.URDF(file='/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/assets/hollow_egg/level1/egg_shell.urdf')>[0m[38;5;159m, material: [38;5;121m<gs.materials.Rigid>[0m[38;5;159m.[0m
+[38;5;159m[Genesis] [21:07:12] [INFO] Building scene [38;5;121m[3m<8c48362>[0m[38;5;159m...[0m
+[38;5;226m[Genesis] [21:07:13] [WARNING] Neutral robot position (qpos0) exceeds joint limits.[0m
+[38;5;226m[Genesis] [21:07:14] [WARNING] Constraint solver time constant should be greater than 2*substep_dt. timeconst is changed from `0.005` to `0.02`). Decrease simulation timestep or increase timeconst to avoid altering the original value.[0m
+[38;5;226m[Genesis] [21:07:16] [WARNING] Filtered out geometry pairs causing self-collision for the neutral configuration (qpos0): (6, 11), (7, 11), (14, 21), (15, 20), (16, 23), (17, 22). Consider tuning Morph option 'decompose_robot_error_threshold' or specify dedicated collision meshes. This behavior can be disabled by setting Morph option 'enable_neutral_collision=True'.[0m
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+[38;5;159m[Genesis] [21:07:37] [INFO] Compiling simulation kernels...[0m
+[38;5;159m[Genesis] [21:08:19] [INFO] Building visualizer...[0m
+libEGL warning: failed to open /dev/dri/renderD135: Permission denied
+
+libEGL warning: failed to open /dev/dri/card8: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD134: Permission denied
+
+libEGL warning: failed to open /dev/dri/card7: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD133: Permission denied
+
+libEGL warning: failed to open /dev/dri/card6: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD132: Permission denied
+
+libEGL warning: failed to open /dev/dri/card5: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD131: Permission denied
+
+libEGL warning: failed to open /dev/dri/card4: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD130: Permission denied
+
+libEGL warning: failed to open /dev/dri/card3: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD129: Permission denied
+
+libEGL warning: failed to open /dev/dri/card2: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD128: Permission denied
+
+libEGL warning: failed to open /dev/dri/card1: Permission denied
+
+[38;5;159m[Genesis] [21:08:19] [INFO] Software rendering context detected. Shadows and plane reflection not supported. Beware rendering will be extremely slow.[0m
+/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/_test_tools/warnings_helper.py:11: UserWarning: cannot create weak reference to 'numpy.float64' object. Template mapper caching disabled.
+  warnings.warn(message)
+{"diagnostic_patch_face_cosine_min": 0.9999999999999858, "diagnostic_patch_edge_tolerance": 1e-10}
+[W 10/11/26 21:08:21.603 2569304] QuadrantsWarning
+While compiling `kernel_inputs_c940_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/egg_stress_controller.py", line 107, in kernel_inputs:
+        grip[i_b] = 0.04 if value < 0.15 or value > 0.9 else 0.018
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+[W 10/11/26 21:08:21.603 2569304] QuadrantsWarning
+While compiling `kernel_inputs_c940_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/egg_stress_controller.py", line 108, in kernel_inputs:
+        limit[i_b] = 0.055 if value >= 0.7 and value < 0.76 else 4.0
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+{"tick": 0, "loaded_contacts": 0, "contact_count_per_env": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "contact_slot_changes": 0, "mu_values": [], "max_force_error": 0.0, "max_moment_error": 0.0, "max_evaluations": 0, "max_samples": 0, "reset_environments": 0, "full_residual_max_N": 0.0, "cpu_peaks_Pa": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]}
+{"tick": 160, "loaded_contacts": 44, "contact_count_per_env": [3, 5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 7, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], "contact_slot_changes": 0, "mu_values": [0.42429914471832386, 0.4311938382221841, 0.448830358823588, 0.45816961152323477, 0.4769864289156946, 0.4935471922533235, 0.4954560635237416, 0.4974882300874463, 0.513025067476569, 0.5196625771794972, 0.5324021512794131, 0.5419087058450491, 0.5461851691827745, 0.5548840612434311, 0.5658805011730794, 0.5729245004692824, 0.6004145878320895, 0.6008812824796964, 0.6283166196584705, 0.6898673409173306, 0.69289010627508, 0.6958277757897541, 0.6961679182040915, 0.7251277090278597, 0.7253469770242981, 0.7256774791394456, 0.7656720864142516, 0.7777646050612338, 0.7900954592846008, 0.8029259935956841, 0.8034576450364378, 0.8262101596608401], "max_force_error": 7.059728124784912e-09, "max_moment_error": 8.132077798137294e-10, "max_evaluations": 7, "max_samples": 1063, "reset_environments": 0, "full_residual_max_N": 1.2878296291764104e-11, "cpu_peaks_Pa": [70579.31597851489, 72820.25186489185, 14232.304305272612, 12317.142182629857, 13095.773118986583, 15716.003749981272, 12991.453701489805, 14820.564736763441, 15504.002362203784, 14037.538092545165, 13889.424079424443, 15701.101370560655, 13867.564339740768, 13671.465503666792, 13260.97136559557, 15489.431352025771, 13017.375779040873, 54677.29558514429, 13915.350063373035, 14980.751075289807, 14557.714017930877, 13158.483911488664, 13931.025372431262, 15458.7573448766, 13533.124070288077, 12846.36173650698, 14894.335902701034, 14143.851397779095, 14141.455588274262, 15356.699462104743, 13860.505301164596, 13806.10606794114]}
+{"tick": 320, "loaded_contacts": 70, "contact_count_per_env": [2, 4, 4, 4, 7, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 6, 3, 6, 7, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], "contact_slot_changes": 0, "mu_values": [0.42429914471832386, 0.4311938382221841, 0.448830358823588, 0.45816961152323477, 0.4769864289156946, 0.4935471922533235, 0.4954560635237416, 0.4974882300874463, 0.513025067476569, 0.5196625771794972, 0.5324021512794131, 0.5419087058450491, 0.5461851691827745, 0.5548840612434311, 0.5658805011730794, 0.5729245004692824, 0.6004145878320895, 0.6008812824796964, 0.6283166196584705, 0.6898673409173306, 0.69289010627508, 0.6958277757897541, 0.6961679182040915, 0.7251277090278597, 0.7253469770242981, 0.7256774791394456, 0.7656720864142516, 0.7777646050612338, 0.7900954592846008, 0.8029259935956841, 0.8034576450364378, 0.8262101596608401], "max_force_error": 7.939804519909552e-09, "max_moment_error": 6.690669032456486e-09, "max_evaluations": 7, "max_samples": 947, "reset_environments": 0, "full_residual_max_N": 1.2688203104622016e-11, "cpu_peaks_Pa": [75898.22128678128, 74412.72026216486, 64078.1662811151, 59506.63101173628, 57516.51057785511, 79192.11038208957, 12034.852376556555, 14141.648929955032, 15273.641672633976, 14037.538092541019, 13889.424079426455, 15701.10137056283, 13867.564339743545, 13671.465503662052, 13260.971365597972, 15489.43135203113, 13017.375779038302, 50846.53242243384, 75368.6975480004, 54730.82712501991, 59090.858366456836, 66652.23649804984, 12946.746108181098, 14805.144847023617, 13160.775780385966, 12846.361736501589, 14894.335902700306, 14143.851397780309, 14141.455588265071, 15356.699462100785, 13860.505301169063, 13806.106067943121]}
+{"tick": 480, "loaded_contacts": 96, "contact_count_per_env": [1, 0, 4, 4, 6, 2, 6, 2, 7, 5, 4, 1, 1, 1, 1, 1, 1, 1, 3, 6, 6, 2, 5, 5, 6, 5, 5, 1, 1, 1, 1, 1], "contact_slot_changes": 2, "mu_values": [0.42429914471832386, 0.4311938382221841, 0.448830358823588, 0.45816961152323477, 0.4769864289156946, 0.4935471922533235, 0.4954560635237416, 0.4974882300874463, 0.513025067476569, 0.5196625771794972, 0.5324021512794131, 0.5419087058450491, 0.5461851691827745, 0.5548840612434311, 0.5658805011730794, 0.5729245004692824, 0.6008812824796964, 0.6283166196584705, 0.6898673409173306, 0.69289010627508, 0.6958277757897541, 0.6961679182040915, 0.7251277090278597, 0.7253469770242981, 0.7256774791394456, 0.7656720864142516, 0.7777646050612338, 0.7900954592846008, 0.8029259935956841, 0.8034576450364378, 0.8262101596608401], "max_force_error": 7.692376558560574e-09, "max_moment_error": 3.584351567511277e-09, "max_evaluations": 19, "max_samples": 911, "reset_environments": 0, "full_residual_max_N": 2.5179044839815475e-11, "cpu_peaks_Pa": [12642.11465406838, 57.64243015329399, 69690.96304771234, 63441.04919840298, 57523.508387997186, 82430.79649826862, 51866.74704549185, 74626.76053507648, 57926.664981255344, 63505.82055277866, 59891.48804922133, 15086.746401273029, 13439.285419205524, 13671.465503665257, 13260.971365595598, 15489.431352030877, 13017.375779037802, 264080.98716929497, 81988.70003805672, 56382.610538949295, 55421.27100254478, 70888.0387937955, 57560.565145821805, 63756.34962922658, 57465.98949688647, 60427.44483861867, 66426.54507568043, 13293.819600784522, 13620.461798205833, 15285.76726784998, 13860.50530116929, 13806.10606793719]}
+{"tick": 640, "loaded_contacts": 103, "contact_count_per_env": [1, 1, 1, 2, 1, 1, 6, 2, 6, 4, 4, 5, 2, 5, 6, 1, 1, 1, 1, 1, 6, 1, 2, 5, 6, 4, 4, 6, 6, 3, 7, 1], "contact_slot_changes": 3, "mu_values": [0.42429914471832386, 0.4311938382221841, 0.448830358823588, 0.45816961152323477, 0.4769864289156946, 0.4935471922533235, 0.4954560635237416, 0.4974882300874463, 0.513025067476569, 0.5196625771794972, 0.5324021512794131, 0.5419087058450491, 0.5461851691827745, 0.5548840612434311, 0.5658805011730794, 0.5729245004692824, 0.6004145878320895, 0.6008812824796964, 0.6283166196584705, 0.6898673409173306, 0.69289010627508, 0.6958277757897541, 0.6961679182040915, 0.7251277090278597, 0.7253469770242981, 0.7256774791394456, 0.7656720864142516, 0.7777646050612338, 0.7900954592846008, 0.8029259935956841, 0.8034576450364378, 0.8262101596608401], "max_force_error": 8.504469308214258e-09, "max_moment_error": 2.741292722519068e-09, "max_evaluations": 19, "max_samples": 804, "reset_environments": 3, "full_residual_max_N": 1.2087226232212184e-11, "cpu_peaks_Pa": [13552.795311874164, 69795.69804527835, 17143.549394508293, 9642.72163019468, 13188.713955364468, 11554.870829898702, 53373.2224729739, 81893.12286272118, 56611.9305095581, 70442.78440156904, 62162.8429767069, 64490.48456868806, 68987.88512572311, 64682.9317570329, 59363.7884627284, 14723.942784926832, 12479.712319660055, 12621.751675577438, 16464.15896582019, 18069.249055823, 56049.45905967343, 28108.508548144586, 18155.971644746303, 66996.62540930048, 61297.84296907312, 66079.7920139186, 64527.83835689157, 52840.668234132776, 56031.031398575586, 76858.81331854213, 70366.35951463513, 12898.488294434821]}
+Traceback (most recent call last):
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/probe_exact_patch_alignment_v1.py", line 27, in <module>
+    runpy.run_module('research.rigid_stress.probe_nonconvex_online', run_name='__main__')
+  File "/usr/lib/python3.10/runpy.py", line 227, in run_module
+    return _run_code(code, {}, init_globals, run_name, mod_spec)
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/probe_nonconvex_online.py", line 218, in <module>
+    main()
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/probe_nonconvex_online.py", line 79, in main
+    solver.check_errno()
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/rigid_solver.py", line 1459, in check_errno
+    gs.raise_exception(
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/misc.py", line 43, in raise_exception
+    raise gs.GenesisException(msg)
+genesis.GenesisException: Native stress contact recovery rejected a load. link=12, env=5, contact=0, status=33: vector traction numerical fit unresolved; radius=0.00436428708 m, mu=0.600881282
+
+[38;5;9m[Genesis] [21:10:26] [ERROR] GenesisException: Native stress contact recovery rejected a load. link=12, env=5, contact=0, status=33: vector traction numerical fit unresolved; radius=0.00436428708 m, mu=0.600881282[0m
+[38;5;159m[Genesis] [21:10:26] [INFO] 💤 Exiting Genesis and caching compiled kernels...[0m

@@ -1,0 +1,108 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0
+rootdir: /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery
+configfile: pyproject.toml
+plugins: anyio-4.15.1, forked-1.7.5, print-1.2.0, timeout-2.4.0, xdist-3.8.0, quadrants-1.3.3, syrupy-6.1.1
+timeout: 1200.0s
+timeout method: signal
+timeout func_only: False
+collected 45 items
+
+tests/rigid/test_stress_nonconvex.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[33m                        [ 26%][0m
+tests/rigid/test_stress_sources.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[33m                                  [ 35%][0m
+tests/rigid/test_stress_traction.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[33m                                 [ 44%][0m
+tests/rigid/test_stress_footprint.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[33m                              [ 57%][0m
+tests/rigid/test_stress_sliding_footprint.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[33m                      [ 71%][0m
+tests/rigid/test_stress_surface_fan.py [32m.[0m[32m.[0m[32m.[0m[31mF[0m[31mF[0m[31mF[0m[32m.[0m[32m.[0m[31m                          [ 88%][0m
+tests/rigid/test_stress_compatibility.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m                           [100%][0m
+
+=================================== FAILURES ===================================
+[31m[1m___ test_saved_edge_contact_uses_neighbor_finite_area_and_cpu_oracle[147-2] ____[0m
+[1m[31mtests/rigid/test_stress_surface_fan.py[0m:196: in test_saved_edge_contact_uses_neighbor_finite_area_and_cpu_oracle
+    [0massert_allclose(profiles[i_b, : count[i_b]], cpu_profiles[native_indices], rtol=[94m2e-11[39;49;00m, atol=[94m2e-20[39;49;00m)[90m[39;49;00m
+[1m[31mtests/utils/assertions.py[0m:50: in assert_allclose
+    [0mnp.testing.assert_allclose(*args, atol=atol, rtol=rtol, err_msg=err_msg)[90m[39;49;00m
+[1m[31mE   AssertionError: [0m
+[1m[31mE   Not equal to tolerance rtol=2e-11, atol=2e-20[0m
+[1m[31mE   None[0m
+[1m[31mE   Mismatched elements: 10 / 487 (2.05%)[0m
+[1m[31mE   Max absolute difference among violations: 5.7258508e-13[0m
+[1m[31mE   Max relative difference among violations: 0.20464024[0m
+[1m[31mE    ACTUAL: array([1.059978e-14, 1.228728e-13, 4.279489e-13, 9.295843e-13,[0m
+[1m[31mE          1.532543e-12, 1.645651e-12, 1.870670e-12, 2.241806e-12,[0m
+[1m[31mE          1.350817e-12, 6.377573e-13, 3.285058e-12, 3.808049e-11,...[0m
+[1m[31mE    DESIRED: array([1.059978e-14, 1.228728e-13, 4.279489e-13, 9.295843e-13,[0m
+[1m[31mE          1.532543e-12, 2.068672e-12, 2.351661e-12, 2.241806e-12,[0m
+[1m[31mE          1.698320e-12, 8.018476e-13, 3.285058e-12, 3.808049e-11,...[0m
+---------------------------- Captured stdout setup -----------------------------
+[Genesis 20:59:40] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 20:59:40] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+--------------------------- Captured stdout teardown ---------------------------
+[Genesis 20:59:44] Exiting Genesis and caching compiled kernels...
+[31m[1m___ test_saved_edge_contact_uses_neighbor_finite_area_and_cpu_oracle[427-2] ____[0m
+[1m[31mtests/rigid/test_stress_surface_fan.py[0m:196: in test_saved_edge_contact_uses_neighbor_finite_area_and_cpu_oracle
+    [0massert_allclose(profiles[i_b, : count[i_b]], cpu_profiles[native_indices], rtol=[94m2e-11[39;49;00m, atol=[94m2e-20[39;49;00m)[90m[39;49;00m
+[1m[31mtests/utils/assertions.py[0m:50: in assert_allclose
+    [0mnp.testing.assert_allclose(*args, atol=atol, rtol=rtol, err_msg=err_msg)[90m[39;49;00m
+[1m[31mE   AssertionError: [0m
+[1m[31mE   Not equal to tolerance rtol=2e-11, atol=2e-20[0m
+[1m[31mE   None[0m
+[1m[31mE   Mismatched elements: 7 / 388 (1.8%)[0m
+[1m[31mE   Max absolute difference among violations: 2.80288232e-16[0m
+[1m[31mE   Max relative difference among violations: 0.00798475[0m
+[1m[31mE    ACTUAL: array([1.175231e-14, 1.362329e-13, 4.744808e-13, 1.030662e-12,[0m
+[1m[31mE          1.699189e-12, 2.293627e-12, 2.607406e-12, 2.485619e-12,[0m
+[1m[31mE          1.883035e-12, 8.890625e-13, 3.638895e-12, 4.218240e-11,...[0m
+[1m[31mE    DESIRED: array([1.175231e-14, 1.362329e-13, 4.744808e-13, 1.030662e-12,[0m
+[1m[31mE          1.699189e-12, 2.293627e-12, 2.607406e-12, 2.485619e-12,[0m
+[1m[31mE          1.883035e-12, 8.890625e-13, 3.638895e-12, 4.218240e-11,...[0m
+---------------------------- Captured stdout setup -----------------------------
+[Genesis 20:59:47] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 20:59:47] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+--------------------------- Captured stdout teardown ---------------------------
+[Genesis 20:59:51] Exiting Genesis and caching compiled kernels...
+[31m[1m___ test_saved_edge_contact_uses_neighbor_finite_area_and_cpu_oracle[454-2] ____[0m
+[1m[31mtests/rigid/test_stress_surface_fan.py[0m:196: in test_saved_edge_contact_uses_neighbor_finite_area_and_cpu_oracle
+    [0massert_allclose(profiles[i_b, : count[i_b]], cpu_profiles[native_indices], rtol=[94m2e-11[39;49;00m, atol=[94m2e-20[39;49;00m)[90m[39;49;00m
+[1m[31mtests/utils/assertions.py[0m:50: in assert_allclose
+    [0mnp.testing.assert_allclose(*args, atol=atol, rtol=rtol, err_msg=err_msg)[90m[39;49;00m
+[1m[31mE   AssertionError: [0m
+[1m[31mE   Not equal to tolerance rtol=2e-11, atol=2e-20[0m
+[1m[31mE   None[0m
+[1m[31mE   Mismatched elements: 8 / 379 (2.11%)[0m
+[1m[31mE   Max absolute difference among violations: 3.06046967e-16[0m
+[1m[31mE   Max relative difference among violations: 0.00883455[0m
+[1m[31mE    ACTUAL: array([1.175595e-14, 1.362751e-13, 4.746277e-13, 1.030981e-12,[0m
+[1m[31mE          1.699716e-12, 2.294339e-12, 2.608215e-12, 2.486392e-12,[0m
+[1m[31mE          1.883621e-12, 8.893395e-13, 3.639749e-12, 4.219231e-11,...[0m
+[1m[31mE    DESIRED: array([1.175595e-14, 1.362751e-13, 4.746277e-13, 1.030981e-12,[0m
+[1m[31mE          1.699716e-12, 2.294339e-12, 2.608215e-12, 2.486392e-12,[0m
+[1m[31mE          1.883621e-12, 8.893395e-13, 3.639749e-12, 4.219231e-11,...[0m
+---------------------------- Captured stdout setup -----------------------------
+[Genesis 20:59:54] Running on [INTEL(R) XEON(R) PLATINUM 8562Y+] with backend gs.cpu. Device memory: 1006.14 GB.
+[Genesis 20:59:54] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+--------------------------- Captured stdout teardown ---------------------------
+[Genesis 20:59:58] Exiting Genesis and caching compiled kernels...
+[33m=============================== warnings summary ===============================[0m
+tests/rigid/test_stress_nonconvex.py: 16 warnings
+tests/rigid/test_stress_sources.py: 8 warnings
+tests/rigid/test_stress_traction.py: 4 warnings
+tests/rigid/test_stress_footprint.py: 12 warnings
+tests/rigid/test_stress_sliding_footprint.py: 12 warnings
+tests/rigid/test_stress_surface_fan.py: 16 warnings
+tests/rigid/test_stress_compatibility.py: 10 warnings
+  /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                          32 iterations, so the compile time may be extremely long.
+                          You can use a non-static for loop if you want to decrease the compile time.
+                          You can disable this warning by setting qd.init(unrolling_limit=0).
+    for a, b in qd.static(qd.ndrange(6, 6)):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================================= Failed tests =================================
+tests/rigid/test_stress_surface_fan.py::test_saved_edge_contact_uses_neighbor...
+tests/rigid/test_stress_surface_fan.py::test_saved_edge_contact_uses_neighbor...
+tests/rigid/test_stress_surface_fan.py::test_saved_edge_contact_uses_neighbor...
+============================== slowest durations ===============================
+
+(135 durations < 100s hidden.)
+[31m============ [31m[1m3 failed[0m, [32m42 passed[0m, [33m78 warnings[0m[31m in 334.57s (0:05:34)[0m[31m =============[0m
