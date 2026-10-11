@@ -9,12 +9,12 @@ not yet established. The initial branch source is `1d6babf7`.
 | Requirement | Evidence to deliver | Status |
 |---|---|---|
 | Material normals and real surface topology | Cavity/U winding tests; no spatial sheet merging | Native implementation and CPU/CUDA checks pass |
-| Surface provenance | Geom/pair and face/barycentric witnesses, actual boundary association, ambiguity diagnostics | Native resolver and raw collision witness retention pass CPU/CUDA checks; reference association pending |
+| Surface provenance | Geom/pair and face/barycentric witnesses, actual boundary association, ambiguity diagnostics | Native resolver, raw witnesses and both-side GJK reference/frame checks pass CPU/CUDA; general live association pending |
 | Intrinsic finite footprint | Verified paths, hole/gap exclusion, explicit radius/profile and distance error | Native path checks pass; footprint integration/tuning pending |
-| Six-component vector fit | Original/projected/P2 wrench, local cones, offset tangential load and constrained corner fits | Pending |
+| Six-component vector fit | Original/projected/P2 wrench, local cones, offset tangential load and constrained corner fits | Standalone native dual, signed scatter and edge/corner/planar checks pass CPU/CUDA; live integration pending |
 | Failure diagnostics | Ambiguity, unresolved integration/distance, numerical fitting and physical incompatibility | Pending |
-| Same-mesh numerical recovery | Independent CPU FP64 nodal loads, complete residual/gauge rows, full/max stress | Nonconvex elastic checks pass; vector contact loads pending |
-| Dynamic lifecycle | Motion, slip/release, rotations, source changes, batch isolation, partial reset/state restore | Pending |
+| Same-mesh numerical recovery | Independent CPU FP64 nodal loads, complete residual/gauge rows, full/max stress | Nonconvex vector-load CPU FP64 comparisons pass on both backends; live acceptance pending |
+| Dynamic lifecycle | Motion, slip/release, rotations, source changes, batch isolation, partial reset/state restore | Standalone source/traction transitions pass; complete online lifecycle pending |
 | Existing Franka egg | Legal changing contacts, actual varied combined friction, rigid trajectory isolation | Pending |
 | Matched performance | New-law four-scope baseline, detailed profiles, measured candidate decisions and repeated throughput | Pending |
 | Reproducible delivery | Native code/example/tests, source and artifact identities, committed/pushed evidence | In progress |
@@ -230,3 +230,94 @@ SHA256 verification; manifest SHA256 is
 This completes the collision producer checkpoint, not the active nonconvex
 recovery goal. Reference association, vector loads and matched performance
 remain pending as listed above.
+
+## Reference-source and vector-traction checkpoint
+
+The native source capture now selects the stressed link's actual A/B collision
+witness, geom, pair, method and emitting vertex, and transforms it through the
+existing association's material frame. It preserves the original force point.
+Declared uncertainty remains an input: a witness method alone does not certify
+reference-boundary accuracy. Actual contact moments still require their torque;
+the existing stress configuration rejects enabled rolling/torsional modes.
+
+The resolver accepts uncertainty spanning a covered part of the same planar
+wall, while retaining ambiguity across distinct branches. A zero-distance
+edge/vertex alternative must share the active mesh vertex identities. The
+coplanar segment check also recognizes an endpoint on a truly incident target
+face; coincident vertices on separate sheets do not qualify. The small live
+GJK source fixture checks both stressed geom sides, rotations, tangential
+forces, reference barycentrics, offset moments, contact death/rebirth and a
+partial reset. This is source capture/association evidence, not a live
+nonconvex stress trajectory. Primitive, SDF, decomposition and aggregate-source
+association still need the complete online contract.
+
+`stress/traction.py` implements the declared positive weighted vector-traction
+QP through a six-component dual. Every positive integration sample uses its
+local inward material normal and supplied actual friction coefficient. The
+Coulomb projection and generalized Jacobian are native Quadrants. A regularized
+six-by-six Newton solve, Armijo checks and a gradient fallback operate per
+contact/environment; moments are scaled by the unchanged physical radius.
+The internal termination budget is **1e-9** in these checks. The 1e-12 matrix
+ridge is regularization, not a wrench acceptance threshold.
+
+The scatter uses signed P2 shape values and retains the original six-component
+wrench. Tests manufacture independent FP64 primal/dual KKT solutions on a
+concave edge and cavity corner with actual **mu = 0, 0.25, 0.55, 0.85, 1.2**.
+They compare sample and nodal forces, local cones, force and moment about the
+original offset point, then recover full/max fields using the existing native
+elastic model. Independent NumPy/SciPy FP64 elasticity checks
+include all six gauge rows, complete stress tensors and the global peak.
+Acceptance remains force/moment 1e-8, complete equilibrium
+`max(1e-11 N, 1e-8 ||rhs||)`, and stress `rtol=1e-4, atol=1e-3 Pa`.
+No high-resolution physical convergence workload was run.
+
+The edge/corner fixtures supply area/profile weights offline on analytically
+verified incident planar walls; they do not claim general intrinsic footprint
+generation. A separate planar batch includes zero friction, interior friction,
+sliding-boundary traction, eccentric sliding traction, a pulling wrench and
+release/rebirth with environment isolation. The fitted separating certificate
+is explicitly **sampled-wrench infeasibility**, not an assertion that an
+unresolved continuous footprint is physically incompatible. Invalid input,
+empty integration and numerical fitting failure have distinct statuses.
+
+The first projection test's nonsmooth three-dimensional SLSQP oracle returned
+a line-search failure on both backends although the native edge/corner checks
+passed. Its replacement uses an independent convex two-variable QP with linear
+constraints, plus Moreau polar feasibility/orthogonality and Jacobian finite
+differences. Final wrench, residual and stress budgets were not relaxed. The
+failed run and its exact source are preserved in `traction-v1`.
+
+| Closed allocated run | CPU | CUDA |
+|---|---|---|
+| `source-association-v1` (existing geometry plus new sources) | 16 passed, 109.15 s | 16 passed, 111.61 s |
+| `traction-v1` (initial oracle) | 1 failed / 2 passed, 15.09 s | 1 failed / 2 passed, 11.38 s |
+| `traction-v2` (projection, edge/corner, planar/lifecycle) | 4 passed, 18.79 s | 4 passed, 11.92 s |
+| `contact-checkpoint-v1` (final combined module layout) | 20 passed, 149.01 s | 20 passed, 139.10 s |
+
+These use the same RTX PRO 6000 Blackwell Server Edition / Genesis 1.4.3 /
+Quadrants 1.3.3 / FP64 setup as the witness checkpoint, with isolated caches.
+The planar test was consolidated into `test_stress_traction.py` after the
+closed v2 run. A combined source/geometry/traction rerun passes twenty checks
+on each backend, with identical frozen before/after source hashes. Reproduce
+that final module layout through the portable command below:
+
+```bash
+bash research/rigid_stress/scripts/check_nonconvex_contact.sh cpu
+bash research/rigid_stress/scripts/check_nonconvex_contact.sh cuda
+```
+
+This checkpoint does **not** switch `RigidStressRecovery` or its fused graph
+to the new law. Its general subproblem stores one profile per supplied
+sample/contact/environment; that dense representation is not a selected live
+layout. The remaining major work is native intrinsic profile/local integration,
+general source mapping, online diagnostics/lifecycle, the Franka egg replay,
+then a matched four-scope baseline, profiling and measured optimizations.
+
+Source checkpoint: `4981d82391192777be4b9e8af52823f2f78f01e7`.
+The [publication manifest](../evidence/20261011-nonconvex/contact-checkpoint-v1/manifest.json)
+records all eight successful/failed test logs, frozen source snapshots,
+launchers and the final test consolidation. All **72 publication artifacts
+and their preserved data-side originals** pass SHA256 verification on an
+allocated compute node; manifest SHA256 is
+`7d74c3fc80864be7fc010a7dff9ccf76d9a79867c42f534dd9f11806d55a841a`.
+The active nonconvex goal remains incomplete as stated in the manifest.
