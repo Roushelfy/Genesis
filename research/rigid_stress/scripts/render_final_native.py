@@ -41,7 +41,8 @@ def main():
         "option source hashes match the other scopes. Preparation cost is",
         "recorded separately. Original cold-path timings remain archived.",
         "Every rate uses 900 warmup steps and three repeats of at least 2400",
-        "changing-contact steps and ten seconds. Both seeds are included. The",
+        "benchmark steps and ten seconds. Live/policy contacts change; recovery",
+        "repeats its frozen actual snapshot. Both seeds are included. The",
         "aggregate is total valid transitions divided by total wall time; the",
         "six-repeat spread combines workload and temporal variation. All resets,",
         "contact parameters, controller and required observation/inference work",
@@ -80,6 +81,30 @@ def main():
             for row in data["two_seed_aggregates"]
         ),
     )
+    if data.get("recovery_version") is not None:
+        lines += [
+            "## Standalone recovery preparation",
+            "",
+            "This untimed call compiles/captures the graph actually measured,",
+            "after restoring the pre-integration snapshot. Its time includes",
+            "snapshot restoration, JIT, synchronization and the errno check;",
+            "timed calls are unchanged.",
+            "",
+        ]
+        table(
+            lines,
+            ("B", "Seed", "Preparation calls", "Preparation seconds including JIT"),
+            (
+                (
+                    row["envs"],
+                    row["seed"],
+                    row["recovery_preparation_steps"],
+                    number(row["recovery_preparation_seconds_including_JIT"], 6),
+                )
+                for row in measurements
+                if row["scope"] == "recovery"
+            ),
+        )
     lines += [
         "## Matched rigid overhead",
         "",
@@ -108,7 +133,17 @@ def main():
     ]
     table(
         lines,
-        ("B", "Seed", "Scope", "Max env-step/s", "Full env-step/s", "Full step time +%", "Additional native bytes"),
+        (
+            "B",
+            "Seed",
+            "Scope",
+            "Max env-step/s",
+            "Full env-step/s",
+            "Full step time +%",
+            "Additional native bytes",
+            "Max peak MiB",
+            "Full peak MiB",
+        ),
         (
             (
                 row["envs"],
@@ -118,6 +153,8 @@ def main():
                 number(row["measurements"]["full"]["valid_env_steps_per_second"]),
                 number(row["step_time_increase_percent"], 3),
                 row["additional_native_bytes"],
+                number(row["measurements"]["max"]["sampled_whole_card_peak_MiB"], 0),
+                number(row["measurements"]["full"]["sampled_whole_card_peak_MiB"], 0),
             )
             for row in data["matched_output_cost"]
         ),

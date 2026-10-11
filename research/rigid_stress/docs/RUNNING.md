@@ -32,7 +32,8 @@ serial graph containing rigid contact-force postprocessing, full recovery
 and rigid integration. Both requested/effective selections are recorded.
 The normal example exposes `--unfused-rigid-post`. Default selection currently
 enables this graph below B=8192 for one eligible configured stress link;
-final large-batch production comparisons determine any later selection change.
+formal two-seed large-batch production comparisons give opposite-signed
+gains at B32768 and B61440, so the original large-batch route is retained.
 
 Full mode writes all tetrahedral corner tensors and
 von Mises values; the default `max` allocates no complete field. Both modes

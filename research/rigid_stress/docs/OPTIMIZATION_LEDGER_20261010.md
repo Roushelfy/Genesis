@@ -7,6 +7,20 @@ Q10x10 quadrature. All production physical arithmetic uses Quadrants FP64.
 The finite pad load and actual combined contact friction change are described
 in [CONTACT_REPAIR_20261010.md](CONTACT_REPAIR_20261010.md).
 
+## Final post-graph selection, 2026-10-11 04:34 UTC
+
+All 16 prototype/ordinary production pairs are closed in
+`postgraph-composition-complete-v9-summary.json`. Ordinary B32768 policy
+gains are +1.0340%/-0.2990%; B61440 gains are +0.2706%/-0.0325%.
+At B61440, off/on repeat standard deviations are 981.17/33.68 env-step/s
+on seed 510000 and 41.27/761.79 on seed 623001. Each pair uses one physical
+GPU, unchanged source/budgets, 900 warmup and three 2400-step measured
+trajectories; the second seed reverses order. All numerical failures are
+zero. Gains have opposite signs on both large batches and do not support
+propagating the prototype's small gain into the large default. Keep the
+tested automatic selection below B8192, with explicit `on/off` available.
+Small-batch live/policy gains are consistent across both seeds and retained.
+
 ## Matched graph-entry cost, 2026-10-11 04:12 UTC
 
 The 04:25 UTC closed-case v12 checkpoint verifies all 1918 publication
