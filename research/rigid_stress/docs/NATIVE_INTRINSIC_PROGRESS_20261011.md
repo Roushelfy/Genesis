@@ -1,5 +1,9 @@
 # Native intrinsic contact integration checkpoint
 
+The later [surface-fan checkpoint](NATIVE_SURFACE_FAN_PROGRESS_20261011.md)
+supersedes the tick-147 blocker and the internal stopping setting below.
+This file preserves the earlier diagnosis and source-specific evidence.
+
 The active extension starts at `1d6babf77848c46ba616da8bbb7062260a7ccd09`.
 This work follows the published `c3083710` footprint checkpoint. It does not
 complete the nonconvex goal or establish new-law throughput. Production stress

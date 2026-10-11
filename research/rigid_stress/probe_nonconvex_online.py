@@ -24,6 +24,7 @@ def main():
     parser.add_argument("--contact-block-size", type=int, default=2)
     parser.add_argument("--oracle-stride", type=int, default=20)
     parser.add_argument("--egg-geometry", choices=("urdf", "mesh64"), default="urdf")
+    parser.add_argument("--collision-method", choices=("auto", "mpr", "gjk"), default="auto")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -43,6 +44,7 @@ def main():
         contact_model="intrinsic",
         contact_block_size=args.contact_block_size,
         egg_geometry=args.egg_geometry,
+        use_gjk_collision={"auto": None, "mpr": False, "gjk": True}[args.collision_method],
     )
     solver = workload.scene.rigid_solver
     entry = solver.stress_recovery.links[0]
@@ -168,6 +170,7 @@ def main():
                 valid=qd_to_numpy(entry.contacts.valid, transpose=True),
                 position=qd_to_numpy(entry.contacts.position, transpose=True),
                 force=force,
+                normal=qd_to_numpy(entry.contacts.normal, transpose=True),
                 radius=radius,
                 friction=qd_to_numpy(entry.contacts.friction, transpose=True),
                 frame_position=qd_to_numpy(entry.contacts.frame_position, transpose=True),

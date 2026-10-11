@@ -12,9 +12,9 @@ from genesis.utils.array_class import DataKind, V
 from .contact import StressContactState
 from .data import StressInfo
 from .paths import StressPathInfo, func_surface_segment
-from .provenance import StressSourceState, StressSourceStatus
+from .provenance import StressSourceState, StressSourceStatus, func_closest_triangle
 from .surface import StressSurfaceInfo
-from .traction import StressTractionState, create_tractions
+from .traction import StressTractionInfo, StressTractionState, create_tractions, func_surface_fan_bary
 
 
 class StressFootprintStatus(IntEnum):
@@ -123,12 +123,107 @@ def func_footprint_point_distance(
     if is_straight:
         distance = (target - anchor).norm()
     else:
+        # A path crossing one actual shared edge has an exact two-triangle
+        # unfolding. Both segments stay inside their convex triangles. This
+        # removes port-spacing error without connecting separate sheets.
+        for i_edge in qd.static(range(3)):
+            if stress_info.surface_neighbors[i_anchor, i_edge] == i_face:
+                i_first = stress_info.surface_nodes[i_anchor, i_edge]
+                i_second = stress_info.surface_nodes[i_anchor, (i_edge + 1) % 3]
+                first = stress_info.vertices[i_first]
+                edge = stress_info.vertices[i_second] - first
+                length = edge.norm()
+                direction = edge / length
+                anchor_coordinate = (anchor - first).dot(direction)
+                target_coordinate = (target - first).dot(direction)
+                anchor_height = (anchor - first - anchor_coordinate * direction).norm()
+                target_height = (target - first - target_coordinate * direction).norm()
+                height = anchor_height + target_height
+                crossing = gs.qd_float(0.0)
+                if height > 0.0:
+                    crossing = (anchor_height * target_coordinate + target_height * anchor_coordinate) / height
+                crossing = qd.min(length, qd.max(0.0, crossing))
+                point = first + crossing * direction
+                distance = qd.min(distance, (anchor - point).norm() + (target - point).norm())
         for i_t in range(path_info.face_ports.shape[1]):
             i_port = path_info.face_ports[i_face, i_t]
             candidate = footprint_state.port_distance[i_port, i_c, i_b]
             candidate += (target - path_info.positions[i_port]).norm()
             distance = qd.min(distance, candidate)
     return distance, is_straight
+
+
+def create_surface_fan_tractions(surface_info: StressSurfaceInfo, n_contacts: int, n_envs: int) -> StressTractionState:
+    """Partition every boundary face about its closest point to the anchor.
+
+    The finite area rule resolves small neighboring patches. Geometry is
+    reconstructed from shared triangles and one center per face/contact,
+    rather than storing per-sample position, normal and P2 shape tensors.
+    """
+    n_faces = surface_info.face_origin.shape[0]
+    return create_tractions(
+        3 * surface_info.positions.shape[0], n_contacts, n_envs, packed_samples=True, fan_faces=n_faces
+    )
+
+
+@qd.kernel
+def kernel_surface_fan_profiles(
+    contact_state: StressContactState,
+    footprint_state: StressFootprintState,
+    traction_state: StressTractionState,
+    stress_info: StressInfo,
+    surface_info: StressSurfaceInfo,
+    path_info: StressPathInfo,
+    traction_info: StressTractionInfo,
+):
+    for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
+        traction_state.sample_count[i_c, i_b] = 0
+    for i_f, i_c, i_b in qd.ndrange(
+        surface_info.face_origin.shape[0], contact_state.valid.shape[0], contact_state.valid.shape[1]
+    ):
+        center = qd.Vector.zero(gs.qd_float, 3)
+        if contact_state.valid[i_c, i_b] and footprint_state.status[i_c, i_b] == StressFootprintStatus.SUCCESS:
+            center, _ = func_closest_triangle(i_f, contact_state.center[i_c, i_b], surface_info)
+        traction_state.fan_centers[i_f, i_c, i_b] = center
+    for i_q, i_c, i_b in qd.ndrange(
+        traction_state.profile.shape[0], contact_state.valid.shape[0], contact_state.valid.shape[1]
+    ):
+        if contact_state.valid[i_c, i_b] and footprint_state.status[i_c, i_b] == StressFootprintStatus.SUCCESS:
+            anchor, radius = contact_state.center[i_c, i_b], contact_state.radius[i_c, i_b]
+            n = surface_info.gauss.shape[0]
+            i_face = i_q // (3 * n * n)
+            center = traction_state.fan_centers[i_face, i_c, i_b]
+            if (center - anchor).norm() < radius:
+                i_face, bary = func_surface_fan_bary(i_q, i_c, i_b, traction_state, traction_info)
+                origin, edges = surface_info.face_origin[i_face], surface_info.face_edges[i_face]
+                position = origin + bary[1] * edges[0, :] + bary[2] * edges[1, :]
+                i_fan = (i_q // (n * n)) % 3
+                i_first = stress_info.surface_nodes[i_face, i_fan]
+                i_second = stress_info.surface_nodes[i_face, (i_fan + 1) % 3]
+                area = (stress_info.vertices[i_first] - center).cross(stress_info.vertices[i_second] - center).norm()
+                if area > 0.0 and (position - anchor).norm() < radius:
+                    qd.atomic_add(footprint_state.candidates[i_c, i_b], 1)
+                    distance, _ = func_footprint_point_distance(
+                        i_face, i_c, i_b, position, contact_state, footprint_state, stress_info, surface_info, path_info
+                    )
+                    if distance < radius:
+                        i_sample = i_q % (n * n)
+                        weight = area * surface_info.gauss[i_sample // n]
+                        weight *= surface_info.gauss_weights[i_sample // n] * surface_info.gauss_weights[i_sample % n]
+                        relative = distance / radius
+                        profile = weight * qd.exp(-0.5 * (relative / 0.45) ** 2) * (1.0 - relative * relative) ** 2
+                        i_slot = qd.atomic_add(traction_state.sample_count[i_c, i_b], 1)
+                        traction_state.sample_indices[i_slot, i_c, i_b] = i_q
+                        traction_state.profile[i_slot, i_c, i_b] = profile
+                        qd.atomic_add(footprint_state.samples[i_c, i_b], 1)
+                        qd.atomic_max(footprint_state.maximum_distance[i_c, i_b], distance)
+    for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
+        if (
+            contact_state.valid[i_c, i_b]
+            and footprint_state.status[i_c, i_b] == StressFootprintStatus.SUCCESS
+            and footprint_state.samples[i_c, i_b] == 0
+        ):
+            footprint_state.status[i_c, i_b] = StressFootprintStatus.EMPTY_SUPPORT
 
 
 def create_anchor_fan_tractions(

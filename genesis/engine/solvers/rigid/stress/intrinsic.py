@@ -17,8 +17,10 @@ from .footprint import (
     StressFootprintState,
     create_anchor_fan_tractions,
     create_footprints,
+    create_surface_fan_tractions,
     kernel_anchor_fan_profiles,
     kernel_footprint_ports,
+    kernel_surface_fan_profiles,
 )
 from .paths import StressSurfacePaths
 from .provenance import StressSourceState, create_sources, kernel_resolve_sources
@@ -39,7 +41,7 @@ if TYPE_CHECKING:
 
 
 # Final original-point wrench and local-cone acceptance retains its independent 1e-8 budget
-_TRACTION_FIT_TOLERANCE = 8e-9
+_TRACTION_FIT_TOLERANCE = 9e-9
 
 
 @dataclass(frozen=True)
@@ -81,7 +83,11 @@ class IntrinsicContacts:
         )
         self.sources = create_sources(n_chunk, n_envs)
         self.footprints = create_footprints(self.paths.info.positions.shape[0], n_chunk, n_envs)
-        self.tractions = create_anchor_fan_tractions(surface_info, n_chunk, n_envs, compact=True, packed=True)
+        self.tractions = (
+            create_surface_fan_tractions(surface_info, n_chunk, n_envs)
+            if options.intrinsic_integration == "surface_fan"
+            else create_anchor_fan_tractions(surface_info, n_chunk, n_envs, compact=True, packed=True)
+        )
         self.certificates = StressWrenchCertificates(
             ray=V_VEC(6, dtype=gs.qd_float, shape=(n_contacts, n_envs)),
             margin=V(dtype=gs.qd_float, shape=(n_contacts, n_envs)),
@@ -115,9 +121,20 @@ class IntrinsicContacts:
                 options.source_projection_limit, epsilon, self.contacts, self.sources, stress_info, surface_info
             )
             kernel_footprint_ports(self.contacts, self.sources, self.footprints, surface_info, self.paths.info)
-            kernel_anchor_fan_profiles(
-                self.contacts, self.footprints, self.tractions, stress_info, surface_info, self.paths.info
-            )
+            if options.intrinsic_integration == "surface_fan":
+                kernel_surface_fan_profiles(
+                    self.contacts,
+                    self.footprints,
+                    self.tractions,
+                    stress_info,
+                    surface_info,
+                    self.paths.info,
+                    self.traction_info,
+                )
+            else:
+                kernel_anchor_fan_profiles(
+                    self.contacts, self.footprints, self.tractions, stress_info, surface_info, self.paths.info
+                )
             kernel_fit_tractions(
                 self.contacts, self.sources, self.tractions, self.traction_info, epsilon, _TRACTION_FIT_TOLERANCE, 128
             )

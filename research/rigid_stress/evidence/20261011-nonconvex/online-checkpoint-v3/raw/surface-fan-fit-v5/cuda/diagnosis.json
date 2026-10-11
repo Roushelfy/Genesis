@@ -1,0 +1,111 @@
+{
+  "scope": "Separate sampled-cone infeasibility from numerical failure in saved native contacts.\n\nReplay preserves the snapshot's anchor, force point, radius and actual friction.\nThe native profile is reconstructed using the declared port-path law. Independent\nCPU LPs use inscribed and circumscribed friction polygons: inner feasibility is\na constructive Coulomb witness, while outer infeasibility bounds the exact\nsampled cones. Neither conclusion certifies a continuous footprint model.\n",
+  "contacts": [
+    {
+      "snapshot": "snapshot-454.npz",
+      "env": 2,
+      "contact": 0,
+      "samples": 422,
+      "radius_m": 0.00576403650876631,
+      "friction": 0.6531024606382921,
+      "target": [
+        0.10137612495236181,
+        0.7331942178494739,
+        0.672420344874946,
+        0.0016007283769131774,
+        5.157348754182865e-05,
+        -0.000297565390960849
+      ],
+      "saved_force_error": 2.39548940298116e-08,
+      "saved_moment_error": 5.718573819594178e-09,
+      "lp": [
+        {
+          "sides": 32,
+          "outer": false,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "wrench_error": 1.8193296976952277e-15,
+          "minimum_compression": 0.0,
+          "maximum_cone_violation": 0.0
+        },
+        {
+          "sides": 32,
+          "outer": true,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "wrench_error": 2.2210823577535994e-16,
+          "minimum_compression": 0.0,
+          "maximum_cone_violation": 0.002543944562266587
+        },
+        {
+          "sides": 128,
+          "outer": false,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "wrench_error": 3.3420300265111596e-16,
+          "minimum_compression": 0.0,
+          "maximum_cone_violation": 0.0
+        },
+        {
+          "sides": 128,
+          "outer": true,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "wrench_error": 1.99848975144111e-16,
+          "minimum_compression": 0.0,
+          "maximum_cone_violation": 4.9009833120380875e-06
+        }
+      ],
+      "native": [
+        {
+          "tolerance": 9e-09,
+          "evaluation_budget": 128,
+          "status": 0,
+          "evaluations": 18,
+          "force_error": 9.680443800278094e-15,
+          "moment_error": 5.816311505195694e-15,
+          "dual": [
+            -3113.6240802867383,
+            13595.564220159376,
+            -14393.12463436376,
+            530.0290027015593,
+            -186.21406906725463,
+            1074.4059578163576
+          ]
+        },
+        {
+          "tolerance": 9e-09,
+          "evaluation_budget": 512,
+          "status": 0,
+          "evaluations": 18,
+          "force_error": 9.680443800278094e-15,
+          "moment_error": 5.816311505195694e-15,
+          "dual": [
+            -3113.6240802867383,
+            13595.564220159376,
+            -14393.12463436376,
+            530.0290027015593,
+            -186.21406906725463,
+            1074.4059578163576
+          ]
+        },
+        {
+          "tolerance": 9e-09,
+          "evaluation_budget": 2048,
+          "status": 0,
+          "evaluations": 18,
+          "force_error": 9.680443800278094e-15,
+          "moment_error": 5.816311505195694e-15,
+          "dual": [
+            -3113.6240802867383,
+            13595.564220159376,
+            -14393.12463436376,
+            530.0290027015593,
+            -186.21406906725463,
+            1074.4059578163576
+          ]
+        }
+      ]
+    }
+  ]
+}

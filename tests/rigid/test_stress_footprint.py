@@ -61,6 +61,33 @@ def cpu_intrinsic_distances(
     last = np.linalg.norm(points[:, None] - ports[face_ports[target_faces]], axis=2)
     distances = np.min(to_ports[:, face_ports[target_faces]] + last[None], axis=2)
     for i_b, anchor in enumerate(anchors):
+        # An unfolded adjacent pair is a continuous surface path, independent
+        # of the graph discretization. Mesh vertex identities define the edge.
+        for target_face in np.unique(target_faces):
+            shared_vertices = np.intersect1d(triangles[faces[i_b]], triangles[target_face])
+            if len(shared_vertices) == 2:
+                first, second = vertices[shared_vertices]
+                edge = second - first
+                length = np.linalg.norm(edge)
+                direction = edge / length
+                selected = target_faces == target_face
+                targets = points[selected]
+                start_coordinate = (anchor - first) @ direction
+                end_coordinate = (targets - first) @ direction
+                start_height = np.linalg.norm(anchor - first - start_coordinate * direction)
+                end_height = np.linalg.norm(targets - first - end_coordinate[:, None] * direction, axis=1)
+                height = start_height + end_height
+                crossing = np.divide(
+                    start_height * end_coordinate + end_height * start_coordinate,
+                    height,
+                    out=np.zeros_like(height),
+                    where=height > 0,
+                )
+                edge_points = first + np.clip(crossing, 0, length)[:, None] * direction
+                path_length = np.linalg.norm(edge_points - anchor, axis=1) + np.linalg.norm(
+                    targets - edge_points, axis=1
+                )
+                distances[i_b, selected] = np.minimum(distances[i_b, selected], path_length)
         normal = normals[faces[i_b]]
         coplanar = np.abs(normals @ normal) >= 1.0 - 1e-12
         coplanar &= np.abs((origin - anchor) @ normal) <= 1e-14
@@ -329,7 +356,13 @@ def test_native_intrinsic_profiles_and_vector_recovery(nonconvex_material_mesh, 
         scene.build(n_envs=n_envs)
         raw_contacts = create_contacts(5, n_envs, radius)
         settings = options.model_copy(
-            update={"contact_model": "intrinsic", "contact_block_size": 2, "quadrature": 4, "contact_radius": radius}
+            update={
+                "contact_model": "intrinsic",
+                "intrinsic_integration": "anchor_fan",
+                "contact_block_size": 2,
+                "quadrature": 4,
+                "contact_radius": radius,
+            }
         )
         streamed = IntrinsicContacts(entity.base_link, raw_contacts, model.info, surface.info, settings, paths)
         link_position = tensor_to_array(entity.base_link.get_pos())[0]
