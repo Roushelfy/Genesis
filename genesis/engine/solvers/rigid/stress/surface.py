@@ -86,9 +86,8 @@ def kernel_surface(stress_info: StressInfo, surface_info: StressSurfaceInfo):
         surface_info.face_bounds_high[i_f] = qd.max(x, x + first, x + second)
         surface_info.face_dual[i_f] = gram.inverse() @ qd.Matrix.rows([first, second])
         normal = first.cross(second).normalized()
-        com = qd.Vector([stress_info.mass_properties[1 + i_a] for i_a in qd.static(range(3))])
-        com /= stress_info.mass_properties[0]
-        if normal.dot(x + (first + second) / 3.0 - com) < 0.0:
+        i_opposite = stress_info.surface_opposite_vertices[i_f]
+        if normal.dot(stress_info.vertices[i_opposite] - x) > 0.0:
             normal = -normal
         surface_info.face_normal[i_f] = normal
         for i_q in range(surface_info.shape.shape[0]):

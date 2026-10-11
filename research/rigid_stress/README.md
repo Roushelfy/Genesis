@@ -10,6 +10,13 @@ optimization on low-resolution full-shell meshes; defer physical mesh and
 quadrature convergence until the applicable performance work is complete.
 Same-mesh numerical consistency remains required throughout.
 
+The active 2026-10-11 extension is
+[native nonconvex contact mapping](docs/NONCONVEX_CONTACT_REQUIREMENTS.md).
+Its [implementation checkpoint](docs/NONCONVEX_PROGRESS_20261011.md) records
+material-boundary, intrinsic-path and source tests. The live vector-traction
+integration and new-law throughput are still pending; the completed egg
+milestone below does not establish acceptance of that extension.
+
 The native implementation is in `genesis/engine/solvers/rigid/stress/`, with
 `RigidLink.configure_stress_recovery`, `get_max_stress`, `get_stress_field` and
 `set_stress_contact_radius`. The normal example is

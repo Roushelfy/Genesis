@@ -38,6 +38,7 @@ from .solve import (
     kernel_peak,
 )
 from .surface_inverse import StressSurfaceInverse
+from .topology import build_surface_topology
 
 
 @dataclass(frozen=True)
@@ -72,6 +73,7 @@ class StressModel:
             gs.raise_exception("Every stress mesh vertex must belong to a tetrahedron.")
 
         # Connectivity processing handles asset topology; physical operators are assembled in Quadrants below.
+        boundary = build_surface_topology(tetrahedra, surface)
         edges = np.array([[0, 1], [0, 2], [0, 3], [1, 2], [1, 3], [2, 3]], dtype=gs.np_int)
         edge_vertices, edge_inverse = np.unique(
             np.sort(tetrahedra[:, edges].reshape((-1, 2)), axis=1), axis=0, return_inverse=True
@@ -97,6 +99,9 @@ class StressModel:
             vertices=V_VEC(3, dtype=gs.qd_float, shape=(n_nodes,)),
             elements=V(dtype=gs.qd_int, shape=(n_elements, 10)),
             surface_nodes=V(dtype=gs.qd_int, shape=(len(surface), 6)),
+            surface_owners=V(dtype=gs.qd_int, shape=(len(surface),)),
+            surface_opposite_vertices=V(dtype=gs.qd_int, shape=(len(surface),)),
+            surface_neighbors=V(dtype=gs.qd_int, shape=(len(surface), 3)),
             edges=V(dtype=gs.qd_int, shape=(6, 2)),
             gradients=V_MAT(4, 3, dtype=gs.qd_float, shape=(n_elements,)),
             corner_gradients=V_VEC(3, dtype=gs.qd_float, shape=(n_elements, 4, 7)),
@@ -123,6 +128,9 @@ class StressModel:
         self.info.vertices.from_numpy(xyz.astype(gs.np_float, copy=False))
         self.info.elements.from_numpy(elements.astype(gs.np_int, copy=False))
         self.info.surface_nodes.from_numpy(surface_nodes.astype(gs.np_int, copy=False))
+        self.info.surface_owners.from_numpy(boundary.owners)
+        self.info.surface_opposite_vertices.from_numpy(boundary.opposite_vertices)
+        self.info.surface_neighbors.from_numpy(boundary.neighbors)
         self.info.edges.from_numpy(edges)
         self.info.row_start.from_numpy(row_start.astype(gs.np_int, copy=False))
         self.info.columns.from_numpy(entries[:, 1].astype(gs.np_int, copy=False))
