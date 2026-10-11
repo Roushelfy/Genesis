@@ -265,7 +265,7 @@ def test_native_source_provenance_ambiguity_and_offset_wrench(nonconvex_material
     sources.free_moment.from_numpy(moment)
     sources.witness_face.from_numpy(np.array([[face, -1, -1, -1, -1, face]], dtype=gs.np_int))
     sources.witness_barycentric.from_numpy(np.broadcast_to(bary, (1, 6, 3)).copy())
-    kernel_resolve_sources(0.0006, float(np.finfo(gs.np_float).eps), contacts, sources, sampled.info)
+    kernel_resolve_sources(0.0006, float(np.finfo(gs.np_float).eps), contacts, sources, model.info, sampled.info)
     assert_equal(
         qd_to_numpy(sources.status, transpose=True)[:, 0],
         [
@@ -289,7 +289,7 @@ def test_native_source_provenance_ambiguity_and_offset_wrench(nonconvex_material
     witnesses[0, 0] = witnesses[0, 2]
     sources.witness.from_numpy(witnesses)
     sources.witness_face.from_numpy(np.array([[-1, -1, -1, -1, -1, face]], dtype=gs.np_int))
-    kernel_resolve_sources(0.0006, float(np.finfo(gs.np_float).eps), contacts, sources, sampled.info)
+    kernel_resolve_sources(0.0006, float(np.finfo(gs.np_float).eps), contacts, sources, model.info, sampled.info)
     assert_equal(qd_to_numpy(sources.status, transpose=True)[0, 0], StressSourceStatus.AMBIGUOUS)
     assert np.isnan(qd_to_numpy(contacts.center, transpose=True)[0, 0]).all()
     assert np.isnan(qd_to_numpy(sources.anchor_moment, transpose=True)[0, 0]).all()

@@ -7,9 +7,12 @@ from typing import ClassVar
 import quadrants as qd
 
 import genesis as gs
+from genesis.utils import array_class, geom
 from genesis.utils.array_class import V_VEC, DataKind, V
 
 from .contact import StressContactState
+from .data import StressInfo
+from .paths import func_surface_segment
 from .surface import StressSurfaceInfo
 
 
@@ -26,6 +29,8 @@ class StressSourceState:
 
     geom: qd.Tensor
     pair: qd.Tensor
+    method: qd.Tensor
+    vertex: qd.Tensor
     witness: qd.Tensor
     witness_face: qd.Tensor
     witness_barycentric: qd.Tensor
@@ -41,6 +46,8 @@ def create_sources(n_contacts: int, n_envs: int) -> StressSourceState:
     sources = StressSourceState(
         geom=V(dtype=gs.qd_int, shape=shape),
         pair=V(dtype=gs.qd_int, shape=shape),
+        method=V(dtype=gs.qd_int, shape=shape),
+        vertex=V(dtype=gs.qd_int, shape=shape),
         witness=V_VEC(3, dtype=gs.qd_float, shape=shape),
         witness_face=V(dtype=gs.qd_int, shape=shape),
         witness_barycentric=V_VEC(3, dtype=gs.qd_float, shape=shape),
@@ -52,10 +59,64 @@ def create_sources(n_contacts: int, n_envs: int) -> StressSourceState:
     )
     sources.geom.fill(-1)
     sources.pair.fill(-1)
+    sources.vertex.fill(-1)
     sources.witness_face.fill(-1)
     sources.uncertainty.fill(0)
     sources.free_moment.fill(0)
     return sources
+
+
+@qd.kernel
+def kernel_capture_rigid_sources(
+    i_l: int,
+    contact_state: StressContactState,
+    source_state: StressSourceState,
+    collider_state: array_class.ColliderState,
+):
+    func_capture_rigid_sources(i_l, contact_state, source_state, collider_state)
+
+
+@qd.func
+def func_capture_rigid_sources(
+    i_l: int,
+    contact_state: StressContactState,
+    source_state: StressSourceState,
+    collider_state: array_class.ColliderState,
+):
+    """Capture both geom sides in the existing association's material frame.
+
+    The caller declares source uncertainty separately; a producer method is not
+    a certificate of material-boundary accuracy. Enabled contact moment modes
+    still require their actual torque, as enforced by the stress feature.
+    """
+    for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
+        source_state.geom[i_c, i_b] = -1
+        source_state.pair[i_c, i_b] = -1
+        source_state.method[i_c, i_b] = array_class.ContactWitnessKind.NORMAL_OFFSET
+        source_state.vertex[i_c, i_b] = -1
+        source_state.witness_face[i_c, i_b] = -1
+        source_state.witness_barycentric[i_c, i_b] = qd.Vector([float("nan")] * 3)
+        source_state.witness[i_c, i_b] = qd.Vector([float("nan")] * 3)
+        source_state.free_moment[i_c, i_b] = qd.Vector.zero(gs.qd_float, 3)
+        if contact_state.valid[i_c, i_b]:
+            i_contact = collider_state.contact_sort_idx[i_c, i_b]
+            i_a = collider_state.contact_data.link_a[i_contact, i_b]
+            i_b_link = collider_state.contact_data.link_b[i_contact, i_b]
+            if i_l == i_a or i_l == i_b_link:
+                i_geom = collider_state.contact_data.geom_b[i_contact, i_b]
+                point = collider_state.contact_data.witness.point_b[i_contact, i_b]
+                i_vertex = collider_state.contact_data.witness.vertex_b[i_contact, i_b]
+                if i_l == i_a:
+                    i_geom = collider_state.contact_data.geom_a[i_contact, i_b]
+                    point = collider_state.contact_data.witness.point_a[i_contact, i_b]
+                    i_vertex = collider_state.contact_data.witness.vertex_a[i_contact, i_b]
+                source_state.geom[i_c, i_b] = i_geom
+                source_state.pair[i_c, i_b] = collider_state.contact_data.pair_idx[i_contact, i_b]
+                source_state.method[i_c, i_b] = collider_state.contact_data.witness.method[i_contact, i_b]
+                source_state.vertex[i_c, i_b] = i_vertex
+                source_state.witness[i_c, i_b] = geom.qd_inv_transform_by_quat(
+                    point - contact_state.frame_position[i_b], contact_state.frame_quaternion[i_b]
+                )
 
 
 @qd.func
@@ -89,9 +150,10 @@ def kernel_resolve_sources(
     source_epsilon: float,
     contact_state: StressContactState,
     source_state: StressSourceState,
+    stress_info: StressInfo,
     surface_info: StressSurfaceInfo,
 ):
-    func_resolve_sources(projection_limit, source_epsilon, contact_state, source_state, surface_info)
+    func_resolve_sources(projection_limit, source_epsilon, contact_state, source_state, stress_info, surface_info)
 
 
 @qd.func
@@ -100,6 +162,7 @@ def func_resolve_sources(
     source_epsilon: float,
     contact_state: StressContactState,
     source_state: StressSourceState,
+    stress_info: StressInfo,
     surface_info: StressSurfaceInfo,
 ):
     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
@@ -150,12 +213,26 @@ def func_resolve_sources(
                 if source_state.witness_face[i_c, i_b] < 0:
                     for i_f in range(surface_info.face_origin.shape[0]):
                         candidate, candidate_bary = func_closest_triangle(i_f, witness, surface_info)
-                        # An uncertainty ball must still select one physical anchor.
-                        # Adjacent edge/corner faces sharing that anchor are equivalent sources.
-                        if (candidate - witness).norm() <= distance + 2.0 * uncertainty + tolerance and (
-                            candidate - position
-                        ).norm() > tolerance:
-                            source_state.status[i_c, i_b] = StressSourceStatus.AMBIGUOUS
+                        if (candidate - witness).norm() <= distance + 2.0 * uncertainty + tolerance:
+                            separation = (candidate - position).norm()
+                            is_equivalent = False
+                            if separation <= tolerance:
+                                # The same geometric anchor must also share its active mesh vertex identities.
+                                is_equivalent = True
+                                for a in qd.static(range(3)):
+                                    if bary[a] > 32.0 * source_epsilon:
+                                        i_vertex = stress_info.surface_nodes[nearest_face, a]
+                                        is_shared = False
+                                        for b in qd.static(range(3)):
+                                            is_shared = is_shared or i_vertex == stress_info.surface_nodes[i_f, b]
+                                        is_equivalent = is_equivalent and is_shared
+                            elif separation <= 2.0 * uncertainty + tolerance:
+                                # A resolved local planar displacement is one surface source, not another branch.
+                                is_equivalent = func_surface_segment(
+                                    nearest_face, i_f, position, candidate, stress_info, surface_info
+                                )
+                            if not is_equivalent:
+                                source_state.status[i_c, i_b] = StressSourceStatus.AMBIGUOUS
                 if source_state.status[i_c, i_b] == StressSourceStatus.SUCCESS:
                     contact_state.center[i_c, i_b] = position
                     contact_state.anchor_face[i_c, i_b] = nearest_face

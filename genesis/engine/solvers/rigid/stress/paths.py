@@ -169,6 +169,20 @@ def func_surface_segment(
                     end_contained = end_contained and bary[a] + derivative[a] >= -tolerance
                 if end_contained:
                     accepted = current == i_target
+                    if not accepted:
+                        # A segment ending on a shared edge/vertex is also contained in its incident target face.
+                        # Match vertex identities, so coincident points on separate sheets never qualify.
+                        is_shared_endpoint = True
+                        for a in qd.static(range(3)):
+                            if bary[a] + derivative[a] > tolerance:
+                                i_vertex = stress_info.surface_nodes[current, a]
+                                is_shared_vertex = False
+                                for b in qd.static(range(3)):
+                                    is_shared_vertex = is_shared_vertex or (
+                                        i_vertex == stress_info.surface_nodes[i_target, b]
+                                    )
+                                is_shared_endpoint = is_shared_endpoint and is_shared_vertex
+                        accepted = is_shared_endpoint
                     active = False
                 else:
                     crossing = gs.qd_float(float("inf"))
