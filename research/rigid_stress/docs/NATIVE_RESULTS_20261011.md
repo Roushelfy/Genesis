@@ -1,7 +1,8 @@
 # Repaired native low-shell validation and performance
 
-Status at 2026-10-11 03:41 UTC: production source `1f22f6a2` is committed and
-pushed. Numerical/lifecycle validation passes. Production-v8 measurements
+Status at 2026-10-11 04:25 UTC: source/evidence checkpoint `2baa1459` is
+committed and pushed; numerical engine `f3e92c62` and benchmark preparation
+fix `1f22f6a2` remain unchanged. Numerical/lifecycle validation passes. Production-v8 measurements
 cover all five batches, both seeds and four scopes. The production-v9 final
 remeasurement and formal large-batch post-graph comparisons remain in progress;
 this document does not yet declare goal completion or a throughput plateau.
@@ -141,15 +142,16 @@ SIMT kernels; work counts and whole-batch intervals are reported separately.
 
 Production-v8 B=32768/49152/61440 four-scope measurements, larger max/full
 pairs, profiles and every-environment audits are complete. The production-v9
-remeasurement and v10 primed-recovery replacement are still running.
+remeasurement is still running. All ten v10 primed-recovery replacements
+are complete, as are both B32768 four-scope cases.
 The original rigid flattened i32 buffer limit rejects B=65536; this is a
 recorded capacity diagnostic, not an OOM result. The optimization inventory
 and its decisions are in [coverage](OPTIMIZATION_COVERAGE_20261011.md) and
 the [ledger](OPTIMIZATION_LEDGER_20261010.md).
 
-Current publication checkpoint v11 verifies all 1835 publication artifacts
-and all 1835 preserved originals. Its manifest SHA256 is
-`a7f0faea456b50f2e1a0dd0906743829a9b2938cb6fa758151d05a7d0e48ee73`.
+Current publication checkpoint v12 verifies all 1918 publication artifacts
+and all 1918 preserved originals. Its manifest SHA256 is
+`d5b0a7f91ebb56f89b753144d92cf758dd753e2aea141b89ba78aa9dcaf0c7c4`.
 Later closed cases await the next checkpoint. Commands and data
 locations are in [RUNNING.md](RUNNING.md) and the evidence manifest.
 

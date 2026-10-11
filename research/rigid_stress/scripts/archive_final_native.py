@@ -69,6 +69,9 @@ def main():
         "quadrants-large-address-*-v3.json",
         "quadrants-large-address-*-v4.json",
         "postgraph-composition-final-v9-summary.json",
+        "postgraph-composition-complete-v9-summary.json",
+        "native-pipeline-entry-*-v1.json",
+        "native-pipeline-entry-complete-v1-summary.json",
     ):
         for path in args.run.glob(pattern):
             if path.name.endswith((".postgraph-variant.json", ".indices-variant.json")):
@@ -126,6 +129,17 @@ def main():
         "run_native_final_recovery_v10.sh",
         "native-recovery-preparation-v10.patch",
         "run_native_postgraph_large_composition_v9.sh",
+        "run_native_pipeline_entry_v1.sh",
+        "run_pipeline_entry_summary_v1.sh",
+        "summarize_pipeline_entry_v1.py",
+        "run_postgraph_summary_complete_v9.sh",
+        "run_native_final_summary_v9.sh",
+        "native-final-v11-verification.json",
+        "native-final-v11-archive.log",
+        "native-final-complete-v8-tables.md",
+        "native-final-complete-v8-tables.log",
+        "native-final-complete-v9-v10-tables.md",
+        "native-final-complete-v9-v10-tables.log",
     ):
         add(args.run / name)
     add(args.summary)

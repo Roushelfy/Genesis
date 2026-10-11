@@ -7,6 +7,33 @@ Q10x10 quadrature. All production physical arithmetic uses Quadrants FP64.
 The finite pad load and actual combined contact friction change are described
 in [CONTACT_REPAIR_20261010.md](CONTACT_REPAIR_20261010.md).
 
+## Matched graph-entry cost, 2026-10-11 04:12 UTC
+
+The 04:25 UTC closed-case v12 checkpoint verifies all 1918 publication
+artifacts and all 1918 originals. Manifest SHA256:
+`d5b0a7f91ebb56f89b753144d92cf758dd753e2aea141b89ba78aa9dcaf0c7c4`.
+It adds all ten primed-recovery cases and the matched graph-entry experiment;
+the final large-batch live/policy matrix remains open.
+
+Four same-GPU snapshot experiments compare the ordinary graph calling
+`func_pipeline` with a graph declared directly from that exact function's
+body. Both routes use the same public `recover(0)` call, actual pre-integration
+snapshot after 900 live steps, and three repeats of at least 200 calls and
+ten seconds. Both are explicitly prepared outside timing; seed 623001
+reverses their order. Direct-body throughput changes are -0.4263%/-0.1519%
+at B1024 and -0.0144%/-0.0447% at B32768. All original comparisons pass,
+with zero invalid steps and peak differences below 1.32e-8 Pa. Keep the
+shared function and ordinary wrapper: this isolated declaration change has
+no useful performance gain. The complete four-case summary is
+`native-pipeline-entry-complete-v1-summary.json`; this is a snapshot cost
+experiment, not a changing-contact rollout claim.
+
+All ten explicitly primed v10 recovery cases have completed. The formal
+B32768 ordinary production post-graph pairs give +1.0346% and -0.2990%
+across the two seeds. These opposite signs do not justify enabling the
+large-batch graph from the earlier small prototype gain. B61440 pairs and
+the final all-scope remeasurement remain running.
+
 ## Serial rigid-post composition, 2026-10-11 03:27 UTC
 
 The 04:00 UTC v11 checkpoint publishes the complete v8 baseline: all 40

@@ -1,0 +1,74 @@
+{
+  "envs": 1024,
+  "seed": 510000,
+  "warmup_steps": 900,
+  "rows": [
+    {
+      "route": "func_wrapper",
+      "preparation_seconds_including_JIT": 4.818324996624142,
+      "repeats": [
+        {
+          "steps": 2861,
+          "seconds": 10.005976400338113,
+          "valid_env_steps_per_second": 292791.4161281655,
+          "invalid_environment_steps": 0
+        },
+        {
+          "steps": 2860,
+          "seconds": 10.006044970825315,
+          "valid_env_steps_per_second": 292687.071519172,
+          "invalid_environment_steps": 0
+        },
+        {
+          "steps": 2854,
+          "seconds": 10.0037677497603,
+          "valid_env_steps_per_second": 292139.5291359124,
+          "invalid_environment_steps": 0
+        }
+      ]
+    },
+    {
+      "route": "direct_body",
+      "preparation_seconds_including_JIT": 5.053343076724559,
+      "repeats": [
+        {
+          "steps": 2846,
+          "seconds": 10.006285295356065,
+          "valid_env_steps_per_second": 291247.3424431076,
+          "invalid_environment_steps": 0
+        },
+        {
+          "steps": 2846,
+          "seconds": 10.004551209043711,
+          "valid_env_steps_per_second": 291297.82427077653,
+          "invalid_environment_steps": 0
+        },
+        {
+          "steps": 2847,
+          "seconds": 10.006903226021677,
+          "valid_env_steps_per_second": 291331.6871516316,
+          "invalid_environment_steps": 0
+        }
+      ]
+    }
+  ],
+  "maximum_absolute_differences": {
+    "force": 1.1102230246251565e-16,
+    "rhs": 1.1102230246251565e-16,
+    "displacement": 7.940933880509066e-23,
+    "residual": 1.833200475101493e-12,
+    "step_peak": 4.554749466478825e-09,
+    "step_valid": 0.0
+  },
+  "passed": true,
+  "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "gpu_uuid": "GPU-40b7c172-fb9d-63ea-58c7-0677967a8583",
+  "slurm_job_id": "705398",
+  "source_revision": "1f22f6a231657c731b13d5b24438d05b52abdbe8-pipeline-entry-v1",
+  "source_sha256": {
+    "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/probe_native_pipeline_entry.py": "e70da9242c808d3bd4c3e4c8c17e079ee0bf5ab941ab7278cba304b8fd9abf93",
+    "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/pipeline.py": "5677953121fc287950a1a86ab80a781929032b13ffae3d9698b0d28426722de9",
+    "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/recovery.py": "1633c00e5f219aa95f452cac81544c54e3843e1a3fef69dfcf7af422fadba423"
+  },
+  "scope": "Three at-least-ten-second frozen actual pre-integration recovery repeats. Same public recover call, same physical GPU and original complete acceptance; only the Quadrants graph entry declaration differs. Raw body is the exact same Python function used by qd.func. This is not a live throughput measurement."
+}

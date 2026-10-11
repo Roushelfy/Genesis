@@ -43,8 +43,12 @@ error budget against an FP64 reference during warmup. `--policy-precision 64`
 supplies its matched ablation; all stress arithmetic remains Quadrants FP64.
 
 The `recovery` timing scope repeatedly processes a frozen actual snapshot;
-it is a kernel diagnostic and omits changing rigid trajectories. Supplement
-it with synchronized stress-stage costs on a complete changing trajectory:
+it is a kernel diagnostic and omits changing rigid trajectories. The benchmark
+explicitly primes the standalone recovery graph outside timing after restoring
+that snapshot, synchronizes and checks errno. It records this preparation
+count and JIT/capture wall time separately, since combined-post live warmup
+alone does not compile the standalone graph. Supplement snapshot timing with
+synchronized stress-stage costs on a complete changing trajectory:
 
 ```bash
 python -m research.rigid_stress.native_recovery_trajectory_profile \
@@ -128,14 +132,15 @@ python -m research.rigid_stress.native_validity_probe --scope policy \
     --envs 1024 --warmup 900 --steps 1200 \
     --output "$RIGID_STRESS_DATA_ROOT/runs/native/validity-policy.json"
 python -m pytest tests/rigid/test_stress.py --backend cpu \
-    -k 'not lifecycle' -n 0 -s -q
+    -n 0 -s -q
 ```
 
 The audit keeps native failure counters across independent resets, reading
 them once at the end. It checks every one of the 2,150,400 environment steps
 per scope, including warmup, and publishes no throughput rate.
-GPU tests include the actual rigid lifecycle checks; CPU runs the 19
-numerical cases. Do not run CPU numerical work on a login node on the cluster.
+The current suite passes 52 cases on GPU and 31 on CPU, with 21 CUDA-only
+CPU skips. GPU tests include actual rigid lifecycle checks. Do not run CPU
+numerical work on a login node on the cluster.
 
 Allocate the measured cluster hardware before sourcing the environment:
 
@@ -169,6 +174,36 @@ python -m research.rigid_stress.native_history_probe --envs 8 --steps 1200 \
 It stores actual complete RHS arrays under the requested data path and checks
 optimistic h=0/1/4 load-subspace acceptance offline. It does not run production
 NumPy recovery or contribute a throughput rate.
+
+## Repaired final measurement matrix
+
+The final randomized workload uses both seeds, the complete low shell and
+the repaired local pad integration. Run each case in its own benchmark
+process; the runner saves the literal command, result status, GPU UUID,
+whole-card memory samples and exact numerical source hashes:
+
+```bash
+"$RIGID_STRESS_ENV/bin/python" research/rigid_stress/scripts/measured_sweep.py \
+    --envs 1024 2048 32768 49152 61440 --seeds 510000 623001 \
+    --scopes rigid recovery live policy --warmup 900 --steps 2400 \
+    --repetitions 3 --output "$RIGID_STRESS_DATA_ROOT/runs/native/final-matrix"
+```
+
+Use `--output-mode full` on the ordinary benchmark for same-GPU max/full
+pairs at B1024 and B32768, preserving scope, seed, timestep and all numerical
+budgets. Final evidence uses separate allocated GPUs per independent case;
+matched optimization and output-cost pairs retain one physical GPU. Exact
+launch scripts are preserved in the evidence manifest. The final standalone
+recovery setup fix is `1f22f6a2`; the numerical engine is `f3e92c62`.
+Earlier small-batch v9 cold-path recovery timings include standalone JIT
+and are preserved as invalid timings rather than mixed into final rates.
+
+The measured B61440 is the largest convenient multiple of 512 below this
+Franka scene's original flattened-Jacobian i32 limit (B61497). B65536 is
+rejected by that guard. Independent scalar, Vec3 and explicit-i64 diagnostics
+do not justify removing it: packed allocation succeeds but boundary access
+raises CUDA illegal address. This is a backend addressing limit, not a
+measured physical-memory exhaustion.
 
 ## Copied-condition native batch scaling
 
