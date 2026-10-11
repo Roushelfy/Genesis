@@ -1,0 +1,333 @@
+{
+  "source_revision": "2bb3d2e423ef1e69cd00733118b14bb2a9e05614",
+  "source_sha256": {
+    "genesis/engine/solvers/rigid/stress/data.py": "081ee50334a918f8bef23fb891de3c4a6e5fa4964826069268497c0fa1cece19",
+    "genesis/engine/solvers/rigid/stress/model.py": "02deae6f14789dfe8c6470432a5ad8cdd372f27008a5f6ea902a07dff6dda97f",
+    "genesis/engine/solvers/rigid/stress/surface.py": "b83ee1d677294001d0da2613b99fbfe689a014c27bd01bdd06c703d39b32f30e",
+    "genesis/engine/solvers/rigid/stress/topology.py": "0e6c421b6fcd66e456417cded1f6b7403474b957d263b4ae5d52b1a9f5b12cd2",
+    "genesis/engine/solvers/rigid/stress/paths.py": "fdc8a966a917385db897584f9c30dfa26666a8135857fa6e1e2cf6a19c79364d",
+    "genesis/engine/solvers/rigid/stress/provenance.py": "d8117b453d93e5b3497e23fefd0b0d6965f29a11446bd72b3ba7f60fac4b2724",
+    "tests/rigid/test_stress_nonconvex.py": "a6ddbbbb688c1926c618dc69671d77e15bf4370559d35b78f26179a9a4082cfe"
+  },
+  "checked_tests": [
+    {
+      "file": "checkpoint-v1-cpu/tests.log",
+      "counts": {
+        "passed": 12
+      }
+    },
+    {
+      "file": "checkpoint-v1-cuda/tests.log",
+      "counts": {
+        "passed": 12
+      }
+    },
+    {
+      "file": "existing-cuda-v1.log",
+      "counts": {
+        "passed": 52
+      }
+    },
+    {
+      "file": "boundary-com-mutation-v2.log",
+      "counts": {
+        "failed": 2,
+        "deselected": 4
+      }
+    },
+    {
+      "file": "path-euclidean-mutation-v3.log",
+      "counts": {
+        "failed": 2,
+        "deselected": 6
+      }
+    }
+  ],
+  "existing_cpu_regression_complete": false,
+  "native_nonconvex_contact_goal_complete": false,
+  "limits": [
+    "Only the material-normal fix is active in live stress recovery.",
+    "Source and intrinsic-path helpers are not integrated into live collision/load mapping.",
+    "Vector traction fitting, its contact scatter/CPU oracles/lifecycle and matched throughput remain pending.",
+    "Port paths are upper bounds; no final subdivision count or physical convergence is established."
+  ],
+  "artifact_count": 46,
+  "artifacts": [
+    {
+      "file": "checkpoint-v1-cpu/tests.log",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/checkpoint-v1-cpu/tests.log",
+      "sha256": "c7512d54d7623a3050616eb7cdf3918d636eaad2b98272d4e9914ad358a69599",
+      "bytes": 1589
+    },
+    {
+      "file": "checkpoint-v1-cpu/import.log",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/checkpoint-v1-cpu/import.log",
+      "sha256": "6b444f84c6e90180caa94cd971be397f826ef1f5ede21a597687019140dae22e",
+      "bytes": 90
+    },
+    {
+      "file": "checkpoint-v1-cpu/source.sha256",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/checkpoint-v1-cpu/source.sha256",
+      "sha256": "ec7d10d77caa97510b65fe2292040ea6525c009d09d9766b07fbeee35e1f3de3",
+      "bytes": 778
+    },
+    {
+      "file": "checkpoint-v1-cuda/tests.log",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/checkpoint-v1-cuda/tests.log",
+      "sha256": "050a82e7da332a1e2bbac06b55f381ac36e2f92555771afc0b520d431850f12c",
+      "bytes": 1589
+    },
+    {
+      "file": "checkpoint-v1-cuda/import.log",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/checkpoint-v1-cuda/import.log",
+      "sha256": "6b444f84c6e90180caa94cd971be397f826ef1f5ede21a597687019140dae22e",
+      "bytes": 90
+    },
+    {
+      "file": "checkpoint-v1-cuda/source.sha256",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/checkpoint-v1-cuda/source.sha256",
+      "sha256": "ec7d10d77caa97510b65fe2292040ea6525c009d09d9766b07fbeee35e1f3de3",
+      "bytes": 778
+    },
+    {
+      "file": "checkpoint-v1-cuda/gpu.csv",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/checkpoint-v1-cuda/gpu.csv",
+      "sha256": "15cf426db1d98f92fcc4a1011a24cfa068d11bd554eb03087abe8895a0f8e6cf",
+      "bytes": 108
+    },
+    {
+      "file": "checkpoint-allocation-v1.log",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/checkpoint-allocation-v1.log",
+      "sha256": "025eabc88f7a9581ab7bab835e6c07a11fd7d065d32b2ec8941b928bce04db90",
+      "bytes": 427
+    },
+    {
+      "file": "run_checkpoint_combined_v1.sh",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/run_checkpoint_combined_v1.sh",
+      "sha256": "d514daf1e186192d16394dc3becd20bdb624e75b5eedf2e727dbd31d1828306c",
+      "bytes": 548
+    },
+    {
+      "file": "existing-cuda-v1.log",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/existing-cuda-v1.log",
+      "sha256": "4871809b20a97333b73f3502994436a088067de37b31e221ad1a981c2fee6d99",
+      "bytes": 2030
+    },
+    {
+      "file": "run_existing_regression_v1.sh",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/run_existing_regression_v1.sh",
+      "sha256": "35891edb46e81f0a744705857788f1c173dcc8eb133d06271cd22eb8f6a23448",
+      "bytes": 970
+    },
+    {
+      "file": "boundary-com-mutation-v2.log",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/boundary-com-mutation-v2.log",
+      "sha256": "8ba2ed19fad10fa272742fedc6d9780b380315baee42fd9c61c20479fd4af0e1",
+      "bytes": 5183
+    },
+    {
+      "file": "boundary_com_mutation.py",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/boundary_com_mutation.py",
+      "sha256": "beeee8e2d5c98cc05932779cdcee89bf35b6dfbc5eed3c3c460d56f631228da1",
+      "bytes": 1096
+    },
+    {
+      "file": "run_boundary_tests_v2.sh",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/run_boundary_tests_v2.sh",
+      "sha256": "65eca9a62a4c376638ac044939d16af637d472fc62255472b99e29ab791294ec",
+      "bytes": 1379
+    },
+    {
+      "file": "boundary-allocation-v2.log",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/boundary-allocation-v2.log",
+      "sha256": "c2d31e3c034b135bd65d4f0cd2561ac153acf35bfe88105c4342d4661b6bdd7b",
+      "bytes": 255
+    },
+    {
+      "file": "boundary-cpu-v2.log",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/boundary-cpu-v2.log",
+      "sha256": "0e2ebcc7837d13aaded84766f698018a3be2a265097a52a3337a5e5e9511c384",
+      "bytes": 1814
+    },
+    {
+      "file": "boundary-cuda-v2.log",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/boundary-cuda-v2.log",
+      "sha256": "8448fb6cea38004d68e524c5e700c24c8d07c93a1f7bd879151f60897d456a59",
+      "bytes": 1814
+    },
+    {
+      "file": "boundary-allocation-v1.log",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/boundary-allocation-v1.log",
+      "sha256": "e3f9361c81e82ed1a93e53d2ff53d5de8cd6fda7a56083ab4fbfba21eea84b39",
+      "bytes": 365
+    },
+    {
+      "file": "boundary-cpu-v1.log",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/boundary-cpu-v1.log",
+      "sha256": "884d310c65d0ec82f061f3119f9aae0e9fd43f12288127ccea81d9543385dd5c",
+      "bytes": 341
+    },
+    {
+      "file": "run_boundary_tests_v1.sh",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/run_boundary_tests_v1.sh",
+      "sha256": "fa9ffcabfec5958ebfdf3e345caa8ae8d013fabf43bb7925a42949317d27b8c7",
+      "bytes": 1020
+    },
+    {
+      "file": "path-euclidean-mutation-v3.log",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/path-euclidean-mutation-v3.log",
+      "sha256": "5b0589e7085f4943b8662bcdf2fd58692650e4db666af8da43f35dd5e8f1acf8",
+      "bytes": 4202
+    },
+    {
+      "file": "path_euclidean_mutation.py",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/path_euclidean_mutation.py",
+      "sha256": "9eb34710efb5b4f0b0d450e3f88a5e6c29013bc27ca1d60424f4934c459a6a52",
+      "bytes": 895
+    },
+    {
+      "file": "run_combined_tests_v3.sh",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/run_combined_tests_v3.sh",
+      "sha256": "1fc533fee727d90dd4f7bdb6dba519d24ffe1f2ecb95ae1dd585fdc5c04d1484",
+      "bytes": 1542
+    },
+    {
+      "file": "combined-allocation-v3.log",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/combined-allocation-v3.log",
+      "sha256": "7bb88e75d95d1254f5a051f099e249fc78fb59be55ab9ad4542a5207a5561110",
+      "bytes": 255
+    },
+    {
+      "file": "combined-cpu-v3.log",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/combined-cpu-v3.log",
+      "sha256": "957d6b72b9fca46253f329d97a1c3b4abf8a942958f84477ef734cc0cac1b0cb",
+      "bytes": 2218
+    },
+    {
+      "file": "combined-cuda-v3.log",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/combined-cuda-v3.log",
+      "sha256": "b28ef8672989fa883bf3274af0e974c4926ec13304fe66c3f9cf4145d9da06e3",
+      "bytes": 2218
+    },
+    {
+      "file": "combined-source-v3.sha256",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/combined-source-v3.sha256",
+      "sha256": "f18ac71b6fde0bb3dc096f8b8010f184c0a42d9e00065cd82ae577a8841093a5",
+      "bytes": 662
+    },
+    {
+      "file": "run_path_tests_v1.sh",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/run_path_tests_v1.sh",
+      "sha256": "b571a7613acdbc0f06dcbd24751ec89dbe2e86480365d62b29e8e112f90be3df",
+      "bytes": 1009
+    },
+    {
+      "file": "paths-allocation-v1.log",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/paths-allocation-v1.log",
+      "sha256": "0b360cfa02118f96e03a4998dee1f000ab77540cc535deae4c62cbc45ea6cb36",
+      "bytes": 252
+    },
+    {
+      "file": "paths-cpu-v1.log",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/paths-cpu-v1.log",
+      "sha256": "79a9f87bd6142bfd57e5878757b1f6e973036c4fe3d83ce5fef4e95ef73d6511",
+      "bytes": 1874
+    },
+    {
+      "file": "paths-cuda-v1.log",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/paths-cuda-v1.log",
+      "sha256": "9ed50b78f21833e0539037c5c5553e75ba5e89a12a7d134df935d2304f239bd6",
+      "bytes": 1874
+    },
+    {
+      "file": "run_nonconvex_elastic_v1.sh",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/run_nonconvex_elastic_v1.sh",
+      "sha256": "2ec293eda28063aff3ab81d88c7fd575d2798e0268cdc175cde6382414a44a99",
+      "bytes": 1186
+    },
+    {
+      "file": "elastic-allocation-v1.log",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/elastic-allocation-v1.log",
+      "sha256": "ed4890931b6176d8366635c460b7619e99ec0955905387f0e05c53d4a927db21",
+      "bytes": 254
+    },
+    {
+      "file": "elastic-cpu-v1.log",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/elastic-cpu-v1.log",
+      "sha256": "8fe796f2ed5c5641c3b0c27559be90f150b4ec7f07889613d2d4e4b8420ff056",
+      "bytes": 1859
+    },
+    {
+      "file": "elastic-cuda-v1.log",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/elastic-cuda-v1.log",
+      "sha256": "ce9f2d780ee9369860032333067769080c41885907bee80a3ebf5dacd29e7601",
+      "bytes": 1859
+    },
+    {
+      "file": "elastic-source-v1.sha256",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/elastic-source-v1.sha256",
+      "sha256": "960ecdf6b453ea0bf3de81457cb5012beab56a151fa02a1272bbf07c127fe3e5",
+      "bytes": 662
+    },
+    {
+      "file": "run_source_tests_v1.sh",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/run_source_tests_v1.sh",
+      "sha256": "5a448c4a1b796ebee25031428154f8066b6e6649b6eba76b3e9ae94288768efb",
+      "bytes": 1193
+    },
+    {
+      "file": "source-allocation-v1.log",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/source-allocation-v1.log",
+      "sha256": "fbef242e2a3f9545e7a6147d2a29e9ab5460e9667e715bd62a92f4ccfb69fbf7",
+      "bytes": 365
+    },
+    {
+      "file": "source-cpu-v1.log",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/source-cpu-v1.log",
+      "sha256": "5bda21f273caac83bc751700ddec307b3cb84f3c8102994cf75c79197eb47de3",
+      "bytes": 3820
+    },
+    {
+      "file": "source-source-v1.sha256",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/source-source-v1.sha256",
+      "sha256": "1efa335d3cb390f2ef87cc7ff64db11f70702dcf449d314b327f91ec12d3b5c5",
+      "bytes": 778
+    },
+    {
+      "file": "run_source_tests_v2.sh",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/run_source_tests_v2.sh",
+      "sha256": "53f8e4f9b22c18c1c121cb618895e1a9cdfe2da3ecd7e5ad3e064038b119eae8",
+      "bytes": 1193
+    },
+    {
+      "file": "source-allocation-v2.log",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/source-allocation-v2.log",
+      "sha256": "e2ffdb6a3b389898d89f39eba538f9bf7e77e232fae010ad31a38ed12cd50d07",
+      "bytes": 326
+    },
+    {
+      "file": "source-cpu-v2.log",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/source-cpu-v2.log",
+      "sha256": "e9d6d91cff63abe1bb281f213d5fb2af18d15fc100e7a91667a24f8f216bc2ab",
+      "bytes": 1896
+    },
+    {
+      "file": "source-cuda-v2.log",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/source-cuda-v2.log",
+      "sha256": "e5187bca66259d6a22f362ec8829e47be4d92302fcfcd777c1882c7250cfeede",
+      "bytes": 1896
+    },
+    {
+      "file": "source-source-v2.sha256",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/source-source-v2.sha256",
+      "sha256": "ec7d10d77caa97510b65fe2292040ea6525c009d09d9766b07fbeee35e1f3de3",
+      "bytes": 778
+    },
+    {
+      "file": "archive_geometry_checkpoint_v1.py",
+      "raw": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/archive_geometry_checkpoint_v1.py",
+      "sha256": "7c0045e4b57599732688b812e4a356d5234678cc3ea77f243fed599fdd2ed3cb",
+      "bytes": 5677
+    }
+  ]
+}
