@@ -17,7 +17,7 @@ mkdir -p "$task_run/tmp" "$task_run/source"
 export TMPDIR="$task_run/tmp" PYTHONUNBUFFERED=1
 export QD_OFFLINE_CACHE_FILE_PATH="$task_run/cache/quadrants"
 export GS_CACHE_FILE_PATH="$task_run/cache/genesis"
-task_sources=(genesis/engine/solvers/rigid/stress/{provenance,paths,association,traction}.py tests/rigid/{test_stress_sources,test_stress_traction,test_stress_nonconvex}.py)
+task_sources=(genesis/engine/solvers/rigid/stress/*.py tests/rigid/{test_stress_sources,test_stress_traction,test_stress_nonconvex,test_stress_footprint,test_stress_sliding_footprint}.py tests/rigid/assets/nonconvex_sliding_tick*.npz)
 sha256sum "${task_sources[@]}" > "$task_run/source.sha256"
 cp --parents "${task_sources[@]}" "$task_run/source"
 "$RIGID_STRESS_ENV/bin/python" -c 'import genesis; print(genesis.__file__)' > "$task_run/import.log" 2>&1
@@ -26,7 +26,7 @@ if [[ "$task_backend" == cuda ]]; then
     nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv > "$task_run/hardware.csv"
 fi
 task_failed=0
-"$RIGID_STRESS_ENV/bin/python" -m pytest -n 0 --backend "$task_backend" --tb=short -q tests/rigid/test_stress_nonconvex.py tests/rigid/test_stress_sources.py tests/rigid/test_stress_traction.py > "$task_run/tests.log" 2>&1 || task_failed=1
+"$RIGID_STRESS_ENV/bin/python" -m pytest -n 0 --backend "$task_backend" --tb=short -q tests/rigid/test_stress_nonconvex.py tests/rigid/test_stress_sources.py tests/rigid/test_stress_traction.py tests/rigid/test_stress_footprint.py tests/rigid/test_stress_sliding_footprint.py > "$task_run/tests.log" 2>&1 || task_failed=1
 sha256sum "${task_sources[@]}" > "$task_run/source-after.sha256"
 cmp "$task_run/source.sha256" "$task_run/source-after.sha256"
 exit "$task_failed"

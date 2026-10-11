@@ -31,6 +31,7 @@ class StressSourceState:
     pair: qd.Tensor
     method: qd.Tensor
     vertex: qd.Tensor
+    has_vertex_ambiguity: qd.Tensor
     witness: qd.Tensor
     witness_face: qd.Tensor
     witness_barycentric: qd.Tensor
@@ -48,6 +49,7 @@ def create_sources(n_contacts: int, n_envs: int) -> StressSourceState:
         pair=V(dtype=gs.qd_int, shape=shape),
         method=V(dtype=gs.qd_int, shape=shape),
         vertex=V(dtype=gs.qd_int, shape=shape),
+        has_vertex_ambiguity=V(dtype=gs.qd_bool, shape=shape),
         witness=V_VEC(3, dtype=gs.qd_float, shape=shape),
         witness_face=V(dtype=gs.qd_int, shape=shape),
         witness_barycentric=V_VEC(3, dtype=gs.qd_float, shape=shape),
@@ -94,6 +96,7 @@ def func_capture_rigid_sources(
         source_state.pair[i_c, i_b] = -1
         source_state.method[i_c, i_b] = array_class.ContactWitnessKind.NORMAL_OFFSET
         source_state.vertex[i_c, i_b] = -1
+        source_state.has_vertex_ambiguity[i_c, i_b] = False
         source_state.witness_face[i_c, i_b] = -1
         source_state.witness_barycentric[i_c, i_b] = qd.Vector([float("nan")] * 3)
         source_state.witness[i_c, i_b] = qd.Vector([float("nan")] * 3)
@@ -205,7 +208,9 @@ def func_resolve_sources(
                             distance = candidate_distance
                             nearest_face = i_f
                             position, bary = candidate, candidate_bary
-            if not valid:
+            if source_state.has_vertex_ambiguity[i_c, i_b]:
+                source_state.status[i_c, i_b] = StressSourceStatus.AMBIGUOUS
+            elif not valid:
                 source_state.status[i_c, i_b] = StressSourceStatus.INVALID_INPUT
             elif nearest_face < 0 or distance > projection_limit:
                 source_state.status[i_c, i_b] = StressSourceStatus.UNRESOLVED

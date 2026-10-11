@@ -13,8 +13,15 @@ from genesis.engine.solvers.rigid.stress.provenance import (
     kernel_capture_rigid_sources,
     kernel_resolve_sources,
 )
+from genesis.engine.solvers.rigid.stress.source_vertices import (
+    StressSourceVertexInfo,
+    StressSourceVertexStatus,
+    kernel_bind_source_vertices,
+    kernel_source_vertex_mapping,
+)
 from genesis.engine.solvers.rigid.stress.surface import StressSurface
 from genesis.options.rigid_stress import RigidStressOptions
+from genesis.utils.array_class import V_VEC, V
 from genesis.utils.misc import qd_to_numpy, tensor_to_array
 from tests.rigid.test_stress_nonconvex import nonconvex_material_mesh
 from tests.utils.assertions import assert_allclose, assert_equal
@@ -57,6 +64,47 @@ def test_native_source_uncertainty_on_same_surface(nonconvex_material_mesh, asse
     recovered_moment = qd_to_numpy(sources.anchor_moment, transpose=True)[[0, 2], 0]
     recovered_moment += np.cross(centers[[0, 2]] - points[0, [0, 2]], force[0, [0, 2]])
     assert_allclose(recovered_moment, moment[0, [0, 2]], rtol=0.0, atol=1e-22)
+    # A known collision vertex differs slightly from its unique reference
+    # feature. Bind that geom/vertex correspondence rather than conflating
+    # neighboring face projections or snapping general nearby witnesses.
+    info = StressSourceVertexInfo(
+        geom=V(dtype=gs.qd_int, shape=(4,)),
+        positions=V_VEC(3, dtype=gs.qd_float, shape=(4,)),
+        reference_vertex=V(dtype=gs.qd_int, shape=(4,)),
+        reference_face=V(dtype=gs.qd_int, shape=(4,)),
+        barycentric=V_VEC(3, dtype=gs.qd_float, shape=(4,)),
+        offset=V(dtype=gs.qd_float, shape=(4,)),
+        status=V(dtype=gs.qd_int, shape=(4,)),
+    )
+    collision_vertex = corner + [6.8e-10, 0.0, 0.0]
+    node_positions = qd_to_numpy(model.info.vertices, transpose=True)
+    first_face_nodes = qd_to_numpy(model.info.surface_nodes, transpose=True)[:, 0]
+    edge_positions = node_positions[first_face_nodes[3:]]
+    info.geom.fill(7)
+    info.positions.from_numpy(np.concatenate((collision_vertex[None], edge_positions + [6.8e-10, 0.0, 0.0])))
+    kernel_source_vertex_mapping(model.info, info, 1e-8)
+    assert_equal(qd_to_numpy(info.status, transpose=True), StressSourceVertexStatus.SUCCESS)
+    matched_faces = qd_to_numpy(info.reference_face, transpose=True)
+    matched_bary = qd_to_numpy(info.barycentric, transpose=True)
+    matched = np.einsum("va,vai->vi", matched_bary, vertices[triangles[matched_faces]])
+    assert_allclose(matched[1:], edge_positions, rtol=0.0, atol=1e-15)
+    vertex_witnesses = np.stack((collision_vertex, collision_vertex + [0.0, 1e-7, 0.0], collision_vertex))[None]
+    sources.witness.from_numpy(vertex_witnesses)
+    sources.geom.from_numpy(np.array([[7, 7, 8]], dtype=gs.np_int))
+    sources.witness_face.fill(-1)
+    sources.uncertainty.fill(0.0)
+    contacts.frame_position.fill(0.0)
+    kernel_bind_source_vertices(contacts, sources, info, float(np.finfo(gs.np_float).eps))
+    witness_faces = qd_to_numpy(sources.witness_face, transpose=True)
+    assert witness_faces[0, 0] >= 0
+    assert_equal(witness_faces[1:, 0], -1)
+    kernel_resolve_sources(1e-8, float(np.finfo(gs.np_float).eps), contacts, sources, model.info, sampled.info)
+    assert_equal(qd_to_numpy(sources.status, transpose=True)[0, 0], StressSourceStatus.SUCCESS)
+    bound = qd_to_numpy(contacts.center, transpose=True)[0, 0]
+    assert_equal(bound, corner)
+    recovered = qd_to_numpy(sources.anchor_moment, transpose=True)[0, 0].copy()
+    recovered += np.cross(bound - points[0, 0], force[0, 0])
+    assert_allclose(recovered, moment[0, 0], rtol=0.0, atol=1e-22)
 
 
 @pytest.mark.required

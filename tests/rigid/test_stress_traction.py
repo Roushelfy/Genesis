@@ -63,7 +63,7 @@ def kernel_traction_queries(
     tractions: StressTractionState,
     info: StressTractionInfo,
 ):
-    for i_q, i_c, i_b in qd.ndrange(info.positions.shape[0], contacts.valid.shape[0], contacts.valid.shape[1]):
+    for i_q, i_c, i_b in qd.ndrange(tractions.profile.shape[0], contacts.valid.shape[0], contacts.valid.shape[1]):
         forces[i_q, i_c, i_b] = func_sample_traction(i_q, i_c, i_b, contacts, tractions, info)
 
 
