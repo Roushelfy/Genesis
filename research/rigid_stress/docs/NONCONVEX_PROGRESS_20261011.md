@@ -10,12 +10,12 @@ not yet established. The initial branch source is `1d6babf7`.
 |---|---|---|
 | Material normals and real surface topology | Cavity/U winding tests; no spatial sheet merging | Native implementation and CPU/CUDA checks pass |
 | Surface provenance | Geom/pair and face/barycentric witnesses, actual boundary association, ambiguity diagnostics | Native resolver, raw witnesses and both-side GJK reference/frame checks pass CPU/CUDA; general live association pending |
-| Intrinsic finite footprint | Verified paths, hole/gap exclusion, explicit radius/profile and distance error | Native path checks pass; footprint integration/tuning pending |
+| Intrinsic finite footprint | Verified paths, hole/gap exclusion, explicit radius/profile and distance error | Native profiles and finite anchor-face integration pass standalone checks; general refinement and live layout pending |
 | Six-component vector fit | Original/projected/P2 wrench, local cones, offset tangential load and constrained corner fits | Standalone native dual, signed scatter and edge/corner/planar checks pass CPU/CUDA; live integration pending |
-| Failure diagnostics | Ambiguity, unresolved integration/distance, numerical fitting and physical incompatibility | Pending |
+| Failure diagnostics | Ambiguity, unresolved integration/distance, numerical fitting and physical incompatibility | Standalone statuses and independent sampled-cone feasibility checks; general continuous-model diagnostics pending |
 | Same-mesh numerical recovery | Independent CPU FP64 nodal loads, complete residual/gauge rows, full/max stress | Nonconvex vector-load CPU FP64 comparisons pass on both backends; live acceptance pending |
 | Dynamic lifecycle | Motion, slip/release, rotations, source changes, batch isolation, partial reset/state restore | Standalone source/traction transitions pass; complete online lifecycle pending |
-| Existing Franka egg | Legal changing contacts, actual varied combined friction, rigid trajectory isolation | Pending |
+| Existing Franka egg | Legal changing contacts, actual varied combined friction, rigid trajectory isolation | Seven new-law snapshots pass on the existing old-law live trajectory; complete new-law online acceptance pending |
 | Matched performance | New-law four-scope baseline, detailed profiles, measured candidate decisions and repeated throughput | Pending |
 | Reproducible delivery | Native code/example/tests, source and artifact identities, committed/pushed evidence | In progress |
 
@@ -321,3 +321,137 @@ and their preserved data-side originals** pass SHA256 verification on an
 allocated compute node; manifest SHA256 is
 `7d74c3fc80864be7fc010a7dff9ccf76d9a79867c42f534dd9f11806d55a841a`.
 The active nonconvex goal remains incomplete as stated in the manifest.
+
+## Intrinsic-profile and finite local-integration checkpoint
+
+`stress/footprint.py` now constructs positive finite profiles natively from
+the witnessed anchor and shared material-boundary port paths. Euclidean
+distance prunes candidates; inclusion requires a real surface path shorter
+than the unchanged physical radius. Covered planar segments use their exact
+length. Other paths are conservative port-graph bounds. The profile remains
+the declared positive area weight times the Gaussian and compact taper; no
+normal-direction mask excludes a reachable material face. Each integration
+sample instead has its own true inward Coulomb cone. Port subdivision two is
+the tested proof configuration, not a universal geodesic accuracy claim.
+
+U-shaped and cavity fixtures independently reconstruct graph distances and
+covered planar intervals on CPU. They verify the native profile, same-facing
+gap exclusion, all signed P2 nodal loads, original offset wrench, complete
+elastic residual including six gauge rows, full tensors, von Mises fields
+and global peaks. They also check a changed anchor/radius, contact release,
+rebirth and environment isolation. The shared rule and the local rule below
+both use manufactured independent primal/dual KKT solutions.
+
+Actual Franka snapshots exposed two different representation issues. First,
+the collision mesh's bottom vertex differs from its FP64 reference by about
+**0.681 nm**. Independent nearest-face projections differ by roundoff-scale
+amounts and were misclassified as separate source branches. The new typed
+`StressSourceVertices` table validates a unique collision/reference P1 or P2
+boundary-node correspondence within a declared **1e-8 m geometry bound**.
+Runtime binding additionally requires the original witness to equal a vertex
+of the same collision geom at floating-point roundoff. Nearby general points
+and vertices of another geom do not bind. Ambiguous correspondence is explicit.
+Tests cover all three P2 edge-node barycentric conventions. This geometry
+bound does not alter the original application point, force, moment, friction,
+radius or any final numerical budget. Public getter tensors are copied to
+contiguous interop buffers; their geometric transformation is Quadrants math.
+
+Second, two nearly sliding contacts at ticks 400 and 460 remained unresolved
+after source association succeeded. They have actual combined **mu =
+0.6531024606382921**, radii **6.2248103 and 5.7247985 mm**, and 73/58 positive
+samples under the shared Q10 rule. Independent circumscribed 128-sided cone
+LPs are infeasible; their outer polygons include the true Coulomb cones.
+The same native problem still fails with internal tolerance 5e-9 or 1024
+evaluations. Its normalized force discrepancy remains about 1.3e-4, far
+outside the final 1e-8 budget. This is sampled representation failure,
+not a reason to relax acceptance or merely increase iterations.
+
+The corresponding continuous pressure centers are strictly inside their
+original reference triangle, about **9.85 and 11.33 micrometres** from the
+anchor. Therefore these inputs have a feasible finite-area neighborhood on
+that face. The local rule partitions the witnessed face into its three
+anchor/edge triangles and applies Q10 to each. All other faces retain their
+Q10 rules. The physical footprint, path law, positive area/profile weights
+and local friction cones remain unchanged. No sample is a singular point
+load. This is a local integration repair on the same low mesh, not a physical
+mesh or integration-convergence study.
+
+The repaired contacts have 252/232 positive samples and converge in **20/19
+native evaluations** with the original internal 1e-9 budget. Their normalized
+force errors are approximately **3.79e-12 / 2.92e-11** and moment errors
+**7.94e-13 / 5.10e-12** in the standalone CPU replay. Independent inner cone
+LPs construct feasible tractions. These LPs include the exact target-force
+ray wherever it satisfies the true cone: a fixed angular polygon alone can
+misclassify a force arbitrarily close to sliding. Outer polygons are used
+only as outer bounds, not accepted physical tractions.
+
+The two captured contacts are permanent small fixtures in
+`tests/rigid/assets/nonconvex_sliding_tick{400,460}.npz`. Their regression
+checks use actual mu plus 0.85/1.2, varying force amplitudes and three
+environments. Independent CPU quadrature, signed basis values and Coulomb
+projection at the fitted dual verify primal feasibility and QP KKT
+consistency. An independent FP64 elastic solve then checks the entire
+nodal load, original-point wrench, all gauge rows, full stress and peak.
+Wrench acceptance stays **1e-8**, complete residual stays
+**max(1e-11 N, 1e-8 ||rhs||)**, and stress stays
+**rtol=1e-4, atol=1e-3 Pa**.
+
+The reusable `probe_nonconvex_live_mapping.py --anchor-fan` runs 640 ordinary
+Franka steps at B=4, seed 623001, with two environment resets. It independently
+recovers new-law loads at ticks 0, 100, 180, 400, 460, 560 and 620 from the
+saved pre-integration source frame. All **97 loaded snapshot contacts** pass
+source, footprint, fit and local-cone checks. The largest normalized wrench
+error is below **8.86e-10**. Every complete CPU residual and full/max stress
+comparison passes; the centrifugal body load is included. Actual combined
+contact coefficients are **0.512724, 0.653102, 0.674688 and 0.763502**.
+
+This is an intrusive diagnostic on the existing **old-law live trajectory**,
+with a separate elastic state. It does not execute the new law at every
+`scene.step()`, does not prove full online lifecycle acceptance, and provides
+no new-law live/policy throughput claim. The invalid pre-repair snapshot
+states are retained and explicitly marked invalid; their incomplete loads
+are not numerical references or valid throughput samples. Changing this
+local integration also changes the discrete finite-footprint load; subsequent
+optimization must establish a new matched baseline.
+
+The final suite passes **26 CPU cases in 197.52 s** and **26 CUDA cases in
+204.21 s**. Earlier closed proof checks passed two footprint cases on each
+backend and two separate 22-case combined suites. Development evidence also
+retains the noncontiguous interop failure, a Quadrants compile-time shape
+dispatch failure, invalid zero-length scalar placeholders, and an in-place
+broadcast error in the new CPU oracle. Those were implementation errors;
+their corrections change neither physical inputs nor acceptance budgets.
+Runs cancelled after an authoritative development failure have separate
+unchanged-source closure records and provide no passing acceptance result.
+
+Reproduce the complete module layout through
+`bash research/rigid_stress/scripts/check_nonconvex_contact.sh cpu` and the
+corresponding `cuda` command inside an allocated compute node. Run the
+snapshot probe with an explicit new output directory, the arguments above
+and `--anchor-fan`; its archived launcher records the exact setup. Hardware
+remains RTX PRO 6000 Blackwell Server Edition, 97,887 MiB, driver 595.71.05,
+Genesis 1.4.3, Quadrants 1.3.3, container `1_26`, FP64. These are correctness
+runs with isolated compilation caches, not throughput measurements.
+
+The dense proof representation is deliberately not selected for the live
+feature. Its 8,200 samples by 750 raw rigid slots would require roughly
+**633 GiB at B=1024** for profiles and local sample geometry alone; this is
+a storage-size estimate, excluding other state, not measured device memory.
+Most slots are unrelated rigid contacts and most geometry is shared. Contact
+and candidate compaction, shared geometry plus small local integration
+storage, then online integration are the immediate engineering work. General
+primitive/SDF/decomposition/aggregate association, more general local
+distance/integration refinement, actual full-trajectory lifecycle and the
+new four-scope profiling/optimization remain required. The goal stays active.
+
+Source checkpoint: `273e67ba6e0ac600de1d4d27b9df0f8154610be7`.
+The [publication manifest](../evidence/20261011-nonconvex/footprint-checkpoint-v1/manifest.json)
+preserves the complete source epochs, accepted and failed logs, cancelled-run
+closures, seven snapshots per trajectory, LP witnesses, small regression
+fixtures and launchers. All **661 publication artifacts and their preserved
+data-side originals** pass SHA256 verification on an allocated compute node;
+manifest SHA256 is
+`64d885563b3ea649d29a0259b3ab43351b7707d7ad29034aa5a267874f363c52`.
+The initial publication rejected an incorrectly summed snapshot count of 117;
+the corrected total is 97. Its failed program/log are included. This completes
+the intrinsic-profile checkpoint, not native nonconvex online acceptance.

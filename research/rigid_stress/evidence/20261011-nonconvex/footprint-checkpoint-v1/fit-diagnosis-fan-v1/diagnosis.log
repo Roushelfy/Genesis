@@ -1,0 +1,132 @@
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/diagnose_native_traction_snapshot.py", line 192, in <module>
+    main()
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/diagnose_native_traction_snapshot.py", line 160, in main
+    kernel_fit_tractions(contacts, sources, tractions, info, epsilon, tolerance, evaluations)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/_quadrants_callable.py", line 101, in __call__
+    return self.wrapper.__call__(*args, **kwargs)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel_impl.py", line 184, in wrapped_func
+    raise type(e)("\n" + str(e)) from None
+quadrants.lang.exception.QuadrantsCompilationError: 
+quadrants stack trace:
+===
+Traceback (most recent call last):
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer_utils.py", line 40, in __call__
+    res = method(ctx, node)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer.py", line 526, in build_Call
+    return CallTransformer.build_Call(ctx, node, build_stmt, build_stmts)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformers/call_transformer.py", line 501, in build_Call
+    node.ptr = func(*py_args, **py_kwargs)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/_quadrants_callable.py", line 101, in __call__
+    return self.wrapper.__call__(*args, **kwargs)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/func.py", line 89, in __call__
+    ret = transform_tree(tree, ctx)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/transform.py", line 8, in transform_tree
+    ASTTransformer()(ctx, tree)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer_utils.py", line 51, in __call__
+    raise e.with_traceback(None)
+quadrants.lang.exception.QuadrantsCompilationError: File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/traction.py", line 106, in func_traction_geometry:
+    if qd.static(traction_state.sample_positions.shape[0] > 0):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Traceback (most recent call last):
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer_utils.py", line 40, in __call__
+    res = method(ctx, node)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer.py", line 526, in build_Call
+    return CallTransformer.build_Call(ctx, node, build_stmt, build_stmts)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformers/call_transformer.py", line 501, in build_Call
+    node.ptr = func(*py_args, **py_kwargs)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/impl.py", line 1331, in static
+    raise ValueError(f"Input to qd.static must be compile-time constants or global pointers, instead of {type(x)}")
+ValueError: Input to qd.static must be compile-time constants or global pointers, instead of <class 'quadrants.lang.expr.Expr'>
+
+
+===
+
+Your code:
+File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/traction.py", line 247, in kernel_fit_tractions:
+                    position, normal = func_traction_geometry(i_q, i_c, i_b,
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/traction.py", line 106, in func_traction_geometry:
+    if qd.static(traction_state.sample_positions.shape[0] > 0):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Traceback (most recent call last):
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer_utils.py", line 40, in __call__
+    res = method(ctx, node)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer.py", line 526, in build_Call
+    return CallTransformer.build_Call(ctx, node, build_stmt, build_stmts)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformers/call_transformer.py", line 501, in build_Call
+    node.ptr = func(*py_args, **py_kwargs)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/impl.py", line 1331, in static
+    raise ValueError(f"Input to qd.static must be compile-time constants or global pointers, instead of {type(x)}")
+ValueError: Input to qd.static must be compile-time constants or global pointers, instead of <class 'quadrants.lang.expr.Expr'>
+
+
+
+[38;5;9m[Genesis] [17:56:33] [ERROR] QuadrantsCompilationError: 
+quadrants stack trace:
+===
+Traceback (most recent call last):
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer_utils.py", line 40, in __call__
+    res = method(ctx, node)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer.py", line 526, in build_Call
+    return CallTransformer.build_Call(ctx, node, build_stmt, build_stmts)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformers/call_transformer.py", line 501, in build_Call
+    node.ptr = func(*py_args, **py_kwargs)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/_quadrants_callable.py", line 101, in __call__
+    return self.wrapper.__call__(*args, **kwargs)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/func.py", line 89, in __call__
+    ret = transform_tree(tree, ctx)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/transform.py", line 8, in transform_tree
+    ASTTransformer()(ctx, tree)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer_utils.py", line 51, in __call__
+    raise e.with_traceback(None)
+quadrants.lang.exception.QuadrantsCompilationError: File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/traction.py", line 106, in func_traction_geometry:
+    if qd.static(traction_state.sample_positions.shape[0] > 0):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Traceback (most recent call last):
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer_utils.py", line 40, in __call__
+    res = method(ctx, node)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer.py", line 526, in build_Call
+    return CallTransformer.build_Call(ctx, node, build_stmt, build_stmts)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformers/call_transformer.py", line 501, in build_Call
+    node.ptr = func(*py_args, **py_kwargs)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/impl.py", line 1331, in static
+    raise ValueError(f"Input to qd.static must be compile-time constants or global pointers, instead of {type(x)}")
+ValueError: Input to qd.static must be compile-time constants or global pointers, instead of <class 'quadrants.lang.expr.Expr'>
+
+
+===
+
+Your code:
+File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/traction.py", line 247, in kernel_fit_tractions:
+                    position, normal = func_traction_geometry(i_q, i_c, i_b,
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/traction.py", line 106, in func_traction_geometry:
+    if qd.static(traction_state.sample_positions.shape[0] > 0):
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Traceback (most recent call last):
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer_utils.py", line 40, in __call__
+    res = method(ctx, node)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer.py", line 526, in build_Call
+    return CallTransformer.build_Call(ctx, node, build_stmt, build_stmts)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformers/call_transformer.py", line 501, in build_Call
+    node.ptr = func(*py_args, **py_kwargs)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/impl.py", line 1331, in static
+    raise ValueError(f"Input to qd.static must be compile-time constants or global pointers, instead of {type(x)}")
+ValueError: Input to qd.static must be compile-time constants or global pointers, instead of <class 'quadrants.lang.expr.Expr'>
+
+[0m

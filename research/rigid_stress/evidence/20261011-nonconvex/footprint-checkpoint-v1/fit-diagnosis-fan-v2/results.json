@@ -1,0 +1,217 @@
+{
+  "scope": "Separate sampled-cone infeasibility from numerical failure in saved native contacts.\n\nReplay preserves the snapshot's anchor, force point, radius and actual friction.\nThe native profile is reconstructed using the declared port-path law. Independent\nCPU LPs use inscribed and circumscribed friction polygons: inner feasibility is\na constructive Coulomb witness, while outer infeasibility bounds the exact\nsampled cones. Neither conclusion certifies a continuous footprint model.\n",
+  "contacts": [
+    {
+      "snapshot": "snapshot-400.npz",
+      "env": 2,
+      "contact": 0,
+      "samples": 252,
+      "radius_m": 0.006224810276126815,
+      "friction": 0.6531024606382921,
+      "target": [
+        0.09735869724993156,
+        0.7330674488913865,
+        0.6731518398145182,
+        0.0013039088129615719,
+        4.028983145589596e-05,
+        -0.00023246170933351133
+      ],
+      "saved_force_error": 0.00013382896611130178,
+      "saved_moment_error": 1.9312173523200936e-05,
+      "lp": [
+        {
+          "sides": 32,
+          "outer": false,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "wrench_error": 1.5700984948919825e-16,
+          "minimum_compression": 0.0,
+          "maximum_cone_violation": 0.0
+        },
+        {
+          "sides": 32,
+          "outer": true,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "wrench_error": 1.1189891551899396e-16,
+          "minimum_compression": 0.0,
+          "maximum_cone_violation": 0.0021747185514778833
+        },
+        {
+          "sides": 128,
+          "outer": false,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "wrench_error": 9.490640369951745e-19,
+          "minimum_compression": 0.0,
+          "maximum_cone_violation": 0.0
+        },
+        {
+          "sides": 128,
+          "outer": true,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "wrench_error": 1.1228168556166689e-18,
+          "minimum_compression": 0.0,
+          "maximum_cone_violation": 0.00010580269589210989
+        }
+      ],
+      "native": [
+        {
+          "tolerance": 1e-09,
+          "evaluation_budget": 128,
+          "status": 0,
+          "evaluations": 20,
+          "force_error": 3.7870346358178896e-12,
+          "moment_error": 7.936955331769127e-13,
+          "dual": [
+            -2448.8332808886853,
+            11130.815047320824,
+            -11806.682371127295,
+            586.4595462412531,
+            -206.00975153465717,
+            1188.4601116879455
+          ]
+        },
+        {
+          "tolerance": 5e-09,
+          "evaluation_budget": 128,
+          "status": 0,
+          "evaluations": 20,
+          "force_error": 3.7870346358178896e-12,
+          "moment_error": 7.936955331769127e-13,
+          "dual": [
+            -2448.8332808886853,
+            11130.815047320824,
+            -11806.682371127295,
+            586.4595462412531,
+            -206.00975153465717,
+            1188.4601116879455
+          ]
+        },
+        {
+          "tolerance": 1e-09,
+          "evaluation_budget": 1024,
+          "status": 0,
+          "evaluations": 20,
+          "force_error": 3.7870346358178896e-12,
+          "moment_error": 7.936955331769127e-13,
+          "dual": [
+            -2448.8332808886853,
+            11130.815047320824,
+            -11806.682371127295,
+            586.4595462412531,
+            -206.00975153465717,
+            1188.4601116879455
+          ]
+        }
+      ]
+    },
+    {
+      "snapshot": "snapshot-460.npz",
+      "env": 2,
+      "contact": 0,
+      "samples": 232,
+      "radius_m": 0.005724798461850307,
+      "friction": 0.6531024606382921,
+      "target": [
+        0.10088017884104912,
+        0.7331782948223897,
+        0.6725122880054542,
+        0.001628998040807008,
+        5.221846381694554e-05,
+        -0.00030128677432618027
+      ],
+      "saved_force_error": 0.00012408554264582754,
+      "saved_moment_error": 9.179444961110881e-06,
+      "lp": [
+        {
+          "sides": 32,
+          "outer": false,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "wrench_error": 1.1102442746917262e-16,
+          "minimum_compression": 0.0,
+          "maximum_cone_violation": 0.0
+        },
+        {
+          "sides": 32,
+          "outer": true,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "wrench_error": 1.9070577649480805e-18,
+          "minimum_compression": 0.0,
+          "maximum_cone_violation": 0.0024633341005163567
+        },
+        {
+          "sides": 128,
+          "outer": false,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "wrench_error": 1.43652760395936e-17,
+          "minimum_compression": 0.0,
+          "maximum_cone_violation": 0.0
+        },
+        {
+          "sides": 128,
+          "outer": true,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "wrench_error": 1.1102532742080614e-16,
+          "minimum_compression": 0.0,
+          "maximum_cone_violation": 9.462418195393951e-05
+        }
+      ],
+      "native": [
+        {
+          "tolerance": 1e-09,
+          "evaluation_budget": 128,
+          "status": 0,
+          "evaluations": 19,
+          "force_error": 2.9204615165537964e-11,
+          "moment_error": 5.102126710644641e-12,
+          "dual": [
+            -2500.314578644776,
+            10966.76627216368,
+            -11617.988114605094,
+            511.50689556165224,
+            -179.73626173747635,
+            1036.8739366818443
+          ]
+        },
+        {
+          "tolerance": 5e-09,
+          "evaluation_budget": 128,
+          "status": 0,
+          "evaluations": 19,
+          "force_error": 2.9204615165537964e-11,
+          "moment_error": 5.102126710644641e-12,
+          "dual": [
+            -2500.314578644776,
+            10966.76627216368,
+            -11617.988114605094,
+            511.50689556165224,
+            -179.73626173747635,
+            1036.8739366818443
+          ]
+        },
+        {
+          "tolerance": 1e-09,
+          "evaluation_budget": 1024,
+          "status": 0,
+          "evaluations": 19,
+          "force_error": 2.9204615165537964e-11,
+          "moment_error": 5.102126710644641e-12,
+          "dual": [
+            -2500.314578644776,
+            10966.76627216368,
+            -11617.988114605094,
+            511.50689556165224,
+            -179.73626173747635,
+            1036.8739366818443
+          ]
+        }
+      ]
+    }
+  ]
+}
