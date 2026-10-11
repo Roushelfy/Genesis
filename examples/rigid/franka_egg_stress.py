@@ -7,7 +7,7 @@ import numpy as np
 import torch
 
 import genesis as gs
-from examples.rigid.egg_stress_controller import create_workspace, native_step
+from examples.rigid.egg_stress_controller import ResetIndexCache, create_workspace, native_step
 from genesis.utils.misc import tensor_to_array
 
 
@@ -43,6 +43,7 @@ class FrankaEgg:
         coalesced_residual: bool | None = None,
         contact_moment_reuse: bool | None = None,
         native_controller: bool = True,
+        resident_reset_indices: bool = True,
     ):
         self.n_envs = n_envs
         self.tick = 0
@@ -165,6 +166,7 @@ class FrankaEgg:
         self.stress = stress
         self.reset_state = self.scene.get_state() if saved_reset else None
         self.controller_inputs = create_workspace(self) if native_controller and gs.backend == gs.cuda else None
+        self.reset_indices = ResetIndexCache(n_envs, resident_reset_indices and gs.backend == gs.cuda)
 
     def save_conditions(self, path: Path) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -183,15 +185,16 @@ class FrankaEgg:
 
     def reset(self, envs_idx=None) -> None:
         ids = np.arange(self.n_envs) if envs_idx is None else envs_idx
+        selection = self.reset_indices.select(ids) if envs_idx is not None and self.reset_state is not None else ids
         if self.reset_state is not None:
-            self.scene.reset(state=self.reset_state, envs_idx=ids)
+            self.scene.reset(state=self.reset_state, envs_idx=selection)
         else:
             self.scene.reset(envs_idx=ids)
             self.robot.set_qpos(self.initial_joints[ids], envs_idx=ids)
             self.egg.set_pos(self.initial_position[ids], envs_idx=ids)
             self.egg.set_quat(self.initial_quaternion[ids], envs_idx=ids)
             self.egg.set_friction_ratio(self.friction[ids], envs_idx=ids)
-        self.phase[ids] = 0.0
+        self.phase[selection] = 0.0
         self.reset_count += len(ids)
 
     def restart(self) -> None:
@@ -257,6 +260,7 @@ def main() -> None:
     parser.add_argument(
         "--torch-controller", action="store_true", help="Compare the original scripted input scheduling."
     )
+    parser.add_argument("--host-reset-indices", action="store_true", help="Compare uncached reset index transfers.")
     args = parser.parse_args()
     gs.init(backend=gs.gpu, precision="64")
     workload = FrankaEgg(
@@ -268,6 +272,7 @@ def main() -> None:
         output_mode=args.output_mode,
         saved_reset=not args.legacy_reset,
         native_controller=not args.torch_controller,
+        resident_reset_indices=not args.host_reset_indices,
     )
     for _ in range(args.steps):
         workload.step()

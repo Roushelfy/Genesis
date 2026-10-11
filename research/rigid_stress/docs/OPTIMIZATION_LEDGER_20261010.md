@@ -7,6 +7,92 @@ Q10x10 quadrature. All production physical arithmetic uses Quadrants FP64.
 The finite pad load and actual combined contact friction change are described
 in [CONTACT_REPAIR_20261010.md](CONTACT_REPAIR_20261010.md).
 
+## Verified production checkpoint, 2026-10-11 02:20 UTC
+
+The bounded-index production source above is frozen for the final measurements.
+Checkpoint v9 contains 1,220 artifacts. All 1,220 publication hashes and all
+1,220 data-side original hashes pass verification; the manifest SHA256 is
+`a57f1baf776f4e601892bc33b002b8cbc56f56a3875657f9e794ce897e6f60f6`.
+The 432 full-field oracle samples and the 48 GPU/27 CPU production cases
+belong to this exact numerical engine and controller source. Final throughput
+acceptance remains open while the larger changing trajectories finish.
+
+Completed production-v8 four-scope results, aggregated as both seeds' total
+valid transitions divided by total time, are:
+
+| B | Rigid env-step/s | Frozen recovery env-step/s | Live env-step/s | Policy env-step/s |
+|---:|---:|---:|---:|---:|
+| 1024 | 115094.76 | 289730.51 | 81657.09 | 80896.80 |
+| 2048 | 189444.08 | 365117.99 | 123670.88 | 123136.27 |
+
+Each workload uses 900 warmup steps and three measured repeats of at least
+2400 steps and 10 seconds, with zero invalid transitions. Every required
+controller, reset and observation operation remains in its stated scope.
+These are partial final results, not a replacement for the larger sweep.
+The seed-623001 B=32768 matched index-transport probe gains 1.069%, from
+305157.32 to 308420.58 policy env-step/s, with zero invalid transitions.
+The second large seed is now being measured.
+
+One B=32768 full-output-cost allocation failed before executing the script:
+Pyxis could not open its container namespace. The exact same configuration
+was relaunched. No simulated transition or failed numerical environment is
+discarded from the results; this is a separately recorded infrastructure
+startup failure.
+
+## Bounded index transport checkpoint, 2026-10-11 02:10 UTC
+
+The B=32768 native six-way interaction ablations finish on both seeds with
+zero invalid transitions. All-auto gives 300534.26/309112.96 env-step/s,
+versus original 283818.66/290373.09, about +5.89%/+6.45%. Each individual
+off route is slower than the combination: wrench-off 296257.53/304145.16,
+block-original 299657.34/307079.87, residual-original 298766.56/306592.83,
+moments-off 290138.28/298003.57. These are ordinary three-repeat changing
+trajectories with the same load model, sampling, budgets and timestep.
+
+The resident controller's B=32768 native policy composition gains about
+0.54%/0.58%, with zero invalid steps. Additional index-transport trials use
+the same ordinary public control and Scene reset calls. At B=1024, original
+policy rates are 75478.75/74051.85; joint range selectors give
+78210.20/77001.34; resident reset selectors give 79722.13/78203.26;
+combined gives 82606.65/81286.38, about +9.44%/+9.77%. The combined
+research path passes 288 CPU FP64 full-field samples. Its large composition
+is still running.
+
+Production v8 adds ordinary Panda range selectors and a bounded reset
+selector LRU. It retains complete caller selections and at most B int64
+entries (8 B bytes), with integer selection for one environment to avoid
+generic masking's CUDA item() synchronization. Arbitrary selections retain
+ordinary public API semantics. Cache lookup, lazy allocation, eviction and
+bookkeeping belong to actual timing; the benchmark records start/end cache
+state and whole-card memory includes its storage. Repeated configuration
+indices are independent of contact state and require no physical history
+assumption. Source patch and controller are preserved separately.
+
+Exact production v8 passes 48 GPU cases in 639.60 s, 27 CPU cases in
+134.69 s (21 CUDA-only skips), 432 CPU FP64 full-field snapshots and the
+independent configuration-input oracle. Reset validation on both seeds
+checks single, noncontiguous multiple and whole selections against declared
+initial state and exact untouched state/observations. CPU and device routes
+match all six rigid fields exactly; max/phase clear to zero, full fields
+become NaN, cache eviction/ownership and the storage bound pass. The worst
+full residual uses 0.6274% of its budget; peak/tensor/von-Mises differences
+stay below 5.647e-6/4.102e-6/5.647e-6 Pa.
+
+The observation compact-argument prototype reduces isolated submission
+from about 0.118 to 0.077 ms, but actual two-seed B=1024 gains are +0.44%
+and -0.26%; it is not selected. The first observation prototype's large
+gain is only +0.055%. Policy-only CUDA graph gain at B=32768 is +0.12%,
+within its repeat standard deviation; eager FP32 remains selected. These
+small results are reported rather than assuming kernel-count reductions
+must improve actual throughput.
+
+Final production-v8 four-scope measurements are running at B=1024/2048/
+32768/49152/61440 for both seeds, each with 900 warmup and 3x2400 steps.
+Matched same-GPU max/full pairs, final postprocessing/integration profiles
+and every-environment episode/work-tail audits are also running. These
+outputs and newly completed validation are not part of the old 1057-artifact
+publication. Final plateau acceptance remains open.
+
 ## Lifecycle and rollout scheduling checkpoint, 2026-10-11 01:30 UTC
 
 The production v7 integration passes all 48 GPU cases in 625.30 s and all

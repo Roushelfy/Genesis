@@ -1,0 +1,32 @@
+{
+  "command": [
+    "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python",
+    "research/rigid_stress/probe_native_observation.py",
+    "--native-observation",
+    "--scope",
+    "policy",
+    "--envs",
+    "1024",
+    "--seed",
+    "510000",
+    "--varied",
+    "--warmup",
+    "900",
+    "--steps",
+    "2400",
+    "--repetitions",
+    "3",
+    "--minimum-seconds",
+    "0",
+    "--compact-log",
+    "--output",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-contact-repair/native-observation-native-policy-b1024-seed510000-v1.json"
+  ],
+  "native_observation": true,
+  "validation": false,
+  "max_abs_error_by_column": null,
+  "source_revision": "59b16811-native-scheduling-v6-controller-v3-link-invalidation-v4-observation-probe-v1",
+  "probe_sha256": "9b205058874addde313245e506360d0076f63137c4a7170185e6629945dc5f7d",
+  "additional_observation_bytes": 212992,
+  "note": "FP64 device observation only, same 9 positions/9 velocities/authored egg position and velocity/phase/global stress in MPa. Uses the existing native offset transform, checks immutable stress options, and retains ordinary policy casting/control budget. Stress and rigid numerical functions remain unchanged. Validation covers all 26 columns on changing contacts and partial resets."
+}

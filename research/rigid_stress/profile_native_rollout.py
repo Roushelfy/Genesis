@@ -15,6 +15,7 @@ import quadrants as qd
 import torch
 
 import genesis as gs
+import genesis.engine.solvers.rigid.rigid_solver as rigid_module
 from examples.rigid.franka_egg_stress import FrankaEgg
 from genesis.utils.misc import qd_to_numpy
 
@@ -91,6 +92,8 @@ def main():
             (policy, "forward", "policy_inference"),
             (workload.link, "set_stress_contact_radius", "contact_parameter_update"),
             (recovery, "recover", "native_stress_recovery"),
+            (rigid_module, "kernel_resolve_stress_contacts", "rigid_contact_force_postprocess"),
+            (rigid_module, "kernel_step_2", "rigid_integration_after_stress"),
             (solver, "substep", "rigid_substep_including_recovery"),
             (workload.scene, "step", "scene_step"),
             (workload, "step", "controller_and_scene_step"),

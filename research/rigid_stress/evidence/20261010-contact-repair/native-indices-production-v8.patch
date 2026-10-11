@@ -1,0 +1,182 @@
+diff --git a/examples/rigid/egg_stress_controller.py b/examples/rigid/egg_stress_controller.py
+index f7266674..124dd071 100644
+--- a/examples/rigid/egg_stress_controller.py
++++ b/examples/rigid/egg_stress_controller.py
+@@ -1,5 +1,7 @@
+ """Quadrants configuration inputs for the scripted Franka egg workload."""
+ 
++from collections import OrderedDict
++
+ import numpy as np
+ import quadrants as qd
+ import torch
+@@ -7,6 +9,55 @@ import torch
+ import genesis as gs
+ 
+ 
++class ResetIndexCache:
++    """Bounded configuration selectors; auxiliary physics state is never cached."""
++
++    def __init__(self, n_envs, enabled):
++        self.enabled = enabled
++        self.capacity = n_envs
++        self.buffers = OrderedDict()
++        self.elements = 0
++        self.hits = self.misses = self.evictions = self.single_selections = 0
++
++    def select(self, ids):
++        if not self.enabled or not isinstance(ids, np.ndarray) or ids.ndim != 1:
++            return ids
++        if not np.issubdtype(ids.dtype, np.integer) or not 0 < len(ids) <= self.capacity:
++            return ids
++        key = tuple(int(value) for value in ids)
++        if len(key) == 1:
++            self.single_selections += 1
++            # Generic Torch masking calls item() on a one-element device
++            # tensor; an ordinary integer avoids that synchronization.
++            return key[0]
++        if key in self.buffers:
++            self.hits += 1
++            self.buffers.move_to_end(key)
++            return self.buffers[key]
++        self.misses += 1
++        while self.elements + len(key) > self.capacity:
++            evicted, _ = self.buffers.popitem(last=False)
++            self.elements -= len(evicted)
++            self.evictions += 1
++        selection = torch.as_tensor(ids.copy(), dtype=torch.int64, device=gs.device)
++        self.buffers[key] = selection
++        self.elements += len(key)
++        return selection
++
++    def describe(self):
++        return {
++            "enabled": self.enabled,
++            "capacity_elements": self.capacity,
++            "stored_elements": self.elements,
++            "bytes": self.elements * 8,
++            "selectors": len(self.buffers),
++            "hits": self.hits,
++            "misses": self.misses,
++            "evictions": self.evictions,
++            "single_selections": self.single_selections,
++        }
++
++
+ @qd.kernel
+ def kernel_inputs(
+     tick: int,
+@@ -94,10 +145,10 @@ def native_step(workload, workspace, residual_action=None):
+         residual_action is not None and residual_action.dtype == torch.float32,
+         workload.stress,
+     )
+-    workload.robot.control_dofs_position(workspace["target"][:, workload.arm], workload.arm)
++    workload.robot.control_dofs_position(workspace["target"][:, :7], range(7))
+     limit = workspace["limit"][:, None].expand(-1, 2)
+-    workload.robot.set_dofs_force_range(-limit, limit, workload.fingers)
+-    workload.robot.control_dofs_position(workspace["grip"][:, None].expand(-1, 2), workload.fingers)
++    workload.robot.set_dofs_force_range(-limit, limit, range(7, 9))
++    workload.robot.control_dofs_position(workspace["grip"][:, None].expand(-1, 2), range(7, 9))
+     if workload.stress:
+         workload.link.set_stress_contact_radius(workspace["radius"][:, None])
+     workload.scene.step()
+diff --git a/examples/rigid/franka_egg_stress.py b/examples/rigid/franka_egg_stress.py
+index 9c8a0461..41dc3d67 100644
+--- a/examples/rigid/franka_egg_stress.py
++++ b/examples/rigid/franka_egg_stress.py
+@@ -7,7 +7,7 @@ import numpy as np
+ import torch
+ 
+ import genesis as gs
+-from examples.rigid.egg_stress_controller import create_workspace, native_step
++from examples.rigid.egg_stress_controller import ResetIndexCache, create_workspace, native_step
+ from genesis.utils.misc import tensor_to_array
+ 
+ 
+@@ -43,6 +43,7 @@ class FrankaEgg:
+         coalesced_residual: bool | None = None,
+         contact_moment_reuse: bool | None = None,
+         native_controller: bool = True,
++        resident_reset_indices: bool = True,
+     ):
+         self.n_envs = n_envs
+         self.tick = 0
+@@ -165,6 +166,7 @@ class FrankaEgg:
+         self.stress = stress
+         self.reset_state = self.scene.get_state() if saved_reset else None
+         self.controller_inputs = create_workspace(self) if native_controller and gs.backend == gs.cuda else None
++        self.reset_indices = ResetIndexCache(n_envs, resident_reset_indices and gs.backend == gs.cuda)
+ 
+     def save_conditions(self, path: Path) -> None:
+         path.parent.mkdir(parents=True, exist_ok=True)
+@@ -183,15 +185,16 @@ class FrankaEgg:
+ 
+     def reset(self, envs_idx=None) -> None:
+         ids = np.arange(self.n_envs) if envs_idx is None else envs_idx
++        selection = self.reset_indices.select(ids) if envs_idx is not None and self.reset_state is not None else ids
+         if self.reset_state is not None:
+-            self.scene.reset(state=self.reset_state, envs_idx=ids)
++            self.scene.reset(state=self.reset_state, envs_idx=selection)
+         else:
+             self.scene.reset(envs_idx=ids)
+             self.robot.set_qpos(self.initial_joints[ids], envs_idx=ids)
+             self.egg.set_pos(self.initial_position[ids], envs_idx=ids)
+             self.egg.set_quat(self.initial_quaternion[ids], envs_idx=ids)
+             self.egg.set_friction_ratio(self.friction[ids], envs_idx=ids)
+-        self.phase[ids] = 0.0
++        self.phase[selection] = 0.0
+         self.reset_count += len(ids)
+ 
+     def restart(self) -> None:
+@@ -257,6 +260,7 @@ def main() -> None:
+     parser.add_argument(
+         "--torch-controller", action="store_true", help="Compare the original scripted input scheduling."
+     )
++    parser.add_argument("--host-reset-indices", action="store_true", help="Compare uncached reset index transfers.")
+     args = parser.parse_args()
+     gs.init(backend=gs.gpu, precision="64")
+     workload = FrankaEgg(
+@@ -268,6 +272,7 @@ def main() -> None:
+         output_mode=args.output_mode,
+         saved_reset=not args.legacy_reset,
+         native_controller=not args.torch_controller,
++        resident_reset_indices=not args.host_reset_indices,
+     )
+     for _ in range(args.steps):
+         workload.step()
+diff --git a/examples/speed_benchmark/rigid_stress.py b/examples/speed_benchmark/rigid_stress.py
+index ee63e43f..841e86ee 100644
+--- a/examples/speed_benchmark/rigid_stress.py
++++ b/examples/speed_benchmark/rigid_stress.py
+@@ -277,6 +277,7 @@ def main() -> None:
+     parser.add_argument(
+         "--torch-controller", action="store_true", help="Compare the original scripted input scheduling."
+     )
++    parser.add_argument("--host-reset-indices", action="store_true", help="Compare uncached reset index transfers.")
+     parser.add_argument("--trace", action="store_true", help="Export a separate intrusive CUDA/CPU trace pass.")
+     parser.add_argument(
+         "--compact-log", action="store_true", help="Keep full per-environment diagnostics in JSON only."
+@@ -310,6 +311,7 @@ def main() -> None:
+         coalesced_residual={"auto": None, "on": True, "off": False}[args.coalesced_residual],
+         contact_moment_reuse={"auto": None, "on": True, "off": False}[args.contact_moment_reuse],
+         native_controller=not args.torch_controller,
++        resident_reset_indices=not args.host_reset_indices,
+         face_parallel_scatter=not args.contact_warp_scatter,
+         scatter_tasks_per_env=args.scatter_tasks_per_env,
+         cached_peak=not args.uncached_peak,
+@@ -463,6 +465,7 @@ def main() -> None:
+             "output_mode": args.output_mode,
+             "reset_mode": "individual_setters" if args.legacy_reset else "saved_initial_state",
+             "native_controller": workload.controller_inputs is not None,
++            "reset_index_cache": workload.reset_indices.describe(),
+             "controller_buffers": {
+                 name: {
+                     "shape": list(value.shape),
+@@ -616,6 +619,7 @@ def main() -> None:
+             else 0
+         )
+         result["device_free_bytes"] = torch.cuda.mem_get_info()[0]
++        result["reset_index_cache_at_end"] = workload.reset_indices.describe()
+         if args.trace:
+             qd.sync()
+             with torch.profiler.profile(

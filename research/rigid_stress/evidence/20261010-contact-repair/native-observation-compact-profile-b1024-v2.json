@@ -1,0 +1,74 @@
+{
+  "envs": 1024,
+  "seed": 623001,
+  "timings": {
+    "examples.rigid.franka_egg_stress.observation": [
+      {
+        "submission_ms_per_call": 0.11853323876857758,
+        "synchronized_ms_per_call": 0.11858650669455528
+      },
+      {
+        "submission_ms_per_call": 0.11828977521508932,
+        "synchronized_ms_per_call": 0.1183434734120965
+      },
+      {
+        "submission_ms_per_call": 0.11781353037804365,
+        "synchronized_ms_per_call": 0.11786601040512323
+      },
+      {
+        "submission_ms_per_call": 0.11773699056357145,
+        "synchronized_ms_per_call": 0.11778115667402744
+      },
+      {
+        "submission_ms_per_call": 0.11860275827348232,
+        "synchronized_ms_per_call": 0.1186479376628995
+      }
+    ],
+    "research.rigid_stress.probe_native_observation.native_observation": [
+      {
+        "submission_ms_per_call": 0.08187481388449669,
+        "synchronized_ms_per_call": 0.08192121144384146
+      },
+      {
+        "submission_ms_per_call": 0.08143609575927258,
+        "synchronized_ms_per_call": 0.08147365786135197
+      },
+      {
+        "submission_ms_per_call": 0.08142533991485834,
+        "synchronized_ms_per_call": 0.08146242052316666
+      },
+      {
+        "submission_ms_per_call": 0.08116350322961807,
+        "synchronized_ms_per_call": 0.08120050560683012
+      },
+      {
+        "submission_ms_per_call": 0.08120045065879822,
+        "synchronized_ms_per_call": 0.08123654033988714
+      }
+    ],
+    "__main__.native_observation": [
+      {
+        "submission_ms_per_call": 0.0769474720582366,
+        "synchronized_ms_per_call": 0.07698542065918446
+      },
+      {
+        "submission_ms_per_call": 0.07701877783983946,
+        "synchronized_ms_per_call": 0.07705493550747633
+      },
+      {
+        "submission_ms_per_call": 0.07621981482952833,
+        "synchronized_ms_per_call": 0.0762554919347167
+      },
+      {
+        "submission_ms_per_call": 0.07805348373949528,
+        "synchronized_ms_per_call": 0.0781424343585968
+      },
+      {
+        "submission_ms_per_call": 0.08034454379230738,
+        "synchronized_ms_per_call": 0.0803873660042882
+      }
+    ]
+  },
+  "source_revision": "59b16811-native-scheduling-v6-controller-v3-link-invalidation-v4-observation-compact-v2",
+  "scope_note": "Frozen changing-trajectory endpoint after 900 steps. Five 500-call repetitions, same FP64 26 values and 208-byte/environment output. Submission and synchronized wall cost include host argument packing/launch; they are not pure GPU kernel duration or actual rollout throughput."
+}

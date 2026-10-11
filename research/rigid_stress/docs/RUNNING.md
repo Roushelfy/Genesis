@@ -78,10 +78,18 @@ between 0.42 and 0.84. It differs from the earlier fixed-friction benchmark.
 `--packed-block-size 0|256|512` and `--coalesced-residual on|off` supply the
 large-batch scheduling ablations. Their automatic defaults keep the original
 routes below B=8192. `--torch-controller` compares the original scripted input
-dispatch with the Quadrants CUDA configuration pass. The benchmark records
+dispatch with the Quadrants CUDA configuration pass. Its Panda controls use
+ordinary range selectors and basic target slices. `--host-reset-indices`
+disables the bounded resident index cache while retaining the same public
+Scene reset. The cache stores at most B int64 indices, uses an integer for
+one selected environment, and records hit/miss/eviction counts before and
+after timing. It caches only configuration selectors, never physical loads
+or contact histories. The benchmark records
 effective routes, controller buffers and exact production source hashes.
 See [CONTACT_REPAIR_20261010.md](CONTACT_REPAIR_20261010.md) for checkpoint
 revisions, regression results and performance-development evidence.
+The measured candidate inventory is
+[OPTIMIZATION_COVERAGE_20261011.md](OPTIMIZATION_COVERAGE_20261011.md).
 `--trace` exports a separate 50-step Torch/CUPTI CPU/CUDA trace after timing;
 its overhead is excluded from the reported rates. The pressure microkernels
 repeat query/integration/small-solve work to diagnose the hotspot and are

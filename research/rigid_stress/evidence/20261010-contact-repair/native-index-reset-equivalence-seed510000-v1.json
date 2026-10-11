@@ -1,0 +1,124 @@
+{
+  "seed": 510000,
+  "rows": [
+    {
+      "route": "cpu",
+      "selected": [
+        3
+      ],
+      "rigid_initial_state_passed": true,
+      "untouched_state_and_observations_exact": true,
+      "reset_stress_invalidation_passed": true
+    },
+    {
+      "route": "resident",
+      "selected": [
+        3
+      ],
+      "rigid_initial_state_passed": true,
+      "untouched_state_and_observations_exact": true,
+      "reset_stress_invalidation_passed": true
+    },
+    {
+      "route": "cpu",
+      "selected": [
+        0,
+        15
+      ],
+      "rigid_initial_state_passed": true,
+      "untouched_state_and_observations_exact": true,
+      "reset_stress_invalidation_passed": true
+    },
+    {
+      "route": "resident",
+      "selected": [
+        0,
+        15
+      ],
+      "rigid_initial_state_passed": true,
+      "untouched_state_and_observations_exact": true,
+      "reset_stress_invalidation_passed": true
+    },
+    {
+      "route": "cpu",
+      "selected": [
+        0,
+        3,
+        8,
+        15
+      ],
+      "rigid_initial_state_passed": true,
+      "untouched_state_and_observations_exact": true,
+      "reset_stress_invalidation_passed": true
+    },
+    {
+      "route": "resident",
+      "selected": [
+        0,
+        3,
+        8,
+        15
+      ],
+      "rigid_initial_state_passed": true,
+      "untouched_state_and_observations_exact": true,
+      "reset_stress_invalidation_passed": true
+    },
+    {
+      "route": "cpu",
+      "selected": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "rigid_initial_state_passed": true,
+      "untouched_state_and_observations_exact": true,
+      "reset_stress_invalidation_passed": true
+    },
+    {
+      "route": "resident",
+      "selected": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "rigid_initial_state_passed": true,
+      "untouched_state_and_observations_exact": true,
+      "reset_stress_invalidation_passed": true
+    }
+  ],
+  "passed": true,
+  "source_revision": "f4965c70-native-index-reset-validation-v1",
+  "source_sha256": {
+    "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/verify_native_index_resets.py": "33663bbbc240bf774d3c3e08d5198aea8757b53b6c83a9eb85f3644cbfa82bec",
+    "genesis/engine/solvers/rigid/rigid_solver.py": "639210a260da02b0b59b3814ae6a6cf27c6f8d540ce8800cdb36ea652b9cc510",
+    "genesis/engine/solvers/rigid/stress/recovery.py": "87cee66f18357ee727f1c8ad3b0b441a4bc216222b2b679953776049cad3d37c",
+    "examples/rigid/franka_egg_stress.py": "660dc0a0a603f149f52b7bc5fd7c010cca1c5edfb1e7442091100fd4527bacee"
+  },
+  "note": "Same public Scene.reset initial state with CPU indices versus resident int64 CUDA indices (Python integer for one selected environment). Six rigid fields match exactly between routes; selected rows restore their declared initial state and untouched rows/stress observations stay exactly unchanged. Selected max/phase clear to zero and all full-field values become NaN. No numerical budget changes."
+}
