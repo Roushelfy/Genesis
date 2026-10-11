@@ -546,12 +546,27 @@ def kernel_fit_tractions(
                                     traction_state.status[i_c, i_b] = StressTractionStatus.SUCCESS
                                     is_active = False
                                 else:
-                                    ridge = 1e-12 * qd.max(1.0, hessian.trace() / 6.0)
-                                    direction, is_positive = func_traction_direction(hessian, gradient, ridge)
-                                    slope = gradient.dot(direction)
+                                    # Boundary-cone curvature can be much smaller
+                                    # than a fixed ridge; damping every step then
+                                    # prevents an otherwise feasible wrench fit.
+                                    direction, is_positive, slope = gradient, False, 0.0
+                                    ridge = 0.0
+                                    for i_attempt in range(2):
+                                        if i_attempt == 0 or not is_positive or slope <= 0.0 or not slope < qd.math.inf:
+                                            if i_attempt == 1:
+                                                ridge = 1e-12 * qd.max(1.0, hessian.trace() / 6.0)
+                                            direction, is_positive = func_traction_direction(hessian, gradient, ridge)
+                                            slope = gradient.dot(direction)
                                     if not is_positive or slope <= 0.0 or not slope < qd.math.inf:
                                         direction = gradient / lipschitz
                                         slope = gradient.dot(direction)
+                                    # Near-null curvature can produce a huge
+                                    # nominal Newton step before the active cones
+                                    # settle. Bound the dual step, not the load.
+                                    trust_radius = 2.0 * qd.max(1.0, current.norm())
+                                    trust_fraction = qd.min(1.0, trust_radius / qd.max(direction.norm(), 1e-30))
+                                    direction *= trust_fraction
+                                    slope *= trust_fraction
                                     alpha = 1.0
                                     proposal = current - direction
                                     is_trial = True
@@ -623,8 +638,9 @@ def func_source_traction(
             position, normal = func_traction_geometry(i_q, i_s, i_b, traction_state, traction_info)
             relative = (position - contact_state.center[i_c, i_b]) / contact_state.radius[i_c, i_b]
             dual = traction_state.dual[i_c, i_b]
-            value = contact_state.force[i_c, i_b] / traction_state.scale[i_c, i_b]
-            value -= dual[0:3] + dual[3:6].cross(relative)
+            force = contact_state.force[i_c, i_b] / traction_state.scale[i_c, i_b]
+            # Match the dual's subtraction order when large components cancel.
+            value = force - dual[0:3] - dual[3:6].cross(relative)
             friction = func_traction_source_friction(i_s, i_b, contact_state.friction[i_c, i_b], traction_state)
             projected, _ = func_coulomb_projection(value, normal, friction)
             result = weight * traction_state.scale[i_c, i_b] * projected

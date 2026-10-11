@@ -1,0 +1,144 @@
+[Quadrants] version 1.3.3, llvm 22.1.0, commit 00423caa, linux, python 3.10.12
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+{"variant": "scalar128", "status": [[0, 3]], "force_error": [[3.231244677780991e-11, 0.0022534354877367536]], "moment_error": [[8.745418599917452e-11, 0.0007730295448237386]], "evaluations": [[8, 128]], "dual": [[[0.9648150383753289, 0.3183797713195998, 0.1515646114700514, -0.09611728763633674, -0.2344747393650146, 0.8262451984164559], [-12108386036.515156, -136544485997.3624, -119258214616.027, 23715146921.675808, 48293343752.490135, -31459518827.226936]]], "scale": [[0.06795556004050708, 0.004042693610461235]], "weight_sum": [[2.6625743761951512e-05, 2.6625743761951512e-05]], "certificate": [[[0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]], "certificate_margin": [[0.0, 0.0]]}
+/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/traction_warp_candidate_v2.py:68: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/traction_warp_candidate_v2.py:68: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+[W 10/11/26 22:51:35.001 2629773] QuadrantsWarning
+While compiling `kernel_fit_tractions_warp_c950_0`, File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/traction_warp_candidate_v2.py", line 133, in kernel_fit_tractions_warp:
+            is_valid = qd.simt.subgroup.all_true(is_valid)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: u1 <- i32
+{"variant": "warp_v2_128", "status": [[0, 3]], "force_error": [[3.2312062770961286e-11, 0.0022534354859703527]], "moment_error": [[8.745426216812014e-11, 0.0007730295499742146]], "evaluations": [[8, 128]], "dual": [[[0.9648150383753283, 0.3183797713196, 0.15156461147005157, -0.09611728763633673, -0.23447473936501445, 0.8262451984164557], [-12108386036.303547, -136544485994.97662, -119258214613.94312, 23715146921.337536, 48293343751.64511, -31459518826.687492]]], "scale": [[0.06795556004050708, 0.004042693610461235]], "weight_sum": [[2.6625743761951546e-05, 2.6625743761951546e-05]], "certificate": [[[0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]], "certificate_margin": [[0.0, 0.0]]}
+/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/traction_warp_candidate_v4.py:65: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/traction_warp_candidate_v4.py:71: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/traction_warp_candidate_v4.py:65: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/traction_warp_candidate_v4.py:71: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+[W 10/11/26 22:51:36.137 2629773] QuadrantsWarning
+While compiling `kernel_fit_tractions_warp_c952_0`, File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/traction_warp_candidate_v4.py", line 138, in kernel_fit_tractions_warp:
+            is_valid = qd.simt.subgroup.all_true(is_valid)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: u1 <- i32
+{"variant": "warp_v4_128", "status": [[0, 3]], "force_error": [[3.2312062770961286e-11, 0.0022534354869614627]], "moment_error": [[8.745424747819245e-11, 0.0007730295470842543]], "evaluations": [[8, 128]], "dual": [[[0.9648150383753283, 0.31837977131960005, 0.1515646114700516, -0.09611728763633669, -0.23447473936501453, 0.8262451984164557], [-12108386036.327122, -136544485995.24222, -119258214614.17522, 23715146921.305927, 48293343751.73731, -31459518826.74072]]], "scale": [[0.06795556004050708, 0.004042693610461235]], "weight_sum": [[2.6625743761951546e-05, 2.6625743761951546e-05]], "certificate": [[[0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]], "certificate_margin": [[0.0, 0.0]]}
+{"variant": "scalar512", "status": [[0, 3]], "force_error": [[3.231244677780991e-11, 0.0022510841410323767]], "moment_error": [[8.745418599917452e-11, 0.0007721817209667899]], "evaluations": [[8, 512]], "dual": [[[0.9648150383753289, 0.3183797713195998, 0.1515646114700514, -0.09611728763633674, -0.2344747393650146, 0.8262451984164559], [-69738938666.48915, -786326748761.4513, -686784300082.4274, 136118987922.06996, 278715640541.4413, -180605483797.01898]]], "scale": [[0.06795556004050708, 0.004042693610461235]], "weight_sum": [[2.6625743761951512e-05, 2.6625743761951512e-05]], "certificate": [[[0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]], "certificate_margin": [[0.0, 0.0]]}
+{"variant": "warp_v2_512", "status": [[0, 3]], "force_error": [[3.2312062770961286e-11, 0.0022510841448110082]], "moment_error": [[8.745426216812014e-11, 0.0007721817099511171]], "evaluations": [[8, 512]], "dual": [[[0.9648150383753283, 0.3183797713196, 0.15156461147005157, -0.09611728763633673, -0.23447473936501445, 0.8262451984164557], [-69738938665.95189, -786326748755.3947, -686784300077.1368, 136118987921.16652, 278715640539.2942, -180605483795.64557]]], "scale": [[0.06795556004050708, 0.004042693610461235]], "weight_sum": [[2.6625743761951546e-05, 2.6625743761951546e-05]], "certificate": [[[0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]], "certificate_margin": [[0.0, 0.0]]}
+/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/traction_warp_candidate_v5.py:65: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/traction_warp_candidate_v5.py:71: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/traction_warp_candidate_v5.py:65: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/traction_warp_candidate_v5.py:71: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+[W 10/11/26 22:51:41.700 2629773] QuadrantsWarning
+While compiling `kernel_fit_tractions_warp_c954_0`, File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/traction_warp_candidate_v5.py", line 138, in kernel_fit_tractions_warp:
+            is_valid = qd.simt.subgroup.all_true(is_valid)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: u1 <- i32
+{"variant": "warp_v5_ridge1e16_128", "status": [[0, 3]], "force_error": [[3.231196033646326e-11, 22.81311321534668]], "moment_error": [[8.745423239541503e-11, 39.87645766156196]], "evaluations": [[8, 128]], "dual": [[[0.964815038375328, 0.3183797713196, 0.15156461147005165, -0.09611728763633662, -0.23447473936501453, 0.8262451984164556], [-35642176139530.92, -401848104728338.0, -350999658508127.2, 6904032892450.315, 143111923158265.38, -89898198324671.98]]], "scale": [[0.06795556004050708, 0.004042693610461235]], "weight_sum": [[2.6625743761951546e-05, 2.6625743761951546e-05]], "certificate": [[[0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]], "certificate_margin": [[0.0, 0.0]]}
+/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/traction_warp_candidate_v6.py:65: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/traction_warp_candidate_v6.py:71: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/traction_warp_candidate_v6.py:65: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/traction_warp_candidate_v6.py:71: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+[W 10/11/26 22:51:42.895 2629773] QuadrantsWarning
+While compiling `kernel_fit_tractions_warp_c956_0`, File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/traction_warp_candidate_v6.py", line 138, in kernel_fit_tractions_warp:
+            is_valid = qd.simt.subgroup.all_true(is_valid)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: u1 <- i32
+{"variant": "warp_v6_ridge0_128", "status": [[0, 3]], "force_error": [[3.231196033646326e-11, 1978.7762054848072]], "moment_error": [[8.745424043014923e-11, 3138.7911173348666]], "evaluations": [[8, 128]], "dual": [[[0.964815038375328, 0.3183797713196, 0.15156461147005168, -0.09611728763633666, -0.23447473936501448, 0.8262451984164556], [-3.609684194035577e+19, -4.070251651537628e+20, -3.554999997085358e+20, 5.538564985801343e+18, 1.280416379322746e+20, -1.0706642232283354e+20]]], "scale": [[0.06795556004050708, 0.004042693610461235]], "weight_sum": [[2.6625743761951546e-05, 2.6625743761951546e-05]], "certificate": [[[0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]], "certificate_margin": [[0.0, 0.0]]}
+/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/traction_warp_candidate_v7.py:65: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/traction_warp_candidate_v7.py:71: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/traction_warp_candidate_v7.py:65: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/traction_warp_candidate_v7.py:71: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+[W 10/11/26 22:51:43.948 2629773] QuadrantsWarning
+While compiling `kernel_fit_tractions_warp_c958_0`, File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/traction_warp_candidate_v7.py", line 138, in kernel_fit_tractions_warp:
+            is_valid = qd.simt.subgroup.all_true(is_valid)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: u1 <- i32
+{"variant": "warp_v7_adaptive128", "status": [[0, 3]], "force_error": [[3.231195668720518e-11, 404.9508806265188]], "moment_error": [[8.745424804196691e-11, 0.18465140331935007]], "evaluations": [[8, 128]], "dual": [[[0.964815038375328, 0.3183797713196, 0.15156461147005157, -0.09611728763633665, -0.23447473936501445, 0.8262451984164556], [-2.957360132928273e+19, -3.3346980625634905e+20, -2.9125590698610832e+20, 4.437337263820203e+18, 1.0504168711591502e+20, -8.759725344252305e+19]]], "scale": [[0.06795556004050708, 0.004042693610461235]], "weight_sum": [[2.6625743761951546e-05, 2.6625743761951546e-05]], "certificate": [[[0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]], "certificate_margin": [[0.0, 0.0]]}
+{"variant": "warp_v7_adaptive512", "status": [[0, 3]], "force_error": [[3.231195668720518e-11, 404.9508806265188]], "moment_error": [[8.745424804196691e-11, 0.18465140331935007]], "evaluations": [[8, 512]], "dual": [[[0.964815038375328, 0.3183797713196, 0.15156461147005157, -0.09611728763633665, -0.23447473936501445, 0.8262451984164556], [-2.957360132928273e+19, -3.3346980625634905e+20, -2.9125590698610832e+20, 4.437337263820203e+18, 1.0504168711591502e+20, -8.759725344252305e+19]]], "scale": [[0.06795556004050708, 0.004042693610461235]], "weight_sum": [[2.6625743761951546e-05, 2.6625743761951546e-05]], "certificate": [[[0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]], "certificate_margin": [[0.0, 0.0]]}
+{"cpu_oracle": {"component": 0, "count": 1195, "normalized_force_error": 8.188662036806777e-16, "normalized_moment_error": 2.73253372162601e-17, "minimum_compression_N": 0.0, "maximum_cone_excess_N": 1.0842021724855044e-19}}
+Traceback (most recent call last):
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/probe_exact_602_v1.py", line 104, in <module>
+    force=cpu_resolved_wrench_fit(xyz,w,n,patch)
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/rigid/test_stress_surface_fan.py", line 127, in cpu_resolved_wrench_fit
+    assert np.linalg.norm(mismatch[:3]) / scale <= 1e-8
+AssertionError
+
+[38;5;9m[Genesis] [22:51:49] [ERROR] AssertionError: [0m

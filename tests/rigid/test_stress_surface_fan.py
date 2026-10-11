@@ -132,7 +132,8 @@ def cpu_resolved_wrench_fit(positions, profiles, normals, patch):
 @pytest.mark.required
 @pytest.mark.precision("64")
 @pytest.mark.parametrize(
-    "tick,coordinate_power", ((147, 1), (427, 1), (454, 1), (147, 2), (427, 2), (454, 2), (594, 2), (1076, 2))
+    "tick,coordinate_power",
+    ((147, 1), (427, 1), (454, 1), (147, 2), (427, 2), (454, 2), (517, 2), (594, 2), (1076, 2)),
 )
 def test_saved_edge_contact_uses_neighbor_finite_area_and_cpu_oracle(tick, coordinate_power):
     with np.load(Path(__file__).with_name("assets") / f"nonconvex_mesh64_tick{tick}.npz") as saved:
