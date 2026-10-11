@@ -233,7 +233,24 @@ def func_collider_clear_env(
                         collider_state.contact_data.force[n_hib, i_b] = collider_state.contact_data.force[i_c, i_b]
                         collider_state.contact_data.link_a[n_hib, i_b] = collider_state.contact_data.link_a[i_c, i_b]
                         collider_state.contact_data.link_b[n_hib, i_b] = collider_state.contact_data.link_b[i_c, i_b]
+                        collider_state.contact_data.pair_idx[n_hib, i_b] = collider_state.contact_data.pair_idx[i_c, i_b]
                         # fmt: on
+                        if qd.static(len(collider_state.contact_data.witness.point_a.shape) > 0):
+                            collider_state.contact_data.witness.point_a[n_hib, i_b] = (
+                                collider_state.contact_data.witness.point_a[i_c, i_b]
+                            )
+                            collider_state.contact_data.witness.point_b[n_hib, i_b] = (
+                                collider_state.contact_data.witness.point_b[i_c, i_b]
+                            )
+                            collider_state.contact_data.witness.method[n_hib, i_b] = (
+                                collider_state.contact_data.witness.method[i_c, i_b]
+                            )
+                            collider_state.contact_data.witness.vertex_a[n_hib, i_b] = (
+                                collider_state.contact_data.witness.vertex_a[i_c, i_b]
+                            )
+                            collider_state.contact_data.witness.vertex_b[n_hib, i_b] = (
+                                collider_state.contact_data.witness.vertex_b[i_c, i_b]
+                            )
                     n_hib = n_hib + 1
             # Rank r of the kept range never overtakes the logical position it reads, so the walk is in place
             rank = 0
@@ -258,6 +275,13 @@ def func_collider_clear_env(
             collider_state.contact_data.pos[i_c, i_b] = qd.Vector.zero(gs.qd_float, 3)
             collider_state.contact_data.normal[i_c, i_b] = qd.Vector.zero(gs.qd_float, 3)
             collider_state.contact_data.force[i_c, i_b] = qd.Vector.zero(gs.qd_float, 3)
+            collider_state.contact_data.pair_idx[i_c, i_b] = -1
+            if qd.static(len(collider_state.contact_data.witness.point_a.shape) > 0):
+                collider_state.contact_data.witness.point_a[i_c, i_b] = qd.Vector.zero(gs.qd_float, 3)
+                collider_state.contact_data.witness.point_b[i_c, i_b] = qd.Vector.zero(gs.qd_float, 3)
+                collider_state.contact_data.witness.method[i_c, i_b] = array_class.ContactWitnessKind.NORMAL_OFFSET
+                collider_state.contact_data.witness.vertex_a[i_c, i_b] = -1
+                collider_state.contact_data.witness.vertex_b[i_c, i_b] = -1
 
     if qd.static(rigid_config.use_hibernation):
         collider_state.n_contacts[i_b] = collider_state.n_contacts_hibernated[i_b]
@@ -410,6 +434,8 @@ def func_add_contact(
             collider_state.n_contacts[i_b] = i_c + 1
     else:
         errno[i_b] = errno[i_b] | array_class.ErrorCode.OVERFLOW_COLLISION_PAIRS
+        i_c = -1
+    return i_c
 
 
 @qd.func
@@ -472,6 +498,12 @@ def func_set_contact(
     collider_state.contact_data.link_a[i_c, i_b] = dyn_info.geoms.link_idx[i_ga]
     collider_state.contact_data.link_b[i_c, i_b] = dyn_info.geoms.link_idx[i_gb]
     collider_state.contact_data.pair_idx[i_c, i_b] = i_pair
+    if qd.static(len(collider_state.contact_data.witness.point_a.shape) > 0):
+        collider_state.contact_data.witness.point_a[i_c, i_b] = contact_pos - 0.5 * penetration * normal
+        collider_state.contact_data.witness.point_b[i_c, i_b] = contact_pos + 0.5 * penetration * normal
+        collider_state.contact_data.witness.method[i_c, i_b] = array_class.ContactWitnessKind.NORMAL_OFFSET
+        collider_state.contact_data.witness.vertex_a[i_c, i_b] = -1
+        collider_state.contact_data.witness.vertex_b[i_c, i_b] = -1
 
 
 @qd.func

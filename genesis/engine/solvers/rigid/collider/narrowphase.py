@@ -26,6 +26,7 @@ from .contact import (
     func_set_contact,
 )
 from .utils import func_point_in_geom_aabb
+from .witness import func_get_witness, func_set_witness, func_unrotate_witness
 
 
 @qd.func
@@ -545,8 +546,9 @@ def func_add_polytope_vertex_contacts_sdf(
                         dyn_info,
                         rigid_config,
                     )
+                    i_stored = -1
                     if n_added < n_max:
-                        func_add_contact(
+                        i_stored = func_add_contact(
                             i_ga,
                             i_gb,
                             i_b,
@@ -575,6 +577,7 @@ def func_add_polytope_vertex_contacts_sdf(
                                     weakest_pen = collider_state.contact_data.penetration[idx_prev, i_b]
                                     weakest_idx = idx_prev
                         if weakest_idx >= 0:
+                            i_stored = weakest_idx
                             func_set_contact(
                                 i_ga,
                                 i_gb,
@@ -591,6 +594,19 @@ def func_add_polytope_vertex_contacts_sdf(
                                 collider_info,
                                 errno,
                             )
+                    if qd.static(len(collider_state.contact_data.witness.point_a.shape) > 0):
+                        if i_stored >= 0:
+                            # The emitted depth may be synthetic. Retain the actual vertex and queried SDF projection.
+                            point_b = vertex_pos + pen_v * gu.qd_normalize(grad_v, EPS)
+                            func_set_witness(
+                                i_stored,
+                                i_b,
+                                array_class.ContactWitnessKind.SDF_VERTEX,
+                                vertex_pos,
+                                point_b,
+                                collider_state,
+                            )
+                            collider_state.contact_data.witness.vertex_a[i_stored, i_b] = i_v
 
 
 @qd.func
@@ -2061,7 +2077,7 @@ def func_convex_convex_contact(
                                                     dyn_info,
                                                     rigid_config,
                                                 )
-                                                func_add_contact(
+                                                i_stored = func_add_contact(
                                                     i_ga,
                                                     i_gb,
                                                     i_b,
@@ -2077,11 +2093,33 @@ def func_convex_convex_contact(
                                                     use_atomic=False,
                                                     errno=errno,
                                                 )
+                                                if qd.static(
+                                                    len(collider_state.contact_data.witness.point_a.shape) > 0
+                                                ):
+                                                    func_set_witness(
+                                                        i_stored,
+                                                        i_b,
+                                                        array_class.ContactWitnessKind.GJK,
+                                                        gjk_state.witness.point_obj1[i_b, i_c],
+                                                        gjk_state.witness.point_obj2[i_b, i_c],
+                                                        collider_state,
+                                                    )
 
                                         break
                                     else:
                                         contact_pos = gjk_state.contact_pos[i_b, 0]
                                         normal = gjk_state.normal[i_b, 0]
+
+            witness_a = qd.Vector.zero(gs.qd_float, 3)
+            witness_b = qd.Vector.zero(gs.qd_float, 3)
+            witness_method = array_class.ContactWitnessKind.NORMAL_OFFSET
+            if qd.static(len(collider_state.contact_data.witness.point_a.shape) > 0):
+                if is_col:
+                    witness_a, witness_b, witness_method = func_get_witness(
+                        i_ga, i_gb, i_b, 0, normal, contact_pos, penetration, mpr_state, gjk_state, dyn_info, prefer_gjk
+                    )
+                    if i_detection > 0:
+                        witness_a, witness_b = func_unrotate_witness(witness_a, witness_b, contact_pos_0, qrot)
 
             # Refine the unperturbed (i_detection == 0) contact here; perturbed contacts are refined inside
             # func_recompute_perturbed_contact after the perturbation is reverted, on the canonical (unperturbed) pose.
@@ -2103,7 +2141,7 @@ def func_convex_convex_contact(
             if i_detection == 0:
                 is_col_0, normal_0, penetration_0, contact_pos_0 = is_col, normal, penetration, contact_pos
                 if is_col_0:
-                    func_add_contact(
+                    i_stored = func_add_contact(
                         i_ga,
                         i_gb,
                         i_b,
@@ -2119,6 +2157,7 @@ def func_convex_convex_contact(
                         use_atomic=False,
                         errno=errno,
                     )
+                    func_set_witness(i_stored, i_b, witness_method, witness_a, witness_b, collider_state)
                     if multi_contact:
                         # Perturb geom_a around two orthogonal axes to find multiple contacts
                         axis_0, axis_1 = func_contact_orthogonals(
@@ -2192,7 +2231,7 @@ def func_convex_convex_contact(
                     # is only approximate, keep the negative tolerance so first-order error drops no genuine contact.
                     if penetration > (-EPS * geom_pair_scale if is_exact else -tolerance):
                         penetration = qd.max(penetration, 0.0)
-                        func_add_contact(
+                        i_stored = func_add_contact(
                             i_ga,
                             i_gb,
                             i_b,
@@ -2208,6 +2247,7 @@ def func_convex_convex_contact(
                             use_atomic=False,
                             errno=errno,
                         )
+                        func_set_witness(i_stored, i_b, witness_method, witness_a, witness_b, collider_state)
                         n_con = n_con + 1
 
 
@@ -2431,6 +2471,8 @@ def _func_multicontact_detect(
     local_penetration = qd.Matrix.zero(gs.qd_float, collider_static_config.n_contacts_per_convex_pair, 1)
 
     # One runtime loop drives every detection of the call, so the detection pipeline is inlined once in the kernel
+    local_witness = qd.Matrix.zero(gs.qd_float, collider_static_config.n_contacts_per_convex_pair, 6)
+    local_witness_method = qd.Vector.zero(gs.qd_int, collider_static_config.n_contacts_per_convex_pair)
     axis_0 = qd.Vector.zero(gs.qd_float, 3)
     axis_1 = qd.Vector.zero(gs.qd_float, 3)
     is_axes_computed = False
@@ -2443,8 +2485,15 @@ def _func_multicontact_detect(
         slot_normal = qd.Vector.zero(gs.qd_float, 3)
         slot_pos = qd.Vector.zero(gs.qd_float, 3)
         slot_penetration = gs.qd_float(0.0)
+        witness_a = qd.Vector.zero(gs.qd_float, 3)
+        witness_b = qd.Vector.zero(gs.qd_float, 3)
+        witness_method = array_class.ContactWitnessKind.NORMAL_OFFSET
         is_slot_written = False
         if is_initial_detection and not is_gjk_preferred_0:
+            if qd.static(len(collider_state.contact_data.witness.point_a.shape) > 0):
+                witness_a = collider_state.narrowphase_work_queues.witness.point_a[i_work, 0]
+                witness_b = collider_state.narrowphase_work_queues.witness.point_b[i_work, 0]
+                witness_method = collider_state.narrowphase_work_queues.witness.method[i_work, 0]
             # Slot 0 holds contact 0 from the MPR seed, already detected, refined and cached by the contact0 kernel
             if qd.static(gjk_static_config.enable_contact_patch):
                 slot_status = MULTICONTACT_SLOT.BASE
@@ -2540,6 +2589,24 @@ def _func_multicontact_detect(
                                 use_gjk = True
                                 is_detected = False
 
+            if qd.static(len(collider_state.contact_data.witness.point_a.shape) > 0):
+                if is_col:
+                    witness_a, witness_b, witness_method = func_get_witness(
+                        i_ga,
+                        i_gb,
+                        i_scratch,
+                        0,
+                        normal,
+                        contact_pos,
+                        penetration,
+                        mpr_state,
+                        gjk_state,
+                        dyn_info,
+                        is_gjk_used,
+                    )
+                    if not is_initial_detection:
+                        witness_a, witness_b = func_unrotate_witness(witness_a, witness_b, contact0_pos, qrot)
+
             if is_initial_detection:
                 if is_col:
                     collider_state.contact_cache.normal[i_pair, i_b] = normal
@@ -2573,6 +2640,11 @@ def _func_multicontact_detect(
                             local_contact_pos[n_con, i_3] = manifold_pos[i_3]
                             local_normal[n_con, i_3] = manifold_normal[i_3]
                         local_penetration[n_con, 0] = penetration
+                        if qd.static(len(collider_state.contact_data.witness.point_a.shape) > 0):
+                            for i_3 in qd.static(range(3)):
+                                local_witness[n_con, i_3] = gjk_state.witness.point_obj1[i_scratch, i_c][i_3]
+                                local_witness[n_con, i_3 + 3] = gjk_state.witness.point_obj2[i_scratch, i_c][i_3]
+                            local_witness_method[n_con] = array_class.ContactWitnessKind.GJK
                         n_con = n_con + 1
                     if not is_gjk_multi_done:
                         contact_pos = func_apply_smooth_refinement(
@@ -2651,6 +2723,11 @@ def _func_multicontact_detect(
                         local_contact_pos[n_con, i_3] = slot_pos[i_3]
                         local_normal[n_con, i_3] = slot_normal[i_3]
                     local_penetration[n_con, 0] = slot_penetration
+                    if qd.static(len(collider_state.contact_data.witness.point_a.shape) > 0):
+                        for i_3 in qd.static(range(3)):
+                            local_witness[n_con, i_3] = witness_a[i_3]
+                            local_witness[n_con, i_3 + 3] = witness_b[i_3]
+                        local_witness_method[n_con] = witness_method
                     n_con = n_con + 1
         elif not is_slot_written:
             # The MPR seed marks its slot above, and every other detection stores its outcome here, empty when it did
@@ -2659,6 +2736,10 @@ def _func_multicontact_detect(
             collider_state.narrowphase_work_queues.mpr_normal[i_work, i_det] = slot_normal
             collider_state.narrowphase_work_queues.mpr_penetration[i_work, i_det] = slot_penetration
             collider_state.narrowphase_work_queues.mpr_contact_status[i_work, i_det] = slot_status
+            if qd.static(len(collider_state.contact_data.witness.point_a.shape) > 0):
+                collider_state.narrowphase_work_queues.witness.point_a[i_work, i_det] = witness_a
+                collider_state.narrowphase_work_queues.witness.point_b[i_work, i_det] = witness_b
+                collider_state.narrowphase_work_queues.witness.method[i_work, i_det] = witness_method
 
     if qd.static(gjk_static_config.enable_contact_patch):
         _func_multicontact_write(
@@ -2670,6 +2751,8 @@ def _func_multicontact_detect(
             local_contact_pos,
             local_normal,
             local_penetration,
+            local_witness,
+            local_witness_method,
             dyn_state,
             collider_state,
             dyn_info,
@@ -2735,6 +2818,8 @@ def _func_multicontact_write(
     local_contact_pos,
     local_normal,
     local_penetration,
+    local_witness,
+    local_witness_method,
     dyn_state: array_class.DynState,
     collider_state: array_class.ColliderState,
     dyn_info: array_class.DynInfo,
@@ -2780,6 +2865,10 @@ def _func_multicontact_write(
                     collider_info,
                     errno,
                 )
+                if qd.static(len(collider_state.contact_data.witness.point_a.shape) > 0):
+                    witness_a = qd.Vector([local_witness[i, j] for j in qd.static(range(3))])
+                    witness_b = qd.Vector([local_witness[i, j + 3] for j in qd.static(range(3))])
+                    func_set_witness(i_c, i_b, local_witness_method[i], witness_a, witness_b, collider_state)
 
 
 @qd.func
@@ -2812,6 +2901,8 @@ def _func_multicontact_gather(
     local_contact_pos = qd.Matrix.zero(gs.qd_float, collider_static_config.n_contacts_per_convex_pair, 3)
     local_normal = qd.Matrix.zero(gs.qd_float, collider_static_config.n_contacts_per_convex_pair, 3)
     local_penetration = qd.Matrix.zero(gs.qd_float, collider_static_config.n_contacts_per_convex_pair, 1)
+    local_witness = qd.Matrix.zero(gs.qd_float, collider_static_config.n_contacts_per_convex_pair, 6)
+    local_witness_method = qd.Vector.zero(gs.qd_int, collider_static_config.n_contacts_per_convex_pair)
     for i_s in range(collider_state.narrowphase_work_queues.mpr_contact_status.shape[1]):
         status = collider_state.narrowphase_work_queues.mpr_contact_status[i_work, i_s]
         if status != MULTICONTACT_SLOT.EMPTY:
@@ -2834,6 +2925,13 @@ def _func_multicontact_gather(
                     local_contact_pos[n_con, i_3] = contact_pos[i_3]
                     local_normal[n_con, i_3] = normal[i_3]
                 local_penetration[n_con, 0] = penetration
+                if qd.static(len(collider_state.contact_data.witness.point_a.shape) > 0):
+                    witness_a = collider_state.narrowphase_work_queues.witness.point_a[i_work, i_s]
+                    witness_b = collider_state.narrowphase_work_queues.witness.point_b[i_work, i_s]
+                    for i_3 in qd.static(range(3)):
+                        local_witness[n_con, i_3] = witness_a[i_3]
+                        local_witness[n_con, i_3 + 3] = witness_b[i_3]
+                    local_witness_method[n_con] = collider_state.narrowphase_work_queues.witness.method[i_work, i_s]
                 n_con = n_con + 1
 
     _func_multicontact_write(
@@ -2845,6 +2943,8 @@ def _func_multicontact_gather(
         local_contact_pos,
         local_normal,
         local_penetration,
+        local_witness,
+        local_witness_method,
         dyn_state,
         collider_state,
         dyn_info,
@@ -2961,6 +3061,7 @@ def _func_enqueue_for_multicontact(
     collider_state.narrowphase_work_queues.mpr_normal[idx, 0] = normal_0
     collider_state.narrowphase_work_queues.mpr_penetration[idx, 0] = penetration_0
     collider_state.narrowphase_work_queues.mpr_prefer_gjk[idx] = 1 if prefer_gjk else 0
+    return idx
 
 
 @qd.func
@@ -3173,6 +3274,24 @@ def func_narrowphase_contact0(
                 if qd.static(collider_static_config.ccd_algorithm in (CCD_ALGORITHM_CODE.MPR, CCD_ALGORITHM_CODE.GJK)):
                     collider_state.contact_cache.normal[i_pair, i_b] = normal
                     collider_state.contact_cache.penetration[i_pair, i_b] = penetration
+                witness_a = qd.Vector.zero(gs.qd_float, 3)
+                witness_b = qd.Vector.zero(gs.qd_float, 3)
+                witness_method = array_class.ContactWitnessKind.NORMAL_OFFSET
+                if qd.static(len(collider_state.contact_data.witness.point_a.shape) > 0):
+                    if not prefer_gjk:
+                        witness_a, witness_b, witness_method = func_get_witness(
+                            i_ga,
+                            i_gb,
+                            flat_idx,
+                            0,
+                            normal,
+                            contact_pos,
+                            penetration,
+                            mpr_state,
+                            gjk_state,
+                            dyn_info,
+                            False,
+                        )
                 # Refine the contact position before enqueueing or storing it. The downstream multicontact functions
                 # store this as the initial contact (index 0 of local_contact_pos) without re-refining, so refinement
                 # must happen here to stay consistent with the monolithic path's consolidated refinement at the start
@@ -3195,11 +3314,15 @@ def func_narrowphase_contact0(
                     # via a single atomic reservation. The prefer_gjk flag selects GJK for contact 0; perturbed
                     # contacts always try MPR first and fall back to GJK per contact. prefer_gjk is never set for the
                     # MJ_MPR algorithm (no GJK), so a non-multi_contact MJ_MPR pair always takes the fast path below.
-                    _func_enqueue_for_multicontact(
+                    i_work = _func_enqueue_for_multicontact(
                         i_b, i_ga, i_gb, i_pair, contact_pos, normal, penetration, collider_state, prefer_gjk
                     )
+                    if qd.static(len(collider_state.contact_data.witness.point_a.shape) > 0):
+                        collider_state.narrowphase_work_queues.witness.point_a[i_work, 0] = witness_a
+                        collider_state.narrowphase_work_queues.witness.point_b[i_work, 0] = witness_b
+                        collider_state.narrowphase_work_queues.witness.method[i_work, 0] = witness_method
                 else:
-                    func_add_contact(
+                    i_stored = func_add_contact(
                         i_ga,
                         i_gb,
                         i_b,
@@ -3215,6 +3338,7 @@ def func_narrowphase_contact0(
                         use_atomic=True,
                         errno=errno,
                     )
+                    func_set_witness(i_stored, i_b, witness_method, witness_a, witness_b, collider_state)
             elif not is_col:
                 collider_state.contact_cache.normal[i_pair, i_b] = qd.Vector.zero(gs.qd_float, 3)
                 collider_state.contact_cache.penetration[i_pair, i_b] = 0.0

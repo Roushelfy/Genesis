@@ -11,6 +11,9 @@ from .contact import func_compute_geom_pair_scale
 class MPR:
     def __init__(self, rigid_solver):
         self._solver = rigid_solver
+        self._save_witness = any(
+            link.stress_options is not None for entity in rigid_solver.entities for link in entity.links
+        )
 
         self._mpr_info = array_class.get_mpr_info(
             # Dimensionless, every site scaling it by the magnitudes of its own operands so the degeneracy tests
@@ -28,11 +31,11 @@ class MPR:
             # EXTRAPOLATED -> refine with GJK).
             CCD_EXTRAPOLATION_TOL=1.0,
         )
-        self.mpr_state = array_class.get_mpr_state(self._solver._B)
+        self.mpr_state = array_class.get_mpr_state(self._solver._B, self._save_witness)
         # The scratch states of the split narrowphase, at the smallest size until 'activate' sizes them when it runs
         # FIXME: quadrants#856 - see the scratch states of GJK in gjk.py.
-        self.contact0_mpr_state = array_class.get_mpr_state(1)
-        self.multicontact_mpr_state = array_class.get_mpr_state(1)
+        self.contact0_mpr_state = array_class.get_mpr_state(1, self._save_witness)
+        self.multicontact_mpr_state = array_class.get_mpr_state(1, self._save_witness)
 
     def activate(self, n_contact0_threads, n_multicontact_threads):
         """Allocate the scratch states the split narrowphase runs MPR on.
@@ -40,8 +43,8 @@ class MPR:
         The split narrowphase runs MPR on one state per thread of its contact0 pass (n_contact0_threads) and of its
         multicontact pass (n_multicontact_threads), while the other passes run it on one state per environment.
         """
-        self.contact0_mpr_state = array_class.get_mpr_state(n_contact0_threads)
-        self.multicontact_mpr_state = array_class.get_mpr_state(n_multicontact_threads)
+        self.contact0_mpr_state = array_class.get_mpr_state(n_contact0_threads, self._save_witness)
+        self.multicontact_mpr_state = array_class.get_mpr_state(n_multicontact_threads, self._save_witness)
 
 
 @qd.kernel
@@ -405,6 +408,9 @@ def mpr_find_pos(
         p1 = p1 + b[i] * mpr_state.simplex_support.v1[i, i_b]
         p2 = p2 + b[i] * mpr_state.simplex_support.v2[i, i_b]
 
+    if qd.static(len(mpr_state.witness_a.shape) > 0):
+        mpr_state.witness_a[i_b] = p1 / sum_
+        mpr_state.witness_b[i_b] = p2 / sum_
     return (0.5 / sum_) * (p1 + p2)
 
 
@@ -414,6 +420,9 @@ def mpr_find_penetr_touch(i_ga: int, i_gb: int, i_b: int, mpr_state: array_class
     penetration = gs.qd_float(0.0)
     normal = -mpr_state.simplex_support.v[0, i_b].normalized()
     pos = (mpr_state.simplex_support.v1[1, i_b] + mpr_state.simplex_support.v2[1, i_b]) * 0.5
+    if qd.static(len(mpr_state.witness_a.shape) > 0):
+        mpr_state.witness_a[i_b] = mpr_state.simplex_support.v1[1, i_b]
+        mpr_state.witness_b[i_b] = mpr_state.simplex_support.v2[1, i_b]
     return is_col, normal, penetration, pos
 
 
@@ -430,6 +439,9 @@ def mpr_find_penetr_segment(i_ga: int, i_gb: int, i_b: int, mpr_state: array_cla
     penetration = mpr_state.simplex_support.v[1, i_b].dot(direction)
     normal = -direction
     pos = (mpr_state.simplex_support.v1[1, i_b] + mpr_state.simplex_support.v2[1, i_b]) * 0.5
+    if qd.static(len(mpr_state.witness_a.shape) > 0):
+        mpr_state.witness_a[i_b] = mpr_state.simplex_support.v1[1, i_b]
+        mpr_state.witness_b[i_b] = mpr_state.simplex_support.v2[1, i_b]
 
     return is_col, normal, penetration, pos
 

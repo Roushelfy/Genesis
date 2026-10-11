@@ -421,6 +421,10 @@ def func_gjk_contact(
 
             gjk_state.contact_pos[i_b, n_contacts] = contact_pos
             gjk_state.normal[i_b, n_contacts] = normal
+            if qd.static(len(collider_state.contact_data.witness.point_a.shape) > 0):
+                # A rejected degenerate pair must not shift the correspondence between contacts and witnesses.
+                gjk_state.witness.point_obj1[i_b, n_contacts] = w1
+                gjk_state.witness.point_obj2[i_b, n_contacts] = w2
             n_contacts += 1
 
     gjk_state.n_contacts[i_b] = n_contacts

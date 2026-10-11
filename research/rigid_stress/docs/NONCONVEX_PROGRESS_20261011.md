@@ -9,7 +9,7 @@ not yet established. The initial branch source is `1d6babf7`.
 | Requirement | Evidence to deliver | Status |
 |---|---|---|
 | Material normals and real surface topology | Cavity/U winding tests; no spatial sheet merging | Native implementation and CPU/CUDA checks pass |
-| Surface provenance | Geom/pair and face/barycentric witnesses, actual boundary association, ambiguity diagnostics | Native resolver tested; collision producer integration pending |
+| Surface provenance | Geom/pair and face/barycentric witnesses, actual boundary association, ambiguity diagnostics | Native resolver and raw collision witness retention pass CPU/CUDA checks; reference association pending |
 | Intrinsic finite footprint | Verified paths, hole/gap exclusion, explicit radius/profile and distance error | Native path checks pass; footprint integration/tuning pending |
 | Six-component vector fit | Original/projected/P2 wrench, local cones, offset tangential load and constrained corner fits | Pending |
 | Failure diagnostics | Ambiguity, unresolved integration/distance, numerical fitting and physical incompatibility | Pending |
@@ -125,9 +125,9 @@ CPU and allocation logs. No new-law live/policy rate is reported.
 
 ## Next integration work
 
-1. Preserve actual primitive/SDF/GJK/decomposition witnesses before their
-   narrowphase workspace is overwritten. Current `ContactData` retains
-   geom/pair and the application point but no reference-boundary witness.
+1. Associate retained GJK/MPR and nonaggregated SDF producer points with the
+   actual reference boundary, carrying face/barycentrics and bounded source
+   uncertainty. Finish primitive/special and aggregate-source representation.
    Internal decomposition faces must not become material exterior faces.
 2. Connect witnessed anchors and intrinsic finite profiles to six-dimensional
    vector traction fitting and signed P2 scatter. Preserve the original
@@ -142,3 +142,80 @@ CPU and allocation logs. No new-law live/policy rate is reported.
    profiles. Evaluate local/frontier work, shared geometry, per-face distance
    reuse, interior fits, compaction, valid history and native scheduling from
    those measurements. The old load-model throughput is historical evidence.
+
+## Collision witness producer checkpoint
+
+The narrowphase now retains a typed `ContactWitness` beside each rigid
+contact's geom/pair identity. It carries both world-space producer points,
+their method and optional emitting-vertex indices. These fields are allocated
+only for stress-enabled scenes, belong to the state record, follow raw contact
+slots through the GPU queue/gather and contact sort, and are cleared on partial
+resets. Hibernated-contact compaction also preserves their pair identity.
+
+GJK preserves the correspondence after rejecting degenerate witness pairs.
+MPR stores its original weighted portal points separately from the unchanged
+rigid application point. Perturbed points are independently unrotated into
+each geom's original frame. MPR's exact/approximate labels describe its portal
+classification; they do not establish exact material-boundary coordinates for
+arbitrary assets. The nonaggregated SDF path preserves the actual emitting
+vertex and the queried-gradient projection, independently of a synthetic
+emitted penetration. Primitive/special and aggregate paths retain an explicit
+normal-offset estimate. Those estimates are not authoritative face witnesses.
+
+This is source retention, not reference-boundary association. Actual
+reference face/barycentric mapping, decomposition-interior rejection, SDF
+uncertainty and aggregate-island representation remain pending. Live stress
+still uses the old pressure mapping. No vector traction, new-law numerical
+acceptance or throughput result follows from these source tests.
+
+The five source/lifecycle cases exercise ordinary MPR, GJK and patch-enabled
+GJK, real collision surface checks, two simultaneous geom pairs including a
+rotated geom, environment isolation, partial reset and state-record restoration.
+U-shaped and cavity fixtures check SDF emitting-vertex identity. A separate
+eight-point octagonal box patch checks both actual geom boundaries and every
+contact's midpoint/penetration correspondence. It uses an eight-vertex,
+six-tetrahedron cube, not a high-resolution elastic mesh.
+
+The initial one-pair check passes all five CUDA cases; CPU passes four, with
+its sole failure a `2.16840434e-19 m` one-rounding-unit contact-position
+difference in an added bitwise comparison. Floating collision comparisons
+now use 32 FP64 epsilon at the 1 cm pair scale; integer identity remains exact.
+The first two-pair GPU check then failed because independent atomic slot
+reservations returned `[1, 2]` versus `[2, 1]`. Canonical identity/position
+alignment fixes that comparison without changing its numerical thresholds.
+These changes define the new source-retention test. Final contact wrench,
+complete equilibrium and stress budgets are unchanged.
+
+Both final source suites pass **five CPU and five CUDA cases** (434.94 s and
+562.82 s). The octagonal patch separately passes **one CPU and one CUDA case**
+(65.18 s and 107.02 s), giving six new cases on each backend. The existing
+stress/geometry suite passes **64 CUDA cases** (1098.85 s) and **43 CPU cases,
+21 CUDA-only skips** (460.39 s). Six selected collision checks also pass
+(302.32 s): two GPU split/monolithic cases, CPU/GPU box-patch cases and two
+GPU hibernation/pruning/reset cases. Those legacy collision cases do not
+configure stress, so they do not establish stress-enabled hibernation coverage.
+
+All final runs retain identical before/after source hashes. The corrected
+five-case test ran under a temporary `_v5` module name to leave the concurrently
+running regression's imported files frozen; its committed test has identical
+bytes. An earlier development run used a nonexistent VectorTensor `.ndim`
+attribute and was corrected to inspect its shape. Another development run
+edited imported source during compilation, invalidating Quadrants' source/AST
+lookup; it supplies no numerical evidence. Accepted runs froze imported code
+and verified its hashes. Failed development logs remain in the raw data root;
+the publication will also preserve the failed two-pair comparison and its test.
+
+GPU checks used RTX PRO 6000 Blackwell Server Edition, 97,887 MiB, driver
+595.71.05, Genesis 1.4.3, Quadrants 1.3.3, container `1_26`, FP64. These are
+correctness timings with isolated compilation caches, not throughput results.
+
+Reproduce inside an allocated compute node:
+
+```bash
+bash /absolute/path/to/Genesis/research/rigid_stress/scripts/check_nonconvex_witness.sh cpu
+bash /absolute/path/to/Genesis/research/rigid_stress/scripts/check_nonconvex_witness.sh cuda
+```
+
+The script isolates runtime/cache paths, refuses existing evidence and checks
+the tested source hashes before and after execution. Set
+`RIGID_STRESS_CHECK_EXISTING=1` to include the old stress and geometry suites.

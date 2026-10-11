@@ -1162,6 +1162,36 @@ def get_constraint_state(constraint_solver, solver, collider):
 # =========================================== Collider ===========================================
 
 
+class ContactWitnessKind(IntEnum):
+    NORMAL_OFFSET = 0
+    GJK = 1
+    MPR_EXACT = 2
+    MPR_APPROXIMATE = 3
+    SDF_VERTEX = 4
+
+
+@dataclasses.dataclass(eq=True, kw_only=False, frozen=True)
+class ContactWitness:
+    kind: ClassVar[DataKind] = DataKind.SCRATCH
+
+    point_a: qd.Tensor
+    point_b: qd.Tensor
+    method: qd.Tensor
+    vertex_a: qd.Tensor
+    vertex_b: qd.Tensor
+
+
+def get_contact_witness(shape, active):
+    shape = maybe_shape(shape, active)
+    return ContactWitness(
+        point_a=V_VEC(3, dtype=gs.qd_float, shape=shape),
+        point_b=V_VEC(3, dtype=gs.qd_float, shape=shape),
+        method=V(dtype=gs.qd_int, shape=shape),
+        vertex_a=V(dtype=gs.qd_int, shape=shape),
+        vertex_b=V(dtype=gs.qd_int, shape=shape),
+    )
+
+
 @dataclasses.dataclass(eq=True, kw_only=False, frozen=True)
 class ContactData:
     kind: ClassVar[DataKind] = DataKind.STATE
@@ -1179,11 +1209,13 @@ class ContactData:
     link_a: qd.Tensor
     link_b: qd.Tensor
     pair_idx: qd.Tensor
+    witness: ContactWitness = of_kind(DataKind.STATE)
 
 
 def get_contact_data(solver, max_candidate_contacts, requires_grad):
     _B = solver._B
     max_candidate_contacts_ = max(max_candidate_contacts, 1)
+    save_witness = any(link.stress_options is not None for entity in solver.entities for link in entity.links)
 
     return ContactData(
         geom_a=V(dtype=gs.qd_int, shape=(max_candidate_contacts_, _B)),
@@ -1199,6 +1231,7 @@ def get_contact_data(solver, max_candidate_contacts, requires_grad):
         link_a=V(dtype=gs.qd_int, shape=(max_candidate_contacts_, _B)),
         link_b=V(dtype=gs.qd_int, shape=(max_candidate_contacts_, _B)),
         pair_idx=V(dtype=gs.qd_int, shape=(max_candidate_contacts_, _B)),
+        witness=get_contact_witness((max_candidate_contacts_, _B), save_witness),
     )
 
 
@@ -1310,9 +1343,10 @@ class NarrowphaseWorkQueues:
     mpr_prefer_gjk: qd.Tensor
     mpr_queue_size: qd.Tensor
     mpr_work_counter: qd.Tensor
+    witness: ContactWitness
 
 
-def get_narrowphase_work_queues(max_entries, n_slots, active):
+def get_narrowphase_work_queues(max_entries, n_slots, active, save_witness):
     entries_shape = maybe_shape((max_entries,), active)
     slots_shape = maybe_shape((max_entries, n_slots), active)
     return NarrowphaseWorkQueues(
@@ -1327,6 +1361,7 @@ def get_narrowphase_work_queues(max_entries, n_slots, active):
         mpr_prefer_gjk=V(dtype=gs.qd_int, shape=entries_shape),
         mpr_queue_size=V(dtype=gs.qd_int, shape=maybe_shape((1,), active)),
         mpr_work_counter=V(dtype=gs.qd_int, shape=maybe_shape((1,), active)),
+        witness=get_contact_witness((max_entries, n_slots), active and save_witness),
     )
 
 
@@ -1426,7 +1461,10 @@ def get_collider_state(
         # A pair holds its first contact and its four perturbed ones (see N_PERTURBATIONS in narrowphase.py), or its
         # first contact alone under the contact patch (see NarrowphaseWorkQueues)
         narrowphase_work_queues=get_narrowphase_work_queues(
-            max(max_collision_pairs_broad, 1) * _B, 1 if solver._options.enable_contact_patch else 5, split_narrowphase
+            max(max_collision_pairs_broad, 1) * _B,
+            1 if solver._options.enable_contact_patch else 5,
+            split_narrowphase,
+            any(link.stress_options is not None for entity in solver.entities for link in entity.links),
         ),
         contact_sort_key=V(dtype=gs.qd_float, shape=(max(max_candidate_contacts, 1), _B)),
         contact_sort_idx=V(dtype=gs.qd_int, shape=(max(max_candidate_contacts, 1), _B)),
@@ -1514,13 +1552,17 @@ class MPRState:
     # What the depth of the contact in simplex_support[1..3] is worth, a PORTAL_STATUS value. Zero means no portal.
     # Only VALID portals are reused (perturbation reconstruction, EPA seeding); INVALID forces a GJK refine.
     portal_status: qd.Tensor
+    witness_a: qd.Tensor
+    witness_b: qd.Tensor
 
 
-def get_mpr_state(B_):
+def get_mpr_state(B_, save_witness=False):
     return MPRState(
         simplex_support=get_mpr_simplex_support(B_),
         simplex_size=V(dtype=gs.qd_int, shape=(B_,)),
         portal_status=V(dtype=gs.qd_int, shape=(B_,)),
+        witness_a=V_VEC(3, dtype=gs.qd_float, shape=maybe_shape((B_,), save_witness)),
+        witness_b=V_VEC(3, dtype=gs.qd_float, shape=maybe_shape((B_,), save_witness)),
     )
 
 

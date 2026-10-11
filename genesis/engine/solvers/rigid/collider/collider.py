@@ -846,6 +846,26 @@ class Collider:
                 pos[:, envs_idx] = 0.0
                 normal[:, envs_idx] = 0.0
                 force[:, envs_idx] = 0.0
+            if len(self.collider_state.contact_data.witness.point_a.shape) > 0:
+                env_mask = indices_to_mask(envs_idx)
+                witness_a = qd_to_torch(self.collider_state.contact_data.witness.point_a, transpose=True, copy=False)
+                witness_b = qd_to_torch(self.collider_state.contact_data.witness.point_b, transpose=True, copy=False)
+                witness_method = qd_to_torch(
+                    self.collider_state.contact_data.witness.method, transpose=True, copy=False
+                )
+                pair_idx = qd_to_torch(self.collider_state.contact_data.pair_idx, transpose=True, copy=False)
+                witness_a[env_mask] = 0.0
+                witness_b[env_mask] = 0.0
+                witness_method[env_mask] = array_class.ContactWitnessKind.NORMAL_OFFSET
+                pair_idx[env_mask] = -1
+                witness_vertex_a = qd_to_torch(
+                    self.collider_state.contact_data.witness.vertex_a, transpose=True, copy=False
+                )
+                witness_vertex_b = qd_to_torch(
+                    self.collider_state.contact_data.witness.vertex_b, transpose=True, copy=False
+                )
+                witness_vertex_a[env_mask] = -1
+                witness_vertex_b[env_mask] = -1
             if gs.backend == gs.metal:
                 torch.mps.synchronize()
             return
