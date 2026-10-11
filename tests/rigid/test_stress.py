@@ -8,6 +8,7 @@ from scipy.sparse.linalg import splu
 from scipy.spatial.transform import Rotation
 
 import genesis as gs
+from genesis.engine.solvers.rigid.stress.balance import kernel_balance_contacts
 from genesis.engine.solvers.rigid.stress.contact import (
     StressContactState,
     create_contacts,
@@ -25,8 +26,12 @@ from genesis.engine.solvers.rigid.stress.data import StressInfo, StressState
 from genesis.engine.solvers.rigid.stress.history import StressHistory
 from genesis.engine.solvers.rigid.stress.model import StressModel
 from genesis.engine.solvers.rigid.stress.recovery import kernel_accept
-from genesis.engine.solvers.rigid.stress.scatter import create_scatter_workspace, kernel_scatter_faces
-from genesis.engine.solvers.rigid.stress.solve import kernel_peak
+from genesis.engine.solvers.rigid.stress.scatter import (
+    create_scatter_workspace,
+    kernel_fit_scatter_moments,
+    kernel_scatter_faces,
+)
+from genesis.engine.solvers.rigid.stress.solve import kernel_balance, kernel_full_residual, kernel_peak
 from genesis.engine.solvers.rigid.stress.surface import StressSurface, StressSurfaceInfo
 from genesis.options.rigid_stress import RigidStressOptions
 from genesis.utils.array_class import V_VEC
@@ -139,6 +144,28 @@ def test_native_full_field_unbatched_shared_operator(tmp_path):
     complete.base_link.stress_options.output_mode = "max"
     with pytest.raises(gs.GenesisException, match="rebuilding"):
         scene.step()
+    complete.base_link.stress_options.output_mode = "full"
+    complete.base_link.stress_options.poisson = 0.22
+    with pytest.raises(gs.GenesisException, match="rebuilding"):
+        scene.step()
+    with pytest.raises(gs.GenesisException, match="rebuilding"):
+        complete.base_link.get_max_stress()
+    with pytest.raises(gs.GenesisException, match="rebuilding"):
+        complete.base_link.get_stress_field()
+    with pytest.raises(gs.GenesisException, match="rebuilding"):
+        tuple(scene.rigid_solver.stress_recovery.data)
+    complete.base_link.stress_options.poisson = 0.3
+    complete.base_link.stress_options.density = 2100.0
+    with pytest.raises(gs.GenesisException, match="rebuilding"):
+        scene.step()
+    complete.base_link.stress_options.density = 2000.0
+    complete.base_link.stress_options.cooperative_pressure = False
+    with pytest.raises(gs.GenesisException, match="rebuilding"):
+        scene.step()
+    complete.base_link.stress_options.cooperative_pressure = True
+    scene.reset()
+    scene.step()
+    np.testing.assert_array_equal(tensor_to_array(complete.base_link.get_stress_field(copy=False)[1]), 0.0)
 
 
 @pytest.mark.required
@@ -176,6 +203,111 @@ def test_native_p2_shared_operators(tmp_path, young, poisson, density):
 
 @pytest.mark.required
 @pytest.mark.precision("64")
+def test_native_shared_operator_contact_moments_and_link_isolation(tmp_path):
+    if gs.backend != gs.cuda:
+        pytest.skip("Current-footprint moment reuse runs on CUDA.")
+    vertices, tetrahedra, faces, _ = shell_mesh(1, 2, 0.0005)
+    mesh = tmp_path / "shell.npz"
+    np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)
+    collision = tmp_path / "shell.obj"
+    trimesh.Trimesh(vertices=vertices, faces=faces, process=False).export(collision)
+    scene = gs.Scene(
+        sim_options=gs.options.SimOptions(dt=0.01),
+        rigid_options=gs.options.RigidOptions(
+            friction_cone=gs.friction_cone.elliptic, iterations=100, tolerance=1e-12, contact_pruning_tolerance=None
+        ),
+        show_viewer=False,
+    )
+    scene.add_entity(gs.morphs.Plane(), material=gs.materials.Rigid(friction=0.1))
+    eggs = []
+    for x, fused in ((-0.08, True), (0.08, False)):
+        egg = scene.add_entity(
+            gs.morphs.Mesh(file=collision, pos=(x, 0, 0.031), convexify=True, decimate=False),
+            material=gs.materials.Rigid(friction=0.6),
+        )
+        egg.base_link.configure_stress_recovery(
+            RigidStressOptions(
+                mesh=mesh,
+                output_mode="full",
+                contact_wrench_reuse=True,
+                packed_block_size=512,
+                coalesced_residual=True,
+                contact_moment_reuse=True,
+                fused_pipeline=fused,
+            )
+        )
+        eggs.append(egg)
+    scene.build(n_envs=3)
+    entries = scene.rigid_solver.stress_recovery.links
+    assert entries[0].model is entries[1].model and entries[0].surface is entries[1].surface
+    assert all(entry.reuse_contact_moments for entry in entries)
+    assert entries[0].scatter is not entries[1].scatter
+    eggs[1].set_pos(np.array([[0.08, 0, 0.035], [0.08, 0, 0.048], [0.08, 0, 0.061]]))
+    for egg in eggs:
+        egg.set_friction_ratio(np.array([[0.7], [1.0], [1.4]]))
+    for _ in range(40):
+        scene.step()
+        scene.rigid_solver.check_errno()
+    oracle = P2Shell(vertices, tetrahedra, faces, 1e10, 0.3, 2000.0, 2, factor_backend="none")
+    mapper = FinitePatchMapper(SurfaceGeometry(oracle, 10), anchor_to_surface=True, adaptive_integration=True)
+    free = np.setdiff1d(np.arange(oracle.ndof), qd_to_numpy(entries[0].model.info.pins))
+    factor = splu(oracle.k[free][:, free].tocsc())
+    for entry in entries:
+        arrays = {
+            name: qd_to_numpy(getattr(entry.contacts, name), transpose=True)
+            for name in ("valid", "position", "force", "normal", "radius", "friction")
+        }
+        assert arrays["valid"].any(axis=1).all()
+        expected_force = np.zeros((oracle.ndof, 3))
+        for i_b, i_c in np.argwhere(arrays["valid"]):
+            if np.linalg.norm(arrays["force"][i_b, i_c]) > 0:
+                patch = WrenchPatch(
+                    arrays["position"][i_b, i_c],
+                    arrays["force"][i_b, i_c],
+                    arrays["radius"][i_b, i_c],
+                    arrays["friction"][i_b, i_c],
+                    np.zeros(3),
+                    arrays["normal"][i_b, i_c],
+                )
+                expected_force[:, i_b] += mapper.map(patch).nodal_force_n
+        np.testing.assert_allclose(
+            qd_to_numpy(entry.state.force, transpose=True).reshape((3, -1)).T,
+            expected_force,
+            rtol=2e-7,
+            atol=1e-10,
+        )
+        omega = qd_to_numpy(entry.omega)
+        centrifugal = -np.cross(omega[:, None], np.cross(omega[:, None], (oracle.xyz - oracle.com)[None]))
+        raw = expected_force + oracle.m @ centrifugal.reshape((3, -1)).T
+        expected_rhs = raw - oracle.mr @ np.linalg.solve(oracle.gram, oracle.r.T @ raw)
+        displacement = qd_to_numpy(entry.state.displacement, transpose=True).reshape((3, -1)).T
+        residual = np.linalg.norm(oracle.k @ displacement - expected_rhs, axis=0)
+        assert (residual <= np.maximum(1e-11, 1e-8 * np.linalg.norm(expected_rhs, axis=0))).all()
+        reference = np.zeros_like(displacement)
+        reference[free] = factor.solve(expected_rhs[free])
+        actual_tensor, actual_vm = entry.link.get_stress_field()
+        actual_tensor, actual_vm = tensor_to_array(actual_tensor), tensor_to_array(actual_vm)
+        for i_b in range(3):
+            tensor, vm = stress_field(oracle.glambda, oracle.elements, reference[:, i_b], 1e10, 0.3)
+            np.testing.assert_allclose(actual_tensor[i_b], tensor, rtol=1e-4, atol=1e-3)
+            np.testing.assert_allclose(actual_vm[i_b], vm, rtol=1e-4, atol=1e-3)
+    # One link's pose notice must invalidate only that link and selected environment.
+    untouched = [tensor_to_array(value).copy() for value in eggs[1].base_link.get_stress_field()]
+    partial_before = tensor_to_array(eggs[0].base_link.get_stress_field()[0]).copy()
+    # Velocity setters broadcast a conservative unbounded dynamics notice.
+    # Isolate the explicitly link-filtered pose notice here.
+    eggs[0].set_pos(np.array([[0.0, 0.0, 0.12]]), envs_idx=[1], zero_velocity=False)
+    partial_after = tensor_to_array(eggs[0].base_link.get_stress_field()[0])
+    np.testing.assert_array_equal(partial_after[[0, 2]], partial_before[[0, 2]])
+    assert np.isnan(partial_after[1]).all()
+    for actual, previous in zip(eggs[1].base_link.get_stress_field(), untouched):
+        np.testing.assert_array_equal(tensor_to_array(actual), previous)
+    scene.step()
+    scene.rigid_solver.check_errno()
+
+
+@pytest.mark.required
+@pytest.mark.precision("64")
 @pytest.mark.parametrize("n_envs", (2051, 32771))
 def test_native_batched_inertia_relief_and_partial_load_reset(tmp_path, n_envs):
     if gs.backend != gs.cuda:
@@ -199,6 +331,11 @@ def test_native_batched_inertia_relief_and_partial_load_reset(tmp_path, n_envs):
     state.force.from_numpy(force)
     model.recover(omega, state, surface_load=True)
     assert qd_to_numpy(state.valid).all()
+    kernel_full_residual(options.young, options.tolerance, options.absolute_tolerance, state, model.info, False)
+    original_residual = qd_to_numpy(state.residual, copy=True)
+    kernel_full_residual(options.young, options.tolerance, options.absolute_tolerance, state, model.info, False, True)
+    np.testing.assert_array_equal(qd_to_numpy(state.residual), original_residual)
+    del original_residual
     rhs = qd_to_numpy(state.rhs, copy=True)
     displacement = qd_to_numpy(state.displacement, copy=True)
     peak = qd_to_numpy(state.peak, copy=True)
@@ -339,6 +476,9 @@ def test_native_batched_recovery_against_full_fp64_direct(
             model.surface_inverse.apply(model.options.young, omega, state, packed=True)
             np.testing.assert_array_equal(qd_to_numpy(state.displacement), dense)
             if gs.backend == gs.cuda:
+                for block_size in (256, 512):
+                    model.surface_inverse.apply(model.options.young, omega, state, packed=True, block_size=block_size)
+                    np.testing.assert_array_equal(qd_to_numpy(state.displacement), dense)
                 count = np.count_nonzero(np.any(updated[boundary] != 0.0, axis=2), axis=0)
                 np.testing.assert_array_equal(qd_to_numpy(state.boundary_count), count)
             model.recover(omega, state, surface_load=True)
@@ -402,6 +542,43 @@ def test_native_finite_pressure_matches_independent_cpu(tmp_path, cooperative):
     np.testing.assert_allclose(qd_to_numpy(state.force), expected, atol=1e-12, rtol=2e-10)
     assert qd_to_numpy(contacts.force_error).max() < 1e-9
     assert qd_to_numpy(contacts.moment_error).max() < 1e-11
+
+    if cooperative and gs.backend == gs.cuda:
+        omega = V_VEC(3, dtype=gs.qd_float, shape=(n_envs,))
+        angular_velocity = random.normal(size=(n_envs, 3))
+        omega.from_numpy(angular_velocity)
+        kernel_balance(omega, state, model.info, True)
+        expected_rhs = qd_to_numpy(state.rhs, copy=True)
+        expected_wrench = qd_to_numpy(state.wrench, copy=True)
+        centrifugal = -np.cross(
+            angular_velocity[:, None], np.cross(angular_velocity[:, None], (oracle.xyz - oracle.com)[None])
+        )
+        raw = expected.transpose((1, 0, 2)).reshape((n_envs, oracle.ndof)).T
+        raw += oracle.m @ centrifugal.reshape((n_envs, oracle.ndof)).T
+        independent_rhs = raw - oracle.mr @ np.linalg.solve(oracle.gram, oracle.r.T @ raw)
+        for capacity in (32, 1):
+            scatter = create_scatter_workspace(n_envs, capacity)
+            kernel_scatter_faces(contacts, state, model.info, surface.info, scatter, True)
+            kernel_balance_contacts(omega, state, model.info, contacts, scatter)
+            actual = qd_to_numpy(state.rhs)
+            np.testing.assert_allclose(actual, expected_rhs, atol=1e-15, rtol=1e-10)
+            np.testing.assert_allclose(qd_to_numpy(state.wrench), expected_wrench, atol=1e-15, rtol=1e-10)
+            np.testing.assert_allclose(
+                actual.transpose((1, 0, 2)).reshape((n_envs, oracle.ndof)).T,
+                independent_rhs,
+                atol=1e-12,
+                rtol=2e-10,
+            )
+            assert int(qd_to_numpy(scatter.overflow_calls)) == (1 if capacity == 1 else 0)
+            cache = create_scatter_workspace(n_envs, capacity, reuse_moments=True)
+            kernel_anchor(float(np.finfo(float).eps), contacts, surface.info)
+            kernel_fit_scatter_moments(contacts, state, model.info, surface.info, cache, True)
+            np.testing.assert_array_equal(qd_to_numpy(contacts.status), 0)
+            np.testing.assert_allclose(qd_to_numpy(state.force), expected, atol=1e-12, rtol=2e-10)
+            kernel_balance_contacts(omega, state, model.info, contacts, cache)
+            np.testing.assert_allclose(qd_to_numpy(state.rhs), expected_rhs, atol=1e-15, rtol=1e-10)
+            np.testing.assert_allclose(qd_to_numpy(state.wrench), expected_wrench, atol=1e-15, rtol=1e-10)
+            assert int(qd_to_numpy(cache.overflow_calls)) == (1 if capacity == 1 else 0)
 
 
 @pytest.mark.required
@@ -470,11 +647,22 @@ def test_native_constrained_pressure_and_invalid_inputs(tmp_path, case):
     np.testing.assert_allclose(
         qd_to_numpy(state.force)[:, 0], mapped.nodal_force_n.reshape((-1, 3)), rtol=2e-7, atol=1e-10
     )
+    if gs.backend == gs.cuda:
+        cache = create_scatter_workspace(1, 32, reuse_moments=True)
+        kernel_anchor(float(np.finfo(float).eps), contacts, surface.info)
+        kernel_fit_scatter_moments(contacts, state, model.info, surface.info, cache, True)
+        np.testing.assert_array_equal(qd_to_numpy(contacts.status).reshape(-1), [0, 0, 1, 1, 1, 1])
+        assert qd_to_numpy(contacts.evaluations)[0, 0] > 1
+        np.testing.assert_allclose(
+            qd_to_numpy(state.force)[:, 0], mapped.nodal_force_n.reshape((-1, 3)), rtol=2e-7, atol=1e-10
+        )
 
 
 @pytest.mark.required
 @pytest.mark.precision("64")
-@pytest.mark.parametrize("execution", ("serial", "warp", "graph", "faces", "faces_overflow", "faces_uncached"))
+@pytest.mark.parametrize(
+    "execution", ("serial", "warp", "graph", "faces", "faces_overflow", "faces_uncached", "moments", "moments_overflow")
+)
 @pytest.mark.parametrize("case", ("batch2048", "batch16384", "batch32768"))
 def test_native_live_apex_wrench_recovery(tmp_path, execution, case):
     if execution not in ("serial", "warp") and gs.backend != gs.cuda:
@@ -540,12 +728,17 @@ def test_native_live_apex_wrench_recovery(tmp_path, execution, case):
         kernel_apex_contact_graph(float(np.finfo(float).eps), contacts, state, model.info, surface.info)
     else:
         kernel_anchor(float(np.finfo(float).eps), contacts, surface.info)
-        kernel_pressure(contacts, surface.info, cooperative)
-        if execution.startswith("faces"):
+        if execution.startswith("moments"):
+            workspace = create_scatter_workspace(1, 1 if execution == "moments_overflow" else 32, reuse_moments=True)
+            kernel_fit_scatter_moments(contacts, state, model.info, surface.info, workspace, True)
+            assert bool(qd_to_numpy(workspace.overflow_calls)) == (execution == "moments_overflow")
+        elif execution.startswith("faces"):
+            kernel_pressure(contacts, surface.info, cooperative)
             workspace = create_scatter_workspace(1, 1 if execution == "faces_overflow" else 32)
             kernel_scatter_faces(contacts, state, model.info, surface.info, workspace, execution != "faces_uncached")
             assert bool(qd_to_numpy(workspace.overflow_calls)) == (execution == "faces_overflow")
         else:
+            kernel_pressure(contacts, surface.info, cooperative)
             kernel_scatter(contacts, state, model.info, surface.info)
     print("apex", cooperative, "status", qd_to_numpy(contacts.status), "iterations", qd_to_numpy(contacts.evaluations))
     np.testing.assert_array_equal(qd_to_numpy(contacts.status), 0)
@@ -621,7 +814,14 @@ def test_native_rigid_lifecycle_and_partial_reset(tmp_path, substeps, output_mod
     link = egg.base_link
     link.configure_stress_recovery(
         RigidStressOptions(
-            mesh=mesh, tolerance=1e-7, history_size=4 if output_mode == "max" else 0, output_mode=output_mode
+            mesh=mesh,
+            tolerance=1e-7,
+            history_size=4 if output_mode == "max" else 0,
+            output_mode=output_mode,
+            contact_wrench_reuse=True,
+            packed_block_size=512,
+            coalesced_residual=True,
+            contact_moment_reuse=True,
         )
     )
     scene.build(n_envs=3)

@@ -367,9 +367,11 @@ def kernel_pressure_warp(contact_state: StressContactState, surface_info: Stress
 
 
 @qd.func
-def func_pressure_warp(contact_state: StressContactState, surface_info: StressSurfaceInfo, refinement: bool):
+def func_pressure_warp(
+    contact_state: StressContactState, surface_info: StressSurfaceInfo, refinement: bool, enabled: bool = True
+):
     qd.loop_config(block_dim=128)
-    for i_thread in range(contact_state.active_count[None] * 32):
+    for i_thread in range(qd.select(enabled, contact_state.active_count[None] * 32, 0)):
         lane = i_thread % 32
         slot = i_thread // 32
         pair = contact_state.active_pairs[slot]

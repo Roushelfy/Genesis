@@ -1,0 +1,31 @@
+{
+  "command": [
+    "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python",
+    "research/rigid_stress/probe_pipeline_fastcache.py",
+    "--fastcache",
+    "--scope",
+    "policy",
+    "--envs",
+    "1024",
+    "--seed",
+    "510000",
+    "--varied",
+    "--warmup",
+    "900",
+    "--steps",
+    "2400",
+    "--repetitions",
+    "3",
+    "--minimum-seconds",
+    "0",
+    "--compact-log",
+    "--output",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-contact-repair/pipeline-fastcache-cached-b1024-seed510000-v1.json"
+  ],
+  "fastcache": true,
+  "source_revision": "59b16811-native-scheduling-v6-controller-v3-link-invalidation-v4-fastcache-probe-v1",
+  "probe_sha256": "8e623b0a806cf3b163aac6d9653a061ce12c89ab87e83e91f3774693548da30c",
+  "original_pipeline_sha256": "70dad78c10e2b1fbcc56d7439949a84b88b30610354ead44daec0e31b4d6330b",
+  "generated_pipeline_sha256": "9fb88853728c9e023c27e2a9517195f4fab5546de873184b440f505a34313937",
+  "note": "Only the existing Quadrants graph decorator's fastcache option changes. All numerical expressions, typed fields, template arguments, controls, load model, resets and acceptance remain identical. Exact generated module is retained."
+}

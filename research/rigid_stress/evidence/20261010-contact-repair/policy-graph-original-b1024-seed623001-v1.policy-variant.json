@@ -1,0 +1,29 @@
+{
+  "command": [
+    "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python",
+    "research/rigid_stress/probe_policy_graph.py",
+    "--scope",
+    "policy",
+    "--envs",
+    "1024",
+    "--seed",
+    "623001",
+    "--varied",
+    "--warmup",
+    "900",
+    "--steps",
+    "2400",
+    "--repetitions",
+    "3",
+    "--minimum-seconds",
+    "0",
+    "--compact-log",
+    "--output",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261010-contact-repair/policy-graph-original-b1024-seed623001-v1.json"
+  ],
+  "policy_graph": false,
+  "source_revision": "59b16811-native-scheduling-v6-controller-v3-link-invalidation-v4-policy-graph-probe-v1",
+  "probe_sha256": "5310a0c4b4824a3d8bd6f3ed5a5ab77a20be42e35b6c8d0d1291a5c571c50fbe",
+  "additional_static_policy_io_bytes": 0,
+  "scope_note": "Torch policy inference only. Identical seeded FP32 layers; graph capture/setup excluded from timing, every observation cast/static-input copy/replay/action use included. Graph pool memory is additional to static IO. Stress numerical functions, rigid integration, controls, contact model, reset and final budgets are unchanged. This is not RL training."
+}

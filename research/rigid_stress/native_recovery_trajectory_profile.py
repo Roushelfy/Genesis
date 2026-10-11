@@ -12,6 +12,7 @@ import os
 import platform
 import sys
 import time
+from functools import partial
 from pathlib import Path
 
 import numpy as np
@@ -57,7 +58,8 @@ def main():
 
     for name in durations:
         setattr(recovery, name, wrap(name))
-    recovery.subscriber.callback = recovery.reset
+    for entry, subscriber in zip(recovery.links, recovery.subscribers):
+        subscriber.callback = partial(recovery._state_changed, entry=entry)
     with torch.inference_mode():
         for _ in range(args.warmup):
             workload.step()
@@ -115,6 +117,7 @@ def main():
                     *Path("genesis/engine/solvers/rigid/stress").glob("*.py"),
                     Path("genesis/options/rigid_stress.py"),
                     Path("examples/rigid/franka_egg_stress.py"),
+                    Path("examples/rigid/egg_stress_controller.py"),
                     Path(__file__),
                 ]
             )

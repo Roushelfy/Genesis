@@ -22,6 +22,7 @@ import genesis as gs
 from examples.rigid.franka_egg_stress import FrankaEgg
 from examples.speed_benchmark.stress_stages import kernel_query, kernel_small_solve, kernel_weights_gram
 from genesis.engine.solvers.rigid.stress.association import kernel_associate
+from genesis.engine.solvers.rigid.stress.balance import kernel_balance_contacts
 from genesis.engine.solvers.rigid.stress.contact import (
     StressContactState,
     kernel_anchor,
@@ -29,7 +30,7 @@ from genesis.engine.solvers.rigid.stress.contact import (
     kernel_scatter,
 )
 from genesis.engine.solvers.rigid.stress.recovery import kernel_accept, kernel_begin_step
-from genesis.engine.solvers.rigid.stress.scatter import kernel_scatter_faces
+from genesis.engine.solvers.rigid.stress.scatter import kernel_fit_scatter_moments, kernel_scatter_faces
 from genesis.engine.solvers.rigid.stress.solve import (
     kernel_balance,
     kernel_direct_init,
@@ -133,19 +134,54 @@ def profile(workload: FrankaEgg, repetitions: int) -> dict:
                 options.cached_face_bounds,
             )
         ),
-        "inertia_relief_centrifugal": lambda: kernel_balance(
-            entry.omega, entry.state, entry.model.info, options.cooperative_balance
+        "inertia_relief_centrifugal": lambda: (
+            kernel_balance_contacts(entry.omega, entry.state, entry.model.info, entry.contacts, entry.scatter)
+            if entry.reuse_contact_wrench and entry.scatter.tasks.shape[0] > 0 and options.cooperative_balance
+            else kernel_balance(entry.omega, entry.state, entry.model.info, options.cooperative_balance)
         ),
         "rhs_reduction": lambda: kernel_direct_init(entry.state),
         "linear_solve": lambda: entry.model.solve(options, entry.state, entry.omega, surface_load=True),
         "complete_residual": lambda: kernel_full_residual(
-            options.young, options.tolerance, options.absolute_tolerance, entry.state, entry.model.info, False
+            options.young,
+            options.tolerance,
+            options.absolute_tolerance,
+            entry.state,
+            entry.model.info,
+            False,
+            entry.coalesced_residual,
         ),
         "global_peak": lambda: kernel_peak(
             options.young, options.poisson, entry.state, entry.model.info, options.cached_peak
         ),
         "accept": lambda: kernel_accept(entry.state, entry.contacts, solver._errno),
     }
+    if entry.reuse_contact_moments:
+        # These stages share current-footprint scratch and must refresh together.
+        stages = {
+            name: stage
+            for name, stage in stages.items()
+            if name not in ("anchor_search", "candidate_weights_constraints", "nodal_scatter")
+        }
+        stages = dict(
+            list(stages.items())[:2]
+            + [
+                (
+                    "anchor_search_candidate_weights_constraints_nodal_scatter",
+                    lambda: (
+                        kernel_anchor(recovery.source_epsilon, entry.contacts, entry.surface.info),
+                        kernel_fit_scatter_moments(
+                            entry.contacts,
+                            entry.state,
+                            entry.model.info,
+                            entry.surface.info,
+                            entry.scatter,
+                            options.cached_face_bounds,
+                        ),
+                    ),
+                )
+            ]
+            + list(stages.items())[2:]
+        )
     for stage in stages.values():
         stage()
     qd.sync()
@@ -212,6 +248,10 @@ def main() -> None:
     parser.add_argument("--serial-pressure", action="store_true")
     parser.add_argument("--serial-scatter", action="store_true")
     parser.add_argument("--serial-balance", action="store_true", help="Compare original rigid inertia relief.")
+    parser.add_argument("--contact-wrench-reuse", choices=("auto", "on", "off"), default="auto")
+    parser.add_argument("--packed-block-size", choices=(0, 256, 512), type=int, default=None)
+    parser.add_argument("--coalesced-residual", choices=("auto", "on", "off"), default="auto")
+    parser.add_argument("--contact-moment-reuse", choices=("auto", "on", "off"), default="auto")
     parser.add_argument(
         "--contact-warp-scatter", action="store_true", help="Compare the original contact-warp scatter."
     )
@@ -234,6 +274,9 @@ def main() -> None:
     parser.add_argument("--policy-precision", choices=("64", "32"), default="32")
     parser.add_argument("--output-mode", choices=("max", "full"), default="max")
     parser.add_argument("--legacy-reset", action="store_true", help="Compare reset followed by separate pose setters.")
+    parser.add_argument(
+        "--torch-controller", action="store_true", help="Compare the original scripted input scheduling."
+    )
     parser.add_argument("--trace", action="store_true", help="Export a separate intrusive CUDA/CPU trace pass.")
     parser.add_argument(
         "--compact-log", action="store_true", help="Keep full per-environment diagnostics in JSON only."
@@ -262,11 +305,17 @@ def main() -> None:
         saved_reset=not args.legacy_reset,
         cooperative_scatter=not args.serial_scatter,
         cooperative_balance=not args.serial_balance,
+        contact_wrench_reuse={"auto": None, "on": True, "off": False}[args.contact_wrench_reuse],
+        packed_block_size=args.packed_block_size,
+        coalesced_residual={"auto": None, "on": True, "off": False}[args.coalesced_residual],
+        contact_moment_reuse={"auto": None, "on": True, "off": False}[args.contact_moment_reuse],
+        native_controller=not args.torch_controller,
         face_parallel_scatter=not args.contact_warp_scatter,
         scatter_tasks_per_env=args.scatter_tasks_per_env,
         cached_peak=not args.uncached_peak,
         cached_face_bounds=not args.uncached_face_bounds,
     )
+    solver = workload.scene.rigid_solver
     if args.save_conditions is not None:
         workload.save_conditions(args.save_conditions)
     setup_seconds = time.perf_counter() - start
@@ -383,6 +432,25 @@ def main() -> None:
             "cooperative_pressure": not args.serial_pressure,
             "cooperative_scatter": not args.serial_scatter,
             "cooperative_balance": not args.serial_balance,
+            "contact_wrench_reuse": args.contact_wrench_reuse,
+            "packed_block_size": args.packed_block_size,
+            "coalesced_residual": args.coalesced_residual,
+            "contact_moment_reuse": args.contact_moment_reuse,
+            "effective_contact_moment_reuse": [entry.reuse_contact_moments for entry in solver.stress_recovery.links]
+            if solver.stress_recovery is not None
+            else [],
+            "effective_contact_wrench_reuse": [
+                entry.fused_pipeline
+                and entry.reuse_contact_wrench
+                and entry.scatter.tasks.shape[0] > 0
+                and entry.options.cooperative_balance
+                for entry in solver.stress_recovery.links
+            ]
+            if solver.stress_recovery is not None
+            else [],
+            "effective_packed_block_sizes": [entry.packed_block_size for entry in solver.stress_recovery.links]
+            if solver.stress_recovery is not None
+            else [],
             "face_parallel_scatter": not args.contact_warp_scatter,
             "scatter_tasks_per_env": args.scatter_tasks_per_env,
             "cached_peak": not args.uncached_peak,
@@ -394,6 +462,15 @@ def main() -> None:
             "fused_pipeline": not args.unfused_pipeline,
             "output_mode": args.output_mode,
             "reset_mode": "individual_setters" if args.legacy_reset else "saved_initial_state",
+            "native_controller": workload.controller_inputs is not None,
+            "controller_buffers": {
+                name: {
+                    "shape": list(value.shape),
+                    "dtype": str(value.dtype),
+                    "bytes": value.numel() * value.element_size(),
+                }
+                for name, value in (workload.controller_inputs or {}).items()
+            },
             "history": args.history,
             "host": platform.node(),
             "slurm_job_id": os.environ.get("SLURM_JOB_ID"),
@@ -408,6 +485,7 @@ def main() -> None:
                         Path("genesis/engine/solvers/rigid/rigid_solver.py"),
                         Path("genesis/options/rigid_stress.py"),
                         Path("examples/rigid/franka_egg_stress.py"),
+                        Path("examples/rigid/egg_stress_controller.py"),
                         Path(__file__),
                     ]
                 )

@@ -74,6 +74,12 @@ geometry reuse variants. `--source-revision` records the declared checkout;
 the benchmark also records exact numerical source hashes and GPU UUID.
 The current adaptive-pad workload has actual combined contact friction
 between 0.42 and 0.84. It differs from the earlier fixed-friction benchmark.
+`--contact-wrench-reuse on|off`, `--contact-moment-reuse on|off`,
+`--packed-block-size 0|256|512` and `--coalesced-residual on|off` supply the
+large-batch scheduling ablations. Their automatic defaults keep the original
+routes below B=8192. `--torch-controller` compares the original scripted input
+dispatch with the Quadrants CUDA configuration pass. The benchmark records
+effective routes, controller buffers and exact production source hashes.
 See [CONTACT_REPAIR_20261010.md](CONTACT_REPAIR_20261010.md) for checkpoint
 revisions, regression results and performance-development evidence.
 `--trace` exports a separate 50-step Torch/CUPTI CPU/CUDA trace after timing;
@@ -86,7 +92,7 @@ are omitted by its kernel profiler, so use wall stages and the optional trace.
 pre-integration frame; it is not changing-contact trajectory throughput.
 `live` includes the whole rigid trajectory, changing contacts/radii, slip,
 release and independently delayed resets. `policy` adds device observations
-and a fixed seeded FP64 26->128->128->7 tanh MLP; it measures inference and
+and a fixed seeded FP32 26->128->128->7 tanh MLP by default; it measures inference and
 rollouts, not completed reinforcement-learning training.
 
 The MLP has tanh after the first two linear layers and a linear output.

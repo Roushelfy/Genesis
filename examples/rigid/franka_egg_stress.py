@@ -7,6 +7,7 @@ import numpy as np
 import torch
 
 import genesis as gs
+from examples.rigid.egg_stress_controller import create_workspace, native_step
 from genesis.utils.misc import tensor_to_array
 
 
@@ -37,6 +38,11 @@ class FrankaEgg:
         face_parallel_scatter: bool = True,
         scatter_tasks_per_env: int = 32,
         cooperative_balance: bool = True,
+        contact_wrench_reuse: bool | None = None,
+        packed_block_size: int | None = None,
+        coalesced_residual: bool | None = None,
+        contact_moment_reuse: bool | None = None,
+        native_controller: bool = True,
     ):
         self.n_envs = n_envs
         self.tick = 0
@@ -86,6 +92,10 @@ class FrankaEgg:
                     output_mode=output_mode,
                     cooperative_scatter=cooperative_scatter,
                     cooperative_balance=cooperative_balance,
+                    contact_wrench_reuse=contact_wrench_reuse,
+                    packed_block_size=packed_block_size,
+                    coalesced_residual=coalesced_residual,
+                    contact_moment_reuse=contact_moment_reuse,
                     face_parallel_scatter=face_parallel_scatter,
                     scatter_tasks_per_env=scatter_tasks_per_env,
                     cached_peak=cached_peak,
@@ -154,6 +164,7 @@ class FrankaEgg:
         self.phase = torch.zeros(n_envs, dtype=gs.tc_float, device=gs.device)
         self.stress = stress
         self.reset_state = self.scene.get_state() if saved_reset else None
+        self.controller_inputs = create_workspace(self) if native_controller and gs.backend == gs.cuda else None
 
     def save_conditions(self, path: Path) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -203,6 +214,9 @@ class FrankaEgg:
         )
 
     def step(self, residual_action: torch.Tensor | None = None) -> None:
+        if self.controller_inputs is not None:
+            native_step(self, self.controller_inputs, residual_action)
+            return
         ids = np.flatnonzero((self.tick > self.delays) & ((self.tick - self.delays) % 600 == 0))
         if len(ids):
             self.reset(ids)
@@ -240,6 +254,9 @@ def main() -> None:
     parser.add_argument("--viewer", action="store_true")
     parser.add_argument("--output-mode", choices=("max", "full"), default="max")
     parser.add_argument("--legacy-reset", action="store_true", help="Compare reset followed by separate pose setters.")
+    parser.add_argument(
+        "--torch-controller", action="store_true", help="Compare the original scripted input scheduling."
+    )
     args = parser.parse_args()
     gs.init(backend=gs.gpu, precision="64")
     workload = FrankaEgg(
@@ -250,6 +267,7 @@ def main() -> None:
         viewer=args.viewer,
         output_mode=args.output_mode,
         saved_reset=not args.legacy_reset,
+        native_controller=not args.torch_controller,
     )
     for _ in range(args.steps):
         workload.step()

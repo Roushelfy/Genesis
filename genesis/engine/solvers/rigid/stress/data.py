@@ -27,6 +27,7 @@ class StressInfo:
     mass_modes: qd.Tensor
     relief: qd.Tensor
     centrifugal: qd.Tensor
+    centrifugal_wrench: qd.Tensor
     gram: qd.Tensor
     gram_inverse: qd.Tensor
     pins: qd.Tensor

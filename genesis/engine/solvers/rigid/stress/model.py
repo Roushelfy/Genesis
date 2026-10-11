@@ -10,7 +10,7 @@ from genesis.options.rigid_stress import RigidStressOptions
 from genesis.utils.array_class import V_MAT, V_VEC, V
 from genesis.utils.misc import qd_to_numpy
 
-from .balance import kernel_relief_projection
+from .balance import kernel_centrifugal_wrench, kernel_relief_projection
 from .data import StressInfo, StressState
 from .factor import StressFactor
 from .history import StressHistory
@@ -111,6 +111,7 @@ class StressModel:
             mass_modes=V_MAT(3, 6, dtype=gs.qd_float, shape=(n_nodes,)),
             relief=V_MAT(3, 6, dtype=gs.qd_float, shape=(n_nodes,)),
             centrifugal=V_MAT(3, 6, dtype=gs.qd_float, shape=(n_nodes,)),
+            centrifugal_wrench=V_MAT(6, 6, dtype=gs.qd_float, shape=()),
             gram=V_MAT(6, 6, dtype=gs.qd_float, shape=()),
             gram_inverse=V_MAT(6, 6, dtype=gs.qd_float, shape=()),
             pins=V(dtype=gs.qd_int, shape=(6,)),
@@ -143,6 +144,7 @@ class StressModel:
         kernel_mass_modes(self.info)
         kernel_gram_inverse(self.info)
         kernel_relief_projection(self.info)
+        kernel_centrifugal_wrench(self.info)
         kernel_gauge(self.info)
         kernel_diagonal(self.info)
         qd.sync()
@@ -236,6 +238,9 @@ class StressModel:
         if options is None:
             options = self.options
         block = options.preconditioner == "block"
+        coalesced = options.coalesced_residual
+        if coalesced is None:
+            coalesced = state.active.shape[0] >= 8192
         kernel_balance(omega, state, self.info, options.cooperative_balance)
         if self.factor is not None:
             kernel_direct_init(state)
@@ -244,7 +249,7 @@ class StressModel:
             else:
                 history.predict(state)
                 kernel_full_residual(
-                    options.young, options.tolerance, options.absolute_tolerance, state, self.info, False
+                    options.young, options.tolerance, options.absolute_tolerance, state, self.info, False, coalesced
                 )
                 history.mark_hits(state)
                 if self.inverse is not None:
@@ -266,17 +271,35 @@ class StressModel:
                 if not kernel_active(state):
                     break
         kernel_full_residual(
-            options.young, options.tolerance, options.absolute_tolerance, state, self.info, history is not None
+            options.young,
+            options.tolerance,
+            options.absolute_tolerance,
+            state,
+            self.info,
+            history is not None,
+            coalesced,
         )
         if self.inverse is not None:
             for _ in range(options.inverse_corrections):
                 self.inverse.apply(options.young, state, correction=True)
                 kernel_full_residual(
-                    options.young, options.tolerance, options.absolute_tolerance, state, self.info, only_active=True
+                    options.young,
+                    options.tolerance,
+                    options.absolute_tolerance,
+                    state,
+                    self.info,
+                    only_active=True,
+                    coalesced=coalesced,
                 )
             self.factor.solve(options.young, state, self.info, options.cooperative_solve, only_failed=True)
             kernel_full_residual(
-                options.young, options.tolerance, options.absolute_tolerance, state, self.info, only_active=True
+                options.young,
+                options.tolerance,
+                options.absolute_tolerance,
+                state,
+                self.info,
+                only_active=True,
+                coalesced=coalesced,
             )
         kernel_peak(options.young, options.poisson, state, self.info, options.cached_peak)
 
@@ -289,7 +312,10 @@ class StressModel:
     ) -> None:
         if surface_load and self.surface_inverse is not None:
             assert omega is not None
-            self.surface_inverse.apply(options.young, omega, state, options.packed_surface_loads)
+            block_size = options.packed_block_size
+            if block_size is None:
+                block_size = 512 if state.active.shape[0] >= 8192 else 0
+            self.surface_inverse.apply(options.young, omega, state, options.packed_surface_loads, block_size)
         elif self.inverse is not None:
             self.inverse.apply(options.young, state)
         else:

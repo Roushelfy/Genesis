@@ -44,10 +44,15 @@ class StressSurfaceInverse:
         kernel_surface_store(temporary, self.info)
         qd.sync()
 
-    def apply(self, young: float, omega: qd.Tensor, state: StressState, packed: bool = True) -> None:
+    def apply(
+        self, young: float, omega: qd.Tensor, state: StressState, packed: bool = True, block_size: int = 0
+    ) -> None:
         if packed and gs.backend == gs.cuda:
             kernel_surface_pack(state, self.info)
-            kernel_surface_apply_packed(young, omega, state, self.info)
+            if block_size:
+                kernel_surface_apply_packed_block(young, omega, state, self.info, block_size)
+            else:
+                kernel_surface_apply_packed(young, omega, state, self.info)
         else:
             kernel_surface_apply(young, omega, state, self.info)
 
@@ -79,8 +84,14 @@ def kernel_surface_apply_packed(
 
 @qd.func
 def func_surface_apply_packed(
-    young: float, omega: qd.Tensor, stress_state: StressState, surface_inverse_info: StressSurfaceInverseInfo
+    young: float,
+    omega: qd.Tensor,
+    stress_state: StressState,
+    surface_inverse_info: StressSurfaceInverseInfo,
+    block_size: qd.template() = 0,
 ):
+    if qd.static(block_size):
+        qd.loop_config(block_dim=block_size)
     for i_n, i_b in qd.ndrange(stress_state.rhs.shape[0], stress_state.active.shape[0]):
         w = omega[i_b]
         terms = qd.Vector([w[0] * w[0], w[1] * w[1], w[2] * w[2], w[0] * w[1], w[0] * w[2], w[1] * w[2]])
@@ -93,6 +104,17 @@ def func_surface_apply_packed(
     for i_b in range(stress_state.active.shape[0]):
         stress_state.active[i_b] = 1
         stress_state.valid[i_b] = True
+
+
+@qd.kernel(graph=True)
+def kernel_surface_apply_packed_block(
+    young: float,
+    omega: qd.Tensor,
+    stress_state: StressState,
+    surface_inverse_info: StressSurfaceInverseInfo,
+    block_size: qd.template(),
+):
+    func_surface_apply_packed(young, omega, stress_state, surface_inverse_info, block_size)
 
 
 @qd.kernel(graph=True)

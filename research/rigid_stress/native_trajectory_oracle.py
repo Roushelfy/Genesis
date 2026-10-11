@@ -30,6 +30,11 @@ def main():
     parser.add_argument("--substeps", type=int, default=1)
     parser.add_argument("--scatter-tasks-per-env", type=int, default=32)
     parser.add_argument("--contact-warp-scatter", action="store_true")
+    parser.add_argument("--contact-wrench-reuse", choices=("auto", "on", "off"), default="auto")
+    parser.add_argument("--packed-block-size", choices=(0, 256, 512), type=int, default=None)
+    parser.add_argument("--coalesced-residual", choices=("auto", "on", "off"), default="auto")
+    parser.add_argument("--contact-moment-reuse", choices=("auto", "on", "off"), default="auto")
+    parser.add_argument("--torch-controller", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.parent.mkdir(parents=True, exist_ok=True)
@@ -42,6 +47,11 @@ def main():
         substeps=args.substeps,
         face_parallel_scatter=not args.contact_warp_scatter,
         scatter_tasks_per_env=args.scatter_tasks_per_env,
+        contact_wrench_reuse={"auto": None, "on": True, "off": False}[args.contact_wrench_reuse],
+        packed_block_size=args.packed_block_size,
+        coalesced_residual={"auto": None, "on": True, "off": False}[args.coalesced_residual],
+        contact_moment_reuse={"auto": None, "on": True, "off": False}[args.contact_moment_reuse],
+        native_controller=not args.torch_controller,
     )
     entry = workload.scene.rigid_solver.stress_recovery.links[0]
     with np.load("examples/rigid/assets/hollow_egg/level1/elastic.npz") as asset:
@@ -185,6 +195,7 @@ def main():
                     *Path("genesis/engine/solvers/rigid/stress").glob("*.py"),
                     Path("genesis/options/rigid_stress.py"),
                     Path("examples/rigid/franka_egg_stress.py"),
+                    Path("examples/rigid/egg_stress_controller.py"),
                     Path(__file__),
                 ]
             )

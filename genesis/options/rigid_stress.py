@@ -34,6 +34,18 @@ class RigidStressOptions(Options):
     ``cooperative_balance`` reduces the complete rigid-mode wrench in CUDA
     node tiles and applies a shared mass-mode projection. CPU uses its
     original balance order. Disable it to compare scheduling and projection.
+    ``contact_wrench_reuse`` optionally projects the actual integrated contact
+    wrench instead of reducing it again from all nodes. Overflow retains the
+    complete nodal reduction. ``contact_moment_reuse`` integrates current-step
+    P2 load moments alongside the pressure Gram matrix. Strictly positive
+    affine pressures reuse those moments; constrained, refined and overflowing
+    cases retain complete sampling. It needs CUDA cooperative pressure and
+    face scatter, adds 217 bytes per task capacity, and assumes no contact
+    history. ``packed_block_size`` selects the CUDA inverse block size;
+    ``coalesced_residual`` changes only the complete residual row scheduling.
+    These four options default to their original routes below 8,192 environments
+    and enable their large-batch routes above that size. Set explicit values
+    to compare scheduling. All options are fixed when building the scene.
 
     ``tolerance`` bounds the complete equilibrium residual relative to the
     load norm; ``absolute_tolerance`` supplies the force floor near zero.
@@ -95,12 +107,16 @@ class RigidStressOptions(Options):
     cooperative_pressure: StrictBool = True
     cooperative_scatter: StrictBool = True
     cooperative_balance: StrictBool = True
+    contact_wrench_reuse: StrictBool | None = None
     face_parallel_scatter: StrictBool = True
     scatter_tasks_per_env: PositiveInt = 32
+    contact_moment_reuse: StrictBool | None = None
     inverse_max_bytes: PositiveInt = 64 * 1024 * 1024
     inverse_precision: Literal["64", "32"] = "64"
     surface_inverse: StrictBool = True
     packed_surface_loads: StrictBool = True
+    packed_block_size: Literal[0, 256, 512] | None = None
+    coalesced_residual: StrictBool | None = None
     fused_pipeline: StrictBool = True
     cached_peak: StrictBool = True
     cached_face_bounds: StrictBool = True

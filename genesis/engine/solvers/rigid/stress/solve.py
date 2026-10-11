@@ -179,16 +179,48 @@ def kernel_active(stress_state: StressState) -> int:
     return count
 
 
-@qd.kernel(graph=True)
 def kernel_full_residual(
     young: float,
     tolerance: float,
     absolute_tolerance: float,
     stress_state: StressState,
     stress_info: StressInfo,
-    only_active: qd.template(),
+    only_active: bool,
+    coalesced: bool = False,
 ):
-    func_full_residual(young, tolerance, absolute_tolerance, stress_state, stress_info, only_active)
+    kernel_full_residual_impl(
+        young,
+        tolerance,
+        absolute_tolerance,
+        stress_state,
+        stress_info,
+        only_active,
+        coalesced and gs.backend == gs.cuda,
+    )
+
+
+@qd.kernel(graph=True)
+def kernel_full_residual_impl(
+    young: float,
+    tolerance: float,
+    absolute_tolerance: float,
+    stress_state: StressState,
+    stress_info: StressInfo,
+    only_active: qd.template(),
+    coalesced: qd.template(),
+):
+    func_full_residual(young, tolerance, absolute_tolerance, stress_state, stress_info, only_active, coalesced)
+
+
+@qd.func
+def func_residual_row(young: float, stress_state: StressState, stress_info: StressInfo, i_n: int, i_b: int):
+    product = qd.Vector.zero(gs.qd_float, 3)
+    for i_entry in range(stress_info.row_start[i_n], stress_info.row_start[i_n + 1]):
+        j_n = stress_info.columns[i_entry]
+        product += young * stress_info.stiffness[i_entry] @ stress_state.displacement[j_n, i_b]
+    residual = stress_state.rhs[i_n, i_b] - product
+    stress_state.residual[i_n, i_b] = residual
+    qd.atomic_add(stress_state.residual_norm_squared[i_b], residual.dot(residual))
 
 
 @qd.func
@@ -199,19 +231,24 @@ def func_full_residual(
     stress_state: StressState,
     stress_info: StressInfo,
     only_active: qd.template(),
+    coalesced: qd.template() = False,
 ):
     for i_b in range(stress_state.active.shape[0]):
         if qd.static(not only_active) or stress_state.active[i_b]:
             stress_state.residual_norm_squared[i_b] = 0.0
-    for i_n, i_b in qd.ndrange(stress_info.vertices.shape[0], stress_state.active.shape[0]):
-        if qd.static(not only_active) or stress_state.active[i_b]:
-            product = qd.Vector.zero(gs.qd_float, 3)
-            for i_entry in range(stress_info.row_start[i_n], stress_info.row_start[i_n + 1]):
-                j_n = stress_info.columns[i_entry]
-                product += young * stress_info.stiffness[i_entry] @ stress_state.displacement[j_n, i_b]
-            residual = stress_state.rhs[i_n, i_b] - product
-            stress_state.residual[i_n, i_b] = residual
-            qd.atomic_add(stress_state.residual_norm_squared[i_b], residual.dot(residual))
+    if qd.static(coalesced):
+        qd.loop_config(block_dim=256)
+        for i_thread in range(stress_info.vertices.shape[0] * ((stress_state.active.shape[0] + 31) // 32) * 32):
+            i_index = i_thread // 32
+            i_n = i_index % stress_info.vertices.shape[0]
+            i_b = (i_index // stress_info.vertices.shape[0]) * 32 + i_thread % 32
+            if i_b < stress_state.active.shape[0]:  # noqa: SIM102 - bound padding before tensor indexing
+                if qd.static(not only_active) or stress_state.active[i_b]:
+                    func_residual_row(young, stress_state, stress_info, i_n, i_b)
+    else:
+        for i_n, i_b in qd.ndrange(stress_info.vertices.shape[0], stress_state.active.shape[0]):
+            if qd.static(not only_active) or stress_state.active[i_b]:
+                func_residual_row(young, stress_state, stress_info, i_n, i_b)
     for i_b in range(stress_state.active.shape[0]):
         if qd.static(not only_active) or stress_state.active[i_b]:
             budget = qd.max(

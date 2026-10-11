@@ -17,6 +17,7 @@ import genesis as gs
 from examples.rigid.franka_egg_stress import FrankaEgg
 from genesis.engine.solvers.rigid.stress.contact import StressContactState
 from genesis.engine.solvers.rigid.stress.data import StressState
+from genesis.engine.solvers.rigid.stress.scatter import StressScatterWorkspace
 from genesis.utils import array_class
 from genesis.utils.array_class import V_VEC, V
 from genesis.utils.misc import qd_to_numpy
@@ -94,6 +95,44 @@ def kernel_abort(flags: qd.Tensor, outcomes: qd.Tensor):
         flags[i_b][0] = 0
 
 
+@qd.kernel
+def kernel_tail_work(
+    contacts: StressContactState,
+    state: StressState,
+    scatter: StressScatterWorkspace,
+    frame_counts: qd.Tensor,
+    totals: qd.Tensor,
+    reuse_moments: qd.template(),
+    n_q: qd.template(),
+):
+    for i_b in range(totals.shape[0]):
+        frame_counts[i_b] = qd.Vector.zero(qd.i64, 4)
+        totals[i_b][0] += state.boundary_count[i_b]
+        totals[i_b][1] = qd.max(totals[i_b][1], state.boundary_count[i_b])
+    for i_t in range(qd.i32(qd.select(scatter.count[None] <= scatter.tasks.shape[0], scatter.count[None], 0))):
+        i_pair, i_f = scatter.tasks[i_t][0], scatter.tasks[i_t][1]
+        pair = contacts.active_pairs[i_pair]
+        i_c, i_b = pair[0], pair[1]
+        qd.atomic_add(frame_counts[i_b][0], 1)
+        affine = False
+        if qd.static(reuse_moments):
+            qd.atomic_add(frame_counts[i_b][2], n_q)
+            affine = (
+                scatter.affine_pressure[i_pair] and not contacts.is_refined[i_c, i_b] and contacts.status[i_c, i_b] == 0
+            )
+        if affine:
+            qd.atomic_add(frame_counts[i_b][1], 1)
+        elif contacts.status[i_c, i_b] == 0:
+            samples = 7 * n_q if contacts.is_refined[i_c, i_b] and i_f == contacts.anchor_face[i_c, i_b] else n_q
+            qd.atomic_add(frame_counts[i_b][3], samples)
+    for i_b in range(totals.shape[0]):
+        totals[i_b][2] += frame_counts[i_b][0]
+        totals[i_b][3] = qd.max(totals[i_b][3], frame_counts[i_b][0])
+        totals[i_b][4] += frame_counts[i_b][1]
+        totals[i_b][5] += frame_counts[i_b][2]
+        totals[i_b][6] += frame_counts[i_b][3]
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--scope", choices=("live", "policy"), required=True)
@@ -101,10 +140,18 @@ def main():
     parser.add_argument("--seed", type=int, default=510000)
     parser.add_argument("--warmup", type=int, default=900)
     parser.add_argument("--steps", type=int, default=2400)
+    parser.add_argument("--contact-moment-reuse", choices=("auto", "on", "off"), default="auto")
+    parser.add_argument("--scatter-tasks-per-env", type=int, default=32)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     gs.init(backend=gs.gpu, precision="64", seed=args.seed, logging_level="warning")
-    workload = FrankaEgg(args.envs, seed=args.seed, varied=True)
+    workload = FrankaEgg(
+        args.envs,
+        seed=args.seed,
+        varied=True,
+        contact_moment_reuse={"auto": None, "on": True, "off": False}[args.contact_moment_reuse],
+        scatter_tasks_per_env=args.scatter_tasks_per_env,
+    )
     torch.manual_seed(99173)
     reference = (
         torch.nn.Sequential(
@@ -124,6 +171,9 @@ def main():
     failures = V(dtype=gs.qd_int, shape=(args.envs,))
     counters = V_VEC(9, dtype=qd.i64, shape=(args.envs,))
     errors = V_VEC(6, dtype=gs.qd_float, shape=(args.envs,))
+    tail_counts = V_VEC(4, dtype=qd.i64, shape=(args.envs,))
+    tail_totals = V_VEC(7, dtype=qd.i64, shape=(args.envs,))
+    tail_totals.fill(0)
     for field in (flags, geometry, outcomes, failures, counters):
         field.fill(0)
     initial_errors = np.zeros((args.envs, 6))
@@ -179,6 +229,15 @@ def main():
                     geometry,
                     outcomes,
                 )
+                kernel_tail_work(
+                    entry.contacts,
+                    entry.state,
+                    entry.scatter,
+                    tail_counts,
+                    tail_totals,
+                    entry.reuse_contact_moments,
+                    entry.surface.info.shape.shape[0],
+                )
             unfinished = qd_to_numpy(flags)[:, 0]
             if stage == "warmup":
                 kernel_abort(flags, outcomes)
@@ -196,6 +255,9 @@ def main():
                 workload.restart()
     counts, work, accuracy = (qd_to_numpy(field) for field in (failures, counters, errors))
     observed = work[:, 0] > 0
+    trajectory_outcomes = np.asarray(stages[1]["per_environment_cumulative_outcomes"]) - np.asarray(
+        stages[0]["per_environment_cumulative_outcomes"]
+    )
     result = {
         "scope": args.scope,
         "envs": args.envs,
@@ -203,6 +265,8 @@ def main():
         "warmup_steps": args.warmup,
         "trajectory_steps": args.steps,
         "stages": stages,
+        "trajectory_only_totals": trajectory_outcomes.sum(axis=0).tolist(),
+        "per_environment_trajectory_only_outcomes": trajectory_outcomes.tolist(),
         "outcome_columns": [
             "started",
             "completed",
@@ -226,6 +290,40 @@ def main():
         "failed_environment_steps": int(counts.sum()),
         "every_step_failures": counts.tolist(),
         "per_environment_work": work.tolist(),
+        "counter_columns": [
+            "nonzero_contacts",
+            "local_integration_retries",
+            "pressure_newton_evaluations_sum",
+            "pressure_newton_evaluations_max",
+            "inverse_corrections",
+            "factor_fallbacks",
+            "hold_proxy_success_steps",
+            "hold_proxy_failed_steps",
+            "batch_scatter_overflow_affected_steps",
+        ],
+        "tail_cost_scope": "Per-environment work counters; these are not individual GPU latency measurements. Line-search scans are not separately counted.",
+        "contact_moment_reuse_requested": args.contact_moment_reuse,
+        "effective_contact_moment_reuse": entry.reuse_contact_moments,
+        "scatter_tasks_per_env": args.scatter_tasks_per_env,
+        "additional_per_environment_work": qd_to_numpy(tail_totals).tolist(),
+        "additional_work_columns": [
+            "packed_boundary_columns_sum",
+            "packed_boundary_columns_max",
+            "admitted_face_tasks_sum",
+            "admitted_face_tasks_max",
+            "affine_contracted_face_tasks_sum",
+            "moment_prepare_sample_visits_sum",
+            "face_scatter_sample_visits_sum",
+        ],
+        "additional_work_scope": "Work counts across warmup and trajectory. Overflow work is separately counted and does not appear in the bounded admitted-task sample totals; nonlinear pressure/grid work is not included in these sample counts.",
+        "error_columns": [
+            "full_residual_budget_ratio_max",
+            "global_peak_max_Pa",
+            "wrench_force_relative_max",
+            "wrench_moment_relative_max",
+            "actual_mu_max",
+            "actual_mu_min",
+        ],
         "per_environment_error_maxima": accuracy.tolist(),
         "full_residual_budget_ratio_max": float(accuracy[:, 0].max()),
         "actual_mu_range": [float(accuracy[observed, 5].min()), float(accuracy[observed, 4].max())]
@@ -246,6 +344,7 @@ def main():
                     *Path("genesis/engine/solvers/rigid/stress").glob("*.py"),
                     Path("genesis/options/rigid_stress.py"),
                     Path("examples/rigid/franka_egg_stress.py"),
+                    Path("examples/rigid/egg_stress_controller.py"),
                     Path("research/rigid_stress/native_validity_probe.py"),
                     Path(__file__),
                 ]

@@ -197,6 +197,41 @@ Both paths keep the original full-equilibrium acceptance, including gauge
 rows. Odd batches and partial changes to force/angular velocity are tested
 against independent CPU FP64 recovery.
 
+Four build-time controls select measured large-batch scheduling. Their `None`
+defaults use the original routes below 8192 environments and the following
+routes at B >= 8192; explicit settings support matched ablations:
+
+- `contact_wrench_reuse`: project the actual integrated contact wrench rather
+  than reduce it again over every node. A shared 6x6 centrifugal wrench map
+  adds 288 bytes. Complete task overflow uses the original full nodal reduction.
+- `contact_moment_reuse`: integrate the current footprint's pressure Gram and
+  six P2 load moments together. Strictly positive affine pressure contracts
+  these moments; clipped, locally refined and overflowing cases perform the
+  complete original integration. This assumes no temporal contact identity
+  and adds 217 bytes per bounded face-task capacity (plus a one-byte disabled
+  backend placeholder). It requires CUDA cooperative pressure/face scatter.
+- `packed_block_size`: use 512-thread inverse blocks. Allowed explicit values
+  are 0 (original), 256 and 512. Boundary node order and every nonzero column
+  remain unchanged.
+- `coalesced_residual`: change only the node/environment scheduling of the
+  complete residual product and reduction. All six gauge rows remain checked.
+
+Equal declared geometry, material and mass share only immutable operators;
+contact caches, loads, fields and history remain private to each link and
+environment. Link-filtered pose notices invalidate the affected stress link.
+Existing unbounded dynamics notices conservatively invalidate every watched
+link in the selected environments. A single native mutation emitting both
+geometry and dynamics clears each affected observation/history once.
+All configured options are immutable
+after build; mutation raises with a rebuild diagnostic from recovery/data/
+observation access. Dynamic radii remain supplied through their ordinary setter.
+
+The Franka workload computes its phase, joint targets and radius schedule in
+one Quadrants configuration kernel on CUDA, retaining public control/range/
+radius setters and ordinary scene reset. `--torch-controller` selects its
+original input scheduling for ablation. This changes controller dispatch,
+not stress arithmetic, dynamics, contact law or final acceptance.
+
 Contact rejection reports the affected link, environment, contact slot,
 original radius and actual friction coefficient. The diagnostic distinguishes
 invalid input/friction, an absent force-line anchor, an unresolved sampled

@@ -7,6 +7,92 @@ Q10x10 quadrature. All production physical arithmetic uses Quadrants FP64.
 The finite pad load and actual combined contact friction change are described
 in [CONTACT_REPAIR_20261010.md](CONTACT_REPAIR_20261010.md).
 
+## Lifecycle and rollout scheduling checkpoint, 2026-10-11 01:30 UTC
+
+The production v7 integration passes all 48 GPU cases in 625.30 s and all
+27 CPU cases in 133.74 s (21 CUDA-only skips). It combines the validated
+current-footprint moments, integrated wrench, packed block and complete
+residual controls with the resident controller. Options are immutable after
+build. A new two-body regression shares the material/topology operators and
+surface while retaining private contact/state caches. Both fused and unfused
+routes match the independent CPU FP64 load, all gauge rows and full stress
+field at actual coefficients 0.42/0.6/0.84. Moving one body with
+`zero_velocity=False` invalidates only that body's selected environments.
+The original global subscriber fails this isolation assertion; the new
+per-link subscribers pass. A geometry setter's default velocity clearing
+also emits an unbounded dynamics notice, which conservatively invalidates
+all watched links by the existing solver contract. The earlier attempted
+test used that default and confused the two different mutation scopes; its
+failed log is preserved alongside the corrected red/green regression.
+
+The exact v7 production path additionally passes 432 independent CPU FP64
+full-field samples: 144 each for two seeds and 144 with forced task overflow
+and four substeps. The worst full residual uses 0.6402% of its unchanged
+budget. Maximum peak, tensor and von Mises differences are respectively
+6.214e-6, 4.203e-6 and 6.227e-6 Pa. Source hashes, complete per-contact wrench
+and friction diagnostics and all gauge-row comparisons are preserved in
+`native-production-full-oracle-v7-summary.json` and its three originals.
+
+Restoring a public Scene state emits geometry and dynamics notices in one
+native mutation. Geometry already clears every auxiliary observation and
+history field, so v7 suppresses the second identical stress clear in that
+mutation. A dynamics-only notice still clears normally. Matched B=1024
+policy repeats improve by 0.88% and 1.05% for seeds 510000/623001, with no
+invalid transitions. The ordinary saved-state reset and rigid copying remain
+unchanged. Replacing their contiguous Torch copies with existing Quadrants
+copy kernels is rejected: the same two actual rollouts slow by 1.67%/1.20%,
+and matched partial/full reset microbenchmarks are consistently slower.
+Both paths produce exactly equal rigid qpos, velocity, acceleration, link
+pose and friction for selected and untouched environments. The research
+combined copy/notice route also passes 432 full-field CPU oracle samples.
+
+The resident controller's native B=1024/2048 composition passes 432 full-field
+CPU oracle samples and the independent input oracle. At B=1024 its two-seed
+actual policy gains are 3.15%/2.45%; at B=2048 they are 2.33%/1.88%.
+The large-batch composition and six-way interaction ablations are ongoing.
+
+Adding Quadrants `fastcache=True` to the existing stress graph wrapper has
+no repeatable end-to-end benefit: matched B=1024 policy rates are
+75064.13 -> 74623.10 and 73899.92 -> 73857.60 env-step/s, with zero invalid
+transitions. These are two seeds with 900 warmup and three 2400-step repeats,
+not isolated kernel launches. The production wrapper remains unchanged.
+Its single dispatch is already graph captured; large-batch GPU work further
+reduces the relative saving available from this host-side cache choice.
+
+Two 2400-step B=16 trajectories validate all 26 columns of a fused Quadrants
+FP64 observation against the existing getters with exactly zero difference,
+including changing contacts, authored position/velocity and partial resets.
+Matched actual throughput trials are running; this observation prototype and
+the separate policy CUDA graph are not yet selected production optimizations.
+The latter is Torch policy inference only and never computes stress.
+
+Final four-scope large-batch measurement and final-source selection remain
+required. None of these checkpoints establishes a throughput optimum or
+physical mesh convergence. Intrusive CUDA interval profiles, work-count
+tails and the untimed per-environment audits are reported separately from
+ordinary throughput.
+
+Two B=16, 2400-step every-frame contact-motion audits inspect the exact
+pre-integration frame immediately after recovery. Loaded finger-contact
+samples with tangential relative speed >1e-5 m/s number 76219/97843 for
+the two seeds; 2351/4399 occur during weak grip. Maximum tangential point
+speeds are 0.6691/0.6125 m/s and tangential forces 0.3334/0.3238 N. Support,
+unloaded, release, rotation and loaded-pair establishment/disappearance are
+also counted for every environment. Actual coefficients span
+0.42478--0.82813 in these small trajectories; large-population audits span
+approximately 0.42--0.84. Independent CPU source-force cone checks pass,
+with maximum positive cone excess below 5.56e-17 N. These are untimed
+diagnostic contact samples, not unique episodes, after-response velocities
+or a substitute for the declared grasp criteria. They supplement the
+explicitly labelled weak-grip height-drop proxy.
+
+The completed v8 publication contains 1057 artifacts. All 1057 publication
+and 1057 preserved original hashes pass; manifest SHA256:
+`0cdc5c170edece6a956491aea204e49c78434a8fdc8b14fbc4f4495500b0fe3e`.
+It excludes the subsequent exact-v7 oracle and contact-motion audit outputs,
+which remain in the data root for the next publication checkpoint. No Git
+artifact reaches 100 MB; full Chrome traces use lossless gzip.
+
 ## Native current-footprint reuse checkpoint, 2026-10-11 00:30 UTC
 
 The matched B=32768 contact-moment pair completes on GPU

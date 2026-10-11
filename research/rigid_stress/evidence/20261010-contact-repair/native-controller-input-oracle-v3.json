@@ -1,0 +1,71 @@
+{
+  "envs": 1211,
+  "ticks": [
+    -1,
+    0,
+    1,
+    89,
+    90,
+    119,
+    179,
+    180,
+    200,
+    299,
+    300,
+    419,
+    420,
+    455,
+    456,
+    539,
+    540,
+    599,
+    600,
+    943,
+    1799,
+    2399
+  ],
+  "reports": [
+    {
+      "action_dtype": "none",
+      "max_abs_errors": [
+        1.1102230246251565e-16,
+        4.690692279041286e-15,
+        0.0,
+        0.0,
+        1.734723475976807e-18
+      ]
+    },
+    {
+      "action_dtype": "float32",
+      "max_abs_errors": [
+        1.1102230246251565e-16,
+        4.690692279041286e-15,
+        0.0,
+        0.0,
+        1.734723475976807e-18
+      ]
+    },
+    {
+      "action_dtype": "float64",
+      "max_abs_errors": [
+        1.1102230246251565e-16,
+        4.690692279041286e-15,
+        0.0,
+        0.0,
+        1.734723475976807e-18
+      ]
+    }
+  ],
+  "columns": [
+    "phase",
+    "target_rad",
+    "grip_m",
+    "force_limit_N",
+    "radius_m"
+  ],
+  "control_error_budget_rad": 1e-09,
+  "radius_error_budget_m": 3e-15,
+  "kernel_source_sha256": "5f338a5a653b6b8368222db79dcd78dde9b397be0edfb5a73c2f1023b67b1a34",
+  "oracle_source_sha256": "c8d4f11233286e05fd38cecc36acdbb0f66f30f79bce5daa0a16a31d61b86148",
+  "note": "Synthetic independent CPU NumPy FP64 configuration-input oracle, including phase boundaries, resets, delayed starts, FP32/FP64 residuals and exact scalar-dtype matching. This is not a throughput or stress convergence measurement."
+}
