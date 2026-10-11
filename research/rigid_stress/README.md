@@ -14,11 +14,13 @@ The native implementation is in `genesis/engine/solvers/rigid/stress/`, with
 `RigidLink.configure_stress_recovery`, `get_max_stress` and
 `set_stress_contact_radius`. The normal example is
 `examples/rigid/franka_egg_stress.py`; it imports no research implementation.
-The low-resolution native implementation, profiling and performance selection
-are complete. All 16 GPU tests and 14 CPU numerical tests pass. On the measured
-Blackwell GPU, B=1024 full live recovery achieves 42,867 environment steps/s;
-the matched policy workload achieves 42,515. See the
-[results and ablations](docs/NATIVE_RESULTS_20261010.md),
+The repaired low-resolution implementation passes 52 GPU cases, 31 CPU cases
+and 432 independent CPU FP64 full-field trajectory samples. Its final
+same-source four-scope measurements and last large-batch graph comparison are
+in progress. The original coefficient-1 workload and earlier rates are a
+historical milestone. See the
+[current results and status](docs/NATIVE_RESULTS_20261011.md),
+[optimization coverage](docs/OPTIMIZATION_COVERAGE_20261011.md),
 [native API](docs/NATIVE_API.md), [reproduction commands](docs/RUNNING.md)
 and [iteration journal](docs/PROGRESS_20261010_NATIVE.md).
 

@@ -159,6 +159,22 @@ when cooperative exterior inverse recovery is available without load history.
 Both output modes use it. Other configurations retain the independently
 callable native passes. `--unfused-pipeline` supplies the matched ablation.
 
+`fused_rigid_post=None` additionally selects a serial graph containing the
+unchanged rigid contact-force postprocessing, full stress pipeline and rigid
+integration. The current automatic selection uses it below B=8192 when one
+configured stress link is eligible for the fused pipeline. `True` requests
+it at any batch size; `False` keeps those three dispatches separate. Multiple
+stress links and configurations without the fused stress pipeline retain
+their ordinary execution order. This scheduling option changes no load,
+solve, acceptance or rigid arithmetic. Standalone recovery remains available
+for pre-integration snapshot measurement.
+
+The benchmark exposes `--rigid-post-fusion auto|on|off` and records both the
+requested and effective selection. The example exposes
+`--unfused-rigid-post`. Paired changing-contact trajectories validate exact
+rigid/phase agreement and unchanged nodal, full-field and peak budgets through
+partial resets and restored states.
+
 `cooperative_scatter=True` reduces integration-point loads per face before
 node accumulation on CUDA, preserving all eligible Q10 and local retry
 samples. CPU and the disabled option use scalar scatter. The benchmark

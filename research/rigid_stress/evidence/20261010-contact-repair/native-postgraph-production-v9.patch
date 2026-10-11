@@ -1,0 +1,684 @@
+diff --git a/examples/rigid/franka_egg_stress.py b/examples/rigid/franka_egg_stress.py
+index 41dc3d67..0c567b56 100644
+--- a/examples/rigid/franka_egg_stress.py
++++ b/examples/rigid/franka_egg_stress.py
+@@ -44,6 +44,7 @@ class FrankaEgg:
+         contact_moment_reuse: bool | None = None,
+         native_controller: bool = True,
+         resident_reset_indices: bool = True,
++        fused_rigid_post: bool | None = None,
+     ):
+         self.n_envs = n_envs
+         self.tick = 0
+@@ -97,6 +98,7 @@ class FrankaEgg:
+                     packed_block_size=packed_block_size,
+                     coalesced_residual=coalesced_residual,
+                     contact_moment_reuse=contact_moment_reuse,
++                    fused_rigid_post=fused_rigid_post,
+                     face_parallel_scatter=face_parallel_scatter,
+                     scatter_tasks_per_env=scatter_tasks_per_env,
+                     cached_peak=cached_peak,
+@@ -261,6 +263,9 @@ def main() -> None:
+         "--torch-controller", action="store_true", help="Compare the original scripted input scheduling."
+     )
+     parser.add_argument("--host-reset-indices", action="store_true", help="Compare uncached reset index transfers.")
++    parser.add_argument(
++        "--unfused-rigid-post", action="store_true", help="Separate rigid postprocessing from recovery."
++    )
+     args = parser.parse_args()
+     gs.init(backend=gs.gpu, precision="64")
+     workload = FrankaEgg(
+@@ -273,6 +278,7 @@ def main() -> None:
+         saved_reset=not args.legacy_reset,
+         native_controller=not args.torch_controller,
+         resident_reset_indices=not args.host_reset_indices,
++        fused_rigid_post=False if args.unfused_rigid_post else None,
+     )
+     for _ in range(args.steps):
+         workload.step()
+diff --git a/examples/speed_benchmark/rigid_stress.py b/examples/speed_benchmark/rigid_stress.py
+index 841e86ee..d9625694 100644
+--- a/examples/speed_benchmark/rigid_stress.py
++++ b/examples/speed_benchmark/rigid_stress.py
+@@ -278,6 +278,7 @@ def main() -> None:
+         "--torch-controller", action="store_true", help="Compare the original scripted input scheduling."
+     )
+     parser.add_argument("--host-reset-indices", action="store_true", help="Compare uncached reset index transfers.")
++    parser.add_argument("--rigid-post-fusion", choices=("auto", "on", "off"), default="auto")
+     parser.add_argument("--trace", action="store_true", help="Export a separate intrusive CUDA/CPU trace pass.")
+     parser.add_argument(
+         "--compact-log", action="store_true", help="Keep full per-environment diagnostics in JSON only."
+@@ -312,6 +313,7 @@ def main() -> None:
+         contact_moment_reuse={"auto": None, "on": True, "off": False}[args.contact_moment_reuse],
+         native_controller=not args.torch_controller,
+         resident_reset_indices=not args.host_reset_indices,
++        fused_rigid_post={"auto": None, "on": True, "off": False}[args.rigid_post_fusion],
+         face_parallel_scatter=not args.contact_warp_scatter,
+         scatter_tasks_per_env=args.scatter_tasks_per_env,
+         cached_peak=not args.uncached_peak,
+@@ -465,6 +467,9 @@ def main() -> None:
+             "output_mode": args.output_mode,
+             "reset_mode": "individual_setters" if args.legacy_reset else "saved_initial_state",
+             "native_controller": workload.controller_inputs is not None,
++            "rigid_post_fusion": args.rigid_post_fusion,
++            "effective_rigid_post_fusion": workload.stress
++            and workload.scene.rigid_solver.stress_recovery.post_kernel is not None,
+             "reset_index_cache": workload.reset_indices.describe(),
+             "controller_buffers": {
+                 name: {
+diff --git a/genesis/engine/solvers/rigid/rigid_solver.py b/genesis/engine/solvers/rigid/rigid_solver.py
+index 48050a1c..bd9a627b 100644
+--- a/genesis/engine/solvers/rigid/rigid_solver.py
++++ b/genesis/engine/solvers/rigid/rigid_solver.py
+@@ -1385,6 +1385,8 @@ class RigidSolver(GravityMixin, TimeBasedMixin, KinematicSolver):
+                     self._options.noslip_iterations > 0,
+                     self._errno,
+                 )
++            elif self.stress_recovery.post_kernel is not None:
++                self.stress_recovery.recover_and_integrate(f % self.substeps)
+             else:
+                 if not self._disable_constraint:
+                     kernel_resolve_stress_contacts(
+diff --git a/genesis/engine/solvers/rigid/stress/pipeline.py b/genesis/engine/solvers/rigid/stress/pipeline.py
+index 0c1c0feb..bd799813 100644
+--- a/genesis/engine/solvers/rigid/stress/pipeline.py
++++ b/genesis/engine/solvers/rigid/stress/pipeline.py
+@@ -25,8 +25,8 @@ from .surface import StressSurfaceInfo
+ from .surface_inverse import StressSurfaceInverseInfo, func_surface_apply_packed, func_surface_pack
+ 
+ 
+-@qd.kernel(graph=True)
+-def kernel_pipeline(
++@qd.func
++def func_pipeline(
+     young: float,
+     poisson: float,
+     tolerance: float,
+@@ -96,3 +96,78 @@ def kernel_pipeline(
+     func_full_residual(young, tolerance, absolute, state, info, True, coalesced_residual)
+     func_peak_impl(young, poisson, state, info, cached_peak, full)
+     func_accept(state, contacts, errno, full)
++
++
++@qd.kernel(graph=True)
++def kernel_pipeline(
++    young: float,
++    poisson: float,
++    tolerance: float,
++    absolute: float,
++    epsilon: float,
++    link: int,
++    offsets_pos: qd.types.ndarray(),
++    offsets_quat: qd.types.ndarray(),
++    omega: qd.Tensor,
++    dyn: array_class.DynState,
++    collider: array_class.ColliderState,
++    state: StressState,
++    contacts: StressContactState,
++    info: StressInfo,
++    surface: StressSurfaceInfo,
++    boundary: StressSurfaceInverseInfo,
++    inverse: StressInverseInfo,
++    factor: StressFactorInfo,
++    scatter: StressScatterWorkspace,
++    errno: qd.Tensor,
++    batch_offsets: qd.template(),
++    first: qd.template(),
++    enable: bool,
++    corrections: qd.template(),
++    cached_peak: qd.template(),
++    cached_bounds: qd.template(),
++    n_nodes: qd.template(),
++    full: qd.template(),
++    face_parallel: qd.template(),
++    is_cooperative_balance: qd.template(),
++    reuse_contact_wrench: qd.template(),
++    packed_block_size: qd.template(),
++    coalesced_residual: qd.template(),
++    reuse_contact_moments: qd.template(),
++):
++    func_pipeline(
++        young,
++        poisson,
++        tolerance,
++        absolute,
++        epsilon,
++        link,
++        offsets_pos,
++        offsets_quat,
++        omega,
++        dyn,
++        collider,
++        state,
++        contacts,
++        info,
++        surface,
++        boundary,
++        inverse,
++        factor,
++        scatter,
++        errno,
++        batch_offsets,
++        first,
++        enable,
++        corrections,
++        cached_peak,
++        cached_bounds,
++        n_nodes,
++        full,
++        face_parallel,
++        is_cooperative_balance,
++        reuse_contact_wrench,
++        packed_block_size,
++        coalesced_residual,
++        reuse_contact_moments,
++    )
+diff --git a/genesis/engine/solvers/rigid/stress/post.py b/genesis/engine/solvers/rigid/stress/post.py
+new file mode 100644
+index 00000000..90d329c9
+--- /dev/null
++++ b/genesis/engine/solvers/rigid/stress/post.py
+@@ -0,0 +1,108 @@
++"""Serial contact-force, stress and rigid integration graph factory."""
++
++from functools import lru_cache
++
++import quadrants as qd
++
++from genesis.utils import array_class
++
++from .contact import StressContactState
++from .data import StressInfo, StressState
++from .factor import StressFactorInfo
++from .inverse import StressInverseInfo
++from .pipeline import func_pipeline
++from .scatter import StressScatterWorkspace
++from .surface import StressSurfaceInfo
++from .surface_inverse import StressSurfaceInverseInfo
++
++
++@lru_cache(maxsize=1)
++def create_post_kernel():
++    # Resolve the rigid functions after RigidSolver finishes importing recovery.
++    from ..rigid_solver import func_resolve_post, func_step_2
++
++    @qd.kernel(graph=True)
++    def kernel_rigid_stress_post(
++        young: float,
++        poisson: float,
++        tolerance: float,
++        absolute: float,
++        epsilon: float,
++        link: int,
++        offsets_pos: qd.types.ndarray(),
++        offsets_quat: qd.types.ndarray(),
++        omega: qd.Tensor,
++        dyn: array_class.DynState,
++        collider: array_class.ColliderState,
++        state: StressState,
++        contacts: StressContactState,
++        info: StressInfo,
++        surface: StressSurfaceInfo,
++        boundary: StressSurfaceInverseInfo,
++        inverse: StressInverseInfo,
++        factor: StressFactorInfo,
++        scatter: StressScatterWorkspace,
++        errno: qd.Tensor,
++        batch_offsets: qd.template(),
++        first: qd.template(),
++        enable: bool,
++        corrections: qd.template(),
++        cached_peak: qd.template(),
++        cached_bounds: qd.template(),
++        n_nodes: qd.template(),
++        full: qd.template(),
++        face_parallel: qd.template(),
++        is_cooperative_balance: qd.template(),
++        reuse_contact_wrench: qd.template(),
++        packed_block_size: qd.template(),
++        coalesced_residual: qd.template(),
++        reuse_contact_moments: qd.template(),
++        constraint_state: array_class.ConstraintState,
++        dyn_info: array_class.DynInfo,
++        rigid_info: array_class.RigidInfo,
++        rigid_config: qd.template(),
++        noslip: qd.template(),
++        is_backward: qd.template(),
++        constraints_enabled: qd.template(),
++    ):
++        if qd.static(constraints_enabled):
++            func_resolve_post(dyn, collider, constraint_state, dyn_info, rigid_info, rigid_config, noslip, errno)
++        func_pipeline(
++            young,
++            poisson,
++            tolerance,
++            absolute,
++            epsilon,
++            link,
++            offsets_pos,
++            offsets_quat,
++            omega,
++            dyn,
++            collider,
++            state,
++            contacts,
++            info,
++            surface,
++            boundary,
++            inverse,
++            factor,
++            scatter,
++            errno,
++            batch_offsets,
++            first,
++            enable,
++            corrections,
++            cached_peak,
++            cached_bounds,
++            n_nodes,
++            full,
++            face_parallel,
++            is_cooperative_balance,
++            reuse_contact_wrench,
++            packed_block_size,
++            coalesced_residual,
++            reuse_contact_moments,
++        )
++        func_step_2(dyn, constraint_state, dyn_info, rigid_info, rigid_config, is_backward, errno)
++
++    return kernel_rigid_stress_post
+diff --git a/genesis/engine/solvers/rigid/stress/recovery.py b/genesis/engine/solvers/rigid/stress/recovery.py
+index 58239997..9c8565ff 100644
+--- a/genesis/engine/solvers/rigid/stress/recovery.py
++++ b/genesis/engine/solvers/rigid/stress/recovery.py
+@@ -30,6 +30,7 @@ from .history import StressHistory
+ from .lifecycle import func_accept, func_begin_step
+ from .model import StressModel
+ from .pipeline import kernel_pipeline
++from .post import create_post_kernel
+ from .scatter import StressScatterWorkspace, create_scatter_workspace, kernel_pressure_moments, kernel_scatter_faces
+ from .surface import StressSurface
+ 
+@@ -159,6 +160,70 @@ class RigidStressRecovery:
+         for subscriber in self.subscribers:
+             solver.subscribe(subscriber)
+         self.source_epsilon = float(np.finfo(gs.np_float).eps)
++        self.post_kernel = None
++        if len(self.links) == 1:
++            entry = self.links[0]
++            requested = entry.options.fused_rigid_post
++            selected = requested if requested is not None else solver._B < 8192
++            if entry.fused_pipeline and selected:
++                self.post_kernel = create_post_kernel()
++
++    def _pipeline_arguments(self, entry: StressLink, i_substep: int):
++        solver = self.solver
++        options = entry.options
++        return (
++            options.young,
++            options.poisson,
++            options.tolerance,
++            options.absolute_tolerance,
++            self.source_epsilon,
++            entry.link.idx,
++            solver._links_offset_pos,
++            solver._links_offset_quat,
++            entry.omega,
++            solver.dyn_state,
++            solver.collider.collider_state,
++            entry.state,
++            entry.contacts,
++            entry.model.info,
++            entry.surface.info,
++            entry.model.surface_inverse.info,
++            entry.model.inverse.info,
++            entry.model.factor.info,
++            entry.scatter,
++            solver._errno,
++            solver._links_offset_quat.ndim == 3,
++            i_substep == 0,
++            not solver._disable_constraint,
++            options.inverse_corrections,
++            options.cached_peak,
++            options.cached_face_bounds,
++            entry.model.info.vertices.shape[0],
++            entry.output_mode == "full",
++            entry.scatter.tasks.shape[0] > 0,
++            options.cooperative_balance,
++            entry.reuse_contact_wrench,
++            entry.packed_block_size,
++            entry.coalesced_residual,
++            entry.reuse_contact_moments,
++        )
++
++    def recover_and_integrate(self, i_substep: int) -> None:
++        """Serial post graph; ordinary recover() remains stress-only."""
++        entry = self.links[0]
++        if entry.link.stress_options != entry.options:
++            gs.raise_exception("Changing stress recovery options requires rebuilding the scene.")
++        solver = self.solver
++        self.post_kernel(
++            *self._pipeline_arguments(entry, i_substep),
++            solver.constraint_solver.constraint_state,
++            solver.dyn_info,
++            solver.rigid_info,
++            solver.rigid_config,
++            solver._options.noslip_iterations > 0,
++            solver._is_backward,
++            not solver._disable_constraint,
++        )
+ 
+     def recover(self, i_substep: int) -> None:
+         solver = self.solver
+@@ -167,42 +232,7 @@ class RigidStressRecovery:
+             if options != entry.options:
+                 gs.raise_exception("Changing stress recovery options requires rebuilding the scene.")
+             if entry.fused_pipeline:
+-                kernel_pipeline(
+-                    options.young,
+-                    options.poisson,
+-                    options.tolerance,
+-                    options.absolute_tolerance,
+-                    self.source_epsilon,
+-                    entry.link.idx,
+-                    solver._links_offset_pos,
+-                    solver._links_offset_quat,
+-                    entry.omega,
+-                    solver.dyn_state,
+-                    solver.collider.collider_state,
+-                    entry.state,
+-                    entry.contacts,
+-                    entry.model.info,
+-                    entry.surface.info,
+-                    entry.model.surface_inverse.info,
+-                    entry.model.inverse.info,
+-                    entry.model.factor.info,
+-                    entry.scatter,
+-                    solver._errno,
+-                    solver._links_offset_quat.ndim == 3,
+-                    i_substep == 0,
+-                    not solver._disable_constraint,
+-                    options.inverse_corrections,
+-                    options.cached_peak,
+-                    options.cached_face_bounds,
+-                    entry.model.info.vertices.shape[0],
+-                    entry.output_mode == "full",
+-                    entry.scatter.tasks.shape[0] > 0,
+-                    options.cooperative_balance,
+-                    entry.reuse_contact_wrench,
+-                    entry.packed_block_size,
+-                    entry.coalesced_residual,
+-                    entry.reuse_contact_moments,
+-                )
++                kernel_pipeline(*self._pipeline_arguments(entry, i_substep))
+                 continue
+             if i_substep == 0:
+                 kernel_begin_step(entry.state)
+diff --git a/genesis/options/rigid_stress.py b/genesis/options/rigid_stress.py
+index 6b28a864..7ddf51b3 100644
+--- a/genesis/options/rigid_stress.py
++++ b/genesis/options/rigid_stress.py
+@@ -118,6 +118,7 @@ class RigidStressOptions(Options):
+     packed_block_size: Literal[0, 256, 512] | None = None
+     coalesced_residual: StrictBool | None = None
+     fused_pipeline: StrictBool = True
++    fused_rigid_post: StrictBool | None = None
+     cached_peak: StrictBool = True
+     cached_face_bounds: StrictBool = True
+     inverse_corrections: Annotated[int, Field(ge=0, le=8)] = 2
+diff --git a/research/rigid_stress/native_contact_motion_audit.py b/research/rigid_stress/native_contact_motion_audit.py
+index 4784aefd..6ab64333 100644
+--- a/research/rigid_stress/native_contact_motion_audit.py
++++ b/research/rigid_stress/native_contact_motion_audit.py
+@@ -22,7 +22,7 @@ def main():
+     parser.add_argument("--output", type=Path, required=True)
+     args = parser.parse_args()
+     gs.init(backend=gs.gpu, precision="64", seed=args.seed, logging_level="warning")
+-    workload = FrankaEgg(args.envs, varied=True, seed=args.seed)
++    workload = FrankaEgg(args.envs, varied=True, seed=args.seed, fused_rigid_post=False)
+     solver = workload.scene.rigid_solver
+     recovery = solver.stress_recovery
+     entry = recovery.links[0]
+@@ -121,7 +121,10 @@ def main():
+                     for path in sorted(
+                         [
+                             *Path("genesis/engine/solvers/rigid/stress").glob("*.py"),
++                            Path("genesis/engine/solvers/rigid/rigid_solver.py"),
++                            Path("genesis/options/rigid_stress.py"),
+                             Path("examples/rigid/franka_egg_stress.py"),
++                            Path("examples/rigid/egg_stress_controller.py"),
+                             Path(__file__),
+                         ]
+                     )
+@@ -155,6 +158,8 @@ def main():
+                 "per_environment_maxima": maxima.tolist(),
+                 "global_maxima": maxima.max(axis=0).tolist(),
+                 "actual_mu_range": [float(minimum_mu.min()), float(maxima[:, 3].max())],
++                "rigid_post_fusion": False,
++                "fusion_note": "Fusion is disabled to expose raw pre-integration values. Separate on/off trajectory comparisons verify unchanged physical motion. Native physical functions are preserved.",
+                 "scope_note": "Offline, untimed every-environment diagnostics immediately after stress recovery and before rigid integration. Contact point velocity = cd_vel + cd_ang cross (world_point - root_COM), using the same source contact frame. Sliding threshold 1e-5 m/s is diagnostic, not a numerical acceptance change or grasp success criterion. Establishment/disappearance counts track loaded egg-other-link pairs in left/right/support groups, not unstable manifold slot identities. All environments and transient/release steps are included; no production numerical code is replaced.",
+             },
+             indent=2,
+diff --git a/research/rigid_stress/native_grasp_outcomes.py b/research/rigid_stress/native_grasp_outcomes.py
+index a3bcfdc3..27669a57 100644
+--- a/research/rigid_stress/native_grasp_outcomes.py
++++ b/research/rigid_stress/native_grasp_outcomes.py
+@@ -39,8 +39,10 @@ def kernel_episode(
+     flags: qd.Tensor,
+     geometry: qd.Tensor,
+     outcomes: qd.Tensor,
++    counters: qd.Tensor,
+ ):
+     for i_b in range(flags.shape[0]):
++        counters[i_b][9] += gs.qd_int(state.valid[i_b] and state.rhs_norm_squared[i_b] == 0.0)
+         if tick >= delays[i_b]:
+             local_tick = (tick - delays[i_b]) % 600
+             phase = gs.qd_float(local_tick) / 599.0
+@@ -169,7 +171,7 @@ def main():
+     geometry = V_VEC(3, dtype=gs.qd_float, shape=(args.envs,))
+     outcomes = V_VEC(10, dtype=qd.i64, shape=(args.envs,))
+     failures = V(dtype=gs.qd_int, shape=(args.envs,))
+-    counters = V_VEC(9, dtype=qd.i64, shape=(args.envs,))
++    counters = V_VEC(10, dtype=qd.i64, shape=(args.envs,))
+     errors = V_VEC(6, dtype=gs.qd_float, shape=(args.envs,))
+     tail_counts = V_VEC(4, dtype=qd.i64, shape=(args.envs,))
+     tail_totals = V_VEC(7, dtype=qd.i64, shape=(args.envs,))
+@@ -228,6 +230,7 @@ def main():
+                     flags,
+                     geometry,
+                     outcomes,
++                    counters,
+                 )
+                 kernel_tail_work(
+                     entry.contacts,
+@@ -300,8 +303,10 @@ def main():
+             "hold_proxy_success_steps",
+             "hold_proxy_failed_steps",
+             "batch_scatter_overflow_affected_steps",
++            "valid_exact_zero_rhs_steps",
+         ],
+         "tail_cost_scope": "Per-environment work counters; these are not individual GPU latency measurements. Line-search scans are not separately counted.",
++        "exact_zero_rhs_fraction": float(work[:, 9].sum() / (args.envs * (args.warmup + args.steps))),
+         "contact_moment_reuse_requested": args.contact_moment_reuse,
+         "effective_contact_moment_reuse": entry.reuse_contact_moments,
+         "scatter_tasks_per_env": args.scatter_tasks_per_env,
+diff --git a/research/rigid_stress/native_recovery_trajectory_profile.py b/research/rigid_stress/native_recovery_trajectory_profile.py
+index 761e67a0..94257a98 100644
+--- a/research/rigid_stress/native_recovery_trajectory_profile.py
++++ b/research/rigid_stress/native_recovery_trajectory_profile.py
+@@ -36,7 +36,7 @@ def main():
+     args = parser.parse_args()
+     args.output.parent.mkdir(parents=True, exist_ok=True)
+     gs.init(backend=gs.gpu, precision="64", seed=args.seed, logging_level="warning")
+-    workload = FrankaEgg(args.envs, seed=args.seed, varied=True, output_mode=args.output_mode)
++    workload = FrankaEgg(args.envs, seed=args.seed, varied=True, output_mode=args.output_mode, fused_rigid_post=False)
+     recovery = workload.scene.rigid_solver.stress_recovery
+     durations = {"recover": [], "reset": [], "set_radius": []}
+     recording = False
+@@ -102,6 +102,8 @@ def main():
+             )
+     result = {
+         "scope": "synchronized recovery on live changing trajectory",
++        "rigid_post_fusion": False,
++        "fusion_note": "Fusion is disabled to expose the stress-only interval. Native physical functions, loads and budgets remain unchanged. Ordinary live/policy measurements include the selected graph route.",
+         "note": "Includes native contact association, pressure retries, complete solve/check/peak, stress reset and radius writes. Rigid/controller/reset motion costs are in instrumented_live_seconds, outside the recovery stage rate. Every-step synchronization is intrusive; use the ordinary live/policy benchmark for actual aggregate throughput.",
+         "envs": args.envs,
+         "seed": args.seed,
+diff --git a/research/rigid_stress/profile_native_rollout.py b/research/rigid_stress/profile_native_rollout.py
+index d389cc63..494fb67d 100644
+--- a/research/rigid_stress/profile_native_rollout.py
++++ b/research/rigid_stress/profile_native_rollout.py
+@@ -91,7 +91,11 @@ def main():
+             (workload, "observation", "observation"),
+             (policy, "forward", "policy_inference"),
+             (workload.link, "set_stress_contact_radius", "contact_parameter_update"),
+-            (recovery, "recover", "native_stress_recovery"),
++            (
++                recovery,
++                "recover_and_integrate" if recovery.post_kernel is not None else "recover",
++                "native_stress_and_rigid_post" if recovery.post_kernel is not None else "native_stress_recovery",
++            ),
+             (rigid_module, "kernel_resolve_stress_contacts", "rigid_contact_force_postprocess"),
+             (rigid_module, "kernel_step_2", "rigid_integration_after_stress"),
+             (solver, "substep", "rigid_substep_including_recovery"),
+diff --git a/research/rigid_stress/verify_native_postgraph.py b/research/rigid_stress/verify_native_postgraph.py
+new file mode 100644
+index 00000000..7bd48cec
+--- /dev/null
++++ b/research/rigid_stress/verify_native_postgraph.py
+@@ -0,0 +1,102 @@
++"""Check rigid isolation and complete stress agreement across serial post fusion."""
++
++import argparse
++import hashlib
++import json
++import os
++from pathlib import Path
++
++import numpy as np
++
++import genesis as gs
++from examples.rigid.franka_egg_stress import FrankaEgg
++from genesis.utils.misc import qd_to_numpy, tensor_to_array
++
++
++def main():
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument("--seed", type=int, required=True)
++    parser.add_argument("--steps", type=int, default=2400)
++    parser.add_argument("--envs", type=int, default=16)
++    parser.add_argument("--output", type=Path, required=True)
++    args = parser.parse_args()
++    gs.init(backend=gs.gpu, precision="64", seed=args.seed, logging_level="warning")
++    workloads = [
++        FrankaEgg(args.envs, seed=args.seed, varied=True, output_mode="full", fused_rigid_post=enabled)
++        for enabled in (False, True)
++    ]
++    assert workloads[0].scene.rigid_solver.stress_recovery.post_kernel is None
++    assert workloads[1].scene.rigid_solver.stress_recovery.post_kernel is not None
++    maxima = {name: 0.0 for name in ("nodal_force_N", "peak_Pa", "tensor_Pa", "von_mises_Pa")}
++    checks = 0
++    for tick in range(args.steps):
++        for workload in workloads:
++            workload.step()
++            workload.scene.rigid_solver.check_errno()
++        if tick % 20 == 19:
++            solvers = [workload.scene.rigid_solver for workload in workloads]
++            states = [solver.get_state(0) for solver in solvers]
++            for name in ("qpos", "dofs_vel", "dofs_acc", "links_pos", "links_quat", "friction_ratio"):
++                values = [tensor_to_array(getattr(state, name)) for state in states]
++                np.testing.assert_array_equal(*values, err_msg=f"rigid {name} tick {tick}")
++            entries = [solver.stress_recovery.links[0] for solver in solvers]
++            for name in ("valid", "step_valid", "invalid_steps"):
++                np.testing.assert_array_equal(*[qd_to_numpy(getattr(entry.state, name)) for entry in entries])
++            np.testing.assert_array_equal(*[qd_to_numpy(entry.contacts.valid) for entry in entries])
++            for label, values, relative, absolute in (
++                ("nodal_force_N", [qd_to_numpy(entry.state.force) for entry in entries], 1e-8, 1e-12),
++                ("peak_Pa", [tensor_to_array(workload.link.get_max_stress()) for workload in workloads], 1e-4, 1e-3),
++                (
++                    "tensor_Pa",
++                    [tensor_to_array(workload.link.get_stress_field()[0]) for workload in workloads],
++                    1e-4,
++                    1e-3,
++                ),
++                (
++                    "von_mises_Pa",
++                    [tensor_to_array(workload.link.get_stress_field()[1]) for workload in workloads],
++                    1e-4,
++                    1e-3,
++                ),
++            ):
++                np.testing.assert_allclose(*values, rtol=relative, atol=absolute)
++                maxima[label] = max(maxima[label], float(np.max(np.abs(values[0] - values[1]))))
++            np.testing.assert_array_equal(*[tensor_to_array(workload.phase) for workload in workloads])
++            checks += 1
++        if tick % 400 == 399:
++            print("Equivalent tick", tick, "max differences", maxima, flush=True)
++    result = {
++        "passed": True,
++        "seed": args.seed,
++        "envs": args.envs,
++        "steps": args.steps,
++        "checked_states": checks,
++        "maximum_absolute_differences": maxima,
++        "resets": [workload.reset_count for workload in workloads],
++        "invalid_environment_steps": [
++            int(qd_to_numpy(workload.scene.rigid_solver.stress_recovery.links[0].state.invalid_steps).sum())
++            for workload in workloads
++        ],
++        "source_revision": os.environ["RIGID_STRESS_SOURCE_REVISION"],
++        "source_sha256": {
++            str(path): hashlib.sha256(path.read_bytes()).hexdigest()
++            for path in sorted(
++                [
++                    *Path("genesis/engine/solvers/rigid/stress").glob("*.py"),
++                    Path("genesis/engine/solvers/rigid/rigid_solver.py"),
++                    Path("genesis/options/rigid_stress.py"),
++                    Path("examples/rigid/franka_egg_stress.py"),
++                    Path("examples/rigid/egg_stress_controller.py"),
++                    Path(__file__),
++                ]
++            )
++        },
++        "scope": "Untimed live full-field trajectories; serial post fusion on/off, ordinary public resets. Six rigid fields and phase must agree exactly; complete stress retains the original final budgets. CPU FP64 wrench/full-gauge oracles are separate.",
++    }
++    assert result["invalid_environment_steps"] == [0, 0]
++    args.output.write_text(json.dumps(result, indent=2) + "\n")
++    print("Passed", checks, "state comparisons", flush=True)
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/tests/rigid/test_stress.py b/tests/rigid/test_stress.py
+index 19a47a57..b611c9c5 100644
+--- a/tests/rigid/test_stress.py
++++ b/tests/rigid/test_stress.py
+@@ -793,7 +793,8 @@ def test_native_pcg_iteration_limit_and_freefall(tmp_path, preconditioner):
+ @pytest.mark.precision("64")
+ @pytest.mark.parametrize("substeps", (1, 4))
+ @pytest.mark.parametrize("output_mode", ("max", "full"))
+-def test_native_rigid_lifecycle_and_partial_reset(tmp_path, substeps, output_mode, monkeypatch):
++@pytest.mark.parametrize("fused_rigid_post", (False, True))
++def test_native_rigid_lifecycle_and_partial_reset(tmp_path, substeps, output_mode, fused_rigid_post, monkeypatch):
+     vertices, tetrahedra, faces, _ = shell_mesh(1, 2, 0.0005)
+     mesh = tmp_path / "shell.npz"
+     np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)
+@@ -816,15 +817,17 @@ def test_native_rigid_lifecycle_and_partial_reset(tmp_path, substeps, output_mod
+         RigidStressOptions(
+             mesh=mesh,
+             tolerance=1e-7,
+-            history_size=4 if output_mode == "max" else 0,
++            history_size=4 if output_mode == "max" and not fused_rigid_post else 0,
+             output_mode=output_mode,
+             contact_wrench_reuse=True,
+             packed_block_size=512,
+             coalesced_residual=True,
+             contact_moment_reuse=True,
++            fused_rigid_post=fused_rigid_post,
+         )
+     )
+     scene.build(n_envs=3)
++    assert (scene.rigid_solver.stress_recovery.post_kernel is not None) == (fused_rigid_post and gs.backend == gs.cuda)
+     assert not scene._pre_substep_callbacks and not scene._post_substep_callbacks
+     egg.set_pos(np.array([[0.0, 0.0, 0.031], [0.0, 0.0, 0.045], [0.0, 0.0, 0.061]]))
+     angles = np.array([0.23, -0.31, 0.47])

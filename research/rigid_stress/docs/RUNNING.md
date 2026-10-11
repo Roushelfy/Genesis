@@ -27,6 +27,14 @@ Default throughput measurements use at least 1,200 steps, three repeats and
 ten seconds per repeat. Kernel profiling is a separate intrusive pass.
 
 `--output-mode full` additionally writes all tetrahedral corner tensors and
+von Mises values. `--rigid-post-fusion auto|on|off` compares the additional
+serial graph containing rigid contact-force postprocessing, full recovery
+and rigid integration. Both requested/effective selections are recorded.
+The normal example exposes `--unfused-rigid-post`. Default selection currently
+enables this graph below B=8192 for one eligible configured stress link;
+final large-batch production comparisons determine any later selection change.
+
+Full mode writes all tetrahedral corner tensors and
 von Mises values; the default `max` allocates no complete field. Both modes
 retain the same complete load and residual budgets. `--unfused-pipeline`
 compares separate native passes. The policy benchmark defaults to FP32

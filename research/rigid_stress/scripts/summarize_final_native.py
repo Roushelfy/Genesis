@@ -48,6 +48,9 @@ def measurement(directory, scope, batch, seed):
         "output_mode": source["output_mode"],
         "source_revision": source["source_revision"],
         "source_sha256": source["source_sha256"],
+        "effective_rigid_post_fusion": source.get("effective_rigid_post_fusion"),
+        "recovery_preparation_steps": source.get("recovery_preparation_steps"),
+        "recovery_preparation_seconds_including_JIT": source.get("recovery_preparation_seconds_including_JIT"),
         "gpu": source["gpu"],
         "gpu_uuid": source["gpu_uuid"],
         "steps": steps,
@@ -79,19 +82,53 @@ def main():
     parser.add_argument("--run", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--require-complete", action="store_true")
+    parser.add_argument("--version", choices=("v8", "v9"), default="v8")
+    parser.add_argument("--recovery-version", choices=("v10",))
     args = parser.parse_args()
-    result = {"summarizer_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest()}
+    result = {
+        "summarizer_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        "version": args.version,
+        "recovery_version": args.recovery_version,
+    }
     measurements, missing = [], []
     for batch in BATCHES:
         for seed in SEEDS:
             for scope in SCOPES:
-                directory = args.run / f"final-native-v8-b{batch}-seed{seed}"
+                directory = args.run / f"final-native-{args.version}-b{batch}-seed{seed}"
+                if scope == "recovery" and args.recovery_version is not None:
+                    directory = args.run / f"final-native-recovery-{args.recovery_version}-b{batch}-seed{seed}"
                 row = measurement(directory, scope, batch, seed)
                 if row is None:
                     missing.append({"envs": batch, "seed": seed, "scope": scope})
                 else:
                     measurements.append(row)
     result["measurements"] = measurements
+    if measurements:
+
+        def numerical_sources(row):
+            # The recovery-only benchmark fix adds one untimed JIT/capture call.
+            # Every engine, controller, asset input and option source must match.
+            return {
+                path: digest
+                for path, digest in row["source_sha256"].items()
+                if path != "examples/speed_benchmark/rigid_stress.py"
+            }
+
+        reference_hashes = numerical_sources(measurements[0])
+        assert all(numerical_sources(row) == reference_hashes for row in measurements), "Mixed numerical source."
+        result["numerical_and_configuration_source_sha256"] = reference_hashes
+    invalid_timing = [
+        {
+            "envs": row["envs"],
+            "seed": row["seed"],
+            "scope": row["scope"],
+            "path": row["path"],
+            "reason": "Standalone recovery was not primed after combined-post live warmup; first repeat includes JIT/capture.",
+        }
+        for row in measurements
+        if row["scope"] == "recovery" and row["effective_rigid_post_fusion"] and row["recovery_preparation_steps"] != 1
+    ]
+    result["invalid_timing_measurements"] = invalid_timing
     result["missing_measurements"] = missing
     aggregate = []
     for batch in BATCHES:
@@ -146,13 +183,14 @@ def main():
             for scope in ("live", "policy"):
                 paired = {}
                 for mode in ("max", "full"):
-                    directory = args.run / f"final-native-fullcost-v8-{scope}-{mode}-b{batch}-seed{seed}"
+                    directory = args.run / f"final-native-fullcost-{args.version}-{scope}-{mode}-b{batch}-seed{seed}"
                     paired[mode] = measurement(directory, scope, batch, seed)
                     if paired[mode] is None:
                         missing_fullcost.append({"envs": batch, "seed": seed, "scope": scope, "mode": mode})
                 if not all(paired.values()):
                     continue
                 assert paired["max"]["gpu_uuid"] == paired["full"]["gpu_uuid"]
+                assert paired["max"]["source_sha256"] == paired["full"]["source_sha256"]
                 fullcost.append(
                     {
                         "envs": batch,
@@ -174,7 +212,8 @@ def main():
     for batch in (1024, 2048, 32768, 61440):
         for seed in SEEDS:
             for scope in ("live", "policy"):
-                path = args.run / f"native-final-episode-{scope}-b{batch}-seed{seed}-v8.json"
+                audit_prefix = "native-final-episode" if args.version == "v8" else "native-postgraph-episode"
+                path = args.run / f"{audit_prefix}-{scope}-b{batch}-seed{seed}-{args.version}.json"
                 if not path.exists():
                     missing_audits.append(str(path))
                     continue
@@ -198,15 +237,16 @@ def main():
                         "criteria": source["criteria"],
                         "tail_cost_scope": source["tail_cost_scope"],
                         "additional_work_scope": source["additional_work_scope"],
+                        "exact_zero_rhs_fraction": source.get("exact_zero_rhs_fraction"),
                     }
                 )
     result["episode_audits"] = audits
     result["missing_episode_audits"] = missing_audits
     profiles, missing_profiles = [], []
     for batch in (1024, 32768):
-        paths = [args.run / f"native-final-snapshot-profile-b{batch}-v8.json"]
+        paths = [args.run / f"native-final-snapshot-profile-b{batch}-{args.version}.json"]
         paths += [
-            args.run / f"native-final-rollout-profile-{scope}-{mode}-b{batch}-v8.json"
+            args.run / f"native-final-rollout-profile-{scope}-{mode}-b{batch}-{args.version}.json"
             for scope in ("live", "policy")
             for mode in ("max", "full")
         ]
@@ -221,11 +261,17 @@ def main():
                 else ("summary", "invalid_environment_steps", "scope_note")
             )
             profiles.append(
-                {**provenance, **{key: source[key] for key in keys}, "source_sha256": source["source_sha256"]}
+                {
+                    **provenance,
+                    **{key: source[key] for key in keys},
+                    "source_sha256": source["source_sha256"],
+                    "arguments": source.get("arguments"),
+                    "source_revision": source.get("source_revision"),
+                }
             )
     result["profiles"] = profiles
     result["missing_profiles"] = missing_profiles
-    result["complete"] = not any((missing, missing_fullcost, missing_audits, missing_profiles))
+    result["complete"] = not any((missing, missing_fullcost, missing_audits, missing_profiles, invalid_timing))
     result["scope_notes"] = [
         "Recovery repeats a frozen actual pre-integration snapshot; live and policy contain changing trajectories and timed public resets.",
         "Policy is FP32 inference plus observation and rollout, not full RL training.",
@@ -233,6 +279,7 @@ def main():
         "Memory CSV is sampled whole-card memory for the selected UUID, including setup/JIT; native buffers and Torch allocations are separate inventories.",
         "Per-environment work is not per-environment GPU latency. Intrusive nested profile intervals are not additive or throughput measurements.",
         "Two-seed aggregate is summed valid transitions / summed wall time; six-repeat spread combines temporal and workload-seed variation.",
+        "The optional recovery-v10 replacement explicitly primes standalone JIT/capture before timing. Its benchmark source differs by that setup-only fix; all engine/controller/options source hashes must match. Original cold-path v9 results remain preserved and are flagged invalid timing rather than numerical failures.",
     ]
     args.output.write_text(json.dumps(result, indent=2) + "\n")
     print(

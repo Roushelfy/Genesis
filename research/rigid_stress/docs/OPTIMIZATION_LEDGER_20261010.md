@@ -7,6 +7,86 @@ Q10x10 quadrature. All production physical arithmetic uses Quadrants FP64.
 The finite pad load and actual combined contact friction change are described
 in [CONTACT_REPAIR_20261010.md](CONTACT_REPAIR_20261010.md).
 
+## Serial rigid-post composition, 2026-10-11 03:27 UTC
+
+The 04:00 UTC v11 checkpoint publishes the complete v8 baseline: all 40
+four-scope measurements, all matched output-cost pairs, 16 all-environment
+episode audits and ten profiles. It also preserves closed v9 cases, numerical
+oracles and address diagnostics. All 1835 publication files and their 1835
+runtime originals pass SHA256 verification; manifest:
+`a7f0faea456b50f2e1a0dd0906743829a9b2938cb6fa758151d05a7d0e48ee73`.
+The [complete baseline tables](BASELINE_MEASUREMENTS_20261011.md) disclose
+rates, repeat variation, full-field cost, successful/failed/unfinished and
+weak-grip-drop counts, numerical/work tails, memory and nested profile costs.
+Final v9/v10 remeasurement and large-batch graph selection remain open.
+
+Production candidate `f3e92c6267357143b859b24a27a3a67731586667` adds a
+single serial Quadrants graph for the original contact-force postprocessing,
+unchanged full stress pipeline and original rigid integration. B1024
+two-seed live gains are 1.9372%/1.7929%, policy 1.6502%/1.6043%; B2048
+live 1.5156%/1.3478%, policy 0.9979%/1.1187%. Pairs use one physical GPU,
+900 warmup and three 2400-step changing trajectories with original budgets.
+No numerical failures occur. The production option records its effective
+selection. All 52 GPU and 31 CPU tests pass; 432 independent CPU FP64
+full-field samples pass, including forced overflow and four substeps.
+Worst complete residual uses 0.62436% of its budget. Two-seed paired
+16-environment 2400-step trajectories keep all six public rigid state fields
+and phase exactly equal; maximum nodal difference is 1.38778e-16 N and
+complete stress-field difference 2.16962e-6 Pa. Reset and state restoration
+retain their tested invalidation semantics.
+
+The large AST prototype gives +0.3661%/+0.2517% at B32768. Its same-GPU
+three-repeat standard deviations are retained in
+`postgraph-composition-final-v9-summary.json`. Ordinary production
+B32768/B61440 paired comparisons are in progress before the final automatic
+selection. Final four-scope measurements and max/full pairs now use the
+committed production candidate, rather than attributing an old-source rate
+to new code.
+
+Independent synthetic B65536 address diagnostics test the original scalar
+Jacobian allocation and an equal-byte Vec3 packing. On an otherwise empty
+RTX PRO 6000 with 101,071,781,888 free bytes, scalar allocation reports OOM
+for the 18.3 GB array and explicitly warns that int64 indexing is not
+supported. Packed allocation succeeds, but markers around 2^31 cause a CUDA
+illegal address. The correct-layout v2 scripts, JSON stages and failure logs
+are retained. The initial v1 packed trial rejects its unsupported `layout=`
+argument; that API error is not presented as a device boundary test. The
+original production guard stays intact. This demonstrates a native backend
+addressing limitation, not an exhausted physical-memory observation.
+
+Two further v3 diagnostics supply explicit int64 coordinates, with default
+index precision i32/i64 respectively. Both fail during compilation at the
+backend assertion requiring an i32 tensor offset (`type_check.cpp:149`).
+The failure occurs before marker access. Explicit coordinate promotion and
+changing the default index type do not suffice. In v4, the bounded Vec3
+component index is explicitly cast to i32 while outer coordinates remain
+int64. Both default-index variants then compile, but boundary access still
+raises CUDA illegal address. These separate tests distinguish the component
+index type requirement from the outer array addressing failure.
+
+The final four-scope remeasurement identifies a benchmark setup issue at
+small batches: combined-post warmup does not compile the standalone recovery
+graph, so its first timed recovery repeat includes JIT/capture. Source
+`1f22f6a2` adds exactly one untimed standalone recovery plus synchronization
+and errno check, and records its preparation cost separately. No numerical
+function or timed recovery operation changes. All ten batch/seed recovery
+cases are rerun with that explicit preparation. Original v9 cold-path results
+remain preserved and are marked invalid timing, rather than being silently
+removed or described as numerical failures. Live/policy warmup already
+compiles the graph those scopes actually measure.
+
+Small every-environment audits find only 0.412–0.421% valid exactly-zero RHS
+states. Skipping their peak scans could save at most about 0.01–0.03% of
+end-to-end time before adding a predicate. This does not justify a second
+peak path. Further full-Jacobian reset clearing does not apply: the selected
+zero-copy `ConstraintSolver.clear()` returns after indexed counters and
+warmstart reset, before that unused full-buffer kernel.
+
+Publication checkpoint v10 verifies all 1504 publication artifacts and
+all 1504 preserved runtime originals. Manifest SHA256:
+`7dbfc4d45cc5b9bba6292e0bfad83acc420c0e7116cadfeb5021dcdc6e5f4865`.
+It is a closed-case checkpoint, not final goal acceptance.
+
 ## Verified production checkpoint, 2026-10-11 02:20 UTC
 
 The bounded-index production source above is frozen for the final measurements.

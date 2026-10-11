@@ -1,0 +1,20 @@
+diff --git a/examples/speed_benchmark/rigid_stress.py b/examples/speed_benchmark/rigid_stress.py
+index d9625694..655b7645 100644
+--- a/examples/speed_benchmark/rigid_stress.py
++++ b/examples/speed_benchmark/rigid_stress.py
+@@ -521,7 +521,15 @@ def main() -> None:
+             result.update(profile(workload, args.steps))
+         else:
+             if args.scope == "recovery":
++                prepare_start = time.perf_counter()
+                 restore_frame(workload)
++                # Live warmup may only compile the combined rigid-post graph.
++                # Compile/capture this standalone path before timing its repeats.
++                workload.scene.rigid_solver.stress_recovery.recover(0)
++                qd.sync()
++                workload.scene.rigid_solver.check_errno()
++                result["recovery_preparation_steps"] = 1
++                result["recovery_preparation_seconds_including_JIT"] = time.perf_counter() - prepare_start
+                 result["recovery_input"] = "Frozen actual contact snapshot with its matching pre-integration frame."
+             rows = []
+             for _ in range(args.repetitions):
