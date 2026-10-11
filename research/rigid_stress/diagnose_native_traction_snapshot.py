@@ -27,7 +27,13 @@ from genesis.engine.solvers.rigid.stress.model import StressModel
 from genesis.engine.solvers.rigid.stress.paths import StressSurfacePaths
 from genesis.engine.solvers.rigid.stress.provenance import create_sources
 from genesis.engine.solvers.rigid.stress.surface import StressSurface
-from genesis.engine.solvers.rigid.stress.traction import create_traction_info, create_tractions, kernel_fit_tractions
+from genesis.engine.solvers.rigid.stress.traction import (
+    create_traction_info,
+    create_traction_samples,
+    create_tractions,
+    kernel_fit_tractions,
+    kernel_traction_samples,
+)
 from genesis.options.rigid_stress import RigidStressOptions
 from genesis.utils.misc import qd_to_numpy
 
@@ -84,7 +90,10 @@ def main():
     parser.add_argument("--backend", choices=["cpu", "cuda"], default="cpu")
     parser.add_argument("--mesh", type=Path, default=Path("examples/rigid/assets/hollow_egg/level1/elastic.npz"))
     parser.add_argument("--anchor-fan", action="store_true")
+    parser.add_argument("--packed", action="store_true")
     args = parser.parse_args()
+    if args.packed and not args.anchor_fan:
+        parser.error("--packed requires --anchor-fan.")
     if args.output.exists():
         raise FileExistsError(args.output)
     args.output.parent.mkdir(parents=True, exist_ok=True)
@@ -99,9 +108,12 @@ def main():
     sources = create_sources(1, 1)
     footprints = create_footprints(paths.info.positions.shape[0], 1, 1)
     tractions = (
-        create_anchor_fan_tractions(surface.info, 1, 1) if args.anchor_fan else create_tractions(len(positions), 1, 1)
+        create_anchor_fan_tractions(surface.info, 1, 1, compact=args.packed, packed=args.packed)
+        if args.anchor_fan
+        else create_tractions(len(positions), 1, 1)
     )
     epsilon = float(np.finfo(gs.np_float).eps)
+    exported = create_traction_samples(tractions) if args.anchor_fan else None
     records = []
     for snapshot in sorted(args.run_dir.glob("snapshot-*.npz")):
         with np.load(snapshot) as saved:
@@ -125,12 +137,14 @@ def main():
                 kernel_footprint_ports(contacts, sources, footprints, surface.info, paths.info)
                 if args.anchor_fan:
                     kernel_anchor_fan_profiles(contacts, footprints, tractions, model.info, surface.info, paths.info)
-                    positions = qd_to_numpy(tractions.sample_positions, transpose=True, copy=True).reshape(-1, 3)
-                    normals = qd_to_numpy(tractions.sample_normals, transpose=True, copy=True).reshape(-1, 3)
+                    kernel_traction_samples(exported, tractions, surface.info, info)
+                    positions = qd_to_numpy(exported.positions, transpose=True, copy=True).reshape(-1, 3)
+                    normals = qd_to_numpy(exported.normals, transpose=True, copy=True).reshape(-1, 3)
                 else:
                     kernel_footprint_profiles(contacts, footprints, tractions, model.info, surface.info, paths.info)
                 profile = qd_to_numpy(tractions.profile, transpose=True, copy=True).reshape(-1)
-                eligible = profile > 0.0
+                count = int(qd_to_numpy(tractions.sample_count, transpose=True).item())
+                eligible = (np.arange(len(profile)) < count) & (profile > 0.0)
                 if not args.anchor_fan:
                     assert eligible.sum() == saved["samples"][i_b, i_c]
                 relative = (positions[eligible] - anchor) / radius

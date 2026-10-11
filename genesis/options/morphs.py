@@ -1118,6 +1118,10 @@ class URDF(FileMorph):
         own material. Defaults to False.
     merge_fixed_links : bool, optional
         Whether to merge links connected via a fixed joint. Defaults to True.
+    preserve_mesh_precision : bool, optional
+        Use the source asset's collision mesh coordinates and pose instead of MuJoCo's FP32 mesh representation,
+        retaining MuJoCo's link inertia, joints and collision parameters. Requires corresponding mesh declarations
+        in the two URDF parses. Defaults to False. Apply the same choice to comparisons of rigid dynamics.
     links_to_keep : list of str, optional
         A list of link names that should not be skipped during link merging. Defaults to [].
     align : bool, optional
@@ -1138,6 +1142,7 @@ class URDF(FileMorph):
     fixed: StrictBool = False
     prioritize_urdf_material: StrictBool = False
     merge_fixed_links: StrictBool = True
+    preserve_mesh_precision: StrictBool = False
     links_to_keep: StrArrayType = ()
     default_armature: float | None = Field(default=0.1, ge=0)
     xacro_args: FrozenDictType[str, str] = {}

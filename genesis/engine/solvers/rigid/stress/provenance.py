@@ -147,6 +147,43 @@ def func_closest_triangle(i_f: int, point: qd.types.vector(3), surface_info: Str
     return position, bary
 
 
+@qd.func
+def func_same_surface_feature(
+    first_face: int,
+    second_face: int,
+    position: qd.types.vector(3),
+    tolerance: float,
+    stress_info: StressInfo,
+):
+    """Compare shared vertex/edge identity using the existing position budget.
+
+    Fixed dimensionless barycentric thresholds depend on triangle conditioning
+    and misclassify roundoff near a real edge. Coincident separately indexed
+    sheets remain distinct: distance is checked only on their common topology.
+    """
+    count = 0
+    first, second = qd.Vector.zero(gs.qd_float, 3), qd.Vector.zero(gs.qd_float, 3)
+    for a in qd.static(range(3)):
+        vertex = stress_info.surface_nodes[first_face, a]
+        shared = False
+        for b in qd.static(range(3)):
+            shared = shared or vertex == stress_info.surface_nodes[second_face, b]
+        if shared:
+            if count == 0:
+                first = stress_info.vertices[vertex]
+            elif count == 1:
+                second = stress_info.vertices[vertex]
+            count += 1
+    equivalent = count == 3
+    if count == 1:
+        equivalent = (position - first).norm() <= tolerance
+    elif count == 2:
+        edge = second - first
+        coordinate = qd.min(1.0, qd.max(0.0, (position - first).dot(edge) / edge.dot(edge)))
+        equivalent = (position - first - coordinate * edge).norm() <= tolerance
+    return equivalent
+
+
 @qd.kernel
 def kernel_resolve_sources(
     projection_limit: float,
@@ -222,15 +259,9 @@ def func_resolve_sources(
                             separation = (candidate - position).norm()
                             is_equivalent = False
                             if separation <= tolerance:
-                                # The same geometric anchor must also share its active mesh vertex identities.
-                                is_equivalent = True
-                                for a in qd.static(range(3)):
-                                    if bary[a] > 32.0 * source_epsilon:
-                                        i_vertex = stress_info.surface_nodes[nearest_face, a]
-                                        is_shared = False
-                                        for b in qd.static(range(3)):
-                                            is_shared = is_shared or i_vertex == stress_info.surface_nodes[i_f, b]
-                                        is_equivalent = is_equivalent and is_shared
+                                is_equivalent = func_same_surface_feature(
+                                    nearest_face, i_f, position, tolerance, stress_info
+                                )
                             elif separation <= 2.0 * uncertainty + tolerance:
                                 # A resolved local planar displacement is one surface source, not another branch.
                                 is_equivalent = func_surface_segment(

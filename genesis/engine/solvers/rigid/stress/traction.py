@@ -22,6 +22,7 @@ class StressTractionStatus(IntEnum):
     UNRESOLVED_INTEGRATION = 2
     NUMERICAL_FAILURE = 3
     SAMPLED_WRENCH_INFEASIBLE = 4
+    CONTINUOUS_FORCE_INFEASIBLE = 5
 
 
 @dataclass(frozen=True)
@@ -68,10 +69,18 @@ class StressTractionState:
     sample_normals: qd.Tensor
     sample_faces: qd.Tensor
     sample_shape: qd.Tensor
+    sample_count: qd.Tensor
+    sample_indices: qd.Tensor
 
 
 def create_tractions(
-    n_samples: int, n_contacts: int, n_envs: int, *, local_samples: bool = False
+    n_samples: int,
+    n_contacts: int,
+    n_envs: int,
+    *,
+    local_samples: bool = False,
+    local_sample_count: int | None = None,
+    packed_samples: bool = False,
 ) -> StressTractionState:
     """Allocate the exact supplied quadrature subproblem, without a force cloud.
 
@@ -79,8 +88,11 @@ def create_tractions(
     general subproblem layout is not the selected live scheduling/layout yet.
     """
     shape = (n_contacts, n_envs)
-    sample_shape = (n_samples, n_contacts, n_envs) if local_samples else ()
-    return StressTractionState(
+    sample_shape = (
+        (n_samples if local_sample_count is None else local_sample_count, n_contacts, n_envs) if local_samples else ()
+    )
+    face_shape = shape if local_samples and local_sample_count is not None else sample_shape
+    state = StressTractionState(
         profile=V(dtype=gs.qd_float, shape=(n_samples, n_contacts, n_envs)),
         dual=V_VEC(6, dtype=gs.qd_float, shape=shape),
         weight_sum=V(dtype=gs.qd_float, shape=shape),
@@ -93,9 +105,36 @@ def create_tractions(
         certificate_margin=V(dtype=gs.qd_float, shape=shape),
         sample_positions=V_VEC(3, dtype=gs.qd_float, shape=sample_shape),
         sample_normals=V_VEC(3, dtype=gs.qd_float, shape=sample_shape),
-        sample_faces=V(dtype=gs.qd_int, shape=sample_shape),
+        sample_faces=V(dtype=gs.qd_int, shape=face_shape),
         sample_shape=V_VEC(6, dtype=gs.qd_float, shape=sample_shape),
+        sample_count=V(dtype=gs.qd_int, shape=shape),
+        sample_indices=V(dtype=gs.qd_int, shape=(n_samples, n_contacts, n_envs) if packed_samples else ()),
     )
+    state.sample_count.fill(0 if packed_samples else n_samples)
+    return state
+
+
+@qd.func
+def func_traction_sample_index(i_q: int, i_c: int, i_b: int, traction_state: StressTractionState):
+    i_sample = i_q
+    if qd.static(len(traction_state.sample_indices.shape) == 3):
+        i_sample = traction_state.sample_indices[i_q, i_c, i_b]
+    return i_sample
+
+
+@qd.func
+def func_traction_local_index(
+    i_sample: int, i_c: int, i_b: int, traction_state: StressTractionState, traction_info: StressTractionInfo
+):
+    i_local = -1
+    if qd.static(len(traction_state.sample_faces.shape) == 2):
+        n_quadrature = traction_state.sample_positions.shape[0] // 3
+        i_anchor = traction_state.sample_faces[i_c, i_b]
+        if i_sample >= traction_info.positions.shape[0]:
+            i_local = n_quadrature + i_sample - traction_info.positions.shape[0]
+        elif i_sample // n_quadrature == i_anchor:
+            i_local = i_sample % n_quadrature
+    return i_local
 
 
 @qd.func
@@ -103,13 +142,95 @@ def func_traction_geometry(
     i_q: int, i_c: int, i_b: int, traction_state: StressTractionState, traction_info: StressTractionInfo
 ):
     position, normal = qd.Vector.zero(gs.qd_float, 3), qd.Vector.zero(gs.qd_float, 3)
-    if qd.static(len(traction_state.sample_positions.shape) == 3):
-        position = traction_state.sample_positions[i_q, i_c, i_b]
-        normal = traction_state.sample_normals[i_q, i_c, i_b]
+    i_sample = func_traction_sample_index(i_q, i_c, i_b, traction_state)
+    if qd.static(len(traction_state.sample_faces.shape) == 2):
+        i_local = func_traction_local_index(i_sample, i_c, i_b, traction_state, traction_info)
+        if i_local >= 0:
+            position = traction_state.sample_positions[i_local, i_c, i_b]
+            normal = traction_state.sample_normals[i_local, i_c, i_b]
+        else:
+            position = traction_info.positions[i_sample]
+            normal = traction_info.inward_normals[i_sample]
+    elif qd.static(len(traction_state.sample_faces.shape) == 3):
+        position = traction_state.sample_positions[i_sample, i_c, i_b]
+        normal = traction_state.sample_normals[i_sample, i_c, i_b]
     else:
-        position = traction_info.positions[i_q]
-        normal = traction_info.inward_normals[i_q]
+        position = traction_info.positions[i_sample]
+        normal = traction_info.inward_normals[i_sample]
     return position, normal
+
+
+@qd.func
+def func_traction_shape(
+    i_q: int,
+    i_c: int,
+    i_b: int,
+    traction_state: StressTractionState,
+    surface_info: StressSurfaceInfo,
+    traction_info: StressTractionInfo,
+):
+    i_sample = func_traction_sample_index(i_q, i_c, i_b, traction_state)
+    n_quadrature = surface_info.shape.shape[0]
+    i_face = i_sample // n_quadrature
+    basis = qd.Vector.zero(gs.qd_float, 6)
+    if qd.static(len(traction_state.sample_faces.shape) == 2):
+        i_local = func_traction_local_index(i_sample, i_c, i_b, traction_state, traction_info)
+        if i_local >= 0:
+            i_face = traction_state.sample_faces[i_c, i_b]
+            basis = traction_state.sample_shape[i_local, i_c, i_b]
+        else:
+            basis = surface_info.shape[i_sample % n_quadrature]
+    elif qd.static(len(traction_state.sample_faces.shape) == 3):
+        i_face = traction_state.sample_faces[i_sample, i_c, i_b]
+        basis = traction_state.sample_shape[i_sample, i_c, i_b]
+    else:
+        basis = surface_info.shape[i_sample % n_quadrature]
+    return i_face, basis
+
+
+@dataclass(frozen=True)
+class StressTractionSamples:
+    """Explicit sample export for diagnostics and independent offline validation."""
+
+    kind: ClassVar[DataKind] = DataKind.SCRATCH
+
+    positions: qd.Tensor
+    normals: qd.Tensor
+    faces: qd.Tensor
+    shape: qd.Tensor
+
+
+def create_traction_samples(traction_state: StressTractionState) -> StressTractionSamples:
+    shape = traction_state.profile.shape
+    return StressTractionSamples(
+        positions=V_VEC(3, dtype=gs.qd_float, shape=shape),
+        normals=V_VEC(3, dtype=gs.qd_float, shape=shape),
+        faces=V(dtype=gs.qd_int, shape=shape),
+        shape=V_VEC(6, dtype=gs.qd_float, shape=shape),
+    )
+
+
+@qd.kernel
+def kernel_traction_samples(
+    samples: StressTractionSamples,
+    traction_state: StressTractionState,
+    surface_info: StressSurfaceInfo,
+    traction_info: StressTractionInfo,
+):
+    for i_q, i_c, i_b in qd.ndrange(
+        traction_state.profile.shape[0], traction_state.profile.shape[1], traction_state.profile.shape[2]
+    ):
+        samples.positions[i_q, i_c, i_b] = qd.Vector([float("nan")] * 3)
+        samples.normals[i_q, i_c, i_b] = qd.Vector([float("nan")] * 3)
+        samples.faces[i_q, i_c, i_b] = -1
+        samples.shape[i_q, i_c, i_b] = qd.Vector.zero(gs.qd_float, 6)
+        if i_q < traction_state.sample_count[i_c, i_b]:
+            position, normal = func_traction_geometry(i_q, i_c, i_b, traction_state, traction_info)
+            i_face, basis = func_traction_shape(i_q, i_c, i_b, traction_state, surface_info, traction_info)
+            samples.positions[i_q, i_c, i_b] = position
+            samples.normals[i_q, i_c, i_b] = normal
+            samples.faces[i_q, i_c, i_b] = i_face
+            samples.shape[i_q, i_c, i_b] = basis
 
 
 @qd.func
@@ -155,7 +276,8 @@ def func_traction_dual(
     energy = target.dot(dual)
     gradient = target
     hessian = qd.Matrix.zero(gs.qd_float, 6, 6)
-    for i_q in range(traction_state.profile.shape[0]):
+    n_samples = traction_state.sample_count[i_c, i_b]
+    for i_q in range(n_samples):
         weight = traction_state.profile[i_q, i_c, i_b] / traction_state.weight_sum[i_c, i_b]
         if weight > 0.0:
             position, normal = func_traction_geometry(i_q, i_c, i_b, traction_state, traction_info)
@@ -240,7 +362,9 @@ def kernel_fit_tractions(
             is_valid = is_valid and qd.abs(finite) < qd.math.inf
             weight_sum = gs.qd_float(0.0)
             lipschitz = gs.qd_float(0.0)
-            for i_q in range(traction_state.profile.shape[0]):
+            n_samples = traction_state.sample_count[i_c, i_b]
+            is_valid = is_valid and 0 <= n_samples <= traction_state.profile.shape[0]
+            for i_q in range(n_samples):
                 weight = traction_state.profile[i_q, i_c, i_b]
                 is_valid = is_valid and weight >= 0.0 and weight < qd.math.inf
                 if weight > 0.0 and is_valid:
@@ -333,7 +457,7 @@ def kernel_fit_tractions(
                         # Continuous-footprint incompatibility requires a separate geometry certificate.
                         ray = -current / current.norm()
                         polar_max = gs.qd_float(-float("inf"))
-                        for i_q in range(traction_state.profile.shape[0]):
+                        for i_q in range(n_samples):
                             if traction_state.profile[i_q, i_c, i_b] > 0.0:
                                 position, normal = func_traction_geometry(i_q, i_c, i_b, traction_state, traction_info)
                                 relative = (position - anchor) / radius
@@ -358,7 +482,11 @@ def func_sample_traction(
     traction_info: StressTractionInfo,
 ):
     result = qd.Vector.zero(gs.qd_float, 3)
-    if traction_state.status[i_c, i_b] == StressTractionStatus.SUCCESS and traction_state.scale[i_c, i_b] > 0.0:
+    if (
+        i_q < traction_state.sample_count[i_c, i_b]
+        and traction_state.status[i_c, i_b] == StressTractionStatus.SUCCESS
+        and traction_state.scale[i_c, i_b] > 0.0
+    ):
         weight = traction_state.profile[i_q, i_c, i_b] / traction_state.weight_sum[i_c, i_b]
         if weight > 0.0:
             position, normal = func_traction_geometry(i_q, i_c, i_b, traction_state, traction_info)
@@ -380,28 +508,23 @@ def kernel_scatter_tractions(
     surface_info: StressSurfaceInfo,
     traction_info: StressTractionInfo,
     errno: qd.Tensor,
+    reset_force: qd.template(),
 ):
     for i_n, i_b in qd.ndrange(state.force.shape[0], state.force.shape[1]):
-        state.force[i_n, i_b] = qd.Vector.zero(gs.qd_float, 3)
+        if qd.static(reset_force):
+            state.force[i_n, i_b] = qd.Vector.zero(gs.qd_float, 3)
     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
         if contact_state.valid[i_c, i_b] and traction_state.status[i_c, i_b] != StressTractionStatus.SUCCESS:
             state.step_valid[i_b] = False
             qd.atomic_or(errno[i_b], array_class.ErrorCode.INVALID_STRESS_LOAD)
-    for i_q, i_c, i_b in qd.ndrange(
-        traction_state.profile.shape[0], contact_state.valid.shape[0], contact_state.valid.shape[1]
-    ):
-        if contact_state.valid[i_c, i_b] and traction_state.profile[i_q, i_c, i_b] > 0.0:
-            force = func_sample_traction(i_q, i_c, i_b, contact_state, traction_state, traction_info)
-            n_quadrature = surface_info.shape.shape[0]
-            i_face = i_q // n_quadrature
-            i_sample = i_q % n_quadrature
-            basis = qd.Vector.zero(gs.qd_float, 6)
-            if qd.static(len(traction_state.sample_positions.shape) == 3):
-                i_face = traction_state.sample_faces[i_q, i_c, i_b]
-                basis = traction_state.sample_shape[i_q, i_c, i_b]
-            else:
-                basis = surface_info.shape[i_sample]
-            for a in qd.static(range(6)):
-                i_node = stress_info.surface_nodes[i_face, a]
-                for k in qd.static(range(3)):
-                    qd.atomic_add(state.force[i_node, i_b][k], basis[a] * force[k])
+    for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
+        if contact_state.valid[i_c, i_b]:
+            n_samples = traction_state.sample_count[i_c, i_b]
+            for i_q in range(n_samples):
+                if traction_state.profile[i_q, i_c, i_b] > 0.0:
+                    force = func_sample_traction(i_q, i_c, i_b, contact_state, traction_state, traction_info)
+                    i_face, basis = func_traction_shape(i_q, i_c, i_b, traction_state, surface_info, traction_info)
+                    for a in qd.static(range(6)):
+                        i_node = stress_info.surface_nodes[i_face, a]
+                        for k in qd.static(range(3)):
+                            qd.atomic_add(state.force[i_node, i_b][k], basis[a] * force[k])

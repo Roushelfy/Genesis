@@ -45,6 +45,9 @@ class FrankaEgg:
         native_controller: bool = True,
         resident_reset_indices: bool = True,
         fused_rigid_post: bool | None = None,
+        contact_model: str = "pressure",
+        contact_block_size: int = 16,
+        egg_geometry: str = "urdf",
     ):
         self.n_envs = n_envs
         self.tick = 0
@@ -72,9 +75,17 @@ class FrankaEgg:
         self.robot = self.scene.add_entity(
             gs.morphs.MJCF(file="xml/franka_emika_panda/panda.xml"), material=gs.materials.Rigid(friction=0.1)
         )
+        if egg_geometry not in ("urdf", "mesh64"):
+            raise ValueError("egg_geometry must be 'urdf' or 'mesh64'.")
+        self.egg_geometry = egg_geometry
         self.egg = self.scene.add_entity(
             gs.morphs.URDF(
-                file=assets / "egg_shell.urdf", pos=(0.65, 0, 0.031), align=False, convexify=True, decimate=False
+                file=assets / "egg_shell.urdf",
+                pos=(0.65, 0, 0.031),
+                align=False,
+                convexify=True,
+                decimate=False,
+                preserve_mesh_precision=egg_geometry == "mesh64",
             ),
             material=gs.materials.Rigid(friction=0.6),
         )
@@ -83,6 +94,8 @@ class FrankaEgg:
             self.link.configure_stress_recovery(
                 gs.options.RigidStressOptions(
                     mesh=assets / "elastic.npz",
+                    contact_model=contact_model,
+                    contact_block_size=contact_block_size,
                     cooperative_solve=cooperative_solve,
                     method=method,
                     inverse_precision=inverse_precision,
@@ -258,6 +271,9 @@ def main() -> None:
     parser.add_argument("--varied", action="store_true")
     parser.add_argument("--viewer", action="store_true")
     parser.add_argument("--output-mode", choices=("max", "full"), default="max")
+    parser.add_argument("--contact-model", choices=("pressure", "intrinsic"), default="pressure")
+    parser.add_argument("--contact-block-size", type=int, default=16)
+    parser.add_argument("--egg-geometry", choices=("urdf", "mesh64"), default="urdf")
     parser.add_argument("--legacy-reset", action="store_true", help="Compare reset followed by separate pose setters.")
     parser.add_argument(
         "--torch-controller", action="store_true", help="Compare the original scripted input scheduling."
@@ -279,6 +295,9 @@ def main() -> None:
         native_controller=not args.torch_controller,
         resident_reset_indices=not args.host_reset_indices,
         fused_rigid_post=False if args.unfused_rigid_post else None,
+        contact_model=args.contact_model,
+        contact_block_size=args.contact_block_size,
+        egg_geometry=args.egg_geometry,
     )
     for _ in range(args.steps):
         workload.step()

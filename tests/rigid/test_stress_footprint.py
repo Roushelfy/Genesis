@@ -1,8 +1,10 @@
 import numpy as np
 import pytest
+import trimesh
 from scipy import sparse
 from scipy.sparse.csgraph import dijkstra
 from scipy.sparse.linalg import splu
+from scipy.spatial.transform import Rotation
 
 import genesis as gs
 from genesis.engine.solvers.rigid.stress.contact import create_contacts
@@ -14,6 +16,7 @@ from genesis.engine.solvers.rigid.stress.footprint import (
     kernel_footprint_ports,
     kernel_footprint_profiles,
 )
+from genesis.engine.solvers.rigid.stress.intrinsic import IntrinsicContacts
 from genesis.engine.solvers.rigid.stress.model import StressModel
 from genesis.engine.solvers.rigid.stress.paths import StressSurfacePaths
 from genesis.engine.solvers.rigid.stress.provenance import create_sources, kernel_resolve_sources
@@ -21,17 +24,19 @@ from genesis.engine.solvers.rigid.stress.surface import StressSurface
 from genesis.engine.solvers.rigid.stress.traction import (
     StressTractionStatus,
     create_traction_info,
+    create_traction_samples,
     create_tractions,
     kernel_fit_tractions,
     kernel_scatter_tractions,
+    kernel_traction_samples,
 )
 from genesis.options.rigid_stress import RigidStressOptions
 from genesis.utils.array_class import V_VEC, V
-from genesis.utils.misc import qd_to_numpy
+from genesis.utils.misc import qd_to_numpy, tensor_to_array
 from research.rigid_stress.field_cpu import stress_field
 from research.rigid_stress.mechanics import P2Shell
 from tests.rigid.test_stress_nonconvex import nonconvex_material_mesh
-from tests.rigid.test_stress_traction import cpu_cone_projection, kernel_traction_queries
+from tests.rigid.test_stress_traction import cpu_cone_projection, expand_traction_samples, kernel_traction_queries
 from tests.utils.assertions import assert_allclose, assert_equal
 
 
@@ -113,8 +118,8 @@ def cpu_anchor_fan_geometry(anchors, faces, vertices, triangles, positions, weig
 
 @pytest.mark.required
 @pytest.mark.precision("64")
-@pytest.mark.parametrize("anchor_fan", (False, True))
-def test_native_intrinsic_profiles_and_vector_recovery(nonconvex_material_mesh, asset_tmp_path, anchor_fan):  # noqa: F811
+@pytest.mark.parametrize(("anchor_fan", "packed"), ((False, False), (True, False), (True, True)))
+def test_native_intrinsic_profiles_and_vector_recovery(nonconvex_material_mesh, asset_tmp_path, anchor_fan, packed):  # noqa: F811
     vertices, tetrahedra, triangles, shape = nonconvex_material_mesh
     mesh = asset_tmp_path / f"footprint-{shape}.npz"
     np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=triangles)
@@ -142,7 +147,7 @@ def test_native_intrinsic_profiles_and_vector_recovery(nonconvex_material_mesh, 
     sources = create_sources(1, n_envs)
     footprints = create_footprints(len(ports), 1, n_envs)
     tractions = (
-        create_anchor_fan_tractions(surface.info, 1, n_envs)
+        create_anchor_fan_tractions(surface.info, 1, n_envs, compact=packed, packed=packed)
         if anchor_fan
         else create_tractions(len(positions), 1, n_envs)
     )
@@ -191,19 +196,40 @@ def test_native_intrinsic_profiles_and_vector_recovery(nonconvex_material_mesh, 
     expected *= np.maximum(1.0 - (distances / radius) ** 2, 0.0) ** 2
     kernel_footprint_ports(contacts, sources, footprints, surface.info, paths.info)
     kernel_profiles(contacts, footprints, tractions, model.info, surface.info, paths.info)
-    actual_profile = qd_to_numpy(tractions.profile, transpose=True, copy=True)[:, :, 0]
+    indices = qd_to_numpy(tractions.sample_indices, transpose=True) if packed else None
+    counts = qd_to_numpy(tractions.sample_count, transpose=True)
+    actual_profile = expand_traction_samples(
+        qd_to_numpy(tractions.profile, transpose=True, copy=True)[:, :, 0], indices, counts
+    )
     assert_equal(qd_to_numpy(footprints.status, transpose=True), StressFootprintStatus.SUCCESS)
     assert_allclose(actual_profile, expected, rtol=2e-12, atol=2e-20)
     if anchor_fan:
+        exported = create_traction_samples(tractions)
+        kernel_traction_samples(exported, tractions, surface.info, info)
+        selected = expected > 0.0 if packed else np.ones_like(expected, dtype=bool)
         assert_allclose(
-            qd_to_numpy(tractions.sample_positions, transpose=True)[:, :, 0], sample_positions, rtol=0, atol=1e-15
+            expand_traction_samples(qd_to_numpy(exported.positions, transpose=True)[:, :, 0], indices, counts)[
+                selected
+            ],
+            sample_positions[selected],
+            rtol=0,
+            atol=1e-15,
         )
         assert_allclose(
-            qd_to_numpy(tractions.sample_normals, transpose=True)[:, :, 0], sample_normals, rtol=0, atol=1e-15
+            expand_traction_samples(qd_to_numpy(exported.normals, transpose=True)[:, :, 0], indices, counts)[selected],
+            sample_normals[selected],
+            rtol=0,
+            atol=1e-15,
         )
-        assert_equal(qd_to_numpy(tractions.sample_faces, transpose=True)[:, :, 0], sample_faces)
+        assert_equal(
+            expand_traction_samples(qd_to_numpy(exported.faces, transpose=True)[:, :, 0], indices, counts)[selected],
+            sample_faces[selected],
+        )
         assert_allclose(
-            qd_to_numpy(tractions.sample_shape, transpose=True)[:, :, 0], sample_basis, rtol=2e-12, atol=2e-14
+            expand_traction_samples(qd_to_numpy(exported.shape, transpose=True)[:, :, 0], indices, counts)[selected],
+            sample_basis[selected],
+            rtol=2e-12,
+            atol=2e-14,
         )
     euclidean = np.linalg.norm(sample_positions - anchors[:, None], axis=2)
     other_branch = (
@@ -240,13 +266,15 @@ def test_native_intrinsic_profiles_and_vector_recovery(nonconvex_material_mesh, 
     assert_equal(qd_to_numpy(tractions.status, transpose=True), StressTractionStatus.SUCCESS)
     quadrature_force = V_VEC(3, dtype=gs.qd_float, shape=(sample_positions.shape[1], 1, n_envs))
     kernel_traction_queries(quadrature_force, contacts, tractions, info)
-    actual = qd_to_numpy(quadrature_force, transpose=True, copy=True)[:, :, 0].transpose((1, 0, 2))
+    actual = expand_traction_samples(
+        qd_to_numpy(quadrature_force, transpose=True, copy=True)[:, :, 0], indices, counts
+    ).transpose((1, 0, 2))
     assert_allclose(actual, reference, rtol=1e-4, atol=1e-12)
     state = model.create_state(n_envs, "full")
     errno = V(dtype=gs.qd_int, shape=(n_envs,))
     omega = V_VEC(3, dtype=gs.qd_float, shape=(n_envs,))
     omega.fill(0.0)
-    kernel_scatter_tractions(contacts, tractions, state, model.info, surface.info, info, errno)
+    kernel_scatter_tractions(contacts, tractions, state, model.info, surface.info, info, errno, reset_force=True)
     assert_equal(qd_to_numpy(errno, transpose=True), 0)
     nodal_force = qd_to_numpy(state.force, transpose=True, copy=True)
     node_positions = qd_to_numpy(model.info.vertices, transpose=True, copy=True)
@@ -285,6 +313,80 @@ def test_native_intrinsic_profiles_and_vector_recovery(nonconvex_material_mesh, 
         assert_allclose(actual_vm[i_b], vm, rtol=1e-4, atol=1e-3)
         expected_peaks[i_b] = vm.max()
     assert_allclose(qd_to_numpy(state.peak, transpose=True), expected_peaks, rtol=1e-4, atol=1e-3)
+    if packed:
+        collision = asset_tmp_path / f"streamed-{shape}.obj"
+        trimesh.Trimesh(vertices=vertices, faces=triangles, process=False).export(collision)
+        scene = gs.Scene(show_viewer=False)
+        entity = scene.add_entity(
+            gs.morphs.Mesh(
+                file=collision,
+                offset_pos=(0.00012, -0.00023, 0.00017),
+                offset_quat=(0.9238795325112867, 0.0, 0.3826834323650898, 0.0),
+                convexify=False,
+                decimate=False,
+            )
+        )
+        scene.build(n_envs=n_envs)
+        raw_contacts = create_contacts(5, n_envs, radius)
+        settings = options.model_copy(
+            update={"contact_model": "intrinsic", "contact_block_size": 2, "quadrature": 4, "contact_radius": radius}
+        )
+        streamed = IntrinsicContacts(entity.base_link, raw_contacts, model.info, surface.info, settings, paths)
+        link_position = tensor_to_array(entity.base_link.get_pos())[0]
+        link_quaternion = tensor_to_array(entity.base_link.get_quat())[0]
+        inverse_rotation = Rotation.from_quat(link_quaternion[[1, 2, 3, 0]]).inv()
+        collision_positions = tensor_to_array(entity.base_link.geoms[0].get_verts())[0]
+        expected_positions = inverse_rotation.apply(collision_positions - link_position)
+        assert_allclose(
+            qd_to_numpy(streamed.vertices.info.positions, transpose=True), expected_positions, rtol=0, atol=1e-15
+        )
+        factors = np.arange(1, 6)[:, None] * np.array([[0.3, 0.7, 0.5]])
+        raw_contacts.position.from_numpy(np.broadcast_to(points[None], (5, n_envs, 3)).copy())
+        raw_contacts.force.from_numpy(force[None] * factors[..., None])
+        raw_contacts.friction.from_numpy(np.broadcast_to(friction[None], (5, n_envs)).copy())
+        raw_contacts.frame_position.fill(0.0)
+        raw_contacts.frame_quaternion.fill([1.0, 0.0, 0.0, 0.0])
+        streamed.raw_sources.geom.fill(entity.base_link.geoms[0].idx)
+        streamed.raw_sources.pair.fill(11)
+        streamed.raw_sources.witness.from_numpy(np.broadcast_to(anchors[None], (5, n_envs, 3)).copy())
+        streamed.raw_sources.free_moment.from_numpy(free_moment[None] * factors[..., None])
+        streamed_state = model.create_state(n_envs, "full")
+        initial_active = np.array(
+            [[True, True, False], [True, False, False], [True, True, False], [True, False, False], [True, True, True]],
+            dtype=gs.np_bool,
+        )
+        for active in (initial_active, initial_active & [[True, False, True]], initial_active):
+            raw_contacts.valid.from_numpy(active)
+            errno.fill(0)
+            streamed.scatter(raw_contacts, streamed_state, model.info, surface.info, settings, epsilon, errno)
+            assert_equal(qd_to_numpy(raw_contacts.status, transpose=True), 0)
+            assert_equal(qd_to_numpy(errno, transpose=True), 0)
+            total_factor = (factors * active).sum(axis=0)
+            assert_allclose(
+                qd_to_numpy(streamed_state.force, transpose=True),
+                nodal_force * total_factor[:, None, None],
+                rtol=1e-4,
+                atol=1e-12,
+            )
+            model.recover(omega, streamed_state)
+            streamed_displacement = (
+                qd_to_numpy(streamed_state.displacement, transpose=True).reshape(n_envs, oracle.ndof).T
+            )
+            streamed_rhs = rhs * total_factor[None]
+            streamed_residual = np.linalg.norm(oracle.k @ streamed_displacement - streamed_rhs, axis=0)
+            assert (
+                streamed_residual
+                <= np.maximum(settings.absolute_tolerance, settings.tolerance * np.linalg.norm(streamed_rhs, axis=0))
+            ).all()
+            assert_allclose(
+                qd_to_numpy(streamed_state.peak, transpose=True), expected_peaks * total_factor, rtol=1e-4, atol=1e-3
+            )
+            assert_allclose(
+                qd_to_numpy(streamed_state.stress_tensor, transpose=True),
+                actual_tensor * total_factor[:, None, None, None],
+                rtol=1e-4,
+                atol=1e-3,
+            )
     # Only env 0 moves and changes radius; env 1 releases and env 2 stays intact.
     moved = anchors.copy()
     moved[0, 1] -= 0.00005
@@ -294,7 +396,11 @@ def test_native_intrinsic_profiles_and_vector_recovery(nonconvex_material_mesh, 
     kernel_resolve_sources(1e-8, epsilon, contacts, sources, model.info, surface.info)
     kernel_footprint_ports(contacts, sources, footprints, surface.info, paths.info)
     kernel_profiles(contacts, footprints, tractions, model.info, surface.info, paths.info)
-    updated = qd_to_numpy(tractions.profile, transpose=True, copy=True)[:, :, 0]
+    updated_indices = qd_to_numpy(tractions.sample_indices, transpose=True) if packed else None
+    updated_counts = qd_to_numpy(tractions.sample_count, transpose=True)
+    updated = expand_traction_samples(
+        qd_to_numpy(tractions.profile, transpose=True, copy=True)[:, :, 0], updated_indices, updated_counts
+    )
     assert_equal(updated[1], 0.0)
     assert_equal(updated[2], actual_profile[2])
     assert not np.array_equal(updated[0], actual_profile[0])
@@ -304,4 +410,9 @@ def test_native_intrinsic_profiles_and_vector_recovery(nonconvex_material_mesh, 
     kernel_resolve_sources(1e-8, epsilon, contacts, sources, model.info, surface.info)
     kernel_footprint_ports(contacts, sources, footprints, surface.info, paths.info)
     kernel_profiles(contacts, footprints, tractions, model.info, surface.info, paths.info)
-    assert_equal(qd_to_numpy(tractions.profile, transpose=True)[:, :, 0], actual_profile)
+    reborn_indices = qd_to_numpy(tractions.sample_indices, transpose=True) if packed else None
+    reborn_counts = qd_to_numpy(tractions.sample_count, transpose=True)
+    assert_equal(
+        expand_traction_samples(qd_to_numpy(tractions.profile, transpose=True)[:, :, 0], reborn_indices, reborn_counts),
+        actual_profile,
+    )
