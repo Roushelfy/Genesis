@@ -1,0 +1,271 @@
+{
+  "source_revision": "039686c4624d1b375b98cd28903fdca7975b7ede",
+  "requirement_revision": "1d6babf77848c46ba616da8bbb7062260a7ccd09",
+  "geometry_checkpoint_revision": "506b4964efc1e82bffd2ab7868db68bc7ec1bd72",
+  "native_nonconvex_goal_complete": false,
+  "scope": "Raw collision witness retention, state lifecycle, and existing stress/collision regression only.",
+  "test_source_rename": {
+    "tested": "tests/rigid/test_stress_witness_v5.py",
+    "committed": "tests/rigid/test_stress_witness.py",
+    "sha256": "a434a0774364164dd421a1869ea4c48918f71a0ec2b04ebf079282a005d38214"
+  },
+  "failed_check": {
+    "log": "witness-v4/cuda.log",
+    "cause": "The added comparison assumed deterministic GPU atomic contact-slot ordering across two independent pairs.",
+    "correction": "Canonical contact identity/position alignment; integer identities and numerical budgets retained."
+  },
+  "remaining": [
+    "Reference boundary face/barycentric association",
+    "SDF uncertainty and aggregate sources",
+    "Intrinsic footprint and vector traction integration",
+    "New-law contact/elastic/lifecycle acceptance",
+    "New-law throughput and measured optimization"
+  ],
+  "checks": [
+    {
+      "log": "witness-v5/cpu.log",
+      "result": "5 passed"
+    },
+    {
+      "log": "witness-v5/cuda.log",
+      "result": "5 passed"
+    },
+    {
+      "log": "witness-manifold-v1/cpu.log",
+      "result": "1 passed"
+    },
+    {
+      "log": "witness-manifold-v1/cuda.log",
+      "result": "1 passed"
+    },
+    {
+      "log": "witness-regression-v1/stress-cuda.log",
+      "result": "64 passed"
+    },
+    {
+      "log": "witness-regression-v1/stress-cpu.log",
+      "result": "43 passed, 21 skipped"
+    },
+    {
+      "log": "witness-regression-v1/collision-cuda.log",
+      "result": "6 passed"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "witness-v4/allocation.log",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-v4/allocation.log",
+      "sha256": "cedd55ce13b6c042213910d1e26f02ef5573002a45bc80a37f274b120ddb7e3d"
+    },
+    {
+      "path": "witness-v4/cpu.log",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-v4/cpu.log",
+      "sha256": "2860ecf9f4f0ecf3d4fa0a084e63956095b2eaf27e73db8fc98bf165216c0bc7"
+    },
+    {
+      "path": "witness-v4/cuda.log",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-v4/cuda.log",
+      "sha256": "3c0001199b7e1e06a91df818e40a9466c1b06672da6415a43f159be4ffdf9f73"
+    },
+    {
+      "path": "witness-v4/hardware.csv",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-v4/hardware.csv",
+      "sha256": "15cf426db1d98f92fcc4a1011a24cfa068d11bd554eb03087abe8895a0f8e6cf"
+    },
+    {
+      "path": "witness-v4/source-after.sha256",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-v4/source-after.sha256",
+      "sha256": "967fdb12ea3cc1691ee52b7cddfbce305257cdce74c6aaa5bdc497a81229cf29"
+    },
+    {
+      "path": "witness-v4/source.sha256",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-v4/source.sha256",
+      "sha256": "967fdb12ea3cc1691ee52b7cddfbce305257cdce74c6aaa5bdc497a81229cf29"
+    },
+    {
+      "path": "witness-v5/allocation.log",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-v5/allocation.log",
+      "sha256": "6a10fcdb3f7bc245899cc30772a7863c870297ee53d2b3f0737be163ee0ff41c"
+    },
+    {
+      "path": "witness-v5/cpu.log",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-v5/cpu.log",
+      "sha256": "4832f972baf791cde03a371f5d39337511bad1983bde6c14bda75f79c7407faf"
+    },
+    {
+      "path": "witness-v5/cuda.log",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-v5/cuda.log",
+      "sha256": "5b22a15f53509a629cbf113eb4db1e4d677cc8bcedc9e908c0236398825723df"
+    },
+    {
+      "path": "witness-v5/hardware.csv",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-v5/hardware.csv",
+      "sha256": "15cf426db1d98f92fcc4a1011a24cfa068d11bd554eb03087abe8895a0f8e6cf"
+    },
+    {
+      "path": "witness-v5/source-after.sha256",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-v5/source-after.sha256",
+      "sha256": "6796589909ba6c2e479eaba854b86da830e1b71a369d2b688b6496b0beb34571"
+    },
+    {
+      "path": "witness-v5/source.sha256",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-v5/source.sha256",
+      "sha256": "6796589909ba6c2e479eaba854b86da830e1b71a369d2b688b6496b0beb34571"
+    },
+    {
+      "path": "witness-manifold-v1/allocation.log",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-manifold-v1/allocation.log",
+      "sha256": "a2ed16974f5b7d9de83f4eb9ed19e4699cd66ea452d1c0a247e3de8f2ba1352b"
+    },
+    {
+      "path": "witness-manifold-v1/cpu.log",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-manifold-v1/cpu.log",
+      "sha256": "fec157d147e3b652647bd43bdf8a1f1ebad88c71d179bcad07baa3bf703bd3ab"
+    },
+    {
+      "path": "witness-manifold-v1/cuda.log",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-manifold-v1/cuda.log",
+      "sha256": "65646b299880484792a6b65cf4c7f7b2051b5dd832b24e7619d885ee06a99b90"
+    },
+    {
+      "path": "witness-manifold-v1/hardware.csv",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-manifold-v1/hardware.csv",
+      "sha256": "15cf426db1d98f92fcc4a1011a24cfa068d11bd554eb03087abe8895a0f8e6cf"
+    },
+    {
+      "path": "witness-manifold-v1/source-after.sha256",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-manifold-v1/source-after.sha256",
+      "sha256": "cd90d7095db4879c539f32dec407d775b77fac735ed04cbbd81b76346d3cd6be"
+    },
+    {
+      "path": "witness-manifold-v1/source.sha256",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-manifold-v1/source.sha256",
+      "sha256": "cd90d7095db4879c539f32dec407d775b77fac735ed04cbbd81b76346d3cd6be"
+    },
+    {
+      "path": "witness-regression-v1/allocation.log",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-regression-v1/allocation.log",
+      "sha256": "6a10fcdb3f7bc245899cc30772a7863c870297ee53d2b3f0737be163ee0ff41c"
+    },
+    {
+      "path": "witness-regression-v1/collision-cuda.log",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-regression-v1/collision-cuda.log",
+      "sha256": "c0fc55a787a6e1539fcd5a874684fc04ae5fda8b4d8e6b81a61f194577d8a8b0"
+    },
+    {
+      "path": "witness-regression-v1/hardware.csv",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-regression-v1/hardware.csv",
+      "sha256": "15cf426db1d98f92fcc4a1011a24cfa068d11bd554eb03087abe8895a0f8e6cf"
+    },
+    {
+      "path": "witness-regression-v1/source-after.sha256",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-regression-v1/source-after.sha256",
+      "sha256": "967fdb12ea3cc1691ee52b7cddfbce305257cdce74c6aaa5bdc497a81229cf29"
+    },
+    {
+      "path": "witness-regression-v1/source.sha256",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-regression-v1/source.sha256",
+      "sha256": "967fdb12ea3cc1691ee52b7cddfbce305257cdce74c6aaa5bdc497a81229cf29"
+    },
+    {
+      "path": "witness-regression-v1/stress-cpu.log",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-regression-v1/stress-cpu.log",
+      "sha256": "73e55869fc939523c2663f558adba044549be3ad3aa24caf199350c4f853d42e"
+    },
+    {
+      "path": "witness-regression-v1/stress-cuda.log",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-regression-v1/stress-cuda.log",
+      "sha256": "4bc26b4a788ac7d78c3199aa5b43b0efb8000fb9409fe2721777f9657098d058"
+    },
+    {
+      "path": "run_witness_v4.sh",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/run_witness_v4.sh",
+      "sha256": "86c7ec2c7df0214f82ee95ba2ace0535c9dca32e057db46c1fef83df6866fe84"
+    },
+    {
+      "path": "run_witness_v5.sh",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/run_witness_v5.sh",
+      "sha256": "c88cfc479c42b2b2764fe7c5209faa57f8149900808227856840a97e51d4d602"
+    },
+    {
+      "path": "run_witness_manifold_v1.sh",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/run_witness_manifold_v1.sh",
+      "sha256": "1ad8458e9231908199668a81f65d82c662da176dfa7349570dca313c107d38fc"
+    },
+    {
+      "path": "run_witness_regression_v1.sh",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/run_witness_regression_v1.sh",
+      "sha256": "77b2c45a5b4a3ec1aeba9e809037c6450aec5fe34234171aac4141fa96ca5e49"
+    },
+    {
+      "path": "archive_witness_checkpoint.py",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/archive_witness_checkpoint.py",
+      "sha256": "ac6227fbd7de09ba082794b71b6dc9ddc692f3729ebf45d7b2c861a2246bfc2b"
+    },
+    {
+      "path": "source/genesis/utils/array_class.py",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-v5/source/genesis/utils/array_class.py",
+      "sha256": "ac269251baa277f7e8e58dfd5746ad8282ee54b5187c2293edbba3b975a970ea"
+    },
+    {
+      "path": "source/genesis/engine/solvers/rigid/collider/collider.py",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-v5/source/genesis/engine/solvers/rigid/collider/collider.py",
+      "sha256": "0347e6a3e6fa2076b5741347037c9c41cc472018b70e5f01b325a2341ec5c00c"
+    },
+    {
+      "path": "source/genesis/engine/solvers/rigid/collider/contact.py",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-v5/source/genesis/engine/solvers/rigid/collider/contact.py",
+      "sha256": "a497ce5cabcfcf1bea971bfce2768de93409c10bbc026d3306b499991ea458bc"
+    },
+    {
+      "path": "source/genesis/engine/solvers/rigid/collider/gjk.py",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-v5/source/genesis/engine/solvers/rigid/collider/gjk.py",
+      "sha256": "454b511266be09b463ab97228d52f2bd5b4e522ac84cbddc8d4ff5cb77b0b12a"
+    },
+    {
+      "path": "source/genesis/engine/solvers/rigid/collider/mpr.py",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-v5/source/genesis/engine/solvers/rigid/collider/mpr.py",
+      "sha256": "f325c976a3e961b6cc421204b0c41b14e04cf440ff0b70ebfb4cd6ee72dbeff4"
+    },
+    {
+      "path": "source/genesis/engine/solvers/rigid/collider/narrowphase.py",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-v5/source/genesis/engine/solvers/rigid/collider/narrowphase.py",
+      "sha256": "489907becbe12a3ab4788c7321bc6e5c2d9941b9f34aa5f84107ce0dfca2d08e"
+    },
+    {
+      "path": "source/genesis/engine/solvers/rigid/collider/witness.py",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-v5/source/genesis/engine/solvers/rigid/collider/witness.py",
+      "sha256": "31f57cf0ff24f6d493ca82f12b1999d5a61b0f2f45c8241928cedab2afe857cd"
+    },
+    {
+      "path": "source/tests/rigid/test_stress_witness.py",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-v5/source/tests/rigid/test_stress_witness_v5.py",
+      "sha256": "a434a0774364164dd421a1869ea4c48918f71a0ec2b04ebf079282a005d38214"
+    },
+    {
+      "path": "source/tests/rigid/test_stress_nonconvex.py",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-v5/source/tests/rigid/test_stress_nonconvex.py",
+      "sha256": "a6ddbbbb688c1926c618dc69671d77e15bf4370559d35b78f26179a9a4082cfe"
+    },
+    {
+      "path": "source/tests/rigid/test_stress_witness_manifold.py",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-manifold-v1/source/tests/rigid/test_stress_witness_manifold.py",
+      "sha256": "3c26282bb34c68bf3e709a948fd2838181464b76063060151a4cf7435f2830e7"
+    },
+    {
+      "path": "failed-v4-source/tests/rigid/test_stress_witness.py",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-v4/source/tests/rigid/test_stress_witness.py",
+      "sha256": "c9f7ac248bd069b9e6f88196bcfb65552a1a8a04f3f349b942cbfeef9dd6f8c6"
+    },
+    {
+      "path": "source/tests/rigid/test_stress.py",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/archive-support/tests/rigid/test_stress.py",
+      "sha256": "c3d14bd8c49c3016ac5405682303860cb657f0a1413c25bcc3a450e6aa60b083"
+    },
+    {
+      "path": "check_nonconvex_witness.sh",
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/archive-support/research/rigid_stress/scripts/check_nonconvex_witness.sh",
+      "sha256": "21515ffd3e514340d95ecfefe72151f4ecee795be2e9354859814afb00fe7cb2"
+    }
+  ]
+}

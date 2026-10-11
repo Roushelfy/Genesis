@@ -1,0 +1,61 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0
+rootdir: /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery
+configfile: pyproject.toml
+plugins: anyio-4.15.1, forked-1.7.5, print-1.2.0, timeout-2.4.0, xdist-3.8.0, quadrants-1.3.3, syrupy-6.1.1
+timeout: 1200.0s
+timeout method: signal
+timeout func_only: False
+collected 5 items
+
+tests/rigid/test_stress_witness.py [32m.[0m[32m.[0m[31mF[0m[32m.[0m[32m.[0m[31m                                 [100%][0m
+
+=================================== FAILURES ===================================
+[31m[1m___________ test_native_collision_witnesses_and_lifecycle[True-True] ___________[0m
+[1m[31mtests/rigid/test_stress_witness.py[0m:116: in test_native_collision_witnesses_and_lifecycle
+    [0mnp.testing.assert_array_equal(without[i_b, :count], with_witness[i_b, :count])[90m[39;49;00m
+[1m[31mE   AssertionError: [0m
+[1m[31mE   Arrays are not equal[0m
+[1m[31mE   [0m
+[1m[31mE   Mismatched elements: 2 / 2 (100%)[0m
+[1m[31mE   Max absolute difference among violations: 1[0m
+[1m[31mE   Max relative difference among violations: 1.[0m
+[1m[31mE    ACTUAL: array([1, 2], dtype=int32)[0m
+[1m[31mE    DESIRED: array([2, 1], dtype=int32)[0m
+---------------------------- Captured stdout setup -----------------------------
+[Genesis 16:04:18] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 16:04:18] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+----------------------------- Captured stdout call -----------------------------
+[Genesis 16:04:18] Scene <1a913ea> created.
+[Genesis 16:04:18] Adding <gs.engine.entities.RigidEntity> 'tetra_287a1c6'. idx: 0, morph: <gs.morphs.Mesh(file='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-v4/tmp/pytest-of-zhaofeng/pytest-1/test_native_collision_witnesse2/tetra.obj')>, material: <gs.materials.Rigid>.
+[Genesis 16:04:18] Adding <gs.engine.entities.RigidEntity> 'tetra_c03df51'. idx: 1, morph: <gs.morphs.Mesh(file='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-v4/tmp/pytest-of-zhaofeng/pytest-1/test_native_collision_witnesse2/tetra.obj')>, material: <gs.materials.Rigid>.
+[Genesis 16:04:18] Adding <gs.engine.entities.RigidEntity> 'tetra_6d084bf'. idx: 2, morph: <gs.morphs.Mesh(file='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-v4/tmp/pytest-of-zhaofeng/pytest-1/test_native_collision_witnesse2/tetra.obj')>, material: <gs.materials.Rigid>.
+[Genesis 16:04:18] Building scene <1a913ea>...
+[Genesis 16:04:20] Compiling simulation kernels...
+[Genesis 16:04:39] Building visualizer...
+[Genesis 16:04:58] Scene <10bb0fe> created.
+[Genesis 16:04:58] Adding <gs.engine.entities.RigidEntity> 'tetra_85c9143'. idx: 0, morph: <gs.morphs.Mesh(file='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-v4/tmp/pytest-of-zhaofeng/pytest-1/test_native_collision_witnesse2/tetra.obj')>, material: <gs.materials.Rigid>.
+[Genesis 16:04:58] Adding <gs.engine.entities.RigidEntity> 'tetra_705f5ca'. idx: 1, morph: <gs.morphs.Mesh(file='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-v4/tmp/pytest-of-zhaofeng/pytest-1/test_native_collision_witnesse2/tetra.obj')>, material: <gs.materials.Rigid>.
+[Genesis 16:04:58] Adding <gs.engine.entities.RigidEntity> 'tetra_afc2997'. idx: 2, morph: <gs.morphs.Mesh(file='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/witness-v4/tmp/pytest-of-zhaofeng/pytest-1/test_native_collision_witnesse2/tetra.obj')>, material: <gs.materials.Rigid>.
+[Genesis 16:04:58] Building scene <10bb0fe>...
+[Genesis 16:05:00] Compiling simulation kernels...
+[Genesis 16:05:25] Building visualizer...
+--------------------------- Captured stdout teardown ---------------------------
+[Genesis 16:05:42] Exiting Genesis and caching compiled kernels...
+[33m=============================== warnings summary ===============================[0m
+tests/rigid/test_stress_witness.py: 10 warnings
+  /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                          32 iterations, so the compile time may be extremely long.
+                          You can use a non-static for loop if you want to decrease the compile time.
+                          You can disable this warning by setting qd.init(unrolling_limit=0).
+    for a, b in qd.static(qd.ndrange(6, 6)):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================================= Failed tests =================================
+tests/rigid/test_stress_witness.py::test_native_collision_witnesses_and_lifec...
+============================== slowest durations ===============================
+147.08s call     tests/rigid/test_stress_witness.py::test_native_sdf_emitting_vertex_provenance[u]
+131.98s call     tests/rigid/test_stress_witness.py::test_native_collision_witnesses_and_lifecycle[False-False]
+
+(13 durations < 100s hidden.)
+[31m============= [31m[1m1 failed[0m, [32m4 passed[0m, [33m10 warnings[0m[31m in 456.01s (0:07:36)[0m[31m =============[0m

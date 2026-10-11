@@ -203,7 +203,7 @@ attribute and was corrected to inspect its shape. Another development run
 edited imported source during compilation, invalidating Quadrants' source/AST
 lookup; it supplies no numerical evidence. Accepted runs froze imported code
 and verified its hashes. Failed development logs remain in the raw data root;
-the publication will also preserve the failed two-pair comparison and its test.
+the publication also preserves the failed two-pair comparison and its test.
 
 GPU checks used RTX PRO 6000 Blackwell Server Edition, 97,887 MiB, driver
 595.71.05, Genesis 1.4.3, Quadrants 1.3.3, container `1_26`, FP64. These are
@@ -219,3 +219,14 @@ bash /absolute/path/to/Genesis/research/rigid_stress/scripts/check_nonconvex_wit
 The script isolates runtime/cache paths, refuses existing evidence and checks
 the tested source hashes before and after execution. Set
 `RIGID_STRESS_CHECK_EXISTING=1` to include the old stress and geometry suites.
+
+Source checkpoint: `039686c4624d1b375b98cd28903fdca7975b7ede`.
+The [publication manifest](../evidence/20261011-nonconvex/witness-checkpoint-v1/manifest.json)
+records closed CPU/CUDA logs, unchanged source hashes, source snapshots,
+launchers, the test-module rename and the failed two-pair comparison. All
+**43 publication artifacts and their immutable data-side originals** pass
+SHA256 verification; manifest SHA256 is
+`751ccc3d325bfc3bd75a08778e286527b96e13ae7a6124d2446cb578c8a91b21`.
+This completes the collision producer checkpoint, not the active nonconvex
+recovery goal. Reference association, vector loads and matched performance
+remain pending as listed above.
