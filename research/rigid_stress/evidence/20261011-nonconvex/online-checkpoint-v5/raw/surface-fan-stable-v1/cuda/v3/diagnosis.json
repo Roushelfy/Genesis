@@ -1,0 +1,191 @@
+{
+  "scope": "Separate sampled-cone infeasibility from numerical failure in saved native contacts.\n\nReplay preserves the snapshot's anchor, force point, radius and actual friction.\nThe native profile is reconstructed using the declared port-path law. Independent\nCPU LPs use inscribed and circumscribed friction polygons: inner feasibility is\na constructive Coulomb witness, while outer infeasibility bounds the exact\nsampled cones. Neither conclusion certifies a continuous footprint model.\n",
+  "contacts": [
+    {
+      "snapshot": "snapshot-594.npz",
+      "env": 18,
+      "contact": 1,
+      "samples": 547,
+      "edge_subdivisions": 8,
+      "radius_m": 0.0050082488050716654,
+      "friction": 0.7900954592846008,
+      "target": [
+        -0.9023276158090295,
+        -0.3963533008839525,
+        -0.169437111126186,
+        -0.005502585767798517,
+        0.00948272763806094,
+        0.007121371982167337
+      ],
+      "saved_force_error": 12.472986900606372,
+      "saved_moment_error": 9.720186847074903,
+      "lp": [
+        {
+          "sides": 32,
+          "outer": false,
+          "status": 2,
+          "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)"
+        },
+        {
+          "sides": 32,
+          "outer": true,
+          "status": 2,
+          "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)"
+        },
+        {
+          "sides": 128,
+          "outer": false,
+          "status": 2,
+          "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)"
+        },
+        {
+          "sides": 128,
+          "outer": true,
+          "status": 2,
+          "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)"
+        }
+      ],
+      "native": [
+        {
+          "scheduler": "scalar",
+          "tolerance": 9e-09,
+          "evaluation_budget": 128,
+          "status": 3,
+          "evaluations": 128,
+          "force_error": 5.2064491708372085,
+          "moment_error": 4.053947137945249,
+          "dual": [
+            -2719030868.082152,
+            23764906699.97264,
+            -37825771993.10492,
+            -17843200175.942406,
+            18008773557.172695,
+            24531249577.866993
+          ]
+        },
+        {
+          "scheduler": "scalar",
+          "tolerance": 9e-09,
+          "evaluation_budget": 512,
+          "status": 3,
+          "evaluations": 512,
+          "force_error": 0.001652243437404728,
+          "moment_error": 0.0012660161729667616,
+          "dual": [
+            -34241328567.381134,
+            327211511027.1085,
+            -537493095119.372,
+            -242587661380.28604,
+            246154388463.6277,
+            337232589262.40576
+          ]
+        },
+        {
+          "scheduler": "scalar",
+          "tolerance": 9e-09,
+          "evaluation_budget": 2048,
+          "status": 3,
+          "evaluations": 2048,
+          "force_error": 0.0016522526336242716,
+          "moment_error": 0.001266003992428583,
+          "dual": [
+            -172135532221.13943,
+            1644933855199.9744,
+            -2702046103177.0312,
+            -1219518695682.439,
+            1237449301960.2332,
+            1695311119118.56
+          ]
+        },
+        {
+          "scheduler": "warp_candidate",
+          "tolerance": 9e-09,
+          "evaluation_budget": 128,
+          "status": 3,
+          "evaluations": 128,
+          "force_error": 7.2023718085448145,
+          "moment_error": 5.613621084266232,
+          "dual": [
+            -2965071864.2844753,
+            25926484193.97852,
+            -41273597752.62056,
+            -19369620555.644695,
+            19564884548.31322,
+            26777285033.02795
+          ]
+        },
+        {
+          "scheduler": "warp_candidate",
+          "tolerance": 9e-09,
+          "evaluation_budget": 512,
+          "status": 3,
+          "evaluations": 512,
+          "force_error": 0.0016522478919278752,
+          "moment_error": 0.0012660103594257775,
+          "dual": [
+            -34250314373.027206,
+            327297379760.1887,
+            -537634147174.024,
+            -242651322612.68735,
+            246218985712.09915,
+            337321087785.9371
+          ]
+        },
+        {
+          "scheduler": "warp_candidate",
+          "tolerance": 9e-09,
+          "evaluation_budget": 2048,
+          "status": 3,
+          "evaluations": 2048,
+          "force_error": 0.001652244068887278,
+          "moment_error": 0.0012660151705203761,
+          "dual": [
+            -172144518175.55096,
+            1645019725341.1506,
+            -2702187157537.1626,
+            -1219582357959.4763,
+            1237513900268.2363,
+            1695399619093.6555
+          ]
+        }
+      ],
+      "profiles": {
+        "minimum": 1.6835747781309485e-26,
+        "maximum": 2.164497682357783e-07,
+        "sum": 1.4783762302530677e-05,
+        "faces": [
+          {
+            "face": 41,
+            "count": 179,
+            "weight": 1.951513660267892e-06
+          },
+          {
+            "face": 42,
+            "count": 47,
+            "weight": 2.863464767067039e-06
+          },
+          {
+            "face": 43,
+            "count": 177,
+            "weight": 2.12117446987506e-06
+          },
+          {
+            "face": 60,
+            "count": 48,
+            "weight": 2.4152098993714347e-06
+          },
+          {
+            "face": 61,
+            "count": 48,
+            "weight": 2.732638671926263e-06
+          },
+          {
+            "face": 63,
+            "count": 48,
+            "weight": 2.6997608340229885e-06
+          }
+        ]
+      }
+    }
+  ]
+}

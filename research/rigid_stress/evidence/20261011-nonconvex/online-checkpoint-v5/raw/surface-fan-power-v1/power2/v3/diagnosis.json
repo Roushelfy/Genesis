@@ -1,0 +1,316 @@
+{
+  "scope": "Separate sampled-cone infeasibility from numerical failure in saved native contacts.\n\nReplay preserves the snapshot's anchor, force point, radius and actual friction.\nThe native profile is reconstructed using the declared port-path law. Independent\nCPU LPs use inscribed and circumscribed friction polygons: inner feasibility is\na constructive Coulomb witness, while outer infeasibility bounds the exact\nsampled cones. Neither conclusion certifies a continuous footprint model.\n",
+  "contacts": [
+    {
+      "snapshot": "snapshot-594.npz",
+      "env": 18,
+      "contact": 1,
+      "samples": 664,
+      "edge_subdivisions": 8,
+      "coordinate_power": 2,
+      "radius_m": 0.0050082488050716654,
+      "friction": 0.7900954592846008,
+      "target": [
+        -0.9023276158090295,
+        -0.3963533008839525,
+        -0.169437111126186,
+        -0.005502585767798517,
+        0.00948272763806094,
+        0.007121371982167337
+      ],
+      "saved_force_error": 12.472986900606372,
+      "saved_moment_error": 9.720186847074903,
+      "lp": [
+        {
+          "sides": 32,
+          "outer": false,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "wrench_error": 5.3535894325872125e-15,
+          "minimum_compression": 0.0,
+          "maximum_cone_violation": 1.734723475976807e-18,
+          "used_minimum_profile": 8.206728002320346e-25,
+          "used_maximum_force_to_profile_ratio": 9.910742061736499e+21,
+          "force_magnitude_by_face": [
+            {
+              "face": 41,
+              "force_magnitude": 0.011953504572036793
+            },
+            {
+              "face": 42,
+              "force_magnitude": 0.0
+            },
+            {
+              "face": 43,
+              "force_magnitude": 0.0
+            },
+            {
+              "face": 60,
+              "force_magnitude": 0.0
+            },
+            {
+              "face": 61,
+              "force_magnitude": 0.9888041181341443
+            },
+            {
+              "face": 63,
+              "force_magnitude": 0.0016282480102478294
+            }
+          ]
+        },
+        {
+          "sides": 32,
+          "outer": true,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "wrench_error": 2.3329549449474402e-15,
+          "minimum_compression": 0.0,
+          "maximum_cone_violation": 4.882724516785952e-05,
+          "used_minimum_profile": 8.206728002320346e-25,
+          "used_maximum_force_to_profile_ratio": 1.7056950349822702e+22,
+          "force_magnitude_by_face": [
+            {
+              "face": 41,
+              "force_magnitude": 0.013998175207007779
+            },
+            {
+              "face": 42,
+              "force_magnitude": 0.0
+            },
+            {
+              "face": 43,
+              "force_magnitude": 0.0
+            },
+            {
+              "face": 60,
+              "force_magnitude": 0.0
+            },
+            {
+              "face": 61,
+              "force_magnitude": 0.9855124080516255
+            },
+            {
+              "face": 63,
+              "force_magnitude": 0.0066533580573152635
+            }
+          ]
+        },
+        {
+          "sides": 128,
+          "outer": false,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "wrench_error": 1.2539258187445235e-15,
+          "minimum_compression": 0.0,
+          "maximum_cone_violation": 8.673617379884035e-19,
+          "used_minimum_profile": 4.138708625173044e-24,
+          "used_maximum_force_to_profile_ratio": 3.334673595987699e+21,
+          "force_magnitude_by_face": [
+            {
+              "face": 41,
+              "force_magnitude": 0.013801242373851101
+            },
+            {
+              "face": 42,
+              "force_magnitude": 0.0
+            },
+            {
+              "face": 43,
+              "force_magnitude": 0.0
+            },
+            {
+              "face": 60,
+              "force_magnitude": 0.0
+            },
+            {
+              "face": 61,
+              "force_magnitude": 0.9864506686584906
+            },
+            {
+              "face": 63,
+              "force_magnitude": 0.004927742900292551
+            }
+          ]
+        },
+        {
+          "sides": 128,
+          "outer": true,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "wrench_error": 9.538534421588954e-16,
+          "minimum_compression": 0.0,
+          "maximum_cone_violation": 2.6212897340695956e-06,
+          "used_minimum_profile": 4.138708625173044e-24,
+          "used_maximum_force_to_profile_ratio": 3.3914749674420505e+21,
+          "force_magnitude_by_face": [
+            {
+              "face": 41,
+              "force_magnitude": 0.014036326699810883
+            },
+            {
+              "face": 42,
+              "force_magnitude": 0.0
+            },
+            {
+              "face": 43,
+              "force_magnitude": 0.0
+            },
+            {
+              "face": 60,
+              "force_magnitude": 0.0
+            },
+            {
+              "face": 61,
+              "force_magnitude": 0.9863644859357886
+            },
+            {
+              "face": 63,
+              "force_magnitude": 0.0049110198947317244
+            }
+          ]
+        }
+      ],
+      "native": [
+        {
+          "scheduler": "scalar",
+          "tolerance": 9e-09,
+          "evaluation_budget": 128,
+          "status": 0,
+          "evaluations": 20,
+          "force_error": 5.020014469775234e-09,
+          "moment_error": 2.432421992286214e-09,
+          "dual": [
+            -1796.433353994907,
+            28786.471890929348,
+            -46692.86215961147,
+            -14343.188237475737,
+            30101.58414898628,
+            35659.26823011135
+          ]
+        },
+        {
+          "scheduler": "scalar",
+          "tolerance": 9e-09,
+          "evaluation_budget": 512,
+          "status": 0,
+          "evaluations": 20,
+          "force_error": 5.020014469775234e-09,
+          "moment_error": 2.432421992286214e-09,
+          "dual": [
+            -1796.433353994907,
+            28786.471890929348,
+            -46692.86215961147,
+            -14343.188237475737,
+            30101.58414898628,
+            35659.26823011135
+          ]
+        },
+        {
+          "scheduler": "scalar",
+          "tolerance": 9e-09,
+          "evaluation_budget": 2048,
+          "status": 0,
+          "evaluations": 20,
+          "force_error": 5.020014469775234e-09,
+          "moment_error": 2.432421992286214e-09,
+          "dual": [
+            -1796.433353994907,
+            28786.471890929348,
+            -46692.86215961147,
+            -14343.188237475737,
+            30101.58414898628,
+            35659.26823011135
+          ]
+        },
+        {
+          "scheduler": "warp_candidate",
+          "tolerance": 9e-09,
+          "evaluation_budget": 128,
+          "status": 0,
+          "evaluations": 20,
+          "force_error": 5.020014619911181e-09,
+          "moment_error": 2.4324232234480673e-09,
+          "dual": [
+            -1796.433353994906,
+            28786.471890929304,
+            -46692.86215961139,
+            -14343.18823747572,
+            30101.58414898624,
+            35659.2682301113
+          ]
+        },
+        {
+          "scheduler": "warp_candidate",
+          "tolerance": 9e-09,
+          "evaluation_budget": 512,
+          "status": 0,
+          "evaluations": 20,
+          "force_error": 5.020014619911181e-09,
+          "moment_error": 2.4324232234480673e-09,
+          "dual": [
+            -1796.433353994906,
+            28786.471890929304,
+            -46692.86215961139,
+            -14343.18823747572,
+            30101.58414898624,
+            35659.2682301113
+          ]
+        },
+        {
+          "scheduler": "warp_candidate",
+          "tolerance": 9e-09,
+          "evaluation_budget": 2048,
+          "status": 0,
+          "evaluations": 20,
+          "force_error": 5.020014619911181e-09,
+          "moment_error": 2.4324232234480673e-09,
+          "dual": [
+            -1796.433353994906,
+            28786.471890929304,
+            -46692.86215961139,
+            -14343.18823747572,
+            30101.58414898624,
+            35659.2682301113
+          ]
+        }
+      ],
+      "profiles": {
+        "minimum": 7.879771818560806e-31,
+        "maximum": 3.0514720258474683e-07,
+        "sum": 1.482034106775937e-05,
+        "faces": [
+          {
+            "face": 41,
+            "count": 213,
+            "weight": 1.9498478887321202e-06
+          },
+          {
+            "face": 42,
+            "count": 60,
+            "weight": 2.8672840969437624e-06
+          },
+          {
+            "face": 43,
+            "count": 211,
+            "weight": 2.1311720890553755e-06
+          },
+          {
+            "face": 60,
+            "count": 60,
+            "weight": 2.422237659052299e-06
+          },
+          {
+            "face": 61,
+            "count": 60,
+            "weight": 2.740646497216172e-06
+          },
+          {
+            "face": 63,
+            "count": 60,
+            "weight": 2.709152836759642e-06
+          }
+        ]
+      }
+    }
+  ]
+}

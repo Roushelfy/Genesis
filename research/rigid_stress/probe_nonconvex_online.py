@@ -25,6 +25,7 @@ def main():
     parser.add_argument("--oracle-stride", type=int, default=20)
     parser.add_argument("--egg-geometry", choices=("urdf", "mesh64"), default="urdf")
     parser.add_argument("--collision-method", choices=("auto", "mpr", "gjk"), default="auto")
+    parser.add_argument("--contact-patch", choices=("auto", "on", "off"), default="auto")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -45,6 +46,7 @@ def main():
         contact_block_size=args.contact_block_size,
         egg_geometry=args.egg_geometry,
         use_gjk_collision={"auto": None, "mpr": False, "gjk": True}[args.collision_method],
+        enable_contact_patch={"auto": None, "on": True, "off": False}[args.contact_patch],
     )
     solver = workload.scene.rigid_solver
     entry = solver.stress_recovery.links[0]
