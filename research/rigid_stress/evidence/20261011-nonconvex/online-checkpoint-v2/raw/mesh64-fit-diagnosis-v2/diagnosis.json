@@ -1,0 +1,70 @@
+{
+  "scope": "Separate sampled-cone infeasibility from numerical failure in saved native contacts.\n\nReplay preserves the snapshot's anchor, force point, radius and actual friction.\nThe native profile is reconstructed using the declared port-path law. Independent\nCPU LPs use inscribed and circumscribed friction polygons: inner feasibility is\na constructive Coulomb witness, while outer infeasibility bounds the exact\nsampled cones. Neither conclusion certifies a continuous footprint model.\n",
+  "contacts": [
+    {
+      "snapshot": "snapshot-147.npz",
+      "env": 1,
+      "contact": 2,
+      "samples": 287,
+      "radius_m": 0.006611504643123596,
+      "friction": 0.6746881909245573,
+      "target": [
+        0.08581750768100858,
+        -0.8546925318142155,
+        -0.5119922181404968,
+        0.006798764139317475,
+        0.0018671555874059148,
+        -0.0019773561133813265
+      ],
+      "saved_force_error": 2.7138834807244464e-05,
+      "saved_moment_error": 1.36057428868112e-11,
+      "lp": [
+        {
+          "sides": 32,
+          "outer": false,
+          "status": 2,
+          "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)"
+        },
+        {
+          "sides": 32,
+          "outer": true,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "wrench_error": 1.3999229199105634e-17,
+          "minimum_compression": 0.0,
+          "maximum_cone_violation": 0.00016996220853982003
+        },
+        {
+          "sides": 128,
+          "outer": false,
+          "status": 2,
+          "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)"
+        },
+        {
+          "sides": 128,
+          "outer": true,
+          "status": 2,
+          "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)"
+        }
+      ],
+      "native": [
+        {
+          "tolerance": 8e-09,
+          "evaluation_budget": 128,
+          "status": 3,
+          "evaluations": 128,
+          "force_error": 2.7138834807845606e-05,
+          "moment_error": 3.776965084938346e-11,
+          "dual": [
+            1104716055.238726,
+            -1383383514.9477873,
+            2494677067.6993537,
+            98447.60667383239,
+            34529.092270238914,
+            199629.44842632514
+          ]
+        }
+      ]
+    }
+  ]
+}

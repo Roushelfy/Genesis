@@ -33,20 +33,29 @@ ASSETS = Path(__file__).resolve().parents[2] / "examples/rigid/assets/hollow_egg
 
 @pytest.mark.required
 @pytest.mark.precision("64")
-def test_saved_live_edge_sources_are_one_topological_feature():
-    with np.load(Path(__file__).with_name("assets") / "nonconvex_mesh64_tick113.npz") as saved:
+@pytest.mark.parametrize("tick", (113, 114))
+def test_saved_live_edge_sources_are_one_topological_feature(tick):
+    with np.load(Path(__file__).with_name("assets") / f"nonconvex_mesh64_tick{tick}.npz") as saved:
         witnesses, positions, forces = (saved[key] for key in ("witness", "position", "force"))
         geometries, pairs = saved["geom"], saved["pair"]
+        radii, frictions, methods = (saved[key] for key in ("radius", "friction", "method"))
     model = StressModel(RigidStressOptions(mesh=ASSETS / "elastic.npz", method="pcg"))
     surface = StressSurface(10, model.info)
-    contacts = create_contacts(2, 1, 0.006324642496134901)
-    sources = create_sources(2, 1)
+    contacts = create_contacts(len(witnesses), 1, float(radii[0]))
+    sources = create_sources(len(witnesses), 1)
     contacts.valid.fill(True)
     contacts.position.from_numpy(positions[:, None])
     contacts.force.from_numpy(forces[:, None])
+    contacts.radius.from_numpy(radii[:, None])
+    contacts.friction.from_numpy(frictions[:, None])
+    # The saved local witnesses came from a world-to-body transform near the
+    # declared 0.65 m initial world pose. Include that operand scale when
+    # assessing geometric roundoff, without changing the original load.
+    contacts.frame_position.from_numpy(np.array([[0.65, 0.0, 0.031]]))
     sources.witness.from_numpy(witnesses[:, None])
     sources.geom.from_numpy(geometries[:, None])
     sources.pair.from_numpy(pairs[:, None])
+    sources.method.from_numpy(methods[:, None])
     kernel_resolve_sources(1e-4, float(np.finfo(gs.np_float).eps), contacts, sources, model.info, surface.info)
     assert_equal(qd_to_numpy(sources.status, transpose=True), 0)
     anchors = qd_to_numpy(contacts.center, transpose=True)[0]

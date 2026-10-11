@@ -214,7 +214,12 @@ def func_resolve_sources(
         if contact_state.valid[i_c, i_b]:
             witness = source_state.witness[i_c, i_b]
             uncertainty = source_state.uncertainty[i_c, i_b]
-            tolerance = 32.0 * source_epsilon * qd.max(witness.norm(), projection_limit)
+            # The witness was transformed from world coordinates. Its local
+            # magnitude alone misses subtraction/rotation roundoff when the
+            # body is far from the world origin; standalone sources have a
+            # zero frame position and retain their existing geometric budget.
+            operand_scale = qd.max(witness.norm(), projection_limit) + contact_state.frame_position[i_b].norm()
+            tolerance = 32.0 * source_epsilon * operand_scale
             valid = source_state.geom[i_c, i_b] >= 0 and source_state.pair[i_c, i_b] >= 0
             valid = valid and projection_limit > 0.0 and uncertainty >= 0.0 and source_epsilon > 0.0
             finite = witness.sum() + projection_limit + uncertainty + source_epsilon

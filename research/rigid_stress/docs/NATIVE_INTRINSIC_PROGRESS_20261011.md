@@ -106,8 +106,35 @@ separation `1.65684e-16 m`, just above the local-only roundoff estimate
 `1.59843e-16 m`. Its source arose from a world-to-body transformation near
 world position 0.65 m. The resolver's geometric roundoff budget must include
 that transformation's operand scale, not only the roughly 0.02 m local point.
-This internal budget correction is still being validated. It does not change
-the physical projection limit or final numerical acceptance.
+The internal budget correction is covered by the targeted checks below; full
+online acceptance remains pending. It does not change the physical projection
+limit or final numerical acceptance.
+
+After source checkpoint `026974987ee6a4e1e1a21bd0d414a103be700a71`, the
+resolver includes the world-to-body operand scale in its existing `32 epsilon`
+position budget. The saved tick-114 regression retains its radius, force and
+actual friction. The targeted source/compatibility suite passes nine CPU and
+nine CUDA cases (124.75 and 151.61 s) with identical before/after source hashes.
+The every-step scene now completes 147 steps. At tick 147, env 1/contact 2
+fails fitting with actual mu `0.6746881909245573`, radius
+`0.006611504643123596 m` and 279 positive integration samples.
+
+The force error stagnates at `2.71388348e-5` for 128, 512 and 2,048
+evaluations. An independent circumscribed 128-sided Coulomb LP is infeasible,
+proving this sampled system lacks a solution; this is not merely a poor
+internal stopping threshold. The continuous Euclidean support superset also
+contains face 9, whose closest distance is 6.07786 mm, while the sampled
+system does not establish continuous incompatibility. The strict common
+polar test correctly does not classify the contact as physically incompatible.
+Local integration and port-distance refinement are the next diagnosis.
+This new-law attempt still does not establish complete online acceptance.
+
+Doubling port subdivisions to four and then eight changes the positive sample
+count to 287 and 293 respectively. Both circumscribed 128-sided systems remain
+infeasible and the force error remains `2.71388348e-5`. Those experiments do
+not identify the continuous footprint as infeasible and provide no throughput
+claim or selected refinement setting. Collision-normal accuracy, intrinsic
+support coverage and local integration must still be separated.
 
 ## Closed evidence before the latest checks
 
@@ -143,6 +170,11 @@ passes SHA256 verification. Manifest SHA256 is
 `dcc41597f3cf647e37ba11eb1f01087e54ed362aea029e81214fef73a1e0b470`.
 Partial/failed trajectories remain labelled as such; no filtering of failed
 environments contributes to an acceptance or rate claim.
+
+The subsequent [source-roundoff and sampled-failure manifest](../evidence/20261011-nonconvex/online-checkpoint-v2/manifest.json)
+retains the nine-case checks, tick-147 online/dynamics failures and independent
+two/four/eight-port diagnoses. These supply progress evidence, not full
+lifecycle or throughput acceptance.
 
 ## Reproduction and remaining work
 

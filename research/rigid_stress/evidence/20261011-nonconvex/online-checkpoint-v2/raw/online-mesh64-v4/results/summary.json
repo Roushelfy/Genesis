@@ -1,0 +1,3382 @@
+{
+  "scope": "Intrusive validation of native intrinsic recovery in every live scene.step, including diagnostic and oracle overhead; no throughput claim.",
+  "arguments": {
+    "envs": 4,
+    "steps": 640,
+    "seed": 623001,
+    "contact_block_size": 2,
+    "oracle_stride": 20,
+    "egg_geometry": "mesh64",
+    "output": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/online-mesh64-v4/results"
+  },
+  "completed_steps": 147,
+  "records": [
+    {
+      "tick": 0,
+      "loaded_contacts": 0,
+      "contact_count_per_env": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [],
+      "max_force_error": 0.0,
+      "max_moment_error": 0.0,
+      "max_evaluations": 0,
+      "max_samples": 0,
+      "reset_environments": 0
+    },
+    {
+      "tick": 1,
+      "loaded_contacts": 0,
+      "contact_count_per_env": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [],
+      "max_force_error": 0.0,
+      "max_moment_error": 0.0,
+      "max_evaluations": 0,
+      "max_samples": 0,
+      "reset_environments": 0
+    },
+    {
+      "tick": 2,
+      "loaded_contacts": 1,
+      "contact_count_per_env": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "contact_slot_changes": 1,
+      "mu_values": [
+        0.5127239705117185
+      ],
+      "max_force_error": 8.82465683759435e-16,
+      "max_moment_error": 5.81594756776812e-15,
+      "max_evaluations": 2,
+      "max_samples": 113,
+      "reset_environments": 0
+    },
+    {
+      "tick": 3,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 3,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 8.403133225001848e-16,
+      "max_moment_error": 5.753361988682589e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 4,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.033148710966534e-15,
+      "max_moment_error": 5.696737572271197e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 5,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.0433983858381983e-15,
+      "max_moment_error": 5.552028694286052e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 6,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.0227000372152475e-15,
+      "max_moment_error": 5.518350634900912e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 7,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.614164239663892e-16,
+      "max_moment_error": 5.364663427159744e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 8,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 8.043335641171459e-16,
+      "max_moment_error": 5.2413707816100786e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 9,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.973660454271053e-16,
+      "max_moment_error": 5.1537371139504534e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 10,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.122180962683929e-16,
+      "max_moment_error": 5.085432431707804e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 11,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 6.949587283073956e-16,
+      "max_moment_error": 4.9364553901880256e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 12,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.1741886263195932e-15,
+      "max_moment_error": 4.799176499595792e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 13,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 6.949127221816478e-16,
+      "max_moment_error": 4.610221273958236e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 14,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 6.776888828221429e-16,
+      "max_moment_error": 4.467733074117863e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 15,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.167211417607321e-15,
+      "max_moment_error": 4.396509145081393e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 16,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.1664011152260001e-15,
+      "max_moment_error": 4.317518017430626e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 17,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 8.749030641329555e-16,
+      "max_moment_error": 4.121736932970826e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 18,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 6.092807967485028e-16,
+      "max_moment_error": 4.028143190206258e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 19,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 9.667805103294553e-16,
+      "max_moment_error": 3.912719958221962e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 20,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.78288810770431e-16,
+      "max_moment_error": 3.7127750784951315e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 21,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.781915796264474e-16,
+      "max_moment_error": 3.603205706919754e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 22,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.782952183463071e-16,
+      "max_moment_error": 3.447717454072447e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 23,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 9.665113303629237e-16,
+      "max_moment_error": 3.338393337742517e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 24,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 9.665837883113907e-16,
+      "max_moment_error": 3.1891589784934758e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 25,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 9.664689809531054e-16,
+      "max_moment_error": 3.0093311754828516e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 26,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 5.974507980383584e-16,
+      "max_moment_error": 3.0042681592657434e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 27,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.1647818005932619e-15,
+      "max_moment_error": 3.0473270608380956e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 28,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 9.275548293510792e-16,
+      "max_moment_error": 2.9871941585782797e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 29,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.164636392612293e-15,
+      "max_moment_error": 3.046175990920212e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 30,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 9.665279521224972e-16,
+      "max_moment_error": 2.9811568707040093e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 31,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.781598616745545e-16,
+      "max_moment_error": 3.0207925269127552e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 32,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 6.09064592737361e-16,
+      "max_moment_error": 3.0754908721319897e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 33,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.781224757682737e-16,
+      "max_moment_error": 3.017269911456961e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 34,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 5.45099975137597e-16,
+      "max_moment_error": 3.0524049057091457e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 35,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.782382184669182e-16,
+      "max_moment_error": 3.0164665984212496e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 36,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 9.664422289601941e-16,
+      "max_moment_error": 2.937728712073394e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 37,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.780642442477049e-16,
+      "max_moment_error": 3.068028091436026e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 38,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.781708087229251e-16,
+      "max_moment_error": 3.020614131364984e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 39,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.1646161485863505e-15,
+      "max_moment_error": 3.015510433157946e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 40,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 6.919717523155706e-16,
+      "max_moment_error": 2.9865788551820016e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 41,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.782701562366945e-16,
+      "max_moment_error": 3.022854193853354e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 42,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 9.664352930530523e-16,
+      "max_moment_error": 2.943969872700646e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 43,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.780808604144567e-16,
+      "max_moment_error": 2.9860663241827353e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 44,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.780564897457757e-16,
+      "max_moment_error": 2.9923715845277037e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 45,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.1004316537756136e-15,
+      "max_moment_error": 3.0255406847801178e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 46,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.780736732979326e-16,
+      "max_moment_error": 3.0166163149618834e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 47,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.781052230348714e-16,
+      "max_moment_error": 2.9483026022264437e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 48,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 4.278625672034351e-16,
+      "max_moment_error": 3.0363242080813105e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 49,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 9.665378307691338e-16,
+      "max_moment_error": 2.9285984509177456e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 50,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.781274903614737e-16,
+      "max_moment_error": 3.086794186835757e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 51,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 9.664048635691434e-16,
+      "max_moment_error": 2.9902644797090675e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 52,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 9.664027001568717e-16,
+      "max_moment_error": 3.0304563051191364e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 53,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.782601996240795e-16,
+      "max_moment_error": 3.046304236546166e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 54,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 6.665439806470687e-16,
+      "max_moment_error": 3.0434531165892554e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 55,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.780768598869914e-16,
+      "max_moment_error": 3.0345655573330036e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 56,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.1646213582232858e-15,
+      "max_moment_error": 3.020668387713008e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 57,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 9.665300086339404e-16,
+      "max_moment_error": 2.997410073795309e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 58,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.1647240768645228e-15,
+      "max_moment_error": 2.995310515755476e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 59,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 4.277342414747881e-16,
+      "max_moment_error": 3.042956532511479e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 60,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.782288199788615e-16,
+      "max_moment_error": 3.0023434312890673e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 61,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.7822333534309e-16,
+      "max_moment_error": 2.96088862209048e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 62,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 4.278607173689264e-16,
+      "max_moment_error": 3.0473986958059287e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 63,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 6.088830746157616e-16,
+      "max_moment_error": 2.9911336867700582e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 64,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 9.66536017573431e-16,
+      "max_moment_error": 3.030632244524956e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 65,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 6.091245686119578e-16,
+      "max_moment_error": 2.975321023778246e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 66,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.1647416929558766e-15,
+      "max_moment_error": 3.0043635290483473e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 67,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.780616865593615e-16,
+      "max_moment_error": 2.9084140019064188e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 68,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.1646317829218233e-15,
+      "max_moment_error": 2.967501871063975e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 69,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.780829011931164e-16,
+      "max_moment_error": 3.0047271738216113e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 70,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.782771463833103e-16,
+      "max_moment_error": 3.0496255697784538e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 71,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.782788084893232e-16,
+      "max_moment_error": 3.0660788922373923e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 72,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.1646248704132522e-15,
+      "max_moment_error": 3.011482110430974e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 73,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 9.663726466912275e-16,
+      "max_moment_error": 3.026222712181901e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 74,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 9.663978967878395e-16,
+      "max_moment_error": 3.0259473247400753e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 75,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.328824347695848e-16,
+      "max_moment_error": 2.9728298859843634e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 76,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 4.202314467588989e-16,
+      "max_moment_error": 3.024168526701104e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 77,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.1430523391095507e-15,
+      "max_moment_error": 2.9065893299205257e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 78,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 8.985383956638532e-16,
+      "max_moment_error": 2.9007767832761294e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 79,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 4.941735577210352e-16,
+      "max_moment_error": 2.8984687220043273e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 80,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.650761827674771e-16,
+      "max_moment_error": 2.8504171426874976e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 81,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 5.717379173976468e-16,
+      "max_moment_error": 2.764704853272251e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 82,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 4.494430062348703e-16,
+      "max_moment_error": 2.8582164772533023e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 83,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 5.928842806167912e-16,
+      "max_moment_error": 2.795469299151355e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 84,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 4.40533406834285e-16,
+      "max_moment_error": 2.965593524903261e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 85,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.588132935104827e-16,
+      "max_moment_error": 2.8854014138112194e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 86,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 5.712764164989653e-16,
+      "max_moment_error": 2.9601516853180445e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 87,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 9.543383503590598e-16,
+      "max_moment_error": 3.0028459008823932e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 88,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.650556242911241e-16,
+      "max_moment_error": 3.0449369810590823e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 89,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 5.943438625649244e-16,
+      "max_moment_error": 3.0441044208341e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 90,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 9.589470980321215e-16,
+      "max_moment_error": 3.114235386239141e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 91,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 9.3106732385435e-16,
+      "max_moment_error": 3.10634746175992e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 92,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 4.941264509426377e-16,
+      "max_moment_error": 3.1182159732270556e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 93,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.1717724629120312e-15,
+      "max_moment_error": 3.1819352136085967e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 94,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 6.9197958743983e-16,
+      "max_moment_error": 3.170584884100736e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 95,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.336620025194503e-15,
+      "max_moment_error": 3.182838236629011e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 96,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.173158164814025e-16,
+      "max_moment_error": 3.2230905963878792e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 97,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 6.109755189486042e-16,
+      "max_moment_error": 3.178461173051177e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 98,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 5.046592770772188e-16,
+      "max_moment_error": 3.2305521129184714e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 99,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 5.053158427546221e-16,
+      "max_moment_error": 3.2937867201970488e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 100,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 9.706199302799748e-16,
+      "max_moment_error": 3.2286759159249597e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 101,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.947466981592428e-16,
+      "max_moment_error": 3.2350945632165194e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 102,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.857291777329459e-16,
+      "max_moment_error": 3.217015376691659e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 103,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.946456953228694e-16,
+      "max_moment_error": 3.2549937262672788e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 104,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 4.946964653483098e-16,
+      "max_moment_error": 3.3219760489413742e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 105,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 6.293632276553935e-16,
+      "max_moment_error": 3.2070422588529128e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 106,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.937993110069255e-16,
+      "max_moment_error": 3.245840591060378e-15,
+      "max_evaluations": 2,
+      "max_samples": 141,
+      "reset_environments": 0
+    },
+    {
+      "tick": 107,
+      "loaded_contacts": 4,
+      "contact_count_per_env": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 6.920154169833425e-16,
+      "max_moment_error": 3.224889200376927e-15,
+      "max_evaluations": 2,
+      "max_samples": 143,
+      "reset_environments": 0
+    },
+    {
+      "tick": 108,
+      "loaded_contacts": 5,
+      "contact_count_per_env": [
+        2,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 1,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.1234472700155597e-13,
+      "max_moment_error": 2.4205900587744833e-14,
+      "max_evaluations": 7,
+      "max_samples": 367,
+      "reset_environments": 0
+    },
+    {
+      "tick": 109,
+      "loaded_contacts": 5,
+      "contact_count_per_env": [
+        2,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 3.427240003593516e-10,
+      "max_moment_error": 6.079321556774867e-11,
+      "max_evaluations": 6,
+      "max_samples": 249,
+      "reset_environments": 0
+    },
+    {
+      "tick": 110,
+      "loaded_contacts": 8,
+      "contact_count_per_env": [
+        5,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 3,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 2.4564022454467473e-09,
+      "max_moment_error": 6.232712018435939e-10,
+      "max_evaluations": 10,
+      "max_samples": 404,
+      "reset_environments": 0
+    },
+    {
+      "tick": 111,
+      "loaded_contacts": 9,
+      "contact_count_per_env": [
+        6,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 1,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.7788956749052328e-09,
+      "max_moment_error": 5.581565619277508e-10,
+      "max_evaluations": 13,
+      "max_samples": 405,
+      "reset_environments": 0
+    },
+    {
+      "tick": 112,
+      "loaded_contacts": 10,
+      "contact_count_per_env": [
+        7,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 1,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.8734030082089196e-09,
+      "max_moment_error": 4.631181629307672e-10,
+      "max_evaluations": 11,
+      "max_samples": 405,
+      "reset_environments": 0
+    },
+    {
+      "tick": 113,
+      "loaded_contacts": 10,
+      "contact_count_per_env": [
+        7,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.8972372548803275e-09,
+      "max_moment_error": 4.459655047993074e-10,
+      "max_evaluations": 11,
+      "max_samples": 405,
+      "reset_environments": 0
+    },
+    {
+      "tick": 114,
+      "loaded_contacts": 10,
+      "contact_count_per_env": [
+        7,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 5.024024749496902e-10,
+      "max_moment_error": 1.2985512023422643e-10,
+      "max_evaluations": 11,
+      "max_samples": 403,
+      "reset_environments": 0
+    },
+    {
+      "tick": 115,
+      "loaded_contacts": 10,
+      "contact_count_per_env": [
+        7,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 4.1562244174254425e-12,
+      "max_moment_error": 3.545277478033266e-13,
+      "max_evaluations": 11,
+      "max_samples": 405,
+      "reset_environments": 0
+    },
+    {
+      "tick": 116,
+      "loaded_contacts": 10,
+      "contact_count_per_env": [
+        7,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 3.2621350232252432e-12,
+      "max_moment_error": 1.964299237538806e-12,
+      "max_evaluations": 11,
+      "max_samples": 405,
+      "reset_environments": 0
+    },
+    {
+      "tick": 117,
+      "loaded_contacts": 10,
+      "contact_count_per_env": [
+        7,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.8633090413756114e-09,
+      "max_moment_error": 8.600093504120073e-11,
+      "max_evaluations": 11,
+      "max_samples": 405,
+      "reset_environments": 0
+    },
+    {
+      "tick": 118,
+      "loaded_contacts": 10,
+      "contact_count_per_env": [
+        7,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.271593411024833e-09,
+      "max_moment_error": 1.1184976094179888e-09,
+      "max_evaluations": 11,
+      "max_samples": 403,
+      "reset_environments": 0
+    },
+    {
+      "tick": 119,
+      "loaded_contacts": 10,
+      "contact_count_per_env": [
+        7,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 2.250651248104948e-09,
+      "max_moment_error": 8.297540217241455e-10,
+      "max_evaluations": 12,
+      "max_samples": 403,
+      "reset_environments": 0
+    },
+    {
+      "tick": 120,
+      "loaded_contacts": 10,
+      "contact_count_per_env": [
+        7,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.889629809565678e-09,
+      "max_moment_error": 6.81252947445952e-10,
+      "max_evaluations": 10,
+      "max_samples": 403,
+      "reset_environments": 0
+    },
+    {
+      "tick": 121,
+      "loaded_contacts": 10,
+      "contact_count_per_env": [
+        7,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.407150518317457e-09,
+      "max_moment_error": 2.6153713692232037e-09,
+      "max_evaluations": 9,
+      "max_samples": 405,
+      "reset_environments": 0
+    },
+    {
+      "tick": 122,
+      "loaded_contacts": 10,
+      "contact_count_per_env": [
+        7,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.7968183008797919e-09,
+      "max_moment_error": 6.414456169643909e-10,
+      "max_evaluations": 9,
+      "max_samples": 403,
+      "reset_environments": 0
+    },
+    {
+      "tick": 123,
+      "loaded_contacts": 10,
+      "contact_count_per_env": [
+        7,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.116254803810121e-09,
+      "max_moment_error": 2.486991908070404e-09,
+      "max_evaluations": 9,
+      "max_samples": 405,
+      "reset_environments": 0
+    },
+    {
+      "tick": 124,
+      "loaded_contacts": 10,
+      "contact_count_per_env": [
+        7,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.056736266597368e-09,
+      "max_moment_error": 2.4603318264920834e-09,
+      "max_evaluations": 8,
+      "max_samples": 405,
+      "reset_environments": 0
+    },
+    {
+      "tick": 125,
+      "loaded_contacts": 10,
+      "contact_count_per_env": [
+        7,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.717765985664602e-09,
+      "max_moment_error": 6.11016869289826e-10,
+      "max_evaluations": 8,
+      "max_samples": 404,
+      "reset_environments": 0
+    },
+    {
+      "tick": 126,
+      "loaded_contacts": 10,
+      "contact_count_per_env": [
+        7,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.0409392125624114e-09,
+      "max_moment_error": 2.4532768092528442e-09,
+      "max_evaluations": 7,
+      "max_samples": 405,
+      "reset_environments": 0
+    },
+    {
+      "tick": 127,
+      "loaded_contacts": 10,
+      "contact_count_per_env": [
+        7,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 6.527880134856989e-09,
+      "max_moment_error": 1.361094403020157e-09,
+      "max_evaluations": 7,
+      "max_samples": 404,
+      "reset_environments": 0
+    },
+    {
+      "tick": 128,
+      "loaded_contacts": 10,
+      "contact_count_per_env": [
+        7,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.7075767657909288e-09,
+      "max_moment_error": 6.100288385744008e-10,
+      "max_evaluations": 8,
+      "max_samples": 404,
+      "reset_environments": 0
+    },
+    {
+      "tick": 129,
+      "loaded_contacts": 10,
+      "contact_count_per_env": [
+        7,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.7107866030436057e-09,
+      "max_moment_error": 6.125019071324989e-10,
+      "max_evaluations": 7,
+      "max_samples": 404,
+      "reset_environments": 0
+    },
+    {
+      "tick": 130,
+      "loaded_contacts": 10,
+      "contact_count_per_env": [
+        7,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.7155890183709596e-09,
+      "max_moment_error": 6.156323289172337e-10,
+      "max_evaluations": 7,
+      "max_samples": 404,
+      "reset_environments": 0
+    },
+    {
+      "tick": 131,
+      "loaded_contacts": 10,
+      "contact_count_per_env": [
+        7,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 2.3725155931792468e-09,
+      "max_moment_error": 6.191314916588854e-10,
+      "max_evaluations": 7,
+      "max_samples": 404,
+      "reset_environments": 0
+    },
+    {
+      "tick": 132,
+      "loaded_contacts": 10,
+      "contact_count_per_env": [
+        7,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.7274649512001258e-09,
+      "max_moment_error": 9.55439919827445e-10,
+      "max_evaluations": 7,
+      "max_samples": 404,
+      "reset_environments": 0
+    },
+    {
+      "tick": 133,
+      "loaded_contacts": 10,
+      "contact_count_per_env": [
+        7,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.407299718359194e-09,
+      "max_moment_error": 2.616414478018354e-09,
+      "max_evaluations": 7,
+      "max_samples": 406,
+      "reset_environments": 0
+    },
+    {
+      "tick": 134,
+      "loaded_contacts": 10,
+      "contact_count_per_env": [
+        7,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.47234832207669e-09,
+      "max_moment_error": 2.6449309477720678e-09,
+      "max_evaluations": 7,
+      "max_samples": 406,
+      "reset_environments": 0
+    },
+    {
+      "tick": 135,
+      "loaded_contacts": 10,
+      "contact_count_per_env": [
+        7,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.6925152038603673e-09,
+      "max_moment_error": 6.126588810665811e-10,
+      "max_evaluations": 7,
+      "max_samples": 404,
+      "reset_environments": 0
+    },
+    {
+      "tick": 136,
+      "loaded_contacts": 10,
+      "contact_count_per_env": [
+        7,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.598819013471767e-09,
+      "max_moment_error": 2.700041191496479e-09,
+      "max_evaluations": 7,
+      "max_samples": 406,
+      "reset_environments": 0
+    },
+    {
+      "tick": 137,
+      "loaded_contacts": 10,
+      "contact_count_per_env": [
+        7,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 7.65918495796112e-09,
+      "max_moment_error": 2.7262013328382063e-09,
+      "max_evaluations": 7,
+      "max_samples": 406,
+      "reset_environments": 0
+    },
+    {
+      "tick": 138,
+      "loaded_contacts": 10,
+      "contact_count_per_env": [
+        7,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.7407802516948957e-09,
+      "max_moment_error": 6.356212433135393e-10,
+      "max_evaluations": 7,
+      "max_samples": 404,
+      "reset_environments": 0
+    },
+    {
+      "tick": 139,
+      "loaded_contacts": 10,
+      "contact_count_per_env": [
+        7,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.7544845177940284e-09,
+      "max_moment_error": 6.421125814060045e-10,
+      "max_evaluations": 7,
+      "max_samples": 405,
+      "reset_environments": 0
+    },
+    {
+      "tick": 140,
+      "loaded_contacts": 10,
+      "contact_count_per_env": [
+        7,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.7668692320268198e-09,
+      "max_moment_error": 6.479900909347016e-10,
+      "max_evaluations": 7,
+      "max_samples": 405,
+      "reset_environments": 0
+    },
+    {
+      "tick": 141,
+      "loaded_contacts": 10,
+      "contact_count_per_env": [
+        7,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.7779058816954917e-09,
+      "max_moment_error": 6.532528671015372e-10,
+      "max_evaluations": 7,
+      "max_samples": 405,
+      "reset_environments": 0
+    },
+    {
+      "tick": 142,
+      "loaded_contacts": 10,
+      "contact_count_per_env": [
+        7,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.7875883975457151e-09,
+      "max_moment_error": 6.579080989763827e-10,
+      "max_evaluations": 7,
+      "max_samples": 405,
+      "reset_environments": 0
+    },
+    {
+      "tick": 143,
+      "loaded_contacts": 10,
+      "contact_count_per_env": [
+        7,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.1705892985251234e-12,
+      "max_moment_error": 5.011426732600333e-13,
+      "max_evaluations": 7,
+      "max_samples": 406,
+      "reset_environments": 0
+    },
+    {
+      "tick": 144,
+      "loaded_contacts": 10,
+      "contact_count_per_env": [
+        7,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 0,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.802945943760084e-09,
+      "max_moment_error": 6.654521066233836e-10,
+      "max_evaluations": 7,
+      "max_samples": 405,
+      "reset_environments": 0
+    },
+    {
+      "tick": 145,
+      "loaded_contacts": 11,
+      "contact_count_per_env": [
+        7,
+        2,
+        1,
+        1
+      ],
+      "contact_slot_changes": 1,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.8086780822062875e-09,
+      "max_moment_error": 6.683781667606208e-10,
+      "max_evaluations": 7,
+      "max_samples": 407,
+      "reset_environments": 0
+    },
+    {
+      "tick": 146,
+      "loaded_contacts": 10,
+      "contact_count_per_env": [
+        7,
+        1,
+        1,
+        1
+      ],
+      "contact_slot_changes": 1,
+      "mu_values": [
+        0.5127239705117185,
+        0.6531024606382921,
+        0.6746881909245573,
+        0.7635019915792053
+      ],
+      "max_force_error": 1.8131629213707594e-09,
+      "max_moment_error": 6.707689634510945e-10,
+      "max_evaluations": 7,
+      "max_samples": 405,
+      "reset_environments": 0
+    }
+  ],
+  "oracle_captures": [
+    {
+      "tick": 0,
+      "full_residual_max_N": 0.0,
+      "cpu_peaks_Pa": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "tick": 20,
+      "full_residual_max_N": 9.675422825897675e-13,
+      "cpu_peaks_Pa": [
+        14605.415386232084,
+        14492.441186644392,
+        13666.20363711579,
+        13315.97029904079
+      ]
+    },
+    {
+      "tick": 40,
+      "full_residual_max_N": 1.0974010126112468e-12,
+      "cpu_peaks_Pa": [
+        14400.283690340251,
+        14462.909213819152,
+        13670.511226421037,
+        13320.792785906497
+      ]
+    },
+    {
+      "tick": 60,
+      "full_residual_max_N": 1.0954291915236875e-12,
+      "cpu_peaks_Pa": [
+        14213.892816352472,
+        14239.332249043377,
+        13670.512405435102,
+        13320.79410497265
+      ]
+    },
+    {
+      "tick": 80,
+      "full_residual_max_N": 9.866384439757163e-13,
+      "cpu_peaks_Pa": [
+        14055.021466953125,
+        14028.569442002861,
+        13598.112124260226,
+        13320.794105329509
+      ]
+    },
+    {
+      "tick": 100,
+      "full_residual_max_N": 9.9885141266084e-13,
+      "cpu_peaks_Pa": [
+        13930.551350913767,
+        13840.690950869892,
+        13363.845266965009,
+        13320.794105334151
+      ]
+    },
+    {
+      "tick": 120,
+      "full_residual_max_N": 8.177051797868529e-12,
+      "cpu_peaks_Pa": [
+        62552.20013057189,
+        13683.54274926442,
+        13147.69013759676,
+        13211.202434832316
+      ]
+    },
+    {
+      "tick": 140,
+      "full_residual_max_N": 8.65554717617185e-12,
+      "cpu_peaks_Pa": [
+        61782.75824018701,
+        13562.608514594014,
+        12956.274125390939,
+        12974.9618622028
+      ]
+    }
+  ],
+  "source_sha256": {
+    "genesis/engine/solvers/rigid/stress/__init__.py": "17b4fa6e4eb64175b87586a6c7142b9fd2f5e88ba4321129d18e07e296adc5a6",
+    "genesis/engine/solvers/rigid/stress/association.py": "0c265ddde597bb03f6f56da0f4c6063a3a530ce2a19f2dceaf3378e987f811b3",
+    "genesis/engine/solvers/rigid/stress/balance.py": "9b9cb6916d198f823b6e6af495c8cea6d0836f07243f3f4bda0b25a48a616712",
+    "genesis/engine/solvers/rigid/stress/compatibility.py": "50b8192347bb89df23039acbb760a5519d5ddc0d0255fc40f554832979ce3167",
+    "genesis/engine/solvers/rigid/stress/contact.py": "7ebfe4210a819036edc18fcc6b9a3e94273f8644dc7c2a50904079c9100886b8",
+    "genesis/engine/solvers/rigid/stress/data.py": "081ee50334a918f8bef23fb891de3c4a6e5fa4964826069268497c0fa1cece19",
+    "genesis/engine/solvers/rigid/stress/factor.py": "f2a059e88cf03b35a5fba2f88c3ac3f631a899d52cd841a6d268d9ccf087f81c",
+    "genesis/engine/solvers/rigid/stress/footprint.py": "549dd21c8f8d71b7ba076351a7bd278c92708fecfe09b41af551e9cc2d32d6f2",
+    "genesis/engine/solvers/rigid/stress/grid.py": "f451674d257339ece41a258f22c7b95fe25d6fc51888854855de4320e26b9a90",
+    "genesis/engine/solvers/rigid/stress/history.py": "559e046d3405afc260be5cd5a0de5712e490518e73aafc288642261c3959657c",
+    "genesis/engine/solvers/rigid/stress/intrinsic.py": "90d1f704c1dcef125b1a6a7423960c611c83ef6ff856013104143f9456261b83",
+    "genesis/engine/solvers/rigid/stress/inverse.py": "b15ef055df018d96b92aa2b0be3d39d258b4cc59c83dbccdd9dcf0c173eb2a43",
+    "genesis/engine/solvers/rigid/stress/lifecycle.py": "aec6ccc09b9da6fc15ea1c64e6716dee9325b3d05edaa7ac19b4419861c192fa",
+    "genesis/engine/solvers/rigid/stress/model.py": "02deae6f14789dfe8c6470432a5ad8cdd372f27008a5f6ea902a07dff6dda97f",
+    "genesis/engine/solvers/rigid/stress/operators.py": "40ad5e488e928a8f22efe0833f447afba7ef0e258bc3cffb5a0fe30bc1d416ff",
+    "genesis/engine/solvers/rigid/stress/paths.py": "f164db603035224f229f9d8b81bd6534499e51b440248760f001dcb1e4adf855",
+    "genesis/engine/solvers/rigid/stress/pipeline.py": "5677953121fc287950a1a86ab80a781929032b13ffae3d9698b0d28426722de9",
+    "genesis/engine/solvers/rigid/stress/post.py": "e19a87869e01403119880a16e6d7e221a6e3653b24fff174cc01a9390458901e",
+    "genesis/engine/solvers/rigid/stress/provenance.py": "cdb00916ffa41aa7b29ed2ba03759d6ae7ec899900aa59dc16abce4c8c036a1a",
+    "genesis/engine/solvers/rigid/stress/recovery.py": "32808c73c3fda7eede2bb42bc4f55db715f980c00bdb83c78d3e339a883be93b",
+    "genesis/engine/solvers/rigid/stress/scatter.py": "f1aec3bdf7f1f8c0e6dc2a587874afe6dcefd1e9dc5147859711098736a7b399",
+    "genesis/engine/solvers/rigid/stress/solve.py": "7a69e5aace87d1c9a642698ad3381c2bdfc27c765f27447d97d5a18a2916393c",
+    "genesis/engine/solvers/rigid/stress/source_vertices.py": "4bb61a95aeb8fbe6577daadff68abd5bc25e1da19b97a39bf04b39243b99c8cf",
+    "genesis/engine/solvers/rigid/stress/surface.py": "b83ee1d677294001d0da2613b99fbfe689a014c27bd01bdd06c703d39b32f30e",
+    "genesis/engine/solvers/rigid/stress/surface_inverse.py": "aab910a4172d681a3184f9b8f40d3f2727e80fa81061dc0b50a0f3dbee36ed17",
+    "genesis/engine/solvers/rigid/stress/topology.py": "0e6c421b6fcd66e456417cded1f6b7403474b957d263b4ae5d52b1a9f5b12cd2",
+    "genesis/engine/solvers/rigid/stress/traction.py": "8f0fd5f063bdf60b87fd18f4b2fdef902da1256fc71225bd491dc5c67db64a37",
+    "genesis/options/rigid_stress.py": "2107fc0a700b68acfef856eaa639de4d15b03a98f1f5adcfe0fe5179e74f7a9c",
+    "examples/rigid/franka_egg_stress.py": "a661fddfbbf201d65062e97ceeb7771a0926df647ab2526c840f25b16a3b5a3a",
+    "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/probe_nonconvex_online.py": "ea3a04c4e3a66b2750deefbbbff04c6fd95377172a1378f1ba7e00c00292fc36"
+  },
+  "source_sha256_after": {
+    "genesis/engine/solvers/rigid/stress/__init__.py": "17b4fa6e4eb64175b87586a6c7142b9fd2f5e88ba4321129d18e07e296adc5a6",
+    "genesis/engine/solvers/rigid/stress/association.py": "0c265ddde597bb03f6f56da0f4c6063a3a530ce2a19f2dceaf3378e987f811b3",
+    "genesis/engine/solvers/rigid/stress/balance.py": "9b9cb6916d198f823b6e6af495c8cea6d0836f07243f3f4bda0b25a48a616712",
+    "genesis/engine/solvers/rigid/stress/compatibility.py": "50b8192347bb89df23039acbb760a5519d5ddc0d0255fc40f554832979ce3167",
+    "genesis/engine/solvers/rigid/stress/contact.py": "7ebfe4210a819036edc18fcc6b9a3e94273f8644dc7c2a50904079c9100886b8",
+    "genesis/engine/solvers/rigid/stress/data.py": "081ee50334a918f8bef23fb891de3c4a6e5fa4964826069268497c0fa1cece19",
+    "genesis/engine/solvers/rigid/stress/factor.py": "f2a059e88cf03b35a5fba2f88c3ac3f631a899d52cd841a6d268d9ccf087f81c",
+    "genesis/engine/solvers/rigid/stress/footprint.py": "549dd21c8f8d71b7ba076351a7bd278c92708fecfe09b41af551e9cc2d32d6f2",
+    "genesis/engine/solvers/rigid/stress/grid.py": "f451674d257339ece41a258f22c7b95fe25d6fc51888854855de4320e26b9a90",
+    "genesis/engine/solvers/rigid/stress/history.py": "559e046d3405afc260be5cd5a0de5712e490518e73aafc288642261c3959657c",
+    "genesis/engine/solvers/rigid/stress/intrinsic.py": "90d1f704c1dcef125b1a6a7423960c611c83ef6ff856013104143f9456261b83",
+    "genesis/engine/solvers/rigid/stress/inverse.py": "b15ef055df018d96b92aa2b0be3d39d258b4cc59c83dbccdd9dcf0c173eb2a43",
+    "genesis/engine/solvers/rigid/stress/lifecycle.py": "aec6ccc09b9da6fc15ea1c64e6716dee9325b3d05edaa7ac19b4419861c192fa",
+    "genesis/engine/solvers/rigid/stress/model.py": "02deae6f14789dfe8c6470432a5ad8cdd372f27008a5f6ea902a07dff6dda97f",
+    "genesis/engine/solvers/rigid/stress/operators.py": "40ad5e488e928a8f22efe0833f447afba7ef0e258bc3cffb5a0fe30bc1d416ff",
+    "genesis/engine/solvers/rigid/stress/paths.py": "f164db603035224f229f9d8b81bd6534499e51b440248760f001dcb1e4adf855",
+    "genesis/engine/solvers/rigid/stress/pipeline.py": "5677953121fc287950a1a86ab80a781929032b13ffae3d9698b0d28426722de9",
+    "genesis/engine/solvers/rigid/stress/post.py": "e19a87869e01403119880a16e6d7e221a6e3653b24fff174cc01a9390458901e",
+    "genesis/engine/solvers/rigid/stress/provenance.py": "cdb00916ffa41aa7b29ed2ba03759d6ae7ec899900aa59dc16abce4c8c036a1a",
+    "genesis/engine/solvers/rigid/stress/recovery.py": "32808c73c3fda7eede2bb42bc4f55db715f980c00bdb83c78d3e339a883be93b",
+    "genesis/engine/solvers/rigid/stress/scatter.py": "f1aec3bdf7f1f8c0e6dc2a587874afe6dcefd1e9dc5147859711098736a7b399",
+    "genesis/engine/solvers/rigid/stress/solve.py": "7a69e5aace87d1c9a642698ad3381c2bdfc27c765f27447d97d5a18a2916393c",
+    "genesis/engine/solvers/rigid/stress/source_vertices.py": "4bb61a95aeb8fbe6577daadff68abd5bc25e1da19b97a39bf04b39243b99c8cf",
+    "genesis/engine/solvers/rigid/stress/surface.py": "b83ee1d677294001d0da2613b99fbfe689a014c27bd01bdd06c703d39b32f30e",
+    "genesis/engine/solvers/rigid/stress/surface_inverse.py": "aab910a4172d681a3184f9b8f40d3f2727e80fa81061dc0b50a0f3dbee36ed17",
+    "genesis/engine/solvers/rigid/stress/topology.py": "0e6c421b6fcd66e456417cded1f6b7403474b957d263b4ae5d52b1a9f5b12cd2",
+    "genesis/engine/solvers/rigid/stress/traction.py": "8f0fd5f063bdf60b87fd18f4b2fdef902da1256fc71225bd491dc5c67db64a37",
+    "genesis/options/rigid_stress.py": "2107fc0a700b68acfef856eaa639de4d15b03a98f1f5adcfe0fe5179e74f7a9c",
+    "examples/rigid/franka_egg_stress.py": "a661fddfbbf201d65062e97ceeb7771a0926df647ab2526c840f25b16a3b5a3a",
+    "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/probe_nonconvex_online.py": "ea3a04c4e3a66b2750deefbbbff04c6fd95377172a1378f1ba7e00c00292fc36"
+  }
+}
