@@ -3422,6 +3422,18 @@ class ShellStaticConfig(metaclass=AutoInitMeta):
     # Lanes of the single block that lists the environments still solving, by a scan over their counts: a full block
     # on GPU, 1 on CPU where one lane lists them in order
     envs_block_dim: int
+    # Lanes of the grid the hot passes of the solve stride over, whose launch costs a fraction of one sized at run time:
+    # eight per core on GPU, whatever the count of environments still solving, and 1 on CPU, where Genesis runs
+    # quadrants on one thread
+    grid_dim: int
+    # Environments and lanes per environment of the blocks that reduce the line search terms of an environment in a
+    # fixed order (see func_envs_group_reduce in shell_solver.py): consecutive environments side by side on GPU, so
+    # that the lanes read their arrays together, and a single lane on CPU
+    envs_group_dim: int
+    envs_group_lanes: int
+    # Whether the sums several threads accumulate add 64-bit integers, which repeat bit for bit whatever the order the
+    # threads come in (see func_fixed_scale in shell_solver.py), or floats, faster but in the order the threads come in
+    has_fixed_point_sums: bool
 
 
 @dataclasses.dataclass(eq=True, kw_only=False, frozen=True)
@@ -3438,8 +3450,9 @@ class ShellInfo:
     endpoints in either face, so that it stays intact as long as both pairs point at the same vertices.
 
     The coarse space of the linear solve gives every patch of vertices 9 degrees of freedom, a displacement affine in
-    the shape functions verts_coarse_phi of its vertices, starting at verts_coarse_dof. An entity holds its own dense
-    coarse matrix, of size entities_coarse_dim, stored row-major from entities_coarse_matrix_start.
+    the shape functions verts_coarse_phi of its vertices, starting at verts_coarse_dof, coarse_phi_max bounding their
+    magnitude. An entity holds its own dense coarse matrix, of size entities_coarse_dim, stored row-major from
+    entities_coarse_matrix_start.
     """
 
     kind: ClassVar[DataKind] = DataKind.CONSTANT
@@ -3477,6 +3490,7 @@ class ShellInfo:
     hinges_rest_area: qd.Tensor
     verts_coarse_dof: qd.Tensor
     verts_coarse_phi: qd.Tensor
+    coarse_phi_max: qd.Tensor
     verts_fan_start: qd.Tensor
     verts_fan_len: qd.Tensor
     verts_is_fan_closed: qd.Tensor
@@ -3519,6 +3533,7 @@ def get_shell_info(n_entities, n_verts, n_faces, n_hinges, n_coarse_dofs):
         hinges_rest_area=V(dtype=gs.qd_float, shape=(max(n_hinges, 1),)),
         verts_coarse_dof=V(dtype=gs.qd_int, shape=(n_verts,)),
         verts_coarse_phi=V(dtype=gs.qd_vec3, shape=(n_verts,)),
+        coarse_phi_max=V(dtype=gs.qd_float, shape=()),
         verts_fan_start=V(dtype=gs.qd_int, shape=(n_verts,)),
         verts_fan_len=V(dtype=gs.qd_int, shape=(n_verts,)),
         verts_is_fan_closed=V(dtype=gs.qd_bool, shape=(n_verts,)),
@@ -3599,11 +3614,25 @@ class ShellScratch:
     The implicit integration solves (M + K) dv = b by preconditioned conjugate gradient (PCG), K summing the stiffness
     of every face and hinge scaled by dt * (dt + damping). verts_prec holds the diagonal 3x3 blocks of M + K, which the
     solve inverts into the block-Jacobi preconditioner. A face stores its elastic deformation gradient and the positive
-    part of its stress, which the stiffness products read, and a hinge the gradient of its dihedral angle and its
-    scaled stiffness, zero while it is broken. coarse_assembly holds the lower triangle of the coarse matrix of every
-    entity, coarse_matrix a copy of it per environment, then its Cholesky factor, then its inverse, coarse_factor_inv
-    the inverse of the Cholesky factor, coarse_vec the restricted residual and coarse_sol the coarse correction.
+    part of its stress, which the stiffness products read, and a hinge the gradient of its dihedral angle and its scaled
+    stiffness, zero while it is broken. coarse_assembly holds the lower triangle of the coarse matrix of every entity,
+    coarse_matrix a copy of it per environment, then its Cholesky factor, then its inverse, coarse_factor_inv the
+    inverse of the Cholesky factor, coarse_vec the restricted residual and coarse_sol the coarse correction.
     envs_coarse_age counts the substeps since the coarse matrices of an environment were factorized.
+
+    The sums several threads accumulate are fixed-point (see func_fixed_scale in shell_solver.py): verts_Ap,
+    coarse_assembly, coarse_vec, envs_pAp, envs_residual, envs_vel_error and envs_rz_new hold one directly, and
+    verts_rhs_sum, verts_prec_sum, envs_free_mass_sum and envs_residual_threshold_sum the one their float counterpart is
+    read from. verts_Ap and verts_rhs_sum store their vertex rows component-major, so that the atomic additions of the
+    lanes of consecutive environments to one component of a vertex hit consecutive entries. envs_schur_energy holds the
+    share of p^T A p of the rigid degrees of freedom, which one thread per environment sums. Every fixed-point sum
+    rounds its terms by a scale following from a bound on them, from the largest entry magnitudes the passes before it
+    record as the bits of floats (see func_bound_bits in shell_solver.py): of the diagonal blocks (envs_prec_max), the
+    right-hand side (envs_rhs_max), the vector the next system product applies to (envs_vec_max), the velocity change
+    over the solve (envs_dv_max), the elastic terms of the right-hand side and the diagonal blocks (envs_rhs_term_max,
+    envs_prec_term_max), the vertex masses (envs_mass_min, envs_mass_max), the residual of the iteration (envs_r_max)
+    with the shares of its two norms every vertex holds (verts_norm_terms, envs_residual_term_max,
+    envs_vel_error_term_max), and the coarse inverse (envs_coarse_inv_max).
 
     An environment solves while envs_needs_solve holds (every environment at the start of a substep, then the ones still
     iterating on their contacts, see kernel_shell_rigid_contact_solve), envs_needs_solve_idx listing the
@@ -3615,18 +3644,23 @@ class ShellScratch:
     preconditioner (envs_residual, envs_residual_checked holding it at the last restart of the conjugate gradient) and
     the bound r^T M^-1 r on the mass-weighted squared error of the velocity change (envs_vel_error). envs_solving_idx
     lists the n_envs_solving environments still solving in increasing order, the passes of an iteration running over
-    them alone. pcg_flag keeps the device loop of the solve running while any environment iterates. faces_damage is
-    the damage index of every face after the last substep.
+    them alone, and envs_is_solve_loose marks an environment whose solve stops at the loose tolerance of an inexact
+    Newton iteration of the contact solve (see func_contact_linearize in shell_solver.py). pcg_flag keeps the device
+    loop of the solve running while any environment iterates. faces_damage is the damage index of every face after the
+    last substep.
     """
 
     kind: ClassVar[DataKind] = DataKind.SCRATCH
 
     verts_mass: qd.Tensor
     verts_rhs: qd.Tensor
+    verts_rhs_sum: qd.Tensor
     verts_r: qd.Tensor
+    verts_norm_terms: qd.Tensor
     verts_p: qd.Tensor
     verts_Ap: qd.Tensor
     verts_prec: qd.Tensor
+    verts_prec_sum: qd.Tensor
     verts_normal: qd.Tensor
     verts_separation: qd.Tensor
     verts_split: qd.Tensor
@@ -3649,13 +3683,29 @@ class ShellScratch:
     coarse_sol: qd.Tensor
     envs_coarse_age: qd.Tensor = of_kind(DataKind.WARMSTART)
     envs_free_mass: qd.Tensor
+    envs_free_mass_sum: qd.Tensor
+    envs_prec_max: qd.Tensor
+    envs_rhs_max: qd.Tensor
+    envs_vec_max: qd.Tensor
+    envs_dv_max: qd.Tensor
+    envs_rhs_term_max: qd.Tensor
+    envs_prec_term_max: qd.Tensor
+    envs_mass_min: qd.Tensor
+    envs_mass_max: qd.Tensor
     envs_rz: qd.Tensor
     envs_rz_new: qd.Tensor
     envs_pAp: qd.Tensor
+    envs_schur_energy: qd.Tensor
     envs_residual: qd.Tensor
     envs_residual_threshold: qd.Tensor
+    envs_residual_threshold_sum: qd.Tensor
     envs_residual_checked: qd.Tensor
     envs_vel_error: qd.Tensor
+    envs_r_max: qd.Tensor
+    envs_residual_term_max: qd.Tensor
+    envs_vel_error_term_max: qd.Tensor
+    # The largest entry of the coarse inverse outlives a substep with it (see coarse_matrix)
+    envs_coarse_inv_max: qd.Tensor = of_kind(DataKind.WARMSTART)
     envs_vel_error_threshold: qd.Tensor
     envs_step: qd.Tensor
     envs_needs_solve: qd.Tensor
@@ -3664,6 +3714,7 @@ class ShellScratch:
     envs_is_solving: qd.Tensor
     envs_solving_idx: qd.Tensor
     n_envs_solving: qd.Tensor
+    envs_is_solve_loose: qd.Tensor
     envs_pcg_mode: qd.Tensor
     envs_n_iterations: qd.Tensor
     envs_n_solve_iterations: qd.Tensor
@@ -3672,14 +3723,31 @@ class ShellScratch:
     pcg_flag: qd.types.ndarray()
 
 
-def get_shell_scratch(n_verts, n_faces, n_hinges, n_coarse_dofs, n_coarse_entries, B, has_fracture, has_damage):
+def get_shell_scratch(
+    n_verts,
+    n_faces,
+    n_hinges,
+    n_coarse_dofs,
+    n_coarse_entries,
+    B,
+    has_fracture,
+    has_damage,
+    has_fixed_point_sums,
+):
+    # Fixed-point sums take 64-bit integers (see has_fixed_point_sums in ShellStaticConfig), and their bounds the bits
+    # of floats (see func_bound_bits in shell_solver.py)
+    fixed = qd.i64 if has_fixed_point_sums else gs.qd_float
+    bound = qd.i32 if gs.qd_float == qd.f32 else qd.i64
     return ShellScratch(
         verts_mass=V(dtype=gs.qd_float, shape=(n_verts, B)),
         verts_rhs=V(dtype=gs.qd_vec3, shape=(n_verts, B)),
+        verts_rhs_sum=V(dtype=fixed, shape=(n_verts, 3, B)),
         verts_r=V(dtype=gs.qd_vec3, shape=(n_verts, B)),
+        verts_norm_terms=V(dtype=gs.qd_vec2, shape=(n_verts, B)),
         verts_p=V(dtype=gs.qd_vec3, shape=(n_verts, B)),
-        verts_Ap=V(dtype=gs.qd_vec3, shape=(n_verts, B)),
+        verts_Ap=V(dtype=fixed, shape=(n_verts, 3, B)),
         verts_prec=V_MAT(n=3, m=3, dtype=gs.qd_float, shape=(n_verts, B)),
+        verts_prec_sum=V_MAT(n=3, m=3, dtype=fixed, shape=(n_verts, B)),
         verts_normal=V(dtype=gs.qd_vec3, shape=(n_verts, B)),
         verts_separation=V(dtype=gs.qd_float, shape=maybe_shape((n_verts, B), has_fracture)),
         verts_split=V(dtype=gs.qd_ivec2, shape=maybe_shape((n_verts, B), has_fracture)),
@@ -3694,20 +3762,35 @@ def get_shell_scratch(n_verts, n_faces, n_hinges, n_coarse_dofs, n_coarse_entrie
         corners_render_normal=V(dtype=gs.qd_vec3, shape=(3 * n_faces, B)),
         # The assembly scatters every element of every environment, whose atomic additions coalesce across environments,
         # while the lanes factorizing the coarse matrix of one environment read its entries together, hence two layouts.
-        coarse_assembly=V(dtype=gs.qd_float, shape=maybe_shape((n_coarse_entries, B), n_coarse_entries > 0)),
+        coarse_assembly=V(dtype=fixed, shape=maybe_shape((n_coarse_entries, B), n_coarse_entries > 0)),
         coarse_matrix=V(dtype=gs.qd_float, shape=maybe_shape((B, n_coarse_entries), n_coarse_entries > 0)),
         coarse_factor_inv=V(dtype=gs.qd_float, shape=maybe_shape((B, n_coarse_entries), n_coarse_entries > 0)),
-        coarse_vec=V(dtype=gs.qd_float, shape=maybe_shape((n_coarse_dofs, B), n_coarse_dofs > 0)),
+        coarse_vec=V(dtype=fixed, shape=maybe_shape((n_coarse_dofs, B), n_coarse_dofs > 0)),
         coarse_sol=V(dtype=gs.qd_float, shape=maybe_shape((n_coarse_dofs, B), n_coarse_dofs > 0)),
         envs_coarse_age=V(dtype=gs.qd_int, shape=(B,)),
         envs_free_mass=V(dtype=gs.qd_float, shape=(B,)),
+        envs_free_mass_sum=V(dtype=fixed, shape=(B,)),
+        envs_prec_max=V(dtype=bound, shape=(B,)),
+        envs_rhs_max=V(dtype=bound, shape=(B,)),
+        envs_vec_max=V(dtype=bound, shape=(B,)),
+        envs_dv_max=V(dtype=bound, shape=(B,)),
+        envs_rhs_term_max=V(dtype=bound, shape=(B,)),
+        envs_prec_term_max=V(dtype=bound, shape=(B,)),
+        envs_mass_min=V(dtype=bound, shape=(B,)),
+        envs_mass_max=V(dtype=bound, shape=(B,)),
         envs_rz=V(dtype=gs.qd_float, shape=(B,)),
-        envs_rz_new=V(dtype=gs.qd_float, shape=(B,)),
-        envs_pAp=V(dtype=gs.qd_float, shape=(B,)),
-        envs_residual=V(dtype=gs.qd_float, shape=(B,)),
+        envs_rz_new=V(dtype=fixed, shape=(B,)),
+        envs_pAp=V(dtype=fixed, shape=(B,)),
+        envs_schur_energy=V(dtype=gs.qd_float, shape=(B,)),
+        envs_residual=V(dtype=fixed, shape=(B,)),
         envs_residual_threshold=V(dtype=gs.qd_float, shape=(B,)),
+        envs_residual_threshold_sum=V(dtype=fixed, shape=(B,)),
         envs_residual_checked=V(dtype=gs.qd_float, shape=(B,)),
-        envs_vel_error=V(dtype=gs.qd_float, shape=(B,)),
+        envs_vel_error=V(dtype=fixed, shape=(B,)),
+        envs_r_max=V(dtype=bound, shape=(B,)),
+        envs_residual_term_max=V(dtype=bound, shape=(B,)),
+        envs_vel_error_term_max=V(dtype=bound, shape=(B,)),
+        envs_coarse_inv_max=V(dtype=bound, shape=(B,)),
         envs_vel_error_threshold=V(dtype=gs.qd_float, shape=(B,)),
         envs_step=V(dtype=gs.qd_float, shape=(B,)),
         envs_needs_solve=V(dtype=gs.qd_bool, shape=(B,)),
@@ -3716,6 +3799,7 @@ def get_shell_scratch(n_verts, n_faces, n_hinges, n_coarse_dofs, n_coarse_entrie
         envs_is_solving=V(dtype=gs.qd_bool, shape=(B,)),
         envs_solving_idx=V(dtype=gs.qd_int, shape=(B,)),
         n_envs_solving=V(dtype=gs.qd_int, shape=()),
+        envs_is_solve_loose=V(dtype=gs.qd_bool, shape=(B,)),
         envs_pcg_mode=V(dtype=gs.qd_int, shape=(B,)),
         envs_n_iterations=V(dtype=gs.qd_int, shape=(B,)),
         envs_n_solve_iterations=V(dtype=gs.qd_int, shape=(B,)),
@@ -3747,9 +3831,21 @@ class ShellContactScratch:
     the step, refined over the passes envs_line_pass while line_flag keeps their device loop running (see
     func_contact_line_search_update in shell_solver.py). verts_rhs_base and verts_diag_base keep the system of the sheet
     without contacts, which every iteration adds the contacts to anew. newton_flag keeps the device loop of the solve
-    running while any environment iterates, envs_n_newton_iterations counts its iterations and envs_is_nonlinear flags
-    an environment with a contact whose impulse left the linear model of the previous iteration. Once solved,
-    verts_contact_force holds the distribution of the contact forces on the vertices, in N.
+    running while any environment iterates, envs_n_newton_iterations counts its iterations, envs_is_nonlinear flags
+    an environment with a contact whose impulse left the linear model of the previous iteration, and envs_dir_prev_max
+    holds the largest relative velocity change of a contact along the Newton direction of that iteration, as the bits
+    of a float (see func_bound_bits in shell_solver.py). Once solved, verts_contact_force holds the distribution of the
+    contact forces on the vertices, in N.
+
+    The contact sums several threads accumulate are fixed-point (see func_fixed_scale in shell_solver.py):
+    dofs_schur_product, envs_line_slope and envs_line_curvature hold one directly, and dofs_schur_rhs_sum,
+    dofs_schur_inv_sum, dofs_schur_vec_sum, verts_contact_force_sum and links_contact_force_sum the one their float
+    counterpart is read from. Their bounds follow from the largest entry magnitudes, recorded as the bits of floats, of
+    the contact Jacobians (envs_jac_max), Hessians (envs_hessian_max), impulses (envs_impulse_max), velocity changes
+    (envs_vel_change_max), start velocities (envs_vel_max), step directions (envs_dir_max), stiffnesses
+    (envs_stiffness_max), gaps over the substep (envs_gap_rate_max, in m/s) and friction bounds
+    (envs_friction_bound_max), of the rigid velocities of the Schur right-hand side (envs_schur_rhs_max) and of the
+    contact forces (envs_force_max).
 
     The rigid degrees of freedom the contacts move are eliminated from every linear solve by their Schur complement: a
     contact with a movable link holds the Jacobian of its rigid point over the degrees of freedom of its kinematic tree
@@ -3780,20 +3876,37 @@ class ShellContactScratch:
     verts_dv_prev: qd.Tensor
     # A checkpoint carries it for the contact force getter to read between steps
     verts_contact_force: qd.Tensor = of_kind(DataKind.STATE)
+    verts_contact_force_sum: qd.Tensor
+    links_contact_force_sum: qd.Tensor
     envs_step: qd.Tensor
     envs_n_newton_iterations: qd.Tensor
     envs_is_nonlinear: qd.Tensor
+    envs_dir_prev_max: qd.Tensor
     envs_line_terms: qd.Tensor
     envs_line_slope: qd.Tensor
     envs_line_curvature: qd.Tensor
     envs_line_bracket: qd.Tensor
     envs_line_pass: qd.Tensor
+    envs_jac_max: qd.Tensor
+    envs_hessian_max: qd.Tensor
+    envs_impulse_max: qd.Tensor
+    envs_vel_change_max: qd.Tensor
+    envs_vel_max: qd.Tensor
+    envs_dir_max: qd.Tensor
+    envs_stiffness_max: qd.Tensor
+    envs_gap_rate_max: qd.Tensor
+    envs_friction_bound_max: qd.Tensor
+    envs_schur_rhs_max: qd.Tensor
+    envs_force_max: qd.Tensor
     contacts_jac: qd.Tensor
     trees_is_coupled: qd.Tensor
     dofs_schur_inv: qd.Tensor
+    dofs_schur_inv_sum: qd.Tensor
     dofs_schur_product: qd.Tensor
     dofs_schur_rhs: qd.Tensor
+    dofs_schur_rhs_sum: qd.Tensor
     dofs_schur_vec: qd.Tensor
+    dofs_schur_vec_sum: qd.Tensor
     dofs_dv: qd.Tensor
     dofs_dir: qd.Tensor
     # Ndarrays, as graph_counter of the constraint solver
@@ -3805,6 +3918,7 @@ def get_shell_contact_scratch(
     n_verts,
     n_faces,
     n_geoms,
+    n_links,
     n_trees,
     n_dofs,
     max_tree_dofs,
@@ -3812,7 +3926,12 @@ def get_shell_contact_scratch(
     n_line_search_points,
     n_line_search_bracket,
     B,
+    has_fixed_point_sums,
 ):
+    # Fixed-point sums take 64-bit integers (see has_fixed_point_sums in ShellStaticConfig), and their bounds the bits
+    # of floats (see func_bound_bits in shell_solver.py)
+    fixed = qd.i64 if has_fixed_point_sums else gs.qd_float
+    bound = qd.i32 if gs.qd_float == qd.f32 else qd.i64
     return ShellContactScratch(
         geoms_bound_center=V(dtype=gs.qd_vec3, shape=(n_geoms,)),
         geoms_bound_radius=V(dtype=gs.qd_float, shape=(n_geoms,)),
@@ -3831,20 +3950,37 @@ def get_shell_contact_scratch(
         verts_diag_base=V_MAT(n=3, m=3, dtype=gs.qd_float, shape=(n_verts, B)),
         verts_dv_prev=V(dtype=gs.qd_vec3, shape=(n_verts, B)),
         verts_contact_force=V(dtype=gs.qd_vec3, shape=(n_verts, B)),
+        verts_contact_force_sum=V_VEC(3, dtype=fixed, shape=(n_verts, B)),
+        links_contact_force_sum=V_VEC(3, dtype=fixed, shape=(max(n_links, 1), B)),
         envs_step=V(dtype=gs.qd_float, shape=(B,)),
         envs_n_newton_iterations=V(dtype=gs.qd_int, shape=(B,)),
         envs_is_nonlinear=V(dtype=gs.qd_bool, shape=(B,)),
+        envs_dir_prev_max=V(dtype=bound, shape=(B,)),
         envs_line_terms=V(dtype=gs.qd_float, shape=(B, n_line_search_terms)),
-        envs_line_slope=V(dtype=gs.qd_float, shape=(B, n_line_search_points)),
-        envs_line_curvature=V(dtype=gs.qd_float, shape=(B, n_line_search_points)),
+        envs_line_slope=V(dtype=fixed, shape=(B, n_line_search_points)),
+        envs_line_curvature=V(dtype=fixed, shape=(B, n_line_search_points)),
         envs_line_bracket=V(dtype=gs.qd_float, shape=(B, n_line_search_bracket)),
         envs_line_pass=V(dtype=gs.qd_int, shape=(B,)),
+        envs_jac_max=V(dtype=bound, shape=(B,)),
+        envs_hessian_max=V(dtype=bound, shape=(B,)),
+        envs_impulse_max=V(dtype=bound, shape=(B,)),
+        envs_vel_change_max=V(dtype=bound, shape=(B,)),
+        envs_vel_max=V(dtype=bound, shape=(B,)),
+        envs_dir_max=V(dtype=bound, shape=(B,)),
+        envs_stiffness_max=V(dtype=bound, shape=(B,)),
+        envs_gap_rate_max=V(dtype=bound, shape=(B,)),
+        envs_friction_bound_max=V(dtype=bound, shape=(B,)),
+        envs_schur_rhs_max=V(dtype=bound, shape=(B,)),
+        envs_force_max=V(dtype=bound, shape=(B,)),
         contacts_jac=V(dtype=gs.qd_vec3, shape=(2 * n_faces, max(max_tree_dofs, 1), B)),
         trees_is_coupled=V(dtype=gs.qd_bool, shape=(n_trees, B)),
         dofs_schur_inv=V(dtype=gs.qd_float, shape=(max(n_dofs, 1), max(n_dofs, 1), B)),
-        dofs_schur_product=V(dtype=gs.qd_float, shape=(2 * max(n_dofs, 1), B)),
+        dofs_schur_inv_sum=V(dtype=fixed, shape=(max(n_dofs, 1), max(n_dofs, 1), B)),
+        dofs_schur_product=V(dtype=fixed, shape=(2 * max(n_dofs, 1), B)),
         dofs_schur_rhs=V(dtype=gs.qd_float, shape=(max(n_dofs, 1), B)),
+        dofs_schur_rhs_sum=V(dtype=fixed, shape=(max(n_dofs, 1), B)),
         dofs_schur_vec=V(dtype=gs.qd_float, shape=(max(n_dofs, 1), B)),
+        dofs_schur_vec_sum=V(dtype=fixed, shape=(max(n_dofs, 1), B)),
         dofs_dv=V(dtype=gs.qd_float, shape=(max(n_dofs, 1), B)),
         dofs_dir=V(dtype=gs.qd_float, shape=(max(n_dofs, 1), B)),
         newton_flag=qd.ndarray(qd.i32, shape=()),

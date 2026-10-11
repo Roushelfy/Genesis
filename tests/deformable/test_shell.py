@@ -467,9 +467,9 @@ def test_rigid_contact_conserves_momentum(n_envs, grid_sheet_path, show_viewer):
 @pytest.mark.parametrize("n_envs", [0, 2])
 def test_state_restore_reproduces_contact(n_envs, grid_sheet_path, show_viewer):
     # A ball rolls and slides on a sheet pinned at its edges, which it sags into. Restoring a snapshot replays the
-    # motion that followed it, the warm start of the solver included, and so do restoring a checkpoint of the scene and
-    # loading a copy of the scene pickled there. Resetting one environment to the initial state replays its motion from
-    # the start while the other one carries on.
+    # motion that followed it bit for bit, the warm start of the solver included, and so do restoring a checkpoint of
+    # the scene and loading a copy of the scene pickled there. Resetting one environment to the initial state replays
+    # its motion from the start while the other one carries on.
     THICKNESS, BALL_RADIUS = 2e-3, 0.02
 
     scene = gs.Scene(
@@ -519,36 +519,36 @@ def test_state_restore_reproduces_contact(n_envs, grid_sheet_path, show_viewer):
     trajectory_ref = run(scene, 30)
     scene.reset(state=state_init)
     for (sheet_a, ball_a), (sheet_b, ball_b) in zip(trajectory_ref[:15], run(scene, 15)):
-        assert_allclose(sheet_b, sheet_a, tol=1e-9)
-        assert_allclose(ball_b, ball_a, tol=1e-9)
+        assert_equal(sheet_b, sheet_a)
+        assert_equal(ball_b, ball_a)
     state_mid = scene.get_state()
     checkpoint_mid = scene.__getstate__()
     scene_mid_bytes = pickle.dumps(scene)
     for (sheet_a, ball_a), (sheet_b, ball_b) in zip(trajectory_ref[15:], run(scene, 15)):
-        assert_allclose(sheet_b, sheet_a, tol=1e-9)
-        assert_allclose(ball_b, ball_a, tol=1e-9)
+        assert_equal(sheet_b, sheet_a)
+        assert_equal(ball_b, ball_a)
     scene.reset(state=state_mid)
     for (sheet_a, ball_a), (sheet_b, ball_b) in zip(trajectory_ref[15:], run(scene, 15)):
-        assert_allclose(sheet_b, sheet_a, tol=1e-9)
-        assert_allclose(ball_b, ball_a, tol=1e-9)
+        assert_equal(sheet_b, sheet_a)
+        assert_equal(ball_b, ball_a)
     scene.__setstate__(checkpoint_mid)
     for (sheet_a, ball_a), (sheet_b, ball_b) in zip(trajectory_ref[15:], run(scene, 15)):
-        assert_allclose(sheet_b, sheet_a, tol=1e-9)
-        assert_allclose(ball_b, ball_a, tol=1e-9)
+        assert_equal(sheet_b, sheet_a)
+        assert_equal(ball_b, ball_a)
     scene_mid = pickle.loads(scene_mid_bytes)
     for (sheet_a, ball_a), (sheet_b, ball_b) in zip(trajectory_ref[15:], run(scene_mid, 15)):
-        assert_allclose(sheet_b, sheet_a, tol=1e-9)
-        assert_allclose(ball_b, ball_a, tol=1e-9)
+        assert_equal(sheet_b, sheet_a)
+        assert_equal(ball_b, ball_a)
     if n_envs > 0:
         scene.reset(state=state_mid)
         scene.reset(state=state_init, envs_idx=[1])
         for (sheet_a, ball_a), (sheet_c, ball_c), (sheet_b, ball_b) in zip(
             trajectory_ref[:15], trajectory_ref[15:], run(scene, 15)
         ):
-            assert_allclose(sheet_b[1], sheet_a[1], tol=1e-9)
-            assert_allclose(ball_b[1], ball_a[1], tol=1e-9)
-            assert_allclose(sheet_b[0], sheet_c[0], tol=1e-9)
-            assert_allclose(ball_b[0], ball_c[0], tol=1e-9)
+            assert_equal(sheet_b[1], sheet_a[1])
+            assert_equal(ball_b[1], ball_a[1])
+            assert_equal(sheet_b[0], sheet_c[0])
+            assert_equal(ball_b[0], ball_c[0])
 
 
 @pytest.mark.required

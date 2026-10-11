@@ -77,6 +77,7 @@ class LegacyCoupler(RBC):
             self.shell_solver.build_rigid_contact(
                 geoms_bound_center,
                 geoms_bound_radius,
+                self.rigid_solver.n_links,
                 self.rigid_solver.rigid_info.trees_dof_start.shape[0],
                 self.rigid_solver.n_dofs,
                 qd_to_numpy(self.rigid_solver.rigid_info.trees_n_dofs).max(initial=0),

@@ -14,7 +14,7 @@ import genesis.utils.sdf as sdf
 from genesis.engine.entities.shell_entity import ShellEntity, ShellEntityDescription
 from genesis.engine.materials.shell import Shell
 from genesis.engine.states.solvers import ShellSolverState
-from genesis.utils.misc import broadcast_tensor, qd_to_torch
+from genesis.utils.misc import broadcast_tensor, get_gpu_core_count, qd_to_torch
 
 from .base_solver import GravityMixin, Solver, TimeBasedMixin
 from .rigid.abd.forward_dynamics import func_vel_at_point
@@ -45,6 +45,18 @@ CONTACT_MARGIN_RATIO = 2.0
 # from zero to the Coulomb bound as the slip velocity reaches the stick velocity of the contact, which widens past this
 # floor until the stuck friction is no stiffer than the normal penalty (see func_contact_stick_velocity).
 FRICTION_STICK_VELOCITY = 1e-4
+
+# Ratio of the tolerance of the linear solves of the Newton iterations whose contacts still leave their linear model to
+# the tolerance of the final one, and the iterations past which the solves stay at the final tolerance (see
+# func_contact_linearize). Their iterate only steers the next linearization, so that a solve to the final tolerance
+# would refine a direction the next iteration discards. An environment still iterating past a few iterations has
+# contacts switching regime, which loose solves would keep switching rather than settle.
+NEWTON_LOOSE_TOLERANCE_RATIO = 30.0
+N_NEWTON_LOOSE_ITERATIONS = 8
+
+# Exponent standing for an infinite or NaN bound of a fixed-point sum, above the exponent of any finite one, which every
+# bound it enters keeps (see func_fixed_scale)
+BOUND_EXPONENT_NON_FINITE = 1 << 16
 
 # Maximum Newton iterations of the contact solve of a substep (see kernel_shell_rigid_contact_solve), a safety limit for
 # the environments whose contacts keep changing regime
@@ -81,6 +93,10 @@ DEEPEST_POINT_SOFTMIN_WIDTH = 1e-3
 # func_contact_is_in_normal_cone)
 EDGE_BARY_TOLERANCE = 1e-3
 NORMAL_CONE_TOLERANCE = 1e-2
+
+# Binary digits of a 64-bit fixed-point sum below its sign bit, which its terms share with the room their count needs
+# (see func_fixed_scale)
+FIXED_POINT_DIGITS = 62
 
 
 class PCG_MODE(IntEnum):
@@ -183,6 +199,12 @@ class ShellSolver(GravityMixin, TimeBasedMixin, Solver):
                 has_coarse_space=self._n_coarse_patches > 0,
                 coarse_block_dim=1 if gs.backend == gs.cpu else 32,
                 envs_block_dim=1 if gs.backend == gs.cpu else 1024,
+                grid_dim=1 if gs.backend == gs.cpu else 8 * get_gpu_core_count(),
+                envs_group_dim=1 if gs.backend == gs.cpu else 8,
+                envs_group_lanes=1 if gs.backend == gs.cpu else 32,
+                # A rollout repeats bit for bit unless the performance mode trades that for throughput (see
+                # use_deterministic_algorithms in genesis/__init__.py). Apple Metal has no 64-bit integers.
+                has_fixed_point_sums=gs.use_deterministic_algorithms and gs.backend != gs.metal,
             )
             entities_coarse_dim = [
                 9 * entity.patches.n_patches if entity.patches is not None else 0 for entity in self._entities
@@ -205,6 +227,7 @@ class ShellSolver(GravityMixin, TimeBasedMixin, Solver):
                 self._B,
                 self._static_config.has_fracture,
                 self._static_config.has_damage,
+                self._static_config.has_fixed_point_sums,
             )
             self._init_info_and_state()
 
@@ -214,6 +237,7 @@ class ShellSolver(GravityMixin, TimeBasedMixin, Solver):
         self,
         geoms_bound_center: np.ndarray,
         geoms_bound_radius: np.ndarray,
+        n_links: int,
         n_trees: int,
         n_dofs: int,
         max_tree_dofs: int,
@@ -222,13 +246,14 @@ class ShellSolver(GravityMixin, TimeBasedMixin, Solver):
         of every substep, the coupler driving it (see solve_rigid_contact).
 
         Every geom is bounded by the sphere of radius geoms_bound_radius around geoms_bound_center in its own frame, a
-        negative radius standing for an unbounded geom. The rigid solver has n_trees kinematic trees and n_dofs degrees
-        of freedom, at most max_tree_dofs in a tree.
+        negative radius standing for an unbounded geom. The rigid solver has n_links links, n_trees kinematic trees and
+        n_dofs degrees of freedom, at most max_tree_dofs in a tree.
         """
         self._shell_contact = array_class.get_shell_contact_scratch(
             self._n_verts,
             self._n_faces,
             len(geoms_bound_radius),
+            n_links,
             n_trees,
             n_dofs,
             max_tree_dofs,
@@ -236,6 +261,7 @@ class ShellSolver(GravityMixin, TimeBasedMixin, Solver):
             N_LINE_SEARCH_POINTS,
             N_LINE_SEARCH_BRACKET,
             self._B,
+            self._static_config.has_fixed_point_sums,
         )
         self._shell_contact.geoms_bound_center.from_numpy(geoms_bound_center)
         self._shell_contact.geoms_bound_radius.from_numpy(geoms_bound_radius)
@@ -370,6 +396,7 @@ class ShellSolver(GravityMixin, TimeBasedMixin, Solver):
         info.hinges_rest_area.from_numpy(hinges_rest_area)
         info.verts_coarse_dof.from_numpy(verts_coarse_dof)
         info.verts_coarse_phi.from_numpy(verts_coarse_phi)
+        info.coarse_phi_max.fill(float(np.abs(verts_coarse_phi).max(initial=0.0)))
         info.verts_fan_start.from_numpy(verts_fan_start)
         info.verts_fan_len.from_numpy(verts_fan_len)
         info.verts_is_fan_closed.from_numpy(verts_is_fan_closed)
@@ -423,11 +450,20 @@ class ShellSolver(GravityMixin, TimeBasedMixin, Solver):
         if not self.is_active:
             return
         kernel_shell_compute_forces(
-            self._substep_dt, self._gravity, self._shell_state, self._shell_scratch, self._shell_info
+            self._substep_dt,
+            self._gravity,
+            self._shell_state,
+            self._shell_scratch,
+            self._shell_info,
+            self._static_config,
         )
         if self._static_config.has_coarse_space:
             kernel_shell_coarse_assemble(
-                self._shell_state, self._shell_scratch, self._shell_info, self._coarse_update_interval
+                self._shell_state,
+                self._shell_scratch,
+                self._shell_info,
+                self._static_config,
+                self._coarse_update_interval,
             )
             kernel_shell_coarse_factorize(
                 self._shell_state,
@@ -471,6 +507,7 @@ class ShellSolver(GravityMixin, TimeBasedMixin, Solver):
             rigid_solver.dyn_info,
             rigid_solver.rigid_info,
             rigid_solver.collider.collider_info.sdf,
+            self._static_config,
             rigid_solver.rigid_config,
             rigid_solver.collider.collider_config,
             self._contact_stiffness,
@@ -503,6 +540,7 @@ class ShellSolver(GravityMixin, TimeBasedMixin, Solver):
             self._shell_contact,
             rigid_solver.dyn_state,
             rigid_solver.dyn_info,
+            self._static_config,
         )
         kernel_shell_apply_dv(self._shell_state, self._shell_scratch)
 
@@ -757,6 +795,105 @@ class ShellSolver(GravityMixin, TimeBasedMixin, Solver):
 
 
 @qd.func
+def func_exponent(x: float):
+    """Return the binary exponent e of a positive normal float, x lying in [2^(e - 1), 2^e)."""
+    if qd.static(gs.qd_float == qd.f32):
+        return ((qd.bit_cast(x, qd.i32) >> 23) & 0xFF) - 126
+    else:
+        return qd.cast((qd.bit_cast(x, qd.i64) >> 52) & 0x7FF, gs.qd_int) - 1022
+
+
+@qd.func
+def func_bound_bits(value: float):
+    """Return the bits of the magnitude of a float as an integer of its width, which an integer atomic max or min orders
+    as the magnitudes.
+
+    The registers of the bounds of the fixed-point sums hold such bits (see ShellScratch), integer atomics being native
+    where floating-point ones loop on compare-and-swap. A NaN ranks above infinity, so that a non-finite term reaches
+    the bound of its sum (see func_fixed_scale).
+    """
+    if qd.static(gs.qd_float == qd.f32):
+        return qd.bit_cast(qd.abs(value), qd.i32)
+    else:
+        return qd.bit_cast(qd.abs(value), qd.i64)
+
+
+@qd.func
+def func_bound_exponent(bits):
+    """Return the binary exponent e of a bound register, the magnitude it holds lying below 2^e.
+
+    The register holds the bits of a float (see func_bound_bits). An infinite or NaN one gives
+    BOUND_EXPONENT_NON_FINITE.
+    """
+    exponent = 0
+    if qd.static(gs.qd_float == qd.f32):
+        field = (bits >> 23) & 0xFF
+        exponent = qd.max(field, 1) - 126
+        if field == 0xFF:
+            exponent = BOUND_EXPONENT_NON_FINITE
+    else:
+        field = qd.cast((bits >> 52) & 0x7FF, gs.qd_int)
+        exponent = qd.max(field, 1) - 1022
+        if field == 0x7FF:
+            exponent = BOUND_EXPONENT_NON_FINITE
+    return exponent
+
+
+@qd.func
+def func_fixed_scale(bound_exponent: int, n_terms: int, static_config: qd.template()):
+    """Return the power of two by which a fixed-point sum rounds its terms to the integers it adds.
+
+    The threads that accumulate a sum together add their terms as 64-bit integers, whose sum does not depend on the
+    order the terms come in, so that it repeats bit for bit whatever the schedule of the threads, which a sum of floats
+    does not. Every term must lie below 2^bound_exponent in magnitude, and the sum then has room for n_terms of them. A
+    term keeps about FIXED_POINT_DIGITS - log2(n_terms) binary digits below the bound, the scale staying within the
+    exponent range of the working precision, which only rounds the terms of a vanishing bound more coarsely.
+
+    The bound exponents follow from the registers of the largest entries by integer arithmetic alone (see
+    func_bound_exponent), a product of bounded factors adding their exponents and a sum taking the larger one plus one,
+    so that the passes that accumulate a sum and the ones that read it back derive the same scale. A bound evaluated in
+    floating point rounds apart between kernels, and a bound straddling a power of two then reads the sum back twice too
+    large or too small. A non-finite bound gives a NaN scale, so that the sum reads back as NaN, as a sum of floats with
+    a non-finite term would. Without 64-bit integers (see has_fixed_point_sums in ShellStaticConfig), the sums add
+    floats and the scale is one.
+    """
+    scale = gs.qd_float(1.0)
+    if qd.static(static_config.has_fixed_point_sums):
+        exponent = FIXED_POINT_DIGITS - func_exponent(gs.qd_float(qd.max(n_terms, 1))) - bound_exponent
+        if qd.static(gs.qd_float == qd.f32):
+            scale = qd.bit_cast((qd.min(qd.max(exponent, -126), 127) + 127) << 23, qd.f32)
+        else:
+            scale = qd.bit_cast(qd.cast(qd.min(qd.max(exponent, -1022), 1023) + 1023, qd.i64) << 52, qd.f64)
+        if bound_exponent >= BOUND_EXPONENT_NON_FINITE // 2:
+            scale = qd.math.nan
+    return scale
+
+
+@qd.func
+def func_to_fixed(value, scale, static_config: qd.template()):
+    """Round a term of a fixed-point sum, scalar, vector or matrix, to the integers the sum adds.
+
+    See func_fixed_scale.
+    """
+    if qd.static(static_config.has_fixed_point_sums):
+        return qd.cast(qd.floor(value * scale + 0.5), qd.i64)
+    else:
+        return value
+
+
+@qd.func
+def func_from_fixed(value, scale, static_config: qd.template()):
+    """Return the value of a fixed-point sum, scalar, vector or matrix, in the working precision.
+
+    See func_fixed_scale.
+    """
+    if qd.static(static_config.has_fixed_point_sums):
+        return qd.cast(value, gs.qd_float) / scale
+    else:
+        return value
+
+
+@qd.func
 def func_vert_offset(i_v: int, i_u: int, i_b: int, shell_state: array_class.ShellState):
     """Position of vertex i_v relative to vertex i_u, exact up to the precision of the small anchored offsets.
 
@@ -954,6 +1091,91 @@ def func_is_vert_free(i_v: int, i_b: int, shell_state: array_class.ShellState):
 # ------------------------------------------------------------------------------------
 
 
+@qd.func
+def func_face_force_terms(
+    i_f: int, i_b: int, dt: float, shell_state: array_class.ShellState, shell_info: array_class.ShellInfo
+):
+    """Return the terms one face adds to the right-hand side and to the diagonal blocks of its three vertices.
+
+    The face also returns its deformation gradient, the positive part of its stress and its stiffness scale, which the
+    stiffness products read (see ShellScratch).
+    """
+    i_e = shell_info.faces_entity[i_f]
+    modulus = shell_info.entities_stretching_modulus[i_e] * shell_state.faces_thickness[i_f, i_b]
+    nu = shell_info.entities_nu[i_e]
+    rest_area = shell_info.faces_rest_area[i_f]
+    F, Y = func_face_deformation(i_f, i_b, shell_state, shell_info)
+    stress = func_membrane_stress(F, modulus, nu)
+    lambda_0, lambda_1, eigvec_0 = func_sym2_eigen(stress)
+    stress_pos = func_sym2_compose(qd.max(lambda_0, 0.0), qd.max(lambda_1, 0.0), eigvec_0)
+    stiffness = dt * (dt + shell_info.entities_damping[i_e]) * rest_area
+
+    i_v0 = shell_state.corners_vert[3 * i_f, i_b]
+    i_v1 = shell_state.corners_vert[3 * i_f + 1, i_b]
+    i_v2 = shell_state.corners_vert[3 * i_f + 2, i_b]
+    # Elastic force: minus the gradient of rest_area / 2 * G : stress, rest_area * F @ stress being its gradient
+    # with respect to F.
+    Q = rest_area * (F @ stress) @ Y.transpose()
+    force_1 = -qd.Vector([Q[0, 0], Q[1, 0], Q[2, 0]])
+    force_2 = -qd.Vector([Q[0, 1], Q[1, 1], Q[2, 1]])
+    Kv0, Kv1, Kv2 = func_membrane_stiffness_product(
+        shell_state.verts_vel[i_v0, i_b],
+        shell_state.verts_vel[i_v1, i_b],
+        shell_state.verts_vel[i_v2, i_b],
+        F,
+        stress_pos,
+        Y,
+        modulus,
+        nu,
+    )
+    rhs_0 = -dt * (force_1 + force_2) - stiffness * Kv0
+    rhs_1 = dt * force_1 - stiffness * Kv1
+    rhs_2 = dt * force_2 - stiffness * Kv2
+
+    # Diagonal blocks of the stiffness: displacing vertex k alone changes F by dx * w_k^T.
+    prec_blocks = qd.Matrix.zero(gs.qd_float, 9, 3)
+    for k in qd.static(range(3)):
+        w = -qd.Vector([Y[0, 0] + Y[1, 0], Y[0, 1] + Y[1, 1]])
+        if qd.static(k > 0):
+            w = qd.Vector([Y[k - 1, 0], Y[k - 1, 1]])
+        M = modulus * (
+            0.5 * (1.0 - nu) * w.dot(w) * qd.Matrix.identity(gs.qd_float, 2)
+            + (0.5 * (1.0 - nu) + nu) * w.outer_product(w)
+        )
+        H = stiffness * (F @ M @ F.transpose() + w.dot(stress_pos @ w) * qd.Matrix.identity(gs.qd_float, 3))
+        for j, l in qd.static(qd.ndrange(3, 3)):
+            prec_blocks[3 * k + j, l] = H[j, l]
+    return F, stress_pos, stiffness, rhs_0, rhs_1, rhs_2, prec_blocks
+
+
+@qd.func
+def func_hinge_force_terms(
+    i_h: int, i_b: int, dt: float, shell_state: array_class.ShellState, shell_info: array_class.ShellInfo
+):
+    """Return the gradient of the dihedral angle of a hinge, its stiffness scale and the coefficient of the gradient in
+    the terms it adds to the right-hand side of its four vertices, all zero for a hinge whose faces split apart."""
+    grad = qd.Matrix.zero(gs.qd_float, 3, 4)
+    stiffness = gs.qd_float(0.0)
+    coeff = gs.qd_float(0.0)
+    i_va, i_vb, i_vc, i_vd, is_intact = func_hinge_verts(i_h, i_b, shell_state, shell_info)
+    if is_intact:
+        edge_b, edge_c, edge_d = func_hinge_edges(i_va, i_vb, i_vc, i_vd, i_b, shell_state)
+        angle = func_hinge_angle(edge_b, edge_c, edge_d)
+        grad = func_hinge_angle_gradient(edge_b, edge_c, edge_d)
+        i_e = shell_info.hinges_entity[i_h]
+        k_bend = func_hinge_stiffness(i_h, i_b, shell_state, shell_info)
+        rest_angle = shell_info.hinges_rest_angle[i_h] + shell_state.hinges_plastic_angle[i_h, i_b]
+        stiffness = dt * (dt + shell_info.entities_damping[i_e]) * k_bend
+        grad_dot_vel = (
+            grad[:, 0].dot(shell_state.verts_vel[i_va, i_b])
+            + grad[:, 1].dot(shell_state.verts_vel[i_vb, i_b])
+            + grad[:, 2].dot(shell_state.verts_vel[i_vc, i_b])
+            + grad[:, 3].dot(shell_state.verts_vel[i_vd, i_b])
+        )
+        coeff = -dt * k_bend * (angle - rest_angle) - stiffness * grad_dot_vel
+    return grad, stiffness, coeff, i_va, i_vb, i_vc, i_vd
+
+
 @qd.kernel
 def kernel_shell_compute_forces(
     dt: float,
@@ -961,124 +1183,156 @@ def kernel_shell_compute_forces(
     shell_state: array_class.ShellState,
     shell_scratch: array_class.ShellScratch,
     shell_info: array_class.ShellInfo,
+    static_config: qd.template(),
 ):
     """Assemble the right-hand side dt * (f + M g) - K v of the velocity update, the diagonal blocks of M + K, and the
     per-element data the stiffness products read (see ShellScratch).
 
     The diagonal blocks stay assembled, the contacts adding to them before the linear solve inverts them. The warm start
-    of a vertex the forces do not move is cleared, its velocity change being zero.
+    of a vertex the forces do not move is cleared, its velocity change being zero. The elements add their terms to their
+    vertices as fixed-point sums (see func_fixed_scale), a first pass over them recording the largest terms the sums
+    round by, and a vertex gathers its mass from the faces of its fan in their order, so that every sum repeats bit for
+    bit.
     """
     n_verts, B = shell_state.verts_pos.shape[0], shell_state.verts_pos.shape[1]
     n_faces = shell_state.faces_thickness.shape[0]
     n_hinges = shell_scratch.hinges_stiffness.shape[0]
-
-    for i_v, i_b in qd.ndrange(n_verts, B):
-        shell_scratch.verts_mass[i_v, i_b] = 0.0
-        shell_scratch.verts_rhs[i_v, i_b] = qd.Vector.zero(gs.qd_float, 3)
-        shell_scratch.verts_prec[i_v, i_b] = qd.Matrix.zero(gs.qd_float, 3, 3)
-
-    for i_c, i_b in qd.ndrange(3 * n_faces, B):
-        i_v = shell_state.corners_vert[i_c, i_b]
-        shell_scratch.verts_mass[i_v, i_b] += shell_info.faces_mass[i_c // 3] / 3.0
-
-    for i_f, i_b in qd.ndrange(n_faces, B):
-        i_e = shell_info.faces_entity[i_f]
-        modulus = shell_info.entities_stretching_modulus[i_e] * shell_state.faces_thickness[i_f, i_b]
-        nu = shell_info.entities_nu[i_e]
-        rest_area = shell_info.faces_rest_area[i_f]
-        F, Y = func_face_deformation(i_f, i_b, shell_state, shell_info)
-        stress = func_membrane_stress(F, modulus, nu)
-        lambda_0, lambda_1, eigvec_0 = func_sym2_eigen(stress)
-        stress_pos = func_sym2_compose(qd.max(lambda_0, 0.0), qd.max(lambda_1, 0.0), eigvec_0)
-        stiffness = dt * (dt + shell_info.entities_damping[i_e]) * rest_area
-        shell_scratch.faces_F[i_f, i_b] = F
-        shell_scratch.faces_stress[i_f, i_b] = stress_pos
-        shell_scratch.faces_stiffness[i_f, i_b] = stiffness
-
-        i_v0 = shell_state.corners_vert[3 * i_f, i_b]
-        i_v1 = shell_state.corners_vert[3 * i_f + 1, i_b]
-        i_v2 = shell_state.corners_vert[3 * i_f + 2, i_b]
-        # Elastic force: minus the gradient of rest_area / 2 * G : stress, rest_area * F @ stress being its gradient
-        # with respect to F.
-        Q = rest_area * (F @ stress) @ Y.transpose()
-        force_1 = -qd.Vector([Q[0, 0], Q[1, 0], Q[2, 0]])
-        force_2 = -qd.Vector([Q[0, 1], Q[1, 1], Q[2, 1]])
-        Kv0, Kv1, Kv2 = func_membrane_stiffness_product(
-            shell_state.verts_vel[i_v0, i_b],
-            shell_state.verts_vel[i_v1, i_b],
-            shell_state.verts_vel[i_v2, i_b],
-            F,
-            stress_pos,
-            Y,
-            modulus,
-            nu,
-        )
-        shell_scratch.verts_rhs[i_v0, i_b] += -dt * (force_1 + force_2) - stiffness * Kv0
-        shell_scratch.verts_rhs[i_v1, i_b] += dt * force_1 - stiffness * Kv1
-        shell_scratch.verts_rhs[i_v2, i_b] += dt * force_2 - stiffness * Kv2
-
-        # Diagonal blocks of the stiffness: displacing vertex k alone changes F by dx * w_k^T.
-        for k in qd.static(range(3)):
-            w = -qd.Vector([Y[0, 0] + Y[1, 0], Y[0, 1] + Y[1, 1]])
-            if qd.static(k > 0):
-                w = qd.Vector([Y[k - 1, 0], Y[k - 1, 1]])
-            M = modulus * (
-                0.5 * (1.0 - nu) * w.dot(w) * qd.Matrix.identity(gs.qd_float, 2)
-                + (0.5 * (1.0 - nu) + nu) * w.outer_product(w)
-            )
-            H = F @ M @ F.transpose() + w.dot(stress_pos @ w) * qd.Matrix.identity(gs.qd_float, 3)
-            i_v = shell_state.corners_vert[3 * i_f + k, i_b]
-            shell_scratch.verts_prec[i_v, i_b] += stiffness * H
-
-    for i_h, i_b in qd.ndrange(n_hinges, B):
-        shell_scratch.hinges_stiffness[i_h, i_b] = 0.0
-        i_va, i_vb, i_vc, i_vd, is_intact = func_hinge_verts(i_h, i_b, shell_state, shell_info)
-        if is_intact:
-            edge_b, edge_c, edge_d = func_hinge_edges(i_va, i_vb, i_vc, i_vd, i_b, shell_state)
-            angle = func_hinge_angle(edge_b, edge_c, edge_d)
-            grad = func_hinge_angle_gradient(edge_b, edge_c, edge_d)
-            i_e = shell_info.hinges_entity[i_h]
-            k_bend = func_hinge_stiffness(i_h, i_b, shell_state, shell_info)
-            rest_angle = shell_info.hinges_rest_angle[i_h] + shell_state.hinges_plastic_angle[i_h, i_b]
-            stiffness = dt * (dt + shell_info.entities_damping[i_e]) * k_bend
-            shell_scratch.hinges_grad[i_h, i_b] = grad
-            shell_scratch.hinges_stiffness[i_h, i_b] = stiffness
-
-            grad_dot_vel = (
-                grad[:, 0].dot(shell_state.verts_vel[i_va, i_b])
-                + grad[:, 1].dot(shell_state.verts_vel[i_vb, i_b])
-                + grad[:, 2].dot(shell_state.verts_vel[i_vc, i_b])
-                + grad[:, 3].dot(shell_state.verts_vel[i_vd, i_b])
-            )
-            coeff = -dt * k_bend * (angle - rest_angle) - stiffness * grad_dot_vel
-            shell_scratch.verts_rhs[i_va, i_b] += coeff * grad[:, 0]
-            shell_scratch.verts_rhs[i_vb, i_b] += coeff * grad[:, 1]
-            shell_scratch.verts_rhs[i_vc, i_b] += coeff * grad[:, 2]
-            shell_scratch.verts_rhs[i_vd, i_b] += coeff * grad[:, 3]
-            shell_scratch.verts_prec[i_va, i_b] += stiffness * grad[:, 0].outer_product(grad[:, 0])
-            shell_scratch.verts_prec[i_vb, i_b] += stiffness * grad[:, 1].outer_product(grad[:, 1])
-            shell_scratch.verts_prec[i_vc, i_b] += stiffness * grad[:, 2].outer_product(grad[:, 2])
-            shell_scratch.verts_prec[i_vd, i_b] += stiffness * grad[:, 3].outer_product(grad[:, 3])
+    n_terms = 3 * n_faces + 4 * n_hinges
 
     for i_b in range(B):
-        shell_scratch.envs_free_mass[i_b] = 0.0
+        shell_scratch.envs_rhs_term_max[i_b] = 0
+        shell_scratch.envs_prec_term_max[i_b] = 0
+        shell_scratch.envs_prec_max[i_b] = 0
+        shell_scratch.envs_rhs_max[i_b] = 0
+        shell_scratch.envs_mass_min[i_b] = func_bound_bits(qd.math.inf)
+        shell_scratch.envs_mass_max[i_b] = 0
+        shell_scratch.envs_free_mass_sum[i_b] = 0
         shell_scratch.envs_needs_solve[i_b] = True
         shell_scratch.envs_needs_solve_idx[i_b] = i_b
         if i_b == 0:
             shell_scratch.n_envs_needs_solve[None] = B
         shell_scratch.envs_n_iterations[i_b] = 0
         shell_scratch.envs_solve_status[i_b] = SHELL_SOLVE_STATUS.CONVERGED
+        shell_scratch.envs_is_solve_loose[i_b] = False
+
+    for i_v, i_b in qd.ndrange(n_verts, B):
+        for j in qd.static(range(3)):
+            shell_scratch.verts_rhs_sum[i_v, j, i_b] = func_to_fixed(gs.qd_float(0.0), 1.0, static_config)
+        shell_scratch.verts_prec_sum[i_v, i_b] = func_to_fixed(qd.Matrix.zero(gs.qd_float, 3, 3), 1.0, static_config)
+        mass = gs.qd_float(0.0)
+        i_o = shell_state.verts_origin[i_v, i_b]
+        if i_o >= 0:
+            fan_start = shell_info.verts_fan_start[i_o]
+            for i_j in range(fan_start, fan_start + shell_info.verts_fan_len[i_o]):
+                if func_fan_entry_is_owned(i_v, i_j, i_b, shell_state, shell_info):
+                    i_c = shell_info.fans_corner[i_j]
+                    mass += shell_info.faces_mass[i_c // 3] / 3.0
+        shell_scratch.verts_mass[i_v, i_b] = mass
+        if qd.static(static_config.has_fixed_point_sums):
+            qd.atomic_max(shell_scratch.envs_mass_max[i_b], func_bound_bits(mass))
+
+    for i_f, i_b in qd.ndrange(n_faces, B):
+        F, stress_pos, stiffness, rhs_0, rhs_1, rhs_2, prec_blocks = func_face_force_terms(
+            i_f, i_b, dt, shell_state, shell_info
+        )
+        shell_scratch.faces_F[i_f, i_b] = F
+        shell_scratch.faces_stress[i_f, i_b] = stress_pos
+        shell_scratch.faces_stiffness[i_f, i_b] = stiffness
+        rhs_max = qd.max(qd.abs(rhs_0).max(), qd.abs(rhs_1).max(), qd.abs(rhs_2).max())
+        if qd.static(static_config.has_fixed_point_sums):
+            qd.atomic_max(shell_scratch.envs_rhs_term_max[i_b], func_bound_bits(rhs_max))
+            qd.atomic_max(shell_scratch.envs_prec_term_max[i_b], func_bound_bits(qd.abs(prec_blocks).max()))
+
+    for i_h, i_b in qd.ndrange(n_hinges, B):
+        grad, stiffness, coeff, _i_va, _i_vb, _i_vc, _i_vd = func_hinge_force_terms(
+            i_h, i_b, dt, shell_state, shell_info
+        )
+        shell_scratch.hinges_grad[i_h, i_b] = grad
+        shell_scratch.hinges_stiffness[i_h, i_b] = stiffness
+        grad_max = qd.abs(grad).max()
+        if qd.static(static_config.has_fixed_point_sums):
+            qd.atomic_max(shell_scratch.envs_rhs_term_max[i_b], func_bound_bits(qd.abs(coeff) * grad_max))
+            qd.atomic_max(shell_scratch.envs_prec_term_max[i_b], func_bound_bits(stiffness * grad_max * grad_max))
+
+    for i_f, i_b in qd.ndrange(n_faces, B):
+        _F, _stress_pos, _stiffness, rhs_0, rhs_1, rhs_2, prec_blocks = func_face_force_terms(
+            i_f, i_b, dt, shell_state, shell_info
+        )
+        scale_rhs = func_fixed_scale(func_bound_exponent(shell_scratch.envs_rhs_term_max[i_b]), n_terms, static_config)
+        scale_prec = func_fixed_scale(
+            func_bound_exponent(shell_scratch.envs_prec_term_max[i_b]), n_terms, static_config
+        )
+        for k in qd.static(range(3)):
+            i_v = shell_state.corners_vert[3 * i_f + k, i_b]
+            rhs = rhs_0
+            if qd.static(k == 1):
+                rhs = rhs_1
+            elif qd.static(k == 2):
+                rhs = rhs_2
+            H = qd.Matrix.zero(gs.qd_float, 3, 3)
+            for j, l in qd.static(qd.ndrange(3, 3)):
+                H[j, l] = prec_blocks[3 * k + j, l]
+            for j in qd.static(range(3)):
+                shell_scratch.verts_rhs_sum[i_v, j, i_b] += func_to_fixed(rhs[j], scale_rhs, static_config)
+            shell_scratch.verts_prec_sum[i_v, i_b] += func_to_fixed(H, scale_prec, static_config)
+
+    for i_h, i_b in qd.ndrange(n_hinges, B):
+        grad, stiffness, coeff, i_va, i_vb, i_vc, i_vd = func_hinge_force_terms(i_h, i_b, dt, shell_state, shell_info)
+        if stiffness > 0.0:
+            scale_rhs = func_fixed_scale(
+                func_bound_exponent(shell_scratch.envs_rhs_term_max[i_b]), n_terms, static_config
+            )
+            scale_prec = func_fixed_scale(
+                func_bound_exponent(shell_scratch.envs_prec_term_max[i_b]), n_terms, static_config
+            )
+            for k in qd.static(range(4)):
+                i_v = i_va
+                if qd.static(k == 1):
+                    i_v = i_vb
+                elif qd.static(k == 2):
+                    i_v = i_vc
+                elif qd.static(k == 3):
+                    i_v = i_vd
+                for j in qd.static(range(3)):
+                    shell_scratch.verts_rhs_sum[i_v, j, i_b] += func_to_fixed(
+                        coeff * grad[j, k], scale_rhs, static_config
+                    )
+                shell_scratch.verts_prec_sum[i_v, i_b] += func_to_fixed(
+                    stiffness * grad[:, k].outer_product(grad[:, k]), scale_prec, static_config
+                )
 
     for i_v, i_b in qd.ndrange(n_verts, B):
         mass = shell_scratch.verts_mass[i_v, i_b]
         if func_is_vert_free(i_v, i_b, shell_state) and mass > 0.0:
-            shell_scratch.verts_rhs[i_v, i_b] += dt * mass * gravity[i_b]
-            shell_scratch.verts_prec[i_v, i_b] += mass * qd.Matrix.identity(gs.qd_float, 3)
-            shell_scratch.envs_free_mass[i_b] += mass
+            scale_rhs = func_fixed_scale(
+                func_bound_exponent(shell_scratch.envs_rhs_term_max[i_b]), n_terms, static_config
+            )
+            scale_prec = func_fixed_scale(
+                func_bound_exponent(shell_scratch.envs_prec_term_max[i_b]), n_terms, static_config
+            )
+            scale_mass = func_fixed_scale(func_bound_exponent(shell_scratch.envs_mass_max[i_b]), n_verts, static_config)
+            rhs_sum = qd.Vector([shell_scratch.verts_rhs_sum[i_v, j, i_b] for j in qd.static(range(3))])
+            rhs = func_from_fixed(rhs_sum, scale_rhs, static_config) + (dt * mass * gravity[i_b])
+            prec = func_from_fixed(shell_scratch.verts_prec_sum[i_v, i_b], scale_prec, static_config) + (
+                mass * qd.Matrix.identity(gs.qd_float, 3)
+            )
+            shell_scratch.verts_rhs[i_v, i_b] = rhs
+            shell_scratch.verts_prec[i_v, i_b] = prec
+            shell_scratch.envs_free_mass_sum[i_b] += func_to_fixed(mass, scale_mass, static_config)
+            if qd.static(static_config.has_fixed_point_sums):
+                qd.atomic_max(shell_scratch.envs_rhs_max[i_b], func_bound_bits(qd.abs(rhs).max()))
+                qd.atomic_max(shell_scratch.envs_prec_max[i_b], func_bound_bits(qd.abs(prec).max()))
+                qd.atomic_min(shell_scratch.envs_mass_min[i_b], func_bound_bits(mass))
         else:
             shell_scratch.verts_rhs[i_v, i_b] = qd.Vector.zero(gs.qd_float, 3)
             shell_scratch.verts_prec[i_v, i_b] = qd.Matrix.zero(gs.qd_float, 3, 3)
             shell_state.verts_dv[i_v, i_b] = qd.Vector.zero(gs.qd_float, 3)
+
+    for i_b in range(B):
+        scale_mass = func_fixed_scale(func_bound_exponent(shell_scratch.envs_mass_max[i_b]), n_verts, static_config)
+        shell_scratch.envs_free_mass[i_b] = func_from_fixed(
+            shell_scratch.envs_free_mass_sum[i_b], scale_mass, static_config
+        )
 
 
 @qd.func
@@ -1097,11 +1351,15 @@ def func_pcg_direction(
 def func_element_product(
     i_e_: int,
     i_b: int,
+    scale,
+    scale_pAp,
     shell_state: array_class.ShellState,
     shell_scratch: array_class.ShellScratch,
     shell_info: array_class.ShellInfo,
+    static_config: qd.template(),
 ):
-    """Add the stiffness of one face or hinge times x to verts_Ap, and its share of x^T K x to envs_pAp.
+    """Add the stiffness of one face or hinge times x to verts_Ap, and its share of x^T K x to envs_pAp, as fixed-point
+    terms of the given scales (see func_product_scale).
 
     The faces come first in the index i_e_, then the hinges, and x is the vector func_pcg_direction selects.
     """
@@ -1128,10 +1386,13 @@ def func_element_product(
             shell_info.entities_stretching_modulus[i_e] * shell_state.faces_thickness[i_f, i_b],
             shell_info.entities_nu[i_e],
         )
-        shell_scratch.verts_Ap[i_v0, i_b] += stiffness * Kp0
-        shell_scratch.verts_Ap[i_v1, i_b] += stiffness * Kp1
-        shell_scratch.verts_Ap[i_v2, i_b] += stiffness * Kp2
-        shell_scratch.envs_pAp[i_b] += stiffness * (x0.dot(Kp0) + x1.dot(Kp1) + x2.dot(Kp2))
+        for j in qd.static(range(3)):
+            shell_scratch.verts_Ap[i_v0, j, i_b] += func_to_fixed(stiffness * Kp0[j], scale, static_config)
+            shell_scratch.verts_Ap[i_v1, j, i_b] += func_to_fixed(stiffness * Kp1[j], scale, static_config)
+            shell_scratch.verts_Ap[i_v2, j, i_b] += func_to_fixed(stiffness * Kp2[j], scale, static_config)
+        shell_scratch.envs_pAp[i_b] += func_to_fixed(
+            stiffness * (x0.dot(Kp0) + x1.dot(Kp1) + x2.dot(Kp2)), scale_pAp, static_config
+        )
     else:
         i_h = i_e_ - n_faces
         stiffness = shell_scratch.hinges_stiffness[i_h, i_b]
@@ -1145,30 +1406,125 @@ def func_element_product(
                 + grad[:, 3].dot(func_pcg_direction(i_vd, i_b, shell_state, shell_scratch))
             )
             coeff = stiffness * rate
-            shell_scratch.verts_Ap[i_va, i_b] += coeff * grad[:, 0]
-            shell_scratch.verts_Ap[i_vb, i_b] += coeff * grad[:, 1]
-            shell_scratch.verts_Ap[i_vc, i_b] += coeff * grad[:, 2]
-            shell_scratch.verts_Ap[i_vd, i_b] += coeff * grad[:, 3]
-            shell_scratch.envs_pAp[i_b] += coeff * rate
+            for j in qd.static(range(3)):
+                shell_scratch.verts_Ap[i_va, j, i_b] += func_to_fixed(coeff * grad[j, 0], scale, static_config)
+                shell_scratch.verts_Ap[i_vb, j, i_b] += func_to_fixed(coeff * grad[j, 1], scale, static_config)
+                shell_scratch.verts_Ap[i_vc, j, i_b] += func_to_fixed(coeff * grad[j, 2], scale, static_config)
+                shell_scratch.verts_Ap[i_vd, j, i_b] += func_to_fixed(coeff * grad[j, 3], scale, static_config)
+            shell_scratch.envs_pAp[i_b] += func_to_fixed(coeff * rate, scale_pAp, static_config)
+
+
+@qd.func
+def func_product_scale(
+    i_b: int, shell_state: array_class.ShellState, shell_scratch: array_class.ShellScratch, static_config: qd.template()
+):
+    """Return the scales of the fixed-point stiffness rows and of the fixed-point x^T A x of the system product of an
+    environment (see func_fixed_scale).
+
+    For x the vector the product applies to, x_max its largest entry and d the largest entry of the diagonal blocks of
+    the system, a term of an element is at most 21 * d * x_max, the stiffness of an element being bounded by the
+    diagonal blocks it adds to. A contact adds a ninth of its Hessian at least to the diagonal block of one of its
+    vertices, so that its term is at most 47 * d * x_max, and the response of the rigid degrees of freedom of its tree
+    at most sqrt(n) times as much for n contacts, their Schur complement being at most the contact stiffness. A share of
+    x^T A x of an element, a contact or a vertex mass is at most 144 * d * x_max^2.
+    """
+    n_verts = shell_state.verts_pos.shape[0]
+    n_faces = shell_state.faces_thickness.shape[0]
+    n_hinges = shell_scratch.hinges_stiffness.shape[0]
+    n_slots = 2 * n_faces
+    e_prec = func_bound_exponent(shell_scratch.envs_prec_max[i_b])
+    e_vec = func_bound_exponent(shell_scratch.envs_vec_max[i_b])
+    # 64 * (1 + sqrt(n_slots)), sqrt(n_slots) lying below 2^ceil(e / 2) for n_slots below 2^e
+    e_rows = 8 + qd.max((func_exponent(gs.qd_float(n_slots)) + 1) // 2, 1)
+    scale = func_fixed_scale(e_rows + e_prec + e_vec, 3 * n_faces + 4 * n_hinges + 6 * n_slots, static_config)
+    scale_pAp = func_fixed_scale(8 + e_prec + 2 * e_vec, n_faces + n_hinges + n_slots + n_verts, static_config)
+    return scale, scale_pAp
 
 
 @qd.func
 def func_system_product(
-    shell_state: array_class.ShellState, shell_scratch: array_class.ShellScratch, shell_info: array_class.ShellInfo
+    shell_state: array_class.ShellState,
+    shell_scratch: array_class.ShellScratch,
+    shell_info: array_class.ShellInfo,
+    static_config: qd.template(),
 ):
     """Add the stiffness K x of the faces and hinges to verts_Ap in every environment still solving, matrix-free, x
-    being the vector func_pcg_direction selects, and x^T K x to envs_pAp.
+    being the vector func_pcg_direction selects, and x^T (M + K) x to envs_pAp.
 
-    verts_Ap holds M x beforehand (see func_pcg_advance). The faces and the hinges share one parallel loop, so that the
-    product costs a single launch. The rows of the vertices the forces do not move are left for func_pcg_residual to
-    ignore.
+    verts_Ap starts from zero and sums fixed-point terms (see func_product_scale), the mass part M x joining when its
+    rows are read (see func_pcg_residual). The vertices, faces and hinges share one grid of lanes (see grid_dim in
+    ShellStaticConfig), so that the product costs a single launch.
     """
-    n_elements = shell_state.faces_thickness.shape[0] + shell_scratch.hinges_stiffness.shape[0]
-    n_envs_solving = shell_scratch.n_envs_solving[None]
+    _G = qd.static(static_config.grid_dim)
+    for i_lane in range(_G):
+        n_verts = shell_state.verts_pos.shape[0]
+        n_elements = shell_state.faces_thickness.shape[0] + shell_scratch.hinges_stiffness.shape[0]
+        n_envs_solving = shell_scratch.n_envs_solving[None]
+        n_items = (n_elements + n_verts) * n_envs_solving
+        for i_chunk_ in range((n_items + _G - 1) // _G):
+            i_flat = i_chunk_ * _G + i_lane
+            if i_flat < n_items:
+                i_b = shell_scratch.envs_solving_idx[i_flat % n_envs_solving]
+                i_e_ = i_flat // n_envs_solving
+                scale, scale_pAp = func_product_scale(i_b, shell_state, shell_scratch, static_config)
+                if i_e_ < n_elements:
+                    func_element_product(
+                        i_e_, i_b, scale, scale_pAp, shell_state, shell_scratch, shell_info, static_config
+                    )
+                else:
+                    i_v = i_e_ - n_elements
+                    x = func_pcg_direction(i_v, i_b, shell_state, shell_scratch)
+                    shell_scratch.envs_pAp[i_b] += func_to_fixed(
+                        shell_scratch.verts_mass[i_v, i_b] * x.norm_sqr(), scale_pAp, static_config
+                    )
 
-    for i_flat in range(n_elements * n_envs_solving):
-        i_b = shell_scratch.envs_solving_idx[i_flat % n_envs_solving]
-        func_element_product(i_flat // n_envs_solving, i_b, shell_state, shell_scratch, shell_info)
+
+@qd.func
+def func_pcg_alpha(
+    i_b: int, shell_state: array_class.ShellState, shell_scratch: array_class.ShellScratch, static_config: qd.template()
+):
+    """Return x^T A x of the system product of an environment, its fixed-point sum less the energy of the rigid degrees
+    of freedom, and the conjugate gradient step alpha = r^T z / x^T A x, zero for a non-positive curvature."""
+    _, scale_pAp = func_product_scale(i_b, shell_state, shell_scratch, static_config)
+    p_A_p = (
+        func_from_fixed(shell_scratch.envs_pAp[i_b], scale_pAp, static_config) - shell_scratch.envs_schur_energy[i_b]
+    )
+    alpha = gs.qd_float(0.0)
+    if p_A_p > 0.0:
+        alpha = shell_scratch.envs_rz[i_b] / p_A_p
+    return p_A_p, alpha
+
+
+@qd.func
+def func_pcg_norm_scales(
+    i_b: int,
+    shell_state: array_class.ShellState,
+    shell_scratch: array_class.ShellScratch,
+    shell_info: array_class.ShellInfo,
+    static_config: qd.template(),
+):
+    """Return the scales of the fixed-point measures of an iteration of an environment: r^T D^-1 r and r^T M^-1 r, the
+    restriction of r, and its coarse share of r^T z (see func_fixed_scale).
+
+    The shares of the two norms are bounded by their largest ones, which the vertices record, and a share of the
+    restriction by phi_max * r_max for r_max the largest residual entry and phi_max the largest shape function. An
+    entry of the restriction is then at most c = n_verts * phi_max * r_max, an entry of the coarse correction
+    n_dofs * inv_max * c for inv_max the largest entry of the coarse inverse, and a share of r^T z their product.
+    """
+    n_verts = shell_state.verts_pos.shape[0]
+    n_dofs = shell_scratch.coarse_vec.shape[0]
+    e_restriction = func_exponent(shell_info.coarse_phi_max[None]) + func_bound_exponent(shell_scratch.envs_r_max[i_b])
+    e_coarse = func_exponent(gs.qd_float(n_verts)) + e_restriction
+    scale_residual = func_fixed_scale(
+        func_bound_exponent(shell_scratch.envs_residual_term_max[i_b]), n_verts, static_config
+    )
+    scale_vel_error = func_fixed_scale(
+        func_bound_exponent(shell_scratch.envs_vel_error_term_max[i_b]), n_verts, static_config
+    )
+    scale_coarse = func_fixed_scale(e_restriction, n_verts, static_config)
+    e_rz = func_exponent(gs.qd_float(n_dofs)) + func_bound_exponent(shell_scratch.envs_coarse_inv_max[i_b])
+    scale_rz = func_fixed_scale(e_rz + 2 * e_coarse, n_dofs, static_config)
+    return scale_residual, scale_vel_error, scale_coarse, scale_rz
 
 
 @qd.func
@@ -1202,8 +1558,8 @@ def func_pcg_prepare(
 ):
     """Set up the linear solve of every environment from its warm start, whose true residual it checks first.
 
-    The block-Jacobi preconditioner is inverted, the convergence thresholds set, the product of the warm start prepared
-    (see PCG_MODE) and the environments to solve listed (see func_envs_list).
+    The block-Jacobi preconditioner is inverted, the convergence thresholds set and the environments to solve listed
+    (see func_envs_list), their first product checking the warm start (see PCG_MODE).
 
     An environment converges once either its residual r in the norm of the block-Jacobi preconditioner D^-1 falls below
     the relative tolerance, r^T D^-1 r <= tolerance^2 * b^T D^-1 b for its right-hand side b, or the mass-weighted
@@ -1217,30 +1573,62 @@ def func_pcg_prepare(
     floating point, hence the second, which needs a true bound: block-Jacobi on a stiff membrane underestimates the
     error of its smooth motions by orders of magnitude, so that z^T M z for z = D^-1 r would stop a falling sheet at
     rest.
+
+    b^T D^-1 b sums fixed-point terms, at most 3 * b_max^2 / m_min for b_max the largest entry of b and m_min the
+    smallest vertex mass, D being at least as large as M.
     """
     n_verts, B = shell_state.verts_pos.shape[0], shell_state.verts_pos.shape[1]
 
+    _G = qd.static(static_config.grid_dim)
     for i_b in range(B):
-        shell_scratch.envs_residual_threshold[i_b] = 0.0
+        shell_scratch.envs_residual_threshold_sum[i_b] = 0
         shell_scratch.envs_residual_checked[i_b] = -1.0
         shell_scratch.envs_n_solve_iterations[i_b] = 0
         shell_scratch.envs_is_solving[i_b] = shell_scratch.envs_needs_solve[i_b]
         shell_scratch.envs_pcg_mode[i_b] = PCG_MODE.CHECK
-        func_pcg_reset(i_b, shell_scratch)
+        shell_scratch.envs_vec_max[i_b] = 0
+        shell_scratch.envs_dv_max[i_b] = 0
+        shell_scratch.envs_schur_energy[i_b] = 0.0
+        shell_scratch.envs_r_max[i_b] = 0
+        shell_scratch.envs_residual_term_max[i_b] = 0
+        shell_scratch.envs_vel_error_term_max[i_b] = 0
+        shell_scratch.envs_pAp[i_b] = 0
+        shell_scratch.envs_residual[i_b] = 0
+        shell_scratch.envs_vel_error[i_b] = 0
+        shell_scratch.envs_rz_new[i_b] = 0
         if qd.static(static_config.has_coarse_space):
             for i_d in range(shell_scratch.coarse_vec.shape[0]):
-                shell_scratch.coarse_vec[i_d, i_b] = 0.0
+                shell_scratch.coarse_vec[i_d, i_b] = 0
 
-    n_envs_needs_solve = shell_scratch.n_envs_needs_solve[None]
-    for i_flat in range(n_verts * n_envs_needs_solve):
-        i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
-        i_v = i_flat // n_envs_needs_solve
-        shell_scratch.verts_Ap[i_v, i_b] = shell_scratch.verts_mass[i_v, i_b] * shell_state.verts_dv[i_v, i_b]
-        if func_is_vert_free(i_v, i_b, shell_state) and shell_scratch.verts_mass[i_v, i_b] > 0.0:
-            prec = shell_scratch.verts_prec[i_v, i_b].inverse()
-            rhs = shell_scratch.verts_rhs[i_v, i_b]
-            shell_scratch.verts_prec[i_v, i_b] = prec
-            shell_scratch.envs_residual_threshold[i_b] += rhs.dot(prec @ rhs)
+    for i_lane in range(_G):
+        n_verts = shell_state.verts_pos.shape[0]
+        n_envs_needs_solve = shell_scratch.n_envs_needs_solve[None]
+        n_items = n_verts * n_envs_needs_solve
+        for i_chunk_ in range((n_items + _G - 1) // _G):
+            i_flat = i_chunk_ * _G + i_lane
+            if i_flat < n_items:
+                i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
+                i_v = i_flat // n_envs_needs_solve
+                for j in qd.static(range(3)):
+                    shell_scratch.verts_Ap[i_v, j, i_b] = func_to_fixed(gs.qd_float(0.0), 1.0, static_config)
+                dv_max = qd.abs(shell_state.verts_dv[i_v, i_b]).max()
+                if qd.static(static_config.has_fixed_point_sums):
+                    qd.atomic_max(shell_scratch.envs_vec_max[i_b], func_bound_bits(dv_max))
+                    qd.atomic_max(shell_scratch.envs_dv_max[i_b], func_bound_bits(dv_max))
+                if func_is_vert_free(i_v, i_b, shell_state) and shell_scratch.verts_mass[i_v, i_b] > 0.0:
+                    prec = shell_scratch.verts_prec[i_v, i_b].inverse()
+                    rhs = shell_scratch.verts_rhs[i_v, i_b]
+                    shell_scratch.verts_prec[i_v, i_b] = prec
+                    scale = func_fixed_scale(
+                        3
+                        + 2 * func_bound_exponent(shell_scratch.envs_rhs_max[i_b])
+                        - func_bound_exponent(shell_scratch.envs_mass_min[i_b]),
+                        n_verts,
+                        static_config,
+                    )
+                    shell_scratch.envs_residual_threshold_sum[i_b] += func_to_fixed(
+                        rhs.dot(prec @ rhs), scale, static_config
+                    )
 
     _K = qd.static(static_config.envs_block_dim)
     if qd.static(_K > 1):
@@ -1250,11 +1638,21 @@ def func_pcg_prepare(
         for i_b_ in range(n_chunk):
             i_b = i_lane * n_chunk + i_b_
             if i_b < B:
-                shell_scratch.envs_residual_threshold[i_b] = (
-                    tolerance * tolerance * shell_scratch.envs_residual_threshold[i_b]
+                scale = func_fixed_scale(
+                    3
+                    + 2 * func_bound_exponent(shell_scratch.envs_rhs_max[i_b])
+                    - func_bound_exponent(shell_scratch.envs_mass_min[i_b]),
+                    n_verts,
+                    static_config,
                 )
-                shell_scratch.envs_vel_error_threshold[i_b] = (
-                    velocity_tolerance * velocity_tolerance * shell_scratch.envs_free_mass[i_b]
+                ratio = gs.qd_float(1.0)
+                if shell_scratch.envs_is_solve_loose[i_b]:
+                    ratio = NEWTON_LOOSE_TOLERANCE_RATIO
+                shell_scratch.envs_residual_threshold[i_b] = (ratio * tolerance) ** 2 * func_from_fixed(
+                    shell_scratch.envs_residual_threshold_sum[i_b], scale, static_config
+                )
+                shell_scratch.envs_vel_error_threshold[i_b] = (ratio * velocity_tolerance) ** 2 * (
+                    shell_scratch.envs_free_mass[i_b]
                 )
         func_envs_list(
             i_lane,
@@ -1263,15 +1661,6 @@ def func_pcg_prepare(
             shell_scratch.envs_is_solving,
             static_config,
         )
-
-
-@qd.func
-def func_pcg_reset(i_b: int, shell_scratch: array_class.ShellScratch):
-    """Clear the scalar reductions the next iteration of the solve of an environment accumulates."""
-    shell_scratch.envs_pAp[i_b] = 0.0
-    shell_scratch.envs_rz_new[i_b] = 0.0
-    shell_scratch.envs_residual[i_b] = 0.0
-    shell_scratch.envs_vel_error[i_b] = 0.0
 
 
 @qd.func
@@ -1324,82 +1713,207 @@ def func_envs_list(
 
 
 @qd.func
+def func_envs_group_reduce(i_g: int, i_lane: int, value: float, static_config: qd.template(), take_max: qd.template()):
+    """Return to every lane of an environment the sum, or the maximum, of the values its lanes hold, in a fixed order.
+
+    The calling loop is a block of static_config.envs_group_dim environments times static_config.envs_group_lanes
+    lanes (see func_contact_line_search_start), lane i_lane of environment i_g holding value. The lanes combine
+    pairwise, halving their number at every step, so that the result does not depend on the schedule of the threads.
+    """
+    result = value
+    _G = qd.static(static_config.envs_group_dim)
+    _L = qd.static(static_config.envs_group_lanes)
+    if qd.static(_L > 1):
+        sh_values = qd.simt.block.SharedArray((_L, _G), gs.qd_float)
+        sh_values[i_lane, i_g] = value
+        qd.simt.block.sync()
+        for i_step in qd.static(range(_L.bit_length() - 1)):
+            if i_lane < qd.static(_L >> (i_step + 1)):
+                other = sh_values[i_lane + qd.static(_L >> (i_step + 1)), i_g]
+                if qd.static(take_max):
+                    sh_values[i_lane, i_g] = qd.max(sh_values[i_lane, i_g], other)
+                else:
+                    sh_values[i_lane, i_g] = sh_values[i_lane, i_g] + other
+            qd.simt.block.sync()
+        result = sh_values[0, i_g]
+    return result
+
+
+@qd.func
+def func_pcg_add_norms(
+    i_v: int,
+    i_b: int,
+    r: qd.types.vector(3),
+    norm_terms: qd.types.vector(2),
+    shell_state: array_class.ShellState,
+    shell_scratch: array_class.ShellScratch,
+    shell_info: array_class.ShellInfo,
+    static_config: qd.template(),
+):
+    """Add the shares of a vertex to the measures of the iteration of its environment.
+
+    The vertex adds its shares of r^T D^-1 r to envs_residual and of r^T M^-1 r to envs_vel_error, and its restriction
+    of r to coarse_vec, which func_pcg_coarse_solve completes, all fixed-point (see func_pcg_norm_scales).
+    """
+    scale_residual, scale_vel_error, scale_coarse, _ = func_pcg_norm_scales(
+        i_b, shell_state, shell_scratch, shell_info, static_config
+    )
+    shell_scratch.envs_residual[i_b] += func_to_fixed(norm_terms[0], scale_residual, static_config)
+    shell_scratch.envs_vel_error[i_b] += func_to_fixed(norm_terms[1], scale_vel_error, static_config)
+    if qd.static(static_config.has_coarse_space):
+        i_o = shell_state.verts_origin[i_v, i_b]
+        if i_o >= 0:
+            i_d = shell_info.verts_coarse_dof[i_o]
+            if i_d >= 0:
+                phi = shell_info.verts_coarse_phi[i_o]
+                for a, j in qd.static(qd.ndrange(3, 3)):
+                    shell_scratch.coarse_vec[i_d + 3 * a + j, i_b] += func_to_fixed(
+                        phi[a] * r[j], scale_coarse, static_config
+                    )
+
+
+@qd.func
 def func_pcg_residual(
     shell_state: array_class.ShellState,
     shell_scratch: array_class.ShellScratch,
     shell_info: array_class.ShellInfo,
     static_config: qd.template(),
 ):
-    """Update the residual of every environment still solving from the system product verts_Ap, and accumulate the
-    measures of the iteration.
+    """Update the residual of every environment still solving from the system product verts_Ap.
 
     An environment in SOLVE mode takes the conjugate gradient step dv += alpha p, r -= alpha A p, alpha = r^T z / p^T A
-    p, while CHECK mode recomputes the true residual r = b - A dv. Every free vertex then adds r^T D^-1 r to
-    envs_residual, r^T M^-1 r to envs_vel_error and the restriction of r to coarse_vec, which func_pcg_coarse_solve
-    completes.
+    p, while CHECK mode recomputes the true residual r = b - A dv, a vertex adding its mass part to its row of the
+    product, which it clears for the next one. Every free vertex then adds its shares to the measures of the iteration
+    (see func_pcg_add_norms). The fixed-point sums of those measures take their bounds from the shares themselves, so
+    that a vertex records its shares and its largest residual entry instead, and func_pcg_norms adds them.
     """
-    n_verts = shell_state.verts_pos.shape[0]
-    n_envs_solving = shell_scratch.n_envs_solving[None]
-
-    for i_flat in range(n_verts * n_envs_solving):
-        i_b = shell_scratch.envs_solving_idx[i_flat % n_envs_solving]
-        i_v = i_flat // n_envs_solving
-        if func_is_vert_free(i_v, i_b, shell_state) and shell_scratch.verts_mass[i_v, i_b] > 0.0:
-            r = shell_scratch.verts_r[i_v, i_b]
-            if shell_scratch.envs_pcg_mode[i_b] == PCG_MODE.SOLVE:
-                p_A_p = shell_scratch.envs_pAp[i_b]
-                if p_A_p > 0.0:
-                    alpha = shell_scratch.envs_rz[i_b] / p_A_p
-                    shell_state.verts_dv[i_v, i_b] += alpha * shell_scratch.verts_p[i_v, i_b]
-                    r = r - alpha * shell_scratch.verts_Ap[i_v, i_b]
-            else:
-                r = shell_scratch.verts_rhs[i_v, i_b] - shell_scratch.verts_Ap[i_v, i_b]
-            shell_scratch.verts_r[i_v, i_b] = r
-            shell_scratch.envs_residual[i_b] += r.dot(shell_scratch.verts_prec[i_v, i_b] @ r)
-            shell_scratch.envs_vel_error[i_b] += r.norm_sqr() / shell_scratch.verts_mass[i_v, i_b]
-            if qd.static(static_config.has_coarse_space):
-                i_o = shell_state.verts_origin[i_v, i_b]
-                i_d = shell_info.verts_coarse_dof[i_o]
-                if i_d >= 0:
-                    phi = shell_info.verts_coarse_phi[i_o]
-                    for a, j in qd.static(qd.ndrange(3, 3)):
-                        shell_scratch.coarse_vec[i_d + 3 * a + j, i_b] += phi[a] * r[j]
-        else:
-            shell_scratch.verts_r[i_v, i_b] = qd.Vector.zero(gs.qd_float, 3)
+    _G = qd.static(static_config.grid_dim)
+    for i_lane in range(_G):
+        n_verts = shell_state.verts_pos.shape[0]
+        n_envs_solving = shell_scratch.n_envs_solving[None]
+        n_items = n_verts * n_envs_solving
+        for i_chunk_ in range((n_items + _G - 1) // _G):
+            i_flat = i_chunk_ * _G + i_lane
+            if i_flat < n_items:
+                i_b = shell_scratch.envs_solving_idx[i_flat % n_envs_solving]
+                i_v = i_flat // n_envs_solving
+                scale, _ = func_product_scale(i_b, shell_state, shell_scratch, static_config)
+                p_A_p, alpha = func_pcg_alpha(i_b, shell_state, shell_scratch, static_config)
+                mass = shell_scratch.verts_mass[i_v, i_b]
+                Ap = mass * func_pcg_direction(i_v, i_b, shell_state, shell_scratch) + func_from_fixed(
+                    qd.Vector([shell_scratch.verts_Ap[i_v, j, i_b] for j in qd.static(range(3))]), scale, static_config
+                )
+                for j in qd.static(range(3)):
+                    shell_scratch.verts_Ap[i_v, j, i_b] = func_to_fixed(gs.qd_float(0.0), 1.0, static_config)
+                r = qd.Vector.zero(gs.qd_float, 3)
+                norm_terms = qd.Vector.zero(gs.qd_float, 2)
+                if func_is_vert_free(i_v, i_b, shell_state) and mass > 0.0:
+                    r = shell_scratch.verts_r[i_v, i_b]
+                    if shell_scratch.envs_pcg_mode[i_b] == PCG_MODE.SOLVE:
+                        if p_A_p > 0.0:
+                            shell_state.verts_dv[i_v, i_b] += alpha * shell_scratch.verts_p[i_v, i_b]
+                            r = r - alpha * Ap
+                    else:
+                        r = shell_scratch.verts_rhs[i_v, i_b] - Ap
+                    norm_terms = qd.Vector([r.dot(shell_scratch.verts_prec[i_v, i_b] @ r), r.norm_sqr() / mass])
+                    if qd.static(static_config.has_fixed_point_sums):
+                        qd.atomic_max(shell_scratch.envs_residual_term_max[i_b], func_bound_bits(norm_terms[0]))
+                        qd.atomic_max(shell_scratch.envs_vel_error_term_max[i_b], func_bound_bits(norm_terms[1]))
+                        qd.atomic_max(shell_scratch.envs_r_max[i_b], func_bound_bits(qd.abs(r).max()))
+                        qd.atomic_max(
+                            shell_scratch.envs_dv_max[i_b],
+                            func_bound_bits(qd.abs(shell_state.verts_dv[i_v, i_b]).max()),
+                        )
+                    else:
+                        func_pcg_add_norms(
+                            i_v, i_b, r, norm_terms, shell_state, shell_scratch, shell_info, static_config
+                        )
+                shell_scratch.verts_r[i_v, i_b] = r
+                if qd.static(static_config.has_fixed_point_sums):
+                    shell_scratch.verts_norm_terms[i_v, i_b] = norm_terms
 
 
 @qd.func
-def func_pcg_coarse_solve(shell_scratch: array_class.ShellScratch, shell_info: array_class.ShellInfo):
+def func_pcg_norms(
+    shell_state: array_class.ShellState,
+    shell_scratch: array_class.ShellScratch,
+    shell_info: array_class.ShellInfo,
+    static_config: qd.template(),
+):
+    """Add the shares every vertex recorded to the measures of the iteration of every environment still solving, the
+    bounds of their fixed-point sums being complete (see func_pcg_residual)."""
+    _G = qd.static(static_config.grid_dim)
+    for i_lane in range(_G):
+        n_verts = shell_state.verts_pos.shape[0]
+        n_envs_solving = shell_scratch.n_envs_solving[None]
+        n_items = n_verts * n_envs_solving
+        for i_chunk_ in range((n_items + _G - 1) // _G):
+            i_flat = i_chunk_ * _G + i_lane
+            if i_flat < n_items:
+                i_b = shell_scratch.envs_solving_idx[i_flat % n_envs_solving]
+                i_v = i_flat // n_envs_solving
+                func_pcg_add_norms(
+                    i_v,
+                    i_b,
+                    shell_scratch.verts_r[i_v, i_b],
+                    shell_scratch.verts_norm_terms[i_v, i_b],
+                    shell_state,
+                    shell_scratch,
+                    shell_info,
+                    static_config,
+                )
+
+
+@qd.func
+def func_pcg_coarse_solve(
+    shell_state: array_class.ShellState,
+    shell_scratch: array_class.ShellScratch,
+    shell_info: array_class.ShellInfo,
+    static_config: qd.template(),
+):
     """Solve the coarse system of every environment still solving for its restricted residual.
 
-    The coarse correction goes to coarse_sol and its share of r^T z to envs_rz_new (see the coarse space in
-    kernel_shell_coarse_factorize).
+    The coarse correction goes to coarse_sol and its share of r^T z to envs_rz_new, fixed-point (see
+    func_pcg_norm_scales and the coarse space in kernel_shell_coarse_factorize).
     """
-    n_dofs = shell_scratch.coarse_vec.shape[0]
-    n_envs_solving = shell_scratch.n_envs_solving[None]
-
-    # The lanes of an environment read the columns of its inverse, which is symmetric, so that a warp reads entries
-    # side by side
-    for i_flat in range(n_dofs * n_envs_solving):
-        i_b = shell_scratch.envs_solving_idx[i_flat // n_dofs]
-        i_d = i_flat % n_dofs
-        i_e = shell_info.coarse_dofs_entity[i_d]
-        dof_start = shell_info.entities_coarse_dof_start[i_e]
-        dim = shell_info.entities_coarse_dim[i_e]
-        col_start = shell_info.entities_coarse_matrix_start[i_e] + i_d - dof_start
-        value = gs.qd_float(0.0)
-        for j in range(dim):
-            value += (
-                shell_scratch.coarse_matrix[i_b, col_start + j * dim] * shell_scratch.coarse_vec[dof_start + j, i_b]
-            )
-        shell_scratch.coarse_sol[i_d, i_b] = value
-        shell_scratch.envs_rz_new[i_b] += shell_scratch.coarse_vec[i_d, i_b] * value
+    _G = qd.static(static_config.grid_dim)
+    for i_lane in range(_G):
+        n_dofs = shell_scratch.coarse_vec.shape[0]
+        n_envs_solving = shell_scratch.n_envs_solving[None]
+        n_items = n_dofs * n_envs_solving
+        for i_chunk_ in range((n_items + _G - 1) // _G):
+            i_flat = i_chunk_ * _G + i_lane
+            # The lanes of an environment read the columns of its inverse, which is symmetric, so that a warp reads
+            # entries side by side
+            if i_flat < n_items:
+                i_b = shell_scratch.envs_solving_idx[i_flat // n_dofs]
+                i_d = i_flat % n_dofs
+                _, _, scale_coarse, scale_rz = func_pcg_norm_scales(
+                    i_b, shell_state, shell_scratch, shell_info, static_config
+                )
+                i_e = shell_info.coarse_dofs_entity[i_d]
+                dof_start = shell_info.entities_coarse_dof_start[i_e]
+                dim = shell_info.entities_coarse_dim[i_e]
+                col_start = shell_info.entities_coarse_matrix_start[i_e] + i_d - dof_start
+                value = gs.qd_float(0.0)
+                for j in range(dim):
+                    value += shell_scratch.coarse_matrix[i_b, col_start + j * dim] * func_from_fixed(
+                        shell_scratch.coarse_vec[dof_start + j, i_b], scale_coarse, static_config
+                    )
+                shell_scratch.coarse_sol[i_d, i_b] = value
+                shell_scratch.envs_rz_new[i_b] += func_to_fixed(
+                    func_from_fixed(shell_scratch.coarse_vec[i_d, i_b], scale_coarse, static_config) * value,
+                    scale_rz,
+                    static_config,
+                )
 
 
 @qd.func
 def func_pcg_decide(
     pcg_flag: qd.types.ndarray(qd.i32, ndim=0),
+    shell_state: array_class.ShellState,
     shell_scratch: array_class.ShellScratch,
+    shell_info: array_class.ShellInfo,
     static_config: qd.template(),
     max_iterations: int,
     errno: qd.Tensor,
@@ -1414,25 +1928,37 @@ def func_pcg_decide(
     STAGNATION_RATIO times the one of the previous restart: the recursive residual then keeps converging while the true
     one sits at the floor of the floating-point precision, so that further restarts would only spend the iteration
     limit. The step envs_step of a continuing solve holds the conjugate gradient coefficient beta, zero on a restart.
-    One block decides every environment and lists the ones still solving (see func_envs_list).
+    One block decides every environment and lists the ones still solving (see func_envs_list). The measures of the
+    iteration are read from their fixed-point sums, which restart from zero for the next one.
     """
-    B = shell_scratch.envs_is_solving.shape[0]
     _K = qd.static(static_config.envs_block_dim)
-
     if qd.static(_K > 1):
         qd.loop_config(block_dim=_K)
     for i_lane in range(_K):
+        B = shell_scratch.envs_is_solving.shape[0]
         n_chunk = (B + _K - 1) // _K
         for i_b_ in range(n_chunk):
             i_b = i_lane * n_chunk + i_b_
             if i_b < B:
                 if shell_scratch.envs_is_solving[i_b]:
-                    residual = shell_scratch.envs_residual[i_b]
-                    rz_new = residual + shell_scratch.envs_rz_new[i_b]
+                    p_A_p, _ = func_pcg_alpha(i_b, shell_state, shell_scratch, static_config)
+                    scale_residual, scale_vel_error, _, scale_rz = func_pcg_norm_scales(
+                        i_b, shell_state, shell_scratch, shell_info, static_config
+                    )
+                    residual = func_from_fixed(shell_scratch.envs_residual[i_b], scale_residual, static_config)
+                    vel_error = func_from_fixed(shell_scratch.envs_vel_error[i_b], scale_vel_error, static_config)
+                    rz_new = residual + func_from_fixed(shell_scratch.envs_rz_new[i_b], scale_rz, static_config)
+                    shell_scratch.envs_pAp[i_b] = 0
+                    shell_scratch.envs_residual[i_b] = 0
+                    shell_scratch.envs_vel_error[i_b] = 0
+                    shell_scratch.envs_rz_new[i_b] = 0
+                    shell_scratch.envs_r_max[i_b] = 0
+                    shell_scratch.envs_residual_term_max[i_b] = 0
+                    shell_scratch.envs_vel_error_term_max[i_b] = 0
                     shell_scratch.envs_n_iterations[i_b] += 1
                     shell_scratch.envs_n_solve_iterations[i_b] += 1
                     shell_scratch.envs_step[i_b] = 0.0
-                    if shell_scratch.envs_pcg_mode[i_b] == PCG_MODE.SOLVE and shell_scratch.envs_pAp[i_b] <= 0.0:
+                    if shell_scratch.envs_pcg_mode[i_b] == PCG_MODE.SOLVE and p_A_p <= 0.0:
                         shell_scratch.envs_is_solving[i_b] = False
                         shell_scratch.envs_solve_status[i_b] |= SHELL_SOLVE_STATUS.BREAKDOWN
                     elif qd.math.isnan(rz_new) or qd.math.isinf(rz_new):
@@ -1441,7 +1967,7 @@ def func_pcg_decide(
                         errno[i_b] = errno[i_b] | array_class.ErrorCode.INVALID_SHELL_SOLVE_NAN
                     elif (
                         residual <= shell_scratch.envs_residual_threshold[i_b]
-                        or shell_scratch.envs_vel_error[i_b] <= shell_scratch.envs_vel_error_threshold[i_b]
+                        or vel_error <= shell_scratch.envs_vel_error_threshold[i_b]
                     ):
                         if shell_scratch.envs_pcg_mode[i_b] == PCG_MODE.CHECK:
                             shell_scratch.envs_is_solving[i_b] = False
@@ -1465,7 +1991,7 @@ def func_pcg_decide(
                     ):
                         shell_scratch.envs_is_solving[i_b] = False
                         shell_scratch.envs_solve_status[i_b] |= SHELL_SOLVE_STATUS.MAX_ITERATIONS
-                    func_pcg_reset(i_b, shell_scratch)
+                    shell_scratch.envs_vec_max[i_b] = 0
         n_envs_solving = func_envs_list(
             i_lane,
             shell_scratch.envs_solving_idx,
@@ -1484,37 +2010,39 @@ def func_pcg_advance(
     shell_info: array_class.ShellInfo,
     static_config: qd.template(),
 ):
-    """Set the vector the next system product of every environment still solving applies to, with its mass part.
+    """Set the vector the next system product of every environment still solving applies to, and record its largest
+    entry for the scale of the generalized forces of its contacts (see func_schur_product_scale).
 
     The vector is the search direction p = z + beta p for z the preconditioned residual, or the solution while its true
-    residual is checked. Its mass part M x goes to verts_Ap, and the mass part of p^T A p to envs_pAp. The lanes of the
-    vertices also clear the restriction coarse_vec the next residual accumulates.
+    residual is checked. The lanes of the vertices also clear the restriction coarse_vec the next residual accumulates.
     """
-    n_verts = shell_state.verts_pos.shape[0]
-    n_dofs = shell_scratch.coarse_vec.shape[0]
-    n_envs_solving = shell_scratch.n_envs_solving[None]
-
-    for i_flat in range(n_verts * n_envs_solving):
-        i_b = shell_scratch.envs_solving_idx[i_flat % n_envs_solving]
-        i_v = i_flat // n_envs_solving
-        if qd.static(static_config.has_coarse_space):
-            for i_d_ in range((n_dofs + n_verts - 1) // n_verts):
-                i_d = i_d_ * n_verts + i_v
-                if i_d < n_dofs:
-                    shell_scratch.coarse_vec[i_d, i_b] = 0.0
-        mass = shell_scratch.verts_mass[i_v, i_b]
-        if shell_scratch.envs_pcg_mode[i_b] == PCG_MODE.SOLVE:
-            p = qd.Vector.zero(gs.qd_float, 3)
-            if func_is_vert_free(i_v, i_b, shell_state) and mass > 0.0:
-                p = (
-                    func_precondition(i_v, i_b, shell_state, shell_scratch, shell_info, static_config)
-                    + shell_scratch.envs_step[i_b] * shell_scratch.verts_p[i_v, i_b]
-                )
-            shell_scratch.verts_p[i_v, i_b] = p
-            shell_scratch.verts_Ap[i_v, i_b] = mass * p
-            shell_scratch.envs_pAp[i_b] += mass * p.norm_sqr()
-        else:
-            shell_scratch.verts_Ap[i_v, i_b] = mass * shell_state.verts_dv[i_v, i_b]
+    _G = qd.static(static_config.grid_dim)
+    for i_lane in range(_G):
+        n_verts = shell_state.verts_pos.shape[0]
+        n_dofs = shell_scratch.coarse_vec.shape[0]
+        n_envs_solving = shell_scratch.n_envs_solving[None]
+        n_items = n_verts * n_envs_solving
+        for i_chunk_ in range((n_items + _G - 1) // _G):
+            i_flat = i_chunk_ * _G + i_lane
+            if i_flat < n_items:
+                i_b = shell_scratch.envs_solving_idx[i_flat % n_envs_solving]
+                i_v = i_flat // n_envs_solving
+                if qd.static(static_config.has_coarse_space):
+                    for i_d_ in range((n_dofs + n_verts - 1) // n_verts):
+                        i_d = i_d_ * n_verts + i_v
+                        if i_d < n_dofs:
+                            shell_scratch.coarse_vec[i_d, i_b] = 0
+                x = shell_state.verts_dv[i_v, i_b]
+                if shell_scratch.envs_pcg_mode[i_b] == PCG_MODE.SOLVE:
+                    x = qd.Vector.zero(gs.qd_float, 3)
+                    if func_is_vert_free(i_v, i_b, shell_state) and shell_scratch.verts_mass[i_v, i_b] > 0.0:
+                        x = (
+                            func_precondition(i_v, i_b, shell_state, shell_scratch, shell_info, static_config)
+                            + shell_scratch.envs_step[i_b] * shell_scratch.verts_p[i_v, i_b]
+                        )
+                    shell_scratch.verts_p[i_v, i_b] = x
+                if qd.static(static_config.has_fixed_point_sums):
+                    qd.atomic_max(shell_scratch.envs_vec_max[i_b], func_bound_bits(qd.abs(x).max()))
 
 
 @qd.kernel(graph=True)
@@ -1534,16 +2062,18 @@ def kernel_shell_pcg_solve(
 
     The iterations loop on the device while any environment iterates, so that the solve costs the iterations of its
     slowest environment, with no host synchronization. The passes of an iteration run over the environments still
-    solving alone (see func_envs_list), and fuse their reductions into the passes that produce their terms, a
-    graph node costing more than the work of a pass over a few hundred vertices.
+    solving alone (see func_envs_list), and fuse their reductions into the passes that produce their terms, a graph
+    node costing more than the work of a pass over a few hundred vertices.
     """
     func_pcg_prepare(shell_state, shell_scratch, static_config, tolerance, velocity_tolerance)
     while qd.graph.do_while(pcg_flag):
-        func_system_product(shell_state, shell_scratch, shell_info)
+        func_system_product(shell_state, shell_scratch, shell_info, static_config)
         func_pcg_residual(shell_state, shell_scratch, shell_info, static_config)
+        if qd.static(static_config.has_fixed_point_sums):
+            func_pcg_norms(shell_state, shell_scratch, shell_info, static_config)
         if qd.static(static_config.has_coarse_space):
-            func_pcg_coarse_solve(shell_scratch, shell_info)
-        func_pcg_decide(pcg_flag, shell_scratch, static_config, max_iterations, errno)
+            func_pcg_coarse_solve(shell_state, shell_scratch, shell_info, static_config)
+        func_pcg_decide(pcg_flag, shell_state, shell_scratch, shell_info, static_config, max_iterations, errno)
         func_pcg_advance(shell_state, shell_scratch, shell_info, static_config)
 
 
@@ -1559,16 +2089,41 @@ def func_select3(i: int, x0, x1, x2):
 
 
 @qd.func
+def func_coarse_scale(
+    i_b: int,
+    shell_state: array_class.ShellState,
+    shell_scratch: array_class.ShellScratch,
+    shell_info: array_class.ShellInfo,
+    static_config: qd.template(),
+):
+    """Return the scale of the fixed-point sums of the coarse matrices of an environment (see func_fixed_scale).
+
+    A term of a coarse matrix is the bilinear form of a mass or an element evaluated on the shape functions of the
+    vertices it moves, at most 4 per element. Bounded by the forms on single vertices, which the diagonal blocks of the
+    system sum, a term is at most 64 * phi_max^2 times their largest entry for shape functions bounded by phi_max.
+    """
+    n_terms = 6 * shell_state.verts_pos.shape[0] + 81 * shell_state.faces_thickness.shape[0]
+    n_terms += 144 * shell_scratch.hinges_stiffness.shape[0]
+    e_phi = func_exponent(shell_info.coarse_phi_max[None])
+    return func_fixed_scale(
+        7 + 2 * e_phi + func_bound_exponent(shell_scratch.envs_prec_max[i_b]), n_terms, static_config
+    )
+
+
+@qd.func
 def func_coarse_add_block(
     i_e: int,
     i_d_row: int,
     i_d_col: int,
-    block: qd.types.matrix(3, 3),
     i_b: int,
+    block: qd.types.matrix(3, 3),
+    scale,
     shell_scratch: array_class.ShellScratch,
     shell_info: array_class.ShellInfo,
+    static_config: qd.template(),
 ):
-    """Add a 3x3 block to the lower triangle of the coarse matrix of an entity, at global coarse rows and columns."""
+    """Add a 3x3 block to the lower triangle of the coarse matrix of an entity, at global coarse rows and columns, as
+    fixed-point terms of the given scale (see func_coarse_scale)."""
     dof_start = shell_info.entities_coarse_dof_start[i_e]
     dim = shell_info.entities_coarse_dim[i_e]
     matrix_start = shell_info.entities_coarse_matrix_start[i_e]
@@ -1576,7 +2131,9 @@ def func_coarse_add_block(
         row = i_d_row - dof_start + j
         col = i_d_col - dof_start + k
         if row >= col:
-            shell_scratch.coarse_assembly[matrix_start + row * dim + col, i_b] += block[j, k]
+            shell_scratch.coarse_assembly[matrix_start + row * dim + col, i_b] += func_to_fixed(
+                block[j, k], scale, static_config
+            )
 
 
 @qd.kernel
@@ -1584,6 +2141,7 @@ def kernel_shell_coarse_assemble(
     shell_state: array_class.ShellState,
     shell_scratch: array_class.ShellScratch,
     shell_info: array_class.ShellInfo,
+    static_config: qd.template(),
     coarse_update_interval: int,
 ):
     """Assemble the coarse matrix Z^T (M + K) Z of every entity, Z spanning the displacements affine in
@@ -1594,7 +2152,8 @@ def kernel_shell_coarse_assemble(
     stiffness of an element being bilinear in the displacement of its vertices, its coarse block for a pair of shape
     functions is its stiffness evaluated on the sum of the vertex weights times those shape functions, per patch.
     The Cholesky factorization drops the pivots that vanish (fixed or degenerate patches), solving the coarse system
-    on the remaining unknowns. Only the environments whose coarse matrices are due (see envs_coarse_age) are assembled.
+    on the remaining unknowns. Only the environments whose coarse matrices are due (see envs_coarse_age) are assembled,
+    as fixed-point sums (see func_coarse_scale).
     """
     n_verts, B = shell_state.verts_pos.shape[0], shell_state.verts_pos.shape[1]
     n_faces = shell_state.faces_thickness.shape[0]
@@ -1603,7 +2162,7 @@ def kernel_shell_coarse_assemble(
 
     for i_m, i_b in qd.ndrange(shell_scratch.coarse_assembly.shape[0], B):
         if shell_scratch.envs_coarse_age[i_b] >= coarse_update_interval:
-            shell_scratch.coarse_assembly[i_m, i_b] = 0.0
+            shell_scratch.coarse_assembly[i_m, i_b] = 0
 
     for i_v, i_b in qd.ndrange(n_verts, B):
         if shell_scratch.envs_coarse_age[i_b] >= coarse_update_interval and func_is_vert_free(i_v, i_b, shell_state):
@@ -1613,6 +2172,7 @@ def kernel_shell_coarse_assemble(
                 i_e = func_vert_entity(i_v, i_b, shell_state, shell_info)
                 phi = shell_info.verts_coarse_phi[i_o]
                 mass = shell_scratch.verts_mass[i_v, i_b]
+                scale = func_coarse_scale(i_b, shell_state, shell_scratch, shell_info, static_config)
                 for a in range(3):
                     for b in range(a + 1):
                         coeff = mass * func_select3(a, phi[0], phi[1], phi[2]) * func_select3(b, phi[0], phi[1], phi[2])
@@ -1620,10 +2180,12 @@ def kernel_shell_coarse_assemble(
                             i_e,
                             i_d + 3 * a,
                             i_d + 3 * b,
-                            coeff * qd.Matrix.identity(gs.qd_float, 3),
                             i_b,
+                            coeff * qd.Matrix.identity(gs.qd_float, 3),
+                            scale,
                             shell_scratch,
                             shell_info,
+                            static_config,
                         )
 
     # Faces: the coarse block of shape functions (a of patch P, b of patch Q) evaluates the membrane stiffness on the
@@ -1656,6 +2218,7 @@ def kernel_shell_coarse_assemble(
             phi_0 = shell_info.verts_coarse_phi[i_o0]
             phi_1 = shell_info.verts_coarse_phi[i_o1]
             phi_2 = shell_info.verts_coarse_phi[i_o2]
+            scale = func_coarse_scale(i_b, shell_state, shell_scratch, shell_info, static_config)
             for k, l, a, b in qd.ndrange(3, 3, 3, 3):
                 dof_k = func_select3(k, dof_0, dof_1, dof_2)
                 dof_l = func_select3(l, dof_0, dof_1, dof_2)
@@ -1683,7 +2246,17 @@ def kernel_shell_coarse_assemble(
                         F @ M @ F.transpose() + W_k.dot(stress_pos @ W_l) * qd.Matrix.identity(gs.qd_float, 3)
                     )
                     if dof_k >= 0 and dof_l >= 0:
-                        func_coarse_add_block(i_e, dof_k + 3 * a, dof_l + 3 * b, block, i_b, shell_scratch, shell_info)
+                        func_coarse_add_block(
+                            i_e,
+                            dof_k + 3 * a,
+                            dof_l + 3 * b,
+                            i_b,
+                            block,
+                            scale,
+                            shell_scratch,
+                            shell_info,
+                            static_config,
+                        )
 
     # Hinges: the same with the gradient of the dihedral angle, the stiffness being k * grad grad^T
     for i_h, i_b in qd.ndrange(n_hinges, B):
@@ -1693,6 +2266,7 @@ def kernel_shell_coarse_assemble(
             if shell_info.entities_coarse_dim[i_e] > 0:
                 i_va, i_vb, i_vc, i_vd, _ = func_hinge_verts(i_h, i_b, shell_state, shell_info)
                 grad = shell_scratch.hinges_grad[i_h, i_b]
+                scale = func_coarse_scale(i_b, shell_state, shell_scratch, shell_info, static_config)
                 for k, l, a, b in qd.ndrange(4, 4, 3, 3):
                     i_vk = i_va
                     i_vl = i_va
@@ -1744,10 +2318,12 @@ def kernel_shell_coarse_assemble(
                             i_e,
                             dof_k + 3 * a,
                             dof_l + 3 * b,
-                            stiffness * G_k.outer_product(G_l),
                             i_b,
+                            stiffness * G_k.outer_product(G_l),
+                            scale,
                             shell_scratch,
                             shell_info,
+                            static_config,
                         )
 
 
@@ -1764,6 +2340,10 @@ def kernel_shell_coarse_factorize(
     B = shell_state.verts_pos.shape[1]
     n_entities = shell_state.entities_n_verts.shape[0]
 
+    for i_b in range(B):
+        if shell_scratch.envs_coarse_age[i_b] >= coarse_update_interval:
+            shell_scratch.envs_coarse_inv_max[i_b] = 0
+
     # Cholesky factorization, dropping the pivots that vanish (fixed or degenerate patches) so that the coarse system is
     # solved on the remaining unknowns, then explicit inversion, which turns the coarse solve of every iteration into a
     # parallel matrix-vector product. The lanes of a block share the rows of one entity in one environment.
@@ -1779,12 +2359,13 @@ def kernel_shell_coarse_factorize(
         if shell_scratch.envs_coarse_age[i_b] < coarse_update_interval:
             dim = 0
         matrix_start = shell_info.entities_coarse_matrix_start[i_e]
+        scale = func_coarse_scale(i_b, shell_state, shell_scratch, shell_info, static_config)
         for i_chunk in range((dim * dim + _K - 1) // _K):
             i_entry = i_chunk * _K + tid
             if i_entry < dim * dim:
-                shell_scratch.coarse_matrix[i_b, matrix_start + i_entry] = shell_scratch.coarse_assembly[
-                    matrix_start + i_entry, i_b
-                ]
+                shell_scratch.coarse_matrix[i_b, matrix_start + i_entry] = func_from_fixed(
+                    shell_scratch.coarse_assembly[matrix_start + i_entry, i_b], scale, static_config
+                )
         if qd.static(_K > 1):
             qd.simt.block.sync()
         for j in range(dim):
@@ -1847,6 +2428,9 @@ def kernel_shell_coarse_factorize(
                         * shell_scratch.coarse_factor_inv[i_b, matrix_start + k * dim + j]
                     )
                 shell_scratch.coarse_matrix[i_b, matrix_start + i_entry] = value
+                # The bound of the coarse share of r^T z (see func_pcg_norm_scales)
+                if qd.static(static_config.has_fixed_point_sums):
+                    qd.atomic_max(shell_scratch.envs_coarse_inv_max[i_b], func_bound_bits(qd.abs(value)))
         if qd.static(_K > 1):
             qd.simt.block.sync()
 
@@ -2605,14 +3189,17 @@ def func_contact_rigid_response(
     i_b: int,
     i_t: int,
     i_d_offset: int,
+    scale,
     dofs_vec: qd.template(),
     shell_contact: array_class.ShellContactScratch,
     rigid_info: array_class.RigidInfo,
+    static_config: qd.template(),
 ):
     """Velocity of the rigid point of a contact for the rigid velocities given generalized forces impose on its tree.
 
-    The forces f are read from dofs_vec from index i_d_offset on, and the rigid velocities are S^-1 f, S being the
-    Schur matrix of the tree (see func_contact_assemble).
+    The forces f are read from dofs_vec from index i_d_offset on, a fixed-point sum of the given scale or floats for a
+    scale of one (see func_fixed_scale), and the rigid velocities are S^-1 f, S being the Schur matrix of the tree (see
+    func_contact_assemble).
     """
     i_d_start = rigid_info.trees_dof_start[i_t]
     n_tree_dofs = rigid_info.trees_n_dofs[i_t]
@@ -2620,9 +3207,8 @@ def func_contact_rigid_response(
     for k in range(n_tree_dofs):
         response = gs.qd_float(0.0)
         for l in range(n_tree_dofs):
-            response += (
-                shell_contact.dofs_schur_inv[i_d_start + k, i_d_start + l, i_b]
-                * dofs_vec[i_d_offset + i_d_start + l, i_b]
+            response += shell_contact.dofs_schur_inv[i_d_start + k, i_d_start + l, i_b] * func_from_fixed(
+                dofs_vec[i_d_offset + i_d_start + l, i_b], scale, static_config
             )
         vel += shell_contact.contacts_jac[i_c, k, i_b] * response
     return vel
@@ -2677,18 +3263,22 @@ def func_contact_add_to_verts(
     i_c: int,
     i_b: int,
     impulse: qd.types.vector(3),
+    scale,
     dst: qd.template(),
     shell_state: array_class.ShellState,
     shell_contact: array_class.ShellContactScratch,
+    static_config: qd.template(),
 ):
     """Spread a vector applied at the face point of a contact on the free vertices of its face, by its barycentric
-    coordinates."""
+    coordinates, as fixed-point terms of the given scale (see func_fixed_scale), into the vertex rows of dst, stored
+    component-major (see verts_Ap in ShellScratch)."""
     i_f = i_c // 2
     bary = shell_contact.contacts_bary[i_c, i_b]
     for k in qd.static(range(3)):
         i_v = shell_state.corners_vert[3 * i_f + k, i_b]
         if func_is_vert_free(i_v, i_b, shell_state):
-            dst[i_v, i_b] += bary[k] * impulse
+            for j in qd.static(range(3)):
+                dst[i_v, j, i_b] += func_to_fixed(bary[k] * impulse[j], scale, static_config)
 
 
 @qd.func
@@ -2790,6 +3380,7 @@ def kernel_shell_rigid_contact_detect(
     dyn_info: array_class.DynInfo,
     rigid_info: array_class.RigidInfo,
     sdf_info: array_class.SDFInfo,
+    shell_static_config: qd.template(),
     rigid_config: qd.template(),
     collider_config: qd.template(),
     contact_stiffness: float,
@@ -2831,6 +3422,11 @@ def kernel_shell_rigid_contact_detect(
     for i_b in range(B):
         shell_contact.envs_step[i_b] = 1.0
         shell_contact.envs_n_newton_iterations[i_b] = 0
+        shell_contact.envs_jac_max[i_b] = 0
+        shell_contact.envs_vel_max[i_b] = 0
+        shell_contact.envs_stiffness_max[i_b] = 0
+        shell_contact.envs_gap_rate_max[i_b] = 0
+        shell_contact.envs_friction_bound_max[i_b] = 0
 
     for i_f, i_b in qd.ndrange(n_faces, B):
         i_v0 = shell_state.corners_vert[3 * i_f, i_b]
@@ -2942,6 +3538,24 @@ def kernel_shell_rigid_contact_detect(
                 if shell_state.contacts_geom_prev[i_c, i_b] == i_g:
                     friction_bound = shell_state.contacts_friction_bound_prev[i_c, i_b]
                 shell_contact.contacts_friction_bound[i_c, i_b] = friction_bound
+                # The largest entries the fixed-point sums of the contact solve are bounded from
+                if qd.static(shell_static_config.has_fixed_point_sums):
+                    qd.atomic_max(shell_contact.envs_vel_max[i_b], func_bound_bits(qd.abs(vel).max()))
+                    qd.atomic_max(
+                        shell_contact.envs_stiffness_max[i_b],
+                        func_bound_bits(shell_contact.contacts_stiffness[i_c, i_b]),
+                    )
+                    qd.atomic_max(
+                        shell_contact.envs_gap_rate_max[i_b],
+                        func_bound_bits(qd.abs(shell_contact.contacts_gap[i_c, i_b]) / dt),
+                    )
+                    qd.atomic_max(shell_contact.envs_friction_bound_max[i_b], func_bound_bits(friction_bound))
+                    if i_t >= 0:
+                        for k in range(rigid_info.trees_n_dofs[i_t]):
+                            qd.atomic_max(
+                                shell_contact.envs_jac_max[i_b],
+                                func_bound_bits(qd.abs(shell_contact.contacts_jac[i_c, k, i_b]).max()),
+                            )
             else:
                 shell_contact.contacts_geom[i_c, i_b] = -1
 
@@ -2960,42 +3574,72 @@ def func_contact_linearize(
     which environments iterate again.
 
     The friction bound of a contact stays fixed over the iterations, so that they minimize one convex potential (see
-    kernel_shell_rigid_contact_detect). An environment stops iterating once its last step was full and the impulse of
-    every contact matches the linear model of the previous iteration within the impulse that would change the velocity
-    of the contact point by velocity_tolerance, the contact potential then being quadratic along the step. It also stops
+    kernel_shell_rigid_contact_detect). An environment stops iterating once the impulse of every contact matches the
+    linear model of the previous iteration within the impulse that would change the velocity of the contact point by
+    velocity_tolerance, the contact potential then being quadratic along the step, and its last step was either full or
+    the Newton direction moved no contact by more than velocity_tolerance. A direction that small leaves the slope of
+    the line search to rounding, whose step length then says nothing of the convergence. It also stops
     once it ran max_iterations iterations, which its solve status reports. One block decides every environment and
     lists the ones still iterating (see func_envs_list).
+
+    The iterations are inexact Newton steps: once the first linear solve of a substep left a contact off its linear
+    model, the next solves stop at NEWTON_LOOSE_TOLERANCE_RATIO times the tolerance, until an iterate matches its model
+    or the environment ran N_NEWTON_LOOSE_ITERATIONS iterations. A matching iterate solved loosely takes one more solve
+    to the full tolerance, from which on the solves stay at the full tolerance. The iterate an environment stops at
+    always comes from a solve to the full tolerance.
     """
     B = shell_contact.envs_step.shape[0]
-    n_slots = shell_contact.contacts_geom.shape[0]
-    n_envs_needs_solve = shell_scratch.n_envs_needs_solve[None]
 
+    _G = qd.static(static_config.grid_dim)
     for i_b in range(B):
         shell_contact.envs_is_nonlinear[i_b] = shell_contact.envs_n_newton_iterations[i_b] == 0
+        shell_contact.envs_dir_prev_max[i_b] = 0
+        shell_contact.envs_hessian_max[i_b] = 0
+        shell_contact.envs_impulse_max[i_b] = 0
+        shell_contact.envs_vel_change_max[i_b] = 0
+        shell_contact.envs_dir_max[i_b] = 0
+        shell_contact.envs_schur_rhs_max[i_b] = 0
+        shell_scratch.envs_rhs_max[i_b] = 0
 
-    for i_flat in range(n_slots * n_envs_needs_solve):
-        i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
-        i_c = i_flat // n_envs_needs_solve
-        i_g = shell_contact.contacts_geom[i_c, i_b]
-        if i_g >= 0:
-            vel = func_contact_vel(i_c, i_b, shell_contact)
-            gap = shell_contact.contacts_gap[i_c, i_b]
-            normal = shell_contact.contacts_normal[i_c, i_b]
-            stiffness = shell_contact.contacts_stiffness[i_c, i_b]
-            friction_bound = shell_contact.contacts_friction_bound[i_c, i_b]
-            impulse = func_contact_potential(dt, vel, gap, normal, stiffness, friction_bound)[1]
-            # Mismatch of the impulse against the linear model of the previous iterate, along the step it took
-            model = shell_contact.contacts_impulse[i_c, i_b] - shell_contact.envs_step[i_b] * (
-                shell_contact.contacts_hessian[i_c, i_b] @ shell_contact.contacts_dir[i_c, i_b]
-            )
-            # The mass of the contact point, from its stiffness (see kernel_shell_rigid_contact_detect)
-            impulse_tolerance = velocity_tolerance * stiffness / contact_stiffness
-            if (impulse - model).norm() > impulse_tolerance:
-                shell_contact.envs_is_nonlinear[i_b] = True
-            shell_contact.contacts_impulse[i_c, i_b] = impulse
-            shell_contact.contacts_hessian[i_c, i_b] = func_contact_hessian(
-                dt, vel, gap, normal, stiffness, friction_bound
-            )
+    for i_lane in range(_G):
+        n_slots = shell_contact.contacts_geom.shape[0]
+        n_envs_needs_solve = shell_scratch.n_envs_needs_solve[None]
+        n_items = n_slots * n_envs_needs_solve
+        for i_chunk_ in range((n_items + _G - 1) // _G):
+            i_flat = i_chunk_ * _G + i_lane
+            if i_flat < n_items:
+                i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
+                i_c = i_flat // n_envs_needs_solve
+                i_g = shell_contact.contacts_geom[i_c, i_b]
+                if i_g >= 0:
+                    vel = func_contact_vel(i_c, i_b, shell_contact)
+                    gap = shell_contact.contacts_gap[i_c, i_b]
+                    normal = shell_contact.contacts_normal[i_c, i_b]
+                    stiffness = shell_contact.contacts_stiffness[i_c, i_b]
+                    friction_bound = shell_contact.contacts_friction_bound[i_c, i_b]
+                    impulse = func_contact_potential(dt, vel, gap, normal, stiffness, friction_bound)[1]
+                    # Mismatch of the impulse against the linear model of the previous iterate, along the step it took
+                    model = shell_contact.contacts_impulse[i_c, i_b] - shell_contact.envs_step[i_b] * (
+                        shell_contact.contacts_hessian[i_c, i_b] @ shell_contact.contacts_dir[i_c, i_b]
+                    )
+                    # The mass of the contact point, from its stiffness (see kernel_shell_rigid_contact_detect)
+                    impulse_tolerance = velocity_tolerance * stiffness / contact_stiffness
+                    if (impulse - model).norm() > impulse_tolerance:
+                        shell_contact.envs_is_nonlinear[i_b] = True
+                    qd.atomic_max(
+                        shell_contact.envs_dir_prev_max[i_b],
+                        func_bound_bits(shell_contact.contacts_dir[i_c, i_b].norm()),
+                    )
+                    hessian = func_contact_hessian(dt, vel, gap, normal, stiffness, friction_bound)
+                    shell_contact.contacts_impulse[i_c, i_b] = impulse
+                    shell_contact.contacts_hessian[i_c, i_b] = hessian
+                    if qd.static(static_config.has_fixed_point_sums):
+                        qd.atomic_max(shell_contact.envs_hessian_max[i_b], func_bound_bits(qd.abs(hessian).max()))
+                        qd.atomic_max(shell_contact.envs_impulse_max[i_b], func_bound_bits(qd.abs(impulse).max()))
+                        qd.atomic_max(
+                            shell_contact.envs_vel_change_max[i_b],
+                            func_bound_bits(qd.abs(shell_contact.contacts_vel_change[i_c, i_b]).max()),
+                        )
 
     _K = qd.static(static_config.envs_block_dim)
     if qd.static(_K > 1):
@@ -3006,14 +3650,23 @@ def func_contact_linearize(
             i_b = i_lane * n_chunk + i_b_
             if i_b < B:
                 if shell_scratch.envs_needs_solve[i_b]:
-                    is_converged = shell_contact.envs_step[i_b] >= 1.0 and not shell_contact.envs_is_nonlinear[i_b]
+                    is_step_converged = shell_contact.envs_step[i_b] >= 1.0 or (
+                        qd.bit_cast(shell_contact.envs_dir_prev_max[i_b], gs.qd_float) <= velocity_tolerance
+                    )
+                    is_converged = is_step_converged and not shell_contact.envs_is_nonlinear[i_b]
+                    is_loose = shell_scratch.envs_is_solve_loose[i_b]
                     n_iterations = shell_contact.envs_n_newton_iterations[i_b]
                     if not is_converged and n_iterations >= max_iterations:
                         shell_scratch.envs_solve_status[i_b] |= SHELL_SOLVE_STATUS.MAX_ITERATIONS
-                    if is_converged or n_iterations >= max_iterations:
+                    if (is_converged and not is_loose) or n_iterations >= max_iterations:
                         shell_scratch.envs_needs_solve[i_b] = False
                     else:
                         shell_contact.envs_n_newton_iterations[i_b] = n_iterations + 1
+                        shell_scratch.envs_is_solve_loose[i_b] = (
+                            not is_converged
+                            and (is_loose or n_iterations == 1)
+                            and n_iterations < N_NEWTON_LOOSE_ITERATIONS
+                        )
         func_envs_list(
             i_lane,
             shell_scratch.envs_needs_solve_idx,
@@ -3024,12 +3677,33 @@ def func_contact_linearize(
 
 
 @qd.func
+def func_contact_schur_scales(
+    i_b: int, n_slots: int, shell_contact: array_class.ShellContactScratch, static_config: qd.template()
+):
+    """Return the scales of the fixed-point rigid right-hand side and rigid Schur matrix the contacts of an environment
+    sum (see func_contact_assemble and func_fixed_scale).
+
+    The impulse p + H u of a contact is below the largest impulse plus 3 * h * u for h and u the largest entries of the
+    contact Hessians and velocity changes, its generalized force below 3 * j times that for j the largest entry of the
+    contact Jacobians, and its share of the Schur matrix below 9 * h * j^2.
+    """
+    e_hessian = func_bound_exponent(shell_contact.envs_hessian_max[i_b])
+    e_jac = func_bound_exponent(shell_contact.envs_jac_max[i_b])
+    e_vel_change = func_bound_exponent(shell_contact.envs_vel_change_max[i_b])
+    e_impulse = qd.max(func_bound_exponent(shell_contact.envs_impulse_max[i_b]), 2 + e_hessian + e_vel_change) + 1
+    scale_rhs = func_fixed_scale(2 + e_jac + e_impulse, n_slots, static_config)
+    scale_inv = func_fixed_scale(4 + e_hessian + 2 * e_jac, n_slots, static_config)
+    return scale_rhs, scale_inv
+
+
+@qd.func
 def func_contact_assemble(
     shell_state: array_class.ShellState,
     shell_scratch: array_class.ShellScratch,
     shell_contact: array_class.ShellContactScratch,
     dyn_info: array_class.DynInfo,
     rigid_info: array_class.RigidInfo,
+    static_config: qd.template(),
 ):
     """Add the contacts, linearized about the current iterate, to the linear system of the sheet in every environment
     still solving, then eliminate the movable rigid degrees of freedom.
@@ -3041,104 +3715,253 @@ def func_contact_assemble(
     func_contact_schur_product applies. Every contact reads the Jacobian of its rigid point over the degrees of freedom
     of its tree from the detection (see func_contact_jacobian), so that the products of the solve run in parallel over
     the contacts.
-    """
-    n_verts = shell_state.verts_pos.shape[0]
-    n_slots = shell_contact.contacts_geom.shape[0]
-    n_trees = shell_contact.trees_is_coupled.shape[0]
-    n_dofs = shell_contact.dofs_schur_rhs.shape[0]
-    n_envs_needs_solve = shell_scratch.n_envs_needs_solve[None]
 
-    for i_flat in range(n_verts * n_envs_needs_solve):
-        i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
-        i_v = i_flat // n_envs_needs_solve
-        shell_scratch.verts_rhs[i_v, i_b] = shell_contact.verts_rhs_base[i_v, i_b]
-        shell_scratch.verts_prec[i_v, i_b] = shell_contact.verts_diag_base[i_v, i_b]
+    The contacts add fixed-point terms (see func_fixed_scale), bounded from the largest entries of their Hessians h,
+    impulses p, velocity changes u and Jacobians j: a diagonal block takes at most h, the rigid right-hand side
+    3 * j * (p + 3 * h * u), the rigid system 9 * h * j^2, and the right-hand side of the sheet p + 3 * h * (u + v_r)
+    for v_r the velocity of the rigid point, at most j times the number of degrees of freedom of a tree times the
+    largest rigid velocity of S^-1 b_r.
+    """
+    _G = qd.static(static_config.grid_dim)
+    for i_lane in range(_G):
+        n_verts = shell_state.verts_pos.shape[0]
+        n_envs_needs_solve = shell_scratch.n_envs_needs_solve[None]
+        n_items = n_verts * n_envs_needs_solve
+        for i_chunk_ in range((n_items + _G - 1) // _G):
+            i_flat = i_chunk_ * _G + i_lane
+            if i_flat < n_items:
+                i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
+                i_v = i_flat // n_envs_needs_solve
+                for j in qd.static(range(3)):
+                    shell_scratch.verts_rhs_sum[i_v, j, i_b] = func_to_fixed(gs.qd_float(0.0), 1.0, static_config)
+                shell_scratch.verts_prec_sum[i_v, i_b] = func_to_fixed(
+                    qd.Matrix.zero(gs.qd_float, 3, 3), 1.0, static_config
+                )
 
     # The mass matrix couples nothing across its blocks, whose entries it leaves unwritten
-    for i_flat in range(n_trees * n_envs_needs_solve):
-        i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
-        i_t = i_flat // n_envs_needs_solve
-        shell_contact.trees_is_coupled[i_t, i_b] = False
-        i_d_start = rigid_info.trees_dof_start[i_t]
-        i_d_end = i_d_start + rigid_info.trees_n_dofs[i_t]
-        for i_d in range(i_d_start, i_d_end):
-            shell_contact.dofs_schur_rhs[i_d, i_b] = gs.qd_float(0.0)
-            shell_contact.dofs_schur_product[i_d, i_b] = gs.qd_float(0.0)
-            shell_contact.dofs_schur_product[n_dofs + i_d, i_b] = gs.qd_float(0.0)
-            for j_d in range(i_d_start, i_d_end):
-                mass = gs.qd_float(0.0)
-                if rigid_info.dofs_mass_block_start[j_d] == rigid_info.dofs_mass_block_start[i_d]:
-                    mass = rigid_info.mass_mat[i_d, j_d, i_b]
-                shell_contact.dofs_schur_inv[i_d, j_d, i_b] = mass
-
-    for i_flat in range(n_slots * n_envs_needs_solve):
-        i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
-        i_c = i_flat // n_envs_needs_solve
-        if shell_contact.contacts_geom[i_c, i_b] >= 0:
-            i_f = i_c // 2
-            bary = shell_contact.contacts_bary[i_c, i_b]
-            hessian = shell_contact.contacts_hessian[i_c, i_b]
-            impulse = shell_contact.contacts_impulse[i_c, i_b] + hessian @ shell_contact.contacts_vel_change[i_c, i_b]
-            func_contact_add_to_verts(i_c, i_b, impulse, shell_scratch.verts_rhs, shell_state, shell_contact)
-            for k in qd.static(range(3)):
-                i_v = shell_state.corners_vert[3 * i_f + k, i_b]
-                if func_is_vert_free(i_v, i_b, shell_state):
-                    shell_scratch.verts_prec[i_v, i_b] += bary[k] ** 2 * hessian
-            i_t = func_contact_tree(i_c, i_b, shell_contact, dyn_info, rigid_info)
-            if i_t >= 0:
-                shell_contact.trees_is_coupled[i_t, i_b] = True
+    for i_lane in range(_G):
+        n_trees = shell_contact.trees_is_coupled.shape[0]
+        n_dofs = shell_contact.dofs_schur_rhs.shape[0]
+        n_envs_needs_solve = shell_scratch.n_envs_needs_solve[None]
+        n_items = n_trees * n_envs_needs_solve
+        for i_chunk_ in range((n_items + _G - 1) // _G):
+            i_flat = i_chunk_ * _G + i_lane
+            if i_flat < n_items:
+                i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
+                i_t = i_flat // n_envs_needs_solve
+                shell_contact.trees_is_coupled[i_t, i_b] = False
                 i_d_start = rigid_info.trees_dof_start[i_t]
-                n_tree_dofs = rigid_info.trees_n_dofs[i_t]
-                for k in range(n_tree_dofs):
-                    jac_k = shell_contact.contacts_jac[i_c, k, i_b]
-                    # The rigid link receives the opposite of the impulse of the sheet
-                    shell_contact.dofs_schur_rhs[i_d_start + k, i_b] -= jac_k.dot(impulse)
-                    row = hessian @ jac_k
-                    for l in range(n_tree_dofs):
-                        shell_contact.dofs_schur_inv[i_d_start + k, i_d_start + l, i_b] += row.dot(
-                            shell_contact.contacts_jac[i_c, l, i_b]
-                        )
+                i_d_end = i_d_start + rigid_info.trees_n_dofs[i_t]
+                for i_d in range(i_d_start, i_d_end):
+                    shell_contact.dofs_schur_rhs[i_d, i_b] = gs.qd_float(0.0)
+                    shell_contact.dofs_schur_rhs_sum[i_d, i_b] = 0
+                    shell_contact.dofs_schur_product[i_d, i_b] = 0
+                    shell_contact.dofs_schur_product[n_dofs + i_d, i_b] = 0
+                    for j_d in range(i_d_start, i_d_end):
+                        mass = gs.qd_float(0.0)
+                        if rigid_info.dofs_mass_block_start[j_d] == rigid_info.dofs_mass_block_start[i_d]:
+                            mass = rigid_info.mass_mat[i_d, j_d, i_b]
+                        shell_contact.dofs_schur_inv[i_d, j_d, i_b] = mass
+                        shell_contact.dofs_schur_inv_sum[i_d, j_d, i_b] = 0
+
+    for i_lane in range(_G):
+        n_slots = shell_contact.contacts_geom.shape[0]
+        n_envs_needs_solve = shell_scratch.n_envs_needs_solve[None]
+        n_items = n_slots * n_envs_needs_solve
+        for i_chunk_ in range((n_items + _G - 1) // _G):
+            i_flat = i_chunk_ * _G + i_lane
+            if i_flat < n_items:
+                i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
+                i_c = i_flat // n_envs_needs_solve
+                if shell_contact.contacts_geom[i_c, i_b] >= 0:
+                    scale_rhs, scale_inv = func_contact_schur_scales(i_b, n_slots, shell_contact, static_config)
+                    i_f = i_c // 2
+                    bary = shell_contact.contacts_bary[i_c, i_b]
+                    hessian = shell_contact.contacts_hessian[i_c, i_b]
+                    impulse = (
+                        shell_contact.contacts_impulse[i_c, i_b] + hessian @ shell_contact.contacts_vel_change[i_c, i_b]
+                    )
+                    scale_prec = func_fixed_scale(
+                        func_bound_exponent(shell_contact.envs_hessian_max[i_b]), n_slots, static_config
+                    )
+                    for k in qd.static(range(3)):
+                        i_v = shell_state.corners_vert[3 * i_f + k, i_b]
+                        if func_is_vert_free(i_v, i_b, shell_state):
+                            shell_scratch.verts_prec_sum[i_v, i_b] += func_to_fixed(
+                                bary[k] ** 2 * hessian, scale_prec, static_config
+                            )
+                    i_t = func_contact_tree(i_c, i_b, shell_contact, dyn_info, rigid_info)
+                    if i_t >= 0:
+                        shell_contact.trees_is_coupled[i_t, i_b] = True
+                        i_d_start = rigid_info.trees_dof_start[i_t]
+                        n_tree_dofs = rigid_info.trees_n_dofs[i_t]
+                        for k in range(n_tree_dofs):
+                            jac_k = shell_contact.contacts_jac[i_c, k, i_b]
+                            # The rigid link receives the opposite of the impulse of the sheet
+                            shell_contact.dofs_schur_rhs_sum[i_d_start + k, i_b] += func_to_fixed(
+                                -jac_k.dot(impulse), scale_rhs, static_config
+                            )
+                            row = hessian @ jac_k
+                            for l in range(n_tree_dofs):
+                                shell_contact.dofs_schur_inv_sum[i_d_start + k, i_d_start + l, i_b] += func_to_fixed(
+                                    row.dot(shell_contact.contacts_jac[i_c, l, i_b]), scale_inv, static_config
+                                )
 
     # Inverse of the Schur matrix of every coupled tree, in place by Gauss-Jordan elimination, which needs no pivoting
-    # on a positive definite matrix
-    for i_flat in range(n_trees * n_envs_needs_solve):
-        i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
-        i_t = i_flat // n_envs_needs_solve
-        if shell_contact.trees_is_coupled[i_t, i_b]:
-            i_d_start = rigid_info.trees_dof_start[i_t]
-            i_d_end = i_d_start + rigid_info.trees_n_dofs[i_t]
-            for k_d in range(i_d_start, i_d_end):
-                pivot = 1.0 / shell_contact.dofs_schur_inv[k_d, k_d, i_b]
-                shell_contact.dofs_schur_inv[k_d, k_d, i_b] = gs.qd_float(1.0)
-                for j_d in range(i_d_start, i_d_end):
-                    shell_contact.dofs_schur_inv[k_d, j_d, i_b] *= pivot
-                for i_d in range(i_d_start, i_d_end):
-                    if i_d != k_d:
-                        factor = shell_contact.dofs_schur_inv[i_d, k_d, i_b]
-                        shell_contact.dofs_schur_inv[i_d, k_d, i_b] = gs.qd_float(0.0)
+    # on a positive definite matrix, then the largest rigid velocity of S^-1 b_r
+    for i_lane in range(_G):
+        n_slots = shell_contact.contacts_geom.shape[0]
+        n_trees = shell_contact.trees_is_coupled.shape[0]
+        n_envs_needs_solve = shell_scratch.n_envs_needs_solve[None]
+        n_items = n_trees * n_envs_needs_solve
+        for i_chunk_ in range((n_items + _G - 1) // _G):
+            i_flat = i_chunk_ * _G + i_lane
+            if i_flat < n_items:
+                i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
+                i_t = i_flat // n_envs_needs_solve
+                if shell_contact.trees_is_coupled[i_t, i_b]:
+                    scale_rhs, scale_inv = func_contact_schur_scales(i_b, n_slots, shell_contact, static_config)
+                    i_d_start = rigid_info.trees_dof_start[i_t]
+                    i_d_end = i_d_start + rigid_info.trees_n_dofs[i_t]
+                    for i_d in range(i_d_start, i_d_end):
+                        shell_contact.dofs_schur_rhs[i_d, i_b] = func_from_fixed(
+                            shell_contact.dofs_schur_rhs_sum[i_d, i_b], scale_rhs, static_config
+                        )
                         for j_d in range(i_d_start, i_d_end):
-                            shell_contact.dofs_schur_inv[i_d, j_d, i_b] -= (
-                                factor * shell_contact.dofs_schur_inv[k_d, j_d, i_b]
+                            shell_contact.dofs_schur_inv[i_d, j_d, i_b] += func_from_fixed(
+                                shell_contact.dofs_schur_inv_sum[i_d, j_d, i_b], scale_inv, static_config
                             )
+                    for k_d in range(i_d_start, i_d_end):
+                        pivot = 1.0 / shell_contact.dofs_schur_inv[k_d, k_d, i_b]
+                        shell_contact.dofs_schur_inv[k_d, k_d, i_b] = gs.qd_float(1.0)
+                        for j_d in range(i_d_start, i_d_end):
+                            shell_contact.dofs_schur_inv[k_d, j_d, i_b] *= pivot
+                        for i_d in range(i_d_start, i_d_end):
+                            if i_d != k_d:
+                                factor = shell_contact.dofs_schur_inv[i_d, k_d, i_b]
+                                shell_contact.dofs_schur_inv[i_d, k_d, i_b] = gs.qd_float(0.0)
+                                for j_d in range(i_d_start, i_d_end):
+                                    shell_contact.dofs_schur_inv[i_d, j_d, i_b] -= (
+                                        factor * shell_contact.dofs_schur_inv[k_d, j_d, i_b]
+                                    )
+                    for i_d in range(i_d_start, i_d_end):
+                        vel = gs.qd_float(0.0)
+                        for j_d in range(i_d_start, i_d_end):
+                            vel += shell_contact.dofs_schur_inv[i_d, j_d, i_b] * shell_contact.dofs_schur_rhs[j_d, i_b]
+                        if qd.static(static_config.has_fixed_point_sums):
+                            qd.atomic_max(shell_contact.envs_schur_rhs_max[i_b], func_bound_bits(qd.abs(vel)))
 
-    # Right-hand side of the sheet corrected by the coupling: + C S^-1 b_r
-    for i_flat in range(n_slots * n_envs_needs_solve):
-        i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
-        i_c = i_flat // n_envs_needs_solve
-        if shell_contact.contacts_geom[i_c, i_b] >= 0:
-            i_t = func_contact_tree(i_c, i_b, shell_contact, dyn_info, rigid_info)
-            if i_t >= 0:
-                vel_rigid = func_contact_rigid_response(
-                    i_c, i_b, i_t, 0, shell_contact.dofs_schur_rhs, shell_contact, rigid_info
+    # Right-hand side of the sheet: the linearized impulses, corrected by the coupling, + C S^-1 b_r
+    for i_lane in range(_G):
+        n_slots = shell_contact.contacts_geom.shape[0]
+        max_tree_dofs = shell_contact.contacts_jac.shape[1]
+        n_envs_needs_solve = shell_scratch.n_envs_needs_solve[None]
+        n_items = n_slots * n_envs_needs_solve
+        for i_chunk_ in range((n_items + _G - 1) // _G):
+            i_flat = i_chunk_ * _G + i_lane
+            if i_flat < n_items:
+                i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
+                i_c = i_flat // n_envs_needs_solve
+                if shell_contact.contacts_geom[i_c, i_b] >= 0:
+                    hessian = shell_contact.contacts_hessian[i_c, i_b]
+                    impulse = (
+                        shell_contact.contacts_impulse[i_c, i_b] + hessian @ shell_contact.contacts_vel_change[i_c, i_b]
+                    )
+                    i_t = func_contact_tree(i_c, i_b, shell_contact, dyn_info, rigid_info)
+                    if i_t >= 0:
+                        impulse += hessian @ func_contact_rigid_response(
+                            i_c,
+                            i_b,
+                            i_t,
+                            0,
+                            1.0,
+                            shell_contact.dofs_schur_rhs,
+                            shell_contact,
+                            rigid_info,
+                            static_config,
+                        )
+                    func_contact_add_to_verts(
+                        i_c,
+                        i_b,
+                        impulse,
+                        func_contact_rhs_scale(i_b, max_tree_dofs, n_slots, shell_contact, static_config),
+                        shell_scratch.verts_rhs_sum,
+                        shell_state,
+                        shell_contact,
+                        static_config,
+                    )
+
+    for i_lane in range(_G):
+        n_verts = shell_state.verts_pos.shape[0]
+        n_slots = shell_contact.contacts_geom.shape[0]
+        max_tree_dofs = shell_contact.contacts_jac.shape[1]
+        n_envs_needs_solve = shell_scratch.n_envs_needs_solve[None]
+        n_items = n_verts * n_envs_needs_solve
+        for i_chunk_ in range((n_items + _G - 1) // _G):
+            i_flat = i_chunk_ * _G + i_lane
+            if i_flat < n_items:
+                i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
+                i_v = i_flat // n_envs_needs_solve
+                scale_rhs = func_contact_rhs_scale(i_b, max_tree_dofs, n_slots, shell_contact, static_config)
+                scale_prec = func_fixed_scale(
+                    func_bound_exponent(shell_contact.envs_hessian_max[i_b]), n_slots, static_config
                 )
-                func_contact_add_to_verts(
-                    i_c,
-                    i_b,
-                    shell_contact.contacts_hessian[i_c, i_b] @ vel_rigid,
-                    shell_scratch.verts_rhs,
-                    shell_state,
-                    shell_contact,
+                rhs_sum = qd.Vector([shell_scratch.verts_rhs_sum[i_v, j, i_b] for j in qd.static(range(3))])
+                rhs = shell_contact.verts_rhs_base[i_v, i_b] + func_from_fixed(rhs_sum, scale_rhs, static_config)
+                prec = shell_contact.verts_diag_base[i_v, i_b] + func_from_fixed(
+                    shell_scratch.verts_prec_sum[i_v, i_b], scale_prec, static_config
                 )
+                shell_scratch.verts_rhs[i_v, i_b] = rhs
+                shell_scratch.verts_prec[i_v, i_b] = prec
+                if qd.static(static_config.has_fixed_point_sums):
+                    qd.atomic_max(shell_scratch.envs_rhs_max[i_b], func_bound_bits(qd.abs(rhs).max()))
+                    qd.atomic_max(shell_scratch.envs_prec_max[i_b], func_bound_bits(qd.abs(prec).max()))
+
+
+@qd.func
+def func_contact_rhs_scale(
+    i_b: int,
+    max_tree_dofs: int,
+    n_slots: int,
+    shell_contact: array_class.ShellContactScratch,
+    static_config: qd.template(),
+):
+    """Return the scale of the fixed-point contact terms of the right-hand side of the sheet (see
+    func_contact_assemble)."""
+    e_vel_rigid = (
+        func_exponent(gs.qd_float(max_tree_dofs))
+        + func_bound_exponent(shell_contact.envs_jac_max[i_b])
+        + func_bound_exponent(shell_contact.envs_schur_rhs_max[i_b])
+    )
+    e_vel = qd.max(func_bound_exponent(shell_contact.envs_vel_change_max[i_b]), e_vel_rigid) + 1
+    e_impulse = func_bound_exponent(shell_contact.envs_impulse_max[i_b])
+    e_bound = qd.max(e_impulse, 2 + func_bound_exponent(shell_contact.envs_hessian_max[i_b]) + e_vel) + 1
+    return func_fixed_scale(e_bound, n_slots, static_config)
+
+
+@qd.func
+def func_schur_product_scale(
+    i_b: int,
+    shell_scratch: array_class.ShellScratch,
+    shell_contact: array_class.ShellContactScratch,
+    static_config: qd.template(),
+):
+    """Return the scale of the fixed-point generalized forces of the contacts in the system product (see
+    func_fixed_scale).
+
+    For x the vector the product applies to, x_max its largest entry and d the largest entry of the diagonal blocks of
+    the system, a contact adds a ninth of its Hessian at least to the diagonal block of one of its vertices, so that its
+    impulse is at most 47 * d * x_max, and a generalized force, its dot product with a column of the contact Jacobian,
+    at most 2 * jac_max times as large.
+    """
+    n_slots = shell_contact.contacts_geom.shape[0]
+    e_bound = (
+        7
+        + func_bound_exponent(shell_contact.envs_jac_max[i_b])
+        + func_bound_exponent(shell_scratch.envs_prec_max[i_b])
+        + func_bound_exponent(shell_scratch.envs_vec_max[i_b])
+    )
+    return func_fixed_scale(e_bound, n_slots, static_config)
 
 
 @qd.func
@@ -3149,45 +3972,64 @@ def func_system_contact_product(
     shell_info: array_class.ShellInfo,
     dyn_info: array_class.DynInfo,
     rigid_info: array_class.RigidInfo,
+    static_config: qd.template(),
 ):
-    """Add the stiffness of the faces, hinges and contacts of the sheet to the system product of every environment still
-    solving, their rigid part excepted.
+    """Add the stiffness of the faces, hinges and contacts of the sheet to the system product of every environment
+    still solving, their rigid part excepted.
 
-    The faces and hinges add K x as func_system_product does, and the contacts their stiffness J_s^T H J_s x, both to
-    verts_Ap, with their shares of x^T A x to envs_pAp. The generalized forces C^T x of the rigid contacts gather in the
-    Schur accumulator of the iteration (see func_contact_schur_product). The elements and the contacts share one
-    parallel loop, so that the product costs a single launch.
+    The vertices, faces and hinges add (M + K) x as func_system_product does, and the contacts their stiffness
+    J_s^T H J_s x, to verts_Ap and envs_pAp. The generalized forces C^T x of the rigid contacts gather in the Schur
+    accumulator of the iteration (see func_contact_schur_product). All are fixed-point sums (see func_product_scale and
+    func_schur_product_scale). The vertices, elements and contacts share one grid of lanes (see grid_dim in
+    ShellStaticConfig), so that the product costs a single launch.
     """
-    n_elements = shell_state.faces_thickness.shape[0] + shell_scratch.hinges_stiffness.shape[0]
-    n_slots = shell_contact.contacts_geom.shape[0]
-    n_dofs = shell_contact.dofs_schur_rhs.shape[0]
-    n_envs_solving = shell_scratch.n_envs_solving[None]
-
-    for i_flat in range((n_elements + n_slots) * n_envs_solving):
-        i_b = shell_scratch.envs_solving_idx[i_flat % n_envs_solving]
-        i_e_ = i_flat // n_envs_solving
-        i_c = i_e_ - n_elements
-        if i_e_ < n_elements:
-            func_element_product(i_e_, i_b, shell_state, shell_scratch, shell_info)
-        elif shell_contact.contacts_geom[i_c, i_b] >= 0:
-            i_f = i_c // 2
-            bary = shell_contact.contacts_bary[i_c, i_b]
-            vel = qd.Vector.zero(gs.qd_float, 3)
-            for k in qd.static(range(3)):
-                i_v = shell_state.corners_vert[3 * i_f + k, i_b]
-                if func_is_vert_free(i_v, i_b, shell_state):
-                    vel += bary[k] * func_pcg_direction(i_v, i_b, shell_state, shell_scratch)
-            impulse = shell_contact.contacts_hessian[i_c, i_b] @ vel
-            func_contact_add_to_verts(i_c, i_b, impulse, shell_scratch.verts_Ap, shell_state, shell_contact)
-            shell_scratch.envs_pAp[i_b] += vel.dot(impulse)
-            i_t = func_contact_tree(i_c, i_b, shell_contact, dyn_info, rigid_info)
-            if i_t >= 0:
-                i_d_offset = (shell_scratch.envs_n_solve_iterations[i_b] % 2) * n_dofs
-                i_d_start = rigid_info.trees_dof_start[i_t]
-                for k in range(rigid_info.trees_n_dofs[i_t]):
-                    shell_contact.dofs_schur_product[i_d_offset + i_d_start + k, i_b] += shell_contact.contacts_jac[
-                        i_c, k, i_b
-                    ].dot(impulse)
+    _G = qd.static(static_config.grid_dim)
+    for i_lane in range(_G):
+        n_verts = shell_state.verts_pos.shape[0]
+        n_elements = shell_state.faces_thickness.shape[0] + shell_scratch.hinges_stiffness.shape[0]
+        n_slots = shell_contact.contacts_geom.shape[0]
+        n_dofs = shell_contact.dofs_schur_rhs.shape[0]
+        n_envs_solving = shell_scratch.n_envs_solving[None]
+        n_items = (n_elements + n_slots + n_verts) * n_envs_solving
+        for i_chunk_ in range((n_items + _G - 1) // _G):
+            i_flat = i_chunk_ * _G + i_lane
+            if i_flat < n_items:
+                i_b = shell_scratch.envs_solving_idx[i_flat % n_envs_solving]
+                i_e_ = i_flat // n_envs_solving
+                i_c = i_e_ - n_elements
+                scale, scale_pAp = func_product_scale(i_b, shell_state, shell_scratch, static_config)
+                if i_e_ < n_elements:
+                    func_element_product(
+                        i_e_, i_b, scale, scale_pAp, shell_state, shell_scratch, shell_info, static_config
+                    )
+                elif i_c >= n_slots:
+                    i_v = i_c - n_slots
+                    x = func_pcg_direction(i_v, i_b, shell_state, shell_scratch)
+                    shell_scratch.envs_pAp[i_b] += func_to_fixed(
+                        shell_scratch.verts_mass[i_v, i_b] * x.norm_sqr(), scale_pAp, static_config
+                    )
+                elif shell_contact.contacts_geom[i_c, i_b] >= 0:
+                    i_f = i_c // 2
+                    bary = shell_contact.contacts_bary[i_c, i_b]
+                    vel = qd.Vector.zero(gs.qd_float, 3)
+                    for k in qd.static(range(3)):
+                        i_v = shell_state.corners_vert[3 * i_f + k, i_b]
+                        if func_is_vert_free(i_v, i_b, shell_state):
+                            vel += bary[k] * func_pcg_direction(i_v, i_b, shell_state, shell_scratch)
+                    impulse = shell_contact.contacts_hessian[i_c, i_b] @ vel
+                    func_contact_add_to_verts(
+                        i_c, i_b, impulse, scale, shell_scratch.verts_Ap, shell_state, shell_contact, static_config
+                    )
+                    shell_scratch.envs_pAp[i_b] += func_to_fixed(vel.dot(impulse), scale_pAp, static_config)
+                    i_t = func_contact_tree(i_c, i_b, shell_contact, dyn_info, rigid_info)
+                    if i_t >= 0:
+                        scale_schur = func_schur_product_scale(i_b, shell_scratch, shell_contact, static_config)
+                        i_d_offset = (shell_scratch.envs_n_solve_iterations[i_b] % 2) * n_dofs
+                        i_d_start = rigid_info.trees_dof_start[i_t]
+                        for k in range(rigid_info.trees_n_dofs[i_t]):
+                            shell_contact.dofs_schur_product[i_d_offset + i_d_start + k, i_b] += func_to_fixed(
+                                shell_contact.contacts_jac[i_c, k, i_b].dot(impulse), scale_schur, static_config
+                            )
 
 
 @qd.func
@@ -3197,55 +4039,79 @@ def func_contact_schur_product(
     shell_contact: array_class.ShellContactScratch,
     dyn_info: array_class.DynInfo,
     rigid_info: array_class.RigidInfo,
+    static_config: qd.template(),
 ):
     """Subtract the Schur complement of the rigid degrees of freedom, C S^-1 C^T x, from the system product of every
-    environment still solving, and its share x^T C S^-1 C^T x from envs_pAp.
+    environment still solving.
 
+    Every contact subtracts its share from the rows of its vertices, as fixed-point terms (see func_product_scale), and
+    one thread per environment sums the energy x^T C S^-1 C^T x over its trees in their order into envs_schur_energy.
     The generalized forces C^T x of an iteration accumulate in one of the two halves of dofs_schur_product, alternating
-    with the parity of the iteration, so that every tree clears the half of the previous iteration while its contacts
-    read the current one, with no pass of its own.
+    with the parity of the iteration, so that the environment clears the half of the previous iteration while its
+    contacts read the current one, with no pass of its own.
     """
-    n_slots = shell_contact.contacts_geom.shape[0]
-    n_trees = shell_contact.trees_is_coupled.shape[0]
-    n_dofs = shell_contact.dofs_schur_rhs.shape[0]
-    n_envs_solving = shell_scratch.n_envs_solving[None]
-
-    for i_flat in range((n_slots + n_trees) * n_envs_solving):
-        i_b = shell_scratch.envs_solving_idx[i_flat % n_envs_solving]
-        i_c = i_flat // n_envs_solving
-        i_d_offset = (shell_scratch.envs_n_solve_iterations[i_b] % 2) * n_dofs
-        if i_c < n_slots:
-            if shell_contact.contacts_geom[i_c, i_b] >= 0:
-                i_t = func_contact_tree(i_c, i_b, shell_contact, dyn_info, rigid_info)
-                if i_t >= 0:
-                    vel_rigid = func_contact_rigid_response(
-                        i_c, i_b, i_t, i_d_offset, shell_contact.dofs_schur_product, shell_contact, rigid_info
-                    )
-                    func_contact_add_to_verts(
-                        i_c,
-                        i_b,
-                        -(shell_contact.contacts_hessian[i_c, i_b] @ vel_rigid),
-                        shell_scratch.verts_Ap,
-                        shell_state,
-                        shell_contact,
-                    )
-        else:
-            i_t = i_c - n_slots
-            if shell_contact.trees_is_coupled[i_t, i_b]:
-                i_d_start = rigid_info.trees_dof_start[i_t]
-                i_d_end = i_d_start + rigid_info.trees_n_dofs[i_t]
-                energy = gs.qd_float(0.0)
-                for i_d in range(i_d_start, i_d_end):
-                    force = shell_contact.dofs_schur_product[i_d_offset + i_d, i_b]
-                    for j_d in range(i_d_start, i_d_end):
-                        energy += (
-                            force
-                            * shell_contact.dofs_schur_inv[i_d, j_d, i_b]
-                            * shell_contact.dofs_schur_product[i_d_offset + j_d, i_b]
-                        )
-                shell_scratch.envs_pAp[i_b] -= energy
-                for i_d in range(i_d_start, i_d_end):
-                    shell_contact.dofs_schur_product[n_dofs - i_d_offset + i_d, i_b] = gs.qd_float(0.0)
+    _G = qd.static(static_config.grid_dim)
+    for i_lane in range(_G):
+        n_slots = shell_contact.contacts_geom.shape[0]
+        n_trees = shell_contact.trees_is_coupled.shape[0]
+        n_dofs = shell_contact.dofs_schur_rhs.shape[0]
+        n_envs_solving = shell_scratch.n_envs_solving[None]
+        n_items = (n_slots + 1) * n_envs_solving
+        for i_chunk_ in range((n_items + _G - 1) // _G):
+            i_flat = i_chunk_ * _G + i_lane
+            if i_flat < n_items:
+                i_b = shell_scratch.envs_solving_idx[i_flat % n_envs_solving]
+                i_c = i_flat // n_envs_solving
+                i_d_offset = (shell_scratch.envs_n_solve_iterations[i_b] % 2) * n_dofs
+                scale = func_schur_product_scale(i_b, shell_scratch, shell_contact, static_config)
+                if i_c < n_slots:
+                    if shell_contact.contacts_geom[i_c, i_b] >= 0:
+                        i_t = func_contact_tree(i_c, i_b, shell_contact, dyn_info, rigid_info)
+                        if i_t >= 0:
+                            vel_rigid = func_contact_rigid_response(
+                                i_c,
+                                i_b,
+                                i_t,
+                                i_d_offset,
+                                scale,
+                                shell_contact.dofs_schur_product,
+                                shell_contact,
+                                rigid_info,
+                                static_config,
+                            )
+                            func_contact_add_to_verts(
+                                i_c,
+                                i_b,
+                                -(shell_contact.contacts_hessian[i_c, i_b] @ vel_rigid),
+                                func_product_scale(i_b, shell_state, shell_scratch, static_config)[0],
+                                shell_scratch.verts_Ap,
+                                shell_state,
+                                shell_contact,
+                                static_config,
+                            )
+                else:
+                    energy = gs.qd_float(0.0)
+                    for i_t in range(n_trees):
+                        if shell_contact.trees_is_coupled[i_t, i_b]:
+                            i_d_start = rigid_info.trees_dof_start[i_t]
+                            i_d_end = i_d_start + rigid_info.trees_n_dofs[i_t]
+                            for i_d in range(i_d_start, i_d_end):
+                                force = func_from_fixed(
+                                    shell_contact.dofs_schur_product[i_d_offset + i_d, i_b], scale, static_config
+                                )
+                                for j_d in range(i_d_start, i_d_end):
+                                    energy += (
+                                        force
+                                        * shell_contact.dofs_schur_inv[i_d, j_d, i_b]
+                                        * func_from_fixed(
+                                            shell_contact.dofs_schur_product[i_d_offset + j_d, i_b],
+                                            scale,
+                                            static_config,
+                                        )
+                                    )
+                            for i_d in range(i_d_start, i_d_end):
+                                shell_contact.dofs_schur_product[n_dofs - i_d_offset + i_d, i_b] = 0
+                    shell_scratch.envs_schur_energy[i_b] = energy
 
 
 @qd.func
@@ -3260,62 +4126,98 @@ def func_contact_direction(
 ):
     """Turn the solution of the linearized contacts into the step of the contact solve from its current iterate.
 
-    The rigid velocity change of the solution follows from the Schur system, dv_r = S^-1 (b_r + C^T dv_s). The step is
-    the difference between the solution and the iterate, for the sheet, the rigid degrees of freedom and the relative
-    velocity of every contact, and the elastic system product of the step of the sheet, verts_Ap = (M + K) d_s, follows
-    for the line search.
+    The rigid velocity change of the solution follows from the Schur system, dv_r = S^-1 (b_r + C^T dv_s), C^T dv_s
+    summing fixed-point terms at most 16 * h * j * dv_max for h and j the largest entries of the contact Hessians and
+    Jacobians and dv_max the one of dv_s (see func_fixed_scale). The step is the difference between the solution and the
+    iterate, for the sheet, the rigid degrees of freedom and the relative velocity of every contact, and the elastic
+    system product of the step of the sheet, (M + K) d_s, follows for the line search.
     """
-    n_verts, B = shell_state.verts_pos.shape[0], shell_state.verts_pos.shape[1]
-    n_slots = shell_contact.contacts_geom.shape[0]
-    n_trees = shell_contact.trees_is_coupled.shape[0]
-    n_envs_needs_solve = shell_scratch.n_envs_needs_solve[None]
-
-    for i_flat in range(n_trees * n_envs_needs_solve):
-        i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
-        i_t = i_flat // n_envs_needs_solve
-        i_d_start = rigid_info.trees_dof_start[i_t]
-        for i_d in range(i_d_start, i_d_start + rigid_info.trees_n_dofs[i_t]):
-            shell_contact.dofs_schur_vec[i_d, i_b] = shell_contact.dofs_schur_rhs[i_d, i_b]
-            shell_contact.dofs_dir[i_d, i_b] = gs.qd_float(0.0)
-
-    for i_flat in range(n_slots * n_envs_needs_solve):
-        i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
-        i_c = i_flat // n_envs_needs_solve
-        if shell_contact.contacts_geom[i_c, i_b] >= 0:
-            i_t = func_contact_tree(i_c, i_b, shell_contact, dyn_info, rigid_info)
-            if i_t >= 0:
-                impulse = shell_contact.contacts_hessian[i_c, i_b] @ func_contact_shell_velocity(
-                    i_c, i_b, shell_state.verts_dv, shell_state, shell_contact
-                )
+    _G = qd.static(static_config.grid_dim)
+    for i_lane in range(_G):
+        n_trees = shell_contact.trees_is_coupled.shape[0]
+        n_envs_needs_solve = shell_scratch.n_envs_needs_solve[None]
+        n_items = n_trees * n_envs_needs_solve
+        for i_chunk_ in range((n_items + _G - 1) // _G):
+            i_flat = i_chunk_ * _G + i_lane
+            if i_flat < n_items:
+                i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
+                i_t = i_flat // n_envs_needs_solve
                 i_d_start = rigid_info.trees_dof_start[i_t]
-                for k in range(rigid_info.trees_n_dofs[i_t]):
-                    shell_contact.dofs_schur_vec[i_d_start + k, i_b] += shell_contact.contacts_jac[i_c, k, i_b].dot(
-                        impulse
-                    )
+                for i_d in range(i_d_start, i_d_start + rigid_info.trees_n_dofs[i_t]):
+                    shell_contact.dofs_schur_vec_sum[i_d, i_b] = 0
+                    shell_contact.dofs_dir[i_d, i_b] = gs.qd_float(0.0)
 
-    for i_flat in range(n_trees * n_envs_needs_solve):
-        i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
-        i_t = i_flat // n_envs_needs_solve
-        if shell_contact.trees_is_coupled[i_t, i_b]:
-            i_d_start = rigid_info.trees_dof_start[i_t]
-            i_d_end = i_d_start + rigid_info.trees_n_dofs[i_t]
-            for i_d in range(i_d_start, i_d_end):
-                dv = gs.qd_float(0.0)
-                for j_d in range(i_d_start, i_d_end):
-                    dv += shell_contact.dofs_schur_inv[i_d, j_d, i_b] * shell_contact.dofs_schur_vec[j_d, i_b]
-                shell_contact.dofs_dir[i_d, i_b] = dv - shell_contact.dofs_dv[i_d, i_b]
+    for i_lane in range(_G):
+        n_slots = shell_contact.contacts_geom.shape[0]
+        n_envs_needs_solve = shell_scratch.n_envs_needs_solve[None]
+        n_items = n_slots * n_envs_needs_solve
+        for i_chunk_ in range((n_items + _G - 1) // _G):
+            i_flat = i_chunk_ * _G + i_lane
+            if i_flat < n_items:
+                i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
+                i_c = i_flat // n_envs_needs_solve
+                if shell_contact.contacts_geom[i_c, i_b] >= 0:
+                    i_t = func_contact_tree(i_c, i_b, shell_contact, dyn_info, rigid_info)
+                    if i_t >= 0:
+                        e_bound = (
+                            5
+                            + func_bound_exponent(shell_contact.envs_hessian_max[i_b])
+                            + func_bound_exponent(shell_contact.envs_jac_max[i_b])
+                            + func_bound_exponent(shell_scratch.envs_dv_max[i_b])
+                        )
+                        scale = func_fixed_scale(e_bound, n_slots, static_config)
+                        impulse = shell_contact.contacts_hessian[i_c, i_b] @ func_contact_shell_velocity(
+                            i_c, i_b, shell_state.verts_dv, shell_state, shell_contact
+                        )
+                        i_d_start = rigid_info.trees_dof_start[i_t]
+                        for k in range(rigid_info.trees_n_dofs[i_t]):
+                            shell_contact.dofs_schur_vec_sum[i_d_start + k, i_b] += func_to_fixed(
+                                shell_contact.contacts_jac[i_c, k, i_b].dot(impulse), scale, static_config
+                            )
+
+    for i_lane in range(_G):
+        n_slots = shell_contact.contacts_geom.shape[0]
+        n_trees = shell_contact.trees_is_coupled.shape[0]
+        n_envs_needs_solve = shell_scratch.n_envs_needs_solve[None]
+        n_items = n_trees * n_envs_needs_solve
+        for i_chunk_ in range((n_items + _G - 1) // _G):
+            i_flat = i_chunk_ * _G + i_lane
+            if i_flat < n_items:
+                i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
+                i_t = i_flat // n_envs_needs_solve
+                if shell_contact.trees_is_coupled[i_t, i_b]:
+                    e_bound = (
+                        5
+                        + func_bound_exponent(shell_contact.envs_hessian_max[i_b])
+                        + func_bound_exponent(shell_contact.envs_jac_max[i_b])
+                        + func_bound_exponent(shell_scratch.envs_dv_max[i_b])
+                    )
+                    scale = func_fixed_scale(e_bound, n_slots, static_config)
+                    i_d_start = rigid_info.trees_dof_start[i_t]
+                    i_d_end = i_d_start + rigid_info.trees_n_dofs[i_t]
+                    for i_d in range(i_d_start, i_d_end):
+                        shell_contact.dofs_schur_vec[i_d, i_b] = shell_contact.dofs_schur_rhs[
+                            i_d, i_b
+                        ] + func_from_fixed(shell_contact.dofs_schur_vec_sum[i_d, i_b], scale, static_config)
+                    for i_d in range(i_d_start, i_d_end):
+                        dv = gs.qd_float(0.0)
+                        for j_d in range(i_d_start, i_d_end):
+                            dv += shell_contact.dofs_schur_inv[i_d, j_d, i_b] * shell_contact.dofs_schur_vec[j_d, i_b]
+                        shell_contact.dofs_dir[i_d, i_b] = dv - shell_contact.dofs_dv[i_d, i_b]
 
     # The product of the step of the sheet applies to verts_p, read by func_system_product in SOLVE mode
     _K = qd.static(static_config.envs_block_dim)
     if qd.static(_K > 1):
         qd.loop_config(block_dim=_K)
     for i_lane in range(_K):
+        B = shell_scratch.envs_is_solving.shape[0]
         n_chunk = (B + _K - 1) // _K
         for i_b_ in range(n_chunk):
             i_b = i_lane * n_chunk + i_b_
             if i_b < B:
                 shell_scratch.envs_is_solving[i_b] = shell_scratch.envs_needs_solve[i_b]
                 shell_scratch.envs_pcg_mode[i_b] = PCG_MODE.SOLVE
+                shell_scratch.envs_vec_max[i_b] = 0
         func_envs_list(
             i_lane,
             shell_scratch.envs_solving_idx,
@@ -3324,26 +4226,43 @@ def func_contact_direction(
             static_config,
         )
 
-    for i_flat in range(n_verts * n_envs_needs_solve):
-        i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
-        i_v = i_flat // n_envs_needs_solve
-        step = shell_state.verts_dv[i_v, i_b] - shell_contact.verts_dv_prev[i_v, i_b]
-        shell_scratch.verts_p[i_v, i_b] = step
-        shell_scratch.verts_Ap[i_v, i_b] = shell_scratch.verts_mass[i_v, i_b] * step
+    for i_lane in range(_G):
+        n_verts = shell_state.verts_pos.shape[0]
+        n_envs_needs_solve = shell_scratch.n_envs_needs_solve[None]
+        n_items = n_verts * n_envs_needs_solve
+        for i_chunk_ in range((n_items + _G - 1) // _G):
+            i_flat = i_chunk_ * _G + i_lane
+            if i_flat < n_items:
+                i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
+                i_v = i_flat // n_envs_needs_solve
+                step = shell_state.verts_dv[i_v, i_b] - shell_contact.verts_dv_prev[i_v, i_b]
+                shell_scratch.verts_p[i_v, i_b] = step
+                for j in qd.static(range(3)):
+                    shell_scratch.verts_Ap[i_v, j, i_b] = func_to_fixed(gs.qd_float(0.0), 1.0, static_config)
+                if qd.static(static_config.has_fixed_point_sums):
+                    qd.atomic_max(shell_scratch.envs_vec_max[i_b], func_bound_bits(qd.abs(step).max()))
 
-    for i_flat in range(n_slots * n_envs_needs_solve):
-        i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
-        i_c = i_flat // n_envs_needs_solve
-        if shell_contact.contacts_geom[i_c, i_b] >= 0:
-            direction = func_contact_shell_velocity(i_c, i_b, shell_scratch.verts_p, shell_state, shell_contact)
-            i_t = func_contact_tree(i_c, i_b, shell_contact, dyn_info, rigid_info)
-            if i_t >= 0:
-                direction = direction - func_contact_rigid_velocity(
-                    i_c, i_b, i_t, shell_contact.dofs_dir, shell_contact, rigid_info
-                )
-            shell_contact.contacts_dir[i_c, i_b] = direction
+    for i_lane in range(_G):
+        n_slots = shell_contact.contacts_geom.shape[0]
+        n_envs_needs_solve = shell_scratch.n_envs_needs_solve[None]
+        n_items = n_slots * n_envs_needs_solve
+        for i_chunk_ in range((n_items + _G - 1) // _G):
+            i_flat = i_chunk_ * _G + i_lane
+            if i_flat < n_items:
+                i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
+                i_c = i_flat // n_envs_needs_solve
+                if shell_contact.contacts_geom[i_c, i_b] >= 0:
+                    direction = func_contact_shell_velocity(i_c, i_b, shell_scratch.verts_p, shell_state, shell_contact)
+                    i_t = func_contact_tree(i_c, i_b, shell_contact, dyn_info, rigid_info)
+                    if i_t >= 0:
+                        direction = direction - func_contact_rigid_velocity(
+                            i_c, i_b, i_t, shell_contact.dofs_dir, shell_contact, rigid_info
+                        )
+                    shell_contact.contacts_dir[i_c, i_b] = direction
+                    if qd.static(static_config.has_fixed_point_sums):
+                        qd.atomic_max(shell_contact.envs_dir_max[i_b], func_bound_bits(qd.abs(direction).max()))
 
-    func_system_product(shell_state, shell_scratch, shell_info)
+    func_system_product(shell_state, shell_scratch, shell_info, static_config)
 
 
 @qd.func
@@ -3352,7 +4271,9 @@ def func_contact_line_search_start(
     shell_state: array_class.ShellState,
     shell_scratch: array_class.ShellScratch,
     shell_contact: array_class.ShellContactScratch,
+    shell_info: array_class.ShellInfo,
     rigid_info: array_class.RigidInfo,
+    static_config: qd.template(),
 ):
     """Accumulate the quadratic part of the incremental potential along the step of the contact solve, and open the
     bracket [0, 1] of the minimum along the step in every environment still solving.
@@ -3362,39 +4283,63 @@ def func_contact_line_search_start(
     the solution of the linearized contacts minimizes jointly. It is convex along the step, its slope increasing with
     the step length. The quadratic part is known in closed form from the elastic product of the step, and the line
     search passes (see func_contact_line_search_update) add the contact potentials at the step lengths they evaluate.
+    The terms of an environment reduce over its vertices and contacts in a fixed order: a block holds
+    static_config.envs_group_dim consecutive environments of the solve side by side, every environment taking
+    static_config.envs_group_lanes lanes (see func_envs_group_reduce).
     """
     n_verts, B = shell_state.verts_pos.shape[0], shell_state.verts_pos.shape[1]
     n_slots = shell_contact.contacts_geom.shape[0]
     n_envs_needs_solve = shell_scratch.n_envs_needs_solve[None]
+    _G = qd.static(static_config.envs_group_dim)
+    _L = qd.static(static_config.envs_group_lanes)
 
-    for i_b in range(B):
-        for k in qd.static(range(N_LINE_SEARCH_TERMS)):
-            shell_contact.envs_line_terms[i_b, k] = gs.qd_float(0.0)
-
-    # Quadratic of the sheet along the step: dv^T A d, b^T d and d^T A d
-    for i_flat in range(n_verts * n_envs_needs_solve):
-        i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
-        i_v = i_flat // n_envs_needs_solve
-        if func_is_vert_free(i_v, i_b, shell_state):
-            step = shell_scratch.verts_p[i_v, i_b]
-            product = shell_scratch.verts_Ap[i_v, i_b]
-            shell_contact.envs_line_terms[i_b, 0] += shell_contact.verts_dv_prev[i_v, i_b].dot(product)
-            shell_contact.envs_line_terms[i_b, 1] += shell_contact.verts_rhs_base[i_v, i_b].dot(step)
-            shell_contact.envs_line_terms[i_b, 2] += step.dot(product)
-
-    # Slope -p^T d of the contact potentials at the iterate
-    for i_flat in range(n_slots * n_envs_needs_solve):
-        i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
-        i_c = i_flat // n_envs_needs_solve
-        if shell_contact.contacts_geom[i_c, i_b] >= 0:
-            shell_contact.envs_line_terms[i_b, 3] -= shell_contact.contacts_impulse[i_c, i_b].dot(
-                shell_contact.contacts_dir[i_c, i_b]
-            )
-
-    # Kinetic energy of the rigid step, then the bracket [0, 1] if the step descends, its full length otherwise
     for i_b in range(B):
         shell_contact.envs_line_pass[i_b] = -1
-        if shell_scratch.envs_needs_solve[i_b]:
+
+    if qd.static(_G * _L > 1):
+        qd.loop_config(block_dim=_G * _L)
+    for i_flat in range((n_envs_needs_solve + _G - 1) // _G * (_G * _L)):
+        i_g = i_flat % _G
+        i_lane = (i_flat // _G) % _L
+        i_k = i_flat // (_G * _L) * _G + i_g
+        # The lanes of a block reach its synchronizations together, those past the last environment idling
+        is_env = i_k < n_envs_needs_solve
+        i_b = shell_scratch.envs_needs_solve_idx[qd.min(i_k, n_envs_needs_solve - 1)]
+
+        # Quadratic of the sheet along the step: dv^T A d, b^T d and d^T A d
+        dv_A_step = gs.qd_float(0.0)
+        rhs_step = gs.qd_float(0.0)
+        step_A_step = gs.qd_float(0.0)
+        for i_chunk in range((n_verts + _L - 1) // _L):
+            i_v = i_chunk * _L + i_lane
+            if is_env and i_v < n_verts:
+                if func_is_vert_free(i_v, i_b, shell_state):
+                    step = shell_scratch.verts_p[i_v, i_b]
+                    scale, _ = func_product_scale(i_b, shell_state, shell_scratch, static_config)
+                    product = shell_scratch.verts_mass[i_v, i_b] * step + func_from_fixed(
+                        qd.Vector([shell_scratch.verts_Ap[i_v, j, i_b] for j in qd.static(range(3))]),
+                        scale,
+                        static_config,
+                    )
+                    dv_A_step += shell_contact.verts_dv_prev[i_v, i_b].dot(product)
+                    rhs_step += shell_contact.verts_rhs_base[i_v, i_b].dot(step)
+                    step_A_step += step.dot(product)
+        # Slope -p^T d of the contact potentials at the iterate
+        contacts_slope = gs.qd_float(0.0)
+        for i_chunk in range((n_slots + _L - 1) // _L):
+            i_c = i_chunk * _L + i_lane
+            if is_env and i_c < n_slots:
+                if shell_contact.contacts_geom[i_c, i_b] >= 0:
+                    contacts_slope -= shell_contact.contacts_impulse[i_c, i_b].dot(shell_contact.contacts_dir[i_c, i_b])
+        dv_A_step = func_envs_group_reduce(i_g, i_lane, dv_A_step, static_config, take_max=False)
+        rhs_step = func_envs_group_reduce(i_g, i_lane, rhs_step, static_config, take_max=False)
+        step_A_step = func_envs_group_reduce(i_g, i_lane, step_A_step, static_config, take_max=False)
+        contacts_slope = func_envs_group_reduce(i_g, i_lane, contacts_slope, static_config, take_max=False)
+
+        # Kinetic energy of the rigid step, then the bracket [0, 1] if the step descends, its full length otherwise
+        if is_env and i_lane == 0:
+            dv_M_dir = gs.qd_float(0.0)
+            dir_M_dir = gs.qd_float(0.0)
             for i_t in range(shell_contact.trees_is_coupled.shape[0]):
                 if shell_contact.trees_is_coupled[i_t, i_b]:
                     i_d_start = rigid_info.trees_dof_start[i_t]
@@ -3404,14 +4349,15 @@ def func_contact_line_search_start(
                         for j_d in range(i_d_start, i_d_end):
                             if rigid_info.dofs_mass_block_start[j_d] == rigid_info.dofs_mass_block_start[i_d]:
                                 product += rigid_info.mass_mat[i_d, j_d, i_b] * shell_contact.dofs_dir[j_d, i_b]
-                        shell_contact.envs_line_terms[i_b, 4] += shell_contact.dofs_dv[i_d, i_b] * product
-                        shell_contact.envs_line_terms[i_b, 5] += shell_contact.dofs_dir[i_d, i_b] * product
-            slope_start = (
-                shell_contact.envs_line_terms[i_b, 0]
-                - shell_contact.envs_line_terms[i_b, 1]
-                + shell_contact.envs_line_terms[i_b, 3]
-                + shell_contact.envs_line_terms[i_b, 4]
-            )
+                        dv_M_dir += shell_contact.dofs_dv[i_d, i_b] * product
+                        dir_M_dir += shell_contact.dofs_dir[i_d, i_b] * product
+            shell_contact.envs_line_terms[i_b, 0] = dv_A_step
+            shell_contact.envs_line_terms[i_b, 1] = rhs_step
+            shell_contact.envs_line_terms[i_b, 2] = step_A_step
+            shell_contact.envs_line_terms[i_b, 3] = contacts_slope
+            shell_contact.envs_line_terms[i_b, 4] = dv_M_dir
+            shell_contact.envs_line_terms[i_b, 5] = dir_M_dir
+            slope_start = dv_A_step - rhs_step + contacts_slope + dv_M_dir
             shell_contact.envs_step[i_b] = 1.0
             # A direction without descent is the vanishing step of a converged iterate, taken in full
             if slope_start < 0.0:
@@ -3425,55 +4371,91 @@ def func_contact_line_search_start(
 
 
 @qd.func
+def func_line_search_scales(i_b: int, shell_contact: array_class.ShellContactScratch, static_config: qd.template()):
+    """Return the scales of the fixed-point slopes and curvatures of the contact potentials along the step (see
+    func_fixed_scale).
+
+    Over a bracket within [0, 1], the relative velocity of a contact stays within u + v + d of its start velocity u, its
+    iterate change v and its step d, so that its normal impulse is at most k * (g / dt + sqrt(3) * (u + v + d)) for k
+    its stiffness and g its gap, and its friction impulse at most its friction bound. The stick velocity being at least
+    2 * friction_bound / k, its Hessian is at most 2.5 * k.
+    """
+    n_slots = shell_contact.contacts_geom.shape[0]
+    e_stiffness = func_bound_exponent(shell_contact.envs_stiffness_max[i_b])
+    e_dir = func_bound_exponent(shell_contact.envs_dir_max[i_b])
+    e_vel_start = func_bound_exponent(shell_contact.envs_vel_max[i_b])
+    e_vel = qd.max(qd.max(e_vel_start, func_bound_exponent(shell_contact.envs_vel_change_max[i_b])) + 1, e_dir) + 1
+    e_normal = e_stiffness + qd.max(func_bound_exponent(shell_contact.envs_gap_rate_max[i_b]), 1 + e_vel) + 1
+    e_impulse = qd.max(e_normal, func_bound_exponent(shell_contact.envs_friction_bound_max[i_b])) + 1
+    scale_slope = func_fixed_scale(1 + e_impulse + e_dir, n_slots, static_config)
+    scale_curvature = func_fixed_scale(3 + e_stiffness + 2 * e_dir, n_slots, static_config)
+    return scale_slope, scale_curvature
+
+
+@qd.func
 def func_contact_line_search_points(
     dt: float,
     shell_scratch: array_class.ShellScratch,
     shell_contact: array_class.ShellContactScratch,
+    static_config: qd.template(),
 ):
     """Add the slope and curvature of every contact potential along the step at the step lengths of the current pass.
 
     A bracketing pass evaluates N_LINE_SEARCH_POINTS evenly spaced points of the bracket, a refining pass its candidate
-    step length (see func_contact_line_search_update).
+    step length (see func_contact_line_search_update). Both sums are fixed-point (see func_line_search_scales).
     """
-    n_slots, B = shell_contact.contacts_geom.shape[0], shell_contact.contacts_geom.shape[1]
+    B = shell_contact.contacts_geom.shape[1]
     n_points = shell_contact.envs_line_slope.shape[1]
-    n_envs_needs_solve = shell_scratch.n_envs_needs_solve[None]
 
+    _G = qd.static(static_config.grid_dim)
     for i_b, j in qd.ndrange(B, n_points):
-        shell_contact.envs_line_slope[i_b, j] = gs.qd_float(0.0)
-        shell_contact.envs_line_curvature[i_b, j] = gs.qd_float(0.0)
+        shell_contact.envs_line_slope[i_b, j] = 0
+        shell_contact.envs_line_curvature[i_b, j] = 0
 
-    for i_flat in range(n_slots * n_envs_needs_solve):
-        i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
-        i_c = i_flat // n_envs_needs_solve
-        i_pass = shell_contact.envs_line_pass[i_b]
-        if i_pass >= 0 and shell_contact.contacts_geom[i_c, i_b] >= 0:
-            vel = func_contact_vel(i_c, i_b, shell_contact)
-            direction = shell_contact.contacts_dir[i_c, i_b]
-            gap = shell_contact.contacts_gap[i_c, i_b]
-            normal = shell_contact.contacts_normal[i_c, i_b]
-            stiffness = shell_contact.contacts_stiffness[i_c, i_b]
-            friction_bound = shell_contact.contacts_friction_bound[i_c, i_b]
-            step_lower = shell_contact.envs_line_bracket[i_b, 0]
-            width = shell_contact.envs_line_bracket[i_b, 2] - step_lower
-            n_evaluated = n_points
-            if i_pass >= N_LINE_SEARCH_LEVELS:
-                n_evaluated = 1
-            for j in range(n_evaluated):
-                step_length = step_lower + width * (j + 1.0) / n_points
-                if i_pass >= N_LINE_SEARCH_LEVELS:
-                    step_length = shell_contact.envs_line_bracket[i_b, 5]
-                vel_step = vel + step_length * direction
-                impulse = func_contact_potential(dt, vel_step, gap, normal, stiffness, friction_bound)[1]
-                hessian = func_contact_hessian(dt, vel_step, gap, normal, stiffness, friction_bound)
-                shell_contact.envs_line_slope[i_b, j] -= impulse.dot(direction)
-                shell_contact.envs_line_curvature[i_b, j] += direction.dot(hessian @ direction)
+    for i_lane in range(_G):
+        n_slots = shell_contact.contacts_geom.shape[0]
+        n_points = shell_contact.envs_line_slope.shape[1]
+        n_envs_needs_solve = shell_scratch.n_envs_needs_solve[None]
+        n_items = n_slots * n_envs_needs_solve
+        for i_chunk_ in range((n_items + _G - 1) // _G):
+            i_flat = i_chunk_ * _G + i_lane
+            if i_flat < n_items:
+                i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
+                i_c = i_flat // n_envs_needs_solve
+                i_pass = shell_contact.envs_line_pass[i_b]
+                if i_pass >= 0 and shell_contact.contacts_geom[i_c, i_b] >= 0:
+                    scale_slope, scale_curvature = func_line_search_scales(i_b, shell_contact, static_config)
+                    vel = func_contact_vel(i_c, i_b, shell_contact)
+                    direction = shell_contact.contacts_dir[i_c, i_b]
+                    gap = shell_contact.contacts_gap[i_c, i_b]
+                    normal = shell_contact.contacts_normal[i_c, i_b]
+                    stiffness = shell_contact.contacts_stiffness[i_c, i_b]
+                    friction_bound = shell_contact.contacts_friction_bound[i_c, i_b]
+                    step_lower = shell_contact.envs_line_bracket[i_b, 0]
+                    width = shell_contact.envs_line_bracket[i_b, 2] - step_lower
+                    n_evaluated = n_points
+                    if i_pass >= N_LINE_SEARCH_LEVELS:
+                        n_evaluated = 1
+                    for j in range(n_evaluated):
+                        step_length = step_lower + width * (j + 1.0) / n_points
+                        if i_pass >= N_LINE_SEARCH_LEVELS:
+                            step_length = shell_contact.envs_line_bracket[i_b, 5]
+                        vel_step = vel + step_length * direction
+                        impulse = func_contact_potential(dt, vel_step, gap, normal, stiffness, friction_bound)[1]
+                        hessian = func_contact_hessian(dt, vel_step, gap, normal, stiffness, friction_bound)
+                        shell_contact.envs_line_slope[i_b, j] += func_to_fixed(
+                            -impulse.dot(direction), scale_slope, static_config
+                        )
+                        shell_contact.envs_line_curvature[i_b, j] += func_to_fixed(
+                            direction.dot(hessian @ direction), scale_curvature, static_config
+                        )
 
 
 @qd.func
 def func_contact_line_search_update(
     line_flag: qd.types.ndarray(qd.i32, ndim=0),
     shell_contact: array_class.ShellContactScratch,
+    static_config: qd.template(),
 ):
     """Narrow the bracket of the minimum of the potential along the step from the slopes of the current pass.
 
@@ -3503,6 +4485,7 @@ def func_contact_line_search_update(
     for i_b in range(B):
         i_pass = shell_contact.envs_line_pass[i_b]
         if i_pass >= 0:
+            scale_slope, scale_curvature = func_line_search_scales(i_b, shell_contact, static_config)
             slope_linear = (
                 shell_contact.envs_line_terms[i_b, 0]
                 - shell_contact.envs_line_terms[i_b, 1]
@@ -3521,7 +4504,9 @@ def func_contact_line_search_update(
             if i_pass < N_LINE_SEARCH_LEVELS:
                 width = step_upper - step_lower
                 slope_end = (
-                    slope_linear + step_upper * curvature_linear + shell_contact.envs_line_slope[i_b, n_points - 1]
+                    slope_linear
+                    + step_upper * curvature_linear
+                    + func_from_fixed(shell_contact.envs_line_slope[i_b, n_points - 1], scale_slope, static_config)
                 )
                 if i_pass == 0 and slope_end <= -FULL_STEP_SLOPE_RATIO * slope_start:
                     is_full = True
@@ -3531,27 +4516,44 @@ def func_contact_line_search_update(
                     for j_ in range(n_points - 1):
                         j = n_points - 2 - j_
                         step_length = step_lower + width * (j + 1.0) / n_points
-                        if slope_linear + step_length * curvature_linear + shell_contact.envs_line_slope[i_b, j] >= 0.0:
+                        if (
+                            slope_linear
+                            + step_length * curvature_linear
+                            + func_from_fixed(shell_contact.envs_line_slope[i_b, j], scale_slope, static_config)
+                            >= 0.0
+                        ):
                             j_upper = j
                     if j_upper > 0:
                         step_lower_new = step_lower + width * j_upper / n_points
                         slope_lower = (
                             slope_linear
                             + step_lower_new * curvature_linear
-                            + shell_contact.envs_line_slope[i_b, j_upper - 1]
+                            + func_from_fixed(
+                                shell_contact.envs_line_slope[i_b, j_upper - 1], scale_slope, static_config
+                            )
                         )
                         step_lower = step_lower_new
                     step_upper = step_lower + width / n_points
                     slope_upper = (
-                        slope_linear + step_upper * curvature_linear + shell_contact.envs_line_slope[i_b, j_upper]
+                        slope_linear
+                        + step_upper * curvature_linear
+                        + func_from_fixed(shell_contact.envs_line_slope[i_b, j_upper], scale_slope, static_config)
                     )
-                    curvature_upper = curvature_linear + shell_contact.envs_line_curvature[i_b, j_upper]
+                    curvature_upper = curvature_linear + func_from_fixed(
+                        shell_contact.envs_line_curvature[i_b, j_upper], scale_curvature, static_config
+                    )
                     candidate = 0.5 * (step_lower + step_upper)
                     if slope_upper > slope_lower:
                         candidate = step_lower - (step_upper - step_lower) * slope_lower / (slope_upper - slope_lower)
             else:
-                slope_candidate = slope_linear + candidate * curvature_linear + shell_contact.envs_line_slope[i_b, 0]
-                curvature_candidate = curvature_linear + shell_contact.envs_line_curvature[i_b, 0]
+                slope_candidate = (
+                    slope_linear
+                    + candidate * curvature_linear
+                    + func_from_fixed(shell_contact.envs_line_slope[i_b, 0], scale_slope, static_config)
+                )
+                curvature_candidate = curvature_linear + func_from_fixed(
+                    shell_contact.envs_line_curvature[i_b, 0], scale_curvature, static_config
+                )
                 if slope_candidate >= 0.0:
                     step_upper = candidate
                     slope_upper = slope_candidate
@@ -3593,32 +4595,50 @@ def func_contact_line_search_apply(
     shell_state: array_class.ShellState,
     shell_scratch: array_class.ShellScratch,
     shell_contact: array_class.ShellContactScratch,
+    static_config: qd.template(),
 ):
     """Move the iterate of every environment still solving by the step length its line search chose."""
-    n_verts = shell_state.verts_pos.shape[0]
-    n_slots = shell_contact.contacts_geom.shape[0]
-    n_dofs = shell_contact.dofs_schur_vec.shape[0]
-    n_envs_needs_solve = shell_scratch.n_envs_needs_solve[None]
+    _G = qd.static(static_config.grid_dim)
+    for i_lane in range(_G):
+        n_verts = shell_state.verts_pos.shape[0]
+        n_envs_needs_solve = shell_scratch.n_envs_needs_solve[None]
+        n_items = n_verts * n_envs_needs_solve
+        for i_chunk_ in range((n_items + _G - 1) // _G):
+            i_flat = i_chunk_ * _G + i_lane
+            if i_flat < n_items:
+                i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
+                i_v = i_flat // n_envs_needs_solve
+                dv = (
+                    shell_contact.verts_dv_prev[i_v, i_b]
+                    + shell_contact.envs_step[i_b] * shell_scratch.verts_p[i_v, i_b]
+                )
+                shell_state.verts_dv[i_v, i_b] = dv
+                shell_contact.verts_dv_prev[i_v, i_b] = dv
 
-    for i_flat in range(n_verts * n_envs_needs_solve):
-        i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
-        i_v = i_flat // n_envs_needs_solve
-        dv = shell_contact.verts_dv_prev[i_v, i_b] + shell_contact.envs_step[i_b] * shell_scratch.verts_p[i_v, i_b]
-        shell_state.verts_dv[i_v, i_b] = dv
-        shell_contact.verts_dv_prev[i_v, i_b] = dv
+    for i_lane in range(_G):
+        n_dofs = shell_contact.dofs_schur_vec.shape[0]
+        n_envs_needs_solve = shell_scratch.n_envs_needs_solve[None]
+        n_items = n_dofs * n_envs_needs_solve
+        for i_chunk_ in range((n_items + _G - 1) // _G):
+            i_flat = i_chunk_ * _G + i_lane
+            if i_flat < n_items:
+                i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
+                i_d = i_flat // n_envs_needs_solve
+                shell_contact.dofs_dv[i_d, i_b] += shell_contact.envs_step[i_b] * shell_contact.dofs_dir[i_d, i_b]
 
-    for i_flat in range(n_dofs * n_envs_needs_solve):
-        i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
-        i_d = i_flat // n_envs_needs_solve
-        shell_contact.dofs_dv[i_d, i_b] += shell_contact.envs_step[i_b] * shell_contact.dofs_dir[i_d, i_b]
-
-    for i_flat in range(n_slots * n_envs_needs_solve):
-        i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
-        i_c = i_flat // n_envs_needs_solve
-        if shell_contact.contacts_geom[i_c, i_b] >= 0:
-            shell_contact.contacts_vel_change[i_c, i_b] += (
-                shell_contact.envs_step[i_b] * shell_contact.contacts_dir[i_c, i_b]
-            )
+    for i_lane in range(_G):
+        n_slots = shell_contact.contacts_geom.shape[0]
+        n_envs_needs_solve = shell_scratch.n_envs_needs_solve[None]
+        n_items = n_slots * n_envs_needs_solve
+        for i_chunk_ in range((n_items + _G - 1) // _G):
+            i_flat = i_chunk_ * _G + i_lane
+            if i_flat < n_items:
+                i_b = shell_scratch.envs_needs_solve_idx[i_flat % n_envs_needs_solve]
+                i_c = i_flat // n_envs_needs_solve
+                if shell_contact.contacts_geom[i_c, i_b] >= 0:
+                    shell_contact.contacts_vel_change[i_c, i_b] += (
+                        shell_contact.envs_step[i_b] * shell_contact.contacts_dir[i_c, i_b]
+                    )
 
 
 @qd.func
@@ -3670,24 +4690,34 @@ def kernel_shell_rigid_contact_solve(
             velocity_tolerance,
             max_newton_iterations,
         )
-        func_contact_assemble(shell_state, shell_scratch, shell_contact, dyn_info, rigid_info)
+        func_contact_assemble(shell_state, shell_scratch, shell_contact, dyn_info, rigid_info, shell_static_config)
         func_pcg_prepare(shell_state, shell_scratch, shell_static_config, tolerance, velocity_tolerance)
         while qd.graph.do_while(pcg_flag):
-            func_system_contact_product(shell_state, shell_scratch, shell_contact, shell_info, dyn_info, rigid_info)
-            func_contact_schur_product(shell_state, shell_scratch, shell_contact, dyn_info, rigid_info)
+            func_system_contact_product(
+                shell_state, shell_scratch, shell_contact, shell_info, dyn_info, rigid_info, shell_static_config
+            )
+            func_contact_schur_product(
+                shell_state, shell_scratch, shell_contact, dyn_info, rigid_info, shell_static_config
+            )
             func_pcg_residual(shell_state, shell_scratch, shell_info, shell_static_config)
+            if qd.static(shell_static_config.has_fixed_point_sums):
+                func_pcg_norms(shell_state, shell_scratch, shell_info, shell_static_config)
             if qd.static(shell_static_config.has_coarse_space):
-                func_pcg_coarse_solve(shell_scratch, shell_info)
-            func_pcg_decide(pcg_flag, shell_scratch, shell_static_config, max_iterations, errno)
+                func_pcg_coarse_solve(shell_state, shell_scratch, shell_info, shell_static_config)
+            func_pcg_decide(
+                pcg_flag, shell_state, shell_scratch, shell_info, shell_static_config, max_iterations, errno
+            )
             func_pcg_advance(shell_state, shell_scratch, shell_info, shell_static_config)
         func_contact_direction(
             shell_state, shell_scratch, shell_contact, shell_info, dyn_info, rigid_info, shell_static_config
         )
-        func_contact_line_search_start(line_flag, shell_state, shell_scratch, shell_contact, rigid_info)
+        func_contact_line_search_start(
+            line_flag, shell_state, shell_scratch, shell_contact, shell_info, rigid_info, shell_static_config
+        )
         while qd.graph.do_while(line_flag):
-            func_contact_line_search_points(dt, shell_scratch, shell_contact)
-            func_contact_line_search_update(line_flag, shell_contact)
-        func_contact_line_search_apply(shell_state, shell_scratch, shell_contact)
+            func_contact_line_search_points(dt, shell_scratch, shell_contact, shell_static_config)
+            func_contact_line_search_update(line_flag, shell_contact, shell_static_config)
+        func_contact_line_search_apply(shell_state, shell_scratch, shell_contact, shell_static_config)
         func_contact_continue(newton_flag, shell_scratch)
 
 
@@ -3699,6 +4729,7 @@ def kernel_shell_rigid_contact_finalize(
     shell_contact: array_class.ShellContactScratch,
     dyn_state: array_class.DynState,
     dyn_info: array_class.DynInfo,
+    static_config: qd.template(),
 ):
     """Apply the solved contacts at the last iterate to the sheets and the rigid links.
 
@@ -3706,13 +4737,25 @@ def kernel_shell_rigid_contact_finalize(
     integrates, and every contact spreads its force on the vertices of its face and adds the opposite force to the
     contact force of its rigid link. Every contact slot records its geom and mu times its normal impulse, the friction
     bound of the next substep (see kernel_shell_rigid_contact_detect). An environment whose solve produced non-finite
-    values applies nothing, errno halting the simulation at its next check.
+    values applies nothing, errno halting the simulation at its next check. The forces add as fixed-point sums (see
+    func_fixed_scale), a first pass over the contacts recording the largest force they round by.
     """
     n_verts, B = shell_state.verts_pos.shape[0], shell_state.verts_pos.shape[1]
     n_slots = shell_contact.contacts_geom.shape[0]
+    n_links = dyn_state.links.contact_force.shape[0]
+
+    for i_b in range(B):
+        shell_contact.envs_force_max[i_b] = 0
 
     for i_v, i_b in qd.ndrange(n_verts, B):
-        shell_contact.verts_contact_force[i_v, i_b] = qd.Vector.zero(gs.qd_float, 3)
+        shell_contact.verts_contact_force_sum[i_v, i_b] = func_to_fixed(
+            qd.Vector.zero(gs.qd_float, 3), 1.0, static_config
+        )
+
+    for i_l, i_b in qd.ndrange(n_links, B):
+        shell_contact.links_contact_force_sum[i_l, i_b] = func_to_fixed(
+            qd.Vector.zero(gs.qd_float, 3), 1.0, static_config
+        )
 
     for i_d, i_b in qd.ndrange(dyn_state.dofs.acc.shape[0], B):
         if not shell_scratch.envs_solve_status[i_b] & SHELL_SOLVE_STATUS.NON_FINITE:
@@ -3737,14 +4780,33 @@ def kernel_shell_rigid_contact_finalize(
             shell_state.contacts_friction_bound_prev[i_c, i_b] = dyn_info.geoms.coup_friction[i_g] * qd.max(
                 impulse.dot(shell_contact.contacts_normal[i_c, i_b]), 0.0
             )
-            force = impulse / dt
+            if qd.static(static_config.has_fixed_point_sums):
+                qd.atomic_max(shell_contact.envs_force_max[i_b], func_bound_bits(qd.abs(impulse).max() / dt))
+
+    for i_c, i_b in qd.ndrange(n_slots, B):
+        i_g = shell_state.contacts_geom_prev[i_c, i_b]
+        if i_g >= 0:
+            scale = func_fixed_scale(func_bound_exponent(shell_contact.envs_force_max[i_b]), n_slots, static_config)
+            force = shell_contact.contacts_impulse[i_c, i_b] / dt
             i_f = i_c // 2
             bary = shell_contact.contacts_bary[i_c, i_b]
             for k in qd.static(range(3)):
                 i_v = shell_state.corners_vert[3 * i_f + k, i_b]
-                shell_contact.verts_contact_force[i_v, i_b] += bary[k] * force
+                shell_contact.verts_contact_force_sum[i_v, i_b] += func_to_fixed(bary[k] * force, scale, static_config)
             i_l = dyn_info.geoms.link_idx[i_g]
-            dyn_state.links.contact_force[i_l, i_b] -= force
+            shell_contact.links_contact_force_sum[i_l, i_b] += func_to_fixed(-force, scale, static_config)
+
+    for i_v, i_b in qd.ndrange(n_verts, B):
+        scale = func_fixed_scale(func_bound_exponent(shell_contact.envs_force_max[i_b]), n_slots, static_config)
+        shell_contact.verts_contact_force[i_v, i_b] = func_from_fixed(
+            shell_contact.verts_contact_force_sum[i_v, i_b], scale, static_config
+        )
+
+    for i_l, i_b in qd.ndrange(n_links, B):
+        scale = func_fixed_scale(func_bound_exponent(shell_contact.envs_force_max[i_b]), n_slots, static_config)
+        dyn_state.links.contact_force[i_l, i_b] += func_from_fixed(
+            shell_contact.links_contact_force_sum[i_l, i_b], scale, static_config
+        )
 
 
 # ------------------------------------------------------------------------------------
@@ -3758,22 +4820,27 @@ def kernel_shell_update_render(
     shell_scratch: array_class.ShellScratch,
     shell_info: array_class.ShellInfo,
 ):
-    """Write the position and the smooth normal of every face corner, from the vertex holding it."""
+    """Write the position and the smooth normal of every face corner, from the vertex holding it.
+
+    A vertex sums the normals of the faces of its fan in their order, so that it repeats bit for bit.
+    """
     n_verts, B = shell_state.verts_pos.shape[0], shell_state.verts_pos.shape[1]
     n_faces = shell_state.faces_thickness.shape[0]
 
     for i_v, i_b in qd.ndrange(n_verts, B):
-        shell_scratch.verts_normal[i_v, i_b] = qd.Vector.zero(gs.qd_float, 3)
-
-    for i_f, i_b in qd.ndrange(n_faces, B):
-        i_v0 = shell_state.corners_vert[3 * i_f, i_b]
-        i_v1 = shell_state.corners_vert[3 * i_f + 1, i_b]
-        i_v2 = shell_state.corners_vert[3 * i_f + 2, i_b]
-        x0 = shell_state.verts_pos[i_v0, i_b]
-        normal = (shell_state.verts_pos[i_v1, i_b] - x0).cross(shell_state.verts_pos[i_v2, i_b] - x0)
-        shell_scratch.verts_normal[i_v0, i_b] += normal
-        shell_scratch.verts_normal[i_v1, i_b] += normal
-        shell_scratch.verts_normal[i_v2, i_b] += normal
+        normal = qd.Vector.zero(gs.qd_float, 3)
+        i_o = shell_state.verts_origin[i_v, i_b]
+        if i_o >= 0:
+            fan_start = shell_info.verts_fan_start[i_o]
+            for i_j in range(fan_start, fan_start + shell_info.verts_fan_len[i_o]):
+                if func_fan_entry_is_owned(i_v, i_j, i_b, shell_state, shell_info):
+                    i_f = shell_info.fans_corner[i_j] // 3
+                    i_v0 = shell_state.corners_vert[3 * i_f, i_b]
+                    i_v1 = shell_state.corners_vert[3 * i_f + 1, i_b]
+                    i_v2 = shell_state.corners_vert[3 * i_f + 2, i_b]
+                    x0 = shell_state.verts_pos[i_v0, i_b]
+                    normal += (shell_state.verts_pos[i_v1, i_b] - x0).cross(shell_state.verts_pos[i_v2, i_b] - x0)
+        shell_scratch.verts_normal[i_v, i_b] = normal
 
     for i_c, i_b in qd.ndrange(3 * n_faces, B):
         i_v = shell_state.corners_vert[i_c, i_b]

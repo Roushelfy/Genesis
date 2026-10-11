@@ -19,10 +19,13 @@ def main():
     parser.add_argument("--substeps", type=int, default=10, help="Number of substeps per control step")
     parser.add_argument("--pcg-tolerance", type=float, default=1e-4, help="Relative tolerance of the linear solves")
     parser.add_argument("--contact-stiffness", type=float, default=25.0, help="Stiffness ratio of the egg contacts")
+    parser.add_argument(
+        "--deterministic", action="store_true", help="Run in the default mode, whose rollouts repeat bit for bit"
+    )
     args = parser.parse_args()
 
     # The benchmark measures the throughput of a thousand parallel environments, which needs a GPU.
-    gs.init(backend=gs.gpu, precision="32", performance_mode=True, seed=0, logging_level="warning")
+    gs.init(backend=gs.gpu, precision="32", performance_mode=not args.deterministic, seed=0, logging_level="warning")
 
     EGG_LENGTH, EGG_WIDTH = 0.06, 0.045
     sphere = trimesh.creation.icosphere(subdivisions=2)
