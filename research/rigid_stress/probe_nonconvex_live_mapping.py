@@ -64,7 +64,8 @@ def kernel_mapping_errors(
         if contact_state.valid[i_c, i_b] and traction_state.status[i_c, i_b] == StressTractionStatus.SUCCESS:
             force_sum, moment_sum = qd.Vector.zero(gs.qd_float, 3), qd.Vector.zero(gs.qd_float, 3)
             maximum_cone, minimum_compression = gs.qd_float(0.0), gs.qd_float(0.0)
-            for i_q in range(traction_state.profile.shape[0]):
+            n_samples = traction_state.sample_count[i_c, i_b]
+            for i_q in range(n_samples):
                 force = func_sample_traction(i_q, i_c, i_b, contact_state, traction_state, traction_info)
                 position, normal = func_traction_geometry(i_q, i_c, i_b, traction_state, traction_info)
                 force_sum += force
@@ -91,8 +92,11 @@ def main():
     parser.add_argument("--projection-limit", type=float, default=1e-4)
     parser.add_argument("--geometry-tolerance", type=float, default=1e-8)
     parser.add_argument("--anchor-fan", action="store_true")
+    parser.add_argument("--packed", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
+    if args.packed and not args.anchor_fan:
+        parser.error("--packed requires --anchor-fan.")
     args.output.parent.mkdir(parents=True, exist_ok=True)
     gs.init(backend=gs.cuda, precision="64")
     workload = FrankaEgg(args.envs, seed=args.seed, varied=True, fused_rigid_post=False, fused_pipeline=False)
@@ -116,7 +120,7 @@ def main():
     )
     footprints = create_footprints(paths.info.positions.shape[0], n_contacts, args.envs)
     tractions = (
-        create_anchor_fan_tractions(entry.surface.info, n_contacts, args.envs)
+        create_anchor_fan_tractions(entry.surface.info, n_contacts, args.envs, compact=args.packed, packed=args.packed)
         if args.anchor_fan
         else create_tractions(info.positions.shape[0], n_contacts, args.envs)
     )
@@ -153,7 +157,7 @@ def main():
             kernel_mapping_errors(errors, entry.contacts, sources, tractions, info)
             errno.fill(0)
             kernel_scatter_tractions(
-                entry.contacts, tractions, state, entry.model.info, entry.surface.info, info, errno
+                entry.contacts, tractions, state, entry.model.info, entry.surface.info, info, errno, reset_force=True
             )
             entry.model.recover(entry.omega, state)
             arrays = {

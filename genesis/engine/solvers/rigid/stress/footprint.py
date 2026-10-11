@@ -131,7 +131,14 @@ def func_footprint_point_distance(
     return distance, is_straight
 
 
-def create_anchor_fan_tractions(surface_info: StressSurfaceInfo, n_contacts: int, n_envs: int) -> StressTractionState:
+def create_anchor_fan_tractions(
+    surface_info: StressSurfaceInfo,
+    n_contacts: int,
+    n_envs: int,
+    *,
+    compact: bool = False,
+    packed: bool = False,
+) -> StressTractionState:
     """Integrate the witnessed face as three finite triangles incident to its anchor.
 
     Other faces retain the same shared quadrature. This local partition adds
@@ -139,7 +146,68 @@ def create_anchor_fan_tractions(surface_info: StressSurfaceInfo, n_contacts: int
     load. The dense proof layout remains separate from live contact packing.
     """
     n_samples = surface_info.positions.shape[0] + 2 * surface_info.shape.shape[0]
-    return create_tractions(n_samples, n_contacts, n_envs, local_samples=True)
+    return create_tractions(
+        n_samples,
+        n_contacts,
+        n_envs,
+        local_samples=True,
+        local_sample_count=3 * surface_info.shape.shape[0] if compact else None,
+        packed_samples=packed,
+    )
+
+
+@qd.func
+def func_anchor_fan_sample(
+    i_q: int,
+    i_c: int,
+    i_b: int,
+    contact_state: StressContactState,
+    stress_info: StressInfo,
+    surface_info: StressSurfaceInfo,
+):
+    n_quadrature = surface_info.shape.shape[0]
+    n_shared = surface_info.positions.shape[0]
+    i_anchor = contact_state.anchor_face[i_c, i_b]
+    i_face, i_sample, i_fan = i_q // n_quadrature, i_q % n_quadrature, 0
+    if i_q >= n_shared:
+        i_face = i_anchor
+        i_fan = 1 + (i_q - n_shared) // n_quadrature
+    anchor = contact_state.center[i_c, i_b]
+    normal = -surface_info.face_normal[i_face]
+    position = qd.Vector.zero(gs.qd_float, 3)
+    basis = qd.Vector.zero(gs.qd_float, 6)
+    area_weight = gs.qd_float(0.0)
+    i_local = -1
+    if i_face == i_anchor:
+        i_local = i_fan * n_quadrature + i_sample
+        n = surface_info.gauss.shape[0]
+        u, v = surface_info.gauss[i_sample // n], surface_info.gauss[i_sample % n]
+        local = surface_info.face_dual[i_face] @ (anchor - surface_info.face_origin[i_face])
+        anchor_bary = qd.Vector([1.0 - local[0] - local[1], local[0], local[1]])
+        bary = (1.0 - u) * anchor_bary
+        bary[i_fan] += u * (1.0 - v)
+        bary[(i_fan + 1) % 3] += u * v
+        i_first = stress_info.surface_nodes[i_face, i_fan]
+        i_second = stress_info.surface_nodes[i_face, (i_fan + 1) % 3]
+        first, second = stress_info.vertices[i_first], stress_info.vertices[i_second]
+        position = (1.0 - u) * anchor + u * (1.0 - v) * first + u * v * second
+        area_weight = (first - anchor).cross(second - anchor).norm() * u
+        area_weight *= surface_info.gauss_weights[i_sample // n] * surface_info.gauss_weights[i_sample % n]
+        basis = qd.Vector(
+            [
+                bary[0] * (2.0 * bary[0] - 1.0),
+                bary[1] * (2.0 * bary[1] - 1.0),
+                bary[2] * (2.0 * bary[2] - 1.0),
+                4.0 * bary[0] * bary[1],
+                4.0 * bary[0] * bary[2],
+                4.0 * bary[1] * bary[2],
+            ]
+        )
+    else:
+        position = surface_info.positions[i_q]
+        basis = surface_info.shape[i_sample]
+        area_weight = surface_info.weights[i_q]
+    return position, normal, basis, area_weight, i_face, i_local
 
 
 @qd.kernel
@@ -151,60 +219,43 @@ def kernel_anchor_fan_profiles(
     surface_info: StressSurfaceInfo,
     path_info: StressPathInfo,
 ):
+    for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
+        if qd.static(len(traction_state.sample_indices.shape) == 3):
+            traction_state.sample_count[i_c, i_b] = 0
+        else:
+            traction_state.sample_count[i_c, i_b] = traction_state.profile.shape[0]
+        if qd.static(len(traction_state.sample_faces.shape) == 2):
+            traction_state.sample_faces[i_c, i_b] = contact_state.anchor_face[i_c, i_b]
     for i_q, i_c, i_b in qd.ndrange(
-        traction_state.profile.shape[0], contact_state.valid.shape[0], contact_state.valid.shape[1]
+        traction_state.sample_positions.shape[0], contact_state.valid.shape[0], contact_state.valid.shape[1]
     ):
-        traction_state.profile[i_q, i_c, i_b] = 0.0
-        traction_state.sample_faces[i_q, i_c, i_b] = -1
         traction_state.sample_positions[i_q, i_c, i_b] = qd.Vector.zero(gs.qd_float, 3)
         traction_state.sample_normals[i_q, i_c, i_b] = qd.Vector.zero(gs.qd_float, 3)
         traction_state.sample_shape[i_q, i_c, i_b] = qd.Vector.zero(gs.qd_float, 6)
+        if qd.static(len(traction_state.sample_faces.shape) == 3):
+            traction_state.sample_faces[i_q, i_c, i_b] = -1
+    for i_q, i_c, i_b in qd.ndrange(
+        surface_info.positions.shape[0] + 2 * surface_info.shape.shape[0],
+        contact_state.valid.shape[0],
+        contact_state.valid.shape[1],
+    ):
+        if qd.static(len(traction_state.sample_indices.shape) == 0):
+            traction_state.profile[i_q, i_c, i_b] = 0.0
         if contact_state.valid[i_c, i_b] and footprint_state.status[i_c, i_b] == StressFootprintStatus.SUCCESS:
-            n_quadrature = surface_info.shape.shape[0]
-            n_shared = surface_info.positions.shape[0]
-            i_anchor = contact_state.anchor_face[i_c, i_b]
-            i_face, i_sample, i_fan = i_q // n_quadrature, i_q % n_quadrature, 0
-            if i_q >= n_shared:
-                i_face = i_anchor
-                i_fan = 1 + (i_q - n_shared) // n_quadrature
             anchor = contact_state.center[i_c, i_b]
             radius = contact_state.radius[i_c, i_b]
-            normal = -surface_info.face_normal[i_face]
-            position = qd.Vector.zero(gs.qd_float, 3)
-            basis = qd.Vector.zero(gs.qd_float, 6)
-            area_weight = gs.qd_float(0.0)
-            if i_face == i_anchor:
-                n = surface_info.gauss.shape[0]
-                u, v = surface_info.gauss[i_sample // n], surface_info.gauss[i_sample % n]
-                local = surface_info.face_dual[i_face] @ (anchor - surface_info.face_origin[i_face])
-                anchor_bary = qd.Vector([1.0 - local[0] - local[1], local[0], local[1]])
-                bary = (1.0 - u) * anchor_bary
-                bary[i_fan] += u * (1.0 - v)
-                bary[(i_fan + 1) % 3] += u * v
-                i_first = stress_info.surface_nodes[i_face, i_fan]
-                i_second = stress_info.surface_nodes[i_face, (i_fan + 1) % 3]
-                first, second = stress_info.vertices[i_first], stress_info.vertices[i_second]
-                position = (1.0 - u) * anchor + u * (1.0 - v) * first + u * v * second
-                area_weight = (first - anchor).cross(second - anchor).norm() * u
-                area_weight *= surface_info.gauss_weights[i_sample // n] * surface_info.gauss_weights[i_sample % n]
-                basis = qd.Vector(
-                    [
-                        bary[0] * (2.0 * bary[0] - 1.0),
-                        bary[1] * (2.0 * bary[1] - 1.0),
-                        bary[2] * (2.0 * bary[2] - 1.0),
-                        4.0 * bary[0] * bary[1],
-                        4.0 * bary[0] * bary[2],
-                        4.0 * bary[1] * bary[2],
-                    ]
-                )
-            else:
-                position = surface_info.positions[i_q]
-                basis = surface_info.shape[i_sample]
-                area_weight = surface_info.weights[i_q]
-            traction_state.sample_positions[i_q, i_c, i_b] = position
-            traction_state.sample_normals[i_q, i_c, i_b] = normal
-            traction_state.sample_faces[i_q, i_c, i_b] = i_face
-            traction_state.sample_shape[i_q, i_c, i_b] = basis
+            position, normal, basis, area_weight, i_face, i_local = func_anchor_fan_sample(
+                i_q, i_c, i_b, contact_state, stress_info, surface_info
+            )
+            i_geometry = i_q
+            if qd.static(len(traction_state.sample_faces.shape) == 2):
+                i_geometry = i_local
+            if i_geometry >= 0:
+                traction_state.sample_positions[i_geometry, i_c, i_b] = position
+                traction_state.sample_normals[i_geometry, i_c, i_b] = normal
+                traction_state.sample_shape[i_geometry, i_c, i_b] = basis
+                if qd.static(len(traction_state.sample_faces.shape) == 3):
+                    traction_state.sample_faces[i_geometry, i_c, i_b] = i_face
             if area_weight > 0.0 and (position - anchor).norm() < radius:
                 qd.atomic_add(footprint_state.candidates[i_c, i_b], 1)
                 distance, _ = func_footprint_point_distance(
@@ -214,7 +265,11 @@ def kernel_anchor_fan_profiles(
                     relative = distance / radius
                     profile = area_weight * qd.exp(-0.5 * (relative / 0.45) ** 2)
                     profile *= (1.0 - relative * relative) ** 2
-                    traction_state.profile[i_q, i_c, i_b] = profile
+                    i_slot = i_q
+                    if qd.static(len(traction_state.sample_indices.shape) == 3):
+                        i_slot = qd.atomic_add(traction_state.sample_count[i_c, i_b], 1)
+                        traction_state.sample_indices[i_slot, i_c, i_b] = i_q
+                    traction_state.profile[i_slot, i_c, i_b] = profile
                     qd.atomic_add(footprint_state.samples[i_c, i_b], 1)
                     qd.atomic_max(footprint_state.maximum_distance[i_c, i_b], distance)
     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):

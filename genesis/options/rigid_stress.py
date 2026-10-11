@@ -19,6 +19,22 @@ class RigidStressOptions(Options):
     larger footprint spreads the same contact wrench over more shell area;
     choose it from the contact model rather than the elastic mesh resolution.
     ``quadrature`` controls surface integration cost and accuracy.
+    ``contact_model="intrinsic"`` preserves collision geom/pair witnesses and
+    fits vector tractions in the local inward material Coulomb cones. The
+    finite profile multiplies positive area weights by a Gaussian of width
+    0.45 times the physical radius and a squared compact taper. Surface paths
+    follow shared topological edge ports. Verified covered planar segments
+    use their exact length. ``surface_edge_subdivisions`` declares the port
+    discretization. Its graph distances can overestimate continuous distance.
+    The witnessed face uses three finite anchor/edge triangles with the same
+    quadrature. ``contact_block_size`` bounds the concurrent workspace. All
+    contacts are processed, including subsequent blocks when needed.
+    ``source_projection_limit`` bounds collision-witness projection onto the
+    reference boundary. ``source_geometry_tolerance`` declares mesh/reference
+    vertex correspondence. ``source_uncertainty`` bounds ambiguity around the
+    witness. These geometry bounds preserve the original application point,
+    force, moment and physical footprint radius. The intrinsic path retains
+    the independently callable recovery kernels.
     ``cooperative_pressure`` assigns a CUDA warp to each active contact;
     CPU and disabled cooperation use the same native serial pressure law.
     ``cooperative_scatter`` reduces loads on each surface face before node
@@ -96,6 +112,12 @@ class RigidStressOptions(Options):
     poisson: Annotated[ValidFloat, Field(gt=-1.0, lt=0.5)] = 0.3
     density: PositiveFloat = 2000.0
     contact_radius: PositiveFloat = 0.006
+    contact_model: Literal["pressure", "intrinsic"] = "pressure"
+    contact_block_size: PositiveInt = 16
+    surface_edge_subdivisions: PositiveInt = 2
+    source_projection_limit: PositiveFloat = 1e-4
+    source_geometry_tolerance: PositiveFloat = 1e-8
+    source_uncertainty: Annotated[ValidFloat, Field(ge=0)] = 0.0
     quadrature: Annotated[PositiveInt, Field(le=16)] = 10
     tolerance: PositiveFloat = 1e-8
     absolute_tolerance: PositiveFloat = 1e-11

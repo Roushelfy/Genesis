@@ -27,10 +27,12 @@ from .association import kernel_associate
 from .contact import StressContactState, create_contacts, kernel_anchor, kernel_pressure, kernel_scatter
 from .data import StressState
 from .history import StressHistory
+from .intrinsic import IntrinsicContacts
 from .lifecycle import func_accept, func_begin_step
 from .model import StressModel
 from .pipeline import kernel_pipeline
 from .post import create_post_kernel
+from .provenance import kernel_capture_rigid_sources
 from .scatter import StressScatterWorkspace, create_scatter_workspace, kernel_pressure_moments, kernel_scatter_faces
 from .surface import StressSurface
 
@@ -56,6 +58,7 @@ class StressLink:
     fused_pipeline: bool
     coalesced_residual: bool
     reuse_contact_moments: bool
+    intrinsic: IntrinsicContacts | None = None
 
 
 class RigidStressRecovery:
@@ -92,7 +95,8 @@ class RigidStressRecovery:
                     if surface is None:
                         surface = StressSurface(options.quadrature, model.info)
                     reuse_contact_moments = (
-                        gs.backend == gs.cuda
+                        options.contact_model == "pressure"
+                        and gs.backend == gs.cuda
                         and options.face_parallel_scatter
                         and options.cooperative_pressure
                         and options.cooperative_scatter
@@ -112,8 +116,8 @@ class RigidStressRecovery:
                                 solver.collider.collider_state.contact_sort_idx.shape[0],
                                 solver._B,
                                 options.contact_radius,
-                                options.cooperative_pressure,
-                                options.cooperative_scatter,
+                                options.contact_model == "pressure" and options.cooperative_pressure,
+                                options.contact_model == "pressure" and options.cooperative_scatter,
                             ),
                             V_VEC(3, dtype=gs.qd_float, shape=(solver._B,)),
                             StressHistory(model.info.vertices.shape[0], solver._B) if options.history_size else None,
@@ -121,7 +125,8 @@ class RigidStressRecovery:
                             create_scatter_workspace(
                                 solver._B,
                                 options.scatter_tasks_per_env
-                                if options.face_parallel_scatter
+                                if options.contact_model == "pressure"
+                                and options.face_parallel_scatter
                                 and options.cooperative_scatter
                                 and gs.backend == gs.cuda
                                 else 0,
@@ -136,7 +141,8 @@ class RigidStressRecovery:
                             else 512
                             if solver._B >= 8192
                             else 0,
-                            gs.backend == gs.cuda
+                            options.contact_model == "pressure"
+                            and gs.backend == gs.cuda
                             and options.fused_pipeline
                             and model.surface_inverse is not None
                             and options.packed_surface_loads
@@ -149,6 +155,20 @@ class RigidStressRecovery:
                             reuse_contact_moments,
                         )
                     )
+        for entry in self.links:
+            if entry.options.contact_model == "intrinsic":
+                paths = None
+                for previous in self.links:
+                    if (
+                        previous.intrinsic is not None
+                        and previous.model is entry.model
+                        and previous.options.surface_edge_subdivisions == entry.options.surface_edge_subdivisions
+                    ):
+                        paths = previous.intrinsic.paths
+                        break
+                entry.intrinsic = IntrinsicContacts(
+                    entry.link, entry.contacts, entry.model.info, entry.surface.info, entry.options, paths
+                )
         self.subscribers = [
             Subscriber(
                 to=frozenset((StateChange.GEOMETRY, StateChange.DYNAMICS)),
@@ -249,37 +269,51 @@ class RigidStressRecovery:
                 entry.state.step_valid,
                 solver._errno,
             )
-            kernel_anchor(self.source_epsilon, entry.contacts, entry.surface.info)
-            if entry.reuse_contact_moments:
-                kernel_pressure_moments(
+            if entry.intrinsic is not None:
+                kernel_capture_rigid_sources(
+                    entry.link.idx, entry.contacts, entry.intrinsic.raw_sources, solver.collider.collider_state
+                )
+                entry.intrinsic.scatter(
                     entry.contacts,
                     entry.state,
                     entry.model.info,
                     entry.surface.info,
-                    entry.scatter,
-                    options.cached_face_bounds,
+                    options,
+                    self.source_epsilon,
+                    solver._errno,
                 )
             else:
-                kernel_pressure(entry.contacts, entry.surface.info, options.cooperative_pressure)
-            if entry.scatter.tasks.shape[0] and options.cooperative_scatter:
-                kernel_scatter_faces(
-                    entry.contacts,
-                    entry.state,
-                    entry.model.info,
-                    entry.surface.info,
-                    entry.scatter,
-                    options.cached_face_bounds,
-                    entry.reuse_contact_moments,
-                )
-            else:
-                kernel_scatter(
-                    entry.contacts,
-                    entry.state,
-                    entry.model.info,
-                    entry.surface.info,
-                    options.cooperative_scatter,
-                    options.cached_face_bounds,
-                )
+                kernel_anchor(self.source_epsilon, entry.contacts, entry.surface.info)
+                if entry.reuse_contact_moments:
+                    kernel_pressure_moments(
+                        entry.contacts,
+                        entry.state,
+                        entry.model.info,
+                        entry.surface.info,
+                        entry.scatter,
+                        options.cached_face_bounds,
+                    )
+                else:
+                    kernel_pressure(entry.contacts, entry.surface.info, options.cooperative_pressure)
+                if entry.scatter.tasks.shape[0] and options.cooperative_scatter:
+                    kernel_scatter_faces(
+                        entry.contacts,
+                        entry.state,
+                        entry.model.info,
+                        entry.surface.info,
+                        entry.scatter,
+                        options.cached_face_bounds,
+                        entry.reuse_contact_moments,
+                    )
+                else:
+                    kernel_scatter(
+                        entry.contacts,
+                        entry.state,
+                        entry.model.info,
+                        entry.surface.info,
+                        options.cooperative_scatter,
+                        options.cached_face_bounds,
+                    )
             entry.model.recover(entry.omega, entry.state, entry.link.stress_options, entry.history, surface_load=True)
             kernel_accept(entry.state, entry.contacts, solver._errno)
             if entry.history is not None:
@@ -306,6 +340,18 @@ class RigidStressRecovery:
             3: "nonnegative sampled pad fit unresolved after local integration; physical infeasibility is not established",
             4: "integrated contact force or moment exceeds its preservation budget",
             5: "constrained pressure fit unresolved",
+            11: "invalid contact source input",
+            12: "ambiguous material-boundary provenance",
+            13: "collision witness is outside the declared reference-boundary projection limit",
+            21: "intrinsic footprint source unresolved",
+            22: "invalid intrinsic footprint input",
+            23: "finite intrinsic footprint has no resolved positive integration samples",
+            31: "invalid vector traction input",
+            32: "vector traction integration unresolved",
+            33: "vector traction numerical fit unresolved",
+            34: "sampled wrench has a strict infeasibility certificate; continuum feasibility remains unresolved",
+            35: "force is incompatible with the continuous reference-surface friction cones inside the physical radius",
+            40: "vector traction fails final original wrench or local friction acceptance",
         }
         details = []
         for entry in self.links:
@@ -334,6 +380,7 @@ class RigidStressRecovery:
     def data(self) -> Iterator[DataItem]:
         seen = set()
         seen_surfaces = set()
+        seen_paths = set()
         for i, entry in enumerate(self.links):
             if entry.link.stress_options != entry.options:
                 gs.raise_exception("Changing stress recovery options requires rebuilding the scene.")
@@ -363,6 +410,11 @@ class RigidStressRecovery:
             for item in iter_data(entry.scatter, f"stress.{i}.scatter"):
                 if 0 not in item.value.shape:
                     yield item
+            if entry.intrinsic is not None:
+                if id(entry.intrinsic.paths) not in seen_paths:
+                    yield from iter_data(entry.intrinsic.paths.info, f"stress.{i}.intrinsic.paths")
+                    seen_paths.add(id(entry.intrinsic.paths))
+                yield from entry.intrinsic.data(f"stress.{i}.intrinsic")
             if entry.history is not None:
                 yield from iter_data(entry.history.state, f"stress.{i}.history")
             yield DataItem(f"stress.{i}.omega", entry.omega, entry.state.kind)

@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 from enum import IntEnum
+from math import isfinite
 from typing import TYPE_CHECKING, ClassVar
 
 import quadrants as qd
@@ -48,10 +49,13 @@ class StressSourceVertices:
     """
 
     def __init__(self, link: "RigidLink", stress_info: StressInfo, geometry_tolerance: float):
-        if geometry_tolerance <= 0.0:
+        if not isfinite(geometry_tolerance) or geometry_tolerance <= 0.0:
             gs.raise_exception("Mesh/reference vertex correspondence requires a positive geometry tolerance.")
         geoms = tuple(geometry for geometry in link.geoms if geometry.type == gs.GEOM_TYPE.MESH)
         n_vertices = sum(geometry.n_verts for geometry in geoms)
+        self.info: StressSourceVertexInfo | None = None
+        if not n_vertices:
+            return
         self.info = StressSourceVertexInfo(
             geom=V(dtype=gs.qd_int, shape=(n_vertices,)),
             positions=V_VEC(3, dtype=gs.qd_float, shape=(n_vertices,)),
@@ -61,17 +65,19 @@ class StressSourceVertices:
             offset=V(dtype=gs.qd_float, shape=(n_vertices,)),
             status=V(dtype=gs.qd_int, shape=(n_vertices,)),
         )
-        position, quaternion = link.get_pos().contiguous(), link.get_quat().contiguous()
         start = 0
         for geometry in geoms:
             kernel_source_vertex_positions(
                 start,
                 geometry.idx,
-                geometry.get_verts().contiguous(),
-                position,
-                quaternion,
+                link.idx,
+                geometry.init_verts,
+                geometry.init_pos,
+                geometry.init_quat,
+                link.entity.solver._links_offset_pos,
+                link.entity.solver._links_offset_quat,
                 self.info,
-                link.entity.solver.n_envs > 0,
+                link.entity.solver._links_offset_quat.ndim == 3,
             )
             start += geometry.n_verts
         kernel_source_vertex_mapping(stress_info, self.info, geometry_tolerance)
@@ -81,28 +87,36 @@ class StressSourceVertices:
 def kernel_source_vertex_positions(
     i_start: int,
     i_geom: int,
+    i_link: int,
     vertices: qd.types.ndarray(),
     position: qd.types.ndarray(),
     quaternion: qd.types.ndarray(),
+    links_offset_pos: qd.types.ndarray(),
+    links_offset_quat: qd.types.ndarray(),
     source_vertex_info: StressSourceVertexInfo,
-    has_envs: qd.template(),
+    batch_offsets: qd.template(),
 ):
-    for i_v in range(vertices.shape[1] if qd.static(has_envs) else vertices.shape[0]):
+    for i_v in range(vertices.shape[0]):
         point = qd.Vector.zero(gs.qd_float, 3)
         origin = qd.Vector.zero(gs.qd_float, 3)
         rotation = qd.Vector.zero(gs.qd_float, 4)
+        offset_pos = qd.Vector.zero(gs.qd_float, 3)
+        offset_quat = qd.Vector.zero(gs.qd_float, 4)
         for a in qd.static(range(3)):
-            if qd.static(has_envs):
-                point[a], origin[a] = vertices[0, i_v, a], position[0, a]
+            point[a], origin[a] = vertices[i_v, a], position[a]
+            if qd.static(batch_offsets):
+                offset_pos[a] = links_offset_pos[0, i_link, a]
             else:
-                point[a], origin[a] = vertices[i_v, a], position[a]
+                offset_pos[a] = links_offset_pos[i_link, a]
         for a in qd.static(range(4)):
-            if qd.static(has_envs):
-                rotation[a] = quaternion[0, a]
+            rotation[a] = quaternion[a]
+            if qd.static(batch_offsets):
+                offset_quat[a] = links_offset_quat[0, i_link, a]
             else:
-                rotation[a] = quaternion[a]
+                offset_quat[a] = links_offset_quat[i_link, a]
         source_vertex_info.geom[i_start + i_v] = i_geom
-        source_vertex_info.positions[i_start + i_v] = geom.qd_inv_transform_by_quat(point - origin, rotation)
+        point = origin + geom.qd_transform_by_quat(point, rotation)
+        source_vertex_info.positions[i_start + i_v] = offset_pos + geom.qd_transform_by_quat(point, offset_quat)
 
 
 @qd.kernel

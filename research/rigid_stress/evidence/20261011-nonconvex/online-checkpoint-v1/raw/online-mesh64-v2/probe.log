@@ -1,0 +1,57 @@
+[Quadrants] version 1.3.3, llvm 22.1.0, commit 00423caa, linux, python 3.10.12
+[38;5;159m[Genesis] [19:03:36] [INFO] [38;5;121m╭───────────────────────────────────────────────╮[0m[38;5;159m[0m
+[38;5;159m[Genesis] [19:03:36] [INFO] [38;5;121m│┈┉┈┉┈┉┈┉┈┉┈┉┈┉┈┉┈┉┈[0m[38;5;159m [38;5;121m[1m[3mGenesis[0m[38;5;159m [38;5;121m┈┉┈┉┈┉┈┉┈┉┈┉┈┉┈┉┈┉┈│[0m[38;5;159m[0m
+[38;5;159m[Genesis] [19:03:36] [INFO] [38;5;121m╰───────────────────────────────────────────────╯[0m[38;5;159m[0m
+[38;5;159m[Genesis] [19:03:36] [INFO] Running on [38;5;121m[NVIDIA RTX PRO 6000 Blackwell Server Edition][0m[38;5;159m with backend [38;5;121mgs.cuda[0m[38;5;159m. Device memory: [38;5;121m94.97[0m[38;5;159m GB.[0m
+[38;5;159m[Genesis] [19:03:36] [INFO] 🚀 Genesis initialized. 🔖 version: [38;5;121m1.4.3[0m[38;5;159m, 🎨 theme: [38;5;121mdark[0m[38;5;159m, 🌱 seed: [38;5;121mNone[0m[38;5;159m, 🐛 debug: [38;5;121mFalse[0m[38;5;159m, 📏 precision: [38;5;121m64[0m[38;5;159m, 🔥 performance: [38;5;121mFalse[0m[38;5;159m, 💬 verbose: [38;5;121mINFO[0m[38;5;159m[0m
+[38;5;159m[Genesis] [19:03:37] [INFO] Scene [38;5;121m[3m<9b72fda>[0m[38;5;159m created.[0m
+[38;5;159m[Genesis] [19:03:37] [INFO] Adding [38;5;121m<gs.engine.entities.RigidEntity>[0m[38;5;159m [38;5;121m[3mplane_7be66a6[0m[38;5;159m. idx: [38;5;121m0[0m[38;5;159m, morph: [38;5;121m<gs.morphs.Plane>[0m[38;5;159m, material: [38;5;121m<gs.materials.Rigid>[0m[38;5;159m.[0m
+[38;5;226m[Genesis] [19:03:38] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint1`[0m
+[38;5;226m[Genesis] [19:03:38] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint2`[0m
+[38;5;159m[Genesis] [19:03:38] [INFO] Adding [38;5;121m<gs.engine.entities.RigidEntity>[0m[38;5;159m [38;5;121m[3mpanda_4156812[0m[38;5;159m. idx: [38;5;121m1[0m[38;5;159m, morph: [38;5;121m<gs.morphs.MJCF(file='/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/assets/xml/franka_emika_panda/panda.xml')>[0m[38;5;159m, material: [38;5;121m<gs.materials.Rigid>[0m[38;5;159m.[0m
+[38;5;159m[Genesis] [19:03:38] [INFO] Adding [38;5;121m<gs.engine.entities.RigidEntity>[0m[38;5;159m [38;5;121m[3megg_shell_9c83d83[0m[38;5;159m. idx: [38;5;121m2[0m[38;5;159m, morph: [38;5;121m<gs.morphs.URDF(file='/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/assets/hollow_egg/level1/egg_shell.urdf')>[0m[38;5;159m, material: [38;5;121m<gs.materials.Rigid>[0m[38;5;159m.[0m
+[38;5;159m[Genesis] [19:03:38] [INFO] Building scene [38;5;121m[3m<9b72fda>[0m[38;5;159m...[0m
+[38;5;226m[Genesis] [19:03:39] [WARNING] Neutral robot position (qpos0) exceeds joint limits.[0m
+[38;5;226m[Genesis] [19:03:39] [WARNING] Constraint solver time constant should be greater than 2*substep_dt. timeconst is changed from `0.005` to `0.02`). Decrease simulation timestep or increase timeconst to avoid altering the original value.[0m
+[38;5;226m[Genesis] [19:03:42] [WARNING] Filtered out geometry pairs causing self-collision for the neutral configuration (qpos0): (6, 11), (7, 11), (14, 21), (15, 20), (16, 23), (17, 22). Consider tuning Morph option 'decompose_robot_error_threshold' or specify dedicated collision meshes. This behavior can be disabled by setting Morph option 'enable_neutral_collision=True'.[0m
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+[38;5;159m[Genesis] [19:04:04] [INFO] Compiling simulation kernels...[0m
+[38;5;159m[Genesis] [19:04:55] [INFO] Building visualizer...[0m
+[W 10/11/26 19:04:57.762 2144500] QuadrantsWarning
+While compiling `kernel_inputs_c938_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/egg_stress_controller.py", line 107, in kernel_inputs:
+        grip[i_b] = 0.04 if value < 0.15 or value > 0.9 else 0.018
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+[W 10/11/26 19:04:57.762 2144500] QuadrantsWarning
+While compiling `kernel_inputs_c938_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/egg_stress_controller.py", line 108, in kernel_inputs:
+        limit[i_b] = 0.055 if value >= 0.7 and value < 0.76 else 4.0
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+{"tick": 0, "loaded_contacts": 0, "contact_count_per_env": [0, 0, 0, 0], "contact_slot_changes": 0, "mu_values": [], "max_force_error": 0.0, "max_moment_error": 0.0, "max_evaluations": 0, "max_samples": 0, "reset_environments": 0, "full_residual_max_N": 0.0, "cpu_peaks_Pa": [0.0, 0.0, 0.0, 0.0]}
+{"tick": 20, "loaded_contacts": 4, "contact_count_per_env": [1, 1, 1, 1], "contact_slot_changes": 0, "mu_values": [0.5127239705117185, 0.6531024606382921, 0.6746881909245573, 0.7635019915792053], "max_force_error": 7.782770162450819e-16, "max_moment_error": 3.720727375460562e-15, "max_evaluations": 2, "max_samples": 141, "reset_environments": 0, "full_residual_max_N": 1.51651578536667e-12, "cpu_peaks_Pa": [14605.415386229162, 14492.441186644324, 13666.203637120268, 13315.970299038148]}
+{"tick": 40, "loaded_contacts": 4, "contact_count_per_env": [1, 1, 1, 1], "contact_slot_changes": 0, "mu_values": [0.5127239705117185, 0.6531024606382921, 0.6746881909245573, 0.7635019915792053], "max_force_error": 4.941887500343518e-16, "max_moment_error": 2.987045648462558e-15, "max_evaluations": 2, "max_samples": 141, "reset_environments": 0, "full_residual_max_N": 1.4684793540361178e-12, "cpu_peaks_Pa": [14400.283690340875, 14462.909213822564, 13670.511226423412, 13320.792785908956]}
+{"tick": 60, "loaded_contacts": 4, "contact_count_per_env": [1, 1, 1, 1], "contact_slot_changes": 0, "mu_values": [0.5127239705117185, 0.6531024606382921, 0.6746881909245573, 0.7635019915792053], "max_force_error": 4.795631126007152e-16, "max_moment_error": 3.1243425915578383e-15, "max_evaluations": 2, "max_samples": 141, "reset_environments": 0, "full_residual_max_N": 1.5754943988090614e-12, "cpu_peaks_Pa": [14213.892816345537, 14239.332249046507, 13670.512405434942, 13320.794104967317]}
+{"tick": 80, "loaded_contacts": 4, "contact_count_per_env": [1, 1, 1, 1], "contact_slot_changes": 0, "mu_values": [0.5127239705117185, 0.6531024606382921, 0.6746881909245573, 0.7635019915792053], "max_force_error": 9.560639060649836e-16, "max_moment_error": 2.745513467223016e-15, "max_evaluations": 2, "max_samples": 141, "reset_environments": 0, "full_residual_max_N": 1.6329152581149419e-12, "cpu_peaks_Pa": [14055.021466953247, 14028.569442003121, 13598.112124260242, 13320.794105329573]}
+{"tick": 100, "loaded_contacts": 4, "contact_count_per_env": [1, 1, 1, 1], "contact_slot_changes": 0, "mu_values": [0.5127239705117185, 0.6531024606382921, 0.6746881909245573, 0.7635019915792053], "max_force_error": 9.707022531500756e-16, "max_moment_error": 3.215875077893793e-15, "max_evaluations": 2, "max_samples": 141, "reset_environments": 0, "full_residual_max_N": 1.4428432236231906e-12, "cpu_peaks_Pa": [13930.551350906075, 13840.690950869584, 13363.845266961405, 13320.794105338222]}
+Traceback (most recent call last):
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/probe_nonconvex_online.py", line 211, in <module>
+    main()
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/probe_nonconvex_online.py", line 75, in main
+    solver.check_errno()
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/rigid_solver.py", line 1459, in check_errno
+    gs.raise_exception(
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/utils/misc.py", line 43, in raise_exception
+    raise gs.GenesisException(msg)
+genesis.GenesisException: Native stress contact recovery rejected a load. link=12, env=0, contact=3, status=12: ambiguous material-boundary provenance; radius=0.0063246425 m, mu=0.512723971; link=12, env=0, contact=4, status=12: ambiguous material-boundary provenance; radius=0.0063246425 m, mu=0.512723971
+
+[38;5;9m[Genesis] [19:05:05] [ERROR] GenesisException: Native stress contact recovery rejected a load. link=12, env=0, contact=3, status=12: ambiguous material-boundary provenance; radius=0.0063246425 m, mu=0.512723971; link=12, env=0, contact=4, status=12: ambiguous material-boundary provenance; radius=0.0063246425 m, mu=0.512723971[0m
+[38;5;159m[Genesis] [19:05:05] [INFO] 💤 Exiting Genesis and caching compiled kernels...[0m

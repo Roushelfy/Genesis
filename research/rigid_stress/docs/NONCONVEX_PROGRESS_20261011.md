@@ -4,6 +4,11 @@ This implements the active extension in `NONCONVEX_CONTACT_REQUIREMENTS.md`.
 The previous egg milestone remains complete; native nonconvex acceptance is
 not yet established. The initial branch source is `1d6babf7`.
 
+Current integration work and the every-step contact diagnoses are recorded in
+[the native intrinsic checkpoint](NATIVE_INTRINSIC_PROGRESS_20261011.md).
+Its opt-in streamed path is now connected to rigid recovery; the sections below
+retain the earlier immutable checkpoint history and its then-current limits.
+
 ## Required evidence and current work
 
 | Requirement | Evidence to deliver | Status |

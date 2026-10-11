@@ -28,14 +28,15 @@ from genesis.utils.misc import qd_to_numpy
 from research.rigid_stress.field_cpu import stress_field
 from research.rigid_stress.mechanics import P2Shell
 from tests.rigid.test_stress_footprint import cpu_anchor_fan_geometry, cpu_intrinsic_distances
-from tests.rigid.test_stress_traction import cpu_cone_projection, kernel_traction_queries
+from tests.rigid.test_stress_traction import cpu_cone_projection, expand_traction_samples, kernel_traction_queries
 from tests.utils.assertions import assert_allclose, assert_equal
 
 
 @pytest.mark.required
 @pytest.mark.precision("64")
-@pytest.mark.parametrize("tick", (400, 460))
-def test_native_saved_sliding_contact_with_finite_anchor_integration(tick):
+@pytest.mark.parametrize("tick", (110, 400, 460))
+@pytest.mark.parametrize("packed", (False, True))
+def test_native_saved_sliding_contact_with_finite_anchor_integration(tick, packed):
     """Actual Franka contacts whose original Q10 sampled cone systems are infeasible."""
     with np.load(Path(__file__).with_name("assets") / f"nonconvex_sliding_tick{tick}.npz") as saved:
         point, anchor, force = (saved[key] for key in ("position", "anchor", "force"))
@@ -50,7 +51,7 @@ def test_native_saved_sliding_contact_with_finite_anchor_integration(tick):
     contacts = create_contacts(1, n_envs, radius)
     sources = create_sources(1, n_envs)
     footprints = create_footprints(paths.info.positions.shape[0], 1, n_envs)
-    tractions = create_anchor_fan_tractions(surface.info, 1, n_envs)
+    tractions = create_anchor_fan_tractions(surface.info, 1, n_envs, compact=packed, packed=packed)
     forces = np.array([1.0, 0.7, 1.3])[:, None] * force
     frictions = np.array([friction, 0.85, 1.2])
     points = np.broadcast_to(point, (n_envs, 3)).copy()
@@ -67,10 +68,10 @@ def test_native_saved_sliding_contact_with_finite_anchor_integration(tick):
     assert_equal(qd_to_numpy(sources.status, transpose=True), 0)
     anchors = qd_to_numpy(contacts.center, transpose=True)[:, 0]
     faces = qd_to_numpy(contacts.anchor_face, transpose=True)[:, 0]
-    assert_equal(faces, 51)
+    assert_equal(faces, 49 if tick == 110 else 51)
     kernel_footprint_ports(contacts, sources, footprints, surface.info, paths.info)
     kernel_anchor_fan_profiles(contacts, footprints, tractions, model.info, surface.info, paths.info)
-    kernel_fit_tractions(contacts, sources, tractions, info, epsilon, 1e-9, 128)
+    kernel_fit_tractions(contacts, sources, tractions, info, epsilon, 8e-9 if tick == 110 else 1e-9, 128)
     assert_equal(qd_to_numpy(tractions.status, transpose=True), StressTractionStatus.SUCCESS)
     with np.load(mesh) as asset:
         vertices, tetrahedra, triangles = (asset[key] for key in ("vertices", "tetrahedra", "surface_triangles"))
@@ -102,7 +103,14 @@ def test_native_saved_sliding_contact_with_finite_anchor_integration(tick):
     )
     profiles = cpu_weights * np.exp(-0.5 * (distances / (0.45 * radius)) ** 2)
     profiles *= np.maximum(1 - (distances / radius) ** 2, 0) ** 2
-    assert_allclose(qd_to_numpy(tractions.profile, transpose=True)[:, :, 0], profiles, rtol=2e-12, atol=2e-20)
+    indices = qd_to_numpy(tractions.sample_indices, transpose=True) if packed else None
+    counts = qd_to_numpy(tractions.sample_count, transpose=True)
+    assert_allclose(
+        expand_traction_samples(qd_to_numpy(tractions.profile, transpose=True)[:, :, 0], indices, counts),
+        profiles,
+        rtol=2e-12,
+        atol=2e-20,
+    )
     normals = -qd_to_numpy(surface.info.face_normal, transpose=True)[cpu_faces]
     relative = (cpu_positions - anchors[:, None]) / radius
     dual = qd_to_numpy(tractions.dual, transpose=True)[:, 0]
@@ -112,7 +120,7 @@ def test_native_saved_sliding_contact_with_finite_anchor_integration(tick):
     expected = expected * cpu_cone_projection(values, normals, frictions[:, None])
     quadrature_force = V_VEC(3, dtype=gs.qd_float, shape=(tractions.profile.shape[0], 1, n_envs))
     kernel_traction_queries(quadrature_force, contacts, tractions, info)
-    actual = qd_to_numpy(quadrature_force, transpose=True)[:, :, 0]
+    actual = expand_traction_samples(qd_to_numpy(quadrature_force, transpose=True)[:, :, 0], indices, counts)
     assert_allclose(actual, expected, rtol=1e-4, atol=1e-12)
     compression = np.einsum("bqi,bqi->bq", actual, normals)
     tangent = actual - compression[..., None] * normals
@@ -126,7 +134,7 @@ def test_native_saved_sliding_contact_with_finite_anchor_integration(tick):
     errno = V(dtype=gs.qd_int, shape=(n_envs,))
     omega = V_VEC(3, dtype=gs.qd_float, shape=(n_envs,))
     omega.fill(0.0)
-    kernel_scatter_tractions(contacts, tractions, state, model.info, surface.info, info, errno)
+    kernel_scatter_tractions(contacts, tractions, state, model.info, surface.info, info, errno, reset_force=True)
     assert_equal(qd_to_numpy(errno, transpose=True), 0)
     surface_nodes = qd_to_numpy(model.info.surface_nodes, transpose=True).T[cpu_faces]
     expected_nodal = np.zeros((n_envs, model.info.vertices.shape[0], 3))

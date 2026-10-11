@@ -883,6 +883,31 @@ class KinematicEntityDescription(EntityDescription):
                 # by our custom legacy URDF parser.
                 # Note that the Kinematic tree ordering is stable between Mujoco and Genesis (Hopefully!).
                 for link_g_infos, link_g_infos_mj in zip(links_g_infos, links_g_infos_mj):
+                    source_meshes = []
+                    if isinstance(morph, gs.morphs.URDF) and morph.preserve_mesh_precision:
+                        source_meshes = [
+                            g_info
+                            for g_info in link_g_infos
+                            if (g_info["contype"] or g_info["conaffinity"]) and g_info["type"] == gs.GEOM_TYPE.MESH
+                        ]
+                        parsed_meshes = [
+                            g_info
+                            for g_info in link_g_infos_mj
+                            if (g_info["contype"] or g_info["conaffinity"]) and g_info["type"] == gs.GEOM_TYPE.MESH
+                        ]
+                        if len(source_meshes) != len(parsed_meshes):
+                            gs.raise_exception("Preserving URDF mesh precision requires matching collision meshes.")
+                        for source, parsed in zip(source_meshes, parsed_meshes):
+                            if (
+                                os.path.abspath(source["mesh"].metadata["mesh_path"])
+                                != os.path.abspath(parsed["mesh"].metadata["mesh_path"])
+                            ):
+                                gs.raise_exception("The two URDF parses disagree on collision mesh order.")
+                            # MuJoCo recenters/rotates mesh data and stores its
+                            # vertices in FP32. Source geometry and its source
+                            # pose must be retained together; all other parsed
+                            # properties, including inertia, stay authoritative.
+                            parsed.update(mesh=source["mesh"], pos=source["pos"], quat=source["quat"])
                     # Remove collision geometries from our legacy URDF parser
                     for i_g, g_info in tuple(enumerate(link_g_infos))[::-1]:
                         is_col = g_info["contype"] or g_info["conaffinity"]

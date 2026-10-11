@@ -1,0 +1,105 @@
+{
+  "scope": "Separate sampled-cone infeasibility from numerical failure in saved native contacts.\n\nReplay preserves the snapshot's anchor, force point, radius and actual friction.\nThe native profile is reconstructed using the declared port-path law. Independent\nCPU LPs use inscribed and circumscribed friction polygons: inner feasibility is\na constructive Coulomb witness, while outer infeasibility bounds the exact\nsampled cones. Neither conclusion certifies a continuous footprint model.\n",
+  "contacts": [
+    {
+      "snapshot": "snapshot-111.npz",
+      "env": 0,
+      "contact": 1,
+      "samples": 272,
+      "radius_m": 0.006317902770477488,
+      "friction": 0.5127239705117185,
+      "target": [
+        0.11863212489005884,
+        0.9052788045980156,
+        -0.4079175221655199,
+        -0.012645448415326443,
+        0.0034603314565140758,
+        0.00400180972884462
+      ],
+      "saved_force_error": 1.27895995587369e-08,
+      "saved_moment_error": 4.477288971809053e-12,
+      "lp": [
+        {
+          "sides": 32,
+          "outer": false,
+          "status": 2,
+          "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)"
+        },
+        {
+          "sides": 32,
+          "outer": true,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "wrench_error": 1.1286706047019754e-16,
+          "minimum_compression": 0.0,
+          "maximum_cone_violation": 4.187251447586998e-05
+        },
+        {
+          "sides": 128,
+          "outer": false,
+          "status": 2,
+          "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)"
+        },
+        {
+          "sides": 128,
+          "outer": true,
+          "status": 0,
+          "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+          "wrench_error": 2.293220617172518e-16,
+          "minimum_compression": 0.0,
+          "maximum_cone_violation": 0.00013342184747822117
+        }
+      ],
+      "native": [
+        {
+          "tolerance": 8e-09,
+          "evaluation_budget": 128,
+          "status": 3,
+          "evaluations": 128,
+          "force_error": 1.2789497451244859e-08,
+          "moment_error": 3.914609986181114e-12,
+          "dual": [
+            554255.6430861712,
+            515641.6472632047,
+            1305538.9497363071,
+            -0.350078612847439,
+            0.04992687348833965,
+            1.50163065103918
+          ]
+        },
+        {
+          "tolerance": 9e-09,
+          "evaluation_budget": 128,
+          "status": 3,
+          "evaluations": 128,
+          "force_error": 1.2789497451244859e-08,
+          "moment_error": 3.914609986181114e-12,
+          "dual": [
+            554255.6430861712,
+            515641.6472632047,
+            1305538.9497363071,
+            -0.350078612847439,
+            0.04992687348833965,
+            1.50163065103918
+          ]
+        },
+        {
+          "tolerance": 1e-08,
+          "evaluation_budget": 1024,
+          "status": 3,
+          "evaluations": 1024,
+          "force_error": 1.279745708367579e-08,
+          "moment_error": 4.5263159980952405e-11,
+          "dual": [
+            4762879.416726921,
+            4431059.457100356,
+            11218873.539074399,
+            -0.35007909700717604,
+            0.04992317918282133,
+            1.5016323154216906
+          ]
+        }
+      ]
+    }
+  ]
+}

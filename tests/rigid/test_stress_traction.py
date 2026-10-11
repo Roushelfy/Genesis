@@ -42,6 +42,18 @@ def cpu_cone_projection(values, normals, friction):
     return result
 
 
+def expand_traction_samples(values, indices, counts):
+    """Canonical offline export for the single-contact numerical fixtures."""
+    result = values
+    if indices is not None:
+        result = np.zeros_like(values)
+        for i_b, count in enumerate(counts[:, 0]):
+            selected = indices[i_b, :count, 0]
+            assert len(np.unique(selected)) == count
+            result[i_b, selected] = values[i_b, :count]
+    return result
+
+
 @qd.kernel
 def kernel_cone_queries(
     values: qd.types.ndarray(),
@@ -210,7 +222,7 @@ def test_native_vector_tractions_signed_scatter_and_elasticity(nonconvex_materia
     reference_displacement[free] = splu(oracle.k[free][:, free].tocsc()).solve(rhs[free])
     vertex_positions = qd_to_numpy(model.info.vertices, transpose=True)
     for state in states:
-        kernel_scatter_tractions(contacts, tractions, state, model.info, sampled.info, info, errno)
+        kernel_scatter_tractions(contacts, tractions, state, model.info, sampled.info, info, errno, reset_force=True)
         assert_equal(qd_to_numpy(errno, transpose=True), 0)
         nodal_force = qd_to_numpy(state.force, transpose=True)
         assert_allclose(nodal_force, np.moveaxis(expected_force, 1, 0), rtol=1e-4, atol=1e-12)
