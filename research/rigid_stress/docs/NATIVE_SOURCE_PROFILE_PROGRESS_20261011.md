@@ -1,5 +1,9 @@
 # Intrinsic source robustness and initial profile
 
+See the [subsequent patch/refinement checkpoint](NATIVE_PATCH_REFINEMENT_PROGRESS_20261011.md)
+for the source geometry capture, explicit direct-patch producer, longer
+trajectory failures and initial cooperative-fit evidence.
+
 This follows the validated [surface-fan checkpoint](NATIVE_SURFACE_FAN_PROGRESS_20261011.md),
 source `209ad577384a2548bb2173498322fbc9fabd9d03`. The active nonconvex goal
 is unfinished. The first new-law profile identifies actionable contact costs;
