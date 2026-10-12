@@ -1,0 +1,2842 @@
+{
+  "scope": "Qualify an isolated exact-sample fan launch candidate, with copied B32/B1024 live workloads.",
+  "summary": {
+    "32": {
+      "native": {
+        "valid_env_steps_per_second": 3176.4654706803976,
+        "batch_steps_per_second": 99.26454595876243,
+        "repeat_rates": [
+          3172.998674410205,
+          3179.506845275824,
+          3176.8976481884692
+        ],
+        "resets_per_repetition": 37,
+        "gpu_uuid": "GPU-c76298f5-14a5-a899-a833-a3a917a745f8",
+        "stage_wall_ms": {
+          "begin_step": 0.050918475608341396,
+          "association_transform": 0.17178652342408895,
+          "source_capture": 0.057605666370363906,
+          "intrinsic_contact_pipeline": 5.151713812665548,
+          "inertia_relief_centrifugal": 0.0393533700844273,
+          "rhs_reduction": 0.03001438017236069,
+          "linear_solve": 0.18550367167335935,
+          "complete_residual": 0.06230481085367501,
+          "global_peak": 0.09693839820101857,
+          "accept": 0.0267830619122833
+        },
+        "snapshot_check": {
+          "nodal_force_max_difference_N": 1.942890293094024e-16,
+          "peak_max_difference_Pa": 6.05359673500061e-09,
+          "original_point_max_difference_m": 0.0,
+          "normalized_force_error_max": 8.929944064501407e-09,
+          "normalized_moment_error_max": 4.144107376023052e-09,
+          "complete_residual_max_N": 1.2152195286489905e-11
+        },
+        "complete_residual_budget_fraction": 0.004599714072660409,
+        "native_buffer_bytes": 167626674,
+        "extra_frontier_bytes": 0,
+        "total_native_candidate_bytes": 167626674,
+        "device_free_bytes": 98479636480,
+        "torch_peak_allocated_bytes": 1286144
+      },
+      "frontier": {
+        "valid_env_steps_per_second": 3247.3587312817003,
+        "batch_steps_per_second": 101.47996035255314,
+        "repeat_rates": [
+          3241.685247708715,
+          3246.905220298338,
+          3253.5073385958135
+        ],
+        "resets_per_repetition": 37,
+        "gpu_uuid": "GPU-c76298f5-14a5-a899-a833-a3a917a745f8",
+        "stage_wall_ms": {
+          "begin_step": 0.051753639127127826,
+          "association_transform": 0.17349836707580835,
+          "source_capture": 0.05856614370713942,
+          "intrinsic_contact_pipeline": 4.882229255599668,
+          "inertia_relief_centrifugal": 0.03907914287992753,
+          "rhs_reduction": 0.030048162443563342,
+          "linear_solve": 0.18572865519672632,
+          "complete_residual": 0.06243417374207638,
+          "global_peak": 0.09360809053760022,
+          "accept": 0.026735844585346058
+        },
+        "snapshot_check": {
+          "nodal_force_max_difference_N": 1.3877787807814457e-16,
+          "peak_max_difference_Pa": 5.515175871551037e-09,
+          "original_point_max_difference_m": 0.0,
+          "normalized_force_error_max": 8.929943913754028e-09,
+          "normalized_moment_error_max": 4.144107376469066e-09,
+          "complete_residual_max_N": 1.2130445633232768e-11
+        },
+        "complete_residual_budget_fraction": 0.005118908362646338,
+        "native_buffer_bytes": 167626674,
+        "extra_frontier_bytes": 82948,
+        "total_native_candidate_bytes": 167709622,
+        "device_free_bytes": 98479636480,
+        "torch_peak_allocated_bytes": 1286144
+      },
+      "live_speedup": 1.0223182846644063
+    },
+    "1024": {
+      "native": {
+        "valid_env_steps_per_second": 28276.747752555275,
+        "batch_steps_per_second": 27.61401147710476,
+        "repeat_rates": [
+          28215.665607758878,
+          28261.175386483275,
+          28353.752208895687
+        ],
+        "resets_per_repetition": 1184,
+        "gpu_uuid": "GPU-779281f8-1132-b676-132d-571b2ccec62c",
+        "stage_wall_ms": {
+          "begin_step": 0.05220180537435226,
+          "association_transform": 0.1784563464752864,
+          "source_capture": 0.16448304086225107,
+          "intrinsic_contact_pipeline": 31.8793036894931,
+          "inertia_relief_centrifugal": 0.12168342800578102,
+          "rhs_reduction": 0.06026273331372067,
+          "linear_solve": 0.840423545014346,
+          "complete_residual": 0.3436895858612843,
+          "global_peak": 0.2474331486155279,
+          "accept": 0.0271475400950294
+        },
+        "snapshot_check": {
+          "nodal_force_max_difference_N": 1.942890293094024e-16,
+          "peak_max_difference_Pa": 1.0717485565692186e-08,
+          "original_point_max_difference_m": 0.0,
+          "normalized_force_error_max": 8.929944227865594e-09,
+          "normalized_moment_error_max": 4.14410738135597e-09,
+          "complete_residual_max_N": 1.319011703710459e-11
+        },
+        "complete_residual_budget_fraction": 0.005306820037052374,
+        "native_buffer_bytes": 3097545298,
+        "extra_frontier_bytes": 0,
+        "total_native_candidate_bytes": 3097545298,
+        "device_free_bytes": 94232969216,
+        "torch_peak_allocated_bytes": 3971584
+      },
+      "frontier": {
+        "valid_env_steps_per_second": 39565.72314243364,
+        "batch_steps_per_second": 38.638401506282854,
+        "repeat_rates": [
+          39453.98871046963,
+          39633.75411821033,
+          39609.90909782534
+        ],
+        "resets_per_repetition": 1184,
+        "gpu_uuid": "GPU-779281f8-1132-b676-132d-571b2ccec62c",
+        "stage_wall_ms": {
+          "begin_step": 0.051916256779804826,
+          "association_transform": 0.17743853823048994,
+          "source_capture": 0.16495442469022237,
+          "intrinsic_contact_pipeline": 19.88384149808553,
+          "inertia_relief_centrifugal": 0.12225886530359276,
+          "rhs_reduction": 0.06034796024323441,
+          "linear_solve": 0.8438973600277677,
+          "complete_residual": 0.3438090679992456,
+          "global_peak": 0.24785489949863404,
+          "accept": 0.027674603188643232
+        },
+        "snapshot_check": {
+          "nodal_force_max_difference_N": 1.942890293094024e-16,
+          "peak_max_difference_Pa": 9.786162991076708e-09,
+          "original_point_max_difference_m": 0.0,
+          "normalized_force_error_max": 8.929944184705291e-09,
+          "normalized_moment_error_max": 4.144107382465546e-09,
+          "complete_residual_max_N": 1.1937729967822714e-11
+        },
+        "complete_residual_budget_fraction": 0.005164239915525964,
+        "native_buffer_bytes": 3097545298,
+        "extra_frontier_bytes": 2654212,
+        "total_native_candidate_bytes": 3100199510,
+        "device_free_bytes": 94199414784,
+        "torch_peak_allocated_bytes": 3971584
+      },
+      "live_speedup": 1.3992317464747417
+    }
+  },
+  "limitations": "Isolated prototype scheduling; native production integration remains to qualify. Identical geometry, quadrature, profile, intrinsic paths, friction, wrench and residual budgets. All candidate work and the additional maximum readback are timed. Extra workspace is explicitly counted because the old native enumerator excludes this prototype. One 32-condition bank is copied; policy, broader seeds, batch optimum and optimization plateau remain unverified.",
+  "files": [
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/archive_fan_frontier_v1.py",
+      "run_path": "archive_fan_frontier_v1.py",
+      "artifact": "blobs/eaee57b8c5fc27c6cf4c6efb9b57e1ee8c0606fed7b89f24b3e3a8f4504744f1.py",
+      "encoding": "identity",
+      "bytes": 6874,
+      "sha256": "eaee57b8c5fc27c6cf4c6efb9b57e1ee8c0606fed7b89f24b3e3a8f4504744f1",
+      "stored_bytes": 6874,
+      "stored_sha256": "eaee57b8c5fc27c6cf4c6efb9b57e1ee8c0606fed7b89f24b3e3a8f4504744f1"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/hardware.csv",
+      "run_path": "fan-frontier-b1024-benchmark-v1/hardware.csv",
+      "artifact": "blobs/f6694a9756c2a3e35e2912c534f6b745860a5544d42cedcbc2372b0813c62f6e.csv",
+      "encoding": "identity",
+      "bytes": 156,
+      "sha256": "f6694a9756c2a3e35e2912c534f6b745860a5544d42cedcbc2372b0813c62f6e",
+      "stored_bytes": 156,
+      "stored_sha256": "f6694a9756c2a3e35e2912c534f6b745860a5544d42cedcbc2372b0813c62f6e"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/live/frontier/benchmark.log",
+      "run_path": "fan-frontier-b1024-benchmark-v1/live/frontier/benchmark.log",
+      "artifact": "blobs/f2e81f43320d201f938221d01ba0cd2f1c7d864d077b840e5e81538137b971aa.log",
+      "encoding": "identity",
+      "bytes": 101013,
+      "sha256": "f2e81f43320d201f938221d01ba0cd2f1c7d864d077b840e5e81538137b971aa",
+      "stored_bytes": 101013,
+      "stored_sha256": "f2e81f43320d201f938221d01ba0cd2f1c7d864d077b840e5e81538137b971aa"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/live/frontier/result.json",
+      "run_path": "fan-frontier-b1024-benchmark-v1/live/frontier/result.json",
+      "artifact": "blobs/4e563e619bd6082e1076d74ee2d68eee39e22cf617ca172351359bd14c422491.json.gz",
+      "encoding": "gzip",
+      "bytes": 21138651,
+      "sha256": "4e563e619bd6082e1076d74ee2d68eee39e22cf617ca172351359bd14c422491",
+      "stored_bytes": 1523033,
+      "stored_sha256": "462f71ff9f9684bdacc5e69672dc2b61a7f91a33adce6f7b2912c5af01a05702"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/live/native/benchmark.log",
+      "run_path": "fan-frontier-b1024-benchmark-v1/live/native/benchmark.log",
+      "artifact": "blobs/4231fd3d0867d2d2a03ab81aeb9d4b4d05a87074a3b2d06258fb9ddd57b301ac.log",
+      "encoding": "identity",
+      "bytes": 100680,
+      "sha256": "4231fd3d0867d2d2a03ab81aeb9d4b4d05a87074a3b2d06258fb9ddd57b301ac",
+      "stored_bytes": 100680,
+      "stored_sha256": "4231fd3d0867d2d2a03ab81aeb9d4b4d05a87074a3b2d06258fb9ddd57b301ac"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/live/native/result.json",
+      "run_path": "fan-frontier-b1024-benchmark-v1/live/native/result.json",
+      "artifact": "blobs/739b5b930a8e4570c9b130570d3454cc14c9eb0538b93d6072070b3cdb04a91b.json.gz",
+      "encoding": "gzip",
+      "bytes": 21150376,
+      "sha256": "739b5b930a8e4570c9b130570d3454cc14c9eb0538b93d6072070b3cdb04a91b",
+      "stored_bytes": 1510143,
+      "stored_sha256": "a77ffbb11d1ee16821436df9f3c64a488efcf7faf617e73b9bf4b7b4fe807a5c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/node.txt",
+      "run_path": "fan-frontier-b1024-benchmark-v1/node.txt",
+      "artifact": "blobs/979aa4a8fcc6a1a4afdf5fc422a2a2c038e1309f93e4cf5e6e9bd3878fc3c7c4.txt",
+      "encoding": "identity",
+      "bytes": 12,
+      "sha256": "979aa4a8fcc6a1a4afdf5fc422a2a2c038e1309f93e4cf5e6e9bd3878fc3c7c4",
+      "stored_bytes": 12,
+      "stored_sha256": "979aa4a8fcc6a1a4afdf5fc422a2a2c038e1309f93e4cf5e6e9bd3878fc3c7c4"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/profile/frontier/benchmark.log",
+      "run_path": "fan-frontier-b1024-benchmark-v1/profile/frontier/benchmark.log",
+      "artifact": "blobs/5f1b41d2942b35239fd9715b6dd3c53fc70dfeead740ee0ca09daba29d8158ec.log",
+      "encoding": "identity",
+      "bytes": 187438,
+      "sha256": "5f1b41d2942b35239fd9715b6dd3c53fc70dfeead740ee0ca09daba29d8158ec",
+      "stored_bytes": 187438,
+      "stored_sha256": "5f1b41d2942b35239fd9715b6dd3c53fc70dfeead740ee0ca09daba29d8158ec"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/profile/frontier/result.json",
+      "run_path": "fan-frontier-b1024-benchmark-v1/profile/frontier/result.json",
+      "artifact": "blobs/b15de8c52dc2b7ff37b527cb2940571e061e7453eacbd8449c4b86834c5d87aa.json.gz",
+      "encoding": "gzip",
+      "bytes": 21215761,
+      "sha256": "b15de8c52dc2b7ff37b527cb2940571e061e7453eacbd8449c4b86834c5d87aa",
+      "stored_bytes": 1532773,
+      "stored_sha256": "77400caddb34942f385a2721ce2b0bbc5e4db33b2cfdf248c38d6ac744546500"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/profile/native/benchmark.log",
+      "run_path": "fan-frontier-b1024-benchmark-v1/profile/native/benchmark.log",
+      "artifact": "blobs/e7b045cfc05ee744d3b8d55ffc432b068786474f7365fb50aa846cf56e27c54e.log",
+      "encoding": "identity",
+      "bytes": 186929,
+      "sha256": "e7b045cfc05ee744d3b8d55ffc432b068786474f7365fb50aa846cf56e27c54e",
+      "stored_bytes": 186929,
+      "stored_sha256": "e7b045cfc05ee744d3b8d55ffc432b068786474f7365fb50aa846cf56e27c54e"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/profile/native/result.json",
+      "run_path": "fan-frontier-b1024-benchmark-v1/profile/native/result.json",
+      "artifact": "blobs/0219491f7122c2da0d74c00a6e1bcd73ee75ed63d08cbd63373cf961460dbf68.json.gz",
+      "encoding": "gzip",
+      "bytes": 21227853,
+      "sha256": "0219491f7122c2da0d74c00a6e1bcd73ee75ed63d08cbd63373cf961460dbf68",
+      "stored_bytes": 1517586,
+      "stored_sha256": "5ddddad888d9d2ff9bbe322edb853de7348e0d5166488d147c858e8b2c2d0055"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/examples/rigid/assets/hollow_egg/level1/elastic.npz",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/examples/rigid/assets/hollow_egg/level1/elastic.npz",
+      "artifact": "blobs/3b2b90d7ee39562a296422dab1e5ee66e87265949ee38eefd27c729633a995a4.npz",
+      "encoding": "identity",
+      "bytes": 3573,
+      "sha256": "3b2b90d7ee39562a296422dab1e5ee66e87265949ee38eefd27c729633a995a4",
+      "stored_bytes": 3573,
+      "stored_sha256": "3b2b90d7ee39562a296422dab1e5ee66e87265949ee38eefd27c729633a995a4"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/examples/rigid/egg_stress_controller.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/examples/rigid/egg_stress_controller.py",
+      "artifact": "blobs/2760c2d6a89dbf0a3ec28f1a7c6030d6d73b71b43c6a4b55a5d5ab745e7de33d.py",
+      "encoding": "identity",
+      "bytes": 6195,
+      "sha256": "2760c2d6a89dbf0a3ec28f1a7c6030d6d73b71b43c6a4b55a5d5ab745e7de33d",
+      "stored_bytes": 6195,
+      "stored_sha256": "2760c2d6a89dbf0a3ec28f1a7c6030d6d73b71b43c6a4b55a5d5ab745e7de33d"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/examples/rigid/franka_egg_stress.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/examples/rigid/franka_egg_stress.py",
+      "artifact": "blobs/792e9bd5359c979812ffa18e61009d46aa181015e42aae99049e79cde3984e30.py",
+      "encoding": "identity",
+      "bytes": 15995,
+      "sha256": "792e9bd5359c979812ffa18e61009d46aa181015e42aae99049e79cde3984e30",
+      "stored_bytes": 15995,
+      "stored_sha256": "792e9bd5359c979812ffa18e61009d46aa181015e42aae99049e79cde3984e30"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/examples/speed_benchmark/rigid_stress.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/examples/speed_benchmark/rigid_stress.py",
+      "artifact": "blobs/c013f3b8a5b128629ce7d08922f975a34c98fe3e904fbe5563a5d101ffaa61ba.py",
+      "encoding": "identity",
+      "bytes": 40463,
+      "sha256": "c013f3b8a5b128629ce7d08922f975a34c98fe3e904fbe5563a5d101ffaa61ba",
+      "stored_bytes": 40463,
+      "stored_sha256": "c013f3b8a5b128629ce7d08922f975a34c98fe3e904fbe5563a5d101ffaa61ba"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/__init__.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/__init__.py",
+      "artifact": "blobs/17b4fa6e4eb64175b87586a6c7142b9fd2f5e88ba4321129d18e07e296adc5a6.py",
+      "encoding": "identity",
+      "bytes": 72,
+      "sha256": "17b4fa6e4eb64175b87586a6c7142b9fd2f5e88ba4321129d18e07e296adc5a6",
+      "stored_bytes": 72,
+      "stored_sha256": "17b4fa6e4eb64175b87586a6c7142b9fd2f5e88ba4321129d18e07e296adc5a6"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/association.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/association.py",
+      "artifact": "blobs/0c265ddde597bb03f6f56da0f4c6063a3a530ce2a19f2dceaf3378e987f811b3.py",
+      "encoding": "identity",
+      "bytes": 4147,
+      "sha256": "0c265ddde597bb03f6f56da0f4c6063a3a530ce2a19f2dceaf3378e987f811b3",
+      "stored_bytes": 4147,
+      "stored_sha256": "0c265ddde597bb03f6f56da0f4c6063a3a530ce2a19f2dceaf3378e987f811b3"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/balance.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/balance.py",
+      "artifact": "blobs/9b9cb6916d198f823b6e6af495c8cea6d0836f07243f3f4bda0b25a48a616712.py",
+      "encoding": "identity",
+      "bytes": 5310,
+      "sha256": "9b9cb6916d198f823b6e6af495c8cea6d0836f07243f3f4bda0b25a48a616712",
+      "stored_bytes": 5310,
+      "stored_sha256": "9b9cb6916d198f823b6e6af495c8cea6d0836f07243f3f4bda0b25a48a616712"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/boundary_certificate.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/boundary_certificate.py",
+      "artifact": "blobs/8f7c7a9d08716b795b1b107a268d5e2097933ee2709b4bcd7299c3ce548621f8.py",
+      "encoding": "identity",
+      "bytes": 5536,
+      "sha256": "8f7c7a9d08716b795b1b107a268d5e2097933ee2709b4bcd7299c3ce548621f8",
+      "stored_bytes": 5536,
+      "stored_sha256": "8f7c7a9d08716b795b1b107a268d5e2097933ee2709b4bcd7299c3ce548621f8"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/compatibility.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/compatibility.py",
+      "artifact": "blobs/a6b1dba264288688613e5039dd47ae5f8a7f7dfa362cff477779d6b2de65150a.py",
+      "encoding": "identity",
+      "bytes": 35645,
+      "sha256": "a6b1dba264288688613e5039dd47ae5f8a7f7dfa362cff477779d6b2de65150a",
+      "stored_bytes": 35645,
+      "stored_sha256": "a6b1dba264288688613e5039dd47ae5f8a7f7dfa362cff477779d6b2de65150a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/contact.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/contact.py",
+      "artifact": "blobs/7ebfe4210a819036edc18fcc6b9a3e94273f8644dc7c2a50904079c9100886b8.py",
+      "encoding": "identity",
+      "bytes": 35348,
+      "sha256": "7ebfe4210a819036edc18fcc6b9a3e94273f8644dc7c2a50904079c9100886b8",
+      "stored_bytes": 35348,
+      "stored_sha256": "7ebfe4210a819036edc18fcc6b9a3e94273f8644dc7c2a50904079c9100886b8"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/cooperative_fit.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/cooperative_fit.py",
+      "artifact": "blobs/97826c5b1d20b3d12e605eb84b0cc4af37ac9c5983a0e4cf4226a8c3924e7235.py",
+      "encoding": "identity",
+      "bytes": 15863,
+      "sha256": "97826c5b1d20b3d12e605eb84b0cc4af37ac9c5983a0e4cf4226a8c3924e7235",
+      "stored_bytes": 15863,
+      "stored_sha256": "97826c5b1d20b3d12e605eb84b0cc4af37ac9c5983a0e4cf4226a8c3924e7235"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/cooperative_scatter.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/cooperative_scatter.py",
+      "artifact": "blobs/b8e25a9893d8560747b09fa984576557d09a6a5fa712e376e5acf73c6cbef963.py",
+      "encoding": "identity",
+      "bytes": 8028,
+      "sha256": "b8e25a9893d8560747b09fa984576557d09a6a5fa712e376e5acf73c6cbef963",
+      "stored_bytes": 8028,
+      "stored_sha256": "b8e25a9893d8560747b09fa984576557d09a6a5fa712e376e5acf73c6cbef963"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/data.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/data.py",
+      "artifact": "blobs/081ee50334a918f8bef23fb891de3c4a6e5fa4964826069268497c0fa1cece19.py",
+      "encoding": "identity",
+      "bytes": 2171,
+      "sha256": "081ee50334a918f8bef23fb891de3c4a6e5fa4964826069268497c0fa1cece19",
+      "stored_bytes": 2171,
+      "stored_sha256": "081ee50334a918f8bef23fb891de3c4a6e5fa4964826069268497c0fa1cece19"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/factor.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/factor.py",
+      "artifact": "blobs/f2a059e88cf03b35a5fba2f88c3ac3f631a899d52cd841a6d268d9ccf087f81c.py",
+      "encoding": "identity",
+      "bytes": 14633,
+      "sha256": "f2a059e88cf03b35a5fba2f88c3ac3f631a899d52cd841a6d268d9ccf087f81c",
+      "stored_bytes": 14633,
+      "stored_sha256": "f2a059e88cf03b35a5fba2f88c3ac3f631a899d52cd841a6d268d9ccf087f81c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/failure.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/failure.py",
+      "artifact": "blobs/6c83464eafa08eb4a27c29f1574b420d29317f8413073b590adb76ce346858fc.py",
+      "encoding": "identity",
+      "bytes": 3205,
+      "sha256": "6c83464eafa08eb4a27c29f1574b420d29317f8413073b590adb76ce346858fc",
+      "stored_bytes": 3205,
+      "stored_sha256": "6c83464eafa08eb4a27c29f1574b420d29317f8413073b590adb76ce346858fc"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/footprint.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/footprint.py",
+      "artifact": "blobs/12e563f3dbd7b7b47506028cc2be4d5ac34b685424915df19450f84ab453b583.py",
+      "encoding": "identity",
+      "bytes": 31397,
+      "sha256": "12e563f3dbd7b7b47506028cc2be4d5ac34b685424915df19450f84ab453b583",
+      "stored_bytes": 31397,
+      "stored_sha256": "12e563f3dbd7b7b47506028cc2be4d5ac34b685424915df19450f84ab453b583"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/grid.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/grid.py",
+      "artifact": "blobs/f451674d257339ece41a258f22c7b95fe25d6fc51888854855de4320e26b9a90.py",
+      "encoding": "identity",
+      "bytes": 3661,
+      "sha256": "f451674d257339ece41a258f22c7b95fe25d6fc51888854855de4320e26b9a90",
+      "stored_bytes": 3661,
+      "stored_sha256": "f451674d257339ece41a258f22c7b95fe25d6fc51888854855de4320e26b9a90"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/history.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/history.py",
+      "artifact": "blobs/559e046d3405afc260be5cd5a0de5712e490518e73aafc288642261c3959657c.py",
+      "encoding": "identity",
+      "bytes": 7077,
+      "sha256": "559e046d3405afc260be5cd5a0de5712e490518e73aafc288642261c3959657c",
+      "stored_bytes": 7077,
+      "stored_sha256": "559e046d3405afc260be5cd5a0de5712e490518e73aafc288642261c3959657c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/intrinsic.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/intrinsic.py",
+      "artifact": "blobs/6f4f67d0864184520a788e8214fc07e28cb730321654d9f931798af2f0e3e6be.py",
+      "encoding": "identity",
+      "bytes": 25264,
+      "sha256": "6f4f67d0864184520a788e8214fc07e28cb730321654d9f931798af2f0e3e6be",
+      "stored_bytes": 25264,
+      "stored_sha256": "6f4f67d0864184520a788e8214fc07e28cb730321654d9f931798af2f0e3e6be"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/inverse.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/inverse.py",
+      "artifact": "blobs/b15ef055df018d96b92aa2b0be3d39d258b4cc59c83dbccdd9dcf0c173eb2a43.py",
+      "encoding": "identity",
+      "bytes": 3908,
+      "sha256": "b15ef055df018d96b92aa2b0be3d39d258b4cc59c83dbccdd9dcf0c173eb2a43",
+      "stored_bytes": 3908,
+      "stored_sha256": "b15ef055df018d96b92aa2b0be3d39d258b4cc59c83dbccdd9dcf0c173eb2a43"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/lifecycle.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/lifecycle.py",
+      "artifact": "blobs/aec6ccc09b9da6fc15ea1c64e6716dee9325b3d05edaa7ac19b4419861c192fa.py",
+      "encoding": "identity",
+      "bytes": 1826,
+      "sha256": "aec6ccc09b9da6fc15ea1c64e6716dee9325b3d05edaa7ac19b4419861c192fa",
+      "stored_bytes": 1826,
+      "stored_sha256": "aec6ccc09b9da6fc15ea1c64e6716dee9325b3d05edaa7ac19b4419861c192fa"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/model.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/model.py",
+      "artifact": "blobs/02deae6f14789dfe8c6470432a5ad8cdd372f27008a5f6ea902a07dff6dda97f.py",
+      "encoding": "identity",
+      "bytes": 15959,
+      "sha256": "02deae6f14789dfe8c6470432a5ad8cdd372f27008a5f6ea902a07dff6dda97f",
+      "stored_bytes": 15959,
+      "stored_sha256": "02deae6f14789dfe8c6470432a5ad8cdd372f27008a5f6ea902a07dff6dda97f"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/operators.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/operators.py",
+      "artifact": "blobs/40ad5e488e928a8f22efe0833f447afba7ef0e258bc3cffb5a0fe30bc1d416ff.py",
+      "encoding": "identity",
+      "bytes": 10408,
+      "sha256": "40ad5e488e928a8f22efe0833f447afba7ef0e258bc3cffb5a0fe30bc1d416ff",
+      "stored_bytes": 10408,
+      "stored_sha256": "40ad5e488e928a8f22efe0833f447afba7ef0e258bc3cffb5a0fe30bc1d416ff"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/paths.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/paths.py",
+      "artifact": "blobs/a4d9f4a3b407d5d153b4ba00612cea9888ad9299692fd381eff33ab738bcb352.py",
+      "encoding": "identity",
+      "bytes": 10803,
+      "sha256": "a4d9f4a3b407d5d153b4ba00612cea9888ad9299692fd381eff33ab738bcb352",
+      "stored_bytes": 10803,
+      "stored_sha256": "a4d9f4a3b407d5d153b4ba00612cea9888ad9299692fd381eff33ab738bcb352"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/pipeline.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/pipeline.py",
+      "artifact": "blobs/5677953121fc287950a1a86ab80a781929032b13ffae3d9698b0d28426722de9.py",
+      "encoding": "identity",
+      "bytes": 5573,
+      "sha256": "5677953121fc287950a1a86ab80a781929032b13ffae3d9698b0d28426722de9",
+      "stored_bytes": 5573,
+      "stored_sha256": "5677953121fc287950a1a86ab80a781929032b13ffae3d9698b0d28426722de9"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/post.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/post.py",
+      "artifact": "blobs/e19a87869e01403119880a16e6d7e221a6e3653b24fff174cc01a9390458901e.py",
+      "encoding": "identity",
+      "bytes": 3326,
+      "sha256": "e19a87869e01403119880a16e6d7e221a6e3653b24fff174cc01a9390458901e",
+      "stored_bytes": 3326,
+      "stored_sha256": "e19a87869e01403119880a16e6d7e221a6e3653b24fff174cc01a9390458901e"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/provenance.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/provenance.py",
+      "artifact": "blobs/cdb00916ffa41aa7b29ed2ba03759d6ae7ec899900aa59dc16abce4c8c036a1a.py",
+      "encoding": "identity",
+      "bytes": 13238,
+      "sha256": "cdb00916ffa41aa7b29ed2ba03759d6ae7ec899900aa59dc16abce4c8c036a1a",
+      "stored_bytes": 13238,
+      "stored_sha256": "cdb00916ffa41aa7b29ed2ba03759d6ae7ec899900aa59dc16abce4c8c036a1a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/recovery.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/recovery.py",
+      "artifact": "blobs/f8c25dc73a4de4033bfebb6076d725fba5a4f00346a69ecb4660555a4dcd3efe.py",
+      "encoding": "identity",
+      "bytes": 26146,
+      "sha256": "f8c25dc73a4de4033bfebb6076d725fba5a4f00346a69ecb4660555a4dcd3efe",
+      "stored_bytes": 26146,
+      "stored_sha256": "f8c25dc73a4de4033bfebb6076d725fba5a4f00346a69ecb4660555a4dcd3efe"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/scatter.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/scatter.py",
+      "artifact": "blobs/f1aec3bdf7f1f8c0e6dc2a587874afe6dcefd1e9dc5147859711098736a7b399.py",
+      "encoding": "identity",
+      "bytes": 13531,
+      "sha256": "f1aec3bdf7f1f8c0e6dc2a587874afe6dcefd1e9dc5147859711098736a7b399",
+      "stored_bytes": 13531,
+      "stored_sha256": "f1aec3bdf7f1f8c0e6dc2a587874afe6dcefd1e9dc5147859711098736a7b399"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/solve.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/solve.py",
+      "artifact": "blobs/7a69e5aace87d1c9a642698ad3381c2bdfc27c765f27447d97d5a18a2916393c.py",
+      "encoding": "identity",
+      "bytes": 14656,
+      "sha256": "7a69e5aace87d1c9a642698ad3381c2bdfc27c765f27447d97d5a18a2916393c",
+      "stored_bytes": 14656,
+      "stored_sha256": "7a69e5aace87d1c9a642698ad3381c2bdfc27c765f27447d97d5a18a2916393c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/source_vertices.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/source_vertices.py",
+      "artifact": "blobs/4bb61a95aeb8fbe6577daadff68abd5bc25e1da19b97a39bf04b39243b99c8cf.py",
+      "encoding": "identity",
+      "bytes": 8421,
+      "sha256": "4bb61a95aeb8fbe6577daadff68abd5bc25e1da19b97a39bf04b39243b99c8cf",
+      "stored_bytes": 8421,
+      "stored_sha256": "4bb61a95aeb8fbe6577daadff68abd5bc25e1da19b97a39bf04b39243b99c8cf"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/surface.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/surface.py",
+      "artifact": "blobs/b83ee1d677294001d0da2613b99fbfe689a014c27bd01bdd06c703d39b32f30e.py",
+      "encoding": "identity",
+      "bytes": 5052,
+      "sha256": "b83ee1d677294001d0da2613b99fbfe689a014c27bd01bdd06c703d39b32f30e",
+      "stored_bytes": 5052,
+      "stored_sha256": "b83ee1d677294001d0da2613b99fbfe689a014c27bd01bdd06c703d39b32f30e"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/surface_inverse.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/surface_inverse.py",
+      "artifact": "blobs/aab910a4172d681a3184f9b8f40d3f2727e80fa81061dc0b50a0f3dbee36ed17.py",
+      "encoding": "identity",
+      "bytes": 7072,
+      "sha256": "aab910a4172d681a3184f9b8f40d3f2727e80fa81061dc0b50a0f3dbee36ed17",
+      "stored_bytes": 7072,
+      "stored_sha256": "aab910a4172d681a3184f9b8f40d3f2727e80fa81061dc0b50a0f3dbee36ed17"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/topology.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/topology.py",
+      "artifact": "blobs/0e6c421b6fcd66e456417cded1f6b7403474b957d263b4ae5d52b1a9f5b12cd2.py",
+      "encoding": "identity",
+      "bytes": 2646,
+      "sha256": "0e6c421b6fcd66e456417cded1f6b7403474b957d263b4ae5d52b1a9f5b12cd2",
+      "stored_bytes": 2646,
+      "stored_sha256": "0e6c421b6fcd66e456417cded1f6b7403474b957d263b4ae5d52b1a9f5b12cd2"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/traction.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/genesis/engine/solvers/rigid/stress/traction.py",
+      "artifact": "blobs/1376bf6ab19fbab3b155808dece101bd91e81723f1226c32873c3d62c192b77f.py",
+      "encoding": "identity",
+      "bytes": 39045,
+      "sha256": "1376bf6ab19fbab3b155808dece101bd91e81723f1226c32873c3d62c192b77f",
+      "stored_bytes": 39045,
+      "stored_sha256": "1376bf6ab19fbab3b155808dece101bd91e81723f1226c32873c3d62c192b77f"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/genesis/options/morphs.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/genesis/options/morphs.py",
+      "artifact": "blobs/3a6fda0b9150a9fe8feaf173eb46a096c06fe6b057580ced7f93d32654aafc7f.py",
+      "encoding": "identity",
+      "bytes": 101878,
+      "sha256": "3a6fda0b9150a9fe8feaf173eb46a096c06fe6b057580ced7f93d32654aafc7f",
+      "stored_bytes": 101878,
+      "stored_sha256": "3a6fda0b9150a9fe8feaf173eb46a096c06fe6b057580ced7f93d32654aafc7f"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/genesis/options/rigid_stress.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/genesis/options/rigid_stress.py",
+      "artifact": "blobs/a068320bb085348436b429ca79b6886aedc6108b0d5954d641c549c0bb7c418a.py",
+      "encoding": "identity",
+      "bytes": 10754,
+      "sha256": "a068320bb085348436b429ca79b6886aedc6108b0d5954d641c549c0bb7c418a",
+      "stored_bytes": 10754,
+      "stored_sha256": "a068320bb085348436b429ca79b6886aedc6108b0d5954d641c549c0bb7c418a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan_frontier_candidate_v1.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan_frontier_candidate_v1.py",
+      "artifact": "blobs/09de232f86f3f01aa2294c23ce72772115cf22a5556d42ac8b95dae4a3575b9d.py",
+      "encoding": "identity",
+      "bytes": 9881,
+      "sha256": "09de232f86f3f01aa2294c23ce72772115cf22a5556d42ac8b95dae4a3575b9d",
+      "stored_bytes": 9881,
+      "stored_sha256": "09de232f86f3f01aa2294c23ce72772115cf22a5556d42ac8b95dae4a3575b9d"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/original-point-scalar-b32-profile-v1/conditions.npz",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/original-point-scalar-b32-profile-v1/conditions.npz",
+      "artifact": "blobs/156d956bc5fc3827da8df236cf1695a4bf30a9a1e1d939c672f6a57d69d10930.npz",
+      "encoding": "identity",
+      "bytes": 14058,
+      "sha256": "156d956bc5fc3827da8df236cf1695a4bf30a9a1e1d939c672f6a57d69d10930",
+      "stored_bytes": 14058,
+      "stored_sha256": "156d956bc5fc3827da8df236cf1695a4bf30a9a1e1d939c672f6a57d69d10930"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/probe_fan_frontier_v1.py",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/probe_fan_frontier_v1.py",
+      "artifact": "blobs/7eb48159d2950b4fdf0480bf25d853d28d1d009252cb52f043d1d83947e007c6.py",
+      "encoding": "identity",
+      "bytes": 1149,
+      "sha256": "7eb48159d2950b4fdf0480bf25d853d28d1d009252cb52f043d1d83947e007c6",
+      "stored_bytes": 1149,
+      "stored_sha256": "7eb48159d2950b4fdf0480bf25d853d28d1d009252cb52f043d1d83947e007c6"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/run_fan_frontier_b1024_benchmark_v1.sh",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/run_fan_frontier_b1024_benchmark_v1.sh",
+      "artifact": "blobs/e5d161aaea9ffe69ffd3a8b99e886233ba146ed52c0df14557cf31886371c204.sh",
+      "encoding": "identity",
+      "bytes": 2529,
+      "sha256": "e5d161aaea9ffe69ffd3a8b99e886233ba146ed52c0df14557cf31886371c204",
+      "stored_bytes": 2529,
+      "stored_sha256": "e5d161aaea9ffe69ffd3a8b99e886233ba146ed52c0df14557cf31886371c204"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source-after.sha256",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source-after.sha256",
+      "artifact": "blobs/7799748382636bd774cd464baacaffbe7c94298433cabec01112438750c3390c.sha256",
+      "encoding": "identity",
+      "bytes": 4962,
+      "sha256": "7799748382636bd774cd464baacaffbe7c94298433cabec01112438750c3390c",
+      "stored_bytes": 4962,
+      "stored_sha256": "7799748382636bd774cd464baacaffbe7c94298433cabec01112438750c3390c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-b1024-benchmark-v1/source.sha256",
+      "run_path": "fan-frontier-b1024-benchmark-v1/source.sha256",
+      "artifact": "blobs/7799748382636bd774cd464baacaffbe7c94298433cabec01112438750c3390c.sha256",
+      "encoding": "identity",
+      "bytes": 4962,
+      "sha256": "7799748382636bd774cd464baacaffbe7c94298433cabec01112438750c3390c",
+      "stored_bytes": 4962,
+      "stored_sha256": "7799748382636bd774cd464baacaffbe7c94298433cabec01112438750c3390c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/hardware.csv",
+      "run_path": "fan-frontier-benchmark-v1/hardware.csv",
+      "artifact": "blobs/e9fd6287b35d33db9f09c5a3f7122ae490ec25bcad571e12d32e4867676847c2.csv",
+      "encoding": "identity",
+      "bytes": 156,
+      "sha256": "e9fd6287b35d33db9f09c5a3f7122ae490ec25bcad571e12d32e4867676847c2",
+      "stored_bytes": 156,
+      "stored_sha256": "e9fd6287b35d33db9f09c5a3f7122ae490ec25bcad571e12d32e4867676847c2"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/live/frontier/benchmark.log",
+      "run_path": "fan-frontier-benchmark-v1/live/frontier/benchmark.log",
+      "artifact": "blobs/ef5d0ed8f9b865fc107bd3be6ff85ea39126c27f4157c463971646cb92a68abf.log",
+      "encoding": "identity",
+      "bytes": 66693,
+      "sha256": "ef5d0ed8f9b865fc107bd3be6ff85ea39126c27f4157c463971646cb92a68abf",
+      "stored_bytes": 66693,
+      "stored_sha256": "ef5d0ed8f9b865fc107bd3be6ff85ea39126c27f4157c463971646cb92a68abf"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/live/frontier/result.json",
+      "run_path": "fan-frontier-benchmark-v1/live/frontier/result.json",
+      "artifact": "blobs/f28ba85602f4cafaee6b4239ba0f156c1a4ed92251489cc26b3b2c4508fbfd47.json.gz",
+      "encoding": "gzip",
+      "bytes": 763212,
+      "sha256": "f28ba85602f4cafaee6b4239ba0f156c1a4ed92251489cc26b3b2c4508fbfd47",
+      "stored_bytes": 126143,
+      "stored_sha256": "b1d8a8933a151829378ef21214673309b0d3f4e42b6c11e0389f86770303af31"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/live/native/benchmark.log",
+      "run_path": "fan-frontier-benchmark-v1/live/native/benchmark.log",
+      "artifact": "blobs/8f7ab0ded51ae17a820ad039e921580ec4d199b9906c175ad3143f97b3b38010.log",
+      "encoding": "identity",
+      "bytes": 66347,
+      "sha256": "8f7ab0ded51ae17a820ad039e921580ec4d199b9906c175ad3143f97b3b38010",
+      "stored_bytes": 66347,
+      "stored_sha256": "8f7ab0ded51ae17a820ad039e921580ec4d199b9906c175ad3143f97b3b38010"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/live/native/result.json",
+      "run_path": "fan-frontier-benchmark-v1/live/native/result.json",
+      "artifact": "blobs/823ef6484fcef6b871a481b58310cc7119763a2cad4e5cf16016ea3ee1fdbf98.json.gz",
+      "encoding": "gzip",
+      "bytes": 763080,
+      "sha256": "823ef6484fcef6b871a481b58310cc7119763a2cad4e5cf16016ea3ee1fdbf98",
+      "stored_bytes": 126539,
+      "stored_sha256": "918213cc77c2798a61e283009d483bf74ed167494ccfc39da1a7e4d5567a85ab"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/node.txt",
+      "run_path": "fan-frontier-benchmark-v1/node.txt",
+      "artifact": "blobs/979aa4a8fcc6a1a4afdf5fc422a2a2c038e1309f93e4cf5e6e9bd3878fc3c7c4.txt",
+      "encoding": "identity",
+      "bytes": 12,
+      "sha256": "979aa4a8fcc6a1a4afdf5fc422a2a2c038e1309f93e4cf5e6e9bd3878fc3c7c4",
+      "stored_bytes": 12,
+      "stored_sha256": "979aa4a8fcc6a1a4afdf5fc422a2a2c038e1309f93e4cf5e6e9bd3878fc3c7c4"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/profile/frontier/benchmark.log",
+      "run_path": "fan-frontier-benchmark-v1/profile/frontier/benchmark.log",
+      "artifact": "blobs/1e0b65218d6b38c2f32b783d9e237337720bad3682474ddc936c3a980c7b884e.log",
+      "encoding": "identity",
+      "bytes": 78510,
+      "sha256": "1e0b65218d6b38c2f32b783d9e237337720bad3682474ddc936c3a980c7b884e",
+      "stored_bytes": 78510,
+      "stored_sha256": "1e0b65218d6b38c2f32b783d9e237337720bad3682474ddc936c3a980c7b884e"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/profile/frontier/result.json",
+      "run_path": "fan-frontier-benchmark-v1/profile/frontier/result.json",
+      "artifact": "blobs/8a3cd7c8e5cab83cb406a9a96fa5e26a86e1c6174f1734916438f328dba9d521.json.gz",
+      "encoding": "gzip",
+      "bytes": 765884,
+      "sha256": "8a3cd7c8e5cab83cb406a9a96fa5e26a86e1c6174f1734916438f328dba9d521",
+      "stored_bytes": 127704,
+      "stored_sha256": "6a2781dabee093cec07caf83b3fb2e720ee4de181a7cb3bd5dfaabc7ff602657"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/profile/native/benchmark.log",
+      "run_path": "fan-frontier-benchmark-v1/profile/native/benchmark.log",
+      "artifact": "blobs/a7c162cd8bd354cfe62b4d1d670e61de3115c20d8e078418b4c5dbccebb2a1e0.log",
+      "encoding": "identity",
+      "bytes": 77978,
+      "sha256": "a7c162cd8bd354cfe62b4d1d670e61de3115c20d8e078418b4c5dbccebb2a1e0",
+      "stored_bytes": 77978,
+      "stored_sha256": "a7c162cd8bd354cfe62b4d1d670e61de3115c20d8e078418b4c5dbccebb2a1e0"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/profile/native/result.json",
+      "run_path": "fan-frontier-benchmark-v1/profile/native/result.json",
+      "artifact": "blobs/ce8cf931231ad099d1a6619a0c45b883a1b907cd27d0c47f7cd37f332a96f4ab.json.gz",
+      "encoding": "gzip",
+      "bytes": 765447,
+      "sha256": "ce8cf931231ad099d1a6619a0c45b883a1b907cd27d0c47f7cd37f332a96f4ab",
+      "stored_bytes": 127124,
+      "stored_sha256": "64bec2908e2d6fa62fcc01a92b77cbf718bff9960a1e817271daf1e187123729"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/examples/rigid/assets/hollow_egg/level1/elastic.npz",
+      "run_path": "fan-frontier-benchmark-v1/source/examples/rigid/assets/hollow_egg/level1/elastic.npz",
+      "artifact": "blobs/3b2b90d7ee39562a296422dab1e5ee66e87265949ee38eefd27c729633a995a4.npz",
+      "encoding": "identity",
+      "bytes": 3573,
+      "sha256": "3b2b90d7ee39562a296422dab1e5ee66e87265949ee38eefd27c729633a995a4",
+      "stored_bytes": 3573,
+      "stored_sha256": "3b2b90d7ee39562a296422dab1e5ee66e87265949ee38eefd27c729633a995a4"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/examples/rigid/egg_stress_controller.py",
+      "run_path": "fan-frontier-benchmark-v1/source/examples/rigid/egg_stress_controller.py",
+      "artifact": "blobs/2760c2d6a89dbf0a3ec28f1a7c6030d6d73b71b43c6a4b55a5d5ab745e7de33d.py",
+      "encoding": "identity",
+      "bytes": 6195,
+      "sha256": "2760c2d6a89dbf0a3ec28f1a7c6030d6d73b71b43c6a4b55a5d5ab745e7de33d",
+      "stored_bytes": 6195,
+      "stored_sha256": "2760c2d6a89dbf0a3ec28f1a7c6030d6d73b71b43c6a4b55a5d5ab745e7de33d"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/examples/rigid/franka_egg_stress.py",
+      "run_path": "fan-frontier-benchmark-v1/source/examples/rigid/franka_egg_stress.py",
+      "artifact": "blobs/792e9bd5359c979812ffa18e61009d46aa181015e42aae99049e79cde3984e30.py",
+      "encoding": "identity",
+      "bytes": 15995,
+      "sha256": "792e9bd5359c979812ffa18e61009d46aa181015e42aae99049e79cde3984e30",
+      "stored_bytes": 15995,
+      "stored_sha256": "792e9bd5359c979812ffa18e61009d46aa181015e42aae99049e79cde3984e30"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/examples/speed_benchmark/rigid_stress.py",
+      "run_path": "fan-frontier-benchmark-v1/source/examples/speed_benchmark/rigid_stress.py",
+      "artifact": "blobs/c013f3b8a5b128629ce7d08922f975a34c98fe3e904fbe5563a5d101ffaa61ba.py",
+      "encoding": "identity",
+      "bytes": 40463,
+      "sha256": "c013f3b8a5b128629ce7d08922f975a34c98fe3e904fbe5563a5d101ffaa61ba",
+      "stored_bytes": 40463,
+      "stored_sha256": "c013f3b8a5b128629ce7d08922f975a34c98fe3e904fbe5563a5d101ffaa61ba"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/__init__.py",
+      "run_path": "fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/__init__.py",
+      "artifact": "blobs/17b4fa6e4eb64175b87586a6c7142b9fd2f5e88ba4321129d18e07e296adc5a6.py",
+      "encoding": "identity",
+      "bytes": 72,
+      "sha256": "17b4fa6e4eb64175b87586a6c7142b9fd2f5e88ba4321129d18e07e296adc5a6",
+      "stored_bytes": 72,
+      "stored_sha256": "17b4fa6e4eb64175b87586a6c7142b9fd2f5e88ba4321129d18e07e296adc5a6"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/association.py",
+      "run_path": "fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/association.py",
+      "artifact": "blobs/0c265ddde597bb03f6f56da0f4c6063a3a530ce2a19f2dceaf3378e987f811b3.py",
+      "encoding": "identity",
+      "bytes": 4147,
+      "sha256": "0c265ddde597bb03f6f56da0f4c6063a3a530ce2a19f2dceaf3378e987f811b3",
+      "stored_bytes": 4147,
+      "stored_sha256": "0c265ddde597bb03f6f56da0f4c6063a3a530ce2a19f2dceaf3378e987f811b3"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/balance.py",
+      "run_path": "fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/balance.py",
+      "artifact": "blobs/9b9cb6916d198f823b6e6af495c8cea6d0836f07243f3f4bda0b25a48a616712.py",
+      "encoding": "identity",
+      "bytes": 5310,
+      "sha256": "9b9cb6916d198f823b6e6af495c8cea6d0836f07243f3f4bda0b25a48a616712",
+      "stored_bytes": 5310,
+      "stored_sha256": "9b9cb6916d198f823b6e6af495c8cea6d0836f07243f3f4bda0b25a48a616712"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/boundary_certificate.py",
+      "run_path": "fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/boundary_certificate.py",
+      "artifact": "blobs/8f7c7a9d08716b795b1b107a268d5e2097933ee2709b4bcd7299c3ce548621f8.py",
+      "encoding": "identity",
+      "bytes": 5536,
+      "sha256": "8f7c7a9d08716b795b1b107a268d5e2097933ee2709b4bcd7299c3ce548621f8",
+      "stored_bytes": 5536,
+      "stored_sha256": "8f7c7a9d08716b795b1b107a268d5e2097933ee2709b4bcd7299c3ce548621f8"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/compatibility.py",
+      "run_path": "fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/compatibility.py",
+      "artifact": "blobs/a6b1dba264288688613e5039dd47ae5f8a7f7dfa362cff477779d6b2de65150a.py",
+      "encoding": "identity",
+      "bytes": 35645,
+      "sha256": "a6b1dba264288688613e5039dd47ae5f8a7f7dfa362cff477779d6b2de65150a",
+      "stored_bytes": 35645,
+      "stored_sha256": "a6b1dba264288688613e5039dd47ae5f8a7f7dfa362cff477779d6b2de65150a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/contact.py",
+      "run_path": "fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/contact.py",
+      "artifact": "blobs/7ebfe4210a819036edc18fcc6b9a3e94273f8644dc7c2a50904079c9100886b8.py",
+      "encoding": "identity",
+      "bytes": 35348,
+      "sha256": "7ebfe4210a819036edc18fcc6b9a3e94273f8644dc7c2a50904079c9100886b8",
+      "stored_bytes": 35348,
+      "stored_sha256": "7ebfe4210a819036edc18fcc6b9a3e94273f8644dc7c2a50904079c9100886b8"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/cooperative_fit.py",
+      "run_path": "fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/cooperative_fit.py",
+      "artifact": "blobs/97826c5b1d20b3d12e605eb84b0cc4af37ac9c5983a0e4cf4226a8c3924e7235.py",
+      "encoding": "identity",
+      "bytes": 15863,
+      "sha256": "97826c5b1d20b3d12e605eb84b0cc4af37ac9c5983a0e4cf4226a8c3924e7235",
+      "stored_bytes": 15863,
+      "stored_sha256": "97826c5b1d20b3d12e605eb84b0cc4af37ac9c5983a0e4cf4226a8c3924e7235"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/cooperative_scatter.py",
+      "run_path": "fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/cooperative_scatter.py",
+      "artifact": "blobs/b8e25a9893d8560747b09fa984576557d09a6a5fa712e376e5acf73c6cbef963.py",
+      "encoding": "identity",
+      "bytes": 8028,
+      "sha256": "b8e25a9893d8560747b09fa984576557d09a6a5fa712e376e5acf73c6cbef963",
+      "stored_bytes": 8028,
+      "stored_sha256": "b8e25a9893d8560747b09fa984576557d09a6a5fa712e376e5acf73c6cbef963"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/data.py",
+      "run_path": "fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/data.py",
+      "artifact": "blobs/081ee50334a918f8bef23fb891de3c4a6e5fa4964826069268497c0fa1cece19.py",
+      "encoding": "identity",
+      "bytes": 2171,
+      "sha256": "081ee50334a918f8bef23fb891de3c4a6e5fa4964826069268497c0fa1cece19",
+      "stored_bytes": 2171,
+      "stored_sha256": "081ee50334a918f8bef23fb891de3c4a6e5fa4964826069268497c0fa1cece19"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/factor.py",
+      "run_path": "fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/factor.py",
+      "artifact": "blobs/f2a059e88cf03b35a5fba2f88c3ac3f631a899d52cd841a6d268d9ccf087f81c.py",
+      "encoding": "identity",
+      "bytes": 14633,
+      "sha256": "f2a059e88cf03b35a5fba2f88c3ac3f631a899d52cd841a6d268d9ccf087f81c",
+      "stored_bytes": 14633,
+      "stored_sha256": "f2a059e88cf03b35a5fba2f88c3ac3f631a899d52cd841a6d268d9ccf087f81c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/failure.py",
+      "run_path": "fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/failure.py",
+      "artifact": "blobs/6c83464eafa08eb4a27c29f1574b420d29317f8413073b590adb76ce346858fc.py",
+      "encoding": "identity",
+      "bytes": 3205,
+      "sha256": "6c83464eafa08eb4a27c29f1574b420d29317f8413073b590adb76ce346858fc",
+      "stored_bytes": 3205,
+      "stored_sha256": "6c83464eafa08eb4a27c29f1574b420d29317f8413073b590adb76ce346858fc"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/footprint.py",
+      "run_path": "fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/footprint.py",
+      "artifact": "blobs/12e563f3dbd7b7b47506028cc2be4d5ac34b685424915df19450f84ab453b583.py",
+      "encoding": "identity",
+      "bytes": 31397,
+      "sha256": "12e563f3dbd7b7b47506028cc2be4d5ac34b685424915df19450f84ab453b583",
+      "stored_bytes": 31397,
+      "stored_sha256": "12e563f3dbd7b7b47506028cc2be4d5ac34b685424915df19450f84ab453b583"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/grid.py",
+      "run_path": "fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/grid.py",
+      "artifact": "blobs/f451674d257339ece41a258f22c7b95fe25d6fc51888854855de4320e26b9a90.py",
+      "encoding": "identity",
+      "bytes": 3661,
+      "sha256": "f451674d257339ece41a258f22c7b95fe25d6fc51888854855de4320e26b9a90",
+      "stored_bytes": 3661,
+      "stored_sha256": "f451674d257339ece41a258f22c7b95fe25d6fc51888854855de4320e26b9a90"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/history.py",
+      "run_path": "fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/history.py",
+      "artifact": "blobs/559e046d3405afc260be5cd5a0de5712e490518e73aafc288642261c3959657c.py",
+      "encoding": "identity",
+      "bytes": 7077,
+      "sha256": "559e046d3405afc260be5cd5a0de5712e490518e73aafc288642261c3959657c",
+      "stored_bytes": 7077,
+      "stored_sha256": "559e046d3405afc260be5cd5a0de5712e490518e73aafc288642261c3959657c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/intrinsic.py",
+      "run_path": "fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/intrinsic.py",
+      "artifact": "blobs/6f4f67d0864184520a788e8214fc07e28cb730321654d9f931798af2f0e3e6be.py",
+      "encoding": "identity",
+      "bytes": 25264,
+      "sha256": "6f4f67d0864184520a788e8214fc07e28cb730321654d9f931798af2f0e3e6be",
+      "stored_bytes": 25264,
+      "stored_sha256": "6f4f67d0864184520a788e8214fc07e28cb730321654d9f931798af2f0e3e6be"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/inverse.py",
+      "run_path": "fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/inverse.py",
+      "artifact": "blobs/b15ef055df018d96b92aa2b0be3d39d258b4cc59c83dbccdd9dcf0c173eb2a43.py",
+      "encoding": "identity",
+      "bytes": 3908,
+      "sha256": "b15ef055df018d96b92aa2b0be3d39d258b4cc59c83dbccdd9dcf0c173eb2a43",
+      "stored_bytes": 3908,
+      "stored_sha256": "b15ef055df018d96b92aa2b0be3d39d258b4cc59c83dbccdd9dcf0c173eb2a43"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/lifecycle.py",
+      "run_path": "fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/lifecycle.py",
+      "artifact": "blobs/aec6ccc09b9da6fc15ea1c64e6716dee9325b3d05edaa7ac19b4419861c192fa.py",
+      "encoding": "identity",
+      "bytes": 1826,
+      "sha256": "aec6ccc09b9da6fc15ea1c64e6716dee9325b3d05edaa7ac19b4419861c192fa",
+      "stored_bytes": 1826,
+      "stored_sha256": "aec6ccc09b9da6fc15ea1c64e6716dee9325b3d05edaa7ac19b4419861c192fa"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/model.py",
+      "run_path": "fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/model.py",
+      "artifact": "blobs/02deae6f14789dfe8c6470432a5ad8cdd372f27008a5f6ea902a07dff6dda97f.py",
+      "encoding": "identity",
+      "bytes": 15959,
+      "sha256": "02deae6f14789dfe8c6470432a5ad8cdd372f27008a5f6ea902a07dff6dda97f",
+      "stored_bytes": 15959,
+      "stored_sha256": "02deae6f14789dfe8c6470432a5ad8cdd372f27008a5f6ea902a07dff6dda97f"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/operators.py",
+      "run_path": "fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/operators.py",
+      "artifact": "blobs/40ad5e488e928a8f22efe0833f447afba7ef0e258bc3cffb5a0fe30bc1d416ff.py",
+      "encoding": "identity",
+      "bytes": 10408,
+      "sha256": "40ad5e488e928a8f22efe0833f447afba7ef0e258bc3cffb5a0fe30bc1d416ff",
+      "stored_bytes": 10408,
+      "stored_sha256": "40ad5e488e928a8f22efe0833f447afba7ef0e258bc3cffb5a0fe30bc1d416ff"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/paths.py",
+      "run_path": "fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/paths.py",
+      "artifact": "blobs/a4d9f4a3b407d5d153b4ba00612cea9888ad9299692fd381eff33ab738bcb352.py",
+      "encoding": "identity",
+      "bytes": 10803,
+      "sha256": "a4d9f4a3b407d5d153b4ba00612cea9888ad9299692fd381eff33ab738bcb352",
+      "stored_bytes": 10803,
+      "stored_sha256": "a4d9f4a3b407d5d153b4ba00612cea9888ad9299692fd381eff33ab738bcb352"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/pipeline.py",
+      "run_path": "fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/pipeline.py",
+      "artifact": "blobs/5677953121fc287950a1a86ab80a781929032b13ffae3d9698b0d28426722de9.py",
+      "encoding": "identity",
+      "bytes": 5573,
+      "sha256": "5677953121fc287950a1a86ab80a781929032b13ffae3d9698b0d28426722de9",
+      "stored_bytes": 5573,
+      "stored_sha256": "5677953121fc287950a1a86ab80a781929032b13ffae3d9698b0d28426722de9"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/post.py",
+      "run_path": "fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/post.py",
+      "artifact": "blobs/e19a87869e01403119880a16e6d7e221a6e3653b24fff174cc01a9390458901e.py",
+      "encoding": "identity",
+      "bytes": 3326,
+      "sha256": "e19a87869e01403119880a16e6d7e221a6e3653b24fff174cc01a9390458901e",
+      "stored_bytes": 3326,
+      "stored_sha256": "e19a87869e01403119880a16e6d7e221a6e3653b24fff174cc01a9390458901e"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/provenance.py",
+      "run_path": "fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/provenance.py",
+      "artifact": "blobs/cdb00916ffa41aa7b29ed2ba03759d6ae7ec899900aa59dc16abce4c8c036a1a.py",
+      "encoding": "identity",
+      "bytes": 13238,
+      "sha256": "cdb00916ffa41aa7b29ed2ba03759d6ae7ec899900aa59dc16abce4c8c036a1a",
+      "stored_bytes": 13238,
+      "stored_sha256": "cdb00916ffa41aa7b29ed2ba03759d6ae7ec899900aa59dc16abce4c8c036a1a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/recovery.py",
+      "run_path": "fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/recovery.py",
+      "artifact": "blobs/f8c25dc73a4de4033bfebb6076d725fba5a4f00346a69ecb4660555a4dcd3efe.py",
+      "encoding": "identity",
+      "bytes": 26146,
+      "sha256": "f8c25dc73a4de4033bfebb6076d725fba5a4f00346a69ecb4660555a4dcd3efe",
+      "stored_bytes": 26146,
+      "stored_sha256": "f8c25dc73a4de4033bfebb6076d725fba5a4f00346a69ecb4660555a4dcd3efe"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/scatter.py",
+      "run_path": "fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/scatter.py",
+      "artifact": "blobs/f1aec3bdf7f1f8c0e6dc2a587874afe6dcefd1e9dc5147859711098736a7b399.py",
+      "encoding": "identity",
+      "bytes": 13531,
+      "sha256": "f1aec3bdf7f1f8c0e6dc2a587874afe6dcefd1e9dc5147859711098736a7b399",
+      "stored_bytes": 13531,
+      "stored_sha256": "f1aec3bdf7f1f8c0e6dc2a587874afe6dcefd1e9dc5147859711098736a7b399"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/solve.py",
+      "run_path": "fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/solve.py",
+      "artifact": "blobs/7a69e5aace87d1c9a642698ad3381c2bdfc27c765f27447d97d5a18a2916393c.py",
+      "encoding": "identity",
+      "bytes": 14656,
+      "sha256": "7a69e5aace87d1c9a642698ad3381c2bdfc27c765f27447d97d5a18a2916393c",
+      "stored_bytes": 14656,
+      "stored_sha256": "7a69e5aace87d1c9a642698ad3381c2bdfc27c765f27447d97d5a18a2916393c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/source_vertices.py",
+      "run_path": "fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/source_vertices.py",
+      "artifact": "blobs/4bb61a95aeb8fbe6577daadff68abd5bc25e1da19b97a39bf04b39243b99c8cf.py",
+      "encoding": "identity",
+      "bytes": 8421,
+      "sha256": "4bb61a95aeb8fbe6577daadff68abd5bc25e1da19b97a39bf04b39243b99c8cf",
+      "stored_bytes": 8421,
+      "stored_sha256": "4bb61a95aeb8fbe6577daadff68abd5bc25e1da19b97a39bf04b39243b99c8cf"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/surface.py",
+      "run_path": "fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/surface.py",
+      "artifact": "blobs/b83ee1d677294001d0da2613b99fbfe689a014c27bd01bdd06c703d39b32f30e.py",
+      "encoding": "identity",
+      "bytes": 5052,
+      "sha256": "b83ee1d677294001d0da2613b99fbfe689a014c27bd01bdd06c703d39b32f30e",
+      "stored_bytes": 5052,
+      "stored_sha256": "b83ee1d677294001d0da2613b99fbfe689a014c27bd01bdd06c703d39b32f30e"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/surface_inverse.py",
+      "run_path": "fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/surface_inverse.py",
+      "artifact": "blobs/aab910a4172d681a3184f9b8f40d3f2727e80fa81061dc0b50a0f3dbee36ed17.py",
+      "encoding": "identity",
+      "bytes": 7072,
+      "sha256": "aab910a4172d681a3184f9b8f40d3f2727e80fa81061dc0b50a0f3dbee36ed17",
+      "stored_bytes": 7072,
+      "stored_sha256": "aab910a4172d681a3184f9b8f40d3f2727e80fa81061dc0b50a0f3dbee36ed17"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/topology.py",
+      "run_path": "fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/topology.py",
+      "artifact": "blobs/0e6c421b6fcd66e456417cded1f6b7403474b957d263b4ae5d52b1a9f5b12cd2.py",
+      "encoding": "identity",
+      "bytes": 2646,
+      "sha256": "0e6c421b6fcd66e456417cded1f6b7403474b957d263b4ae5d52b1a9f5b12cd2",
+      "stored_bytes": 2646,
+      "stored_sha256": "0e6c421b6fcd66e456417cded1f6b7403474b957d263b4ae5d52b1a9f5b12cd2"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/traction.py",
+      "run_path": "fan-frontier-benchmark-v1/source/genesis/engine/solvers/rigid/stress/traction.py",
+      "artifact": "blobs/1376bf6ab19fbab3b155808dece101bd91e81723f1226c32873c3d62c192b77f.py",
+      "encoding": "identity",
+      "bytes": 39045,
+      "sha256": "1376bf6ab19fbab3b155808dece101bd91e81723f1226c32873c3d62c192b77f",
+      "stored_bytes": 39045,
+      "stored_sha256": "1376bf6ab19fbab3b155808dece101bd91e81723f1226c32873c3d62c192b77f"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/genesis/options/morphs.py",
+      "run_path": "fan-frontier-benchmark-v1/source/genesis/options/morphs.py",
+      "artifact": "blobs/3a6fda0b9150a9fe8feaf173eb46a096c06fe6b057580ced7f93d32654aafc7f.py",
+      "encoding": "identity",
+      "bytes": 101878,
+      "sha256": "3a6fda0b9150a9fe8feaf173eb46a096c06fe6b057580ced7f93d32654aafc7f",
+      "stored_bytes": 101878,
+      "stored_sha256": "3a6fda0b9150a9fe8feaf173eb46a096c06fe6b057580ced7f93d32654aafc7f"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/genesis/options/rigid_stress.py",
+      "run_path": "fan-frontier-benchmark-v1/source/genesis/options/rigid_stress.py",
+      "artifact": "blobs/a068320bb085348436b429ca79b6886aedc6108b0d5954d641c549c0bb7c418a.py",
+      "encoding": "identity",
+      "bytes": 10754,
+      "sha256": "a068320bb085348436b429ca79b6886aedc6108b0d5954d641c549c0bb7c418a",
+      "stored_bytes": 10754,
+      "stored_sha256": "a068320bb085348436b429ca79b6886aedc6108b0d5954d641c549c0bb7c418a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan_frontier_candidate_v1.py",
+      "run_path": "fan-frontier-benchmark-v1/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan_frontier_candidate_v1.py",
+      "artifact": "blobs/09de232f86f3f01aa2294c23ce72772115cf22a5556d42ac8b95dae4a3575b9d.py",
+      "encoding": "identity",
+      "bytes": 9881,
+      "sha256": "09de232f86f3f01aa2294c23ce72772115cf22a5556d42ac8b95dae4a3575b9d",
+      "stored_bytes": 9881,
+      "stored_sha256": "09de232f86f3f01aa2294c23ce72772115cf22a5556d42ac8b95dae4a3575b9d"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/original-point-scalar-b32-profile-v1/conditions.npz",
+      "run_path": "fan-frontier-benchmark-v1/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/original-point-scalar-b32-profile-v1/conditions.npz",
+      "artifact": "blobs/156d956bc5fc3827da8df236cf1695a4bf30a9a1e1d939c672f6a57d69d10930.npz",
+      "encoding": "identity",
+      "bytes": 14058,
+      "sha256": "156d956bc5fc3827da8df236cf1695a4bf30a9a1e1d939c672f6a57d69d10930",
+      "stored_bytes": 14058,
+      "stored_sha256": "156d956bc5fc3827da8df236cf1695a4bf30a9a1e1d939c672f6a57d69d10930"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/probe_fan_frontier_v1.py",
+      "run_path": "fan-frontier-benchmark-v1/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/probe_fan_frontier_v1.py",
+      "artifact": "blobs/7eb48159d2950b4fdf0480bf25d853d28d1d009252cb52f043d1d83947e007c6.py",
+      "encoding": "identity",
+      "bytes": 1149,
+      "sha256": "7eb48159d2950b4fdf0480bf25d853d28d1d009252cb52f043d1d83947e007c6",
+      "stored_bytes": 1149,
+      "stored_sha256": "7eb48159d2950b4fdf0480bf25d853d28d1d009252cb52f043d1d83947e007c6"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/run_fan_frontier_benchmark_v1.sh",
+      "run_path": "fan-frontier-benchmark-v1/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/run_fan_frontier_benchmark_v1.sh",
+      "artifact": "blobs/bd0f200dc9a0ec6846de74f72f5597175108700a3aac11675b83156307bef6fe.sh",
+      "encoding": "identity",
+      "bytes": 2515,
+      "sha256": "bd0f200dc9a0ec6846de74f72f5597175108700a3aac11675b83156307bef6fe",
+      "stored_bytes": 2515,
+      "stored_sha256": "bd0f200dc9a0ec6846de74f72f5597175108700a3aac11675b83156307bef6fe"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source-after.sha256",
+      "run_path": "fan-frontier-benchmark-v1/source-after.sha256",
+      "artifact": "blobs/776ffa8a6a99e1d72ab2ef2ec4dfb257398903223e7adefe29b9f24e2eee90ca.sha256",
+      "encoding": "identity",
+      "bytes": 4956,
+      "sha256": "776ffa8a6a99e1d72ab2ef2ec4dfb257398903223e7adefe29b9f24e2eee90ca",
+      "stored_bytes": 4956,
+      "stored_sha256": "776ffa8a6a99e1d72ab2ef2ec4dfb257398903223e7adefe29b9f24e2eee90ca"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-benchmark-v1/source.sha256",
+      "run_path": "fan-frontier-benchmark-v1/source.sha256",
+      "artifact": "blobs/776ffa8a6a99e1d72ab2ef2ec4dfb257398903223e7adefe29b9f24e2eee90ca.sha256",
+      "encoding": "identity",
+      "bytes": 4956,
+      "sha256": "776ffa8a6a99e1d72ab2ef2ec4dfb257398903223e7adefe29b9f24e2eee90ca",
+      "stored_bytes": 4956,
+      "stored_sha256": "776ffa8a6a99e1d72ab2ef2ec4dfb257398903223e7adefe29b9f24e2eee90ca"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/node.txt",
+      "run_path": "fan-frontier-regression-v1/cpu/node.txt",
+      "artifact": "blobs/8929b628c93b1998ed6a0dfb4dbe135eec0c63f3c453fbb78871f4b547dee898.txt",
+      "encoding": "identity",
+      "bytes": 12,
+      "sha256": "8929b628c93b1998ed6a0dfb4dbe135eec0c63f3c453fbb78871f4b547dee898",
+      "stored_bytes": 12,
+      "stored_sha256": "8929b628c93b1998ed6a0dfb4dbe135eec0c63f3c453fbb78871f4b547dee898"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/examples/rigid/assets/hollow_egg/level1/elastic.npz",
+      "run_path": "fan-frontier-regression-v1/cpu/source/examples/rigid/assets/hollow_egg/level1/elastic.npz",
+      "artifact": "blobs/3b2b90d7ee39562a296422dab1e5ee66e87265949ee38eefd27c729633a995a4.npz",
+      "encoding": "identity",
+      "bytes": 3573,
+      "sha256": "3b2b90d7ee39562a296422dab1e5ee66e87265949ee38eefd27c729633a995a4",
+      "stored_bytes": 3573,
+      "stored_sha256": "3b2b90d7ee39562a296422dab1e5ee66e87265949ee38eefd27c729633a995a4"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/examples/speed_benchmark/rigid_stress.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/examples/speed_benchmark/rigid_stress.py",
+      "artifact": "blobs/c013f3b8a5b128629ce7d08922f975a34c98fe3e904fbe5563a5d101ffaa61ba.py",
+      "encoding": "identity",
+      "bytes": 40463,
+      "sha256": "c013f3b8a5b128629ce7d08922f975a34c98fe3e904fbe5563a5d101ffaa61ba",
+      "stored_bytes": 40463,
+      "stored_sha256": "c013f3b8a5b128629ce7d08922f975a34c98fe3e904fbe5563a5d101ffaa61ba"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/genesis/engine/entities/rigid_entity/description.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/genesis/engine/entities/rigid_entity/description.py",
+      "artifact": "blobs/3bb64792b62103e490166405ecc381aeb73f8f08b724a789f0f64e3bdeafccd6.py",
+      "encoding": "identity",
+      "bytes": 98078,
+      "sha256": "3bb64792b62103e490166405ecc381aeb73f8f08b724a789f0f64e3bdeafccd6",
+      "stored_bytes": 98078,
+      "stored_sha256": "3bb64792b62103e490166405ecc381aeb73f8f08b724a789f0f64e3bdeafccd6"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/__init__.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/__init__.py",
+      "artifact": "blobs/17b4fa6e4eb64175b87586a6c7142b9fd2f5e88ba4321129d18e07e296adc5a6.py",
+      "encoding": "identity",
+      "bytes": 72,
+      "sha256": "17b4fa6e4eb64175b87586a6c7142b9fd2f5e88ba4321129d18e07e296adc5a6",
+      "stored_bytes": 72,
+      "stored_sha256": "17b4fa6e4eb64175b87586a6c7142b9fd2f5e88ba4321129d18e07e296adc5a6"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/association.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/association.py",
+      "artifact": "blobs/0c265ddde597bb03f6f56da0f4c6063a3a530ce2a19f2dceaf3378e987f811b3.py",
+      "encoding": "identity",
+      "bytes": 4147,
+      "sha256": "0c265ddde597bb03f6f56da0f4c6063a3a530ce2a19f2dceaf3378e987f811b3",
+      "stored_bytes": 4147,
+      "stored_sha256": "0c265ddde597bb03f6f56da0f4c6063a3a530ce2a19f2dceaf3378e987f811b3"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/balance.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/balance.py",
+      "artifact": "blobs/9b9cb6916d198f823b6e6af495c8cea6d0836f07243f3f4bda0b25a48a616712.py",
+      "encoding": "identity",
+      "bytes": 5310,
+      "sha256": "9b9cb6916d198f823b6e6af495c8cea6d0836f07243f3f4bda0b25a48a616712",
+      "stored_bytes": 5310,
+      "stored_sha256": "9b9cb6916d198f823b6e6af495c8cea6d0836f07243f3f4bda0b25a48a616712"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/boundary_certificate.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/boundary_certificate.py",
+      "artifact": "blobs/8f7c7a9d08716b795b1b107a268d5e2097933ee2709b4bcd7299c3ce548621f8.py",
+      "encoding": "identity",
+      "bytes": 5536,
+      "sha256": "8f7c7a9d08716b795b1b107a268d5e2097933ee2709b4bcd7299c3ce548621f8",
+      "stored_bytes": 5536,
+      "stored_sha256": "8f7c7a9d08716b795b1b107a268d5e2097933ee2709b4bcd7299c3ce548621f8"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/compatibility.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/compatibility.py",
+      "artifact": "blobs/a6b1dba264288688613e5039dd47ae5f8a7f7dfa362cff477779d6b2de65150a.py",
+      "encoding": "identity",
+      "bytes": 35645,
+      "sha256": "a6b1dba264288688613e5039dd47ae5f8a7f7dfa362cff477779d6b2de65150a",
+      "stored_bytes": 35645,
+      "stored_sha256": "a6b1dba264288688613e5039dd47ae5f8a7f7dfa362cff477779d6b2de65150a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/contact.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/contact.py",
+      "artifact": "blobs/7ebfe4210a819036edc18fcc6b9a3e94273f8644dc7c2a50904079c9100886b8.py",
+      "encoding": "identity",
+      "bytes": 35348,
+      "sha256": "7ebfe4210a819036edc18fcc6b9a3e94273f8644dc7c2a50904079c9100886b8",
+      "stored_bytes": 35348,
+      "stored_sha256": "7ebfe4210a819036edc18fcc6b9a3e94273f8644dc7c2a50904079c9100886b8"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/cooperative_fit.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/cooperative_fit.py",
+      "artifact": "blobs/97826c5b1d20b3d12e605eb84b0cc4af37ac9c5983a0e4cf4226a8c3924e7235.py",
+      "encoding": "identity",
+      "bytes": 15863,
+      "sha256": "97826c5b1d20b3d12e605eb84b0cc4af37ac9c5983a0e4cf4226a8c3924e7235",
+      "stored_bytes": 15863,
+      "stored_sha256": "97826c5b1d20b3d12e605eb84b0cc4af37ac9c5983a0e4cf4226a8c3924e7235"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/cooperative_scatter.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/cooperative_scatter.py",
+      "artifact": "blobs/b8e25a9893d8560747b09fa984576557d09a6a5fa712e376e5acf73c6cbef963.py",
+      "encoding": "identity",
+      "bytes": 8028,
+      "sha256": "b8e25a9893d8560747b09fa984576557d09a6a5fa712e376e5acf73c6cbef963",
+      "stored_bytes": 8028,
+      "stored_sha256": "b8e25a9893d8560747b09fa984576557d09a6a5fa712e376e5acf73c6cbef963"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/data.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/data.py",
+      "artifact": "blobs/081ee50334a918f8bef23fb891de3c4a6e5fa4964826069268497c0fa1cece19.py",
+      "encoding": "identity",
+      "bytes": 2171,
+      "sha256": "081ee50334a918f8bef23fb891de3c4a6e5fa4964826069268497c0fa1cece19",
+      "stored_bytes": 2171,
+      "stored_sha256": "081ee50334a918f8bef23fb891de3c4a6e5fa4964826069268497c0fa1cece19"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/factor.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/factor.py",
+      "artifact": "blobs/f2a059e88cf03b35a5fba2f88c3ac3f631a899d52cd841a6d268d9ccf087f81c.py",
+      "encoding": "identity",
+      "bytes": 14633,
+      "sha256": "f2a059e88cf03b35a5fba2f88c3ac3f631a899d52cd841a6d268d9ccf087f81c",
+      "stored_bytes": 14633,
+      "stored_sha256": "f2a059e88cf03b35a5fba2f88c3ac3f631a899d52cd841a6d268d9ccf087f81c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/failure.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/failure.py",
+      "artifact": "blobs/6c83464eafa08eb4a27c29f1574b420d29317f8413073b590adb76ce346858fc.py",
+      "encoding": "identity",
+      "bytes": 3205,
+      "sha256": "6c83464eafa08eb4a27c29f1574b420d29317f8413073b590adb76ce346858fc",
+      "stored_bytes": 3205,
+      "stored_sha256": "6c83464eafa08eb4a27c29f1574b420d29317f8413073b590adb76ce346858fc"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/footprint.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/footprint.py",
+      "artifact": "blobs/12e563f3dbd7b7b47506028cc2be4d5ac34b685424915df19450f84ab453b583.py",
+      "encoding": "identity",
+      "bytes": 31397,
+      "sha256": "12e563f3dbd7b7b47506028cc2be4d5ac34b685424915df19450f84ab453b583",
+      "stored_bytes": 31397,
+      "stored_sha256": "12e563f3dbd7b7b47506028cc2be4d5ac34b685424915df19450f84ab453b583"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/grid.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/grid.py",
+      "artifact": "blobs/f451674d257339ece41a258f22c7b95fe25d6fc51888854855de4320e26b9a90.py",
+      "encoding": "identity",
+      "bytes": 3661,
+      "sha256": "f451674d257339ece41a258f22c7b95fe25d6fc51888854855de4320e26b9a90",
+      "stored_bytes": 3661,
+      "stored_sha256": "f451674d257339ece41a258f22c7b95fe25d6fc51888854855de4320e26b9a90"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/history.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/history.py",
+      "artifact": "blobs/559e046d3405afc260be5cd5a0de5712e490518e73aafc288642261c3959657c.py",
+      "encoding": "identity",
+      "bytes": 7077,
+      "sha256": "559e046d3405afc260be5cd5a0de5712e490518e73aafc288642261c3959657c",
+      "stored_bytes": 7077,
+      "stored_sha256": "559e046d3405afc260be5cd5a0de5712e490518e73aafc288642261c3959657c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/intrinsic.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/intrinsic.py",
+      "artifact": "blobs/6f4f67d0864184520a788e8214fc07e28cb730321654d9f931798af2f0e3e6be.py",
+      "encoding": "identity",
+      "bytes": 25264,
+      "sha256": "6f4f67d0864184520a788e8214fc07e28cb730321654d9f931798af2f0e3e6be",
+      "stored_bytes": 25264,
+      "stored_sha256": "6f4f67d0864184520a788e8214fc07e28cb730321654d9f931798af2f0e3e6be"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/inverse.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/inverse.py",
+      "artifact": "blobs/b15ef055df018d96b92aa2b0be3d39d258b4cc59c83dbccdd9dcf0c173eb2a43.py",
+      "encoding": "identity",
+      "bytes": 3908,
+      "sha256": "b15ef055df018d96b92aa2b0be3d39d258b4cc59c83dbccdd9dcf0c173eb2a43",
+      "stored_bytes": 3908,
+      "stored_sha256": "b15ef055df018d96b92aa2b0be3d39d258b4cc59c83dbccdd9dcf0c173eb2a43"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/lifecycle.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/lifecycle.py",
+      "artifact": "blobs/aec6ccc09b9da6fc15ea1c64e6716dee9325b3d05edaa7ac19b4419861c192fa.py",
+      "encoding": "identity",
+      "bytes": 1826,
+      "sha256": "aec6ccc09b9da6fc15ea1c64e6716dee9325b3d05edaa7ac19b4419861c192fa",
+      "stored_bytes": 1826,
+      "stored_sha256": "aec6ccc09b9da6fc15ea1c64e6716dee9325b3d05edaa7ac19b4419861c192fa"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/model.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/model.py",
+      "artifact": "blobs/02deae6f14789dfe8c6470432a5ad8cdd372f27008a5f6ea902a07dff6dda97f.py",
+      "encoding": "identity",
+      "bytes": 15959,
+      "sha256": "02deae6f14789dfe8c6470432a5ad8cdd372f27008a5f6ea902a07dff6dda97f",
+      "stored_bytes": 15959,
+      "stored_sha256": "02deae6f14789dfe8c6470432a5ad8cdd372f27008a5f6ea902a07dff6dda97f"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/operators.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/operators.py",
+      "artifact": "blobs/40ad5e488e928a8f22efe0833f447afba7ef0e258bc3cffb5a0fe30bc1d416ff.py",
+      "encoding": "identity",
+      "bytes": 10408,
+      "sha256": "40ad5e488e928a8f22efe0833f447afba7ef0e258bc3cffb5a0fe30bc1d416ff",
+      "stored_bytes": 10408,
+      "stored_sha256": "40ad5e488e928a8f22efe0833f447afba7ef0e258bc3cffb5a0fe30bc1d416ff"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/paths.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/paths.py",
+      "artifact": "blobs/a4d9f4a3b407d5d153b4ba00612cea9888ad9299692fd381eff33ab738bcb352.py",
+      "encoding": "identity",
+      "bytes": 10803,
+      "sha256": "a4d9f4a3b407d5d153b4ba00612cea9888ad9299692fd381eff33ab738bcb352",
+      "stored_bytes": 10803,
+      "stored_sha256": "a4d9f4a3b407d5d153b4ba00612cea9888ad9299692fd381eff33ab738bcb352"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/pipeline.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/pipeline.py",
+      "artifact": "blobs/5677953121fc287950a1a86ab80a781929032b13ffae3d9698b0d28426722de9.py",
+      "encoding": "identity",
+      "bytes": 5573,
+      "sha256": "5677953121fc287950a1a86ab80a781929032b13ffae3d9698b0d28426722de9",
+      "stored_bytes": 5573,
+      "stored_sha256": "5677953121fc287950a1a86ab80a781929032b13ffae3d9698b0d28426722de9"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/post.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/post.py",
+      "artifact": "blobs/e19a87869e01403119880a16e6d7e221a6e3653b24fff174cc01a9390458901e.py",
+      "encoding": "identity",
+      "bytes": 3326,
+      "sha256": "e19a87869e01403119880a16e6d7e221a6e3653b24fff174cc01a9390458901e",
+      "stored_bytes": 3326,
+      "stored_sha256": "e19a87869e01403119880a16e6d7e221a6e3653b24fff174cc01a9390458901e"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/provenance.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/provenance.py",
+      "artifact": "blobs/cdb00916ffa41aa7b29ed2ba03759d6ae7ec899900aa59dc16abce4c8c036a1a.py",
+      "encoding": "identity",
+      "bytes": 13238,
+      "sha256": "cdb00916ffa41aa7b29ed2ba03759d6ae7ec899900aa59dc16abce4c8c036a1a",
+      "stored_bytes": 13238,
+      "stored_sha256": "cdb00916ffa41aa7b29ed2ba03759d6ae7ec899900aa59dc16abce4c8c036a1a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/recovery.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/recovery.py",
+      "artifact": "blobs/f8c25dc73a4de4033bfebb6076d725fba5a4f00346a69ecb4660555a4dcd3efe.py",
+      "encoding": "identity",
+      "bytes": 26146,
+      "sha256": "f8c25dc73a4de4033bfebb6076d725fba5a4f00346a69ecb4660555a4dcd3efe",
+      "stored_bytes": 26146,
+      "stored_sha256": "f8c25dc73a4de4033bfebb6076d725fba5a4f00346a69ecb4660555a4dcd3efe"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/scatter.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/scatter.py",
+      "artifact": "blobs/f1aec3bdf7f1f8c0e6dc2a587874afe6dcefd1e9dc5147859711098736a7b399.py",
+      "encoding": "identity",
+      "bytes": 13531,
+      "sha256": "f1aec3bdf7f1f8c0e6dc2a587874afe6dcefd1e9dc5147859711098736a7b399",
+      "stored_bytes": 13531,
+      "stored_sha256": "f1aec3bdf7f1f8c0e6dc2a587874afe6dcefd1e9dc5147859711098736a7b399"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/solve.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/solve.py",
+      "artifact": "blobs/7a69e5aace87d1c9a642698ad3381c2bdfc27c765f27447d97d5a18a2916393c.py",
+      "encoding": "identity",
+      "bytes": 14656,
+      "sha256": "7a69e5aace87d1c9a642698ad3381c2bdfc27c765f27447d97d5a18a2916393c",
+      "stored_bytes": 14656,
+      "stored_sha256": "7a69e5aace87d1c9a642698ad3381c2bdfc27c765f27447d97d5a18a2916393c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/source_vertices.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/source_vertices.py",
+      "artifact": "blobs/4bb61a95aeb8fbe6577daadff68abd5bc25e1da19b97a39bf04b39243b99c8cf.py",
+      "encoding": "identity",
+      "bytes": 8421,
+      "sha256": "4bb61a95aeb8fbe6577daadff68abd5bc25e1da19b97a39bf04b39243b99c8cf",
+      "stored_bytes": 8421,
+      "stored_sha256": "4bb61a95aeb8fbe6577daadff68abd5bc25e1da19b97a39bf04b39243b99c8cf"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/surface.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/surface.py",
+      "artifact": "blobs/b83ee1d677294001d0da2613b99fbfe689a014c27bd01bdd06c703d39b32f30e.py",
+      "encoding": "identity",
+      "bytes": 5052,
+      "sha256": "b83ee1d677294001d0da2613b99fbfe689a014c27bd01bdd06c703d39b32f30e",
+      "stored_bytes": 5052,
+      "stored_sha256": "b83ee1d677294001d0da2613b99fbfe689a014c27bd01bdd06c703d39b32f30e"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/surface_inverse.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/surface_inverse.py",
+      "artifact": "blobs/aab910a4172d681a3184f9b8f40d3f2727e80fa81061dc0b50a0f3dbee36ed17.py",
+      "encoding": "identity",
+      "bytes": 7072,
+      "sha256": "aab910a4172d681a3184f9b8f40d3f2727e80fa81061dc0b50a0f3dbee36ed17",
+      "stored_bytes": 7072,
+      "stored_sha256": "aab910a4172d681a3184f9b8f40d3f2727e80fa81061dc0b50a0f3dbee36ed17"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/topology.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/topology.py",
+      "artifact": "blobs/0e6c421b6fcd66e456417cded1f6b7403474b957d263b4ae5d52b1a9f5b12cd2.py",
+      "encoding": "identity",
+      "bytes": 2646,
+      "sha256": "0e6c421b6fcd66e456417cded1f6b7403474b957d263b4ae5d52b1a9f5b12cd2",
+      "stored_bytes": 2646,
+      "stored_sha256": "0e6c421b6fcd66e456417cded1f6b7403474b957d263b4ae5d52b1a9f5b12cd2"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/traction.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/genesis/engine/solvers/rigid/stress/traction.py",
+      "artifact": "blobs/1376bf6ab19fbab3b155808dece101bd91e81723f1226c32873c3d62c192b77f.py",
+      "encoding": "identity",
+      "bytes": 39045,
+      "sha256": "1376bf6ab19fbab3b155808dece101bd91e81723f1226c32873c3d62c192b77f",
+      "stored_bytes": 39045,
+      "stored_sha256": "1376bf6ab19fbab3b155808dece101bd91e81723f1226c32873c3d62c192b77f"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/genesis/options/morphs.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/genesis/options/morphs.py",
+      "artifact": "blobs/3a6fda0b9150a9fe8feaf173eb46a096c06fe6b057580ced7f93d32654aafc7f.py",
+      "encoding": "identity",
+      "bytes": 101878,
+      "sha256": "3a6fda0b9150a9fe8feaf173eb46a096c06fe6b057580ced7f93d32654aafc7f",
+      "stored_bytes": 101878,
+      "stored_sha256": "3a6fda0b9150a9fe8feaf173eb46a096c06fe6b057580ced7f93d32654aafc7f"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/genesis/options/rigid_stress.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/genesis/options/rigid_stress.py",
+      "artifact": "blobs/a068320bb085348436b429ca79b6886aedc6108b0d5954d641c549c0bb7c418a.py",
+      "encoding": "identity",
+      "bytes": 10754,
+      "sha256": "a068320bb085348436b429ca79b6886aedc6108b0d5954d641c549c0bb7c418a",
+      "stored_bytes": 10754,
+      "stored_sha256": "a068320bb085348436b429ca79b6886aedc6108b0d5954d641c549c0bb7c418a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan_frontier_candidate_v1.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan_frontier_candidate_v1.py",
+      "artifact": "blobs/09de232f86f3f01aa2294c23ce72772115cf22a5556d42ac8b95dae4a3575b9d.py",
+      "encoding": "identity",
+      "bytes": 9881,
+      "sha256": "09de232f86f3f01aa2294c23ce72772115cf22a5556d42ac8b95dae4a3575b9d",
+      "stored_bytes": 9881,
+      "stored_sha256": "09de232f86f3f01aa2294c23ce72772115cf22a5556d42ac8b95dae4a3575b9d"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/probe_fan_frontier_v1.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/probe_fan_frontier_v1.py",
+      "artifact": "blobs/7eb48159d2950b4fdf0480bf25d853d28d1d009252cb52f043d1d83947e007c6.py",
+      "encoding": "identity",
+      "bytes": 1149,
+      "sha256": "7eb48159d2950b4fdf0480bf25d853d28d1d009252cb52f043d1d83947e007c6",
+      "stored_bytes": 1149,
+      "stored_sha256": "7eb48159d2950b4fdf0480bf25d853d28d1d009252cb52f043d1d83947e007c6"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/run_fan_frontier_regression_v1.sh",
+      "run_path": "fan-frontier-regression-v1/cpu/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/run_fan_frontier_regression_v1.sh",
+      "artifact": "blobs/203b61ce0caa075911cf3e7541e772f493dc7b094ee47510bab4a4d01ea42a8f.sh",
+      "encoding": "identity",
+      "bytes": 2478,
+      "sha256": "203b61ce0caa075911cf3e7541e772f493dc7b094ee47510bab4a4d01ea42a8f",
+      "stored_bytes": 2478,
+      "stored_sha256": "203b61ce0caa075911cf3e7541e772f493dc7b094ee47510bab4a4d01ea42a8f"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/research/rigid_stress/field_cpu.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/research/rigid_stress/field_cpu.py",
+      "artifact": "blobs/3a49fb0fcbb757e9621439d49c93ca793be29b3ebb0ce55484b68344fa70cdda.py",
+      "encoding": "identity",
+      "bytes": 1304,
+      "sha256": "3a49fb0fcbb757e9621439d49c93ca793be29b3ebb0ce55484b68344fa70cdda",
+      "stored_bytes": 1304,
+      "stored_sha256": "3a49fb0fcbb757e9621439d49c93ca793be29b3ebb0ce55484b68344fa70cdda"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/research/rigid_stress/mechanics.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/research/rigid_stress/mechanics.py",
+      "artifact": "blobs/5c0a18e905b003c959690c9b4ae15369d4026c6716177bb2539e096a4555130b.py",
+      "encoding": "identity",
+      "bytes": 17733,
+      "sha256": "5c0a18e905b003c959690c9b4ae15369d4026c6716177bb2539e096a4555130b",
+      "stored_bytes": 17733,
+      "stored_sha256": "5c0a18e905b003c959690c9b4ae15369d4026c6716177bb2539e096a4555130b"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/research/rigid_stress/scripts/check_nonconvex_contact.sh",
+      "run_path": "fan-frontier-regression-v1/cpu/source/research/rigid_stress/scripts/check_nonconvex_contact.sh",
+      "artifact": "blobs/7459bea8d3a9eba5141a4b76cba40c35817433b6e06d42bff5d42f7c3764d65c.sh",
+      "encoding": "identity",
+      "bytes": 2580,
+      "sha256": "7459bea8d3a9eba5141a4b76cba40c35817433b6e06d42bff5d42f7c3764d65c",
+      "stored_bytes": 2580,
+      "stored_sha256": "7459bea8d3a9eba5141a4b76cba40c35817433b6e06d42bff5d42f7c3764d65c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/research/rigid_stress/wrench.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/research/rigid_stress/wrench.py",
+      "artifact": "blobs/090156b375800d8f3faabc2b7e507b64852cd0edf1c9cd1951da9e0730a523e2.py",
+      "encoding": "identity",
+      "bytes": 21161,
+      "sha256": "090156b375800d8f3faabc2b7e507b64852cd0edf1c9cd1951da9e0730a523e2",
+      "stored_bytes": 21161,
+      "stored_sha256": "090156b375800d8f3faabc2b7e507b64852cd0edf1c9cd1951da9e0730a523e2"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/tests/rigid/assets/nonconvex_mesh64_small_disk.npz",
+      "run_path": "fan-frontier-regression-v1/cpu/source/tests/rigid/assets/nonconvex_mesh64_small_disk.npz",
+      "artifact": "blobs/76fa3d25cd757fb0dac67a63513a9471cab4b8aceb0a9f3141d913dc9644ee71.npz",
+      "encoding": "identity",
+      "bytes": 2479,
+      "sha256": "76fa3d25cd757fb0dac67a63513a9471cab4b8aceb0a9f3141d913dc9644ee71",
+      "stored_bytes": 2479,
+      "stored_sha256": "76fa3d25cd757fb0dac67a63513a9471cab4b8aceb0a9f3141d913dc9644ee71"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/tests/rigid/assets/nonconvex_mesh64_tick1076.npz",
+      "run_path": "fan-frontier-regression-v1/cpu/source/tests/rigid/assets/nonconvex_mesh64_tick1076.npz",
+      "artifact": "blobs/69ef143b78b312f8edde12f200917f72c25931bd819773d0dd02228a7784ffac.npz",
+      "encoding": "identity",
+      "bytes": 1233,
+      "sha256": "69ef143b78b312f8edde12f200917f72c25931bd819773d0dd02228a7784ffac",
+      "stored_bytes": 1233,
+      "stored_sha256": "69ef143b78b312f8edde12f200917f72c25931bd819773d0dd02228a7784ffac"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/tests/rigid/assets/nonconvex_mesh64_tick113.npz",
+      "run_path": "fan-frontier-regression-v1/cpu/source/tests/rigid/assets/nonconvex_mesh64_tick113.npz",
+      "artifact": "blobs/8b3ddac9dac23b16875f27fe11573d2ceda7528115b229e85f4e662b218e6451.npz",
+      "encoding": "identity",
+      "bytes": 1690,
+      "sha256": "8b3ddac9dac23b16875f27fe11573d2ceda7528115b229e85f4e662b218e6451",
+      "stored_bytes": 1690,
+      "stored_sha256": "8b3ddac9dac23b16875f27fe11573d2ceda7528115b229e85f4e662b218e6451"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/tests/rigid/assets/nonconvex_mesh64_tick114.npz",
+      "run_path": "fan-frontier-regression-v1/cpu/source/tests/rigid/assets/nonconvex_mesh64_tick114.npz",
+      "artifact": "blobs/85f316523a7920a3f0a58c516fcfcadf85a35b2da16adbb954083d781f31893c.npz",
+      "encoding": "identity",
+      "bytes": 1604,
+      "sha256": "85f316523a7920a3f0a58c516fcfcadf85a35b2da16adbb954083d781f31893c",
+      "stored_bytes": 1604,
+      "stored_sha256": "85f316523a7920a3f0a58c516fcfcadf85a35b2da16adbb954083d781f31893c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/tests/rigid/assets/nonconvex_mesh64_tick147.npz",
+      "run_path": "fan-frontier-regression-v1/cpu/source/tests/rigid/assets/nonconvex_mesh64_tick147.npz",
+      "artifact": "blobs/fdc297ab68271700eba4b3fa4a193e51326ff051c1d0a544f07ffc2382738f4d.npz",
+      "encoding": "identity",
+      "bytes": 2204,
+      "sha256": "fdc297ab68271700eba4b3fa4a193e51326ff051c1d0a544f07ffc2382738f4d",
+      "stored_bytes": 2204,
+      "stored_sha256": "fdc297ab68271700eba4b3fa4a193e51326ff051c1d0a544f07ffc2382738f4d"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/tests/rigid/assets/nonconvex_mesh64_tick427.npz",
+      "run_path": "fan-frontier-regression-v1/cpu/source/tests/rigid/assets/nonconvex_mesh64_tick427.npz",
+      "artifact": "blobs/635f643c3059f2875873f51d180bfd7f2af9371fad4aa941f34dd89b462f6543.npz",
+      "encoding": "identity",
+      "bytes": 2203,
+      "sha256": "635f643c3059f2875873f51d180bfd7f2af9371fad4aa941f34dd89b462f6543",
+      "stored_bytes": 2203,
+      "stored_sha256": "635f643c3059f2875873f51d180bfd7f2af9371fad4aa941f34dd89b462f6543"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/tests/rigid/assets/nonconvex_mesh64_tick454.npz",
+      "run_path": "fan-frontier-regression-v1/cpu/source/tests/rigid/assets/nonconvex_mesh64_tick454.npz",
+      "artifact": "blobs/e36f7b720d68e6c934510213cf25a0d98330523abf36f32d008270f4686e1b76.npz",
+      "encoding": "identity",
+      "bytes": 2205,
+      "sha256": "e36f7b720d68e6c934510213cf25a0d98330523abf36f32d008270f4686e1b76",
+      "stored_bytes": 2205,
+      "stored_sha256": "e36f7b720d68e6c934510213cf25a0d98330523abf36f32d008270f4686e1b76"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/tests/rigid/assets/nonconvex_mesh64_tick517.npz",
+      "run_path": "fan-frontier-regression-v1/cpu/source/tests/rigid/assets/nonconvex_mesh64_tick517.npz",
+      "artifact": "blobs/7823b815dd50229d2c83750d23043c77d7a5a058ee2ef449fc89b885f94719cd.npz",
+      "encoding": "identity",
+      "bytes": 1036,
+      "sha256": "7823b815dd50229d2c83750d23043c77d7a5a058ee2ef449fc89b885f94719cd",
+      "stored_bytes": 1036,
+      "stored_sha256": "7823b815dd50229d2c83750d23043c77d7a5a058ee2ef449fc89b885f94719cd"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/tests/rigid/assets/nonconvex_mesh64_tick594.npz",
+      "run_path": "fan-frontier-regression-v1/cpu/source/tests/rigid/assets/nonconvex_mesh64_tick594.npz",
+      "artifact": "blobs/7fedbf7278d84dfdab038425eef3a638ce8ac61b7afa391dff85760cd99c2a7b.npz",
+      "encoding": "identity",
+      "bytes": 1231,
+      "sha256": "7fedbf7278d84dfdab038425eef3a638ce8ac61b7afa391dff85760cd99c2a7b",
+      "stored_bytes": 1231,
+      "stored_sha256": "7fedbf7278d84dfdab038425eef3a638ce8ac61b7afa391dff85760cd99c2a7b"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/tests/rigid/assets/nonconvex_mesh64_tick602.npz",
+      "run_path": "fan-frontier-regression-v1/cpu/source/tests/rigid/assets/nonconvex_mesh64_tick602.npz",
+      "artifact": "blobs/046c00e227f681d0cb1bd02d07fb6a751456490f8f3b80ababc60631cea8ba54.npz",
+      "encoding": "identity",
+      "bytes": 2324,
+      "sha256": "046c00e227f681d0cb1bd02d07fb6a751456490f8f3b80ababc60631cea8ba54",
+      "stored_bytes": 2324,
+      "stored_sha256": "046c00e227f681d0cb1bd02d07fb6a751456490f8f3b80ababc60631cea8ba54"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/tests/rigid/assets/nonconvex_plane_pair_tick1160.npz",
+      "run_path": "fan-frontier-regression-v1/cpu/source/tests/rigid/assets/nonconvex_plane_pair_tick1160.npz",
+      "artifact": "blobs/4b0921e2e4a4e8218f071eb42b0cb6b0ce937bd21036a484f7a81913e93d404e.npz",
+      "encoding": "identity",
+      "bytes": 2287,
+      "sha256": "4b0921e2e4a4e8218f071eb42b0cb6b0ce937bd21036a484f7a81913e93d404e",
+      "stored_bytes": 2287,
+      "stored_sha256": "4b0921e2e4a4e8218f071eb42b0cb6b0ce937bd21036a484f7a81913e93d404e"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/tests/rigid/assets/nonconvex_plane_pair_tick710.npz",
+      "run_path": "fan-frontier-regression-v1/cpu/source/tests/rigid/assets/nonconvex_plane_pair_tick710.npz",
+      "artifact": "blobs/536b13e24c658f53a015b63f90d781ed8f33cc21b9563c4a10fd150939bad3d3.npz",
+      "encoding": "identity",
+      "bytes": 2295,
+      "sha256": "536b13e24c658f53a015b63f90d781ed8f33cc21b9563c4a10fd150939bad3d3",
+      "stored_bytes": 2295,
+      "stored_sha256": "536b13e24c658f53a015b63f90d781ed8f33cc21b9563c4a10fd150939bad3d3"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/tests/rigid/assets/nonconvex_policy_tick876.npz",
+      "run_path": "fan-frontier-regression-v1/cpu/source/tests/rigid/assets/nonconvex_policy_tick876.npz",
+      "artifact": "blobs/6655457c43c5def87011d4423264ee4ad3147a42ee070f6362ab560b03546cdc.npz",
+      "encoding": "identity",
+      "bytes": 12660,
+      "sha256": "6655457c43c5def87011d4423264ee4ad3147a42ee070f6362ab560b03546cdc",
+      "stored_bytes": 12660,
+      "stored_sha256": "6655457c43c5def87011d4423264ee4ad3147a42ee070f6362ab560b03546cdc"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/tests/rigid/assets/nonconvex_sliding_tick110.npz",
+      "run_path": "fan-frontier-regression-v1/cpu/source/tests/rigid/assets/nonconvex_sliding_tick110.npz",
+      "artifact": "blobs/1e8d329d4b6e8d9e841b15512387aa822f139c051f379405569a7a47817d5acc.npz",
+      "encoding": "identity",
+      "bytes": 1998,
+      "sha256": "1e8d329d4b6e8d9e841b15512387aa822f139c051f379405569a7a47817d5acc",
+      "stored_bytes": 1998,
+      "stored_sha256": "1e8d329d4b6e8d9e841b15512387aa822f139c051f379405569a7a47817d5acc"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/tests/rigid/assets/nonconvex_sliding_tick400.npz",
+      "run_path": "fan-frontier-regression-v1/cpu/source/tests/rigid/assets/nonconvex_sliding_tick400.npz",
+      "artifact": "blobs/8d2eba72cc8c31002b49a4eac99ce0d3469834d47a8b806905c49b9cb5287c51.npz",
+      "encoding": "identity",
+      "bytes": 5517,
+      "sha256": "8d2eba72cc8c31002b49a4eac99ce0d3469834d47a8b806905c49b9cb5287c51",
+      "stored_bytes": 5517,
+      "stored_sha256": "8d2eba72cc8c31002b49a4eac99ce0d3469834d47a8b806905c49b9cb5287c51"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/tests/rigid/assets/nonconvex_sliding_tick460.npz",
+      "run_path": "fan-frontier-regression-v1/cpu/source/tests/rigid/assets/nonconvex_sliding_tick460.npz",
+      "artifact": "blobs/373a0bb52ddb41622ee20321d8835a0141a44fa064fda476bee625a7913c74af.npz",
+      "encoding": "identity",
+      "bytes": 4910,
+      "sha256": "373a0bb52ddb41622ee20321d8835a0141a44fa064fda476bee625a7913c74af",
+      "stored_bytes": 4910,
+      "stored_sha256": "373a0bb52ddb41622ee20321d8835a0141a44fa064fda476bee625a7913c74af"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/tests/rigid/assets/nonconvex_urdf_tick111.npz",
+      "run_path": "fan-frontier-regression-v1/cpu/source/tests/rigid/assets/nonconvex_urdf_tick111.npz",
+      "artifact": "blobs/71762cd15131ed95402333167a360d60339ae50483f0638ecf4138853e4497b8.npz",
+      "encoding": "identity",
+      "bytes": 1998,
+      "sha256": "71762cd15131ed95402333167a360d60339ae50483f0638ecf4138853e4497b8",
+      "stored_bytes": 1998,
+      "stored_sha256": "71762cd15131ed95402333167a360d60339ae50483f0638ecf4138853e4497b8"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/tests/rigid/test_stress_compatibility.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/tests/rigid/test_stress_compatibility.py",
+      "artifact": "blobs/a9b549d76a32825a9a69a8060b3f395bd1cdabe87722471c8f32ff6056dc3143.py",
+      "encoding": "identity",
+      "bytes": 28460,
+      "sha256": "a9b549d76a32825a9a69a8060b3f395bd1cdabe87722471c8f32ff6056dc3143",
+      "stored_bytes": 28460,
+      "stored_sha256": "a9b549d76a32825a9a69a8060b3f395bd1cdabe87722471c8f32ff6056dc3143"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/tests/rigid/test_stress_disk_refinement.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/tests/rigid/test_stress_disk_refinement.py",
+      "artifact": "blobs/294e34e0fb63e09301be6f644bd6785c1d09c674867b633aabdf7e20bcdedf20.py",
+      "encoding": "identity",
+      "bytes": 16559,
+      "sha256": "294e34e0fb63e09301be6f644bd6785c1d09c674867b633aabdf7e20bcdedf20",
+      "stored_bytes": 16559,
+      "stored_sha256": "294e34e0fb63e09301be6f644bd6785c1d09c674867b633aabdf7e20bcdedf20"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/tests/rigid/test_stress_disk_torque.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/tests/rigid/test_stress_disk_torque.py",
+      "artifact": "blobs/9dcf99c04df016e1ccbbb9270b47920b16d323d32e3f1f645dfce5008f3f544f.py",
+      "encoding": "identity",
+      "bytes": 11055,
+      "sha256": "9dcf99c04df016e1ccbbb9270b47920b16d323d32e3f1f645dfce5008f3f544f",
+      "stored_bytes": 11055,
+      "stored_sha256": "9dcf99c04df016e1ccbbb9270b47920b16d323d32e3f1f645dfce5008f3f544f"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/tests/rigid/test_stress_failure_diagnostics.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/tests/rigid/test_stress_failure_diagnostics.py",
+      "artifact": "blobs/79c58ac0fd88de4951f93bc0b1523fd39d5e748e37053a7c1ebba77ee638eda6.py",
+      "encoding": "identity",
+      "bytes": 4215,
+      "sha256": "79c58ac0fd88de4951f93bc0b1523fd39d5e748e37053a7c1ebba77ee638eda6",
+      "stored_bytes": 4215,
+      "stored_sha256": "79c58ac0fd88de4951f93bc0b1523fd39d5e748e37053a7c1ebba77ee638eda6"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/tests/rigid/test_stress_footprint.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/tests/rigid/test_stress_footprint.py",
+      "artifact": "blobs/075caf313a3c91b201956c8032161ff38ab7444f8b464b4b232243b61a65a920.py",
+      "encoding": "identity",
+      "bytes": 25039,
+      "sha256": "075caf313a3c91b201956c8032161ff38ab7444f8b464b4b232243b61a65a920",
+      "stored_bytes": 25039,
+      "stored_sha256": "075caf313a3c91b201956c8032161ff38ab7444f8b464b4b232243b61a65a920"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/tests/rigid/test_stress_nonconvex.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/tests/rigid/test_stress_nonconvex.py",
+      "artifact": "blobs/25788caa5bb20723757d6d6d509b982fdf4acbbdae8b9e4b8fc58c4f382f015a.py",
+      "encoding": "identity",
+      "bytes": 15508,
+      "sha256": "25788caa5bb20723757d6d6d509b982fdf4acbbdae8b9e4b8fc58c4f382f015a",
+      "stored_bytes": 15508,
+      "stored_sha256": "25788caa5bb20723757d6d6d509b982fdf4acbbdae8b9e4b8fc58c4f382f015a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/tests/rigid/test_stress_shared_lifecycle.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/tests/rigid/test_stress_shared_lifecycle.py",
+      "artifact": "blobs/a4a9f644808571d511c8e7062c5f126c1a3bce5b0ff31cfd29726b1308b1493b.py",
+      "encoding": "identity",
+      "bytes": 8537,
+      "sha256": "a4a9f644808571d511c8e7062c5f126c1a3bce5b0ff31cfd29726b1308b1493b",
+      "stored_bytes": 8537,
+      "stored_sha256": "a4a9f644808571d511c8e7062c5f126c1a3bce5b0ff31cfd29726b1308b1493b"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/tests/rigid/test_stress_shared_support.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/tests/rigid/test_stress_shared_support.py",
+      "artifact": "blobs/89427a30a570dffc741d83475e359b436a896a94add7b346d68d169f64a463eb.py",
+      "encoding": "identity",
+      "bytes": 11654,
+      "sha256": "89427a30a570dffc741d83475e359b436a896a94add7b346d68d169f64a463eb",
+      "stored_bytes": 11654,
+      "stored_sha256": "89427a30a570dffc741d83475e359b436a896a94add7b346d68d169f64a463eb"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/tests/rigid/test_stress_sliding_footprint.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/tests/rigid/test_stress_sliding_footprint.py",
+      "artifact": "blobs/334d45d6bcaabc81d32469789a1e1ebe9a09983ec058fccebbb5324a2fd20b2a.py",
+      "encoding": "identity",
+      "bytes": 9515,
+      "sha256": "334d45d6bcaabc81d32469789a1e1ebe9a09983ec058fccebbb5324a2fd20b2a",
+      "stored_bytes": 9515,
+      "stored_sha256": "334d45d6bcaabc81d32469789a1e1ebe9a09983ec058fccebbb5324a2fd20b2a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/tests/rigid/test_stress_sources.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/tests/rigid/test_stress_sources.py",
+      "artifact": "blobs/27fd5d4b5b766364dbfc513c07eeae25c5f137d53e2fa0f01b18c5d154adc22a.py",
+      "encoding": "identity",
+      "bytes": 12596,
+      "sha256": "27fd5d4b5b766364dbfc513c07eeae25c5f137d53e2fa0f01b18c5d154adc22a",
+      "stored_bytes": 12596,
+      "stored_sha256": "27fd5d4b5b766364dbfc513c07eeae25c5f137d53e2fa0f01b18c5d154adc22a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/tests/rigid/test_stress_surface_fan.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/tests/rigid/test_stress_surface_fan.py",
+      "artifact": "blobs/f247062b7bdab96670a068fd471645dc63e25ddb777f70c6fb25a3b2101c619e.py",
+      "encoding": "identity",
+      "bytes": 27725,
+      "sha256": "f247062b7bdab96670a068fd471645dc63e25ddb777f70c6fb25a3b2101c619e",
+      "stored_bytes": 27725,
+      "stored_sha256": "f247062b7bdab96670a068fd471645dc63e25ddb777f70c6fb25a3b2101c619e"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source/tests/rigid/test_stress_traction.py",
+      "run_path": "fan-frontier-regression-v1/cpu/source/tests/rigid/test_stress_traction.py",
+      "artifact": "blobs/864178ac96941605f8778f7be1a5a61f125d13ccf6a4a5811bf71a24757e34bc.py",
+      "encoding": "identity",
+      "bytes": 18084,
+      "sha256": "864178ac96941605f8778f7be1a5a61f125d13ccf6a4a5811bf71a24757e34bc",
+      "stored_bytes": 18084,
+      "stored_sha256": "864178ac96941605f8778f7be1a5a61f125d13ccf6a4a5811bf71a24757e34bc"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source-after.sha256",
+      "run_path": "fan-frontier-regression-v1/cpu/source-after.sha256",
+      "artifact": "blobs/099a161b41da35cdccdcfc416034414d20f00df614765cec7bf0cac0af173d47.sha256",
+      "encoding": "identity",
+      "bytes": 8309,
+      "sha256": "099a161b41da35cdccdcfc416034414d20f00df614765cec7bf0cac0af173d47",
+      "stored_bytes": 8309,
+      "stored_sha256": "099a161b41da35cdccdcfc416034414d20f00df614765cec7bf0cac0af173d47"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/source.sha256",
+      "run_path": "fan-frontier-regression-v1/cpu/source.sha256",
+      "artifact": "blobs/099a161b41da35cdccdcfc416034414d20f00df614765cec7bf0cac0af173d47.sha256",
+      "encoding": "identity",
+      "bytes": 8309,
+      "sha256": "099a161b41da35cdccdcfc416034414d20f00df614765cec7bf0cac0af173d47",
+      "stored_bytes": 8309,
+      "stored_sha256": "099a161b41da35cdccdcfc416034414d20f00df614765cec7bf0cac0af173d47"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cpu/tests.log",
+      "run_path": "fan-frontier-regression-v1/cpu/tests.log",
+      "artifact": "blobs/336a72d3564f38d08b07220e821b5a7d18bc58aea8913b31f140fdb2c48d83e6.log",
+      "encoding": "identity",
+      "bytes": 3951,
+      "sha256": "336a72d3564f38d08b07220e821b5a7d18bc58aea8913b31f140fdb2c48d83e6",
+      "stored_bytes": 3951,
+      "stored_sha256": "336a72d3564f38d08b07220e821b5a7d18bc58aea8913b31f140fdb2c48d83e6"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/hardware.csv",
+      "run_path": "fan-frontier-regression-v1/cuda/hardware.csv",
+      "artifact": "blobs/15cf426db1d98f92fcc4a1011a24cfa068d11bd554eb03087abe8895a0f8e6cf.csv",
+      "encoding": "identity",
+      "bytes": 108,
+      "sha256": "15cf426db1d98f92fcc4a1011a24cfa068d11bd554eb03087abe8895a0f8e6cf",
+      "stored_bytes": 108,
+      "stored_sha256": "15cf426db1d98f92fcc4a1011a24cfa068d11bd554eb03087abe8895a0f8e6cf"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/node.txt",
+      "run_path": "fan-frontier-regression-v1/cuda/node.txt",
+      "artifact": "blobs/979aa4a8fcc6a1a4afdf5fc422a2a2c038e1309f93e4cf5e6e9bd3878fc3c7c4.txt",
+      "encoding": "identity",
+      "bytes": 12,
+      "sha256": "979aa4a8fcc6a1a4afdf5fc422a2a2c038e1309f93e4cf5e6e9bd3878fc3c7c4",
+      "stored_bytes": 12,
+      "stored_sha256": "979aa4a8fcc6a1a4afdf5fc422a2a2c038e1309f93e4cf5e6e9bd3878fc3c7c4"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/examples/rigid/assets/hollow_egg/level1/elastic.npz",
+      "run_path": "fan-frontier-regression-v1/cuda/source/examples/rigid/assets/hollow_egg/level1/elastic.npz",
+      "artifact": "blobs/3b2b90d7ee39562a296422dab1e5ee66e87265949ee38eefd27c729633a995a4.npz",
+      "encoding": "identity",
+      "bytes": 3573,
+      "sha256": "3b2b90d7ee39562a296422dab1e5ee66e87265949ee38eefd27c729633a995a4",
+      "stored_bytes": 3573,
+      "stored_sha256": "3b2b90d7ee39562a296422dab1e5ee66e87265949ee38eefd27c729633a995a4"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/examples/speed_benchmark/rigid_stress.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/examples/speed_benchmark/rigid_stress.py",
+      "artifact": "blobs/c013f3b8a5b128629ce7d08922f975a34c98fe3e904fbe5563a5d101ffaa61ba.py",
+      "encoding": "identity",
+      "bytes": 40463,
+      "sha256": "c013f3b8a5b128629ce7d08922f975a34c98fe3e904fbe5563a5d101ffaa61ba",
+      "stored_bytes": 40463,
+      "stored_sha256": "c013f3b8a5b128629ce7d08922f975a34c98fe3e904fbe5563a5d101ffaa61ba"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/genesis/engine/entities/rigid_entity/description.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/genesis/engine/entities/rigid_entity/description.py",
+      "artifact": "blobs/3bb64792b62103e490166405ecc381aeb73f8f08b724a789f0f64e3bdeafccd6.py",
+      "encoding": "identity",
+      "bytes": 98078,
+      "sha256": "3bb64792b62103e490166405ecc381aeb73f8f08b724a789f0f64e3bdeafccd6",
+      "stored_bytes": 98078,
+      "stored_sha256": "3bb64792b62103e490166405ecc381aeb73f8f08b724a789f0f64e3bdeafccd6"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/__init__.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/__init__.py",
+      "artifact": "blobs/17b4fa6e4eb64175b87586a6c7142b9fd2f5e88ba4321129d18e07e296adc5a6.py",
+      "encoding": "identity",
+      "bytes": 72,
+      "sha256": "17b4fa6e4eb64175b87586a6c7142b9fd2f5e88ba4321129d18e07e296adc5a6",
+      "stored_bytes": 72,
+      "stored_sha256": "17b4fa6e4eb64175b87586a6c7142b9fd2f5e88ba4321129d18e07e296adc5a6"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/association.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/association.py",
+      "artifact": "blobs/0c265ddde597bb03f6f56da0f4c6063a3a530ce2a19f2dceaf3378e987f811b3.py",
+      "encoding": "identity",
+      "bytes": 4147,
+      "sha256": "0c265ddde597bb03f6f56da0f4c6063a3a530ce2a19f2dceaf3378e987f811b3",
+      "stored_bytes": 4147,
+      "stored_sha256": "0c265ddde597bb03f6f56da0f4c6063a3a530ce2a19f2dceaf3378e987f811b3"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/balance.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/balance.py",
+      "artifact": "blobs/9b9cb6916d198f823b6e6af495c8cea6d0836f07243f3f4bda0b25a48a616712.py",
+      "encoding": "identity",
+      "bytes": 5310,
+      "sha256": "9b9cb6916d198f823b6e6af495c8cea6d0836f07243f3f4bda0b25a48a616712",
+      "stored_bytes": 5310,
+      "stored_sha256": "9b9cb6916d198f823b6e6af495c8cea6d0836f07243f3f4bda0b25a48a616712"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/boundary_certificate.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/boundary_certificate.py",
+      "artifact": "blobs/8f7c7a9d08716b795b1b107a268d5e2097933ee2709b4bcd7299c3ce548621f8.py",
+      "encoding": "identity",
+      "bytes": 5536,
+      "sha256": "8f7c7a9d08716b795b1b107a268d5e2097933ee2709b4bcd7299c3ce548621f8",
+      "stored_bytes": 5536,
+      "stored_sha256": "8f7c7a9d08716b795b1b107a268d5e2097933ee2709b4bcd7299c3ce548621f8"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/compatibility.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/compatibility.py",
+      "artifact": "blobs/a6b1dba264288688613e5039dd47ae5f8a7f7dfa362cff477779d6b2de65150a.py",
+      "encoding": "identity",
+      "bytes": 35645,
+      "sha256": "a6b1dba264288688613e5039dd47ae5f8a7f7dfa362cff477779d6b2de65150a",
+      "stored_bytes": 35645,
+      "stored_sha256": "a6b1dba264288688613e5039dd47ae5f8a7f7dfa362cff477779d6b2de65150a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/contact.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/contact.py",
+      "artifact": "blobs/7ebfe4210a819036edc18fcc6b9a3e94273f8644dc7c2a50904079c9100886b8.py",
+      "encoding": "identity",
+      "bytes": 35348,
+      "sha256": "7ebfe4210a819036edc18fcc6b9a3e94273f8644dc7c2a50904079c9100886b8",
+      "stored_bytes": 35348,
+      "stored_sha256": "7ebfe4210a819036edc18fcc6b9a3e94273f8644dc7c2a50904079c9100886b8"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/cooperative_fit.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/cooperative_fit.py",
+      "artifact": "blobs/97826c5b1d20b3d12e605eb84b0cc4af37ac9c5983a0e4cf4226a8c3924e7235.py",
+      "encoding": "identity",
+      "bytes": 15863,
+      "sha256": "97826c5b1d20b3d12e605eb84b0cc4af37ac9c5983a0e4cf4226a8c3924e7235",
+      "stored_bytes": 15863,
+      "stored_sha256": "97826c5b1d20b3d12e605eb84b0cc4af37ac9c5983a0e4cf4226a8c3924e7235"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/cooperative_scatter.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/cooperative_scatter.py",
+      "artifact": "blobs/b8e25a9893d8560747b09fa984576557d09a6a5fa712e376e5acf73c6cbef963.py",
+      "encoding": "identity",
+      "bytes": 8028,
+      "sha256": "b8e25a9893d8560747b09fa984576557d09a6a5fa712e376e5acf73c6cbef963",
+      "stored_bytes": 8028,
+      "stored_sha256": "b8e25a9893d8560747b09fa984576557d09a6a5fa712e376e5acf73c6cbef963"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/data.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/data.py",
+      "artifact": "blobs/081ee50334a918f8bef23fb891de3c4a6e5fa4964826069268497c0fa1cece19.py",
+      "encoding": "identity",
+      "bytes": 2171,
+      "sha256": "081ee50334a918f8bef23fb891de3c4a6e5fa4964826069268497c0fa1cece19",
+      "stored_bytes": 2171,
+      "stored_sha256": "081ee50334a918f8bef23fb891de3c4a6e5fa4964826069268497c0fa1cece19"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/factor.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/factor.py",
+      "artifact": "blobs/f2a059e88cf03b35a5fba2f88c3ac3f631a899d52cd841a6d268d9ccf087f81c.py",
+      "encoding": "identity",
+      "bytes": 14633,
+      "sha256": "f2a059e88cf03b35a5fba2f88c3ac3f631a899d52cd841a6d268d9ccf087f81c",
+      "stored_bytes": 14633,
+      "stored_sha256": "f2a059e88cf03b35a5fba2f88c3ac3f631a899d52cd841a6d268d9ccf087f81c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/failure.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/failure.py",
+      "artifact": "blobs/6c83464eafa08eb4a27c29f1574b420d29317f8413073b590adb76ce346858fc.py",
+      "encoding": "identity",
+      "bytes": 3205,
+      "sha256": "6c83464eafa08eb4a27c29f1574b420d29317f8413073b590adb76ce346858fc",
+      "stored_bytes": 3205,
+      "stored_sha256": "6c83464eafa08eb4a27c29f1574b420d29317f8413073b590adb76ce346858fc"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/footprint.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/footprint.py",
+      "artifact": "blobs/12e563f3dbd7b7b47506028cc2be4d5ac34b685424915df19450f84ab453b583.py",
+      "encoding": "identity",
+      "bytes": 31397,
+      "sha256": "12e563f3dbd7b7b47506028cc2be4d5ac34b685424915df19450f84ab453b583",
+      "stored_bytes": 31397,
+      "stored_sha256": "12e563f3dbd7b7b47506028cc2be4d5ac34b685424915df19450f84ab453b583"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/grid.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/grid.py",
+      "artifact": "blobs/f451674d257339ece41a258f22c7b95fe25d6fc51888854855de4320e26b9a90.py",
+      "encoding": "identity",
+      "bytes": 3661,
+      "sha256": "f451674d257339ece41a258f22c7b95fe25d6fc51888854855de4320e26b9a90",
+      "stored_bytes": 3661,
+      "stored_sha256": "f451674d257339ece41a258f22c7b95fe25d6fc51888854855de4320e26b9a90"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/history.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/history.py",
+      "artifact": "blobs/559e046d3405afc260be5cd5a0de5712e490518e73aafc288642261c3959657c.py",
+      "encoding": "identity",
+      "bytes": 7077,
+      "sha256": "559e046d3405afc260be5cd5a0de5712e490518e73aafc288642261c3959657c",
+      "stored_bytes": 7077,
+      "stored_sha256": "559e046d3405afc260be5cd5a0de5712e490518e73aafc288642261c3959657c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/intrinsic.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/intrinsic.py",
+      "artifact": "blobs/6f4f67d0864184520a788e8214fc07e28cb730321654d9f931798af2f0e3e6be.py",
+      "encoding": "identity",
+      "bytes": 25264,
+      "sha256": "6f4f67d0864184520a788e8214fc07e28cb730321654d9f931798af2f0e3e6be",
+      "stored_bytes": 25264,
+      "stored_sha256": "6f4f67d0864184520a788e8214fc07e28cb730321654d9f931798af2f0e3e6be"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/inverse.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/inverse.py",
+      "artifact": "blobs/b15ef055df018d96b92aa2b0be3d39d258b4cc59c83dbccdd9dcf0c173eb2a43.py",
+      "encoding": "identity",
+      "bytes": 3908,
+      "sha256": "b15ef055df018d96b92aa2b0be3d39d258b4cc59c83dbccdd9dcf0c173eb2a43",
+      "stored_bytes": 3908,
+      "stored_sha256": "b15ef055df018d96b92aa2b0be3d39d258b4cc59c83dbccdd9dcf0c173eb2a43"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/lifecycle.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/lifecycle.py",
+      "artifact": "blobs/aec6ccc09b9da6fc15ea1c64e6716dee9325b3d05edaa7ac19b4419861c192fa.py",
+      "encoding": "identity",
+      "bytes": 1826,
+      "sha256": "aec6ccc09b9da6fc15ea1c64e6716dee9325b3d05edaa7ac19b4419861c192fa",
+      "stored_bytes": 1826,
+      "stored_sha256": "aec6ccc09b9da6fc15ea1c64e6716dee9325b3d05edaa7ac19b4419861c192fa"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/model.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/model.py",
+      "artifact": "blobs/02deae6f14789dfe8c6470432a5ad8cdd372f27008a5f6ea902a07dff6dda97f.py",
+      "encoding": "identity",
+      "bytes": 15959,
+      "sha256": "02deae6f14789dfe8c6470432a5ad8cdd372f27008a5f6ea902a07dff6dda97f",
+      "stored_bytes": 15959,
+      "stored_sha256": "02deae6f14789dfe8c6470432a5ad8cdd372f27008a5f6ea902a07dff6dda97f"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/operators.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/operators.py",
+      "artifact": "blobs/40ad5e488e928a8f22efe0833f447afba7ef0e258bc3cffb5a0fe30bc1d416ff.py",
+      "encoding": "identity",
+      "bytes": 10408,
+      "sha256": "40ad5e488e928a8f22efe0833f447afba7ef0e258bc3cffb5a0fe30bc1d416ff",
+      "stored_bytes": 10408,
+      "stored_sha256": "40ad5e488e928a8f22efe0833f447afba7ef0e258bc3cffb5a0fe30bc1d416ff"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/paths.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/paths.py",
+      "artifact": "blobs/a4d9f4a3b407d5d153b4ba00612cea9888ad9299692fd381eff33ab738bcb352.py",
+      "encoding": "identity",
+      "bytes": 10803,
+      "sha256": "a4d9f4a3b407d5d153b4ba00612cea9888ad9299692fd381eff33ab738bcb352",
+      "stored_bytes": 10803,
+      "stored_sha256": "a4d9f4a3b407d5d153b4ba00612cea9888ad9299692fd381eff33ab738bcb352"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/pipeline.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/pipeline.py",
+      "artifact": "blobs/5677953121fc287950a1a86ab80a781929032b13ffae3d9698b0d28426722de9.py",
+      "encoding": "identity",
+      "bytes": 5573,
+      "sha256": "5677953121fc287950a1a86ab80a781929032b13ffae3d9698b0d28426722de9",
+      "stored_bytes": 5573,
+      "stored_sha256": "5677953121fc287950a1a86ab80a781929032b13ffae3d9698b0d28426722de9"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/post.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/post.py",
+      "artifact": "blobs/e19a87869e01403119880a16e6d7e221a6e3653b24fff174cc01a9390458901e.py",
+      "encoding": "identity",
+      "bytes": 3326,
+      "sha256": "e19a87869e01403119880a16e6d7e221a6e3653b24fff174cc01a9390458901e",
+      "stored_bytes": 3326,
+      "stored_sha256": "e19a87869e01403119880a16e6d7e221a6e3653b24fff174cc01a9390458901e"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/provenance.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/provenance.py",
+      "artifact": "blobs/cdb00916ffa41aa7b29ed2ba03759d6ae7ec899900aa59dc16abce4c8c036a1a.py",
+      "encoding": "identity",
+      "bytes": 13238,
+      "sha256": "cdb00916ffa41aa7b29ed2ba03759d6ae7ec899900aa59dc16abce4c8c036a1a",
+      "stored_bytes": 13238,
+      "stored_sha256": "cdb00916ffa41aa7b29ed2ba03759d6ae7ec899900aa59dc16abce4c8c036a1a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/recovery.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/recovery.py",
+      "artifact": "blobs/f8c25dc73a4de4033bfebb6076d725fba5a4f00346a69ecb4660555a4dcd3efe.py",
+      "encoding": "identity",
+      "bytes": 26146,
+      "sha256": "f8c25dc73a4de4033bfebb6076d725fba5a4f00346a69ecb4660555a4dcd3efe",
+      "stored_bytes": 26146,
+      "stored_sha256": "f8c25dc73a4de4033bfebb6076d725fba5a4f00346a69ecb4660555a4dcd3efe"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/scatter.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/scatter.py",
+      "artifact": "blobs/f1aec3bdf7f1f8c0e6dc2a587874afe6dcefd1e9dc5147859711098736a7b399.py",
+      "encoding": "identity",
+      "bytes": 13531,
+      "sha256": "f1aec3bdf7f1f8c0e6dc2a587874afe6dcefd1e9dc5147859711098736a7b399",
+      "stored_bytes": 13531,
+      "stored_sha256": "f1aec3bdf7f1f8c0e6dc2a587874afe6dcefd1e9dc5147859711098736a7b399"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/solve.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/solve.py",
+      "artifact": "blobs/7a69e5aace87d1c9a642698ad3381c2bdfc27c765f27447d97d5a18a2916393c.py",
+      "encoding": "identity",
+      "bytes": 14656,
+      "sha256": "7a69e5aace87d1c9a642698ad3381c2bdfc27c765f27447d97d5a18a2916393c",
+      "stored_bytes": 14656,
+      "stored_sha256": "7a69e5aace87d1c9a642698ad3381c2bdfc27c765f27447d97d5a18a2916393c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/source_vertices.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/source_vertices.py",
+      "artifact": "blobs/4bb61a95aeb8fbe6577daadff68abd5bc25e1da19b97a39bf04b39243b99c8cf.py",
+      "encoding": "identity",
+      "bytes": 8421,
+      "sha256": "4bb61a95aeb8fbe6577daadff68abd5bc25e1da19b97a39bf04b39243b99c8cf",
+      "stored_bytes": 8421,
+      "stored_sha256": "4bb61a95aeb8fbe6577daadff68abd5bc25e1da19b97a39bf04b39243b99c8cf"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/surface.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/surface.py",
+      "artifact": "blobs/b83ee1d677294001d0da2613b99fbfe689a014c27bd01bdd06c703d39b32f30e.py",
+      "encoding": "identity",
+      "bytes": 5052,
+      "sha256": "b83ee1d677294001d0da2613b99fbfe689a014c27bd01bdd06c703d39b32f30e",
+      "stored_bytes": 5052,
+      "stored_sha256": "b83ee1d677294001d0da2613b99fbfe689a014c27bd01bdd06c703d39b32f30e"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/surface_inverse.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/surface_inverse.py",
+      "artifact": "blobs/aab910a4172d681a3184f9b8f40d3f2727e80fa81061dc0b50a0f3dbee36ed17.py",
+      "encoding": "identity",
+      "bytes": 7072,
+      "sha256": "aab910a4172d681a3184f9b8f40d3f2727e80fa81061dc0b50a0f3dbee36ed17",
+      "stored_bytes": 7072,
+      "stored_sha256": "aab910a4172d681a3184f9b8f40d3f2727e80fa81061dc0b50a0f3dbee36ed17"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/topology.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/topology.py",
+      "artifact": "blobs/0e6c421b6fcd66e456417cded1f6b7403474b957d263b4ae5d52b1a9f5b12cd2.py",
+      "encoding": "identity",
+      "bytes": 2646,
+      "sha256": "0e6c421b6fcd66e456417cded1f6b7403474b957d263b4ae5d52b1a9f5b12cd2",
+      "stored_bytes": 2646,
+      "stored_sha256": "0e6c421b6fcd66e456417cded1f6b7403474b957d263b4ae5d52b1a9f5b12cd2"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/traction.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/genesis/engine/solvers/rigid/stress/traction.py",
+      "artifact": "blobs/1376bf6ab19fbab3b155808dece101bd91e81723f1226c32873c3d62c192b77f.py",
+      "encoding": "identity",
+      "bytes": 39045,
+      "sha256": "1376bf6ab19fbab3b155808dece101bd91e81723f1226c32873c3d62c192b77f",
+      "stored_bytes": 39045,
+      "stored_sha256": "1376bf6ab19fbab3b155808dece101bd91e81723f1226c32873c3d62c192b77f"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/genesis/options/morphs.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/genesis/options/morphs.py",
+      "artifact": "blobs/3a6fda0b9150a9fe8feaf173eb46a096c06fe6b057580ced7f93d32654aafc7f.py",
+      "encoding": "identity",
+      "bytes": 101878,
+      "sha256": "3a6fda0b9150a9fe8feaf173eb46a096c06fe6b057580ced7f93d32654aafc7f",
+      "stored_bytes": 101878,
+      "stored_sha256": "3a6fda0b9150a9fe8feaf173eb46a096c06fe6b057580ced7f93d32654aafc7f"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/genesis/options/rigid_stress.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/genesis/options/rigid_stress.py",
+      "artifact": "blobs/a068320bb085348436b429ca79b6886aedc6108b0d5954d641c549c0bb7c418a.py",
+      "encoding": "identity",
+      "bytes": 10754,
+      "sha256": "a068320bb085348436b429ca79b6886aedc6108b0d5954d641c549c0bb7c418a",
+      "stored_bytes": 10754,
+      "stored_sha256": "a068320bb085348436b429ca79b6886aedc6108b0d5954d641c549c0bb7c418a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan_frontier_candidate_v1.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan_frontier_candidate_v1.py",
+      "artifact": "blobs/09de232f86f3f01aa2294c23ce72772115cf22a5556d42ac8b95dae4a3575b9d.py",
+      "encoding": "identity",
+      "bytes": 9881,
+      "sha256": "09de232f86f3f01aa2294c23ce72772115cf22a5556d42ac8b95dae4a3575b9d",
+      "stored_bytes": 9881,
+      "stored_sha256": "09de232f86f3f01aa2294c23ce72772115cf22a5556d42ac8b95dae4a3575b9d"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/probe_fan_frontier_v1.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/probe_fan_frontier_v1.py",
+      "artifact": "blobs/7eb48159d2950b4fdf0480bf25d853d28d1d009252cb52f043d1d83947e007c6.py",
+      "encoding": "identity",
+      "bytes": 1149,
+      "sha256": "7eb48159d2950b4fdf0480bf25d853d28d1d009252cb52f043d1d83947e007c6",
+      "stored_bytes": 1149,
+      "stored_sha256": "7eb48159d2950b4fdf0480bf25d853d28d1d009252cb52f043d1d83947e007c6"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/run_fan_frontier_regression_v1.sh",
+      "run_path": "fan-frontier-regression-v1/cuda/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/run_fan_frontier_regression_v1.sh",
+      "artifact": "blobs/203b61ce0caa075911cf3e7541e772f493dc7b094ee47510bab4a4d01ea42a8f.sh",
+      "encoding": "identity",
+      "bytes": 2478,
+      "sha256": "203b61ce0caa075911cf3e7541e772f493dc7b094ee47510bab4a4d01ea42a8f",
+      "stored_bytes": 2478,
+      "stored_sha256": "203b61ce0caa075911cf3e7541e772f493dc7b094ee47510bab4a4d01ea42a8f"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/research/rigid_stress/field_cpu.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/research/rigid_stress/field_cpu.py",
+      "artifact": "blobs/3a49fb0fcbb757e9621439d49c93ca793be29b3ebb0ce55484b68344fa70cdda.py",
+      "encoding": "identity",
+      "bytes": 1304,
+      "sha256": "3a49fb0fcbb757e9621439d49c93ca793be29b3ebb0ce55484b68344fa70cdda",
+      "stored_bytes": 1304,
+      "stored_sha256": "3a49fb0fcbb757e9621439d49c93ca793be29b3ebb0ce55484b68344fa70cdda"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/research/rigid_stress/mechanics.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/research/rigid_stress/mechanics.py",
+      "artifact": "blobs/5c0a18e905b003c959690c9b4ae15369d4026c6716177bb2539e096a4555130b.py",
+      "encoding": "identity",
+      "bytes": 17733,
+      "sha256": "5c0a18e905b003c959690c9b4ae15369d4026c6716177bb2539e096a4555130b",
+      "stored_bytes": 17733,
+      "stored_sha256": "5c0a18e905b003c959690c9b4ae15369d4026c6716177bb2539e096a4555130b"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/research/rigid_stress/scripts/check_nonconvex_contact.sh",
+      "run_path": "fan-frontier-regression-v1/cuda/source/research/rigid_stress/scripts/check_nonconvex_contact.sh",
+      "artifact": "blobs/7459bea8d3a9eba5141a4b76cba40c35817433b6e06d42bff5d42f7c3764d65c.sh",
+      "encoding": "identity",
+      "bytes": 2580,
+      "sha256": "7459bea8d3a9eba5141a4b76cba40c35817433b6e06d42bff5d42f7c3764d65c",
+      "stored_bytes": 2580,
+      "stored_sha256": "7459bea8d3a9eba5141a4b76cba40c35817433b6e06d42bff5d42f7c3764d65c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/research/rigid_stress/wrench.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/research/rigid_stress/wrench.py",
+      "artifact": "blobs/090156b375800d8f3faabc2b7e507b64852cd0edf1c9cd1951da9e0730a523e2.py",
+      "encoding": "identity",
+      "bytes": 21161,
+      "sha256": "090156b375800d8f3faabc2b7e507b64852cd0edf1c9cd1951da9e0730a523e2",
+      "stored_bytes": 21161,
+      "stored_sha256": "090156b375800d8f3faabc2b7e507b64852cd0edf1c9cd1951da9e0730a523e2"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/tests/rigid/assets/nonconvex_mesh64_small_disk.npz",
+      "run_path": "fan-frontier-regression-v1/cuda/source/tests/rigid/assets/nonconvex_mesh64_small_disk.npz",
+      "artifact": "blobs/76fa3d25cd757fb0dac67a63513a9471cab4b8aceb0a9f3141d913dc9644ee71.npz",
+      "encoding": "identity",
+      "bytes": 2479,
+      "sha256": "76fa3d25cd757fb0dac67a63513a9471cab4b8aceb0a9f3141d913dc9644ee71",
+      "stored_bytes": 2479,
+      "stored_sha256": "76fa3d25cd757fb0dac67a63513a9471cab4b8aceb0a9f3141d913dc9644ee71"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/tests/rigid/assets/nonconvex_mesh64_tick1076.npz",
+      "run_path": "fan-frontier-regression-v1/cuda/source/tests/rigid/assets/nonconvex_mesh64_tick1076.npz",
+      "artifact": "blobs/69ef143b78b312f8edde12f200917f72c25931bd819773d0dd02228a7784ffac.npz",
+      "encoding": "identity",
+      "bytes": 1233,
+      "sha256": "69ef143b78b312f8edde12f200917f72c25931bd819773d0dd02228a7784ffac",
+      "stored_bytes": 1233,
+      "stored_sha256": "69ef143b78b312f8edde12f200917f72c25931bd819773d0dd02228a7784ffac"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/tests/rigid/assets/nonconvex_mesh64_tick113.npz",
+      "run_path": "fan-frontier-regression-v1/cuda/source/tests/rigid/assets/nonconvex_mesh64_tick113.npz",
+      "artifact": "blobs/8b3ddac9dac23b16875f27fe11573d2ceda7528115b229e85f4e662b218e6451.npz",
+      "encoding": "identity",
+      "bytes": 1690,
+      "sha256": "8b3ddac9dac23b16875f27fe11573d2ceda7528115b229e85f4e662b218e6451",
+      "stored_bytes": 1690,
+      "stored_sha256": "8b3ddac9dac23b16875f27fe11573d2ceda7528115b229e85f4e662b218e6451"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/tests/rigid/assets/nonconvex_mesh64_tick114.npz",
+      "run_path": "fan-frontier-regression-v1/cuda/source/tests/rigid/assets/nonconvex_mesh64_tick114.npz",
+      "artifact": "blobs/85f316523a7920a3f0a58c516fcfcadf85a35b2da16adbb954083d781f31893c.npz",
+      "encoding": "identity",
+      "bytes": 1604,
+      "sha256": "85f316523a7920a3f0a58c516fcfcadf85a35b2da16adbb954083d781f31893c",
+      "stored_bytes": 1604,
+      "stored_sha256": "85f316523a7920a3f0a58c516fcfcadf85a35b2da16adbb954083d781f31893c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/tests/rigid/assets/nonconvex_mesh64_tick147.npz",
+      "run_path": "fan-frontier-regression-v1/cuda/source/tests/rigid/assets/nonconvex_mesh64_tick147.npz",
+      "artifact": "blobs/fdc297ab68271700eba4b3fa4a193e51326ff051c1d0a544f07ffc2382738f4d.npz",
+      "encoding": "identity",
+      "bytes": 2204,
+      "sha256": "fdc297ab68271700eba4b3fa4a193e51326ff051c1d0a544f07ffc2382738f4d",
+      "stored_bytes": 2204,
+      "stored_sha256": "fdc297ab68271700eba4b3fa4a193e51326ff051c1d0a544f07ffc2382738f4d"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/tests/rigid/assets/nonconvex_mesh64_tick427.npz",
+      "run_path": "fan-frontier-regression-v1/cuda/source/tests/rigid/assets/nonconvex_mesh64_tick427.npz",
+      "artifact": "blobs/635f643c3059f2875873f51d180bfd7f2af9371fad4aa941f34dd89b462f6543.npz",
+      "encoding": "identity",
+      "bytes": 2203,
+      "sha256": "635f643c3059f2875873f51d180bfd7f2af9371fad4aa941f34dd89b462f6543",
+      "stored_bytes": 2203,
+      "stored_sha256": "635f643c3059f2875873f51d180bfd7f2af9371fad4aa941f34dd89b462f6543"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/tests/rigid/assets/nonconvex_mesh64_tick454.npz",
+      "run_path": "fan-frontier-regression-v1/cuda/source/tests/rigid/assets/nonconvex_mesh64_tick454.npz",
+      "artifact": "blobs/e36f7b720d68e6c934510213cf25a0d98330523abf36f32d008270f4686e1b76.npz",
+      "encoding": "identity",
+      "bytes": 2205,
+      "sha256": "e36f7b720d68e6c934510213cf25a0d98330523abf36f32d008270f4686e1b76",
+      "stored_bytes": 2205,
+      "stored_sha256": "e36f7b720d68e6c934510213cf25a0d98330523abf36f32d008270f4686e1b76"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/tests/rigid/assets/nonconvex_mesh64_tick517.npz",
+      "run_path": "fan-frontier-regression-v1/cuda/source/tests/rigid/assets/nonconvex_mesh64_tick517.npz",
+      "artifact": "blobs/7823b815dd50229d2c83750d23043c77d7a5a058ee2ef449fc89b885f94719cd.npz",
+      "encoding": "identity",
+      "bytes": 1036,
+      "sha256": "7823b815dd50229d2c83750d23043c77d7a5a058ee2ef449fc89b885f94719cd",
+      "stored_bytes": 1036,
+      "stored_sha256": "7823b815dd50229d2c83750d23043c77d7a5a058ee2ef449fc89b885f94719cd"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/tests/rigid/assets/nonconvex_mesh64_tick594.npz",
+      "run_path": "fan-frontier-regression-v1/cuda/source/tests/rigid/assets/nonconvex_mesh64_tick594.npz",
+      "artifact": "blobs/7fedbf7278d84dfdab038425eef3a638ce8ac61b7afa391dff85760cd99c2a7b.npz",
+      "encoding": "identity",
+      "bytes": 1231,
+      "sha256": "7fedbf7278d84dfdab038425eef3a638ce8ac61b7afa391dff85760cd99c2a7b",
+      "stored_bytes": 1231,
+      "stored_sha256": "7fedbf7278d84dfdab038425eef3a638ce8ac61b7afa391dff85760cd99c2a7b"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/tests/rigid/assets/nonconvex_mesh64_tick602.npz",
+      "run_path": "fan-frontier-regression-v1/cuda/source/tests/rigid/assets/nonconvex_mesh64_tick602.npz",
+      "artifact": "blobs/046c00e227f681d0cb1bd02d07fb6a751456490f8f3b80ababc60631cea8ba54.npz",
+      "encoding": "identity",
+      "bytes": 2324,
+      "sha256": "046c00e227f681d0cb1bd02d07fb6a751456490f8f3b80ababc60631cea8ba54",
+      "stored_bytes": 2324,
+      "stored_sha256": "046c00e227f681d0cb1bd02d07fb6a751456490f8f3b80ababc60631cea8ba54"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/tests/rigid/assets/nonconvex_plane_pair_tick1160.npz",
+      "run_path": "fan-frontier-regression-v1/cuda/source/tests/rigid/assets/nonconvex_plane_pair_tick1160.npz",
+      "artifact": "blobs/4b0921e2e4a4e8218f071eb42b0cb6b0ce937bd21036a484f7a81913e93d404e.npz",
+      "encoding": "identity",
+      "bytes": 2287,
+      "sha256": "4b0921e2e4a4e8218f071eb42b0cb6b0ce937bd21036a484f7a81913e93d404e",
+      "stored_bytes": 2287,
+      "stored_sha256": "4b0921e2e4a4e8218f071eb42b0cb6b0ce937bd21036a484f7a81913e93d404e"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/tests/rigid/assets/nonconvex_plane_pair_tick710.npz",
+      "run_path": "fan-frontier-regression-v1/cuda/source/tests/rigid/assets/nonconvex_plane_pair_tick710.npz",
+      "artifact": "blobs/536b13e24c658f53a015b63f90d781ed8f33cc21b9563c4a10fd150939bad3d3.npz",
+      "encoding": "identity",
+      "bytes": 2295,
+      "sha256": "536b13e24c658f53a015b63f90d781ed8f33cc21b9563c4a10fd150939bad3d3",
+      "stored_bytes": 2295,
+      "stored_sha256": "536b13e24c658f53a015b63f90d781ed8f33cc21b9563c4a10fd150939bad3d3"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/tests/rigid/assets/nonconvex_policy_tick876.npz",
+      "run_path": "fan-frontier-regression-v1/cuda/source/tests/rigid/assets/nonconvex_policy_tick876.npz",
+      "artifact": "blobs/6655457c43c5def87011d4423264ee4ad3147a42ee070f6362ab560b03546cdc.npz",
+      "encoding": "identity",
+      "bytes": 12660,
+      "sha256": "6655457c43c5def87011d4423264ee4ad3147a42ee070f6362ab560b03546cdc",
+      "stored_bytes": 12660,
+      "stored_sha256": "6655457c43c5def87011d4423264ee4ad3147a42ee070f6362ab560b03546cdc"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/tests/rigid/assets/nonconvex_sliding_tick110.npz",
+      "run_path": "fan-frontier-regression-v1/cuda/source/tests/rigid/assets/nonconvex_sliding_tick110.npz",
+      "artifact": "blobs/1e8d329d4b6e8d9e841b15512387aa822f139c051f379405569a7a47817d5acc.npz",
+      "encoding": "identity",
+      "bytes": 1998,
+      "sha256": "1e8d329d4b6e8d9e841b15512387aa822f139c051f379405569a7a47817d5acc",
+      "stored_bytes": 1998,
+      "stored_sha256": "1e8d329d4b6e8d9e841b15512387aa822f139c051f379405569a7a47817d5acc"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/tests/rigid/assets/nonconvex_sliding_tick400.npz",
+      "run_path": "fan-frontier-regression-v1/cuda/source/tests/rigid/assets/nonconvex_sliding_tick400.npz",
+      "artifact": "blobs/8d2eba72cc8c31002b49a4eac99ce0d3469834d47a8b806905c49b9cb5287c51.npz",
+      "encoding": "identity",
+      "bytes": 5517,
+      "sha256": "8d2eba72cc8c31002b49a4eac99ce0d3469834d47a8b806905c49b9cb5287c51",
+      "stored_bytes": 5517,
+      "stored_sha256": "8d2eba72cc8c31002b49a4eac99ce0d3469834d47a8b806905c49b9cb5287c51"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/tests/rigid/assets/nonconvex_sliding_tick460.npz",
+      "run_path": "fan-frontier-regression-v1/cuda/source/tests/rigid/assets/nonconvex_sliding_tick460.npz",
+      "artifact": "blobs/373a0bb52ddb41622ee20321d8835a0141a44fa064fda476bee625a7913c74af.npz",
+      "encoding": "identity",
+      "bytes": 4910,
+      "sha256": "373a0bb52ddb41622ee20321d8835a0141a44fa064fda476bee625a7913c74af",
+      "stored_bytes": 4910,
+      "stored_sha256": "373a0bb52ddb41622ee20321d8835a0141a44fa064fda476bee625a7913c74af"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/tests/rigid/assets/nonconvex_urdf_tick111.npz",
+      "run_path": "fan-frontier-regression-v1/cuda/source/tests/rigid/assets/nonconvex_urdf_tick111.npz",
+      "artifact": "blobs/71762cd15131ed95402333167a360d60339ae50483f0638ecf4138853e4497b8.npz",
+      "encoding": "identity",
+      "bytes": 1998,
+      "sha256": "71762cd15131ed95402333167a360d60339ae50483f0638ecf4138853e4497b8",
+      "stored_bytes": 1998,
+      "stored_sha256": "71762cd15131ed95402333167a360d60339ae50483f0638ecf4138853e4497b8"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/tests/rigid/test_stress_compatibility.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/tests/rigid/test_stress_compatibility.py",
+      "artifact": "blobs/a9b549d76a32825a9a69a8060b3f395bd1cdabe87722471c8f32ff6056dc3143.py",
+      "encoding": "identity",
+      "bytes": 28460,
+      "sha256": "a9b549d76a32825a9a69a8060b3f395bd1cdabe87722471c8f32ff6056dc3143",
+      "stored_bytes": 28460,
+      "stored_sha256": "a9b549d76a32825a9a69a8060b3f395bd1cdabe87722471c8f32ff6056dc3143"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/tests/rigid/test_stress_disk_refinement.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/tests/rigid/test_stress_disk_refinement.py",
+      "artifact": "blobs/294e34e0fb63e09301be6f644bd6785c1d09c674867b633aabdf7e20bcdedf20.py",
+      "encoding": "identity",
+      "bytes": 16559,
+      "sha256": "294e34e0fb63e09301be6f644bd6785c1d09c674867b633aabdf7e20bcdedf20",
+      "stored_bytes": 16559,
+      "stored_sha256": "294e34e0fb63e09301be6f644bd6785c1d09c674867b633aabdf7e20bcdedf20"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/tests/rigid/test_stress_disk_torque.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/tests/rigid/test_stress_disk_torque.py",
+      "artifact": "blobs/9dcf99c04df016e1ccbbb9270b47920b16d323d32e3f1f645dfce5008f3f544f.py",
+      "encoding": "identity",
+      "bytes": 11055,
+      "sha256": "9dcf99c04df016e1ccbbb9270b47920b16d323d32e3f1f645dfce5008f3f544f",
+      "stored_bytes": 11055,
+      "stored_sha256": "9dcf99c04df016e1ccbbb9270b47920b16d323d32e3f1f645dfce5008f3f544f"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/tests/rigid/test_stress_failure_diagnostics.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/tests/rigid/test_stress_failure_diagnostics.py",
+      "artifact": "blobs/79c58ac0fd88de4951f93bc0b1523fd39d5e748e37053a7c1ebba77ee638eda6.py",
+      "encoding": "identity",
+      "bytes": 4215,
+      "sha256": "79c58ac0fd88de4951f93bc0b1523fd39d5e748e37053a7c1ebba77ee638eda6",
+      "stored_bytes": 4215,
+      "stored_sha256": "79c58ac0fd88de4951f93bc0b1523fd39d5e748e37053a7c1ebba77ee638eda6"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/tests/rigid/test_stress_footprint.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/tests/rigid/test_stress_footprint.py",
+      "artifact": "blobs/075caf313a3c91b201956c8032161ff38ab7444f8b464b4b232243b61a65a920.py",
+      "encoding": "identity",
+      "bytes": 25039,
+      "sha256": "075caf313a3c91b201956c8032161ff38ab7444f8b464b4b232243b61a65a920",
+      "stored_bytes": 25039,
+      "stored_sha256": "075caf313a3c91b201956c8032161ff38ab7444f8b464b4b232243b61a65a920"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/tests/rigid/test_stress_nonconvex.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/tests/rigid/test_stress_nonconvex.py",
+      "artifact": "blobs/25788caa5bb20723757d6d6d509b982fdf4acbbdae8b9e4b8fc58c4f382f015a.py",
+      "encoding": "identity",
+      "bytes": 15508,
+      "sha256": "25788caa5bb20723757d6d6d509b982fdf4acbbdae8b9e4b8fc58c4f382f015a",
+      "stored_bytes": 15508,
+      "stored_sha256": "25788caa5bb20723757d6d6d509b982fdf4acbbdae8b9e4b8fc58c4f382f015a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/tests/rigid/test_stress_shared_lifecycle.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/tests/rigid/test_stress_shared_lifecycle.py",
+      "artifact": "blobs/a4a9f644808571d511c8e7062c5f126c1a3bce5b0ff31cfd29726b1308b1493b.py",
+      "encoding": "identity",
+      "bytes": 8537,
+      "sha256": "a4a9f644808571d511c8e7062c5f126c1a3bce5b0ff31cfd29726b1308b1493b",
+      "stored_bytes": 8537,
+      "stored_sha256": "a4a9f644808571d511c8e7062c5f126c1a3bce5b0ff31cfd29726b1308b1493b"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/tests/rigid/test_stress_shared_support.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/tests/rigid/test_stress_shared_support.py",
+      "artifact": "blobs/89427a30a570dffc741d83475e359b436a896a94add7b346d68d169f64a463eb.py",
+      "encoding": "identity",
+      "bytes": 11654,
+      "sha256": "89427a30a570dffc741d83475e359b436a896a94add7b346d68d169f64a463eb",
+      "stored_bytes": 11654,
+      "stored_sha256": "89427a30a570dffc741d83475e359b436a896a94add7b346d68d169f64a463eb"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/tests/rigid/test_stress_sliding_footprint.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/tests/rigid/test_stress_sliding_footprint.py",
+      "artifact": "blobs/334d45d6bcaabc81d32469789a1e1ebe9a09983ec058fccebbb5324a2fd20b2a.py",
+      "encoding": "identity",
+      "bytes": 9515,
+      "sha256": "334d45d6bcaabc81d32469789a1e1ebe9a09983ec058fccebbb5324a2fd20b2a",
+      "stored_bytes": 9515,
+      "stored_sha256": "334d45d6bcaabc81d32469789a1e1ebe9a09983ec058fccebbb5324a2fd20b2a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/tests/rigid/test_stress_sources.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/tests/rigid/test_stress_sources.py",
+      "artifact": "blobs/27fd5d4b5b766364dbfc513c07eeae25c5f137d53e2fa0f01b18c5d154adc22a.py",
+      "encoding": "identity",
+      "bytes": 12596,
+      "sha256": "27fd5d4b5b766364dbfc513c07eeae25c5f137d53e2fa0f01b18c5d154adc22a",
+      "stored_bytes": 12596,
+      "stored_sha256": "27fd5d4b5b766364dbfc513c07eeae25c5f137d53e2fa0f01b18c5d154adc22a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/tests/rigid/test_stress_surface_fan.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/tests/rigid/test_stress_surface_fan.py",
+      "artifact": "blobs/f247062b7bdab96670a068fd471645dc63e25ddb777f70c6fb25a3b2101c619e.py",
+      "encoding": "identity",
+      "bytes": 27725,
+      "sha256": "f247062b7bdab96670a068fd471645dc63e25ddb777f70c6fb25a3b2101c619e",
+      "stored_bytes": 27725,
+      "stored_sha256": "f247062b7bdab96670a068fd471645dc63e25ddb777f70c6fb25a3b2101c619e"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source/tests/rigid/test_stress_traction.py",
+      "run_path": "fan-frontier-regression-v1/cuda/source/tests/rigid/test_stress_traction.py",
+      "artifact": "blobs/864178ac96941605f8778f7be1a5a61f125d13ccf6a4a5811bf71a24757e34bc.py",
+      "encoding": "identity",
+      "bytes": 18084,
+      "sha256": "864178ac96941605f8778f7be1a5a61f125d13ccf6a4a5811bf71a24757e34bc",
+      "stored_bytes": 18084,
+      "stored_sha256": "864178ac96941605f8778f7be1a5a61f125d13ccf6a4a5811bf71a24757e34bc"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source-after.sha256",
+      "run_path": "fan-frontier-regression-v1/cuda/source-after.sha256",
+      "artifact": "blobs/099a161b41da35cdccdcfc416034414d20f00df614765cec7bf0cac0af173d47.sha256",
+      "encoding": "identity",
+      "bytes": 8309,
+      "sha256": "099a161b41da35cdccdcfc416034414d20f00df614765cec7bf0cac0af173d47",
+      "stored_bytes": 8309,
+      "stored_sha256": "099a161b41da35cdccdcfc416034414d20f00df614765cec7bf0cac0af173d47"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/source.sha256",
+      "run_path": "fan-frontier-regression-v1/cuda/source.sha256",
+      "artifact": "blobs/099a161b41da35cdccdcfc416034414d20f00df614765cec7bf0cac0af173d47.sha256",
+      "encoding": "identity",
+      "bytes": 8309,
+      "sha256": "099a161b41da35cdccdcfc416034414d20f00df614765cec7bf0cac0af173d47",
+      "stored_bytes": 8309,
+      "stored_sha256": "099a161b41da35cdccdcfc416034414d20f00df614765cec7bf0cac0af173d47"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan-frontier-regression-v1/cuda/tests.log",
+      "run_path": "fan-frontier-regression-v1/cuda/tests.log",
+      "artifact": "blobs/80779c97db04b661f27d06a52cf03b6a38b5cff040fda34991a59b83b7be0a43.log",
+      "encoding": "identity",
+      "bytes": 5909,
+      "sha256": "80779c97db04b661f27d06a52cf03b6a38b5cff040fda34991a59b83b7be0a43",
+      "stored_bytes": 5909,
+      "stored_sha256": "80779c97db04b661f27d06a52cf03b6a38b5cff040fda34991a59b83b7be0a43"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/fan_frontier_candidate_v1.py",
+      "run_path": "fan_frontier_candidate_v1.py",
+      "artifact": "blobs/09de232f86f3f01aa2294c23ce72772115cf22a5556d42ac8b95dae4a3575b9d.py",
+      "encoding": "identity",
+      "bytes": 9881,
+      "sha256": "09de232f86f3f01aa2294c23ce72772115cf22a5556d42ac8b95dae4a3575b9d",
+      "stored_bytes": 9881,
+      "stored_sha256": "09de232f86f3f01aa2294c23ce72772115cf22a5556d42ac8b95dae4a3575b9d"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/generate_fan_frontier_candidate_v1.py",
+      "run_path": "generate_fan_frontier_candidate_v1.py",
+      "artifact": "blobs/6ebb994acab7b6c2cf32346ae0b71ab0c51f51dd04bdf9d72f351468608f4b3f.py",
+      "encoding": "identity",
+      "bytes": 4965,
+      "sha256": "6ebb994acab7b6c2cf32346ae0b71ab0c51f51dd04bdf9d72f351468608f4b3f",
+      "stored_bytes": 4965,
+      "stored_sha256": "6ebb994acab7b6c2cf32346ae0b71ab0c51f51dd04bdf9d72f351468608f4b3f"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/probe_fan_frontier_v1.py",
+      "run_path": "probe_fan_frontier_v1.py",
+      "artifact": "blobs/7eb48159d2950b4fdf0480bf25d853d28d1d009252cb52f043d1d83947e007c6.py",
+      "encoding": "identity",
+      "bytes": 1149,
+      "sha256": "7eb48159d2950b4fdf0480bf25d853d28d1d009252cb52f043d1d83947e007c6",
+      "stored_bytes": 1149,
+      "stored_sha256": "7eb48159d2950b4fdf0480bf25d853d28d1d009252cb52f043d1d83947e007c6"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/run_archive_fan_frontier_v1.sh",
+      "run_path": "run_archive_fan_frontier_v1.sh",
+      "artifact": "blobs/6554fe954cdd842acd1d169e737b6d336a2fc3167cd1e9c1092bae83419f673a.sh",
+      "encoding": "identity",
+      "bytes": 527,
+      "sha256": "6554fe954cdd842acd1d169e737b6d336a2fc3167cd1e9c1092bae83419f673a",
+      "stored_bytes": 527,
+      "stored_sha256": "6554fe954cdd842acd1d169e737b6d336a2fc3167cd1e9c1092bae83419f673a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/run_fan_frontier_b1024_benchmark_v1.sh",
+      "run_path": "run_fan_frontier_b1024_benchmark_v1.sh",
+      "artifact": "blobs/e5d161aaea9ffe69ffd3a8b99e886233ba146ed52c0df14557cf31886371c204.sh",
+      "encoding": "identity",
+      "bytes": 2529,
+      "sha256": "e5d161aaea9ffe69ffd3a8b99e886233ba146ed52c0df14557cf31886371c204",
+      "stored_bytes": 2529,
+      "stored_sha256": "e5d161aaea9ffe69ffd3a8b99e886233ba146ed52c0df14557cf31886371c204"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/run_fan_frontier_benchmark_v1.sh",
+      "run_path": "run_fan_frontier_benchmark_v1.sh",
+      "artifact": "blobs/bd0f200dc9a0ec6846de74f72f5597175108700a3aac11675b83156307bef6fe.sh",
+      "encoding": "identity",
+      "bytes": 2515,
+      "sha256": "bd0f200dc9a0ec6846de74f72f5597175108700a3aac11675b83156307bef6fe",
+      "stored_bytes": 2515,
+      "stored_sha256": "bd0f200dc9a0ec6846de74f72f5597175108700a3aac11675b83156307bef6fe"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/run_fan_frontier_regression_v1.sh",
+      "run_path": "run_fan_frontier_regression_v1.sh",
+      "artifact": "blobs/203b61ce0caa075911cf3e7541e772f493dc7b094ee47510bab4a4d01ea42a8f.sh",
+      "encoding": "identity",
+      "bytes": 2478,
+      "sha256": "203b61ce0caa075911cf3e7541e772f493dc7b094ee47510bab4a4d01ea42a8f",
+      "stored_bytes": 2478,
+      "stored_sha256": "203b61ce0caa075911cf3e7541e772f493dc7b094ee47510bab4a4d01ea42a8f"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/run_generate_fan_frontier_v1.sh",
+      "run_path": "run_generate_fan_frontier_v1.sh",
+      "artifact": "blobs/a31201c2bd2daffda67c56650bd01ecad3ba3687403fbcb7834a802a3945f885.sh",
+      "encoding": "identity",
+      "bytes": 482,
+      "sha256": "a31201c2bd2daffda67c56650bd01ecad3ba3687403fbcb7834a802a3945f885",
+      "stored_bytes": 482,
+      "stored_sha256": "a31201c2bd2daffda67c56650bd01ecad3ba3687403fbcb7834a802a3945f885"
+    }
+  ]
+}
