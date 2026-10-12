@@ -86,6 +86,7 @@ def kernel_fit_tractions(
     epsilon: float,
     fit_tolerance: float,
     max_evaluations: int,
+    warm_start: qd.template(),
 ):
     lanes = qd.static(32 if gs.backend == gs.cuda else 1)
     qd.loop_config(block_dim=128)
@@ -95,6 +96,13 @@ def kernel_fit_tractions(
         i_c, i_b = pair // contact_state.valid.shape[1], pair % contact_state.valid.shape[1]
         status = gs.qd_int(StressTractionStatus.SUCCESS)
         current = qd.Vector.zero(gs.qd_float, 6)
+        if qd.static(warm_start):  # noqa: SIM102 — keep the cold specialization free of workspace reads.
+            # Scratch slots may hold another source: reuse only a numerical
+            # initial guess, then validate and fit the current problem fully.
+            if traction_state.status[i_c, i_b] == StressTractionStatus.SUCCESS and traction_state.scale[i_c, i_b] > 0.0:
+                previous = traction_state.dual[i_c, i_b]
+                if qd.abs(previous.sum()) < qd.math.inf and previous.norm() <= 1e6:
+                    current = previous
         weight_sum, scale = gs.qd_float(0.0), gs.qd_float(0.0)
         force_error, moment_error = gs.qd_float(0.0), gs.qd_float(0.0)
         evaluations = 0
