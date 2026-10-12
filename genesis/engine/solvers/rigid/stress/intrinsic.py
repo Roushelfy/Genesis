@@ -275,16 +275,17 @@ def kernel_pack_intrinsic_contacts(
 ):
     for _ in range(1):
         packing.maximum[None] = 0
+    for i_c, i_b in qd.ndrange(raw_contacts.valid.shape[0], raw_contacts.valid.shape[1]):
+        certificates.ray[i_c, i_b] = qd.Vector.zero(gs.qd_float, 6)
+        certificates.margin[i_c, i_b] = 0.0
+        raw_contacts.status[i_c, i_b] = 0
+        raw_contacts.force_error[i_c, i_b] = 0.0
+        raw_contacts.moment_error[i_c, i_b] = 0.0
+        raw_contacts.evaluations[i_c, i_b] = 0
+        raw_contacts.candidate_count[i_c, i_b] = 0
     for i_b in range(packing.count.shape[0]):
         n_contacts = 0
         for i_c in range(raw_contacts.valid.shape[0]):
-            certificates.ray[i_c, i_b] = qd.Vector.zero(gs.qd_float, 6)
-            certificates.margin[i_c, i_b] = 0.0
-            raw_contacts.status[i_c, i_b] = 0
-            raw_contacts.force_error[i_c, i_b] = 0.0
-            raw_contacts.moment_error[i_c, i_b] = 0.0
-            raw_contacts.evaluations[i_c, i_b] = 0
-            raw_contacts.candidate_count[i_c, i_b] = 0
             if raw_contacts.valid[i_c, i_b]:
                 packing.indices[n_contacts, i_b] = i_c
                 n_contacts += 1
