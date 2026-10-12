@@ -351,6 +351,7 @@ class RigidStressRecovery:
             33: "vector traction numerical fit unresolved",
             34: "sampled wrench has a strict infeasibility certificate; continuum feasibility remains unresolved",
             35: "force is incompatible with the continuous reference-surface friction cones inside the physical radius",
+            36: "original wrench is incompatible with the continuous reference-surface friction cones inside the physical radius",
             40: "vector traction fails final original wrench or local friction acceptance",
         }
         details = []

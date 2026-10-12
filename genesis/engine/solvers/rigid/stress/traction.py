@@ -23,6 +23,7 @@ class StressTractionStatus(IntEnum):
     NUMERICAL_FAILURE = 3
     SAMPLED_WRENCH_INFEASIBLE = 4
     CONTINUOUS_FORCE_INFEASIBLE = 5
+    CONTINUOUS_WRENCH_INFEASIBLE = 6
 
 
 @dataclass(frozen=True)
@@ -539,7 +540,12 @@ def kernel_fit_tractions(
                                 gradient_squared = trial_squared
                                 traction_state.dual[i_c, i_b] = current
                                 force_error = gradient[0:3].norm() * scale / budget_scale
-                                moment_error = gradient[3:6].norm() * scale / budget_scale
+                                # The constraint is conditioned about the anchor;
+                                # acceptance concerns the unchanged original point.
+                                offset = (contact_state.position[i_c, i_b] - anchor) / radius
+                                moment_error = (
+                                    (gradient[3:6] - offset.cross(gradient[0:3])).norm() * scale / budget_scale
+                                )
                                 traction_state.force_error[i_c, i_b] = force_error
                                 traction_state.moment_error[i_c, i_b] = moment_error
                                 if qd.max(force_error, moment_error) <= fit_tolerance:

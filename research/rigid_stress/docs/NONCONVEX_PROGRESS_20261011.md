@@ -23,6 +23,12 @@ records the adaptive Newton repair,50 CPU/50 CUDA combined regressions, portable
 actual-producer checks and the continuously incompatible original component
 at step602. Aggregate partitioning remains an unselected modeling alternative;
 large-batch acceptance and matched four-scope performance remain in progress.
+The [native continuous-wrench checkpoint](NATIVE_CONTINUOUS_WRENCH_20261011.md)
+adds production six-component continuous certificates and original-point
+termination. It passes 51 CPU/51 CUDA regressions and 4096 independent CPU
+full-field comparisons in the actual B1024 trajectory, then diagnoses its exact
+step602 component as continuously incompatible. This is disclosed failure
+evidence, not full-horizon acceptance or a throughput result.
 
 ## Required evidence and current work
 
@@ -32,8 +38,8 @@ large-batch acceptance and matched four-scope performance remain in progress.
 | Surface provenance | Geom/pair and face/barycentric witnesses, actual boundary association, ambiguity diagnostics | Native resolver, raw witnesses and both-side GJK reference/frame checks pass CPU/CUDA; general live association pending |
 | Intrinsic finite footprint | Verified paths, hole/gap exclusion, explicit radius/profile and distance error | Finite surface fans, adjacent unfolding and streamed live integration pass targeted CPU/CUDA and B4 checks; general refinement pending |
 | Six-component vector fit | Original/projected/P2 wrench, local cones, offset tangential load and constrained corner fits | Native dual and signed scatter pass CPU/CUDA and every-step B4 checks; broader live acceptance pending |
-| Failure diagnostics | Ambiguity, unresolved integration/distance, numerical fitting and physical incompatibility | Native force-only and sampled statuses; independent continuous six-component proof plus CPU/CUDA certificate candidates for exact step602; production six-component diagnostics pending |
-| Same-mesh numerical recovery | Independent CPU FP64 nodal loads, complete residual/gauge rows, full/max stress | Combined regression passes50 CPU/50 CUDA cases; 432 original live CPU fields and192 portable actual-producer CPU fields pass |
+| Failure diagnostics | Ambiguity, unresolved integration/distance, numerical fitting and physical incompatibility | Native force-only, sampled and continuous six-component statuses; exact step602 proof independently audited on CPU/CUDA rays; depth/work exhaustion and stale-margin budget checks pass |
+| Same-mesh numerical recovery | Independent CPU FP64 nodal loads, complete residual/gauge rows, full/max stress | Combined regression passes 51 CPU/51 CUDA cases; 432 original live, 192 portable actual-producer and 4096 current B1024 CPU fields pass |
 | Dynamic lifecycle | Motion, slip/release, rotations, source changes, batch isolation, partial reset/state restore | B16/B32 complete 1280 steps and56 saved-state resets; B16 recovery leaves 213 rigid fields byte-identical at33 checks; broader source lifecycle pending |
 | Existing Franka egg | Legal changing contacts, actual varied combined friction, rigid trajectory isolation | Explicit pair support completes B16/B32 1280-step trajectories, including former710/1160 failures and56 saved-state resets; broader source and large-batch coverage pending |
 | Matched performance | New-law four-scope baseline, detailed profiles, measured candidate decisions and repeated throughput | B32 matched scalar/experimental-warp intrinsic snapshot profiles157.95/29.25ms; component commit/scatter now dominate; online selection and larger matched measurements pending |

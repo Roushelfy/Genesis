@@ -10,7 +10,12 @@ from genesis.options.rigid_stress import RigidStressOptions
 from genesis.utils.array_class import V_VEC, DataKind, V, iter_data
 from genesis.utils.misc import qd_to_numpy
 
-from .compatibility import kernel_certify_continuous_force
+from .compatibility import (
+    create_wrench_search,
+    kernel_certify_continuous_force,
+    kernel_certify_continuous_wrench,
+    kernel_search_wrench_certificate,
+)
 from .contact import StressContactState, create_contacts
 from .data import StressInfo, StressState
 from .footprint import (
@@ -44,6 +49,7 @@ if TYPE_CHECKING:
 
 # Final original-point wrench and local-cone acceptance retains its independent 1e-8 budget
 _TRACTION_FIT_TOLERANCE = 9e-9
+_WRENCH_CERTIFICATE_DEPTH = 8
 
 
 @dataclass(frozen=True)
@@ -112,6 +118,7 @@ class IntrinsicContacts:
             ray=V_VEC(6, dtype=gs.qd_float, shape=(n_contacts, n_envs)),
             margin=V(dtype=gs.qd_float, shape=(n_contacts, n_envs)),
         )
+        self.wrench_search = create_wrench_search(n_chunk, n_envs, _WRENCH_CERTIFICATE_DEPTH)
         self.packing = StressContactPacking(
             indices=V(dtype=gs.qd_int, shape=(n_contacts, n_envs)),
             count=V(dtype=gs.qd_int, shape=(n_envs,)),
@@ -166,6 +173,20 @@ class IntrinsicContacts:
                 self.contacts, self.sources, self.tractions, self.traction_info, epsilon, _TRACTION_FIT_TOLERANCE, 128
             )
             kernel_certify_continuous_force(self.contacts, self.tractions, surface_info, epsilon, 1e-8)
+            kernel_search_wrench_certificate(
+                self.contacts, self.sources, self.tractions, self.wrench_search, self.traction_info, epsilon, 1e-8
+            )
+            kernel_certify_continuous_wrench(
+                self.contacts,
+                self.sources,
+                self.tractions,
+                self.wrench_search,
+                surface_info,
+                epsilon,
+                _WRENCH_CERTIFICATE_DEPTH,
+                16384,
+                1e-8,
+            )
             kernel_commit_intrinsic_contacts(
                 i_start,
                 epsilon,
@@ -201,6 +222,7 @@ class IntrinsicContacts:
             ("tractions", self.tractions),
             ("packing", self.packing),
             ("certificates", self.certificates),
+            ("wrench_search", self.wrench_search),
         ):
             if value is not None:
                 yield from iter_data(value, f"{prefix}.{name}")
