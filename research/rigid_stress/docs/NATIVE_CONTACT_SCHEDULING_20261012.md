@@ -186,6 +186,50 @@ they must not be mistaken for a current production speedup.
 
 ## Remaining acceptance and tuning
 
+### Post-repair qualification and baseline
+
+After production source `dfb3c56b9d7cc2a78abee30eda2c2ca1ae52e316`, the
+unguarded v10 sample scheduler passes all 52 CPU cases in 395.36 s, but its
+CUDA run has **51 passes and one failure in 554.25 s**. The saved step517,
+squared-coordinate, original-friction environment ends with numerical status 3;
+the other two coefficients pass. The production scalar path and independent
+CPU oracle accept this same legal fixture. The old-law speedup does not establish
+post-repair numerical robustness, so this scheduler is not selected.
+
+The repaired production scalar baseline uses exactly the archived B32 condition
+bank. Its intrinsic snapshot pipeline is **173.217 ms**, with native buffers
+167,458,738 bytes, original-point delta zero, force/moment errors below 1e-8
+and complete residual within each original budget. GPU UUID is
+`GPU-adb3f72e-e837-07af-76f0-f0838bfdf2ed`. Its hardware differs from the old
+scalar profile; their timing difference cannot be assigned solely to the
+integration change. This is a snapshot baseline, not live throughput.
+
+A separate native candidate follows the sample-parallel fit with a device-masked
+scalar retry of only numerical/sampled fitting failures. It revalidates the
+same profiles, original wrench, radius and actual friction from scratch; it
+does not remove a component or change final acceptance. Already successful
+environments retain their fitted state. The counter includes failed fast-path
+evaluations plus scalar retry evaluations, so fallback work is disclosed.
+This candidate passes **52 CPU cases in 411.66 s and 52 CUDA cases in 571.51 s**,
+including step517, the small-radius circle case and physically incompatible
+controls. The CUDA run's directory label `targeted` is historical: its frozen
+launcher lacks that driver flag and the collected-case log proves a full
+52-case run. The subsequent launcher passes scope explicitly. The
+[post-repair publication manifest](../evidence/20261011-nonconvex/post-circle-guard-checkpoint-v1/manifest.json)
+records 333 verified copied artifacts, 4,420,416 bytes, including the failed
+unguarded run, successful retry qualification and scalar baseline. Its SHA256 is
+`7a7c663ab8693e0d6dda754d6ed0a24ff1d62ad674a359823b5bdb989c5a2644`.
+
+Repeated matched B32 profile, rigid-only, recovery-only, live and policy
+measurements are now running scalar and cooperative-plus-retry on one GPU,
+with identical repaired integration, condition bank, timestep, precision,
+accuracy budget and workload. Each non-profile scope requests three repetitions
+and at least 1280 steps/10 seconds; JSON records actual work. Recovery uses the
+declared frozen snapshot, while live and policy include changing contacts and
+resets. Policy scope includes observation interoperation and the stated MLP
+inference only. These results are pending; neither throughput selection nor
+complete RL training throughput is claimed.
+
 This repairs the exhibited legal one-face sampling failure. It does not establish
 universal sufficient integration for boundary-near wrenches or general intrinsic
 footprints; justified local refinement remains applicable. The continuously
