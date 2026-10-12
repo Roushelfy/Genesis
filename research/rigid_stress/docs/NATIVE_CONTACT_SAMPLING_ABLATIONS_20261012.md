@@ -51,7 +51,8 @@ Manifest SHA256:
 | Candidate | Purpose | Current evidence/decision |
 |---|---|---|
 | Sample-major frontier launch | Keep neighboring sample lanes on one contact and reduce divergent geometry work | [Selected](NATIVE_FAN_SAMPLE_LAYOUT_20261012.md):23 CUDA cases, unchanged CPU route,48 recorded oracle fields. Same-GPU live40955.914→55763.374 env-step/s (1.361546320x),zero failures in all three1280-step repeats/2323 resets. |
-| Nonnegative port-distance bound | Skip a final Euclidean segment norm whenever its accumulated path already exceeds the best complete distance | Mathematical lower bound retains the same minimum. Isolated23 CPU cases pass and same-GPU profile contact wall33.176090→26.676988ms. Its increment on top of sample-major scheduling and combined CUDA qualification are under evaluation. |
+| Nonnegative port-distance bound | Skip a final Euclidean segment norm whenever its accumulated path already exceeds the best complete distance | [Selected](NATIVE_PORT_BOUNDS_20261012.md):23 CPU/23 CUDA cases,48 recorded fields. With sample-major scheduling, same-GPU live52414.728→54119.673 env-step/s (1.032527971x),zero failures in all three1280-step repeats/2323 resets. |
+| Exact workspace growth | Allocate the actual observed contact requirement when a complete aggregate outgrows its workspace |23 CPU cases pass. Isolated profile records7 versus8 contacts,5,497,390,686 versus6,111,942,238 native bytes, and contact wall18.698345 versus18.630598ms. Dynamic live cost and CUDA qualification are pending. |
 
 The active goal still needs selected end-to-end benefits, new current-source
 four-scope measurements, wider batches/seeds, timed grasp outcomes, per-environment

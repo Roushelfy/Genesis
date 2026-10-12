@@ -167,8 +167,10 @@ def func_footprint_point_distance(
         for i_t in range(path_info.face_ports.shape[1]):
             i_port = path_info.face_ports[i_face, i_t]
             candidate = footprint_state.port_distance[i_port, i_c, i_b]
-            candidate += (target - path_info.positions[i_port]).norm()
-            distance = qd.min(distance, candidate)
+            # The final segment has nonnegative length, so this lower bound preserves the same minimum.
+            if candidate < distance:
+                candidate += (target - path_info.positions[i_port]).norm()
+                distance = qd.min(distance, candidate)
     return distance, is_straight
 
 

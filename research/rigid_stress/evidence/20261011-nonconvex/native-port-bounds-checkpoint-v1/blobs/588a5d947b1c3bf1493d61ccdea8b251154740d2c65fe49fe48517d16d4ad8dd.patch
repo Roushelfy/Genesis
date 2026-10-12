@@ -1,0 +1,107 @@
+diff --git a/genesis/engine/solvers/rigid/stress/footprint.py b/genesis/engine/solvers/rigid/stress/footprint.py
+index bb42be57..ff2b45f0 100644
+--- a/genesis/engine/solvers/rigid/stress/footprint.py
++++ b/genesis/engine/solvers/rigid/stress/footprint.py
+@@ -37,16 +37,20 @@ class StressFootprintState:
+     kind: ClassVar[DataKind] = DataKind.SCRATCH
+ 
+     port_distance: qd.Tensor
++    seed_distance: qd.Tensor
+     status: qd.Tensor
+     candidates: qd.Tensor
+     samples: qd.Tensor
+     maximum_distance: qd.Tensor
+ 
+ 
+-def create_footprints(n_ports: int, n_contacts: int, n_envs: int) -> StressFootprintState:
++def create_footprints(
++    n_ports: int, n_contacts: int, n_envs: int, n_face_ports: int | None = None
++) -> StressFootprintState:
+     shape = (n_contacts, n_envs)
+     return StressFootprintState(
+         port_distance=V(dtype=gs.qd_float, shape=(n_ports, n_contacts, n_envs)),
++        seed_distance=V(dtype=gs.qd_float, shape=(n_face_ports, n_contacts, n_envs) if n_face_ports is not None else ()),
+         status=V(dtype=gs.qd_int, shape=shape),
+         candidates=V(dtype=gs.qd_int, shape=shape),
+         samples=V(dtype=gs.qd_int, shape=shape),
+@@ -79,6 +83,10 @@ def kernel_footprint_ports(
+                 is_valid = radius > 0.0 and radius < qd.math.inf and qd.abs(anchor.sum()) < qd.math.inf
+                 if not is_valid:
+                     footprint_state.status[i_c, i_b] = StressFootprintStatus.INVALID_INPUT
++                elif qd.static(len(footprint_state.seed_distance.shape) == 3):
++                    for i_a in range(path_info.face_ports.shape[1]):
++                        i_first = path_info.face_ports[i_anchor, i_a]
++                        footprint_state.seed_distance[i_a, i_c, i_b] = (path_info.positions[i_first] - anchor).norm()
+     for i_p, i_c, i_b in qd.ndrange(
+         path_info.positions.shape[0], contact_state.valid.shape[0], contact_state.valid.shape[1]
+     ):
+@@ -88,7 +96,12 @@ def kernel_footprint_ports(
+             anchor = contact_state.center[i_c, i_b]
+             for i_a in range(path_info.face_ports.shape[1]):
+                 i_first = path_info.face_ports[i_anchor, i_a]
+-                candidate = (path_info.positions[i_first] - anchor).norm() + path_info.distances[i_first, i_p]
++                seed_distance = gs.qd_float(0.0)
++                if qd.static(len(footprint_state.seed_distance.shape) == 3):
++                    seed_distance = footprint_state.seed_distance[i_a, i_c, i_b]
++                else:
++                    seed_distance = (path_info.positions[i_first] - anchor).norm()
++                candidate = seed_distance + path_info.distances[i_first, i_p]
+                 distance = qd.min(distance, candidate)
+         footprint_state.port_distance[i_p, i_c, i_b] = distance
+ 
+@@ -156,8 +169,10 @@ def func_footprint_point_distance(
+         for i_t in range(path_info.face_ports.shape[1]):
+             i_port = path_info.face_ports[i_face, i_t]
+             candidate = footprint_state.port_distance[i_port, i_c, i_b]
+-            candidate += (target - path_info.positions[i_port]).norm()
+-            distance = qd.min(distance, candidate)
++            # The final segment has nonnegative length, so this lower bound preserves the same minimum.
++            if candidate < distance:
++                candidate += (target - path_info.positions[i_port]).norm()
++                distance = qd.min(distance, candidate)
+     return distance, is_straight
+ 
+ 
+diff --git a/genesis/engine/solvers/rigid/stress/intrinsic.py b/genesis/engine/solvers/rigid/stress/intrinsic.py
+index 219f5020..70bcab9e 100644
+--- a/genesis/engine/solvers/rigid/stress/intrinsic.py
++++ b/genesis/engine/solvers/rigid/stress/intrinsic.py
+@@ -134,7 +134,9 @@ class IntrinsicContacts:
+             n_chunk, n_envs, options.contact_radius, cooperative=False, cooperative_scatter=False
+         )
+         self.sources = create_sources(n_chunk, n_envs)
+-        self.footprints = create_footprints(self.paths.info.positions.shape[0], n_chunk, n_envs)
++        self.footprints = create_footprints(
++            self.paths.info.positions.shape[0], n_chunk, n_envs, self.paths.info.face_ports.shape[1]
++        )
+         self.tractions = (
+             create_surface_fan_tractions(
+                 surface_info,
+diff --git a/genesis/engine/solvers/rigid/stress/surface_frontier.py b/genesis/engine/solvers/rigid/stress/surface_frontier.py
+index 289cb8ea..a0410765 100644
+--- a/genesis/engine/solvers/rigid/stress/surface_frontier.py
++++ b/genesis/engine/solvers/rigid/stress/surface_frontier.py
+@@ -101,8 +101,8 @@ def kernel_fan_frontier_samples(
+     frontier: StressFanFrontier,
+     maximum: int,
+ ):
+-    for i_task, i_c, i_b in qd.ndrange(
+-        maximum * 3 * surface_info.gauss.shape[0] ** 2, contact_state.valid.shape[0], contact_state.valid.shape[1]
++    for i_c, i_b, i_task in qd.ndrange(
++        contact_state.valid.shape[0], contact_state.valid.shape[1], maximum * 3 * surface_info.gauss.shape[0] ** 2
+     ):
+         n_local = 3 * surface_info.gauss.shape[0] ** 2
+         i_work = i_task // n_local
+diff --git a/tests/rigid/test_stress_source_priors.py b/tests/rigid/test_stress_source_priors.py
+index 6597fc5c..b01a264d 100644
+--- a/tests/rigid/test_stress_source_priors.py
++++ b/tests/rigid/test_stress_source_priors.py
+@@ -170,7 +170,7 @@ def test_body_source_prior_wrench_cones_full_fields_and_gauge_rows(case, record_
+     surface, paths = StressSurface(10, model.info), StressSurfacePaths(model.info, 8)
+     info = create_traction_info(surface.info)
+     contacts, sources = create_contacts(n_sources, n_envs, 0.006), create_sources(n_sources, n_envs)
+-    footprints = create_footprints(paths.info.positions.shape[0], n_sources, n_envs)
++    footprints = create_footprints(paths.info.positions.shape[0], n_sources, n_envs, paths.info.face_ports.shape[1])
+     tractions = create_surface_fan_tractions(surface.info, n_sources, n_envs, shared_support=True, source_priors=True)
+     for name, values in (
+         ("center", anchors),

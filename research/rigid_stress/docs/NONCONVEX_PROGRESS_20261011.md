@@ -4,6 +4,15 @@ This implements the active extension in `NONCONVEX_CONTACT_REQUIREMENTS.md`.
 The previous egg milestone remains complete; native nonconvex acceptance is
 not yet established. The initial branch source is `1d6babf7`.
 
+The [nonnegative path-bound checkpoint](NATIVE_PORT_BOUNDS_20261012.md)
+passes23 CPU/23 CUDA cases and48 recorded independent full fields. It preserves
+the same intrinsic minimum and samples while skipping noncompetitive final
+norms. On top of sample-major scheduling, same-GPU B2048 live improves
+52414.728→54119.673 effective env-step/s (1.032527971x), zero failures/overflows
+in each three1280-step repeats/2323 resets and unchanged native memory. Exact
+contact-capacity growth has a measured614,551,552-byte memory reduction and
+is being evaluated with update costs. The overall goal remains active.
+
 The [sample-major fan launch checkpoint](NATIVE_FAN_SAMPLE_LAYOUT_20261012.md)
 passes23 CUDA cases and48 recorded independent full fields across both
 backends. The CPU numerical route remains unchanged. Same-GPU B2048/623102
