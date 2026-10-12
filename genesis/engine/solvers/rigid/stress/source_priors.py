@@ -56,9 +56,9 @@ def kernel_partition_source_priors(
 
 @qd.kernel
 def kernel_refresh_refined_source_priors(contacts: StressContactState, tractions: StressTractionState):
-    """Keep the prior normalization consistent with a changed disk rule."""
+    """Keep each retained prior normalization consistent with changed local integration."""
     for i_c, i_b in qd.ndrange(contacts.valid.shape[0], contacts.valid.shape[1]):
-        if contacts.valid[i_c, i_b] and tractions.circle.refined[i_c, i_b]:
+        if contacts.valid[i_c, i_b] and (tractions.circle.refined[i_c, i_b] or tractions.fan_refined[i_c, i_b]):
             weight_sum = gs.qd_float(0.0)
             for i_q in range(tractions.sample_count[i_c, i_b]):
                 weight_sum += tractions.profile[i_q, i_c, i_b]

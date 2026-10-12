@@ -1,0 +1,100 @@
+{
+  "scope": "Independent CPU FP64 aggregate-wrench outer proof on all original finite disks and true material cones.",
+  "selected_environment": 3092,
+  "source_count": 2,
+  "original_force": [
+    [
+      0.03247320020357666,
+      -0.07312970658223629,
+      0.03025159989769604
+    ],
+    [
+      -0.017343487914105834,
+      0.13450536624886203,
+      0.04957799692036063
+    ]
+  ],
+  "original_moment": [
+    [
+      -1.7618241822308017e-06,
+      -5.118152311848545e-07,
+      6.539545603907846e-07
+    ],
+    [
+      2.425573803258783e-06,
+      6.651886185264367e-07,
+      -9.56140460737632e-07
+    ]
+  ],
+  "centers": [
+    [
+      0.0063786850638774826,
+      -0.020037955968838665,
+      -0.0045481715338389055
+    ],
+    [
+      0.00016450871294534412,
+      -0.021953266522123063,
+      2.97275146600793e-17
+    ]
+  ],
+  "radii": [
+    0.0045498695587655276,
+    0.0045498695587655276
+  ],
+  "friction": [
+    0.424924445637218,
+    0.424924445637218
+  ],
+  "aggregate_force": [
+    0.01512971228947083,
+    0.06137565966662574,
+    0.07982959681805667
+  ],
+  "aggregate_moment_about_anchor": [
+    -0.0007060469890128946,
+    0.0002293586313480172,
+    -0.0008693604173501384
+  ],
+  "bounds": [
+    {
+      "sides": 32,
+      "vertices": 89,
+      "primal_status": 2,
+      "ray": [
+        0.37483725919403416,
+        -0.6100870669591011,
+        0.6100870669591011,
+        -0.18698051251728362,
+        -0.24605163272614172,
+        -0.13993374342867038
+      ],
+      "target_margin": 0.23990976590162083,
+      "continuous_polar_upper_bound": 2.0816681711721685e-17,
+      "certified_physical_incompatibility": false,
+      "native_ray_target_margin": 0.17719928827312445,
+      "native_ray_continuous_polar_upper_bound": -0.05327492443091287,
+      "native_reported_bound": -0.004355173137494134
+    },
+    {
+      "sides": 128,
+      "vertices": 281,
+      "primal_status": 2,
+      "ray": [
+        0.3641088415858804,
+        -0.6135077792867735,
+        0.6135077792867735,
+        -0.1810103795108191,
+        -0.24542777004242175,
+        -0.1471108873930308
+      ],
+      "target_margin": 0.24141091537985038,
+      "continuous_polar_upper_bound": -4.96621699291877e-07,
+      "certified_physical_incompatibility": true,
+      "native_ray_target_margin": 0.17719928827312445,
+      "native_ray_continuous_polar_upper_bound": -0.053761565471688665,
+      "native_reported_bound": -0.004355173137494134
+    }
+  ],
+  "interpretation": "Each outer polygon contains the Euclidean disk/triangle intersection,which contains the intrinsic support. A256epsilon coordinate envelope makes only the offline outer proof conservative;original physical radii are unchanged. The true cone polar is convex in position. Negative vertex maxima plus a positive target margin therefore certify the complete unchanged continuous load model. Outer feasibility alone provides no physical-feasibility claim."
+}

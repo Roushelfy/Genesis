@@ -1,0 +1,110 @@
+{
+  "scope": "Diagnostic Q10 wrench-line fan repartition on immutable single-contact failures; no production mutation.",
+  "case": "b2048-623102",
+  "sample_count": 633,
+  "faces": [
+    13,
+    14,
+    15,
+    32,
+    33,
+    35
+  ],
+  "radius": 0.004095322555192497,
+  "friction": 0.5647647577682903,
+  "anchor": [
+    -0.012601853648862394,
+    0.007788373876248841,
+    -0.02427050983124842
+  ],
+  "point": [
+    -0.009803576715020915,
+    0.007233000481368613,
+    -0.020177308620251275
+  ],
+  "force": [
+    0.00018129078776730592,
+    -0.0004916651995448928,
+    0.0018448188281332864
+  ],
+  "moment": [
+    9.87921294662961e-07,
+    -4.420254301850079e-06,
+    -1.275131306796202e-06
+  ],
+  "scale": 0.0019178001790613852,
+  "circle_face": -1,
+  "circle_refined": true,
+  "circle_focus": [
+    0.0,
+    0.0
+  ],
+  "polygons": [
+    {
+      "polygon": "inner",
+      "status": 0,
+      "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+      "success": true,
+      "normalized_wrench_error": 3.835896867111847e-16,
+      "physical_cone_excess": 5.551115123125783e-17
+    },
+    {
+      "polygon": "outer",
+      "status": 0,
+      "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+      "success": true,
+      "normalized_wrench_error": 1.1857187100668868e-16,
+      "physical_cone_excess": 0.0003097503954326841
+    }
+  ],
+  "native_cold_iterations": [
+    {
+      "budget": 128,
+      "status": 0,
+      "force_error": 1.1367820767837517e-13,
+      "moment_error": 9.035051788693312e-14,
+      "evaluations": 11
+    },
+    {
+      "budget": 512,
+      "status": 0,
+      "force_error": 1.1367820767837517e-13,
+      "moment_error": 9.035051788693312e-14,
+      "evaluations": 11
+    },
+    {
+      "budget": 2048,
+      "status": 0,
+      "force_error": 1.1367820767837517e-13,
+      "moment_error": 9.035051788693312e-14,
+      "evaluations": 11
+    }
+  ],
+  "positive_count": 633,
+  "packed_count": 633,
+  "independent_optimum": {
+    "optimizer_success": true,
+    "iterations": 11,
+    "message": "Optimization terminated successfully.",
+    "energy": -6.950080990223721,
+    "dual": [
+      8.58457598278033,
+      -14.954143056863069,
+      30.039979983491193,
+      -10.089450476927468,
+      74.25358104258649,
+      33.15641227018379
+    ],
+    "force_error": 2.5172027167143304e-16,
+    "moment_error": 1.4097218112259192e-16,
+    "hessian_eigenvalues": [
+      0.000838777282542747,
+      0.0016528169683449466,
+      0.010009649773343053,
+      0.053863260005952825,
+      0.08797462177180107,
+      0.15090240465168014
+    ]
+  },
+  "interpretation": "An inner primal satisfying the original cones/budget proves sampled feasibility. Outer polygon infeasibility implies sampled cone infeasibility,not continuous physical infeasibility. Iteration budgets here are diagnostic only;production128 and final budgets remain unchanged."
+}

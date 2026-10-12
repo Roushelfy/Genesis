@@ -131,6 +131,7 @@ class StressTractionState:
     sample_indices: qd.Tensor
     fan_barycentric: qd.Tensor
     fan_coordinate_power: qd.Tensor
+    fan_refined: qd.Tensor
     circle: StressTractionCircle
     support: StressTractionSupport
     frontier: StressFanFrontier
@@ -183,6 +184,7 @@ def create_tractions(
         sample_indices=V(dtype=gs.qd_int, shape=(n_samples, n_contacts, n_envs) if packed_samples else ()),
         fan_barycentric=V_VEC(3, dtype=gs.qd_float, shape=(fan_faces, n_contacts, n_envs) if fan_faces else ()),
         fan_coordinate_power=V(dtype=gs.qd_int, shape=()),
+        fan_refined=V(dtype=gs.qd_bool, shape=shape if fan_faces else ()),
         circle=StressTractionCircle(
             face=V(dtype=gs.qd_int, shape=shape if fan_faces else ()),
             radius=V(dtype=gs.qd_float, shape=shape if fan_faces else ()),
@@ -211,6 +213,7 @@ def create_tractions(
     )
     state.sample_count.fill(0 if packed_samples else n_samples)
     state.fan_coordinate_power.fill(fan_coordinate_power)
+    state.fan_refined.fill(False)
     state.circle.face.fill(-1)
     state.circle.refined.fill(False)
     state.circle.focus.fill(0.0)
@@ -583,7 +586,8 @@ def kernel_fit_tractions(
     """Fit all supplied tractions or retry only unresolved contacts using the same native numerical path.
 
     Retry mode zero fits all contacts; one retries numerical or sampled failures; two retries refined disk
-    failures. Retry counts include previous evaluations, and already successful contacts retain their state.
+    failures; three refits every constraint whose fan support was repartitioned. Retry counts include previous
+    evaluations. Geometry changes invalidate successful constraints sharing that support.
     """
     if cooperative and gs.backend == gs.cuda and retry_mode == 0:
         from .cooperative_fit import kernel_fit_tractions as kernel_fit_cooperative
@@ -633,6 +637,8 @@ def kernel_fit_tractions_impl(
             prior_evaluations = traction_state.evaluations[i_c, i_b]
         if qd.static(retry_mode == 2):
             should_fit = should_fit and traction_state.circle.refined[i_c, i_b]
+        if qd.static(retry_mode == 3):
+            should_fit = traction_state.fan_refined[i_c, i_b]
         if should_fit:
             traction_state.dual[i_c, i_b] = qd.Vector.zero(gs.qd_float, 6)
             traction_state.weight_sum[i_c, i_b] = 0.0
