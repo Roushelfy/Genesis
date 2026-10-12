@@ -14,7 +14,15 @@ from .data import StressInfo
 from .paths import StressPathInfo, func_surface_segment
 from .provenance import StressSourceState, StressSourceStatus, func_closest_triangle
 from .surface import StressSurfaceInfo
-from .traction import StressTractionInfo, StressTractionState, create_tractions, func_surface_fan_bary
+from .traction import (
+    StressTractionInfo,
+    StressTractionState,
+    StressTractionStatus,
+    create_tractions,
+    func_circle_panel,
+    func_surface_fan_bary,
+    func_traction_support_range,
+)
 
 
 class StressFootprintStatus(IntEnum):
@@ -197,6 +205,8 @@ def kernel_surface_fan_profiles(
         traction_state.sample_count[i_c, i_b] = 0
         traction_state.circle.face[i_c, i_b] = -1
         traction_state.circle.radius[i_c, i_b] = 0.0
+        traction_state.circle.refined[i_c, i_b] = False
+        traction_state.circle.focus[i_c, i_b] = qd.Vector.zero(gs.qd_float, 2)
         if contact_state.valid[i_c, i_b] and footprint_state.status[i_c, i_b] == StressFootprintStatus.SUCCESS:
             i_face = contact_state.anchor_face[i_c, i_b]
             origin, edges = surface_info.face_origin[i_face], surface_info.face_edges[i_face]
@@ -290,6 +300,130 @@ def kernel_surface_fan_profiles(
             and footprint_state.samples[i_c, i_b] == 0
         ):
             footprint_state.status[i_c, i_b] = StressFootprintStatus.EMPTY_SUPPORT
+
+
+@qd.kernel
+def kernel_refine_failed_disks(
+    contact_state: StressContactState,
+    source_state: StressSourceState,
+    footprint_state: StressFootprintState,
+    traction_state: StressTractionState,
+    surface_info: StressSurfaceInfo,
+    traction_info: StressTractionInfo,
+    epsilon: float,
+):
+    """Refine unresolved single-source disks without changing their physical footprint or vector-traction law.
+
+    Only verified disks contained in one actual material triangle are repartitioned. Positive compression fixes
+    their required centroid and normal torque from the original wrench; shared supports retain their existing diagnostic route.
+    Successful fits retain their profiles and fitted state. The caller retries only refined unresolved fits and
+    applies the unchanged final original-point wrench, local-cone and elastic consistency checks. A required
+    compression centroid or normal torque outside the same disk's capacity is diagnosed using a continuous polar
+    ray with roundoff and original-point error allowances; the bound holds throughout the disk independently of sampling.
+    """
+    for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
+        first, last = func_traction_support_range(i_c, i_b, traction_state)
+        unresolved = traction_state.status[i_c, i_b] == StressTractionStatus.NUMERICAL_FAILURE
+        unresolved = unresolved or traction_state.status[i_c, i_b] == StressTractionStatus.SAMPLED_WRENCH_INFEASIBLE
+        i_face = traction_state.circle.face[i_c, i_b]
+        if contact_state.valid[i_c, i_b] and unresolved and first == i_c and last == i_c + 1 and i_face >= 0:
+            normal = -surface_info.face_normal[i_face]
+            compression = contact_state.force[i_c, i_b].dot(normal)
+            if compression > 0.0:
+                radius = traction_state.circle.radius[i_c, i_b]
+                centroid = normal.cross(source_state.anchor_moment[i_c, i_b]) / (compression * radius)
+                fraction = centroid.norm()
+                normal_torque = source_state.anchor_moment[i_c, i_b].dot(normal) / (compression * radius)
+                friction = contact_state.friction[i_c, i_b]
+                for i_test in range(2):
+                    violation = False
+                    force_ray, moment_ray = qd.Vector.zero(gs.qd_float, 3), qd.Vector.zero(gs.qd_float, 3)
+                    gap = gs.qd_float(0.0)
+                    if i_test == 0 and fraction > 1.0:
+                        violation = True
+                        force_ray = -0.5 * (1.0 + fraction) * normal
+                        moment_ray = -normal.cross(centroid / fraction)
+                        gap = fraction - 1.0
+                    if i_test == 1 and qd.abs(normal_torque) > friction:
+                        violation = True
+                        force_ray = -0.5 * (qd.abs(normal_torque) + friction) * normal
+                        moment_ray = (1.0 if normal_torque > 0.0 else -1.0) * normal
+                        gap = qd.abs(normal_torque) - friction
+                    if violation:
+                        ray_norm = qd.sqrt(force_ray.dot(force_ray) + moment_ray.dot(moment_ray))
+                        force_ray /= ray_norm
+                        moment_ray /= ray_norm
+                        ray = qd.Vector(
+                            [
+                                force_ray[0],
+                                force_ray[1],
+                                force_ray[2],
+                                moment_ray[0],
+                                moment_ray[1],
+                                moment_ray[2],
+                            ]
+                        )
+                        scale = traction_state.scale[i_c, i_b]
+                        margin = force_ray.dot(contact_state.force[i_c, i_b])
+                        margin += moment_ray.dot(source_state.anchor_moment[i_c, i_b]) / radius
+                        margin /= scale
+                        offset = (contact_state.position[i_c, i_b] - contact_state.center[i_c, i_b]) / radius
+                        allowance = (force_ray + moment_ray.cross(offset)).norm() + moment_ray.norm()
+                        allowance *= 1e-8 * contact_state.force[i_c, i_b].norm() / scale
+                        edges = surface_info.face_edges[i_face]
+                        roundoff = (
+                            512.0
+                            * epsilon
+                            * (
+                                1.0
+                                + (contact_state.center[i_c, i_b].norm() + edges[0, :].norm() + edges[1, :].norm())
+                                / radius
+                            )
+                            * (1.0 + friction)
+                        )
+                        bound = -0.5 * gap / ray_norm
+                        if bound < -roundoff and margin > allowance + roundoff:
+                            traction_state.status[i_c, i_b] = StressTractionStatus.CONTINUOUS_WRENCH_INFEASIBLE
+                            traction_state.certificate[i_c, i_b] = ray
+                            traction_state.certificate_margin[i_c, i_b] = margin
+                refine_fraction = fraction
+                if friction > 0.0:
+                    refine_fraction = qd.max(refine_fraction, qd.abs(normal_torque) / friction)
+                if (
+                    traction_state.status[i_c, i_b] != StressTractionStatus.CONTINUOUS_WRENCH_INFEASIBLE
+                    and refine_fraction < 1.0
+                    and 9 * surface_info.gauss.shape[0] ** 2 <= traction_state.profile.shape[0]
+                ):
+                    tangent = surface_info.face_edges[i_face][0, :].normalized()
+                    second = normal.cross(tangent)
+                    theta = gs.qd_float(0.0)
+                    if fraction > 256.0 * epsilon * (1.0 + contact_state.center[i_c, i_b].norm() / radius):
+                        theta = qd.atan2(centroid.dot(second), centroid.dot(tangent))
+                    traction_state.circle.focus[i_c, i_b] = qd.Vector(
+                        [
+                            qd.min(1.0 - 1e-12, refine_fraction),
+                            theta,
+                        ]
+                    )
+                    traction_state.circle.refined[i_c, i_b] = True
+                    traction_state.sample_count[i_c, i_b] = 9 * surface_info.gauss.shape[0] ** 2
+                    footprint_state.samples[i_c, i_b] = traction_state.sample_count[i_c, i_b]
+                    footprint_state.candidates[i_c, i_b] = traction_state.sample_count[i_c, i_b]
+                    footprint_state.maximum_distance[i_c, i_b] = 0.0
+    for i_q, i_c, i_b in qd.ndrange(
+        9 * surface_info.gauss.shape[0] ** 2, contact_state.valid.shape[0], contact_state.valid.shape[1]
+    ):
+        if traction_state.circle.refined[i_c, i_b]:
+            distance, _, jacobian = func_circle_panel(i_q, i_c, i_b, traction_state, traction_info)
+            n = surface_info.gauss.shape[0]
+            local = i_q % (n * n)
+            radius = traction_state.circle.radius[i_c, i_b]
+            profile = radius * radius * distance * jacobian
+            profile *= surface_info.gauss_weights[local // n] * surface_info.gauss_weights[local % n]
+            profile *= qd.exp(-0.5 * (distance / 0.45) ** 2) * (1.0 - distance * distance) ** 2
+            traction_state.profile[i_q, i_c, i_b] = profile
+            traction_state.sample_indices[i_q, i_c, i_b] = 3 * traction_info.positions.shape[0] + i_q
+            qd.atomic_max(footprint_state.maximum_distance[i_c, i_b], radius * distance)
 
 
 def create_anchor_fan_tractions(

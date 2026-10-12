@@ -512,7 +512,7 @@ def main() -> None:
             "substeps": 1,
             "varied": args.varied,
             "seed": args.seed,
-            "load_model": "intrinsic_surface_fan_q10_squared_coordinates_ports8_adjacent_unfolding_verified_single_face_disks"
+            "load_model": "intrinsic_surface_fan_q10_squared_coordinates_ports8_adjacent_unfolding_verified_single_face_disks_failed_disk_nine_panel_refinement"
             if args.contact_model == "intrinsic"
             else "finite_pad_adaptive_q10",
             "contact_model": args.contact_model,

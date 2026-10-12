@@ -25,6 +25,7 @@ from .footprint import (
     create_surface_fan_tractions,
     kernel_anchor_fan_profiles,
     kernel_footprint_ports,
+    kernel_refine_failed_disks,
     kernel_surface_fan_profiles,
 )
 from .paths import StressSurfacePaths
@@ -173,6 +174,26 @@ class IntrinsicContacts:
             kernel_fit_tractions(
                 self.contacts, self.sources, self.tractions, self.traction_info, epsilon, _TRACTION_FIT_TOLERANCE, 128
             )
+            if options.intrinsic_integration == "surface_fan":
+                kernel_refine_failed_disks(
+                    self.contacts,
+                    self.sources,
+                    self.footprints,
+                    self.tractions,
+                    surface_info,
+                    self.traction_info,
+                    epsilon,
+                )
+                kernel_fit_tractions(
+                    self.contacts,
+                    self.sources,
+                    self.tractions,
+                    self.traction_info,
+                    epsilon,
+                    _TRACTION_FIT_TOLERANCE,
+                    128,
+                    retry_mode=2,
+                )
             kernel_certify_continuous_force(self.contacts, self.tractions, surface_info, epsilon, 1e-8)
             kernel_search_wrench_certificate(
                 self.contacts, self.sources, self.tractions, self.wrench_search, self.traction_info, epsilon, 1e-8

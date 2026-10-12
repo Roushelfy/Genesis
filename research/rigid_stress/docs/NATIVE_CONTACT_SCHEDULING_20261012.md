@@ -7,6 +7,11 @@ archived experimental Quadrants kernels on that unchanged integration law.
 The subsequent production circle repair changes local integration; its
 performance needs a new baseline before selecting further optimizations.
 
+The later [finite-disk refinement and matched-scope checkpoint](NATIVE_DISK_REFINEMENT_20261012.md)
+supersedes the pending descriptions below: native 54 CPU/54 CUDA cases pass;
+the preceding-circle matched comparison completes rigid/recovery/live but
+fails both policy variants. It does not establish overall completion.
+
 The [publication manifest](../evidence/20261011-nonconvex/contact-scheduling-circle-checkpoint-v1/manifest.json)
 records **1060 copied raw artifacts, 26,103,429 bytes**, with every original and
 published SHA256 verified on allocated CPU compute. No selected runtime file
