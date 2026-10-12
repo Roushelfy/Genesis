@@ -30,6 +30,12 @@ qualified contact repairs and selected seed/layout/port/scatter optimizations.
 The subsequent [cold cooperative retry](docs/NATIVE_COOPERATIVE_RETRY_20261012.md)
 is selected with a same-GPU1.036986834x live gain,23 CPU/23 CUDA production
 cases and320 independent dynamic fields passing unchanged final budgets.
+The subsequent [eight-sample-lane retry](docs/NATIVE_SAMPLE_LANE_RETRY_20261012.md)
+has a separate paired1.044883994x live gain,23 CUDA production cases and160
+dynamic independent fields passing. [Complete-sample compaction](docs/NATIVE_COMPACT_TRACTION_PROFILES_20261012.md)
+passes31 CPU/31 CUDA cases and96 fields, saving15.715GB native bytes atB8192
+on a separated seed cohort, with a small throughput regression. Its fused
+capacity follow-up and remaining refinement/layout/reuse work are active.
 [Matched B1024 four scopes](docs/NATIVE_MATCHED_SCOPES_20261012.md) include timed
 grasp outcomes, resets and environment work. Contact graphs, fastcache and
 standalone device-frontier maximum have no selected dynamic end-to-end benefit;
