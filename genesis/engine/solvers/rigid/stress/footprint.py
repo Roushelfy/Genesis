@@ -44,7 +44,9 @@ class StressFootprintState:
     maximum_distance: qd.Tensor
 
 
-def create_footprints(n_ports: int, n_contacts: int, n_envs: int, n_face_ports: int | None = None) -> StressFootprintState:
+def create_footprints(
+    n_ports: int, n_contacts: int, n_envs: int, n_face_ports: int | None = None
+) -> StressFootprintState:
     shape = (n_contacts, n_envs)
     return StressFootprintState(
         port_distance=V(dtype=gs.qd_float, shape=(n_ports, n_contacts, n_envs)),
@@ -183,6 +185,7 @@ def create_surface_fan_tractions(
     shared_support: bool = False,
     surface_fan_frontier: bool = True,
     source_priors: bool = False,
+    cached_acceptance: bool = False,
 ) -> StressTractionState:
     """Partition every boundary face about its closest point to the anchor.
 
@@ -204,6 +207,7 @@ def create_surface_fan_tractions(
         shared_support=shared_support,
         surface_fan_frontier=surface_fan_frontier,
         source_priors=source_priors,
+        cached_acceptance=cached_acceptance,
     )
 
 
@@ -472,6 +476,7 @@ def create_anchor_fan_tractions(
     packed: bool = False,
     shared_support: bool = False,
     source_priors: bool = False,
+    cached_acceptance: bool = False,
 ) -> StressTractionState:
     """Integrate the witnessed face as three finite triangles incident to its anchor.
 
@@ -489,6 +494,7 @@ def create_anchor_fan_tractions(
         packed_samples=packed,
         shared_support=shared_support,
         source_priors=source_priors,
+        cached_acceptance=cached_acceptance,
     )
 
 

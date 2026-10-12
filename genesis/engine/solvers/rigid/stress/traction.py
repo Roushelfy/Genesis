@@ -110,6 +110,17 @@ class StressTractionPriors:
 
 
 @dataclass(frozen=True)
+class StressTractionAcceptance:
+    """Current-step original-point wrench and cone checks from fused scatter."""
+
+    kind: ClassVar[DataKind] = DataKind.SCRATCH
+
+    force: qd.Tensor
+    moment: qd.Tensor
+    cone_valid: qd.Tensor
+
+
+@dataclass(frozen=True)
 class StressTractionState:
     kind: ClassVar[DataKind] = DataKind.SCRATCH
 
@@ -136,6 +147,7 @@ class StressTractionState:
     support: StressTractionSupport
     frontier: StressFanFrontier
     priors: StressTractionPriors
+    acceptance: StressTractionAcceptance
 
 
 def create_tractions(
@@ -151,6 +163,7 @@ def create_tractions(
     shared_support: bool = False,
     surface_fan_frontier: bool = True,
     source_priors: bool = False,
+    cached_acceptance: bool = False,
 ) -> StressTractionState:
     """Allocate the exact supplied quadrature subproblem, without a force cloud.
 
@@ -209,6 +222,11 @@ def create_tractions(
             anchor_moment=V_VEC(3, dtype=gs.qd_float, shape=shape if source_priors else ()),
             weight_sum=V(dtype=gs.qd_float, shape=shape if source_priors else ()),
             group_scale=V(dtype=gs.qd_float, shape=shape if source_priors else ()),
+        ),
+        acceptance=StressTractionAcceptance(
+            force=V_VEC(3, dtype=gs.qd_float, shape=shape if cached_acceptance else ()),
+            moment=V_VEC(3, dtype=gs.qd_float, shape=shape if cached_acceptance else ()),
+            cone_valid=V(dtype=gs.qd_bool, shape=shape if cached_acceptance else ()),
         ),
     )
     state.sample_count.fill(0 if packed_samples else n_samples)
@@ -876,6 +894,25 @@ def func_source_traction(
             projected, _ = func_coulomb_projection(value, normal, friction)
             result = weight * traction_state.scale[i_c, i_b] * projected
     return result
+
+
+def kernel_prepare_cached_tractions(
+    epsilon: float,
+    contact_state: StressContactState,
+    traction_state: StressTractionState,
+    state: StressState,
+    stress_info: StressInfo,
+    surface_info: StressSurfaceInfo,
+    traction_info: StressTractionInfo,
+    errno: qd.Tensor,
+    reset_force: bool = True,
+):
+    from .cooperative_scatter import kernel_scatter_cached_tractions
+
+    kernel_scatter_cached_tractions(
+        epsilon, contact_state, traction_state, state, stress_info, surface_info, traction_info, errno,
+        reset_force=reset_force,
+    )
 
 
 def kernel_scatter_tractions(

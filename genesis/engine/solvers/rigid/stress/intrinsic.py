@@ -48,6 +48,7 @@ from .traction import (
     func_traction_source_friction,
     func_traction_support_range,
     kernel_fit_tractions,
+    kernel_prepare_cached_tractions,
     kernel_scatter_tractions,
 )
 
@@ -145,6 +146,7 @@ class IntrinsicContacts:
                 shared_support=shared_support,
                 surface_fan_frontier=options.surface_fan_frontier,
                 source_priors=body_partition,
+                cached_acceptance=options.cooperative_tractions and gs.backend == gs.cuda,
             )
             if options.intrinsic_integration == "surface_fan"
             else create_anchor_fan_tractions(
@@ -155,6 +157,7 @@ class IntrinsicContacts:
                 packed=True,
                 shared_support=shared_support,
                 source_priors=body_partition,
+                cached_acceptance=options.cooperative_tractions and gs.backend == gs.cuda,
             )
         )
         self.wrench_search = create_wrench_search(n_chunk, n_envs, _WRENCH_CERTIFICATE_DEPTH)
@@ -295,6 +298,19 @@ class IntrinsicContacts:
                 epsilon,
                 1e-8,
             )
+            fused_acceptance = len(self.tractions.acceptance.force.shape) == 2
+            if fused_acceptance:
+                kernel_prepare_cached_tractions(
+                    epsilon,
+                    self.contacts,
+                    self.tractions,
+                    state,
+                    stress_info,
+                    surface_info,
+                    self.traction_info,
+                    errno,
+                    reset_force=False,
+                )
             kernel_commit_intrinsic_contacts(
                 i_start,
                 epsilon,
@@ -311,17 +327,18 @@ class IntrinsicContacts:
             )
             if body_partition:
                 kernel_commit_body_partition(raw_contacts, self.packing)
-            kernel_scatter_tractions(
-                self.contacts,
-                self.tractions,
-                state,
-                stress_info,
-                surface_info,
-                self.traction_info,
-                errno,
-                reset_force=False,
-                cooperative=options.cooperative_tractions,
-            )
+            if not fused_acceptance:
+                kernel_scatter_tractions(
+                    self.contacts,
+                    self.tractions,
+                    state,
+                    stress_info,
+                    surface_info,
+                    self.traction_info,
+                    errno,
+                    reset_force=False,
+                    cooperative=options.cooperative_tractions,
+                )
         kernel_capture_contact_failure(raw_contacts, self.raw_sources, self.failure, errno, grouped=body_partition)
 
     def data(self, prefix: str):
