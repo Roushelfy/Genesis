@@ -70,3 +70,12 @@ dynamic/tail cost profiling, remaining applicable candidates and a measured
 plateau. [B1024 four scopes](NATIVE_MATCHED_SCOPES_20261012.md) now include timed
 grasp outcomes and environment work with a matched condition bank. No physical mesh/quadrature convergence or
 RL training throughput is claimed.
+
+The [clean production combination](NATIVE_SELECTED_STORAGE_FANS_20261012.md)
+now passes31 CPU/31 CUDA and96 fields. Its B2048 same-GPU ratio over counted
+positions with serial fans is1.003100208, within repeat variation, and all
+condition banks/rigid outcomes agree. This does not multiply the earlier
+isolated gains. Parallel fans retain their measured hard-tail reduction.
+[B16384/B32768 live probes](NATIVE_WIDE_COUNTED_POSITIONS_20261012.md) establish
+resident feasibility and roughly107642/104754 valid env-step/s for the earlier
+counted-position prototype, without establishing a final-source optimum.

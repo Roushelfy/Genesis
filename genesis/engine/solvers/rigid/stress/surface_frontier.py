@@ -101,6 +101,14 @@ def kernel_fan_frontier_samples(
     frontier: StressFanFrontier,
     maximum: int,
 ):
+    for _ in range(1):
+        if qd.static(len(traction_state.capacity_maximum.shape) == 1):
+            traction_state.capacity_maximum[0] = 0
+    for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
+        traction_state.sample_count[i_c, i_b] = 0
+        footprint_state.candidates[i_c, i_b] = 0
+        footprint_state.samples[i_c, i_b] = 0
+        footprint_state.maximum_distance[i_c, i_b] = 0.0
     for i_c, i_b, i_task in qd.ndrange(
         contact_state.valid.shape[0], contact_state.valid.shape[1], maximum * 3 * surface_info.gauss.shape[0] ** 2
     ):
@@ -160,11 +168,17 @@ def kernel_fan_frontier_samples(
                         relative = distance / radius
                         profile = weight * qd.exp(-0.5 * (relative / 0.45) ** 2) * (1.0 - relative * relative) ** 2
                         i_slot = qd.atomic_add(traction_state.sample_count[i_c, i_b], 1)
-                        traction_state.sample_indices[i_slot, i_c, i_b] = i_sample
-                        traction_state.profile[i_slot, i_c, i_b] = profile
+                        if i_slot < traction_state.profile.shape[0]:
+                            traction_state.sample_indices[i_slot, i_c, i_b] = i_sample
+                            traction_state.profile[i_slot, i_c, i_b] = profile
+                            if qd.static(len(traction_state.sample_positions.shape) == 3):
+                                traction_state.sample_positions[i_slot, i_c, i_b] = position
                         qd.atomic_add(footprint_state.samples[i_c, i_b], 1)
                         qd.atomic_max(footprint_state.maximum_distance[i_c, i_b], distance)
     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
+        if qd.static(len(traction_state.capacity_maximum.shape) == 1):  # noqa: SIM102
+            if traction_state.sample_count[i_c, i_b] > traction_state.profile.shape[0]:
+                qd.atomic_max(traction_state.capacity_maximum[0], traction_state.sample_count[i_c, i_b])
         if (
             contact_state.valid[i_c, i_b]
             and footprint_state.status[i_c, i_b] == StressFootprintStatus.SUCCESS

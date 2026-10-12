@@ -1,6 +1,6 @@
 """Stream all witnessed rigid contacts through intrinsic finite-area traction recovery."""
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import TYPE_CHECKING, ClassVar
 
 import quadrants as qd
@@ -113,6 +113,9 @@ class IntrinsicContacts:
         self.raw_sources = create_sources(n_contacts, n_envs)
         self.failure = create_contact_failure(n_envs)
         self.raw_sources.uncertainty.fill(options.source_uncertainty)
+        self.is_compact_profiles = (
+            gs.backend == gs.cuda and options.intrinsic_integration == "surface_fan" and options.surface_fan_frontier
+        )
         self._allocate_workspace(surface_info, options, n_chunk, n_envs)
         self.certificates = StressWrenchCertificates(
             ray=V_VEC(6, dtype=gs.qd_float, shape=(n_contacts, n_envs)),
@@ -147,6 +150,11 @@ class IntrinsicContacts:
                 surface_fan_frontier=options.surface_fan_frontier,
                 source_priors=body_partition,
                 cached_acceptance=options.cooperative_tractions and gs.backend == gs.cuda,
+                # Quadrants requires positive tensor dimensions. One slot is
+                # the minimum legal placeholder; complete sampling determines
+                # the actual required size before any traction fit.
+                profile_capacity=1 if self.is_compact_profiles else None,
+                cached_fan_positions=self.is_compact_profiles,
             )
             if options.intrinsic_integration == "surface_fan"
             else create_anchor_fan_tractions(
@@ -161,6 +169,25 @@ class IntrinsicContacts:
             )
         )
         self.wrench_search = create_wrench_search(n_chunk, n_envs, _WRENCH_CERTIFICATE_DEPTH)
+
+    def _grow_sample_profiles(self) -> bool:
+        n_samples = int(qd_to_numpy(self.tractions.capacity_maximum, transpose=True)[0])
+        if n_samples <= self.tractions.profile.shape[0]:
+            return False
+        n_contacts, n_envs = self.contacts.valid.shape
+        previous = self.tractions
+        self.tractions = replace(
+            previous,
+            profile=V(dtype=gs.qd_float, shape=(n_samples, n_contacts, n_envs)),
+            sample_indices=V(dtype=gs.qd_int, shape=(n_samples, n_contacts, n_envs)),
+            sample_positions=(
+                V_VEC(3, dtype=gs.qd_float, shape=(n_samples, n_contacts, n_envs))
+                if len(previous.sample_positions.shape) == 3
+                else previous.sample_positions
+            ),
+        )
+        kernel_copy_profiles(previous, self.tractions)
+        return True
 
     def scatter(
         self,
@@ -205,6 +232,17 @@ class IntrinsicContacts:
                     self.traction_info,
                     epsilon,
                 )
+                if self.is_compact_profiles and self._grow_sample_profiles():
+                    kernel_surface_fan_profiles(
+                        self.contacts,
+                        self.footprints,
+                        self.tractions,
+                        stress_info,
+                        surface_info,
+                        self.paths.info,
+                        self.traction_info,
+                        epsilon,
+                    )
             else:
                 kernel_anchor_fan_profiles(
                     self.contacts, self.footprints, self.tractions, stress_info, surface_info, self.paths.info
@@ -237,6 +275,20 @@ class IntrinsicContacts:
                     self.traction_info,
                     epsilon,
                 )
+                if (
+                    self.is_compact_profiles
+                    and self.tractions.profile.shape[0] < 9 * surface_info.gauss.shape[0] ** 2
+                    and self._grow_sample_profiles()
+                ):
+                    kernel_refine_failed_disks(
+                        self.contacts,
+                        self.sources,
+                        self.footprints,
+                        self.tractions,
+                        surface_info,
+                        self.traction_info,
+                        epsilon,
+                    )
                 if body_partition:
                     kernel_refresh_refined_source_priors(self.contacts, self.tractions)
                 kernel_fit_tractions(
@@ -263,6 +315,18 @@ class IntrinsicContacts:
                     self.traction_info,
                     epsilon,
                 )
+                if self.is_compact_profiles and self._grow_sample_profiles():
+                    kernel_refine_failed_fans(
+                        self.contacts,
+                        self.sources,
+                        self.footprints,
+                        self.tractions,
+                        stress_info,
+                        surface_info,
+                        self.paths.info,
+                        self.traction_info,
+                        epsilon,
+                    )
                 if body_partition:
                     kernel_refresh_refined_source_priors(self.contacts, self.tractions)
                 kernel_fit_tractions(
@@ -357,6 +421,16 @@ class IntrinsicContacts:
         ):
             if value is not None:
                 yield from iter_data(value, f"{prefix}.{name}")
+
+
+@qd.kernel
+def kernel_copy_profiles(previous: StressTractionState, current: StressTractionState):
+    for i_q, i_c, i_b in qd.ndrange(previous.profile.shape[0], previous.profile.shape[1], previous.profile.shape[2]):
+        if i_q < previous.sample_count[i_c, i_b]:
+            current.profile[i_q, i_c, i_b] = previous.profile[i_q, i_c, i_b]
+            current.sample_indices[i_q, i_c, i_b] = previous.sample_indices[i_q, i_c, i_b]
+            if qd.static(len(previous.sample_positions.shape) == 3):
+                current.sample_positions[i_q, i_c, i_b] = previous.sample_positions[i_q, i_c, i_b]
 
 
 @qd.kernel

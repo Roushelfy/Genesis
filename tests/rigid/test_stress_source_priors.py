@@ -1,3 +1,4 @@
+from dataclasses import replace
 from pathlib import Path
 
 import numpy as np
@@ -148,6 +149,7 @@ def source_prior_fixture(case, vertices, faces):
 
 @pytest.mark.required
 @pytest.mark.precision("64")
+@pytest.mark.parametrize("native_pipeline", (False, True))
 @pytest.mark.parametrize(
     "case",
     (
@@ -161,7 +163,7 @@ def source_prior_fixture(case, vertices, faces):
         "varied4096_slow",
     ),
 )
-def test_body_source_prior_wrench_cones_full_fields_and_gauge_rows(case, record_property):
+def test_body_source_prior_wrench_cones_full_fields_and_gauge_rows(case, native_pipeline, record_property):
     mesh = Path(__file__).resolve().parents[2] / "examples/rigid/assets/hollow_egg/level1/elastic.npz"
     options = RigidStressOptions(mesh=mesh, method="direct", intrinsic_load_partition="body_source_prior")
     model, n_envs = StressModel(options), 3
@@ -222,6 +224,47 @@ def test_body_source_prior_wrench_cones_full_fields_and_gauge_rows(case, record_
     if case in ("varied2048", "varied4096"):
         assert qd_to_numpy(tractions.fan_refined, transpose=True)[0, 0]
     assert_equal(qd_to_numpy(tractions.status, transpose=True), 0)
+    if native_pipeline:
+        scene = gs.Scene(show_viewer=False)
+        entity = scene.add_entity(
+            gs.morphs.URDF(
+                file=mesh.with_name("egg_shell.urdf"),
+                align=False,
+                convexify=True,
+                decimate=False,
+                preserve_mesh_precision=True,
+            )
+        )
+        scene.build(n_envs=n_envs)
+        native_contacts = create_contacts(n_sources, n_envs, 0.006)
+        native_contacts.valid.fill(True)
+        native_contacts.position.from_numpy(np.repeat(points[:, None], n_envs, axis=1))
+        native_contacts.force.from_numpy(np.repeat(forces[:, None], n_envs, axis=1))
+        native_contacts.radius.from_numpy(np.repeat(radii[:, None], n_envs, axis=1))
+        native_contacts.friction.from_numpy(actual_mu.T.copy())
+        native_contacts.frame_position.from_numpy(qd_to_numpy(contacts.frame_position, transpose=True))
+        native_contacts.frame_quaternion.from_numpy(qd_to_numpy(contacts.frame_quaternion, transpose=True))
+        mapped = IntrinsicContacts(entity.base_link, native_contacts, model.info, surface.info, options, paths)
+        mapped.raw_sources.geom.fill(entity.base_link.geoms[0].idx)
+        mapped.raw_sources.pair.from_numpy(np.repeat(np.arange(n_sources)[:, None], n_envs, axis=1).astype(gs.np_int))
+        mapped.raw_sources.witness.from_numpy(np.repeat(anchors[:, None], n_envs, axis=1))
+        mapped.raw_sources.uncertainty.from_numpy(qd_to_numpy(sources.uncertainty, transpose=True).T.copy())
+        mapped.raw_sources.free_moment.from_numpy(
+            np.repeat((moments - np.cross(points - anchors, forces))[:, None], n_envs, axis=1)
+        )
+        native_state = model.create_state(n_envs, "full")
+        native_errno = V(dtype=gs.qd_int, shape=(n_envs,))
+        native_errno.fill(0)
+        kernel_begin_step(native_state)
+        mapped.scatter(native_contacts, native_state, model.info, surface.info, options, epsilon, native_errno)
+        assert_equal(qd_to_numpy(native_errno), 0)
+        assert_equal(qd_to_numpy(native_contacts.status, transpose=True), 0)
+        contacts, sources, tractions, footprints = mapped.contacts, mapped.sources, mapped.tractions, mapped.footprints
+        assert tractions.profile.shape[0] >= qd_to_numpy(tractions.sample_count, transpose=True).max()
+        if mapped.is_compact_profiles:
+            assert tractions.profile.shape[0] < 3 * surface.info.positions.shape[0]
+            assert any(item.name.endswith("tractions.capacity_maximum") for item in mapped.data("stress"))
+        record_property("profile_capacity", tractions.profile.shape[0])
     fitted = (
         tractions.dual,
         tractions.weight_sum,
@@ -257,6 +300,18 @@ def test_body_source_prior_wrench_cones_full_fields_and_gauge_rows(case, record_
         )
     ]
     counts = qd_to_numpy(tractions.sample_count, transpose=True)
+    if len(tractions.fan_barycentric.shape) == 3 and len(tractions.sample_positions.shape) == 3:
+        direct = replace(tractions, sample_positions=V_VEC(3, dtype=gs.qd_float, shape=()))
+        direct_samples = create_traction_samples(direct)
+        kernel_traction_samples(direct_samples, direct, surface.info, info)
+        actual_positions = qd_to_numpy(samples.positions, transpose=True)
+        direct_positions = qd_to_numpy(direct_samples.positions, transpose=True)
+        selected = np.arange(tractions.profile.shape[0])[None, :, None] < counts[:, None, :]
+        assert_allclose(actual_positions[selected], direct_positions[selected], rtol=0, atol=1e-15)
+        record_property(
+            "cached_position_max_difference_m",
+            float(abs(actual_positions[selected] - direct_positions[selected]).max()),
+        )
     record_property("fan_refined", qd_to_numpy(tractions.fan_refined, transpose=True).tolist())
     record_property("fit_evaluations", qd_to_numpy(tractions.evaluations, transpose=True).tolist())
     surface_nodes = qd_to_numpy(model.info.surface_nodes, transpose=True).T
@@ -320,9 +375,12 @@ def test_body_source_prior_wrench_cones_full_fields_and_gauge_rows(case, record_
     omega, errno = V_VEC(3, dtype=gs.qd_float, shape=(n_envs,)), V(dtype=gs.qd_int, shape=(n_envs,))
     omega.fill(0)
     errno.fill(0)
-    kernel_prepare_cached_tractions(
-        epsilon, contacts, tractions, state, model.info, surface.info, info, errno, reset_force=True
-    )
+    if len(tractions.acceptance.force.shape) == 2:
+        kernel_prepare_cached_tractions(
+            epsilon, contacts, tractions, state, model.info, surface.info, info, errno, reset_force=True
+        )
+    else:
+        kernel_scatter_tractions(contacts, tractions, state, model.info, surface.info, info, errno, reset_force=True)
     assert_equal(qd_to_numpy(errno), 0)
     assert_allclose(qd_to_numpy(state.force, transpose=True), nodal, rtol=1e-4, atol=1e-10)
     oracle = P2Shell(vertices, tets, faces, options.young, options.poisson, options.density, 2, factor_backend="none")
