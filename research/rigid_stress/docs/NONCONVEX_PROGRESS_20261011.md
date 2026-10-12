@@ -4,13 +4,24 @@ This implements the active extension in `NONCONVEX_CONTACT_REQUIREMENTS.md`.
 The previous egg milestone remains complete; native nonconvex acceptance is
 not yet established. The initial branch source is `1d6babf7`.
 
+The [source-prior model checkpoint](NATIVE_SOURCE_PRIORS_20261012.md) preserves
+local source forces under aggregate cancellation and passes24 independent
+CPU/CUDA full-field comparisons, including two0.05 N opposing loads with
+zero total wrench/nonzero12.96 kPa stress and the three-source B1024 policy807
+input. It remains unselected:live/policy/lifecycle and production integration
+are open. The original policy rejection now has an independent strict
+continuous proof. Its phase was previously mislabeled "warmup";the new
+capture is call1408/tick807 during the first timed repetition,without a valid
+policy throughput result. Surface-fan generation dominates fresh B1024
+profiling;applicable scheduling/pruning optimization is under evaluation.
+
 The [native boundary/packing checkpoint](NATIVE_BOUNDARY_PACKING_20261012.md)
 selects an on-demand masked certificate fallback after56 CPU/56 CUDA cases,
 preserving old stronger proofs and final budgets at approximately0.4% healthy
 live cost. Stable bounded GPU packing then passes10 CPU/10 CUDA lifecycle
 cases and actual same-GPU three-repeat live gain1.020729x. Copied B1024
 sourcecd76762e gives226,884 rigid-only/31,357 recovery-only/27,796 live
-valid env-step/s;policy warmup fails in32 copied environments and has no
+valid env-step/s;policy fails in32 copied environments and has no
 valid throughput. Physical contact/model repair, policy acceptance, diverse
 large-batch qualification and a measured plateau remain incomplete.
 
