@@ -1,0 +1,1044 @@
+{
+  "scope": "Publish current-source copied B1024 profiling and valid B2048 live throughput;no optimum claim.",
+  "source_revision": "cad0c46c",
+  "summary": {
+    "profile_b1024": {
+      "stage_wall_ms": {
+        "begin_step": 0.050662231296882965,
+        "association_transform": 0.17901362298289314,
+        "source_capture": 0.16519415694347117,
+        "intrinsic_contact_pipeline": 31.73305113996321,
+        "inertia_relief_centrifugal": 0.12149547364970203,
+        "rhs_reduction": 0.05979898924124427,
+        "linear_solve": 0.8476605686155381,
+        "complete_residual": 0.34307253699807916,
+        "global_peak": 0.2468777289323043,
+        "accept": 0.02691930640139617
+      },
+      "recovery_snapshot_check": {
+        "nodal_force_max_difference_N": 2.220446049250313e-16,
+        "peak_max_difference_Pa": 1.0222720447927713e-08,
+        "original_point_max_difference_m": 0.0,
+        "normalized_force_error_max": 8.92994416348886e-09,
+        "normalized_moment_error_max": 4.144107381362824e-09,
+        "complete_residual_max_N": 1.2470982643722895e-11
+      },
+      "complete_residual_budget_fraction": 0.005326112221174917,
+      "native_buffer_bytes": 3097545298,
+      "gpu_uuid": "GPU-c76298f5-14a5-a899-a833-a3a917a745f8"
+    },
+    "live_b2048": {
+      "valid_env_steps_per_second": 31164.233948781228,
+      "batch_steps_per_second": 15.216911107803334,
+      "repeats": [
+        {
+          "steps": 1280,
+          "seconds": 84.11992207402363,
+          "transitions_per_second": 31163.129201346524,
+          "attempted_transitions_per_second": 31163.129201346524,
+          "invalid_environment_steps": 0,
+          "scatter_overflow_calls": 0,
+          "batch_steps_per_second": 15.216371680344983,
+          "resets": 2368
+        },
+        {
+          "steps": 1280,
+          "seconds": 84.05696290917695,
+          "transitions_per_second": 31186.470570349426,
+          "attempted_transitions_per_second": 31186.470570349426,
+          "invalid_environment_steps": 0,
+          "scatter_overflow_calls": 0,
+          "batch_steps_per_second": 15.22776883317843,
+          "resets": 2368
+        },
+        {
+          "steps": 1280,
+          "seconds": 84.17393528483808,
+          "transitions_per_second": 31143.132266885823,
+          "attempted_transitions_per_second": 31143.132266885823,
+          "invalid_environment_steps": 0,
+          "scatter_overflow_calls": 0,
+          "batch_steps_per_second": 15.206607552190343,
+          "resets": 2368
+        }
+      ],
+      "native_buffer_bytes": 6121977426,
+      "device_free_bytes": 89749192704,
+      "torch_peak_allocated_bytes": 7485952,
+      "gpu_uuid": "GPU-17819d06-c563-257f-30fe-100c9f111279"
+    }
+  },
+  "limitations": "One32-condition bank is copied across all environments,including delays. Existing componentwise footprint/FP64/Q10/s8/error budgets are unchanged. B1024 profile and B2048 live run on distinct allocated GPUs and are not a matched batch-speedup comparison. Profiling replays an actual contact snapshot and includes graph/stage wall timing;it is not live throughput. B2048 reports every environment/reset/failure counter for three complete repetitions. No new independent per-stepCPUoracle,diverse seeds,policy acceptance,maximum throughput or plateau is claimed. Full raw JSON/logs are retained losslessly with explicit gzip encoding where large;original and stored hashes are separate.",
+  "files": [
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/archive_selected_scale_v1.py",
+      "run_path": "archive_selected_scale_v1.py",
+      "artifact": "blobs/016407c8ca308ae7420d6d727970bd1cc870bf12c67b127c1e82b2f4fd856095.py",
+      "encoding": "identity",
+      "bytes": 5332,
+      "sha256": "016407c8ca308ae7420d6d727970bd1cc870bf12c67b127c1e82b2f4fd856095",
+      "stored_bytes": 5332,
+      "stored_sha256": "016407c8ca308ae7420d6d727970bd1cc870bf12c67b127c1e82b2f4fd856095"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/run_archive_selected_scale_v1.sh",
+      "run_path": "run_archive_selected_scale_v1.sh",
+      "artifact": "blobs/c6596bf1a07892f17801d3b1c7510cbf260e7a883b12f6254efd9ebd7685950a.sh",
+      "encoding": "identity",
+      "bytes": 531,
+      "sha256": "c6596bf1a07892f17801d3b1c7510cbf260e7a883b12f6254efd9ebd7685950a",
+      "stored_bytes": 531,
+      "stored_sha256": "c6596bf1a07892f17801d3b1c7510cbf260e7a883b12f6254efd9ebd7685950a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/run_selected_copied_scale_v1.sh",
+      "run_path": "run_selected_copied_scale_v1.sh",
+      "artifact": "blobs/edaf7a182793dfc71b0cff7fb8736e054cb20ca5b4cfdfd386db44416e14a317.sh",
+      "encoding": "identity",
+      "bytes": 2078,
+      "sha256": "edaf7a182793dfc71b0cff7fb8736e054cb20ca5b4cfdfd386db44416e14a317",
+      "stored_bytes": 2078,
+      "stored_sha256": "edaf7a182793dfc71b0cff7fb8736e054cb20ca5b4cfdfd386db44416e14a317"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/benchmark.log",
+      "run_path": "selected-copied-scale-v1/live-b2048/benchmark.log",
+      "artifact": "blobs/859e1648d38e9f3eee4e4444a9cfccc4313f8a826e8698aa11c2e70248e946d5.log",
+      "encoding": "identity",
+      "bytes": 133293,
+      "sha256": "859e1648d38e9f3eee4e4444a9cfccc4313f8a826e8698aa11c2e70248e946d5",
+      "stored_bytes": 133293,
+      "stored_sha256": "859e1648d38e9f3eee4e4444a9cfccc4313f8a826e8698aa11c2e70248e946d5"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/hardware.csv",
+      "run_path": "selected-copied-scale-v1/live-b2048/hardware.csv",
+      "artifact": "blobs/af837e3701819ae77341b26856b6a9e57dc79e4ef0a88c08d197b5723e8221aa.csv",
+      "encoding": "identity",
+      "bytes": 156,
+      "sha256": "af837e3701819ae77341b26856b6a9e57dc79e4ef0a88c08d197b5723e8221aa",
+      "stored_bytes": 156,
+      "stored_sha256": "af837e3701819ae77341b26856b6a9e57dc79e4ef0a88c08d197b5723e8221aa"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/node.txt",
+      "run_path": "selected-copied-scale-v1/live-b2048/node.txt",
+      "artifact": "blobs/979aa4a8fcc6a1a4afdf5fc422a2a2c038e1309f93e4cf5e6e9bd3878fc3c7c4.txt",
+      "encoding": "identity",
+      "bytes": 12,
+      "sha256": "979aa4a8fcc6a1a4afdf5fc422a2a2c038e1309f93e4cf5e6e9bd3878fc3c7c4",
+      "stored_bytes": 12,
+      "stored_sha256": "979aa4a8fcc6a1a4afdf5fc422a2a2c038e1309f93e4cf5e6e9bd3878fc3c7c4"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/result.json",
+      "run_path": "selected-copied-scale-v1/live-b2048/result.json",
+      "artifact": "blobs/4d4a0af748639f1d53266f228c229ad43e897f3bed74252eaaca051590d8044a.json.gz",
+      "encoding": "gzip",
+      "bytes": 42194105,
+      "sha256": "4d4a0af748639f1d53266f228c229ad43e897f3bed74252eaaca051590d8044a",
+      "stored_bytes": 2664795,
+      "stored_sha256": "045ed974004d320b96a2c77c40ed974508d5cf63f4b1e51d774267f2fa4df373"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/returncode.txt",
+      "run_path": "selected-copied-scale-v1/live-b2048/returncode.txt",
+      "artifact": "blobs/9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa.txt",
+      "encoding": "identity",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "stored_bytes": 2,
+      "stored_sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/revision.txt",
+      "run_path": "selected-copied-scale-v1/live-b2048/revision.txt",
+      "artifact": "blobs/c5093f8adf48336bb50de7cb3dca3d6bc1b487b86a8386c24610a7ea9c982cac.txt",
+      "encoding": "identity",
+      "bytes": 41,
+      "sha256": "c5093f8adf48336bb50de7cb3dca3d6bc1b487b86a8386c24610a7ea9c982cac",
+      "stored_bytes": 41,
+      "stored_sha256": "c5093f8adf48336bb50de7cb3dca3d6bc1b487b86a8386c24610a7ea9c982cac"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/examples/rigid/assets/hollow_egg/level1/elastic.npz",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/examples/rigid/assets/hollow_egg/level1/elastic.npz",
+      "artifact": "blobs/3b2b90d7ee39562a296422dab1e5ee66e87265949ee38eefd27c729633a995a4.npz",
+      "encoding": "identity",
+      "bytes": 3573,
+      "sha256": "3b2b90d7ee39562a296422dab1e5ee66e87265949ee38eefd27c729633a995a4",
+      "stored_bytes": 3573,
+      "stored_sha256": "3b2b90d7ee39562a296422dab1e5ee66e87265949ee38eefd27c729633a995a4"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/examples/rigid/egg_stress_controller.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/examples/rigid/egg_stress_controller.py",
+      "artifact": "blobs/2760c2d6a89dbf0a3ec28f1a7c6030d6d73b71b43c6a4b55a5d5ab745e7de33d.py",
+      "encoding": "identity",
+      "bytes": 6195,
+      "sha256": "2760c2d6a89dbf0a3ec28f1a7c6030d6d73b71b43c6a4b55a5d5ab745e7de33d",
+      "stored_bytes": 6195,
+      "stored_sha256": "2760c2d6a89dbf0a3ec28f1a7c6030d6d73b71b43c6a4b55a5d5ab745e7de33d"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/examples/rigid/franka_egg_stress.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/examples/rigid/franka_egg_stress.py",
+      "artifact": "blobs/792e9bd5359c979812ffa18e61009d46aa181015e42aae99049e79cde3984e30.py",
+      "encoding": "identity",
+      "bytes": 15995,
+      "sha256": "792e9bd5359c979812ffa18e61009d46aa181015e42aae99049e79cde3984e30",
+      "stored_bytes": 15995,
+      "stored_sha256": "792e9bd5359c979812ffa18e61009d46aa181015e42aae99049e79cde3984e30"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/examples/speed_benchmark/rigid_stress.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/examples/speed_benchmark/rigid_stress.py",
+      "artifact": "blobs/c013f3b8a5b128629ce7d08922f975a34c98fe3e904fbe5563a5d101ffaa61ba.py",
+      "encoding": "identity",
+      "bytes": 40463,
+      "sha256": "c013f3b8a5b128629ce7d08922f975a34c98fe3e904fbe5563a5d101ffaa61ba",
+      "stored_bytes": 40463,
+      "stored_sha256": "c013f3b8a5b128629ce7d08922f975a34c98fe3e904fbe5563a5d101ffaa61ba"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/__init__.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/__init__.py",
+      "artifact": "blobs/17b4fa6e4eb64175b87586a6c7142b9fd2f5e88ba4321129d18e07e296adc5a6.py",
+      "encoding": "identity",
+      "bytes": 72,
+      "sha256": "17b4fa6e4eb64175b87586a6c7142b9fd2f5e88ba4321129d18e07e296adc5a6",
+      "stored_bytes": 72,
+      "stored_sha256": "17b4fa6e4eb64175b87586a6c7142b9fd2f5e88ba4321129d18e07e296adc5a6"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/association.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/association.py",
+      "artifact": "blobs/0c265ddde597bb03f6f56da0f4c6063a3a530ce2a19f2dceaf3378e987f811b3.py",
+      "encoding": "identity",
+      "bytes": 4147,
+      "sha256": "0c265ddde597bb03f6f56da0f4c6063a3a530ce2a19f2dceaf3378e987f811b3",
+      "stored_bytes": 4147,
+      "stored_sha256": "0c265ddde597bb03f6f56da0f4c6063a3a530ce2a19f2dceaf3378e987f811b3"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/balance.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/balance.py",
+      "artifact": "blobs/9b9cb6916d198f823b6e6af495c8cea6d0836f07243f3f4bda0b25a48a616712.py",
+      "encoding": "identity",
+      "bytes": 5310,
+      "sha256": "9b9cb6916d198f823b6e6af495c8cea6d0836f07243f3f4bda0b25a48a616712",
+      "stored_bytes": 5310,
+      "stored_sha256": "9b9cb6916d198f823b6e6af495c8cea6d0836f07243f3f4bda0b25a48a616712"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/boundary_certificate.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/boundary_certificate.py",
+      "artifact": "blobs/8f7c7a9d08716b795b1b107a268d5e2097933ee2709b4bcd7299c3ce548621f8.py",
+      "encoding": "identity",
+      "bytes": 5536,
+      "sha256": "8f7c7a9d08716b795b1b107a268d5e2097933ee2709b4bcd7299c3ce548621f8",
+      "stored_bytes": 5536,
+      "stored_sha256": "8f7c7a9d08716b795b1b107a268d5e2097933ee2709b4bcd7299c3ce548621f8"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/compatibility.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/compatibility.py",
+      "artifact": "blobs/a6b1dba264288688613e5039dd47ae5f8a7f7dfa362cff477779d6b2de65150a.py",
+      "encoding": "identity",
+      "bytes": 35645,
+      "sha256": "a6b1dba264288688613e5039dd47ae5f8a7f7dfa362cff477779d6b2de65150a",
+      "stored_bytes": 35645,
+      "stored_sha256": "a6b1dba264288688613e5039dd47ae5f8a7f7dfa362cff477779d6b2de65150a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/contact.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/contact.py",
+      "artifact": "blobs/7ebfe4210a819036edc18fcc6b9a3e94273f8644dc7c2a50904079c9100886b8.py",
+      "encoding": "identity",
+      "bytes": 35348,
+      "sha256": "7ebfe4210a819036edc18fcc6b9a3e94273f8644dc7c2a50904079c9100886b8",
+      "stored_bytes": 35348,
+      "stored_sha256": "7ebfe4210a819036edc18fcc6b9a3e94273f8644dc7c2a50904079c9100886b8"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/cooperative_fit.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/cooperative_fit.py",
+      "artifact": "blobs/97826c5b1d20b3d12e605eb84b0cc4af37ac9c5983a0e4cf4226a8c3924e7235.py",
+      "encoding": "identity",
+      "bytes": 15863,
+      "sha256": "97826c5b1d20b3d12e605eb84b0cc4af37ac9c5983a0e4cf4226a8c3924e7235",
+      "stored_bytes": 15863,
+      "stored_sha256": "97826c5b1d20b3d12e605eb84b0cc4af37ac9c5983a0e4cf4226a8c3924e7235"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/cooperative_scatter.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/cooperative_scatter.py",
+      "artifact": "blobs/b8e25a9893d8560747b09fa984576557d09a6a5fa712e376e5acf73c6cbef963.py",
+      "encoding": "identity",
+      "bytes": 8028,
+      "sha256": "b8e25a9893d8560747b09fa984576557d09a6a5fa712e376e5acf73c6cbef963",
+      "stored_bytes": 8028,
+      "stored_sha256": "b8e25a9893d8560747b09fa984576557d09a6a5fa712e376e5acf73c6cbef963"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/data.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/data.py",
+      "artifact": "blobs/081ee50334a918f8bef23fb891de3c4a6e5fa4964826069268497c0fa1cece19.py",
+      "encoding": "identity",
+      "bytes": 2171,
+      "sha256": "081ee50334a918f8bef23fb891de3c4a6e5fa4964826069268497c0fa1cece19",
+      "stored_bytes": 2171,
+      "stored_sha256": "081ee50334a918f8bef23fb891de3c4a6e5fa4964826069268497c0fa1cece19"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/factor.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/factor.py",
+      "artifact": "blobs/f2a059e88cf03b35a5fba2f88c3ac3f631a899d52cd841a6d268d9ccf087f81c.py",
+      "encoding": "identity",
+      "bytes": 14633,
+      "sha256": "f2a059e88cf03b35a5fba2f88c3ac3f631a899d52cd841a6d268d9ccf087f81c",
+      "stored_bytes": 14633,
+      "stored_sha256": "f2a059e88cf03b35a5fba2f88c3ac3f631a899d52cd841a6d268d9ccf087f81c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/failure.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/failure.py",
+      "artifact": "blobs/6c83464eafa08eb4a27c29f1574b420d29317f8413073b590adb76ce346858fc.py",
+      "encoding": "identity",
+      "bytes": 3205,
+      "sha256": "6c83464eafa08eb4a27c29f1574b420d29317f8413073b590adb76ce346858fc",
+      "stored_bytes": 3205,
+      "stored_sha256": "6c83464eafa08eb4a27c29f1574b420d29317f8413073b590adb76ce346858fc"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/footprint.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/footprint.py",
+      "artifact": "blobs/12e563f3dbd7b7b47506028cc2be4d5ac34b685424915df19450f84ab453b583.py",
+      "encoding": "identity",
+      "bytes": 31397,
+      "sha256": "12e563f3dbd7b7b47506028cc2be4d5ac34b685424915df19450f84ab453b583",
+      "stored_bytes": 31397,
+      "stored_sha256": "12e563f3dbd7b7b47506028cc2be4d5ac34b685424915df19450f84ab453b583"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/grid.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/grid.py",
+      "artifact": "blobs/f451674d257339ece41a258f22c7b95fe25d6fc51888854855de4320e26b9a90.py",
+      "encoding": "identity",
+      "bytes": 3661,
+      "sha256": "f451674d257339ece41a258f22c7b95fe25d6fc51888854855de4320e26b9a90",
+      "stored_bytes": 3661,
+      "stored_sha256": "f451674d257339ece41a258f22c7b95fe25d6fc51888854855de4320e26b9a90"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/history.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/history.py",
+      "artifact": "blobs/559e046d3405afc260be5cd5a0de5712e490518e73aafc288642261c3959657c.py",
+      "encoding": "identity",
+      "bytes": 7077,
+      "sha256": "559e046d3405afc260be5cd5a0de5712e490518e73aafc288642261c3959657c",
+      "stored_bytes": 7077,
+      "stored_sha256": "559e046d3405afc260be5cd5a0de5712e490518e73aafc288642261c3959657c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/intrinsic.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/intrinsic.py",
+      "artifact": "blobs/6f4f67d0864184520a788e8214fc07e28cb730321654d9f931798af2f0e3e6be.py",
+      "encoding": "identity",
+      "bytes": 25264,
+      "sha256": "6f4f67d0864184520a788e8214fc07e28cb730321654d9f931798af2f0e3e6be",
+      "stored_bytes": 25264,
+      "stored_sha256": "6f4f67d0864184520a788e8214fc07e28cb730321654d9f931798af2f0e3e6be"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/inverse.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/inverse.py",
+      "artifact": "blobs/b15ef055df018d96b92aa2b0be3d39d258b4cc59c83dbccdd9dcf0c173eb2a43.py",
+      "encoding": "identity",
+      "bytes": 3908,
+      "sha256": "b15ef055df018d96b92aa2b0be3d39d258b4cc59c83dbccdd9dcf0c173eb2a43",
+      "stored_bytes": 3908,
+      "stored_sha256": "b15ef055df018d96b92aa2b0be3d39d258b4cc59c83dbccdd9dcf0c173eb2a43"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/lifecycle.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/lifecycle.py",
+      "artifact": "blobs/aec6ccc09b9da6fc15ea1c64e6716dee9325b3d05edaa7ac19b4419861c192fa.py",
+      "encoding": "identity",
+      "bytes": 1826,
+      "sha256": "aec6ccc09b9da6fc15ea1c64e6716dee9325b3d05edaa7ac19b4419861c192fa",
+      "stored_bytes": 1826,
+      "stored_sha256": "aec6ccc09b9da6fc15ea1c64e6716dee9325b3d05edaa7ac19b4419861c192fa"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/model.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/model.py",
+      "artifact": "blobs/02deae6f14789dfe8c6470432a5ad8cdd372f27008a5f6ea902a07dff6dda97f.py",
+      "encoding": "identity",
+      "bytes": 15959,
+      "sha256": "02deae6f14789dfe8c6470432a5ad8cdd372f27008a5f6ea902a07dff6dda97f",
+      "stored_bytes": 15959,
+      "stored_sha256": "02deae6f14789dfe8c6470432a5ad8cdd372f27008a5f6ea902a07dff6dda97f"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/operators.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/operators.py",
+      "artifact": "blobs/40ad5e488e928a8f22efe0833f447afba7ef0e258bc3cffb5a0fe30bc1d416ff.py",
+      "encoding": "identity",
+      "bytes": 10408,
+      "sha256": "40ad5e488e928a8f22efe0833f447afba7ef0e258bc3cffb5a0fe30bc1d416ff",
+      "stored_bytes": 10408,
+      "stored_sha256": "40ad5e488e928a8f22efe0833f447afba7ef0e258bc3cffb5a0fe30bc1d416ff"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/paths.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/paths.py",
+      "artifact": "blobs/a4d9f4a3b407d5d153b4ba00612cea9888ad9299692fd381eff33ab738bcb352.py",
+      "encoding": "identity",
+      "bytes": 10803,
+      "sha256": "a4d9f4a3b407d5d153b4ba00612cea9888ad9299692fd381eff33ab738bcb352",
+      "stored_bytes": 10803,
+      "stored_sha256": "a4d9f4a3b407d5d153b4ba00612cea9888ad9299692fd381eff33ab738bcb352"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/pipeline.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/pipeline.py",
+      "artifact": "blobs/5677953121fc287950a1a86ab80a781929032b13ffae3d9698b0d28426722de9.py",
+      "encoding": "identity",
+      "bytes": 5573,
+      "sha256": "5677953121fc287950a1a86ab80a781929032b13ffae3d9698b0d28426722de9",
+      "stored_bytes": 5573,
+      "stored_sha256": "5677953121fc287950a1a86ab80a781929032b13ffae3d9698b0d28426722de9"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/post.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/post.py",
+      "artifact": "blobs/e19a87869e01403119880a16e6d7e221a6e3653b24fff174cc01a9390458901e.py",
+      "encoding": "identity",
+      "bytes": 3326,
+      "sha256": "e19a87869e01403119880a16e6d7e221a6e3653b24fff174cc01a9390458901e",
+      "stored_bytes": 3326,
+      "stored_sha256": "e19a87869e01403119880a16e6d7e221a6e3653b24fff174cc01a9390458901e"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/provenance.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/provenance.py",
+      "artifact": "blobs/cdb00916ffa41aa7b29ed2ba03759d6ae7ec899900aa59dc16abce4c8c036a1a.py",
+      "encoding": "identity",
+      "bytes": 13238,
+      "sha256": "cdb00916ffa41aa7b29ed2ba03759d6ae7ec899900aa59dc16abce4c8c036a1a",
+      "stored_bytes": 13238,
+      "stored_sha256": "cdb00916ffa41aa7b29ed2ba03759d6ae7ec899900aa59dc16abce4c8c036a1a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/recovery.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/recovery.py",
+      "artifact": "blobs/f8c25dc73a4de4033bfebb6076d725fba5a4f00346a69ecb4660555a4dcd3efe.py",
+      "encoding": "identity",
+      "bytes": 26146,
+      "sha256": "f8c25dc73a4de4033bfebb6076d725fba5a4f00346a69ecb4660555a4dcd3efe",
+      "stored_bytes": 26146,
+      "stored_sha256": "f8c25dc73a4de4033bfebb6076d725fba5a4f00346a69ecb4660555a4dcd3efe"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/scatter.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/scatter.py",
+      "artifact": "blobs/f1aec3bdf7f1f8c0e6dc2a587874afe6dcefd1e9dc5147859711098736a7b399.py",
+      "encoding": "identity",
+      "bytes": 13531,
+      "sha256": "f1aec3bdf7f1f8c0e6dc2a587874afe6dcefd1e9dc5147859711098736a7b399",
+      "stored_bytes": 13531,
+      "stored_sha256": "f1aec3bdf7f1f8c0e6dc2a587874afe6dcefd1e9dc5147859711098736a7b399"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/solve.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/solve.py",
+      "artifact": "blobs/7a69e5aace87d1c9a642698ad3381c2bdfc27c765f27447d97d5a18a2916393c.py",
+      "encoding": "identity",
+      "bytes": 14656,
+      "sha256": "7a69e5aace87d1c9a642698ad3381c2bdfc27c765f27447d97d5a18a2916393c",
+      "stored_bytes": 14656,
+      "stored_sha256": "7a69e5aace87d1c9a642698ad3381c2bdfc27c765f27447d97d5a18a2916393c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/source_vertices.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/source_vertices.py",
+      "artifact": "blobs/4bb61a95aeb8fbe6577daadff68abd5bc25e1da19b97a39bf04b39243b99c8cf.py",
+      "encoding": "identity",
+      "bytes": 8421,
+      "sha256": "4bb61a95aeb8fbe6577daadff68abd5bc25e1da19b97a39bf04b39243b99c8cf",
+      "stored_bytes": 8421,
+      "stored_sha256": "4bb61a95aeb8fbe6577daadff68abd5bc25e1da19b97a39bf04b39243b99c8cf"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/surface.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/surface.py",
+      "artifact": "blobs/b83ee1d677294001d0da2613b99fbfe689a014c27bd01bdd06c703d39b32f30e.py",
+      "encoding": "identity",
+      "bytes": 5052,
+      "sha256": "b83ee1d677294001d0da2613b99fbfe689a014c27bd01bdd06c703d39b32f30e",
+      "stored_bytes": 5052,
+      "stored_sha256": "b83ee1d677294001d0da2613b99fbfe689a014c27bd01bdd06c703d39b32f30e"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/surface_inverse.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/surface_inverse.py",
+      "artifact": "blobs/aab910a4172d681a3184f9b8f40d3f2727e80fa81061dc0b50a0f3dbee36ed17.py",
+      "encoding": "identity",
+      "bytes": 7072,
+      "sha256": "aab910a4172d681a3184f9b8f40d3f2727e80fa81061dc0b50a0f3dbee36ed17",
+      "stored_bytes": 7072,
+      "stored_sha256": "aab910a4172d681a3184f9b8f40d3f2727e80fa81061dc0b50a0f3dbee36ed17"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/topology.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/topology.py",
+      "artifact": "blobs/0e6c421b6fcd66e456417cded1f6b7403474b957d263b4ae5d52b1a9f5b12cd2.py",
+      "encoding": "identity",
+      "bytes": 2646,
+      "sha256": "0e6c421b6fcd66e456417cded1f6b7403474b957d263b4ae5d52b1a9f5b12cd2",
+      "stored_bytes": 2646,
+      "stored_sha256": "0e6c421b6fcd66e456417cded1f6b7403474b957d263b4ae5d52b1a9f5b12cd2"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/traction.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/genesis/engine/solvers/rigid/stress/traction.py",
+      "artifact": "blobs/1376bf6ab19fbab3b155808dece101bd91e81723f1226c32873c3d62c192b77f.py",
+      "encoding": "identity",
+      "bytes": 39045,
+      "sha256": "1376bf6ab19fbab3b155808dece101bd91e81723f1226c32873c3d62c192b77f",
+      "stored_bytes": 39045,
+      "stored_sha256": "1376bf6ab19fbab3b155808dece101bd91e81723f1226c32873c3d62c192b77f"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/genesis/options/morphs.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/genesis/options/morphs.py",
+      "artifact": "blobs/3a6fda0b9150a9fe8feaf173eb46a096c06fe6b057580ced7f93d32654aafc7f.py",
+      "encoding": "identity",
+      "bytes": 101878,
+      "sha256": "3a6fda0b9150a9fe8feaf173eb46a096c06fe6b057580ced7f93d32654aafc7f",
+      "stored_bytes": 101878,
+      "stored_sha256": "3a6fda0b9150a9fe8feaf173eb46a096c06fe6b057580ced7f93d32654aafc7f"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/genesis/options/rigid_stress.py",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/genesis/options/rigid_stress.py",
+      "artifact": "blobs/a068320bb085348436b429ca79b6886aedc6108b0d5954d641c549c0bb7c418a.py",
+      "encoding": "identity",
+      "bytes": 10754,
+      "sha256": "a068320bb085348436b429ca79b6886aedc6108b0d5954d641c549c0bb7c418a",
+      "stored_bytes": 10754,
+      "stored_sha256": "a068320bb085348436b429ca79b6886aedc6108b0d5954d641c549c0bb7c418a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/original-point-scalar-b32-profile-v1/conditions.npz",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/original-point-scalar-b32-profile-v1/conditions.npz",
+      "artifact": "blobs/156d956bc5fc3827da8df236cf1695a4bf30a9a1e1d939c672f6a57d69d10930.npz",
+      "encoding": "identity",
+      "bytes": 14058,
+      "sha256": "156d956bc5fc3827da8df236cf1695a4bf30a9a1e1d939c672f6a57d69d10930",
+      "stored_bytes": 14058,
+      "stored_sha256": "156d956bc5fc3827da8df236cf1695a4bf30a9a1e1d939c672f6a57d69d10930"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/run_selected_copied_scale_v1.sh",
+      "run_path": "selected-copied-scale-v1/live-b2048/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/run_selected_copied_scale_v1.sh",
+      "artifact": "blobs/edaf7a182793dfc71b0cff7fb8736e054cb20ca5b4cfdfd386db44416e14a317.sh",
+      "encoding": "identity",
+      "bytes": 2078,
+      "sha256": "edaf7a182793dfc71b0cff7fb8736e054cb20ca5b4cfdfd386db44416e14a317",
+      "stored_bytes": 2078,
+      "stored_sha256": "edaf7a182793dfc71b0cff7fb8736e054cb20ca5b4cfdfd386db44416e14a317"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source-after.sha256",
+      "run_path": "selected-copied-scale-v1/live-b2048/source-after.sha256",
+      "artifact": "blobs/98d8cbba9eb3581b0f4f1024692af1b924e4048e5edbfee8d26c29b2c0fa734d.sha256",
+      "encoding": "identity",
+      "bytes": 4585,
+      "sha256": "98d8cbba9eb3581b0f4f1024692af1b924e4048e5edbfee8d26c29b2c0fa734d",
+      "stored_bytes": 4585,
+      "stored_sha256": "98d8cbba9eb3581b0f4f1024692af1b924e4048e5edbfee8d26c29b2c0fa734d"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/live-b2048/source.sha256",
+      "run_path": "selected-copied-scale-v1/live-b2048/source.sha256",
+      "artifact": "blobs/98d8cbba9eb3581b0f4f1024692af1b924e4048e5edbfee8d26c29b2c0fa734d.sha256",
+      "encoding": "identity",
+      "bytes": 4585,
+      "sha256": "98d8cbba9eb3581b0f4f1024692af1b924e4048e5edbfee8d26c29b2c0fa734d",
+      "stored_bytes": 4585,
+      "stored_sha256": "98d8cbba9eb3581b0f4f1024692af1b924e4048e5edbfee8d26c29b2c0fa734d"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/benchmark.log",
+      "run_path": "selected-copied-scale-v1/profile-b1024/benchmark.log",
+      "artifact": "blobs/db0153bc3070216111c4f0c4a81b197265281494873f8c1d13091d7b4dff1cf2.log",
+      "encoding": "identity",
+      "bytes": 185785,
+      "sha256": "db0153bc3070216111c4f0c4a81b197265281494873f8c1d13091d7b4dff1cf2",
+      "stored_bytes": 185785,
+      "stored_sha256": "db0153bc3070216111c4f0c4a81b197265281494873f8c1d13091d7b4dff1cf2"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/hardware.csv",
+      "run_path": "selected-copied-scale-v1/profile-b1024/hardware.csv",
+      "artifact": "blobs/e9fd6287b35d33db9f09c5a3f7122ae490ec25bcad571e12d32e4867676847c2.csv",
+      "encoding": "identity",
+      "bytes": 156,
+      "sha256": "e9fd6287b35d33db9f09c5a3f7122ae490ec25bcad571e12d32e4867676847c2",
+      "stored_bytes": 156,
+      "stored_sha256": "e9fd6287b35d33db9f09c5a3f7122ae490ec25bcad571e12d32e4867676847c2"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/node.txt",
+      "run_path": "selected-copied-scale-v1/profile-b1024/node.txt",
+      "artifact": "blobs/979aa4a8fcc6a1a4afdf5fc422a2a2c038e1309f93e4cf5e6e9bd3878fc3c7c4.txt",
+      "encoding": "identity",
+      "bytes": 12,
+      "sha256": "979aa4a8fcc6a1a4afdf5fc422a2a2c038e1309f93e4cf5e6e9bd3878fc3c7c4",
+      "stored_bytes": 12,
+      "stored_sha256": "979aa4a8fcc6a1a4afdf5fc422a2a2c038e1309f93e4cf5e6e9bd3878fc3c7c4"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/result.json",
+      "run_path": "selected-copied-scale-v1/profile-b1024/result.json",
+      "artifact": "blobs/14c0e9a7225dc8fd15348c2c1f957f25c6952737892a873fe4803b97b8dd8fb3.json.gz",
+      "encoding": "gzip",
+      "bytes": 21225925,
+      "sha256": "14c0e9a7225dc8fd15348c2c1f957f25c6952737892a873fe4803b97b8dd8fb3",
+      "stored_bytes": 1516382,
+      "stored_sha256": "32e89fcefc0e614e37f23e5b74b04ce89f64c55d5cdc8d280aef5405d5052366"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/returncode.txt",
+      "run_path": "selected-copied-scale-v1/profile-b1024/returncode.txt",
+      "artifact": "blobs/9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa.txt",
+      "encoding": "identity",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "stored_bytes": 2,
+      "stored_sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/revision.txt",
+      "run_path": "selected-copied-scale-v1/profile-b1024/revision.txt",
+      "artifact": "blobs/c5093f8adf48336bb50de7cb3dca3d6bc1b487b86a8386c24610a7ea9c982cac.txt",
+      "encoding": "identity",
+      "bytes": 41,
+      "sha256": "c5093f8adf48336bb50de7cb3dca3d6bc1b487b86a8386c24610a7ea9c982cac",
+      "stored_bytes": 41,
+      "stored_sha256": "c5093f8adf48336bb50de7cb3dca3d6bc1b487b86a8386c24610a7ea9c982cac"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/examples/rigid/assets/hollow_egg/level1/elastic.npz",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/examples/rigid/assets/hollow_egg/level1/elastic.npz",
+      "artifact": "blobs/3b2b90d7ee39562a296422dab1e5ee66e87265949ee38eefd27c729633a995a4.npz",
+      "encoding": "identity",
+      "bytes": 3573,
+      "sha256": "3b2b90d7ee39562a296422dab1e5ee66e87265949ee38eefd27c729633a995a4",
+      "stored_bytes": 3573,
+      "stored_sha256": "3b2b90d7ee39562a296422dab1e5ee66e87265949ee38eefd27c729633a995a4"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/examples/rigid/egg_stress_controller.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/examples/rigid/egg_stress_controller.py",
+      "artifact": "blobs/2760c2d6a89dbf0a3ec28f1a7c6030d6d73b71b43c6a4b55a5d5ab745e7de33d.py",
+      "encoding": "identity",
+      "bytes": 6195,
+      "sha256": "2760c2d6a89dbf0a3ec28f1a7c6030d6d73b71b43c6a4b55a5d5ab745e7de33d",
+      "stored_bytes": 6195,
+      "stored_sha256": "2760c2d6a89dbf0a3ec28f1a7c6030d6d73b71b43c6a4b55a5d5ab745e7de33d"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/examples/rigid/franka_egg_stress.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/examples/rigid/franka_egg_stress.py",
+      "artifact": "blobs/792e9bd5359c979812ffa18e61009d46aa181015e42aae99049e79cde3984e30.py",
+      "encoding": "identity",
+      "bytes": 15995,
+      "sha256": "792e9bd5359c979812ffa18e61009d46aa181015e42aae99049e79cde3984e30",
+      "stored_bytes": 15995,
+      "stored_sha256": "792e9bd5359c979812ffa18e61009d46aa181015e42aae99049e79cde3984e30"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/examples/speed_benchmark/rigid_stress.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/examples/speed_benchmark/rigid_stress.py",
+      "artifact": "blobs/c013f3b8a5b128629ce7d08922f975a34c98fe3e904fbe5563a5d101ffaa61ba.py",
+      "encoding": "identity",
+      "bytes": 40463,
+      "sha256": "c013f3b8a5b128629ce7d08922f975a34c98fe3e904fbe5563a5d101ffaa61ba",
+      "stored_bytes": 40463,
+      "stored_sha256": "c013f3b8a5b128629ce7d08922f975a34c98fe3e904fbe5563a5d101ffaa61ba"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/__init__.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/__init__.py",
+      "artifact": "blobs/17b4fa6e4eb64175b87586a6c7142b9fd2f5e88ba4321129d18e07e296adc5a6.py",
+      "encoding": "identity",
+      "bytes": 72,
+      "sha256": "17b4fa6e4eb64175b87586a6c7142b9fd2f5e88ba4321129d18e07e296adc5a6",
+      "stored_bytes": 72,
+      "stored_sha256": "17b4fa6e4eb64175b87586a6c7142b9fd2f5e88ba4321129d18e07e296adc5a6"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/association.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/association.py",
+      "artifact": "blobs/0c265ddde597bb03f6f56da0f4c6063a3a530ce2a19f2dceaf3378e987f811b3.py",
+      "encoding": "identity",
+      "bytes": 4147,
+      "sha256": "0c265ddde597bb03f6f56da0f4c6063a3a530ce2a19f2dceaf3378e987f811b3",
+      "stored_bytes": 4147,
+      "stored_sha256": "0c265ddde597bb03f6f56da0f4c6063a3a530ce2a19f2dceaf3378e987f811b3"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/balance.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/balance.py",
+      "artifact": "blobs/9b9cb6916d198f823b6e6af495c8cea6d0836f07243f3f4bda0b25a48a616712.py",
+      "encoding": "identity",
+      "bytes": 5310,
+      "sha256": "9b9cb6916d198f823b6e6af495c8cea6d0836f07243f3f4bda0b25a48a616712",
+      "stored_bytes": 5310,
+      "stored_sha256": "9b9cb6916d198f823b6e6af495c8cea6d0836f07243f3f4bda0b25a48a616712"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/boundary_certificate.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/boundary_certificate.py",
+      "artifact": "blobs/8f7c7a9d08716b795b1b107a268d5e2097933ee2709b4bcd7299c3ce548621f8.py",
+      "encoding": "identity",
+      "bytes": 5536,
+      "sha256": "8f7c7a9d08716b795b1b107a268d5e2097933ee2709b4bcd7299c3ce548621f8",
+      "stored_bytes": 5536,
+      "stored_sha256": "8f7c7a9d08716b795b1b107a268d5e2097933ee2709b4bcd7299c3ce548621f8"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/compatibility.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/compatibility.py",
+      "artifact": "blobs/a6b1dba264288688613e5039dd47ae5f8a7f7dfa362cff477779d6b2de65150a.py",
+      "encoding": "identity",
+      "bytes": 35645,
+      "sha256": "a6b1dba264288688613e5039dd47ae5f8a7f7dfa362cff477779d6b2de65150a",
+      "stored_bytes": 35645,
+      "stored_sha256": "a6b1dba264288688613e5039dd47ae5f8a7f7dfa362cff477779d6b2de65150a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/contact.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/contact.py",
+      "artifact": "blobs/7ebfe4210a819036edc18fcc6b9a3e94273f8644dc7c2a50904079c9100886b8.py",
+      "encoding": "identity",
+      "bytes": 35348,
+      "sha256": "7ebfe4210a819036edc18fcc6b9a3e94273f8644dc7c2a50904079c9100886b8",
+      "stored_bytes": 35348,
+      "stored_sha256": "7ebfe4210a819036edc18fcc6b9a3e94273f8644dc7c2a50904079c9100886b8"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/cooperative_fit.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/cooperative_fit.py",
+      "artifact": "blobs/97826c5b1d20b3d12e605eb84b0cc4af37ac9c5983a0e4cf4226a8c3924e7235.py",
+      "encoding": "identity",
+      "bytes": 15863,
+      "sha256": "97826c5b1d20b3d12e605eb84b0cc4af37ac9c5983a0e4cf4226a8c3924e7235",
+      "stored_bytes": 15863,
+      "stored_sha256": "97826c5b1d20b3d12e605eb84b0cc4af37ac9c5983a0e4cf4226a8c3924e7235"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/cooperative_scatter.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/cooperative_scatter.py",
+      "artifact": "blobs/b8e25a9893d8560747b09fa984576557d09a6a5fa712e376e5acf73c6cbef963.py",
+      "encoding": "identity",
+      "bytes": 8028,
+      "sha256": "b8e25a9893d8560747b09fa984576557d09a6a5fa712e376e5acf73c6cbef963",
+      "stored_bytes": 8028,
+      "stored_sha256": "b8e25a9893d8560747b09fa984576557d09a6a5fa712e376e5acf73c6cbef963"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/data.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/data.py",
+      "artifact": "blobs/081ee50334a918f8bef23fb891de3c4a6e5fa4964826069268497c0fa1cece19.py",
+      "encoding": "identity",
+      "bytes": 2171,
+      "sha256": "081ee50334a918f8bef23fb891de3c4a6e5fa4964826069268497c0fa1cece19",
+      "stored_bytes": 2171,
+      "stored_sha256": "081ee50334a918f8bef23fb891de3c4a6e5fa4964826069268497c0fa1cece19"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/factor.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/factor.py",
+      "artifact": "blobs/f2a059e88cf03b35a5fba2f88c3ac3f631a899d52cd841a6d268d9ccf087f81c.py",
+      "encoding": "identity",
+      "bytes": 14633,
+      "sha256": "f2a059e88cf03b35a5fba2f88c3ac3f631a899d52cd841a6d268d9ccf087f81c",
+      "stored_bytes": 14633,
+      "stored_sha256": "f2a059e88cf03b35a5fba2f88c3ac3f631a899d52cd841a6d268d9ccf087f81c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/failure.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/failure.py",
+      "artifact": "blobs/6c83464eafa08eb4a27c29f1574b420d29317f8413073b590adb76ce346858fc.py",
+      "encoding": "identity",
+      "bytes": 3205,
+      "sha256": "6c83464eafa08eb4a27c29f1574b420d29317f8413073b590adb76ce346858fc",
+      "stored_bytes": 3205,
+      "stored_sha256": "6c83464eafa08eb4a27c29f1574b420d29317f8413073b590adb76ce346858fc"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/footprint.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/footprint.py",
+      "artifact": "blobs/12e563f3dbd7b7b47506028cc2be4d5ac34b685424915df19450f84ab453b583.py",
+      "encoding": "identity",
+      "bytes": 31397,
+      "sha256": "12e563f3dbd7b7b47506028cc2be4d5ac34b685424915df19450f84ab453b583",
+      "stored_bytes": 31397,
+      "stored_sha256": "12e563f3dbd7b7b47506028cc2be4d5ac34b685424915df19450f84ab453b583"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/grid.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/grid.py",
+      "artifact": "blobs/f451674d257339ece41a258f22c7b95fe25d6fc51888854855de4320e26b9a90.py",
+      "encoding": "identity",
+      "bytes": 3661,
+      "sha256": "f451674d257339ece41a258f22c7b95fe25d6fc51888854855de4320e26b9a90",
+      "stored_bytes": 3661,
+      "stored_sha256": "f451674d257339ece41a258f22c7b95fe25d6fc51888854855de4320e26b9a90"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/history.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/history.py",
+      "artifact": "blobs/559e046d3405afc260be5cd5a0de5712e490518e73aafc288642261c3959657c.py",
+      "encoding": "identity",
+      "bytes": 7077,
+      "sha256": "559e046d3405afc260be5cd5a0de5712e490518e73aafc288642261c3959657c",
+      "stored_bytes": 7077,
+      "stored_sha256": "559e046d3405afc260be5cd5a0de5712e490518e73aafc288642261c3959657c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/intrinsic.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/intrinsic.py",
+      "artifact": "blobs/6f4f67d0864184520a788e8214fc07e28cb730321654d9f931798af2f0e3e6be.py",
+      "encoding": "identity",
+      "bytes": 25264,
+      "sha256": "6f4f67d0864184520a788e8214fc07e28cb730321654d9f931798af2f0e3e6be",
+      "stored_bytes": 25264,
+      "stored_sha256": "6f4f67d0864184520a788e8214fc07e28cb730321654d9f931798af2f0e3e6be"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/inverse.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/inverse.py",
+      "artifact": "blobs/b15ef055df018d96b92aa2b0be3d39d258b4cc59c83dbccdd9dcf0c173eb2a43.py",
+      "encoding": "identity",
+      "bytes": 3908,
+      "sha256": "b15ef055df018d96b92aa2b0be3d39d258b4cc59c83dbccdd9dcf0c173eb2a43",
+      "stored_bytes": 3908,
+      "stored_sha256": "b15ef055df018d96b92aa2b0be3d39d258b4cc59c83dbccdd9dcf0c173eb2a43"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/lifecycle.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/lifecycle.py",
+      "artifact": "blobs/aec6ccc09b9da6fc15ea1c64e6716dee9325b3d05edaa7ac19b4419861c192fa.py",
+      "encoding": "identity",
+      "bytes": 1826,
+      "sha256": "aec6ccc09b9da6fc15ea1c64e6716dee9325b3d05edaa7ac19b4419861c192fa",
+      "stored_bytes": 1826,
+      "stored_sha256": "aec6ccc09b9da6fc15ea1c64e6716dee9325b3d05edaa7ac19b4419861c192fa"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/model.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/model.py",
+      "artifact": "blobs/02deae6f14789dfe8c6470432a5ad8cdd372f27008a5f6ea902a07dff6dda97f.py",
+      "encoding": "identity",
+      "bytes": 15959,
+      "sha256": "02deae6f14789dfe8c6470432a5ad8cdd372f27008a5f6ea902a07dff6dda97f",
+      "stored_bytes": 15959,
+      "stored_sha256": "02deae6f14789dfe8c6470432a5ad8cdd372f27008a5f6ea902a07dff6dda97f"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/operators.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/operators.py",
+      "artifact": "blobs/40ad5e488e928a8f22efe0833f447afba7ef0e258bc3cffb5a0fe30bc1d416ff.py",
+      "encoding": "identity",
+      "bytes": 10408,
+      "sha256": "40ad5e488e928a8f22efe0833f447afba7ef0e258bc3cffb5a0fe30bc1d416ff",
+      "stored_bytes": 10408,
+      "stored_sha256": "40ad5e488e928a8f22efe0833f447afba7ef0e258bc3cffb5a0fe30bc1d416ff"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/paths.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/paths.py",
+      "artifact": "blobs/a4d9f4a3b407d5d153b4ba00612cea9888ad9299692fd381eff33ab738bcb352.py",
+      "encoding": "identity",
+      "bytes": 10803,
+      "sha256": "a4d9f4a3b407d5d153b4ba00612cea9888ad9299692fd381eff33ab738bcb352",
+      "stored_bytes": 10803,
+      "stored_sha256": "a4d9f4a3b407d5d153b4ba00612cea9888ad9299692fd381eff33ab738bcb352"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/pipeline.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/pipeline.py",
+      "artifact": "blobs/5677953121fc287950a1a86ab80a781929032b13ffae3d9698b0d28426722de9.py",
+      "encoding": "identity",
+      "bytes": 5573,
+      "sha256": "5677953121fc287950a1a86ab80a781929032b13ffae3d9698b0d28426722de9",
+      "stored_bytes": 5573,
+      "stored_sha256": "5677953121fc287950a1a86ab80a781929032b13ffae3d9698b0d28426722de9"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/post.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/post.py",
+      "artifact": "blobs/e19a87869e01403119880a16e6d7e221a6e3653b24fff174cc01a9390458901e.py",
+      "encoding": "identity",
+      "bytes": 3326,
+      "sha256": "e19a87869e01403119880a16e6d7e221a6e3653b24fff174cc01a9390458901e",
+      "stored_bytes": 3326,
+      "stored_sha256": "e19a87869e01403119880a16e6d7e221a6e3653b24fff174cc01a9390458901e"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/provenance.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/provenance.py",
+      "artifact": "blobs/cdb00916ffa41aa7b29ed2ba03759d6ae7ec899900aa59dc16abce4c8c036a1a.py",
+      "encoding": "identity",
+      "bytes": 13238,
+      "sha256": "cdb00916ffa41aa7b29ed2ba03759d6ae7ec899900aa59dc16abce4c8c036a1a",
+      "stored_bytes": 13238,
+      "stored_sha256": "cdb00916ffa41aa7b29ed2ba03759d6ae7ec899900aa59dc16abce4c8c036a1a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/recovery.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/recovery.py",
+      "artifact": "blobs/f8c25dc73a4de4033bfebb6076d725fba5a4f00346a69ecb4660555a4dcd3efe.py",
+      "encoding": "identity",
+      "bytes": 26146,
+      "sha256": "f8c25dc73a4de4033bfebb6076d725fba5a4f00346a69ecb4660555a4dcd3efe",
+      "stored_bytes": 26146,
+      "stored_sha256": "f8c25dc73a4de4033bfebb6076d725fba5a4f00346a69ecb4660555a4dcd3efe"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/scatter.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/scatter.py",
+      "artifact": "blobs/f1aec3bdf7f1f8c0e6dc2a587874afe6dcefd1e9dc5147859711098736a7b399.py",
+      "encoding": "identity",
+      "bytes": 13531,
+      "sha256": "f1aec3bdf7f1f8c0e6dc2a587874afe6dcefd1e9dc5147859711098736a7b399",
+      "stored_bytes": 13531,
+      "stored_sha256": "f1aec3bdf7f1f8c0e6dc2a587874afe6dcefd1e9dc5147859711098736a7b399"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/solve.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/solve.py",
+      "artifact": "blobs/7a69e5aace87d1c9a642698ad3381c2bdfc27c765f27447d97d5a18a2916393c.py",
+      "encoding": "identity",
+      "bytes": 14656,
+      "sha256": "7a69e5aace87d1c9a642698ad3381c2bdfc27c765f27447d97d5a18a2916393c",
+      "stored_bytes": 14656,
+      "stored_sha256": "7a69e5aace87d1c9a642698ad3381c2bdfc27c765f27447d97d5a18a2916393c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/source_vertices.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/source_vertices.py",
+      "artifact": "blobs/4bb61a95aeb8fbe6577daadff68abd5bc25e1da19b97a39bf04b39243b99c8cf.py",
+      "encoding": "identity",
+      "bytes": 8421,
+      "sha256": "4bb61a95aeb8fbe6577daadff68abd5bc25e1da19b97a39bf04b39243b99c8cf",
+      "stored_bytes": 8421,
+      "stored_sha256": "4bb61a95aeb8fbe6577daadff68abd5bc25e1da19b97a39bf04b39243b99c8cf"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/surface.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/surface.py",
+      "artifact": "blobs/b83ee1d677294001d0da2613b99fbfe689a014c27bd01bdd06c703d39b32f30e.py",
+      "encoding": "identity",
+      "bytes": 5052,
+      "sha256": "b83ee1d677294001d0da2613b99fbfe689a014c27bd01bdd06c703d39b32f30e",
+      "stored_bytes": 5052,
+      "stored_sha256": "b83ee1d677294001d0da2613b99fbfe689a014c27bd01bdd06c703d39b32f30e"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/surface_inverse.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/surface_inverse.py",
+      "artifact": "blobs/aab910a4172d681a3184f9b8f40d3f2727e80fa81061dc0b50a0f3dbee36ed17.py",
+      "encoding": "identity",
+      "bytes": 7072,
+      "sha256": "aab910a4172d681a3184f9b8f40d3f2727e80fa81061dc0b50a0f3dbee36ed17",
+      "stored_bytes": 7072,
+      "stored_sha256": "aab910a4172d681a3184f9b8f40d3f2727e80fa81061dc0b50a0f3dbee36ed17"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/topology.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/topology.py",
+      "artifact": "blobs/0e6c421b6fcd66e456417cded1f6b7403474b957d263b4ae5d52b1a9f5b12cd2.py",
+      "encoding": "identity",
+      "bytes": 2646,
+      "sha256": "0e6c421b6fcd66e456417cded1f6b7403474b957d263b4ae5d52b1a9f5b12cd2",
+      "stored_bytes": 2646,
+      "stored_sha256": "0e6c421b6fcd66e456417cded1f6b7403474b957d263b4ae5d52b1a9f5b12cd2"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/traction.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/genesis/engine/solvers/rigid/stress/traction.py",
+      "artifact": "blobs/1376bf6ab19fbab3b155808dece101bd91e81723f1226c32873c3d62c192b77f.py",
+      "encoding": "identity",
+      "bytes": 39045,
+      "sha256": "1376bf6ab19fbab3b155808dece101bd91e81723f1226c32873c3d62c192b77f",
+      "stored_bytes": 39045,
+      "stored_sha256": "1376bf6ab19fbab3b155808dece101bd91e81723f1226c32873c3d62c192b77f"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/genesis/options/morphs.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/genesis/options/morphs.py",
+      "artifact": "blobs/3a6fda0b9150a9fe8feaf173eb46a096c06fe6b057580ced7f93d32654aafc7f.py",
+      "encoding": "identity",
+      "bytes": 101878,
+      "sha256": "3a6fda0b9150a9fe8feaf173eb46a096c06fe6b057580ced7f93d32654aafc7f",
+      "stored_bytes": 101878,
+      "stored_sha256": "3a6fda0b9150a9fe8feaf173eb46a096c06fe6b057580ced7f93d32654aafc7f"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/genesis/options/rigid_stress.py",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/genesis/options/rigid_stress.py",
+      "artifact": "blobs/a068320bb085348436b429ca79b6886aedc6108b0d5954d641c549c0bb7c418a.py",
+      "encoding": "identity",
+      "bytes": 10754,
+      "sha256": "a068320bb085348436b429ca79b6886aedc6108b0d5954d641c549c0bb7c418a",
+      "stored_bytes": 10754,
+      "stored_sha256": "a068320bb085348436b429ca79b6886aedc6108b0d5954d641c549c0bb7c418a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/original-point-scalar-b32-profile-v1/conditions.npz",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/original-point-scalar-b32-profile-v1/conditions.npz",
+      "artifact": "blobs/156d956bc5fc3827da8df236cf1695a4bf30a9a1e1d939c672f6a57d69d10930.npz",
+      "encoding": "identity",
+      "bytes": 14058,
+      "sha256": "156d956bc5fc3827da8df236cf1695a4bf30a9a1e1d939c672f6a57d69d10930",
+      "stored_bytes": 14058,
+      "stored_sha256": "156d956bc5fc3827da8df236cf1695a4bf30a9a1e1d939c672f6a57d69d10930"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/run_selected_copied_scale_v1.sh",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/run_selected_copied_scale_v1.sh",
+      "artifact": "blobs/edaf7a182793dfc71b0cff7fb8736e054cb20ca5b4cfdfd386db44416e14a317.sh",
+      "encoding": "identity",
+      "bytes": 2078,
+      "sha256": "edaf7a182793dfc71b0cff7fb8736e054cb20ca5b4cfdfd386db44416e14a317",
+      "stored_bytes": 2078,
+      "stored_sha256": "edaf7a182793dfc71b0cff7fb8736e054cb20ca5b4cfdfd386db44416e14a317"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source-after.sha256",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source-after.sha256",
+      "artifact": "blobs/98d8cbba9eb3581b0f4f1024692af1b924e4048e5edbfee8d26c29b2c0fa734d.sha256",
+      "encoding": "identity",
+      "bytes": 4585,
+      "sha256": "98d8cbba9eb3581b0f4f1024692af1b924e4048e5edbfee8d26c29b2c0fa734d",
+      "stored_bytes": 4585,
+      "stored_sha256": "98d8cbba9eb3581b0f4f1024692af1b924e4048e5edbfee8d26c29b2c0fa734d"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/selected-copied-scale-v1/profile-b1024/source.sha256",
+      "run_path": "selected-copied-scale-v1/profile-b1024/source.sha256",
+      "artifact": "blobs/98d8cbba9eb3581b0f4f1024692af1b924e4048e5edbfee8d26c29b2c0fa734d.sha256",
+      "encoding": "identity",
+      "bytes": 4585,
+      "sha256": "98d8cbba9eb3581b0f4f1024692af1b924e4048e5edbfee8d26c29b2c0fa734d",
+      "stored_bytes": 4585,
+      "stored_sha256": "98d8cbba9eb3581b0f4f1024692af1b924e4048e5edbfee8d26c29b2c0fa734d"
+    }
+  ]
+}
