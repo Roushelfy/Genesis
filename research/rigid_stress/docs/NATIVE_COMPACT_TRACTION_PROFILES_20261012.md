@@ -52,9 +52,29 @@ acceptance thresholds are unchanged.
 This memory prototype is not selected for production yet. Three additional
 capacity reductions/host reads hurt B2048 throughput. A follow-up fuses
 capacity statistics into the producers and avoids disk-capacity reads once
-the900-sample disk rule fits. Its B16 smoke passes; expanded CUDA qualification
-and paired live evaluation are being completed. Memory savings may also
-enable larger batches, which still need measurement.
+the900-sample disk rule fits. Its B16 smoke and31 CUDA cases pass. On one
+GPU, the three-repeat B2048 pair reports60148.641796→58797.647578 env-step/s
+(0.977539074x), saving3929899008 native bytes. This reduces the observed
+regression but does not establish a throughput gain; cross-allocation ratios
+are separate paired decisions rather than a direct comparison of elapsed
+times. Its48 independent full fields have maximum normalized wrench error
+7.386595923e-10, residual budget fraction0.0456061170 and peak difference
+8.192051610e-6Pa. CUDA31 completes in718.38s.
+
+The fused-capacity archive has248 entries/115 unique blobs/16238850 bytes,
+manifest SHA256:
+`7dd7c7c94e1af8f0d0af2db85383e29127d293011c08a3aefba79e074dde1ea8`.
+All source/original/stored/decompressed hashes and complete paired counters
+pass allocated CPU verification. Both v2 raw telemetry streams are valid;
+an inherited limitation sentence in an earlier derived scalar checker is a
+metadata error and does not describe these v2 runs. No exact transient peak
+is inferred from the monitor.
+
+This follow-up remains a prototype. A current-step position cache is now
+being evaluated on counted storage with the selected eight-sample-lane retry.
+It verifies cached positions against direct chart reconstruction before the
+independent force/nodal/stress oracle. Memory savings may enable larger
+batches, which still need final-source measurement.
 
 Archive `native-compact-traction-profiles-checkpoint-v1` contains828 entries/
 151 unique blobs/71292207 stored bytes. Allocated CPU publication verifies
