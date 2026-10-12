@@ -101,8 +101,8 @@ def kernel_fan_frontier_samples(
     frontier: StressFanFrontier,
     maximum: int,
 ):
-    for i_task, i_c, i_b in qd.ndrange(
-        maximum * 3 * surface_info.gauss.shape[0] ** 2, contact_state.valid.shape[0], contact_state.valid.shape[1]
+    for i_c, i_b, i_task in qd.ndrange(
+        contact_state.valid.shape[0], contact_state.valid.shape[1], maximum * 3 * surface_info.gauss.shape[0] ** 2
     ):
         n_local = 3 * surface_info.gauss.shape[0] ** 2
         i_work = i_task // n_local

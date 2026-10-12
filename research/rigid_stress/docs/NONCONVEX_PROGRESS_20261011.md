@@ -4,6 +4,16 @@ This implements the active extension in `NONCONVEX_CONTACT_REQUIREMENTS.md`.
 The previous egg milestone remains complete; native nonconvex acceptance is
 not yet established. The initial branch source is `1d6babf7`.
 
+The [sample-major fan launch checkpoint](NATIVE_FAN_SAMPLE_LAYOUT_20261012.md)
+passes23 CUDA cases and48 recorded independent full fields across both
+backends. The CPU numerical route remains unchanged. Same-GPU B2048/623102
+live improves40955.914→55763.374 effective env-step/s (1.361546320x), with
+zero failures/overflows in each three1280-step repeats/2323 resets and no
+memory increment. Q10 sample identity, geometry, profiles and budgets remain
+fixed. Nonnegative path-bound pruning is being evaluated on top of this
+selected schedule. Wider four-scope/seeds/outcomes/tail evidence, dynamic
+profiling, remaining applicable candidates and a plateau remain open.
+
 The [current-step anchor-port reuse checkpoint](NATIVE_PORT_SEED_REUSE_20261012.md)
 passes15 CPU/15 CUDA targeted cases and48 independent full fields. It reuses
 current Quadrants seed norms across destination ports with the same graph,
