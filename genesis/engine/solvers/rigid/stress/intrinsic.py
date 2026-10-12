@@ -13,8 +13,7 @@ from genesis.utils.misc import qd_to_numpy
 from .compatibility import (
     create_wrench_search,
     kernel_certify_continuous_force,
-    kernel_certify_continuous_wrench,
-    kernel_search_wrench_certificate,
+    kernel_diagnose_wrenches,
 )
 from .contact import StressContactState, create_contacts
 from .data import StressInfo, StressState
@@ -51,7 +50,7 @@ if TYPE_CHECKING:
 
 # Final original-point wrench and local-cone acceptance retains its independent 1e-8 budget
 _TRACTION_FIT_TOLERANCE = 9e-9
-_WRENCH_CERTIFICATE_DEPTH = 8
+_WRENCH_CERTIFICATE_DEPTH = 12
 
 
 @dataclass(frozen=True)
@@ -207,18 +206,14 @@ class IntrinsicContacts:
                     warm_start=options.warm_start_tractions,
                 )
             kernel_certify_continuous_force(self.contacts, self.tractions, surface_info, epsilon, 1e-8)
-            kernel_search_wrench_certificate(
-                self.contacts, self.sources, self.tractions, self.wrench_search, self.traction_info, epsilon, 1e-8
-            )
-            kernel_certify_continuous_wrench(
+            kernel_diagnose_wrenches(
                 self.contacts,
                 self.sources,
                 self.tractions,
                 self.wrench_search,
+                self.traction_info,
                 surface_info,
                 epsilon,
-                _WRENCH_CERTIFICATE_DEPTH,
-                16384,
                 1e-8,
             )
             kernel_commit_intrinsic_contacts(
@@ -275,6 +270,9 @@ def kernel_pack_intrinsic_contacts(
 ):
     for _ in range(1):
         packing.maximum[None] = 0
+    if qd.static(gs.backend == gs.cuda):
+        for i_b in range(packing.count.shape[0]):
+            packing.count[i_b] = 0
     for i_c, i_b in qd.ndrange(raw_contacts.valid.shape[0], raw_contacts.valid.shape[1]):
         certificates.ray[i_c, i_b] = qd.Vector.zero(gs.qd_float, 6)
         certificates.margin[i_c, i_b] = 0.0
@@ -283,13 +281,39 @@ def kernel_pack_intrinsic_contacts(
         raw_contacts.moment_error[i_c, i_b] = 0.0
         raw_contacts.evaluations[i_c, i_b] = 0
         raw_contacts.candidate_count[i_c, i_b] = 0
+        if qd.static(gs.backend == gs.cuda):  # noqa: SIM102 — omit atomic collection in the CPU specialization.
+            if raw_contacts.valid[i_c, i_b]:
+                destination = qd.atomic_add(packing.count[i_b], 1)
+                packing.indices[destination, i_b] = i_c
     for i_b in range(packing.count.shape[0]):
         n_contacts = 0
-        for i_c in range(raw_contacts.valid.shape[0]):
-            if raw_contacts.valid[i_c, i_b]:
-                packing.indices[n_contacts, i_b] = i_c
-                n_contacts += 1
-        packing.count[i_b] = n_contacts
+        if qd.static(gs.backend == gs.cuda):
+            n_contacts = packing.count[i_b]
+            if n_contacts <= 32:
+                # Sort the short atomic list back into its exact stable order.
+                for i_c in range(1, n_contacts):
+                    value = packing.indices[i_c, i_b]
+                    destination = i_c
+                    for i_j in range(i_c):
+                        if packing.indices[i_j, i_b] > value:
+                            destination = qd.min(destination, i_j)
+                    for offset in range(i_c - destination):
+                        source = i_c - 1 - offset
+                        packing.indices[source + 1, i_b] = packing.indices[source, i_b]
+                    packing.indices[destination, i_b] = value
+            else:
+                # Dense lists retain linear work rather than quadratic tails.
+                destination = 0
+                for i_c in range(raw_contacts.valid.shape[0]):
+                    if raw_contacts.valid[i_c, i_b]:
+                        packing.indices[destination, i_b] = i_c
+                        destination += 1
+        else:
+            for i_c in range(raw_contacts.valid.shape[0]):
+                if raw_contacts.valid[i_c, i_b]:
+                    packing.indices[n_contacts, i_b] = i_c
+                    n_contacts += 1
+            packing.count[i_b] = n_contacts
         qd.atomic_max(packing.maximum[None], n_contacts)
     for i_n, i_b in qd.ndrange(state.force.shape[0], state.force.shape[1]):
         state.force[i_n, i_b] = qd.Vector.zero(gs.qd_float, 3)

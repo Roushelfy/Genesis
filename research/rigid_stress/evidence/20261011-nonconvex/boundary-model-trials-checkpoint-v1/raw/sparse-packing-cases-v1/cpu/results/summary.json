@@ -1,0 +1,87 @@
+[
+  {
+    "case": "sparse",
+    "active_counts": [
+      0,
+      1,
+      2,
+      4,
+      6,
+      8
+    ],
+    "repeats": 64,
+    "kernel_wall_ms": {
+      "native": 0.14949266915209591,
+      "quadratic": 0.16385717026423663,
+      "hybrid": 0.16370912635466084
+    }
+  },
+  {
+    "case": "mixed",
+    "active_counts": [
+      0,
+      1,
+      8,
+      32,
+      64,
+      1200
+    ],
+    "repeats": 8,
+    "kernel_wall_ms": {
+      "native": 0.1529596047475934,
+      "quadratic": 0.5017059738747776,
+      "hybrid": 0.17017178470268846
+    }
+  },
+  {
+    "case": "dense",
+    "active_counts": [
+      1200,
+      1200,
+      1200,
+      1200,
+      1200,
+      1200
+    ],
+    "repeats": 8,
+    "kernel_wall_ms": {
+      "native": 0.15725864795967937,
+      "quadratic": 2.21638148650527,
+      "hybrid": 0.18664804520085454
+    }
+  },
+  {
+    "case": "released",
+    "active_counts": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "repeats": 64,
+    "kernel_wall_ms": {
+      "native": 0.1481154395150952,
+      "quadratic": 0.16332275117747486,
+      "hybrid": 0.1634351210668683
+    }
+  },
+  {
+    "case": "restored",
+    "active_counts": [
+      31,
+      32,
+      33,
+      1,
+      0,
+      1200
+    ],
+    "repeats": 8,
+    "kernel_wall_ms": {
+      "native": 0.15133217675611377,
+      "quadratic": 0.49586209934204817,
+      "hybrid": 0.1706262701191008
+    }
+  }
+]

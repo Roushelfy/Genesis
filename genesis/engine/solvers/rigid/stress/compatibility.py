@@ -8,6 +8,7 @@ import quadrants as qd
 import genesis as gs
 from genesis.utils.array_class import V_VEC, DataKind, V
 
+from .boundary_certificate import func_boundary_wrench_penalty
 from .contact import StressContactState
 from .provenance import StressSourceState, func_closest_triangle
 from .surface import StressSurfaceInfo
@@ -82,7 +83,6 @@ def func_wrench_polar_penalty(
     return energy, gradient, hessian
 
 
-@qd.kernel
 def kernel_search_wrench_certificate(
     contact_state: StressContactState,
     source_state: StressSourceState,
@@ -91,16 +91,44 @@ def kernel_search_wrench_certificate(
     traction_info: StressTractionInfo,
     epsilon: float,
     wrench_tolerance: float,
+    boundary_witnesses: bool = False,
+):
+    kernel_search_wrench_certificate_impl(
+        contact_state,
+        source_state,
+        traction_state,
+        search_state,
+        traction_info,
+        epsilon,
+        wrench_tolerance,
+        boundary_witnesses,
+    )
+
+
+@qd.kernel
+def kernel_search_wrench_certificate_impl(
+    contact_state: StressContactState,
+    source_state: StressSourceState,
+    traction_state: StressTractionState,
+    search_state: StressWrenchSearchState,
+    traction_info: StressTractionInfo,
+    epsilon: float,
+    wrench_tolerance: float,
+    boundary_witnesses: qd.template(),
 ):
     """Search a bounded separating ray only for unresolved, already validated traction inputs."""
     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
-        search_state.evaluations[i_c, i_b] = 0
+        if qd.static(not boundary_witnesses):
+            search_state.evaluations[i_c, i_b] = 0
         status = traction_state.status[i_c, i_b]
         unresolved = status == StressTractionStatus.NUMERICAL_FAILURE
         unresolved = unresolved or status == StressTractionStatus.SAMPLED_WRENCH_INFEASIBLE
         if contact_state.valid[i_c, i_b] and unresolved:
             radius = contact_state.radius[i_c, i_b]
-            scale = qd.max(contact_state.force[i_c, i_b].norm(), source_state.anchor_moment[i_c, i_b].norm() / radius)
+            scale = qd.max(
+                contact_state.force[i_c, i_b].norm(),
+                source_state.anchor_moment[i_c, i_b].norm() / radius,
+            )
             if scale > 0.0:
                 target = qd.Vector.zero(gs.qd_float, 6)
                 target[0:3] = contact_state.force[i_c, i_b] / scale
@@ -130,7 +158,8 @@ def kernel_search_wrench_certificate(
                                 _, normal = func_traction_geometry(i_q, i_s, i_b, traction_state, traction_info)
                                 compression = reference.dot(normal)
                                 depth = qd.min(
-                                    depth, compression - friction * (reference - compression * normal).norm()
+                                    depth,
+                                    compression - friction * (reference - compression * normal).norm(),
                                 )
                     ray = qd.Vector.zero(gs.qd_float, 6)
                     penalty = gs.qd_float(100.0)
@@ -143,17 +172,33 @@ def kernel_search_wrench_certificate(
                             trial, active = False, True
                             for _ in range(128):
                                 if active:
-                                    trial_energy, gradient, hessian = func_wrench_polar_penalty(
-                                        i_c,
-                                        i_b,
-                                        proposal,
-                                        target,
-                                        penalty,
-                                        contact_state,
-                                        traction_state,
-                                        traction_info,
-                                        n_samples,
-                                    )
+                                    trial_energy = gs.qd_float(0.0)
+                                    gradient = qd.Vector.zero(gs.qd_float, 6)
+                                    hessian = qd.Matrix.zero(gs.qd_float, 6, 6)
+                                    if qd.static(boundary_witnesses):
+                                        trial_energy, gradient, hessian = func_boundary_wrench_penalty(
+                                            i_c,
+                                            i_b,
+                                            proposal,
+                                            target,
+                                            penalty,
+                                            contact_state,
+                                            traction_state,
+                                            traction_info,
+                                            epsilon,
+                                        )
+                                    else:
+                                        trial_energy, gradient, hessian = func_wrench_polar_penalty(
+                                            i_c,
+                                            i_b,
+                                            proposal,
+                                            target,
+                                            penalty,
+                                            contact_state,
+                                            traction_state,
+                                            traction_info,
+                                            n_samples,
+                                        )
                                     search_state.evaluations[i_c, i_b] += 1
                                     squared = gradient.dot(gradient)
                                     allowance = 64.0 * epsilon * (1.0 + qd.abs(energy) + qd.abs(trial_energy))
@@ -162,7 +207,11 @@ def kernel_search_wrench_certificate(
                                         trial_energy <= energy + allowance and squared < gradient_squared
                                     )
                                     if accepted:
-                                        ray, energy, gradient_squared = proposal, trial_energy, squared
+                                        ray, energy, gradient_squared = (
+                                            proposal,
+                                            trial_energy,
+                                            squared,
+                                        )
                                         if gradient.norm() <= 1e-9:
                                             active = False
                                         else:
@@ -172,11 +221,16 @@ def kernel_search_wrench_certificate(
                                                 direction = gradient / qd.max(hessian.trace(), 1.0)
                                                 slope = gradient.dot(direction)
                                             fraction = qd.min(
-                                                1.0, 2.0 * qd.max(1.0, ray.norm()) / qd.max(direction.norm(), 1e-30)
+                                                1.0,
+                                                2.0 * qd.max(1.0, ray.norm()) / qd.max(direction.norm(), 1e-30),
                                             )
                                             direction *= fraction
                                             slope *= fraction
-                                            alpha, proposal, trial = 1.0, ray - direction, True
+                                            alpha, proposal, trial = (
+                                                1.0,
+                                                ray - direction,
+                                                True,
+                                            )
                                     else:
                                         alpha *= 0.5
                                         proposal = ray - alpha * direction
@@ -187,12 +241,19 @@ def kernel_search_wrench_certificate(
                                 maximum = gs.qd_float(-float("inf"))
                                 for i_s in range(first, last):
                                     friction = func_traction_source_friction(
-                                        i_s, i_b, contact_state.friction[i_c, i_b], traction_state
+                                        i_s,
+                                        i_b,
+                                        contact_state.friction[i_c, i_b],
+                                        traction_state,
                                     )
                                     for i_q in range(traction_state.sample_count[i_s, i_b]):
                                         if traction_state.profile[i_q, i_s, i_b] > 0.0:
                                             position, normal = func_traction_geometry(
-                                                i_q, i_s, i_b, traction_state, traction_info
+                                                i_q,
+                                                i_s,
+                                                i_b,
+                                                traction_state,
+                                                traction_info,
                                             )
                                             relative = (position - contact_state.center[i_c, i_b]) / radius
                                             value = adjusted[0:3] + adjusted[3:6].cross(relative)
@@ -236,7 +297,6 @@ def kernel_search_wrench_certificate(
                             penalty *= 100.0
 
 
-@qd.kernel
 def kernel_certify_continuous_wrench(
     contact_state: StressContactState,
     source_state: StressSourceState,
@@ -247,6 +307,34 @@ def kernel_certify_continuous_wrench(
     maximum_depth: int,
     maximum_nodes: int,
     wrench_tolerance: float,
+    accumulate: bool = False,
+):
+    kernel_certify_continuous_wrench_impl(
+        contact_state,
+        source_state,
+        traction_state,
+        search_state,
+        surface_info,
+        epsilon,
+        maximum_depth,
+        maximum_nodes,
+        wrench_tolerance,
+        accumulate,
+    )
+
+
+@qd.kernel
+def kernel_certify_continuous_wrench_impl(
+    contact_state: StressContactState,
+    source_state: StressSourceState,
+    traction_state: StressTractionState,
+    search_state: StressWrenchSearchState,
+    surface_info: StressSurfaceInfo,
+    epsilon: float,
+    maximum_depth: int,
+    maximum_nodes: int,
+    wrench_tolerance: float,
+    accumulate: qd.template(),
 ):
     """Certify strict separation on a conservative superset of the unchanged intrinsic disks.
 
@@ -255,15 +343,23 @@ def kernel_certify_continuous_wrench(
     unresolved in the continuum. No force, moment, friction, provenance or radius is modified.
     """
     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
-        search_state.bound[i_c, i_b] = gs.qd_float(float("inf"))
-        search_state.visited[i_c, i_b] = 0
+        previous_nodes = 0
+        if qd.static(accumulate):
+            previous_nodes = search_state.visited[i_c, i_b]
+        else:
+            search_state.bound[i_c, i_b] = gs.qd_float(float("inf"))
+            search_state.visited[i_c, i_b] = 0
         if (
             contact_state.valid[i_c, i_b]
             and traction_state.status[i_c, i_b] == StressTractionStatus.SAMPLED_WRENCH_INFEASIBLE
         ):
+            search_state.bound[i_c, i_b] = gs.qd_float(float("inf"))
             ray = traction_state.certificate[i_c, i_b]
             radius = contact_state.radius[i_c, i_b]
-            scale = qd.max(contact_state.force[i_c, i_b].norm(), source_state.anchor_moment[i_c, i_b].norm() / radius)
+            scale = qd.max(
+                contact_state.force[i_c, i_b].norm(),
+                source_state.anchor_moment[i_c, i_b].norm() / radius,
+            )
             if ray.norm() > 0.0 and scale > 0.0:
                 ray /= ray.norm()
                 target = qd.Vector.zero(gs.qd_float, 6)
@@ -318,9 +414,21 @@ def kernel_certify_continuous_wrench(
                                                 )
                                             nearest = qd.Vector.zero(gs.qd_float, 3)
                                             for a in qd.static(range(3)):
-                                                low = qd.min(points[0, a], points[1, a], points[2, a])
-                                                high = qd.max(points[0, a], points[1, a], points[2, a])
-                                                nearest[a] = qd.max(low - center[a], center[a] - high, 0.0)
+                                                low = qd.min(
+                                                    points[0, a],
+                                                    points[1, a],
+                                                    points[2, a],
+                                                )
+                                                high = qd.max(
+                                                    points[0, a],
+                                                    points[1, a],
+                                                    points[2, a],
+                                                )
+                                                nearest[a] = qd.max(
+                                                    low - center[a],
+                                                    center[a] - high,
+                                                    0.0,
+                                                )
                                             if nearest.norm() <= support_radius + geometric_roundoff:
                                                 normal = -surface_info.face_normal[i_f]
                                                 upper = gs.qd_float(-float("inf"))
@@ -357,19 +465,55 @@ def kernel_certify_continuous_wrench(
                                                 ):
                                                     resolved = False
                                                 else:
-                                                    a, b, c = barycentric[0:2], barycentric[2:4], barycentric[4:6]
-                                                    ab, bc, ca = 0.5 * (a + b), 0.5 * (b + c), 0.5 * (c + a)
+                                                    a, b, c = (
+                                                        barycentric[0:2],
+                                                        barycentric[2:4],
+                                                        barycentric[4:6],
+                                                    )
+                                                    ab, bc, ca = (
+                                                        0.5 * (a + b),
+                                                        0.5 * (b + c),
+                                                        0.5 * (c + a),
+                                                    )
                                                     search_state.triangles[size, i_c, i_b] = qd.Vector(
-                                                        [a[0], a[1], ab[0], ab[1], ca[0], ca[1]]
+                                                        [
+                                                            a[0],
+                                                            a[1],
+                                                            ab[0],
+                                                            ab[1],
+                                                            ca[0],
+                                                            ca[1],
+                                                        ]
                                                     )
                                                     search_state.triangles[size + 1, i_c, i_b] = qd.Vector(
-                                                        [ab[0], ab[1], b[0], b[1], bc[0], bc[1]]
+                                                        [
+                                                            ab[0],
+                                                            ab[1],
+                                                            b[0],
+                                                            b[1],
+                                                            bc[0],
+                                                            bc[1],
+                                                        ]
                                                     )
                                                     search_state.triangles[size + 2, i_c, i_b] = qd.Vector(
-                                                        [ca[0], ca[1], bc[0], bc[1], c[0], c[1]]
+                                                        [
+                                                            ca[0],
+                                                            ca[1],
+                                                            bc[0],
+                                                            bc[1],
+                                                            c[0],
+                                                            c[1],
+                                                        ]
                                                     )
                                                     search_state.triangles[size + 3, i_c, i_b] = qd.Vector(
-                                                        [ab[0], ab[1], bc[0], bc[1], ca[0], ca[1]]
+                                                        [
+                                                            ab[0],
+                                                            ab[1],
+                                                            bc[0],
+                                                            bc[1],
+                                                            ca[0],
+                                                            ca[1],
+                                                        ]
                                                     )
                                                     for child in qd.static(range(4)):
                                                         search_state.depths[size + child, i_c, i_b] = depth + 1
@@ -378,11 +522,70 @@ def kernel_certify_continuous_wrench(
                                     resolved = False
                 if resolved and n_faces > 0:
                     search_state.bound[i_c, i_b] = maximum
-                search_state.visited[i_c, i_b] = n_nodes
+                search_state.visited[i_c, i_b] = previous_nodes + n_nodes
                 if resolved and n_faces > 0 and maximum < 0.0:
                     traction_state.status[i_c, i_b] = StressTractionStatus.CONTINUOUS_WRENCH_INFEASIBLE
                     traction_state.certificate[i_c, i_b] = ray
                     traction_state.certificate_margin[i_c, i_b] = margin - roundoff
+
+
+def kernel_diagnose_wrenches(
+    contact_state: StressContactState,
+    source_state: StressSourceState,
+    traction_state: StressTractionState,
+    search_state: StressWrenchSearchState,
+    traction_info: StressTractionInfo,
+    surface_info: StressSurfaceInfo,
+    epsilon: float,
+    wrench_tolerance: float,
+) -> None:
+    """Retain existing strict proofs, then retry only unresolved contacts with boundary witnesses.
+
+    Every phase stays device-masked. Retry counts include the first phase, and an established continuous proof and
+    its bound survive the retry kernels. Finite witnesses only guide search; unchanged continuous checks prove it.
+    """
+    kernel_search_wrench_certificate(
+        contact_state,
+        source_state,
+        traction_state,
+        search_state,
+        traction_info,
+        epsilon,
+        wrench_tolerance,
+    )
+    kernel_certify_continuous_wrench(
+        contact_state,
+        source_state,
+        traction_state,
+        search_state,
+        surface_info,
+        epsilon,
+        8,
+        16384,
+        wrench_tolerance,
+    )
+    kernel_search_wrench_certificate(
+        contact_state,
+        source_state,
+        traction_state,
+        search_state,
+        traction_info,
+        epsilon,
+        wrench_tolerance,
+        boundary_witnesses=True,
+    )
+    kernel_certify_continuous_wrench(
+        contact_state,
+        source_state,
+        traction_state,
+        search_state,
+        surface_info,
+        epsilon,
+        12,
+        65536,
+        wrench_tolerance,
+        accumulate=True,
+    )
 
 
 @qd.kernel

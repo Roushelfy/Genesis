@@ -4,6 +4,26 @@ This implements the active extension in `NONCONVEX_CONTACT_REQUIREMENTS.md`.
 The previous egg milestone remains complete; native nonconvex acceptance is
 not yet established. The initial branch source is `1d6babf7`.
 
+The [native boundary/packing checkpoint](NATIVE_BOUNDARY_PACKING_20261012.md)
+selects an on-demand masked certificate fallback after56 CPU/56 CUDA cases,
+preserving old stronger proofs and final budgets at approximately0.4% healthy
+live cost. Stable bounded GPU packing then passes10 CPU/10 CUDA lifecycle
+cases and actual same-GPU three-repeat live gain1.020729x. Copied B1024
+sourcecd76762e gives226,884 rigid-only/31,357 recovery-only/27,796 live
+valid env-step/s;policy warmup fails in32 copied environments and has no
+valid throughput. Physical contact/model repair, policy acceptance, diverse
+large-batch qualification and a measured plateau remain incomplete.
+
+The [closed boundary/model trials](NATIVE_BOUNDARY_MODEL_TRIALS_20261012.md)
+prove the unchanged policy component incompatible on native samples and
+qualify12 aggregate-model full fields, without selecting a new physical law.
+Direct boundary-search replacement passes56 CUDA cases but fails one CPU
+fixture's stronger existing proof-gap assertion; retaining the original
+proof first with a boundary fallback is qualified by the newer checkpoint. Sparse
+compaction gives1.027092x matched B32 gain but has quadratic dense tails;
+a bounded hybrid is qualified separately above. Complete model/large-batch/policy
+acceptance and a plateau remain open.
+
 The [contact-trial checkpoint](NATIVE_CONTACT_TRIALS_20261012.md) selects
 parallel metadata clearing after9 actual native CPU/9 CUDA lifecycle cases
 and same-GPU three-repeat B32 gain1.037933x, reaching3129.758 env-step/s.
