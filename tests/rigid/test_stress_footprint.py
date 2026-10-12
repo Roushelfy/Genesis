@@ -27,7 +27,7 @@ from genesis.engine.solvers.rigid.stress.traction import (
     create_traction_samples,
     create_tractions,
     kernel_fit_tractions,
-    kernel_scatter_tractions,
+    kernel_prepare_cached_tractions,
     kernel_traction_samples,
 )
 from genesis.options.rigid_stress import RigidStressOptions
@@ -174,9 +174,11 @@ def test_native_intrinsic_profiles_and_vector_recovery(nonconvex_material_mesh, 
     sources = create_sources(1, n_envs)
     footprints = create_footprints(len(ports), 1, n_envs)
     tractions = (
-        create_anchor_fan_tractions(surface.info, 1, n_envs, compact=packed, packed=packed)
+        create_anchor_fan_tractions(
+            surface.info, 1, n_envs, compact=packed, packed=packed, cached_acceptance=True
+        )
         if anchor_fan
-        else create_tractions(len(positions), 1, n_envs)
+        else create_tractions(len(positions), 1, n_envs, cached_acceptance=True)
     )
     kernel_profiles = kernel_anchor_fan_profiles if anchor_fan else kernel_footprint_profiles
     points = anchors + [0.00003, -0.00001, 0.00002]
@@ -301,7 +303,9 @@ def test_native_intrinsic_profiles_and_vector_recovery(nonconvex_material_mesh, 
     errno = V(dtype=gs.qd_int, shape=(n_envs,))
     omega = V_VEC(3, dtype=gs.qd_float, shape=(n_envs,))
     omega.fill(0.0)
-    kernel_scatter_tractions(contacts, tractions, state, model.info, surface.info, info, errno, reset_force=True)
+    kernel_prepare_cached_tractions(
+        epsilon, contacts, tractions, state, model.info, surface.info, info, errno, reset_force=True
+    )
     assert_equal(qd_to_numpy(errno, transpose=True), 0)
     nodal_force = qd_to_numpy(state.force, transpose=True, copy=True)
     node_positions = qd_to_numpy(model.info.vertices, transpose=True, copy=True)

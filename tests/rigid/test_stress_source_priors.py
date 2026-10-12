@@ -29,6 +29,7 @@ from genesis.engine.solvers.rigid.stress.traction import (
     create_traction_info,
     create_traction_samples,
     kernel_fit_tractions,
+    kernel_prepare_cached_tractions,
     kernel_scatter_tractions,
     kernel_traction_samples,
 )
@@ -171,7 +172,9 @@ def test_body_source_prior_wrench_cones_full_fields_and_gauge_rows(case, record_
     info = create_traction_info(surface.info)
     contacts, sources = create_contacts(n_sources, n_envs, 0.006), create_sources(n_sources, n_envs)
     footprints = create_footprints(paths.info.positions.shape[0], n_sources, n_envs, paths.info.face_ports.shape[1])
-    tractions = create_surface_fan_tractions(surface.info, n_sources, n_envs, shared_support=True, source_priors=True)
+    tractions = create_surface_fan_tractions(
+        surface.info, n_sources, n_envs, shared_support=True, source_priors=True, cached_acceptance=True
+    )
     for name, values in (
         ("center", anchors),
         ("position", points),
@@ -299,7 +302,9 @@ def test_body_source_prior_wrench_cones_full_fields_and_gauge_rows(case, record_
     omega, errno = V_VEC(3, dtype=gs.qd_float, shape=(n_envs,)), V(dtype=gs.qd_int, shape=(n_envs,))
     omega.fill(0)
     errno.fill(0)
-    kernel_scatter_tractions(contacts, tractions, state, model.info, surface.info, info, errno, reset_force=True)
+    kernel_prepare_cached_tractions(
+        epsilon, contacts, tractions, state, model.info, surface.info, info, errno, reset_force=True
+    )
     assert_equal(qd_to_numpy(errno), 0)
     assert_allclose(qd_to_numpy(state.force, transpose=True), nodal, rtol=1e-4, atol=1e-10)
     oracle = P2Shell(vertices, tets, faces, options.young, options.poisson, options.density, 2, factor_backend="none")
