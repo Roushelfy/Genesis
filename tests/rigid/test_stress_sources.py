@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import numpy as np
 import pytest
 import trimesh
@@ -6,7 +8,14 @@ from scipy.spatial.transform import Rotation
 import genesis as gs
 from genesis.engine.solvers.rigid.stress.association import kernel_associate
 from genesis.engine.solvers.rigid.stress.contact import create_contacts
+from genesis.engine.solvers.rigid.stress.footprint import (
+    create_footprints,
+    create_surface_fan_tractions,
+    kernel_footprint_ports,
+    kernel_surface_fan_profiles,
+)
 from genesis.engine.solvers.rigid.stress.model import StressModel
+from genesis.engine.solvers.rigid.stress.paths import StressSurfacePaths
 from genesis.engine.solvers.rigid.stress.provenance import (
     StressSourceStatus,
     create_sources,
@@ -20,11 +29,67 @@ from genesis.engine.solvers.rigid.stress.source_vertices import (
     kernel_source_vertex_mapping,
 )
 from genesis.engine.solvers.rigid.stress.surface import StressSurface
+from genesis.engine.solvers.rigid.stress.traction import create_traction_info
 from genesis.options.rigid_stress import RigidStressOptions
 from genesis.utils.array_class import V_VEC, V
 from genesis.utils.misc import qd_to_numpy, tensor_to_array
 from tests.rigid.test_stress_nonconvex import nonconvex_material_mesh
 from tests.utils.assertions import assert_allclose, assert_equal
+
+
+@pytest.mark.required
+@pytest.mark.precision("64")
+def test_shared_edge_roundoff_preserves_finite_profile():
+    mesh = Path(__file__).resolve().parents[2] / "examples/rigid/assets/hollow_egg/level1/elastic.npz"
+    with np.load(Path(__file__).with_name("assets") / "nonconvex_shared_edge_roundoff.npz") as asset:
+        saved = {key: asset[key].copy() for key in asset.files}
+    model = StressModel(RigidStressOptions(mesh=mesh, method="direct"))
+    n_envs, n_sources = saved["force"].shape[:2]
+    surface, paths = StressSurface(10, model.info), StressSurfacePaths(model.info, 8)
+    contacts, sources = create_contacts(n_sources, n_envs, 0.006), create_sources(n_sources, n_envs)
+    for name, key in (("position", "point"), ("force", "force"), ("radius", "radius"), ("friction", "friction")):
+        getattr(contacts, name).from_numpy(np.moveaxis(saved[key], 0, 1).copy())
+    contacts.valid.fill(True)
+    contacts.frame_position.from_numpy(saved["frame_position"])
+    sources.geom.fill(24)
+    sources.pair.fill(1)
+    for name in ("witness", "uncertainty", "free_moment"):
+        getattr(sources, name).from_numpy(np.moveaxis(saved[name], 0, 1).copy())
+    epsilon = float(np.finfo(gs.np_float).eps)
+    kernel_resolve_sources(1e-5, epsilon, contacts, sources, model.info, surface.info)
+    assert_equal(qd_to_numpy(sources.status), StressSourceStatus.SUCCESS)
+    anchors = qd_to_numpy(contacts.center, transpose=True)
+    assert_allclose(anchors, saved["witness"], rtol=0, atol=2e-16)
+    moment = qd_to_numpy(sources.anchor_moment, transpose=True, copy=True)
+    moment += np.cross(anchors - saved["point"], saved["force"])
+    assert_allclose(moment, saved["free_moment"], rtol=0, atol=1e-20)
+    footprints = create_footprints(paths.info.positions.shape[0], n_sources, n_envs)
+    tractions = create_surface_fan_tractions(surface.info, n_sources, n_envs)
+    kernel_footprint_ports(contacts, sources, footprints, surface.info, paths.info)
+    kernel_surface_fan_profiles(
+        contacts,
+        footprints,
+        tractions,
+        model.info,
+        surface.info,
+        paths.info,
+        create_traction_info(surface.info),
+        epsilon,
+    )
+    profile = qd_to_numpy(tractions.profile, transpose=True)
+    indices = qd_to_numpy(tractions.sample_indices, transpose=True)
+    counts = qd_to_numpy(tractions.sample_count, transpose=True)
+    # Atomic packing order varies. A roundoff-sized fan may also contribute negligible new samples;
+    # compare the physical integration weights on the union of their shared sample identities.
+    for source in range(n_sources):
+        labels = np.union1d(indices[0, : counts[0, source], source], indices[1, : counts[1, source], source])
+        weights = np.zeros((n_envs, len(labels)))
+        for environment in range(n_envs):
+            count = counts[environment, source]
+            weights[environment, np.searchsorted(labels, indices[environment, :count, source])] = profile[
+                environment, :count, source
+            ]
+        assert_allclose(weights[0], weights[1], rtol=1e-10, atol=1e-18)
 
 
 @pytest.mark.required

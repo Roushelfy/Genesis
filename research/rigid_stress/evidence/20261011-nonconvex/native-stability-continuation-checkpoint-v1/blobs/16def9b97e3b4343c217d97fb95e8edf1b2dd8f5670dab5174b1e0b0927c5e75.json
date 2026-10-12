@@ -1,0 +1,86 @@
+{
+  "scope": "Classify retained multi-source numerical failure using independent LP/convex dual and native cold fits.",
+  "environment": 645,
+  "sources": [
+    0,
+    1
+  ],
+  "sample_count": 1102,
+  "minimum_normalized_weight": 2.838014200392394e-13,
+  "maximum_normalized_weight": 0.01804448040701804,
+  "sampled_LP": [
+    {
+      "polygon": "inner",
+      "success": false,
+      "status": 2,
+      "message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is Infeasible)",
+      "dual_success": true,
+      "ray": [
+        0.21457661313829424,
+        0.6085764539492925,
+        0.7639316571478129,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "target_margin": 0.0004850716868071414,
+      "true_sampled_polar_upper_bound": 0.0005658276044040456
+    },
+    {
+      "polygon": "outer",
+      "success": true,
+      "status": 0,
+      "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+      "normalized_wrench_error": 1.1194198415863292e-16,
+      "physical_cone_excess": 0.00033099949784271
+    }
+  ],
+  "independent_dual": null,
+  "native_cold_fits": [
+    {
+      "budget": 128,
+      "status": 3,
+      "force_error": 0.1729613459520478,
+      "moment_error": 0.318066821911267,
+      "evaluations": 128,
+      "dual": [
+        -291633.4072738732,
+        -812874.9362149892,
+        -1029774.1995992124,
+        -289996.8640813942,
+        -652026.0505867273,
+        257483.82112644604
+      ]
+    },
+    {
+      "budget": 512,
+      "status": 0,
+      "force_error": 4.8998233644223893e-11,
+      "moment_error": 1.5753840555652722e-11,
+      "evaluations": 155,
+      "dual": [
+        -5037273.530661013,
+        -14787734.714330852,
+        -18595342.878739767,
+        -1030011.7375774925,
+        -207135.4053601511,
+        -1195116.3850453445
+      ]
+    },
+    {
+      "budget": 2048,
+      "status": 0,
+      "force_error": 4.8998233644223893e-11,
+      "moment_error": 1.5753840555652722e-11,
+      "evaluations": 155,
+      "dual": [
+        -5037273.530661013,
+        -14787734.714330852,
+        -18595342.878739767,
+        -1030011.7375774925,
+        -207135.4053601511,
+        -1195116.3850453445
+      ]
+    }
+  ]
+}

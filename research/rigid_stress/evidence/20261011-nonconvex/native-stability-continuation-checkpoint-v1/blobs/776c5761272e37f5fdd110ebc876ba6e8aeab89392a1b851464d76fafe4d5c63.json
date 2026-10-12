@@ -1,0 +1,143 @@
+{
+  "scope": "Independent captured convex-vertex interval/witness audit along each original collision normal.",
+  "environment": 3092,
+  "contacts": [
+    {
+      "raw_contact": 0,
+      "normal": [
+        0.0011713903286767282,
+        0.9991695341966207,
+        0.04072922510932253
+      ],
+      "reported_penetration_m": 0.00011644082921848897,
+      "a": {
+        "geom": 14,
+        "type": 5,
+        "convex": true,
+        "vertices": 8,
+        "local_bounds_m": [
+          [
+            -0.003,
+            -0.002,
+            -0.003
+          ],
+          [
+            0.003,
+            0.002,
+            0.003
+          ]
+        ],
+        "normal_interval_m": [
+          -0.0019172019887833537,
+          0.0023201068128393394
+        ],
+        "witness_projection_m": 0.0021526758124876325,
+        "point": [
+          0.6535993555995484,
+          -0.00423235750079912,
+          0.13788375560944774
+        ]
+      },
+      "b": {
+        "geom": 24,
+        "type": 6,
+        "convex": true,
+        "vertices": 42,
+        "local_bounds_m": [
+          [
+            -0.022,
+            -0.022,
+            -0.03
+          ],
+          [
+            0.022,
+            0.022,
+            0.03
+          ]
+        ],
+        "normal_interval_m": [
+          0.0021961038232538297,
+          0.04451896033759407
+        ],
+        "witness_projection_m": 0.0022691166417061212,
+        "point": [
+          0.6535994919972097,
+          -0.004116013371707415,
+          0.1378884981541929
+        ]
+      },
+      "translation_A_along_collision_normal_m": 0.04643616232637742,
+      "translation_A_opposite_collision_normal_m": 0.00012400298958550968,
+      "witness_B_minus_A_along_normal_m": 0.00011644082921848883
+    },
+    {
+      "raw_contact": 1,
+      "normal": [
+        -0.006140221301648979,
+        -0.9999805579920994,
+        -0.0010868855396865326
+      ],
+      "reported_penetration_m": 9.529640072900776e-05,
+      "a": {
+        "geom": 15,
+        "type": 5,
+        "convex": true,
+        "vertices": 8,
+        "local_bounds_m": [
+          [
+            -0.003,
+            -0.002,
+            -0.003
+          ],
+          [
+            0.003,
+            0.002,
+            0.003
+          ]
+        ],
+        "normal_interval_m": [
+          0.0001109388423587246,
+          0.0041464832329877
+        ],
+        "witness_projection_m": 0.00011093884235872466,
+        "point": [
+          0.6466063982923528,
+          -0.004235265288677571,
+          0.14163195484669994
+        ]
+      },
+      "b": {
+        "geom": 24,
+        "type": 6,
+        "convex": true,
+        "vertices": 42,
+        "local_bounds_m": [
+          [
+            -0.022,
+            -0.022,
+            -0.03
+          ],
+          [
+            0.022,
+            0.022,
+            0.03
+          ]
+        ],
+        "normal_interval_m": [
+          -0.042106857127775975,
+          0.00020623524308773888
+        ],
+        "witness_projection_m": 0.00020623524308773178,
+        "point": [
+          0.6466058131513631,
+          -0.004330559836653203,
+          0.14163185127042002
+        ]
+      },
+      "translation_A_along_collision_normal_m": 9.529640072901428e-05,
+      "translation_A_opposite_collision_normal_m": 0.04625334036076367,
+      "witness_B_minus_A_along_normal_m": 9.529640072900745e-05
+    }
+  ],
+  "limitations": "Vertex intervals are exact supports for the captured discrete convex geoms. Positive interval overlap alone is not a full intersection proof;negative overlap is separation. Original forces,normals,witnesses and rigid state are unchanged."
+}

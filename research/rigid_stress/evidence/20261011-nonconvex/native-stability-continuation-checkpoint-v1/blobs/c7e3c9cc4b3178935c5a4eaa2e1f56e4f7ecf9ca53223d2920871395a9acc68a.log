@@ -1,0 +1,90 @@
+[Quadrants] version 1.3.3, llvm 22.1.0, commit 00423caa, linux, python 3.10.12
+[38;5;226m[Genesis] [07:37:07] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint1`[0m
+[38;5;226m[Genesis] [07:37:07] [WARNING] (MJCF) Approximating tendon by joint actuator for `finger_joint2`[0m
+[38;5;226m[Genesis] [07:37:09] [WARNING] Neutral robot position (qpos0) exceeds joint limits.[0m
+[38;5;226m[Genesis] [07:37:09] [WARNING] Constraint solver time constant should be greater than 2*substep_dt. timeconst is changed from `0.005` to `0.02`). Decrease simulation timestep or increase timeconst to avoid altering the original value.[0m
+[38;5;226m[Genesis] [07:37:12] [WARNING] Filtered out geometry pairs causing self-collision for the neutral configuration (qpos0): (6, 11), (7, 11), (14, 21), (15, 20), (16, 23), (17, 22). Consider tuning Morph option 'decompose_robot_error_threshold' or specify dedicated collision meshes. This behavior can be disabled by setting Morph option 'enable_neutral_collision=True'.[0m
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-refinement/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-refinement/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+[W 10/12/26 07:38:19.825 1604969] QuadrantsWarning
+While compiling `kernel_inputs_c964_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-refinement/examples/rigid/egg_stress_controller.py", line 107, in kernel_inputs:
+        grip[i_b] = 0.04 if value < 0.15 or value > 0.9 else 0.018
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+[W 10/12/26 07:38:19.825 1604969] QuadrantsWarning
+While compiling `kernel_inputs_c964_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-refinement/examples/rigid/egg_stress_controller.py", line 108, in kernel_inputs:
+        limit[i_b] = 0.055 if value >= 0.7 and value < 0.76 else 4.0
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-refinement/genesis/engine/solvers/rigid/stress/cooperative_fit.py:67: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-refinement/genesis/engine/solvers/rigid/stress/cooperative_fit.py:75: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-refinement/genesis/engine/solvers/rigid/stress/cooperative_fit.py:67: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-refinement/genesis/engine/solvers/rigid/stress/cooperative_fit.py:75: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+[W 10/12/26 07:38:24.828 1604969] QuadrantsWarning
+While compiling `kernel_fit_tractions_c1034_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-refinement/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 158, in kernel_fit_tractions:
+                is_valid = qd.simt.subgroup.all_true(is_valid)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: u1 <- i32
+[W 10/12/26 07:38:33.707 1604969] QuadrantsWarning
+While compiling `kernel_commit_intrinsic_contacts_c1036_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-refinement/genesis/engine/solvers/rigid/stress/cooperative_scatter.py", line 98, in kernel_commit_intrinsic_contacts:
+                    cone_valid = qd.simt.subgroup.all_true(cone_valid)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: u1 <- i32
+Traceback (most recent call last):
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-refinement/examples/speed_benchmark/rigid_stress.py", line 817, in <module>
+    main()
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-refinement/examples/speed_benchmark/rigid_stress.py", line 651, in main
+    result.update(profile(workload, args.steps))
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-refinement/examples/speed_benchmark/rigid_stress.py", line 147, in profile
+    snapshot_check = prepare_recovery_snapshot(workload)
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-refinement/examples/speed_benchmark/rigid_stress.py", line 110, in prepare_recovery_snapshot
+    np.testing.assert_allclose(peak, original_peak, rtol=1e-4, atol=1e-3)
+  File "/usr/local/lib/python3.10/dist-packages/numpy/testing/_private/utils.py", line 1715, in assert_allclose
+    assert_array_compare(compare, actual, desired, err_msg=str(err_msg),
+  File "/usr/local/lib/python3.10/dist-packages/numpy/testing/_private/utils.py", line 921, in assert_array_compare
+    raise AssertionError(msg)
+AssertionError: 
+Not equal to tolerance rtol=0.0001, atol=0.001
+
+Mismatched elements: 1 / 2048 (0.0488%)
+Max absolute difference among violations: 180.11539348
+Max relative difference among violations: 0.00289985
+ ACTUAL: array([ 6366.514823, 17277.147817, 13632.19146 , ..., 18832.718077,
+       30874.000028,  8277.014603], shape=(2048,))
+ DESIRED: array([ 6366.514823, 17277.147817, 13632.19146 , ..., 18832.718077,
+       30874.000028,  8277.014603], shape=(2048,))
+
+[38;5;9m[Genesis] [07:39:11] [ERROR] AssertionError: 
+Not equal to tolerance rtol=0.0001, atol=0.001
+
+Mismatched elements: 1 / 2048 (0.0488%)
+Max absolute difference among violations: 180.11539348
+Max relative difference among violations: 0.00289985
+ ACTUAL: array([ 6366.514823, 17277.147817, 13632.19146 , ..., 18832.718077,
+       30874.000028,  8277.014603], shape=(2048,))
+ DESIRED: array([ 6366.514823, 17277.147817, 13632.19146 , ..., 18832.718077,
+       30874.000028,  8277.014603], shape=(2048,))[0m

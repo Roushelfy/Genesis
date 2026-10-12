@@ -587,7 +587,8 @@ def kernel_fit_tractions(
 
     Retry mode zero fits all contacts; one retries numerical or sampled failures; two retries refined disk
     failures; three refits every constraint whose fan support was repartitioned. Retry counts include previous
-    evaluations. Geometry changes invalidate successful constraints sharing that support.
+    evaluations. Geometry changes invalidate successful constraints sharing that support. Mode four continues
+    only numerical failures on the unchanged refined fan, retaining their verified finite dual iterate.
     """
     if cooperative and gs.backend == gs.cuda and retry_mode == 0:
         from .cooperative_fit import kernel_fit_tractions as kernel_fit_cooperative
@@ -631,6 +632,7 @@ def kernel_fit_tractions_impl(
 ):
     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
         should_fit, prior_evaluations = True, 0
+        initial_dual = qd.Vector.zero(gs.qd_float, 6)
         if qd.static(retry_mode > 0):
             should_fit = traction_state.status[i_c, i_b] == StressTractionStatus.NUMERICAL_FAILURE
             should_fit = should_fit or traction_state.status[i_c, i_b] == StressTractionStatus.SAMPLED_WRENCH_INFEASIBLE
@@ -639,6 +641,11 @@ def kernel_fit_tractions_impl(
             should_fit = should_fit and traction_state.circle.refined[i_c, i_b]
         if qd.static(retry_mode == 3):
             should_fit = traction_state.fan_refined[i_c, i_b]
+        if qd.static(retry_mode == 4):
+            should_fit = traction_state.fan_refined[i_c, i_b]
+            should_fit = should_fit and traction_state.status[i_c, i_b] == StressTractionStatus.NUMERICAL_FAILURE
+            if qd.abs(traction_state.dual[i_c, i_b]).sum() < qd.math.inf:
+                initial_dual = traction_state.dual[i_c, i_b]
         if should_fit:
             traction_state.dual[i_c, i_b] = qd.Vector.zero(gs.qd_float, 6)
             traction_state.weight_sum[i_c, i_b] = 0.0
@@ -711,7 +718,7 @@ def kernel_fit_tractions_impl(
                     force /= scale
                     moment /= radius * scale
                     target = qd.Vector([force[0], force[1], force[2], moment[0], moment[1], moment[2]])
-                    current = qd.Vector.zero(gs.qd_float, 6)
+                    current = initial_dual
                     proposal = current
                     direction = current
                     energy = gs.qd_float(0.0)

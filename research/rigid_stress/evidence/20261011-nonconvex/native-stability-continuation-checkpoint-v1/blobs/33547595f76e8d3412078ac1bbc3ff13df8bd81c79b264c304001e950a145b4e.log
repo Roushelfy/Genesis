@@ -1,0 +1,114 @@
+{
+  "scope": "Independent frame audit: original collision cone versus owner-oriented material boundary cone.",
+  "environment": 3092,
+  "contacts": [
+    {
+      "raw_contact": 0,
+      "point": [
+        0.006394606507206401,
+        -0.02009394937349239,
+        -0.004549100487487313
+      ],
+      "force": [
+        0.03247320020357666,
+        -0.07312970658223629,
+        0.03025159989769604
+      ],
+      "normal": [
+        0.27346839481916435,
+        -0.9617486414264993,
+        -0.015955806131705424
+      ],
+      "material_inward_normal": [
+        -0.27312912686728125,
+        0.9614546823831106,
+        0.03170762968606664
+      ],
+      "material_collision_normal_dot": -0.9998758392700251,
+      "mu": 0.424924445637218,
+      "anchor": [
+        0.0063786850638774826,
+        -0.020037955968838665,
+        -0.0045481715338389055
+      ],
+      "witness": [
+        0.0063786850638774826,
+        -0.020037955968838665,
+        -0.0045481715338389055
+      ],
+      "witness_method": 1,
+      "vertex": -1,
+      "pair": 210,
+      "geom": 24,
+      "anchor_face": 48,
+      "all_witness_faces": [
+        48
+      ],
+      "witness_boundary_distance_m": 1.939479807224432e-18,
+      "point_anchor_distance_m": 5.8220414609246575e-05,
+      "point_normal_offset_m": 5.8220414609246575e-05,
+      "point_material_inward_offset_m": -5.8213185920069155e-05,
+      "original_collision_compression_N": 0.07873010122455618,
+      "original_collision_tangent_N": 0.03345434461780659,
+      "original_collision_cone_excess_N": 0.0,
+      "anchor_material_compression_N": -0.07822106910601619,
+      "anchor_material_tangent_N": 0.034627826390746366,
+      "anchor_material_cone_excess_N": 0.06786587081777082
+    },
+    {
+      "raw_contact": 1,
+      "point": [
+        0.00015149180632241716,
+        -0.021907445097047427,
+        -1.1437412220694675e-06
+      ],
+      "force": [
+        -0.017343487914105834,
+        0.13450536624886203,
+        0.04957799692036063
+      ],
+      "normal": [
+        -0.2731877914237726,
+        0.9616611902469022,
+        -0.02400387031111392
+      ],
+      "material_inward_normal": [
+        -0.26450773041314607,
+        0.9311060993352938,
+        -0.25115153260989825
+      ],
+      "material_collision_normal_dot": 0.9736974912362164,
+      "mu": 0.424924445637218,
+      "anchor": [
+        0.00016450871294534412,
+        -0.021953266522123063,
+        2.97275146600793e-17
+      ],
+      "witness": [
+        0.0001645087129453445,
+        -0.02195326652212307,
+        3.185586973747468e-17
+      ],
+      "witness_method": 1,
+      "vertex": -1,
+      "pair": 216,
+      "geom": 24,
+      "anchor_face": 44,
+      "all_witness_faces": [
+        44,
+        48
+      ],
+      "witness_boundary_distance_m": 7.827119235771042e-18,
+      "point_anchor_distance_m": 4.764820036449687e-05,
+      "point_normal_offset_m": 4.764820036449687e-05,
+      "point_material_inward_offset_m": 4.639493315682931e-05,
+      "original_collision_compression_N": 0.1328965559519545,
+      "original_collision_tangent_N": 0.05647099536497978,
+      "original_collision_cone_excess_N": -6.938893903907228e-18,
+      "anchor_material_compression_N": 0.11737466362297358,
+      "anchor_material_tangent_N": 0.08410503100764154,
+      "anchor_material_cone_excess_N": 0.034229667135794555
+    }
+  ],
+  "interpretation": "No normal/force/friction/anchor edits. The owner-oriented material inward normal is determined from the unique owning tetrahedron, independently of collision normal and link COM. Collision-cone feasibility alone does not establish feasibility on the witnessed material boundary. Rigid producer geometry requires separate review if directions disagree."
+}

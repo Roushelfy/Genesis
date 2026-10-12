@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="22.028" timestamp="2026-10-12T07:59:24.393063+00:00" hostname="cpu-206-205"><testcase classname="tests.rigid.test_stress_source_priors" name="test_body_source_prior_wrench_cones_full_fields_and_gauge_rows[roundoff_edge]" file="tests/rigid/test_stress_source_priors.py" line="131" time="11.902"><properties><property name="fan_refined" value="[[False, False, False, False, False, False], [False, False, False, False, False, False], [False, False, False, False, False, False]]" /><property name="fit_evaluations" value="[[3, 0, 0, 0, 0, 0], [4, 0, 0, 0, 0, 0], [3, 0, 0, 0, 0, 0]]" /></properties><failure message="AssertionError: &#10;Not equal to tolerance rtol=0.0001, atol=1e-10&#10;None&#10;Mismatched elements: 6855 / 12300 (55.7%)&#10;Max absolute difference among violations: 1.15509696e-05&#10;Max relative difference among violations: 2.02956294&#10; ACTUAL: array([[-4.052699e-29, -1.619103e-28,  1.726466e-27],&#10;       [-4.697891e-28, -1.876866e-27,  2.001320e-26],&#10;       [-1.636210e-27, -6.536864e-27,  6.970321e-26],...&#10; DESIRED: array([[-3.896274e-29, -1.514669e-28,  1.725241e-27],&#10;       [-4.516564e-28, -1.755806e-27,  1.999900e-26],&#10;       [-1.573056e-27, -6.115228e-27,  6.965375e-26],...">tests/rigid/test_stress_source_priors.py:237: in test_body_source_prior_wrench_cones_full_fields_and_gauge_rows
+    assert_allclose(actual_force, expected, rtol=1e-4, atol=1e-10)
+tests/utils/assertions.py:50: in assert_allclose
+    np.testing.assert_allclose(*args, atol=atol, rtol=rtol, err_msg=err_msg)
+E   AssertionError: 
+E   Not equal to tolerance rtol=0.0001, atol=1e-10
+E   None
+E   Mismatched elements: 6855 / 12300 (55.7%)
+E   Max absolute difference among violations: 1.15509696e-05
+E   Max relative difference among violations: 2.02956294
+E    ACTUAL: array([[-4.052699e-29, -1.619103e-28,  1.726466e-27],
+E          [-4.697891e-28, -1.876866e-27,  2.001320e-26],
+E          [-1.636210e-27, -6.536864e-27,  6.970321e-26],...
+E    DESIRED: array([[-3.896274e-29, -1.514669e-28,  1.725241e-27],
+E          [-4.516564e-28, -1.755806e-27,  1.999900e-26],
+E          [-1.573056e-27, -6.115228e-27,  6.965375e-26],...</failure></testcase></testsuite></testsuites>

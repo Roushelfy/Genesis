@@ -4,6 +4,22 @@ This implements the active extension in `NONCONVEX_CONTACT_REQUIREMENTS.md`.
 The previous egg milestone remains complete; native nonconvex acceptance is
 not yet established. The initial branch source is `1d6babf7`.
 
+The [shared-feature stability and failed-fan continuation checkpoint](NATIVE_STABILITY_CONTINUATION_20261012.md)
+passes15 CPU/15 CUDA targeted cases and48 independent full fields. It repairs
+the180-Pa shared-edge repeat discrepancy and the wider env645 numerical
+stopping failure without changing physical inputs or final budgets. B4096
+live now finishes three1280-step repetitions at41152.364 effective env-step/s,
+counting one continuously certified invalid environment and4644 resets per
+repeat. The earlier core688 policy rollout finishes at42903.298 env-step/s
+with zero invalid steps; these are different source/trajectory epochs, not a
+matched overhead comparison. Exact captured-pose detection identifies a
+rigid producer normal/witness anomaly before patching; its generic repair
+remains unresolved. The archive retains failed attempts and verified closures.
+The active goal still needs legal-contact robustness, current matched
+four-scope baselines, wider seed/outcome/tail evidence and a measured plateau.
+The preceding checkpoint statements below describe their original source
+epochs and limitations.
+
 The [native wrench-line fan repair](NATIVE_WRENCH_FAN_REPAIR_20261012.md)
 passes64 CPU/64 CUDA cases and36 independent full fields. Both newly
 captured single-source failures recover at their original radii/friction;
