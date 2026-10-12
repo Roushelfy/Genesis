@@ -16,6 +16,7 @@ from genesis.engine.solvers.rigid.stress.footprint import (
 from genesis.engine.solvers.rigid.stress.model import StressModel
 from genesis.engine.solvers.rigid.stress.paths import StressSurfacePaths
 from genesis.engine.solvers.rigid.stress.provenance import create_sources, kernel_resolve_sources
+from genesis.engine.solvers.rigid.stress.recovery import kernel_reset
 from genesis.engine.solvers.rigid.stress.surface import StressSurface
 from genesis.engine.solvers.rigid.stress.traction import (
     create_traction_info,
@@ -25,7 +26,7 @@ from genesis.engine.solvers.rigid.stress.traction import (
     kernel_traction_samples,
 )
 from genesis.options.rigid_stress import RigidStressOptions
-from genesis.utils.array_class import V_VEC, V
+from genesis.utils.array_class import V_VEC, V, iter_data
 from genesis.utils.misc import qd_to_numpy
 from research.rigid_stress.field_cpu import stress_field
 from research.rigid_stress.mechanics import P2Shell
@@ -158,7 +159,7 @@ def test_saved_edge_contact_uses_neighbor_finite_area_and_cpu_oracle(tick, coord
     epsilon = float(np.finfo(gs.np_float).eps)
     kernel_resolve_sources(1e-8, epsilon, contacts, sources, model.info, surface.info)
     kernel_footprint_ports(contacts, sources, footprints, surface.info, paths.info)
-    kernel_surface_fan_profiles(contacts, footprints, tractions, model.info, surface.info, paths.info, info)
+    kernel_surface_fan_profiles(contacts, footprints, tractions, model.info, surface.info, paths.info, info, epsilon)
     kernel_fit_tractions(contacts, sources, tractions, info, epsilon, 9e-9, 128)
     assert_equal(qd_to_numpy(tractions.status, transpose=True), 0)
     samples = create_traction_samples(tractions)
@@ -256,4 +257,190 @@ def test_saved_edge_contact_uses_neighbor_finite_area_and_cpu_oracle(tick, coord
         assert_allclose(actual_tensor[i_b], expected_tensor, rtol=1e-4, atol=1e-3)
         assert_allclose(actual_vm[i_b, :, :, 0], expected_vm, rtol=1e-4, atol=1e-3)
         peaks.append(expected_vm.max())
+    assert_allclose(qd_to_numpy(state.peak, transpose=True), peaks, rtol=1e-4, atol=1e-3)
+
+
+@pytest.mark.required
+@pytest.mark.precision("64")
+def test_legal_small_intrinsic_disks_recover_original_wrench_and_full_field_through_release_reset():
+    with np.load(Path(__file__).with_name("assets") / "nonconvex_mesh64_small_disk.npz") as saved:
+        anchor, point, force = (saved[key] for key in ("anchor", "point", "force"))
+        original_radius, original_samples = float(saved["radius"]), saved["samples"]
+    mesh = Path(__file__).resolve().parents[2] / "examples/rigid/assets/hollow_egg/level1/elastic.npz"
+    with np.load(mesh) as asset:
+        vertices, tets, faces = (asset[key] for key in ("vertices", "tetrahedra", "surface_triangles"))
+    triangle = vertices[faces[0]]
+    owners = np.flatnonzero(np.isin(tets, faces[0]).sum(axis=1) == 3)
+    opposite = vertices[tets[owners[0]][~np.isin(tets[owners[0]], faces[0])][0]]
+    normal = np.cross(triangle[1] - triangle[0], triangle[2] - triangle[0])
+    normal /= np.linalg.norm(normal)
+    normal *= np.sign(normal @ (opposite - triangle[0]))
+    tangent = (triangle[1] - triangle[0]) / np.linalg.norm(triangle[1] - triangle[0])
+    second = np.cross(normal, tangent)
+    ratio = np.linalg.norm(force - normal * (force @ normal)) / (force @ normal)
+    centroid_coordinate = -ratio * ((point - anchor) @ normal)
+    patch_radius = 0.25 * (original_radius - abs(centroid_coordinate))
+    # A uniform vector traction on this positive-area subdisk realizes the
+    # original point wrench. Its pressure centroid lies outside the old
+    # triangle-fan sample hull, so iterations alone cannot recover this input.
+    assert patch_radius > 0 and abs(centroid_coordinate) + patch_radius < original_radius
+    assert centroid_coordinate < ((original_samples - anchor) @ tangent).min() - 4e-6
+    assert_allclose(np.cross(anchor + centroid_coordinate * tangent - point, force), 0, rtol=0, atol=1e-18)
+    edge_vectors = np.roll(triangle, -1, axis=0) - triangle
+    edge_clearance = np.linalg.norm(np.cross(anchor - triangle, edge_vectors), axis=1)
+    edge_clearance /= np.linalg.norm(edge_vectors, axis=1)
+    radii, frictions = original_radius * np.array([1.0, 2.0, 0.5, 0.1]), np.array([0.5, 0.6, 0.85, 1.2])
+    assert (edge_clearance.min() > radii).all() and (ratio < frictions).all()
+    points = anchor + (radii / original_radius)[:, None] * (point - anchor)
+    options, n_envs = RigidStressOptions(mesh=mesh, method="direct"), len(radii)
+    model = StressModel(options)
+    surface, paths = StressSurface(10, model.info), StressSurfacePaths(model.info, 8)
+    contacts, sources = create_contacts(1, n_envs, original_radius), create_sources(1, n_envs)
+    footprints = create_footprints(paths.info.positions.shape[0], 1, n_envs)
+    tractions, info = create_surface_fan_tractions(surface.info, 1, n_envs), create_traction_info(surface.info)
+    assert any(item.name == "stress.tractions.circle.face" for item in iter_data(tractions, "stress.tractions"))
+    contacts.valid.fill(True)
+    contacts.position.from_numpy(points[None])
+    contacts.force.from_numpy(np.broadcast_to(force, (1, n_envs, 3)).copy())
+    contacts.radius.from_numpy(radii[None])
+    contacts.friction.from_numpy(frictions[None])
+    sources.geom.fill(7)
+    sources.pair.fill(11)
+    sources.witness.from_numpy(np.broadcast_to(anchor, (1, n_envs, 3)).copy())
+    epsilon = float(np.finfo(gs.np_float).eps)
+    kernel_resolve_sources(1e-8, epsilon, contacts, sources, model.info, surface.info)
+    assert_equal(qd_to_numpy(sources.status, transpose=True), 0)
+    kernel_footprint_ports(contacts, sources, footprints, surface.info, paths.info)
+    kernel_surface_fan_profiles(contacts, footprints, tractions, model.info, surface.info, paths.info, info, epsilon)
+    kernel_fit_tractions(contacts, sources, tractions, info, epsilon, 9e-9, 128)
+    assert_equal(qd_to_numpy(tractions.circle.face, transpose=True), 0)
+    assert_equal(qd_to_numpy(tractions.sample_count, transpose=True), 100)
+    assert_equal(qd_to_numpy(tractions.status, transpose=True), 0)
+    assert_equal(qd_to_numpy(contacts.radius, transpose=True)[:, 0], radii)
+    assert_equal(qd_to_numpy(contacts.friction, transpose=True)[:, 0], frictions)
+    samples, quad_force = create_traction_samples(tractions), V_VEC(3, dtype=gs.qd_float, shape=tractions.profile.shape)
+    kernel_traction_samples(samples, tractions, surface.info, info)
+    kernel_traction_queries(quad_force, contacts, tractions, info)
+    sample_positions = qd_to_numpy(samples.positions, transpose=True, copy=True)[:, :100, 0]
+    sample_normals = qd_to_numpy(samples.normals, transpose=True, copy=True)[:, :100, 0]
+    sample_basis = qd_to_numpy(samples.shape, transpose=True, copy=True)[:, :100, 0]
+    sample_indices = qd_to_numpy(tractions.sample_indices, transpose=True, copy=True)[:, :100, 0]
+    profiles = qd_to_numpy(tractions.profile, transpose=True, copy=True)[:, :100, 0]
+    actual_force = qd_to_numpy(quad_force, transpose=True, copy=True)[:, :100, 0]
+    gauss, weights = np.polynomial.legendre.leggauss(10)
+    gauss, weights = (gauss + 1) / 2, weights / 2
+    u, v = np.repeat(gauss, 10), np.tile(gauss, 10)
+    reference_positions = anchor + radii[:, None, None] * u[None, :, None] ** 2 * (
+        np.cos(2 * np.pi * v)[:, None] * tangent + np.sin(2 * np.pi * v)[:, None] * second
+    )
+    reference_profiles = 4 * np.pi * radii[:, None] ** 2 * u**3 * np.repeat(weights, 10) * np.tile(weights, 10)
+    reference_profiles *= np.exp(-0.5 * (u**2 / 0.45) ** 2) * (1 - u**4) ** 2
+    surface_nodes = qd_to_numpy(model.info.surface_nodes, transpose=True).T[0]
+    nodal_reference = np.zeros((n_envs, model.info.vertices.shape[0], 3))
+    for i_b, mu in enumerate(frictions):
+        order = sample_indices[i_b] - 3 * surface.info.positions.shape[0]
+        assert_equal(np.sort(order), np.arange(100))
+        positions = reference_positions[i_b]
+        local = np.linalg.lstsq((triangle[1:] - triangle[0]).T, (positions - triangle[0]).T, rcond=None)[0].T
+        bary = np.column_stack((1 - local.sum(axis=1), local))
+        basis = np.column_stack((bary * (2 * bary - 1), 4 * bary[:, [0, 0, 1]] * bary[:, [1, 2, 2]]))
+        assert (bary > 0).all()
+        assert_allclose(sample_positions[i_b], positions[order], rtol=0, atol=128 * epsilon * np.linalg.norm(anchor))
+        assert_allclose(sample_basis[i_b], basis[order], rtol=2e-12, atol=2e-14)
+        assert_allclose(profiles[i_b], reference_profiles[i_b, order], rtol=2e-12, atol=0)
+        assert_allclose(sample_normals[i_b], np.broadcast_to(normal, (100, 3)), rtol=0, atol=64 * epsilon)
+        patch = WrenchPatch(anchor, force, radii[i_b], mu, np.cross(points[i_b] - anchor, force))
+        cpu_force = cpu_resolved_wrench_fit(
+            positions, reference_profiles[i_b], np.broadcast_to(normal, (100, 3)), patch
+        )
+        assert_allclose(actual_force[i_b], cpu_force[order], rtol=1e-4, atol=1e-10)
+        np.add.at(
+            nodal_reference[i_b],
+            np.broadcast_to(surface_nodes, (100, 6)).reshape(-1),
+            (basis[:, :, None] * cpu_force[:, None]).reshape(-1, 3),
+        )
+        assert np.linalg.norm(actual_force[i_b].sum(axis=0) - force) / np.linalg.norm(force) <= 1e-8
+        moment = np.cross(sample_positions[i_b] - points[i_b], actual_force[i_b]).sum(axis=0)
+        assert np.linalg.norm(moment) / (radii[i_b] * np.linalg.norm(force)) <= 1e-8
+        compression = np.einsum("qi,qi->q", actual_force[i_b], sample_normals[i_b])
+        assert (compression >= -1e-12).all()
+        assert (
+            np.linalg.norm(actual_force[i_b] - compression[:, None] * sample_normals[i_b], axis=1)
+            <= mu * compression + 1e-12
+        ).all()
+    state = model.create_state(n_envs, "full")
+    errno, omega = V(dtype=gs.qd_int, shape=(n_envs,)), V_VEC(3, dtype=gs.qd_float, shape=(n_envs,))
+    omega.fill(0)
+    kernel_scatter_tractions(contacts, tractions, state, model.info, surface.info, info, errno, reset_force=True)
+    assert_equal(qd_to_numpy(errno, transpose=True), 0)
+    assert_allclose(qd_to_numpy(state.force, transpose=True), nodal_reference, rtol=1e-4, atol=1e-10)
+    xyz = qd_to_numpy(model.info.vertices, transpose=True)
+    moments = np.cross(xyz[None] - points[:, None], qd_to_numpy(state.force, transpose=True)).sum(axis=1)
+    assert (np.linalg.norm(moments, axis=1) / (radii * np.linalg.norm(force)) <= 1e-8).all()
+    oracle = P2Shell(vertices, tets, faces, options.young, options.poisson, options.density, 2, factor_backend="none")
+    rhs = oracle.balance(np.moveaxis(nodal_reference, 0, -1).reshape(oracle.ndof, n_envs))
+    free = np.setdiff1d(np.arange(oracle.ndof), qd_to_numpy(model.info.pins, transpose=True))
+    reference = np.zeros_like(rhs)
+    reference[free] = splu(oracle.k[free][:, free].tocsc()).solve(rhs[free])
+    model.recover(omega, state)
+    assert qd_to_numpy(state.valid, transpose=True).all()
+    displacement = qd_to_numpy(state.displacement, transpose=True).reshape(n_envs, oracle.ndof).T
+    residual = np.linalg.norm(oracle.k @ displacement - rhs, axis=0)
+    assert (residual <= np.maximum(options.absolute_tolerance, options.tolerance * np.linalg.norm(rhs, axis=0))).all()
+    tensors, vms = qd_to_numpy(state.stress_tensor, transpose=True), qd_to_numpy(state.von_mises, transpose=True)
+    peaks = []
+    for i_b in range(n_envs):
+        tensor, vm = stress_field(oracle.glambda, oracle.elements, reference[:, i_b], options.young, options.poisson)
+        assert_allclose(tensors[i_b], tensor, rtol=1e-4, atol=1e-3)
+        assert_allclose(vms[i_b, :, :, 0], vm, rtol=1e-4, atol=1e-3)
+        peaks.append(vm.max())
+    assert_allclose(qd_to_numpy(state.peak, transpose=True), peaks, rtol=1e-4, atol=1e-3)
+    saved_tensor = qd_to_numpy(state.stress_tensor, transpose=True, copy=True)
+    kernel_reset(np.array([0], dtype=gs.np_int), state)
+    assert_equal(qd_to_numpy(state.peak, transpose=True)[0], 0)
+    assert_equal(qd_to_numpy(state.stress_tensor, transpose=True)[1:], saved_tensor[1:])
+    contacts.valid.from_numpy(np.array([[False, True, True, True]]))
+    kernel_footprint_ports(contacts, sources, footprints, surface.info, paths.info)
+    kernel_surface_fan_profiles(contacts, footprints, tractions, model.info, surface.info, paths.info, info, epsilon)
+    kernel_fit_tractions(contacts, sources, tractions, info, epsilon, 9e-9, 128)
+    assert_equal(qd_to_numpy(tractions.circle.face, transpose=True)[:, 0], [-1, 0, 0, 0])
+    assert_equal(qd_to_numpy(tractions.sample_count, transpose=True)[:, 0], [0, 100, 100, 100])
+    errno.fill(0)
+    kernel_scatter_tractions(contacts, tractions, state, model.info, surface.info, info, errno, reset_force=True)
+    model.recover(omega, state)
+    assert_equal(qd_to_numpy(state.peak, transpose=True)[0], 0)
+    assert_equal(qd_to_numpy(errno, transpose=True), 0)
+    released_rhs = rhs.copy()
+    released_rhs[:, 0] = 0
+    displacement = qd_to_numpy(state.displacement, transpose=True).reshape(n_envs, oracle.ndof).T
+    residual = np.linalg.norm(oracle.k @ displacement - released_rhs, axis=0)
+    assert (
+        residual <= np.maximum(options.absolute_tolerance, options.tolerance * np.linalg.norm(released_rhs, axis=0))
+    ).all()
+    tensors, vms = qd_to_numpy(state.stress_tensor, transpose=True), qd_to_numpy(state.von_mises, transpose=True)
+    assert_equal(tensors[0], 0)
+    for i_b in range(1, n_envs):
+        tensor, vm = stress_field(oracle.glambda, oracle.elements, reference[:, i_b], options.young, options.poisson)
+        assert_allclose(tensors[i_b], tensor, rtol=1e-4, atol=1e-3)
+        assert_allclose(vms[i_b, :, :, 0], vm, rtol=1e-4, atol=1e-3)
+    assert_allclose(qd_to_numpy(state.peak, transpose=True)[1:], peaks[1:], rtol=1e-4, atol=1e-3)
+    # A boundary crossing must invalidate the whole-circle chart, even on the
+    # same face; restoring the contact rebuilds it from current geometry.
+    moved = np.broadcast_to(anchor, (1, n_envs, 3)).copy()
+    moved[0, 0] = triangle[:2].mean(axis=0)
+    contacts.valid.fill(True)
+    contacts.center.from_numpy(moved)
+    kernel_footprint_ports(contacts, sources, footprints, surface.info, paths.info)
+    kernel_surface_fan_profiles(contacts, footprints, tractions, model.info, surface.info, paths.info, info, epsilon)
+    assert_equal(qd_to_numpy(tractions.circle.face, transpose=True)[:, 0], [-1, 0, 0, 0])
+    kernel_resolve_sources(1e-8, epsilon, contacts, sources, model.info, surface.info)
+    kernel_footprint_ports(contacts, sources, footprints, surface.info, paths.info)
+    kernel_surface_fan_profiles(contacts, footprints, tractions, model.info, surface.info, paths.info, info, epsilon)
+    kernel_fit_tractions(contacts, sources, tractions, info, epsilon, 9e-9, 128)
+    assert_equal(qd_to_numpy(tractions.status, transpose=True), 0)
+    assert_equal(qd_to_numpy(tractions.circle.face, transpose=True), 0)
+    errno.fill(0)
+    kernel_scatter_tractions(contacts, tractions, state, model.info, surface.info, info, errno, reset_force=True)
+    model.recover(omega, state)
+    assert_equal(qd_to_numpy(errno, transpose=True), 0)
     assert_allclose(qd_to_numpy(state.peak, transpose=True), peaks, rtol=1e-4, atol=1e-3)

@@ -1,0 +1,535 @@
+[Quadrants] version 1.3.3, llvm 22.1.0, commit 00423caa, linux, python 3.10.12
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0
+rootdir: /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery
+configfile: pyproject.toml
+plugins: anyio-4.15.1, forked-1.7.5, print-1.2.0, timeout-2.4.0, xdist-3.8.0, quadrants-1.3.3, syrupy-6.1.1
+timeout: 1200.0s
+timeout method: signal
+timeout func_only: False
+collected 51 items
+
+tests/rigid/test_stress_nonconvex.py [Genesis 00:18:22] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:18:22] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:18:24] Exiting Genesis and caching compiled kernels...
+[Genesis 00:18:24] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:18:24] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:18:25] Exiting Genesis and caching compiled kernels...
+[Genesis 00:18:26] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:18:26] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:18:26] Exiting Genesis and caching compiled kernels...
+[Genesis 00:18:26] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:18:26] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:18:26] Exiting Genesis and caching compiled kernels...
+[Genesis 00:18:27] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:18:27] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:18:27] Exiting Genesis and caching compiled kernels...
+[Genesis 00:18:27] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:18:27] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:18:27] Exiting Genesis and caching compiled kernels...
+[Genesis 00:18:28] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:18:28] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:18:29] Exiting Genesis and caching compiled kernels...
+[Genesis 00:18:29] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:18:29] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:18:31] Exiting Genesis and caching compiled kernels...
+[Genesis 00:18:31] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:18:31] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:18:33] Exiting Genesis and caching compiled kernels...
+[Genesis 00:18:34] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:18:34] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:18:36] Exiting Genesis and caching compiled kernels...
+[Genesis 00:18:37] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:18:37] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:18:39] Exiting Genesis and caching compiled kernels...
+[Genesis 00:18:39] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:18:39] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:18:40] Exiting Genesis and caching compiled kernels...
+
+tests/rigid/test_stress_sources.py [Genesis 00:18:41] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:18:41] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:18:42] Exiting Genesis and caching compiled kernels...
+[Genesis 00:18:43] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:18:43] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:18:44] Exiting Genesis and caching compiled kernels...
+[Genesis 00:18:45] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:18:45] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[Genesis 00:18:46] Scene <c405418> created.
+[Genesis 00:18:46] Adding <gs.engine.entities.RigidEntity> 'source-tetra_ff859dc'. idx: 0, morph: <gs.morphs.Mesh(file='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/sample-contiguous-layout-v11-v1/cuda/tmp/pytest-of-zhaofeng/pytest-0/assets0/source-tetra.obj')>, material: <gs.materials.Rigid>.
+[Genesis 00:18:46] Adding <gs.engine.entities.RigidEntity> 'source-tetra_c9416e5'. idx: 1, morph: <gs.morphs.Mesh(file='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/sample-contiguous-layout-v11-v1/cuda/tmp/pytest-of-zhaofeng/pytest-0/assets0/source-tetra.obj')>, material: <gs.materials.Rigid>.
+[Genesis 00:18:46] Building scene <c405418>...
+[Genesis 00:18:53] Compiling simulation kernels...
+[Genesis 00:19:32] Building visualizer...
+libEGL warning: failed to open /dev/dri/renderD135: Permission denied
+
+libEGL warning: failed to open /dev/dri/card8: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD134: Permission denied
+
+libEGL warning: failed to open /dev/dri/card7: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD133: Permission denied
+
+libEGL warning: failed to open /dev/dri/card6: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD132: Permission denied
+
+libEGL warning: failed to open /dev/dri/card5: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD131: Permission denied
+
+libEGL warning: failed to open /dev/dri/card4: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD130: Permission denied
+
+libEGL warning: failed to open /dev/dri/card3: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD129: Permission denied
+
+libEGL warning: failed to open /dev/dri/card2: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD128: Permission denied
+
+libEGL warning: failed to open /dev/dri/card1: Permission denied
+
+[Genesis 00:19:33] Software rendering context detected. Shadows and plane reflection not supported. Beware rendering will be extremely slow.
+[32m.[0m[Genesis 00:19:52] Exiting Genesis and caching compiled kernels...
+[Genesis 00:19:54] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:19:54] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[Genesis 00:19:55] Scene <8c67f12> created.
+[Genesis 00:19:55] Adding <gs.engine.entities.RigidEntity> 'source-tetra_c4901a2'. idx: 0, morph: <gs.morphs.Mesh(file='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/sample-contiguous-layout-v11-v1/cuda/tmp/pytest-of-zhaofeng/pytest-0/assets0/source-tetra.obj')>, material: <gs.materials.Rigid>.
+[Genesis 00:19:55] Adding <gs.engine.entities.RigidEntity> 'source-tetra_54afde3'. idx: 1, morph: <gs.morphs.Mesh(file='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/sample-contiguous-layout-v11-v1/cuda/tmp/pytest-of-zhaofeng/pytest-0/assets0/source-tetra.obj')>, material: <gs.materials.Rigid>.
+[Genesis 00:19:55] Building scene <8c67f12>...
+[Genesis 00:19:57] Compiling simulation kernels...
+[Genesis 00:20:02] Building visualizer...
+libEGL warning: failed to open /dev/dri/renderD135: Permission denied
+
+libEGL warning: failed to open /dev/dri/card8: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD134: Permission denied
+
+libEGL warning: failed to open /dev/dri/card7: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD133: Permission denied
+
+libEGL warning: failed to open /dev/dri/card6: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD132: Permission denied
+
+libEGL warning: failed to open /dev/dri/card5: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD131: Permission denied
+
+libEGL warning: failed to open /dev/dri/card4: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD130: Permission denied
+
+libEGL warning: failed to open /dev/dri/card3: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD129: Permission denied
+
+libEGL warning: failed to open /dev/dri/card2: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD128: Permission denied
+
+libEGL warning: failed to open /dev/dri/card1: Permission denied
+
+[Genesis 00:20:02] Software rendering context detected. Shadows and plane reflection not supported. Beware rendering will be extremely slow.
+[32m.[0m[Genesis 00:20:03] Exiting Genesis and caching compiled kernels...
+
+tests/rigid/test_stress_traction.py [Genesis 00:20:04] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:20:04] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:20:04] Exiting Genesis and caching compiled kernels...
+[Genesis 00:20:04] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:20:04] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[W 10/12/26 00:20:06.870 1938460] QuadrantsWarning
+While compiling `kernel_fit_tractions_c948_0`, File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/traction_original_point_candidate_v10.py", line 141, in kernel_fit_tractions:
+                is_valid = qd.simt.subgroup.all_true(is_valid)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: u1 <- i32
+[32m.[0m[Genesis 00:20:08] Exiting Genesis and caching compiled kernels...
+[Genesis 00:20:09] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:20:09] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:20:12] Exiting Genesis and caching compiled kernels...
+[Genesis 00:20:13] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:20:13] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:20:14] Exiting Genesis and caching compiled kernels...
+
+tests/rigid/test_stress_footprint.py [Genesis 00:20:14] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:20:14] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:20:18] Exiting Genesis and caching compiled kernels...
+[Genesis 00:20:19] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:20:19] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[W 10/12/26 00:20:22.194 1938460] QuadrantsWarning
+While compiling `kernel_fit_tractions_c948_2`, File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/traction_original_point_candidate_v10.py", line 141, in kernel_fit_tractions:
+                is_valid = qd.simt.subgroup.all_true(is_valid)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: u1 <- i32
+[32m.[0m[Genesis 00:20:23] Exiting Genesis and caching compiled kernels...
+[Genesis 00:20:24] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:20:24] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[W 10/12/26 00:20:27.520 1938460] QuadrantsWarning
+While compiling `kernel_fit_tractions_c948_3`, File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/traction_original_point_candidate_v10.py", line 141, in kernel_fit_tractions:
+                is_valid = qd.simt.subgroup.all_true(is_valid)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: u1 <- i32
+[Genesis 00:20:29] Scene <00363d3> created.
+[Genesis 00:20:29] Adding <gs.engine.entities.RigidEntity> 'streamed-u_ebb9d89'. idx: 0, morph: <gs.morphs.Mesh(file='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/sample-contiguous-layout-v11-v1/cuda/tmp/pytest-of-zhaofeng/pytest-0/assets0/streamed-u.obj')>, material: <gs.materials.Rigid>.
+[Genesis 00:20:29] Building scene <00363d3>...
+[Genesis 00:20:29] Preprocessing geom idx 0.
+[Genesis 00:20:30] Compiling simulation kernels...
+[Genesis 00:20:35] Building visualizer...
+libEGL warning: failed to open /dev/dri/renderD135: Permission denied
+
+libEGL warning: failed to open /dev/dri/card8: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD134: Permission denied
+
+libEGL warning: failed to open /dev/dri/card7: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD133: Permission denied
+
+libEGL warning: failed to open /dev/dri/card6: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD132: Permission denied
+
+libEGL warning: failed to open /dev/dri/card5: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD131: Permission denied
+
+libEGL warning: failed to open /dev/dri/card4: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD130: Permission denied
+
+libEGL warning: failed to open /dev/dri/card3: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD129: Permission denied
+
+libEGL warning: failed to open /dev/dri/card2: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD128: Permission denied
+
+libEGL warning: failed to open /dev/dri/card1: Permission denied
+
+[Genesis 00:20:35] Software rendering context detected. Shadows and plane reflection not supported. Beware rendering will be extremely slow.
+[W 10/12/26 00:20:37.722 1938460] QuadrantsWarning
+While compiling `kernel_commit_intrinsic_contacts_c950_0`, File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/traction_sample_cooperative_candidate_v2.py", line 89, in kernel_commit_intrinsic_contacts:
+                    cone_valid = qd.simt.subgroup.all_true(cone_valid)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: u1 <- i32
+[32m.[0m[Genesis 00:20:38] Exiting Genesis and caching compiled kernels...
+[Genesis 00:20:39] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:20:39] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:20:43] Exiting Genesis and caching compiled kernels...
+[Genesis 00:20:43] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:20:43] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:20:48] Exiting Genesis and caching compiled kernels...
+[Genesis 00:20:48] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:20:48] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[Genesis 00:20:52] Scene <7b85d51> created.
+[Genesis 00:20:52] Adding <gs.engine.entities.RigidEntity> 'streamed-cavity_49faeaa'. idx: 0, morph: <gs.morphs.Mesh(file='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/sample-contiguous-layout-v11-v1/cuda/tmp/pytest-of-zhaofeng/pytest-0/assets0/streamed-cavity.obj')>, material: <gs.materials.Rigid>.
+[Genesis 00:20:52] Building scene <7b85d51>...
+[Genesis 00:20:53] Preprocessing geom idx 0.
+[Genesis 00:20:54] Compiling simulation kernels...
+[Genesis 00:20:55] Building visualizer...
+libEGL warning: failed to open /dev/dri/renderD135: Permission denied
+
+libEGL warning: failed to open /dev/dri/card8: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD134: Permission denied
+
+libEGL warning: failed to open /dev/dri/card7: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD133: Permission denied
+
+libEGL warning: failed to open /dev/dri/card6: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD132: Permission denied
+
+libEGL warning: failed to open /dev/dri/card5: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD131: Permission denied
+
+libEGL warning: failed to open /dev/dri/card4: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD130: Permission denied
+
+libEGL warning: failed to open /dev/dri/card3: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD129: Permission denied
+
+libEGL warning: failed to open /dev/dri/card2: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD128: Permission denied
+
+libEGL warning: failed to open /dev/dri/card1: Permission denied
+
+[Genesis 00:20:55] Software rendering context detected. Shadows and plane reflection not supported. Beware rendering will be extremely slow.
+[32m.[0m[Genesis 00:20:56] Exiting Genesis and caching compiled kernels...
+
+tests/rigid/test_stress_sliding_footprint.py [Genesis 00:20:57] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:20:57] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:21:14] Exiting Genesis and caching compiled kernels...
+[Genesis 00:21:15] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:21:15] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:21:31] Exiting Genesis and caching compiled kernels...
+[Genesis 00:21:32] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:21:32] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:21:49] Exiting Genesis and caching compiled kernels...
+[Genesis 00:21:50] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:21:50] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:22:07] Exiting Genesis and caching compiled kernels...
+[Genesis 00:22:07] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:22:07] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:22:24] Exiting Genesis and caching compiled kernels...
+[Genesis 00:22:24] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:22:24] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:22:41] Exiting Genesis and caching compiled kernels...
+
+tests/rigid/test_stress_surface_fan.py [Genesis 00:22:42] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:22:42] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[W 10/12/26 00:22:58.724 1938460] QuadrantsWarning
+While compiling `kernel_fit_tractions_c948_4`, File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/traction_original_point_candidate_v10.py", line 141, in kernel_fit_tractions:
+                is_valid = qd.simt.subgroup.all_true(is_valid)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: u1 <- i32
+[32m.[0m[Genesis 00:23:01] Exiting Genesis and caching compiled kernels...
+[Genesis 00:23:01] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:23:01] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:23:18] Exiting Genesis and caching compiled kernels...
+[Genesis 00:23:19] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:23:19] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:23:36] Exiting Genesis and caching compiled kernels...
+[Genesis 00:23:37] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:23:37] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:23:54] Exiting Genesis and caching compiled kernels...
+[Genesis 00:23:55] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:23:55] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:24:12] Exiting Genesis and caching compiled kernels...
+[Genesis 00:24:12] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:24:12] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:24:30] Exiting Genesis and caching compiled kernels...
+[Genesis 00:24:30] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:24:30] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:24:47] Exiting Genesis and caching compiled kernels...
+[Genesis 00:24:48] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:24:48] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:25:05] Exiting Genesis and caching compiled kernels...
+[Genesis 00:25:06] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:25:06] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:25:23] Exiting Genesis and caching compiled kernels...
+
+tests/rigid/test_stress_shared_support.py [Genesis 00:25:24] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:25:24] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[W 10/12/26 00:25:40.481 1938460] QuadrantsWarning
+While compiling `kernel_fit_tractions_c948_5`, File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/traction_original_point_candidate_v10.py", line 141, in kernel_fit_tractions:
+                is_valid = qd.simt.subgroup.all_true(is_valid)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: u1 <- i32
+[32m.[0m[Genesis 00:25:43] Exiting Genesis and caching compiled kernels...
+[Genesis 00:25:44] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:25:44] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:26:01] Exiting Genesis and caching compiled kernels...
+
+tests/rigid/test_stress_shared_lifecycle.py [Genesis 00:26:02] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:26:02] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:26:02] Exiting Genesis and caching compiled kernels...
+[Genesis 00:26:02] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:26:02] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[Genesis 00:26:17] Scene <b23cb14> created.
+[Genesis 00:26:17] Adding <gs.engine.entities.RigidEntity> 'egg_shell_d803370'. idx: 0, morph: <gs.morphs.URDF(file='/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/assets/hollow_egg/level1/egg_shell.urdf')>, material: <gs.materials.Rigid>.
+[Genesis 00:26:17] Building scene <b23cb14>...
+[Genesis 00:26:18] Compiling simulation kernels...
+[Genesis 00:26:19] Building visualizer...
+libEGL warning: failed to open /dev/dri/renderD135: Permission denied
+
+libEGL warning: failed to open /dev/dri/card8: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD134: Permission denied
+
+libEGL warning: failed to open /dev/dri/card7: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD133: Permission denied
+
+libEGL warning: failed to open /dev/dri/card6: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD132: Permission denied
+
+libEGL warning: failed to open /dev/dri/card5: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD131: Permission denied
+
+libEGL warning: failed to open /dev/dri/card4: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD130: Permission denied
+
+libEGL warning: failed to open /dev/dri/card3: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD129: Permission denied
+
+libEGL warning: failed to open /dev/dri/card2: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD128: Permission denied
+
+libEGL warning: failed to open /dev/dri/card1: Permission denied
+
+[Genesis 00:26:19] Software rendering context detected. Shadows and plane reflection not supported. Beware rendering will be extremely slow.
+[W 10/12/26 00:26:19.975 1938460] QuadrantsWarning
+While compiling `ext_arr_to_ndarray_c18_6`, File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/_kernels.py", line 108, in ext_arr_to_ndarray:
+        ndarray[I] = arr[I]
+        ^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: i32 <- i64
+[W 10/12/26 00:26:23.638 1938460] QuadrantsWarning
+While compiling `kernel_commit_intrinsic_contacts_c950_1`, File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/traction_sample_cooperative_candidate_v2.py", line 89, in kernel_commit_intrinsic_contacts:
+                    cone_valid = qd.simt.subgroup.all_true(cone_valid)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: u1 <- i32
+[32m.[0m[Genesis 00:26:26] Exiting Genesis and caching compiled kernels...
+
+tests/rigid/test_stress_compatibility.py [Genesis 00:26:27] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:26:27] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:26:28] Exiting Genesis and caching compiled kernels...
+[Genesis 00:26:29] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:26:29] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:26:30] Exiting Genesis and caching compiled kernels...
+[Genesis 00:26:31] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:26:31] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:26:33] Exiting Genesis and caching compiled kernels...
+[Genesis 00:26:34] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:26:34] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[32m.[0m[Genesis 00:26:39] Exiting Genesis and caching compiled kernels...
+[Genesis 00:26:39] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:26:39] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[Genesis 00:26:39] Scene <7f38291> created.
+[Genesis 00:26:39] Adding <gs.engine.entities.RigidEntity> 'egg_shell_c39ba5b'. idx: 0, morph: <gs.morphs.URDF(file='/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/assets/hollow_egg/level1/egg_shell.urdf')>, material: <gs.materials.Rigid>.
+[Genesis 00:26:39] Building scene <7f38291>...
+[Genesis 00:26:43] Compiling simulation kernels...
+[Genesis 00:27:01] Building visualizer...
+libEGL warning: failed to open /dev/dri/renderD135: Permission denied
+
+libEGL warning: failed to open /dev/dri/card8: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD134: Permission denied
+
+libEGL warning: failed to open /dev/dri/card7: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD133: Permission denied
+
+libEGL warning: failed to open /dev/dri/card6: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD132: Permission denied
+
+libEGL warning: failed to open /dev/dri/card5: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD131: Permission denied
+
+libEGL warning: failed to open /dev/dri/card4: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD130: Permission denied
+
+libEGL warning: failed to open /dev/dri/card3: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD129: Permission denied
+
+libEGL warning: failed to open /dev/dri/card2: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD128: Permission denied
+
+libEGL warning: failed to open /dev/dri/card1: Permission denied
+
+[Genesis 00:27:01] Software rendering context detected. Shadows and plane reflection not supported. Beware rendering will be extremely slow.
+[32m.[0m[Genesis 00:27:02] Exiting Genesis and caching compiled kernels...
+[Genesis 00:27:03] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:27:03] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+[Genesis 00:27:03] Scene <e28c776> created.
+[Genesis 00:27:03] Adding <gs.engine.entities.RigidEntity> 'egg_shell_66a6d5b'. idx: 0, morph: <gs.morphs.URDF(file='/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/assets/hollow_egg/level1/egg_shell.urdf')>, material: <gs.materials.Rigid>.
+[Genesis 00:27:03] Building scene <e28c776>...
+[Genesis 00:27:04] Compiling simulation kernels...
+[Genesis 00:27:05] Building visualizer...
+libEGL warning: failed to open /dev/dri/renderD135: Permission denied
+
+libEGL warning: failed to open /dev/dri/card8: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD134: Permission denied
+
+libEGL warning: failed to open /dev/dri/card7: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD133: Permission denied
+
+libEGL warning: failed to open /dev/dri/card6: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD132: Permission denied
+
+libEGL warning: failed to open /dev/dri/card5: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD131: Permission denied
+
+libEGL warning: failed to open /dev/dri/card4: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD130: Permission denied
+
+libEGL warning: failed to open /dev/dri/card3: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD129: Permission denied
+
+libEGL warning: failed to open /dev/dri/card2: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD128: Permission denied
+
+libEGL warning: failed to open /dev/dri/card1: Permission denied
+
+[Genesis 00:27:05] Software rendering context detected. Shadows and plane reflection not supported. Beware rendering will be extremely slow.
+[32m.[0m[Genesis 00:27:06] Exiting Genesis and caching compiled kernels...
+
+
+[33m=============================== warnings summary ===============================[0m
+../../../../../../data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/_pytest/config/__init__.py:1290
+  /mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/_pytest/config/__init__.py:1290: PytestAssertRewriteWarning: Module already imported so cannot be rewritten; quadrants
+    self._mark_plugins_for_rewrite(hook, disable_autoload)
+
+tests/rigid/test_stress_nonconvex.py: 16 warnings
+tests/rigid/test_stress_sources.py: 8 warnings
+tests/rigid/test_stress_traction.py: 4 warnings
+tests/rigid/test_stress_footprint.py: 12 warnings
+tests/rigid/test_stress_sliding_footprint.py: 12 warnings
+tests/rigid/test_stress_surface_fan.py: 18 warnings
+tests/rigid/test_stress_shared_support.py: 4 warnings
+tests/rigid/test_stress_shared_lifecycle.py: 2 warnings
+tests/rigid/test_stress_compatibility.py: 12 warnings
+  /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                          32 iterations, so the compile time may be extremely long.
+                          You can use a non-static for loop if you want to decrease the compile time.
+                          You can disable this warning by setting qd.init(unrolling_limit=0).
+    for a, b in qd.static(qd.ndrange(6, 6)):
+
+tests/rigid/test_stress_traction.py: 6 warnings
+tests/rigid/test_stress_footprint.py: 12 warnings
+tests/rigid/test_stress_sliding_footprint.py: 12 warnings
+tests/rigid/test_stress_surface_fan.py: 18 warnings
+tests/rigid/test_stress_shared_support.py: 4 warnings
+tests/rigid/test_stress_shared_lifecycle.py: 2 warnings
+tests/rigid/test_stress_compatibility.py: 4 warnings
+  /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/traction_original_point_candidate_v10.py:63: SyntaxWarning: You are unrolling more than
+                          32 iterations, so the compile time may be extremely long.
+                          You can use a non-static for loop if you want to decrease the compile time.
+                          You can disable this warning by setting qd.init(unrolling_limit=0).
+    for a, b in qd.static(qd.ndrange(6, 6)):
+
+tests/rigid/test_stress_traction.py: 6 warnings
+tests/rigid/test_stress_footprint.py: 12 warnings
+tests/rigid/test_stress_sliding_footprint.py: 12 warnings
+tests/rigid/test_stress_surface_fan.py: 18 warnings
+tests/rigid/test_stress_shared_support.py: 4 warnings
+tests/rigid/test_stress_shared_lifecycle.py: 2 warnings
+tests/rigid/test_stress_compatibility.py: 4 warnings
+  /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/traction_original_point_candidate_v10.py:71: SyntaxWarning: You are unrolling more than
+                          32 iterations, so the compile time may be extremely long.
+                          You can use a non-static for loop if you want to decrease the compile time.
+                          You can disable this warning by setting qd.init(unrolling_limit=0).
+    for a, b in qd.static(qd.ndrange(6, 6)):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+============================== slowest durations ===============================
+
+(153 durations < 100s hidden.)
+[33m================= [32m51 passed[0m, [33m[1m205 warnings[0m[33m in 525.60s (0:08:45)[0m[33m =================[0m

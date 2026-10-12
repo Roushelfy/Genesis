@@ -82,7 +82,7 @@ def test_plane_pair_union_preserves_each_wrench_with_destination_friction(tick):
     kernel_resolve_sources(1e-8, epsilon, contacts, sources, model.info, surface.info)
     assert_equal(qd_to_numpy(sources.status, transpose=True), 0)
     kernel_footprint_ports(contacts, sources, footprints, surface.info, paths.info)
-    kernel_surface_fan_profiles(contacts, footprints, tractions, model.info, surface.info, paths.info, info)
+    kernel_surface_fan_profiles(contacts, footprints, tractions, model.info, surface.info, paths.info, info, epsilon)
     kernel_bind_traction_support(contacts, sources, footprints, tractions)
     assert_equal(qd_to_numpy(tractions.support.start, transpose=True), 0)
     assert_equal(qd_to_numpy(tractions.support.end, transpose=True), 2)

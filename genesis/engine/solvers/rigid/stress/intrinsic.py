@@ -162,6 +162,7 @@ class IntrinsicContacts:
                     surface_info,
                     self.paths.info,
                     self.traction_info,
+                    epsilon,
                 )
             else:
                 kernel_anchor_fan_profiles(

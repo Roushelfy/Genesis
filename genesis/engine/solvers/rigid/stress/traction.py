@@ -75,6 +75,16 @@ class StressTractionSupport:
 
 
 @dataclass(frozen=True)
+class StressTractionCircle:
+    """Intrinsic disk charts verified to lie within one actual boundary face."""
+
+    kind: ClassVar[DataKind] = DataKind.SCRATCH
+
+    face: qd.Tensor
+    radius: qd.Tensor
+
+
+@dataclass(frozen=True)
 class StressTractionState:
     kind: ClassVar[DataKind] = DataKind.SCRATCH
 
@@ -96,6 +106,7 @@ class StressTractionState:
     sample_indices: qd.Tensor
     fan_barycentric: qd.Tensor
     fan_coordinate_power: qd.Tensor
+    circle: StressTractionCircle
     support: StressTractionSupport
 
 
@@ -140,6 +151,10 @@ def create_tractions(
         sample_indices=V(dtype=gs.qd_int, shape=(n_samples, n_contacts, n_envs) if packed_samples else ()),
         fan_barycentric=V_VEC(3, dtype=gs.qd_float, shape=(fan_faces, n_contacts, n_envs) if fan_faces else ()),
         fan_coordinate_power=V(dtype=gs.qd_int, shape=()),
+        circle=StressTractionCircle(
+            face=V(dtype=gs.qd_int, shape=shape if fan_faces else ()),
+            radius=V(dtype=gs.qd_float, shape=shape if fan_faces else ()),
+        ),
         support=StressTractionSupport(
             start=V(dtype=gs.qd_int, shape=shape if shared_support else ()),
             end=V(dtype=gs.qd_int, shape=shape if shared_support else ()),
@@ -151,6 +166,7 @@ def create_tractions(
     )
     state.sample_count.fill(0 if packed_samples else n_samples)
     state.fan_coordinate_power.fill(fan_coordinate_power)
+    state.circle.face.fill(-1)
     return state
 
 
@@ -176,15 +192,35 @@ def func_surface_fan_bary(
 ):
     n = traction_info.gauss.shape[0]
     n_quadrature = n * n
-    i_face = i_sample // (3 * n_quadrature)
-    i_fan = (i_sample // n_quadrature) % 3
-    i_q = i_sample % n_quadrature
-    u, v = traction_info.gauss[i_q // n], traction_info.gauss[i_q % n]
+    i_face = 0
+    bary = qd.Vector.zero(gs.qd_float, 3)
     power = traction_state.fan_coordinate_power[None]
-    u, v = u**power, v**power
-    bary = (1.0 - u) * traction_state.fan_barycentric[i_face, i_c, i_b]
-    bary[i_fan] += u * (1.0 - v)
-    bary[(i_fan + 1) % 3] += u * v
+    # Circle samples occupy a disjoint index namespace, without storing a
+    # per-sample geometry cloud or changing the exact profile allocation.
+    circle_start = 3 * traction_info.positions.shape[0]
+    if i_sample >= circle_start:
+        i_face = traction_state.circle.face[i_c, i_b]
+        i_q = i_sample - circle_start
+        u, v = traction_info.gauss[i_q // n], traction_info.gauss[i_q % n]
+        edges = traction_info.face_edges[i_face]
+        normal = traction_info.inward_normals[i_face * n_quadrature]
+        length = edges[0, :].norm()
+        tangent = edges[0, :] / length
+        second = normal.cross(tangent)
+        distance = traction_state.circle.radius[i_c, i_b] * u**power
+        angle = 2.0 * qd.math.pi * v
+        dv = distance * qd.sin(angle) / edges[1, :].dot(second)
+        du = (distance * qd.cos(angle) - edges[1, :].dot(tangent) * dv) / length
+        bary = traction_state.fan_barycentric[i_face, i_c, i_b] + qd.Vector([-du - dv, du, dv])
+    else:
+        i_face = i_sample // (3 * n_quadrature)
+        i_fan = (i_sample // n_quadrature) % 3
+        i_q = i_sample % n_quadrature
+        u, v = traction_info.gauss[i_q // n], traction_info.gauss[i_q % n]
+        u, v = u**power, v**power
+        bary = (1.0 - u) * traction_state.fan_barycentric[i_face, i_c, i_b]
+        bary[i_fan] += u * (1.0 - v)
+        bary[(i_fan + 1) % 3] += u * v
     return i_face, bary
 
 
