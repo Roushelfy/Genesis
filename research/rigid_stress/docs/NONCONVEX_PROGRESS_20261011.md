@@ -4,6 +4,14 @@ This implements the active extension in `NONCONVEX_CONTACT_REQUIREMENTS.md`.
 The previous egg milestone remains complete; native nonconvex acceptance is
 not yet established. The initial branch source is `1d6babf7`.
 
+The [current-source copied scaling checkpoint](NATIVE_COPIED_SCALE_20261012.md)
+records B2048 live31,164.234 valid env-step/s/15.2169 batch-step/s across
+three complete1280-step repetitions,2368 resets each and zero failures or
+overflow. Its B1024 profile identifies22.125 ms surface-fan generation and
+3.174 ms port propagation as the main remaining device costs. A candidate
+face-frontier launch schedule is undergoing56 CPU/56 CUDA regression and
+matched B32/B1024 live tests;no selection or gain is yet claimed.
+
 The [source-prior model checkpoint](NATIVE_SOURCE_PRIORS_20261012.md) preserves
 local source forces under aggregate cancellation and passes24 independent
 CPU/CUDA full-field comparisons, including two0.05 N opposing loads with
