@@ -51,6 +51,7 @@ class FrankaEgg:
         use_gjk_collision: bool | None = None,
         enable_contact_patch: bool | None = None,
         intrinsic_support: str = "contact",
+        cooperative_tractions: bool = True,
     ):
         self.n_envs = n_envs
         self.tick = 0
@@ -102,6 +103,7 @@ class FrankaEgg:
                     contact_model=contact_model,
                     contact_block_size=contact_block_size,
                     intrinsic_support=intrinsic_support,
+                    cooperative_tractions=cooperative_tractions,
                     cooperative_solve=cooperative_solve,
                     method=method,
                     inverse_precision=inverse_precision,

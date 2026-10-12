@@ -4,6 +4,19 @@ This implements the active extension in `NONCONVEX_CONTACT_REQUIREMENTS.md`.
 The previous egg milestone remains complete; native nonconvex acceptance is
 not yet established. The initial branch source is `1d6babf7`.
 
+The latest [native cooperative checkpoint](NATIVE_COOPERATIVE_TRACTIONS_20261012.md)
+qualifies production sample-parallel fit/validation/scatter with canonical
+masked retry:55 CPU/55 CUDA cases and same-GPU current-law B32 live gain
+15.322x across three complete1280-step repetitions, with every environment
+retained and zero numerical failures. Enabled kernel profiling identifies
+fitting as the remaining hotspot. Experimental workspace-dual initial guesses
+add1.1400x matched live gain and pass later432 independent CPU full fields;
+their native selection remains pending. A new CPU/GPU diagnostic prototype
+generates a strict continuous ray for the policy failure without changing
+inputs. General integration/model acceptance, complete large-batch four-scope
+measurements and a measured plateau remain unfinished. Historical sections
+below preserve the source epochs and decisions current at their publication.
+
 Current integration work and the every-step contact diagnoses are recorded in
 [the surface-fan checkpoint](NATIVE_SURFACE_FAN_PROGRESS_20261011.md) and
 [the source/profile checkpoint](NATIVE_SOURCE_PROFILE_PROGRESS_20261011.md),

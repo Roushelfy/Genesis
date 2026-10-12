@@ -174,7 +174,14 @@ class IntrinsicContacts:
             if options.intrinsic_support == "pair_union":
                 kernel_bind_traction_support(self.contacts, self.sources, self.footprints, self.tractions)
             kernel_fit_tractions(
-                self.contacts, self.sources, self.tractions, self.traction_info, epsilon, _TRACTION_FIT_TOLERANCE, 128
+                self.contacts,
+                self.sources,
+                self.tractions,
+                self.traction_info,
+                epsilon,
+                _TRACTION_FIT_TOLERANCE,
+                128,
+                cooperative=options.cooperative_tractions,
             )
             if options.intrinsic_integration == "surface_fan":
                 kernel_refine_failed_disks(
@@ -195,6 +202,7 @@ class IntrinsicContacts:
                     _TRACTION_FIT_TOLERANCE,
                     128,
                     retry_mode=2,
+                    cooperative=options.cooperative_tractions,
                 )
             kernel_certify_continuous_force(self.contacts, self.tractions, surface_info, epsilon, 1e-8)
             kernel_search_wrench_certificate(
@@ -223,6 +231,7 @@ class IntrinsicContacts:
                 self.traction_info,
                 self.packing,
                 self.certificates,
+                cooperative=options.cooperative_tractions,
             )
             kernel_scatter_tractions(
                 self.contacts,
@@ -233,6 +242,7 @@ class IntrinsicContacts:
                 self.traction_info,
                 errno,
                 reset_force=False,
+                cooperative=options.cooperative_tractions,
             )
         kernel_capture_contact_failure(raw_contacts, self.raw_sources, self.failure, errno)
 
@@ -403,8 +413,54 @@ def kernel_load_intrinsic_contacts(
             source_state.has_vertex_ambiguity[i_c, i_b] = raw_sources.has_vertex_ambiguity[i_raw, i_b]
 
 
-@qd.kernel
 def kernel_commit_intrinsic_contacts(
+    i_start: int,
+    epsilon: float,
+    raw_contacts: StressContactState,
+    raw_sources: StressSourceState,
+    contact_state: StressContactState,
+    source_state: StressSourceState,
+    footprint_state: StressFootprintState,
+    traction_state: StressTractionState,
+    traction_info: StressTractionInfo,
+    packing: StressContactPacking,
+    certificates: StressWrenchCertificates,
+    cooperative: bool = True,
+):
+    if cooperative and gs.backend == gs.cuda:
+        from .cooperative_scatter import kernel_commit_intrinsic_contacts as kernel_commit_cooperative
+
+        kernel_commit_cooperative(
+            i_start,
+            epsilon,
+            raw_contacts,
+            raw_sources,
+            contact_state,
+            source_state,
+            footprint_state,
+            traction_state,
+            traction_info,
+            packing,
+            certificates,
+        )
+    else:
+        kernel_commit_intrinsic_contacts_impl(
+            i_start,
+            epsilon,
+            raw_contacts,
+            raw_sources,
+            contact_state,
+            source_state,
+            footprint_state,
+            traction_state,
+            traction_info,
+            packing,
+            certificates,
+        )
+
+
+@qd.kernel
+def kernel_commit_intrinsic_contacts_impl(
     i_start: int,
     epsilon: float,
     raw_contacts: StressContactState,

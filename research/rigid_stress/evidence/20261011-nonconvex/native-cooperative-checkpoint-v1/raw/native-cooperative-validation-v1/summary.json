@@ -1,0 +1,47 @@
+{
+  "profiles": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/native-cooperative-profiles-v2",
+  "same_gpu_uuid": "GPU-5c0d0cca-f892-19d7-d4f3-b68ab73a520b",
+  "law": "intrinsic_surface_fan_q10_squared_coordinates_ports8_adjacent_unfolding_verified_single_face_disks_failed_disk_nine_panel_refinement",
+  "native_tests": {
+    "cpu_pass": 55,
+    "cuda_pass": 55
+  },
+  "quality_environment_states": 3840,
+  "maximum_cross_scheduler_peak_difference_Pa": 1.024163793772459e-06,
+  "maximum_cross_scheduler_peak_budget_fraction": 1.7327605608484805e-07,
+  "maximum_complete_residual_budget_fraction": 0.006442272506942573,
+  "maximum_normalized_original_point_force_error": 6.576967829356389e-09,
+  "maximum_normalized_original_point_moment_error": 2.009059209201813e-09,
+  "stage_wall_ms": {
+    "scalar": {
+      "begin_step": 0.01662226095504593,
+      "association_transform": 0.10226298145425972,
+      "source_capture": 0.02256040861539077,
+      "intrinsic_contact_pipeline": 198.88690716325073,
+      "inertia_relief_centrifugal": 0.03929479971702676,
+      "rhs_reduction": 0.030042244543437846,
+      "linear_solve": 0.1328344391367864,
+      "complete_residual": 0.06244398209673818,
+      "global_peak": 0.08811937259451952,
+      "accept": 0.026667958445614204
+    },
+    "cooperative": {
+      "begin_step": 0.016529191270819865,
+      "association_transform": 0.10187628759013023,
+      "source_capture": 0.02210850470873993,
+      "intrinsic_contact_pipeline": 8.706593132592388,
+      "inertia_relief_centrifugal": 0.03927350444428157,
+      "rhs_reduction": 0.030138629153952934,
+      "linear_solve": 0.13314511379576288,
+      "complete_residual": 0.06280744601099286,
+      "global_peak": 0.08853694234858267,
+      "accept": 0.027432796923676506
+    }
+  },
+  "intrinsic_snapshot_wall_speedup": 22.843252709114722,
+  "note": "Profiling has stage wall timing only: this epoch did not enable QD kernel profiling. Cross-scheduler agreement supplements the independent CPU oracle tests; it is not an independent oracle itself. Actual live/policy/large-batch throughput is separate.",
+  "inputs": {
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/native-cooperative-profiles-v2/scalar/result.json": "5be15c92bfe48a5186a3d16bd819b10e145ec5c6c1e3690f826c1e7ccbe2f792",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/native-cooperative-profiles-v2/cooperative/result.json": "4e2c7ae2473b12c15da2bdcf1058b32fe2fe8c44fdd5528a215bcd43ddfd108a"
+  }
+}
