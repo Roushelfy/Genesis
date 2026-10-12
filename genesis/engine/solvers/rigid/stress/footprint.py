@@ -168,6 +168,7 @@ def create_surface_fan_tractions(
     *,
     coordinate_power: int = 2,
     shared_support: bool = False,
+    surface_fan_frontier: bool = True,
 ) -> StressTractionState:
     """Partition every boundary face about its closest point to the anchor.
 
@@ -187,11 +188,31 @@ def create_surface_fan_tractions(
         fan_faces=n_faces,
         fan_coordinate_power=coordinate_power,
         shared_support=shared_support,
+        surface_fan_frontier=surface_fan_frontier,
+    )
+
+
+def kernel_surface_fan_profiles(
+    contact_state: StressContactState,
+    footprint_state: StressFootprintState,
+    traction_state: StressTractionState,
+    stress_info: StressInfo,
+    surface_info: StressSurfaceInfo,
+    path_info: StressPathInfo,
+    traction_info: StressTractionInfo,
+    epsilon: float,
+):
+    implementation = kernel_surface_fan_profiles_impl
+    if len(traction_state.frontier.indices.shape) == 3:
+        from .surface_frontier import kernel_surface_fan_profiles as implementation
+
+    implementation(
+        contact_state, footprint_state, traction_state, stress_info, surface_info, path_info, traction_info, epsilon
     )
 
 
 @qd.kernel
-def kernel_surface_fan_profiles(
+def kernel_surface_fan_profiles_impl(
     contact_state: StressContactState,
     footprint_state: StressFootprintState,
     traction_state: StressTractionState,

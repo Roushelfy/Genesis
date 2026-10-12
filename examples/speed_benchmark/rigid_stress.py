@@ -317,6 +317,7 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=510000)
     parser.add_argument("--contact-model", choices=("pressure", "intrinsic"), default="pressure")
     parser.add_argument("--intrinsic-support", choices=("contact", "pair_union"), default="contact")
+    parser.add_argument("--dense-surface-fan", action="store_true", help="Compare the full-face fan launch.")
     parser.add_argument("--contact-block-size", type=int, default=16)
     parser.add_argument("--egg-geometry", choices=("urdf", "mesh64"), default="urdf")
     parser.add_argument("--collision-method", choices=("auto", "mpr", "gjk"), default="auto")
@@ -406,6 +407,7 @@ def main() -> None:
         use_gjk_collision={"auto": None, "mpr": False, "gjk": True}[args.collision_method],
         enable_contact_patch={"auto": None, "on": True, "off": False}[args.contact_patch],
         intrinsic_support=args.intrinsic_support,
+        surface_fan_frontier=not args.dense_surface_fan,
         cooperative_tractions=not args.serial_tractions,
         warm_start_tractions=not args.cold_tractions,
     )
@@ -522,6 +524,7 @@ def main() -> None:
             "contact_model": args.contact_model,
             "contact_block_size": args.contact_block_size,
             "intrinsic_support": args.intrinsic_support,
+            "surface_fan_frontier": not args.dense_surface_fan,
             "cooperative_tractions": not args.serial_tractions,
             "warm_start_tractions": not args.cold_tractions,
             "effective_contact_block_size": solver.stress_recovery.links[0].intrinsic.contacts.valid.shape[0]

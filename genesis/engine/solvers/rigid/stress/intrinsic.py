@@ -110,7 +110,13 @@ class IntrinsicContacts:
         self.sources = create_sources(n_chunk, n_envs)
         self.footprints = create_footprints(self.paths.info.positions.shape[0], n_chunk, n_envs)
         self.tractions = (
-            create_surface_fan_tractions(surface_info, n_chunk, n_envs, shared_support=shared_support)
+            create_surface_fan_tractions(
+                surface_info,
+                n_chunk,
+                n_envs,
+                shared_support=shared_support,
+                surface_fan_frontier=options.surface_fan_frontier,
+            )
             if options.intrinsic_integration == "surface_fan"
             else create_anchor_fan_tractions(
                 surface_info, n_chunk, n_envs, compact=True, packed=True, shared_support=shared_support
