@@ -81,7 +81,7 @@ qualification. All environments and resets remain in the accounting.
 | Rigid only |226,884.310|221.567|2,211/2,220/2,217 steps;2,784 resets each|
 | Recovery only |31,356.677|30.622|1,280 steps each;frozen actual snapshot,no resets|
 | Live rigid plus stress |27,796.274|27.145|1,280 steps and1,184 resets each|
-| Policy plus rigid plus stress |Unverified|Unverified|Warmup aborted on contact recovery|
+| Policy plus rigid plus stress |Unverified|Unverified|Timed repetition aborted on contact recovery|
 
 Rates aggregate three repetitions by actual elapsed time, rather than
 averaging individual rates. Rigid's minimum10-second rule extends its
@@ -100,10 +100,14 @@ peak replay difference8.826e-9 Pa and full residual at most1.151e-11 N.
 This is snapshot replay consistency, not a new independent CPU full-field
 comparison at every B1024 step.
 
-Policy warmup preserves failures in32 copied environments, index6 modulo32,
+The policy run preserves failures in32 copied environments, index6 modulo32,
 contact2: sampled wrench separation with continuous feasibility unresolved.
 Its return code1 and complete logs are retained. No valid policy throughput,
-complete policy acceptance or RL training throughput is claimed.
+complete policy acceptance or RL training throughput is claimed. The earlier
+manifest's "warmup aborted" phase wording is corrected by the
+[preserved tick807 input and independent audit](NATIVE_SOURCE_PRIORS_20261012.md);
+its original traceback points into the timed repetition. Archived hashes
+are retained unchanged.
 
 ## Reproduction and limitations
 
