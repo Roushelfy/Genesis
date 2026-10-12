@@ -1,0 +1,8 @@
+{
+  "scope": "Explicit benchmark response to certified physical load failures; every failed step/reset is counted.\n\nThe native feature still raises on invalid loads. This driver checks every completed live/policy step before the\nnext observation. Only35/36continuous physical certificates terminate/reset the affected environment. Numerical,\nsampled-unresolved,geometry,solver and other rigid failures remain fatal. Original forces/radii/friction are untouched.\n",
+  "benchmark_scope": "live",
+  "poststep_errno_check": "Every live/policy step uses a bulk device-to-CPU error read inside timing.",
+  "failed_environment_steps": 0,
+  "events": [],
+  "limitations": "These are explicit physically incompatible episode terminations,not successful stress recoveries. All original loads are attempted first. Native final acceptance/error semantics are unchanged. Driver checks/capture/reset/peer-isolation overhead is included in live/policy timing. Numerical or continuum-unresolved failures cannot be reset by this driver. No grasp-success metric or complete RL training is claimed."
+}

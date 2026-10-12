@@ -4,6 +4,21 @@ This implements the active extension in `NONCONVEX_CONTACT_REQUIREMENTS.md`.
 The previous egg milestone remains complete; native nonconvex acceptance is
 not yet established. The initial branch source is `1d6babf7`.
 
+The [native EPA bound correction](NATIVE_EPA_BOUNDS_20261012.md) resolves the
+wide live producer anomaly: a3.4e-19-m lower/upper excess had returned an
+already deleted interior face. Its comparison now matches the existing EPA
+distance budget. Original-pose detection agrees with an independent convex
+separating-translation oracle in patch-on/off modes; small regressions fail
+on old code and pass after repair. CPU17 low FP64 cases/CUDA18 expanded cases
+and48 independent full fields pass. One additional CPU FP32 depth check
+fails identically before/after and is disclosed without changing acceptance.
+The original varied B4096/623103 live workload now completes three1280-step
+repetitions/4643 resets each with zero failures,42338.077 effective env-step/s.
+This producer correction changes trajectories, so new matched four-scope
+baselines are required. Wider seeds/outcomes/tail evidence and profiling-led
+optimization/plateau remain open; current-step port-seed reuse is under
+isolated evaluation. The goal remains active.
+
 The [shared-feature stability and failed-fan continuation checkpoint](NATIVE_STABILITY_CONTINUATION_20261012.md)
 passes15 CPU/15 CUDA targeted cases and48 independent full fields. It repairs
 the180-Pa shared-edge repeat discrepancy and the wider env645 numerical

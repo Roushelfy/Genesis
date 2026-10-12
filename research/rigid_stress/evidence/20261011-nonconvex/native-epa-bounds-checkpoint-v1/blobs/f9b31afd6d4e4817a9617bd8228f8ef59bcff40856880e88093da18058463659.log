@@ -1,0 +1,29 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0 -- /mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python
+cachedir: .pytest_cache
+rootdir: /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery
+configfile: pyproject.toml
+plugins: anyio-4.15.1, forked-1.7.5, print-1.2.0, timeout-2.4.0, xdist-3.8.0, quadrants-1.3.3, syrupy-6.1.1
+timeout: 1200.0s
+timeout method: signal
+timeout func_only: False
+created: 2/2 workers
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/conftest.py:219: UserWarning: No GPU backend detected (neither NVML nor AMD SMI); multi-GPU support will be disabled.
+  gpu_indices = _get_gpu_indices()
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/conftest.py:219: UserWarning: No GPU backend detected (neither NVML nor AMD SMI); multi-GPU support will be disabled.
+  gpu_indices = _get_gpu_indices()
+2 workers [2 items]
+
+scheduling tests via WorkStealingScheduling
+
+tests/rigid/test_epa_shallow_contact.py::test_shallow_convex_contact_matches_independent_separating_translation[True] 
+tests/rigid/test_epa_shallow_contact.py::test_shallow_convex_contact_matches_independent_separating_translation[False] 
+[gw0][36m [ 50%] [0m[32mPASSED[0m tests/rigid/test_epa_shallow_contact.py::test_shallow_convex_contact_matches_independent_separating_translation[False] 
+[gw1][36m [100%] [0m[32mPASSED[0m tests/rigid/test_epa_shallow_contact.py::test_shallow_convex_contact_matches_independent_separating_translation[True] 
+
+- generated xml file: /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/epa-shallow-regression-v2/cpu/report.xml -
+============================== slowest durations ===============================
+
+(6 durations < 100s hidden.)
+[32m========================= [32m[1m2 passed[0m[32m in 63.48s (0:01:03)[0m[32m =========================[0m
+[I 10/12/26 08:48:41.826 412041] [shell.py:_shell_pop_print@25] Graphical python shell detected, using wrapped sys.stdout

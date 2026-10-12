@@ -1,0 +1,203 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0 -- /mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python
+cachedir: .pytest_cache
+rootdir: /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery
+configfile: pyproject.toml
+plugins: anyio-4.15.1, forked-1.7.5, print-1.2.0, timeout-2.4.0, xdist-3.8.0, quadrants-1.3.3, syrupy-6.1.1
+timeout: 1200.0s
+timeout method: signal
+timeout func_only: False
+created: 2/2 workers
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/conftest.py:219: UserWarning: No GPU backend detected (neither NVML nor AMD SMI); multi-GPU support will be disabled.
+  gpu_indices = _get_gpu_indices()
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/tests/conftest.py:219: UserWarning: No GPU backend detected (neither NVML nor AMD SMI); multi-GPU support will be disabled.
+  gpu_indices = _get_gpu_indices()
+2 workers [2 items]
+
+scheduling tests via WorkStealingScheduling
+
+tests/rigid/test_epa_shallow_contact.py::test_shallow_convex_contact_matches_independent_separating_translation[False] 
+tests/rigid/test_epa_shallow_contact.py::test_shallow_convex_contact_matches_independent_separating_translation[True] 
+[gw1][36m [ 50%] [0m[31mFAILED[0m tests/rigid/test_epa_shallow_contact.py::test_shallow_convex_contact_matches_independent_separating_translation[False] 
+[gw0][36m [100%] [0m[31mFAILED[0m tests/rigid/test_epa_shallow_contact.py::test_shallow_convex_contact_matches_independent_separating_translation[True] 
+
+=================================== FAILURES ===================================
+[31m[1m_ test_shallow_convex_contact_matches_independent_separating_translation[False] _[0m
+[gw1] linux -- Python 3.10.12 /mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python
+
+contact_patch = False
+asset_tmp_path = PosixPath('/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/epa-shallow-regression-v1/cpu/tmp/pytest-of-zhaofeng/pytest-0/popen-gw1/assets0')
+
+    [0m[37m@pytest[39;49;00m.mark.required[90m[39;49;00m
+    [37m@pytest[39;49;00m.mark.precision([33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [37m@pytest[39;49;00m.mark.parametrize([33m"[39;49;00m[33mcontact_patch[39;49;00m[33m"[39;49;00m, ([94mFalse[39;49;00m, [94mTrue[39;49;00m))[90m[39;49;00m
+    [94mdef[39;49;00m[90m [39;49;00m[92mtest_shallow_convex_contact_matches_independent_separating_translation[39;49;00m(contact_patch, asset_tmp_path):[90m[39;49;00m
+        [94mwith[39;49;00m np.load(Path([91m__file__[39;49;00m).with_name([33m"[39;49;00m[33massets[39;49;00m[33m"[39;49;00m) / [33m"[39;49;00m[33mnonconvex_epa_shallow_bound.npz[39;49;00m[33m"[39;49;00m) [94mas[39;49;00m asset:[90m[39;49;00m
+            saved = {key: asset[key].copy() [94mfor[39;49;00m key [95min[39;49;00m asset.files}[90m[39;49;00m
+        mesh = asset_tmp_path / [33m"[39;49;00m[33mconvex_egg.obj[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        trimesh.Trimesh(vertices=saved[[33m"[39;49;00m[33mmesh_vertices[39;49;00m[33m"[39;49;00m], faces=saved[[33m"[39;49;00m[33mmesh_faces[39;49;00m[33m"[39;49;00m], process=[94mFalse[39;49;00m).export([90m[39;49;00m
+            mesh, file_type=[33m"[39;49;00m[33mobj[39;49;00m[33m"[39;49;00m, digits=[94m17[39;49;00m[90m[39;49;00m
+        )[90m[39;49;00m
+        scene = gs.Scene([90m[39;49;00m
+            sim_options=gs.options.SimOptions([90m[39;49;00m
+                gravity=([94m0.0[39;49;00m, [94m0.0[39;49;00m, [94m0.0[39;49;00m),[90m[39;49;00m
+            ),[90m[39;49;00m
+            rigid_options=gs.options.RigidOptions([90m[39;49;00m
+                use_gjk_collision=[94mTrue[39;49;00m,[90m[39;49;00m
+                enable_contact_patch=contact_patch,[90m[39;49;00m
+            ),[90m[39;49;00m
+            show_viewer=[94mFalse[39;49;00m,[90m[39;49;00m
+        )[90m[39;49;00m
+        box = scene.add_entity([90m[39;49;00m
+            morph=gs.morphs.Box([90m[39;49;00m
+                pos=saved[[33m"[39;49;00m[33mbox_positions[39;49;00m[33m"[39;49;00m][[94m0[39;49;00m],[90m[39;49;00m
+                quat=saved[[33m"[39;49;00m[33mbox_quaternions[39;49;00m[33m"[39;49;00m][[94m0[39;49;00m],[90m[39;49;00m
+                size=saved[[33m"[39;49;00m[33mbox_size[39;49;00m[33m"[39;49;00m],[90m[39;49;00m
+                fixed=[94mTrue[39;49;00m,[90m[39;49;00m
+            ),[90m[39;49;00m
+            vis_mode=[33m"[39;49;00m[33mcollision[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+        )[90m[39;49;00m
+        egg = scene.add_entity([90m[39;49;00m
+            morph=gs.morphs.Mesh([90m[39;49;00m
+                file=mesh,[90m[39;49;00m
+                pos=saved[[33m"[39;49;00m[33mmesh_position[39;49;00m[33m"[39;49;00m],[90m[39;49;00m
+                quat=saved[[33m"[39;49;00m[33mmesh_quaternion[39;49;00m[33m"[39;49;00m],[90m[39;49;00m
+                decimate=[94mFalse[39;49;00m,[90m[39;49;00m
+            ),[90m[39;49;00m
+            vis_mode=[33m"[39;49;00m[33mcollision[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+        )[90m[39;49;00m
+        scene.build(n_envs=[94m2[39;49;00m)[90m[39;49;00m
+        box.set_pos(saved[[33m"[39;49;00m[33mbox_positions[39;49;00m[33m"[39;49;00m])[90m[39;49;00m
+        box.set_quat(saved[[33m"[39;49;00m[33mbox_quaternions[39;49;00m[33m"[39;49;00m])[90m[39;49;00m
+        scene.step()[90m[39;49;00m
+        contacts = box.get_contacts(with_entity=egg)[90m[39;49;00m
+        normals = tensor_to_array(contacts[[33m"[39;49;00m[33mnormal[39;49;00m[33m"[39;49;00m])[90m[39;49;00m
+        geoms = tensor_to_array(contacts[[33m"[39;49;00m[33mgeom_a[39;49;00m[33m"[39;49;00m])[90m[39;49;00m
+        valid = tensor_to_array(contacts[[33m"[39;49;00m[33mvalid_mask[39;49;00m[33m"[39;49;00m])[90m[39;49;00m
+        depth = tensor_to_array(contacts[[33m"[39;49;00m[33mpenetration[39;49;00m[33m"[39;49;00m])[90m[39;49;00m
+        [94mfor[39;49;00m environment [95min[39;49;00m [96mrange[39;49;00m([94m2[39;49;00m):[90m[39;49;00m
+            [94massert[39;49;00m valid[environment].any()[90m[39;49;00m
+            direction = normals[environment, valid[environment]][90m[39;49;00m
+            direction = np.where([90m[39;49;00m
+                (geoms[environment, valid[environment]] == box.geom_start)[:, [94mNone[39;49;00m], direction, -direction[90m[39;49;00m
+            )[90m[39;49;00m
+>           [94massert[39;49;00m (direction @ saved[[33m"[39;49;00m[33mreference_normals[39;49;00m[33m"[39;49;00m][environment] > [94m0.99[39;49;00m).all()[90m[39;49;00m
+[1m[31mE           assert np.False_[0m
+[1m[31mE            +  where np.False_ = <built-in method all of numpy.ndarray object at 0x7ae66a51be10>()[0m
+[1m[31mE            +    where <built-in method all of numpy.ndarray object at 0x7ae66a51be10> = (array([[0.00117139, 0.99916953, 0.04072923]]) @ array([ 4.48138428e-04, -9.98408969e-01, -5.63855378e-02])) > 0.99.all[0m
+
+[1m[31mtests/rigid/test_epa_shallow_contact.py[0m:65: AssertionError
+---------------------------- Captured stdout setup -----------------------------
+[Genesis 08:45:10] Running on [AMD EPYC 9454 48-Core Processor] with backend gs.cpu. Device memory: 1510.38 GB.
+[Genesis 08:45:10] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+----------------------------- Captured stdout call -----------------------------
+[Genesis 08:45:12] Scene <2037f4e> created.
+[Genesis 08:45:16] Adding <gs.engine.entities.RigidEntity> 'box_0920e29'. idx: 0, morph: <gs.morphs.Box>, material: <gs.materials.Rigid>.
+[Genesis 08:45:17] Adding <gs.engine.entities.RigidEntity> 'convex_egg_b008a5a'. idx: 1, morph: <gs.morphs.Mesh(file='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/epa-shallow-regression-v1/cpu/tmp/pytest-of-zhaofeng/pytest-0/popen-gw1/assets0/convex_egg.obj')>, material: <gs.materials.Rigid>.
+[Genesis 08:45:17] Building scene <2037f4e>...
+[Genesis 08:45:25] Compiling simulation kernels...
+[Genesis 08:45:46] Building visualizer...
+[Genesis 08:45:54] Software rendering context detected. Shadows and plane reflection not supported. Beware rendering will be extremely slow.
+----------------------------- Captured stderr call -----------------------------
+[W 10/12/26 08:45:20.325 411162] [frontend_ir.cpp:begin_frontend_struct_for_on_external_tensor@1551] qd.loop_config(serialize=True) does not have effect on the struct for. The execution order is not guaranteed.
+[W 10/12/26 08:45:20.334 411162] [frontend_ir.cpp:begin_frontend_struct_for_on_external_tensor@1551] qd.loop_config(serialize=True) does not have effect on the struct for. The execution order is not guaranteed.
+[W 10/12/26 08:45:20.566 411162] [frontend_ir.cpp:begin_frontend_struct_for_on_external_tensor@1551] qd.loop_config(serialize=True) does not have effect on the struct for. The execution order is not guaranteed.
+[W 10/12/26 08:45:20.578 411162] [frontend_ir.cpp:begin_frontend_struct_for_on_external_tensor@1551] qd.loop_config(serialize=True) does not have effect on the struct for. The execution order is not guaranteed.
+[W 10/12/26 08:45:20.631 411162] [frontend_ir.cpp:begin_frontend_struct_for_on_external_tensor@1551] qd.loop_config(serialize=True) does not have effect on the struct for. The execution order is not guaranteed.
+[W 10/12/26 08:45:20.637 411162] [frontend_ir.cpp:begin_frontend_struct_for_on_external_tensor@1551] qd.loop_config(serialize=True) does not have effect on the struct for. The execution order is not guaranteed.
+--------------------------- Captured stdout teardown ---------------------------
+[Genesis 08:45:55] Exiting Genesis and caching compiled kernels...
+[31m[1m_ test_shallow_convex_contact_matches_independent_separating_translation[True] _[0m
+[gw0] linux -- Python 3.10.12 /mnt/data/zhaofeng/venvs/rigid-stress-recovery/bin/python
+
+contact_patch = True
+asset_tmp_path = PosixPath('/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/epa-shallow-regression-v1/cpu/tmp/pytest-of-zhaofeng/pytest-0/popen-gw0/assets0')
+
+    [0m[37m@pytest[39;49;00m.mark.required[90m[39;49;00m
+    [37m@pytest[39;49;00m.mark.precision([33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [37m@pytest[39;49;00m.mark.parametrize([33m"[39;49;00m[33mcontact_patch[39;49;00m[33m"[39;49;00m, ([94mFalse[39;49;00m, [94mTrue[39;49;00m))[90m[39;49;00m
+    [94mdef[39;49;00m[90m [39;49;00m[92mtest_shallow_convex_contact_matches_independent_separating_translation[39;49;00m(contact_patch, asset_tmp_path):[90m[39;49;00m
+        [94mwith[39;49;00m np.load(Path([91m__file__[39;49;00m).with_name([33m"[39;49;00m[33massets[39;49;00m[33m"[39;49;00m) / [33m"[39;49;00m[33mnonconvex_epa_shallow_bound.npz[39;49;00m[33m"[39;49;00m) [94mas[39;49;00m asset:[90m[39;49;00m
+            saved = {key: asset[key].copy() [94mfor[39;49;00m key [95min[39;49;00m asset.files}[90m[39;49;00m
+        mesh = asset_tmp_path / [33m"[39;49;00m[33mconvex_egg.obj[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        trimesh.Trimesh(vertices=saved[[33m"[39;49;00m[33mmesh_vertices[39;49;00m[33m"[39;49;00m], faces=saved[[33m"[39;49;00m[33mmesh_faces[39;49;00m[33m"[39;49;00m], process=[94mFalse[39;49;00m).export([90m[39;49;00m
+            mesh, file_type=[33m"[39;49;00m[33mobj[39;49;00m[33m"[39;49;00m, digits=[94m17[39;49;00m[90m[39;49;00m
+        )[90m[39;49;00m
+        scene = gs.Scene([90m[39;49;00m
+            sim_options=gs.options.SimOptions([90m[39;49;00m
+                gravity=([94m0.0[39;49;00m, [94m0.0[39;49;00m, [94m0.0[39;49;00m),[90m[39;49;00m
+            ),[90m[39;49;00m
+            rigid_options=gs.options.RigidOptions([90m[39;49;00m
+                use_gjk_collision=[94mTrue[39;49;00m,[90m[39;49;00m
+                enable_contact_patch=contact_patch,[90m[39;49;00m
+            ),[90m[39;49;00m
+            show_viewer=[94mFalse[39;49;00m,[90m[39;49;00m
+        )[90m[39;49;00m
+        box = scene.add_entity([90m[39;49;00m
+            morph=gs.morphs.Box([90m[39;49;00m
+                pos=saved[[33m"[39;49;00m[33mbox_positions[39;49;00m[33m"[39;49;00m][[94m0[39;49;00m],[90m[39;49;00m
+                quat=saved[[33m"[39;49;00m[33mbox_quaternions[39;49;00m[33m"[39;49;00m][[94m0[39;49;00m],[90m[39;49;00m
+                size=saved[[33m"[39;49;00m[33mbox_size[39;49;00m[33m"[39;49;00m],[90m[39;49;00m
+                fixed=[94mTrue[39;49;00m,[90m[39;49;00m
+            ),[90m[39;49;00m
+            vis_mode=[33m"[39;49;00m[33mcollision[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+        )[90m[39;49;00m
+        egg = scene.add_entity([90m[39;49;00m
+            morph=gs.morphs.Mesh([90m[39;49;00m
+                file=mesh,[90m[39;49;00m
+                pos=saved[[33m"[39;49;00m[33mmesh_position[39;49;00m[33m"[39;49;00m],[90m[39;49;00m
+                quat=saved[[33m"[39;49;00m[33mmesh_quaternion[39;49;00m[33m"[39;49;00m],[90m[39;49;00m
+                decimate=[94mFalse[39;49;00m,[90m[39;49;00m
+            ),[90m[39;49;00m
+            vis_mode=[33m"[39;49;00m[33mcollision[39;49;00m[33m"[39;49;00m,[90m[39;49;00m
+        )[90m[39;49;00m
+        scene.build(n_envs=[94m2[39;49;00m)[90m[39;49;00m
+        box.set_pos(saved[[33m"[39;49;00m[33mbox_positions[39;49;00m[33m"[39;49;00m])[90m[39;49;00m
+        box.set_quat(saved[[33m"[39;49;00m[33mbox_quaternions[39;49;00m[33m"[39;49;00m])[90m[39;49;00m
+        scene.step()[90m[39;49;00m
+        contacts = box.get_contacts(with_entity=egg)[90m[39;49;00m
+        normals = tensor_to_array(contacts[[33m"[39;49;00m[33mnormal[39;49;00m[33m"[39;49;00m])[90m[39;49;00m
+        geoms = tensor_to_array(contacts[[33m"[39;49;00m[33mgeom_a[39;49;00m[33m"[39;49;00m])[90m[39;49;00m
+        valid = tensor_to_array(contacts[[33m"[39;49;00m[33mvalid_mask[39;49;00m[33m"[39;49;00m])[90m[39;49;00m
+        depth = tensor_to_array(contacts[[33m"[39;49;00m[33mpenetration[39;49;00m[33m"[39;49;00m])[90m[39;49;00m
+        [94mfor[39;49;00m environment [95min[39;49;00m [96mrange[39;49;00m([94m2[39;49;00m):[90m[39;49;00m
+            [94massert[39;49;00m valid[environment].any()[90m[39;49;00m
+            direction = normals[environment, valid[environment]][90m[39;49;00m
+            direction = np.where([90m[39;49;00m
+                (geoms[environment, valid[environment]] == box.geom_start)[:, [94mNone[39;49;00m], direction, -direction[90m[39;49;00m
+            )[90m[39;49;00m
+>           [94massert[39;49;00m (direction @ saved[[33m"[39;49;00m[33mreference_normals[39;49;00m[33m"[39;49;00m][environment] > [94m0.99[39;49;00m).all()[90m[39;49;00m
+[1m[31mE           assert np.False_[0m
+[1m[31mE            +  where np.False_ = <built-in method all of numpy.ndarray object at 0x7a07454f6730>()[0m
+[1m[31mE            +    where <built-in method all of numpy.ndarray object at 0x7a07454f6730> = (array([[0.00117139, 0.99916953, 0.04072923]]) @ array([ 4.48138428e-04, -9.98408969e-01, -5.63855378e-02])) > 0.99.all[0m
+
+[1m[31mtests/rigid/test_epa_shallow_contact.py[0m:65: AssertionError
+---------------------------- Captured stdout setup -----------------------------
+[Genesis 08:45:10] Running on [AMD EPYC 9454 48-Core Processor] with backend gs.cpu. Device memory: 1510.38 GB.
+[Genesis 08:45:10] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+----------------------------- Captured stdout call -----------------------------
+[Genesis 08:45:12] Scene <3362f43> created.
+[Genesis 08:45:16] Adding <gs.engine.entities.RigidEntity> 'box_9524468'. idx: 0, morph: <gs.morphs.Box>, material: <gs.materials.Rigid>.
+[Genesis 08:45:17] Adding <gs.engine.entities.RigidEntity> 'convex_egg_b44ee8b'. idx: 1, morph: <gs.morphs.Mesh(file='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/epa-shallow-regression-v1/cpu/tmp/pytest-of-zhaofeng/pytest-0/popen-gw0/assets0/convex_egg.obj')>, material: <gs.materials.Rigid>.
+[Genesis 08:45:17] Building scene <3362f43>...
+[Genesis 08:45:25] Compiling simulation kernels...
+[Genesis 08:45:50] Building visualizer...
+[Genesis 08:45:56] Software rendering context detected. Shadows and plane reflection not supported. Beware rendering will be extremely slow.
+----------------------------- Captured stderr call -----------------------------
+[W 10/12/26 08:45:20.461 411159] [frontend_ir.cpp:begin_frontend_struct_for_on_external_tensor@1551] qd.loop_config(serialize=True) does not have effect on the struct for. The execution order is not guaranteed.
+[W 10/12/26 08:45:20.471 411159] [frontend_ir.cpp:begin_frontend_struct_for_on_external_tensor@1551] qd.loop_config(serialize=True) does not have effect on the struct for. The execution order is not guaranteed.
+[W 10/12/26 08:45:20.704 411159] [frontend_ir.cpp:begin_frontend_struct_for_on_external_tensor@1551] qd.loop_config(serialize=True) does not have effect on the struct for. The execution order is not guaranteed.
+[W 10/12/26 08:45:20.716 411159] [frontend_ir.cpp:begin_frontend_struct_for_on_external_tensor@1551] qd.loop_config(serialize=True) does not have effect on the struct for. The execution order is not guaranteed.
+[W 10/12/26 08:45:20.768 411159] [frontend_ir.cpp:begin_frontend_struct_for_on_external_tensor@1551] qd.loop_config(serialize=True) does not have effect on the struct for. The execution order is not guaranteed.
+[W 10/12/26 08:45:20.774 411159] [frontend_ir.cpp:begin_frontend_struct_for_on_external_tensor@1551] qd.loop_config(serialize=True) does not have effect on the struct for. The execution order is not guaranteed.
+--------------------------- Captured stdout teardown ---------------------------
+[Genesis 08:45:58] Exiting Genesis and caching compiled kernels...
+- generated xml file: /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/epa-shallow-regression-v1/cpu/report.xml -
+================================= Failed tests =================================
+tests/rigid/test_epa_shallow_contact.py::test_shallow_convex_contact_matches_...
+tests/rigid/test_epa_shallow_contact.py::test_shallow_convex_contact_matches_...
+============================== slowest durations ===============================
+
+(6 durations < 100s hidden.)
+[31m========================= [31m[1m2 failed[0m[31m in 63.28s (0:01:03)[0m[31m =========================[0m
+[I 10/12/26 08:44:50.614 411143] [shell.py:_shell_pop_print@25] Graphical python shell detected, using wrapped sys.stdout

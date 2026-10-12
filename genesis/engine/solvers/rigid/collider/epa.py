@@ -981,7 +981,9 @@ def func_safe_epa(
                 lower2 = face_dist2
                 nearest_i_f = i_f
 
-        if lower2 > upper2 or nearest_i_f == -1:
+        # Face admission already allows the distance tolerance. A one-ulp excess here must retain that active
+        # face, rather than return the previous nearest face, which the last horizon may have deleted.
+        if lower2 > upper2 + tolerance * (2.0 * upper + tolerance) or nearest_i_f == -1:
             # Invalid face found, stop the algorithm (lower bound of depth is larger than upper bound)
             nearest_i_f = prev_nearest_i_f
             break
