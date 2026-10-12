@@ -6,14 +6,22 @@ import pytest
 from scipy.spatial.transform import Rotation
 
 import genesis as gs
-from genesis.engine.solvers.rigid.stress.compatibility import kernel_certify_continuous_force
+from genesis.engine.solvers.rigid.stress.compatibility import (
+    create_wrench_search,
+    kernel_certify_continuous_force,
+    kernel_certify_continuous_wrench,
+    kernel_search_wrench_certificate,
+)
 from genesis.engine.solvers.rigid.stress.contact import create_contacts
 from genesis.engine.solvers.rigid.stress.footprint import (
     create_anchor_fan_tractions,
     create_footprints,
+    create_surface_fan_tractions,
     kernel_anchor_fan_profiles,
     kernel_footprint_ports,
+    kernel_surface_fan_profiles,
 )
+from genesis.engine.solvers.rigid.stress.intrinsic import kernel_bind_traction_support
 from genesis.engine.solvers.rigid.stress.model import StressModel
 from genesis.engine.solvers.rigid.stress.paths import StressSurfacePaths
 from genesis.engine.solvers.rigid.stress.provenance import create_sources, kernel_resolve_sources
@@ -131,6 +139,108 @@ def test_native_continuous_force_certificate_for_import_precision_mismatch():
     # Exact inputs remain unchanged even though a diagnostic certificate exists.
     assert_equal(qd_to_numpy(contacts.force, transpose=True), np.broadcast_to(force, (2, 1, 3)))
     assert_equal(qd_to_numpy(contacts.radius, transpose=True), radius)
+
+
+@pytest.mark.required
+@pytest.mark.precision("64")
+def test_saved_continuous_wrench_certificate_respects_support_budget_and_environment_lifecycle():
+    """The exact step602 component is incompatible; a feasible input and release must never inherit its certificate."""
+    with np.load(Path(__file__).with_name("assets") / "nonconvex_mesh64_tick602.npz") as saved:
+        anchors, points, forces = (saved[key] for key in ("anchor", "position", "force"))
+        radii, frictions, faces = (saved[key] for key in ("radius", "friction", "anchor_face"))
+    model = StressModel(RigidStressOptions(mesh=ASSETS / "elastic.npz", method="pcg"))
+    surface = StressSurface(10, model.info)
+    paths = StressSurfacePaths(model.info, 8)
+    contacts, sources = create_contacts(2, 3, float(radii[0])), create_sources(2, 3)
+    footprints = create_footprints(paths.info.positions.shape[0], 2, 3)
+    tractions = create_surface_fan_tractions(surface.info, 2, 3, shared_support=True)
+    info, search = create_traction_info(surface.info), create_wrench_search(2, 3, 8)
+    force = np.broadcast_to(forces[:, None], (2, 3, 3)).copy()
+    point = np.broadcast_to(points[:, None], (2, 3, 3)).copy()
+    # This manufactured control is a different declared input: a zero-load
+    # support and one feasible force/free moment at anchor1. It does not change
+    # the production acceptance of the saved original component in env0.
+    force[0, 1], force[1, 1] = 0.0, forces.sum(axis=0)
+    point[1, 1] = anchors[1]
+    free_moment = np.zeros((2, 3, 3))
+    free_moment[1, 1] = np.cross(points - anchors[1], forces).sum(axis=0)
+    anchor_moment = free_moment + np.cross(point - anchors[:, None], force)
+    contacts.valid.from_numpy(np.array([[True, True, False], [True, True, False]]))
+    contacts.center.from_numpy(np.broadcast_to(anchors[:, None], (2, 3, 3)).copy())
+    contacts.position.from_numpy(point)
+    contacts.force.from_numpy(force)
+    contacts.radius.from_numpy(np.broadcast_to(radii[:, None], (2, 3)).copy())
+    contacts.friction.from_numpy(np.broadcast_to(frictions[:, None], (2, 3)).copy())
+    contacts.anchor_face.from_numpy(np.broadcast_to(faces[:, None], (2, 3)).copy())
+    sources.status.fill(0)
+    sources.geom.fill(24)
+    sources.pair.fill(22)
+    sources.free_moment.from_numpy(free_moment)
+    sources.anchor_moment.from_numpy(anchor_moment)
+    epsilon = float(np.finfo(gs.np_float).eps)
+    kernel_footprint_ports(contacts, sources, footprints, surface.info, paths.info)
+    kernel_surface_fan_profiles(contacts, footprints, tractions, model.info, surface.info, paths.info, info)
+    kernel_bind_traction_support(contacts, sources, footprints, tractions)
+    kernel_fit_tractions(contacts, sources, tractions, info, epsilon, 9e-9, 128)
+    statuses = qd_to_numpy(tractions.status, transpose=True, copy=True)
+    assert statuses[0, 1] in (StressTractionStatus.NUMERICAL_FAILURE, StressTractionStatus.SAMPLED_WRENCH_INFEASIBLE)
+    assert_equal(statuses[0, 0], StressTractionStatus.SUCCESS)
+    assert_equal(statuses[1:], StressTractionStatus.SUCCESS)
+    kernel_certify_continuous_force(contacts, tractions, surface.info, epsilon, 1e-8)
+    assert qd_to_numpy(tractions.status, transpose=True)[0, 1] != StressTractionStatus.CONTINUOUS_FORCE_INFEASIBLE
+    kernel_search_wrench_certificate(contacts, sources, tractions, search, info, epsilon, 1e-8)
+    assert_equal(qd_to_numpy(tractions.status, transpose=True)[0, 1], StressTractionStatus.SAMPLED_WRENCH_INFEASIBLE)
+    # Bounded geometry work must never turn an unfinished proof into a physical diagnosis.
+    kernel_certify_continuous_wrench(contacts, sources, tractions, search, surface.info, epsilon, 2, 16384, 1e-8)
+    assert_equal(qd_to_numpy(tractions.status, transpose=True)[0, 1], StressTractionStatus.SAMPLED_WRENCH_INFEASIBLE)
+    kernel_certify_continuous_wrench(contacts, sources, tractions, search, surface.info, epsilon, 8, 1, 1e-8)
+    assert_equal(qd_to_numpy(tractions.status, transpose=True)[0, 1], StressTractionStatus.SAMPLED_WRENCH_INFEASIBLE)
+    kernel_certify_continuous_wrench(contacts, sources, tractions, search, surface.info, epsilon, 8, 16384, 1e-8)
+    assert_equal(
+        qd_to_numpy(tractions.status, transpose=True)[0], [0, StressTractionStatus.CONTINUOUS_WRENCH_INFEASIBLE]
+    )
+    assert_equal(qd_to_numpy(tractions.status, transpose=True)[1:], 0)
+    ray = qd_to_numpy(tractions.certificate, transpose=True, copy=True)[0, 1]
+    assert_allclose(np.linalg.norm(ray), 1.0, rtol=0.0, atol=1e-14)
+    assert np.linalg.norm(ray[3:]) > 0.1
+    assert qd_to_numpy(search.bound, transpose=True)[0, 1] < -1e-4
+    assert qd_to_numpy(search.visited, transpose=True)[0, 1] > 0
+    scale = max(np.linalg.norm(forces[1]), np.linalg.norm(anchor_moment[1, 0]) / radii[1])
+    target = np.concatenate((forces[1], anchor_moment[1, 0] / radii[1])) / scale
+    margin = target @ ray
+    assert margin > 1e-3
+    assert margin >= qd_to_numpy(tractions.certificate_margin, transpose=True)[0, 1]
+    assert_equal(qd_to_numpy(tractions.certificate, transpose=True)[1:], 0.0)
+    assert_equal(qd_to_numpy(contacts.force, transpose=True), force.swapaxes(0, 1))
+    assert_equal(qd_to_numpy(contacts.position, transpose=True), point.swapaxes(0, 1))
+    assert_equal(qd_to_numpy(contacts.radius, transpose=True), np.broadcast_to(radii, (3, 2)))
+    # A stale certificate margin cannot override the final original-point
+    # error budget when the declared target changes towards a feasible input.
+    feasible_force = forces.sum(axis=0)
+    feasible_moment = np.cross(points - anchors[1], forces).sum(axis=0)
+    feasible_target = np.concatenate((feasible_force, feasible_moment / radii[1]))
+    incompatible_target = np.concatenate((forces[1], anchor_moment[1, 0] / radii[1]))
+    feasible_dot, incompatible_dot = feasible_target @ ray, incompatible_target @ ray
+    assert feasible_dot < 0.0 < incompatible_dot
+    fraction = -feasible_dot / (incompatible_dot - feasible_dot) + 1e-10
+    force[1, 0] = (1 - fraction) * feasible_force + fraction * forces[1]
+    anchor_moment[1, 0] = (1 - fraction) * feasible_moment + fraction * anchor_moment[1, 0]
+    free_moment[1, 0] = anchor_moment[1, 0] - np.cross(point[1, 0] - anchors[1], force[1, 0])
+    contacts.force.from_numpy(force)
+    sources.anchor_moment.from_numpy(anchor_moment)
+    sources.free_moment.from_numpy(free_moment)
+    tractions.status.from_numpy(np.array([[0, 0, 0], [StressTractionStatus.SAMPLED_WRENCH_INFEASIBLE, 0, 0]]))
+    tractions.certificate_margin.fill(1.0)
+    kernel_certify_continuous_wrench(contacts, sources, tractions, search, surface.info, epsilon, 8, 16384, 1e-8)
+    assert_equal(qd_to_numpy(tractions.status, transpose=True)[0, 1], StressTractionStatus.SAMPLED_WRENCH_INFEASIBLE)
+    # Releasing only env0 clears its diagnostic; other environments remain independent.
+    contacts.valid.from_numpy(np.array([[False, True, False], [False, True, False]]))
+    kernel_fit_tractions(contacts, sources, tractions, info, epsilon, 9e-9, 128)
+    kernel_search_wrench_certificate(contacts, sources, tractions, search, info, epsilon, 1e-8)
+    kernel_certify_continuous_wrench(contacts, sources, tractions, search, surface.info, epsilon, 8, 16384, 1e-8)
+    assert_equal(qd_to_numpy(tractions.status, transpose=True), 0)
+    assert_equal(qd_to_numpy(tractions.certificate, transpose=True), 0.0)
+    assert_equal(qd_to_numpy(tractions.certificate_margin, transpose=True), 0.0)
 
 
 @pytest.mark.required
