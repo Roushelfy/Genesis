@@ -80,7 +80,6 @@ def func_dual_warp(
     return energy, target - resultant, hessian
 
 
-@qd.kernel
 def kernel_fit_tractions(
     contact_state: StressContactState,
     source_state: StressSourceState,
@@ -89,7 +88,33 @@ def kernel_fit_tractions(
     epsilon: float,
     fit_tolerance: float,
     max_evaluations: int,
+    warm_start: bool = True,
+    is_retry: bool = False,
+):
+    kernel_fit_tractions_impl(
+        contact_state,
+        source_state,
+        traction_state,
+        traction_info,
+        epsilon,
+        fit_tolerance,
+        max_evaluations,
+        warm_start,
+        is_retry,
+    )
+
+
+@qd.kernel
+def kernel_fit_tractions_impl(
+    contact_state: StressContactState,
+    source_state: StressSourceState,
+    traction_state: StressTractionState,
+    traction_info: StressTractionInfo,
+    epsilon: float,
+    fit_tolerance: float,
+    max_evaluations: int,
     warm_start: qd.template(),
+    is_retry: qd.template(),
 ):
     lanes = qd.static(32 if gs.backend == gs.cuda else 1)
     qd.loop_config(block_dim=128)
@@ -97,6 +122,11 @@ def kernel_fit_tractions(
         lane = i_thread % lanes
         pair = i_thread // lanes
         i_c, i_b = pair // contact_state.valid.shape[1], pair % contact_state.valid.shape[1]
+        should_fit, prior_evaluations = True, 0
+        if qd.static(is_retry):
+            should_fit = traction_state.status[i_c, i_b] == StressTractionStatus.NUMERICAL_FAILURE
+            should_fit = should_fit or traction_state.status[i_c, i_b] == StressTractionStatus.SAMPLED_WRENCH_INFEASIBLE
+            prior_evaluations = traction_state.evaluations[i_c, i_b]
         status = gs.qd_int(StressTractionStatus.SUCCESS)
         current = qd.Vector.zero(gs.qd_float, 6)
         if qd.static(warm_start):  # noqa: SIM102 — keep the cold specialization free of workspace reads.
@@ -111,7 +141,7 @@ def kernel_fit_tractions(
         evaluations = 0
         certificate = qd.Vector.zero(gs.qd_float, 6)
         certificate_margin = gs.qd_float(0.0)
-        if contact_state.valid[i_c, i_b] and func_traction_constraint_active(i_c, i_b, traction_state):
+        if should_fit and contact_state.valid[i_c, i_b] and func_traction_constraint_active(i_c, i_b, traction_state):
             anchor = contact_state.center[i_c, i_b]
             radius, friction = contact_state.radius[i_c, i_b], contact_state.friction[i_c, i_b]
             force, moment = contact_state.force[i_c, i_b], source_state.anchor_moment[i_c, i_b]
@@ -275,13 +305,13 @@ def kernel_fit_tractions(
                         if polar_max < -64.0 * epsilon and margin > fit_tolerance:
                             status = StressTractionStatus.SAMPLED_WRENCH_INFEASIBLE
                             certificate, certificate_margin = ray, margin
-        if lane == 0:
+        if lane == 0 and should_fit:
             traction_state.dual[i_c, i_b] = current
             traction_state.weight_sum[i_c, i_b] = weight_sum
             traction_state.scale[i_c, i_b] = scale
             traction_state.status[i_c, i_b] = status
             traction_state.force_error[i_c, i_b] = force_error
             traction_state.moment_error[i_c, i_b] = moment_error
-            traction_state.evaluations[i_c, i_b] = evaluations
+            traction_state.evaluations[i_c, i_b] = prior_evaluations + evaluations
             traction_state.certificate[i_c, i_b] = certificate
             traction_state.certificate_margin[i_c, i_b] = certificate_margin

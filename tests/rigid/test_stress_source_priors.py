@@ -6,6 +6,7 @@ from scipy.optimize import minimize, root
 from scipy.sparse.linalg import splu
 
 import genesis as gs
+from genesis.engine.solvers.rigid.stress import cooperative_fit
 from genesis.engine.solvers.rigid.stress.contact import create_contacts
 from genesis.engine.solvers.rigid.stress.fan_refinement import kernel_refine_failed_fans, kernel_select_failed_fans
 from genesis.engine.solvers.rigid.stress.footprint import (
@@ -221,6 +222,23 @@ def test_body_source_prior_wrench_cones_full_fields_and_gauge_rows(case, record_
     if case in ("varied2048", "varied4096"):
         assert qd_to_numpy(tractions.fan_refined, transpose=True)[0, 0]
     assert_equal(qd_to_numpy(tractions.status, transpose=True), 0)
+    fitted = (
+        tractions.dual,
+        tractions.weight_sum,
+        tractions.scale,
+        tractions.status,
+        tractions.force_error,
+        tractions.moment_error,
+        tractions.evaluations,
+        tractions.certificate,
+        tractions.certificate_margin,
+    )
+    snapshots = tuple(qd_to_numpy(value, transpose=True, copy=True) for value in fitted)
+    cooperative_fit.kernel_fit_tractions(
+        contacts, sources, tractions, info, epsilon, 9e-9, 128, warm_start=False, is_retry=True
+    )
+    for value, expected in zip(fitted, snapshots):
+        assert_equal(qd_to_numpy(value, transpose=True), expected)
     assert_equal(qd_to_numpy(contacts.valid, transpose=True), True)
     assert_equal(qd_to_numpy(contacts.position, transpose=True), np.repeat(points[None], n_envs, axis=0))
     samples = create_traction_samples(tractions)
