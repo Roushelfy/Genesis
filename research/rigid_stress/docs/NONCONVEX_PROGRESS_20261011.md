@@ -41,6 +41,17 @@ native scalar retry passes 52 CPU/52 CUDA cases with unchanged final acceptance;
 matched four-scope timing on one GPU is underway. Scheduling selection and
 larger four-scope measurements remain unfinished.
 
+The [finite-disk refinement checkpoint](NATIVE_DISK_REFINEMENT_20261012.md)
+now adds native nine-panel retries for legal near-boundary centroids and normal
+torques, with 54 CPU/54 CUDA regressions under unchanged final budgets.
+The preceding circle-law matched comparison is closed: repeated B32 live rates
+are about197 versus2642 env-step/s, while **both policy variants fail** and have
+no valid complete policy rate. A preserved first-failure fixture at tick876,
+environment24 has sampled infeasibility but no established continuous
+incompatibility. General integration repair, native scheduling selection and
+large-batch acceptance remain open; older pending descriptions above refer to
+their immutable checkpoint epochs.
+
 ## Required evidence and current work
 
 | Requirement | Evidence to deliver | Status |

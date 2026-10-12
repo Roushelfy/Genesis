@@ -82,6 +82,8 @@ class StressTractionCircle:
 
     face: qd.Tensor
     radius: qd.Tensor
+    refined: qd.Tensor
+    focus: qd.Tensor
 
 
 @dataclass(frozen=True)
@@ -154,6 +156,8 @@ def create_tractions(
         circle=StressTractionCircle(
             face=V(dtype=gs.qd_int, shape=shape if fan_faces else ()),
             radius=V(dtype=gs.qd_float, shape=shape if fan_faces else ()),
+            refined=V(dtype=gs.qd_bool, shape=shape if fan_faces else ()),
+            focus=V_VEC(2, dtype=gs.qd_float, shape=shape if fan_faces else ()),
         ),
         support=StressTractionSupport(
             start=V(dtype=gs.qd_int, shape=shape if shared_support else ()),
@@ -167,6 +171,8 @@ def create_tractions(
     state.sample_count.fill(0 if packed_samples else n_samples)
     state.fan_coordinate_power.fill(fan_coordinate_power)
     state.circle.face.fill(-1)
+    state.circle.refined.fill(False)
+    state.circle.focus.fill(0.0)
     return state
 
 
@@ -187,6 +193,33 @@ def func_traction_source_friction(i_s: int, i_b: int, friction: float, traction_
 
 
 @qd.func
+def func_circle_panel(
+    i_q: int, i_c: int, i_b: int, traction_state: StressTractionState, traction_info: StressTractionInfo
+):
+    """Return disk coordinates and area Jacobian for a partition adapted to the required compression centroid."""
+    fraction, theta = traction_state.circle.focus[i_c, i_b][0], traction_state.circle.focus[i_c, i_b][1]
+    half_width = qd.min(0.5 * qd.math.pi, qd.sqrt(8.0 * (1.0 - fraction)))
+    radial_edges = qd.Vector(
+        [
+            0.0,
+            qd.max(0.25 * (1.0 - fraction), fraction - 8.0 * (1.0 - fraction)),
+            0.5 * (1.0 + fraction),
+            1.0,
+        ]
+    )
+    angular_edges = qd.Vector([theta - qd.math.pi, theta - half_width, theta + half_width, theta + qd.math.pi])
+    n = traction_info.gauss.shape[0]
+    panel, local = i_q // (n * n), i_q % (n * n)
+    i_r, i_t = panel // 3, panel % 3
+    u, v = traction_info.gauss[local // n], traction_info.gauss[local % n]
+    width_r = radial_edges[i_r + 1] - radial_edges[i_r]
+    width_t = angular_edges[i_t + 1] - angular_edges[i_t]
+    distance = radial_edges[i_r] + width_r * u
+    angle = angular_edges[i_t] + width_t * v
+    return distance, angle, width_r * width_t
+
+
+@qd.func
 def func_surface_fan_bary(
     i_sample: int, i_c: int, i_b: int, traction_state: StressTractionState, traction_info: StressTractionInfo
 ):
@@ -201,14 +234,19 @@ def func_surface_fan_bary(
     if i_sample >= circle_start:
         i_face = traction_state.circle.face[i_c, i_b]
         i_q = i_sample - circle_start
-        u, v = traction_info.gauss[i_q // n], traction_info.gauss[i_q % n]
         edges = traction_info.face_edges[i_face]
         normal = traction_info.inward_normals[i_face * n_quadrature]
         length = edges[0, :].norm()
         tangent = edges[0, :] / length
         second = normal.cross(tangent)
-        distance = traction_state.circle.radius[i_c, i_b] * u**power
-        angle = 2.0 * qd.math.pi * v
+        distance, angle = gs.qd_float(0.0), gs.qd_float(0.0)
+        if traction_state.circle.refined[i_c, i_b]:
+            distance, angle, _ = func_circle_panel(i_q, i_c, i_b, traction_state, traction_info)
+            distance *= traction_state.circle.radius[i_c, i_b]
+        else:
+            u, v = traction_info.gauss[i_q // n], traction_info.gauss[i_q % n]
+            distance = traction_state.circle.radius[i_c, i_b] * u**power
+            angle = 2.0 * qd.math.pi * v
         dv = distance * qd.sin(angle) / edges[1, :].dot(second)
         du = (distance * qd.cos(angle) - edges[1, :].dot(tangent) * dv) / length
         bary = traction_state.fan_barycentric[i_face, i_c, i_b] + qd.Vector([-du - dv, du, dv])
@@ -459,7 +497,6 @@ def func_traction_direction(matrix: qd.types.matrix(6, 6), gradient: qd.types.ve
     return direction, is_valid
 
 
-@qd.kernel
 def kernel_fit_tractions(
     contact_state: StressContactState,
     source_state: StressSourceState,
@@ -468,18 +505,48 @@ def kernel_fit_tractions(
     epsilon: float,
     fit_tolerance: float,
     max_evaluations: int,
+    retry_mode: int = 0,
+):
+    """Fit all supplied tractions or retry only unresolved contacts using the same native numerical path.
+
+    Retry mode zero fits all contacts; one retries numerical or sampled failures; two retries refined disk
+    failures. Retry counts include previous evaluations, and already successful contacts retain their state.
+    """
+    kernel_fit_tractions_impl(
+        contact_state, source_state, traction_state, traction_info, epsilon, fit_tolerance, max_evaluations, retry_mode
+    )
+
+
+@qd.kernel
+def kernel_fit_tractions_impl(
+    contact_state: StressContactState,
+    source_state: StressSourceState,
+    traction_state: StressTractionState,
+    traction_info: StressTractionInfo,
+    epsilon: float,
+    fit_tolerance: float,
+    max_evaluations: int,
+    retry_mode: qd.template(),
 ):
     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
-        traction_state.dual[i_c, i_b] = qd.Vector.zero(gs.qd_float, 6)
-        traction_state.weight_sum[i_c, i_b] = 0.0
-        traction_state.scale[i_c, i_b] = 0.0
-        traction_state.status[i_c, i_b] = StressTractionStatus.SUCCESS
-        traction_state.force_error[i_c, i_b] = 0.0
-        traction_state.moment_error[i_c, i_b] = 0.0
-        traction_state.evaluations[i_c, i_b] = 0
-        traction_state.certificate[i_c, i_b] = qd.Vector.zero(gs.qd_float, 6)
-        traction_state.certificate_margin[i_c, i_b] = 0.0
-        if contact_state.valid[i_c, i_b]:
+        should_fit, prior_evaluations = True, 0
+        if qd.static(retry_mode > 0):
+            should_fit = traction_state.status[i_c, i_b] == StressTractionStatus.NUMERICAL_FAILURE
+            should_fit = should_fit or traction_state.status[i_c, i_b] == StressTractionStatus.SAMPLED_WRENCH_INFEASIBLE
+            prior_evaluations = traction_state.evaluations[i_c, i_b]
+        if qd.static(retry_mode == 2):
+            should_fit = should_fit and traction_state.circle.refined[i_c, i_b]
+        if should_fit:
+            traction_state.dual[i_c, i_b] = qd.Vector.zero(gs.qd_float, 6)
+            traction_state.weight_sum[i_c, i_b] = 0.0
+            traction_state.scale[i_c, i_b] = 0.0
+            traction_state.status[i_c, i_b] = StressTractionStatus.SUCCESS
+            traction_state.force_error[i_c, i_b] = 0.0
+            traction_state.moment_error[i_c, i_b] = 0.0
+            traction_state.evaluations[i_c, i_b] = 0
+            traction_state.certificate[i_c, i_b] = qd.Vector.zero(gs.qd_float, 6)
+            traction_state.certificate_margin[i_c, i_b] = 0.0
+        if should_fit and contact_state.valid[i_c, i_b]:
             anchor = contact_state.center[i_c, i_b]
             radius = contact_state.radius[i_c, i_b]
             friction = contact_state.friction[i_c, i_b]
@@ -644,6 +711,8 @@ def kernel_fit_tractions(
                             traction_state.status[i_c, i_b] = StressTractionStatus.SAMPLED_WRENCH_INFEASIBLE
                             traction_state.certificate[i_c, i_b] = ray
                             traction_state.certificate_margin[i_c, i_b] = margin
+        if should_fit:
+            traction_state.evaluations[i_c, i_b] += prior_evaluations
 
 
 @qd.func
