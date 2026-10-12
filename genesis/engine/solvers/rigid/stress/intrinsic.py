@@ -271,6 +271,17 @@ class IntrinsicContacts:
                     retry_mode=3,
                     cooperative=options.cooperative_tractions,
                 )
+                kernel_fit_tractions(
+                    self.contacts,
+                    self.sources,
+                    self.tractions,
+                    self.traction_info,
+                    epsilon,
+                    _TRACTION_FIT_TOLERANCE,
+                    128,
+                    retry_mode=4,
+                    cooperative=options.cooperative_tractions,
+                )
             kernel_certify_continuous_force(self.contacts, self.tractions, surface_info, epsilon, 1e-8)
             kernel_diagnose_wrenches(
                 self.contacts,

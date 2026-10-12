@@ -17,7 +17,7 @@ from genesis.engine.solvers.rigid.stress.footprint import (
 from genesis.engine.solvers.rigid.stress.intrinsic import IntrinsicContacts, kernel_bind_traction_support
 from genesis.engine.solvers.rigid.stress.model import StressModel
 from genesis.engine.solvers.rigid.stress.paths import StressSurfacePaths
-from genesis.engine.solvers.rigid.stress.provenance import create_sources
+from genesis.engine.solvers.rigid.stress.provenance import create_sources, kernel_resolve_sources
 from genesis.engine.solvers.rigid.stress.recovery import kernel_accept, kernel_begin_step, kernel_reset
 from genesis.engine.solvers.rigid.stress.source_priors import (
     kernel_partition_source_priors,
@@ -42,7 +42,9 @@ from tests.rigid.test_stress_shared_support import kernel_shared_traction_querie
 from tests.utils.assertions import assert_allclose, assert_equal
 
 
-def cpu_source_prior_fit(positions, profiles, normals, friction, source, forces, anchor, force, moment, radius, scale):
+def cpu_source_prior_fit(
+    positions, profiles, normals, friction, source, forces, anchor, force, moment, radius, scale, initial=None
+):
     """Independent FP64 convex dual, without native multipliers or recovered forces."""
     totals = np.array([profiles[source == i].sum() for i in range(len(forces))])
     weights = profiles / profiles.sum()
@@ -76,14 +78,33 @@ def cpu_source_prior_fit(positions, profiles, normals, friction, source, forces,
         lambda value: evaluate(value)[1], fitted.x, jac=lambda value: evaluate(value)[2], options={"xtol": 1e-12}
     )
     multiplier = min((fitted.x, corrected.x), key=lambda value: np.linalg.norm(evaluate(value)[1]))
+    if initial is not None and np.linalg.norm(evaluate(multiplier)[1]) > 1e-10:
+        # This independently published SOCP/root initializer carries no native multipliers or forces.
+        root_scale = max(1.0, np.linalg.norm(initial))
+        polished = root(
+            lambda value: evaluate(value * root_scale)[1],
+            initial / root_scale,
+            jac=lambda value: evaluate(value * root_scale)[2] * root_scale,
+            options={"xtol": 1e-12, "maxfev": 2000},
+        )
+        multiplier = min((multiplier, polished.x * root_scale), key=lambda value: np.linalg.norm(evaluate(value)[1]))
     assert np.linalg.norm(evaluate(multiplier)[1]) <= 1e-10
     return evaluate(multiplier)[3]
 
 
 def source_prior_fixture(case, vertices, faces):
     assets = Path(__file__).with_name("assets")
-    if case in ("varied2048", "varied4096"):
-        with np.load(assets / f"nonconvex_{case}_single_source.npz") as saved:
+    if case == "roundoff_edge":
+        with np.load(assets / "nonconvex_shared_edge_roundoff.npz") as saved:
+            anchors, points, forces, radii, friction, anchor_faces = (
+                saved[key][0].copy() for key in ("witness", "point", "force", "radius", "friction", "old_anchor_face")
+            )
+        return anchors, points, forces, radii, friction, anchor_faces, np.cross(points - anchors, forces)
+    if case in ("varied2048", "varied4096", "varied4096_slow"):
+        asset = f"nonconvex_{case}_single_source.npz"
+        if case == "varied4096_slow":
+            asset = "nonconvex_varied4096_slow_fan.npz"
+        with np.load(assets / asset) as saved:
             return tuple(
                 saved[key].copy() for key in ("anchor", "point", "force", "radius", "friction", "anchor_face", "moment")
             )
@@ -126,7 +147,17 @@ def source_prior_fixture(case, vertices, faces):
 @pytest.mark.required
 @pytest.mark.precision("64")
 @pytest.mark.parametrize(
-    "case", ("step602", "policy876", "policy807", "balanced_compression", "varied2048", "varied4096")
+    "case",
+    (
+        "step602",
+        "policy876",
+        "policy807",
+        "balanced_compression",
+        "varied2048",
+        "varied4096",
+        "roundoff_edge",
+        "varied4096_slow",
+    ),
 )
 def test_body_source_prior_wrench_cones_full_fields_and_gauge_rows(case, record_property):
     mesh = Path(__file__).resolve().parents[2] / "examples/rigid/assets/hollow_egg/level1/elastic.npz"
@@ -158,6 +189,15 @@ def test_body_source_prior_wrench_cones_full_fields_and_gauge_rows(case, record_
     sources.anchor_moment.from_numpy(np.repeat(moments[:, None], n_envs, axis=1))
     sources.free_moment.from_numpy(np.repeat((moments - np.cross(points - anchors, forces))[:, None], n_envs, axis=1))
     epsilon = float(np.finfo(gs.np_float).eps)
+    if case == "roundoff_edge":
+        with np.load(Path(__file__).with_name("assets") / "nonconvex_shared_edge_roundoff.npz") as saved:
+            contacts.frame_position.from_numpy(np.repeat(saved["frame_position"][0, None], n_envs, axis=0))
+            sources.uncertainty.from_numpy(np.repeat(saved["uncertainty"][0, :, None], n_envs, axis=1))
+        sources.witness.from_numpy(np.repeat(anchors[:, None], n_envs, axis=1))
+        kernel_resolve_sources(1e-5, epsilon, contacts, sources, model.info, surface.info)
+        assert_equal(qd_to_numpy(sources.status), 0)
+        anchors = qd_to_numpy(contacts.center, transpose=True, copy=True)[0]
+        moments = qd_to_numpy(sources.anchor_moment, transpose=True, copy=True)[0]
     kernel_footprint_ports(contacts, sources, footprints, surface.info, paths.info)
     kernel_surface_fan_profiles(contacts, footprints, tractions, model.info, surface.info, paths.info, info, epsilon)
     kernel_bind_traction_support(contacts, sources, footprints, tractions, body_union=True)
@@ -172,6 +212,9 @@ def test_body_source_prior_wrench_cones_full_fields_and_gauge_rows(case, record_
     )
     kernel_refresh_refined_source_priors(contacts, tractions)
     kernel_fit_tractions(contacts, sources, tractions, info, epsilon, 9e-9, 128, retry_mode=3)
+    if case == "varied4096_slow":
+        assert qd_to_numpy(tractions.status, transpose=True)[0, 0] == 3
+    kernel_fit_tractions(contacts, sources, tractions, info, epsilon, 9e-9, 128, retry_mode=4)
     if case in ("varied2048", "varied4096"):
         assert qd_to_numpy(tractions.fan_refined, transpose=True)[0, 0]
     assert_equal(qd_to_numpy(tractions.status, transpose=True), 0)
@@ -216,8 +259,12 @@ def test_body_source_prior_wrench_cones_full_fields_and_gauge_rows(case, record_
             for cloud, value in zip(clouds, values):
                 cloud.append(value)
         xyz, profiles, normals, basis, sample_faces, actual_force, mu, source = map(np.concatenate, clouds)
+        initial = None
+        if case == "varied4096_slow":
+            with np.load(Path(__file__).with_name("assets") / "nonconvex_varied4096_slow_fan.npz") as saved:
+                initial = saved["oracle_dual"]
         expected = cpu_source_prior_fit(
-            xyz, profiles, normals, mu, source, forces, anchors[0], force, moment, radii[0], scale
+            xyz, profiles, normals, mu, source, forces, anchors[0], force, moment, radii[0], scale, initial
         )
         assert_allclose(actual_force, expected, rtol=1e-4, atol=1e-10)
         np.add.at(
