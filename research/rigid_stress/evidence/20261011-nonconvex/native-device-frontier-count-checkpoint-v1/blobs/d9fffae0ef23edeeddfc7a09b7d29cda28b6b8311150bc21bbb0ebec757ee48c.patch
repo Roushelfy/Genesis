@@ -1,0 +1,226 @@
+diff --git a/examples/speed_benchmark/rigid_stress.py b/examples/speed_benchmark/rigid_stress.py
+index 5d95d977..451828ff 100644
+--- a/examples/speed_benchmark/rigid_stress.py
++++ b/examples/speed_benchmark/rigid_stress.py
+@@ -21,6 +21,7 @@ import torch
+ 
+ import genesis as gs
+ from examples.rigid.franka_egg_stress import FrankaEgg
++from examples.speed_benchmark.rigid_stress_metrics import RolloutMetrics
+ from examples.speed_benchmark.stress_stages import kernel_query, kernel_small_solve, kernel_weights_gram
+ from genesis.engine.solvers.rigid.stress.association import kernel_associate
+ from genesis.engine.solvers.rigid.stress.balance import kernel_balance_contacts
+@@ -382,11 +383,16 @@ def main() -> None:
+     parser.add_argument("--host-reset-indices", action="store_true", help="Compare uncached reset index transfers.")
+     parser.add_argument("--rigid-post-fusion", choices=("auto", "on", "off"), default="auto")
+     parser.add_argument("--trace", action="store_true", help="Export a separate intrusive CUDA/CPU trace pass.")
++    parser.add_argument(
++        "--trajectory-metrics", action="store_true", help="Time device-side grasp outcomes and per-environment work."
++    )
+     parser.add_argument(
+         "--compact-log", action="store_true", help="Keep full per-environment diagnostics in JSON only."
+     )
+     parser.add_argument("--output", type=Path, required=True)
+     args = parser.parse_args()
++    if args.trajectory_metrics and args.scope in ("profile", "recovery"):
++        parser.error("Trajectory metrics require rigid, live, policy or policy-rigid scope.")
+     args.output.parent.mkdir(parents=True, exist_ok=True)
+     gs.init(backend=gs.gpu, precision="64", seed=args.seed, logging_level="warning")
+     start = time.perf_counter()
+@@ -432,6 +438,7 @@ def main() -> None:
+         warm_start_tractions=not args.cold_tractions,
+     )
+     solver = workload.scene.rigid_solver
++    metrics = RolloutMetrics(workload) if args.trajectory_metrics else None
+     if args.save_conditions is not None:
+         workload.save_conditions(args.save_conditions)
+     setup_seconds = time.perf_counter() - start
+@@ -465,6 +472,8 @@ def main() -> None:
+                     policy_error_rad = max(policy_error_rad, 1e-4 * difference)
+                     assert policy_error_rad < 1e-9
+             workload.step(action)
++            if metrics is not None:
++                metrics.record()
+             if tick % 10 == 0:
+                 row = {
+                     "tick": tick,
+@@ -636,6 +645,7 @@ def main() -> None:
+             "setup_seconds": setup_seconds,
+             "warmup_steps": args.warmup,
+             "warmup_quality": quality,
++            "trajectory_metrics": {"warmup": metrics.summary(), "repeats": []} if metrics is not None else None,
+             "policy": {
+                 "layers": [26, 128, 128, 7],
+                 "seed": 99173,
+@@ -662,6 +672,8 @@ def main() -> None:
+             for _ in range(args.repetitions):
+                 if args.scope != "recovery":
+                     workload.restart()
++                if metrics is not None:
++                    metrics.reset()
+                 failure_before = None
+                 scatter_overflow_before = 0
+                 if workload.stress:
+@@ -684,9 +696,13 @@ def main() -> None:
+                             else None
+                         )
+                         workload.step(action)
++                        if metrics is not None:
++                            metrics.record()
+                     steps += 1
+                 qd.sync()
+                 elapsed = time.perf_counter() - start
++                if metrics is not None:
++                    result["trajectory_metrics"]["repeats"].append(metrics.summary())
+                 invalid_environment_steps = 0
+                 failed_per_environment = None
+                 if failure_before is not None:
+diff --git a/genesis/engine/solvers/rigid/collider/epa.py b/genesis/engine/solvers/rigid/collider/epa.py
+index 0c9997a8..8b07d7eb 100644
+--- a/genesis/engine/solvers/rigid/collider/epa.py
++++ b/genesis/engine/solvers/rigid/collider/epa.py
+@@ -981,7 +981,9 @@ def func_safe_epa(
+                 lower2 = face_dist2
+                 nearest_i_f = i_f
+ 
+-        if lower2 > upper2 or nearest_i_f == -1:
++        # Face admission already allows the distance tolerance. A one-ulp excess here must retain that active
++        # face, rather than return the previous nearest face, which the last horizon may have deleted.
++        if lower2 > upper2 + tolerance * (2.0 * upper + tolerance) or nearest_i_f == -1:
+             # Invalid face found, stop the algorithm (lower bound of depth is larger than upper bound)
+             nearest_i_f = prev_nearest_i_f
+             break
+diff --git a/genesis/engine/solvers/rigid/stress/footprint.py b/genesis/engine/solvers/rigid/stress/footprint.py
+index bb42be57..3ec86788 100644
+--- a/genesis/engine/solvers/rigid/stress/footprint.py
++++ b/genesis/engine/solvers/rigid/stress/footprint.py
+@@ -37,16 +37,18 @@ class StressFootprintState:
+     kind: ClassVar[DataKind] = DataKind.SCRATCH
+ 
+     port_distance: qd.Tensor
++    seed_distance: qd.Tensor
+     status: qd.Tensor
+     candidates: qd.Tensor
+     samples: qd.Tensor
+     maximum_distance: qd.Tensor
+ 
+ 
+-def create_footprints(n_ports: int, n_contacts: int, n_envs: int) -> StressFootprintState:
++def create_footprints(n_ports: int, n_contacts: int, n_envs: int, n_face_ports: int | None = None) -> StressFootprintState:
+     shape = (n_contacts, n_envs)
+     return StressFootprintState(
+         port_distance=V(dtype=gs.qd_float, shape=(n_ports, n_contacts, n_envs)),
++        seed_distance=V(dtype=gs.qd_float, shape=(n_face_ports, n_contacts, n_envs) if n_face_ports is not None else ()),
+         status=V(dtype=gs.qd_int, shape=shape),
+         candidates=V(dtype=gs.qd_int, shape=shape),
+         samples=V(dtype=gs.qd_int, shape=shape),
+@@ -79,6 +81,10 @@ def kernel_footprint_ports(
+                 is_valid = radius > 0.0 and radius < qd.math.inf and qd.abs(anchor.sum()) < qd.math.inf
+                 if not is_valid:
+                     footprint_state.status[i_c, i_b] = StressFootprintStatus.INVALID_INPUT
++                elif qd.static(len(footprint_state.seed_distance.shape) == 3):
++                    for i_a in range(path_info.face_ports.shape[1]):
++                        i_first = path_info.face_ports[i_anchor, i_a]
++                        footprint_state.seed_distance[i_a, i_c, i_b] = (path_info.positions[i_first] - anchor).norm()
+     for i_p, i_c, i_b in qd.ndrange(
+         path_info.positions.shape[0], contact_state.valid.shape[0], contact_state.valid.shape[1]
+     ):
+@@ -88,7 +94,12 @@ def kernel_footprint_ports(
+             anchor = contact_state.center[i_c, i_b]
+             for i_a in range(path_info.face_ports.shape[1]):
+                 i_first = path_info.face_ports[i_anchor, i_a]
+-                candidate = (path_info.positions[i_first] - anchor).norm() + path_info.distances[i_first, i_p]
++                seed_distance = gs.qd_float(0.0)
++                if qd.static(len(footprint_state.seed_distance.shape) == 3):
++                    seed_distance = footprint_state.seed_distance[i_a, i_c, i_b]
++                else:
++                    seed_distance = (path_info.positions[i_first] - anchor).norm()
++                candidate = seed_distance + path_info.distances[i_first, i_p]
+                 distance = qd.min(distance, candidate)
+         footprint_state.port_distance[i_p, i_c, i_b] = distance
+ 
+@@ -156,8 +167,10 @@ def func_footprint_point_distance(
+         for i_t in range(path_info.face_ports.shape[1]):
+             i_port = path_info.face_ports[i_face, i_t]
+             candidate = footprint_state.port_distance[i_port, i_c, i_b]
+-            candidate += (target - path_info.positions[i_port]).norm()
+-            distance = qd.min(distance, candidate)
++            # The final segment has nonnegative length, so this lower bound preserves the same minimum.
++            if candidate < distance:
++                candidate += (target - path_info.positions[i_port]).norm()
++                distance = qd.min(distance, candidate)
+     return distance, is_straight
+ 
+ 
+diff --git a/genesis/engine/solvers/rigid/stress/intrinsic.py b/genesis/engine/solvers/rigid/stress/intrinsic.py
+index 219f5020..4c633625 100644
+--- a/genesis/engine/solvers/rigid/stress/intrinsic.py
++++ b/genesis/engine/solvers/rigid/stress/intrinsic.py
+@@ -134,7 +134,9 @@ class IntrinsicContacts:
+             n_chunk, n_envs, options.contact_radius, cooperative=False, cooperative_scatter=False
+         )
+         self.sources = create_sources(n_chunk, n_envs)
+-        self.footprints = create_footprints(self.paths.info.positions.shape[0], n_chunk, n_envs)
++        self.footprints = create_footprints(
++            self.paths.info.positions.shape[0], n_chunk, n_envs, self.paths.info.face_ports.shape[1]
++        )
+         self.tractions = (
+             create_surface_fan_tractions(
+                 surface_info,
+@@ -176,7 +178,7 @@ class IntrinsicContacts:
+         if body_partition and n_work > n_chunk:
+             # Contact count is an input, not a fixed property of a grasp. Grow
+             # the complete workspace before loading; never truncate a body union.
+-            n_chunk = min(raw_contacts.valid.shape[0], max(n_work, 2 * n_chunk))
++            n_chunk = min(raw_contacts.valid.shape[0], n_work)
+             self._allocate_workspace(surface_info, options, n_chunk, raw_contacts.valid.shape[1])
+         stride = 1 if options.intrinsic_support == "pair_union" and not body_partition else n_chunk
+         for i_start in range(0, n_work, stride):
+diff --git a/genesis/engine/solvers/rigid/stress/surface_frontier.py b/genesis/engine/solvers/rigid/stress/surface_frontier.py
+index 289cb8ea..9ab7021f 100644
+--- a/genesis/engine/solvers/rigid/stress/surface_frontier.py
++++ b/genesis/engine/solvers/rigid/stress/surface_frontier.py
+@@ -100,9 +100,13 @@ def kernel_fan_frontier_samples(
+     epsilon: float,
+     frontier: StressFanFrontier,
+     maximum: int,
++    device_maximum: qd.template(),
+ ):
+-    for i_task, i_c, i_b in qd.ndrange(
+-        maximum * 3 * surface_info.gauss.shape[0] ** 2, contact_state.valid.shape[0], contact_state.valid.shape[1]
++    n_tasks = maximum * 3 * surface_info.gauss.shape[0] ** 2
++    if qd.static(device_maximum):
++        n_tasks = frontier.maximum[None] * 3 * surface_info.gauss.shape[0] ** 2
++    for i_c, i_b, i_task in qd.ndrange(
++        contact_state.valid.shape[0], contact_state.valid.shape[1], n_tasks
+     ):
+         n_local = 3 * surface_info.gauss.shape[0] ** 2
+         i_work = i_task // n_local
+@@ -173,10 +177,11 @@ def kernel_fan_frontier_samples(
+             footprint_state.status[i_c, i_b] = StressFootprintStatus.EMPTY_SUPPORT
+ 
+ 
+-def kernel_surface_fan_profiles(contacts, footprints, tractions, model, surface, paths, info, epsilon):
++def kernel_surface_fan_profiles(contacts, footprints, tractions, model, surface, paths, info, epsilon, device_maximum=True):
+     frontier = tractions.frontier
+     kernel_fan_frontier(contacts, footprints, tractions, model, surface, paths, info, epsilon, frontier)
+-    maximum = int(qd_to_numpy(frontier.maximum, transpose=True))
++    maximum = 0 if device_maximum else int(qd_to_numpy(frontier.maximum, transpose=True))
+     kernel_fan_frontier_samples(
+-        contacts, footprints, tractions, model, surface, paths, info, epsilon, frontier, maximum
++        contacts, footprints, tractions, model, surface, paths, info, epsilon, frontier, maximum,
++        device_maximum=device_maximum,
+     )
+diff --git a/tests/rigid/test_stress_source_priors.py b/tests/rigid/test_stress_source_priors.py
+index 6597fc5c..b01a264d 100644
+--- a/tests/rigid/test_stress_source_priors.py
++++ b/tests/rigid/test_stress_source_priors.py
+@@ -170,7 +170,7 @@ def test_body_source_prior_wrench_cones_full_fields_and_gauge_rows(case, record_
+     surface, paths = StressSurface(10, model.info), StressSurfacePaths(model.info, 8)
+     info = create_traction_info(surface.info)
+     contacts, sources = create_contacts(n_sources, n_envs, 0.006), create_sources(n_sources, n_envs)
+-    footprints = create_footprints(paths.info.positions.shape[0], n_sources, n_envs)
++    footprints = create_footprints(paths.info.positions.shape[0], n_sources, n_envs, paths.info.face_ports.shape[1])
+     tractions = create_surface_fan_tractions(surface.info, n_sources, n_envs, shared_support=True, source_priors=True)
+     for name, values in (
+         ("center", anchors),

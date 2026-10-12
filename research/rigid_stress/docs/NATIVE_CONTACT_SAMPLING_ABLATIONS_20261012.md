@@ -54,9 +54,13 @@ Manifest SHA256:
 | Nonnegative port-distance bound | Skip a final Euclidean segment norm whenever its accumulated path already exceeds the best complete distance | [Selected](NATIVE_PORT_BOUNDS_20261012.md):23 CPU/23 CUDA cases,48 recorded fields. With sample-major scheduling, same-GPU live52414.728→54119.673 env-step/s (1.032527971x),zero failures in all three1280-step repeats/2323 resets. |
 | Exact workspace growth | Allocate the actual observed contact requirement when a complete aggregate outgrows its workspace | [Retained for memory](NATIVE_EXACT_CONTACT_CAPACITY_20261012.md):CPU23/CUDA23 pass; same-GPU live ratio0.995473616 provides no speed gain, but native memory drops614,551,552 bytes atB2048. Current pruning/metrics combination passes anotherCUDA23/24 recorded fields and three1280-step live repeats with zero failures. More frequent growth costs remain to be counted at wider batches. |
 | Final traction projection fusion | Reuse final projected traction for original-point wrench, cones and signed P2 scatter | [Selected](NATIVE_FUSED_TRACTION_ACCEPTANCE_20261012.md):CPU23/CUDA23 plus6 cached componentwise cases per backend pass. Matched live57355.126→58219.869 valid env-step/s (1.015076987x),zero failures, with six wrench components/cone validity cached per constraint. |
-| Device frontier count | Remove a per-step host maximum read before fan sampling | Same-GPU snapshot contact wall17.000367→16.861936ms,unchanged snapshot budgets. CUDA tests and matched live evaluation are running. |
+| Device frontier count | Remove a per-step host maximum read before fan sampling | [Not selected](NATIVE_DEVICE_FRONTIER_COUNT_20261012.md):CUDA23/24 independent fields pass; matched live ratio1.001762273 is within repeat scatter. |
+| Contact graphs | Reduce per-kernel dispatch and capture the complete aggregate contact pipeline | [Not selected](NATIVE_CONTACT_GRAPHS_20261012.md):CUDA23/24 independent fields pass. Snapshot gains do not carry into three-repeat changing-contact live:per-kernel graph+fastcache0.972735x,complete graph0.994586x,complete graph+fastcache0.997816x. |
+| Fastcache without graphs | Cache native contact dispatch signatures | [Not selected](NATIVE_CONTACT_FASTCACHE_20261012.md):same-GPU original/fastcache/original live ratio0.998677432 versus pooled originals,zero failures in all9 repeats. |
+| Masked cold cooperative retry | Remove the measured long serial fit tail while retaining complete serial fallback | [Dynamic audit](NATIVE_DYNAMIC_PROFILE_20261012.md) measures0.74–1.49s first serial retries on hard frames. Candidate implementation, CUDA qualification and same-GPU live ablation are running. |
 
-The active goal still needs selected end-to-end benefits, new current-source
-four-scope measurements, wider batches/seeds, timed grasp outcomes, per-environment
-tail work and a measured plateau. No physical mesh/quadrature convergence or
+The active goal still needs wider current-source four-scope batches/seeds,
+dynamic/tail cost profiling, remaining applicable candidates and a measured
+plateau. [B1024 four scopes](NATIVE_MATCHED_SCOPES_20261012.md) now include timed
+grasp outcomes and environment work with a matched condition bank. No physical mesh/quadrature convergence or
 RL training throughput is claimed.
