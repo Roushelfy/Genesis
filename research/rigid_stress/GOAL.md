@@ -39,6 +39,15 @@ capacity follow-up remains unselected. [Current-step position reuse](docs/NATIVE
 passes31 CPU/31 CUDA cases and96 fields, with an isolated1.074361448x live
 gain on counted storage. Combined B2048/B8192 comparison versus production
 full storage and remaining refinement/layout/reuse work are active.
+The [combined storage/tail checkpoint](docs/NATIVE_CONTACT_TAIL_STORAGE_20261012.md)
+now qualifies1.022885722x B2048/1.027915774x separated-seedB8192 with14.116GB
+native savings. Parallel fan sampling qualifies1.017149258x live and160
+additional dynamic fields, reducing hard fan calls to4.3–4.4ms. Cooperative
+refit and scalar sample layout pass their matrices but have only approximately
+0.3% effects within repeat variation and remain unselected. The cleaned
+production combination is locally implemented and under validation; final
+source wider scopes/seed measurements, bottleneck decisions and plateau are
+still pending.
 [Matched B1024 four scopes](docs/NATIVE_MATCHED_SCOPES_20261012.md) include timed
 grasp outcomes, resets and environment work. Contact graphs, fastcache and
 standalone device-frontier maximum have no selected dynamic end-to-end benefit;
