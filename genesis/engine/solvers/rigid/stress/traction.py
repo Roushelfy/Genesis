@@ -506,15 +506,33 @@ def kernel_fit_tractions(
     fit_tolerance: float,
     max_evaluations: int,
     retry_mode: int = 0,
+    cooperative: bool = True,
 ):
     """Fit all supplied tractions or retry only unresolved contacts using the same native numerical path.
 
     Retry mode zero fits all contacts; one retries numerical or sampled failures; two retries refined disk
     failures. Retry counts include previous evaluations, and already successful contacts retain their state.
     """
-    kernel_fit_tractions_impl(
-        contact_state, source_state, traction_state, traction_info, epsilon, fit_tolerance, max_evaluations, retry_mode
-    )
+    if cooperative and gs.backend == gs.cuda and retry_mode == 0:
+        from .cooperative_fit import kernel_fit_tractions as kernel_fit_cooperative
+
+        kernel_fit_cooperative(
+            contact_state, source_state, traction_state, traction_info, epsilon, fit_tolerance, max_evaluations
+        )
+        kernel_fit_tractions_impl(
+            contact_state, source_state, traction_state, traction_info, epsilon, fit_tolerance, max_evaluations, 1
+        )
+    else:
+        kernel_fit_tractions_impl(
+            contact_state,
+            source_state,
+            traction_state,
+            traction_info,
+            epsilon,
+            fit_tolerance,
+            max_evaluations,
+            retry_mode,
+        )
 
 
 @qd.kernel
@@ -758,8 +776,31 @@ def func_source_traction(
     return result
 
 
-@qd.kernel
 def kernel_scatter_tractions(
+    contact_state: StressContactState,
+    traction_state: StressTractionState,
+    state: StressState,
+    stress_info: StressInfo,
+    surface_info: StressSurfaceInfo,
+    traction_info: StressTractionInfo,
+    errno: qd.Tensor,
+    reset_force: bool,
+    cooperative: bool = True,
+):
+    if cooperative and gs.backend == gs.cuda:
+        from .cooperative_scatter import kernel_scatter_tractions as kernel_scatter_cooperative
+
+        kernel_scatter_cooperative(
+            contact_state, traction_state, state, stress_info, surface_info, traction_info, errno, reset_force
+        )
+    else:
+        kernel_scatter_tractions_impl(
+            contact_state, traction_state, state, stress_info, surface_info, traction_info, errno, reset_force
+        )
+
+
+@qd.kernel
+def kernel_scatter_tractions_impl(
     contact_state: StressContactState,
     traction_state: StressTractionState,
     state: StressState,

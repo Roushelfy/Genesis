@@ -32,6 +32,11 @@ class RigidStressOptions(Options):
     ``"anchor_fan"`` rule partitions only the witnessed face and remains an
     explicit integration comparison. Neither rule changes the physical radius.
     Adjacent faces additionally use a verified two-triangle unfolded path.
+    ``cooperative_tractions`` distributes intrinsic fitting, original-contact
+    acceptance and signed scatter across CUDA warp lanes. Unresolved fits use
+    a device-masked retry of the canonical scalar algorithm; CPU retains that
+    scalar route. Disabling this option provides a matched scheduling baseline
+    without changing the load law, sampling or final acceptance budgets.
     ``intrinsic_support="pair_union"`` explicitly partitions each original
     point wrench over the union of all finite witnessed disks from that
     collision geom/pair. Each component retains its original force, point,
@@ -129,6 +134,7 @@ class RigidStressOptions(Options):
     contact_model: Literal["pressure", "intrinsic"] = "pressure"
     intrinsic_integration: Literal["surface_fan", "anchor_fan"] = "surface_fan"
     intrinsic_support: Literal["contact", "pair_union"] = "contact"
+    cooperative_tractions: StrictBool = True
     contact_block_size: PositiveInt = 16
     surface_edge_subdivisions: PositiveInt = 8
     source_projection_limit: PositiveFloat = 1e-4

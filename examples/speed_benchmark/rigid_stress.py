@@ -326,6 +326,7 @@ def main() -> None:
     parser.add_argument("--save-conditions", type=Path, help="Save the constructed condition bank before warmup.")
     parser.add_argument("--serial-solve", action="store_true")
     parser.add_argument("--serial-pressure", action="store_true")
+    parser.add_argument("--serial-tractions", action="store_true")
     parser.add_argument("--serial-scatter", action="store_true")
     parser.add_argument("--serial-balance", action="store_true", help="Compare original rigid inertia relief.")
     parser.add_argument("--contact-wrench-reuse", choices=("auto", "on", "off"), default="auto")
@@ -404,6 +405,7 @@ def main() -> None:
         use_gjk_collision={"auto": None, "mpr": False, "gjk": True}[args.collision_method],
         enable_contact_patch={"auto": None, "on": True, "off": False}[args.contact_patch],
         intrinsic_support=args.intrinsic_support,
+        cooperative_tractions=not args.serial_tractions,
     )
     solver = workload.scene.rigid_solver
     if args.save_conditions is not None:
@@ -518,6 +520,7 @@ def main() -> None:
             "contact_model": args.contact_model,
             "contact_block_size": args.contact_block_size,
             "intrinsic_support": args.intrinsic_support,
+            "cooperative_tractions": not args.serial_tractions,
             "effective_contact_block_size": solver.stress_recovery.links[0].intrinsic.contacts.valid.shape[0]
             if args.contact_model == "intrinsic" and workload.stress
             else args.contact_block_size,
