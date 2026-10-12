@@ -108,16 +108,32 @@ def prepare_recovery_snapshot(workload: FrankaEgg) -> dict:
     np.testing.assert_allclose(point[valid], original_point[valid], rtol=0, atol=1e-13)
     np.testing.assert_allclose(wrench_force[valid], original_wrench_force[valid], rtol=1e-12, atol=1e-13)
     np.testing.assert_allclose(peak, original_peak, rtol=1e-4, atol=1e-3)
-    loaded = valid & (np.linalg.norm(wrench_force, axis=2) > 0)
-    scale = np.linalg.norm(wrench_force[loaded], axis=1)
-    radius = qd_to_numpy(entry.contacts.radius, transpose=True)[loaded]
-    force_error = qd_to_numpy(entry.contacts.force_error, transpose=True)[loaded] / scale
-    moment_error = qd_to_numpy(entry.contacts.moment_error, transpose=True)[loaded] / (radius * scale)
+    conservation = "componentwise"
+    if entry.options.intrinsic_load_partition == "body_source_prior" and entry.intrinsic is not None:
+        conservation = "body_aggregate"
+        active = valid.any(axis=1)
+        first = qd_to_numpy(entry.intrinsic.packing.indices, transpose=True)[active, 0]
+        scale = np.linalg.norm(np.where(valid[:, :, None], wrench_force, 0).sum(axis=1), axis=1)[active]
+        source_scale = qd_to_numpy(entry.intrinsic.tractions.scale, transpose=True)[active, 0]
+        scale = np.where(scale > 0, scale, source_scale)
+        loaded = scale > 0
+        radius = qd_to_numpy(entry.intrinsic.contacts.radius, transpose=True)[active, 0][loaded]
+        force_error = qd_to_numpy(entry.contacts.force_error, transpose=True)[active, first][loaded] / scale[loaded]
+        moment_error = qd_to_numpy(entry.contacts.moment_error, transpose=True)[active, first][loaded] / (
+            radius * scale[loaded]
+        )
+    else:
+        loaded = valid & (np.linalg.norm(wrench_force, axis=2) > 0)
+        scale = np.linalg.norm(wrench_force[loaded], axis=1)
+        radius = qd_to_numpy(entry.contacts.radius, transpose=True)[loaded]
+        force_error = qd_to_numpy(entry.contacts.force_error, transpose=True)[loaded] / scale
+        moment_error = qd_to_numpy(entry.contacts.moment_error, transpose=True)[loaded] / (radius * scale)
     assert (force_error <= 1e-8).all() and (moment_error <= 1e-8).all()
     residual = np.sqrt(qd_to_numpy(entry.state.residual_norm_squared))
     rhs_norm = np.sqrt(qd_to_numpy(entry.state.rhs_norm_squared))
     assert (residual <= np.maximum(entry.options.absolute_tolerance, entry.options.tolerance * rhs_norm)).all()
     return {
+        "wrench_conservation": conservation,
         "nodal_force_max_difference_N": float(np.max(np.abs(force - original_force))),
         "peak_max_difference_Pa": float(np.max(np.abs(peak - original_peak))),
         "original_point_max_difference_m": float(np.max(np.abs(point[valid] - original_point[valid]), initial=0)),
@@ -318,6 +334,9 @@ def main() -> None:
     parser.add_argument("--contact-model", choices=("pressure", "intrinsic"), default="pressure")
     parser.add_argument("--intrinsic-support", choices=("contact", "pair_union"), default="contact")
     parser.add_argument("--dense-surface-fan", action="store_true", help="Compare the full-face fan launch.")
+    parser.add_argument(
+        "--intrinsic-load-partition", choices=("componentwise", "body_source_prior"), default="componentwise"
+    )
     parser.add_argument("--contact-block-size", type=int, default=16)
     parser.add_argument("--egg-geometry", choices=("urdf", "mesh64"), default="urdf")
     parser.add_argument("--collision-method", choices=("auto", "mpr", "gjk"), default="auto")
@@ -408,6 +427,7 @@ def main() -> None:
         enable_contact_patch={"auto": None, "on": True, "off": False}[args.contact_patch],
         intrinsic_support=args.intrinsic_support,
         surface_fan_frontier=not args.dense_surface_fan,
+        intrinsic_load_partition=args.intrinsic_load_partition,
         cooperative_tractions=not args.serial_tractions,
         warm_start_tractions=not args.cold_tractions,
     )
@@ -519,12 +539,14 @@ def main() -> None:
             "varied": args.varied,
             "seed": args.seed,
             "load_model": "intrinsic_surface_fan_q10_squared_coordinates_ports8_adjacent_unfolding_verified_single_face_disks_failed_disk_nine_panel_refinement"
+            + ("_body_source_prior" if args.intrinsic_load_partition == "body_source_prior" else "")
             if args.contact_model == "intrinsic"
             else "finite_pad_adaptive_q10",
             "contact_model": args.contact_model,
             "contact_block_size": args.contact_block_size,
             "intrinsic_support": args.intrinsic_support,
             "surface_fan_frontier": not args.dense_surface_fan,
+            "intrinsic_load_partition": args.intrinsic_load_partition,
             "cooperative_tractions": not args.serial_tractions,
             "warm_start_tractions": not args.cold_tractions,
             "effective_contact_block_size": solver.stress_recovery.links[0].intrinsic.contacts.valid.shape[0]

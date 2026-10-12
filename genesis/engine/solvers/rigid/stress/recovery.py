@@ -364,12 +364,19 @@ class RigidStressRecovery:
                     indices = qd_to_numpy(failure.contact, transpose=True)
                     radius = qd_to_numpy(failure.radius, transpose=True)
                     friction = qd_to_numpy(failure.friction, transpose=True)
+                    group_count = qd_to_numpy(failure.group_count, transpose=True)
                     for env in environments[:8]:
                         code = int(preserved[env])
                         details.append(
                             f"link={entry.link.idx}, env={env}, contact={indices[env]}, status={code}: {reasons[code]}; "
                             f"radius={radius[env]:.9g} m, mu={friction[env]:.9g} (first preserved contact failure)"
                         )
+                        if group_count[env] > 1:
+                            details.append(
+                                f"env={env}: body_source_prior conserves the aggregate wrench of "
+                                f"{group_count[env]} original contacts; target_force and target_moment "
+                                "are retained in the failure record about its original application point"
+                            )
                     if len(environments) > 8:
                         details.append(
                             f"{len(environments) - 8} additional preserved environment failures on this link"

@@ -4,6 +4,21 @@ This implements the active extension in `NONCONVEX_CONTACT_REQUIREMENTS.md`.
 The previous egg milestone remains complete; native nonconvex acceptance is
 not yet established. The initial branch source is `1d6babf7`.
 
+The explicit [native body source-prior law](BODY_SOURCE_PRIOR_MODEL.md) is now
+integrated without changing the componentwise default. Combined native
+frontier/model6 CPU/6 CUDA cases pass24 independent full fields (max wrench
+7.387e-10, complete residual budget fraction0.045857, peak delta3.694e-7 Pa),
+including self-balanced compression and contact/reset/failure isolation.
+Pre-frontier native model62 CUDA cases pass; CPU61 pass with one strict
+physical diagnostic classification mismatch, corrected and retested in the
+combined checks. Its copied B1024 policy run now completes three1280-step
+repetitions/1184 resets each without failures,25440.881 valid env-step/s,
+before frontier combination. Wider independent seeds fail during warmup:
+B2048/623102 env1914 numerical-fit33;B4096/623103 env2174 sampled-infeasible34
+with continuous feasibility unresolved. Both are single-contact groups;
+neither has a valid throughput. Capture/oracle diagnosis is active, and
+contact robustness, broader policy acceptance and a plateau remain open.
+
 The [exact-sample fan launch checkpoint](NATIVE_FAN_FRONTIER_20261012.md)
 passes 56 CPU/56 CUDA cases and measures copied B1024 live throughput
 28276.748 to 39565.723 valid env-step/s, a 1.399232x gain across three

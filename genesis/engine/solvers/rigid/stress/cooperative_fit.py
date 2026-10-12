@@ -11,8 +11,10 @@ from .traction import (
     StressTractionState,
     StressTractionStatus,
     func_coulomb_projection,
+    func_traction_constraint_active,
     func_traction_direction,
     func_traction_geometry,
+    func_traction_reference,
     func_traction_source_friction,
     func_traction_support_range,
 )
@@ -48,7 +50,8 @@ def func_dual_warp(
                 if weight > 0.0:
                     position, normal = func_traction_geometry(i_q, i_s, i_b, state, info)
                     relative = (position - anchor) / radius
-                    value = force - dual[0:3] - dual[3:6].cross(relative)
+                    reference = func_traction_reference(i_s, i_c, i_b, force, weight_sum, state)
+                    value = reference - dual[0:3] - dual[3:6].cross(relative)
                     projected, jacobian = func_coulomb_projection(value, normal, source_friction)
                     moment = relative.cross(projected)
                     wrench = qd.Vector([projected[0], projected[1], projected[2], moment[0], moment[1], moment[2]])
@@ -108,7 +111,7 @@ def kernel_fit_tractions(
         evaluations = 0
         certificate = qd.Vector.zero(gs.qd_float, 6)
         certificate_margin = gs.qd_float(0.0)
-        if contact_state.valid[i_c, i_b]:
+        if contact_state.valid[i_c, i_b] and func_traction_constraint_active(i_c, i_b, traction_state):
             anchor = contact_state.center[i_c, i_b]
             radius, friction = contact_state.radius[i_c, i_b], contact_state.friction[i_c, i_b]
             force, moment = contact_state.force[i_c, i_b], source_state.anchor_moment[i_c, i_b]
@@ -131,6 +134,11 @@ def kernel_fit_tractions(
                     is_valid = is_valid and support_radius > 0.0 and support_radius < qd.math.inf
                     n_samples = traction_state.sample_count[i_s, i_b]
                     is_valid = is_valid and 0 <= n_samples <= traction_state.profile.shape[0]
+                    if qd.static(len(traction_state.priors.force.shape) == 2):
+                        source_weight = traction_state.priors.weight_sum[i_s, i_b]
+                        original_force = traction_state.priors.force[i_s, i_b]
+                        is_valid = is_valid and source_weight > 0.0 and source_weight < qd.math.inf
+                        is_valid = is_valid and qd.abs(original_force.sum()) < qd.math.inf
                     for chunk in range((n_samples + lanes - 1) // lanes):
                         i_q = chunk * lanes + lane
                         if i_q < n_samples:
@@ -158,6 +166,8 @@ def kernel_fit_tractions(
             else:
                 lipschitz /= weight_sum
                 scale = qd.max(force.norm(), moment.norm() / radius)
+                if qd.static(len(traction_state.priors.force.shape) == 2):
+                    scale = qd.max(scale, traction_state.priors.group_scale[i_c, i_b])
                 if scale > 0.0:
                     budget_scale = force.norm()
                     if budget_scale == 0.0:
