@@ -12,8 +12,10 @@ pair gives37181.828 uncached versus40999.785 effective env-step/s (1.102683414x)
 Each route completes three1280-step repeats/2323 resets each with zero invalid
 steps or overflows. Actual native memory grows3,145,720 bytes. Port propagation
 device cost drops6.574 to0.885ms and contact wall40.385 to34.742ms. Fan-profile
-sampling remains a major actionable hotspot and a first-triangle loop-bound
-candidate is under separate evaluation. Wider four-scope/seeds/outcomes/tail
+sampling remains a major actionable hotspot. The [sampling ablations](NATIVE_CONTACT_SAMPLING_ABLATIONS_20261012.md)
+reject first-triangle loop bounds after23 CPU/23 CUDA cases and matched profiling
+with no benefit. Sample-major launch and nonnegative path-bound pruning are
+under separate evaluation. Wider four-scope/seeds/outcomes/tail
 evidence and a measured plateau remain open. The goal remains active.
 
 The [native EPA bound correction](NATIVE_EPA_BOUNDS_20261012.md) resolves the

@@ -55,8 +55,8 @@ steps,128 frozen actual-snapshot stage passes give:
 | Global peak wall |0.459271|0.460399|
 
 The remaining device hotspot is fan-profile sampling (approximately20.1ms).
-It remains actionable. A separate first-triangle loop-bound candidate is under
-isolated evaluation.
+It remains actionable. Subsequent isolated decisions and measurements are in
+[the contact sampling ablations](NATIVE_CONTACT_SAMPLING_ABLATIONS_20261012.md).
 
 The live pair runs sequentially on GPU7ae01237, with seed623102 and independent
 varied conditions. Each route includes600 warmup steps followed by three1280
