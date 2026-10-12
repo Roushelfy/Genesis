@@ -4,6 +4,18 @@ This implements the active extension in `NONCONVEX_CONTACT_REQUIREMENTS.md`.
 The previous egg milestone remains complete; native nonconvex acceptance is
 not yet established. The initial branch source is `1d6babf7`.
 
+The [current-step anchor-port reuse checkpoint](NATIVE_PORT_SEED_REUSE_20261012.md)
+passes15 CPU/15 CUDA targeted cases and48 independent full fields. It reuses
+current Quadrants seed norms across destination ports with the same graph,
+samples, load law and final budgets. A sequential same-GPU B2048/623102 live
+pair gives37181.828 uncached versus40999.785 effective env-step/s (1.102683414x).
+Each route completes three1280-step repeats/2323 resets each with zero invalid
+steps or overflows. Actual native memory grows3,145,720 bytes. Port propagation
+device cost drops6.574 to0.885ms and contact wall40.385 to34.742ms. Fan-profile
+sampling remains a major actionable hotspot and a first-triangle loop-bound
+candidate is under separate evaluation. Wider four-scope/seeds/outcomes/tail
+evidence and a measured plateau remain open. The goal remains active.
+
 The [native EPA bound correction](NATIVE_EPA_BOUNDS_20261012.md) resolves the
 wide live producer anomaly: a3.4e-19-m lower/upper excess had returned an
 already deleted interior face. Its comparison now matches the existing EPA
@@ -16,8 +28,8 @@ The original varied B4096/623103 live workload now completes three1280-step
 repetitions/4643 resets each with zero failures,42338.077 effective env-step/s.
 This producer correction changes trajectories, so new matched four-scope
 baselines are required. Wider seeds/outcomes/tail evidence and profiling-led
-optimization/plateau remain open; current-step port-seed reuse is under
-isolated evaluation. The goal remains active.
+optimization/plateau remain open. Current-step port-seed reuse is qualified in
+the newer checkpoint above. The goal remains active.
 
 The [shared-feature stability and failed-fan continuation checkpoint](NATIVE_STABILITY_CONTINUATION_20261012.md)
 passes15 CPU/15 CUDA targeted cases and48 independent full fields. It repairs
