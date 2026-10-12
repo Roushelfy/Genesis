@@ -148,6 +148,7 @@ class StressTractionState:
     frontier: StressFanFrontier
     priors: StressTractionPriors
     acceptance: StressTractionAcceptance
+    capacity_maximum: qd.Tensor
 
 
 def create_tractions(
@@ -164,6 +165,8 @@ def create_tractions(
     surface_fan_frontier: bool = True,
     source_priors: bool = False,
     cached_acceptance: bool = False,
+    counted_profiles: bool = False,
+    cached_fan_positions: bool = False,
 ) -> StressTractionState:
     """Allocate the exact supplied quadrature subproblem, without a force cloud.
 
@@ -189,7 +192,9 @@ def create_tractions(
         evaluations=V(dtype=gs.qd_int, shape=shape),
         certificate=V_VEC(6, dtype=gs.qd_float, shape=shape),
         certificate_margin=V(dtype=gs.qd_float, shape=shape),
-        sample_positions=V_VEC(3, dtype=gs.qd_float, shape=sample_shape),
+        sample_positions=V_VEC(
+            3, dtype=gs.qd_float, shape=(n_samples, n_contacts, n_envs) if cached_fan_positions else sample_shape
+        ),
         sample_normals=V_VEC(3, dtype=gs.qd_float, shape=sample_shape),
         sample_faces=V(dtype=gs.qd_int, shape=face_shape),
         sample_shape=V_VEC(6, dtype=gs.qd_float, shape=sample_shape),
@@ -228,6 +233,7 @@ def create_tractions(
             moment=V_VEC(3, dtype=gs.qd_float, shape=shape if cached_acceptance else ()),
             cone_valid=V(dtype=gs.qd_bool, shape=shape if cached_acceptance else ()),
         ),
+        capacity_maximum=V(dtype=gs.qd_int, shape=(1,) if counted_profiles else ()),
     )
     state.sample_count.fill(0 if packed_samples else n_samples)
     state.fan_coordinate_power.fill(fan_coordinate_power)
@@ -381,9 +387,17 @@ def func_traction_geometry(
     position, normal = qd.Vector.zero(gs.qd_float, 3), qd.Vector.zero(gs.qd_float, 3)
     i_sample = func_traction_sample_index(i_q, i_c, i_b, traction_state)
     if qd.static(len(traction_state.fan_barycentric.shape) == 3):
-        i_face, bary = func_surface_fan_bary(i_sample, i_c, i_b, traction_state, traction_info)
-        edges = traction_info.face_edges[i_face]
-        position = traction_info.face_origin[i_face] + bary[1] * edges[0, :] + bary[2] * edges[1, :]
+        i_face = gs.qd_int(0)
+        if qd.static(len(traction_state.sample_positions.shape) == 3):
+            position = traction_state.sample_positions[i_q, i_c, i_b]
+            n_quadrature = traction_info.gauss.shape[0] ** 2
+            i_face = i_sample // (3 * n_quadrature)
+            if i_sample >= 3 * traction_info.positions.shape[0]:
+                i_face = traction_state.circle.face[i_c, i_b]
+        else:
+            i_face, bary = func_surface_fan_bary(i_sample, i_c, i_b, traction_state, traction_info)
+            edges = traction_info.face_edges[i_face]
+            position = traction_info.face_origin[i_face] + bary[1] * edges[0, :] + bary[2] * edges[1, :]
         normal = traction_info.inward_normals[i_face * traction_info.gauss.shape[0] ** 2]
     elif qd.static(len(traction_state.sample_faces.shape) == 2):
         i_local = func_traction_local_index(i_sample, i_c, i_b, traction_state, traction_info)
@@ -622,8 +636,7 @@ def kernel_fit_tractions(
             warm_start=warm_start,
         )
         # A failed warm iterate can recover cheaply from a cold warp fit.
-        # A second reduction order handles remaining stagnation; refined
-        # routes retain their serial fallback and continuation.
+        # The serial reduction remains a fallback for different roundoff.
         kernel_fit_cooperative(
             contact_state,
             source_state,

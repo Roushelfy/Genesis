@@ -50,7 +50,9 @@ def create_footprints(
     shape = (n_contacts, n_envs)
     return StressFootprintState(
         port_distance=V(dtype=gs.qd_float, shape=(n_ports, n_contacts, n_envs)),
-        seed_distance=V(dtype=gs.qd_float, shape=(n_face_ports, n_contacts, n_envs) if n_face_ports is not None else ()),
+        seed_distance=V(
+            dtype=gs.qd_float, shape=(n_face_ports, n_contacts, n_envs) if n_face_ports is not None else ()
+        ),
         status=V(dtype=gs.qd_int, shape=shape),
         candidates=V(dtype=gs.qd_int, shape=shape),
         samples=V(dtype=gs.qd_int, shape=shape),
@@ -186,6 +188,8 @@ def create_surface_fan_tractions(
     surface_fan_frontier: bool = True,
     source_priors: bool = False,
     cached_acceptance: bool = False,
+    profile_capacity: int | None = None,
+    cached_fan_positions: bool = False,
 ) -> StressTractionState:
     """Partition every boundary face about its closest point to the anchor.
 
@@ -198,7 +202,7 @@ def create_surface_fan_tractions(
     """
     n_faces = surface_info.face_origin.shape[0]
     return create_tractions(
-        3 * surface_info.positions.shape[0],
+        3 * surface_info.positions.shape[0] if profile_capacity is None else profile_capacity,
         n_contacts,
         n_envs,
         packed_samples=True,
@@ -208,6 +212,8 @@ def create_surface_fan_tractions(
         surface_fan_frontier=surface_fan_frontier,
         source_priors=source_priors,
         cached_acceptance=cached_acceptance,
+        counted_profiles=profile_capacity is not None,
+        cached_fan_positions=cached_fan_positions,
     )
 
 
@@ -362,6 +368,9 @@ def kernel_refine_failed_disks(
     compression centroid or normal torque outside the same disk's capacity is diagnosed using a continuous polar
     ray with roundoff and original-point error allowances; the bound holds throughout the disk independently of sampling.
     """
+    for _ in range(1):
+        if qd.static(len(traction_state.capacity_maximum.shape) == 1):
+            traction_state.capacity_maximum[0] = 0
     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
         first, last = func_traction_support_range(i_c, i_b, traction_state)
         unresolved = traction_state.status[i_c, i_b] == StressTractionStatus.NUMERICAL_FAILURE
@@ -433,7 +442,6 @@ def kernel_refine_failed_disks(
                 if (
                     traction_state.status[i_c, i_b] != StressTractionStatus.CONTINUOUS_WRENCH_INFEASIBLE
                     and refine_fraction < 1.0
-                    and 9 * surface_info.gauss.shape[0] ** 2 <= traction_state.profile.shape[0]
                 ):
                     tangent = surface_info.face_edges[i_face][0, :].normalized()
                     second = normal.cross(tangent)
@@ -448,13 +456,16 @@ def kernel_refine_failed_disks(
                     )
                     traction_state.circle.refined[i_c, i_b] = True
                     traction_state.sample_count[i_c, i_b] = 9 * surface_info.gauss.shape[0] ** 2
+                    if qd.static(len(traction_state.capacity_maximum.shape) == 1):  # noqa: SIM102
+                        if traction_state.sample_count[i_c, i_b] > traction_state.profile.shape[0]:
+                            qd.atomic_max(traction_state.capacity_maximum[0], traction_state.sample_count[i_c, i_b])
                     footprint_state.samples[i_c, i_b] = traction_state.sample_count[i_c, i_b]
                     footprint_state.candidates[i_c, i_b] = traction_state.sample_count[i_c, i_b]
                     footprint_state.maximum_distance[i_c, i_b] = 0.0
     for i_q, i_c, i_b in qd.ndrange(
         9 * surface_info.gauss.shape[0] ** 2, contact_state.valid.shape[0], contact_state.valid.shape[1]
     ):
-        if traction_state.circle.refined[i_c, i_b]:
+        if traction_state.circle.refined[i_c, i_b] and i_q < traction_state.profile.shape[0]:
             distance, _, jacobian = func_circle_panel(i_q, i_c, i_b, traction_state, traction_info)
             n = surface_info.gauss.shape[0]
             local = i_q % (n * n)
@@ -464,6 +475,13 @@ def kernel_refine_failed_disks(
             profile *= qd.exp(-0.5 * (distance / 0.45) ** 2) * (1.0 - distance * distance) ** 2
             traction_state.profile[i_q, i_c, i_b] = profile
             traction_state.sample_indices[i_q, i_c, i_b] = 3 * traction_info.positions.shape[0] + i_q
+            if qd.static(len(traction_state.sample_positions.shape) == 3):
+                i_sample = 3 * traction_info.positions.shape[0] + i_q
+                i_face, bary = func_surface_fan_bary(i_sample, i_c, i_b, traction_state, traction_info)
+                edges = surface_info.face_edges[i_face]
+                traction_state.sample_positions[i_q, i_c, i_b] = (
+                    surface_info.face_origin[i_face] + bary[1] * edges[0, :] + bary[2] * edges[1, :]
+                )
             qd.atomic_max(footprint_state.maximum_distance[i_c, i_b], radius * distance)
 
 

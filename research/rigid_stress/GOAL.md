@@ -37,17 +37,23 @@ passes31 CPU/31 CUDA cases and96 fields, saving15.715GB native bytes atB8192
 on a separated seed cohort, with a small throughput regression. Its fused
 capacity follow-up remains unselected. [Current-step position reuse](docs/NATIVE_CACHED_FAN_POSITIONS_20261012.md)
 passes31 CPU/31 CUDA cases and96 fields, with an isolated1.074361448x live
-gain on counted storage. Combined B2048/B8192 comparison versus production
-full storage and remaining refinement/layout/reuse work are active.
+gain on counted storage. Combined B2048/B8192 comparisons versus production
+full storage are qualified below.
 The [combined storage/tail checkpoint](docs/NATIVE_CONTACT_TAIL_STORAGE_20261012.md)
 now qualifies1.022885722x B2048/1.027915774x separated-seedB8192 with14.116GB
 native savings. Parallel fan sampling qualifies1.017149258x live and160
 additional dynamic fields, reducing hard fan calls to4.3–4.4ms. Cooperative
 refit and scalar sample layout pass their matrices but have only approximately
 0.3% effects within repeat variation and remain unselected. The cleaned
-production combination is locally implemented and under validation; final
-source wider scopes/seed measurements, bottleneck decisions and plateau are
-still pending.
+production combination is now [qualified](docs/NATIVE_SELECTED_STORAGE_FANS_20261012.md)
+with31 CPU/31 CUDA cases,96 independent fields and a same-GPU B2048 ratio
+1.003100208 over the counted-position/serial-fan prototype, within repeat
+variation. Its hard-tail improvement is retained; gains are not additive.
+[Exploratory wide live probes](docs/NATIVE_WIDE_COUNTED_POSITIONS_20261012.md)
+reach107641.889 valid env-step/s atB16384 and104753.768 atB32768, with
+zero failures, on separate GPU/seed cohorts predating the clean combination.
+Final-source wider scopes/seed measurements, bottleneck decisions and plateau
+are still pending.
 [Matched B1024 four scopes](docs/NATIVE_MATCHED_SCOPES_20261012.md) include timed
 grasp outcomes, resets and environment work. Contact graphs, fastcache and
 standalone device-frontier maximum have no selected dynamic end-to-end benefit;
