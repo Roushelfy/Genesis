@@ -54,6 +54,25 @@ reach107641.889 valid env-step/s atB16384 and104753.768 atB32768, with
 zero failures, on separate GPU/seed cohorts predating the clean combination.
 Final-source wider scopes/seed measurements, bottleneck decisions and plateau
 are still pending.
+[Current production baselines](docs/NATIVE_WIDE_BASELINE_PROFILE_20261012.md)
+now verify six matched four-scope widths throughB32768,464 captured full
+fields and160 additional original-wrench/CPU-inertia-relief fields. B16384
+live/policy rates are105910.718/105892.927 valid env-step/s with all outcomes
+retained and zero failures. B32768 live/policy also pass104316.704/104146.207
+valid env-step/s. Clean combined qualification, sparse diagnostic clearing and warm-Hessian precision
+decisions are pending; no new completion is claimed.
+The copied-cohort curve now passes unchanged workloads atB8192/16384/24576/32768,
+peaking at108645.547 valid env-step/s atB16384 for production92ec3e0c.
+[Valid-source-only initialization](docs/NATIVE_VALID_SOURCE_CAPTURE_20261012.md)
+qualifies1.009451355x B8192/1.011652788x separated-seedB16384 and31CPU/31CUDA
+cases/96 fields, selected for clean integration. This baseline platform does
+not complete the pending final candidate/combined-source work.
+[Coalesced cached coordinates](docs/NATIVE_COALESCED_POSITIONS_20261012.md)
+qualify1.017995104x B16384/1.015946367x separated-seedB8192,31CPU/31CUDA/96
+fields and eight exact cached/direct geometry comparisons, selected for clean
+integration. Isolated FP32-Gaussian cost is below0.2% of the fenced step and
+does not justify a production change. Sparse diagnostic/warm-Hessian matrices
+both pass31CPU/31CUDA; live decisions and clean combined qualification remain.
 [Matched B1024 four scopes](docs/NATIVE_MATCHED_SCOPES_20261012.md) include timed
 grasp outcomes, resets and environment work. Contact graphs, fastcache and
 standalone device-frontier maximum have no selected dynamic end-to-end benefit;
