@@ -1,0 +1,15 @@
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-refinement/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-refinement/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+{"polygon": "inner", "status": 0, "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)", "success": true, "normalized_wrench_error": 3.6803900932597324e-13, "physical_cone_excess": 8.326672684688674e-17}
+{"polygon": "outer", "status": 0, "message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)", "success": true, "normalized_wrench_error": 1.1769092295048457e-14, "physical_cone_excess": 0.00032088454335083005}
+{"budget": 128, "status": 3, "force_error": 0.008278230532252896, "moment_error": 0.01817377961946662, "evaluations": 128}
+{"budget": 512, "status": 3, "force_error": 0.008262032521891694, "moment_error": 0.018166956650102747, "evaluations": 512}
+{"budget": 2048, "status": 3, "force_error": 0.008301412321742788, "moment_error": 0.01816815300911546, "evaluations": 2048}

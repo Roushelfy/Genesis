@@ -19,6 +19,17 @@ with continuous feasibility unresolved. Both are single-contact groups;
 neither has a valid throughput. Capture/oracle diagnosis is active, and
 contact robustness, broader policy acceptance and a plateau remain open.
 
+The [combined body-prior/frontier baseline](NATIVE_BODY_BASELINE_20261012.md)
+now has valid copied B1024 four-scope evidence: rigid229478.178,
+recovery46301.686, live34843.754 and policy34092.695 env-step/s.
+Three live/policy1280-step repetitions/1184 resets each have no failures;
+rigid minimum-duration runs have different step/reset counts, so no matched
+rigid/live slowdown ratio is asserted. Wider B2048/B4096 failures are captured
+before rigid integration and independently audited: the former is sampled
+cone feasible but severely weight-conditioned, while the latter is sampled
+cone infeasible with continuous feasibility unresolved. Local integration
+repair is active; these batches still have no valid throughput.
+
 The [exact-sample fan launch checkpoint](NATIVE_FAN_FRONTIER_20261012.md)
 passes 56 CPU/56 CUDA cases and measures copied B1024 live throughput
 28276.748 to 39565.723 valid env-step/s, a 1.399232x gain across three
