@@ -4,6 +4,15 @@ This implements the active extension in `NONCONVEX_CONTACT_REQUIREMENTS.md`.
 The previous egg milestone remains complete; native nonconvex acceptance is
 not yet established. The initial branch source is `1d6babf7`.
 
+The [contact-trial checkpoint](NATIVE_CONTACT_TRIALS_20261012.md) selects
+parallel metadata clearing after9 actual native CPU/9 CUDA lifecycle cases
+and same-GPU three-repeat B32 gain1.037933x, reaching3129.758 env-step/s.
+Gradient-only line-search trials pass55 CUDA cases but are rejected after
+an8.42% live regression. A separate on-demand CPU/GPU diagnostic avoids
+an extra witness cloud and independently proves the unchanged policy876
+component incompatible; it remains a prototype. Contact/model repair,
+complete policy/large-batch four-scope acceptance and a plateau remain open.
+
 The [native traction warm-start follow-up](NATIVE_TRACTION_WARM_START_20261012.md)
 now selects generic previous-dual initial guesses after55 actual native CUDA
 cases,432 independent live CPU FP64 fields and same-GPU three-repeat B32
