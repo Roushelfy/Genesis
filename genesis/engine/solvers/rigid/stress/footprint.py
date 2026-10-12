@@ -166,8 +166,9 @@ def create_surface_fan_tractions(
     The finite area rule resolves small neighboring patches. Geometry is
     reconstructed from shared triangles and one barycentric center per face/contact,
     rather than storing per-sample position, normal and P2 shape tensors.
-    Squared integration coordinates resolve finite support close to edges;
-    a power of one supplies the original integration comparison.
+    A disk wholly inside one verified triangle uses a radius-scaled circular
+    rule. Other footprints use squared triangle coordinates to resolve
+    support close to edges. A power of one supplies linear coordinates.
     """
     n_faces = surface_info.face_origin.shape[0]
     return create_tractions(
@@ -190,9 +191,32 @@ def kernel_surface_fan_profiles(
     surface_info: StressSurfaceInfo,
     path_info: StressPathInfo,
     traction_info: StressTractionInfo,
+    epsilon: float,
 ):
     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
         traction_state.sample_count[i_c, i_b] = 0
+        traction_state.circle.face[i_c, i_b] = -1
+        traction_state.circle.radius[i_c, i_b] = 0.0
+        if contact_state.valid[i_c, i_b] and footprint_state.status[i_c, i_b] == StressFootprintStatus.SUCCESS:
+            i_face = contact_state.anchor_face[i_c, i_b]
+            origin, edges = surface_info.face_origin[i_face], surface_info.face_edges[i_face]
+            anchor, radius = contact_state.center[i_c, i_b], contact_state.radius[i_c, i_b]
+            normal = -surface_info.face_normal[i_face]
+            roundoff = 128.0 * epsilon * (anchor.norm() + origin.norm() + edges[0, :].norm() + edges[1, :].norm())
+            inside = qd.abs((anchor - origin).dot(normal)) <= roundoff
+            vertices = qd.Matrix.rows([origin, origin + edges[0, :], origin + edges[1, :]])
+            for a in range(3):
+                edge = vertices[(a + 1) % 3, :] - vertices[a, :]
+                direction = normal.cross(edge).normalized()
+                if direction.dot(vertices[(a + 2) % 3, :] - vertices[a, :]) < 0.0:
+                    direction = -direction
+                inside = inside and (anchor - vertices[a, :]).dot(direction) >= radius + roundoff
+            # Any path leaving this convex triangle already spends at least
+            # R before its first boundary crossing. The complete intrinsic
+            # footprint is therefore this disk; nearby sheets cannot enter it.
+            if inside:
+                traction_state.circle.face[i_c, i_b] = i_face
+                traction_state.circle.radius[i_c, i_b] = radius
     for i_f, i_c, i_b in qd.ndrange(
         surface_info.face_origin.shape[0], contact_state.valid.shape[0], contact_state.valid.shape[1]
     ):
@@ -206,35 +230,59 @@ def kernel_surface_fan_profiles(
         if contact_state.valid[i_c, i_b] and footprint_state.status[i_c, i_b] == StressFootprintStatus.SUCCESS:
             anchor, radius = contact_state.center[i_c, i_b], contact_state.radius[i_c, i_b]
             n = surface_info.gauss.shape[0]
-            i_face = i_q // (3 * n * n)
-            center_bary = traction_state.fan_barycentric[i_face, i_c, i_b]
-            origin, edges = surface_info.face_origin[i_face], surface_info.face_edges[i_face]
-            center = origin + center_bary[1] * edges[0, :] + center_bary[2] * edges[1, :]
-            if (center - anchor).norm() < radius:
-                i_face, bary = func_surface_fan_bary(i_q, i_c, i_b, traction_state, traction_info)
+            i_circle = traction_state.circle.face[i_c, i_b]
+            i_sample = i_q
+            is_candidate = False
+            if i_circle >= 0:
+                is_candidate = i_q < n * n
+                i_sample = 3 * surface_info.positions.shape[0] + i_q
+            else:
+                i_face = i_q // (3 * n * n)
+                center_bary = traction_state.fan_barycentric[i_face, i_c, i_b]
+                origin, edges = surface_info.face_origin[i_face], surface_info.face_edges[i_face]
+                center = origin + center_bary[1] * edges[0, :] + center_bary[2] * edges[1, :]
+                is_candidate = (center - anchor).norm() < radius
+            if is_candidate:
+                i_face, bary = func_surface_fan_bary(i_sample, i_c, i_b, traction_state, traction_info)
+                origin, edges = surface_info.face_origin[i_face], surface_info.face_edges[i_face]
                 position = origin + bary[1] * edges[0, :] + bary[2] * edges[1, :]
-                i_fan = (i_q // (n * n)) % 3
-                # The opposite barycentric coordinate is the exact subtriangle area fraction.
-                # Coordinate round-trips give a zero-area edge fan a spurious positive weight.
-                area = center_bary[(i_fan + 2) % 3] * edges[0, :].cross(edges[1, :]).norm()
-                if area > 0.0 and (position - anchor).norm() < radius:
+                weight, distance = gs.qd_float(0.0), gs.qd_float(float("inf"))
+                i_local = i_q % (n * n)
+                u, v = surface_info.gauss[i_local // n], surface_info.gauss[i_local % n]
+                power = traction_state.fan_coordinate_power[None]
+                if i_circle >= 0:
                     qd.atomic_add(footprint_state.candidates[i_c, i_b], 1)
-                    distance, _ = func_footprint_point_distance(
-                        i_face, i_c, i_b, position, contact_state, footprint_state, stress_info, surface_info, path_info
-                    )
-                    if distance < radius:
-                        i_sample = i_q % (n * n)
-                        u, v = surface_info.gauss[i_sample // n], surface_info.gauss[i_sample % n]
-                        power = traction_state.fan_coordinate_power[None]
+                    distance = radius * u**power
+                    weight = 2.0 * qd.math.pi * radius * radius * power * u ** (2 * power - 1)
+                else:
+                    i_fan = (i_q // (n * n)) % 3
+                    # A zero-area edge fan must not acquire a spurious weight
+                    # through a coordinate round-trip.
+                    center_bary = traction_state.fan_barycentric[i_face, i_c, i_b]
+                    area = center_bary[(i_fan + 2) % 3] * edges[0, :].cross(edges[1, :]).norm()
+                    if area > 0.0 and (position - anchor).norm() < radius:
+                        qd.atomic_add(footprint_state.candidates[i_c, i_b], 1)
+                        distance, _ = func_footprint_point_distance(
+                            i_face,
+                            i_c,
+                            i_b,
+                            position,
+                            contact_state,
+                            footprint_state,
+                            stress_info,
+                            surface_info,
+                            path_info,
+                        )
                         weight = area * u**power * power * power * u ** (power - 1) * v ** (power - 1)
-                        weight *= surface_info.gauss_weights[i_sample // n] * surface_info.gauss_weights[i_sample % n]
-                        relative = distance / radius
-                        profile = weight * qd.exp(-0.5 * (relative / 0.45) ** 2) * (1.0 - relative * relative) ** 2
-                        i_slot = qd.atomic_add(traction_state.sample_count[i_c, i_b], 1)
-                        traction_state.sample_indices[i_slot, i_c, i_b] = i_q
-                        traction_state.profile[i_slot, i_c, i_b] = profile
-                        qd.atomic_add(footprint_state.samples[i_c, i_b], 1)
-                        qd.atomic_max(footprint_state.maximum_distance[i_c, i_b], distance)
+                if weight > 0.0 and distance < radius:
+                    weight *= surface_info.gauss_weights[i_local // n] * surface_info.gauss_weights[i_local % n]
+                    relative = distance / radius
+                    profile = weight * qd.exp(-0.5 * (relative / 0.45) ** 2) * (1.0 - relative * relative) ** 2
+                    i_slot = qd.atomic_add(traction_state.sample_count[i_c, i_b], 1)
+                    traction_state.sample_indices[i_slot, i_c, i_b] = i_sample
+                    traction_state.profile[i_slot, i_c, i_b] = profile
+                    qd.atomic_add(footprint_state.samples[i_c, i_b], 1)
+                    qd.atomic_max(footprint_state.maximum_distance[i_c, i_b], distance)
     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
         if (
             contact_state.valid[i_c, i_b]

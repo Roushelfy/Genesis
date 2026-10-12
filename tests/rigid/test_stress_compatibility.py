@@ -179,7 +179,7 @@ def test_saved_continuous_wrench_certificate_respects_support_budget_and_environ
     sources.anchor_moment.from_numpy(anchor_moment)
     epsilon = float(np.finfo(gs.np_float).eps)
     kernel_footprint_ports(contacts, sources, footprints, surface.info, paths.info)
-    kernel_surface_fan_profiles(contacts, footprints, tractions, model.info, surface.info, paths.info, info)
+    kernel_surface_fan_profiles(contacts, footprints, tractions, model.info, surface.info, paths.info, info, epsilon)
     kernel_bind_traction_support(contacts, sources, footprints, tractions)
     kernel_fit_tractions(contacts, sources, tractions, info, epsilon, 9e-9, 128)
     statuses = qd_to_numpy(tractions.status, transpose=True, copy=True)

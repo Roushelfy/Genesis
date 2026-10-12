@@ -29,6 +29,14 @@ termination. It passes 51 CPU/51 CUDA regressions and 4096 independent CPU
 full-field comparisons in the actual B1024 trajectory, then diagnoses its exact
 step602 component as continuously incompatible. This is disclosed failure
 evidence, not full-horizon acceptance or a throughput result.
+The [sample-scheduling and verified-circle checkpoint](NATIVE_CONTACT_SCHEDULING_20261012.md)
+adds a successful production regression for a continuum-feasible 10-micrometre
+contact outside the old Q10 sample hull, with 52 CPU/52 CUDA cases and unchanged
+final acceptance. Separately, experimental sample-parallel scheduling gives
+about 13.23x matched B32 live throughput on one GPU across three repetitions;
+it is not yet selected production scheduling or a new-integration speedup.
+Post-repair baselines, scheduling combination checks and larger four-scope
+measurements remain unfinished.
 
 ## Required evidence and current work
 
@@ -36,13 +44,13 @@ evidence, not full-horizon acceptance or a throughput result.
 |---|---|---|
 | Material normals and real surface topology | Cavity/U winding tests; no spatial sheet merging | Native implementation and CPU/CUDA checks pass |
 | Surface provenance | Geom/pair and face/barycentric witnesses, actual boundary association, ambiguity diagnostics | Native resolver, raw witnesses and both-side GJK reference/frame checks pass CPU/CUDA; general live association pending |
-| Intrinsic finite footprint | Verified paths, hole/gap exclusion, explicit radius/profile and distance error | Finite surface fans, adjacent unfolding and streamed live integration pass targeted CPU/CUDA and B4 checks; general refinement pending |
+| Intrinsic finite footprint | Verified paths, hole/gap exclusion, explicit radius/profile and distance error | Finite surface fans, adjacent unfolding and verified one-face disks pass CPU/CUDA; a legal small-radius Q10 sampling failure is now successful at 1/5/10/20 micrometres; general refinement pending |
 | Six-component vector fit | Original/projected/P2 wrench, local cones, offset tangential load and constrained corner fits | Native dual and signed scatter pass CPU/CUDA and every-step B4 checks; broader live acceptance pending |
 | Failure diagnostics | Ambiguity, unresolved integration/distance, numerical fitting and physical incompatibility | Native force-only, sampled and continuous six-component statuses; exact step602 proof independently audited on CPU/CUDA rays; depth/work exhaustion and stale-margin budget checks pass |
-| Same-mesh numerical recovery | Independent CPU FP64 nodal loads, complete residual/gauge rows, full/max stress | Combined regression passes 51 CPU/51 CUDA cases; 432 original live, 192 portable actual-producer and 4096 current B1024 CPU fields pass |
+| Same-mesh numerical recovery | Independent CPU FP64 nodal loads, complete residual/gauge rows, full/max stress | Production combined regression passes 52 CPU/52 CUDA cases; experimental scheduling passes 51 CPU/51 CUDA and 432 full live CPU fields; earlier 432 original live, 192 actual-producer and 4096 B1024 CPU fields remain valid for their frozen source epochs |
 | Dynamic lifecycle | Motion, slip/release, rotations, source changes, batch isolation, partial reset/state restore | B16/B32 complete 1280 steps and56 saved-state resets; B16 recovery leaves 213 rigid fields byte-identical at33 checks; broader source lifecycle pending |
 | Existing Franka egg | Legal changing contacts, actual varied combined friction, rigid trajectory isolation | Explicit pair support completes B16/B32 1280-step trajectories, including former710/1160 failures and56 saved-state resets; broader source and large-batch coverage pending |
-| Matched performance | New-law four-scope baseline, detailed profiles, measured candidate decisions and repeated throughput | B32 matched scalar/experimental-warp intrinsic snapshot profiles157.95/29.25ms; component commit/scatter now dominate; online selection and larger matched measurements pending |
+| Matched performance | New-law four-scope baseline, detailed profiles, measured candidate decisions and repeated throughput | Source047d7de9 scalar/experimental sample-parallel intrinsic snapshot profiles169.08/9.83ms; same-GPU three-repeat B32 live rate202/2674 env-step/s with no failed environments; verified-circle production baselines, selection and larger four-scope measurements pending |
 | Reproducible delivery | Native code/example/tests, source and artifact identities, committed/pushed evidence | In progress |
 
 ## Design direction
