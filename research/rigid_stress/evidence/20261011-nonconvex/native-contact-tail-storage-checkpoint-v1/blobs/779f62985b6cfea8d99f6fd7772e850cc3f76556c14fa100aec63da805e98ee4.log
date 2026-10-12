@@ -1,0 +1,470 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0
+rootdir: /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-segment-bounds
+configfile: pyproject.toml
+plugins: anyio-4.15.1, forked-1.7.5, print-1.2.0, timeout-2.4.0, xdist-3.8.0, quadrants-1.3.3, syrupy-6.1.1
+timeout: 1200.0s
+timeout method: signal
+timeout func_only: False
+collected 23 items
+
+tests/rigid/test_stress_source_priors.py [31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31mF[0m[31m                      [ 43%][0m
+tests/rigid/test_stress_sources.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m                                 [ 65%][0m
+tests/rigid/test_stress_nonconvex.py [32m.[0m[32m.[0m[31m                                  [ 73%][0m
+tests/rigid/test_stress_footprint.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m                              [100%][0m
+
+=================================== FAILURES ===================================
+[31m[1m___ test_body_source_prior_wrench_cones_full_fields_and_gauge_rows[step602] ____[0m
+[1m[31mtests/rigid/test_stress_source_priors.py[0m:214: in test_body_source_prior_wrench_cones_full_fields_and_gauge_rows
+    [0mkernel_refine_failed_fans([90m[39;49;00m
+[1m[31mgenesis/engine/solvers/rigid/stress/fan_refinement.py[0m:143: in kernel_refine_failed_fans
+    [0mkernel_refine_failed_samples(contacts, footprints, state, stress, surface, paths, info)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/_quadrants_callable.py[0m:101: in __call__
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m.wrapper.[92m__call__[39;49;00m(*args, **kwargs)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel_impl.py[0m:180: in wrapped_func
+    [0m[94mreturn[39;49;00m primal(*args, **kwargs)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel.py[0m:1056: in __call__
+    [0mret = [96mself[39;49;00m.launch_kernel(key, kernel_cpp, compiled_kernel_data, *py_args, qd_stream=qd_stream)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel.py[0m:856: in launch_kernel
+    [0m[94mraise[39;49;00m e [94mfrom[39;49;00m[90m [39;49;00m[94mNone[39;49;00m[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel.py[0m:802: in launch_kernel
+    [0mcompile_result: CompileResult = prog.compile_kernel(prog_config, prog_device_cap, t_kernel)[90m[39;49;00m
+[1m[31mE   RuntimeError: [statements.h:LocalStoreStmt@837] Assertion failure: dest->is<AllocaStmt>() || dest->is<MatrixPtrStmt>() || dest->is<MatrixOfMatrixPtrStmt>() || dest->is<GetElementStmt>()[0m
+---------------------------- Captured stdout setup -----------------------------
+[Genesis 13:52:07] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 13:52:07] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+----------------------------- Captured stdout call -----------------------------
+
+
+----------------------------- Captured stderr call -----------------------------
+[W 10/12/26 13:52:26.030 3870721] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c968_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-segment-bounds/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 194, in kernel_fit_tractions_impl:
+                is_valid = qd.simt.subgroup.all_true(is_valid)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: u1 <- i32
+[W 10/12/26 13:52:28.188 3870721] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c968_1`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-segment-bounds/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 194, in kernel_fit_tractions_impl:
+                is_valid = qd.simt.subgroup.all_true(is_valid)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: u1 <- i32
+[W 10/12/26 13:52:30.201 3870721] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c968_2`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-segment-bounds/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 194, in kernel_fit_tractions_impl:
+                is_valid = qd.simt.subgroup.all_true(is_valid)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: u1 <- i32
+[W 10/12/26 13:52:32.193 3870721] QuadrantsWarning
+While compiling `kernel_refine_failed_samples_c778_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-segment-bounds/genesis/engine/solvers/rigid/stress/fan_refinement.py", line 99, in func_refine_source_sample:
+        closest, _ = func_closest_triangle(i_f, anchor, surface)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: i32 <- f64
+[E 10/12/26 13:52:32.194 3870721] [statements.h:LocalStoreStmt@837] Assertion failure: dest->is<AllocaStmt>() || dest->is<MatrixPtrStmt>() || dest->is<MatrixOfMatrixPtrStmt>() || dest->is<GetElementStmt>()
+--------------------------- Captured stdout teardown ---------------------------
+[Genesis 13:52:32] Exiting Genesis and caching compiled kernels...
+[31m[1m__ test_body_source_prior_wrench_cones_full_fields_and_gauge_rows[policy876] ___[0m
+[1m[31mtests/rigid/test_stress_source_priors.py[0m:214: in test_body_source_prior_wrench_cones_full_fields_and_gauge_rows
+    [0mkernel_refine_failed_fans([90m[39;49;00m
+[1m[31mgenesis/engine/solvers/rigid/stress/fan_refinement.py[0m:143: in kernel_refine_failed_fans
+    [0mkernel_refine_failed_samples(contacts, footprints, state, stress, surface, paths, info)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/_quadrants_callable.py[0m:101: in __call__
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m.wrapper.[92m__call__[39;49;00m(*args, **kwargs)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel_impl.py[0m:180: in wrapped_func
+    [0m[94mreturn[39;49;00m primal(*args, **kwargs)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel.py[0m:1056: in __call__
+    [0mret = [96mself[39;49;00m.launch_kernel(key, kernel_cpp, compiled_kernel_data, *py_args, qd_stream=qd_stream)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel.py[0m:856: in launch_kernel
+    [0m[94mraise[39;49;00m e [94mfrom[39;49;00m[90m [39;49;00m[94mNone[39;49;00m[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel.py[0m:802: in launch_kernel
+    [0mcompile_result: CompileResult = prog.compile_kernel(prog_config, prog_device_cap, t_kernel)[90m[39;49;00m
+[1m[31mE   RuntimeError: [statements.h:LocalStoreStmt@837] Assertion failure: dest->is<AllocaStmt>() || dest->is<MatrixPtrStmt>() || dest->is<MatrixOfMatrixPtrStmt>() || dest->is<GetElementStmt>()[0m
+---------------------------- Captured stdout setup -----------------------------
+[Genesis 13:52:33] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 13:52:33] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+----------------------------- Captured stdout call -----------------------------
+
+
+----------------------------- Captured stderr call -----------------------------
+[W 10/12/26 13:52:51.412 3870721] QuadrantsWarning
+While compiling `kernel_refine_failed_samples_c778_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-segment-bounds/genesis/engine/solvers/rigid/stress/fan_refinement.py", line 99, in func_refine_source_sample:
+        closest, _ = func_closest_triangle(i_f, anchor, surface)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: i32 <- f64
+[E 10/12/26 13:52:51.413 3870721] [statements.h:LocalStoreStmt@837] Assertion failure: dest->is<AllocaStmt>() || dest->is<MatrixPtrStmt>() || dest->is<MatrixOfMatrixPtrStmt>() || dest->is<GetElementStmt>()
+--------------------------- Captured stdout teardown ---------------------------
+[Genesis 13:52:51] Exiting Genesis and caching compiled kernels...
+[31m[1m__ test_body_source_prior_wrench_cones_full_fields_and_gauge_rows[policy807] ___[0m
+[1m[31mtests/rigid/test_stress_source_priors.py[0m:214: in test_body_source_prior_wrench_cones_full_fields_and_gauge_rows
+    [0mkernel_refine_failed_fans([90m[39;49;00m
+[1m[31mgenesis/engine/solvers/rigid/stress/fan_refinement.py[0m:143: in kernel_refine_failed_fans
+    [0mkernel_refine_failed_samples(contacts, footprints, state, stress, surface, paths, info)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/_quadrants_callable.py[0m:101: in __call__
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m.wrapper.[92m__call__[39;49;00m(*args, **kwargs)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel_impl.py[0m:180: in wrapped_func
+    [0m[94mreturn[39;49;00m primal(*args, **kwargs)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel.py[0m:1056: in __call__
+    [0mret = [96mself[39;49;00m.launch_kernel(key, kernel_cpp, compiled_kernel_data, *py_args, qd_stream=qd_stream)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel.py[0m:856: in launch_kernel
+    [0m[94mraise[39;49;00m e [94mfrom[39;49;00m[90m [39;49;00m[94mNone[39;49;00m[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel.py[0m:802: in launch_kernel
+    [0mcompile_result: CompileResult = prog.compile_kernel(prog_config, prog_device_cap, t_kernel)[90m[39;49;00m
+[1m[31mE   RuntimeError: [statements.h:LocalStoreStmt@837] Assertion failure: dest->is<AllocaStmt>() || dest->is<MatrixPtrStmt>() || dest->is<MatrixOfMatrixPtrStmt>() || dest->is<GetElementStmt>()[0m
+---------------------------- Captured stdout setup -----------------------------
+[Genesis 13:52:51] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 13:52:51] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+----------------------------- Captured stdout call -----------------------------
+
+
+----------------------------- Captured stderr call -----------------------------
+[W 10/12/26 13:53:10.186 3870721] QuadrantsWarning
+While compiling `kernel_refine_failed_samples_c778_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-segment-bounds/genesis/engine/solvers/rigid/stress/fan_refinement.py", line 99, in func_refine_source_sample:
+        closest, _ = func_closest_triangle(i_f, anchor, surface)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: i32 <- f64
+[E 10/12/26 13:53:10.187 3870721] [statements.h:LocalStoreStmt@837] Assertion failure: dest->is<AllocaStmt>() || dest->is<MatrixPtrStmt>() || dest->is<MatrixOfMatrixPtrStmt>() || dest->is<GetElementStmt>()
+--------------------------- Captured stdout teardown ---------------------------
+[Genesis 13:53:10] Exiting Genesis and caching compiled kernels...
+[31m[1m_ test_body_source_prior_wrench_cones_full_fields_and_gauge_rows[balanced_compression] _[0m
+[1m[31mtests/rigid/test_stress_source_priors.py[0m:214: in test_body_source_prior_wrench_cones_full_fields_and_gauge_rows
+    [0mkernel_refine_failed_fans([90m[39;49;00m
+[1m[31mgenesis/engine/solvers/rigid/stress/fan_refinement.py[0m:143: in kernel_refine_failed_fans
+    [0mkernel_refine_failed_samples(contacts, footprints, state, stress, surface, paths, info)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/_quadrants_callable.py[0m:101: in __call__
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m.wrapper.[92m__call__[39;49;00m(*args, **kwargs)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel_impl.py[0m:180: in wrapped_func
+    [0m[94mreturn[39;49;00m primal(*args, **kwargs)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel.py[0m:1056: in __call__
+    [0mret = [96mself[39;49;00m.launch_kernel(key, kernel_cpp, compiled_kernel_data, *py_args, qd_stream=qd_stream)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel.py[0m:856: in launch_kernel
+    [0m[94mraise[39;49;00m e [94mfrom[39;49;00m[90m [39;49;00m[94mNone[39;49;00m[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel.py[0m:802: in launch_kernel
+    [0mcompile_result: CompileResult = prog.compile_kernel(prog_config, prog_device_cap, t_kernel)[90m[39;49;00m
+[1m[31mE   RuntimeError: [statements.h:LocalStoreStmt@837] Assertion failure: dest->is<AllocaStmt>() || dest->is<MatrixPtrStmt>() || dest->is<MatrixOfMatrixPtrStmt>() || dest->is<GetElementStmt>()[0m
+---------------------------- Captured stdout setup -----------------------------
+[Genesis 13:53:10] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 13:53:10] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+----------------------------- Captured stdout call -----------------------------
+
+
+----------------------------- Captured stderr call -----------------------------
+[W 10/12/26 13:53:25.744 3870721] QuadrantsWarning
+While compiling `ext_arr_to_ndarray_c18_4`, File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/_kernels.py", line 108, in ext_arr_to_ndarray:
+        ndarray[I] = arr[I]
+        ^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: i32 <- i64
+[W 10/12/26 13:53:29.099 3870721] QuadrantsWarning
+While compiling `kernel_refine_failed_samples_c778_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-segment-bounds/genesis/engine/solvers/rigid/stress/fan_refinement.py", line 99, in func_refine_source_sample:
+        closest, _ = func_closest_triangle(i_f, anchor, surface)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: i32 <- f64
+[E 10/12/26 13:53:29.100 3870721] [statements.h:LocalStoreStmt@837] Assertion failure: dest->is<AllocaStmt>() || dest->is<MatrixPtrStmt>() || dest->is<MatrixOfMatrixPtrStmt>() || dest->is<GetElementStmt>()
+--------------------------- Captured stdout teardown ---------------------------
+[Genesis 13:53:29] Exiting Genesis and caching compiled kernels...
+[31m[1m__ test_body_source_prior_wrench_cones_full_fields_and_gauge_rows[varied2048] __[0m
+[1m[31mtests/rigid/test_stress_source_priors.py[0m:214: in test_body_source_prior_wrench_cones_full_fields_and_gauge_rows
+    [0mkernel_refine_failed_fans([90m[39;49;00m
+[1m[31mgenesis/engine/solvers/rigid/stress/fan_refinement.py[0m:143: in kernel_refine_failed_fans
+    [0mkernel_refine_failed_samples(contacts, footprints, state, stress, surface, paths, info)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/_quadrants_callable.py[0m:101: in __call__
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m.wrapper.[92m__call__[39;49;00m(*args, **kwargs)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel_impl.py[0m:180: in wrapped_func
+    [0m[94mreturn[39;49;00m primal(*args, **kwargs)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel.py[0m:1056: in __call__
+    [0mret = [96mself[39;49;00m.launch_kernel(key, kernel_cpp, compiled_kernel_data, *py_args, qd_stream=qd_stream)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel.py[0m:856: in launch_kernel
+    [0m[94mraise[39;49;00m e [94mfrom[39;49;00m[90m [39;49;00m[94mNone[39;49;00m[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel.py[0m:802: in launch_kernel
+    [0mcompile_result: CompileResult = prog.compile_kernel(prog_config, prog_device_cap, t_kernel)[90m[39;49;00m
+[1m[31mE   RuntimeError: [statements.h:LocalStoreStmt@837] Assertion failure: dest->is<AllocaStmt>() || dest->is<MatrixPtrStmt>() || dest->is<MatrixOfMatrixPtrStmt>() || dest->is<GetElementStmt>()[0m
+---------------------------- Captured stdout setup -----------------------------
+[Genesis 13:53:29] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 13:53:29] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+----------------------------- Captured stdout call -----------------------------
+
+
+----------------------------- Captured stderr call -----------------------------
+[W 10/12/26 13:53:48.120 3870721] QuadrantsWarning
+While compiling `kernel_refine_failed_samples_c778_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-segment-bounds/genesis/engine/solvers/rigid/stress/fan_refinement.py", line 99, in func_refine_source_sample:
+        closest, _ = func_closest_triangle(i_f, anchor, surface)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: i32 <- f64
+[E 10/12/26 13:53:48.121 3870721] [statements.h:LocalStoreStmt@837] Assertion failure: dest->is<AllocaStmt>() || dest->is<MatrixPtrStmt>() || dest->is<MatrixOfMatrixPtrStmt>() || dest->is<GetElementStmt>()
+--------------------------- Captured stdout teardown ---------------------------
+[Genesis 13:53:48] Exiting Genesis and caching compiled kernels...
+[31m[1m__ test_body_source_prior_wrench_cones_full_fields_and_gauge_rows[varied4096] __[0m
+[1m[31mtests/rigid/test_stress_source_priors.py[0m:214: in test_body_source_prior_wrench_cones_full_fields_and_gauge_rows
+    [0mkernel_refine_failed_fans([90m[39;49;00m
+[1m[31mgenesis/engine/solvers/rigid/stress/fan_refinement.py[0m:143: in kernel_refine_failed_fans
+    [0mkernel_refine_failed_samples(contacts, footprints, state, stress, surface, paths, info)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/_quadrants_callable.py[0m:101: in __call__
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m.wrapper.[92m__call__[39;49;00m(*args, **kwargs)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel_impl.py[0m:180: in wrapped_func
+    [0m[94mreturn[39;49;00m primal(*args, **kwargs)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel.py[0m:1056: in __call__
+    [0mret = [96mself[39;49;00m.launch_kernel(key, kernel_cpp, compiled_kernel_data, *py_args, qd_stream=qd_stream)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel.py[0m:856: in launch_kernel
+    [0m[94mraise[39;49;00m e [94mfrom[39;49;00m[90m [39;49;00m[94mNone[39;49;00m[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel.py[0m:802: in launch_kernel
+    [0mcompile_result: CompileResult = prog.compile_kernel(prog_config, prog_device_cap, t_kernel)[90m[39;49;00m
+[1m[31mE   RuntimeError: [statements.h:LocalStoreStmt@837] Assertion failure: dest->is<AllocaStmt>() || dest->is<MatrixPtrStmt>() || dest->is<MatrixOfMatrixPtrStmt>() || dest->is<GetElementStmt>()[0m
+---------------------------- Captured stdout setup -----------------------------
+[Genesis 13:53:48] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 13:53:48] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+----------------------------- Captured stdout call -----------------------------
+
+
+----------------------------- Captured stderr call -----------------------------
+[W 10/12/26 13:54:07.024 3870721] QuadrantsWarning
+While compiling `kernel_refine_failed_samples_c778_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-segment-bounds/genesis/engine/solvers/rigid/stress/fan_refinement.py", line 99, in func_refine_source_sample:
+        closest, _ = func_closest_triangle(i_f, anchor, surface)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: i32 <- f64
+[E 10/12/26 13:54:07.025 3870721] [statements.h:LocalStoreStmt@837] Assertion failure: dest->is<AllocaStmt>() || dest->is<MatrixPtrStmt>() || dest->is<MatrixOfMatrixPtrStmt>() || dest->is<GetElementStmt>()
+--------------------------- Captured stdout teardown ---------------------------
+[Genesis 13:54:07] Exiting Genesis and caching compiled kernels...
+[31m[1m_ test_body_source_prior_wrench_cones_full_fields_and_gauge_rows[roundoff_edge] _[0m
+[1m[31mtests/rigid/test_stress_source_priors.py[0m:214: in test_body_source_prior_wrench_cones_full_fields_and_gauge_rows
+    [0mkernel_refine_failed_fans([90m[39;49;00m
+[1m[31mgenesis/engine/solvers/rigid/stress/fan_refinement.py[0m:143: in kernel_refine_failed_fans
+    [0mkernel_refine_failed_samples(contacts, footprints, state, stress, surface, paths, info)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/_quadrants_callable.py[0m:101: in __call__
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m.wrapper.[92m__call__[39;49;00m(*args, **kwargs)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel_impl.py[0m:180: in wrapped_func
+    [0m[94mreturn[39;49;00m primal(*args, **kwargs)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel.py[0m:1056: in __call__
+    [0mret = [96mself[39;49;00m.launch_kernel(key, kernel_cpp, compiled_kernel_data, *py_args, qd_stream=qd_stream)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel.py[0m:856: in launch_kernel
+    [0m[94mraise[39;49;00m e [94mfrom[39;49;00m[90m [39;49;00m[94mNone[39;49;00m[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel.py[0m:802: in launch_kernel
+    [0mcompile_result: CompileResult = prog.compile_kernel(prog_config, prog_device_cap, t_kernel)[90m[39;49;00m
+[1m[31mE   RuntimeError: [statements.h:LocalStoreStmt@837] Assertion failure: dest->is<AllocaStmt>() || dest->is<MatrixPtrStmt>() || dest->is<MatrixOfMatrixPtrStmt>() || dest->is<GetElementStmt>()[0m
+---------------------------- Captured stdout setup -----------------------------
+[Genesis 13:54:07] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 13:54:07] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+----------------------------- Captured stdout call -----------------------------
+
+
+----------------------------- Captured stderr call -----------------------------
+[W 10/12/26 13:54:26.452 3870721] QuadrantsWarning
+While compiling `kernel_refine_failed_samples_c778_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-segment-bounds/genesis/engine/solvers/rigid/stress/fan_refinement.py", line 99, in func_refine_source_sample:
+        closest, _ = func_closest_triangle(i_f, anchor, surface)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: i32 <- f64
+[E 10/12/26 13:54:26.453 3870721] [statements.h:LocalStoreStmt@837] Assertion failure: dest->is<AllocaStmt>() || dest->is<MatrixPtrStmt>() || dest->is<MatrixOfMatrixPtrStmt>() || dest->is<GetElementStmt>()
+--------------------------- Captured stdout teardown ---------------------------
+[Genesis 13:54:26] Exiting Genesis and caching compiled kernels...
+[31m[1m_ test_body_source_prior_wrench_cones_full_fields_and_gauge_rows[varied4096_slow] _[0m
+[1m[31mtests/rigid/test_stress_source_priors.py[0m:214: in test_body_source_prior_wrench_cones_full_fields_and_gauge_rows
+    [0mkernel_refine_failed_fans([90m[39;49;00m
+[1m[31mgenesis/engine/solvers/rigid/stress/fan_refinement.py[0m:143: in kernel_refine_failed_fans
+    [0mkernel_refine_failed_samples(contacts, footprints, state, stress, surface, paths, info)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/_quadrants_callable.py[0m:101: in __call__
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m.wrapper.[92m__call__[39;49;00m(*args, **kwargs)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel_impl.py[0m:180: in wrapped_func
+    [0m[94mreturn[39;49;00m primal(*args, **kwargs)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel.py[0m:1056: in __call__
+    [0mret = [96mself[39;49;00m.launch_kernel(key, kernel_cpp, compiled_kernel_data, *py_args, qd_stream=qd_stream)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel.py[0m:856: in launch_kernel
+    [0m[94mraise[39;49;00m e [94mfrom[39;49;00m[90m [39;49;00m[94mNone[39;49;00m[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel.py[0m:802: in launch_kernel
+    [0mcompile_result: CompileResult = prog.compile_kernel(prog_config, prog_device_cap, t_kernel)[90m[39;49;00m
+[1m[31mE   RuntimeError: [statements.h:LocalStoreStmt@837] Assertion failure: dest->is<AllocaStmt>() || dest->is<MatrixPtrStmt>() || dest->is<MatrixOfMatrixPtrStmt>() || dest->is<GetElementStmt>()[0m
+---------------------------- Captured stdout setup -----------------------------
+[Genesis 13:54:26] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 13:54:26] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+----------------------------- Captured stdout call -----------------------------
+
+
+----------------------------- Captured stderr call -----------------------------
+[W 10/12/26 13:54:45.435 3870721] QuadrantsWarning
+While compiling `kernel_refine_failed_samples_c778_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-segment-bounds/genesis/engine/solvers/rigid/stress/fan_refinement.py", line 99, in func_refine_source_sample:
+        closest, _ = func_closest_triangle(i_f, anchor, surface)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: i32 <- f64
+[E 10/12/26 13:54:45.436 3870721] [statements.h:LocalStoreStmt@837] Assertion failure: dest->is<AllocaStmt>() || dest->is<MatrixPtrStmt>() || dest->is<MatrixOfMatrixPtrStmt>() || dest->is<GetElementStmt>()
+--------------------------- Captured stdout teardown ---------------------------
+[Genesis 13:54:45] Exiting Genesis and caching compiled kernels...
+[31m[1m__ test_body_source_prior_dynamic_workspace_release_reset_and_invalid_member ___[0m
+[1m[31mtests/rigid/test_stress_source_priors.py[0m:409: in test_body_source_prior_dynamic_workspace_release_reset_and_invalid_member
+    [0mstreamed.scatter(raw, state, model.info, surface.info, options, epsilon, errno)[90m[39;49;00m
+[1m[31mgenesis/engine/solvers/rigid/stress/intrinsic.py[0m:255: in scatter
+    [0mkernel_refine_failed_fans([90m[39;49;00m
+[1m[31mgenesis/engine/solvers/rigid/stress/fan_refinement.py[0m:143: in kernel_refine_failed_fans
+    [0mkernel_refine_failed_samples(contacts, footprints, state, stress, surface, paths, info)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/_quadrants_callable.py[0m:101: in __call__
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m.wrapper.[92m__call__[39;49;00m(*args, **kwargs)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel_impl.py[0m:180: in wrapped_func
+    [0m[94mreturn[39;49;00m primal(*args, **kwargs)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel.py[0m:1056: in __call__
+    [0mret = [96mself[39;49;00m.launch_kernel(key, kernel_cpp, compiled_kernel_data, *py_args, qd_stream=qd_stream)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel.py[0m:856: in launch_kernel
+    [0m[94mraise[39;49;00m e [94mfrom[39;49;00m[90m [39;49;00m[94mNone[39;49;00m[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel.py[0m:802: in launch_kernel
+    [0mcompile_result: CompileResult = prog.compile_kernel(prog_config, prog_device_cap, t_kernel)[90m[39;49;00m
+[1m[31mE   RuntimeError: [statements.h:LocalStoreStmt@837] Assertion failure: dest->is<AllocaStmt>() || dest->is<MatrixPtrStmt>() || dest->is<MatrixOfMatrixPtrStmt>() || dest->is<GetElementStmt>()[0m
+---------------------------- Captured stdout setup -----------------------------
+[Genesis 13:54:45] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 13:54:45] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+----------------------------- Captured stdout call -----------------------------
+[Genesis 13:55:01] Scene <6e7822c> created.
+[Genesis 13:55:06] Adding <gs.engine.entities.RigidEntity> 'egg_shell_4cf48c7'. idx: 0, morph: <gs.morphs.URDF(file='/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-segment-bounds/examples/rigid/assets/hollow_egg/level1/egg_shell.urdf')>, material: <gs.materials.Rigid>.
+[Genesis 13:55:06] Building scene <6e7822c>...
+[Genesis 13:55:14] Compiling simulation kernels...
+[Genesis 13:55:32] Building visualizer...
+[Genesis 13:55:38] Software rendering context detected. Shadows and plane reflection not supported. Beware rendering will be extremely slow.
+
+
+----------------------------- Captured stderr call -----------------------------
+libEGL warning: failed to open /dev/dri/renderD135: Permission denied
+
+libEGL warning: failed to open /dev/dri/card8: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD134: Permission denied
+
+libEGL warning: failed to open /dev/dri/card7: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD133: Permission denied
+
+libEGL warning: failed to open /dev/dri/card6: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD132: Permission denied
+
+libEGL warning: failed to open /dev/dri/card5: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD131: Permission denied
+
+libEGL warning: failed to open /dev/dri/card4: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD130: Permission denied
+
+libEGL warning: failed to open /dev/dri/card3: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD129: Permission denied
+
+libEGL warning: failed to open /dev/dri/card2: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD128: Permission denied
+
+libEGL warning: failed to open /dev/dri/card1: Permission denied
+
+[W 10/12/26 13:55:45.328 3870721] QuadrantsWarning
+While compiling `kernel_refine_failed_samples_c778_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-segment-bounds/genesis/engine/solvers/rigid/stress/fan_refinement.py", line 99, in func_refine_source_sample:
+        closest, _ = func_closest_triangle(i_f, anchor, surface)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: i32 <- f64
+[E 10/12/26 13:55:45.329 3870721] [statements.h:LocalStoreStmt@837] Assertion failure: dest->is<AllocaStmt>() || dest->is<MatrixPtrStmt>() || dest->is<MatrixOfMatrixPtrStmt>() || dest->is<GetElementStmt>()
+--------------------------- Captured stdout teardown ---------------------------
+[Genesis 13:55:45] Exiting Genesis and caching compiled kernels...
+[31m[1m_________ test_body_source_prior_reports_incompatible_continuous_cones _________[0m
+[1m[31mtests/rigid/test_stress_source_priors.py[0m:519: in test_body_source_prior_reports_incompatible_continuous_cones
+    [0mstreamed.scatter(raw, state, model.info, surface.info, options, [96mfloat[39;49;00m(np.finfo(gs.np_float).eps), errno)[90m[39;49;00m
+[1m[31mgenesis/engine/solvers/rigid/stress/intrinsic.py[0m:255: in scatter
+    [0mkernel_refine_failed_fans([90m[39;49;00m
+[1m[31mgenesis/engine/solvers/rigid/stress/fan_refinement.py[0m:143: in kernel_refine_failed_fans
+    [0mkernel_refine_failed_samples(contacts, footprints, state, stress, surface, paths, info)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/_quadrants_callable.py[0m:101: in __call__
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m.wrapper.[92m__call__[39;49;00m(*args, **kwargs)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel_impl.py[0m:180: in wrapped_func
+    [0m[94mreturn[39;49;00m primal(*args, **kwargs)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel.py[0m:1056: in __call__
+    [0mret = [96mself[39;49;00m.launch_kernel(key, kernel_cpp, compiled_kernel_data, *py_args, qd_stream=qd_stream)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel.py[0m:856: in launch_kernel
+    [0m[94mraise[39;49;00m e [94mfrom[39;49;00m[90m [39;49;00m[94mNone[39;49;00m[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel.py[0m:802: in launch_kernel
+    [0mcompile_result: CompileResult = prog.compile_kernel(prog_config, prog_device_cap, t_kernel)[90m[39;49;00m
+[1m[31mE   RuntimeError: [statements.h:LocalStoreStmt@837] Assertion failure: dest->is<AllocaStmt>() || dest->is<MatrixPtrStmt>() || dest->is<MatrixOfMatrixPtrStmt>() || dest->is<GetElementStmt>()[0m
+---------------------------- Captured stdout setup -----------------------------
+[Genesis 13:55:46] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 13:55:46] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+----------------------------- Captured stdout call -----------------------------
+[Genesis 13:56:01] Scene <254aca9> created.
+[Genesis 13:56:01] Adding <gs.engine.entities.RigidEntity> 'egg_shell_d598545'. idx: 0, morph: <gs.morphs.URDF(file='/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-segment-bounds/examples/rigid/assets/hollow_egg/level1/egg_shell.urdf')>, material: <gs.materials.Rigid>.
+[Genesis 13:56:01] Building scene <254aca9>...
+[Genesis 13:56:02] Compiling simulation kernels...
+[Genesis 13:56:03] Building visualizer...
+[Genesis 13:56:03] Software rendering context detected. Shadows and plane reflection not supported. Beware rendering will be extremely slow.
+
+
+----------------------------- Captured stderr call -----------------------------
+libEGL warning: failed to open /dev/dri/renderD135: Permission denied
+
+libEGL warning: failed to open /dev/dri/card8: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD134: Permission denied
+
+libEGL warning: failed to open /dev/dri/card7: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD133: Permission denied
+
+libEGL warning: failed to open /dev/dri/card6: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD132: Permission denied
+
+libEGL warning: failed to open /dev/dri/card5: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD131: Permission denied
+
+libEGL warning: failed to open /dev/dri/card4: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD130: Permission denied
+
+libEGL warning: failed to open /dev/dri/card3: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD129: Permission denied
+
+libEGL warning: failed to open /dev/dri/card2: Permission denied
+
+libEGL warning: failed to open /dev/dri/renderD128: Permission denied
+
+libEGL warning: failed to open /dev/dri/card1: Permission denied
+
+[W 10/12/26 13:56:08.291 3870721] QuadrantsWarning
+While compiling `kernel_refine_failed_samples_c778_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-segment-bounds/genesis/engine/solvers/rigid/stress/fan_refinement.py", line 99, in func_refine_source_sample:
+        closest, _ = func_closest_triangle(i_f, anchor, surface)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: i32 <- f64
+[E 10/12/26 13:56:08.293 3870721] [statements.h:LocalStoreStmt@837] Assertion failure: dest->is<AllocaStmt>() || dest->is<MatrixPtrStmt>() || dest->is<MatrixOfMatrixPtrStmt>() || dest->is<GetElementStmt>()
+--------------------------- Captured stdout teardown ---------------------------
+[Genesis 13:56:08] Exiting Genesis and caching compiled kernels...
+[33m=============================== warnings summary ===============================[0m
+tests/rigid/test_stress_source_priors.py: 20 warnings
+tests/rigid/test_stress_sources.py: 10 warnings
+tests/rigid/test_stress_nonconvex.py: 4 warnings
+tests/rigid/test_stress_footprint.py: 12 warnings
+  /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-segment-bounds/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                          32 iterations, so the compile time may be extremely long.
+                          You can use a non-static for loop if you want to decrease the compile time.
+                          You can disable this warning by setting qd.init(unrolling_limit=0).
+    for a, b in qd.static(qd.ndrange(6, 6)):
+
+tests/rigid/test_stress_source_priors.py: 60 warnings
+tests/rigid/test_stress_footprint.py: 36 warnings
+  /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-segment-bounds/genesis/engine/solvers/rigid/stress/cooperative_fit.py:68: SyntaxWarning: You are unrolling more than
+                          32 iterations, so the compile time may be extremely long.
+                          You can use a non-static for loop if you want to decrease the compile time.
+                          You can disable this warning by setting qd.init(unrolling_limit=0).
+    for a, b in qd.static(qd.ndrange(6, 6)):
+
+tests/rigid/test_stress_source_priors.py: 60 warnings
+tests/rigid/test_stress_footprint.py: 36 warnings
+  /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-segment-bounds/genesis/engine/solvers/rigid/stress/cooperative_fit.py:76: SyntaxWarning: You are unrolling more than
+                          32 iterations, so the compile time may be extremely long.
+                          You can use a non-static for loop if you want to decrease the compile time.
+                          You can disable this warning by setting qd.init(unrolling_limit=0).
+    for a, b in qd.static(qd.ndrange(6, 6)):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/native-parallel-refined-fan-regression-v1/cuda/report.xml -
+================================= Failed tests =================================
+tests/rigid/test_stress_source_priors.py::test_body_source_prior_wrench_cones...
+tests/rigid/test_stress_source_priors.py::test_body_source_prior_wrench_cones...
+tests/rigid/test_stress_source_priors.py::test_body_source_prior_wrench_cones...
+tests/rigid/test_stress_source_priors.py::test_body_source_prior_wrench_cones...
+tests/rigid/test_stress_source_priors.py::test_body_source_prior_wrench_cones...
+tests/rigid/test_stress_source_priors.py::test_body_source_prior_wrench_cones...
+tests/rigid/test_stress_source_priors.py::test_body_source_prior_wrench_cones...
+tests/rigid/test_stress_source_priors.py::test_body_source_prior_wrench_cones...
+tests/rigid/test_stress_source_priors.py::test_body_source_prior_dynamic_work...
+tests/rigid/test_stress_source_priors.py::test_body_source_prior_reports_inco...
+============================== slowest durations ===============================
+
+(69 durations < 100s hidden.)
+[31m=========== [31m[1m10 failed[0m, [32m13 passed[0m, [33m238 warnings[0m[31m in 393.34s (0:06:33)[0m[31m ============[0m
