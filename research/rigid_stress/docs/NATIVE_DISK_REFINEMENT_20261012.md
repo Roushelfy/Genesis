@@ -114,6 +114,65 @@ Boundary-crossing sampling and continuous feasibility remain to be resolved.
 The final scene error loses the current contact detail after rigid integration;
 the preserved first-failure record is authoritative for this diagnosis.
 
+## Subsequent policy diagnosis and persistent error context
+
+The [additional publication manifest](../evidence/20261011-nonconvex/policy-diagnosis-checkpoint-v1/manifest.json)
+records 309 copied artifacts, 3,164,146 bytes, with every original and copy
+verified on allocated CPU compute. Manifest SHA256 is
+`c5136b88383afa21adc6d2509a2075282a9d5fa6ca9ffca491b5518831293222`.
+
+Further independent CPU evidence resolves the earlier open feasibility
+question for the same tick876 component. An experimental triangle-ray chart
+clips its integration coordinate to the unchanged Euclidean ball, multiplies
+the area Jacobian by the squared ray fraction, and still accepts points only
+through the existing validated intrinsic paths. Exact incident-vertex chart
+centers avoid spurious finite weights in mathematically degenerate edge fans;
+neither the physical anchor nor the original wrench is moved. This prototype
+is **not selected production integration**. CPU geometry, profile and signed
+P2-basis checks match 600 samples per source, 1200 in their pair union. The
+second original component remains unresolved in both native and CPU fitting.
+
+Independent Clarabel circular-cone feasibility solves find component0 feasible
+and component1 primal infeasible on that cloud. Its new normalized separating
+ray has target margin **0.0012157304658**. An independent continuous geometric
+audit bounds this ray over every actual boundary triangle intersecting either
+unchanged Euclidean disk, including unreachable branches and without intrinsic
+or orientation pruning. Triangle/intersection endpoints plus circle-arc
+Lipschitz bounds give a conservative maximum **-0.0004548060001**. This strictly
+negative bound proves incompatibility of the original component even on a
+continuous superset of the finite physical supports; it is not a sampling or
+iteration failure. Actual mu remains 0.5196625772 and R remains 6.465712642 mm.
+This identifies a limitation of the declared per-component auxiliary load
+model, not an unsupported label for ordinary rigid grasping or grounds to
+discard a contact. It requires an explicit modeling decision to make this
+input recoverable while preserving the relevant physical resultant.
+
+The experimental native QD polar search on the clipped cloud finds a sampled
+certificate in 59 evaluations, but its generated ray remains unresolved in
+the continuous checker. The CPU proof does not imply that production currently
+generates that stronger ray. The first diagnostic launcher also passes an
+incorrect continuous-checker signature; its failure is archived, corrected in
+a separate source epoch and never counted as acceptance.
+
+Production now retains a typed, device-side first failed raw contact per
+environment for intrinsic recovery. It stores original status, contact index,
+physical radius, actual friction, reference-frame point/anchor/force and free
+moment before a later recovery can reuse the working arrays. It preserves that
+record while the corresponding INVALID_STRESS_LOAD bit remains set, clears it
+when that environment's error is cleared, and does not alter loads or error
+flags. Successful environments perform O(1) diagnostic work without scanning
+contact capacity or synchronizing to the host. Exception formatting prefers
+the preserved record over newer working arrays. The ordinary error and reset
+APIs remain unchanged.
+
+The new failure lifecycle regression plus actual streaming/compatibility tests
+pass **9 CPU cases in 103.23 s and 9 CUDA cases in 160.08 s**, with unchanged
+source closures. Tests cover delayed errors after contact death/buffer reuse,
+deterministic first-contact selection, invalid inactive slots, unaffected
+environments, selected error clearing, new failure capture and retained
+original friction. The preceding full 54-case numerical suite remains its
+own immutable source epoch; a new combined 55-case run is not claimed here.
+
 ## Evidence and remaining work
 
 The [publication manifest](../evidence/20261011-nonconvex/disk-refinement-checkpoint-v1/manifest.json)

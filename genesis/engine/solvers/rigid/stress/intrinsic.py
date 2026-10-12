@@ -18,6 +18,7 @@ from .compatibility import (
 )
 from .contact import StressContactState, create_contacts
 from .data import StressInfo, StressState
+from .failure import create_contact_failure, kernel_capture_contact_failure
 from .footprint import (
     StressFootprintState,
     create_anchor_fan_tractions,
@@ -102,6 +103,7 @@ class IntrinsicContacts:
         self.vertices = StressSourceVertices(link, stress_info, options.source_geometry_tolerance)
         self.traction_info = create_traction_info(surface_info)
         self.raw_sources = create_sources(n_contacts, n_envs)
+        self.failure = create_contact_failure(n_envs)
         self.raw_sources.uncertainty.fill(options.source_uncertainty)
         self.contacts = create_contacts(
             n_chunk, n_envs, options.contact_radius, cooperative=False, cooperative_scatter=False
@@ -232,12 +234,14 @@ class IntrinsicContacts:
                 errno,
                 reset_force=False,
             )
+        kernel_capture_contact_failure(raw_contacts, self.raw_sources, self.failure, errno)
 
     def data(self, prefix: str):
         for name, value in (
             ("vertices", self.vertices.info),
             ("traction_info", self.traction_info),
             ("raw_sources", self.raw_sources),
+            ("failure", self.failure),
             ("contacts", self.contacts),
             ("sources", self.sources),
             ("footprints", self.footprints),

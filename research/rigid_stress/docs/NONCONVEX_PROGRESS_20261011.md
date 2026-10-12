@@ -52,6 +52,14 @@ incompatibility. General integration repair, native scheduling selection and
 large-batch acceptance remain open; older pending descriptions above refer to
 their immutable checkpoint epochs.
 
+The same checkpoint now includes a stronger independent CPU certificate:
+tick876 component1 is incompatible on a continuous superset of both original
+disks, with polar upper bound -4.54806e-4 and positive target margin1.21573e-3.
+This supersedes the earlier unresolved feasibility diagnosis while preserving
+its original evidence. Native first-failure persistence passes9 CPU/9 CUDA
+lifecycle/compatibility cases; production ray generation for this new strict
+continuous diagnosis and the per-component modeling decision remain open.
+
 ## Required evidence and current work
 
 | Requirement | Evidence to deliver | Status |
