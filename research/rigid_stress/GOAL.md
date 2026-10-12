@@ -25,17 +25,21 @@ validated progress, including unfinished work and unavailable device checks.
 
 ## Extension progress, 2026-10-12
 
-The extension remains active. Current numerical source `6a861556` contains
+The extension remains active. Numerical baseline `6a861556` contains
 qualified contact repairs and selected seed/layout/port/scatter optimizations.
+The subsequent [cold cooperative retry](docs/NATIVE_COOPERATIVE_RETRY_20261012.md)
+is selected with a same-GPU1.036986834x live gain,23 CPU/23 CUDA production
+cases and320 independent dynamic fields passing unchanged final budgets.
 [Matched B1024 four scopes](docs/NATIVE_MATCHED_SCOPES_20261012.md) include timed
 grasp outcomes, resets and environment work. Contact graphs, fastcache and
 standalone device-frontier maximum have no selected dynamic end-to-end benefit;
 see [the ablation ledger](docs/NATIVE_CONTACT_SAMPLING_ABLATIONS_20261012.md).
 [Dynamic profiling and320 independent GPU field samples](docs/NATIVE_DYNAMIC_PROFILE_20261012.md)
-pass unchanged budgets and identify a0.74-1.49s serial fit tail. Its cooperative
-retry candidate is being qualified, with broader B4096/B8192 matched scopes
-running. More seeds, measured tail optimization, remaining candidate decisions
-and a throughput plateau are still required before extension completion.
+pass unchanged budgets and identify a0.74-1.49s serial fit tail. Cold retry
+removes the largest unrefined tail; refinement tails remain. Baseline B4096
+and B8192 matched four scopes now pass. Final-source wider scopes, separated
+seeds, actual-sample memory compaction, remaining candidate decisions and a
+throughput plateau are still required before extension completion.
 
 ## Completion record, 2026-10-11
 

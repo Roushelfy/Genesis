@@ -621,6 +621,19 @@ def kernel_fit_tractions(
             max_evaluations,
             warm_start=warm_start,
         )
+        # A failed warm iterate can recover cheaply from a cold warp fit.
+        # The serial reduction remains a fallback for different roundoff.
+        kernel_fit_cooperative(
+            contact_state,
+            source_state,
+            traction_state,
+            traction_info,
+            epsilon,
+            fit_tolerance,
+            max_evaluations,
+            warm_start=False,
+            is_retry=True,
+        )
         kernel_fit_tractions_impl(
             contact_state, source_state, traction_state, traction_info, epsilon, fit_tolerance, max_evaluations, 1
         )
@@ -910,7 +923,14 @@ def kernel_prepare_cached_tractions(
     from .cooperative_scatter import kernel_scatter_cached_tractions
 
     kernel_scatter_cached_tractions(
-        epsilon, contact_state, traction_state, state, stress_info, surface_info, traction_info, errno,
+        epsilon,
+        contact_state,
+        traction_state,
+        state,
+        stress_info,
+        surface_info,
+        traction_info,
+        errno,
         reset_force=reset_force,
     )
 

@@ -55,6 +55,47 @@ all four source closures/results/logs, reusable launcher and allocated CPU
 publication checks. All297 original/stored/decompressed entries and81 unique
 blobs/14,354,776 stored bytes pass verification. Manifest SHA256:
 `bea57c1a074533b72b05f411d11053ede2556528a3aa861519bb8128e3e9d75c`.
-It is a single-seed checkpoint, not a final maximum or
-plateau. B4096 four scopes and dynamic profiling are being extended; further
-batches/seeds and final optimization decisions remain under the active goal.
+It is a single-seed checkpoint, not a final maximum or plateau.
+
+## Wider batches on the same numerical baseline
+
+Separate B4096/seed623103 and B8192/seed623104 allocations repeat the same
+four-scope protocol on numerical source6a861556. Each allocation runs its
+four scopes sequentially on one GPU with one identical saved condition bank.
+These are scaling checkpoints, not paired optimization speedup measurements.
+
+| B | Scope | Effective env-step/s | Batch step/s | Native stress bytes |
+|---:|---|---:|---:|---:|
+|4096|Rigid-only|342897.257974|83.715151|0|
+|4096|Recovery-only|130445.025723|31.846930|10923073118|
+|4096|Live|73501.695773|17.944750|10923073118|
+|4096|Policy|77129.666519|18.830485|10923073118|
+|8192|Rigid-only|498604.726879|60.864835|0|
+|8192|Recovery-only|134295.196232|16.393457|21773033054|
+|8192|Live|84886.150868|10.362079|21773033054|
+|8192|Policy|86598.454060|10.571100|21773033054|
+
+All stress repeats have zero invalid environment steps and overflows.
+Rigid/live positions agree exactly and per-environment grasp/contact/descent
+counters agree. B4096 dynamic repeats each include4643 resets and6284
+successful/zero failed lift cycles; B8192 includes9287 resets and12562
+successful/zero failed lift cycles. Passing/failed lift-window observations
+are309644/0 and619020/0 respectively. Numerical corrections/fallbacks remain
+zero. B8192 live retains14 integration-retry environment frames per repeat.
+Recovery repeats remain explicitly frozen snapshots. Policy scope remains
+inference rollout; its different trajectory is not an overhead subtraction.
+
+At B4096 the completed recovery/live allocation reports82029576192 free
+device bytes, policy81897455616. At B8192 recovery/live reports65483112448,
+policy65451655168. Native buffer totals and endpoint free memory do not
+establish transient peak device memory.
+
+Allocated CPU publishers verify each condition bank, source closure, residual
+budget, snapshot checks, every failure count and rigid/live isolation. The
+B4096 archive has297 entries/82 blobs/48083796 stored bytes, manifest SHA256
+`fafba0c0be0f4d8098d95461ea1cfcab62a5bf1abdc024f56d93f1c9c30fb27d`.
+B8192 has297 entries/83 blobs/105240057 stored bytes, manifest SHA256
+`e221bd146c906a85d40e0e60dc94b87228e70f265cd52a8655f9210fb06dcbff`.
+The selected cold retry is a subsequent source change. Final-source scopes,
+wider batches, separated seeds and remaining optimization decisions are
+still required under the active goal.
