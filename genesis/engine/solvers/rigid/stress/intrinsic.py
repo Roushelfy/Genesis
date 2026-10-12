@@ -182,6 +182,7 @@ class IntrinsicContacts:
                 _TRACTION_FIT_TOLERANCE,
                 128,
                 cooperative=options.cooperative_tractions,
+                warm_start=options.warm_start_tractions,
             )
             if options.intrinsic_integration == "surface_fan":
                 kernel_refine_failed_disks(
@@ -203,6 +204,7 @@ class IntrinsicContacts:
                     128,
                     retry_mode=2,
                     cooperative=options.cooperative_tractions,
+                    warm_start=options.warm_start_tractions,
                 )
             kernel_certify_continuous_force(self.contacts, self.tractions, surface_info, epsilon, 1e-8)
             kernel_search_wrench_certificate(

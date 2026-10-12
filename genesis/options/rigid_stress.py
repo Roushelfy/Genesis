@@ -37,6 +37,11 @@ class RigidStressOptions(Options):
     a device-masked retry of the canonical scalar algorithm; CPU retains that
     scalar route. Disabling this option provides a matched scheduling baseline
     without changing the load law, sampling or final acceptance budgets.
+    ``warm_start_tractions`` allows CUDA fitting to start from a previous
+    successful fit. This reduces work on smooth loads but can add cold-retry
+    work after abrupt changes. Every current input and final result still
+    receives complete validation; no contact identity is assumed. Disable
+    this option to start every fit from zero.
     ``intrinsic_support="pair_union"`` explicitly partitions each original
     point wrench over the union of all finite witnessed disks from that
     collision geom/pair. Each component retains its original force, point,
@@ -135,6 +140,7 @@ class RigidStressOptions(Options):
     intrinsic_integration: Literal["surface_fan", "anchor_fan"] = "surface_fan"
     intrinsic_support: Literal["contact", "pair_union"] = "contact"
     cooperative_tractions: StrictBool = True
+    warm_start_tractions: StrictBool = True
     contact_block_size: PositiveInt = 16
     surface_edge_subdivisions: PositiveInt = 8
     source_projection_limit: PositiveFloat = 1e-4

@@ -507,6 +507,7 @@ def kernel_fit_tractions(
     max_evaluations: int,
     retry_mode: int = 0,
     cooperative: bool = True,
+    warm_start: bool = True,
 ):
     """Fit all supplied tractions or retry only unresolved contacts using the same native numerical path.
 
@@ -517,7 +518,14 @@ def kernel_fit_tractions(
         from .cooperative_fit import kernel_fit_tractions as kernel_fit_cooperative
 
         kernel_fit_cooperative(
-            contact_state, source_state, traction_state, traction_info, epsilon, fit_tolerance, max_evaluations
+            contact_state,
+            source_state,
+            traction_state,
+            traction_info,
+            epsilon,
+            fit_tolerance,
+            max_evaluations,
+            warm_start=warm_start,
         )
         kernel_fit_tractions_impl(
             contact_state, source_state, traction_state, traction_info, epsilon, fit_tolerance, max_evaluations, 1
