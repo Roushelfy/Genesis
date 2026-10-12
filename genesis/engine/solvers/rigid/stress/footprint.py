@@ -37,16 +37,18 @@ class StressFootprintState:
     kind: ClassVar[DataKind] = DataKind.SCRATCH
 
     port_distance: qd.Tensor
+    seed_distance: qd.Tensor
     status: qd.Tensor
     candidates: qd.Tensor
     samples: qd.Tensor
     maximum_distance: qd.Tensor
 
 
-def create_footprints(n_ports: int, n_contacts: int, n_envs: int) -> StressFootprintState:
+def create_footprints(n_ports: int, n_contacts: int, n_envs: int, n_face_ports: int | None = None) -> StressFootprintState:
     shape = (n_contacts, n_envs)
     return StressFootprintState(
         port_distance=V(dtype=gs.qd_float, shape=(n_ports, n_contacts, n_envs)),
+        seed_distance=V(dtype=gs.qd_float, shape=(n_face_ports, n_contacts, n_envs) if n_face_ports is not None else ()),
         status=V(dtype=gs.qd_int, shape=shape),
         candidates=V(dtype=gs.qd_int, shape=shape),
         samples=V(dtype=gs.qd_int, shape=shape),
@@ -79,6 +81,10 @@ def kernel_footprint_ports(
                 is_valid = radius > 0.0 and radius < qd.math.inf and qd.abs(anchor.sum()) < qd.math.inf
                 if not is_valid:
                     footprint_state.status[i_c, i_b] = StressFootprintStatus.INVALID_INPUT
+                elif qd.static(len(footprint_state.seed_distance.shape) == 3):
+                    for i_a in range(path_info.face_ports.shape[1]):
+                        i_first = path_info.face_ports[i_anchor, i_a]
+                        footprint_state.seed_distance[i_a, i_c, i_b] = (path_info.positions[i_first] - anchor).norm()
     for i_p, i_c, i_b in qd.ndrange(
         path_info.positions.shape[0], contact_state.valid.shape[0], contact_state.valid.shape[1]
     ):
@@ -88,7 +94,12 @@ def kernel_footprint_ports(
             anchor = contact_state.center[i_c, i_b]
             for i_a in range(path_info.face_ports.shape[1]):
                 i_first = path_info.face_ports[i_anchor, i_a]
-                candidate = (path_info.positions[i_first] - anchor).norm() + path_info.distances[i_first, i_p]
+                seed_distance = gs.qd_float(0.0)
+                if qd.static(len(footprint_state.seed_distance.shape) == 3):
+                    seed_distance = footprint_state.seed_distance[i_a, i_c, i_b]
+                else:
+                    seed_distance = (path_info.positions[i_first] - anchor).norm()
+                candidate = seed_distance + path_info.distances[i_first, i_p]
                 distance = qd.min(distance, candidate)
         footprint_state.port_distance[i_p, i_c, i_b] = distance
 

@@ -170,7 +170,7 @@ def test_body_source_prior_wrench_cones_full_fields_and_gauge_rows(case, record_
     surface, paths = StressSurface(10, model.info), StressSurfacePaths(model.info, 8)
     info = create_traction_info(surface.info)
     contacts, sources = create_contacts(n_sources, n_envs, 0.006), create_sources(n_sources, n_envs)
-    footprints = create_footprints(paths.info.positions.shape[0], n_sources, n_envs)
+    footprints = create_footprints(paths.info.positions.shape[0], n_sources, n_envs, paths.info.face_ports.shape[1])
     tractions = create_surface_fan_tractions(surface.info, n_sources, n_envs, shared_support=True, source_priors=True)
     for name, values in (
         ("center", anchors),
