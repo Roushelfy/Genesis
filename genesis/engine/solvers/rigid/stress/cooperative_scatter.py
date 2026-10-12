@@ -19,6 +19,7 @@ from .traction import (
     StressTractionState,
     StressTractionStatus,
     func_source_traction,
+    func_traction_constraint_active,
     func_traction_geometry,
     func_traction_shape,
     func_traction_source_friction,
@@ -63,7 +64,7 @@ def kernel_commit_intrinsic_contacts(
                 status = 20 + footprint_state.status[i_c, i_b]
             elif traction_state.status[i_c, i_b] != 0:
                 status = 30 + traction_state.status[i_c, i_b]
-            else:
+            elif func_traction_constraint_active(i_c, i_b, traction_state):
                 total, moment = qd.Vector.zero(gs.qd_float, 3), qd.Vector.zero(gs.qd_float, 3)
                 scale = qd.max(contact_state.force[i_c, i_b].norm(), traction_state.scale[i_c, i_b])
                 cone_tolerance = 64.0 * epsilon * scale
@@ -102,7 +103,10 @@ def kernel_commit_intrinsic_contacts(
                 raw_contacts.center[i_raw, i_b] = contact_state.center[i_c, i_b]
                 raw_contacts.anchor_face[i_raw, i_b] = contact_state.anchor_face[i_c, i_b]
                 raw_sources.barycentric[i_raw, i_b] = source_state.barycentric[i_c, i_b]
-                raw_sources.anchor_moment[i_raw, i_b] = source_state.anchor_moment[i_c, i_b]
+                if qd.static(len(traction_state.priors.force.shape) == 2):
+                    raw_sources.anchor_moment[i_raw, i_b] = traction_state.priors.anchor_moment[i_c, i_b]
+                else:
+                    raw_sources.anchor_moment[i_raw, i_b] = source_state.anchor_moment[i_c, i_b]
                 raw_sources.status[i_raw, i_b] = source_state.status[i_c, i_b]
                 raw_contacts.candidate_count[i_raw, i_b] = footprint_state.samples[i_c, i_b]
                 raw_contacts.evaluations[i_raw, i_b] = traction_state.evaluations[i_c, i_b]

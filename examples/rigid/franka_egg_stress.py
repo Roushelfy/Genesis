@@ -52,6 +52,7 @@ class FrankaEgg:
         enable_contact_patch: bool | None = None,
         intrinsic_support: str = "contact",
         surface_fan_frontier: bool = True,
+        intrinsic_load_partition: str = "componentwise",
         cooperative_tractions: bool = True,
         warm_start_tractions: bool = True,
     ):
@@ -106,6 +107,7 @@ class FrankaEgg:
                     contact_block_size=contact_block_size,
                     intrinsic_support=intrinsic_support,
                     surface_fan_frontier=surface_fan_frontier,
+                    intrinsic_load_partition=intrinsic_load_partition,
                     cooperative_tractions=cooperative_tractions,
                     warm_start_tractions=warm_start_tractions,
                     cooperative_solve=cooperative_solve,
@@ -286,6 +288,9 @@ def main() -> None:
     parser.add_argument("--contact-model", choices=("pressure", "intrinsic"), default="pressure")
     parser.add_argument("--intrinsic-support", choices=("contact", "pair_union"), default="contact")
     parser.add_argument("--dense-surface-fan", action="store_true", help="Compare the full-face fan launch.")
+    parser.add_argument(
+        "--intrinsic-load-partition", choices=("componentwise", "body_source_prior"), default="componentwise"
+    )
     parser.add_argument("--contact-block-size", type=int, default=16)
     parser.add_argument("--egg-geometry", choices=("urdf", "mesh64"), default="urdf")
     parser.add_argument("--collision-method", choices=("auto", "mpr", "gjk"), default="auto")
@@ -318,6 +323,7 @@ def main() -> None:
         enable_contact_patch={"auto": None, "on": True, "off": False}[args.contact_patch],
         intrinsic_support=args.intrinsic_support,
         surface_fan_frontier=not args.dense_surface_fan,
+        intrinsic_load_partition=args.intrinsic_load_partition,
     )
     for _ in range(args.steps):
         workload.step()

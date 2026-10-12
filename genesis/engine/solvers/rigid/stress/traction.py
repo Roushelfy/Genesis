@@ -98,6 +98,18 @@ class StressFanFrontier:
 
 
 @dataclass(frozen=True)
+class StressTractionPriors:
+    """Original local loads and profile integrals for an explicit aggregate law."""
+
+    kind: ClassVar[DataKind] = DataKind.SCRATCH
+
+    force: qd.Tensor
+    anchor_moment: qd.Tensor
+    weight_sum: qd.Tensor
+    group_scale: qd.Tensor
+
+
+@dataclass(frozen=True)
 class StressTractionState:
     kind: ClassVar[DataKind] = DataKind.SCRATCH
 
@@ -122,6 +134,7 @@ class StressTractionState:
     circle: StressTractionCircle
     support: StressTractionSupport
     frontier: StressFanFrontier
+    priors: StressTractionPriors
 
 
 def create_tractions(
@@ -136,6 +149,7 @@ def create_tractions(
     fan_coordinate_power: int = 1,
     shared_support: bool = False,
     surface_fan_frontier: bool = True,
+    source_priors: bool = False,
 ) -> StressTractionState:
     """Allocate the exact supplied quadrature subproblem, without a force cloud.
 
@@ -188,6 +202,12 @@ def create_tractions(
             count=V(dtype=gs.qd_int, shape=shape if frontier_shape else ()),
             maximum=V(dtype=gs.qd_int, shape=()),
         ),
+        priors=StressTractionPriors(
+            force=V_VEC(3, dtype=gs.qd_float, shape=shape if source_priors else ()),
+            anchor_moment=V_VEC(3, dtype=gs.qd_float, shape=shape if source_priors else ()),
+            weight_sum=V(dtype=gs.qd_float, shape=shape if source_priors else ()),
+            group_scale=V(dtype=gs.qd_float, shape=shape if source_priors else ()),
+        ),
     )
     state.sample_count.fill(0 if packed_samples else n_samples)
     state.fan_coordinate_power.fill(fan_coordinate_power)
@@ -211,6 +231,33 @@ def func_traction_source_friction(i_s: int, i_b: int, friction: float, traction_
     if qd.static(len(traction_state.support.friction.shape) == 2):
         friction = traction_state.support.friction[i_s, i_b]
     return friction
+
+
+@qd.func
+def func_traction_constraint_active(i_c: int, i_b: int, traction_state: StressTractionState):
+    active = True
+    if qd.static(len(traction_state.priors.force.shape) == 2):
+        active = i_c == traction_state.support.start[i_c, i_b]
+    return active
+
+
+@qd.func
+def func_traction_reference(
+    i_s: int,
+    i_c: int,
+    i_b: int,
+    force: qd.types.vector(3),
+    weight_sum: float,
+    traction_state: StressTractionState,
+):
+    reference = force
+    if qd.static(len(traction_state.priors.force.shape) == 2):
+        reference = qd.Vector.zero(gs.qd_float, 3)
+        source_weight = traction_state.priors.weight_sum[i_s, i_b]
+        scale = traction_state.priors.group_scale[i_c, i_b]
+        if source_weight > 0.0 and scale > 0.0:
+            reference = traction_state.priors.force[i_s, i_b] * (weight_sum / source_weight / scale)
+    return reference
 
 
 @qd.func
@@ -470,7 +517,10 @@ def func_traction_dual(
             if weight > 0.0:
                 position, normal = func_traction_geometry(i_q, i_s, i_b, traction_state, traction_info)
                 relative = (position - anchor) / radius
-                value = force - dual[0:3] - dual[3:6].cross(relative)
+                reference = func_traction_reference(
+                    i_s, i_c, i_b, force, traction_state.weight_sum[i_c, i_b], traction_state
+                )
+                value = reference - dual[0:3] - dual[3:6].cross(relative)
                 projected, jacobian = func_coulomb_projection(value, normal, source_friction)
                 moment = relative.cross(projected)
                 wrench = qd.Vector([projected[0], projected[1], projected[2], moment[0], moment[1], moment[2]])
@@ -593,7 +643,7 @@ def kernel_fit_tractions_impl(
             traction_state.evaluations[i_c, i_b] = 0
             traction_state.certificate[i_c, i_b] = qd.Vector.zero(gs.qd_float, 6)
             traction_state.certificate_margin[i_c, i_b] = 0.0
-        if should_fit and contact_state.valid[i_c, i_b]:
+        if should_fit and contact_state.valid[i_c, i_b] and func_traction_constraint_active(i_c, i_b, traction_state):
             anchor = contact_state.center[i_c, i_b]
             radius = contact_state.radius[i_c, i_b]
             friction = contact_state.friction[i_c, i_b]
@@ -618,6 +668,11 @@ def kernel_fit_tractions_impl(
                 is_valid = is_valid and support_radius > 0.0 and support_radius < qd.math.inf
                 n_samples = traction_state.sample_count[i_s, i_b]
                 is_valid = is_valid and 0 <= n_samples <= traction_state.profile.shape[0]
+                if qd.static(len(traction_state.priors.force.shape) == 2):
+                    source_weight = traction_state.priors.weight_sum[i_s, i_b]
+                    original_force = traction_state.priors.force[i_s, i_b]
+                    is_valid = is_valid and source_weight > 0.0 and source_weight < qd.math.inf
+                    is_valid = is_valid and qd.abs(original_force.sum()) < qd.math.inf
                 for i_q in range(n_samples):
                     weight = traction_state.profile[i_q, i_s, i_b]
                     is_valid = is_valid and weight >= 0.0 and weight < qd.math.inf
@@ -640,6 +695,8 @@ def kernel_fit_tractions_impl(
                 traction_state.weight_sum[i_c, i_b] = weight_sum
                 lipschitz /= weight_sum
                 scale = qd.max(force.norm(), moment.norm() / radius)
+                if qd.static(len(traction_state.priors.force.shape) == 2):
+                    scale = qd.max(scale, traction_state.priors.group_scale[i_c, i_b])
                 traction_state.scale[i_c, i_b] = scale
                 if scale > 0.0:
                     budget_scale = force.norm()
@@ -798,7 +855,10 @@ def func_source_traction(
             dual = traction_state.dual[i_c, i_b]
             force = contact_state.force[i_c, i_b] / traction_state.scale[i_c, i_b]
             # Match the dual's subtraction order when large components cancel.
-            value = force - dual[0:3] - dual[3:6].cross(relative)
+            reference = func_traction_reference(
+                i_s, i_c, i_b, force, traction_state.weight_sum[i_c, i_b], traction_state
+            )
+            value = reference - dual[0:3] - dual[3:6].cross(relative)
             friction = func_traction_source_friction(i_s, i_b, contact_state.friction[i_c, i_b], traction_state)
             projected, _ = func_coulomb_projection(value, normal, friction)
             result = weight * traction_state.scale[i_c, i_b] * projected

@@ -169,6 +169,7 @@ def create_surface_fan_tractions(
     coordinate_power: int = 2,
     shared_support: bool = False,
     surface_fan_frontier: bool = True,
+    source_priors: bool = False,
 ) -> StressTractionState:
     """Partition every boundary face about its closest point to the anchor.
 
@@ -189,6 +190,7 @@ def create_surface_fan_tractions(
         fan_coordinate_power=coordinate_power,
         shared_support=shared_support,
         surface_fan_frontier=surface_fan_frontier,
+        source_priors=source_priors,
     )
 
 
@@ -455,6 +457,7 @@ def create_anchor_fan_tractions(
     compact: bool = False,
     packed: bool = False,
     shared_support: bool = False,
+    source_priors: bool = False,
 ) -> StressTractionState:
     """Integrate the witnessed face as three finite triangles incident to its anchor.
 
@@ -471,6 +474,7 @@ def create_anchor_fan_tractions(
         local_sample_count=3 * surface_info.shape.shape[0] if compact else None,
         packed_samples=packed,
         shared_support=shared_support,
+        source_priors=source_priors,
     )
 
 

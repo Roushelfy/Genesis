@@ -53,6 +53,15 @@ class RigidStressOptions(Options):
     material normal and friction coefficient. The default ``"contact"``
     confines each component to its own disk. Pair unions may contain separate
     islands; they do not create surface adjacency or enlarge any disk.
+    ``intrinsic_load_partition="body_source_prior"`` is an explicit alternative
+    load law: fit the complete link wrench on all its witnessed disks, with
+    each original contact force as a separate local traction prior. It preserves
+    self-balanced compression even when the net wrench vanishes. Individual
+    point wrenches are priors, while their sum is the conserved constraint;
+    every source retains its actual normal, friction and radius. The default
+    ``"componentwise"`` preserves the original per-point constraints. Body
+    partitioning uses all sources independently of ``intrinsic_support`` and
+    grows its workspace to fit the actual count without truncation.
     ``contact_block_size`` bounds the concurrent workspace. All
     contacts are processed, including subsequent blocks when needed. Pair-union
     blocks keep complete pairs together; their workspace is at least the
@@ -143,6 +152,7 @@ class RigidStressOptions(Options):
     contact_model: Literal["pressure", "intrinsic"] = "pressure"
     intrinsic_integration: Literal["surface_fan", "anchor_fan"] = "surface_fan"
     intrinsic_support: Literal["contact", "pair_union"] = "contact"
+    intrinsic_load_partition: Literal["componentwise", "body_source_prior"] = "componentwise"
     cooperative_tractions: StrictBool = True
     surface_fan_frontier: StrictBool = True
     warm_start_tractions: StrictBool = True
