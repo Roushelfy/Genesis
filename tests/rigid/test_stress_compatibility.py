@@ -1,4 +1,5 @@
 import xml.etree.ElementTree as ET
+from itertools import pairwise
 from pathlib import Path
 
 import numpy as np
@@ -10,6 +11,7 @@ from genesis.engine.solvers.rigid.stress.compatibility import (
     create_wrench_search,
     kernel_certify_continuous_force,
     kernel_certify_continuous_wrench,
+    kernel_diagnose_wrenches,
     kernel_search_wrench_certificate,
 )
 from genesis.engine.solvers.rigid.stress.contact import create_contacts
@@ -214,6 +216,18 @@ def test_saved_continuous_wrench_certificate_respects_support_budget_and_environ
     assert_equal(qd_to_numpy(contacts.force, transpose=True), force.swapaxes(0, 1))
     assert_equal(qd_to_numpy(contacts.position, transpose=True), point.swapaxes(0, 1))
     assert_equal(qd_to_numpy(contacts.radius, transpose=True), np.broadcast_to(radii, (3, 2)))
+    # A boundary retry must preserve an existing stronger continuous proof,
+    # including its bound, visits and original certificate. It needs no new fit.
+    bound_before = qd_to_numpy(search.bound, transpose=True, copy=True)
+    visits_before = qd_to_numpy(search.visited, transpose=True, copy=True)
+    ray_before = qd_to_numpy(tractions.certificate, transpose=True, copy=True)
+    kernel_search_wrench_certificate(contacts, sources, tractions, search, info, epsilon, 1e-8, boundary_witnesses=True)
+    kernel_certify_continuous_wrench(
+        contacts, sources, tractions, search, surface.info, epsilon, 8, 16384, 1e-8, accumulate=True
+    )
+    assert_equal(qd_to_numpy(search.bound, transpose=True), bound_before)
+    assert_equal(qd_to_numpy(search.visited, transpose=True), visits_before)
+    assert_equal(qd_to_numpy(tractions.certificate, transpose=True), ray_before)
     # A stale certificate margin cannot override the final original-point
     # error budget when the declared target changes towards a feasible input.
     feasible_force = forces.sum(axis=0)
@@ -238,6 +252,156 @@ def test_saved_continuous_wrench_certificate_respects_support_budget_and_environ
     kernel_fit_tractions(contacts, sources, tractions, info, epsilon, 9e-9, 128)
     kernel_search_wrench_certificate(contacts, sources, tractions, search, info, epsilon, 1e-8)
     kernel_certify_continuous_wrench(contacts, sources, tractions, search, surface.info, epsilon, 8, 16384, 1e-8)
+    assert_equal(qd_to_numpy(tractions.status, transpose=True), 0)
+    assert_equal(qd_to_numpy(tractions.certificate, transpose=True), 0.0)
+    assert_equal(qd_to_numpy(tractions.certificate_margin, transpose=True), 0.0)
+
+
+def _continuous_disk_polar_bound(mesh, anchors, radii, friction, ray):
+    """Independent clipped-face boundary/arc Lipschitz bound; no native subdivision or search witnesses."""
+    triangles, tetrahedra = mesh["vertices"][mesh["surface_triangles"]], mesh["tetrahedra"]
+    normals = np.cross(triangles[:, 1] - triangles[:, 0], triangles[:, 2] - triangles[:, 0])
+    normals /= np.linalg.norm(normals, axis=1)[:, None]
+    for i_f, face in enumerate(mesh["surface_triangles"]):
+        owner = np.flatnonzero(np.isin(tetrahedra, face).sum(axis=1) == 3)[0]
+        opposite = tetrahedra[owner][~np.isin(tetrahedra[owner], face)][0]
+        if normals[i_f] @ (mesh["vertices"][opposite] - triangles[i_f, 0]) < 0:
+            normals[i_f] *= -1
+    maximum = -np.inf
+    for center, radius, mu in zip(anchors, radii, friction):
+        for triangle, normal in zip(triangles, normals):
+            distance = (center - triangle[0]) @ normal
+            if abs(distance) >= radius:
+                continue
+            circle_center, circle_radius = center - distance * normal, np.sqrt(radius**2 - distance**2)
+            e0 = (triangle[1] - triangle[0]) / np.linalg.norm(triangle[1] - triangle[0])
+            e1 = np.cross(normal, e0)
+            coordinates = np.column_stack(((triangle - circle_center) @ e0, (triangle - circle_center) @ e1))
+            dual = np.linalg.pinv(np.column_stack((coordinates[1] - coordinates[0], coordinates[2] - coordinates[0])))
+            points = [v for v in coordinates if np.linalg.norm(v) <= circle_radius]
+            angles = [0.0, 2 * np.pi]
+            for first, second in zip(coordinates, np.roll(coordinates, -1, axis=0)):
+                direction = second - first
+                a, b, c = direction @ direction, 2 * first @ direction, first @ first - circle_radius**2
+                discriminant = b**2 - 4 * a * c
+                if discriminant >= 0:
+                    for fraction in ((-b - np.sqrt(discriminant)) / (2 * a), (-b + np.sqrt(discriminant)) / (2 * a)):
+                        if 0 <= fraction <= 1:
+                            point = first + fraction * direction
+                            points.append(point)
+                            angles.append(np.arctan2(point[1], point[0]) % (2 * np.pi))
+
+            def polar(local, center=circle_center, first=e0, second=e1, inward=normal, friction=mu):
+                xyz = center + local[:, 0, None] * first + local[:, 1, None] * second
+                value = ray[:3] + np.cross(ray[3:], (xyz - anchors[1]) / radii[1])
+                compression = value @ inward
+                return compression + friction * np.linalg.norm(value - compression[:, None] * inward, axis=1)
+
+            if points:
+                maximum = max(maximum, float(polar(np.asarray(points)).max()))
+            angles = np.unique(angles)
+            for first, second in pairwise(angles):
+                middle = (first + second) / 2
+                point = circle_radius * np.array([np.cos(middle), np.sin(middle)])
+                uv = dual @ (point - coordinates[0])
+                if (uv >= 0).all() and uv.sum() <= 1:
+                    count = max(1, int(np.ceil((second - first) * 16384 / (2 * np.pi))))
+                    theta = np.linspace(first, second, count + 1)
+                    values = polar(circle_radius * np.column_stack((np.cos(theta), np.sin(theta))))
+                    lipschitz = (1 + mu) * np.linalg.norm(ray[3:]) * circle_radius / radii[1]
+                    maximum = max(maximum, float(values.max() + lipschitz * (second - first) / (2 * count)))
+    return maximum
+
+
+@pytest.mark.required
+@pytest.mark.precision("64")
+def test_saved_policy_boundary_certificate_preserves_feasible_components_and_release():
+    """The original policy876 component is incompatible; a bounded failed proof must stay unresolved."""
+    with np.load(Path(__file__).with_name("assets") / "nonconvex_policy_tick876.npz") as saved:
+        original = {key: saved[key].copy() for key in saved.files}
+    model = StressModel(RigidStressOptions(mesh=ASSETS / "elastic.npz", method="pcg"))
+    surface, paths = StressSurface(10, model.info), StressSurfacePaths(model.info, 8)
+    contacts, sources = create_contacts(2, 3, 0.006), create_sources(2, 3)
+    info, search = create_traction_info(surface.info), create_wrench_search(2, 3, 12)
+    footprints = create_footprints(paths.info.positions.shape[0], 2, 3)
+    tractions = create_surface_fan_tractions(surface.info, 2, 3, shared_support=True)
+    for name in ("position", "center", "anchor_face", "force", "normal", "friction", "radius"):
+        values = original["contacts." + name][:2]
+        contacts.__dict__[name].from_numpy(np.repeat(values[:, None], 3, axis=1))
+    for name in ("geom", "pair", "status", "free_moment", "anchor_moment", "barycentric"):
+        values = original["raw_sources." + name][:2]
+        sources.__dict__[name].from_numpy(np.repeat(values[:, None], 3, axis=1))
+    valid = np.array([[True, True, False], [True, True, False]])
+    force = np.repeat(original["contacts.force"][:2, None], 3, axis=1)
+    moment = np.repeat(original["raw_sources.anchor_moment"][:2, None], 3, axis=1)
+    # Env1 is a separately declared feasible control. The saved original
+    # component and both unchanged support sources remain in env0.
+    force[1, 1], moment[1, 1] = 0.0, 0.0
+    contacts.valid.from_numpy(valid)
+    contacts.force.from_numpy(force)
+    sources.anchor_moment.from_numpy(moment)
+    epsilon = float(np.finfo(gs.np_float).eps)
+    kernel_footprint_ports(contacts, sources, footprints, surface.info, paths.info)
+    kernel_surface_fan_profiles(contacts, footprints, tractions, model.info, surface.info, paths.info, info, epsilon)
+    kernel_bind_traction_support(contacts, sources, footprints, tractions)
+    kernel_fit_tractions(contacts, sources, tractions, info, epsilon, 9e-9, 128)
+    before_force = qd_to_numpy(tractions.force_error, transpose=True, copy=True)
+    before_moment = qd_to_numpy(tractions.moment_error, transpose=True, copy=True)
+    initial_status = qd_to_numpy(tractions.status, transpose=True, copy=True)
+    assert_equal(qd_to_numpy(tractions.status, transpose=True)[0, 0], StressTractionStatus.SUCCESS)
+    assert_equal(qd_to_numpy(tractions.status, transpose=True)[1:], StressTractionStatus.SUCCESS)
+    kernel_search_wrench_certificate(contacts, sources, tractions, search, info, epsilon, 1e-8, boundary_witnesses=True)
+    assert_equal(qd_to_numpy(tractions.status, transpose=True)[0, 1], StressTractionStatus.SAMPLED_WRENCH_INFEASIBLE)
+    kernel_certify_continuous_wrench(contacts, sources, tractions, search, surface.info, epsilon, 2, 65536, 1e-8)
+    assert_equal(qd_to_numpy(tractions.status, transpose=True)[0, 1], StressTractionStatus.SAMPLED_WRENCH_INFEASIBLE)
+    kernel_certify_continuous_wrench(contacts, sources, tractions, search, surface.info, epsilon, 12, 1, 1e-8)
+    assert_equal(qd_to_numpy(tractions.status, transpose=True)[0, 1], StressTractionStatus.SAMPLED_WRENCH_INFEASIBLE)
+    kernel_certify_continuous_wrench(contacts, sources, tractions, search, surface.info, epsilon, 12, 65536, 1e-8)
+    assert_equal(
+        qd_to_numpy(tractions.status, transpose=True)[0], [0, StressTractionStatus.CONTINUOUS_WRENCH_INFEASIBLE]
+    )
+    assert_equal(qd_to_numpy(tractions.status, transpose=True)[1:], 0)
+    assert qd_to_numpy(search.bound, transpose=True)[0, 1] < -1e-4
+    assert qd_to_numpy(search.evaluations, transpose=True)[0, 1] <= 640
+    assert 0 < qd_to_numpy(search.visited, transpose=True)[0, 1] <= 65536
+    assert_equal(qd_to_numpy(tractions.force_error, transpose=True), before_force)
+    assert_equal(qd_to_numpy(tractions.moment_error, transpose=True), before_moment)
+    ray = qd_to_numpy(tractions.certificate, transpose=True, copy=True)[0, 1]
+    anchors, radii, friction = (original["contacts." + name][:2] for name in ("center", "radius", "friction"))
+    target = np.concatenate((force[1, 0], moment[1, 0] / radii[1])) / np.linalg.norm(force[1, 0])
+    assert target @ ray > 1e-3
+    assert_allclose(np.linalg.norm(ray), 1.0, rtol=0.0, atol=1e-14)
+    with np.load(ASSETS / "elastic.npz") as mesh:
+        assert _continuous_disk_polar_bound(mesh, anchors, radii, friction, ray) < -1e-4
+    assert_equal(qd_to_numpy(contacts.force, transpose=True), force.swapaxes(0, 1))
+    for name in ("position", "center", "friction", "radius"):
+        assert_equal(
+            qd_to_numpy(contacts.__dict__[name], transpose=True),
+            np.repeat(original["contacts." + name][None, :2], 3, axis=0),
+        )
+    assert_equal(qd_to_numpy(tractions.certificate, transpose=True)[1:], 0.0)
+    # Exercise the production sequence from the original unresolved statuses,
+    # including all first-phase work and the conditional boundary retry.
+    tractions.status.from_numpy(initial_status.T.copy())
+    kernel_diagnose_wrenches(contacts, sources, tractions, search, info, surface.info, epsilon, 1e-8)
+    assert_equal(
+        qd_to_numpy(tractions.status, transpose=True)[0], [0, StressTractionStatus.CONTINUOUS_WRENCH_INFEASIBLE]
+    )
+    assert_equal(qd_to_numpy(tractions.status, transpose=True)[1:], 0)
+    assert qd_to_numpy(search.bound, transpose=True)[0, 1] < 0.0
+    assert qd_to_numpy(search.evaluations, transpose=True)[0, 1] <= 1280
+    assert qd_to_numpy(search.visited, transpose=True)[0, 1] <= 81920
+    combined_ray = qd_to_numpy(tractions.certificate, transpose=True, copy=True)[0, 1]
+    with np.load(ASSETS / "elastic.npz") as mesh:
+        assert _continuous_disk_polar_bound(mesh, anchors, radii, friction, combined_ray) < 0.0
+    assert_equal(qd_to_numpy(tractions.force_error, transpose=True), before_force)
+    assert_equal(qd_to_numpy(tractions.moment_error, transpose=True), before_moment)
+    # Release/reset env0 only; feasible env1 must retain its success, and no
+    # stale physical classification or certificate may survive in env0.
+    valid[:, 0] = False
+    contacts.valid.from_numpy(valid)
+    kernel_fit_tractions(contacts, sources, tractions, info, epsilon, 9e-9, 128)
+    kernel_diagnose_wrenches(contacts, sources, tractions, search, info, surface.info, epsilon, 1e-8)
     assert_equal(qd_to_numpy(tractions.status, transpose=True), 0)
     assert_equal(qd_to_numpy(tractions.certificate, transpose=True), 0.0)
     assert_equal(qd_to_numpy(tractions.certificate_margin, transpose=True), 0.0)
