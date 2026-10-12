@@ -52,7 +52,7 @@ Manifest SHA256:
 |---|---|---|
 | Sample-major frontier launch | Keep neighboring sample lanes on one contact and reduce divergent geometry work | [Selected](NATIVE_FAN_SAMPLE_LAYOUT_20261012.md):23 CUDA cases, unchanged CPU route,48 recorded oracle fields. Same-GPU live40955.914→55763.374 env-step/s (1.361546320x),zero failures in all three1280-step repeats/2323 resets. |
 | Nonnegative port-distance bound | Skip a final Euclidean segment norm whenever its accumulated path already exceeds the best complete distance | [Selected](NATIVE_PORT_BOUNDS_20261012.md):23 CPU/23 CUDA cases,48 recorded fields. With sample-major scheduling, same-GPU live52414.728→54119.673 env-step/s (1.032527971x),zero failures in all three1280-step repeats/2323 resets. |
-| Exact workspace growth | Allocate the actual observed contact requirement when a complete aggregate outgrows its workspace |23 CPU cases pass. Isolated profile records7 versus8 contacts,5,497,390,686 versus6,111,942,238 native bytes, and contact wall18.698345 versus18.630598ms. Dynamic live cost and CUDA qualification are pending. |
+| Exact workspace growth | Allocate the actual observed contact requirement when a complete aggregate outgrows its workspace | [Retained for memory](NATIVE_EXACT_CONTACT_CAPACITY_20261012.md):CPU23/CUDA23 pass; same-GPU live ratio0.995473616 provides no speed gain, but native memory drops614,551,552 bytes atB2048. Current pruning/metrics combination passes anotherCUDA23/24 recorded fields and three1280-step live repeats with zero failures. More frequent growth costs remain to be counted at wider batches. |
 
 The active goal still needs selected end-to-end benefits, new current-source
 four-scope measurements, wider batches/seeds, timed grasp outcomes, per-environment

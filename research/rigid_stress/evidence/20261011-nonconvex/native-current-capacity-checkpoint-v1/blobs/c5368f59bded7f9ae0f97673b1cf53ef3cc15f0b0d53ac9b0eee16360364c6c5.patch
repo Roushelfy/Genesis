@@ -1,0 +1,13 @@
+diff --git a/genesis/engine/solvers/rigid/stress/intrinsic.py b/genesis/engine/solvers/rigid/stress/intrinsic.py
+index 70bcab9e..2a41905d 100644
+--- a/genesis/engine/solvers/rigid/stress/intrinsic.py
++++ b/genesis/engine/solvers/rigid/stress/intrinsic.py
+@@ -178,7 +178,7 @@ class IntrinsicContacts:
+         if body_partition and n_work > n_chunk:
+             # Contact count is an input, not a fixed property of a grasp. Grow
+             # the complete workspace before loading; never truncate a body union.
+-            n_chunk = min(raw_contacts.valid.shape[0], max(n_work, 2 * n_chunk))
++            n_chunk = n_work
+             self._allocate_workspace(surface_info, options, n_chunk, raw_contacts.valid.shape[1])
+         stride = 1 if options.intrinsic_support == "pair_union" and not body_partition else n_chunk
+         for i_start in range(0, n_work, stride):
