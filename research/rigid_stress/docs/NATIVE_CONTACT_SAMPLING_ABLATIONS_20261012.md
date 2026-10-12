@@ -50,8 +50,8 @@ Manifest SHA256:
 
 | Candidate | Purpose | Current evidence/decision |
 |---|---|---|
-| Sample-major frontier launch | Keep neighboring sample lanes on one contact and reduce divergent geometry work | Isolated same-GPU profile improves contact wall33.604776→18.680484ms and fan sampling20.090→5.580ms. Full CUDA oracle and matched live repetitions remain pending. |
-| Nonnegative port-distance bound | Skip a final Euclidean segment norm whenever its accumulated path already exceeds the best complete distance | Mathematical lower bound retains the same minimum. Isolated CPU numerical and same-GPU profile evaluation are running. |
+| Sample-major frontier launch | Keep neighboring sample lanes on one contact and reduce divergent geometry work | [Selected](NATIVE_FAN_SAMPLE_LAYOUT_20261012.md):23 CUDA cases, unchanged CPU route,48 recorded oracle fields. Same-GPU live40955.914→55763.374 env-step/s (1.361546320x),zero failures in all three1280-step repeats/2323 resets. |
+| Nonnegative port-distance bound | Skip a final Euclidean segment norm whenever its accumulated path already exceeds the best complete distance | Mathematical lower bound retains the same minimum. Isolated23 CPU cases pass and same-GPU profile contact wall33.176090→26.676988ms. Its increment on top of sample-major scheduling and combined CUDA qualification are under evaluation. |
 
 The active goal still needs selected end-to-end benefits, new current-source
 four-scope measurements, wider batches/seeds, timed grasp outcomes, per-environment
