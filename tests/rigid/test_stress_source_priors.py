@@ -7,6 +7,7 @@ from scipy.sparse.linalg import splu
 
 import genesis as gs
 from genesis.engine.solvers.rigid.stress.contact import create_contacts
+from genesis.engine.solvers.rigid.stress.fan_refinement import kernel_refine_failed_fans, kernel_select_failed_fans
 from genesis.engine.solvers.rigid.stress.footprint import (
     create_footprints,
     create_surface_fan_tractions,
@@ -20,6 +21,7 @@ from genesis.engine.solvers.rigid.stress.provenance import create_sources
 from genesis.engine.solvers.rigid.stress.recovery import kernel_accept, kernel_begin_step, kernel_reset
 from genesis.engine.solvers.rigid.stress.source_priors import (
     kernel_partition_source_priors,
+    kernel_refresh_refined_source_priors,
     kernel_snapshot_source_priors,
 )
 from genesis.engine.solvers.rigid.stress.surface import StressSurface
@@ -80,6 +82,11 @@ def cpu_source_prior_fit(positions, profiles, normals, friction, source, forces,
 
 def source_prior_fixture(case, vertices, faces):
     assets = Path(__file__).with_name("assets")
+    if case in ("varied2048", "varied4096"):
+        with np.load(assets / f"nonconvex_{case}_single_source.npz") as saved:
+            return tuple(
+                saved[key].copy() for key in ("anchor", "point", "force", "radius", "friction", "anchor_face", "moment")
+            )
     if case == "balanced_compression":
         boundary = np.unique(faces)
         indices = boundary[[np.argmin(vertices[boundary, 0]), np.argmax(vertices[boundary, 0])]]
@@ -118,7 +125,9 @@ def source_prior_fixture(case, vertices, faces):
 
 @pytest.mark.required
 @pytest.mark.precision("64")
-@pytest.mark.parametrize("case", ("step602", "policy876", "policy807", "balanced_compression"))
+@pytest.mark.parametrize(
+    "case", ("step602", "policy876", "policy807", "balanced_compression", "varied2048", "varied4096")
+)
 def test_body_source_prior_wrench_cones_full_fields_and_gauge_rows(case, record_property):
     mesh = Path(__file__).resolve().parents[2] / "examples/rigid/assets/hollow_egg/level1/elastic.npz"
     options = RigidStressOptions(mesh=mesh, method="direct", intrinsic_load_partition="body_source_prior")
@@ -155,6 +164,16 @@ def test_body_source_prior_wrench_cones_full_fields_and_gauge_rows(case, record_
     kernel_snapshot_source_priors(contacts, sources, tractions)
     kernel_partition_source_priors(contacts, sources, tractions)
     kernel_fit_tractions(contacts, sources, tractions, info, epsilon, 9e-9, 128)
+    if case in ("varied2048", "varied4096"):
+        assert qd_to_numpy(tractions.status, transpose=True)[0, 0] in (3, 4)
+    kernel_select_failed_fans(contacts, footprints, tractions)
+    kernel_refine_failed_fans(
+        contacts, sources, footprints, tractions, model.info, surface.info, paths.info, info, epsilon
+    )
+    kernel_refresh_refined_source_priors(contacts, tractions)
+    kernel_fit_tractions(contacts, sources, tractions, info, epsilon, 9e-9, 128, retry_mode=3)
+    if case in ("varied2048", "varied4096"):
+        assert qd_to_numpy(tractions.fan_refined, transpose=True)[0, 0]
     assert_equal(qd_to_numpy(tractions.status, transpose=True), 0)
     assert_equal(qd_to_numpy(contacts.valid, transpose=True), True)
     assert_equal(qd_to_numpy(contacts.position, transpose=True), np.repeat(points[None], n_envs, axis=0))
@@ -174,6 +193,8 @@ def test_body_source_prior_wrench_cones_full_fields_and_gauge_rows(case, record_
         )
     ]
     counts = qd_to_numpy(tractions.sample_count, transpose=True)
+    record_property("fan_refined", qd_to_numpy(tractions.fan_refined, transpose=True).tolist())
+    record_property("fit_evaluations", qd_to_numpy(tractions.evaluations, transpose=True).tolist())
     surface_nodes = qd_to_numpy(model.info.surface_nodes, transpose=True).T
     nodal = np.zeros((n_envs, model.info.vertices.shape[0], 3))
     force = forces.sum(axis=0)

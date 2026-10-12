@@ -226,6 +226,7 @@ def kernel_surface_fan_profiles_impl(
 ):
     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
         traction_state.sample_count[i_c, i_b] = 0
+        traction_state.fan_refined[i_c, i_b] = False
         traction_state.circle.face[i_c, i_b] = -1
         traction_state.circle.radius[i_c, i_b] = 0.0
         traction_state.circle.refined[i_c, i_b] = False

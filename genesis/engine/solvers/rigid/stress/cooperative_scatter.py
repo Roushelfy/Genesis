@@ -52,6 +52,11 @@ def kernel_commit_intrinsic_contacts(
             if qd.static(len(packing.block_start.shape) == 2):
                 start = packing.block_start[i_start, i_b]
             i_raw = packing.indices[start + i_c, i_b]
+            if qd.static(len(traction_state.fan_refined.shape) == 2):  # noqa: SIM102 — guard disabled scalar scratch.
+                if lane == 0:
+                    raw_contacts.is_refined[i_raw, i_b] = (
+                        traction_state.circle.refined[i_c, i_b] or traction_state.fan_refined[i_c, i_b]
+                    )
             force_scale = contact_state.force[i_c, i_b].norm()
             if force_scale == 0.0:
                 force_scale = traction_state.scale[i_c, i_b]

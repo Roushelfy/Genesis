@@ -41,6 +41,7 @@ def kernel_fan_frontier(
         traction_state.circle.face[i_c, i_b] = -1
         traction_state.circle.radius[i_c, i_b] = 0.0
         traction_state.circle.refined[i_c, i_b] = False
+        traction_state.fan_refined[i_c, i_b] = False
         traction_state.circle.focus[i_c, i_b] = qd.Vector.zero(gs.qd_float, 2)
         if contact_state.valid[i_c, i_b] and footprint_state.status[i_c, i_b] == StressFootprintStatus.SUCCESS:
             i_face = contact_state.anchor_face[i_c, i_b]

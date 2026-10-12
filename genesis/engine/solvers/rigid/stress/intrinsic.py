@@ -18,6 +18,7 @@ from .compatibility import (
 from .contact import StressContactState, create_contacts
 from .data import StressInfo, StressState
 from .failure import create_contact_failure, kernel_capture_contact_failure
+from .fan_refinement import kernel_refine_failed_fans, kernel_select_failed_fans
 from .footprint import (
     StressFootprintState,
     create_anchor_fan_tractions,
@@ -244,6 +245,31 @@ class IntrinsicContacts:
                     retry_mode=2,
                     cooperative=options.cooperative_tractions,
                     warm_start=options.warm_start_tractions,
+                )
+                kernel_select_failed_fans(self.contacts, self.footprints, self.tractions)
+                kernel_refine_failed_fans(
+                    self.contacts,
+                    self.sources,
+                    self.footprints,
+                    self.tractions,
+                    stress_info,
+                    surface_info,
+                    self.paths.info,
+                    self.traction_info,
+                    epsilon,
+                )
+                if body_partition:
+                    kernel_refresh_refined_source_priors(self.contacts, self.tractions)
+                kernel_fit_tractions(
+                    self.contacts,
+                    self.sources,
+                    self.tractions,
+                    self.traction_info,
+                    epsilon,
+                    _TRACTION_FIT_TOLERANCE,
+                    128,
+                    retry_mode=3,
+                    cooperative=options.cooperative_tractions,
                 )
             kernel_certify_continuous_force(self.contacts, self.tractions, surface_info, epsilon, 1e-8)
             kernel_diagnose_wrenches(
@@ -573,6 +599,10 @@ def kernel_commit_intrinsic_contacts_impl(
                 raw_sources.anchor_moment[i_raw, i_b] = source_state.anchor_moment[i_c, i_b]
             raw_sources.status[i_raw, i_b] = source_state.status[i_c, i_b]
             raw_contacts.candidate_count[i_raw, i_b] = footprint_state.samples[i_c, i_b]
+            if qd.static(len(traction_state.fan_refined.shape) == 2):
+                raw_contacts.is_refined[i_raw, i_b] = (
+                    traction_state.circle.refined[i_c, i_b] or traction_state.fan_refined[i_c, i_b]
+                )
             raw_contacts.evaluations[i_raw, i_b] = traction_state.evaluations[i_c, i_b]
             certificates.ray[i_raw, i_b] = traction_state.certificate[i_c, i_b]
             certificates.margin[i_raw, i_b] = traction_state.certificate_margin[i_c, i_b]

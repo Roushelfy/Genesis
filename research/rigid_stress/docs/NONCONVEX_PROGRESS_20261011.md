@@ -4,6 +4,18 @@ This implements the active extension in `NONCONVEX_CONTACT_REQUIREMENTS.md`.
 The previous egg milestone remains complete; native nonconvex acceptance is
 not yet established. The initial branch source is `1d6babf7`.
 
+The [native wrench-line fan repair](NATIVE_WRENCH_FAN_REPAIR_20261012.md)
+passes64 CPU/64 CUDA cases and36 independent full fields. Both newly
+captured single-source failures recover at their original radii/friction;
+the independent B2048/623102 live workload now completes three1280-step
+repetitions/2323 resets each with no invalid steps,36261.929 valid env-step/s.
+B4096moves past its old failure but aborts in its first timed repetition on
+a new two-source continuous-model incompatibility. An independent spatial/
+cone outer proof verifies it; no B4096rate is claimed. Geometry/provenance/
+rigid-input review and explicit failed-episode accounting are next, followed
+by broader four-scope evidence and remaining optimization. The goal remains
+active and incomplete.
+
 The explicit [native body source-prior law](BODY_SOURCE_PRIOR_MODEL.md) is now
 integrated without changing the componentwise default. Combined native
 frontier/model6 CPU/6 CUDA cases pass24 independent full fields (max wrench
