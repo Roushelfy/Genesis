@@ -23,6 +23,20 @@ This is a new requirement after the milestone below. Its prior completion
 record does not establish native nonconvex-contact acceptance. Record and push
 validated progress, including unfinished work and unavailable device checks.
 
+## Extension progress, 2026-10-12
+
+The extension remains active. Current numerical source `6a861556` contains
+qualified contact repairs and selected seed/layout/port/scatter optimizations.
+[Matched B1024 four scopes](docs/NATIVE_MATCHED_SCOPES_20261012.md) include timed
+grasp outcomes, resets and environment work. Contact graphs, fastcache and
+standalone device-frontier maximum have no selected dynamic end-to-end benefit;
+see [the ablation ledger](docs/NATIVE_CONTACT_SAMPLING_ABLATIONS_20261012.md).
+[Dynamic profiling and320 independent GPU field samples](docs/NATIVE_DYNAMIC_PROFILE_20261012.md)
+pass unchanged budgets and identify a0.74-1.49s serial fit tail. Its cooperative
+retry candidate is being qualified, with broader B4096/B8192 matched scopes
+running. More seeds, measured tail optimization, remaining candidate decisions
+and a throughput plateau are still required before extension completion.
+
 ## Completion record, 2026-10-11
 
 The low-shell native feature, contact repair, unchanged-budget numerical and
