@@ -1,0 +1,361 @@
+{
+  "scope": "Allocated-CPU checkpoint writer preserving raw, stored and decompressed hashes.",
+  "summary": {
+    "captured_sample_mean": 25477233,
+    "captured_sample_maximum": 30171852,
+    "captured_fenced_mean_step_ms": 159.6115005610045,
+    "measurements": [
+      {
+        "sample_count": 25477233,
+        "routes": [
+          {
+            "gaussian_fp32": false,
+            "repeat_seconds_per_100": [
+              0.07334433682262897,
+              0.07322262926027179,
+              0.07323305867612362,
+              0.07326438138261437,
+              0.0733703039586544
+            ],
+            "mean_kernel_ms": 0.7328694202005863,
+            "independent_profile_relative_error_max": 1.1769549335701188e-15
+          },
+          {
+            "gaussian_fp32": true,
+            "repeat_seconds_per_100": [
+              0.04891462903469801,
+              0.048903907649219036,
+              0.04879122320562601,
+              0.04894932406023145,
+              0.04887293325737119
+            ],
+            "mean_kernel_ms": 0.4888640344142914,
+            "independent_profile_relative_error_max": 1.9600667289707673e-07
+          },
+          {
+            "gaussian_fp32": false,
+            "repeat_seconds_per_100": [
+              0.07337378896772861,
+              0.0731760561466217,
+              0.0731921661645174,
+              0.0731986197642982,
+              0.07319125486537814
+            ],
+            "mean_kernel_ms": 0.7322637718170881,
+            "independent_profile_relative_error_max": 1.1769549335701188e-15
+          }
+        ],
+        "isolated_saved_ms": 0.24370256159454584,
+        "captured_fenced_mean_step_fraction": 0.0015268483833431614
+      },
+      {
+        "sample_count": 30171852,
+        "routes": [
+          {
+            "gaussian_fp32": false,
+            "repeat_seconds_per_100": [
+              0.08652463601902127,
+              0.08651192206889391,
+              0.08652516594156623,
+              0.08657368738204241,
+              0.08667740412056446
+            ],
+            "mean_kernel_ms": 0.8656256310641766,
+            "independent_profile_relative_error_max": 1.1769549335701188e-15
+          },
+          {
+            "gaussian_fp32": true,
+            "repeat_seconds_per_100": [
+              0.058195679914206266,
+              0.05807597516104579,
+              0.058066011406481266,
+              0.05796624207869172,
+              0.058079578913748264
+            ],
+            "mean_kernel_ms": 0.5807669749483466,
+            "independent_profile_relative_error_max": 1.9600667289707673e-07
+          },
+          {
+            "gaussian_fp32": false,
+            "repeat_seconds_per_100": [
+              0.08649447513744235,
+              0.08653317298740149,
+              0.08653548592701554,
+              0.08653123490512371,
+              0.08652320224791765
+            ],
+            "mean_kernel_ms": 0.8652351424098015,
+            "independent_profile_relative_error_max": 1.1769549335701188e-15
+          }
+        ],
+        "isolated_saved_ms": 0.2846634117886424,
+        "captured_fenced_mean_step_fraction": 0.0017834768220842726
+      }
+    ],
+    "limitations": "Isolated Gaussian-profile precision cost at captured sample counts; no production selection or rollout claim. Counts sum retained per-source candidate counts; aggregate diagnostic duplication can overestimate Gaussian calls. This interleaved off/on/off microkernel isolates contiguous64-bit input/output plus Gaussian computation and cannot establish whole-sampler register/occupancy or end-to-end gains, or final stress consistency. No contact/load/acceptance change is made.",
+    "decision": "No production Gaussian FP32 change selected: isolated anticipated whole-step saving is below0.2%; geometry/distance and nonlinear fitting dominate. Final stress consistency for Gaussian FP32 remains unmeasured."
+  },
+  "limitations": "Standalone native Quadrants Gaussian kernels only, RTX PRO6000 Blackwell node hardware CSV; assigned GPU UUID not retained separately. Mean/max sample counts come from production92ec3e0c B16384/seed623102 dynamic capture, whose lineage remains in native-selected-dynamic-checkpoint-v1. ContiguousFP64 inputs/output; FP32 only exp argument/result; five100-call repeats in off/on/off order, independent CPU FP64 profile comparison. The first run fails because ndarray cannot useqd.template; corrected v2 usesqd.types.ndarray. Both source closures and failure are preserved. This microkernel is cost evidence, not a formal whole-kernel speed bound, contact/stress acceptance, a rollout comparison or headline throughput. No physical/numerical production law is changed.",
+  "files": [
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/archive_native_gaussian_cost_v1.py",
+      "run_path": "archive_native_gaussian_cost_v1.py",
+      "artifact": "blobs/5db659c5e5329887449185441343451ab5c8e7426b4d07117e220867b1f97cbe.py",
+      "encoding": "identity",
+      "bytes": 2322,
+      "sha256": "5db659c5e5329887449185441343451ab5c8e7426b4d07117e220867b1f97cbe",
+      "stored_bytes": 2322,
+      "stored_sha256": "5db659c5e5329887449185441343451ab5c8e7426b4d07117e220867b1f97cbe"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/native-gaussian-precision-cost-v1/benchmark.log",
+      "run_path": "native-gaussian-precision-cost-v1/benchmark.log",
+      "artifact": "blobs/326620030187142222572131840c8b79dcd7747544618a108fc1acb99cf01804.log",
+      "encoding": "identity",
+      "bytes": 1213,
+      "sha256": "326620030187142222572131840c8b79dcd7747544618a108fc1acb99cf01804",
+      "stored_bytes": 1213,
+      "stored_sha256": "326620030187142222572131840c8b79dcd7747544618a108fc1acb99cf01804"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/native-gaussian-precision-cost-v1/hardware.csv",
+      "run_path": "native-gaussian-precision-cost-v1/hardware.csv",
+      "artifact": "blobs/85e815aeba0283029210f7590a07a7e485176455ddf6d7065b5630ce69ece1f8.csv",
+      "encoding": "identity",
+      "bytes": 156,
+      "sha256": "85e815aeba0283029210f7590a07a7e485176455ddf6d7065b5630ce69ece1f8",
+      "stored_bytes": 156,
+      "stored_sha256": "85e815aeba0283029210f7590a07a7e485176455ddf6d7065b5630ce69ece1f8"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/native-gaussian-precision-cost-v1/node.txt",
+      "run_path": "native-gaussian-precision-cost-v1/node.txt",
+      "artifact": "blobs/5b8b7e138ab4ec464f36863c8d3dc3c3de046326cea262b72cba03e3ff1fff00.txt",
+      "encoding": "identity",
+      "bytes": 12,
+      "sha256": "5b8b7e138ab4ec464f36863c8d3dc3c3de046326cea262b72cba03e3ff1fff00",
+      "stored_bytes": 12,
+      "stored_sha256": "5b8b7e138ab4ec464f36863c8d3dc3c3de046326cea262b72cba03e3ff1fff00"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/native-gaussian-precision-cost-v1/probe_gaussian_precision_cost_v1.py",
+      "run_path": "native-gaussian-precision-cost-v1/probe_gaussian_precision_cost_v1.py",
+      "artifact": "blobs/5d0d49ccb994300157e60d505a0db082dba287d4c2cd957919e260abb9a7f8a5.py",
+      "encoding": "identity",
+      "bytes": 3875,
+      "sha256": "5d0d49ccb994300157e60d505a0db082dba287d4c2cd957919e260abb9a7f8a5",
+      "stored_bytes": 3875,
+      "stored_sha256": "5d0d49ccb994300157e60d505a0db082dba287d4c2cd957919e260abb9a7f8a5"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/native-gaussian-precision-cost-v1/returncode.txt",
+      "run_path": "native-gaussian-precision-cost-v1/returncode.txt",
+      "artifact": "blobs/4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865.txt",
+      "encoding": "identity",
+      "bytes": 2,
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "stored_bytes": 2,
+      "stored_sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/native-gaussian-precision-cost-v1/run_gaussian_precision_cost_v1.sh",
+      "run_path": "native-gaussian-precision-cost-v1/run_gaussian_precision_cost_v1.sh",
+      "artifact": "blobs/2ec1a7090bc809ce365c877e025165f4798803d2d0d68fe4cb8fa9d0ebc5ce92.sh",
+      "encoding": "identity",
+      "bytes": 1397,
+      "sha256": "2ec1a7090bc809ce365c877e025165f4798803d2d0d68fe4cb8fa9d0ebc5ce92",
+      "stored_bytes": 1397,
+      "stored_sha256": "2ec1a7090bc809ce365c877e025165f4798803d2d0d68fe4cb8fa9d0ebc5ce92"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/native-gaussian-precision-cost-v1/source-after.sha256",
+      "run_path": "native-gaussian-precision-cost-v1/source-after.sha256",
+      "artifact": "blobs/067837a82732e3ac61d2d10762264751253c97b98bc5e7912fc025ebfe80843f.sha256",
+      "encoding": "identity",
+      "bytes": 386,
+      "sha256": "067837a82732e3ac61d2d10762264751253c97b98bc5e7912fc025ebfe80843f",
+      "stored_bytes": 386,
+      "stored_sha256": "067837a82732e3ac61d2d10762264751253c97b98bc5e7912fc025ebfe80843f"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/native-gaussian-precision-cost-v1/source.sha256",
+      "run_path": "native-gaussian-precision-cost-v1/source.sha256",
+      "artifact": "blobs/067837a82732e3ac61d2d10762264751253c97b98bc5e7912fc025ebfe80843f.sha256",
+      "encoding": "identity",
+      "bytes": 386,
+      "sha256": "067837a82732e3ac61d2d10762264751253c97b98bc5e7912fc025ebfe80843f",
+      "stored_bytes": 386,
+      "stored_sha256": "067837a82732e3ac61d2d10762264751253c97b98bc5e7912fc025ebfe80843f"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/native-gaussian-precision-cost-v1-allocation.log",
+      "run_path": "native-gaussian-precision-cost-v1-allocation.log",
+      "artifact": "blobs/c23f26635ed6a176a5a0bfb7877ae05be27ac54ede4ef05d696756e416d5f373.log",
+      "encoding": "identity",
+      "bytes": 94,
+      "sha256": "c23f26635ed6a176a5a0bfb7877ae05be27ac54ede4ef05d696756e416d5f373",
+      "stored_bytes": 94,
+      "stored_sha256": "c23f26635ed6a176a5a0bfb7877ae05be27ac54ede4ef05d696756e416d5f373"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/native-gaussian-precision-cost-v2/benchmark.log",
+      "run_path": "native-gaussian-precision-cost-v2/benchmark.log",
+      "artifact": "blobs/f2debcadcba29da946d9f414cf179731c094a4c385cf06cc4b286764623aa41a.log",
+      "encoding": "identity",
+      "bytes": 3377,
+      "sha256": "f2debcadcba29da946d9f414cf179731c094a4c385cf06cc4b286764623aa41a",
+      "stored_bytes": 3377,
+      "stored_sha256": "f2debcadcba29da946d9f414cf179731c094a4c385cf06cc4b286764623aa41a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/native-gaussian-precision-cost-v2/hardware.csv",
+      "run_path": "native-gaussian-precision-cost-v2/hardware.csv",
+      "artifact": "blobs/eac4913dcb08af32afd265ac031dd7108feb229ad82b59b217cfe10912f6aac2.csv",
+      "encoding": "identity",
+      "bytes": 156,
+      "sha256": "eac4913dcb08af32afd265ac031dd7108feb229ad82b59b217cfe10912f6aac2",
+      "stored_bytes": 156,
+      "stored_sha256": "eac4913dcb08af32afd265ac031dd7108feb229ad82b59b217cfe10912f6aac2"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/native-gaussian-precision-cost-v2/node.txt",
+      "run_path": "native-gaussian-precision-cost-v2/node.txt",
+      "artifact": "blobs/b0fd0aa40961146cdcadbbff5a7dcb2055f1504fdaa80905a13190912405c152.txt",
+      "encoding": "identity",
+      "bytes": 12,
+      "sha256": "b0fd0aa40961146cdcadbbff5a7dcb2055f1504fdaa80905a13190912405c152",
+      "stored_bytes": 12,
+      "stored_sha256": "b0fd0aa40961146cdcadbbff5a7dcb2055f1504fdaa80905a13190912405c152"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/native-gaussian-precision-cost-v2/probe_gaussian_precision_cost_v2.py",
+      "run_path": "native-gaussian-precision-cost-v2/probe_gaussian_precision_cost_v2.py",
+      "artifact": "blobs/2b592ec0139d11bfbaa0be487f2e8559c9e391bd4f7dab03948b0785d78db70a.py",
+      "encoding": "identity",
+      "bytes": 3899,
+      "sha256": "2b592ec0139d11bfbaa0be487f2e8559c9e391bd4f7dab03948b0785d78db70a",
+      "stored_bytes": 3899,
+      "stored_sha256": "2b592ec0139d11bfbaa0be487f2e8559c9e391bd4f7dab03948b0785d78db70a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/native-gaussian-precision-cost-v2/result.json",
+      "run_path": "native-gaussian-precision-cost-v2/result.json",
+      "artifact": "blobs/f2debcadcba29da946d9f414cf179731c094a4c385cf06cc4b286764623aa41a.json",
+      "encoding": "identity",
+      "bytes": 3377,
+      "sha256": "f2debcadcba29da946d9f414cf179731c094a4c385cf06cc4b286764623aa41a",
+      "stored_bytes": 3377,
+      "stored_sha256": "f2debcadcba29da946d9f414cf179731c094a4c385cf06cc4b286764623aa41a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/native-gaussian-precision-cost-v2/returncode.txt",
+      "run_path": "native-gaussian-precision-cost-v2/returncode.txt",
+      "artifact": "blobs/9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa.txt",
+      "encoding": "identity",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "stored_bytes": 2,
+      "stored_sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/native-gaussian-precision-cost-v2/run_gaussian_precision_cost_v2.sh",
+      "run_path": "native-gaussian-precision-cost-v2/run_gaussian_precision_cost_v2.sh",
+      "artifact": "blobs/68c0638eb91514c6cde82406a8e5e64ee0c660ab13d3cede90c046bbb9bd1fcb.sh",
+      "encoding": "identity",
+      "bytes": 1397,
+      "sha256": "68c0638eb91514c6cde82406a8e5e64ee0c660ab13d3cede90c046bbb9bd1fcb",
+      "stored_bytes": 1397,
+      "stored_sha256": "68c0638eb91514c6cde82406a8e5e64ee0c660ab13d3cede90c046bbb9bd1fcb"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/native-gaussian-precision-cost-v2/source-after.sha256",
+      "run_path": "native-gaussian-precision-cost-v2/source-after.sha256",
+      "artifact": "blobs/7ec6b79cb60b84ebd5bf9f4ba82c9d5434b1531345513c4cf6d52266f73abd72.sha256",
+      "encoding": "identity",
+      "bytes": 386,
+      "sha256": "7ec6b79cb60b84ebd5bf9f4ba82c9d5434b1531345513c4cf6d52266f73abd72",
+      "stored_bytes": 386,
+      "stored_sha256": "7ec6b79cb60b84ebd5bf9f4ba82c9d5434b1531345513c4cf6d52266f73abd72"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/native-gaussian-precision-cost-v2/source.sha256",
+      "run_path": "native-gaussian-precision-cost-v2/source.sha256",
+      "artifact": "blobs/7ec6b79cb60b84ebd5bf9f4ba82c9d5434b1531345513c4cf6d52266f73abd72.sha256",
+      "encoding": "identity",
+      "bytes": 386,
+      "sha256": "7ec6b79cb60b84ebd5bf9f4ba82c9d5434b1531345513c4cf6d52266f73abd72",
+      "stored_bytes": 386,
+      "stored_sha256": "7ec6b79cb60b84ebd5bf9f4ba82c9d5434b1531345513c4cf6d52266f73abd72"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/native-gaussian-precision-cost-v2-allocation.log",
+      "run_path": "native-gaussian-precision-cost-v2-allocation.log",
+      "artifact": "blobs/a2ed16974f5b7d9de83f4eb9ed19e4699cd66ea452d1c0a247e3de8f2ba1352b.log",
+      "encoding": "identity",
+      "bytes": 109,
+      "sha256": "a2ed16974f5b7d9de83f4eb9ed19e4699cd66ea452d1c0a247e3de8f2ba1352b",
+      "stored_bytes": 109,
+      "stored_sha256": "a2ed16974f5b7d9de83f4eb9ed19e4699cd66ea452d1c0a247e3de8f2ba1352b"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/probe_gaussian_precision_cost_v1.py",
+      "run_path": "probe_gaussian_precision_cost_v1.py",
+      "artifact": "blobs/5d0d49ccb994300157e60d505a0db082dba287d4c2cd957919e260abb9a7f8a5.py",
+      "encoding": "identity",
+      "bytes": 3875,
+      "sha256": "5d0d49ccb994300157e60d505a0db082dba287d4c2cd957919e260abb9a7f8a5",
+      "stored_bytes": 3875,
+      "stored_sha256": "5d0d49ccb994300157e60d505a0db082dba287d4c2cd957919e260abb9a7f8a5"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/probe_gaussian_precision_cost_v2.py",
+      "run_path": "probe_gaussian_precision_cost_v2.py",
+      "artifact": "blobs/2b592ec0139d11bfbaa0be487f2e8559c9e391bd4f7dab03948b0785d78db70a.py",
+      "encoding": "identity",
+      "bytes": 3899,
+      "sha256": "2b592ec0139d11bfbaa0be487f2e8559c9e391bd4f7dab03948b0785d78db70a",
+      "stored_bytes": 3899,
+      "stored_sha256": "2b592ec0139d11bfbaa0be487f2e8559c9e391bd4f7dab03948b0785d78db70a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/publish_native_checkpoint_v1.py",
+      "run_path": "publish_native_checkpoint_v1.py",
+      "artifact": "blobs/fab464b4a1f6c351fc8fea5b32c303d47c075a156e67549ba7d054cfe5a716ba.py",
+      "encoding": "identity",
+      "bytes": 2690,
+      "sha256": "fab464b4a1f6c351fc8fea5b32c303d47c075a156e67549ba7d054cfe5a716ba",
+      "stored_bytes": 2690,
+      "stored_sha256": "fab464b4a1f6c351fc8fea5b32c303d47c075a156e67549ba7d054cfe5a716ba"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/run_archive_native_gaussian_cost_v1.sh",
+      "run_path": "run_archive_native_gaussian_cost_v1.sh",
+      "artifact": "blobs/2f9cea31b9d605362fa6390c57296fbf58cff17d84293411440aaeae298951b2.sh",
+      "encoding": "identity",
+      "bytes": 384,
+      "sha256": "2f9cea31b9d605362fa6390c57296fbf58cff17d84293411440aaeae298951b2",
+      "stored_bytes": 384,
+      "stored_sha256": "2f9cea31b9d605362fa6390c57296fbf58cff17d84293411440aaeae298951b2"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/run_gaussian_precision_cost_v1.sh",
+      "run_path": "run_gaussian_precision_cost_v1.sh",
+      "artifact": "blobs/2ec1a7090bc809ce365c877e025165f4798803d2d0d68fe4cb8fa9d0ebc5ce92.sh",
+      "encoding": "identity",
+      "bytes": 1397,
+      "sha256": "2ec1a7090bc809ce365c877e025165f4798803d2d0d68fe4cb8fa9d0ebc5ce92",
+      "stored_bytes": 1397,
+      "stored_sha256": "2ec1a7090bc809ce365c877e025165f4798803d2d0d68fe4cb8fa9d0ebc5ce92"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/run_gaussian_precision_cost_v2.sh",
+      "run_path": "run_gaussian_precision_cost_v2.sh",
+      "artifact": "blobs/68c0638eb91514c6cde82406a8e5e64ee0c660ab13d3cede90c046bbb9bd1fcb.sh",
+      "encoding": "identity",
+      "bytes": 1397,
+      "sha256": "68c0638eb91514c6cde82406a8e5e64ee0c660ab13d3cede90c046bbb9bd1fcb",
+      "stored_bytes": 1397,
+      "stored_sha256": "68c0638eb91514c6cde82406a8e5e64ee0c660ab13d3cede90c046bbb9bd1fcb"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+[Quadrants] version 1.3.3, llvm 22.1.0, commit 00423caa, linux, python 3.10.12
+Traceback (most recent call last):
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/probe_gaussian_precision_cost_v1.py", line 49, in <module>
+    initialize(relative, weight)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/_quadrants_callable.py", line 101, in __call__
+    return self.wrapper.__call__(*args, **kwargs)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel_impl.py", line 184, in wrapped_func
+    raise type(e)("\n" + str(e)) from None
+quadrants.lang.exception.QuadrantsRuntimeTypeError: 
+exception while trying to ensure compiled <function initialize at 0x75a515dce4d0>:
+Ndarray shouldn't be passed in via `qd.template()`, please annotate your kernel using `qd.types.ndarray(...)` instead
+
+[38;5;9m[Genesis] [16:12:54] [ERROR] QuadrantsRuntimeTypeError: 
+exception while trying to ensure compiled <function initialize at 0x75a515dce4d0>:
+Ndarray shouldn't be passed in via `qd.template()`, please annotate your kernel using `qd.types.ndarray(...)` instead[0m
