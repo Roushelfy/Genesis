@@ -87,6 +87,17 @@ class StressTractionCircle:
 
 
 @dataclass(frozen=True)
+class StressFanFrontier:
+    """Stable candidate faces for the unchanged surface fan quadrature."""
+
+    kind: ClassVar[DataKind] = DataKind.SCRATCH
+
+    indices: qd.Tensor
+    count: qd.Tensor
+    maximum: qd.Tensor
+
+
+@dataclass(frozen=True)
 class StressTractionState:
     kind: ClassVar[DataKind] = DataKind.SCRATCH
 
@@ -110,6 +121,7 @@ class StressTractionState:
     fan_coordinate_power: qd.Tensor
     circle: StressTractionCircle
     support: StressTractionSupport
+    frontier: StressFanFrontier
 
 
 def create_tractions(
@@ -123,6 +135,7 @@ def create_tractions(
     fan_faces: int = 0,
     fan_coordinate_power: int = 1,
     shared_support: bool = False,
+    surface_fan_frontier: bool = True,
 ) -> StressTractionState:
     """Allocate the exact supplied quadrature subproblem, without a force cloud.
 
@@ -134,6 +147,9 @@ def create_tractions(
         (n_samples if local_sample_count is None else local_sample_count, n_contacts, n_envs) if local_samples else ()
     )
     face_shape = shape if local_samples and local_sample_count is not None else sample_shape
+    frontier_shape = (
+        (fan_faces, n_contacts, n_envs) if fan_faces and surface_fan_frontier and gs.backend == gs.cuda else ()
+    )
     state = StressTractionState(
         profile=V(dtype=gs.qd_float, shape=(n_samples, n_contacts, n_envs)),
         dual=V_VEC(6, dtype=gs.qd_float, shape=shape),
@@ -166,6 +182,11 @@ def create_tractions(
             center=V_VEC(3, dtype=gs.qd_float, shape=shape if shared_support else ()),
             radius=V(dtype=gs.qd_float, shape=shape if shared_support else ()),
             friction=V(dtype=gs.qd_float, shape=shape if shared_support else ()),
+        ),
+        frontier=StressFanFrontier(
+            indices=V(dtype=gs.qd_int, shape=frontier_shape),
+            count=V(dtype=gs.qd_int, shape=shape if frontier_shape else ()),
+            maximum=V(dtype=gs.qd_int, shape=()),
         ),
     )
     state.sample_count.fill(0 if packed_samples else n_samples)

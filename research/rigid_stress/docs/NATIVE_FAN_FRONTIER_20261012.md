@@ -49,8 +49,21 @@ Manifest SHA256:
 `575fbfdbef4366d8109a6c5c03ae86d4d25d85928fd192616d32c01033021aa6`.
 
 Production integration stores the frontier in typed, enumerated native scratch
-and exposes a scheduling ablation. Its own regression and matched timing are
-still running; the table qualifies the isolated prototype only. This copied
+and exposes `surface_fan_frontier=False` / `--dense-surface-fan` as a scheduling
+ablation. Its separate 56 CUDA cases pass in 676.59 s. A fresh same-GPU B1024
+comparison measures 28265.616857 to 39558.605542 valid env-step/s, or 1.399531x,
+again with three complete 1280-step repetitions, 1184 resets each and zero
+failures or overflow. Native enumeration now includes the frontier:
+3,097,545,310 versus 3,100,199,510 bytes. Every source snapshot before/after
+matches. CPU retains the original full-face kernel. This selects the CUDA
+frontier route by default while preserving the original physical law.
+
+The production archive is
+[`native-fan-frontier-checkpoint-v1`](../evidence/20261011-nonconvex/native-fan-frontier-checkpoint-v1/manifest.json):
+136 entries, 93 unique blobs, 7,655,332 bytes; manifest SHA256
+`288fcdfcdb4147903c152ca73298025095cbf0d0f0cfb28339848254e7c89b61`.
+
+This copied
 bank does not establish diverse policy acceptance, a throughput maximum or an
 optimization plateau. The original componentwise load law's policy failure
 and the explicit source-prior model's production validation remain separate

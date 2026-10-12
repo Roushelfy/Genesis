@@ -8,9 +8,10 @@ The [exact-sample fan launch checkpoint](NATIVE_FAN_FRONTIER_20261012.md)
 passes 56 CPU/56 CUDA cases and measures copied B1024 live throughput
 28276.748 to 39565.723 valid env-step/s, a 1.399232x gain across three
 complete repetitions with zero failures. The extra 2,654,212-byte workspace
-and maximum readback are disclosed and timed. Production integration has
-its own regression/timing underway; broader policy acceptance and a plateau
-remain incomplete.
+and maximum readback are disclosed and timed. Production integration now
+passes56 CUDA cases and measures matched B1024 gain1.399531x, with all
+typed frontier buffers included in native memory enumeration. Broader policy
+acceptance and a plateau remain incomplete.
 
 The [current-source copied scaling checkpoint](NATIVE_COPIED_SCALE_20261012.md)
 records B2048 live31,164.234 valid env-step/s/15.2169 batch-step/s across

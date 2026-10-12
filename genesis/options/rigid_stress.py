@@ -37,6 +37,10 @@ class RigidStressOptions(Options):
     a device-masked retry of the canonical scalar algorithm; CPU retains that
     scalar route. Disabling this option provides a matched scheduling baseline
     without changing the load law, sampling or final acceptance budgets.
+    ``surface_fan_frontier`` schedules CUDA fan sampling on a compact list of
+    candidate faces. It preserves each original sample and intrinsic distance
+    check, and includes the device maximum readback. CPU retains its original
+    full-face route. Disable it for a matched scheduling comparison.
     ``warm_start_tractions`` allows CUDA fitting to start from a previous
     successful fit. This reduces work on smooth loads but can add cold-retry
     work after abrupt changes. Every current input and final result still
@@ -140,6 +144,7 @@ class RigidStressOptions(Options):
     intrinsic_integration: Literal["surface_fan", "anchor_fan"] = "surface_fan"
     intrinsic_support: Literal["contact", "pair_union"] = "contact"
     cooperative_tractions: StrictBool = True
+    surface_fan_frontier: StrictBool = True
     warm_start_tractions: StrictBool = True
     contact_block_size: PositiveInt = 16
     surface_edge_subdivisions: PositiveInt = 8
