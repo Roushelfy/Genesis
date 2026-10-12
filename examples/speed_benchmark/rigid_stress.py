@@ -21,6 +21,7 @@ import torch
 
 import genesis as gs
 from examples.rigid.franka_egg_stress import FrankaEgg
+from examples.speed_benchmark.rigid_stress_metrics import RolloutMetrics
 from examples.speed_benchmark.stress_stages import kernel_query, kernel_small_solve, kernel_weights_gram
 from genesis.engine.solvers.rigid.stress.association import kernel_associate
 from genesis.engine.solvers.rigid.stress.balance import kernel_balance_contacts
@@ -383,10 +384,15 @@ def main() -> None:
     parser.add_argument("--rigid-post-fusion", choices=("auto", "on", "off"), default="auto")
     parser.add_argument("--trace", action="store_true", help="Export a separate intrusive CUDA/CPU trace pass.")
     parser.add_argument(
+        "--trajectory-metrics", action="store_true", help="Time device-side grasp outcomes and per-environment work."
+    )
+    parser.add_argument(
         "--compact-log", action="store_true", help="Keep full per-environment diagnostics in JSON only."
     )
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
+    if args.trajectory_metrics and args.scope in ("profile", "recovery"):
+        parser.error("Trajectory metrics require rigid, live, policy or policy-rigid scope.")
     args.output.parent.mkdir(parents=True, exist_ok=True)
     gs.init(backend=gs.gpu, precision="64", seed=args.seed, logging_level="warning")
     start = time.perf_counter()
@@ -432,6 +438,7 @@ def main() -> None:
         warm_start_tractions=not args.cold_tractions,
     )
     solver = workload.scene.rigid_solver
+    metrics = RolloutMetrics(workload) if args.trajectory_metrics else None
     if args.save_conditions is not None:
         workload.save_conditions(args.save_conditions)
     setup_seconds = time.perf_counter() - start
@@ -465,6 +472,8 @@ def main() -> None:
                     policy_error_rad = max(policy_error_rad, 1e-4 * difference)
                     assert policy_error_rad < 1e-9
             workload.step(action)
+            if metrics is not None:
+                metrics.record()
             if tick % 10 == 0:
                 row = {
                     "tick": tick,
@@ -636,6 +645,7 @@ def main() -> None:
             "setup_seconds": setup_seconds,
             "warmup_steps": args.warmup,
             "warmup_quality": quality,
+            "trajectory_metrics": {"warmup": metrics.summary(), "repeats": []} if metrics is not None else None,
             "policy": {
                 "layers": [26, 128, 128, 7],
                 "seed": 99173,
@@ -662,6 +672,8 @@ def main() -> None:
             for _ in range(args.repetitions):
                 if args.scope != "recovery":
                     workload.restart()
+                if metrics is not None:
+                    metrics.reset()
                 failure_before = None
                 scatter_overflow_before = 0
                 if workload.stress:
@@ -684,9 +696,13 @@ def main() -> None:
                             else None
                         )
                         workload.step(action)
+                        if metrics is not None:
+                            metrics.record()
                     steps += 1
                 qd.sync()
                 elapsed = time.perf_counter() - start
+                if metrics is not None:
+                    result["trajectory_metrics"]["repeats"].append(metrics.summary())
                 invalid_environment_steps = 0
                 failed_per_environment = None
                 if failure_before is not None:
