@@ -356,6 +356,25 @@ class RigidStressRecovery:
         }
         details = []
         for entry in self.links:
+            if entry.intrinsic is not None:
+                failure = entry.intrinsic.failure
+                preserved = qd_to_numpy(failure.status, transpose=True)
+                environments = np.flatnonzero(preserved != 0)
+                if len(environments):
+                    indices = qd_to_numpy(failure.contact, transpose=True)
+                    radius = qd_to_numpy(failure.radius, transpose=True)
+                    friction = qd_to_numpy(failure.friction, transpose=True)
+                    for env in environments[:8]:
+                        code = int(preserved[env])
+                        details.append(
+                            f"link={entry.link.idx}, env={env}, contact={indices[env]}, status={code}: {reasons[code]}; "
+                            f"radius={radius[env]:.9g} m, mu={friction[env]:.9g} (first preserved contact failure)"
+                        )
+                    if len(environments) > 8:
+                        details.append(
+                            f"{len(environments) - 8} additional preserved environment failures on this link"
+                        )
+                    continue
             status = qd_to_numpy(entry.contacts.status, transpose=True)
             failed = np.argwhere(status != 0)
             if not len(failed):
