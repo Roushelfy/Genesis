@@ -622,7 +622,8 @@ def kernel_fit_tractions(
             warm_start=warm_start,
         )
         # A failed warm iterate can recover cheaply from a cold warp fit.
-        # The serial reduction remains a fallback for different roundoff.
+        # A second reduction order handles remaining stagnation; refined
+        # routes retain their serial fallback and continuation.
         kernel_fit_cooperative(
             contact_state,
             source_state,
@@ -634,8 +635,17 @@ def kernel_fit_tractions(
             warm_start=False,
             is_retry=True,
         )
-        kernel_fit_tractions_impl(
-            contact_state, source_state, traction_state, traction_info, epsilon, fit_tolerance, max_evaluations, 1
+        kernel_fit_cooperative(
+            contact_state,
+            source_state,
+            traction_state,
+            traction_info,
+            epsilon,
+            fit_tolerance,
+            max_evaluations,
+            warm_start=False,
+            is_retry=True,
+            sample_lanes=8,
         )
     else:
         kernel_fit_tractions_impl(

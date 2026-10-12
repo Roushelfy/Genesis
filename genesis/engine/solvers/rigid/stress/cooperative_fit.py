@@ -35,6 +35,7 @@ def func_dual_warp(
     weight_sum: float,
     state: StressTractionState,
     info: StressTractionInfo,
+    sample_lanes: qd.template(),
 ):
     energy = gs.qd_float(0.0)
     resultant = qd.Vector.zero(gs.qd_float, 6)
@@ -43,9 +44,9 @@ def func_dual_warp(
     for i_s in range(start, end):
         source_friction = func_traction_source_friction(i_s, i_b, friction, state)
         n_samples = state.sample_count[i_s, i_b]
-        for chunk in range((n_samples + lanes - 1) // lanes):
-            i_q = chunk * lanes + lane
-            if i_q < n_samples:
+        for chunk in range((n_samples + sample_lanes - 1) // sample_lanes):
+            i_q = chunk * sample_lanes + lane
+            if lane < sample_lanes and i_q < n_samples:
                 weight = state.profile[i_q, i_s, i_b] / weight_sum
                 if weight > 0.0:
                     position, normal = func_traction_geometry(i_q, i_s, i_b, state, info)
@@ -90,7 +91,9 @@ def kernel_fit_tractions(
     max_evaluations: int,
     warm_start: bool = True,
     is_retry: bool = False,
+    sample_lanes: int = 32,
 ):
+    assert sample_lanes in (1, 2, 4, 8, 16, 32)
     kernel_fit_tractions_impl(
         contact_state,
         source_state,
@@ -101,6 +104,7 @@ def kernel_fit_tractions(
         max_evaluations,
         warm_start,
         is_retry,
+        sample_lanes,
     )
 
 
@@ -115,8 +119,10 @@ def kernel_fit_tractions_impl(
     max_evaluations: int,
     warm_start: qd.template(),
     is_retry: qd.template(),
+    sample_lanes: qd.template(),
 ):
     lanes = qd.static(32 if gs.backend == gs.cuda else 1)
+    n_sample_lanes = qd.static(sample_lanes if gs.backend == gs.cuda else 1)
     qd.loop_config(block_dim=128)
     for i_thread in range(contact_state.valid.shape[0] * contact_state.valid.shape[1] * lanes):
         lane = i_thread % lanes
@@ -169,9 +175,9 @@ def kernel_fit_tractions_impl(
                         original_force = traction_state.priors.force[i_s, i_b]
                         is_valid = is_valid and source_weight > 0.0 and source_weight < qd.math.inf
                         is_valid = is_valid and qd.abs(original_force.sum()) < qd.math.inf
-                    for chunk in range((n_samples + lanes - 1) // lanes):
-                        i_q = chunk * lanes + lane
-                        if i_q < n_samples:
+                    for chunk in range((n_samples + n_sample_lanes - 1) // n_sample_lanes):
+                        i_q = chunk * n_sample_lanes + lane
+                        if lane < n_sample_lanes and i_q < n_samples:
                             weight = traction_state.profile[i_q, i_s, i_b]
                             valid_weight = weight >= 0.0 and weight < qd.math.inf
                             is_valid = is_valid and valid_weight
@@ -228,6 +234,7 @@ def kernel_fit_tractions_impl(
                                 weight_sum,
                                 traction_state,
                                 traction_info,
+                                n_sample_lanes,
                             )
                             evaluations += 1
                             trial_squared = trial_gradient.dot(trial_gradient)
@@ -288,9 +295,13 @@ def kernel_fit_tractions_impl(
                         for i_s in range(start, end):
                             source_friction = func_traction_source_friction(i_s, i_b, friction, traction_state)
                             n_samples = traction_state.sample_count[i_s, i_b]
-                            for chunk in range((n_samples + lanes - 1) // lanes):
-                                i_q = chunk * lanes + lane
-                                if i_q < n_samples and traction_state.profile[i_q, i_s, i_b] > 0.0:
+                            for chunk in range((n_samples + n_sample_lanes - 1) // n_sample_lanes):
+                                i_q = chunk * n_sample_lanes + lane
+                                if (
+                                    lane < n_sample_lanes
+                                    and i_q < n_samples
+                                    and traction_state.profile[i_q, i_s, i_b] > 0.0
+                                ):
                                     position, normal = func_traction_geometry(
                                         i_q, i_s, i_b, traction_state, traction_info
                                     )

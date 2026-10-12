@@ -1,0 +1,358 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0
+rootdir: /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-path-reuse
+configfile: pyproject.toml
+plugins: anyio-4.15.1, forked-1.7.5, print-1.2.0, timeout-2.4.0, xdist-3.8.0, quadrants-1.3.3, syrupy-6.1.1
+timeout: 1200.0s
+timeout method: signal
+timeout func_only: False
+collected 31 items
+
+tests/rigid/test_stress_source_priors.py [32m.[0m[31mF[0m[32m.[0m[31mF[0m[32m.[0m[31mF[0m[32m.[0m[31mF[0m[32m.[0m[31mF[0m[32m.[0m[31mF[0m[32m.[0m[31mF[0m[32m.[0m[31mF[0m[32m.[0m[32m.[0m[31m              [ 58%][0m
+tests/rigid/test_stress_sources.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m                                 [ 74%][0m
+tests/rigid/test_stress_nonconvex.py [32m.[0m[32m.[0m[31m                                  [ 80%][0m
+tests/rigid/test_stress_footprint.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m                              [100%][0m
+
+=================================== FAILURES ===================================
+[31m[1m_ test_body_source_prior_wrench_cones_full_fields_and_gauge_rows[step602-True] _[0m
+[1m[31mtests/rigid/test_stress_source_priors.py[0m:324: in test_body_source_prior_wrench_cones_full_fields_and_gauge_rows
+    [0massert_allclose(actual_force, expected, rtol=[94m1e-4[39;49;00m, atol=[94m1e-10[39;49;00m)[90m[39;49;00m
+[1m[31mtests/utils/assertions.py[0m:50: in assert_allclose
+    [0mnp.testing.assert_allclose(*args, atol=atol, rtol=rtol, err_msg=err_msg)[90m[39;49;00m
+[1m[31mE   AssertionError: [0m
+[1m[31mE   Not equal to tolerance rtol=0.0001, atol=1e-10[0m
+[1m[31mE   None[0m
+[1m[31mE   Mismatched elements: 1783 / 3300 (54%)[0m
+[1m[31mE   Max absolute difference among violations: 0.0003121[0m
+[1m[31mE   Max relative difference among violations: 1.[0m
+[1m[31mE    ACTUAL: array([[-1.289720e-10, -2.350340e-11, -1.219371e-11],[0m
+[1m[31mE          [-1.495044e-09, -2.724514e-10, -1.413493e-10],[0m
+[1m[31mE          [-5.207017e-09, -9.489088e-10, -4.922973e-10],...[0m
+[1m[31mE    DESIRED: array([[-1.224048e-10, -2.172061e-11, -1.271599e-11],[0m
+[1m[31mE          [-1.418917e-09, -2.517855e-10, -1.474037e-10],[0m
+[1m[31mE          [-4.941888e-09, -8.769336e-10, -5.133852e-10],...[0m
+---------------------------- Captured stdout setup -----------------------------
+[Genesis 12:49:31] Running on [AMD EPYC 9454 48-Core Processor] with backend gs.cpu. Device memory: 1510.38 GB.
+[Genesis 12:49:31] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+----------------------------- Captured stdout call -----------------------------
+[Genesis 12:49:37] Scene <913c494> created.
+[Genesis 12:49:42] Adding <gs.engine.entities.RigidEntity> 'egg_shell_8294080'. idx: 0, morph: <gs.morphs.URDF(file='/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-path-reuse/examples/rigid/assets/hollow_egg/level1/egg_shell.urdf')>, material: <gs.materials.Rigid>.
+[Genesis 12:49:42] Building scene <913c494>...
+[Genesis 12:49:50] Compiling simulation kernels...
+[Genesis 12:50:00] Building visualizer...
+[Genesis 12:50:07] Software rendering context detected. Shadows and plane reflection not supported. Beware rendering will be extremely slow.
+----------------------------- Captured stderr call -----------------------------
+[W 10/12/26 12:49:45.847 510173] [frontend_ir.cpp:begin_frontend_struct_for_on_external_tensor@1551] qd.loop_config(serialize=True) does not have effect on the struct for. The execution order is not guaranteed.
+[W 10/12/26 12:49:45.857 510173] [frontend_ir.cpp:begin_frontend_struct_for_on_external_tensor@1551] qd.loop_config(serialize=True) does not have effect on the struct for. The execution order is not guaranteed.
+[W 10/12/26 12:49:46.089 510173] [frontend_ir.cpp:begin_frontend_struct_for_on_external_tensor@1551] qd.loop_config(serialize=True) does not have effect on the struct for. The execution order is not guaranteed.
+[W 10/12/26 12:49:46.101 510173] [frontend_ir.cpp:begin_frontend_struct_for_on_external_tensor@1551] qd.loop_config(serialize=True) does not have effect on the struct for. The execution order is not guaranteed.
+[W 10/12/26 12:49:46.154 510173] [frontend_ir.cpp:begin_frontend_struct_for_on_external_tensor@1551] qd.loop_config(serialize=True) does not have effect on the struct for. The execution order is not guaranteed.
+[W 10/12/26 12:49:46.159 510173] [frontend_ir.cpp:begin_frontend_struct_for_on_external_tensor@1551] qd.loop_config(serialize=True) does not have effect on the struct for. The execution order is not guaranteed.
+--------------------------- Captured stdout teardown ---------------------------
+[Genesis 12:50:17] Exiting Genesis and caching compiled kernels...
+[31m[1m_ test_body_source_prior_wrench_cones_full_fields_and_gauge_rows[policy876-True] _[0m
+[1m[31mtests/rigid/test_stress_source_priors.py[0m:324: in test_body_source_prior_wrench_cones_full_fields_and_gauge_rows
+    [0massert_allclose(actual_force, expected, rtol=[94m1e-4[39;49;00m, atol=[94m1e-10[39;49;00m)[90m[39;49;00m
+[1m[31mtests/utils/assertions.py[0m:50: in assert_allclose
+    [0mnp.testing.assert_allclose(*args, atol=atol, rtol=rtol, err_msg=err_msg)[90m[39;49;00m
+[1m[31mE   AssertionError: [0m
+[1m[31mE   Not equal to tolerance rtol=0.0001, atol=1e-10[0m
+[1m[31mE   None[0m
+[1m[31mE   Mismatched elements: 1963 / 3744 (52.4%)[0m
+[1m[31mE   Max absolute difference among violations: 0.00018386[0m
+[1m[31mE   Max relative difference among violations: 1.[0m
+[1m[31mE    ACTUAL: array([[ 6.694236e-11, -1.314437e-11, -7.535718e-12],[0m
+[1m[31mE          [ 7.759966e-10, -1.523696e-10, -8.735413e-11],[0m
+[1m[31mE          [ 2.702694e-09, -5.306827e-10, -3.042429e-10],...[0m
+[1m[31mE    DESIRED: array([[ 6.389036e-11, -1.111185e-11, -7.226182e-12],[0m
+[1m[31mE          [ 7.406176e-10, -1.288086e-10, -8.376597e-11],[0m
+[1m[31mE          [ 2.579469e-09, -4.486223e-10, -2.917456e-10],...[0m
+---------------------------- Captured stdout setup -----------------------------
+[Genesis 12:50:32] Running on [AMD EPYC 9454 48-Core Processor] with backend gs.cpu. Device memory: 1510.38 GB.
+[Genesis 12:50:32] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+----------------------------- Captured stdout call -----------------------------
+[Genesis 12:50:37] Scene <ee6acbb> created.
+[Genesis 12:50:37] Adding <gs.engine.entities.RigidEntity> 'egg_shell_6fefc9a'. idx: 0, morph: <gs.morphs.URDF(file='/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-path-reuse/examples/rigid/assets/hollow_egg/level1/egg_shell.urdf')>, material: <gs.materials.Rigid>.
+[Genesis 12:50:37] Building scene <ee6acbb>...
+[Genesis 12:50:39] Compiling simulation kernels...
+[Genesis 12:50:41] Building visualizer...
+[Genesis 12:50:41] Software rendering context detected. Shadows and plane reflection not supported. Beware rendering will be extremely slow.
+--------------------------- Captured stdout teardown ---------------------------
+[Genesis 12:50:48] Exiting Genesis and caching compiled kernels...
+[31m[1m_ test_body_source_prior_wrench_cones_full_fields_and_gauge_rows[policy807-True] _[0m
+[1m[31mtests/rigid/test_stress_source_priors.py[0m:324: in test_body_source_prior_wrench_cones_full_fields_and_gauge_rows
+    [0massert_allclose(actual_force, expected, rtol=[94m1e-4[39;49;00m, atol=[94m1e-10[39;49;00m)[90m[39;49;00m
+[1m[31mtests/utils/assertions.py[0m:50: in assert_allclose
+    [0mnp.testing.assert_allclose(*args, atol=atol, rtol=rtol, err_msg=err_msg)[90m[39;49;00m
+[1m[31mE   AssertionError: [0m
+[1m[31mE   Not equal to tolerance rtol=0.0001, atol=1e-10[0m
+[1m[31mE   None[0m
+[1m[31mE   Mismatched elements: 3188 / 4896 (65.1%)[0m
+[1m[31mE   Max absolute difference among violations: 0.00057387[0m
+[1m[31mE   Max relative difference among violations: 1.86030129[0m
+[1m[31mE    ACTUAL: array([[ 3.187764e-11, -3.408254e-11, -1.810635e-11],[0m
+[1m[31mE          [ 3.695258e-10, -3.950851e-10, -2.098889e-10],[0m
+[1m[31mE          [ 1.287008e-09, -1.376027e-09, -7.310140e-10],...[0m
+[1m[31mE    DESIRED: array([[ 1.404357e-11, -1.608605e-11, -7.391377e-12],[0m
+[1m[31mE          [ 1.627931e-10, -1.864696e-10, -8.568089e-11],[0m
+[1m[31mE          [ 5.669859e-10, -6.494478e-10, -2.984147e-10],...[0m
+---------------------------- Captured stdout setup -----------------------------
+[Genesis 12:51:02] Running on [AMD EPYC 9454 48-Core Processor] with backend gs.cpu. Device memory: 1510.38 GB.
+[Genesis 12:51:02] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+----------------------------- Captured stdout call -----------------------------
+[Genesis 12:51:08] Scene <9cf099e> created.
+[Genesis 12:51:08] Adding <gs.engine.entities.RigidEntity> 'egg_shell_cb9a91d'. idx: 0, morph: <gs.morphs.URDF(file='/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-path-reuse/examples/rigid/assets/hollow_egg/level1/egg_shell.urdf')>, material: <gs.materials.Rigid>.
+[Genesis 12:51:08] Building scene <9cf099e>...
+[Genesis 12:51:09] Compiling simulation kernels...
+[Genesis 12:51:11] Building visualizer...
+[Genesis 12:51:11] Software rendering context detected. Shadows and plane reflection not supported. Beware rendering will be extremely slow.
+--------------------------- Captured stdout teardown ---------------------------
+[Genesis 12:51:19] Exiting Genesis and caching compiled kernels...
+[31m[1m_ test_body_source_prior_wrench_cones_full_fields_and_gauge_rows[balanced_compression-True] _[0m
+[1m[31mtests/rigid/test_stress_source_priors.py[0m:324: in test_body_source_prior_wrench_cones_full_fields_and_gauge_rows
+    [0massert_allclose(actual_force, expected, rtol=[94m1e-4[39;49;00m, atol=[94m1e-10[39;49;00m)[90m[39;49;00m
+[1m[31mtests/utils/assertions.py[0m:50: in assert_allclose
+    [0mnp.testing.assert_allclose(*args, atol=atol, rtol=rtol, err_msg=err_msg)[90m[39;49;00m
+[1m[31mE   AssertionError: [0m
+[1m[31mE   Not equal to tolerance rtol=0.0001, atol=1e-10[0m
+[1m[31mE   None[0m
+[1m[31mE   Mismatched elements: 708 / 4104 (17.3%)[0m
+[1m[31mE   Max absolute difference among violations: 0.00125047[0m
+[1m[31mE   Max relative difference among violations: 1.[0m
+[1m[31mE    ACTUAL: array([[0., 0., 0.],[0m
+[1m[31mE          [0., 0., 0.],[0m
+[1m[31mE          [0., 0., 0.],...[0m
+[1m[31mE    DESIRED: array([[ 5.589979e-11,  5.140948e-23,  4.463805e-29],[0m
+[1m[31mE          [ 6.479908e-10,  5.959391e-22,  5.174446e-28],[0m
+[1m[31mE          [ 2.256862e-09,  2.075574e-21,  1.802188e-27],...[0m
+---------------------------- Captured stdout setup -----------------------------
+[Genesis 12:51:33] Running on [AMD EPYC 9454 48-Core Processor] with backend gs.cpu. Device memory: 1510.38 GB.
+[Genesis 12:51:33] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+----------------------------- Captured stdout call -----------------------------
+[Genesis 12:51:39] Scene <f5ac914> created.
+[Genesis 12:51:39] Adding <gs.engine.entities.RigidEntity> 'egg_shell_7ae2858'. idx: 0, morph: <gs.morphs.URDF(file='/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-path-reuse/examples/rigid/assets/hollow_egg/level1/egg_shell.urdf')>, material: <gs.materials.Rigid>.
+[Genesis 12:51:39] Building scene <f5ac914>...
+[Genesis 12:51:40] Compiling simulation kernels...
+[Genesis 12:51:42] Building visualizer...
+[Genesis 12:51:42] Software rendering context detected. Shadows and plane reflection not supported. Beware rendering will be extremely slow.
+--------------------------- Captured stdout teardown ---------------------------
+[Genesis 12:51:50] Exiting Genesis and caching compiled kernels...
+[31m[1m_ test_body_source_prior_wrench_cones_full_fields_and_gauge_rows[varied2048-True] _[0m
+[1m[31mtests/rigid/test_stress_source_priors.py[0m:357: in test_body_source_prior_wrench_cones_full_fields_and_gauge_rows
+    [0mkernel_prepare_cached_tractions([90m[39;49;00m
+[1m[31mgenesis/engine/solvers/rigid/stress/traction.py[0m:925: in kernel_prepare_cached_tractions
+    [0mkernel_scatter_cached_tractions([90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/_quadrants_callable.py[0m:101: in __call__
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m.wrapper.[92m__call__[39;49;00m(*args, **kwargs)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel_impl.py[0m:184: in wrapped_func
+    [0m[94mraise[39;49;00m [96mtype[39;49;00m(e)([33m"[39;49;00m[33m\n[39;49;00m[33m"[39;49;00m + [96mstr[39;49;00m(e)) [94mfrom[39;49;00m[90m [39;49;00m[94mNone[39;49;00m[90m[39;49;00m
+[1m[31mE   quadrants.lang.exception.QuadrantsIndexError: [0m
+[1m[31mE   quadrants stack trace:[0m
+[1m[31mE   ===[0m
+[1m[31mE   Traceback (most recent call last):[0m
+[1m[31mE     File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer_utils.py", line 40, in __call__[0m
+[1m[31mE       res = method(ctx, node)[0m
+[1m[31mE     File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer.py", line 358, in build_Subscript[0m
+[1m[31mE       node.ptr = impl.subscript(ctx.ast_builder, node.value.ptr, *node.slice.ptr)[0m
+[1m[31mE     File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/util.py", line 316, in wrapped[0m
+[1m[31mE       return func(*args, **kwargs)[0m
+[1m[31mE     File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/impl.py", line 353, in subscript[0m
+[1m[31mE       return Expr(ast_builder.expr_subscript(value.ptr, indices_expr_group, dbg_info))[0m
+[1m[31mE     File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/expr.py", line 52, in __init__[0m
+[1m[31mE       self.ptr.type_check(impl.get_runtime().prog.config())[0m
+[1m[31mE   quadrants._lib.core.quadrants_python.QuadrantsIndexError: File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-path-reuse/genesis/engine/solvers/rigid/stress/cooperative_scatter.py", line 189, in kernel_scatter_cached_tractions:[0m
+[1m[31mE               traction_state.acceptance.force[i_c, i_b] = total[0m
+[1m[31mE               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[1m[31mE   Array with dim 0 accessed with indices of dim 2[0m
+[1m[31mE   [0m
+[1m[31mE   ===[0m
+[1m[31mE   [0m
+[1m[31mE   Your code:[0m
+[1m[31mE   File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-path-reuse/genesis/engine/solvers/rigid/stress/cooperative_scatter.py", line 189, in kernel_scatter_cached_tractions:[0m
+[1m[31mE               traction_state.acceptance.force[i_c, i_b] = total[0m
+[1m[31mE               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[1m[31mE   File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-path-reuse/genesis/engine/solvers/rigid/stress/cooperative_scatter.py", line 189, in kernel_scatter_cached_tractions:[0m
+[1m[31mE               traction_state.acceptance.force[i_c, i_b] = total[0m
+[1m[31mE               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[1m[31mE   Array with dim 0 accessed with indices of dim 2[0m
+---------------------------- Captured stdout setup -----------------------------
+[Genesis 12:52:04] Running on [AMD EPYC 9454 48-Core Processor] with backend gs.cpu. Device memory: 1510.38 GB.
+[Genesis 12:52:04] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+----------------------------- Captured stdout call -----------------------------
+[Genesis 12:52:09] Scene <260a0e7> created.
+[Genesis 12:52:09] Adding <gs.engine.entities.RigidEntity> 'egg_shell_32e4edf'. idx: 0, morph: <gs.morphs.URDF(file='/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-path-reuse/examples/rigid/assets/hollow_egg/level1/egg_shell.urdf')>, material: <gs.materials.Rigid>.
+[Genesis 12:52:09] Building scene <260a0e7>...
+[Genesis 12:52:11] Compiling simulation kernels...
+[Genesis 12:52:12] Building visualizer...
+[Genesis 12:52:12] Software rendering context detected. Shadows and plane reflection not supported. Beware rendering will be extremely slow.
+--------------------------- Captured stdout teardown ---------------------------
+[Genesis 12:52:21] Exiting Genesis and caching compiled kernels...
+[31m[1m_ test_body_source_prior_wrench_cones_full_fields_and_gauge_rows[varied4096-True] _[0m
+[1m[31mtests/rigid/test_stress_source_priors.py[0m:357: in test_body_source_prior_wrench_cones_full_fields_and_gauge_rows
+    [0mkernel_prepare_cached_tractions([90m[39;49;00m
+[1m[31mgenesis/engine/solvers/rigid/stress/traction.py[0m:925: in kernel_prepare_cached_tractions
+    [0mkernel_scatter_cached_tractions([90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/_quadrants_callable.py[0m:101: in __call__
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m.wrapper.[92m__call__[39;49;00m(*args, **kwargs)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel_impl.py[0m:184: in wrapped_func
+    [0m[94mraise[39;49;00m [96mtype[39;49;00m(e)([33m"[39;49;00m[33m\n[39;49;00m[33m"[39;49;00m + [96mstr[39;49;00m(e)) [94mfrom[39;49;00m[90m [39;49;00m[94mNone[39;49;00m[90m[39;49;00m
+[1m[31mE   quadrants.lang.exception.QuadrantsIndexError: [0m
+[1m[31mE   quadrants stack trace:[0m
+[1m[31mE   ===[0m
+[1m[31mE   Traceback (most recent call last):[0m
+[1m[31mE     File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer_utils.py", line 40, in __call__[0m
+[1m[31mE       res = method(ctx, node)[0m
+[1m[31mE     File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer.py", line 358, in build_Subscript[0m
+[1m[31mE       node.ptr = impl.subscript(ctx.ast_builder, node.value.ptr, *node.slice.ptr)[0m
+[1m[31mE     File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/util.py", line 316, in wrapped[0m
+[1m[31mE       return func(*args, **kwargs)[0m
+[1m[31mE     File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/impl.py", line 353, in subscript[0m
+[1m[31mE       return Expr(ast_builder.expr_subscript(value.ptr, indices_expr_group, dbg_info))[0m
+[1m[31mE     File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/expr.py", line 52, in __init__[0m
+[1m[31mE       self.ptr.type_check(impl.get_runtime().prog.config())[0m
+[1m[31mE   quadrants._lib.core.quadrants_python.QuadrantsIndexError: File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-path-reuse/genesis/engine/solvers/rigid/stress/cooperative_scatter.py", line 189, in kernel_scatter_cached_tractions:[0m
+[1m[31mE               traction_state.acceptance.force[i_c, i_b] = total[0m
+[1m[31mE               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[1m[31mE   Array with dim 0 accessed with indices of dim 2[0m
+[1m[31mE   [0m
+[1m[31mE   ===[0m
+[1m[31mE   [0m
+[1m[31mE   Your code:[0m
+[1m[31mE   File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-path-reuse/genesis/engine/solvers/rigid/stress/cooperative_scatter.py", line 189, in kernel_scatter_cached_tractions:[0m
+[1m[31mE               traction_state.acceptance.force[i_c, i_b] = total[0m
+[1m[31mE               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[1m[31mE   File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-path-reuse/genesis/engine/solvers/rigid/stress/cooperative_scatter.py", line 189, in kernel_scatter_cached_tractions:[0m
+[1m[31mE               traction_state.acceptance.force[i_c, i_b] = total[0m
+[1m[31mE               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[1m[31mE   Array with dim 0 accessed with indices of dim 2[0m
+---------------------------- Captured stdout setup -----------------------------
+[Genesis 12:52:35] Running on [AMD EPYC 9454 48-Core Processor] with backend gs.cpu. Device memory: 1510.38 GB.
+[Genesis 12:52:35] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+----------------------------- Captured stdout call -----------------------------
+[Genesis 12:52:40] Scene <c5b2c22> created.
+[Genesis 12:52:40] Adding <gs.engine.entities.RigidEntity> 'egg_shell_ae78ad0'. idx: 0, morph: <gs.morphs.URDF(file='/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-path-reuse/examples/rigid/assets/hollow_egg/level1/egg_shell.urdf')>, material: <gs.materials.Rigid>.
+[Genesis 12:52:40] Building scene <c5b2c22>...
+[Genesis 12:52:42] Compiling simulation kernels...
+[Genesis 12:52:44] Building visualizer...
+[Genesis 12:52:44] Software rendering context detected. Shadows and plane reflection not supported. Beware rendering will be extremely slow.
+--------------------------- Captured stdout teardown ---------------------------
+[Genesis 12:52:52] Exiting Genesis and caching compiled kernels...
+[31m[1m_ test_body_source_prior_wrench_cones_full_fields_and_gauge_rows[roundoff_edge-True] _[0m
+[1m[31mtests/rigid/test_stress_source_priors.py[0m:324: in test_body_source_prior_wrench_cones_full_fields_and_gauge_rows
+    [0massert_allclose(actual_force, expected, rtol=[94m1e-4[39;49;00m, atol=[94m1e-10[39;49;00m)[90m[39;49;00m
+[1m[31mtests/utils/assertions.py[0m:50: in assert_allclose
+    [0mnp.testing.assert_allclose(*args, atol=atol, rtol=rtol, err_msg=err_msg)[90m[39;49;00m
+[1m[31mE   AssertionError: [0m
+[1m[31mE   Not equal to tolerance rtol=0.0001, atol=1e-10[0m
+[1m[31mE   None[0m
+[1m[31mE   Mismatched elements: 7980 / 11535 (69.2%)[0m
+[1m[31mE   Max absolute difference among violations: 0.00459623[0m
+[1m[31mE   Max relative difference among violations: 234.1106379[0m
+[1m[31mE    ACTUAL: array([[-3.907748e-30, -4.189818e-29,  1.610086e-27],[0m
+[1m[31mE          [-4.529864e-29, -4.856840e-28,  1.866413e-26],[0m
+[1m[31mE          [-1.577689e-28, -1.691570e-27,  6.500456e-26],...[0m
+[1m[31mE    DESIRED: array([[-4.052699e-29, -1.619103e-28,  1.726466e-27],[0m
+[1m[31mE          [-4.697891e-28, -1.876866e-27,  2.001320e-26],[0m
+[1m[31mE          [-1.636210e-27, -6.536864e-27,  6.970321e-26],...[0m
+---------------------------- Captured stdout setup -----------------------------
+[Genesis 12:53:07] Running on [AMD EPYC 9454 48-Core Processor] with backend gs.cpu. Device memory: 1510.38 GB.
+[Genesis 12:53:07] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+----------------------------- Captured stdout call -----------------------------
+[Genesis 12:53:13] Scene <6c1a912> created.
+[Genesis 12:53:13] Adding <gs.engine.entities.RigidEntity> 'egg_shell_7a9d3b5'. idx: 0, morph: <gs.morphs.URDF(file='/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-path-reuse/examples/rigid/assets/hollow_egg/level1/egg_shell.urdf')>, material: <gs.materials.Rigid>.
+[Genesis 12:53:13] Building scene <6c1a912>...
+[Genesis 12:53:14] Compiling simulation kernels...
+[Genesis 12:53:16] Building visualizer...
+[Genesis 12:53:16] Software rendering context detected. Shadows and plane reflection not supported. Beware rendering will be extremely slow.
+--------------------------- Captured stdout teardown ---------------------------
+[Genesis 12:53:24] Exiting Genesis and caching compiled kernels...
+[31m[1m_ test_body_source_prior_wrench_cones_full_fields_and_gauge_rows[varied4096_slow-True] _[0m
+[1m[31mtests/rigid/test_stress_source_priors.py[0m:357: in test_body_source_prior_wrench_cones_full_fields_and_gauge_rows
+    [0mkernel_prepare_cached_tractions([90m[39;49;00m
+[1m[31mgenesis/engine/solvers/rigid/stress/traction.py[0m:925: in kernel_prepare_cached_tractions
+    [0mkernel_scatter_cached_tractions([90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/_quadrants_callable.py[0m:101: in __call__
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m.wrapper.[92m__call__[39;49;00m(*args, **kwargs)[90m[39;49;00m
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel_impl.py[0m:184: in wrapped_func
+    [0m[94mraise[39;49;00m [96mtype[39;49;00m(e)([33m"[39;49;00m[33m\n[39;49;00m[33m"[39;49;00m + [96mstr[39;49;00m(e)) [94mfrom[39;49;00m[90m [39;49;00m[94mNone[39;49;00m[90m[39;49;00m
+[1m[31mE   quadrants.lang.exception.QuadrantsIndexError: [0m
+[1m[31mE   quadrants stack trace:[0m
+[1m[31mE   ===[0m
+[1m[31mE   Traceback (most recent call last):[0m
+[1m[31mE     File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer_utils.py", line 40, in __call__[0m
+[1m[31mE       res = method(ctx, node)[0m
+[1m[31mE     File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer.py", line 358, in build_Subscript[0m
+[1m[31mE       node.ptr = impl.subscript(ctx.ast_builder, node.value.ptr, *node.slice.ptr)[0m
+[1m[31mE     File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/util.py", line 316, in wrapped[0m
+[1m[31mE       return func(*args, **kwargs)[0m
+[1m[31mE     File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/impl.py", line 353, in subscript[0m
+[1m[31mE       return Expr(ast_builder.expr_subscript(value.ptr, indices_expr_group, dbg_info))[0m
+[1m[31mE     File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/expr.py", line 52, in __init__[0m
+[1m[31mE       self.ptr.type_check(impl.get_runtime().prog.config())[0m
+[1m[31mE   quadrants._lib.core.quadrants_python.QuadrantsIndexError: File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-path-reuse/genesis/engine/solvers/rigid/stress/cooperative_scatter.py", line 189, in kernel_scatter_cached_tractions:[0m
+[1m[31mE               traction_state.acceptance.force[i_c, i_b] = total[0m
+[1m[31mE               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[1m[31mE   Array with dim 0 accessed with indices of dim 2[0m
+[1m[31mE   [0m
+[1m[31mE   ===[0m
+[1m[31mE   [0m
+[1m[31mE   Your code:[0m
+[1m[31mE   File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-path-reuse/genesis/engine/solvers/rigid/stress/cooperative_scatter.py", line 189, in kernel_scatter_cached_tractions:[0m
+[1m[31mE               traction_state.acceptance.force[i_c, i_b] = total[0m
+[1m[31mE               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[1m[31mE   File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-path-reuse/genesis/engine/solvers/rigid/stress/cooperative_scatter.py", line 189, in kernel_scatter_cached_tractions:[0m
+[1m[31mE               traction_state.acceptance.force[i_c, i_b] = total[0m
+[1m[31mE               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[1m[31mE   Array with dim 0 accessed with indices of dim 2[0m
+---------------------------- Captured stdout setup -----------------------------
+[Genesis 12:53:44] Running on [AMD EPYC 9454 48-Core Processor] with backend gs.cpu. Device memory: 1510.38 GB.
+[Genesis 12:53:44] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+----------------------------- Captured stdout call -----------------------------
+[Genesis 12:53:50] Scene <6090459> created.
+[Genesis 12:53:50] Adding <gs.engine.entities.RigidEntity> 'egg_shell_700846f'. idx: 0, morph: <gs.morphs.URDF(file='/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-path-reuse/examples/rigid/assets/hollow_egg/level1/egg_shell.urdf')>, material: <gs.materials.Rigid>.
+[Genesis 12:53:50] Building scene <6090459>...
+[Genesis 12:53:51] Compiling simulation kernels...
+[Genesis 12:53:53] Building visualizer...
+[Genesis 12:53:53] Software rendering context detected. Shadows and plane reflection not supported. Beware rendering will be extremely slow.
+--------------------------- Captured stdout teardown ---------------------------
+[Genesis 12:54:07] Exiting Genesis and caching compiled kernels...
+[33m=============================== warnings summary ===============================[0m
+tests/rigid/test_stress_source_priors.py: 36 warnings
+tests/rigid/test_stress_sources.py: 10 warnings
+tests/rigid/test_stress_nonconvex.py: 4 warnings
+tests/rigid/test_stress_footprint.py: 12 warnings
+  /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-path-reuse/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                          32 iterations, so the compile time may be extremely long.
+                          You can use a non-static for loop if you want to decrease the compile time.
+                          You can disable this warning by setting qd.init(unrolling_limit=0).
+    for a, b in qd.static(qd.ndrange(6, 6)):
+
+tests/rigid/test_stress_source_priors.py: 32 warnings
+  /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-path-reuse/genesis/engine/solvers/rigid/stress/cooperative_fit.py:67: SyntaxWarning: You are unrolling more than
+                          32 iterations, so the compile time may be extremely long.
+                          You can use a non-static for loop if you want to decrease the compile time.
+                          You can disable this warning by setting qd.init(unrolling_limit=0).
+    for a, b in qd.static(qd.ndrange(6, 6)):
+
+tests/rigid/test_stress_source_priors.py: 32 warnings
+  /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-path-reuse/genesis/engine/solvers/rigid/stress/cooperative_fit.py:75: SyntaxWarning: You are unrolling more than
+                          32 iterations, so the compile time may be extremely long.
+                          You can use a non-static for loop if you want to decrease the compile time.
+                          You can disable this warning by setting qd.init(unrolling_limit=0).
+    for a, b in qd.static(qd.ndrange(6, 6)):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/native-compact-traction-profiles-regression-v1/cpu/report.xml -
+================================= Failed tests =================================
+tests/rigid/test_stress_source_priors.py::test_body_source_prior_wrench_cones...
+tests/rigid/test_stress_source_priors.py::test_body_source_prior_wrench_cones...
+tests/rigid/test_stress_source_priors.py::test_body_source_prior_wrench_cones...
+tests/rigid/test_stress_source_priors.py::test_body_source_prior_wrench_cones...
+tests/rigid/test_stress_source_priors.py::test_body_source_prior_wrench_cones...
+tests/rigid/test_stress_source_priors.py::test_body_source_prior_wrench_cones...
+tests/rigid/test_stress_source_priors.py::test_body_source_prior_wrench_cones...
+tests/rigid/test_stress_source_priors.py::test_body_source_prior_wrench_cones...
+============================== slowest durations ===============================
+
+(93 durations < 100s hidden.)
+[31m============ [31m[1m8 failed[0m, [32m23 passed[0m, [33m126 warnings[0m[31m in 473.47s (0:07:53)[0m[31m ============[0m
