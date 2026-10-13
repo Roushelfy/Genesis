@@ -1,0 +1,842 @@
+diff --git a/genesis/engine/solvers/rigid/stress/cooperative_fit.py b/genesis/engine/solvers/rigid/stress/cooperative_fit.py
+index 66d59763..40dbb2d8 100644
+--- a/genesis/engine/solvers/rigid/stress/cooperative_fit.py
++++ b/genesis/engine/solvers/rigid/stress/cooperative_fit.py
+@@ -35,6 +35,7 @@ def func_dual_warp(
+     weight_sum: float,
+     state: StressTractionState,
+     info: StressTractionInfo,
++    sample_lanes: qd.template(),
+ ):
+     energy = gs.qd_float(0.0)
+     resultant = qd.Vector.zero(gs.qd_float, 6)
+@@ -43,9 +44,9 @@ def func_dual_warp(
+     for i_s in range(start, end):
+         source_friction = func_traction_source_friction(i_s, i_b, friction, state)
+         n_samples = state.sample_count[i_s, i_b]
+-        for chunk in range((n_samples + lanes - 1) // lanes):
+-            i_q = chunk * lanes + lane
+-            if i_q < n_samples:
++        for chunk in range((n_samples + sample_lanes - 1) // sample_lanes):
++            i_q = chunk * sample_lanes + lane
++            if lane < sample_lanes and i_q < n_samples:
+                 weight = state.profile[i_q, i_s, i_b] / weight_sum
+                 if weight > 0.0:
+                     position, normal = func_traction_geometry(i_q, i_s, i_b, state, info)
+@@ -90,7 +91,9 @@ def kernel_fit_tractions(
+     max_evaluations: int,
+     warm_start: bool = True,
+     is_retry: bool = False,
++    sample_lanes: int = 32,
+ ):
++    assert sample_lanes in (1, 2, 4, 8, 16, 32)
+     kernel_fit_tractions_impl(
+         contact_state,
+         source_state,
+@@ -101,6 +104,7 @@ def kernel_fit_tractions(
+         max_evaluations,
+         warm_start,
+         is_retry,
++        sample_lanes,
+     )
+ 
+ 
+@@ -115,8 +119,10 @@ def kernel_fit_tractions_impl(
+     max_evaluations: int,
+     warm_start: qd.template(),
+     is_retry: qd.template(),
++    sample_lanes: qd.template(),
+ ):
+     lanes = qd.static(32 if gs.backend == gs.cuda else 1)
++    n_sample_lanes = qd.static(sample_lanes if gs.backend == gs.cuda else 1)
+     qd.loop_config(block_dim=128)
+     for i_thread in range(contact_state.valid.shape[0] * contact_state.valid.shape[1] * lanes):
+         lane = i_thread % lanes
+@@ -169,9 +175,9 @@ def kernel_fit_tractions_impl(
+                         original_force = traction_state.priors.force[i_s, i_b]
+                         is_valid = is_valid and source_weight > 0.0 and source_weight < qd.math.inf
+                         is_valid = is_valid and qd.abs(original_force.sum()) < qd.math.inf
+-                    for chunk in range((n_samples + lanes - 1) // lanes):
+-                        i_q = chunk * lanes + lane
+-                        if i_q < n_samples:
++                    for chunk in range((n_samples + n_sample_lanes - 1) // n_sample_lanes):
++                        i_q = chunk * n_sample_lanes + lane
++                        if lane < n_sample_lanes and i_q < n_samples:
+                             weight = traction_state.profile[i_q, i_s, i_b]
+                             valid_weight = weight >= 0.0 and weight < qd.math.inf
+                             is_valid = is_valid and valid_weight
+@@ -228,6 +234,7 @@ def kernel_fit_tractions_impl(
+                                 weight_sum,
+                                 traction_state,
+                                 traction_info,
++                                n_sample_lanes,
+                             )
+                             evaluations += 1
+                             trial_squared = trial_gradient.dot(trial_gradient)
+@@ -288,9 +295,13 @@ def kernel_fit_tractions_impl(
+                         for i_s in range(start, end):
+                             source_friction = func_traction_source_friction(i_s, i_b, friction, traction_state)
+                             n_samples = traction_state.sample_count[i_s, i_b]
+-                            for chunk in range((n_samples + lanes - 1) // lanes):
+-                                i_q = chunk * lanes + lane
+-                                if i_q < n_samples and traction_state.profile[i_q, i_s, i_b] > 0.0:
++                            for chunk in range((n_samples + n_sample_lanes - 1) // n_sample_lanes):
++                                i_q = chunk * n_sample_lanes + lane
++                                if (
++                                    lane < n_sample_lanes
++                                    and i_q < n_samples
++                                    and traction_state.profile[i_q, i_s, i_b] > 0.0
++                                ):
+                                     position, normal = func_traction_geometry(
+                                         i_q, i_s, i_b, traction_state, traction_info
+                                     )
+diff --git a/genesis/engine/solvers/rigid/stress/fan_refinement.py b/genesis/engine/solvers/rigid/stress/fan_refinement.py
+index 0cdc6a82..7bc7b403 100644
+--- a/genesis/engine/solvers/rigid/stress/fan_refinement.py
++++ b/genesis/engine/solvers/rigid/stress/fan_refinement.py
+@@ -42,12 +42,11 @@ def kernel_select_failed_fans(
+ 
+ 
+ @qd.func
+-def func_refine_source_fan(
++def func_refine_source_sample(
++    i_q: int,
+     i_c: int,
+     i_b: int,
+-    epsilon: float,
+     contacts: StressContactState,
+-    sources: StressSourceState,
+     footprints: StressFootprintState,
+     state: StressTractionState,
+     stress: StressInfo,
+@@ -56,58 +55,42 @@ def func_refine_source_fan(
+     info: StressTractionInfo,
+ ):
+     anchor, radius = contacts.center[i_c, i_b], contacts.radius[i_c, i_b]
+-    force, moment = contacts.force[i_c, i_b], sources.anchor_moment[i_c, i_b]
+-    if qd.static(len(state.priors.force.shape) == 2):
+-        force, moment = state.priors.force[i_c, i_b], state.priors.anchor_moment[i_c, i_b]
+-    state.sample_count[i_c, i_b] = 0
+-    footprints.samples[i_c, i_b] = 0
+-    footprints.candidates[i_c, i_b] = 0
+-    footprints.maximum_distance[i_c, i_b] = 0.0
+-    for i_f in range(surface.face_origin.shape[0]):
+-        closest, bary = func_closest_triangle(i_f, anchor, surface)
+-        if (closest - anchor).norm() < radius and force.norm() > 0.0:
+-            # This line has the original wrench's transverse lever arm. It
+-            # selects integration charts, never a replacement application point.
+-            focus = anchor + force.cross(moment) / force.dot(force)
+-            normal = surface.face_normal[i_f]
+-            denominator = force.dot(normal)
+-            if qd.abs(denominator) > 64.0 * epsilon * force.norm():
+-                focus += force * (surface.face_origin[i_f] - focus).dot(normal) / denominator
+-            _, bary = func_closest_triangle(i_f, focus, surface)
+-        state.fan_barycentric[i_f, i_c, i_b] = bary
+     n = surface.gauss.shape[0]
+-    for i_q in range(state.profile.shape[0]):
+-        i_f = i_q // (3 * n * n)
+-        closest, _ = func_closest_triangle(i_f, anchor, surface)
+-        # Pruning uses the original anchor, irrespective of the new chart center.
+-        if (closest - anchor).norm() < radius:
+-            i_face, bary = func_surface_fan_bary(i_q, i_c, i_b, state, info)
+-            origin, edges = surface.face_origin[i_face], surface.face_edges[i_face]
+-            position = origin + bary[1] * edges[0, :] + bary[2] * edges[1, :]
+-            i_fan, local = (i_q // (n * n)) % 3, i_q % (n * n)
+-            center_bary = state.fan_barycentric[i_face, i_c, i_b]
+-            area = center_bary[(i_fan + 2) % 3] * edges[0, :].cross(edges[1, :]).norm()
+-            if area > 0.0 and (position - anchor).norm() < radius:
+-                footprints.candidates[i_c, i_b] += 1
+-                distance, _ = func_footprint_point_distance(
+-                    i_face, i_c, i_b, position, contacts, footprints, stress, surface, paths
+-                )
+-                if distance < radius:
+-                    u, v = surface.gauss[local // n], surface.gauss[local % n]
+-                    power = state.fan_coordinate_power[None]
+-                    weight = area * u**power * power * power * u ** (power - 1) * v ** (power - 1)
+-                    weight *= surface.gauss_weights[local // n] * surface.gauss_weights[local % n]
+-                    relative = distance / radius
+-                    profile = weight * qd.exp(-0.5 * (relative / 0.45) ** 2) * (1.0 - relative**2) ** 2
+-                    slot = state.sample_count[i_c, i_b]
+-                    state.sample_count[i_c, i_b] += 1
++    i_f = i_q // (3 * n * n)
++    closest, _ = func_closest_triangle(i_f, anchor, surface)
++    # Pruning uses the original anchor, irrespective of the new chart center.
++    if (closest - anchor).norm() < radius:
++        i_face, bary = func_surface_fan_bary(i_q, i_c, i_b, state, info)
++        origin, edges = surface.face_origin[i_face], surface.face_edges[i_face]
++        position = origin + bary[1] * edges[0, :] + bary[2] * edges[1, :]
++        i_fan, local = (i_q // (n * n)) % 3, i_q % (n * n)
++        center_bary = state.fan_barycentric[i_face, i_c, i_b]
++        area = center_bary[(i_fan + 2) % 3] * edges[0, :].cross(edges[1, :]).norm()
++        if area > 0.0 and (position - anchor).norm() < radius:
++            footprints.candidates[i_c, i_b] += 1
++            distance, _ = func_footprint_point_distance(
++                i_face, i_c, i_b, position, contacts, footprints, stress, surface, paths
++            )
++            if distance < radius:
++                u, v = surface.gauss[local // n], surface.gauss[local % n]
++                power = state.fan_coordinate_power[None]
++                weight = area * u**power * power * power * u ** (power - 1) * v ** (power - 1)
++                weight *= surface.gauss_weights[local // n] * surface.gauss_weights[local % n]
++                relative = distance / radius
++                profile = weight * qd.exp(-0.5 * (relative / 0.45) ** 2) * (1.0 - relative**2) ** 2
++                slot = qd.atomic_add(state.sample_count[i_c, i_b], 1)
++                if slot < state.profile.shape[0]:
+                     state.sample_indices[slot, i_c, i_b] = i_q
+                     state.profile[slot, i_c, i_b] = profile
+-                    footprints.samples[i_c, i_b] += 1
+-                    footprints.maximum_distance[i_c, i_b] = qd.max(footprints.maximum_distance[i_c, i_b], distance)
++                    if qd.static(len(state.sample_positions.shape) == 3):
++                        state.sample_positions[slot, i_c, i_b] = position
++                    elif qd.static(len(state.sample_positions.shape) == 4):
++                        for i_a in qd.static(range(3)):
++                            state.sample_positions[slot, i_c, i_b, i_a] = position[i_a]
++                footprints.samples[i_c, i_b] += 1
++                qd.atomic_max(footprints.maximum_distance[i_c, i_b], distance)
+ 
+ 
+-@qd.kernel
+ def kernel_refine_failed_fans(
+     contacts: StressContactState,
+     sources: StressSourceState,
+@@ -119,8 +102,83 @@ def kernel_refine_failed_fans(
+     info: StressTractionInfo,
+     epsilon: float,
+ ):
++    parallel = gs.backend == gs.cuda
++    kernel_refine_failed_charts(
++        contacts, sources, footprints, state, stress, surface, paths, info, epsilon, parallel=parallel
++    )
++    if parallel:
++        kernel_refine_failed_samples(contacts, footprints, state, stress, surface, paths, info)
++
++
++@qd.kernel
++def kernel_refine_failed_charts(
++    contacts: StressContactState,
++    sources: StressSourceState,
++    footprints: StressFootprintState,
++    state: StressTractionState,
++    stress: StressInfo,
++    surface: StressSurfaceInfo,
++    paths: StressPathInfo,
++    info: StressTractionInfo,
++    epsilon: float,
++    parallel: qd.template(),
++):
++    for _ in range(1):
++        if qd.static(len(state.capacity_maximum.shape) == 1):
++            state.capacity_maximum[0] = 0
+     for i_c, i_b in qd.ndrange(contacts.valid.shape[0], contacts.valid.shape[1]):
+         if state.fan_refined[i_c, i_b] and state.circle.face[i_c, i_b] < 0:
+-            func_refine_source_fan(
+-                i_c, i_b, epsilon, contacts, sources, footprints, state, stress, surface, paths, info
+-            )
++            anchor, radius = contacts.center[i_c, i_b], contacts.radius[i_c, i_b]
++            force, moment = contacts.force[i_c, i_b], sources.anchor_moment[i_c, i_b]
++            if qd.static(len(state.priors.force.shape) == 2):
++                force, moment = state.priors.force[i_c, i_b], state.priors.anchor_moment[i_c, i_b]
++            state.sample_count[i_c, i_b] = 0
++            footprints.samples[i_c, i_b] = 0
++            footprints.candidates[i_c, i_b] = 0
++            footprints.maximum_distance[i_c, i_b] = 0.0
++            for i_f in range(surface.face_origin.shape[0]):
++                closest, bary = func_closest_triangle(i_f, anchor, surface)
++                if (closest - anchor).norm() < radius and force.norm() > 0.0:
++                    # This line has the original wrench's transverse lever arm. It
++                    # selects integration charts, never a replacement application point.
++                    focus = anchor + force.cross(moment) / force.dot(force)
++                    normal = surface.face_normal[i_f]
++                    denominator = force.dot(normal)
++                    if qd.abs(denominator) > 64.0 * epsilon * force.norm():
++                        focus += force * (surface.face_origin[i_f] - focus).dot(normal) / denominator
++                    _focus_point, bary = func_closest_triangle(i_f, focus, surface)
++                state.fan_barycentric[i_f, i_c, i_b] = bary
++
++            if qd.static(not parallel):
++                for i_q in range(3 * surface.positions.shape[0]):
++                    func_refine_source_sample(i_q, i_c, i_b, contacts, footprints, state, stress, surface, paths, info)
++    for i_c, i_b in qd.ndrange(contacts.valid.shape[0], contacts.valid.shape[1]):
++        if qd.static(not parallel and len(state.capacity_maximum.shape) == 1):  # noqa: SIM102
++            if state.fan_refined[i_c, i_b] and state.sample_count[i_c, i_b] > state.profile.shape[0]:
++                qd.atomic_max(state.capacity_maximum[0], state.sample_count[i_c, i_b])
++
++
++@qd.kernel
++def kernel_refine_failed_samples(
++    contacts: StressContactState,
++    footprints: StressFootprintState,
++    state: StressTractionState,
++    stress: StressInfo,
++    surface: StressSurfaceInfo,
++    paths: StressPathInfo,
++    info: StressTractionInfo,
++):
++    qd.loop_config(block_dim=128)
++    for i_thread in range(contacts.valid.shape[0] * contacts.valid.shape[1] * 32):
++        lane = i_thread % 32
++        pair = i_thread // 32
++        i_c, i_b = pair // contacts.valid.shape[1], pair % contacts.valid.shape[1]
++        if state.fan_refined[i_c, i_b] and state.circle.face[i_c, i_b] < 0:
++            for i_chunk in range((3 * surface.positions.shape[0] + 31) // 32):
++                i_q = 32 * i_chunk + lane
++                if i_q < 3 * surface.positions.shape[0]:
++                    func_refine_source_sample(i_q, i_c, i_b, contacts, footprints, state, stress, surface, paths, info)
++    for i_c, i_b in qd.ndrange(contacts.valid.shape[0], contacts.valid.shape[1]):
++        if qd.static(len(state.capacity_maximum.shape) == 1):  # noqa: SIM102
++            if state.fan_refined[i_c, i_b] and state.sample_count[i_c, i_b] > state.profile.shape[0]:
++                qd.atomic_max(state.capacity_maximum[0], state.sample_count[i_c, i_b])
+diff --git a/genesis/engine/solvers/rigid/stress/footprint.py b/genesis/engine/solvers/rigid/stress/footprint.py
+index ec46b120..fd4889d8 100644
+--- a/genesis/engine/solvers/rigid/stress/footprint.py
++++ b/genesis/engine/solvers/rigid/stress/footprint.py
+@@ -24,6 +24,8 @@ from .traction import (
+     func_traction_support_range,
+ )
+ 
++_SQUARED_PORT_DISTANCE_BOUND = True
++
+ 
+ class StressFootprintStatus(IntEnum):
+     SUCCESS = 0
+@@ -50,7 +52,9 @@ def create_footprints(
+     shape = (n_contacts, n_envs)
+     return StressFootprintState(
+         port_distance=V(dtype=gs.qd_float, shape=(n_ports, n_contacts, n_envs)),
+-        seed_distance=V(dtype=gs.qd_float, shape=(n_face_ports, n_contacts, n_envs) if n_face_ports is not None else ()),
++        seed_distance=V(
++            dtype=gs.qd_float, shape=(n_face_ports, n_contacts, n_envs) if n_face_ports is not None else ()
++        ),
+         status=V(dtype=gs.qd_int, shape=shape),
+         candidates=V(dtype=gs.qd_int, shape=shape),
+         samples=V(dtype=gs.qd_int, shape=shape),
+@@ -171,8 +175,20 @@ def func_footprint_point_distance(
+             candidate = footprint_state.port_distance[i_port, i_c, i_b]
+             # The final segment has nonnegative length, so this lower bound preserves the same minimum.
+             if candidate < distance:
+-                candidate += (target - path_info.positions[i_port]).norm()
+-                distance = qd.min(distance, candidate)
++                delta = target - path_info.positions[i_port]
++                if qd.static(_SQUARED_PORT_DISTANCE_BOUND):
++                    remaining = distance - candidate
++                    squared = delta.dot(delta)
++                    roundoff = qd.static(2.0 ** (-17 if gs.qd_float == qd.f32 else -46))
++                    # Keep a conservative machine-roundoff margin: this gate
++                    # only avoids sqrt for a path that cannot improve the
++                    # complete current bound; radius and path law are intact.
++                    if squared <= remaining * remaining * (1.0 + roundoff):
++                        candidate += qd.sqrt(squared)
++                        distance = qd.min(distance, candidate)
++                else:
++                    candidate += delta.norm()
++                    distance = qd.min(distance, candidate)
+     return distance, is_straight
+ 
+ 
+@@ -186,6 +202,8 @@ def create_surface_fan_tractions(
+     surface_fan_frontier: bool = True,
+     source_priors: bool = False,
+     cached_acceptance: bool = False,
++    profile_capacity: int | None = None,
++    cached_fan_positions: bool = False,
+ ) -> StressTractionState:
+     """Partition every boundary face about its closest point to the anchor.
+ 
+@@ -198,7 +216,7 @@ def create_surface_fan_tractions(
+     """
+     n_faces = surface_info.face_origin.shape[0]
+     return create_tractions(
+-        3 * surface_info.positions.shape[0],
++        3 * surface_info.positions.shape[0] if profile_capacity is None else profile_capacity,
+         n_contacts,
+         n_envs,
+         packed_samples=True,
+@@ -208,6 +226,8 @@ def create_surface_fan_tractions(
+         surface_fan_frontier=surface_fan_frontier,
+         source_priors=source_priors,
+         cached_acceptance=cached_acceptance,
++        counted_profiles=profile_capacity is not None,
++        cached_fan_positions=cached_fan_positions,
+     )
+ 
+ 
+@@ -362,6 +382,9 @@ def kernel_refine_failed_disks(
+     compression centroid or normal torque outside the same disk's capacity is diagnosed using a continuous polar
+     ray with roundoff and original-point error allowances; the bound holds throughout the disk independently of sampling.
+     """
++    for _ in range(1):
++        if qd.static(len(traction_state.capacity_maximum.shape) == 1):
++            traction_state.capacity_maximum[0] = 0
+     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
+         first, last = func_traction_support_range(i_c, i_b, traction_state)
+         unresolved = traction_state.status[i_c, i_b] == StressTractionStatus.NUMERICAL_FAILURE
+@@ -433,7 +456,6 @@ def kernel_refine_failed_disks(
+                 if (
+                     traction_state.status[i_c, i_b] != StressTractionStatus.CONTINUOUS_WRENCH_INFEASIBLE
+                     and refine_fraction < 1.0
+-                    and 9 * surface_info.gauss.shape[0] ** 2 <= traction_state.profile.shape[0]
+                 ):
+                     tangent = surface_info.face_edges[i_face][0, :].normalized()
+                     second = normal.cross(tangent)
+@@ -448,13 +470,16 @@ def kernel_refine_failed_disks(
+                     )
+                     traction_state.circle.refined[i_c, i_b] = True
+                     traction_state.sample_count[i_c, i_b] = 9 * surface_info.gauss.shape[0] ** 2
++                    if qd.static(len(traction_state.capacity_maximum.shape) == 1):  # noqa: SIM102
++                        if traction_state.sample_count[i_c, i_b] > traction_state.profile.shape[0]:
++                            qd.atomic_max(traction_state.capacity_maximum[0], traction_state.sample_count[i_c, i_b])
+                     footprint_state.samples[i_c, i_b] = traction_state.sample_count[i_c, i_b]
+                     footprint_state.candidates[i_c, i_b] = traction_state.sample_count[i_c, i_b]
+                     footprint_state.maximum_distance[i_c, i_b] = 0.0
+     for i_q, i_c, i_b in qd.ndrange(
+         9 * surface_info.gauss.shape[0] ** 2, contact_state.valid.shape[0], contact_state.valid.shape[1]
+     ):
+-        if traction_state.circle.refined[i_c, i_b]:
++        if traction_state.circle.refined[i_c, i_b] and i_q < traction_state.profile.shape[0]:
+             distance, _, jacobian = func_circle_panel(i_q, i_c, i_b, traction_state, traction_info)
+             n = surface_info.gauss.shape[0]
+             local = i_q % (n * n)
+@@ -464,6 +489,13 @@ def kernel_refine_failed_disks(
+             profile *= qd.exp(-0.5 * (distance / 0.45) ** 2) * (1.0 - distance * distance) ** 2
+             traction_state.profile[i_q, i_c, i_b] = profile
+             traction_state.sample_indices[i_q, i_c, i_b] = 3 * traction_info.positions.shape[0] + i_q
++            if qd.static(len(traction_state.sample_positions.shape) == 3):
++                i_sample = 3 * traction_info.positions.shape[0] + i_q
++                i_face, bary = func_surface_fan_bary(i_sample, i_c, i_b, traction_state, traction_info)
++                edges = surface_info.face_edges[i_face]
++                traction_state.sample_positions[i_q, i_c, i_b] = (
++                    surface_info.face_origin[i_face] + bary[1] * edges[0, :] + bary[2] * edges[1, :]
++                )
+             qd.atomic_max(footprint_state.maximum_distance[i_c, i_b], radius * distance)
+ 
+ 
+diff --git a/genesis/engine/solvers/rigid/stress/intrinsic.py b/genesis/engine/solvers/rigid/stress/intrinsic.py
+index 552d6264..22debf55 100644
+--- a/genesis/engine/solvers/rigid/stress/intrinsic.py
++++ b/genesis/engine/solvers/rigid/stress/intrinsic.py
+@@ -1,6 +1,6 @@
+ """Stream all witnessed rigid contacts through intrinsic finite-area traction recovery."""
+ 
+-from dataclasses import dataclass, field
++from dataclasses import dataclass, field, replace
+ from typing import TYPE_CHECKING, ClassVar
+ 
+ import quadrants as qd
+@@ -113,6 +113,9 @@ class IntrinsicContacts:
+         self.raw_sources = create_sources(n_contacts, n_envs)
+         self.failure = create_contact_failure(n_envs)
+         self.raw_sources.uncertainty.fill(options.source_uncertainty)
++        self.is_compact_profiles = (
++            gs.backend == gs.cuda and options.intrinsic_integration == "surface_fan" and options.surface_fan_frontier
++        )
+         self._allocate_workspace(surface_info, options, n_chunk, n_envs)
+         self.certificates = StressWrenchCertificates(
+             ray=V_VEC(6, dtype=gs.qd_float, shape=(n_contacts, n_envs)),
+@@ -147,6 +150,11 @@ class IntrinsicContacts:
+                 surface_fan_frontier=options.surface_fan_frontier,
+                 source_priors=body_partition,
+                 cached_acceptance=options.cooperative_tractions and gs.backend == gs.cuda,
++                # Quadrants requires positive tensor dimensions. One slot is
++                # the minimum legal placeholder; complete sampling determines
++                # the actual required size before any traction fit.
++                profile_capacity=1 if self.is_compact_profiles else None,
++                cached_fan_positions=self.is_compact_profiles,
+             )
+             if options.intrinsic_integration == "surface_fan"
+             else create_anchor_fan_tractions(
+@@ -162,6 +170,30 @@ class IntrinsicContacts:
+         )
+         self.wrench_search = create_wrench_search(n_chunk, n_envs, _WRENCH_CERTIFICATE_DEPTH)
+ 
++    def _grow_sample_profiles(self) -> bool:
++        n_samples = int(qd_to_numpy(self.tractions.capacity_maximum, transpose=True)[0])
++        if n_samples <= self.tractions.profile.shape[0]:
++            return False
++        n_contacts, n_envs = self.contacts.valid.shape
++        previous = self.tractions
++        sample_layout = (2, 1, 0) if len(previous.sample_positions.shape) == 4 else None
++        self.tractions = replace(
++            previous,
++            profile=V(dtype=gs.qd_float, shape=(n_samples, n_contacts, n_envs), layout=sample_layout),
++            sample_indices=V(dtype=gs.qd_int, shape=(n_samples, n_contacts, n_envs), layout=sample_layout),
++            sample_positions=(
++                V(dtype=gs.qd_float, shape=(n_samples, n_contacts, n_envs, 3), layout=(2, 1, 0, 3))
++                if len(previous.sample_positions.shape) == 4
++                else (
++                    V_VEC(3, dtype=gs.qd_float, shape=(n_samples, n_contacts, n_envs))
++                    if len(previous.sample_positions.shape) == 3
++                    else previous.sample_positions
++                )
++            ),
++        )
++        kernel_copy_profiles(previous, self.tractions)
++        return True
++
+     def scatter(
+         self,
+         raw_contacts: StressContactState,
+@@ -205,6 +237,17 @@ class IntrinsicContacts:
+                     self.traction_info,
+                     epsilon,
+                 )
++                if self.is_compact_profiles and self._grow_sample_profiles():
++                    kernel_surface_fan_profiles(
++                        self.contacts,
++                        self.footprints,
++                        self.tractions,
++                        stress_info,
++                        surface_info,
++                        self.paths.info,
++                        self.traction_info,
++                        epsilon,
++                    )
+             else:
+                 kernel_anchor_fan_profiles(
+                     self.contacts, self.footprints, self.tractions, stress_info, surface_info, self.paths.info
+@@ -237,6 +280,20 @@ class IntrinsicContacts:
+                     self.traction_info,
+                     epsilon,
+                 )
++                if (
++                    self.is_compact_profiles
++                    and self.tractions.profile.shape[0] < 9 * surface_info.gauss.shape[0] ** 2
++                    and self._grow_sample_profiles()
++                ):
++                    kernel_refine_failed_disks(
++                        self.contacts,
++                        self.sources,
++                        self.footprints,
++                        self.tractions,
++                        surface_info,
++                        self.traction_info,
++                        epsilon,
++                    )
+                 if body_partition:
+                     kernel_refresh_refined_source_priors(self.contacts, self.tractions)
+                 kernel_fit_tractions(
+@@ -263,6 +320,18 @@ class IntrinsicContacts:
+                     self.traction_info,
+                     epsilon,
+                 )
++                if self.is_compact_profiles and self._grow_sample_profiles():
++                    kernel_refine_failed_fans(
++                        self.contacts,
++                        self.sources,
++                        self.footprints,
++                        self.tractions,
++                        stress_info,
++                        surface_info,
++                        self.paths.info,
++                        self.traction_info,
++                        epsilon,
++                    )
+                 if body_partition:
+                     kernel_refresh_refined_source_priors(self.contacts, self.tractions)
+                 kernel_fit_tractions(
+@@ -359,6 +428,19 @@ class IntrinsicContacts:
+                 yield from iter_data(value, f"{prefix}.{name}")
+ 
+ 
++@qd.kernel
++def kernel_copy_profiles(previous: StressTractionState, current: StressTractionState):
++    for i_q, i_c, i_b in qd.ndrange(previous.profile.shape[0], previous.profile.shape[1], previous.profile.shape[2]):
++        if i_q < previous.sample_count[i_c, i_b]:
++            current.profile[i_q, i_c, i_b] = previous.profile[i_q, i_c, i_b]
++            current.sample_indices[i_q, i_c, i_b] = previous.sample_indices[i_q, i_c, i_b]
++            if qd.static(len(previous.sample_positions.shape) == 3):
++                current.sample_positions[i_q, i_c, i_b] = previous.sample_positions[i_q, i_c, i_b]
++            elif qd.static(len(previous.sample_positions.shape) == 4):
++                for i_a in qd.static(range(3)):
++                    current.sample_positions[i_q, i_c, i_b, i_a] = previous.sample_positions[i_q, i_c, i_b, i_a]
++
++
+ @qd.kernel
+ def kernel_pack_intrinsic_contacts(
+     raw_contacts: StressContactState,
+diff --git a/genesis/engine/solvers/rigid/stress/provenance.py b/genesis/engine/solvers/rigid/stress/provenance.py
+index b93310e9..0a43d53e 100644
+--- a/genesis/engine/solvers/rigid/stress/provenance.py
++++ b/genesis/engine/solvers/rigid/stress/provenance.py
+@@ -92,16 +92,16 @@ def func_capture_rigid_sources(
+     still require their actual torque, as enforced by the stress feature.
+     """
+     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
+-        source_state.geom[i_c, i_b] = -1
+-        source_state.pair[i_c, i_b] = -1
+-        source_state.method[i_c, i_b] = array_class.ContactWitnessKind.NORMAL_OFFSET
+-        source_state.vertex[i_c, i_b] = -1
+-        source_state.has_vertex_ambiguity[i_c, i_b] = False
+-        source_state.witness_face[i_c, i_b] = -1
+-        source_state.witness_barycentric[i_c, i_b] = qd.Vector([float("nan")] * 3)
+-        source_state.witness[i_c, i_b] = qd.Vector([float("nan")] * 3)
+-        source_state.free_moment[i_c, i_b] = qd.Vector.zero(gs.qd_float, 3)
+         if contact_state.valid[i_c, i_b]:
++            source_state.geom[i_c, i_b] = -1
++            source_state.pair[i_c, i_b] = -1
++            source_state.method[i_c, i_b] = array_class.ContactWitnessKind.NORMAL_OFFSET
++            source_state.vertex[i_c, i_b] = -1
++            source_state.has_vertex_ambiguity[i_c, i_b] = False
++            source_state.witness_face[i_c, i_b] = -1
++            source_state.witness_barycentric[i_c, i_b] = qd.Vector([float("nan")] * 3)
++            source_state.witness[i_c, i_b] = qd.Vector([float("nan")] * 3)
++            source_state.free_moment[i_c, i_b] = qd.Vector.zero(gs.qd_float, 3)
+             i_contact = collider_state.contact_sort_idx[i_c, i_b]
+             i_a = collider_state.contact_data.link_a[i_contact, i_b]
+             i_b_link = collider_state.contact_data.link_b[i_contact, i_b]
+diff --git a/genesis/engine/solvers/rigid/stress/surface_frontier.py b/genesis/engine/solvers/rigid/stress/surface_frontier.py
+index a0410765..0b97c29b 100644
+--- a/genesis/engine/solvers/rigid/stress/surface_frontier.py
++++ b/genesis/engine/solvers/rigid/stress/surface_frontier.py
+@@ -101,6 +101,14 @@ def kernel_fan_frontier_samples(
+     frontier: StressFanFrontier,
+     maximum: int,
+ ):
++    for _ in range(1):
++        if qd.static(len(traction_state.capacity_maximum.shape) == 1):
++            traction_state.capacity_maximum[0] = 0
++    for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
++        traction_state.sample_count[i_c, i_b] = 0
++        footprint_state.candidates[i_c, i_b] = 0
++        footprint_state.samples[i_c, i_b] = 0
++        footprint_state.maximum_distance[i_c, i_b] = 0.0
+     for i_c, i_b, i_task in qd.ndrange(
+         contact_state.valid.shape[0], contact_state.valid.shape[1], maximum * 3 * surface_info.gauss.shape[0] ** 2
+     ):
+@@ -160,11 +168,20 @@ def kernel_fan_frontier_samples(
+                         relative = distance / radius
+                         profile = weight * qd.exp(-0.5 * (relative / 0.45) ** 2) * (1.0 - relative * relative) ** 2
+                         i_slot = qd.atomic_add(traction_state.sample_count[i_c, i_b], 1)
+-                        traction_state.sample_indices[i_slot, i_c, i_b] = i_sample
+-                        traction_state.profile[i_slot, i_c, i_b] = profile
++                        if i_slot < traction_state.profile.shape[0]:
++                            traction_state.sample_indices[i_slot, i_c, i_b] = i_sample
++                            traction_state.profile[i_slot, i_c, i_b] = profile
++                            if qd.static(len(traction_state.sample_positions.shape) == 3):
++                                traction_state.sample_positions[i_slot, i_c, i_b] = position
++                            elif qd.static(len(traction_state.sample_positions.shape) == 4):
++                                for i_a in qd.static(range(3)):
++                                    traction_state.sample_positions[i_slot, i_c, i_b, i_a] = position[i_a]
+                         qd.atomic_add(footprint_state.samples[i_c, i_b], 1)
+                         qd.atomic_max(footprint_state.maximum_distance[i_c, i_b], distance)
+     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
++        if qd.static(len(traction_state.capacity_maximum.shape) == 1):  # noqa: SIM102
++            if traction_state.sample_count[i_c, i_b] > traction_state.profile.shape[0]:
++                qd.atomic_max(traction_state.capacity_maximum[0], traction_state.sample_count[i_c, i_b])
+         if (
+             contact_state.valid[i_c, i_b]
+             and footprint_state.status[i_c, i_b] == StressFootprintStatus.SUCCESS
+diff --git a/genesis/engine/solvers/rigid/stress/traction.py b/genesis/engine/solvers/rigid/stress/traction.py
+index d97b46e2..78484851 100644
+--- a/genesis/engine/solvers/rigid/stress/traction.py
++++ b/genesis/engine/solvers/rigid/stress/traction.py
+@@ -148,6 +148,7 @@ class StressTractionState:
+     frontier: StressFanFrontier
+     priors: StressTractionPriors
+     acceptance: StressTractionAcceptance
++    capacity_maximum: qd.Tensor
+ 
+ 
+ def create_tractions(
+@@ -164,6 +165,8 @@ def create_tractions(
+     surface_fan_frontier: bool = True,
+     source_priors: bool = False,
+     cached_acceptance: bool = False,
++    counted_profiles: bool = False,
++    cached_fan_positions: bool = False,
+ ) -> StressTractionState:
+     """Allocate the exact supplied quadrature subproblem, without a force cloud.
+ 
+@@ -178,8 +181,9 @@ def create_tractions(
+     frontier_shape = (
+         (fan_faces, n_contacts, n_envs) if fan_faces and surface_fan_frontier and gs.backend == gs.cuda else ()
+     )
++    sample_layout = (2, 1, 0) if cached_fan_positions else None
+     state = StressTractionState(
+-        profile=V(dtype=gs.qd_float, shape=(n_samples, n_contacts, n_envs)),
++        profile=V(dtype=gs.qd_float, shape=(n_samples, n_contacts, n_envs), layout=sample_layout),
+         dual=V_VEC(6, dtype=gs.qd_float, shape=shape),
+         weight_sum=V(dtype=gs.qd_float, shape=shape),
+         scale=V(dtype=gs.qd_float, shape=shape),
+@@ -189,12 +193,18 @@ def create_tractions(
+         evaluations=V(dtype=gs.qd_int, shape=shape),
+         certificate=V_VEC(6, dtype=gs.qd_float, shape=shape),
+         certificate_margin=V(dtype=gs.qd_float, shape=shape),
+-        sample_positions=V_VEC(3, dtype=gs.qd_float, shape=sample_shape),
++        sample_positions=(
++            V(dtype=gs.qd_float, shape=(n_samples, n_contacts, n_envs, 3), layout=(2, 1, 0, 3))
++            if cached_fan_positions
++            else V_VEC(3, dtype=gs.qd_float, shape=(n_samples, n_contacts, n_envs) if cached_fan_positions else sample_shape)
++        ),
+         sample_normals=V_VEC(3, dtype=gs.qd_float, shape=sample_shape),
+         sample_faces=V(dtype=gs.qd_int, shape=face_shape),
+         sample_shape=V_VEC(6, dtype=gs.qd_float, shape=sample_shape),
+         sample_count=V(dtype=gs.qd_int, shape=shape),
+-        sample_indices=V(dtype=gs.qd_int, shape=(n_samples, n_contacts, n_envs) if packed_samples else ()),
++        sample_indices=V(
++            dtype=gs.qd_int, shape=(n_samples, n_contacts, n_envs) if packed_samples else (), layout=sample_layout
++        ),
+         fan_barycentric=V_VEC(3, dtype=gs.qd_float, shape=(fan_faces, n_contacts, n_envs) if fan_faces else ()),
+         fan_coordinate_power=V(dtype=gs.qd_int, shape=()),
+         fan_refined=V(dtype=gs.qd_bool, shape=shape if fan_faces else ()),
+@@ -228,6 +238,7 @@ def create_tractions(
+             moment=V_VEC(3, dtype=gs.qd_float, shape=shape if cached_acceptance else ()),
+             cone_valid=V(dtype=gs.qd_bool, shape=shape if cached_acceptance else ()),
+         ),
++        capacity_maximum=V(dtype=gs.qd_int, shape=(1,) if counted_profiles else ()),
+     )
+     state.sample_count.fill(0 if packed_samples else n_samples)
+     state.fan_coordinate_power.fill(fan_coordinate_power)
+@@ -381,9 +392,21 @@ def func_traction_geometry(
+     position, normal = qd.Vector.zero(gs.qd_float, 3), qd.Vector.zero(gs.qd_float, 3)
+     i_sample = func_traction_sample_index(i_q, i_c, i_b, traction_state)
+     if qd.static(len(traction_state.fan_barycentric.shape) == 3):
+-        i_face, bary = func_surface_fan_bary(i_sample, i_c, i_b, traction_state, traction_info)
+-        edges = traction_info.face_edges[i_face]
+-        position = traction_info.face_origin[i_face] + bary[1] * edges[0, :] + bary[2] * edges[1, :]
++        i_face = gs.qd_int(0)
++        if qd.static(len(traction_state.sample_positions.shape) in (3, 4)):
++            if qd.static(len(traction_state.sample_positions.shape) == 4):
++                for i_a in qd.static(range(3)):
++                    position[i_a] = traction_state.sample_positions[i_q, i_c, i_b, i_a]
++            else:
++                position = traction_state.sample_positions[i_q, i_c, i_b]
++            n_quadrature = traction_info.gauss.shape[0] ** 2
++            i_face = i_sample // (3 * n_quadrature)
++            if i_sample >= 3 * traction_info.positions.shape[0]:
++                i_face = traction_state.circle.face[i_c, i_b]
++        else:
++            i_face, bary = func_surface_fan_bary(i_sample, i_c, i_b, traction_state, traction_info)
++            edges = traction_info.face_edges[i_face]
++            position = traction_info.face_origin[i_face] + bary[1] * edges[0, :] + bary[2] * edges[1, :]
+         normal = traction_info.inward_normals[i_face * traction_info.gauss.shape[0] ** 2]
+     elif qd.static(len(traction_state.sample_faces.shape) == 2):
+         i_local = func_traction_local_index(i_sample, i_c, i_b, traction_state, traction_info)
+@@ -634,8 +657,17 @@ def kernel_fit_tractions(
+             warm_start=False,
+             is_retry=True,
+         )
+-        kernel_fit_tractions_impl(
+-            contact_state, source_state, traction_state, traction_info, epsilon, fit_tolerance, max_evaluations, 1
++        kernel_fit_cooperative(
++            contact_state,
++            source_state,
++            traction_state,
++            traction_info,
++            epsilon,
++            fit_tolerance,
++            max_evaluations,
++            warm_start=False,
++            is_retry=True,
++            sample_lanes=8,
+         )
+     else:
+         kernel_fit_tractions_impl(
+diff --git a/tests/rigid/test_stress_source_priors.py b/tests/rigid/test_stress_source_priors.py
+index 0fbf6c5c..1d90bf50 100644
+--- a/tests/rigid/test_stress_source_priors.py
++++ b/tests/rigid/test_stress_source_priors.py
+@@ -1,3 +1,4 @@
++from dataclasses import replace
+ from pathlib import Path
+ 
+ import numpy as np
+@@ -148,6 +149,7 @@ def source_prior_fixture(case, vertices, faces):
+ 
+ @pytest.mark.required
+ @pytest.mark.precision("64")
++@pytest.mark.parametrize("native_pipeline", (False, True))
+ @pytest.mark.parametrize(
+     "case",
+     (
+@@ -161,7 +163,7 @@ def source_prior_fixture(case, vertices, faces):
+         "varied4096_slow",
+     ),
+ )
+-def test_body_source_prior_wrench_cones_full_fields_and_gauge_rows(case, record_property):
++def test_body_source_prior_wrench_cones_full_fields_and_gauge_rows(case, native_pipeline, record_property):
+     mesh = Path(__file__).resolve().parents[2] / "examples/rigid/assets/hollow_egg/level1/elastic.npz"
+     options = RigidStressOptions(mesh=mesh, method="direct", intrinsic_load_partition="body_source_prior")
+     model, n_envs = StressModel(options), 3
+@@ -222,6 +224,47 @@ def test_body_source_prior_wrench_cones_full_fields_and_gauge_rows(case, record_
+     if case in ("varied2048", "varied4096"):
+         assert qd_to_numpy(tractions.fan_refined, transpose=True)[0, 0]
+     assert_equal(qd_to_numpy(tractions.status, transpose=True), 0)
++    if native_pipeline:
++        scene = gs.Scene(show_viewer=False)
++        entity = scene.add_entity(
++            gs.morphs.URDF(
++                file=mesh.with_name("egg_shell.urdf"),
++                align=False,
++                convexify=True,
++                decimate=False,
++                preserve_mesh_precision=True,
++            )
++        )
++        scene.build(n_envs=n_envs)
++        native_contacts = create_contacts(n_sources, n_envs, 0.006)
++        native_contacts.valid.fill(True)
++        native_contacts.position.from_numpy(np.repeat(points[:, None], n_envs, axis=1))
++        native_contacts.force.from_numpy(np.repeat(forces[:, None], n_envs, axis=1))
++        native_contacts.radius.from_numpy(np.repeat(radii[:, None], n_envs, axis=1))
++        native_contacts.friction.from_numpy(actual_mu.T.copy())
++        native_contacts.frame_position.from_numpy(qd_to_numpy(contacts.frame_position, transpose=True))
++        native_contacts.frame_quaternion.from_numpy(qd_to_numpy(contacts.frame_quaternion, transpose=True))
++        mapped = IntrinsicContacts(entity.base_link, native_contacts, model.info, surface.info, options, paths)
++        mapped.raw_sources.geom.fill(entity.base_link.geoms[0].idx)
++        mapped.raw_sources.pair.from_numpy(np.repeat(np.arange(n_sources)[:, None], n_envs, axis=1).astype(gs.np_int))
++        mapped.raw_sources.witness.from_numpy(np.repeat(anchors[:, None], n_envs, axis=1))
++        mapped.raw_sources.uncertainty.from_numpy(qd_to_numpy(sources.uncertainty, transpose=True).T.copy())
++        mapped.raw_sources.free_moment.from_numpy(
++            np.repeat((moments - np.cross(points - anchors, forces))[:, None], n_envs, axis=1)
++        )
++        native_state = model.create_state(n_envs, "full")
++        native_errno = V(dtype=gs.qd_int, shape=(n_envs,))
++        native_errno.fill(0)
++        kernel_begin_step(native_state)
++        mapped.scatter(native_contacts, native_state, model.info, surface.info, options, epsilon, native_errno)
++        assert_equal(qd_to_numpy(native_errno), 0)
++        assert_equal(qd_to_numpy(native_contacts.status, transpose=True), 0)
++        contacts, sources, tractions, footprints = mapped.contacts, mapped.sources, mapped.tractions, mapped.footprints
++        assert tractions.profile.shape[0] >= qd_to_numpy(tractions.sample_count, transpose=True).max()
++        if mapped.is_compact_profiles:
++            assert tractions.profile.shape[0] < 3 * surface.info.positions.shape[0]
++            assert any(item.name.endswith("tractions.capacity_maximum") for item in mapped.data("stress"))
++        record_property("profile_capacity", tractions.profile.shape[0])
+     fitted = (
+         tractions.dual,
+         tractions.weight_sum,
+@@ -257,6 +300,18 @@ def test_body_source_prior_wrench_cones_full_fields_and_gauge_rows(case, record_
+         )
+     ]
+     counts = qd_to_numpy(tractions.sample_count, transpose=True)
++    if len(tractions.fan_barycentric.shape) == 3 and len(tractions.sample_positions.shape) in (3, 4):
++        direct = replace(tractions, sample_positions=V_VEC(3, dtype=gs.qd_float, shape=()))
++        direct_samples = create_traction_samples(direct)
++        kernel_traction_samples(direct_samples, direct, surface.info, info)
++        actual_positions = qd_to_numpy(samples.positions, transpose=True)
++        direct_positions = qd_to_numpy(direct_samples.positions, transpose=True)
++        selected = np.arange(tractions.profile.shape[0])[None, :, None] < counts[:, None, :]
++        assert_allclose(actual_positions[selected], direct_positions[selected], rtol=0, atol=1e-15)
++        record_property(
++            "cached_position_max_difference_m",
++            float(abs(actual_positions[selected] - direct_positions[selected]).max()),
++        )
+     record_property("fan_refined", qd_to_numpy(tractions.fan_refined, transpose=True).tolist())
+     record_property("fit_evaluations", qd_to_numpy(tractions.evaluations, transpose=True).tolist())
+     surface_nodes = qd_to_numpy(model.info.surface_nodes, transpose=True).T
+@@ -320,9 +375,12 @@ def test_body_source_prior_wrench_cones_full_fields_and_gauge_rows(case, record_
+     omega, errno = V_VEC(3, dtype=gs.qd_float, shape=(n_envs,)), V(dtype=gs.qd_int, shape=(n_envs,))
+     omega.fill(0)
+     errno.fill(0)
+-    kernel_prepare_cached_tractions(
+-        epsilon, contacts, tractions, state, model.info, surface.info, info, errno, reset_force=True
+-    )
++    if len(tractions.acceptance.force.shape) == 2:
++        kernel_prepare_cached_tractions(
++            epsilon, contacts, tractions, state, model.info, surface.info, info, errno, reset_force=True
++        )
++    else:
++        kernel_scatter_tractions(contacts, tractions, state, model.info, surface.info, info, errno, reset_force=True)
+     assert_equal(qd_to_numpy(errno), 0)
+     assert_allclose(qd_to_numpy(state.force, transpose=True), nodal, rtol=1e-4, atol=1e-10)
+     oracle = P2Shell(vertices, tets, faces, options.young, options.poisson, options.density, 2, factor_backend="none")

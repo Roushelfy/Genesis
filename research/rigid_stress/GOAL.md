@@ -73,6 +73,22 @@ fields and eight exact cached/direct geometry comparisons, selected for clean
 integration. Isolated FP32-Gaussian cost is below0.2% of the fenced step and
 does not justify a production change. Sparse diagnostic/warm-Hessian matrices
 both pass31CPU/31CUDA; live decisions and clean combined qualification remain.
+[Warm Hessian and diagnostic clearing](docs/NATIVE_WARM_HESSIAN_DIAGNOSTICS_20261012.md)
+now qualify two cohorts each: Hessian1.033683688x/1.020015526x, diagnostic
+clearing1.009038163x/1.010380685x, with31CPU/31CUDA/96fields for each candidate
+and zero invalid/failed outcomes. The squared-distance gate has no gain and is
+not selected. Four-candidate clean code passes3CPU/3CUDA hard/lifecycle smoke
+and33CPU combined cases;33CUDA/live comparison, dynamic oracles, inactive-walk
+decision and final-source four-scope/scaling remain pending.
+[Clean combined qualification](docs/NATIVE_COMBINED_QUALIFICATION_20261013.md)
+now records a same-GPU1.073180556x complete B16384 live gain, zero invalid/
+failed outcomes and exact rigid counters/positions. The first33CUDA matrix
+has32passes/1over-strict repeat-precision failure, fully preserved. Independent
+equal-history/forced-FP64 diagnostics identify its cause; budget-aware isolated
+checks add original wrench and complete CPU/gauge residuals and pass2CUDA.
+The expanded35CPU/35CUDA matrix, dynamic oracles and final-source scopes are
+running/pending. The inactive-walk exit has only1.000350925x with overlapping
+repeat ranges and is not selected. No extension completion is claimed.
 [Matched B1024 four scopes](docs/NATIVE_MATCHED_SCOPES_20261012.md) include timed
 grasp outcomes, resets and environment work. Contact graphs, fastcache and
 standalone device-frontier maximum have no selected dynamic end-to-end benefit;

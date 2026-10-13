@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="29.795" timestamp="2026-10-12T15:41:37.136879+00:00" hostname="rtx-209-191"><testcase classname="tests.rigid.test_stress_source_priors" name="test_body_source_prior_wrench_cones_full_fields_and_gauge_rows[varied4096_slow-False]" file="tests/rigid/test_stress_source_priors.py" line="149" time="19.051"><failure message="quadrants.lang.exception.QuadrantsCompilationError: &#10;quadrants stack trace:&#10;===&#10;Traceback (most recent call last):&#10;  File &quot;/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer_utils.py&quot;, line 40, in __call__&#10;    res = method(ctx, node)&#10;  File &quot;/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer.py&quot;, line 526, in build_Call&#10;    return CallTransformer.build_Call(ctx, node, build_stmt, build_stmts)&#10;  File &quot;/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformers/call_transformer.py&quot;, line 501, in build_Call&#10;    node.ptr = func(*py_args, **py_kwargs)&#10;  File &quot;/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/_quadrants_callable.py&quot;, line 101, in __call__&#10;    return self.wrapper.__call__(*args, **kwargs)&#10;  File &quot;/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/func.py&quot;, line 89, in __call__&#10;    ret = transform_tree(tree, ctx)&#10;  File &quot;/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/transform.py&quot;, line 8, in transform_tree&#10;    ASTTransformer()(ctx, tree)&#10;  File &quot;/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer_utils.py&quot;, line 51, in __call__&#10;    raise e.with_traceback(None)&#10;quadrants.lang.exception.QuadrantsCompilationError: File &quot;/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-segment-bounds/genesis/engine/solvers/rigid/stress/cooperative_fit.py&quot;, line 45, in func_dual_warp:&#10;    hessian_dtype = qd.static(qd.f32 if fp32_jacobian else gs.qd_float)&#10;                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&#10;Traceback (most recent call last):&#10;  File &quot;/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer_utils.py&quot;, line 40, in __call__&#10;    res = method(ctx, node)&#10;  File &quot;/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer.py&quot;, line 526, in build_Call&#10;    return CallTransformer.build_Call(ctx, node, build_stmt, build_stmts)&#10;  File &quot;/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformers/call_transformer.py&quot;, line 501, in build_Call&#10;    node.ptr = func(*py_args, **py_kwargs)&#10;  File &quot;/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/impl.py&quot;, line 1331, in static&#10;    raise ValueError(f&quot;Input to qd.static must be compile-time constants or global pointers, instead of {type(x)}&quot;)&#10;ValueError: Input to qd.static must be compile-time constants or global pointers, instead of &lt;class 'quadrants._lib.core.quadrants_python.DataTypeCxx'&gt;&#10;&#10;&#10;===&#10;&#10;Your code:&#10;File &quot;/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-segment-bounds/genesis/engine/solvers/rigid/stress/cooperative_fit.py&quot;, line 228, in kernel_fit_tractions_impl:&#10;                            trial_energy, trial_gradient, hessian =&#10;^^^^^^^^^^^^^^^&#10;                                i_c,&#10;                                ^^^^&#10;                                i_b,&#10;                                ^^^^&#10;                                lane,&#10;                                ^^^^^&#10;                                lanes,&#10;                                ^^^^^^&#10;                                qd.static(_FP32_WARM_JACOBIAN and gs.backend ==&#10;                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&#10;gs.cuda and warm_start and not is_retry),&#10;^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&#10;                                proposal,&#10;                                ^^^^^^^^^&#10;                                force,&#10;                                ^^^^^^&#10;                                target,&#10;                                ^^^^^^^&#10;                                anchor,&#10;                                ^^^^^^^&#10;                                radius,&#10;                                ^^^^^^^&#10;                                friction,&#10;                                ^^^^^^^^^&#10;                                weight_sum,&#10;                                ^^^^^^^^^^^&#10;                                traction_state,&#10;                                ^^^^^^^^^^^^^^^&#10;                                traction_info,&#10;                                ^^^^^^^^^^^^^^&#10;                                n_sample_lanes,&#10;                                ^^^^^^^^^^^^^^^&#10;                            )&#10;                            ^&#10;File &quot;/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-segment-bounds/genesis/engine/solvers/rigid/stress/cooperative_fit.py&quot;, line 45, in func_dual_warp:&#10;    hessian_dtype = qd.static(qd.f32 if fp32_jacobian else gs.qd_float)&#10;                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&#10;Traceback (most recent call last):&#10;  File &quot;/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer_utils.py&quot;, line 40, in __call__&#10;    res = method(ctx, node)&#10;  File &quot;/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer.py&quot;, line 526, in build_Call&#10;    return CallTransformer.build_Call(ctx, node, build_stmt, build_stmts)&#10;  File &quot;/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformers/call_transformer.py&quot;, line 501, in build_Call&#10;    node.ptr = func(*py_args, **py_kwargs)&#10;  File &quot;/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/impl.py&quot;, line 1331, in static&#10;    raise ValueError(f&quot;Input to qd.static must be compile-time constants or global pointers, instead of {type(x)}&quot;)&#10;ValueError: Input to qd.static must be compile-time constants or global pointers, instead of &lt;class 'quadrants._lib.core.quadrants_python.DataTypeCxx'&gt;">tests/rigid/test_stress_source_priors.py:212: in test_body_source_prior_wrench_cones_full_fields_and_gauge_rows
+    kernel_fit_tractions(contacts, sources, tractions, info, epsilon, 9e-9, 128)
+genesis/engine/solvers/rigid/stress/traction.py:628: in kernel_fit_tractions
+    kernel_fit_cooperative(
+genesis/engine/solvers/rigid/stress/cooperative_fit.py:102: in kernel_fit_tractions
+    kernel_fit_tractions_impl(
+/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/_quadrants_callable.py:101: in __call__
+    return self.wrapper.__call__(*args, **kwargs)
+/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel_impl.py:184: in wrapped_func
+    raise type(e)("\n" + str(e)) from None
+E   quadrants.lang.exception.QuadrantsCompilationError: 
+E   quadrants stack trace:
+E   ===
+E   Traceback (most recent call last):
+E     File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer_utils.py", line 40, in __call__
+E       res = method(ctx, node)
+E     File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer.py", line 526, in build_Call
+E       return CallTransformer.build_Call(ctx, node, build_stmt, build_stmts)
+E     File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformers/call_transformer.py", line 501, in build_Call
+E       node.ptr = func(*py_args, **py_kwargs)
+E     File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/_quadrants_callable.py", line 101, in __call__
+E       return self.wrapper.__call__(*args, **kwargs)
+E     File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/func.py", line 89, in __call__
+E       ret = transform_tree(tree, ctx)
+E     File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/transform.py", line 8, in transform_tree
+E       ASTTransformer()(ctx, tree)
+E     File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer_utils.py", line 51, in __call__
+E       raise e.with_traceback(None)
+E   quadrants.lang.exception.QuadrantsCompilationError: File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-segment-bounds/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 45, in func_dual_warp:
+E       hessian_dtype = qd.static(qd.f32 if fp32_jacobian else gs.qd_float)
+E                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Traceback (most recent call last):
+E     File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer_utils.py", line 40, in __call__
+E       res = method(ctx, node)
+E     File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer.py", line 526, in build_Call
+E       return CallTransformer.build_Call(ctx, node, build_stmt, build_stmts)
+E     File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformers/call_transformer.py", line 501, in build_Call
+E       node.ptr = func(*py_args, **py_kwargs)
+E     File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/impl.py", line 1331, in static
+E       raise ValueError(f"Input to qd.static must be compile-time constants or global pointers, instead of {type(x)}")
+E   ValueError: Input to qd.static must be compile-time constants or global pointers, instead of &lt;class 'quadrants._lib.core.quadrants_python.DataTypeCxx'&gt;
+E   
+E   
+E   ===
+E   
+E   Your code:
+E   File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-segment-bounds/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 228, in kernel_fit_tractions_impl:
+E                               trial_energy, trial_gradient, hessian =
+E   ^^^^^^^^^^^^^^^
+E                                   i_c,
+E                                   ^^^^
+E                                   i_b,
+E                                   ^^^^
+E                                   lane,
+E                                   ^^^^^
+E                                   lanes,
+E                                   ^^^^^^
+E                                   qd.static(_FP32_WARM_JACOBIAN and gs.backend ==
+E                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   gs.cuda and warm_start and not is_retry),
+E   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                                   proposal,
+E                                   ^^^^^^^^^
+E                                   force,
+E                                   ^^^^^^
+E                                   target,
+E                                   ^^^^^^^
+E                                   anchor,
+E                                   ^^^^^^^
+E                                   radius,
+E                                   ^^^^^^^
+E                                   friction,
+E                                   ^^^^^^^^^
+E                                   weight_sum,
+E                                   ^^^^^^^^^^^
+E                                   traction_state,
+E                                   ^^^^^^^^^^^^^^^
+E                                   traction_info,
+E                                   ^^^^^^^^^^^^^^
+E                                   n_sample_lanes,
+E                                   ^^^^^^^^^^^^^^^
+E                               )
+E                               ^
+E   File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-segment-bounds/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 45, in func_dual_warp:
+E       hessian_dtype = qd.static(qd.f32 if fp32_jacobian else gs.qd_float)
+E                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   Traceback (most recent call last):
+E     File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer_utils.py", line 40, in __call__
+E       res = method(ctx, node)
+E     File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer.py", line 526, in build_Call
+E       return CallTransformer.build_Call(ctx, node, build_stmt, build_stmts)
+E     File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformers/call_transformer.py", line 501, in build_Call
+E       node.ptr = func(*py_args, **py_kwargs)
+E     File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/impl.py", line 1331, in static
+E       raise ValueError(f"Input to qd.static must be compile-time constants or global pointers, instead of {type(x)}")
+E   ValueError: Input to qd.static must be compile-time constants or global pointers, instead of &lt;class 'quadrants._lib.core.quadrants_python.DataTypeCxx'&gt;</failure></testcase></testsuite></testsuites>

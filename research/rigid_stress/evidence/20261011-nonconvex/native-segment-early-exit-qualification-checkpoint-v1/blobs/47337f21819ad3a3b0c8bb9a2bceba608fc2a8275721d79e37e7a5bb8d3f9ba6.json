@@ -1,0 +1,170 @@
+{
+  "family": "segment-early-exit",
+  "pairs": [
+    {
+      "batch": 8192,
+      "seed": 623105,
+      "routes": {
+        "off": {
+          "env_steps_per_second": 107923.55790926811,
+          "batch_steps_per_second": 13.174262440096205,
+          "repeat_seconds": [
+            97.14783829217777,
+            97.08171283407137,
+            97.24786686664447
+          ],
+          "native_buffer_bytes": 7658839626,
+          "gpu_uuid": "GPU-325bc5a3-b0fe-9a67-0857-3a4ad14c17fb",
+          "sampled_device_peak_MiB_including_setup": 23637,
+          "warmup_full_residual_budget_fraction_max": 0.009280185866048826,
+          "resets": [
+            9287,
+            9287,
+            9287
+          ],
+          "trajectory_totals": [
+            {
+              "observed_steps": 10485760,
+              "lift_window_steps": 619020,
+              "lift_grasp_pass_steps": 619020,
+              "lift_grasp_fail_steps": 0,
+              "completed_lift_success_cycles": 12562,
+              "completed_lift_failure_cycles": 0,
+              "weak_grip_steps": 414149,
+              "weak_grip_descents": 201701,
+              "release_steps": 461792,
+              "release_descents": 11980,
+              "loaded_steps": 10277970,
+              "fit_evaluation_sum": 20790252,
+              "integration_retry_frames": 11,
+              "elastic_corrections": 0,
+              "elastic_fallbacks": 0,
+              "invalid_stress_steps": 0,
+              "two_finger_contact_steps": 4630611
+            },
+            {
+              "observed_steps": 10485760,
+              "lift_window_steps": 619020,
+              "lift_grasp_pass_steps": 619020,
+              "lift_grasp_fail_steps": 0,
+              "completed_lift_success_cycles": 12562,
+              "completed_lift_failure_cycles": 0,
+              "weak_grip_steps": 414149,
+              "weak_grip_descents": 201701,
+              "release_steps": 461792,
+              "release_descents": 11980,
+              "loaded_steps": 10277970,
+              "fit_evaluation_sum": 20793323,
+              "integration_retry_frames": 11,
+              "elastic_corrections": 0,
+              "elastic_fallbacks": 0,
+              "invalid_stress_steps": 0,
+              "two_finger_contact_steps": 4630611
+            },
+            {
+              "observed_steps": 10485760,
+              "lift_window_steps": 619020,
+              "lift_grasp_pass_steps": 619020,
+              "lift_grasp_fail_steps": 0,
+              "completed_lift_success_cycles": 12562,
+              "completed_lift_failure_cycles": 0,
+              "weak_grip_steps": 414149,
+              "weak_grip_descents": 201701,
+              "release_steps": 461792,
+              "release_descents": 11980,
+              "loaded_steps": 10277970,
+              "fit_evaluation_sum": 20793580,
+              "integration_retry_frames": 11,
+              "elastic_corrections": 0,
+              "elastic_fallbacks": 0,
+              "invalid_stress_steps": 0,
+              "two_finger_contact_steps": 4630611
+            }
+          ]
+        },
+        "on": {
+          "env_steps_per_second": 107961.4309357631,
+          "batch_steps_per_second": 13.178885612275769,
+          "repeat_seconds": [
+            97.4459416270256,
+            96.98766654497012,
+            96.94155912008137
+          ],
+          "native_buffer_bytes": 7658839626,
+          "gpu_uuid": "GPU-325bc5a3-b0fe-9a67-0857-3a4ad14c17fb",
+          "sampled_device_peak_MiB_including_setup": 21459,
+          "warmup_full_residual_budget_fraction_max": 0.010423703563347816,
+          "resets": [
+            9287,
+            9287,
+            9287
+          ],
+          "trajectory_totals": [
+            {
+              "observed_steps": 10485760,
+              "lift_window_steps": 619020,
+              "lift_grasp_pass_steps": 619020,
+              "lift_grasp_fail_steps": 0,
+              "completed_lift_success_cycles": 12562,
+              "completed_lift_failure_cycles": 0,
+              "weak_grip_steps": 414149,
+              "weak_grip_descents": 201701,
+              "release_steps": 461792,
+              "release_descents": 11980,
+              "loaded_steps": 10277970,
+              "fit_evaluation_sum": 20794222,
+              "integration_retry_frames": 11,
+              "elastic_corrections": 0,
+              "elastic_fallbacks": 0,
+              "invalid_stress_steps": 0,
+              "two_finger_contact_steps": 4630611
+            },
+            {
+              "observed_steps": 10485760,
+              "lift_window_steps": 619020,
+              "lift_grasp_pass_steps": 619020,
+              "lift_grasp_fail_steps": 0,
+              "completed_lift_success_cycles": 12562,
+              "completed_lift_failure_cycles": 0,
+              "weak_grip_steps": 414149,
+              "weak_grip_descents": 201701,
+              "release_steps": 461792,
+              "release_descents": 11980,
+              "loaded_steps": 10277970,
+              "fit_evaluation_sum": 20792739,
+              "integration_retry_frames": 11,
+              "elastic_corrections": 0,
+              "elastic_fallbacks": 0,
+              "invalid_stress_steps": 0,
+              "two_finger_contact_steps": 4630611
+            },
+            {
+              "observed_steps": 10485760,
+              "lift_window_steps": 619020,
+              "lift_grasp_pass_steps": 619020,
+              "lift_grasp_fail_steps": 0,
+              "completed_lift_success_cycles": 12562,
+              "completed_lift_failure_cycles": 0,
+              "weak_grip_steps": 414149,
+              "weak_grip_descents": 201701,
+              "release_steps": 461792,
+              "release_descents": 11980,
+              "loaded_steps": 10277970,
+              "fit_evaluation_sum": 20794510,
+              "integration_retry_frames": 11,
+              "elastic_corrections": 0,
+              "elastic_fallbacks": 0,
+              "invalid_stress_steps": 0,
+              "two_finger_contact_steps": 4630611
+            }
+          ]
+        }
+      },
+      "live_speedup": 1.0003509245546447,
+      "native_bytes_saved": 0,
+      "rigid_position_difference_m_max": 0.0,
+      "identical_per_environment_rigid_contact_grasp_counters": true
+    }
+  ],
+  "limitations": "200ms device memory samples include setup and are not exact transient peaks. These three-repeat pairs are separate decisions; small sub-percent ratios need repeat/drift evidence before selection. Numerical fixture qualifications are separate and required."
+}

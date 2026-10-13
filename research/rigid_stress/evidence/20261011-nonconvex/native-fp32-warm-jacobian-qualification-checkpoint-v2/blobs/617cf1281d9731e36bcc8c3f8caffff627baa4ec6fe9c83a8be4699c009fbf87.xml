@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="29.035" timestamp="2026-10-12T15:44:26.939560+00:00" hostname="rtx-209-191"><testcase classname="tests.rigid.test_stress_source_priors" name="test_body_source_prior_wrench_cones_full_fields_and_gauge_rows[varied4096_slow-False]" file="tests/rigid/test_stress_source_priors.py" line="149" time="18.876"><failure message="UserWarning: exception while trying to ensure compiled &lt;function kernel_fit_tractions_impl at 0x74af6b9f9900&gt;:&#10;cannot create weak reference to 'DataTypeCxx' object. Template mapper caching disabled.">/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/_template_mapper.py:181: in lookup
+    mapping_cache_tracker_ += [
+/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/_template_mapper.py:182: in &lt;listcomp&gt;
+    ReferenceType(arg, _evict_callback) for arg in args if type(arg) not in _primitive_types
+E   TypeError: cannot create weak reference to 'DataTypeCxx' object
+
+During handling of the above exception, another exception occurred:
+/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel.py:953: in ensure_compiled
+    instance_id, arg_features = self.mapper.lookup(self.raise_on_templated_floats, py_args)
+/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/_template_mapper.py:187: in lookup
+    warnings_helper.warn_once(f"{e}. Template mapper caching disabled.")
+/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/_test_tools/warnings_helper.py:11: in warn_once
+    warnings.warn(message)
+E   UserWarning: cannot create weak reference to 'DataTypeCxx' object. Template mapper caching disabled.
+
+The above exception was the direct cause of the following exception:
+tests/rigid/test_stress_source_priors.py:212: in test_body_source_prior_wrench_cones_full_fields_and_gauge_rows
+    kernel_fit_tractions(contacts, sources, tractions, info, epsilon, 9e-9, 128)
+genesis/engine/solvers/rigid/stress/traction.py:628: in kernel_fit_tractions
+    kernel_fit_cooperative(
+genesis/engine/solvers/rigid/stress/cooperative_fit.py:104: in kernel_fit_tractions
+    kernel_fit_tractions_impl(
+/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/_quadrants_callable.py:101: in __call__
+    return self.wrapper.__call__(*args, **kwargs)
+/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel_impl.py:180: in wrapped_func
+    return primal(*args, **kwargs)
+/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel.py:1046: in __call__
+    key = self.ensure_compiled(*py_args)  # type: ignore[arg-type]
+/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel.py:955: in ensure_compiled
+    raise type(e)(f"exception while trying to ensure compiled {self.func}:\n{e}") from e
+E   UserWarning: exception while trying to ensure compiled &lt;function kernel_fit_tractions_impl at 0x74af6b9f9900&gt;:
+E   cannot create weak reference to 'DataTypeCxx' object. Template mapper caching disabled.</failure></testcase></testsuite></testsuites>
