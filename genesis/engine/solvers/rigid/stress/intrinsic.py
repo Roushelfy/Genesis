@@ -128,6 +128,7 @@ class IntrinsicContacts:
             block_start=V(dtype=gs.qd_int, shape=(n_contacts, n_envs) if shared_support and not body_partition else ()),
             block_end=V(dtype=gs.qd_int, shape=(n_contacts, n_envs) if shared_support and not body_partition else ()),
         )
+        kernel_initialize_intrinsic_contacts(raw_contacts, self.packing, self.certificates)
 
     def _allocate_workspace(
         self, surface_info: StressSurfaceInfo, options: RigidStressOptions, n_chunk: int, n_envs: int
@@ -176,14 +177,19 @@ class IntrinsicContacts:
             return False
         n_contacts, n_envs = self.contacts.valid.shape
         previous = self.tractions
+        sample_layout = (2, 1, 0) if len(previous.sample_positions.shape) == 4 else None
         self.tractions = replace(
             previous,
-            profile=V(dtype=gs.qd_float, shape=(n_samples, n_contacts, n_envs)),
-            sample_indices=V(dtype=gs.qd_int, shape=(n_samples, n_contacts, n_envs)),
+            profile=V(dtype=gs.qd_float, shape=(n_samples, n_contacts, n_envs), layout=sample_layout),
+            sample_indices=V(dtype=gs.qd_int, shape=(n_samples, n_contacts, n_envs), layout=sample_layout),
             sample_positions=(
-                V_VEC(3, dtype=gs.qd_float, shape=(n_samples, n_contacts, n_envs))
-                if len(previous.sample_positions.shape) == 3
-                else previous.sample_positions
+                V(dtype=gs.qd_float, shape=(n_samples, n_contacts, n_envs, 3), layout=(2, 1, 0, 3))
+                if len(previous.sample_positions.shape) == 4
+                else (
+                    V_VEC(3, dtype=gs.qd_float, shape=(n_samples, n_contacts, n_envs))
+                    if len(previous.sample_positions.shape) == 3
+                    else previous.sample_positions
+                )
             ),
         )
         kernel_copy_profiles(previous, self.tractions)
@@ -431,6 +437,37 @@ def kernel_copy_profiles(previous: StressTractionState, current: StressTractionS
             current.sample_indices[i_q, i_c, i_b] = previous.sample_indices[i_q, i_c, i_b]
             if qd.static(len(previous.sample_positions.shape) == 3):
                 current.sample_positions[i_q, i_c, i_b] = previous.sample_positions[i_q, i_c, i_b]
+            elif qd.static(len(previous.sample_positions.shape) == 4):
+                for i_a in qd.static(range(3)):
+                    current.sample_positions[i_q, i_c, i_b, i_a] = previous.sample_positions[i_q, i_c, i_b, i_a]
+
+
+@qd.func
+def func_clear_raw_contact_diagnostics(
+    i_c: int,
+    i_b: int,
+    raw_contacts: StressContactState,
+    certificates: StressWrenchCertificates,
+):
+    certificates.ray[i_c, i_b] = qd.Vector.zero(gs.qd_float, 6)
+    certificates.margin[i_c, i_b] = 0.0
+    raw_contacts.status[i_c, i_b] = 0
+    raw_contacts.force_error[i_c, i_b] = 0.0
+    raw_contacts.moment_error[i_c, i_b] = 0.0
+    raw_contacts.evaluations[i_c, i_b] = 0
+    raw_contacts.candidate_count[i_c, i_b] = 0
+
+
+@qd.kernel
+def kernel_initialize_intrinsic_contacts(
+    raw_contacts: StressContactState,
+    packing: StressContactPacking,
+    certificates: StressWrenchCertificates,
+):
+    for i_b in range(packing.count.shape[0]):
+        packing.count[i_b] = 0
+    for i_c, i_b in qd.ndrange(raw_contacts.valid.shape[0], raw_contacts.valid.shape[1]):
+        func_clear_raw_contact_diagnostics(i_c, i_b, raw_contacts, certificates)
 
 
 @qd.kernel
@@ -442,17 +479,15 @@ def kernel_pack_intrinsic_contacts(
 ):
     for _ in range(1):
         packing.maximum[None] = 0
-    if qd.static(gs.backend == gs.cuda):
-        for i_b in range(packing.count.shape[0]):
-            packing.count[i_b] = 0
+    for i_b in range(packing.count.shape[0]):
+        # Clear the previous complete list before collecting the current one,
+        # including contacts that disappeared or were reset.
+        for i_previous in range(packing.count[i_b]):
+            func_clear_raw_contact_diagnostics(packing.indices[i_previous, i_b], i_b, raw_contacts, certificates)
+        packing.count[i_b] = 0
     for i_c, i_b in qd.ndrange(raw_contacts.valid.shape[0], raw_contacts.valid.shape[1]):
-        certificates.ray[i_c, i_b] = qd.Vector.zero(gs.qd_float, 6)
-        certificates.margin[i_c, i_b] = 0.0
-        raw_contacts.status[i_c, i_b] = 0
-        raw_contacts.force_error[i_c, i_b] = 0.0
-        raw_contacts.moment_error[i_c, i_b] = 0.0
-        raw_contacts.evaluations[i_c, i_b] = 0
-        raw_contacts.candidate_count[i_c, i_b] = 0
+        if raw_contacts.valid[i_c, i_b]:
+            func_clear_raw_contact_diagnostics(i_c, i_b, raw_contacts, certificates)
         if qd.static(gs.backend == gs.cuda):  # noqa: SIM102 — omit atomic collection in the CPU specialization.
             if raw_contacts.valid[i_c, i_b]:
                 destination = qd.atomic_add(packing.count[i_b], 1)

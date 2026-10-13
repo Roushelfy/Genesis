@@ -92,16 +92,16 @@ def func_capture_rigid_sources(
     still require their actual torque, as enforced by the stress feature.
     """
     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
-        source_state.geom[i_c, i_b] = -1
-        source_state.pair[i_c, i_b] = -1
-        source_state.method[i_c, i_b] = array_class.ContactWitnessKind.NORMAL_OFFSET
-        source_state.vertex[i_c, i_b] = -1
-        source_state.has_vertex_ambiguity[i_c, i_b] = False
-        source_state.witness_face[i_c, i_b] = -1
-        source_state.witness_barycentric[i_c, i_b] = qd.Vector([float("nan")] * 3)
-        source_state.witness[i_c, i_b] = qd.Vector([float("nan")] * 3)
-        source_state.free_moment[i_c, i_b] = qd.Vector.zero(gs.qd_float, 3)
         if contact_state.valid[i_c, i_b]:
+            source_state.geom[i_c, i_b] = -1
+            source_state.pair[i_c, i_b] = -1
+            source_state.method[i_c, i_b] = array_class.ContactWitnessKind.NORMAL_OFFSET
+            source_state.vertex[i_c, i_b] = -1
+            source_state.has_vertex_ambiguity[i_c, i_b] = False
+            source_state.witness_face[i_c, i_b] = -1
+            source_state.witness_barycentric[i_c, i_b] = qd.Vector([float("nan")] * 3)
+            source_state.witness[i_c, i_b] = qd.Vector([float("nan")] * 3)
+            source_state.free_moment[i_c, i_b] = qd.Vector.zero(gs.qd_float, 3)
             i_contact = collider_state.contact_sort_idx[i_c, i_b]
             i_a = collider_state.contact_data.link_a[i_contact, i_b]
             i_b_link = collider_state.contact_data.link_b[i_contact, i_b]

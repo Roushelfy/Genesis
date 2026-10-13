@@ -181,8 +181,9 @@ def create_tractions(
     frontier_shape = (
         (fan_faces, n_contacts, n_envs) if fan_faces and surface_fan_frontier and gs.backend == gs.cuda else ()
     )
+    sample_layout = (2, 1, 0) if cached_fan_positions else None
     state = StressTractionState(
-        profile=V(dtype=gs.qd_float, shape=(n_samples, n_contacts, n_envs)),
+        profile=V(dtype=gs.qd_float, shape=(n_samples, n_contacts, n_envs), layout=sample_layout),
         dual=V_VEC(6, dtype=gs.qd_float, shape=shape),
         weight_sum=V(dtype=gs.qd_float, shape=shape),
         scale=V(dtype=gs.qd_float, shape=shape),
@@ -192,14 +193,18 @@ def create_tractions(
         evaluations=V(dtype=gs.qd_int, shape=shape),
         certificate=V_VEC(6, dtype=gs.qd_float, shape=shape),
         certificate_margin=V(dtype=gs.qd_float, shape=shape),
-        sample_positions=V_VEC(
-            3, dtype=gs.qd_float, shape=(n_samples, n_contacts, n_envs) if cached_fan_positions else sample_shape
+        sample_positions=(
+            V(dtype=gs.qd_float, shape=(n_samples, n_contacts, n_envs, 3), layout=(2, 1, 0, 3))
+            if cached_fan_positions
+            else V_VEC(3, dtype=gs.qd_float, shape=(n_samples, n_contacts, n_envs) if cached_fan_positions else sample_shape)
         ),
         sample_normals=V_VEC(3, dtype=gs.qd_float, shape=sample_shape),
         sample_faces=V(dtype=gs.qd_int, shape=face_shape),
         sample_shape=V_VEC(6, dtype=gs.qd_float, shape=sample_shape),
         sample_count=V(dtype=gs.qd_int, shape=shape),
-        sample_indices=V(dtype=gs.qd_int, shape=(n_samples, n_contacts, n_envs) if packed_samples else ()),
+        sample_indices=V(
+            dtype=gs.qd_int, shape=(n_samples, n_contacts, n_envs) if packed_samples else (), layout=sample_layout
+        ),
         fan_barycentric=V_VEC(3, dtype=gs.qd_float, shape=(fan_faces, n_contacts, n_envs) if fan_faces else ()),
         fan_coordinate_power=V(dtype=gs.qd_int, shape=()),
         fan_refined=V(dtype=gs.qd_bool, shape=shape if fan_faces else ()),
@@ -388,8 +393,12 @@ def func_traction_geometry(
     i_sample = func_traction_sample_index(i_q, i_c, i_b, traction_state)
     if qd.static(len(traction_state.fan_barycentric.shape) == 3):
         i_face = gs.qd_int(0)
-        if qd.static(len(traction_state.sample_positions.shape) == 3):
-            position = traction_state.sample_positions[i_q, i_c, i_b]
+        if qd.static(len(traction_state.sample_positions.shape) in (3, 4)):
+            if qd.static(len(traction_state.sample_positions.shape) == 4):
+                for i_a in qd.static(range(3)):
+                    position[i_a] = traction_state.sample_positions[i_q, i_c, i_b, i_a]
+            else:
+                position = traction_state.sample_positions[i_q, i_c, i_b]
             n_quadrature = traction_info.gauss.shape[0] ** 2
             i_face = i_sample // (3 * n_quadrature)
             if i_sample >= 3 * traction_info.positions.shape[0]:

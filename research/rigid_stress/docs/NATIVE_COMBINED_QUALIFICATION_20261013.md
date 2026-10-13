@@ -1,4 +1,4 @@
-# Clean combination qualification in progress
+# Clean combination qualification
 
 The nonconvex extension remains active. The clean combination integrates
 coalesced cached coordinates, valid-source capture, FP32 warm Newton Hessians
@@ -75,14 +75,74 @@ initial test incorrectly expected displacement to survive restore's declared
 invalidation. Those failures are preserved. The corrected test compares
 separate one-/two-step branches and checks unaffected observations exactly
 across partial reset. It is included in the35-case CPU/CUDA combined matrix
-currently running. Its result is still pending.
+now passing on both CPU and CUDA.
+
+The complete35-case matrices pass: CPU570.217s, CUDA818.219s. Their96
+independent full-field cases have worst original wrench error7.388121062e-10,
+complete residual budget fraction0.0458562252 and global peak difference
+8.385381079e-6Pa. The standalone cached/direct geometry checks remain exact.
+The complete pair and same-numerical-source CPU/CUDA snapshots qualify in
+`native-final-combined-qualification-checkpoint-v1`, manifest
+`f669160222ba05ab2c1f628a6d652502a7811e3555de56c758fa77ea229453fc`.
+Every original/stored/decompressed hash and large-JSON reconstruction passes.
+
+## Current dynamic profiling and independent oracles
+
+The B16384/623102 changing trajectory includes600warmup and1280instrumented
+steps. It retains all per-environment work and outcomes:18571resets,
+25124successful lift cycles, zero failed lifts or invalid steps. Serialized
+fenced mean is147.438508ms; step[minimum,median,p90,p99,maximum] is
+24.112455/161.758372/175.542341/309.684237/341.323833ms. Retry-frame mean
+is312.371326ms versus144.554150ms without retry. Per-environment maximum
+fit evaluation[minimum,median,p90,p99,maximum] is5/11/16/146/401.
+These instrumented latencies are separate from headline throughput. Their
+different GPU and scheduling also preclude an exact speedup comparison with
+the baseline instrumented mean.
+
+| Stage | Mean ms per instrumented step |
+|---|---:|
+|Initial fan sampling|43.100137|
+|Warm cooperative fit|25.410934|
+|Rigid constraints|14.441849|
+|Signed nodal scatter|10.235963|
+|Blocked inverse application|10.240678|
+|Surface ports|6.424756|
+|Complete elastic residual|5.554941|
+|Global peak|3.458618|
+|Source resolution|3.098264|
+|Raw contact packing|0.486218|
+|Source capture|0.104961|
+
+Nested refined-fan chart/sample timings overlap their wrapper and are not
+added. The profile retains22retry frames, original attempts and complete tail
+environment records. CPU FP64 independently checks464captured complete fields:
+worst residual budget fraction0.00621422449, global peak difference
+1.226493623e-6Pa. Archive `native-final-combined-dynamic-checkpoint-v1`,
+verified manifest
+`45dc02aa5a4efe5802f58e0ee0af7bbd39b990526bb36eff909dc62aa97e24e1`.
+
+An additional B2048/623102 trajectory records original application points,
+force/free moments, angular velocity, nodal forces and recovered state.
+Independent CPU FP64 checks160fields including its own mass/centrifugal
+loading/inertia relief, every stiffness/gauge row and tensor/von Mises/global
+peak. Worst original aggregate wrench error is8.623318699e-9, independent
+relief RHS difference4.616757194e-8of the residual allowance, complete
+residual budget fraction0.005644716894, peak difference1.391832484e-6Pa.
+Archive `native-final-combined-wrench-oracle-checkpoint-v1`, verified manifest
+`ad1f06bdbede05ffed1bce5c1607577879952d4ed5fd9d751a24099098973d81`.
+Both new oracle publications include the35-case CPU qualification. The full
+35CUDA lifecycle qualification is retained in the combined archive above.
 
 ## Remaining qualification
 
-The35-case matrices, new B16384 dynamic profiling/full-field capture and
-B2048 original-wrench/independent-inertia-relief capture are running. Final
-clean-source four-scope and copied/separated-seed scaling measurements,
-remaining profile/cost decisions and final publication remain required.
+Final clean-source four-scope and copied/separated-seed scaling measurements,
+remaining profile/cost decisions and final publication remain required. The
+43.100137ms initial sampler motivates a remaining cost probe for its per-sample
+count/reservation/max-distance atomics before selecting or rejecting a warp
+aggregation implementation. Raw capture/packing is now0.591179ms combined;
+raw-source compaction would need a separate benefit beyond removing these
+measured writes to justify its source/index/lifecycle complexity. Neither cost
+argument proves a universal upper bound on other memory effects.
 The baseline plateau and this single paired improvement establish progress;
 they do not complete those remaining requirements. Policy measurements refer
 to inference rollout, and physical mesh/quadrature convergence remains outside

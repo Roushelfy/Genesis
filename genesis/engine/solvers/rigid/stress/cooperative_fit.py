@@ -19,6 +19,9 @@ from .traction import (
     func_traction_support_range,
 )
 
+_HESSIAN_FLOAT32 = qd.types.matrix(6, 6, qd.f32)
+_HESSIAN_FLOAT64 = qd.types.matrix(6, 6, qd.f64)
+
 
 @qd.func
 def func_dual_warp(
@@ -26,6 +29,7 @@ def func_dual_warp(
     i_b: int,
     lane: int,
     lanes: qd.template(),
+    hessian_type: qd.template(),
     dual: qd.types.vector(6),
     force: qd.types.vector(3),
     target: qd.types.vector(6),
@@ -39,7 +43,7 @@ def func_dual_warp(
 ):
     energy = gs.qd_float(0.0)
     resultant = qd.Vector.zero(gs.qd_float, 6)
-    hessian = qd.Matrix.zero(gs.qd_float, 6, 6)
+    hessian = qd.Matrix.zero(hessian_type.dtype, 6, 6)
     start, end = func_traction_support_range(i_c, i_b, state)
     for i_s in range(start, end):
         source_friction = func_traction_source_friction(i_s, i_b, friction, state)
@@ -56,7 +60,7 @@ def func_dual_warp(
                     projected, jacobian = func_coulomb_projection(value, normal, source_friction)
                     moment = relative.cross(projected)
                     wrench = qd.Vector([projected[0], projected[1], projected[2], moment[0], moment[1], moment[2]])
-                    operator = qd.Matrix.zero(gs.qd_float, 6, 3)
+                    operator = qd.Matrix.zero(hessian_type.dtype, 6, 3)
                     for a in qd.static(range(3)):
                         operator[a, a] = 1.0
                     operator[3, 1], operator[3, 2] = -relative[2], relative[1]
@@ -64,10 +68,11 @@ def func_dual_warp(
                     operator[5, 0], operator[5, 1] = -relative[1], relative[0]
                     energy += 0.5 * weight * projected.dot(projected)
                     resultant += weight * wrench
-                    product = operator @ jacobian
+                    product = operator @ jacobian.cast(hessian_type.dtype)
+                    hessian_weight = qd.cast(weight, hessian_type.dtype)
                     for a, b in qd.static(qd.ndrange(6, 6)):
                         if qd.static(b <= a):
-                            hessian[a, b] += weight * product[a, :].dot(operator[b, :])
+                            hessian[a, b] += hessian_weight * product[a, :].dot(operator[b, :])
     if qd.static(lanes > 1):
         energy = qd.simt.subgroup.reduce_all_add(energy)
         for a in qd.static(range(6)):
@@ -78,7 +83,7 @@ def func_dual_warp(
             if qd.static(lanes > 1):
                 hessian[a, b] = qd.simt.subgroup.reduce_all_add(hessian[a, b])
             hessian[b, a] = hessian[a, b]
-    return energy, target - resultant, hessian
+    return energy, target - resultant, hessian.cast(gs.qd_float)
 
 
 def kernel_fit_tractions(
@@ -94,6 +99,14 @@ def kernel_fit_tractions(
     sample_lanes: int = 32,
 ):
     assert sample_lanes in (1, 2, 4, 8, 16, 32)
+    # Approximate only the warm Newton search direction. Physical tractions,
+    # gradients and final acceptance keep scene precision; cold/retry Hessians
+    # retain scene precision, including existing FP32 scenes.
+    hessian_type = (
+        _HESSIAN_FLOAT32
+        if gs.qd_float == qd.f32 or (gs.backend == gs.cuda and warm_start and not is_retry)
+        else _HESSIAN_FLOAT64
+    )
     kernel_fit_tractions_impl(
         contact_state,
         source_state,
@@ -105,6 +118,7 @@ def kernel_fit_tractions(
         warm_start,
         is_retry,
         sample_lanes,
+        hessian_type,
     )
 
 
@@ -120,6 +134,7 @@ def kernel_fit_tractions_impl(
     warm_start: qd.template(),
     is_retry: qd.template(),
     sample_lanes: qd.template(),
+    hessian_type: qd.template(),
 ):
     lanes = qd.static(32 if gs.backend == gs.cuda else 1)
     n_sample_lanes = qd.static(sample_lanes if gs.backend == gs.cuda else 1)
@@ -225,6 +240,7 @@ def kernel_fit_tractions_impl(
                                 i_b,
                                 lane,
                                 lanes,
+                                hessian_type,
                                 proposal,
                                 force,
                                 target,
