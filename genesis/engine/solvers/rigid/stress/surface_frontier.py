@@ -173,6 +173,9 @@ def kernel_fan_frontier_samples(
                             traction_state.profile[i_slot, i_c, i_b] = profile
                             if qd.static(len(traction_state.sample_positions.shape) == 3):
                                 traction_state.sample_positions[i_slot, i_c, i_b] = position
+                            elif qd.static(len(traction_state.sample_positions.shape) == 4):
+                                for i_a in qd.static(range(3)):
+                                    traction_state.sample_positions[i_slot, i_c, i_b, i_a] = position[i_a]
                         qd.atomic_add(footprint_state.samples[i_c, i_b], 1)
                         qd.atomic_max(footprint_state.maximum_distance[i_c, i_b], distance)
     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):

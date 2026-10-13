@@ -13,6 +13,7 @@ from genesis.engine.solvers.rigid.stress.traction import create_tractions
 from genesis.options.rigid_stress import RigidStressOptions
 from genesis.utils.array_class import V_VEC, DataKind, V, iter_data
 from genesis.utils.misc import qd_to_numpy
+from research.rigid_stress.mechanics import P2Shell
 from tests.utils.assertions import assert_allclose, assert_equal
 
 
@@ -26,7 +27,7 @@ def test_shared_support_arrays_participate_in_native_data_enumeration():
 
 @pytest.mark.required
 @pytest.mark.precision("64")
-def test_complete_pair_streaming_release_reset_and_source_failure_isolation():
+def test_complete_pair_streaming_release_reset_and_source_failure_isolation(record_property):
     assets = Path(__file__).resolve().parents[2] / "examples/rigid/assets/hollow_egg/level1"
     with np.load(Path(__file__).with_name("assets") / "nonconvex_plane_pair_tick710.npz") as saved:
         points, anchors, forces = (saved[name] for name in ("position", "anchor", "force"))
@@ -35,6 +36,9 @@ def test_complete_pair_streaming_release_reset_and_source_failure_isolation():
         mesh=assets / "elastic.npz", contact_model="intrinsic", intrinsic_support="pair_union", method="direct"
     )
     model, n_envs = StressModel(options), 3
+    with np.load(assets / "elastic.npz") as saved:
+        vertices, tetrahedra, faces = (saved[name] for name in ("vertices", "tetrahedra", "surface_triangles"))
+    oracle = P2Shell(vertices, tetrahedra, faces, options.young, options.poisson, options.density, 2, factor_backend="none")
     surface = StressSurface(10, model.info)
     scene = gs.Scene(show_viewer=False)
     entity = scene.add_entity(
@@ -63,6 +67,8 @@ def test_complete_pair_streaming_release_reset_and_source_failure_isolation():
     omega.fill(0)
     epsilon = float(np.finfo(gs.np_float).eps)
     reference = None
+    isolation_differences = []
+    isolation_force_errors, wrench_errors, residual_fractions = [], [], []
     for block_size in (12, 2, 7):
         settings = options.model_copy(update={"contact_block_size": block_size})
         streamed = IntrinsicContacts(entity.base_link, raw, model.info, surface.info, settings, None)
@@ -71,6 +77,11 @@ def test_complete_pair_streaming_release_reset_and_source_failure_isolation():
         streamed.raw_sources.pair.from_numpy(np.broadcast_to(pairs[:, None] + 100, (12, n_envs)).copy())
         streamed.raw_sources.witness.from_numpy(np.broadcast_to(anchors[original, None], (12, n_envs, 3)).copy())
         state = model.create_state(n_envs, "full")
+        control = IntrinsicContacts(entity.base_link, raw, model.info, surface.info, settings, None)
+        control.raw_sources.geom.fill(entity.base_link.geoms[0].idx)
+        control.raw_sources.pair.from_numpy(np.broadcast_to(pairs[:, None] + 100, (12, n_envs)).copy())
+        control.raw_sources.witness.from_numpy(np.broadcast_to(anchors[original, None], (12, n_envs, 3)).copy())
+        control_state = model.create_state(n_envs, "full")
         raw.valid.from_numpy(initial)
         for active in (initial, initial & [False, True, True], initial):
             raw.valid.from_numpy(active)
@@ -91,12 +102,62 @@ def test_complete_pair_streaming_release_reset_and_source_failure_isolation():
             )
             if reference is None:
                 reference = snapshot
+            force_magnitudes = np.linalg.norm(forces[original] * scale[:, None], axis=1)
+            for i_b in range(n_envs):
+                selected = active[:, i_b]
+                total_force = np.sum(forces[original[selected]] * scale[selected, None], axis=0)
+                force_budget = force_magnitudes[selected].sum()
+                if force_budget > 0:
+                    origin = np.sum(points[original[selected]] * force_magnitudes[selected, None], axis=0) / force_budget
+                    target_moment = np.cross(
+                        points[original[selected]] - origin, forces[original[selected]] * scale[selected, None]
+                    ).sum(axis=0)
+                    moment_budget = np.sum(
+                        force_magnitudes[selected]
+                        * (radii[original[selected]] + np.linalg.norm(points[original[selected]] - origin, axis=1))
+                    )
+                    force_error = np.linalg.norm(snapshot[0][i_b].sum(axis=0) - total_force) / force_budget
+                    moment_error = np.linalg.norm(
+                        np.cross(oracle.xyz - origin, snapshot[0][i_b]).sum(axis=0) - target_moment
+                    ) / moment_budget
+                    assert max(force_error, moment_error) <= 1e-8
+                    wrench_errors.extend((float(force_error), float(moment_error)))
+            rhs = qd_to_numpy(state.rhs, transpose=True).reshape((n_envs, oracle.ndof)).T
+            displacement = qd_to_numpy(state.displacement, transpose=True).reshape((n_envs, oracle.ndof)).T
+            residual = np.linalg.norm(oracle.k @ displacement - rhs, axis=0)
+            budget = np.maximum(options.absolute_tolerance, options.tolerance * np.linalg.norm(rhs, axis=0))
+            assert np.all(residual <= budget)
+            residual_fractions.extend((residual / budget).tolist())
+            assert_equal(displacement[qd_to_numpy(model.info.pins, transpose=True)], 0)
             for actual, expected in zip(snapshot, reference):
                 if active[:, 0].any():
                     assert_allclose(actual, expected, rtol=1e-4, atol=1e-10 if actual is snapshot[0] else 1e-3)
                 else:
                     assert_equal(actual[0], 0)
-                    assert_allclose(actual[1:], expected[1:], rtol=1e-12, atol=1e-15 if actual is snapshot[0] else 1e-8)
+                    assert_allclose(actual[1:], expected[1:], rtol=1e-4, atol=1e-10 if actual is snapshot[0] else 1e-3)
+            # Approximate Newton directions and atomic sums admit independently
+            # converged solutions within the same final physical error budgets.
+            raw.valid.from_numpy(initial)
+            errno.fill(0)
+            kernel_begin_step(control_state)
+            control.scatter(raw, control_state, model.info, surface.info, settings, epsilon, errno)
+            assert_equal(qd_to_numpy(raw.status, transpose=True), 0)
+            assert_equal(qd_to_numpy(errno, transpose=True), 0)
+            model.recover(omega, control_state)
+            kernel_accept(control_state, raw, errno)
+            for actual, field in zip(
+                snapshot, (control_state.force, control_state.stress_tensor, control_state.von_mises, control_state.peak)
+            ):
+                expected = qd_to_numpy(field, transpose=True, copy=True)
+                isolation_differences.append(float(np.max(np.abs(actual[1:] - expected[1:]))))
+                if field is control_state.force:
+                    force_difference = np.linalg.norm((actual[1:] - expected[1:]).reshape((n_envs - 1, -1)), axis=1)
+                    force_budget = (initial[:, 1:] * force_magnitudes[:, None]).sum(axis=0)
+                    assert np.all(force_difference <= 1e-8 * force_budget)
+                    isolation_force_errors.extend((force_difference / force_budget).tolist())
+                else:
+                    assert_allclose(actual[1:], expected[1:], rtol=1e-4, atol=1e-3)
+            raw.valid.from_numpy(active)
         # Partial reset clears only its observation. The next numerical pass
         # rebuilds all group metadata and the original environment returns.
         kernel_reset(np.array([0], dtype=gs.np_int), state)
@@ -150,3 +211,7 @@ def test_complete_pair_streaming_release_reset_and_source_failure_isolation():
         assert qd_to_numpy(state.valid, transpose=True).all()
         assert qd_to_numpy(state.step_valid, transpose=True).all()
         assert_allclose(qd_to_numpy(state.peak, transpose=True), reference[3], rtol=1e-4, atol=1e-3)
+    record_property("unaffected_environment_field_differences", isolation_differences)
+    record_property("unaffected_environment_force_errors", isolation_force_errors)
+    record_property("original_wrench_errors", wrench_errors)
+    record_property("complete_residual_budget_fractions", residual_fractions)

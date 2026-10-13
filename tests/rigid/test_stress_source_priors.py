@@ -300,7 +300,7 @@ def test_body_source_prior_wrench_cones_full_fields_and_gauge_rows(case, native_
         )
     ]
     counts = qd_to_numpy(tractions.sample_count, transpose=True)
-    if len(tractions.fan_barycentric.shape) == 3 and len(tractions.sample_positions.shape) == 3:
+    if len(tractions.fan_barycentric.shape) == 3 and len(tractions.sample_positions.shape) in (3, 4):
         direct = replace(tractions, sample_positions=V_VEC(3, dtype=gs.qd_float, shape=()))
         direct_samples = create_traction_samples(direct)
         kernel_traction_samples(direct_samples, direct, surface.info, info)
@@ -450,6 +450,7 @@ def test_body_source_prior_dynamic_workspace_release_reset_and_invalid_member():
     raw.friction.from_numpy(np.broadcast_to(mu[original, None], (12, n_envs)).copy())
     streamed = IntrinsicContacts(entity.base_link, raw, model.info, surface.info, options, None)
     assert streamed.contacts.valid.shape[0] == 2
+    assert_equal(qd_to_numpy(streamed.packing.count, transpose=True), 0)
     streamed.raw_sources.geom.fill(entity.base_link.geoms[0].idx)
     streamed.raw_sources.pair.from_numpy(np.repeat(np.arange(12)[:, None], n_envs, axis=1).astype(gs.np_int))
     witnesses = np.broadcast_to(anchors[original, None], (12, n_envs, 3)).copy()
@@ -461,6 +462,8 @@ def test_body_source_prior_dynamic_workspace_release_reset_and_invalid_member():
     initial = np.ones((12, n_envs), dtype=gs.np_bool)
     reference = None
     for active in (initial, initial & [False, True, True], initial):
+        # Previous valid diagnostics must disappear with their contacts.
+        raw.candidate_count.fill(97)
         raw.valid.from_numpy(active)
         errno.fill(0)
         kernel_begin_step(state)
@@ -468,6 +471,15 @@ def test_body_source_prior_dynamic_workspace_release_reset_and_invalid_member():
         assert streamed.contacts.valid.shape[0] == 12
         assert any(item.name.endswith("tractions.priors.force") for item in streamed.data("stress"))
         assert_equal(qd_to_numpy(raw.status, transpose=True), 0)
+        for diagnostic in (
+            raw.force_error,
+            raw.moment_error,
+            raw.evaluations,
+            raw.candidate_count,
+            streamed.certificates.ray,
+            streamed.certificates.margin,
+        ):
+            assert_equal(qd_to_numpy(diagnostic, transpose=True)[~active.T], 0)
         assert_equal(qd_to_numpy(errno), 0)
         assert_equal(qd_to_numpy(raw.force, transpose=True), np.moveaxis(source_forces, 0, 1))
         model.recover(omega, state)
