@@ -91,6 +91,11 @@ fixture fields;464dynamic fields and160original-wrench/independent-relief
 fields also pass unchanged budgets. Final-source scopes/scaling and the
 sampler atomic-cost decision remain pending. The inactive-walk exit has only1.000350925x with overlapping
 repeat ranges and is not selected. No extension completion is claimed.
+Production source `eba3aeb2` and its full qualification are pushed. Synthetic
+warp counter costs pass six complete index/count/max checks and motivate a
+private sampler prototype, whose3CUDA hard/growth cases pass157.13s. Its35CUDA
+matrix and full same-GPU B8192 live pair remain pending; no production gain
+or selection is claimed from the primitive cost alone.
 [Matched B1024 four scopes](docs/NATIVE_MATCHED_SCOPES_20261012.md) include timed
 grasp outcomes, resets and environment work. Contact graphs, fastcache and
 standalone device-frontier maximum have no selected dynamic end-to-end benefit;
