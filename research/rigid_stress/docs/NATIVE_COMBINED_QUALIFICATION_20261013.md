@@ -147,3 +147,26 @@ The baseline plateau and this single paired improvement establish progress;
 they do not complete those remaining requirements. Policy measurements refer
 to inference rollout, and physical mesh/quadrature convergence remains outside
 this phase.
+
+The counter cost probe now validates six synthetic configurations at the
+captured mean/max aggregate-count scales and32768/65536/131072source columns.
+All candidate/accepted counts, FP64 maxima and every accepted index permutation
+pass. Off/on/off means show2.476–5.390ms savings for warp count/reservation/
+max aggregation, with no geometry/profile work in this scope. Raw diagnostics
+can duplicate body-union work, so this motivates an actual sampler/rollout
+comparison rather than establishing a production bound or saving. Three failed
+probe versions are retained: unsigned shuffle signatures were corrected, then
+configuration buffers were retained to prevent the observed recycled-buffer
+count accumulation. The completed cost archive is
+`native-sampler-counter-cost-checkpoint-v1`.
+Every original/stored/decompressed hash verifies. Manifest:
+`49b56b3d72aa55d756dd96f7cb17ff3c4b179f27f5090264e679ed3440386804`.
+
+The private sampler prototype pads complete32-lane source groups, reduces
+candidate/accepted counts and FP64 maximum distance, reserves one complete
+sample interval and uses a lane prefix to write every eligible sample. The
+original geometry/area/Gaussian/path/radius/friction arithmetic is unchanged.
+Its three CUDA hard/growth smoke cases pass in157.13s. A35-case CUDA matrix
+and same-GPU B8192/623105 complete changing-contact pair are running/pending.
+It remains unselected. Production numerical source `eba3aeb2` is pushed and
+keeps the qualified four-candidate implementation while this decision proceeds.
