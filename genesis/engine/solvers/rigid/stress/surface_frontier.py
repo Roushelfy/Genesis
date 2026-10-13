@@ -109,12 +109,24 @@ def kernel_fan_frontier_samples(
         footprint_state.candidates[i_c, i_b] = 0
         footprint_state.samples[i_c, i_b] = 0
         footprint_state.maximum_distance[i_c, i_b] = 0.0
-    for i_c, i_b, i_task in qd.ndrange(
-        contact_state.valid.shape[0], contact_state.valid.shape[1], maximum * 3 * surface_info.gauss.shape[0] ** 2
-    ):
+    n_tasks = maximum * 3 * surface_info.gauss.shape[0] ** 2
+    n_chunks = (n_tasks + 31) // 32
+    qd.loop_config(block_dim=128)
+    for i_thread in range(contact_state.valid.shape[0] * contact_state.valid.shape[1] * n_chunks * 32):
+        lane = i_thread % 32
+        i_pair = i_thread // (n_chunks * 32)
+        i_c = i_pair // contact_state.valid.shape[1]
+        i_b = i_pair % contact_state.valid.shape[1]
+        i_task = (i_thread // 32 % n_chunks) * 32 + lane
         n_local = 3 * surface_info.gauss.shape[0] ** 2
         i_work = i_task // n_local
-        if i_work < frontier.count[i_c, i_b]:
+        i_sample = gs.qd_int(0)
+        position = qd.Vector.zero(gs.qd_float, 3)
+        profile = gs.qd_float(0.0)
+        distance = gs.qd_float(0.0)
+        is_counted = False
+        is_sampled = False
+        if i_task < n_tasks and i_work < frontier.count[i_c, i_b]:
             i_q = frontier.indices[i_work, i_c, i_b] * n_local + i_task % n_local
             if traction_state.circle.face[i_c, i_b] >= 0:
                 i_q = i_task % n_local
@@ -142,7 +154,7 @@ def kernel_fan_frontier_samples(
                     (u, v) = (surface_info.gauss[i_local // n], surface_info.gauss[i_local % n])
                     power = traction_state.fan_coordinate_power[None]
                     if i_circle >= 0:
-                        qd.atomic_add(footprint_state.candidates[i_c, i_b], 1)
+                        is_counted = True
                         distance = radius * u**power
                         weight = 2.0 * qd.math.pi * radius * radius * power * u ** (2 * power - 1)
                     else:
@@ -150,7 +162,7 @@ def kernel_fan_frontier_samples(
                         center_bary = traction_state.fan_barycentric[i_face, i_c, i_b]
                         area = center_bary[(i_fan + 2) % 3] * edges[0, :].cross(edges[1, :]).norm()
                         if area > 0.0 and (position - anchor).norm() < radius:
-                            qd.atomic_add(footprint_state.candidates[i_c, i_b], 1)
+                            is_counted = True
                             (distance, _) = func_footprint_point_distance(
                                 i_face,
                                 i_c,
@@ -166,18 +178,38 @@ def kernel_fan_frontier_samples(
                     if weight > 0.0 and distance < radius:
                         weight *= surface_info.gauss_weights[i_local // n] * surface_info.gauss_weights[i_local % n]
                         relative = distance / radius
+                        is_sampled = True
                         profile = weight * qd.exp(-0.5 * (relative / 0.45) ** 2) * (1.0 - relative * relative) ** 2
-                        i_slot = qd.atomic_add(traction_state.sample_count[i_c, i_b], 1)
-                        if i_slot < traction_state.profile.shape[0]:
-                            traction_state.sample_indices[i_slot, i_c, i_b] = i_sample
-                            traction_state.profile[i_slot, i_c, i_b] = profile
-                            if qd.static(len(traction_state.sample_positions.shape) == 3):
-                                traction_state.sample_positions[i_slot, i_c, i_b] = position
-                            elif qd.static(len(traction_state.sample_positions.shape) == 4):
-                                for i_a in qd.static(range(3)):
-                                    traction_state.sample_positions[i_slot, i_c, i_b, i_a] = position[i_a]
-                        qd.atomic_add(footprint_state.samples[i_c, i_b], 1)
-                        qd.atomic_max(footprint_state.maximum_distance[i_c, i_b], distance)
+        candidates = qd.simt.subgroup.reduce_all_add(gs.qd_int(is_counted))
+        samples = qd.simt.subgroup.reduce_all_add(gs.qd_int(is_sampled))
+        maximum_distance = gs.qd_float(0.0)
+        if is_sampled:
+            maximum_distance = distance
+        maximum_distance = qd.simt.subgroup.reduce_all_max(maximum_distance)
+        prefix = gs.qd_int(is_sampled)
+        for offset in qd.static((1, 2, 4, 8, 16)):
+            previous = qd.simt.subgroup.shuffle_up(prefix, qd.u32(offset))
+            if lane >= offset:
+                prefix += previous
+        i_start = gs.qd_int(0)
+        if lane == 0:
+            if candidates > 0:
+                qd.atomic_add(footprint_state.candidates[i_c, i_b], candidates)
+            if samples > 0:
+                i_start = qd.atomic_add(traction_state.sample_count[i_c, i_b], samples)
+                qd.atomic_add(footprint_state.samples[i_c, i_b], samples)
+                qd.atomic_max(footprint_state.maximum_distance[i_c, i_b], maximum_distance)
+        i_start = qd.simt.subgroup.shuffle(i_start, qd.u32(0))
+        if is_sampled:
+            i_slot = i_start + prefix - 1
+            if i_slot < traction_state.profile.shape[0]:
+                traction_state.sample_indices[i_slot, i_c, i_b] = i_sample
+                traction_state.profile[i_slot, i_c, i_b] = profile
+                if qd.static(len(traction_state.sample_positions.shape) == 3):
+                    traction_state.sample_positions[i_slot, i_c, i_b] = position
+                elif qd.static(len(traction_state.sample_positions.shape) == 4):
+                    for i_a in qd.static(range(3)):
+                        traction_state.sample_positions[i_slot, i_c, i_b, i_a] = position[i_a]
     for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
         if qd.static(len(traction_state.capacity_maximum.shape) == 1):  # noqa: SIM102
             if traction_state.sample_count[i_c, i_b] > traction_state.profile.shape[0]:
@@ -188,6 +220,7 @@ def kernel_fan_frontier_samples(
             and (footprint_state.samples[i_c, i_b] == 0)
         ):
             footprint_state.status[i_c, i_b] = StressFootprintStatus.EMPTY_SUPPORT
+
 
 
 def kernel_surface_fan_profiles(contacts, footprints, tractions, model, surface, paths, info, epsilon):
