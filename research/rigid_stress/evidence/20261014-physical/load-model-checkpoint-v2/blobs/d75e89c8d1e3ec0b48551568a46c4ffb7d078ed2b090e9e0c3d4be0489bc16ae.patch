@@ -1,0 +1,227 @@
+diff --git a/genesis/engine/solvers/rigid/stress/contact.py b/genesis/engine/solvers/rigid/stress/contact.py
+index 00f87eb3..ced58f9e 100644
+--- a/genesis/engine/solvers/rigid/stress/contact.py
++++ b/genesis/engine/solvers/rigid/stress/contact.py
+@@ -250,6 +250,7 @@ def func_anchor(source_epsilon: float, contact_state: StressContactState, surfac
+                 direction = -force / magnitude
+                 point = contact_state.position[i_c, i_b]
+                 best = gs.qd_float(-1e30)
++                distance = gs.qd_float(1e30)
+                 for i_f in range(surface_info.face_origin.shape[0]):
+                     denominator = surface_info.face_normal[i_f].dot(direction)
+                     if denominator > 1e-12:
+@@ -259,10 +260,16 @@ def func_anchor(source_epsilon: float, contact_state: StressContactState, surfac
+                         bary = surface_info.face_dual[i_f] @ (
+                             point + parameter * direction - surface_info.face_origin[i_f]
+                         )
+-                        if bary[0] >= -2e-12 and bary[1] >= -2e-12 and bary.sum() <= 1.0 + 2e-12:
+-                            if parameter > best:
+-                                contact_state.anchor_face[i_c, i_b] = i_f
+-                            best = qd.max(best, parameter)
++                        # The application point identifies the nearest material sheet along the force line
++                        if (
++                            bary[0] >= -2e-12
++                            and bary[1] >= -2e-12
++                            and bary.sum() <= 1.0 + 2e-12
++                            and qd.abs(parameter) < distance
++                        ):
++                            contact_state.anchor_face[i_c, i_b] = i_f
++                            best = parameter
++                            distance = qd.abs(parameter)
+                 if best > -1e30:
+                     contact_state.center[i_c, i_b] = point + best * direction
+                 else:
+diff --git a/research/rigid_stress/contact_reference.py b/research/rigid_stress/contact_reference.py
+index 87834115..4f2fc92a 100644
+--- a/research/rigid_stress/contact_reference.py
++++ b/research/rigid_stress/contact_reference.py
+@@ -146,13 +146,24 @@ class IndependentContactSystem:
+                 )
+         return energy, gradient, matrix, normal, contact_gradient
+ 
+-    def solve_supported(self, boundary_dofs, boundary_values, load_steps, tolerance=1e-9, failure_path=None):
++    def solve_supported(
++        self,
++        boundary_dofs,
++        boundary_values,
++        load_steps,
++        tolerance=1e-9,
++        failure_path=None,
++        initial_displacement=None,
++    ):
+         free = np.setdiff1d(np.arange(self.stiffness.shape[0]), boundary_dofs)
+-        displacement = np.zeros(self.stiffness.shape[0])
++        displacement = (
++            np.zeros(self.stiffness.shape[0]) if initial_displacement is None else initial_displacement.copy()
++        )
++        boundary_start = displacement[boundary_dofs].copy()
+         records = []
+         for step in range(1, load_steps + 1):
+             previous = displacement.copy()
+-            displacement[boundary_dofs] = boundary_values * step / load_steps
++            displacement[boundary_dofs] = boundary_start + (boundary_values - boundary_start) * step / load_steps
+             for friction_iteration in range(12 if self.friction > 0 else 1):
+                 lagged = displacement.copy()
+                 normal, current = self.normal_collisions(displacement)
+@@ -241,7 +252,7 @@ def block_reference(lower, upper, resolution, young, poisson):
+     return SkfemElasticReference(mesh.p.T, mesh.t.T, young, poisson, 1000)
+ 
+ 
+-def validate_blocks(resolution, dhat, friction, output):
++def validate_blocks(resolution, dhat, friction, output, shear_after_close=0.0):
+     if output.exists():
+         raise FileExistsError(output)
+     output.mkdir(parents=True)
+@@ -259,6 +270,16 @@ def validate_blocks(resolution, dhat, friction, output):
+     displacement, gradient, contact_force, energy, records = system.solve_supported(
+         dofs, values.reshape(-1), 12, failure_path=output / "failure.npz"
+     )
++    if shear_after_close != 0:
++        values[len(bottom) :, 0] = shear_after_close
++        displacement, gradient, contact_force, energy, shear_records = system.solve_supported(
++            dofs,
++            values.reshape(-1),
++            8,
++            failure_path=output / "shear_failure.npz",
++            initial_displacement=displacement,
++        )
++        records.extend(shear_records)
+     fields, rows = [], []
+     for part in system.parts:
+         count = part.reference.basis.N
+@@ -266,6 +287,7 @@ def validate_blocks(resolution, dhat, friction, output):
+         vector = np.empty(count)
+         vector[part.permutation] = displacement[section]
+         tensor, vm = part.reference.corner_stress(vector)
++        gradients = part.reference.corner_basis.interpolate(vector).grad.transpose(2, 3, 0, 1)
+         force = contact_force[section].reshape(-1, 3)
+         positions = part.reference.coordinates + displacement[section].reshape(-1, 3)
+         rows.append(
+@@ -275,6 +297,13 @@ def validate_blocks(resolution, dhat, friction, output):
+                 "contact_moment_Nm": np.cross(positions - part.reference.com, force).sum(axis=0).tolist(),
+                 "peak_Pa": float(vm.max()),
+                 "tetrahedra": part.reference.mesh.nelements,
++                "maximum_displacement_gradient": float(np.linalg.norm(gradients, axis=(-2, -1)).max()),
++                "minimum_deformation_jacobian": float(np.linalg.det(gradients + np.eye(3)).min()),
++                "maximum_elastic_displacement_m": float(
++                    np.linalg.norm(
++                        part.reference.align_rigid_gauge(vector)[part.reference.component_dofs], axis=1
++                    ).max()
++                ),
+             }
+         )
+         fields.append((tensor, vm))
+@@ -285,6 +314,8 @@ def validate_blocks(resolution, dhat, friction, output):
+         "poisson": poisson,
+         "gap_m": gap,
+         "closing_after_touch_m": closing,
++        "shear_after_close_m": shear_after_close,
++        "shear_steps": 8 if shear_after_close != 0 else 0,
+         "resolution": resolution,
+         "dhat_m": dhat,
+         "barrier_stiffness": 1e6,
+@@ -320,9 +351,10 @@ def main():
+     parser.add_argument("--resolution", type=int, default=3)
+     parser.add_argument("--dhat", type=float, default=1e-5)
+     parser.add_argument("--friction", type=float, default=0)
++    parser.add_argument("--shear-after-close", type=float, default=0)
+     parser.add_argument("--output", type=Path, required=True)
+     args = parser.parse_args()
+-    validate_blocks(args.resolution, args.dhat, args.friction, args.output)
++    validate_blocks(args.resolution, args.dhat, args.friction, args.output, args.shear_after_close)
+ 
+ 
+ if __name__ == "__main__":
+diff --git a/tests/rigid/test_stress.py b/tests/rigid/test_stress.py
+index b611c9c5..4d19adc1 100644
+--- a/tests/rigid/test_stress.py
++++ b/tests/rigid/test_stress.py
+@@ -40,6 +40,8 @@ from research.rigid_stress.field_cpu import stress_field
+ from research.rigid_stress.mechanics import P2Shell, SurfaceGeometry, shell_mesh
+ from research.rigid_stress.peak_cpu import P2Peak
+ from research.rigid_stress.wrench import FinitePatchMapper, WrenchPatch
++from tests.rigid.test_stress_nonconvex import nonconvex_material_mesh
++from tests.utils.assertions import assert_allclose
+ 
+ 
+ @qd.kernel(graph=True)
+@@ -488,7 +490,11 @@ def test_native_batched_recovery_against_full_fp64_direct(
+ @pytest.mark.required
+ @pytest.mark.precision("64")
+ @pytest.mark.parametrize("cooperative", (False, True))
+-def test_native_finite_pressure_matches_independent_cpu(tmp_path, cooperative):
++def test_native_finite_pressure_matches_independent_cpu(
++    tmp_path,
++    cooperative,
++    nonconvex_material_mesh,  # noqa: F811
++):
+     vertices, tetrahedra, faces, _ = shell_mesh(1, 2, 0.0005)
+     mesh = tmp_path / "shell.npz"
+     np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)
+@@ -500,7 +506,7 @@ def test_native_finite_pressure_matches_independent_cpu(tmp_path, cooperative):
+     np.testing.assert_allclose(
+         qd_to_numpy(surface.info.weights), geometry.integration_weights.reshape((-1,)), rtol=2e-13
+     )
+-    mapper = FinitePatchMapper(geometry, anchor_to_surface=True, adaptive_integration=True)
++    mapper = FinitePatchMapper(geometry, adaptive_integration=True)
+     n_contacts, n_envs = 3, 5
+     contacts = create_contacts(n_contacts, n_envs, 0.006, cooperative)
+     state = model.create_state(n_envs)
+@@ -580,6 +586,27 @@ def test_native_finite_pressure_matches_independent_cpu(tmp_path, cooperative):
+             np.testing.assert_allclose(qd_to_numpy(state.wrench), expected_wrench, atol=1e-15, rtol=1e-10)
+             assert int(qd_to_numpy(cache.overflow_calls)) == (1 if capacity == 1 else 0)
+ 
++    vertices, tetrahedra, faces, shape = nonconvex_material_mesh
++    mesh = tmp_path / "material.npz"
++    np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)
++    model = StressModel(RigidStressOptions(mesh=mesh, method="pcg"))
++    surface = StressSurface(10, model.info)
++    point = [0.001, 0.002, 0.0005] if shape == "u" else [0.001, 0.0015, 0.0015]
++    contacts = create_contacts(1, 1, 0.0002, cooperative)
++    contacts.position.from_numpy(np.array([[point]]))
++    contacts.force.from_numpy(np.array([[[-0.05, 0.0, 0.0]]]))
++    contacts.normal.from_numpy(np.array([[[-1.0, 0.0, 0.0]]]))
++    contacts.friction.fill(0)
++    contacts.valid.fill(True)
++    state = model.create_state(1)
++    kernel_anchor(float(np.finfo(float).eps), contacts, surface.info)
++    kernel_pressure(contacts, surface.info, cooperative)
++    kernel_scatter(contacts, state, model.info, surface.info)
++    loaded = qd_to_numpy(state.force, transpose=True)[0]
++    locations = qd_to_numpy(model.info.vertices, transpose=True)
++    assert_allclose(loaded[abs(locations[:, 0] - point[0]) < 1e-12].sum(axis=0), [-0.05, 0, 0], atol=1e-12, rtol=1e-8)
++    assert_allclose(loaded[abs(locations[:, 0] - point[0]) >= 1e-12], 0, atol=1e-12, rtol=0)
++
+ 
+ @pytest.mark.required
+ @pytest.mark.precision("64")
+diff --git a/tests/rigid/test_stress_independent_fem.py b/tests/rigid/test_stress_independent_fem.py
+index e7b6d6a4..ab5b1991 100644
+--- a/tests/rigid/test_stress_independent_fem.py
++++ b/tests/rigid/test_stress_independent_fem.py
+@@ -8,9 +8,11 @@ pytest.importorskip("skfem")
+ 
+ import genesis as gs
+ from genesis.engine.solvers.rigid.stress.model import StressModel
++from genesis.engine.solvers.rigid.stress.surface import StressSurface
+ from genesis.options.rigid_stress import RigidStressOptions
+ from genesis.utils.array_class import V_VEC
+ from genesis.utils.misc import qd_to_numpy
++from research.rigid_stress.native_load_samples import kernel_continuous_boundary_load
+ from research.rigid_stress.skfem_reference import SkfemElasticReference
+ from tests.rigid.test_stress_nonconvex import nonconvex_material_mesh
+ 
+@@ -77,6 +79,13 @@ def test_independent_fem_assembly_boundary_loads_and_inertia_relief(
+         expected_tensor = np.zeros((len(tets), 4, 3, 3))
+         expected_tensor[..., 0, 0] = options.young * curvature * reference.corner_positions[..., 2]
+         force = reference.pure_bending_load(curvature)
++    surface = StressSurface(10, native.info)
++    boundary_state = native.create_state(1)
++    native_tensor = tensor if analytic == "uniform_strain" else np.zeros((3, 3))
++    bending_scale = options.young * curvature if analytic == "pure_bending" else 0.0
++    kernel_continuous_boundary_load(native_tensor, bending_scale, boundary_state, native.info, surface.info)
++    integrated = qd_to_numpy(boundary_state.force, transpose=True)[0].reshape(-1)
++    np.testing.assert_allclose(integrated, force[permutation], rtol=1e-11, atol=1e-13)
+     expected_displacement = reference.align_rigid_gauge(expected_displacement)
+     solved = reference.solve(force)
+     np.testing.assert_allclose(solved.displacement, expected_displacement, rtol=1e-9, atol=1e-17)

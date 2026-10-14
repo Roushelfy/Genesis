@@ -1,0 +1,226 @@
+Info    : Meshing 1D...
+Info    : [  0%] Meshing curve 1 (BSpline)
+Info    : [ 30%] Meshing curve 2 (Line)
+Info    : Done meshing 1D (Wall 0.00909731s, CPU 0.007055s)
+Info    : Meshing 2D...
+Info    : [  0%] Meshing surface 1 (Plane, Frontal-Delaunay)
+Info    : [ 60%] Meshing surface 2 (Surface of Revolution, Frontal-Delaunay)
+Info    : Done meshing 2D (Wall 0.0146854s, CPU 0.007212s)
+Info    : Meshing 3D...
+Info    : 3D Meshing 1 volume with 1 connected component
+Info    : Tetrahedrizing 98 nodes...
+Info    : Done tetrahedrizing 106 nodes (Wall 0.000692966s, CPU 0.000693s)
+Info    : Reconstructing mesh...
+Info    :  - Creating surface mesh
+Info    :  - Identifying boundary edges
+Info    :  - Recovering boundary
+Info    : Done reconstructing mesh (Wall 0.00167109s, CPU 0.00167s)
+Info    : Found volume 1
+Info    : It. 0 - 0 nodes created - worst tet radius 2.11413 (nodes removed 0 0)
+Info    : 3D refinement terminated (112 nodes total):
+Info    :  - 1 Delaunay cavities modified for star shapeness
+Info    :  - 1 nodes could not be inserted
+Info    :  - 200 tetrahedra created in 0.000145179 sec. (1377612 tets/s)
+Info    : 0 node relocations
+Info    : Done meshing 3D (Wall 0.00521581s, CPU 0.003021s)
+Info    : Optimizing mesh...
+Info    : Optimizing volume 1
+Info    : Optimization starts (volume = 3.80863e-06) with worst = 0.108891 / average = 0.715799:
+Info    : 0.00 < quality < 0.10 :         0 elements
+Info    : 0.10 < quality < 0.20 :         2 elements
+Info    : 0.20 < quality < 0.30 :         2 elements
+Info    : 0.30 < quality < 0.40 :         5 elements
+Info    : 0.40 < quality < 0.50 :         2 elements
+Info    : 0.50 < quality < 0.60 :        12 elements
+Info    : 0.60 < quality < 0.70 :        44 elements
+Info    : 0.70 < quality < 0.80 :        85 elements
+Info    : 0.80 < quality < 0.90 :        46 elements
+Info    : 0.90 < quality < 1.00 :         2 elements
+Info    : 4 edge swaps, 0 node relocations (volume = 3.80863e-06): worst = 0.309432 / average = 0.728166 (Wall 9.37921e-05s, CPU 9.4e-05s)
+Info    : No ill-shaped tets in the mesh :-)
+Info    : 0.00 < quality < 0.10 :         0 elements
+Info    : 0.10 < quality < 0.20 :         0 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :         4 elements
+Info    : 0.40 < quality < 0.50 :         2 elements
+Info    : 0.50 < quality < 0.60 :        12 elements
+Info    : 0.60 < quality < 0.70 :        45 elements
+Info    : 0.70 < quality < 0.80 :        84 elements
+Info    : 0.80 < quality < 0.90 :        47 elements
+Info    : 0.90 < quality < 1.00 :         2 elements
+Info    : Done optimizing mesh (Wall 0.000275857s, CPU 0.000276s)
+Info    : 123 nodes 449 elements
+Info    : Optimizing mesh (Netgen)...
+Info    : Optimizing volume 1
+Info    : CalcLocalH: 100 Points 196 Elements 192 Surface Elements 
+Info    : Remove Illegal Elements 
+Info    : 31 illegal tets 
+Info    : SplitImprove 
+Info    : badmax = 12.7137 
+Info    : 2 splits performed 
+Info    : SwapImprove  
+Info    : 5 swaps performed 
+Info    : SwapImprove2  
+Info    : 0 swaps performed 
+Info    : 24 illegal tets 
+Info    : SplitImprove 
+Info    : badmax = 9.2382 
+Info    : 4 splits performed 
+Info    : SwapImprove  
+Info    : 1 swaps performed 
+Info    : SwapImprove2  
+Info    : 0 swaps performed 
+Info    : 14 illegal tets 
+Info    : SplitImprove 
+Info    : badmax = 9.98191 
+Info    : 2 splits performed 
+Info    : SwapImprove  
+Info    : 1 swaps performed 
+Info    : SwapImprove2  
+Info    : 0 swaps performed 
+Info    : 7 illegal tets 
+Info    : SplitImprove 
+Info    : badmax = 9.98191 
+Info    : 1 splits performed 
+Info    : SwapImprove  
+Info    : 0 swaps performed 
+Info    : SwapImprove2  
+Info    : 0 swaps performed 
+Info    : 4 illegal tets 
+Info    : SplitImprove 
+Info    : badmax = 9.98191 
+Info    : 0 splits performed 
+Info    : SwapImprove  
+Info    : 0 swaps performed 
+Info    : SwapImprove2  
+Info    : 0 swaps performed 
+Info    : 4 illegal tets 
+Info    : SplitImprove 
+Info    : badmax = 9.98191 
+Info    : 0 splits performed 
+Info    : SwapImprove  
+Info    : 0 swaps performed 
+Info    : SwapImprove2  
+Info    : 0 swaps performed 
+Info    : 4 illegal tets 
+Info    : SplitImprove 
+Info    : badmax = 9.98191 
+Info    : 0 splits performed 
+Info    : SwapImprove  
+Info    : 0 swaps performed 
+Info    : SwapImprove2  
+Info    : 0 swaps performed 
+Info    : 4 illegal tets 
+Info    : SplitImprove 
+Info    : badmax = 9.98191 
+Info    : 0 splits performed 
+Info    : SwapImprove  
+Info    : 0 swaps performed 
+Info    : SwapImprove2  
+Info    : 0 swaps performed 
+Info    : 4 illegal tets 
+Info    : SplitImprove 
+Info    : badmax = 9.98191 
+Info    : 0 splits performed 
+Info    : SwapImprove  
+Info    : 0 swaps performed 
+Info    : SwapImprove2  
+Info    : 0 swaps performed 
+Info    : 4 illegal tets 
+Info    : SplitImprove 
+Info    : badmax = 9.98191 
+Info    : 0 splits performed 
+Info    : SwapImprove  
+Info    : 0 swaps performed 
+Info    : SwapImprove2  
+Info    : 0 swaps performed 
+Info    : 4 illegal tets 
+Info    : SplitImprove 
+Info    : badmax = 9.98191 
+Info    : 0 splits performed 
+Info    : SwapImprove  
+Info    : 0 swaps performed 
+Info    : SwapImprove2  
+Info    : 0 swaps performed 
+Info    : 4 illegal tets 
+Info    : SplitImprove 
+Info    : badmax = 9.98191 
+Info    : 0 splits performed 
+Info    : SwapImprove  
+Info    : 0 swaps performed 
+Info    : SwapImprove2  
+Info    : 0 swaps performed 
+Info    : 4 illegal tets 
+Info    : SplitImprove 
+Info    : badmax = 9.98191 
+Info    : 0 splits performed 
+Info    : SwapImprove  
+Info    : 0 swaps performed 
+Info    : SwapImprove2  
+Info    : 0 swaps performed 
+Info    : 4 illegal tets 
+Info    : SplitImprove 
+Info    : badmax = 9.98191 
+Info    : 0 splits performed 
+Info    : SwapImprove  
+Info    : 0 swaps performed 
+Info    : SwapImprove2  
+Info    : 0 swaps performed 
+Info    : 4 illegal tets 
+Info    : Volume Optimization 
+Info    : CombineImprove 
+Info    : 4 elements combined 
+Info    : ImproveMesh 
+Info    : Total badness = 347.739 
+Info    : Total badness = 343.895 
+Info    : SplitImprove 
+Info    : badmax = 6.79702 
+Info    : 0 splits performed 
+Info    : ImproveMesh 
+Info    : Total badness = 343.895 
+Info    : Total badness = 343.908 
+Info    : SwapImprove  
+Info    : 2 swaps performed 
+Info    : SwapImprove2  
+Info    : 0 swaps performed 
+Info    : ImproveMesh 
+Info    : Total badness = 340.294 
+Info    : Total badness = 338.643 
+Info    : CombineImprove 
+Info    : 2 elements combined 
+Info    : ImproveMesh 
+Info    : Total badness = 322.031 
+Info    : Total badness = 321.529 
+Info    : SplitImprove 
+Info    : badmax = 6.21663 
+Info    : 0 splits performed 
+Info    : ImproveMesh 
+Info    : Total badness = 321.529 
+Info    : Total badness = 321.53 
+Info    : SwapImprove  
+Info    : 0 swaps performed 
+Info    : SwapImprove2  
+Info    : 0 swaps performed 
+Info    : ImproveMesh 
+Info    : Total badness = 321.53 
+Info    : Total badness = 321.531 
+Info    : CombineImprove 
+Info    : 0 elements combined 
+Info    : ImproveMesh 
+Info    : Total badness = 321.531 
+Info    : Total badness = 321.531 
+Info    : SplitImprove 
+Info    : badmax = 6.21667 
+Info    : 0 splits performed 
+Info    : ImproveMesh 
+Info    : Total badness = 321.531 
+Info    : Total badness = 321.531 
+Info    : SwapImprove  
+Info    : 0 swaps performed 
+Info    : SwapImprove2  
+Info    : 0 swaps performed 
+Info    : ImproveMesh 
+Info    : Total badness = 321.531 
+Info    : Total badness = 321.531 
+Info    : Done optimizing mesh (Wall 0.0344831s, CPU 0.034392s)
+{"geometry": {"name": "thin_neck", "description": "Smooth revolved cubic B-spline dumbbell,44mm long, central radius2mm", "thickness_m": null, "gap_m": null, "minimum_rounding_m": null}, "gmsh_version": "4.14.1", "volume_construction": "Gmsh OpenCASCADE volume tetrahedralization", "mesh_size": 0.005, "mesh_size_units": "m", "shell_layers": null, "nodes": 103, "tetrahedra": 210, "boundary_triangles": 192, "dimensions_m": [0.044, 0.014899631711552251, 0.015246436195370899], "minimum_volume_m3": 3.6327430690319193e-09, "total_volume_m3": 3.8086340591959435e-06, "scaled_jacobian_percentiles": [0.2700970911860004, 0.3695121736105445, 0.7884008359221516, 0.9534531751546961, 0.9737662317689552], "mesh_sha256": "3459da20195c55e1640a9b2e970dd9ab04ea1870212c2b08b1fb4251feb016c2"}

@@ -8,9 +8,11 @@ pytest.importorskip("skfem")
 
 import genesis as gs
 from genesis.engine.solvers.rigid.stress.model import StressModel
+from genesis.engine.solvers.rigid.stress.surface import StressSurface
 from genesis.options.rigid_stress import RigidStressOptions
 from genesis.utils.array_class import V_VEC
 from genesis.utils.misc import qd_to_numpy
+from research.rigid_stress.native_load_samples import kernel_continuous_boundary_load
 from research.rigid_stress.skfem_reference import SkfemElasticReference
 from tests.rigid.test_stress_nonconvex import nonconvex_material_mesh
 
@@ -77,6 +79,13 @@ def test_independent_fem_assembly_boundary_loads_and_inertia_relief(
         expected_tensor = np.zeros((len(tets), 4, 3, 3))
         expected_tensor[..., 0, 0] = options.young * curvature * reference.corner_positions[..., 2]
         force = reference.pure_bending_load(curvature)
+    surface = StressSurface(10, native.info)
+    boundary_state = native.create_state(1)
+    native_tensor = tensor if analytic == "uniform_strain" else np.zeros((3, 3))
+    bending_scale = options.young * curvature if analytic == "pure_bending" else 0.0
+    kernel_continuous_boundary_load(native_tensor, bending_scale, boundary_state, native.info, surface.info)
+    integrated = qd_to_numpy(boundary_state.force, transpose=True)[0].reshape(-1)
+    np.testing.assert_allclose(integrated, force[permutation], rtol=1e-11, atol=1e-13)
     expected_displacement = reference.align_rigid_gauge(expected_displacement)
     solved = reference.solve(force)
     np.testing.assert_allclose(solved.displacement, expected_displacement, rtol=1e-9, atol=1e-17)

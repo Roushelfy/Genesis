@@ -1,0 +1,136 @@
+Warning : Union - BOPAlgo_AlertUnableToOrientTheShape BOPAlgo_AlertUnableToOrientTheShape BOPAlgo_AlertUnableToOrientTheShape BOPAlgo_AlertUnableToOrientTheShape BOPAlgo_AlertUnableToOrientTheShape BOPAlgo_AlertUnableToOrientTheShape BOPAlgo_AlertUnableToOrientTheShape BOPAlgo_AlertUnableToOrientTheShape 
+Info    : Meshing 1D...
+Info    : [  0%] Meshing curve 1 (Circle)
+Info    : [ 10%] Meshing curve 2 (Circle)
+Info    : [ 20%] Meshing curve 3 (Circle)
+Info    : [ 30%] Meshing curve 4 (Circle)
+Info    : [ 30%] Meshing curve 5 (Circle)
+Info    : [ 40%] Meshing curve 6 (Line)
+Info    : [ 50%] Meshing curve 7 (Circle)
+Info    : [ 50%] Meshing curve 8 (Circle)
+Info    : [ 60%] Meshing curve 9 (Line)
+Info    : [ 70%] Meshing curve 10 (Circle)
+Info    : [ 70%] Meshing curve 11 (Circle)
+Info    : Done meshing 1D (Wall 0.0111738s, CPU 0.00083s)
+Info    : Meshing 2D...
+Info    : [  0%] Meshing surface 1 (Torus, Frontal-Delaunay)
+Info    : [ 30%] Meshing surface 2 (Cylinder, Frontal-Delaunay)
+Info    : [ 50%] Meshing surface 3 (Cylinder, Frontal-Delaunay)
+Info    : [ 70%] Meshing surface 4 (Sphere, Frontal-Delaunay)
+Info    : [ 90%] Meshing surface 5 (Sphere, Frontal-Delaunay)
+Info    : Done meshing 2D (Wall 0.0368083s, CPU 0.030524s)
+Info    : Meshing 3D...
+Info    : 3D Meshing 1 volume with 1 connected component
+Info    : Tetrahedrizing 800 nodes...
+Info    : Done tetrahedrizing 808 nodes (Wall 0.00864194s, CPU 0.008024s)
+Info    : Reconstructing mesh...
+Info    :  - Creating surface mesh
+Info    :  - Identifying boundary edges
+Info    :  - Recovering boundary
+Info    : Done reconstructing mesh (Wall 0.0189863s, CPU 0.016383s)
+Info    : Found volume 1
+Info    : It. 0 - 0 nodes created - worst tet radius 2.79801 (nodes removed 0 0)
+Info    : 3D refinement terminated (1031 nodes total):
+Info    :  - 1 Delaunay cavities modified for star shapeness
+Info    :  - 1 nodes could not be inserted
+Info    :  - 3568 tetrahedra created in 0.00989645 sec. (360533 tets/s)
+Info    : 0 node relocations
+Info    : Done meshing 3D (Wall 0.0497242s, CPU 0.044381s)
+Info    : Optimizing mesh...
+Info    : Optimizing volume 1
+Info    : Optimization starts (volume = 3.30962e-06) with worst = 0.0205662 / average = 0.763672:
+Info    : 0.00 < quality < 0.10 :        12 elements
+Info    : 0.10 < quality < 0.20 :        26 elements
+Info    : 0.20 < quality < 0.30 :        29 elements
+Info    : 0.30 < quality < 0.40 :        53 elements
+Info    : 0.40 < quality < 0.50 :        95 elements
+Info    : 0.50 < quality < 0.60 :       174 elements
+Info    : 0.60 < quality < 0.70 :       502 elements
+Info    : 0.70 < quality < 0.80 :      1050 elements
+Info    : 0.80 < quality < 0.90 :      1052 elements
+Info    : 0.90 < quality < 1.00 :       575 elements
+Info    : 67 edge swaps, 3 node relocations (volume = 3.30962e-06): worst = 0.206251 / average = 0.776114 (Wall 0.000857164s, CPU 0.000857s)
+Info    : 68 edge swaps, 3 node relocations (volume = 3.30962e-06): worst = 0.300899 / average = 0.776296 (Wall 0.00105961s, CPU 0.00106s)
+Info    : No ill-shaped tets in the mesh :-)
+Info    : 0.00 < quality < 0.10 :         0 elements
+Info    : 0.10 < quality < 0.20 :         0 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :        53 elements
+Info    : 0.40 < quality < 0.50 :        88 elements
+Info    : 0.50 < quality < 0.60 :       162 elements
+Info    : 0.60 < quality < 0.70 :       507 elements
+Info    : 0.70 < quality < 0.80 :      1057 elements
+Info    : 0.80 < quality < 0.90 :      1062 elements
+Info    : 0.90 < quality < 1.00 :       575 elements
+Info    : Done optimizing mesh (Wall 0.00325345s, CPU 0.003207s)
+Info    : 1031 nodes 5214 elements
+Info    : Optimizing mesh (Netgen)...
+Info    : Optimizing volume 1
+Info    : CalcLocalH: 1031 Points 3504 Elements 1596 Surface Elements 
+Info    : Remove Illegal Elements 
+Info    : 3 illegal tets 
+Info    : SplitImprove 
+Info    : badmax = 15.6283 
+Info    : 1 splits performed 
+Info    : SwapImprove  
+Info    : 0 swaps performed 
+Info    : SwapImprove2  
+Info    : 0 swaps performed 
+Info    : 0 illegal tets 
+Info    : Volume Optimization 
+Info    : CombineImprove 
+Info    : 4 elements combined 
+Info    : ImproveMesh 
+Info    : Total badness = 4962.86 
+Info    : Total badness = 4738.43 
+Info    : SplitImprove 
+Info    : badmax = 10.1879 
+Info    : 0 splits performed 
+Info    : ImproveMesh 
+Info    : Total badness = 4738.43 
+Info    : Total badness = 4719.93 
+Info    : SwapImprove  
+Info    : 183 swaps performed 
+Info    : SwapImprove2  
+Info    : 0 swaps performed 
+Info    : ImproveMesh 
+Info    : Total badness = 4425.58 
+Info    : Total badness = 4375.86 
+Info    : CombineImprove 
+Info    : 0 elements combined 
+Info    : ImproveMesh 
+Info    : Total badness = 4375.86 
+Info    : Total badness = 4374 
+Info    : SplitImprove 
+Info    : badmax = 6.3329 
+Info    : 0 splits performed 
+Info    : ImproveMesh 
+Info    : Total badness = 4374 
+Info    : Total badness = 4373.9 
+Info    : SwapImprove  
+Info    : 34 swaps performed 
+Info    : SwapImprove2  
+Info    : 0 swaps performed 
+Info    : ImproveMesh 
+Info    : Total badness = 4344.76 
+Info    : Total badness = 4332.49 
+Info    : CombineImprove 
+Info    : 0 elements combined 
+Info    : ImproveMesh 
+Info    : Total badness = 4332.49 
+Info    : Total badness = 4332.22 
+Info    : SplitImprove 
+Info    : badmax = 6.26321 
+Info    : 0 splits performed 
+Info    : ImproveMesh 
+Info    : Total badness = 4332.22 
+Info    : Total badness = 4332.18 
+Info    : SwapImprove  
+Info    : 13 swaps performed 
+Info    : SwapImprove2  
+Info    : 0 swaps performed 
+Info    : ImproveMesh 
+Info    : Total badness = 4325.82 
+Info    : Total badness = 4320.57 
+Info    : Done optimizing mesh (Wall 0.296292s, CPU 0.29621s)
+{"geometry": {"name": "narrow_gap", "description": "Rounded U tube, bend radius4.5mm, tube radius4mm, arms24mm", "thickness_m": null, "gap_m": 0.001, "minimum_rounding_m": null}, "gmsh_version": "4.14.1", "volume_construction": "Gmsh OpenCASCADE volume tetrahedralization", "mesh_size": 0.00175, "mesh_size_units": "m", "shell_layers": null, "nodes": 1028, "tetrahedra": 3382, "boundary_triangles": 1596, "dimensions_m": [0.017, 0.036431445484402296, 0.008], "minimum_volume_m3": 1.6900719042001547e-10, "total_volume_m3": 3.3096182716753186e-06, "scaled_jacobian_percentiles": [0.23351321455583798, 0.33455219598341235, 0.6479464468259903, 0.9229950786045059, 0.9950071748870734], "mesh_sha256": "0948ce0a2df1f186f77b204bf16de489d2621f84c5d768128c409e1cc41c484d"}

@@ -1,0 +1,55 @@
+[W 10/14/26 08:56:17.801 2154469] [frontend_ir.cpp:begin_frontend_struct_for_on_external_tensor@1551] qd.loop_config(serialize=True) does not have effect on the struct for. The execution order is not guaranteed.
+[W 10/14/26 08:56:17.811 2154469] [frontend_ir.cpp:begin_frontend_struct_for_on_external_tensor@1551] qd.loop_config(serialize=True) does not have effect on the struct for. The execution order is not guaranteed.
+[W 10/14/26 08:56:18.042 2154469] [frontend_ir.cpp:begin_frontend_struct_for_on_external_tensor@1551] qd.loop_config(serialize=True) does not have effect on the struct for. The execution order is not guaranteed.
+[W 10/14/26 08:56:18.054 2154469] [frontend_ir.cpp:begin_frontend_struct_for_on_external_tensor@1551] qd.loop_config(serialize=True) does not have effect on the struct for. The execution order is not guaranteed.
+[W 10/14/26 08:56:18.106 2154469] [frontend_ir.cpp:begin_frontend_struct_for_on_external_tensor@1551] qd.loop_config(serialize=True) does not have effect on the struct for. The execution order is not guaranteed.
+[W 10/14/26 08:56:18.111 2154469] [frontend_ir.cpp:begin_frontend_struct_for_on_external_tensor@1551] qd.loop_config(serialize=True) does not have effect on the struct for. The execution order is not guaranteed.
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+{"geometry": "u", "case": "opposing", "model": "pressure", "native_quadrature": 10, "ports": 8, "contact_status": [0, 0], "errno": 0, "selected_anchor_m": [[0.01079805241402515, 0.01800582546295539, 8.433348679636432e-05], [-0.010814486527413819, 0.01799731360787092, 5.926055081453657e-05]], "mapping_seconds_with_cold_compile": 1.8291534148156643, "accepted": true, "recovery_seconds_with_cold_compile": 0.5219475892372429, "classification": "numerically_qualified", "peak_Pa": 128743.7487967067, "peak_position_m": [-0.0005188197080578591, -0.004975859900950638, 0.0001303860752727796], "energy_J": 4.532156765662016e-08, "complete_budget_fraction": 0.0025740619569145353, "tensor_relative_error_vs_continuous_load": 1.999657977486711, "peak_relative_error_vs_continuous_load": 8.755002438798343e-06, "energy_relative_error_vs_continuous_load": 6.363836761980046e-05, "full_original_wrench": [-2.435727943124466e-16, 0.0, 0.0, 0.0, -1.253646799091403e-06, 4.255927542263394e-07], "analysis_elapsed_seconds": 2.3596267919056118, "sample_scatter_max_difference_N": 5.204170427930421e-18, "islands": [{"resultant_N": [-0.05000000000000007, 0.0, 0.0], "moment_Nm": [0.0, -6.354153619142473e-06, 0.000560926799414344], "footprint_area_m2": 3.1380499336321655e-05, "loaded_area_m2": 3.1380499336321655e-05, "effective_traction_area_m2": 1.1424593718851834e-05, "maximum_pressure_Pa": 8111.36690895778, "minimum_pressure_Pa": 0.0005810833527627056, "maximum_shear_Pa": 5005.390141646304, "integrated_pressure_N": 0.04361875909351269, "integrated_shear_norm_N": 0.018258321025974873, "integrated_traction_norm_N": 0.05000000000000007, "integrated_traction_squared_N2_per_m2": 218.82616235838066, "maximum_coulomb_violation_Pa": -0.00041658071538210116, "force_shift_from_prior_N": [-3.469446951953614e-17, 0.0, 0.0], "moment_shift_from_prior_Nm": [0.0, -2.371692252312041e-20, 8.673617379884035e-19]}, {"resultant_N": [0.04999999999999982, 0.0, 0.0], "moment_Nm": [0.0, 5.1005068200510366e-06, -0.000560501206660118], "footprint_area_m2": 3.074495894413237e-05, "loaded_area_m2": 3.074495894413237e-05, "effective_traction_area_m2": 1.1482445966405258e-05, "maximum_pressure_Pa": 8298.57177548286, "minimum_pressure_Pa": -0.0025006164811105344, "maximum_shear_Pa": 3889.4839791125937, "integrated_pressure_N": 0.044218225440630754, "integrated_shear_norm_N": 0.01621932010505346, "integrated_traction_norm_N": 0.04999999999999983, "integrated_traction_squared_N2_per_m2": 217.72364593000069, "maximum_coulomb_violation_Pa": 0.037575986812358936, "force_shift_from_prior_N": [-7.632783294297951e-17, 0.0, 0.0], "moment_shift_from_prior_Nm": [0.0, 1.1011428314305904e-20, 3.2526065174565133e-19]}]}
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/load_model_validation.py", line 460, in <module>
+    main()
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/load_model_validation.py", line 411, in main
+    cloud = native_cloud(model, surface, contacts, mapped, np.arange(len(patches)), patches)
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/load_model_validation.py", line 123, in native_cloud
+    kernel_intrinsic_load_samples(forces, areas, mapped.contacts, mapped.tractions, mapped.traction_info)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/_quadrants_callable.py", line 101, in __call__
+    return self.wrapper.__call__(*args, **kwargs)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel_impl.py", line 184, in wrapped_func
+    raise type(e)("\n" + str(e)) from None
+quadrants.lang.exception.QuadrantsCompilationError: 
+File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/native_load_samples.py", line 57, in kernel_intrinsic_load_samples:
+            areas[i_q, i_s, i_b] = area * info.gauss_weights[i_local // n] *
+                                          ^^^^^^^^^^^^^^^^^^
+Traceback (most recent call last):
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer_utils.py", line 40, in __call__
+    res = method(ctx, node)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer.py", line 792, in build_Attribute
+    node.ptr = getattr(node.value.ptr, node.attr)
+AttributeError: type object 'StressTractionInfo' has no attribute 'gauss_weights'
+
+
+[38;5;9m[Genesis] [08:57:35] [ERROR] QuadrantsCompilationError: 
+File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/native_load_samples.py", line 57, in kernel_intrinsic_load_samples:
+            areas[i_q, i_s, i_b] = area * info.gauss_weights[i_local // n] *
+                                          ^^^^^^^^^^^^^^^^^^
+Traceback (most recent call last):
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer_utils.py", line 40, in __call__
+    res = method(ctx, node)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer.py", line 792, in build_Attribute
+    node.ptr = getattr(node.value.ptr, node.attr)
+AttributeError: type object 'StressTractionInfo' has no attribute 'gauss_weights'
+[0m

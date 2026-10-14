@@ -1,0 +1,1213 @@
+diff --git a/genesis/engine/solvers/rigid/stress/contact.py b/genesis/engine/solvers/rigid/stress/contact.py
+index 00f87eb3..ced58f9e 100644
+--- a/genesis/engine/solvers/rigid/stress/contact.py
++++ b/genesis/engine/solvers/rigid/stress/contact.py
+@@ -250,6 +250,7 @@ def func_anchor(source_epsilon: float, contact_state: StressContactState, surfac
+                 direction = -force / magnitude
+                 point = contact_state.position[i_c, i_b]
+                 best = gs.qd_float(-1e30)
++                distance = gs.qd_float(1e30)
+                 for i_f in range(surface_info.face_origin.shape[0]):
+                     denominator = surface_info.face_normal[i_f].dot(direction)
+                     if denominator > 1e-12:
+@@ -259,10 +260,16 @@ def func_anchor(source_epsilon: float, contact_state: StressContactState, surfac
+                         bary = surface_info.face_dual[i_f] @ (
+                             point + parameter * direction - surface_info.face_origin[i_f]
+                         )
+-                        if bary[0] >= -2e-12 and bary[1] >= -2e-12 and bary.sum() <= 1.0 + 2e-12:
+-                            if parameter > best:
+-                                contact_state.anchor_face[i_c, i_b] = i_f
+-                            best = qd.max(best, parameter)
++                        # The application point identifies the nearest material sheet along the force line
++                        if (
++                            bary[0] >= -2e-12
++                            and bary[1] >= -2e-12
++                            and bary.sum() <= 1.0 + 2e-12
++                            and qd.abs(parameter) < distance
++                        ):
++                            contact_state.anchor_face[i_c, i_b] = i_f
++                            best = parameter
++                            distance = qd.abs(parameter)
+                 if best > -1e30:
+                     contact_state.center[i_c, i_b] = point + best * direction
+                 else:
+diff --git a/research/rigid_stress/contact_reference.py b/research/rigid_stress/contact_reference.py
+index 87834115..4e41a164 100644
+--- a/research/rigid_stress/contact_reference.py
++++ b/research/rigid_stress/contact_reference.py
+@@ -2,7 +2,7 @@
+ 
+ import argparse
+ import json
+-from dataclasses import dataclass
++from dataclasses import asdict, dataclass
+ from pathlib import Path
+ from time import perf_counter
+ 
+@@ -23,6 +23,15 @@ class ContactElasticPart:
+     permutation: np.ndarray
+ 
+ 
++@dataclass(frozen=True)
++class ContactStepAcceptance:
++    phase: str
++    step: int
++    friction_iterations: int
++    complete_free_residual_n: float
++    normal_collisions: int
++
++
+ @dataclass(frozen=True)
+ class ContactIteration:
+     step: int
+@@ -86,6 +95,7 @@ class IndependentContactSystem:
+         self.barrier = ipctk.BarrierPotential(dhat, barrier_stiffness, use_physical_barrier=True)
+         self.friction = friction
+         self.friction_potential = ipctk.FrictionPotential(friction_mollifier)
++        self.accepted_steps = []
+ 
+     def elastic_displacement(self, displacement):
+         elastic = np.empty_like(displacement)
+@@ -146,13 +156,25 @@ class IndependentContactSystem:
+                 )
+         return energy, gradient, matrix, normal, contact_gradient
+ 
+-    def solve_supported(self, boundary_dofs, boundary_values, load_steps, tolerance=1e-9, failure_path=None):
++    def solve_supported(
++        self,
++        boundary_dofs,
++        boundary_values,
++        load_steps,
++        tolerance=1e-9,
++        failure_path=None,
++        initial_displacement=None,
++        phase="load",
++    ):
+         free = np.setdiff1d(np.arange(self.stiffness.shape[0]), boundary_dofs)
+-        displacement = np.zeros(self.stiffness.shape[0])
++        displacement = (
++            np.zeros(self.stiffness.shape[0]) if initial_displacement is None else initial_displacement.copy()
++        )
++        boundary_start = displacement[boundary_dofs].copy()
+         records = []
+         for step in range(1, load_steps + 1):
+             previous = displacement.copy()
+-            displacement[boundary_dofs] = boundary_values * step / load_steps
++            displacement[boundary_dofs] = boundary_start + (boundary_values - boundary_start) * step / load_steps
+             for friction_iteration in range(12 if self.friction > 0 else 1):
+                 lagged = displacement.copy()
+                 normal, current = self.normal_collisions(displacement)
+@@ -227,6 +249,15 @@ class IndependentContactSystem:
+                     updated.build(self.mesh, updated_current, updated_normal, self.barrier, self.friction)
+                 final = self.evaluate(displacement, previous, updated, hessian=False)
+                 if np.linalg.norm(final[1][free]) <= tolerance:
++                    self.accepted_steps.append(
++                        ContactStepAcceptance(
++                            phase,
++                            step,
++                            friction_iteration + 1,
++                            float(np.linalg.norm(final[1][free])),
++                            len(updated_normal),
++                        )
++                    )
+                     break
+             else:
+                 self.save_failure(failure_path, displacement, previous, lagged, boundary_dofs, records)
+@@ -241,7 +272,7 @@ def block_reference(lower, upper, resolution, young, poisson):
+     return SkfemElasticReference(mesh.p.T, mesh.t.T, young, poisson, 1000)
+ 
+ 
+-def validate_blocks(resolution, dhat, friction, output):
++def validate_blocks(resolution, dhat, friction, output, shear_after_close=0.0, contact_load_increment=None):
+     if output.exists():
+         raise FileExistsError(output)
+     output.mkdir(parents=True)
+@@ -256,9 +287,42 @@ def validate_blocks(resolution, dhat, friction, output):
+     dofs = (nodes[:, None] * 3 + np.arange(3)).reshape(-1)
+     values = np.zeros((len(nodes), 3))
+     values[len(bottom) :, 2] = -(gap + closing)
+-    displacement, gradient, contact_force, energy, records = system.solve_supported(
+-        dofs, values.reshape(-1), 12, failure_path=output / "failure.npz"
+-    )
++    if contact_load_increment is None:
++        contact_steps = 12
++        displacement, gradient, contact_force, energy, records = system.solve_supported(
++            dofs, values.reshape(-1), contact_steps, failure_path=output / "failure.npz", phase="compression"
++        )
++    else:
++        if not 0 < contact_load_increment <= dhat:
++            raise ValueError("Contact displacement increment must be positive and at most the activation distance")
++        before_touch = values.copy()
++        before_touch[len(bottom) :, 2] = -(gap - 4 * dhat)
++        initial, _, _, _, approach_records = system.solve_supported(
++            dofs, before_touch.reshape(-1), 12, failure_path=output / "approach_failure.npz", phase="approach"
++        )
++        contact_steps = int(np.ceil((closing + 4 * dhat) / contact_load_increment))
++        displacement, gradient, contact_force, energy, records = system.solve_supported(
++            dofs,
++            values.reshape(-1),
++            contact_steps,
++            failure_path=output / "failure.npz",
++            initial_displacement=initial,
++            phase="compression",
++        )
++        (output / "approach_iterations.json").write_text(
++            json.dumps([asdict(row) for row in approach_records], indent=2) + "\n"
++        )
++    if shear_after_close != 0:
++        values[len(bottom) :, 0] = shear_after_close
++        displacement, gradient, contact_force, energy, shear_records = system.solve_supported(
++            dofs,
++            values.reshape(-1),
++            8,
++            failure_path=output / "shear_failure.npz",
++            initial_displacement=displacement,
++            phase="shear",
++        )
++        records.extend(shear_records)
+     fields, rows = [], []
+     for part in system.parts:
+         count = part.reference.basis.N
+@@ -266,6 +330,7 @@ def validate_blocks(resolution, dhat, friction, output):
+         vector = np.empty(count)
+         vector[part.permutation] = displacement[section]
+         tensor, vm = part.reference.corner_stress(vector)
++        gradients = part.reference.corner_basis.interpolate(vector).grad.transpose(2, 3, 0, 1)
+         force = contact_force[section].reshape(-1, 3)
+         positions = part.reference.coordinates + displacement[section].reshape(-1, 3)
+         rows.append(
+@@ -275,6 +340,13 @@ def validate_blocks(resolution, dhat, friction, output):
+                 "contact_moment_Nm": np.cross(positions - part.reference.com, force).sum(axis=0).tolist(),
+                 "peak_Pa": float(vm.max()),
+                 "tetrahedra": part.reference.mesh.nelements,
++                "maximum_displacement_gradient": float(np.linalg.norm(gradients, axis=(-2, -1)).max()),
++                "minimum_deformation_jacobian": float(np.linalg.det(gradients + np.eye(3)).min()),
++                "maximum_elastic_displacement_m": float(
++                    np.linalg.norm(
++                        part.reference.align_rigid_gauge(vector)[part.reference.component_dofs], axis=1
++                    ).max()
++                ),
+             }
+         )
+         fields.append((tensor, vm))
+@@ -285,13 +357,18 @@ def validate_blocks(resolution, dhat, friction, output):
+         "poisson": poisson,
+         "gap_m": gap,
+         "closing_after_touch_m": closing,
++        "shear_after_close_m": shear_after_close,
++        "shear_steps": 8 if shear_after_close != 0 else 0,
+         "resolution": resolution,
+         "dhat_m": dhat,
+         "barrier_stiffness": 1e6,
+         "physical_area_weighted_barrier": True,
+         "friction": friction,
+         "friction_mollifier_m_per_unit_step": 1e-8,
+-        "load_steps": 12,
++        "contact_load_increment_m": contact_load_increment,
++        "approach_steps": 0 if contact_load_increment is None else 12,
++        "load_steps": contact_steps,
++        "accepted_steps": [asdict(row) for row in system.accepted_steps],
+         "complete_free_residual_N": float(np.linalg.norm(gradient[free])),
+         "total_energy_J": float(energy),
+         "parts": rows,
+@@ -320,9 +397,13 @@ def main():
+     parser.add_argument("--resolution", type=int, default=3)
+     parser.add_argument("--dhat", type=float, default=1e-5)
+     parser.add_argument("--friction", type=float, default=0)
++    parser.add_argument("--contact-load-increment", type=float)
++    parser.add_argument("--shear-after-close", type=float, default=0)
+     parser.add_argument("--output", type=Path, required=True)
+     args = parser.parse_args()
+-    validate_blocks(args.resolution, args.dhat, args.friction, args.output)
++    validate_blocks(
++        args.resolution, args.dhat, args.friction, args.output, args.shear_after_close, args.contact_load_increment
++    )
+ 
+ 
+ if __name__ == "__main__":
+diff --git a/research/rigid_stress/finite_traction_reference.py b/research/rigid_stress/finite_traction_reference.py
+new file mode 100644
+index 00000000..34791dcf
+--- /dev/null
++++ b/research/rigid_stress/finite_traction_reference.py
+@@ -0,0 +1,219 @@
++"""Construct independent finite-area boundary loads on full three-dimensional FEM meshes."""
++
++from dataclasses import dataclass
++
++import numpy as np
++from scipy import sparse
++from scipy.sparse.csgraph import connected_components
++from skfem import FacetBasis, LinearForm, asm
++from skfem.helpers import dot
++from skfem.quadrature import get_quadrature_tri
++
++
++@LinearForm
++def prescribed_vector_traction(v, w):
++    return dot(w.traction, v)
++
++
++@dataclass(frozen=True)
++class FinitePatch:
++    name: str
++    centre_m: np.ndarray
++    direction: np.ndarray
++    strength_n: float
++    radius_m: float
++    friction: float
++    shear_fraction: float = 0.0
++    is_local_normal_profile: bool = False
++
++
++@dataclass(frozen=True)
++class PatchTractionReference:
++    specification: FinitePatch
++    witness_m: np.ndarray
++    point_m: np.ndarray
++    force_n: np.ndarray
++    free_moment_nm: np.ndarray
++    inward_normal: np.ndarray
++    positions_m: np.ndarray
++    normals: np.ndarray
++    area_weights_m2: np.ndarray
++    tractions_pa: np.ndarray
++    load_vector_n: np.ndarray
++    profile_integral_m2: float
++    boundary_facets: np.ndarray
++
++
++def triangle_closest_points(triangles, point):
++    """Project one point onto each closed triangle, including all edges."""
++    edges = triangles[:, 1:] - triangles[:, :1]
++    gram = np.einsum("fai,fbi->fab", edges, edges)
++    local = np.linalg.solve(gram, np.einsum("fai,fi->fa", edges, point - triangles[:, 0])[:, :, None])[:, :, 0]
++    projection = triangles[:, 0] + np.einsum("fa,fai->fi", local, edges)
++    segments = triangles[:, [[0, 1], [1, 2], [2, 0]]]
++    vectors = segments[:, :, 1] - segments[:, :, 0]
++    fractions = np.clip(
++        np.einsum("fei,fei->fe", point - segments[:, :, 0], vectors) / np.sum(vectors * vectors, axis=2), 0, 1
++    )
++    candidates = np.concatenate((projection[:, None], segments[:, :, 0] + fractions[:, :, None] * vectors), axis=1)
++    distances = np.sum((candidates - point) ** 2, axis=2)
++    distances[~((local >= 0).all(axis=1) & (local.sum(axis=1) <= 1)), 0] = np.inf
++    selected = np.argmin(distances, axis=1)
++    return candidates[np.arange(len(triangles)), selected], distances[np.arange(len(triangles)), selected]
++
++
++def subdivided_triangle_quadrature(level, order=6):
++    """Integrate each triangle using independently subdivided scikit-fem rules."""
++    triangles = np.array([[[0.0, 0.0], [1.0, 0.0], [0.0, 1.0]]])
++    for _ in range(level):
++        first, second, third = triangles.transpose(1, 0, 2)
++        first_second = (first + second) / 2
++        first_third = (first + third) / 2
++        second_third = (second + third) / 2
++        triangles = np.stack(
++            (
++                np.stack((first, first_second, first_third), axis=1),
++                np.stack((first_second, second, second_third), axis=1),
++                np.stack((first_third, second_third, third), axis=1),
++                np.stack((first_second, second_third, first_third), axis=1),
++            ),
++            axis=1,
++        ).reshape(-1, 3, 2)
++    points, weights = get_quadrature_tri(order)
++    edges = triangles[:, 1:] - triangles[:, :1]
++    transformed = triangles[:, :1] + np.einsum("nai,aq->nqi", edges, points)
++    transformed_weights = abs(np.linalg.det(edges))[:, None] * weights
++    return transformed.reshape(-1, 2).T, transformed_weights.reshape(-1)
++
++
++def assemble_finite_patch(reference, specification, quadrature_level):
++    """Integrate a declared compact profile on its witnessed connected boundary sheet."""
++    boundary = reference.mesh.boundary_facets()
++    faces = reference.mesh.facets[:, boundary].T
++    triangles = reference.mesh.p.T[faces]
++    closest, distance_squared = triangle_closest_points(triangles, specification.centre_m)
++    anchor = np.argmin(distance_squared)
++    selected = np.flatnonzero(distance_squared < specification.radius_m**2)
++    if anchor not in selected:
++        raise ValueError(f"Physical footprint misses the material boundary: {specification.name}")
++    edges = np.sort(faces[:, [[0, 1], [1, 2], [2, 0]]], axis=2).reshape(-1, 2)
++    order = np.lexsort((edges[:, 1], edges[:, 0]))
++    pairs = np.flatnonzero((edges[order][1:] == edges[order][:-1]).all(axis=1))
++    neighbours = np.repeat(np.arange(len(faces)), 3)[order]
++    adjacency = sparse.csr_matrix(
++        (np.ones(len(pairs)), (neighbours[pairs], neighbours[pairs + 1])), shape=(len(faces), len(faces))
++    )
++    _, components = connected_components(adjacency[selected][:, selected], directed=False)
++    selected = selected[components == components[np.flatnonzero(selected == anchor)[0]]]
++    boundary_facets = boundary[selected]
++    quadrature = subdivided_triangle_quadrature(quadrature_level)
++    basis = FacetBasis(reference.mesh, reference.element, facets=boundary_facets, quadrature=quadrature)
++    positions = basis.global_coordinates().transpose(1, 2, 0)
++    inward = -basis.normals.transpose(1, 2, 0)
++    radius_squared = np.sum((positions - specification.centre_m) ** 2, axis=2) / specification.radius_m**2
++    profile = np.exp(-radius_squared / (2 * 0.45**2)) * np.maximum(1 - radius_squared, 0) ** 2
++    integral = np.sum(profile * basis.dx)
++    if integral <= 0:
++        raise ValueError(f"Independent quadrature leaves the footprint unresolved: {specification.name}")
++    direction = specification.direction / np.linalg.norm(specification.direction)
++    traction = profile[:, :, None] * direction
++    if specification.is_local_normal_profile:
++        shear_direction = np.array([0.0, 0.0, 1.0])
++        tangent = shear_direction - np.einsum("fqi,i->fq", inward, shear_direction)[:, :, None] * inward
++        tangent /= np.maximum(np.linalg.norm(tangent, axis=2), 1e-30)[:, :, None]
++        traction = profile[:, :, None] * (inward + specification.shear_fraction * specification.friction * tangent)
++    traction *= specification.strength_n / integral
++    load = asm(prescribed_vector_traction, basis, traction=traction.transpose(2, 0, 1))
++    weighted = traction * basis.dx[:, :, None]
++    force = weighted.sum(axis=(0, 1))
++    if not specification.is_local_normal_profile:
++        force = specification.strength_n * direction
++    centroid = np.sum(positions * (profile * basis.dx)[:, :, None], axis=(0, 1)) / integral
++    moment = np.cross(positions - centroid, weighted).sum(axis=(0, 1))
++    material_centres = reference.mesh.p.T[reference.mesh.t[:, reference.mesh.f2t[0, boundary[anchor]]]].mean(axis=0)
++    normal = np.cross(triangles[anchor, 1] - triangles[anchor, 0], triangles[anchor, 2] - triangles[anchor, 0])
++    normal *= np.sign(normal @ (material_centres - triangles[anchor].mean(axis=0)))
++    normal /= np.linalg.norm(normal)
++    active = profile > 0
++    return PatchTractionReference(
++        specification,
++        closest[anchor],
++        centroid,
++        force,
++        moment,
++        normal,
++        positions[active],
++        inward[active],
++        basis.dx[active],
++        traction[active],
++        load,
++        integral,
++        boundary_facets,
++    )
++
++
++def physical_grip_patches(geometry, case, radius_m=0.003):
++    """Declare fixed physical patch centres and finite profiles for each full geometry."""
++    if geometry == "ellipsoid":
++        centres = np.array([[-0.012, 0, 0], [0.012, 0, 0]])
++    elif geometry == "egg":
++        centres = np.array([[-0.022, 0, 0], [0.022, 0, 0]])
++    elif geometry == "capsule":
++        centres = np.array([[-0.008, 0, 0], [0.008, 0, 0]])
++    elif geometry == "thin_neck":
++        centres = np.array([[-0.022, 0, 0], [0.022, 0, 0]])
++    elif geometry in ("u", "narrow_gap"):
++        half_gap = 0.005 if geometry == "u" else 0.0005
++        centres = np.array([[-half_gap, 0.018, 0], [half_gap, 0.018, 0]])
++    elif geometry == "cavity":
++        centres = np.array([[-0.008, 0, 0], [0.008, 0, 0]])
++    else:
++        raise ValueError(f"Unknown full geometry: {geometry}")
++    directions = np.array([[1.0, 0, 0], [-1.0, 0, 0]])
++    if geometry in ("u", "narrow_gap", "cavity"):
++        directions *= -1
++    strengths = [0.05, 0.05]
++    if case == "bending":
++        directions[:, 2] = [0.3, -0.3]
++    elif case == "asymmetric":
++        strengths[1] = 0.08
++        centres[1, 2] += 0.0005
++    elif case not in ("opposing", "near_slip", "multiple"):
++        raise ValueError(f"Unknown finite load case: {case}")
++    patches = [
++        FinitePatch(
++            f"pad{i_p}",
++            centre,
++            direction,
++            strength,
++            radius_m,
++            0.8 if case == "near_slip" else 2.0,
++            0.95 if case == "near_slip" else 0.0,
++            case == "near_slip",
++        )
++        for i_p, (centre, direction, strength) in enumerate(zip(centres, directions, strengths))
++    ]
++    if case == "multiple":
++        third = centres[0].copy()
++        direction = directions[0].copy()
++        if geometry in ("u", "narrow_gap"):
++            third[1] -= 0.008
++        elif geometry == "capsule":
++            third[2] += 0.008
++        elif geometry in ("ellipsoid", "egg", "cavity"):
++            third[2] = 0.007
++            if geometry == "ellipsoid":
++                third[0] = -0.012 * np.sqrt(1 - (third[2] / 0.009) ** 2)
++                direction = -third / np.array([0.012, 0.015, 0.009]) ** 2
++            elif geometry == "egg":
++                scale = 1 - 0.18 * third[2] / 0.03
++                third[0] = -0.022 * scale * np.sqrt(1 - (third[2] / 0.03) ** 2)
++                direction = np.array([1.0, 0, -0.2])
++            else:
++                third[0] = -np.sqrt(0.008**2 - third[2] ** 2)
++                direction = third.copy()
++        else:
++            third = np.array([-0.016, 0.007, 0])
++            direction = np.array([0.0, -1, 0])
++        patches.append(FinitePatch("pad2", third, direction, 0.02, radius_m, 2.0))
++    return tuple(patches)
+diff --git a/research/rigid_stress/load_model_validation.py b/research/rigid_stress/load_model_validation.py
+new file mode 100644
+index 00000000..53bc1377
+--- /dev/null
++++ b/research/rigid_stress/load_model_validation.py
+@@ -0,0 +1,540 @@
++"""Compare four native load models with independent finite-traction FEM on frozen snapshots."""
++
++import argparse
++import hashlib
++import json
++import xml.etree.ElementTree as ET
++from dataclasses import dataclass
++from pathlib import Path
++from time import perf_counter
++
++import numpy as np
++import quadrants as qd
++
++import genesis as gs
++from genesis.engine.solvers.rigid.stress.contact import create_contacts, kernel_anchor, kernel_pressure, kernel_scatter
++from genesis.engine.solvers.rigid.stress.intrinsic import IntrinsicContacts
++from genesis.engine.solvers.rigid.stress.model import StressModel
++from genesis.engine.solvers.rigid.stress.paths import StressSurfacePaths
++from genesis.engine.solvers.rigid.stress.recovery import kernel_begin_step
++from genesis.engine.solvers.rigid.stress.surface import StressSurface
++from genesis.engine.solvers.rigid.stress.traction import (
++    StressTractionSamples,
++    create_traction_samples,
++    kernel_traction_samples,
++)
++from genesis.options.rigid_stress import RigidStressOptions
++from genesis.utils.array_class import V_VEC, V
++from genesis.utils.misc import qd_to_numpy
++
++from .finite_traction_reference import assemble_finite_patch, physical_grip_patches
++from .native_load_samples import kernel_intrinsic_load_samples, kernel_pressure_load_samples
++from .qualify_reference_scaling import AMGPinFactor
++from .skfem_reference import SkfemElasticReference
++
++
++@dataclass(frozen=True)
++class TractionCloud:
++    positions_m: np.ndarray
++    normals: np.ndarray
++    forces_n: np.ndarray
++    areas_m2: np.ndarray
++    source: np.ndarray
++    friction: np.ndarray
++    faces: np.ndarray
++    basis: np.ndarray
++
++
++def traction_observables(positions, normals, forces, areas, friction, origin):
++    """Measure traction, wrench and concentration with physical area weights."""
++    density = forces / areas[:, None]
++    pressure = np.einsum("qi,qi->q", density, normals)
++    shear = density - pressure[:, None] * normals
++    shear_norm = np.linalg.norm(shear, axis=1)
++    magnitude = np.linalg.norm(forces, axis=1)
++    effective_area = magnitude.sum() ** 2 / np.sum(magnitude * magnitude / areas)
++    return {
++        "resultant_N": forces.sum(axis=0).tolist(),
++        "moment_Nm": np.cross(positions - origin, forces).sum(axis=0).tolist(),
++        "footprint_area_m2": float(areas.sum()),
++        "loaded_area_m2": float(areas[magnitude > 0].sum()),
++        "effective_traction_area_m2": float(effective_area),
++        "maximum_pressure_Pa": float(pressure.max()),
++        "minimum_pressure_Pa": float(pressure.min()),
++        "maximum_shear_Pa": float(shear_norm.max()),
++        "integrated_pressure_N": float(pressure @ areas),
++        "integrated_shear_norm_N": float(shear_norm @ areas),
++        "integrated_traction_norm_N": float(magnitude.sum()),
++        "integrated_traction_squared_N2_per_m2": float(np.sum(magnitude * magnitude / areas)),
++        "maximum_coulomb_violation_Pa": float(max(0, np.maximum(shear_norm - friction * pressure, -pressure).max())),
++    }
++
++
++def map_native(model, surface, paths, link, patches, options, pairs, output_mode="full"):
++    """Run the production load mapper for a complete frozen set of contacts."""
++    contacts = create_contacts(len(patches), 1, options.contact_radius)
++    contacts.valid.fill(True)
++    contacts.position.from_numpy(np.stack([patch.point_m for patch in patches])[:, None])
++    contacts.force.from_numpy(np.stack([patch.force_n for patch in patches])[:, None])
++    contacts.normal.from_numpy(np.stack([patch.inward_normal for patch in patches])[:, None])
++    contacts.radius.from_numpy(np.array([patch.specification.radius_m for patch in patches])[:, None])
++    contacts.friction.from_numpy(np.array([patch.specification.friction for patch in patches])[:, None])
++    contacts.frame_position.fill(0)
++    contacts.frame_quaternion.from_numpy(np.array([[1.0, 0, 0, 0]]))
++    state = model.create_state(1, output_mode)
++    kernel_begin_step(state)
++    epsilon = float(np.finfo(gs.np_float).eps)
++    mapped = None
++    errno = V(dtype=gs.qd_int, shape=(1,))
++    errno.fill(0)
++    if options.contact_model == "pressure":
++        kernel_anchor(epsilon, contacts, surface.info)
++        kernel_pressure(contacts, surface.info)
++        kernel_scatter(contacts, state, model.info, surface.info)
++    else:
++        mapped = IntrinsicContacts(link, contacts, model.info, surface.info, options, paths)
++        mapped.raw_sources.geom.fill(link.geoms[0].idx)
++        mapped.raw_sources.pair.from_numpy(pairs[:, None])
++        mapped.raw_sources.witness.from_numpy(np.stack([patch.witness_m for patch in patches])[:, None])
++        mapped.raw_sources.free_moment.from_numpy(np.stack([patch.free_moment_nm for patch in patches])[:, None])
++        mapped.scatter(contacts, state, model.info, surface.info, options, epsilon, errno)
++    return state, contacts, mapped, int(qd_to_numpy(errno, transpose=True)[0])
++
++
++def native_cloud(model, surface, contacts, mapped, source_ids, patches):
++    """Capture every destination sample for one separable production mapping group."""
++    if mapped is None:
++        shape = (surface.info.positions.shape[0] + 7 * surface.info.shape.shape[0], len(patches), 1)
++        samples = StressTractionSamples(
++            positions=V_VEC(3, dtype=gs.qd_float, shape=shape),
++            normals=V_VEC(3, dtype=gs.qd_float, shape=shape),
++            faces=V(dtype=gs.qd_int, shape=shape),
++            shape=V_VEC(6, dtype=gs.qd_float, shape=shape),
++        )
++        forces = V_VEC(3, dtype=gs.qd_float, shape=shape)
++        areas = V(dtype=gs.qd_float, shape=shape)
++        kernel_pressure_load_samples(samples, forces, areas, contacts, surface.info)
++        order = np.arange(len(patches))
++    else:
++        samples = create_traction_samples(mapped.tractions)
++        kernel_traction_samples(samples, mapped.tractions, surface.info, mapped.traction_info)
++        shape = mapped.tractions.profile.shape
++        forces = V_VEC(3, dtype=gs.qd_float, shape=shape)
++        areas = V(dtype=gs.qd_float, shape=shape)
++        kernel_intrinsic_load_samples(
++            forces, areas, mapped.contacts, mapped.tractions, mapped.traction_info, surface.info
++        )
++        order = qd_to_numpy(mapped.packing.indices, transpose=True, copy=True)[0, : len(patches)]
++    positions = qd_to_numpy(samples.positions, transpose=True, copy=True)[0]
++    normals = qd_to_numpy(samples.normals, transpose=True, copy=True)[0]
++    actual_force = qd_to_numpy(forces, transpose=True, copy=True)[0]
++    area_weights = qd_to_numpy(areas, transpose=True, copy=True)[0]
++    sample_faces = qd_to_numpy(samples.faces, transpose=True, copy=True)[0]
++    basis = qd_to_numpy(samples.shape, transpose=True, copy=True)[0]
++    selected = (area_weights > 0) & (sample_faces >= 0)
++    destination = np.broadcast_to(source_ids[order][None], selected.shape)
++    friction = np.broadcast_to(
++        np.array([patch.specification.friction for patch in patches])[order][None], selected.shape
++    )
++    return TractionCloud(
++        positions[selected],
++        normals[selected],
++        actual_force[selected],
++        area_weights[selected],
++        destination[selected],
++        friction[selected],
++        sample_faces[selected],
++        basis[selected],
++    )
++
++
++def main():
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument("--mesh", type=Path, required=True)
++    parser.add_argument("--geometry", required=True)
++    parser.add_argument("--cases", nargs="+", default=["opposing", "bending", "asymmetric", "near_slip", "multiple"])
++    parser.add_argument("--models", nargs="+", default=["pressure", "componentwise", "pair_union", "body_source_prior"])
++    parser.add_argument("--backend", choices=("cpu", "cuda"), default="cpu")
++    parser.add_argument("--method", choices=("direct", "pcg"), default="direct")
++    parser.add_argument("--native-max-iterations", type=int, default=2000)
++    parser.add_argument("--radius", type=float, default=0.003)
++    parser.add_argument("--reference-quadrature-level", type=int, default=3)
++    parser.add_argument("--reference-solver", choices=("superlu", "amg-cg"), default="superlu")
++    parser.add_argument("--native-quadrature", type=int, default=10)
++    parser.add_argument("--ports", type=int, default=8)
++    parser.add_argument("--reference-only", action="store_true")
++    parser.add_argument("--output", type=Path, required=True)
++    args = parser.parse_args()
++    args.output.mkdir(parents=True, exist_ok=False)
++    with np.load(args.mesh) as saved:
++        vertices, tetrahedra = saved["vertices"], saved["tetrahedra"]
++        boundary = saved["surface_triangles"]
++    reference = SkfemElasticReference(vertices, tetrahedra, 1e10, 0.3, 2000)
++    if args.reference_solver == "amg-cg":
++        operator = (reference.stiffness[reference.free_dofs][:, reference.free_dofs] / reference.young).tocsr()
++        modes = reference.rigid_modes[reference.free_dofs]
++        reference.factor = AMGPinFactor(operator, modes / np.linalg.norm(modes, axis=0))
++    model, surface, paths, entity = None, None, None, None
++    if not args.reference_only:
++        gs.init(backend=gs.cpu if args.backend == "cpu" else gs.cuda, precision="64", logging_level="warning")
++        mesh_file = args.output / "surface.obj"
++        boundary_facets = reference.mesh.boundary_facets()
++        oriented_boundary = reference.mesh.facets[:, boundary_facets].T.copy()
++        triangles = vertices[oriented_boundary]
++        material_centres = vertices[reference.mesh.t[:, reference.mesh.f2t[0, boundary_facets]].T].mean(axis=1)
++        inward = (
++            np.einsum(
++                "fi,fi->f",
++                np.cross(triangles[:, 1] - triangles[:, 0], triangles[:, 2] - triangles[:, 0]),
++                material_centres - triangles.mean(axis=1),
++            )
++            > 0
++        )
++        oriented_boundary[inward, 1:3] = oriented_boundary[inward, 2:0:-1]
++        triangles = vertices[oriented_boundary]
++        signed_volume = np.einsum("fi,fi->", triangles[:, 0], np.cross(triangles[:, 1], triangles[:, 2])) / 6
++        np.testing.assert_allclose(signed_volume, reference.total_mass / 2000, rtol=1e-12, atol=1e-20)
++        (args.output / "surface_geometry_audit.json").write_text(
++            json.dumps(
++                {
++                    "outward_boundary_triangles": len(oriented_boundary),
++                    "signed_surface_volume_m3": float(signed_volume),
++                    "independent_volume_m3": float(reference.total_mass / 2000),
++                },
++                indent=2,
++            )
++            + "\n"
++        )
++        with mesh_file.open("w") as stream:
++            np.savetxt(stream, vertices, fmt="v %.17g %.17g %.17g")
++            np.savetxt(stream, oriented_boundary + 1, fmt="f %d %d %d")
++        robot = ET.Element("robot", name="physical_validation")
++        link = ET.SubElement(robot, "link", name="material")
++        inertial = ET.SubElement(link, "inertial")
++        ET.SubElement(inertial, "origin", xyz=" ".join(f"{value:.17g}" for value in reference.com))
++        ET.SubElement(inertial, "mass", value=f"{reference.total_mass:.17g}")
++        inertia = reference.gram[3:, 3:]
++        ET.SubElement(
++            inertial,
++            "inertia",
++            ixx=f"{inertia[0, 0]:.17g}",
++            iyy=f"{inertia[1, 1]:.17g}",
++            izz=f"{inertia[2, 2]:.17g}",
++            ixy=f"{inertia[0, 1]:.17g}",
++            ixz=f"{inertia[0, 2]:.17g}",
++            iyz=f"{inertia[1, 2]:.17g}",
++        )
++        for name in ("visual", "collision"):
++            geometry = ET.SubElement(ET.SubElement(link, name), "geometry")
++            ET.SubElement(geometry, "mesh", filename=str(mesh_file.resolve()))
++        scene = gs.Scene(
++            show_viewer=False,
++        )
++        entity = scene.add_entity(
++            gs.morphs.URDF(
++                file=ET.tostring(robot, encoding="unicode"),
++                convexify=False,
++                align=False,
++                preserve_mesh_precision=True,
++            ),
++        )
++        scene.build(n_envs=1)
++        options = RigidStressOptions(
++            mesh=args.mesh,
++            output_mode="full",
++            quadrature=args.native_quadrature,
++            surface_edge_subdivisions=args.ports,
++            method=args.method,
++            max_iterations=args.native_max_iterations,
++        )
++        model = StressModel(options)
++        surface = StressSurface(args.native_quadrature, model.info)
++        paths = StressSurfacePaths(model.info, args.ports)
++    reports = []
++    for case in args.cases:
++        output = args.output / case
++        output.mkdir()
++        specifications = physical_grip_patches(args.geometry, case, args.radius)
++        patches = tuple(
++            assemble_finite_patch(reference, patch, args.reference_quadrature_level) for patch in specifications
++        )
++        load = sum((patch.load_vector_n for patch in patches), np.zeros(reference.basis.N))
++        omega = np.array([0.4, -0.7, 0.9]) if case == "asymmetric" else np.zeros(3)
++        np.savez_compressed(
++            output / "frozen_inputs.npz",
++            points_m=np.stack([p.point_m for p in patches]),
++            forces_N=np.stack([p.force_n for p in patches]),
++            witnesses_m=np.stack([p.witness_m for p in patches]),
++            free_moments_Nm=np.stack([p.free_moment_nm for p in patches]),
++            collision_normals=np.stack([p.inward_normal for p in patches]),
++            radii_m=np.array([p.specification.radius_m for p in patches]),
++            friction=np.array([p.specification.friction for p in patches]),
++            omega_rad_s=omega,
++        )
++        solved = reference.solve(load, omega)
++        assert solved.residual_budget_fraction <= 1
++        np.savez_compressed(
++            output / "reference_field.npz",
++            displacement=solved.displacement,
++            rhs_N=solved.rhs,
++            force_N=load,
++            tensor_Pa=solved.tensor_pa,
++            vm_Pa=solved.von_mises_pa,
++        )
++        snapshot = {
++            "mesh_sha256": hashlib.sha256(args.mesh.read_bytes()).hexdigest(),
++            "geometry": args.geometry,
++            "case": case,
++            "material": {"young_Pa": 1e10, "poisson": 0.3, "density_kg_m3": 2000},
++            "mass_kg": float(reference.total_mass),
++            "com_m": reference.com.tolist(),
++            "pose": {"position_m": [0, 0, 0], "quaternion_wxyz": [1, 0, 0, 0]},
++            "omega_rad_s": omega.tolist(),
++            "patch_radius_m": args.radius,
++            "reference_quadrature_level": args.reference_quadrature_level,
++            "reference_peak_Pa": float(solved.peak_pa),
++            "reference_peak_position_m": solved.peak_position_m.tolist(),
++            "reference_energy_J": float(solved.energy_j),
++            "reference_complete_budget_fraction": float(solved.residual_budget_fraction),
++            "patches": [],
++            "models": [],
++        }
++        for i_p, patch in enumerate(patches):
++            np.savez_compressed(
++                output / f"reference_patch{i_p}.npz",
++                positions_m=patch.positions_m,
++                normals=patch.normals,
++                area_weights_m2=patch.area_weights_m2,
++                tractions_Pa=patch.tractions_pa,
++            )
++            snapshot["patches"].append(
++                {
++                    "name": patch.specification.name,
++                    "physical_anchor_m": patch.specification.centre_m.tolist(),
++                    "witness_m": patch.witness_m.tolist(),
++                    "point_m": patch.point_m.tolist(),
++                    "force_N": patch.force_n.tolist(),
++                    "integrated_minus_declared_force_N": (
++                        np.sum(patch.tractions_pa * patch.area_weights_m2[:, None], axis=0) - patch.force_n
++                    ).tolist(),
++                    "free_moment_Nm": patch.free_moment_nm.tolist(),
++                    "normal": patch.inward_normal.tolist(),
++                    "friction": patch.specification.friction,
++                    "profile_integral_m2": float(patch.profile_integral_m2),
++                    "observables": traction_observables(
++                        patch.positions_m,
++                        patch.normals,
++                        patch.tractions_pa * patch.area_weights_m2[:, None],
++                        patch.area_weights_m2,
++                        patch.specification.friction,
++                        reference.com,
++                    ),
++                }
++            )
++        (output / "snapshot.json").write_text(json.dumps(snapshot, indent=2) + "\n")
++        if args.reference_only:
++            reports.append(snapshot)
++            continue
++        coordinates = qd_to_numpy(model.info.vertices, transpose=True, copy=True)
++        permutation = reference.native_dof_permutation(coordinates)
++        angular_velocity = V_VEC(3, dtype=gs.qd_float, shape=(1,))
++        angular_velocity.from_numpy(omega[None])
++        for name in args.models:
++            started = perf_counter()
++            options = RigidStressOptions(
++                mesh=args.mesh,
++                output_mode="full",
++                contact_radius=args.radius,
++                contact_model="pressure" if name == "pressure" else "intrinsic",
++                intrinsic_support="pair_union" if name == "pair_union" else "contact",
++                intrinsic_load_partition="body_source_prior" if name == "body_source_prior" else "componentwise",
++                warm_start_tractions=False,
++                quadrature=args.native_quadrature,
++                surface_edge_subdivisions=args.ports,
++                method=args.method,
++                max_iterations=args.native_max_iterations,
++            )
++            row = {"model": name, "native_quadrature": args.native_quadrature, "ports": args.ports}
++            if name == "pressure" and any(
++                np.linalg.norm(patch.free_moment_nm) > 1e-8 * np.linalg.norm(patch.force_n) * args.radius
++                for patch in patches
++            ):
++                row.update({"accepted": False, "classification": "unsupported_free_contact_moment"})
++                snapshot["models"].append(row)
++                continue
++            pairs = np.arange(len(patches), dtype=gs.np_int)
++            if case == "multiple":
++                pairs[-1] = 0
++            state, contacts, mapped, errno = map_native(
++                model, surface, paths, entity.base_link, patches, options, pairs
++            )
++            status = qd_to_numpy(contacts.status, transpose=True, copy=True)[0]
++            row["contact_status"] = status.tolist()
++            row["errno"] = errno
++            row["selected_anchor_m"] = qd_to_numpy(contacts.center, transpose=True, copy=True)[0].tolist()
++            if mapped is not None:
++                np.savez_compressed(
++                    output / f"{name}_native_workspace.npz",
++                    **{
++                        item.name: qd_to_numpy(item.value, transpose=True, copy=True)
++                        for item in mapped.data("mapped")
++                        if isinstance(item.value, (qd.Tensor, qd.Field, qd.Ndarray))
++                    },
++                )
++            native_load = qd_to_numpy(state.force, transpose=True, copy=True)[0].reshape(-1)
++            row["mapping_seconds_with_cold_compile"] = perf_counter() - started
++            np.savez_compressed(output / f"{name}_mapped_load.npz", force_N=native_load, contact_status=status)
++            if errno != 0 or (status != 0).any():
++                row.update({"accepted": False, "classification": "native_load_rejected"})
++                snapshot["models"].append(row)
++                continue
++            recovery_started = perf_counter()
++            model.recover(angular_velocity, state, options)
++            row["accepted"] = bool(qd_to_numpy(state.valid, transpose=True)[0])
++            row["recovery_seconds_with_cold_compile"] = perf_counter() - recovery_started
++            native_u = qd_to_numpy(state.displacement, transpose=True, copy=True)[0].reshape(-1)
++            native_rhs = qd_to_numpy(state.rhs, transpose=True, copy=True)[0].reshape(-1)
++            native_residual = qd_to_numpy(state.residual, transpose=True, copy=True)[0].reshape(-1)
++            oracle_load = np.empty(reference.basis.N)
++            oracle_load[permutation] = native_load
++            independent_u = np.empty(reference.basis.N)
++            independent_u[permutation] = native_u
++            expected_rhs = reference.balanced_rhs(oracle_load, omega)
++            complete_residual = np.linalg.norm(reference.stiffness @ independent_u - expected_rhs)
++            row["native_iterations"] = int(qd_to_numpy(state.iterations, transpose=True)[0])
++            row["independent_complete_residual_N"] = float(complete_residual)
++            row["independent_complete_budget_fraction"] = float(
++                complete_residual / max(options.absolute_tolerance, options.tolerance * np.linalg.norm(expected_rhs))
++            )
++            np.savez_compressed(
++                output / f"{name}_elastic_diagnostic.npz",
++                displacement_native_order=native_u,
++                rhs_native_order_N=native_rhs,
++                residual_native_order_N=native_residual,
++                expected_independent_rhs_N=expected_rhs,
++            )
++            if not row["accepted"]:
++                row["classification"] = "native_elastic_rejected"
++                snapshot["models"].append(row)
++                continue
++            oracle = reference.solve(oracle_load, omega)
++            displacement = np.empty(reference.basis.N)
++            displacement[permutation] = qd_to_numpy(state.displacement, transpose=True, copy=True)[0].reshape(-1)
++            raw_displacement = displacement.copy()
++            displacement = reference.align_rigid_gauge(displacement)
++            tensor = qd_to_numpy(state.stress_tensor, transpose=True, copy=True)[0]
++            vm = qd_to_numpy(state.von_mises, transpose=True, copy=True)[0, ..., 0]
++            rhs = qd_to_numpy(state.rhs, transpose=True, copy=True)[0].reshape(-1)
++            expected_tensor = oracle.tensor_pa[..., [0, 1, 2, 0, 0, 1], [0, 1, 2, 1, 2, 2]]
++            np.testing.assert_allclose(tensor, expected_tensor, rtol=1e-4, atol=1e-3)
++            np.testing.assert_allclose(vm, oracle.von_mises_pa, rtol=1e-4, atol=1e-3)
++            np.testing.assert_allclose(rhs, oracle.rhs[permutation], rtol=1e-10, atol=1e-13)
++            residual = np.linalg.norm(reference.stiffness @ displacement - oracle.rhs)
++            budget = max(options.absolute_tolerance, options.tolerance * np.linalg.norm(oracle.rhs))
++            assert residual <= budget
++            energy = 0.5 * displacement @ (reference.stiffness @ displacement)
++            np.testing.assert_allclose(energy, oracle.energy_j, rtol=1e-8, atol=1e-20)
++            peak = float(qd_to_numpy(state.peak, transpose=True)[0])
++            np.testing.assert_allclose(peak, oracle.peak_pa, rtol=1e-4, atol=1e-3)
++            row.update(
++                {
++                    "classification": "numerically_qualified",
++                    "peak_Pa": peak,
++                    "peak_position_m": oracle.peak_position_m.tolist(),
++                    "energy_J": float(energy),
++                    "complete_budget_fraction": float(residual / budget),
++                    "tensor_relative_error_vs_continuous_load": float(
++                        np.linalg.norm(oracle.tensor_pa - solved.tensor_pa) / np.linalg.norm(solved.tensor_pa)
++                    ),
++                    "peak_relative_error_vs_continuous_load": float(abs(peak / solved.peak_pa - 1)),
++                    "energy_relative_error_vs_continuous_load": float(abs(energy / solved.energy_j - 1)),
++                    "full_original_wrench": (reference.rigid_modes.T @ oracle_load).tolist(),
++                    "analysis_elapsed_seconds": perf_counter() - started,
++                }
++            )
++            np.savez_compressed(
++                output / f"{name}_field.npz",
++                displacement=displacement,
++                raw_native_displacement=raw_displacement,
++                tensor_Pa=oracle.tensor_pa,
++                vm_Pa=vm,
++                raw_native_tensor_Pa=tensor,
++                rhs_N=rhs,
++            )
++            if name == "pair_union" and int(qd_to_numpy(mapped.packing.maximum, transpose=True)) > 1:
++                clouds = []
++                replayed = np.zeros_like(native_load)
++                for pair in np.unique(pairs):
++                    selected = np.flatnonzero(pairs == pair)
++                    members = tuple(patches[i_p] for i_p in selected)
++                    replay, replay_contacts, replay_mapped, replay_errno = map_native(
++                        model, surface, paths, entity.base_link, members, options, pairs[selected], output_mode="max"
++                    )
++                    assert replay_errno == 0
++                    assert (qd_to_numpy(replay_contacts.status, transpose=True) == 0).all()
++                    replayed += qd_to_numpy(replay.force, transpose=True, copy=True)[0].reshape(-1)
++                    clouds.append(native_cloud(model, surface, replay_contacts, replay_mapped, selected, members))
++                np.testing.assert_allclose(replayed, native_load, rtol=1e-8, atol=1e-12)
++                cloud = TractionCloud(
++                    np.concatenate([c.positions_m for c in clouds]),
++                    np.concatenate([c.normals for c in clouds]),
++                    np.concatenate([c.forces_n for c in clouds]),
++                    np.concatenate([c.areas_m2 for c in clouds]),
++                    np.concatenate([c.source for c in clouds]),
++                    np.concatenate([c.friction for c in clouds]),
++                    np.concatenate([c.faces for c in clouds]),
++                    np.concatenate([c.basis for c in clouds]),
++                )
++            else:
++                cloud = native_cloud(model, surface, contacts, mapped, np.arange(len(patches)), patches)
++            surface_nodes = qd_to_numpy(model.info.surface_nodes, transpose=True, copy=True).T
++            scattered = np.zeros((len(coordinates), 3))
++            np.add.at(
++                scattered,
++                surface_nodes[cloud.faces].reshape(-1),
++                (cloud.basis[:, :, None] * cloud.forces_n[:, None]).reshape(-1, 3),
++            )
++            np.testing.assert_allclose(scattered.reshape(-1), native_load, rtol=1e-8, atol=1e-12)
++            row["sample_scatter_max_difference_N"] = float(abs(scattered.reshape(-1) - native_load).max())
++            row["islands"] = []
++            for i_p, patch in enumerate(patches):
++                selected = cloud.source == i_p
++                statistics = traction_observables(
++                    cloud.positions_m[selected],
++                    cloud.normals[selected],
++                    cloud.forces_n[selected],
++                    cloud.areas_m2[selected],
++                    cloud.friction[selected],
++                    reference.com,
++                )
++                statistics["force_shift_from_prior_N"] = (
++                    np.sum(cloud.forces_n[selected], axis=0) - patch.force_n
++                ).tolist()
++                original_moment = patch.free_moment_nm + np.cross(patch.point_m - reference.com, patch.force_n)
++                statistics["moment_shift_from_prior_Nm"] = (
++                    np.array(statistics["moment_Nm"]) - original_moment
++                ).tolist()
++                row["islands"].append(statistics)
++            row["maximum_coulomb_violation_Pa"] = max(s["maximum_coulomb_violation_Pa"] for s in row["islands"])
++            np.savez_compressed(
++                output / f"{name}_traction.npz",
++                positions_m=cloud.positions_m,
++                normals=cloud.normals,
++                forces_N=cloud.forces_n,
++                areas_m2=cloud.areas_m2,
++                source=cloud.source,
++                friction=cloud.friction,
++                faces=cloud.faces,
++                basis=cloud.basis,
++            )
++            snapshot["models"].append(row)
++            (output / "snapshot.json").write_text(json.dumps(snapshot, indent=2) + "\n")
++            print(json.dumps({"geometry": args.geometry, "case": case, **row}), flush=True)
++        reports.append(snapshot)
++        (output / "snapshot.json").write_text(json.dumps(snapshot, indent=2) + "\n")
++        (args.output / "summary.json").write_text(json.dumps({"cases": reports}, indent=2) + "\n")
++    (args.output / "summary.json").write_text(json.dumps({"cases": reports}, indent=2) + "\n")
++
++
++if __name__ == "__main__":
++    main()
+diff --git a/research/rigid_stress/native_load_samples.py b/research/rigid_stress/native_load_samples.py
+new file mode 100644
+index 00000000..3295d14a
+--- /dev/null
++++ b/research/rigid_stress/native_load_samples.py
+@@ -0,0 +1,116 @@
++"""Capture native quadrature forces and physical area measures for offline load-model audits."""
++
++import quadrants as qd
++
++import genesis as gs
++from genesis.engine.solvers.rigid.stress.contact import StressContactState, func_contact_sample, func_force_frame
++from genesis.engine.solvers.rigid.stress.data import StressInfo, StressState
++from genesis.engine.solvers.rigid.stress.surface import StressSurfaceInfo
++from genesis.engine.solvers.rigid.stress.traction import (
++    StressTractionInfo,
++    StressTractionSamples,
++    StressTractionState,
++    func_circle_panel,
++    func_source_traction,
++    func_traction_constraint_active,
++    func_traction_sample_index,
++    func_traction_support_range,
++)
++
++
++@qd.kernel
++def kernel_continuous_boundary_load(
++    tensor: qd.types.ndarray(),
++    bending_scale: float,
++    state: StressState,
++    info: StressInfo,
++    surface: StressSurfaceInfo,
++):
++    for i_n, i_b in qd.ndrange(state.force.shape[0], state.force.shape[1]):
++        state.force[i_n, i_b] = qd.Vector.zero(gs.qd_float, 3)
++    for i_q, i_b in qd.ndrange(surface.positions.shape[0], state.force.shape[1]):
++        stress = qd.Matrix([[tensor[i, j] for j in qd.static(range(3))] for i in qd.static(range(3))])
++        stress[0, 0] += bending_scale * surface.positions[i_q][2]
++        n_quadrature = surface.shape.shape[0]
++        i_face = i_q // n_quadrature
++        force = stress @ surface.face_normal[i_face] * surface.weights[i_q]
++        for i_local in qd.static(range(6)):
++            i_n = info.surface_nodes[i_face, i_local]
++            for i_a in qd.static(range(3)):
++                qd.atomic_add(state.force[i_n, i_b][i_a], surface.shape[i_q % n_quadrature][i_local] * force[i_a])
++
++
++@qd.kernel
++def kernel_intrinsic_load_samples(
++    forces: qd.Tensor,
++    areas: qd.Tensor,
++    contacts: StressContactState,
++    tractions: StressTractionState,
++    info: StressTractionInfo,
++    surface: StressSurfaceInfo,
++):
++    for i_q, i_s, i_b in qd.ndrange(forces.shape[0], forces.shape[1], forces.shape[2]):
++        forces[i_q, i_s, i_b] = qd.Vector.zero(gs.qd_float, 3)
++        areas[i_q, i_s, i_b] = 0.0
++        if i_q < tractions.sample_count[i_s, i_b]:
++            for i_c in range(contacts.valid.shape[0]):
++                start, end = func_traction_support_range(i_c, i_b, tractions)
++                if func_traction_constraint_active(i_c, i_b, tractions) and (start <= i_s < end):
++                    forces[i_q, i_s, i_b] += func_source_traction(i_q, i_s, i_c, i_b, contacts, tractions, info)
++            i_sample = func_traction_sample_index(i_q, i_s, i_b, tractions)
++            n = info.gauss.shape[0]
++            i_local = i_sample % (n * n)
++            u, v = info.gauss[i_local // n], info.gauss[i_local % n]
++            power = tractions.fan_coordinate_power[None]
++            circle_start = 3 * info.positions.shape[0]
++            area = gs.qd_float(0.0)
++            if i_sample >= circle_start:
++                radius = tractions.circle.radius[i_s, i_b]
++                if tractions.circle.refined[i_s, i_b]:
++                    distance, _, jacobian = func_circle_panel(i_sample - circle_start, i_s, i_b, tractions, info)
++                    area = radius * radius * distance * jacobian
++                else:
++                    area = 2.0 * qd.math.pi * radius * radius * power * u ** (2 * power - 1)
++            else:
++                i_face = i_sample // (3 * n * n)
++                i_fan = (i_sample // (n * n)) % 3
++                edges = info.face_edges[i_face]
++                area = tractions.fan_barycentric[i_face, i_s, i_b][(i_fan + 2) % 3]
++                area *= edges[0, :].cross(edges[1, :]).norm()
++                area *= u**power * power * power * u ** (power - 1) * v ** (power - 1)
++            areas[i_q, i_s, i_b] = area * surface.gauss_weights[i_local // n] * surface.gauss_weights[i_local % n]
++
++
++@qd.kernel
++def kernel_pressure_load_samples(
++    samples: StressTractionSamples,
++    forces: qd.Tensor,
++    areas: qd.Tensor,
++    contacts: StressContactState,
++    surface: StressSurfaceInfo,
++):
++    for i_q, i_c, i_b in qd.ndrange(forces.shape[0], forces.shape[1], forces.shape[2]):
++        forces[i_q, i_c, i_b] = qd.Vector.zero(gs.qd_float, 3)
++        areas[i_q, i_c, i_b] = 0.0
++        samples.faces[i_q, i_c, i_b] = -1
++        samples.positions[i_q, i_c, i_b] = qd.Vector.zero(gs.qd_float, 3)
++        samples.normals[i_q, i_c, i_b] = qd.Vector.zero(gs.qd_float, 3)
++        samples.shape[i_q, i_c, i_b] = qd.Vector.zero(gs.qd_float, 6)
++        if contacts.valid[i_c, i_b] and contacts.status[i_c, i_b] == 0:
++            is_sample = i_q < surface.positions.shape[0] or contacts.is_refined[i_c, i_b]
++            if is_sample:
++                first, second = func_force_frame(contacts.force[i_c, i_b])
++                coordinates, weight, position, basis, i_face = func_contact_sample(
++                    i_q, i_c, i_b, first, second, contacts, surface
++                )
++                if weight > 0.0:
++                    relative = (position - contacts.center[i_c, i_b]) / contacts.radius[i_c, i_b]
++                    profile = qd.exp(-0.5 * relative.dot(relative) / (0.45 * 0.45))
++                    profile *= (1.0 - relative.dot(relative)) ** 2
++                    fraction = weight * qd.max(0.0, coordinates.dot(contacts.coefficient[i_c, i_b]))
++                    forces[i_q, i_c, i_b] = fraction * contacts.force[i_c, i_b]
++                    areas[i_q, i_c, i_b] = weight / profile
++                    samples.positions[i_q, i_c, i_b] = position
++                    samples.normals[i_q, i_c, i_b] = -surface.face_normal[i_face]
++                    samples.faces[i_q, i_c, i_b] = i_face
++                    samples.shape[i_q, i_c, i_b] = basis
+diff --git a/tests/rigid/test_stress.py b/tests/rigid/test_stress.py
+index b611c9c5..4d19adc1 100644
+--- a/tests/rigid/test_stress.py
++++ b/tests/rigid/test_stress.py
+@@ -40,6 +40,8 @@ from research.rigid_stress.field_cpu import stress_field
+ from research.rigid_stress.mechanics import P2Shell, SurfaceGeometry, shell_mesh
+ from research.rigid_stress.peak_cpu import P2Peak
+ from research.rigid_stress.wrench import FinitePatchMapper, WrenchPatch
++from tests.rigid.test_stress_nonconvex import nonconvex_material_mesh
++from tests.utils.assertions import assert_allclose
+ 
+ 
+ @qd.kernel(graph=True)
+@@ -488,7 +490,11 @@ def test_native_batched_recovery_against_full_fp64_direct(
+ @pytest.mark.required
+ @pytest.mark.precision("64")
+ @pytest.mark.parametrize("cooperative", (False, True))
+-def test_native_finite_pressure_matches_independent_cpu(tmp_path, cooperative):
++def test_native_finite_pressure_matches_independent_cpu(
++    tmp_path,
++    cooperative,
++    nonconvex_material_mesh,  # noqa: F811
++):
+     vertices, tetrahedra, faces, _ = shell_mesh(1, 2, 0.0005)
+     mesh = tmp_path / "shell.npz"
+     np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)
+@@ -500,7 +506,7 @@ def test_native_finite_pressure_matches_independent_cpu(tmp_path, cooperative):
+     np.testing.assert_allclose(
+         qd_to_numpy(surface.info.weights), geometry.integration_weights.reshape((-1,)), rtol=2e-13
+     )
+-    mapper = FinitePatchMapper(geometry, anchor_to_surface=True, adaptive_integration=True)
++    mapper = FinitePatchMapper(geometry, adaptive_integration=True)
+     n_contacts, n_envs = 3, 5
+     contacts = create_contacts(n_contacts, n_envs, 0.006, cooperative)
+     state = model.create_state(n_envs)
+@@ -580,6 +586,27 @@ def test_native_finite_pressure_matches_independent_cpu(tmp_path, cooperative):
+             np.testing.assert_allclose(qd_to_numpy(state.wrench), expected_wrench, atol=1e-15, rtol=1e-10)
+             assert int(qd_to_numpy(cache.overflow_calls)) == (1 if capacity == 1 else 0)
+ 
++    vertices, tetrahedra, faces, shape = nonconvex_material_mesh
++    mesh = tmp_path / "material.npz"
++    np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)
++    model = StressModel(RigidStressOptions(mesh=mesh, method="pcg"))
++    surface = StressSurface(10, model.info)
++    point = [0.001, 0.002, 0.0005] if shape == "u" else [0.001, 0.0015, 0.0015]
++    contacts = create_contacts(1, 1, 0.0002, cooperative)
++    contacts.position.from_numpy(np.array([[point]]))
++    contacts.force.from_numpy(np.array([[[-0.05, 0.0, 0.0]]]))
++    contacts.normal.from_numpy(np.array([[[-1.0, 0.0, 0.0]]]))
++    contacts.friction.fill(0)
++    contacts.valid.fill(True)
++    state = model.create_state(1)
++    kernel_anchor(float(np.finfo(float).eps), contacts, surface.info)
++    kernel_pressure(contacts, surface.info, cooperative)
++    kernel_scatter(contacts, state, model.info, surface.info)
++    loaded = qd_to_numpy(state.force, transpose=True)[0]
++    locations = qd_to_numpy(model.info.vertices, transpose=True)
++    assert_allclose(loaded[abs(locations[:, 0] - point[0]) < 1e-12].sum(axis=0), [-0.05, 0, 0], atol=1e-12, rtol=1e-8)
++    assert_allclose(loaded[abs(locations[:, 0] - point[0]) >= 1e-12], 0, atol=1e-12, rtol=0)
++
+ 
+ @pytest.mark.required
+ @pytest.mark.precision("64")
+diff --git a/tests/rigid/test_stress_independent_fem.py b/tests/rigid/test_stress_independent_fem.py
+index e7b6d6a4..ab5b1991 100644
+--- a/tests/rigid/test_stress_independent_fem.py
++++ b/tests/rigid/test_stress_independent_fem.py
+@@ -8,9 +8,11 @@ pytest.importorskip("skfem")
+ 
+ import genesis as gs
+ from genesis.engine.solvers.rigid.stress.model import StressModel
++from genesis.engine.solvers.rigid.stress.surface import StressSurface
+ from genesis.options.rigid_stress import RigidStressOptions
+ from genesis.utils.array_class import V_VEC
+ from genesis.utils.misc import qd_to_numpy
++from research.rigid_stress.native_load_samples import kernel_continuous_boundary_load
+ from research.rigid_stress.skfem_reference import SkfemElasticReference
+ from tests.rigid.test_stress_nonconvex import nonconvex_material_mesh
+ 
+@@ -77,6 +79,13 @@ def test_independent_fem_assembly_boundary_loads_and_inertia_relief(
+         expected_tensor = np.zeros((len(tets), 4, 3, 3))
+         expected_tensor[..., 0, 0] = options.young * curvature * reference.corner_positions[..., 2]
+         force = reference.pure_bending_load(curvature)
++    surface = StressSurface(10, native.info)
++    boundary_state = native.create_state(1)
++    native_tensor = tensor if analytic == "uniform_strain" else np.zeros((3, 3))
++    bending_scale = options.young * curvature if analytic == "pure_bending" else 0.0
++    kernel_continuous_boundary_load(native_tensor, bending_scale, boundary_state, native.info, surface.info)
++    integrated = qd_to_numpy(boundary_state.force, transpose=True)[0].reshape(-1)
++    np.testing.assert_allclose(integrated, force[permutation], rtol=1e-11, atol=1e-13)
+     expected_displacement = reference.align_rigid_gauge(expected_displacement)
+     solved = reference.solve(force)
+     np.testing.assert_allclose(solved.displacement, expected_displacement, rtol=1e-9, atol=1e-17)

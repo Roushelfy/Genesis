@@ -1,0 +1,21 @@
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-physical-contact/research/rigid_stress/bonded_block_reference.py", line 108, in <module>
+    main()
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-physical-contact/research/rigid_stress/bonded_block_reference.py", line 59, in main
+    np.testing.assert_allclose(resultant, -bottom_reaction, rtol=1e-10, atol=1e-12)
+  File "/usr/local/lib/python3.10/dist-packages/numpy/testing/_private/utils.py", line 1715, in assert_allclose
+    assert_array_compare(compare, actual, desired, err_msg=str(err_msg),
+  File "/usr/local/lib/python3.10/dist-packages/numpy/testing/_private/utils.py", line 921, in assert_array_compare
+    raise AssertionError(msg)
+AssertionError: 
+Not equal to tolerance rtol=1e-10, atol=1e-12
+
+Mismatched elements: 3 / 3 (100%)
+Max absolute difference among violations: 0.001108
+Max relative difference among violations: 1.32699723
+ ACTUAL: array([ 1.532296e-02, -2.030197e-06, -5.011080e-01])
+ DESIRED: array([ 1.517243e-02,  6.208606e-06, -5.000000e-01])

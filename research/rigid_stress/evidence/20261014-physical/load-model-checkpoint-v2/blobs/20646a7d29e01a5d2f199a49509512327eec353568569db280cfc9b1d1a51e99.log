@@ -1,0 +1,221 @@
+Info    : Meshing 1D...
+Info    : [ 20%] Meshing curve 8 (Circle)
+Info    : [ 50%] Meshing curve 11 (Circle)
+Info    : [ 80%] Meshing curve 14 (Circle)
+Info    : Done meshing 1D (Wall 0.00523824s, CPU 0.000374s)
+Info    : Meshing 2D...
+Info    : [  0%] Meshing surface 3 (Sphere, Frontal-Delaunay)
+Info    : [ 40%] Meshing surface 4 (Sphere, Frontal-Delaunay)
+Info    : [ 70%] Meshing surface 5 (Sphere, Frontal-Delaunay)
+Info    : Done meshing 2D (Wall 0.37269s, CPU 0.361879s)
+Info    : Meshing 3D...
+Info    : 3D Meshing 2 volumes with 1 connected component
+Info    : Tetrahedrizing 9176 nodes...
+Info    : Done tetrahedrizing 9184 nodes (Wall 0.102622s, CPU 0.090608s)
+Info    : Reconstructing mesh...
+Info    :  - Creating surface mesh
+Info    :  - Identifying boundary edges
+Info    :  - Recovering boundary
+Info    : Done reconstructing mesh (Wall 0.231956s, CPU 0.203007s)
+Info    : Found void region
+Info    : Found volume 4
+Info    : Found volume 5
+Info    : It. 0 - 0 nodes created - worst tet radius 10.6778 (nodes removed 0 0)
+Info    : It. 500 - 493 nodes created - worst tet radius 1.49973 (nodes removed 0 7)
+Info    : It. 1000 - 993 nodes created - worst tet radius 1.47563 (nodes removed 0 7)
+Info    : It. 1500 - 1493 nodes created - worst tet radius 1.4358 (nodes removed 0 7)
+Info    : It. 2000 - 1989 nodes created - worst tet radius 1.30433 (nodes removed 0 11)
+Info    : It. 2500 - 2489 nodes created - worst tet radius 1.18506 (nodes removed 0 11)
+Info    : It. 3000 - 2989 nodes created - worst tet radius 1.11055 (nodes removed 0 11)
+Info    : It. 3500 - 3489 nodes created - worst tet radius 1.06602 (nodes removed 0 11)
+Info    : It. 4000 - 3988 nodes created - worst tet radius 1.04178 (nodes removed 0 12)
+Info    : It. 4500 - 4487 nodes created - worst tet radius 1.02218 (nodes removed 0 13)
+Info    : It. 5000 - 4987 nodes created - worst tet radius 1.00727 (nodes removed 0 13)
+Info    : 3D refinement terminated (14429 nodes total):
+Info    :  - 4 Delaunay cavities modified for star shapeness
+Info    :  - 13 nodes could not be inserted
+Info    :  - 71682 tetrahedra created in 0.345454 sec. (207501 tets/s)
+Info    : 2 node relocations
+Info    : Done meshing 3D (Wall 1.02354s, CPU 0.991572s)
+Info    : Optimizing mesh...
+Info    : Optimizing volume 4
+Info    : Optimization starts (volume = 1.76383) with worst = 0.000599963 / average = 0.742751:
+Info    : 0.00 < quality < 0.10 :       132 elements
+Info    : 0.10 < quality < 0.20 :       287 elements
+Info    : 0.20 < quality < 0.30 :       482 elements
+Info    : 0.30 < quality < 0.40 :       814 elements
+Info    : 0.40 < quality < 0.50 :      1379 elements
+Info    : 0.50 < quality < 0.60 :      2557 elements
+Info    : 0.60 < quality < 0.70 :      6683 elements
+Info    : 0.70 < quality < 0.80 :     14199 elements
+Info    : 0.80 < quality < 0.90 :     12362 elements
+Info    : 0.90 < quality < 1.00 :      4276 elements
+Info    : 879 edge swaps, 27 node relocations (volume = 1.76383): worst = 0.00158838 / average = 0.754611 (Wall 0.0187857s, CPU 0.018786s)
+Info    : 887 edge swaps, 32 node relocations (volume = 1.76383): worst = 0.00158838 / average = 0.754691 (Wall 0.0223173s, CPU 0.022302s)
+Info    : No ill-shaped tets in the mesh :-)
+Info    : 0.00 < quality < 0.10 :         1 elements
+Info    : 0.10 < quality < 0.20 :         3 elements
+Info    : 0.20 < quality < 0.30 :         5 elements
+Info    : 0.30 < quality < 0.40 :       803 elements
+Info    : 0.40 < quality < 0.50 :      1331 elements
+Info    : 0.50 < quality < 0.60 :      2550 elements
+Info    : 0.60 < quality < 0.70 :      6774 elements
+Info    : 0.70 < quality < 0.80 :     14153 elements
+Info    : 0.80 < quality < 0.90 :     12509 elements
+Info    : 0.90 < quality < 1.00 :      4263 elements
+Info    : Optimizing volume 5
+Info    : Optimization starts (volume = 1.18208) with worst = 0.00105544 / average = 0.74228:
+Info    : 0.00 < quality < 0.10 :        82 elements
+Info    : 0.10 < quality < 0.20 :       184 elements
+Info    : 0.20 < quality < 0.30 :       305 elements
+Info    : 0.30 < quality < 0.40 :       592 elements
+Info    : 0.40 < quality < 0.50 :       963 elements
+Info    : 0.50 < quality < 0.60 :      1668 elements
+Info    : 0.60 < quality < 0.70 :      4319 elements
+Info    : 0.70 < quality < 0.80 :      9351 elements
+Info    : 0.80 < quality < 0.90 :      8257 elements
+Info    : 0.90 < quality < 1.00 :      2790 elements
+Info    : 553 edge swaps, 15 node relocations (volume = 1.18208): worst = 0.080964 / average = 0.75355 (Wall 0.00978623s, CPU 0.009775s)
+Info    : 556 edge swaps, 16 node relocations (volume = 1.18208): worst = 0.080964 / average = 0.753559 (Wall 0.0119615s, CPU 0.011951s)
+Info    : No ill-shaped tets in the mesh :-)
+Info    : 0.00 < quality < 0.10 :         1 elements
+Info    : 0.10 < quality < 0.20 :         2 elements
+Info    : 0.20 < quality < 0.30 :         0 elements
+Info    : 0.30 < quality < 0.40 :       593 elements
+Info    : 0.40 < quality < 0.50 :       945 elements
+Info    : 0.50 < quality < 0.60 :      1668 elements
+Info    : 0.60 < quality < 0.70 :      4366 elements
+Info    : 0.70 < quality < 0.80 :      9346 elements
+Info    : 0.80 < quality < 0.90 :      8316 elements
+Info    : 0.90 < quality < 1.00 :      2792 elements
+Info    : Done optimizing mesh (Wall 0.104543s, CPU 0.103512s)
+Info    : 14429 nodes 88913 elements
+Info    : Optimizing mesh (Netgen)...
+Info    : Optimizing volume 4
+Info    : CalcLocalH: 10463 Points 42402 Elements 14558 Surface Elements 
+Info    : Remove Illegal Elements 
+Info    : 3 illegal tets 
+Info    : SplitImprove 
+Info    : badmax = 1530.02 
+Info    : 1 splits performed 
+Info    : SwapImprove  
+Info    : 0 swaps performed 
+Info    : SwapImprove2  
+Info    : 0 swaps performed 
+Info    : 0 illegal tets 
+Info    : Volume Optimization 
+Info    : CombineImprove 
+Info    : 72 elements combined 
+Info    : ImproveMesh 
+Info    : Total badness = 61603 
+Info    : Total badness = 59864.1 
+Info    : SplitImprove 
+Info    : badmax = 30.3901 
+Info    : 0 splits performed 
+Info    : ImproveMesh 
+Info    : Total badness = 59864.1 
+Info    : Total badness = 59743.6 
+Info    : SwapImprove  
+Info    : 2333 swaps performed 
+Info    : SwapImprove2  
+Info    : 0 swaps performed 
+Info    : ImproveMesh 
+Info    : Total badness = 55657.1 
+Info    : Total badness = 54837.9 
+Info    : CombineImprove 
+Info    : 13 elements combined 
+Info    : ImproveMesh 
+Info    : Total badness = 54692.6 
+Info    : Total badness = 54643.4 
+Info    : SplitImprove 
+Info    : badmax = 27.6749 
+Info    : 0 splits performed 
+Info    : ImproveMesh 
+Info    : Total badness = 54643.4 
+Info    : Total badness = 54639.9 
+Info    : SwapImprove  
+Info    : 422 swaps performed 
+Info    : SwapImprove2  
+Info    : 0 swaps performed 
+Info    : ImproveMesh 
+Info    : Total badness = 54278.5 
+Info    : Total badness = 54090 
+Info    : CombineImprove 
+Info    : 5 elements combined 
+Info    : ImproveMesh 
+Info    : Total badness = 54039.4 
+Info    : Total badness = 54028.6 
+Info    : SplitImprove 
+Info    : badmax = 28.2392 
+Info    : 0 splits performed 
+Info    : ImproveMesh 
+Info    : Total badness = 54028.6 
+Info    : Total badness = 54027.7 
+Info    : SwapImprove  
+Info    : 150 swaps performed 
+Info    : SwapImprove2  
+Info    : 0 swaps performed 
+Info    : ImproveMesh 
+Info    : Total badness = 53943.7 
+Info    : Total badness = 53873.3 
+Info    : Optimizing volume 5
+Info    : CalcLocalH: 6953 Points 28033 Elements 9752 Surface Elements 
+Info    : Remove Illegal Elements 
+Info    : 0 illegal tets 
+Info    : Volume Optimization 
+Info    : CombineImprove 
+Info    : 41 elements combined 
+Info    : ImproveMesh 
+Info    : Total badness = 40931.7 
+Info    : Total badness = 39859.5 
+Info    : SplitImprove 
+Info    : badmax = 31.1832 
+Info    : 0 splits performed 
+Info    : ImproveMesh 
+Info    : Total badness = 39859.5 
+Info    : Total badness = 39777.5 
+Info    : SwapImprove  
+Info    : 1659 swaps performed 
+Info    : SwapImprove2  
+Info    : 0 swaps performed 
+Info    : ImproveMesh 
+Info    : Total badness = 36928.1 
+Info    : Total badness = 36384.9 
+Info    : CombineImprove 
+Info    : 7 elements combined 
+Info    : ImproveMesh 
+Info    : Total badness = 36299.5 
+Info    : Total badness = 36266.3 
+Info    : SplitImprove 
+Info    : badmax = 28.9068 
+Info    : 0 splits performed 
+Info    : ImproveMesh 
+Info    : Total badness = 36266.3 
+Info    : Total badness = 36263.6 
+Info    : SwapImprove  
+Info    : 346 swaps performed 
+Info    : SwapImprove2  
+Info    : 0 swaps performed 
+Info    : ImproveMesh 
+Info    : Total badness = 35950.4 
+Info    : Total badness = 35806.8 
+Info    : CombineImprove 
+Info    : 1 elements combined 
+Info    : ImproveMesh 
+Info    : Total badness = 35796.2 
+Info    : Total badness = 35788.8 
+Info    : SplitImprove 
+Info    : badmax = 28.0293 
+Info    : 0 splits performed 
+Info    : ImproveMesh 
+Info    : Total badness = 35788.8 
+Info    : Total badness = 35788.3 
+Info    : SwapImprove  
+Info    : 113 swaps performed 
+Info    : SwapImprove2  
+Info    : 0 swaps performed 
+Info    : ImproveMesh 
+Info    : Total badness = 35735.1 
+Info    : Total badness = 35683.9 
+Info    : Done optimizing mesh (Wall 2.94012s, CPU 2.91569s)
+{"geometry": {"name": "cavity", "description": "Full spherical shell, outer radius12mm, inner radius8mm", "thickness_m": 0.004, "gap_m": null, "minimum_rounding_m": null}, "gmsh_version": "4.14.1", "volume_construction": "Gmsh OpenCASCADE volume tetrahedralization", "mesh_size": 0.06, "mesh_size_units": "unit-sphere coordinates", "shell_layers": 2, "nodes": 14291, "tetrahedra": 67035, "boundary_triangles": 12370, "dimensions_m": [0.023990350917564168, 0.02398723949373758, 0.024], "minimum_volume_m3": 9.336414946719644e-12, "total_volume_m3": 5.09053342509426e-06, "scaled_jacobian_percentiles": [0.09745675314008549, 0.32538180314044707, 0.6250545464839835, 0.8924797359834558, 0.9917569808293489], "mesh_sha256": "d0618e7b32d69d39fbcd8cee7de32b894dcb4c04aa2798156857899d91365c9e"}

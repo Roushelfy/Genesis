@@ -1,0 +1,842 @@
+{
+  "mesh_sha256": "d0f57727496e0b676a18cdc23caf98252c389479eab10e65fb94c9a023f5042d",
+  "geometry": "narrow_gap",
+  "case": "multiple",
+  "material": {
+    "young_Pa": 10000000000.0,
+    "poisson": 0.3,
+    "density_kg_m3": 2000
+  },
+  "mass_kg": 0.006109741223294144,
+  "com_m": [
+    1.7981601402677008e-06,
+    0.009807484843221654,
+    -2.90971349536242e-06
+  ],
+  "pose": {
+    "position_m": [
+      0,
+      0,
+      0
+    ],
+    "quaternion_wxyz": [
+      1,
+      0,
+      0,
+      0
+    ]
+  },
+  "omega_rad_s": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "patch_radius_m": 0.003,
+  "reference_quadrature_level": 3,
+  "reference_peak_Pa": 57820.223288880945,
+  "reference_peak_position_m": [
+    -0.0004999999999999996,
+    -6.123233995736791e-20,
+    -2.266215559059192e-18
+  ],
+  "reference_energy_J": 1.1485848787743148e-08,
+  "reference_complete_budget_fraction": 0.00047376178729705134,
+  "patches": [
+    {
+      "name": "pad0",
+      "physical_anchor_m": [
+        -0.0005,
+        0.018,
+        0.0
+      ],
+      "witness_m": [
+        -0.0005443634189185477,
+        0.018001103799327428,
+        1.5809966175628283e-05
+      ],
+      "point_m": [
+        -0.0007648323729067812,
+        0.01800116337154794,
+        7.28536745346618e-06
+      ],
+      "force_N": [
+        -0.05,
+        -0.0,
+        -0.0
+      ],
+      "free_moment_Nm": [
+        0.0,
+        3.003284716557198e-20,
+        -8.128540139802583e-20
+      ],
+      "normal": [
+        -0.9417125062080145,
+        0.0234306024269924,
+        0.3356017915943364
+      ],
+      "friction": 2.0,
+      "profile_integral_m2": 5.6123578709824774e-06,
+      "observables": {
+        "resultant_N": [
+          -0.049999999999999996,
+          0.0,
+          0.0
+        ],
+        "moment_Nm": [
+          0.0,
+          -5.09754047441418e-07,
+          0.000409683926416314
+        ],
+        "footprint_area_m2": 2.847101620014237e-05,
+        "loaded_area_m2": 2.847101620014237e-05,
+        "effective_traction_area_m2": 1.0539941480058687e-05,
+        "maximum_pressure_Pa": 8373.73503339604,
+        "minimum_pressure_Pa": 7.021034958679442e-07,
+        "maximum_shear_Pa": 3550.2762302027645,
+        "integrated_pressure_N": 0.0465696607054918,
+        "integrated_shear_norm_N": 0.01806223429845276,
+        "integrated_traction_norm_N": 0.05000000000000001,
+        "integrated_traction_squared_N2_per_m2": 237.19296779113432,
+        "maximum_coulomb_violation_Pa": 0.8083969420564809
+      }
+    },
+    {
+      "name": "pad1",
+      "physical_anchor_m": [
+        0.0005,
+        0.018,
+        0.0
+      ],
+      "witness_m": [
+        0.0005285312945197181,
+        0.018000428664964405,
+        1.001550342662888e-05
+      ],
+      "point_m": [
+        0.0007601591757131745,
+        0.018000684011429326,
+        1.4899355731973499e-06
+      ],
+      "force_N": [
+        0.05,
+        -0.0,
+        -0.0
+      ],
+      "free_moment_Nm": [
+        0.0,
+        -1.989832014236306e-20,
+        -3.277396395546219e-21
+      ],
+      "normal": [
+        0.9434584456277727,
+        0.014174876668656787,
+        0.33118761185324486
+      ],
+      "friction": 2.0,
+      "profile_integral_m2": 5.617238516294936e-06,
+      "observables": {
+        "resultant_N": [
+          0.049999999999999906,
+          0.0,
+          0.0
+        ],
+        "moment_Nm": [
+          0.0,
+          2.1998245342796167e-07,
+          -0.0004096599584103834
+        ],
+        "footprint_area_m2": 2.8513915288316452e-05,
+        "loaded_area_m2": 2.8513915288316452e-05,
+        "effective_traction_area_m2": 1.054101630933615e-05,
+        "maximum_pressure_Pa": 8390.311160023846,
+        "minimum_pressure_Pa": 1.2875322061641285e-05,
+        "maximum_shear_Pa": 3543.3248200339635,
+        "integrated_pressure_N": 0.04660657796497381,
+        "integrated_shear_norm_N": 0.017942333840807685,
+        "integrated_traction_norm_N": 0.05,
+        "integrated_traction_squared_N2_per_m2": 237.1687820827824,
+        "maximum_coulomb_violation_Pa": 1.8914614653496429
+      }
+    },
+    {
+      "name": "pad2",
+      "physical_anchor_m": [
+        -0.0005,
+        0.009999999999999998,
+        0.0
+      ],
+      "witness_m": [
+        -0.0005916480934060006,
+        0.010000131400246417,
+        2.6340033104944535e-05
+      ],
+      "point_m": [
+        -0.0007581886490566291,
+        0.010000063270107482,
+        1.6119761184890844e-05
+      ],
+      "force_N": [
+        -0.02,
+        -0.0,
+        -0.0
+      ],
+      "free_moment_Nm": [
+        0.0,
+        -6.291857846763148e-21,
+        -7.250132147095822e-21
+      ],
+      "normal": [
+        -0.9610928762829591,
+        0.001377964735327458,
+        0.2762219838668474
+      ],
+      "friction": 2.0,
+      "profile_integral_m2": 5.601440216338755e-06,
+      "observables": {
+        "resultant_N": [
+          -0.019999999999999966,
+          0.0,
+          0.0
+        ],
+        "moment_Nm": [
+          0.0,
+          -3.805894936050596e-07,
+          3.851568537716514e-06
+        ],
+        "footprint_area_m2": 2.850378894611788e-05,
+        "loaded_area_m2": 2.850378894611788e-05,
+        "effective_traction_area_m2": 1.054932656604659e-05,
+        "maximum_pressure_Pa": 3413.6573503982545,
+        "minimum_pressure_Pa": 0.0001827686825812382,
+        "maximum_shear_Pa": 1465.7266022077094,
+        "integrated_pressure_N": 0.018760604209619836,
+        "integrated_shear_norm_N": 0.006744234296697401,
+        "integrated_traction_norm_N": 0.020000000000000004,
+        "integrated_traction_squared_N2_per_m2": 37.91711229107415,
+        "maximum_coulomb_violation_Pa": 0.0
+      }
+    }
+  ],
+  "models": [
+    {
+      "model": "pressure",
+      "native_quadrature": 10,
+      "ports": 8,
+      "contact_status": [
+        0,
+        0,
+        0
+      ],
+      "errno": 0,
+      "selected_anchor_m": [
+        [
+          -0.0005473998815033764,
+          0.01800116337154794,
+          7.28536745346618e-06
+        ],
+        [
+          0.0005315202369214648,
+          0.018000684011429326,
+          1.4899355731973499e-06
+        ],
+        [
+          -0.0005945855386165647,
+          0.010000063270107482,
+          1.6119761184890844e-05
+        ]
+      ],
+      "mapping_seconds_with_cold_compile": 0.0167818209156394,
+      "accepted": true,
+      "recovery_seconds_with_cold_compile": 0.08620736701413989,
+      "classification": "numerically_qualified",
+      "peak_Pa": 25715.798916248667,
+      "peak_position_m": [
+        -0.0004999999999999996,
+        -6.123233995736791e-20,
+        -2.266215559059192e-18
+      ],
+      "energy_J": 2.286047700129761e-09,
+      "complete_budget_fraction": 0.07245490086091677,
+      "tensor_relative_error_vs_continuous_load": 0.5543246728130834,
+      "peak_relative_error_vs_continuous_load": 0.5552455965490206,
+      "energy_relative_error_vs_continuous_load": 0.8009683269930157,
+      "full_original_wrench": [
+        -0.019999999999999987,
+        0.0,
+        0.0,
+        0.0,
+        -6.703610876185072e-07,
+        3.875536543647004e-06
+      ],
+      "analysis_elapsed_seconds": 0.11250819591805339,
+      "sample_scatter_max_difference_N": 6.071532165918825e-18,
+      "islands": [
+        {
+          "resultant_N": [
+            -0.05000000000000006,
+            0.0,
+            0.0
+          ],
+          "moment_Nm": [
+            0.0,
+            -5.097540474414304e-07,
+            0.0004096839264163138
+          ],
+          "footprint_area_m2": 5.002774622714793e-05,
+          "loaded_area_m2": 5.002774622714793e-05,
+          "effective_traction_area_m2": 1.6967007668681732e-05,
+          "maximum_pressure_Pa": 5903.276176118698,
+          "minimum_pressure_Pa": -3343.042051358131,
+          "maximum_shear_Pa": 2473.262370052896,
+          "integrated_pressure_N": 0.020768672890436532,
+          "integrated_shear_norm_N": 0.018027817898575584,
+          "integrated_traction_norm_N": 0.05,
+          "integrated_traction_squared_N2_per_m2": 147.34477928094438,
+          "maximum_coulomb_violation_Pa": 7860.685638248631,
+          "force_shift_from_prior_N": [
+            -5.551115123125783e-17,
+            0.0,
+            0.0
+          ],
+          "moment_shift_from_prior_Nm": [
+            0.0,
+            -3.049318610115481e-20,
+            -3.7947076036992655e-19
+          ]
+        },
+        {
+          "resultant_N": [
+            0.04999999999999999,
+            0.0,
+            0.0
+          ],
+          "moment_Nm": [
+            0.0,
+            2.1998245342799044e-07,
+            -0.0004096599584103843
+          ],
+          "footprint_area_m2": 4.960854841099797e-05,
+          "loaded_area_m2": 4.960854841099797e-05,
+          "effective_traction_area_m2": 1.7021597124596217e-05,
+          "maximum_pressure_Pa": 5931.158783572867,
+          "minimum_pressure_Pa": -3337.4455327170203,
+          "maximum_shear_Pa": 2498.849894321398,
+          "integrated_pressure_N": 0.020411370656431022,
+          "integrated_shear_norm_N": 0.017977124447608826,
+          "integrated_traction_norm_N": 0.05000000000000002,
+          "integrated_traction_squared_N2_per_m2": 146.87223423867204,
+          "maximum_coulomb_violation_Pa": 7867.164874256116,
+          "force_shift_from_prior_N": [
+            -1.3877787807814457e-17,
+            0.0,
+            0.0
+          ],
+          "moment_shift_from_prior_Nm": [
+            0.0,
+            2.183756817139993e-20,
+            -7.047314121155779e-19
+          ]
+        },
+        {
+          "resultant_N": [
+            -0.01999999999999999,
+            0.0,
+            0.0
+          ],
+          "moment_Nm": [
+            0.0,
+            -3.8058949360506407e-07,
+            3.851568537716558e-06
+          ],
+          "footprint_area_m2": 4.963713608219396e-05,
+          "loaded_area_m2": 4.963713608219396e-05,
+          "effective_traction_area_m2": 1.673893558294649e-05,
+          "maximum_pressure_Pa": 2473.2795660968104,
+          "minimum_pressure_Pa": -1254.6057109296673,
+          "maximum_shear_Pa": 1047.7294173270227,
+          "integrated_pressure_N": 0.009013259378677687,
+          "integrated_shear_norm_N": 0.006733216829957181,
+          "integrated_traction_norm_N": 0.019999999999999997,
+          "integrated_traction_squared_N2_per_m2": 23.896382061922562,
+          "maximum_coulomb_violation_Pa": 2877.2668786783825,
+          "force_shift_from_prior_N": [
+            1.0408340855860843e-17,
+            0.0,
+            0.0
+          ],
+          "moment_shift_from_prior_Nm": [
+            0.0,
+            7.517417406881916e-21,
+            1.3552527156068805e-20
+          ]
+        }
+      ],
+      "maximum_coulomb_violation_Pa": 7867.164874256116
+    },
+    {
+      "model": "componentwise",
+      "native_quadrature": 10,
+      "ports": 8,
+      "contact_status": [
+        0,
+        0,
+        0
+      ],
+      "errno": 0,
+      "selected_anchor_m": [
+        [
+          -0.0005443634189185477,
+          0.01800110379932743,
+          1.5809966175628324e-05
+        ],
+        [
+          0.0005285312945197185,
+          0.018000428664964405,
+          1.001550342662869e-05
+        ],
+        [
+          -0.0005916480934060006,
+          0.010000131400246417,
+          2.63400331049445e-05
+        ]
+      ],
+      "mapping_seconds_with_cold_compile": 0.09903853433206677,
+      "accepted": true,
+      "recovery_seconds_with_cold_compile": 0.08651576517149806,
+      "classification": "numerically_qualified",
+      "peak_Pa": 57820.22059529584,
+      "peak_position_m": [
+        -0.0004999999999999996,
+        -6.123233995736791e-20,
+        -2.266215559059192e-18
+      ],
+      "energy_J": 1.148637057009251e-08,
+      "complete_budget_fraction": 0.033360356871261806,
+      "tensor_relative_error_vs_continuous_load": 0.0008298812983241608,
+      "peak_relative_error_vs_continuous_load": 4.6585518886921307e-08,
+      "energy_relative_error_vs_continuous_load": 4.542827952946915e-05,
+      "full_original_wrench": [
+        -0.02000000000071818,
+        -1.3002522059055756e-11,
+        1.1445299681763328e-10,
+        9.579419405084421e-13,
+        -6.703609125901636e-07,
+        3.875536563071321e-06
+      ],
+      "analysis_elapsed_seconds": 0.19436742505058646,
+      "sample_scatter_max_difference_N": 1.0842021724855044e-19,
+      "islands": [
+        {
+          "resultant_N": [
+            -0.050000000000722265,
+            -1.0778974679781347e-11,
+            1.138136316113262e-10
+          ],
+          "moment_Nm": [
+            9.582323548557552e-13,
+            -5.097538714583031e-07,
+            0.00040968392643905697
+          ],
+          "footprint_area_m2": 2.8206229271902286e-05,
+          "loaded_area_m2": 2.8206229271902286e-05,
+          "effective_traction_area_m2": 1.0361383175145935e-05,
+          "maximum_pressure_Pa": 8485.952301969068,
+          "minimum_pressure_Pa": 0.0007719125394244005,
+          "maximum_shear_Pa": 3635.0333300844395,
+          "integrated_pressure_N": 0.04657076207109664,
+          "integrated_shear_norm_N": 0.01806387799573002,
+          "integrated_traction_norm_N": 0.05000016140966266,
+          "integrated_traction_squared_N2_per_m2": 241.28208548344776,
+          "maximum_coulomb_violation_Pa": 1.7763568394002505e-15,
+          "force_shift_from_prior_N": [
+            -7.222625275637995e-13,
+            -1.0778974679781347e-11,
+            1.138136316113262e-10
+          ],
+          "moment_shift_from_prior_Nm": [
+            9.582323548557552e-13,
+            1.7598309682542702e-13,
+            2.2742766871142184e-14
+          ]
+        },
+        {
+          "resultant_N": [
+            0.050000000000004076,
+            -2.2235473846228343e-12,
+            6.393652384237212e-13
+          ],
+          "moment_Nm": [
+            -2.9041401915357353e-16,
+            2.1998245247319164e-07,
+            -0.00040965995841370174
+          ],
+          "footprint_area_m2": 2.7841366581368593e-05,
+          "loaded_area_m2": 2.7841366581368593e-05,
+          "effective_traction_area_m2": 1.0335014990752729e-05,
+          "maximum_pressure_Pa": 8525.857884843686,
+          "minimum_pressure_Pa": 3.2679249652621265e-05,
+          "maximum_shear_Pa": 3641.8416077788324,
+          "integrated_pressure_N": 0.0466115453115102,
+          "integrated_shear_norm_N": 0.017935873808486314,
+          "integrated_traction_norm_N": 0.05000026243823866,
+          "integrated_traction_squared_N2_per_m2": 241.89865676340497,
+          "maximum_coulomb_violation_Pa": 7.105427357601002e-15,
+          "force_shift_from_prior_N": [
+            4.073130721593543e-15,
+            -2.2235473846228343e-12,
+            6.393652384237212e-13
+          ],
+          "moment_shift_from_prior_Nm": [
+            -2.9041401915357353e-16,
+            -9.547769675131458e-16,
+            -3.318146538783262e-15
+          ]
+        },
+        {
+          "resultant_N": [
+            -0.020000000000000014,
+            2.6224242669087883e-20,
+            -4.952343252052048e-21
+          ],
+          "moment_Nm": [
+            5.037167180649282e-24,
+            -3.8058949360507286e-07,
+            3.85156853771655e-06
+          ],
+          "footprint_area_m2": 2.795800849314863e-05,
+          "loaded_area_m2": 2.795800849314863e-05,
+          "effective_traction_area_m2": 1.0399074281710196e-05,
+          "maximum_pressure_Pa": 3499.6936978457543,
+          "minimum_pressure_Pa": 6.934599092283807e-05,
+          "maximum_shear_Pa": 1534.1825025582382,
+          "integrated_pressure_N": 0.018765591296070763,
+          "integrated_shear_norm_N": 0.006734825401340669,
+          "integrated_traction_norm_N": 0.020000257911514722,
+          "integrated_traction_squared_N2_per_m2": 38.46595434274779,
+          "maximum_coulomb_violation_Pa": 0.0,
+          "force_shift_from_prior_N": [
+            -1.3877787807814457e-17,
+            2.6224242669087883e-20,
+            -4.952343252052048e-21
+          ],
+          "moment_shift_from_prior_Nm": [
+            5.037167180649282e-24,
+            -1.2705494208814505e-21,
+            5.929230630780102e-21
+          ]
+        }
+      ],
+      "maximum_coulomb_violation_Pa": 7.105427357601002e-15
+    },
+    {
+      "model": "pair_union",
+      "native_quadrature": 10,
+      "ports": 8,
+      "contact_status": [
+        0,
+        0,
+        0
+      ],
+      "errno": 0,
+      "selected_anchor_m": [
+        [
+          -0.0005443634189185477,
+          0.01800110379932743,
+          1.5809966175628324e-05
+        ],
+        [
+          0.0005285312945197185,
+          0.018000428664964405,
+          1.001550342662869e-05
+        ],
+        [
+          -0.0005916480934060006,
+          0.010000131400246417,
+          2.63400331049445e-05
+        ]
+      ],
+      "mapping_seconds_with_cold_compile": 0.10259855911135674,
+      "accepted": true,
+      "recovery_seconds_with_cold_compile": 0.08972502360120416,
+      "classification": "numerically_qualified",
+      "peak_Pa": 57820.476671754,
+      "peak_position_m": [
+        -0.0004999999999999996,
+        -6.123233995736791e-20,
+        -2.266215559059192e-18
+      ],
+      "energy_J": 1.1487945803576637e-08,
+      "complete_budget_fraction": 0.026833958708686677,
+      "tensor_relative_error_vs_continuous_load": 0.00418059569361337,
+      "peak_relative_error_vs_continuous_load": 4.382253451007401e-06,
+      "energy_relative_error_vs_continuous_load": 0.00018257386739484183,
+      "full_original_wrench": [
+        -0.01999999999999611,
+        -2.223514659304864e-12,
+        6.394129545072313e-13,
+        -2.9031773902822194e-16,
+        -6.703610885732901e-07,
+        3.875536540329019e-06
+      ],
+      "analysis_elapsed_seconds": 0.20079063810408115,
+      "sample_scatter_max_difference_N": 2.0816681711721685e-17,
+      "islands": [
+        {
+          "resultant_N": [
+            -0.04952991987489117,
+            1.3624252669577983e-05,
+            -1.4485474153310526e-06
+          ],
+          "moment_Nm": [
+            -9.294292920052929e-08,
+            -4.619830295513086e-07,
+            0.0004107997727190935
+          ],
+          "footprint_area_m2": 2.8206229271902286e-05,
+          "loaded_area_m2": 2.8206229271902286e-05,
+          "effective_traction_area_m2": 1.0368293463286254e-05,
+          "maximum_pressure_Pa": 8419.466232979517,
+          "minimum_pressure_Pa": 0.0008114877038836401,
+          "maximum_shear_Pa": 3619.639273687627,
+          "integrated_pressure_N": 0.046143245665388785,
+          "integrated_shear_norm_N": 0.017900771008727428,
+          "integrated_traction_norm_N": 0.04954179269709359,
+          "integrated_traction_squared_N2_per_m2": 236.72065536461693,
+          "maximum_coulomb_violation_Pa": 0.0,
+          "force_shift_from_prior_N": [
+            0.00047008012510883074,
+            1.3624252669577983e-05,
+            -1.4485474153310526e-06
+          ],
+          "moment_shift_from_prior_Nm": [
+            -9.294292920052929e-08,
+            4.777101789009133e-08,
+            1.1158463027793127e-06
+          ]
+        },
+        {
+          "resultant_N": [
+            0.050000000000004055,
+            -2.2235473976284916e-12,
+            6.393652917355117e-13
+          ],
+          "moment_Nm": [
+            -2.904138468867486e-16,
+            2.199824524731863e-07,
+            -0.0004096599584137017
+          ],
+          "footprint_area_m2": 2.784136658136859e-05,
+          "loaded_area_m2": 2.784136658136859e-05,
+          "effective_traction_area_m2": 1.0335014990752727e-05,
+          "maximum_pressure_Pa": 8525.857884843686,
+          "minimum_pressure_Pa": 3.267924965262125e-05,
+          "maximum_shear_Pa": 3641.8416077788315,
+          "integrated_pressure_N": 0.04661154531151018,
+          "integrated_shear_norm_N": 0.017935873808486307,
+          "integrated_traction_norm_N": 0.050000262438238643,
+          "integrated_traction_squared_N2_per_m2": 241.8986567634049,
+          "maximum_coulomb_violation_Pa": 3.552713678800501e-15,
+          "force_shift_from_prior_N": [
+            4.052314039881821e-15,
+            -2.2235473976284916e-12,
+            6.393652917355117e-13
+          ],
+          "moment_shift_from_prior_Nm": [
+            -2.904138468867486e-16,
+            -9.547823144086254e-16,
+            -3.3180923286746378e-15
+          ]
+        },
+        {
+          "resultant_N": [
+            -0.020470080125109123,
+            -1.3624252669545368e-05,
+            1.448547415378694e-06
+          ],
+          "moment_Nm": [
+            9.29429292006252e-08,
+            -4.28360511495216e-07,
+            2.735722234936741e-06
+          ],
+          "footprint_area_m2": 2.795800849314863e-05,
+          "loaded_area_m2": 2.795800849314863e-05,
+          "effective_traction_area_m2": 1.0796901049837195e-05,
+          "maximum_pressure_Pa": 3453.3070226487243,
+          "minimum_pressure_Pa": 9.788374741149066e-05,
+          "maximum_shear_Pa": 1478.0269899014643,
+          "integrated_pressure_N": 0.019229590667892208,
+          "integrated_shear_norm_N": 0.006850363143386538,
+          "integrated_traction_norm_N": 0.020476536953610864,
+          "integrated_traction_squared_N2_per_m2": 38.83415840130476,
+          "maximum_coulomb_violation_Pa": 0.0,
+          "force_shift_from_prior_N": [
+            -0.00047008012510912217,
+            -1.3624252669545368e-05,
+            1.448547415378694e-06
+          ],
+          "moment_shift_from_prior_Nm": [
+            9.29429292006252e-08,
+            -4.777101789014443e-08,
+            -1.1158463027798035e-06
+          ]
+        }
+      ],
+      "maximum_coulomb_violation_Pa": 3.552713678800501e-15
+    },
+    {
+      "model": "body_source_prior",
+      "native_quadrature": 10,
+      "ports": 8,
+      "contact_status": [
+        0,
+        0,
+        0
+      ],
+      "errno": 0,
+      "selected_anchor_m": [
+        [
+          -0.0005443634189185477,
+          0.01800110379932743,
+          1.5809966175628324e-05
+        ],
+        [
+          0.0005285312945197185,
+          0.018000428664964405,
+          1.001550342662869e-05
+        ],
+        [
+          -0.0005916480934060006,
+          0.010000131400246417,
+          2.63400331049445e-05
+        ]
+      ],
+      "mapping_seconds_with_cold_compile": 0.10541897732764482,
+      "accepted": true,
+      "recovery_seconds_with_cold_compile": 0.08648176910355687,
+      "classification": "numerically_qualified",
+      "peak_Pa": 57807.896343494096,
+      "peak_position_m": [
+        -0.0004999999999999996,
+        -6.123233995736791e-20,
+        -2.266215559059192e-18
+      ],
+      "energy_J": 1.1482351217381183e-08,
+      "complete_budget_fraction": 0.03903089739760822,
+      "tensor_relative_error_vs_continuous_load": 0.0013401021202346674,
+      "peak_relative_error_vs_continuous_load": 0.00021319435805811082,
+      "energy_relative_error_vs_continuous_load": 0.0003045112665680527,
+      "full_original_wrench": [
+        -0.020000000000000025,
+        -1.0137540340877282e-14,
+        2.5740256781677e-15,
+        -4.133239185817191e-18,
+        -6.703610876231025e-07,
+        3.875536543622732e-06
+      ],
+      "analysis_elapsed_seconds": 0.20132290525361896,
+      "sample_scatter_max_difference_N": 4.336808689942018e-19,
+      "islands": [
+        {
+          "resultant_N": [
+            -0.05001580871204428,
+            -3.0087597427168963e-06,
+            -3.401548380924418e-05
+          ],
+          "moment_Nm": [
+            -2.844236581067463e-07,
+            -1.0360991691358605e-07,
+            0.00040997205797190607
+          ],
+          "footprint_area_m2": 2.8206229271902286e-05,
+          "loaded_area_m2": 2.8206229271902286e-05,
+          "effective_traction_area_m2": 1.036409448944524e-05,
+          "maximum_pressure_Pa": 8476.043812776721,
+          "minimum_pressure_Pa": 0.0008034433153366104,
+          "maximum_shear_Pa": 3599.718927449346,
+          "integrated_pressure_N": 0.046589444009421485,
+          "integrated_shear_norm_N": 0.018062232755308247,
+          "integrated_traction_norm_N": 0.05001582138349554,
+          "integrated_traction_squared_N2_per_m2": 241.37008700695782,
+          "maximum_coulomb_violation_Pa": 3.552713678800501e-15,
+          "force_shift_from_prior_N": [
+            -1.5808712044276807e-05,
+            -3.0087597427168963e-06,
+            -3.401548380924418e-05
+          ],
+          "moment_shift_from_prior_Nm": [
+            -2.844236581067463e-07,
+            4.0614413052781387e-07,
+            2.881315555918677e-07
+          ]
+        },
+        {
+          "resultant_N": [
+            0.04998463899292251,
+            5.9389647535019565e-06,
+            3.6181852151813344e-05
+          ],
+          "moment_Nm": [
+            2.9069312449818176e-07,
+            -4.525505524461191e-07,
+            -0.0004096273271000272
+          ],
+          "footprint_area_m2": 2.784136658136859e-05,
+          "loaded_area_m2": 2.784136658136859e-05,
+          "effective_traction_area_m2": 1.03394076208161e-05,
+          "maximum_pressure_Pa": 8508.798250800855,
+          "minimum_pressure_Pa": 3.4373213187719584e-05,
+          "maximum_shear_Pa": 3602.2011145905344,
+          "integrated_pressure_N": 0.04660165758373029,
+          "integrated_shear_norm_N": 0.017914247726744423,
+          "integrated_traction_norm_N": 0.049984653502249565,
+          "integrated_traction_squared_N2_per_m2": 241.64494498793567,
+          "maximum_coulomb_violation_Pa": 7.105427357601002e-15,
+          "force_shift_from_prior_N": [
+            -1.536100707748983e-05,
+            5.9389647535019565e-06,
+            3.6181852151813344e-05
+          ],
+          "moment_shift_from_prior_Nm": [
+            2.9069312449818176e-07,
+            -6.725330058740877e-07,
+            3.26313103563838e-08
+          ]
+        },
+        {
+          "resultant_N": [
+            -0.01996883028087818,
+            -2.9302050209226056e-06,
+            -2.1663683399951398e-06
+          ],
+          "moment_Nm": [
+            -6.2694663955690056e-09,
+            -1.1420061826334524e-07,
+            3.5308056717436603e-06
+          ],
+          "footprint_area_m2": 2.795800849314863e-05,
+          "loaded_area_m2": 2.795800849314863e-05,
+          "effective_traction_area_m2": 1.0403478387619969e-05,
+          "maximum_pressure_Pa": 3486.7252400624643,
+          "minimum_pressure_Pa": 7.52387315303944e-05,
+          "maximum_shear_Pa": 1507.841294342286,
+          "integrated_pressure_N": 0.01874138695248802,
+          "integrated_shear_norm_N": 0.00671096951290309,
+          "integrated_traction_norm_N": 0.019968832856460256,
+          "integrated_traction_squared_N2_per_m2": 38.32893872531711,
+          "maximum_coulomb_violation_Pa": 0.0,
+          "force_shift_from_prior_N": [
+            3.116971912182215e-05,
+            -2.9302050209226056e-06,
+            -2.1663683399951398e-06
+          ],
+          "moment_shift_from_prior_Nm": [
+            -6.2694663955690056e-09,
+            2.663888753417263e-07,
+            -3.207628659728841e-07
+          ]
+        }
+      ],
+      "maximum_coulomb_violation_Pa": 7.105427357601002e-15
+    }
+  ]
+}

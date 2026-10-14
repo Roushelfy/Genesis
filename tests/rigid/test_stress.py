@@ -40,6 +40,8 @@ from research.rigid_stress.field_cpu import stress_field
 from research.rigid_stress.mechanics import P2Shell, SurfaceGeometry, shell_mesh
 from research.rigid_stress.peak_cpu import P2Peak
 from research.rigid_stress.wrench import FinitePatchMapper, WrenchPatch
+from tests.rigid.test_stress_nonconvex import nonconvex_material_mesh
+from tests.utils.assertions import assert_allclose
 
 
 @qd.kernel(graph=True)
@@ -488,7 +490,11 @@ def test_native_batched_recovery_against_full_fp64_direct(
 @pytest.mark.required
 @pytest.mark.precision("64")
 @pytest.mark.parametrize("cooperative", (False, True))
-def test_native_finite_pressure_matches_independent_cpu(tmp_path, cooperative):
+def test_native_finite_pressure_matches_independent_cpu(
+    tmp_path,
+    cooperative,
+    nonconvex_material_mesh,  # noqa: F811
+):
     vertices, tetrahedra, faces, _ = shell_mesh(1, 2, 0.0005)
     mesh = tmp_path / "shell.npz"
     np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)
@@ -500,7 +506,7 @@ def test_native_finite_pressure_matches_independent_cpu(tmp_path, cooperative):
     np.testing.assert_allclose(
         qd_to_numpy(surface.info.weights), geometry.integration_weights.reshape((-1,)), rtol=2e-13
     )
-    mapper = FinitePatchMapper(geometry, anchor_to_surface=True, adaptive_integration=True)
+    mapper = FinitePatchMapper(geometry, adaptive_integration=True)
     n_contacts, n_envs = 3, 5
     contacts = create_contacts(n_contacts, n_envs, 0.006, cooperative)
     state = model.create_state(n_envs)
@@ -579,6 +585,27 @@ def test_native_finite_pressure_matches_independent_cpu(tmp_path, cooperative):
             np.testing.assert_allclose(qd_to_numpy(state.rhs), expected_rhs, atol=1e-15, rtol=1e-10)
             np.testing.assert_allclose(qd_to_numpy(state.wrench), expected_wrench, atol=1e-15, rtol=1e-10)
             assert int(qd_to_numpy(cache.overflow_calls)) == (1 if capacity == 1 else 0)
+
+    vertices, tetrahedra, faces, shape = nonconvex_material_mesh
+    mesh = tmp_path / "material.npz"
+    np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=faces)
+    model = StressModel(RigidStressOptions(mesh=mesh, method="pcg"))
+    surface = StressSurface(10, model.info)
+    point = [0.001, 0.002, 0.0005] if shape == "u" else [0.001, 0.0015, 0.0015]
+    contacts = create_contacts(1, 1, 0.0002, cooperative)
+    contacts.position.from_numpy(np.array([[point]]))
+    contacts.force.from_numpy(np.array([[[-0.05, 0.0, 0.0]]]))
+    contacts.normal.from_numpy(np.array([[[-1.0, 0.0, 0.0]]]))
+    contacts.friction.fill(0)
+    contacts.valid.fill(True)
+    state = model.create_state(1)
+    kernel_anchor(float(np.finfo(float).eps), contacts, surface.info)
+    kernel_pressure(contacts, surface.info, cooperative)
+    kernel_scatter(contacts, state, model.info, surface.info)
+    loaded = qd_to_numpy(state.force, transpose=True)[0]
+    locations = qd_to_numpy(model.info.vertices, transpose=True)
+    assert_allclose(loaded[abs(locations[:, 0] - point[0]) < 1e-12].sum(axis=0), [-0.05, 0, 0], atol=1e-12, rtol=1e-8)
+    assert_allclose(loaded[abs(locations[:, 0] - point[0]) >= 1e-12], 0, atol=1e-12, rtol=0)
 
 
 @pytest.mark.required
