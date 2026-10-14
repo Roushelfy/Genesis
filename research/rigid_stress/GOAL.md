@@ -89,6 +89,15 @@ running from separately hashed executable snapshots, without modifying the live
 canonical references. These checks are preliminary reference evidence; solved
 contact convergence, objective frame/native replay, egg/Franka matching, feedback
 and the complete original acceptance matrix remain required.
+The [objective replay and actual Franka inputs](docs/PHYSICAL_OBJECTIVE_FRANKA_20261014.md)
+close both nonlinear U pilots, bound the nonlinear global peak and obtain an
+objective native-versus-nonlinear tensor difference3.09337e-5 at one spatial
+level. Separated contact axes retain44.9–45.1% body-probe changes. Actual
+Franka same-substep captures preserve all12 finger geoms, runtime mass/COM,
+effective friction0.6 and original PD actuation at three integration intervals.
+Sampled angular motion and rank5 point-wrench support prevent claiming static
+application acceptance. Matched deformable Franka contact, full contact tails,
+the live third-level/egg references, feedback and accuracy/cost remain required.
 
 ## Previous nonconvex implementation brief, 2026-10-11
 
