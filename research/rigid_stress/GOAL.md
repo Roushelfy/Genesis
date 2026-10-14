@@ -64,6 +64,13 @@ port comparisons and75 unchanged probes. Declared2/4-port settings extend the
 numerical U range to40824 tetrahedra. The combined audit retains282 qualified
 fields and eight unsupported moments. Remaining physical tails, reference
 traction limitations and full resolved-contact completion criteria stay active.
+The [initial resolved-U update](docs/PHYSICAL_RESOLVED_U_20261014.md) obtains two
+full3D free-body contact pilots and validates their resolved nodal loads against
+actual native full tensors. The coarse fixed stencil lacks support for the
+audited gravity wrenches, while its weakest Schur mode is a common-translation
+gauge. Body strains are small;5–6% local pad strains require a nonlinear check.
+Finer U and full-egg references are running. Contact convergence, finite-footprint
+replay, feedback separation and actual Franka matching remain required.
 
 ## Previous nonconvex implementation brief, 2026-10-11
 
