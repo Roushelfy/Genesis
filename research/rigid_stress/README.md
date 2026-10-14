@@ -1,6 +1,16 @@
 # Fixed-shape rigid stress recovery
 
-## Current direction: native Quadrants feature
+## Current stage: load-model validation and physical convergence
+
+The user's 2026-10-14 next-stage goal is in
+[GOAL.md](GOAL.md) and [the validation plan](docs/LOAD_MODEL_PHYSICAL_VALIDATION.md).
+Validate load-distribution effects and physical convergence using independent
+open-source FEM and deformable-contact references, with convex and nonconvex
+models. The Franka/full hollow egg remains the primary application.
+The low-mesh performance milestone below is complete. Its physical-convergence
+deferral no longer applies to this stage.
+
+## Completed stage: native Quadrants feature
 
 The user's 2026-10-10 direction is in [GOAL.md](GOAL.md) and
 [docs/NATIVE_QUADRANTS_PLAN.md](docs/NATIVE_QUADRANTS_PLAN.md). Implement stress

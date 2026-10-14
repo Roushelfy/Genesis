@@ -6,16 +6,25 @@ validation ordering. Follow the root `CLAUDE.md` and `CODING_GUIDELINES.md` for
 engine code. Existing research modules and measurements are references; the
 production feature belongs to Genesis's existing rigid solver.
 
-Read docs/NONCONVEX_CONTACT_REQUIREMENTS.md for the 2026-10-11 active
-extension. The previous low-shell completion record does not cover this new
-nonconvex contact contract. Keep its implementation native and performance-first.
+Read docs/NONCONVEX_CONTACT_REQUIREMENTS.md for the completed 2026-10-11
+extension and its declared contact law. That numerical/performance milestone
+is the baseline for the new physical-validation stage below.
+
+## Active physical-validation stage, 2026-10-14
+
+Read `docs/LOAD_MODEL_PHYSICAL_VALIDATION.md` after `GOAL.md`.
+The low-mesh performance milestone has closed. The user now authorizes and
+prioritizes load-model validation, independent FEM/contact comparisons and
+physical mesh/geometry/contact-integration convergence across convex/nonconvex
+shapes. This direction supersedes the earlier deferral of those studies.
+Keep production arithmetic in Quadrants and use external FEM only as a reference.
 
 - Use Quadrants for the complete production numerical path, including recovery
   solves. External numerical backends in the research prototype are reference
   paths, not acceptable substitutes for the requested native implementation.
-- Develop and tune on inexpensive low-resolution full-shell meshes. Complete
-  detailed profiling and the applicable performance optimizations before
-  spending GPU time on physical mesh/quadrature convergence studies.
+- The completed performance phase used inexpensive low-resolution full-shell
+  meshes. The new physical-validation stage may refine meshes and integration
+  as needed to answer its accuracy questions. Keep long sweeps opt-in.
 - Keep same-mesh numerical consistency checks throughout optimization. Check
   complete residuals including the six gauge rows, scalar peak error, contact
   wrench/frame consistency, environment independence and partial resets.

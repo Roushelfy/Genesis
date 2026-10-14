@@ -6,6 +6,15 @@ native CUDA-library recommendations, mandatory GPU direct-backend choice and
 convergence-first acceptance sequence. Earlier code and evidence remain useful
 for mathematics, numerical comparisons and bottleneck diagnosis.
 
+## Active next stage, 2026-10-14
+
+The user now requests [load-model validation and physical convergence](LOAD_MODEL_PHYSICAL_VALIDATION.md).
+The completed performance milestone is the baseline. Its restrictions on
+fine-mesh physical studies apply to the historical performance phase, not
+the new authorized validation work. Separate independent elasticity checks,
+load-model sensitivity and deformable-contact references. Preserve the native
+Quadrants production path and its performance options.
+
 ## Nonconvex extension, 2026-10-11
 
 The new [nonconvex contact contract](NONCONVEX_CONTACT_REQUIREMENTS.md)
