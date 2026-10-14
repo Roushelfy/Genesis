@@ -26,8 +26,15 @@ The [independent-gauge/control update](docs/PHYSICAL_CONTROLS_20261014.md) adds
 finest absolute tensor error is 1.017%, but the tensor tail remains 3.966%.
 The best normal-contact control accepts 11/12, with one unresolved configuration.
 Neither control establishes completion of the required full physical matrix.
-The complete load-model sensitivity, physical matrix and deformable-contact
-comparisons remain required. This stage remains active.
+The [finite-load matrix and material-sheet repair](docs/PHYSICAL_LOAD_MODELS_20261014.md)
+adds343 independently rechecked native fields,33CPU/54CUDA stress-module passes
+and8CPU/8CUDA continuous-boundary-transfer passes. Six shapes have three useful
+levels each, but no complete initial3% physical tail passes. Pressure has measured
+cross-sheet compression/friction failures. The finer analytic-shell tensor tail
+is0.879%; supported sticking controls converge after resolving contact-entry
+increments. Full physical refinement, separated error axes, radius/profile
+sensitivity, changing histories, warmed accuracy/cost and resolved egg/Franka/
+interior-hotspot comparisons remain required. This stage remains active.
 
 ## Previous nonconvex implementation brief, 2026-10-11
 

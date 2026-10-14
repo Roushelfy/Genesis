@@ -250,6 +250,7 @@ def func_anchor(source_epsilon: float, contact_state: StressContactState, surfac
                 direction = -force / magnitude
                 point = contact_state.position[i_c, i_b]
                 best = gs.qd_float(-1e30)
+                distance = gs.qd_float(1e30)
                 for i_f in range(surface_info.face_origin.shape[0]):
                     denominator = surface_info.face_normal[i_f].dot(direction)
                     if denominator > 1e-12:
@@ -259,10 +260,16 @@ def func_anchor(source_epsilon: float, contact_state: StressContactState, surfac
                         bary = surface_info.face_dual[i_f] @ (
                             point + parameter * direction - surface_info.face_origin[i_f]
                         )
-                        if bary[0] >= -2e-12 and bary[1] >= -2e-12 and bary.sum() <= 1.0 + 2e-12:
-                            if parameter > best:
-                                contact_state.anchor_face[i_c, i_b] = i_f
-                            best = qd.max(best, parameter)
+                        # The application point identifies the nearest material sheet along the force line
+                        if (
+                            bary[0] >= -2e-12
+                            and bary[1] >= -2e-12
+                            and bary.sum() <= 1.0 + 2e-12
+                            and qd.abs(parameter) < distance
+                        ):
+                            contact_state.anchor_face[i_c, i_b] = i_f
+                            best = parameter
+                            distance = qd.abs(parameter)
                 if best > -1e30:
                     contact_state.center[i_c, i_b] = point + best * direction
                 else:

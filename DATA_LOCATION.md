@@ -31,3 +31,18 @@ reference environment is `/mnt/data/zhaofeng/venvs/rigid-stress-physical`,
 configured through `PHYSICAL_VALIDATION_ENV`. It inherits the existing
 validated base site's dependencies via a recorded `.pth` and adds pinned
 reference packages without migrating or editing that base environment.
+
+The load-model matrix, refined shell, friction controls and publication tools
+remain under `runs/20261014-physical-validation/`. Selected immutable
+deliverables are `load-model-checkpoint-v2`, `load-refinement-figures-v1` and
+`egg-solver-comparison-v1` under `research/rigid_stress/evidence/20261014-physical/`.
+Runtime caches and long job logs continue to use the data mount.
+
+The unselected initial publication at
+`research/rigid_stress/evidence/20261014-physical/load-model-checkpoint-5` was
+copied with metadata/symlink preservation to
+`runs/20261014-physical-validation/publication-attempt-load-model-checkpoint-5`
+under the data root. Its writer job712467 was terminalCOMPLETED before copying.
+All4321 files were SHA256-verified before removing the untracked source copy.
+No tracked deliverable or active writer was moved. Exact old/new absolute paths
+and validation are recorded in that run root's `publication-attempt-migration.json`.
