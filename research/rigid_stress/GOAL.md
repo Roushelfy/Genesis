@@ -48,6 +48,16 @@ target. Current-source contact controls pass, but full free-body U attempts
 remain unqualified and expose weak rigid/contact modes. Full egg reference
 tasks and the original physical/contact/model/cost completion criteria remain
 active; these diagnostic passes are not stage completion.
+The [profile/history update](docs/PHYSICAL_PROFILE_HISTORY_20261014.md) completes
+the seven-shape200-field FEM sweep and distinguishes ten numerical tail
+diagnostics from seven finest-traction-admissible ones. Fixed original wrenches
+permit29 admissible alternative profiles with substantial capsule stress
+differences. A native PCG release repair passes8CPU/8CUDA regressions and39
+changing-contact fields, with one unsupported pressure moment retained. Complete
+current-source checks pass41CPU/62CUDA cases with21 explicit CUDA-only skips.
+The5669-tetrahedron native U sequence also passes; two finer8-port initializations
+fail allocation. Extended native settings, converged full egg/Franka/interior-hotspot
+contact and the original physical operating-range acceptance remain active.
 
 ## Previous nonconvex implementation brief, 2026-10-11
 

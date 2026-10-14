@@ -64,6 +64,50 @@ def kernel_apex_contact_graph(
 
 @pytest.mark.required
 @pytest.mark.precision("64")
+@pytest.mark.parametrize("warm_start", (False, True))
+@pytest.mark.parametrize("load_scale", (1.0, 0.001))
+def test_native_pcg_balanced_grip_release(
+    nonconvex_material_mesh,  # noqa: F811
+    tmp_path,
+    warm_start,
+    load_scale,
+):
+    vertices, tetrahedra, surface, _ = nonconvex_material_mesh
+    mesh = tmp_path / "release.npz"
+    np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=surface)
+    options = RigidStressOptions(mesh=mesh, method="pcg", output_mode="full", warm_start=warm_start)
+    model = StressModel(options)
+    coordinates = qd_to_numpy(model.info.vertices, transpose=True, copy=True)
+    nodes = [np.argmin(coordinates[:, 0]), np.argmax(coordinates[:, 0])]
+    direction = coordinates[nodes[1]] - coordinates[nodes[0]]
+    direction *= 0.05 * load_scale / np.linalg.norm(direction)
+    force = np.zeros((len(coordinates), 2, 3))
+    force[nodes[0]] = direction
+    force[nodes[1]] = -direction
+    np.testing.assert_allclose(force.sum(axis=0), 0, atol=1e-13)
+    np.testing.assert_allclose(np.cross(coordinates[:, None], force).sum(axis=0), 0, atol=1e-13)
+    state = model.create_state(2, "full")
+    omega = V_VEC(3, dtype=gs.qd_float, shape=(2,))
+    omega.fill(0)
+    state.force.from_numpy(force)
+    model.recover(omega, state)
+    assert qd_to_numpy(state.valid).all()
+    assert (qd_to_numpy(state.peak) > 0).all()
+    assert (qd_to_numpy(state.rhs_norm_squared) > 0).all()
+    peak = qd_to_numpy(state.peak, copy=True)
+    force[:, 0] = 0
+    state.force.from_numpy(force)
+    model.recover(omega, state)
+    assert qd_to_numpy(state.valid).all()
+    np.testing.assert_array_equal(qd_to_numpy(state.displacement, transpose=True)[0], 0)
+    np.testing.assert_array_equal(qd_to_numpy(state.stress_tensor, transpose=True)[0], 0)
+    np.testing.assert_array_equal(qd_to_numpy(state.von_mises, transpose=True)[0], 0)
+    np.testing.assert_array_equal(qd_to_numpy(state.peak)[0], 0)
+    np.testing.assert_allclose(qd_to_numpy(state.peak)[1], peak[1], rtol=1e-4, atol=1e-3)
+
+
+@pytest.mark.required
+@pytest.mark.precision("64")
 def test_native_full_field_same_state_and_invalid_solve(tmp_path):
     vertices, tetrahedra, faces, _ = shell_mesh(1, 2, 0.0005)
     mesh = tmp_path / "shell.npz"

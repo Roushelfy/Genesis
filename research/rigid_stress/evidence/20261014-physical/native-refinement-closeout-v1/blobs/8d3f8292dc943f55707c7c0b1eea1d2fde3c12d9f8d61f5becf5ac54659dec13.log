@@ -1,0 +1,32 @@
+============================= test session starts ==============================
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0
+cachedir: /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/pcg-final-stress-suite-gpu-v1/cache/pytest
+rootdir: /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery
+configfile: pyproject.toml
+plugins: anyio-4.15.1, forked-1.7.5, print-1.2.0, timeout-2.4.0, xdist-3.8.0, quadrants-1.3.3, syrupy-6.1.1
+timeout: 1200.0s
+timeout method: signal
+timeout func_only: False
+created: 4/4 workers
+4 workers [62 items]
+
+..............................................................           [100%]
+=============================== warnings summary ===============================
+tests/rigid/test_stress.py: 124 warnings
+  /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                          32 iterations, so the compile time may be extremely long.
+                          You can use a non-static for loop if you want to decrease the compile time.
+                          You can disable this warning by setting qd.init(unrolling_limit=0).
+    for a, b in qd.static(qd.ndrange(6, 6)):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/pcg-final-stress-suite-gpu-v1/results.xml -
+============================== slowest durations ===============================
+130.87s call     tests/rigid/test_stress.py::test_native_shared_operator_contact_moments_and_link_isolation
+129.92s call     tests/rigid/test_stress.py::test_native_full_field_unbatched_shared_operator
+105.84s call     tests/rigid/test_stress.py::test_native_rigid_lifecycle_and_partial_reset[False-max-4]
+101.29s call     tests/rigid/test_stress.py::test_native_rigid_lifecycle_and_partial_reset[False-full-1]
+
+(182 durations < 100s hidden.)
+================= 62 passed, 124 warnings in 700.80s (0:11:40) =================
+[I 10/14/26 17:17:38.307 2527166] [shell.py:_shell_pop_print@25] Graphical python shell detected, using wrapped sys.stdout

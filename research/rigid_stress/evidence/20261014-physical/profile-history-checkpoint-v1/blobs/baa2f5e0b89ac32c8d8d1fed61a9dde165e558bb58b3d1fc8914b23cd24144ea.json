@@ -1,0 +1,134 @@
+{
+  "geometry": "capsule",
+  "case": "near_slip",
+  "profile": "baseline",
+  "quadrature_level": 4,
+  "frozen_inputs_sha256": "3e437562f3316b6c77be278838b85b92b186f29d73e721a5b0a4fabef1d3dc12",
+  "patches": [
+    {
+      "name": "pad0",
+      "profile": "baseline",
+      "gaussian_width_over_radius": 0.45,
+      "profile_integral_m2": 5.6163228448826526e-06,
+      "force_error_N": [
+        0.0,
+        3.2864878353466853e-19,
+        -1.3877787807814457e-17
+      ],
+      "moment_error_about_original_point_Nm": [
+        1.0164204081534951e-19,
+        -9.164375365505621e-20,
+        9.693564162386421e-20
+      ],
+      "maximum_traction_correction_Pa": 0.0008713843046709897,
+      "traction_admissible": true,
+      "observables": {
+        "resultant_N": [
+          0.049539255410304524,
+          1.1187010601778334e-05,
+          0.03799629469308643
+        ],
+        "moment_Nm": [
+          -7.318348607963451e-09,
+          0.0003005184811152042,
+          -5.4258557187260764e-08
+        ],
+        "footprint_area_m2": 2.8414510697759024e-05,
+        "loaded_area_m2": 2.8414510697759024e-05,
+        "effective_traction_area_m2": 1.0540195117489122e-05,
+        "maximum_pressure_Pa": 8899.4954695427,
+        "minimum_pressure_Pa": 3.654901875910692e-08,
+        "maximum_shear_Pa": 6763.616483964575,
+        "integrated_pressure_N": 0.049999999925112004,
+        "integrated_shear_norm_N": 0.03800000001051566,
+        "integrated_traction_norm_N": 0.0628012738191703,
+        "integrated_traction_squared_N2_per_m2": 374.1866207738612,
+        "maximum_coulomb_violation_Pa": 0.0
+      }
+    },
+    {
+      "name": "pad1",
+      "profile": "baseline",
+      "gaussian_width_over_radius": 0.45,
+      "profile_integral_m2": 5.615895319841609e-06,
+      "force_error_N": [
+        6.938893903907228e-18,
+        5.963111948670274e-19,
+        -6.938893903907228e-18
+      ],
+      "moment_error_about_original_point_Nm": [
+        -2.1465957281210483e-20,
+        -2.9354468590399e-20,
+        2.5258787184919253e-20
+      ],
+      "maximum_traction_correction_Pa": 0.0007517531977000682,
+      "traction_admissible": true,
+      "observables": {
+        "resultant_N": [
+          -0.049430694578253574,
+          0.0002975672389617703,
+          0.03808112646010806
+        ],
+        "moment_Nm": [
+          6.703087143605071e-09,
+          -0.0003009243252464827,
+          2.4084241480452053e-06
+        ],
+        "footprint_area_m2": 2.8402569645561028e-05,
+        "loaded_area_m2": 2.8402569645561028e-05,
+        "effective_traction_area_m2": 1.0534867648064077e-05,
+        "maximum_pressure_Pa": 8902.112135017971,
+        "minimum_pressure_Pa": 4.178571520116304e-08,
+        "maximum_shear_Pa": 6765.605313179807,
+        "integrated_pressure_N": 0.0500000000550964,
+        "integrated_shear_norm_N": 0.03800000001816454,
+        "integrated_traction_norm_N": 0.06280127392728713,
+        "integrated_traction_squared_N2_per_m2": 374.37584777013467,
+        "maximum_coulomb_violation_Pa": 0.0
+      }
+    }
+  ],
+  "traction_admissible": true,
+  "raw_global_peak_Pa": 10539.954809845507,
+  "raw_global_peak_position_m": [
+    -0.007996968889192114,
+    0.00022020123817421703,
+    2.1419038166402282e-05
+  ],
+  "energy_J": 9.996371627491859e-11,
+  "complete_budget_fraction": 1.4638630801364987e-06,
+  "models": [
+    {
+      "model": "pressure",
+      "native_classification": "unsupported_free_contact_moment",
+      "native_accepted": false
+    },
+    {
+      "model": "componentwise",
+      "native_classification": "numerically_qualified",
+      "native_accepted": true,
+      "source_native_field": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/load-matrix-capsule-l2-v3/results/near_slip/componentwise_field.npz",
+      "source_native_field_sha256": "7c33eb68bb74df0d6782f49818e1e84f44553a11f109dda19175e205c4329327",
+      "volume_l2_tensor_relative_difference": 0.049425689155707477,
+      "raw_peak_relative_difference": 0.04509695878227871
+    },
+    {
+      "model": "pair_union",
+      "native_classification": "numerically_qualified",
+      "native_accepted": true,
+      "source_native_field": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/load-matrix-capsule-l2-v3/results/near_slip/pair_union_field.npz",
+      "source_native_field_sha256": "012f1f8c6ca7960f9f107e09f4b0f185fce251fff3cf27f83d8a06d9be570a62",
+      "volume_l2_tensor_relative_difference": 0.04942568915570752,
+      "raw_peak_relative_difference": 0.04509695878223097
+    },
+    {
+      "model": "body_source_prior",
+      "native_classification": "numerically_qualified",
+      "native_accepted": true,
+      "source_native_field": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/load-matrix-capsule-l2-v3/results/near_slip/body_source_prior_field.npz",
+      "source_native_field_sha256": "082892602c0592217f1bae89d7697176db8f30b519cd40f64af2896042b8fbcb",
+      "volume_l2_tensor_relative_difference": 0.04991457310614796,
+      "raw_peak_relative_difference": 0.04180236386582159
+    }
+  ]
+}

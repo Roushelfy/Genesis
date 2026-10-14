@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="8" time="39.426" timestamp="2026-10-14T17:08:57.827724+00:00" hostname="cpu-207-115"><testcase classname="tests.rigid.test_stress" name="test_native_pcg_balanced_grip_release[u-1.0-False]" time="8.018" /><testcase classname="tests.rigid.test_stress" name="test_native_pcg_balanced_grip_release[u-1.0-True]" time="7.972"><failure message="AssertionError: &#10;Arrays are not equal&#10;&#10;Mismatched elements: 399 / 405 (98.5%)&#10;Max absolute difference among violations: 5.62035702e-19&#10;Max relative difference among violations: inf&#10; ACTUAL: array([[-3.421225e-19,  2.773266e-19, -2.300397e-19],&#10;       [-5.620357e-19,  0.000000e+00, -2.082727e-20],&#10;       [ 8.176813e-20, -2.613948e-19, -2.135647e-19],...&#10; DESIRED: array(0)">nonconvex_material_mesh = (array([[0.   , 0.   , 0.   ],
+       [0.   , 0.   , 0.001],
+       [0.   , 0.001, 0.   ],
+       [0.   , 0.001, 0.001...5, 24],
+       [24, 26, 27],
+       [29, 27, 26],
+       [26, 28, 29],
+       [31, 29, 28],
+       [28, 30, 31]]), 'u')
+tmp_path = PosixPath('/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/pcg-release-before-cpu-v1/tmp/pytest/popen-gw1/test_native_pcg_balanced_grip_0')
+warm_start = True, load_scale = 1.0
+
+    @pytest.mark.required
+    @pytest.mark.precision("64")
+    @pytest.mark.parametrize("warm_start", (False, True))
+    @pytest.mark.parametrize("load_scale", (1.0, 0.001))
+    def test_native_pcg_balanced_grip_release(
+        nonconvex_material_mesh,  # noqa: F811
+        tmp_path,
+        warm_start,
+        load_scale,
+    ):
+        vertices, tetrahedra, surface, _ = nonconvex_material_mesh
+        mesh = tmp_path / "release.npz"
+        np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=surface)
+        options = RigidStressOptions(mesh=mesh, method="pcg", output_mode="full", warm_start=warm_start)
+        model = StressModel(options)
+        coordinates = qd_to_numpy(model.info.vertices, transpose=True, copy=True)
+        nodes = [np.argmin(coordinates[:, 0]), np.argmax(coordinates[:, 0])]
+        direction = coordinates[nodes[1]] - coordinates[nodes[0]]
+        direction *= 0.05 * load_scale / np.linalg.norm(direction)
+        force = np.zeros((len(coordinates), 2, 3))
+        force[nodes[0]] = direction
+        force[nodes[1]] = -direction
+        np.testing.assert_allclose(force.sum(axis=0), 0, atol=1e-13)
+        np.testing.assert_allclose(np.cross(coordinates[:, None], force).sum(axis=0), 0, atol=1e-13)
+        state = model.create_state(2, "full")
+        omega = V_VEC(3, dtype=gs.qd_float, shape=(2,))
+        omega.fill(0)
+        state.force.from_numpy(force)
+        model.recover(omega, state)
+        assert qd_to_numpy(state.valid).all()
+        assert (qd_to_numpy(state.peak) &gt; 0).all()
+        assert (qd_to_numpy(state.rhs_norm_squared) &gt; 0).all()
+        peak = qd_to_numpy(state.peak, copy=True)
+        force[:, 0] = 0
+        state.force.from_numpy(force)
+        model.recover(omega, state)
+        assert qd_to_numpy(state.valid).all()
+&gt;       np.testing.assert_array_equal(qd_to_numpy(state.displacement, transpose=True)[0], 0)
+E       AssertionError: 
+E       Arrays are not equal
+E       
+E       Mismatched elements: 399 / 405 (98.5%)
+E       Max absolute difference among violations: 5.62035702e-19
+E       Max relative difference among violations: inf
+E        ACTUAL: array([[-3.421225e-19,  2.773266e-19, -2.300397e-19],
+E              [-5.620357e-19,  0.000000e+00, -2.082727e-20],
+E              [ 8.176813e-20, -2.613948e-19, -2.135647e-19],...
+E        DESIRED: array(0)
+
+tests/rigid/test_stress.py:102: AssertionError</failure></testcase><testcase classname="tests.rigid.test_stress" name="test_native_pcg_balanced_grip_release[u-0.001-False]" time="5.931" /><testcase classname="tests.rigid.test_stress" name="test_native_pcg_balanced_grip_release[u-0.001-True]" time="5.875"><failure message="AssertionError: &#10;Arrays are not equal&#10;&#10;Mismatched elements: 399 / 405 (98.5%)&#10;Max absolute difference among violations: 6.08941915e-19&#10;Max relative difference among violations: inf&#10; ACTUAL: array([[ 1.501064e-20, -4.681744e-20, -1.865437e-19],&#10;       [-9.999419e-20,  0.000000e+00,  6.212198e-20],&#10;       [ 2.173788e-19, -1.054565e-19, -4.119435e-20],...&#10; DESIRED: array(0)">nonconvex_material_mesh = (array([[0.   , 0.   , 0.   ],
+       [0.   , 0.   , 0.001],
+       [0.   , 0.001, 0.   ],
+       [0.   , 0.001, 0.001...5, 24],
+       [24, 26, 27],
+       [29, 27, 26],
+       [26, 28, 29],
+       [31, 29, 28],
+       [28, 30, 31]]), 'u')
+tmp_path = PosixPath('/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/pcg-release-before-cpu-v1/tmp/pytest/popen-gw1/test_native_pcg_balanced_grip_1')
+warm_start = True, load_scale = 0.001
+
+    @pytest.mark.required
+    @pytest.mark.precision("64")
+    @pytest.mark.parametrize("warm_start", (False, True))
+    @pytest.mark.parametrize("load_scale", (1.0, 0.001))
+    def test_native_pcg_balanced_grip_release(
+        nonconvex_material_mesh,  # noqa: F811
+        tmp_path,
+        warm_start,
+        load_scale,
+    ):
+        vertices, tetrahedra, surface, _ = nonconvex_material_mesh
+        mesh = tmp_path / "release.npz"
+        np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=surface)
+        options = RigidStressOptions(mesh=mesh, method="pcg", output_mode="full", warm_start=warm_start)
+        model = StressModel(options)
+        coordinates = qd_to_numpy(model.info.vertices, transpose=True, copy=True)
+        nodes = [np.argmin(coordinates[:, 0]), np.argmax(coordinates[:, 0])]
+        direction = coordinates[nodes[1]] - coordinates[nodes[0]]
+        direction *= 0.05 * load_scale / np.linalg.norm(direction)
+        force = np.zeros((len(coordinates), 2, 3))
+        force[nodes[0]] = direction
+        force[nodes[1]] = -direction
+        np.testing.assert_allclose(force.sum(axis=0), 0, atol=1e-13)
+        np.testing.assert_allclose(np.cross(coordinates[:, None], force).sum(axis=0), 0, atol=1e-13)
+        state = model.create_state(2, "full")
+        omega = V_VEC(3, dtype=gs.qd_float, shape=(2,))
+        omega.fill(0)
+        state.force.from_numpy(force)
+        model.recover(omega, state)
+        assert qd_to_numpy(state.valid).all()
+        assert (qd_to_numpy(state.peak) &gt; 0).all()
+        assert (qd_to_numpy(state.rhs_norm_squared) &gt; 0).all()
+        peak = qd_to_numpy(state.peak, copy=True)
+        force[:, 0] = 0
+        state.force.from_numpy(force)
+        model.recover(omega, state)
+        assert qd_to_numpy(state.valid).all()
+&gt;       np.testing.assert_array_equal(qd_to_numpy(state.displacement, transpose=True)[0], 0)
+E       AssertionError: 
+E       Arrays are not equal
+E       
+E       Mismatched elements: 399 / 405 (98.5%)
+E       Max absolute difference among violations: 6.08941915e-19
+E       Max relative difference among violations: inf
+E        ACTUAL: array([[ 1.501064e-20, -4.681744e-20, -1.865437e-19],
+E              [-9.999419e-20,  0.000000e+00,  6.212198e-20],
+E              [ 2.173788e-19, -1.054565e-19, -4.119435e-20],...
+E        DESIRED: array(0)
+
+tests/rigid/test_stress.py:102: AssertionError</failure></testcase><testcase classname="tests.rigid.test_stress" name="test_native_pcg_balanced_grip_release[cavity-1.0-True]" time="5.678"><failure message="AssertionError: &#10;Arrays are not equal&#10;&#10;Mismatched elements: 1020 / 1026 (99.4%)&#10;Max absolute difference among violations: 3.28704468e-19&#10;Max relative difference among violations: inf&#10; ACTUAL: array([[ 3.019828e-19,  0.000000e+00,  0.000000e+00],&#10;       [-4.600164e-20,  1.015965e-19,  1.152401e-19],&#10;       [-2.822522e-19, -4.500135e-20, -1.659655e-19],...&#10; DESIRED: array(0)">nonconvex_material_mesh = (array([[0.   , 0.   , 0.   ],
+       [0.   , 0.   , 0.001],
+       [0.   , 0.   , 0.002],
+       [0.   , 0.   , 0.003...],
+       [56, 60, 61],
+       [62, 58, 57],
+       [57, 61, 62],
+       [63, 59, 58],
+       [58, 62, 63]]), 'cavity')
+tmp_path = PosixPath('/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/pcg-release-before-cpu-v1/tmp/pytest/popen-gw1/test_native_pcg_balanced_grip_2')
+warm_start = True, load_scale = 1.0
+
+    @pytest.mark.required
+    @pytest.mark.precision("64")
+    @pytest.mark.parametrize("warm_start", (False, True))
+    @pytest.mark.parametrize("load_scale", (1.0, 0.001))
+    def test_native_pcg_balanced_grip_release(
+        nonconvex_material_mesh,  # noqa: F811
+        tmp_path,
+        warm_start,
+        load_scale,
+    ):
+        vertices, tetrahedra, surface, _ = nonconvex_material_mesh
+        mesh = tmp_path / "release.npz"
+        np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=surface)
+        options = RigidStressOptions(mesh=mesh, method="pcg", output_mode="full", warm_start=warm_start)
+        model = StressModel(options)
+        coordinates = qd_to_numpy(model.info.vertices, transpose=True, copy=True)
+        nodes = [np.argmin(coordinates[:, 0]), np.argmax(coordinates[:, 0])]
+        direction = coordinates[nodes[1]] - coordinates[nodes[0]]
+        direction *= 0.05 * load_scale / np.linalg.norm(direction)
+        force = np.zeros((len(coordinates), 2, 3))
+        force[nodes[0]] = direction
+        force[nodes[1]] = -direction
+        np.testing.assert_allclose(force.sum(axis=0), 0, atol=1e-13)
+        np.testing.assert_allclose(np.cross(coordinates[:, None], force).sum(axis=0), 0, atol=1e-13)
+        state = model.create_state(2, "full")
+        omega = V_VEC(3, dtype=gs.qd_float, shape=(2,))
+        omega.fill(0)
+        state.force.from_numpy(force)
+        model.recover(omega, state)
+        assert qd_to_numpy(state.valid).all()
+        assert (qd_to_numpy(state.peak) &gt; 0).all()
+        assert (qd_to_numpy(state.rhs_norm_squared) &gt; 0).all()
+        peak = qd_to_numpy(state.peak, copy=True)
+        force[:, 0] = 0
+        state.force.from_numpy(force)
+        model.recover(omega, state)
+        assert qd_to_numpy(state.valid).all()
+&gt;       np.testing.assert_array_equal(qd_to_numpy(state.displacement, transpose=True)[0], 0)
+E       AssertionError: 
+E       Arrays are not equal
+E       
+E       Mismatched elements: 1020 / 1026 (99.4%)
+E       Max absolute difference among violations: 3.28704468e-19
+E       Max relative difference among violations: inf
+E        ACTUAL: array([[ 3.019828e-19,  0.000000e+00,  0.000000e+00],
+E              [-4.600164e-20,  1.015965e-19,  1.152401e-19],
+E              [-2.822522e-19, -4.500135e-20, -1.659655e-19],...
+E        DESIRED: array(0)
+
+tests/rigid/test_stress.py:102: AssertionError</failure></testcase><testcase classname="tests.rigid.test_stress" name="test_native_pcg_balanced_grip_release[cavity-1.0-False]" time="5.692" /><testcase classname="tests.rigid.test_stress" name="test_native_pcg_balanced_grip_release[cavity-0.001-True]" time="5.677"><failure message="AssertionError: &#10;Arrays are not equal&#10;&#10;Mismatched elements: 1020 / 1026 (99.4%)&#10;Max absolute difference among violations: 1.32980896e-18&#10;Max relative difference among violations: inf&#10; ACTUAL: array([[ 8.501202e-21,  0.000000e+00,  0.000000e+00],&#10;       [ 6.305120e-20, -2.098162e-20, -6.426692e-20],&#10;       [ 3.479439e-19, -3.138347e-19, -1.001352e-19],...&#10; DESIRED: array(0)">nonconvex_material_mesh = (array([[0.   , 0.   , 0.   ],
+       [0.   , 0.   , 0.001],
+       [0.   , 0.   , 0.002],
+       [0.   , 0.   , 0.003...],
+       [56, 60, 61],
+       [62, 58, 57],
+       [57, 61, 62],
+       [63, 59, 58],
+       [58, 62, 63]]), 'cavity')
+tmp_path = PosixPath('/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/pcg-release-before-cpu-v1/tmp/pytest/popen-gw1/test_native_pcg_balanced_grip_3')
+warm_start = True, load_scale = 0.001
+
+    @pytest.mark.required
+    @pytest.mark.precision("64")
+    @pytest.mark.parametrize("warm_start", (False, True))
+    @pytest.mark.parametrize("load_scale", (1.0, 0.001))
+    def test_native_pcg_balanced_grip_release(
+        nonconvex_material_mesh,  # noqa: F811
+        tmp_path,
+        warm_start,
+        load_scale,
+    ):
+        vertices, tetrahedra, surface, _ = nonconvex_material_mesh
+        mesh = tmp_path / "release.npz"
+        np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=surface)
+        options = RigidStressOptions(mesh=mesh, method="pcg", output_mode="full", warm_start=warm_start)
+        model = StressModel(options)
+        coordinates = qd_to_numpy(model.info.vertices, transpose=True, copy=True)
+        nodes = [np.argmin(coordinates[:, 0]), np.argmax(coordinates[:, 0])]
+        direction = coordinates[nodes[1]] - coordinates[nodes[0]]
+        direction *= 0.05 * load_scale / np.linalg.norm(direction)
+        force = np.zeros((len(coordinates), 2, 3))
+        force[nodes[0]] = direction
+        force[nodes[1]] = -direction
+        np.testing.assert_allclose(force.sum(axis=0), 0, atol=1e-13)
+        np.testing.assert_allclose(np.cross(coordinates[:, None], force).sum(axis=0), 0, atol=1e-13)
+        state = model.create_state(2, "full")
+        omega = V_VEC(3, dtype=gs.qd_float, shape=(2,))
+        omega.fill(0)
+        state.force.from_numpy(force)
+        model.recover(omega, state)
+        assert qd_to_numpy(state.valid).all()
+        assert (qd_to_numpy(state.peak) &gt; 0).all()
+        assert (qd_to_numpy(state.rhs_norm_squared) &gt; 0).all()
+        peak = qd_to_numpy(state.peak, copy=True)
+        force[:, 0] = 0
+        state.force.from_numpy(force)
+        model.recover(omega, state)
+        assert qd_to_numpy(state.valid).all()
+&gt;       np.testing.assert_array_equal(qd_to_numpy(state.displacement, transpose=True)[0], 0)
+E       AssertionError: 
+E       Arrays are not equal
+E       
+E       Mismatched elements: 1020 / 1026 (99.4%)
+E       Max absolute difference among violations: 1.32980896e-18
+E       Max relative difference among violations: inf
+E        ACTUAL: array([[ 8.501202e-21,  0.000000e+00,  0.000000e+00],
+E              [ 6.305120e-20, -2.098162e-20, -6.426692e-20],
+E              [ 3.479439e-19, -3.138347e-19, -1.001352e-19],...
+E        DESIRED: array(0)
+
+tests/rigid/test_stress.py:102: AssertionError</failure></testcase><testcase classname="tests.rigid.test_stress" name="test_native_pcg_balanced_grip_release[cavity-0.001-False]" time="5.859" /></testsuite></testsuites>

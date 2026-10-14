@@ -1,0 +1,33 @@
+{
+  "claim_anchor": "fixed-wrench-profile-ambiguity",
+  "claim": "Identical original point wrenches permit different admissible traction distributions and different stress predictions",
+  "material_passport": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/profile-summary-v1/results/summary.json",
+      "sha256": "aaabffe2444706af69d829225d5f10e6962f8eb0ab203e2fd53f7edd80ccaa6d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/matrix-mesh-capsule-v1/meshes/h0.0025.npz",
+      "sha256": "e885970003e1d4066d1e549dec790c72eb8c414951fe0335884d843162155f42"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/profile-capsule-q4-v1/results/opposing/narrow/reference_field.npz",
+      "sha256": "1dae8a8c472ebcf3be24a12e62ee43e01776a7cd2a1812499cae88e39393c57e"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/profile-capsule-q4-v1/results/opposing/baseline/reference_field.npz",
+      "sha256": "6c31cee503f6fe882ce4ac7854c0844210b5bda3268b08f106947c90e716b1c7"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/profile-capsule-q4-v1/results/opposing/quartic/reference_field.npz",
+      "sha256": "19443273201fad54fcb6c52b0014900917367fa357c0f830243d9550be4c2650"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/load-matrix-capsule-l2-v3/results/opposing/componentwise_field.npz",
+      "sha256": "c16d3a02f3d4fc612656309faeac82319d77999dee83d56fd56fa5c59d39c516"
+    }
+  ],
+  "caption": "Opposing0.05N patches, radius3mm and friction2. All displayed alternative profiles preserve the original six-component patch wrenches and use byte-identical rigid inputs. The peak chart retains every raw global corner maximum. The full3D stress maps use a shared scale and exact face-centroid tensors for display; stars identify unaveraged global corner maxima. Pressure maps retain quadrature samples with matched colour limits and physical coordinates. Native input/profile is unchanged. These are fixed-discretization model comparisons, not continuum or contact-feedback validation.",
+  "rendered_text_qa": "passed",
+  "open_issues": "Coulomb admissibility is sampled; complete mesh/contact convergence and resolved egg/Franka comparisons remain required."
+}

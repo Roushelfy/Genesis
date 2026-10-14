@@ -1,0 +1,122 @@
+diff --git a/genesis/engine/solvers/rigid/stress/model.py b/genesis/engine/solvers/rigid/stress/model.py
+index 7b1a970b..0e824e01 100644
+--- a/genesis/engine/solvers/rigid/stress/model.py
++++ b/genesis/engine/solvers/rigid/stress/model.py
+@@ -270,7 +270,7 @@ class StressModel:
+                 kernel_pcg_chunk(
+                     options.young,
+                     0.01 * options.tolerance,
+-                    options.absolute_tolerance,
++                    0.01 * options.absolute_tolerance,
+                     options.max_iterations,
+                     state,
+                     self.info,
+diff --git a/genesis/engine/solvers/rigid/stress/solve.py b/genesis/engine/solvers/rigid/stress/solve.py
+index bc71a9b0..b343c2f1 100644
+--- a/genesis/engine/solvers/rigid/stress/solve.py
++++ b/genesis/engine/solvers/rigid/stress/solve.py
+@@ -83,9 +83,18 @@ def kernel_pcg_init(
+         stress_state.residual_norm_squared[i_b] = 0.0
+         stress_state.residual_preconditioned[i_b] = 0.0
+         stress_state.valid[i_b] = True
++    if qd.static(warm_start):
++        for i_n, i_b in qd.ndrange(stress_info.vertices.shape[0], stress_state.active.shape[0]):
++            qd.atomic_add(
++                stress_state.rhs_norm_squared[i_b], stress_state.rhs[i_n, i_b].dot(stress_state.rhs[i_n, i_b])
++            )
+     for i_n, i_b in qd.ndrange(stress_info.vertices.shape[0], stress_state.active.shape[0]):
+         if qd.static(not warm_start):
+             stress_state.displacement[i_n, i_b] = qd.Vector.zero(gs.qd_float, 3)
++        else:
++            # The complete zero RHS has the exact zero solution in the pinned gauge
++            if stress_state.rhs_norm_squared[i_b] == 0.0:
++                stress_state.displacement[i_n, i_b] = qd.Vector.zero(gs.qd_float, 3)
+         stress_state.displacement[i_n, i_b] *= stress_info.is_free[i_n]
+     for i_n, i_b in qd.ndrange(stress_info.vertices.shape[0], stress_state.active.shape[0]):
+         product = qd.Vector.zero(gs.qd_float, 3)
+@@ -97,7 +106,10 @@ def kernel_pcg_init(
+         stress_state.residual[i_n, i_b] = residual
+         stress_state.preconditioned[i_n, i_b] = z
+         stress_state.direction[i_n, i_b] = z
+-        qd.atomic_add(stress_state.rhs_norm_squared[i_b], stress_state.rhs[i_n, i_b].dot(stress_state.rhs[i_n, i_b]))
++        if qd.static(not warm_start):
++            qd.atomic_add(
++                stress_state.rhs_norm_squared[i_b], stress_state.rhs[i_n, i_b].dot(stress_state.rhs[i_n, i_b])
++            )
+         qd.atomic_add(stress_state.residual_norm_squared[i_b], residual.dot(residual))
+         qd.atomic_add(stress_state.residual_preconditioned[i_b], residual.dot(z))
+ 
+diff --git a/research/rigid_stress/load_model_validation.py b/research/rigid_stress/load_model_validation.py
+index 53bc1377..ea67969e 100644
+--- a/research/rigid_stress/load_model_validation.py
++++ b/research/rigid_stress/load_model_validation.py
+@@ -131,6 +131,14 @@ def native_cloud(model, surface, contacts, mapped, source_ids, patches):
+     area_weights = qd_to_numpy(areas, transpose=True, copy=True)[0]
+     sample_faces = qd_to_numpy(samples.faces, transpose=True, copy=True)[0]
+     basis = qd_to_numpy(samples.shape, transpose=True, copy=True)[0]
++    if mapped is not None:
++        # A reused mapper can reserve more slots than the current packed inputs.
++        # Audit unused forces before excluding those slots from physical observables.
++        count = len(order)
++        np.testing.assert_array_equal(actual_force[:, count:], 0)
++        positions, normals = positions[:, :count], normals[:, :count]
++        actual_force, area_weights = actual_force[:, :count], area_weights[:, :count]
++        sample_faces, basis = sample_faces[:, :count], basis[:, :count]
+     selected = (area_weights > 0) & (sample_faces >= 0)
+     destination = np.broadcast_to(source_ids[order][None], selected.shape)
+     friction = np.broadcast_to(
+diff --git a/tests/rigid/test_stress.py b/tests/rigid/test_stress.py
+index 4d19adc1..0db72b14 100644
+--- a/tests/rigid/test_stress.py
++++ b/tests/rigid/test_stress.py
+@@ -62,6 +62,50 @@ def kernel_apex_contact_graph(
+     func_scatter_warp(contacts, state, info, surface, True)
+ 
+ 
++@pytest.mark.required
++@pytest.mark.precision("64")
++@pytest.mark.parametrize("warm_start", (False, True))
++@pytest.mark.parametrize("load_scale", (1.0, 0.001))
++def test_native_pcg_balanced_grip_release(
++    nonconvex_material_mesh,  # noqa: F811
++    tmp_path,
++    warm_start,
++    load_scale,
++):
++    vertices, tetrahedra, surface, _ = nonconvex_material_mesh
++    mesh = tmp_path / "release.npz"
++    np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=surface)
++    options = RigidStressOptions(mesh=mesh, method="pcg", output_mode="full", warm_start=warm_start)
++    model = StressModel(options)
++    coordinates = qd_to_numpy(model.info.vertices, transpose=True, copy=True)
++    nodes = [np.argmin(coordinates[:, 0]), np.argmax(coordinates[:, 0])]
++    direction = coordinates[nodes[1]] - coordinates[nodes[0]]
++    direction *= 0.05 * load_scale / np.linalg.norm(direction)
++    force = np.zeros((len(coordinates), 2, 3))
++    force[nodes[0]] = direction
++    force[nodes[1]] = -direction
++    np.testing.assert_allclose(force.sum(axis=0), 0, atol=1e-13)
++    np.testing.assert_allclose(np.cross(coordinates[:, None], force).sum(axis=0), 0, atol=1e-13)
++    state = model.create_state(2, "full")
++    omega = V_VEC(3, dtype=gs.qd_float, shape=(2,))
++    omega.fill(0)
++    state.force.from_numpy(force)
++    model.recover(omega, state)
++    assert qd_to_numpy(state.valid).all()
++    assert (qd_to_numpy(state.peak) > 0).all()
++    assert (qd_to_numpy(state.rhs_norm_squared) > 0).all()
++    peak = qd_to_numpy(state.peak, copy=True)
++    force[:, 0] = 0
++    state.force.from_numpy(force)
++    model.recover(omega, state)
++    assert qd_to_numpy(state.valid).all()
++    np.testing.assert_array_equal(qd_to_numpy(state.displacement, transpose=True)[0], 0)
++    np.testing.assert_array_equal(qd_to_numpy(state.stress_tensor, transpose=True)[0], 0)
++    np.testing.assert_array_equal(qd_to_numpy(state.von_mises, transpose=True)[0], 0)
++    np.testing.assert_array_equal(qd_to_numpy(state.peak)[0], 0)
++    np.testing.assert_allclose(qd_to_numpy(state.peak)[1], peak[1], rtol=1e-4, atol=1e-3)
++
++
+ @pytest.mark.required
+ @pytest.mark.precision("64")
+ def test_native_full_field_same_state_and_invalid_solve(tmp_path):

@@ -1,0 +1,32 @@
+{
+  "geometry": {
+    "name": "egg",
+    "description": "Full normal-offset hollow egg,22/22/30mm semiaxes, taper0.18",
+    "thickness_m": 0.0005,
+    "gap_m": null,
+    "minimum_rounding_m": null
+  },
+  "gmsh_version": "4.14.1",
+  "volume_construction": "independent Gmsh surface with matched normal-offset layers",
+  "mesh_size": 0.03,
+  "mesh_size_units": "unit-sphere coordinates",
+  "shell_layers": 2,
+  "nodes": 50229,
+  "tetrahedra": 200892,
+  "boundary_triangles": 66964,
+  "dimensions_m": [
+    0.04468283901956718,
+    0.04468433917628484,
+    0.06
+  ],
+  "minimum_volume_m3": 5.009649908427691e-12,
+  "total_volume_m3": 3.7424638563292806e-06,
+  "scaled_jacobian_percentiles": [
+    0.10405041546044985,
+    0.18046595553929226,
+    0.30475712433419627,
+    0.8621141678235243,
+    0.8943640182072662
+  ],
+  "mesh_sha256": "eed14415d94398463581e3c676d272b6aa25de37ace1faf432a54cb1e69f690c"
+}
