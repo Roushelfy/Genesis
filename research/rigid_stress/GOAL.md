@@ -35,6 +35,12 @@ is0.879%; supported sticking controls converge after resolving contact-entry
 increments. Full physical refinement, separated error axes, radius/profile
 sensitivity, changing histories, warmed accuracy/cost and resolved egg/Franka/
 interior-hotspot comparisons remain required. This stage remains active.
+The [separated-error update](docs/PHYSICAL_ERROR_AXES_20261014.md) adds fixed
+polyhedron volume studies, independent quadrature bounds,150 additional native
+quadrature/port fields, radius sweeps and three force-controlled contact controls.
+The fixed-U raw peak grows on seed reentrant creases. Finer CAD reference sweeps
+are running; full-U coupled attempts remain unqualified. These findings retain
+the full physical-validation objective and its unfinished completion criteria.
 
 ## Previous nonconvex implementation brief, 2026-10-11
 

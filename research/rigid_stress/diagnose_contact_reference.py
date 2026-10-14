@@ -10,23 +10,42 @@ from scipy import sparse
 from scipy.sparse.linalg import splu
 
 from .contact_reference import IndependentContactSystem, block_reference
+from .skfem_reference import SkfemElasticReference
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--failure", type=Path, required=True)
-    parser.add_argument("--resolution", type=int, required=True)
+    parser.add_argument("--resolution", type=int, default=3)
+    parser.add_argument("--grasp-body-mesh", type=Path)
+    parser.add_argument("--friction", type=float, default=0)
     parser.add_argument("--dhat", type=float, required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    lower = block_reference((-0.005, -0.005, -0.005), (0.005, 0.005, 0), args.resolution, 1e6, 0)
-    upper = block_reference((-0.005, -0.005, 0.001), (0.005, 0.005, 0.006), args.resolution, 1e6, 0)
-    system = IndependentContactSystem((("lower", lower), ("upper", upper)), args.dhat, 1e6, 0, 1e-8)
+    if args.grasp_body_mesh is None:
+        lower = block_reference((-0.005, -0.005, -0.005), (0.005, 0.005, 0), args.resolution, 1e6, 0)
+        upper = block_reference((-0.005, -0.005, 0.001), (0.005, 0.005, 0.006), args.resolution, 1e6, 0)
+        references = (("lower", lower), ("upper", upper))
+    else:
+        references = []
+        for name, path, young, poisson, density in (
+            ("body", args.grasp_body_mesh, 1e10, 0.3, 2000),
+            ("left_shoe", args.failure.parent / "left_shoe_mesh.npz", 1e6, 0, 1000),
+            ("right_shoe", args.failure.parent / "right_shoe_mesh.npz", 1e6, 0, 1000),
+        ):
+            with np.load(path) as saved:
+                reference = SkfemElasticReference(saved["vertices"], saved["tetrahedra"], young, poisson, density)
+            references.append((name, reference))
+    system = IndependentContactSystem(references, args.dhat, 1e6, args.friction, 1e-8)
     with np.load(args.failure) as saved:
         displacement, previous, boundary = saved["displacement"], saved["previous_displacement"], saved["boundary_dofs"]
+        lagged = saved["lagged_displacement"]
         np.testing.assert_array_equal(system.rest, saved["rest_positions"])
     free = np.setdiff1d(np.arange(len(displacement)), boundary)
     tangential = ipctk.TangentialCollisions()
+    if args.friction > 0:
+        normal, positions = system.normal_collisions(lagged)
+        tangential.build(system.mesh, positions, normal, system.barrier, args.friction)
     energy, gradient, matrix, _, _ = system.evaluate(displacement, previous, tangential, hessian=True)
     directions = []
     scale = np.max(np.abs(matrix.diagonal()))
@@ -78,6 +97,10 @@ def main():
             }
         )
     result = {
+        "initial_intersections": bool(ipctk.has_intersections(system.mesh, system.mesh.vertices(system.rest))),
+        "failed_state_intersections": bool(
+            ipctk.has_intersections(system.mesh, system.mesh.vertices(system.rest + displacement.reshape(-1, 3)))
+        ),
         "energy_J": energy,
         "free_residual_N": np.linalg.norm(gradient[free]),
         "directions": directions,
