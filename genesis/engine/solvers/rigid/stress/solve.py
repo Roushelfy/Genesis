@@ -83,9 +83,18 @@ def kernel_pcg_init(
         stress_state.residual_norm_squared[i_b] = 0.0
         stress_state.residual_preconditioned[i_b] = 0.0
         stress_state.valid[i_b] = True
+    if qd.static(warm_start):
+        for i_n, i_b in qd.ndrange(stress_info.vertices.shape[0], stress_state.active.shape[0]):
+            qd.atomic_add(
+                stress_state.rhs_norm_squared[i_b], stress_state.rhs[i_n, i_b].dot(stress_state.rhs[i_n, i_b])
+            )
     for i_n, i_b in qd.ndrange(stress_info.vertices.shape[0], stress_state.active.shape[0]):
         if qd.static(not warm_start):
             stress_state.displacement[i_n, i_b] = qd.Vector.zero(gs.qd_float, 3)
+        else:
+            # The complete zero RHS has the exact zero solution in the pinned gauge
+            if stress_state.rhs_norm_squared[i_b] == 0.0:
+                stress_state.displacement[i_n, i_b] = qd.Vector.zero(gs.qd_float, 3)
         stress_state.displacement[i_n, i_b] *= stress_info.is_free[i_n]
     for i_n, i_b in qd.ndrange(stress_info.vertices.shape[0], stress_state.active.shape[0]):
         product = qd.Vector.zero(gs.qd_float, 3)
@@ -97,7 +106,10 @@ def kernel_pcg_init(
         stress_state.residual[i_n, i_b] = residual
         stress_state.preconditioned[i_n, i_b] = z
         stress_state.direction[i_n, i_b] = z
-        qd.atomic_add(stress_state.rhs_norm_squared[i_b], stress_state.rhs[i_n, i_b].dot(stress_state.rhs[i_n, i_b]))
+        if qd.static(not warm_start):
+            qd.atomic_add(
+                stress_state.rhs_norm_squared[i_b], stress_state.rhs[i_n, i_b].dot(stress_state.rhs[i_n, i_b])
+            )
         qd.atomic_add(stress_state.residual_norm_squared[i_b], residual.dot(residual))
         qd.atomic_add(stress_state.residual_preconditioned[i_b], residual.dot(z))
 

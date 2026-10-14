@@ -131,6 +131,14 @@ def native_cloud(model, surface, contacts, mapped, source_ids, patches):
     area_weights = qd_to_numpy(areas, transpose=True, copy=True)[0]
     sample_faces = qd_to_numpy(samples.faces, transpose=True, copy=True)[0]
     basis = qd_to_numpy(samples.shape, transpose=True, copy=True)[0]
+    if mapped is not None:
+        # A reused mapper can reserve more slots than the current packed inputs.
+        # Audit unused forces before excluding those slots from physical observables.
+        count = len(order)
+        np.testing.assert_array_equal(actual_force[:, count:], 0)
+        positions, normals = positions[:, :count], normals[:, :count]
+        actual_force, area_weights = actual_force[:, :count], area_weights[:, :count]
+        sample_faces, basis = sample_faces[:, :count], basis[:, :count]
     selected = (area_weights > 0) & (sample_faces >= 0)
     destination = np.broadcast_to(source_ids[order][None], selected.shape)
     friction = np.broadcast_to(

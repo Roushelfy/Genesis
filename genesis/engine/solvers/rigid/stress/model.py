@@ -270,7 +270,7 @@ class StressModel:
                 kernel_pcg_chunk(
                     options.young,
                     0.01 * options.tolerance,
-                    options.absolute_tolerance,
+                    0.01 * options.absolute_tolerance,
                     options.max_iterations,
                     state,
                     self.info,
