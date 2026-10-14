@@ -27,7 +27,12 @@ diagnostics are separate from measured load-model and omitted-feedback errors;
 no universal3% claim or tolerance relaxation is implied.
 
 Next evidence priorities are the scheduled separated U contact axes and third
-level, nonlinear pad comparison, resolved full egg followed by actual Franka
+level, nonlinear pad/all-part comparison with objective finite-rotation checks,
+resolved full egg followed by actual Franka
 matching, regularization/history tails, and corresponding rigid-contact feedback.
-The latest completed checkpoint is
+The latest completed load-model replay checkpoint is
 [PHYSICAL_RESOLVED_MODELS_20261014.md](PHYSICAL_RESOLVED_MODELS_20261014.md).
+The [nonlinear bulk qualification](PHYSICAL_NONLINEAR_REFERENCE_20261014.md)
+adds derivative/objectivity/whole-volume bounds and two live same-protocol
+references. Evaluating a different law at saved positions is diagnostic evidence;
+it does not establish its contact equilibrium or physical accuracy.
