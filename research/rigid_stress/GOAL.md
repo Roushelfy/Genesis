@@ -19,10 +19,13 @@ elastic numerical error. Commit and push reproducible progress and findings.
 The previous completion records do not establish this stage's acceptance.
 
 Initial progress is in [PHYSICAL_VALIDATION_PROGRESS_20261014.md](docs/PHYSICAL_VALIDATION_PROGRESS_20261014.md).
-Independent scikit-fem assembly/boundary integration and analytic free-body
-fields pass8CPU/8CUDA cases with32 independently checked fields. Seven initial
-full3D geometry assets are constructed. The first spherical-shell convergence
-curve exposes remaining physical error and an extended sweep is in progress.
+It establishes independent scikit-fem assembly/boundary integration, analytic
+free-body fields and seven initial full3D geometry assets.
+The [independent-gauge/control update](docs/PHYSICAL_CONTROLS_20261014.md) adds
+8 CPU/8 CUDA gauge/probe passes and a successful five-level shell curve. Its
+finest absolute tensor error is 1.017%, but the tensor tail remains 3.966%.
+The best normal-contact control accepts 11/12, with one unresolved configuration.
+Neither control establishes completion of the required full physical matrix.
 The complete load-model sensitivity, physical matrix and deformable-contact
 comparisons remain required. This stage remains active.
 

@@ -1,5 +1,10 @@
 # Load-model and physical-validation progress
 
+The later [independent-gauge/control update](PHYSICAL_CONTROLS_20261014.md)
+supersedes the running items below: the fine shell completes with1.017% absolute
+tensor error but3.966% tensor tail change. The contact control retains11/12
+accepted configurations and one unresolved case. The full stage remains active.
+
 The active stage follows [LOAD_MODEL_PHYSICAL_VALIDATION.md](LOAD_MODEL_PHYSICAL_VALIDATION.md).
 The [execution protocol](PHYSICAL_VALIDATION_PROTOCOL_20261014.md) declares
 observables and initial criteria before inspecting the physical curves.

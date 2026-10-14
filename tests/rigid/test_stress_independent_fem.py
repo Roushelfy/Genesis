@@ -32,6 +32,7 @@ def test_independent_fem_assembly_boundary_loads_and_inertia_relief(
     options = RigidStressOptions(mesh=mesh, method=method, output_mode="full")
     native = StressModel(options)
     reference = SkfemElasticReference(vertices, tets, options.young, options.poisson, options.density)
+    mass_gauge = SkfemElasticReference(vertices, tets, options.young, options.poisson, options.density, gauge="mass")
     coordinates = qd_to_numpy(native.info.vertices)
     permutation = reference.native_dof_permutation(coordinates)
     columns = qd_to_numpy(native.info.columns)
@@ -86,6 +87,16 @@ def test_independent_fem_assembly_boundary_loads_and_inertia_relief(
     np.testing.assert_allclose(probe_tensor, solved.tensor_pa.mean(axis=1), rtol=1e-9, atol=1e-7)
     assert np.isfinite(probe_vm).all()
 
+    barycentric = np.array([[0.1, 0.2, 0.3, 0.4], [0.6, 0.1, 0.2, 0.1], [0.15, 0.35, 0.4, 0.1]])
+    points = np.einsum("qc,ecj->eqj", barycentric, vertices[tets]).reshape(-1, 3)
+    probe_tensor, _ = reference.stress_at_points(solved.displacement, points)
+    if analytic == "uniform_strain":
+        expected_probes = np.broadcast_to(tensor, probe_tensor.shape)
+    else:
+        expected_probes = np.zeros_like(probe_tensor)
+        expected_probes[:, 0, 0] = options.young * curvature * points[:, 2]
+    np.testing.assert_allclose(probe_tensor, expected_probes, rtol=1e-9, atol=1e-7)
+
     random = np.random.default_rng(2026101401)
     random_force = random.normal(size=reference.basis.N) * 1e-5
     forces = (force, random_force)
@@ -105,6 +116,12 @@ def test_independent_fem_assembly_boundary_loads_and_inertia_relief(
     rows = []
     for environment, (load, velocity) in enumerate(zip(forces, velocities)):
         oracle = reference.solve(load, velocity)
+        mass_oracle = mass_gauge.solve(load, velocity)
+        assert oracle.residual_budget_fraction <= 1
+        assert mass_oracle.residual_budget_fraction <= 1
+        np.testing.assert_allclose(oracle.displacement, mass_oracle.displacement, rtol=1e-9, atol=1e-17)
+        np.testing.assert_allclose(oracle.tensor_pa, mass_oracle.tensor_pa, rtol=1e-9, atol=1e-7)
+        np.testing.assert_allclose(oracle.energy_j, mass_oracle.energy_j, rtol=1e-10, atol=1e-20)
         native_displacement = np.empty(reference.basis.N)
         native_displacement[permutation] = displacements[environment]
         aligned = reference.align_rigid_gauge(native_displacement)
@@ -126,6 +143,9 @@ def test_independent_fem_assembly_boundary_loads_and_inertia_relief(
                 "budget_fraction": residual / budget,
                 "peak_difference_Pa": abs(peaks[environment] - oracle.peak_pa),
                 "energy_J": energy,
+                "independent_pinned_residual_budget_fraction": oracle.residual_budget_fraction,
+                "independent_mass_residual_budget_fraction": mass_oracle.residual_budget_fraction,
+                "independent_gauge_peak_difference_Pa": abs(oracle.peak_pa - mass_oracle.peak_pa),
             }
         )
     record_property(
