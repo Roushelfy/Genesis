@@ -2,8 +2,9 @@
 
 Numerical source `76537c2f` integrates the qualified coalesced-coordinate,
 valid-source, warm-Hessian, sparse-diagnostic and warp-counter optimizations.
-The extension remains active while wider and copied-cohort curves finish.
-No unfinished width or throughput optimum is claimed.
+All six four-scope widths and the copied-cohort curve have finished.
+The extension's final closeout is tracked in `../GOAL.md` and
+[the current audit](NATIVE_NONCONVEX_CLOSEOUT_20261014.md).
 
 ## Workload and scopes
 
@@ -46,6 +47,8 @@ the archives; no difficult environment is removed.
 |2048 /623102|211411.647 (103.2283)|135534.656 (66.1790)|68509.262 (33.4518)|65377.457 (31.9226)|
 |4096 /623103|353558.373 (86.3180)|159786.742 (39.0104)|91945.117 (22.4475)|94228.290 (23.0050)|
 |8192 /623104|505233.279 (61.6740)|178368.978 (21.7736)|117496.253 (14.3428)|116118.497 (14.1746)|
+|16384 /991909|658136.833 (40.1695)|187299.691 (11.4319)|131919.205 (8.0517)|132785.500 (8.1046)|
+|32768 /623102|823471.248 (25.1303)|191316.287 (5.8385)|145256.946 (4.4329)|145431.227 (4.4382)|
 
 Every repeat has zero invalid environment steps, scatter overflows, failed
 lift windows and failed lift cycles. Rigid/live final positions and every
@@ -60,11 +63,22 @@ are preserved in each `native-final-matched-scopes-b<B>-<seed>-checkpoint-v1`
 manifest.200ms memory samples include setup and are not exact transient peaks.
 All original/stored/decompressed hashes and large-JSON reconstruction verify.
 
-## Remaining measurements
+## Completed copied-condition curve and edge
 
-B16384/991909 andB32768/623102 four-scope runs continue. A separate same-GPU
-curve tiles the same2048-condition bank atB8192/16384/24576/32768. Those
-measurements and the final plateau/cost summary remain required.
+A separate same-GPU curve tiles the same2048-condition bank at
+B8192/16384/24576/32768 and retains identical per-environment rigid outcomes.
+Live rates are120536.835/139124.948/146295.829/150133.237 valid env-step/s.
+The last33.3% batch increase yields2.623% aggregate throughput gain on that
+one GPU. The verified curve is
+`native-final-copied-curve-checkpoint-v1/manifest.json`.
+
+B36864 live/policy edge records have also finished at
+154343.359/154176.223 valid env-step/s, with zero invalid steps, overflows
+or failed lifts. Their separate GPU allocation precludes treating the ratio
+to the curve as a paired speedup. The existing Jacobian guard rejects
+B40960; the last convenient allowed B38912 endpoint is being measured.
+Final endpoint/output-cost publications and the plateau/cost summary remain
+tracked by the current audit.
 [Sampler qualification and detailed profiling](NATIVE_WARP_COUNTERS_20261013.md)
 include two controlled live improvements and624final-source dynamic fields
 checked independently on CPU FP64. The highest current controlled live rate

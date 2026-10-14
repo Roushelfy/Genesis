@@ -13,7 +13,12 @@ Configure a link before `scene.build()`:
 ```python
 gs.init(backend=gs.gpu, precision="64")
 egg.base_link.configure_stress_recovery(
-    gs.options.RigidStressOptions(mesh="elastic.npz", contact_radius=0.006)
+    gs.options.RigidStressOptions(
+        mesh="elastic.npz",
+        contact_radius=0.006,
+        contact_model="intrinsic",
+        intrinsic_load_partition="body_source_prior",
+    )
 )
 scene.build(n_envs=8)
 scene.step()
@@ -84,6 +89,40 @@ motion. See [OUTPUT_MODES.md](OUTPUT_MODES.md) for acceptance requirements.
 
 ## Model and errors
 
+`contact_model="intrinsic"` retains the collision geom/pair witness, reference
+boundary face and barycentric coordinates. Material normals point away from
+the owning tetrahedron, including cavity faces. A finite footprint follows
+actual surface adjacency from its witnessed anchor; nearby disconnected
+sheets are never merged. Verified covered planar segments and adjacent-face
+unfolding supplement the shared-edge port graph. Its distances can
+overestimate continuous intrinsic distance; `surface_edge_subdivisions=8`
+declares the current approximation. Q10 integration uses a compact Gaussian
+profile of width `0.45 * contact_radius` and a squared taper. Local fan/disk
+refinement retains the physical radius and every eligible sample.
+
+The original force application point is preserved. Projection to an anchor
+adds `(point - anchor) × force` to its free moment. Vector tractions obey
+the true local material-normal Coulomb cones, and signed P2 nodal scatter
+preserves all six resultant wrench components. The default
+`intrinsic_load_partition="componentwise"` conserves each point wrench.
+`intrinsic_support="pair_union"` explicitly lets each component use its
+collision pair's finite disks, retaining each destination's radius and friction.
+`intrinsic_load_partition="body_source_prior"` instead conserves the complete
+link wrench, using every original contact force as its own local traction
+prior. This declared partition model supports separate contact islands and
+self-balanced compression; individual disk resultants may differ from their
+priors. See [BODY_SOURCE_PRIOR_MODEL.md](BODY_SOURCE_PRIOR_MODEL.md) for the
+objective, constraints and original-point acceptance budgets.
+
+The intrinsic workspace grows to the observed complete source/sample count.
+Contact birth/death, changes to position/radius/friction, release and partial
+reset invalidate or verify reuse. No source, sample or hard environment is
+discarded. CUDA uses cooperative fitting and warp-aggregated sampler counters;
+CPU retains its canonical native numerical route. Physical loads, geometry,
+residuals and stress use FP64 in the qualified profile; warm Newton Hessians
+use FP32, with FP64 gradients, cold retries and unchanged final acceptance.
+
+The retained `contact_model="pressure"` selects the earlier pad law.
 Each solved point contact includes its complete normal and tangential force.
 A force-line anchor moves the footprint centre on the exterior without
 changing its point wrench. Positive Duffy/Gauss quadrature samples a compact
@@ -153,11 +192,14 @@ rebuilt on every recovery, including after reset or checkpoint restoration.
 CPU keeps the dense operator path. `--dense-surface-loads` measures its dense
 CUDA ablation, with the same model and acceptance budgets.
 
-`fused_pipeline=True` captures the serial association, pressure, scatter,
+For `contact_model="pressure"`, `fused_pipeline=True` captures the serial association, pressure, scatter,
 complete solve/residual/peak and acceptance stages in one native CUDA graph
 when cooperative exterior inverse recovery is available without load history.
 Both output modes use it. Other configurations retain the independently
 callable native passes. `--unfused-pipeline` supplies the matched ablation.
+Intrinsic recovery retains its dynamic source/sample growth and native
+dispatch; requesting `fused_pipeline` does not enable the pressure graph for
+that contact model. The benchmark records the effective selection.
 
 `fused_rigid_post=None` additionally selects a serial graph containing the
 unchanged rigid contact-force postprocessing, full stress pipeline and rigid
@@ -250,10 +292,12 @@ not stress arithmetic, dynamics, contact law or final acceptance.
 
 Contact rejection reports the affected link, environment, contact slot,
 original radius and actual friction coefficient. The diagnostic distinguishes
-invalid input/friction, an absent force-line anchor, an unresolved sampled
-fit, and failure to preserve the contact force/moment. An unresolved fit does
-not establish physical infeasibility. Diagnostic host transfers occur only
-when the rigid solver reports an error.
+invalid input/friction, ambiguous or unresolved surface provenance,
+unresolved integration, numerical fitting failure, and independently certified
+incompatible force/wrench cones. An unresolved fit does not establish physical
+infeasibility. The first failure's original point, radius, force, free moment
+and aggregate target are retained until the error is cleared. Diagnostic host
+transfers occur only when the rigid solver reports an error.
 
 The native block LDL factor is shared across environments. Its symbolic
 minimum-degree ordering is Python topology work; every numeric factor value

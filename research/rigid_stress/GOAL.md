@@ -23,7 +23,50 @@ This is a new requirement after the milestone below. Its prior completion
 record does not establish native nonconvex-contact acceptance. Record and push
 validated progress, including unfinished work and unavailable device checks.
 
-## Current extension status, 2026-10-13
+## Current extension status, 2026-10-14
+
+The extension remains active during final closeout. Numerical source
+`76537c2f` is unchanged. Its six final-source matched four-scope widths,
+B1024/2048/4096/8192/16384/32768, and the copied2048-condition scaling curve
+have completed and been published. B32768/623102 live/policy rates are
+145256.946/145431.227 valid env-step/s. The same-GPU copied curve reaches
+150133.237 at B32768. Those curves preserve the original condition banks,
+load law, timestep, precision and final accuracy budgets.
+
+The complete B36864 copied-bank edge records now pass source, bank, complete
+residual, per-environment work/outcome and return-code checks. Live/policy
+rates are154343.359/154176.223 valid env-step/s, with zero invalid steps,
+overflows or failed lifts. They use a separate GPU allocation from the curve
+and therefore do not establish a paired incremental speedup. B40960 is rejected
+by the existing3678×15 Jacobian addressing guard. Its limit is38924
+environments; the final convenient2048-condition multiple,B38912, is being
+checked without changing the guard or collision/contact capacity. That run
+has now failed during warmup with a CUDA out-of-memory error while growing
+the complete sample-position workspace. It has no accepted throughput result.
+
+Fresh complete native stress regression collects135 cases on each backend.
+CPU passes114 with21 explicitly CUDA-only skips. CUDA is still running and
+has exposed two saved-edge fixture failures that require diagnosis; the goal
+is not complete. Both B1024/B8192 same-GPU max/full/max output-cost sequences
+have finished. B1024 live/policy full-over-max ratios are0.999829800/0.992281893,
+with110100480 additional field bytes, identical per-environment rigid outcomes
+and unchanged physical budgets. Policy position comparison uses the retained
+independent max/max control rather than claiming bit-identical trajectories.
+B8192 output-pair qualification is pending.
+
+Publication verification passes43120 entries across97 existing checkpoints,
+43119 unchanged originals and36 complete large-JSON reconstructions. One
+append-only allocation log has its exact archived prefix and both hashes
+recorded separately.389 missing identity files were restored only after their
+original SHA256/size matched; immutable manifests remain unchanged.
+
+The final measured bottleneck/candidate inventory, output-cost report,
+remaining boundary publication, requirement-to-evidence audit and commit/push
+remain required. Physical mesh/quadrature convergence stays outside this phase.
+The following dated checkpoints preserve their original observations; this
+section supersedes their older pending/running statements.
+
+## Archived extension status, 2026-10-13
 
 The extension remains active. Pushed numerical source `eba3aeb2` qualifies
 the four selected layout/capture/Hessian/diagnostic optimizations with35CPU/
