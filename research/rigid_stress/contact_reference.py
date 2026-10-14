@@ -130,7 +130,7 @@ class IndependentContactSystem:
         collisions.build(self.mesh, current, self.dhat)
         return collisions, current
 
-    def evaluate(self, displacement, previous, tangential, hessian, project_hessian=False):
+    def evaluate(self, displacement, previous, tangential, hessian, project_hessian=False, external_force=None):
         normal, current = self.normal_collisions(displacement)
         # Rigid translation energy cancels in the bulk quadratic form. Remove each part's rigid modes before evaluating it.
         elastic = self.elastic_displacement(displacement)
@@ -144,6 +144,9 @@ class IndependentContactSystem:
             shear = self.mesh.to_full_dof(self.friction_potential.gradient(tangential, self.mesh, tangent_velocity))
             gradient += shear
             contact_gradient += shear
+        if external_force is not None:
+            energy -= external_force @ displacement
+            gradient -= external_force
         matrix = None
         if hessian:
             projection = ipctk.PSDProjectionMethod.CLAMP if project_hessian else ipctk.PSDProjectionMethod.NONE
@@ -156,6 +159,20 @@ class IndependentContactSystem:
                 )
         return energy, gradient, matrix, normal, contact_gradient
 
+    def reduced_gradient(self, gradient, free, coordinate_map):
+        return gradient[free] if coordinate_map is None else coordinate_map.T @ gradient
+
+    def reduced_hessian(self, matrix, free, coordinate_map):
+        if coordinate_map is None:
+            return matrix[free][:, free].tocsc()
+        return (coordinate_map.T @ matrix @ coordinate_map).tocsc()
+
+    def coordinate_energy_scale(self, displacement, gradient, contact_gradient, external_force):
+        """Bound cancellation in coordinate-based contact work before force terms cancel."""
+        applied = np.zeros_like(gradient) if external_force is None else external_force
+        bulk_gradient = gradient + applied - contact_gradient
+        return (abs(bulk_gradient) + abs(contact_gradient) + abs(applied)) @ abs(self.rest.reshape(-1) + displacement)
+
     def solve_supported(
         self,
         boundary_dofs,
@@ -165,6 +182,9 @@ class IndependentContactSystem:
         failure_path=None,
         initial_displacement=None,
         phase="load",
+        coordinate_map=None,
+        applied_force=None,
+        initial_force=None,
     ):
         free = np.setdiff1d(np.arange(self.stiffness.shape[0]), boundary_dofs)
         displacement = (
@@ -175,6 +195,12 @@ class IndependentContactSystem:
         for step in range(1, load_steps + 1):
             previous = displacement.copy()
             displacement[boundary_dofs] = boundary_start + (boundary_values - boundary_start) * step / load_steps
+            force_current = None
+            if applied_force is not None:
+                if initial_force is None:
+                    force_current = applied_force * step / load_steps
+                else:
+                    force_current = initial_force + (applied_force - initial_force) * step / load_steps
             for friction_iteration in range(12 if self.friction > 0 else 1):
                 lagged = displacement.copy()
                 normal, current = self.normal_collisions(displacement)
@@ -182,10 +208,11 @@ class IndependentContactSystem:
                 if self.friction > 0:
                     tangential.build(self.mesh, current, normal, self.barrier, self.friction)
                 for iteration in range(100):
-                    energy, gradient, matrix, normal, _ = self.evaluate(
-                        displacement, previous, tangential, hessian=True
+                    energy, gradient, matrix, normal, contact_gradient = self.evaluate(
+                        displacement, previous, tangential, hessian=True, external_force=force_current
                     )
-                    residual = np.linalg.norm(gradient[free])
+                    reduced_gradient = self.reduced_gradient(gradient, free, coordinate_map)
+                    residual = np.linalg.norm(reduced_gradient)
                     if residual <= tolerance:
                         break
                     print(
@@ -200,16 +227,25 @@ class IndependentContactSystem:
                         ),
                         flush=True,
                     )
+                    reduced_matrix = self.reduced_hessian(matrix, free, coordinate_map)
+                    reduced_direction = splu(reduced_matrix).solve(-reduced_gradient)
                     direction = np.zeros_like(displacement)
-                    direction[free] = splu(matrix[free][:, free].tocsc()).solve(-gradient[free])
+                    if coordinate_map is None:
+                        direction[free] = reduced_direction
+                    else:
+                        direction = coordinate_map @ reduced_direction
                     slope = gradient @ direction
                     if slope >= 0:
                         scale = np.max(np.abs(matrix.diagonal()))
                         for relative_shift in (1e-8, 1e-7, 1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1):
-                            shifted = matrix[free][:, free] + relative_shift * scale * sparse.eye(
-                                len(free), format="csc"
+                            shifted = reduced_matrix + relative_shift * scale * sparse.eye(
+                                reduced_matrix.shape[0], format="csc"
                             )
-                            direction[free] = splu(shifted.tocsc()).solve(-gradient[free])
+                            reduced_direction = splu(shifted.tocsc()).solve(-reduced_gradient)
+                            if coordinate_map is None:
+                                direction[free] = reduced_direction
+                            else:
+                                direction = coordinate_map @ reduced_direction
                             slope = gradient @ direction
                             if slope < 0:
                                 break
@@ -222,10 +258,19 @@ class IndependentContactSystem:
                     alpha = min(1.0, safe)
                     for _ in range(60):
                         trial = displacement + alpha * direction
-                        evaluated = self.evaluate(trial, previous, tangential, hessian=False)
+                        evaluated = self.evaluate(
+                            trial, previous, tangential, hessian=False, external_force=force_current
+                        )
                         candidate = evaluated[0]
-                        roundoff = 64 * np.finfo(float).eps * max(abs(energy), abs(candidate))
-                        residual_reduced = np.linalg.norm(evaluated[1][free]) < (1 - 1e-3 * alpha) * residual
+                        coordinate_scale = max(
+                            self.coordinate_energy_scale(displacement, gradient, contact_gradient, force_current),
+                            self.coordinate_energy_scale(trial, evaluated[1], evaluated[4], force_current),
+                        )
+                        roundoff = 64 * np.finfo(float).eps * max(abs(energy), abs(candidate), coordinate_scale)
+                        residual_reduced = (
+                            np.linalg.norm(self.reduced_gradient(evaluated[1], free, coordinate_map))
+                            < (1 - 1e-3 * alpha) * residual
+                        )
                         if candidate <= energy + 1e-4 * alpha * slope or (
                             candidate <= energy + roundoff and residual_reduced
                         ):
@@ -247,14 +292,15 @@ class IndependentContactSystem:
                 updated = ipctk.TangentialCollisions()
                 if self.friction > 0:
                     updated.build(self.mesh, updated_current, updated_normal, self.barrier, self.friction)
-                final = self.evaluate(displacement, previous, updated, hessian=False)
-                if np.linalg.norm(final[1][free]) <= tolerance:
+                final = self.evaluate(displacement, previous, updated, hessian=False, external_force=force_current)
+                complete_residual = np.linalg.norm(self.reduced_gradient(final[1], free, coordinate_map))
+                if complete_residual <= tolerance:
                     self.accepted_steps.append(
                         ContactStepAcceptance(
                             phase,
                             step,
                             friction_iteration + 1,
-                            float(np.linalg.norm(final[1][free])),
+                            float(complete_residual),
                             len(updated_normal),
                         )
                     )

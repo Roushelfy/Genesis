@@ -15,6 +15,7 @@ task_sources=(research/rigid_stress/{skfem_reference,finite_traction_reference,n
     research/rigid_stress/scripts/{run_load_models,run_physical_load_matrix,sample_load_fields,cluster_env}.sh)
 while IFS= read -r task_source; do task_sources+=("$task_source"); done < <(rg --files genesis/engine/solvers/rigid/stress)
 task_sources+=(genesis/options/rigid_stress.py)
+task_sources+=(research/rigid_stress/scripts/run_physical_axis_scan.sh)
 sha256sum "${task_sources[@]}" > "$task_run/source.sha256"
 cp --parents "${task_sources[@]}" "$task_run/source"
 git rev-parse HEAD > "$task_run/base-revision.txt"

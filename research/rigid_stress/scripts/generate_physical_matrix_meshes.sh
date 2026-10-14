@@ -5,6 +5,7 @@ source research/rigid_stress/scripts/cluster_env.sh
 task_env=${PHYSICAL_VALIDATION_ENV:-/mnt/data/zhaofeng/venvs/rigid-stress-physical}
 task_run=${1:?New runtime directory required}
 task_shape=${2:?Full geometry name required}
+shift 2
 test ! -e "$task_run"
 mkdir -p "$task_run/tmp" "$task_run/source" "$task_run/meshes"
 export TMPDIR="$task_run/tmp" PYTHONUNBUFFERED=1
@@ -19,6 +20,7 @@ case "$task_shape" in
     ellipsoid|capsule|thin_neck) task_sizes=(0.005 0.0035 0.0025) ;;
     *) printf 'Unknown geometry: %s\n' "$task_shape" >&2; exit 2 ;;
 esac
+if test "$#" -gt 0; then task_sizes=("$@"); fi
 task_status=0
 for task_size in "${task_sizes[@]}"; do
     task_case_status=0

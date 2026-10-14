@@ -1,0 +1,32 @@
+{
+  "geometry": {
+    "name": "cavity",
+    "description": "Full spherical shell, outer radius12mm, inner radius8mm",
+    "thickness_m": 0.004,
+    "gap_m": null,
+    "minimum_rounding_m": null
+  },
+  "gmsh_version": "4.14.1",
+  "volume_construction": "Gmsh OpenCASCADE volume tetrahedralization",
+  "mesh_size": 0.11,
+  "mesh_size_units": "unit-sphere coordinates",
+  "shell_layers": 2,
+  "nodes": 2841,
+  "tetrahedra": 11142,
+  "boundary_triangles": 3864,
+  "dimensions_m": [
+    0.02396440480539693,
+    0.02397790549989342,
+    0.024
+  ],
+  "minimum_volume_m3": 1.5161294108125017e-10,
+  "total_volume_m3": 5.0817260743069575e-06,
+  "scaled_jacobian_percentiles": [
+    0.10671030769885533,
+    0.19540563514173548,
+    0.643132846038532,
+    0.9195955726551677,
+    0.9941307266706482
+  ],
+  "mesh_sha256": "a8070aa4b04fa051d1c5a94a118a8e51a00b1dfffc87cfa03815f562eeaafb78"
+}

@@ -1,0 +1,124 @@
+Info    : Meshing 1D...
+Info    : [  0%] Meshing curve 1 (Circle)
+Info    : [ 20%] Meshing curve 2 (Line)
+Info    : [ 30%] Meshing curve 3 (Circle)
+Info    : [ 50%] Meshing curve 4 (Circle)
+Info    : [ 80%] Meshing curve 6 (Circle)
+Info    : Done meshing 1D (Wall 0.00639283s, CPU 0.000324s)
+Info    : Meshing 2D...
+Info    : [  0%] Meshing surface 1 (Cylinder, Frontal-Delaunay)
+Info    : [ 40%] Meshing surface 2 (Sphere, Frontal-Delaunay)
+Info    : [ 70%] Meshing surface 3 (Sphere, Frontal-Delaunay)
+Info    : Done meshing 2D (Wall 0.0608032s, CPU 0.05597s)
+Info    : Meshing 3D...
+Info    : 3D Meshing 1 volume with 1 connected component
+Info    : Tetrahedrizing 1657 nodes...
+Info    : Done tetrahedrizing 1665 nodes (Wall 0.0190478s, CPU 0.017055s)
+Info    : Reconstructing mesh...
+Info    :  - Creating surface mesh
+Info    :  - Identifying boundary edges
+Info    :  - Recovering boundary
+Info    : Done reconstructing mesh (Wall 0.0628427s, CPU 0.056874s)
+Info    : Found volume 1
+Info    : It. 0 - 0 nodes created - worst tet radius 7.19731 (nodes removed 0 0)
+Info    : It. 500 - 500 nodes created - worst tet radius 1.51145 (nodes removed 0 0)
+Info    : It. 1000 - 1000 nodes created - worst tet radius 1.23535 (nodes removed 0 0)
+Info    : It. 1500 - 1500 nodes created - worst tet radius 1.09921 (nodes removed 0 0)
+Info    : It. 2000 - 2000 nodes created - worst tet radius 1.00806 (nodes removed 0 0)
+Info    : 3D refinement terminated (3713 nodes total):
+Info    :  - 2 Delaunay cavities modified for star shapeness
+Info    :  - 0 nodes could not be inserted
+Info    :  - 18015 tetrahedra created in 0.070853 sec. (254258 tets/s)
+Info    : 0 node relocations
+Info    : Done meshing 3D (Wall 0.198878s, CPU 0.187679s)
+Info    : Optimizing mesh...
+Info    : Optimizing volume 1
+Info    : Optimization starts (volume = 6.9388e-06) with worst = 0.0190281 / average = 0.773989:
+Info    : 0.00 < quality < 0.10 :        30 elements
+Info    : 0.10 < quality < 0.20 :       127 elements
+Info    : 0.20 < quality < 0.30 :       213 elements
+Info    : 0.30 < quality < 0.40 :       318 elements
+Info    : 0.40 < quality < 0.50 :       497 elements
+Info    : 0.50 < quality < 0.60 :       850 elements
+Info    : 0.60 < quality < 0.70 :      1900 elements
+Info    : 0.70 < quality < 0.80 :      4327 elements
+Info    : 0.80 < quality < 0.90 :      6732 elements
+Info    : 0.90 < quality < 1.00 :      3021 elements
+Info    : 367 edge swaps, 18 node relocations (volume = 6.9388e-06): worst = 0.222038 / average = 0.786652 (Wall 0.00492679s, CPU 0.004927s)
+Info    : 372 edge swaps, 21 node relocations (volume = 6.9388e-06): worst = 0.253303 / average = 0.786818 (Wall 0.00605563s, CPU 0.006051s)
+Info    : 373 edge swaps, 23 node relocations (volume = 6.9388e-06): worst = 0.292334 / average = 0.786863 (Wall 0.00715251s, CPU 0.007148s)
+Info    : No ill-shaped tets in the mesh :-)
+Info    : 0.00 < quality < 0.10 :         0 elements
+Info    : 0.10 < quality < 0.20 :         0 elements
+Info    : 0.20 < quality < 0.30 :         1 elements
+Info    : 0.30 < quality < 0.40 :       317 elements
+Info    : 0.40 < quality < 0.50 :       468 elements
+Info    : 0.50 < quality < 0.60 :       812 elements
+Info    : 0.60 < quality < 0.70 :      1922 elements
+Info    : 0.70 < quality < 0.80 :      4365 elements
+Info    : 0.80 < quality < 0.90 :      6782 elements
+Info    : 0.90 < quality < 1.00 :      3017 elements
+Info    : Done optimizing mesh (Wall 0.0218496s, CPU 0.018831s)
+Info    : 3713 nodes 21122 elements
+Info    : Optimizing mesh (Netgen)...
+Info    : Optimizing volume 1
+Info    : CalcLocalH: 3713 Points 17684 Elements 3310 Surface Elements 
+Info    : Remove Illegal Elements 
+Info    : 0 illegal tets 
+Info    : Volume Optimization 
+Info    : CombineImprove 
+Info    : 125 elements combined 
+Info    : ImproveMesh 
+Info    : Total badness = 23214.5 
+Info    : Total badness = 22219.9 
+Info    : SplitImprove 
+Info    : badmax = 11.4086 
+Info    : 0 splits performed 
+Info    : ImproveMesh 
+Info    : Total badness = 22219.9 
+Info    : Total badness = 22045.6 
+Info    : SwapImprove  
+Info    : 938 swaps performed 
+Info    : SwapImprove2  
+Info    : 0 swaps performed 
+Info    : ImproveMesh 
+Info    : Total badness = 20436.9 
+Info    : Total badness = 20008.6 
+Info    : CombineImprove 
+Info    : 24 elements combined 
+Info    : ImproveMesh 
+Info    : Total badness = 19787.6 
+Info    : Total badness = 19728.7 
+Info    : SplitImprove 
+Info    : badmax = 5.54849 
+Info    : 0 splits performed 
+Info    : ImproveMesh 
+Info    : Total badness = 19728.7 
+Info    : Total badness = 19717 
+Info    : SwapImprove  
+Info    : 138 swaps performed 
+Info    : SwapImprove2  
+Info    : 0 swaps performed 
+Info    : ImproveMesh 
+Info    : Total badness = 19620.7 
+Info    : Total badness = 19547 
+Info    : CombineImprove 
+Info    : 5 elements combined 
+Info    : ImproveMesh 
+Info    : Total badness = 19501 
+Info    : Total badness = 19490.6 
+Info    : SplitImprove 
+Info    : badmax = 5.54229 
+Info    : 0 splits performed 
+Info    : ImproveMesh 
+Info    : Total badness = 19490.6 
+Info    : Total badness = 19488.2 
+Info    : SwapImprove  
+Info    : 53 swaps performed 
+Info    : SwapImprove2  
+Info    : 0 swaps performed 
+Info    : ImproveMesh 
+Info    : Total badness = 19464.8 
+Info    : Total badness = 19436.7 
+Info    : Done optimizing mesh (Wall 1.35478s, CPU 1.33935s)
+{"geometry": {"name": "capsule", "description": "Radius8mm cylinder, axial length24mm, hemispherical caps", "thickness_m": null, "gap_m": null, "minimum_rounding_m": null}, "gmsh_version": "4.14.1", "volume_construction": "Gmsh OpenCASCADE volume tetrahedralization", "mesh_size": 0.00125, "mesh_size_units": "m", "shell_layers": null, "nodes": 3559, "tetrahedra": 15979, "boundary_triangles": 3310, "dimensions_m": [0.016, 0.015994628788106383, 0.04], "minimum_volume_m3": 1.0252895795427427e-10, "total_volume_m3": 6.938803462816452e-06, "scaled_jacobian_percentiles": [0.2562228634359736, 0.38643484380533094, 0.6278134049366966, 0.8944796530285436, 0.9969387496113562], "mesh_sha256": "725f9ef414c371833716d84ff5e3e87d414d200355f0a5e556b65f543f93d748"}
