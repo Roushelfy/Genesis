@@ -23,3 +23,11 @@ data root above. The selected immutable publication is
 `native-nonconvex-closeout-20261014-v1`. Complete raw JSON and caches stay on
 the data mount. Published large JSON uses ordered compressed byte ranges
 with full-file reconstruction hashes.
+
+The new load-model/physical-validation stage uses
+`runs/20261014-physical-validation/` for independent FEM qualifications,
+mesh assets, fine sweeps, reference setup and failed attempts. Its optional
+reference environment is `/mnt/data/zhaofeng/venvs/rigid-stress-physical`,
+configured through `PHYSICAL_VALIDATION_ENV`. It inherits the existing
+validated base site's dependencies via a recorded `.pth` and adds pinned
+reference packages without migrating or editing that base environment.
