@@ -42,3 +42,12 @@ at one useful level. Actual complete Franka input snapshots and temporal axes
 are verified, but they retain angular motion and rank5 point-force support.
 They supply corresponding inputs; matched deformable application contact and
 the original convergence/feedback/cost acceptance remain incomplete.
+The [actual Panda mechanics checkpoint](PHYSICAL_FRANKA_MECHANICS_20261014.md)
+adds the real rigid compound fingers and jaw potential, unchanged-budget
+same-held-row contact requalification and strict corresponding fixture geometry.
+Both free-body release solvers remain unqualified; their net force/moment and
+raw stress diagnostics are explicit. Three identical52s rigid fixed-hand
+histories are compared at80 exact common physical times. Normal-force changes
+are small, but orientation differences are nonmonotone and angular motion
+persists. Contact regularization/support matching, solved deformable application
+contact, actual full-arm matching and the original acceptance remain required.
