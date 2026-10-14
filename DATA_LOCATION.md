@@ -13,3 +13,13 @@ Small source, configuration, documentation and selected published evidence
 remain in this worktree. No existing runtime directories were migrated or
 replaced, and compatibility symlinks remain in place. Raw run directories are
 listed in `research/rigid_stress/docs/PROGRESS_20261009.md`.
+
+The nonconvex extension uses `runs/20261011-nonconvex/` for its original
+qualifications, matched scopes, profiles, scaling and capacity trials.
+Final regression, output-mode comparisons, analysis, archive staging and
+verification use `runs/20261014-closeout/`. These paths are relative to the
+data root above. The selected immutable publication is
+`research/rigid_stress/evidence/20261011-nonconvex/`, including
+`native-nonconvex-closeout-20261014-v1`. Complete raw JSON and caches stay on
+the data mount. Published large JSON uses ordered compressed byte ranges
+with full-file reconstruction hashes.

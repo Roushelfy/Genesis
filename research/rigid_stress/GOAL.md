@@ -23,48 +23,59 @@ This is a new requirement after the milestone below. Its prior completion
 record does not establish native nonconvex-contact acceptance. Record and push
 validated progress, including unfinished work and unavailable device checks.
 
-## Current extension status, 2026-10-14
+## Nonconvex extension completion record, 2026-10-14
 
-The extension remains active during final closeout. Numerical source
-`76537c2f` is unchanged. Its six final-source matched four-scope widths,
-B1024/2048/4096/8192/16384/32768, and the copied2048-condition scaling curve
-have completed and been published. B32768/623102 live/policy rates are
-145256.946/145431.227 valid env-step/s. The same-GPU copied curve reaches
-150133.237 at B32768. Those curves preserve the original condition banks,
-load law, timestep, precision and final accuracy budgets.
+Native nonconvex contact mapping, lifecycle/field validation, detailed
+optimization and measured performance acceptance are complete. Production
+numerical source `76537c2f` is unchanged during final closeout. See the
+[final report](docs/NATIVE_NONCONVEX_RESULTS_20261014.md) and
+[requirement-to-evidence audit](docs/NATIVE_NONCONVEX_CLOSEOUT_20261014.md).
 
-The complete B36864 copied-bank edge records now pass source, bank, complete
-residual, per-environment work/outcome and return-code checks. Live/policy
-rates are154343.359/154176.223 valid env-step/s, with zero invalid steps,
-overflows or failed lifts. They use a separate GPU allocation from the curve
-and therefore do not establish a paired incremental speedup. B40960 is rejected
-by the existing3678×15 Jacobian addressing guard. Its limit is38924
-environments; the final convenient2048-condition multiple,B38912, is being
-checked without changing the guard or collision/contact capacity. That run
-has now failed during warmup with a CUDA out-of-memory error while growing
-the complete sample-position workspace. It has no accepted throughput result.
+Current-source coverage is135 CUDA passes and114 CPU passes/21 explicitly
+CUDA-only skips. This combines the retained complete initial suite with10
+fresh CPU/CUDA passes in the sole changed test module. The two original CUDA
+saved-edge failures came from checking elastic equilibrium against a
+separately fitted CPU contact load. The corrected test independently balances
+the actual native loads, retaining the complete CPU K/gauge residual and all
+independent force/moment/cone/nodal/full-field/peak gates. Original failures,
+RHS differences and source provenance remain published. Engine tolerances
+stay fixed. Final-source464 dynamic fields and160 original-wrench/
+independent-relief fields also pass CPU FP64.
 
-Fresh complete native stress regression collects135 cases on each backend.
-CPU passes114 with21 explicitly CUDA-only skips. CUDA is still running and
-has exposed two saved-edge fixture failures that require diagnosis; the goal
-is not complete. Both B1024/B8192 same-GPU max/full/max output-cost sequences
-have finished. B1024 live/policy full-over-max ratios are0.999829800/0.992281893,
-with110100480 additional field bytes, identical per-environment rigid outcomes
-and unchanged physical budgets. Policy position comparison uses the retained
-independent max/max control rather than claiming bit-identical trajectories.
-B8192 output-pair qualification is pending.
+Six matched four-scope widths, B1024/2048/4096/8192/16384/32768, complete
+with original banks,600 warmup and three1280-step repeats per scope.
+The one-GPU copied2048-condition curve reaches150133.237 live env-step/s
+at B32768, with only2.623% gain for its last33.3% batch increase.
+Separately allocated B36864 live/policy trials complete at154343.359/
+154176.223 env-step/s, with zero invalid steps, overflows or failed lifts.
+B40960 reaches the unchanged Jacobian address guard. B38912 fails warmup
+during complete sample-position growth with CUDA out of memory. Their
+diagnosed failures have no accepted rates. This establishes a practical
+device/workload endpoint, with no global-optimum or integer-maximum claim.
 
-Publication verification passes43120 entries across97 existing checkpoints,
-43119 unchanged originals and36 complete large-JSON reconstructions. One
-append-only allocation log has its exact archived prefix and both hashes
-recorded separately.389 missing identity files were restored only after their
-original SHA256/size matched; immutable manifests remain unchanged.
+Final-source same-GPU max/full/max measurements complete for live/policy
+at B1024 and B8192. Full fields add107520 bytes/environment. Measured rate
+costs are0.017%/0.772% and0.739%/0.745% respectively. Live poses and all
+per-environment rigid/grasp/contact/descent outcomes match exactly. Policy
+evolves independently from observations, so cross-process poses/peaks remain
+rollout diagnostics. Same-state numerical accuracy uses the unchanged strict
+tests and independent CPU fields.
 
-The final measured bottleneck/candidate inventory, output-cost report,
-remaining boundary publication, requirement-to-evidence audit and commit/push
-remain required. Physical mesh/quadrature convergence stays outside this phase.
-The following dated checkpoints preserve their original observations; this
-section supersedes their older pending/running statements.
+The final closeout manifest verifies6997 entries/6997 exact originals and
+two complete large-JSON reconstructions. The previous97 checkpoints verify
+43120 entries/43119 exact originals/one exact archived allocation-log prefix
+and36 complete reconstructions. The prefix and both hashes are explicitly
+recorded.389 restored identity files match their original SHA256/size.
+The combined allocated audit passes all98 publications:50117 entries,
+50116 exact originals/one exact prefix and38 complete reconstructions.
+Every manifest artifact is explicitly checked for Git inclusion.
+The final source/test/docs/evidence deliverables are committed and pushed
+to `Roushelfy/Genesis:rigid-stress-recovery`, with remote HEAD checked at
+delivery. Runtime data and large staging remain in the declared data root.
+
+Physical mesh/quadrature convergence and complete RL training remain later,
+separate studies. The following dated checkpoints preserve their original
+observations. This completion record supersedes their pending/running items.
 
 ## Archived extension status, 2026-10-13
 

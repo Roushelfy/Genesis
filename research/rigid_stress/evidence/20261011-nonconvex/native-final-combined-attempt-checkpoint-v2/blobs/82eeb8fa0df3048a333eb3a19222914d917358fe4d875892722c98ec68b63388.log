@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/archive_native_final_combined_attempt_v1.py", line 49, in <module>
+    publish_bounded(root, Path("research/rigid_stress/evidence/20261011-nonconvex/native-final-combined-attempt-checkpoint-v1"),
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/publish_native_bounded_checkpoint_v1.py", line 48, in publish_bounded
+    publish(root, destination, staged_runs, extras, summary,
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/publish_native_checkpoint_v1.py", line 16, in publish
+    for line in (run / "source.sha256").read_text().splitlines():
+  File "/usr/lib/python3.10/pathlib.py", line 1134, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+  File "/usr/lib/python3.10/pathlib.py", line 1119, in open
+    return self._accessor.open(self, mode, buffering, encoding, errors,
+FileNotFoundError: [Errno 2] No such file or directory: '/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/bounded-publication/native-final-combined-attempt-checkpoint-v1/native-final-combined-supplement-v1/source.sha256'

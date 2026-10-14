@@ -1,0 +1,197 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0
+rootdir: /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery
+configfile: pyproject.toml
+plugins: anyio-4.15.1, forked-1.7.5, print-1.2.0, timeout-2.4.0, xdist-3.8.0, quadrants-1.3.3, syrupy-6.1.1
+timeout: 1200.0s
+timeout method: signal
+timeout func_only: False
+collected 135 items
+
+tests/rigid/test_stress.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[33m [ 33%]
+[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[33m                                                                  [ 38%][0m
+tests/rigid/test_stress_compatibility.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[33m                         [ 43%][0m
+tests/rigid/test_stress_disk_refinement.py [32m.[0m[33m                             [ 44%][0m
+tests/rigid/test_stress_disk_torque.py [32m.[0m[33m                                 [ 45%][0m
+tests/rigid/test_stress_failure_diagnostics.py [32m.[0m[33m                         [ 45%][0m
+tests/rigid/test_stress_footprint.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[33m                              [ 50%][0m
+tests/rigid/test_stress_intrinsic_lifecycle.py [32m.[0m[32m.[0m[33m                        [ 51%][0m
+tests/rigid/test_stress_nonconvex.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[33m                        [ 60%][0m
+tests/rigid/test_stress_shared_lifecycle.py [32m.[0m[32m.[0m[33m                           [ 62%][0m
+tests/rigid/test_stress_shared_support.py [32m.[0m[32m.[0m[33m                             [ 63%][0m
+tests/rigid/test_stress_sliding_footprint.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[33m                      [ 68%][0m
+tests/rigid/test_stress_source_priors.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[33m              [ 81%][0m
+tests/rigid/test_stress_sources.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[33m                                 [ 85%][0m
+tests/rigid/test_stress_surface_fan.py [31mF[0m[32m.[0m[32m.[0m[31mF[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m                        [ 92%][0m
+tests/rigid/test_stress_traction.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m                                 [ 95%][0m
+tests/rigid/test_stress_witness.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m                                 [ 99%][0m
+tests/rigid/test_stress_witness_manifold.py [32m.[0m[31m                            [100%][0m
+
+=================================== FAILURES ===================================
+[31m[1m___ test_saved_edge_contact_uses_neighbor_finite_area_and_cpu_oracle[147-1] ____[0m
+[1m[31mtests/rigid/test_stress_surface_fan.py[0m:249: in test_saved_edge_contact_uses_neighbor_finite_area_and_cpu_oracle
+    [0m[94massert[39;49;00m (residual <= np.maximum(options.absolute_tolerance, options.tolerance * np.linalg.norm(rhs, axis=[94m0[39;49;00m))).all()[90m[39;49;00m
+[1m[31mE   AssertionError: assert np.False_[0m
+[1m[31mE    +  where np.False_ = <built-in method all of numpy.ndarray object at 0x7e412f0cc390>()[0m
+[1m[31mE    +    where <built-in method all of numpy.ndarray object at 0x7e412f0cc390> = array([8.57531408e-09, 1.10911064e-12, 5.96830525e-12]) <= array([1.37224319e-10, 1.08626547e-10, 1.08606802e-10]).all[0m
+[1m[31mE    +      where array([1.37224319e-10, 1.08626547e-10, 1.08606802e-10]) = <ufunc 'maximum'>(1e-11, (1e-08 * array([0.01372243, 0.01086265, 0.01086068])))[0m
+[1m[31mE    +        where <ufunc 'maximum'> = np.maximum[0m
+[1m[31mE    +        and   1e-11 = ──────────────────────────── <gs.options.RigidStressOptions> ────────────────────────────\n                            ...: True\n                     'inverse_corrections': <int>: 2\n                          'preconditioner': <str>: 'block'\n.absolute_tolerance[0m
+[1m[31mE    +        and   1e-08 = ──────────────────────────── <gs.options.RigidStressOptions> ────────────────────────────\n                            ...: True\n                     'inverse_corrections': <int>: 2\n                          'preconditioner': <str>: 'block'\n.tolerance[0m
+[1m[31mE    +        and   array([0.01372243, 0.01086265, 0.01086068]) = <function norm at 0x7e45ca58a830>(array([[-3.78729140e-06, -5.20708113e-05, -4.94362924e-05],\n       [ 2.14704921e-05,  4.76582865e-04,  4.78169395e-04]...  2.51226573e-05,  2.51226573e-05],\n       [ 4.89951537e-06,  4.89951537e-06,  4.89951537e-06]],\n      shape=(2430, 3)), axis=0)[0m
+[1m[31mE    +          where <function norm at 0x7e45ca58a830> = <module 'numpy.linalg' from '/usr/local/lib/python3.10/dist-packages/numpy/linalg/__init__.py'>.norm[0m
+[1m[31mE    +            where <module 'numpy.linalg' from '/usr/local/lib/python3.10/dist-packages/numpy/linalg/__init__.py'> = np.linalg[0m
+---------------------------- Captured stdout setup -----------------------------
+[Genesis 02:04:10] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 02:04:10] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+----------------------------- Captured stderr call -----------------------------
+[W 10/14/26 02:04:27.101 4140221] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c980_6`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 209, in kernel_fit_tractions_impl:
+                is_valid = qd.simt.subgroup.all_true(is_valid)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: u1 <- i32
+[W 10/14/26 02:04:27.101 4140221] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c980_6`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 65, in func_dual_warp:
+                        operator[a, a] = 1.0
+                        ^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+[W 10/14/26 02:04:27.101 4140221] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c980_6`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 65, in func_dual_warp:
+                        operator[a, a] = 1.0
+                        ^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+[W 10/14/26 02:04:27.101 4140221] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c980_6`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 65, in func_dual_warp:
+                        operator[a, a] = 1.0
+                        ^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+[W 10/14/26 02:04:27.101 4140221] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c980_6`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 66, in func_dual_warp:
+                    operator[3, 1], operator[3, 2] = -relative[2], relative[1]
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+[W 10/14/26 02:04:27.101 4140221] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c980_6`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 66, in func_dual_warp:
+                    operator[3, 1], operator[3, 2] = -relative[2], relative[1]
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+[W 10/14/26 02:04:27.101 4140221] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c980_6`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 67, in func_dual_warp:
+                    operator[4, 0], operator[4, 2] = relative[2], -relative[0]
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+[W 10/14/26 02:04:27.101 4140221] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c980_6`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 67, in func_dual_warp:
+                    operator[4, 0], operator[4, 2] = relative[2], -relative[0]
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+[W 10/14/26 02:04:27.101 4140221] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c980_6`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 68, in func_dual_warp:
+                    operator[5, 0], operator[5, 1] = -relative[1], relative[0]
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+[W 10/14/26 02:04:27.101 4140221] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c980_6`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 68, in func_dual_warp:
+                    operator[5, 0], operator[5, 1] = -relative[1], relative[0]
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+[W 10/14/26 02:04:28.526 4140221] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c980_7`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 209, in kernel_fit_tractions_impl:
+                is_valid = qd.simt.subgroup.all_true(is_valid)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: u1 <- i32
+[W 10/14/26 02:04:29.932 4140221] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c980_8`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 209, in kernel_fit_tractions_impl:
+                is_valid = qd.simt.subgroup.all_true(is_valid)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: u1 <- i32
+--------------------------- Captured stdout teardown ---------------------------
+[Genesis 02:04:32] Exiting Genesis and caching compiled kernels...
+[31m[1m___ test_saved_edge_contact_uses_neighbor_finite_area_and_cpu_oracle[147-2] ____[0m
+[1m[31mtests/rigid/test_stress_surface_fan.py[0m:249: in test_saved_edge_contact_uses_neighbor_finite_area_and_cpu_oracle
+    [0m[94massert[39;49;00m (residual <= np.maximum(options.absolute_tolerance, options.tolerance * np.linalg.norm(rhs, axis=[94m0[39;49;00m))).all()[90m[39;49;00m
+[1m[31mE   AssertionError: assert np.False_[0m
+[1m[31mE    +  where np.False_ = <built-in method all of numpy.ndarray object at 0x7e412ed0f1b0>()[0m
+[1m[31mE    +    where <built-in method all of numpy.ndarray object at 0x7e412ed0f1b0> = array([1.77663394e-10, 2.03133138e-13, 5.14587432e-12]) <= array([1.38578278e-10, 1.08630640e-10, 1.08610661e-10]).all[0m
+[1m[31mE    +      where array([1.38578278e-10, 1.08630640e-10, 1.08610661e-10]) = <ufunc 'maximum'>(1e-11, (1e-08 * array([0.01385783, 0.01086306, 0.01086107])))[0m
+[1m[31mE    +        where <ufunc 'maximum'> = np.maximum[0m
+[1m[31mE    +        and   1e-11 = ──────────────────────────── <gs.options.RigidStressOptions> ────────────────────────────\n                            ...: True\n                     'inverse_corrections': <int>: 2\n                          'preconditioner': <str>: 'block'\n.absolute_tolerance[0m
+[1m[31mE    +        and   1e-08 = ──────────────────────────── <gs.options.RigidStressOptions> ────────────────────────────\n                            ...: True\n                     'inverse_corrections': <int>: 2\n                          'preconditioner': <str>: 'block'\n.tolerance[0m
+[1m[31mE    +        and   array([0.01385783, 0.01086306, 0.01086107]) = <function norm at 0x7e45ca58a830>(array([[-5.44857222e-06, -5.20347637e-05, -4.94205190e-05],\n       [ 3.70167212e-05,  4.76388695e-04,  4.77958033e-04]...  2.51226573e-05,  2.51226573e-05],\n       [ 4.89951537e-06,  4.89951537e-06,  4.89951537e-06]],\n      shape=(2430, 3)), axis=0)[0m
+[1m[31mE    +          where <function norm at 0x7e45ca58a830> = <module 'numpy.linalg' from '/usr/local/lib/python3.10/dist-packages/numpy/linalg/__init__.py'>.norm[0m
+[1m[31mE    +            where <module 'numpy.linalg' from '/usr/local/lib/python3.10/dist-packages/numpy/linalg/__init__.py'> = np.linalg[0m
+---------------------------- Captured stdout setup -----------------------------
+[Genesis 02:05:14] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 02:05:14] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+--------------------------- Captured stdout teardown ---------------------------
+[Genesis 02:05:34] Exiting Genesis and caching compiled kernels...
+[33m=============================== warnings summary ===============================[0m
+tests/rigid/test_stress.py: 104 warnings
+tests/rigid/test_stress_compatibility.py: 14 warnings
+tests/rigid/test_stress_disk_refinement.py: 2 warnings
+tests/rigid/test_stress_disk_torque.py: 2 warnings
+tests/rigid/test_stress_footprint.py: 12 warnings
+tests/rigid/test_stress_intrinsic_lifecycle.py: 4 warnings
+tests/rigid/test_stress_nonconvex.py: 16 warnings
+tests/rigid/test_stress_shared_lifecycle.py: 2 warnings
+tests/rigid/test_stress_shared_support.py: 4 warnings
+tests/rigid/test_stress_sliding_footprint.py: 12 warnings
+tests/rigid/test_stress_source_priors.py: 36 warnings
+tests/rigid/test_stress_sources.py: 10 warnings
+tests/rigid/test_stress_surface_fan.py: 20 warnings
+tests/rigid/test_stress_traction.py: 4 warnings
+tests/rigid/test_stress_witness.py: 10 warnings
+tests/rigid/test_stress_witness_manifold.py: 2 warnings
+  /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                          32 iterations, so the compile time may be extremely long.
+                          You can use a non-static for loop if you want to decrease the compile time.
+                          You can disable this warning by setting qd.init(unrolling_limit=0).
+    for a, b in qd.static(qd.ndrange(6, 6)):
+
+tests/rigid/test_stress_compatibility.py: 18 warnings
+tests/rigid/test_stress_disk_refinement.py: 6 warnings
+tests/rigid/test_stress_disk_torque.py: 6 warnings
+tests/rigid/test_stress_footprint.py: 36 warnings
+tests/rigid/test_stress_intrinsic_lifecycle.py: 12 warnings
+tests/rigid/test_stress_shared_lifecycle.py: 6 warnings
+tests/rigid/test_stress_shared_support.py: 12 warnings
+tests/rigid/test_stress_sliding_footprint.py: 36 warnings
+tests/rigid/test_stress_source_priors.py: 156 warnings
+tests/rigid/test_stress_surface_fan.py: 60 warnings
+tests/rigid/test_stress_traction.py: 18 warnings
+  /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/cooperative_fit.py:73: SyntaxWarning: You are unrolling more than
+                          32 iterations, so the compile time may be extremely long.
+                          You can use a non-static for loop if you want to decrease the compile time.
+                          You can disable this warning by setting qd.init(unrolling_limit=0).
+    for a, b in qd.static(qd.ndrange(6, 6)):
+
+tests/rigid/test_stress_compatibility.py: 18 warnings
+tests/rigid/test_stress_disk_refinement.py: 6 warnings
+tests/rigid/test_stress_disk_torque.py: 6 warnings
+tests/rigid/test_stress_footprint.py: 36 warnings
+tests/rigid/test_stress_intrinsic_lifecycle.py: 12 warnings
+tests/rigid/test_stress_shared_lifecycle.py: 6 warnings
+tests/rigid/test_stress_shared_support.py: 12 warnings
+tests/rigid/test_stress_sliding_footprint.py: 36 warnings
+tests/rigid/test_stress_source_priors.py: 156 warnings
+tests/rigid/test_stress_surface_fan.py: 60 warnings
+tests/rigid/test_stress_traction.py: 18 warnings
+  /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/cooperative_fit.py:81: SyntaxWarning: You are unrolling more than
+                          32 iterations, so the compile time may be extremely long.
+                          You can use a non-static for loop if you want to decrease the compile time.
+                          You can disable this warning by setting qd.init(unrolling_limit=0).
+    for a, b in qd.static(qd.ndrange(6, 6)):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-closeout/regression-v2-cuda/report.xml -
+================================= Failed tests =================================
+tests/rigid/test_stress_surface_fan.py::test_saved_edge_contact_uses_neighbor...
+tests/rigid/test_stress_surface_fan.py::test_saved_edge_contact_uses_neighbor...
+============================== slowest durations ===============================
+165.00s call     tests/rigid/test_stress_witness.py::test_native_sdf_emitting_vertex_provenance[u]
+119.35s call     tests/rigid/test_stress_witness.py::test_native_collision_witnesses_and_lifecycle[False-False]
+101.16s call     tests/rigid/test_stress_witness.py::test_native_collision_witnesses_and_lifecycle[True-True]
+100.85s call     tests/rigid/test_stress.py::test_native_full_field_unbatched_shared_operator
+
+(401 durations < 100s hidden.)
+[31m=========== [31m[1m2 failed[0m, [32m133 passed[0m, [33m986 warnings[0m[31m in 2993.34s (0:49:53)[0m[31m ===========[0m

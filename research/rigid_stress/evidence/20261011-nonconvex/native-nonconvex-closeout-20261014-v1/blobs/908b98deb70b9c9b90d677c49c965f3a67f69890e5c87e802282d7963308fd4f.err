@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-closeout/publication-verification-v2/verifier.py", line 143, in <module>
+    main()
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-closeout/publication-verification-v2/verifier.py", line 128, in main
+    result = verify_manifest(path, args.originals, cache, args.repair_missing)
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-closeout/publication-verification-v2/verifier.py", line 73, in verify_manifest
+    assert cache[key] == (entry["sha256"], entry["bytes"]), original
+AssertionError: /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/allocation-nativeEpaArchiveV1.log
+srun: error: cpu-207-115: task 0: Exited with exit code 1

@@ -94,15 +94,18 @@ properties, independent oracle, policy logs and verifier are retained in
 950 entries, 138 unique blobs, 3,154,183 bytes. Manifest SHA256:
 `b4ce87c709c5106b0c6dce7a9c628fc1cd713077437516599f0bde83b7868ae9`.
 
-Broader random conditions expose unresolved warmup contacts: B2048/seed623102
+The original broader random conditions exposed warmup contacts: B2048/seed623102
 env1914 has numerical-fit status33, R=0.00409532256 m, mu=0.564764758;
 B4096/seed623103 env2174 has sampled-infeasible/continuous-unresolved status34,
 R=0.00408657883 m, mu=0.709940432. Both are single-contact groups. Neither
 run has a valid throughput result. Failure capture and independent CPU
-classification are ongoing; they are not declared unsupported or physical
-incompatibility without a proof. Native contact robustness and the overall
-goal remain incomplete. Wider valid trajectories, grasp outcomes, scaling
-and a measured optimization plateau are still required.
+classification were required at that checkpoint. The
+[wrench/fan repair](NATIVE_WRENCH_FAN_REPAIR_20261012.md) and later refinement
+resolve those contacts while preserving physical inputs and acceptance.
+The [2026-10-14 final report](NATIVE_NONCONVEX_RESULTS_20261014.md) now records
+current-source numerical/lifecycle coverage, six completed matched widths,
+grasp outcomes, full/max costs, scaling and the practical performance endpoint.
+The failed historical runs retain no accepted throughput result.
 
 Earlier isolated evidence is in `NATIVE_SOURCE_PRIORS_20261012.md`. Same-mesh
 agreement does not establish physical mesh convergence, and no such study is

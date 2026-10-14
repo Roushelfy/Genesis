@@ -1,0 +1,153 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0
+rootdir: /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery
+configfile: pyproject.toml
+plugins: anyio-4.15.1, forked-1.7.5, print-1.2.0, timeout-2.4.0, xdist-3.8.0, quadrants-1.3.3, syrupy-6.1.1
+timeout: 1200.0s
+timeout method: signal
+timeout func_only: False
+collected 2 items
+
+tests/rigid/test_stress_shared_lifecycle.py [32m.[0m[31mF[0m[31m                           [100%][0m
+
+=================================== FAILURES ===================================
+[31m[1m___ test_complete_pair_streaming_release_reset_and_source_failure_isolation ____[0m
+[1m[31mtests/rigid/test_stress_shared_lifecycle.py[0m:121: in test_complete_pair_streaming_release_reset_and_source_failure_isolation
+    [0massert_allclose(actual[[94m1[39;49;00m:], expected[[94m1[39;49;00m:], rtol=[94m1e-12[39;49;00m, atol=[94m1e-15[39;49;00m [94mif[39;49;00m field [95mis[39;49;00m control_state.force [94melse[39;49;00m [94m1e-8[39;49;00m)[90m[39;49;00m
+[1m[31mtests/utils/assertions.py[0m:50: in assert_allclose
+    [0mnp.testing.assert_allclose(*args, atol=atol, rtol=rtol, err_msg=err_msg)[90m[39;49;00m
+[1m[31mE   AssertionError: [0m
+[1m[31mE   Not equal to tolerance rtol=1e-12, atol=1e-15[0m
+[1m[31mE   None[0m
+[1m[31mE   Mismatched elements: 46 / 4860 (0.947%)[0m
+[1m[31mE   Max absolute difference among violations: 1.57960242e-11[0m
+[1m[31mE   Max relative difference among violations: 2.37751611e-08[0m
+[1m[31mE    ACTUAL: array([[[0., 0., 0.],[0m
+[1m[31mE           [0., 0., 0.],[0m
+[1m[31mE           [0., 0., 0.],...[0m
+[1m[31mE    DESIRED: array([[[0., 0., 0.],[0m
+[1m[31mE           [0., 0., 0.],[0m
+[1m[31mE           [0., 0., 0.],...[0m
+---------------------------- Captured stdout setup -----------------------------
+[Genesis 00:22:47] Running on [NVIDIA RTX PRO 6000 Blackwell Server Edition] with backend gs.cuda. Device memory: 94.97 GB.
+[Genesis 00:22:47] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+----------------------------- Captured stdout call -----------------------------
+[Genesis 00:23:06] Scene <b74ccfd> created.
+[Genesis 00:23:11] Adding <gs.engine.entities.RigidEntity> 'egg_shell_2f0ee8b'. idx: 0, morph: <gs.morphs.URDF(file='/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/examples/rigid/assets/hollow_egg/level1/egg_shell.urdf')>, material: <gs.materials.Rigid>.
+[Genesis 00:23:11] Building scene <b74ccfd>...
+[Genesis 00:23:20] Compiling simulation kernels...
+[Genesis 00:23:39] Building visualizer...
+----------------------------- Captured stderr call -----------------------------
+[W 10/13/26 00:23:47.416 958237] QuadrantsWarning
+While compiling `ext_arr_to_ndarray_c18_5`, File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/_kernels.py", line 108, in ext_arr_to_ndarray:
+        ndarray[I] = arr[I]
+        ^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: i32 <- i64
+[W 10/13/26 00:23:51.432 958237] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c1030_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 209, in kernel_fit_tractions_impl:
+                is_valid = qd.simt.subgroup.all_true(is_valid)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: u1 <- i32
+[W 10/13/26 00:23:51.432 958237] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c1030_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 65, in func_dual_warp:
+                        operator[a, a] = 1.0
+                        ^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+[W 10/13/26 00:23:51.432 958237] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c1030_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 65, in func_dual_warp:
+                        operator[a, a] = 1.0
+                        ^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+[W 10/13/26 00:23:51.432 958237] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c1030_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 65, in func_dual_warp:
+                        operator[a, a] = 1.0
+                        ^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+[W 10/13/26 00:23:51.432 958237] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c1030_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 66, in func_dual_warp:
+                    operator[3, 1], operator[3, 2] = -relative[2], relative[1]
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+[W 10/13/26 00:23:51.432 958237] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c1030_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 66, in func_dual_warp:
+                    operator[3, 1], operator[3, 2] = -relative[2], relative[1]
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+[W 10/13/26 00:23:51.432 958237] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c1030_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 67, in func_dual_warp:
+                    operator[4, 0], operator[4, 2] = relative[2], -relative[0]
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+[W 10/13/26 00:23:51.432 958237] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c1030_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 67, in func_dual_warp:
+                    operator[4, 0], operator[4, 2] = relative[2], -relative[0]
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+[W 10/13/26 00:23:51.432 958237] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c1030_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 68, in func_dual_warp:
+                    operator[5, 0], operator[5, 1] = -relative[1], relative[0]
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+[W 10/13/26 00:23:51.432 958237] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c1030_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 68, in func_dual_warp:
+                    operator[5, 0], operator[5, 1] = -relative[1], relative[0]
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: f32 <- f64
+[W 10/13/26 00:23:52.740 958237] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c1030_1`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 209, in kernel_fit_tractions_impl:
+                is_valid = qd.simt.subgroup.all_true(is_valid)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: u1 <- i32
+[W 10/13/26 00:23:54.126 958237] QuadrantsWarning
+While compiling `kernel_fit_tractions_impl_c1030_2`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/cooperative_fit.py", line 209, in kernel_fit_tractions_impl:
+                is_valid = qd.simt.subgroup.all_true(is_valid)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: u1 <- i32
+[W 10/13/26 00:24:02.191 958237] QuadrantsWarning
+While compiling `kernel_scatter_cached_tractions_c1034_0`, File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/cooperative_scatter.py", line 187, in kernel_scatter_cached_tractions:
+                cone_valid = qd.simt.subgroup.all_true(cone_valid)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Assign may lose precision: u1 <- i32
+--------------------------- Captured stdout teardown ---------------------------
+[Genesis 00:24:03] Exiting Genesis and caching compiled kernels...
+[33m=============================== warnings summary ===============================[0m
+tests/rigid/test_stress_shared_lifecycle.py::test_complete_pair_streaming_release_reset_and_source_failure_isolation
+tests/rigid/test_stress_shared_lifecycle.py::test_complete_pair_streaming_release_reset_and_source_failure_isolation
+  /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                          32 iterations, so the compile time may be extremely long.
+                          You can use a non-static for loop if you want to decrease the compile time.
+                          You can disable this warning by setting qd.init(unrolling_limit=0).
+    for a, b in qd.static(qd.ndrange(6, 6)):
+
+tests/rigid/test_stress_shared_lifecycle.py::test_complete_pair_streaming_release_reset_and_source_failure_isolation
+tests/rigid/test_stress_shared_lifecycle.py::test_complete_pair_streaming_release_reset_and_source_failure_isolation
+tests/rigid/test_stress_shared_lifecycle.py::test_complete_pair_streaming_release_reset_and_source_failure_isolation
+tests/rigid/test_stress_shared_lifecycle.py::test_complete_pair_streaming_release_reset_and_source_failure_isolation
+tests/rigid/test_stress_shared_lifecycle.py::test_complete_pair_streaming_release_reset_and_source_failure_isolation
+tests/rigid/test_stress_shared_lifecycle.py::test_complete_pair_streaming_release_reset_and_source_failure_isolation
+  /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/cooperative_fit.py:73: SyntaxWarning: You are unrolling more than
+                          32 iterations, so the compile time may be extremely long.
+                          You can use a non-static for loop if you want to decrease the compile time.
+                          You can disable this warning by setting qd.init(unrolling_limit=0).
+    for a, b in qd.static(qd.ndrange(6, 6)):
+
+tests/rigid/test_stress_shared_lifecycle.py::test_complete_pair_streaming_release_reset_and_source_failure_isolation
+tests/rigid/test_stress_shared_lifecycle.py::test_complete_pair_streaming_release_reset_and_source_failure_isolation
+tests/rigid/test_stress_shared_lifecycle.py::test_complete_pair_streaming_release_reset_and_source_failure_isolation
+tests/rigid/test_stress_shared_lifecycle.py::test_complete_pair_streaming_release_reset_and_source_failure_isolation
+tests/rigid/test_stress_shared_lifecycle.py::test_complete_pair_streaming_release_reset_and_source_failure_isolation
+tests/rigid/test_stress_shared_lifecycle.py::test_complete_pair_streaming_release_reset_and_source_failure_isolation
+  /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/cooperative_fit.py:81: SyntaxWarning: You are unrolling more than
+                          32 iterations, so the compile time may be extremely long.
+                          You can use a non-static for loop if you want to decrease the compile time.
+                          You can disable this warning by setting qd.init(unrolling_limit=0).
+    for a, b in qd.static(qd.ndrange(6, 6)):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/native-final-combined-lifecycle-v1/cuda/report.xml -
+================================= Failed tests =================================
+tests/rigid/test_stress_shared_lifecycle.py::test_complete_pair_streaming_rel...
+============================== slowest durations ===============================
+
+(6 durations < 100s hidden.)
+[31m============= [31m[1m1 failed[0m, [32m1 passed[0m, [33m14 warnings[0m[31m in 96.07s (0:01:36)[0m[31m ==============[0m

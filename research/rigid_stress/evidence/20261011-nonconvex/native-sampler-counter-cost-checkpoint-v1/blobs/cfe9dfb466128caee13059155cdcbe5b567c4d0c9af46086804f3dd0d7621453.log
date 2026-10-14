@@ -1,0 +1,97 @@
+[Quadrants] version 1.3.3, llvm 22.1.0, commit 00423caa, linux, python 3.10.12
+Traceback (most recent call last):
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/probe_native_sampler_counter_cost_v1.py", line 119, in <module>
+    main()
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/probe_native_sampler_counter_cost_v1.py", line 92, in main
+    kernel_sampler_counters(n_samples, state, is_warp)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/_quadrants_callable.py", line 101, in __call__
+    return self.wrapper.__call__(*args, **kwargs)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel_impl.py", line 184, in wrapped_func
+    raise type(e)("\n" + str(e)) from None
+quadrants.lang.exception.QuadrantsTypeError: 
+quadrants stack trace:
+===
+Traceback (most recent call last):
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformers/call_transformer.py", line 501, in build_Call
+    node.ptr = func(*py_args, **py_kwargs)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/simt/subgroup.py", line 419, in shuffle_up
+    return impl.call_internal("subgroupShuffleUp", value, offset, with_runtime_context=False)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/impl.py", line 1392, in call_internal
+    return expr_init(_qd_core.insert_internal_func_call(getattr(_qd_core.InternalOp, name), make_expr_group(args)))
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/util.py", line 316, in wrapped
+    return func(*args, **kwargs)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/impl.py", line 143, in expr_init
+    Expr(rhs).ptr, _qd_core.DebugInfo(get_runtime().get_current_src_info())
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/expr.py", line 52, in __init__
+    self.ptr.type_check(impl.get_runtime().prog.config())
+quadrants._lib.core.quadrants_python.QuadrantsTypeError: In a call to the operation `subgroupShuffleUp`:
+  expected u32 for argument #2, but got i32  (called with argument types i32, i32)
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer_utils.py", line 40, in __call__
+    res = method(ctx, node)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer.py", line 526, in build_Call
+    return CallTransformer.build_Call(ctx, node, build_stmt, build_stmts)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformers/call_transformer.py", line 520, in build_Call
+    raise QuadrantsTypeError(msg)
+quadrants.lang.exception.QuadrantsTypeError: TypeError when calling `shuffle_up`: In a call to the operation `subgroupShuffleUp`:
+  expected u32 for argument #2, but got i32  (called with argument types i32, i32)
+.
+
+===
+
+Your code:
+File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/probe_native_sampler_counter_cost_v1.py", line 51, in kernel_sampler_counters:
+                previous = qd.simt.subgroup.shuffle_up(prefix, offset)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError when calling `shuffle_up`: In a call to the operation `subgroupShuffleUp`:
+  expected u32 for argument #2, but got i32  (called with argument types i32, i32)
+.
+
+
+[38;5;9m[Genesis] [01:00:58] [ERROR] QuadrantsTypeError: 
+quadrants stack trace:
+===
+Traceback (most recent call last):
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformers/call_transformer.py", line 501, in build_Call
+    node.ptr = func(*py_args, **py_kwargs)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/simt/subgroup.py", line 419, in shuffle_up
+    return impl.call_internal("subgroupShuffleUp", value, offset, with_runtime_context=False)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/impl.py", line 1392, in call_internal
+    return expr_init(_qd_core.insert_internal_func_call(getattr(_qd_core.InternalOp, name), make_expr_group(args)))
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/util.py", line 316, in wrapped
+    return func(*args, **kwargs)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/impl.py", line 143, in expr_init
+    Expr(rhs).ptr, _qd_core.DebugInfo(get_runtime().get_current_src_info())
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/expr.py", line 52, in __init__
+    self.ptr.type_check(impl.get_runtime().prog.config())
+quadrants._lib.core.quadrants_python.QuadrantsTypeError: In a call to the operation `subgroupShuffleUp`:
+  expected u32 for argument #2, but got i32  (called with argument types i32, i32)
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer_utils.py", line 40, in __call__
+    res = method(ctx, node)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer.py", line 526, in build_Call
+    return CallTransformer.build_Call(ctx, node, build_stmt, build_stmts)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformers/call_transformer.py", line 520, in build_Call
+    raise QuadrantsTypeError(msg)
+quadrants.lang.exception.QuadrantsTypeError: TypeError when calling `shuffle_up`: In a call to the operation `subgroupShuffleUp`:
+  expected u32 for argument #2, but got i32  (called with argument types i32, i32)
+.
+
+===
+
+Your code:
+File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/probe_native_sampler_counter_cost_v1.py", line 51, in kernel_sampler_counters:
+                previous = qd.simt.subgroup.shuffle_up(prefix, offset)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError when calling `shuffle_up`: In a call to the operation `subgroupShuffleUp`:
+  expected u32 for argument #2, but got i32  (called with argument types i32, i32)
+.
+[0m

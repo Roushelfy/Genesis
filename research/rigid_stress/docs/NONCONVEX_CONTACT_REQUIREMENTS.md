@@ -2,8 +2,12 @@
 
 User requirement, 2026-10-11. This extends GOAL.md and NATIVE_QUADRANTS_PLAN.md
 after the previous low-shell milestone. The algorithm has an offline CPU FP64
-prototype; native Quadrants integration and its GPU performance are not yet
-validated by that prototype's evidence.
+prototype. Native Quadrants acceptance requires its own evidence.
+
+The [2026-10-14 final report](NATIVE_NONCONVEX_RESULTS_20261014.md) and
+[requirement audit](NATIVE_NONCONVEX_CLOSEOUT_20261014.md) now record native
+implementation, CPU/CUDA numerical/lifecycle validation, matched performance,
+output costs and verified publication. The contract below is preserved.
 
 ## Outcome
 

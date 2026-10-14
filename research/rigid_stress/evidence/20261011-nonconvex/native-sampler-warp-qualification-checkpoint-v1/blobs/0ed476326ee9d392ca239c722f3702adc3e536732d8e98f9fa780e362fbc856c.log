@@ -1,0 +1,45 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0
+rootdir: /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-sampler-warp
+configfile: pyproject.toml
+plugins: anyio-4.15.1, forked-1.7.5, print-1.2.0, timeout-2.4.0, xdist-3.8.0, quadrants-1.3.3, syrupy-6.1.1
+timeout: 1200.0s
+timeout method: signal
+timeout func_only: False
+collected 31 items / 28 deselected / 3 selected
+
+tests/rigid/test_stress_source_priors.py [32m.[0m[32m.[0m[32m.[0m[33m                             [100%][0m
+
+[33m=============================== warnings summary ===============================[0m
+tests/rigid/test_stress_source_priors.py::test_body_source_prior_wrench_cones_full_fields_and_gauge_rows[varied4096_slow-False]
+tests/rigid/test_stress_source_priors.py::test_body_source_prior_wrench_cones_full_fields_and_gauge_rows[varied4096_slow-False]
+tests/rigid/test_stress_source_priors.py::test_body_source_prior_wrench_cones_full_fields_and_gauge_rows[varied4096_slow-True]
+tests/rigid/test_stress_source_priors.py::test_body_source_prior_wrench_cones_full_fields_and_gauge_rows[varied4096_slow-True]
+tests/rigid/test_stress_source_priors.py::test_body_source_prior_dynamic_workspace_release_reset_and_invalid_member
+tests/rigid/test_stress_source_priors.py::test_body_source_prior_dynamic_workspace_release_reset_and_invalid_member
+  /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-sampler-warp/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                          32 iterations, so the compile time may be extremely long.
+                          You can use a non-static for loop if you want to decrease the compile time.
+                          You can disable this warning by setting qd.init(unrolling_limit=0).
+    for a, b in qd.static(qd.ndrange(6, 6)):
+
+tests/rigid/test_stress_source_priors.py: 24 warnings
+  /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-sampler-warp/genesis/engine/solvers/rigid/stress/cooperative_fit.py:73: SyntaxWarning: You are unrolling more than
+                          32 iterations, so the compile time may be extremely long.
+                          You can use a non-static for loop if you want to decrease the compile time.
+                          You can disable this warning by setting qd.init(unrolling_limit=0).
+    for a, b in qd.static(qd.ndrange(6, 6)):
+
+tests/rigid/test_stress_source_priors.py: 24 warnings
+  /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-sampler-warp/genesis/engine/solvers/rigid/stress/cooperative_fit.py:81: SyntaxWarning: You are unrolling more than
+                          32 iterations, so the compile time may be extremely long.
+                          You can use a non-static for loop if you want to decrease the compile time.
+                          You can disable this warning by setting qd.init(unrolling_limit=0).
+    for a, b in qd.static(qd.ndrange(6, 6)):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261011-nonconvex/native-sampler-warp-smoke-v1/cuda/report.xml -
+============================== slowest durations ===============================
+
+(9 durations < 100s hidden.)
+[33m========== [32m3 passed[0m, [33m[1m28 deselected[0m, [33m[1m54 warnings[0m[33m in 157.13s (0:02:37)[0m[33m ===========[0m

@@ -6,7 +6,7 @@ native CUDA-library recommendations, mandatory GPU direct-backend choice and
 convergence-first acceptance sequence. Earlier code and evidence remain useful
 for mathematics, numerical comparisons and bottleneck diagnosis.
 
-## Active extension, 2026-10-11
+## Nonconvex extension, 2026-10-11
 
 The new [nonconvex contact contract](NONCONVEX_CONTACT_REQUIREMENTS.md)
 supplements this plan. Preserve contact surface provenance, true material
@@ -20,6 +20,13 @@ same-mesh consistency checks, then profile and optimize aggregate throughput
 before high-resolution physical convergence work. Rebuild matched benchmarks
 after the footprint law changes and separate distance approximation error
 from wrench conservation and elastic-solver error.
+
+The [2026-10-14 final report](NATIVE_NONCONVEX_RESULTS_20261014.md) and
+[closeout audit](NATIVE_NONCONVEX_CLOSEOUT_20261014.md) establish native
+nonconvex acceptance, current-source CPU/CUDA coverage, six matched four-scope
+widths, full/max costs and a practical device/workload endpoint. The
+requirements below remain the implementation brief. Physical convergence
+and RL training remain separate later work.
 
 ## Result to build
 

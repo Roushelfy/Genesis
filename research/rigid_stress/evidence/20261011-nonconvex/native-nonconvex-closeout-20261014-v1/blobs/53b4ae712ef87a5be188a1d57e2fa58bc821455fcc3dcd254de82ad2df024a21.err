@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "<string>", line 1, in <listcomp>
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/summarize_nonconvex_closeout.py", line 144, in output_pair
+    assert full_position_difference <= position_control + transform_roundoff, parent
+AssertionError: /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-closeout/output-modes-b8192
+srun: error: cpu-207-115: task 0: Exited with exit code 1
