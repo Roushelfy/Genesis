@@ -1,5 +1,42 @@
 # Reproducing the device implementation
 
+## Completed native nonconvex workflow, 2026-10-14
+
+The [final report](NATIVE_NONCONVEX_RESULTS_20261014.md) and
+[closeout audit](NATIVE_NONCONVEX_CLOSEOUT_20261014.md) describe the current
+intrinsic/body-source-prior engine and verified source/results. On an allocated
+node/container, set `RIGID_STRESS_DATA_ROOT` and `RIGID_STRESS_ENV`, source
+`research/rigid_stress/scripts/cluster_env.sh` and run from this repository.
+Use an archived condition bank for exact workload reproduction.
+
+```bash
+BANK="$RIGID_STRESS_DATA_ROOT/runs/20261011-nonconvex/native-final-matched-scopes-v1/b8192-623104/conditions.npz"
+NEW_TEST_RUN="$RIGID_STRESS_DATA_ROOT/runs/reproduce/stress-cuda"
+
+"$RIGID_STRESS_ENV/bin/python" examples/rigid/franka_egg_stress.py \
+    --envs 8 --steps 600 --varied --contact-model intrinsic \
+    --intrinsic-load-partition body_source_prior --egg-geometry mesh64 \
+    --collision-method gjk --contact-patch on --output-mode full
+
+"$RIGID_STRESS_ENV/bin/python" -m examples.speed_benchmark.rigid_stress \
+    --scope live --envs 8192 --seed 623104 --warmup 600 --steps 1280 \
+    --repetitions 3 --minimum-seconds 10 --varied --contact-model intrinsic \
+    --intrinsic-load-partition body_source_prior --contact-block-size 4 \
+    --egg-geometry mesh64 --collision-method gjk --contact-patch on \
+    --conditions "$BANK" --trajectory-metrics --compact-log \
+    --output "$RIGID_STRESS_DATA_ROOT/runs/reproduce/live8192.json"
+
+bash research/rigid_stress/scripts/check_nonconvex_final.sh cuda "$NEW_TEST_RUN"
+```
+
+Change `--scope` to `rigid`, `recovery` or `policy` for the other scopes.
+`measure_nonconvex_output_modes.sh <batch> <seed> <bank> <new-run-directory>`
+records max/full/max live/policy comparisons under the same bank.
+`verify_nonconvex_publication.py`
+checks manifests, originals, decompression and complete JSON reconstruction.
+The report documents its arguments and publication identity. The remaining
+commands below preserve the earlier pressure-law and research workflows.
+
 ## Current native low-resolution workflow
 
 The normal example and benchmark use only the engine feature. From the

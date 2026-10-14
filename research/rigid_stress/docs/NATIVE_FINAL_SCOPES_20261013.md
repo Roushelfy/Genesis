@@ -76,13 +76,17 @@ B36864 live/policy edge records have also finished at
 154343.359/154176.223 valid env-step/s, with zero invalid steps, overflows
 or failed lifts. Their separate GPU allocation precludes treating the ratio
 to the curve as a paired speedup. The existing Jacobian guard rejects
-B40960; the last convenient allowed B38912 endpoint is being measured.
-Final endpoint/output-cost publications and the plateau/cost summary remain
-tracked by the current audit.
+B40960. The last convenient complete-bank B38912 endpoint fails warmup
+with CUDA out of memory during complete sample-position growth. It has no
+accepted rate. [The final report](NATIVE_NONCONVEX_RESULTS_20261014.md) and
+the current audit include both resource failures, full/max costs and the
+practical endpoint. B36864 is the largest successfully measured complete
+bank, with no assertion about every individual integer batch.
 [Sampler qualification and detailed profiling](NATIVE_WARP_COUNTERS_20261013.md)
 include two controlled live improvements and624final-source dynamic fields
 checked independently on CPU FP64. The highest current controlled live rate
-is135495.178env-step/s atB16384/734001; this is not yet a final optimum claim.
+is135495.178env-step/s atB16384/734001. This identifies a controlled sampler
+comparison rather than the largest overall rate.
 
 Reproduce with the exact archived source and
 `run_native_final_matched_scopes_v1.sh <batch> <seed>`, or the public

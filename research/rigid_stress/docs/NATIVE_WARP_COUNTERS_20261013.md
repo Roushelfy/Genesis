@@ -4,7 +4,8 @@ This follow-up preserves the qualified low-shell FP64/Q10/s8 intrinsic
 footprint and `body_source_prior` vector-traction law. It changes CUDA
 scheduling and counters; reference geometry, physical radius, Gaussian
 profile, friction, original-point wrench and final accuracy budgets remain
-unchanged. The nonconvex extension is still active.
+unchanged. The [2026-10-14 final report](NATIVE_NONCONVEX_RESULTS_20261014.md)
+records completed nonconvex acceptance and supersedes the pending items below.
 
 ## Implementation and qualification
 
@@ -123,11 +124,14 @@ Verified manifests are
 and `native-final-sampler-wrench-oracle-checkpoint-v1`
 (`a1201060018083030a4855aa71a9859f2eecfa564216c78eb693ca36e524ccf7`).
 
-## Remaining evidence
+## Final scope and candidate decisions
 
-Final-source B1024/2048/4096/8192 four scopes are verified and published;
+Final-source B1024/2048/4096/8192/16384/32768 four scopes are verified and published;
 see [the current scope tables](NATIVE_FINAL_SCOPES_20261013.md).
-Wider four-scope measurements and copied-condition scaling are running.
+Copied-condition scaling and B36864 live/policy edge trials complete.
+B38912 reaches sample-position-growth CUDA out of memory; B40960 reaches
+the unchanged Jacobian addressing guard. The final report records these
+resource endpoints, output costs and current-source regression.
 A complete B2048/623102 applicability audit observes51.036% of loaded groups
 with no projected samples, but only12.638% of sample-evaluation work. These
 interior cases average1.42983 evaluations;72.928% of their constraints and
@@ -150,8 +154,8 @@ all acceptance gates are unchanged. Verified archive
 `native-fit-interior-cost-checkpoint-v2`, manifest
 `10609e8f9a80a89d7e3b784949aaead3d2591637e62bc1e2e884b87cc3746e6e`.
 The earlier audit is retained and referenced. Wider scope/copy publications,
-the final profile/cost plateau report and final publication remain required.
-No unfinished measurement is counted as a successful result.
+the profile/cost endpoint report and final publication now complete. Failed
+and unfinished measurements retain their own status and have no accepted rate.
 
 The earlier standalone counter probe validates six synthetic count/index/max
 configurations and motivates this candidate. It excludes geometry/profile

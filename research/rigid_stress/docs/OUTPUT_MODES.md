@@ -5,7 +5,24 @@ between the complete stress field and its global maximum. This is an
 implemented build-time option in the existing native rigid solver feature.
 Both output APIs and their numerical/lifecycle checks are available. Matched
 ordinary live/policy throughput and memory measurements on source `e6094ff9`
-complete; final optimized-source measurements remain required.
+complete. The final nonconvex source `76537c2f` also completes same-GPU
+max/full/max measurements at B1024 and B8192 with600 warmup and three1280-step
+repeats per route. Pooled-control rate costs are:
+
+| Batch | Live full-field cost | Policy rollout cost | Additional field bytes |
+|---|---:|---:|---:|
+|1024|0.017%|0.772%|110100480|
+|8192|0.739%|0.745%|880803840|
+
+Live positions and every per-environment rigid/grasp/contact/descent outcome
+match exactly. Policy trajectories evolve independently from stress
+observations, so these policy costs describe complete rollout. Same-state
+tensor/von Mises/peak accuracy uses the strict native tests and independent
+CPU field oracles. The [final report](NATIVE_NONCONVEX_RESULTS_20261014.md)
+documents repeat controls, cross-process diagnostics and separate kernel
+traces. Full-mode storage remains107520 bytes/environment.
+
+The following measurements retain the earlier pressure-law milestone.
 
 At B=1024 on one RTX PRO 6000 Blackwell, three 2400-step repeats after 900
 warmup steps give the following valid env-step/s, with zero invalid steps:
