@@ -1,0 +1,16 @@
+[Quadrants] version 1.3.3, llvm 22.1.0, commit 00423caa, linux, python 3.10.12
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-refinement/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-refinement/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+{"case": "sparse", "active_counts": [0, 1, 2, 4, 6, 8], "repeats": 64, "kernel_wall_ms": {"native": 0.0432927772635594, "quadratic": 0.043149870180059224, "hybrid": 0.04310137592256069}}
+{"case": "mixed", "active_counts": [0, 1, 8, 32, 64, 1200], "repeats": 8, "kernel_wall_ms": {"native": 0.1901885843835771, "quadratic": 21.777302492409945, "hybrid": 0.187732744961977}}
+{"case": "dense", "active_counts": [1200, 1200, 1200, 1200, 1200, 1200], "repeats": 8, "kernel_wall_ms": {"native": 0.1600906252861023, "quadratic": 27.573362865950912, "hybrid": 0.15999790048226714}}
+{"case": "released", "active_counts": [0, 0, 0, 0, 0, 0], "repeats": 64, "kernel_wall_ms": {"native": 0.04213988722767681, "quadratic": 0.043013948015868664, "hybrid": 0.0428621206083335}}
+{"case": "restored", "active_counts": [31, 32, 33, 1, 0, 1200], "repeats": 8, "kernel_wall_ms": {"native": 0.1929646241478622, "quadratic": 21.74013649346307, "hybrid": 0.1887803664430976}}

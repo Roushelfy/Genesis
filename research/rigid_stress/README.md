@@ -13,9 +13,12 @@ Same-mesh numerical consistency remains required throughout.
 The active 2026-10-11 extension is
 [native nonconvex contact mapping](docs/NONCONVEX_CONTACT_REQUIREMENTS.md).
 Its [implementation checkpoint](docs/NONCONVEX_PROGRESS_20261011.md) records
-material-boundary, intrinsic-path and source tests. The live vector-traction
-integration and new-law throughput are still pending; the completed egg
-milestone below does not establish acceptance of that extension.
+material-boundary, intrinsic-path and source tests. Native vector-traction
+integration, source-prior partitioning, changing-contact numerical oracles
+and final-source four-scope measurements through B32768 are implemented and
+qualified. [GOAL.md](GOAL.md) records the current closeout work, including fresh
+complete regression and final-source max/full output costs. The completed
+2026-10-11 egg milestone below uses the earlier pressure law.
 
 The native implementation is in `genesis/engine/solvers/rigid/stress/`, with
 `RigidLink.configure_stress_recovery`, `get_max_stress`, `get_stress_field` and

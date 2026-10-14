@@ -1,0 +1,49 @@
+diff --git a/research/rigid_stress/GOAL.md b/research/rigid_stress/GOAL.md
+index ba863ede..c7417d96 100644
+--- a/research/rigid_stress/GOAL.md
++++ b/research/rigid_stress/GOAL.md
+@@ -23,7 +23,43 @@ This is a new requirement after the milestone below. Its prior completion
+ record does not establish native nonconvex-contact acceptance. Record and push
+ validated progress, including unfinished work and unavailable device checks.
+ 
+-## Extension progress, 2026-10-12
++## Current extension status, 2026-10-13
++
++The extension remains active. Pushed numerical source `eba3aeb2` qualifies
++the four selected layout/capture/Hessian/diagnostic optimizations with35CPU/
++35CUDA cases,96fixture fields,464dynamic fields and160original-wrench/
++independent-relief fields. Its same-GPU B16384 complete live pair improves
++106145.289 to113913.060 valid env-step/s (1.073180556x).
++
++The [warp sampler follow-up](docs/NATIVE_WARP_COUNTERS_20261013.md) passes
++35prototype CUDA cases in808.30s and a complete B8192/623105 same-GPU pair:
++107515.913 to117664.460 valid env-step/s (1.094391115x), with identical banks,
++rigid positions and per-environment contact/grasp counters, and zero invalid
++steps/overflows/failed lifts. Numerical commit `76537c2f` removes the
++prototype flag and duplicate path. Its CUDA kernel arguments/body are
++AST-identical to the qualified prototype; the CPU numerical route is unchanged.
++Clean-source35CUDA passes810.81s. The independent B16384/734001 pair
++improves115452.687 to135495.178 valid env-step/s (1.173599173x), with zero
++failures and exact rigid counters/positions. The complete two-cohort,
++prototype/clean/source-equivalence qualification is published.
++
++Final-source B1024/2048/4096 four-scope measurements are verified and
++published. Final-source464dynamic fields and160original-wrench/independent-
++relief fields pass CPU FP64. The initial sampler now costs22.906ms per
++instrumented B16384 step; warm fit costs25.026ms. These measurements load the original baseline banks;
++they hold timestep, load law, sampling and precision budgets fixed. Wider
++four-scope runs and the copied2048-condition scaling curve are running.
++A constraint-interior fit applicability probe assesses the remaining warm
++fit cost without changing production numerics. Its decision and the final
++profile/cost plateau report remain required.
++Neither the primitive counter probe nor an unfinished run establishes goal
++completion. Physical mesh/quadrature convergence stays outside this phase.
++
++## Extension development record, 2026-10-12–13
++
++The chronological entries below retain the evidence available at each
++checkpoint. Their older pending items are superseded by the current status
++above and the later linked qualification reports.
+ 
+ The extension remains active. Numerical baseline `6a861556` contains
+ qualified contact repairs and selected seed/layout/port/scatter optimizations.
