@@ -1,0 +1,21 @@
+Transforming over 1000 elements to C_CONTIGUOUS.
+{"step": 1, "newton_iteration": 0, "updated_residual_N": 0.04368026752969914}
+{"step": 1, "newton_iteration": 1, "updated_residual_N": 0.007082917547506986}
+{"step": 1, "newton_iteration": 2, "updated_residual_N": 0.0009828748877977267}
+{"step": 1, "newton_iteration": 3, "updated_residual_N": 0.00019109855749327526}
+{"step": 1, "newton_iteration": 4, "updated_residual_N": 3.9300057080235984e-05}
+{"step": 1, "newton_iteration": 5, "updated_residual_N": 6.105648483440822e-06}
+{"step": 1, "newton_iteration": 6, "updated_residual_N": 6.384504601271459e-07}
+{"step": 1, "newton_iteration": 7, "updated_residual_N": 2.3128526936140555e-08}
+{"step": 1, "newton_iteration": 8, "updated_residual_N": 7.278844886708588e-11}
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+{"hold_complete_residual_N": 7.278844886708588e-11, "constant_load_hold_tensor_relative_change": 3.3167099412338424e-05, "native_complete_budget_fraction": 0.015037199887163, "native_full_tensor_relative_difference": 1.6299383013442406e-10, "part_small_strain_diagnostics": [{"name": "body", "maximum_elastic_displacement_m": 1.1372624771678155e-06, "maximum_symmetric_strain_norm": 1.1075059959147082e-05, "minimum_deformation_jacobian": 0.9999994971784071}, {"name": "left_shoe", "maximum_elastic_displacement_m": 1.7270103741035543e-05, "maximum_symmetric_strain_norm": 0.06221098080865318, "minimum_deformation_jacobian": 0.933706387502237}, {"name": "right_shoe", "maximum_elastic_displacement_m": 2.032760809257182e-05, "maximum_symmetric_strain_norm": 0.0751971753240089, "minimum_deformation_jacobian": 0.91615459970651}]}

@@ -1,0 +1,87 @@
+{
+  "scope": "Audit resolved-contact mesh changes and reference-only gauge/cache candidates.",
+  "candidates": [
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/grasp-u-cache-only-v1",
+      "full_body_tensor_relative_difference": 3.611060096187219e-11,
+      "full_body_tensor_absolute_difference_Pa": 5.42446791942563e-05,
+      "full_contact_force_relative_difference": 1.5921522577137906e-10,
+      "full_contact_force_absolute_difference_N": 9.060697530850392e-12,
+      "common_x_translation_m": 7.490056260327078e-06,
+      "maximum_all_part_displacement_difference_after_translation_m": 1.4385648867738473e-14,
+      "complete_original_coordinate_residual_N": 3.137384192254144e-11,
+      "empty_factor_reuses": 340,
+      "supported_factorizations": 3981
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/grasp-u-centred-cache-v1",
+      "full_body_tensor_relative_difference": 2.6995263944144316e-11,
+      "full_body_tensor_absolute_difference_Pa": 4.055178793458951e-05,
+      "full_contact_force_relative_difference": 2.185940197655398e-10,
+      "full_contact_force_absolute_difference_N": 1.2439854828795756e-11,
+      "common_x_translation_m": -0.00014476159878157614,
+      "maximum_all_part_displacement_difference_after_translation_m": 3.0989577452364426e-16,
+      "complete_original_coordinate_residual_N": 1.525854246684022e-11,
+      "empty_factor_reuses": 340,
+      "supported_factorizations": 3981
+    }
+  ],
+  "levels": [
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/grasp-u-spatial-y-l1-v1",
+      "tetrahedra": 845,
+      "pad_resolution": 5,
+      "raw_global_peak_Pa": 112410.6393690433,
+      "raw_global_peak_position_m": [
+        0.00035698440893704305,
+        -0.004991140866333466,
+        0.00015274418427433216
+      ],
+      "body_elastic_energy_J": 4.382679437107152e-08,
+      "outside_probe_indices": [],
+      "complete_constrained_residual_N": 3.1003207438074387e-11
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/grasp-u-spatial-y-l2-v1",
+      "tetrahedra": 2339,
+      "pad_resolution": 7,
+      "raw_global_peak_Pa": 100653.75406833192,
+      "raw_global_peak_position_m": [
+        0.003283124812045432,
+        -0.003822847290746053,
+        -0.0004831036588991277
+      ],
+      "body_elastic_energy_J": 4.073830255384827e-08,
+      "outside_probe_indices": [],
+      "complete_constrained_residual_N": 5.328623992273626e-11
+    }
+  ],
+  "adjacent_changes": {
+    "common_valid_probes": 75,
+    "tensor_Pa": {
+      "relative_change": 0.4457877378530109,
+      "absolute_change": 48652.94881073882
+    },
+    "vm_Pa": {
+      "relative_change": 0.18871992488508993,
+      "absolute_change": 22336.660727636692
+    },
+    "displacement_m": {
+      "relative_change": 0.09168282469844012,
+      "absolute_change": 1.9751050685699086e-07
+    },
+    "raw_global_peak_Pa": 0.11680523403756848,
+    "body_elastic_energy_J": 0.07581297264756803
+  },
+  "probe_coordinate_sha256": "19e4490a7eabf220e2b1f1264e0275f30aa672aab54d6d35680e7721872a874b",
+  "input_sha256": {
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/grasp-u-spatial-y-l1-v1/solution/result.json": "efa8f619d98d660d071af7f36de828753b0767526bcdd3599324c89e3309783b",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/grasp-u-spatial-y-l1-v1/solution/configuration.json": "9d443593ba7983300148c6809f5ec0c73149e10be5434f7986852d6798bc05fd",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/grasp-u-spatial-y-l1-v1/solution/fields.npz": "b460a8ae6bed1f135809546f78f8d65f5095bce25376f570a8b2e26f97784c20",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/grasp-u-spatial-y-l2-v1/solution/result.json": "41e203cec634a76df1a56e815d9275257fe30496e792273db399dfb95e36fb6d",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/grasp-u-spatial-y-l2-v1/solution/configuration.json": "ed6b41ec63a4634449c402d7929af8ff7cf35be417b5f0306a304e7cbbd444f6",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/grasp-u-spatial-y-l2-v1/solution/fields.npz": "662ea61f5e22d325fe42256f15e476f498647e03b36eae9d00fd497e3252b7e7"
+  },
+  "goal_completion": false,
+  "limitations": "Two useful contact levels do not establish a tail. Body geometry and pad spatial discretization change together; separate axes, contact regularization, nonlinear pad compliance and full egg/Franka comparisons remain required. Cache and centre fixing are reference-only changes under exactly zero total x force. No wall-time speedup is inferred from factor reuse counts."
+}
