@@ -1,0 +1,163 @@
+diff --git a/research/rigid_stress/contact_reference.py b/research/rigid_stress/contact_reference.py
+index 50bec9b8..c86b8b62 100644
+--- a/research/rigid_stress/contact_reference.py
++++ b/research/rigid_stress/contact_reference.py
+@@ -87,6 +87,31 @@ class IndependentContactSystem:
+         self.friction = friction
+         self.friction_potential = ipctk.FrictionPotential(friction_mollifier)
+ 
++    def elastic_displacement(self, displacement):
++        elastic = np.empty_like(displacement)
++        for part in self.parts:
++            count = part.reference.basis.N
++            section = slice(part.first_node * 3, part.first_node * 3 + count)
++            vector = np.empty(count)
++            vector[part.permutation] = displacement[section]
++            elastic[section] = part.reference.align_rigid_gauge(vector)[part.permutation]
++        return elastic
++
++    def save_failure(self, path, displacement, previous, lagged, boundary_dofs, records):
++        if path is not None:
++            np.savez_compressed(
++                path,
++                rest_positions=self.rest,
++                displacement=displacement,
++                previous_displacement=previous,
++                lagged_displacement=lagged,
++                boundary_dofs=boundary_dofs,
++                surface_triangles=self.faces,
++            )
++            path.with_suffix(".json").write_text(
++                json.dumps({"iterations": [record.__dict__ for record in records]}, indent=2) + "\n"
++            )
++
+     def normal_collisions(self, displacement):
+         current = self.mesh.vertices(self.rest + displacement.reshape(-1, 3))
+         collisions = ipctk.NormalCollisions()
+@@ -97,8 +122,10 @@ class IndependentContactSystem:
+ 
+     def evaluate(self, displacement, previous, tangential, hessian, project_hessian=False):
+         normal, current = self.normal_collisions(displacement)
+-        energy = 0.5 * displacement @ (self.stiffness @ displacement) + self.barrier(normal, self.mesh, current)
+-        gradient = self.stiffness @ displacement
++        # Rigid translation energy cancels in the bulk quadratic form. Remove each part's rigid modes before evaluating it.
++        elastic = self.elastic_displacement(displacement)
++        gradient = self.stiffness @ elastic
++        energy = 0.5 * elastic @ gradient + self.barrier(normal, self.mesh, current)
+         contact_gradient = self.mesh.to_full_dof(self.barrier.gradient(normal, self.mesh, current))
+         gradient = gradient + contact_gradient
+         tangent_velocity = self.mesh.vertices((displacement - previous).reshape(-1, 3))
+@@ -119,7 +146,7 @@ class IndependentContactSystem:
+                 )
+         return energy, gradient, matrix, normal, contact_gradient
+ 
+-    def solve_supported(self, boundary_dofs, boundary_values, load_steps, tolerance=1e-9):
++    def solve_supported(self, boundary_dofs, boundary_values, load_steps, tolerance=1e-9, failure_path=None):
+         free = np.setdiff1d(np.arange(self.stiffness.shape[0]), boundary_dofs)
+         displacement = np.zeros(self.stiffness.shape[0])
+         records = []
+@@ -127,11 +154,12 @@ class IndependentContactSystem:
+             previous = displacement.copy()
+             displacement[boundary_dofs] = boundary_values * step / load_steps
+             for friction_iteration in range(12 if self.friction > 0 else 1):
++                lagged = displacement.copy()
+                 normal, current = self.normal_collisions(displacement)
+                 tangential = ipctk.TangentialCollisions()
+                 if self.friction > 0:
+                     tangential.build(self.mesh, current, normal, self.barrier, self.friction)
+-                for iteration in range(100):
++                for iteration in range(512):
+                     energy, gradient, matrix, normal, _ = self.evaluate(
+                         displacement, previous, tangential, hessian=True
+                     )
+@@ -154,12 +182,17 @@ class IndependentContactSystem:
+                     direction[free] = splu(matrix[free][:, free].tocsc()).solve(-gradient[free])
+                     slope = gradient @ direction
+                     if slope >= 0:
+-                        projected = self.evaluate(
+-                            displacement, previous, tangential, hessian=True, project_hessian=True
+-                        )[2]
+-                        direction[free] = splu(projected[free][:, free].tocsc()).solve(-gradient[free])
+-                        slope = gradient @ direction
++                        scale = np.max(np.abs(matrix.diagonal()))
++                        for relative_shift in (1e-8, 1e-7, 1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1):
++                            shifted = matrix[free][:, free] + relative_shift * scale * sparse.eye(
++                                len(free), format="csc"
++                            )
++                            direction[free] = splu(shifted.tocsc()).solve(-gradient[free])
++                            slope = gradient @ direction
++                            if slope < 0:
++                                break
+                         if slope >= 0:
++                            self.save_failure(failure_path, displacement, previous, lagged, boundary_dofs, records)
+                             raise RuntimeError(f"Contact Newton direction is not descending: {slope}")
+                     start = self.mesh.vertices(self.rest + displacement.reshape(-1, 3))
+                     end = self.mesh.vertices(self.rest + (displacement + direction).reshape(-1, 3))
+@@ -167,11 +200,17 @@ class IndependentContactSystem:
+                     alpha = min(1.0, safe)
+                     for _ in range(60):
+                         trial = displacement + alpha * direction
+-                        candidate = self.evaluate(trial, previous, tangential, hessian=False)[0]
+-                        if candidate <= energy + 1e-4 * alpha * slope:
++                        evaluated = self.evaluate(trial, previous, tangential, hessian=False)
++                        candidate = evaluated[0]
++                        roundoff = 64 * np.finfo(float).eps * max(abs(energy), abs(candidate))
++                        residual_reduced = np.linalg.norm(evaluated[1][free]) < (1 - 1e-3 * alpha) * residual
++                        if candidate <= energy + 1e-4 * alpha * slope or (
++                            candidate <= energy + roundoff and residual_reduced
++                        ):
+                             break
+                         alpha *= 0.5
+                     else:
++                        self.save_failure(failure_path, displacement, previous, lagged, boundary_dofs, records)
+                         raise RuntimeError("Contact line search did not converge")
+                     records.append(
+                         ContactIteration(
+@@ -180,6 +219,7 @@ class IndependentContactSystem:
+                     )
+                     displacement = trial
+                 else:
++                    self.save_failure(failure_path, displacement, previous, lagged, boundary_dofs, records)
+                     raise RuntimeError(f"Contact Newton solve did not converge at load step{step}")
+                 updated_normal, updated_current = self.normal_collisions(displacement)
+                 updated = ipctk.TangentialCollisions()
+@@ -189,6 +229,7 @@ class IndependentContactSystem:
+                 if np.linalg.norm(final[1][free]) <= tolerance:
+                     break
+             else:
++                self.save_failure(failure_path, displacement, previous, lagged, boundary_dofs, records)
+                 raise RuntimeError(f"Lagged friction did not converge at load step{step}")
+         energy, gradient, _, normal, contact_gradient = final
+         return displacement, gradient, -contact_gradient, energy, records
+@@ -215,7 +256,9 @@ def validate_blocks(resolution, dhat, friction, output):
+     dofs = (nodes[:, None] * 3 + np.arange(3)).reshape(-1)
+     values = np.zeros((len(nodes), 3))
+     values[len(bottom) :, 2] = -(gap + closing)
+-    displacement, gradient, contact_force, energy, records = system.solve_supported(dofs, values.reshape(-1), 12)
++    displacement, gradient, contact_force, energy, records = system.solve_supported(
++        dofs, values.reshape(-1), 12, failure_path=output / "failure.npz"
++    )
+     fields, rows = [], []
+     for part in system.parts:
+         count = part.reference.basis.N
+diff --git a/tests/rigid/test_stress_independent_fem.py b/tests/rigid/test_stress_independent_fem.py
+index d561d663..f5efd9a5 100644
+--- a/tests/rigid/test_stress_independent_fem.py
++++ b/tests/rigid/test_stress_independent_fem.py
+@@ -86,6 +86,16 @@ def test_independent_fem_assembly_boundary_loads_and_inertia_relief(
+     np.testing.assert_allclose(probe_tensor, solved.tensor_pa.mean(axis=1), rtol=1e-9, atol=1e-7)
+     assert np.isfinite(probe_vm).all()
+ 
++    barycentric = np.array([[0.1, 0.2, 0.3, 0.4], [0.6, 0.1, 0.2, 0.1], [0.15, 0.35, 0.4, 0.1]])
++    points = np.einsum("qc,ecj->eqj", barycentric, vertices[tets]).reshape(-1, 3)
++    probe_tensor, _ = reference.stress_at_points(solved.displacement, points)
++    if analytic == "uniform_strain":
++        expected_probes = np.broadcast_to(tensor, probe_tensor.shape)
++    else:
++        expected_probes = np.zeros_like(probe_tensor)
++        expected_probes[:, 0, 0] = options.young * curvature * points[:, 2]
++    np.testing.assert_allclose(probe_tensor, expected_probes, rtol=1e-9, atol=1e-7)
++
+     random = np.random.default_rng(2026101401)
+     random_force = random.normal(size=reference.basis.N) * 1e-5
+     forces = (force, random_force)

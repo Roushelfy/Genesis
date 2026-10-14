@@ -1,0 +1,64 @@
+{
+  "mesh": {
+    "geometry": {
+      "name": "cavity",
+      "description": "Full spherical shell, outer radius12mm, inner radius8mm",
+      "thickness_m": 0.004,
+      "gap_m": null,
+      "minimum_rounding_m": null
+    },
+    "gmsh_version": "4.14.1",
+    "volume_construction": "Gmsh OpenCASCADE volume tetrahedralization",
+    "mesh_size": 0.08,
+    "mesh_size_units": "unit-sphere coordinates",
+    "shell_layers": 2,
+    "nodes": 7210,
+    "tetrahedra": 32158,
+    "boundary_triangles": 7190,
+    "dimensions_m": [
+      0.023997915957780017,
+      0.023992990765185025,
+      0.024
+    ],
+    "minimum_volume_m3": 2.987844371926046e-11,
+    "total_volume_m3": 5.087778703728083e-06,
+    "scaled_jacobian_percentiles": [
+      0.18015376121917173,
+      0.3628529492219821,
+      0.659502489686729,
+      0.894476870043904,
+      0.9984590343963711
+    ],
+    "mesh_sha256": "a7d5ced00948803796d3d220ae14a7b11c0d163b9c3732412390a3012786d42b"
+  },
+  "young_Pa": 10000000000.0,
+  "poisson": 0.3,
+  "density_kg_m3": 2000,
+  "inner_pressure_Pa": 10000.0,
+  "outer_pressure_Pa": 0,
+  "inner_radius_m": 0.008,
+  "outer_radius_m": 0.012,
+  "reference": "full3D independent scikit-fem P2, closed pressure shell, consistent-mass aligned free-body solution",
+  "linear_gauge": "pinned",
+  "factor_seconds": 488.50884280819446,
+  "factor_nonzeros": 884162299,
+  "peak_Pa": 21717.67588564722,
+  "exact_peak_Pa": 21315.78947368421,
+  "peak_relative_error": 0.01885393043777084,
+  "peak_position_m": [
+    -0.0011004293894994954,
+    -0.0003722519196225737,
+    0.007915205851212153
+  ],
+  "energy_J": 3.490450567248587e-08,
+  "exact_energy_J": 3.513292668603996e-08,
+  "energy_relative_error": 0.006501622127736084,
+  "common_probe_tensor_relative_error": 0.010168111770169972,
+  "common_probe_vm_relative_error": 0.004503720939461828,
+  "common_probe_displacement_relative_error": 0.005497441568914118,
+  "complete_residual_N": 1.401649136111408e-13,
+  "complete_residual_budget_fraction": 0.00010125843208499675,
+  "total_mass_kg": 0.010175557407456154,
+  "elapsed_seconds": 1216.528181341011,
+  "field_sha256": "676c9975b9c9edeb3d19d105584f50eecbda91d63eaa08dcf5b6ae6942f47d40"
+}

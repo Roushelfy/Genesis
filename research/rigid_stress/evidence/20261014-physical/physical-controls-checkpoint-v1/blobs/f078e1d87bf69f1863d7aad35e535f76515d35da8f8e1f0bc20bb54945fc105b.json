@@ -1,0 +1,462 @@
+{
+  "scope": "supported full3D deformable-block compression contact formulation control",
+  "young_Pa": 1000000.0,
+  "poisson": 0.0,
+  "gap_m": 0.001,
+  "closing_after_touch_m": 5e-05,
+  "resolution": 4,
+  "dhat_m": 5e-06,
+  "barrier_stiffness": 1000000.0,
+  "physical_area_weighted_barrier": true,
+  "friction": 0.0,
+  "friction_mollifier_m_per_unit_step": 1e-08,
+  "load_steps": 12,
+  "complete_free_residual_N": 6.065139501620485e-10,
+  "total_energy_J": 1.5099725782771213e-05,
+  "parts": [
+    {
+      "name": "lower",
+      "contact_force_N": [
+        -0.00012654394105176742,
+        0.00013093202182377448,
+        -0.549302272345741
+      ],
+      "contact_moment_Nm": [
+        -3.295617445166015e-07,
+        -3.101509856416143e-07,
+        -3.72254035904215e-07
+      ],
+      "peak_Pa": 5638.92039594549,
+      "tetrahedra": 162
+    },
+    {
+      "name": "upper",
+      "contact_force_N": [
+        0.00012654394105176772,
+        -0.00013093202182377458,
+        0.5493022723457409
+      ],
+      "contact_moment_Nm": [
+        -4.560303864261197e-07,
+        -4.491126606688141e-07,
+        3.7225403590421555e-07
+      ],
+      "peak_Pa": 5640.7845812564,
+      "tetrahedra": 162
+    }
+  ],
+  "analytic_frictionless_zero_gap_force_N": 0.5,
+  "elapsed_seconds": 5.7008523270487785,
+  "iterations": [
+    {
+      "step": 1,
+      "friction_iteration": 0,
+      "newton_iteration": 0,
+      "energy_j": 0.0005359374999999995,
+      "free_residual_n": 2.278238435803057,
+      "normal_collisions": 0,
+      "collision_free_step": 1.0,
+      "accepted_step": 1.0
+    },
+    {
+      "step": 2,
+      "friction_iteration": 0,
+      "newton_iteration": 0,
+      "energy_j": 0.0005359374999999998,
+      "free_residual_n": 2.278238435803058,
+      "normal_collisions": 0,
+      "collision_free_step": 1.0,
+      "accepted_step": 1.0
+    },
+    {
+      "step": 3,
+      "friction_iteration": 0,
+      "newton_iteration": 0,
+      "energy_j": 0.0005359374999999996,
+      "free_residual_n": 2.278238435803057,
+      "normal_collisions": 0,
+      "collision_free_step": 1.0,
+      "accepted_step": 1.0
+    },
+    {
+      "step": 4,
+      "friction_iteration": 0,
+      "newton_iteration": 0,
+      "energy_j": 0.0005359374999999998,
+      "free_residual_n": 2.278238435803058,
+      "normal_collisions": 0,
+      "collision_free_step": 1.0,
+      "accepted_step": 1.0
+    },
+    {
+      "step": 5,
+      "friction_iteration": 0,
+      "newton_iteration": 0,
+      "energy_j": 0.0005359374999999993,
+      "free_residual_n": 2.2782384358030567,
+      "normal_collisions": 0,
+      "collision_free_step": 1.0,
+      "accepted_step": 1.0
+    },
+    {
+      "step": 6,
+      "friction_iteration": 0,
+      "newton_iteration": 0,
+      "energy_j": 0.0005359375000000002,
+      "free_residual_n": 2.2782384358030585,
+      "normal_collisions": 0,
+      "collision_free_step": 1.0,
+      "accepted_step": 1.0
+    },
+    {
+      "step": 7,
+      "friction_iteration": 0,
+      "newton_iteration": 0,
+      "energy_j": 0.0005359374999999997,
+      "free_residual_n": 2.2782384358030576,
+      "normal_collisions": 0,
+      "collision_free_step": 1.0,
+      "accepted_step": 1.0
+    },
+    {
+      "step": 8,
+      "friction_iteration": 0,
+      "newton_iteration": 0,
+      "energy_j": 0.0005359375000000001,
+      "free_residual_n": 2.2782384358030576,
+      "normal_collisions": 0,
+      "collision_free_step": 1.0,
+      "accepted_step": 1.0
+    },
+    {
+      "step": 9,
+      "friction_iteration": 0,
+      "newton_iteration": 0,
+      "energy_j": 0.0005359375000000002,
+      "free_residual_n": 2.2782384358030576,
+      "normal_collisions": 0,
+      "collision_free_step": 1.0,
+      "accepted_step": 1.0
+    },
+    {
+      "step": 10,
+      "friction_iteration": 0,
+      "newton_iteration": 0,
+      "energy_j": 0.0005359374999999988,
+      "free_residual_n": 2.278238435803056,
+      "normal_collisions": 0,
+      "collision_free_step": 1.0,
+      "accepted_step": 1.0
+    },
+    {
+      "step": 11,
+      "friction_iteration": 0,
+      "newton_iteration": 0,
+      "energy_j": 0.0005359375000000002,
+      "free_residual_n": 2.278238435803059,
+      "normal_collisions": 0,
+      "collision_free_step": 1.0,
+      "accepted_step": 1.0
+    },
+    {
+      "step": 12,
+      "friction_iteration": 0,
+      "newton_iteration": 0,
+      "energy_j": 0.0005359375000000003,
+      "free_residual_n": 2.278238435803058,
+      "normal_collisions": 0,
+      "collision_free_step": 0.33203125,
+      "accepted_step": 0.33203125
+    },
+    {
+      "step": 12,
+      "friction_iteration": 0,
+      "newton_iteration": 1,
+      "energy_j": 0.00023912580013275148,
+      "free_residual_n": 1.521792080165323,
+      "normal_collisions": 0,
+      "collision_free_step": 0.1015625,
+      "accepted_step": 0.05078125
+    },
+    {
+      "step": 12,
+      "friction_iteration": 0,
+      "newton_iteration": 2,
+      "energy_j": 0.00021545622821104172,
+      "free_residual_n": 1.4445135760944272,
+      "normal_collisions": 0,
+      "collision_free_step": 0.06640625,
+      "accepted_step": 0.0166015625
+    },
+    {
+      "step": 12,
+      "friction_iteration": 0,
+      "newton_iteration": 3,
+      "energy_j": 0.0002129808724186681,
+      "free_residual_n": 6.508985856559316,
+      "normal_collisions": 1195,
+      "collision_free_step": 1.0,
+      "accepted_step": 1.0
+    },
+    {
+      "step": 12,
+      "friction_iteration": 0,
+      "newton_iteration": 4,
+      "energy_j": 1.5572992961535186e-05,
+      "free_residual_n": 1.4801909671600542,
+      "normal_collisions": 1264,
+      "collision_free_step": 1.0,
+      "accepted_step": 1.0
+    },
+    {
+      "step": 12,
+      "friction_iteration": 0,
+      "newton_iteration": 5,
+      "energy_j": 1.5144755882608573e-05,
+      "free_residual_n": 0.33833079769868096,
+      "normal_collisions": 1411,
+      "collision_free_step": 1.0,
+      "accepted_step": 1.0
+    },
+    {
+      "step": 12,
+      "friction_iteration": 0,
+      "newton_iteration": 6,
+      "energy_j": 1.5103152817028459e-05,
+      "free_residual_n": 0.06635429857266184,
+      "normal_collisions": 1431,
+      "collision_free_step": 1.0,
+      "accepted_step": 1.0
+    },
+    {
+      "step": 12,
+      "friction_iteration": 0,
+      "newton_iteration": 7,
+      "energy_j": 1.5100142213461465e-05,
+      "free_residual_n": 0.012146799279064986,
+      "normal_collisions": 1423,
+      "collision_free_step": 1.0,
+      "accepted_step": 1.0
+    },
+    {
+      "step": 12,
+      "friction_iteration": 0,
+      "newton_iteration": 8,
+      "energy_j": 1.5099891169293957e-05,
+      "free_residual_n": 0.0031957277450318936,
+      "normal_collisions": 1437,
+      "collision_free_step": 1.0,
+      "accepted_step": 0.5
+    },
+    {
+      "step": 12,
+      "friction_iteration": 0,
+      "newton_iteration": 9,
+      "energy_j": 1.5099855310589244e-05,
+      "free_residual_n": 0.0031850424278908433,
+      "normal_collisions": 1428,
+      "collision_free_step": 1.0,
+      "accepted_step": 0.5
+    },
+    {
+      "step": 12,
+      "friction_iteration": 0,
+      "newton_iteration": 10,
+      "energy_j": 1.5099827598866403e-05,
+      "free_residual_n": 0.0038263444187932373,
+      "normal_collisions": 1411,
+      "collision_free_step": 1.0,
+      "accepted_step": 1.0
+    },
+    {
+      "step": 12,
+      "friction_iteration": 0,
+      "newton_iteration": 11,
+      "energy_j": 1.5099819041767285e-05,
+      "free_residual_n": 0.0013971327370678986,
+      "normal_collisions": 1416,
+      "collision_free_step": 1.0,
+      "accepted_step": 1.0
+    },
+    {
+      "step": 12,
+      "friction_iteration": 0,
+      "newton_iteration": 12,
+      "energy_j": 1.5099810832425372e-05,
+      "free_residual_n": 0.0007961924539389226,
+      "normal_collisions": 1395,
+      "collision_free_step": 1.0,
+      "accepted_step": 1.0
+    },
+    {
+      "step": 12,
+      "friction_iteration": 0,
+      "newton_iteration": 13,
+      "energy_j": 1.5099805767489655e-05,
+      "free_residual_n": 0.0009976224645197305,
+      "normal_collisions": 1408,
+      "collision_free_step": 1.0,
+      "accepted_step": 1.0
+    },
+    {
+      "step": 12,
+      "friction_iteration": 0,
+      "newton_iteration": 14,
+      "energy_j": 1.5099800043725923e-05,
+      "free_residual_n": 0.00026791281978792844,
+      "normal_collisions": 1393,
+      "collision_free_step": 1.0,
+      "accepted_step": 0.0625
+    },
+    {
+      "step": 12,
+      "friction_iteration": 0,
+      "newton_iteration": 15,
+      "energy_j": 1.5099790506999894e-05,
+      "free_residual_n": 0.0010741168253681386,
+      "normal_collisions": 1411,
+      "collision_free_step": 1.0,
+      "accepted_step": 0.5
+    },
+    {
+      "step": 12,
+      "friction_iteration": 0,
+      "newton_iteration": 16,
+      "energy_j": 1.5099789376664285e-05,
+      "free_residual_n": 0.0007324546822843895,
+      "normal_collisions": 1412,
+      "collision_free_step": 1.0,
+      "accepted_step": 1.0
+    },
+    {
+      "step": 12,
+      "friction_iteration": 0,
+      "newton_iteration": 17,
+      "energy_j": 1.5099788039332635e-05,
+      "free_residual_n": 0.00013955896809057645,
+      "normal_collisions": 1408,
+      "collision_free_step": 1.0,
+      "accepted_step": 1.0
+    },
+    {
+      "step": 12,
+      "friction_iteration": 0,
+      "newton_iteration": 18,
+      "energy_j": 1.509978791411358e-05,
+      "free_residual_n": 9.424990779488524e-06,
+      "normal_collisions": 1408,
+      "collision_free_step": 1.0,
+      "accepted_step": 0.125
+    },
+    {
+      "step": 12,
+      "friction_iteration": 0,
+      "newton_iteration": 19,
+      "energy_j": 1.5099786250221992e-05,
+      "free_residual_n": 0.002706861028224882,
+      "normal_collisions": 1406,
+      "collision_free_step": 1.0,
+      "accepted_step": 1.0
+    },
+    {
+      "step": 12,
+      "friction_iteration": 0,
+      "newton_iteration": 20,
+      "energy_j": 1.5099782581296328e-05,
+      "free_residual_n": 0.0009718744879431423,
+      "normal_collisions": 1391,
+      "collision_free_step": 1.0,
+      "accepted_step": 1.0
+    },
+    {
+      "step": 12,
+      "friction_iteration": 0,
+      "newton_iteration": 21,
+      "energy_j": 1.5099779180818185e-05,
+      "free_residual_n": 0.0006337840646335916,
+      "normal_collisions": 1404,
+      "collision_free_step": 1.0,
+      "accepted_step": 0.25
+    },
+    {
+      "step": 12,
+      "friction_iteration": 0,
+      "newton_iteration": 22,
+      "energy_j": 1.5099770979220138e-05,
+      "free_residual_n": 0.0019484653212462001,
+      "normal_collisions": 1384,
+      "collision_free_step": 1.0,
+      "accepted_step": 0.125
+    },
+    {
+      "step": 12,
+      "friction_iteration": 0,
+      "newton_iteration": 23,
+      "energy_j": 1.5099763179960316e-05,
+      "free_residual_n": 0.0020567662934105452,
+      "normal_collisions": 1380,
+      "collision_free_step": 1.0,
+      "accepted_step": 1.0
+    },
+    {
+      "step": 12,
+      "friction_iteration": 0,
+      "newton_iteration": 24,
+      "energy_j": 1.509976123208451e-05,
+      "free_residual_n": 0.0031412348168895028,
+      "normal_collisions": 1374,
+      "collision_free_step": 1.0,
+      "accepted_step": 1.0
+    },
+    {
+      "step": 12,
+      "friction_iteration": 0,
+      "newton_iteration": 25,
+      "energy_j": 1.5099745851253486e-05,
+      "free_residual_n": 0.0006749343863393185,
+      "normal_collisions": 1359,
+      "collision_free_step": 1.0,
+      "accepted_step": 1.0
+    },
+    {
+      "step": 12,
+      "friction_iteration": 0,
+      "newton_iteration": 26,
+      "energy_j": 1.5099738034079521e-05,
+      "free_residual_n": 0.00042072736766632444,
+      "normal_collisions": 1378,
+      "collision_free_step": 1.0,
+      "accepted_step": 0.25
+    },
+    {
+      "step": 12,
+      "friction_iteration": 0,
+      "newton_iteration": 27,
+      "energy_j": 1.5099728707967429e-05,
+      "free_residual_n": 0.0009087151053622834,
+      "normal_collisions": 1371,
+      "collision_free_step": 1.0,
+      "accepted_step": 1.0
+    },
+    {
+      "step": 12,
+      "friction_iteration": 0,
+      "newton_iteration": 28,
+      "energy_j": 1.5099725789575845e-05,
+      "free_residual_n": 4.59206779566278e-05,
+      "normal_collisions": 1365,
+      "collision_free_step": 1.0,
+      "accepted_step": 1.0
+    },
+    {
+      "step": 12,
+      "friction_iteration": 0,
+      "newton_iteration": 29,
+      "energy_j": 1.5099725782775792e-05,
+      "free_residual_n": 4.368498157636947e-07,
+      "normal_collisions": 1371,
+      "collision_free_step": 1.0,
+      "accepted_step": 1.0
+    }
+  ]
+}

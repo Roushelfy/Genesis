@@ -1,0 +1,64 @@
+{
+  "mesh": {
+    "geometry": {
+      "name": "cavity",
+      "description": "Full spherical shell, outer radius12mm, inner radius8mm",
+      "thickness_m": 0.004,
+      "gap_m": null,
+      "minimum_rounding_m": null
+    },
+    "gmsh_version": "4.14.1",
+    "volume_construction": "Gmsh OpenCASCADE volume tetrahedralization",
+    "mesh_size": 0.2,
+    "mesh_size_units": "unit-sphere coordinates",
+    "shell_layers": 2,
+    "nodes": 912,
+    "tetrahedra": 3626,
+    "boundary_triangles": 1194,
+    "dimensions_m": [
+      0.02396419849682003,
+      0.023940743119892544,
+      0.024
+    ],
+    "minimum_volume_m3": 4.13661630400678e-10,
+    "total_volume_m3": 5.053875630342891e-06,
+    "scaled_jacobian_percentiles": [
+      0.1797116109212921,
+      0.34350784495991193,
+      0.6256929313326991,
+      0.8860758457305412,
+      0.9739324291116388
+    ],
+    "mesh_sha256": "2ce9021e62bf5fe79898966474bfdd3c0c87d33187d27e43206d04cf49796cf4"
+  },
+  "young_Pa": 10000000000.0,
+  "poisson": 0.3,
+  "density_kg_m3": 2000,
+  "inner_pressure_Pa": 10000.0,
+  "outer_pressure_Pa": 0,
+  "inner_radius_m": 0.008,
+  "outer_radius_m": 0.012,
+  "reference": "full3D independent scikit-fem P2, closed pressure shell, consistent-mass aligned free-body solution",
+  "linear_gauge": "pinned",
+  "factor_seconds": 2.4024659311398864,
+  "factor_nonzeros": 27267678,
+  "peak_Pa": 22191.600281209336,
+  "exact_peak_Pa": 21315.78947368421,
+  "peak_relative_error": 0.04108742059994408,
+  "peak_position_m": [
+    -0.0015972984530083995,
+    0.0008958676993332323,
+    0.007787557943110816
+  ],
+  "energy_J": 3.382176840110646e-08,
+  "exact_energy_J": 3.513292668603996e-08,
+  "energy_relative_error": 0.03731992773190995,
+  "common_probe_tensor_relative_error": 0.04908092612061018,
+  "common_probe_vm_relative_error": 0.036437013299406594,
+  "common_probe_displacement_relative_error": 0.03200353796502055,
+  "complete_residual_N": 1.2207013300524912e-14,
+  "complete_residual_budget_fraction": 3.7194274257552965e-06,
+  "total_mass_kg": 0.010107751260685771,
+  "elapsed_seconds": 5.671253990847617,
+  "field_sha256": "9c597b858c06c471d7a510adb4a701ec2312487fac69806e1c5544fe9ac1d413"
+}

@@ -1,0 +1,61 @@
+{
+  "mesh": {
+    "geometry": {
+      "name": "cavity",
+      "description": "Full spherical shell, outer radius12mm, inner radius8mm",
+      "thickness_m": 0.004,
+      "gap_m": null,
+      "minimum_rounding_m": null
+    },
+    "gmsh_version": "4.14.1",
+    "volume_construction": "Gmsh OpenCASCADE volume tetrahedralization",
+    "mesh_size": 0.28,
+    "mesh_size_units": "unit-sphere coordinates",
+    "shell_layers": 2,
+    "nodes": 495,
+    "tetrahedra": 1937,
+    "boundary_triangles": 660,
+    "dimensions_m": [
+      0.023903602340002435,
+      0.023940187075957152,
+      0.024
+    ],
+    "minimum_volume_m3": 8.624803038563749e-10,
+    "total_volume_m3": 5.030250019624382e-06,
+    "scaled_jacobian_percentiles": [
+      0.12378084700545976,
+      0.3260508789896708,
+      0.6179035457270972,
+      0.9025762464248149,
+      0.9854731821732259
+    ],
+    "mesh_sha256": "59b85b5891b476b7c8db61cece420333791e3c1cedf7ed9b25803223072edb0c"
+  },
+  "young_Pa": 10000000000.0,
+  "poisson": 0.3,
+  "density_kg_m3": 2000,
+  "inner_pressure_Pa": 10000.0,
+  "outer_pressure_Pa": 0,
+  "inner_radius_m": 0.008,
+  "outer_radius_m": 0.012,
+  "reference": "full3D independent scikit-fem P2, closed pressure shell, consistent-mass free-body gauge",
+  "peak_Pa": 26386.293212499284,
+  "exact_peak_Pa": 21315.78947368421,
+  "peak_relative_error": 0.23787548404317627,
+  "peak_position_m": [
+    -0.0017760303471571176,
+    0.0023980120821485078,
+    -0.007422617749813521
+  ],
+  "energy_J": 3.2578016528478415e-08,
+  "exact_energy_J": 3.513292668603996e-08,
+  "energy_relative_error": 0.07272124467150454,
+  "common_probe_tensor_relative_error": 0.077762092442457,
+  "common_probe_vm_relative_error": 0.07435933053874072,
+  "common_probe_displacement_relative_error": 0.062218797969637925,
+  "complete_residual_N": 1.4962489041323645e-12,
+  "complete_residual_budget_fraction": 0.0003339767974713606,
+  "total_mass_kg": 0.010060500039248755,
+  "elapsed_seconds": 9.04050766211003,
+  "field_sha256": "53846ababdcd5a05a6a5008b8ebffa84c86f0f0d0c2eea6ff304b9b354b35494"
+}

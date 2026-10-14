@@ -1,0 +1,248 @@
+{
+  "results": [
+    {
+      "mesh": {
+        "geometry": {
+          "name": "cavity",
+          "description": "Full spherical shell, outer radius12mm, inner radius8mm",
+          "thickness_m": 0.004,
+          "gap_m": null,
+          "minimum_rounding_m": null
+        },
+        "gmsh_version": "4.14.1",
+        "volume_construction": "Gmsh OpenCASCADE volume tetrahedralization",
+        "mesh_size": 0.28,
+        "mesh_size_units": "unit-sphere coordinates",
+        "shell_layers": 2,
+        "nodes": 495,
+        "tetrahedra": 1937,
+        "boundary_triangles": 660,
+        "dimensions_m": [
+          0.023903602340002435,
+          0.023940187075957152,
+          0.024
+        ],
+        "minimum_volume_m3": 8.624803038563749e-10,
+        "total_volume_m3": 5.030250019624382e-06,
+        "scaled_jacobian_percentiles": [
+          0.12378084700545976,
+          0.3260508789896708,
+          0.6179035457270972,
+          0.9025762464248149,
+          0.9854731821732259
+        ],
+        "mesh_sha256": "59b85b5891b476b7c8db61cece420333791e3c1cedf7ed9b25803223072edb0c"
+      },
+      "young_Pa": 10000000000.0,
+      "poisson": 0.3,
+      "density_kg_m3": 2000,
+      "inner_pressure_Pa": 10000.0,
+      "outer_pressure_Pa": 0,
+      "inner_radius_m": 0.008,
+      "outer_radius_m": 0.012,
+      "reference": "full3D independent scikit-fem P2, closed pressure shell, consistent-mass free-body gauge",
+      "peak_Pa": 26386.293212499284,
+      "exact_peak_Pa": 21315.78947368421,
+      "peak_relative_error": 0.23787548404317627,
+      "peak_position_m": [
+        -0.0017760303471571176,
+        0.0023980120821485078,
+        -0.007422617749813521
+      ],
+      "energy_J": 3.2578016528478415e-08,
+      "exact_energy_J": 3.513292668603996e-08,
+      "energy_relative_error": 0.07272124467150454,
+      "common_probe_tensor_relative_error": 0.077762092442457,
+      "common_probe_vm_relative_error": 0.07435933053874072,
+      "common_probe_displacement_relative_error": 0.062218797969637925,
+      "complete_residual_N": 1.4962489041323645e-12,
+      "complete_residual_budget_fraction": 0.0003339767974713606,
+      "total_mass_kg": 0.010060500039248755,
+      "elapsed_seconds": 9.04050766211003,
+      "field_sha256": "53846ababdcd5a05a6a5008b8ebffa84c86f0f0d0c2eea6ff304b9b354b35494"
+    },
+    {
+      "mesh": {
+        "geometry": {
+          "name": "cavity",
+          "description": "Full spherical shell, outer radius12mm, inner radius8mm",
+          "thickness_m": 0.004,
+          "gap_m": null,
+          "minimum_rounding_m": null
+        },
+        "gmsh_version": "4.14.1",
+        "volume_construction": "Gmsh OpenCASCADE volume tetrahedralization",
+        "mesh_size": 0.2,
+        "mesh_size_units": "unit-sphere coordinates",
+        "shell_layers": 2,
+        "nodes": 912,
+        "tetrahedra": 3626,
+        "boundary_triangles": 1194,
+        "dimensions_m": [
+          0.02396419849682003,
+          0.023940743119892544,
+          0.024
+        ],
+        "minimum_volume_m3": 4.13661630400678e-10,
+        "total_volume_m3": 5.053875630342891e-06,
+        "scaled_jacobian_percentiles": [
+          0.1797116109212921,
+          0.34350784495991193,
+          0.6256929313326991,
+          0.8860758457305412,
+          0.9739324291116388
+        ],
+        "mesh_sha256": "2ce9021e62bf5fe79898966474bfdd3c0c87d33187d27e43206d04cf49796cf4"
+      },
+      "young_Pa": 10000000000.0,
+      "poisson": 0.3,
+      "density_kg_m3": 2000,
+      "inner_pressure_Pa": 10000.0,
+      "outer_pressure_Pa": 0,
+      "inner_radius_m": 0.008,
+      "outer_radius_m": 0.012,
+      "reference": "full3D independent scikit-fem P2, closed pressure shell, consistent-mass free-body gauge",
+      "peak_Pa": 22191.600281232397,
+      "exact_peak_Pa": 21315.78947368421,
+      "peak_relative_error": 0.0410874206010261,
+      "peak_position_m": [
+        -0.0015972984530083995,
+        0.0008958676993332323,
+        0.007787557943110816
+      ],
+      "energy_J": 3.382176840110648e-08,
+      "exact_energy_J": 3.513292668603996e-08,
+      "energy_relative_error": 0.0373199277319094,
+      "common_probe_tensor_relative_error": 0.04908092612064356,
+      "common_probe_vm_relative_error": 0.036437013299447985,
+      "common_probe_displacement_relative_error": 0.03200353796503578,
+      "complete_residual_N": 7.941677990634386e-12,
+      "complete_residual_budget_fraction": 0.002419797062366809,
+      "total_mass_kg": 0.010107751260685771,
+      "elapsed_seconds": 36.28077634610236,
+      "field_sha256": "812b82b9ed481be4f5d6e907fd447b876dc896d107d02dfd352dda846160d834"
+    },
+    {
+      "mesh": {
+        "geometry": {
+          "name": "cavity",
+          "description": "Full spherical shell, outer radius12mm, inner radius8mm",
+          "thickness_m": 0.004,
+          "gap_m": null,
+          "minimum_rounding_m": null
+        },
+        "gmsh_version": "4.14.1",
+        "volume_construction": "Gmsh OpenCASCADE volume tetrahedralization",
+        "mesh_size": 0.15,
+        "mesh_size_units": "unit-sphere coordinates",
+        "shell_layers": 2,
+        "nodes": 1496,
+        "tetrahedra": 5934,
+        "boundary_triangles": 1974,
+        "dimensions_m": [
+          0.023937032614203425,
+          0.023973435183435546,
+          0.024
+        ],
+        "minimum_volume_m3": 3.327748249362242e-10,
+        "total_volume_m3": 5.075355217353183e-06,
+        "scaled_jacobian_percentiles": [
+          0.1815173803544085,
+          0.29215246064170247,
+          0.635805232923458,
+          0.9091505863087228,
+          0.9896951689658103
+        ],
+        "mesh_sha256": "0150e4f3935861b541f1e74dc27a08b2cea0ff85d82a44e4a1e1112579a11a4f"
+      },
+      "young_Pa": 10000000000.0,
+      "poisson": 0.3,
+      "density_kg_m3": 2000,
+      "inner_pressure_Pa": 10000.0,
+      "outer_pressure_Pa": 0,
+      "inner_radius_m": 0.008,
+      "outer_radius_m": 0.012,
+      "reference": "full3D independent scikit-fem P2, closed pressure shell, consistent-mass free-body gauge",
+      "peak_Pa": 22153.151588358305,
+      "exact_peak_Pa": 21315.78947368421,
+      "peak_relative_error": 0.03928365476248841,
+      "peak_position_m": [
+        -0.002387387248975614,
+        -0.0008493914582415388,
+        -0.007588077244868753
+      ],
+      "energy_J": 3.4225854503101126e-08,
+      "exact_energy_J": 3.513292668603996e-08,
+      "energy_relative_error": 0.025818292653064345,
+      "common_probe_tensor_relative_error": 0.04778374234414169,
+      "common_probe_vm_relative_error": 0.028688645341308116,
+      "common_probe_displacement_relative_error": 0.02232291489526542,
+      "complete_residual_N": 4.902092565145121e-12,
+      "complete_residual_budget_fraction": 0.0018322541043075602,
+      "total_mass_kg": 0.010150710434706358,
+      "elapsed_seconds": 99.79905436793342,
+      "field_sha256": "9c59c2eba38f48ffc571de495014b6931cceea2f250a313d24d4196cd9f19988"
+    },
+    {
+      "mesh": {
+        "geometry": {
+          "name": "cavity",
+          "description": "Full spherical shell, outer radius12mm, inner radius8mm",
+          "thickness_m": 0.004,
+          "gap_m": null,
+          "minimum_rounding_m": null
+        },
+        "gmsh_version": "4.14.1",
+        "volume_construction": "Gmsh OpenCASCADE volume tetrahedralization",
+        "mesh_size": 0.11,
+        "mesh_size_units": "unit-sphere coordinates",
+        "shell_layers": 2,
+        "nodes": 2841,
+        "tetrahedra": 11142,
+        "boundary_triangles": 3864,
+        "dimensions_m": [
+          0.02396440480539693,
+          0.02397790549989342,
+          0.024
+        ],
+        "minimum_volume_m3": 1.5161294108125017e-10,
+        "total_volume_m3": 5.0817260743069575e-06,
+        "scaled_jacobian_percentiles": [
+          0.10671030769885533,
+          0.19540563514173548,
+          0.643132846038532,
+          0.9195955726551677,
+          0.9941307266706482
+        ],
+        "mesh_sha256": "a8070aa4b04fa051d1c5a94a118a8e51a00b1dfffc87cfa03815f562eeaafb78"
+      },
+      "young_Pa": 10000000000.0,
+      "poisson": 0.3,
+      "density_kg_m3": 2000,
+      "inner_pressure_Pa": 10000.0,
+      "outer_pressure_Pa": 0,
+      "inner_radius_m": 0.008,
+      "outer_radius_m": 0.012,
+      "reference": "full3D independent scikit-fem P2, closed pressure shell, consistent-mass free-body gauge",
+      "peak_Pa": 21414.757192777397,
+      "exact_peak_Pa": 21315.78947368421,
+      "peak_relative_error": 0.004642930031532266,
+      "peak_position_m": [
+        4.898587196589413e-19,
+        -1.1998078261294862e-34,
+        0.008
+      ],
+      "energy_J": 3.4702153888987754e-08,
+      "exact_energy_J": 3.513292668603996e-08,
+      "energy_relative_error": 0.012261227221453619,
+      "common_probe_tensor_relative_error": 0.040406356732632605,
+      "common_probe_vm_relative_error": 0.01851660955867403,
+      "common_probe_displacement_relative_error": 0.01124386325424783,
+      "complete_residual_N": 4.774525831400671e-12,
+      "complete_residual_budget_fraction": 0.002574523167644494,
+      "total_mass_kg": 0.010163452148613904,
+      "elapsed_seconds": 326.47106297593564,
+      "field_sha256": "336907dfb4a0a5f0ac14bcc803aed99d001ded8b1bb28acf11bc1a2d70947807"
+    }
+  ]
+}

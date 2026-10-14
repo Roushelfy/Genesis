@@ -1,0 +1,1783 @@
+{
+  "scope": "Independent gauge/probe qualification and initial physical-control progress",
+  "source_closures": {
+    "independent-probes-cpu-v2": true,
+    "independent-gauges-cpu-v3": true,
+    "independent-gauges-cuda-v3": true,
+    "spherical-shell-v2": true,
+    "spherical-shell-pinned-v3": true,
+    "contact-blocks-v3": true,
+    "contact-blocks-convergence-v1": true,
+    "contact-blocks-convergence-v2": true,
+    "contact-blocks-convergence-v3": true,
+    "contact-blocks-convergence-v4": true,
+    "contact-blocks-convergence-v5": true,
+    "contact-blocks-diagnostic-v1": true,
+    "contact-blocks-n5-d1p25-v4": true,
+    "contact-blocks-n5-d1p25-v5": true,
+    "contact-blocks-n5-d1p25-v6": true,
+    "contact-n5-diagnostic-v3": true,
+    "contact-n5-diagnostic-v4": true,
+    "setup-amg-v1": true,
+    "control-figures-v1": true,
+    "control-figures-v2": true,
+    "control-figures-v3": true,
+    "controls-publication-tools-v1": true
+  },
+  "qualification": {
+    "cpu": {
+      "suite": {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "0",
+        "tests": "8",
+        "time": "53.270",
+        "timestamp": "2026-10-14T06:51:51.572446+00:00",
+        "hostname": "cpu-207-115"
+      },
+      "test_properties": [
+        {
+          "shape": "u",
+          "method": "direct",
+          "analytic": "uniform_strain",
+          "stiffness_relative_error": 5.601507292972106e-16,
+          "mass_relative_error": 8.467086205464814e-16,
+          "fields": [
+            {
+              "environment": 0,
+              "complete_residual_N": 1.0977308555519817e-16,
+              "budget_fraction": 3.795937533792021e-07,
+              "peak_difference_Pa": 3.5197444958612323e-09,
+              "energy_J": 8.01634615384617e-11,
+              "independent_pinned_residual_budget_fraction": 1.223262507844219e-06,
+              "independent_mass_residual_budget_fraction": 4.5349666757718186e-05,
+              "independent_gauge_peak_difference_Pa": 2.0472725736908615e-08
+            },
+            {
+              "environment": 1,
+              "complete_residual_N": 7.820806942627222e-17,
+              "budget_fraction": 7.820806942627222e-06,
+              "peak_difference_Pa": 1.2310010788496584e-09,
+              "energy_J": 3.57196034034898e-14,
+              "independent_pinned_residual_budget_fraction": 4.9937538884155865e-06,
+              "independent_mass_residual_budget_fraction": 4.9029426275959126e-05,
+              "independent_gauge_peak_difference_Pa": 2.2942003852222115e-10
+            }
+          ]
+        },
+        {
+          "shape": "u",
+          "method": "pcg",
+          "analytic": "uniform_strain",
+          "stiffness_relative_error": 5.601507292972106e-16,
+          "mass_relative_error": 8.467086205464814e-16,
+          "fields": [
+            {
+              "environment": 0,
+              "complete_residual_N": 7.534687932571376e-12,
+              "budget_fraction": 0.026054842663847406,
+              "peak_difference_Pa": 9.681862138677388e-06,
+              "energy_J": 8.016346153846802e-11,
+              "independent_pinned_residual_budget_fraction": 1.223262507844219e-06,
+              "independent_mass_residual_budget_fraction": 4.5349666757718186e-05,
+              "independent_gauge_peak_difference_Pa": 2.0472725736908615e-08
+            },
+            {
+              "environment": 1,
+              "complete_residual_N": 7.620672423009482e-12,
+              "budget_fraction": 0.7620672423009482,
+              "peak_difference_Pa": 1.0984085747622885e-06,
+              "energy_J": 3.5719603403350135e-14,
+              "independent_pinned_residual_budget_fraction": 4.9937538884155865e-06,
+              "independent_mass_residual_budget_fraction": 4.9029426275959126e-05,
+              "independent_gauge_peak_difference_Pa": 2.2942003852222115e-10
+            }
+          ]
+        },
+        {
+          "shape": "u",
+          "method": "direct",
+          "analytic": "pure_bending",
+          "stiffness_relative_error": 5.601507292972106e-16,
+          "mass_relative_error": 8.467086205464814e-16,
+          "fields": [
+            {
+              "environment": 0,
+              "complete_residual_N": 2.1448581633846887e-17,
+              "budget_fraction": 1.27273916386615e-06,
+              "peak_difference_Pa": 4.2359715735074133e-10,
+              "energy_J": 4.666666666666635e-13,
+              "independent_pinned_residual_budget_fraction": 2.3323068868926087e-06,
+              "independent_mass_residual_budget_fraction": 1.291297169139597e-05,
+              "independent_gauge_peak_difference_Pa": 3.551576810423285e-10
+            },
+            {
+              "environment": 1,
+              "complete_residual_N": 7.820806942627222e-17,
+              "budget_fraction": 7.820806942627222e-06,
+              "peak_difference_Pa": 1.2310010788496584e-09,
+              "energy_J": 3.57196034034898e-14,
+              "independent_pinned_residual_budget_fraction": 4.9937538884155865e-06,
+              "independent_mass_residual_budget_fraction": 4.9029426275959126e-05,
+              "independent_gauge_peak_difference_Pa": 2.2942003852222115e-10
+            }
+          ]
+        },
+        {
+          "shape": "u",
+          "method": "pcg",
+          "analytic": "pure_bending",
+          "stiffness_relative_error": 5.601507292972106e-16,
+          "mass_relative_error": 8.467086205464814e-16,
+          "fields": [
+            {
+              "environment": 0,
+              "complete_residual_N": 7.938801357020878e-12,
+              "budget_fraction": 0.47108119192784187,
+              "peak_difference_Pa": 1.1113302662124624e-05,
+              "energy_J": 4.666666666696366e-13,
+              "independent_pinned_residual_budget_fraction": 2.3323068868926087e-06,
+              "independent_mass_residual_budget_fraction": 1.291297169139597e-05,
+              "independent_gauge_peak_difference_Pa": 3.551576810423285e-10
+            },
+            {
+              "environment": 1,
+              "complete_residual_N": 7.620672423009482e-12,
+              "budget_fraction": 0.7620672423009482,
+              "peak_difference_Pa": 1.0984085747622885e-06,
+              "energy_J": 3.5719603403350135e-14,
+              "independent_pinned_residual_budget_fraction": 4.9937538884155865e-06,
+              "independent_mass_residual_budget_fraction": 4.9029426275959126e-05,
+              "independent_gauge_peak_difference_Pa": 2.2942003852222115e-10
+            }
+          ]
+        },
+        {
+          "shape": "cavity",
+          "method": "direct",
+          "analytic": "uniform_strain",
+          "stiffness_relative_error": 5.848462736186509e-16,
+          "mass_relative_error": 7.710257411780228e-16,
+          "fields": [
+            {
+              "environment": 0,
+              "complete_residual_N": 9.359709949025648e-16,
+              "budget_fraction": 2.274785697656443e-06,
+              "peak_difference_Pa": 6.4828782342374325e-09,
+              "energy_J": 2.977499999999965e-10,
+              "independent_pinned_residual_budget_fraction": 2.10320083056936e-06,
+              "independent_mass_residual_budget_fraction": 2.8312050628173907e-05,
+              "independent_gauge_peak_difference_Pa": 1.6161720850504935e-08
+            },
+            {
+              "environment": 1,
+              "complete_residual_N": 1.3375718947585239e-17,
+              "budget_fraction": 1.337571894758524e-06,
+              "peak_difference_Pa": 2.8762769943568856e-11,
+              "energy_J": 1.1623113752591566e-14,
+              "independent_pinned_residual_budget_fraction": 5.130986354408034e-07,
+              "independent_mass_residual_budget_fraction": 2.564326489393345e-06,
+              "independent_gauge_peak_difference_Pa": 5.4569682106375694e-12
+            }
+          ]
+        },
+        {
+          "shape": "cavity",
+          "method": "pcg",
+          "analytic": "uniform_strain",
+          "stiffness_relative_error": 5.848462736186509e-16,
+          "mass_relative_error": 7.710257411780228e-16,
+          "fields": [
+            {
+              "environment": 0,
+              "complete_residual_N": 8.823403702378514e-12,
+              "budget_fraction": 0.021444417248110335,
+              "peak_difference_Pa": 7.856404408812523e-06,
+              "energy_J": 2.977500000005329e-10,
+              "independent_pinned_residual_budget_fraction": 2.10320083056936e-06,
+              "independent_mass_residual_budget_fraction": 2.8312050628173907e-05,
+              "independent_gauge_peak_difference_Pa": 1.6161720850504935e-08
+            },
+            {
+              "environment": 1,
+              "complete_residual_N": 8.040269007034319e-12,
+              "budget_fraction": 0.804026900703432,
+              "peak_difference_Pa": 1.313607413067075e-06,
+              "energy_J": 1.1623113752684075e-14,
+              "independent_pinned_residual_budget_fraction": 5.130986354408034e-07,
+              "independent_mass_residual_budget_fraction": 2.564326489393345e-06,
+              "independent_gauge_peak_difference_Pa": 5.4569682106375694e-12
+            }
+          ]
+        },
+        {
+          "shape": "cavity",
+          "method": "direct",
+          "analytic": "pure_bending",
+          "stiffness_relative_error": 5.848462736186509e-16,
+          "mass_relative_error": 7.710257411780228e-16,
+          "fields": [
+            {
+              "environment": 0,
+              "complete_residual_N": 2.1972470042854108e-16,
+              "budget_fraction": 2.715157768329005e-06,
+              "peak_difference_Pa": 1.3878889149054885e-09,
+              "energy_J": 1.5733333333333138e-11,
+              "independent_pinned_residual_budget_fraction": 2.309865042474192e-06,
+              "independent_mass_residual_budget_fraction": 4.273591410708556e-05,
+              "independent_gauge_peak_difference_Pa": 2.291926648467779e-09
+            },
+            {
+              "environment": 1,
+              "complete_residual_N": 1.3375718947585239e-17,
+              "budget_fraction": 1.337571894758524e-06,
+              "peak_difference_Pa": 2.8762769943568856e-11,
+              "energy_J": 1.1623113752591566e-14,
+              "independent_pinned_residual_budget_fraction": 5.130986354408034e-07,
+              "independent_mass_residual_budget_fraction": 2.564326489393345e-06,
+              "independent_gauge_peak_difference_Pa": 5.4569682106375694e-12
+            }
+          ]
+        },
+        {
+          "shape": "cavity",
+          "method": "pcg",
+          "analytic": "pure_bending",
+          "stiffness_relative_error": 5.848462736186509e-16,
+          "mass_relative_error": 7.710257411780228e-16,
+          "fields": [
+            {
+              "environment": 0,
+              "complete_residual_N": 9.215684613382724e-12,
+              "budget_fraction": 0.11387903872297625,
+              "peak_difference_Pa": 5.71160671825055e-06,
+              "energy_J": 1.5733333333372752e-11,
+              "independent_pinned_residual_budget_fraction": 2.309865042474192e-06,
+              "independent_mass_residual_budget_fraction": 4.273591410708556e-05,
+              "independent_gauge_peak_difference_Pa": 2.291926648467779e-09
+            },
+            {
+              "environment": 1,
+              "complete_residual_N": 8.040269007034319e-12,
+              "budget_fraction": 0.804026900703432,
+              "peak_difference_Pa": 1.313607413067075e-06,
+              "energy_J": 1.1623113752684075e-14,
+              "independent_pinned_residual_budget_fraction": 5.130986354408034e-07,
+              "independent_mass_residual_budget_fraction": 2.564326489393345e-06,
+              "independent_gauge_peak_difference_Pa": 5.4569682106375694e-12
+            }
+          ]
+        }
+      ],
+      "formatting_source_equivalence": [],
+      "maximum_complete_residual_budget_fraction": 0.804026900703432,
+      "maximum_peak_difference_Pa": 1.1113302662124624e-05,
+      "unused_snapshot_source_changes": [
+        {
+          "file": "research/rigid_stress/contact_reference.py",
+          "tested_sha256": "510852a62abe6965b2be65f6032c679f1bf68f109508df2c196844b9f0f1a598",
+          "current_sha256": "4381c7bd990d2236e9ad30a35472e28f24a89834b5443916465c85874d89cf6b",
+          "role": "Archived offline contact benchmark; not imported by this elasticity qualification"
+        }
+      ]
+    },
+    "cuda": {
+      "suite": {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "0",
+        "tests": "8",
+        "time": "35.323",
+        "timestamp": "2026-10-14T06:51:49.669792+00:00",
+        "hostname": "rtx-209-099"
+      },
+      "test_properties": [
+        {
+          "shape": "u",
+          "method": "direct",
+          "analytic": "uniform_strain",
+          "stiffness_relative_error": 5.359829189814273e-16,
+          "mass_relative_error": 8.372742721992226e-16,
+          "fields": [
+            {
+              "environment": 0,
+              "complete_residual_N": 1.3245219147453438e-16,
+              "budget_fraction": 4.580177759496203e-07,
+              "peak_difference_Pa": 3.497916623018682e-09,
+              "energy_J": 8.016346153846149e-11,
+              "independent_pinned_residual_budget_fraction": 1.223262507844219e-06,
+              "independent_mass_residual_budget_fraction": 4.5349666757718186e-05,
+              "independent_gauge_peak_difference_Pa": 2.0472725736908615e-08
+            },
+            {
+              "environment": 1,
+              "complete_residual_N": 4.1809807938469167e-17,
+              "budget_fraction": 4.180980793846917e-06,
+              "peak_difference_Pa": 7.300968718482181e-10,
+              "energy_J": 3.571960340351407e-14,
+              "independent_pinned_residual_budget_fraction": 4.9937538884155865e-06,
+              "independent_mass_residual_budget_fraction": 4.9029426275959126e-05,
+              "independent_gauge_peak_difference_Pa": 2.2942003852222115e-10
+            }
+          ]
+        },
+        {
+          "shape": "u",
+          "method": "pcg",
+          "analytic": "uniform_strain",
+          "stiffness_relative_error": 5.33496850207862e-16,
+          "mass_relative_error": 8.372742721992226e-16,
+          "fields": [
+            {
+              "environment": 0,
+              "complete_residual_N": 9.174712525250978e-12,
+              "budget_fraction": 0.031726024152650585,
+              "peak_difference_Pa": 9.719069566926919e-06,
+              "energy_J": 8.016346153845738e-11,
+              "independent_pinned_residual_budget_fraction": 1.223262507844219e-06,
+              "independent_mass_residual_budget_fraction": 4.5349666757718186e-05,
+              "independent_gauge_peak_difference_Pa": 2.0472725736908615e-08
+            },
+            {
+              "environment": 1,
+              "complete_residual_N": 9.059022011242724e-12,
+              "budget_fraction": 0.9059022011242724,
+              "peak_difference_Pa": 4.3397922127041966e-06,
+              "energy_J": 3.571960340247288e-14,
+              "independent_pinned_residual_budget_fraction": 4.9937538884155865e-06,
+              "independent_mass_residual_budget_fraction": 4.9029426275959126e-05,
+              "independent_gauge_peak_difference_Pa": 2.2942003852222115e-10
+            }
+          ]
+        },
+        {
+          "shape": "u",
+          "method": "direct",
+          "analytic": "pure_bending",
+          "stiffness_relative_error": 5.341746298160025e-16,
+          "mass_relative_error": 8.372742721992226e-16,
+          "fields": [
+            {
+              "environment": 0,
+              "complete_residual_N": 1.3515995476369733e-17,
+              "budget_fraction": 8.020267761793334e-07,
+              "peak_difference_Pa": 4.6429704525507987e-10,
+              "energy_J": 4.666666666666641e-13,
+              "independent_pinned_residual_budget_fraction": 2.3323068868926087e-06,
+              "independent_mass_residual_budget_fraction": 1.291297169139597e-05,
+              "independent_gauge_peak_difference_Pa": 3.551576810423285e-10
+            },
+            {
+              "environment": 1,
+              "complete_residual_N": 4.356628851542119e-17,
+              "budget_fraction": 4.356628851542119e-06,
+              "peak_difference_Pa": 7.664766599191353e-10,
+              "energy_J": 3.571960340350839e-14,
+              "independent_pinned_residual_budget_fraction": 4.9937538884155865e-06,
+              "independent_mass_residual_budget_fraction": 4.9029426275959126e-05,
+              "independent_gauge_peak_difference_Pa": 2.2942003852222115e-10
+            }
+          ]
+        },
+        {
+          "shape": "u",
+          "method": "pcg",
+          "analytic": "pure_bending",
+          "stiffness_relative_error": 5.278054898677498e-16,
+          "mass_relative_error": 8.372742721992226e-16,
+          "fields": [
+            {
+              "environment": 0,
+              "complete_residual_N": 8.07220692468718e-12,
+              "budget_fraction": 0.47899735596820714,
+              "peak_difference_Pa": 9.547619129079976e-06,
+              "energy_J": 4.666666666607455e-13,
+              "independent_pinned_residual_budget_fraction": 2.3323068868926087e-06,
+              "independent_mass_residual_budget_fraction": 1.291297169139597e-05,
+              "independent_gauge_peak_difference_Pa": 3.551576810423285e-10
+            },
+            {
+              "environment": 1,
+              "complete_residual_N": 7.622523852587041e-12,
+              "budget_fraction": 0.7622523852587042,
+              "peak_difference_Pa": 1.2938589861732908e-06,
+              "energy_J": 3.571960340427948e-14,
+              "independent_pinned_residual_budget_fraction": 4.9937538884155865e-06,
+              "independent_mass_residual_budget_fraction": 4.9029426275959126e-05,
+              "independent_gauge_peak_difference_Pa": 2.2942003852222115e-10
+            }
+          ]
+        },
+        {
+          "shape": "cavity",
+          "method": "direct",
+          "analytic": "uniform_strain",
+          "stiffness_relative_error": 5.53037892330965e-16,
+          "mass_relative_error": 7.636465334184487e-16,
+          "fields": [
+            {
+              "environment": 0,
+              "complete_residual_N": 8.393812300468298e-16,
+              "budget_fraction": 2.0400337482579486e-06,
+              "peak_difference_Pa": 6.335540092550218e-09,
+              "energy_J": 2.97749999999997e-10,
+              "independent_pinned_residual_budget_fraction": 2.10320083056936e-06,
+              "independent_mass_residual_budget_fraction": 2.8312050628173907e-05,
+              "independent_gauge_peak_difference_Pa": 1.6161720850504935e-08
+            },
+            {
+              "environment": 1,
+              "complete_residual_N": 1.5711661320381243e-17,
+              "budget_fraction": 1.5711661320381244e-06,
+              "peak_difference_Pa": 4.888534022029489e-12,
+              "energy_J": 1.1623113752591222e-14,
+              "independent_pinned_residual_budget_fraction": 5.130986354408034e-07,
+              "independent_mass_residual_budget_fraction": 2.564326489393345e-06,
+              "independent_gauge_peak_difference_Pa": 5.4569682106375694e-12
+            }
+          ]
+        },
+        {
+          "shape": "cavity",
+          "method": "pcg",
+          "analytic": "uniform_strain",
+          "stiffness_relative_error": 5.561476590871454e-16,
+          "mass_relative_error": 7.636465334184487e-16,
+          "fields": [
+            {
+              "environment": 0,
+              "complete_residual_N": 8.790202752614948e-12,
+              "budget_fraction": 0.021363725596251364,
+              "peak_difference_Pa": 6.464722901000641e-06,
+              "energy_J": 2.977499999998681e-10,
+              "independent_pinned_residual_budget_fraction": 2.10320083056936e-06,
+              "independent_mass_residual_budget_fraction": 2.8312050628173907e-05,
+              "independent_gauge_peak_difference_Pa": 1.6161720850504935e-08
+            },
+            {
+              "environment": 1,
+              "complete_residual_N": 8.973849362021679e-12,
+              "budget_fraction": 0.897384936202168,
+              "peak_difference_Pa": 1.866758793767076e-06,
+              "energy_J": 1.1623113752937708e-14,
+              "independent_pinned_residual_budget_fraction": 5.130986354408034e-07,
+              "independent_mass_residual_budget_fraction": 2.564326489393345e-06,
+              "independent_gauge_peak_difference_Pa": 5.4569682106375694e-12
+            }
+          ]
+        },
+        {
+          "shape": "cavity",
+          "method": "direct",
+          "analytic": "pure_bending",
+          "stiffness_relative_error": 5.522458136542398e-16,
+          "mass_relative_error": 7.636465334184487e-16,
+          "fields": [
+            {
+              "environment": 0,
+              "complete_residual_N": 2.4900240386669636e-16,
+              "budget_fraction": 3.076944967373534e-06,
+              "peak_difference_Pa": 1.9617800717242062e-09,
+              "energy_J": 1.5733333333333054e-11,
+              "independent_pinned_residual_budget_fraction": 2.309865042474192e-06,
+              "independent_mass_residual_budget_fraction": 4.273591410708556e-05,
+              "independent_gauge_peak_difference_Pa": 2.291926648467779e-09
+            },
+            {
+              "environment": 1,
+              "complete_residual_N": 1.3310178854292778e-17,
+              "budget_fraction": 1.3310178854292778e-06,
+              "peak_difference_Pa": 1.0015810403274372e-10,
+              "energy_J": 1.1623113752591384e-14,
+              "independent_pinned_residual_budget_fraction": 5.130986354408034e-07,
+              "independent_mass_residual_budget_fraction": 2.564326489393345e-06,
+              "independent_gauge_peak_difference_Pa": 5.4569682106375694e-12
+            }
+          ]
+        },
+        {
+          "shape": "cavity",
+          "method": "pcg",
+          "analytic": "pure_bending",
+          "stiffness_relative_error": 5.592006383113415e-16,
+          "mass_relative_error": 7.636465334184487e-16,
+          "fields": [
+            {
+              "environment": 0,
+              "complete_residual_N": 8.738572379456385e-12,
+              "budget_fraction": 0.10798332019072499,
+              "peak_difference_Pa": 5.357449481380172e-06,
+              "energy_J": 1.5733333333318136e-11,
+              "independent_pinned_residual_budget_fraction": 2.309865042474192e-06,
+              "independent_mass_residual_budget_fraction": 4.273591410708556e-05,
+              "independent_gauge_peak_difference_Pa": 2.291926648467779e-09
+            },
+            {
+              "environment": 1,
+              "complete_residual_N": 9.128961067197964e-12,
+              "budget_fraction": 0.9128961067197964,
+              "peak_difference_Pa": 1.7678070207693963e-06,
+              "energy_J": 1.1623113752542767e-14,
+              "independent_pinned_residual_budget_fraction": 5.130986354408034e-07,
+              "independent_mass_residual_budget_fraction": 2.564326489393345e-06,
+              "independent_gauge_peak_difference_Pa": 5.4569682106375694e-12
+            }
+          ]
+        }
+      ],
+      "formatting_source_equivalence": [],
+      "maximum_complete_residual_budget_fraction": 0.9128961067197964,
+      "maximum_peak_difference_Pa": 9.719069566926919e-06,
+      "unused_snapshot_source_changes": [
+        {
+          "file": "research/rigid_stress/contact_reference.py",
+          "tested_sha256": "510852a62abe6965b2be65f6032c679f1bf68f109508df2c196844b9f0f1a598",
+          "current_sha256": "4381c7bd990d2236e9ad30a35472e28f24a89834b5443916465c85874d89cf6b",
+          "role": "Archived offline contact benchmark; not imported by this elasticity qualification"
+        }
+      ]
+    }
+  },
+  "gauge_fields": 32,
+  "maximum_independent_gauge_peak_difference_Pa": 2.0472725736908615e-08,
+  "maximum_pinned_complete_budget_fraction": 4.9937538884155865e-06,
+  "maximum_mass_complete_budget_fraction": 4.9029426275959126e-05,
+  "completed_spherical_shell_levels": [
+    {
+      "mesh": {
+        "geometry": {
+          "name": "cavity",
+          "description": "Full spherical shell, outer radius12mm, inner radius8mm",
+          "thickness_m": 0.004,
+          "gap_m": null,
+          "minimum_rounding_m": null
+        },
+        "gmsh_version": "4.14.1",
+        "volume_construction": "Gmsh OpenCASCADE volume tetrahedralization",
+        "mesh_size": 0.28,
+        "mesh_size_units": "unit-sphere coordinates",
+        "shell_layers": 2,
+        "nodes": 495,
+        "tetrahedra": 1937,
+        "boundary_triangles": 660,
+        "dimensions_m": [
+          0.023903602340002435,
+          0.023940187075957152,
+          0.024
+        ],
+        "minimum_volume_m3": 8.624803038563749e-10,
+        "total_volume_m3": 5.030250019624382e-06,
+        "scaled_jacobian_percentiles": [
+          0.12378084700545976,
+          0.3260508789896708,
+          0.6179035457270972,
+          0.9025762464248149,
+          0.9854731821732259
+        ],
+        "mesh_sha256": "59b85b5891b476b7c8db61cece420333791e3c1cedf7ed9b25803223072edb0c"
+      },
+      "young_Pa": 10000000000.0,
+      "poisson": 0.3,
+      "density_kg_m3": 2000,
+      "inner_pressure_Pa": 10000.0,
+      "outer_pressure_Pa": 0,
+      "inner_radius_m": 0.008,
+      "outer_radius_m": 0.012,
+      "reference": "full3D independent scikit-fem P2, closed pressure shell, consistent-mass free-body gauge",
+      "peak_Pa": 26386.293212499284,
+      "exact_peak_Pa": 21315.78947368421,
+      "peak_relative_error": 0.23787548404317627,
+      "peak_position_m": [
+        -0.0017760303471571176,
+        0.0023980120821485078,
+        -0.007422617749813521
+      ],
+      "energy_J": 3.2578016528478415e-08,
+      "exact_energy_J": 3.513292668603996e-08,
+      "energy_relative_error": 0.07272124467150454,
+      "common_probe_tensor_relative_error": 0.077762092442457,
+      "common_probe_vm_relative_error": 0.07435933053874072,
+      "common_probe_displacement_relative_error": 0.062218797969637925,
+      "complete_residual_N": 1.4962489041323645e-12,
+      "complete_residual_budget_fraction": 0.0003339767974713606,
+      "total_mass_kg": 0.010060500039248755,
+      "elapsed_seconds": 9.04050766211003,
+      "field_sha256": "53846ababdcd5a05a6a5008b8ebffa84c86f0f0d0c2eea6ff304b9b354b35494"
+    },
+    {
+      "mesh": {
+        "geometry": {
+          "name": "cavity",
+          "description": "Full spherical shell, outer radius12mm, inner radius8mm",
+          "thickness_m": 0.004,
+          "gap_m": null,
+          "minimum_rounding_m": null
+        },
+        "gmsh_version": "4.14.1",
+        "volume_construction": "Gmsh OpenCASCADE volume tetrahedralization",
+        "mesh_size": 0.2,
+        "mesh_size_units": "unit-sphere coordinates",
+        "shell_layers": 2,
+        "nodes": 912,
+        "tetrahedra": 3626,
+        "boundary_triangles": 1194,
+        "dimensions_m": [
+          0.02396419849682003,
+          0.023940743119892544,
+          0.024
+        ],
+        "minimum_volume_m3": 4.13661630400678e-10,
+        "total_volume_m3": 5.053875630342891e-06,
+        "scaled_jacobian_percentiles": [
+          0.1797116109212921,
+          0.34350784495991193,
+          0.6256929313326991,
+          0.8860758457305412,
+          0.9739324291116388
+        ],
+        "mesh_sha256": "2ce9021e62bf5fe79898966474bfdd3c0c87d33187d27e43206d04cf49796cf4"
+      },
+      "young_Pa": 10000000000.0,
+      "poisson": 0.3,
+      "density_kg_m3": 2000,
+      "inner_pressure_Pa": 10000.0,
+      "outer_pressure_Pa": 0,
+      "inner_radius_m": 0.008,
+      "outer_radius_m": 0.012,
+      "reference": "full3D independent scikit-fem P2, closed pressure shell, consistent-mass free-body gauge",
+      "peak_Pa": 22191.600281232397,
+      "exact_peak_Pa": 21315.78947368421,
+      "peak_relative_error": 0.0410874206010261,
+      "peak_position_m": [
+        -0.0015972984530083995,
+        0.0008958676993332323,
+        0.007787557943110816
+      ],
+      "energy_J": 3.382176840110648e-08,
+      "exact_energy_J": 3.513292668603996e-08,
+      "energy_relative_error": 0.0373199277319094,
+      "common_probe_tensor_relative_error": 0.04908092612064356,
+      "common_probe_vm_relative_error": 0.036437013299447985,
+      "common_probe_displacement_relative_error": 0.03200353796503578,
+      "complete_residual_N": 7.941677990634386e-12,
+      "complete_residual_budget_fraction": 0.002419797062366809,
+      "total_mass_kg": 0.010107751260685771,
+      "elapsed_seconds": 36.28077634610236,
+      "field_sha256": "812b82b9ed481be4f5d6e907fd447b876dc896d107d02dfd352dda846160d834"
+    },
+    {
+      "mesh": {
+        "geometry": {
+          "name": "cavity",
+          "description": "Full spherical shell, outer radius12mm, inner radius8mm",
+          "thickness_m": 0.004,
+          "gap_m": null,
+          "minimum_rounding_m": null
+        },
+        "gmsh_version": "4.14.1",
+        "volume_construction": "Gmsh OpenCASCADE volume tetrahedralization",
+        "mesh_size": 0.15,
+        "mesh_size_units": "unit-sphere coordinates",
+        "shell_layers": 2,
+        "nodes": 1496,
+        "tetrahedra": 5934,
+        "boundary_triangles": 1974,
+        "dimensions_m": [
+          0.023937032614203425,
+          0.023973435183435546,
+          0.024
+        ],
+        "minimum_volume_m3": 3.327748249362242e-10,
+        "total_volume_m3": 5.075355217353183e-06,
+        "scaled_jacobian_percentiles": [
+          0.1815173803544085,
+          0.29215246064170247,
+          0.635805232923458,
+          0.9091505863087228,
+          0.9896951689658103
+        ],
+        "mesh_sha256": "0150e4f3935861b541f1e74dc27a08b2cea0ff85d82a44e4a1e1112579a11a4f"
+      },
+      "young_Pa": 10000000000.0,
+      "poisson": 0.3,
+      "density_kg_m3": 2000,
+      "inner_pressure_Pa": 10000.0,
+      "outer_pressure_Pa": 0,
+      "inner_radius_m": 0.008,
+      "outer_radius_m": 0.012,
+      "reference": "full3D independent scikit-fem P2, closed pressure shell, consistent-mass free-body gauge",
+      "peak_Pa": 22153.151588358305,
+      "exact_peak_Pa": 21315.78947368421,
+      "peak_relative_error": 0.03928365476248841,
+      "peak_position_m": [
+        -0.002387387248975614,
+        -0.0008493914582415388,
+        -0.007588077244868753
+      ],
+      "energy_J": 3.4225854503101126e-08,
+      "exact_energy_J": 3.513292668603996e-08,
+      "energy_relative_error": 0.025818292653064345,
+      "common_probe_tensor_relative_error": 0.04778374234414169,
+      "common_probe_vm_relative_error": 0.028688645341308116,
+      "common_probe_displacement_relative_error": 0.02232291489526542,
+      "complete_residual_N": 4.902092565145121e-12,
+      "complete_residual_budget_fraction": 0.0018322541043075602,
+      "total_mass_kg": 0.010150710434706358,
+      "elapsed_seconds": 99.79905436793342,
+      "field_sha256": "9c59c2eba38f48ffc571de495014b6931cceea2f250a313d24d4196cd9f19988"
+    },
+    {
+      "mesh": {
+        "geometry": {
+          "name": "cavity",
+          "description": "Full spherical shell, outer radius12mm, inner radius8mm",
+          "thickness_m": 0.004,
+          "gap_m": null,
+          "minimum_rounding_m": null
+        },
+        "gmsh_version": "4.14.1",
+        "volume_construction": "Gmsh OpenCASCADE volume tetrahedralization",
+        "mesh_size": 0.11,
+        "mesh_size_units": "unit-sphere coordinates",
+        "shell_layers": 2,
+        "nodes": 2841,
+        "tetrahedra": 11142,
+        "boundary_triangles": 3864,
+        "dimensions_m": [
+          0.02396440480539693,
+          0.02397790549989342,
+          0.024
+        ],
+        "minimum_volume_m3": 1.5161294108125017e-10,
+        "total_volume_m3": 5.0817260743069575e-06,
+        "scaled_jacobian_percentiles": [
+          0.10671030769885533,
+          0.19540563514173548,
+          0.643132846038532,
+          0.9195955726551677,
+          0.9941307266706482
+        ],
+        "mesh_sha256": "a8070aa4b04fa051d1c5a94a118a8e51a00b1dfffc87cfa03815f562eeaafb78"
+      },
+      "young_Pa": 10000000000.0,
+      "poisson": 0.3,
+      "density_kg_m3": 2000,
+      "inner_pressure_Pa": 10000.0,
+      "outer_pressure_Pa": 0,
+      "inner_radius_m": 0.008,
+      "outer_radius_m": 0.012,
+      "reference": "full3D independent scikit-fem P2, closed pressure shell, consistent-mass free-body gauge",
+      "peak_Pa": 21414.757192777397,
+      "exact_peak_Pa": 21315.78947368421,
+      "peak_relative_error": 0.004642930031532266,
+      "peak_position_m": [
+        4.898587196589413e-19,
+        -1.1998078261294862e-34,
+        0.008
+      ],
+      "energy_J": 3.4702153888987754e-08,
+      "exact_energy_J": 3.513292668603996e-08,
+      "energy_relative_error": 0.012261227221453619,
+      "common_probe_tensor_relative_error": 0.040406356732632605,
+      "common_probe_vm_relative_error": 0.01851660955867403,
+      "common_probe_displacement_relative_error": 0.01124386325424783,
+      "complete_residual_N": 4.774525831400671e-12,
+      "complete_residual_budget_fraction": 0.002574523167644494,
+      "total_mass_kg": 0.010163452148613904,
+      "elapsed_seconds": 326.47106297593564,
+      "field_sha256": "336907dfb4a0a5f0ac14bcc803aed99d001ded8b1bb28acf11bc1a2d70947807"
+    }
+  ],
+  "pinned_spherical_shell_levels": [
+    {
+      "mesh": {
+        "geometry": {
+          "name": "cavity",
+          "description": "Full spherical shell, outer radius12mm, inner radius8mm",
+          "thickness_m": 0.004,
+          "gap_m": null,
+          "minimum_rounding_m": null
+        },
+        "gmsh_version": "4.14.1",
+        "volume_construction": "Gmsh OpenCASCADE volume tetrahedralization",
+        "mesh_size": 0.28,
+        "mesh_size_units": "unit-sphere coordinates",
+        "shell_layers": 2,
+        "nodes": 495,
+        "tetrahedra": 1937,
+        "boundary_triangles": 660,
+        "dimensions_m": [
+          0.023903602340002435,
+          0.023940187075957152,
+          0.024
+        ],
+        "minimum_volume_m3": 8.624803038563749e-10,
+        "total_volume_m3": 5.030250019624382e-06,
+        "scaled_jacobian_percentiles": [
+          0.12378084700545976,
+          0.3260508789896708,
+          0.6179035457270972,
+          0.9025762464248149,
+          0.9854731821732259
+        ],
+        "mesh_sha256": "59b85b5891b476b7c8db61cece420333791e3c1cedf7ed9b25803223072edb0c"
+      },
+      "young_Pa": 10000000000.0,
+      "poisson": 0.3,
+      "density_kg_m3": 2000,
+      "inner_pressure_Pa": 10000.0,
+      "outer_pressure_Pa": 0,
+      "inner_radius_m": 0.008,
+      "outer_radius_m": 0.012,
+      "reference": "full3D independent scikit-fem P2, closed pressure shell, consistent-mass aligned free-body solution",
+      "linear_gauge": "pinned",
+      "factor_seconds": 0.7793723340146244,
+      "factor_nonzeros": 11103229,
+      "peak_Pa": 26386.293212499386,
+      "exact_peak_Pa": 21315.78947368421,
+      "peak_relative_error": 0.23787548404318115,
+      "peak_position_m": [
+        -0.0017760303471571176,
+        0.0023980120821485078,
+        -0.007422617749813521
+      ],
+      "energy_J": 3.25780165284784e-08,
+      "exact_energy_J": 3.513292668603996e-08,
+      "energy_relative_error": 0.07272124467150498,
+      "common_probe_tensor_relative_error": 0.07776209244245481,
+      "common_probe_vm_relative_error": 0.07435933053874322,
+      "common_probe_displacement_relative_error": 0.06221879796963097,
+      "complete_residual_N": 1.193151342290706e-14,
+      "complete_residual_budget_fraction": 2.6632257714365783e-06,
+      "total_mass_kg": 0.010060500039248755,
+      "elapsed_seconds": 3.5994905992411077,
+      "field_sha256": "d78df43b8a3d2d396ca960da3d69bb2ad7210acc18be1af701849974ace318fe"
+    },
+    {
+      "mesh": {
+        "geometry": {
+          "name": "cavity",
+          "description": "Full spherical shell, outer radius12mm, inner radius8mm",
+          "thickness_m": 0.004,
+          "gap_m": null,
+          "minimum_rounding_m": null
+        },
+        "gmsh_version": "4.14.1",
+        "volume_construction": "Gmsh OpenCASCADE volume tetrahedralization",
+        "mesh_size": 0.2,
+        "mesh_size_units": "unit-sphere coordinates",
+        "shell_layers": 2,
+        "nodes": 912,
+        "tetrahedra": 3626,
+        "boundary_triangles": 1194,
+        "dimensions_m": [
+          0.02396419849682003,
+          0.023940743119892544,
+          0.024
+        ],
+        "minimum_volume_m3": 4.13661630400678e-10,
+        "total_volume_m3": 5.053875630342891e-06,
+        "scaled_jacobian_percentiles": [
+          0.1797116109212921,
+          0.34350784495991193,
+          0.6256929313326991,
+          0.8860758457305412,
+          0.9739324291116388
+        ],
+        "mesh_sha256": "2ce9021e62bf5fe79898966474bfdd3c0c87d33187d27e43206d04cf49796cf4"
+      },
+      "young_Pa": 10000000000.0,
+      "poisson": 0.3,
+      "density_kg_m3": 2000,
+      "inner_pressure_Pa": 10000.0,
+      "outer_pressure_Pa": 0,
+      "inner_radius_m": 0.008,
+      "outer_radius_m": 0.012,
+      "reference": "full3D independent scikit-fem P2, closed pressure shell, consistent-mass aligned free-body solution",
+      "linear_gauge": "pinned",
+      "factor_seconds": 2.4024659311398864,
+      "factor_nonzeros": 27267678,
+      "peak_Pa": 22191.600281209336,
+      "exact_peak_Pa": 21315.78947368421,
+      "peak_relative_error": 0.04108742059994408,
+      "peak_position_m": [
+        -0.0015972984530083995,
+        0.0008958676993332323,
+        0.007787557943110816
+      ],
+      "energy_J": 3.382176840110646e-08,
+      "exact_energy_J": 3.513292668603996e-08,
+      "energy_relative_error": 0.03731992773190995,
+      "common_probe_tensor_relative_error": 0.04908092612061018,
+      "common_probe_vm_relative_error": 0.036437013299406594,
+      "common_probe_displacement_relative_error": 0.03200353796502055,
+      "complete_residual_N": 1.2207013300524912e-14,
+      "complete_residual_budget_fraction": 3.7194274257552965e-06,
+      "total_mass_kg": 0.010107751260685771,
+      "elapsed_seconds": 5.671253990847617,
+      "field_sha256": "9c597b858c06c471d7a510adb4a701ec2312487fac69806e1c5544fe9ac1d413"
+    },
+    {
+      "mesh": {
+        "geometry": {
+          "name": "cavity",
+          "description": "Full spherical shell, outer radius12mm, inner radius8mm",
+          "thickness_m": 0.004,
+          "gap_m": null,
+          "minimum_rounding_m": null
+        },
+        "gmsh_version": "4.14.1",
+        "volume_construction": "Gmsh OpenCASCADE volume tetrahedralization",
+        "mesh_size": 0.15,
+        "mesh_size_units": "unit-sphere coordinates",
+        "shell_layers": 2,
+        "nodes": 1496,
+        "tetrahedra": 5934,
+        "boundary_triangles": 1974,
+        "dimensions_m": [
+          0.023937032614203425,
+          0.023973435183435546,
+          0.024
+        ],
+        "minimum_volume_m3": 3.327748249362242e-10,
+        "total_volume_m3": 5.075355217353183e-06,
+        "scaled_jacobian_percentiles": [
+          0.1815173803544085,
+          0.29215246064170247,
+          0.635805232923458,
+          0.9091505863087228,
+          0.9896951689658103
+        ],
+        "mesh_sha256": "0150e4f3935861b541f1e74dc27a08b2cea0ff85d82a44e4a1e1112579a11a4f"
+      },
+      "young_Pa": 10000000000.0,
+      "poisson": 0.3,
+      "density_kg_m3": 2000,
+      "inner_pressure_Pa": 10000.0,
+      "outer_pressure_Pa": 0,
+      "inner_radius_m": 0.008,
+      "outer_radius_m": 0.012,
+      "reference": "full3D independent scikit-fem P2, closed pressure shell, consistent-mass aligned free-body solution",
+      "linear_gauge": "pinned",
+      "factor_seconds": 8.213513449765742,
+      "factor_nonzeros": 59599896,
+      "peak_Pa": 22153.15158835852,
+      "exact_peak_Pa": 21315.78947368421,
+      "peak_relative_error": 0.0392836547624984,
+      "peak_position_m": [
+        -0.002387387248975614,
+        -0.0008493914582415388,
+        -0.007588077244868753
+      ],
+      "energy_J": 3.422585450310108e-08,
+      "exact_energy_J": 3.513292668603996e-08,
+      "energy_relative_error": 0.025818292653065678,
+      "common_probe_tensor_relative_error": 0.047783742344145716,
+      "common_probe_vm_relative_error": 0.028688645341293537,
+      "common_probe_displacement_relative_error": 0.022322914895272158,
+      "complete_residual_N": 1.6107118399862825e-14,
+      "complete_residual_budget_fraction": 6.0203542476034014e-06,
+      "total_mass_kg": 0.010150710434706358,
+      "elapsed_seconds": 14.174075558781624,
+      "field_sha256": "fc6c7f2b68fd2fc88256ddddc980aae00f18630c93bcaa01ad0b7ef574e54c92"
+    },
+    {
+      "mesh": {
+        "geometry": {
+          "name": "cavity",
+          "description": "Full spherical shell, outer radius12mm, inner radius8mm",
+          "thickness_m": 0.004,
+          "gap_m": null,
+          "minimum_rounding_m": null
+        },
+        "gmsh_version": "4.14.1",
+        "volume_construction": "Gmsh OpenCASCADE volume tetrahedralization",
+        "mesh_size": 0.11,
+        "mesh_size_units": "unit-sphere coordinates",
+        "shell_layers": 2,
+        "nodes": 2841,
+        "tetrahedra": 11142,
+        "boundary_triangles": 3864,
+        "dimensions_m": [
+          0.02396440480539693,
+          0.02397790549989342,
+          0.024
+        ],
+        "minimum_volume_m3": 1.5161294108125017e-10,
+        "total_volume_m3": 5.0817260743069575e-06,
+        "scaled_jacobian_percentiles": [
+          0.10671030769885533,
+          0.19540563514173548,
+          0.643132846038532,
+          0.9195955726551677,
+          0.9941307266706482
+        ],
+        "mesh_sha256": "a8070aa4b04fa051d1c5a94a118a8e51a00b1dfffc87cfa03815f562eeaafb78"
+      },
+      "young_Pa": 10000000000.0,
+      "poisson": 0.3,
+      "density_kg_m3": 2000,
+      "inner_pressure_Pa": 10000.0,
+      "outer_pressure_Pa": 0,
+      "inner_radius_m": 0.008,
+      "outer_radius_m": 0.012,
+      "reference": "full3D independent scikit-fem P2, closed pressure shell, consistent-mass aligned free-body solution",
+      "linear_gauge": "pinned",
+      "factor_seconds": 28.100259272847325,
+      "factor_nonzeros": 132273103,
+      "peak_Pa": 21414.757192844256,
+      "exact_peak_Pa": 21315.78947368421,
+      "peak_relative_error": 0.0046429300346688684,
+      "peak_position_m": [
+        4.898587196589413e-19,
+        -1.1998078261294862e-34,
+        0.008
+      ],
+      "energy_J": 3.470215388898721e-08,
+      "exact_energy_J": 3.513292668603996e-08,
+      "energy_relative_error": 0.012261227221469051,
+      "common_probe_tensor_relative_error": 0.04040635673267032,
+      "common_probe_vm_relative_error": 0.018516609558663587,
+      "common_probe_displacement_relative_error": 0.01124386325426939,
+      "complete_residual_N": 1.9134834984267242e-14,
+      "complete_residual_budget_fraction": 1.0317899141326543e-05,
+      "total_mass_kg": 0.010163452148613904,
+      "elapsed_seconds": 73.81809865497053,
+      "field_sha256": "b3bc2ea115478132b707dc156c8cef4bf1b02b6540860be3b7ed807a67c8d921"
+    },
+    {
+      "mesh": {
+        "geometry": {
+          "name": "cavity",
+          "description": "Full spherical shell, outer radius12mm, inner radius8mm",
+          "thickness_m": 0.004,
+          "gap_m": null,
+          "minimum_rounding_m": null
+        },
+        "gmsh_version": "4.14.1",
+        "volume_construction": "Gmsh OpenCASCADE volume tetrahedralization",
+        "mesh_size": 0.08,
+        "mesh_size_units": "unit-sphere coordinates",
+        "shell_layers": 2,
+        "nodes": 7210,
+        "tetrahedra": 32158,
+        "boundary_triangles": 7190,
+        "dimensions_m": [
+          0.023997915957780017,
+          0.023992990765185025,
+          0.024
+        ],
+        "minimum_volume_m3": 2.987844371926046e-11,
+        "total_volume_m3": 5.087778703728083e-06,
+        "scaled_jacobian_percentiles": [
+          0.18015376121917173,
+          0.3628529492219821,
+          0.659502489686729,
+          0.894476870043904,
+          0.9984590343963711
+        ],
+        "mesh_sha256": "a7d5ced00948803796d3d220ae14a7b11c0d163b9c3732412390a3012786d42b"
+      },
+      "young_Pa": 10000000000.0,
+      "poisson": 0.3,
+      "density_kg_m3": 2000,
+      "inner_pressure_Pa": 10000.0,
+      "outer_pressure_Pa": 0,
+      "inner_radius_m": 0.008,
+      "outer_radius_m": 0.012,
+      "reference": "full3D independent scikit-fem P2, closed pressure shell, consistent-mass aligned free-body solution",
+      "linear_gauge": "pinned",
+      "factor_seconds": 488.50884280819446,
+      "factor_nonzeros": 884162299,
+      "peak_Pa": 21717.67588564722,
+      "exact_peak_Pa": 21315.78947368421,
+      "peak_relative_error": 0.01885393043777084,
+      "peak_position_m": [
+        -0.0011004293894994954,
+        -0.0003722519196225737,
+        0.007915205851212153
+      ],
+      "energy_J": 3.490450567248587e-08,
+      "exact_energy_J": 3.513292668603996e-08,
+      "energy_relative_error": 0.006501622127736084,
+      "common_probe_tensor_relative_error": 0.010168111770169972,
+      "common_probe_vm_relative_error": 0.004503720939461828,
+      "common_probe_displacement_relative_error": 0.005497441568914118,
+      "complete_residual_N": 1.401649136111408e-13,
+      "complete_residual_budget_fraction": 0.00010125843208499675,
+      "total_mass_kg": 0.010175557407456154,
+      "elapsed_seconds": 1216.528181341011,
+      "field_sha256": "676c9975b9c9edeb3d19d105584f50eecbda91d63eaa08dcf5b6ae6942f47d40"
+    }
+  ],
+  "tensor_probe_tail_relative_change": 0.03966338049600538,
+  "vm_probe_tail_relative_change": 0.016221823194424712,
+  "shell_fine_failure": "h0.08 SuperLU memory expansion fails; gstrf SystemError. SlurmFAILED, not a completed field.",
+  "contact_matrices": {
+    "contact-blocks-convergence-v1": {
+      "cases": [
+        {
+          "case": "n3-d1.25e-6",
+          "accepted": false,
+          "failure_snapshot_available": false
+        },
+        {
+          "case": "n3-d1e-5",
+          "accepted": true,
+          "free_residual_N": 2.26667414700714e-13,
+          "force_N": 0.5985964628776343,
+          "raw_peak_Pa": 6030.177089229113,
+          "force_relative_error": 0.1971929257552687,
+          "peak_relative_error": 0.20603541784582258
+        },
+        {
+          "case": "n3-d2.5e-6",
+          "accepted": false,
+          "failure_snapshot_available": false
+        },
+        {
+          "case": "n3-d5e-6",
+          "accepted": true,
+          "free_residual_N": 1.3799971879596096e-11,
+          "force_N": 0.5493009341978234,
+          "raw_peak_Pa": 5614.45639538742,
+          "force_relative_error": 0.09860186839564689,
+          "peak_relative_error": 0.1228912790774841
+        },
+        {
+          "case": "n4-d1.25e-6",
+          "accepted": false,
+          "failure_snapshot_available": false
+        },
+        {
+          "case": "n4-d1e-5",
+          "accepted": false,
+          "failure_snapshot_available": false
+        },
+        {
+          "case": "n4-d2.5e-6",
+          "accepted": false,
+          "failure_snapshot_available": false
+        },
+        {
+          "case": "n4-d5e-6",
+          "accepted": false,
+          "failure_snapshot_available": false
+        },
+        {
+          "case": "n5-d1.25e-6",
+          "accepted": false,
+          "failure_snapshot_available": false
+        },
+        {
+          "case": "n5-d1e-5",
+          "accepted": true,
+          "free_residual_N": 3.391840323905669e-10,
+          "force_N": 0.5985520172868338,
+          "raw_peak_Pa": 6073.202278053671,
+          "force_relative_error": 0.19710403457366765,
+          "peak_relative_error": 0.2146404556107342
+        },
+        {
+          "case": "n5-d2.5e-6",
+          "accepted": false,
+          "failure_snapshot_available": false
+        },
+        {
+          "case": "n5-d5e-6",
+          "accepted": true,
+          "free_residual_N": 3.3279515585937973e-11,
+          "force_N": 0.5492971133986536,
+          "raw_peak_Pa": 5669.931676614889,
+          "force_relative_error": 0.09859422679730723,
+          "peak_relative_error": 0.13398633532297777
+        }
+      ],
+      "accepted": 4,
+      "total": 12
+    },
+    "contact-blocks-convergence-v2": {
+      "cases": [
+        {
+          "case": "n3-d1.25e-6",
+          "accepted": true,
+          "free_residual_N": 5.5263672779242367e-11,
+          "force_N": 0.5123376527888421,
+          "raw_peak_Pa": 5128.089182803052,
+          "force_relative_error": 0.02467530557768427,
+          "peak_relative_error": 0.02561783656061034
+        },
+        {
+          "case": "n3-d1e-5",
+          "accepted": true,
+          "free_residual_N": 4.898869043524251e-10,
+          "force_N": 0.5985462803987489,
+          "raw_peak_Pa": 6174.074388751933,
+          "force_relative_error": 0.19709256079749782,
+          "peak_relative_error": 0.23481487775038667
+        },
+        {
+          "case": "n3-d2.5e-6",
+          "accepted": true,
+          "free_residual_N": 7.731163287828908e-12,
+          "force_N": 0.5246714383250033,
+          "raw_peak_Pa": 5256.202457160253,
+          "force_relative_error": 0.049342876650006584,
+          "peak_relative_error": 0.05124049143205056
+        },
+        {
+          "case": "n3-d5e-6",
+          "accepted": true,
+          "free_residual_N": 3.371380714319817e-10,
+          "force_N": 0.5493018808729605,
+          "raw_peak_Pa": 5625.027718814508,
+          "force_relative_error": 0.098603761745921,
+          "peak_relative_error": 0.12500554376290163
+        },
+        {
+          "case": "n4-d1.25e-6",
+          "accepted": true,
+          "free_residual_N": 4.903248492918451e-12,
+          "force_N": 0.5123341243324253,
+          "raw_peak_Pa": 5130.428391588856,
+          "force_relative_error": 0.024668248664850623,
+          "peak_relative_error": 0.0260856783177712
+        },
+        {
+          "case": "n4-d1e-5",
+          "accepted": false,
+          "failure_snapshot_available": true
+        },
+        {
+          "case": "n4-d2.5e-6",
+          "accepted": true,
+          "free_residual_N": 4.8971555876999645e-11,
+          "force_N": 0.5246643193607177,
+          "raw_peak_Pa": 5260.783884377727,
+          "force_relative_error": 0.049328638721435336,
+          "peak_relative_error": 0.05215677687554554
+        },
+        {
+          "case": "n4-d5e-6",
+          "accepted": false,
+          "failure_snapshot_available": true
+        },
+        {
+          "case": "n5-d1.25e-6",
+          "accepted": true,
+          "free_residual_N": 1.2302822488561677e-12,
+          "force_N": 0.5123323659270604,
+          "raw_peak_Pa": 5132.71140971348,
+          "force_relative_error": 0.02466473185412088,
+          "peak_relative_error": 0.026542281942695922
+        },
+        {
+          "case": "n5-d1e-5",
+          "accepted": true,
+          "free_residual_N": 3.391853537724535e-10,
+          "force_N": 0.5985520172871395,
+          "raw_peak_Pa": 6073.202278049899,
+          "force_relative_error": 0.19710403457427894,
+          "peak_relative_error": 0.2146404556099799
+        },
+        {
+          "case": "n5-d2.5e-6",
+          "accepted": false,
+          "failure_snapshot_available": true
+        },
+        {
+          "case": "n5-d5e-6",
+          "accepted": false,
+          "failure_snapshot_available": true
+        }
+      ],
+      "accepted": 8,
+      "total": 12
+    },
+    "contact-blocks-convergence-v3": {
+      "cases": [
+        {
+          "case": "n3-d1.25e-6",
+          "accepted": true,
+          "free_residual_N": 5.527252725860166e-11,
+          "force_N": 0.5123376527900744,
+          "raw_peak_Pa": 5128.089182803368,
+          "force_relative_error": 0.024675305580148743,
+          "peak_relative_error": 0.025617836560673624
+        },
+        {
+          "case": "n3-d1e-5",
+          "accepted": true,
+          "free_residual_N": 2.117552229950501e-10,
+          "force_N": 0.5985462805373235,
+          "raw_peak_Pa": 6174.07437773438,
+          "force_relative_error": 0.197092561074647,
+          "peak_relative_error": 0.23481487554687597
+        },
+        {
+          "case": "n3-d2.5e-6",
+          "accepted": true,
+          "free_residual_N": 2.308244556006971e-12,
+          "force_N": 0.5246714383203485,
+          "raw_peak_Pa": 5256.202457160562,
+          "force_relative_error": 0.04934287664069692,
+          "peak_relative_error": 0.05124049143211229
+        },
+        {
+          "case": "n3-d5e-6",
+          "accepted": true,
+          "free_residual_N": 1.624334049230876e-11,
+          "force_N": 0.5493202834727933,
+          "raw_peak_Pa": 5633.0593148301,
+          "force_relative_error": 0.09864056694558654,
+          "peak_relative_error": 0.12661186296602
+        },
+        {
+          "case": "n4-d1.25e-6",
+          "accepted": true,
+          "free_residual_N": 4.890506803171159e-12,
+          "force_N": 0.5123341243317222,
+          "raw_peak_Pa": 5130.428391588855,
+          "force_relative_error": 0.024668248663444414,
+          "peak_relative_error": 0.0260856783177712
+        },
+        {
+          "case": "n4-d1e-5",
+          "accepted": true,
+          "free_residual_N": 8.875454235746725e-12,
+          "force_N": 0.5985555833439936,
+          "raw_peak_Pa": 6176.666408768776,
+          "force_relative_error": 0.19711116668798723,
+          "peak_relative_error": 0.23533328175375523
+        },
+        {
+          "case": "n4-d2.5e-6",
+          "accepted": true,
+          "free_residual_N": 4.899862679432724e-11,
+          "force_N": 0.5246643193606995,
+          "raw_peak_Pa": 5260.783884377819,
+          "force_relative_error": 0.04932863872139892,
+          "peak_relative_error": 0.05215677687556375
+        },
+        {
+          "case": "n4-d5e-6",
+          "accepted": true,
+          "free_residual_N": 6.065139501620485e-10,
+          "force_N": 0.549302272345741,
+          "raw_peak_Pa": 5640.7845812564,
+          "force_relative_error": 0.09860454469148205,
+          "peak_relative_error": 0.12815691625128012
+        },
+        {
+          "case": "n5-d1.25e-6",
+          "accepted": false,
+          "failure_snapshot_available": true
+        },
+        {
+          "case": "n5-d1e-5",
+          "accepted": true,
+          "free_residual_N": 2.7404007582361266e-10,
+          "force_N": 0.5985520169863296,
+          "raw_peak_Pa": 6073.202278623909,
+          "force_relative_error": 0.1971040339726593,
+          "peak_relative_error": 0.21464045572478163
+        },
+        {
+          "case": "n5-d2.5e-6",
+          "accepted": true,
+          "free_residual_N": 1.2182250361660109e-10,
+          "force_N": 0.5246607821279988,
+          "raw_peak_Pa": 5265.219663036116,
+          "force_relative_error": 0.04932156425599765,
+          "peak_relative_error": 0.053043932607223176
+        },
+        {
+          "case": "n5-d5e-6",
+          "accepted": true,
+          "free_residual_N": 1.8088296279245606e-13,
+          "force_N": 0.5492985439065201,
+          "raw_peak_Pa": 5667.2189521613045,
+          "force_relative_error": 0.09859708781304022,
+          "peak_relative_error": 0.13344379043226096
+        }
+      ],
+      "accepted": 11,
+      "total": 12
+    },
+    "contact-blocks-convergence-v4": {
+      "cases": [
+        {
+          "case": "n3-d1.25e-6",
+          "accepted": true,
+          "free_residual_N": 5.526868616103386e-11,
+          "force_N": 0.5123376527869394,
+          "raw_peak_Pa": 5128.089182803382,
+          "force_relative_error": 0.02467530557387887,
+          "peak_relative_error": 0.025617836560676288
+        },
+        {
+          "case": "n3-d1e-5",
+          "accepted": true,
+          "free_residual_N": 1.8261651729528964e-13,
+          "force_N": 0.5985462807398578,
+          "raw_peak_Pa": 6174.074377734375,
+          "force_relative_error": 0.19709256147971566,
+          "peak_relative_error": 0.23481487554687508
+        },
+        {
+          "case": "n3-d2.5e-6",
+          "accepted": true,
+          "free_residual_N": 2.995167036942092e-12,
+          "force_N": 0.5246714383208766,
+          "raw_peak_Pa": 5256.202457160515,
+          "force_relative_error": 0.049342876641753186,
+          "peak_relative_error": 0.051240491432102964
+        },
+        {
+          "case": "n3-d5e-6",
+          "accepted": true,
+          "free_residual_N": 1.6240957649838502e-11,
+          "force_N": 0.5493202834727339,
+          "raw_peak_Pa": 5633.059314831581,
+          "force_relative_error": 0.09864056694546774,
+          "peak_relative_error": 0.1266118629663162
+        },
+        {
+          "case": "n4-d1.25e-6",
+          "accepted": true,
+          "free_residual_N": 4.8819227578539065e-12,
+          "force_N": 0.5123341243318775,
+          "raw_peak_Pa": 5130.428391588853,
+          "force_relative_error": 0.024668248663755055,
+          "peak_relative_error": 0.026085678317770533
+        },
+        {
+          "case": "n4-d1e-5",
+          "accepted": true,
+          "free_residual_N": 3.1628559813506434e-12,
+          "force_N": 0.5985555833455489,
+          "raw_peak_Pa": 6176.666408743798,
+          "force_relative_error": 0.19711116669109785,
+          "peak_relative_error": 0.23533328174875945
+        },
+        {
+          "case": "n4-d2.5e-6",
+          "accepted": true,
+          "free_residual_N": 4.9003076166884474e-11,
+          "force_N": 0.5246643193606613,
+          "raw_peak_Pa": 5260.783884377737,
+          "force_relative_error": 0.04932863872132254,
+          "peak_relative_error": 0.05215677687554754
+        },
+        {
+          "case": "n4-d5e-6",
+          "accepted": true,
+          "free_residual_N": 7.822433256627821e-10,
+          "force_N": 0.549301617609373,
+          "raw_peak_Pa": 5651.405568188877,
+          "force_relative_error": 0.09860323521874603,
+          "peak_relative_error": 0.13028111363777528
+        },
+        {
+          "case": "n5-d1.25e-6",
+          "accepted": false,
+          "failure_snapshot_available": true
+        },
+        {
+          "case": "n5-d1e-5",
+          "accepted": true,
+          "free_residual_N": 2.740182196971888e-10,
+          "force_N": 0.5985520169863124,
+          "raw_peak_Pa": 6073.202278622743,
+          "force_relative_error": 0.19710403397262488,
+          "peak_relative_error": 0.21464045572454848
+        },
+        {
+          "case": "n5-d2.5e-6",
+          "accepted": false,
+          "failure_snapshot_available": true
+        },
+        {
+          "case": "n5-d5e-6",
+          "accepted": true,
+          "free_residual_N": 9.37554577443624e-11,
+          "force_N": 0.5492990397338359,
+          "raw_peak_Pa": 5669.868343310545,
+          "force_relative_error": 0.09859807946767174,
+          "peak_relative_error": 0.13397366866210914
+        }
+      ],
+      "accepted": 10,
+      "total": 12
+    },
+    "contact-blocks-convergence-v5": {
+      "cases": [
+        {
+          "case": "n3-d1.25e-6",
+          "accepted": true,
+          "free_residual_N": 5.526506852139039e-11,
+          "force_N": 0.5123376527890585,
+          "raw_peak_Pa": 5128.089182803368,
+          "force_relative_error": 0.024675305578117035,
+          "peak_relative_error": 0.025617836560673624
+        },
+        {
+          "case": "n3-d1e-5",
+          "accepted": true,
+          "free_residual_N": 2.1096885193734772e-13,
+          "force_N": 0.5985462807399136,
+          "raw_peak_Pa": 6174.07437773438,
+          "force_relative_error": 0.19709256147982712,
+          "peak_relative_error": 0.23481487554687597
+        },
+        {
+          "case": "n3-d2.5e-6",
+          "accepted": true,
+          "free_residual_N": 2.3743511106996484e-12,
+          "force_N": 0.5246714383199556,
+          "raw_peak_Pa": 5256.202457160496,
+          "force_relative_error": 0.049342876639911104,
+          "peak_relative_error": 0.05124049143209919
+        },
+        {
+          "case": "n3-d5e-6",
+          "accepted": true,
+          "free_residual_N": 1.6243970819777328e-11,
+          "force_N": 0.5493202834735355,
+          "raw_peak_Pa": 5633.059314831534,
+          "force_relative_error": 0.0986405669470709,
+          "peak_relative_error": 0.12661186296630667
+        },
+        {
+          "case": "n4-d1.25e-6",
+          "accepted": true,
+          "free_residual_N": 4.848942344759797e-12,
+          "force_N": 0.5123341243309896,
+          "raw_peak_Pa": 5130.428391588854,
+          "force_relative_error": 0.024668248661979142,
+          "peak_relative_error": 0.026085678317770755
+        },
+        {
+          "case": "n4-d1e-5",
+          "accepted": true,
+          "free_residual_N": 3.880782535219321e-12,
+          "force_N": 0.5985555833448539,
+          "raw_peak_Pa": 6176.6664087284125,
+          "force_relative_error": 0.19711116668970785,
+          "peak_relative_error": 0.23533328174568258
+        },
+        {
+          "case": "n4-d2.5e-6",
+          "accepted": true,
+          "free_residual_N": 4.899846945229774e-11,
+          "force_N": 0.5246643193608665,
+          "raw_peak_Pa": 5260.783884377841,
+          "force_relative_error": 0.0493286387217331,
+          "peak_relative_error": 0.05215677687556819
+        },
+        {
+          "case": "n4-d5e-6",
+          "accepted": true,
+          "free_residual_N": 2.3787581291637363e-10,
+          "force_N": 0.5493016172248711,
+          "raw_peak_Pa": 5651.405571488559,
+          "force_relative_error": 0.09860323444974228,
+          "peak_relative_error": 0.13028111429771183
+        },
+        {
+          "case": "n5-d1.25e-6",
+          "accepted": false,
+          "failure_snapshot_available": true
+        },
+        {
+          "case": "n5-d1e-5",
+          "accepted": true,
+          "free_residual_N": 2.740279257560696e-10,
+          "force_N": 0.5985520169862977,
+          "raw_peak_Pa": 6073.202278622552,
+          "force_relative_error": 0.19710403397259535,
+          "peak_relative_error": 0.2146404557245103
+        },
+        {
+          "case": "n5-d2.5e-6",
+          "accepted": true,
+          "free_residual_N": 1.2178122558360872e-10,
+          "force_N": 0.5246607821278103,
+          "raw_peak_Pa": 5265.219663036201,
+          "force_relative_error": 0.04932156425562062,
+          "peak_relative_error": 0.053043932607240274
+        },
+        {
+          "case": "n5-d5e-6",
+          "accepted": true,
+          "free_residual_N": 2.95051917635376e-13,
+          "force_N": 0.549298543906363,
+          "raw_peak_Pa": 5667.218952160439,
+          "force_relative_error": 0.09859708781272603,
+          "peak_relative_error": 0.13344379043208776
+        }
+      ],
+      "accepted": 11,
+      "total": 12
+    }
+  },
+  "figure_contract": {
+    "scope": "Initial physical controls; full load-model and deformable-grasp acceptance remains pending",
+    "inputs": [
+      {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/control-figures-v3/source/nature_mpl_style.py",
+        "sha256": "5ca3184cd5d1d5361996b98935354b56e63db598f405ed539afb5aed39e2eec1"
+      },
+      {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/spherical-shell-pinned-v3/sweep/summary.json",
+        "sha256": "20297b085f4a88a32e60ad2bf1098004187ba70e46f47f1e9487e3d3562953ec"
+      },
+      {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/contact-blocks-convergence-v5/n3-d1.25e-6.returncode",
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+      },
+      {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/contact-blocks-convergence-v5/n3-d1.25e-6/result.json",
+        "sha256": "84e403dfb003262454b7df4bb7c6a97f11bb9c86fcddcd516dd686232939344f"
+      },
+      {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/contact-blocks-convergence-v5/n3-d1e-5.returncode",
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+      },
+      {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/contact-blocks-convergence-v5/n3-d1e-5/result.json",
+        "sha256": "bb99acb524ddb29c081f50bf42bfd836b4fa823df263fb28168664f30e3e0a08"
+      },
+      {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/contact-blocks-convergence-v5/n3-d2.5e-6.returncode",
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+      },
+      {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/contact-blocks-convergence-v5/n3-d2.5e-6/result.json",
+        "sha256": "1d1ac83f9ea833ae5e1b934aee572b6f50f5bb1173b3020587386468ab172b12"
+      },
+      {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/contact-blocks-convergence-v5/n3-d5e-6.returncode",
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+      },
+      {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/contact-blocks-convergence-v5/n3-d5e-6/result.json",
+        "sha256": "5042b39d3be441118728f07b29b87f329d1801930b7129285b8efe5835da3187"
+      },
+      {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/contact-blocks-convergence-v5/n4-d1.25e-6.returncode",
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+      },
+      {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/contact-blocks-convergence-v5/n4-d1.25e-6/result.json",
+        "sha256": "bf63bf0712fd8387a5018e448f61456f9e2f535e9ff1883e07ab1768067f7f5e"
+      },
+      {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/contact-blocks-convergence-v5/n4-d1e-5.returncode",
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+      },
+      {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/contact-blocks-convergence-v5/n4-d1e-5/result.json",
+        "sha256": "7df04c6b522a7af6fd245a047201550f526ba1e3ee5ee9dd840990ecd3df0972"
+      },
+      {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/contact-blocks-convergence-v5/n4-d2.5e-6.returncode",
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+      },
+      {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/contact-blocks-convergence-v5/n4-d2.5e-6/result.json",
+        "sha256": "5b6d2413e7c8d95a51dc9885280f251147c7a8cb2d2c8b41f385f274afceea2a"
+      },
+      {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/contact-blocks-convergence-v5/n4-d5e-6.returncode",
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+      },
+      {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/contact-blocks-convergence-v5/n4-d5e-6/result.json",
+        "sha256": "2a5757b7c6eff8fd5151c5a4ff9b63f910a7e754fad164fbaa3557e7700b058f"
+      },
+      {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/contact-blocks-convergence-v5/n5-d1.25e-6.returncode",
+        "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+      },
+      {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/contact-blocks-convergence-v5/n5-d1e-5.returncode",
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+      },
+      {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/contact-blocks-convergence-v5/n5-d1e-5/result.json",
+        "sha256": "671adf7756a2b19fd37f1161e1f35d13e6269deffecd8e662740cb616914b48c"
+      },
+      {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/contact-blocks-convergence-v5/n5-d2.5e-6.returncode",
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+      },
+      {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/contact-blocks-convergence-v5/n5-d2.5e-6/result.json",
+        "sha256": "e26b5da1489135ab02fc0baf1223afe748c04ab08d33189cbc73088fc1c08704"
+      },
+      {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/contact-blocks-convergence-v5/n5-d5e-6.returncode",
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+      },
+      {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/contact-blocks-convergence-v5/n5-d5e-6/result.json",
+        "sha256": "bdbd1c5e167aed8febdc741b75a02d4830d23fd28e064ad264ca5929e7958ac9"
+      },
+      {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/spherical-shell-pinned-v3/sweep/h0.08/mesh.npz",
+        "sha256": "a7d5ced00948803796d3d220ae14a7b11c0d163b9c3732412390a3012786d42b"
+      },
+      {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/spherical-shell-pinned-v3/sweep/h0.08/field.npz",
+        "sha256": "676c9975b9c9edeb3d19d105584f50eecbda91d63eaa08dcf5b6ae6942f47d40"
+      },
+      {
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/spherical-shell-pinned-v3/sweep/h0.08/result.json",
+        "sha256": "24d6f77e7d14e72022bca582018a385f614b2d1e59e9ad6175bad075b19f7d0f"
+      }
+    ],
+    "exports": {
+      "controls": {
+        "svg": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/control-figures-v3/figures/physical_controls.svg",
+        "pdf": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/control-figures-v3/figures/physical_controls.pdf",
+        "png": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/control-figures-v3/figures/physical_controls.png",
+        "preview_png": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/control-figures-v3/figures/physical_controls_preview.png"
+      },
+      "matched_shell_slice": {
+        "svg": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/control-figures-v3/figures/shell_matched_slice.svg",
+        "pdf": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/control-figures-v3/figures/shell_matched_slice.pdf",
+        "png": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/control-figures-v3/figures/shell_matched_slice.png",
+        "preview_png": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/control-figures-v3/figures/shell_matched_slice_preview.png"
+      }
+    },
+    "failed_contact_cases": [
+      {
+        "name": "n5-d1.25e-6",
+        "resolution": 5,
+        "dhat_m": 1.25e-06
+      }
+    ],
+    "figure_contract": {
+      "controls_claim": "Scalar peak convergence can precede full tensor convergence; contact regularization changes force",
+      "controls_panels": [
+        "Shell peak, energy and full-tensor probe errors",
+        "Block force errors",
+        "Block raw peak errors"
+      ],
+      "slice_claim": "Matched physical stress sampling with identical colour limits retains visible spatial differences",
+      "slice_sampling": "Exact per-element linear stress at tetrahedral centroids in fixed |y|<0.6mm slab; no cross-element smoothing",
+      "peak_marker": "Projected location of the full3D unaveraged corner maximum; may lie outside the displayed slab"
+    },
+    "captions": {
+      "controls": "Full3D independent scikit-fem P2 shell versus Lam\u00e9, and supported deformable-block IPC controls. Dashed lines show the initially declared3% target. Red crosses at the activation-distance axis mark failed solves with no accepted error value. Contact force/peak errors use0.5N/5000Pa analytic zero-gap values.",
+      "slice": "Common centroid samples within |y|<0.6mm at h=0.08; units and colour limits match. The raw full3D global corner peak is21.718kPa, versus21.316kPa analytic. The open star projects its location; slice colours do not replace that unsmoothed maximum."
+    },
+    "alt_text": "Three convergence curves compare independent shell and contact errors. A paired shell slice compares analytic and FEM von Mises stress with the same colour scale and a marked projection of the global raw FEM hotspot."
+  },
+  "physical_stage_complete": false,
+  "limitations": "This checkpoint qualifies reference algebra/gauge and initial physical controls only. Contact-reference regressions and unresolved fine configurations remain failed. Solver-scaling trials are excluded. Full shapes, four load models, friction and egg/interior-hotspot deformable contact remain required.",
+  "qualification_passed": true
+}

@@ -5,6 +5,7 @@ from time import perf_counter
 
 import numpy as np
 from scipy import sparse
+from scipy.linalg import qr
 from scipy.sparse.linalg import splu
 from scipy.spatial import cKDTree
 from skfem import Basis, BilinearForm, ElementTetP2, ElementVector, FacetBasis, LinearForm, MeshTet, asm
@@ -45,7 +46,7 @@ class IndependentElasticSolution:
 class SkfemElasticReference:
     """Assemble and solve a free-link problem without native or P2Shell operators."""
 
-    def __init__(self, vertices, tetrahedra, young, poisson, density):
+    def __init__(self, vertices, tetrahedra, young, poisson, density, gauge="pinned"):
         self.mesh = MeshTet(vertices.T, tetrahedra.T, sort_t=False)
         self.element = ElementVector(ElementTetP2())
         self.scalar_basis = Basis(self.mesh, ElementTetP2(), intorder=4)
@@ -69,11 +70,18 @@ class SkfemElasticReference:
             self.rigid_modes[self.component_dofs, axis + 3] = np.cross(np.eye(3)[axis], relative)
         self.mass_modes = self.mass @ self.rigid_modes
         self.gram = self.rigid_modes.T @ self.mass_modes
-        gauge = self.mass_modes / np.linalg.norm(self.mass_modes, axis=0)
-        operator = sparse.bmat(
-            [[self.stiffness / young, sparse.csr_matrix(gauge)], [sparse.csr_matrix(gauge.T), None]], format="csc"
-        )
-        self.factor = splu(operator)
+        if gauge not in ("pinned", "mass"):
+            raise ValueError(f"Unknown independent rigid gauge: {gauge}")
+        self.gauge = gauge
+        self.factor = None
+        scaled_modes = self.rigid_modes / np.linalg.norm(self.rigid_modes, axis=0)
+        _, triangular, pivot = qr(scaled_modes.T, mode="economic", pivoting=True)
+        if np.min(np.abs(triangular.diagonal())) <= 1e-12:
+            raise ValueError("Mesh does not admit six independent rigid constraints")
+        self.gauge_dofs = pivot[:6]
+        self.free_dofs = np.setdiff1d(np.arange(self.basis.N), self.gauge_dofs)
+        self.factor_seconds = 0.0
+        self.factor_nonzeros = 0
         corners = np.array([[0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]])
         self.corner_basis = Basis(self.mesh, self.element, quadrature=(corners, np.ones(4)))
         self.corner_positions = self.mesh.p[:, self.mesh.t].transpose(2, 1, 0)
@@ -111,12 +119,34 @@ class SkfemElasticReference:
         boundary = FacetBasis(self.mesh, self.element, intorder=4)
         return asm(bending_traction, boundary, scale=self.young * curvature)
 
+    def factorize(self):
+        if self.factor is not None:
+            return
+        started = perf_counter()
+        if self.gauge == "pinned":
+            operator = self.stiffness[self.free_dofs][:, self.free_dofs] / self.young
+        else:
+            constraint = self.mass_modes / np.linalg.norm(self.mass_modes, axis=0)
+            operator = sparse.bmat(
+                [[self.stiffness / self.young, sparse.csr_matrix(constraint)], [sparse.csr_matrix(constraint.T), None]],
+                format="csc",
+            )
+        self.factor = splu(operator.tocsc())
+        self.factor_seconds = perf_counter() - started
+        self.factor_nonzeros = self.factor.L.nnz + self.factor.U.nnz
+
     def solve(self, force, omega=None):
         started = perf_counter()
         if omega is None:
             omega = np.zeros(3)
         rhs = self.balanced_rhs(force, omega)
-        displacement = self.factor.solve(np.r_[rhs / self.young, np.zeros(6)])[: self.basis.N]
+        self.factorize()
+        if self.gauge == "pinned":
+            displacement = np.zeros(self.basis.N)
+            displacement[self.free_dofs] = self.factor.solve(rhs[self.free_dofs] / self.young)
+        else:
+            displacement = self.factor.solve(np.r_[rhs / self.young, np.zeros(6)])[: self.basis.N]
+        displacement = self.align_rigid_gauge(displacement)
         tensor, vm = self.corner_stress(displacement)
         residual = np.linalg.norm(self.stiffness @ displacement - rhs)
         budget = max(1e-11, 1e-8 * np.linalg.norm(rhs))
