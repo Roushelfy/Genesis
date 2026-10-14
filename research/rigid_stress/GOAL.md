@@ -1,6 +1,24 @@
 # Agent goal: native Quadrants rigid stress recovery
 
-## Active extension: nonconvex contact mapping, 2026-10-11
+## Active next stage: load-model accuracy and physical convergence, 2026-10-14
+
+Follow [docs/LOAD_MODEL_PHYSICAL_VALIDATION.md](docs/LOAD_MODEL_PHYSICAL_VALIDATION.md).
+Quantify how the pressure, componentwise and aggregate-source load models affect
+internal stress, then establish credible mesh/geometry/contact-integration and
+intrinsic-distance convergence on representative convex and nonconvex shapes.
+Use independent open-source FEM and resolved deformable-contact references.
+Keep the full hollow egg/Franka application and add rounded convex controls,
+U/cavity/narrow-gap and thin-neck shapes with interior hotspots.
+
+The completed low-mesh performance milestone is the starting point. Physical
+convergence is now authorized and is the priority. The earlier performance-first
+deferral applies to that completed phase and does not block this stage.
+Keep production numerics in Quadrants, preserve fast/robust model options and
+the qualified native feature, and report load-model error separately from
+elastic numerical error. Commit and push reproducible progress and findings.
+The previous completion records do not establish this stage's acceptance.
+
+## Previous nonconvex implementation brief, 2026-10-11
 
 Implement the contact mapping contract in
 [docs/NONCONVEX_CONTACT_REQUIREMENTS.md](docs/NONCONVEX_CONTACT_REQUIREMENTS.md).
