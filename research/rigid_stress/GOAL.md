@@ -98,6 +98,12 @@ effective friction0.6 and original PD actuation at three integration intervals.
 Sampled angular motion and rank5 point-wrench support prevent claiming static
 application acceptance. Matched deformable Franka contact, full contact tails,
 the live third-level/egg references, feedback and accuracy/cost remain required.
+The [actual Panda mechanics update](docs/PHYSICAL_FRANKA_MECHANICS_20261014.md)
+qualifies all12 corresponding rigid-finger geoms and repairs one numerical
+contact floor using identical held rows and unchanged tolerance. Direct and
+least-squares free-body release remain unqualified. Actual full-arm matching,
+contact convergence, feedback and every original physical acceptance item
+remain active; small strains or narrow peak bounds are not equilibrium proof.
 
 ## Previous nonconvex implementation brief, 2026-10-11
 

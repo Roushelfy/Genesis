@@ -1,0 +1,98 @@
+{
+  "scope": "Audit retained incomplete Panda closure/release states without accepting them.",
+  "source_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-ref-release-lsq-v1",
+  "states": [
+    {
+      "state": "completed_held_closure_at_release",
+      "physical_acceptance": false,
+      "norm_of_unconstrained_body_force_residual_N": 0.058857233877572905,
+      "norm_of_complete_free_map_residual_N": 0.058857233877572905,
+      "body_net_force_including_gravity_N": [
+        -1.1577251019823391e-07,
+        -0.0004413687054597992,
+        -0.0640584858897504
+      ],
+      "body_net_moment_about_deformed_com_Nm": [
+        -0.0003866347933997627,
+        1.0930114739079685e-07,
+        -5.156600447054073e-06
+      ],
+      "body_complete_rigid_wrench_residual_scaled_N": 0.06691387812472376,
+      "jaw_position_m": [
+        0.021996759343474774,
+        0.021996672574435067
+      ],
+      "jaw_pd_force_N": [
+        -0.39967593434747756,
+        -0.39966725744350684
+      ],
+      "finger_contact_force_N": [
+        [
+          -0.00010477720432199054,
+          -0.39945043045289574,
+          -0.0006108438419032686
+        ],
+        [
+          0.00010489297683218869,
+          0.3998917991583556,
+          0.000611518787616641
+        ]
+      ],
+      "active_normal_stencils": 2,
+      "body_peak_lower_Pa": 155536.25310717497,
+      "body_peak_upper_Pa": 155536.25343512034,
+      "body_whole_volume_j_lower_bound": 0.9999919212219638,
+      "objective_elastic_displacement_max_m": 3.528444581024014e-07,
+      "objective_elastic_displacement_over_thickness": 0.0007056889162048028,
+      "objective_elastic_displacement_over_nominal_footprint": 5.880740968373357e-05,
+      "fitted_rotation_angle_rad": 2.1696418193818725e-07
+    },
+    {
+      "state": "failed_free_body_state",
+      "physical_acceptance": false,
+      "norm_of_unconstrained_body_force_residual_N": 1.8944763325817533e-05,
+      "norm_of_complete_free_map_residual_N": 1.8968052985358934e-05,
+      "body_net_force_including_gravity_N": [
+        -5.004711761485113e-08,
+        -0.0005381474813079823,
+        -6.990460631075803e-06
+      ],
+      "body_net_moment_about_deformed_com_Nm": [
+        8.541070081905941e-07,
+        6.705991679016683e-07,
+        -7.792345936559911e-09
+      ],
+      "body_complete_rigid_wrench_residual_scaled_N": 0.0005409248908562893,
+      "jaw_position_m": [
+        0.021996758835193597,
+        0.021996673660286716
+      ],
+      "jaw_pd_force_N": [
+        -0.3996758835193598,
+        -0.3996673660286717
+      ],
+      "finger_contact_force_N": [
+        [
+          -0.00022183944229262504,
+          -0.39941543181081046,
+          -0.02388018939170607
+        ],
+        [
+          0.0002218894894102399,
+          0.39995357929211856,
+          -0.040170631091699764
+        ]
+      ],
+      "active_normal_stencils": 2,
+      "body_peak_lower_Pa": 156553.47726585146,
+      "body_peak_upper_Pa": 156553.47759379682,
+      "body_whole_volume_j_lower_bound": 0.9999918705471751,
+      "objective_elastic_displacement_max_m": 3.5183677726344664e-07,
+      "objective_elastic_displacement_over_thickness": 0.0007036735545268933,
+      "objective_elastic_displacement_over_nominal_footprint": 5.8639462877241106e-05,
+      "fitted_rotation_angle_rad": 3.4240261593687874e-07
+    }
+  ],
+  "goal_completion": false,
+  "limitations": "These fields come from incomplete free-body contact states. The held closure still contains support reactions. Neither state establishes complete equilibrium, spatial/regularization/history convergence or accuracy against the actual application. Force/moment residuals retain gravity and all nonlinear-body nodes."
+}

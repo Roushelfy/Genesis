@@ -1,0 +1,350 @@
+{
+  "scope": "Compare exact common physical times across fixed-hand rigid integration intervals.",
+  "comparisons": [
+    {
+      "previous_substeps": 2,
+      "current_substeps": 4,
+      "common_physical_samples": 80,
+      "first_time_s": 32.24,
+      "last_time_s": 51.99,
+      "position": {
+        "l2_absolute_difference": 0.0007035010697997674,
+        "units": "m",
+        "l2_relative_difference": 0.00011771904179191318,
+        "maximum_sample_difference": 7.865531498460895e-05
+      },
+      "velocity": {
+        "l2_absolute_difference": 3.746683746830967e-07,
+        "units": "m/s",
+        "l2_relative_difference": 0.0020648395967335655,
+        "maximum_sample_difference": 3.7306844123538643e-07
+      },
+      "angular_velocity": {
+        "l2_absolute_difference": 0.0006270787419539796,
+        "units": "rad/s",
+        "l2_relative_difference": 0.0024336005004152667,
+        "maximum_sample_difference": 0.00015073517434553151
+      },
+      "jaw_position": {
+        "l2_absolute_difference": 8.707991082868913e-07,
+        "units": "m",
+        "l2_relative_difference": 3.197268335680227e-06,
+        "maximum_sample_difference": 1.1743420672198383e-07
+      },
+      "normal_force": {
+        "l2_absolute_difference_N": 8.70806800329448e-05,
+        "l2_relative_difference": 1.9492893377319773e-05,
+        "maximum_sample_difference_N": 8.322756474887782e-06
+      },
+      "maximum_orientation_difference_rad": 0.00016114425492850731
+    },
+    {
+      "previous_substeps": 4,
+      "current_substeps": 8,
+      "common_physical_samples": 80,
+      "first_time_s": 32.24,
+      "last_time_s": 51.99,
+      "position": {
+        "l2_absolute_difference": 0.00017093818759818193,
+        "units": "m",
+        "l2_relative_difference": 2.8603440410257824e-05,
+        "maximum_sample_difference": 1.911488151904944e-05
+      },
+      "velocity": {
+        "l2_absolute_difference": 1.2514165167047793e-07,
+        "units": "m/s",
+        "l2_relative_difference": 0.0006896743550740829,
+        "maximum_sample_difference": 1.2438510155518587e-07
+      },
+      "angular_velocity": {
+        "l2_absolute_difference": 0.0001383476444298024,
+        "units": "rad/s",
+        "l2_relative_difference": 0.0005367515641510761,
+        "maximum_sample_difference": 2.5317625480538825e-05
+      },
+      "jaw_position": {
+        "l2_absolute_difference": 1.9740082798665208e-06,
+        "units": "m",
+        "l2_relative_difference": 7.247812597121123e-06,
+        "maximum_sample_difference": 2.667579600538686e-07
+      },
+      "normal_force": {
+        "l2_absolute_difference_N": 0.00019783694626199008,
+        "l2_relative_difference": 4.4283587607243986e-05,
+        "maximum_sample_difference_N": 1.8905462000784468e-05
+      },
+      "maximum_orientation_difference_rad": 0.00033631118400226584
+    }
+  ],
+  "cases": [
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-rigid-fixture-s2-v1",
+      "integration_interval_s": 0.005,
+      "summary_sha256": "120a2240453eeb373124eaa9957d1f988ffddaf10405a90137629e1cc60761fd",
+      "last_common_time_frame": {
+        "phase": "released_free_body_fixed_hand",
+        "tick": 5199,
+        "physical_substep": 0,
+        "recovery_local_index": 0,
+        "frame": "constraint forces evaluated before rigid integration",
+        "egg_position_m": [
+          0.6512279660792295,
+          -0.0002546299076037884,
+          0.14913515564829938
+        ],
+        "egg_quaternion_wxyz": [
+          0.9999114474158997,
+          -0.013201505027911979,
+          -0.0016522171795029668,
+          -0.00029626007237431397
+        ],
+        "egg_velocity_m_s": [
+          4.651934888528727e-10,
+          3.101688030440578e-08,
+          -2.028825067278093e-05
+        ],
+        "egg_angular_velocity_rad_s": [
+          -0.00026636794450960604,
+          0.03429935297013008,
+          -0.0009197893093976855
+        ],
+        "jaw_position_m": [
+          0.021532980736015353,
+          0.0215275006907849
+        ],
+        "jaw_velocity_m_s": [
+          -1.6402493730553828e-07,
+          -1.640367497557806e-07
+        ],
+        "jaw_control_force_N": [
+          -0.3532964333521624,
+          -0.35274842871099255
+        ],
+        "contacts": [
+          {
+            "world_point_m": [
+              0.6512140325623461,
+              -0.022016350278320673,
+              0.14971630154968946
+            ],
+            "body_force_N": [
+              0.00022511772369005847,
+              0.3530369525337133,
+              0.02266467677824045
+            ],
+            "body_inward_normal": [
+              0.0002623030799792477,
+              0.9999987963580717,
+              0.0015292087831104593
+            ],
+            "friction": 0.6,
+            "opposite_geom": 4,
+            "normal_force_N": 0.3530712456755029,
+            "shear_force_N": 0.022125179838628745
+          },
+          {
+            "world_point_m": [
+              0.6512418996063222,
+              0.021507129655127143,
+              0.1485540098282483
+            ],
+            "body_force_N": [
+              -0.0002265389129699719,
+              -0.35303695143924263,
+              0.04139314203019333
+            ],
+            "body_inward_normal": [
+              -0.00026230307997924065,
+              -0.9999987963580717,
+              -0.0015292087831104636
+            ],
+            "friction": 0.6,
+            "opposite_geom": 11,
+            "normal_force_N": 0.3529732871746671,
+            "shear_force_N": 0.04193317480986867
+          }
+        ]
+      }
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-rigid-fixture-controlled-v1",
+      "integration_interval_s": 0.0025,
+      "summary_sha256": "7b1f39df1fe976105c9984f105265cda9d593b6f3cb9f62e5ce624d78b57abb0",
+      "last_common_time_frame": {
+        "phase": "released_free_body_fixed_hand",
+        "tick": 5199,
+        "physical_substep": 0,
+        "recovery_local_index": 0,
+        "frame": "constraint forces evaluated before rigid integration",
+        "egg_position_m": [
+          0.6512279660537639,
+          -0.00025475018708641785,
+          0.1492138108713184
+        ],
+        "egg_quaternion_wxyz": [
+          0.9999123547028961,
+          -0.013128350651257203,
+          -0.0016859426705484522,
+          -0.00029482028292254374
+        ],
+        "egg_velocity_m_s": [
+          4.741864175148163e-10,
+          3.101652118351207e-08,
+          -2.0288077245324045e-05
+        ],
+        "egg_angular_velocity_rad_s": [
+          -0.0002649649917198872,
+          0.03425734438767173,
+          -0.0009135753423953909
+        ],
+        "jaw_position_m": [
+          0.021533063774523544,
+          0.02152758372932454
+        ],
+        "jaw_velocity_m_s": [
+          -1.6231519159641664e-07,
+          -1.6232719550965508e-07
+        ],
+        "jaw_control_force_N": [
+          -0.35330475430043856,
+          -0.3527567496604992
+        ],
+        "contacts": [
+          {
+            "world_point_m": [
+              0.6512140817078105,
+              -0.022016552017174285,
+              0.14979173846154648
+            ],
+            "body_force_N": [
+              0.00022430688604433864,
+              0.3530451964929808,
+              0.02271635043870045
+            ],
+            "body_inward_normal": [
+              0.0002623030799792418,
+              0.9999987963580717,
+              0.0015292087831099636
+            ],
+            "friction": 0.6,
+            "opposite_geom": 4,
+            "normal_force_N": 0.3530795684319778,
+            "shear_force_N": 0.022176835064740375
+          },
+          {
+            "world_point_m": [
+              0.6512418504099252,
+              0.02150709083411631,
+              0.1486358833624281
+            ],
+            "body_force_N": [
+              -0.00022575698024254317,
+              -0.35304519539039136,
+              0.04134146814549075
+            ],
+            "body_inward_normal": [
+              -0.00026230307997924065,
+              -0.9999987963580717,
+              -0.0015292087831104636
+            ],
+            "friction": 0.6,
+            "opposite_geom": 11,
+            "normal_force_N": 0.35298160993094807,
+            "shear_force_N": 0.04188151135566164
+          }
+        ]
+      }
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-rigid-fixture-s8-v1",
+      "integration_interval_s": 0.00125,
+      "summary_sha256": "b40f4045c00f60053d08ec2ce16a4d2c7db7d9a0323e9f7639a008d5b1223519",
+      "last_common_time_frame": {
+        "phase": "released_free_body_fixed_hand",
+        "tick": 5199,
+        "physical_substep": 0,
+        "recovery_local_index": 0,
+        "frame": "constraint forces evaluated before rigid integration",
+        "egg_position_m": [
+          0.6512279660542425,
+          -0.00025477941565542084,
+          0.14923292573049074
+        ],
+        "egg_quaternion_wxyz": [
+          0.9999145208257976,
+          -0.012960705754019145,
+          -0.0016986756146532846,
+          -0.0002926588960501062
+        ],
+        "egg_velocity_m_s": [
+          4.776782287454389e-10,
+          3.1015984632523084e-08,
+          -2.0287683418302368e-05
+        ],
+        "egg_angular_velocity_rad_s": [
+          -0.0002616695606616081,
+          0.034256464844811145,
+          -0.0009018893912997916
+        ],
+        "jaw_position_m": [
+          0.021533252400850647,
+          0.021527772355722417
+        ],
+        "jaw_velocity_m_s": [
+          -1.5842740365206936e-07,
+          -1.5843936156190643e-07
+        ],
+        "jaw_control_force_N": [
+          -0.3533236558110283,
+          -0.35277565117862625
+        ],
+        "contacts": [
+          {
+            "world_point_m": [
+              0.6512141819499824,
+              -0.022016766183917964,
+              0.14980347883499645
+            ],
+            "body_force_N": [
+              0.00022268634567025334,
+              0.3530639213106306,
+              0.022834767823275245
+            ],
+            "body_inward_normal": [
+              0.0002623030799792418,
+              0.9999987963580717,
+              0.0015292087831099636
+            ],
+            "friction": 0.6,
+            "opposite_geom": 4,
+            "normal_force_N": 0.35309847388692145,
+            "shear_force_N": 0.022295212058144522
+          },
+          {
+            "world_point_m": [
+              0.6512417501687093,
+              0.021507246541676944,
+              0.14866237270731983
+            ],
+            "body_force_N": [
+              -0.00022414730149492783,
+              -0.35306392021213545,
+              0.04122305068648657
+            ],
+            "body_inward_normal": [
+              -0.00026230307997924065,
+              -0.9999987963580717,
+              -0.0015292087831104636
+            ],
+            "friction": 0.6,
+            "opposite_geom": 11,
+            "normal_force_N": 0.35300051539294885,
+            "shear_force_N": 0.04176311815210939
+          }
+        ]
+      }
+    }
+  ],
+  "goal_completion": false,
+  "limitations": "Comparison uses physical_substep0 at identical macro ticks, without interpolation. Original controls, supports, geometry, material and total52s history remain fixed. Position relative differences include the common world offset; absolute translation and orientation differences must also be inspected. Temporal agreement is separate from contact regularization and physical model/deformation feedback. Persisting angular motion prevents static-contact acceptance; no stress accuracy or physical operating range is inferred."
+}

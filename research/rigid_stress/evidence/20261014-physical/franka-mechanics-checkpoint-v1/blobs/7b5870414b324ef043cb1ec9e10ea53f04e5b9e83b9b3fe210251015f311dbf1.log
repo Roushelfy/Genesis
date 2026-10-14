@@ -1,0 +1,42 @@
+{"step": 1, "newton_iteration": 0, "updated_residual_N": 0.058857233877572905}
+{"step": 1, "newton_iteration": 1, "updated_residual_N": 0.027248104875449673}
+{"step": 1, "newton_iteration": 2, "updated_residual_N": 0.02682200451842686}
+{"step": 1, "newton_iteration": 3, "updated_residual_N": 0.025711936005504504}
+{"step": 1, "newton_iteration": 4, "updated_residual_N": 0.02366527104802254}
+{"step": 1, "newton_iteration": 5, "updated_residual_N": 0.02054845187524054}
+{"step": 1, "newton_iteration": 6, "updated_residual_N": 0.01616430458379026}
+{"step": 1, "newton_iteration": 7, "updated_residual_N": 0.011063708892049454}
+{"step": 1, "newton_iteration": 8, "updated_residual_N": 0.007303738713170805}
+{"step": 1, "newton_iteration": 9, "updated_residual_N": 0.005229453492555173}
+{"step": 1, "newton_iteration": 10, "updated_residual_N": 0.003909696418705628}
+{"step": 1, "newton_iteration": 11, "updated_residual_N": 0.002928278610001884}
+{"step": 1, "newton_iteration": 12, "updated_residual_N": 0.002141560161247635}
+{"step": 1, "newton_iteration": 13, "updated_residual_N": 0.0014810838072562991}
+{"step": 1, "newton_iteration": 14, "updated_residual_N": 0.0006630352315514739}
+{"step": 1, "newton_iteration": 15, "updated_residual_N": 0.00020479825546565805}
+{"step": 1, "newton_iteration": 16, "updated_residual_N": 6.492836161439553e-05}
+{"step": 1, "newton_iteration": 17, "updated_residual_N": 2.7530474971146695e-05}
+{"step": 1, "newton_iteration": 18, "updated_residual_N": 2.0040209280054283e-05}
+{"step": 1, "newton_iteration": 19, "updated_residual_N": 1.908328238075503e-05}
+{"step": 1, "newton_iteration": 20, "updated_residual_N": 1.8979169130594277e-05}
+{"step": 1, "newton_iteration": 21, "updated_residual_N": 1.8968052987365193e-05}
+{"step": 1, "newton_iteration": 22, "updated_residual_N": 1.8968052985375367e-05}
+{"step": 1, "newton_iteration": 23, "updated_residual_N": 1.896805298536964e-05}
+{"step": 1, "newton_iteration": 24, "updated_residual_N": 1.896805298536351e-05}
+{"step": 1, "newton_iteration": 25, "updated_residual_N": 1.8968052985361557e-05}
+{"step": 1, "newton_iteration": 26, "updated_residual_N": 1.896805298536111e-05}
+{"step": 1, "newton_iteration": 27, "updated_residual_N": 1.8968052985359978e-05}
+{"step": 1, "newton_iteration": 28, "updated_residual_N": 1.8968052985359676e-05}
+{"step": 1, "newton_iteration": 29, "updated_residual_N": 1.8968052985358934e-05}
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/franka_contact_reference.py", line 295, in <module>
+    main()
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/franka_contact_reference.py", line 241, in main
+    u, g, f, energy, records = system.solve_updated_friction(
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/contact_reference.py", line 285, in solve_updated_friction
+    raise RuntimeError(f"Updated friction residual line search did not converge at step{step}")
+RuntimeError: Updated friction residual line search did not converge at step1
