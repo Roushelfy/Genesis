@@ -1,0 +1,78 @@
+{
+  "geometry": "ellipsoid",
+  "mesh_sha256": "72a9a195aee44ba5c5bf0b1e53a6046e605869c66c790ee796e26299840f1ac7",
+  "probe_coordinate_sha256": "8e746ea9b33451430232e2ad52feb0408dc29fe37fc5a1e5f33517096f32ee06",
+  "probe_count": 27,
+  "valid_count": 27,
+  "outside_probe_indices": [],
+  "tetrahedra": 5582,
+  "probe_definition": "Fixed physical interiors; no smoothing, relocating or omitted outside coordinates",
+  "displacement_gauge": "Independent scikit-fem consistent mass; translations and rotations removed identically",
+  "rows": [
+    {
+      "case": "asymmetric",
+      "field": "reference_field",
+      "input_sha256": "dd04ab983c891b7795ff2cac91f72ba18e4c3024ba73d0ed2eda7da60c189e27",
+      "raw_global_peak_Pa": 8967.217027920902,
+      "raw_global_peak_position_m": [
+        0.011943790224917115,
+        -3.656731117158047e-18,
+        0.0008700889167410267
+      ],
+      "raw_native_peak_Pa": null,
+      "raw_native_peak_position_m": null
+    },
+    {
+      "case": "bending",
+      "field": "reference_field",
+      "input_sha256": "cc4319d94c453c6cd3168fdda34af10d4bdab60c0897117f937aa7054799b935",
+      "raw_global_peak_Pa": 7429.2660633840305,
+      "raw_global_peak_position_m": [
+        0.011943790224917114,
+        -3.6567311171580466e-18,
+        -0.0008700889167410538
+      ],
+      "raw_native_peak_Pa": null,
+      "raw_native_peak_position_m": null
+    },
+    {
+      "case": "multiple",
+      "field": "reference_field",
+      "input_sha256": "a883a616fba5054ce6d32feace692e7049013ce9792d2c7e9fb3d0c6f6df14bc",
+      "raw_global_peak_Pa": 5861.941999068749,
+      "raw_global_peak_position_m": [
+        0.011943790224917114,
+        -3.6567311171580466e-18,
+        -0.0008700889167410538
+      ],
+      "raw_native_peak_Pa": null,
+      "raw_native_peak_position_m": null
+    },
+    {
+      "case": "near_slip",
+      "field": "reference_field",
+      "input_sha256": "f3431563324bcb3c0161ac87e21473423e0c38c78e9d7cc8f13645ceed9c7c4f",
+      "raw_global_peak_Pa": 11559.708292327485,
+      "raw_global_peak_position_m": [
+        -0.011987761750439321,
+        0.00016972085601474246,
+        0.00039339834766180905
+      ],
+      "raw_native_peak_Pa": null,
+      "raw_native_peak_position_m": null
+    },
+    {
+      "case": "opposing",
+      "field": "reference_field",
+      "input_sha256": "2782b11434b795738916c82af1149baf6f88744dcd88eeb5f78d8f18db38dc7e",
+      "raw_global_peak_Pa": 5858.539716492252,
+      "raw_global_peak_position_m": [
+        0.011943790224917114,
+        -3.6567311171580466e-18,
+        -0.0008700889167410538
+      ],
+      "raw_native_peak_Pa": null,
+      "raw_native_peak_position_m": null
+    }
+  ]
+}

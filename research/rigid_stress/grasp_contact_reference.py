@@ -66,9 +66,28 @@ def main():
     parser.add_argument("--pad-thickness", type=float, default=0.001)
     parser.add_argument("--edge-lift", type=float, default=1e-4)
     parser.add_argument("--force-steps", type=int, default=64)
+    parser.add_argument("--gravity", nargs=3, type=float, default=(0, 0, -9.81))
+    parser.add_argument("--body-rigid-coordinates", action="store_true")
+    parser.add_argument("--updated-friction", action="store_true")
+    parser.add_argument("--friction-least-squares", action="store_true")
+    parser.add_argument(
+        "--preloaded-state",
+        type=Path,
+        help="Use a retained force-step's previous displacement as an explicit initial pose",
+    )
+    parser.add_argument(
+        "--resume-failed-step",
+        action="store_true",
+        help="Resume both the failed iterate and its unchanged friction-step history",
+    )
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
+    if args.resume_failed_step and (args.preloaded_state is None or not args.updated_friction):
+        parser.error("--resume-failed-step requires --preloaded-state and --updated-friction")
+    if args.friction_least_squares and not args.updated_friction:
+        parser.error("--friction-least-squares requires --updated-friction")
     args.output.mkdir(parents=True, exist_ok=False)
+    (args.output / "configuration.json").write_text(json.dumps(vars(args), default=str, indent=2) + "\n")
     with np.load(args.mesh) as saved:
         body = SkfemElasticReference(saved["vertices"], saved["tetrahedra"], 1e10, 0.3, 2000)
     left, left_back, left_drive = compliant_shoe(
@@ -124,34 +143,62 @@ def main():
         system.mesh, initial_positions, system.mesh.vertices(system.rest + rigid_target)
     )
     approach_fraction = 0.9 * collision_free_fraction
-    displacement, _, _, _, _ = system.solve_supported(
-        initialization_fixed,
-        approach_fraction * values,
-        12,
-        phase="collision_free_approach",
-        failure_path=args.output / "approach_failure.npz",
-    )
-    init_steps = int(np.ceil((1 - approach_fraction) * max(preload_travel) / (args.dhat / 4)))
-    displacement, gradient, _, _, _ = system.solve_supported(
-        initialization_fixed,
-        values,
-        init_steps,
-        initial_displacement=displacement,
-        phase="contact_initialization",
-        failure_path=args.output / "initialization_failure.npz",
-    )
+    if args.preloaded_state is None:
+        displacement, _, _, _, _ = system.solve_supported(
+            initialization_fixed,
+            approach_fraction * values,
+            12,
+            phase="collision_free_approach",
+            failure_path=args.output / "approach_failure.npz",
+        )
+        init_steps = int(np.ceil((1 - approach_fraction) * max(preload_travel) / (args.dhat / 4)))
+        displacement, gradient, _, _, _ = system.solve_supported(
+            initialization_fixed,
+            values,
+            init_steps,
+            initial_displacement=displacement,
+            phase="contact_initialization",
+            failure_path=args.output / "initialization_failure.npz",
+        )
+    else:
+        with np.load(args.preloaded_state) as saved:
+            np.testing.assert_array_equal(saved["rest_positions"], system.rest)
+            np.testing.assert_array_equal(saved["surface_triangles"], system.faces)
+            displacement = saved["displacement" if args.resume_failed_step else "previous_displacement"].copy()
+            resumed_previous = saved["previous_displacement"].copy()
+        positions = system.mesh.vertices(system.rest + displacement.reshape(-1, 3))
+        if ipctk.has_intersections(system.mesh, positions):
+            raise ValueError("The declared preloaded initial pose has mesh intersections")
+        gradient = np.zeros_like(displacement)
     guides = np.concatenate([np.concatenate((back + 1, back + 2)) for back in backs])
     controlled = np.concatenate(backs)
     independent = np.setdiff1d(np.arange(len(displacement)), np.concatenate((guides, controlled)))
+    if args.body_rigid_coordinates:
+        # Six rigid coordinates restore the omitted elastic coordinate entries.
+        # This is an invertible change of basis, with every body motion still free.
+        independent = independent[~np.isin(independent, body_hold)]
+        modes = body.rigid_modes[system.parts[0].permutation].copy()
+        radius = np.linalg.norm(body.coordinates - body.com, axis=1).max()
+        modes[:, 3:] /= radius
+        assert np.linalg.matrix_rank(modes[body_hold]) == 6
+        rigid_rows, rigid_columns = np.nonzero(modes)
+        extra_coordinates = 6
+    else:
+        extra_coordinates = 0
     rows = np.concatenate((independent, *backs))
     columns = np.concatenate(
         (
             np.arange(len(independent)),
-            *[np.full(len(back), len(independent) + index) for index, back in enumerate(backs)],
+            *[np.full(len(back), len(independent) + extra_coordinates + index) for index, back in enumerate(backs)],
         )
     )
+    values = np.ones(len(rows))
+    if args.body_rigid_coordinates:
+        rows = np.concatenate((rows, rigid_rows))
+        columns = np.concatenate((columns, len(independent) + rigid_columns))
+        values = np.concatenate((values, modes[rigid_rows, rigid_columns]))
     coordinate_map = sparse.csr_matrix(
-        (np.ones(len(rows)), (rows, columns)), shape=(len(displacement), len(independent) + 2)
+        (values, (rows, columns)), shape=(len(displacement), len(independent) + extra_coordinates + 2)
     )
     sparse.save_npz(args.output / "coordinate_map.npz", coordinate_map)
     target_force = np.zeros_like(displacement)
@@ -161,30 +208,38 @@ def main():
         starting_force[back] = gradient[back].sum() / len(back)
     # Stabilize both contacts before releasing the initialization fixture and applying gravity.
     held_columns = np.concatenate(
-        (np.flatnonzero(~np.isin(independent, body_hold)), [len(independent), len(independent) + 1])
+        (
+            np.flatnonzero(~np.isin(independent, body_hold)),
+            [len(independent) + extra_coordinates, len(independent) + extra_coordinates + 1],
+        )
     )
     held_map = coordinate_map[:, held_columns]
     held_guides = np.concatenate((guides, body_hold))
     normal_actuation = target_force.copy()
-    displacement, _, _, _, _ = system.solve_supported(
-        held_guides,
-        np.zeros(len(held_guides)),
-        args.force_steps,
-        initial_displacement=displacement,
-        coordinate_map=held_map,
-        applied_force=normal_actuation,
-        initial_force=starting_force,
-        phase="held_body_force_control",
-        failure_path=args.output / "held_force_failure.npz",
-    )
+    if args.preloaded_state is None:
+        displacement, _, _, _, _ = system.solve_supported(
+            held_guides,
+            np.zeros(len(held_guides)),
+            args.force_steps,
+            initial_displacement=displacement,
+            coordinate_map=held_map,
+            applied_force=normal_actuation,
+            initial_force=starting_force,
+            phase="held_body_force_control",
+            failure_path=args.output / "held_force_failure.npz",
+        )
     starting_force = normal_actuation
     for part in system.parts:
         acceleration = np.zeros(part.reference.basis.N)
-        acceleration[part.reference.component_dofs] = [0, 0, -9.81]
+        acceleration[part.reference.component_dofs] = args.gravity
         gravity = part.reference.mass @ acceleration
         section = slice(part.first_node * 3, part.first_node * 3 + part.reference.basis.N)
         target_force[section] += gravity[part.permutation]
-    displacement, gradient, contact_force, energy, records = system.solve_supported(
+    force_solver = system.solve_updated_friction if args.updated_friction else system.solve_supported
+    resumed_arguments = {"initial_previous_displacement": resumed_previous} if args.resume_failed_step else {}
+    if args.updated_friction:
+        resumed_arguments["least_squares"] = args.friction_least_squares
+    displacement, gradient, contact_force, energy, records = force_solver(
         guides,
         np.zeros(len(guides)),
         args.force_steps,
@@ -194,6 +249,7 @@ def main():
         initial_force=starting_force,
         phase="free_body_force_control",
         failure_path=args.output / "force_failure.npz",
+        **resumed_arguments,
     )
     reduced_residual = np.linalg.norm(coordinate_map.T @ gradient)
     body_residual = np.linalg.norm(gradient[:body_count])
@@ -219,6 +275,8 @@ def main():
         },
         "actuator_force_per_shoe_N": args.force,
         "friction": args.friction,
+        "gravity_m_per_s2": args.gravity,
+        "body_rigid_coordinates": args.body_rigid_coordinates,
         "dhat_m": args.dhat,
         "pad_thickness_m": args.pad_thickness,
         "edge_lift_m": args.edge_lift,
@@ -233,6 +291,20 @@ def main():
         "accepted_steps": [asdict(row) for row in system.accepted_steps],
         "iterations": [asdict(row) for row in records],
         "protocol": "Temporary support retained until both force-controlled contacts are established, then removed before gravity; final jaw translations and contact forces are solved outputs",
+        "friction_solve": "Updated-force Jacobian and constrained-residual Newton"
+        if args.updated_friction
+        else "Lagged friction fixed point",
+        "friction_newton_least_squares": args.friction_least_squares,
+        "preloaded_initial_state": None
+        if args.preloaded_state is None
+        else {
+            "path": str(args.preloaded_state.resolve()),
+            "sha256": hashlib.sha256(args.preloaded_state.read_bytes()).hexdigest(),
+            "selected_field": "displacement with previous_displacement history"
+            if args.resume_failed_step
+            else "previous_displacement",
+            "interpretation": "Explicit saved initial pose; no convergence claim for its failed subsequent state",
+        },
         "limitations": "Pilot configuration; mesh/contact convergence, actual Franka match and native replay must still be verified",
     }
     np.savez_compressed(

@@ -1,0 +1,173 @@
+{
+  "mesh_sha256": "d76fb67072a58f6186b34d32b633219af60f457d3732118ccc683d70a515702c",
+  "geometry": "capsule",
+  "case": "opposing",
+  "material": {
+    "young_Pa": 10000000000.0,
+    "poisson": 0.3,
+    "density_kg_m3": 2000
+  },
+  "mass_kg": 0.013819804623267942,
+  "com_m": [
+    9.075614838992466e-07,
+    1.420067079715173e-07,
+    3.368113728439312e-08
+  ],
+  "pose": {
+    "position_m": [
+      0,
+      0,
+      0
+    ],
+    "quaternion_wxyz": [
+      1,
+      0,
+      0,
+      0
+    ]
+  },
+  "omega_rad_s": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "patch_radius_m": 0.003,
+  "reference_quadrature_level": 3,
+  "reference_peak_Pa": 6217.926792015468,
+  "reference_peak_position_m": [
+    0.008,
+    -1.959434878635765e-18,
+    1.3877787807814457e-17
+  ],
+  "reference_energy_J": 6.005683588028341e-11,
+  "reference_complete_budget_fraction": 5.4473341578797865e-05,
+  "patches": [
+    {
+      "name": "pad0",
+      "physical_anchor_m": [
+        -0.008,
+        0.0,
+        0.0
+      ],
+      "witness_m": [
+        -0.007978408367720733,
+        -1.2546103807858575e-06,
+        9.597364986069223e-10
+      ],
+      "point_m": [
+        -0.007927165839742545,
+        2.47167186481481e-08,
+        1.311878857511936e-10
+      ],
+      "force_N": [
+        0.05,
+        0.0,
+        0.0
+      ],
+      "integrated_minus_declared_force_N": [
+        -8.326672684688674e-17,
+        0.0,
+        0.0
+      ],
+      "free_moment_Nm": [
+        0.0,
+        -1.318861615415949e-20,
+        -2.5989186050216443e-20
+      ],
+      "normal": [
+        0.9983160894698473,
+        -0.05800847814350496,
+        4.437461586806676e-05
+      ],
+      "friction": 2.0,
+      "profile_integral_m2": 5.620902143480134e-06,
+      "observables": {
+        "resultant_N": [
+          0.04999999999999992,
+          0.0,
+          0.0
+        ],
+        "moment_Nm": [
+          0.0,
+          -1.6774974699301359e-09,
+          5.864499466203558e-09
+        ],
+        "footprint_area_m2": 2.8381473083809846e-05,
+        "loaded_area_m2": 2.8381473083809846e-05,
+        "effective_traction_area_m2": 1.0551393626255256e-05,
+        "maximum_pressure_Pa": 8877.36858470742,
+        "minimum_pressure_Pa": 1.0546459739706592e-08,
+        "maximum_shear_Pa": 1098.4371979780913,
+        "integrated_pressure_N": 0.049617124361397764,
+        "integrated_shear_norm_N": 0.005281072449660823,
+        "integrated_traction_norm_N": 0.04999999999999999,
+        "integrated_traction_squared_N2_per_m2": 236.93552610711023,
+        "maximum_coulomb_violation_Pa": 0.0
+      }
+    },
+    {
+      "name": "pad1",
+      "physical_anchor_m": [
+        0.008,
+        0.0,
+        0.0
+      ],
+      "witness_m": [
+        0.008,
+        1.477040953792823e-19,
+        2.168404344971009e-19
+      ],
+      "point_m": [
+        0.007929459722630714,
+        -1.6041081652789495e-07,
+        3.55887213804722e-09
+      ],
+      "force_N": [
+        -0.05,
+        0.0,
+        0.0
+      ],
+      "integrated_minus_declared_force_N": [
+        2.8449465006019636e-16,
+        0.0,
+        0.0
+      ],
+      "free_moment_Nm": [
+        0.0,
+        1.6260108230119928e-20,
+        2.95529479097041e-21
+      ],
+      "normal": [
+        -0.9956858471036183,
+        -0.09278843611975586,
+        0.0
+      ],
+      "friction": 2.0,
+      "profile_integral_m2": 5.621169645334154e-06,
+      "observables": {
+        "resultant_N": [
+          -0.04999999999999972,
+          0.0,
+          0.0
+        ],
+        "moment_Nm": [
+          0.0,
+          1.5061132572626738e-09,
+          -1.5120876224973347e-08
+        ],
+        "footprint_area_m2": 2.837594060968939e-05,
+        "loaded_area_m2": 2.837594060968939e-05,
+        "effective_traction_area_m2": 1.0550845064338306e-05,
+        "maximum_pressure_Pa": 8860.700766602073,
+        "minimum_pressure_Pa": 9.142584329229106e-07,
+        "maximum_shear_Pa": 834.1557239601273,
+        "integrated_pressure_N": 0.049626020866424196,
+        "integrated_shear_norm_N": 0.005429130440014569,
+        "integrated_traction_norm_N": 0.05000000000000002,
+        "integrated_traction_squared_N2_per_m2": 236.94784491243865,
+        "maximum_coulomb_violation_Pa": 0.0
+      }
+    }
+  ],
+  "models": []
+}

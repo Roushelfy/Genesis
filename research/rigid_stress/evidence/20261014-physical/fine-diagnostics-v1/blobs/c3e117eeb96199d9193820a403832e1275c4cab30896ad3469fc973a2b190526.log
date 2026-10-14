@@ -1,0 +1,41 @@
+{"step": 1, "newton_iteration": 0, "updated_residual_N": 0.03952994860497795}
+{"step": 1, "newton_iteration": 1, "updated_residual_N": 0.025866128459458182}
+{"step": 1, "newton_iteration": 2, "updated_residual_N": 0.01595905999088809}
+{"step": 1, "newton_iteration": 3, "updated_residual_N": 0.01573243530950225}
+{"step": 1, "newton_iteration": 4, "updated_residual_N": 0.01509466745306098}
+{"step": 1, "newton_iteration": 5, "updated_residual_N": 0.004827087065960213}
+{"step": 1, "newton_iteration": 6, "updated_residual_N": 0.004280627678094629}
+{"step": 1, "newton_iteration": 7, "updated_residual_N": 0.0039179083884422474}
+{"step": 1, "newton_iteration": 8, "updated_residual_N": 0.0036638455803663797}
+{"step": 1, "newton_iteration": 9, "updated_residual_N": 0.0031829846864851337}
+{"step": 1, "newton_iteration": 10, "updated_residual_N": 0.002138936428812456}
+{"step": 1, "newton_iteration": 11, "updated_residual_N": 0.001045929758517977}
+{"step": 1, "newton_iteration": 12, "updated_residual_N": 0.00029851714747599706}
+{"step": 1, "newton_iteration": 13, "updated_residual_N": 0.0001062708647961067}
+{"step": 1, "newton_iteration": 14, "updated_residual_N": 8.362552256811591e-05}
+{"step": 1, "newton_iteration": 15, "updated_residual_N": 6.242695777013149e-05}
+{"step": 1, "newton_iteration": 16, "updated_residual_N": 3.7933416937601514e-05}
+{"step": 1, "newton_iteration": 17, "updated_residual_N": 2.5364141550619506e-05}
+{"step": 1, "newton_iteration": 18, "updated_residual_N": 2.163255063891036e-05}
+{"step": 1, "newton_iteration": 19, "updated_residual_N": 2.07109371484894e-05}
+{"step": 1, "newton_iteration": 20, "updated_residual_N": 2.0500122904827426e-05}
+{"step": 1, "newton_iteration": 21, "updated_residual_N": 2.0452892129210705e-05}
+{"step": 1, "newton_iteration": 22, "updated_residual_N": 2.0442362043294817e-05}
+{"step": 1, "newton_iteration": 23, "updated_residual_N": 2.0440016751009648e-05}
+{"step": 1, "newton_iteration": 24, "updated_residual_N": 2.0440016742750562e-05}
+{"step": 1, "newton_iteration": 25, "updated_residual_N": 2.044001673982331e-05}
+{"step": 1, "newton_iteration": 26, "updated_residual_N": 2.044001672768631e-05}
+{"step": 1, "newton_iteration": 27, "updated_residual_N": 2.044001672594649e-05}
+{"step": 1, "newton_iteration": 28, "updated_residual_N": 2.0440016725785586e-05}
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/grasp_contact_reference.py", line 327, in <module>
+    main()
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/grasp_contact_reference.py", line 242, in main
+    displacement, gradient, contact_force, energy, records = force_solver(
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/contact_reference.py", line 282, in solve_updated_friction
+    raise RuntimeError(f"Updated friction residual line search did not converge at step{step}")
+RuntimeError: Updated friction residual line search did not converge at step1

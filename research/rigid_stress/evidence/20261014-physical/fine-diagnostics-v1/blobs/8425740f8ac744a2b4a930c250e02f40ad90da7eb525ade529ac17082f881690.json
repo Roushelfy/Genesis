@@ -1,0 +1,242 @@
+{
+  "scope": "Diagnostic of saved failed free-body force/gravity step; no converged-contact claim",
+  "input_sha256": {
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/matrix-mesh-u-v1/meshes/h0.0035.npz": "89d355a64969b976d9c43249c50283b1a6334074c902a935ff99dda9acfacdb9",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/grasp-u-rigid-basis-z-v1/solution/left_shoe_mesh.npz": "1cb758440338f591a8bc621a273ea61426f900cfa682e9249e386bf4f56c6a3f",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/grasp-u-rigid-basis-z-v1/solution/right_shoe_mesh.npz": "bf9fd9976842d3c1873c3397182e4b09d1fb1215960ad94378f47208540a7b72",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/grasp-u-rigid-basis-z-v1/solution/force_failure.npz": "d1190f990e18ec4c2fd803b64c4c19d0f678a41d167ac78275ebd186ce805491",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/grasp-u-rigid-basis-z-v1/solution/coordinate_map.npz": "784830cc5d16162561d6801e3edee704bfcc86f589633c440960eef738f286e1"
+  },
+  "failed_step": 1,
+  "force_steps": 64,
+  "gravity_m_per_s2": [
+    0,
+    0,
+    -9.81
+  ],
+  "body_mass_kg": 0.003728718823955421,
+  "body_com_m": [
+    1.900708583494989e-05,
+    0.006847102024775797,
+    -2.1136841887628962e-05
+  ],
+  "evaluations": {
+    "retained_lagged_stencil": {
+      "energy_J": -8.573419135423824e-05,
+      "complete_constrained_residual_N": 0.00025884412444151665,
+      "complete_body_residual_N": 0.0002099665376015163,
+      "normal_collisions": 3,
+      "parts": [
+        {
+          "name": "body",
+          "contact_resultant_N": [
+            -3.5116153604347958e-06,
+            -9.411686677908772e-06,
+            0.0004542242115236593
+          ],
+          "contact_moment_about_com_Nm": [
+            5.045091356669655e-06,
+            -1.4417434294897646e-10,
+            -1.5091937015458126e-07
+          ]
+        },
+        {
+          "name": "left_shoe",
+          "contact_resultant_N": [
+            0.05000208221391281,
+            -4.979356886210562e-07,
+            -0.0017299883834637254
+          ],
+          "contact_moment_about_com_Nm": [
+            5.364141333637657e-09,
+            -3.893807128302571e-05,
+            -1.5171420073558785e-08
+          ]
+        },
+        {
+          "name": "right_shoe",
+          "contact_resultant_N": [
+            -0.049998570598552367,
+            9.90962236653004e-06,
+            0.0012757641719400661
+          ],
+          "contact_moment_about_com_Nm": [
+            1.0602898148427825e-08,
+            5.270137631268581e-05,
+            6.175917416102938e-09
+          ]
+        }
+      ]
+    },
+    "updated_stencil": {
+      "energy_J": -8.573419135423824e-05,
+      "complete_constrained_residual_N": 0.00025884412444151665,
+      "complete_body_residual_N": 0.0002099665376015163,
+      "normal_collisions": 3,
+      "parts": [
+        {
+          "name": "body",
+          "contact_resultant_N": [
+            -3.5116153604347958e-06,
+            -9.411686677908772e-06,
+            0.0004542242115236593
+          ],
+          "contact_moment_about_com_Nm": [
+            5.045091356669655e-06,
+            -1.4417434294897646e-10,
+            -1.5091937015458126e-07
+          ]
+        },
+        {
+          "name": "left_shoe",
+          "contact_resultant_N": [
+            0.05000208221391281,
+            -4.979356886210562e-07,
+            -0.0017299883834637254
+          ],
+          "contact_moment_about_com_Nm": [
+            5.364141333637657e-09,
+            -3.893807128302571e-05,
+            -1.5171420073558785e-08
+          ]
+        },
+        {
+          "name": "right_shoe",
+          "contact_resultant_N": [
+            -0.049998570598552367,
+            9.90962236653004e-06,
+            0.0012757641719400661
+          ],
+          "contact_moment_about_com_Nm": [
+            1.0602898148427825e-08,
+            5.270137631268581e-05,
+            6.175917416102938e-09
+          ]
+        }
+      ]
+    }
+  },
+  "updated_force_derivative_checks": [
+    {
+      "body_translation_axis": 0,
+      "epsilon_m": 1e-09,
+      "updated_gradient_derivative_norm_N_per_m": 4413259.994416999,
+      "frozen_hessian_derivative_norm_N_per_m": 4114162.9259881177,
+      "frozen_hessian_relative_difference": 0.07064576442779812,
+      "coupled_jacobian_relative_difference": 0.00012908418014279135
+    },
+    {
+      "body_translation_axis": 0,
+      "epsilon_m": 1e-10,
+      "updated_gradient_derivative_norm_N_per_m": 4413799.5270274775,
+      "frozen_hessian_derivative_norm_N_per_m": 4114162.9259881177,
+      "frozen_hessian_relative_difference": 0.07076260370204096,
+      "coupled_jacobian_relative_difference": 1.5025389484585725e-06
+    },
+    {
+      "body_translation_axis": 0,
+      "epsilon_m": 1e-11,
+      "updated_gradient_derivative_norm_N_per_m": 4413804.924863126,
+      "frozen_hessian_derivative_norm_N_per_m": 4114162.9259881177,
+      "frozen_hessian_relative_difference": 0.07076375594461622,
+      "coupled_jacobian_relative_difference": 7.208804898171702e-06
+    },
+    {
+      "body_translation_axis": 1,
+      "epsilon_m": 1e-09,
+      "updated_gradient_derivative_norm_N_per_m": 17750724.684704613,
+      "frozen_hessian_derivative_norm_N_per_m": 17966275.985763542,
+      "frozen_hessian_relative_difference": 0.012292762500425896,
+      "coupled_jacobian_relative_difference": 0.012219233946777744
+    },
+    {
+      "body_translation_axis": 1,
+      "epsilon_m": 1e-10,
+      "updated_gradient_derivative_norm_N_per_m": 17964429.395538293,
+      "frozen_hessian_derivative_norm_N_per_m": 17966275.985763542,
+      "frozen_hessian_relative_difference": 0.00163897298187466,
+      "coupled_jacobian_relative_difference": 0.00012697942529938245
+    },
+    {
+      "body_translation_axis": 1,
+      "epsilon_m": 1e-11,
+      "updated_gradient_derivative_norm_N_per_m": 17966675.95759112,
+      "frozen_hessian_derivative_norm_N_per_m": 17966275.985763542,
+      "frozen_hessian_relative_difference": 0.0016368358372914245,
+      "coupled_jacobian_relative_difference": 1.6429807221223837e-06
+    },
+    {
+      "body_translation_axis": 2,
+      "epsilon_m": 1e-09,
+      "updated_gradient_derivative_norm_N_per_m": 15307765.49523661,
+      "frozen_hessian_derivative_norm_N_per_m": 15436637.084905706,
+      "frozen_hessian_relative_difference": 0.008457338077204364,
+      "coupled_jacobian_relative_difference": 0.00017412309724746658
+    },
+    {
+      "body_translation_axis": 2,
+      "epsilon_m": 1e-10,
+      "updated_gradient_derivative_norm_N_per_m": 15305132.702826539,
+      "frozen_hessian_derivative_norm_N_per_m": 15436637.084905706,
+      "frozen_hessian_relative_difference": 0.008631055057175738,
+      "coupled_jacobian_relative_difference": 1.746955887027639e-06
+    },
+    {
+      "body_translation_axis": 2,
+      "epsilon_m": 1e-11,
+      "updated_gradient_derivative_norm_N_per_m": 15305106.437419757,
+      "frozen_hessian_derivative_norm_N_per_m": 15436637.084905706,
+      "frozen_hessian_relative_difference": 0.008632787671330217,
+      "coupled_jacobian_relative_difference": 5.278911268108915e-07
+    }
+  ],
+  "friction_force_api_relative_difference": 1.032023307572487e-10,
+  "newton_direction_checks": {
+    "relative_linear_solve_residual": 7.094043001460232e-07,
+    "maximum_newton_displacement_m": 0.14184435783685506,
+    "finite_differences": [
+      {
+        "epsilon_m": 1e-08,
+        "directional_derivative_relative_difference": 0.9999987982762429,
+        "actual_residual_merit_derivative": -2.4306787506586767e-08,
+        "analytic_residual_merit_derivative": -2.434664706181777e-08,
+        "normal_collision_counts_plus_minus": [
+          3,
+          3
+        ]
+      },
+      {
+        "epsilon_m": 1e-09,
+        "directional_derivative_relative_difference": 0.9999999844629247,
+        "actual_residual_merit_derivative": -2.689817673456865e-08,
+        "analytic_residual_merit_derivative": -2.434664706181777e-08,
+        "normal_collision_counts_plus_minus": [
+          3,
+          3
+        ]
+      },
+      {
+        "epsilon_m": 1e-10,
+        "directional_derivative_relative_difference": 0.9999999995581377,
+        "actual_residual_merit_derivative": -4.79301464515898e-08,
+        "analytic_residual_merit_derivative": -2.434664706181777e-08,
+        "normal_collision_counts_plus_minus": [
+          3,
+          3
+        ]
+      },
+      {
+        "epsilon_m": 1e-11,
+        "directional_derivative_relative_difference": 0.9999999999719513,
+        "actual_residual_merit_derivative": -2.8960968781459004e-07,
+        "analytic_residual_merit_derivative": -2.434664706181777e-08,
+        "normal_collision_counts_plus_minus": [
+          3,
+          3
+        ]
+      }
+    ]
+  },
+  "friction_force_jacobian_api": "force_jacobian(*args, **kwargs)\nOverloaded function.\n\n1. force_jacobian(self: ipctk.TangentialPotential, collisions: ipctk.TangentialCollisions, mesh: ipc::CollisionMesh, rest_positions: typing.Annotated[numpy.typing.NDArray[numpy.float64], \"[m, n]\", \"flags.f_contiguous\"], lagged_displacements: typing.Annotated[numpy.typing.NDArray[numpy.float64], \"[m, n]\", \"flags.f_contiguous\"], velocities: typing.Annotated[numpy.typing.NDArray[numpy.float64], \"[m, n]\", \"flags.f_contiguous\"], normal_potential: ipctk.NormalPotential, wrt: ipctk.TangentialPotential.DiffWRT, dmin: typing.SupportsFloat = 0) -> scipy.sparse.csc_matrix[numpy.float64]\n\n\n            Compute the Jacobian of the friction force wrt the velocities.\n\n            Parameters:\n                collisions: The set of collisions.\n                mesh: The collision mesh.\n                rest_positions: Rest positions of the vertices (rowwise).\n                lagged_displacements: Previous displacements of the vertices (rowwise).\n                velocities: Current displacements of the vertices (rowwise).\n                normal_potential: Normal potential (used for normal force magnitude).\n                wrt: The variable to take the derivative with respect to.\n                dmin: Minimum distance (used for normal force magnitude).\n\n            Returns:\n                The Jacobian of the friction force wrt the velocities.\n            \n\n2. force_jacobian(self: ipctk.TangentialPotential, collision: ipctk.TangentialCollision, rest_positions: typing.Annotated[numpy.typing.NDArray[numpy.float64], \"[m, 1]\"], lagged_displacements: typing.Annotated[numpy.typing.NDArray[numpy.float64], \"[m, 1]\"], velocities: typing.Annotated[numpy.typing.NDArray[numpy.float64], \"[m, 1]\"], normal_potential: ipctk.NormalPotential, wrt: ipctk.TangentialPotential.DiffWRT, dmin: typing.SupportsFloat = 0) -> typing.Annotated[numpy.typing.NDArray[numpy.float64], \"[m, n]\"]\n\n\n            Compute the friction force Jacobian.\n\n            Parameters:\n                collision: The collision\n                rest_positions: Rest positions of the vertices (rowwise).\n                lagged_displacements: Previous displacements of the vertices (rowwise).\n                velocities: Current displacements of the vertices (rowwise).\n                normal_potential: Normal potential (used for normal force magnitude).\n                wrt: Variable to differentiate the friction force with respect to.\n                dmin: Minimum distance (used for normal force magnitude).\n\n            Returns:\n                Friction force Jacobian\n            \n",
+  "limitations": "A large updated-stencil residual does not prove physical infeasibility. Geometry, contact support and total-wrench feasibility require separate checks."
+}

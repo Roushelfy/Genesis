@@ -1,0 +1,423 @@
+diff --git a/research/rigid_stress/contact_reference.py b/research/rigid_stress/contact_reference.py
+index 9d752eef..9a0bda38 100644
+--- a/research/rigid_stress/contact_reference.py
++++ b/research/rigid_stress/contact_reference.py
+@@ -173,6 +173,123 @@ class IndependentContactSystem:
+         bulk_gradient = gradient + applied - contact_gradient
+         return (abs(bulk_gradient) + abs(contact_gradient) + abs(applied)) @ abs(self.rest.reshape(-1) + displacement)
+ 
++    def evaluate_updated_friction(self, displacement, previous, external_force, hessian):
++        """Differentiate the current friction force through both geometry and relative motion."""
++        normal, current = self.normal_collisions(displacement)
++        tangential = ipctk.TangentialCollisions()
++        if self.friction > 0:
++            tangential.build(self.mesh, current, normal, self.barrier, self.friction)
++        evaluated = self.evaluate(displacement, previous, tangential, hessian=hessian, external_force=external_force)
++        if not hessian or self.friction == 0:
++            return evaluated
++        energy, gradient, matrix, normal, contact_gradient = evaluated
++        rest = self.mesh.vertices(self.rest)
++        current_displacement = self.mesh.vertices(displacement.reshape(-1, 3))
++        velocity = self.mesh.vertices((displacement - previous).reshape(-1, 3))
++        jacobians = [
++            self.friction_potential.force_jacobian(
++                tangential, self.mesh, rest, current_displacement, velocity, self.barrier, wrt
++            )
++            for wrt in (
++                ipctk.TangentialPotential.DiffWRT.VELOCITIES,
++                ipctk.TangentialPotential.DiffWRT.LAGGED_DISPLACEMENTS,
++            )
++        ]
++        frozen_shear = self.mesh.to_full_dof(self.friction_potential.hessian(tangential, self.mesh, velocity))
++        matrix = matrix - frozen_shear - self.mesh.to_full_dof(jacobians[0] + jacobians[1])
++        return energy, gradient, matrix, normal, contact_gradient
++
++    def solve_updated_friction(
++        self,
++        boundary_dofs,
++        boundary_values,
++        load_steps,
++        tolerance=1e-9,
++        failure_path=None,
++        initial_displacement=None,
++        phase="updated_friction",
++        coordinate_map=None,
++        applied_force=None,
++        initial_force=None,
++        initial_previous_displacement=None,
++        least_squares=False,
++    ):
++        """Solve current-force equilibrium with CCD and a residual-based Newton line search.
++
++        Current Coulomb friction is not a geometry-independent conservative
++        potential. The merit function is the complete constrained force residual;
++        the diagnostic potential is retained without treating it as its integral.
++        """
++        free = np.setdiff1d(np.arange(self.stiffness.shape[0]), boundary_dofs)
++        displacement = (
++            np.zeros(self.stiffness.shape[0]) if initial_displacement is None else initial_displacement.copy()
++        )
++        boundary_start = displacement[boundary_dofs].copy()
++        records = []
++        for step in range(1, load_steps + 1):
++            previous = (
++                initial_previous_displacement.copy()
++                if step == 1 and initial_previous_displacement is not None
++                else displacement.copy()
++            )
++            displacement[boundary_dofs] = boundary_start + (boundary_values - boundary_start) * step / load_steps
++            force_current = None
++            if applied_force is not None:
++                starting_force = np.zeros_like(applied_force) if initial_force is None else initial_force
++                force_current = starting_force + (applied_force - starting_force) * step / load_steps
++            damping = 1e-4
++            for iteration in range(100):
++                final = self.evaluate_updated_friction(displacement, previous, force_current, hessian=True)
++                energy, gradient, matrix, normal, contact_gradient = final
++                reduced_gradient = self.reduced_gradient(gradient, free, coordinate_map)
++                residual = float(np.linalg.norm(reduced_gradient))
++                print(
++                    json.dumps({"step": step, "newton_iteration": iteration, "updated_residual_N": residual}),
++                    flush=True,
++                )
++                if residual <= tolerance:
++                    self.accepted_steps.append(ContactStepAcceptance(phase, step, 1, residual, len(normal)))
++                    break
++                reduced_matrix = self.reduced_hessian(matrix, free, coordinate_map)
++                if least_squares:
++                    column_norms = np.sqrt(np.asarray(reduced_matrix.power(2).sum(axis=0)).ravel())
++                    scales = 1 / np.maximum(column_norms, 1)
++                    scaled_matrix = reduced_matrix @ sparse.diags(scales)
++                    normal_matrix = scaled_matrix.T @ scaled_matrix + damping * sparse.eye(
++                        reduced_matrix.shape[0], format="csc"
++                    )
++                    reduced_direction = scales * splu(normal_matrix.tocsc()).solve(-scaled_matrix.T @ reduced_gradient)
++                else:
++                    reduced_direction = splu(reduced_matrix).solve(-reduced_gradient)
++                direction = np.zeros_like(displacement)
++                if coordinate_map is None:
++                    direction[free] = reduced_direction
++                else:
++                    direction = coordinate_map @ reduced_direction
++                current = self.mesh.vertices(self.rest + displacement.reshape(-1, 3))
++                proposed = self.mesh.vertices(self.rest + (displacement + direction).reshape(-1, 3))
++                safe = ipctk.compute_collision_free_stepsize(self.mesh, current, proposed)
++                alpha = min(1.0, safe)
++                for _ in range(60):
++                    trial = displacement + alpha * direction
++                    evaluated = self.evaluate_updated_friction(trial, previous, force_current, hessian=False)
++                    trial_residual = np.linalg.norm(self.reduced_gradient(evaluated[1], free, coordinate_map))
++                    if trial_residual < (1 - 1e-4 * alpha) * residual:
++                        break
++                    alpha *= 0.5
++                else:
++                    self.save_failure(failure_path, displacement, previous, displacement, boundary_dofs, records)
++                    raise RuntimeError(f"Updated friction residual line search did not converge at step{step}")
++                records.append(ContactIteration(step, 0, iteration, energy, residual, len(normal), safe, alpha))
++                displacement = trial
++                if least_squares:
++                    damping = max(1e-12, damping * 0.25) if alpha >= 0.9 else min(1e2, damping * 4)
++            else:
++                self.save_failure(failure_path, displacement, previous, displacement, boundary_dofs, records)
++                raise RuntimeError(f"Updated friction Newton solve did not converge at step{step}")
++        energy, gradient, _, normal, contact_gradient = final
++        return displacement, gradient, -contact_gradient, energy, records
++
+     def solve_supported(
+         self,
+         boundary_dofs,
+@@ -318,7 +435,16 @@ def block_reference(lower, upper, resolution, young, poisson):
+     return SkfemElasticReference(mesh.p.T, mesh.t.T, young, poisson, 1000)
+ 
+ 
+-def validate_blocks(resolution, dhat, friction, output, shear_after_close=0.0, contact_load_increment=None):
++def validate_blocks(
++    resolution,
++    dhat,
++    friction,
++    output,
++    shear_after_close=0.0,
++    contact_load_increment=None,
++    updated_friction=False,
++    least_squares=False,
++):
+     if output.exists():
+         raise FileExistsError(output)
+     output.mkdir(parents=True)
+@@ -327,6 +453,8 @@ def validate_blocks(resolution, dhat, friction, output, shear_after_close=0.0, c
+     lower = block_reference((-0.005, -0.005, -0.005), (0.005, 0.005, 0), resolution, young, poisson)
+     upper = block_reference((-0.005, -0.005, gap), (0.005, 0.005, gap + 0.005), resolution, young, poisson)
+     system = IndependentContactSystem((("lower", lower), ("upper", upper)), dhat, 1e6, friction, 1e-8)
++    solver = system.solve_updated_friction if updated_friction else system.solve_supported
++    solver_arguments = {"least_squares": least_squares} if updated_friction else {}
+     bottom = np.flatnonzero(np.isclose(system.rest[:, 2], -0.005))
+     top = np.flatnonzero(np.isclose(system.rest[:, 2], gap + 0.005))
+     nodes = np.r_[bottom, top]
+@@ -335,38 +463,50 @@ def validate_blocks(resolution, dhat, friction, output, shear_after_close=0.0, c
+     values[len(bottom) :, 2] = -(gap + closing)
+     if contact_load_increment is None:
+         contact_steps = 12
+-        displacement, gradient, contact_force, energy, records = system.solve_supported(
+-            dofs, values.reshape(-1), contact_steps, failure_path=output / "failure.npz", phase="compression"
++        displacement, gradient, contact_force, energy, records = solver(
++            dofs,
++            values.reshape(-1),
++            contact_steps,
++            failure_path=output / "failure.npz",
++            phase="compression",
++            **solver_arguments,
+         )
+     else:
+         if not 0 < contact_load_increment <= dhat:
+             raise ValueError("Contact displacement increment must be positive and at most the activation distance")
+         before_touch = values.copy()
+         before_touch[len(bottom) :, 2] = -(gap - 4 * dhat)
+-        initial, _, _, _, approach_records = system.solve_supported(
+-            dofs, before_touch.reshape(-1), 12, failure_path=output / "approach_failure.npz", phase="approach"
++        initial, _, _, _, approach_records = solver(
++            dofs,
++            before_touch.reshape(-1),
++            12,
++            failure_path=output / "approach_failure.npz",
++            phase="approach",
++            **solver_arguments,
+         )
+         contact_steps = int(np.ceil((closing + 4 * dhat) / contact_load_increment))
+-        displacement, gradient, contact_force, energy, records = system.solve_supported(
++        displacement, gradient, contact_force, energy, records = solver(
+             dofs,
+             values.reshape(-1),
+             contact_steps,
+             failure_path=output / "failure.npz",
+             initial_displacement=initial,
+             phase="compression",
++            **solver_arguments,
+         )
+         (output / "approach_iterations.json").write_text(
+             json.dumps([asdict(row) for row in approach_records], indent=2) + "\n"
+         )
+     if shear_after_close != 0:
+         values[len(bottom) :, 0] = shear_after_close
+-        displacement, gradient, contact_force, energy, shear_records = system.solve_supported(
++        displacement, gradient, contact_force, energy, shear_records = solver(
+             dofs,
+             values.reshape(-1),
+             8,
+             failure_path=output / "shear_failure.npz",
+             initial_displacement=displacement,
+             phase="shear",
++            **solver_arguments,
+         )
+         records.extend(shear_records)
+     fields, rows = [], []
+@@ -411,6 +551,8 @@ def validate_blocks(resolution, dhat, friction, output, shear_after_close=0.0, c
+         "physical_area_weighted_barrier": True,
+         "friction": friction,
+         "friction_mollifier_m_per_unit_step": 1e-8,
++        "updated_friction_newton": updated_friction,
++        "friction_newton_least_squares": least_squares,
+         "contact_load_increment_m": contact_load_increment,
+         "approach_steps": 0 if contact_load_increment is None else 12,
+         "load_steps": contact_steps,
+@@ -445,10 +587,19 @@ def main():
+     parser.add_argument("--friction", type=float, default=0)
+     parser.add_argument("--contact-load-increment", type=float)
+     parser.add_argument("--shear-after-close", type=float, default=0)
++    parser.add_argument("--updated-friction", action="store_true")
++    parser.add_argument("--friction-least-squares", action="store_true")
+     parser.add_argument("--output", type=Path, required=True)
+     args = parser.parse_args()
+     validate_blocks(
+-        args.resolution, args.dhat, args.friction, args.output, args.shear_after_close, args.contact_load_increment
++        args.resolution,
++        args.dhat,
++        args.friction,
++        args.output,
++        args.shear_after_close,
++        args.contact_load_increment,
++        args.updated_friction,
++        args.friction_least_squares,
+     )
+ 
+ 
+diff --git a/research/rigid_stress/force_control_blocks.py b/research/rigid_stress/force_control_blocks.py
+index c80118df..31a3b5eb 100644
+--- a/research/rigid_stress/force_control_blocks.py
++++ b/research/rigid_stress/force_control_blocks.py
+@@ -16,6 +16,7 @@ def main():
+     parser.add_argument("--resolution", type=int, default=3)
+     parser.add_argument("--dhat", type=float, default=2.5e-6)
+     parser.add_argument("--force", type=float, default=0.5)
++    parser.add_argument("--updated-friction", action="store_true")
+     parser.add_argument("--output", type=Path, required=True)
+     args = parser.parse_args()
+     args.output.mkdir(parents=True, exist_ok=False)
+@@ -55,7 +56,8 @@ def main():
+     applied[back_normal] = -args.force / len(back_normal)
+     initial_force = np.zeros(full_count)
+     initial_force[back_normal] = gradient[back_normal].sum() / len(back_normal)
+-    displacement, gradient, contact_force, energy, _ = system.solve_supported(
++    force_solver = system.solve_updated_friction if args.updated_friction else system.solve_supported
++    displacement, gradient, contact_force, energy, _ = force_solver(
+         fixed,
+         np.zeros(len(fixed)),
+         12,
+@@ -85,6 +87,7 @@ def main():
+         "resolution": args.resolution,
+         "dhat_m": args.dhat,
+         "actuator_force_N": args.force,
++        "updated_friction_newton": args.updated_friction,
+         "solved_interface_force_N": force.tolist(),
+         "transverse_interface_force_relative_to_axial": float(np.linalg.norm(force[:2]) / args.force),
+         "solved_back_displacement_m": float(displacement[back_normal[0]]),
+diff --git a/research/rigid_stress/grasp_contact_reference.py b/research/rigid_stress/grasp_contact_reference.py
+index 649e8b1d..51fec89b 100644
+--- a/research/rigid_stress/grasp_contact_reference.py
++++ b/research/rigid_stress/grasp_contact_reference.py
+@@ -66,8 +66,24 @@ def main():
+     parser.add_argument("--pad-thickness", type=float, default=0.001)
+     parser.add_argument("--edge-lift", type=float, default=1e-4)
+     parser.add_argument("--force-steps", type=int, default=64)
++    parser.add_argument("--updated-friction", action="store_true")
++    parser.add_argument("--friction-least-squares", action="store_true")
++    parser.add_argument(
++        "--preloaded-state",
++        type=Path,
++        help="Use a retained force-step's previous displacement as an explicit initial pose",
++    )
++    parser.add_argument(
++        "--resume-failed-step",
++        action="store_true",
++        help="Resume both the failed iterate and its unchanged friction-step history",
++    )
+     parser.add_argument("--output", type=Path, required=True)
+     args = parser.parse_args()
++    if args.resume_failed_step and (args.preloaded_state is None or not args.updated_friction):
++        parser.error("--resume-failed-step requires --preloaded-state and --updated-friction")
++    if args.friction_least_squares and not args.updated_friction:
++        parser.error("--friction-least-squares requires --updated-friction")
+     args.output.mkdir(parents=True, exist_ok=False)
+     with np.load(args.mesh) as saved:
+         body = SkfemElasticReference(saved["vertices"], saved["tetrahedra"], 1e10, 0.3, 2000)
+@@ -124,22 +140,33 @@ def main():
+         system.mesh, initial_positions, system.mesh.vertices(system.rest + rigid_target)
+     )
+     approach_fraction = 0.9 * collision_free_fraction
+-    displacement, _, _, _, _ = system.solve_supported(
+-        initialization_fixed,
+-        approach_fraction * values,
+-        12,
+-        phase="collision_free_approach",
+-        failure_path=args.output / "approach_failure.npz",
+-    )
+-    init_steps = int(np.ceil((1 - approach_fraction) * max(preload_travel) / (args.dhat / 4)))
+-    displacement, gradient, _, _, _ = system.solve_supported(
+-        initialization_fixed,
+-        values,
+-        init_steps,
+-        initial_displacement=displacement,
+-        phase="contact_initialization",
+-        failure_path=args.output / "initialization_failure.npz",
+-    )
++    if args.preloaded_state is None:
++        displacement, _, _, _, _ = system.solve_supported(
++            initialization_fixed,
++            approach_fraction * values,
++            12,
++            phase="collision_free_approach",
++            failure_path=args.output / "approach_failure.npz",
++        )
++        init_steps = int(np.ceil((1 - approach_fraction) * max(preload_travel) / (args.dhat / 4)))
++        displacement, gradient, _, _, _ = system.solve_supported(
++            initialization_fixed,
++            values,
++            init_steps,
++            initial_displacement=displacement,
++            phase="contact_initialization",
++            failure_path=args.output / "initialization_failure.npz",
++        )
++    else:
++        with np.load(args.preloaded_state) as saved:
++            np.testing.assert_array_equal(saved["rest_positions"], system.rest)
++            np.testing.assert_array_equal(saved["surface_triangles"], system.faces)
++            displacement = saved["displacement" if args.resume_failed_step else "previous_displacement"].copy()
++            resumed_previous = saved["previous_displacement"].copy()
++        positions = system.mesh.vertices(system.rest + displacement.reshape(-1, 3))
++        if ipctk.has_intersections(system.mesh, positions):
++            raise ValueError("The declared preloaded initial pose has mesh intersections")
++        gradient = np.zeros_like(displacement)
+     guides = np.concatenate([np.concatenate((back + 1, back + 2)) for back in backs])
+     controlled = np.concatenate(backs)
+     independent = np.setdiff1d(np.arange(len(displacement)), np.concatenate((guides, controlled)))
+@@ -166,17 +193,18 @@ def main():
+     held_map = coordinate_map[:, held_columns]
+     held_guides = np.concatenate((guides, body_hold))
+     normal_actuation = target_force.copy()
+-    displacement, _, _, _, _ = system.solve_supported(
+-        held_guides,
+-        np.zeros(len(held_guides)),
+-        args.force_steps,
+-        initial_displacement=displacement,
+-        coordinate_map=held_map,
+-        applied_force=normal_actuation,
+-        initial_force=starting_force,
+-        phase="held_body_force_control",
+-        failure_path=args.output / "held_force_failure.npz",
+-    )
++    if args.preloaded_state is None:
++        displacement, _, _, _, _ = system.solve_supported(
++            held_guides,
++            np.zeros(len(held_guides)),
++            args.force_steps,
++            initial_displacement=displacement,
++            coordinate_map=held_map,
++            applied_force=normal_actuation,
++            initial_force=starting_force,
++            phase="held_body_force_control",
++            failure_path=args.output / "held_force_failure.npz",
++        )
+     starting_force = normal_actuation
+     for part in system.parts:
+         acceleration = np.zeros(part.reference.basis.N)
+@@ -184,7 +212,11 @@ def main():
+         gravity = part.reference.mass @ acceleration
+         section = slice(part.first_node * 3, part.first_node * 3 + part.reference.basis.N)
+         target_force[section] += gravity[part.permutation]
+-    displacement, gradient, contact_force, energy, records = system.solve_supported(
++    force_solver = system.solve_updated_friction if args.updated_friction else system.solve_supported
++    resumed_arguments = {"initial_previous_displacement": resumed_previous} if args.resume_failed_step else {}
++    if args.updated_friction:
++        resumed_arguments["least_squares"] = args.friction_least_squares
++    displacement, gradient, contact_force, energy, records = force_solver(
+         guides,
+         np.zeros(len(guides)),
+         args.force_steps,
+@@ -194,6 +226,7 @@ def main():
+         initial_force=starting_force,
+         phase="free_body_force_control",
+         failure_path=args.output / "force_failure.npz",
++        **resumed_arguments,
+     )
+     reduced_residual = np.linalg.norm(coordinate_map.T @ gradient)
+     body_residual = np.linalg.norm(gradient[:body_count])
+@@ -233,6 +266,20 @@ def main():
+         "accepted_steps": [asdict(row) for row in system.accepted_steps],
+         "iterations": [asdict(row) for row in records],
+         "protocol": "Temporary support retained until both force-controlled contacts are established, then removed before gravity; final jaw translations and contact forces are solved outputs",
++        "friction_solve": "Updated-force Jacobian and constrained-residual Newton"
++        if args.updated_friction
++        else "Lagged friction fixed point",
++        "friction_newton_least_squares": args.friction_least_squares,
++        "preloaded_initial_state": None
++        if args.preloaded_state is None
++        else {
++            "path": str(args.preloaded_state.resolve()),
++            "sha256": hashlib.sha256(args.preloaded_state.read_bytes()).hexdigest(),
++            "selected_field": "displacement with previous_displacement history"
++            if args.resume_failed_step
++            else "previous_displacement",
++            "interpretation": "Explicit saved initial pose; no convergence claim for its failed subsequent state",
++        },
+         "limitations": "Pilot configuration; mesh/contact convergence, actual Franka match and native replay must still be verified",
+     }
+     np.savez_compressed(

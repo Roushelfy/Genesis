@@ -1,0 +1,24 @@
+{
+  "mesh": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/matrix-mesh-u-v1/meshes/h0.0035.npz",
+  "geometry": "u",
+  "pad_resolution": 3,
+  "pad_young": 1000000.0,
+  "force": 0.05,
+  "dhat": 2.5e-06,
+  "friction": 0.8,
+  "initial_gap": 0.001,
+  "pad_thickness": 0.001,
+  "edge_lift": 0.0001,
+  "force_steps": 64,
+  "gravity": [
+    0,
+    0,
+    -9.81
+  ],
+  "body_rigid_coordinates": true,
+  "updated_friction": true,
+  "friction_least_squares": true,
+  "preloaded_state": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/grasp-u-coupled-v4/solution/force_failure.npz",
+  "resume_failed_step": true,
+  "output": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/grasp-u-rigid-basis-z-v1/solution"
+}
