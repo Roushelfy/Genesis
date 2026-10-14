@@ -1,0 +1,8 @@
+{
+  "job": 711895,
+  "status": "agent-cancelled",
+  "reason": "Python-backed collision filter requires the GIL during parallel IPC collision building. The trial retained only38s CPU after multiple minutes and no result. Replace with the library C++ patch filter using identical component labels.",
+  "binding_source": "https://github.com/ipc-sim/ipc-toolkit/blob/v1.6.0/python/src/collision_mesh.cpp",
+  "source_closure_checked_before_change": true,
+  "accepted_contact_evidence": false
+}

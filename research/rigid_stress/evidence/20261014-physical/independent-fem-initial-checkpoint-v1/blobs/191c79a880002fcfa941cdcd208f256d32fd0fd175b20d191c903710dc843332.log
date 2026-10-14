@@ -1,0 +1,201 @@
+Genesis image version '1_26' found.
+Requirement already satisfied: ipctk==1.6.0 in /mnt/data/zhaofeng/venvs/rigid-stress-physical/lib/python3.10/site-packages (1.6.0)
+{"version": "1.6.0", "source": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/lib/python3.10/site-packages/ipctk.cpython-310-x86_64-linux-gnu.so", "source_sha256": "cb91ea8ad9c49887a430c1fe3452decc7da55a4762902e63b7197bbf82f9d2fa"}
+__init__(*args, **kwargs)
+Overloaded function.
+
+1. __init__(self: ipctk.BarrierPotential, dhat: typing.SupportsFloat, stiffness: typing.SupportsFloat, use_physical_barrier: bool = False) -> None
+
+
+            Construct a barrier potential.
+
+            Parameters:
+                dhat: The activation distance of the barrier.
+                stiffness: The stiffness of the barrier.
+                use_physical_barrier: Whether to use the physical barrier.
+            
+
+2. __init__(self: ipctk.BarrierPotential, barrier: ipctk.Barrier, dhat: typing.SupportsFloat, stiffness: typing.SupportsFloat, use_physical_barrier: bool = False) -> None
+
+
+            Construct a barrier potential.
+
+            Parameters:
+                barrier: The barrier function.
+                dhat: The activation distance of the barrier.
+                stiffness: The stiffness of the barrier.
+                use_physical_barrier: Whether to use the physical barrier.
+            
+
+__init__(self: ipctk.FrictionPotential, eps_v: typing.SupportsFloat) -> None
+
+
+            Construct a friction potential.
+
+            Parameters:
+                eps_v: The smooth friction mollifier parameter :math:`\\epsilon_{v}`.
+            
+
+build(*args, **kwargs)
+Overloaded function.
+
+1. build(self: ipctk.TangentialCollisions, mesh: ipc::CollisionMesh, vertices: typing.Annotated[numpy.typing.NDArray[numpy.float64], "[m, n]", "flags.f_contiguous"], collisions: ipctk.NormalCollisions, normal_potential: ipc::NormalPotential, mu: typing.SupportsFloat) -> None
+
+2. build(self: ipctk.TangentialCollisions, mesh: ipc::CollisionMesh, vertices: typing.Annotated[numpy.typing.NDArray[numpy.float64], "[m, n]", "flags.f_contiguous"], collisions: ipctk.NormalCollisions, normal_potential: ipc::NormalPotential, mu_s: typing.SupportsFloat, mu_k: typing.SupportsFloat) -> None
+
+3. build(self: ipctk.TangentialCollisions, mesh: ipc::CollisionMesh, vertices: typing.Annotated[numpy.typing.NDArray[numpy.float64], "[m, n]", "flags.f_contiguous"], collisions: ipctk.NormalCollisions, normal_potential: ipc::NormalPotential, mu_s: typing.Annotated[numpy.typing.NDArray[numpy.float64], "[m, 1]"], mu_k: typing.Annotated[numpy.typing.NDArray[numpy.float64], "[m, 1]"]) -> None
+
+4. build(self: ipctk.TangentialCollisions, mesh: ipc::CollisionMesh, vertices: typing.Annotated[numpy.typing.NDArray[numpy.float64], "[m, n]", "flags.f_contiguous"], collisions: ipctk.NormalCollisions, normal_potential: ipc::NormalPotential, mu_s: typing.Annotated[numpy.typing.NDArray[numpy.float64], "[m, 1]"], mu_k: typing.Annotated[numpy.typing.NDArray[numpy.float64], "[m, 1]"], blend_mu: collections.abc.Callable[[typing.SupportsFloat, typing.SupportsFloat], float]) -> None
+
+build_from_full_mesh(full_rest_positions: typing.Annotated[numpy.typing.NDArray[numpy.float64], "[m, n]", "flags.f_contiguous"], edges: typing.Annotated[numpy.typing.NDArray[numpy.int32], "[m, n]", "flags.f_contiguous"], faces: typing.Annotated[numpy.typing.NDArray[numpy.int32], "[m, n]", "flags.f_contiguous"] = array([], shape=(0, 0), dtype=int32)) -> ipctk.CollisionMesh
+
+
+            Helper function that automatically builds include_vertex using construct_is_on_surface.
+
+            Parameters:
+                full_rest_positions: The full vertices at rest (#FV × dim).
+                edges: The edge matrix of mesh (#E × 2).
+                faces: The face matrix of mesh (#F × 3).
+
+            Returns:
+                Constructed CollisionMesh.
+            
+
+to_full_dof(*args, **kwargs)
+Overloaded function.
+
+1. to_full_dof(self: ipctk.CollisionMesh, x: typing.Annotated[numpy.typing.NDArray[numpy.float64], "[m, 1]"]) -> typing.Annotated[numpy.typing.NDArray[numpy.float64], "[m, 1]"]
+
+
+            Map a vector quantity on the collision mesh to the full mesh.
+
+            This is useful for mapping gradients from the collision mesh to the full mesh (i.e., applies the chain-rule).
+
+            Parameters:
+                x: Vector quantity on the collision mesh with size equal to ndof().
+
+            Returns:
+                Vector quantity on the full mesh with size equal to full_ndof().
+            
+
+2. to_full_dof(self: ipctk.CollisionMesh, X: scipy.sparse.csc_matrix[numpy.float64]) -> scipy.sparse.csc_matrix[numpy.float64]
+
+
+            Map a matrix quantity on the collision mesh to the full mesh.
+
+            This is useful for mapping Hessians from the collision mesh to the full mesh (i.e., applies the chain-rule).
+
+            Parameters:
+                X: Matrix quantity on the collision mesh with size equal to ndof() × ndof().
+
+            Returns:
+                Matrix quantity on the full mesh with size equal to full_ndof() × full_ndof().
+            
+
+gradient(*args, **kwargs)
+Overloaded function.
+
+1. gradient(self: ipctk.TangentialPotential, collisions: ipctk.TangentialCollisions, mesh: ipc::CollisionMesh, X: typing.Annotated[numpy.typing.NDArray[numpy.float64], "[m, n]", "flags.f_contiguous"]) -> typing.Annotated[numpy.typing.NDArray[numpy.float64], "[m, 1]"]
+
+
+            Compute the gradient of the potential.
+
+            Parameters:
+                collisions: The set of collisions.
+                mesh: The collision mesh.
+                X: Degrees of freedom of the collision mesh (e.g., vertices or velocities).
+
+            Returns:
+                The gradient of the potential w.r.t. X. This will have a size of X.size.
+            
+
+2. gradient(self: ipctk.TangentialPotential, collision: ipctk.TangentialCollision, x: typing.Annotated[numpy.typing.NDArray[numpy.float64], "[m, 1]"]) -> typing.Annotated[numpy.typing.NDArray[numpy.float64], "[m, 1]"]
+
+
+            Compute the gradient of the potential for a single collision.
+
+            Parameters:
+                collision: The collision.
+                x: The collision stencil's degrees of freedom.
+
+            Returns:
+                The gradient of the potential.
+            
+
+hessian(*args, **kwargs)
+Overloaded function.
+
+1. hessian(self: ipctk.NormalPotential, collisions: ipctk.NormalCollisions, mesh: ipc::CollisionMesh, X: typing.Annotated[numpy.typing.NDArray[numpy.float64], "[m, n]", "flags.f_contiguous"], project_hessian_to_psd: ipctk.PSDProjectionMethod = <PSDProjectionMethod.NONE: 0>) -> scipy.sparse.csc_matrix[numpy.float64]
+
+
+            Compute the hessian of the potential.
+
+            Parameters:
+                collisions: The set of collisions.
+                mesh: The collision mesh.
+                X: Degrees of freedom of the collision mesh (e.g., vertices or velocities).
+                project_hessian_to_psd: Make sure the hessian is positive semi-definite.
+
+            Returns:
+                The Hessian of the potential w.r.t. X. This will have a size of X.size by X.size.
+            
+
+2. hessian(self: ipctk.NormalPotential, collision: ipctk.NormalCollision, x: typing.Annotated[numpy.typing.NDArray[numpy.float64], "[m, 1]"], project_hessian_to_psd: ipctk.PSDProjectionMethod = <PSDProjectionMethod.NONE: 0>) -> typing.Annotated[numpy.typing.NDArray[numpy.float64], "[m, n]"]
+
+
+            Compute the hessian of the potential for a single collision.
+
+            Parameters:
+                collision: The collision.
+                x: The collision stencil's degrees of freedom.
+
+            Returns:
+                The hessian of the potential.
+            
+
+compute_collision_free_stepsize(mesh: ipctk.CollisionMesh, vertices_t0: typing.Annotated[numpy.typing.NDArray[numpy.float64], "[m, n]", "flags.f_contiguous"], vertices_t1: typing.Annotated[numpy.typing.NDArray[numpy.float64], "[m, n]", "flags.f_contiguous"], min_distance: typing.SupportsFloat = 0.0, broad_phase: ipctk.BroadPhase = None, narrow_phase_ccd: ipctk.NarrowPhaseCCD = <ipctk.TightInclusionCCD object at 0x7ca538b58f70>) -> float
+
+
+        Computes a maximal step size that is collision free.
+
+        Note:
+            Assumes the trajectory is linear.
+            When using SweepAndTiniestQueue broad phase, tolerance and
+            max_iterations are extracted from TightInclusionCCD if provided,
+            otherwise defaults are used.
+
+        Parameters:
+            mesh: The collision mesh.
+            vertices_t0: Vertex vertices at start as rows of a matrix. Assumes vertices_t0 is intersection free.
+            vertices_t1: Surface vertex vertices at end as rows of a matrix.
+            min_distance: The minimum distance allowable between any two elements.
+            broad_phase: Broad phase to use.
+            narrow_phase_ccd: The narrow phase CCD algorithm to use.
+
+        Returns:
+            A step-size :math:`\in [0, 1]` that is collision free. A value of 1.0 if a full step and 0.0 is no step.
+        
+
+initial_barrier_stiffness(bbox_diagonal: typing.SupportsFloat, barrier: ipctk.Barrier, dhat: typing.SupportsFloat, average_mass: typing.SupportsFloat, grad_energy: typing.Annotated[numpy.typing.NDArray[numpy.float64], "[m, 1]"], grad_barrier: typing.Annotated[numpy.typing.NDArray[numpy.float64], "[m, 1]"], min_barrier_stiffness_scale: typing.SupportsFloat = 100000000000.0, dmin: typing.SupportsFloat = 0) -> tuple[float, float]
+
+
+        Compute an inital barrier stiffness using the barrier potential gradient.
+
+        Parameters:
+            bbox_diagonal: Length of the diagonal of the bounding box of the scene.
+            barrier: Barrier function.
+            dhat: Activation distance of the barrier.
+            average_mass: Average mass of all bodies.
+            grad_energy: Gradient of the elasticity energy function.
+            grad_barrier: Gradient of the barrier potential.
+            min_barrier_stiffness_scale: Scale used to premultiply the minimum barrier stiffness.
+            dmin: Minimum distance between elements.
+
+        Returns:
+            Tuple of:
+            The initial barrier stiffness.
+            Maximum stiffness of the barrier.
+        
+
+NormalCollisions attributes: ['CollisionSetType', 'IMPROVED_MAX_APPROX', 'IPC', 'OGC', 'build', 'clear', 'collision_set_type', 'compute_minimum_distance', 'ee_collisions', 'empty', 'enable_shape_derivatives', 'ev_collisions', 'fv_collisions', 'is_edge_edge', 'is_edge_vertex', 'is_face_vertex', 'is_plane_vertex', 'is_vertex_vertex', 'pv_collisions', 'use_area_weighting', 'vv_collisions']
+CollisionMesh attributes: ['are_adjacencies_initialized', 'are_area_jacobians_initialized', 'build_from_full_mesh', 'can_collide', 'codim_edges', 'codim_vertices', 'construct_faces_to_edges', 'construct_is_on_surface', 'dim', 'displace_vertices', 'edge_area', 'edge_area_gradient', 'edge_areas', 'edge_vertex_adjacencies', 'edges', 'faces', 'faces_to_edges', 'full_ndof', 'full_num_vertices', 'init_adjacencies', 'init_area_jacobians', 'is_vertex_on_boundary', 'map_displacements', 'ndof', 'num_codim_edges', 'num_codim_vertices', 'num_edges', 'num_faces', 'num_vertices', 'planes', 'rest_positions', 'to_full_dof', 'to_full_vertex_id', 'vertex_area', 'vertex_area_gradient', 'vertex_areas', 'vertex_edge_adjacencies', 'vertex_vertex_adjacencies', 'vertices']

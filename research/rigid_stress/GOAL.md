@@ -18,6 +18,14 @@ the qualified native feature, and report load-model error separately from
 elastic numerical error. Commit and push reproducible progress and findings.
 The previous completion records do not establish this stage's acceptance.
 
+Initial progress is in [PHYSICAL_VALIDATION_PROGRESS_20261014.md](docs/PHYSICAL_VALIDATION_PROGRESS_20261014.md).
+Independent scikit-fem assembly/boundary integration and analytic free-body
+fields pass8CPU/8CUDA cases with32 independently checked fields. Seven initial
+full3D geometry assets are constructed. The first spherical-shell convergence
+curve exposes remaining physical error and an extended sweep is in progress.
+The complete load-model sensitivity, physical matrix and deformable-contact
+comparisons remain required. This stage remains active.
+
 ## Previous nonconvex implementation brief, 2026-10-11
 
 Implement the contact mapping contract in

@@ -1,0 +1,687 @@
+{
+  "scope": "independent elasticity qualification and initial geometry construction",
+  "numerical_engine_revision": "76537c2fb64cd469e83ba9921b0724b5c82a5f36",
+  "environment": {
+    "python": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "platform": "Linux-7.0.12-319-ge90ae78b-coreweave-amd64-x86_64-with-glibc2.35",
+    "hostname": "cpu-207-115",
+    "packages": {
+      "scikit-fem": {
+        "version": "12.0.2",
+        "source": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/lib/python3.10/site-packages/skfem/__init__.py",
+        "source_sha256": "e2c0e4f40c259bfcefd87c127870d475e759ee1d347ae57d6ac86792ea39f5fb"
+      },
+      "gmsh": {
+        "version": "4.14.1",
+        "source": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/lib/python3.10/site-packages/gmsh.py",
+        "source_sha256": "eaee8517730909251be9e79a1773244e81674a0831c4b3eea66a5deab43f2dc1"
+      },
+      "meshio": {
+        "version": "5.3.5",
+        "source": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/lib/python3.10/site-packages/meshio/__init__.py",
+        "source_sha256": "0eabe42f9e0983e53da37c5b5450e25a3c003755f64875886a922f2032a3401d"
+      },
+      "pygeodesic": {
+        "version": "0.1.11",
+        "source": "/mnt/data/zhaofeng/venvs/rigid-stress-physical/lib/python3.10/site-packages/pygeodesic/geodesic.cpython-310-x86_64-linux-gnu.so",
+        "source_sha256": "1c8c8144cab6eec447461ece8b60313d08955b1827879b9581934799104c5050"
+      },
+      "numpy": {
+        "version": "2.2.6",
+        "source": "/usr/local/lib/python3.10/dist-packages/numpy/__init__.py",
+        "source_sha256": "6ae17b070c0f70a8e3cad89a510a256942e5a1f37ea5feb120cec167ed2a6236"
+      },
+      "scipy": {
+        "version": "1.15.3",
+        "source": "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/scipy/__init__.py",
+        "source_sha256": "185913aa107512fafd5cf89dfd452a8719b45a6eba833e2dcee2cbfd18b4bbe5"
+      }
+    }
+  },
+  "qualification": {
+    "cpu": {
+      "suite": {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "0",
+        "tests": "8",
+        "time": "52.772",
+        "timestamp": "2026-10-14T04:28:21.663689+00:00",
+        "hostname": "cpu-207-115"
+      },
+      "test_properties": [
+        {
+          "shape": "u",
+          "method": "direct",
+          "analytic": "uniform_strain",
+          "stiffness_relative_error": 5.601507292972106e-16,
+          "mass_relative_error": 8.467086205464814e-16,
+          "fields": [
+            {
+              "environment": 0,
+              "complete_residual_N": 1.0977308555519817e-16,
+              "budget_fraction": 3.795937533792021e-07,
+              "peak_difference_Pa": 2.398701326455921e-08,
+              "energy_J": 8.01634615384617e-11
+            },
+            {
+              "environment": 1,
+              "complete_residual_N": 7.820806942627222e-17,
+              "budget_fraction": 7.820806942627222e-06,
+              "peak_difference_Pa": 1.0018084140028805e-09,
+              "energy_J": 3.57196034034898e-14
+            }
+          ]
+        },
+        {
+          "shape": "u",
+          "method": "pcg",
+          "analytic": "uniform_strain",
+          "stiffness_relative_error": 5.601507292972106e-16,
+          "mass_relative_error": 8.467086205464814e-16,
+          "fields": [
+            {
+              "environment": 0,
+              "complete_residual_N": 7.534687932571376e-12,
+              "budget_fraction": 0.026054842663847406,
+              "peak_difference_Pa": 9.66139486990869e-06,
+              "energy_J": 8.016346153846802e-11
+            },
+            {
+              "environment": 1,
+              "complete_residual_N": 7.620672423009482e-12,
+              "budget_fraction": 0.7620672423009482,
+              "peak_difference_Pa": 1.0986377674271353e-06,
+              "energy_J": 3.5719603403350135e-14
+            }
+          ]
+        },
+        {
+          "shape": "u",
+          "method": "direct",
+          "analytic": "pure_bending",
+          "stiffness_relative_error": 5.601507292972106e-16,
+          "mass_relative_error": 8.467086205464814e-16,
+          "fields": [
+            {
+              "environment": 0,
+              "complete_residual_N": 2.1448581633846887e-17,
+              "budget_fraction": 1.27273916386615e-06,
+              "peak_difference_Pa": 6.752998160663992e-11,
+              "energy_J": 4.666666666666635e-13
+            },
+            {
+              "environment": 1,
+              "complete_residual_N": 7.820806942627222e-17,
+              "budget_fraction": 7.820806942627222e-06,
+              "peak_difference_Pa": 1.0018084140028805e-09,
+              "energy_J": 3.57196034034898e-14
+            }
+          ]
+        },
+        {
+          "shape": "u",
+          "method": "pcg",
+          "analytic": "pure_bending",
+          "stiffness_relative_error": 5.601507292972106e-16,
+          "mass_relative_error": 8.467086205464814e-16,
+          "fields": [
+            {
+              "environment": 0,
+              "complete_residual_N": 7.938801357020878e-12,
+              "budget_fraction": 0.47108119192784187,
+              "peak_difference_Pa": 1.1113658729300369e-05,
+              "energy_J": 4.666666666696366e-13
+            },
+            {
+              "environment": 1,
+              "complete_residual_N": 7.620672423009482e-12,
+              "budget_fraction": 0.7620672423009482,
+              "peak_difference_Pa": 1.0986377674271353e-06,
+              "energy_J": 3.5719603403350135e-14
+            }
+          ]
+        },
+        {
+          "shape": "cavity",
+          "method": "direct",
+          "analytic": "uniform_strain",
+          "stiffness_relative_error": 5.848462736186509e-16,
+          "mass_relative_error": 7.710257411780228e-16,
+          "fields": [
+            {
+              "environment": 0,
+              "complete_residual_N": 9.359709949025648e-16,
+              "budget_fraction": 2.274785697656443e-06,
+              "peak_difference_Pa": 2.2644599084742367e-08,
+              "energy_J": 2.977499999999965e-10
+            },
+            {
+              "environment": 1,
+              "complete_residual_N": 1.3375718947585239e-17,
+              "budget_fraction": 1.337571894758524e-06,
+              "peak_difference_Pa": 2.3305801732931286e-11,
+              "energy_J": 1.1623113752591566e-14
+            }
+          ]
+        },
+        {
+          "shape": "cavity",
+          "method": "pcg",
+          "analytic": "uniform_strain",
+          "stiffness_relative_error": 5.848462736186509e-16,
+          "mass_relative_error": 7.710257411780228e-16,
+          "fields": [
+            {
+              "environment": 0,
+              "complete_residual_N": 8.823403702378514e-12,
+              "budget_fraction": 0.021444417248110335,
+              "peak_difference_Pa": 7.840242687962018e-06,
+              "energy_J": 2.977500000005329e-10
+            },
+            {
+              "environment": 1,
+              "complete_residual_N": 8.040269007034319e-12,
+              "budget_fraction": 0.804026900703432,
+              "peak_difference_Pa": 1.3136019560988643e-06,
+              "energy_J": 1.1623113752684075e-14
+            }
+          ]
+        },
+        {
+          "shape": "cavity",
+          "method": "direct",
+          "analytic": "pure_bending",
+          "stiffness_relative_error": 5.848462736186509e-16,
+          "mass_relative_error": 7.710257411780228e-16,
+          "fields": [
+            {
+              "environment": 0,
+              "complete_residual_N": 2.1972470042854108e-16,
+              "budget_fraction": 2.715157768329005e-06,
+              "peak_difference_Pa": 9.049472282640636e-10,
+              "energy_J": 1.5733333333333138e-11
+            },
+            {
+              "environment": 1,
+              "complete_residual_N": 1.3375718947585239e-17,
+              "budget_fraction": 1.337571894758524e-06,
+              "peak_difference_Pa": 2.3305801732931286e-11,
+              "energy_J": 1.1623113752591566e-14
+            }
+          ]
+        },
+        {
+          "shape": "cavity",
+          "method": "pcg",
+          "analytic": "pure_bending",
+          "stiffness_relative_error": 5.848462736186509e-16,
+          "mass_relative_error": 7.710257411780228e-16,
+          "fields": [
+            {
+              "environment": 0,
+              "complete_residual_N": 9.215684613382724e-12,
+              "budget_fraction": 0.11387903872297625,
+              "peak_difference_Pa": 5.71389955439372e-06,
+              "energy_J": 1.5733333333372752e-11
+            },
+            {
+              "environment": 1,
+              "complete_residual_N": 8.040269007034319e-12,
+              "budget_fraction": 0.804026900703432,
+              "peak_difference_Pa": 1.3136019560988643e-06,
+              "energy_J": 1.1623113752684075e-14
+            }
+          ]
+        }
+      ],
+      "formatting_source_equivalence": [
+        {
+          "file": "tests/rigid/test_stress_independent_fem.py",
+          "tested_sha256": "dbc6020d9b82c463515b4b1c209e5fe2872580cdb7a26b41f084b58c3cda715c",
+          "current_sha256": "5d56ee50cbbc432172f9dd84030b556a5c11ee75644b6b0d221c0b61713264df",
+          "AST_identical": true
+        }
+      ],
+      "maximum_complete_residual_budget_fraction": 0.804026900703432,
+      "maximum_peak_difference_Pa": 1.1113658729300369e-05
+    },
+    "cuda": {
+      "suite": {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "0",
+        "tests": "8",
+        "time": "35.992",
+        "timestamp": "2026-10-14T04:28:30.982684+00:00",
+        "hostname": "rtx-209-067"
+      },
+      "test_properties": [
+        {
+          "shape": "u",
+          "method": "direct",
+          "analytic": "uniform_strain",
+          "stiffness_relative_error": 5.328527098369514e-16,
+          "mass_relative_error": 8.372742721992226e-16,
+          "fields": [
+            {
+              "environment": 0,
+              "complete_residual_N": 1.203965195006974e-16,
+              "budget_fraction": 4.1632943539772685e-07,
+              "peak_difference_Pa": 2.4128894438035786e-08,
+              "energy_J": 8.016346153846158e-11
+            },
+            {
+              "environment": 1,
+              "complete_residual_N": 5.424145440461552e-17,
+              "budget_fraction": 5.4241454404615524e-06,
+              "peak_difference_Pa": 7.203198038041592e-10,
+              "energy_J": 3.5719603403496225e-14
+            }
+          ]
+        },
+        {
+          "shape": "u",
+          "method": "pcg",
+          "analytic": "uniform_strain",
+          "stiffness_relative_error": 5.274097605209829e-16,
+          "mass_relative_error": 8.372742721992226e-16,
+          "fields": [
+            {
+              "environment": 0,
+              "complete_residual_N": 7.429036377213158e-12,
+              "budget_fraction": 0.02568950110269934,
+              "peak_difference_Pa": 9.480634616920725e-06,
+              "energy_J": 8.01634615384519e-11
+            },
+            {
+              "environment": 1,
+              "complete_residual_N": 7.405348346272433e-12,
+              "budget_fraction": 0.7405348346272433,
+              "peak_difference_Pa": 1.3750550351687707e-06,
+              "energy_J": 3.5719603404054474e-14
+            }
+          ]
+        },
+        {
+          "shape": "u",
+          "method": "direct",
+          "analytic": "pure_bending",
+          "stiffness_relative_error": 5.260828266868863e-16,
+          "mass_relative_error": 8.372742721992226e-16,
+          "fields": [
+            {
+              "environment": 0,
+              "complete_residual_N": 1.1601903591846154e-17,
+              "budget_fraction": 6.884463191468191e-07,
+              "peak_difference_Pa": 7.753442332614213e-11,
+              "energy_J": 4.666666666666644e-13
+            },
+            {
+              "environment": 1,
+              "complete_residual_N": 5.741154673594697e-17,
+              "budget_fraction": 5.741154673594697e-06,
+              "peak_difference_Pa": 8.694769348949194e-10,
+              "energy_J": 3.571960340349968e-14
+            }
+          ]
+        },
+        {
+          "shape": "u",
+          "method": "pcg",
+          "analytic": "pure_bending",
+          "stiffness_relative_error": 5.38439224296846e-16,
+          "mass_relative_error": 8.372742721992226e-16,
+          "fields": [
+            {
+              "environment": 0,
+              "complete_residual_N": 7.407902879029394e-12,
+              "budget_fraction": 0.4395781631256756,
+              "peak_difference_Pa": 4.8457384309585905e-06,
+              "energy_J": 4.666666666660448e-13
+            },
+            {
+              "environment": 1,
+              "complete_residual_N": 8.444864436612842e-12,
+              "budget_fraction": 0.8444864436612842,
+              "peak_difference_Pa": 4.533624178293394e-06,
+              "energy_J": 3.571960340390492e-14
+            }
+          ]
+        },
+        {
+          "shape": "cavity",
+          "method": "direct",
+          "analytic": "uniform_strain",
+          "stiffness_relative_error": 5.554613017339088e-16,
+          "mass_relative_error": 7.636465334184487e-16,
+          "fields": [
+            {
+              "environment": 0,
+              "complete_residual_N": 9.217257142535953e-16,
+              "budget_fraction": 2.2401639402987255e-06,
+              "peak_difference_Pa": 2.201159077230841e-08,
+              "energy_J": 2.977499999999968e-10
+            },
+            {
+              "environment": 1,
+              "complete_residual_N": 1.6781291868753433e-17,
+              "budget_fraction": 1.6781291868753434e-06,
+              "peak_difference_Pa": 5.684341886080801e-13,
+              "energy_J": 1.162311375259115e-14
+            }
+          ]
+        },
+        {
+          "shape": "cavity",
+          "method": "pcg",
+          "analytic": "uniform_strain",
+          "stiffness_relative_error": 5.573502336794012e-16,
+          "mass_relative_error": 7.636465334184487e-16,
+          "fields": [
+            {
+              "environment": 0,
+              "complete_residual_N": 7.931751644966766e-12,
+              "budget_fraction": 0.019277344380967336,
+              "peak_difference_Pa": 8.84580185811501e-06,
+              "energy_J": 2.977499999998994e-10
+            },
+            {
+              "environment": 1,
+              "complete_residual_N": 9.127844017342991e-12,
+              "budget_fraction": 0.9127844017342992,
+              "peak_difference_Pa": 2.2713049929734552e-06,
+              "energy_J": 1.1623113754102353e-14
+            }
+          ]
+        },
+        {
+          "shape": "cavity",
+          "method": "direct",
+          "analytic": "pure_bending",
+          "stiffness_relative_error": 5.55882735402758e-16,
+          "mass_relative_error": 7.636465334184487e-16,
+          "fields": [
+            {
+              "environment": 0,
+              "complete_residual_N": 2.1955387628796085e-16,
+              "budget_fraction": 2.7130468791508197e-06,
+              "peak_difference_Pa": 2.6830093702301383e-10,
+              "energy_J": 1.5733333333333112e-11
+            },
+            {
+              "environment": 1,
+              "complete_residual_N": 1.5614600306005743e-17,
+              "budget_fraction": 1.5614600306005744e-06,
+              "peak_difference_Pa": 5.684341886080801e-13,
+              "energy_J": 1.162311375259121e-14
+            }
+          ]
+        },
+        {
+          "shape": "cavity",
+          "method": "pcg",
+          "analytic": "pure_bending",
+          "stiffness_relative_error": 5.555974578175173e-16,
+          "mass_relative_error": 7.636465334184487e-16,
+          "fields": [
+            {
+              "environment": 0,
+              "complete_residual_N": 8.74967279125255e-12,
+              "budget_fraction": 0.10812048897175518,
+              "peak_difference_Pa": 3.3211126719834283e-06,
+              "energy_J": 1.5733333333340428e-11
+            },
+            {
+              "environment": 1,
+              "complete_residual_N": 8.746727851267703e-12,
+              "budget_fraction": 0.8746727851267704,
+              "peak_difference_Pa": 1.5197809943856555e-06,
+              "energy_J": 1.162311375242998e-14
+            }
+          ]
+        }
+      ],
+      "formatting_source_equivalence": [
+        {
+          "file": "tests/rigid/test_stress_independent_fem.py",
+          "tested_sha256": "dbc6020d9b82c463515b4b1c209e5fe2872580cdb7a26b41f084b58c3cda715c",
+          "current_sha256": "5d56ee50cbbc432172f9dd84030b556a5c11ee75644b6b0d221c0b61713264df",
+          "AST_identical": true
+        }
+      ],
+      "maximum_complete_residual_budget_fraction": 0.9127844017342992,
+      "maximum_peak_difference_Pa": 9.480634616920725e-06
+    }
+  },
+  "initial_meshes": [
+    {
+      "geometry": {
+        "name": "capsule",
+        "description": "Radius8mm cylinder, axial length24mm, hemispherical caps",
+        "thickness_m": null,
+        "gap_m": null,
+        "minimum_rounding_m": null
+      },
+      "gmsh_version": "4.14.1",
+      "volume_construction": "Gmsh OpenCASCADE volume tetrahedralization",
+      "mesh_size": 0.006,
+      "mesh_size_units": "m",
+      "shell_layers": null,
+      "nodes": 146,
+      "tetrahedra": 396,
+      "boundary_triangles": 254,
+      "dimensions_m": [
+        0.015999121991894263,
+        0.015936273733200668,
+        0.04
+      ],
+      "minimum_volume_m3": 5.51392907697793e-09,
+      "total_volume_m3": 6.535592076694947e-06,
+      "scaled_jacobian_percentiles": [
+        0.2011238698469799,
+        0.26532931469655036,
+        0.6505216027714313,
+        0.9434823985527772,
+        0.9823562277016697
+      ],
+      "mesh_sha256": "decd46ecd5bb713ee725cdc10a2aa0faedb39c7e534f482b46b10393790b1a1f"
+    },
+    {
+      "geometry": {
+        "name": "cavity",
+        "description": "Full spherical shell, outer radius12mm, inner radius8mm",
+        "thickness_m": 0.004,
+        "gap_m": null,
+        "minimum_rounding_m": null
+      },
+      "gmsh_version": "4.14.1",
+      "volume_construction": "Gmsh OpenCASCADE volume tetrahedralization",
+      "mesh_size": 0.6,
+      "mesh_size_units": "unit-sphere coordinates",
+      "shell_layers": 2,
+      "nodes": 346,
+      "tetrahedra": 1317,
+      "boundary_triangles": 476,
+      "dimensions_m": [
+        0.023953159452362073,
+        0.023932517173304642,
+        0.024
+      ],
+      "minimum_volume_m3": 9.91074357409791e-10,
+      "total_volume_m3": 4.993963440135441e-06,
+      "scaled_jacobian_percentiles": [
+        0.06887286023621905,
+        0.2775888472152501,
+        0.6118686377749067,
+        0.9397146129247957,
+        0.9955248165584045
+      ],
+      "mesh_sha256": "d09f4efceea561bb66c3320e36ffa47541dc7332a180712ce4679fbadea14b79"
+    },
+    {
+      "geometry": {
+        "name": "egg",
+        "description": "Full normal-offset hollow egg,22/22/30mm semiaxes, taper0.18",
+        "thickness_m": 0.0005,
+        "gap_m": null,
+        "minimum_rounding_m": null
+      },
+      "gmsh_version": "4.14.1",
+      "volume_construction": "independent Gmsh surface with matched normal-offset layers",
+      "mesh_size": 0.45,
+      "mesh_size_units": "unit-sphere coordinates",
+      "shell_layers": 2,
+      "nodes": 480,
+      "tetrahedra": 1896,
+      "boundary_triangles": 632,
+      "dimensions_m": [
+        0.04442315933001545,
+        0.04419887298967186,
+        0.06
+      ],
+      "minimum_volume_m3": 7.082899680593993e-10,
+      "total_volume_m3": 3.6077087880177774e-06,
+      "scaled_jacobian_percentiles": [
+        0.014241903102520355,
+        0.016163942897367993,
+        0.03207671130440892,
+        0.9521951032003092,
+        0.9701605288486758
+      ],
+      "mesh_sha256": "d657ce6a143ce9f7dd941d202639bd8a6bde8ff80c228eca9e89461967318ccd"
+    },
+    {
+      "geometry": {
+        "name": "ellipsoid",
+        "description": "Solid ellipsoid, semiaxes12/15/9mm",
+        "thickness_m": null,
+        "gap_m": null,
+        "minimum_rounding_m": null
+      },
+      "gmsh_version": "4.14.1",
+      "volume_construction": "Gmsh OpenCASCADE volume tetrahedralization",
+      "mesh_size": 0.006,
+      "mesh_size_units": "m",
+      "shell_layers": null,
+      "nodes": 83,
+      "tetrahedra": 194,
+      "boundary_triangles": 152,
+      "dimensions_m": [
+        0.023889439090400505,
+        0.02951793530599227,
+        0.018
+      ],
+      "minimum_volume_m3": 1.4258623996024596e-08,
+      "total_volume_m3": 6.251725577887193e-06,
+      "scaled_jacobian_percentiles": [
+        0.20872208699682318,
+        0.29963732364979834,
+        0.7101167343679954,
+        0.9672201905251333,
+        0.9761798737146252
+      ],
+      "mesh_sha256": "a8928e242869901fbf4af5955dc5e57c1174996347a958fccbb2d59c6faed28a"
+    },
+    {
+      "geometry": {
+        "name": "narrow_gap",
+        "description": "Rounded U tube, bend radius4.5mm, tube radius4mm, arms24mm",
+        "thickness_m": null,
+        "gap_m": 0.001,
+        "minimum_rounding_m": null
+      },
+      "gmsh_version": "4.14.1",
+      "volume_construction": "Gmsh OpenCASCADE volume tetrahedralization",
+      "mesh_size": 0.004,
+      "mesh_size_units": "m",
+      "shell_layers": null,
+      "nodes": 206,
+      "tetrahedra": 491,
+      "boundary_triangles": 374,
+      "dimensions_m": [
+        0.017,
+        0.03626655706446648,
+        0.008
+      ],
+      "minimum_volume_m3": 1.9183168916219933e-09,
+      "total_volume_m3": 2.9940588580761943e-06,
+      "scaled_jacobian_percentiles": [
+        0.19963572612412975,
+        0.3232807463985673,
+        0.7103540820024785,
+        0.9216507669161604,
+        0.9553775868538029
+      ],
+      "mesh_sha256": "ac7d00d0a81decb1bf553f9f628d118d8dc692b24592a4f2b2a39aef7aeb4070"
+    },
+    {
+      "geometry": {
+        "name": "thin_neck",
+        "description": "Smooth revolved cubic B-spline dumbbell,44mm long, central radius2mm",
+        "thickness_m": null,
+        "gap_m": null,
+        "minimum_rounding_m": null
+      },
+      "gmsh_version": "4.14.1",
+      "volume_construction": "Gmsh OpenCASCADE volume tetrahedralization",
+      "mesh_size": 0.006,
+      "mesh_size_units": "m",
+      "shell_layers": null,
+      "nodes": 104,
+      "tetrahedra": 213,
+      "boundary_triangles": 192,
+      "dimensions_m": [
+        0.044,
+        0.014922332720549356,
+        0.015146119536210347
+      ],
+      "minimum_volume_m3": 3.907797910191763e-09,
+      "total_volume_m3": 3.7805578364925228e-06,
+      "scaled_jacobian_percentiles": [
+        0.1852927774453871,
+        0.37052117139012414,
+        0.7854220182564458,
+        0.9465002293329493,
+        0.9554448970540766
+      ],
+      "mesh_sha256": "f7070c79437b2754beefb1c5ccb0fc5cf666db53a967fb5ee0ee6b1ac4aa4110"
+    },
+    {
+      "geometry": {
+        "name": "u",
+        "description": "Rounded U tube, bend radius8mm, tube radius3mm, arms24mm",
+        "thickness_m": null,
+        "gap_m": 0.01,
+        "minimum_rounding_m": null
+      },
+      "gmsh_version": "4.14.1",
+      "volume_construction": "Gmsh OpenCASCADE volume tetrahedralization",
+      "mesh_size": 0.004,
+      "mesh_size_units": "m",
+      "shell_layers": null,
+      "nodes": 217,
+      "tetrahedra": 569,
+      "boundary_triangles": 362,
+      "dimensions_m": [
+        0.022,
+        0.0374206763542199,
+        0.006
+      ],
+      "minimum_volume_m3": 9.102487319087633e-10,
+      "total_volume_m3": 1.8265564863611233e-06,
+      "scaled_jacobian_percentiles": [
+        0.26933581495447734,
+        0.34860275448731026,
+        0.6342630487635508,
+        0.9420371616457799,
+        0.9638639186120338
+      ],
+      "mesh_sha256": "fd43ecbade9b7a2020f5eedd3ef89fa61406f4c6b77116d0adb5577ce127f378"
+    }
+  ],
+  "limitations": "These checks do not establish load-model accuracy, physical convergence or deformable contact. The complete active stage remains unfinished.",
+  "passed": true
+}
