@@ -1,0 +1,21 @@
+{"step": 1, "newton_iteration": 0, "updated_residual_N": 0.0482001801888912}
+{"step": 1, "newton_iteration": 1, "updated_residual_N": 0.008408777762068277}
+{"step": 1, "newton_iteration": 2, "updated_residual_N": 0.001414467948403536}
+{"step": 1, "newton_iteration": 3, "updated_residual_N": 0.0006147501651497168}
+{"step": 1, "newton_iteration": 4, "updated_residual_N": 0.0005953008743604866}
+{"step": 1, "newton_iteration": 5, "updated_residual_N": 0.00010217962100082033}
+{"step": 1, "newton_iteration": 6, "updated_residual_N": 2.0321783281280247e-05}
+{"step": 1, "newton_iteration": 7, "updated_residual_N": 1.5363696359007893e-06}
+{"step": 1, "newton_iteration": 8, "updated_residual_N": 3.982633561903735e-08}
+{"step": 1, "newton_iteration": 9, "updated_residual_N": 2.192189134513965e-10}
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+{"scope": "Replay objective nonlinear contact loads through native linear elastic recovery.", "reference": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/grasp-u-neohookean-all-y-l1-v1", "mesh_sha256": "fca107fe6fcad9a1028ba5387f6123eb57540995349913c0e22b02e1509ce32b", "hold_original_coordinate_residual_N": 2.1921891281406888e-10, "native_complete_budget_fraction": 0.013800073989010729, "native_vs_independent_linear_tensor_relative_difference": 2.8916028860991268e-11, "native_vs_nonlinear_volume_tensor_relative_difference": 3.0933740797037425e-05, "native_vs_nonlinear_probe_tensor_relative_difference": 2.659877980219589e-05, "native_raw_peak_Pa": 112414.20420594151, "nonlinear_global_peak_lower_Pa": 112413.66484067294, "nonlinear_global_peak_upper_Pa": 112414.5200822108, "deformation_induced_reference_moment_difference_Nm": [-1.853645248269093e-10, 2.8599104047392646e-10, -2.704975118439576e-09], "rotation_world_from_material": [[0.9999999931116547, -7.854856314408256e-05, 8.721704455959302e-05], [7.833622639063561e-05, 0.9999970398126927, 0.002431918848721593], [-8.740781011205488e-05, -0.002431911999715552, 0.9999970390775658]], "goal_completion": false, "limitations": "Same-load native versus independent linear gates remain strict. Difference from objective nonlinear Cauchy stress is a linearization/geometry approximation diagnostic, not an algebra failure. Resolved forces remain unchanged apart from the explicit frame rotation; their deformed/reference moment difference is retained. One hold is not spatial/regularization/history convergence or actual Franka matching."}

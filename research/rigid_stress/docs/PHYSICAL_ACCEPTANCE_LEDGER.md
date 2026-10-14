@@ -36,3 +36,9 @@ The [nonlinear bulk qualification](PHYSICAL_NONLINEAR_REFERENCE_20261014.md)
 adds derivative/objectivity/whole-volume bounds and two live same-protocol
 references. Evaluating a different law at saved positions is diagnostic evidence;
 it does not establish its contact equilibrium or physical accuracy.
+The later [objective replay/application-input checkpoint](PHYSICAL_OBJECTIVE_FRANKA_20261014.md)
+closes those nonlinear pilots and gives3.09337e-5 objective tensor difference
+at one useful level. Actual complete Franka input snapshots and temporal axes
+are verified, but they retain angular motion and rank5 point-force support.
+They supply corresponding inputs; matched deformable application contact and
+the original convergence/feedback/cost acceptance remain incomplete.

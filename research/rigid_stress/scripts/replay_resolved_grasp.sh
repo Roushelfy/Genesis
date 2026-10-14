@@ -10,7 +10,7 @@ mkdir -p "$task_run/source" "$task_run/tmp"
 export TMPDIR="$task_run/tmp" PYTHONUNBUFFERED=1
 export GS_CACHE_FILE_PATH="$task_run/cache/genesis" QD_OFFLINE_CACHE_FILE_PATH="$task_run/cache/quadrants"
 export NUMBA_CACHE_DIR="$task_run/cache/numba"
-task_sources=(research/rigid_stress/{replay_resolved_grasp,contact_reference,skfem_reference,profile_reference_sensitivity,summarize_fine_references,finite_traction_reference,load_model_validation,native_load_samples,validation_meshes,spherical_shell_validation,qualify_reference_scaling}.py
+task_sources=(research/rigid_stress/{replay_resolved_grasp,neohookean_reference,contact_reference,skfem_reference,profile_reference_sensitivity,summarize_fine_references,finite_traction_reference,load_model_validation,native_load_samples,validation_meshes,spherical_shell_validation,qualify_reference_scaling}.py
     research/rigid_stress/scripts/replay_resolved_grasp.sh genesis/options/rigid_stress.py)
 while IFS= read -r task_source; do task_sources+=("$task_source"); done < <("$task_env/bin/python" -c 'from pathlib import Path; print("\n".join(str(p) for p in Path("genesis/engine/solvers/rigid/stress").rglob("*.py")))')
 sha256sum "${task_sources[@]}" > "$task_run/source.sha256"

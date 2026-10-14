@@ -17,6 +17,7 @@ from genesis.utils.array_class import V_VEC
 from genesis.utils.misc import qd_to_numpy
 
 from .contact_reference import IndependentContactSystem
+from .neohookean_reference import NeoHookeanPadContactSystem
 from .profile_reference_sensitivity import tensor_l2
 from .skfem_reference import SkfemElasticReference
 from .summarize_fine_references import closed_source
@@ -83,6 +84,8 @@ def main():
     assert int((args.reference / "returncode.txt").read_text()) == 0
     args.output.mkdir(parents=True, exist_ok=False)
     result = json.loads((args.reference / "solution/result.json").read_text())
+    if result["material"].get("body_material_model", "linear") != "linear":
+        raise ValueError("A nonlinear body needs objective-frame nonlinear replay rather than same-linear-system gates")
     references = []
     for name, path, young, poisson, density in (
         (
@@ -111,7 +114,12 @@ def main():
             references.append(
                 (name, SkfemElasticReference(saved["vertices"], saved["tetrahedra"], young, poisson, density))
             )
-    system = IndependentContactSystem(references, result["dhat_m"], 1e6, result["friction"], 1e-8)
+    system_type = (
+        NeoHookeanPadContactSystem
+        if result["material"].get("pad_material_model", "linear") == "neo_hookean"
+        else IndependentContactSystem
+    )
+    system = system_type(references, result["dhat_m"], 1e6, result["friction"], 1e-8)
     coordinate_map = sparse.load_npz(args.reference / "solution/coordinate_map.npz")
     with np.load(args.reference / "solution/fields.npz") as saved:
         np.testing.assert_array_equal(system.rest, saved["rest_positions"])
