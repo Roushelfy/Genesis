@@ -70,6 +70,8 @@ def main():
     parser.add_argument("--body-rigid-coordinates", action="store_true")
     parser.add_argument("--updated-friction", action="store_true")
     parser.add_argument("--friction-least-squares", action="store_true")
+    parser.add_argument("--reuse-empty-factor", action="store_true")
+    parser.add_argument("--centre-gauge", action="store_true")
     parser.add_argument(
         "--preloaded-state",
         type=Path,
@@ -86,6 +88,8 @@ def main():
         parser.error("--resume-failed-step requires --preloaded-state and --updated-friction")
     if args.friction_least_squares and not args.updated_friction:
         parser.error("--friction-least-squares requires --updated-friction")
+    if args.centre_gauge and not args.body_rigid_coordinates:
+        parser.error("--centre-gauge requires --body-rigid-coordinates")
     args.output.mkdir(parents=True, exist_ok=False)
     (args.output / "configuration.json").write_text(json.dumps(vars(args), default=str, indent=2) + "\n")
     with np.load(args.mesh) as saved:
@@ -97,7 +101,12 @@ def main():
         args.geometry, 1, args.pad_resolution, args.initial_gap, args.pad_thickness, args.edge_lift, args.pad_young
     )
     system = IndependentContactSystem(
-        (("body", body), ("left_shoe", left), ("right_shoe", right)), args.dhat, 1e6, args.friction, 1e-8
+        (("body", body), ("left_shoe", left), ("right_shoe", right)),
+        args.dhat,
+        1e6,
+        args.friction,
+        1e-8,
+        reuse_empty_factor=args.reuse_empty_factor,
     )
     body_count = body.basis.N
     # These constraints initialize the contact state and are removed in the force-controlled stage.
@@ -235,6 +244,26 @@ def main():
         gravity = part.reference.mass @ acceleration
         section = slice(part.first_node * 3, part.first_node * 3 + part.reference.basis.N)
         target_force[section] += gravity[part.permutation]
+    original_coordinate_map = coordinate_map
+    centre_shift = 0.0
+    if args.centre_gauge:
+        if abs(target_force.reshape(-1, 3)[:, 0].sum()) > 1e-13:
+            raise ValueError("Common-x gauge requires zero total applied x force")
+        centre_shift = (displacement[backs[0]].mean() + displacement[backs[1]].mean()) / 2
+        displacement[0::3] -= centre_shift
+        if args.resume_failed_step:
+            resumed_previous[0::3] -= centre_shift
+        count = coordinate_map.shape[1]
+        transform = sparse.coo_matrix(
+            (
+                np.r_[np.ones(count - 2), -1, 1],
+                (np.r_[np.arange(count - 2), count - 2, count - 1], np.r_[np.arange(count - 2), count - 2, count - 2]),
+            ),
+            shape=(count, count - 1),
+        ).tocsr()
+        coordinate_map = (coordinate_map @ transform).tocsr()
+        sparse.save_npz(args.output / "original_coordinate_map.npz", original_coordinate_map)
+        sparse.save_npz(args.output / "coordinate_map.npz", coordinate_map)
     force_solver = system.solve_updated_friction if args.updated_friction else system.solve_supported
     resumed_arguments = {"initial_previous_displacement": resumed_previous} if args.resume_failed_step else {}
     if args.updated_friction:
@@ -251,7 +280,7 @@ def main():
         failure_path=args.output / "force_failure.npz",
         **resumed_arguments,
     )
-    reduced_residual = np.linalg.norm(coordinate_map.T @ gradient)
+    reduced_residual = np.linalg.norm(original_coordinate_map.T @ gradient)
     body_residual = np.linalg.norm(gradient[:body_count])
     assert reduced_residual <= 1e-9
     assert body_residual <= 1e-9
@@ -277,6 +306,10 @@ def main():
         "friction": args.friction,
         "gravity_m_per_s2": args.gravity,
         "body_rigid_coordinates": args.body_rigid_coordinates,
+        "centre_gauge": args.centre_gauge,
+        "initial_common_x_shift_m": float(centre_shift),
+        "supported_factorizations": system.supported_factorizations,
+        "empty_factor_reuses": system.empty_factor_reuses,
         "dhat_m": args.dhat,
         "pad_thickness_m": args.pad_thickness,
         "edge_lift_m": args.edge_lift,

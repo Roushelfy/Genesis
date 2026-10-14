@@ -71,7 +71,7 @@ def quadratic_boundary_triangles(reference):
 class IndependentContactSystem:
     """Minimize independently assembled bulk elasticity plus contact potentials."""
 
-    def __init__(self, references, dhat, barrier_stiffness, friction, friction_mollifier):
+    def __init__(self, references, dhat, barrier_stiffness, friction, friction_mollifier, reuse_empty_factor=False):
         self.parts = []
         stiffness, positions, faces, group_ids = [], [], [], []
         offset = 0
@@ -96,6 +96,9 @@ class IndependentContactSystem:
         self.friction = friction
         self.friction_potential = ipctk.FrictionPotential(friction_mollifier)
         self.accepted_steps = []
+        self.reuse_empty_factor = reuse_empty_factor
+        self.supported_factorizations = 0
+        self.empty_factor_reuses = 0
 
     def elastic_displacement(self, displacement):
         elastic = np.empty_like(displacement)
@@ -309,6 +312,7 @@ class IndependentContactSystem:
         )
         boundary_start = displacement[boundary_dofs].copy()
         records = []
+        empty_factor, empty_matrix = None, None
         for step in range(1, load_steps + 1):
             previous = displacement.copy()
             displacement[boundary_dofs] = boundary_start + (boundary_values - boundary_start) * step / load_steps
@@ -345,7 +349,20 @@ class IndependentContactSystem:
                         flush=True,
                     )
                     reduced_matrix = self.reduced_hessian(matrix, free, coordinate_map)
-                    reduced_direction = splu(reduced_matrix).solve(-reduced_gradient)
+                    if self.reuse_empty_factor and not len(normal) and not len(tangential):
+                        same = empty_matrix is not None and np.array_equal(reduced_matrix.data, empty_matrix.data)
+                        same = same and np.array_equal(reduced_matrix.indices, empty_matrix.indices)
+                        same = same and np.array_equal(reduced_matrix.indptr, empty_matrix.indptr)
+                        if not same:
+                            empty_matrix = reduced_matrix.copy()
+                            empty_factor = splu(reduced_matrix)
+                            self.supported_factorizations += 1
+                        else:
+                            self.empty_factor_reuses += 1
+                        reduced_direction = empty_factor.solve(-reduced_gradient)
+                    else:
+                        self.supported_factorizations += 1
+                        reduced_direction = splu(reduced_matrix).solve(-reduced_gradient)
                     direction = np.zeros_like(displacement)
                     if coordinate_map is None:
                         direction[free] = reduced_direction
@@ -359,6 +376,7 @@ class IndependentContactSystem:
                                 reduced_matrix.shape[0], format="csc"
                             )
                             reduced_direction = splu(shifted.tocsc()).solve(-reduced_gradient)
+                            self.supported_factorizations += 1
                             if coordinate_map is None:
                                 direction[free] = reduced_direction
                             else:

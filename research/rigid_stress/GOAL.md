@@ -71,6 +71,15 @@ audited gravity wrenches, while its weakest Schur mode is a common-translation
 gauge. Body strains are small;5–6% local pad strains require a nonlinear check.
 Finer U and full-egg references are running. Contact convergence, finite-footprint
 replay, feedback separation and actual Franka matching remain required.
+The [resolved-model/refinement update](docs/PHYSICAL_RESOLVED_MODELS_20261014.md)
+closes the finer U reference and actual native replay, adds guarded identical
+source-wrench finite-footprint comparisons, and qualifies reference-only cache/
+translation-gauge options. The two useful contact levels still change44.6% at
+fixed tensor probes; finer pads reach7.5% local strain. The original egg job
+times out during initialization. Third-level/separated-axis U jobs and a longer
+full-egg retry are scheduled. The [acceptance ledger](docs/PHYSICAL_ACCEPTANCE_LEDGER.md)
+retains the complete A/B/C, geometry, convergence, feedback, cost and publication
+requirements; neither these numerical passes nor scheduled work completes them.
 
 ## Previous nonconvex implementation brief, 2026-10-11
 

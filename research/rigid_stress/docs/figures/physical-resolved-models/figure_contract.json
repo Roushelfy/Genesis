@@ -1,0 +1,36 @@
+{
+  "claim_anchor": "resolved-contact-finite-footprint-load-model-sensitivity",
+  "main_claim": "Identical source wrenches leave the U peak nearly unchanged while the declared native finite-footprint law spreads a more concentrated resolved-contact load and changes its full stress field.",
+  "material_passport": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/grasp-u-plots-v3/style/nature_mpl_style.py",
+      "sha256": "5ca3184cd5d1d5361996b98935354b56e63db598f405ed539afb5aed39e2eec1"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/resolved-load-models-y-v5/results/summary.json",
+      "sha256": "e0d29c14fd26156ee60584a5b2768baa46d9db0f1cc83085a58b09d4f7f4fa78"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/resolved-load-models-y-v5/results/componentwise_traction.npz",
+      "sha256": "df7c8a9ee96c9d7673ecadd4fc4d919bf0c806d5a2f4513e34d50160e80f3275"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/resolved-load-models-y-v5/results/body_source_prior_traction.npz",
+      "sha256": "a1d6cfaf0f824327fe71c18440e1a2254c9202ace03d4c84a8f2e2d1e26b396b"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/grasp-u-replay-y-l1-v2/results/summary.json",
+      "sha256": "d9b61e88eaba86097fe61d898f257e405257b74f3e45ec36973811ca6326e3c4"
+    }
+  ],
+  "panel_roles": {
+    "pressure_row": "Left-shoe material-coordinate normal samples on one scale",
+    "shear_row": "Corresponding tangential samples on a separate shared scale",
+    "redistribution": "Both physical shoes' signed local force changes under the aggregate prior"
+  },
+  "caption": "Left-shoe contact samples in material coordinates at0.05N per jaw and friction0.8. Each dot is an actual integration sample; no interpolation, element averaging or pressure smoothing is applied. Resolved contact values divide stencil forces by IPC stencil weights; native values use the production quadrature's physical areas. These are different declared measures, so dots do not establish a converged continuum contact-edge pressure. Pressure and shear each use shared limits. Componentwise and pair_union agree for these separated single-source pairs; pressure rejects the original free contact moments. The second plot retains signed local force shifts for both shoes while the original aggregate wrench is conserved.",
+  "body_text_handoff": "At fixed3mm native radius, the full volume tensor difference is3.27% for componentwise and3.49% for body_source_prior, despite a nearly unchanged componentwise global peak. The reference contact and pad compliance still need spatial, regularization and nonlinear validation.",
+  "alt_text": "Six scatter panels compare concentrated resolved normal and shear samples with broader native footprints. A companion signed dot plot shows the aggregate prior moving force between two physical shoes.",
+  "limits": "One deterministic U gravity case; no statistical confidence interval, physical convergence, general model ranking or Franka equivalence is established.",
+  "open_decisions": "Repository supplement, established Matplotlib style; no journal template or figure number supplied."
+}
