@@ -16,6 +16,7 @@ def main():
     parser.add_argument("--resolution", type=int, default=3)
     parser.add_argument("--dhat", type=float, default=2.5e-6)
     parser.add_argument("--force", type=float, default=0.5)
+    parser.add_argument("--updated-friction", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -55,7 +56,8 @@ def main():
     applied[back_normal] = -args.force / len(back_normal)
     initial_force = np.zeros(full_count)
     initial_force[back_normal] = gradient[back_normal].sum() / len(back_normal)
-    displacement, gradient, contact_force, energy, _ = system.solve_supported(
+    force_solver = system.solve_updated_friction if args.updated_friction else system.solve_supported
+    displacement, gradient, contact_force, energy, _ = force_solver(
         fixed,
         np.zeros(len(fixed)),
         12,
@@ -85,6 +87,7 @@ def main():
         "resolution": args.resolution,
         "dhat_m": args.dhat,
         "actuator_force_N": args.force,
+        "updated_friction_newton": args.updated_friction,
         "solved_interface_force_N": force.tolist(),
         "transverse_interface_force_relative_to_axial": float(np.linalg.norm(force[:2]) / args.force),
         "solved_back_displacement_m": float(displacement[back_normal[0]]),

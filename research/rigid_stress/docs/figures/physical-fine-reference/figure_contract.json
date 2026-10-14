@@ -1,0 +1,140 @@
+{
+  "claim_anchor": "physical-reference-refinement",
+  "claim": "Raw peaks and complete common-probe diagnostics respond differently to refinement; geometry changes remain a separate error source",
+  "material_passport": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-six-summary-v1/results/summary.json",
+      "sha256": "72bdd11c71af468ba7620ebefcadf2ab70fc5715c9052b09aa429eeecb9bd283"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fixed-poly-summary-v1/results/summary.json",
+      "sha256": "2d6fcb5f09e445751ee942fc14f4f3278cbf7830ac26115483c76cb1360c4028"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-six-plots-v2/source/style.py",
+      "sha256": "5ca3184cd5d1d5361996b98935354b56e63db598f405ed539afb5aed39e2eec1"
+    }
+  ],
+  "data_profile": {
+    "selected_case": "Opposing compact finite profiles, force0.05N per patch, radius3mm, friction2",
+    "cad_rows": 36,
+    "frozen_polyhedron_rows": 6,
+    "uncertainty": "Deterministic FEM evaluations; no statistical uncertainty or fitted asymptote",
+    "outside_probes": {
+      "ellipsoid": [
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ],
+      "capsule": [
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ],
+      "u": [
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ],
+      "thin_neck": [
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ],
+      "cavity": [
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ],
+      "narrow_gap": [
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ]
+    }
+  },
+  "panels": [
+    {
+      "panel": "a",
+      "geometry": "ellipsoid",
+      "role": "Ellipsoid",
+      "x": "tetrahedra",
+      "plot_type": "ordered line with all measured levels"
+    },
+    {
+      "panel": "b",
+      "geometry": "capsule",
+      "role": "Capsule",
+      "x": "tetrahedra",
+      "plot_type": "ordered line with all measured levels"
+    },
+    {
+      "panel": "c",
+      "geometry": "u",
+      "role": "Rounded U",
+      "x": "tetrahedra",
+      "plot_type": "ordered line with all measured levels"
+    },
+    {
+      "panel": "d",
+      "geometry": "thin_neck",
+      "role": "Thin neck",
+      "x": "tetrahedra",
+      "plot_type": "ordered line with all measured levels"
+    },
+    {
+      "panel": "e",
+      "geometry": "cavity",
+      "role": "Cavity shell",
+      "x": "tetrahedra",
+      "plot_type": "ordered line with all measured levels"
+    },
+    {
+      "panel": "f",
+      "geometry": "narrow_gap",
+      "role": "Narrow gap",
+      "x": "tetrahedra",
+      "plot_type": "ordered line with all measured levels"
+    }
+  ],
+  "palette": {
+    "remeshed CAD": "#0072B2, solid circles",
+    "frozen polyhedron": "#E69F00, dashed squares"
+  },
+  "caption": "Independent FEM opposing-load curves retain the raw global four-corner von Mises maximum. CAD remeshing changes volume and boundary approximation together. Frozen seed-polyhedron controls retain volume, boundary area and centre of mass while uniformly refining tetrahedra. The second figure compares full unsmoothed tensors at unchanged physical interior probes; points outside either adjacent approximate domain remain explicitly listed in the source data. The3% dotted line is an initial engineering diagnostic, not continuum-error certification. Energy, displacement and other loads are retained in the complete CSV/JSON. No smoothed maximum or asymptotic extrapolation is used.",
+  "body_interpretation": "The frozen-U raw peak grows on seed reentrant creases while remeshed-U peaks decrease toward the latest range. Small common-tensor changes coexist with nonmonotone raw peaks on several shapes. A complete operating range requires the full observable set and resolved-contact comparisons.",
+  "open_issues": "Joint CAD/volume changes are not separated for every shape; native finer accuracy/cost and coupled egg/contact acceptance remain required",
+  "rendered_text_qa": "passed",
+  "exports": [
+    {
+      "svg": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-six-plots-v2/results/raw_global_peak_Pa.svg",
+      "pdf": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-six-plots-v2/results/raw_global_peak_Pa.pdf",
+      "png": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-six-plots-v2/results/raw_global_peak_Pa.png",
+      "preview_png": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-six-plots-v2/results/raw_global_peak_Pa_preview.png"
+    },
+    {
+      "svg": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-six-plots-v2/results/adjacent_probe_tensor_relative_change.svg",
+      "pdf": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-six-plots-v2/results/adjacent_probe_tensor_relative_change.pdf",
+      "png": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-six-plots-v2/results/adjacent_probe_tensor_relative_change.png",
+      "preview_png": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-six-plots-v2/results/adjacent_probe_tensor_relative_change_preview.png"
+    }
+  ]
+}

@@ -41,6 +41,13 @@ quadrature/port fields, radius sweeps and three force-controlled contact control
 The fixed-U raw peak grows on seed reentrant creases. Finer CAD reference sweeps
 are running; full-U coupled attempts remain unqualified. These findings retain
 the full physical-validation objective and its unfinished completion criteria.
+The [finer FEM reference update](docs/PHYSICAL_FINE_REFERENCES_20261014.md)
+adds180 independent six-level fields on six shapes,90 full-field peak/work
+reconstructions and10/30 complete last-change diagnostics below the initial3%
+target. Current-source contact controls pass, but full free-body U attempts
+remain unqualified and expose weak rigid/contact modes. Full egg reference
+tasks and the original physical/contact/model/cost completion criteria remain
+active; these diagnostic passes are not stage completion.
 
 ## Previous nonconvex implementation brief, 2026-10-11
 
