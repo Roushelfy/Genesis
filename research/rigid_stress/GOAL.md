@@ -58,6 +58,12 @@ current-source checks pass41CPU/62CUDA cases with21 explicit CUDA-only skips.
 The5669-tetrahedron native U sequence also passes; two finer8-port initializations
 fail allocation. Extended native settings, converged full egg/Franka/interior-hotspot
 contact and the original physical operating-range acceptance remain active.
+The [native port-axis update](docs/PHYSICAL_NATIVE_PORT_AXIS_20261014.md) adds204
+qualified fields and six unsupported pressure moments, with identical-input
+port comparisons and75 unchanged probes. Declared2/4-port settings extend the
+numerical U range to40824 tetrahedra. The combined audit retains282 qualified
+fields and eight unsupported moments. Remaining physical tails, reference
+traction limitations and full resolved-contact completion criteria stay active.
 
 ## Previous nonconvex implementation brief, 2026-10-11
 
