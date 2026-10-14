@@ -1,0 +1,17 @@
+{
+  "mesh": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-matrix-mesh-u-v1/meshes/h0.000875.npz",
+  "mesh_sha256": "982ba1bbf046f9b53a0de4186f1468d53c037e7dce4d75f1fcf3aa8553e80fea",
+  "geometry": "u",
+  "backend": "cuda",
+  "surface_edge_subdivisions": 4,
+  "models": [
+    "pressure",
+    "componentwise",
+    "pair_union",
+    "body_source_prior"
+  ],
+  "quadrature": 10,
+  "max_iterations": 20000,
+  "warmup": 4,
+  "repeats": 8
+}
