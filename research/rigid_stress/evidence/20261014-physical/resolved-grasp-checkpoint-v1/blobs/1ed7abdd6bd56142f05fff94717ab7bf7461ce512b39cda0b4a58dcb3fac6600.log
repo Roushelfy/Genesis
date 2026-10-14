@@ -1,0 +1,15 @@
+{"step": 1, "newton_iteration": 0, "updated_residual_N": 0.0186640169343827}
+{"step": 1, "newton_iteration": 1, "updated_residual_N": 0.00108378667338525}
+{"step": 1, "newton_iteration": 2, "updated_residual_N": 6.290959550388158e-06}
+{"step": 1, "newton_iteration": 3, "updated_residual_N": 4.6403090781899115e-10}
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                        32 iterations, so the compile time may be extremely long.
+                        You can use a non-static for loop if you want to decrease the compile time.
+                        You can disable this warning by setting qd.init(unrolling_limit=0).
+  for a, b in qd.static(qd.ndrange(6, 6)):
+{"hold_complete_residual_N": 4.6403090781899115e-10, "constant_load_hold_tensor_relative_change": 2.8139905132447598e-06, "native_complete_budget_fraction": 0.012103112734206778, "native_full_tensor_relative_difference": 1.0033127221566282e-09, "part_small_strain_diagnostics": [{"name": "body", "maximum_elastic_displacement_m": 1.161862057431621e-06, "maximum_symmetric_strain_norm": 1.1921056289156026e-05, "minimum_deformation_jacobian": 0.9999978798399336}, {"name": "left_shoe", "maximum_elastic_displacement_m": 1.9837789965328635e-05, "maximum_symmetric_strain_norm": 0.055670425362919315, "minimum_deformation_jacobian": 0.940888920760193}, {"name": "right_shoe", "maximum_elastic_displacement_m": 1.9916455927858347e-05, "maximum_symmetric_strain_norm": 0.051497630249280495, "minimum_deformation_jacobian": 0.9391553981897967}]}

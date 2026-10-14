@@ -1,0 +1,3456 @@
+{
+  "scope": "Full free-body U contact pilots, bounded fixed-stencil wrench certificates, exact raw-tensor native replay and pad strain limitations",
+  "source_closures": [
+    {
+      "name": "grasp-u-spatial-y-l1-v1",
+      "returncode": 0
+    },
+    {
+      "name": "grasp-u-spatial-zero-l1-v1",
+      "returncode": 0
+    },
+    {
+      "name": "grasp-support-coarse-v1",
+      "returncode": 139
+    },
+    {
+      "name": "grasp-support-coarse-v2",
+      "returncode": 0
+    },
+    {
+      "name": "grasp-u-replay-y-l1-v1",
+      "returncode": 0
+    },
+    {
+      "name": "grasp-u-replay-zero-l1-v1",
+      "returncode": 0
+    },
+    {
+      "name": "grasp-u-replay-y-l1-v2",
+      "returncode": 0
+    },
+    {
+      "name": "grasp-u-replay-zero-l1-v2",
+      "returncode": 0
+    },
+    {
+      "name": "grasp-u-plots-v1",
+      "returncode": 1
+    },
+    {
+      "name": "grasp-u-plots-v2",
+      "returncode": 1
+    },
+    {
+      "name": "grasp-u-plots-v3",
+      "returncode": 0
+    }
+  ],
+  "replays": {
+    "y": {
+      "scope": "Audit a constant-load contact hold and replay its resolved nodal loads natively.",
+      "reference": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/grasp-u-spatial-y-l1-v1",
+      "reference_mesh_sha256": "fca107fe6fcad9a1028ba5387f6123eb57540995349913c0e22b02e1509ce32b",
+      "hold_complete_residual_N": 2.9030193985943026e-11,
+      "hold_body_residual_N": 2.8741619853114576e-11,
+      "constant_load_hold_tensor_relative_change": 0.0002914750097280597,
+      "hold_maximum_nodal_increment_m": 2.6016565984817584e-06,
+      "static_to_inertia_relief_rhs_difference_N": 1.0629646762217376e-13,
+      "native_complete_budget_fraction": 0.011029515814712084,
+      "native_full_tensor_relative_difference": 3.2182720340036274e-11,
+      "raw_native_tensor_postprocessor_relative_difference": 1.5027889054383715e-13,
+      "native_peak_Pa": 112410.35097151567,
+      "reference_raw_peak_Pa": 112410.35097177263,
+      "reference_raw_peak_position_m": [
+        0.00035698440893704305,
+        -0.004991140866333466,
+        0.00015274418427433216
+      ],
+      "part_small_strain_diagnostics": [
+        {
+          "name": "body",
+          "maximum_elastic_displacement_m": 1.2333458032828075e-06,
+          "maximum_symmetric_strain_norm": 1.2302051913730347e-05,
+          "minimum_deformation_jacobian": 1.0000048176524754
+        },
+        {
+          "name": "left_shoe",
+          "maximum_elastic_displacement_m": 2.0981823519648207e-05,
+          "maximum_symmetric_strain_norm": 0.05959470876105709,
+          "minimum_deformation_jacobian": 0.9385120665330163
+        },
+        {
+          "name": "right_shoe",
+          "maximum_elastic_displacement_m": 2.1134518579095594e-05,
+          "maximum_symmetric_strain_norm": 0.05724434211126368,
+          "minimum_deformation_jacobian": 0.9397030870932348
+        }
+      ],
+      "normal_stencils": [
+        {
+          "index": 0,
+          "shoe": 1,
+          "nodes": [
+            243,
+            1541,
+            2636,
+            2994
+          ],
+          "weight": 1.3530585215867725e-07,
+          "body_resultant_N": [
+            0.0044645812884983845,
+            -5.6944347213891245e-06,
+            -0.0007038373136973542
+          ],
+          "reference_application_point_m": [
+            0.0050213473972527635,
+            0.01650331382615546,
+            0.00035660392827735796
+          ],
+          "stencil_traction_magnitude_Pa": 33403.758789027095,
+          "current_application_point_m": [
+            0.005168866688345664,
+            0.016496011527660562,
+            0.0003589609469994538
+          ],
+          "collinearity_relative_difference": 9.97949952105449e-17
+        },
+        {
+          "index": 1,
+          "shoe": 1,
+          "nodes": [
+            2636,
+            2995,
+            243,
+            1549
+          ],
+          "weight": 1.1409479994034927e-07,
+          "body_resultant_N": [
+            0.003709231167442051,
+            2.1742572025913628e-07,
+            -0.0005872462933759405
+          ],
+          "reference_application_point_m": [
+            0.005021073301970276,
+            0.01703441166786339,
+            0.0003548468145942286
+          ],
+          "stencil_traction_magnitude_Pa": 32914.99658208088,
+          "current_application_point_m": [
+            0.005168569378277171,
+            0.017027104983617803,
+            0.0003557770083727205
+          ],
+          "collinearity_relative_difference": 1.6479815565187316e-16
+        },
+        {
+          "index": 2,
+          "shoe": 0,
+          "nodes": [
+            2262,
+            2272,
+            187,
+            1336
+          ],
+          "weight": 1.32057161898473e-07,
+          "body_resultant_N": [
+            -0.004386491993041496,
+            4.293300629137287e-07,
+            -0.0006088343689266407
+          ],
+          "reference_application_point_m": [
+            -0.0050413705957555455,
+            0.017994100309965833,
+            0.0004959587131318366
+          ],
+          "stencil_traction_magnitude_Pa": 33535.04461929344,
+          "current_application_point_m": [
+            -0.004895580214784349,
+            0.017986288712574003,
+            0.0004952640708939472
+          ],
+          "collinearity_relative_difference": 8.33876280325929e-18
+        },
+        {
+          "index": 3,
+          "shoe": 0,
+          "nodes": [
+            1908,
+            2272,
+            187,
+            1336
+          ],
+          "weight": 1.3205823239152327e-07,
+          "body_resultant_N": [
+            -0.002928088180681072,
+            -1.9018566237053845e-07,
+            -0.0004190374307017724
+          ],
+          "reference_application_point_m": [
+            -0.00504133854548655,
+            0.017999956161474023,
+            0.0004957533362531886
+          ],
+          "stencil_traction_magnitude_Pa": 22398.606256269148,
+          "current_application_point_m": [
+            -0.00489554895291368,
+            0.017992144016455484,
+            0.0004950429662811463
+          ],
+          "collinearity_relative_difference": 1.4808403522849398e-16
+        },
+        {
+          "index": 4,
+          "shoe": 0,
+          "nodes": [
+            2269,
+            2273,
+            187,
+            1336
+          ],
+          "weight": 1.3199579727744383e-07,
+          "body_resultant_N": [
+            -0.002774211374799328,
+            1.52448641630574e-07,
+            -0.00038820720654447435
+          ],
+          "reference_application_point_m": [
+            -0.005037239285811895,
+            0.018748925099984937,
+            0.00046948543950398416
+          ],
+          "stencil_traction_magnitude_Pa": 21222.201757426523,
+          "current_application_point_m": [
+            -0.004891550530129305,
+            0.01874104291299349,
+            0.0004667634774795638
+          ],
+          "collinearity_relative_difference": 1.5643777618220933e-16
+        },
+        {
+          "index": 5,
+          "shoe": 0,
+          "nodes": [
+            1907,
+            2265,
+            210,
+            1337
+          ],
+          "weight": 1.2529469097044292e-07,
+          "body_resultant_N": [
+            -0.0026355008142816966,
+            -2.4014681190024927e-06,
+            -0.0003840549578373012
+          ],
+          "reference_application_point_m": [
+            -0.0050355968597675625,
+            0.01650286106065241,
+            0.00045928419656904394
+          ],
+          "stencil_traction_magnitude_Pa": 21256.589824150396,
+          "current_application_point_m": [
+            -0.0048896110898910316,
+            0.016494950640129603,
+            0.0004625934392292973
+          ],
+          "collinearity_relative_difference": 1.6569623612714956e-16
+        },
+        {
+          "index": 6,
+          "shoe": 0,
+          "nodes": [
+            1907,
+            2266,
+            187,
+            1337
+          ],
+          "weight": 1.2529536875578478e-07,
+          "body_resultant_N": [
+            -0.0003719115420350004,
+            -3.402309821173673e-07,
+            -5.415771160192192e-05
+          ],
+          "reference_application_point_m": [
+            -0.005039464587158788,
+            0.017227571704632693,
+            0.0004838866594803075
+          ],
+          "stencil_traction_magnitude_Pa": 2999.585969707891,
+          "current_application_point_m": [
+            -0.004893573325714083,
+            0.017219727513905044,
+            0.00048525016564216416
+          ],
+          "collinearity_relative_difference": 7.342720184012745e-17
+        },
+        {
+          "index": 7,
+          "shoe": 0,
+          "nodes": [
+            2262,
+            2266,
+            187,
+            1337
+          ],
+          "weight": 1.2532497849544002e-07,
+          "body_resultant_N": [
+            -0.00963312515281847,
+            -1.1245617822286733e-05,
+            -0.0013249420395907176
+          ],
+          "reference_application_point_m": [
+            -0.005039587993610931,
+            0.017250694836217915,
+            0.000484671643103693
+          ],
+          "stencil_traction_magnitude_Pa": 77588.8516674171,
+          "current_application_point_m": [
+            -0.004893699750262905,
+            0.017242852755152593,
+            0.0004859730696239535
+          ],
+          "collinearity_relative_difference": 1.2932595288575635e-16
+        },
+        {
+          "index": 8,
+          "shoe": 1,
+          "nodes": [
+            2991,
+            3001,
+            244,
+            1549
+          ],
+          "weight": 1.1412440968000419e-07,
+          "body_resultant_N": [
+            0.00553823508344021,
+            3.131998526654469e-07,
+            -0.0008747906161409224
+          ],
+          "reference_application_point_m": [
+            0.005022184147107534,
+            0.01779635737445837,
+            0.0003639885185609659
+          ],
+          "stencil_traction_magnitude_Pa": 49129.700986289026,
+          "current_application_point_m": [
+            0.0051696477108948485,
+            0.017789075449491456,
+            0.00036287169753130243
+          ],
+          "collinearity_relative_difference": 1.6127817545565455e-16
+        },
+        {
+          "index": 9,
+          "shoe": 1,
+          "nodes": [
+            2637,
+            3001,
+            244,
+            1549
+          ],
+          "weight": 1.1412548017305446e-07,
+          "body_resultant_N": [
+            0.003442943580738817,
+            2.0074769550242823e-07,
+            -0.0005444781814628715
+          ],
+          "reference_application_point_m": [
+            0.005022480635843476,
+            0.01799972354299828,
+            0.00036642847365691303
+          ],
+          "stencil_traction_magnitude_Pa": 30542.964481538012,
+          "current_application_point_m": [
+            0.005169935314096359,
+            0.01799244818676163,
+            0.00036476530546616145
+          ],
+          "collinearity_relative_difference": 1.257269494981723e-16
+        },
+        {
+          "index": 10,
+          "shoe": 1,
+          "nodes": [
+            2637,
+            3002,
+            244,
+            1549
+          ],
+          "weight": 1.1409479786253987e-07,
+          "body_resultant_N": [
+            0.000660496504904943,
+            3.7637496480890675e-08,
+            -0.00010435916878180001
+          ],
+          "reference_application_point_m": [
+            0.005023294283424753,
+            0.018557816890525002,
+            0.0003731243892907112
+          ],
+          "stencil_traction_magnitude_Pa": 5860.829134979346,
+          "current_application_point_m": [
+            0.005170724577298998,
+            0.018550559560711766,
+            0.00036996189248383567
+          ],
+          "collinearity_relative_difference": 2.0283056850162115e-17
+        },
+        {
+          "index": 11,
+          "shoe": 0,
+          "nodes": [
+            2266,
+            2272,
+            187,
+            1336
+          ],
+          "weight": 1.32057161898473e-07,
+          "body_resultant_N": [
+            -9.336941486353837e-09,
+            -7.376388832825206e-12,
+            -1.5154874026694964e-09
+          ],
+          "reference_application_point_m": [
+            -0.005041954194544401,
+            0.01788747194287127,
+            0.0004996983914994669
+          ],
+          "stencil_traction_magnitude_Pa": 0.07162909417690301,
+          "current_application_point_m": [
+            -0.004896149457740272,
+            0.017879670317136227,
+            0.0004992901333354376
+          ],
+          "collinearity_relative_difference": 5.075876451163011e-17
+        },
+        {
+          "index": 12,
+          "shoe": 0,
+          "nodes": [
+            2269,
+            2279,
+            205,
+            1336
+          ],
+          "weight": 1.3199579727744383e-07,
+          "body_resultant_N": [
+            -0.004853536470391446,
+            2.571069869338965e-07,
+            -0.0006794346762382231
+          ],
+          "reference_application_point_m": [
+            -0.005033574190068053,
+            0.0194185686665487,
+            0.0004459996483572404
+          ],
+          "stencil_traction_magnitude_Pa": 37128.924156620815,
+          "current_application_point_m": [
+            -0.004887975551764058,
+            0.019410623754977815,
+            0.00044147897729774434
+          ],
+          "collinearity_relative_difference": 1.2622036170191767e-16
+        },
+        {
+          "index": 13,
+          "shoe": 1,
+          "nodes": [
+            2991,
+            2995,
+            243,
+            1549
+          ],
+          "weight": 1.1412440968000451e-07,
+          "body_resultant_N": [
+            0.007748540193437972,
+            4.321434476676821e-07,
+            -0.0012243817310504351
+          ],
+          "reference_application_point_m": [
+            0.005021388467572476,
+            0.017250588585247292,
+            0.0003574404710267806
+          ],
+          "stencil_traction_magnitude_Pa": 68737.95756389745,
+          "current_application_point_m": [
+            0.005168875385855871,
+            0.017243288938272445,
+            0.00035778988919252523
+          ],
+          "collinearity_relative_difference": 6.19167597830223e-17
+        },
+        {
+          "index": 14,
+          "shoe": 1,
+          "nodes": [
+            1549,
+            2991,
+            3001,
+            2995
+          ],
+          "weight": 2.4734989140625964e-07,
+          "body_resultant_N": [
+            0.01342880652308345,
+            1.2876554268625718e-06,
+            -0.0021219444757176707
+          ],
+          "reference_application_point_m": [
+            0.00502192763184512,
+            0.01762040962412271,
+            0.0003618775253061184
+          ],
+          "stencil_traction_magnitude_Pa": 54964.33311360854,
+          "current_application_point_m": [
+            0.005169398883193277,
+            0.017613122016040848,
+            0.0003612333913245804
+          ],
+          "collinearity_relative_difference": 0.0
+        },
+        {
+          "index": 15,
+          "shoe": 1,
+          "nodes": [
+            244,
+            2637,
+            2998,
+            3002
+          ],
+          "weight": 2.7255470137003174e-07,
+          "body_resultant_N": [
+            0.009941448747199263,
+            -0.00013020835568712408,
+            -0.0013729117417412289
+          ],
+          "reference_application_point_m": [
+            0.005023301011897015,
+            0.0185624320527824,
+            0.0003731797612768652
+          ],
+          "stencil_traction_magnitude_Pa": 36824.33291193688,
+          "current_application_point_m": [
+            0.005170731104124234,
+            0.018555174872038976,
+            0.0003700048657469602
+          ],
+          "collinearity_relative_difference": 1.742049831502713e-16
+        },
+        {
+          "index": 16,
+          "shoe": 0,
+          "nodes": [
+            1337,
+            1907,
+            2265,
+            2266
+          ],
+          "weight": 2.809515978525668e-07,
+          "body_resultant_N": [
+            -0.004114297109206411,
+            -3.479912045821326e-06,
+            -0.000599549412009995
+          ],
+          "reference_application_point_m": [
+            -0.005036631891400881,
+            0.01669679883486667,
+            0.0004658679923733859
+          ],
+          "stencil_traction_magnitude_Pa": 14798.8240981607,
+          "current_application_point_m": [
+            -0.004890671351976697,
+            0.016688906218538725,
+            0.00046865648672953555
+          ],
+          "collinearity_relative_difference": 0.0
+        },
+        {
+          "index": 17,
+          "shoe": 0,
+          "nodes": [
+            1336,
+            2269,
+            2279,
+            2273
+          ],
+          "weight": 3.0114814806166566e-07,
+          "body_resultant_N": [
+            -0.007600030415312266,
+            1.3621330059318372e-07,
+            -0.0010635076147208953
+          ],
+          "reference_application_point_m": [
+            -0.005036153180048915,
+            0.018947365683156518,
+            0.00046252571596729574
+          ],
+          "stencil_traction_magnitude_Pa": 25482.741637529638,
+          "current_application_point_m": [
+            -0.004890491141270437,
+            0.018939464938426246,
+            0.0004592707792366468
+          ],
+          "collinearity_relative_difference": 0.0
+        },
+        {
+          "index": 18,
+          "shoe": 0,
+          "nodes": [
+            187,
+            2266,
+            2272,
+            1933
+          ],
+          "weight": 2.9676291905058673e-07,
+          "body_resultant_N": [
+            -0.009524102421412314,
+            -8.028346390043954e-06,
+            -0.0018075746434570103
+          ],
+          "reference_application_point_m": [
+            -0.005042476816754002,
+            0.01779198450547194,
+            0.0005030473343160256
+          ],
+          "stencil_traction_magnitude_Pa": 32666.202722117614,
+          "current_application_point_m": [
+            -0.004896659224067935,
+            0.01778419180951777,
+            0.0005028955377491305
+          ],
+          "collinearity_relative_difference": 0.0
+        }
+      ],
+      "friction_stencils": [
+        {
+          "index": 0,
+          "shoe": 1,
+          "nodes": [
+            243,
+            1541,
+            2636,
+            2994
+          ],
+          "weight": 1.3530585215867725e-07,
+          "body_resultant_N": [
+            -0.00017250259649148137,
+            0.0034329628194706705,
+            -0.0011219931535616956
+          ],
+          "reference_application_point_m": [
+            0.0050213473972527635,
+            0.01650331382615546,
+            0.00035660392827735796
+          ],
+          "stencil_traction_magnitude_Pa": 26723.0070312217,
+          "weighted_friction_bound_N": 0.003615779238601776,
+          "bound_violation_N": 0.0
+        },
+        {
+          "index": 1,
+          "shoe": 1,
+          "nodes": [
+            2636,
+            2995,
+            243,
+            1549
+          ],
+          "weight": 1.1409479994034927e-07,
+          "body_resultant_N": [
+            -8.778945197239111e-05,
+            0.0024776890120153695,
+            -0.0005535882674401458
+          ],
+          "reference_application_point_m": [
+            0.005021073301970277,
+            0.01703441166786339,
+            0.00035484681459422863
+          ],
+          "stencil_traction_magnitude_Pa": 22264.793735300453,
+          "weighted_friction_bound_N": 0.00300434396005584,
+          "bound_violation_N": -0.0004640467731135932
+        },
+        {
+          "index": 2,
+          "shoe": 0,
+          "nodes": [
+            2262,
+            2272,
+            187,
+            1336
+          ],
+          "weight": 1.32057161898473e-07,
+          "body_resultant_N": [
+            -0.00010355200623725111,
+            0.0011220021959974674,
+            0.0007468562530366464
+          ],
+          "reference_application_point_m": [
+            -0.0050413705957555455,
+            0.017994100309965833,
+            0.0004959587131318366
+          ],
+          "stencil_traction_magnitude_Pa": 10236.596588538938,
+          "weighted_friction_bound_N": 0.0035428342532500406,
+          "bound_violation_N": -0.002191018360267998
+        },
+        {
+          "index": 3,
+          "shoe": 0,
+          "nodes": [
+            1908,
+            2272,
+            187,
+            1336
+          ],
+          "weight": 1.3205823239152327e-07,
+          "body_resultant_N": [
+            -7.376246376180385e-05,
+            0.0007174875643195429,
+            0.0005151008636858703
+          ],
+          "reference_application_point_m": [
+            -0.005041338545486551,
+            0.017999956161474023,
+            0.0004957533362531886
+          ],
+          "stencil_traction_magnitude_Pa": 6711.563520498048,
+          "weighted_friction_bound_N": 0.002366336280189297,
+          "bound_violation_N": -0.0014800190650888956
+        },
+        {
+          "index": 4,
+          "shoe": 0,
+          "nodes": [
+            2269,
+            2273,
+            187,
+            1336
+          ],
+          "weight": 1.3199579727744383e-07,
+          "body_resultant_N": [
+            8.89861683924406e-08,
+            0.0008182677090945304,
+            -3.1458107359607215e-07
+          ],
+          "reference_application_point_m": [
+            -0.005037239285811896,
+            0.018748925099984937,
+            0.0004694854395039842
+          ],
+          "stencil_traction_magnitude_Pa": 6199.195665928442,
+          "weighted_friction_bound_N": 0.0022409931527634167,
+          "bound_violation_N": -0.0014227253783603176
+        },
+        {
+          "index": 5,
+          "shoe": 0,
+          "nodes": [
+            1907,
+            2265,
+            210,
+            1337
+          ],
+          "weight": 1.2529469097044292e-07,
+          "body_resultant_N": [
+            0.0001013192103066983,
+            0.002007102989789575,
+            -0.0007078332138661772
+          ],
+          "reference_application_point_m": [
+            -0.005035596859767562,
+            0.016502861060652407,
+            0.00045928419656904383
+          ],
+          "stencil_traction_magnitude_Pa": 17005.27185932034,
+          "weighted_friction_bound_N": 0.002130670282481911,
+          "bound_violation_N": 0.0
+        },
+        {
+          "index": 6,
+          "shoe": 0,
+          "nodes": [
+            1907,
+            2266,
+            187,
+            1337
+          ],
+          "weight": 1.2529536875578478e-07,
+          "body_resultant_N": [
+            -7.135338368489565e-07,
+            0.00012046533527373225,
+            4.143185219395481e-06
+          ],
+          "reference_application_point_m": [
+            -0.005039464587158787,
+            0.01722757170463269,
+            0.00048388665948030744
+          ],
+          "stencil_traction_magnitude_Pa": 962.0361548366162,
+          "weighted_friction_bound_N": 0.00030066738415138205,
+          "bound_violation_N": -0.00018012870937473093
+        },
+        {
+          "index": 7,
+          "shoe": 0,
+          "nodes": [
+            2262,
+            2266,
+            187,
+            1337
+          ],
+          "weight": 1.2532497849544002e-07,
+          "body_resultant_N": [
+            -4.923597950408472e-05,
+            0.003410930626268705,
+            0.00032902445338496924
+          ],
+          "reference_application_point_m": [
+            -0.0050395879936109295,
+            0.017250694836217908,
+            0.00048467164310369285
+          ],
+          "stencil_traction_magnitude_Pa": 27345.839279224758,
+          "weighted_friction_bound_N": 0.007779056933363932,
+          "bound_violation_N": -0.00435194021375533
+        },
+        {
+          "index": 8,
+          "shoe": 1,
+          "nodes": [
+            2991,
+            3001,
+            244,
+            1549
+          ],
+          "weight": 1.1412440968000419e-07,
+          "body_resultant_N": [
+            0.00010076696034721847,
+            0.0022491298593215817,
+            0.0006387534706901155
+          ],
+          "reference_application_point_m": [
+            0.005022184147107532,
+            0.017796357374458362,
+            0.0003639885185609658
+          ],
+          "stencil_traction_magnitude_Pa": 20506.083434817923,
+          "weighted_friction_bound_N": 0.004485518498252281,
+          "bound_violation_N": -0.002145273831404773
+        },
+        {
+          "index": 9,
+          "shoe": 1,
+          "nodes": [
+            2637,
+            3001,
+            244,
+            1549
+          ],
+          "weight": 1.1412548017305446e-07,
+          "body_resultant_N": [
+            0.00018251475648351062,
+            -0.0016468699324577972,
+            0.0011535033455222225
+          ],
+          "reference_application_point_m": [
+            0.005022480635843476,
+            0.017999723542998277,
+            0.00036642847365691303
+          ],
+          "stencil_traction_magnitude_Pa": 17690.405274338784,
+          "weighted_friction_bound_N": 0.002788584389891262,
+          "bound_violation_N": -0.0007696583935014128
+        },
+        {
+          "index": 10,
+          "shoe": 1,
+          "nodes": [
+            2637,
+            3002,
+            244,
+            1549
+          ],
+          "weight": 1.1409479786253987e-07,
+          "body_resultant_N": [
+            4.715334863211603e-05,
+            0.00025521626660878236,
+            0.0002985288981416885
+          ],
+          "reference_application_point_m": [
+            0.005023294283424753,
+            0.018557816890525002,
+            0.0003731243892907112
+          ],
+          "stencil_traction_magnitude_Pa": 3467.058696493224,
+          "weighted_friction_bound_N": 0.0005349520923698818,
+          "bound_violation_N": -0.00013937873121592646
+        },
+        {
+          "index": 11,
+          "shoe": 0,
+          "nodes": [
+            2266,
+            2272,
+            187,
+            1336
+          ],
+          "weight": 1.32057161898473e-07,
+          "body_resultant_N": [
+            -2.4657876638573755e-10,
+            2.1430622896623133e-09,
+            1.5087446116357308e-09
+          ],
+          "reference_application_point_m": [
+            -0.005041954194544401,
+            0.01788747194287121,
+            0.0004996983914994688
+          ],
+          "stencil_traction_magnitude_Pa": 0.019934220072090628,
+          "weighted_friction_bound_N": 7.567307909088202e-09,
+          "bound_violation_N": -4.93485138170834e-09
+        },
+        {
+          "index": 12,
+          "shoe": 0,
+          "nodes": [
+            2269,
+            2279,
+            205,
+            1336
+          ],
+          "weight": 1.3199579727744383e-07,
+          "body_resultant_N": [
+            -0.00038586484838346166,
+            0.002760306101201217,
+            0.0027574671617128345
+          ],
+          "reference_application_point_m": [
+            -0.005033574190068051,
+            0.019418568666548692,
+            0.0004459996483572402
+          ],
+          "stencil_traction_magnitude_Pa": 29703.139325296714,
+          "weighted_friction_bound_N": 0.003920689556885535,
+          "bound_violation_N": 0.0
+        },
+        {
+          "index": 13,
+          "shoe": 1,
+          "nodes": [
+            2991,
+            2995,
+            243,
+            1549
+          ],
+          "weight": 1.1412440968000451e-07,
+          "body_resultant_N": [
+            0.00010093832765178177,
+            0.002502232024494137,
+            0.0006396746963630655
+          ],
+          "reference_application_point_m": [
+            0.005021388467572477,
+            0.017250588585247296,
+            0.0003574404710267807
+          ],
+          "stencil_traction_magnitude_Pa": 22647.859110038615,
+          "weighted_friction_bound_N": 0.006275743063671195,
+          "bound_violation_N": -0.003691069512222126
+        },
+        {
+          "index": 14,
+          "shoe": 1,
+          "nodes": [
+            1549,
+            2991,
+            3001,
+            2995
+          ],
+          "weight": 2.4734989140625964e-07,
+          "body_resultant_N": [
+            0.00022256064527238596,
+            0.00510634036584828,
+            0.001411582200276903
+          ],
+          "reference_application_point_m": [
+            0.005021927631845121,
+            0.017620409624122712,
+            0.00036187752530611846
+          ],
+          "stencil_traction_magnitude_Pa": 21437.359697121406,
+          "weighted_friction_bound_N": 0.010876337461494821,
+          "bound_violation_N": -0.005573808868374914
+        },
+        {
+          "index": 15,
+          "shoe": 1,
+          "nodes": [
+            244,
+            2637,
+            2998,
+            3002
+          ],
+          "weight": 2.7255470137003174e-07,
+          "body_resultant_N": [
+            0.0006720749212737757,
+            0.0039450862510460325,
+            0.004492433856313502
+          ],
+          "reference_application_point_m": [
+            0.005023301011897013,
+            0.018562432052782393,
+            0.00037317976127686496
+          ],
+          "stencil_traction_magnitude_Pa": 22074.187336175306,
+          "weighted_friction_bound_N": 0.008029316047970895,
+          "bound_violation_N": -0.002012892510573498
+        },
+        {
+          "index": 16,
+          "shoe": 0,
+          "nodes": [
+            1337,
+            1907,
+            2265,
+            2266
+          ],
+          "weight": 2.809515978525668e-07,
+          "body_resultant_N": [
+            0.00014874365003627642,
+            0.0031562452340882785,
+            -0.0010390453441998316
+          ],
+          "reference_application_point_m": [
+            -0.005036631891400881,
+            0.01669679883486667,
+            0.0004658679923733859
+          ],
+          "stencil_traction_magnitude_Pa": 11839.059278528626,
+          "weighted_friction_bound_N": 0.003326202621373875,
+          "bound_violation_N": -8.673617379884035e-19
+        },
+        {
+          "index": 17,
+          "shoe": 0,
+          "nodes": [
+            1336,
+            2269,
+            2279,
+            2273
+          ],
+          "weight": 3.0114814806166566e-07,
+          "body_resultant_N": [
+            -0.0005378391604956166,
+            0.004750775069652492,
+            0.003844110790065404
+          ],
+          "reference_application_point_m": [
+            -0.005036153180048915,
+            0.018947365683156518,
+            0.00046252571596729574
+          ],
+          "stencil_traction_magnitude_Pa": 20371.51808451391,
+          "weighted_friction_bound_N": 0.006139264361340774,
+          "bound_violation_N": -4.419416984679722e-06
+        },
+        {
+          "index": 18,
+          "shoe": 0,
+          "nodes": [
+            187,
+            2266,
+            2272,
+            1933
+          ],
+          "weight": 2.9676291905058673e-07,
+          "body_resultant_N": [
+            -0.000277878797144935,
+            0.0020932374814147175,
+            0.001454844976216518
+          ],
+          "reference_application_point_m": [
+            -0.005042476816754001,
+            0.017791984505471935,
+            0.0005030473343160254
+          ],
+          "stencil_traction_magnitude_Pa": 8640.772417972226,
+          "weighted_friction_bound_N": 0.007755294139291072,
+          "bound_violation_N": -0.005191033293681837
+        }
+      ],
+      "potential_J": -9.730239395017081e-05,
+      "iterations": [
+        {
+          "step": 1,
+          "friction_iteration": 0,
+          "newton_iteration": 0,
+          "energy_j": -9.730228155233061e-05,
+          "free_residual_n": 0.04830675459312508,
+          "normal_collisions": 19,
+          "collision_free_step": 1.0,
+          "accepted_step": 1.0
+        },
+        {
+          "step": 1,
+          "friction_iteration": 0,
+          "newton_iteration": 1,
+          "energy_j": -9.730238179648086e-05,
+          "free_residual_n": 0.008482328880966644,
+          "normal_collisions": 19,
+          "collision_free_step": 1.0,
+          "accepted_step": 1.0
+        },
+        {
+          "step": 1,
+          "friction_iteration": 0,
+          "newton_iteration": 2,
+          "energy_j": -9.730239009206278e-05,
+          "free_residual_n": 0.0014147173400880628,
+          "normal_collisions": 19,
+          "collision_free_step": 1.0,
+          "accepted_step": 1.0
+        },
+        {
+          "step": 1,
+          "friction_iteration": 0,
+          "newton_iteration": 3,
+          "energy_j": -9.730239182389515e-05,
+          "free_residual_n": 0.0005867249059650787,
+          "normal_collisions": 19,
+          "collision_free_step": 1.0,
+          "accepted_step": 1.0
+        },
+        {
+          "step": 1,
+          "friction_iteration": 0,
+          "newton_iteration": 4,
+          "energy_j": -9.730239374125919e-05,
+          "free_residual_n": 0.0005824694420986287,
+          "normal_collisions": 19,
+          "collision_free_step": 1.0,
+          "accepted_step": 1.0
+        },
+        {
+          "step": 1,
+          "friction_iteration": 0,
+          "newton_iteration": 5,
+          "energy_j": -9.730239391158877e-05,
+          "free_residual_n": 0.00010534035006876182,
+          "normal_collisions": 19,
+          "collision_free_step": 1.0,
+          "accepted_step": 1.0
+        },
+        {
+          "step": 1,
+          "friction_iteration": 0,
+          "newton_iteration": 6,
+          "energy_j": -9.730239393422534e-05,
+          "free_residual_n": 2.55688467167562e-05,
+          "normal_collisions": 19,
+          "collision_free_step": 1.0,
+          "accepted_step": 1.0
+        },
+        {
+          "step": 1,
+          "friction_iteration": 0,
+          "newton_iteration": 7,
+          "energy_j": -9.730239394968812e-05,
+          "free_residual_n": 4.109651569639752e-06,
+          "normal_collisions": 19,
+          "collision_free_step": 1.0,
+          "accepted_step": 1.0
+        },
+        {
+          "step": 1,
+          "friction_iteration": 0,
+          "newton_iteration": 8,
+          "energy_j": -9.730239395001968e-05,
+          "free_residual_n": 8.504960504561627e-07,
+          "normal_collisions": 19,
+          "collision_free_step": 1.0,
+          "accepted_step": 1.0
+        },
+        {
+          "step": 1,
+          "friction_iteration": 0,
+          "newton_iteration": 9,
+          "energy_j": -9.730239395017101e-05,
+          "free_residual_n": 2.8166098533013975e-08,
+          "normal_collisions": 19,
+          "collision_free_step": 1.0,
+          "accepted_step": 1.0
+        }
+      ],
+      "limitations": "One additional constant-load increment probes the displacement-smoothed friction history; it is not temporal or spatial convergence. Direct nodal replay isolates elastic recovery. Finite-footprint/load-model replay, rigid contact feedback, spatial/regularization tails and actual Franka matching remain required."
+    },
+    "zero": {
+      "scope": "Audit a constant-load contact hold and replay its resolved nodal loads natively.",
+      "reference": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/grasp-u-spatial-zero-l1-v1",
+      "reference_mesh_sha256": "fca107fe6fcad9a1028ba5387f6123eb57540995349913c0e22b02e1509ce32b",
+      "hold_complete_residual_N": 4.6311417794678916e-10,
+      "hold_body_residual_N": 2.302003847239946e-10,
+      "constant_load_hold_tensor_relative_change": 2.8139903459940737e-06,
+      "hold_maximum_nodal_increment_m": 1.768077051729675e-06,
+      "static_to_inertia_relief_rhs_difference_N": 1.7140553923027608e-11,
+      "native_complete_budget_fraction": 0.012021116292750999,
+      "native_full_tensor_relative_difference": 9.973408150358874e-10,
+      "raw_native_tensor_postprocessor_relative_difference": 1.467394725016615e-13,
+      "native_peak_Pa": 108926.83973268786,
+      "reference_raw_peak_Pa": 108926.83978636593,
+      "reference_raw_peak_position_m": [
+        0.00035698440893704305,
+        -0.004991140866333466,
+        0.00015274418427433216
+      ],
+      "part_small_strain_diagnostics": [
+        {
+          "name": "body",
+          "maximum_elastic_displacement_m": 1.1618620574321085e-06,
+          "maximum_symmetric_strain_norm": 1.1921056289141283e-05,
+          "minimum_deformation_jacobian": 0.9999978798399335
+        },
+        {
+          "name": "left_shoe",
+          "maximum_elastic_displacement_m": 1.98377899653284e-05,
+          "maximum_symmetric_strain_norm": 0.055670425362972495,
+          "minimum_deformation_jacobian": 0.9408889207602128
+        },
+        {
+          "name": "right_shoe",
+          "maximum_elastic_displacement_m": 1.9916455927861786e-05,
+          "maximum_symmetric_strain_norm": 0.05149763024928943,
+          "minimum_deformation_jacobian": 0.9391553981897697
+        }
+      ],
+      "normal_stencils": [
+        {
+          "index": 0,
+          "shoe": 0,
+          "nodes": [
+            2269,
+            2279,
+            205,
+            1336
+          ],
+          "weight": 1.3199579727744383e-07,
+          "body_resultant_N": [
+            -0.004769304089519319,
+            2.5974201352602566e-06,
+            -0.0006594585448353877
+          ],
+          "reference_application_point_m": [
+            -0.005033573202433401,
+            0.019418749115638068,
+            0.0004459933196327706
+          ],
+          "stencil_traction_magnitude_Pa": 36476.0179528117,
+          "current_application_point_m": [
+            -0.004911032784529616,
+            0.019418257892238368,
+            0.0004459092556723407
+          ],
+          "collinearity_relative_difference": 1.8604475336550665e-16
+        },
+        {
+          "index": 1,
+          "shoe": 0,
+          "nodes": [
+            1907,
+            2265,
+            210,
+            1337
+          ],
+          "weight": 1.2529469097044292e-07,
+          "body_resultant_N": [
+            -0.0029638534677056596,
+            -1.1472755571235092e-06,
+            -0.0004390909777182658
+          ],
+          "reference_application_point_m": [
+            -0.005035589370422426,
+            0.016501457753855257,
+            0.0004592365571370624
+          ],
+          "stencil_traction_magnitude_Pa": 23913.24407674889,
+          "current_application_point_m": [
+            -0.004912626190988784,
+            0.0165009598745468,
+            0.00045781253774395146
+          ],
+          "collinearity_relative_difference": 1.5360685585966324e-16
+        },
+        {
+          "index": 2,
+          "shoe": 0,
+          "nodes": [
+            1907,
+            2266,
+            187,
+            1337
+          ],
+          "weight": 1.2529536875578478e-07,
+          "body_resultant_N": [
+            -5.3466342550072366e-05,
+            -2.09965328573936e-08,
+            -7.91277036241307e-06
+          ],
+          "reference_application_point_m": [
+            -0.005039464012129726,
+            0.01722746395927184,
+            0.0004838830017428833
+          ],
+          "stencil_traction_magnitude_Pa": 431.3703075476294,
+          "current_application_point_m": [
+            -0.004916608119885464,
+            0.017226954439254153,
+            0.00048279233079762053
+          ],
+          "collinearity_relative_difference": 1.8017785576767877e-16
+        },
+        {
+          "index": 3,
+          "shoe": 0,
+          "nodes": [
+            2262,
+            2266,
+            187,
+            1337
+          ],
+          "weight": 1.2532497849544002e-07,
+          "body_resultant_N": [
+            -0.009533814785316433,
+            -6.781332118947395e-06,
+            -0.0013226849409257607
+          ],
+          "reference_application_point_m": [
+            -0.005039587647187066,
+            0.01725062992547401,
+            0.0004846694395150157
+          ],
+          "stencil_traction_magnitude_Pa": 76801.38551998748,
+          "current_application_point_m": [
+            -0.004916735180398411,
+            0.017250120031788177,
+            0.00048358940483062576
+          ],
+          "collinearity_relative_difference": 1.2849434108746283e-16
+        },
+        {
+          "index": 4,
+          "shoe": 0,
+          "nodes": [
+            2262,
+            2272,
+            187,
+            1336
+          ],
+          "weight": 1.32057161898473e-07,
+          "body_resultant_N": [
+            -0.003799275835790671,
+            1.8522396027057797e-06,
+            -0.0005316023145333081
+          ],
+          "reference_application_point_m": [
+            -0.005041371177618464,
+            0.01799399399875645,
+            0.0004959624416868242
+          ],
+          "stencil_traction_magnitude_Pa": 29050.203605739902,
+          "current_application_point_m": [
+            -0.00491862756637133,
+            0.017993478772911835,
+            0.0004952237780420286
+          ],
+          "collinearity_relative_difference": 1.185070979972679e-16
+        },
+        {
+          "index": 5,
+          "shoe": 0,
+          "nodes": [
+            1908,
+            2272,
+            187,
+            1336
+          ],
+          "weight": 1.3205823239152327e-07,
+          "body_resultant_N": [
+            -0.002915375576851131,
+            1.1468738448228385e-06,
+            -0.0004158543308897755
+          ],
+          "reference_application_point_m": [
+            -0.005041339022508701,
+            0.01799986900554769,
+            0.0004957563929926021
+          ],
+          "stencil_traction_magnitude_Pa": 22299.90130262259,
+          "current_application_point_m": [
+            -0.0049185962490702565,
+            0.017999353878582255,
+            0.0004950204287358582
+          ],
+          "collinearity_relative_difference": 1.4735797487441306e-16
+        },
+        {
+          "index": 6,
+          "shoe": 0,
+          "nodes": [
+            2269,
+            2273,
+            187,
+            1336
+          ],
+          "weight": 1.3199579727744383e-07,
+          "body_resultant_N": [
+            -0.0028868011692761136,
+            1.5770906554184175e-06,
+            -0.00039902396833321687
+          ],
+          "reference_application_point_m": [
+            -0.005037239764007453,
+            0.018748837729667577,
+            0.0004694885037625365
+          ],
+          "stencil_traction_magnitude_Pa": 22078.342171165004,
+          "current_application_point_m": [
+            -0.004914603797680572,
+            0.018748335208204726,
+            0.00046909666799737737
+          ],
+          "collinearity_relative_difference": 3.022727531634427e-17
+        },
+        {
+          "index": 7,
+          "shoe": 1,
+          "nodes": [
+            2991,
+            3001,
+            244,
+            1549
+          ],
+          "weight": 1.1412440968000419e-07,
+          "body_resultant_N": [
+            0.004532816764531282,
+            2.6215050923034043e-06,
+            -0.0007175670926229816
+          ],
+          "reference_application_point_m": [
+            0.005022184021830902,
+            0.01779627144529663,
+            0.0003639874875964865
+          ],
+          "stencil_traction_magnitude_Pa": 40212.810458927954,
+          "current_application_point_m": [
+            0.005146534754687172,
+            0.01779685968972882,
+            0.0003635506018555731
+          ],
+          "collinearity_relative_difference": 1.9673588816208513e-16
+        },
+        {
+          "index": 8,
+          "shoe": 1,
+          "nodes": [
+            2637,
+            3001,
+            244,
+            1549
+          ],
+          "weight": 1.1412548017305446e-07,
+          "body_resultant_N": [
+            0.004662734271238052,
+            2.6959737903563244e-06,
+            -0.000738080068718987
+          ],
+          "reference_application_point_m": [
+            0.0050224807305339954,
+            0.017999788492676524,
+            0.0003664292529128707
+          ],
+          "stencil_traction_magnitude_Pa": 41364.91007071391,
+          "current_application_point_m": [
+            0.005146818363818551,
+            0.01800037563448704,
+            0.0003660856488630796
+          ],
+          "collinearity_relative_difference": 1.3255867686799461e-16
+        },
+        {
+          "index": 9,
+          "shoe": 1,
+          "nodes": [
+            2637,
+            3002,
+            244,
+            1549
+          ],
+          "weight": 1.1409479786253987e-07,
+          "body_resultant_N": [
+            0.00054073923059445,
+            3.1134147990204816e-07,
+            -8.549014605038063e-05
+          ],
+          "reference_application_point_m": [
+            0.005023294241398065,
+            0.018557788063775994,
+            0.00037312404343194
+          ],
+          "stencil_traction_magnitude_Pa": 4798.25161784927,
+          "current_application_point_m": [
+            0.005147595958500208,
+            0.018558372182437183,
+            0.00037303619753267146
+          ],
+          "collinearity_relative_difference": 2.000403496223869e-16
+        },
+        {
+          "index": 10,
+          "shoe": 0,
+          "nodes": [
+            2266,
+            2272,
+            187,
+            1336
+          ],
+          "weight": 1.32057161898473e-07,
+          "body_resultant_N": [
+            -2.3683723562355983e-08,
+            -6.372996683872156e-12,
+            -3.831595715661743e-09
+          ],
+          "reference_application_point_m": [
+            -0.005041953783169183,
+            0.01788754710455478,
+            0.0004996957554230679
+          ],
+          "stencil_traction_magnitude_Pa": 0.1816763542128828,
+          "current_application_point_m": [
+            -0.004919194992002062,
+            0.017887030087157925,
+            0.0004989081826476826
+          ],
+          "collinearity_relative_difference": 4.173155871218435e-16
+        },
+        {
+          "index": 11,
+          "shoe": 1,
+          "nodes": [
+            243,
+            1541,
+            2636,
+            2994
+          ],
+          "weight": 1.3530585215867725e-07,
+          "body_resultant_N": [
+            0.00518852094989358,
+            -4.0776242540744845e-06,
+            -0.0008210877656056988
+          ],
+          "reference_application_point_m": [
+            0.005021355533577622,
+            0.01650151787083632,
+            0.0003566657718702347
+          ],
+          "stencil_traction_magnitude_Pa": 38823.81741746193,
+          "current_application_point_m": [
+            0.005145787575531785,
+            0.016502109439626156,
+            0.0003556355444325303
+          ],
+          "collinearity_relative_difference": 2.1339819975179266e-17
+        },
+        {
+          "index": 12,
+          "shoe": 1,
+          "nodes": [
+            2636,
+            2995,
+            243,
+            1549
+          ],
+          "weight": 1.1409479994034927e-07,
+          "body_resultant_N": [
+            0.002860666861758685,
+            1.671133521690898e-06,
+            -0.0004545325622401058
+          ],
+          "reference_application_point_m": [
+            0.005021073077965145,
+            0.017034258019309228,
+            0.00035484497114319943
+          ],
+          "stencil_traction_magnitude_Pa": 25387.245521186207,
+          "current_application_point_m": [
+            0.005145472011619954,
+            0.01703485046127468,
+            0.0003540588601459112
+          ],
+          "collinearity_relative_difference": 1.5094011903751243e-16
+        },
+        {
+          "index": 13,
+          "shoe": 1,
+          "nodes": [
+            2991,
+            2995,
+            243,
+            1549
+          ],
+          "weight": 1.1412440968000451e-07,
+          "body_resultant_N": [
+            0.008947181884348126,
+            5.17498525498218e-06,
+            -0.0014174672934280114
+          ],
+          "reference_application_point_m": [
+            0.005021388356918031,
+            0.01725051268566574,
+            0.0003574395603956166
+          ],
+          "stencil_traction_magnitude_Pa": 79376.26557853217,
+          "current_application_point_m": [
+            0.00514577368359929,
+            0.017251103930516293,
+            0.00035675255375062543
+          ],
+          "collinearity_relative_difference": 1.4029977333060042e-16
+        },
+        {
+          "index": 14,
+          "shoe": 1,
+          "nodes": [
+            244,
+            2637,
+            2998,
+            3002
+          ],
+          "weight": 2.7255470137003174e-07,
+          "body_resultant_N": [
+            0.009689621372817718,
+            -0.00012688255698410175,
+            -0.001331853646508747
+          ],
+          "reference_application_point_m": [
+            0.005023301011897014,
+            0.018562432052782397,
+            0.0003731797612768651
+          ],
+          "stencil_traction_magnitude_Pa": 35888.387492360795,
+          "current_application_point_m": [
+            0.00514760243008431,
+            0.018563016146283223,
+            0.000373094043942027
+          ],
+          "collinearity_relative_difference": 0.0
+        },
+        {
+          "index": 15,
+          "shoe": 0,
+          "nodes": [
+            1337,
+            1907,
+            2265,
+            2266
+          ],
+          "weight": 2.809515978525668e-07,
+          "body_resultant_N": [
+            -0.003932796084908455,
+            -1.1446476725103799e-06,
+            -0.0005826388241405263
+          ],
+          "reference_application_point_m": [
+            -0.005036631891400881,
+            0.01669679883486667,
+            0.0004658679923733859
+          ],
+          "stencil_traction_magnitude_Pa": 14150.909404559401,
+          "current_application_point_m": [
+            -0.004913697531899553,
+            0.01669629787450292,
+            0.00046453367552749293
+          ],
+          "collinearity_relative_difference": 0.0
+        },
+        {
+          "index": 16,
+          "shoe": 0,
+          "nodes": [
+            1336,
+            2269,
+            2279,
+            2273
+          ],
+          "weight": 3.0114814806166566e-07,
+          "body_resultant_N": [
+            -0.007750853566697968,
+            3.975384542708834e-06,
+            -0.0010713510920030435
+          ],
+          "reference_application_point_m": [
+            -0.005036153180048914,
+            0.018947365683156515,
+            0.00046252571596729563
+          ],
+          "stencil_traction_magnitude_Pa": 25982.385481137637,
+          "current_application_point_m": [
+            -0.004913545524913935,
+            0.018946866503014265,
+            0.00046222509779637156
+          ],
+          "collinearity_relative_difference": 2.2342809341813954e-16
+        },
+        {
+          "index": 17,
+          "shoe": 0,
+          "nodes": [
+            187,
+            2266,
+            2272,
+            1933
+          ],
+          "weight": 2.9676291905058673e-07,
+          "body_resultant_N": [
+            -0.010188718271271791,
+            -2.378485593037288e-06,
+            -0.001937234373632882
+          ],
+          "reference_application_point_m": [
+            -0.005042476816754003,
+            0.017791984505471942,
+            0.0005030473343160257
+          ],
+          "stencil_traction_magnitude_Pa": 34947.93680674651,
+          "current_application_point_m": [
+            -0.004919704397828,
+            0.01779146587971074,
+            0.0005022158534146863
+          ],
+          "collinearity_relative_difference": 1.7241044045451214e-16
+        },
+        {
+          "index": 18,
+          "shoe": 1,
+          "nodes": [
+            1549,
+            2991,
+            3001,
+            2995
+          ],
+          "weight": 2.4734989140625964e-07,
+          "body_resultant_N": [
+            0.012530788623934828,
+            8.250101092440507e-06,
+            -0.001985204573287398
+          ],
+          "reference_application_point_m": [
+            0.00502192763184512,
+            0.01762040962412271,
+            0.0003618775253061184
+          ],
+          "stencil_traction_magnitude_Pa": 51292.001215502045,
+          "current_application_point_m": [
+            0.005146289684217703,
+            0.017620998821345144,
+            0.00036136003359978763
+          ],
+          "collinearity_relative_difference": 0.0
+        }
+      ],
+      "friction_stencils": [
+        {
+          "index": 0,
+          "shoe": 0,
+          "nodes": [
+            2269,
+            2279,
+            205,
+            1336
+          ],
+          "weight": 1.3199579727744383e-07,
+          "body_resultant_N": [
+            -9.822003729721312e-05,
+            -0.0002928491271403771,
+            0.0007091887382422988
+          ],
+          "reference_application_point_m": [
+            -0.005033573202433402,
+            0.01941874911563807,
+            0.0004459933196327706
+          ],
+          "stencil_traction_magnitude_Pa": 5860.300501530429,
+          "weighted_friction_bound_N": 0.003851744856950175,
+          "bound_violation_N": -0.0030782098199652625
+        },
+        {
+          "index": 1,
+          "shoe": 0,
+          "nodes": [
+            1907,
+            2265,
+            210,
+            1337
+          ],
+          "weight": 1.2529469097044292e-07,
+          "body_resultant_N": [
+            -0.00010952838686499509,
+            0.0004527725570942477,
+            0.0007381309359134431
+          ],
+          "reference_application_point_m": [
+            -0.005035589370422425,
+            0.016501457753855253,
+            0.00045923655713706236
+          ],
+          "stencil_traction_magnitude_Pa": 6966.237641394657,
+          "weighted_friction_bound_N": 0.0023969620213576213,
+          "bound_violation_N": -0.0015241294288524105
+        },
+        {
+          "index": 2,
+          "shoe": 0,
+          "nodes": [
+            1907,
+            2266,
+            187,
+            1337
+          ],
+          "weight": 1.2529536875578478e-07,
+          "body_resultant_N": [
+            -1.0758814416308283e-06,
+            4.557069933107424e-06,
+            7.257605162625056e-06
+          ],
+          "reference_application_point_m": [
+            -0.005039464012129723,
+            0.017227463959271834,
+            0.00048388300174288313
+          ],
+          "stencil_traction_magnitude_Pa": 68.932870054634,
+          "weighted_friction_bound_N": 4.3238961403581306e-05,
+          "bound_violation_N": -3.460199203069135e-05
+        },
+        {
+          "index": 3,
+          "shoe": 0,
+          "nodes": [
+            2262,
+            2266,
+            187,
+            1337
+          ],
+          "weight": 1.2532497849544002e-07,
+          "body_resultant_N": [
+            -0.00017807531434571407,
+            0.0008004824103010984,
+            0.001279449606907106
+          ],
+          "reference_application_point_m": [
+            -0.005039587647187066,
+            0.01725062992547401,
+            0.00048466943951501565
+          ],
+          "stencil_traction_magnitude_Pa": 12126.037836780319,
+          "weighted_friction_bound_N": 0.0077001055909699506,
+          "bound_violation_N": -0.006180410159840565
+        },
+        {
+          "index": 4,
+          "shoe": 0,
+          "nodes": [
+            2262,
+            2272,
+            187,
+            1336
+          ],
+          "weight": 1.32057161898473e-07,
+          "body_resultant_N": [
+            -9.310803717297392e-05,
+            -8.931459647436443e-05,
+            0.0006651169004538561
+          ],
+          "reference_application_point_m": [
+            -0.005041371177618465,
+            0.01799399399875645,
+            0.0004959624416868243
+          ],
+          "stencil_traction_magnitude_Pa": 5130.46834152744,
+          "weighted_friction_bound_N": 0.0030690299525974476,
+          "bound_violation_N": -0.0023915148642053683
+        },
+        {
+          "index": 5,
+          "shoe": 0,
+          "nodes": [
+            1908,
+            2272,
+            187,
+            1336
+          ],
+          "weight": 1.3205823239152327e-07,
+          "body_resultant_N": [
+            -7.282782255572476e-05,
+            -6.937082534362886e-05,
+            0.0005103731759986965
+          ],
+          "reference_application_point_m": [
+            -0.005041339022508701,
+            0.01799986900554769,
+            0.0004957563929926021
+          ],
+          "stencil_traction_magnitude_Pa": 3939.0908222496805,
+          "weighted_friction_bound_N": 0.002355908438823813,
+          "bound_violation_N": -0.0018357190676078483
+        },
+        {
+          "index": 6,
+          "shoe": 0,
+          "nodes": [
+            2269,
+            2273,
+            187,
+            1336
+          ],
+          "weight": 1.3199579727744383e-07,
+          "body_resultant_N": [
+            -5.5160819478700576e-05,
+            6.877485207257966e-05,
+            0.0003993413804476166
+          ],
+          "reference_application_point_m": [
+            -0.005037239764007453,
+            0.01874883772966758,
+            0.0004694885037625365
+          ],
+          "stencil_traction_magnitude_Pa": 3098.2615016455366,
+          "weighted_friction_bound_N": 0.0023313987019577135,
+          "bound_violation_N": -0.0019224412048740006
+        },
+        {
+          "index": 7,
+          "shoe": 1,
+          "nodes": [
+            2991,
+            3001,
+            244,
+            1549
+          ],
+          "weight": 1.1412440968000419e-07,
+          "body_resultant_N": [
+            9.146347692107486e-05,
+            -0.00034064296091726774,
+            0.0005765233502574038
+          ],
+          "reference_application_point_m": [
+            0.0050221840218309015,
+            0.01779627144529662,
+            0.0003639874875964864
+          ],
+          "stencil_traction_magnitude_Pa": 5922.105250367611,
+          "weighted_friction_bound_N": 0.0036714106041592334,
+          "bound_violation_N": -0.002995553838398176
+        },
+        {
+          "index": 8,
+          "shoe": 1,
+          "nodes": [
+            2637,
+            3001,
+            244,
+            1549
+          ],
+          "weight": 1.1412548017305446e-07,
+          "body_resultant_N": [
+            0.0001334611962828341,
+            -0.0005835844469090134,
+            0.0008409938050385194
+          ],
+          "reference_application_point_m": [
+            0.005022480730533994,
+            0.01799978849267652,
+            0.0003664292529128706
+          ],
+          "stencil_traction_magnitude_Pa": 9045.349347220577,
+          "weighted_friction_bound_N": 0.00377663217930835,
+          "bound_violation_N": -0.0027443273417237773
+        },
+        {
+          "index": 9,
+          "shoe": 1,
+          "nodes": [
+            2637,
+            3002,
+            244,
+            1549
+          ],
+          "weight": 1.1409479786253987e-07,
+          "body_resultant_N": [
+            1.6190269357317042e-05,
+            -8.562673490411559e-05,
+            0.00010209427687589533
+          ],
+          "reference_application_point_m": [
+            0.005023294241398065,
+            0.018557788063775994,
+            0.00037312404343194
+          ],
+          "stencil_traction_magnitude_Pa": 1176.4651288850612,
+          "weighted_friction_bound_N": 0.0004379644387456929,
+          "bound_violation_N": -0.00030373588767322493
+        },
+        {
+          "index": 10,
+          "shoe": 0,
+          "nodes": [
+            2266,
+            2272,
+            187,
+            1336
+          ],
+          "weight": 1.32057161898473e-07,
+          "body_resultant_N": [
+            -6.482541641044039e-10,
+            -1.8567896635311256e-10,
+            4.0072744860504945e-09
+          ],
+          "reference_application_point_m": [
+            -0.005041953783169184,
+            0.017887547104554855,
+            0.0004996957554230657
+          ],
+          "stencil_traction_magnitude_Pa": 0.03077162924639218,
+          "weighted_friction_bound_N": 1.9193330977131995e-08,
+          "bound_violation_N": -1.5129716951861397e-08
+        },
+        {
+          "index": 11,
+          "shoe": 1,
+          "nodes": [
+            243,
+            1541,
+            2636,
+            2994
+          ],
+          "weight": 1.3530585215867725e-07,
+          "body_resultant_N": [
+            0.00014919352163639453,
+            0.0003138216336039924,
+            0.0009412076251362838
+          ],
+          "reference_application_point_m": [
+            0.005021355533577622,
+            0.01650151787083632,
+            0.0003566657718702347
+          ],
+          "stencil_traction_magnitude_Pa": 7415.065883257538,
+          "weighted_friction_bound_N": 0.004202471759778073,
+          "bound_violation_N": -0.003199169951631177
+        },
+        {
+          "index": 12,
+          "shoe": 1,
+          "nodes": [
+            2636,
+            2995,
+            243,
+            1549
+          ],
+          "weight": 1.1409479994034927e-07,
+          "body_resultant_N": [
+            9.778277546012307e-05,
+            0.00019497949522073266,
+            0.0006161269960503609
+          ],
+          "reference_application_point_m": [
+            0.005021073077965144,
+            0.017034258019309224,
+            0.0003548449711431993
+          ],
+          "stencil_traction_magnitude_Pa": 5728.556101580242,
+          "weighted_friction_bound_N": 0.0023172421590210144,
+          "bound_violation_N": -0.0016636436966641496
+        },
+        {
+          "index": 13,
+          "shoe": 1,
+          "nodes": [
+            2991,
+            2995,
+            243,
+            1549
+          ],
+          "weight": 1.1412440968000451e-07,
+          "body_resultant_N": [
+            0.00010533653050584968,
+            0.0009109150765674334,
+            0.0006682193472705364
+          ],
+          "reference_application_point_m": [
+            0.005021388356918031,
+            0.01725051268566574,
+            0.0003574395603956166
+          ],
+          "stencil_traction_magnitude_Pa": 9942.021379389687,
+          "weighted_friction_bound_N": 0.007247015561402614,
+          "bound_violation_N": -0.006112388240453782
+        },
+        {
+          "index": 14,
+          "shoe": 1,
+          "nodes": [
+            244,
+            2637,
+            2998,
+            3002
+          ],
+          "weight": 2.7255470137003174e-07,
+          "body_resultant_N": [
+            0.00023213075272177344,
+            -0.001527374344802501,
+            0.0018343278719893303
+          ],
+          "reference_application_point_m": [
+            0.005023301011897014,
+            0.018562432052782397,
+            0.0003731797612768651
+          ],
+          "stencil_traction_magnitude_Pa": 8799.084362025274,
+          "weighted_friction_bound_N": 0.00782523898850588,
+          "bound_violation_N": -0.0054270071778843645
+        },
+        {
+          "index": 15,
+          "shoe": 0,
+          "nodes": [
+            1337,
+            1907,
+            2265,
+            2266
+          ],
+          "weight": 2.809515978525668e-07,
+          "body_resultant_N": [
+            -0.00012824185626871343,
+            0.0005323454165662688,
+            0.0008645831713257886
+          ],
+          "reference_application_point_m": [
+            -0.005036631891400882,
+            0.016696798834866675,
+            0.000465867992373386
+          ],
+          "stencil_traction_magnitude_Pa": 3642.6100911034955,
+          "weighted_friction_bound_N": 0.0031805764866222963,
+          "bound_violation_N": -0.0021571793611728854
+        },
+        {
+          "index": 16,
+          "shoe": 0,
+          "nodes": [
+            1336,
+            2269,
+            2279,
+            2273
+          ],
+          "weight": 3.0114814806166566e-07,
+          "body_resultant_N": [
+            -0.000151778064535886,
+            -1.2157687925090123e-05,
+            0.0010980165420566839
+          ],
+          "reference_application_point_m": [
+            -0.005036153180048914,
+            0.018947365683156515,
+            0.00046252571596729563
+          ],
+          "stencil_traction_magnitude_Pa": 3680.991142043611,
+          "weighted_friction_bound_N": 0.006259637815895134,
+          "bound_violation_N": -0.005151114150437305
+        },
+        {
+          "index": 17,
+          "shoe": 0,
+          "nodes": [
+            187,
+            2266,
+            2272,
+            1933
+          ],
+          "weight": 2.9676291905058673e-07,
+          "body_resultant_N": [
+            -0.0003177002297493454,
+            6.606367683552882e-05,
+            0.0016708360372838496
+          ],
+          "reference_application_point_m": [
+            -0.005042476816754002,
+            0.01779198450547194,
+            0.0005030473343160256
+          ],
+          "stencil_traction_magnitude_Pa": 5735.402903965165,
+          "weighted_friction_bound_N": 0.008297001393252427,
+          "bound_violation_N": -0.006594946485540513
+        },
+        {
+          "index": 18,
+          "shoe": 1,
+          "nodes": [
+            1549,
+            2991,
+            3001,
+            2995
+          ],
+          "weight": 2.4734989140625964e-07,
+          "body_resultant_N": [
+            0.00022137150213963322,
+            -0.0002332324412043703,
+            0.0013963474327818811
+          ],
+          "reference_application_point_m": [
+            0.00502192763184512,
+            0.01762040962412271,
+            0.0003618775253061184
+          ],
+          "stencil_traction_magnitude_Pa": 5792.989299426453,
+          "weighted_friction_bound_N": 0.010149656744531367,
+          "bound_violation_N": -0.00871676147040061
+        }
+      ],
+      "potential_J": -9.712180230993443e-05,
+      "iterations": [
+        {
+          "step": 1,
+          "friction_iteration": 0,
+          "newton_iteration": 0,
+          "energy_j": -9.712179191204556e-05,
+          "free_residual_n": 0.0186640169343827,
+          "normal_collisions": 19,
+          "collision_free_step": 1.0,
+          "accepted_step": 1.0
+        },
+        {
+          "step": 1,
+          "friction_iteration": 0,
+          "newton_iteration": 1,
+          "energy_j": -9.712180226132502e-05,
+          "free_residual_n": 0.0010837866721096772,
+          "normal_collisions": 19,
+          "collision_free_step": 1.0,
+          "accepted_step": 1.0
+        },
+        {
+          "step": 1,
+          "friction_iteration": 0,
+          "newton_iteration": 2,
+          "energy_j": -9.712180230993097e-05,
+          "free_residual_n": 6.290959506135987e-06,
+          "normal_collisions": 19,
+          "collision_free_step": 1.0,
+          "accepted_step": 1.0
+        }
+      ],
+      "limitations": "One additional constant-load increment probes the displacement-smoothed friction history; it is not temporal or spatial convergence. Direct nodal replay isolates elastic recovery. Finite-footprint/load-model replay, rigid contact feedback, spatial/regularization tails and actual Franka matching remain required."
+    }
+  },
+  "fixed_stencil_support": {
+    "scope": "Bracket fixed-stencil wrench support with inner/outer Coulomb polygons.",
+    "input_sha256": {
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/matrix-mesh-u-v1/meshes/h0.0035.npz": "89d355a64969b976d9c43249c50283b1a6334074c902a935ff99dda9acfacdb9",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/grasp-u-rigid-basis-z-v1/solution/left_shoe_mesh.npz": "1cb758440338f591a8bc621a273ea61426f900cfa682e9249e386bf4f56c6a3f",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/grasp-u-rigid-basis-z-v1/solution/right_shoe_mesh.npz": "bf9fd9976842d3c1873c3397182e4b09d1fb1215960ad94378f47208540a7b72",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/grasp-u-rigid-basis-z-v1/solution/force_failure.npz": "d1190f990e18ec4c2fd803b64c4c19d0f678a41d167ac78275ebd186ce805491"
+    },
+    "normal_collision_count": 3,
+    "body_mass_kg": 0.003728718823955421,
+    "body_com_m": [
+      1.900708583494989e-05,
+      0.006847102024775797,
+      -2.1136841887628962e-05
+    ],
+    "moment_scale_m": 0.021897541451343636,
+    "collisions": [
+      {
+        "index": 0,
+        "nodes": [
+          1452,
+          1488,
+          183,
+          1213
+        ],
+        "groups": [
+          2,
+          2,
+          0,
+          0
+        ],
+        "current_normal_force_N": 0.0468870667066384,
+        "inward_normal": [
+          0.9460326725273915,
+          0.013470841360790263,
+          0.32379116563568194
+        ],
+        "reference_application_point_m": [
+          0.005199163082806241,
+          0.018000409090560787,
+          -0.0010702503068202225
+        ]
+      },
+      {
+        "index": 1,
+        "nodes": [
+          135,
+          994,
+          1336,
+          1363
+        ],
+        "groups": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "current_normal_force_N": 0.047090453982473725,
+        "inward_normal": [
+          -0.951153674057804,
+          0.008024117123158977,
+          0.3086135153727627
+        ],
+        "reference_application_point_m": [
+          -0.005103865189011312,
+          0.01799737493173708,
+          -0.0007607237404969035
+        ]
+      },
+      {
+        "index": 2,
+        "nodes": [
+          994,
+          1363,
+          1336,
+          1401
+        ],
+        "groups": [
+          0,
+          1,
+          1,
+          1
+        ],
+        "current_normal_force_N": 0.000999283640272671,
+        "inward_normal": [
+          -0.9509274266201926,
+          0.02343137328308164,
+          0.3085255257633754
+        ],
+        "reference_application_point_m": [
+          -0.005104346667065217,
+          0.018010320987193826,
+          -0.0007625520661855309
+        ]
+      }
+    ],
+    "rows": [
+      {
+        "gravity_m_per_s2": [
+          0,
+          0,
+          0
+        ],
+        "polygon_sides": 8,
+        "inner_status": 0,
+        "inner_message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "outer_status": 0,
+        "outer_message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "classification": "fixed_stencil_wrench_feasible_in_exact_coulomb_cones",
+        "complete_scaled_wrench_residual_N": 1.695875545575376e-17,
+        "coefficients_N": [
+          [
+            0.04681546056933308,
+            -0.0006159749364076409,
+            -0.01761220575024753
+          ],
+          [
+            0.048021138391982715,
+            -0.0004000647156209424,
+            0.014002384818004249
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ]
+        ]
+      },
+      {
+        "gravity_m_per_s2": [
+          0,
+          0,
+          0
+        ],
+        "polygon_sides": 16,
+        "inner_status": 0,
+        "inner_message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "outer_status": 0,
+        "outer_message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "classification": "fixed_stencil_wrench_feasible_in_exact_coulomb_cones",
+        "complete_scaled_wrench_residual_N": 1.2917143913868597e-17,
+        "coefficients_N": [
+          [
+            0.04681546056933308,
+            -0.0006159749364076359,
+            -0.017612205750247537
+          ],
+          [
+            0.048021138391982715,
+            -0.00040006471562095084,
+            0.014002384818004227
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ]
+        ]
+      },
+      {
+        "gravity_m_per_s2": [
+          0,
+          0,
+          0
+        ],
+        "polygon_sides": 32,
+        "inner_status": 0,
+        "inner_message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "outer_status": 0,
+        "outer_message": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+        "classification": "fixed_stencil_wrench_feasible_in_exact_coulomb_cones",
+        "complete_scaled_wrench_residual_N": 1.2917143913868597e-17,
+        "coefficients_N": [
+          [
+            0.04681546056933308,
+            -0.0006159749364076359,
+            -0.017612205750247537
+          ],
+          [
+            0.048021138391982715,
+            -0.00040006471562095084,
+            0.014002384818004227
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ]
+        ]
+      },
+      {
+        "gravity_m_per_s2": [
+          0,
+          -0.15328125,
+          0
+        ],
+        "polygon_sides": 8,
+        "inner_status": 2,
+        "inner_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+        "outer_status": 2,
+        "outer_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+        "classification": "fixed_stencil_outer_cone_infeasibility_with_bounded_dual_certificate",
+        "separating_margin_N": 1.3486574926314943e-05,
+        "bounded_dual_error_N": 1.145702094967215e-16,
+        "multipliers": [
+          0.9845872080660061,
+          -0.04084169989200607,
+          -0.509324845561697,
+          1.0,
+          6.662886189827167e-05,
+          -0.029879534263939817,
+          1.0,
+          0.9998028760044605,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          8.59631297520559e-05,
+          0.0001100815873408015,
+          0.0,
+          0.0,
+          0.0,
+          0.0004040035555769767,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "gravity_m_per_s2": [
+          0,
+          -0.15328125,
+          0
+        ],
+        "polygon_sides": 16,
+        "inner_status": 2,
+        "inner_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+        "outer_status": 2,
+        "outer_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+        "classification": "fixed_stencil_outer_cone_infeasibility_with_bounded_dual_certificate",
+        "separating_margin_N": 1.3677208427750929e-05,
+        "bounded_dual_error_N": 1.0406301375510734e-16,
+        "multipliers": [
+          -1.0,
+          -0.04083869090876429,
+          -0.5093304603651753,
+          1.0,
+          4.289397978836635e-05,
+          -0.02989225382977836,
+          -0.984583439399245,
+          -0.9847767163295087,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.00018762373120974538,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.00037963737485662274,
+          1.605118800496159e-05,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "gravity_m_per_s2": [
+          0,
+          -0.15328125,
+          0
+        ],
+        "polygon_sides": 32,
+        "inner_status": 2,
+        "inner_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+        "outer_status": 2,
+        "outer_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+        "classification": "fixed_stencil_outer_cone_infeasibility_with_bounded_dual_certificate",
+        "separating_margin_N": 1.3752035746607314e-05,
+        "bounded_dual_error_N": 7.889881954326488e-16,
+        "multipliers": [
+          -1.0,
+          -0.04082059453710233,
+          -0.5093341545014161,
+          1.0,
+          2.7278137039924122e-05,
+          -0.029968750763223653,
+          -0.9845454316514131,
+          -0.9847370051783236,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.00018340014401588641,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.00017572252438444712,
+          0.00021638146924292495,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "gravity_m_per_s2": [
+          0,
+          -9.81,
+          0
+        ],
+        "polygon_sides": 8,
+        "inner_status": 2,
+        "inner_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+        "outer_status": 2,
+        "outer_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+        "classification": "fixed_stencil_outer_cone_infeasibility_with_bounded_dual_certificate",
+        "separating_margin_N": 0.0014842128809270717,
+        "bounded_dual_error_N": 7.387821687127541e-17,
+        "multipliers": [
+          -1.0,
+          -0.04088522719592942,
+          -0.5093205745481327,
+          1.0,
+          8.468327891196354e-05,
+          -0.029695535762256187,
+          -0.9846525774860769,
+          -0.9848789149591515,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.000232852785071688,
+          0.0,
+          0.0,
+          0.00012340749640236005,
+          0.000315858820676862,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "gravity_m_per_s2": [
+          0,
+          -9.81,
+          0
+        ],
+        "polygon_sides": 16,
+        "inner_status": 2,
+        "inner_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+        "outer_status": 2,
+        "outer_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+        "classification": "fixed_stencil_outer_cone_infeasibility_with_bounded_dual_certificate",
+        "separating_margin_N": 0.0014846453703642336,
+        "bounded_dual_error_N": 3.2643924783062114e-16,
+        "multipliers": [
+          -1.0,
+          -0.04088096127477981,
+          -0.5093179933931055,
+          1.0,
+          9.559433047467437e-05,
+          -0.029713568652628308,
+          -0.9846556859807867,
+          -0.9848702528254175,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0002207433293202849,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.00020526294484589404,
+          0.0002220486448596914,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "gravity_m_per_s2": [
+          0,
+          -9.81,
+          0
+        ],
+        "polygon_sides": 32,
+        "inner_status": 2,
+        "inner_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+        "outer_status": 2,
+        "outer_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+        "classification": "fixed_stencil_outer_cone_infeasibility_with_bounded_dual_certificate",
+        "separating_margin_N": 0.001484848175272359,
+        "bounded_dual_error_N": 2.094108020587161e-15,
+        "multipliers": [
+          -1.0,
+          -0.040883316706217525,
+          -0.5093148590839273,
+          1.0,
+          0.00010884367377677324,
+          -0.02970361177914985,
+          -0.984663725122446,
+          -0.9848759590428046,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0001788246438548476,
+          4.127853070474823e-05,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0004265896552748566,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "gravity_m_per_s2": [
+          0,
+          0,
+          -0.15328125
+        ],
+        "polygon_sides": 8,
+        "inner_status": 2,
+        "inner_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+        "outer_status": 2,
+        "outer_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+        "classification": "fixed_stencil_outer_cone_infeasibility_with_bounded_dual_certificate",
+        "separating_margin_N": 0.0002812446885840065,
+        "bounded_dual_error_N": 6.6387745557955e-17,
+        "multipliers": [
+          -1.0,
+          -0.04084169989200585,
+          -0.509324845561697,
+          1.0,
+          6.662886189858932e-05,
+          -0.029879534263940053,
+          -0.984587208066006,
+          -0.9847843320615451,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          8.596312975199327e-05,
+          0.00011008158734084362,
+          0.0,
+          0.0,
+          0.0,
+          0.00040400355557703604,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "gravity_m_per_s2": [
+          0,
+          0,
+          -0.15328125
+        ],
+        "polygon_sides": 16,
+        "inner_status": 2,
+        "inner_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+        "outer_status": 2,
+        "outer_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+        "classification": "fixed_stencil_outer_cone_infeasibility_with_bounded_dual_certificate",
+        "separating_margin_N": 0.00028144025094759,
+        "bounded_dual_error_N": 9.598457306817776e-17,
+        "multipliers": [
+          -1.0,
+          -0.040838690908763936,
+          -0.5093304603651749,
+          1.0,
+          4.2893979787692674e-05,
+          -0.02989225382978034,
+          -0.9845834393992439,
+          -0.9847767163295081,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.00018762373120980488,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.00037963737485413563,
+          1.6051188007817284e-05,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "gravity_m_per_s2": [
+          0,
+          0,
+          -0.15328125
+        ],
+        "polygon_sides": 32,
+        "inner_status": 2,
+        "inner_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+        "outer_status": 2,
+        "outer_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+        "classification": "fixed_stencil_outer_cone_infeasibility_with_bounded_dual_certificate",
+        "separating_margin_N": 0.00028152753247185085,
+        "bounded_dual_error_N": 4.1424420138850356e-17,
+        "multipliers": [
+          -1.0,
+          -0.04082059453710313,
+          -0.509334154501415,
+          1.0,
+          2.7278137044100093e-05,
+          -0.0299687507632308,
+          -0.9845454316514085,
+          -0.9847370051783182,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.00018340014401315325,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.00017572252438511848,
+          0.0002163814692449486,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "gravity_m_per_s2": [
+          0,
+          0,
+          -9.81
+        ],
+        "polygon_sides": 8,
+        "inner_status": 2,
+        "inner_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+        "outer_status": 2,
+        "outer_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+        "classification": "fixed_stencil_outer_cone_infeasibility_with_bounded_dual_certificate",
+        "separating_margin_N": 0.01862077442155939,
+        "bounded_dual_error_N": 2.989038789630285e-17,
+        "multipliers": [
+          -1.0,
+          -0.04080256721333844,
+          -0.509340123848208,
+          1.0,
+          2.0445303880934834e-06,
+          -0.030044955817600385,
+          -0.9844921560272427,
+          -0.984696981904938,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.00019537259669200792,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.00029461958751853695,
+          0.00011008863036476206,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "gravity_m_per_s2": [
+          0,
+          0,
+          -9.81
+        ],
+        "polygon_sides": 16,
+        "inner_status": 2,
+        "inner_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+        "outer_status": 2,
+        "outer_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+        "classification": "fixed_stencil_outer_cone_infeasibility_with_bounded_dual_certificate",
+        "separating_margin_N": 0.01862110479504287,
+        "bounded_dual_error_N": 2.9852625540248176e-17,
+        "multipliers": [
+          -1.0,
+          -0.040802594230560686,
+          -0.5093371596508249,
+          1.0,
+          1.457477756691749e-05,
+          -0.030044841610471412,
+          -0.9845015905242864,
+          -0.9846976404006986,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0001870016321509942,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0001926526921140585,
+          0.00020368683994034415,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "gravity_m_per_s2": [
+          0,
+          0,
+          -9.81
+        ],
+        "polygon_sides": 32,
+        "inner_status": 2,
+        "inner_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+        "outer_status": 2,
+        "outer_message": "The problem is infeasible. (HiGHS Status 8: model_status is Infeasible; primal_status is None)",
+        "classification": "fixed_stencil_outer_cone_infeasibility_with_bounded_dual_certificate",
+        "separating_margin_N": 0.018621257558672097,
+        "bounded_dual_error_N": 6.277112594015624e-17,
+        "multipliers": [
+          -1.0,
+          -0.04080333040452441,
+          -0.5093357092391272,
+          1.0,
+          2.0705953981447948e-05,
+          -0.030041729657878602,
+          -0.984507585670394,
+          -0.9846995191898158,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.00017572493152121657,
+          7.377205644700845e-06,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0003924155546919044,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    ],
+    "limitations": "The contact geometry and existing stencil are fixed. Positive feasibility supplies possible static wrenches, not deformation/contact convergence. Negative certificates exclude only this fixed stencil's admissible force distributions; additional contacts, deformation and pose changes can alter support. Force/moment checks use the linear FEM reference rigid modes, with two x-free guided backplates. No general grasp infeasibility or resolved-contact acceptance is claimed.",
+    "binding_reference": "https://github.com/ipc-sim/ipc-toolkit/blob/v1.6.0/python/src/potentials/potential.hpp"
+  },
+  "goal_completion": false
+}

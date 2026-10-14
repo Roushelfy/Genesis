@@ -1,0 +1,1066 @@
+{
+  "scope": "Audit a constant-load contact hold and replay its resolved nodal loads natively.",
+  "reference": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/grasp-u-spatial-zero-l1-v1",
+  "reference_mesh_sha256": "fca107fe6fcad9a1028ba5387f6123eb57540995349913c0e22b02e1509ce32b",
+  "hold_complete_residual_N": 4.6311417794678916e-10,
+  "hold_body_residual_N": 2.302003847239946e-10,
+  "constant_load_hold_tensor_relative_change": 2.8139903459940737e-06,
+  "hold_maximum_nodal_increment_m": 1.768077051729675e-06,
+  "static_to_inertia_relief_rhs_difference_N": 1.7140553923027608e-11,
+  "native_complete_budget_fraction": 0.012021116292750999,
+  "native_full_tensor_relative_difference": 9.973408150358874e-10,
+  "raw_native_tensor_postprocessor_relative_difference": 1.467394725016615e-13,
+  "native_peak_Pa": 108926.83973268786,
+  "reference_raw_peak_Pa": 108926.83978636593,
+  "reference_raw_peak_position_m": [
+    0.00035698440893704305,
+    -0.004991140866333466,
+    0.00015274418427433216
+  ],
+  "part_small_strain_diagnostics": [
+    {
+      "name": "body",
+      "maximum_elastic_displacement_m": 1.1618620574321085e-06,
+      "maximum_symmetric_strain_norm": 1.1921056289141283e-05,
+      "minimum_deformation_jacobian": 0.9999978798399335
+    },
+    {
+      "name": "left_shoe",
+      "maximum_elastic_displacement_m": 1.98377899653284e-05,
+      "maximum_symmetric_strain_norm": 0.055670425362972495,
+      "minimum_deformation_jacobian": 0.9408889207602128
+    },
+    {
+      "name": "right_shoe",
+      "maximum_elastic_displacement_m": 1.9916455927861786e-05,
+      "maximum_symmetric_strain_norm": 0.05149763024928943,
+      "minimum_deformation_jacobian": 0.9391553981897697
+    }
+  ],
+  "normal_stencils": [
+    {
+      "index": 0,
+      "shoe": 0,
+      "nodes": [
+        2269,
+        2279,
+        205,
+        1336
+      ],
+      "weight": 1.3199579727744383e-07,
+      "body_resultant_N": [
+        -0.004769304089519319,
+        2.5974201352602566e-06,
+        -0.0006594585448353877
+      ],
+      "reference_application_point_m": [
+        -0.005033573202433401,
+        0.019418749115638068,
+        0.0004459933196327706
+      ],
+      "stencil_traction_magnitude_Pa": 36476.0179528117,
+      "current_application_point_m": [
+        -0.004911032784529616,
+        0.019418257892238368,
+        0.0004459092556723407
+      ],
+      "collinearity_relative_difference": 1.8604475336550665e-16
+    },
+    {
+      "index": 1,
+      "shoe": 0,
+      "nodes": [
+        1907,
+        2265,
+        210,
+        1337
+      ],
+      "weight": 1.2529469097044292e-07,
+      "body_resultant_N": [
+        -0.0029638534677056596,
+        -1.1472755571235092e-06,
+        -0.0004390909777182658
+      ],
+      "reference_application_point_m": [
+        -0.005035589370422426,
+        0.016501457753855257,
+        0.0004592365571370624
+      ],
+      "stencil_traction_magnitude_Pa": 23913.24407674889,
+      "current_application_point_m": [
+        -0.004912626190988784,
+        0.0165009598745468,
+        0.00045781253774395146
+      ],
+      "collinearity_relative_difference": 1.5360685585966324e-16
+    },
+    {
+      "index": 2,
+      "shoe": 0,
+      "nodes": [
+        1907,
+        2266,
+        187,
+        1337
+      ],
+      "weight": 1.2529536875578478e-07,
+      "body_resultant_N": [
+        -5.3466342550072366e-05,
+        -2.09965328573936e-08,
+        -7.91277036241307e-06
+      ],
+      "reference_application_point_m": [
+        -0.005039464012129726,
+        0.01722746395927184,
+        0.0004838830017428833
+      ],
+      "stencil_traction_magnitude_Pa": 431.3703075476294,
+      "current_application_point_m": [
+        -0.004916608119885464,
+        0.017226954439254153,
+        0.00048279233079762053
+      ],
+      "collinearity_relative_difference": 1.8017785576767877e-16
+    },
+    {
+      "index": 3,
+      "shoe": 0,
+      "nodes": [
+        2262,
+        2266,
+        187,
+        1337
+      ],
+      "weight": 1.2532497849544002e-07,
+      "body_resultant_N": [
+        -0.009533814785316433,
+        -6.781332118947395e-06,
+        -0.0013226849409257607
+      ],
+      "reference_application_point_m": [
+        -0.005039587647187066,
+        0.01725062992547401,
+        0.0004846694395150157
+      ],
+      "stencil_traction_magnitude_Pa": 76801.38551998748,
+      "current_application_point_m": [
+        -0.004916735180398411,
+        0.017250120031788177,
+        0.00048358940483062576
+      ],
+      "collinearity_relative_difference": 1.2849434108746283e-16
+    },
+    {
+      "index": 4,
+      "shoe": 0,
+      "nodes": [
+        2262,
+        2272,
+        187,
+        1336
+      ],
+      "weight": 1.32057161898473e-07,
+      "body_resultant_N": [
+        -0.003799275835790671,
+        1.8522396027057797e-06,
+        -0.0005316023145333081
+      ],
+      "reference_application_point_m": [
+        -0.005041371177618464,
+        0.01799399399875645,
+        0.0004959624416868242
+      ],
+      "stencil_traction_magnitude_Pa": 29050.203605739902,
+      "current_application_point_m": [
+        -0.00491862756637133,
+        0.017993478772911835,
+        0.0004952237780420286
+      ],
+      "collinearity_relative_difference": 1.185070979972679e-16
+    },
+    {
+      "index": 5,
+      "shoe": 0,
+      "nodes": [
+        1908,
+        2272,
+        187,
+        1336
+      ],
+      "weight": 1.3205823239152327e-07,
+      "body_resultant_N": [
+        -0.002915375576851131,
+        1.1468738448228385e-06,
+        -0.0004158543308897755
+      ],
+      "reference_application_point_m": [
+        -0.005041339022508701,
+        0.01799986900554769,
+        0.0004957563929926021
+      ],
+      "stencil_traction_magnitude_Pa": 22299.90130262259,
+      "current_application_point_m": [
+        -0.0049185962490702565,
+        0.017999353878582255,
+        0.0004950204287358582
+      ],
+      "collinearity_relative_difference": 1.4735797487441306e-16
+    },
+    {
+      "index": 6,
+      "shoe": 0,
+      "nodes": [
+        2269,
+        2273,
+        187,
+        1336
+      ],
+      "weight": 1.3199579727744383e-07,
+      "body_resultant_N": [
+        -0.0028868011692761136,
+        1.5770906554184175e-06,
+        -0.00039902396833321687
+      ],
+      "reference_application_point_m": [
+        -0.005037239764007453,
+        0.018748837729667577,
+        0.0004694885037625365
+      ],
+      "stencil_traction_magnitude_Pa": 22078.342171165004,
+      "current_application_point_m": [
+        -0.004914603797680572,
+        0.018748335208204726,
+        0.00046909666799737737
+      ],
+      "collinearity_relative_difference": 3.022727531634427e-17
+    },
+    {
+      "index": 7,
+      "shoe": 1,
+      "nodes": [
+        2991,
+        3001,
+        244,
+        1549
+      ],
+      "weight": 1.1412440968000419e-07,
+      "body_resultant_N": [
+        0.004532816764531282,
+        2.6215050923034043e-06,
+        -0.0007175670926229816
+      ],
+      "reference_application_point_m": [
+        0.005022184021830902,
+        0.01779627144529663,
+        0.0003639874875964865
+      ],
+      "stencil_traction_magnitude_Pa": 40212.810458927954,
+      "current_application_point_m": [
+        0.005146534754687172,
+        0.01779685968972882,
+        0.0003635506018555731
+      ],
+      "collinearity_relative_difference": 1.9673588816208513e-16
+    },
+    {
+      "index": 8,
+      "shoe": 1,
+      "nodes": [
+        2637,
+        3001,
+        244,
+        1549
+      ],
+      "weight": 1.1412548017305446e-07,
+      "body_resultant_N": [
+        0.004662734271238052,
+        2.6959737903563244e-06,
+        -0.000738080068718987
+      ],
+      "reference_application_point_m": [
+        0.0050224807305339954,
+        0.017999788492676524,
+        0.0003664292529128707
+      ],
+      "stencil_traction_magnitude_Pa": 41364.91007071391,
+      "current_application_point_m": [
+        0.005146818363818551,
+        0.01800037563448704,
+        0.0003660856488630796
+      ],
+      "collinearity_relative_difference": 1.3255867686799461e-16
+    },
+    {
+      "index": 9,
+      "shoe": 1,
+      "nodes": [
+        2637,
+        3002,
+        244,
+        1549
+      ],
+      "weight": 1.1409479786253987e-07,
+      "body_resultant_N": [
+        0.00054073923059445,
+        3.1134147990204816e-07,
+        -8.549014605038063e-05
+      ],
+      "reference_application_point_m": [
+        0.005023294241398065,
+        0.018557788063775994,
+        0.00037312404343194
+      ],
+      "stencil_traction_magnitude_Pa": 4798.25161784927,
+      "current_application_point_m": [
+        0.005147595958500208,
+        0.018558372182437183,
+        0.00037303619753267146
+      ],
+      "collinearity_relative_difference": 2.000403496223869e-16
+    },
+    {
+      "index": 10,
+      "shoe": 0,
+      "nodes": [
+        2266,
+        2272,
+        187,
+        1336
+      ],
+      "weight": 1.32057161898473e-07,
+      "body_resultant_N": [
+        -2.3683723562355983e-08,
+        -6.372996683872156e-12,
+        -3.831595715661743e-09
+      ],
+      "reference_application_point_m": [
+        -0.005041953783169183,
+        0.01788754710455478,
+        0.0004996957554230679
+      ],
+      "stencil_traction_magnitude_Pa": 0.1816763542128828,
+      "current_application_point_m": [
+        -0.004919194992002062,
+        0.017887030087157925,
+        0.0004989081826476826
+      ],
+      "collinearity_relative_difference": 4.173155871218435e-16
+    },
+    {
+      "index": 11,
+      "shoe": 1,
+      "nodes": [
+        243,
+        1541,
+        2636,
+        2994
+      ],
+      "weight": 1.3530585215867725e-07,
+      "body_resultant_N": [
+        0.00518852094989358,
+        -4.0776242540744845e-06,
+        -0.0008210877656056988
+      ],
+      "reference_application_point_m": [
+        0.005021355533577622,
+        0.01650151787083632,
+        0.0003566657718702347
+      ],
+      "stencil_traction_magnitude_Pa": 38823.81741746193,
+      "current_application_point_m": [
+        0.005145787575531785,
+        0.016502109439626156,
+        0.0003556355444325303
+      ],
+      "collinearity_relative_difference": 2.1339819975179266e-17
+    },
+    {
+      "index": 12,
+      "shoe": 1,
+      "nodes": [
+        2636,
+        2995,
+        243,
+        1549
+      ],
+      "weight": 1.1409479994034927e-07,
+      "body_resultant_N": [
+        0.002860666861758685,
+        1.671133521690898e-06,
+        -0.0004545325622401058
+      ],
+      "reference_application_point_m": [
+        0.005021073077965145,
+        0.017034258019309228,
+        0.00035484497114319943
+      ],
+      "stencil_traction_magnitude_Pa": 25387.245521186207,
+      "current_application_point_m": [
+        0.005145472011619954,
+        0.01703485046127468,
+        0.0003540588601459112
+      ],
+      "collinearity_relative_difference": 1.5094011903751243e-16
+    },
+    {
+      "index": 13,
+      "shoe": 1,
+      "nodes": [
+        2991,
+        2995,
+        243,
+        1549
+      ],
+      "weight": 1.1412440968000451e-07,
+      "body_resultant_N": [
+        0.008947181884348126,
+        5.17498525498218e-06,
+        -0.0014174672934280114
+      ],
+      "reference_application_point_m": [
+        0.005021388356918031,
+        0.01725051268566574,
+        0.0003574395603956166
+      ],
+      "stencil_traction_magnitude_Pa": 79376.26557853217,
+      "current_application_point_m": [
+        0.00514577368359929,
+        0.017251103930516293,
+        0.00035675255375062543
+      ],
+      "collinearity_relative_difference": 1.4029977333060042e-16
+    },
+    {
+      "index": 14,
+      "shoe": 1,
+      "nodes": [
+        244,
+        2637,
+        2998,
+        3002
+      ],
+      "weight": 2.7255470137003174e-07,
+      "body_resultant_N": [
+        0.009689621372817718,
+        -0.00012688255698410175,
+        -0.001331853646508747
+      ],
+      "reference_application_point_m": [
+        0.005023301011897014,
+        0.018562432052782397,
+        0.0003731797612768651
+      ],
+      "stencil_traction_magnitude_Pa": 35888.387492360795,
+      "current_application_point_m": [
+        0.00514760243008431,
+        0.018563016146283223,
+        0.000373094043942027
+      ],
+      "collinearity_relative_difference": 0.0
+    },
+    {
+      "index": 15,
+      "shoe": 0,
+      "nodes": [
+        1337,
+        1907,
+        2265,
+        2266
+      ],
+      "weight": 2.809515978525668e-07,
+      "body_resultant_N": [
+        -0.003932796084908455,
+        -1.1446476725103799e-06,
+        -0.0005826388241405263
+      ],
+      "reference_application_point_m": [
+        -0.005036631891400881,
+        0.01669679883486667,
+        0.0004658679923733859
+      ],
+      "stencil_traction_magnitude_Pa": 14150.909404559401,
+      "current_application_point_m": [
+        -0.004913697531899553,
+        0.01669629787450292,
+        0.00046453367552749293
+      ],
+      "collinearity_relative_difference": 0.0
+    },
+    {
+      "index": 16,
+      "shoe": 0,
+      "nodes": [
+        1336,
+        2269,
+        2279,
+        2273
+      ],
+      "weight": 3.0114814806166566e-07,
+      "body_resultant_N": [
+        -0.007750853566697968,
+        3.975384542708834e-06,
+        -0.0010713510920030435
+      ],
+      "reference_application_point_m": [
+        -0.005036153180048914,
+        0.018947365683156515,
+        0.00046252571596729563
+      ],
+      "stencil_traction_magnitude_Pa": 25982.385481137637,
+      "current_application_point_m": [
+        -0.004913545524913935,
+        0.018946866503014265,
+        0.00046222509779637156
+      ],
+      "collinearity_relative_difference": 2.2342809341813954e-16
+    },
+    {
+      "index": 17,
+      "shoe": 0,
+      "nodes": [
+        187,
+        2266,
+        2272,
+        1933
+      ],
+      "weight": 2.9676291905058673e-07,
+      "body_resultant_N": [
+        -0.010188718271271791,
+        -2.378485593037288e-06,
+        -0.001937234373632882
+      ],
+      "reference_application_point_m": [
+        -0.005042476816754003,
+        0.017791984505471942,
+        0.0005030473343160257
+      ],
+      "stencil_traction_magnitude_Pa": 34947.93680674651,
+      "current_application_point_m": [
+        -0.004919704397828,
+        0.01779146587971074,
+        0.0005022158534146863
+      ],
+      "collinearity_relative_difference": 1.7241044045451214e-16
+    },
+    {
+      "index": 18,
+      "shoe": 1,
+      "nodes": [
+        1549,
+        2991,
+        3001,
+        2995
+      ],
+      "weight": 2.4734989140625964e-07,
+      "body_resultant_N": [
+        0.012530788623934828,
+        8.250101092440507e-06,
+        -0.001985204573287398
+      ],
+      "reference_application_point_m": [
+        0.00502192763184512,
+        0.01762040962412271,
+        0.0003618775253061184
+      ],
+      "stencil_traction_magnitude_Pa": 51292.001215502045,
+      "current_application_point_m": [
+        0.005146289684217703,
+        0.017620998821345144,
+        0.00036136003359978763
+      ],
+      "collinearity_relative_difference": 0.0
+    }
+  ],
+  "friction_stencils": [
+    {
+      "index": 0,
+      "shoe": 0,
+      "nodes": [
+        2269,
+        2279,
+        205,
+        1336
+      ],
+      "weight": 1.3199579727744383e-07,
+      "body_resultant_N": [
+        -9.822003729721312e-05,
+        -0.0002928491271403771,
+        0.0007091887382422988
+      ],
+      "reference_application_point_m": [
+        -0.005033573202433402,
+        0.01941874911563807,
+        0.0004459933196327706
+      ],
+      "stencil_traction_magnitude_Pa": 5860.300501530429,
+      "weighted_friction_bound_N": 0.003851744856950175,
+      "bound_violation_N": -0.0030782098199652625
+    },
+    {
+      "index": 1,
+      "shoe": 0,
+      "nodes": [
+        1907,
+        2265,
+        210,
+        1337
+      ],
+      "weight": 1.2529469097044292e-07,
+      "body_resultant_N": [
+        -0.00010952838686499509,
+        0.0004527725570942477,
+        0.0007381309359134431
+      ],
+      "reference_application_point_m": [
+        -0.005035589370422425,
+        0.016501457753855253,
+        0.00045923655713706236
+      ],
+      "stencil_traction_magnitude_Pa": 6966.237641394657,
+      "weighted_friction_bound_N": 0.0023969620213576213,
+      "bound_violation_N": -0.0015241294288524105
+    },
+    {
+      "index": 2,
+      "shoe": 0,
+      "nodes": [
+        1907,
+        2266,
+        187,
+        1337
+      ],
+      "weight": 1.2529536875578478e-07,
+      "body_resultant_N": [
+        -1.0758814416308283e-06,
+        4.557069933107424e-06,
+        7.257605162625056e-06
+      ],
+      "reference_application_point_m": [
+        -0.005039464012129723,
+        0.017227463959271834,
+        0.00048388300174288313
+      ],
+      "stencil_traction_magnitude_Pa": 68.932870054634,
+      "weighted_friction_bound_N": 4.3238961403581306e-05,
+      "bound_violation_N": -3.460199203069135e-05
+    },
+    {
+      "index": 3,
+      "shoe": 0,
+      "nodes": [
+        2262,
+        2266,
+        187,
+        1337
+      ],
+      "weight": 1.2532497849544002e-07,
+      "body_resultant_N": [
+        -0.00017807531434571407,
+        0.0008004824103010984,
+        0.001279449606907106
+      ],
+      "reference_application_point_m": [
+        -0.005039587647187066,
+        0.01725062992547401,
+        0.00048466943951501565
+      ],
+      "stencil_traction_magnitude_Pa": 12126.037836780319,
+      "weighted_friction_bound_N": 0.0077001055909699506,
+      "bound_violation_N": -0.006180410159840565
+    },
+    {
+      "index": 4,
+      "shoe": 0,
+      "nodes": [
+        2262,
+        2272,
+        187,
+        1336
+      ],
+      "weight": 1.32057161898473e-07,
+      "body_resultant_N": [
+        -9.310803717297392e-05,
+        -8.931459647436443e-05,
+        0.0006651169004538561
+      ],
+      "reference_application_point_m": [
+        -0.005041371177618465,
+        0.01799399399875645,
+        0.0004959624416868243
+      ],
+      "stencil_traction_magnitude_Pa": 5130.46834152744,
+      "weighted_friction_bound_N": 0.0030690299525974476,
+      "bound_violation_N": -0.0023915148642053683
+    },
+    {
+      "index": 5,
+      "shoe": 0,
+      "nodes": [
+        1908,
+        2272,
+        187,
+        1336
+      ],
+      "weight": 1.3205823239152327e-07,
+      "body_resultant_N": [
+        -7.282782255572476e-05,
+        -6.937082534362886e-05,
+        0.0005103731759986965
+      ],
+      "reference_application_point_m": [
+        -0.005041339022508701,
+        0.01799986900554769,
+        0.0004957563929926021
+      ],
+      "stencil_traction_magnitude_Pa": 3939.0908222496805,
+      "weighted_friction_bound_N": 0.002355908438823813,
+      "bound_violation_N": -0.0018357190676078483
+    },
+    {
+      "index": 6,
+      "shoe": 0,
+      "nodes": [
+        2269,
+        2273,
+        187,
+        1336
+      ],
+      "weight": 1.3199579727744383e-07,
+      "body_resultant_N": [
+        -5.5160819478700576e-05,
+        6.877485207257966e-05,
+        0.0003993413804476166
+      ],
+      "reference_application_point_m": [
+        -0.005037239764007453,
+        0.01874883772966758,
+        0.0004694885037625365
+      ],
+      "stencil_traction_magnitude_Pa": 3098.2615016455366,
+      "weighted_friction_bound_N": 0.0023313987019577135,
+      "bound_violation_N": -0.0019224412048740006
+    },
+    {
+      "index": 7,
+      "shoe": 1,
+      "nodes": [
+        2991,
+        3001,
+        244,
+        1549
+      ],
+      "weight": 1.1412440968000419e-07,
+      "body_resultant_N": [
+        9.146347692107486e-05,
+        -0.00034064296091726774,
+        0.0005765233502574038
+      ],
+      "reference_application_point_m": [
+        0.0050221840218309015,
+        0.01779627144529662,
+        0.0003639874875964864
+      ],
+      "stencil_traction_magnitude_Pa": 5922.105250367611,
+      "weighted_friction_bound_N": 0.0036714106041592334,
+      "bound_violation_N": -0.002995553838398176
+    },
+    {
+      "index": 8,
+      "shoe": 1,
+      "nodes": [
+        2637,
+        3001,
+        244,
+        1549
+      ],
+      "weight": 1.1412548017305446e-07,
+      "body_resultant_N": [
+        0.0001334611962828341,
+        -0.0005835844469090134,
+        0.0008409938050385194
+      ],
+      "reference_application_point_m": [
+        0.005022480730533994,
+        0.01799978849267652,
+        0.0003664292529128706
+      ],
+      "stencil_traction_magnitude_Pa": 9045.349347220577,
+      "weighted_friction_bound_N": 0.00377663217930835,
+      "bound_violation_N": -0.0027443273417237773
+    },
+    {
+      "index": 9,
+      "shoe": 1,
+      "nodes": [
+        2637,
+        3002,
+        244,
+        1549
+      ],
+      "weight": 1.1409479786253987e-07,
+      "body_resultant_N": [
+        1.6190269357317042e-05,
+        -8.562673490411559e-05,
+        0.00010209427687589533
+      ],
+      "reference_application_point_m": [
+        0.005023294241398065,
+        0.018557788063775994,
+        0.00037312404343194
+      ],
+      "stencil_traction_magnitude_Pa": 1176.4651288850612,
+      "weighted_friction_bound_N": 0.0004379644387456929,
+      "bound_violation_N": -0.00030373588767322493
+    },
+    {
+      "index": 10,
+      "shoe": 0,
+      "nodes": [
+        2266,
+        2272,
+        187,
+        1336
+      ],
+      "weight": 1.32057161898473e-07,
+      "body_resultant_N": [
+        -6.482541641044039e-10,
+        -1.8567896635311256e-10,
+        4.0072744860504945e-09
+      ],
+      "reference_application_point_m": [
+        -0.005041953783169184,
+        0.017887547104554855,
+        0.0004996957554230657
+      ],
+      "stencil_traction_magnitude_Pa": 0.03077162924639218,
+      "weighted_friction_bound_N": 1.9193330977131995e-08,
+      "bound_violation_N": -1.5129716951861397e-08
+    },
+    {
+      "index": 11,
+      "shoe": 1,
+      "nodes": [
+        243,
+        1541,
+        2636,
+        2994
+      ],
+      "weight": 1.3530585215867725e-07,
+      "body_resultant_N": [
+        0.00014919352163639453,
+        0.0003138216336039924,
+        0.0009412076251362838
+      ],
+      "reference_application_point_m": [
+        0.005021355533577622,
+        0.01650151787083632,
+        0.0003566657718702347
+      ],
+      "stencil_traction_magnitude_Pa": 7415.065883257538,
+      "weighted_friction_bound_N": 0.004202471759778073,
+      "bound_violation_N": -0.003199169951631177
+    },
+    {
+      "index": 12,
+      "shoe": 1,
+      "nodes": [
+        2636,
+        2995,
+        243,
+        1549
+      ],
+      "weight": 1.1409479994034927e-07,
+      "body_resultant_N": [
+        9.778277546012307e-05,
+        0.00019497949522073266,
+        0.0006161269960503609
+      ],
+      "reference_application_point_m": [
+        0.005021073077965144,
+        0.017034258019309224,
+        0.0003548449711431993
+      ],
+      "stencil_traction_magnitude_Pa": 5728.556101580242,
+      "weighted_friction_bound_N": 0.0023172421590210144,
+      "bound_violation_N": -0.0016636436966641496
+    },
+    {
+      "index": 13,
+      "shoe": 1,
+      "nodes": [
+        2991,
+        2995,
+        243,
+        1549
+      ],
+      "weight": 1.1412440968000451e-07,
+      "body_resultant_N": [
+        0.00010533653050584968,
+        0.0009109150765674334,
+        0.0006682193472705364
+      ],
+      "reference_application_point_m": [
+        0.005021388356918031,
+        0.01725051268566574,
+        0.0003574395603956166
+      ],
+      "stencil_traction_magnitude_Pa": 9942.021379389687,
+      "weighted_friction_bound_N": 0.007247015561402614,
+      "bound_violation_N": -0.006112388240453782
+    },
+    {
+      "index": 14,
+      "shoe": 1,
+      "nodes": [
+        244,
+        2637,
+        2998,
+        3002
+      ],
+      "weight": 2.7255470137003174e-07,
+      "body_resultant_N": [
+        0.00023213075272177344,
+        -0.001527374344802501,
+        0.0018343278719893303
+      ],
+      "reference_application_point_m": [
+        0.005023301011897014,
+        0.018562432052782397,
+        0.0003731797612768651
+      ],
+      "stencil_traction_magnitude_Pa": 8799.084362025274,
+      "weighted_friction_bound_N": 0.00782523898850588,
+      "bound_violation_N": -0.0054270071778843645
+    },
+    {
+      "index": 15,
+      "shoe": 0,
+      "nodes": [
+        1337,
+        1907,
+        2265,
+        2266
+      ],
+      "weight": 2.809515978525668e-07,
+      "body_resultant_N": [
+        -0.00012824185626871343,
+        0.0005323454165662688,
+        0.0008645831713257886
+      ],
+      "reference_application_point_m": [
+        -0.005036631891400882,
+        0.016696798834866675,
+        0.000465867992373386
+      ],
+      "stencil_traction_magnitude_Pa": 3642.6100911034955,
+      "weighted_friction_bound_N": 0.0031805764866222963,
+      "bound_violation_N": -0.0021571793611728854
+    },
+    {
+      "index": 16,
+      "shoe": 0,
+      "nodes": [
+        1336,
+        2269,
+        2279,
+        2273
+      ],
+      "weight": 3.0114814806166566e-07,
+      "body_resultant_N": [
+        -0.000151778064535886,
+        -1.2157687925090123e-05,
+        0.0010980165420566839
+      ],
+      "reference_application_point_m": [
+        -0.005036153180048914,
+        0.018947365683156515,
+        0.00046252571596729563
+      ],
+      "stencil_traction_magnitude_Pa": 3680.991142043611,
+      "weighted_friction_bound_N": 0.006259637815895134,
+      "bound_violation_N": -0.005151114150437305
+    },
+    {
+      "index": 17,
+      "shoe": 0,
+      "nodes": [
+        187,
+        2266,
+        2272,
+        1933
+      ],
+      "weight": 2.9676291905058673e-07,
+      "body_resultant_N": [
+        -0.0003177002297493454,
+        6.606367683552882e-05,
+        0.0016708360372838496
+      ],
+      "reference_application_point_m": [
+        -0.005042476816754002,
+        0.01779198450547194,
+        0.0005030473343160256
+      ],
+      "stencil_traction_magnitude_Pa": 5735.402903965165,
+      "weighted_friction_bound_N": 0.008297001393252427,
+      "bound_violation_N": -0.006594946485540513
+    },
+    {
+      "index": 18,
+      "shoe": 1,
+      "nodes": [
+        1549,
+        2991,
+        3001,
+        2995
+      ],
+      "weight": 2.4734989140625964e-07,
+      "body_resultant_N": [
+        0.00022137150213963322,
+        -0.0002332324412043703,
+        0.0013963474327818811
+      ],
+      "reference_application_point_m": [
+        0.00502192763184512,
+        0.01762040962412271,
+        0.0003618775253061184
+      ],
+      "stencil_traction_magnitude_Pa": 5792.989299426453,
+      "weighted_friction_bound_N": 0.010149656744531367,
+      "bound_violation_N": -0.00871676147040061
+    }
+  ],
+  "potential_J": -9.712180230993443e-05,
+  "iterations": [
+    {
+      "step": 1,
+      "friction_iteration": 0,
+      "newton_iteration": 0,
+      "energy_j": -9.712179191204556e-05,
+      "free_residual_n": 0.0186640169343827,
+      "normal_collisions": 19,
+      "collision_free_step": 1.0,
+      "accepted_step": 1.0
+    },
+    {
+      "step": 1,
+      "friction_iteration": 0,
+      "newton_iteration": 1,
+      "energy_j": -9.712180226132502e-05,
+      "free_residual_n": 0.0010837866721096772,
+      "normal_collisions": 19,
+      "collision_free_step": 1.0,
+      "accepted_step": 1.0
+    },
+    {
+      "step": 1,
+      "friction_iteration": 0,
+      "newton_iteration": 2,
+      "energy_j": -9.712180230993097e-05,
+      "free_residual_n": 6.290959506135987e-06,
+      "normal_collisions": 19,
+      "collision_free_step": 1.0,
+      "accepted_step": 1.0
+    }
+  ],
+  "limitations": "One additional constant-load increment probes the displacement-smoothed friction history; it is not temporal or spatial convergence. Direct nodal replay isolates elastic recovery. Finite-footprint/load-model replay, rigid contact feedback, spatial/regularization tails and actual Franka matching remain required."
+}

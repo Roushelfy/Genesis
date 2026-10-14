@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/plot_resolved_grasp.py", line 137, in <module>
+    main()
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/plot_resolved_grasp.py", line 109, in main
+    export(fig, args.output / "resolved_u_strain", style)
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/plot_physical_controls.py", line 36, in export
+    raise RuntimeError(f"Rendered text QA failed for{preview}: {issues}")
+RuntimeError: Rendered text QA failed for/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/grasp-u-plots-v2/results/resolved_u_strain_preview.png: ["text may be clipped: '$\\\\mathdefault{10^{-7}}$'", "text may be clipped: '$\\\\mathdefault{10^{0}}$'", "text may be clipped: '$\\\\mathdefault{10^{1}}$'"]
