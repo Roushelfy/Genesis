@@ -80,6 +80,15 @@ times out during initialization. Third-level/separated-axis U jobs and a longer
 full-egg retry are scheduled. The [acceptance ledger](docs/PHYSICAL_ACCEPTANCE_LEDGER.md)
 retains the complete A/B/C, geometry, convergence, feedback, cost and publication
 requirements; neither these numerical passes nor scheduled work completes them.
+The [nonlinear reference qualification](docs/PHYSICAL_NONLINEAR_REFERENCE_20261014.md)
+checks independent P2 neo-Hookean derivatives, objectivity, analytic compression,
+full part-block assembly and whole-volume nonlinear peak bounds. Saved linear
+U positions expose a finite-rotation assumption in the body as well as local
+pad strain. Same-protocol pad-only/all-part nonlinear contact experiments are
+running from separately hashed executable snapshots, without modifying the live
+canonical references. These checks are preliminary reference evidence; solved
+contact convergence, objective frame/native replay, egg/Franka matching, feedback
+and the complete original acceptance matrix remain required.
 
 ## Previous nonconvex implementation brief, 2026-10-11
 
