@@ -5,7 +5,16 @@ without narrowing its scope. Historical native performance completion does not
 establish the new physical stage. Dated reports preserve their observations;
 running or pending jobs count as scheduled work only.
 
-Current: [original-step recovery and fourth U](PHYSICAL_CONTACT_RECOVERY_20261015.md)
+Current: [stencil precision and original fields](PHYSICAL_STENCIL_PRECISION_20261015.md)
+independently recovers rejected8433-tet step26 at the unchanged equation/budgets,
+with18 active body nodes and0.00283025mm² lumped support at that one state.
+The complete80-state precision-aware re-solve and independent audit remain
+live/scheduled. Original startup80-state raw global field bounds,397440 interior/
+corner checks and four actual native CUDA replays qualify only that prefix and
+one coarse physical setting. Full original history, physical tails and every
+original A/B/C/model/feedback/accuracy-cost requirement remain open.
+
+The earlier [original-step recovery and fourth U](PHYSICAL_CONTACT_RECOVERY_20261015.md)
 independently audits all866 original physical states including recovered866 at
 the unchanged equation/budgets. Direct continuation accepts867/868, then rejects
 869; fixed-dt residual continuation subsequently recovers869, independently

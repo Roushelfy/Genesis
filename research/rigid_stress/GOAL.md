@@ -31,7 +31,17 @@ egg/Franka and U contact references, resolved-load/native replay versus feedback
 remaining applicable load-model sensitivity and physically verified warmed costs.
 These are execution priorities within the complete linked objective.
 
-The [original-step recovery/fourth-U checkpoint](docs/PHYSICAL_CONTACT_RECOVERY_20261015.md)
+The [stencil-precision/original-field checkpoint](docs/PHYSICAL_STENCIL_PRECISION_20261015.md)
+independently recovers rejected8433-tet step26 to9.611e-13N at unchanged physical
+inputs and force budgets. Its expanded audit identifies18 active body nodes and
+0.00283025mm² lumped support at that one recovered state. The80-step re-solve and its audit
+remain live/scheduled. Original ground-supported startup80-state global fields,
+397440 interior/corner certificate checks and four actual native CUDA replays
+are qualified. Full3.3s history, physical contact/space/geometry tails, model/
+feedback and verified warmed accuracy/cost remain required. The uncached30720
+producer times out before saving dynamic states; it is not completed evidence.
+
+The earlier [original-step recovery/fourth-U checkpoint](docs/PHYSICAL_CONTACT_RECOVERY_20261015.md)
 independently verifies original step866 and all865 preceding physical states at
 the unchanged timestep and force budgets. Direct continuation accepts867/868
 but rejects869; fixed-dt residual continuation then recovers869, independently
