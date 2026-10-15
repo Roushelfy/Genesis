@@ -1,0 +1,691 @@
+{
+  "scope": "Measure full rigid-contact tangents and stencil changes at rejected original-equation continuation states.",
+  "original_dt_s": 0.00125,
+  "original_previous_state_and_controls_fixed": true,
+  "unknown_column_scales": [
+    0.0001,
+    0.0001,
+    0.0001,
+    0.01,
+    0.01,
+    0.01,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1
+  ],
+  "base_absolute_difference_steps": [
+    1e-12,
+    1e-12,
+    1e-12,
+    1e-10,
+    1e-10,
+    1e-10,
+    1e-08,
+    1e-08,
+    1e-08,
+    1e-08,
+    1e-08,
+    1e-08,
+    1e-08,
+    1e-08,
+    1e-08
+  ],
+  "cases": [
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-rigid-full-history-v2/results/failure.npz",
+      "source_sha256": "053cf586b331b3aca8f2de88c4b9413c5cccfe178beb2290dd7c3a597ef6ef1f",
+      "numerical_stage": null,
+      "original_body_residual_N": 1.5281680131871755,
+      "original_robot_effort_residual": 1.3168044136239707,
+      "artificial_equation_residual": 2.0172435004897173,
+      "stencil_fingerprint": [
+        [
+          "FaceVertexNormalCollision",
+          16,
+          494,
+          498,
+          499
+        ],
+        [
+          "FaceVertexNormalCollision",
+          28,
+          502,
+          503,
+          504
+        ],
+        [
+          "FaceVertexNormalCollision",
+          36,
+          402,
+          398,
+          397
+        ]
+      ],
+      "scaled_analytic_singular_values": [
+        124859.49283810104,
+        11163.697353642141,
+        2664.5674040548656,
+        2079.759511930363,
+        335.52037388409406,
+        249.17337354792946,
+        203.86086850507465,
+        106.18500785336124,
+        88.5399924453976,
+        64.8345367478176,
+        59.84235675094832,
+        29.536332019403424,
+        29.17292120532033,
+        28.74792946513025,
+        0.02495878595844075
+      ],
+      "observations": [
+        {
+          "absolute_step_multiplier": 10.0,
+          "central_scaled_relative_difference": 0.0029940535627609624,
+          "one_sided_scaled_relative_difference": 0.009123814359168703,
+          "scaled_central_singular_values": [
+            124863.83794615147,
+            11154.71771006416,
+            2677.7145164385797,
+            2120.9852049357264,
+            425.75819105875223,
+            278.37538904209674,
+            241.27467328443026,
+            115.9051645605477,
+            105.93770940723473,
+            63.73777004126584,
+            62.346649291877284,
+            33.006988225424706,
+            29.476003524437377,
+            28.830090495585804,
+            9.19166248307321
+          ],
+          "stencil_changes": []
+        },
+        {
+          "absolute_step_multiplier": 1.0,
+          "central_scaled_relative_difference": 0.0002905170743887867,
+          "one_sided_scaled_relative_difference": 0.0009263746709937386,
+          "scaled_central_singular_values": [
+            124859.9922282648,
+            11162.72817078553,
+            2665.336716096693,
+            2082.7461247296123,
+            339.3426492757686,
+            250.05686757748953,
+            210.61338009720237,
+            106.18978924468507,
+            91.98525496403559,
+            64.47537785083657,
+            60.21661528592985,
+            29.56087780407397,
+            29.51257223696429,
+            28.789272979113285,
+            2.094124478847568
+          ],
+          "stencil_changes": []
+        },
+        {
+          "absolute_step_multiplier": 0.1,
+          "central_scaled_relative_difference": 2.1965712374175688e-05,
+          "one_sided_scaled_relative_difference": 0.00010465498991658683,
+          "scaled_central_singular_values": [
+            124859.53423348097,
+            11163.61319686424,
+            2664.593045254979,
+            2079.8813248731935,
+            335.81567144317415,
+            249.2404702655014,
+            204.42559366728722,
+            106.18497042306264,
+            88.81809660091099,
+            64.78842094481692,
+            59.86771927862006,
+            29.533421533643978,
+            29.197411870291493,
+            28.752257012559316,
+            0.1676146920672808
+          ],
+          "stencil_changes": []
+        },
+        {
+          "absolute_step_multiplier": 0.01,
+          "central_scaled_relative_difference": 7.398425390381633e-06,
+          "one_sided_scaled_relative_difference": 2.3002312158303686e-05,
+          "scaled_central_singular_values": [
+            124859.49953022439,
+            11163.514906495217,
+            2664.6033227154776,
+            2079.877212587885,
+            335.52201159768606,
+            249.1731568450272,
+            203.86402551253119,
+            106.18497259423981,
+            88.5417299488871,
+            64.83320274937427,
+            59.84224528417165,
+            29.53630211435362,
+            29.173028601745195,
+            28.7479507398445,
+            0.0249586963468163
+          ],
+          "stencil_changes": []
+        }
+      ]
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-rigid-step866-homotopy-v1/results/numerical_recovery/stage0001.npz",
+      "source_sha256": "521ff5e9c100e9ced8240f63b3fa0372fe7a1fefaf6bcd3e4a3b87ae19661ba1",
+      "numerical_stage": {
+        "numerical_stage": 0,
+        "residual_continuation_parameter": 0.125,
+        "finite_difference_scale": 1.0,
+        "solver_reported_success": true,
+        "message": "The solution converged.",
+        "artificial_equation_residual": 2.580270436105626e-11,
+        "original_body_residual_N": 0.19688907263752636,
+        "original_robot_effort_residual": 5.011437593820491,
+        "original_motion_CCD": {
+          "passed": true,
+          "intervals": 1,
+          "observations": [
+            {
+              "intervals": 1,
+              "tested_safe_fractions": [
+                1.0
+              ]
+            }
+          ],
+          "same_straight_vertex_trajectories": true,
+          "CCD_tolerances_and_conservative_rescaling_unchanged": true,
+          "physical_timestep_subdivided": false
+        },
+        "numerical_stage_accepted": true,
+        "is_physical_history_state": false
+      },
+      "original_body_residual_N": 0.19688907263752636,
+      "original_robot_effort_residual": 5.011437593820491,
+      "artificial_equation_residual": 2.580270436105626e-11,
+      "stencil_fingerprint": [
+        [
+          "FaceVertexNormalCollision",
+          28,
+          502,
+          503,
+          504
+        ]
+      ],
+      "scaled_analytic_singular_values": [
+        6173.864418502608,
+        6170.006813864509,
+        340.8744965081756,
+        314.1614088840368,
+        242.448474801217,
+        186.94453487420031,
+        74.1351638029005,
+        70.3583769531987,
+        31.374312113744637,
+        30.61822907317773,
+        28.8604881371867,
+        10.312499999846446,
+        0.4023373327562102,
+        0.392774639330836,
+        0.3927732606435371
+      ],
+      "observations": [
+        {
+          "absolute_step_multiplier": 10.0,
+          "central_scaled_relative_difference": 0.002014019181227354,
+          "one_sided_scaled_relative_difference": 0.00147873067635698,
+          "scaled_central_singular_values": [
+            6160.499947528193,
+            6159.5267782725605,
+            340.8745390881767,
+            314.1614088915271,
+            242.44847483383296,
+            186.94453487141612,
+            74.13516383304622,
+            70.3583769607996,
+            31.374312111826104,
+            30.61822907122304,
+            28.860488137153492,
+            10.312499999942649,
+            0.4023373136342182,
+            0.39292492534723056,
+            0.39291779677563116
+          ],
+          "stencil_changes": []
+        },
+        {
+          "absolute_step_multiplier": 1.0,
+          "central_scaled_relative_difference": 4.766095406062548e-05,
+          "one_sided_scaled_relative_difference": 0.0004228220978261011,
+          "scaled_central_singular_values": [
+            6173.465267937433,
+            6170.00678975321,
+            340.87464276149746,
+            314.16140889286226,
+            242.44847484565489,
+            186.94453488573768,
+            74.13516384357918,
+            70.35837696236669,
+            31.37431211155073,
+            30.618229071061098,
+            28.860488137263143,
+            10.312500000608793,
+            0.4023373318136854,
+            0.3927786180541808,
+            0.3927746262349504
+          ],
+          "stencil_changes": []
+        },
+        {
+          "absolute_step_multiplier": 0.1,
+          "central_scaled_relative_difference": 6.730319025154529e-07,
+          "one_sided_scaled_relative_difference": 4.284543385864796e-05,
+          "scaled_central_singular_values": [
+            6173.860162485601,
+            6170.0070702359835,
+            340.8740460806692,
+            314.16140888372587,
+            242.4484748135102,
+            186.9445345685811,
+            74.13516381568995,
+            70.35837695063364,
+            31.374312105631724,
+            30.618229065321493,
+            28.860488136180248,
+            10.312500009490599,
+            0.4023373388167248,
+            0.39277460208253084,
+            0.3927733159820771
+          ],
+          "stencil_changes": []
+        },
+        {
+          "absolute_step_multiplier": 0.01,
+          "central_scaled_relative_difference": 2.7770207049052453e-06,
+          "one_sided_scaled_relative_difference": 1.415751479045915e-05,
+          "scaled_central_singular_values": [
+            6173.86437469555,
+            6170.007277644883,
+            340.8976897172143,
+            314.16140879713066,
+            242.44847385072532,
+            186.9445298042765,
+            74.13516294088883,
+            70.35837676562835,
+            31.374312176442697,
+            30.618229133564267,
+            28.860488136225275,
+            10.312500187126261,
+            0.4023373293988292,
+            0.392773457896391,
+            0.3927730663161329
+          ],
+          "stencil_changes": []
+        }
+      ]
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-rigid-step866-homotopy-v1/results/numerical_recovery/stage0005.npz",
+      "source_sha256": "f3f0ca563bfc3e462a89fdb99edcec38bd6277a11005cd3f7e140fbb5e201982",
+      "numerical_stage": {
+        "numerical_stage": 4,
+        "residual_continuation_parameter": 0.2890625,
+        "finite_difference_scale": 1.0,
+        "solver_reported_success": true,
+        "message": "The solution converged.",
+        "artificial_equation_residual": 1.201410104444347e-10,
+        "original_body_residual_N": 0.15997237148852586,
+        "original_robot_effort_residual": 4.071793044982115,
+        "original_motion_CCD": {
+          "passed": true,
+          "intervals": 2,
+          "observations": [
+            {
+              "intervals": 1,
+              "tested_safe_fractions": [
+                0.875
+              ]
+            },
+            {
+              "intervals": 2,
+              "tested_safe_fractions": [
+                1.0,
+                1.0
+              ]
+            }
+          ],
+          "same_straight_vertex_trajectories": true,
+          "CCD_tolerances_and_conservative_rescaling_unchanged": true,
+          "physical_timestep_subdivided": false
+        },
+        "numerical_stage_accepted": true,
+        "is_physical_history_state": false
+      },
+      "original_body_residual_N": 0.15997237148852586,
+      "original_robot_effort_residual": 4.071793044982115,
+      "artificial_equation_residual": 1.201410104444347e-10,
+      "stencil_fingerprint": [
+        [
+          "FaceVertexNormalCollision",
+          16,
+          494,
+          498,
+          499
+        ],
+        [
+          "FaceVertexNormalCollision",
+          28,
+          502,
+          503,
+          504
+        ]
+      ],
+      "scaled_analytic_singular_values": [
+        4137.050858953822,
+        4123.679566048482,
+        1029.129451210861,
+        277.4688627326479,
+        246.69879383393146,
+        232.5800557103504,
+        110.23364611048102,
+        71.63217994312275,
+        69.99597015487115,
+        31.38474619973439,
+        30.19466488652291,
+        28.857699968028243,
+        6.2883052320539425,
+        1.5729289640765272,
+        0.37974316549204257
+      ],
+      "observations": [
+        {
+          "absolute_step_multiplier": 10.0,
+          "central_scaled_relative_difference": 0.0005404211935369731,
+          "one_sided_scaled_relative_difference": 0.0041271424405734175,
+          "scaled_central_singular_values": [
+            4137.050552507461,
+            4120.600540219327,
+            1029.129436774806,
+            277.4688807238156,
+            246.6987950459093,
+            232.58005777913044,
+            110.23364933208869,
+            71.63218014665887,
+            69.9959702545439,
+            31.384746190949926,
+            30.19466488980238,
+            28.857699966262096,
+            6.288305693176028,
+            1.5729384437784302,
+            0.37978329161052626
+          ],
+          "stencil_changes": []
+        },
+        {
+          "absolute_step_multiplier": 1.0,
+          "central_scaled_relative_difference": 5.894237233958371e-06,
+          "one_sided_scaled_relative_difference": 0.00041935082978403,
+          "scaled_central_singular_values": [
+            4137.050937120731,
+            4123.646023340834,
+            1029.1294606506724,
+            277.4685804400734,
+            246.6987702813708,
+            232.58002199428228,
+            110.23364811220624,
+            71.63218058675298,
+            69.99597011053795,
+            31.384746209024446,
+            30.19466499421268,
+            28.85769998885709,
+            6.2883057495608625,
+            1.5729290690598488,
+            0.3797436079496889
+          ],
+          "stencil_changes": []
+        },
+        {
+          "absolute_step_multiplier": 0.1,
+          "central_scaled_relative_difference": 6.078143539313818e-07,
+          "one_sided_scaled_relative_difference": 4.203761817125825e-05,
+          "scaled_central_singular_values": [
+            4137.0507634066435,
+            4123.679230196816,
+            1029.1294015465191,
+            277.46848214066466,
+            246.6988222641586,
+            232.58003722897928,
+            110.23366447981661,
+            71.63217380478721,
+            69.99597383808853,
+            31.384746202732533,
+            30.194664283385425,
+            28.85769994840842,
+            6.288303576170617,
+            1.5729289602486596,
+            0.37974317087493625
+          ],
+          "stencil_changes": []
+        },
+        {
+          "absolute_step_multiplier": 0.01,
+          "central_scaled_relative_difference": 1.1315889789031178e-05,
+          "one_sided_scaled_relative_difference": 2.73983806852743e-05,
+          "scaled_central_singular_values": [
+            4137.0508088305105,
+            4123.6795625532795,
+            1029.1049400482275,
+            277.4448632227863,
+            246.69649449811644,
+            232.57740508829636,
+            110.23071540680478,
+            71.63194702934345,
+            69.99590075514853,
+            31.384745568395395,
+            30.194616718778658,
+            28.85769925474332,
+            6.28799120142665,
+            1.5729289342658115,
+            0.37974312657877984
+          ],
+          "stencil_changes": []
+        }
+      ]
+    },
+    {
+      "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-rigid-step866-homotopy-v1/results/numerical_recovery/stage0026.npz",
+      "source_sha256": "36ddc2aeca1b4ad065119b750fdd66af38a9f9186dab2fdf385463b43d087526",
+      "numerical_stage": {
+        "numerical_stage": 25,
+        "residual_continuation_parameter": 0.3074008636176586,
+        "finite_difference_scale": 1.0,
+        "solver_reported_success": true,
+        "message": "The solution converged.",
+        "artificial_equation_residual": 9.16855842512938e-12,
+        "original_body_residual_N": 0.15584594475500865,
+        "original_robot_effort_residual": 3.9667626851572386,
+        "original_motion_CCD": {
+          "passed": true,
+          "intervals": 4,
+          "observations": [
+            {
+              "intervals": 1,
+              "tested_safe_fractions": [
+                0.875
+              ]
+            },
+            {
+              "intervals": 2,
+              "tested_safe_fractions": [
+                1.0,
+                0.9375
+              ]
+            },
+            {
+              "intervals": 4,
+              "tested_safe_fractions": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+              ]
+            }
+          ],
+          "same_straight_vertex_trajectories": true,
+          "CCD_tolerances_and_conservative_rescaling_unchanged": true,
+          "physical_timestep_subdivided": false
+        },
+        "numerical_stage_accepted": true,
+        "is_physical_history_state": false
+      },
+      "original_body_residual_N": 0.15584594475500865,
+      "original_robot_effort_residual": 3.9667626851572386,
+      "artificial_equation_residual": 9.16855842512938e-12,
+      "stencil_fingerprint": [
+        [
+          "FaceVertexNormalCollision",
+          16,
+          494,
+          498,
+          499
+        ],
+        [
+          "FaceVertexNormalCollision",
+          28,
+          502,
+          503,
+          504
+        ],
+        [
+          "FaceVertexNormalCollision",
+          36,
+          402,
+          398,
+          397
+        ]
+      ],
+      "scaled_analytic_singular_values": [
+        2313.044981833701,
+        1087.937623362903,
+        559.6932985609069,
+        402.35109700367985,
+        349.53262028433164,
+        244.60529414679678,
+        194.4002178298004,
+        84.95664192590422,
+        66.11179571737195,
+        59.98091429308948,
+        30.19542607726259,
+        29.084561053268427,
+        28.754363681396104,
+        2.453999448065773,
+        0.22900926497654878
+      ],
+      "observations": [
+        {
+          "absolute_step_multiplier": 10.0,
+          "central_scaled_relative_difference": 2.2700300498782795e-06,
+          "one_sided_scaled_relative_difference": 0.0017575464706197758,
+          "scaled_central_singular_values": [
+            2313.0447623378914,
+            1087.9373044793313,
+            559.693260623353,
+            402.35133992396163,
+            349.5330777638578,
+            244.605299354066,
+            194.4005598834542,
+            84.95702518510183,
+            66.11174502192684,
+            59.980788172520185,
+            30.195427427291726,
+            29.084569208569402,
+            28.754366591261125,
+            2.453999457521505,
+            0.22900890876117055
+          ],
+          "stencil_changes": []
+        },
+        {
+          "absolute_step_multiplier": 1.0,
+          "central_scaled_relative_difference": 6.356949900918173e-07,
+          "one_sided_scaled_relative_difference": 0.0001755850498024875,
+          "scaled_central_singular_values": [
+            2313.0453495187357,
+            1087.9375695988874,
+            559.6933079056257,
+            402.351159884171,
+            349.5326995889583,
+            244.60529717095193,
+            194.4002254690279,
+            84.95665149815213,
+            66.11179661138732,
+            59.98092120088463,
+            30.195426129460888,
+            29.08456213972354,
+            28.754364169478198,
+            2.453999448932818,
+            0.22901097062027873
+          ],
+          "stencil_changes": []
+        },
+        {
+          "absolute_step_multiplier": 0.1,
+          "central_scaled_relative_difference": 2.174611426734474e-06,
+          "one_sided_scaled_relative_difference": 2.2057150984322584e-05,
+          "scaled_central_singular_values": [
+            2313.0437898429273,
+            1087.9376272656662,
+            559.6932495808559,
+            402.35110172185443,
+            349.53222037977736,
+            244.60526671484243,
+            194.40022665687974,
+            84.95662212001633,
+            66.11178885935902,
+            59.98087709178272,
+            30.1954258493256,
+            29.08455518576786,
+            28.754361885446983,
+            2.4539994532239935,
+            0.22900390748058996
+          ],
+          "stencil_changes": []
+        },
+        {
+          "absolute_step_multiplier": 0.01,
+          "central_scaled_relative_difference": 5.671926691149154e-05,
+          "one_sided_scaled_relative_difference": 0.0001909617148619783,
+          "scaled_central_singular_values": [
+            2313.0986239148947,
+            1087.93767228589,
+            559.6967695624619,
+            402.35713205842666,
+            349.54712788977946,
+            244.60635461996657,
+            194.40043343501316,
+            84.95786988491417,
+            66.11197780234026,
+            59.98268267406086,
+            30.195431542131043,
+            29.084706417178616,
+            28.754402439216587,
+            2.453999502583509,
+            0.22892414295541463
+          ],
+          "stencil_changes": []
+        }
+      ]
+    }
+  ],
+  "physical_states_added": 0,
+  "goal_completion": false
+}

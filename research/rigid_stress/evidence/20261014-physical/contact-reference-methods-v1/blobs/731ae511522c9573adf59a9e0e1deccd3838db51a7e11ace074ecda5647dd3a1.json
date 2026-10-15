@@ -1,0 +1,26 @@
+{
+  "commands": [
+    {
+      "job": "717975",
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-metis-contact-v2",
+      "command": "sbatch --parsable --array=0-0 --partition=cpu --exclude=cpu-207-115 --cpus-per-task=8 --mem=256G --time=12:00:00 --output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-metis-contact-v2-%A_%a.log '--wrap=bash -c '\"'\"'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/run_metis_paired_reference.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-metis-contact-v2 /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/reference-metis-dependency-v1 /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad1920-metis-original-fields-qualification-v1 run_paired_egg_contact --geometry-run /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-adaptive-cad-polyhedron-geometry-v5 --mode cad --level 3 --closure-run /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-ref-centred-v1 --seed-reference /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-tip-coupled-0-v1 --steps 5'\"'\"''"
+    },
+    {
+      "job": "717976",
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-metis-audit-v2",
+      "command": "sbatch --parsable --array=0-0 --partition=cpu --exclude=cpu-207-115 --cpus-per-task=8 --mem=256G --time=02:00:00 --output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-metis-audit-v2-%A_%a.log '--wrap=bash -c '\"'\"'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/audit_generic_stencil_history.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-metis-audit-v2 --run /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-metis-contact-v2'\"'\"'' --dependency=afterok:717975"
+    },
+    {
+      "job": "717977",
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-metis-coverage-v2",
+      "command": "sbatch --parsable --array=0-0 --partition=cpu --exclude=cpu-207-115 --cpus-per-task=8 --mem=64G --time=00:30:00 --output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-metis-coverage-v2-%A_%a.log '--wrap=bash -c '\"'\"'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/audit_adaptive_contact_coverage.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-metis-coverage-v2 --run /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-metis-contact-v2 --audit /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-metis-audit-v2'\"'\"'' --dependency=afterok:717976"
+    }
+  ],
+  "previous_source_gate_failure": "717938_0",
+  "schema_preflight_independent_original_body_mapped_audits": 10,
+  "cancelled_unstarted_audits": [
+    "717939",
+    "717940"
+  ],
+  "all_original_gates_preserved": true
+}

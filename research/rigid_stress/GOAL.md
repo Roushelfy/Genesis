@@ -31,6 +31,23 @@ egg/Franka and U contact references, resolved-load/native replay versus feedback
 remaining applicable load-model sensitivity and physically verified warmed costs.
 These are execution priorities within the complete linked objective.
 
+The [covered-contact/reference-method checkpoint](docs/PHYSICAL_CONTACT_RESOLUTION_METHODS_20261015.md)
+closes the second64716-tet CAD case with all five independent force/coverage
+audits and158340 common-point full fields against31668 tetrahedra. Tensor9.68%
+and raw peak13.89% changes remain unresolved despite energy0.407% and displacement
+0.0215%. The fixed-body U pad5/7/9 sequence now has three independently checked
+levels and1.20% last tensor change; its body/geometry axis remains at12.33%.
+Original rigid step866 now passes current-friction, body force/moment, fresh
+actual robot and motion gates after38 lagged-friction numerical stages, with
+all865 retained states byte-identical. A same-law866-state feedback prefix
+qualifies independent source-wrench and volume-tensor processing; its7.81%
+resolved-load stress change at866 is conditional coarse evidence, not a full
+or physically converged application. Full330-control rigid continuation,
+all-state audit, full feedback and actual native replay are in progress.
+Seeded nested-dissection reference ordering passes all five1920-tet original
+arrays/initializer/corner/quadrature qualifications before the unchanged171228-tet
+physical retry. All physical/model/feedback/regularization/warmed-cost gates stay.
+
 The [complete-history checkpoint](docs/PHYSICAL_COMPLETE_HISTORIES_20261015.md)
 closes all330 original controls/2640 physical states through3.3s, with separate
 all-state force/control/global-field audits,14 actual native nodal replays and

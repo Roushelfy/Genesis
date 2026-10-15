@@ -8,7 +8,7 @@ shift
 test ! -e "$task_run"
 mkdir -p "$task_run/input-source" "$task_run/source" "$task_run/tmp"
 export TMPDIR="$task_run/tmp" PYTHONUNBUFFERED=1
-task_sources=(research/rigid_stress/{run_rigid_egg_franka,rigid_egg_articulated_contact,interrupted_source_verification,original_franka_ground,predicted_wide_franka,wide_coordinate_franka,run_articulated_franka,captured_reference_motion,precise_panda_kinematics,articulated_franka_contact,run_original_rigid_franka,franka_mujoco_reference,franka_contact_reference,franka_rigid_mode_coordinates,audit_franka_reference,contact_reference,neohookean_reference,stable_neohookean_reference,skfem_reference,summarize_fine_references}.py
+task_sources=(research/rigid_stress/{recover_lagged_rigid_contact,recover_original_rigid_step,run_rigid_egg_franka,rigid_egg_articulated_contact,interrupted_source_verification,original_franka_ground,predicted_wide_franka,wide_coordinate_franka,run_articulated_franka,captured_reference_motion,precise_panda_kinematics,articulated_franka_contact,run_original_rigid_franka,franka_mujoco_reference,franka_contact_reference,franka_rigid_mode_coordinates,audit_franka_reference,contact_reference,neohookean_reference,stable_neohookean_reference,skfem_reference,summarize_fine_references}.py
     research/rigid_stress/scripts/{run_original_rigid_franka,cluster_env}.sh genesis/assets/xml/franka_emika_panda/panda.xml)
 sha256sum "${task_sources[@]}" > "$task_run/input-source.sha256"
 cp --parents "${task_sources[@]}" "$task_run/input-source"

@@ -131,8 +131,29 @@ def main():
     parser.add_argument("--check-jacobian", action="store_true")
     parser.add_argument("--resume-from", type=Path)
     parser.add_argument("--resume-audit", type=Path)
+    parser.add_argument("--lagged-qualification", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
+    if args.lagged_qualification is not None:
+        closed_source(args.lagged_qualification)
+        assert int((args.lagged_qualification / "returncode.txt").read_text()) == 0
+        qualified = json.loads((args.lagged_qualification / "results/summary.json").read_text())
+        qualified_run = Path(qualified["run"])
+        closed_source(qualified_run)
+        assert int((qualified_run / "returncode.txt").read_text()) == 0
+        qualified_producer = json.loads((qualified_run / "results/summary.json").read_text())
+        assert qualified_producer["numerical_recovery"]["final_acceptance_uses_original_current_friction"]
+        assert qualified_producer["numerical_recovery"]["recovered_original_equation"]
+        assert qualified["states_checked"] == len(qualified["rows"]) >= 866
+        assert all(
+            max(row["body_force_equivalent_residual_N"], row["fresh_actual_robot_effort_residual"]) <= 1e-9
+            for row in qualified["rows"]
+        )
+        module = Path("research/rigid_stress/recover_lagged_rigid_contact.py")
+        assert (
+            hashlib.sha256((qualified_run / "source" / module).read_bytes()).digest()
+            == hashlib.sha256(Path(__file__).with_name(module.name).read_bytes()).digest()
+        )
     closed_source(args.matched_deformable)
     assert int((args.matched_deformable / "returncode.txt").read_text()) == 0
     closed_source(args.matched_audit)
@@ -184,7 +205,7 @@ def main():
     )
     geometry = args.matched_deformable / "results/reference_geometry.npz"
     (args.output / "reference_geometry.npz").write_bytes(geometry.read_bytes())
-    rows, tangent_checks = [], []
+    rows, tangent_checks, numerical_recoveries = [], [], []
     finger_tangent_checked = False
     resumed_states = 0
     retained_identities = []
@@ -239,9 +260,35 @@ def main():
                     {"phase": "original_start", "step": step, "rows": qualify_tangent(system, pose, velocity, previous)}
                 )
             try:
-                pose, velocity, full, contact = system.solve_rigid(
-                    pose, velocity, previous, False, f"original_rigid{step:05d}"
-                )
+                try:
+                    pose, velocity, full, contact = system.solve_rigid(
+                        pose, velocity, previous, False, f"original_rigid{step:05d}"
+                    )
+                except RuntimeError as error:
+                    if args.lagged_qualification is None or step <= 1:
+                        raise
+                    from . import recover_lagged_rigid_contact as lagged
+
+                    recovery_dir = args.output / "numerical_recovery" / f"step{step:05d}"
+                    recovery_dir.parent.mkdir(parents=True, exist_ok=True)
+                    rejected = {key: value.copy() for key, value in system.failure_state.items()}
+                    np.savez_compressed(recovery_dir.with_suffix(".rejected_newton.npz"), **rejected)
+                    lagged.ANCHOR = args.output / f"step{step - 1:05d}.npz"
+                    try:
+                        recovered, report = lagged.recover_equation(system, pose, velocity, previous, recovery_dir)
+                    except Exception:
+                        np.savez_compressed(recovery_dir / "rejected_lagged_inner_state.npz", **system.failure_state)
+                        system.failure_state = rejected
+                        raise
+                    pose, velocity, full, contact = recovered
+                    numerical_recoveries.append(
+                        {
+                            "step": step,
+                            "original_Newton_failure": str(error),
+                            "recovery_directory": str(recovery_dir),
+                            "original_equation_recovered": report["recovered_original_equation"],
+                        }
+                    )
                 fresh = system.verify_robot_step(velocity, contact)
                 mesh = system.contact.mesh
                 motion = qualify_physical_motion(
@@ -313,6 +360,7 @@ def main():
         "kinematic_qualification_relative_error": kinematic_error,
         "tangent_qualifications": tangent_checks,
         "numerical_initial_guesses": getattr(system, "initial_guess_records", []),
+        "numerical_recoveries": numerical_recoveries,
         "byte_identical_retained_prefix_states": resumed_states,
         "retained_prefix_sha256": retained_identities,
         "reference_geometry_byte_identical": True,
