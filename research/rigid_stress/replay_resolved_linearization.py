@@ -16,6 +16,7 @@ from genesis.options.rigid_stress import RigidStressOptions
 from genesis.utils.array_class import V_VEC
 from genesis.utils.misc import qd_to_numpy
 
+from .extended_reference_corner_stress import extended_corner_stress
 from .skfem_reference import SkfemElasticReference
 from .summarize_fine_references import closed_source
 
@@ -72,7 +73,8 @@ def main():
         model.recover(omega, state, options)
         displacement = np.empty(body.basis.N)
         displacement[permutation] = qd_to_numpy(state.displacement, transpose=True, copy=True)[0].reshape(-1)
-        tensor, vm = body.corner_stress(displacement)
+        original_float64_tensor, _original_float64_vm = body.corner_stress(displacement)
+        tensor, vm = extended_corner_stress(body, displacement)
         raw = qd_to_numpy(state.stress_tensor, transpose=True, copy=True)[0]
         peak = float(qd_to_numpy(state.peak)[0])
         native_valid = bool(qd_to_numpy(state.valid, transpose=True)[0])
@@ -109,9 +111,14 @@ def main():
         independent_components = tensor[..., [0, 1, 2, 0, 0, 1], [0, 1, 2, 1, 2, 2]]
         component_error = abs(raw - independent_components)
         component_budget = 1e-5 + 1e-9 * abs(independent_components)
+        original_components = original_float64_tensor[..., [0, 1, 2, 0, 0, 1], [0, 1, 2, 1, 2, 2]]
+        original_error = abs(raw - original_components)
+        original_budget = 1e-5 + 1e-9 * abs(original_components)
         row.update(
             cached_corner_stress_max_absolute_difference_Pa=float(component_error.max()),
             cached_corner_stress_max_existing_budget_fraction=float((component_error / component_budget).max()),
+            original_float64_reference_component_budget_fraction=float((original_error / original_budget).max()),
+            corner_component_reference="Extended exact-polynomial/cofactor arithmetic, independently checked against96-digit decimal interpolation",
             complete_equilibrium_passed=bool(native_valid and residual <= budget),
             cached_corner_stress_passed=bool(np.all(component_error <= component_budget)),
             raw_peak_reconstruction_passed=bool(np.isclose(peak, vm.max(), rtol=1e-4, atol=1e-3)),
@@ -131,6 +138,7 @@ def main():
             args.output / f"{mode}.npz",
             native_corner_tensor_Pa=tensor,
             native_cached_corner_components_Pa=raw,
+            original_float64_reference_corner_tensor_Pa=original_float64_tensor,
             independent_corner_tensor_Pa=reference.tensor_pa,
             native_displacement_m=displacement,
             native_quadrature_tensor_Pa=quadrature,

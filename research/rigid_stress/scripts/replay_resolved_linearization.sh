@@ -9,7 +9,7 @@ test ! -e "$task_run"
 mkdir -p "$task_run/source" "$task_run/tmp"
 export TMPDIR="$task_run/tmp" PYTHONUNBUFFERED=1
 export GS_CACHE_FILE_PATH="$task_run/cache/genesis" QD_OFFLINE_CACHE_FILE_PATH="$task_run/cache/quadrants"
-task_sources=(research/rigid_stress/{replay_resolved_linearization,audit_objective_frame,dynamic_franka_reference,franka_contact_reference,franka_rigid_mode_coordinates,audit_franka_reference,contact_reference,neohookean_reference,stable_neohookean_reference,skfem_reference,summarize_fine_references}.py
+task_sources=(research/rigid_stress/{replay_resolved_linearization,extended_reference_corner_stress,verify_corner_polynomial_decimal,audit_objective_frame,dynamic_franka_reference,franka_contact_reference,franka_rigid_mode_coordinates,audit_franka_reference,contact_reference,neohookean_reference,stable_neohookean_reference,skfem_reference,summarize_fine_references}.py
     research/rigid_stress/scripts/{replay_resolved_linearization,cluster_env}.sh)
 "$task_env/bin/python" - <<'PY' > "$task_run/additional-sources.txt"
 from pathlib import Path

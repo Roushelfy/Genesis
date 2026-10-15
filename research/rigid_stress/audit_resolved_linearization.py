@@ -33,13 +33,19 @@ def main():
     args = parser.parse_args()
     closed_source(args.comparison)
     assert int((args.comparison / "returncode.txt").read_text()) == 0
-    compared = json.loads((args.comparison / "results/summary.json").read_text())
+    comparison_summary = args.comparison / "results/summary.json"
+    compared = json.loads(comparison_summary.read_text())
     args.output.mkdir(parents=True, exist_ok=False)
-    rows, hashes = [], {}
+    rows, hashes = [], {str(comparison_summary): hashlib.sha256(comparison_summary.read_bytes()).hexdigest()}
     for index, row in enumerate(compared["rows"]):
         assert row["complete_body_dynamic_residual_N"] <= 1e-9 and row["complete_mapped_dynamic_residual_N"] <= 1e-9
-        source = Path(row["state_source"])
+        source = (
+            Path(row["state_source"])
+            if "state_source" in row
+            else Path(row["run"]) / f"results/step{row['step']:04d}.npz"
+        )
         assert hashlib.sha256(source.read_bytes()).hexdigest() == compared["input_sha256"][str(source)]
+        hashes[str(source)] = compared["input_sha256"][str(source)]
         fields_path = args.comparison / f"results/case{index:02d}.npz"
         with np.load(fields_path) as saved:
             body = SkfemElasticReference(saved["vertices"], saved["tetrahedra"], 1e10, 0.3, 2000)
@@ -112,6 +118,7 @@ def main():
             frozen_displacement_linear_quadrature_tensor_Pa=frozen_tensor,
         )
         hashes[str(fields_path)] = hashlib.sha256(fields_path.read_bytes()).hexdigest()
+    assert all(hashlib.sha256(Path(path).read_bytes()).hexdigest() == expected for path, expected in hashes.items())
     report = {
         "scope": __doc__,
         "comparison": str(args.comparison),
