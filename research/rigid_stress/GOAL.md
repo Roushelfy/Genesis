@@ -31,6 +31,19 @@ egg/Franka and U contact references, resolved-load/native replay versus feedback
 remaining applicable load-model sensitivity and physically verified warmed costs.
 These are execution priorities within the complete linked objective.
 
+The [complete original feedback checkpoint](docs/PHYSICAL_COMPLETE_FEEDBACK_20261015.md)
+closes the original rigid counterpart's330 controls/2640 states/3.3s, independent
+all-state original physical gates, complete matched source-wrench history,
+seven material-frame tensor comparisons and14 actual native resolved replays.
+Feedback differs23.17% at snapshot869 while deformable linear/nonlinear recovery
+differs0.003865%; later feedback is much smaller. This is conditional480-tet
+evidence, not a history-wide tensor maximum or physical convergence. Original
+body/actual robot gates remain1e-9. Five original502230-tet frozen-traction
+cases now pass complete load/RHS/corner/quadrature qualification without moving
+physical points before516287/554574-tet local bulk solves. The original finder
+failure remains rejected. All physical/model/regularization/history/warmed-cost
+requirements remain open.
+
 The [fixed-domain thickness/local-axis checkpoint](docs/PHYSICAL_THICKNESS_LOCAL_AXIS_20261015.md)
 independently closes20 fields across2/3/4/5 layers. Last full-tensor changes
 remain3.18-4.52%; all original36 probes and raw maxima remain. Five probe
