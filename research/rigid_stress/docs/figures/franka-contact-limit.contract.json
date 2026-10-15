@@ -1,0 +1,15 @@
+{
+  "claim_anchor": "separate-contact-regularization-and-point-load-limit",
+  "main_claim": "Small contact-distance changes and a growing concentrated-load spatial response are separate diagnostics.",
+  "material_passport": {
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-articulated-regularization-hold-audit-v1/results/summary.json": "c1d1f7a4f94ea5ad0568f5ed961e90dafdfa495ff64cee7dba60dd28d1eb7e41",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-fixed-point-load-control-v2/results/summary.json": "987481bfb944a4299df299d3ec5caff895e83587f49a802de83e2b2faf1bdb87"
+  },
+  "panels": {
+    "a": "Maximum regularized full-contact moment over80 accepted states",
+    "b": "Unaveraged global stress growth under two fixed point forces",
+    "c": "Point-load compliance and localized-test lower bound"
+  },
+  "data_status": "Three closed contact distances and four closed independent linear point-load meshes. Deterministic numerical studies; no statistical uncertainty or fitted rate.",
+  "limitations": "Panels a and b/c use separately declared controls, not one matched continuum contact sweep. No finite-patch or full application spatial acceptance."
+}

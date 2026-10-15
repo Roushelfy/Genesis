@@ -1,0 +1,690 @@
+{
+  "scope": "Solve held initialization then free FEM/complete Panda joint contact dynamics.",
+  "steps": [
+    {
+      "step": 1,
+      "time_s": 0.00125,
+      "fresh_robot_step_effort_residual": 3.324520817535977e-11,
+      "phase": "dynamic0001",
+      "iteration": 3,
+      "body_residual_N": 2.834772386648394e-11,
+      "joint_residual_N_or_Nm": 3.333179334898013e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 2,
+      "time_s": 0.0025,
+      "fresh_robot_step_effort_residual": 4.5465871448285835e-11,
+      "phase": "dynamic0002",
+      "iteration": 14,
+      "body_residual_N": 4.7141868684149754e-11,
+      "joint_residual_N_or_Nm": 4.5363454067834584e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 3,
+      "time_s": 0.00375,
+      "fresh_robot_step_effort_residual": 6.11312169812128e-11,
+      "phase": "dynamic0003",
+      "iteration": 14,
+      "body_residual_N": 6.963921405758161e-11,
+      "joint_residual_N_or_Nm": 6.092464076674133e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 4,
+      "time_s": 0.005,
+      "fresh_robot_step_effort_residual": 3.1638706085307805e-11,
+      "phase": "dynamic0004",
+      "iteration": 14,
+      "body_residual_N": 3.951391169068219e-11,
+      "joint_residual_N_or_Nm": 3.175224723546472e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 5,
+      "time_s": 0.00625,
+      "fresh_robot_step_effort_residual": 4.592545624959358e-11,
+      "phase": "dynamic0005",
+      "iteration": 14,
+      "body_residual_N": 3.6058434223636334e-11,
+      "joint_residual_N_or_Nm": 4.605201937725757e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 6,
+      "time_s": 0.0075,
+      "fresh_robot_step_effort_residual": 2.6889721282570908e-11,
+      "phase": "dynamic0006",
+      "iteration": 15,
+      "body_residual_N": 2.404158987007635e-11,
+      "joint_residual_N_or_Nm": 2.677544458741143e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 7,
+      "time_s": 0.00875,
+      "fresh_robot_step_effort_residual": 1.948273295185503e-11,
+      "phase": "dynamic0007",
+      "iteration": 12,
+      "body_residual_N": 3.0805738108604074e-11,
+      "joint_residual_N_or_Nm": 1.9473028919658272e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 8,
+      "time_s": 0.01,
+      "fresh_robot_step_effort_residual": 2.9414900833605185e-11,
+      "phase": "dynamic0008",
+      "iteration": 14,
+      "body_residual_N": 3.259726887463812e-11,
+      "joint_residual_N_or_Nm": 2.933369996673729e-11,
+      "normal_stencils": 2
+    }
+  ],
+  "body_tetrahedra": 480,
+  "original_force_budgets": {
+    "body_N": 1e-09,
+    "joint_N_or_Nm": 1e-09
+  },
+  "all_accepted_residuals": [
+    {
+      "phase": "closure0001",
+      "iteration": 2,
+      "body_residual_N": 2.1817922250925037e-13,
+      "joint_residual_N_or_Nm": 1.4129061960185695e-14,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0002",
+      "iteration": 1,
+      "body_residual_N": 2.2275282554959457e-13,
+      "joint_residual_N_or_Nm": 6.078241359317985e-13,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0003",
+      "iteration": 1,
+      "body_residual_N": 2.0875913154436297e-13,
+      "joint_residual_N_or_Nm": 7.616011479338364e-13,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0004",
+      "iteration": 1,
+      "body_residual_N": 2.1451232070153307e-13,
+      "joint_residual_N_or_Nm": 4.328692890075516e-13,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0005",
+      "iteration": 1,
+      "body_residual_N": 1.987486835102949e-13,
+      "joint_residual_N_or_Nm": 4.322140838245451e-13,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0006",
+      "iteration": 1,
+      "body_residual_N": 1.9439513912473555e-13,
+      "joint_residual_N_or_Nm": 4.929722786771681e-15,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0007",
+      "iteration": 1,
+      "body_residual_N": 2.1227016746895513e-13,
+      "joint_residual_N_or_Nm": 3.578824277668865e-12,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0008",
+      "iteration": 1,
+      "body_residual_N": 2.0185284067117153e-13,
+      "joint_residual_N_or_Nm": 3.5968607651802616e-12,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0009",
+      "iteration": 1,
+      "body_residual_N": 2.0818448220564628e-13,
+      "joint_residual_N_or_Nm": 3.5697811539798697e-12,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0010",
+      "iteration": 1,
+      "body_residual_N": 2.00464944430253e-13,
+      "joint_residual_N_or_Nm": 4.339066185152074e-13,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0011",
+      "iteration": 1,
+      "body_residual_N": 2.0244358101205458e-13,
+      "joint_residual_N_or_Nm": 3.5697805805924264e-12,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0012",
+      "iteration": 1,
+      "body_residual_N": 1.9842927580581107e-13,
+      "joint_residual_N_or_Nm": 3.587450710056432e-12,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0013",
+      "iteration": 1,
+      "body_residual_N": 2.056969403221432e-13,
+      "joint_residual_N_or_Nm": 4.305517806314163e-13,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0014",
+      "iteration": 1,
+      "body_residual_N": 2.0113041945007771e-13,
+      "joint_residual_N_or_Nm": 1.6394065725679294e-14,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0015",
+      "iteration": 1,
+      "body_residual_N": 2.09709727808543e-13,
+      "joint_residual_N_or_Nm": 3.6023478300063655e-12,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0016",
+      "iteration": 1,
+      "body_residual_N": 2.1493066909615785e-13,
+      "joint_residual_N_or_Nm": 3.6259094576353685e-12,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0017",
+      "iteration": 1,
+      "body_residual_N": 2.127805272625714e-13,
+      "joint_residual_N_or_Nm": 6.881817311817314e-13,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0018",
+      "iteration": 1,
+      "body_residual_N": 2.0962978443197193e-13,
+      "joint_residual_N_or_Nm": 3.596715451371315e-12,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0019",
+      "iteration": 1,
+      "body_residual_N": 2.131143718420737e-13,
+      "joint_residual_N_or_Nm": 9.51822027434026e-15,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0020",
+      "iteration": 1,
+      "body_residual_N": 2.0379018204624877e-13,
+      "joint_residual_N_or_Nm": 1.6253320050158094e-14,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0021",
+      "iteration": 1,
+      "body_residual_N": 2.0718193633023642e-13,
+      "joint_residual_N_or_Nm": 3.605266102664631e-12,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0022",
+      "iteration": 1,
+      "body_residual_N": 2.1191091235418013e-13,
+      "joint_residual_N_or_Nm": 4.3180707697111756e-13,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0023",
+      "iteration": 1,
+      "body_residual_N": 2.0408618374064995e-13,
+      "joint_residual_N_or_Nm": 1.68252011085933e-14,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0024",
+      "iteration": 1,
+      "body_residual_N": 2.0456806089407342e-13,
+      "joint_residual_N_or_Nm": 3.548996587580969e-12,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0025",
+      "iteration": 1,
+      "body_residual_N": 1.9952158104135712e-13,
+      "joint_residual_N_or_Nm": 5.781459918274132e-15,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0026",
+      "iteration": 1,
+      "body_residual_N": 2.004788985054202e-13,
+      "joint_residual_N_or_Nm": 3.647085123888565e-12,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0027",
+      "iteration": 1,
+      "body_residual_N": 2.1631514704551836e-13,
+      "joint_residual_N_or_Nm": 1.0722167927378682e-14,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0028",
+      "iteration": 1,
+      "body_residual_N": 2.201855107041576e-13,
+      "joint_residual_N_or_Nm": 1.884802934276943e-12,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0029",
+      "iteration": 1,
+      "body_residual_N": 1.9507434169649425e-13,
+      "joint_residual_N_or_Nm": 4.2970559691674735e-13,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0030",
+      "iteration": 1,
+      "body_residual_N": 2.1312038825249482e-13,
+      "joint_residual_N_or_Nm": 1.83350567592132e-12,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0031",
+      "iteration": 1,
+      "body_residual_N": 2.115775043432236e-13,
+      "joint_residual_N_or_Nm": 3.429163863321919e-13,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0032",
+      "iteration": 1,
+      "body_residual_N": 2.1004736918984695e-13,
+      "joint_residual_N_or_Nm": 4.580792182285531e-15,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0033",
+      "iteration": 1,
+      "body_residual_N": 2.0179514702377239e-13,
+      "joint_residual_N_or_Nm": 5.884293544265827e-15,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0034",
+      "iteration": 1,
+      "body_residual_N": 2.0454663813634148e-13,
+      "joint_residual_N_or_Nm": 1.8454982386651057e-12,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0035",
+      "iteration": 1,
+      "body_residual_N": 2.1112609352736507e-13,
+      "joint_residual_N_or_Nm": 1.9217732075094126e-12,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0036",
+      "iteration": 1,
+      "body_residual_N": 2.0663035132023943e-13,
+      "joint_residual_N_or_Nm": 4.3386706567592383e-13,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0037",
+      "iteration": 1,
+      "body_residual_N": 2.1222684162211404e-13,
+      "joint_residual_N_or_Nm": 9.559232218745724e-15,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0038",
+      "iteration": 1,
+      "body_residual_N": 2.1043131883184806e-13,
+      "joint_residual_N_or_Nm": 7.481169709608176e-13,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0039",
+      "iteration": 1,
+      "body_residual_N": 2.1284677738762748e-13,
+      "joint_residual_N_or_Nm": 4.3055155276315706e-13,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0040",
+      "iteration": 1,
+      "body_residual_N": 2.2566738809109917e-13,
+      "joint_residual_N_or_Nm": 1.8335663064063605e-12,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0041",
+      "iteration": 1,
+      "body_residual_N": 2.0182510358194053e-13,
+      "joint_residual_N_or_Nm": 6.272583339842096e-15,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0042",
+      "iteration": 1,
+      "body_residual_N": 2.147175830485017e-13,
+      "joint_residual_N_or_Nm": 1.894613858087923e-12,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0043",
+      "iteration": 1,
+      "body_residual_N": 2.0797762440612323e-13,
+      "joint_residual_N_or_Nm": 4.3499845519474986e-13,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0044",
+      "iteration": 1,
+      "body_residual_N": 2.1859076837402588e-13,
+      "joint_residual_N_or_Nm": 1.0152183846074602e-14,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0045",
+      "iteration": 1,
+      "body_residual_N": 2.0314335928496232e-13,
+      "joint_residual_N_or_Nm": 1.9191843070314564e-12,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0046",
+      "iteration": 1,
+      "body_residual_N": 1.9644628050896414e-13,
+      "joint_residual_N_or_Nm": 1.5279097673647317e-13,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0047",
+      "iteration": 1,
+      "body_residual_N": 2.0314132916188356e-13,
+      "joint_residual_N_or_Nm": 7.422996535644228e-13,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0048",
+      "iteration": 1,
+      "body_residual_N": 2.0519556996703392e-13,
+      "joint_residual_N_or_Nm": 1.843481422406508e-12,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0049",
+      "iteration": 1,
+      "body_residual_N": 2.0914902613836603e-13,
+      "joint_residual_N_or_Nm": 1.8268945557325215e-12,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0050",
+      "iteration": 1,
+      "body_residual_N": 2.1378490223054828e-13,
+      "joint_residual_N_or_Nm": 1.4903799414076234e-14,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0051",
+      "iteration": 1,
+      "body_residual_N": 2.070046919813523e-13,
+      "joint_residual_N_or_Nm": 5.884677557883661e-15,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0052",
+      "iteration": 1,
+      "body_residual_N": 2.1265337719783145e-13,
+      "joint_residual_N_or_Nm": 1.943302085202472e-12,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0053",
+      "iteration": 17,
+      "body_residual_N": 8.276303305399211e-11,
+      "joint_residual_N_or_Nm": 2.8162706927349197e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "closure0054",
+      "iteration": 4,
+      "body_residual_N": 1.2298473366222884e-10,
+      "joint_residual_N_or_Nm": 9.803467221525781e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "closure0055",
+      "iteration": 4,
+      "body_residual_N": 1.2302032303074975e-11,
+      "joint_residual_N_or_Nm": 1.4392048831346794e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "closure0056",
+      "iteration": 4,
+      "body_residual_N": 4.0591796203482225e-11,
+      "joint_residual_N_or_Nm": 4.101565780356564e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "closure0057",
+      "iteration": 3,
+      "body_residual_N": 2.541647702370494e-10,
+      "joint_residual_N_or_Nm": 1.2545577501452774e-10,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "closure0058",
+      "iteration": 3,
+      "body_residual_N": 6.201335689546132e-11,
+      "joint_residual_N_or_Nm": 4.257402664299631e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "closure0059",
+      "iteration": 3,
+      "body_residual_N": 4.7142298968798044e-11,
+      "joint_residual_N_or_Nm": 4.217467806869178e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "closure0060",
+      "iteration": 3,
+      "body_residual_N": 4.2062425978610194e-11,
+      "joint_residual_N_or_Nm": 4.6287188769309404e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "closure0061",
+      "iteration": 3,
+      "body_residual_N": 4.3250086603865005e-11,
+      "joint_residual_N_or_Nm": 4.701617568744742e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "closure0062",
+      "iteration": 3,
+      "body_residual_N": 2.0629732870835956e-11,
+      "joint_residual_N_or_Nm": 1.425904568501771e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "closure0063",
+      "iteration": 3,
+      "body_residual_N": 1.4139390460250866e-11,
+      "joint_residual_N_or_Nm": 1.1196293258252582e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "closure0064",
+      "iteration": 3,
+      "body_residual_N": 2.3941117651822422e-11,
+      "joint_residual_N_or_Nm": 1.478423391287325e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0001",
+      "iteration": 3,
+      "body_residual_N": 2.834772386648394e-11,
+      "joint_residual_N_or_Nm": 3.333179334898013e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0002",
+      "iteration": 14,
+      "body_residual_N": 4.7141868684149754e-11,
+      "joint_residual_N_or_Nm": 4.5363454067834584e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0003",
+      "iteration": 14,
+      "body_residual_N": 6.963921405758161e-11,
+      "joint_residual_N_or_Nm": 6.092464076674133e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0004",
+      "iteration": 14,
+      "body_residual_N": 3.951391169068219e-11,
+      "joint_residual_N_or_Nm": 3.175224723546472e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0005",
+      "iteration": 14,
+      "body_residual_N": 3.6058434223636334e-11,
+      "joint_residual_N_or_Nm": 4.605201937725757e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0006",
+      "iteration": 15,
+      "body_residual_N": 2.404158987007635e-11,
+      "joint_residual_N_or_Nm": 2.677544458741143e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0007",
+      "iteration": 12,
+      "body_residual_N": 3.0805738108604074e-11,
+      "joint_residual_N_or_Nm": 1.9473028919658272e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0008",
+      "iteration": 14,
+      "body_residual_N": 3.259726887463812e-11,
+      "joint_residual_N_or_Nm": 2.933369996673729e-11,
+      "normal_stencils": 2
+    }
+  ],
+  "tangent_qualifications": [],
+  "body_peak_lower_Pa": 156404.13575731052,
+  "body_peak_upper_Pa": 156404.13608525594,
+  "body_determinant_lower_bound": 0.9999918780817925,
+  "final_joint_position": [
+    -1.0429308762705982,
+    1.4360017189416028,
+    1.5210271626641612,
+    -1.7209400336366598,
+    -1.4360621232478112,
+    1.6313329162476964,
+    1.4553924438336054,
+    0.02199916207770522,
+    0.021999125829027796
+  ],
+  "final_joint_velocity": [
+    7.901023525179739e-06,
+    3.4296984328996016e-05,
+    -7.636510332063821e-05,
+    -1.210869413621325e-05,
+    1.1717917374382165e-06,
+    -1.7426719214376665e-05,
+    8.007462281624521e-07,
+    -1.926084421929092e-06,
+    1.9251598602967486e-06
+  ],
+  "controller_target": [
+    -1.0429300070043328,
+    1.4284284666121048,
+    1.5294581926808155,
+    -1.7200574780985856,
+    -1.4357374863701315,
+    1.6324552119168398,
+    1.455392712925263,
+    0.018,
+    0.018
+  ],
+  "controller_kp": [
+    4500.0,
+    4500.0,
+    3500.0,
+    3500.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    100.0,
+    100.0
+  ],
+  "controller_kv": [
+    450.0,
+    450.0,
+    350.0,
+    350.0,
+    200.0,
+    200.0,
+    200.0,
+    10.0,
+    10.0
+  ],
+  "controller_caps": [
+    87.0,
+    87.0,
+    87.0,
+    87.0,
+    12.0,
+    12.0,
+    12.0,
+    4.0,
+    4.0
+  ],
+  "closure_joint_position": [
+    -1.0429309368338582,
+    1.4360015112862932,
+    1.5210277101511613,
+    -1.7209399529670943,
+    -1.4360621367056599,
+    1.6313330456751305,
+    1.4553924361698336,
+    0.02199918684028204,
+    0.02199910214259978
+  ],
+  "robot_solver_tolerance": 1e-14,
+  "precise_kinematic_max_discrepancy_m": 8.910575255058156e-16,
+  "fixed_arm_control": false,
+  "closure_source": null,
+  "reused_closure_sha256": null,
+  "authored_equality_solref": [
+    [
+      0.005,
+      1.0
+    ]
+  ],
+  "goal_completion": false,
+  "limitations": "Complete nine-joint nonlinear kinematics/PD/equality and independent FEM/contact are coupled with original1e-9 body/joint force gates and fresh MuJoCo step checks. Held six-point quasi-static initialization followed by zero initial velocity differs from original approach/lift and captured angular history. Endpoint implicit body/contact/PD forces use a MuJoCo old-state step response; time-integration, history, spatial/contact/regularization and native feedback/model/accuracy-cost still need qualification. Newton CCD guards accepted endpoint chords; no continuous nonlinear rigid-motion CCD claim is made. This is an application pilot, not completion of full physical acceptance."
+}

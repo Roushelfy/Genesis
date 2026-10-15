@@ -192,6 +192,16 @@ Original history, spatial/contact/regularization tails, contact-law equivalence,
 finite-footprint/model effects and physically verified warmed costs remain open.
 The complete linked physical-validation objective remains unchanged.
 
+The [contact-limit checkpoint](docs/PHYSICAL_CONTACT_LIMIT_20261015.md) completes
+the fourth original local level: tensor changes remain32.75% and peaks reach
+30.8MPa with two active nodes. Independent geometry confirms retained vertex
+normal cones; an explicit fixed-point control has no finite-energy H1 load limit.
+Three full-arm contact-distance holds meet original budgets and show small
+regularization tails at one coarse setting. Qualified50um numerical marking
+bands now place13/25 trace samples inside the activation scale; finer solved
+patches remain unverified. Priority is actual contact/volume/geometry tails and
+the unchanged original history/model/feedback/physical-cost completion criteria.
+
 ## Previous nonconvex implementation brief, 2026-10-11
 
 Implement the contact mapping contract in

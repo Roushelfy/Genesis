@@ -1,0 +1,30 @@
+{
+  "invalid_submission_job": "715079_0",
+  "invalid_script": "research/rigid_stress/scripts/qualify_local_franka_mesh.sh",
+  "action": "Cancelled before physics execution; actual entry is run_localized_franka.sh qualify.",
+  "incorrect_level_repeat_job": "715082_0",
+  "reason": "Escaped command string replacement did not replace levels; original0/12/18/21/24 remained.",
+  "corrected_qualification_job": "715084_0",
+  "corrected_levels": [
+    0,
+    9,
+    12,
+    15,
+    18
+  ],
+  "pending_solve_job": "715083",
+  "dependency_change": "scontrol update JobId=715083 Dependency=afterok:715084",
+  "dependency_update_exit_code": 0,
+  "invalid_traction_startup_jobs": [
+    "715078_2",
+    "715078_3"
+  ],
+  "invalid_traction_wrapper": "audit_refined_contact_tractions.sh",
+  "corrected_traction_jobs": [
+    "715101_0",
+    "715101_1"
+  ],
+  "corrected_traction_entry": "run_refined_contact_franka.sh audit",
+  "cancelled_invalid_pending_tip_traction": "715100_1",
+  "corrected_pending_tip_traction": "715102_0"
+}

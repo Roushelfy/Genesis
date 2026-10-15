@@ -160,7 +160,12 @@ def audit_case(run, rigid, steps, output):
         omega_material = rotation.T @ omega_world
         rigid_relief = body.solve(material_contact, omega_material)
         replay_tensor = linear_quadrature(static.bulk, full_replay.displacement)
-        reference_tensor = None if rigid else rotation.T @ quadrature_fields(static.bulk, vector)[0] @ rotation
+        reference_tensor, nonlinear_energy, peak_lower, peak_upper = None, None, None, None
+        if not rigid:
+            cauchy, nonlinear_energy = quadrature_fields(static.bulk, vector)
+            reference_tensor = rotation.T @ cauchy @ rotation
+            _, vm, upper = static.bulk.stress_bounds(vector)
+            peak_lower, peak_upper = float(vm.max()), float(upper.max())
         patch_wrenches = []
         for source in sources:
             body_force = source[: n // 3]
@@ -180,6 +185,9 @@ def audit_case(run, rigid, steps, output):
             "fresh_step_effort_residual": fresh,
             "raw_replayed_peak_Pa": float(full_replay.von_mises_pa.max()),
             "replayed_energy_J": full_replay.energy_j,
+            "nonlinear_body_energy_J": nonlinear_energy,
+            "nonlinear_raw_peak_lower_Pa": peak_lower,
+            "nonlinear_raw_peak_upper_Pa": peak_upper,
             "full_rhs_balance_correction_norm_N": float(np.linalg.norm(full_replay.rhs - material_rhs)),
             "patch_wrenches_material_N_Nm": np.array(patch_wrenches).tolist(),
             "normal_stencils": normal_rows,
@@ -197,6 +205,8 @@ def audit_case(run, rigid, steps, output):
                 "patch_wrenches": np.array(patch_wrenches),
                 "energy": full_replay.energy_j,
                 "peak": float(full_replay.von_mises_pa.max()),
+                "nonlinear_energy_J": nonlinear_energy,
+                "nonlinear_raw_peak_lower_Pa": peak_lower,
             }
         )
         np.savez_compressed(
@@ -212,6 +222,7 @@ def audit_case(run, rigid, steps, output):
             objective_replay_quadrature_tensor_Pa=replay_tensor,
             rotation_world_from_material=rotation,
             patch_wrenches_material_N_Nm=np.array(patch_wrenches),
+            **({"objective_nonlinear_quadrature_tensor_Pa": reference_tensor} if reference_tensor is not None else {}),
         )
         previous, previous_q = u, q
         previous_body_velocity, previous_joint_velocity, previous_rotation = body_velocity, joint_velocity, rotation

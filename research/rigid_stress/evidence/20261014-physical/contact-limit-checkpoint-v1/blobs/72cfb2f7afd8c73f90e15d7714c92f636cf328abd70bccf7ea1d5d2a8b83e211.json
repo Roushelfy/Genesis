@@ -1,0 +1,2325 @@
+{
+  "scope": "Separate contact-distance regularization from fixed-mesh full-arm contact histories.",
+  "cases": [
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-articulated-regularization-0-pilot-v1",
+      "rigid": false,
+      "steps_checked": 8,
+      "rows": [
+        {
+          "step": 1,
+          "time_s": 0.00125,
+          "body_residual_N_or_force_equivalent_N": 2.7331092849185337e-11,
+          "body_resultant_residual_N": 2.9967801470714855e-11,
+          "body_moment_residual_Nm": 4.541171602563811e-13,
+          "joint_effort_residual": 2.881822081865594e-11,
+          "fresh_step_effort_residual": 2.8893280712226305e-11,
+          "raw_replayed_peak_Pa": 156426.9247223289,
+          "replayed_energy_J": 1.4011570487401412e-07,
+          "nonlinear_body_energy_J": 1.4012427230542925e-07,
+          "nonlinear_raw_peak_lower_Pa": 156431.04061217478,
+          "nonlinear_raw_peak_upper_Pa": 156431.04094012018,
+          "full_rhs_balance_correction_norm_N": 5.976267365311191e-11,
+          "patch_wrenches_material_N_Nm": [
+            [
+              0.00014662889387470637,
+              0.4000035280360343,
+              0.02766514019453887,
+              -0.001358609347725687,
+              8.391366122319385e-07,
+              -4.9320631875584e-06
+            ],
+            [
+              -0.00017322850831326105,
+              -0.3999985281460036,
+              0.03632151955204584,
+              0.0013578500045094248,
+              -1.4773810593363384e-07,
+              4.8490070911658694e-06
+            ]
+          ],
+          "normal_stencils": [
+            {
+              "stencil": 0,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                0.00010534881725157675,
+                0.4000449880226183,
+                0.0006125877203848215
+              ]
+            },
+            {
+              "stencil": 1,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -0.00010532168478944615,
+                -0.3999419569134958,
+                -0.0006124299491482998
+              ]
+            }
+          ],
+          "shear_stencils": [
+            {
+              "stencil": 0,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                4.134508098770411e-05,
+                -4.143584742521009e-05,
+                0.027052203105105855
+              ],
+              "coulomb_bound_N": 0.24002728255237557,
+              "coulomb_violation_N": -0.21297501611894948
+            },
+            {
+              "stencil": 1,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -6.794486563264727e-05,
+                -5.6539491104885615e-05,
+                0.03693429887705413
+              ],
+              "coulomb_bound_N": 0.23996546381228023,
+              "coulomb_violation_N": -0.2030310591635197
+            }
+          ],
+          "contact_total_force_residual_N": 1.39857957306236e-16,
+          "contact_total_moment_about_body_com_Nm": [
+            -2.3775766849070974e-08,
+            6.6637937267582156e-12,
+            -2.629311029967926e-10
+          ]
+        },
+        {
+          "step": 2,
+          "time_s": 0.0025,
+          "body_residual_N_or_force_equivalent_N": 1.3397632787292597e-10,
+          "body_resultant_residual_N": 1.1663041171693775e-10,
+          "body_moment_residual_Nm": 3.284730793842725e-12,
+          "joint_effort_residual": 8.178258246330157e-11,
+          "fresh_step_effort_residual": 8.16505664929111e-11,
+          "raw_replayed_peak_Pa": 156456.70708921755,
+          "replayed_energy_J": 1.4016591297342835e-07,
+          "nonlinear_body_energy_J": 1.4017448500213188e-07,
+          "nonlinear_raw_peak_lower_Pa": 156460.8243195274,
+          "nonlinear_raw_peak_upper_Pa": 156460.82464747276,
+          "full_rhs_balance_correction_norm_N": 1.0646865972473087e-10,
+          "patch_wrenches_material_N_Nm": [
+            [
+              0.00015005641680389703,
+              0.40007343122712147,
+              0.027639145901894546,
+              -0.001358169133270888,
+              8.450376064426236e-07,
+              -4.8581494395587194e-06
+            ],
+            [
+              -0.00017697735578228743,
+              -0.4000710539110099,
+              0.036364371507094546,
+              0.0013588946509050619,
+              -1.528585877497199e-07,
+              4.931730657533976e-06
+            ]
+          ],
+          "normal_stencils": [
+            {
+              "stencil": 0,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                0.00010536566270245848,
+                0.40011485220676013,
+                0.0006126875842939316
+              ]
+            },
+            {
+              "stencil": 1,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -0.00010533921443610067,
+                -0.40001441773967145,
+                -0.0006125337910747104
+              ]
+            }
+          ],
+          "shear_stencils": [
+            {
+              "stencil": 0,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                4.478066595765871e-05,
+                -4.1396300441624726e-05,
+                0.027026100598471745
+              ],
+              "coulomb_bound_N": 0.24006920110667473,
+              "coulomb_violation_N": -0.21304303170514008
+            },
+            {
+              "stencil": 1,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -7.164769758734513e-05,
+                -5.6603649275118993e-05,
+                0.03697726304889638
+              ],
+              "coulomb_bound_N": 0.24000894035368225,
+              "coulomb_violation_N": -0.20303156456857605
+            }
+          ],
+          "contact_total_force_residual_N": 2.775558885051556e-17,
+          "contact_total_moment_about_body_com_Nm": [
+            -2.3941840453646328e-08,
+            6.733727423178853e-12,
+            -2.8010435334027695e-10
+          ]
+        },
+        {
+          "step": 3,
+          "time_s": 0.00375,
+          "body_residual_N_or_force_equivalent_N": 5.2364868602317256e-11,
+          "body_resultant_residual_N": 7.146831620010901e-11,
+          "body_moment_residual_Nm": 3.2746723551112963e-13,
+          "joint_effort_residual": 4.9893247836039964e-11,
+          "fresh_step_effort_residual": 4.997322009744647e-11,
+          "raw_replayed_peak_Pa": 156447.71645180494,
+          "replayed_energy_J": 1.4014929118207533e-07,
+          "nonlinear_body_energy_J": 1.4015786166591256e-07,
+          "nonlinear_raw_peak_lower_Pa": 156451.83324305172,
+          "nonlinear_raw_peak_upper_Pa": 156451.8335709971,
+          "full_rhs_balance_correction_norm_N": 7.823670602542073e-11,
+          "patch_wrenches_material_N_Nm": [
+            [
+              0.0001518006867747816,
+              0.40004990206856006,
+              0.02766085736325885,
+              -0.001358602216974151,
+              8.487529712780594e-07,
+              -4.819329773445036e-06
+            ],
+            [
+              -0.000171652047924096,
+              -0.40004805219709255,
+              0.03635237372036698,
+              0.001358598406601884,
+              -1.4545835670613492e-07,
+              4.8144274668229775e-06
+            ]
+          ],
+          "normal_stencils": [
+            {
+              "stencil": 0,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                0.00010535716726166982,
+                0.40009135690095243,
+                0.0006126432557667806
+              ]
+            },
+            {
+              "stencil": 1,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -0.00010533085402217704,
+                -0.3999914329948345,
+                -0.000612490246444397
+              ]
+            }
+          ],
+          "shear_stencils": [
+            {
+              "stencil": 0,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                4.657108736099302e-05,
+                -4.142950714008305e-05,
+                0.027047847133864402
+              ],
+              "coulomb_bound_N": 0.24005510389813672,
+              "coulomb_violation_N": -0.213007184942196
+            },
+            {
+              "stencil": 1,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -6.628785794571314e-05,
+                -5.6585865131693444e-05,
+                0.03696523098841314
+              ],
+              "coulomb_bound_N": 0.2399951494820982,
+              "coulomb_violation_N": -0.2030298157480849
+            }
+          ],
+          "contact_total_force_residual_N": 8.333902964292956e-17,
+          "contact_total_moment_about_body_com_Nm": [
+            -2.386059826049768e-08,
+            6.699040292352772e-12,
+            -2.7151702771972125e-10
+          ]
+        },
+        {
+          "step": 4,
+          "time_s": 0.005,
+          "body_residual_N_or_force_equivalent_N": 1.075729921022603e-10,
+          "body_resultant_residual_N": 1.312632365458238e-10,
+          "body_moment_residual_Nm": 1.6519868145828128e-12,
+          "joint_effort_residual": 9.286896199025853e-11,
+          "fresh_step_effort_residual": 9.271479680158234e-11,
+          "raw_replayed_peak_Pa": 156445.04853123604,
+          "replayed_energy_J": 1.4014339421850966e-07,
+          "nonlinear_body_energy_J": 1.4015196414310524e-07,
+          "nonlinear_raw_peak_lower_Pa": 156449.16514987938,
+          "nonlinear_raw_peak_upper_Pa": 156449.16547782478,
+          "full_rhs_balance_correction_norm_N": 8.305505975739604e-11,
+          "patch_wrenches_material_N_Nm": [
+            [
+              0.00015333182059557246,
+              0.4000411669471602,
+              0.02766510467639302,
+              -0.001358679186105027,
+              8.517123833459995e-07,
+              -4.785496533445537e-06
+            ],
+            [
+              -0.00017008689204684368,
+              -0.4000402803616723,
+              0.03635642089009336,
+              0.0013586766652846807,
+              -1.4326376154036232e-07,
+              4.779948402729577e-06
+            ]
+          ],
+          "normal_stencils": [
+            {
+              "stencil": 0,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -0.00010532587184073575,
+                -0.39998365449363577,
+                -0.0006124693860530536
+              ]
+            },
+            {
+              "stencil": 1,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                0.00010535193429028708,
+                0.4000826287868462,
+                0.0006126209390579681
+              ]
+            }
+          ],
+          "shear_stencils": [
+            {
+              "stencil": 0,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -6.467041179851674e-05,
+                -5.659164493999593e-05,
+                0.036969267264648976
+              ],
+              "coulomb_bound_N": 0.23999048236705964,
+              "coulomb_violation_N": -0.20302111522395744
+            },
+            {
+              "stencil": 1,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                4.815809263311162e-05,
+                -4.1435842092593876e-05,
+                0.02705210681775737
+              ],
+              "coulomb_bound_N": 0.24004986701466394,
+              "coulomb_violation_N": -0.21299768559781235
+            }
+          ],
+          "contact_total_force_residual_N": 2.7971736445668477e-17,
+          "contact_total_moment_about_body_com_Nm": [
+            -2.386006694565096e-08,
+            6.698607251840686e-12,
+            -2.7144388223699495e-10
+          ]
+        },
+        {
+          "step": 5,
+          "time_s": 0.00625,
+          "body_residual_N_or_force_equivalent_N": 3.4431725002501343e-10,
+          "body_resultant_residual_N": 3.048774866264093e-10,
+          "body_moment_residual_Nm": 8.281314471692528e-12,
+          "joint_effort_residual": 2.1811412534484873e-10,
+          "fresh_step_effort_residual": 2.1776964965303775e-10,
+          "raw_replayed_peak_Pa": 156445.61332893404,
+          "replayed_energy_J": 1.401436060837961e-07,
+          "nonlinear_body_energy_J": 1.4015217599828084e-07,
+          "nonlinear_raw_peak_lower_Pa": 156449.72995304462,
+          "nonlinear_raw_peak_upper_Pa": 156449.73028099004,
+          "full_rhs_balance_correction_norm_N": 6.285175516489429e-11,
+          "patch_wrenches_material_N_Nm": [
+            [
+              0.0001545309969483099,
+              0.4000412254310452,
+              0.02766844765958262,
+              -0.001358752776409094,
+              8.540305164806585e-07,
+              -4.7591391770057175e-06
+            ],
+            [
+              -0.0001688691755599496,
+              -0.4000410319648465,
+              0.03635978999591319,
+              0.0013587518893445998,
+              -1.4155576088676486e-07,
+              4.753140727651583e-06
+            ]
+          ],
+          "normal_stencils": [
+            {
+              "stencil": 0,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -0.00010532263279861268,
+                -0.3999844005430566,
+                -0.0006124612991912011
+              ]
+            },
+            {
+              "stencil": 1,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                0.00010534851480185498,
+                0.4000826927826379,
+                0.0006126118055432225
+              ]
+            }
+          ],
+          "shear_stencils": [
+            {
+              "stencil": 0,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -6.338435197905363e-05,
+                -5.659629324898743e-05,
+                0.03697263854040635
+              ],
+              "coulomb_bound_N": 0.23999092998823063,
+              "coulomb_violation_N": -0.20301819379849176
+            },
+            {
+              "stencil": 1,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                4.9424537651930626e-05,
+                -4.144066808500197e-05,
+                0.02705544869776968
+              ],
+              "coulomb_bound_N": 0.24004990540316104,
+              "coulomb_violation_N": -0.21299437982424202
+            }
+          ],
+          "contact_total_force_residual_N": 1.3552527156068805e-20,
+          "contact_total_moment_about_body_com_Nm": [
+            -2.386013462783894e-08,
+            6.698341554545791e-12,
+            -2.7139667005708287e-10
+          ]
+        },
+        {
+          "step": 6,
+          "time_s": 0.0075,
+          "body_residual_N_or_force_equivalent_N": 1.8820257389049357e-10,
+          "body_resultant_residual_N": 1.555636367566594e-10,
+          "body_moment_residual_Nm": 4.737326056227737e-12,
+          "joint_effort_residual": 1.0963199560754141e-10,
+          "fresh_step_effort_residual": 1.0996725772528051e-10,
+          "raw_replayed_peak_Pa": 156446.16746305962,
+          "replayed_energy_J": 1.401439826036423e-07,
+          "nonlinear_body_energy_J": 1.4015255256014833e-07,
+          "nonlinear_raw_peak_lower_Pa": 156450.28408984558,
+          "nonlinear_raw_peak_upper_Pa": 156450.28441779094,
+          "full_rhs_balance_correction_norm_N": 6.866790431752738e-11,
+          "patch_wrenches_material_N_Nm": [
+            [
+              0.00015548356752676141,
+              0.4000416102024138,
+              0.027671210841597762,
+              -0.0013588142345613056,
+              8.558741300008941e-07,
+              -4.73820900180172e-06
+            ],
+            [
+              -0.00016789955393772357,
+              -0.40004188940276875,
+              0.03636255848210879,
+              0.0013588140376656645,
+              -1.401955224821981e-07,
+              4.7317954591520745e-06
+            ]
+          ],
+          "normal_stencils": [
+            {
+              "stencil": 0,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                0.00010534478700951755,
+                0.4000830821102459,
+                0.0006126030539347904
+              ]
+            },
+            {
+              "stencil": 1,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -0.00010531902800205742,
+                -0.3999852534146992,
+                -0.0006124532596535186
+              ]
+            }
+          ],
+          "shear_stencils": [
+            {
+              "stencil": 0,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                5.045807722297177e-05,
+                -4.144453611391104e-05,
+                0.027058210276975556
+              ],
+              "coulomb_bound_N": 0.24005013899081473,
+              "coulomb_violation_N": -0.21299184992701478
+            },
+            {
+              "stencil": 1,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -6.233249838730901e-05,
+                -5.6599949618775316e-05,
+                0.03697540936018436
+              ],
+              "coulomb_bound_N": 0.2399914417026429,
+              "coulomb_violation_N": -0.2030159364829997
+            }
+          ],
+          "contact_total_force_residual_N": 3.4703997331926476e-18,
+          "contact_total_moment_about_body_com_Nm": [
+            -2.3860154389862987e-08,
+            6.6980445441369024e-12,
+            -2.71352588077263e-10
+          ]
+        },
+        {
+          "step": 7,
+          "time_s": 0.00875,
+          "body_residual_N_or_force_equivalent_N": 6.147628462378656e-11,
+          "body_resultant_residual_N": 4.45916331310494e-11,
+          "body_moment_residual_Nm": 1.5603984032768087e-12,
+          "joint_effort_residual": 3.6167886738138436e-11,
+          "fresh_step_effort_residual": 3.630672212021581e-11,
+          "raw_replayed_peak_Pa": 156446.4309706706,
+          "replayed_energy_J": 1.4014397606680338e-07,
+          "nonlinear_body_energy_J": 1.40152546002331e-07,
+          "nonlinear_raw_peak_lower_Pa": 156450.5475758192,
+          "nonlinear_raw_peak_upper_Pa": 156450.5479037646,
+          "full_rhs_balance_correction_norm_N": 7.579280370850993e-11,
+          "patch_wrenches_material_N_Nm": [
+            [
+              0.0001562429034016178,
+              0.40004152355551675,
+              0.02767351584979706,
+              -0.0013588647373163482,
+              8.573458421196339e-07,
+              -4.721516619584104e-06
+            ],
+            [
+              -0.0001671257389850541,
+              -0.4000421005676968,
+              0.03636485511948104,
+              0.0013588648957934383,
+              -1.391097466938681e-07,
+              4.7147594580027735e-06
+            ]
+          ],
+          "normal_stencils": [
+            {
+              "stencil": 0,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                0.00010534063074875802,
+                0.4000829992660673,
+                0.0006125935477292889
+              ]
+            },
+            {
+              "stencil": 1,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -0.00010531494916653733,
+                -0.39998546079145486,
+                -0.0006124442001175423
+              ]
+            }
+          ],
+          "shear_stencils": [
+            {
+              "stencil": 0,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                5.131235167097031e-05,
+                -4.144765418308005e-05,
+                0.027060514404805294
+              ],
+              "coulomb_bound_N": 0.2400500892749775,
+              "coulomb_violation_N": -0.21298949447888801
+            },
+            {
+              "stencil": 1,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -6.146272040747989e-05,
+                -5.660283103049656e-05,
+                0.036977707341767516
+              ],
+              "coulomb_bound_N": 0.2399915661195787,
+              "coulomb_violation_N": -0.2030137643758313
+            }
+          ],
+          "contact_total_force_residual_N": 8.355543624297648e-17,
+          "contact_total_moment_about_body_com_Nm": [
+            -2.3860138447645823e-08,
+            6.697730322018525e-12,
+            -2.713152777531619e-10
+          ]
+        },
+        {
+          "step": 8,
+          "time_s": 0.01,
+          "body_residual_N_or_force_equivalent_N": 9.5865843682554e-12,
+          "body_resultant_residual_N": 6.657385416494538e-12,
+          "body_moment_residual_Nm": 1.0935151282032853e-13,
+          "joint_effort_residual": 8.605916756234462e-12,
+          "fresh_step_effort_residual": 8.631256738777594e-12,
+          "raw_replayed_peak_Pa": 156446.60023301197,
+          "replayed_energy_J": 1.4014391056782643e-07,
+          "nonlinear_body_energy_J": 1.401524804973681e-07,
+          "nonlinear_raw_peak_lower_Pa": 156450.71683329143,
+          "nonlinear_raw_peak_upper_Pa": 156450.71716123683,
+          "full_rhs_balance_correction_norm_N": 7.92483643640997e-11,
+          "patch_wrenches_material_N_Nm": [
+            [
+              0.0001568450792992733,
+              0.40004140467194793,
+              0.027675442600811225,
+              -0.001358906865290916,
+              8.585149680378923e-07,
+              -4.708278041958742e-06
+            ],
+            [
+              -0.00016651163929832372,
+              -0.40004215293427087,
+              0.0363667739244646,
+              0.0013589072138575347,
+              -1.3824782589437326e-07,
+              4.701239386248008e-06
+            ]
+          ],
+          "normal_stencils": [
+            {
+              "stencil": 0,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                0.00010533623545368927,
+                0.4000828835624766,
+                0.0006125840050321945
+              ]
+            },
+            {
+              "stencil": 1,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -0.00010531059835285979,
+                -0.3999855099931544,
+                -0.0006124349121976602
+              ]
+            }
+          ],
+          "shear_stencils": [
+            {
+              "stencil": 0,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                5.2023367292832636e-05,
+                -4.1450156223015045e-05,
+                0.027062440324868566
+              ],
+              "coulomb_bound_N": 0.2400500198434457,
+              "coulomb_violation_N": -0.21298749777170842
+            },
+            {
+              "stencil": 1,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -6.073876688141181e-05,
+                -5.6605096348169946e-05,
+                0.03697962724830504
+              ],
+              "coulomb_bound_N": 0.23999159563134273,
+              "coulomb_violation_N": -0.20301187517866326
+            }
+          ],
+          "contact_total_force_residual_N": 2.797158870338408e-17,
+          "contact_total_moment_about_body_com_Nm": [
+            -2.3860123411333783e-08,
+            6.697411996872552e-12,
+            -2.7128414277358473e-10
+          ]
+        }
+      ],
+      "dhat_m": 2.5e-06
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-articulated-regularization-1-pilot-v1",
+      "rigid": false,
+      "steps_checked": 8,
+      "rows": [
+        {
+          "step": 1,
+          "time_s": 0.00125,
+          "body_residual_N_or_force_equivalent_N": 2.8347688654828075e-11,
+          "body_resultant_residual_N": 2.686759798744232e-11,
+          "body_moment_residual_Nm": 4.5221835105753e-13,
+          "joint_effort_residual": 3.33318280504243e-11,
+          "fresh_step_effort_residual": 3.3245279671832e-11,
+          "raw_replayed_peak_Pa": 156380.45395665563,
+          "replayed_energy_J": 1.4003115045481697e-07,
+          "nonlinear_body_energy_J": 1.4003971010958005e-07,
+          "nonlinear_raw_peak_lower_Pa": 156384.56735241285,
+          "nonlinear_raw_peak_upper_Pa": 156384.56768035822,
+          "full_rhs_balance_correction_norm_N": 5.8114917579373084e-11,
+          "patch_wrenches_material_N_Nm": [
+            [
+              0.00014659658238261973,
+              0.39988271031844547,
+              0.02766647043125046,
+              -0.001358411905105235,
+              8.391031101300288e-07,
+              -4.930310264842044e-06
+            ],
+            [
+              -0.00017320086791915818,
+              -0.3998785288754316,
+              0.03632018842670201,
+              0.0013576532478117465,
+              -1.4770297998769816e-07,
+              4.848088023045766e-06
+            ]
+          ],
+          "normal_stencils": [
+            {
+              "stencil": 0,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                0.00010531753109588387,
+                0.3999241725900325,
+                0.0006124024867847232
+              ]
+            },
+            {
+              "stencil": 1,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -0.00010529061405330312,
+                -0.399821960015651,
+                -0.0006122459690266567
+              ]
+            }
+          ],
+          "shear_stencils": [
+            {
+              "stencil": 0,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                4.1343472175354616e-05,
+                -4.143815282477393e-05,
+                0.027053718995616413
+              ],
+              "coulomb_bound_N": 0.23995479320519464,
+              "coulomb_violation_N": -0.21290101088373398
+            },
+            {
+              "stencil": 1,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -6.794771182283144e-05,
+                -5.653714837243571e-05,
+                0.03693278335211016
+              ],
+              "coulomb_bound_N": 0.23989346558653643,
+              "coulomb_violation_N": -0.20296057645672974
+            }
+          ],
+          "contact_total_force_residual_N": 8.333898556489274e-17,
+          "contact_total_moment_about_body_com_Nm": [
+            -1.1884306105728638e-08,
+            3.3309739481382408e-12,
+            -1.3146782425720038e-10
+          ]
+        },
+        {
+          "step": 2,
+          "time_s": 0.0025,
+          "body_residual_N_or_force_equivalent_N": 4.714184236489224e-11,
+          "body_resultant_residual_N": 3.589759507182488e-11,
+          "body_moment_residual_Nm": 2.0757743889209902e-13,
+          "joint_effort_residual": 4.53634705289002e-11,
+          "fresh_step_effort_residual": 4.5465896326960206e-11,
+          "raw_replayed_peak_Pa": 156410.13709066273,
+          "replayed_energy_J": 1.4008172197873452e-07,
+          "nonlinear_body_energy_J": 1.4009028623421796e-07,
+          "nonlinear_raw_peak_lower_Pa": 156414.25179011837,
+          "nonlinear_raw_peak_upper_Pa": 156414.25211806374,
+          "full_rhs_balance_correction_norm_N": 9.767171728821962e-11,
+          "patch_wrenches_material_N_Nm": [
+            [
+              0.00014998995374331024,
+              0.39995396922257936,
+              0.02764044208470076,
+              -0.00135797348575901,
+              8.449393325681953e-07,
+              -4.857174826939532e-06
+            ],
+            [
+              -0.00017691015038423118,
+              -0.3999507788967943,
+              0.03636307718119749,
+              0.001358698319616845,
+              -1.527681550652695e-07,
+              4.929939799867537e-06
+            ]
+          ],
+          "normal_stencils": [
+            {
+              "stencil": 0,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                0.0001053347288539201,
+                0.3999953924228662,
+                0.0006125044308207433
+              ]
+            },
+            {
+              "stencil": 1,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -0.00010530806638041747,
+                -0.39989414503206466,
+                -0.0006123493928457887
+              ]
+            }
+          ],
+          "shear_stencils": [
+            {
+              "stencil": 0,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                4.474454837182562e-05,
+                -4.139854156350354e-05,
+                0.027027580357867443
+              ],
+              "coulomb_bound_N": 0.2399975251496942,
+              "coulomb_violation_N": -0.2129698760489153
+            },
+            {
+              "stencil": 1,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -7.161105120780426e-05,
+                -5.6601372842260926e-05,
+                0.036975783900929426
+              ],
+              "coulomb_bound_N": 0.239936776641885,
+              "coulomb_violation_N": -0.20296088007471175
+            }
+          ],
+          "contact_total_force_residual_N": 8.355538678361469e-17,
+          "contact_total_moment_about_body_com_Nm": [
+            -1.1967433422987051e-08,
+            3.365828344254482e-12,
+            -1.3996547822657524e-10
+          ]
+        },
+        {
+          "step": 3,
+          "time_s": 0.00375,
+          "body_residual_N_or_force_equivalent_N": 6.963922414214394e-11,
+          "body_resultant_residual_N": 6.955018340863387e-11,
+          "body_moment_residual_Nm": 8.897386964441874e-13,
+          "joint_effort_residual": 6.092460904170952e-11,
+          "fresh_step_effort_residual": 6.113122193368401e-11,
+          "raw_replayed_peak_Pa": 156401.0096920589,
+          "replayed_energy_J": 1.4006458065374979e-07,
+          "nonlinear_body_energy_J": 1.4007314330801117e-07,
+          "nonlinear_raw_peak_lower_Pa": 156405.12395577526,
+          "nonlinear_raw_peak_upper_Pa": 156405.12428372065,
+          "full_rhs_balance_correction_norm_N": 8.07978788727171e-11,
+          "patch_wrenches_material_N_Nm": [
+            [
+              0.0001517516376439019,
+              0.39992928851286463,
+              0.027662175021819748,
+              -0.0013584048809353658,
+              8.486878084754263e-07,
+              -4.817948915534724e-06
+            ],
+            [
+              -0.00017160353663734994,
+              -0.3999274334275228,
+              0.03635105596325572,
+              0.0013584010797593625,
+              -1.45394071586351e-07,
+              4.8130472949794515e-06
+            ]
+          ],
+          "normal_stencils": [
+            {
+              "stencil": 0,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -0.00010529961045681033,
+                -0.39987081657358214,
+                -0.0006123053269315905
+              ]
+            },
+            {
+              "stencil": 1,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                0.00010532592517610044,
+                0.3999707456060779,
+                0.0006124583440476512
+              ]
+            }
+          ],
+          "shear_stencils": [
+            {
+              "stencil": 0,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -6.626999669143826e-05,
+                -5.658354734175465e-05,
+                0.03696372788137221
+              ],
+              "coulomb_bound_N": 0.2399227795418685,
+              "coulomb_violation_N": -0.2029589489462927
+            },
+            {
+              "stencil": 1,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                4.6552687061223775e-05,
+                -4.143178864419362e-05,
+                0.027049350134559454
+              ],
+              "coulomb_bound_N": 0.23998273703373751,
+              "coulomb_violation_N": -0.21293331510927166
+            }
+          ],
+          "contact_total_force_residual_N": 5.561954668145563e-17,
+          "contact_total_moment_about_body_com_Nm": [
+            -1.19267542046924e-08,
+            3.3485365020613327e-12,
+            -1.35715705112862e-10
+          ]
+        },
+        {
+          "step": 4,
+          "time_s": 0.005,
+          "body_residual_N_or_force_equivalent_N": 3.951391034944046e-11,
+          "body_resultant_residual_N": 4.581450570889765e-11,
+          "body_moment_residual_Nm": 6.950048937453144e-13,
+          "joint_effort_residual": 3.175225865403679e-11,
+          "fresh_step_effort_residual": 3.1638706117819363e-11,
+          "raw_replayed_peak_Pa": 156398.46509220486,
+          "replayed_energy_J": 1.40058906963921e-07,
+          "nonlinear_body_energy_J": 1.4006746910365448e-07,
+          "nonlinear_raw_peak_lower_Pa": 156402.57918205546,
+          "nonlinear_raw_peak_upper_Pa": 156402.57951000085,
+          "full_rhs_balance_correction_norm_N": 8.055615719109986e-11,
+          "patch_wrenches_material_N_Nm": [
+            [
+              0.00015328306487316843,
+              0.3999208662889583,
+              0.02766641968870166,
+              -0.0013584823789683793,
+              8.516477171088026e-07,
+              -4.784115605271185e-06
+            ],
+            [
+              -0.00017003835511071662,
+              -0.39991998006004936,
+              0.03635510642841025,
+              0.001358479855394366,
+              -1.431994320908421e-07,
+              4.7785684901794585e-06
+            ]
+          ],
+          "normal_stencils": [
+            {
+              "stencil": 0,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -0.00010529470720451858,
+                -0.3998633565345411,
+                -0.0006122849595344415
+              ]
+            },
+            {
+              "stencil": 1,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                0.00010532076966411878,
+                0.39996233038470014,
+                0.0006124365118060057
+              ]
+            }
+          ],
+          "shear_stencils": [
+            {
+              "stencil": 0,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -6.465244151371136e-05,
+                -5.658933325023033e-05,
+                0.03696776794027198
+              ],
+              "coulomb_bound_N": 0.23991830350435964,
+              "coulomb_violation_N": -0.2029504357165546
+            },
+            {
+              "stencil": 1,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                4.8139903545288794e-05,
+                -4.143811901207676e-05,
+                0.027053606693495224
+              ],
+              "coulomb_bound_N": 0.23997768788613233,
+              "coulomb_violation_N": -0.2129240066265634
+            }
+          ],
+          "contact_total_force_residual_N": 2.7971736445668477e-17,
+          "contact_total_moment_about_body_com_Nm": [
+            -1.1926496657291025e-08,
+            3.348322206113809e-12,
+            -1.3567925255530966e-10
+          ]
+        },
+        {
+          "step": 5,
+          "time_s": 0.00625,
+          "body_residual_N_or_force_equivalent_N": 3.605842564310312e-11,
+          "body_resultant_residual_N": 4.884376063250267e-11,
+          "body_moment_residual_Nm": 3.5805021902239915e-13,
+          "joint_effort_residual": 4.605203048981767e-11,
+          "fresh_step_effort_residual": 4.59254657040821e-11,
+          "raw_replayed_peak_Pa": 156399.05651193362,
+          "replayed_energy_J": 1.4005916765870536e-07,
+          "nonlinear_body_energy_J": 1.4006772980754263e-07,
+          "nonlinear_raw_peak_lower_Pa": 156403.1706129811,
+          "nonlinear_raw_peak_upper_Pa": 156403.17094092653,
+          "full_rhs_balance_correction_norm_N": 7.88060364234511e-11,
+          "patch_wrenches_material_N_Nm": [
+            [
+              0.0001544823144625491,
+              0.39992099504322703,
+              0.02766976150076948,
+              -0.001358556075374302,
+              8.53965963784959e-07,
+              -4.757758071578867e-06
+            ],
+            [
+              -0.00016882046932182912,
+              -0.39992080029917093,
+              0.036358476498502934,
+              0.0013585551964607184,
+              -1.4149119267994264e-07,
+              4.751757265224685e-06
+            ]
+          ],
+          "normal_stencils": [
+            {
+              "stencil": 0,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -0.00010529148141500078,
+                -0.39986417121826295,
+                -0.0006122769832395071
+              ]
+            },
+            {
+              "stencil": 1,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                0.00010531736385626826,
+                0.3999624646488953,
+                0.0006124274913611899
+              ]
+            }
+          ],
+          "shear_stencils": [
+            {
+              "stencil": 0,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -6.336619479330604e-05,
+                -5.659398352936936e-05,
+                0.03697114028468693
+              ],
+              "coulomb_bound_N": 0.23991879230616478,
+              "coulomb_violation_N": -0.20294755440284842
+            },
+            {
+              "stencil": 1,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                4.940640348000286e-05,
+                -4.14429432091703e-05,
+                0.027056947295494807
+              ],
+              "coulomb_bound_N": 0.23997776843572674,
+              "coulomb_violation_N": -0.21292074429297536
+            }
+          ],
+          "contact_total_force_residual_N": 3.469685171791681e-18,
+          "contact_total_moment_about_body_com_Nm": [
+            -1.1926533283320925e-08,
+            3.348189659010091e-12,
+            -1.356554876026303e-10
+          ]
+        },
+        {
+          "step": 6,
+          "time_s": 0.0075,
+          "body_residual_N_or_force_equivalent_N": 2.4041567869944705e-11,
+          "body_resultant_residual_N": 2.1065328844140267e-11,
+          "body_moment_residual_Nm": 2.502278122955603e-13,
+          "joint_effort_residual": 2.6775458818690643e-11,
+          "fresh_step_effort_residual": 2.6889733054992914e-11,
+          "raw_replayed_peak_Pa": 156399.59322100418,
+          "replayed_energy_J": 1.4005951248119227e-07,
+          "nonlinear_body_energy_J": 1.400680746406665e-07,
+          "nonlinear_raw_peak_lower_Pa": 156403.70731793056,
+          "nonlinear_raw_peak_upper_Pa": 156403.70764587593,
+          "full_rhs_balance_correction_norm_N": 7.906719994868677e-11,
+          "patch_wrenches_material_N_Nm": [
+            [
+              0.0001554349033039505,
+              0.39992133481846126,
+              0.027672525177902065,
+              -0.0013586174599865477,
+              8.558096216728598e-07,
+              -4.736826577521752e-06
+            ],
+            [
+              -0.00016785089042142096,
+              -0.39992161275901456,
+              0.03636124433937845,
+              0.0013586172678108348,
+              -1.4013101555881797e-07,
+              4.730412820824393e-06
+            ]
+          ],
+          "normal_stencils": [
+            {
+              "stencil": 0,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -0.00010528786006243804,
+                -0.39986497911297864,
+                -0.0006122688803454538
+              ]
+            },
+            {
+              "stencil": 1,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                0.00010531361950105594,
+                0.39996280898120257,
+                0.0006124186763695376
+              ]
+            }
+          ],
+          "shear_stencils": [
+            {
+              "stencil": 0,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -6.231439626811445e-05,
+                -5.6597639075311944e-05,
+                0.03697391038942709
+              ],
+              "coulomb_bound_N": 0.2399192770343927,
+              "coulomb_violation_N": -0.20294527081567038
+            },
+            {
+              "stencil": 1,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                5.0439973368524145e-05,
+                -4.14468122581447e-05,
+                0.02705970943956245
+              ],
+              "coulomb_bound_N": 0.23997797502617169,
+              "coulomb_violation_N": -0.21291818683441555
+            }
+          ],
+          "contact_total_force_residual_N": 5.594338752928849e-17,
+          "contact_total_moment_about_body_com_Nm": [
+            -1.1926541651410133e-08,
+            3.348040791275545e-12,
+            -1.3563354915114081e-10
+          ]
+        },
+        {
+          "step": 7,
+          "time_s": 0.00875,
+          "body_residual_N_or_force_equivalent_N": 3.080574182441653e-11,
+          "body_resultant_residual_N": 4.028116716319819e-12,
+          "body_moment_residual_Nm": 7.338178270834431e-13,
+          "joint_effort_residual": 1.9473035952444847e-11,
+          "fresh_step_effort_residual": 1.9482742121056403e-11,
+          "raw_replayed_peak_Pa": 156399.8512899372,
+          "replayed_energy_J": 1.4005949605932658e-07,
+          "nonlinear_body_energy_J": 1.4006805822707165e-07,
+          "nonlinear_raw_peak_lower_Pa": 156403.9653858469,
+          "nonlinear_raw_peak_upper_Pa": 156403.96571379234,
+          "full_rhs_balance_correction_norm_N": 8.098487948684553e-11,
+          "patch_wrenches_material_N_Nm": [
+            [
+              0.0001561942344254739,
+              0.3999212340534394,
+              0.027674830314330025,
+              -0.0013586679390714443,
+              8.572813274924455e-07,
+              -4.720134011893407e-06
+            ],
+            [
+              -0.00016707709199737615,
+              -0.39992180989347226,
+              0.036363540673308714,
+              0.0013586680996796377,
+              -1.390452636177284e-07,
+              4.713377147202985e-06
+            ]
+          ],
+          "normal_stencils": [
+            {
+              "stencil": 0,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -0.00010528377291723392,
+                -0.3998651724598097,
+                -0.000612259804837493
+              ]
+            },
+            {
+              "stencil": 1,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                0.00010530945490586144,
+                0.39996271201909045,
+                0.000612409154057682
+              ]
+            }
+          ],
+          "shear_stencils": [
+            {
+              "stencil": 0,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -6.144463904765651e-05,
+                -5.660052026731387e-05,
+                0.036976208045272206
+              ],
+              "coulomb_bound_N": 0.23991939303336832,
+              "coulomb_violation_N": -0.20294309061587645
+            },
+            {
+              "stencil": 1,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                5.129424702013134e-05,
+                -4.144993070396863e-05,
+                0.02706201371805127
+              ],
+              "coulomb_bound_N": 0.23997791683956865,
+              "coulomb_violation_N": -0.21291582276552243
+            }
+          ],
+          "contact_total_force_residual_N": 6.939224768264016e-18,
+          "contact_total_moment_about_body_com_Nm": [
+            -1.192653311564906e-08,
+            3.3478833956132863e-12,
+            -1.3561491838363915e-10
+          ]
+        },
+        {
+          "step": 8,
+          "time_s": 0.01,
+          "body_residual_N_or_force_equivalent_N": 3.259724951379027e-11,
+          "body_resultant_residual_N": 3.3719710433538576e-11,
+          "body_moment_residual_Nm": 4.296687769820969e-13,
+          "joint_effort_residual": 2.9333613923502656e-11,
+          "fresh_step_effort_residual": 2.9414796605324453e-11,
+          "raw_replayed_peak_Pa": 156400.02167961278,
+          "replayed_energy_J": 1.40059432592759e-07,
+          "nonlinear_body_energy_J": 1.4006799473015686e-07,
+          "nonlinear_raw_peak_lower_Pa": 156404.13575731052,
+          "nonlinear_raw_peak_upper_Pa": 156404.13608525594,
+          "full_rhs_balance_correction_norm_N": 7.90503554953721e-11,
+          "patch_wrenches_material_N_Nm": [
+            [
+              0.00015679641529358165,
+              0.39992111797824825,
+              0.027676757119409576,
+              -0.0013587100735037107,
+              8.584504638426371e-07,
+              -4.7068953822221125e-06
+            ],
+            [
+              -0.00016646295432228022,
+              -0.399921865155348,
+              0.036365459482413,
+              0.0013587104218747985,
+              -1.3818328979313391e-07,
+              4.699856246530722e-06
+            ]
+          ],
+          "normal_stencils": [
+            {
+              "stencil": 0,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                0.00010530505582107238,
+                0.3999625991239178,
+                0.0006123996211465701
+              ]
+            },
+            {
+              "stencil": 1,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -0.00010527941833835012,
+                -0.39986522455683016,
+                -0.0006122505268355446
+              ]
+            }
+          ],
+          "shear_stencils": [
+            {
+              "stencil": 0,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                5.200526713776604e-05,
+                -4.1452432967359436e-05,
+                0.027063939688671622
+              ],
+              "coulomb_bound_N": 0.2399778490930942,
+              "coulomb_violation_N": -0.2129138276933823
+            },
+            {
+              "stencil": 1,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -6.072064732932924e-05,
+                -5.6602785889399684e-05,
+                0.03697812795957004
+              ],
+              "coulomb_bound_N": 0.23991942428233104,
+              "coulomb_violation_N": -0.2029412031479022
+            }
+          ],
+          "contact_total_force_residual_N": 1.1150913351151566e-16,
+          "contact_total_moment_about_body_com_Nm": [
+            -1.1926525543310036e-08,
+            3.347724004341404e-12,
+            -1.3559931042600448e-10
+          ]
+        }
+      ],
+      "dhat_m": 1.25e-06
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-articulated-regularization-2-pilot-v1",
+      "rigid": false,
+      "steps_checked": 8,
+      "rows": [
+        {
+          "step": 1,
+          "time_s": 0.00125,
+          "body_residual_N_or_force_equivalent_N": 1.05271532766676e-10,
+          "body_resultant_residual_N": 1.44451370669178e-10,
+          "body_moment_residual_Nm": 6.724872294411885e-13,
+          "joint_effort_residual": 1.5762132016244075e-10,
+          "fresh_step_effort_residual": 1.5758051068506425e-10,
+          "raw_replayed_peak_Pa": 156357.2182160809,
+          "replayed_energy_J": 1.3998888216276436e-07,
+          "nonlinear_body_energy_J": 1.3999743790422544e-07,
+          "nonlinear_raw_peak_lower_Pa": 156361.33031255676,
+          "nonlinear_raw_peak_upper_Pa": 156361.33064050213,
+          "full_rhs_balance_correction_norm_N": 6.066975814669952e-11,
+          "patch_wrenches_material_N_Nm": [
+            [
+              0.00014658042883594958,
+              0.3998223004970162,
+              0.027667135525433897,
+              -0.0013583131814570702,
+              8.390863627127363e-07,
+              -4.9294337355092166e-06
+            ],
+            [
+              -0.0001731870618187111,
+              -0.3998185282967348,
+              0.03631952289025759,
+              0.0013575548687233996,
+              -1.4768543661805965e-07,
+              4.847628796897722e-06
+            ]
+          ],
+          "normal_stencils": [
+            {
+              "stencil": 0,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -0.00010527507858666628,
+                -0.39976196062327435,
+                -0.0006121539776932981
+              ]
+            },
+            {
+              "stencil": 1,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                0.00010530188791343713,
+                0.39986376391107376,
+                0.0006123098686831036
+              ]
+            }
+          ],
+          "shear_stencils": [
+            {
+              "stencil": 0,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -6.794914891990113e-05,
+                -5.653597705252064e-05,
+                0.0369320256146202
+              ],
+              "coulomb_bound_N": 0.23985746590759183,
+              "coulomb_violation_N": -0.20292533451225392
+            },
+            {
+              "stencil": 1,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                4.134266988086978e-05,
+                -4.143930549758243e-05,
+                0.027054476917973348
+              ],
+              "coulomb_bound_N": 0.23991854795400408,
+              "coulomb_violation_N": -0.21286400771142103
+            }
+          ],
+          "contact_total_force_residual_N": 1.3878740687166725e-17,
+          "contact_total_moment_about_body_com_Nm": [
+            -5.941258745449738e-09,
+            1.665256264317145e-12,
+            -6.573449011677834e-11
+          ]
+        },
+        {
+          "step": 2,
+          "time_s": 0.0025,
+          "body_residual_N_or_force_equivalent_N": 4.984683579352898e-11,
+          "body_resultant_residual_N": 5.097633784065091e-11,
+          "body_moment_residual_Nm": 4.312271048012008e-13,
+          "joint_effort_residual": 6.289772351033789e-11,
+          "fresh_step_effort_residual": 6.292766902772128e-11,
+          "raw_replayed_peak_Pa": 156386.8527408979,
+          "replayed_energy_J": 1.4003963715898703e-07,
+          "nonlinear_body_energy_J": 1.4004819753917706e-07,
+          "nonlinear_raw_peak_lower_Pa": 156390.9661947098,
+          "nonlinear_raw_peak_upper_Pa": 156390.9665226552,
+          "full_rhs_balance_correction_norm_N": 9.892895989113836e-11,
+          "patch_wrenches_material_N_Nm": [
+            [
+              0.00014995671129981996,
+              0.3998942399178165,
+              0.027641090088639977,
+              -0.0013578756632650084,
+              8.448901733714012e-07,
+              -4.856687795112688e-06
+            ],
+            [
+              -0.00017687651741705245,
+              -0.39989064303700084,
+              0.036362430066365616,
+              0.0013586001573303037,
+              -1.5272289636001283e-07,
+              4.929043708900761e-06
+            ]
+          ],
+          "normal_stencils": [
+            {
+              "stencil": 0,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -0.00010529249293429906,
+                -0.3998340103254798,
+                -0.0006122571964242521
+              ]
+            },
+            {
+              "stencil": 1,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                0.00010531926252509869,
+                0.39993566422828875,
+                0.0006124128568533587
+              ]
+            }
+          ],
+          "shear_stencils": [
+            {
+              "stencil": 0,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -7.159269697400997e-05,
+                -5.6600234723513596e-05,
+                0.03697504437778705
+              ],
+              "coulomb_bound_N": 0.2399006957743183,
+              "coulomb_violation_N": -0.20292553876531896
+            },
+            {
+              "stencil": 1,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                4.472647787488391e-05,
+                -4.1399661990559274e-05,
+                0.027028320147301062
+              ],
+              "coulomb_bound_N": 0.23996168818962668,
+              "coulomb_violation_N": -0.2129332993294886
+            }
+          ],
+          "contact_total_force_residual_N": 2.860982138013983e-17,
+          "contact_total_moment_about_body_com_Nm": [
+            -5.982845089355995e-09,
+            1.682655354433944e-12,
+            -6.996103896943565e-11
+          ]
+        },
+        {
+          "step": 3,
+          "time_s": 0.00375,
+          "body_residual_N_or_force_equivalent_N": 2.5347847834954936e-10,
+          "body_resultant_residual_N": 2.1985412707121348e-10,
+          "body_moment_residual_Nm": 5.453440705084698e-12,
+          "joint_effort_residual": 1.8026612735656058e-10,
+          "fresh_step_effort_residual": 1.8055214202768715e-10,
+          "raw_replayed_peak_Pa": 156377.6546520399,
+          "replayed_energy_J": 1.4002223188843173e-07,
+          "nonlinear_body_energy_J": 1.4003079061136728e-07,
+          "nonlinear_raw_peak_lower_Pa": 156381.76763227832,
+          "nonlinear_raw_peak_upper_Pa": 156381.76796022375,
+          "full_rhs_balance_correction_norm_N": 9.213844480903832e-11,
+          "patch_wrenches_material_N_Nm": [
+            [
+              0.0001517270163583613,
+              0.39986897715763475,
+              0.027662833781803123,
+              -0.0013583062028040846,
+              8.486550441877049e-07,
+              -4.817260519207672e-06
+            ],
+            [
+              -0.00017157925517750181,
+              -0.39986711972693495,
+              0.03635039707640065,
+              0.0013583024101324992,
+              -1.4536189302154413e-07,
+              4.81235662950516e-06
+            ]
+          ],
+          "normal_stencils": [
+            {
+              "stencil": 0,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -0.00010528398768313783,
+                -0.39981050404716073,
+                -0.0006122128607357883
+              ]
+            },
+            {
+              "stencil": 1,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                0.00010531030307312991,
+                0.39991043538114157,
+                0.000612365881347587
+              ]
+            }
+          ],
+          "shear_stencils": [
+            {
+              "stencil": 0,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -6.62610410427787e-05,
+                -5.658238844239847e-05,
+                0.03696297631313995
+              ],
+              "coulomb_bound_N": 0.23988659198227338,
+              "coulomb_violation_N": -0.20292351297067063
+            },
+            {
+              "stencil": 1,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                4.654339105444811e-05,
+                -4.143292928269109e-05,
+                0.027050101572423806
+              ],
+              "coulomb_bound_N": 0.23994655085503513,
+              "coulomb_violation_N": -0.21289637750894871
+            }
+          ],
+          "contact_total_force_residual_N": 5.647850612456345e-17,
+          "contact_total_moment_about_body_com_Nm": [
+            -5.962490894734999e-09,
+            1.674022235393334e-12,
+            -6.784707761971556e-11
+          ]
+        },
+        {
+          "step": 4,
+          "time_s": 0.005,
+          "body_residual_N_or_force_equivalent_N": 2.4311950983183638e-11,
+          "body_resultant_residual_N": 2.963142037547221e-11,
+          "body_moment_residual_Nm": 3.8418292997556647e-13,
+          "joint_effort_residual": 2.1054612453468397e-11,
+          "fresh_step_effort_residual": 2.0945015495815285e-11,
+          "raw_replayed_peak_Pa": 156375.17420161807,
+          "replayed_energy_J": 1.400166744359183e-07,
+          "nonlinear_body_energy_J": 1.4002523268116559e-07,
+          "nonlinear_raw_peak_lower_Pa": 156379.28703460476,
+          "nonlinear_raw_peak_upper_Pa": 156379.28736255015,
+          "full_rhs_balance_correction_norm_N": 7.991303445113616e-11,
+          "patch_wrenches_material_N_Nm": [
+            [
+              0.0001532586802730376,
+              0.3998607181837809,
+              0.02766707710450398,
+              -0.0013583839775861868,
+              8.516153695038585e-07,
+              -4.783425334644983e-06
+            ],
+            [
+              -0.00017001410830628263,
+              -0.39985983204237857,
+              0.03635444916944491,
+              0.0013583814528061865,
+              -1.4316729766974365e-07,
+              4.777879016371962e-06
+            ]
+          ],
+          "normal_stencils": [
+            {
+              "stencil": 0,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                0.00010530518808066839,
+                0.3999021834074093,
+                0.0006123443017520997
+              ]
+            },
+            {
+              "stencil": 1,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -0.00010527912559200519,
+                -0.3998032096881697,
+                -0.0006121927497084431
+              ]
+            }
+          ],
+          "shear_stencils": [
+            {
+              "stencil": 0,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                4.813080133436924e-05,
+                -4.143925733321875e-05,
+                0.02705435653740348
+              ],
+              "coulomb_bound_N": 0.23994159965613746,
+              "coulomb_violation_N": -0.2128871685691781
+            },
+            {
+              "stencil": 1,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -6.464347713248479e-05,
+                -5.6588177373532096e-05,
+                0.03696701825342968
+              ],
+              "coulomb_bound_N": 0.2398822153529161,
+              "coulomb_violation_N": -0.20291509726737478
+            }
+          ],
+          "contact_total_force_residual_N": 8.441532684523881e-17,
+          "contact_total_moment_about_body_com_Nm": [
+            -5.9623641596325515e-09,
+            1.673915715918019e-12,
+            -6.782896195666605e-11
+          ]
+        },
+        {
+          "step": 5,
+          "time_s": 0.00625,
+          "body_residual_N_or_force_equivalent_N": 1.0655282086210817e-10,
+          "body_resultant_residual_N": 1.1421952911534729e-10,
+          "body_moment_residual_Nm": 1.0415439364404599e-12,
+          "joint_effort_residual": 1.303305637722975e-10,
+          "fresh_step_effort_residual": 1.303377128727155e-10,
+          "raw_replayed_peak_Pa": 156375.77782512145,
+          "replayed_energy_J": 1.4001695751922683e-07,
+          "nonlinear_body_energy_J": 1.40025515810564e-07,
+          "nonlinear_raw_peak_lower_Pa": 156379.89069604175,
+          "nonlinear_raw_peak_upper_Pa": 156379.89102398712,
+          "full_rhs_balance_correction_norm_N": 7.731166137561813e-11,
+          "patch_wrenches_material_N_Nm": [
+            [
+              0.0001544579672535058,
+              0.3998608791659477,
+              0.02767041849839976,
+              -0.0013584577252675654,
+              8.539336778133516e-07,
+              -4.757067636068501e-06
+            ],
+            [
+              -0.00016879619154424891,
+              -0.39986068376347633,
+              0.03635781960344312,
+              0.0013584568458153252,
+              -1.414590140922204e-07,
+              4.751067190923032e-06
+            ]
+          ],
+          "normal_stencils": [
+            {
+              "stencil": 0,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                0.0001053017883458669,
+                0.39990234989877516,
+                0.0006123353333890268
+              ]
+            },
+            {
+              "stencil": 1,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -0.00010527590568007388,
+                -0.39980405585324585,
+                -0.0006121848243527284
+              ]
+            }
+          ],
+          "shear_stencils": [
+            {
+              "stencil": 0,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                4.939733026547202e-05,
+                -4.1444080896115854e-05,
+                0.02705769667223993
+              ],
+              "coulomb_bound_N": 0.23994169954206018,
+              "coulomb_violation_N": -0.21288392603951525
+            },
+            {
+              "stencil": 1,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -6.335719138696109e-05,
+                -5.659282843559436e-05,
+                0.03697039100959751
+              ],
+              "coulomb_bound_N": 0.23988272304355943,
+              "coulomb_violation_N": -0.2029122344305527
+            }
+          ],
+          "contact_total_force_residual_N": 1.1123894476047437e-16,
+          "contact_total_moment_about_body_com_Nm": [
+            -5.962382992874809e-09,
+            1.6738495897498928e-12,
+            -6.781707319195376e-11
+          ]
+        },
+        {
+          "step": 6,
+          "time_s": 0.0075,
+          "body_residual_N_or_force_equivalent_N": 1.0373589102939644e-10,
+          "body_resultant_residual_N": 1.1429302849610278e-10,
+          "body_moment_residual_Nm": 9.509838897370666e-13,
+          "joint_effort_residual": 1.3322576951016953e-10,
+          "fresh_step_effort_residual": 1.3317158971424256e-10,
+          "raw_replayed_peak_Pa": 156376.3056844271,
+          "replayed_energy_J": 1.4001728617727357e-07,
+          "nonlinear_body_energy_J": 1.4002584448205365e-07,
+          "nonlinear_raw_peak_lower_Pa": 156380.4185179076,
+          "nonlinear_raw_peak_upper_Pa": 156380.41884585298,
+          "full_rhs_balance_correction_norm_N": 7.697218476572308e-11,
+          "patch_wrenches_material_N_Nm": [
+            [
+              0.0001554105533324767,
+              0.3998611959098681,
+              0.027673182406225537,
+              -0.0013585190717386184,
+              8.557773352249794e-07,
+              -4.736135733146287e-06
+            ],
+            [
+              -0.00016782657208738288,
+              -0.3998614733617834,
+              0.03636058715235418,
+              0.0013585188788359799,
+              -1.4009878112931394e-07,
+              4.729721794422252e-06
+            ]
+          ],
+          "normal_stencils": [
+            {
+              "stencil": 0,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -0.0001052722759493282,
+                -0.3998048408869389,
+                -0.0006121766892079112
+              ]
+            },
+            {
+              "stencil": 1,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                0.0001052980355669479,
+                0.39990267120015816,
+                0.000612326485886899
+              ]
+            }
+          ],
+          "shear_stencils": [
+            {
+              "stencil": 0,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -6.230535857645363e-05,
+                -5.65964836318737e-05,
+                0.036973160786943265
+              ],
+              "coulomb_bound_N": 0.23988319405515957,
+              "coulomb_violation_N": -0.20290993745397787
+            },
+            {
+              "stencil": 1,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                5.04309035592175e-05,
+                -4.1447950427343934e-05,
+                0.027060459082690225
+              ],
+              "coulomb_bound_N": 0.23994189231393576,
+              "coulomb_violation_N": -0.2128813544963945
+            }
+          ],
+          "contact_total_force_residual_N": 3.1031703550281426e-17,
+          "contact_total_moment_about_body_com_Nm": [
+            -5.962386825854749e-09,
+            1.6737749593709762e-12,
+            -6.780608577871758e-11
+          ]
+        },
+        {
+          "step": 7,
+          "time_s": 0.00875,
+          "body_residual_N_or_force_equivalent_N": 1.0475383280398779e-10,
+          "body_resultant_residual_N": 6.718426333641033e-11,
+          "body_moment_residual_Nm": 2.30565569436719e-12,
+          "joint_effort_residual": 8.580896476295514e-11,
+          "fresh_step_effort_residual": 8.584536333742972e-11,
+          "raw_replayed_peak_Pa": 156376.56129749355,
+          "replayed_energy_J": 1.40017265310202e-07,
+          "nonlinear_body_energy_J": 1.4002582354666414e-07,
+          "nonlinear_raw_peak_lower_Pa": 156380.6740993135,
+          "nonlinear_raw_peak_upper_Pa": 156380.6744272589,
+          "full_rhs_balance_correction_norm_N": 8.470157384006979e-11,
+          "patch_wrenches_material_N_Nm": [
+            [
+              0.00015616988717874353,
+              0.39986108883179045,
+              0.02767548753436951,
+              -0.0013585695387967863,
+              8.572490459906611e-07,
+              -4.7194429788910515e-06
+            ],
+            [
+              -0.00016705272978708441,
+              -0.39986166413592505,
+              0.03636288344658014,
+              0.001358569700955376,
+              -1.3901296806117316e-07,
+              4.712685138321209e-06
+            ]
+          ],
+          "normal_stencils": [
+            {
+              "stencil": 0,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -0.00010526818482043406,
+                -0.3998050278735404,
+                -0.0006121676067144295
+              ]
+            },
+            {
+              "stencil": 1,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                0.00010529386699888455,
+                0.3999025679249752,
+                0.0006123169566621348
+              ]
+            }
+          ],
+          "shear_stencils": [
+            {
+              "stencil": 0,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -6.14355594216297e-05,
+                -5.659936490070388e-05,
+                0.03697545839293886
+              ],
+              "coulomb_bound_N": 0.2398833062379942,
+              "coulomb_violation_N": -0.202907753487778
+            },
+            {
+              "stencil": 1,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                5.128518171728493e-05,
+                -4.1451068950105154e-05,
+                0.027062763362967045
+              ],
+              "coulomb_bound_N": 0.2399418303394881,
+              "coulomb_violation_N": -0.21287898663818922
+            }
+          ],
+          "contact_total_force_residual_N": 2.775562855513763e-17,
+          "contact_total_moment_about_body_com_Nm": [
+            -5.9623825290531195e-09,
+            1.6736962327407266e-12,
+            -6.779674765382618e-11
+          ]
+        },
+        {
+          "step": 8,
+          "time_s": 0.01,
+          "body_residual_N_or_force_equivalent_N": 4.43316129334329e-11,
+          "body_resultant_residual_N": 5.031900724248353e-11,
+          "body_moment_residual_Nm": 5.800541813415033e-13,
+          "joint_effort_residual": 5.8037897605119035e-11,
+          "fresh_step_effort_residual": 5.80013025299519e-11,
+          "raw_replayed_peak_Pa": 156376.73224594194,
+          "replayed_energy_J": 1.4001720285625078e-07,
+          "nonlinear_body_energy_J": 1.4002576110037101e-07,
+          "nonlinear_raw_peak_lower_Pa": 156380.8450536919,
+          "nonlinear_raw_peak_upper_Pa": 156380.84538163728,
+          "full_rhs_balance_correction_norm_N": 8.06435899490144e-11,
+          "patch_wrenches_material_N_Nm": [
+            [
+              0.00015677209888776948,
+              0.39986097415271366,
+              0.027677414345233728,
+              -0.0013586116759757075,
+              8.584182403267226e-07,
+              -4.706203699761058e-06
+            ],
+            [
+              -0.00016643863162797934,
+              -0.39986172084761273,
+              0.036364802249237105,
+              0.0013586120250317737,
+              -1.3815104939538685e-07,
+              4.6991651113694665e-06
+            ]
+          ],
+          "normal_stencils": [
+            {
+              "stencil": 0,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                0.00010528946601505723,
+                0.3999024564259117,
+                0.0006123074286293747
+              ]
+            },
+            {
+              "stencil": 1,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -0.00010526382835748072,
+                -0.39980508142041077,
+                -0.0006121583336727606
+              ]
+            }
+          ],
+          "shear_stencils": [
+            {
+              "stencil": 0,
+              "finger": 0,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                5.199623244052128e-05,
+                -4.1453571300072074e-05,
+                0.027064689337629937
+              ],
+              "coulomb_bound_N": 0.239941763430682,
+              "coulomb_violation_N": -0.2128769923998903
+            },
+            {
+              "stencil": 1,
+              "finger": 1,
+              "weight_m2": 1.2064301812974071e-05,
+              "body_resultant_N": [
+                -6.071160711754871e-05,
+                -5.660163064643063e-05,
+                0.03697737830261345
+              ],
+              "coulomb_bound_N": 0.23988333835687073,
+              "coulomb_violation_N": -0.2029058668941217
+            }
+          ],
+          "contact_total_force_residual_N": 1.6711069498175726e-16,
+          "contact_total_moment_about_body_com_Nm": [
+            -5.9623787372186515e-09,
+            1.6736165845386303e-12,
+            -6.778898590468346e-11
+          ]
+        }
+      ],
+      "dhat_m": 6.25e-07
+    }
+  ],
+  "adjacent_comparisons": [
+    {
+      "coarse_case": 0,
+      "fine_case": 1,
+      "rows": [
+        {
+          "step": 1,
+          "time_s": 0.00125,
+          "objective_nonlinear_tensor_absolute_volume_L2_Pa_m32": 0.01554272443717503,
+          "objective_nonlinear_tensor_relative_change": 0.0003019812734453108,
+          "nonlinear_energy_relative_change": 0.0006038444080114225,
+          "raw_nonlinear_peak_relative_change": 0.0002971729279219737,
+          "patch_force_N_absolute_change": 0.0001702947123477262,
+          "patch_force_N_relative_change": 0.00030015456383321657,
+          "patch_moment_Nm_absolute_change": 2.787484640902878e-07,
+          "patch_moment_Nm_relative_change": 0.00014513909906962088
+        },
+        {
+          "step": 2,
+          "time_s": 0.0025,
+          "objective_nonlinear_tensor_absolute_volume_L2_Pa_m32": 0.015473082876031717,
+          "objective_nonlinear_tensor_relative_change": 0.00030057391364305037,
+          "nonlinear_energy_relative_change": 0.0006010321641656269,
+          "raw_nonlinear_peak_relative_change": 0.00029775118875696727,
+          "patch_force_N_absolute_change": 0.00016953056915221365,
+          "patch_force_N_relative_change": 0.0002987536753563454,
+          "patch_moment_Nm_absolute_change": 2.7717882046389803e-07,
+          "patch_moment_Nm_relative_change": 0.0001442895859995957
+        },
+        {
+          "step": 3,
+          "time_s": 0.00375,
+          "objective_nonlinear_tensor_absolute_volume_L2_Pa_m32": 0.015569464844527736,
+          "objective_nonlinear_tensor_relative_change": 0.00030246467284604327,
+          "nonlinear_energy_relative_change": 0.0006048151408659663,
+          "raw_nonlinear_peak_relative_change": 0.00029864294784665013,
+          "patch_force_N_absolute_change": 0.00017058720601811125,
+          "patch_force_N_relative_change": 0.00030063350453337533,
+          "patch_moment_Nm_absolute_change": 2.790756438757166e-07,
+          "patch_moment_Nm_relative_change": 0.00014526986715195463
+        },
+        {
+          "step": 4,
+          "time_s": 0.005,
+          "objective_nonlinear_tensor_absolute_volume_L2_Pa_m32": 0.015528748737159767,
+          "objective_nonlinear_tensor_relative_change": 0.00030167978122597324,
+          "nonlinear_energy_relative_change": 0.0006032452788036213,
+          "raw_nonlinear_peak_relative_change": 0.00029785933241988083,
+          "patch_force_N_absolute_change": 0.00017014074389815179,
+          "patch_force_N_relative_change": 0.00029985235071138715,
+          "patch_moment_Nm_absolute_change": 2.7833613024985834e-07,
+          "patch_moment_Nm_relative_change": 0.000144876600601252
+        },
+        {
+          "step": 5,
+          "time_s": 0.00625,
+          "objective_nonlinear_tensor_absolute_volume_L2_Pa_m32": 0.015519760084088103,
+          "objective_nonlinear_tensor_relative_change": 0.0003015048632768641,
+          "nonlinear_energy_relative_change": 0.0006028954053458602,
+          "raw_nonlinear_peak_relative_change": 0.00029768795530826786,
+          "patch_force_N_absolute_change": 0.00017004251169171764,
+          "patch_force_N_relative_change": 0.00029967867506018706,
+          "patch_moment_Nm_absolute_change": 2.7817839135069505e-07,
+          "patch_moment_Nm_relative_change": 0.00014478656379380712
+        },
+        {
+          "step": 6,
+          "time_s": 0.0075,
+          "objective_nonlinear_tensor_absolute_volume_L2_Pa_m32": 0.015525573369353434,
+          "objective_nonlinear_tensor_relative_change": 0.00030161741680708175,
+          "nonlinear_energy_relative_change": 0.0006031204448160299,
+          "raw_nonlinear_peak_relative_change": 0.0002977983879905999,
+          "patch_force_N_absolute_change": 0.0001701061380582263,
+          "patch_force_N_relative_change": 0.0002997902146067188,
+          "patch_moment_Nm_absolute_change": 2.782848183946552e-07,
+          "patch_moment_Nm_relative_change": 0.00014483538413378858
+        },
+        {
+          "step": 7,
+          "time_s": 0.00875,
+          "objective_nonlinear_tensor_absolute_volume_L2_Pa_m32": 0.015527387100711098,
+          "objective_nonlinear_tensor_relative_change": 0.0003016526609518324,
+          "nonlinear_energy_relative_change": 0.0006031908796964025,
+          "raw_nonlinear_peak_relative_change": 0.00029783253805204524,
+          "patch_force_N_absolute_change": 0.00017012604426237178,
+          "patch_force_N_relative_change": 0.000299825123689907,
+          "patch_moment_Nm_absolute_change": 2.7832012200273024e-07,
+          "patch_moment_Nm_relative_change": 0.00014484836382240644
+        },
+        {
+          "step": 8,
+          "time_s": 0.01,
+          "objective_nonlinear_tensor_absolute_volume_L2_Pa_m32": 0.015527023077485514,
+          "objective_nonlinear_tensor_relative_change": 0.0003016456497372131,
+          "nonlinear_energy_relative_change": 0.0006031768169023621,
+          "raw_nonlinear_peak_relative_change": 0.00029782509110365396,
+          "patch_force_N_absolute_change": 0.00017012201178819155,
+          "patch_force_N_relative_change": 0.00029981792499633253,
+          "patch_moment_Nm_absolute_change": 2.783126391844465e-07,
+          "patch_moment_Nm_relative_change": 0.00014483997272091698
+        }
+      ]
+    },
+    {
+      "coarse_case": 1,
+      "fine_case": 2,
+      "rows": [
+        {
+          "step": 1,
+          "time_s": 0.00125,
+          "objective_nonlinear_tensor_absolute_volume_L2_Pa_m32": 0.007771489736154715,
+          "objective_nonlinear_tensor_relative_change": 0.00015101589912854625,
+          "nonlinear_energy_relative_change": 0.0003019498498504358,
+          "raw_nonlinear_peak_relative_change": 0.0001486111675415014,
+          "patch_force_N_absolute_change": 8.514870351122771e-05,
+          "patch_force_N_relative_change": 0.00015010211207042008,
+          "patch_moment_Nm_absolute_change": 1.393764094512259e-07,
+          "patch_moment_Nm_relative_change": 7.257595011162465e-05
+        },
+        {
+          "step": 2,
+          "time_s": 0.0025,
+          "objective_nonlinear_tensor_absolute_volume_L2_Pa_m32": 0.0077363230074506,
+          "objective_nonlinear_tensor_relative_change": 0.00015030528469363663,
+          "nonlinear_energy_relative_change": 0.0003005300730780647,
+          "raw_nonlinear_peak_relative_change": 0.00014889348135094238,
+          "patch_force_N_absolute_change": 8.476291868208712e-05,
+          "patch_force_N_relative_change": 0.00014939491268276447,
+          "patch_moment_Nm_absolute_change": 1.3858614460218144e-07,
+          "patch_moment_Nm_relative_change": 7.214829798080194e-05
+        },
+        {
+          "step": 3,
+          "time_s": 0.00375,
+          "objective_nonlinear_tensor_absolute_volume_L2_Pa_m32": 0.007785309134999947,
+          "objective_nonlinear_tensor_relative_change": 0.00015126640073913748,
+          "nonlinear_energy_relative_change": 0.0003024527424217993,
+          "raw_nonlinear_peak_relative_change": 0.00014935451779685138,
+          "patch_force_N_absolute_change": 8.52998906251668e-05,
+          "patch_force_N_relative_change": 0.0001503503630232345,
+          "patch_moment_Nm_absolute_change": 1.395493528317222e-07,
+          "patch_moment_Nm_relative_change": 7.264621291793977e-05
+        },
+        {
+          "step": 4,
+          "time_s": 0.005,
+          "objective_nonlinear_tensor_absolute_volume_L2_Pa_m32": 0.007764093445629461,
+          "objective_nonlinear_tensor_relative_change": 0.00015085717019123825,
+          "nonlinear_energy_relative_change": 0.0003016343674648869,
+          "raw_nonlinear_peak_relative_change": 0.00014894649983632213,
+          "patch_force_N_absolute_change": 8.506729073832574e-05,
+          "patch_force_N_relative_change": 0.00014994315301379327,
+          "patch_moment_Nm_absolute_change": 1.3916484938536897e-07,
+          "patch_moment_Nm_relative_change": 7.244187389042932e-05
+        },
+        {
+          "step": 5,
+          "time_s": 0.00625,
+          "objective_nonlinear_tensor_absolute_volume_L2_Pa_m32": 0.007759964542223515,
+          "objective_nonlinear_tensor_relative_change": 0.00015077678613003732,
+          "nonlinear_energy_relative_change": 0.0003014736045374722,
+          "raw_nonlinear_peak_relative_change": 0.0001488677146130879,
+          "patch_force_N_absolute_change": 8.502223770394744e-05,
+          "patch_force_N_relative_change": 0.00014986345202193326,
+          "patch_moment_Nm_absolute_change": 1.3909186865498084e-07,
+          "patch_moment_Nm_relative_change": 7.239991446749817e-05
+        },
+        {
+          "step": 6,
+          "time_s": 0.0075,
+          "objective_nonlinear_tensor_absolute_volume_L2_Pa_m32": 0.007762927155957785,
+          "objective_nonlinear_tensor_relative_change": 0.0001508341675380658,
+          "nonlinear_energy_relative_change": 0.00030158831585036516,
+          "raw_nonlinear_peak_relative_change": 0.00014892401647026432,
+          "patch_force_N_absolute_change": 8.505469095977354e-05,
+          "patch_force_N_relative_change": 0.00014992036683015954,
+          "patch_moment_Nm_absolute_change": 1.391459470071406e-07,
+          "patch_moment_Nm_relative_change": 7.242477828170422e-05
+        },
+        {
+          "step": 7,
+          "time_s": 0.00875,
+          "objective_nonlinear_tensor_absolute_volume_L2_Pa_m32": 0.007763759770852712,
+          "objective_nonlinear_tensor_relative_change": 0.00015085035200571536,
+          "nonlinear_energy_relative_change": 0.0003016206535177979,
+          "raw_nonlinear_peak_relative_change": 0.00014893967344464798,
+          "patch_force_N_absolute_change": 8.506365210584934e-05,
+          "patch_force_N_relative_change": 0.00014993607786156253,
+          "patch_moment_Nm_absolute_change": 1.391613505148715e-07,
+          "patch_moment_Nm_relative_change": 7.243009872891444e-05
+        },
+        {
+          "step": 8,
+          "time_s": 0.01,
+          "objective_nonlinear_tensor_absolute_volume_L2_Pa_m32": 0.007763569110780277,
+          "objective_nonlinear_tensor_relative_change": 0.00015084667727420314,
+          "nonlinear_energy_relative_change": 0.00030161328496958184,
+          "raw_nonlinear_peak_relative_change": 0.0001489357830917193,
+          "patch_force_N_absolute_change": 8.506163992660244e-05,
+          "patch_force_N_relative_change": 0.00014993248458345276,
+          "patch_moment_Nm_absolute_change": 1.3915807703695197e-07,
+          "patch_moment_Nm_relative_change": 7.242614610629247e-05
+        }
+      ]
+    }
+  ],
+  "goal_completion": false,
+  "limitations": "Only barrier activation distance changes. Geometry, material, collision quadrature, friction, control, time step and held-initializer protocol remain fixed; each distance solves its own corresponding closure. Complete independent body/joint/fresh-step gates and each Coulomb bound are retained. This is one unresolved coarse spatial/contact setting, not spatial convergence, finite-footprint model validation, original approach/angular-history matching or a physical accuracy/cost operating range. Nonzero full regularized-contact torque is recorded, not projected away."
+}
