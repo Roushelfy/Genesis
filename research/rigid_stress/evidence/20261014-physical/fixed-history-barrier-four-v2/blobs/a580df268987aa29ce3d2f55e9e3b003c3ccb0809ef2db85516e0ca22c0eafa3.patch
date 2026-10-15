@@ -1,0 +1,110 @@
+--- a/research/rigid_stress/audit_recorded_nonlinear_contact_history.py
++++ b/research/rigid_stress/audit_recorded_nonlinear_contact_history.py
+@@ -1,4 +1,4 @@
+-"""Qualify recording-only reference changes and independently reconstruct every retained contact stage."""
++"""Compare fixed-history barrier-distance cases with independent current-friction/force/full-field audits."""
+ 
+ import argparse
+ import hashlib
+@@ -10,6 +10,7 @@
+ from scipy import sparse
+ 
+ from .contact_reference import IndependentContactSystem
++from .audit_objective_frame import finite_frame
+ from .neohookean_reference import NeoHookeanBulk
+ from .qualify_articulated_precision import tensor_from_f
+ from .skfem_reference import SkfemElasticReference
+@@ -79,9 +80,12 @@
+         assert int((run / "returncode.txt").read_text()) == 0
+     directories = [run / "solution" for run in [args.run, args.baseline]]
+     configs = [json.loads((directory / "configuration.json").read_text()) for directory in directories]
+-    assert {k: v for k, v in configs[0].items() if k != "output"} == {
+-        k: v for k, v in configs[1].items() if k != "output"
++    excluded = {"output", "dhat", "contact_initialization_steps"}
++    assert {k: v for k, v in configs[0].items() if k not in excluded} == {
++        k: v for k, v in configs[1].items() if k not in excluded
+     }
++    assert configs[0]["contact_initialization_steps"] == 604
++    assert configs[1]["dhat"] == 2.5e-6 and configs[0]["dhat"] in [1.25e-6, 6.25e-7]
+     config = configs[0]
+     assert config["body_material"] == config["pad_material"] == "neo_hookean"
+     assert config["updated_friction"] and not config["resume_failed_step"]
+@@ -99,16 +103,10 @@
+             assert candidate[key].shape == original[key].shape
+             if key in ["rest_positions", "surface_triangles", "body_component_permutation"]:
+                 np.testing.assert_array_equal(candidate[key], original[key])
+-            elif key in ["body_tensor_Pa", "body_vm_Pa"]:
+-                np.testing.assert_allclose(candidate[key], original[key], rtol=1e-4, atol=1e-3)
+-            elif key in ["displacement", "contact_force_N"]:
+-                np.testing.assert_allclose(candidate[key], original[key], rtol=1e-8, atol=1e-12)
+-            elif key == "applied_force_N":
+-                np.testing.assert_allclose(candidate[key], original[key], rtol=1e-12, atol=1e-15)
+-            elif key == "total_gradient_N":
+-                np.testing.assert_allclose(candidate[key], original[key], rtol=1e-8, atol=1e-9)
+             else:
+-                raise AssertionError(f"Unspecified original array criterion: {key}")
++                assert key in ["body_tensor_Pa", "body_vm_Pa", "displacement", "contact_force_N", "applied_force_N", "total_gradient_N"]
++                if key == "applied_force_N":
++                    np.testing.assert_allclose(candidate[key], original[key], rtol=1e-12, atol=1e-15)
+             array_checks[key] = {
+                 "bit_identical": bool(np.array_equal(candidate[key], original[key])),
+                 "maximum_absolute_difference": float(np.max(abs(candidate[key] - original[key]))),
+@@ -137,7 +135,11 @@
+     final_quadrature = [
+         tensor_from_f(bulk.deformation_gradients(vector).transpose(2, 3, 0, 1), body.lame) for vector in final_vectors
+     ]
+-    np.testing.assert_allclose(final_quadrature[0], final_quadrature[1], rtol=1e-4, atol=1e-3)
++    rotations = [finite_frame(body, vector)[0] for vector in final_vectors]
++    final_quadrature = [rotation.T @ tensor @ rotation for rotation, tensor in zip(rotations, final_quadrature)]
++    weights = bulk.basis.dx
++    absolute_volume_error = float(np.sqrt(np.sum(weights[..., None, None] * (final_quadrature[0] - final_quadrature[1])**2)))
++    volume_reference_norm = float(np.sqrt(np.sum(weights[..., None, None] * final_quadrature[1]**2)))
+     quadrature_difference = float(np.linalg.norm(final_quadrature[0] - final_quadrature[1]))
+     quadrature_reference = float(np.linalg.norm(final_quadrature[1]))
+     inputs = {}
+@@ -170,6 +172,7 @@
+     assert [r["accepted_record_index"] for r in records] == list(range(len(records)))
+     mappings = {}
+     for call in manifest["calls"]:
++        assert call["dhat_m"] == config["dhat"] and call["friction"] == config["friction"]
+         assert [r["step"] for r in records if r["call"] == call["call"]] == list(range(1, call["load_steps"] + 1))
+         path = history / call["map_file"]
+         assert retain(path) == call["map_sha256"] and call["tolerance_N"] == 1e-9
+@@ -261,18 +264,22 @@
+         "scope": __doc__,
+         "run": str(args.run),
+         "baseline": str(args.baseline),
+-        "final_saved_arrays_qualified": qualified_arrays,
++        "study": "Fixed-history contact barrier distance sensitivity",
++        "same_solution_equivalence_qualified": False,
++        "barrier_distance_m": config["dhat"],
++        "baseline_barrier_distance_m": configs[1]["dhat"],
++        "fixed_contact_initialization_stages": 604,
++        "final_volume_weighted_objective_tensor_absolute_L2_Pa_m1p5": absolute_volume_error,
++        "baseline_volume_weighted_objective_tensor_L2_Pa_m1p5": volume_reference_norm,
++        "final_volume_weighted_objective_tensor_relative_L2": absolute_volume_error / volume_reference_norm,
++        "final_saved_arrays_compared": qualified_arrays,
+         "final_saved_array_comparisons": array_checks,
+         "original_accepted_stage_keys_identical": True,
+         "original_accepted_residual_records_identical": reports[0]["accepted_steps"] == reports[1]["accepted_steps"],
+         "original_iteration_records_identical": reports[0]["iterations"] == reports[1]["iterations"],
+         "final_complete_quadrature_tensor_absolute_difference_Pa": quadrature_difference,
+         "final_complete_quadrature_tensor_relative_difference": quadrature_difference / quadrature_reference,
+-        "stress_field_qualification_criteria": {
+-            "rtol": 1e-4,
+-            "atol_Pa": 1e-3,
+-            "source": "PHYSICAL_VALIDATION_PROTOCOL_20261014.md original independent-field gates",
+-        },
++        "stress_field_equivalence_to_distinct_barrier_problem_required": False,
+         "independent_final_body_residual_N": final_body_residual,
+         "independent_final_original_mapped_residual_N": final_original_residual,
+         "stages_checked": len(rows),
+@@ -281,7 +288,7 @@
+         "rows": rows,
+         "input_sha256": {str(path): digest for path, digest in inputs.items()},
+         "goal_completion": False,
+-        "limitations": "The recording path is qualified against all original final arrays and complete corner/quadrature fields at the previously declared independent-field tolerances. Residual/iteration bit differences remain explicit; no bit identity is inferred from unchanged equations. Original full intermediate fields do not exist for a matched history comparison. Independent current normal/friction forces, constrained bulk balance and complete raw body fields are reconstructed at every new retained stage at the original1e-9N gate. These are original quasi-static initialization/load increments, not physical timesteps; endpoint intersection tests do not certify unrecorded paths between numerical Newton iterates. Physical shoe groups are source identities, not continuum islands. One coarse history does not establish spatial, regularization, load-increment or pressure convergence, native load-model accuracy, full Franka matching or verified warmed cost.",
++        "limitations": "The barrier distance changes a declared numerical contact regularization, not geometry/material/friction/actuation. All original12 approach/604 contact-initialization/64 held-force/64 free-body stages and1e-8m per-stage friction mollifier remain fixed; no new physical timesteps are inferred. All current-friction forces, original1e-9N constrained balances, full corner/quadrature fields and raw whole-volume bounds are independently checked. Objective final volume norms use proper finite material frames. Different barrier problems are compared, not required to reproduce identical final arrays. This coarse845-tet/pad5 family does not establish spatial/contact-pressure convergence, a continuum hard-contact limit, full Franka matching, load-model accuracy or warmed native cost.",
+     }
+     (args.output / "summary.json").write_text(json.dumps(result, indent=2) + "\n")
+     print(json.dumps({"stages_checked": len(rows), "recording_qualified": True}), flush=True)
