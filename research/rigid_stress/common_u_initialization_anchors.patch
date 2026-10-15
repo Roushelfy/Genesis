@@ -1,0 +1,39 @@
+--- a/research/rigid_stress/grasp_contact_reference.py
++++ b/research/rigid_stress/grasp_contact_reference.py
+@@ -65,6 +65,7 @@
+     parser.add_argument("--force", type=float, default=0.05)
+     parser.add_argument("--dhat", type=float, default=2.5e-6)
+     parser.add_argument("--contact-initialization-steps", type=int)
++    parser.add_argument("--initialization-anchors", type=Path)
+     parser.add_argument("--friction", type=float, default=0.8)
+     parser.add_argument("--initial-gap", type=float, default=0.001)
+     parser.add_argument("--pad-thickness", type=float, default=0.001)
+@@ -102,6 +103,28 @@
+     (args.output / "configuration.json").write_text(json.dumps(vars(args), default=str, indent=2) + "\n")
+     with np.load(args.mesh) as saved:
+         body = SkfemElasticReference(saved["vertices"], saved["tetrahedra"], 1e10, 0.3, 2000)
++    if args.initialization_anchors is not None:
++        from scipy.spatial import cKDTree
++        with np.load(args.initialization_anchors) as anchors:
++            points, components = anchors["positions_m"], anchors["components"]
++        assert points.shape == (6, 3) and components.shape == (6,)
++        distance, nodes = cKDTree(body.coordinates).query(points)
++        assert distance.max() <= 1e-12, distance
++        assert np.all((components >= 0) & (components < 3))
++        selected = body.component_dofs[nodes, components]
++        assert len(np.unique(selected)) == 6
++        assert np.linalg.matrix_rank(body.rigid_modes[selected]) == 6
++        body.gauge_dofs = selected.copy()
++        body.free_dofs = np.setdiff1d(np.arange(body.basis.N), selected)
++        (args.output / "initialization_anchors.json").write_text(json.dumps({
++            "source": str(args.initialization_anchors),
++            "sha256": hashlib.sha256(args.initialization_anchors.read_bytes()).hexdigest(),
++            "positions_m": points.tolist(), "components": components.tolist(),
++            "actual_node_distances_m": distance.tolist(),
++            "selected_body_reference_dofs": selected.tolist(),
++            "temporary_initialization_only": True,
++            "free_body_modes_restored_after_release": True,
++        }, indent=2) + "\n")
+     left, left_back, left_drive = compliant_shoe(
+         args.geometry, -1, args.pad_resolution, args.initial_gap, args.pad_thickness, args.edge_lift, args.pad_young
+     )

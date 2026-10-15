@@ -1,0 +1,28 @@
+--- a/research/rigid_stress/grasp_contact_reference.py
++++ b/research/rigid_stress/grasp_contact_reference.py
+@@ -64,6 +64,7 @@
+     parser.add_argument("--body-material", choices=("linear", "neo_hookean"), default="linear")
+     parser.add_argument("--force", type=float, default=0.05)
+     parser.add_argument("--dhat", type=float, default=2.5e-6)
++    parser.add_argument("--contact-initialization-steps", type=int)
+     parser.add_argument("--friction", type=float, default=0.8)
+     parser.add_argument("--initial-gap", type=float, default=0.001)
+     parser.add_argument("--pad-thickness", type=float, default=0.001)
+@@ -87,6 +88,8 @@
+     )
+     parser.add_argument("--output", type=Path, required=True)
+     args = parser.parse_args()
++    if args.contact_initialization_steps is not None and args.contact_initialization_steps <= 0:
++        parser.error("--contact-initialization-steps must be positive")
+     if args.resume_failed_step and (args.preloaded_state is None or not args.updated_friction):
+         parser.error("--resume-failed-step requires --preloaded-state and --updated-friction")
+     if args.friction_least_squares and not args.updated_friction:
+@@ -170,6 +173,8 @@
+             failure_path=args.output / "approach_failure.npz",
+         )
+         init_steps = int(np.ceil((1 - approach_fraction) * max(preload_travel) / (args.dhat / 4)))
++        if args.contact_initialization_steps is not None:
++            init_steps = args.contact_initialization_steps
+         displacement, gradient, _, _, _ = system.solve_supported(
+             initialization_fixed,
+             values,
