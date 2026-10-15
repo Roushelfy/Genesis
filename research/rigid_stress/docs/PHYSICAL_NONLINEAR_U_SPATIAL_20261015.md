@@ -195,3 +195,19 @@ the complete original history remain unverified. Fixed-polyhedron geometry and
 contact tails for the egg, separated U axes, remaining applicable load models,
 true rigid/deformable feedback and warmed costs at verified physical accuracy
 remain required by the [acceptance ledger](PHYSICAL_ACCEPTANCE_LEDGER.md).
+
+The [retained-initializer continuation record](../evidence/20261014-physical/interrupted-spatial-resume-plan-v1/README.md)
+records the next numerical qualification without counting scheduled work as a
+result.716329_0 starts from the byte-identical30298-tet held closure and resolves
+all five original dynamic states.716330_0 must independently reconstruct their
+unchanged1e-9N force balances and compare every saved array and full corner/
+quadrature tensor within the existing numerical-comparison budgets before
+716331_0 may continue the80-step control.716332_0 independently audits that
+complete reference. The original terminated source remains incomplete.
+
+716333_0 separately adds a5669-tet body with the same pad5 mesh as the existing
+845-tet case and running2339-tet case;716334_0 checks this declared fixed-pad axis.
+It waits for the2339/pad5 producer to complete. Thus changing pad discretization
+is separated from changing body meshes, while body CAD approximation and volume
+discretization remain coupled on this axis. These six new jobs are scheduled
+or running, not accepted physical accuracy or convergence evidence.
