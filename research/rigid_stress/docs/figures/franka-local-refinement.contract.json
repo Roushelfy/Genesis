@@ -1,0 +1,23 @@
+{
+  "claim_anchor": "unresolved-local-panda-stress-concentration",
+  "main_claim": "Local stress and raw peak remain unresolved despite stable contact resultants.",
+  "material_passport": [
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-coupled-fields-v1",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-frozen-fields-v1"
+  ],
+  "panels": {
+    "a": "Coarse stress location and raw peak",
+    "b": "First local stress redistribution",
+    "c": "Finer stress concentration",
+    "d": "Raw global peak growth on both discretization paths",
+    "e": "Common-material-point tensor tail remains above declared diagnostic"
+  },
+  "data_status": "Three closed deterministic discretizations and complete original force gates per path; no fitted order or statistical uncertainty.",
+  "exports": [
+    "editable SVG",
+    "embedded-font PDF",
+    "450dpi PNG",
+    "180dpi preview"
+  ],
+  "limitations": "Fixed polyhedron; element envelopes and projected locations; no physical convergence, singularity or full-arm acceptance."
+}

@@ -118,3 +118,12 @@ changes tensors43.03% and reaches562kPa on coupled/fixed-contact paths; two
 active nodes and a moving peak retain unresolved concentration. Full application matching, solved
 egg/U/contact tails, model/feedback separation and warmed physical accuracy/cost
 remain required.
+
+The [three-level local/full-arm backend checkpoint](PHYSICAL_LOCAL_TAIL_ARTICULATED_20261015.md)
+closes the480/1099/3993 coupled and fixed-contact fields. Tensor changes remain
+26.8% and raw peaks reach2.971MPa; pressure/area concentration is unresolved.
+The full9-joint MuJoCo mass/bias/kinematics/equality and effort response match
+the actual captured inputs, but no coupled articulated FEM history is solved
+yet. Cached U final tensors and744 original force gates qualify its numerical
+control only. Full original C matching and all convergence/model/feedback/cost
+requirements remain unverified where previously open.

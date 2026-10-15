@@ -164,6 +164,16 @@ raw peak562kPa on both coupled and fixed-contact paths. Two active body nodes
 retain concentrated force/area and the peak changes contact neighbourhood.
 The complete original application/model/feedback/accuracy-cost goal remains.
 
+The [three-level local/articulated update](docs/PHYSICAL_LOCAL_TAIL_ARTICULATED_20261015.md)
+closes480/1099/3993-tet coupled/fixed-contact studies: tensor tails remain26.8%
+and raw peaks grow to2.971MPa, so no physical stress/contact tail passes. A full
+MuJoCo9-joint backend now matches all576 actual mass/bias/pose/Jacobian inputs
+and qualifies its effort response with the original armature/equality. Cached
+U final fields and744 force gates also agree with the original reference.
+The next application gate is the actual full-arm/FEM coupled solve and its
+complete force residuals, followed by the unchanged convergence/model/feedback/
+physical accuracy-cost completion requirements.
+
 ## Previous nonconvex implementation brief, 2026-10-11
 
 Implement the contact mapping contract in
