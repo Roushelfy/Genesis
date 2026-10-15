@@ -31,7 +31,7 @@ def prism_tetrahedra(surface, count, layers):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--seed", type=Path, required=True)
-    parser.add_argument("--layers", type=int, choices=[3, 4], required=True)
+    parser.add_argument("--layers", type=int, choices=[3, 4, 5, 6], required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     assert not args.output.exists() and not args.output.with_suffix(".json").exists()

@@ -31,6 +31,21 @@ egg/Franka and U contact references, resolved-load/native replay versus feedback
 remaining applicable load-model sensitivity and physically verified warmed costs.
 These are execution priorities within the complete linked objective.
 
+The [thickness/contact-coverage checkpoint](docs/PHYSICAL_THICKNESS_CONTACT_COVERAGE_20261015.md)
+retains all15 fixed-surface two/three/four-layer FEM fields. Their final tensor
+changes remain3.62–4.93%;256 additional interior probes retain3.77–4.17%, so
+element-interface traces do not explain the discrepancy. All actual contact
+samples in the first two small-cap adaptive runs lie outside the refinement
+caps: near-equal peaks are not convergence. Corrected paired geometry includes
+the independently audited contact positions and force-normal support directions;
+new actual references and coverage audits are scheduled, not accepted. Four
+fixed-polyhedron levels still change tensor27.19%, energy12.33% and raw peak52.68%.
+All five30720-tet baseline/ordered states retain complete arrays and full corner/
+quadrature tensors to3.38e-15/5.22e-13 with separate independent force audits.
+Different-node reference timings are descriptive, not a controlled speedup or
+verified warmed production cost. Five/six-layer thickness, original histories,
+U/contact tails, model/feedback and all full physical acceptance remain required.
+
 The [generic-stencil/contact checkpoint](docs/PHYSICAL_EGG_EDGE_STENCILS_20261015.md)
 qualifies four IPC reference stencil types and the original unmollified friction
 magnitude, independently rechecks ten existing1920-tet states, and recovers all

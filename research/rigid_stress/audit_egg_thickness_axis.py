@@ -21,7 +21,8 @@ def verify_layer_geometry(seed, axis_runs):
         (2, seed),
         *((json.loads((run / "mesh.json").read_text())["shell_layers"], run / "mesh.npz") for run in axis_runs),
     ]
-    assert [row[0] for row in meshes] == [2, 3, 4]
+    assert meshes[0][0] == 2
+    assert [row[0] for row in meshes] == sorted({row[0] for row in meshes})
     inputs = {str(path): sha256(path) for _, mesh in meshes for path in [mesh, mesh.with_suffix(".json")]}
     with np.load(seed) as saved:
         original_vertices = saved["vertices"].copy()
@@ -165,7 +166,7 @@ def main():
     parser.add_argument("--geometry-only", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    assert len(args.axis_run) == 2
+    assert len(args.axis_run) >= 2
     for run in [args.base_run, args.base_probes]:
         closed_source(run)
         assert int((run / "returncode.txt").read_text()) == 0
@@ -192,7 +193,8 @@ def main():
         assert geometry["mesh_sha256"] == sha256(axis / "mesh.npz")
         geometries.append(geometry)
         levels.append((geometry["shell_layers"], axis / "fem", axis / "probes", axis / "mesh.npz"))
-    assert [row[0] for row in levels] == [2, 3, 4]
+    assert levels[0][0] == 2
+    assert [row[0] for row in levels] == sorted({row[0] for row in levels})
     reports = [json.loads((probes / "results/summary.json").read_text()) for _, _, probes, _ in levels]
     assert len({report["probe_coordinate_sha256"] for report in reports}) == 1
     assert all(not report["outside_probe_indices"] for report in reports)

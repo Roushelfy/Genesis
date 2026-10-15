@@ -1,4 +1,4 @@
-"""Publish exact source/results bytes with bounded, reconstructible JSON chunks."""
+"""Publish exact source/results bytes with bounded, reconstructible byte chunks."""
 
 import argparse
 import gzip
@@ -85,7 +85,7 @@ def publish_bounded(root, destination, runs, extras, summary, limitations, stagi
                 original = Path(current) / name
                 target = staged / original.relative_to(run)
                 target.parent.mkdir(parents=True, exist_ok=True)
-                if original.suffix != ".json" or original.stat().st_size < 200_000_000:
+                if original.stat().st_size < 50_000_000:
                     os.link(original, target)
                     continue
                 parts, digest, offset = [], hashlib.sha256(), 0
@@ -126,7 +126,7 @@ def publish_bounded(root, destination, runs, extras, summary, limitations, stagi
         extras,
         summary,
         limitations
-        + " JSON files above200MB are preserved as exact ordered32MiB byte ranges, individually gzip-compressed, with original/part/stored SHA256 and offsets. Join decompressed ranges in index order to restore the original JSON exactly; no records are reduced or excluded. Runtime staging uses hard links for unchanged small originals.",
+        + " Files of at least50MB are preserved as exact ordered32MiB byte ranges, individually gzip-compressed, with original/part/stored SHA256 and offsets. Join decompressed ranges in index order to restore the original file exactly; no records are reduced or excluded. Runtime staging uses hard links for unchanged small originals.",
     )
     manifest = json.loads((destination / "manifest.json").read_text())
     artifacts = {row["original"]: row for row in manifest["files"]}
@@ -144,7 +144,7 @@ def publish_bounded(root, destination, runs, extras, summary, limitations, stagi
             digest.update(data)
             offset += len(data)
         assert offset == index["bytes"] and digest.hexdigest() == index["sha256"]
-    print("Published chunk reconstruction verified against original complete JSON bytes.", flush=True)
+    print("Published chunk reconstruction verified against original complete file bytes.", flush=True)
 
 
 def main():

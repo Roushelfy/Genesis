@@ -16,6 +16,27 @@ from .refine_egg_thickness import prism_tetrahedra
 from .summarize_fine_references import closed_source
 
 
+def support_direction(geometry, axis):
+    radial = np.linalg.norm(axis[:2])
+    phi = np.arctan2(axis[1], axis[0])
+    optimum = minimize_scalar(
+        lambda s, radial=radial, axis_z=axis[2]: (
+            -(
+                radial * geometry.equatorial_radius_m * (1 - geometry.taper * s) * np.sqrt(1 - s * s)
+                + axis_z * geometry.polar_radius_m * s
+            )
+        ),
+        bounds=(-1, 1),
+        method="bounded",
+        options={"xatol": 1e-14},
+    )
+    assert optimum.success
+    s = optimum.x
+    direction = np.array([np.sqrt(1 - s * s) * np.cos(phi), np.sqrt(1 - s * s) * np.sin(phi), s])
+    radius, height, _, _, _, _ = meridian(geometry, s, 0)
+    return direction, np.array([radius * np.cos(phi), radius * np.sin(phi), height])
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--geometry-run", type=Path, required=True)
@@ -24,6 +45,7 @@ def main():
     parser.add_argument("--observation-run", type=Path, required=True)
     parser.add_argument("--capture", type=Path, required=True)
     parser.add_argument("--target-edge-lengths", type=float, nargs=4, default=[1e-4, 5e-5, 2.5e-5, 1.25e-5])
+    parser.add_argument("--contact-audit", type=Path, nargs="+", default=[])
     parser.add_argument("--marking-radius", type=float, default=5e-5)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
@@ -67,25 +89,9 @@ def main():
     support_positions = []
     for finger in frame["fingers"]:
         axis = matrix.T @ rotation(finger["world_quaternion_wxyz"]) @ np.array([0, 1, 0])
-        radial = np.linalg.norm(axis[:2])
-        phi = np.arctan2(axis[1], axis[0])
-        optimum = minimize_scalar(
-            lambda s, radial=radial, axis_z=axis[2]: (
-                -(
-                    radial * geometry.equatorial_radius_m * (1 - geometry.taper * s) * np.sqrt(1 - s * s)
-                    + axis_z * geometry.polar_radius_m * s
-                )
-            ),
-            bounds=(-1, 1),
-            method="bounded",
-            options={"xatol": 1e-14},
-        )
-        assert optimum.success
-        s = optimum.x
-        direction = np.array([np.sqrt(1 - s * s) * np.cos(phi), np.sqrt(1 - s * s) * np.sin(phi), s])
+        direction, position = support_direction(geometry, axis)
         anchors.append(direction)
-        radius, height, _, _, _, _ = meridian(geometry, s, 0)
-        support_positions.append([radius * np.cos(phi), radius * np.sin(phi), height])
+        support_positions.append(position.tolist())
     observations = json.loads(paths[3].read_text())["actual_state_observations"]
     for observed in observations:
         if Path(observed["state"]).name != "closure_state.npz":
@@ -102,6 +108,39 @@ def main():
                 s = point[2] / geometry.polar_radius_m
                 direction = np.r_[point[:2] / (geometry.equatorial_radius_m * (1 - geometry.taper * s)), s]
                 anchors.append(direction / np.linalg.norm(direction))
+    for audit_run in args.contact_audit:
+        closed_source(audit_run)
+        assert int((audit_run / "returncode.txt").read_text()) == 0
+        report_path = audit_run / "results/summary.json"
+        report = json.loads(report_path.read_text())
+        source = Path(report["run"])
+        closed_source(source)
+        assert int((source / "returncode.txt").read_text()) == 0
+        inputs[str(report_path)] = hashlib.sha256(report_path.read_bytes()).hexdigest()
+        contact_path = source / "results/contact_geometry.npz"
+        inputs[str(contact_path)] = hashlib.sha256(contact_path.read_bytes()).hexdigest()
+        with np.load(contact_path) as saved:
+            rest = saved["rest_positions"].copy()
+        for row in report["rows"]:
+            assert row["complete_body_dynamic_residual_N"] <= 1e-9 and row["complete_mapped_dynamic_residual_N"] <= 1e-9
+            field_path = audit_run / f"results/step{row['step']:04d}.npz"
+            inputs[str(field_path)] = hashlib.sha256(field_path.read_bytes()).hexdigest()
+            with np.load(field_path) as saved:
+                active = saved["active_body_contact_nodes"].copy()
+                forces = saved["normal_surface_force_N"][active].copy()
+            points = (rest[active] - shift) @ matrix
+            for point, force in zip(points, forces, strict=True):
+                parameter = point[2] / geometry.polar_radius_m
+                direction = np.r_[
+                    point[:2] / (geometry.equatorial_radius_m * (1 - geometry.taper * parameter)), parameter
+                ]
+                anchors.append(direction / np.linalg.norm(direction))
+                axis = -force @ matrix
+                assert np.linalg.norm(axis) > 0
+                axis /= np.linalg.norm(axis)
+                direction, position = support_direction(geometry, axis)
+                anchors.append(direction)
+                support_positions.append(position.tolist())
     anchors = np.array(anchors)
     cap_angle = args.marking_radius / min(geometry.equatorial_radius_m * (1 - geometry.taper), geometry.polar_radius_m)
     args.output.mkdir(parents=True, exist_ok=False)
@@ -194,6 +233,7 @@ def main():
         "seed_global_level": args.seed_level,
         "declared_geometry": vars(geometry),
         "mesh_marking_radius_m": args.marking_radius,
+        "additional_contact_audits": [str(run) for run in args.contact_audit],
         "conservative_parameter_cap_angle_rad": cap_angle,
         "fixed_unit_sphere_marking_anchors": anchors.tolist(),
         "analytic_support_positions_author_m": support_positions,

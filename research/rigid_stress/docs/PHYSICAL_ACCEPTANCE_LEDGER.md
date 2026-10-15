@@ -5,6 +5,22 @@ without narrowing its scope. Historical native performance completion does not
 establish the new physical stage. Dated reports preserve their observations;
 running or pending jobs count as scheduled work only.
 
+Current: [full thickness fields and actual refinement coverage](PHYSICAL_THICKNESS_CONTACT_COVERAGE_20261015.md)
+preserve all15 two/three/four-layer fixed-surface FEM fields, unchanged actual
+geometry/mass/traction, and unresolved3.62–4.93% final tensor changes. Additional
+interior probes retain3.77–4.17% changes; exact-interface stress traces do not
+explain away the tail. Every actual active sample in the first two small-cap
+adaptive cases lies outside their numerical refinement caps, invalidating their
+apparent peak plateau. Corrected paired meshes include audited contact locations
+and force-normal support directions; actual references/coverage and five/six-layer
+thickness remain scheduled only. Four fixed-polyhedron levels retain27.19%
+tensor/12.33% energy/52.68% raw-peak changes. Complete30720-tet five-state sparse
+ordering comparisons preserve every array and corner/quadrature field, with
+separate independent original-force audits. Different-node timing observations
+do not establish controlled acceleration or verified warmed native costs. Exact
+large binary fields reconstruct from bounded byte chunks checked against actual
+producer files. Full physical/history/contact/model/feedback acceptance stays open.
+
 Current: [generic point/edge/face reference reconstruction](PHYSICAL_EGG_EDGE_STENCILS_20261015.md)
 qualifies four stencil types, independently rechecks ten old states and completes
 five newly audited7680-tet CAD dynamic states at unchanged physical force gates.
