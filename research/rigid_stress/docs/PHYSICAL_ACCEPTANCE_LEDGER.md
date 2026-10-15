@@ -5,6 +5,27 @@ without narrowing its scope. Historical native performance completion does not
 establish the new physical stage. Dated reports preserve their observations;
 running or pending jobs count as scheduled work only.
 
+Latest verified checkpoint: [complete barrier histories and five-level thickness](PHYSICAL_BARRIER_HISTORY_THICKNESS_20261015.md)
+closes all744 stages at each of three barrier distances with current friction,
+full fields and original force budgets. Final tensor changes0.070%/0.114% retain
+larger initialization differences and1.69–1.72MPa full-stage raw extrema; a
+fourth distance remains live. All25 fixed-boundary2/3/4/5/6-layer linear FEM
+fields now pass fresh stiffness/mass/inertia-relief, full force/corner/quadrature/
+probe/energy audits. The last tensor changes still3.30–4.68%, so this numerical
+audit does not close physical convergence. The shared-coordinate coarse control
+passes both complete audits before fixed-pad finer producers start. The171228-tet
+CAD reference passes64 held initializer increments but fails its first dynamic
+factorization with MemoryError; its closure remains saved and no dynamic state
+is accepted.
+
+The [complete original rigid/deformable feedback checkpoint](PHYSICAL_COMPLETE_FEEDBACK_20261015.md)
+also closes both original coarse2640-state/3.3s histories and their scoped
+native/feedback evidence. These are coarse conditional results, not continuum
+acceptance. Full A/B/C physical/model/island/feedback and verified warmed-cost
+requirements remain. Earlier “Current” blocks below preserve the status at their
+own checkpoint, including then-unfinished histories and thickness cases; their
+old pending statements are not the latest execution state.
+
 Current: [separate body/finger contact integration and corrected coverage](PHYSICAL_CONTACT_QUADRATURE_AXIS_20261015.md)
 preserve identical1920-tet bulk geometry/mass through three levels of each trace
 axis, with complete original-budget force audits for every five-state history.
