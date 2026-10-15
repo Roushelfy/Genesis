@@ -5,7 +5,20 @@ without narrowing its scope. Historical native performance completion does not
 establish the new physical stage. Dated reports preserve their observations;
 running or pending jobs count as scheduled work only.
 
-Latest verified checkpoint: [three covered CAD levels](PHYSICAL_COVERED_CAD_THREE_LEVEL_20261015.md)
+Latest verified checkpoint: [covered CAD contact-tail localization](PHYSICAL_COVERED_CAD_CONTACT_TAIL_20261015.md)
+closes all15 complete dynamic source reconstructions, per-source normal/shear/
+total six-component wrenches, actual graph components and complete threshold
+tails. Every mesh uses the same6mm finger crease with90-degree face planes;
+growing discrete density is not a continuum-pressure or singularity proof.
+The final pair localizes96.17% of original weighted squared tensor change
+within250um, retaining all158340 probes and disclosing zero probes within25um.
+Actual31668/64716-tet native replays pass both original load modes and budgets.
+Figures retain inspected editable/vector/1000dpi exports and real render failure.
+Finest replay and fixed-mesh distance controls remain separate pending work;
+their input preparations generate zero physical states. Every original
+physical/model/island/application/feedback and verified-cost gate remains open.
+
+Previous checkpoint: [three covered CAD levels](PHYSICAL_COVERED_CAD_THREE_LEVEL_20261015.md)
 closes the fine five-state force/coverage audits, all158340 original common
 probes and three independent resolved-load linearizations. Tensor changes grow
 9.6801%→10.7209% and raw-peak changes grow13.8907%→15.2844%; no physical tail
