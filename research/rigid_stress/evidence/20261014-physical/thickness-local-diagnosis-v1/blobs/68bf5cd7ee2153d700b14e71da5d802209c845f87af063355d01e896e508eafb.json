@@ -1,0 +1,112 @@
+{
+  "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-four-level-audit-v1",
+  "job": "718556_0",
+  "scheduler_state": "COMPLETED",
+  "wrapper_code": 0,
+  "source_before_after_and_actual_files_verified": true,
+  "summary_sha256": "6a18f25037bf8e814f62b705562825a3de6d24630206482e62f32c1e4f46cf11",
+  "last_four_to_five_layer_changes": [
+    {
+      "case": "opposing",
+      "from_layers": 4,
+      "to_layers": 5,
+      "tensor_Pa": {
+        "relative_change": 0.0339204328441422,
+        "absolute_change": 2763.0707794669124
+      },
+      "vm_Pa": {
+        "relative_change": 0.01591383515885208,
+        "absolute_change": 957.8772100324838
+      },
+      "displacement_m": {
+        "relative_change": 7.347382496506803e-05,
+        "absolute_change": 2.443031749421224e-11
+      },
+      "raw_reconstructed_global_peak_Pa": 1.3417447533470295e-05,
+      "reconstructed_energy_J": 5.736721789761923e-05,
+      "all_five_changes_below_initial3percent": false
+    },
+    {
+      "case": "bending",
+      "from_layers": 4,
+      "to_layers": 5,
+      "tensor_Pa": {
+        "relative_change": 0.0378879537204771,
+        "absolute_change": 2973.2280640321546
+      },
+      "vm_Pa": {
+        "relative_change": 0.015361183224014918,
+        "absolute_change": 889.7316211280631
+      },
+      "displacement_m": {
+        "relative_change": 7.305802667207845e-05,
+        "absolute_change": 2.340523945781618e-11
+      },
+      "raw_reconstructed_global_peak_Pa": 0.0013535271344150557,
+      "reconstructed_energy_J": 5.7289920574965514e-05,
+      "all_five_changes_below_initial3percent": false
+    },
+    {
+      "case": "asymmetric",
+      "from_layers": 4,
+      "to_layers": 5,
+      "tensor_Pa": {
+        "relative_change": 0.03641746958058241,
+        "absolute_change": 3981.5967075472063
+      },
+      "vm_Pa": {
+        "relative_change": 0.03426246303716018,
+        "absolute_change": 2833.7497450668607
+      },
+      "displacement_m": {
+        "relative_change": 7.077459097145787e-05,
+        "absolute_change": 3.194902994875558e-11
+      },
+      "raw_reconstructed_global_peak_Pa": 0.0004449713929395305,
+      "reconstructed_energy_J": 5.756674769274994e-05,
+      "all_five_changes_below_initial3percent": false
+    },
+    {
+      "case": "near_slip",
+      "from_layers": 4,
+      "to_layers": 5,
+      "tensor_Pa": {
+        "relative_change": 0.04521451915480871,
+        "absolute_change": 3767.7595708898384
+      },
+      "vm_Pa": {
+        "relative_change": 0.02072228420229102,
+        "absolute_change": 1278.757591361473
+      },
+      "displacement_m": {
+        "relative_change": 7.435736844332082e-05,
+        "absolute_change": 2.514495782646293e-11
+      },
+      "raw_reconstructed_global_peak_Pa": 0.00048092590740433927,
+      "reconstructed_energy_J": 5.667553148003268e-05,
+      "all_five_changes_below_initial3percent": false
+    },
+    {
+      "case": "multiple",
+      "from_layers": 4,
+      "to_layers": 5,
+      "tensor_Pa": {
+        "relative_change": 0.031764609259173314,
+        "absolute_change": 2639.8047489010187
+      },
+      "vm_Pa": {
+        "relative_change": 0.015453685550138712,
+        "absolute_change": 960.2077357805401
+      },
+      "displacement_m": {
+        "relative_change": 7.062573430460055e-05,
+        "absolute_change": 2.442014057018395e-11
+      },
+      "raw_reconstructed_global_peak_Pa": 2.1405522484307937e-05,
+      "reconstructed_energy_J": 5.236344486270195e-05,
+      "all_five_changes_below_initial3percent": false
+    }
+  ],
+  "goal_completion": false,
+  "time_utc": "2026-10-15T18:59:29.564957+00:00"
+}

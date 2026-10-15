@@ -1,0 +1,404 @@
+{
+  "scope": "Locate the unchanged thickness-axis probe discrepancy without replacing its declared observable.",
+  "audit": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-four-level-audit-v1",
+  "previous": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers4-v1",
+  "current": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1",
+  "rows": [
+    {
+      "case": "opposing",
+      "unchanged_probe_count": 36,
+      "original_full_tensor_relative_change": 0.0339204328441422,
+      "full_tensor_absolute_change_Pa": 2763.0707794669124,
+      "hydrostatic_fraction_of_squared_tensor_difference": 0.10801433967130107,
+      "deviatoric_fraction_of_squared_tensor_difference": 0.891985660328699,
+      "component_squared_difference_Pa2": [
+        [
+          854439.3759420248,
+          434265.3177857194,
+          2188269.240911554
+        ],
+        [
+          434265.3177857194,
+          576197.1586355706,
+          89036.37985345419
+        ],
+        [
+          2188269.240911554,
+          89036.37985345419,
+          780781.7206648404
+        ]
+      ],
+      "top_five_probe_indices": [
+        33,
+        7,
+        21,
+        30,
+        12
+      ],
+      "top_five_fraction_of_squared_tensor_difference": 0.9742533131600207,
+      "top_five_positions_m": [
+        [
+          -0.02175214994496229,
+          0.0,
+          -3.2716207264977516e-05
+        ],
+        [
+          0.021188560131184555,
+          -0.004135771368598278,
+          0.001090866415328662
+        ],
+        [
+          0.021552705869439952,
+          0.0030145631531861903,
+          -0.00011176285112000827
+        ],
+        [
+          0.02175214994496229,
+          0.0,
+          -3.2716207264977516e-05
+        ],
+        [
+          0.02015795948627368,
+          0.008028546616392277,
+          0.00036333798353201075
+        ]
+      ],
+      "top_five_distance_to_nonzero_traction_samples_m": [
+        0.00024731119506666156,
+        0.0013892223553970096,
+        0.0002540894562567297,
+        0.0002476458110530847,
+        0.005299120868263729
+      ],
+      "unchanged_raw_global_peak_Pa": 143311.60556719918,
+      "unchanged_raw_global_peak_position_m": [
+        -0.02196537334965042,
+        -0.00021117377721921425,
+        0.0002489050997086312
+      ]
+    },
+    {
+      "case": "bending",
+      "unchanged_probe_count": 36,
+      "original_full_tensor_relative_change": 0.0378879537204771,
+      "full_tensor_absolute_change_Pa": 2973.2280640321546,
+      "hydrostatic_fraction_of_squared_tensor_difference": 0.09506635502947704,
+      "deviatoric_fraction_of_squared_tensor_difference": 0.9049336449705232,
+      "component_squared_difference_Pa2": [
+        [
+          712701.8635644098,
+          486290.8683196413,
+          2777499.433520303
+        ],
+        [
+          486290.8683196413,
+          553526.6315917623,
+          95982.40900871706
+        ],
+        [
+          2777499.433520303,
+          95982.40900871706,
+          854311.2038948993
+        ]
+      ],
+      "top_five_probe_indices": [
+        33,
+        7,
+        21,
+        30,
+        12
+      ],
+      "top_five_fraction_of_squared_tensor_difference": 0.981421823862716,
+      "top_five_positions_m": [
+        [
+          -0.02175214994496229,
+          0.0,
+          -3.2716207264977516e-05
+        ],
+        [
+          0.021188560131184555,
+          -0.004135771368598278,
+          0.001090866415328662
+        ],
+        [
+          0.021552705869439952,
+          0.0030145631531861903,
+          -0.00011176285112000827
+        ],
+        [
+          0.02175214994496229,
+          0.0,
+          -3.2716207264977516e-05
+        ],
+        [
+          0.02015795948627368,
+          0.008028546616392277,
+          0.00036333798353201075
+        ]
+      ],
+      "top_five_distance_to_nonzero_traction_samples_m": [
+        0.00024731119506666156,
+        0.0013892223553970096,
+        0.0002540894562567297,
+        0.0002476458110530847,
+        0.005299120868263729
+      ],
+      "unchanged_raw_global_peak_Pa": 142402.72975259568,
+      "unchanged_raw_global_peak_position_m": [
+        0.02205677086284144,
+        -5.402350767341075e-18,
+        -0.0004487822104580402
+      ]
+    },
+    {
+      "case": "asymmetric",
+      "unchanged_probe_count": 36,
+      "original_full_tensor_relative_change": 0.03641746958058241,
+      "full_tensor_absolute_change_Pa": 3981.5967075472063,
+      "hydrostatic_fraction_of_squared_tensor_difference": 0.1808786801950403,
+      "deviatoric_fraction_of_squared_tensor_difference": 0.8191213198049598,
+      "component_squared_difference_Pa2": [
+        [
+          2774920.689697836,
+          606311.7567796697,
+          2390094.245218204
+        ],
+        [
+          606311.7567796697,
+          2754895.6861078204,
+          251963.64051151325
+        ],
+        [
+          2390094.245218204,
+          251963.64051151325,
+          3826556.6807263247
+        ]
+      ],
+      "top_five_probe_indices": [
+        30,
+        33,
+        7,
+        21,
+        12
+      ],
+      "top_five_fraction_of_squared_tensor_difference": 0.9841140561296319,
+      "top_five_positions_m": [
+        [
+          0.02175214994496229,
+          0.0,
+          -3.2716207264977516e-05
+        ],
+        [
+          -0.02175214994496229,
+          0.0,
+          -3.2716207264977516e-05
+        ],
+        [
+          0.021188560131184555,
+          -0.004135771368598278,
+          0.001090866415328662
+        ],
+        [
+          0.021552705869439952,
+          0.0030145631531861903,
+          -0.00011176285112000827
+        ],
+        [
+          0.02015795948627368,
+          0.008028546616392277,
+          0.00036333798353201075
+        ]
+      ],
+      "top_five_distance_to_nonzero_traction_samples_m": [
+        0.0002476458110530847,
+        0.00024731119506666156,
+        0.001289580930333366,
+        0.00027374280875117,
+        0.005281545877108334
+      ],
+      "unchanged_raw_global_peak_Pa": 233147.15674290847,
+      "unchanged_raw_global_peak_position_m": [
+        0.021938305616810625,
+        -5.373335150468707e-18,
+        0.00044878221045775913
+      ]
+    },
+    {
+      "case": "near_slip",
+      "unchanged_probe_count": 36,
+      "original_full_tensor_relative_change": 0.04521451915480871,
+      "full_tensor_absolute_change_Pa": 3767.7595708898384,
+      "hydrostatic_fraction_of_squared_tensor_difference": 0.05960868926879478,
+      "deviatoric_fraction_of_squared_tensor_difference": 0.9403913107312052,
+      "component_squared_difference_Pa2": [
+        [
+          1024449.6539808717,
+          734714.2193416207,
+          4778315.630158747
+        ],
+        [
+          734714.2193416207,
+          664553.0264995334,
+          149612.52217651712
+        ],
+        [
+          4778315.630158747,
+          149612.52217651712,
+          1181724.7601978045
+        ]
+      ],
+      "top_five_probe_indices": [
+        33,
+        7,
+        21,
+        30,
+        12
+      ],
+      "top_five_fraction_of_squared_tensor_difference": 0.9866953576240673,
+      "top_five_positions_m": [
+        [
+          -0.02175214994496229,
+          0.0,
+          -3.2716207264977516e-05
+        ],
+        [
+          0.021188560131184555,
+          -0.004135771368598278,
+          0.001090866415328662
+        ],
+        [
+          0.021552705869439952,
+          0.0030145631531861903,
+          -0.00011176285112000827
+        ],
+        [
+          0.02175214994496229,
+          0.0,
+          -3.2716207264977516e-05
+        ],
+        [
+          0.02015795948627368,
+          0.008028546616392277,
+          0.00036333798353201075
+        ]
+      ],
+      "top_five_distance_to_nonzero_traction_samples_m": [
+        0.00024731119506666156,
+        0.0013892223553970096,
+        0.0002540894562567297,
+        0.0002476458110530847,
+        0.005299120868263729
+      ],
+      "unchanged_raw_global_peak_Pa": 151216.1904138238,
+      "unchanged_raw_global_peak_position_m": [
+        0.021938305616810625,
+        -5.373335150468707e-18,
+        0.00044878221045775913
+      ]
+    },
+    {
+      "case": "multiple",
+      "unchanged_probe_count": 36,
+      "original_full_tensor_relative_change": 0.03176460925917332,
+      "full_tensor_absolute_change_Pa": 2639.804748901019,
+      "hydrostatic_fraction_of_squared_tensor_difference": 0.11987670942494022,
+      "deviatoric_fraction_of_squared_tensor_difference": 0.8801232905750597,
+      "component_squared_difference_Pa2": [
+        [
+          802558.727740744,
+          489214.68781743455,
+          1838843.0147964696
+        ],
+        [
+          489214.68781743455,
+          568229.8425576662,
+          94745.0726561941
+        ],
+        [
+          1838843.0147964696,
+          94745.0726561941,
+          752174.9914817648
+        ]
+      ],
+      "top_five_probe_indices": [
+        33,
+        7,
+        21,
+        30,
+        12
+      ],
+      "top_five_fraction_of_squared_tensor_difference": 0.9848850985282275,
+      "top_five_positions_m": [
+        [
+          -0.02175214994496229,
+          0.0,
+          -3.2716207264977516e-05
+        ],
+        [
+          0.021188560131184555,
+          -0.004135771368598278,
+          0.001090866415328662
+        ],
+        [
+          0.021552705869439952,
+          0.0030145631531861903,
+          -0.00011176285112000827
+        ],
+        [
+          0.02175214994496229,
+          0.0,
+          -3.2716207264977516e-05
+        ],
+        [
+          0.02015795948627368,
+          0.008028546616392277,
+          0.00036333798353201075
+        ]
+      ],
+      "top_five_distance_to_nonzero_traction_samples_m": [
+        0.00024731119506666156,
+        0.0013892223553970096,
+        0.0002540894562567297,
+        0.0002476458110530847,
+        0.005299120868263729
+      ],
+      "unchanged_raw_global_peak_Pa": 144095.1720768216,
+      "unchanged_raw_global_peak_position_m": [
+        -0.02196537334965042,
+        -0.00021117377721921425,
+        0.0002489050997086312
+      ]
+    }
+  ],
+  "input_sha256": {
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-four-level-audit-v1/results/summary.json": "6a18f25037bf8e814f62b705562825a3de6d24630206482e62f32c1e4f46cf11",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers4-v1/probes/results/opposing/reference_field.npz": "7c9c2f3f6fa6d55ecf763db20cc2ccc55a4bdc14ce17e5462e9ad7937ea40b01",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/probes/results/opposing/reference_field.npz": "bba48cd292fed0f02d7cb97b681800f596639810d4a65bf20223444421f698b9",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/opposing/snapshot.json": "6330a5da69d742ca58769e77732829fb3f9fce55440f8f1de95c0a60f0f64ba1",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/opposing/reference_patch0.npz": "b14de877fedb05b7e311369dcf0ff57b2446b17d77a7622e1bace930b8197c04",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/opposing/reference_patch1.npz": "f30701142b3773796b1e1f72c990b28b6bbdfd03b2bd0cf80c43a7994092f1f1",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers4-v1/probes/results/bending/reference_field.npz": "2b5ba30d38a0a5ce4acf6246dd1f4fb6ab326372089fc41ad42da5f699a337db",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/probes/results/bending/reference_field.npz": "529963ca3d62603726d792379a453397c90c272663f29a1c1f4e385e1dd89c26",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/bending/snapshot.json": "d42685752e9f51c1f6eec2db472423e86b37555ff478ed76b30371c890dc9700",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/bending/reference_patch0.npz": "064ac6f7ecfd780a912da8198337e28805ce31f07518a4aca885bcfccd9126c6",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/bending/reference_patch1.npz": "b2b978980743cc0fb011660000609168d05d4c7ae3d37fc3905f1aa1b701f48c",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers4-v1/probes/results/asymmetric/reference_field.npz": "3ece66a3a558be171dde8b9c482309dea9f8ed48f1018f94acf661ce4e2cc6af",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/probes/results/asymmetric/reference_field.npz": "7ceb074b6da29c8f6d7ed4a8a1b00a1255374433598e9dec2a7e2435a1249f38",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/asymmetric/snapshot.json": "a6b2da1775ee52c503f722538414452d13156bf90e54a35b551a7cd66964c407",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/asymmetric/reference_patch0.npz": "b14de877fedb05b7e311369dcf0ff57b2446b17d77a7622e1bace930b8197c04",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/asymmetric/reference_patch1.npz": "78883722a55ae5f8c213de4be9da6569646185bc27f4412be35489b193e9d6db",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers4-v1/probes/results/near_slip/reference_field.npz": "477f51d19a7304f3d180b92a0a812bf897267e36c2d425d879941b857649493e",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/probes/results/near_slip/reference_field.npz": "13b6797cb36f692fa25c19a476ed0c68e0a2931f80176c9c190471392a48c1fc",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/near_slip/snapshot.json": "c0d73967d4b31e6621204cfbb0836414cc9e9d1cfb419fc1c06e7769c0002097",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/near_slip/reference_patch0.npz": "1d824ff684749a505365ef23b3b651428c1dfb72843e6462d62506014acc01b6",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/near_slip/reference_patch1.npz": "4a919f4e15a86a76f8918d867ef2a462967cac4a5749806dbfcda4119534baba",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers4-v1/probes/results/multiple/reference_field.npz": "3d0254c54b1f8190c4bb8c3129f23de311d816279b7267a0c9116ab5fed4d408",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/probes/results/multiple/reference_field.npz": "ec18b9dd2a10f51af015ec44b7e3043a7bcf99793096968e95e91940752da837",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/multiple/snapshot.json": "831cee01343e630001001251c251c83cf1f5247a797e8e5e62d82f8e75f2743e",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/multiple/reference_patch0.npz": "b14de877fedb05b7e311369dcf0ff57b2446b17d77a7622e1bace930b8197c04",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/multiple/reference_patch1.npz": "f30701142b3773796b1e1f72c990b28b6bbdfd03b2bd0cf80c43a7994092f1f1",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/multiple/reference_patch2.npz": "a6ec46d8bdae351fffa6f32001d3fed44863566e74cba216d3da62feaba27932"
+  },
+  "goal_completion": false,
+  "limitations": "All original36 physical probes and the original full-tensor Frobenius observable remain unchanged; all180 point/component records are exported. Hydrostatic/deviatoric squared norms form an orthogonal tensor decomposition, not an additive decomposition of geometry/bulk/contact errors. The five largest differences are diagnostic reporting only; no point is removed or renormalized. Distance to finite traction quadrature samples is not a continuum boundary distance or a singularity proof. Raw global peaks remain those of the independently checked full fields. Probe localization does not establish volume-integrated accuracy, physical convergence or the full application/model/feedback/cost objective."
+}

@@ -1,0 +1,1180 @@
+{
+  "scope": "Audit fixed-boundary egg thickness refinement, unchanged tractions and unsmoothed FEM fields.",
+  "seed_sha256": "eed14415d94398463581e3c676d272b6aa25de37ace1faf432a54cb1e69f690c",
+  "geometry_records": [
+    {
+      "scope": "Re-layer an existing full egg shell without changing either polyhedral material boundary.",
+      "geometry": {
+        "name": "egg",
+        "description": "Full normal-offset hollow egg,22/22/30mm semiaxes, taper0.18",
+        "thickness_m": 0.0005,
+        "gap_m": null,
+        "minimum_rounding_m": null
+      },
+      "seed": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-matrix-mesh-egg-v1/meshes/h0.03.npz",
+      "seed_sha256": "eed14415d94398463581e3c676d272b6aa25de37ace1faf432a54cb1e69f690c",
+      "seed_metadata_sha256": "511efc8862f08d17a73d2055c853a5069bd9d441dc1a8e0efce780d9da5ee5b7",
+      "mesh_sha256": "d179754529f2fc50823307c9b3dbb7f4b005a826bac2a3b40258a8ee2bb04d78",
+      "seed_shell_layers": 2,
+      "shell_layers": 3,
+      "surface_mesh_size": 0.03,
+      "nodes": 66972,
+      "tetrahedra": 301338,
+      "boundary_triangles": 66964,
+      "outer_and_inner_boundary_vertices_byte_identical": true,
+      "outer_and_inner_boundary_triangles_identical": true,
+      "seed_prism_connectivity_independently_reconstructed": true,
+      "volume_m3": 3.7424638563292814e-06,
+      "seed_volume_m3": 3.7424638563292806e-06,
+      "surface_area_m2": 0.014973144006272036,
+      "seed_surface_area_m2": 0.014973144006272036,
+      "com_m": [
+        -7.35052400278934e-09,
+        9.942163106204521e-09,
+        -0.0019633670998999604
+      ],
+      "seed_com_m": [
+        -7.350524001484516e-09,
+        9.942163102786948e-09,
+        -0.0019633670999000042
+      ],
+      "mass_kg_at_unchanged_density2000": 0.007484927712658563,
+      "minimum_tetrahedron_volume_m3": 3.339766605618404e-12,
+      "goal_completion": false,
+      "limitations": "Only the through-thickness volume discretization changes. The existing affine outer/inner surface geometry and its CAD approximation are fixed, not corrected. Physical traction profiles, material, density and reference quadrature must remain unchanged in subsequent solves. Mesh identity alone does not qualify stress or coupled contact convergence."
+    },
+    {
+      "scope": "Re-layer an existing full egg shell without changing either polyhedral material boundary.",
+      "geometry": {
+        "name": "egg",
+        "description": "Full normal-offset hollow egg,22/22/30mm semiaxes, taper0.18",
+        "thickness_m": 0.0005,
+        "gap_m": null,
+        "minimum_rounding_m": null
+      },
+      "seed": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-matrix-mesh-egg-v1/meshes/h0.03.npz",
+      "seed_sha256": "eed14415d94398463581e3c676d272b6aa25de37ace1faf432a54cb1e69f690c",
+      "seed_metadata_sha256": "511efc8862f08d17a73d2055c853a5069bd9d441dc1a8e0efce780d9da5ee5b7",
+      "mesh_sha256": "ef3b941adfce66a9ae4652c4e8e56afe602961588d6de993a15f9b2c4a9f9fd6",
+      "seed_shell_layers": 2,
+      "shell_layers": 4,
+      "surface_mesh_size": 0.03,
+      "nodes": 83715,
+      "tetrahedra": 401784,
+      "boundary_triangles": 66964,
+      "outer_and_inner_boundary_vertices_byte_identical": true,
+      "outer_and_inner_boundary_triangles_identical": true,
+      "seed_prism_connectivity_independently_reconstructed": true,
+      "volume_m3": 3.7424638563292806e-06,
+      "seed_volume_m3": 3.7424638563292806e-06,
+      "surface_area_m2": 0.014973144006272036,
+      "seed_surface_area_m2": 0.014973144006272036,
+      "com_m": [
+        -7.350524009205991e-09,
+        9.942163112028129e-09,
+        -0.00196336709989998
+      ],
+      "seed_com_m": [
+        -7.350524001484516e-09,
+        9.942163102786948e-09,
+        -0.0019633670999000042
+      ],
+      "mass_kg_at_unchanged_density2000": 0.007484927712658561,
+      "minimum_tetrahedron_volume_m3": 2.5048249542138497e-12,
+      "goal_completion": false,
+      "limitations": "Only the through-thickness volume discretization changes. The existing affine outer/inner surface geometry and its CAD approximation are fixed, not corrected. Physical traction profiles, material, density and reference quadrature must remain unchanged in subsequent solves. Mesh identity alone does not qualify stress or coupled contact convergence."
+    },
+    {
+      "scope": "Re-layer an existing full egg shell without changing either polyhedral material boundary.",
+      "geometry": {
+        "name": "egg",
+        "description": "Full normal-offset hollow egg,22/22/30mm semiaxes, taper0.18",
+        "thickness_m": 0.0005,
+        "gap_m": null,
+        "minimum_rounding_m": null
+      },
+      "seed": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-matrix-mesh-egg-v1/meshes/h0.03.npz",
+      "seed_sha256": "eed14415d94398463581e3c676d272b6aa25de37ace1faf432a54cb1e69f690c",
+      "seed_metadata_sha256": "511efc8862f08d17a73d2055c853a5069bd9d441dc1a8e0efce780d9da5ee5b7",
+      "mesh_sha256": "8a8ecb0779b2a93350561d33e67fa5046bd8464db4f51409216d47ea90775b59",
+      "seed_shell_layers": 2,
+      "shell_layers": 5,
+      "surface_mesh_size": 0.03,
+      "nodes": 100458,
+      "tetrahedra": 502230,
+      "boundary_triangles": 66964,
+      "outer_and_inner_boundary_vertices_byte_identical": true,
+      "outer_and_inner_boundary_triangles_identical": true,
+      "seed_prism_connectivity_independently_reconstructed": true,
+      "volume_m3": 3.7424638563292797e-06,
+      "seed_volume_m3": 3.7424638563292806e-06,
+      "surface_area_m2": 0.014973144006272036,
+      "seed_surface_area_m2": 0.014973144006272036,
+      "com_m": [
+        -7.35052400234698e-09,
+        9.942163102496315e-09,
+        -0.0019633670999000086
+      ],
+      "seed_com_m": [
+        -7.350524001484516e-09,
+        9.942163102786948e-09,
+        -0.0019633670999000042
+      ],
+      "mass_kg_at_unchanged_density2000": 0.0074849277126585595,
+      "minimum_tetrahedron_volume_m3": 2.0038599633710675e-12,
+      "goal_completion": false,
+      "limitations": "Only the through-thickness volume discretization changes. The existing affine outer/inner surface geometry and its CAD approximation are fixed, not corrected. Physical traction profiles, material, density and reference quadrature must remain unchanged in subsequent solves. Mesh identity alone does not qualify stress or coupled contact convergence."
+    }
+  ],
+  "independent_boundary_and_surface_flux_audit": {
+    "scope": "Independent mesh-only boundary connectivity and oriented surface-flux volume/COM audit",
+    "rows": [
+      {
+        "layers": 2,
+        "tetrahedra": 200892,
+        "surface_triangles": 66964,
+        "mesh_sha256": "eed14415d94398463581e3c676d272b6aa25de37ace1faf432a54cb1e69f690c",
+        "oriented_surface_flux_volume_m3": 3.7424638563292785e-06,
+        "oriented_surface_flux_com_m": [
+          -7.350524003340507e-09,
+          9.942163131227919e-09,
+          -0.001963367099899977
+        ],
+        "tetrahedron_volume_m3": 3.742463856329281e-06,
+        "mass_kg_at_unchanged_density2000": 0.007484927712658562,
+        "minimum_positive_tetrahedron_volume_m3": 5.009649908427691e-12,
+        "boundary_vertices_and_triangles_identical": true
+      },
+      {
+        "layers": 3,
+        "tetrahedra": 301338,
+        "surface_triangles": 66964,
+        "mesh_sha256": "d179754529f2fc50823307c9b3dbb7f4b005a826bac2a3b40258a8ee2bb04d78",
+        "oriented_surface_flux_volume_m3": 3.7424638563292785e-06,
+        "oriented_surface_flux_com_m": [
+          -7.350524003340507e-09,
+          9.942163131227919e-09,
+          -0.001963367099899977
+        ],
+        "tetrahedron_volume_m3": 3.742463856329281e-06,
+        "mass_kg_at_unchanged_density2000": 0.007484927712658562,
+        "minimum_positive_tetrahedron_volume_m3": 3.339766605618404e-12,
+        "boundary_vertices_and_triangles_identical": true
+      },
+      {
+        "layers": 4,
+        "tetrahedra": 401784,
+        "surface_triangles": 66964,
+        "mesh_sha256": "ef3b941adfce66a9ae4652c4e8e56afe602961588d6de993a15f9b2c4a9f9fd6",
+        "oriented_surface_flux_volume_m3": 3.7424638563292785e-06,
+        "oriented_surface_flux_com_m": [
+          -7.350524003340507e-09,
+          9.942163131227919e-09,
+          -0.001963367099899977
+        ],
+        "tetrahedron_volume_m3": 3.742463856329281e-06,
+        "mass_kg_at_unchanged_density2000": 0.007484927712658562,
+        "minimum_positive_tetrahedron_volume_m3": 2.5048249542138497e-12,
+        "boundary_vertices_and_triangles_identical": true
+      },
+      {
+        "layers": 5,
+        "tetrahedra": 502230,
+        "surface_triangles": 66964,
+        "mesh_sha256": "8a8ecb0779b2a93350561d33e67fa5046bd8464db4f51409216d47ea90775b59",
+        "oriented_surface_flux_volume_m3": 3.7424638563292785e-06,
+        "oriented_surface_flux_com_m": [
+          -7.350524003340507e-09,
+          9.942163131227919e-09,
+          -0.001963367099899977
+        ],
+        "tetrahedron_volume_m3": 3.742463856329281e-06,
+        "mass_kg_at_unchanged_density2000": 0.007484927712658562,
+        "minimum_positive_tetrahedron_volume_m3": 2.0038599633710675e-12,
+        "boundary_vertices_and_triangles_identical": true
+      }
+    ],
+    "unchanged_input_sha256": {
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-matrix-mesh-egg-v1/meshes/h0.03.npz": "eed14415d94398463581e3c676d272b6aa25de37ace1faf432a54cb1e69f690c",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-matrix-mesh-egg-v1/meshes/h0.03.json": "511efc8862f08d17a73d2055c853a5069bd9d441dc1a8e0efce780d9da5ee5b7",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers3-v1/mesh.npz": "d179754529f2fc50823307c9b3dbb7f4b005a826bac2a3b40258a8ee2bb04d78",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers3-v1/mesh.json": "feafd49d87230533ba1b19047dfd1d21a8025e653b0f00aef01b51af0d9ec6db",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers4-v1/mesh.npz": "ef3b941adfce66a9ae4652c4e8e56afe602961588d6de993a15f9b2c4a9f9fd6",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers4-v1/mesh.json": "3dacede0901fa46c5fcf92dd7fab7c9d1756133d546db007f6a28f3f3e4c321d",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/mesh.npz": "8a8ecb0779b2a93350561d33e67fa5046bd8464db4f51409216d47ea90775b59",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/mesh.json": "d5c65bb74ffe52017ae6d91801f9ea7d5bfb51efd363cbd3318f6ca197d2070a"
+    },
+    "data_producers_naturally_closed": [
+      {
+        "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers3-v1",
+        "source_after_present": true,
+        "returncode": "0"
+      },
+      {
+        "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers4-v1",
+        "source_after_present": true,
+        "returncode": "0"
+      },
+      {
+        "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1",
+        "source_after_present": true,
+        "returncode": "0"
+      }
+    ],
+    "stress_and_FEM_solve_completion_not_inferred": true,
+    "goal_completion": false
+  },
+  "rows": [
+    {
+      "case": "opposing",
+      "layers": 2,
+      "mesh_sha256": "eed14415d94398463581e3c676d272b6aa25de37ace1faf432a54cb1e69f690c",
+      "probe_field_sha256": "7c715c2c248cb747d73945b4d6fd51c7f0a3024a28ba86057cfc62a284ec7b5a",
+      "traction_identity_checks": [
+        {
+          "samples": 88755,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "c174c29a52b565ba950282a4c9ce3fbf033ad9757cb08c31c6cc59686e78a8d2",
+          "candidate_sha256": "c174c29a52b565ba950282a4c9ce3fbf033ad9757cb08c31c6cc59686e78a8d2"
+        },
+        {
+          "samples": 91522,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "f788ffdcf25baeb39efe9b2c3f06f4322d930b70433898f49f90917604922ed2",
+          "candidate_sha256": "f788ffdcf25baeb39efe9b2c3f06f4322d930b70433898f49f90917604922ed2"
+        }
+      ],
+      "mass_kg": 0.007484927712658553,
+      "field_sha256": "8b63dd90ed98c0feab11d9e71cd267f221c9aaaafd19edcf53f7a22c36cc385c",
+      "snapshot_sha256": "d93f6a21d3a34d4a7750f1f59e38d6e68e3441c9662316fb0a6fc17ed8172581",
+      "raw_reconstructed_global_peak_Pa": 143156.9237197361,
+      "raw_peak_position_m": [
+        -0.02196537334965042,
+        -0.00021117377721921425,
+        0.0002489050997086312
+      ],
+      "reconstructed_energy_J": 9.465123019395599e-09,
+      "recorded_complete_FEM_budget_fraction": 0.0046526551149992275
+    },
+    {
+      "case": "opposing",
+      "layers": 3,
+      "mesh_sha256": "d179754529f2fc50823307c9b3dbb7f4b005a826bac2a3b40258a8ee2bb04d78",
+      "probe_field_sha256": "6a05cec654c14bbe6639813320820e83b3cff7f270987219193dd818ba7e5240",
+      "traction_identity_checks": [
+        {
+          "samples": 88755,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "c174c29a52b565ba950282a4c9ce3fbf033ad9757cb08c31c6cc59686e78a8d2",
+          "candidate_sha256": "0697acf759949317a624d911842f779d8fb880691cd7f811ee00963aa963601d"
+        },
+        {
+          "samples": 91522,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "f788ffdcf25baeb39efe9b2c3f06f4322d930b70433898f49f90917604922ed2",
+          "candidate_sha256": "a86f3c23d93eba9d6cdbb1558baf990dbd4b47b45faa4cd0ee16178037a841d5"
+        }
+      ],
+      "mass_kg": 0.007484927712658554,
+      "field_sha256": "fc77cbc897010d315ba70f484fdddc80e6e14c150d492a9b10ea8f0d319b817d",
+      "snapshot_sha256": "c2f02b092c2dff6b132f9a0a95cca54adfbbe362d673af8860426be1d372d9bf",
+      "raw_reconstructed_global_peak_Pa": 143295.53547126197,
+      "raw_peak_position_m": [
+        -0.02196537334965042,
+        -0.00021117377721921425,
+        0.0002489050997086312
+      ],
+      "reconstructed_energy_J": 9.46874879568597e-09,
+      "recorded_complete_FEM_budget_fraction": 0.00983117902107913
+    },
+    {
+      "case": "opposing",
+      "layers": 4,
+      "mesh_sha256": "ef3b941adfce66a9ae4652c4e8e56afe602961588d6de993a15f9b2c4a9f9fd6",
+      "probe_field_sha256": "7c9c2f3f6fa6d55ecf763db20cc2ccc55a4bdc14ce17e5462e9ad7937ea40b01",
+      "traction_identity_checks": [
+        {
+          "samples": 88755,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "c174c29a52b565ba950282a4c9ce3fbf033ad9757cb08c31c6cc59686e78a8d2",
+          "candidate_sha256": "f2571b2e50ded6e9bc30ef10f0b0d3c974d1cad2239f2452c70ba0aab39932d7"
+        },
+        {
+          "samples": 91522,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "f788ffdcf25baeb39efe9b2c3f06f4322d930b70433898f49f90917604922ed2",
+          "candidate_sha256": "f242957ba6a8a0374a08a5011a72502b9121c8a09551c13d0b1c641077549a5e"
+        }
+      ],
+      "mass_kg": 0.007484927712658555,
+      "field_sha256": "4c71aea45693e7587b0a797b08dcd299c020ccb8fd310f8816302552ab9f7dd2",
+      "snapshot_sha256": "95088e94f119651bca5a6c3797b3f7ede035e2a6c274eb6e6d3ad219592ac0bf",
+      "raw_reconstructed_global_peak_Pa": 143313.5284431478,
+      "raw_peak_position_m": [
+        -0.02196537334965042,
+        -0.00021117377721921425,
+        0.0002489050997086312
+      ],
+      "reconstructed_energy_J": 9.469944505038558e-09,
+      "recorded_complete_FEM_budget_fraction": 0.017783541342445936
+    },
+    {
+      "case": "opposing",
+      "layers": 5,
+      "mesh_sha256": "8a8ecb0779b2a93350561d33e67fa5046bd8464db4f51409216d47ea90775b59",
+      "probe_field_sha256": "bba48cd292fed0f02d7cb97b681800f596639810d4a65bf20223444421f698b9",
+      "traction_identity_checks": [
+        {
+          "samples": 88755,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "c174c29a52b565ba950282a4c9ce3fbf033ad9757cb08c31c6cc59686e78a8d2",
+          "candidate_sha256": "b14de877fedb05b7e311369dcf0ff57b2446b17d77a7622e1bace930b8197c04"
+        },
+        {
+          "samples": 91522,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "f788ffdcf25baeb39efe9b2c3f06f4322d930b70433898f49f90917604922ed2",
+          "candidate_sha256": "f30701142b3773796b1e1f72c990b28b6bbdfd03b2bd0cf80c43a7994092f1f1"
+        }
+      ],
+      "mass_kg": 0.007484927712658553,
+      "field_sha256": "2c5c7373df290978e66dcfb8069f731b654ff5f687137b1b260a8cd27d09c206",
+      "snapshot_sha256": "6330a5da69d742ca58769e77732829fb3f9fce55440f8f1de95c0a60f0f64ba1",
+      "raw_reconstructed_global_peak_Pa": 143311.60556719918,
+      "raw_peak_position_m": [
+        -0.02196537334965042,
+        -0.00021117377721921425,
+        0.0002489050997086312
+      ],
+      "reconstructed_energy_J": 9.47048780057581e-09,
+      "recorded_complete_FEM_budget_fraction": 0.026160087773350604
+    },
+    {
+      "case": "bending",
+      "layers": 2,
+      "mesh_sha256": "eed14415d94398463581e3c676d272b6aa25de37ace1faf432a54cb1e69f690c",
+      "probe_field_sha256": "7330dc839a8c031859b88af88fa3c75e9a5d453ee9fe37a186e205de090eff8b",
+      "traction_identity_checks": [
+        {
+          "samples": 88755,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "c51222b12e7a3941ccfa8bcc9d12668720c0d042b5cb85a9117fa884631d1287",
+          "candidate_sha256": "c51222b12e7a3941ccfa8bcc9d12668720c0d042b5cb85a9117fa884631d1287"
+        },
+        {
+          "samples": 91522,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "bbe4fb96714dc5e853ca824813682b3e74423d691d92d518ad56e4d1ff2b839c",
+          "candidate_sha256": "bbe4fb96714dc5e853ca824813682b3e74423d691d92d518ad56e4d1ff2b839c"
+        }
+      ],
+      "mass_kg": 0.007484927712658553,
+      "field_sha256": "ea39714cae5e2d2f6f9752f590c00712138dbe707c8c679bb306ac252608aea5",
+      "snapshot_sha256": "adfe4493c3d5a49a0ca0db67d92c893bc45369464db61406c804afc81b73183f",
+      "raw_reconstructed_global_peak_Pa": 141819.34286436977,
+      "raw_peak_position_m": [
+        0.02205677086284144,
+        -5.402350767341075e-18,
+        -0.0004487822104580402
+      ],
+      "reconstructed_energy_J": 8.735577654069912e-09,
+      "recorded_complete_FEM_budget_fraction": 0.004677384015551277
+    },
+    {
+      "case": "bending",
+      "layers": 3,
+      "mesh_sha256": "d179754529f2fc50823307c9b3dbb7f4b005a826bac2a3b40258a8ee2bb04d78",
+      "probe_field_sha256": "8e54d6397e562e6ccd06c7a4870afd06180c7fb0929beeab5d18319316f15cba",
+      "traction_identity_checks": [
+        {
+          "samples": 88755,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "c51222b12e7a3941ccfa8bcc9d12668720c0d042b5cb85a9117fa884631d1287",
+          "candidate_sha256": "a41998dda51117d8c0ba1bf24bd238fcd1143faeb9308633af929f5c5cd86f22"
+        },
+        {
+          "samples": 91522,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "bbe4fb96714dc5e853ca824813682b3e74423d691d92d518ad56e4d1ff2b839c",
+          "candidate_sha256": "6b7c68d30184cec261c9034d6703f414d7780a914c5799a0f1107a3b55c3e115"
+        }
+      ],
+      "mass_kg": 0.007484927712658554,
+      "field_sha256": "d05f3e205071379d66ad8f2b7a2567d66e4542348a8048b763cd78ada9afe69f",
+      "snapshot_sha256": "e49686f402e16d3ffa27b050b310e5fd49dbce7c2685e866fb4545551d91db3a",
+      "raw_reconstructed_global_peak_Pa": 142068.73912978094,
+      "raw_peak_position_m": [
+        0.02205677086284144,
+        -5.402350767341075e-18,
+        -0.0004487822104580402
+      ],
+      "reconstructed_energy_J": 8.738916170334667e-09,
+      "recorded_complete_FEM_budget_fraction": 0.009695603402956566
+    },
+    {
+      "case": "bending",
+      "layers": 4,
+      "mesh_sha256": "ef3b941adfce66a9ae4652c4e8e56afe602961588d6de993a15f9b2c4a9f9fd6",
+      "probe_field_sha256": "2b5ba30d38a0a5ce4acf6246dd1f4fb6ab326372089fc41ad42da5f699a337db",
+      "traction_identity_checks": [
+        {
+          "samples": 88755,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "c51222b12e7a3941ccfa8bcc9d12668720c0d042b5cb85a9117fa884631d1287",
+          "candidate_sha256": "0854034d824e4fa58a86f240dd7637d77dce5ad733b505d7ea864cc795cb8479"
+        },
+        {
+          "samples": 91522,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "bbe4fb96714dc5e853ca824813682b3e74423d691d92d518ad56e4d1ff2b839c",
+          "candidate_sha256": "66157e6144b9b04ef4001abfdd0e7d6bc3291553fc652501d9564d3b6abb0422"
+        }
+      ],
+      "mass_kg": 0.007484927712658555,
+      "field_sha256": "2260851434fe7cfddea8b44783fba4b9afc4bca59155813ec955c1e798e09299",
+      "snapshot_sha256": "46d7823467f774a94868264c9bd51f6bbeefaee9ee39cb97f377ed82fa18f764",
+      "raw_reconstructed_global_peak_Pa": 142209.98379386077,
+      "raw_peak_position_m": [
+        0.02205677086284144,
+        -5.402350767341075e-18,
+        -0.0004487822104580402
+      ],
+      "reconstructed_energy_J": 8.740017796201558e-09,
+      "recorded_complete_FEM_budget_fraction": 0.017581987531365473
+    },
+    {
+      "case": "bending",
+      "layers": 5,
+      "mesh_sha256": "8a8ecb0779b2a93350561d33e67fa5046bd8464db4f51409216d47ea90775b59",
+      "probe_field_sha256": "529963ca3d62603726d792379a453397c90c272663f29a1c1f4e385e1dd89c26",
+      "traction_identity_checks": [
+        {
+          "samples": 88755,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "c51222b12e7a3941ccfa8bcc9d12668720c0d042b5cb85a9117fa884631d1287",
+          "candidate_sha256": "064ac6f7ecfd780a912da8198337e28805ce31f07518a4aca885bcfccd9126c6"
+        },
+        {
+          "samples": 91522,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "bbe4fb96714dc5e853ca824813682b3e74423d691d92d518ad56e4d1ff2b839c",
+          "candidate_sha256": "b2b978980743cc0fb011660000609168d05d4c7ae3d37fc3905f1aa1b701f48c"
+        }
+      ],
+      "mass_kg": 0.007484927712658553,
+      "field_sha256": "e09d3926d943091336e194c74c0a7c6af884e7e6a7a8082b67e1e4c02b930726",
+      "snapshot_sha256": "d42685752e9f51c1f6eec2db472423e86b37555ff478ed76b30371c890dc9700",
+      "raw_reconstructed_global_peak_Pa": 142402.72975259568,
+      "raw_peak_position_m": [
+        0.02205677086284144,
+        -5.402350767341075e-18,
+        -0.0004487822104580402
+      ],
+      "reconstructed_energy_J": 8.740518539814488e-09,
+      "recorded_complete_FEM_budget_fraction": 0.025405470986985493
+    },
+    {
+      "case": "asymmetric",
+      "layers": 2,
+      "mesh_sha256": "eed14415d94398463581e3c676d272b6aa25de37ace1faf432a54cb1e69f690c",
+      "probe_field_sha256": "18b0cf4b2c57fb91f0b35ffeb6eda98f9967ed6bd86f244f8894233a1f0565ca",
+      "traction_identity_checks": [
+        {
+          "samples": 88755,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "c174c29a52b565ba950282a4c9ce3fbf033ad9757cb08c31c6cc59686e78a8d2",
+          "candidate_sha256": "c174c29a52b565ba950282a4c9ce3fbf033ad9757cb08c31c6cc59686e78a8d2"
+        },
+        {
+          "samples": 90847,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "f1f08b16dffdb95df86ea463b9af282feb63c05c882aeac328c5a02c1cfdc9fa",
+          "candidate_sha256": "f1f08b16dffdb95df86ea463b9af282feb63c05c882aeac328c5a02c1cfdc9fa"
+        }
+      ],
+      "mass_kg": 0.007484927712658553,
+      "field_sha256": "ae38fe32ed5d6a7e166aa06fc19194fcbd2a6c32515b8e03c6163264ada78c70",
+      "snapshot_sha256": "2b7d8e6a5c8121e5070ffddb5d33ca36353d806e65bdf2ea5c2548494fd13c1f",
+      "raw_reconstructed_global_peak_Pa": 232636.3524221466,
+      "raw_peak_position_m": [
+        0.021938305616810625,
+        -5.373335150468707e-18,
+        0.00044878221045775913
+      ],
+      "reconstructed_energy_J": 1.6866480649191125e-08,
+      "recorded_complete_FEM_budget_fraction": 0.004912655595362738
+    },
+    {
+      "case": "asymmetric",
+      "layers": 3,
+      "mesh_sha256": "d179754529f2fc50823307c9b3dbb7f4b005a826bac2a3b40258a8ee2bb04d78",
+      "probe_field_sha256": "552a7cfb85631269304512852582bff6996b0769f372ea1933a18418d715c03f",
+      "traction_identity_checks": [
+        {
+          "samples": 88755,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "c174c29a52b565ba950282a4c9ce3fbf033ad9757cb08c31c6cc59686e78a8d2",
+          "candidate_sha256": "0697acf759949317a624d911842f779d8fb880691cd7f811ee00963aa963601d"
+        },
+        {
+          "samples": 90847,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "f1f08b16dffdb95df86ea463b9af282feb63c05c882aeac328c5a02c1cfdc9fa",
+          "candidate_sha256": "1b6db55c69a9c860c3341df399f32b80b29153bc043c51c739da69560f9fd0da"
+        }
+      ],
+      "mass_kg": 0.007484927712658554,
+      "field_sha256": "7faa743c6d25ff3ee25764566d3f0465fa35ab8e72acce95afdc3a0134c190e3",
+      "snapshot_sha256": "25fcb1db34cb7fb9153ff33041bdab9a7e17376ca2764e658caaaff38b8945c1",
+      "raw_reconstructed_global_peak_Pa": 232910.31588164825,
+      "raw_peak_position_m": [
+        0.021938305616810625,
+        -5.373335150468707e-18,
+        0.00044878221045775913
+      ],
+      "reconstructed_energy_J": 1.6872964515868165e-08,
+      "recorded_complete_FEM_budget_fraction": 0.00989310276972704
+    },
+    {
+      "case": "asymmetric",
+      "layers": 4,
+      "mesh_sha256": "ef3b941adfce66a9ae4652c4e8e56afe602961588d6de993a15f9b2c4a9f9fd6",
+      "probe_field_sha256": "3ece66a3a558be171dde8b9c482309dea9f8ed48f1018f94acf661ce4e2cc6af",
+      "traction_identity_checks": [
+        {
+          "samples": 88755,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "c174c29a52b565ba950282a4c9ce3fbf033ad9757cb08c31c6cc59686e78a8d2",
+          "candidate_sha256": "f2571b2e50ded6e9bc30ef10f0b0d3c974d1cad2239f2452c70ba0aab39932d7"
+        },
+        {
+          "samples": 90847,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "f1f08b16dffdb95df86ea463b9af282feb63c05c882aeac328c5a02c1cfdc9fa",
+          "candidate_sha256": "f76d81ecc6cb0754d81e7dadc8870b871dc58338d20dbbb519b51d9c9ca430cf"
+        }
+      ],
+      "mass_kg": 0.007484927712658555,
+      "field_sha256": "3d74eb922c8d21d96beb2bb5af89954f11b65f72443578678305f1d4bf30a941",
+      "snapshot_sha256": "88288940b184bf031eaabbc295a7f658d9afc4a12bf55130d32e78bb9f513653",
+      "raw_reconstructed_global_peak_Pa": 233043.4129278127,
+      "raw_peak_position_m": [
+        0.021938305616810625,
+        -5.373335150468707e-18,
+        0.00044878221045775913
+      ],
+      "reconstructed_energy_J": 1.687510245147993e-08,
+      "recorded_complete_FEM_budget_fraction": 0.01900720474760446
+    },
+    {
+      "case": "asymmetric",
+      "layers": 5,
+      "mesh_sha256": "8a8ecb0779b2a93350561d33e67fa5046bd8464db4f51409216d47ea90775b59",
+      "probe_field_sha256": "7ceb074b6da29c8f6d7ed4a8a1b00a1255374433598e9dec2a7e2435a1249f38",
+      "traction_identity_checks": [
+        {
+          "samples": 88755,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "c174c29a52b565ba950282a4c9ce3fbf033ad9757cb08c31c6cc59686e78a8d2",
+          "candidate_sha256": "b14de877fedb05b7e311369dcf0ff57b2446b17d77a7622e1bace930b8197c04"
+        },
+        {
+          "samples": 90847,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "f1f08b16dffdb95df86ea463b9af282feb63c05c882aeac328c5a02c1cfdc9fa",
+          "candidate_sha256": "78883722a55ae5f8c213de4be9da6569646185bc27f4412be35489b193e9d6db"
+        }
+      ],
+      "mass_kg": 0.007484927712658553,
+      "field_sha256": "987d89a0e036d320a1fff94a4d864a6c5c99659b3772b88a872656c28cbb8bcb",
+      "snapshot_sha256": "a6b2da1775ee52c503f722538414452d13156bf90e54a35b551a7cd66964c407",
+      "raw_reconstructed_global_peak_Pa": 233147.15674290847,
+      "raw_peak_position_m": [
+        0.021938305616810625,
+        -5.373335150468707e-18,
+        0.00044878221045775913
+      ],
+      "reconstructed_energy_J": 1.6876073952171178e-08,
+      "recorded_complete_FEM_budget_fraction": 0.026868381827642267
+    },
+    {
+      "case": "near_slip",
+      "layers": 2,
+      "mesh_sha256": "eed14415d94398463581e3c676d272b6aa25de37ace1faf432a54cb1e69f690c",
+      "probe_field_sha256": "a2fcfae0d77c89760d209d2af2fbac6c00eccf949ba78fe9469a088c3ac5e481",
+      "traction_identity_checks": [
+        {
+          "samples": 88755,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "3a3584c137f5907e5aeca57dbc41bf8385ae1af0abfbb1fe0be2b1381c004854",
+          "candidate_sha256": "3a3584c137f5907e5aeca57dbc41bf8385ae1af0abfbb1fe0be2b1381c004854"
+        },
+        {
+          "samples": 91522,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "8d63e610b7876bd6485a4c4cfef265e0e7910d551657ef03bfc3b408c9b8fc6e",
+          "candidate_sha256": "8d63e610b7876bd6485a4c4cfef265e0e7910d551657ef03bfc3b408c9b8fc6e"
+        }
+      ],
+      "mass_kg": 0.007484927712658553,
+      "field_sha256": "3cffe98ea2b9358f0bb530df4a7f428146047a65a8d4e04bb21a59498efc18b4",
+      "snapshot_sha256": "1703f9932cb4f5f181d54d6c0a2344ba00a69a30a5f9c4bb4468406deb3cb414",
+      "raw_reconstructed_global_peak_Pa": 150769.91094581736,
+      "raw_peak_position_m": [
+        0.021938305616810625,
+        -5.373335150468707e-18,
+        0.00044878221045775913
+      ],
+      "reconstructed_energy_J": 1.0016061541433741e-08,
+      "recorded_complete_FEM_budget_fraction": 0.003583059776307181
+    },
+    {
+      "case": "near_slip",
+      "layers": 3,
+      "mesh_sha256": "d179754529f2fc50823307c9b3dbb7f4b005a826bac2a3b40258a8ee2bb04d78",
+      "probe_field_sha256": "096f6b547adb963c6f46ac1a35310d5e49b8a1bc2e42b1073b27a45c63f5897b",
+      "traction_identity_checks": [
+        {
+          "samples": 88755,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "3a3584c137f5907e5aeca57dbc41bf8385ae1af0abfbb1fe0be2b1381c004854",
+          "candidate_sha256": "29c501eba3e8067302c3bc5f119a9e8a1a777bf5a6438587ef4c6474de259cdc"
+        },
+        {
+          "samples": 91522,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "8d63e610b7876bd6485a4c4cfef265e0e7910d551657ef03bfc3b408c9b8fc6e",
+          "candidate_sha256": "8ad68d5838ba16b6377cfdd9b3e582fbd77a91a38032a74757a145d614ded7a6"
+        }
+      ],
+      "mass_kg": 0.007484927712658554,
+      "field_sha256": "388a7c811b6acf4a01c96197eb4094f98de9b025cdddb610870c762aacade842",
+      "snapshot_sha256": "f837e292ec5b1c746c06fcb90c08f3c81304e0051f9213759171545b0c372418",
+      "raw_reconstructed_global_peak_Pa": 151031.89825236786,
+      "raw_peak_position_m": [
+        0.021938305616810625,
+        -5.373335150468707e-18,
+        0.00044878221045775913
+      ],
+      "reconstructed_energy_J": 1.0019854868422497e-08,
+      "recorded_complete_FEM_budget_fraction": 0.008122993217143493
+    },
+    {
+      "case": "near_slip",
+      "layers": 4,
+      "mesh_sha256": "ef3b941adfce66a9ae4652c4e8e56afe602961588d6de993a15f9b2c4a9f9fd6",
+      "probe_field_sha256": "477f51d19a7304f3d180b92a0a812bf897267e36c2d425d879941b857649493e",
+      "traction_identity_checks": [
+        {
+          "samples": 88755,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "3a3584c137f5907e5aeca57dbc41bf8385ae1af0abfbb1fe0be2b1381c004854",
+          "candidate_sha256": "e77970d13ddc48beaa4bb827a5a3e6288b291a328defe67ebc311142b7e061ed"
+        },
+        {
+          "samples": 91522,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "8d63e610b7876bd6485a4c4cfef265e0e7910d551657ef03bfc3b408c9b8fc6e",
+          "candidate_sha256": "54a4c5c0a87147de7df6eb1e8c7db467b15867db0462709e4803943d3ac899ea"
+        }
+      ],
+      "mass_kg": 0.007484927712658555,
+      "field_sha256": "2c487ecd273e8bb28bd59c13b019131e792adc704d1080f868bb75c706f3b8fe",
+      "snapshot_sha256": "22be018fec90a288092b5655a3f436a30a077c4f763eea1ee0d5ce1db8e12bdc",
+      "raw_reconstructed_global_peak_Pa": 151143.4666302348,
+      "raw_peak_position_m": [
+        0.021938305616810625,
+        -5.373335150468707e-18,
+        0.00044878221045775913
+      ],
+      "reconstructed_energy_J": 1.002110533907586e-08,
+      "recorded_complete_FEM_budget_fraction": 0.013995071513144927
+    },
+    {
+      "case": "near_slip",
+      "layers": 5,
+      "mesh_sha256": "8a8ecb0779b2a93350561d33e67fa5046bd8464db4f51409216d47ea90775b59",
+      "probe_field_sha256": "13b6797cb36f692fa25c19a476ed0c68e0a2931f80176c9c190471392a48c1fc",
+      "traction_identity_checks": [
+        {
+          "samples": 88755,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "3a3584c137f5907e5aeca57dbc41bf8385ae1af0abfbb1fe0be2b1381c004854",
+          "candidate_sha256": "1d824ff684749a505365ef23b3b651428c1dfb72843e6462d62506014acc01b6"
+        },
+        {
+          "samples": 91522,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "8d63e610b7876bd6485a4c4cfef265e0e7910d551657ef03bfc3b408c9b8fc6e",
+          "candidate_sha256": "4a919f4e15a86a76f8918d867ef2a462967cac4a5749806dbfcda4119534baba"
+        }
+      ],
+      "mass_kg": 0.007484927712658553,
+      "field_sha256": "9d1d9b3b9c710ab8a281ffeb95a78e4d520d92459db3aa256966072ea2025efe",
+      "snapshot_sha256": "c0d73967d4b31e6621204cfbb0836414cc9e9d1cfb419fc1c06e7769c0002097",
+      "raw_reconstructed_global_peak_Pa": 151216.1904138238,
+      "raw_peak_position_m": [
+        0.021938305616810625,
+        -5.373335150468707e-18,
+        0.00044878221045775913
+      ],
+      "reconstructed_energy_J": 1.0021673322737745e-08,
+      "recorded_complete_FEM_budget_fraction": 0.021272449989042087
+    },
+    {
+      "case": "multiple",
+      "layers": 2,
+      "mesh_sha256": "eed14415d94398463581e3c676d272b6aa25de37ace1faf432a54cb1e69f690c",
+      "probe_field_sha256": "42c00a995c44dfcbdc5f535ac5900bccc0005e30149a94ad4b0931697c889efc",
+      "traction_identity_checks": [
+        {
+          "samples": 88755,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "c174c29a52b565ba950282a4c9ce3fbf033ad9757cb08c31c6cc59686e78a8d2",
+          "candidate_sha256": "c174c29a52b565ba950282a4c9ce3fbf033ad9757cb08c31c6cc59686e78a8d2"
+        },
+        {
+          "samples": 91522,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "f788ffdcf25baeb39efe9b2c3f06f4322d930b70433898f49f90917604922ed2",
+          "candidate_sha256": "f788ffdcf25baeb39efe9b2c3f06f4322d930b70433898f49f90917604922ed2"
+        },
+        {
+          "samples": 93264,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "c6daf978a31733ab40778690884b4ac01fa4bc3c63f5bb28a0b8301d8b7361bc",
+          "candidate_sha256": "c6daf978a31733ab40778690884b4ac01fa4bc3c63f5bb28a0b8301d8b7361bc"
+        }
+      ],
+      "mass_kg": 0.007484927712658553,
+      "field_sha256": "07f0775f0d770c046faaa8ba65bcb953ebf5a7cd83e7a724bf08dccf85dc0118",
+      "snapshot_sha256": "049fe0a213eed20b83411e9ab7c796f48e07ce08e33439730060d9515ab3fc3b",
+      "raw_reconstructed_global_peak_Pa": 143948.48932440928,
+      "raw_peak_position_m": [
+        -0.02196537334965042,
+        -0.00021117377721921425,
+        0.0002489050997086312
+      ],
+      "reconstructed_energy_J": 1.1126011208866953e-08,
+      "recorded_complete_FEM_budget_fraction": 0.004952576231606726
+    },
+    {
+      "case": "multiple",
+      "layers": 3,
+      "mesh_sha256": "d179754529f2fc50823307c9b3dbb7f4b005a826bac2a3b40258a8ee2bb04d78",
+      "probe_field_sha256": "9c4110fa28d7732e3511880295bec6d5e469f618803a10f6ae0a6303620fffa2",
+      "traction_identity_checks": [
+        {
+          "samples": 88755,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "c174c29a52b565ba950282a4c9ce3fbf033ad9757cb08c31c6cc59686e78a8d2",
+          "candidate_sha256": "0697acf759949317a624d911842f779d8fb880691cd7f811ee00963aa963601d"
+        },
+        {
+          "samples": 91522,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "f788ffdcf25baeb39efe9b2c3f06f4322d930b70433898f49f90917604922ed2",
+          "candidate_sha256": "a86f3c23d93eba9d6cdbb1558baf990dbd4b47b45faa4cd0ee16178037a841d5"
+        },
+        {
+          "samples": 93264,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "c6daf978a31733ab40778690884b4ac01fa4bc3c63f5bb28a0b8301d8b7361bc",
+          "candidate_sha256": "a18b1a6fcaec3f3100d5c857c6eead08cdb78ea04b9f753db0fa4293d3062c3f"
+        }
+      ],
+      "mass_kg": 0.007484927712658554,
+      "field_sha256": "bb5f09996bbfb8e554b1adf140b3461d0393a494e50060590e3bb6690838e010",
+      "snapshot_sha256": "50604138938e49992c401b2ae58dc5cda949060d925f61dc515761c1b527ebd5",
+      "raw_reconstructed_global_peak_Pa": 144082.39848916,
+      "raw_peak_position_m": [
+        -0.02196537334965042,
+        -0.00021117377721921425,
+        0.0002489050997086312
+      ],
+      "reconstructed_energy_J": 1.112991022181396e-08,
+      "recorded_complete_FEM_budget_fraction": 0.010907312713178926
+    },
+    {
+      "case": "multiple",
+      "layers": 4,
+      "mesh_sha256": "ef3b941adfce66a9ae4652c4e8e56afe602961588d6de993a15f9b2c4a9f9fd6",
+      "probe_field_sha256": "3d0254c54b1f8190c4bb8c3129f23de311d816279b7267a0c9116ab5fed4d408",
+      "traction_identity_checks": [
+        {
+          "samples": 88755,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "c174c29a52b565ba950282a4c9ce3fbf033ad9757cb08c31c6cc59686e78a8d2",
+          "candidate_sha256": "f2571b2e50ded6e9bc30ef10f0b0d3c974d1cad2239f2452c70ba0aab39932d7"
+        },
+        {
+          "samples": 91522,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "f788ffdcf25baeb39efe9b2c3f06f4322d930b70433898f49f90917604922ed2",
+          "candidate_sha256": "f242957ba6a8a0374a08a5011a72502b9121c8a09551c13d0b1c641077549a5e"
+        },
+        {
+          "samples": 93264,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "c6daf978a31733ab40778690884b4ac01fa4bc3c63f5bb28a0b8301d8b7361bc",
+          "candidate_sha256": "200766c303aa7e41c6b103d3008dd5cd7e2c81f7c96f2f9984f12bbae0c28fe7"
+        }
+      ],
+      "mass_kg": 0.007484927712658555,
+      "field_sha256": "1e17edca6e15329799051a6c717b5ce5dfbeaaf9ef069d0399147739ce90f0a6",
+      "snapshot_sha256": "f1ed4dd9a1c0386bd0d38bb3d3baa2350199e8bd36beb6973dc4c1e1716a3e06",
+      "raw_reconstructed_global_peak_Pa": 144098.25650926735,
+      "raw_peak_position_m": [
+        -0.02196537334965042,
+        -0.00021117377721921425,
+        0.0002489050997086312
+      ],
+      "reconstructed_energy_J": 1.1131193995428712e-08,
+      "recorded_complete_FEM_budget_fraction": 0.0191450591070191
+    },
+    {
+      "case": "multiple",
+      "layers": 5,
+      "mesh_sha256": "8a8ecb0779b2a93350561d33e67fa5046bd8464db4f51409216d47ea90775b59",
+      "probe_field_sha256": "ec18b9dd2a10f51af015ec44b7e3043a7bcf99793096968e95e91940752da837",
+      "traction_identity_checks": [
+        {
+          "samples": 88755,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "c174c29a52b565ba950282a4c9ce3fbf033ad9757cb08c31c6cc59686e78a8d2",
+          "candidate_sha256": "b14de877fedb05b7e311369dcf0ff57b2446b17d77a7622e1bace930b8197c04"
+        },
+        {
+          "samples": 91522,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "f788ffdcf25baeb39efe9b2c3f06f4322d930b70433898f49f90917604922ed2",
+          "candidate_sha256": "f30701142b3773796b1e1f72c990b28b6bbdfd03b2bd0cf80c43a7994092f1f1"
+        },
+        {
+          "samples": 93264,
+          "maximum_position_difference_m": 0.0,
+          "source_sha256": "c6daf978a31733ab40778690884b4ac01fa4bc3c63f5bb28a0b8301d8b7361bc",
+          "candidate_sha256": "a6ec46d8bdae351fffa6f32001d3fed44863566e74cba216d3da62feaba27932"
+        }
+      ],
+      "mass_kg": 0.007484927712658553,
+      "field_sha256": "3482418860c121d1c28f90b7968dc8d424907b55b1d7b11af3ba9e6f69462896",
+      "snapshot_sha256": "831cee01343e630001001251c251c83cf1f5247a797e8e5e62d82f8e75f2743e",
+      "raw_reconstructed_global_peak_Pa": 144095.1720768216,
+      "raw_peak_position_m": [
+        -0.02196537334965042,
+        -0.00021117377721921425,
+        0.0002489050997086312
+      ],
+      "reconstructed_energy_J": 1.1131776893614305e-08,
+      "recorded_complete_FEM_budget_fraction": 0.028813475859031434
+    }
+  ],
+  "adjacent_changes": [
+    {
+      "case": "opposing",
+      "from_layers": 2,
+      "to_layers": 3,
+      "tensor_Pa": {
+        "relative_change": 0.035180812771552536,
+        "absolute_change": 2850.0336185626243
+      },
+      "vm_Pa": {
+        "relative_change": 0.031081439329781854,
+        "absolute_change": 1867.624334246226
+      },
+      "displacement_m": {
+        "relative_change": 0.0004779795728693916,
+        "absolute_change": 1.5889654366541794e-10
+      },
+      "raw_reconstructed_global_peak_Pa": 0.0009673138180474883,
+      "reconstructed_energy_J": 0.0003829203169929407,
+      "all_five_changes_below_initial3percent": false
+    },
+    {
+      "case": "opposing",
+      "from_layers": 3,
+      "to_layers": 4,
+      "tensor_Pa": {
+        "relative_change": 0.03823452765224038,
+        "absolute_change": 3132.4788439268614
+      },
+      "vm_Pa": {
+        "relative_change": 0.023485053631026008,
+        "absolute_change": 1425.260655962648
+      },
+      "displacement_m": {
+        "relative_change": 0.00016260465076913344,
+        "absolute_change": 5.4063009857068235e-11
+      },
+      "raw_reconstructed_global_peak_Pa": 0.00012554970965616974,
+      "reconstructed_energy_J": 0.00012626360713641205,
+      "all_five_changes_below_initial3percent": false
+    },
+    {
+      "case": "opposing",
+      "from_layers": 4,
+      "to_layers": 5,
+      "tensor_Pa": {
+        "relative_change": 0.0339204328441422,
+        "absolute_change": 2763.0707794669124
+      },
+      "vm_Pa": {
+        "relative_change": 0.01591383515885208,
+        "absolute_change": 957.8772100324838
+      },
+      "displacement_m": {
+        "relative_change": 7.347382496506803e-05,
+        "absolute_change": 2.443031749421224e-11
+      },
+      "raw_reconstructed_global_peak_Pa": 1.3417447533470295e-05,
+      "reconstructed_energy_J": 5.736721789761923e-05,
+      "all_five_changes_below_initial3percent": false
+    },
+    {
+      "case": "bending",
+      "from_layers": 2,
+      "to_layers": 3,
+      "tensor_Pa": {
+        "relative_change": 0.03695554502529548,
+        "absolute_change": 2886.039556656981
+      },
+      "vm_Pa": {
+        "relative_change": 0.030183232773299113,
+        "absolute_change": 1745.3895444098007
+      },
+      "displacement_m": {
+        "relative_change": 0.0004747539735687664,
+        "absolute_change": 1.5206286280381067e-10
+      },
+      "raw_reconstructed_global_peak_Pa": 0.0017554619470744326,
+      "reconstructed_energy_J": 0.00038202864058678454,
+      "all_five_changes_below_initial3percent": false
+    },
+    {
+      "case": "bending",
+      "from_layers": 3,
+      "to_layers": 4,
+      "tensor_Pa": {
+        "relative_change": 0.041483276422306425,
+        "absolute_change": 3272.4284402750973
+      },
+      "vm_Pa": {
+        "relative_change": 0.021967960830843646,
+        "absolute_change": 1284.6327447422937
+      },
+      "displacement_m": {
+        "relative_change": 0.00016312724390572686,
+        "absolute_change": 5.225679517976055e-11
+      },
+      "raw_reconstructed_global_peak_Pa": 0.0009932120116444842,
+      "reconstructed_energy_J": 0.00012604389288195517,
+      "all_five_changes_below_initial3percent": false
+    },
+    {
+      "case": "bending",
+      "from_layers": 4,
+      "to_layers": 5,
+      "tensor_Pa": {
+        "relative_change": 0.0378879537204771,
+        "absolute_change": 2973.2280640321546
+      },
+      "vm_Pa": {
+        "relative_change": 0.015361183224014918,
+        "absolute_change": 889.7316211280631
+      },
+      "displacement_m": {
+        "relative_change": 7.305802667207845e-05,
+        "absolute_change": 2.340523945781618e-11
+      },
+      "raw_reconstructed_global_peak_Pa": 0.0013535271344150557,
+      "reconstructed_energy_J": 5.7289920574965514e-05,
+      "all_five_changes_below_initial3percent": false
+    },
+    {
+      "case": "asymmetric",
+      "from_layers": 2,
+      "to_layers": 3,
+      "tensor_Pa": {
+        "relative_change": 0.05282154621574211,
+        "absolute_change": 5697.189560351664
+      },
+      "vm_Pa": {
+        "relative_change": 0.06721697112817583,
+        "absolute_change": 5498.260754596614
+      },
+      "displacement_m": {
+        "relative_change": 0.00045595308217015896,
+        "absolute_change": 2.0578739997387807e-10
+      },
+      "raw_reconstructed_global_peak_Pa": 0.0011762615943592403,
+      "reconstructed_energy_J": 0.0003842754882191768,
+      "all_five_changes_below_initial3percent": false
+    },
+    {
+      "case": "asymmetric",
+      "from_layers": 3,
+      "to_layers": 4,
+      "tensor_Pa": {
+        "relative_change": 0.04924949960984614,
+        "absolute_change": 5485.183853706151
+      },
+      "vm_Pa": {
+        "relative_change": 0.051322475015274455,
+        "absolute_change": 4343.279131780352
+      },
+      "displacement_m": {
+        "relative_change": 0.00014988368818110397,
+        "absolute_change": 6.765616954970101e-11
+      },
+      "raw_reconstructed_global_peak_Pa": 0.0005711255447742314,
+      "reconstructed_energy_J": 0.000126691711526572,
+      "all_five_changes_below_initial3percent": false
+    },
+    {
+      "case": "asymmetric",
+      "from_layers": 4,
+      "to_layers": 5,
+      "tensor_Pa": {
+        "relative_change": 0.03641746958058241,
+        "absolute_change": 3981.5967075472063
+      },
+      "vm_Pa": {
+        "relative_change": 0.03426246303716018,
+        "absolute_change": 2833.7497450668607
+      },
+      "displacement_m": {
+        "relative_change": 7.077459097145787e-05,
+        "absolute_change": 3.194902994875558e-11
+      },
+      "raw_reconstructed_global_peak_Pa": 0.0004449713929395305,
+      "reconstructed_energy_J": 5.756674769274994e-05,
+      "all_five_changes_below_initial3percent": false
+    },
+    {
+      "case": "near_slip",
+      "from_layers": 2,
+      "to_layers": 3,
+      "tensor_Pa": {
+        "relative_change": 0.041922704012958334,
+        "absolute_change": 3467.862366647391
+      },
+      "vm_Pa": {
+        "relative_change": 0.03883051786354694,
+        "absolute_change": 2384.5749546654756
+      },
+      "displacement_m": {
+        "relative_change": 0.0004816175926226659,
+        "absolute_change": 1.6283132186761853e-10
+      },
+      "raw_reconstructed_global_peak_Pa": 0.0017346488363187973,
+      "reconstructed_energy_J": 0.0003785810312193494,
+      "all_five_changes_below_initial3percent": false
+    },
+    {
+      "case": "near_slip",
+      "from_layers": 3,
+      "to_layers": 4,
+      "tensor_Pa": {
+        "relative_change": 0.04847770648606672,
+        "absolute_change": 4072.0065631864068
+      },
+      "vm_Pa": {
+        "relative_change": 0.029637717777611698,
+        "absolute_change": 1856.690553689883
+      },
+      "displacement_m": {
+        "relative_change": 0.00016330257485914972,
+        "absolute_change": 5.5219237929310267e-11
+      },
+      "raw_reconstructed_global_peak_Pa": 0.0007381620942960021,
+      "reconstructed_energy_J": 0.0001247837050954992,
+      "all_five_changes_below_initial3percent": false
+    },
+    {
+      "case": "near_slip",
+      "from_layers": 4,
+      "to_layers": 5,
+      "tensor_Pa": {
+        "relative_change": 0.04521451915480871,
+        "absolute_change": 3767.7595708898384
+      },
+      "vm_Pa": {
+        "relative_change": 0.02072228420229102,
+        "absolute_change": 1278.757591361473
+      },
+      "displacement_m": {
+        "relative_change": 7.435736844332082e-05,
+        "absolute_change": 2.514495782646293e-11
+      },
+      "raw_reconstructed_global_peak_Pa": 0.00048092590740433927,
+      "reconstructed_energy_J": 5.667553148003268e-05,
+      "all_five_changes_below_initial3percent": false
+    },
+    {
+      "case": "multiple",
+      "from_layers": 2,
+      "to_layers": 3,
+      "tensor_Pa": {
+        "relative_change": 0.03440346960440487,
+        "absolute_change": 2843.5616541957156
+      },
+      "vm_Pa": {
+        "relative_change": 0.030174414331476926,
+        "absolute_change": 1871.8973846919057
+      },
+      "displacement_m": {
+        "relative_change": 0.0004593071268935495,
+        "absolute_change": 1.5878178450888308e-10
+      },
+      "raw_reconstructed_global_peak_Pa": 0.0009293929456677397,
+      "reconstructed_energy_J": 0.00035031845444399856,
+      "all_five_changes_below_initial3percent": false
+    },
+    {
+      "case": "multiple",
+      "from_layers": 3,
+      "to_layers": 4,
+      "tensor_Pa": {
+        "relative_change": 0.03619521016758278,
+        "absolute_change": 3024.9185855767605
+      },
+      "vm_Pa": {
+        "relative_change": 0.022806543926743163,
+        "absolute_change": 1427.962157016803
+      },
+      "displacement_m": {
+        "relative_change": 0.00015613471519102838,
+        "absolute_change": 5.3982949999108365e-11
+      },
+      "raw_reconstructed_global_peak_Pa": 0.00011005004842878918,
+      "reconstructed_energy_J": 0.00011533116890061201,
+      "all_five_changes_below_initial3percent": false
+    },
+    {
+      "case": "multiple",
+      "from_layers": 4,
+      "to_layers": 5,
+      "tensor_Pa": {
+        "relative_change": 0.031764609259173314,
+        "absolute_change": 2639.8047489010187
+      },
+      "vm_Pa": {
+        "relative_change": 0.015453685550138712,
+        "absolute_change": 960.2077357805401
+      },
+      "displacement_m": {
+        "relative_change": 7.062573430460055e-05,
+        "absolute_change": 2.442014057018395e-11
+      },
+      "raw_reconstructed_global_peak_Pa": 2.1405522484307937e-05,
+      "reconstructed_energy_J": 5.236344486270195e-05,
+      "all_five_changes_below_initial3percent": false
+    }
+  ],
+  "fields_verified": 20,
+  "initial_adjacent_change_diagnostic": 0.03,
+  "physical_accuracy_accepted": false,
+  "goal_completion": false,
+  "limitations": "Only thickness-direction volume discretization varies on the original fixed polyhedral shell; all sampled boundary tractions and frozen physical inputs are checked. Raw global corner peaks and work identities are independently reconstructed. Equilibrium budgets are recorded from the independently assembled FEM driver, not reassembled here. A thickness tail does not establish CAD/surface/contact convergence, native accuracy, deformable-contact feedback or the full Franka application. All original gates remain."
+}
