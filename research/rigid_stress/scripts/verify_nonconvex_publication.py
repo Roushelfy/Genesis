@@ -1,4 +1,4 @@
-"""Stream-check immutable publications, runtime originals and ordered JSON chunks."""
+"""Stream-check immutable publications, runtime originals and ordered byte chunks."""
 
 import argparse
 import gzip
@@ -135,7 +135,7 @@ def verify_manifest(path, originals, cache, repair_missing=False, allow_appended
         "verified_originals": len(entries) - len(appended_logs) if originals else 0,
         "verified_original_prefixes": len(appended_logs),
         "appended_allocation_logs": appended_logs,
-        "reconstructed_complete_json_files": chunks_verified,
+        "reconstructed_complete_files": chunks_verified,
         "restored_missing_artifacts": repairs,
         "passed": True,
     }
@@ -167,7 +167,7 @@ def main():
         "verified_entries": sum(row["verified_entries"] for row in results),
         "verified_originals": sum(row["verified_originals"] for row in results),
         "verified_original_prefixes": sum(row["verified_original_prefixes"] for row in results),
-        "reconstructed_complete_json_files": sum(row["reconstructed_complete_json_files"] for row in results),
+        "reconstructed_complete_files": sum(row["reconstructed_complete_files"] for row in results),
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(output, indent=2) + "\n")

@@ -1,0 +1,232 @@
+{
+  "scope": "Qualify a reference linear-solver change against every original saved array and complete stress field.",
+  "source_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-paired-cad-level3-generic-contact-v1",
+  "states_checked": 5,
+  "rows": [
+    {
+      "step": 1,
+      "time_s": 0.00125,
+      "body_tetrahedra": 7680,
+      "complete_body_dynamic_residual_N": 4.978041666805096e-14,
+      "complete_mapped_dynamic_residual_N": 1.0724128295256126e-13,
+      "force_pullback_max_difference_N": 5.551115123125783e-17,
+      "normal_stencils": 3,
+      "maximum_coulomb_violation_N": -0.1158847718841015,
+      "active_body_contact_nodes": 5,
+      "active_lumped_contact_area_m2": 1.8336174934549396e-05,
+      "maximum_unsmoothed_body_normal_force_per_area_Pa": 113438.22668316407,
+      "all_saved_array_changes": {
+        "displacement": {
+          "maximum_absolute_difference": 5.082197683525802e-21,
+          "relative_L2_difference": 1.8306547639243e-18
+        },
+        "velocity": {
+          "maximum_absolute_difference": 4.065758146820642e-18,
+          "relative_L2_difference": 6.635845756888841e-15
+        },
+        "acceleration": {
+          "maximum_absolute_difference": 3.2526065174565133e-15,
+          "relative_L2_difference": 6.6358458057520455e-15
+        },
+        "contact_force_N": {
+          "maximum_absolute_difference": 3.982925100842749e-14,
+          "relative_L2_difference": 1.0988910226181376e-13
+        },
+        "applied_force_N": {
+          "maximum_absolute_difference": 0.0,
+          "relative_L2_difference": 0.0
+        },
+        "body_component_permutation": {
+          "maximum_absolute_difference": 0.0,
+          "relative_L2_difference": 0.0
+        }
+      },
+      "all_corner_tensor_relative_change": 3.5477024927704972e-15,
+      "all_quadrature_tensor_relative_change": 1.5062677411156258e-13,
+      "raw_global_peak_relative_change": 1.3322676295501878e-15,
+      "source_sha256": "06f2d23df0e8f8db485390d8a7bdda8f8733cece9ab8561963845a16325ee5cb"
+    },
+    {
+      "step": 2,
+      "time_s": 0.0025,
+      "body_tetrahedra": 7680,
+      "complete_body_dynamic_residual_N": 2.610354479577402e-14,
+      "complete_mapped_dynamic_residual_N": 5.996614351731041e-14,
+      "force_pullback_max_difference_N": 1.3877787807814457e-17,
+      "normal_stencils": 3,
+      "maximum_coulomb_violation_N": -0.1172445470618048,
+      "active_body_contact_nodes": 5,
+      "active_lumped_contact_area_m2": 1.8336167021018037e-05,
+      "maximum_unsmoothed_body_normal_force_per_area_Pa": 114132.65287003508,
+      "all_saved_array_changes": {
+        "displacement": {
+          "maximum_absolute_difference": 6.776263578034403e-21,
+          "relative_L2_difference": 4.675415738910487e-19
+        },
+        "velocity": {
+          "maximum_absolute_difference": 4.234383877773252e-18,
+          "relative_L2_difference": 2.7026748553329546e-15
+        },
+        "acceleration": {
+          "maximum_absolute_difference": 6.503336009901911e-15,
+          "relative_L2_difference": 1.220580587330116e-14
+        },
+        "contact_force_N": {
+          "maximum_absolute_difference": 2.0011770018868447e-14,
+          "relative_L2_difference": 5.58926897609218e-14
+        },
+        "applied_force_N": {
+          "maximum_absolute_difference": 0.0,
+          "relative_L2_difference": 0.0
+        },
+        "body_component_permutation": {
+          "maximum_absolute_difference": 0.0,
+          "relative_L2_difference": 0.0
+        }
+      },
+      "all_corner_tensor_relative_change": 4.109438396284814e-15,
+      "all_quadrature_tensor_relative_change": 3.9969910794883515e-13,
+      "raw_global_peak_relative_change": 6.661338147750939e-16,
+      "source_sha256": "5cce9a8d49e3841f7b39bfb6f4293c65d58e82ab4afa6dffbaddbd59f8eeda98"
+    },
+    {
+      "step": 3,
+      "time_s": 0.00375,
+      "body_tetrahedra": 7680,
+      "complete_body_dynamic_residual_N": 2.9500965952499684e-14,
+      "complete_mapped_dynamic_residual_N": 6.784413792962538e-14,
+      "force_pullback_max_difference_N": 1.3877787807814457e-17,
+      "normal_stencils": 3,
+      "maximum_coulomb_violation_N": -0.11726033062690788,
+      "active_body_contact_nodes": 5,
+      "active_lumped_contact_area_m2": 1.8336167486917688e-05,
+      "maximum_unsmoothed_body_normal_force_per_area_Pa": 114090.95718896057,
+      "all_saved_array_changes": {
+        "displacement": {
+          "maximum_absolute_difference": 5.715249346070291e-21,
+          "relative_L2_difference": 2.1108223574593666e-18
+        },
+        "velocity": {
+          "maximum_absolute_difference": 4.3045155588279475e-18,
+          "relative_L2_difference": 3.039366835456708e-15
+        },
+        "acceleration": {
+          "maximum_absolute_difference": 3.2526065174565133e-15,
+          "relative_L2_difference": 3.836450775456944e-15
+        },
+        "contact_force_N": {
+          "maximum_absolute_difference": 1.9539925233402755e-14,
+          "relative_L2_difference": 5.36286365492284e-14
+        },
+        "applied_force_N": {
+          "maximum_absolute_difference": 0.0,
+          "relative_L2_difference": 0.0
+        },
+        "body_component_permutation": {
+          "maximum_absolute_difference": 0.0,
+          "relative_L2_difference": 0.0
+        }
+      },
+      "all_corner_tensor_relative_change": 4.751490439628313e-15,
+      "all_quadrature_tensor_relative_change": 7.058877551318321e-13,
+      "raw_global_peak_relative_change": 1.3322676295501878e-15,
+      "source_sha256": "f55b8223a2f4a89b1d1187d901a3aaf88e0065793b1cc9030ec89bb32c990295"
+    },
+    {
+      "step": 4,
+      "time_s": 0.005,
+      "body_tetrahedra": 7680,
+      "complete_body_dynamic_residual_N": 8.005877681574838e-14,
+      "complete_mapped_dynamic_residual_N": 1.7858990291212508e-13,
+      "force_pullback_max_difference_N": 1.3877787807814457e-17,
+      "normal_stencils": 3,
+      "maximum_coulomb_violation_N": -0.11656011329346391,
+      "active_body_contact_nodes": 5,
+      "active_lumped_contact_area_m2": 1.8336169261966678e-05,
+      "maximum_unsmoothed_body_normal_force_per_area_Pa": 113920.04104363841,
+      "all_saved_array_changes": {
+        "displacement": {
+          "maximum_absolute_difference": 6.776263578034403e-21,
+          "relative_L2_difference": 1.0977584415729195e-18
+        },
+        "velocity": {
+          "maximum_absolute_difference": 4.259966919758292e-18,
+          "relative_L2_difference": 1.0169680366054402e-15
+        },
+        "acceleration": {
+          "maximum_absolute_difference": 6.7736614928204375e-15,
+          "relative_L2_difference": 1.3252798561482533e-14
+        },
+        "contact_force_N": {
+          "maximum_absolute_difference": 1.9872992140790302e-14,
+          "relative_L2_difference": 6.50295105920247e-14
+        },
+        "applied_force_N": {
+          "maximum_absolute_difference": 0.0,
+          "relative_L2_difference": 0.0
+        },
+        "body_component_permutation": {
+          "maximum_absolute_difference": 0.0,
+          "relative_L2_difference": 0.0
+        }
+      },
+      "all_corner_tensor_relative_change": 5.704994399244548e-15,
+      "all_quadrature_tensor_relative_change": 1.117652539219709e-12,
+      "raw_global_peak_relative_change": 1.6653345369377348e-15,
+      "source_sha256": "78282b26fcf882e28183feabf517dfde6b859b9116a9343bcebd846d1a01a452"
+    },
+    {
+      "step": 5,
+      "time_s": 0.00625,
+      "body_tetrahedra": 7680,
+      "complete_body_dynamic_residual_N": 2.026291594424673e-13,
+      "complete_mapped_dynamic_residual_N": 4.0345743147978366e-13,
+      "force_pullback_max_difference_N": 1.3877787807814457e-17,
+      "normal_stencils": 3,
+      "maximum_coulomb_violation_N": -0.11551312638923453,
+      "active_body_contact_nodes": 5,
+      "active_lumped_contact_area_m2": 1.833616989945893e-05,
+      "maximum_unsmoothed_body_normal_force_per_area_Pa": 113853.66369324856,
+      "all_saved_array_changes": {
+        "displacement": {
+          "maximum_absolute_difference": 1.3552527156068805e-20,
+          "relative_L2_difference": 2.086944059292987e-18
+        },
+        "velocity": {
+          "maximum_absolute_difference": 5.421010862427522e-18,
+          "relative_L2_difference": 7.589158006757214e-16
+        },
+        "acceleration": {
+          "maximum_absolute_difference": 5.425903324730863e-15,
+          "relative_L2_difference": 7.759464481973288e-15
+        },
+        "contact_force_N": {
+          "maximum_absolute_difference": 1.2378986724570495e-14,
+          "relative_L2_difference": 3.382740096338777e-14
+        },
+        "applied_force_N": {
+          "maximum_absolute_difference": 0.0,
+          "relative_L2_difference": 0.0
+        },
+        "body_component_permutation": {
+          "maximum_absolute_difference": 0.0,
+          "relative_L2_difference": 0.0
+        }
+      },
+      "all_corner_tensor_relative_change": 5.54805951147109e-15,
+      "all_quadrature_tensor_relative_change": 1.464644876990088e-12,
+      "raw_global_peak_relative_change": 5.551115123125783e-16,
+      "source_sha256": "32184be232f443b8818fd0e48f06c4b4cf6dd743a37d306cdbc2346ef4cfb545"
+    }
+  ],
+  "all_original_arrays_and_complete_fields_qualified": true,
+  "declared_existing_budgets": {
+    "state_relative": 1e-05,
+    "state_absolute": 1e-12,
+    "all_corner_and_quadrature_tensor_relative": 1e-06,
+    "physical_body_and_mapped_force_N": 1e-09,
+    "Newton_internal_target_N": 1e-10
+  },
+  "goal_completion": false,
+  "limitations": "A changed sparse ordering is qualified only on this complete saved prefix, with a byte-identical original initializer and unchanged physical equations/tolerances. Numerical equivalence and reference solve acceleration do not establish contact/geometry convergence, full application/history, model/feedback accuracy or warmed production cost."
+}
