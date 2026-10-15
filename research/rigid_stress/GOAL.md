@@ -31,6 +31,21 @@ egg/Franka and U contact references, resolved-load/native replay versus feedback
 remaining applicable load-model sensitivity and physically verified warmed costs.
 These are execution priorities within the complete linked objective.
 
+The [paired-solver/fourth-barrier checkpoint](docs/PHYSICAL_PAIRED_SOLVER_BARRIER_20261015.md)
+qualifies two numerical factorization changes against every original1920-tet
+state, complete force gate and full corner/quadrature tensor. Border-last full
+LU still fails the unchanged fine matrix; exact eight-coordinate Schur
+elimination solves it at3.992453e-13N original linear residual against the
+unchanged1.103439e-12N budget. Both real capture-metadata failures and their
+independent array audits remain retained. Fine nonlinear continuation and its
+independent state/coverage/all158340-probe comparisons are live, not accepted
+evidence. All744 stages at the fourth0.3125um U barrier independently pass;
+the last final tensor change is0.0687428%, while initialization retains a
+1.6896MPa raw maximum. These close numerical diagnostics and a regularization
+control, without closing spatial/contact-pressure or any original physical,
+model/island, full-application, replay/feedback or warmed-cost requirements.
+Older checkpoint paragraphs retain their own then-current execution states.
+
 The [all-stage barrier/thickness checkpoint](docs/PHYSICAL_BARRIER_HISTORY_THICKNESS_20261015.md)
 independently closes744 stages at each2.5/1.25/0.625um U barrier distance, with
 all original1e-9N gates and full corner/quadrature fields. Full-path comparison

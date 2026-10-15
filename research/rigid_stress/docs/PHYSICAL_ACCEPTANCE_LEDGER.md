@@ -5,7 +5,18 @@ without narrowing its scope. Historical native performance completion does not
 establish the new physical stage. Dated reports preserve their observations;
 running or pending jobs count as scheduled work only.
 
-Latest verified checkpoint: [complete barrier histories and five-level thickness](PHYSICAL_BARRIER_HISTORY_THICKNESS_20261015.md)
+Latest verified checkpoint: [paired Newton solvers and the fourth barrier distance](PHYSICAL_PAIRED_SOLVER_BARRIER_20261015.md)
+retains all14 closed solver attempts with real failures, exact matrix/state
+arrays, both full original1920-tet five-state force/corner/quadrature
+qualifications and a fine linear solve within the unchanged original budget.
+Exact Schur elimination permits the171228-tet nonlinear continuation to run;
+that producer and its dependent independent state/coverage/common-field
+results remain pending acceptance. All744 stages of the fourth0.3125um U
+barrier independently pass original1e-9N gates. Final adjacent tensor change
+0.0687428% retains larger initialization differences and raw maxima. Every
+original physical/model/island/feedback/application/verified-cost gate remains.
+
+Previous checkpoint: [complete barrier histories and five-level thickness](PHYSICAL_BARRIER_HISTORY_THICKNESS_20261015.md)
 closes all744 stages at each of three barrier distances with current friction,
 full fields and original force budgets. Final tensor changes0.070%/0.114% retain
 larger initialization differences and1.69–1.72MPa full-stage raw extrema; a
