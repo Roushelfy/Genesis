@@ -1,0 +1,28 @@
+--- a/research/rigid_stress/run_paired_egg_contact.py
++++ b/research/rigid_stress/run_paired_egg_contact.py
+@@ -29,6 +29,7 @@
+     parser.add_argument("--dt", type=float, default=0.00125)
+     parser.add_argument("--steps", type=int, default=5)
+     parser.add_argument("--control-steps", type=int, default=64)
++    parser.add_argument("--contact-refinement", type=int, choices=[0, 1, 2, 3], default=0)
+     parser.add_argument("--output", type=Path, required=True)
+     args = parser.parse_args()
+     assert args.dt > 0 and args.steps > 0 and args.control_steps > 0
+@@ -69,7 +70,7 @@
+     )
+     static.world_coordinate_origin_m = seed.world_coordinate_origin_m.copy()
+     static.fixed_initializer_points_m, static.fixed_initializer_components = fixed, components
+-    static = refine_contact(static, 0)
++    static = refine_contact(static, args.contact_refinement)
+     assert not ipctk.has_intersections(static.mesh, static.contact_surface_rest)
+     args.output.mkdir(parents=True, exist_ok=False)
+     config = {
+@@ -77,7 +78,7 @@
+         "local_levels": 0,
+         "local_radius": 5e-5,
+         "body_refinement": 0,
+-        "contact_refinement": 0,
++        "contact_refinement": args.contact_refinement,
+         "cold_closure": True,
+         "freeze_contact": False,
+     }

@@ -1,0 +1,48 @@
+{
+  "scope": "Qualify rigid finger trace geometry, affine motion and force/moment pullback on an actual saved body mesh.",
+  "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad-level2-quadrature2-v1",
+  "rows": [
+    {
+      "finger_refinement": 0,
+      "contact_vertices": 20662,
+      "contact_triangles": 41268,
+      "body_trace_rows_identical": true,
+      "undeformed_group_areas_preserved_by_constructor": true,
+      "maximum_affine_motion_error_m": 5.551115123125783e-17,
+      "maximum_force_pullback_error_N": 1.6792123247455493e-15,
+      "maximum_moment_pullback_error_Nm": 1.457167719820518e-16,
+      "maximum_virtual_work_error_J": 1.5881867761018131e-22
+    },
+    {
+      "finger_refinement": 1,
+      "contact_vertices": 21124,
+      "contact_triangles": 42192,
+      "body_trace_rows_identical": true,
+      "undeformed_group_areas_preserved_by_constructor": true,
+      "maximum_affine_motion_error_m": 5.551115123125783e-17,
+      "maximum_force_pullback_error_N": 2.022687572988957e-15,
+      "maximum_moment_pullback_error_Nm": 2.3592239273284576e-16,
+      "maximum_virtual_work_error_J": 1.7867101231145398e-22
+    },
+    {
+      "finger_refinement": 2,
+      "contact_vertices": 22972,
+      "contact_triangles": 45888,
+      "body_trace_rows_identical": true,
+      "undeformed_group_areas_preserved_by_constructor": true,
+      "maximum_affine_motion_error_m": 1.1102230246251565e-16,
+      "maximum_force_pullback_error_N": 1.3877787807814457e-15,
+      "maximum_moment_pullback_error_Nm": 2.636779683484747e-16,
+      "maximum_virtual_work_error_J": 5.293955920339377e-23
+    }
+  ],
+  "input_sha256": {
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad-level2-quadrature2-v1/results/configuration.json": "f83311fdcbc69e2d6011743e21c00a8613bf7a722f85ba40105264cfcf85ea21",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad-level2-quadrature2-v1/results/reference_geometry.npz": "61326e918c0a6cb6eb37d48c681e8709711f9fb03fe21e8bb12c1376cbbae64d",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad-level2-quadrature2-v1/results/contact_geometry.npz": "62751dd2cd48ee539626750599813b423bae254f9060f70d7832bf814fd60929",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad-level2-quadrature2-v1/results/contact_node_map.npz": "2c50fc7cb840e16219e2e5e144f9028a3486e02f855976140d0f3ab532833305"
+  },
+  "qualified": true,
+  "goal_completion": false,
+  "limitations": "This construction qualification preserves actual body rows, rigid finger surfaces, affine motion and wrench/virtual-work pullback. It does not solve new contact equilibria or establish stress/contact convergence. A zero-level complete-state/field regression and independent equilibrium audits remain required before accepting new resolved references."
+}

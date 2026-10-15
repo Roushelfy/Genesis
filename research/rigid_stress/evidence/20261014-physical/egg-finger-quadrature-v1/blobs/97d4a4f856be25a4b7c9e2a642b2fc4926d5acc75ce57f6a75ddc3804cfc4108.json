@@ -1,0 +1,346 @@
+{
+  "scope": "Separate contact-integration changes on byte-identical egg bulk geometry and mass.",
+  "rows": [
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-finger-quadrature0-v1",
+      "tetrahedra": 1920,
+      "step": 5,
+      "time_s": 0.00625,
+      "mass_kg": 0.007231131042204171,
+      "contact_refinement": 2,
+      "finger_refinement": 0,
+      "refinement_axis": "finger",
+      "axis_level": 0,
+      "contact_surface_vertices": 20662,
+      "contact_surface_triangles": 41268,
+      "undeformed_group_surface_areas_m2": [
+        0.014691550541690579,
+        0.006161498214305629,
+        0.006161498214305629
+      ],
+      "minimum_P2_trace_interpolation_weight": -0.125,
+      "per_finger_reaction_wrenches": [
+        {
+          "finger_source_group": 1,
+          "opposite_finger_normal_resultant_N": [
+            -0.00025875040101417247,
+            0.40875522065164854,
+            0.0653886663235856
+          ],
+          "opposite_finger_shear_resultant_N": [
+            0.014239753373095658,
+            -0.005541782499451586,
+            0.03469893481286691
+          ],
+          "opposite_finger_total_moment_about_fixed_body_com_Nm": [
+            7.153797689133883e-05,
+            7.104525391561985e-05,
+            -0.0002962062575845866
+          ]
+        },
+        {
+          "finger_source_group": 2,
+          "opposite_finger_normal_resultant_N": [
+            -0.00010574309870141677,
+            -0.4031327860581111,
+            -0.0006164749392151266
+          ],
+          "opposite_finger_shear_resultant_N": [
+            -0.013619521032201274,
+            4.7345465794115804e-05,
+            -0.02862458480225301
+          ],
+          "opposite_finger_total_moment_about_fixed_body_com_Nm": [
+            -6.985522239963915e-05,
+            -1.9554440312169324e-05,
+            0.00030234511489292024
+          ]
+        }
+      ],
+      "total_contact_surface_internal_force_error_N": 3.469446951953614e-18,
+      "total_contact_surface_internal_moment_error_Nm": 1.435329948250019e-07,
+      "normal_surface_internal_moment_error_Nm": 2.0311292089008886e-19,
+      "unsigned_body_normal_sample_force_N": 0.817085653868232,
+      "unsigned_body_shear_sample_force_N": 0.06961388483708664,
+      "lumped_body_normal_force_density_L2_N_per_m": 537.1912737926974,
+      "lumped_body_shear_force_density_L2_N_per_m": 44.42946543791283,
+      "body_tetrahedra": 1920,
+      "complete_body_dynamic_residual_N": 6.761842757247907e-12,
+      "complete_mapped_dynamic_residual_N": 1.3861714779548744e-11,
+      "force_pullback_max_difference_N": 5.551115123125783e-17,
+      "normal_stencils": 2,
+      "maximum_coulomb_violation_N": -0.21018042886599286,
+      "active_body_contact_nodes": 4,
+      "active_lumped_contact_area_m2": 3.5996002086695937e-06,
+      "maximum_unsmoothed_body_normal_force_per_area_Pa": 502516.7870031139,
+      "original_saved_contact_force_difference_N": 5.766488188904126e-17,
+      "raw_peak_lower_Pa": 356762.3402131696,
+      "raw_peak_upper_Pa": 356762.34021332976,
+      "whole_volume_J_lower_bound": 0.9999724365463377,
+      "raw_peak_reference_position_m": [
+        1.7697452569155986e-06,
+        0.022028914832074527,
+        0.001184687058517001
+      ],
+      "nonlinear_energy_J": 3.149343475845517e-07,
+      "point_evaluator_qualification": {
+        "polynomial_displacement_max_error_m": 5.421010862427522e-20,
+        "polynomial_tensor_max_error_Pa": 3.207474946975708e-06,
+        "finite_rotation_tensor_max_error_Pa": 0.00022515654563903809
+      }
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-finger-quadrature1-v1",
+      "tetrahedra": 1920,
+      "step": 5,
+      "time_s": 0.00625,
+      "mass_kg": 0.007231131042204171,
+      "contact_refinement": 2,
+      "finger_refinement": 1,
+      "refinement_axis": "finger",
+      "axis_level": 1,
+      "contact_surface_vertices": 21124,
+      "contact_surface_triangles": 42192,
+      "undeformed_group_surface_areas_m2": [
+        0.014691550541690579,
+        0.00616149821430563,
+        0.006161498214305629
+      ],
+      "minimum_P2_trace_interpolation_weight": -0.125,
+      "per_finger_reaction_wrenches": [
+        {
+          "finger_source_group": 1,
+          "opposite_finger_normal_resultant_N": [
+            -0.00025874028245300893,
+            0.4087365885739779,
+            0.0653857674532246
+          ],
+          "opposite_finger_shear_resultant_N": [
+            0.014239099366547813,
+            -0.005541797774246848,
+            0.03469898471448822
+          ],
+          "opposite_finger_total_moment_about_fixed_body_com_Nm": [
+            7.150822788699493e-05,
+            7.104461884556096e-05,
+            -0.00029619427829060785
+          ]
+        },
+        {
+          "finger_source_group": 2,
+          "opposite_finger_normal_resultant_N": [
+            -0.00010573828310701442,
+            -0.40311442718635687,
+            -0.0006164468646334001
+          ],
+          "opposite_finger_shear_resultant_N": [
+            -0.013618893059949476,
+            4.7341033815775924e-05,
+            -0.028621794304329557
+          ],
+          "opposite_finger_total_moment_about_fixed_body_com_Nm": [
+            -6.981967035705135e-05,
+            -1.9553520264165788e-05,
+            0.0003023311019963024
+          ]
+        }
+      ],
+      "total_contact_surface_internal_force_error_N": 5.56803001126317e-17,
+      "total_contact_surface_internal_moment_error_Nm": 1.385748771858499e-07,
+      "normal_surface_internal_moment_error_Nm": 6.325581183525844e-19,
+      "unsigned_body_normal_sample_force_N": 0.8170484389048668,
+      "unsigned_body_shear_sample_force_N": 0.06961089749848037,
+      "lumped_body_normal_force_density_L2_N_per_m": 537.1653943579306,
+      "lumped_body_shear_force_density_L2_N_per_m": 44.42675638933494,
+      "body_tetrahedra": 1920,
+      "complete_body_dynamic_residual_N": 6.8026086134938186e-12,
+      "complete_mapped_dynamic_residual_N": 1.3943065570389086e-11,
+      "force_pullback_max_difference_N": 2.7755575615628914e-17,
+      "normal_stencils": 2,
+      "maximum_coulomb_violation_N": -0.21017220314596421,
+      "active_body_contact_nodes": 4,
+      "active_lumped_contact_area_m2": 3.5996002140046082e-06,
+      "maximum_unsmoothed_body_normal_force_per_area_Pa": 502493.90140752704,
+      "original_saved_contact_force_difference_N": 3.1032671261865875e-17,
+      "raw_peak_lower_Pa": 356746.1968523267,
+      "raw_peak_upper_Pa": 356746.1968524869,
+      "whole_volume_J_lower_bound": 0.9999724378240591,
+      "raw_peak_reference_position_m": [
+        1.7697452569155986e-06,
+        0.022028914832074527,
+        0.001184687058517001
+      ],
+      "nonlinear_energy_J": 3.149053667596467e-07,
+      "point_evaluator_qualification": {
+        "polynomial_displacement_max_error_m": 5.421010862427522e-20,
+        "polynomial_tensor_max_error_Pa": 3.207474946975708e-06,
+        "finite_rotation_tensor_max_error_Pa": 0.00022515654563903809
+      }
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-finger-quadrature2-v1",
+      "tetrahedra": 1920,
+      "step": 5,
+      "time_s": 0.00625,
+      "mass_kg": 0.007231131042204171,
+      "contact_refinement": 2,
+      "finger_refinement": 2,
+      "refinement_axis": "finger",
+      "axis_level": 2,
+      "contact_surface_vertices": 22972,
+      "contact_surface_triangles": 45888,
+      "undeformed_group_surface_areas_m2": [
+        0.014691550541690579,
+        0.00616149821430563,
+        0.006161498214305628
+      ],
+      "minimum_P2_trace_interpolation_weight": -0.125,
+      "per_finger_reaction_wrenches": [
+        {
+          "finger_source_group": 1,
+          "opposite_finger_normal_resultant_N": [
+            -0.00025871712502055613,
+            0.4086934335634709,
+            0.06537903303677052
+          ],
+          "opposite_finger_shear_resultant_N": [
+            0.014237585193075065,
+            -0.005541826798309335,
+            0.03469907131002695
+          ],
+          "opposite_finger_total_moment_about_fixed_body_com_Nm": [
+            7.143778519393065e-05,
+            7.104307254132588e-05,
+            -0.00029616616354122537
+          ]
+        },
+        {
+          "finger_source_group": 2,
+          "opposite_finger_normal_resultant_N": [
+            -0.0001057271538690464,
+            -0.40307199831143414,
+            -0.0006163819819471154
+          ],
+          "opposite_finger_shear_resultant_N": [
+            -0.013617438537247529,
+            4.733072506966224e-05,
+            -0.028615302576019398
+          ],
+          "opposite_finger_total_moment_about_fixed_body_com_Nm": [
+            -6.973638019535149e-05,
+            -1.955139585381871e-05,
+            0.0003022986478056378
+          ]
+        }
+      ],
+      "total_contact_surface_internal_force_error_N": 4.8847970559590837e-17,
+      "total_contact_surface_internal_moment_error_Nm": 1.280787462994396e-07,
+      "normal_surface_internal_moment_error_Nm": 6.946198190976491e-19,
+      "unsigned_body_normal_sample_force_N": 0.8169623329834579,
+      "unsigned_body_shear_sample_force_N": 0.06960392546461229,
+      "lumped_body_normal_force_density_L2_N_per_m": 537.1057486799642,
+      "lumped_body_shear_force_density_L2_N_per_m": 44.42046871366142,
+      "body_tetrahedra": 1920,
+      "complete_body_dynamic_residual_N": 6.925930785669632e-12,
+      "complete_mapped_dynamic_residual_N": 1.4195344057870781e-11,
+      "force_pullback_max_difference_N": 5.551115123125783e-17,
+      "normal_stencils": 2,
+      "maximum_coulomb_violation_N": -0.2101532326805805,
+      "active_body_contact_nodes": 4,
+      "active_lumped_contact_area_m2": 3.5996002263564916e-06,
+      "maximum_unsmoothed_body_normal_force_per_area_Pa": 502441.010898566,
+      "original_saved_contact_force_difference_N": 5.563341450410963e-17,
+      "raw_peak_lower_Pa": 356708.8878283392,
+      "raw_peak_upper_Pa": 356708.88782849937,
+      "whole_volume_J_lower_bound": 0.9999724407784897,
+      "raw_peak_reference_position_m": [
+        1.7697452569155986e-06,
+        0.022028914832074527,
+        0.001184687058517001
+      ],
+      "nonlinear_energy_J": 3.148383323782363e-07,
+      "point_evaluator_qualification": {
+        "polynomial_displacement_max_error_m": 5.421010862427522e-20,
+        "polynomial_tensor_max_error_Pa": 3.207474946975708e-06,
+        "finite_rotation_tensor_max_error_Pa": 0.00022515654563903809
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "refinement_axis": "finger",
+      "coarse_axis_level": 0,
+      "fine_axis_level": 1,
+      "tensor": {
+        "absolute_l2_change": 0.0032749805339187294,
+        "relative_l2_change": 4.5970140993481507e-05
+      },
+      "vm": {
+        "absolute_l2_change": 0.0032487771240824297,
+        "relative_l2_change": 4.599130172514909e-05
+      },
+      "objective_displacement": {
+        "absolute_l2_change": 1.0431718726716782e-14,
+        "relative_l2_change": 4.594364876528445e-05
+      },
+      "raw_peak_lower_Pa": 4.5251669072765566e-05,
+      "nonlinear_energy_J": 9.203026675352888e-05
+    },
+    {
+      "refinement_axis": "finger",
+      "coarse_axis_level": 1,
+      "fine_axis_level": 2,
+      "tensor": {
+        "absolute_l2_change": 0.007576240350460997,
+        "relative_l2_change": 0.00010635722726227539
+      },
+      "vm": {
+        "absolute_l2_change": 0.007515446769936061,
+        "relative_l2_change": 0.00010640371237018426
+      },
+      "objective_displacement": {
+        "absolute_l2_change": 2.4130552311745033e-14,
+        "relative_l2_change": 0.00010628770260256565
+      },
+      "raw_peak_lower_Pa": 0.00010459235881299378,
+      "nonlinear_energy_J": 0.00021291683545676676
+    }
+  ],
+  "common_physical_probes": 9600,
+  "physical_configuration": {
+    "closure_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-ref-centred-v1",
+    "dt": 0.00125,
+    "control_steps": 64,
+    "geometry_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-paired-cad-polyhedron-geometry-v1",
+    "mode": "cad",
+    "level": 2,
+    "dhat_m": 2.5e-06,
+    "friction": 0.6,
+    "fixed_other_contact_axis": 2
+  },
+  "input_sha256": {
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-finger-quadrature0-v1-audit/results/summary.json": "53889d43f72c82a7e8d16b038025890ca58ccac7efdc247206c925de14202077",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-finger-quadrature0-v1/results/step0004.npz": "b58b7e7a7247c57eb815afe3850883fb19cc827cd7045aee5d9091f9e184b306",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-finger-quadrature0-v1/results/step0005.npz": "d62a9909d08d43a1e8a7a65007ce738e4fce34bd919a10014905a489790c01d1",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-finger-quadrature0-v1/results/configuration.json": "af1bd591831271857d12a12a0e1acea5ee526cb27a9c3748032ff30aabcc38b9",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-finger-quadrature0-v1/results/reference_geometry.npz": "61326e918c0a6cb6eb37d48c681e8709711f9fb03fe21e8bb12c1376cbbae64d",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-finger-quadrature0-v1/results/contact_geometry.npz": "62751dd2cd48ee539626750599813b423bae254f9060f70d7832bf814fd60929",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-finger-quadrature0-v1/results/contact_node_map.npz": "2c50fc7cb840e16219e2e5e144f9028a3486e02f855976140d0f3ab532833305",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-finger-quadrature1-v1-audit/results/summary.json": "c19ca6c7119e2510f845045e31f90a6127d5d174ac9b8abb6d000f5c5bd83963",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-finger-quadrature1-v1/results/step0004.npz": "66620de56ac7cd4a6528fbdc3f3fc41c51b6aeb4967c28527dcb4432db621eb3",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-finger-quadrature1-v1/results/step0005.npz": "f9ef448d243f2846407c09322c16455188f401f9b42b6744e3e332ea35d1eae4",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-finger-quadrature1-v1/results/configuration.json": "aacf79a2f2342115e2a27689bb742e46c0b86b56e9211ca0582ba9ea072cc1f4",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-finger-quadrature1-v1/results/reference_geometry.npz": "61326e918c0a6cb6eb37d48c681e8709711f9fb03fe21e8bb12c1376cbbae64d",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-finger-quadrature1-v1/results/contact_geometry.npz": "c562aa9c4f200c0096a66113cf8348b23b3c7a7ed3226b29f8d8ccd9759efa8d",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-finger-quadrature1-v1/results/contact_node_map.npz": "04d0258518cc62335a295c13a906bcd139f3050283dcaf69a6097830f00c5244",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-finger-quadrature2-v1-audit/results/summary.json": "26ba9cc41ccabef448e746dac93037a020d5c34864aa9aaa6b4f3f90afde16fd",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-finger-quadrature2-v1/results/step0004.npz": "adffc94d2617618196ce498fb2fe115d64dc983d804de47123a9da8f56144ffb",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-finger-quadrature2-v1/results/step0005.npz": "ee8fb1569dafc6332b263679239b14b7abd444dd9964ff6af11521867a5b34ec",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-finger-quadrature2-v1/results/configuration.json": "517c8bf0b75386045385a7f18f22399cd55c96b73ab5493cf5bc0512d070720b",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-finger-quadrature2-v1/results/reference_geometry.npz": "61326e918c0a6cb6eb37d48c681e8709711f9fb03fe21e8bb12c1376cbbae64d",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-finger-quadrature2-v1/results/contact_geometry.npz": "a827e859af8c3e750074c9dc3fe87eefcc458cf260fa8039093b0d3df5fa8a5f",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-finger-quadrature2-v1/results/contact_node_map.npz": "aae586b422cc3c3cb500a74b807194da6f55de66af8c806c5000f0feb02e7324"
+  },
+  "goal_completion": false,
+  "limitations": "The selected body or finger collision trace axis changes, with exact P2 body interpolation and exact linear rigid finger interpolation onto unchanged bulk unknowns. Reference geometry/initializer anchors are byte-identical, and original physical material/mass, finger meshes/axes/masses, controls, dt, friction and barrier range remain fixed. Each case independently resolves its original held initializer. Undeformed actual surface areas are checked by group; deformed surface and active lumped support can change. Opposite finger reactions identify source wrenches, not continuum contact islands. Force-density norms use discrete nodal forces divided by positive lumped sample areas, not a continuous pressure reconstruction. Normal-contact rotation invariance is checked separately; total frictional surface moment is measured without imposing an additional zero-moment acceptance gate on the existing finite-gap, lagged-tangent friction law. One final common-time comparison isolates this contact-integration axis conditionally on the fixed bulk/geometry and regularization; it does not establish bulk/geometry convergence, full histories/application, model/feedback accuracy or verified warmed cost."
+}
