@@ -1,0 +1,53 @@
+{
+  "kind": "fields",
+  "label": "covered-cad-three-level-v1",
+  "closed_jobs": {
+    "egg-covered-cad-level3-schur-contact-v1": {
+      "job": "719100_0",
+      "returncode": 0
+    },
+    "egg-covered-cad-level3-schur-audit-v1": {
+      "job": "719101_0",
+      "returncode": 0
+    },
+    "egg-covered-cad-level3-schur-coverage-v1": {
+      "job": "719102_0",
+      "returncode": 0
+    },
+    "egg-covered-cad-three-level-fields-v1": {
+      "job": "719103_0",
+      "returncode": 0
+    },
+    "egg-covered-cad-three-level-linearization-v1": {
+      "job": "719220_0",
+      "returncode": 0
+    }
+  },
+  "parent_manifests": [
+    {
+      "label": "covered-contact-fields-v1",
+      "sha256": "823d97f4858532f728257f36b74ccef409d4444cb57d99a1af6c880c86029faa"
+    },
+    {
+      "label": "paired-dynamic-solvers-v1",
+      "sha256": "199de963e2cecfcdbe03cb2e8467dc4ccdad54f99dd5e06d13e13525e9315391"
+    }
+  ],
+  "physical_configurations": [
+    "egg-covered-cad-level3-schur-contact-v1/results/configuration.json"
+  ],
+  "extra_files": [
+    "meta/fine-schur-paired-continuation-commands-v1.json",
+    "meta/covered-cad-three-level-linearization-commands-v1.json",
+    "egg-adaptive-cad-polyhedron-geometry-v5/results/cad-level1.npz",
+    "egg-adaptive-cad-polyhedron-geometry-v5/results/cad-level2.npz",
+    "egg-adaptive-cad-polyhedron-geometry-v5/results/cad-level3.npz",
+    "egg-adaptive-cad-polyhedron-geometry-v5/results/summary.json"
+  ],
+  "pending_work": [
+    "Native finest replay719430 and fixed31668-tet contact-distance producers/audits719417/418/420/421; neither accepted as completed here.",
+    "Complete original A/B/C physical/model/island/application/feedback and accuracy/cost acceptance."
+  ],
+  "limitations": "Three independently audited covered CAD meshes retain31668/64716/171228 tetrahedra and every158340 original common probe at6.25ms. Adjacent tensor changes9.6801%/10.7209% and raw-peak changes13.8907%/15.2844% do not form an accepted physical tail. Seed-volume probe weights remain diagnostic, not exact cross-mesh integration. Same-time resolved-load full-volume linearization changes0.143684%/0.145668%/0.146786% are conditional model diagnostics. All original fine dynamic states, force gates, contact coverage, raw extrema and byte-identical retained initializer are preserved. The producer does not independently retain/audit every initializer full field. Geometry, volume and contact trace remain coupled. Earlier factor failures remain in parents. Full physical convergence, pressure/local-island accuracy, application feedback, remaining finite-load models and warmed cost at demonstrated accuracy remain open.",
+  "goal_completion": false
+}

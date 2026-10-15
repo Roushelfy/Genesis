@@ -5,7 +5,17 @@ without narrowing its scope. Historical native performance completion does not
 establish the new physical stage. Dated reports preserve their observations;
 running or pending jobs count as scheduled work only.
 
-Latest verified checkpoint: [corner accuracy and covered CAD linearization](PHYSICAL_CORNER_ACCURACY_20261015.md)
+Latest verified checkpoint: [three covered CAD levels](PHYSICAL_COVERED_CAD_THREE_LEVEL_20261015.md)
+closes the fine five-state force/coverage audits, all158340 original common
+probes and three independent resolved-load linearizations. Tensor changes grow
+9.6801%→10.7209% and raw-peak changes grow13.8907%→15.2844%; no physical tail
+is accepted. Conditional volume linear/nonlinear differences are0.143684%/
+0.145668%/0.146786%. Bulk/geometry/contact remain coupled, and complete fields
+were not retained at every original held initializer control. Source/feature
+and fixed-mesh contact-distance diagnostics remain separate pending evidence.
+All original physical/model/island/application/feedback/cost requirements stay.
+
+Previous checkpoint: [corner accuracy and covered CAD linearization](PHYSICAL_CORNER_ACCURACY_20261015.md)
 uses complete96-digit independent polynomial fields to qualify improved
 production corner arithmetic and the offline component oracle at unchanged
 budgets. CPU/CUDA complete fields,26 regression tests and four fresh native

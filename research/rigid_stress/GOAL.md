@@ -31,6 +31,16 @@ egg/Franka and U contact references, resolved-load/native replay versus feedback
 remaining applicable load-model sensitivity and physically verified warmed costs.
 These are execution priorities within the complete linked objective.
 
+The [three-level covered CAD checkpoint](docs/PHYSICAL_COVERED_CAD_THREE_LEVEL_20261015.md)
+now closes every original fine dynamic force/coverage state, all158340 original
+common probes and independent three-level resolved-load linearization. Tensor
+changes grow9.6801%→10.7209%, while raw-peak changes grow13.8907%→15.2844%.
+The conditional linear/nonlinear volume tensor changes0.143684%/0.145668%/
+0.146786% do not close that discrepancy. Bulk/geometry/contact remain coupled;
+full initializer fields were not saved at every held control. Complete source,
+contact-feature and fixed-mesh distance controls remain the next physical
+diagnostics, with every original A/B/C/application/feedback/cost gate retained.
+
 The [corner-accuracy/model checkpoint](docs/PHYSICAL_CORNER_ACCURACY_20261015.md)
 repairs native corner cancellation and the independent component oracle's
 precision at unchanged original tolerances. Complete96-digit polynomial checks

@@ -1,0 +1,2676 @@
+{
+  "scope": "Archive closed three-level CAD fields or complete source/localization diagnostics without accepting physical convergence.",
+  "kind": "fields",
+  "closed_runs": [
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "job": "719100_0",
+      "scheduler_state": "COMPLETED",
+      "actual_wrapper_code": 0
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "job": "719101_0",
+      "scheduler_state": "COMPLETED",
+      "actual_wrapper_code": 0
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-coverage-v1",
+      "job": "719102_0",
+      "scheduler_state": "COMPLETED",
+      "actual_wrapper_code": 0
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "job": "719103_0",
+      "scheduler_state": "COMPLETED",
+      "actual_wrapper_code": 0
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "job": "719220_0",
+      "scheduler_state": "COMPLETED",
+      "actual_wrapper_code": 0
+    }
+  ],
+  "parents": [
+    {
+      "label": "covered-contact-fields-v1",
+      "sha256": "823d97f4858532f728257f36b74ccef409d4444cb57d99a1af6c880c86029faa",
+      "manifest": "research/rigid_stress/evidence/20261014-physical/covered-contact-fields-v1/manifest.json",
+      "complete_archive_reverification": {
+        "manifest": "research/rigid_stress/evidence/20261014-physical/covered-contact-fields-v1/manifest.json",
+        "manifest_sha256": "823d97f4858532f728257f36b74ccef409d4444cb57d99a1af6c880c86029faa",
+        "verified_entries": 1129,
+        "verified_originals": 1129,
+        "verified_original_prefixes": 0,
+        "appended_allocation_logs": [],
+        "reconstructed_complete_files": 1,
+        "restored_missing_artifacts": [],
+        "passed": true
+      }
+    },
+    {
+      "label": "paired-dynamic-solvers-v1",
+      "sha256": "199de963e2cecfcdbe03cb2e8467dc4ccdad54f99dd5e06d13e13525e9315391",
+      "manifest": "research/rigid_stress/evidence/20261014-physical/paired-dynamic-solvers-v1/manifest.json",
+      "complete_archive_reverification": {
+        "manifest": "research/rigid_stress/evidence/20261014-physical/paired-dynamic-solvers-v1/manifest.json",
+        "manifest_sha256": "199de963e2cecfcdbe03cb2e8467dc4ccdad54f99dd5e06d13e13525e9315391",
+        "verified_entries": 995,
+        "verified_originals": 995,
+        "verified_original_prefixes": 0,
+        "appended_allocation_logs": [],
+        "reconstructed_complete_files": 1,
+        "restored_missing_artifacts": [],
+        "passed": true
+      }
+    }
+  ],
+  "source_identity_records": [
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/metis_reference_factor.py",
+      "sha256": "06c8fb086252ed5f6c8d3b064e099f419b266eddd4864c0f56758ffe7e9ac007"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/run_paired_egg_contact.py",
+      "sha256": "61f44bc4f2b3e4812c76b1b2a6034bb4fee210b62a0069b61dcfb0dbe25a495c"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/precise_stencil_spatial.py",
+      "sha256": "8d082c089ae112467204422e43e8972d62146a57fd1f680a1707f2390f9ca1d0"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/audit_original_history_fields.py",
+      "sha256": "2215401621793bb13a3ffdc21a47a97009397dfef27a1e842e23e19b1bb0d6d8"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/audit_articulated_contact.py",
+      "sha256": "19ec4b66084e27fc31bc6abe3e623f4e701c25c1affc704f66a20351e210503a"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/audit_objective_frame.py",
+      "sha256": "0d5977fe3bd2f7b14c0ceb906b9091b662f33f30ad6d27b7346eacfc7266f274"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/qualify_articulated_precision.py",
+      "sha256": "e12d9255a10c5ba3463b3885218fcfd362b414d0266480e5f04d7b125d6c8893"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/reference_motion_audit.py",
+      "sha256": "3c390890ee670a472da2135e19a1b90e8ca057ae039e70c13b52b93d68bd31a2"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/audit_precise_spatial_state.py",
+      "sha256": "073a31b57ab7ea5c48cfae2c5a06f94fe9b4d8eb6225b83b98278fb19085ba78"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/resume_paired_egg_contact.py",
+      "sha256": "bba8ce3fa84d7c781e9d84f1c20a6d1317943831a51894c4c032a9613ea87870"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/wide_spatial_franka.py",
+      "sha256": "9772f1d56e4348b1b55a72bbbca16e6f191bc2157a8b4621111d5d32526f56f0"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/wide_coordinate_franka.py",
+      "sha256": "265e3dab11838061c2f6782ee03f9cb7014a81580d4844209df9afe56acffab6"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/precise_panda_kinematics.py",
+      "sha256": "b2c7ace034e1d644055c472bc6334787050f4a82ff3e4f9cef093f9127207355"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/articulated_franka_contact.py",
+      "sha256": "e2bf97f33702aeaf661fa1c70f03dc8aa9020e49bdf4daffcff41408af039511"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/franka_mujoco_reference.py",
+      "sha256": "954105661e1268bc01ed9d80919f5a8b385edde0638023d9ac8810e7e42d48ac"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/localized_franka_mesh.py",
+      "sha256": "5ba6c25325e72abb55941932e9952b2376e9d9969ac83674d85679aeda01695a"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/qualify_local_franka_mesh.py",
+      "sha256": "3bed566a81bcc49095e74cf506fb4bbf2f043d345bbfe72d82bfe75e23b33a6d"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/cached_reference_newton.py",
+      "sha256": "dc7d5668cc2e3640a367d1a5d89aaeedcf9409c3637b47dc42b9eec6b1c77297"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/refined_franka_contact.py",
+      "sha256": "c30bd704235c00540a9608f0499e000a9ebb86889e4d88889dec6cc27b64ec89"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/frozen_franka_contact.py",
+      "sha256": "30513ce7c6b04a4a4c93e5b0217774a7349e396dae8f58b17085b8942f88364a"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/dynamic_franka_reference.py",
+      "sha256": "8a752f4d3698cb2217b993efd93dee076f51d2ab87664c4586546f6b8af13898"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/refine_franka_reference.py",
+      "sha256": "3cd69ca01c8b938254ef421a53a7a3c0b7293acefa6b4739ca1e9d5911933ac8"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/franka_contact_reference.py",
+      "sha256": "8fdff22b417fed68dbdb553123547580ab346a38ef552ea8f495f3d073b829fc"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/franka_rigid_mode_coordinates.py",
+      "sha256": "e32c9a4ffd46b7be229260004763e5b01b70fe804ea55541f07c0836cc8bf984"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/audit_franka_reference.py",
+      "sha256": "d73291d1ea1ad5d8e836c08e325cca71605b9a3c16a32c0c21f0f3f02083b5d8"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/contact_reference.py",
+      "sha256": "8e4ad8fb0619c7471e8b7100b3bcd7ab61f6363e55d205f25e6cfb03c59afa8c"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/neohookean_reference.py",
+      "sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/stable_neohookean_reference.py",
+      "sha256": "1243ca7a4289e9cdab02cf7d21ef2cbbbe5656df04793a257e1ecc47ca68c083"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/skfem_reference.py",
+      "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/summarize_fine_references.py",
+      "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/sparse_franka_inertia.py",
+      "sha256": "1404765c9b31b3608143ed67c6d952a790a85d7f84662372760c1acc1f56596e"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/metis_reference_ordering.patch",
+      "sha256": "b94abddfc759e878c0980a16501c0496d7fa8d8d778f05d0c1d0d20867a517d4"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/symmetric_reference_ordering.patch",
+      "sha256": "e77568fd200cbb5484b049128196f6e3e74a014b716d8f06e0ab963a963543af"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/generic_stencil_types.patch",
+      "sha256": "3f4a9643557d6be8fb547c7bb1dfdd503771d616122d4cc05ab43e6c208d1c45"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/localized_franka_driver.patch",
+      "sha256": "d57497175c3e219dcd0f211ca366fc1025f851ffc6576ffc2ea73102ce6d40a3"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/mapped_contact_vertices.patch",
+      "sha256": "31d2c21581b268b08680c7b4ec4bfd3b70b78523f210d4442f8234b60a398603"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/cached_reference_newton.patch",
+      "sha256": "7075b40e7a7d94e40788c8a7d3be305b5379354da0f221b3ce9ff2332ffc9c0c"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/sparse_franka_driver.patch",
+      "sha256": "b55dcb8ac5727bf8d2ebceefa474b4e20714af31b36cf9a5af95324d1465db99"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/scripts/run_metis_paired_reference.sh",
+      "sha256": "820238c99e2802c0f471370fc32088f980b71c5bddb8dca5e92848cb5a2b0a93"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/schur_metis_reference_factor.py",
+      "sha256": "2ec38ec360669ad40d8b37a3c4aef80bb70973bde55c8af52ee92b297b365eff"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/schur_metis_reference_ordering.patch",
+      "sha256": "191de0dff81cfd894285e4c6138917938676dd0309ccb5991eefc2adaec36a2e"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/scripts/run_schur_metis_paired_reference.sh",
+      "sha256": "3ec2ef7ca3ec78fe721226aa760d048c26863a5d826fbf5bfcc4b1040eb2a93c"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/source/research/rigid_stress/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/metis_reference_factor.py",
+      "sha256": "06c8fb086252ed5f6c8d3b064e099f419b266eddd4864c0f56758ffe7e9ac007"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/run_paired_egg_contact.py",
+      "sha256": "61f44bc4f2b3e4812c76b1b2a6034bb4fee210b62a0069b61dcfb0dbe25a495c"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/precise_stencil_spatial.py",
+      "sha256": "c20360fb35ac4c97283a6e891a4a85b0ef53c62fafdf065439bbedfc85c76e42"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/audit_original_history_fields.py",
+      "sha256": "2215401621793bb13a3ffdc21a47a97009397dfef27a1e842e23e19b1bb0d6d8"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/audit_articulated_contact.py",
+      "sha256": "19ec4b66084e27fc31bc6abe3e623f4e701c25c1affc704f66a20351e210503a"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/audit_objective_frame.py",
+      "sha256": "0d5977fe3bd2f7b14c0ceb906b9091b662f33f30ad6d27b7346eacfc7266f274"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/qualify_articulated_precision.py",
+      "sha256": "e12d9255a10c5ba3463b3885218fcfd362b414d0266480e5f04d7b125d6c8893"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/reference_motion_audit.py",
+      "sha256": "3c390890ee670a472da2135e19a1b90e8ca057ae039e70c13b52b93d68bd31a2"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/audit_precise_spatial_state.py",
+      "sha256": "b9d41c89b9ed84a5a6b1751137d77d81e6d04b17fb938819a1004e96afb0c35f"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/resume_paired_egg_contact.py",
+      "sha256": "bba8ce3fa84d7c781e9d84f1c20a6d1317943831a51894c4c032a9613ea87870"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/wide_spatial_franka.py",
+      "sha256": "9772f1d56e4348b1b55a72bbbca16e6f191bc2157a8b4621111d5d32526f56f0"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/wide_coordinate_franka.py",
+      "sha256": "265e3dab11838061c2f6782ee03f9cb7014a81580d4844209df9afe56acffab6"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/precise_panda_kinematics.py",
+      "sha256": "b2c7ace034e1d644055c472bc6334787050f4a82ff3e4f9cef093f9127207355"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/articulated_franka_contact.py",
+      "sha256": "e2bf97f33702aeaf661fa1c70f03dc8aa9020e49bdf4daffcff41408af039511"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/franka_mujoco_reference.py",
+      "sha256": "954105661e1268bc01ed9d80919f5a8b385edde0638023d9ac8810e7e42d48ac"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/localized_franka_mesh.py",
+      "sha256": "5ba6c25325e72abb55941932e9952b2376e9d9969ac83674d85679aeda01695a"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/qualify_local_franka_mesh.py",
+      "sha256": "3bed566a81bcc49095e74cf506fb4bbf2f043d345bbfe72d82bfe75e23b33a6d"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/cached_reference_newton.py",
+      "sha256": "c04428e0f44ec8dfd560793d0461bc46b7814493aa2a2a356492b279b71e0288"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/refined_franka_contact.py",
+      "sha256": "c30bd704235c00540a9608f0499e000a9ebb86889e4d88889dec6cc27b64ec89"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/frozen_franka_contact.py",
+      "sha256": "30513ce7c6b04a4a4c93e5b0217774a7349e396dae8f58b17085b8942f88364a"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/dynamic_franka_reference.py",
+      "sha256": "8a752f4d3698cb2217b993efd93dee076f51d2ab87664c4586546f6b8af13898"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/refine_franka_reference.py",
+      "sha256": "3cd69ca01c8b938254ef421a53a7a3c0b7293acefa6b4739ca1e9d5911933ac8"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/franka_contact_reference.py",
+      "sha256": "8fdff22b417fed68dbdb553123547580ab346a38ef552ea8f495f3d073b829fc"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/franka_rigid_mode_coordinates.py",
+      "sha256": "e32c9a4ffd46b7be229260004763e5b01b70fe804ea55541f07c0836cc8bf984"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/audit_franka_reference.py",
+      "sha256": "d73291d1ea1ad5d8e836c08e325cca71605b9a3c16a32c0c21f0f3f02083b5d8"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/contact_reference.py",
+      "sha256": "077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/neohookean_reference.py",
+      "sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/stable_neohookean_reference.py",
+      "sha256": "1243ca7a4289e9cdab02cf7d21ef2cbbbe5656df04793a257e1ecc47ca68c083"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/skfem_reference.py",
+      "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/summarize_fine_references.py",
+      "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/sparse_franka_inertia.py",
+      "sha256": "1404765c9b31b3608143ed67c6d952a790a85d7f84662372760c1acc1f56596e"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/metis_reference_ordering.patch",
+      "sha256": "b94abddfc759e878c0980a16501c0496d7fa8d8d778f05d0c1d0d20867a517d4"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/symmetric_reference_ordering.patch",
+      "sha256": "e77568fd200cbb5484b049128196f6e3e74a014b716d8f06e0ab963a963543af"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/generic_stencil_types.patch",
+      "sha256": "3f4a9643557d6be8fb547c7bb1dfdd503771d616122d4cc05ab43e6c208d1c45"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/localized_franka_driver.patch",
+      "sha256": "d57497175c3e219dcd0f211ca366fc1025f851ffc6576ffc2ea73102ce6d40a3"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/mapped_contact_vertices.patch",
+      "sha256": "31d2c21581b268b08680c7b4ec4bfd3b70b78523f210d4442f8234b60a398603"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/cached_reference_newton.patch",
+      "sha256": "7075b40e7a7d94e40788c8a7d3be305b5379354da0f221b3ce9ff2332ffc9c0c"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/sparse_franka_driver.patch",
+      "sha256": "b55dcb8ac5727bf8d2ebceefa474b4e20714af31b36cf9a5af95324d1465db99"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/scripts/run_metis_paired_reference.sh",
+      "sha256": "820238c99e2802c0f471370fc32088f980b71c5bddb8dca5e92848cb5a2b0a93"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/schur_metis_reference_factor.py",
+      "sha256": "2ec38ec360669ad40d8b37a3c4aef80bb70973bde55c8af52ee92b297b365eff"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/schur_metis_reference_ordering.patch",
+      "sha256": "191de0dff81cfd894285e4c6138917938676dd0309ccb5991eefc2adaec36a2e"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-contact-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/input-source/research/rigid_stress/scripts/run_schur_metis_paired_reference.sh",
+      "sha256": "3ec2ef7ca3ec78fe721226aa760d048c26863a5d826fbf5bfcc4b1040eb2a93c"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/precise_stencil_spatial.py",
+      "sha256": "8d082c089ae112467204422e43e8972d62146a57fd1f680a1707f2390f9ca1d0"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/audit_original_history_fields.py",
+      "sha256": "2215401621793bb13a3ffdc21a47a97009397dfef27a1e842e23e19b1bb0d6d8"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/audit_articulated_contact.py",
+      "sha256": "19ec4b66084e27fc31bc6abe3e623f4e701c25c1affc704f66a20351e210503a"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/audit_objective_frame.py",
+      "sha256": "0d5977fe3bd2f7b14c0ceb906b9091b662f33f30ad6d27b7346eacfc7266f274"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/qualify_articulated_precision.py",
+      "sha256": "e12d9255a10c5ba3463b3885218fcfd362b414d0266480e5f04d7b125d6c8893"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/reference_motion_audit.py",
+      "sha256": "3c390890ee670a472da2135e19a1b90e8ca057ae039e70c13b52b93d68bd31a2"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/audit_precise_spatial_state.py",
+      "sha256": "073a31b57ab7ea5c48cfae2c5a06f94fe9b4d8eb6225b83b98278fb19085ba78"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/audit_precise_spatial_history.py",
+      "sha256": "20af68d000728b657d3243c7b630a2e39bd6aed0085a01fec293cd065c1385a0"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/wide_spatial_franka.py",
+      "sha256": "9772f1d56e4348b1b55a72bbbca16e6f191bc2157a8b4621111d5d32526f56f0"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/wide_coordinate_franka.py",
+      "sha256": "265e3dab11838061c2f6782ee03f9cb7014a81580d4844209df9afe56acffab6"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/precise_panda_kinematics.py",
+      "sha256": "b2c7ace034e1d644055c472bc6334787050f4a82ff3e4f9cef093f9127207355"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/articulated_franka_contact.py",
+      "sha256": "e2bf97f33702aeaf661fa1c70f03dc8aa9020e49bdf4daffcff41408af039511"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/franka_mujoco_reference.py",
+      "sha256": "954105661e1268bc01ed9d80919f5a8b385edde0638023d9ac8810e7e42d48ac"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/localized_franka_mesh.py",
+      "sha256": "5ba6c25325e72abb55941932e9952b2376e9d9969ac83674d85679aeda01695a"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/qualify_local_franka_mesh.py",
+      "sha256": "3bed566a81bcc49095e74cf506fb4bbf2f043d345bbfe72d82bfe75e23b33a6d"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/cached_reference_newton.py",
+      "sha256": "c04428e0f44ec8dfd560793d0461bc46b7814493aa2a2a356492b279b71e0288"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/refined_franka_contact.py",
+      "sha256": "c30bd704235c00540a9608f0499e000a9ebb86889e4d88889dec6cc27b64ec89"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/frozen_franka_contact.py",
+      "sha256": "30513ce7c6b04a4a4c93e5b0217774a7349e396dae8f58b17085b8942f88364a"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/dynamic_franka_reference.py",
+      "sha256": "8a752f4d3698cb2217b993efd93dee076f51d2ab87664c4586546f6b8af13898"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/refine_franka_reference.py",
+      "sha256": "3cd69ca01c8b938254ef421a53a7a3c0b7293acefa6b4739ca1e9d5911933ac8"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/franka_contact_reference.py",
+      "sha256": "8fdff22b417fed68dbdb553123547580ab346a38ef552ea8f495f3d073b829fc"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/franka_rigid_mode_coordinates.py",
+      "sha256": "e32c9a4ffd46b7be229260004763e5b01b70fe804ea55541f07c0836cc8bf984"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/audit_franka_reference.py",
+      "sha256": "d73291d1ea1ad5d8e836c08e325cca71605b9a3c16a32c0c21f0f3f02083b5d8"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/contact_reference.py",
+      "sha256": "8e4ad8fb0619c7471e8b7100b3bcd7ab61f6363e55d205f25e6cfb03c59afa8c"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/neohookean_reference.py",
+      "sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/stable_neohookean_reference.py",
+      "sha256": "1243ca7a4289e9cdab02cf7d21ef2cbbbe5656df04793a257e1ecc47ca68c083"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/skfem_reference.py",
+      "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/summarize_fine_references.py",
+      "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/sparse_franka_inertia.py",
+      "sha256": "1404765c9b31b3608143ed67c6d952a790a85d7f84662372760c1acc1f56596e"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/generic_stencil_types.patch",
+      "sha256": "3f4a9643557d6be8fb547c7bb1dfdd503771d616122d4cc05ab43e6c208d1c45"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/localized_franka_driver.patch",
+      "sha256": "d57497175c3e219dcd0f211ca366fc1025f851ffc6576ffc2ea73102ce6d40a3"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/mapped_contact_vertices.patch",
+      "sha256": "31d2c21581b268b08680c7b4ec4bfd3b70b78523f210d4442f8234b60a398603"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/cached_reference_newton.patch",
+      "sha256": "7075b40e7a7d94e40788c8a7d3be305b5379354da0f221b3ce9ff2332ffc9c0c"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/sparse_franka_driver.patch",
+      "sha256": "b55dcb8ac5727bf8d2ebceefa474b4e20714af31b36cf9a5af95324d1465db99"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/scripts/audit_generic_stencil_history.sh",
+      "sha256": "b7400451967cf82c3a0148a8e4bd102144ca749e4c38be6b7d735d1f740250e1"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/source/research/rigid_stress/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/precise_stencil_spatial.py",
+      "sha256": "c20360fb35ac4c97283a6e891a4a85b0ef53c62fafdf065439bbedfc85c76e42"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/audit_original_history_fields.py",
+      "sha256": "2215401621793bb13a3ffdc21a47a97009397dfef27a1e842e23e19b1bb0d6d8"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/audit_articulated_contact.py",
+      "sha256": "19ec4b66084e27fc31bc6abe3e623f4e701c25c1affc704f66a20351e210503a"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/audit_objective_frame.py",
+      "sha256": "0d5977fe3bd2f7b14c0ceb906b9091b662f33f30ad6d27b7346eacfc7266f274"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/qualify_articulated_precision.py",
+      "sha256": "e12d9255a10c5ba3463b3885218fcfd362b414d0266480e5f04d7b125d6c8893"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/reference_motion_audit.py",
+      "sha256": "3c390890ee670a472da2135e19a1b90e8ca057ae039e70c13b52b93d68bd31a2"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/audit_precise_spatial_state.py",
+      "sha256": "b9d41c89b9ed84a5a6b1751137d77d81e6d04b17fb938819a1004e96afb0c35f"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/audit_precise_spatial_history.py",
+      "sha256": "20af68d000728b657d3243c7b630a2e39bd6aed0085a01fec293cd065c1385a0"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/wide_spatial_franka.py",
+      "sha256": "9772f1d56e4348b1b55a72bbbca16e6f191bc2157a8b4621111d5d32526f56f0"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/wide_coordinate_franka.py",
+      "sha256": "265e3dab11838061c2f6782ee03f9cb7014a81580d4844209df9afe56acffab6"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/precise_panda_kinematics.py",
+      "sha256": "b2c7ace034e1d644055c472bc6334787050f4a82ff3e4f9cef093f9127207355"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/articulated_franka_contact.py",
+      "sha256": "e2bf97f33702aeaf661fa1c70f03dc8aa9020e49bdf4daffcff41408af039511"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/franka_mujoco_reference.py",
+      "sha256": "954105661e1268bc01ed9d80919f5a8b385edde0638023d9ac8810e7e42d48ac"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/localized_franka_mesh.py",
+      "sha256": "5ba6c25325e72abb55941932e9952b2376e9d9969ac83674d85679aeda01695a"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/qualify_local_franka_mesh.py",
+      "sha256": "3bed566a81bcc49095e74cf506fb4bbf2f043d345bbfe72d82bfe75e23b33a6d"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/cached_reference_newton.py",
+      "sha256": "c04428e0f44ec8dfd560793d0461bc46b7814493aa2a2a356492b279b71e0288"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/refined_franka_contact.py",
+      "sha256": "c30bd704235c00540a9608f0499e000a9ebb86889e4d88889dec6cc27b64ec89"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/frozen_franka_contact.py",
+      "sha256": "30513ce7c6b04a4a4c93e5b0217774a7349e396dae8f58b17085b8942f88364a"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/dynamic_franka_reference.py",
+      "sha256": "8a752f4d3698cb2217b993efd93dee076f51d2ab87664c4586546f6b8af13898"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/refine_franka_reference.py",
+      "sha256": "3cd69ca01c8b938254ef421a53a7a3c0b7293acefa6b4739ca1e9d5911933ac8"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/franka_contact_reference.py",
+      "sha256": "8fdff22b417fed68dbdb553123547580ab346a38ef552ea8f495f3d073b829fc"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/franka_rigid_mode_coordinates.py",
+      "sha256": "e32c9a4ffd46b7be229260004763e5b01b70fe804ea55541f07c0836cc8bf984"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/audit_franka_reference.py",
+      "sha256": "d73291d1ea1ad5d8e836c08e325cca71605b9a3c16a32c0c21f0f3f02083b5d8"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/contact_reference.py",
+      "sha256": "077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/neohookean_reference.py",
+      "sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/stable_neohookean_reference.py",
+      "sha256": "1243ca7a4289e9cdab02cf7d21ef2cbbbe5656df04793a257e1ecc47ca68c083"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/skfem_reference.py",
+      "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/summarize_fine_references.py",
+      "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/sparse_franka_inertia.py",
+      "sha256": "1404765c9b31b3608143ed67c6d952a790a85d7f84662372760c1acc1f56596e"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/generic_stencil_types.patch",
+      "sha256": "3f4a9643557d6be8fb547c7bb1dfdd503771d616122d4cc05ab43e6c208d1c45"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/localized_franka_driver.patch",
+      "sha256": "d57497175c3e219dcd0f211ca366fc1025f851ffc6576ffc2ea73102ce6d40a3"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/mapped_contact_vertices.patch",
+      "sha256": "31d2c21581b268b08680c7b4ec4bfd3b70b78523f210d4442f8234b60a398603"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/cached_reference_newton.patch",
+      "sha256": "7075b40e7a7d94e40788c8a7d3be305b5379354da0f221b3ce9ff2332ffc9c0c"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/sparse_franka_driver.patch",
+      "sha256": "b55dcb8ac5727bf8d2ebceefa474b4e20714af31b36cf9a5af95324d1465db99"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/scripts/audit_generic_stencil_history.sh",
+      "sha256": "b7400451967cf82c3a0148a8e4bd102144ca749e4c38be6b7d735d1f740250e1"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-audit-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/input-source/research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-coverage-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-coverage-v1/source/research/rigid_stress/audit_adaptive_contact_coverage.py",
+      "sha256": "f845245d0d99d956925cb5f27da6d9a97ff22e3d9c56cdd4e0519f88b7c03c47"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-coverage-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-coverage-v1/source/research/rigid_stress/audit_franka_reference.py",
+      "sha256": "d73291d1ea1ad5d8e836c08e325cca71605b9a3c16a32c0c21f0f3f02083b5d8"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-coverage-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-coverage-v1/source/research/rigid_stress/summarize_fine_references.py",
+      "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-coverage-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-coverage-v1/source/research/rigid_stress/scripts/audit_adaptive_contact_coverage.sh",
+      "sha256": "22971c22030246e179b5e4f4f7bb93bd0d9977488efd761b3063441b441a83fa"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-coverage-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-coverage-v1/source/research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-coverage-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-coverage-v1/source/research/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-coverage-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-coverage-v1/source/research/rigid_stress/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-coverage-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-coverage-v1/input-source/research/rigid_stress/audit_adaptive_contact_coverage.py",
+      "sha256": "f845245d0d99d956925cb5f27da6d9a97ff22e3d9c56cdd4e0519f88b7c03c47"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-coverage-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-coverage-v1/input-source/research/rigid_stress/audit_franka_reference.py",
+      "sha256": "d73291d1ea1ad5d8e836c08e325cca71605b9a3c16a32c0c21f0f3f02083b5d8"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-coverage-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-coverage-v1/input-source/research/rigid_stress/summarize_fine_references.py",
+      "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-coverage-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-coverage-v1/input-source/research/rigid_stress/scripts/audit_adaptive_contact_coverage.sh",
+      "sha256": "22971c22030246e179b5e4f4f7bb93bd0d9977488efd761b3063441b441a83fa"
+    },
+    {
+      "run": "egg-covered-cad-level3-schur-coverage-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-coverage-v1/input-source/research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/precise_stencil_spatial.py",
+      "sha256": "8d082c089ae112467204422e43e8972d62146a57fd1f680a1707f2390f9ca1d0"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/compare_spatial_franka.py",
+      "sha256": "bb00b88bfb028ed884ac2f886c5dc07a45cedea02de0d811a9ceecb0fdf4c209"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/audit_original_history_fields.py",
+      "sha256": "2215401621793bb13a3ffdc21a47a97009397dfef27a1e842e23e19b1bb0d6d8"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/audit_articulated_contact.py",
+      "sha256": "19ec4b66084e27fc31bc6abe3e623f4e701c25c1affc704f66a20351e210503a"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/audit_objective_frame.py",
+      "sha256": "0d5977fe3bd2f7b14c0ceb906b9091b662f33f30ad6d27b7346eacfc7266f274"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/qualify_articulated_precision.py",
+      "sha256": "e12d9255a10c5ba3463b3885218fcfd362b414d0266480e5f04d7b125d6c8893"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/reference_motion_audit.py",
+      "sha256": "3c390890ee670a472da2135e19a1b90e8ca057ae039e70c13b52b93d68bd31a2"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/audit_precise_spatial_state.py",
+      "sha256": "073a31b57ab7ea5c48cfae2c5a06f94fe9b4d8eb6225b83b98278fb19085ba78"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/compare_covered_cad_fields.py",
+      "sha256": "f5aca85792f940fb2f85522008a1dbf811bd45e4642c7e790bdf539443c66cb5"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/wide_spatial_franka.py",
+      "sha256": "9772f1d56e4348b1b55a72bbbca16e6f191bc2157a8b4621111d5d32526f56f0"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/wide_coordinate_franka.py",
+      "sha256": "265e3dab11838061c2f6782ee03f9cb7014a81580d4844209df9afe56acffab6"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/precise_panda_kinematics.py",
+      "sha256": "b2c7ace034e1d644055c472bc6334787050f4a82ff3e4f9cef093f9127207355"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/articulated_franka_contact.py",
+      "sha256": "e2bf97f33702aeaf661fa1c70f03dc8aa9020e49bdf4daffcff41408af039511"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/franka_mujoco_reference.py",
+      "sha256": "954105661e1268bc01ed9d80919f5a8b385edde0638023d9ac8810e7e42d48ac"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/localized_franka_mesh.py",
+      "sha256": "5ba6c25325e72abb55941932e9952b2376e9d9969ac83674d85679aeda01695a"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/qualify_local_franka_mesh.py",
+      "sha256": "3bed566a81bcc49095e74cf506fb4bbf2f043d345bbfe72d82bfe75e23b33a6d"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/cached_reference_newton.py",
+      "sha256": "c04428e0f44ec8dfd560793d0461bc46b7814493aa2a2a356492b279b71e0288"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/refined_franka_contact.py",
+      "sha256": "c30bd704235c00540a9608f0499e000a9ebb86889e4d88889dec6cc27b64ec89"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/frozen_franka_contact.py",
+      "sha256": "30513ce7c6b04a4a4c93e5b0217774a7349e396dae8f58b17085b8942f88364a"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/dynamic_franka_reference.py",
+      "sha256": "8a752f4d3698cb2217b993efd93dee076f51d2ab87664c4586546f6b8af13898"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/refine_franka_reference.py",
+      "sha256": "3cd69ca01c8b938254ef421a53a7a3c0b7293acefa6b4739ca1e9d5911933ac8"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/franka_contact_reference.py",
+      "sha256": "8fdff22b417fed68dbdb553123547580ab346a38ef552ea8f495f3d073b829fc"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/franka_rigid_mode_coordinates.py",
+      "sha256": "e32c9a4ffd46b7be229260004763e5b01b70fe804ea55541f07c0836cc8bf984"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/audit_franka_reference.py",
+      "sha256": "d73291d1ea1ad5d8e836c08e325cca71605b9a3c16a32c0c21f0f3f02083b5d8"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/contact_reference.py",
+      "sha256": "8e4ad8fb0619c7471e8b7100b3bcd7ab61f6363e55d205f25e6cfb03c59afa8c"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/neohookean_reference.py",
+      "sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/stable_neohookean_reference.py",
+      "sha256": "1243ca7a4289e9cdab02cf7d21ef2cbbbe5656df04793a257e1ecc47ca68c083"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/skfem_reference.py",
+      "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/summarize_fine_references.py",
+      "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/sparse_franka_inertia.py",
+      "sha256": "1404765c9b31b3608143ed67c6d952a790a85d7f84662372760c1acc1f56596e"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/wide_point_qualification.patch",
+      "sha256": "ef932cf4804a0620c17dda2a0fca9755fb6e69c0fb686f0443687bbc6ad59b05"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/generic_stencil_types.patch",
+      "sha256": "3f4a9643557d6be8fb547c7bb1dfdd503771d616122d4cc05ab43e6c208d1c45"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/localized_franka_driver.patch",
+      "sha256": "d57497175c3e219dcd0f211ca366fc1025f851ffc6576ffc2ea73102ce6d40a3"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/mapped_contact_vertices.patch",
+      "sha256": "31d2c21581b268b08680c7b4ec4bfd3b70b78523f210d4442f8234b60a398603"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/cached_reference_newton.patch",
+      "sha256": "7075b40e7a7d94e40788c8a7d3be305b5379354da0f221b3ce9ff2332ffc9c0c"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/sparse_franka_driver.patch",
+      "sha256": "b55dcb8ac5727bf8d2ebceefa474b4e20714af31b36cf9a5af95324d1465db99"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/scripts/compare_covered_cad_fields.sh",
+      "sha256": "3dc22b6a89dba209b6de0ee73dc6816f7449bfd2caf43296e5e82a1c5ea5ef02"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/source/research/rigid_stress/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/precise_stencil_spatial.py",
+      "sha256": "c20360fb35ac4c97283a6e891a4a85b0ef53c62fafdf065439bbedfc85c76e42"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/compare_spatial_franka.py",
+      "sha256": "e72104f17be0502bf800f0907401edcec1c9bcb13dd19a1f3b1fa2cc394248e4"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/audit_original_history_fields.py",
+      "sha256": "2215401621793bb13a3ffdc21a47a97009397dfef27a1e842e23e19b1bb0d6d8"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/audit_articulated_contact.py",
+      "sha256": "19ec4b66084e27fc31bc6abe3e623f4e701c25c1affc704f66a20351e210503a"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/audit_objective_frame.py",
+      "sha256": "0d5977fe3bd2f7b14c0ceb906b9091b662f33f30ad6d27b7346eacfc7266f274"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/qualify_articulated_precision.py",
+      "sha256": "e12d9255a10c5ba3463b3885218fcfd362b414d0266480e5f04d7b125d6c8893"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/reference_motion_audit.py",
+      "sha256": "3c390890ee670a472da2135e19a1b90e8ca057ae039e70c13b52b93d68bd31a2"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/audit_precise_spatial_state.py",
+      "sha256": "b9d41c89b9ed84a5a6b1751137d77d81e6d04b17fb938819a1004e96afb0c35f"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/compare_covered_cad_fields.py",
+      "sha256": "f5aca85792f940fb2f85522008a1dbf811bd45e4642c7e790bdf539443c66cb5"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/wide_spatial_franka.py",
+      "sha256": "9772f1d56e4348b1b55a72bbbca16e6f191bc2157a8b4621111d5d32526f56f0"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/wide_coordinate_franka.py",
+      "sha256": "265e3dab11838061c2f6782ee03f9cb7014a81580d4844209df9afe56acffab6"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/precise_panda_kinematics.py",
+      "sha256": "b2c7ace034e1d644055c472bc6334787050f4a82ff3e4f9cef093f9127207355"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/articulated_franka_contact.py",
+      "sha256": "e2bf97f33702aeaf661fa1c70f03dc8aa9020e49bdf4daffcff41408af039511"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/franka_mujoco_reference.py",
+      "sha256": "954105661e1268bc01ed9d80919f5a8b385edde0638023d9ac8810e7e42d48ac"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/localized_franka_mesh.py",
+      "sha256": "5ba6c25325e72abb55941932e9952b2376e9d9969ac83674d85679aeda01695a"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/qualify_local_franka_mesh.py",
+      "sha256": "3bed566a81bcc49095e74cf506fb4bbf2f043d345bbfe72d82bfe75e23b33a6d"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/cached_reference_newton.py",
+      "sha256": "c04428e0f44ec8dfd560793d0461bc46b7814493aa2a2a356492b279b71e0288"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/refined_franka_contact.py",
+      "sha256": "c30bd704235c00540a9608f0499e000a9ebb86889e4d88889dec6cc27b64ec89"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/frozen_franka_contact.py",
+      "sha256": "30513ce7c6b04a4a4c93e5b0217774a7349e396dae8f58b17085b8942f88364a"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/dynamic_franka_reference.py",
+      "sha256": "8a752f4d3698cb2217b993efd93dee076f51d2ab87664c4586546f6b8af13898"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/refine_franka_reference.py",
+      "sha256": "3cd69ca01c8b938254ef421a53a7a3c0b7293acefa6b4739ca1e9d5911933ac8"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/franka_contact_reference.py",
+      "sha256": "8fdff22b417fed68dbdb553123547580ab346a38ef552ea8f495f3d073b829fc"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/franka_rigid_mode_coordinates.py",
+      "sha256": "e32c9a4ffd46b7be229260004763e5b01b70fe804ea55541f07c0836cc8bf984"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/audit_franka_reference.py",
+      "sha256": "d73291d1ea1ad5d8e836c08e325cca71605b9a3c16a32c0c21f0f3f02083b5d8"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/contact_reference.py",
+      "sha256": "077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/neohookean_reference.py",
+      "sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/stable_neohookean_reference.py",
+      "sha256": "1243ca7a4289e9cdab02cf7d21ef2cbbbe5656df04793a257e1ecc47ca68c083"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/skfem_reference.py",
+      "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/summarize_fine_references.py",
+      "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/sparse_franka_inertia.py",
+      "sha256": "1404765c9b31b3608143ed67c6d952a790a85d7f84662372760c1acc1f56596e"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/wide_point_qualification.patch",
+      "sha256": "ef932cf4804a0620c17dda2a0fca9755fb6e69c0fb686f0443687bbc6ad59b05"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/generic_stencil_types.patch",
+      "sha256": "3f4a9643557d6be8fb547c7bb1dfdd503771d616122d4cc05ab43e6c208d1c45"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/localized_franka_driver.patch",
+      "sha256": "d57497175c3e219dcd0f211ca366fc1025f851ffc6576ffc2ea73102ce6d40a3"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/mapped_contact_vertices.patch",
+      "sha256": "31d2c21581b268b08680c7b4ec4bfd3b70b78523f210d4442f8234b60a398603"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/cached_reference_newton.patch",
+      "sha256": "7075b40e7a7d94e40788c8a7d3be305b5379354da0f221b3ce9ff2332ffc9c0c"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/sparse_franka_driver.patch",
+      "sha256": "b55dcb8ac5727bf8d2ebceefa474b4e20714af31b36cf9a5af95324d1465db99"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/scripts/compare_covered_cad_fields.sh",
+      "sha256": "3dc22b6a89dba209b6de0ee73dc6816f7449bfd2caf43296e5e82a1c5ea5ef02"
+    },
+    {
+      "run": "egg-covered-cad-three-level-fields-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/input-source/research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/source/research/rigid_stress/audit_articulated_contact.py",
+      "sha256": "19ec4b66084e27fc31bc6abe3e623f4e701c25c1affc704f66a20351e210503a"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/source/research/rigid_stress/audit_objective_frame.py",
+      "sha256": "0d5977fe3bd2f7b14c0ceb906b9091b662f33f30ad6d27b7346eacfc7266f274"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/source/research/rigid_stress/qualify_articulated_precision.py",
+      "sha256": "e12d9255a10c5ba3463b3885218fcfd362b414d0266480e5f04d7b125d6c8893"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/source/research/rigid_stress/reference_motion_audit.py",
+      "sha256": "3c390890ee670a472da2135e19a1b90e8ca057ae039e70c13b52b93d68bd31a2"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/source/research/rigid_stress/original_franka_ground.py",
+      "sha256": "2dda5f6c7338eae00d928ff67b617e4175d644cd0e8df35ba9ddf2f31b9d1b27"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/source/research/rigid_stress/predicted_wide_franka.py",
+      "sha256": "77cfc40d358606acf2382626e6b59d5d3ed75c90e4dd694c17de5aa52b725328"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/source/research/rigid_stress/wide_coordinate_franka.py",
+      "sha256": "265e3dab11838061c2f6782ee03f9cb7014a81580d4844209df9afe56acffab6"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/source/research/rigid_stress/run_articulated_franka.py",
+      "sha256": "1d37dae790eae702f6020505317a5b5dd24b20dfcc07a0bbda2d62dcf4c4f358"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/source/research/rigid_stress/captured_reference_motion.py",
+      "sha256": "773c72e3d2175d97076d4ffd966add157e6ace1a849d6ccf67b7883fc3f6c9aa"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/source/research/rigid_stress/precise_panda_kinematics.py",
+      "sha256": "b2c7ace034e1d644055c472bc6334787050f4a82ff3e4f9cef093f9127207355"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/source/research/rigid_stress/articulated_franka_contact.py",
+      "sha256": "e2bf97f33702aeaf661fa1c70f03dc8aa9020e49bdf4daffcff41408af039511"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/source/research/rigid_stress/audit_resolved_linearization.py",
+      "sha256": "562d00ebece18827109271d254d51f71077dd351487e441b4cee6c22414f5447"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/source/research/rigid_stress/franka_mujoco_reference.py",
+      "sha256": "954105661e1268bc01ed9d80919f5a8b385edde0638023d9ac8810e7e42d48ac"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/source/research/rigid_stress/franka_contact_reference.py",
+      "sha256": "8fdff22b417fed68dbdb553123547580ab346a38ef552ea8f495f3d073b829fc"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/source/research/rigid_stress/franka_rigid_mode_coordinates.py",
+      "sha256": "e32c9a4ffd46b7be229260004763e5b01b70fe804ea55541f07c0836cc8bf984"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/source/research/rigid_stress/audit_franka_reference.py",
+      "sha256": "d73291d1ea1ad5d8e836c08e325cca71605b9a3c16a32c0c21f0f3f02083b5d8"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/source/research/rigid_stress/contact_reference.py",
+      "sha256": "077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/source/research/rigid_stress/neohookean_reference.py",
+      "sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/source/research/rigid_stress/stable_neohookean_reference.py",
+      "sha256": "1243ca7a4289e9cdab02cf7d21ef2cbbbe5656df04793a257e1ecc47ca68c083"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/source/research/rigid_stress/skfem_reference.py",
+      "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/source/research/rigid_stress/summarize_fine_references.py",
+      "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/source/research/rigid_stress/scripts/audit_resolved_linearization.sh",
+      "sha256": "738583ac2def4cb87c72836721ee4265b2d881a377dbe11f97568fc7350beca2"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/source/research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/source/genesis/assets/xml/franka_emika_panda/panda.xml",
+      "sha256": "e502e07fcef6219024be02dfb9cd65d5c194b4767adf381ca51f10172ff8a32d"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/source/research/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/source/research/rigid_stress/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/input-source/research/rigid_stress/audit_articulated_contact.py",
+      "sha256": "19ec4b66084e27fc31bc6abe3e623f4e701c25c1affc704f66a20351e210503a"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/input-source/research/rigid_stress/audit_objective_frame.py",
+      "sha256": "0d5977fe3bd2f7b14c0ceb906b9091b662f33f30ad6d27b7346eacfc7266f274"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/input-source/research/rigid_stress/qualify_articulated_precision.py",
+      "sha256": "e12d9255a10c5ba3463b3885218fcfd362b414d0266480e5f04d7b125d6c8893"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/input-source/research/rigid_stress/reference_motion_audit.py",
+      "sha256": "3c390890ee670a472da2135e19a1b90e8ca057ae039e70c13b52b93d68bd31a2"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/input-source/research/rigid_stress/original_franka_ground.py",
+      "sha256": "2dda5f6c7338eae00d928ff67b617e4175d644cd0e8df35ba9ddf2f31b9d1b27"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/input-source/research/rigid_stress/predicted_wide_franka.py",
+      "sha256": "77cfc40d358606acf2382626e6b59d5d3ed75c90e4dd694c17de5aa52b725328"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/input-source/research/rigid_stress/wide_coordinate_franka.py",
+      "sha256": "265e3dab11838061c2f6782ee03f9cb7014a81580d4844209df9afe56acffab6"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/input-source/research/rigid_stress/run_articulated_franka.py",
+      "sha256": "1d37dae790eae702f6020505317a5b5dd24b20dfcc07a0bbda2d62dcf4c4f358"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/input-source/research/rigid_stress/captured_reference_motion.py",
+      "sha256": "773c72e3d2175d97076d4ffd966add157e6ace1a849d6ccf67b7883fc3f6c9aa"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/input-source/research/rigid_stress/precise_panda_kinematics.py",
+      "sha256": "b2c7ace034e1d644055c472bc6334787050f4a82ff3e4f9cef093f9127207355"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/input-source/research/rigid_stress/articulated_franka_contact.py",
+      "sha256": "e2bf97f33702aeaf661fa1c70f03dc8aa9020e49bdf4daffcff41408af039511"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/input-source/research/rigid_stress/audit_resolved_linearization.py",
+      "sha256": "562d00ebece18827109271d254d51f71077dd351487e441b4cee6c22414f5447"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/input-source/research/rigid_stress/franka_mujoco_reference.py",
+      "sha256": "954105661e1268bc01ed9d80919f5a8b385edde0638023d9ac8810e7e42d48ac"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/input-source/research/rigid_stress/franka_contact_reference.py",
+      "sha256": "8fdff22b417fed68dbdb553123547580ab346a38ef552ea8f495f3d073b829fc"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/input-source/research/rigid_stress/franka_rigid_mode_coordinates.py",
+      "sha256": "e32c9a4ffd46b7be229260004763e5b01b70fe804ea55541f07c0836cc8bf984"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/input-source/research/rigid_stress/audit_franka_reference.py",
+      "sha256": "d73291d1ea1ad5d8e836c08e325cca71605b9a3c16a32c0c21f0f3f02083b5d8"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/input-source/research/rigid_stress/contact_reference.py",
+      "sha256": "077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/input-source/research/rigid_stress/neohookean_reference.py",
+      "sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/input-source/research/rigid_stress/stable_neohookean_reference.py",
+      "sha256": "1243ca7a4289e9cdab02cf7d21ef2cbbbe5656df04793a257e1ecc47ca68c083"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/input-source/research/rigid_stress/skfem_reference.py",
+      "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/input-source/research/rigid_stress/summarize_fine_references.py",
+      "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/input-source/research/rigid_stress/scripts/audit_resolved_linearization.sh",
+      "sha256": "738583ac2def4cb87c72836721ee4265b2d881a377dbe11f97568fc7350beca2"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/input-source/research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "run": "egg-covered-cad-three-level-linearization-v1",
+      "kind": "input-source",
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1/input-source/genesis/assets/xml/franka_emika_panda/panda.xml",
+      "sha256": "e502e07fcef6219024be02dfb9cd65d5c194b4767adf381ca51f10172ff8a32d"
+    }
+  ],
+  "actual_inputs_reverified": {
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/results/step0001.npz": {
+      "sha256": "9ab1f1707a38a518582eabae70aa19277421c69319fa91a9a2a304e904aa08a2",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/results/step0002.npz": {
+      "sha256": "3f55a3a8a80963d0fa27ec61be481ce74f7d2f8109a7a6cd0d128568342f8d18",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/results/step0003.npz": {
+      "sha256": "7b1b00a912f8799537caf9e4759d00f1876ee81fdf56569bd06276f4bce4d906",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/results/step0004.npz": {
+      "sha256": "9ef90694ae8b533f37d9572931f20b8c5f97b3041ab12f22c11f2baa4d24ea11",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/results/step0005.npz": {
+      "sha256": "fff9bc5667f6304b76b8ce93c282670d3aa5290931077c919a4bfcdb9af36a39",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/results/configuration.json": {
+      "sha256": "310d011a4cb6aa3cf8b0392ff25a9f9fd2244a9f671e9ded9b87b872ca26941f",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/results/summary.json": {
+      "sha256": "d1e1dbfc805b9790f96528a37941b8bcdee88ac740d40602cae5f4f4350b9cb6",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-adaptive-cad-polyhedron-geometry-v5/results/summary.json": {
+      "sha256": "7788b57163d19585ab1cfa38222fe6b07b3bb5dc518d429c8fefa36d9654a430",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-ref-centred-v1/results/configuration.json": {
+      "sha256": "6bc322de01b974711e79da29056a27adf12a3c834b727b3fbfa274dafe1d2d24",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-input-complete-s4-v1/results/summary.json": {
+      "sha256": "f89009453fde4dcdd071eb50aabe45acf42f169d2e59d14a744c9f2b817b6468",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/results/contact_geometry.npz": {
+      "sha256": "b36353b1462f507504aa2d4b4310fcefaf7f0eb02109d8c89677570ba17707e2",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level1-contact-v1-audit/results/summary.json": {
+      "sha256": "71cad0082461bf18414e3e268233453414f13a3fc9862286bb7c9bb396b76a98",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level1-contact-v1/results/step0004.npz": {
+      "sha256": "d72db919881ce16b16dc196b86d54c9b1cdb9dc27f34614ce13f05646dfee551",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level1-contact-v1/results/step0005.npz": {
+      "sha256": "301d3265cb29f1b8f9c9d7662ea2057e36d4ee17dd9c0776e83d09e9ba2ddcb3",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level1-contact-v1/results/configuration.json": {
+      "sha256": "152deb725e3b6c99102d3c4758d555b4ef46ca10dbe72b48936d730de65bc8a1",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level1-contact-v1/results/reference_geometry.npz": {
+      "sha256": "4793506c26e1f8eb7b229db15baeaa3b51d36142aa02220ac6c80ff332e5e14b",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level2-contact-v1-audit/results/summary.json": {
+      "sha256": "e21ac965a1c269254cf71b5145a210476bc99cfd6ab35f83681f0f02363cee7b",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level2-contact-v1/results/step0004.npz": {
+      "sha256": "d206b1fd9e39031cbc9b576e4e141ee09bfec8d04651fe1c4188218fcb891c7a",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level2-contact-v1/results/step0005.npz": {
+      "sha256": "b733aab0413c0b22c57fbaf3dba43771ef64cd6865e312941ceb2b098d761ccd",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level2-contact-v1/results/configuration.json": {
+      "sha256": "6aae162c8cfe6fe3d4594ebd22f6c78146b10a8a4783c2131f09daceff55ff3f",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level2-contact-v1/results/reference_geometry.npz": {
+      "sha256": "aeb255d01ab19073c79f3823ad3f33f1ed18a057cb71ea80582f9f710d5c3c21",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/results/step0004.npz": {
+      "sha256": "9a52597e64db78767deb899f9f88b754858916e70829eb2b30ff139d31ef9246",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/results/step0005.npz": {
+      "sha256": "56c1a9741caa5a629497869d7db4fe0872fe74409dd058216cf1237f02285aa5",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/results/reference_geometry.npz": {
+      "sha256": "1a612262859e601c6d2c08c58f80291a319f6540ae804a2253513703704a5fe5",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/results/summary.json": {
+      "sha256": "1fd5e4490139ce69f63774618a296f99bce6122fa7b372edab4513980eca2f1a",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/results/case00.npz": {
+      "sha256": "376b5843e65cd072e380025d4853e07d29117d170fe07d4e6a21e95abda8da0b",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/results/case01.npz": {
+      "sha256": "bb8439f5ad280ff5fecc807304f0e47cd637188f5ac15d192405ce0ebe42f44b",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/results/case02.npz": {
+      "sha256": "91217e4ba2c2c16bc9add2fe8f71b61e7a04d29e942dd7f947d2f673a1b00e66",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-metis-contact-v2/results/configuration.json": {
+      "sha256": "a9a064279540e4229ebddde5a7f7b432b85657e9bb2ee7d17be2ed8a7342acdd",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-metis-contact-v2/results/closure_state.npz": {
+      "sha256": "27d908e608a51ee39a89efd680a965551e7cfb38e9960d2e22698adf52a2194e",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-metis-contact-v2/results/reference_geometry.npz": {
+      "sha256": "1a612262859e601c6d2c08c58f80291a319f6540ae804a2253513703704a5fe5",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-metis-contact-v2/results/contact_geometry.npz": {
+      "sha256": "b36353b1462f507504aa2d4b4310fcefaf7f0eb02109d8c89677570ba17707e2",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-metis-contact-v2/results/contact_node_map.npz": {
+      "sha256": "a17596688ff7fca0ab5d99e7829d9621305ffce2d0f5eeeca17224553e069662",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/generic-stencil-fixture-qualification-v1/results/summary.json": {
+      "sha256": "6d6f6e2b78bae7b80f82592150da7eda9dc705d06f3029874cb9baaf06b1dc65",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/generic-stencil-original-polyhedron-level2-audit-v1/results/summary.json": {
+      "sha256": "d79f7399d6914953c2834402c7c60949424024b98e9dc20001caa17af3e7727d",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/generic-stencil-original-cad-level2-audit-v1/results/summary.json": {
+      "sha256": "acbd0cd2ed88f65adf9ad0b8bdc6679b1c970b6dc19903f0f98cae69a760315a",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-input-complete-s4-v1/results/stationary_lift_hold-0359-s03_geometry.npz": {
+      "sha256": "0ef329ae3ae711031c4449bac867e3cc96028085f89a8fbe85cd876cafaa4fb7",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-input-complete-s4-v1/results/geom12_local.npz": {
+      "sha256": "c1254c4b67e21f7456465d959bc34676918b5d5f0624a1f32123936828a96a3c",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-input-complete-s4-v1/results/geom13_local.npz": {
+      "sha256": "249d8f491cb0ff3255765adbdb3532e8e847a2beb47827774ac5c1297c9984fc",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-input-complete-s4-v1/results/geom14_local.npz": {
+      "sha256": "114d093b0508f4b3835617a5e9226c4bb3269f97a292f980b8297f624c300c4d",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-input-complete-s4-v1/results/geom15_local.npz": {
+      "sha256": "114d093b0508f4b3835617a5e9226c4bb3269f97a292f980b8297f624c300c4d",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-input-complete-s4-v1/results/geom16_local.npz": {
+      "sha256": "24f493a7cd8e6d23b797beed4c7bd8a362a310937c406d1834048b9efa16416c",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-input-complete-s4-v1/results/geom17_local.npz": {
+      "sha256": "24f493a7cd8e6d23b797beed4c7bd8a362a310937c406d1834048b9efa16416c",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-input-complete-s4-v1/results/geom18_local.npz": {
+      "sha256": "c1254c4b67e21f7456465d959bc34676918b5d5f0624a1f32123936828a96a3c",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-input-complete-s4-v1/results/geom19_local.npz": {
+      "sha256": "249d8f491cb0ff3255765adbdb3532e8e847a2beb47827774ac5c1297c9984fc",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-input-complete-s4-v1/results/geom20_local.npz": {
+      "sha256": "114d093b0508f4b3835617a5e9226c4bb3269f97a292f980b8297f624c300c4d",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-input-complete-s4-v1/results/geom21_local.npz": {
+      "sha256": "114d093b0508f4b3835617a5e9226c4bb3269f97a292f980b8297f624c300c4d",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-input-complete-s4-v1/results/geom22_local.npz": {
+      "sha256": "24f493a7cd8e6d23b797beed4c7bd8a362a310937c406d1834048b9efa16416c",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-input-complete-s4-v1/results/geom23_local.npz": {
+      "sha256": "24f493a7cd8e6d23b797beed4c7bd8a362a310937c406d1834048b9efa16416c",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-input-complete-s4-v1/source/examples/rigid/assets/hollow_egg/level1/elastic.npz": {
+      "sha256": "3b2b90d7ee39562a296422dab1e5ee66e87265949ee38eefd27c729633a995a4",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/fine-schur-paired-continuation-commands-v1.json": {
+      "sha256": "6ab655d6749b13ef0c6ae671e35d5c66876360bfe2d9c4be3689947de336d471",
+      "covered_by_reverified_parent": true
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/covered-cad-three-level-linearization-commands-v1.json": {
+      "sha256": "2a49f511f993a2ade111acea2b559f1ace59985573c2cb085e368a832b9ca74e",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-adaptive-cad-polyhedron-geometry-v5/results/cad-level1.npz": {
+      "sha256": "849aec05664bf21ff2ad18bc8beb34f48e01640ee8d5c6d8991fa86d9b51d8c7",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-adaptive-cad-polyhedron-geometry-v5/results/cad-level2.npz": {
+      "sha256": "c3bf8c41af54ee93d732dfe08dba780f2bac30daba204fc55a3dfaa59f816ea2",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-adaptive-cad-polyhedron-geometry-v5/results/cad-level3.npz": {
+      "sha256": "3172b302e9ac30c1728c5bcc82316730c8802ba7682bd7437d9c9dba9e979018",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/covered-cad-three-level-publication-plan-v1.json": {
+      "sha256": "b8553dacf0607a8d34162a09bd13c6308d2240f80955da40ad45b609f8df1b02",
+      "covered_by_reverified_parent": false
+    },
+    "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/publish_covered_cad_checkpoint.py": {
+      "sha256": "1e6df595b20f5afe867f9df07dda99c6e9ef1a9e094fdcada2c8795d36f67ef6",
+      "covered_by_reverified_parent": false,
+      "archived_external_copy": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/covered-cad-three-level-v1-publication/external-inputs/1e6df595b20f5afe867f9df07dda99c6e9ef1a9e094fdcada2c8795d36f67ef6.py"
+    }
+  },
+  "scientific_checks": {
+    "full_original_fine_force_and_coverage_states": 5,
+    "all_original_common_probes": 158340,
+    "three_covered_mesh_fields_and_independent_linearizations": true
+  },
+  "closed_run_summaries": {
+    "egg-covered-cad-level3-schur-contact-v1": {
+      "scope": "Continue a closed paired-geometry reference from its unchanged initializer and audited physical prefix.",
+      "source_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-metis-contact-v2",
+      "steps": [
+        {
+          "step": 1,
+          "time_s": 0.00125,
+          "complete_dynamic_residual_N": 2.1334285414740443e-13,
+          "complete_body_dynamic_residual_N": 3.232345988884993e-14
+        },
+        {
+          "step": 2,
+          "time_s": 0.0025,
+          "complete_dynamic_residual_N": 1.6929967141200813e-13,
+          "complete_body_dynamic_residual_N": 1.1125613320416987e-13
+        },
+        {
+          "step": 3,
+          "time_s": 0.00375,
+          "complete_dynamic_residual_N": 1.8055233278788007e-13,
+          "complete_body_dynamic_residual_N": 7.599670589286364e-14
+        },
+        {
+          "step": 4,
+          "time_s": 0.005,
+          "complete_dynamic_residual_N": 1.5062357200308116e-13,
+          "complete_body_dynamic_residual_N": 5.603726900190587e-14
+        },
+        {
+          "step": 5,
+          "time_s": 0.00625,
+          "complete_dynamic_residual_N": 1.4431079735732198e-13,
+          "complete_body_dynamic_residual_N": 5.4257516900859665e-14
+        }
+      ],
+      "original_byte_identical_prefix_states": 0,
+      "goal_completion": false,
+      "limitations": "Only centered reference collision-force evaluation is generalized to supported point/edge/face stencils and the package's original unmollified friction magnitude. Original geometry/material/mass, closure, control, dt, gravity, physical1e-9N gates and stricter Newton1e-10 target remain fixed. All retained prefix states are independently force-audited and copied byte-identically before continuation. The initializer is retained, not independently reconstructed at every original closure target. Complete new histories still require a separate independent audit; this does not establish physical convergence, full application, remaining models/feedback or verified warmed cost."
+    },
+    "egg-covered-cad-level3-schur-audit-v1": {
+      "scope": "Independently verify every precision-aware spatial state and its unaveraged global field.",
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1",
+      "states_checked": 5,
+      "rows": [
+        {
+          "step": 1,
+          "time_s": 0.00125,
+          "body_tetrahedra": 171228,
+          "complete_body_dynamic_residual_N": 3.232341987486142e-14,
+          "complete_mapped_dynamic_residual_N": 2.1332329235229332e-13,
+          "force_pullback_max_difference_N": 2.220446049250313e-16,
+          "normal_stencils": 176,
+          "maximum_coulomb_violation_N": -1.9540922675254913e-10,
+          "active_body_contact_nodes": 130,
+          "active_lumped_contact_area_m2": 7.345299226549492e-09,
+          "maximum_unsmoothed_body_normal_force_per_area_Pa": 344993220.38053167,
+          "raw_global_peak_lower_Pa": 55443467.33562228,
+          "raw_global_peak_upper_Pa": 55474989.271298565,
+          "whole_volume_J_lower_bound": 0.9967886785075382,
+          "raw_peak_reference_position_m": [
+            5.7369152416463374e-05,
+            0.022251846605568705,
+            -0.0018427985760413354
+          ]
+        },
+        {
+          "step": 2,
+          "time_s": 0.0025,
+          "body_tetrahedra": 171228,
+          "complete_body_dynamic_residual_N": 1.1125597563343325e-13,
+          "complete_mapped_dynamic_residual_N": 1.692634859601447e-13,
+          "force_pullback_max_difference_N": 4.440892098500626e-16,
+          "normal_stencils": 176,
+          "maximum_coulomb_violation_N": -1.924100144698833e-10,
+          "active_body_contact_nodes": 130,
+          "active_lumped_contact_area_m2": 7.345285600234306e-09,
+          "maximum_unsmoothed_body_normal_force_per_area_Pa": 345012038.41198474,
+          "raw_global_peak_lower_Pa": 55431430.68784985,
+          "raw_global_peak_upper_Pa": 55463500.07362144,
+          "whole_volume_J_lower_bound": 0.9967811419615862,
+          "raw_peak_reference_position_m": [
+            5.7369152416463374e-05,
+            0.022251846605568705,
+            -0.0018427985760413354
+          ]
+        },
+        {
+          "step": 3,
+          "time_s": 0.00375,
+          "body_tetrahedra": 171228,
+          "complete_body_dynamic_residual_N": 7.599524844355267e-14,
+          "complete_mapped_dynamic_residual_N": 1.8053353727587615e-13,
+          "force_pullback_max_difference_N": 1.6653345369377348e-16,
+          "normal_stencils": 175,
+          "maximum_coulomb_violation_N": -1.9581504473285923e-10,
+          "active_body_contact_nodes": 129,
+          "active_lumped_contact_area_m2": 7.288478018623618e-09,
+          "maximum_unsmoothed_body_normal_force_per_area_Pa": 344873649.7899382,
+          "raw_global_peak_lower_Pa": 55406813.24532525,
+          "raw_global_peak_upper_Pa": 55439205.52240173,
+          "whole_volume_J_lower_bound": 0.9967768741738138,
+          "raw_peak_reference_position_m": [
+            5.7369152416463374e-05,
+            0.022251846605568705,
+            -0.0018427985760413354
+          ]
+        },
+        {
+          "step": 4,
+          "time_s": 0.005,
+          "body_tetrahedra": 171228,
+          "complete_body_dynamic_residual_N": 5.603751076745565e-14,
+          "complete_mapped_dynamic_residual_N": 1.5061608774188703e-13,
+          "force_pullback_max_difference_N": 1.1102230246251565e-16,
+          "normal_stencils": 175,
+          "maximum_coulomb_violation_N": -2.0232857454021933e-10,
+          "active_body_contact_nodes": 129,
+          "active_lumped_contact_area_m2": 7.288466759285723e-09,
+          "maximum_unsmoothed_body_normal_force_per_area_Pa": 344779991.77714133,
+          "raw_global_peak_lower_Pa": 55393001.78909661,
+          "raw_global_peak_upper_Pa": 55425648.47212343,
+          "whole_volume_J_lower_bound": 0.9967728977834567,
+          "raw_peak_reference_position_m": [
+            5.7369152416463374e-05,
+            0.022251846605568705,
+            -0.0018427985760413354
+          ]
+        },
+        {
+          "step": 5,
+          "time_s": 0.00625,
+          "body_tetrahedra": 171228,
+          "complete_body_dynamic_residual_N": 5.426195133015162e-14,
+          "complete_mapped_dynamic_residual_N": 1.4433729293498218e-13,
+          "force_pullback_max_difference_N": 1.1102230246251565e-16,
+          "normal_stencils": 174,
+          "maximum_coulomb_violation_N": -2.1022696317631475e-10,
+          "active_body_contact_nodes": 129,
+          "active_lumped_contact_area_m2": 7.288456123413141e-09,
+          "maximum_unsmoothed_body_normal_force_per_area_Pa": 344687601.59069115,
+          "raw_global_peak_lower_Pa": 55382574.38004858,
+          "raw_global_peak_upper_Pa": 55415413.702345066,
+          "whole_volume_J_lower_bound": 0.9967695467924226,
+          "raw_peak_reference_position_m": [
+            5.7369152416463374e-05,
+            0.022251846605568705,
+            -0.0018427985760413354
+          ]
+        }
+      ],
+      "goal_completion": false,
+      "limitations": "Every original dynamic step is independently reconstructed, including exact previous-state/velocity integration, unsmoothed centered normal/friction stencils, mass/armature and capped jaw PD. Raw global wide-coordinate field bounds remain visible. The original fixed-arm/two-jaw control and saved held initializer remain explicit. Full-arm application matching and physical spatial/contact/geometry convergence are separate incomplete requirements."
+    },
+    "egg-covered-cad-level3-schur-coverage-v1": {
+      "scope": "Locate independently audited contact samples relative to fixed numerical refinement caps.",
+      "rows": [
+        {
+          "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1",
+          "step": 1,
+          "time_s": 0.00125,
+          "tetrahedra": 171228,
+          "active_body_samples": 130,
+          "active_samples_outside_marking_caps": 0,
+          "outside_unsigned_normal_sample_load_fraction": 0.0,
+          "minimum_and_maximum_sample_angle_over_cap_angle": [
+            0.0017177718483273154,
+            0.734929752479976
+          ],
+          "active_reference_trace_incident_edge_m_percentiles": [
+            8.595193753528986e-06,
+            8.623175267769402e-06,
+            8.689727393856144e-06
+          ],
+          "maximum_sample_radial_parameter_norm_difference_from_one": 5.203092556804734e-08,
+          "raw_global_peak_lower_Pa": 55443467.33562228
+        },
+        {
+          "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1",
+          "step": 2,
+          "time_s": 0.0025,
+          "tetrahedra": 171228,
+          "active_body_samples": 130,
+          "active_samples_outside_marking_caps": 0,
+          "outside_unsigned_normal_sample_load_fraction": 0.0,
+          "minimum_and_maximum_sample_angle_over_cap_angle": [
+            0.0017177718483273154,
+            0.734929752479976
+          ],
+          "active_reference_trace_incident_edge_m_percentiles": [
+            8.595193753528986e-06,
+            8.623175267769402e-06,
+            8.689727393856144e-06
+          ],
+          "maximum_sample_radial_parameter_norm_difference_from_one": 5.203092556804734e-08,
+          "raw_global_peak_lower_Pa": 55431430.68784985
+        },
+        {
+          "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1",
+          "step": 3,
+          "time_s": 0.00375,
+          "tetrahedra": 171228,
+          "active_body_samples": 129,
+          "active_samples_outside_marking_caps": 0,
+          "outside_unsigned_normal_sample_load_fraction": 0.0,
+          "minimum_and_maximum_sample_angle_over_cap_angle": [
+            0.0017177718483273154,
+            0.734929752479976
+          ],
+          "active_reference_trace_incident_edge_m_percentiles": [
+            8.595193753528986e-06,
+            8.623175267769402e-06,
+            8.689569129470246e-06
+          ],
+          "maximum_sample_radial_parameter_norm_difference_from_one": 5.203092556804734e-08,
+          "raw_global_peak_lower_Pa": 55406813.24532525
+        },
+        {
+          "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1",
+          "step": 4,
+          "time_s": 0.005,
+          "tetrahedra": 171228,
+          "active_body_samples": 129,
+          "active_samples_outside_marking_caps": 0,
+          "outside_unsigned_normal_sample_load_fraction": 0.0,
+          "minimum_and_maximum_sample_angle_over_cap_angle": [
+            0.0017177718483273154,
+            0.734929752479976
+          ],
+          "active_reference_trace_incident_edge_m_percentiles": [
+            8.595193753528986e-06,
+            8.623175267769402e-06,
+            8.689569129470246e-06
+          ],
+          "maximum_sample_radial_parameter_norm_difference_from_one": 5.203092556804734e-08,
+          "raw_global_peak_lower_Pa": 55393001.78909661
+        },
+        {
+          "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1",
+          "step": 5,
+          "time_s": 0.00625,
+          "tetrahedra": 171228,
+          "active_body_samples": 129,
+          "active_samples_outside_marking_caps": 0,
+          "outside_unsigned_normal_sample_load_fraction": 0.0,
+          "minimum_and_maximum_sample_angle_over_cap_angle": [
+            0.0017177718483273154,
+            0.734929752479976
+          ],
+          "active_reference_trace_incident_edge_m_percentiles": [
+            8.595193753528986e-06,
+            8.623175267769402e-06,
+            8.689569129470246e-06
+          ],
+          "maximum_sample_radial_parameter_norm_difference_from_one": 5.203092556804734e-08,
+          "raw_global_peak_lower_Pa": 55382574.38004858
+        }
+      ],
+      "input_sha256": {
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/results/step0001.npz": "9ab1f1707a38a518582eabae70aa19277421c69319fa91a9a2a304e904aa08a2",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/results/step0002.npz": "3f55a3a8a80963d0fa27ec61be481ce74f7d2f8109a7a6cd0d128568342f8d18",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/results/step0003.npz": "7b1b00a912f8799537caf9e4759d00f1876ee81fdf56569bd06276f4bce4d906",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/results/step0004.npz": "9ef90694ae8b533f37d9572931f20b8c5f97b3041ab12f22c11f2baa4d24ea11",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/results/step0005.npz": "fff9bc5667f6304b76b8ce93c282670d3aa5290931077c919a4bfcdb9af36a39",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/results/configuration.json": "310d011a4cb6aa3cf8b0392ff25a9f9fd2244a9f671e9ded9b87b872ca26941f",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/results/summary.json": "d1e1dbfc805b9790f96528a37941b8bcdee88ac740d40602cae5f4f4350b9cb6",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-adaptive-cad-polyhedron-geometry-v5/results/summary.json": "7788b57163d19585ab1cfa38222fe6b07b3bb5dc518d429c8fefa36d9654a430",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-ref-centred-v1/results/configuration.json": "6bc322de01b974711e79da29056a27adf12a3c834b727b3fbfa274dafe1d2d24",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-input-complete-s4-v1/results/summary.json": "f89009453fde4dcdd071eb50aabe45acf42f169d2e59d14a744c9f2b817b6468",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/results/contact_geometry.npz": "b36353b1462f507504aa2d4b4310fcefaf7f0eb02109d8c89677570ba17707e2"
+      },
+      "physical_accuracy_accepted": false,
+      "goal_completion": false,
+      "limitations": "Reference contact-sample positions are mapped to the same angular parameter used for numerical mesh marking; this is not a geodesic distance or resolved physical contact boundary. Unsigned sample-force norms avoid cancellation of opposing jaws and are not a traction-area integral. Incident trace edges are measured in the undeformed collision discretization. Samples outside caps reveal coverage gaps; samples inside caps do not exclude missed contact caused by coarse geometry elsewhere. No stress smoothing, force/geometry modification, convergence acceptance or original goal completion follows."
+    },
+    "egg-covered-cad-three-level-fields-v1": {
+      "scope": "Compare independently audited covered CAD egg fields at identical physical times; geometry and contact axes remain coupled.",
+      "rows": [
+        {
+          "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level1-contact-v1",
+          "tetrahedra": 31668,
+          "step": 5,
+          "time_s": 0.00625,
+          "mass_kg": 0.007424160816030722,
+          "geometry_level": 1,
+          "com_reference_m": [
+            1.9807755843373814e-06,
+            -6.606799390900289e-06,
+            -0.00030587410175460174
+          ],
+          "body_tetrahedra": 31668,
+          "complete_body_dynamic_residual_N": 6.062350807332279e-14,
+          "complete_mapped_dynamic_residual_N": 1.653456064565677e-13,
+          "force_pullback_max_difference_N": null,
+          "normal_stencils": 30,
+          "maximum_coulomb_violation_N": -0.0001700480750021176,
+          "active_body_contact_nodes": 32,
+          "active_lumped_contact_area_m2": 2.896091859144248e-08,
+          "maximum_unsmoothed_body_normal_force_per_area_Pa": 70489891.54646496,
+          "original_saved_contact_force_difference_N": 2.049851877353722e-17,
+          "raw_peak_lower_Pa": 40400486.643240824,
+          "raw_peak_upper_Pa": 40400486.64324099,
+          "whole_volume_J_lower_bound": 0.9976013604674405,
+          "raw_peak_reference_position_m": [
+            2.114692078892005e-05,
+            0.022251337693694837,
+            -0.001827384332560059
+          ],
+          "nonlinear_energy_J": 9.636238254299993e-07,
+          "point_evaluator_qualification": {
+            "polynomial_displacement_max_error_m": 2.1361112138569387e-20,
+            "polynomial_tensor_max_error_Pa": 3.0249357223510742e-06,
+            "finite_rotation_tensor_max_error_Pa": 3.345310688018799e-06
+          }
+        },
+        {
+          "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level2-contact-v1",
+          "tetrahedra": 64716,
+          "step": 5,
+          "time_s": 0.00625,
+          "mass_kg": 0.007424160823023387,
+          "geometry_level": 2,
+          "com_reference_m": [
+            1.980776001206542e-06,
+            -6.606803990800892e-06,
+            -0.00030587410375532386
+          ],
+          "body_tetrahedra": 64716,
+          "complete_body_dynamic_residual_N": 4.7749063395076735e-14,
+          "complete_mapped_dynamic_residual_N": 1.1396457861634038e-13,
+          "force_pullback_max_difference_N": null,
+          "normal_stencils": 59,
+          "maximum_coulomb_violation_N": -0.00018492362096435289,
+          "active_body_contact_nodes": 61,
+          "active_lumped_contact_area_m2": 1.3804154048234311e-08,
+          "maximum_unsmoothed_body_normal_force_per_area_Pa": 107726557.38904718,
+          "original_saved_contact_force_difference_N": 6.189574023130916e-17,
+          "raw_peak_lower_Pa": 46917666.87868378,
+          "raw_peak_upper_Pa": 46917666.87868395,
+          "whole_volume_J_lower_bound": 0.9972333812306653,
+          "raw_peak_reference_position_m": [
+            2.114692078892005e-05,
+            0.022251337693694837,
+            -0.001827384332560059
+          ],
+          "nonlinear_energy_J": 9.675580316359398e-07,
+          "point_evaluator_qualification": {
+            "polynomial_displacement_max_error_m": 2.1361112138569387e-20,
+            "polynomial_tensor_max_error_Pa": 3.0249357223510742e-06,
+            "finite_rotation_tensor_max_error_Pa": 1.6819685697555542e-05
+          }
+        },
+        {
+          "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1",
+          "tetrahedra": 171228,
+          "step": 5,
+          "time_s": 0.00625,
+          "mass_kg": 0.007424160863683647,
+          "geometry_level": 3,
+          "com_reference_m": [
+            1.9807762444654382e-06,
+            -6.6066367955750745e-06,
+            -0.0003058741265428728
+          ],
+          "body_tetrahedra": 171228,
+          "complete_body_dynamic_residual_N": 5.4261239438390766e-14,
+          "complete_mapped_dynamic_residual_N": 1.4436442780661022e-13,
+          "force_pullback_max_difference_N": null,
+          "normal_stencils": 174,
+          "maximum_coulomb_violation_N": -2.1022696317631475e-10,
+          "active_body_contact_nodes": 129,
+          "active_lumped_contact_area_m2": 7.288456123413141e-09,
+          "maximum_unsmoothed_body_normal_force_per_area_Pa": 344687601.59069115,
+          "original_saved_contact_force_difference_N": 3.636161888654943e-16,
+          "raw_peak_lower_Pa": 55382574.38004858,
+          "raw_peak_upper_Pa": 55415413.702345066,
+          "whole_volume_J_lower_bound": 0.9967695467924226,
+          "raw_peak_reference_position_m": [
+            5.7369152416463374e-05,
+            0.022251846605568705,
+            -0.0018427985760413354
+          ],
+          "nonlinear_energy_J": 9.741153981151015e-07,
+          "point_evaluator_qualification": {
+            "polynomial_displacement_max_error_m": 2.1361112138569387e-20,
+            "polynomial_tensor_max_error_Pa": 3.0249357223510742e-06,
+            "finite_rotation_tensor_max_error_Pa": 2.3681670427322388e-05
+          }
+        }
+      ],
+      "comparisons": [
+        {
+          "coarse_tetrahedra": 31668,
+          "fine_tetrahedra": 64716,
+          "tensor": {
+            "absolute_l2_change": 13.248508437794904,
+            "relative_l2_change": 0.09680122185326857
+          },
+          "vm": {
+            "absolute_l2_change": 8.121423221978752,
+            "relative_l2_change": 0.0633926302882232
+          },
+          "objective_displacement": {
+            "absolute_l2_change": 6.223013210965296e-14,
+            "relative_l2_change": 0.00021481424186293047
+          },
+          "raw_peak_lower_Pa": 0.13890674172470252,
+          "nonlinear_energy_J": 0.004066119113588007
+        },
+        {
+          "coarse_tetrahedra": 64716,
+          "fine_tetrahedra": 171228,
+          "tensor": {
+            "absolute_l2_change": 14.596638011963632,
+            "relative_l2_change": 0.10720876006137973
+          },
+          "vm": {
+            "absolute_l2_change": 8.0016365612612,
+            "relative_l2_change": 0.06271904017533676
+          },
+          "objective_displacement": {
+            "absolute_l2_change": 9.271853994645439e-14,
+            "relative_l2_change": 0.00032006095751304335
+          },
+          "raw_peak_lower_Pa": 0.15284424019866905,
+          "nonlinear_energy_J": 0.00673161156455393
+        }
+      ],
+      "common_physical_probes": 158340,
+      "physical_configuration": {
+        "closure_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-ref-centred-v1",
+        "dt": 0.00125,
+        "control_steps": 64,
+        "geometry_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-adaptive-cad-polyhedron-geometry-v5",
+        "mode": "cad",
+        "dhat_m": 2.5e-06,
+        "friction": 0.6
+      },
+      "input_sha256": {
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level1-contact-v1-audit/results/summary.json": "71cad0082461bf18414e3e268233453414f13a3fc9862286bb7c9bb396b76a98",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level1-contact-v1/results/step0004.npz": "d72db919881ce16b16dc196b86d54c9b1cdb9dc27f34614ce13f05646dfee551",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level1-contact-v1/results/step0005.npz": "301d3265cb29f1b8f9c9d7662ea2057e36d4ee17dd9c0776e83d09e9ba2ddcb3",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level1-contact-v1/results/configuration.json": "152deb725e3b6c99102d3c4758d555b4ef46ca10dbe72b48936d730de65bc8a1",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level1-contact-v1/results/reference_geometry.npz": "4793506c26e1f8eb7b229db15baeaa3b51d36142aa02220ac6c80ff332e5e14b",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level2-contact-v1-audit/results/summary.json": "e21ac965a1c269254cf71b5145a210476bc99cfd6ab35f83681f0f02363cee7b",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level2-contact-v1/results/step0004.npz": "d206b1fd9e39031cbc9b576e4e141ee09bfec8d04651fe1c4188218fcb891c7a",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level2-contact-v1/results/step0005.npz": "b733aab0413c0b22c57fbaf3dba43771ef64cd6865e312941ceb2b098d761ccd",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level2-contact-v1/results/configuration.json": "6aae162c8cfe6fe3d4594ebd22f6c78146b10a8a4783c2131f09daceff55ff3f",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level2-contact-v1/results/reference_geometry.npz": "aeb255d01ab19073c79f3823ad3f33f1ed18a057cb71ea80582f9f710d5c3c21",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-audit-v1/results/summary.json": "d1e1dbfc805b9790f96528a37941b8bcdee88ac740d40602cae5f4f4350b9cb6",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/results/step0004.npz": "9a52597e64db78767deb899f9f88b754858916e70829eb2b30ff139d31ef9246",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/results/step0005.npz": "56c1a9741caa5a629497869d7db4fe0872fe74409dd058216cf1237f02285aa5",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/results/configuration.json": "310d011a4cb6aa3cf8b0392ff25a9f9fd2244a9f671e9ded9b87b872ca26941f",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/results/reference_geometry.npz": "1a612262859e601c6d2c08c58f80291a319f6540ae804a2253513703704a5fe5"
+      },
+      "goal_completion": false,
+      "limitations": "Two covered meshes approximate the same declared CAD geometry at fixed material/density, friction, original held closure/control and physical timestep. Represented volume/mass and geometry differ explicitly. Bulk, surface geometry and body contact trace vary together; this is not a separated axis or a physical tail. Separate all-five-state audits qualify original force gates. Full raw corner/global bounds, objective common-point tensors and source arrays remain intact. This short stationary window does not establish complete original application, contact/space/regularization convergence, model/feedback or warmed accuracy/cost."
+    },
+    "egg-covered-cad-three-level-linearization-v1": {
+      "scope": "Separate resolved-load linearization from frozen-deformation constitutive differences on matched states.",
+      "comparison": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1",
+      "rows": [
+        {
+          "case": 0,
+          "tetrahedra": 31668,
+          "time_s": 0.00625,
+          "resolved_linear_vs_nonlinear": {
+            "absolute_volume_L2_Pa_m_3over2": 0.20850964813835632,
+            "relative_volume_L2": 0.0014368444216839391
+          },
+          "frozen_objective_displacement_linear_vs_nonlinear": {
+            "absolute_volume_L2_Pa_m_3over2": 0.4550811904434567,
+            "relative_volume_L2": 0.00313597416589608
+          },
+          "rigid_relief_vs_resolved_full_inertia": {
+            "absolute_volume_L2_Pa_m_3over2": 1.0728697709231685e-07,
+            "relative_volume_L2": 7.401038438869457e-10
+          },
+          "raw_nonlinear_global_peak_lower_Pa": 40400486.643240824,
+          "raw_resolved_linear_global_peak_Pa": 40363746.17239489,
+          "raw_relief_linear_global_peak_Pa": 40363746.17238838,
+          "raw_peak_linear_vs_nonlinear_relative_difference": 0.0009094066408252832,
+          "nonlinear_energy_J": 9.636238254299993e-07,
+          "resolved_linear_energy_J": 9.617602446805357e-07,
+          "full_rhs_reference_balance_correction_N": 8.454598909810294e-09,
+          "linear_complete_residual_N": 4.773035188687062e-12
+        },
+        {
+          "case": 1,
+          "tetrahedra": 64716,
+          "time_s": 0.00625,
+          "resolved_linear_vs_nonlinear": {
+            "absolute_volume_L2_Pa_m_3over2": 0.21190258944678655,
+            "relative_volume_L2": 0.0014566775008606624
+          },
+          "frozen_objective_displacement_linear_vs_nonlinear": {
+            "absolute_volume_L2_Pa_m_3over2": 0.45624162097853055,
+            "relative_volume_L2": 0.003136332151346921
+          },
+          "rigid_relief_vs_resolved_full_inertia": {
+            "absolute_volume_L2_Pa_m_3over2": 9.901617850199425e-08,
+            "relative_volume_L2": 6.813896465306008e-10
+          },
+          "raw_nonlinear_global_peak_lower_Pa": 46917666.87868378,
+          "raw_resolved_linear_global_peak_Pa": 46873743.79086678,
+          "raw_relief_linear_global_peak_Pa": 46873743.790841945,
+          "raw_peak_linear_vs_nonlinear_relative_difference": 0.0009361737430503281,
+          "nonlinear_energy_J": 9.675580316359398e-07,
+          "resolved_linear_energy_J": 9.65706088603935e-07,
+          "full_rhs_reference_balance_correction_N": 8.39145740503189e-09,
+          "linear_complete_residual_N": 4.8572967492135056e-12
+        },
+        {
+          "case": 2,
+          "tetrahedra": 171228,
+          "time_s": 0.00625,
+          "resolved_linear_vs_nonlinear": {
+            "absolute_volume_L2_Pa_m_3over2": 0.2140953074130629,
+            "relative_volume_L2": 0.0014678565912931364
+          },
+          "frozen_objective_displacement_linear_vs_nonlinear": {
+            "absolute_volume_L2_Pa_m_3over2": 0.45721483230415433,
+            "relative_volume_L2": 0.0031347058155731
+          },
+          "rigid_relief_vs_resolved_full_inertia": {
+            "absolute_volume_L2_Pa_m_3over2": 9.917355773307797e-08,
+            "relative_volume_L2": 6.806597841108466e-10
+          },
+          "raw_nonlinear_global_peak_lower_Pa": 55382574.38004858,
+          "raw_resolved_linear_global_peak_Pa": 55337980.42237306,
+          "raw_relief_linear_global_peak_Pa": 55337980.42234429,
+          "raw_peak_linear_vs_nonlinear_relative_difference": 0.0008051983529965279,
+          "nonlinear_energy_J": 9.741153981151015e-07,
+          "resolved_linear_energy_J": 9.722729312006781e-07,
+          "full_rhs_reference_balance_correction_N": 8.393282940683368e-09,
+          "linear_complete_residual_N": 4.700026615290446e-12
+        }
+      ],
+      "input_sha256": {
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/results/summary.json": "1fd5e4490139ce69f63774618a296f99bce6122fa7b372edab4513980eca2f1a",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level1-contact-v1/results/step0005.npz": "301d3265cb29f1b8f9c9d7662ea2057e36d4ee17dd9c0776e83d09e9ba2ddcb3",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/results/case00.npz": "376b5843e65cd072e380025d4853e07d29117d170fe07d4e6a21e95abda8da0b",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level2-contact-v1/results/step0005.npz": "b733aab0413c0b22c57fbaf3dba43771ef64cd6865e312941ceb2b098d761ccd",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/results/case01.npz": "bb8439f5ad280ff5fecc807304f0e47cd637188f5ac15d192405ce0ebe42f44b",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level3-schur-contact-v1/results/step0005.npz": "56c1a9741caa5a629497869d7db4fe0872fe74409dd058216cf1237f02285aa5",
+        "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-fields-v1/results/case02.npz": "91217e4ba2c2c16bc9add2fe8f71b61e7a04d29e942dd7f947d2f673a1b00e66"
+      },
+      "goal_completion": false,
+      "limitations": "One matched state per mesh at the explicitly recorded physical time and unresolved spatial/contact settings. Replaying resolved full-inertia loads through independent linear FEM measures a combined finite-geometry/constitutive linearization discrepancy; the reference-wrench balance correction is explicit. Frozen-objective-deformation stress comparison diagnoses the constitutive assumption without claiming a new equilibrium solve. Rigid-relief comparison is not a corresponding solved rigid/deformable feedback case. Native numerical replay, physical convergence, full histories, remaining finite-footprint models and verified warmed cost remain separate requirements."
+    }
+  },
+  "pending_work_excluded_from_successful_evidence": [
+    "Native finest replay719430 and fixed31668-tet contact-distance producers/audits719417/418/420/421; neither accepted as completed here.",
+    "Complete original A/B/C physical/model/island/application/feedback and accuracy/cost acceptance."
+  ],
+  "goal_completion": false
+}
