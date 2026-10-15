@@ -50,7 +50,8 @@ def assemble_state(static, config, u, previous, velocity, expected, bulk=None):
         coulomb_violations.append(violation)
         del collision
     contact = static.mesh.to_full_dof(surface.reshape(-1))
-    np.testing.assert_allclose(contact, expected, rtol=1e-12, atol=1e-12)
+    if expected is not None:
+        np.testing.assert_allclose(contact, expected, rtol=1e-12, atol=1e-12)
     n = static.body.basis.N
     permutation = static.parts[0].permutation
     vector = np.empty(n, dtype=np.longdouble)
@@ -92,7 +93,7 @@ def assemble_state(static, config, u, previous, velocity, expected, bulk=None):
         "body_tetrahedra": static.body.mesh.nelements,
         "complete_body_dynamic_residual_N": body_residual,
         "complete_mapped_dynamic_residual_N": complete,
-        "force_pullback_max_difference_N": float(abs(contact - expected).max()),
+        "force_pullback_max_difference_N": float(abs(contact - expected).max()) if expected is not None else None,
         "normal_stencils": len(normal),
         "maximum_coulomb_violation_N": max(coulomb_violations, default=0),
         "active_body_contact_nodes": int(active.sum()),

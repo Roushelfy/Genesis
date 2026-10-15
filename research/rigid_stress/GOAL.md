@@ -31,7 +31,17 @@ egg/Franka and U contact references, resolved-load/native replay versus feedback
 remaining applicable load-model sensitivity and physically verified warmed costs.
 These are execution priorities within the complete linked objective.
 
-The [stencil-precision/original-field checkpoint](docs/PHYSICAL_STENCIL_PRECISION_20261015.md)
+The [matched-spatial checkpoint](docs/PHYSICAL_MATCHED_SPATIAL_20261015.md)
+closes three uniform reference levels: final full-tensor change remains49.32%
+despite0.00866% contact-force change. Three independently balanced32.5ms states
+retain23.94% final tensor/49.66% energy changes and a2.044GPa raw peak;18 active
+nodes do not establish a physical tail. Local finite strain reaches0.20 despite
+less than0.8% wall-relative objective displacement. All original25 fine states
+retain complete arrays and corner/quadrature tensors to4.86e-11 relative change
+under the precision correction. Full histories, contact/geometry/model/feedback
+and verified warmed accuracy/cost remain required. Editable matched maps pass QA.
+
+The earlier [stencil-precision/original-field checkpoint](docs/PHYSICAL_STENCIL_PRECISION_20261015.md)
 independently recovers rejected8433-tet step26 to9.611e-13N at unchanged physical
 inputs and force budgets. Its expanded audit identifies18 active body nodes and
 0.00283025mm² lumped support at that one recovered state. The80-step re-solve and its audit
