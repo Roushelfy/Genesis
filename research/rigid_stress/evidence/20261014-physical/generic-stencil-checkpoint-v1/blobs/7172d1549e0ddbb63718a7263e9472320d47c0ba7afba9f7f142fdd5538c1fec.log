@@ -1,0 +1,23 @@
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-paired-polyhedron-three-level-fields-v1/source/research/rigid_stress/compare_paired_polyhedron.py", line 159, in <module>
+    main()
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-paired-polyhedron-three-level-fields-v1/source/research/rigid_stress/compare_paired_polyhedron.py", line 90, in main
+    metrics, fields = assemble_state(static, config, u, old, old_velocity, force, bulk)
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-paired-polyhedron-three-level-fields-v1/source/research/rigid_stress/audit_precise_spatial_state.py", line 54, in assemble_state
+    np.testing.assert_allclose(contact, expected, rtol=1e-12, atol=1e-12)
+  File "/usr/local/lib/python3.10/dist-packages/numpy/testing/_private/utils.py", line 1715, in assert_allclose
+    assert_array_compare(compare, actual, desired, err_msg=str(err_msg),
+  File "/usr/local/lib/python3.10/dist-packages/numpy/testing/_private/utils.py", line 921, in assert_array_compare
+    raise AssertionError(msg)
+AssertionError: 
+Not equal to tolerance rtol=1e-12, atol=1e-12
+
+Mismatched elements: 19 / 2970 (0.64%)
+Max absolute difference among violations: 1.54214627e-11
+Max relative difference among violations: 2.39120045e-08
+ ACTUAL: array([0., 0., 0., ..., 0., 0., 0.], shape=(2970,))
+ DESIRED: array([-0., -0., -0., ..., -0., -0., -0.], shape=(2970,))

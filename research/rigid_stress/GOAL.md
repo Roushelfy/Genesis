@@ -31,6 +31,18 @@ egg/Franka and U contact references, resolved-load/native replay versus feedback
 remaining applicable load-model sensitivity and physically verified warmed costs.
 These are execution priorities within the complete linked objective.
 
+The [generic-stencil/contact checkpoint](docs/PHYSICAL_EGG_EDGE_STENCILS_20261015.md)
+qualifies four IPC reference stencil types and the original unmollified friction
+magnitude, independently rechecks ten existing1920-tet states, and recovers all
+five7680-tet CAD dynamic states from the byte-identical held initializer.
+Its maximum independently reconstructed body/mapped residuals are2.07e-13/
+4.11e-13N. The final0.847MPa raw peak and three actual edge–edge stencils remain
+short unresolved-reference diagnostics. Three fixed-polyhedron levels retain
+47.22% tensor/21.54% energy change. New paired local meshes meet100/50/25/12.5µm
+edge targets with17340/22152/32340/61812 tetrahedra; their actual CAD contact
+references are live. A cancelled fixed-round build with real wrapper0 remains
+incomplete. Full original convergence/application/model/feedback/cost scope stays.
+
 The [egg geometry/four-level checkpoint](docs/PHYSICAL_EGG_GEOMETRY_SPATIAL_20261015.md)
 independently checks480/3577/8433/30298-tet states at6.25ms: the last pair still
 changes tensor15.52% and energy9.35%; the finest resolved-load linear tensor

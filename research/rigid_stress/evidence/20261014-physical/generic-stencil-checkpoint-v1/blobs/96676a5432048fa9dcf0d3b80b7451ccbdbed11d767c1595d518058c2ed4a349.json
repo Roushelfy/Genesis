@@ -1,0 +1,39 @@
+{
+  "scope": "Continue a closed paired-geometry reference from its unchanged initializer and audited physical prefix.",
+  "source_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-paired-cad-level3-contact-v1",
+  "steps": [
+    {
+      "step": 1,
+      "time_s": 0.00125,
+      "complete_dynamic_residual_N": 7.74276394893509e-14,
+      "complete_body_dynamic_residual_N": 3.7854254004555756e-14
+    },
+    {
+      "step": 2,
+      "time_s": 0.0025,
+      "complete_dynamic_residual_N": 5.022491106862895e-14,
+      "complete_body_dynamic_residual_N": 2.327156082538065e-14
+    },
+    {
+      "step": 3,
+      "time_s": 0.00375,
+      "complete_dynamic_residual_N": 8.388706845920207e-14,
+      "complete_body_dynamic_residual_N": 3.582430291735758e-14
+    },
+    {
+      "step": 4,
+      "time_s": 0.005,
+      "complete_dynamic_residual_N": 1.376181614374534e-13,
+      "complete_body_dynamic_residual_N": 6.101425052018613e-14
+    },
+    {
+      "step": 5,
+      "time_s": 0.00625,
+      "complete_dynamic_residual_N": 4.106943985205781e-13,
+      "complete_body_dynamic_residual_N": 2.064708520486142e-13
+    }
+  ],
+  "original_byte_identical_prefix_states": 0,
+  "goal_completion": false,
+  "limitations": "Only centered reference collision-force evaluation is generalized to supported point/edge/face stencils and the package's original unmollified friction magnitude. Original geometry/material/mass, closure, control, dt, gravity, physical1e-9N gates and stricter Newton1e-10 target remain fixed. All retained prefix states are independently force-audited and copied byte-identically before continuation. The initializer is retained, not independently reconstructed at every original closure target. Complete new histories still require a separate independent audit; this does not establish physical convergence, full application, remaining models/feedback or verified warmed cost."
+}

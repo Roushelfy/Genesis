@@ -1,0 +1,163 @@
+{
+  "scope": "Compare independent final fields on the unchanged egg polyhedron across paired surface refinements.",
+  "rows": [
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-tip-coupled-0-v1",
+      "tetrahedra": 480,
+      "step": 5,
+      "time_s": 0.00625,
+      "mass_kg": 0.006529848210401321,
+      "maximum_boundary_vertex_and_facet_centroid_distance_to_supported_seed_facet_m": 3.144186300207963e-18,
+      "body_tetrahedra": 480,
+      "complete_body_dynamic_residual_N": 2.128533901973749e-11,
+      "complete_mapped_dynamic_residual_N": 3.738535153453283e-11,
+      "force_pullback_max_difference_N": null,
+      "normal_stencils": 2,
+      "maximum_coulomb_violation_N": -0.19899057350166607,
+      "active_body_contact_nodes": 2,
+      "active_lumped_contact_area_m2": 9.651359056167826e-05,
+      "maximum_unsmoothed_body_normal_force_per_area_Pa": 8283.117970932664,
+      "original_saved_contact_force_difference_N": 2.734179175585671e-11,
+      "raw_peak_lower_Pa": 156452.58541344435,
+      "raw_peak_upper_Pa": 156452.58541360448,
+      "whole_volume_J_lower_bound": 0.9999918755810259,
+      "raw_peak_reference_position_m": [
+        1.7697452569155986e-06,
+        0.022028914832074527,
+        0.001184687058517001
+      ],
+      "nonlinear_energy_J": 1.3994376256096256e-07,
+      "point_evaluator_qualification": {
+        "polynomial_displacement_max_error_m": 2.642742795433417e-19,
+        "polynomial_tensor_max_error_Pa": 3.039836883544922e-06,
+        "finite_rotation_tensor_max_error_Pa": 0.0001878887414932251
+      }
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-paired-polyhedron-level2-contact-v2",
+      "tetrahedra": 1920,
+      "step": 5,
+      "time_s": 0.00625,
+      "mass_kg": 0.006529848210401322,
+      "maximum_boundary_vertex_and_facet_centroid_distance_to_supported_seed_facet_m": 6.7220534694101275e-18,
+      "body_tetrahedra": 1920,
+      "complete_body_dynamic_residual_N": 1.76440156009795e-11,
+      "complete_mapped_dynamic_residual_N": 3.1610705608920084e-11,
+      "force_pullback_max_difference_N": null,
+      "normal_stencils": 2,
+      "maximum_coulomb_violation_N": -0.19897008233333774,
+      "active_body_contact_nodes": 2,
+      "active_lumped_contact_area_m2": 2.4128020460799115e-05,
+      "maximum_unsmoothed_body_normal_force_per_area_Pa": 33130.0636102513,
+      "original_saved_contact_force_difference_N": 0.0,
+      "raw_peak_lower_Pa": 284221.3902316347,
+      "raw_peak_upper_Pa": 284221.3902317949,
+      "whole_volume_J_lower_bound": 0.9999797700977272,
+      "raw_peak_reference_position_m": [
+        1.7697452569155986e-06,
+        0.022028914832074527,
+        0.001184687058517001
+      ],
+      "nonlinear_energy_J": 2.445897600086608e-07,
+      "point_evaluator_qualification": {
+        "polynomial_displacement_max_error_m": 5.759824041329242e-20,
+        "polynomial_tensor_max_error_Pa": 3.159046173095703e-06,
+        "finite_rotation_tensor_max_error_Pa": 0.0002423413097858429
+      }
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-paired-polyhedron-level3-contact-v1",
+      "tetrahedra": 7680,
+      "step": 5,
+      "time_s": 0.00625,
+      "mass_kg": 0.006529848210401323,
+      "maximum_boundary_vertex_and_facet_centroid_distance_to_supported_seed_facet_m": 7.119523679909208e-18,
+      "body_tetrahedra": 7680,
+      "complete_body_dynamic_residual_N": 1.7645383729063856e-11,
+      "complete_mapped_dynamic_residual_N": 3.161277357107974e-11,
+      "force_pullback_max_difference_N": null,
+      "normal_stencils": 2,
+      "maximum_coulomb_violation_N": -0.1989489559753704,
+      "active_body_contact_nodes": 2,
+      "active_lumped_contact_area_m2": 6.031861934445708e-06,
+      "maximum_unsmoothed_body_normal_force_per_area_Pa": 132511.31778238143,
+      "original_saved_contact_force_difference_N": 0.0,
+      "raw_peak_lower_Pa": 569475.3185432393,
+      "raw_peak_upper_Pa": 569475.3185433993,
+      "whole_volume_J_lower_bound": 0.9999558975446057,
+      "raw_peak_reference_position_m": [
+        1.7697452569155986e-06,
+        0.022028914832074527,
+        0.001184687058517001
+      ],
+      "nonlinear_energy_J": 3.11724497019132e-07,
+      "point_evaluator_qualification": {
+        "polynomial_displacement_max_error_m": 3.3881317890172014e-20,
+        "polynomial_tensor_max_error_Pa": 3.080815076828003e-06,
+        "finite_rotation_tensor_max_error_Pa": 0.0003470107913017273
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "coarse_tetrahedra": 480,
+      "fine_tetrahedra": 1920,
+      "tensor": {
+        "absolute_l2_change": 36.3857437593803,
+        "relative_l2_change": 0.622081243924639
+      },
+      "vm": {
+        "absolute_l2_change": 26.271889706118834,
+        "relative_l2_change": 0.41082444246451777
+      },
+      "objective_displacement": {
+        "absolute_l2_change": 8.44809777546154e-11,
+        "relative_l2_change": 0.44006592178038056
+      },
+      "raw_peak_lower_Pa": 0.4495397222357591,
+      "nonlinear_energy_J": 0.4278429213225965
+    },
+    {
+      "coarse_tetrahedra": 1920,
+      "fine_tetrahedra": 7680,
+      "tensor": {
+        "absolute_l2_change": 29.706384613681777,
+        "relative_l2_change": 0.4722146617159748
+      },
+      "vm": {
+        "absolute_l2_change": 15.865556321709589,
+        "relative_l2_change": 0.23860766707011125
+      },
+      "objective_displacement": {
+        "absolute_l2_change": 5.127022571652444e-11,
+        "relative_l2_change": 0.2247889457023387
+      },
+      "raw_peak_lower_Pa": 0.5009065696495953,
+      "nonlinear_energy_J": 0.21536561179005076
+    }
+  ],
+  "common_physical_probes": 2400,
+  "physical_configuration": {
+    "closure_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-ref-centred-v1",
+    "dt": 0.00125,
+    "control_steps": 64,
+    "dhat_m": 2.5e-06,
+    "friction": 0.6
+  },
+  "input_sha256": {
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-tip-coupled-0-v1/results/step0004.npz": "ec9ff7867cd088350dfd4f196962b3ea0e9399c54fad80c92b135d38e72eaf34",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-tip-coupled-0-v1/results/step0005.npz": "363c6da583ae732711c328ff0c6c09d93ec185a43de6b956020e3fea42063cc1",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-tip-coupled-0-v1/results/configuration.json": "b210e295971fcd18322400081136f55d6ee2864b4651c95514491e76d46d0fa3",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-tip-coupled-0-v1/results/reference_geometry.npz": "5d83bf66e8b660b13934a56506493b3ffe925be491480f4b4d018d4580afbd85",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-paired-polyhedron-level2-contact-v2/results/step0004.npz": "8e5cf024acbb375b4cad19b7141852c8145018a292ec9b310a90b475b4f7ff83",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-paired-polyhedron-level2-contact-v2/results/step0005.npz": "e2ccba17f0e014a6a703c93f50ce10d7199ca5621f307cbce6dee5affd71ae42",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-paired-polyhedron-level2-contact-v2/results/configuration.json": "38c5603244133cffeab0eca7398d9b91e421c5549a9ee8fe38770f5fd4ac665c",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-paired-polyhedron-level2-contact-v2/results/reference_geometry.npz": "29ca729b81f2385e53faaac5ebac7133da856cb2f1f8ba761137b576c6d493bf",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-paired-polyhedron-level3-contact-v1/results/step0004.npz": "11db22767a53d872b7f8e874691ef0a2404a1b6e06dcabed2b5db32c99f54393",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-paired-polyhedron-level3-contact-v1/results/step0005.npz": "e1b3c3c7f6ffdd49648e64e891409c2edeb3982d1cd69ca69358bc1f3505f58e",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-paired-polyhedron-level3-contact-v1/results/configuration.json": "e898660539be5dd0fc6af12529413e520bd2cfd2c890b07cd6cb9c5e61dbd9c3",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-paired-polyhedron-level3-contact-v1/results/reference_geometry.npz": "aaa02d545ea938fe0e70ee83600f43719d3d3203ec167822df49a01eb28eecea"
+  },
+  "goal_completion": false,
+  "limitations": "One common physical time on an unchanged coarse polyhedral material domain. The paired meshes preserve the actual seed boundary, geometry/mass and original physical inputs; common physical probes and independently reconstructed force gates remain explicit. Surface and volume/contact resolution vary together on this branch, so this is not a separated bulk or contact-integration error. Raw maxima are unsmoothed whole-volume bounds. CAD geometry is a separate family and is excluded. These fields do not establish complete application/history, converged physical contact, model/feedback accuracy or verified warmed cost."
+}

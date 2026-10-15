@@ -5,6 +5,17 @@ without narrowing its scope. Historical native performance completion does not
 establish the new physical stage. Dated reports preserve their observations;
 running or pending jobs count as scheduled work only.
 
+Current: [generic point/edge/face reference reconstruction](PHYSICAL_EGG_EDGE_STENCILS_20261015.md)
+qualifies four stencil types, independently rechecks ten old states and completes
+five newly audited7680-tet CAD dynamic states at unchanged physical force gates.
+Actual edge–edge contact is retained, including the original friction convention;
+the original initializer/geometry arrays remain byte-identical. Three uniform
+fixed-polyhedron fields still change tensor47.22% and energy21.54%. Paired local
+geometry assets meet explicit100/50/25/12.5µm edge targets; live contact results
+are excluded. Failed type assertions, the historical force-arithmetic comparison
+and a cancelled wrapper0 adaptive build remain visible. These do not establish
+physical tails, full histories/application, model/feedback or verified costs.
+
 Current: [four-level egg fields and independent continuum geometry](PHYSICAL_EGG_GEOMETRY_SPATIAL_20261015.md)
 retain15.52% common-point tensor/9.35% energy changes at6.25ms and11.22%
 resolved-load linear tensor discrepancy on30298 tetrahedra. The original

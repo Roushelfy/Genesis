@@ -1,0 +1,172 @@
+{
+  "scope": "Qualify centered point/edge/face barrier derivatives and the original unmollified friction magnitude.",
+  "qualified": true,
+  "rows": [
+    {
+      "fixture": "vertex_vertex",
+      "normal_collision_type": "VertexVertexNormalCollision",
+      "squared_distance_m2": 1e-12,
+      "original_unmollified_normal_force_magnitude": 5990989.487277728,
+      "independent_scalar_force_magnitude": 5990989.487277729,
+      "weighted_normal_resultant_over_weight": 5990989.487277727,
+      "normal_resultant_over_original_friction_magnitude": 0.9999999999999999,
+      "directional_derivatives": [
+        {
+          "direction": 0,
+          "step_m": 1e-10,
+          "relative_derivative_difference": 3.845547162169862e-09
+        },
+        {
+          "direction": 0,
+          "step_m": 3e-11,
+          "relative_derivative_difference": 3.482232924470567e-10
+        },
+        {
+          "direction": 1,
+          "step_m": 1e-10,
+          "relative_derivative_difference": 7.326719260750382e-09
+        },
+        {
+          "direction": 1,
+          "step_m": 3e-11,
+          "relative_derivative_difference": 5.475154657116709e-10
+        },
+        {
+          "direction": 2,
+          "step_m": 1e-10,
+          "relative_derivative_difference": 1.50949476548695e-09
+        },
+        {
+          "direction": 2,
+          "step_m": 3e-11,
+          "relative_derivative_difference": 1.3335597452720926e-10
+        }
+      ]
+    },
+    {
+      "fixture": "edge_vertex",
+      "normal_collision_type": "EdgeVertexNormalCollision",
+      "squared_distance_m2": 1.0000000000000002e-12,
+      "original_unmollified_normal_force_magnitude": 5990989.4872777285,
+      "independent_scalar_force_magnitude": 5990989.487277729,
+      "weighted_normal_resultant_over_weight": 5990989.4872777285,
+      "normal_resultant_over_original_friction_magnitude": 1.0,
+      "directional_derivatives": [
+        {
+          "direction": 0,
+          "step_m": 1e-10,
+          "relative_derivative_difference": 1.5136853258145704e-09
+        },
+        {
+          "direction": 0,
+          "step_m": 3e-11,
+          "relative_derivative_difference": 1.442068829119502e-10
+        },
+        {
+          "direction": 1,
+          "step_m": 1e-10,
+          "relative_derivative_difference": 4.92680352915935e-09
+        },
+        {
+          "direction": 1,
+          "step_m": 3e-11,
+          "relative_derivative_difference": 4.32384709199595e-10
+        },
+        {
+          "direction": 2,
+          "step_m": 1e-10,
+          "relative_derivative_difference": 1.5650221877048195e-09
+        },
+        {
+          "direction": 2,
+          "step_m": 3e-11,
+          "relative_derivative_difference": 1.4784886909590986e-10
+        }
+      ]
+    },
+    {
+      "fixture": "face_vertex",
+      "normal_collision_type": "FaceVertexNormalCollision",
+      "squared_distance_m2": 1e-12,
+      "original_unmollified_normal_force_magnitude": 5990989.487277728,
+      "independent_scalar_force_magnitude": 5990989.487277729,
+      "weighted_normal_resultant_over_weight": 5990989.487277727,
+      "normal_resultant_over_original_friction_magnitude": 0.9999999999999999,
+      "directional_derivatives": [
+        {
+          "direction": 0,
+          "step_m": 1e-10,
+          "relative_derivative_difference": 1.6093907523831789e-09
+        },
+        {
+          "direction": 0,
+          "step_m": 3e-11,
+          "relative_derivative_difference": 1.3906640677727223e-10
+        },
+        {
+          "direction": 1,
+          "step_m": 1e-10,
+          "relative_derivative_difference": 8.736282326054237e-11
+        },
+        {
+          "direction": 1,
+          "step_m": 3e-11,
+          "relative_derivative_difference": 3.3706269926691393e-12
+        },
+        {
+          "direction": 2,
+          "step_m": 1e-10,
+          "relative_derivative_difference": 1.9256561278204338e-09
+        },
+        {
+          "direction": 2,
+          "step_m": 3e-11,
+          "relative_derivative_difference": 1.7079798245432348e-10
+        }
+      ]
+    },
+    {
+      "fixture": "edge_edge",
+      "normal_collision_type": "EdgeEdgeNormalCollision",
+      "squared_distance_m2": 1e-12,
+      "original_unmollified_normal_force_magnitude": 5990989.487277728,
+      "independent_scalar_force_magnitude": 5990989.487277729,
+      "weighted_normal_resultant_over_weight": 3834233.271857747,
+      "normal_resultant_over_original_friction_magnitude": 0.6400000000000002,
+      "directional_derivatives": [
+        {
+          "direction": 0,
+          "step_m": 1e-10,
+          "relative_derivative_difference": 8.497246245518461e-10
+        },
+        {
+          "direction": 0,
+          "step_m": 3e-11,
+          "relative_derivative_difference": 7.456631644663019e-11
+        },
+        {
+          "direction": 1,
+          "step_m": 1e-10,
+          "relative_derivative_difference": 1.4438982630246712e-08
+        },
+        {
+          "direction": 1,
+          "step_m": 3e-11,
+          "relative_derivative_difference": 1.2705203123638704e-09
+        },
+        {
+          "direction": 2,
+          "step_m": 1e-10,
+          "relative_derivative_difference": 6.043150093254707e-09
+        },
+        {
+          "direction": 2,
+          "step_m": 3e-11,
+          "relative_derivative_difference": 5.418773810984498e-10
+        }
+      ]
+    }
+  ],
+  "goal_completion": false,
+  "limitations": "Four small deterministic stencils verify barrier force derivatives, independent clamped-log scalar magnitude and the toolkit's unmollified edge-edge friction convention. These qualify reference force reconstruction, not a complete collision algorithm, physical contact convergence, an entire dynamic history, model/feedback accuracy or warmed cost."
+}

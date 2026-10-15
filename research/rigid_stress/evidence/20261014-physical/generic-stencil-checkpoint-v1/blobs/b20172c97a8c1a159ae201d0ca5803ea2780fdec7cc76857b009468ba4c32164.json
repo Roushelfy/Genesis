@@ -1,0 +1,669 @@
+{
+  "scope": "Refine conforming paired egg surfaces near fixed CAD contact anchors with unchanged shell parameters.",
+  "rows": [
+    {
+      "mode": "CAD",
+      "level": 1,
+      "local_refinement_iterations": 6,
+      "target_CAD_surface_edge_length_m": 0.0001,
+      "maximum_local_CAD_surface_edge_length_m": 7.095532898776577e-05,
+      "mesh": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-adaptive-cad-polyhedron-geometry-v3/results/cad-level1.npz",
+      "mesh_sha256": "34fc4561f5d298361917c2cd481e92fa92d104a3342f4c9ffed94bb3b07ce878",
+      "tetrahedra": 17340,
+      "vertices": 4341,
+      "boundary_components": 2,
+      "volume_m3": 3.712077061657713e-06,
+      "mass_kg": 0.007424154123315426,
+      "com_m": [
+        2.5437804889427747e-08,
+        -3.1036201745620357e-07,
+        -0.0019419750364955224
+      ],
+      "inertia_about_com_kg_m2": [
+        [
+          3.21694637684712e-06,
+          -5.238710851768934e-12,
+          -4.0477866541154865e-14
+        ],
+        [
+          -5.238710851769256e-12,
+          3.215341407832418e-06,
+          -3.149396252896311e-11
+        ],
+        [
+          -4.047786655627023e-14,
+          -3.1493962528973425e-11,
+          2.457496637816669e-06
+        ]
+      ],
+      "relative_volume_and_mass_error_from_continuum": -0.008450790037304534,
+      "outer_area_m2": 0.007607496882952888,
+      "inner_area_m2": 0.007298731130999167,
+      "outer_facet_centroid_radial_deficit_at_same_z_m_percentiles": [
+        1.9299065581734887e-08,
+        6.442908046466744e-06,
+        0.00013727985410055474,
+        0.00038648502315675407,
+        0.001016397604949993
+      ],
+      "outer_facet_centroid_normal_angle_at_same_z_degrees_percentiles": [
+        0.0005931558228665014,
+        0.2284648169629424,
+        0.7724341790916099,
+        2.19300974096786,
+        3.392113640720658
+      ],
+      "original_initializer_all_anchors_retained": true,
+      "original_initializer_nearest_P2_node_distances_m": [
+        4.906828973092135e-18,
+        4.906656018863839e-18,
+        4.906656018863839e-18,
+        1.3548602585173248e-19,
+        1.3548602585173248e-19,
+        2.983058249904401e-19
+      ]
+    },
+    {
+      "mode": "polyhedron",
+      "level": 1,
+      "local_refinement_iterations": 6,
+      "target_CAD_surface_edge_length_m": 0.0001,
+      "maximum_local_CAD_surface_edge_length_m": 7.095532898776577e-05,
+      "mesh": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-adaptive-cad-polyhedron-geometry-v3/results/polyhedron-level1.npz",
+      "mesh_sha256": "a876e3b0413c9f7a70f7383368499af2fa7c42c9970b19a1bdb2192ba4c2ceb2",
+      "tetrahedra": 17340,
+      "vertices": 4341,
+      "boundary_components": 2,
+      "volume_m3": 3.264924105200662e-06,
+      "mass_kg": 0.006529848210401324,
+      "com_m": [
+        -2.2381767771566707e-18,
+        2.4053602220782668e-18,
+        -0.0016360242166328525
+      ],
+      "inertia_about_com_kg_m2": [
+        [
+          2.591762081126386e-06,
+          -9.155056210213249e-23,
+          -2.4343610238671236e-23
+        ],
+        [
+          -1.0994522069007606e-22,
+          2.5917911523520514e-06,
+          -8.89090463520901e-23
+        ],
+        [
+          -3.8968302560563574e-23,
+          -1.0059562623248678e-22,
+          1.988841525070644e-06
+        ]
+      ],
+      "relative_volume_and_mass_error_from_continuum": -0.1278917804432187,
+      "outer_area_m2": 0.007090605127895128,
+      "inner_area_m2": 0.006803339856112869,
+      "outer_facet_centroid_radial_deficit_at_same_z_m_percentiles": [
+        9.239909300382682e-06,
+        0.001084492404715632,
+        0.0016936712449004201,
+        0.003959741539409701,
+        0.004825356024167207
+      ],
+      "outer_facet_centroid_normal_angle_at_same_z_degrees_percentiles": [
+        0.07420499461034306,
+        10.06933143715454,
+        16.738511495297125,
+        18.302036059502225,
+        21.577034382686165
+      ],
+      "original_initializer_all_anchors_retained": true,
+      "original_initializer_nearest_P2_node_distances_m": [
+        4.906828973092135e-18,
+        4.906656018863839e-18,
+        4.906656018863839e-18,
+        1.3548602585173248e-19,
+        1.3548602585173248e-19,
+        2.983058249904401e-19
+      ]
+    },
+    {
+      "mode": "CAD",
+      "level": 2,
+      "local_refinement_iterations": 8,
+      "target_CAD_surface_edge_length_m": 5e-05,
+      "maximum_local_CAD_surface_edge_length_m": 3.5481102054188574e-05,
+      "mesh": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-adaptive-cad-polyhedron-geometry-v3/results/cad-level2.npz",
+      "mesh_sha256": "59f046911f14292b0f7aded4c1cd90236a4b490f8334d5bbefc4c006d223c120",
+      "tetrahedra": 22152,
+      "vertices": 5544,
+      "boundary_components": 2,
+      "volume_m3": 3.7120771043231117e-06,
+      "mass_kg": 0.007424154208646223,
+      "com_m": [
+        2.543729306926398e-08,
+        -3.1068460664756193e-07,
+        -0.0019419751411288775
+      ],
+      "inertia_about_com_kg_m2": [
+        [
+          3.216946455064175e-06,
+          -5.238831857622297e-12,
+          -4.051525091333836e-14
+        ],
+        [
+          -5.2388318576193614e-12,
+          3.2153414149756287e-06,
+          -3.151615113233016e-11
+        ],
+        [
+          -4.051525091552271e-14,
+          -3.151615113234022e-11,
+          2.4574967089083273e-06
+        ]
+      ],
+      "relative_volume_and_mass_error_from_continuum": -0.008450778640762602,
+      "outer_area_m2": 0.007607496917914384,
+      "inner_area_m2": 0.007298731164743188,
+      "outer_facet_centroid_radial_deficit_at_same_z_m_percentiles": [
+        4.181541543579748e-09,
+        9.277594168535797e-07,
+        0.00012203306222961785,
+        0.00035626028399692033,
+        0.001016397604949993
+      ],
+      "outer_facet_centroid_normal_angle_at_same_z_degrees_percentiles": [
+        0.0003017603741102923,
+        0.11279537727716635,
+        0.7027897062189677,
+        1.7618328348980552,
+        3.392113640720658
+      ],
+      "original_initializer_all_anchors_retained": true,
+      "original_initializer_nearest_P2_node_distances_m": [
+        4.906828973092135e-18,
+        4.906656018863839e-18,
+        4.906656018863839e-18,
+        1.3548602585173248e-19,
+        1.3548602585173248e-19,
+        2.983058249904401e-19
+      ]
+    },
+    {
+      "mode": "polyhedron",
+      "level": 2,
+      "local_refinement_iterations": 8,
+      "target_CAD_surface_edge_length_m": 5e-05,
+      "maximum_local_CAD_surface_edge_length_m": 3.5481102054188574e-05,
+      "mesh": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-adaptive-cad-polyhedron-geometry-v3/results/polyhedron-level2.npz",
+      "mesh_sha256": "a1b2001eeb75380af63227ecc643d4bc9e301f738dc971796e491193ab851375",
+      "tetrahedra": 22152,
+      "vertices": 5544,
+      "boundary_components": 2,
+      "volume_m3": 3.264924105200662e-06,
+      "mass_kg": 0.006529848210401324,
+      "com_m": [
+        -2.23338713499789e-18,
+        2.3835550501318603e-18,
+        -0.0016360242166328334
+      ],
+      "inertia_about_com_kg_m2": [
+        [
+          2.591762081126338e-06,
+          -9.143307113106114e-23,
+          -2.2772091054974895e-23
+        ],
+        [
+          -1.0984705681118262e-22,
+          2.5917911523519943e-06,
+          -8.652606152535047e-23
+        ],
+        [
+          -3.5777251938448496e-23,
+          -9.805506643992925e-23,
+          1.988841525070633e-06
+        ]
+      ],
+      "relative_volume_and_mass_error_from_continuum": -0.1278917804432187,
+      "outer_area_m2": 0.007090605127895129,
+      "inner_area_m2": 0.006803339856112869,
+      "outer_facet_centroid_radial_deficit_at_same_z_m_percentiles": [
+        4.62415840841654e-06,
+        0.001074554081214412,
+        0.0016561156101507824,
+        0.0036641766655144993,
+        0.004825356024167207
+      ],
+      "outer_facet_centroid_normal_angle_at_same_z_degrees_percentiles": [
+        0.07420499461034306,
+        10.247959628613224,
+        16.90893975133725,
+        18.285856714369466,
+        21.577034382686165
+      ],
+      "original_initializer_all_anchors_retained": true,
+      "original_initializer_nearest_P2_node_distances_m": [
+        4.906828973092135e-18,
+        4.906656018863839e-18,
+        4.906656018863839e-18,
+        1.3548602585173248e-19,
+        1.3548602585173248e-19,
+        2.983058249904401e-19
+      ]
+    },
+    {
+      "mode": "CAD",
+      "level": 3,
+      "local_refinement_iterations": 10,
+      "target_CAD_surface_edge_length_m": 2.5e-05,
+      "maximum_local_CAD_surface_edge_length_m": 1.774140930158337e-05,
+      "mesh": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-adaptive-cad-polyhedron-geometry-v3/results/cad-level3.npz",
+      "mesh_sha256": "cc3e0db9542248380dbb964fd81c97ca7055f0fcd56c665090600da7d99fb130",
+      "tetrahedra": 32340,
+      "vertices": 8091,
+      "boundary_components": 2,
+      "volume_m3": 3.712077104419643e-06,
+      "mass_kg": 0.007424154208839286,
+      "com_m": [
+        2.5437299900744217e-08,
+        -3.1068470239668415e-07,
+        -0.0019419751412088331
+      ],
+      "inertia_about_com_kg_m2": [
+        [
+          3.2169464552381553e-06,
+          -5.238833296567334e-12,
+          -4.051521680912759e-14
+        ],
+        [
+          -5.238833296564323e-12,
+          3.2153414149806503e-06,
+          -3.151616626143428e-11
+        ],
+        [
+          -4.051521682423388e-14,
+          -3.151616626147034e-11,
+          2.457496709077516e-06
+        ]
+      ],
+      "relative_volume_and_mass_error_from_continuum": -0.008450778614977672,
+      "outer_area_m2": 0.007607496918021428,
+      "inner_area_m2": 0.007298731164846695,
+      "outer_facet_centroid_radial_deficit_at_same_z_m_percentiles": [
+        9.683911762758957e-10,
+        1.910704443622291e-08,
+        0.00010127168792868277,
+        0.0002905336010004364,
+        0.001016397604949993
+      ],
+      "outer_facet_centroid_normal_angle_at_same_z_degrees_percentiles": [
+        0.0001527753927760431,
+        0.020202769206592478,
+        0.5767988696656968,
+        1.6655961790584373,
+        3.392113640720658
+      ],
+      "original_initializer_all_anchors_retained": true,
+      "original_initializer_nearest_P2_node_distances_m": [
+        4.906828973092135e-18,
+        4.906656018863839e-18,
+        4.906656018863839e-18,
+        1.3548602585173248e-19,
+        1.3548602585173248e-19,
+        2.983058249904401e-19
+      ]
+    },
+    {
+      "mode": "polyhedron",
+      "level": 3,
+      "local_refinement_iterations": 10,
+      "target_CAD_surface_edge_length_m": 2.5e-05,
+      "maximum_local_CAD_surface_edge_length_m": 1.774140930158337e-05,
+      "mesh": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-adaptive-cad-polyhedron-geometry-v3/results/polyhedron-level3.npz",
+      "mesh_sha256": "83aadfa053d9f68e273ecc8d2f9147463e2af0d82b96cf9186e199f23e660b4b",
+      "tetrahedra": 32340,
+      "vertices": 8091,
+      "boundary_components": 2,
+      "volume_m3": 3.264924105200662e-06,
+      "mass_kg": 0.006529848210401324,
+      "com_m": [
+        -2.23409830868192e-18,
+        2.3872423961449006e-18,
+        -0.0016360242166328807
+      ],
+      "inertia_about_com_kg_m2": [
+        [
+          2.591762081126387e-06,
+          -9.457323057190653e-23,
+          -2.276449359375945e-23
+        ],
+        [
+          -1.1298706834060828e-22,
+          2.5917911523520498e-06,
+          -8.976329829974888e-23
+        ],
+        [
+          -3.5772809920853934e-23,
+          -1.0278068652725341e-22,
+          1.9888415250706604e-06
+        ]
+      ],
+      "relative_volume_and_mass_error_from_continuum": -0.1278917804432187,
+      "outer_area_m2": 0.007090605127895128,
+      "inner_area_m2": 0.006803339856112868,
+      "outer_facet_centroid_radial_deficit_at_same_z_m_percentiles": [
+        2.3131298631066943e-06,
+        0.0010386426428929917,
+        0.0016429352257400249,
+        0.0030058288471909705,
+        0.004825356024167207
+      ],
+      "outer_facet_centroid_normal_angle_at_same_z_degrees_percentiles": [
+        0.07420499461034306,
+        11.087820496201205,
+        17.090660553275114,
+        18.303041356228487,
+        21.577034382686165
+      ],
+      "original_initializer_all_anchors_retained": true,
+      "original_initializer_nearest_P2_node_distances_m": [
+        4.906828973092135e-18,
+        4.906656018863839e-18,
+        4.906656018863839e-18,
+        1.3548602585173248e-19,
+        1.3548602585173248e-19,
+        2.983058249904401e-19
+      ]
+    },
+    {
+      "mode": "CAD",
+      "level": 4,
+      "local_refinement_iterations": 12,
+      "target_CAD_surface_edge_length_m": 1.25e-05,
+      "maximum_local_CAD_surface_edge_length_m": 8.870919079783765e-06,
+      "mesh": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-adaptive-cad-polyhedron-geometry-v3/results/cad-level4.npz",
+      "mesh_sha256": "747fc5d31cb67a3e4559218bfec16bb40e40daf803964d1a7113f34da7229bae",
+      "tetrahedra": 61812,
+      "vertices": 15459,
+      "boundary_components": 2,
+      "volume_m3": 3.712077104478472e-06,
+      "mass_kg": 0.007424154208956944,
+      "com_m": [
+        2.5437300581717364e-08,
+        -3.106849898028875e-07,
+        -0.001941975141280236
+      ],
+      "inertia_about_com_kg_m2": [
+        [
+          3.2169464553451356e-06,
+          -5.238833441107768e-12,
+          -4.0515213602579194e-14
+        ],
+        [
+          -5.2388334411047555e-12,
+          3.2153414149857956e-06,
+          -3.1516184161701924e-11
+        ],
+        [
+          -4.05152136015308e-14,
+          -3.151618416171224e-11,
+          2.4574967091791987e-06
+        ]
+      ],
+      "relative_volume_and_mass_error_from_continuum": -0.008450778599263575,
+      "outer_area_m2": 0.007607496918057187,
+      "inner_area_m2": 0.007298731164881012,
+      "outer_facet_centroid_radial_deficit_at_same_z_m_percentiles": [
+        2.420782151124623e-10,
+        4.4037389013151795e-10,
+        7.80612575659867e-05,
+        0.00022023866159855653,
+        0.001016397604949993
+      ],
+      "outer_facet_centroid_normal_angle_at_same_z_degrees_percentiles": [
+        7.676369965777868e-05,
+        0.0006406471908611617,
+        0.375234257448821,
+        1.319155057914151,
+        3.392113640720658
+      ],
+      "original_initializer_all_anchors_retained": true,
+      "original_initializer_nearest_P2_node_distances_m": [
+        4.906828973092135e-18,
+        4.906656018863839e-18,
+        4.906656018863839e-18,
+        1.3548602585173248e-19,
+        1.3548602585173248e-19,
+        2.983058249904401e-19
+      ]
+    },
+    {
+      "mode": "polyhedron",
+      "level": 4,
+      "local_refinement_iterations": 12,
+      "target_CAD_surface_edge_length_m": 1.25e-05,
+      "maximum_local_CAD_surface_edge_length_m": 8.870919079783765e-06,
+      "mesh": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-adaptive-cad-polyhedron-geometry-v3/results/polyhedron-level4.npz",
+      "mesh_sha256": "c04c28a9d3a35ade1e655adfb064c9ad8c9d2570de1be6aec57c6713643bd646",
+      "tetrahedra": 61812,
+      "vertices": 15459,
+      "boundary_components": 2,
+      "volume_m3": 3.264924105200662e-06,
+      "mass_kg": 0.006529848210401324,
+      "com_m": [
+        -2.234087266011518e-18,
+        2.386401803330876e-18,
+        -0.00163602421663288
+      ],
+      "inertia_about_com_kg_m2": [
+        [
+          2.591762081126242e-06,
+          -9.780470066253125e-23,
+          -2.1133444425724015e-23
+        ],
+        [
+          -1.1621843982361985e-22,
+          2.5917911523518647e-06,
+          -8.478883328737439e-23
+        ],
+        [
+          -4.8682044957852187e-23,
+          -9.619023995053367e-23,
+          1.9888415250706295e-06
+        ]
+      ],
+      "relative_volume_and_mass_error_from_continuum": -0.1278917804432187,
+      "outer_area_m2": 0.007090605127895128,
+      "inner_area_m2": 0.0068033398561128675,
+      "outer_facet_centroid_radial_deficit_at_same_z_m_percentiles": [
+        1.1568275611988088e-06,
+        0.0010238591176920005,
+        0.001640437144617104,
+        0.002509196093963632,
+        0.004825356024167207
+      ],
+      "outer_facet_centroid_normal_angle_at_same_z_degrees_percentiles": [
+        0.07420499461034306,
+        11.488522352674227,
+        17.264852667759104,
+        18.314673380171786,
+        21.577034382686165
+      ],
+      "original_initializer_all_anchors_retained": true,
+      "original_initializer_nearest_P2_node_distances_m": [
+        4.906828973092135e-18,
+        4.906656018863839e-18,
+        4.906656018863839e-18,
+        1.3548602585173248e-19,
+        1.3548602585173248e-19,
+        2.983058249904401e-19
+      ]
+    }
+  ],
+  "refinement": [
+    {
+      "iteration": 1,
+      "target_edge_length_m": 0.0001,
+      "marked_triangles": 20,
+      "surface_vertices": 693,
+      "surface_triangles": 1382,
+      "maximum_parent_midpoint_match_error": 0.0
+    },
+    {
+      "iteration": 2,
+      "target_edge_length_m": 0.0001,
+      "marked_triangles": 22,
+      "surface_vertices": 757,
+      "surface_triangles": 1510,
+      "maximum_parent_midpoint_match_error": 0.0
+    },
+    {
+      "iteration": 3,
+      "target_edge_length_m": 0.0001,
+      "marked_triangles": 36,
+      "surface_vertices": 864,
+      "surface_triangles": 1724,
+      "maximum_parent_midpoint_match_error": 0.0
+    },
+    {
+      "iteration": 4,
+      "target_edge_length_m": 0.0001,
+      "marked_triangles": 40,
+      "surface_vertices": 988,
+      "surface_triangles": 1972,
+      "maximum_parent_midpoint_match_error": 0.0
+    },
+    {
+      "iteration": 5,
+      "target_edge_length_m": 0.0001,
+      "marked_triangles": 42,
+      "surface_vertices": 1117,
+      "surface_triangles": 2230,
+      "maximum_parent_midpoint_match_error": 0.0
+    },
+    {
+      "iteration": 6,
+      "target_edge_length_m": 0.0001,
+      "marked_triangles": 71,
+      "surface_vertices": 1447,
+      "surface_triangles": 2890,
+      "maximum_parent_midpoint_match_error": 0.0
+    },
+    {
+      "iteration": 7,
+      "target_edge_length_m": 5e-05,
+      "marked_triangles": 157,
+      "surface_vertices": 1836,
+      "surface_triangles": 3668,
+      "maximum_parent_midpoint_match_error": 0.0
+    },
+    {
+      "iteration": 8,
+      "target_edge_length_m": 5e-05,
+      "marked_triangles": 2,
+      "surface_vertices": 1848,
+      "surface_triangles": 3692,
+      "maximum_parent_midpoint_match_error": 0.0
+    },
+    {
+      "iteration": 9,
+      "target_edge_length_m": 2.5e-05,
+      "marked_triangles": 415,
+      "surface_vertices": 2674,
+      "surface_triangles": 5344,
+      "maximum_parent_midpoint_match_error": 0.0
+    },
+    {
+      "iteration": 10,
+      "target_edge_length_m": 2.5e-05,
+      "marked_triangles": 4,
+      "surface_vertices": 2697,
+      "surface_triangles": 5390,
+      "maximum_parent_midpoint_match_error": 0.0
+    },
+    {
+      "iteration": 11,
+      "target_edge_length_m": 1.25e-05,
+      "marked_triangles": 1341,
+      "surface_vertices": 5136,
+      "surface_triangles": 10268,
+      "maximum_parent_midpoint_match_error": 0.0
+    },
+    {
+      "iteration": 12,
+      "target_edge_length_m": 1.25e-05,
+      "marked_triangles": 3,
+      "surface_vertices": 5153,
+      "surface_triangles": 10302,
+      "maximum_parent_midpoint_match_error": 0.0
+    }
+  ],
+  "seed_global_level": 3,
+  "declared_geometry": {
+    "equatorial_radius_m": 0.022,
+    "polar_radius_m": 0.03,
+    "taper": 0.18,
+    "thickness_m": 0.0005,
+    "density_kg_m3": 2000
+  },
+  "mesh_marking_radius_m": 5e-05,
+  "conservative_parameter_cap_angle_rad": 0.002771618625277162,
+  "fixed_unit_sphere_marking_anchors": [
+    [
+      0.0001496102236094642,
+      -0.9806676812993255,
+      -0.19568054699378112
+    ],
+    [
+      -0.00015099363449500532,
+      0.989735686898011,
+      -0.14290992716198753
+    ],
+    [
+      0.020989645911833787,
+      -0.9535413634185871,
+      -0.3005300367921946
+    ],
+    [
+      0.0621903777589454,
+      0.9930381771455026,
+      -0.10003767113311386
+    ],
+    [
+      -0.02098964591183372,
+      -0.9535413634185871,
+      -0.3005300367921947
+    ],
+    [
+      1.2747382779543698e-19,
+      -1.0,
+      2.709350872369399e-18
+    ],
+    [
+      -5.047083259050058e-20,
+      1.0,
+      -2.709350872369399e-18
+    ]
+  ],
+  "analytic_support_positions_author_m": [
+    [
+      3.4073571285595895e-06,
+      -0.02233460343823643,
+      -0.005870416409813434
+    ],
+    [
+      -3.4073107765482324e-06,
+      0.02233429960925613,
+      -0.004287297814859626
+    ]
+  ],
+  "input_sha256": {
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-paired-cad-polyhedron-geometry-v1/results/cad-level3.npz": "29a4089da0042e8fb550628771330e148649ccca473649808323e7af430e8e48",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-paired-cad-polyhedron-geometry-v1/results/polyhedron-level3.npz": "83eb1da7b8239f5aa88e9dca98ff88cbf9dd167d33a5558bebbafe0b9a03dab4",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-tip-coupled-0-v1/results/reference_geometry.npz": "5d83bf66e8b660b13934a56506493b3ffe925be491480f4b4d018d4580afbd85",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/generic-stencil-actual-observation-v2/results/summary.json": "ea43ae7becbf5efc4fc887be9a0037770408c8a5bf49b87ad48be829e8cae24f",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-input-complete-s4-v1/results/summary.json": "f89009453fde4dcdd071eb50aabe45acf42f169d2e59d14a744c9f2b817b6468",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-paired-cad-level3-contact-v1/results/contact_geometry.npz": "57ec1ee5c702f6d3234efb45dbfa2de815da487a7a0f2171cbe92a7a577098c8",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-paired-polyhedron-level3-contact-v1/results/contact_geometry.npz": "20dc3c97d83075ef5d5290d421628bb77b90246361202832e54845c1b37bf402"
+  },
+  "goal_completion": false,
+  "limitations": "Surface bisection and radial projection generate conforming CAD approximations; paired polyhedron vertices use identical midpoint prolongation without projection. Mesh marking anchors/radius are numerical choices and do not constrain collision locations or change any physical contact footprint, law or force. Global CAD approximation outside marked caps remains at its seed level. Geometry and represented mass change explicitly at fixed density; two thickness layers remain. All six original physical initializer points are retained. Geometry identity and small local elements do not establish stress/contact convergence, model/feedback accuracy, complete application/history or warmed cost."
+}
