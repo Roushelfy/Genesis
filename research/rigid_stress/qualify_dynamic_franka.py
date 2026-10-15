@@ -9,15 +9,18 @@ import numpy as np
 
 from .dynamic_franka_reference import InertialRigidFingerContactSystem
 from .franka_contact_reference import build_from_capture
+from .refine_franka_reference import refine_body
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--capture", type=Path, required=True)
+    parser.add_argument("--body-refinement", type=int, choices=(0, 1, 2), default=0)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     static, _ = build_from_capture(args.capture, 2.5e-6)
+    static = refine_body(static, args.body_refinement)
     system = InertialRigidFingerContactSystem(static, 0.0025)
     mapping, _held = system.coordinate_map(False)
     count = system.body.basis.N
@@ -85,6 +88,10 @@ def main():
         )
     output = {
         "scope": __doc__,
+        "body_refinement_levels": args.body_refinement,
+        "body_tetrahedra": system.body.mesh.nelements,
+        "fixed_initializer_points_m": static.fixed_initializer_points_m.tolist(),
+        "fixed_initializer_components": static.fixed_initializer_components.tolist(),
         "consistent_body_mass_kg": system.body.total_mass,
         "physical_finger_mass_kg": system.masses.tolist(),
         "effective_finger_joint_mass_kg": (system.masses + system.armature).tolist(),

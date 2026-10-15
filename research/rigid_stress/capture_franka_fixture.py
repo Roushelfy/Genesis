@@ -51,6 +51,7 @@ def main():
     parser.add_argument("--capture", type=Path, required=True)
     parser.add_argument("--substeps", type=int, default=4)
     parser.add_argument("--contact-timeconst", type=float)
+    parser.add_argument("--weld-timeconst", type=float)
     parser.add_argument("--control-steps", type=int, default=64)
     parser.add_argument("--target-hold-seconds", type=float, default=0.5)
     parser.add_argument("--release-hold-seconds", type=float, default=20)
@@ -248,6 +249,23 @@ def main():
     solver.add_weld_constraint(egg.base_link.idx, palm.idx)
     assert np.count_nonzero(array(solver.get_weld_constraints()["link_a"]) == egg.base_link.idx) == 1
     assert solver.n_equalities == 0
+    if args.weld_timeconst is not None:
+        assert args.weld_timeconst >= 2 * scene.dt / args.substeps
+        assert int(qd_to_numpy(solver.constraint_solver.constraint_state.qd_n_equalities, copy=True)[0]) == 1
+        # The public equality setter is bounded by the static equality count,
+        # which is zero in this scene. Change only this experiment's single
+        # dynamically registered weld, preserving every other slot/parameter.
+        original_parameters = solver.dyn_info.equalities.sol_params.to_numpy()
+        changed_parameters = original_parameters.copy()
+        changed_parameters[0, 0, 0] = args.weld_timeconst
+        solver.dyn_info.equalities.sol_params.from_numpy(changed_parameters)
+        observed_parameters = solver.dyn_info.equalities.sol_params.to_numpy()
+        np.testing.assert_array_equal(observed_parameters, changed_parameters)
+        np.testing.assert_array_equal(observed_parameters[0, 0, 1:], original_parameters[0, 0, 1:])
+        np.testing.assert_array_equal(observed_parameters[1:], original_parameters[1:])
+        report["weld_parameter_override_scope"] = (
+            "Only active dynamic weld slot0, env0, timeconst was changed. Public static-count-bounded equality setter cannot address this runtime-only scene; this opt-in research field update is verified by full-array readback."
+        )
     report["runtime_temporary_weld_sol_params"] = qd_to_numpy(
         solver.dyn_info.equalities.sol_params, transpose=True, copy=True
     )[0, 0].tolist()

@@ -65,3 +65,17 @@ at one coarse spatial/contact setting. Actual native nodal replay agrees with
 independent linear FEM to7.77e-11 and that nonlinear dynamic field to4.80e-5.
 Physical spatial/contact tails, matched supports/longer/full-arm histories,
 load-model/feedback separation and the full operating-range acceptance remain.
+The [finer contact/full-arm/refinement checkpoint](PHYSICAL_FRANKA_CONTACT_TAIL_20261015.md)
+adds fixed-weld contact-law force tails0.810%/0.206%, actual complete full-arm
+input/control audits and exact sparse-inertia equation/83-array-archive equivalence.
+Spatial qualifications are not spatial convergence; finer coupled studies are
+live. The full-egg lagged initialization attempt fails at increment384. Same-state
+current-force Newton recovers that increment to4.11e-12N at the unchanged1e-9N
+budget, but both continuation guards fail. The second restores the saved held
+rows and exact shoe meshes. Completed same-state audit finds exactly matching
+bulk operators and4.11e-12N residuals in both reconstructed systems; the earlier
+force discrepancy remains unexplained. Strict continuation714503 passes its
+saved-increment guard and advances into the remaining original initialization.
+Complete egg contact acceptance remains unverified. Original fine
+qualification714444_2 isTIMEOUT, regardless of its wrapper returncode0.
+All original full physical gates remain.
