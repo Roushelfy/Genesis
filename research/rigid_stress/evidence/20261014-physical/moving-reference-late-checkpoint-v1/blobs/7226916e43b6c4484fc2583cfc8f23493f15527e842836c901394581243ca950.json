@@ -1,0 +1,49 @@
+{
+  "scope": "Measure force invariance and residual components at the unchanged failed spatial state.",
+  "body_tetrahedra": 8433,
+  "complete_reduced_residual_N": 1.0114449777201714e-09,
+  "body_residual_N": 5.120716598861554e-10,
+  "nonbody_residual_N": 0.7040163203373443,
+  "reduced_body_residual_N": 8.795275262644619e-10,
+  "reduced_jaw_residual_N": 4.994519731650624e-10,
+  "body_rigid_mode_residual_N_Nm": [
+    4.8799503044402577e-11,
+    -7.051874661217502e-10,
+    8.27884895025586e-11,
+    8.57156733920437e-13,
+    1.0208324520353063e-13,
+    1.089078124094828e-12
+  ],
+  "internal_bulk_resultant_N": [
+    3.4102349152524553e-16,
+    -4.0708089075049874e-16,
+    1.2523466828449556e-16
+  ],
+  "internal_bulk_moment_Nm": [
+    1.7539232168735637e-18,
+    7.274544599267129e-18,
+    -1.4461559079275825e-18
+  ],
+  "basis_partition_gradient_max_m_inv": 2.7303030947223306e-09,
+  "translation_tests": [
+    {
+      "offset_m": [
+        1e-06,
+        -2e-06,
+        3e-06
+      ],
+      "same_deformation_force_difference_N": 3.8698522681820395e-11,
+      "pure_translation_bulk_force_N": 3.8698685906408504e-11
+    },
+    {
+      "offset_m": [
+        0.0001,
+        -0.0002,
+        0.0003
+      ],
+      "same_deformation_force_difference_N": 3.869852462873382e-09,
+      "pure_translation_bulk_force_N": 3.869928264535105e-09
+    }
+  ],
+  "goal_completion": false
+}

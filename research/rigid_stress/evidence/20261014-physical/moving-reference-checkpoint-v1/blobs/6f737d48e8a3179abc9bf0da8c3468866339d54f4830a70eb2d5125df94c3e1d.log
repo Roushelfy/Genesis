@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-predicted-initial-motion-v1/source/research/rigid_stress/compare_initial_motion.py", line 112, in <module>
+    main()
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-predicted-initial-motion-v1/source/research/rigid_stress/compare_initial_motion.py", line 73, in main
+    absolute = tensor_norm(fields[0][key] - fields[1][key])
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-predicted-initial-motion-v1/source/research/rigid_stress/compare_initial_motion.py", line 54, in tensor_norm
+    return float(np.sqrt(np.sum(weights * np.sum(tensor * tensor, axis=(-2, -1)))))
+ValueError: operands could not be broadcast together with shapes (480,11) (480,15) 

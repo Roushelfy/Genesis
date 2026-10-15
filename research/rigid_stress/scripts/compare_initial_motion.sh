@@ -8,7 +8,7 @@ shift
 test ! -e "$task_run"
 mkdir -p "$task_run/input-source" "$task_run/source" "$task_run/tmp"
 export TMPDIR="$task_run/tmp" PYTHONUNBUFFERED=1
-task_sources=(research/rigid_stress/{compare_initial_motion,skfem_reference,summarize_fine_references}.py
+task_sources=(research/rigid_stress/{compare_initial_motion,neohookean_reference,contact_reference,skfem_reference,summarize_fine_references}.py
     research/rigid_stress/scripts/{compare_initial_motion,cluster_env}.sh)
 sha256sum "${task_sources[@]}" > "$task_run/input-source.sha256"
 cp --parents "${task_sources[@]}" "$task_run/input-source"

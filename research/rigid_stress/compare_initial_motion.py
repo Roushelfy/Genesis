@@ -8,6 +8,7 @@ from pathlib import Path
 import numpy as np
 from scipy.spatial.transform import Rotation
 
+from .neohookean_reference import NeoHookeanBulk
 from .skfem_reference import SkfemElasticReference
 from .summarize_fine_references import closed_source
 
@@ -49,8 +50,10 @@ def main():
         with np.load(roots[0] / f"results/case{case_index:02d}/step0001.npz") as saved:
             vertices, tetrahedra = saved["body_mesh_vertices"], saved["body_mesh_tetrahedra"]
         body = SkfemElasticReference(vertices, tetrahedra, 1e10, 0.3, 2000)
+        quadrature_weights = NeoHookeanBulk(body).basis.dx
 
-        def tensor_norm(tensor, weights=body.basis.dx):
+        def tensor_norm(tensor, weights=quadrature_weights):
+            assert tensor.shape[:2] == weights.shape
             return float(np.sqrt(np.sum(weights * np.sum(tensor * tensor, axis=(-2, -1)))))
 
         rows = []

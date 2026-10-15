@@ -1,0 +1,3854 @@
+{
+  "scope": "Compare every accepted original state with the corresponding wide-coordinate history.",
+  "cases": [
+    {
+      "baseline": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-wide-motion-middle-v1",
+      "candidate": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-predicted-motion-middle-v1",
+      "all_original_accepted_states_checked": 80,
+      "rows": [
+        {
+          "step": 1,
+          "time_s": 0.00125,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 3.469446951953614e-18,
+              "L2_difference": 4.337281054975044e-17
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 9.690056916589196e-19,
+              "L2_difference": 1.3691836296882785e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 7.759634948478755e-16,
+              "L2_difference": 1.0955633679602861e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 1.120973588298404e-15,
+              "L2_difference": 2.9541607525320116e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 8.967788706387232e-13,
+              "L2_difference": 2.3633286020455618e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 2.1148249818025988e-11,
+              "L2_difference": 3.4606709703640274e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 2.0175523989396837e-13,
+          "all_quadrature_tensor_relative_change": 2.0336038608237447e-13,
+          "raw_corner_peak_relative_change": 1.9106938253798944e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156431.05108007742,
+          "rounded_coordinate_peak_absolute_difference_Pa": 1.0186340659856796e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 5.275749958856063e-13
+        },
+        {
+          "step": 2,
+          "time_s": 0.0025,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 3.469446951953614e-18,
+              "L2_difference": 5.273960041648733e-17
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 3.1289397071573855e-18,
+              "L2_difference": 4.3722321236805165e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 3.276965914470126e-15,
+              "L2_difference": 4.588702458457557e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 9.133486709523484e-16,
+              "L2_difference": 1.976207576343891e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 1.5742709294096126e-12,
+              "L2_difference": 3.531903181472909e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 9.911040044219277e-11,
+              "L2_difference": 1.3998065811024394e-10
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 1.019904738266355e-12,
+          "all_quadrature_tensor_relative_change": 1.022193491234502e-12,
+          "raw_corner_peak_relative_change": 9.943157408542902e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156460.19709075073,
+          "rounded_coordinate_peak_absolute_difference_Pa": 1.367880031466484e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 1.0517208800648646e-12
+        },
+        {
+          "step": 3,
+          "time_s": 0.00375,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 3.469446951953614e-18,
+              "L2_difference": 4.2451552571664595e-17
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 1.7923217163900995e-18,
+              "L2_difference": 2.3893879127977847e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.1942592809046238e-15,
+              "L2_difference": 1.6054909976275963e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 1.6120899383398499e-15,
+              "L2_difference": 2.999591827428383e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 1.238420683642319e-12,
+              "L2_difference": 1.8253668555983218e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 2.9124258560386806e-11,
+              "L2_difference": 4.254749346971937e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 1.0384766124462735e-12,
+          "all_quadrature_tensor_relative_change": 1.0365532605860674e-12,
+          "raw_corner_peak_relative_change": 1.0309531006669204e-12,
+          "wide_coordinate_raw_corner_peak_Pa": 156450.88191842235,
+          "rounded_coordinate_peak_absolute_difference_Pa": 4.3655745685100555e-10,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 1.7868896999033676e-12
+        },
+        {
+          "step": 4,
+          "time_s": 0.005,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 3.469446951953614e-18,
+              "L2_difference": 5.2067376758150285e-17
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 1.993915557836623e-18,
+              "L2_difference": 2.6213599262821737e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.622847364303459e-16,
+              "L2_difference": 1.8790020760590215e-16
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 5.238804546352466e-16,
+              "L2_difference": 1.1971591414502935e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 1.4873518216139862e-12,
+              "L2_difference": 2.2122990632778216e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 4.123936261923866e-11,
+              "L2_difference": 6.845781552126556e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 2.973963087060488e-13,
+          "all_quadrature_tensor_relative_change": 3.04038782915005e-13,
+          "raw_corner_peak_relative_change": 2.9332092310596636e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156447.89734792107,
+          "rounded_coordinate_peak_absolute_difference_Pa": 4.656612873077393e-10,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 2.1904702538624078e-12
+        },
+        {
+          "step": 5,
+          "time_s": 0.00625,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 3.469446951953614e-18,
+              "L2_difference": 5.961876140948338e-17
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 4.336808689942018e-19,
+              "L2_difference": 6.426049940155013e-19
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.6555034490354278e-15,
+              "L2_difference": 2.2779381322409535e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 8.793838362546421e-16,
+              "L2_difference": 1.9444093635492015e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 9.0118693994582e-13,
+              "L2_difference": 1.5542277583883237e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 2.9152902314422136e-11,
+              "L2_difference": 4.480133178785555e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 4.422879132318876e-13,
+          "all_quadrature_tensor_relative_change": 4.430139383757439e-13,
+          "raw_corner_peak_relative_change": 4.397593400540245e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156448.14541527207,
+          "rounded_coordinate_peak_absolute_difference_Pa": 1.0186340659856796e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 2.6946990293855202e-12
+        },
+        {
+          "step": 6,
+          "time_s": 0.0075,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 3.469446951953614e-18,
+              "L2_difference": 6.435248508465858e-17
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 3.2526065174565133e-19,
+              "L2_difference": 6.131020838422243e-19
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.9374650470668602e-16,
+              "L2_difference": 2.376600381992979e-16
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 2.9223705604419933e-15,
+              "L2_difference": 7.689011719600377e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 3.0414035173573083e-12,
+              "L2_difference": 7.658474607216419e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 6.036907779227718e-11,
+              "L2_difference": 8.47101314531134e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 4.1796086877554447e-13,
+          "all_quadrature_tensor_relative_change": 4.2281275584323643e-13,
+          "raw_corner_peak_relative_change": 4.285460875053104e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156448.38235964446,
+          "rounded_coordinate_peak_absolute_difference_Pa": 1.4260876923799515e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 3.744864877233732e-12
+        },
+        {
+          "step": 7,
+          "time_s": 0.00875,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 3.469446951953614e-18,
+              "L2_difference": 6.016161702465728e-17
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 1.5585406229479126e-18,
+              "L2_difference": 1.9654267484764927e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.0663395181773321e-15,
+              "L2_difference": 1.4780806391458187e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 4.497795201142547e-16,
+              "L2_difference": 1.324421309049836e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 2.6977200644449985e-12,
+              "L2_difference": 7.002438368651377e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 2.2843782421233527e-11,
+              "L2_difference": 5.449969054368241e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 2.4130511766328624e-13,
+          "all_quadrature_tensor_relative_change": 2.482651464836717e-13,
+          "raw_corner_peak_relative_change": 2.107203300738547e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156448.32869364237,
+          "rounded_coordinate_peak_absolute_difference_Pa": 1.4551915228366852e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 3.809784497792736e-12
+        },
+        {
+          "step": 8,
+          "time_s": 0.01,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 3.469446951953614e-18,
+              "L2_difference": 7.557112537195035e-17
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 1.6737371037744975e-18,
+              "L2_difference": 2.2193271875596764e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 2.325761467230703e-15,
+              "L2_difference": 3.1942562075279307e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 7.429940989152901e-16,
+              "L2_difference": 1.615296444877039e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 8.738083370051111e-13,
+              "L2_difference": 1.9437715531537317e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 2.2839730107193645e-11,
+              "L2_difference": 4.7733333956251495e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 8.251164834974005e-13,
+          "all_quadrature_tensor_relative_change": 8.2289130596413e-13,
+          "raw_corner_peak_relative_change": 8.090195180443516e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156448.18095627739,
+          "rounded_coordinate_peak_absolute_difference_Pa": 3.026798367500305e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 4.182409914991782e-12
+        },
+        {
+          "step": 9,
+          "time_s": 0.01125,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 3.469446951953614e-18,
+              "L2_difference": 7.803699082027619e-17
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 4.336808689942018e-19,
+              "L2_difference": 6.708950111355648e-19
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.4671709671693544e-15,
+              "L2_difference": 1.9456709675674663e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 3.693737678150888e-15,
+              "L2_difference": 9.178515713556284e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 3.5493854216529428e-12,
+              "L2_difference": 8.347130620478502e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 2.9167002146834875e-11,
+              "L2_difference": 4.97285538031889e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 8.782913510341475e-13,
+          "all_quadrature_tensor_relative_change": 8.803845532714097e-13,
+          "raw_corner_peak_relative_change": 8.402167850363185e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156447.99882089632,
+          "rounded_coordinate_peak_absolute_difference_Pa": 7.566995918750763e-10,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 5.011720523604549e-12
+        },
+        {
+          "step": 10,
+          "time_s": 0.0125,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 3.469446951953614e-18,
+              "L2_difference": 6.829714229491929e-17
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 5.675120746603812e-19,
+              "L2_difference": 9.96666636298929e-19
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 3.2620657578949757e-16,
+              "L2_difference": 4.1159929912907217e-16
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 3.1233166160713112e-15,
+              "L2_difference": 7.965771120660049e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 5.45364343537776e-12,
+              "L2_difference": 1.3688335561527984e-10
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 9.073248229130026e-12,
+              "L2_difference": 1.7076498483132565e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 2.4777762382795775e-13,
+          "all_quadrature_tensor_relative_change": 2.49877092627119e-13,
+          "raw_corner_peak_relative_change": 2.0017321133991572e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156447.78687721302,
+          "rounded_coordinate_peak_absolute_difference_Pa": 2.3283064365386963e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 5.649499313682838e-12
+        },
+        {
+          "step": 11,
+          "time_s": 0.01375,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 3.469446951953614e-18,
+              "L2_difference": 8.704677207585398e-17
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 2.095559511507139e-18,
+              "L2_difference": 2.9643820091351877e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.2232172197888802e-15,
+              "L2_difference": 1.6905569536795537e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 6.830502896474059e-16,
+              "L2_difference": 1.5915352651430283e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 2.19274772445924e-12,
+              "L2_difference": 5.1704302836460986e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 3.712524732080169e-11,
+              "L2_difference": 5.100759499507609e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 2.495514164285208e-13,
+          "all_quadrature_tensor_relative_change": 2.554025455036104e-13,
+          "raw_corner_peak_relative_change": 2.2515322939398175e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156447.54875634302,
+          "rounded_coordinate_peak_absolute_difference_Pa": 3.521563485264778e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 6.191310280864745e-12
+        },
+        {
+          "step": 12,
+          "time_s": 0.015,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 3.469446951953614e-18,
+              "L2_difference": 6.620454280790457e-17
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 4.336808689942018e-19,
+              "L2_difference": 5.865212349353349e-19
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.5795478870727665e-15,
+              "L2_difference": 2.2124873650975334e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 1.1342349766233805e-15,
+              "L2_difference": 2.2286303417488916e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 1.3018590342471952e-12,
+              "L2_difference": 2.8815482067442394e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 4.894104913000241e-11,
+              "L2_difference": 8.145320033964822e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 6.797883561608818e-13,
+          "all_quadrature_tensor_relative_change": 6.782870978485009e-13,
+          "raw_corner_peak_relative_change": 6.787903572558207e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156447.28993432212,
+          "rounded_coordinate_peak_absolute_difference_Pa": 2.35741026699543e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 7.158216984980411e-12
+        },
+        {
+          "step": 13,
+          "time_s": 0.01625,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 3.469446951953614e-18,
+              "L2_difference": 7.327330834752208e-17
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 7.691059161069047e-19,
+              "L2_difference": 1.0438924215803844e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 6.433438639336249e-16,
+              "L2_difference": 7.960290156978949e-16
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 4.017438093553336e-16,
+              "L2_difference": 8.589594224627599e-15
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 9.335538555705299e-13,
+              "L2_difference": 1.8242904539279708e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 2.915351293708568e-11,
+              "L2_difference": 5.0527116420264246e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 2.2382052044596663e-13,
+          "all_quadrature_tensor_relative_change": 2.2968045862713285e-13,
+          "raw_corner_peak_relative_change": 2.191580250610059e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156447.01490909772,
+          "rounded_coordinate_peak_absolute_difference_Pa": 2.6193447411060333e-10,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 6.84212735777952e-12
+        },
+        {
+          "step": 14,
+          "time_s": 0.0175,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 3.8058910855809825e-18,
+              "L2_difference": 9.580353965899531e-17
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 4.336808689942018e-19,
+              "L2_difference": 7.015192119643946e-19
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 6.879534893754831e-16,
+              "L2_difference": 9.608107964688746e-16
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 2.5861554309400298e-15,
+              "L2_difference": 7.318115107719972e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 2.183437161464078e-12,
+              "L2_difference": 5.6867740249312463e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 2.911948460138092e-11,
+              "L2_difference": 4.3847776263116386e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 3.0849310362686816e-13,
+          "all_quadrature_tensor_relative_change": 3.126304069626411e-13,
+          "raw_corner_peak_relative_change": 2.8266278206956486e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156446.72695651228,
+          "rounded_coordinate_peak_absolute_difference_Pa": 6.693881005048752e-10,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 7.75014509934361e-12
+        },
+        {
+          "step": 15,
+          "time_s": 0.01875,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 4.4626096262215324e-18,
+              "L2_difference": 8.928412798646972e-17
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 6.2172218328465645e-19,
+              "L2_difference": 9.035662179059244e-19
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.9737424094065778e-16,
+              "L2_difference": 2.635060976578423e-16
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 2.5007414234594748e-15,
+              "L2_difference": 6.821177735182834e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 4.069381776930053e-12,
+              "L2_difference": 1.1228839125881505e-10
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 2.91146551312238e-11,
+              "L2_difference": 5.100210366002032e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 1.1927637438764757e-13,
+          "all_quadrature_tensor_relative_change": 1.2436156470884323e-13,
+          "raw_corner_peak_relative_change": 7.549516567451064e-14,
+          "wide_coordinate_raw_corner_peak_Pa": 156446.42854205376,
+          "rounded_coordinate_peak_absolute_difference_Pa": 1.068110577762127e-08,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 8.68620646202445e-12
+        },
+        {
+          "step": 16,
+          "time_s": 0.02,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 5.129337052273974e-18,
+              "L2_difference": 1.0001022941622345e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 4.336808689942018e-19,
+              "L2_difference": 6.677370839515109e-19
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 5.399022945907985e-16,
+              "L2_difference": 7.58110284058541e-16
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 6.878555933771681e-16,
+              "L2_difference": 2.149294705543322e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 2.4868481185705494e-12,
+              "L2_difference": 6.823089237727539e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 1.961189197152713e-11,
+              "L2_difference": 3.088038757393537e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 1.8493950297756627e-13,
+          "all_quadrature_tensor_relative_change": 1.8755026776646476e-13,
+          "raw_corner_peak_relative_change": 1.9662049766111522e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156446.12158450662,
+          "rounded_coordinate_peak_absolute_difference_Pa": 4.3655745685100555e-10,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 8.616972235006428e-12
+        },
+        {
+          "step": 17,
+          "time_s": 0.02125,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 6.064206654414055e-18,
+              "L2_difference": 1.220942265229207e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 1.2874900798265365e-18,
+              "L2_difference": 1.7917876377853792e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 8.497560523006045e-16,
+              "L2_difference": 1.139083036491297e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 8.312834283912907e-16,
+              "L2_difference": 1.5840707922957295e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 5.417129228067611e-13,
+              "L2_difference": 1.3429104247292952e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 1.983878686329099e-11,
+              "L2_difference": 3.142716298936636e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 9.356287927627755e-14,
+          "all_quadrature_tensor_relative_change": 9.989405281417489e-14,
+          "raw_corner_peak_relative_change": 8.01581023779363e-14,
+          "wide_coordinate_raw_corner_peak_Pa": 156445.8075951305,
+          "rounded_coordinate_peak_absolute_difference_Pa": 9.924406185746193e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 9.552382078243672e-12
+        },
+        {
+          "step": 18,
+          "time_s": 0.0225,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 6.904089452453447e-18,
+              "L2_difference": 1.3954353442039367e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 5.98005260761536e-19,
+              "L2_difference": 8.583432517278501e-19
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.3632812644578712e-15,
+              "L2_difference": 1.8226100309529837e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 9.973048225443081e-16,
+              "L2_difference": 2.7336276484275618e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 8.326965506625518e-13,
+              "L2_difference": 2.0513616150402098e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 4.454194998948502e-11,
+              "L2_difference": 5.887032400214764e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 5.211016850075108e-13,
+          "all_quadrature_tensor_relative_change": 5.22909219102455e-13,
+          "raw_corner_peak_relative_change": 5.17585974080248e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156445.48777563722,
+          "rounded_coordinate_peak_absolute_difference_Pa": 6.693881005048752e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 1.013100261081175e-11
+        },
+        {
+          "step": 19,
+          "time_s": 0.02375,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 7.923013839718717e-18,
+              "L2_difference": 1.5810281978748379e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 2.3784685158900754e-18,
+              "L2_difference": 3.198749917877896e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 2.1298804924364952e-15,
+              "L2_difference": 2.9796257864364998e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 8.151394039330974e-16,
+              "L2_difference": 1.5923287375953233e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 1.2539785778446247e-12,
+              "L2_difference": 2.35273919765689e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 2.9090119202379583e-11,
+              "L2_difference": 5.5357118446827096e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 8.417670450720141e-13,
+          "all_quadrature_tensor_relative_change": 8.399276222140936e-13,
+          "raw_corner_peak_relative_change": 8.378853166846056e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156445.16308928924,
+          "rounded_coordinate_peak_absolute_difference_Pa": 1.979060471057892e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 1.0232600510673645e-11
+        },
+        {
+          "step": 20,
+          "time_s": 0.025,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 8.73609267718894e-18,
+              "L2_difference": 1.7861788266264058e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 4.336808689942018e-19,
+              "L2_difference": 7.200597142963136e-19
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 2.0445497580553866e-15,
+              "L2_difference": 2.846709154470918e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 2.781480836493261e-15,
+              "L2_difference": 6.580309801300109e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 2.383868896868026e-12,
+              "L2_difference": 4.789788018374872e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 2.91413004838148e-11,
+              "L2_difference": 3.613954555258159e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 1.0078646066972585e-12,
+          "all_quadrature_tensor_relative_change": 1.0087476075746154e-12,
+          "raw_corner_peak_relative_change": 9.798828415341632e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156444.83431410047,
+          "rounded_coordinate_peak_absolute_difference_Pa": 1.0593794286251068e-08,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 1.0587931806400127e-11
+        },
+        {
+          "step": 21,
+          "time_s": 0.02625,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 9.595983319884765e-18,
+              "L2_difference": 1.9162895293875799e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 1.1316360175317453e-18,
+              "L2_difference": 1.6052309082960609e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.1213330263986992e-15,
+              "L2_difference": 1.5344338545242716e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 9.036069519536143e-16,
+              "L2_difference": 1.8126665812855733e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 2.9480702307575003e-12,
+              "L2_difference": 6.10852112286737e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 5.1924853305962415e-11,
+              "L2_difference": 6.947737845888822e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 7.442154875894476e-13,
+          "all_quadrature_tensor_relative_change": 7.425023942846602e-13,
+          "raw_corner_peak_relative_change": 7.183142969324763e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156444.5020829486,
+          "rounded_coordinate_peak_absolute_difference_Pa": 1.775333657860756e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 1.1027366706145814e-11
+        },
+        {
+          "step": 22,
+          "time_s": 0.0275,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 1.0352780788476881e-17,
+              "L2_difference": 2.0026565115408276e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 1.0909784360635388e-18,
+              "L2_difference": 1.562061040614856e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 3.276355203715156e-17,
+              "L2_difference": 4.960328018532319e-17
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 8.819914197381389e-16,
+              "L2_difference": 2.064341082371713e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 7.683932338347413e-13,
+              "L2_difference": 8.414053307316461e-12
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 1.9143540919142055e-11,
+              "L2_difference": 2.385726198565561e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 2.601565821322802e-13,
+          "all_quadrature_tensor_relative_change": 2.634487580972267e-13,
+          "raw_corner_peak_relative_change": 2.546851618490109e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156444.1669124903,
+          "rounded_coordinate_peak_absolute_difference_Pa": 8.440110832452774e-10,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 1.2755991405384068e-11
+        },
+        {
+          "step": 23,
+          "time_s": 0.02875,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 1.0722973891096413e-17,
+              "L2_difference": 2.163734265643654e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 4.336808689942018e-19,
+              "L2_difference": 5.719925126257017e-19
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 8.112082181457717e-16,
+              "L2_difference": 1.0865107374229538e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 9.771005638514248e-16,
+              "L2_difference": 2.8203708250925364e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 1.4576303453935066e-12,
+              "L2_difference": 3.54372873461885e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 3.056774321510969e-11,
+              "L2_difference": 4.649026547397001e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 1.9641471374004934e-13,
+          "all_quadrature_tensor_relative_change": 2.0037657700231196e-13,
+          "raw_corner_peak_relative_change": 1.7963408538435033e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156443.82922725522,
+          "rounded_coordinate_peak_absolute_difference_Pa": 2.270098775625229e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 1.4637276800288704e-11
+        },
+        {
+          "step": 24,
+          "time_s": 0.03,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 1.1440821079004631e-17,
+              "L2_difference": 2.255763849122618e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 1.472143262327974e-18,
+              "L2_difference": 1.9970515035906592e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.2390627710122848e-15,
+              "L2_difference": 1.6270073705775488e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 2.4957301565134754e-15,
+              "L2_difference": 7.063261433042785e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 2.7270327645503666e-12,
+              "L2_difference": 7.706224909653705e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 1.660310777751306e-11,
+              "L2_difference": 2.2982175284932104e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 1.2462767203406615e-13,
+          "all_quadrature_tensor_relative_change": 1.289172097644816e-13,
+          "raw_corner_peak_relative_change": 1.3589129821411916e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156443.4893759284,
+          "rounded_coordinate_peak_absolute_difference_Pa": 6.752088665962219e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 1.4436221223335643e-11
+        },
+        {
+          "step": 25,
+          "time_s": 0.03125,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 1.1958139834095295e-17,
+              "L2_difference": 2.343386665534549e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 7.589415207398531e-19,
+              "L2_difference": 9.96240385435142e-19
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 9.271120244228731e-16,
+              "L2_difference": 1.212781368895175e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 1.175342648776368e-15,
+              "L2_difference": 3.035701433100762e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 2.9216368884617864e-12,
+              "L2_difference": 7.881654185985058e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 2.51353729496806e-11,
+              "L2_difference": 3.647526219510283e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 4.711992828128501e-13,
+          "all_quadrature_tensor_relative_change": 4.703693595862148e-13,
+          "raw_corner_peak_relative_change": 4.860556401808935e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156443.1476474191,
+          "rounded_coordinate_peak_absolute_difference_Pa": 1.7462298274040222e-10,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 1.4061412895931859e-11
+        },
+        {
+          "step": 26,
+          "time_s": 0.0325,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 1.2595968878267584e-17,
+              "L2_difference": 2.4819780663524276e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 1.938011383317839e-18,
+              "L2_difference": 2.7775082158501616e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.2611021712531477e-15,
+              "L2_difference": 1.678372593986125e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 6.534562023431867e-16,
+              "L2_difference": 1.496041439300225e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 8.477381021828895e-13,
+              "L2_difference": 1.4430175719477197e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 2.289946010591848e-11,
+              "L2_difference": 4.349772760496358e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 4.932420382756441e-13,
+          "all_quadrature_tensor_relative_change": 4.949022967011231e-13,
+          "raw_corner_peak_relative_change": 4.884981308350689e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156442.80428003706,
+          "rounded_coordinate_peak_absolute_difference_Pa": 2.852175384759903e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 1.499213981743774e-11
+        },
+        {
+          "step": 27,
+          "time_s": 0.03375,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 1.3305074421462342e-17,
+              "L2_difference": 2.6159276770067514e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 1.0842021724855044e-18,
+              "L2_difference": 1.1967853177042991e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.6685654250010281e-15,
+              "L2_difference": 2.3147006884657553e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 8.920395135110656e-16,
+              "L2_difference": 1.881153347850536e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 9.707000884256732e-13,
+              "L2_difference": 1.7650308491559777e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 5.717483431144643e-11,
+              "L2_difference": 7.27020542284621e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 6.924083386570618e-13,
+          "all_quadrature_tensor_relative_change": 6.905950231838193e-13,
+          "raw_corner_peak_relative_change": 6.794564910705958e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156442.45947274804,
+          "rounded_coordinate_peak_absolute_difference_Pa": 5.413312464952469e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 1.5059306052403327e-11
+        },
+        {
+          "step": 28,
+          "time_s": 0.035,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 1.3975997307581653e-17,
+              "L2_difference": 2.7922806877727344e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 1.0842021724855044e-18,
+              "L2_difference": 1.2802442767308055e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 4.999364346380334e-16,
+              "L2_difference": 6.844264549252623e-16
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 1.3236289390444883e-15,
+              "L2_difference": 3.0501772292006064e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 1.506843852984043e-12,
+              "L2_difference": 3.006810512488297e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 3.543448867660004e-11,
+              "L2_difference": 5.040787145130236e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 5.014463467883191e-13,
+          "all_quadrature_tensor_relative_change": 5.02585057509407e-13,
+          "raw_corner_peak_relative_change": 4.847233725513433e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156442.11339032388,
+          "rounded_coordinate_peak_absolute_difference_Pa": 5.296897143125534e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 1.6532979781288646e-11
+        },
+        {
+          "step": 29,
+          "time_s": 0.03625,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 1.4841770858793954e-17,
+              "L2_difference": 2.930733823109894e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 1.7414997395548415e-18,
+              "L2_difference": 2.545842880085793e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.6062050197744842e-15,
+              "L2_difference": 2.2391459230839e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 1.2980849813433913e-15,
+              "L2_difference": 3.178262010581181e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 2.0973711363103037e-12,
+              "L2_difference": 4.5725317547670924e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 2.284483713310692e-11,
+              "L2_difference": 4.0666775602378635e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 5.197944420101358e-13,
+          "all_quadrature_tensor_relative_change": 5.185762900309148e-13,
+          "raw_corner_peak_relative_change": 5.000444502911705e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156441.766171727,
+          "rounded_coordinate_peak_absolute_difference_Pa": 1.6618287190794945e-08,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 1.7189074919357115e-11
+        },
+        {
+          "step": 30,
+          "time_s": 0.0375,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 1.574488003413445e-17,
+              "L2_difference": 3.086070915085324e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 1.0842021724855044e-18,
+              "L2_difference": 1.5249642064316632e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 7.244575653774893e-16,
+              "L2_difference": 9.820941050236619e-16
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 7.874653552386417e-16,
+              "L2_difference": 1.7707260342650117e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 1.6043027690634083e-12,
+              "L2_difference": 3.280112906316668e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 5.194444874234705e-11,
+              "L2_difference": 6.316511448276803e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 5.448024129005043e-13,
+          "all_quadrature_tensor_relative_change": 5.460202530057145e-13,
+          "raw_corner_peak_relative_change": 5.271338920920243e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156441.41793254955,
+          "rounded_coordinate_peak_absolute_difference_Pa": 3.346940502524376e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 1.7982542034385006e-11
+        },
+        {
+          "step": 31,
+          "time_s": 0.03875,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 1.6596042267006615e-17,
+              "L2_difference": 3.2483743434445263e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 1.0842021724855044e-18,
+              "L2_difference": 1.2322044219272582e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 3.190876145924049e-16,
+              "L2_difference": 4.2115671694509115e-16
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 7.440231529563367e-16,
+              "L2_difference": 1.8991292933125355e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 1.062950909932282e-12,
+              "L2_difference": 1.9934833283004157e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 1.9398913031487552e-11,
+              "L2_difference": 2.914148626040649e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 9.015164668473835e-14,
+          "all_quadrature_tensor_relative_change": 9.173869328285534e-14,
+          "raw_corner_peak_relative_change": 7.716050021144838e-14,
+          "wide_coordinate_raw_corner_peak_Pa": 156441.06877139522,
+          "rounded_coordinate_peak_absolute_difference_Pa": 7.8580342233181e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 1.751694869006634e-11
+        },
+        {
+          "step": 32,
+          "time_s": 0.04,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 1.7447773600140216e-17,
+              "L2_difference": 3.4295999921660946e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 8.673617379884035e-19,
+              "L2_difference": 1.0043310767719011e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 5.501147259903822e-16,
+              "L2_difference": 7.026996846523347e-16
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 8.51379285064899e-16,
+              "L2_difference": 2.399502732300571e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 1.0691829548417056e-12,
+              "L2_difference": 2.5711279500497297e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 1.0668241301210052e-11,
+              "L2_difference": 1.6500945849125188e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 6.131185938290309e-14,
+          "all_quadrature_tensor_relative_change": 6.579665619018739e-14,
+          "raw_corner_peak_relative_change": 4.263256414560601e-14,
+          "wide_coordinate_raw_corner_peak_Pa": 156440.71877126687,
+          "rounded_coordinate_peak_absolute_difference_Pa": 1.3271346688270569e-08,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 1.956476824436938e-11
+        },
+        {
+          "step": 33,
+          "time_s": 0.04125,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 1.828081726887502e-17,
+              "L2_difference": 3.5979285030579464e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 1.2519146960418559e-18,
+              "L2_difference": 1.6047177227589476e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 6.4740445385597835e-16,
+              "L2_difference": 8.451995991502783e-16
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 1.8603416130957658e-15,
+              "L2_difference": 5.048937133433138e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 1.9978959840314527e-12,
+              "L2_difference": 5.4533551622768986e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 3.545214122269158e-11,
+              "L2_difference": 6.795430973262531e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 5.85707475803618e-14,
+          "all_quadrature_tensor_relative_change": 6.249757100702678e-14,
+          "raw_corner_peak_relative_change": 5.906386491005833e-14,
+          "wide_coordinate_raw_corner_peak_Pa": 156440.36800340321,
+          "rounded_coordinate_peak_absolute_difference_Pa": 5.617039278149605e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 1.8486699233547017e-11
+        },
+        {
+          "step": 34,
+          "time_s": 0.0425,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 1.9228574344958677e-17,
+              "L2_difference": 3.7734315123226114e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 1.8397555614363403e-18,
+              "L2_difference": 2.237006797389613e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.9451120869844516e-15,
+              "L2_difference": 2.6671573947824604e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 2.0843821274975003e-15,
+              "L2_difference": 5.395248511456236e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 2.9888634202153286e-12,
+              "L2_difference": 8.064106145141034e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 4.851000851013865e-11,
+              "L2_difference": 7.103755987668874e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 6.201897674541081e-13,
+          "all_quadrature_tensor_relative_change": 6.186787731086607e-13,
+          "raw_corner_peak_relative_change": 6.343814362708144e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156440.01652919897,
+          "rounded_coordinate_peak_absolute_difference_Pa": 9.371433407068253e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 2.0179702195268883e-11
+        },
+        {
+          "step": 35,
+          "time_s": 0.043750000000000004,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 2.0044260455719668e-17,
+              "L2_difference": 3.9487220883807705e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 1.1943164556285635e-18,
+              "L2_difference": 1.6236771008811953e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.838761674151856e-15,
+              "L2_difference": 2.5617204939256535e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 8.108022709883552e-16,
+              "L2_difference": 1.8033964250488167e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 1.6534964408628557e-12,
+              "L2_difference": 3.3659814275250636e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 3.956327846170622e-11,
+              "L2_difference": 6.441161280447082e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 9.014138935760681e-13,
+          "all_quadrature_tensor_relative_change": 9.015279244455755e-13,
+          "raw_corner_peak_relative_change": 8.979483823168266e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156439.66440200192,
+          "rounded_coordinate_peak_absolute_difference_Pa": 6.984919309616089e-10,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 1.840409519996162e-11
+        },
+        {
+          "step": 36,
+          "time_s": 0.045,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 2.089707043237204e-17,
+              "L2_difference": 4.105311157300201e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 2.927345865710862e-18,
+              "L2_difference": 4.058181789545384e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.599652432451529e-15,
+              "L2_difference": 2.1396124506016193e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 1.448666160143948e-15,
+              "L2_difference": 3.667336511873469e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 1.8075747449058426e-12,
+              "L2_difference": 3.6334981374971627e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 1.8256497008595218e-11,
+              "L2_difference": 4.010225934965186e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 4.645144526114549e-14,
+          "all_quadrature_tensor_relative_change": 4.899578846296874e-14,
+          "raw_corner_peak_relative_change": 1.9872992140790302e-14,
+          "wide_coordinate_raw_corner_peak_Pa": 156439.31166859937,
+          "rounded_coordinate_peak_absolute_difference_Pa": 1.3766111806035042e-08,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 1.9866126319419704e-11
+        },
+        {
+          "step": 37,
+          "time_s": 0.04625,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 2.1927631596494704e-17,
+              "L2_difference": 4.2746623201553637e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 1.3010426069826053e-18,
+              "L2_difference": 2.2184949079455733e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.3176654532101811e-15,
+              "L2_difference": 1.7801184566805653e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 8.244489312981326e-16,
+              "L2_difference": 1.4926110435075118e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 1.038109584258906e-12,
+              "L2_difference": 2.7556612305553738e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 2.01595302951052e-11,
+              "L2_difference": 3.527059930730298e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 6.679863153843074e-13,
+          "all_quadrature_tensor_relative_change": 6.666260243635348e-13,
+          "raw_corner_peak_relative_change": 6.660227924726314e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156438.95837061512,
+          "rounded_coordinate_peak_absolute_difference_Pa": 2.0954757928848267e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 2.1885793885897685e-11
+        },
+        {
+          "step": 38,
+          "time_s": 0.0475,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 2.2909025145007218e-17,
+              "L2_difference": 4.474287990367616e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 1.3552527156068805e-18,
+              "L2_difference": 2.3341842935083986e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.9341059691696783e-15,
+              "L2_difference": 2.6872153097348745e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 7.85114838810011e-16,
+              "L2_difference": 2.2159036515014974e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 6.734289455903257e-13,
+              "L2_difference": 1.329229277646916e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 4.393763131105288e-11,
+              "L2_difference": 5.771378855648396e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 2.0422989680740959e-13,
+          "all_quadrature_tensor_relative_change": 2.0434563163736123e-13,
+          "raw_corner_peak_relative_change": 2.0294876890147862e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156438.60454515016,
+          "rounded_coordinate_peak_absolute_difference_Pa": 2.293381839990616e-08,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 2.2133788512079233e-11
+        },
+        {
+          "step": 39,
+          "time_s": 0.04875,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 2.393483498369138e-17,
+              "L2_difference": 4.689003092479087e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 1.4094628242311558e-18,
+              "L2_difference": 1.8563229009950126e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 5.919860692760571e-16,
+              "L2_difference": 7.38711915854222e-16
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 9.75344935039827e-16,
+              "L2_difference": 2.678440346698982e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 2.534048615965989e-13,
+              "L2_difference": 5.392025382672218e-12
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 2.0366718728181965e-11,
+              "L2_difference": 2.9665192795753704e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 5.711729255056106e-13,
+          "all_quadrature_tensor_relative_change": 5.709661275293311e-13,
+          "raw_corner_peak_relative_change": 5.608846720406291e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156438.2502262258,
+          "rounded_coordinate_peak_absolute_difference_Pa": 1.132139004766941e-08,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 2.1577828283500097e-11
+        },
+        {
+          "step": 40,
+          "time_s": 0.05,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 2.4744095555454058e-17,
+              "L2_difference": 4.849278568040291e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 1.5178830414797062e-18,
+              "L2_difference": 2.1124573768546477e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 2.5717766380331654e-16,
+              "L2_difference": 3.0735355039101134e-16
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 1.3953629930227912e-15,
+              "L2_difference": 3.774421277746573e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 1.8965663424500945e-12,
+              "L2_difference": 4.481693187166014e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 3.839861068000161e-11,
+              "L2_difference": 5.0481838769274245e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 1.7357738598618366e-13,
+          "all_quadrature_tensor_relative_change": 1.7287954472868695e-13,
+          "raw_corner_peak_relative_change": 1.5576429035490946e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156437.89544487567,
+          "rounded_coordinate_peak_absolute_difference_Pa": 9.400537237524986e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 2.2933138235690928e-11
+        },
+        {
+          "step": 41,
+          "time_s": 0.051250000000000004,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 2.5798188353642632e-17,
+              "L2_difference": 5.031009088977551e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 1.8431436932253575e-18,
+              "L2_difference": 2.6057184120323087e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.597708238720313e-15,
+              "L2_difference": 2.2698755647445816e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 8.432742385508594e-16,
+              "L2_difference": 1.7208304804185143e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 1.0633275418087897e-12,
+              "L2_difference": 2.354917661708615e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 2.901136969546414e-11,
+              "L2_difference": 4.385029357612101e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 4.603422393283392e-13,
+          "all_quadrature_tensor_relative_change": 4.601564735911039e-13,
+          "raw_corner_peak_relative_change": 4.4719783431901305e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156437.54022999154,
+          "rounded_coordinate_peak_absolute_difference_Pa": 1.2776581570506096e-08,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 2.365736780249957e-11
+        },
+        {
+          "step": 42,
+          "time_s": 0.0525,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 2.696247484431307e-17,
+              "L2_difference": 5.220198275475674e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 2.0599841277224584e-18,
+              "L2_difference": 2.2008524076689702e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.1475910312199702e-15,
+              "L2_difference": 1.4838991841853264e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 9.360308603225291e-16,
+              "L2_difference": 2.4477839115811497e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 6.9586183564858e-13,
+              "L2_difference": 1.1345820268540109e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 4.1983812260060205e-11,
+              "L2_difference": 6.246989865428996e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 6.363702004518576e-13,
+          "all_quadrature_tensor_relative_change": 6.35681338926337e-13,
+          "raw_corner_peak_relative_change": 6.260547635861258e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156437.18460881524,
+          "rounded_coordinate_peak_absolute_difference_Pa": 5.995389074087143e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 2.5228697418895782e-11
+        },
+        {
+          "step": 43,
+          "time_s": 0.05375,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 2.7846671362128153e-17,
+              "L2_difference": 5.411420332910802e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 2.168404344971009e-18,
+              "L2_difference": 3.0868879004729766e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.3588090545734604e-15,
+              "L2_difference": 1.871560747666809e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 1.3558532280520787e-15,
+              "L2_difference": 3.279918511253821e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 1.8335072706996863e-12,
+              "L2_difference": 3.7740863867845145e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 2.2830071166879407e-11,
+              "L2_difference": 4.3480495851432846e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 5.828976712161541e-13,
+          "all_quadrature_tensor_relative_change": 5.822146803984456e-13,
+          "raw_corner_peak_relative_change": 5.631051180898794e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156436.82860679706,
+          "rounded_coordinate_peak_absolute_difference_Pa": 1.4057150110602379e-08,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 2.3832913985938717e-11
+        },
+        {
+          "step": 44,
+          "time_s": 0.055,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 2.8950487641298515e-17,
+              "L2_difference": 5.599683994281014e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 2.168404344971009e-18,
+              "L2_difference": 2.7731004920425818e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 3.1651707473828e-16,
+              "L2_difference": 4.0689743962524047e-16
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 8.830530233362895e-16,
+              "L2_difference": 1.931594490200538e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 1.0138780230458797e-12,
+              "L2_difference": 1.714251569065693e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 1.4780732193742097e-11,
+              "L2_difference": 2.917381641490678e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 3.7900038333091845e-13,
+          "all_quadrature_tensor_relative_change": 3.77877027572005e-13,
+          "raw_corner_peak_relative_change": 3.672617765460018e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156436.47224912548,
+          "rounded_coordinate_peak_absolute_difference_Pa": 2.1827872842550278e-08,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 2.7039808169700597e-11
+        },
+        {
+          "step": 45,
+          "time_s": 0.05625,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 2.979070462030538e-17,
+              "L2_difference": 5.792171424752376e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 2.168404344971009e-18,
+              "L2_difference": 2.617266017222158e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.7768502584259026e-15,
+              "L2_difference": 2.370102386876747e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 8.127704645378639e-16,
+              "L2_difference": 2.1001234610360243e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 3.5907989800265736e-13,
+              "L2_difference": 8.809592961626514e-12
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 2.911737517763413e-11,
+              "L2_difference": 6.124560090374105e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 3.68796251483628e-13,
+          "all_quadrature_tensor_relative_change": 3.6826712522121766e-13,
+          "raw_corner_peak_relative_change": 3.6426417437951386e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156436.11555925113,
+          "rounded_coordinate_peak_absolute_difference_Pa": 4.94765117764473e-10,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 2.976814923519986e-11
+        },
+        {
+          "step": 46,
+          "time_s": 0.0575,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 3.0743113760154034e-17,
+              "L2_difference": 5.955727163267304e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 2.168404344971009e-18,
+              "L2_difference": 2.290598234491105e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 7.610424106032275e-16,
+              "L2_difference": 8.663748482422823e-16
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 1.287622883673882e-15,
+              "L2_difference": 3.224826047942822e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 1.5575537303026879e-12,
+              "L2_difference": 3.4889297629143366e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 3.8469991081591104e-11,
+              "L2_difference": 5.809442335240595e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 5.384919290368487e-13,
+          "all_quadrature_tensor_relative_change": 5.378612656120802e-13,
+          "raw_corner_peak_relative_change": 5.38680211548126e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156435.75856026373,
+          "rounded_coordinate_peak_absolute_difference_Pa": 6.897607818245888e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 2.7765848381031206e-11
+        },
+        {
+          "step": 47,
+          "time_s": 0.058750000000000004,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 3.1707593119501064e-17,
+              "L2_difference": 6.142710485566688e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 2.2768245622195593e-18,
+              "L2_difference": 2.8797774887601554e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 8.057424096629102e-16,
+              "L2_difference": 1.0556442541917991e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 7.715834874776235e-16,
+              "L2_difference": 1.7838178004629685e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 9.467169130069842e-13,
+              "L2_difference": 1.5928905082452796e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 2.9167501747195956e-11,
+              "L2_difference": 4.5543880606267705e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 3.2952775303912486e-13,
+          "all_quadrature_tensor_relative_change": 3.288421796773347e-13,
+          "raw_corner_peak_relative_change": 3.2729374765949615e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156435.40127532076,
+          "rounded_coordinate_peak_absolute_difference_Pa": 6.082700565457344e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 2.8092472153758502e-11
+        },
+        {
+          "step": 48,
+          "time_s": 0.06,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 3.273835280697074e-17,
+              "L2_difference": 6.383220413365429e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 2.2768245622195593e-18,
+              "L2_difference": 2.36460773602478e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 9.273555422593057e-16,
+              "L2_difference": 1.2702106164609644e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 2.493900619114146e-15,
+              "L2_difference": 6.685689260053202e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 2.4101558199235117e-12,
+              "L2_difference": 5.860841851079014e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 2.908823182323772e-11,
+              "L2_difference": 5.6509499815184e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 4.0390199847800127e-13,
+          "all_quadrature_tensor_relative_change": 4.0362285741245037e-13,
+          "raw_corner_peak_relative_change": 3.8036240823657863e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156435.0437263091,
+          "rounded_coordinate_peak_absolute_difference_Pa": 1.1728843674063683e-08,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 2.9733137287172234e-11
+        },
+        {
+          "step": 49,
+          "time_s": 0.06125,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 3.372154630049617e-17,
+              "L2_difference": 6.535950885496425e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 2.2768245622195593e-18,
+              "L2_difference": 3.0413276776585797e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.124242860437252e-15,
+              "L2_difference": 1.5216418388957656e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 1.3653503574984991e-15,
+              "L2_difference": 3.511324104940345e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 3.087400781290116e-12,
+              "L2_difference": 7.739331900170703e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 3.546480470406621e-11,
+              "L2_difference": 5.6471220989046526e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 4.865425170509507e-13,
+          "all_quadrature_tensor_relative_change": 4.854517535911814e-13,
+          "raw_corner_peak_relative_change": 4.567457523307894e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156434.6859355095,
+          "rounded_coordinate_peak_absolute_difference_Pa": 1.0186340659856796e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 2.982677974356951e-11
+        },
+        {
+          "step": 50,
+          "time_s": 0.0625,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 3.4688460879566557e-17,
+              "L2_difference": 6.706029945362941e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 2.6020852139652106e-18,
+              "L2_difference": 2.8294394867395695e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.6577597557961433e-15,
+              "L2_difference": 2.3035541872824623e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 8.369782773955039e-16,
+              "L2_difference": 2.1477624660784676e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 9.388530061851161e-13,
+              "L2_difference": 1.4579565359054115e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 1.3981555496700437e-11,
+              "L2_difference": 2.3816408828140917e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 6.657757125753276e-13,
+          "all_quadrature_tensor_relative_change": 6.652872281913977e-13,
+          "raw_corner_peak_relative_change": 6.52811138479592e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156434.32792456629,
+          "rounded_coordinate_peak_absolute_difference_Pa": 8.294591680169106e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 2.96434187666822e-11
+        },
+        {
+          "step": 51,
+          "time_s": 0.06375,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 3.5714389832258925e-17,
+              "L2_difference": 6.89593138235967e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 2.710505431213761e-18,
+              "L2_difference": 2.8273919178578962e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 7.720273401866103e-16,
+              "L2_difference": 1.0562466535051348e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 2.2525205068976488e-15,
+              "L2_difference": 5.6327713220644427e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 1.6485891257044358e-12,
+              "L2_difference": 3.186507614523887e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 5.825223636790611e-11,
+              "L2_difference": 7.547103464204785e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 5.648416563522082e-13,
+          "all_quadrature_tensor_relative_change": 5.635935319026009e-13,
+          "raw_corner_peak_relative_change": 5.471179065352771e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156433.96971554027,
+          "rounded_coordinate_peak_absolute_difference_Pa": 7.0140231400728226e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 2.965000437799552e-11
+        },
+        {
+          "step": 52,
+          "time_s": 0.065,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 3.6660300641215364e-17,
+              "L2_difference": 7.056916430868497e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 2.8189256484623115e-18,
+              "L2_difference": 2.920766122886986e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 2.888290280799084e-16,
+              "L2_difference": 4.0821208229955187e-16
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 1.5447862430428656e-15,
+              "L2_difference": 4.0030529478504497e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 3.0378453999524115e-12,
+              "L2_difference": 7.345379881975917e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 1.8571144622114844e-11,
+              "L2_difference": 3.378559444416037e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 2.4721703188042485e-13,
+          "all_quadrature_tensor_relative_change": 2.469106030126747e-13,
+          "raw_corner_peak_relative_change": 2.1960211427085596e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156433.6113296965,
+          "rounded_coordinate_peak_absolute_difference_Pa": 9.807990863919258e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 3.142704735642063e-11
+        },
+        {
+          "step": 53,
+          "time_s": 0.06625,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 3.745285878204937e-17,
+              "L2_difference": 7.232691397060244e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 2.8189256484623115e-18,
+              "L2_difference": 3.007999449885967e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 3.8182734540912123e-16,
+              "L2_difference": 5.102627917122779e-16
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 7.791538444437088e-16,
+              "L2_difference": 2.05424868402754e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 1.695778059114912e-12,
+              "L2_difference": 4.170617187396215e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 3.5341618520590146e-11,
+              "L2_difference": 5.2925501279124517e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 5.1704992338118886e-14,
+          "all_quadrature_tensor_relative_change": 5.066994885593978e-14,
+          "raw_corner_peak_relative_change": 3.8413716652030416e-14,
+          "wide_coordinate_raw_corner_peak_Pa": 156433.25278872054,
+          "rounded_coordinate_peak_absolute_difference_Pa": 4.71482053399086e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 3.052575108856451e-11
+        },
+        {
+          "step": 54,
+          "time_s": 0.0675,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 3.855720445681177e-17,
+              "L2_difference": 7.418684117656348e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 2.8189256484623115e-18,
+              "L2_difference": 2.9513457673044172e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 6.396431418318949e-16,
+              "L2_difference": 9.000795490246495e-16
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 8.834765398099166e-16,
+              "L2_difference": 1.9790114420438703e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 2.579176943208922e-13,
+              "L2_difference": 6.871809106566327e-12
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 2.0047127152755806e-11,
+              "L2_difference": 2.8418481835674057e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 2.5033325795924077e-13,
+          "all_quadrature_tensor_relative_change": 2.4970914798935947e-13,
+          "raw_corner_peak_relative_change": 2.4358293160275934e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156432.89411437153,
+          "rounded_coordinate_peak_absolute_difference_Pa": 1.5541445463895798e-08,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 3.4944354081164226e-11
+        },
+        {
+          "step": 55,
+          "time_s": 0.06875,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 3.938339245262973e-17,
+              "L2_difference": 7.604228949816104e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 2.8189256484623115e-18,
+              "L2_difference": 3.1369462380891552e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 4.2617250735387094e-16,
+              "L2_difference": 5.308341793963968e-16
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 2.122909915343778e-15,
+              "L2_difference": 5.780276530989068e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 2.073160254612591e-12,
+              "L2_difference": 5.453075140125261e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 3.764281247820023e-11,
+              "L2_difference": 6.517618197633701e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 6.88642663566384e-14,
+          "all_quadrature_tensor_relative_change": 6.705864258733394e-14,
+          "raw_corner_peak_relative_change": 3.441691376337985e-14,
+          "wide_coordinate_raw_corner_peak_Pa": 156432.53532804054,
+          "rounded_coordinate_peak_absolute_difference_Pa": 1.3562384992837906e-08,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 3.3677496237204e-11
+        },
+        {
+          "step": 56,
+          "time_s": 0.07,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 4.046916957700154e-17,
+              "L2_difference": 7.773566261418398e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 2.8189256484623115e-18,
+              "L2_difference": 3.4471015001164144e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 4.202770967262181e-16,
+              "L2_difference": 5.619009778659241e-16
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 1.958355559611336e-15,
+              "L2_difference": 4.677874177321188e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 3.265012379964091e-12,
+              "L2_difference": 7.970573505796207e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 8.688614064333855e-11,
+              "L2_difference": 1.1011229791207576e-10
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 5.181116509859442e-14,
+          "all_quadrature_tensor_relative_change": 4.9675808847835004e-14,
+          "raw_corner_peak_relative_change": 6.217248937900877e-15,
+          "wide_coordinate_raw_corner_peak_Pa": 156432.17645119366,
+          "rounded_coordinate_peak_absolute_difference_Pa": 5.326000973582268e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 3.52753787840349e-11
+        },
+        {
+          "step": 57,
+          "time_s": 0.07125000000000001,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 4.1333632874123556e-17,
+              "L2_difference": 7.953862891817419e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 2.8189256484623115e-18,
+              "L2_difference": 3.197910045732776e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.6898774789186234e-15,
+              "L2_difference": 2.2727992849308768e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 1.2140050706070966e-15,
+              "L2_difference": 3.416057702264236e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 2.462148637828614e-12,
+              "L2_difference": 5.863093228835431e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 2.912270424815233e-11,
+              "L2_difference": 6.201330331166874e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 5.078426814432914e-13,
+          "all_quadrature_tensor_relative_change": 5.071975478316673e-13,
+          "raw_corner_peak_relative_change": 4.829470157119431e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156431.8175056974,
+          "rounded_coordinate_peak_absolute_difference_Pa": 5.529727786779404e-10,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 3.3843215772706456e-11
+        },
+        {
+          "step": 58,
+          "time_s": 0.0725,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 4.2252253340310645e-17,
+              "L2_difference": 8.136730698991626e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 2.710505431213761e-18,
+              "L2_difference": 2.975533069500039e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 9.80520864487669e-16,
+              "L2_difference": 1.3206216131101814e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 7.412385321422382e-16,
+              "L2_difference": 1.5288494080113634e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 1.1720667199015406e-12,
+              "L2_difference": 2.3278215262241063e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 2.9128977008241463e-11,
+              "L2_difference": 4.637075830913413e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 6.129224144215848e-13,
+          "all_quadrature_tensor_relative_change": 6.116796616474242e-13,
+          "raw_corner_peak_relative_change": 5.976330541557218e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156431.45851305846,
+          "rounded_coordinate_peak_absolute_difference_Pa": 2.5029294192790985e-08,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 3.6280244352532326e-11
+        },
+        {
+          "step": 59,
+          "time_s": 0.07375,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 4.317690891624692e-17,
+              "L2_difference": 8.315773988962012e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 2.710505431213761e-18,
+              "L2_difference": 3.289530942317828e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.1553414594083489e-15,
+              "L2_difference": 1.6211538339097522e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 1.835678615671735e-15,
+              "L2_difference": 4.57254326046833e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 1.7725885122406467e-12,
+              "L2_difference": 3.643171171711534e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 3.628836814373315e-11,
+              "L2_difference": 5.1854524766745506e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 5.132122300741438e-13,
+          "all_quadrature_tensor_relative_change": 5.119060550458931e-13,
+          "raw_corner_peak_relative_change": 5.153655280309977e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156431.09949488429,
+          "rounded_coordinate_peak_absolute_difference_Pa": 1.3300450518727303e-08,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 3.491514100385654e-11
+        },
+        {
+          "step": 60,
+          "time_s": 0.075,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 4.397816237968009e-17,
+              "L2_difference": 8.489491904835073e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 2.6020852139652106e-18,
+              "L2_difference": 3.2148398772276173e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.7904601859258855e-15,
+              "L2_difference": 2.4108230310103378e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 8.306206706049979e-16,
+              "L2_difference": 2.0198109238139552e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 2.1330394290213862e-12,
+              "L2_difference": 4.582117910025538e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 5.1961046576565195e-11,
+              "L2_difference": 7.189419365663659e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 7.050272768007441e-13,
+          "all_quadrature_tensor_relative_change": 7.036850550135938e-13,
+          "raw_corner_peak_relative_change": 7.069900220812997e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156430.7404731128,
+          "rounded_coordinate_peak_absolute_difference_Pa": 8.294591680169106e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 3.482419952402864e-11
+        },
+        {
+          "step": 61,
+          "time_s": 0.07625,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 4.487203360193959e-17,
+              "L2_difference": 8.707515490609678e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 2.710505431213761e-18,
+              "L2_difference": 3.4406144674119937e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.9708702189489103e-15,
+              "L2_difference": 2.7038480389135262e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 3.002354769093293e-15,
+              "L2_difference": 7.425913297102517e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 2.285058367667749e-12,
+              "L2_difference": 4.749537707585636e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 3.5411285015385374e-11,
+              "L2_difference": 5.2039627371306565e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 8.86793020466119e-13,
+          "all_quadrature_tensor_relative_change": 8.855711444847724e-13,
+          "raw_corner_peak_relative_change": 8.613110225041964e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156430.3814690432,
+          "rounded_coordinate_peak_absolute_difference_Pa": 2.1187588572502136e-08,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 3.733816850114413e-11
+        },
+        {
+          "step": 62,
+          "time_s": 0.0775,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 4.5707591899736555e-17,
+              "L2_difference": 8.854652628237555e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 2.8189256484623115e-18,
+              "L2_difference": 3.067232500536944e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.3389150376207357e-15,
+              "L2_difference": 1.8897596708643492e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 1.4793113200031441e-15,
+              "L2_difference": 3.199868515257545e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 3.5853328712771497e-12,
+              "L2_difference": 8.11960466639065e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 2.2839230506832564e-11,
+              "L2_difference": 3.654361491354749e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 7.856281959476684e-13,
+          "all_quadrature_tensor_relative_change": 7.843314782265902e-13,
+          "raw_corner_peak_relative_change": 7.51620987671231e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156430.02250517742,
+          "rounded_coordinate_peak_absolute_difference_Pa": 2.5815097615122795e-08,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 3.333832685143698e-11
+        },
+        {
+          "step": 63,
+          "time_s": 0.07875,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 4.6988146897307447e-17,
+              "L2_difference": 9.040620147001788e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 3.0357660829594124e-18,
+              "L2_difference": 3.2841642225451325e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 6.674821882689859e-16,
+              "L2_difference": 9.254999025089727e-16
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 2.0817020442182526e-15,
+              "L2_difference": 5.0785581396288685e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 1.0960784677610713e-12,
+              "L2_difference": 2.0552550650760502e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 9.899552705361359e-11,
+              "L2_difference": 1.3708011204827578e-10
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 4.726805810069535e-13,
+          "all_quadrature_tensor_relative_change": 4.717490255485514e-13,
+          "raw_corner_peak_relative_change": 4.691802502065912e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156429.66360254382,
+          "rounded_coordinate_peak_absolute_difference_Pa": 2.8812792152166367e-08,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 3.602798627811051e-11
+        },
+        {
+          "step": 64,
+          "time_s": 0.08,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 4.795421444343058e-17,
+              "L2_difference": 9.221631737515931e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 3.0357660829594124e-18,
+              "L2_difference": 3.9068230176608325e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.5946034925985067e-15,
+              "L2_difference": 2.2369737835414868e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 8.737944114194987e-16,
+              "L2_difference": 2.21454506637572e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 2.2266059474667097e-12,
+              "L2_difference": 5.137351488948355e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 3.702107086059163e-11,
+              "L2_difference": 6.334072433261812e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 5.563906180439021e-13,
+          "all_quadrature_tensor_relative_change": 5.552823618367224e-13,
+          "raw_corner_peak_relative_change": 5.616618281578667e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156429.3047838661,
+          "rounded_coordinate_peak_absolute_difference_Pa": 2.7619535103440285e-08,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 3.897427748984606e-11
+        },
+        {
+          "step": 65,
+          "time_s": 0.08125,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 4.894864435839693e-17,
+              "L2_difference": 9.40962851944649e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 3.144186300207963e-18,
+              "L2_difference": 4.0948835211678876e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 2.404983586215249e-16,
+              "L2_difference": 2.520479831139113e-16
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 7.955439319730796e-16,
+              "L2_difference": 1.8387874389490235e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 6.388034463902642e-13,
+              "L2_difference": 8.912256462535672e-12
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 3.7142233733078456e-11,
+              "L2_difference": 5.608482639621864e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 3.3663330417953087e-13,
+          "all_quadrature_tensor_relative_change": 3.357883861266902e-13,
+          "raw_corner_peak_relative_change": 3.3084646133829665e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156428.94607010225,
+          "rounded_coordinate_peak_absolute_difference_Pa": 3.018067218363285e-08,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 3.7504007227591307e-11
+        },
+        {
+          "step": 66,
+          "time_s": 0.0825,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 4.9844434639677554e-17,
+              "L2_difference": 9.583898632734965e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 3.144186300207963e-18,
+              "L2_difference": 3.346365079353006e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.089941477174366e-15,
+              "L2_difference": 1.499217340937003e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 7.522393725447035e-16,
+              "L2_difference": 2.1941411563751836e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 9.164376585597025e-13,
+              "L2_difference": 2.069002743604124e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 1.805001634269665e-11,
+              "L2_difference": 3.253668191572512e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 3.045497027684918e-13,
+          "all_quadrature_tensor_relative_change": 3.03945989927108e-13,
+          "raw_corner_peak_relative_change": 3.022027073029676e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156428.58748397688,
+          "rounded_coordinate_peak_absolute_difference_Pa": 8.265487849712372e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 3.836538215549741e-11
+        },
+        {
+          "step": 67,
+          "time_s": 0.08375,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 5.088619252057174e-17,
+              "L2_difference": 9.767302057710091e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 3.144186300207963e-18,
+              "L2_difference": 3.3791158328753597e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 7.0462174606092925e-16,
+              "L2_difference": 9.959310685647187e-16
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 8.669758582326476e-16,
+              "L2_difference": 2.6265076883603953e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 1.1311600908945067e-12,
+              "L2_difference": 3.0209094030612596e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 1.9611694213050868e-11,
+              "L2_difference": 3.327575153473582e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 8.313176327046626e-14,
+          "all_quadrature_tensor_relative_change": 7.879412697741647e-14,
+          "raw_corner_peak_relative_change": 6.961098364399732e-14,
+          "wide_coordinate_raw_corner_peak_Pa": 156428.22904711124,
+          "rounded_coordinate_peak_absolute_difference_Pa": 2.0954757928848267e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 4.12931441417192e-11
+        },
+        {
+          "step": 68,
+          "time_s": 0.085,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 5.1970910853759475e-17,
+              "L2_difference": 9.945945383988007e-16
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 3.144186300207963e-18,
+              "L2_difference": 4.337027060125964e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.2902149526612073e-15,
+              "L2_difference": 1.714333536948485e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 1.2733958941258527e-15,
+              "L2_difference": 3.7477026415119214e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 1.7122974018868002e-12,
+              "L2_difference": 4.4909762693875986e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 6.463381913013322e-11,
+              "L2_difference": 1.1068067983523383e-10
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 1.5987415285752173e-13,
+          "all_quadrature_tensor_relative_change": 1.5837117645286667e-13,
+          "raw_corner_peak_relative_change": 1.609823385706477e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156427.87078151904,
+          "rounded_coordinate_peak_absolute_difference_Pa": 1.8044374883174896e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 3.841665810072342e-11
+        },
+        {
+          "step": 69,
+          "time_s": 0.08625000000000001,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 5.287216714452785e-17,
+              "L2_difference": 1.0117384884774036e-15
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 3.144186300207963e-18,
+              "L2_difference": 3.3013241416933205e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.5279385323152606e-15,
+              "L2_difference": 2.068849836961285e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 7.584015372359785e-16,
+              "L2_difference": 1.9200582468644034e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 1.5225623194868574e-12,
+              "L2_difference": 3.6934982943416706e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 3.997869049698899e-11,
+              "L2_difference": 6.872375896955951e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 6.589861068663899e-13,
+          "all_quadrature_tensor_relative_change": 6.5778102566853e-13,
+          "raw_corner_peak_relative_change": 6.595834989298055e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156427.51270919343,
+          "rounded_coordinate_peak_absolute_difference_Pa": 1.4057150110602379e-08,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 4.1209706773936105e-11
+        },
+        {
+          "step": 70,
+          "time_s": 0.08750000000000001,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 5.385893405829951e-17,
+              "L2_difference": 1.029636342399232e-15
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 3.144186300207963e-18,
+              "L2_difference": 3.658461106621921e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 7.967725530562768e-16,
+              "L2_difference": 1.0910540785000083e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 1.1567275074377757e-15,
+              "L2_difference": 2.7603231206347562e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 7.845136273971952e-13,
+              "L2_difference": 1.0711208615832656e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 1.9138475526592202e-11,
+              "L2_difference": 3.123687786345134e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 5.397633264096297e-13,
+          "all_quadrature_tensor_relative_change": 5.377279737009503e-13,
+          "raw_corner_peak_relative_change": 5.266898028821743e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156427.15485213415,
+          "rounded_coordinate_peak_absolute_difference_Pa": 7.799826562404633e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 4.271508026701135e-11
+        },
+        {
+          "step": 71,
+          "time_s": 0.08875,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 5.470504056326775e-17,
+              "L2_difference": 1.0462559657379795e-15
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 2.927345865710862e-18,
+              "L2_difference": 4.117821205842436e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 6.780978706049302e-16,
+              "L2_difference": 9.288949413196537e-16
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 1.227676835848465e-15,
+              "L2_difference": 3.361856811423728e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 1.9075234746289925e-12,
+              "L2_difference": 4.332547620473742e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 2.9054980643650197e-11,
+              "L2_difference": 4.9951303911903516e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 5.927419067037098e-14,
+          "all_quadrature_tensor_relative_change": 5.154973901132615e-14,
+          "raw_corner_peak_relative_change": 1.7763568394002505e-15,
+          "wide_coordinate_raw_corner_peak_Pa": 156426.79723247426,
+          "rounded_coordinate_peak_absolute_difference_Pa": 1.5832483768463135e-08,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 3.94718050409773e-11
+        },
+        {
+          "step": 72,
+          "time_s": 0.09,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 5.555037944462754e-17,
+              "L2_difference": 1.063340464439382e-15
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 3.0357660829594124e-18,
+              "L2_difference": 3.87963763031286e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 4.254644121600956e-16,
+              "L2_difference": 5.412334864232757e-16
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 7.211850271159927e-16,
+              "L2_difference": 1.717992564853344e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 6.820474727414137e-13,
+              "L2_difference": 1.6627895280918735e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 2.9024449510473005e-11,
+              "L2_difference": 5.858033269036863e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 2.419927905921886e-13,
+          "all_quadrature_tensor_relative_change": 2.408757665212494e-13,
+          "raw_corner_peak_relative_change": 2.3725466036239595e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156426.43987217263,
+          "rounded_coordinate_peak_absolute_difference_Pa": 2.075103111565113e-08,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 4.32181411489051e-11
+        },
+        {
+          "step": 73,
+          "time_s": 0.09125,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 5.647965399710431e-17,
+              "L2_difference": 1.0814158186428665e-15
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 2.927345865710862e-18,
+              "L2_difference": 3.1709551478738255e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.3899483396637567e-15,
+              "L2_difference": 1.7551900121571899e-15
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 1.951509812861847e-15,
+              "L2_difference": 5.644132686201656e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 1.883703908338995e-12,
+              "L2_difference": 5.197942255174788e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 2.9198476969583e-11,
+              "L2_difference": 4.6521155044002725e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 2.4791865451508843e-13,
+          "all_quadrature_tensor_relative_change": 2.456571127584435e-13,
+          "raw_corner_peak_relative_change": 2.5213164889237305e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156426.0827933472,
+          "rounded_coordinate_peak_absolute_difference_Pa": 9.284121915698051e-09,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 4.6746199485367524e-11
+        },
+        {
+          "step": 74,
+          "time_s": 0.0925,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 5.743309545835744e-17,
+              "L2_difference": 1.098386726831106e-15
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 2.8189256484623115e-18,
+              "L2_difference": 3.114545099785606e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 2.894514575026168e-16,
+              "L2_difference": 3.031670158557683e-16
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 1.5866136026538292e-15,
+              "L2_difference": 4.363606009643349e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 2.8087576135005647e-12,
+              "L2_difference": 7.665964614545078e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 1.960965764769007e-11,
+              "L2_difference": 3.0431485870207016e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 2.452058660932742e-13,
+          "all_quadrature_tensor_relative_change": 2.4332999988926153e-13,
+          "raw_corner_peak_relative_change": 2.5557334026871104e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156425.72601791448,
+          "rounded_coordinate_peak_absolute_difference_Pa": 1.507578417658806e-08,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 4.481807085986486e-11
+        },
+        {
+          "step": 75,
+          "time_s": 0.09375,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 5.844789386872729e-17,
+              "L2_difference": 1.118244112373088e-15
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 2.6020852139652106e-18,
+              "L2_difference": 3.000579036974293e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 6.465257240714341e-16,
+              "L2_difference": 9.258739438648592e-16
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 8.809883805273571e-16,
+              "L2_difference": 1.7993783039690982e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 1.396889421336307e-12,
+              "L2_difference": 3.6026808364928935e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 1.4265644221467255e-11,
+              "L2_difference": 2.46363765119291e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 2.1646200755032774e-13,
+          "all_quadrature_tensor_relative_change": 2.1405118904982417e-13,
+          "raw_corner_peak_relative_change": 1.942890293094024e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156425.36956812555,
+          "rounded_coordinate_peak_absolute_difference_Pa": 1.0506482794880867e-08,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 4.23921696724325e-11
+        },
+        {
+          "step": 76,
+          "time_s": 0.095,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 5.927054814896843e-17,
+              "L2_difference": 1.1360180706990249e-15
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 2.3852447794681098e-18,
+              "L2_difference": 2.780954548287666e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.0880985240428742e-16,
+              "L2_difference": 1.138742770252903e-16
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 9.505854704685916e-16,
+              "L2_difference": 2.6999758182088094e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 9.065308296991709e-13,
+              "L2_difference": 2.260937726252016e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 1.9925706917778285e-11,
+              "L2_difference": 3.64436898970818e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 1.6080716779608133e-13,
+          "all_quadrature_tensor_relative_change": 1.5785010430012324e-13,
+          "raw_corner_peak_relative_change": 1.4155343563970746e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156425.01346589738,
+          "rounded_coordinate_peak_absolute_difference_Pa": 3.137392923235893e-08,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 4.446157901550442e-11
+        },
+        {
+          "step": 77,
+          "time_s": 0.09625,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 6.018386142434538e-17,
+              "L2_difference": 1.1543278239367969e-15
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 2.3852447794681098e-18,
+              "L2_difference": 2.6760943972665483e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 5.451662812405572e-16,
+              "L2_difference": 7.750218809530405e-16
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 2.0601548164418587e-15,
+              "L2_difference": 5.949162113614688e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 2.4050446034206086e-12,
+              "L2_difference": 6.443869422072199e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 2.2859436565880742e-11,
+              "L2_difference": 3.486805295514339e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 1.5349561510675148e-13,
+          "all_quadrature_tensor_relative_change": 1.5066471688119537e-13,
+          "raw_corner_peak_relative_change": 1.5587531265737198e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156424.65773337393,
+          "rounded_coordinate_peak_absolute_difference_Pa": 3.262539394199848e-08,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 4.5732137932827764e-11
+        },
+        {
+          "step": 78,
+          "time_s": 0.0975,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 6.121184178495688e-17,
+              "L2_difference": 1.1717404559451476e-15
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 2.2768245622195593e-18,
+              "L2_difference": 2.6839441554581655e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 5.753526278988103e-16,
+              "L2_difference": 7.503258440576348e-16
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 2.705546897031812e-15,
+              "L2_difference": 7.490625747848723e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 3.788266133202356e-12,
+              "L2_difference": 1.0496909339888806e-10
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 3.83472698040066e-11,
+              "L2_difference": 6.195690760437444e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 2.6946773472057547e-13,
+          "all_quadrature_tensor_relative_change": 2.6807130974171646e-13,
+          "raw_corner_peak_relative_change": 2.864375403532904e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156424.30239243273,
+          "rounded_coordinate_peak_absolute_difference_Pa": 2.759043127298355e-08,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 4.70710095834332e-11
+        },
+        {
+          "step": 79,
+          "time_s": 0.09875,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 6.202893741148166e-17,
+              "L2_difference": 1.1880818313388841e-15
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 2.168404344971009e-18,
+              "L2_difference": 2.5436510820392768e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 1.4556893774598844e-16,
+              "L2_difference": 2.6014443545327e-16
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 1.558349389130048e-15,
+              "L2_difference": 4.2236928010804507e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 3.3768473580135285e-12,
+              "L2_difference": 9.064712356682747e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 3.922331209826879e-11,
+              "L2_difference": 5.399252397143154e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 1.3812537048372408e-13,
+          "all_quadrature_tensor_relative_change": 1.349720007854345e-13,
+          "raw_corner_peak_relative_change": 1.4555023852835802e-13,
+          "wide_coordinate_raw_corner_peak_Pa": 156423.94746528642,
+          "rounded_coordinate_peak_absolute_difference_Pa": 3.67872416973114e-08,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 4.741623077290281e-11
+        },
+        {
+          "step": 80,
+          "time_s": 0.1,
+          "all_saved_array_differences": {
+            "displacement": {
+              "maximum_absolute_difference": 6.295207097509084e-17,
+              "L2_difference": 1.206186219192135e-15
+            },
+            "joint_position": {
+              "maximum_absolute_difference": 2.168404344971009e-18,
+              "L2_difference": 2.5771291662647633e-18
+            },
+            "joint_velocity": {
+              "maximum_absolute_difference": 2.026343026184099e-16,
+              "L2_difference": 2.2613268705586455e-16
+            },
+            "body_velocity": {
+              "maximum_absolute_difference": 7.385068508873431e-16,
+              "L2_difference": 2.0121608517317536e-14
+            },
+            "body_acceleration": {
+              "maximum_absolute_difference": 8.548055664237671e-13,
+              "L2_difference": 2.0681067581805218e-11
+            },
+            "contact_force_N": {
+              "maximum_absolute_difference": 2.5136927261915076e-11,
+              "L2_difference": 3.525831751010866e-11
+            },
+            "applied_force_N": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "arm_support_generalized_effort": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            },
+            "body_component_permutation": {
+              "maximum_absolute_difference": 0.0,
+              "L2_difference": 0.0
+            }
+          },
+          "all_corner_tensor_relative_change": 7.00064585802138e-14,
+          "all_quadrature_tensor_relative_change": 6.47319548902511e-14,
+          "raw_corner_peak_relative_change": 3.3306690738754696e-14,
+          "wide_coordinate_raw_corner_peak_Pa": 156423.59297387511,
+          "rounded_coordinate_peak_absolute_difference_Pa": 5.925539880990982e-08,
+          "rounded_coordinate_all_corner_tensor_relative_difference": 4.655198019574587e-11
+        }
+      ]
+    }
+  ],
+  "goal_completion": false,
+  "limitations": "Every saved original accepted state, all original array fields and full corner/quadrature tensors are compared. Original incomplete histories remain incomplete. Independent complete force audits are separate requirements. Rounding diagnostics quantify observable arithmetic; they do not establish physical spatial/contact accuracy or original-history matching."
+}
