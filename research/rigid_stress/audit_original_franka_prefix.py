@@ -21,6 +21,7 @@ def main():
     parser.add_argument("--mjcf", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--allow-incomplete-prefix", action="store_true")
+    parser.add_argument("--recovery-run", type=Path)
     args = parser.parse_args()
     closed_source(args.run)
     producer_code = int((args.run / "returncode.txt").read_text())
@@ -50,6 +51,17 @@ def main():
     controls = [r for r in protocol["records"] if r["mode"] == "approach_lift"]
     substeps = round(protocol["macro_dt_s"] / dt)
     assert count == config["macro_steps"] * substeps if producer_code == 0 else count < config["macro_steps"] * substeps
+    recovered_step = None
+    if args.recovery_run is not None:
+        assert producer_code != 0 and args.allow_incomplete_prefix
+        closed_source(args.recovery_run)
+        assert int((args.recovery_run / "returncode.txt").read_text()) == 0
+        recovery = json.loads((args.recovery_run / "results/summary.json").read_text())
+        assert Path(recovery["source_run"]).resolve() == args.run.resolve()
+        assert recovery["recovered_original_equation"] and recovery["final_fraction"] == 1
+        assert recovery["original_dt_s"] == dt and recovery["physical_previous_state_fixed"]
+        recovered_step = count + 1
+        count = recovered_step
     robot = PandaSkeleton(args.mjcf, dt)
     robot.model.opt.tolerance = 1e-14
     kp, kv = np.array(capture["robot_joint_kp"]), np.array(capture["robot_joint_kv"])
@@ -76,7 +88,12 @@ def main():
     for step in range(1, count + 1):
         macro = (step - 1) // substeps
         control = controls[macro]
-        with np.load(args.run / f"results/step{step:05d}.npz") as saved:
+        state_path = (
+            args.recovery_run / "results/recovered.npz"
+            if step == recovered_step
+            else args.run / f"results/step{step:05d}.npz"
+        )
+        with np.load(state_path) as saved:
             u, q, velocity, body_velocity, acceleration, force = [
                 saved[k].copy()
                 for k in [
@@ -173,6 +190,8 @@ def main():
         "steps_checked": len(rows),
         "producer_returncode": producer_code,
         "complete_requested_history": producer_code == 0,
+        "recovery_run": str(args.recovery_run) if args.recovery_run else None,
+        "independently_verified_recovered_step": recovered_step,
         "rows": rows,
         "goal_completion": False,
         "limitations": "This checks only the declared original-history prefix, with real ground support and original controls. Complete grasp/lift, spatial/contact/geometry/time convergence, matching rigid feedback and native model/accuracy-cost acceptance remain incomplete. Source native contacts are preintegration while macro states are postintegration; reported same-macro state differences are physical diagnostics, not contact-law equivalence.",

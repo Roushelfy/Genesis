@@ -1,4 +1,4 @@
-"""Reconstruct three resolved U fields and retain their unresolved spatial tails."""
+"""Reconstruct resolved U fields and retain their measured spatial tails."""
 
 import argparse
 import hashlib
@@ -25,8 +25,9 @@ def main():
     for index, run in enumerate(args.run):
         closed_source(run)
         assert int((run / "returncode.txt").read_text()) == 0
-        config = json.loads((run / "solution/configuration.json").read_text())
-        result = json.loads((run / "solution/result.json").read_text())
+        directory = run / "solution" if (run / "solution/result.json").exists() else run / "results"
+        config = json.loads((directory / "configuration.json").read_text())
+        result = json.loads((directory / "result.json").read_text())
         physical = {
             k: config[k]
             for k in [
@@ -54,7 +55,7 @@ def main():
         assert hashlib.sha256(mesh.read_bytes()).hexdigest() == result["mesh_sha256"]
         with np.load(mesh) as saved:
             reference = SkfemElasticReference(saved["vertices"], saved["tetrahedra"], 1e10, 0.3, 2000)
-        with np.load(run / "solution/fields.npz") as saved:
+        with np.load(directory / "fields.npz") as saved:
             field = {k: saved[k].copy() for k in saved.files}
         permutation = field["body_component_permutation"]
         count = reference.basis.N
@@ -111,7 +112,7 @@ def main():
         }
         levels.append(row)
         np.savez_compressed(args.output / f"level{index}.npz", points_m=probes, **observation, body_residual_N=residual)
-        for path in [mesh, *(run / "solution" / name for name in ["fields.npz", "configuration.json", "result.json"])]:
+        for path in [mesh, *(directory / name for name in ["fields.npz", "configuration.json", "result.json"])]:
             hashes[str(path)] = hashlib.sha256(path.read_bytes()).hexdigest()
     common = np.logical_and.reduce([f["valid"] for f in fields])
     assert common.any()

@@ -1,12 +1,15 @@
 """Solve a declared prefix of the actual original controls from zero velocity and real ground support."""
 
 import argparse
+import hashlib
 import json
+import shutil
 from pathlib import Path
 
 import numpy as np
 
 from .original_franka_ground import GroundedOriginalContact, build_original, contact_groups
+from .summarize_fine_references import closed_source
 
 
 def main():
@@ -18,6 +21,9 @@ def main():
     parser.add_argument("--dhat", type=float, default=2.5e-6)
     parser.add_argument("--macro-steps", type=int, default=10)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--resume-run", type=Path)
+    parser.add_argument("--recovery-run", type=Path)
+    parser.add_argument("--recovery-audit", type=Path)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     (args.output / "configuration.json").write_text(json.dumps(vars(args), default=str, indent=2) + "\n")
@@ -50,16 +56,100 @@ def main():
         world_coordinate_origin_m=static.world_coordinate_origin_m,
     )
     rows = []
+    resume_step = 0
+    if args.resume_run is not None:
+        assert args.recovery_run is not None and args.recovery_audit is not None
+        for source in [args.resume_run, args.recovery_run, args.recovery_audit]:
+            closed_source(source)
+        assert int((args.resume_run / "returncode.txt").read_text()) != 0
+        assert int((args.recovery_run / "returncode.txt").read_text()) == 0
+        assert int((args.recovery_audit / "returncode.txt").read_text()) == 0
+        source_config = json.loads((args.resume_run / "results/configuration.json").read_text())
+        for key in ["capture", "protocol_run"]:
+            assert Path(source_config[key]).resolve() == getattr(args, key).resolve()
+        for key in ["dt", "dhat"]:
+            assert source_config[key] == getattr(args, key)
+        assert (
+            hashlib.sha256(Path(source_config["mjcf"]).read_bytes()).digest()
+            == hashlib.sha256(args.mjcf.read_bytes()).digest()
+        )
+        audit = json.loads((args.recovery_audit / "results/summary.json").read_text())
+        assert Path(audit["run"]).resolve() == args.resume_run.resolve()
+        assert Path(audit["recovery_run"]).resolve() == args.recovery_run.resolve()
+        resume_step = audit["independently_verified_recovered_step"]
+        assert audit["steps_checked"] == resume_step and resume_step < args.macro_steps * substeps
+        prefix_history = args.resume_run / "results/prefix_history.json"
+        if prefix_history.exists():
+            rows.extend(json.loads(prefix_history.read_text()))
+        for line in (args.resume_run / "reference.log").read_text().splitlines():
+            try:
+                row = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if isinstance(row, dict) and "step" in row and "time_s" in row:
+                rows.append(row)
+        assert [row["step"] for row in rows] == list(range(1, resume_step))
+        provenance = []
+        for name in ["initial_state.npz", "reference_geometry.npz"]:
+            with np.load(args.resume_run / "results" / name) as source, np.load(args.output / name) as actual:
+                assert source.files == actual.files
+                for key in source.files:
+                    np.testing.assert_array_equal(source[key], actual[key])
+        for step in range(1, resume_step + 1):
+            source = (
+                args.recovery_run / "results/recovered.npz"
+                if step == resume_step
+                else args.resume_run / f"results/step{step:05d}.npz"
+            )
+            destination = args.output / f"step{step:05d}.npz"
+            shutil.copy2(source, destination)
+            digest = hashlib.sha256(source.read_bytes()).hexdigest()
+            assert hashlib.sha256(destination.read_bytes()).hexdigest() == digest
+            provenance.append({"step": step, "source": str(source), "sha256": digest})
+        recovery = json.loads((args.recovery_run / "results/summary.json").read_text())
+        with np.load(args.output / f"step{resume_step:05d}.npz") as saved:
+            previous = saved["displacement"].copy()
+            body_u = previous[: system.n].copy()
+            q, velocity, body_velocity = [
+                saved[key].copy() for key in ["joint_position", "joint_velocity", "body_velocity"]
+            ]
+        rows.append(
+            {
+                "step": resume_step,
+                "macro_tick": (resume_step - 1) // substeps,
+                "time_s": resume_step * args.dt,
+                "fresh_robot_step_effort_residual": recovery["attempts"][-1]["fresh_robot_effort_residual"],
+                **recovery["attempts"][-1]["residuals"],
+            }
+        )
+        (args.output / "prefix_history.json").write_text(json.dumps(rows, indent=2) + "\n")
+        (args.output / "resume_provenance.json").write_text(
+            json.dumps(
+                {
+                    "source_run": str(args.resume_run),
+                    "recovery_run": str(args.recovery_run),
+                    "independent_audit": str(args.recovery_audit),
+                    "copied_states": provenance,
+                    "pseudo_stages_excluded_from_physical_history": True,
+                },
+                indent=2,
+            )
+            + "\n"
+        )
+    else:
+        assert args.recovery_run is None and args.recovery_audit is None
     for macro in range(args.macro_steps):
         control = controls[macro]
         assert control["tick"] == macro
         system.target[:] = control["target"]
         system.caps[7:] = control["finger_cap_N"]
         for micro in range(substeps):
+            step = macro * substeps + micro + 1
+            if step <= resume_step:
+                continue
             old_body, old_q = body_u.copy(), q.copy()
             old_body_velocity, old_velocity = body_velocity.copy(), velocity.copy()
             system.begin_dynamic_step(old_q, old_velocity, old_body + args.dt * old_body_velocity)
-            step = macro * substeps + micro + 1
             try:
                 body_u, velocity, full, contact = system.solve(body_u, velocity, previous, False, f"original{step:05d}")
                 fresh = system.verify_robot_step(velocity, contact)

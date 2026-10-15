@@ -1,0 +1,98 @@
+--- a/research/rigid_stress/grasp_contact_reference.py
++++ b/research/rigid_stress/grasp_contact_reference.py
+@@ -13,6 +13,7 @@
+ 
+ from .contact_reference import IndependentContactSystem
+ from .finite_traction_reference import triangle_closest_points
++from .neohookean_reference import NeoHookeanAllContactSystem, NeoHookeanPadContactSystem
+ from .skfem_reference import SkfemElasticReference
+ 
+ 
+@@ -59,6 +60,8 @@
+     parser.add_argument("--geometry", choices=("u", "egg"), required=True)
+     parser.add_argument("--pad-resolution", type=int, default=3)
+     parser.add_argument("--pad-young", type=float, default=1e6)
++    parser.add_argument("--pad-material", choices=("linear", "neo_hookean"), default="linear")
++    parser.add_argument("--body-material", choices=("linear", "neo_hookean"), default="linear")
+     parser.add_argument("--force", type=float, default=0.05)
+     parser.add_argument("--dhat", type=float, default=2.5e-6)
+     parser.add_argument("--friction", type=float, default=0.8)
+@@ -90,6 +93,8 @@
+         parser.error("--friction-least-squares requires --updated-friction")
+     if args.centre_gauge and not args.body_rigid_coordinates:
+         parser.error("--centre-gauge requires --body-rigid-coordinates")
++    if args.body_material == "neo_hookean" and args.pad_material != "neo_hookean":
++        parser.error("--body-material neo_hookean currently requires --pad-material neo_hookean")
+     args.output.mkdir(parents=True, exist_ok=False)
+     (args.output / "configuration.json").write_text(json.dumps(vars(args), default=str, indent=2) + "\n")
+     with np.load(args.mesh) as saved:
+@@ -100,7 +105,10 @@
+     right, right_back, right_drive = compliant_shoe(
+         args.geometry, 1, args.pad_resolution, args.initial_gap, args.pad_thickness, args.edge_lift, args.pad_young
+     )
+-    system = IndependentContactSystem(
++    system_type = NeoHookeanPadContactSystem if args.pad_material == "neo_hookean" else IndependentContactSystem
++    if args.body_material == "neo_hookean":
++        system_type = NeoHookeanAllContactSystem
++    system = system_type(
+         (("body", body), ("left_shoe", left), ("right_shoe", right)),
+         args.dhat,
+         1e6,
+@@ -287,6 +295,9 @@
+     vector = np.empty(body_count)
+     vector[system.parts[0].permutation] = displacement[:body_count]
+     tensor, vm = body.corner_stress(vector)
++    nonlinear_upper = None
++    if args.body_material == "neo_hookean":
++        tensor, vm, nonlinear_upper = system.body_bulk.stress_bounds(vector)
+     gradients = body.corner_basis.interpolate(vector).grad.transpose(2, 3, 0, 1)
+     elastic = body.align_rigid_gauge(vector)
+     peak_element, peak_corner = np.unravel_index(np.argmax(vm), vm.shape)
+@@ -298,9 +309,11 @@
+             "body_young_Pa": 1e10,
+             "body_poisson": 0.3,
+             "body_density_kg_m3": 2000,
++            "body_material_model": args.body_material,
+             "pad_young_Pa": args.pad_young,
+             "pad_poisson": 0,
+             "pad_density_kg_m3": 1000,
++            "pad_material_model": args.pad_material,
+         },
+         "actuator_force_per_shoe_N": args.force,
+         "friction": args.friction,
+@@ -340,6 +353,35 @@
+         },
+         "limitations": "Pilot configuration; mesh/contact convergence, actual Franka match and native replay must still be verified",
+     }
++    if nonlinear_upper is not None:
++        lower = float(vm.max())
++        upper = float(nonlinear_upper.max())
++        result["nonlinear_body_peak_bounds"] = {
++            "sampled_corner_lower_Pa": lower,
++            "certified_global_upper_Pa": upper,
++            "relative_interval_width": (upper - lower) / upper,
++            "definition": "Actual unsmoothed Cauchy corner lower bound and Bernstein numerator/determinant whole-volume upper bound; no exact-corner maximum claim",
++        }
++        result["kinematic_diagnostics_definition"] = (
++            "Displacement gradients, symmetric strains and infinitesimal mass-gauge displacements remain linear-coordinate diagnostics; nonlinear body energy and Cauchy stress use the complete finite F. Objective pose/deformation comparisons require a subsequent finite rigid-frame fit."
++        )
++    if args.pad_material == "neo_hookean":
++        diagnostics = []
++        for part, bulk in system.pad_bulk:
++            count = part.reference.basis.N
++            section = slice(part.first_node * 3, part.first_node * 3 + count)
++            pad_vector = np.empty(count)
++            pad_vector[part.permutation] = displacement[section]
++            lower = bulk.determinant_lower_bound(pad_vector)
++            assert lower > 0
++            diagnostics.append(
++                {
++                    "part": part.name,
++                    "quadrature_order": bulk.quadrature_order,
++                    "whole_volume_determinant_lower_bound": lower,
++                }
++            )
++        result["nonlinear_pad_diagnostics"] = diagnostics
+     np.savez_compressed(
+         args.output / "fields.npz",
+         rest_positions=system.rest,

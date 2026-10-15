@@ -1,0 +1,143 @@
+{
+  "scope": "Globalize one rejected step through pseudo-timesteps, accepting only the original final equation.",
+  "source_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-approach-lift-v1",
+  "final_fraction": 1.0,
+  "original_dt_s": 0.00125,
+  "recovered_original_equation": true,
+  "physical_previous_state_fixed": true,
+  "attempts": [
+    {
+      "fraction": 0.0625,
+      "dt_s": 7.8125e-05,
+      "previous_fraction": 0.0,
+      "accepted": true,
+      "residuals": {
+        "phase": "pseudo_dt_0.06250000",
+        "iteration": 3,
+        "body_residual_N": 5.811992391330264e-12,
+        "joint_residual_N_or_Nm": 2.63265646165865e-16,
+        "normal_stencils": 1
+      },
+      "fresh_robot_effort_residual": 2.63265646165865e-16,
+      "contact_groups": [
+        3
+      ]
+    },
+    {
+      "fraction": 0.15625,
+      "dt_s": 0.0001953125,
+      "previous_fraction": 0.0625,
+      "accepted": true,
+      "residuals": {
+        "phase": "pseudo_dt_0.15625000",
+        "iteration": 3,
+        "body_residual_N": 6.191486861167093e-12,
+        "joint_residual_N_or_Nm": 5.914839661231673e-16,
+        "normal_stencils": 1
+      },
+      "fresh_robot_effort_residual": 5.914839661231673e-16,
+      "contact_groups": [
+        3
+      ]
+    },
+    {
+      "fraction": 0.296875,
+      "dt_s": 0.00037109375,
+      "previous_fraction": 0.15625,
+      "accepted": true,
+      "residuals": {
+        "phase": "pseudo_dt_0.29687500",
+        "iteration": 10,
+        "body_residual_N": 8.508557756805411e-12,
+        "joint_residual_N_or_Nm": 7.329811604324607e-12,
+        "normal_stencils": 1
+      },
+      "fresh_robot_effort_residual": 7.329811604324607e-12,
+      "contact_groups": [
+        2
+      ]
+    },
+    {
+      "fraction": 0.5078125,
+      "dt_s": 0.000634765625,
+      "previous_fraction": 0.296875,
+      "accepted": false,
+      "error": "Coupled residual line search failed: pseudo_dt_0.50781250 {'phase': 'pseudo_dt_0.50781250', 'iteration': 49, 'body_residual_N': 1.0552188793668714e-10, 'joint_residual_N_or_Nm': 7.665866801140801e-11, 'normal_stencils': 2}"
+    },
+    {
+      "fraction": 0.40234375,
+      "dt_s": 0.0005029296875,
+      "previous_fraction": 0.296875,
+      "accepted": true,
+      "residuals": {
+        "phase": "pseudo_dt_0.40234375",
+        "iteration": 35,
+        "body_residual_N": 9.565122153640979e-11,
+        "joint_residual_N_or_Nm": 9.6795849368324e-11,
+        "normal_stencils": 3
+      },
+      "fresh_robot_effort_residual": 9.6795849368324e-11,
+      "contact_groups": [
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "fraction": 0.560546875,
+      "dt_s": 0.00070068359375,
+      "previous_fraction": 0.40234375,
+      "accepted": true,
+      "residuals": {
+        "phase": "pseudo_dt_0.56054688",
+        "iteration": 5,
+        "body_residual_N": 6.562224921174403e-11,
+        "joint_residual_N_or_Nm": 5.7453637859739817e-11,
+        "normal_stencils": 2
+      },
+      "fresh_robot_effort_residual": 5.7453637859739817e-11,
+      "contact_groups": [
+        2,
+        1
+      ]
+    },
+    {
+      "fraction": 0.7978515625,
+      "dt_s": 0.000997314453125,
+      "previous_fraction": 0.560546875,
+      "accepted": true,
+      "residuals": {
+        "phase": "pseudo_dt_0.79785156",
+        "iteration": 5,
+        "body_residual_N": 3.496407115699427e-11,
+        "joint_residual_N_or_Nm": 4.0121939421784966e-11,
+        "normal_stencils": 2
+      },
+      "fresh_robot_effort_residual": 4.0121939421784966e-11,
+      "contact_groups": [
+        2,
+        1
+      ]
+    },
+    {
+      "fraction": 1.0,
+      "dt_s": 0.00125,
+      "previous_fraction": 0.7978515625,
+      "accepted": true,
+      "residuals": {
+        "phase": "pseudo_dt_1.00000000",
+        "iteration": 5,
+        "body_residual_N": 8.288932708011594e-11,
+        "joint_residual_N_or_Nm": 8.892529237796022e-11,
+        "normal_stencils": 2
+      },
+      "fresh_robot_effort_residual": 8.892529237796022e-11,
+      "contact_groups": [
+        1,
+        2
+      ]
+    }
+  ],
+  "goal_completion": false,
+  "limitations": "Pseudo-timestep stages are solver iterates, not accepted physical-history states. Only the original final timestep and unchanged original force/fresh-step budgets can recover the rejected step. Independent final-state checks, the remaining complete original history and physical convergence remain required."
+}

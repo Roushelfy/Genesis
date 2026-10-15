@@ -1,0 +1,20 @@
+Transforming over 1000 vertices to C_CONTIGUOUS.
+Transforming over 1000 elements to C_CONTIGUOUS.
+Transforming over 1000 elements to C_CONTIGUOUS.
+Transforming over 1000 elements to C_CONTIGUOUS.
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-cached-spatial-3-v1/source/research/rigid_stress/grasp_contact_reference.py", line 402, in <module>
+    main()
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-cached-spatial-3-v1/source/research/rigid_stress/grasp_contact_reference.py", line 164, in main
+    displacement, _, _, _, _ = system.solve_supported(
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-cached-spatial-3-v1/source/research/rigid_stress/contact_reference.py", line 333, in solve_supported
+    energy, gradient, matrix, normal, contact_gradient = self.evaluate(
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-cached-spatial-3-v1/source/research/rigid_stress/neohookean_reference.py", line 160, in evaluate
+    new_energy, new_gradient, new_matrix = bulk.evaluate(vector, hessian)
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-cached-spatial-3-v1/source/research/rigid_stress/neohookean_reference.py", line 43, in evaluate
+    raise ValueError("Neo-Hookean bulk requires positive deformation determinant")
+ValueError: Neo-Hookean bulk requires positive deformation determinant
