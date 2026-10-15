@@ -31,6 +31,19 @@ egg/Franka and U contact references, resolved-load/native replay versus feedback
 remaining applicable load-model sensitivity and physically verified warmed costs.
 These are execution priorities within the complete linked objective.
 
+The [fixed-domain thickness/local-axis checkpoint](docs/PHYSICAL_THICKNESS_LOCAL_AXIS_20261015.md)
+independently closes20 fields across2/3/4/5 layers. Last full-tensor changes
+remain3.18-4.52%; all original36 probes and raw maxima remain. Five probe
+positions account for97-99% of squared tensor change, predominantly deviatoric.
+New502230/516287/554574-tet local meshes preserve each parent tetrahedral domain
+and volume, plus total area/volume/COM. Frozen original traction samples and
+full five-case force/corner/quadrature qualification must precede their solves;
+the first generic boundary-point finder failure remains retained. A recording-only
+U pilot now retains previous friction states and original constraint maps, but
+observed residual bit differences prevent a bit-identity claim. All-stage current
+friction/full-field qualification stays pending at the original force gates.
+These diagnostics and assets do not narrow or complete the physical objective.
+
 The [U contact/original-rigid recovery checkpoint](docs/PHYSICAL_U_CONTACT_RIGID_RECOVERY_20261015.md)
 closes all three coupled U final fields, retaining12.21% last tensor and5.34%
 raw peak changes. Six independently rebuilt final normal contact traces show
