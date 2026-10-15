@@ -118,7 +118,7 @@ def main():
         "rows": rows,
         "input_sha256": hashes,
         "goal_completion": False,
-        "limitations": "One matched32.5ms state per mesh at unresolved physical spatial/contact settings. Replaying resolved full-inertia loads through independent linear FEM measures a combined finite-geometry/constitutive linearization discrepancy; the reference-wrench balance correction is explicit. Frozen-objective-deformation stress comparison diagnoses the constitutive assumption without claiming a new equilibrium solve. Rigid-relief comparison is not a corresponding solved rigid/deformable feedback case. Native numerical replay, physical convergence, full histories, remaining finite-footprint models and verified warmed cost remain separate requirements.",
+        "limitations": "One matched state per mesh at the explicitly recorded physical time and unresolved spatial/contact settings. Replaying resolved full-inertia loads through independent linear FEM measures a combined finite-geometry/constitutive linearization discrepancy; the reference-wrench balance correction is explicit. Frozen-objective-deformation stress comparison diagnoses the constitutive assumption without claiming a new equilibrium solve. Rigid-relief comparison is not a corresponding solved rigid/deformable feedback case. Native numerical replay, physical convergence, full histories, remaining finite-footprint models and verified warmed cost remain separate requirements.",
     }
     (args.output / "summary.json").write_text(json.dumps(report, indent=2) + "\n")
     print(json.dumps({"rows": rows}))

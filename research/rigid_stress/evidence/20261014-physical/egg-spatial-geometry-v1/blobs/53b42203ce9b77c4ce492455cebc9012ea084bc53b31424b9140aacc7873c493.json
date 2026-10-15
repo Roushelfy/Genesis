@@ -1,0 +1,62 @@
+{
+  "scope": "Check native numerical recovery separately from matched nonlinear-reference model differences.",
+  "audit_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-four-level-step5-linearization-v1",
+  "rows": [
+    {
+      "case": 3,
+      "tetrahedra": 30298,
+      "mode": "full_inertia",
+      "time_s": 0.00625,
+      "native_valid_including_six_gauge_rows": true,
+      "native_complete_residual_N": 2.995190364793051e-10,
+      "independent_complete_residual_N": 2.9970381208428124e-10,
+      "independent_complete_budget_fraction": 0.17670894396488665,
+      "native_vs_independent_corner_tensor_relative_L2": 3.3762113291261965e-11,
+      "native_vs_nonlinear_quadrature_tensor_relative_volume_L2": 0.11220759177212845,
+      "native_raw_global_peak_Pa": 4021712695.850379,
+      "independent_raw_global_peak_Pa": 4021712695.866602,
+      "nonlinear_raw_global_peak_lower_Pa": 3790546898.4879746,
+      "raw_peak_native_vs_nonlinear_relative_difference": 0.06098481394719446,
+      "iterations": 25783,
+      "cached_corner_stress_max_absolute_difference_Pa": 0.0005445480346679688,
+      "cached_corner_stress_max_existing_budget_fraction": 5.940481400495074,
+      "complete_equilibrium_passed": true,
+      "cached_corner_stress_passed": false,
+      "raw_peak_reconstruction_passed": true,
+      "independent_tensor_passed": true,
+      "all_existing_gates_passed": false
+    },
+    {
+      "case": 3,
+      "tetrahedra": 30298,
+      "mode": "rigid_relief",
+      "time_s": 0.00625,
+      "native_valid_including_six_gauge_rows": true,
+      "native_complete_residual_N": 1.4620439584859586e-10,
+      "independent_complete_residual_N": 1.4638355054949563e-10,
+      "independent_complete_budget_fraction": 0.08630948819571513,
+      "native_vs_independent_corner_tensor_relative_L2": 3.317347010194644e-11,
+      "native_vs_nonlinear_quadrature_tensor_relative_volume_L2": 0.11220759177206155,
+      "native_raw_global_peak_Pa": 4021712695.8605995,
+      "independent_raw_global_peak_Pa": 4021712695.867578,
+      "nonlinear_raw_global_peak_lower_Pa": 3790546898.4879746,
+      "raw_peak_native_vs_nonlinear_relative_difference": 0.06098481394989075,
+      "iterations": 5052,
+      "cached_corner_stress_max_absolute_difference_Pa": 0.000499725341796875,
+      "cached_corner_stress_max_existing_budget_fraction": 5.129307546341851,
+      "complete_equilibrium_passed": true,
+      "cached_corner_stress_passed": false,
+      "raw_peak_reconstruction_passed": true,
+      "independent_tensor_passed": true,
+      "all_existing_gates_passed": false
+    }
+  ],
+  "max_iterations": 100000,
+  "all_existing_gates_passed": false,
+  "input_sha256": {
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-four-level-step5-linearization-v1/results/summary.json": "9b0cdf91020423e9a932db7bb5b29ec7e67d28c993f3d5947e969dbebea24f8f",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-four-level-step5-linearization-v1/results/case03.npz": "709ba0de7f0d1b89fdd850b73b40e7737ef08e7aa29eec7c9bc462f204a69063"
+  },
+  "goal_completion": false,
+  "limitations": "One matched state at its explicitly recorded physical time and unresolved physical spatial/contact settings. Both full-inertia and rigid-relief diagnostics are retained before enforcing all unchanged acceptance gates. Increasing the iteration cap changes numerical work only. This is actual production Quadrants recovery of independently resolved nodal loads. Same-discretization linear numerical error and finite-geometry/constitutive model discrepancy are reported separately. Full-inertia and rigid-relief loads define separate problems; neither establishes actual rigid/deformable feedback, finite-footprint load-model accuracy, physical convergence or warmed cost at verified accuracy."
+}

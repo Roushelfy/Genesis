@@ -1,4 +1,4 @@
-"""Compare complete spatial fields at one unchanged physical time, retaining recovery provenance."""
+"""Compare complete spatial fields at one unchanged time with saved-state or recovery provenance."""
 
 import argparse
 import hashlib
@@ -21,24 +21,32 @@ from .wide_spatial_franka import restore_static
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run", type=Path, nargs="+", required=True)
-    parser.add_argument("--recovery-run", type=Path, required=True)
-    parser.add_argument("--recovery-audit", type=Path, required=True)
+    parser.add_argument("--recovery-run", type=Path)
+    parser.add_argument("--recovery-audit", type=Path)
     parser.add_argument("--step", type=int, default=26)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     assert len(args.run) >= 3 and args.step > 1
-    for run in [*args.run, args.recovery_run, args.recovery_audit]:
+    assert (args.recovery_run is None) == (args.recovery_audit is None)
+    extra_runs = [] if args.recovery_run is None else [args.recovery_run, args.recovery_audit]
+    for run in [*args.run, *extra_runs]:
         closed_source(run)
-    assert int((args.recovery_audit / "returncode.txt").read_text()) == 0
-    audited = json.loads((args.recovery_audit / "results/summary.json").read_text())
-    assert audited["recovered_step"] == args.step
-    assert Path(audited["source_run"]).resolve() == args.run[-1].resolve()
-    assert Path(audited["recovery_run"]).resolve() == args.recovery_run.resolve()
+    if args.recovery_run is None:
+        assert all(int((run / "returncode.txt").read_text()) == 0 for run in args.run)
+    else:
+        assert int((args.recovery_audit / "returncode.txt").read_text()) == 0
+        audited = json.loads((args.recovery_audit / "results/summary.json").read_text())
+        assert audited["recovered_step"] == args.step
+        assert Path(audited["source_run"]).resolve() == args.run[-1].resolve()
+        assert Path(audited["recovery_run"]).resolve() == args.recovery_run.resolve()
     args.output.mkdir(parents=True, exist_ok=False)
     baseline, rows, fields, hashes = None, [], [], {}
     for index, run in enumerate(args.run):
         static, config = restore_static(run)
-        physical = {k: v for k, v in config.items() if k not in ["local_levels", "output"]}
+        physical = {
+            k: v for k, v in config.items() if k not in ["local_levels", "output", "steps", "source_requested_steps"]
+        }
+        assert config["steps"] >= args.step
         if baseline is None:
             baseline = physical
         assert physical == baseline
@@ -48,7 +56,7 @@ def main():
         audit_points = qualify(body, points)
         path = (
             args.recovery_run / "results/recovered.npz"
-            if index == len(args.run) - 1
+            if args.recovery_run is not None and index == len(args.run) - 1
             else run / f"results/step{args.step:04d}.npz"
         )
         with np.load(path) as saved:
@@ -129,6 +137,7 @@ def main():
     np.savez_compressed(args.output / "common_probes.npz", points_m=points, volume_weights_m3=weights)
     result = {
         "scope": __doc__,
+        "state_source_mode": "saved_completed_states" if args.recovery_run is None else "recovered_final_state",
         "rows": rows,
         "comparisons": comparisons,
         "common_probes": len(points),
@@ -141,7 +150,7 @@ def main():
         "physical_configuration": baseline,
         "input_sha256": hashes,
         "goal_completion": False,
-        "limitations": "One matched physical time with fixed original physical inputs and complete independently reconstructed1e-9N body/mapped force gates. The finest recovered state follows its original accepted25-state prefix, not a completed new80-step trajectory. Lumped support areas are quadrature diagnostics, not independently resolved physical contact boundaries. All raw peaks and common physical points remain visible. Whole histories, credible spatial/contact/geometry tails, application/model/feedback and verified warmed costs remain incomplete.",
+        "limitations": "One matched physical time with fixed original physical inputs and complete independently reconstructed1e-9N body/mapped force gates. Completed source histories may have different requested lengths outside the common saved window; a recovered finest state requires its explicit independent recovery audit. Neither mode establishes a new complete80-step trajectory comparison. Lumped support areas are quadrature diagnostics, not independently resolved physical contact boundaries. All raw peaks and common physical points remain visible. Whole histories, credible spatial/contact/geometry tails, application/model/feedback and verified warmed costs remain incomplete.",
     }
     (args.output / "summary.json").write_text(json.dumps(result, indent=2) + "\n")
     print(json.dumps({"rows": rows, "comparisons": comparisons, "common_probes": len(points)}))

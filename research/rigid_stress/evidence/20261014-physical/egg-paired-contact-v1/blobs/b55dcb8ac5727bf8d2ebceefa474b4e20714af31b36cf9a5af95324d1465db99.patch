@@ -1,0 +1,6 @@
+--- a/research/rigid_stress/dynamic_franka_reference.py
++++ b/research/rigid_stress/dynamic_franka_reference.py
+@@ -142,1 +142,2 @@
+-    system = InertialRigidFingerContactSystem(static, args.dt)
++    from .sparse_franka_inertia import SparseInertialRigidFingerContactSystem
++    system = SparseInertialRigidFingerContactSystem(static, args.dt)

@@ -1,0 +1,46 @@
+{
+  "scope": "Check native numerical recovery separately from matched nonlinear-reference model differences.",
+  "audit_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-four-level-step5-linearization-v1",
+  "rows": [
+    {
+      "case": 0,
+      "tetrahedra": 480,
+      "mode": "full_inertia",
+      "time_s": 0.00625,
+      "native_valid_including_six_gauge_rows": true,
+      "native_complete_residual_N": 9.742974243909479e-11,
+      "independent_complete_residual_N": 9.737214666974924e-11,
+      "independent_complete_budget_fraction": 0.017167546093469176,
+      "native_vs_independent_corner_tensor_relative_L2": 7.250415071146262e-11,
+      "native_vs_nonlinear_quadrature_tensor_relative_volume_L2": 4.8042486841480295e-05,
+      "native_raw_global_peak_Pa": 156448.4686989776,
+      "independent_raw_global_peak_Pa": 156448.46870049584,
+      "nonlinear_raw_global_peak_lower_Pa": 156452.58541344435,
+      "raw_peak_native_vs_nonlinear_relative_difference": 2.631285674103978e-05,
+      "iterations": 5960
+    },
+    {
+      "case": 0,
+      "tetrahedra": 480,
+      "mode": "rigid_relief",
+      "time_s": 0.00625,
+      "native_valid_including_six_gauge_rows": true,
+      "native_complete_residual_N": 6.33271184999893e-11,
+      "independent_complete_residual_N": 6.314367727051882e-11,
+      "independent_complete_budget_fraction": 0.01113277284221432,
+      "native_vs_independent_corner_tensor_relative_L2": 7.962839527726872e-11,
+      "native_vs_nonlinear_quadrature_tensor_relative_volume_L2": 4.804348542481505e-05,
+      "native_raw_global_peak_Pa": 156448.46866127287,
+      "independent_raw_global_peak_Pa": 156448.46866450273,
+      "nonlinear_raw_global_peak_lower_Pa": 156452.58541344435,
+      "raw_peak_native_vs_nonlinear_relative_difference": 2.631309773881707e-05,
+      "iterations": 733
+    }
+  ],
+  "input_sha256": {
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-four-level-step5-linearization-v1/results/summary.json": "9b0cdf91020423e9a932db7bb5b29ec7e67d28c993f3d5947e969dbebea24f8f",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-four-level-step5-linearization-v1/results/case00.npz": "7138c6875519867ba02e4dd9fc170b9d4311b1855b2a912ea8faa95acf6ee727"
+  },
+  "goal_completion": false,
+  "limitations": "One matched32.5ms state per mesh at unresolved physical spatial/contact settings. This is actual production Quadrants recovery of independently resolved nodal loads. Same-discretization linear numerical error and finite-geometry/constitutive model discrepancy are reported separately. Full-inertia and rigid-relief loads define separate problems; neither establishes actual rigid/deformable feedback, finite-footprint load-model accuracy, physical convergence or warmed cost at verified accuracy."
+}
