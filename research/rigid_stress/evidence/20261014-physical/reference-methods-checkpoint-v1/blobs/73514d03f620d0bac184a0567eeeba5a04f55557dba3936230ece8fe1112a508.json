@@ -1,0 +1,53 @@
+{
+  "scope": "Compare complete final grasp fields and every retained original force gate.",
+  "runs": [
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/grasp-u-neohookean-all-y-l1-v1",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-1-v1"
+  ],
+  "field_changes": {
+    "displacement": {
+      "absolute_l2_difference": 1.6772641731144385e-14,
+      "relative_l2_difference": 4.4847243686069834e-13
+    },
+    "contact_force_N": {
+      "absolute_l2_difference": 8.034548604999055e-12,
+      "relative_l2_difference": 1.4138499456500927e-10
+    },
+    "body_tensor_Pa": {
+      "absolute_l2_difference": 0.00011424821904669213,
+      "relative_l2_difference": 7.605227904417795e-11
+    },
+    "body_vm_Pa": {
+      "absolute_l2_difference": 3.0714179291540515e-05,
+      "relative_l2_difference": 2.0692737514078118e-11
+    }
+  },
+  "raw_peak_relative_difference": 3.7985170564525106e-12,
+  "raw_peak_positions_m": [
+    [
+      0.00035698440893704305,
+      -0.004991140866333466,
+      0.00015274418427433216
+    ],
+    [
+      0.00035698440893704305,
+      -0.004991140866333466,
+      0.00015274418427433216
+    ]
+  ],
+  "retained_accepted_force_gates_checked_per_run": [
+    744,
+    744
+  ],
+  "max_complete_force_gate_N": 9.658660045920728e-10,
+  "input_sha256": {
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/grasp-u-neohookean-all-y-l1-v1/solution/fields.npz": "7ca92a679cab33c1a0cecb0a4eef1292f8d4ab19fbd67290ed6be800650546d7",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/grasp-u-neohookean-all-y-l1-v1/solution/configuration.json": "ae9bfc40339af5fd5952e1e377625a073a39287c07044ca74997890f6f7ace66",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/grasp-u-neohookean-all-y-l1-v1/solution/result.json": "700b987c1fadb9792df549390c35766743f0fd86b6381db10b3cdea25477fa2d",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-1-v1/solution/fields.npz": "df176b22a40523f143a63e0d14c177243b325ffab876b26914c229b8bab43acd",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-1-v1/solution/configuration.json": "747a8d46c03381f2c8bcaf06349cc8dd61a2b0119da903903b1038681bf55810",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-1-v1/solution/result.json": "64f251a8a193f0bf00cd43e91ee81ef9746d9935531bd261b56423b4fe25c627"
+  },
+  "goal_completion": false,
+  "limitations": "Final all-part displacement/contact loads and complete unaveraged body tensor/von Mises fields agree under identical physical inputs. Every retained accepted-step original1e-9N gate is checked, but intermediate full fields were not retained and their equivalence is not claimed. This is reference numerical qualification, not physical contact/mesh/history convergence or application/accuracy-cost acceptance."
+}

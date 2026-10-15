@@ -1,0 +1,52 @@
+{
+  "claim_anchor": "unresolved-contact-field-after-resolving-more-nodes",
+  "main_claim": "At a matched physical time, resolving more contact nodes does not establish stress or traction convergence.",
+  "material_passport": [
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-matched-recovered-spatial-v2"
+  ],
+  "data_status": "Three deterministic solved states with independent original1e-9N force gates. No statistical replicates or fitted order.",
+  "panels": {
+    "a": {
+      "role": "Full reference-section element corner-max stress envelope",
+      "case": 0
+    },
+    "d": {
+      "role": "Matched local contact vertices and unsmoothed normal force per lumped area",
+      "case": 0
+    },
+    "b": {
+      "role": "Full reference-section element corner-max stress envelope",
+      "case": 1
+    },
+    "e": {
+      "role": "Matched local contact vertices and unsmoothed normal force per lumped area",
+      "case": 1
+    },
+    "c": {
+      "role": "Full reference-section element corner-max stress envelope",
+      "case": 2
+    },
+    "f": {
+      "role": "Matched local contact vertices and unsmoothed normal force per lumped area",
+      "case": 2
+    }
+  },
+  "units": {
+    "stress": "MPa",
+    "normal_force_per_area": "MPa",
+    "whole_section_axes": "mm",
+    "contact_axes": "micrometres"
+  },
+  "shared_colour_limits": {
+    "stress_MPa": [
+      0.001,
+      3000.0
+    ],
+    "normal_force_per_area_MPa": [
+      0.001,
+      2000.0
+    ]
+  },
+  "colour_role": "Cividis sequential logarithmic quantity scales; black stars mark projected raw global peaks.",
+  "limitations": "One fixed time, fixed polyhedron and held initialization; no completed fine history or physical tail. Projected element envelopes are not exact section stresses. Marker area does not represent contact area."
+}

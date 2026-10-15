@@ -1,0 +1,175 @@
+{
+  "scope": "Compare solved Panda spatial refinements at fixed material probes and physical times.",
+  "declared_discretization_axis": "body_refinement",
+  "qualifications": [
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-cached-newton-control-v1",
+      "polynomial_displacement_max_error_m": 2.642742795433417e-19,
+      "polynomial_tensor_max_error_Pa": 3.039836883544922e-06,
+      "finite_rotation_tensor_max_error_Pa": 0.0001878887414932251
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-cached-newton-spatial-1-v1",
+      "polynomial_displacement_max_error_m": 9.063252535621014e-20,
+      "polynomial_tensor_max_error_Pa": 2.946704626083374e-06,
+      "finite_rotation_tensor_max_error_Pa": 0.0007625878788530827
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-cached-newton-spatial-2-v1",
+      "polynomial_displacement_max_error_m": 6.776263578034403e-20,
+      "polynomial_tensor_max_error_Pa": 6.854534149169922e-06,
+      "finite_rotation_tensor_max_error_Pa": 0.001573704183101654
+    }
+  ],
+  "cases": [
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-cached-newton-control-v1",
+      "body_tetrahedra": 480,
+      "contact_refinement": 0,
+      "local_levels": 0,
+      "fixed_seed_contact_boundary": false,
+      "final_peak_lower_Pa": 156447.0168566527,
+      "final_peak_upper_Pa": 156447.01718459814,
+      "final_lower_peak_reference_position_m": [
+        1.7697452569155986e-06,
+        0.022028914832074527,
+        0.001184687058517001
+      ],
+      "max_full_dynamic_residual_N": 2.6296758579809277e-10,
+      "max_body_dynamic_residual_N": 2.58060083821521e-10
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-cached-newton-spatial-1-v1",
+      "body_tetrahedra": 3840,
+      "contact_refinement": 0,
+      "local_levels": 0,
+      "fixed_seed_contact_boundary": false,
+      "final_peak_lower_Pa": 226120.52534883405,
+      "final_peak_upper_Pa": 226120.52567678184,
+      "final_lower_peak_reference_position_m": [
+        1.7697452569155986e-06,
+        0.022028914832074527,
+        0.001184687058517001
+      ],
+      "max_full_dynamic_residual_N": 3.82245403431211e-10,
+      "max_body_dynamic_residual_N": 3.8112213026790907e-10
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-cached-newton-spatial-2-v1",
+      "body_tetrahedra": 30720,
+      "contact_refinement": 0,
+      "local_levels": 0,
+      "fixed_seed_contact_boundary": false,
+      "final_peak_lower_Pa": 381761.77356726443,
+      "final_peak_upper_Pa": 381761.7738952196,
+      "final_lower_peak_reference_position_m": [
+        1.7697452569155986e-06,
+        0.022028914832074527,
+        0.001184687058517001
+      ],
+      "max_full_dynamic_residual_N": 5.417306325315766e-10,
+      "max_body_dynamic_residual_N": 5.380997766465073e-10
+    }
+  ],
+  "comparisons": [
+    {
+      "previous_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-cached-newton-control-v1",
+      "current_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-cached-newton-spatial-1-v1",
+      "previous_tetrahedra": 480,
+      "current_tetrahedra": 3840,
+      "previous_contact_refinement": 0,
+      "current_contact_refinement": 0,
+      "varying_discretizations": [
+        "body_refinement"
+      ],
+      "common_time_changes": {
+        "tensor": {
+          "absolute_l2_change": 100.79449680709408,
+          "relative_l2_change": 0.5622239534958559
+        },
+        "vm": {
+          "absolute_l2_change": 66.8943275107171,
+          "relative_l2_change": 0.34560649983125274
+        },
+        "objective_displacement": {
+          "absolute_l2_change": 2.1130725792356285e-10,
+          "relative_l2_change": 0.3630223517255032
+        },
+        "velocity": {
+          "absolute_l2_change": 1.993456696016075e-11,
+          "relative_l2_change": 1.1572724281151414e-05
+        },
+        "body_elastic_energy_J": {
+          "absolute_l2_change": 2.39920764195542e-07,
+          "relative_l2_change": 0.3515523558672846
+        },
+        "force_N": {
+          "absolute_l2_change": 0.00012868576819221895,
+          "relative_l2_change": 7.130119350092892e-05
+        },
+        "moment_Nm": {
+          "absolute_l2_change": 2.7202065080425593e-07,
+          "relative_l2_change": 4.477444346169785e-05
+        }
+      },
+      "raw_lower_peak_relative_change": 0.3081255378506514
+    },
+    {
+      "previous_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-cached-newton-spatial-1-v1",
+      "current_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-cached-newton-spatial-2-v1",
+      "previous_tetrahedra": 3840,
+      "current_tetrahedra": 30720,
+      "previous_contact_refinement": 0,
+      "current_contact_refinement": 0,
+      "varying_discretizations": [
+        "body_refinement"
+      ],
+      "common_time_changes": {
+        "tensor": {
+          "absolute_l2_change": 92.08252531905484,
+          "relative_l2_change": 0.4931732394412546
+        },
+        "vm": {
+          "absolute_l2_change": 39.57086895012837,
+          "relative_l2_change": 0.1952233375778553
+        },
+        "objective_displacement": {
+          "absolute_l2_change": 1.27188581978696e-10,
+          "relative_l2_change": 0.19599614027738987
+        },
+        "velocity": {
+          "absolute_l2_change": 5.418079074519969e-11,
+          "relative_l2_change": 3.145422267139412e-05
+        },
+        "body_elastic_energy_J": {
+          "absolute_l2_change": 1.8590431900027773e-07,
+          "relative_l2_change": 0.21408538536817293
+        },
+        "force_N": {
+          "absolute_l2_change": 0.00015631029053014971,
+          "relative_l2_change": 8.661460075018585e-05
+        },
+        "moment_Nm": {
+          "absolute_l2_change": 3.3146327276307964e-07,
+          "relative_l2_change": 5.456164098215013e-05
+        }
+      },
+      "raw_lower_peak_relative_change": 0.4076920713252271
+    }
+  ],
+  "common_material_points": 2400,
+  "sample_times_s": [
+    0.01,
+    0.02,
+    0.03,
+    0.04,
+    0.05,
+    0.06,
+    0.07,
+    0.08,
+    0.09,
+    0.1
+  ],
+  "goal_completion": false,
+  "limitations": "Fixed polyhedral geometry and physical held points. Configurations, explicit pairwise varying discretizations and fixed-contact-boundary markers define each comparison; body refinement changes contact triangles unless that boundary is frozen. A collision-only sweep keeps the volume fixed. Fixed material-coordinate interior probes carry seed-volume diagnostic weights, not an exact continuum norm. Tensors use each solution's proper finite body frame; contact wrenches use the shared fixed reference origin. Complete nonlinear global peak lower/upper bounds are retained separately. Two spatial levels or an equal-constructor control do not establish a physical tail. Contact quadrature/regularization/CAD geometry/full-arm support matching and feedback/model/accuracy-cost remain separate required studies."
+}
