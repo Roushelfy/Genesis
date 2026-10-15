@@ -22,6 +22,10 @@ The30298-tet five-state spatial prefix is independently qualified and retains
 all original arrays/corner/quadrature fields within the existing budgets. Its
 3.79–5.94GPa raw interval and local contact diagnostics remain unresolved;
 the complete80-step continuation is running and excluded from accepted evidence.
+The fixed2339-tet body pad5/7 audit passes original equilibrium gates, with
+2.78267% tensor and0.0153356% raw-peak change at identical body mass/geometry.
+Pad volume/geometry/contact resolution still vary together; two levels are not
+a credible tail. Pad9 and the fixed-pad body axis remain required.
 
 Current: [nonlinear-U fields, geometry and objective load models](PHYSICAL_NONLINEAR_U_SPATIAL_20261015.md)
 independently checks two nonlinear U final fields, retaining44.58% probe tensor
