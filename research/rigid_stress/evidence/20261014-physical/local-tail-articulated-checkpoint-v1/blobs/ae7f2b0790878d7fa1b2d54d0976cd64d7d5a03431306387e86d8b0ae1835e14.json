@@ -1,0 +1,1012 @@
+{
+  "scope": "Three completed local levels, independent articulated backend and cached U final-field qualification",
+  "runs": [
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-cached-newton-control-v1",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-cached-newton-qualification-v1",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-coupled-6-v1",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-frozen-6-v1",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-coupled-fields-v1",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-coupled-tractions-v1",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-frozen-fields-v1",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-frozen-tractions-v1",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-mujoco-qualification-v1",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-mujoco-qualification-v2",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-figure-v1",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-figure-v2",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-figure-v3"
+  ],
+  "source_closure": [
+    {
+      "run": "u-cached-newton-control-v1",
+      "job": "714883_0",
+      "source_files_checked": 40
+    },
+    {
+      "run": "u-cached-newton-qualification-v1",
+      "job": "714908_0",
+      "source_files_checked": 10
+    },
+    {
+      "run": "franka-local-coupled-6-v1",
+      "job": "714874_2",
+      "source_files_checked": 46
+    },
+    {
+      "run": "franka-local-frozen-6-v1",
+      "job": "714874_6",
+      "source_files_checked": 46
+    },
+    {
+      "run": "franka-local-coupled-fields-v1",
+      "job": "714891_0",
+      "source_files_checked": 12
+    },
+    {
+      "run": "franka-local-coupled-tractions-v1",
+      "job": "714892_0",
+      "source_files_checked": 44
+    },
+    {
+      "run": "franka-local-frozen-fields-v1",
+      "job": "714893_0",
+      "source_files_checked": 12
+    },
+    {
+      "run": "franka-local-frozen-tractions-v1",
+      "job": "714894_0",
+      "source_files_checked": 44
+    },
+    {
+      "run": "franka-mujoco-qualification-v1",
+      "job": "714915_0",
+      "source_files_checked": 14
+    },
+    {
+      "run": "franka-mujoco-qualification-v2",
+      "job": "714934_0",
+      "source_files_checked": 14
+    },
+    {
+      "run": "franka-local-figure-v1",
+      "job": "714931_0",
+      "source_files_checked": 16
+    },
+    {
+      "run": "franka-local-figure-v2",
+      "job": "714936_0",
+      "source_files_checked": 16
+    },
+    {
+      "run": "franka-local-figure-v3",
+      "job": "714938_0",
+      "source_files_checked": 16
+    }
+  ],
+  "goal_completion": false,
+  "coupled": {
+    "scope": "Compare solved Panda spatial refinements at fixed material probes and physical times.",
+    "declared_discretization_axis": "local_levels",
+    "qualifications": [
+      {
+        "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-coupled-0-v1",
+        "polynomial_displacement_max_error_m": 2.642742795433417e-19,
+        "polynomial_tensor_max_error_Pa": 3.039836883544922e-06,
+        "finite_rotation_tensor_max_error_Pa": 0.0001878887414932251
+      },
+      {
+        "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-coupled-3-v1",
+        "polynomial_displacement_max_error_m": 2.642742795433417e-19,
+        "polynomial_tensor_max_error_Pa": 3.039836883544922e-06,
+        "finite_rotation_tensor_max_error_Pa": 0.00032093049958348274
+      },
+      {
+        "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-coupled-6-v1",
+        "polynomial_displacement_max_error_m": 3.4897757426877174e-19,
+        "polynomial_tensor_max_error_Pa": 3.039836883544922e-06,
+        "finite_rotation_tensor_max_error_Pa": 0.0006454838439822197
+      }
+    ],
+    "cases": [
+      {
+        "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-coupled-0-v1",
+        "body_tetrahedra": 480,
+        "contact_refinement": 0,
+        "local_levels": 0,
+        "fixed_seed_contact_boundary": false,
+        "final_peak_lower_Pa": 156447.0168566527,
+        "final_peak_upper_Pa": 156447.01718459814,
+        "final_lower_peak_reference_position_m": [
+          1.7697452569155986e-06,
+          0.022028914832074527,
+          0.001184687058517001
+        ],
+        "max_full_dynamic_residual_N": 2.6296758579809277e-10,
+        "max_body_dynamic_residual_N": 2.58060083821521e-10
+      },
+      {
+        "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-coupled-3-v1",
+        "body_tetrahedra": 1099,
+        "contact_refinement": 0,
+        "local_levels": 3,
+        "fixed_seed_contact_boundary": false,
+        "final_peak_lower_Pa": 562064.4411138593,
+        "final_peak_upper_Pa": 562064.4414418138,
+        "final_lower_peak_reference_position_m": [
+          -2.2683486848548325e-05,
+          -0.02196183354501063,
+          0.002086606824027767
+        ],
+        "max_full_dynamic_residual_N": 2.598369792028325e-10,
+        "max_body_dynamic_residual_N": 2.5799792530228085e-10
+      },
+      {
+        "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-coupled-6-v1",
+        "body_tetrahedra": 3993,
+        "contact_refinement": 0,
+        "local_levels": 6,
+        "fixed_seed_contact_boundary": false,
+        "final_peak_lower_Pa": 2970654.9621045045,
+        "final_peak_upper_Pa": 2970654.9624325843,
+        "final_lower_peak_reference_position_m": [
+          1.7697452569155986e-06,
+          0.022028914832074527,
+          0.001184687058517001
+        ],
+        "max_full_dynamic_residual_N": 2.689340774416216e-10,
+        "max_body_dynamic_residual_N": 2.6846275143374215e-10
+      }
+    ],
+    "comparisons": [
+      {
+        "previous_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-coupled-0-v1",
+        "current_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-coupled-3-v1",
+        "previous_tetrahedra": 480,
+        "current_tetrahedra": 1099,
+        "previous_contact_refinement": 0,
+        "current_contact_refinement": 0,
+        "varying_discretizations": [
+          "local_levels"
+        ],
+        "common_time_changes": {
+          "tensor": {
+            "absolute_l2_change": 63.37643668267585,
+            "relative_l2_change": 0.4302955298015036
+          },
+          "vm": {
+            "absolute_l2_change": 34.45515877578966,
+            "relative_l2_change": 0.2132029648050492
+          },
+          "objective_displacement": {
+            "absolute_l2_change": 8.751367171923459e-11,
+            "relative_l2_change": 0.19757701064301864
+          },
+          "velocity": {
+            "absolute_l2_change": 1.7603475550255078e-09,
+            "relative_l2_change": 0.0010219103721733644
+          },
+          "body_elastic_energy_J": {
+            "absolute_l2_change": 2.1969694575284574e-07,
+            "relative_l2_change": 0.3317496503587739
+          },
+          "force_N": {
+            "absolute_l2_change": 0.00020895990890024615,
+            "relative_l2_change": 0.00011578395593367855
+          },
+          "moment_Nm": {
+            "absolute_l2_change": 4.1489793770111455e-07,
+            "relative_l2_change": 6.82935658695881e-05
+          }
+        },
+        "raw_lower_peak_relative_change": 0.7216564411251188
+      },
+      {
+        "previous_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-coupled-3-v1",
+        "current_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-coupled-6-v1",
+        "previous_tetrahedra": 1099,
+        "current_tetrahedra": 3993,
+        "previous_contact_refinement": 0,
+        "current_contact_refinement": 0,
+        "varying_discretizations": [
+          "local_levels"
+        ],
+        "common_time_changes": {
+          "tensor": {
+            "absolute_l2_change": 41.0635659610982,
+            "relative_l2_change": 0.2680368125948227
+          },
+          "vm": {
+            "absolute_l2_change": 20.874017240920946,
+            "relative_l2_change": 0.12268010797508587
+          },
+          "objective_displacement": {
+            "absolute_l2_change": 3.945945074779269e-11,
+            "relative_l2_change": 0.09058958519969389
+          },
+          "velocity": {
+            "absolute_l2_change": 2.6135641607193036e-09,
+            "relative_l2_change": 0.0015183321661536883
+          },
+          "body_elastic_energy_J": {
+            "absolute_l2_change": 2.2127444807363057e-07,
+            "relative_l2_change": 0.250448829934052
+          },
+          "force_N": {
+            "absolute_l2_change": 0.0006521911874838988,
+            "relative_l2_change": 0.00036150625909482415
+          },
+          "moment_Nm": {
+            "absolute_l2_change": 1.2784243425433518e-06,
+            "relative_l2_change": 0.00021047710130037744
+          }
+        },
+        "raw_lower_peak_relative_change": 0.8107944381680479
+      }
+    ],
+    "common_material_points": 2400,
+    "sample_times_s": [
+      0.01,
+      0.02,
+      0.03,
+      0.04,
+      0.05,
+      0.06,
+      0.07,
+      0.08,
+      0.09,
+      0.1
+    ],
+    "goal_completion": false,
+    "limitations": "Fixed polyhedral geometry and physical held points. Configurations, explicit pairwise varying discretizations and fixed-contact-boundary markers define each comparison; body refinement changes contact triangles unless that boundary is frozen. A collision-only sweep keeps the volume fixed. Fixed material-coordinate interior probes carry seed-volume diagnostic weights, not an exact continuum norm. Tensors use each solution's proper finite body frame; contact wrenches use the shared fixed reference origin. Complete nonlinear global peak lower/upper bounds are retained separately. Two spatial levels or an equal-constructor control do not establish a physical tail. Contact quadrature/regularization/CAD geometry/full-arm support matching and feedback/model/accuracy-cost remain separate required studies."
+  },
+  "frozen": {
+    "scope": "Compare solved Panda spatial refinements at fixed material probes and physical times.",
+    "declared_discretization_axis": "local_levels",
+    "qualifications": [
+      {
+        "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-frozen-0-v1",
+        "polynomial_displacement_max_error_m": 2.642742795433417e-19,
+        "polynomial_tensor_max_error_Pa": 3.039836883544922e-06,
+        "finite_rotation_tensor_max_error_Pa": 0.0001878887414932251
+      },
+      {
+        "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-frozen-3-v1",
+        "polynomial_displacement_max_error_m": 2.642742795433417e-19,
+        "polynomial_tensor_max_error_Pa": 3.039836883544922e-06,
+        "finite_rotation_tensor_max_error_Pa": 0.00032093049958348274
+      },
+      {
+        "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-frozen-6-v1",
+        "polynomial_displacement_max_error_m": 3.4897757426877174e-19,
+        "polynomial_tensor_max_error_Pa": 3.039836883544922e-06,
+        "finite_rotation_tensor_max_error_Pa": 0.0006454838439822197
+      }
+    ],
+    "cases": [
+      {
+        "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-frozen-0-v1",
+        "body_tetrahedra": 480,
+        "contact_refinement": 0,
+        "local_levels": 0,
+        "fixed_seed_contact_boundary": true,
+        "final_peak_lower_Pa": 156447.0168566527,
+        "final_peak_upper_Pa": 156447.01718459814,
+        "final_lower_peak_reference_position_m": [
+          1.7697452569155986e-06,
+          0.022028914832074527,
+          0.001184687058517001
+        ],
+        "max_full_dynamic_residual_N": 2.6296758579809277e-10,
+        "max_body_dynamic_residual_N": 2.58060083821521e-10
+      },
+      {
+        "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-frozen-3-v1",
+        "body_tetrahedra": 1099,
+        "contact_refinement": 0,
+        "local_levels": 3,
+        "fixed_seed_contact_boundary": true,
+        "final_peak_lower_Pa": 562104.7252771612,
+        "final_peak_upper_Pa": 562104.7256051158,
+        "final_lower_peak_reference_position_m": [
+          -2.2683486848548325e-05,
+          -0.02196183354501063,
+          0.002086606824027767
+        ],
+        "max_full_dynamic_residual_N": 2.6208073004169723e-10,
+        "max_body_dynamic_residual_N": 2.566722070051547e-10
+      },
+      {
+        "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-frozen-6-v1",
+        "body_tetrahedra": 3993,
+        "contact_refinement": 0,
+        "local_levels": 6,
+        "fixed_seed_contact_boundary": true,
+        "final_peak_lower_Pa": 2971655.502009326,
+        "final_peak_upper_Pa": 2971655.502337407,
+        "final_lower_peak_reference_position_m": [
+          1.7697452569155986e-06,
+          0.022028914832074527,
+          0.001184687058517001
+        ],
+        "max_full_dynamic_residual_N": 2.6734949519001077e-10,
+        "max_body_dynamic_residual_N": 2.6184046812319075e-10
+      }
+    ],
+    "comparisons": [
+      {
+        "previous_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-frozen-0-v1",
+        "current_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-frozen-3-v1",
+        "previous_tetrahedra": 480,
+        "current_tetrahedra": 1099,
+        "previous_contact_refinement": 0,
+        "current_contact_refinement": 0,
+        "varying_discretizations": [
+          "local_levels"
+        ],
+        "common_time_changes": {
+          "tensor": {
+            "absolute_l2_change": 63.37978810419944,
+            "relative_l2_change": 0.43028670871529706
+          },
+          "vm": {
+            "absolute_l2_change": 34.4613249126132,
+            "relative_l2_change": 0.21322545528531828
+          },
+          "objective_displacement": {
+            "absolute_l2_change": 8.749419791192605e-11,
+            "relative_l2_change": 0.19751857411177146
+          },
+          "velocity": {
+            "absolute_l2_change": 1.6804646418625014e-10,
+            "relative_l2_change": 9.754866200769992e-05
+          },
+          "body_elastic_energy_J": {
+            "absolute_l2_change": 2.197941742360803e-07,
+            "relative_l2_change": 0.3318477472856476
+          },
+          "force_N": {
+            "absolute_l2_change": 7.819113875827028e-05,
+            "relative_l2_change": 4.3322327702933037e-05
+          },
+          "moment_Nm": {
+            "absolute_l2_change": 1.575240231953223e-07,
+            "relative_l2_change": 2.592787556594363e-05
+          }
+        },
+        "raw_lower_peak_relative_change": 0.7216763890758752
+      },
+      {
+        "previous_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-frozen-3-v1",
+        "current_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-frozen-6-v1",
+        "previous_tetrahedra": 1099,
+        "current_tetrahedra": 3993,
+        "previous_contact_refinement": 0,
+        "current_contact_refinement": 0,
+        "varying_discretizations": [
+          "local_levels"
+        ],
+        "common_time_changes": {
+          "tensor": {
+            "absolute_l2_change": 41.08056233465541,
+            "relative_l2_change": 0.2680414767066387
+          },
+          "vm": {
+            "absolute_l2_change": 20.90126151638154,
+            "relative_l2_change": 0.12279149512141747
+          },
+          "objective_displacement": {
+            "absolute_l2_change": 3.9443482436418974e-11,
+            "relative_l2_change": 0.09051715794254632
+          },
+          "velocity": {
+            "absolute_l2_change": 1.151853597191593e-09,
+            "relative_l2_change": 0.0006690816379212686
+          },
+          "body_elastic_energy_J": {
+            "absolute_l2_change": 2.218753901065788e-07,
+            "relative_l2_change": 0.25093071336847633
+          },
+          "force_N": {
+            "absolute_l2_change": 7.824250083978262e-05,
+            "relative_l2_change": 4.3352646722838864e-05
+          },
+          "moment_Nm": {
+            "absolute_l2_change": 1.5278581470132636e-07,
+            "relative_l2_change": 2.514861618551333e-05
+          }
+        },
+        "raw_lower_peak_relative_change": 0.8108445864949398
+      }
+    ],
+    "common_material_points": 2400,
+    "sample_times_s": [
+      0.01,
+      0.02,
+      0.03,
+      0.04,
+      0.05,
+      0.06,
+      0.07,
+      0.08,
+      0.09,
+      0.1
+    ],
+    "goal_completion": false,
+    "limitations": "Fixed polyhedral geometry and physical held points. Configurations, explicit pairwise varying discretizations and fixed-contact-boundary markers define each comparison; body refinement changes contact triangles unless that boundary is frozen. A collision-only sweep keeps the volume fixed. Fixed material-coordinate interior probes carry seed-volume diagnostic weights, not an exact continuum norm. Tensors use each solution's proper finite body frame; contact wrenches use the shared fixed reference origin. Complete nonlinear global peak lower/upper bounds are retained separately. Two spatial levels or an equal-constructor control do not establish a physical tail. Contact quadrature/regularization/CAD geometry/full-arm support matching and feedback/model/accuracy-cost remain separate required studies."
+  },
+  "coupled_tractions": {
+    "scope": "Audit collision-surface traction quadrature and islands without nodal-load smoothing.",
+    "cases": [
+      {
+        "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-coupled-0-v1",
+        "contact_refinement": 0,
+        "body_refinement": 0,
+        "local_levels": 0,
+        "declared_level": 0,
+        "body_tetrahedra": 480,
+        "bulk_dofs": 2970,
+        "surface_vertices": 502,
+        "surface_triangles": 948,
+        "normal_stencils": 2,
+        "active_body_nodes": 2,
+        "islands": [
+          {
+            "nodes": 1,
+            "current_lumped_area_m2": 4.825679461407207e-05,
+            "force_N": [
+              -0.00022302401840703585,
+              -0.399684091688566,
+              0.04017488576107795
+            ],
+            "moment_about_shared_origin_Nm": [
+              0.0013584064102733192,
+              -3.3534962171850596e-07,
+              4.204700127810257e-06
+            ],
+            "normal_resultant_N": [
+              -0.00010482214262993042,
+              -0.3996217523216802,
+              -0.0006111058291250915
+            ],
+            "shear_resultant_N": [
+              -0.00011820187577710543,
+              -6.233936688582676e-05,
+              0.04078599159020304
+            ]
+          },
+          {
+            "nodes": 1,
+            "current_lumped_area_m2": 4.825679594841854e-05,
+            "force_N": [
+              0.000220816318734163,
+              0.39968484571255997,
+              0.02388292096836625
+            ],
+            "moment_about_shared_origin_Nm": [
+              -0.0013585074570851784,
+              1.0024486063029513e-06,
+              -4.2156862233001485e-06
+            ],
+            "normal_resultant_N": [
+              0.00010484803488294602,
+              0.3997204634075447,
+              0.0006112567791662758
+            ],
+            "shear_resultant_N": [
+              0.00011596828385121701,
+              -3.5617694984718065e-05,
+              0.023271664189199976
+            ]
+          }
+        ],
+        "active_lumped_current_area_m2": 9.651359056249061e-05,
+        "active_lumped_rest_area_m2": 9.651441450379258e-05,
+        "normal_density_peak_Pa": 8283.205228869589,
+        "shear_density_peak_Pa": 845.1910417493231,
+        "normal_density_l2_Pa_m": 81.3652643251637,
+        "shear_density_l2_Pa_m": 6.759816571066479,
+        "total_contact_force_N": [
+          -8.131516293641283e-20,
+          5.551115123125783e-17,
+          -3.469446951953614e-18
+        ],
+        "total_contact_moment_Nm": [
+          -4.213884046815877e-08,
+          1.1914690317259974e-11,
+          -5.63381760730966e-10
+        ],
+        "saved_force_pullback_max_error_N": 0.0
+      },
+      {
+        "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-coupled-3-v1",
+        "contact_refinement": 0,
+        "body_refinement": 0,
+        "local_levels": 3,
+        "declared_level": 3,
+        "body_tetrahedra": 1099,
+        "bulk_dofs": 5757,
+        "surface_vertices": 678,
+        "surface_triangles": 1300,
+        "normal_stencils": 2,
+        "active_body_nodes": 2,
+        "islands": [
+          {
+            "nodes": 1,
+            "current_lumped_area_m2": 2.4872478951957348e-06,
+            "force_N": [
+              -0.00022300372823480502,
+              -0.3996373862737306,
+              0.0401739863818304
+            ],
+            "moment_about_shared_origin_Nm": [
+              0.0013583245161053875,
+              -3.3531982998374055e-07,
+              4.204339823746648e-06
+            ],
+            "normal_resultant_N": [
+              -0.00010480989202987261,
+              -0.3995750483892927,
+              -0.0006110344089755145
+            ],
+            "shear_resultant_N": [
+              -0.0001181938362049324,
+              -6.233788443788225e-05,
+              0.04078502079080592
+            ]
+          },
+          {
+            "nodes": 1,
+            "current_lumped_area_m2": 3.9710859031975384e-06,
+            "force_N": [
+              0.00022079587239335198,
+              0.3996381261667366,
+              0.023883820317278287
+            ],
+            "moment_about_shared_origin_Nm": [
+              -0.0013584237411720418,
+              1.002438003543791e-06,
+              -4.2153260653116515e-06
+            ],
+            "normal_resultant_N": [
+              0.00010483578057626806,
+              0.3996737453441159,
+              0.0006111853374073602
+            ],
+            "shear_resultant_N": [
+              0.00011596009181708392,
+              -3.5619177379327134e-05,
+              0.023272634979870928
+            ]
+          }
+        ],
+        "active_lumped_current_area_m2": 6.458333798393274e-06,
+        "active_lumped_rest_area_m2": 6.4585595524097125e-06,
+        "normal_density_peak_Pa": 160649.66025580198,
+        "shear_density_peak_Pa": 16397.738146800162,
+        "normal_density_l2_Pa_m": 323.1366845286541,
+        "shear_density_l2_Pa_m": 28.375679162519337,
+        "total_contact_force_N": [
+          2.710505431213761e-20,
+          1.6653345369377348e-16,
+          -1.0408340855860843e-17
+        ],
+        "total_contact_moment_Nm": [
+          -3.3975046598289354e-08,
+          9.668400093390279e-12,
+          -4.947846813253137e-10
+        ],
+        "saved_force_pullback_max_error_N": 0.0
+      },
+      {
+        "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-coupled-6-v1",
+        "contact_refinement": 0,
+        "body_refinement": 0,
+        "local_levels": 6,
+        "declared_level": 6,
+        "body_tetrahedra": 3993,
+        "bulk_dofs": 18258,
+        "surface_vertices": 1154,
+        "surface_triangles": 2252,
+        "normal_stencils": 2,
+        "active_body_nodes": 2,
+        "islands": [
+          {
+            "nodes": 1,
+            "current_lumped_area_m2": 1.884735188477948e-07,
+            "force_N": [
+              -0.00022291803312863792,
+              -0.39949159887081354,
+              0.04017107484152876
+            ],
+            "moment_about_shared_origin_Nm": [
+              0.0013580819918904135,
+              -3.3525291963035026e-07,
+              4.202283415027799e-06
+            ],
+            "normal_resultant_N": [
+              -0.00010477165275306264,
+              -0.3994292657671967,
+              -0.0006108114766410496
+            ],
+            "shear_resultant_N": [
+              -0.00011814638037557527,
+              -6.233310361685249e-05,
+              0.040781886318169806
+            ]
+          },
+          {
+            "nodes": 1,
+            "current_lumped_area_m2": 2.4816366275959815e-07,
+            "force_N": [
+              0.00022071164527250655,
+              0.3994923198641824,
+              0.023886731857160285
+            ],
+            "moment_about_shared_origin_Nm": [
+              -0.0013581787463369812,
+              1.0022894798895963e-06,
+              -4.213263012294666e-06
+            ],
+            "normal_resultant_N": [
+              0.00010479753634213187,
+              0.39952794382281265,
+              0.0006109623761720268
+            ],
+            "shear_resultant_N": [
+              0.00011591410893037469,
+              -3.562395863026854e-05,
+              0.023275769480988258
+            ]
+          }
+        ],
+        "active_lumped_current_area_m2": 4.3663718160739294e-07,
+        "active_lumped_rest_area_m2": 4.3670584756914025e-07,
+        "normal_density_peak_Pa": 2119288.4230073392,
+        "shear_density_peak_Pa": 216381.08812467635,
+        "normal_density_l2_Pa_m": 1220.542230277469,
+        "shear_density_l2_Pa_m": 104.91719022608486,
+        "total_contact_force_N": [
+          0.0,
+          0.0,
+          1.0408340855860843e-17
+        ],
+        "total_contact_moment_Nm": [
+          -7.436945874449499e-09,
+          2.2475505411325737e-12,
+          -1.9409650210862328e-10
+        ],
+        "saved_force_pullback_max_error_N": 0.0
+      }
+    ],
+    "goal_completion": false,
+    "limitations": "Densities divide unsmoothed collision-vertex force resultants by current barycentric lumped areas. Support area is a quadrature diagnostic, not an independently resolved physical contact boundary. All source normal/friction forces and island wrenches remain visible. Total contact moment can retain finite-gap friction torque; its regularization error is separate from pullback conservation. No contact/stress tail or full-arm matching is inferred from aggregate force stability."
+  },
+  "frozen_tractions": {
+    "scope": "Audit collision-surface traction quadrature and islands without nodal-load smoothing.",
+    "cases": [
+      {
+        "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-frozen-0-v1",
+        "contact_refinement": 0,
+        "body_refinement": 0,
+        "local_levels": 0,
+        "declared_level": 0,
+        "body_tetrahedra": 480,
+        "bulk_dofs": 2970,
+        "surface_vertices": 502,
+        "surface_triangles": 948,
+        "normal_stencils": 2,
+        "active_body_nodes": 2,
+        "islands": [
+          {
+            "nodes": 1,
+            "current_lumped_area_m2": 4.825679461407207e-05,
+            "force_N": [
+              -0.00022302401840703585,
+              -0.399684091688566,
+              0.04017488576107795
+            ],
+            "moment_about_shared_origin_Nm": [
+              0.0013584064102733192,
+              -3.3534962171850596e-07,
+              4.204700127810257e-06
+            ],
+            "normal_resultant_N": [
+              -0.00010482214262993042,
+              -0.3996217523216802,
+              -0.0006111058291250915
+            ],
+            "shear_resultant_N": [
+              -0.00011820187577710543,
+              -6.233936688582676e-05,
+              0.04078599159020304
+            ]
+          },
+          {
+            "nodes": 1,
+            "current_lumped_area_m2": 4.825679594841854e-05,
+            "force_N": [
+              0.000220816318734163,
+              0.39968484571255997,
+              0.02388292096836625
+            ],
+            "moment_about_shared_origin_Nm": [
+              -0.0013585074570851784,
+              1.0024486063029513e-06,
+              -4.2156862233001485e-06
+            ],
+            "normal_resultant_N": [
+              0.00010484803488294602,
+              0.3997204634075447,
+              0.0006112567791662758
+            ],
+            "shear_resultant_N": [
+              0.00011596828385121701,
+              -3.5617694984718065e-05,
+              0.023271664189199976
+            ]
+          }
+        ],
+        "active_lumped_current_area_m2": 9.651359056249061e-05,
+        "active_lumped_rest_area_m2": 9.651441450379258e-05,
+        "normal_density_peak_Pa": 8283.205228869589,
+        "shear_density_peak_Pa": 845.1910417493231,
+        "normal_density_l2_Pa_m": 81.3652643251637,
+        "shear_density_l2_Pa_m": 6.759816571066479,
+        "total_contact_force_N": [
+          -8.131516293641283e-20,
+          5.551115123125783e-17,
+          -3.469446951953614e-18
+        ],
+        "total_contact_moment_Nm": [
+          -4.213884046815877e-08,
+          1.1914690317259974e-11,
+          -5.63381760730966e-10
+        ],
+        "saved_force_pullback_max_error_N": 0.0
+      },
+      {
+        "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-frozen-3-v1",
+        "contact_refinement": 0,
+        "body_refinement": 0,
+        "local_levels": 3,
+        "declared_level": 3,
+        "body_tetrahedra": 1099,
+        "bulk_dofs": 5757,
+        "surface_vertices": 502,
+        "surface_triangles": 948,
+        "normal_stencils": 2,
+        "active_body_nodes": 2,
+        "islands": [
+          {
+            "nodes": 1,
+            "current_lumped_area_m2": 4.825653459479936e-05,
+            "force_N": [
+              -0.00022301997910894396,
+              -0.3996666121417177,
+              0.040174586226057955
+            ],
+            "moment_about_shared_origin_Nm": [
+              0.0013583712161305346,
+              -3.353398409544069e-07,
+              4.204642734656666e-06
+            ],
+            "normal_resultant_N": [
+              -0.00010481755781634449,
+              -0.39960427327390163,
+              -0.0006110790999795359
+            ],
+            "shear_resultant_N": [
+              -0.00011820242129259946,
+              -6.23388678161081e-05,
+              0.040785665326037494
+            ]
+          },
+          {
+            "nodes": 1,
+            "current_lumped_area_m2": 4.825653972906469e-05,
+            "force_N": [
+              0.00022081211034660086,
+              0.3996673652922489,
+              0.02388322043103864
+            ],
+            "moment_about_shared_origin_Nm": [
+              -0.0013584722216026155,
+              1.0024584437057837e-06,
+              -4.215629429132706e-06
+            ],
+            "normal_resultant_N": [
+              0.0001048434498402077,
+              0.39970298348615046,
+              0.0006112300486847777
+            ],
+            "shear_resultant_N": [
+              0.00011596866050639316,
+              -3.56181939015523e-05,
+              0.02327199038235386
+            ]
+          }
+        ],
+        "active_lumped_current_area_m2": 9.651307432386404e-05,
+        "active_lumped_rest_area_m2": 9.651441450379258e-05,
+        "normal_density_peak_Pa": 8282.886979259722,
+        "shear_density_peak_Pa": 845.1888348847596,
+        "normal_density_l2_Pa_m": 81.36192343916679,
+        "shear_density_l2_Pa_m": 6.75981719562109,
+        "total_contact_force_N": [
+          -8.131516293641283e-20,
+          2.7755575615628914e-17,
+          6.938893903907228e-18
+        ],
+        "total_contact_moment_Nm": [
+          -4.213730718359175e-08,
+          1.19142922795374e-11,
+          -5.633844684174716e-10
+        ],
+        "saved_force_pullback_max_error_N": 0.0
+      },
+      {
+        "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-frozen-6-v1",
+        "contact_refinement": 0,
+        "body_refinement": 0,
+        "local_levels": 6,
+        "declared_level": 6,
+        "body_tetrahedra": 3993,
+        "bulk_dofs": 18258,
+        "surface_vertices": 502,
+        "surface_triangles": 948,
+        "normal_stencils": 2,
+        "active_body_nodes": 2,
+        "islands": [
+          {
+            "nodes": 1,
+            "current_lumped_area_m2": 4.82561976913099e-05,
+            "force_N": [
+              -0.00022300560673054886,
+              -0.3996491222234767,
+              0.04017430621533145
+            ],
+            "moment_about_shared_origin_Nm": [
+              0.001358337123428304,
+              -3.3536168528740747e-07,
+              4.2039255213773145e-06
+            ],
+            "normal_resultant_N": [
+              -0.00010481297027377112,
+              -0.3995867838221882,
+              -0.0006110523549241725
+            ],
+            "shear_resultant_N": [
+              -0.00011819263645677775,
+              -6.233840128850324e-05,
+              0.04078535857025562
+            ]
+          },
+          {
+            "nodes": 1,
+            "current_lumped_area_m2": 4.825621965296743e-05,
+            "force_N": [
+              0.00022079924329534626,
+              0.39964987429434806,
+              0.023883500486803284
+            ],
+            "moment_about_shared_origin_Nm": [
+              -0.0013584380290801623,
+              1.0023993521324718e-06,
+              -4.214905023808375e-06
+            ],
+            "normal_resultant_N": [
+              0.00010483886201455825,
+              0.3996854929552435,
+              0.0006112033019791001
+            ],
+            "shear_resultant_N": [
+              0.000115960381280788,
+              -3.5618660895480334e-05,
+              0.023272297184824185
+            ]
+          }
+        ],
+        "active_lumped_current_area_m2": 9.651241734427734e-05,
+        "active_lumped_rest_area_m2": 9.651441450379258e-05,
+        "normal_density_peak_Pa": 8282.579466613111,
+        "shear_density_peak_Pa": 845.1883782359066,
+        "normal_density_l2_Pa_m": 81.3586397168302,
+        "shear_density_l2_Pa_m": 6.75982403068708,
+        "total_contact_force_N": [
+          -5.421010862427522e-20,
+          5.551115123125783e-17,
+          -6.938893903907228e-18
+        ],
+        "total_contact_moment_Nm": [
+          -4.2135867506709265e-08,
+          1.1913848874730171e-11,
+          -5.633414956848944e-10
+        ],
+        "saved_force_pullback_max_error_N": 0.0
+      }
+    ],
+    "goal_completion": false,
+    "limitations": "Densities divide unsmoothed collision-vertex force resultants by current barycentric lumped areas. Support area is a quadrature diagnostic, not an independently resolved physical contact boundary. All source normal/friction forces and island wrenches remain visible. Total contact moment can retain finite-gap friction torque; its regularization error is separate from pullback conservation. No contact/stress tail or full-arm matching is inferred from aggregate force stability."
+  },
+  "u_cached": {
+    "scope": "Compare complete final grasp fields and every retained original force gate.",
+    "runs": [
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/grasp-u-centred-cache-v1",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-cached-newton-control-v1"
+    ],
+    "field_changes": {
+      "displacement": {
+        "absolute_l2_difference": 4.5464493500399856e-14,
+        "relative_l2_difference": 1.2153694034757067e-12
+      },
+      "contact_force_N": {
+        "absolute_l2_difference": 1.1462284077840111e-11,
+        "relative_l2_difference": 2.0141607653683737e-10
+      },
+      "body_tensor_Pa": {
+        "absolute_l2_difference": 1.490136286498599e-05,
+        "relative_l2_difference": 9.919814739520351e-12
+      },
+      "body_vm_Pa": {
+        "absolute_l2_difference": 3.5387672992312577e-06,
+        "relative_l2_difference": 2.384216866661189e-12
+      }
+    },
+    "raw_peak_relative_difference": 3.1163960301228144e-13,
+    "raw_peak_positions_m": [
+      [
+        0.00035698440893704305,
+        -0.004991140866333466,
+        0.00015274418427433216
+      ],
+      [
+        0.00035698440893704305,
+        -0.004991140866333466,
+        0.00015274418427433216
+      ]
+    ],
+    "retained_accepted_force_gates_checked_per_run": [
+      744,
+      744
+    ],
+    "max_complete_force_gate_N": 9.304469413428935e-10,
+    "input_sha256": {
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/grasp-u-centred-cache-v1/solution/fields.npz": "11b66a3cce543fe7e7e2ac91d252542c2506beee37077aee8ade0b5eb6377653",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/grasp-u-centred-cache-v1/solution/configuration.json": "0777a08614417762fe5af2166c0c0913af4d2813a0f848155bdb5ca12e1894ff",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/grasp-u-centred-cache-v1/solution/result.json": "4e777109bf97e54c725b4709cba82e8d78653038283c42717870ea4c50bbf058",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-cached-newton-control-v1/results/fields.npz": "f606d1f363d228f5294fdcc21ca1563c5bf4f75ac8118d7cdec28abb93b71a59",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-cached-newton-control-v1/results/configuration.json": "97e8cb868cae13fd244aafd659401e162756671a1e812833428d079fbbdefcd2",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-cached-newton-control-v1/results/result.json": "a43f002dcb580b348e032be4ab4c9bbd8373a4533abaea850e73f3660a8282fa"
+    },
+    "goal_completion": false,
+    "limitations": "Final all-part displacement/contact loads and complete unaveraged body tensor/von Mises fields agree under identical physical inputs. Every retained accepted-step original1e-9N gate is checked, but intermediate full fields were not retained and their equivalence is not claimed. This is reference numerical qualification, not physical contact/mesh/history convergence or application/accuracy-cost acceptance."
+  },
+  "articulated": {
+    "scope": "Check an independent articulated backend against every captured motion frame.",
+    "mujoco_version": "3.15.0",
+    "frames_checked": 576,
+    "source_mjcf_sha256": "e502e07fcef6219024be02dfb9cd65d5c194b4767adf381ca51f10172ff8a32d",
+    "max_absolute_errors": {
+      "physical_mass": 7.105427357601002e-15,
+      "bias": 6.394884621840902e-14,
+      "passive": 0,
+      "hand_jacobian": 4.440892098500626e-15,
+      "finger_jacobians": 4.440892098500626e-15
+    },
+    "velocity_response_qualifications": [
+      {
+        "frame": 0,
+        "max_effort_equivalent_error": 1.4206542906182698e-12
+      },
+      {
+        "frame": 288,
+        "max_effort_equivalent_error": 1.143958529732388e-13
+      },
+      {
+        "frame": 575,
+        "max_effort_equivalent_error": 8.654936530621618e-14
+      }
+    ],
+    "goal_completion": false,
+    "limitations": "Authored nine-joint mass, bias, passive damping, finger/hand poses and Jacobians are checked at actual motion/hold inputs with original armature and equality parameters. Original tendon actuation is disabled because the application supplies independent nine-joint PD controls. Collision geometry is supplied separately by the captured actual compound surfaces. This backend qualification does not establish coupled deformable-contact equilibrium, matching control/initialization/history, temporal/spatial/contact convergence or accuracy-cost acceptance."
+  }
+}
