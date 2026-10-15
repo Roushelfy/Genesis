@@ -9,6 +9,7 @@ import ipctk
 import numpy as np
 
 from .franka_mujoco_reference import PandaSkeleton
+from .interrupted_source_verification import verify_interrupted_source
 from .original_franka_ground import build_original
 from .original_history_status import history_status
 from .reference_motion_audit import motion_moments
@@ -23,9 +24,16 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--allow-incomplete-prefix", action="store_true")
     parser.add_argument("--recovery-run", type=Path)
+    parser.add_argument("--interrupted-source-observation", type=Path)
     args = parser.parse_args()
-    closed_source(args.run)
-    producer_code = int((args.run / "returncode.txt").read_text())
+    if args.interrupted_source_observation is None:
+        closed_source(args.run)
+        producer_code = int((args.run / "returncode.txt").read_text())
+        source_closure = "natural_producer_exit"
+    else:
+        assert args.allow_incomplete_prefix
+        verify_interrupted_source(args.run, args.interrupted_source_observation)
+        producer_code, source_closure = None, "separate_post_termination_observation"
     assert producer_code == 0 or args.allow_incomplete_prefix
     args.output.mkdir(parents=True, exist_ok=False)
     config = json.loads((args.run / "results/configuration.json").read_text())
@@ -188,6 +196,10 @@ def main():
         "run": str(args.run),
         "steps_checked": len(rows),
         "producer_returncode": producer_code,
+        "source_closure_kind": source_closure,
+        "source_observation_sha256": None
+        if args.interrupted_source_observation is None
+        else hashlib.sha256(args.interrupted_source_observation.read_bytes()).hexdigest(),
         "producer_report_status": producer_report_status,
         "scheduler_success_inferred_from_wrapper_code": False,
         "requested_steps": requested_steps,

@@ -1,0 +1,61 @@
+{
+  "scope": "Show nonlinear U mesh changes alongside separately defined resolved-load model diagnostics.",
+  "claim_anchor": "physical_nonlinear_u_spatial_and_load_models",
+  "material_passport": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-spatial-model-figure-v3/nature_mpl_style.py",
+      "sha256": "5ca3184cd5d1d5361996b98935354b56e63db598f405ed539afb5aed39e2eec1"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-two-level-fields-v2/results/summary.json",
+      "sha256": "22eb457e34376ffb894cb4c9bedc701ecf3a2493a0b13ff9e9bd568fead74289"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-objective-models-coarse-v1/results/summary.json",
+      "sha256": "ba78259366f36ece9e3807fcddd12a1310948b1b4a01baae72347b832791862d"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-objective-models-medium-v1/results/summary.json",
+      "sha256": "414d0f2621cb673ae4042c1f829793c6656b9a7e98ca4deda4a6d4af848e0f26"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/matrix-mesh-u-v1/meshes/h0.0025.npz",
+      "sha256": "fca107fe6fcad9a1028ba5387f6123eb57540995349913c0e22b02e1509ce32b"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-1-v1/solution/fields.npz",
+      "sha256": "df176b22a40523f143a63e0d14c177243b325ffab876b26914c229b8bab43acd"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/matrix-mesh-u-v1/meshes/h0.00175.npz",
+      "sha256": "37257d9f477e9aa3b0b229de8478add4e6a0cd564e0717b2c1dd11f69f9fb1d1"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-2-v1/solution/fields.npz",
+      "sha256": "d95e3a6b84c519ce49fe7007a0d195b359ab0b86ac5a2eb12a0ddeb048b686aa"
+    }
+  ],
+  "exports": {
+    "svg": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-spatial-model-figure-v3/results/nonlinear_u_comparison.svg",
+    "pdf": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-spatial-model-figure-v3/results/nonlinear_u_comparison.pdf",
+    "png": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-spatial-model-figure-v3/results/nonlinear_u_comparison.png",
+    "preview_png": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-spatial-model-figure-v3/results/nonlinear_u_comparison_preview.png"
+  },
+  "redistribution_exports": {
+    "svg": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-spatial-model-figure-v3/results/source_wrench_redistribution.svg",
+    "pdf": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-spatial-model-figure-v3/results/source_wrench_redistribution.pdf",
+    "png": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-spatial-model-figure-v3/results/source_wrench_redistribution.png",
+    "preview_png": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-spatial-model-figure-v3/results/source_wrench_redistribution_preview.png"
+  },
+  "redistribution_figure_size_mm": [
+    183,
+    90
+  ],
+  "figure_size_mm": [
+    183,
+    148
+  ],
+  "rendered_visual_qa_performed": false,
+  "goal_completion": false,
+  "body_text_handoff": "The full probe tensor changes44.58% while the raw peak changes11.69%, so a scalar peak is insufficient to qualify spatial accuracy. At the separately resolved nonlinear holds, native linearization errors remain about0.003% and native finite-footprint model differences about3%; these separate diagnostics do not close the much larger physical spatial uncertainty."
+}
