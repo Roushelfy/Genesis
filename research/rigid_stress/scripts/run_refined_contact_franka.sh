@@ -9,7 +9,7 @@ shift 2
 test ! -e "$task_run"
 mkdir -p "$task_run/input-source" "$task_run/source" "$task_run/tmp"
 export TMPDIR="$task_run/tmp" PYTHONUNBUFFERED=1
-task_sources=(research/rigid_stress/{refined_franka_contact,qualify_refined_franka_contact,audit_refined_contact_tractions,dynamic_franka_reference,refine_franka_reference,franka_contact_reference,franka_rigid_mode_coordinates,audit_franka_reference,contact_reference,neohookean_reference,stable_neohookean_reference,skfem_reference,summarize_fine_references,sparse_franka_inertia}.py
+task_sources=(research/rigid_stress/{localized_franka_mesh,frozen_franka_contact,refined_franka_contact,qualify_refined_franka_contact,audit_refined_contact_tractions,dynamic_franka_reference,refine_franka_reference,franka_contact_reference,franka_rigid_mode_coordinates,audit_franka_reference,contact_reference,neohookean_reference,stable_neohookean_reference,skfem_reference,summarize_fine_references,sparse_franka_inertia}.py
     research/rigid_stress/{mapped_contact_vertices,refined_contact_driver,sparse_franka_driver}.patch
     research/rigid_stress/scripts/{run_refined_contact_franka,cluster_env}.sh)
 sha256sum "${task_sources[@]}" > "$task_run/input-source.sha256"

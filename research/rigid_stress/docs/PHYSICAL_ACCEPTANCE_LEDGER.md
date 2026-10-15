@@ -106,3 +106,15 @@ and full corner tensors at unchanged complete1e-9N gates; the fine control is
 scheduled. These qualify numerical tools and expose an unresolved physical axis.
 Separated/coupled spatial tails, matched full-arm/egg/U contact, load-model and
 feedback separation, verified accuracy/cost and complete deliverables remain open.
+
+The [local-refinement checkpoint](PHYSICAL_LOCAL_REFINEMENT_20261015.md) extends
+reference numerical equivalence to all80 finer3840-tet states and corner tensors
+at unchanged original force budgets. Four qualified local meshes preserve the
+fixed polyhedron's volume/centre/boundary area. Coupled/frozen-contact physical
+studies are live; four failed mesh diagnostics include a rejected topology-
+changing tie candidate. These supply verified tools and scheduled coverage,
+not convergence or a singularity outcome. The first solved480/1099 comparison
+changes tensors43.03% and reaches562kPa on coupled/fixed-contact paths; two
+active nodes and a moving peak retain unresolved concentration. Full application matching, solved
+egg/U/contact tails, model/feedback separation and warmed physical accuracy/cost
+remain required.

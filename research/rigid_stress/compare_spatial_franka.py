@@ -142,7 +142,9 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run", type=Path, nargs="+", required=True)
     parser.add_argument("--sample-every", type=int, default=8)
-    parser.add_argument("--axis", choices=("body_refinement", "contact_refinement"), default="body_refinement")
+    parser.add_argument(
+        "--axis", choices=("body_refinement", "contact_refinement", "local_levels"), default="body_refinement"
+    )
     parser.add_argument("--qualify-only", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
@@ -154,6 +156,7 @@ def main():
         assert int((run / "returncode.txt").read_text()) == 0
         config = json.loads((run / "results/configuration.json").read_text())
         config.setdefault("contact_refinement", 0)
+        config.setdefault("local_levels", 0)
         physical = {k: v for k, v in config.items() if k not in ("output", args.axis)}
         assert physical["cold_closure"]
         if frozen is None:
@@ -256,6 +259,7 @@ def main():
                 "run": str(run),
                 "body_tetrahedra": nelements,
                 "contact_refinement": config["contact_refinement"],
+                "local_levels": config["local_levels"],
                 "fixed_seed_contact_boundary": (run / "results/frozen_contact_boundary.npz").exists(),
                 "final_peak_lower_Pa": report["body_peak_lower_Pa"],
                 "final_peak_upper_Pa": report["body_peak_upper_Pa"],
@@ -286,6 +290,7 @@ def main():
                     key
                     for key, before, after in [
                         ("body_refinement", cases[index][2]["body_refinement"], cases[index + 1][2]["body_refinement"]),
+                        ("local_levels", cases[index][2]["local_levels"], cases[index + 1][2]["local_levels"]),
                         (
                             "contact_refinement",
                             cases[index][2]["contact_refinement"],
