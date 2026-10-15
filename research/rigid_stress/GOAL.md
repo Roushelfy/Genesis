@@ -31,6 +31,24 @@ egg/Franka and U contact references, resolved-load/native replay versus feedback
 remaining applicable load-model sensitivity and physically verified warmed costs.
 These are execution priorities within the complete linked objective.
 
+The [fixed-surface thickness/original-recovery checkpoint](docs/PHYSICAL_THICKNESS_ORIGINAL_RECOVERY_20261015.md)
+independently verifies identical egg boundaries, volume and mass on2/3/4
+thickness layers; the corresponding FEM fields are running, not accepted tails.
+All1936 original-state global fields,12 native replays and8147520 interior/corner
+checks qualify their stated scopes. Original1937 is recovered at the unchanged
+physical gates and all1937 states pass independent control/force audits. The
+same numerical method preserves all saved869 arrays and complete fields exactly.
+An independent1944-state short audit and seven complete common-state comparisons
+qualify candidate physical-budget checks; maximum corner tensor change is1.59e-11.
+The replacement full330-macro continuation preserves all1944 prefix files. Only
+after qualification is its redundant baseline cancelled; all1964 saved baseline
+states pass independent audits, while wrapper0/missing summary remains incomplete. Every original
+physical convergence, model, feedback and verified accuracy/cost gate remains.
+The30298-tet five-state spatial qualification also passes independent balances
+and preserves complete original corner/quadrature fields to6.05e-11. Its raw
+global interval remains3.79–5.94GPa at6.25ms; this is unresolved physical
+concentration, not a converged peak. The full80-step control is running.
+
 The [nonlinear-U/geometry/model checkpoint](docs/PHYSICAL_NONLINEAR_U_SPATIAL_20261015.md)
 independently verifies the completed2339-tet nonlinear contact reference and two
 full objective spatial fields. Their probe tensor still changes44.58%; analytic/

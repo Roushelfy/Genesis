@@ -1,0 +1,42 @@
+{
+  "scope": "Qualify and continue a terminated spatial reference from its retained physical initializer.",
+  "source_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-tip-coupled-18-v1",
+  "body_tetrahedra": 30298,
+  "steps": [
+    {
+      "step": 1,
+      "time_s": 0.00125,
+      "complete_dynamic_residual_N": 6.127506650168008e-13,
+      "complete_body_dynamic_residual_N": 3.931445645752217e-13
+    },
+    {
+      "step": 2,
+      "time_s": 0.0025,
+      "complete_dynamic_residual_N": 1.3404759458464962e-12,
+      "complete_body_dynamic_residual_N": 5.155064516179355e-13
+    },
+    {
+      "step": 3,
+      "time_s": 0.00375,
+      "complete_dynamic_residual_N": 4.97406600176832e-13,
+      "complete_body_dynamic_residual_N": 2.4357145544634196e-13
+    },
+    {
+      "step": 4,
+      "time_s": 0.005,
+      "complete_dynamic_residual_N": 8.803253397718642e-11,
+      "complete_body_dynamic_residual_N": 4.8424376080818595e-11
+    },
+    {
+      "step": 5,
+      "time_s": 0.00625,
+      "complete_dynamic_residual_N": 7.394279317796826e-12,
+      "complete_body_dynamic_residual_N": 4.04834239687862e-12
+    }
+  ],
+  "requested_steps": 5,
+  "source_requested_steps": 80,
+  "complete_source_requested_history": false,
+  "goal_completion": false,
+  "limitations": "The saved original held initializer is retained byte-for-byte, with zero initial velocity. The complete saved prefix is first resolved and independently qualified before further steps. No producer EXIT record is invented for the interrupted source. Centered-stencil arithmetic targets1e-10N and retains original1e-9N physical gates. This fixed-arm/two-jaw control does not establish full-arm or physical contact/geometry/model/feedback/cost acceptance."
+}

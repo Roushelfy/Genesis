@@ -1,0 +1,125 @@
+{
+  "scope": "Replay independently audited original-history loads through native Quadrants recovery.",
+  "audit_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-audited-prefix-full-history-fields-v1",
+  "steps": [
+    11,
+    80,
+    866,
+    869,
+    1440,
+    1936
+  ],
+  "rows": [
+    {
+      "step": 11,
+      "mode": "full_inertia",
+      "native_vs_independent_tensor_absolute_L2_Pa": 1.1101348941829847e-05,
+      "native_vs_independent_tensor_relative_L2": 7.377028294007532e-11,
+      "native_complete_budget_fraction": 0.013563574231403976,
+      "native_raw_global_peak_Pa": 21036.55542087706,
+      "independent_raw_global_peak_Pa": 21036.55542098133
+    },
+    {
+      "step": 11,
+      "mode": "rigid_relief",
+      "native_vs_independent_tensor_absolute_L2_Pa": 1.3707657335129761e-05,
+      "native_vs_independent_tensor_relative_L2": 9.108710032284536e-11,
+      "native_complete_budget_fraction": 0.01332030775790761,
+      "native_raw_global_peak_Pa": 21036.692987434933,
+      "independent_raw_global_peak_Pa": 21036.692987125596
+    },
+    {
+      "step": 80,
+      "mode": "full_inertia",
+      "native_vs_independent_tensor_absolute_L2_Pa": 1.6363115235404304e-05,
+      "native_vs_independent_tensor_relative_L2": 9.993830098210708e-11,
+      "native_complete_budget_fraction": 0.013455096630854228,
+      "native_raw_global_peak_Pa": 22887.85964704686,
+      "independent_raw_global_peak_Pa": 22887.85964686667
+    },
+    {
+      "step": 80,
+      "mode": "rigid_relief",
+      "native_vs_independent_tensor_absolute_L2_Pa": 1.6356472892756492e-05,
+      "native_vs_independent_tensor_relative_L2": 9.989773264110094e-11,
+      "native_complete_budget_fraction": 0.008714034615764761,
+      "native_raw_global_peak_Pa": 22887.859647056357,
+      "independent_raw_global_peak_Pa": 22887.859646868055
+    },
+    {
+      "step": 866,
+      "mode": "full_inertia",
+      "native_vs_independent_tensor_absolute_L2_Pa": 0.0009490848940247318,
+      "native_vs_independent_tensor_relative_L2": 8.078286161681281e-11,
+      "native_complete_budget_fraction": 0.02096597125265947,
+      "native_raw_global_peak_Pa": 1068533.4587206258,
+      "independent_raw_global_peak_Pa": 1068533.4587294438
+    },
+    {
+      "step": 866,
+      "mode": "rigid_relief",
+      "native_vs_independent_tensor_absolute_L2_Pa": 0.0009210180438600598,
+      "native_vs_independent_tensor_relative_L2": 7.838669283286805e-11,
+      "native_complete_budget_fraction": 0.0202403493116035,
+      "native_raw_global_peak_Pa": 1068554.0567038262,
+      "independent_raw_global_peak_Pa": 1068554.0566942964
+    },
+    {
+      "step": 869,
+      "mode": "full_inertia",
+      "native_vs_independent_tensor_absolute_L2_Pa": 0.00012617778224297812,
+      "native_vs_independent_tensor_relative_L2": 8.815997263827517e-11,
+      "native_complete_budget_fraction": 0.037551307088282755,
+      "native_raw_global_peak_Pa": 128478.97803386119,
+      "independent_raw_global_peak_Pa": 128478.9780244538
+    },
+    {
+      "step": 869,
+      "mode": "rigid_relief",
+      "native_vs_independent_tensor_absolute_L2_Pa": 0.0001272196849125533,
+      "native_vs_independent_tensor_relative_L2": 8.885932859639324e-11,
+      "native_complete_budget_fraction": 0.0171696535923931,
+      "native_raw_global_peak_Pa": 128487.50390327506,
+      "independent_raw_global_peak_Pa": 128487.50390231519
+    },
+    {
+      "step": 1440,
+      "mode": "full_inertia",
+      "native_vs_independent_tensor_absolute_L2_Pa": 0.00014144428283552297,
+      "native_vs_independent_tensor_relative_L2": 7.950416542682485e-11,
+      "native_complete_budget_fraction": 0.020333683585137444,
+      "native_raw_global_peak_Pa": 155421.56169197574,
+      "independent_raw_global_peak_Pa": 155421.5616872348
+    },
+    {
+      "step": 1440,
+      "mode": "rigid_relief",
+      "native_vs_independent_tensor_absolute_L2_Pa": 0.00014144769214053402,
+      "native_vs_independent_tensor_relative_L2": 7.950608175700923e-11,
+      "native_complete_budget_fraction": 0.011027780015421209,
+      "native_raw_global_peak_Pa": 155421.56169184705,
+      "independent_raw_global_peak_Pa": 155421.5616872512
+    },
+    {
+      "step": 1936,
+      "mode": "full_inertia",
+      "native_vs_independent_tensor_absolute_L2_Pa": 9.001848457792697e-05,
+      "native_vs_independent_tensor_relative_L2": 5.1049421842348555e-11,
+      "native_complete_budget_fraction": 0.018605366867674708,
+      "native_raw_global_peak_Pa": 156361.18408870028,
+      "independent_raw_global_peak_Pa": 156361.18408849984
+    },
+    {
+      "step": 1936,
+      "mode": "rigid_relief",
+      "native_vs_independent_tensor_absolute_L2_Pa": 0.0003489999370789589,
+      "native_vs_independent_tensor_relative_L2": 1.979176289891396e-10,
+      "native_complete_budget_fraction": 0.034616238320848376,
+      "native_raw_global_peak_Pa": 156361.18408656234,
+      "independent_raw_global_peak_Pa": 156361.18408313656
+    }
+  ],
+  "complete_original_330_macro_history": false,
+  "goal_completion": false,
+  "limitations": "This checks the actual native production solve on objective resolved nodal loads at explicit original-history times. Full-inertia and rigid-relief inputs are separate declared problems. It does not establish finite-footprint load-model accuracy, matching rigid/deformable feedback, physical spatial/contact/time convergence or a verified warmed accuracy/cost range."
+}

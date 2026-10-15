@@ -5,6 +5,24 @@ without narrowing its scope. Historical native performance completion does not
 establish the new physical stage. Dated reports preserve their observations;
 running or pending jobs count as scheduled work only.
 
+Current: [fixed-surface egg thickness and original-state recovery](PHYSICAL_THICKNESS_ORIGINAL_RECOVERY_20261015.md)
+independently fixes actual boundaries, volume/COM and density across2/3/4 layers;
+FEM stresses remain pending. All1936 original global fields,12 native replays
+and8147520 interior/corner checks qualify their scopes. The saved direct1937
+candidate fails; separately checked residual stages then recover the unmodified
+original1937 equation, independently audited with every preceding physical state.
+Known869 full arrays/corner/quadrature fields remain identical. Full original
+history, spatial/contact convergence, models/feedback and accuracy/cost remain
+open. The candidate-budget short history has1944 independently audited states;
+seven common complete states retain corner/quadrature tensors to1.59e-11.
+The replacement full history preserves all1944 source files. The redundant
+baseline is cancelled after qualification, with all1964 saved states audited;
+its actual wrapper0 and missing summary correctly remain incomplete.
+The30298-tet five-state spatial prefix is independently qualified and retains
+all original arrays/corner/quadrature fields within the existing budgets. Its
+3.79–5.94GPa raw interval and local contact diagnostics remain unresolved;
+the complete80-step continuation is running and excluded from accepted evidence.
+
 Current: [nonlinear-U fields, geometry and objective load models](PHYSICAL_NONLINEAR_U_SPATIAL_20261015.md)
 independently checks two nonlinear U final fields, retaining44.58% probe tensor
 change. Exact CAD/analytic measures expose8.57%/4.04% coarse volume/mass errors;

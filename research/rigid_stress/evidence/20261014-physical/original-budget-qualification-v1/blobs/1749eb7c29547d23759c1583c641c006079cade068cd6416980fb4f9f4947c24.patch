@@ -1,0 +1,36 @@
+--- a/research/rigid_stress/stagnation_checked_original.py
++++ b/research/rigid_stress/stagnation_checked_original.py
+@@ -1,4 +1,4 @@
+-"""Check original physical budgets when strict Newton repeats an identical body residual norm."""
++"""Check unchanged original physical budgets on each complete Newton candidate."""
+ 
+ import json
+ import os
+@@ -29,7 +29,7 @@
+             body_norm, joint_norm = float(np.linalg.norm(result[0])), float(np.linalg.norm(result[1]))
+             self.repeated_body_norms = self.repeated_body_norms + 1 if body_norm == self.last_body_norm else 0
+             self.last_body_norm = body_norm
+-            if self.repeated_body_norms >= 2 and 1e-10 < max(body_norm, joint_norm) <= 1e-9:
++            if 1e-10 < max(body_norm, joint_norm) <= 1e-9:
+                 try:
+                     fresh = self.verify_robot_step(variable, result[3])
+                 except AssertionError:
+@@ -58,15 +58,16 @@
+                 "strict_newton_target_N": 1e-10,
+                 "strict_newton_target_met": False,
+                 "identical_body_norm_repetitions": self.repeated_body_norms,
++                "acceptance_trigger": "original_physical_budgets_and_fresh_robot_step",
+                 "fresh_robot_step_effort_residual": fresh,
+                 "contact_groups": groups,
+             }
+-            root = Path(os.environ["ORIGINAL_GLOBALIZATION_OUTPUT"]) / "physical_budget_stagnation"
++            root = Path(os.environ["ORIGINAL_GLOBALIZATION_OUTPUT"]) / "physical_budget_checks"
+             root.mkdir(parents=True, exist_ok=True)
+             np.savez_compressed(root / f"{phase}.npz", body_displacement=body, joint_velocity=velocity)
+             (root / f"{phase}.json").write_text(json.dumps(record, indent=2) + "\n")
+             self.history.append(record)
+-            print(json.dumps({"physical_budget_after_exact_body_norm_stagnation": record}), flush=True)
++            print(json.dumps({"original_physical_budget_after_newton_candidate": record}), flush=True)
+             return body, velocity, full, contact
+         finally:
+             self.check_stagnation = False
