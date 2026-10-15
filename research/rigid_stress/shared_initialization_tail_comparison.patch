@@ -1,0 +1,80 @@
+--- a/research/rigid_stress/audit_nonlinear_u_tail.py
++++ b/research/rigid_stress/audit_nonlinear_u_tail.py
+@@ -1,4 +1,4 @@
+-"""Reconstruct nonlinear U equilibrium and compare objective fields across resolved contact meshes."""
++"""Compare three independently audited fixed-pad U fields with shared physical initialization anchors."""
+ 
+ import argparse
+ import hashlib
+@@ -20,18 +20,44 @@
+     parser = argparse.ArgumentParser(description=__doc__)
+     parser.add_argument("--run", type=Path, nargs="+", required=True)
+     parser.add_argument("--axis", choices=["coupled", "pad_at_fixed_body", "body_at_fixed_pad"], default="coupled")
++    parser.add_argument("--history-audit", type=Path, nargs=3, required=True)
+     parser.add_argument("--output", type=Path, required=True)
+     args = parser.parse_args()
+-    assert len(args.run) >= 2
++    assert len(args.run) == 3 and args.axis == "body_at_fixed_pad"
+     args.output.mkdir(parents=True, exist_ok=False)
+     probes = common_physical_probes("u")
+     rows, observations, hashes, baseline = [], [], {}, None
++    shared_configuration = None
++    history_rows = []
+     for index, run in enumerate(args.run):
+         closed_source(run)
+         assert int((run / "returncode.txt").read_text()) == 0
+         directory = run / "solution"
+         config = json.loads((directory / "configuration.json").read_text())
+         report = json.loads((directory / "result.json").read_text())
++        audit = args.history_audit[index]
++        closed_source(audit)
++        assert int((audit / "returncode.txt").read_text()) == 0
++        audit_summary = audit / "results/summary.json"
++        history = json.loads(audit_summary.read_text())
++        assert Path(history["run"]).resolve() == run.resolve()
++        assert history["stages_checked"] == 744
++        assert history["all_retained_stages_independent_current_friction_and_original_force_gate"]
++        assert history["all_retained_stages_full_corner_quadrature_and_raw_bounds"]
++        assert history["requested_initialization_coordinates_independently_matched"]
++        assert history["qualified_per_stencil_force_method_and_bulk_sources_verified"]
++        for path, digest in history["input_sha256"].items():
++            assert hashlib.sha256(Path(path).read_bytes()).hexdigest() == digest
++        anchor = Path(config["initialization_anchors"])
++        anchor_sha = hashlib.sha256(anchor.read_bytes()).hexdigest()
++        assert anchor_sha == history["common_initialization_anchor_sha256"]
++        current_configuration = {key:value for key,value in config.items() if key not in ["mesh","output"]}
++        if shared_configuration is None:
++            shared_configuration = current_configuration
++        assert current_configuration == shared_configuration
++        hashes[str(audit_summary)] = hashlib.sha256(audit_summary.read_bytes()).hexdigest()
++        hashes[str(anchor)] = anchor_sha
++        history_rows.append({"audit":str(audit),"stages_checked":744,"shared_anchor_sha256":anchor_sha})
+         physical = {
+             key: config[key]
+             for key in [
+@@ -216,7 +242,7 @@
+         ]:
+             hashes[str(path)] = hashlib.sha256(path.read_bytes()).hexdigest()
+     common = np.logical_and.reduce([row["valid"] for row in observations])
+-    assert common.any()
++    assert common.all() and len(common) == 75
+     changes = []
+     for index in range(1, len(rows)):
+         previous, current = rows[index - 1], rows[index]
+@@ -250,13 +276,15 @@
+         "scope": __doc__,
+         "declared_spatial_axis": args.axis,
+         "physical_configuration": baseline,
++        "shared_initialization_configuration":shared_configuration,
++        "independent_all_stage_audits":history_rows,
+         "rows": rows,
+         "adjacent_changes": changes,
+         "common_material_points": int(common.sum()),
+         "probe_sha256": hashlib.sha256(probes.tobytes()).hexdigest(),
+         "input_sha256": hashes,
+         "goal_completion": False,
+-        "limitations": "Every retained accepted-step residual record is checked; only final complete fields were saved. Independent nonlinear bulk equilibrium is reconstructed with the retained final nodal contact forces, not a missing friction history. Proper finite frames and direct P2 deformation-gradient evaluation at common material points avoid stress interpolation and infinitesimal-rotation assumptions. The declared axis and semantic geometry hashes distinguish coupled, fixed-body pad and fixed-pad body studies. Body CAD/volume and pad geometry/volume/contact resolution still require their own separated checks. Probe norms are diagnostics rather than continuum integrals; two levels cannot establish a tail. Discrete masses are recorded without density retuning. Full history/contact reconstruction, separated axes, refined contact references, native finite footprints, actual Franka, feedback and verified warmed accuracy/cost remain separate requirements.",
++        "limitations": "All three histories have independent current-stencil friction/normal forces, original1e-9N constrained balances and complete corner/quadrature fields at every one of744 original loading stages. The same six physical initialization coordinates, pad5 geometry, source definitions,12/604/64/64 stages and physical parameters remain fixed. All75 original material probes remain, with no subset removal, and full global unaveraged lower/upper peaks and locations stay visible. Proper finite frames and direct nonlinear deformation gradients use the original comparison method. Body geometry/mass and volume/contact-trace discretization remain coupled; this removes the earlier initialization-coordinate/count confound without establishing a pure bulk axis, contact pressure, regularization/history tail, continuum feedback/model accuracy or verified warmed native cost. The original differently initialized cases are not replaced. Three useful levels alone do not prove convergence.",
+     }
+     (args.output / "summary.json").write_text(json.dumps(result, indent=2) + "\n")
+     print(json.dumps({"levels": len(rows), "common_material_points": int(common.sum()), "adjacent_changes": changes}))

@@ -114,6 +114,27 @@ coordinates must be independently recovered from the new map. This is a
 declared initialization-sensitivity control, not a replacement of the old setup
 or a device for manufacturing convergence. Results remain outstanding here.
 
+The shared-coordinate follow-up holds pad5, the same six physical anchors and
+all744 stage counts across845/2339/5669 body tetrahedra. Standalone auditor718833
+waits for the original coarse control/audit,718746/718747, and independently
+checks that known coarse history before medium/fine producers718834/718836 may
+start. Their independent all-stage auditors718835/718837 precede the strict
+three-level comparison718839. These jobs are pending, not accepted evidence.
+
+The [standalone auditor](../audit_shared_initialization_history.py) retains the
+qualified per-stencil force method and bulk sources, all original balances,
+full corner/quadrature fields and raw maximum locations at every stage. It also
+independently checks final consistent-mass gravity and uniform shoe actuation.
+The isolated comparison keeps all75 original material probes, proper finite
+frames, nonlinear body energy and complete raw lower/upper peaks. It rejects
+missing probes and mismatched physical controls, anchors or history audits.
+The same physical coordinates are located within the original1e-12m anchor
+tolerance; volume/contact-trace resolution, geometry and mass approximation
+still vary together. This removes a declared initialization-coordinate/count
+confound without establishing a separated bulk axis or physical convergence.
+Exact commands and dependency guards are retained in the data-root journal
+`meta/u-shared-initialization-body-axis-commands-v1.json`.
+
 Separately, barrier-distance jobs718718/718720 and independent audits718719/
 718721 compare2.5/1.25/0.625µm while keeping original coordinates, geometry,
 material, mass, friction, force, all loading-stage counts and tangential mollifier
