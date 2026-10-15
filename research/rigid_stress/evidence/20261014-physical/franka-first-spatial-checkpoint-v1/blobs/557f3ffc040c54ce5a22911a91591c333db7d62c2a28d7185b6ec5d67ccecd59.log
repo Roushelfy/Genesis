@@ -1,0 +1,27 @@
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/compare_spatial_franka.py", line 291, in <module>
+    main()
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/compare_spatial_franka.py", line 172, in main
+    qualifications.append({"run": str(run), **qualify(reference, points)})
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/compare_spatial_franka.py", line 111, in qualify
+    np.testing.assert_allclose(local_tensor, tensor, rtol=1e-8, atol=2e-4)
+  File "/usr/local/lib/python3.10/dist-packages/numpy/testing/_private/utils.py", line 1715, in assert_allclose
+    assert_array_compare(compare, actual, desired, err_msg=str(err_msg),
+  File "/usr/local/lib/python3.10/dist-packages/numpy/testing/_private/utils.py", line 921, in assert_array_compare
+    raise AssertionError(msg)
+AssertionError: 
+Not equal to tolerance rtol=1e-08, atol=0.0002
+
+Mismatched elements: 10 / 21600 (0.0463%)
+Max absolute difference among violations: 0.00053903
+Max relative difference among violations: 1.03074801e-06
+ ACTUAL: array([[[25149514.450826,  1343653.109707,  -300178.226218],
+        [ 1343653.109707,  2100420.836935,  -190920.861756],
+        [ -300178.226218,  -190920.861756, 15153144.347544]],...
+ DESIRED: array([[[25149514.45058 ,  1343653.109843,  -300178.226231],
+        [ 1343653.109843,  2100420.836306,  -190920.861812],
+        [ -300178.226231,  -190920.861812, 15153144.3473  ]],...

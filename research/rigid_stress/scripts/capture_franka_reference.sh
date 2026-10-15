@@ -11,6 +11,8 @@ export TMPDIR="$task_run/tmp" PYTHONUNBUFFERED=1
 export GS_CACHE_FILE_PATH="$task_run/cache/genesis" QD_OFFLINE_CACHE_FILE_PATH="$task_run/cache/quadrants"
 task_sources=(research/rigid_stress/capture_franka_reference.py research/rigid_stress/scripts/{capture_franka_reference,cluster_env}.sh
     examples/rigid/{franka_egg_stress,egg_stress_controller}.py genesis/options/rigid_stress.py
+    genesis/engine/entities/rigid_entity/rigid_entity.py
+    genesis/options/solvers.py
     genesis/assets/xml/franka_emika_panda/panda.xml)
 "$task_env/bin/python" - <<'PY' > "$task_run/additional-sources.txt"
 from pathlib import Path

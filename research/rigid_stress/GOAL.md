@@ -120,6 +120,15 @@ the tested coarse cold protocol; fine spatial studies remain live. The full-egg
 lagged initializer fails with exact retained evidence. The complete original
 physical-contact/model/feedback/accuracy-cost objective remains active.
 
+The [articulated inertia and spatial-probe update](docs/PHYSICAL_ARTICULATED_SPATIAL_20261015.md)
+qualifies common material-point comparisons, full-arm contact-law force tails
+and physical mass separated from implicit damping. The first480/3840 comparison
+changes full tensor probes56.2% despite0.0071% resultant-force change; it does not
+establish convergence. Matched editable stress maps retain raw peak information.
+Fixed-contact coarse controls preserve all original arrays; fine separated
+spatial studies remain live.
+The complete original physical-contact/model/feedback/accuracy-cost scope remains.
+
 ## Previous nonconvex implementation brief, 2026-10-11
 
 Implement the contact mapping contract in

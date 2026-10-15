@@ -1,0 +1,574 @@
+{
+  "scope": "Publish exact source/results bytes with bounded, reconstructible JSON chunks.",
+  "summary": {
+    "scope": "Qualified common-material-point first two spatial levels of actual-finger inertial contact",
+    "job": "714664_0 COMPLETED 0:0",
+    "body_tetrahedra": [
+      480,
+      3840
+    ],
+    "tensor_common_probe_relative_change": 0.5622239534958771,
+    "vm_common_probe_relative_change": 0.34560649983136305,
+    "raw_peak_relative_change": 0.3081255378509936,
+    "contact_force_relative_change": 7.130119160511884e-05,
+    "contact_moment_relative_change": 4.477439875578524e-05,
+    "equal_constructor_controls": "Exactly zero original/sparse480-tet differences on the same new fixed probe protocol",
+    "qualification": "Original componentwise polynomial/finite-rotation tolerances retained; exact affine-P2 manufactured locations and stable rotation encoding remove input cancellation; extended-precision gradient contraction removes numerical translation cancellation",
+    "goal_completion": false,
+    "limitations": "This large first spatial change is not a physical tail. Volume/contact triangles refine together. Fixed-contact and third-level studies remain live; full-arm deformable matching, contact/geometry/history tails, model/feedback and accuracy-cost remain unfinished.",
+    "sharded_original_files": []
+  },
+  "limitations": "Common material probes and the unchanged full tensor/rotation checks qualify comparison semantics, not physical convergence. First actual spatial changes exceed the declared target. Raw nonlinear lower/upper peaks and all unsmoothed probe fields are retained. The full physical validation goal remains active. JSON files above200MB are preserved as exact ordered32MiB byte ranges, individually gzip-compressed, with original/part/stored SHA256 and offsets. Join decompressed ranges in index order to restore the original JSON exactly; no records are reduced or excluded. Runtime staging uses hard links for unchanged small originals.",
+  "files": [
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-spatial-comparison-480-3840-v4-slurm-714664_0.log",
+      "run_path": "20261014-physical-validation/franka-spatial-comparison-480-3840-v4-slurm-714664_0.log",
+      "artifact": "blobs/6a10fcdb3f7bc245899cc30772a7863c870297ee53d2b3f0737be163ee0ff41c.log",
+      "encoding": "identity",
+      "bytes": 36,
+      "sha256": "6a10fcdb3f7bc245899cc30772a7863c870297ee53d2b3f0737be163ee0ff41c",
+      "stored_bytes": 36,
+      "stored_sha256": "6a10fcdb3f7bc245899cc30772a7863c870297ee53d2b3f0737be163ee0ff41c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/arguments.txt",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/arguments.txt",
+      "artifact": "blobs/47ca21462c4a136246d5e429229ea200ab09a995c27474cc2903e16ca42150ff.txt",
+      "encoding": "identity",
+      "bytes": 389,
+      "sha256": "47ca21462c4a136246d5e429229ea200ab09a995c27474cc2903e16ca42150ff",
+      "stored_bytes": 389,
+      "stored_sha256": "47ca21462c4a136246d5e429229ea200ab09a995c27474cc2903e16ca42150ff"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/comparison.log",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/comparison.log",
+      "artifact": "blobs/109f8487d802e55e43e1e48df62daae470aa4ed2bd380ba45dab9964077888e7.log",
+      "encoding": "identity",
+      "bytes": 4777,
+      "sha256": "109f8487d802e55e43e1e48df62daae470aa4ed2bd380ba45dab9964077888e7",
+      "stored_bytes": 4777,
+      "stored_sha256": "109f8487d802e55e43e1e48df62daae470aa4ed2bd380ba45dab9964077888e7"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/cpu.txt",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/cpu.txt",
+      "artifact": "blobs/f2cc940a32edc4f3ae89dffab924af2aa2c7db610f5005f8b3240576d997764c.txt",
+      "encoding": "identity",
+      "bytes": 3911,
+      "sha256": "f2cc940a32edc4f3ae89dffab924af2aa2c7db610f5005f8b3240576d997764c",
+      "stored_bytes": 3911,
+      "stored_sha256": "f2cc940a32edc4f3ae89dffab924af2aa2c7db610f5005f8b3240576d997764c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/node.txt",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/node.txt",
+      "artifact": "blobs/9b99de79354cb6170acc8f4805fceaa775b878342251f55b24c631d7f42e6820.txt",
+      "encoding": "identity",
+      "bytes": 12,
+      "sha256": "9b99de79354cb6170acc8f4805fceaa775b878342251f55b24c631d7f42e6820",
+      "stored_bytes": 12,
+      "stored_sha256": "9b99de79354cb6170acc8f4805fceaa775b878342251f55b24c631d7f42e6820"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case00-step0008.npz",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case00-step0008.npz",
+      "artifact": "blobs/9772a71e0f6b4bc00c9a0337cf262e91881f485f7b9bec8fb918bbc9f769b89f.npz",
+      "encoding": "identity",
+      "bytes": 310087,
+      "sha256": "9772a71e0f6b4bc00c9a0337cf262e91881f485f7b9bec8fb918bbc9f769b89f",
+      "stored_bytes": 310087,
+      "stored_sha256": "9772a71e0f6b4bc00c9a0337cf262e91881f485f7b9bec8fb918bbc9f769b89f"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case00-step0016.npz",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case00-step0016.npz",
+      "artifact": "blobs/c2fc118a2a299f87ef194c30dbf7916ae95eb0b26223e646175b6d797c6e3fd1.npz",
+      "encoding": "identity",
+      "bytes": 310037,
+      "sha256": "c2fc118a2a299f87ef194c30dbf7916ae95eb0b26223e646175b6d797c6e3fd1",
+      "stored_bytes": 310037,
+      "stored_sha256": "c2fc118a2a299f87ef194c30dbf7916ae95eb0b26223e646175b6d797c6e3fd1"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case00-step0024.npz",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case00-step0024.npz",
+      "artifact": "blobs/0fff907f4f480d5aa4673dd1df497a7d2c1e29486c8e072f2cd322a5e5c455f6.npz",
+      "encoding": "identity",
+      "bytes": 310083,
+      "sha256": "0fff907f4f480d5aa4673dd1df497a7d2c1e29486c8e072f2cd322a5e5c455f6",
+      "stored_bytes": 310083,
+      "stored_sha256": "0fff907f4f480d5aa4673dd1df497a7d2c1e29486c8e072f2cd322a5e5c455f6"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case00-step0032.npz",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case00-step0032.npz",
+      "artifact": "blobs/1151bdd08ed9115a1b9ad4f2db340d7dffafcf07d3bd9de5c623fd4d6d4d72f3.npz",
+      "encoding": "identity",
+      "bytes": 310059,
+      "sha256": "1151bdd08ed9115a1b9ad4f2db340d7dffafcf07d3bd9de5c623fd4d6d4d72f3",
+      "stored_bytes": 310059,
+      "stored_sha256": "1151bdd08ed9115a1b9ad4f2db340d7dffafcf07d3bd9de5c623fd4d6d4d72f3"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case00-step0040.npz",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case00-step0040.npz",
+      "artifact": "blobs/a0ae3e4a06c630a4e5a0bba87df849cc2c2d4ea27be5999b2f51d4b449e5c348.npz",
+      "encoding": "identity",
+      "bytes": 310090,
+      "sha256": "a0ae3e4a06c630a4e5a0bba87df849cc2c2d4ea27be5999b2f51d4b449e5c348",
+      "stored_bytes": 310090,
+      "stored_sha256": "a0ae3e4a06c630a4e5a0bba87df849cc2c2d4ea27be5999b2f51d4b449e5c348"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case00-step0048.npz",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case00-step0048.npz",
+      "artifact": "blobs/468c93990a90638325f765603053cc38f4ba492e826590ab80447a06d52d149c.npz",
+      "encoding": "identity",
+      "bytes": 310096,
+      "sha256": "468c93990a90638325f765603053cc38f4ba492e826590ab80447a06d52d149c",
+      "stored_bytes": 310096,
+      "stored_sha256": "468c93990a90638325f765603053cc38f4ba492e826590ab80447a06d52d149c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case00-step0056.npz",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case00-step0056.npz",
+      "artifact": "blobs/25f8918059e695c605718b6f363408e0bc21be583da3c4fa3b48c29d58d89dcc.npz",
+      "encoding": "identity",
+      "bytes": 310099,
+      "sha256": "25f8918059e695c605718b6f363408e0bc21be583da3c4fa3b48c29d58d89dcc",
+      "stored_bytes": 310099,
+      "stored_sha256": "25f8918059e695c605718b6f363408e0bc21be583da3c4fa3b48c29d58d89dcc"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case00-step0064.npz",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case00-step0064.npz",
+      "artifact": "blobs/d8c06dbe1d84e66464b8d25b6a9449750a5afb142593ac2da2c39d735c8079f2.npz",
+      "encoding": "identity",
+      "bytes": 310199,
+      "sha256": "d8c06dbe1d84e66464b8d25b6a9449750a5afb142593ac2da2c39d735c8079f2",
+      "stored_bytes": 310199,
+      "stored_sha256": "d8c06dbe1d84e66464b8d25b6a9449750a5afb142593ac2da2c39d735c8079f2"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case00-step0072.npz",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case00-step0072.npz",
+      "artifact": "blobs/9dcf28665a16a429b7cde737304ad2aa70b64666449a3d3683ceb086fa7c2642.npz",
+      "encoding": "identity",
+      "bytes": 310228,
+      "sha256": "9dcf28665a16a429b7cde737304ad2aa70b64666449a3d3683ceb086fa7c2642",
+      "stored_bytes": 310228,
+      "stored_sha256": "9dcf28665a16a429b7cde737304ad2aa70b64666449a3d3683ceb086fa7c2642"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case00-step0080.npz",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case00-step0080.npz",
+      "artifact": "blobs/98b3372b1befdd93c12564832893363c720af0a9f9ca01774093ba875ac50ad3.npz",
+      "encoding": "identity",
+      "bytes": 310130,
+      "sha256": "98b3372b1befdd93c12564832893363c720af0a9f9ca01774093ba875ac50ad3",
+      "stored_bytes": 310130,
+      "stored_sha256": "98b3372b1befdd93c12564832893363c720af0a9f9ca01774093ba875ac50ad3"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case01-step0008.npz",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case01-step0008.npz",
+      "artifact": "blobs/9772a71e0f6b4bc00c9a0337cf262e91881f485f7b9bec8fb918bbc9f769b89f.npz",
+      "encoding": "identity",
+      "bytes": 310087,
+      "sha256": "9772a71e0f6b4bc00c9a0337cf262e91881f485f7b9bec8fb918bbc9f769b89f",
+      "stored_bytes": 310087,
+      "stored_sha256": "9772a71e0f6b4bc00c9a0337cf262e91881f485f7b9bec8fb918bbc9f769b89f"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case01-step0016.npz",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case01-step0016.npz",
+      "artifact": "blobs/c2fc118a2a299f87ef194c30dbf7916ae95eb0b26223e646175b6d797c6e3fd1.npz",
+      "encoding": "identity",
+      "bytes": 310037,
+      "sha256": "c2fc118a2a299f87ef194c30dbf7916ae95eb0b26223e646175b6d797c6e3fd1",
+      "stored_bytes": 310037,
+      "stored_sha256": "c2fc118a2a299f87ef194c30dbf7916ae95eb0b26223e646175b6d797c6e3fd1"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case01-step0024.npz",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case01-step0024.npz",
+      "artifact": "blobs/0fff907f4f480d5aa4673dd1df497a7d2c1e29486c8e072f2cd322a5e5c455f6.npz",
+      "encoding": "identity",
+      "bytes": 310083,
+      "sha256": "0fff907f4f480d5aa4673dd1df497a7d2c1e29486c8e072f2cd322a5e5c455f6",
+      "stored_bytes": 310083,
+      "stored_sha256": "0fff907f4f480d5aa4673dd1df497a7d2c1e29486c8e072f2cd322a5e5c455f6"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case01-step0032.npz",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case01-step0032.npz",
+      "artifact": "blobs/1151bdd08ed9115a1b9ad4f2db340d7dffafcf07d3bd9de5c623fd4d6d4d72f3.npz",
+      "encoding": "identity",
+      "bytes": 310059,
+      "sha256": "1151bdd08ed9115a1b9ad4f2db340d7dffafcf07d3bd9de5c623fd4d6d4d72f3",
+      "stored_bytes": 310059,
+      "stored_sha256": "1151bdd08ed9115a1b9ad4f2db340d7dffafcf07d3bd9de5c623fd4d6d4d72f3"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case01-step0040.npz",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case01-step0040.npz",
+      "artifact": "blobs/a0ae3e4a06c630a4e5a0bba87df849cc2c2d4ea27be5999b2f51d4b449e5c348.npz",
+      "encoding": "identity",
+      "bytes": 310090,
+      "sha256": "a0ae3e4a06c630a4e5a0bba87df849cc2c2d4ea27be5999b2f51d4b449e5c348",
+      "stored_bytes": 310090,
+      "stored_sha256": "a0ae3e4a06c630a4e5a0bba87df849cc2c2d4ea27be5999b2f51d4b449e5c348"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case01-step0048.npz",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case01-step0048.npz",
+      "artifact": "blobs/468c93990a90638325f765603053cc38f4ba492e826590ab80447a06d52d149c.npz",
+      "encoding": "identity",
+      "bytes": 310096,
+      "sha256": "468c93990a90638325f765603053cc38f4ba492e826590ab80447a06d52d149c",
+      "stored_bytes": 310096,
+      "stored_sha256": "468c93990a90638325f765603053cc38f4ba492e826590ab80447a06d52d149c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case01-step0056.npz",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case01-step0056.npz",
+      "artifact": "blobs/25f8918059e695c605718b6f363408e0bc21be583da3c4fa3b48c29d58d89dcc.npz",
+      "encoding": "identity",
+      "bytes": 310099,
+      "sha256": "25f8918059e695c605718b6f363408e0bc21be583da3c4fa3b48c29d58d89dcc",
+      "stored_bytes": 310099,
+      "stored_sha256": "25f8918059e695c605718b6f363408e0bc21be583da3c4fa3b48c29d58d89dcc"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case01-step0064.npz",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case01-step0064.npz",
+      "artifact": "blobs/d8c06dbe1d84e66464b8d25b6a9449750a5afb142593ac2da2c39d735c8079f2.npz",
+      "encoding": "identity",
+      "bytes": 310199,
+      "sha256": "d8c06dbe1d84e66464b8d25b6a9449750a5afb142593ac2da2c39d735c8079f2",
+      "stored_bytes": 310199,
+      "stored_sha256": "d8c06dbe1d84e66464b8d25b6a9449750a5afb142593ac2da2c39d735c8079f2"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case01-step0072.npz",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case01-step0072.npz",
+      "artifact": "blobs/9dcf28665a16a429b7cde737304ad2aa70b64666449a3d3683ceb086fa7c2642.npz",
+      "encoding": "identity",
+      "bytes": 310228,
+      "sha256": "9dcf28665a16a429b7cde737304ad2aa70b64666449a3d3683ceb086fa7c2642",
+      "stored_bytes": 310228,
+      "stored_sha256": "9dcf28665a16a429b7cde737304ad2aa70b64666449a3d3683ceb086fa7c2642"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case01-step0080.npz",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case01-step0080.npz",
+      "artifact": "blobs/98b3372b1befdd93c12564832893363c720af0a9f9ca01774093ba875ac50ad3.npz",
+      "encoding": "identity",
+      "bytes": 310130,
+      "sha256": "98b3372b1befdd93c12564832893363c720af0a9f9ca01774093ba875ac50ad3",
+      "stored_bytes": 310130,
+      "stored_sha256": "98b3372b1befdd93c12564832893363c720af0a9f9ca01774093ba875ac50ad3"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case02-step0008.npz",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case02-step0008.npz",
+      "artifact": "blobs/686622a936239f30dcdb1a22d653fac47b0b5042429469375b8159c05d8310be.npz",
+      "encoding": "identity",
+      "bytes": 310067,
+      "sha256": "686622a936239f30dcdb1a22d653fac47b0b5042429469375b8159c05d8310be",
+      "stored_bytes": 310067,
+      "stored_sha256": "686622a936239f30dcdb1a22d653fac47b0b5042429469375b8159c05d8310be"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case02-step0016.npz",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case02-step0016.npz",
+      "artifact": "blobs/5ec561e47e2639f2380a3380e40f0791ff15b0c318abbb7903615d2efd0488cb.npz",
+      "encoding": "identity",
+      "bytes": 310043,
+      "sha256": "5ec561e47e2639f2380a3380e40f0791ff15b0c318abbb7903615d2efd0488cb",
+      "stored_bytes": 310043,
+      "stored_sha256": "5ec561e47e2639f2380a3380e40f0791ff15b0c318abbb7903615d2efd0488cb"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case02-step0024.npz",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case02-step0024.npz",
+      "artifact": "blobs/e2ebac02c75482174cd2c525f9e8cb431884c1171c2adda789d696b61896a02b.npz",
+      "encoding": "identity",
+      "bytes": 310014,
+      "sha256": "e2ebac02c75482174cd2c525f9e8cb431884c1171c2adda789d696b61896a02b",
+      "stored_bytes": 310014,
+      "stored_sha256": "e2ebac02c75482174cd2c525f9e8cb431884c1171c2adda789d696b61896a02b"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case02-step0032.npz",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case02-step0032.npz",
+      "artifact": "blobs/40c723b9ad9469ec3af03e9bac89aa68ae5c0ea5b8ae5a2c900e59c013474291.npz",
+      "encoding": "identity",
+      "bytes": 310188,
+      "sha256": "40c723b9ad9469ec3af03e9bac89aa68ae5c0ea5b8ae5a2c900e59c013474291",
+      "stored_bytes": 310188,
+      "stored_sha256": "40c723b9ad9469ec3af03e9bac89aa68ae5c0ea5b8ae5a2c900e59c013474291"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case02-step0040.npz",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case02-step0040.npz",
+      "artifact": "blobs/94899271297058ab6aab2341155fc81ebbd10fc2f3a2d9a11148aca71f70f972.npz",
+      "encoding": "identity",
+      "bytes": 310276,
+      "sha256": "94899271297058ab6aab2341155fc81ebbd10fc2f3a2d9a11148aca71f70f972",
+      "stored_bytes": 310276,
+      "stored_sha256": "94899271297058ab6aab2341155fc81ebbd10fc2f3a2d9a11148aca71f70f972"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case02-step0048.npz",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case02-step0048.npz",
+      "artifact": "blobs/a9dec462ac7749012ffcf779d60f65c437e7156c9e1e9337fdc417c6e26857ee.npz",
+      "encoding": "identity",
+      "bytes": 310233,
+      "sha256": "a9dec462ac7749012ffcf779d60f65c437e7156c9e1e9337fdc417c6e26857ee",
+      "stored_bytes": 310233,
+      "stored_sha256": "a9dec462ac7749012ffcf779d60f65c437e7156c9e1e9337fdc417c6e26857ee"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case02-step0056.npz",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case02-step0056.npz",
+      "artifact": "blobs/fb5efa72d368979f9c2bdc7933f09e16ea5310b89304a2eb6efbdbca49890880.npz",
+      "encoding": "identity",
+      "bytes": 310184,
+      "sha256": "fb5efa72d368979f9c2bdc7933f09e16ea5310b89304a2eb6efbdbca49890880",
+      "stored_bytes": 310184,
+      "stored_sha256": "fb5efa72d368979f9c2bdc7933f09e16ea5310b89304a2eb6efbdbca49890880"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case02-step0064.npz",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case02-step0064.npz",
+      "artifact": "blobs/a481ac7cd0fdc8b0fdeb5b8840321602f66d7d239da4f2a08233e9dea077a411.npz",
+      "encoding": "identity",
+      "bytes": 310276,
+      "sha256": "a481ac7cd0fdc8b0fdeb5b8840321602f66d7d239da4f2a08233e9dea077a411",
+      "stored_bytes": 310276,
+      "stored_sha256": "a481ac7cd0fdc8b0fdeb5b8840321602f66d7d239da4f2a08233e9dea077a411"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case02-step0072.npz",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case02-step0072.npz",
+      "artifact": "blobs/624ae692b82857143b2eb38e0c28fa74c977a31fb57e30d5bbd6b272978353ad.npz",
+      "encoding": "identity",
+      "bytes": 310238,
+      "sha256": "624ae692b82857143b2eb38e0c28fa74c977a31fb57e30d5bbd6b272978353ad",
+      "stored_bytes": 310238,
+      "stored_sha256": "624ae692b82857143b2eb38e0c28fa74c977a31fb57e30d5bbd6b272978353ad"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case02-step0080.npz",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/case02-step0080.npz",
+      "artifact": "blobs/c25014d3df457d60c95b92e818efacc10f4ec344d416a6def2b97f5511f8a2ef.npz",
+      "encoding": "identity",
+      "bytes": 310229,
+      "sha256": "c25014d3df457d60c95b92e818efacc10f4ec344d416a6def2b97f5511f8a2ef",
+      "stored_bytes": 310229,
+      "stored_sha256": "c25014d3df457d60c95b92e818efacc10f4ec344d416a6def2b97f5511f8a2ef"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/common_probes.npz",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/common_probes.npz",
+      "artifact": "blobs/4a2ec5e554ebed1105876293904111394d447fbbce90c1c8b94b43ab02452856.npz",
+      "encoding": "identity",
+      "bytes": 58309,
+      "sha256": "4a2ec5e554ebed1105876293904111394d447fbbce90c1c8b94b43ab02452856",
+      "stored_bytes": 58309,
+      "stored_sha256": "4a2ec5e554ebed1105876293904111394d447fbbce90c1c8b94b43ab02452856"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/summary.json",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/results/summary.json",
+      "artifact": "blobs/4e4a7fc8136ad849040b32fbf3a29ce3b031d206e28707d01b470c3aa2f722bf.json",
+      "encoding": "identity",
+      "bytes": 5821,
+      "sha256": "4e4a7fc8136ad849040b32fbf3a29ce3b031d206e28707d01b470c3aa2f722bf",
+      "stored_bytes": 5821,
+      "stored_sha256": "4e4a7fc8136ad849040b32fbf3a29ce3b031d206e28707d01b470c3aa2f722bf"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/returncode.txt",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/returncode.txt",
+      "artifact": "blobs/9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa.txt",
+      "encoding": "identity",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "stored_bytes": 2,
+      "stored_sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/source/research/rigid_stress/audit_franka_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/source/research/rigid_stress/audit_franka_reference.py",
+      "artifact": "blobs/d73291d1ea1ad5d8e836c08e325cca71605b9a3c16a32c0c21f0f3f02083b5d8.py",
+      "encoding": "identity",
+      "bytes": 7552,
+      "sha256": "d73291d1ea1ad5d8e836c08e325cca71605b9a3c16a32c0c21f0f3f02083b5d8",
+      "stored_bytes": 7552,
+      "stored_sha256": "d73291d1ea1ad5d8e836c08e325cca71605b9a3c16a32c0c21f0f3f02083b5d8"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/source/research/rigid_stress/audit_objective_frame.py",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/source/research/rigid_stress/audit_objective_frame.py",
+      "artifact": "blobs/0d5977fe3bd2f7b14c0ceb906b9091b662f33f30ad6d27b7346eacfc7266f274.py",
+      "encoding": "identity",
+      "bytes": 5509,
+      "sha256": "0d5977fe3bd2f7b14c0ceb906b9091b662f33f30ad6d27b7346eacfc7266f274",
+      "stored_bytes": 5509,
+      "stored_sha256": "0d5977fe3bd2f7b14c0ceb906b9091b662f33f30ad6d27b7346eacfc7266f274"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/source/research/rigid_stress/compare_spatial_franka.py",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/source/research/rigid_stress/compare_spatial_franka.py",
+      "artifact": "blobs/829ea4fa6fadaabdbf7c82482b8d16bf0b69626c567d8e5f5600514537907de2.py",
+      "encoding": "identity",
+      "bytes": 15799,
+      "sha256": "829ea4fa6fadaabdbf7c82482b8d16bf0b69626c567d8e5f5600514537907de2",
+      "stored_bytes": 15799,
+      "stored_sha256": "829ea4fa6fadaabdbf7c82482b8d16bf0b69626c567d8e5f5600514537907de2"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/source/research/rigid_stress/contact_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/source/research/rigid_stress/contact_reference.py",
+      "artifact": "blobs/077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422.py",
+      "encoding": "identity",
+      "bytes": 30478,
+      "sha256": "077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422",
+      "stored_bytes": 30478,
+      "stored_sha256": "077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/source/research/rigid_stress/franka_contact_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/source/research/rigid_stress/franka_contact_reference.py",
+      "artifact": "blobs/8fdff22b417fed68dbdb553123547580ab346a38ef552ea8f495f3d073b829fc.py",
+      "encoding": "identity",
+      "bytes": 15825,
+      "sha256": "8fdff22b417fed68dbdb553123547580ab346a38ef552ea8f495f3d073b829fc",
+      "stored_bytes": 15825,
+      "stored_sha256": "8fdff22b417fed68dbdb553123547580ab346a38ef552ea8f495f3d073b829fc"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/source/research/rigid_stress/franka_rigid_mode_coordinates.py",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/source/research/rigid_stress/franka_rigid_mode_coordinates.py",
+      "artifact": "blobs/e32c9a4ffd46b7be229260004763e5b01b70fe804ea55541f07c0836cc8bf984.py",
+      "encoding": "identity",
+      "bytes": 1825,
+      "sha256": "e32c9a4ffd46b7be229260004763e5b01b70fe804ea55541f07c0836cc8bf984",
+      "stored_bytes": 1825,
+      "stored_sha256": "e32c9a4ffd46b7be229260004763e5b01b70fe804ea55541f07c0836cc8bf984"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/source/research/rigid_stress/neohookean_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/source/research/rigid_stress/neohookean_reference.py",
+      "artifact": "blobs/8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8.py",
+      "encoding": "identity",
+      "bytes": 9763,
+      "sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8",
+      "stored_bytes": 9763,
+      "stored_sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/source/research/rigid_stress/scripts/cluster_env.sh",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/source/research/rigid_stress/scripts/cluster_env.sh",
+      "artifact": "blobs/bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40.sh",
+      "encoding": "identity",
+      "bytes": 701,
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40",
+      "stored_bytes": 701,
+      "stored_sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/source/research/rigid_stress/scripts/compare_spatial_franka.sh",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/source/research/rigid_stress/scripts/compare_spatial_franka.sh",
+      "artifact": "blobs/80fcc57b39be7a1ff3dd4a9ed0a7f915c8fddfd9bed49d435332aa6a9ad2dd7e.sh",
+      "encoding": "identity",
+      "bytes": 1336,
+      "sha256": "80fcc57b39be7a1ff3dd4a9ed0a7f915c8fddfd9bed49d435332aa6a9ad2dd7e",
+      "stored_bytes": 1336,
+      "stored_sha256": "80fcc57b39be7a1ff3dd4a9ed0a7f915c8fddfd9bed49d435332aa6a9ad2dd7e"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/source/research/rigid_stress/skfem_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/source/research/rigid_stress/skfem_reference.py",
+      "artifact": "blobs/e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918.py",
+      "encoding": "identity",
+      "bytes": 7865,
+      "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918",
+      "stored_bytes": 7865,
+      "stored_sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/source/research/rigid_stress/stable_neohookean_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/source/research/rigid_stress/stable_neohookean_reference.py",
+      "artifact": "blobs/1243ca7a4289e9cdab02cf7d21ef2cbbbe5656df04793a257e1ecc47ca68c083.py",
+      "encoding": "identity",
+      "bytes": 1620,
+      "sha256": "1243ca7a4289e9cdab02cf7d21ef2cbbbe5656df04793a257e1ecc47ca68c083",
+      "stored_bytes": 1620,
+      "stored_sha256": "1243ca7a4289e9cdab02cf7d21ef2cbbbe5656df04793a257e1ecc47ca68c083"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/source/research/rigid_stress/summarize_fine_references.py",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/source/research/rigid_stress/summarize_fine_references.py",
+      "artifact": "blobs/47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3.py",
+      "encoding": "identity",
+      "bytes": 8766,
+      "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3",
+      "stored_bytes": 8766,
+      "stored_sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/source-after.sha256",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/source-after.sha256",
+      "artifact": "blobs/a7a22eb33075233bfee2b7971bdc301389704d470e9c5873e04fd6af9ec62428.sha256",
+      "encoding": "identity",
+      "bytes": 1375,
+      "sha256": "a7a22eb33075233bfee2b7971bdc301389704d470e9c5873e04fd6af9ec62428",
+      "stored_bytes": 1375,
+      "stored_sha256": "a7a22eb33075233bfee2b7971bdc301389704d470e9c5873e04fd6af9ec62428"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/source.sha256",
+      "run_path": "20261014-physical-validation/publication-staging/franka-spatial-comparison-checkpoint-v1/20261014-physical-validation/franka-spatial-comparison-480-3840-v4/source.sha256",
+      "artifact": "blobs/a7a22eb33075233bfee2b7971bdc301389704d470e9c5873e04fd6af9ec62428.sha256",
+      "encoding": "identity",
+      "bytes": 1375,
+      "sha256": "a7a22eb33075233bfee2b7971bdc301389704d470e9c5873e04fd6af9ec62428",
+      "stored_bytes": 1375,
+      "stored_sha256": "a7a22eb33075233bfee2b7971bdc301389704d470e9c5873e04fd6af9ec62428"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/spatial-comparison-publication-v1/commands.txt",
+      "run_path": "20261014-physical-validation/spatial-comparison-publication-v1/commands.txt",
+      "artifact": "blobs/f402196bb9d7eaa38e3710a25fa3fa0e379ab86bf8babf18458053b86445cae7.txt",
+      "encoding": "identity",
+      "bytes": 1055,
+      "sha256": "f402196bb9d7eaa38e3710a25fa3fa0e379ab86bf8babf18458053b86445cae7",
+      "stored_bytes": 1055,
+      "stored_sha256": "f402196bb9d7eaa38e3710a25fa3fa0e379ab86bf8babf18458053b86445cae7"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/spatial-comparison-publication-v1/jobs.txt",
+      "run_path": "20261014-physical-validation/spatial-comparison-publication-v1/jobs.txt",
+      "artifact": "blobs/54c047b801781ca7a3b6b3fac0888a18065c6a408714bc187f1e0eb9b650bbc6.txt",
+      "encoding": "identity",
+      "bytes": 32,
+      "sha256": "54c047b801781ca7a3b6b3fac0888a18065c6a408714bc187f1e0eb9b650bbc6",
+      "stored_bytes": 32,
+      "stored_sha256": "54c047b801781ca7a3b6b3fac0888a18065c6a408714bc187f1e0eb9b650bbc6"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/spatial-comparison-publication-v1/summary.json",
+      "run_path": "20261014-physical-validation/spatial-comparison-publication-v1/summary.json",
+      "artifact": "blobs/1f5b30c9cf557b35a7632c8841f3fccaf9cb971bccfb5e85e851f72ac2a31b1d.json",
+      "encoding": "identity",
+      "bytes": 1167,
+      "sha256": "1f5b30c9cf557b35a7632c8841f3fccaf9cb971bccfb5e85e851f72ac2a31b1d",
+      "stored_bytes": 1167,
+      "stored_sha256": "1f5b30c9cf557b35a7632c8841f3fccaf9cb971bccfb5e85e851f72ac2a31b1d"
+    }
+  ]
+}

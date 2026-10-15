@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/compare_spatial_franka.py", line 260, in <module>
+    main()
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/compare_spatial_franka.py", line 141, in main
+    qualifications.append({"run": str(run), **qualify(reference, points)})
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/compare_spatial_franka.py", line 55, in qualify
+    tensor, _, values = point_fields(reference, u, points)
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/compare_spatial_franka.py", line 43, in point_fields
+    probes = reference.scalar_basis.probes(points)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-physical/lib/python3.10/site-packages/skfem/assembly/basis/cell_basis.py", line 208, in probes
+    cells = self.mesh.element_finder(mapping=self.mapping)(*x)
+TypeError: MeshTet1.element_finder.<locals>.finder() takes from 3 to 4 positional arguments but 2400 were given

@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/compare_spatial_franka.py", line 260, in <module>
+    main()
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/compare_spatial_franka.py", line 141, in main
+    qualifications.append({"run": str(run), **qualify(reference, points)})
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/compare_spatial_franka.py", line 55, in qualify
+    tensor, _, values = point_fields(reference, u, points)
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/compare_spatial_franka.py", line 29, in point_fields
+    elements = reference.mesh.element_finder()(*points.T)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-physical/lib/python3.10/site-packages/skfem/mesh/mesh_tet_1.py", line 78, in finder
+    return finder(x, y, z, _search_all=True)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-physical/lib/python3.10/site-packages/skfem/mesh/mesh_tet_1.py", line 77, in finder
+    raise ValueError("Point is outside of the mesh.")
+ValueError: Point is outside of the mesh.

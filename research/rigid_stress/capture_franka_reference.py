@@ -23,6 +23,7 @@ def main():
     parser.add_argument("--substeps", type=int, default=1)
     parser.add_argument("--contact-timeconst", type=float)
     parser.add_argument("--dense-hold-tail-steps", type=int, default=0)
+    parser.add_argument("--capture-articulated-operators", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -167,6 +168,50 @@ def main():
         }
         name = f"{mode}-{tick:04d}-s{physical_substep:02d}"
         row["geometry_snapshot"] = name + "_geometry.npz"
+        if args.capture_articulated_operators:
+            dofs = slice(workload.robot.dof_start, workload.robot.dof_end)
+            mass = array(workload.robot.get_mass_mat()).reshape(9, 9)
+            np.testing.assert_allclose(mass, mass.T, rtol=0, atol=1e-12)
+            assert np.linalg.eigvalsh(mass).min() > 0
+            operator_fields = {
+                "joint_mass_matrix": mass,
+                "hand_jacobian_world": array(workload.robot.get_jacobian(workload.hand)).reshape(6, 9),
+                "finger_jacobians_world": np.stack(
+                    [array(workload.robot.get_jacobian(finger)).reshape(6, 9) for finger in fingers]
+                ),
+                "joint_position": np.array(row["robot_joint_position"]),
+                "joint_velocity": np.array(row["robot_joint_velocity"]),
+                "kinetic_energy_api_J": array(workload.robot.get_kinetic_energy()).reshape(()),
+            }
+            for field in (
+                "ctrl_pos",
+                "ctrl_vel",
+                "ctrl_mode",
+                "ctrl_force",
+                "qf_bias",
+                "qf_applied",
+                "qf_passive",
+                "qf_constraint",
+            ):
+                operator_fields[field] = qd_to_numpy(getattr(solver.dyn_state.dofs, field), transpose=True, copy=True)[
+                    0, dofs
+                ]
+            correction = np.zeros(9)
+            if solver._options.integrator == gs.integrator.approximate_implicitfast:
+                dt = workload.scene.dt / args.substeps
+                damping = array(workload.robot.get_dofs_damping()).reshape(9)
+                kv = array(workload.robot.get_dofs_kv()).reshape(9)
+                correction = dt * (damping + kv * (operator_fields["ctrl_mode"] <= gs.CTRL_MODE.VELOCITY))
+            physical_mass = mass - np.diag(correction)
+            operator_fields["physical_joint_mass_matrix"] = physical_mass
+            operator_fields["implicit_damping_mass_correction"] = correction
+            assert np.linalg.eigvalsh(physical_mass).min() > 0
+            v = operator_fields["joint_velocity"]
+            np.testing.assert_allclose(
+                0.5 * v @ physical_mass @ v, operator_fields["kinetic_energy_api_J"], rtol=1e-10, atol=1e-17
+            )
+            row["articulated_operator_snapshot"] = name + "_articulated.npz"
+            np.savez_compressed(args.output / row["articulated_operator_snapshot"], **operator_fields)
         np.savez_compressed(args.output / f"{name}_geometry.npz", **fields)
         (args.output / f"{name}.json").write_text(json.dumps(row, indent=2) + "\n")
         rows.append(row)
@@ -198,7 +243,21 @@ def main():
         "robot_joint_kv": array(workload.robot.get_dofs_kv()).reshape(9).tolist(),
         "robot_joint_armature": array(workload.robot.get_dofs_armature()).reshape(9).tolist(),
         "robot_joint_passive_damping": array(workload.robot.get_dofs_damping()).reshape(9).tolist(),
+        "articulated_snapshot_schema": "physical-and-working-mass-controller-bias-v2"
+        if args.capture_articulated_operators
+        else None,
+        "runtime_integrator": str(solver._options.integrator),
         "runtime_geom_sol_params": array(solver.get_sol_params(geoms_idx=np.arange(solver.n_geoms))).tolist(),
+        "runtime_static_equalities": [
+            {
+                "type": str(equality.type),
+                "object1": int(equality.eq_obj1id),
+                "object2": int(equality.eq_obj2id),
+                "data": np.asarray(equality.eq_data).tolist(),
+                "sol_params": array(solver.get_sol_params(eqs_idx=[index])).reshape(7).tolist(),
+            }
+            for index, equality in enumerate(solver.equalities)
+        ],
         "body_asset_metadata": json.loads(
             (Path("examples/rigid/assets/hollow_egg/level1/egg_shell.metadata.json")).read_text()
         ),
