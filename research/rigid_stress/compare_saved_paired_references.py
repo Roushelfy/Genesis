@@ -21,6 +21,7 @@ def main():
     parser.add_argument("--candidate", type=Path, required=True)
     parser.add_argument("--baseline-audit", type=Path, required=True)
     parser.add_argument("--candidate-audit", type=Path, required=True)
+    parser.add_argument("--allow-resolved-initializer", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     inputs, configs, audits, paths = {}, [], [], []
@@ -45,13 +46,31 @@ def main():
         for row in report["rows"]:
             assert row["complete_body_dynamic_residual_N"] <= 1e-9
             assert row["complete_mapped_dynamic_residual_N"] <= 1e-9
-        configs.append({key: value for key, value in config.items() if key != "output"})
+        physical_config = {key: value for key, value in config.items() if key != "output"}
+        physical_config.setdefault("finger_refinement", 0)
+        configs.append(physical_config)
         audits.append(report)
         paths.append(sorted((run / "results").glob("step[0-9][0-9][0-9][0-9].npz")))
         assert len(paths[-1]) == config["steps"]
     assert configs[0] == configs[1]
-    for name in ["closure_state.npz", "reference_geometry.npz", "contact_geometry.npz", "contact_node_map.npz"]:
+    for name in ["reference_geometry.npz", "contact_geometry.npz", "contact_node_map.npz"]:
         assert retain(args.baseline / "results" / name) == retain(args.candidate / "results" / name)
+    initializers = [run / "results/closure_state.npz" for run in [args.baseline, args.candidate]]
+    initializer_hashes = [retain(path) for path in initializers]
+    initializer_difference = 0.0
+    if args.allow_resolved_initializer:
+        with np.load(initializers[0]) as original, np.load(initializers[1]) as changed:
+            assert original.files == changed.files
+            for key in original.files:
+                if key != "displacement":
+                    np.testing.assert_array_equal(original[key], changed[key])
+                    continue
+                delta = np.asarray(changed[key], dtype=np.longdouble) - original[key]
+                error = np.linalg.norm(delta)
+                assert error <= 1e-5 * np.linalg.norm(original[key]) + 1e-12
+                initializer_difference = float(abs(delta).max(initial=0))
+    else:
+        assert initializer_hashes[0] == initializer_hashes[1]
     static, _ = restore_static(args.baseline)
     bulk = WidePiolaBulk(static.body)
     rows = []
@@ -91,6 +110,12 @@ def main():
         "states_checked": len(rows),
         "rows": rows,
         "input_sha256": inputs,
+        "initializer_comparison": {
+            "independently_resolved_initializer_allowed": args.allow_resolved_initializer,
+            "byte_identical": initializer_hashes[0] == initializer_hashes[1],
+            "maximum_displacement_difference_m": initializer_difference,
+            "other_initializer_arrays_identical": True,
+        },
         "all_original_arrays_and_complete_fields_qualified": True,
         "declared_existing_budgets": {
             "state_relative": 1e-5,
@@ -99,7 +124,7 @@ def main():
             "independently_audited_physical_body_and_mapped_force_N": 1e-9,
         },
         "goal_completion": False,
-        "limitations": "Complete saved histories are compared at identical physical inputs and byte-identical geometry/initializer. Independent force-audit results are checked and retained, not reassembled in this field comparison. This proves numerical equivalence only for these saved states; it establishes neither physical convergence nor a controlled timing improvement or warmed production cost.",
+        "limitations": "Complete saved histories are compared at identical physical inputs and byte-identical geometry. By default initializer bytes must match; the explicit resolved-initializer option instead checks every initializer array at the original state budget and retains its measured difference. Independent force-audit results are checked and retained, not reassembled in this field comparison. This proves numerical equivalence only for these saved states; it establishes neither physical convergence nor a controlled timing improvement or warmed production cost.",
     }
     args.output.mkdir(parents=True, exist_ok=False)
     (args.output / "summary.json").write_text(json.dumps(result, indent=2) + "\n")

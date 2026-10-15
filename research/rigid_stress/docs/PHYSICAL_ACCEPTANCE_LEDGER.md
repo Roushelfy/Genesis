@@ -5,6 +5,21 @@ without narrowing its scope. Historical native performance completion does not
 establish the new physical stage. Dated reports preserve their observations;
 running or pending jobs count as scheduled work only.
 
+Current: [separate body/finger contact integration and corrected coverage](PHYSICAL_CONTACT_QUADRATURE_AXIS_20261015.md)
+preserve identical1920-tet bulk geometry/mass through three levels of each trace
+axis, with complete original-budget force audits for every five-state history.
+The final body tensor/energy changes are0.990%/0.935%, while lumped density norms
+and actual vertex weights expose unresolved contact concentration. Finger-only
+refinement transfers that diagnostic to the finger side despite tiny bulk-field
+changes. Complete zero-case arrays/corner/quadrature tensors qualify the opt-in
+reference extensions, and constructor affine/wrench tests preserve rigid motion.
+All four original small-cap levels have their active samples outside the caps.
+The first corrected local case now has32 covered samples and40.4MPa raw peak,
+with independently balanced complete states; no physical tail is accepted.
+Matched editable figures pass rendered/data/vector QA, with failed render records
+retained. Finer/broader references and all original physical/history/model/feedback/
+verified-cost gates remain open.
+
 Current: [full thickness fields and actual refinement coverage](PHYSICAL_THICKNESS_CONTACT_COVERAGE_20261015.md)
 preserve all15 two/three/four-layer fixed-surface FEM fields, unchanged actual
 geometry/mass/traction, and unresolved3.62–4.93% final tensor changes. Additional

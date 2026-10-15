@@ -31,6 +31,21 @@ egg/Franka and U contact references, resolved-load/native replay versus feedback
 remaining applicable load-model sensitivity and physically verified warmed costs.
 These are execution priorities within the complete linked objective.
 
+The [separated contact-integration/coverage checkpoint](docs/PHYSICAL_CONTACT_QUADRATURE_AXIS_20261015.md)
+closes three body-trace and three rigid-finger integration levels on identical
+1920-tet bulk geometry and mass, with all five states per solve independently
+balanced at the original gates. Final body-axis tensor/energy changes are
+0.990%/0.935%, but growing discrete force densities and area-weight/gap changes
+remain unresolved. Zero-level regressions preserve complete original arrays and
+corner/quadrature fields; the finger zero case is bit-identical. Editable matched
+stress maps and quantitative source-weight figures pass visual/vector/data QA.
+All four old small-cap meshes miss actual contacts. The corrected first local
+case has32 covered active samples,30 stencils and40.4MPa raw peak; this replaces
+no original raw maximum and is not a physical tail. A third171228-tet level and
+independent audits are scheduled; the second and broader-cap cases remain live.
+Original histories, thickness/U/geometry/contact/regularization, model/feedback
+and physically verified warmed-cost requirements all remain in scope.
+
 The [thickness/contact-coverage checkpoint](docs/PHYSICAL_THICKNESS_CONTACT_COVERAGE_20261015.md)
 retains all15 fixed-surface two/three/four-layer FEM fields. Their final tensor
 changes remain3.62–4.93%;256 additional interior probes retain3.77–4.17%, so

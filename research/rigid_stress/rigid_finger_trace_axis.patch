@@ -1,0 +1,59 @@
+--- a/research/rigid_stress/run_paired_egg_contact.py
++++ b/research/rigid_stress/run_paired_egg_contact.py
+@@ -30,6 +30,7 @@
+     parser.add_argument("--steps", type=int, default=5)
+     parser.add_argument("--control-steps", type=int, default=64)
+     parser.add_argument("--contact-refinement", type=int, choices=[0, 1, 2, 3], default=0)
++    parser.add_argument("--finger-refinement", type=int, choices=[0, 1, 2, 3], default=0)
+     parser.add_argument("--output", type=Path, required=True)
+     args = parser.parse_args()
+     assert args.dt > 0 and args.steps > 0 and args.control_steps > 0
+@@ -70,7 +71,7 @@
+     )
+     static.world_coordinate_origin_m = seed.world_coordinate_origin_m.copy()
+     static.fixed_initializer_points_m, static.fixed_initializer_components = fixed, components
+-    static = refine_contact(static, args.contact_refinement)
++    static = refine_contact(static, args.contact_refinement, args.finger_refinement)
+     assert not ipctk.has_intersections(static.mesh, static.contact_surface_rest)
+     args.output.mkdir(parents=True, exist_ok=False)
+     config = {
+--- a/research/rigid_stress/refined_franka_contact.py
++++ b/research/rigid_stress/refined_franka_contact.py
+@@ -3,6 +3,8 @@
+ import ipctk
+ import numpy as np
+ from scipy import sparse
++
++from .refine_rigid_finger_trace import refine_rigid_finger_trace
+ 
+ 
+ def contact_map(system, levels):
+@@ -68,7 +70,7 @@
+     return node_map, np.array(faces), groups
+ 
+ 
+-def refine_contact(system, levels):
++def refine_contact(system, levels, finger_levels=0):
+     node_map, faces, groups = contact_map(system, levels)
+     rest = node_map @ system.rest
+     np.testing.assert_allclose(np.asarray(node_map.sum(axis=1)).ravel(), 1, rtol=0, atol=1e-15)
+@@ -81,7 +83,7 @@
+     system.contact_surface_faces = faces
+     system.contact_surface_groups = groups
+     system.contact_surface_rest = rest
+-    return system
++    return refine_rigid_finger_trace(system, finger_levels)
+ 
+ 
+ def collision_vertices(system, full_positions):
+--- a/research/rigid_stress/wide_spatial_franka.py
++++ b/research/rigid_stress/wide_spatial_franka.py
+@@ -44,7 +44,7 @@
+     system.world_coordinate_origin_m = seed.world_coordinate_origin_m.copy()
+     system.fixed_initializer_points_m = fixed
+     system.fixed_initializer_components = components
+-    system = refine_contact(system, config.get("contact_refinement", 0))
++    system = refine_contact(system, config.get("contact_refinement", 0), config.get("finger_refinement", 0))
+     with np.load(run / "results/contact_geometry.npz") as saved:
+         for key, actual in [
+             ("rest_positions", system.contact_surface_rest),
