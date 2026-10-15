@@ -1,0 +1,26 @@
+{"constructing_displacement_map_shape": [27, 21]}
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/qualify_ipc_displacement_map.py", line 118, in <module>
+    main()
+  File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/qualify_ipc_displacement_map.py", line 47, in main
+    np.testing.assert_allclose(
+  File "/usr/local/lib/python3.10/dist-packages/numpy/testing/_private/utils.py", line 1715, in assert_allclose
+    assert_array_compare(compare, actual, desired, err_msg=str(err_msg),
+  File "/usr/local/lib/python3.10/dist-packages/numpy/testing/_private/utils.py", line 921, in assert_array_compare
+    raise AssertionError(msg)
+AssertionError: 
+Not equal to tolerance rtol=0, atol=1e-15
+
+Mismatched elements: 9 / 27 (33.3%)
+Max absolute difference among violations: 2.95349685e-06
+Max relative difference among violations: 2.88612109
+ ACTUAL: array([[ 2.342150e-06,  9.762355e-07,  3.738743e-06],
+       [ 1.000249e-02, -3.013962e-07,  2.623698e-06],
+       [ 9.083434e-07,  9.997630e-03, -3.765674e-06],...
+ DESIRED: array([[ 2.342150e-06,  9.762355e-07,  3.738743e-06],
+       [ 1.000249e-02, -3.013962e-07,  2.623698e-06],
+       [ 9.083434e-07,  9.997630e-03, -3.765674e-06],...

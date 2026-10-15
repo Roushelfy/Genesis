@@ -18,6 +18,19 @@ the qualified native feature, and report load-model error separately from
 elastic numerical error. Commit and push reproducible progress and findings.
 The previous completion records do not establish this stage's acceptance.
 
+### Immediate evidence gates
+
+The next result must resolve the measured spatial/contact discrepancy rather
+than add another same-matrix agreement check. Complete at least three useful
+body/contact levels with fixed physical inputs, separated volume/contact axes,
+common-point tensors, raw extrema and traction/island diagnostics. Apply the
+declared observable criteria only to a credible tail; retain unexplained growth
+as unresolved. Reference numerical acceleration must first preserve all original
+states, full corner tensors and original force budgets. Then complete matched
+egg/Franka and U contact references, resolved-load/native replay versus feedback,
+remaining applicable load-model sensitivity and physically verified warmed costs.
+These are execution priorities within the complete linked objective.
+
 Initial progress is in [PHYSICAL_VALIDATION_PROGRESS_20261014.md](docs/PHYSICAL_VALIDATION_PROGRESS_20261014.md).
 It establishes independent scikit-fem assembly/boundary integration, analytic
 free-body fields and seven initial full3D geometry assets.
@@ -128,6 +141,16 @@ establish convergence. Matched editable stress maps retain raw peak information.
 Fixed-contact coarse controls preserve all original arrays; fine separated
 spatial studies remain live.
 The complete original physical-contact/model/feedback/accuracy-cost scope remains.
+
+The [independent contact-discretization checkpoint](docs/PHYSICAL_CONTACT_DISCRETIZATION_20261015.md)
+adds three solved collision refinements with fixed bulk unknowns and original
+force budgets. Coarse-body tensors change only0.002419%/0.005042%, while two
+active nodes retain area-quartering and approximately fourfold force/area density
+growth. This is unresolved traction concentration, not physical contact acceptance.
+P2/current-friction pullback and an independent cached-Newton numerical control
+are qualified. The next evidence gate is separated volume/contact resolution and
+a credible spatial/contact tail; full egg/U/application matching, model/feedback
+separation and verified warmed accuracy/cost remain required.
 
 ## Previous nonconvex implementation brief, 2026-10-11
 

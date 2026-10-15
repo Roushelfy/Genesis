@@ -93,3 +93,16 @@ Original force budgets and componentwise postprocessor gates remain unchanged.
 Fixed-contact volume and third-level reference studies remain live; no spatial
 tail or singularity acceptance is inferred from these first two levels.
 Full coupled application, contact/stress convergence and every original gate remain.
+
+The [independent contact-discretization checkpoint](PHYSICAL_CONTACT_DISCRETIZATION_20261015.md)
+solves three collision-only levels at fixed480-tet bulk geometry and2970 source
+unknowns. Exact P2 trace/current-friction pullback passes, including an independent
+negative-weight patch. Coarse-body tensor changes0.002419%/0.005042% do not
+establish contact convergence: two active nodes persist, their lumped area quarters,
+and maximum normal/shear force-per-area approximately quadruples at each level.
+Raw surface forces, areas and per-island six-component wrenches are retained.
+Reference-only cached current-Newton preconditioning matches all80 original states
+and full corner tensors at unchanged complete1e-9N gates; the fine control is
+scheduled. These qualify numerical tools and expose an unresolved physical axis.
+Separated/coupled spatial tails, matched full-arm/egg/U contact, load-model and
+feedback separation, verified accuracy/cost and complete deliverables remain open.

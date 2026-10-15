@@ -1,0 +1,30 @@
+{
+  "scope": "Qualify IPC contact interpolation using explicit full-coordinate chain rules.",
+  "mapping_shape": [
+    27,
+    21
+  ],
+  "normal_stencils": 6,
+  "max_gradient_chain_difference": 0.0,
+  "max_hessian_chain_difference": 1.8189894035458565e-12,
+  "max_hessian_roundoff_budget_fraction": 0.02943572424836269,
+  "finite_differences": [
+    {
+      "step_m": 1e-06,
+      "work_relative_error": 9.353834247259486e-08,
+      "tangent_relative_error": 3.8037802673239583e-08
+    },
+    {
+      "step_m": 3e-07,
+      "work_relative_error": 8.404122432659883e-09,
+      "tangent_relative_error": 3.422206760256084e-09
+    },
+    {
+      "step_m": 1e-07,
+      "work_relative_error": 9.57620407608409e-10,
+      "tangent_relative_error": 3.817647590531901e-10
+    }
+  ],
+  "goal_completion": false,
+  "limitations": "A mapped normal-contact patch validates coordinates, virtual work, tangent and total force/moment pullback. P2 interpolation, current friction derivatives, actual geometry, contact refinement and physical convergence require separate checks."
+}
