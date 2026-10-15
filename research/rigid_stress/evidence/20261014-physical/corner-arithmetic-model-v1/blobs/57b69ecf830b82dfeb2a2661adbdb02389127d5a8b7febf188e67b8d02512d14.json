@@ -1,0 +1,372 @@
+{
+  "scope": "Check actual native corner kernels against complete independently verified decimal polynomial fields.",
+  "backend": "cpu",
+  "decimal_audit": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-polynomial-decimal-cpu-v1",
+  "rows": [
+    {
+      "diagnostic_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-arithmetic-case2-cpu-v1",
+      "mode": "full_inertia",
+      "tetrahedra": 8433,
+      "is_cached": false,
+      "native_vs_decimal_polynomial": {
+        "maximum_absolute_difference_Pa": 6.488536018878222e-05,
+        "maximum_existing_component_budget_fraction": 0.05568239954696978,
+        "worst_element_corner_component": [
+          7018,
+          0,
+          1
+        ],
+        "first_at_worst_Pa": 26552.387938331813,
+        "reference_at_worst_Pa": 26552.387940367138
+      },
+      "old_native_vs_decimal_polynomial": {
+        "maximum_absolute_difference_Pa": 8.930985495680943e-05,
+        "maximum_existing_component_budget_fraction": 0.7866895601217959,
+        "worst_element_corner_component": [
+          7018,
+          0,
+          1
+        ],
+        "first_at_worst_Pa": 26552.38796912252,
+        "reference_at_worst_Pa": 26552.387940367138
+      },
+      "old_reference_vs_decimal_polynomial": {
+        "maximum_absolute_difference_Pa": 0.00011137034744024277,
+        "maximum_existing_component_budget_fraction": 0.6385419355928382,
+        "worst_element_corner_component": [
+          8159,
+          0,
+          1
+        ],
+        "first_at_worst_Pa": -10950.870593997533,
+        "reference_at_worst_Pa": -10950.870607375542
+      },
+      "raw_global_native_peak_Pa": 2035346455.612275,
+      "raw_global_decimal_peak_Pa": 2035346455.6122735,
+      "raw_global_peak_existing_budget_passed": true,
+      "all_existing_component_budgets_passed": true
+    },
+    {
+      "diagnostic_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-arithmetic-case2-cpu-v1",
+      "mode": "full_inertia",
+      "tetrahedra": 8433,
+      "is_cached": true,
+      "native_vs_decimal_polynomial": {
+        "maximum_absolute_difference_Pa": 6.488536018878222e-05,
+        "maximum_existing_component_budget_fraction": 0.05568239954696978,
+        "worst_element_corner_component": [
+          7018,
+          0,
+          1
+        ],
+        "first_at_worst_Pa": 26552.387938331813,
+        "reference_at_worst_Pa": 26552.387940367138
+      },
+      "old_native_vs_decimal_polynomial": {
+        "maximum_absolute_difference_Pa": 8.930985495680943e-05,
+        "maximum_existing_component_budget_fraction": 0.7866895601217959,
+        "worst_element_corner_component": [
+          7018,
+          0,
+          1
+        ],
+        "first_at_worst_Pa": 26552.38796912252,
+        "reference_at_worst_Pa": 26552.387940367138
+      },
+      "old_reference_vs_decimal_polynomial": {
+        "maximum_absolute_difference_Pa": 0.00011137034744024277,
+        "maximum_existing_component_budget_fraction": 0.6385419355928382,
+        "worst_element_corner_component": [
+          8159,
+          0,
+          1
+        ],
+        "first_at_worst_Pa": -10950.870593997533,
+        "reference_at_worst_Pa": -10950.870607375542
+      },
+      "raw_global_native_peak_Pa": 2035346455.612275,
+      "raw_global_decimal_peak_Pa": 2035346455.6122735,
+      "raw_global_peak_existing_budget_passed": true,
+      "all_existing_component_budgets_passed": true
+    },
+    {
+      "diagnostic_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-arithmetic-case2-cpu-v1",
+      "mode": "rigid_relief",
+      "tetrahedra": 8433,
+      "is_cached": false,
+      "native_vs_decimal_polynomial": {
+        "maximum_absolute_difference_Pa": 5.12503320351243e-05,
+        "maximum_existing_component_budget_fraction": 0.05632410573016922,
+        "worst_element_corner_component": [
+          7018,
+          0,
+          1
+        ],
+        "first_at_worst_Pa": 26552.38676919043,
+        "reference_at_worst_Pa": 26552.38677124921
+      },
+      "old_native_vs_decimal_polynomial": {
+        "maximum_absolute_difference_Pa": 0.000137419905513525,
+        "maximum_existing_component_budget_fraction": 0.3771490187754528,
+        "worst_element_corner_component": [
+          5823,
+          1,
+          1
+        ],
+        "first_at_worst_Pa": 13785.657070017212,
+        "reference_at_worst_Pa": 13785.657061046475
+      },
+      "old_reference_vs_decimal_polynomial": {
+        "maximum_absolute_difference_Pa": 0.00013900769408792257,
+        "maximum_existing_component_budget_fraction": 0.8311440831860158,
+        "worst_element_corner_component": [
+          7018,
+          0,
+          1
+        ],
+        "first_at_worst_Pa": 26552.38674086891,
+        "reference_at_worst_Pa": 26552.38677124921
+      },
+      "raw_global_native_peak_Pa": 2035346455.6023974,
+      "raw_global_decimal_peak_Pa": 2035346455.6023939,
+      "raw_global_peak_existing_budget_passed": true,
+      "all_existing_component_budgets_passed": true
+    },
+    {
+      "diagnostic_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-arithmetic-case2-cpu-v1",
+      "mode": "rigid_relief",
+      "tetrahedra": 8433,
+      "is_cached": true,
+      "native_vs_decimal_polynomial": {
+        "maximum_absolute_difference_Pa": 5.12503320351243e-05,
+        "maximum_existing_component_budget_fraction": 0.05632410573016922,
+        "worst_element_corner_component": [
+          7018,
+          0,
+          1
+        ],
+        "first_at_worst_Pa": 26552.38676919043,
+        "reference_at_worst_Pa": 26552.38677124921
+      },
+      "old_native_vs_decimal_polynomial": {
+        "maximum_absolute_difference_Pa": 0.000137419905513525,
+        "maximum_existing_component_budget_fraction": 0.3771490187754528,
+        "worst_element_corner_component": [
+          5823,
+          1,
+          1
+        ],
+        "first_at_worst_Pa": 13785.657070017212,
+        "reference_at_worst_Pa": 13785.657061046475
+      },
+      "old_reference_vs_decimal_polynomial": {
+        "maximum_absolute_difference_Pa": 0.00013900769408792257,
+        "maximum_existing_component_budget_fraction": 0.8311440831860158,
+        "worst_element_corner_component": [
+          7018,
+          0,
+          1
+        ],
+        "first_at_worst_Pa": 26552.38674086891,
+        "reference_at_worst_Pa": 26552.38677124921
+      },
+      "raw_global_native_peak_Pa": 2035346455.6023974,
+      "raw_global_decimal_peak_Pa": 2035346455.6023939,
+      "raw_global_peak_existing_budget_passed": true,
+      "all_existing_component_budgets_passed": true
+    },
+    {
+      "diagnostic_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-arithmetic-case3-cpu-v1",
+      "mode": "full_inertia",
+      "tetrahedra": 30298,
+      "is_cached": false,
+      "native_vs_decimal_polynomial": {
+        "maximum_absolute_difference_Pa": 6.644660606980324e-05,
+        "maximum_existing_component_budget_fraction": 0.07222590239798417,
+        "worst_element_corner_component": [
+          22642,
+          0,
+          1
+        ],
+        "first_at_worst_Pa": -3052.3561407004017,
+        "reference_at_worst_Pa": -3052.3561397576836
+      },
+      "old_native_vs_decimal_polynomial": {
+        "maximum_absolute_difference_Pa": 0.00033891317434608936,
+        "maximum_existing_component_budget_fraction": 4.8350538440113,
+        "worst_element_corner_component": [
+          23649,
+          2,
+          1
+        ],
+        "first_at_worst_Pa": 5459.619357102594,
+        "reference_at_worst_Pa": 5459.6192823545025
+      },
+      "old_reference_vs_decimal_polynomial": {
+        "maximum_absolute_difference_Pa": 0.0003951129037886858,
+        "maximum_existing_component_budget_fraction": 6.457592840061681,
+        "worst_element_corner_component": [
+          22642,
+          0,
+          1
+        ],
+        "first_at_worst_Pa": -3052.356055470882,
+        "reference_at_worst_Pa": -3052.3561397576836
+      },
+      "raw_global_native_peak_Pa": 4021712695.8503485,
+      "raw_global_decimal_peak_Pa": 4021712695.8503513,
+      "raw_global_peak_existing_budget_passed": true,
+      "all_existing_component_budgets_passed": true
+    },
+    {
+      "diagnostic_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-arithmetic-case3-cpu-v1",
+      "mode": "full_inertia",
+      "tetrahedra": 30298,
+      "is_cached": true,
+      "native_vs_decimal_polynomial": {
+        "maximum_absolute_difference_Pa": 6.644660606980324e-05,
+        "maximum_existing_component_budget_fraction": 0.07222590239798417,
+        "worst_element_corner_component": [
+          22642,
+          0,
+          1
+        ],
+        "first_at_worst_Pa": -3052.3561407004017,
+        "reference_at_worst_Pa": -3052.3561397576836
+      },
+      "old_native_vs_decimal_polynomial": {
+        "maximum_absolute_difference_Pa": 0.00033891317434608936,
+        "maximum_existing_component_budget_fraction": 4.8350538440113,
+        "worst_element_corner_component": [
+          23649,
+          2,
+          1
+        ],
+        "first_at_worst_Pa": 5459.619357102594,
+        "reference_at_worst_Pa": 5459.6192823545025
+      },
+      "old_reference_vs_decimal_polynomial": {
+        "maximum_absolute_difference_Pa": 0.0003951129037886858,
+        "maximum_existing_component_budget_fraction": 6.457592840061681,
+        "worst_element_corner_component": [
+          22642,
+          0,
+          1
+        ],
+        "first_at_worst_Pa": -3052.356055470882,
+        "reference_at_worst_Pa": -3052.3561397576836
+      },
+      "raw_global_native_peak_Pa": 4021712695.8503485,
+      "raw_global_decimal_peak_Pa": 4021712695.8503513,
+      "raw_global_peak_existing_budget_passed": true,
+      "all_existing_component_budgets_passed": true
+    },
+    {
+      "diagnostic_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-arithmetic-case3-cpu-v1",
+      "mode": "rigid_relief",
+      "tetrahedra": 30298,
+      "is_cached": false,
+      "native_vs_decimal_polynomial": {
+        "maximum_absolute_difference_Pa": 7.223105058073997e-05,
+        "maximum_existing_component_budget_fraction": 0.15457078353119,
+        "worst_element_corner_component": [
+          22642,
+          0,
+          1
+        ],
+        "first_at_worst_Pa": -3052.346982157789,
+        "reference_at_worst_Pa": -3052.3469801402775
+      },
+      "old_native_vs_decimal_polynomial": {
+        "maximum_absolute_difference_Pa": 0.0003521540202200413,
+        "maximum_existing_component_budget_fraction": 5.65723643275792,
+        "worst_element_corner_component": [
+          22642,
+          0,
+          1
+        ],
+        "first_at_worst_Pa": -3052.346906300065,
+        "reference_at_worst_Pa": -3052.3469801402775
+      },
+      "old_reference_vs_decimal_polynomial": {
+        "maximum_absolute_difference_Pa": 0.000334804761223495,
+        "maximum_existing_component_budget_fraction": 4.126856306806521,
+        "worst_element_corner_component": [
+          9515,
+          0,
+          1
+        ],
+        "first_at_worst_Pa": 12003.44788891077,
+        "reference_at_worst_Pa": 12003.447979715838
+      },
+      "raw_global_native_peak_Pa": 4021712695.860675,
+      "raw_global_decimal_peak_Pa": 4021712695.8606763,
+      "raw_global_peak_existing_budget_passed": true,
+      "all_existing_component_budgets_passed": true
+    },
+    {
+      "diagnostic_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-arithmetic-case3-cpu-v1",
+      "mode": "rigid_relief",
+      "tetrahedra": 30298,
+      "is_cached": true,
+      "native_vs_decimal_polynomial": {
+        "maximum_absolute_difference_Pa": 7.223105058073997e-05,
+        "maximum_existing_component_budget_fraction": 0.15457078353119,
+        "worst_element_corner_component": [
+          22642,
+          0,
+          1
+        ],
+        "first_at_worst_Pa": -3052.346982157789,
+        "reference_at_worst_Pa": -3052.3469801402775
+      },
+      "old_native_vs_decimal_polynomial": {
+        "maximum_absolute_difference_Pa": 0.0003521540202200413,
+        "maximum_existing_component_budget_fraction": 5.65723643275792,
+        "worst_element_corner_component": [
+          22642,
+          0,
+          1
+        ],
+        "first_at_worst_Pa": -3052.346906300065,
+        "reference_at_worst_Pa": -3052.3469801402775
+      },
+      "old_reference_vs_decimal_polynomial": {
+        "maximum_absolute_difference_Pa": 0.000334804761223495,
+        "maximum_existing_component_budget_fraction": 4.126856306806521,
+        "worst_element_corner_component": [
+          9515,
+          0,
+          1
+        ],
+        "first_at_worst_Pa": 12003.44788891077,
+        "reference_at_worst_Pa": 12003.447979715838
+      },
+      "raw_global_native_peak_Pa": 4021712695.860675,
+      "raw_global_decimal_peak_Pa": 4021712695.8606763,
+      "raw_global_peak_existing_budget_passed": true,
+      "all_existing_component_budgets_passed": true
+    }
+  ],
+  "input_sha256": {
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-polynomial-decimal-cpu-v1/results/summary.json": "baf25caf8319a9eddd6b69ec9d6f98a407c881a9358852c8fcdf9ba858c4a6fa",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-arithmetic-case2-cpu-v1/results/summary.json": "f7f4f7353dd22b589af915182751c7f823eef5dd526fed9e70bf28db941114d4",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-four-level-step5-native-2-diagnostic-v2/results/body_mesh.npz": "a395cc1af9cf9b0f60032c9eb4fa1b9844985ffc41c1e74059f4b9d5c75ff047",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-arithmetic-case2-cpu-v1/results/geometry.npz": "776349d0233e24d0a3041eb46827daf069191882ce18040027cbb6fe0afc2198",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-polynomial-decimal-cpu-v1/results/case00-full_inertia.npz": "1701ae42e3dab5a9323d2ce7f0086b2eab66f05ee4ce7ad8c072ac0e9c0e51bf",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-arithmetic-case2-cpu-v1/results/full_inertia.npz": "dd9b9c859420d37c060a5b3bc473e80c46e9c6aecd0a47eac95e89d401d6b605",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-polynomial-decimal-cpu-v1/results/case00-rigid_relief.npz": "8a558cb90e4a74a8d015fbbdfc9462b8cac90fc0a120aefb668df840709bcdab",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-arithmetic-case2-cpu-v1/results/rigid_relief.npz": "fa84fad6ccf4a6f69861ec646531eeb05141819747275e49c1b05644ac375e52",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-arithmetic-case3-cpu-v1/results/summary.json": "240e16d008a51f5986020717992b33441d2fe10128d04e4fef567904c7233442",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-four-level-step5-native-3-diagnostic-v2/results/body_mesh.npz": "c35d7cd46fe6c08aa33151badd8b68bd2511ed20d34b085df25d1e6d989b29ee",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-arithmetic-case3-cpu-v1/results/geometry.npz": "db94298253fd1a8d51470aa4c4bc83971453800659c3c4c84bda0f1dc555402d",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-polynomial-decimal-cpu-v1/results/case01-full_inertia.npz": "ea63429588fe200d1bb5a8b8008f6c7d8cc4fa6fa0dd6f1c554b42026b520b4a",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-arithmetic-case3-cpu-v1/results/full_inertia.npz": "8df57ce20d437e10be93399a41dcf21ae0b28c8ca4fadb1f06401c604799a857",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-polynomial-decimal-cpu-v1/results/case01-rigid_relief.npz": "9a24e2629245a2e7611796fd0f874b1686107b1b6aaf3eeb37a61227c60b554c",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-arithmetic-case3-cpu-v1/results/rigid_relief.npz": "4a3754054b3f153c1f08fa4c3e3502a424b8b49899baeb85037a38130d29e454"
+  },
+  "all_existing_component_budgets_passed": true,
+  "new_equilibrium_solve_or_physical_state": false,
+  "goal_completion": false,
+  "limitations": "Every actual cached/uncached native corner component is checked against the independently verified decimal polynomial field at the unchanged1e-5Pa+1e-9*abs(stress) budget. Frozen original solver states and actual old failed exits remain; old float64 oracle discrepancies are separately retained. This postprocessing qualification accepts neither new physical states nor spatial/contact/model/feedback convergence or warmed cost."
+}

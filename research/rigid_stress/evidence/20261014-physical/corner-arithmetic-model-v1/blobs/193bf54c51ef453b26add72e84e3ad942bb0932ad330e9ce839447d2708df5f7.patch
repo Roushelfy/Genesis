@@ -1,0 +1,53 @@
+diff --git a/genesis/engine/solvers/rigid/stress/solve.py b/genesis/engine/solvers/rigid/stress/solve.py
+index b343c2f1a..ecf7283d0 100644
+--- a/genesis/engine/solvers/rigid/stress/solve.py
++++ b/genesis/engine/solvers/rigid/stress/solve.py
+@@ -6,7 +6,6 @@ import genesis as gs
+ 
+ from .balance import func_balance_cooperative
+ from .data import StressInfo, StressState
+-from .operators import func_shape_gradient
+ 
+ 
+ @qd.func
+@@ -311,18 +310,29 @@ def func_peak_impl(
+         mu = young / (2.0 * (1.0 + poisson))
+         peak_squared = gs.qd_float(0.0)
+         for i_corner in range(4):
+-            bary = qd.Vector.zero(gs.qd_float, 4)
+-            bary[i_corner] = 1.0
+             derivative = qd.Matrix.zero(gs.qd_float, 3, 3)
+-            for i_local in range(7 if cached else 10):
+-                i_n = stress_info.elements[i_e, i_local]
+-                gradient = qd.Vector.zero(gs.qd_float, 3)
+-                if qd.static(cached):
+-                    i_n = stress_info.corner_nodes[i_e, i_corner, i_local]
+-                    gradient = stress_info.corner_gradients[i_e, i_corner, i_local]
+-                else:
+-                    gradient = func_shape_gradient(i_local, bary, stress_info.gradients[i_e], stress_info.edges)
+-                derivative += stress_state.displacement[i_n, i_b].outer_product(gradient)
++            i_n = stress_info.elements[i_e, i_corner]
++            origin_displacement = stress_state.displacement[i_n, i_b]
++            i_slot = 4
++            # The three quadratic edge tangents preserve translation cancellation before multiplying by geometry.
++            for i_edge in range(6):
++                i_a, i_c = stress_info.edges[i_edge, 0], stress_info.edges[i_edge, 1]
++                if i_a == i_corner or i_c == i_corner:
++                    i_other = i_a
++                    if i_a == i_corner:
++                        i_other = i_c
++                    j_n = stress_info.elements[i_e, i_other]
++                    i_n_mid = stress_info.elements[i_e, 4 + i_edge]
++                    gradient = stress_info.gradients[i_e][i_other, :]
++                    if qd.static(cached):
++                        j_n = stress_info.corner_nodes[i_e, i_corner, i_other]
++                        i_n_mid = stress_info.corner_nodes[i_e, i_corner, i_slot]
++                        gradient = -stress_info.corner_gradients[i_e, i_corner, i_other]
++                    tangent = 4.0 * (stress_state.displacement[i_n_mid, i_b] - origin_displacement) - (
++                        stress_state.displacement[j_n, i_b] - origin_displacement
++                    )
++                    derivative += tangent.outer_product(gradient)
++                    i_slot += 1
+             sigma = mu * (derivative + derivative.transpose())
+             for i_a in qd.static(range(3)):
+                 sigma[i_a, i_a] += lam * derivative.trace()

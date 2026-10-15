@@ -1,0 +1,38 @@
+{
+  "jobs": [
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-arithmetic-case3-cpu-v1",
+      "job": "719204",
+      "argv": [
+        "sbatch",
+        "--parsable",
+        "--array=0-0",
+        "--partition=cpu",
+        "--exclude=cpu-207-115",
+        "--cpus-per-task=8",
+        "--mem=64G",
+        "--time=03:00:00",
+        "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-arithmetic-case3-cpu-v1-%A_%a.log",
+        "--dependency=afterok:719198",
+        "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/diagnose_native_corner_arithmetic_cpu.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-arithmetic-case3-cpu-v1 --replay-run /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-four-level-step5-native-3-diagnostic-v2 --backend cpu'"
+      ]
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-levels12-linearization-v1",
+      "job": "719205",
+      "argv": [
+        "sbatch",
+        "--parsable",
+        "--array=0-0",
+        "--partition=cpu",
+        "--exclude=cpu-207-115",
+        "--cpus-per-task=8",
+        "--mem=256G",
+        "--time=03:00:00",
+        "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-levels12-linearization-v1-%A_%a.log",
+        "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/audit_resolved_linearization.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-levels12-linearization-v1 --comparison /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-levels12-fields-v4'"
+      ]
+    }
+  ],
+  "goal_completion": false
+}

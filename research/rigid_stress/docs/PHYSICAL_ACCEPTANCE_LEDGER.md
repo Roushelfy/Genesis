@@ -5,7 +5,19 @@ without narrowing its scope. Historical native performance completion does not
 establish the new physical stage. Dated reports preserve their observations;
 running or pending jobs count as scheduled work only.
 
-Latest verified checkpoint: [paired Newton solvers and the fourth barrier distance](PHYSICAL_PAIRED_SOLVER_BARRIER_20261015.md)
+Latest verified checkpoint: [corner accuracy and covered CAD linearization](PHYSICAL_CORNER_ACCURACY_20261015.md)
+uses complete96-digit independent polynomial fields to qualify improved
+production corner arithmetic and the offline component oracle at unchanged
+budgets. CPU/CUDA complete fields,26 regression tests and four fresh native
+replays pass; original failed/float64-oracle diagnostics stay visible. Warmed
+measurements cover only the changed numerical stage. Two covered CAD states
+retain0.1437%/0.1457% resolved-load linear/nonlinear volume tensor differences;
+their physical spatial/contact tail stays unresolved. All five171228-tet states
+and actual contact coverage now pass independent original gates. The full
+three-level158340-probe comparison and subsequent linearization remain live.
+Every original A/B/C physical/model/island/application/feedback/cost gate stays.
+
+Previous checkpoint: [paired Newton solvers and the fourth barrier distance](PHYSICAL_PAIRED_SOLVER_BARRIER_20261015.md)
 retains all14 closed solver attempts with real failures, exact matrix/state
 arrays, both full original1920-tet five-state force/corner/quadrature
 qualifications and a fine linear solve within the unchanged original budget.

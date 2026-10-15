@@ -1,0 +1,65 @@
+{
+  "scope": "Separate resolved-load linearization from frozen-deformation constitutive differences on matched states.",
+  "comparison": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-levels12-fields-v4",
+  "rows": [
+    {
+      "case": 0,
+      "tetrahedra": 31668,
+      "time_s": 0.00625,
+      "resolved_linear_vs_nonlinear": {
+        "absolute_volume_L2_Pa_m_3over2": 0.20850964813835632,
+        "relative_volume_L2": 0.0014368444216839391
+      },
+      "frozen_objective_displacement_linear_vs_nonlinear": {
+        "absolute_volume_L2_Pa_m_3over2": 0.4550811904434567,
+        "relative_volume_L2": 0.00313597416589608
+      },
+      "rigid_relief_vs_resolved_full_inertia": {
+        "absolute_volume_L2_Pa_m_3over2": 1.0728697709231685e-07,
+        "relative_volume_L2": 7.401038438869457e-10
+      },
+      "raw_nonlinear_global_peak_lower_Pa": 40400486.643240824,
+      "raw_resolved_linear_global_peak_Pa": 40363746.17239489,
+      "raw_relief_linear_global_peak_Pa": 40363746.17238838,
+      "raw_peak_linear_vs_nonlinear_relative_difference": 0.0009094066408252832,
+      "nonlinear_energy_J": 9.636238254299993e-07,
+      "resolved_linear_energy_J": 9.617602446805357e-07,
+      "full_rhs_reference_balance_correction_N": 8.454598909810294e-09,
+      "linear_complete_residual_N": 4.773035188687062e-12
+    },
+    {
+      "case": 1,
+      "tetrahedra": 64716,
+      "time_s": 0.00625,
+      "resolved_linear_vs_nonlinear": {
+        "absolute_volume_L2_Pa_m_3over2": 0.21190258944678655,
+        "relative_volume_L2": 0.0014566775008606624
+      },
+      "frozen_objective_displacement_linear_vs_nonlinear": {
+        "absolute_volume_L2_Pa_m_3over2": 0.45624162097853055,
+        "relative_volume_L2": 0.003136332151346921
+      },
+      "rigid_relief_vs_resolved_full_inertia": {
+        "absolute_volume_L2_Pa_m_3over2": 9.901617850199425e-08,
+        "relative_volume_L2": 6.813896465306008e-10
+      },
+      "raw_nonlinear_global_peak_lower_Pa": 46917666.87868378,
+      "raw_resolved_linear_global_peak_Pa": 46873743.79086678,
+      "raw_relief_linear_global_peak_Pa": 46873743.790841945,
+      "raw_peak_linear_vs_nonlinear_relative_difference": 0.0009361737430503281,
+      "nonlinear_energy_J": 9.675580316359398e-07,
+      "resolved_linear_energy_J": 9.65706088603935e-07,
+      "full_rhs_reference_balance_correction_N": 8.39145740503189e-09,
+      "linear_complete_residual_N": 4.857296749213764e-12
+    }
+  ],
+  "input_sha256": {
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-levels12-fields-v4/results/summary.json": "cad38880c77f05b0dd9f6c40f137ff943f4394854cef29143db635d7a1f0cdd5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level1-contact-v1/results/step0005.npz": "301d3265cb29f1b8f9c9d7662ea2057e36d4ee17dd9c0776e83d09e9ba2ddcb3",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-levels12-fields-v4/results/case00.npz": "574463e0d9b7c0eade161af5064f4a41cfd35fa1055b4c9964a062614dd1c365",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-level2-contact-v1/results/step0005.npz": "b733aab0413c0b22c57fbaf3dba43771ef64cd6865e312941ceb2b098d761ccd",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-levels12-fields-v4/results/case01.npz": "5bfe9872cf328537653f5ea506db17efd564a486051637917353951f160b4eb4"
+  },
+  "goal_completion": false,
+  "limitations": "One matched state per mesh at the explicitly recorded physical time and unresolved spatial/contact settings. Replaying resolved full-inertia loads through independent linear FEM measures a combined finite-geometry/constitutive linearization discrepancy; the reference-wrench balance correction is explicit. Frozen-objective-deformation stress comparison diagnoses the constitutive assumption without claiming a new equilibrium solve. Rigid-relief comparison is not a corresponding solved rigid/deformable feedback case. Native numerical replay, physical convergence, full histories, remaining finite-footprint models and verified warmed cost remain separate requirements."
+}

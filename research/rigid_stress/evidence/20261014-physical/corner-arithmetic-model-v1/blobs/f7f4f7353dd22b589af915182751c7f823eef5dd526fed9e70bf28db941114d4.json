@@ -1,0 +1,197 @@
+{
+  "scope": "Compare frozen native corner fields with independent extended-precision geometry and stress evaluation.",
+  "replay_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-four-level-step5-native-2-diagnostic-v2",
+  "actual_replay_wrapper_code": 1,
+  "tetrahedra": 8433,
+  "extended_dtype": "float128",
+  "extended_mantissa_bits": 63,
+  "rows": [
+    {
+      "mode": "full_inertia",
+      "original_complete_equilibrium_passed": true,
+      "original_cached_component_budget_fraction": 1.087406095185042,
+      "rebuilt_cached_vs_stored_cached": {
+        "maximum_absolute_difference_Pa": 0.00011238455772399902,
+        "maximum_existing_component_budget_fraction": 0.9043556034809336,
+        "worst_element_corner_component": [
+          7876,
+          2,
+          2
+        ],
+        "first_at_worst_Pa": -371.4611205505207,
+        "reference_at_worst_Pa": -371.46111117103175,
+        "whole_field_relative_L2": 3.663186255173602e-14
+      },
+      "rebuilt_uncached_vs_stored_reference": {
+        "maximum_absolute_difference_Pa": 9.560585021972656e-05,
+        "maximum_existing_component_budget_fraction": 0.8427395371823003,
+        "worst_element_corner_component": [
+          3645,
+          0,
+          1
+        ],
+        "first_at_worst_Pa": -4080.5233648987487,
+        "reference_at_worst_Pa": -4080.5233767649624,
+        "whole_field_relative_L2": 3.2250496189621147e-14
+      },
+      "native_extended_accumulation_vs_reference_extended": {
+        "maximum_absolute_difference_Pa": 3.901744457834866e-05,
+        "maximum_existing_component_budget_fraction": 0.29893996260495564,
+        "worst_element_corner_component": [
+          7018,
+          0,
+          1
+        ],
+        "first_at_worst_Pa": 26552.387939038672,
+        "reference_at_worst_Pa": 26552.3879281117,
+        "whole_field_relative_L2": 1.4801411250558975e-14
+      },
+      "native_gradient_extended_vs_exact_geometry_extended": {
+        "maximum_absolute_difference_Pa": 3.9282022044062614e-05,
+        "maximum_existing_component_budget_fraction": 0.2702673805576373,
+        "worst_element_corner_component": [
+          7630,
+          2,
+          1
+        ],
+        "first_at_worst_Pa": -8848.620873260563,
+        "reference_at_worst_Pa": -8848.62087835473,
+        "whole_field_relative_L2": 1.5755315505259287e-14
+      },
+      "reference_gradient_extended_vs_exact_geometry_extended": {
+        "maximum_absolute_difference_Pa": 2.843327820301056e-05,
+        "maximum_existing_component_budget_fraction": 0.34004414748136186,
+        "worst_element_corner_component": [
+          7876,
+          2,
+          2
+        ],
+        "first_at_worst_Pa": -371.46112047518557,
+        "reference_at_worst_Pa": -371.4611169484309,
+        "whole_field_relative_L2": 1.555427957530715e-14
+      },
+      "cached_vs_native_extended_accumulation": {
+        "maximum_absolute_difference_Pa": 4.355527926236391e-05,
+        "maximum_existing_component_budget_fraction": 0.8022974486033368,
+        "worst_element_corner_component": [
+          3645,
+          0,
+          1
+        ],
+        "first_at_worst_Pa": -4080.5233649087604,
+        "reference_at_worst_Pa": -4080.5233762055286,
+        "whole_field_relative_L2": 2.4696982319477047e-14
+      },
+      "stored_reference_vs_reference_extended_accumulation": {
+        "maximum_absolute_difference_Pa": 9.034806862473488e-05,
+        "maximum_existing_component_budget_fraction": 0.6564680081750669,
+        "worst_element_corner_component": [
+          8159,
+          0,
+          1
+        ],
+        "first_at_worst_Pa": -10950.870593997533,
+        "reference_at_worst_Pa": -10950.87060775111,
+        "whole_field_relative_L2": 2.684971630451699e-14
+      }
+    },
+    {
+      "mode": "rigid_relief",
+      "original_complete_equilibrium_passed": true,
+      "original_cached_component_budget_fraction": 0.7520561776755491,
+      "rebuilt_cached_vs_stored_cached": {
+        "maximum_absolute_difference_Pa": 0.00024080276489257812,
+        "maximum_existing_component_budget_fraction": 0.9250133098336488,
+        "worst_element_corner_component": [
+          7876,
+          2,
+          2
+        ],
+        "first_at_worst_Pa": -371.4611587659456,
+        "reference_at_worst_Pa": -371.461149172206,
+        "whole_field_relative_L2": 4.5772411180548266e-14
+      },
+      "rebuilt_uncached_vs_stored_reference": {
+        "maximum_absolute_difference_Pa": 0.00019049644470214844,
+        "maximum_existing_component_budget_fraction": 0.8712603125625986,
+        "worst_element_corner_component": [
+          7460,
+          0,
+          1
+        ],
+        "first_at_worst_Pa": 44896.039173956146,
+        "reference_at_worst_Pa": 44896.039126127405,
+        "whole_field_relative_L2": 3.7010599944139015e-14
+      },
+      "native_extended_accumulation_vs_reference_extended": {
+        "maximum_absolute_difference_Pa": 3.90174395761278e-05,
+        "maximum_existing_component_budget_fraction": 0.2987845594996862,
+        "worst_element_corner_component": [
+          7018,
+          0,
+          1
+        ],
+        "first_at_worst_Pa": 26552.38676990219,
+        "reference_at_worst_Pa": 26552.3867589809,
+        "whole_field_relative_L2": 1.4802504782174102e-14
+      },
+      "native_gradient_extended_vs_exact_geometry_extended": {
+        "maximum_absolute_difference_Pa": 3.923545591533184e-05,
+        "maximum_existing_component_budget_fraction": 0.27026360836156504,
+        "worst_element_corner_component": [
+          7630,
+          2,
+          1
+        ],
+        "first_at_worst_Pa": -8848.621045019125,
+        "reference_at_worst_Pa": -8848.621050113221,
+        "whole_field_relative_L2": 1.5754835308487114e-14
+      },
+      "reference_gradient_extended_vs_exact_geometry_extended": {
+        "maximum_absolute_difference_Pa": 2.843327820301056e-05,
+        "maximum_existing_component_budget_fraction": 0.34026593053278403,
+        "worst_element_corner_component": [
+          7876,
+          2,
+          2
+        ],
+        "first_at_worst_Pa": -371.46115425517974,
+        "reference_at_worst_Pa": -371.46115072612486,
+        "whole_field_relative_L2": 1.555596167303394e-14
+      },
+      "cached_vs_native_extended_accumulation": {
+        "maximum_absolute_difference_Pa": 0.0001406636438332498,
+        "maximum_existing_component_budget_fraction": 0.6033988754562561,
+        "worst_element_corner_component": [
+          7876,
+          2,
+          2
+        ],
+        "first_at_worst_Pa": -371.4611587659456,
+        "reference_at_worst_Pa": -371.4611525078176,
+        "whole_field_relative_L2": 2.992984570308251e-14
+      },
+      "stored_reference_vs_reference_extended_accumulation": {
+        "maximum_absolute_difference_Pa": 0.00011059246025979519,
+        "maximum_existing_component_budget_fraction": 0.49550770972127267,
+        "worst_element_corner_component": [
+          7018,
+          0,
+          1
+        ],
+        "first_at_worst_Pa": 26552.38674086891,
+        "reference_at_worst_Pa": 26552.3867589809,
+        "whole_field_relative_L2": 2.8091012945290566e-14
+      }
+    }
+  ],
+  "input_sha256": {
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-four-level-step5-native-2-diagnostic-v2/results/summary.json": "0636431f9e9a30d352e5c15cf3e4edd720c8677e5e4793ba3933426f413fede1",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-four-level-step5-native-2-diagnostic-v2/results/body_mesh.npz": "a395cc1af9cf9b0f60032c9eb4fa1b9844985ffc41c1e74059f4b9d5c75ff047",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-four-level-step5-native-2-diagnostic-v2/results/full_inertia.npz": "fae398d944e5f4e2340dfe3c8b61e6300c460504699b189cfa8027f3582963ea",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-four-level-step5-native-2-diagnostic-v2/results/rigid_relief.npz": "a328892064d152ce4eec1121578912167993e2deca0b566610ea95b07eb2bccb"
+  },
+  "new_equilibrium_solve_or_physical_state": false,
+  "goal_completion": false,
+  "limitations": "Frozen displacements and both actual failed replay codes remain unchanged. Complete cached/uncached native fields, independent extended accumulations and cofactor geometry retain every corner/component. Existing component budgets provide diagnostics, without replacing their original reference or accepting a failed gate. This isolates arithmetic/geometry contributions before any production change; spatial/contact/model/feedback and warmed accuracy/cost remain open."
+}

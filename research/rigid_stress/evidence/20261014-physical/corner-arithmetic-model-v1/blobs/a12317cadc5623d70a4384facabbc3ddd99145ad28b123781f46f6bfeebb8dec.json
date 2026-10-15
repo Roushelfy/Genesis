@@ -1,0 +1,39 @@
+{
+  "jobs": [
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-regression-cpu-v1",
+      "job": "719264",
+      "argv": [
+        "sbatch",
+        "--parsable",
+        "--array=0-0",
+        "--partition=cpu",
+        "--cpus-per-task=8",
+        "--mem=64G",
+        "--time=00:45:00",
+        "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-regression-cpu-v1-%A_%a.log",
+        "--exclude=cpu-207-115",
+        "--dependency=afterok:719248:719249",
+        "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/test_corner_stress_regression.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-regression-cpu-v1 cpu /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-production-cuda-v1'"
+      ]
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-regression-gpu-v1",
+      "job": "719265",
+      "argv": [
+        "sbatch",
+        "--parsable",
+        "--array=0-0",
+        "--partition=rtx-mid",
+        "--cpus-per-task=8",
+        "--mem=64G",
+        "--time=00:45:00",
+        "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-regression-gpu-v1-%A_%a.log",
+        "--gres=gpu:1",
+        "--dependency=afterok:719264",
+        "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/test_corner_stress_regression.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-regression-gpu-v1 gpu'"
+      ]
+    }
+  ],
+  "goal_completion": false
+}

@@ -1,0 +1,39 @@
+{
+  "jobs": [
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-difference-form-cuda-v1",
+      "job": "719232",
+      "argv": [
+        "sbatch",
+        "--parsable",
+        "--array=0-0",
+        "--partition=rtx-mid",
+        "--cpus-per-task=8",
+        "--mem=64G",
+        "--time=01:00:00",
+        "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-difference-form-cuda-v1-%A_%a.log",
+        "--gres=gpu:1",
+        "--dependency=afterok:719196:719197",
+        "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/probe_corner_difference_form_gpu.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-difference-form-cuda-v1 --diagnostic-run /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-arithmetic-case2-v1 /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-arithmetic-case3-v1 --backend cuda'"
+      ]
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-polynomial-decimal-cuda-v1",
+      "job": "719233",
+      "argv": [
+        "sbatch",
+        "--parsable",
+        "--array=0-0",
+        "--partition=cpu",
+        "--cpus-per-task=8",
+        "--mem=64G",
+        "--time=01:00:00",
+        "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-polynomial-decimal-cuda-v1-%A_%a.log",
+        "--exclude=cpu-207-115",
+        "--dependency=afterok:719232",
+        "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/verify_corner_polynomial_decimal.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-polynomial-decimal-cuda-v1 --probe-run /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/native-corner-difference-form-cuda-v1'"
+      ]
+    }
+  ],
+  "goal_completion": false
+}

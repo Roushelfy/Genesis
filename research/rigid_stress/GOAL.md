@@ -31,6 +31,20 @@ egg/Franka and U contact references, resolved-load/native replay versus feedback
 remaining applicable load-model sensitivity and physically verified warmed costs.
 These are execution priorities within the complete linked objective.
 
+The [corner-accuracy/model checkpoint](docs/PHYSICAL_CORNER_ACCURACY_20261015.md)
+repairs native corner cancellation and the independent component oracle's
+precision at unchanged original tolerances. Complete96-digit polynomial checks
+precede actual CPU/CUDA full-field qualification,26 regression tests and four
+fresh native replays on8433/30298 tetrahedra. Original float64-reference
+discrepancies and failed exits remain retained. Matched1024/2048 changed-stage
+timings show no observed large regression, without claiming application cost.
+The31668/64716-tet covered CAD resolved-load linearization differences are
+0.1437%/0.1457% at6.25ms, conditional on unresolved spatial/contact settings.
+All five171228-tet dynamic states now pass independent original force and
+coverage audits; the158340-probe three-level field comparison and subsequent
+linearization remain live. Full physical/model/island/application/feedback and
+demonstrated accuracy/cost requirements remain open.
+
 The [paired-solver/fourth-barrier checkpoint](docs/PHYSICAL_PAIRED_SOLVER_BARRIER_20261015.md)
 qualifies two numerical factorization changes against every original1920-tet
 state, complete force gate and full corner/quadrature tensor. Border-last full
