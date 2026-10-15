@@ -1,0 +1,7 @@
+{
+  "job": "718915",
+  "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-fixed-history-barrier-figure-v1",
+  "command": "sbatch --parsable --array=0-0 --partition=cpu --exclude=cpu-207-115 --cpus-per-task=4 --mem=16G --time=00:30:00 --output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-fixed-history-barrier-figure-v1-%A_%a.log '--wrap=bash -c '\"'\"'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/plot_u_barrier_histories.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-fixed-history-barrier-figure-v1 /mnt/home/zhaofeng/.codex/skills/academic-figure-workflow/scripts/nature_mpl_style.py --comparison /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-fixed-history-barrier-all-stage-comparison-v1'\"'\"''",
+  "time_utc": "2026-10-15T20:56:28.986739+00:00",
+  "scope": "Scientific line figures retain all744 stages, raw lower/upper bounds, absolute material tensor differences and individual final comparisons. Editable SVG and RGB/grayscale preview must pass source/rendered QA before PDF/1000dpi export. No physical convergence accepted."
+}
