@@ -31,6 +31,16 @@ egg/Franka and U contact references, resolved-load/native replay versus feedback
 remaining applicable load-model sensitivity and physically verified warmed costs.
 These are execution priorities within the complete linked objective.
 
+The [complete fine-history and linearization checkpoint](docs/PHYSICAL_FULL_SPATIAL_20261015.md)
+independently audits all80 precision-aware8433-tet states at the unchanged force
+budgets. Three complete480/3577/8433 histories still change23.94% in tensor
+and49.66% in energy over ten common times; the final raw peak reaches2.023GPa. Resolved-load independent
+linear FEM at32.5ms differs5.17% in volume-weighted tensor and3.00% in raw peak
+on the finest mesh. All six actual native CUDA replays pass complete residuals
+and agree with independent linear corner tensors to1.44e-10 relative difference. These qualify a complete
+short reference and quantify model limitations, not physical convergence or the
+full original application. Every linked A/B/C/model/feedback/cost gate remains.
+
 The [matched-spatial checkpoint](docs/PHYSICAL_MATCHED_SPATIAL_20261015.md)
 closes three uniform reference levels: final full-tensor change remains49.32%
 despite0.00866% contact-force change. Three independently balanced32.5ms states

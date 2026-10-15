@@ -10,6 +10,7 @@ import numpy as np
 
 from .franka_mujoco_reference import PandaSkeleton
 from .original_franka_ground import build_original
+from .original_history_status import history_status
 from .reference_motion_audit import motion_moments
 from .summarize_fine_references import closed_source
 from .wide_coordinate_franka import WidePiolaBulk
@@ -28,15 +29,13 @@ def main():
     assert producer_code == 0 or args.allow_incomplete_prefix
     args.output.mkdir(parents=True, exist_ok=False)
     config = json.loads((args.run / "results/configuration.json").read_text())
-    producer_path = args.run / "results/summary.json"
-    if producer_code == 0:
-        producer = json.loads(producer_path.read_text())
-        count = len(producer["steps"])
-    else:
-        files = sorted((args.run / "results").glob("step[0-9][0-9][0-9][0-9][0-9].npz"))
-        assert files and not producer_path.exists()
-        assert all(path.name == f"step{index:05d}.npz" for index, path in enumerate(files, 1))
-        count = len(files)
+    recorded_protocol = json.loads((Path(config["protocol_run"]) / "results/original_protocol.json").read_text())
+    requested_substeps = round(recorded_protocol["macro_dt_s"] / config["dt"])
+    assert abs(requested_substeps * config["dt"] - recorded_protocol["macro_dt_s"]) < 1e-14
+    requested_steps = config["macro_steps"] * requested_substeps
+    count, source_complete, producer_report_status = history_status(
+        args.run, producer_code, requested_steps, args.allow_incomplete_prefix
+    )
     assert hashlib.sha256(args.mjcf.read_bytes()).digest() == hashlib.sha256(Path(config["mjcf"]).read_bytes()).digest()
     static, _frame, capture, protocol = build_original(
         Path(config["capture"]), Path(config["protocol_run"]), args.mjcf, config["dt"], config["dhat"]
@@ -50,10 +49,10 @@ def main():
     gravity[n:] = 0
     controls = [r for r in protocol["records"] if r["mode"] == "approach_lift"]
     substeps = round(protocol["macro_dt_s"] / dt)
-    assert count == config["macro_steps"] * substeps if producer_code == 0 else count < config["macro_steps"] * substeps
+    assert substeps == requested_substeps
     recovered_step = None
     if args.recovery_run is not None:
-        assert producer_code != 0 and args.allow_incomplete_prefix
+        assert not source_complete and args.allow_incomplete_prefix and count < requested_steps
         closed_source(args.recovery_run)
         assert int((args.recovery_run / "returncode.txt").read_text()) == 0
         recovery = json.loads((args.recovery_run / "results/summary.json").read_text())
@@ -189,7 +188,10 @@ def main():
         "run": str(args.run),
         "steps_checked": len(rows),
         "producer_returncode": producer_code,
-        "complete_requested_history": producer_code == 0,
+        "producer_report_status": producer_report_status,
+        "scheduler_success_inferred_from_wrapper_code": False,
+        "requested_steps": requested_steps,
+        "complete_requested_history": source_complete,
         "recovery_run": str(args.recovery_run) if args.recovery_run else None,
         "independently_verified_recovered_step": recovered_step,
         "rows": rows,
