@@ -1,0 +1,29 @@
+{
+  "scope": "Exercise report completeness on real completed/failed prefixes without changing their original bytes.",
+  "complete_case": [
+    80,
+    true,
+    "saved_state_count_matches"
+  ],
+  "failed_case": [
+    865,
+    false,
+    "missing"
+  ],
+  "counterfactual_zero_wrapper_code_on_same_real_prefix": [
+    865,
+    false,
+    "missing"
+  ],
+  "actual_partial_producer_code_unchanged": 1,
+  "strict_partial_rejected": true,
+  "invalid_summary_and_mismatched_count_rejected": true,
+  "nonconsecutive_prefix_rejected": true,
+  "source_sha256": {
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-ground-prefix-v2/returncode.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-ground-prefix-v2/results/summary.json": "76abb2884915f4a5f5055f6d031b2bf977cbfb361ab1d09ede62052cf43470fd",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-approach-lift-v1/returncode.txt": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+  },
+  "goal_completion": false,
+  "limitations": "Metadata-only classification regression. The zero-code case is a supplied counterfactual parameter, not a changed original returncode file or a claimed actual scheduler status. Tiny metadata fixtures deliberately contain no physical arrays. Source closure, authoritative Slurm state and complete physical state/force audits remain separate requirements."
+}

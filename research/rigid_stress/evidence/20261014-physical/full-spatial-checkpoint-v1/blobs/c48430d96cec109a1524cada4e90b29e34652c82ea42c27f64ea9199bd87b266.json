@@ -1,0 +1,31 @@
+{
+  "previous_goal_turn_assessment": "No progress on the physical-validation goal: the previous user-directed turn inspected and explained the documented objective. This continuation completes new all-history evidence and executes a model/numerical-error separation.",
+  "native_first_attempt": {
+    "command": "sbatch --parsable --job-name=resolved-linearization-native --array=0-2%1 --partition=rtx-mid --gres=gpu:1 --cpus-per-task=8 --mem=64G --time=01:00:00 --output='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-resolved-linearization-native-v1-slurm-%A_%a.log' --wrap='bash -c '\\''source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash '\\''\\'\\'''\\''/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/replay_resolved_linearization.sh'\\''\\'\\'''\\'' '\\''\\'\\'''\\''/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation'\\''\\'\\'''\\''/franka-resolved-linearization-native-${SLURM_ARRAY_TASK_ID}-v1 --audit-run '\\''\\'\\'''\\''/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-resolved-linearization-v1'\\''\\'\\'''\\'' --case \"${SLURM_ARRAY_TASK_ID}\" --backend cuda'\\'''",
+    "result": {
+      "chunk_id": "584243",
+      "wall_time_seconds": 1.0136e-05,
+      "exit_code": 0,
+      "original_token_count": 2,
+      "output": "716010\n"
+    }
+  },
+  "native_corrected": {
+    "command": "sbatch --parsable --job-name=resolved-linearization-native-v2 --array=0-2%1 --partition=rtx-mid --gres=gpu:1 --cpus-per-task=8 --mem=64G --time=01:00:00 --output='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-resolved-linearization-native-v2-slurm-%A_%a.log' --wrap='bash -c '\\''source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash '\\''\\'\\'''\\''/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/replay_resolved_linearization.sh'\\''\\'\\'''\\'' '\\''\\'\\'''\\''/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation'\\''\\'\\'''\\''/franka-resolved-linearization-native-${SLURM_ARRAY_TASK_ID}-v2 --audit-run '\\''\\'\\'''\\''/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-resolved-linearization-v1'\\''\\'\\'''\\'' --case \"${SLURM_ARRAY_TASK_ID}\" --backend cuda'\\'''",
+    "result": {
+      "chunk_id": "79ed5a",
+      "wall_time_seconds": 8.774e-06,
+      "exit_code": 0,
+      "original_token_count": 2,
+      "output": "716014\n"
+    }
+  },
+  "first_attempt_failure": "Order-four linear quadrature had 11 points, order-six nonlinear snapshots had 15. Task716010_0 failed after recovery but before comparison. Tasks716010_1/2 were cancelled after the verified reproducible mismatch. Task716010_1 wrapper code0 does not establish completion.",
+  "active_goal": "Complete the full LOAD_MODEL_PHYSICAL_VALIDATION.md scope; this checkpoint does not narrow or complete it.",
+  "classification_source_sha256": {
+    "research/rigid_stress/original_history_status.py": "c2b5b215bea660efb921d4e21f55f35371b89737ec0717f340eb0c3053d90dc5",
+    "research/rigid_stress/qualify_original_history_status.py": "408c2f080e9f3c410112806ebfa3ce1a839a5571bf6f43f5464b893658820eaf",
+    "research/rigid_stress/audit_original_franka_prefix.py": "8acc2f7a6e4ccbae0a46438b10ee28d3307d3485d0aad84e41579fff206b9caa",
+    "research/rigid_stress/scripts/audit_original_franka_prefix.sh": "ab09ed4d60a0e6a7cf3e23c5b9627e958af955b5070cbb2de635ea26636faec0"
+  }
+}
