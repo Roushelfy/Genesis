@@ -31,6 +31,26 @@ egg/Franka and U contact references, resolved-load/native replay versus feedback
 remaining applicable load-model sensitivity and physically verified warmed costs.
 These are execution priorities within the complete linked objective.
 
+The [complete-history checkpoint](docs/PHYSICAL_COMPLETE_HISTORIES_20261015.md)
+closes all330 original controls/2640 physical states through3.3s, with separate
+all-state force/control/global-field audits,14 actual native nodal replays and
+11062080 interior/corner certificate checks. Four stationary spatial histories
+now each span all80 states through0.1s, with40 common-time full fields and a
+separate finest80-state audit. The last spatial pair still changes tensor15.52%,
+energy9.15% and raw lower peak45.42%; measured local Green strain remains0.451.
+These complete histories do not resolve physical convergence. A matched
+same-law rigid counterpart now has857 independently audited accepted states;
+its intersecting roots remain rejected. Collision-qualified initialization and
+four contiguous default geometric CCD queries certify the recovered857 path
+without changing the physical step. A full continuation saves865 states before
+stalling at866; all865 pass independent audits, but direct recovery fails the
+original physical residuals. Numerical residual continuation is scheduled,
+without treating artificial stages as physical history. The corrected171228-tet
+contact case fails its first sparse factorization with MemoryError, not physical
+acceptance. Finer physical resolution still requires a viable reference solve.
+Full A/B/C, physical/contact/regularization, model/feedback and verified warmed
+accuracy/cost acceptance remain open.
+
 The [separated contact-integration/coverage checkpoint](docs/PHYSICAL_CONTACT_QUADRATURE_AXIS_20261015.md)
 closes three body-trace and three rigid-finger integration levels on identical
 1920-tet bulk geometry and mass, with all five states per solve independently
