@@ -183,6 +183,15 @@ spatial/contact/regularization tails, feedback/model separation and physically
 verified warmed cost remain required. Scheduled temporal/fourth-U studies count
 as scheduled work only; the complete linked physical objective remains active.
 
+The [feedback/time checkpoint](docs/PHYSICAL_FEEDBACK_TIME_20261015.md) independently
+audits280 full-arm temporal states and160 corresponding rigid/deformable states
+at original budgets. At one coarse setting, maximum tensor time changes decrease
+0.0111%→0.00507%; resolved-load feedback reaches0.0192%, with actual native
+nodal replays verified. These close controlled short-hold diagnostics only.
+Original history, spatial/contact/regularization tails, contact-law equivalence,
+finite-footprint/model effects and physically verified warmed costs remain open.
+The complete linked physical-validation objective remains unchanged.
+
 ## Previous nonconvex implementation brief, 2026-10-11
 
 Implement the contact mapping contract in

@@ -1,0 +1,1582 @@
+{
+  "scope": "Solve a rigid-egg counterpart of the declared full-arm deformable-contact hold.",
+  "reused_held_closure": {
+    "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-rigid-egg-coupled-pilot-v3/results/closure_state.npz",
+    "sha256": "6dbc1b91c9e98fbeae3b730b29788db2aa217d626bfcc4941d63434644e891ad"
+  },
+  "steps": [
+    {
+      "step": 1,
+      "time_s": 0.00125,
+      "fresh_robot_step_effort_residual": 3.8131724432534515e-11,
+      "body_resultant_residual_N": 4.212647999532289e-11,
+      "body_moment_residual_Nm": 7.137879074676052e-13,
+      "phase": "dynamic0001",
+      "iteration": 3,
+      "body_force_equivalent_residual_N": 4.778813218547539e-11,
+      "joint_residual_N_or_Nm": 3.7945403688340206e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 2,
+      "time_s": 0.0025,
+      "fresh_robot_step_effort_residual": 2.9773399215770646e-11,
+      "body_resultant_residual_N": 3.366338492231871e-11,
+      "body_moment_residual_Nm": 1.1343383752852267e-12,
+      "phase": "dynamic0002",
+      "iteration": 16,
+      "body_force_equivalent_residual_N": 4.918198314120408e-11,
+      "joint_residual_N_or_Nm": 2.979827698786331e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 3,
+      "time_s": 0.00375,
+      "fresh_robot_step_effort_residual": 2.8309643619819436e-11,
+      "body_resultant_residual_N": 1.741754001100836e-11,
+      "body_moment_residual_Nm": 3.9825776948241657e-13,
+      "phase": "dynamic0003",
+      "iteration": 14,
+      "body_force_equivalent_residual_N": 2.1490645158455774e-11,
+      "joint_residual_N_or_Nm": 2.823512605246167e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 4,
+      "time_s": 0.005,
+      "fresh_robot_step_effort_residual": 2.6013452575784063e-11,
+      "body_resultant_residual_N": 3.568425800713501e-11,
+      "body_moment_residual_Nm": 7.900089539238026e-13,
+      "phase": "dynamic0004",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 4.355408527936636e-11,
+      "joint_residual_N_or_Nm": 2.5924586385194027e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 5,
+      "time_s": 0.00625,
+      "fresh_robot_step_effort_residual": 2.4770704211770817e-11,
+      "body_resultant_residual_N": 4.086369090661732e-11,
+      "body_moment_residual_Nm": 1.096199411380397e-12,
+      "phase": "dynamic0005",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 5.3576901993636466e-11,
+      "joint_residual_N_or_Nm": 2.4692941989224318e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 6,
+      "time_s": 0.0075,
+      "fresh_robot_step_effort_residual": 4.666596563419703e-11,
+      "body_resultant_residual_N": 4.100628019712938e-11,
+      "body_moment_residual_Nm": 3.3217080646123706e-13,
+      "phase": "dynamic0006",
+      "iteration": 14,
+      "body_force_equivalent_residual_N": 4.232930724541075e-11,
+      "joint_residual_N_or_Nm": 4.670253517184602e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 7,
+      "time_s": 0.00875,
+      "fresh_robot_step_effort_residual": 7.522777211917502e-12,
+      "body_resultant_residual_N": 6.026996233084849e-12,
+      "body_moment_residual_Nm": 1.000084234401847e-13,
+      "phase": "dynamic0007",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 6.805749921914299e-12,
+      "joint_residual_N_or_Nm": 7.484152919034012e-12,
+      "normal_stencils": 2
+    },
+    {
+      "step": 8,
+      "time_s": 0.01,
+      "fresh_robot_step_effort_residual": 4.909987769351121e-11,
+      "body_resultant_residual_N": 4.5804611693149726e-11,
+      "body_moment_residual_Nm": 3.879345919098867e-14,
+      "phase": "dynamic0008",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 4.582104129108678e-11,
+      "joint_residual_N_or_Nm": 4.9015140634573037e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 9,
+      "time_s": 0.01125,
+      "fresh_robot_step_effort_residual": 8.978613615307784e-12,
+      "body_resultant_residual_N": 6.567529409206214e-12,
+      "body_moment_residual_Nm": 6.033581654475717e-13,
+      "phase": "dynamic0009",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 2.0171020939444083e-11,
+      "joint_residual_N_or_Nm": 8.997772354767252e-12,
+      "normal_stencils": 2
+    },
+    {
+      "step": 10,
+      "time_s": 0.0125,
+      "fresh_robot_step_effort_residual": 9.036148792783084e-11,
+      "body_resultant_residual_N": 1.0961019533437597e-10,
+      "body_moment_residual_Nm": 1.9454915639135076e-12,
+      "phase": "dynamic0010",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 1.2568268998302048e-10,
+      "joint_residual_N_or_Nm": 9.030825414556083e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 11,
+      "time_s": 0.01375,
+      "fresh_robot_step_effort_residual": 2.4977157957940346e-11,
+      "body_resultant_residual_N": 3.460234113510618e-11,
+      "body_moment_residual_Nm": 3.736124571689351e-13,
+      "phase": "dynamic0011",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 3.656209155633133e-11,
+      "joint_residual_N_or_Nm": 2.5340763239123447e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 12,
+      "time_s": 0.015,
+      "fresh_robot_step_effort_residual": 3.3171878827606674e-11,
+      "body_resultant_residual_N": 4.5070922049371175e-11,
+      "body_moment_residual_Nm": 2.0573821949160927e-13,
+      "phase": "dynamic0012",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 4.5537678648804286e-11,
+      "joint_residual_N_or_Nm": 3.324269294129496e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 13,
+      "time_s": 0.01625,
+      "fresh_robot_step_effort_residual": 2.6069296895191342e-11,
+      "body_resultant_residual_N": 3.033514972470752e-11,
+      "body_moment_residual_Nm": 1.8279774253770865e-13,
+      "phase": "dynamic0013",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 3.088053901975989e-11,
+      "joint_residual_N_or_Nm": 2.60989390352032e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 14,
+      "time_s": 0.0175,
+      "fresh_robot_step_effort_residual": 1.403355660506043e-11,
+      "body_resultant_residual_N": 2.513834718745337e-11,
+      "body_moment_residual_Nm": 5.33593698618359e-13,
+      "phase": "dynamic0014",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 3.02724200749193e-11,
+      "joint_residual_N_or_Nm": 1.3922631331452044e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 15,
+      "time_s": 0.01875,
+      "fresh_robot_step_effort_residual": 3.9893018085696805e-11,
+      "body_resultant_residual_N": 5.33973946005361e-11,
+      "body_moment_residual_Nm": 7.408345698142173e-13,
+      "phase": "dynamic0015",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 5.83065756466411e-11,
+      "joint_residual_N_or_Nm": 4.015411016338849e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 16,
+      "time_s": 0.02,
+      "fresh_robot_step_effort_residual": 5.687224593622321e-11,
+      "body_resultant_residual_N": 5.385727479234752e-11,
+      "body_moment_residual_Nm": 2.0676886393506808e-13,
+      "phase": "dynamic0016",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 5.425240994878366e-11,
+      "joint_residual_N_or_Nm": 5.6899230156262774e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 17,
+      "time_s": 0.02125,
+      "fresh_robot_step_effort_residual": 1.3427139283711562e-11,
+      "body_resultant_residual_N": 1.9147864927906542e-11,
+      "body_moment_residual_Nm": 1.6970114556727688e-13,
+      "phase": "dynamic0017",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 1.9885041271064152e-11,
+      "joint_residual_N_or_Nm": 1.3542187150217009e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 18,
+      "time_s": 0.0225,
+      "fresh_robot_step_effort_residual": 1.5673282545735318e-11,
+      "body_resultant_residual_N": 1.6494939554873757e-11,
+      "body_moment_residual_Nm": 7.678968291058328e-13,
+      "phase": "dynamic0018",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 2.9347172297323e-11,
+      "joint_residual_N_or_Nm": 1.5572097413475803e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 19,
+      "time_s": 0.02375,
+      "fresh_robot_step_effort_residual": 2.34136473781358e-11,
+      "body_resultant_residual_N": 3.010536500299873e-11,
+      "body_moment_residual_Nm": 5.877903453634344e-13,
+      "phase": "dynamic0019",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 3.537713101980119e-11,
+      "joint_residual_N_or_Nm": 2.3402642022978898e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 20,
+      "time_s": 0.025,
+      "fresh_robot_step_effort_residual": 2.867095771363431e-11,
+      "body_resultant_residual_N": 5.040079125079927e-11,
+      "body_moment_residual_Nm": 3.7934219984185647e-13,
+      "phase": "dynamic0020",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 5.180754683463818e-11,
+      "joint_residual_N_or_Nm": 2.863966729205242e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 21,
+      "time_s": 0.02625,
+      "fresh_robot_step_effort_residual": 5.37058973526976e-11,
+      "body_resultant_residual_N": 4.0720670437688444e-11,
+      "body_moment_residual_Nm": 3.3851702153077377e-13,
+      "phase": "dynamic0021",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 4.2103073979963856e-11,
+      "joint_residual_N_or_Nm": 5.3620656287030434e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 22,
+      "time_s": 0.0275,
+      "fresh_robot_step_effort_residual": 4.3482363175772955e-11,
+      "body_resultant_residual_N": 5.603253543874783e-11,
+      "body_moment_residual_Nm": 3.5304697247138936e-13,
+      "phase": "dynamic0022",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 5.713309767727603e-11,
+      "joint_residual_N_or_Nm": 4.352793039842339e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 23,
+      "time_s": 0.02875,
+      "fresh_robot_step_effort_residual": 2.1233199634081938e-11,
+      "body_resultant_residual_N": 3.670001325064381e-11,
+      "body_moment_residual_Nm": 3.3839814198065026e-13,
+      "phase": "dynamic0023",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 3.8227064713951695e-11,
+      "joint_residual_N_or_Nm": 2.115930192573363e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 24,
+      "time_s": 0.03,
+      "fresh_robot_step_effort_residual": 3.2665797439980643e-11,
+      "body_resultant_residual_N": 3.738090909883025e-11,
+      "body_moment_residual_Nm": 6.446871591817032e-13,
+      "phase": "dynamic0024",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 4.257470696219119e-11,
+      "joint_residual_N_or_Nm": 3.2615511053008305e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 25,
+      "time_s": 0.03125,
+      "fresh_robot_step_effort_residual": 3.138095553464182e-11,
+      "body_resultant_residual_N": 3.883844279623509e-11,
+      "body_moment_residual_Nm": 3.688455698131565e-13,
+      "phase": "dynamic0025",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 4.055062242006366e-11,
+      "joint_residual_N_or_Nm": 3.137475709101848e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 26,
+      "time_s": 0.0325,
+      "fresh_robot_step_effort_residual": 1.7775768124658408e-11,
+      "body_resultant_residual_N": 1.595816973702426e-11,
+      "body_moment_residual_Nm": 7.667113603218455e-13,
+      "phase": "dynamic0026",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 2.9017581639776696e-11,
+      "joint_residual_N_or_Nm": 1.7706643156006516e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 27,
+      "time_s": 0.03375,
+      "fresh_robot_step_effort_residual": 1.3795719554043694e-11,
+      "body_resultant_residual_N": 9.675042080624853e-12,
+      "body_moment_residual_Nm": 4.2340168473388365e-13,
+      "phase": "dynamic0027",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 1.6514380909717907e-11,
+      "joint_residual_N_or_Nm": 1.3827243720419253e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 28,
+      "time_s": 0.035,
+      "fresh_robot_step_effort_residual": 3.328400419549662e-11,
+      "body_resultant_residual_N": 2.852860383663287e-11,
+      "body_moment_residual_Nm": 5.121502076255721e-13,
+      "phase": "dynamic0028",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 3.280181700300669e-11,
+      "joint_residual_N_or_Nm": 3.3329218350748985e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 29,
+      "time_s": 0.03625,
+      "fresh_robot_step_effort_residual": 1.0379537302867549e-10,
+      "body_resultant_residual_N": 1.4743121384592504e-10,
+      "body_moment_residual_Nm": 2.9258067073088453e-12,
+      "phase": "dynamic0029",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 1.7403777259942295e-10,
+      "joint_residual_N_or_Nm": 1.0364974840480546e-10,
+      "normal_stencils": 2
+    },
+    {
+      "step": 30,
+      "time_s": 0.0375,
+      "fresh_robot_step_effort_residual": 4.0863015085123e-11,
+      "body_resultant_residual_N": 3.7869425434503266e-11,
+      "body_moment_residual_Nm": 3.776136934642488e-13,
+      "phase": "dynamic0030",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 3.970599442583549e-11,
+      "joint_residual_N_or_Nm": 4.087617486568907e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 31,
+      "time_s": 0.03875,
+      "fresh_robot_step_effort_residual": 2.0492329607939495e-11,
+      "body_resultant_residual_N": 2.378798835326722e-11,
+      "body_moment_residual_Nm": 6.816714653807762e-13,
+      "phase": "dynamic0031",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 3.209606964032267e-11,
+      "joint_residual_N_or_Nm": 2.0418095049241368e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 32,
+      "time_s": 0.04,
+      "fresh_robot_step_effort_residual": 5.0661150013864265e-11,
+      "body_resultant_residual_N": 5.983386997309417e-11,
+      "body_moment_residual_Nm": 1.945871825121847e-13,
+      "phase": "dynamic0032",
+      "iteration": 14,
+      "body_force_equivalent_residual_N": 6.01491766031105e-11,
+      "joint_residual_N_or_Nm": 5.079456033886873e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 33,
+      "time_s": 0.04125,
+      "fresh_robot_step_effort_residual": 4.329109685217575e-11,
+      "body_resultant_residual_N": 4.241860824591372e-11,
+      "body_moment_residual_Nm": 6.290375203663525e-14,
+      "phase": "dynamic0033",
+      "iteration": 14,
+      "body_force_equivalent_residual_N": 4.2465181848581856e-11,
+      "joint_residual_N_or_Nm": 4.332089113976373e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 34,
+      "time_s": 0.0425,
+      "fresh_robot_step_effort_residual": 1.5471475683308705e-10,
+      "body_resultant_residual_N": 2.250046345120369e-10,
+      "body_moment_residual_Nm": 5.103623781880078e-12,
+      "phase": "dynamic0034",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 2.7686143672472493e-10,
+      "joint_residual_N_or_Nm": 1.5465404225621462e-10,
+      "normal_stencils": 2
+    },
+    {
+      "step": 35,
+      "time_s": 0.043750000000000004,
+      "fresh_robot_step_effort_residual": 2.4910974040454872e-11,
+      "body_resultant_residual_N": 3.406565611697853e-11,
+      "body_moment_residual_Nm": 2.264258663933505e-13,
+      "phase": "dynamic0035",
+      "iteration": 16,
+      "body_force_equivalent_residual_N": 3.480939789514741e-11,
+      "joint_residual_N_or_Nm": 2.4666399740048204e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 36,
+      "time_s": 0.045,
+      "fresh_robot_step_effort_residual": 1.7191241505390546e-11,
+      "body_resultant_residual_N": 1.6358991048855986e-11,
+      "body_moment_residual_Nm": 8.251263924788054e-13,
+      "phase": "dynamic0036",
+      "iteration": 16,
+      "body_force_equivalent_residual_N": 3.078766331475454e-11,
+      "joint_residual_N_or_Nm": 1.719127349156854e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 37,
+      "time_s": 0.04625,
+      "fresh_robot_step_effort_residual": 4.6670992887479006e-11,
+      "body_resultant_residual_N": 6.673971881552752e-11,
+      "body_moment_residual_Nm": 2.8723611095997774e-13,
+      "phase": "dynamic0037",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 6.73544990255416e-11,
+      "joint_residual_N_or_Nm": 4.654325662951885e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 38,
+      "time_s": 0.0475,
+      "fresh_robot_step_effort_residual": 4.908313936418851e-11,
+      "body_resultant_residual_N": 4.971993155018651e-11,
+      "body_moment_residual_Nm": 2.4069872806002497e-13,
+      "phase": "dynamic0038",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 5.029877209186462e-11,
+      "joint_residual_N_or_Nm": 4.9078797762853694e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 39,
+      "time_s": 0.04875,
+      "fresh_robot_step_effort_residual": 4.040236173161435e-11,
+      "body_resultant_residual_N": 3.7648788913360385e-11,
+      "body_moment_residual_Nm": 1.9925650772022095e-13,
+      "phase": "dynamic0039",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 3.817208866685218e-11,
+      "joint_residual_N_or_Nm": 4.035421587545256e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 40,
+      "time_s": 0.05,
+      "fresh_robot_step_effort_residual": 2.493062247133632e-11,
+      "body_resultant_residual_N": 2.4853484520392557e-11,
+      "body_moment_residual_Nm": 3.476930347949956e-13,
+      "phase": "dynamic0040",
+      "iteration": 11,
+      "body_force_equivalent_residual_N": 2.7175107998850077e-11,
+      "joint_residual_N_or_Nm": 2.49587447596917e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 41,
+      "time_s": 0.051250000000000004,
+      "fresh_robot_step_effort_residual": 2.5657446381847073e-11,
+      "body_resultant_residual_N": 2.8776861023054513e-11,
+      "body_moment_residual_Nm": 4.3752348991200493e-13,
+      "phase": "dynamic0041",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 3.192763301854908e-11,
+      "joint_residual_N_or_Nm": 2.5738877738039126e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 42,
+      "time_s": 0.0525,
+      "fresh_robot_step_effort_residual": 3.761191330732105e-11,
+      "body_resultant_residual_N": 6.761113889486862e-11,
+      "body_moment_residual_Nm": 5.411669205742057e-13,
+      "phase": "dynamic0042",
+      "iteration": 11,
+      "body_force_equivalent_residual_N": 6.974163708823562e-11,
+      "joint_residual_N_or_Nm": 3.7436459456582443e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 43,
+      "time_s": 0.05375,
+      "fresh_robot_step_effort_residual": 1.5511590947376024e-11,
+      "body_resultant_residual_N": 1.5100266407179983e-11,
+      "body_moment_residual_Nm": 5.049669308375291e-13,
+      "phase": "dynamic0043",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 2.1972661748969006e-11,
+      "joint_residual_N_or_Nm": 1.5626704627050182e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 44,
+      "time_s": 0.055,
+      "fresh_robot_step_effort_residual": 3.8617392682131944e-11,
+      "body_resultant_residual_N": 4.106930178507302e-11,
+      "body_moment_residual_Nm": 6.823854293062247e-13,
+      "phase": "dynamic0044",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 4.638907992229238e-11,
+      "joint_residual_N_or_Nm": 3.8718750812101484e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 45,
+      "time_s": 0.05625,
+      "fresh_robot_step_effort_residual": 4.5841635095704074e-11,
+      "body_resultant_residual_N": 5.922306698890306e-11,
+      "body_moment_residual_Nm": 4.970357141175827e-13,
+      "phase": "dynamic0045",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 6.12715802767879e-11,
+      "joint_residual_N_or_Nm": 4.5541027272782113e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 46,
+      "time_s": 0.0575,
+      "fresh_robot_step_effort_residual": 3.611100340941916e-11,
+      "body_resultant_residual_N": 3.519650587160411e-11,
+      "body_moment_residual_Nm": 6.804152842350986e-13,
+      "phase": "dynamic0046",
+      "iteration": 15,
+      "body_force_equivalent_residual_N": 4.124760129413864e-11,
+      "joint_residual_N_or_Nm": 3.6001594810717574e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 47,
+      "time_s": 0.058750000000000004,
+      "fresh_robot_step_effort_residual": 1.707297682932223e-11,
+      "body_resultant_residual_N": 2.479728389910446e-11,
+      "body_moment_residual_Nm": 1.7170882573893733e-13,
+      "phase": "dynamic0047",
+      "iteration": 15,
+      "body_force_equivalent_residual_N": 2.5384367772306273e-11,
+      "joint_residual_N_or_Nm": 1.7071775459343342e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 48,
+      "time_s": 0.06,
+      "fresh_robot_step_effort_residual": 1.7693825156187885e-11,
+      "body_resultant_residual_N": 1.4709038072960222e-11,
+      "body_moment_residual_Nm": 4.641310715473501e-13,
+      "phase": "dynamic0048",
+      "iteration": 16,
+      "body_force_equivalent_residual_N": 2.0774793842524865e-11,
+      "joint_residual_N_or_Nm": 1.7615250912260376e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 49,
+      "time_s": 0.06125,
+      "fresh_robot_step_effort_residual": 2.0820126098879113e-11,
+      "body_resultant_residual_N": 2.742312683994524e-11,
+      "body_moment_residual_Nm": 1.4227738470890794e-13,
+      "phase": "dynamic0049",
+      "iteration": 16,
+      "body_force_equivalent_residual_N": 2.778942530620007e-11,
+      "joint_residual_N_or_Nm": 2.0495880916367378e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 50,
+      "time_s": 0.0625,
+      "fresh_robot_step_effort_residual": 1.678088237529539e-11,
+      "body_resultant_residual_N": 2.0233295618781243e-11,
+      "body_moment_residual_Nm": 1.0583560471283255e-13,
+      "phase": "dynamic0050",
+      "iteration": 15,
+      "body_force_equivalent_residual_N": 2.0507950366773355e-11,
+      "joint_residual_N_or_Nm": 1.6943688868382357e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 51,
+      "time_s": 0.06375,
+      "fresh_robot_step_effort_residual": 1.6128253278029364e-10,
+      "body_resultant_residual_N": 2.330455290431626e-10,
+      "body_moment_residual_Nm": 4.329277051516282e-12,
+      "phase": "dynamic0051",
+      "iteration": 14,
+      "body_force_equivalent_residual_N": 2.70253844465477e-10,
+      "joint_residual_N_or_Nm": 1.6147405999168888e-10,
+      "normal_stencils": 2
+    },
+    {
+      "step": 52,
+      "time_s": 0.065,
+      "fresh_robot_step_effort_residual": 3.6428779838635116e-11,
+      "body_resultant_residual_N": 4.80277486091781e-11,
+      "body_moment_residual_Nm": 2.8940381738934766e-13,
+      "phase": "dynamic0052",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 4.8891246465145347e-11,
+      "joint_residual_N_or_Nm": 3.63848244159436e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 53,
+      "time_s": 0.06625,
+      "fresh_robot_step_effort_residual": 3.573996487382288e-11,
+      "body_resultant_residual_N": 3.617129479714303e-11,
+      "body_moment_residual_Nm": 2.623311648642184e-13,
+      "phase": "dynamic0053",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 3.7109712925702435e-11,
+      "joint_residual_N_or_Nm": 3.564874685817894e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 54,
+      "time_s": 0.0675,
+      "fresh_robot_step_effort_residual": 1.8369875088989385e-11,
+      "body_resultant_residual_N": 2.2151253828817747e-11,
+      "body_moment_residual_Nm": 2.987722278815712e-13,
+      "phase": "dynamic0054",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 2.4080484132207612e-11,
+      "joint_residual_N_or_Nm": 1.8363454050066986e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 55,
+      "time_s": 0.06875,
+      "fresh_robot_step_effort_residual": 1.706475864669555e-11,
+      "body_resultant_residual_N": 3.5017867884651876e-11,
+      "body_moment_residual_Nm": 5.983528630647711e-13,
+      "phase": "dynamic0055",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 3.979911179628568e-11,
+      "joint_residual_N_or_Nm": 1.684414627721262e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 56,
+      "time_s": 0.07,
+      "fresh_robot_step_effort_residual": 3.6886342323928196e-11,
+      "body_resultant_residual_N": 4.388185286450068e-11,
+      "body_moment_residual_Nm": 7.188476753387443e-13,
+      "phase": "dynamic0056",
+      "iteration": 15,
+      "body_force_equivalent_residual_N": 4.941583617259384e-11,
+      "joint_residual_N_or_Nm": 3.6745284195685537e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 57,
+      "time_s": 0.07125000000000001,
+      "fresh_robot_step_effort_residual": 2.0627994035350284e-11,
+      "body_resultant_residual_N": 1.575442932630314e-11,
+      "body_moment_residual_Nm": 3.911207134261829e-13,
+      "phase": "dynamic0057",
+      "iteration": 15,
+      "body_force_equivalent_residual_N": 2.0026183053453685e-11,
+      "joint_residual_N_or_Nm": 2.0794454393547283e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 58,
+      "time_s": 0.0725,
+      "fresh_robot_step_effort_residual": 1.3398557493366856e-11,
+      "body_resultant_residual_N": 1.9674907930806805e-11,
+      "body_moment_residual_Nm": 2.5526409097486625e-13,
+      "phase": "dynamic0058",
+      "iteration": 15,
+      "body_force_equivalent_residual_N": 2.1265134762360478e-11,
+      "joint_residual_N_or_Nm": 1.327283957348218e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 59,
+      "time_s": 0.07375,
+      "fresh_robot_step_effort_residual": 3.513809691651141e-11,
+      "body_resultant_residual_N": 3.80748061303457e-11,
+      "body_moment_residual_Nm": 1.0047122046819537e-13,
+      "phase": "dynamic0059",
+      "iteration": 15,
+      "body_force_equivalent_residual_N": 3.820690666746679e-11,
+      "joint_residual_N_or_Nm": 3.500065974438633e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 60,
+      "time_s": 0.075,
+      "fresh_robot_step_effort_residual": 1.6863275102794146e-11,
+      "body_resultant_residual_N": 3.0732476916713764e-11,
+      "body_moment_residual_Nm": 2.0849185688850552e-13,
+      "phase": "dynamic0060",
+      "iteration": 16,
+      "body_force_equivalent_residual_N": 3.143111966578434e-11,
+      "joint_residual_N_or_Nm": 1.700751308123881e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 61,
+      "time_s": 0.07625,
+      "fresh_robot_step_effort_residual": 1.9763963817576992e-11,
+      "body_resultant_residual_N": 2.2376799912482458e-11,
+      "body_moment_residual_Nm": 3.7987007152143094e-13,
+      "phase": "dynamic0061",
+      "iteration": 16,
+      "body_force_equivalent_residual_N": 2.5394905912026535e-11,
+      "joint_residual_N_or_Nm": 1.9736271196916853e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 62,
+      "time_s": 0.0775,
+      "fresh_robot_step_effort_residual": 1.9489573307858598e-11,
+      "body_resultant_residual_N": 2.815468327919949e-11,
+      "body_moment_residual_Nm": 4.743968446864216e-14,
+      "phase": "dynamic0062",
+      "iteration": 14,
+      "body_force_equivalent_residual_N": 2.8194484036412076e-11,
+      "joint_residual_N_or_Nm": 1.942199638683166e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 63,
+      "time_s": 0.07875,
+      "fresh_robot_step_effort_residual": 2.3690293331018503e-11,
+      "body_resultant_residual_N": 2.112903927218983e-11,
+      "body_moment_residual_Nm": 4.952420070109355e-13,
+      "phase": "dynamic0063",
+      "iteration": 14,
+      "body_force_equivalent_residual_N": 2.6296287016586704e-11,
+      "joint_residual_N_or_Nm": 2.3730869314158194e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 64,
+      "time_s": 0.08,
+      "fresh_robot_step_effort_residual": 2.1380056888346862e-11,
+      "body_resultant_residual_N": 1.565486195956177e-11,
+      "body_moment_residual_Nm": 2.5462616927697696e-13,
+      "phase": "dynamic0064",
+      "iteration": 15,
+      "body_force_equivalent_residual_N": 1.7602754012383006e-11,
+      "joint_residual_N_or_Nm": 2.1416877941089027e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 65,
+      "time_s": 0.08125,
+      "fresh_robot_step_effort_residual": 2.8842568504761084e-11,
+      "body_resultant_residual_N": 3.581331033586068e-11,
+      "body_moment_residual_Nm": 3.1146150229218203e-13,
+      "phase": "dynamic0065",
+      "iteration": 14,
+      "body_force_equivalent_residual_N": 3.714171493589956e-11,
+      "joint_residual_N_or_Nm": 2.8797207159675004e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 66,
+      "time_s": 0.0825,
+      "fresh_robot_step_effort_residual": 1.674767749248902e-11,
+      "body_resultant_residual_N": 2.1586613437823454e-11,
+      "body_moment_residual_Nm": 2.737807250227033e-13,
+      "phase": "dynamic0066",
+      "iteration": 14,
+      "body_force_equivalent_residual_N": 2.3256744493318772e-11,
+      "joint_residual_N_or_Nm": 1.6814703902734096e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 67,
+      "time_s": 0.08375,
+      "fresh_robot_step_effort_residual": 1.130361354536431e-11,
+      "body_resultant_residual_N": 1.1346907783368513e-11,
+      "body_moment_residual_Nm": 2.257272038564521e-13,
+      "phase": "dynamic0067",
+      "iteration": 15,
+      "body_force_equivalent_residual_N": 1.3403724285461278e-11,
+      "joint_residual_N_or_Nm": 1.1547377040365753e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 68,
+      "time_s": 0.085,
+      "fresh_robot_step_effort_residual": 3.412982152783628e-11,
+      "body_resultant_residual_N": 1.8438609152615506e-11,
+      "body_moment_residual_Nm": 4.5001927852642753e-13,
+      "phase": "dynamic0068",
+      "iteration": 11,
+      "body_force_equivalent_residual_N": 2.3288011061933833e-11,
+      "joint_residual_N_or_Nm": 3.412934966623307e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 69,
+      "time_s": 0.08625000000000001,
+      "fresh_robot_step_effort_residual": 3.288611810499784e-11,
+      "body_resultant_residual_N": 3.5927920521488243e-11,
+      "body_moment_residual_Nm": 7.638067645399411e-13,
+      "phase": "dynamic0069",
+      "iteration": 10,
+      "body_force_equivalent_residual_N": 4.3286718162666255e-11,
+      "joint_residual_N_or_Nm": 3.300564843043736e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 70,
+      "time_s": 0.08750000000000001,
+      "fresh_robot_step_effort_residual": 5.830963455774441e-11,
+      "body_resultant_residual_N": 8.17071423746306e-11,
+      "body_moment_residual_Nm": 1.9325079312945272e-12,
+      "phase": "dynamic0070",
+      "iteration": 10,
+      "body_force_equivalent_residual_N": 1.0201715770321511e-10,
+      "joint_residual_N_or_Nm": 5.84481624951174e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 71,
+      "time_s": 0.08875,
+      "fresh_robot_step_effort_residual": 9.639842706887513e-11,
+      "body_resultant_residual_N": 1.3048914331723352e-10,
+      "body_moment_residual_Nm": 2.279160277308303e-12,
+      "phase": "dynamic0071",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 1.490556884725096e-10,
+      "joint_residual_N_or_Nm": 9.664134324619426e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 72,
+      "time_s": 0.09,
+      "fresh_robot_step_effort_residual": 1.976563219186827e-11,
+      "body_resultant_residual_N": 3.1501005400055543e-12,
+      "body_moment_residual_Nm": 5.444791236161376e-13,
+      "phase": "dynamic0072",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 1.7496646550887115e-11,
+      "joint_residual_N_or_Nm": 1.9742642139660542e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 73,
+      "time_s": 0.09125,
+      "fresh_robot_step_effort_residual": 3.6776766281430266e-11,
+      "body_resultant_residual_N": 2.9418488020263295e-11,
+      "body_moment_residual_Nm": 7.816759198883782e-13,
+      "phase": "dynamic0073",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 3.841791898072583e-11,
+      "joint_residual_N_or_Nm": 3.682355765345021e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 74,
+      "time_s": 0.0925,
+      "fresh_robot_step_effort_residual": 2.494615362804429e-11,
+      "body_resultant_residual_N": 1.1422333624372013e-11,
+      "body_moment_residual_Nm": 4.079247972354455e-13,
+      "phase": "dynamic0074",
+      "iteration": 15,
+      "body_force_equivalent_residual_N": 1.7225897640077377e-11,
+      "joint_residual_N_or_Nm": 2.4909813437434207e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 75,
+      "time_s": 0.09375,
+      "fresh_robot_step_effort_residual": 3.4775753569392656e-11,
+      "body_resultant_residual_N": 3.3147206001291164e-11,
+      "body_moment_residual_Nm": 8.251071926737791e-13,
+      "phase": "dynamic0075",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 4.217765006307079e-11,
+      "joint_residual_N_or_Nm": 3.4677596496442725e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 76,
+      "time_s": 0.095,
+      "fresh_robot_step_effort_residual": 6.515965682339243e-11,
+      "body_resultant_residual_N": 9.026131305072714e-11,
+      "body_moment_residual_Nm": 1.3982561644135563e-12,
+      "phase": "dynamic0076",
+      "iteration": 14,
+      "body_force_equivalent_residual_N": 1.0050148380403431e-10,
+      "joint_residual_N_or_Nm": 6.562255651426755e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 77,
+      "time_s": 0.09625,
+      "fresh_robot_step_effort_residual": 3.6754356047046585e-11,
+      "body_resultant_residual_N": 2.1261832000227217e-11,
+      "body_moment_residual_Nm": 1.0654446712100964e-12,
+      "phase": "dynamic0077",
+      "iteration": 14,
+      "body_force_equivalent_residual_N": 3.982822333323987e-11,
+      "joint_residual_N_or_Nm": 3.677567389604744e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 78,
+      "time_s": 0.0975,
+      "fresh_robot_step_effort_residual": 3.4804500027192896e-11,
+      "body_resultant_residual_N": 3.149504455663359e-11,
+      "body_moment_residual_Nm": 6.852894459551791e-13,
+      "phase": "dynamic0078",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 3.8225093098266774e-11,
+      "joint_residual_N_or_Nm": 3.4813653071340046e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 79,
+      "time_s": 0.09875,
+      "fresh_robot_step_effort_residual": 3.7225392549958235e-11,
+      "body_resultant_residual_N": 4.13531277233384e-11,
+      "body_moment_residual_Nm": 2.1506305037725799e-13,
+      "phase": "dynamic0079",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 4.1907780875201224e-11,
+      "joint_residual_N_or_Nm": 3.6979090371317496e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 80,
+      "time_s": 0.1,
+      "fresh_robot_step_effort_residual": 2.6101481692740025e-11,
+      "body_resultant_residual_N": 3.302340067583127e-11,
+      "body_moment_residual_Nm": 5.800443617130933e-13,
+      "phase": "dynamic0080",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 3.77715613052777e-11,
+      "joint_residual_N_or_Nm": 2.5753431113205423e-11,
+      "normal_stencils": 2
+    }
+  ],
+  "all_accepted_residuals": [
+    {
+      "phase": "dynamic0001",
+      "iteration": 3,
+      "body_force_equivalent_residual_N": 4.778813218547539e-11,
+      "joint_residual_N_or_Nm": 3.7945403688340206e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0002",
+      "iteration": 16,
+      "body_force_equivalent_residual_N": 4.918198314120408e-11,
+      "joint_residual_N_or_Nm": 2.979827698786331e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0003",
+      "iteration": 14,
+      "body_force_equivalent_residual_N": 2.1490645158455774e-11,
+      "joint_residual_N_or_Nm": 2.823512605246167e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0004",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 4.355408527936636e-11,
+      "joint_residual_N_or_Nm": 2.5924586385194027e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0005",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 5.3576901993636466e-11,
+      "joint_residual_N_or_Nm": 2.4692941989224318e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0006",
+      "iteration": 14,
+      "body_force_equivalent_residual_N": 4.232930724541075e-11,
+      "joint_residual_N_or_Nm": 4.670253517184602e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0007",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 6.805749921914299e-12,
+      "joint_residual_N_or_Nm": 7.484152919034012e-12,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0008",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 4.582104129108678e-11,
+      "joint_residual_N_or_Nm": 4.9015140634573037e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0009",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 2.0171020939444083e-11,
+      "joint_residual_N_or_Nm": 8.997772354767252e-12,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0010",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 1.2568268998302048e-10,
+      "joint_residual_N_or_Nm": 9.030825414556083e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0011",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 3.656209155633133e-11,
+      "joint_residual_N_or_Nm": 2.5340763239123447e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0012",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 4.5537678648804286e-11,
+      "joint_residual_N_or_Nm": 3.324269294129496e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0013",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 3.088053901975989e-11,
+      "joint_residual_N_or_Nm": 2.60989390352032e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0014",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 3.02724200749193e-11,
+      "joint_residual_N_or_Nm": 1.3922631331452044e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0015",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 5.83065756466411e-11,
+      "joint_residual_N_or_Nm": 4.015411016338849e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0016",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 5.425240994878366e-11,
+      "joint_residual_N_or_Nm": 5.6899230156262774e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0017",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 1.9885041271064152e-11,
+      "joint_residual_N_or_Nm": 1.3542187150217009e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0018",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 2.9347172297323e-11,
+      "joint_residual_N_or_Nm": 1.5572097413475803e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0019",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 3.537713101980119e-11,
+      "joint_residual_N_or_Nm": 2.3402642022978898e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0020",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 5.180754683463818e-11,
+      "joint_residual_N_or_Nm": 2.863966729205242e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0021",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 4.2103073979963856e-11,
+      "joint_residual_N_or_Nm": 5.3620656287030434e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0022",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 5.713309767727603e-11,
+      "joint_residual_N_or_Nm": 4.352793039842339e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0023",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 3.8227064713951695e-11,
+      "joint_residual_N_or_Nm": 2.115930192573363e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0024",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 4.257470696219119e-11,
+      "joint_residual_N_or_Nm": 3.2615511053008305e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0025",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 4.055062242006366e-11,
+      "joint_residual_N_or_Nm": 3.137475709101848e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0026",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 2.9017581639776696e-11,
+      "joint_residual_N_or_Nm": 1.7706643156006516e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0027",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 1.6514380909717907e-11,
+      "joint_residual_N_or_Nm": 1.3827243720419253e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0028",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 3.280181700300669e-11,
+      "joint_residual_N_or_Nm": 3.3329218350748985e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0029",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 1.7403777259942295e-10,
+      "joint_residual_N_or_Nm": 1.0364974840480546e-10,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0030",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 3.970599442583549e-11,
+      "joint_residual_N_or_Nm": 4.087617486568907e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0031",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 3.209606964032267e-11,
+      "joint_residual_N_or_Nm": 2.0418095049241368e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0032",
+      "iteration": 14,
+      "body_force_equivalent_residual_N": 6.01491766031105e-11,
+      "joint_residual_N_or_Nm": 5.079456033886873e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0033",
+      "iteration": 14,
+      "body_force_equivalent_residual_N": 4.2465181848581856e-11,
+      "joint_residual_N_or_Nm": 4.332089113976373e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0034",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 2.7686143672472493e-10,
+      "joint_residual_N_or_Nm": 1.5465404225621462e-10,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0035",
+      "iteration": 16,
+      "body_force_equivalent_residual_N": 3.480939789514741e-11,
+      "joint_residual_N_or_Nm": 2.4666399740048204e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0036",
+      "iteration": 16,
+      "body_force_equivalent_residual_N": 3.078766331475454e-11,
+      "joint_residual_N_or_Nm": 1.719127349156854e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0037",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 6.73544990255416e-11,
+      "joint_residual_N_or_Nm": 4.654325662951885e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0038",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 5.029877209186462e-11,
+      "joint_residual_N_or_Nm": 4.9078797762853694e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0039",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 3.817208866685218e-11,
+      "joint_residual_N_or_Nm": 4.035421587545256e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0040",
+      "iteration": 11,
+      "body_force_equivalent_residual_N": 2.7175107998850077e-11,
+      "joint_residual_N_or_Nm": 2.49587447596917e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0041",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 3.192763301854908e-11,
+      "joint_residual_N_or_Nm": 2.5738877738039126e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0042",
+      "iteration": 11,
+      "body_force_equivalent_residual_N": 6.974163708823562e-11,
+      "joint_residual_N_or_Nm": 3.7436459456582443e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0043",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 2.1972661748969006e-11,
+      "joint_residual_N_or_Nm": 1.5626704627050182e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0044",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 4.638907992229238e-11,
+      "joint_residual_N_or_Nm": 3.8718750812101484e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0045",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 6.12715802767879e-11,
+      "joint_residual_N_or_Nm": 4.5541027272782113e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0046",
+      "iteration": 15,
+      "body_force_equivalent_residual_N": 4.124760129413864e-11,
+      "joint_residual_N_or_Nm": 3.6001594810717574e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0047",
+      "iteration": 15,
+      "body_force_equivalent_residual_N": 2.5384367772306273e-11,
+      "joint_residual_N_or_Nm": 1.7071775459343342e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0048",
+      "iteration": 16,
+      "body_force_equivalent_residual_N": 2.0774793842524865e-11,
+      "joint_residual_N_or_Nm": 1.7615250912260376e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0049",
+      "iteration": 16,
+      "body_force_equivalent_residual_N": 2.778942530620007e-11,
+      "joint_residual_N_or_Nm": 2.0495880916367378e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0050",
+      "iteration": 15,
+      "body_force_equivalent_residual_N": 2.0507950366773355e-11,
+      "joint_residual_N_or_Nm": 1.6943688868382357e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0051",
+      "iteration": 14,
+      "body_force_equivalent_residual_N": 2.70253844465477e-10,
+      "joint_residual_N_or_Nm": 1.6147405999168888e-10,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0052",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 4.8891246465145347e-11,
+      "joint_residual_N_or_Nm": 3.63848244159436e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0053",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 3.7109712925702435e-11,
+      "joint_residual_N_or_Nm": 3.564874685817894e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0054",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 2.4080484132207612e-11,
+      "joint_residual_N_or_Nm": 1.8363454050066986e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0055",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 3.979911179628568e-11,
+      "joint_residual_N_or_Nm": 1.684414627721262e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0056",
+      "iteration": 15,
+      "body_force_equivalent_residual_N": 4.941583617259384e-11,
+      "joint_residual_N_or_Nm": 3.6745284195685537e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0057",
+      "iteration": 15,
+      "body_force_equivalent_residual_N": 2.0026183053453685e-11,
+      "joint_residual_N_or_Nm": 2.0794454393547283e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0058",
+      "iteration": 15,
+      "body_force_equivalent_residual_N": 2.1265134762360478e-11,
+      "joint_residual_N_or_Nm": 1.327283957348218e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0059",
+      "iteration": 15,
+      "body_force_equivalent_residual_N": 3.820690666746679e-11,
+      "joint_residual_N_or_Nm": 3.500065974438633e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0060",
+      "iteration": 16,
+      "body_force_equivalent_residual_N": 3.143111966578434e-11,
+      "joint_residual_N_or_Nm": 1.700751308123881e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0061",
+      "iteration": 16,
+      "body_force_equivalent_residual_N": 2.5394905912026535e-11,
+      "joint_residual_N_or_Nm": 1.9736271196916853e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0062",
+      "iteration": 14,
+      "body_force_equivalent_residual_N": 2.8194484036412076e-11,
+      "joint_residual_N_or_Nm": 1.942199638683166e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0063",
+      "iteration": 14,
+      "body_force_equivalent_residual_N": 2.6296287016586704e-11,
+      "joint_residual_N_or_Nm": 2.3730869314158194e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0064",
+      "iteration": 15,
+      "body_force_equivalent_residual_N": 1.7602754012383006e-11,
+      "joint_residual_N_or_Nm": 2.1416877941089027e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0065",
+      "iteration": 14,
+      "body_force_equivalent_residual_N": 3.714171493589956e-11,
+      "joint_residual_N_or_Nm": 2.8797207159675004e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0066",
+      "iteration": 14,
+      "body_force_equivalent_residual_N": 2.3256744493318772e-11,
+      "joint_residual_N_or_Nm": 1.6814703902734096e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0067",
+      "iteration": 15,
+      "body_force_equivalent_residual_N": 1.3403724285461278e-11,
+      "joint_residual_N_or_Nm": 1.1547377040365753e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0068",
+      "iteration": 11,
+      "body_force_equivalent_residual_N": 2.3288011061933833e-11,
+      "joint_residual_N_or_Nm": 3.412934966623307e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0069",
+      "iteration": 10,
+      "body_force_equivalent_residual_N": 4.3286718162666255e-11,
+      "joint_residual_N_or_Nm": 3.300564843043736e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0070",
+      "iteration": 10,
+      "body_force_equivalent_residual_N": 1.0201715770321511e-10,
+      "joint_residual_N_or_Nm": 5.84481624951174e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0071",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 1.490556884725096e-10,
+      "joint_residual_N_or_Nm": 9.664134324619426e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0072",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 1.7496646550887115e-11,
+      "joint_residual_N_or_Nm": 1.9742642139660542e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0073",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 3.841791898072583e-11,
+      "joint_residual_N_or_Nm": 3.682355765345021e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0074",
+      "iteration": 15,
+      "body_force_equivalent_residual_N": 1.7225897640077377e-11,
+      "joint_residual_N_or_Nm": 2.4909813437434207e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0075",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 4.217765006307079e-11,
+      "joint_residual_N_or_Nm": 3.4677596496442725e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0076",
+      "iteration": 14,
+      "body_force_equivalent_residual_N": 1.0050148380403431e-10,
+      "joint_residual_N_or_Nm": 6.562255651426755e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0077",
+      "iteration": 14,
+      "body_force_equivalent_residual_N": 3.982822333323987e-11,
+      "joint_residual_N_or_Nm": 3.677567389604744e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0078",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 3.8225093098266774e-11,
+      "joint_residual_N_or_Nm": 3.4813653071340046e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0079",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 4.1907780875201224e-11,
+      "joint_residual_N_or_Nm": 3.6979090371317496e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0080",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 3.77715613052777e-11,
+      "joint_residual_N_or_Nm": 2.5753431113205423e-11,
+      "normal_stencils": 2
+    }
+  ],
+  "body_radius_m": 0.03163602421663285,
+  "kinematic_directional_error": 4.0657271835827173e-13,
+  "tangent_qualifications": [],
+  "controller_target": [
+    -1.0429300070043328,
+    1.4284284666121048,
+    1.5294581926808155,
+    -1.7200574780985856,
+    -1.4357374863701315,
+    1.6324552119168398,
+    1.455392712925263,
+    0.018,
+    0.018
+  ],
+  "controller_kp": [
+    4500.0,
+    4500.0,
+    3500.0,
+    3500.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    100.0,
+    100.0
+  ],
+  "controller_kv": [
+    450.0,
+    450.0,
+    350.0,
+    350.0,
+    200.0,
+    200.0,
+    200.0,
+    10.0,
+    10.0
+  ],
+  "controller_caps": [
+    87.0,
+    87.0,
+    87.0,
+    87.0,
+    12.0,
+    12.0,
+    12.0,
+    4.0,
+    4.0
+  ],
+  "robot_solver_tolerance": 1e-14,
+  "precise_kinematic_max_discrepancy_m": 1.0671726326406323e-15,
+  "goal_completion": false,
+  "limitations": "Rigid-body motion restricts the same collision surface and consistent mass, preserving actual robot control/contact laws. Body rotational residuals are scaled by the fixed reference radius only in the numerical merit. Raw force/moment and fresh robot-step gates are explicit. This short held-initializer/zero-velocity control is not original approach/angular-history matching or spatial/contact/regularization convergence. Independent balance/recovery replay and rigid/deformable feedback comparisons are required."
+}
