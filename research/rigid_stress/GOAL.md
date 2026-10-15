@@ -31,6 +31,24 @@ egg/Franka and U contact references, resolved-load/native replay versus feedback
 remaining applicable load-model sensitivity and physically verified warmed costs.
 These are execution priorities within the complete linked objective.
 
+The [all-stage barrier/thickness checkpoint](docs/PHYSICAL_BARRIER_HISTORY_THICKNESS_20261015.md)
+independently closes744 stages at each2.5/1.25/0.625um U barrier distance, with
+all original1e-9N gates and full corner/quadrature fields. Full-path comparison
+retains initialization raw maxima1.69–1.72MPa as well as final112.4kPa bounds;
+final adjacent tensor changes0.070%/0.114% do not summarize the history or close
+a physical tail. A fourth0.3125um control is live. The602676-tet sixth-thickness
+case and original five-level comparison complete, retaining3.30–4.68% final
+tensor changes. A separate fresh stiffness/mass/full-field auditor extends
+the archive comparator's explicit producer-recorded residual scope: all25 fields
+now pass original complete budgets, full corner/quadrature/probe reconstruction,
+energy and raw extrema; maximum budget fraction0.04228. Accepted editable figures
+retain all744 stages and actual font/source-QA failures. The shared-initialization
+coarse control passes both all-stage audits before finer body cases start.
+The171228-tet CAD reference now fails its first dynamic sparse factorization
+after64 accepted held initializer increments; its saved closure/failure/source
+records remain, with no accepted dynamic state and unstarted audits cancelled.
+Every original physical/model/feedback/cost gate stays.
+
 The [contact-history/marking-domain checkpoint](docs/PHYSICAL_CONTACT_HISTORY_DOMAIN_20261015.md)
 independently closes all744 original U load/initialization stages with current
 normal/friction forces, original1e-9N balances and full raw fields. Measured

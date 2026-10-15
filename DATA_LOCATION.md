@@ -1,5 +1,18 @@
 # Runtime data locations
 
+The unselected `research/rigid_stress/evidence/20261014-physical/five-level-thickness-v1`
+publication contained redundant direct copies of the same ten large fields
+already represented as exact byte chunks. Its publication process was terminal
+before copying it with metadata and symlink preservation to
+`runs/20261014-physical-validation/publication-attempt-five-level-thickness-v1-unbounded-extras`
+under the data root below. All192 files (3312301696 bytes) were SHA256-verified
+before removing only that untracked publication from the checkout. Original
+scientific runs, field arrays and publication staging remain intact. The selected
+`five-level-thickness-v2` avoids redundant direct extras and retains every original
+field through exact reconstructed chunks. The complete old/new paths, active-job
+check, per-file hashes and old publisher source are retained in
+`runs/20261014-physical-validation/meta/thickness-publication-large-extra-correction-v1.json`.
+
 The rigid stress recovery worktree uses
 `/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery` for runs,
 generated collision assets, video, numerical replays and caches. Its optional
