@@ -164,11 +164,15 @@ perturbation. Independent audit717589 now passes all865 states. Recovery717590
 retains its realFAILED1:0: direct Newton, robot-only roots and full15-variable
 trust-region attempts do not pass the original physical residuals. Its
 success-only audit717591 never starts and is cancelled. Numerical residual
-continuation717624 is scheduled from the exact865 anchor, with its own
-success-only independent audit. Its intermediate equations remove a recorded
-artificial residual offset progressively; only zero final offset, all original
-physical gates and motion checks can qualify a recovered state. These stages
-are not physical time steps. The failed full continuation remains incomplete,
+continuation717624 now terminatesFAILED1:0 from the exact865 anchor. It retains
+56 numerical stages and13362 original-residual evaluations, reaching artificial
+parameter0.3074008636 without reaching the original equation at parameter1.
+Its success-only independent audit717625 never starts and is cancelled. The
+intermediate equations remove a recorded artificial residual offset; only zero
+final offset, all original physical gates and motion checks could qualify a
+recovered state. No intermediate stage is a physical time step, and zero new
+physical states are accepted. This failure does not prove nonexistence of an
+original-equation solution. The full rigid continuation remains incomplete,
 and no rigid/deformable feedback result is accepted yet.
 
 The separate171228-tet corrected-contact job717295 also terminatesFAILED1:0:
@@ -178,6 +182,48 @@ resource failure, not evidence of physical convergence or a contact singularity.
 Before/after source closure and the real failure are retained; no initializer
 or dynamic history from this attempt is accepted. Its unstarted success-only
 audits are cancelled. Finer body/contact resolution remains required.
+
+## Fixed-pad U body and geometry axis
+
+Producer716333 and independent final-field audit716334 complete naturally.
+The845/2339/5669-tet U bodies use identical resolution5 pad geometry, verified
+by separate left/right geometry-array hashes. Both pads retain384 tetrahedra,
+their original material/compliance, force0.05N per shoe, friction0.8,
+gravity(0,-9.81,0)m/s²,2.5µm barrier distance and64 force increments.
+All body material parameters remain E=10GPa, Poisson ratio0.3 and
+density2000kg/m³. The independent reconstruction checks every recorded
+original accepted-stage residual and the complete final constrained/body
+equilibrium, plus all original final corner stresses and global bounds.
+Recorded numerical stages are not asserted to be additional physical times.
+
+| Body tetrahedra | Represented mass (kg) | Raw global lower/upper (Pa) | Body energy (J) |
+|---:|---:|---:|---:|
+|845|0.003987816969|112413.887877 /112414.743122|4.383008777e-8|
+|2339|0.004185568092|100634.579990 /100634.990467|4.046305948e-8|
+|5669|0.004265647367|95606.439058 /95606.780009|4.007763417e-8|
+
+Represented body mass changes because these are different geometry/mesh
+approximations at fixed density. This axis isolates the pads, not volume
+discretization from surface-geometry approximation.
+
+| Adjacent body levels | Tensor (%) | von Mises (%) | Objective displacement (%) | Energy (%) | Raw lower peak (%) |
+|---|---:|---:|---:|---:|---:|
+|845→2339|44.864985|19.095150|8.940356|8.321240|11.705030|
+|2339→5669|12.327608|5.125018|2.175467|0.961697|5.259207|
+
+Tensor/von Mises/displacement comparisons use75 identical material probes,
+with all probes inside every body. Relative changes normalize by the finer
+field/value. Full unsmoothed fields and raw global extrema are retained.
+The finest final body/mapped residuals are4.281938231e-11N and4.441689696e-11N;
+all616 original recorded accepted stages stay below1e-9N. Its body whole-volume
+J lower bound is0.9999951825 and objective displacement1.108606µm.
+
+The finest raw peak is at(0.001455523921,-0.004795046354,0.000257710854)m,
+different from the medium-mesh hotspot. Three useful levels and a sub-percent
+energy change therefore still do not establish physical convergence: tensor,
+von Mises, raw peak and hotspot stability remain unresolved. The separately
+running fixed-body pad9 and coupled finer references address different axes;
+these measured changes are not an additive decomposition of their errors.
 
 ## Immutable evidence and reproduction
 
@@ -192,6 +238,7 @@ per-packet checks rather than unique experiments.
 |[complete-original-history-v1](../evidence/20261014-physical/complete-original-history-v1/manifest.json)|`d2fe098b040884cb736371858e281f3bab3854ee0f7e361f87d3112dc884d8fa`|9972 /7332|222|
 |[complete-spatial-histories-v1](../evidence/20261014-physical/complete-spatial-histories-v1/manifest.json)|`ca66aab42c6a9a391a26bb30778562e6697db6045ae419e6dc9a55539b8b4dd2`|926 /926|342|
 |[original-rigid-qualification-v1](../evidence/20261014-physical/original-rigid-qualification-v1/manifest.json)|`518737c3fd8a20eb8e48eb6e9ff453ddc95ff103be94419fe2219d84c3c5039e`|3935 /3935|390|
+|[closed-physical-followup-v1](../evidence/20261014-physical/closed-physical-followup-v1/manifest.json)|`57cce4b12ef1574a8d5479a96718ac6d60a2301ff95acb642659b4d998465239`|2252 /2245|322|
 
 The runtime verifier checks actual producer bytes as well as publication
 staging. The original-history packet includes repeated entries referencing
