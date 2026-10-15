@@ -1,0 +1,513 @@
+{
+  "scope": "Recover the original rigid equation with lagged-friction numerical stages and unchanged final current-force gates.",
+  "anchor": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-rigid-full-history-v4/results/step02462.npz",
+  "anchor_sha256": "e2db633814b71b9316e66ceaecda1d04d53db36680f220f9836efc8f2577c463",
+  "original_previous_state_controls_dt_predictor_fixed": true,
+  "attempts": [
+    {
+      "stage": 0,
+      "inner_equation_solved": true,
+      "inexact_frozen_numerical_candidate": null,
+      "original_current_body_residual_N": 1.5498689509789686e-07,
+      "original_current_robot_effort_residual": 1.0745860185388234e-07,
+      "original_motion_CCD": {
+        "passed": true,
+        "intervals": 1,
+        "observations": [
+          {
+            "intervals": 1,
+            "tested_safe_fractions": [
+              1.0
+            ]
+          }
+        ],
+        "same_straight_vertex_trajectories": true,
+        "CCD_tolerances_and_conservative_rescaling_unchanged": true,
+        "physical_timestep_subdivided": false
+      },
+      "frozen_friction_stencils": 2,
+      "is_physical_history_state": false,
+      "original_physical_gates_passed": false,
+      "numerical_relaxation": 0.5
+    },
+    {
+      "stage": 1,
+      "inner_equation_solved": true,
+      "inexact_frozen_numerical_candidate": null,
+      "original_current_body_residual_N": 6.750796370470075e-05,
+      "original_current_robot_effort_residual": 1.1830251082733833e-05,
+      "original_motion_CCD": {
+        "passed": true,
+        "intervals": 1,
+        "observations": [
+          {
+            "intervals": 1,
+            "tested_safe_fractions": [
+              1.0
+            ]
+          }
+        ],
+        "same_straight_vertex_trajectories": true,
+        "CCD_tolerances_and_conservative_rescaling_unchanged": true,
+        "physical_timestep_subdivided": false
+      },
+      "frozen_friction_stencils": 2,
+      "is_physical_history_state": false,
+      "original_physical_gates_passed": false,
+      "numerical_relaxation": 0.5
+    },
+    {
+      "stage": 2,
+      "inner_equation_solved": true,
+      "inexact_frozen_numerical_candidate": null,
+      "original_current_body_residual_N": 5.063067384727911e-05,
+      "original_current_robot_effort_residual": 8.881521899842462e-06,
+      "original_motion_CCD": {
+        "passed": true,
+        "intervals": 1,
+        "observations": [
+          {
+            "intervals": 1,
+            "tested_safe_fractions": [
+              1.0
+            ]
+          }
+        ],
+        "same_straight_vertex_trajectories": true,
+        "CCD_tolerances_and_conservative_rescaling_unchanged": true,
+        "physical_timestep_subdivided": false
+      },
+      "frozen_friction_stencils": 2,
+      "is_physical_history_state": false,
+      "original_physical_gates_passed": false,
+      "numerical_relaxation": 0.5
+    },
+    {
+      "stage": 3,
+      "inner_equation_solved": true,
+      "inexact_frozen_numerical_candidate": null,
+      "original_current_body_residual_N": 2.953840545409803e-05,
+      "original_current_robot_effort_residual": 5.189055538146171e-06,
+      "original_motion_CCD": {
+        "passed": true,
+        "intervals": 1,
+        "observations": [
+          {
+            "intervals": 1,
+            "tested_safe_fractions": [
+              1.0
+            ]
+          }
+        ],
+        "same_straight_vertex_trajectories": true,
+        "CCD_tolerances_and_conservative_rescaling_unchanged": true,
+        "physical_timestep_subdivided": false
+      },
+      "frozen_friction_stencils": 2,
+      "is_physical_history_state": false,
+      "original_physical_gates_passed": false,
+      "numerical_relaxation": 0.5
+    },
+    {
+      "stage": 4,
+      "inner_equation_solved": true,
+      "inexact_frozen_numerical_candidate": null,
+      "original_current_body_residual_N": 1.582587833048956e-05,
+      "original_current_robot_effort_residual": 2.7832827528611854e-06,
+      "original_motion_CCD": {
+        "passed": true,
+        "intervals": 1,
+        "observations": [
+          {
+            "intervals": 1,
+            "tested_safe_fractions": [
+              1.0
+            ]
+          }
+        ],
+        "same_straight_vertex_trajectories": true,
+        "CCD_tolerances_and_conservative_rescaling_unchanged": true,
+        "physical_timestep_subdivided": false
+      },
+      "frozen_friction_stencils": 2,
+      "is_physical_history_state": false,
+      "original_physical_gates_passed": false,
+      "numerical_relaxation": 0.5
+    },
+    {
+      "stage": 5,
+      "inner_equation_solved": true,
+      "inexact_frozen_numerical_candidate": null,
+      "original_current_body_residual_N": 8.176175994856458e-06,
+      "original_current_robot_effort_residual": 1.4383292458890589e-06,
+      "original_motion_CCD": {
+        "passed": true,
+        "intervals": 1,
+        "observations": [
+          {
+            "intervals": 1,
+            "tested_safe_fractions": [
+              1.0
+            ]
+          }
+        ],
+        "same_straight_vertex_trajectories": true,
+        "CCD_tolerances_and_conservative_rescaling_unchanged": true,
+        "physical_timestep_subdivided": false
+      },
+      "frozen_friction_stencils": 2,
+      "is_physical_history_state": false,
+      "original_physical_gates_passed": false,
+      "numerical_relaxation": 0.5
+    },
+    {
+      "stage": 6,
+      "inner_equation_solved": true,
+      "inexact_frozen_numerical_candidate": null,
+      "original_current_body_residual_N": 4.155278082010933e-06,
+      "original_current_robot_effort_residual": 7.314906275816349e-07,
+      "original_motion_CCD": {
+        "passed": true,
+        "intervals": 1,
+        "observations": [
+          {
+            "intervals": 1,
+            "tested_safe_fractions": [
+              1.0
+            ]
+          }
+        ],
+        "same_straight_vertex_trajectories": true,
+        "CCD_tolerances_and_conservative_rescaling_unchanged": true,
+        "physical_timestep_subdivided": false
+      },
+      "frozen_friction_stencils": 2,
+      "is_physical_history_state": false,
+      "original_physical_gates_passed": false,
+      "numerical_relaxation": 0.5
+    },
+    {
+      "stage": 7,
+      "inner_equation_solved": true,
+      "inexact_frozen_numerical_candidate": null,
+      "original_current_body_residual_N": 2.093351731914922e-06,
+      "original_current_robot_effort_residual": 3.684839647334999e-07,
+      "original_motion_CCD": {
+        "passed": true,
+        "intervals": 1,
+        "observations": [
+          {
+            "intervals": 1,
+            "tested_safe_fractions": [
+              1.0
+            ]
+          }
+        ],
+        "same_straight_vertex_trajectories": true,
+        "CCD_tolerances_and_conservative_rescaling_unchanged": true,
+        "physical_timestep_subdivided": false
+      },
+      "frozen_friction_stencils": 2,
+      "is_physical_history_state": false,
+      "original_physical_gates_passed": false,
+      "numerical_relaxation": 0.5
+    },
+    {
+      "stage": 8,
+      "inner_equation_solved": true,
+      "inexact_frozen_numerical_candidate": null,
+      "original_current_body_residual_N": 1.0504814276961188e-06,
+      "original_current_robot_effort_residual": 1.8516594552662496e-07,
+      "original_motion_CCD": {
+        "passed": true,
+        "intervals": 1,
+        "observations": [
+          {
+            "intervals": 1,
+            "tested_safe_fractions": [
+              1.0
+            ]
+          }
+        ],
+        "same_straight_vertex_trajectories": true,
+        "CCD_tolerances_and_conservative_rescaling_unchanged": true,
+        "physical_timestep_subdivided": false
+      },
+      "frozen_friction_stencils": 2,
+      "is_physical_history_state": false,
+      "original_physical_gates_passed": false,
+      "numerical_relaxation": 0.5
+    },
+    {
+      "stage": 9,
+      "inner_equation_solved": true,
+      "inexact_frozen_numerical_candidate": null,
+      "original_current_body_residual_N": 5.270788327341452e-07,
+      "original_current_robot_effort_residual": 9.272942177068733e-08,
+      "original_motion_CCD": {
+        "passed": true,
+        "intervals": 1,
+        "observations": [
+          {
+            "intervals": 1,
+            "tested_safe_fractions": [
+              1.0
+            ]
+          }
+        ],
+        "same_straight_vertex_trajectories": true,
+        "CCD_tolerances_and_conservative_rescaling_unchanged": true,
+        "physical_timestep_subdivided": false
+      },
+      "frozen_friction_stencils": 2,
+      "is_physical_history_state": false,
+      "original_physical_gates_passed": false,
+      "numerical_relaxation": 0.5
+    },
+    {
+      "stage": 10,
+      "inner_equation_solved": true,
+      "inexact_frozen_numerical_candidate": null,
+      "original_current_body_residual_N": 2.6346077078658655e-07,
+      "original_current_robot_effort_residual": 4.688017674349325e-08,
+      "original_motion_CCD": {
+        "passed": true,
+        "intervals": 1,
+        "observations": [
+          {
+            "intervals": 1,
+            "tested_safe_fractions": [
+              1.0
+            ]
+          }
+        ],
+        "same_straight_vertex_trajectories": true,
+        "CCD_tolerances_and_conservative_rescaling_unchanged": true,
+        "physical_timestep_subdivided": false
+      },
+      "frozen_friction_stencils": 2,
+      "is_physical_history_state": false,
+      "original_physical_gates_passed": false,
+      "numerical_relaxation": 0.5
+    },
+    {
+      "stage": 11,
+      "inner_equation_solved": true,
+      "inexact_frozen_numerical_candidate": null,
+      "original_current_body_residual_N": 1.3133670688410136e-07,
+      "original_current_robot_effort_residual": 2.318518190993324e-08,
+      "original_motion_CCD": {
+        "passed": true,
+        "intervals": 1,
+        "observations": [
+          {
+            "intervals": 1,
+            "tested_safe_fractions": [
+              1.0
+            ]
+          }
+        ],
+        "same_straight_vertex_trajectories": true,
+        "CCD_tolerances_and_conservative_rescaling_unchanged": true,
+        "physical_timestep_subdivided": false
+      },
+      "frozen_friction_stencils": 2,
+      "is_physical_history_state": false,
+      "original_physical_gates_passed": false,
+      "numerical_relaxation": 0.5
+    },
+    {
+      "stage": 12,
+      "inner_equation_solved": true,
+      "inexact_frozen_numerical_candidate": null,
+      "original_current_body_residual_N": 6.610692022904652e-08,
+      "original_current_robot_effort_residual": 1.134608895717654e-08,
+      "original_motion_CCD": {
+        "passed": true,
+        "intervals": 1,
+        "observations": [
+          {
+            "intervals": 1,
+            "tested_safe_fractions": [
+              1.0
+            ]
+          }
+        ],
+        "same_straight_vertex_trajectories": true,
+        "CCD_tolerances_and_conservative_rescaling_unchanged": true,
+        "physical_timestep_subdivided": false
+      },
+      "frozen_friction_stencils": 2,
+      "is_physical_history_state": false,
+      "original_physical_gates_passed": false,
+      "numerical_relaxation": 0.5
+    },
+    {
+      "stage": 13,
+      "inner_equation_solved": true,
+      "inexact_frozen_numerical_candidate": null,
+      "original_current_body_residual_N": 3.301448791249129e-08,
+      "original_current_robot_effort_residual": 6.1533622301071966e-09,
+      "original_motion_CCD": {
+        "passed": true,
+        "intervals": 1,
+        "observations": [
+          {
+            "intervals": 1,
+            "tested_safe_fractions": [
+              1.0
+            ]
+          }
+        ],
+        "same_straight_vertex_trajectories": true,
+        "CCD_tolerances_and_conservative_rescaling_unchanged": true,
+        "physical_timestep_subdivided": false
+      },
+      "frozen_friction_stencils": 2,
+      "is_physical_history_state": false,
+      "original_physical_gates_passed": false,
+      "numerical_relaxation": 0.5
+    },
+    {
+      "stage": 14,
+      "inner_equation_solved": true,
+      "inexact_frozen_numerical_candidate": null,
+      "original_current_body_residual_N": 1.6837522587366555e-08,
+      "original_current_robot_effort_residual": 3.0534977233019723e-09,
+      "original_motion_CCD": {
+        "passed": true,
+        "intervals": 1,
+        "observations": [
+          {
+            "intervals": 1,
+            "tested_safe_fractions": [
+              1.0
+            ]
+          }
+        ],
+        "same_straight_vertex_trajectories": true,
+        "CCD_tolerances_and_conservative_rescaling_unchanged": true,
+        "physical_timestep_subdivided": false
+      },
+      "frozen_friction_stencils": 2,
+      "is_physical_history_state": false,
+      "original_physical_gates_passed": false,
+      "numerical_relaxation": 0.5
+    },
+    {
+      "stage": 15,
+      "inner_equation_solved": false,
+      "inexact_frozen_numerical_candidate": {
+        "inner_solver_error": "Rigid-body coupled line search failed: lagged_stage015 {'phase': 'lagged_stage015', 'iteration': 46, 'body_force_equivalent_residual_N': 1.0616226362516268e-09, 'joint_residual_N_or_Nm': 4.4350955685982465e-10, 'normal_stencils': 2}",
+        "frozen_body_residual_N": 1.0616226362516268e-09,
+        "frozen_robot_effort_residual": 4.4350955685982465e-10,
+        "working_bound_N_or_Nm": 1e-08,
+        "is_physical_acceptance": false
+      },
+      "original_current_body_residual_N": 7.663476658167763e-09,
+      "original_current_robot_effort_residual": 1.8752196413401407e-09,
+      "original_motion_CCD": {
+        "passed": true,
+        "intervals": 1,
+        "observations": [
+          {
+            "intervals": 1,
+            "tested_safe_fractions": [
+              1.0
+            ]
+          }
+        ],
+        "same_straight_vertex_trajectories": true,
+        "CCD_tolerances_and_conservative_rescaling_unchanged": true,
+        "physical_timestep_subdivided": false
+      },
+      "frozen_friction_stencils": 2,
+      "is_physical_history_state": false,
+      "original_physical_gates_passed": false,
+      "numerical_relaxation": 0.5
+    },
+    {
+      "stage": 16,
+      "inner_equation_solved": true,
+      "inexact_frozen_numerical_candidate": null,
+      "original_current_body_residual_N": 3.4588106282298278e-09,
+      "original_current_robot_effort_residual": 6.130271432569698e-10,
+      "original_motion_CCD": {
+        "passed": true,
+        "intervals": 1,
+        "observations": [
+          {
+            "intervals": 1,
+            "tested_safe_fractions": [
+              1.0
+            ]
+          }
+        ],
+        "same_straight_vertex_trajectories": true,
+        "CCD_tolerances_and_conservative_rescaling_unchanged": true,
+        "physical_timestep_subdivided": false
+      },
+      "frozen_friction_stencils": 2,
+      "is_physical_history_state": false,
+      "original_physical_gates_passed": false,
+      "numerical_relaxation": 0.5
+    },
+    {
+      "stage": 17,
+      "inner_equation_solved": true,
+      "inexact_frozen_numerical_candidate": null,
+      "original_current_body_residual_N": 1.8614623904767238e-09,
+      "original_current_robot_effort_residual": 6.206855336399202e-10,
+      "original_motion_CCD": {
+        "passed": true,
+        "intervals": 1,
+        "observations": [
+          {
+            "intervals": 1,
+            "tested_safe_fractions": [
+              1.0
+            ]
+          }
+        ],
+        "same_straight_vertex_trajectories": true,
+        "CCD_tolerances_and_conservative_rescaling_unchanged": true,
+        "physical_timestep_subdivided": false
+      },
+      "frozen_friction_stencils": 2,
+      "is_physical_history_state": false,
+      "original_physical_gates_passed": false,
+      "numerical_relaxation": 0.5
+    },
+    {
+      "stage": 18,
+      "inner_equation_solved": true,
+      "inexact_frozen_numerical_candidate": null,
+      "original_current_body_residual_N": 8.121851205517237e-10,
+      "original_current_robot_effort_residual": 1.9238335881800333e-10,
+      "original_motion_CCD": {
+        "passed": true,
+        "intervals": 1,
+        "observations": [
+          {
+            "intervals": 1,
+            "tested_safe_fractions": [
+              1.0
+            ]
+          }
+        ],
+        "same_straight_vertex_trajectories": true,
+        "CCD_tolerances_and_conservative_rescaling_unchanged": true,
+        "physical_timestep_subdivided": false
+      },
+      "frozen_friction_stencils": 2,
+      "is_physical_history_state": false,
+      "original_physical_gates_passed": true,
+      "fresh_actual_robot_effort_residual": 1.9238335881800333e-10
+    }
+  ],
+  "recovered_original_equation": true,
+  "final_acceptance_uses_original_current_friction": true,
+  "original_physical_gate_N_or_Nm": 1e-09,
+  "frozen_numerical_stagnation_working_bound_N_or_Nm": 1e-08,
+  "numerical_iterations_are_physical_history": false
+}
