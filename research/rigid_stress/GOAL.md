@@ -31,6 +31,19 @@ egg/Franka and U contact references, resolved-load/native replay versus feedback
 remaining applicable load-model sensitivity and physically verified warmed costs.
 These are execution priorities within the complete linked objective.
 
+The [contact-history/marking-domain checkpoint](docs/PHYSICAL_CONTACT_HISTORY_DOMAIN_20261015.md)
+independently closes all744 original U load/initialization stages with current
+normal/friction forces, original1e-9N balances and full raw fields. Measured
+bit differences remain explicit; final complete quadrature tensor difference
+is6.62e-11 relative. The500um egg marking domain closes five force/coverage
+states and158340 common-point fields: tensor still changes4.27% despite raw
+peak0.00555%. The exact tensor-volume/nested-energy methods pass manufactured
+controls before local bulk interpretation. Old U temporary initialization
+coordinate selections differ across meshes; their final effect remains unmeasured.
+A23-point shared set supplies rank6 anchors for a separate controlled test.
+Fixed-history barrier and initialization controls remain live; startup failures
+are retained. All original physical/model/feedback/warmed-cost requirements stay.
+
 The [complete original feedback checkpoint](docs/PHYSICAL_COMPLETE_FEEDBACK_20261015.md)
 closes the original rigid counterpart's330 controls/2640 states/3.3s, independent
 all-state original physical gates, complete matched source-wrench history,

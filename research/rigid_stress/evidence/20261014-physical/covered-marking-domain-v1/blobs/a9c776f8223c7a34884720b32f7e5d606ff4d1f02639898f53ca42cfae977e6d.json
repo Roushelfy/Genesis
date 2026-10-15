@@ -1,0 +1,67 @@
+{
+  "closed_runs": [
+    {
+      "run": "egg-broad-covered-cad-level1-contact-v1",
+      "summary_sha256": "a8155eb61e8e7d7813cedd25b3bbdf6c89152a79ac3de6d0c50c47157421fc34",
+      "actual_code": 0,
+      "source_closure_actual_verified": true
+    },
+    {
+      "run": "egg-broad-covered-cad-level1-contact-v1-audit",
+      "summary_sha256": "4b4247d7b629c50cefbd0d846cdafdba14456b3e1e98079443d5872d9ba5d837",
+      "actual_code": 0,
+      "source_closure_actual_verified": true
+    },
+    {
+      "run": "egg-broad-covered-cad-level1-coverage-v1",
+      "summary_sha256": "d5c69169b6af21c56e17c2f1dcc75e8482844f2a00c8b5a9e3f77e807c1c8aae",
+      "actual_code": 0,
+      "source_closure_actual_verified": true
+    }
+  ],
+  "all_five_independent_original_force_and_coverage_gates_passed": true,
+  "last_field_and_contact": {
+    "step": 5,
+    "time_s": 0.00625,
+    "body_tetrahedra": 90240,
+    "complete_body_dynamic_residual_N": 6.242433303420926e-14,
+    "complete_mapped_dynamic_residual_N": 1.7296124820029653e-13,
+    "force_pullback_max_difference_N": 1.6653345369377348e-16,
+    "normal_stencils": 30,
+    "maximum_coulomb_violation_N": -0.00017242129249910523,
+    "active_body_contact_nodes": 32,
+    "active_lumped_contact_area_m2": 2.896084322902183e-08,
+    "maximum_unsmoothed_body_normal_force_per_area_Pa": 70489344.52920878,
+    "raw_global_peak_lower_Pa": 40398245.89410627,
+    "raw_global_peak_upper_Pa": 40398245.894106425,
+    "whole_volume_J_lower_bound": 0.997599685314223,
+    "raw_peak_reference_position_m": [
+      2.114692078892005e-05,
+      0.022251337693694837,
+      -0.001827384332560059
+    ]
+  },
+  "last_coverage": {
+    "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-broad-covered-cad-level1-contact-v1",
+    "step": 5,
+    "time_s": 0.00625,
+    "tetrahedra": 90240,
+    "active_body_samples": 32,
+    "active_samples_outside_marking_caps": 0,
+    "outside_unsigned_normal_sample_load_fraction": 0.0,
+    "minimum_and_maximum_sample_angle_over_cap_angle": [
+      0.0,
+      0.21294607097036133
+    ],
+    "active_reference_trace_incident_edge_m_percentiles": [
+      3.438391608232857e-05,
+      3.449278005025229e-05,
+      3.475879449114024e-05
+    ],
+    "maximum_sample_radial_parameter_norm_difference_from_one": 8.321830077262504e-07,
+    "raw_global_peak_lower_Pa": 40398245.89410627
+  },
+  "scope": "Broad500um numerical cap at100um target; changed marking coverage is not a new physical footprint. Raw peak near40.398MPa alone is not field convergence. Full common-point comparison against narrow150um cap remains outstanding; geometry_run provenance differs and must be semantically checked rather than erased.",
+  "goal_completion": false,
+  "time_utc": "2026-10-15T19:40:54.986764+00:00"
+}

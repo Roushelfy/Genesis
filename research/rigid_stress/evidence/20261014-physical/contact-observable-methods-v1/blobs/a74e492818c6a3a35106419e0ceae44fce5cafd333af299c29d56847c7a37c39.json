@@ -1,0 +1,198 @@
+{
+  "scope": "Recover the actual temporary body initialization coordinates from saved U coordinate maps.",
+  "rows": [
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-1-v1",
+      "body_dofs": 5568,
+      "initialization_coordinate_rows": [
+        60,
+        62,
+        70,
+        140,
+        915,
+        941
+      ],
+      "initialization_points_m": [
+        [
+          1.5178830414797062e-17,
+          -0.011,
+          2.0818995585505005e-18
+        ],
+        [
+          1.5178830414797062e-17,
+          -0.011,
+          2.0818995585505005e-18
+        ],
+        [
+          -0.006858387820446052,
+          -0.008600146307148341,
+          1.7880022442132266e-18
+        ],
+        [
+          -0.011,
+          0.024,
+          -1.3877787807814457e-17
+        ],
+        [
+          -0.007859472341680994,
+          0.02696102989652244,
+          -0.00046103571352737135
+        ],
+        [
+          0.010081847024560848,
+          0.026100991201146517,
+          0.000501745890897041
+        ]
+      ],
+      "initialization_components": [
+        0,
+        2,
+        1,
+        2,
+        0,
+        2
+      ],
+      "component_matched_nearest_baseline_distance_m": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "all_six_physical_coordinate_constraints_match_baseline": true
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-2-v1",
+      "body_dofs": 13725,
+      "initialization_coordinate_rows": [
+        81,
+        83,
+        1910,
+        1962,
+        1994,
+        11044
+      ],
+      "initialization_points_m": [
+        [
+          -2.1250362580715887e-17,
+          -0.011,
+          2.0818995585505005e-18
+        ],
+        [
+          -2.1250362580715887e-17,
+          -0.011,
+          2.0818995585505005e-18
+        ],
+        [
+          -0.009884099307035873,
+          0.026322776444421037,
+          -0.00023426350648300762
+        ],
+        [
+          0.00755815482983021,
+          0.026963048644942245,
+          0.00015847893646651266
+        ],
+        [
+          0.010665138485806257,
+          0.025281702639755807,
+          -0.0005042570720548489
+        ],
+        [
+          0.009950590128301781,
+          0.003071300672881863,
+          0.002147911670234871
+        ]
+      ],
+      "initialization_components": [
+        0,
+        2,
+        2,
+        0,
+        2,
+        1
+      ],
+      "component_matched_nearest_baseline_distance_m": [
+        3.642919299551295e-17,
+        3.642919299551295e-17,
+        0.0025875479044424974,
+        0.015430069023715442,
+        0.0014224994330597975,
+        0.020576149757237826
+      ],
+      "all_six_physical_coordinate_constraints_match_baseline": false
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-3-v2",
+      "body_dofs": 30642,
+      "initialization_coordinate_rows": [
+        105,
+        107,
+        3458,
+        3489,
+        3695,
+        29686
+      ],
+      "initialization_points_m": [
+        [
+          1.5395670849294163e-17,
+          -0.011,
+          2.0818995585505005e-18
+        ],
+        [
+          1.5395670849294163e-17,
+          -0.011,
+          2.0818995585505005e-18
+        ],
+        [
+          -0.010797449873440258,
+          0.025001539680875446,
+          -0.0004137541216966914
+        ],
+        [
+          -0.0079834376012021,
+          0.02694858411330172,
+          0.0005527905695023836
+        ],
+        [
+          0.0103599960164921,
+          0.02585197962619423,
+          -2.429539674321025e-05
+        ],
+        [
+          0.009668203853778992,
+          -0.0009680668843305925,
+          0.0007391957694098394
+        ]
+      ],
+      "initialization_components": [
+        0,
+        2,
+        2,
+        0,
+        2,
+        1
+      ],
+      "component_matched_nearest_baseline_distance_m": [
+        2.168404344971009e-19,
+        2.168404344971009e-19,
+        0.0011024068030261994,
+        0.0010214528942883469,
+        0.0006450527594505767,
+        0.018218761732573266
+      ],
+      "all_six_physical_coordinate_constraints_match_baseline": false
+    }
+  ],
+  "input_sha256": {
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-1-v1/solution/original_coordinate_map.npz": "7a6836ee15a312cef8a3381ff82cf6a5cc3f89cda9ac8817cfe5e66315f7344b",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-1-v1/solution/fields.npz": "df176b22a40523f143a63e0d14c177243b325ffab876b26914c229b8bab43acd",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-2-v1/solution/original_coordinate_map.npz": "6df105c1ed05a95740135f87aa59f330ca25d79acb093beb4eb2fd2de760c03e",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-2-v1/solution/fields.npz": "d95e3a6b84c519ce49fe7007a0d195b359ab0b86ac5a2eb12a0ddeb048b686aa",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-3-v2/solution/original_coordinate_map.npz": "84b96d879422c126f1f629b138793e3e566499c9ef7a72f341218a8cc54e4307",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-3-v2/solution/fields.npz": "5a38f64b6a1a29ce54d53fd05a03c5e1f54cb04976efe2fb2a2ae4af912acc42"
+  },
+  "goal_completion": false,
+  "limitations": "The six omitted independent body entries define the held numerical rigid-coordinate origin in initialization; the complete original coordinate map restores six free body modes after release. This audit reports actual geometric coordinate/component identities. Different initialization constraints do not by themselves measure their effect on final friction history or stress, and matching coordinates do not establish physical convergence. The distinction remains explicit when interpreting coupled body/geometry refinements."
+}

@@ -1,0 +1,57 @@
+{
+  "scope": "Retain accepted reference contact stages without changing their equations or arithmetic.",
+  "directory": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-recorded-history-qualification-v1/accepted-contact-history",
+  "geometry_sha256": "3706c5ff63155af6d3f27eb238e4ae18d5776d5bdfda58de17d0fd80cf05dcd7",
+  "accepted_stages": 744,
+  "calls": [
+    {
+      "call": 0,
+      "phase": "collision_free_approach",
+      "method": "supported_current_friction",
+      "load_steps": 12,
+      "tolerance_N": 1e-09,
+      "map_file": "call000.map.npz",
+      "map_sha256": "e86507b978469474ff791f996130f9169143f3ce465ddb9f4050607c8e27af36",
+      "dhat_m": 2.5e-06,
+      "friction": 0.8
+    },
+    {
+      "call": 1,
+      "phase": "contact_initialization",
+      "method": "supported_current_friction",
+      "load_steps": 604,
+      "tolerance_N": 1e-09,
+      "map_file": "call001.map.npz",
+      "map_sha256": "e86507b978469474ff791f996130f9169143f3ce465ddb9f4050607c8e27af36",
+      "dhat_m": 2.5e-06,
+      "friction": 0.8
+    },
+    {
+      "call": 2,
+      "phase": "held_body_force_control",
+      "method": "supported_current_friction",
+      "load_steps": 64,
+      "tolerance_N": 1e-09,
+      "map_file": "call002.map.npz",
+      "map_sha256": "f635bd4abbaf24bdd552b2e18e004f32f5861d586ec1530f41dab978398aa27a",
+      "dhat_m": 2.5e-06,
+      "friction": 0.8
+    },
+    {
+      "call": 3,
+      "phase": "free_body_force_control",
+      "method": "updated_friction",
+      "load_steps": 64,
+      "tolerance_N": 1e-09,
+      "map_file": "call003.map.npz",
+      "map_sha256": "7feb2304fc99214861560a71e9ab913cd17f5b7cde0e47727e51c2a6ef29223c",
+      "dhat_m": 2.5e-06,
+      "friction": 0.8
+    }
+  ],
+  "stages_file": "stages.jsonl",
+  "stages_sha256": "49e02258261b2413410ab74391ec4642145c8b5a24fc79bbcb50487447e7d32b",
+  "stage_coordinate": "Original quasi-static load/initialization stages; not added physical timesteps.",
+  "complete_producer_success_not_inferred": true,
+  "goal_completion": false
+}

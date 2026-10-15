@@ -1,0 +1,45 @@
+--- a/research/rigid_stress/compare_covered_cad_fields.py
++++ b/research/rigid_stress/compare_covered_cad_fields.py
+@@ -40,6 +40,7 @@
+     parser.add_argument("--run", type=Path, nargs="+", required=True)
+     parser.add_argument("--audit", type=Path, nargs="+", required=True)
+     parser.add_argument("--step", type=int, default=5)
++    parser.add_argument("--compare-marking-domains", action="store_true")
+     parser.add_argument("--output", type=Path, required=True)
+     args = parser.parse_args()
+     assert len(args.run) == len(args.audit) >= 2 and args.step > 1
+@@ -70,6 +71,34 @@
+         assert config["steps"] >= args.step
+         physical = {key: config[key] for key in ["closure_run", "dt", "control_steps", "geometry_run", "mode"]}
+         physical.update(dhat_m=static.dhat, friction=static.friction)
++        if args.compare_marking_domains:
++            geometry_run = Path(config["geometry_run"])
++            closed_source(geometry_run)
++            assert int((geometry_run / "returncode.txt").read_text()) == 0
++            geometry_path = geometry_run / "results/summary.json"
++            declared = json.loads(geometry_path.read_text())
++            assert declared["declared_geometry"] == {
++                "equatorial_radius_m": 0.022, "polar_radius_m": 0.03,
++                "taper": 0.18, "thickness_m": 0.0005, "density_kg_m3": 2000,
++            }
++            assert declared["seed_global_level"] == 3
++            seed_hashes = {
++                path: digest for path, digest in declared["input_sha256"].items()
++                if Path(path).name in {"cad-level3.npz", "polyhedron-level3.npz"}
++            }
++            assert len(seed_hashes) == 2
++            for path, digest in seed_hashes.items():
++                assert hashlib.sha256(Path(path).read_bytes()).hexdigest() == digest
++                inputs[path] = digest
++            inputs[str(geometry_path)] = hashlib.sha256(geometry_path.read_bytes()).hexdigest()
++            inputs[str(geometry_run / "arguments.txt")] = hashlib.sha256((geometry_run / "arguments.txt").read_bytes()).hexdigest()
++            # Compare the checked physical definition while retaining both actual provenance paths above.
++            physical["geometry_run"] = {
++                "declared_continuum_geometry": declared["declared_geometry"],
++                "seed_global_level": declared["seed_global_level"],
++                "identical_seed_mesh_inputs": seed_hashes,
++            }
++            physical.update(body_young_Pa=static.body.young, body_poisson=static.body.poisson, body_density_kg_m3=static.body.density)
+         fingers = [static.rest[nodes].copy() for nodes in static.finger_nodes]
+         if baseline is None:
+             baseline = physical
