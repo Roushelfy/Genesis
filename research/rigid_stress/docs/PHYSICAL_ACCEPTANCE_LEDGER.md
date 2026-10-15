@@ -5,7 +5,21 @@ without narrowing its scope. Historical native performance completion does not
 establish the new physical stage. Dated reports preserve their observations;
 running or pending jobs count as scheduled work only.
 
-Current: [complete fine history and linearization](PHYSICAL_FULL_SPATIAL_20261015.md)
+Current original application: [1784 independently checked physical states](PHYSICAL_ORIGINAL_HISTORY_20261015.md)
+retain the original approach/lift controls, ground support, dt and1e-9 physical
+force/actual-robot/fresh-step gates through2.23s. The rejected1784 direct candidate
+passes those original gates without a new Newton/continuation step. All1783
+preceding global fields,12 actual native replays and7518240 interior/corner
+samples qualify their stated scopes. The original3.3s history remains incomplete;
+new continuations are live, not accepted evidence. Every original requirement
+in the table remains in scope.
+The subsequent exact-stagnation qualification preserves every1784 original
+prefix byte and1785–1787 full tensors to7.02e-12 relative change. After stopping
+the redundant baseline, its1789 states pass independent original-budget audits;
+its actual zero wrapper code is correctly retained as incomplete. The remaining
+full-history continuation is live and excluded from accepted evidence.
+
+Current spatial/model result: [complete fine history and linearization](PHYSICAL_FULL_SPATIAL_20261015.md)
 independently audits all80 precision-aware8433-tet states with maximum body/mapped
 residuals5.54e-11/9.80e-11N at unchanged budgets. Complete480/3577/8433 histories
 retain23.94% tensor/49.66% energy change and2.023GPa final raw peak. Independent

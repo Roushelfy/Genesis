@@ -1,0 +1,77 @@
+{
+  "originalStagnationHistoryCommand": {
+    "command": "sbatch --parsable --array=0-0 --job-name=original-stagnation-checked-history --partition=cpu --cpus-per-task=8 --mem=64G --time=04:00:00 --output='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-stagnation-checked-history-v1-slurm-%A_%a.log' --wrap='bash -c '\\''source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash '\\''\\'\\'''\\''/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/run_stagnation_checked_original.sh'\\''\\'\\'''\\'' '\\''\\'\\'''\\''/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-stagnation-checked-history-v1'\\''\\'\\'''\\'' '\\''\\'\\'''\\''--capture'\\''\\'\\'''\\'' '\\''\\'\\'''\\''/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-articulated-physical-mass-input-v2'\\''\\'\\'''\\'' '\\''\\'\\'''\\''--protocol-run'\\''\\'\\'''\\'' '\\''\\'\\'''\\''/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-protocol-v1'\\''\\'\\'''\\'' '\\''\\'\\'''\\''--macro-steps'\\''\\'\\'''\\'' '\\''\\'\\'''\\''330'\\''\\'\\'''\\'' '\\''\\'\\'''\\''--resume-run'\\''\\'\\'''\\'' '\\''\\'\\'''\\''/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-residual-globalized-history-v1'\\''\\'\\'''\\'' '\\''\\'\\'''\\''--recovery-run'\\''\\'\\'''\\'' '\\''\\'\\'''\\''/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-1784-direct-candidate-v2'\\''\\'\\'''\\'' '\\''\\'\\'''\\''--recovery-audit'\\''\\'\\'''\\'' '\\''\\'\\'''\\''/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-1784-direct-audit-v1'\\''\\'\\'''\\'''\\'''",
+    "result": {
+      "chunk_id": "0cdbe9",
+      "wall_time_seconds": 9.635e-06,
+      "exit_code": 0,
+      "original_token_count": 2,
+      "output": "716061\n"
+    }
+  },
+  "originalStagnationEquivalenceCommand": {
+    "command": "sbatch --parsable --array=0-0 --job-name=original-stagnation-equivalence --partition=cpu --cpus-per-task=8 --mem=64G --time=00:15:00 --output='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/original-stagnation-equivalence-v1-slurm-%A_%a.log' --wrap='bash -c '\\''source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash '\\''\\'\\'''\\''/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/qualify_original_stagnation.sh'\\''\\'\\'''\\'' '\\''\\'\\'''\\''/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/original-stagnation-equivalence-v1'\\''\\'\\'''\\'' --observation '\\''\\'\\'''\\''/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/original-stagnation-observation-v1'\\''\\'\\'''\\'''\\'''",
+    "result": {
+      "chunk_id": "4e4488",
+      "wall_time_seconds": 2.2103e-05,
+      "exit_code": 0,
+      "original_token_count": 2,
+      "output": "716065\n"
+    }
+  },
+  "originalStagnationAuditCommand": {
+    "command": "sbatch --parsable --array=0-0 --job-name='original-stagnation-history-audit' --partition=cpu --cpus-per-task=8 --mem=64G --time=01:00:00 --dependency='afterany:716061' --output='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-stagnation-history-audit-v1-slurm-%A_%a.log' --wrap='bash -c '\\''source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash '\\''\\'\\'''\\''/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/audit_original_franka_prefix.sh'\\''\\'\\'''\\'' '\\''\\'\\'''\\''/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-stagnation-history-audit-v1'\\''\\'\\'''\\'' '\\''\\'\\'''\\''--run'\\''\\'\\'''\\'' '\\''\\'\\'''\\''/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-stagnation-checked-history-v1'\\''\\'\\'''\\'' '\\''\\'\\'''\\''--allow-incomplete-prefix'\\''\\'\\'''\\'''\\'''",
+    "result": {
+      "chunk_id": "6614ab",
+      "wall_time_seconds": 1.2198e-05,
+      "exit_code": 0,
+      "original_token_count": 2,
+      "output": "716066\n"
+    },
+    "job": "716066"
+  },
+  "originalStagnationFieldsCommand": {
+    "command": "sbatch --parsable --array=0-0 --job-name='original-stagnation-history-fields' --partition=cpu --cpus-per-task=8 --mem=64G --time=01:00:00 --dependency='afterok:716066' --output='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-stagnation-history-fields-v1-slurm-%A_%a.log' --wrap='bash -c '\\''source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash '\\''\\'\\'''\\''/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/audit_original_history_fields.sh'\\''\\'\\'''\\'' '\\''\\'\\'''\\''/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-stagnation-history-fields-v1'\\''\\'\\'''\\'' '\\''\\'\\'''\\''--run'\\''\\'\\'''\\'' '\\''\\'\\'''\\''/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-stagnation-checked-history-v1'\\''\\'\\'''\\'' '\\''\\'\\'''\\''--force-audit'\\''\\'\\'''\\'' '\\''\\'\\'''\\''/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-stagnation-history-audit-v1'\\''\\'\\'''\\'''\\'''",
+    "result": {
+      "chunk_id": "efe564",
+      "wall_time_seconds": 1.1507e-05,
+      "exit_code": 0,
+      "original_token_count": 2,
+      "output": "716067\n"
+    },
+    "job": "716067"
+  },
+  "originalStagnationNativeCommand": {
+    "command": "sbatch --parsable --array=0-0 --job-name='original-stagnation-history-native' --partition=rtx-mid --gres=gpu:1 --cpus-per-task=8 --mem=64G --time=01:00:00 --dependency='afterok:716067' --output='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-stagnation-history-native-v1-slurm-%A_%a.log' --wrap='bash -c '\\''source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash '\\''\\'\\'''\\''/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/replay_original_history.sh'\\''\\'\\'''\\'' '\\''\\'\\'''\\''/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-stagnation-history-native-v1'\\''\\'\\'''\\'' '\\''\\'\\'''\\''--audit-run'\\''\\'\\'''\\'' '\\''\\'\\'''\\''/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-stagnation-history-fields-v1'\\''\\'\\'''\\'''\\'''",
+    "result": {
+      "chunk_id": "d5b005",
+      "wall_time_seconds": 2.0401e-05,
+      "exit_code": 0,
+      "original_token_count": 2,
+      "output": "716068\n"
+    },
+    "job": "716068"
+  },
+  "originalStagnationBoundsCommand": {
+    "command": "sbatch --parsable --array=0-0 --job-name='original-stagnation-history-bounds' --partition=cpu --cpus-per-task=8 --mem=64G --time=01:00:00 --dependency='afterok:716067' --output='/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-stagnation-history-bounds-v1-slurm-%A_%a.log' --wrap='bash -c '\\''source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash '\\''\\'\\'''\\''/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/qualify_original_history_bounds.sh'\\''\\'\\'''\\'' '\\''\\'\\'''\\''/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-stagnation-history-bounds-v1'\\''\\'\\'''\\'' '\\''\\'\\'''\\''--audit-run'\\''\\'\\'''\\'' '\\''\\'\\'''\\''/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-stagnation-history-fields-v1'\\''\\'\\'''\\'''\\'''",
+    "result": {
+      "chunk_id": "4902ef",
+      "wall_time_seconds": 9.754e-06,
+      "exit_code": 0,
+      "original_token_count": 2,
+      "output": "716069\n"
+    },
+    "job": "716069"
+  },
+  "stopped_redundant_baseline": {
+    "job": "716041_0",
+    "reason": "Stop only after completed716065 independent common-state/corner/quadrature equivalence checks. The original1784 prefix is byte-identical; samples1785\u20131787 agree within existing numerical budgets.",
+    "also_cancelled_unstarted_redundant_fields_native_bounds": [
+      "716056_0",
+      "716057_0",
+      "716058_0"
+    ],
+    "retained_all_state_baseline_audit": "716042_0",
+    "wrapper_zero_is_not_completion": true
+  }
+}

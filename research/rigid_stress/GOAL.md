@@ -31,6 +31,19 @@ egg/Franka and U contact references, resolved-load/native replay versus feedback
 remaining applicable load-model sensitivity and physically verified warmed costs.
 These are execution priorities within the complete linked objective.
 
+The [original-history checkpoint](docs/PHYSICAL_ORIGINAL_HISTORY_20261015.md)
+independently checks1784 original physical states through2.23s at unchanged
+dt/controls and original1e-9 force/robot gates. The1784th saved direct candidate
+already passes those gates, despite missing the stricter internal Newton target;
+it is re-evaluated without artificial continuation. All1783 preceding global
+fields,12 actual native replays and7518240 interior/corner samples qualify their
+declared scopes. Remaining original history and every physical contact/model/
+feedback/accuracy-cost requirement stay open. Continued histories remain live.
+After completed common-state field equivalence, the redundant continuation is
+cancelled and its1789 saved states pass an independent original-budget audit.
+The actual zero wrapper code with missing summary is correctly classified as an
+incomplete prefix. The remaining original-history continuation stays live.
+
 The [complete fine-history and linearization checkpoint](docs/PHYSICAL_FULL_SPATIAL_20261015.md)
 independently audits all80 precision-aware8433-tet states at the unchanged force
 budgets. Three complete480/3577/8433 histories still change23.94% in tensor

@@ -1,0 +1,114 @@
+{
+  "phase": "original01755",
+  "direct_error": "Coupled residual line search failed: original01755 {'phase': 'original01755', 'iteration': 43, 'body_residual_N': 1.011521919857266e-10, 'joint_residual_N_or_Nm': 5.262036008215391e-12, 'normal_stencils': 2}",
+  "final_fraction": 1.0,
+  "recovered_original_equation": true,
+  "original_dt_s": 0.00125,
+  "physical_previous_state_fixed": true,
+  "pseudo_stages_are_physical_history": false,
+  "attempts": [
+    {
+      "fraction": 0.0625,
+      "dt_s": 0.00125,
+      "previous_fraction": 0.0,
+      "accepted": true,
+      "residuals": {
+        "phase": "original01755_residual_0.06250000",
+        "iteration": 7,
+        "body_residual_N": 9.993845581646133e-11,
+        "joint_residual_N_or_Nm": 1.5622186786137095e-11,
+        "normal_stencils": 2
+      },
+      "contact_groups": [
+        2,
+        1
+      ]
+    },
+    {
+      "fraction": 0.15625,
+      "dt_s": 0.00125,
+      "previous_fraction": 0.0625,
+      "accepted": true,
+      "residuals": {
+        "phase": "original01755_residual_0.15625000",
+        "iteration": 7,
+        "body_residual_N": 9.939302868634658e-11,
+        "joint_residual_N_or_Nm": 1.8605749466679345e-11,
+        "normal_stencils": 2
+      },
+      "contact_groups": [
+        2,
+        1
+      ]
+    },
+    {
+      "fraction": 0.296875,
+      "dt_s": 0.00125,
+      "previous_fraction": 0.15625,
+      "accepted": true,
+      "residuals": {
+        "phase": "original01755_residual_0.29687500",
+        "iteration": 6,
+        "body_residual_N": 9.955344847312732e-11,
+        "joint_residual_N_or_Nm": 9.507358347457646e-12,
+        "normal_stencils": 2
+      },
+      "contact_groups": [
+        1,
+        2
+      ]
+    },
+    {
+      "fraction": 0.5078125,
+      "dt_s": 0.00125,
+      "previous_fraction": 0.296875,
+      "accepted": true,
+      "residuals": {
+        "phase": "original01755_residual_0.50781250",
+        "iteration": 9,
+        "body_residual_N": 9.948595816176758e-11,
+        "joint_residual_N_or_Nm": 1.4224776936552021e-11,
+        "normal_stencils": 2
+      },
+      "contact_groups": [
+        2,
+        1
+      ]
+    },
+    {
+      "fraction": 0.7578125,
+      "dt_s": 0.00125,
+      "previous_fraction": 0.5078125,
+      "accepted": true,
+      "residuals": {
+        "phase": "original01755_residual_0.75781250",
+        "iteration": 8,
+        "body_residual_N": 9.987077870398696e-11,
+        "joint_residual_N_or_Nm": 1.7113989294394176e-11,
+        "normal_stencils": 2
+      },
+      "contact_groups": [
+        2,
+        1
+      ]
+    },
+    {
+      "fraction": 1.0,
+      "dt_s": 0.00125,
+      "previous_fraction": 0.7578125,
+      "accepted": true,
+      "residuals": {
+        "phase": "original01755_residual_1.00000000",
+        "iteration": 6,
+        "body_residual_N": 9.845050908899212e-11,
+        "joint_residual_N_or_Nm": 1.8494542644059776e-11,
+        "normal_stencils": 2
+      },
+      "contact_groups": [
+        1,
+        2
+      ],
+      "fresh_robot_effort_residual": 1.8494542644059776e-11
+    }
+  ]
+}
