@@ -1,0 +1,244 @@
+{
+  "scope": "Compare complete spatial fields at one unchanged time with saved-state or recovery provenance.",
+  "state_source_mode": "saved_completed_states",
+  "rows": [
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-tip-coupled-0-v1",
+      "state_source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-tip-coupled-0-v1/results/step0072.npz",
+      "step": 72,
+      "time_s": 0.09,
+      "local_levels": 0,
+      "tetrahedra": 480,
+      "body_tetrahedra": 480,
+      "complete_body_dynamic_residual_N": 1.9684995607710205e-10,
+      "complete_mapped_dynamic_residual_N": 2.0360742100438593e-10,
+      "force_pullback_max_difference_N": null,
+      "normal_stencils": 2,
+      "maximum_coulomb_violation_N": -0.19898712081600148,
+      "active_body_contact_nodes": 2,
+      "active_lumped_contact_area_m2": 9.651359056248066e-05,
+      "maximum_unsmoothed_body_normal_force_per_area_Pa": 8283.206024564748,
+      "original_saved_contact_force_difference_N": 2.5356420245239055e-11,
+      "raw_peak_lower_Pa": 156447.6832651299,
+      "raw_peak_upper_Pa": 156447.68326529002,
+      "raw_peak_reference_position_m": [
+        1.7697452569155986e-06,
+        0.022028914832074527,
+        0.001184687058517001
+      ],
+      "whole_volume_J_lower_bound": 0.9999918753723511,
+      "minimum_corner_J": 0.9999918753723511,
+      "maximum_corner_Green_Lagrange_strain_norm": 1.7153319636527492e-05,
+      "maximum_objective_nodal_displacement_m": 3.516364270973065e-07,
+      "maximum_objective_nodal_displacement_over_0p5mm_wall": 0.0007032728541946131,
+      "nonlinear_energy_J": 1.3994349654153225e-07,
+      "point_evaluator_qualification": {
+        "polynomial_displacement_max_error_m": 2.642742795433417e-19,
+        "polynomial_tensor_max_error_Pa": 3.039836883544922e-06,
+        "finite_rotation_tensor_max_error_Pa": 0.0001878887414932251
+      }
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-tip-coupled-12-v1",
+      "state_source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-tip-coupled-12-v1/results/step0072.npz",
+      "step": 72,
+      "time_s": 0.09,
+      "local_levels": 12,
+      "tetrahedra": 3577,
+      "body_tetrahedra": 3577,
+      "complete_body_dynamic_residual_N": 3.0699815194818106e-10,
+      "complete_mapped_dynamic_residual_N": 5.28757973013915e-10,
+      "force_pullback_max_difference_N": null,
+      "normal_stencils": 2,
+      "maximum_coulomb_violation_N": -0.19877011732095215,
+      "active_body_contact_nodes": 2,
+      "active_lumped_contact_area_m2": 4.080886716152598e-09,
+      "maximum_unsmoothed_body_normal_force_per_area_Pa": 196055239.229452,
+      "original_saved_contact_force_difference_N": 3.199953537791361e-11,
+      "raw_peak_lower_Pa": 280532251.65259004,
+      "raw_peak_upper_Pa": 280532251.6525902,
+      "raw_peak_reference_position_m": [
+        -2.2683486848548325e-05,
+        -0.02196183354501063,
+        0.002086606824027767
+      ],
+      "whole_volume_J_lower_bound": 0.9797017106040988,
+      "minimum_corner_J": 0.9797017106040988,
+      "maximum_corner_Green_Lagrange_strain_norm": 0.031142276285897975,
+      "maximum_objective_nodal_displacement_m": 2.025135660492913e-06,
+      "maximum_objective_nodal_displacement_over_0p5mm_wall": 0.004050271320985826,
+      "nonlinear_energy_J": 6.839558227532452e-07,
+      "point_evaluator_qualification": {
+        "polynomial_displacement_max_error_m": 2.642742795433417e-19,
+        "polynomial_tensor_max_error_Pa": 3.039836883544922e-06,
+        "finite_rotation_tensor_max_error_Pa": 0.00032093049958348274
+      }
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-precise-spatial-fields-export-v1",
+      "state_source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-precise-spatial-fields-export-v1/results/step0072.npz",
+      "step": 72,
+      "time_s": 0.09,
+      "local_levels": 15,
+      "tetrahedra": 8433,
+      "body_tetrahedra": 8433,
+      "complete_body_dynamic_residual_N": 3.1019864233510314e-11,
+      "complete_mapped_dynamic_residual_N": 5.4297022284285855e-11,
+      "force_pullback_max_difference_N": null,
+      "normal_stencils": 18,
+      "maximum_coulomb_violation_N": -3.2643668850125105e-08,
+      "active_body_contact_nodes": 18,
+      "active_lumped_contact_area_m2": 2.830145554138075e-09,
+      "maximum_unsmoothed_body_normal_force_per_area_Pa": 1459914427.32566,
+      "original_saved_contact_force_difference_N": 4.1714753437827135e-17,
+      "raw_peak_lower_Pa": 2022340435.9057093,
+      "raw_peak_upper_Pa": 2022340435.9057095,
+      "raw_peak_reference_position_m": [
+        -2.2683486848548325e-05,
+        -0.02196183354501063,
+        0.002086606824027767
+      ],
+      "whole_volume_J_lower_bound": 0.7972848241761428,
+      "minimum_corner_J": 0.7972848241761428,
+      "maximum_corner_Green_Lagrange_strain_norm": 0.19399782083997827,
+      "maximum_objective_nodal_displacement_m": 3.991986134276208e-06,
+      "maximum_objective_nodal_displacement_over_0p5mm_wall": 0.007983972268552415,
+      "nonlinear_energy_J": 1.358848954956989e-06,
+      "point_evaluator_qualification": {
+        "polynomial_displacement_max_error_m": 2.642742795433417e-19,
+        "polynomial_tensor_max_error_Pa": 3.039836883544922e-06,
+        "finite_rotation_tensor_max_error_Pa": 0.0006454838439822197
+      }
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-tip18-retained-full-history-v1",
+      "state_source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-tip18-retained-full-history-v1/results/step0072.npz",
+      "step": 72,
+      "time_s": 0.09,
+      "local_levels": 18,
+      "tetrahedra": 30298,
+      "body_tetrahedra": 30298,
+      "complete_body_dynamic_residual_N": 4.1143877621358247e-13,
+      "complete_mapped_dynamic_residual_N": 7.91736836264695e-13,
+      "force_pullback_max_difference_N": null,
+      "normal_stencils": 186,
+      "maximum_coulomb_violation_N": -2.5274423550153535e-08,
+      "active_body_contact_nodes": 186,
+      "active_lumped_contact_area_m2": 3.428706967723655e-09,
+      "maximum_unsmoothed_body_normal_force_per_area_Pa": 3644596723.744,
+      "original_saved_contact_force_difference_N": 1.0540630553030908e-16,
+      "raw_peak_lower_Pa": 3713736611.014324,
+      "raw_peak_upper_Pa": 5827021920.4414015,
+      "raw_peak_reference_position_m": [
+        -2.2683486848548325e-05,
+        -0.02196183354501063,
+        0.002086606824027767
+      ],
+      "whole_volume_J_lower_bound": 0.6458075745412963,
+      "minimum_corner_J": 0.6458075745412963,
+      "maximum_corner_Green_Lagrange_strain_norm": 0.45262149886403075,
+      "maximum_objective_nodal_displacement_m": 4.496480884966313e-06,
+      "maximum_objective_nodal_displacement_over_0p5mm_wall": 0.008992961769932625,
+      "nonlinear_energy_J": 1.2447567576432085e-06,
+      "point_evaluator_qualification": {
+        "polynomial_displacement_max_error_m": 3.4897757426877174e-19,
+        "polynomial_tensor_max_error_Pa": 3.039836883544922e-06,
+        "finite_rotation_tensor_max_error_Pa": 0.0006454838439822197
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "coarse": 0,
+      "fine": 1,
+      "tensor": {
+        "absolute_l2_change": 19.28864863233431,
+        "relative_l2_change": 0.4115873917949451
+      },
+      "vm": {
+        "absolute_l2_change": 10.565089784981705,
+        "relative_l2_change": 0.2076510209426852
+      },
+      "raw_displacement": {
+        "absolute_l2_change": 3.9046219315408894e-10,
+        "relative_l2_change": 0.010633161188193215
+      },
+      "objective_displacement": {
+        "absolute_l2_change": 2.5248583207990338e-11,
+        "relative_l2_change": 0.17701821678772542
+      },
+      "raw_peak_lower_Pa": 0.9994423183703709,
+      "nonlinear_energy_J": 0.7953910298209121
+    },
+    {
+      "coarse": 1,
+      "fine": 2,
+      "tensor": {
+        "absolute_l2_change": 11.182606856305515,
+        "relative_l2_change": 0.23943172683702457
+      },
+      "vm": {
+        "absolute_l2_change": 4.2019279662318,
+        "relative_l2_change": 0.08158805803250914
+      },
+      "raw_displacement": {
+        "absolute_l2_change": 3.152199308534335e-09,
+        "relative_l2_change": 0.09378817691374255
+      },
+      "objective_displacement": {
+        "absolute_l2_change": 9.204857514774857e-12,
+        "relative_l2_change": 0.0665694415419207
+      },
+      "raw_peak_lower_Pa": 0.8612833691737202,
+      "nonlinear_energy_J": 0.4966653061341213
+    },
+    {
+      "coarse": 2,
+      "fine": 3,
+      "tensor": {
+        "absolute_l2_change": 7.329724099152253,
+        "relative_l2_change": 0.15521882752538274
+      },
+      "vm": {
+        "absolute_l2_change": 2.3650570385871847,
+        "relative_l2_change": 0.04531381224645883
+      },
+      "raw_displacement": {
+        "absolute_l2_change": 2.5948108283730675e-09,
+        "relative_l2_change": 0.07182341006415917
+      },
+      "objective_displacement": {
+        "absolute_l2_change": 3.2738831790883377e-12,
+        "relative_l2_change": 0.023578246784751938
+      },
+      "raw_peak_lower_Pa": 0.4554432239734546,
+      "nonlinear_energy_J": 0.09165822688908287
+    }
+  ],
+  "common_probes": 2400,
+  "absolute_weighted_L2_units": {
+    "tensor": "Pa*m^(3/2)",
+    "vm": "Pa*m^(3/2)",
+    "raw_displacement": "m^(5/2)",
+    "objective_displacement": "m^(5/2)"
+  },
+  "physical_configuration": {
+    "closure_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-ref-centred-v1",
+    "dt": 0.00125,
+    "body_refinement": 0,
+    "cold_closure": true,
+    "local_contact_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-spatial-cold-0-v1",
+    "local_radius": 5e-05,
+    "freeze_contact": false,
+    "contact_refinement": 0,
+    "control_steps": 64
+  },
+  "input_sha256": {
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-tip-coupled-0-v1/results/step0072.npz": "708cc3d608c76a673fd1df6add4c27067c3dfa30a7a71b505f30bc33e25dacda",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-tip-coupled-12-v1/results/step0072.npz": "fb1ef62624ac7321f776cbc1df23b624ae455408eaf50a3a77e99472ebbcb183",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-precise-spatial-fields-export-v1/results/step0072.npz": "30658290b172d2b0d0646133cadc7bc4ccb4447f8a04fcb0f00bf922e29de046",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-tip18-retained-full-history-v1/results/step0072.npz": "4e4d22fbf53be2c8df29362d2d8fdda595fb22f9b49b23fa8f6f2711871453d1"
+  },
+  "goal_completion": false,
+  "limitations": "One matched physical time with fixed original physical inputs and complete independently reconstructed1e-9N body/mapped force gates. Completed source histories may have different requested lengths outside the common saved window; a recovered finest state requires its explicit independent recovery audit. Neither mode establishes a new complete80-step trajectory comparison. Lumped support areas are quadrature diagnostics, not independently resolved physical contact boundaries. All raw peaks and common physical points remain visible. Whole histories, credible spatial/contact/geometry tails, application/model/feedback and verified warmed costs remain incomplete."
+}

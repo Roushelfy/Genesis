@@ -1,0 +1,69 @@
+{
+  "original_dt_s": 0.00125,
+  "physical_previous_state_fixed": true,
+  "initial_body_residual_N": 5.103976196197695e-10,
+  "initial_joint_effort_residual": 0.08342409893905102,
+  "analytic_matrix_condition": 513480.9166782267,
+  "robot_tangent_observations": [
+    {
+      "velocity_perturbation": 0.0001,
+      "robot_block_relative_difference": 4.99556988942929e-10,
+      "numerical_robot_condition": 30.46413766686956
+    },
+    {
+      "velocity_perturbation": 1e-05,
+      "robot_block_relative_difference": 4.995706590776248e-10,
+      "numerical_robot_condition": 30.464137666863063
+    },
+    {
+      "velocity_perturbation": 1e-06,
+      "robot_block_relative_difference": 4.999764677658875e-10,
+      "numerical_robot_condition": 30.464137666819497
+    },
+    {
+      "velocity_perturbation": 1e-07,
+      "robot_block_relative_difference": 5.01011130280685e-10,
+      "numerical_robot_condition": 30.46413766649111
+    }
+  ],
+  "attempts": [
+    {
+      "method": "CCD_initialized_original_Newton",
+      "solver_reported_success": true,
+      "message": "Original residual Newton",
+      "body_residual_N": 1.6947014873029129e-10,
+      "joint_effort_residual": 8.475182753024801e-12,
+      "original_step_CCD_fraction": 0.859375,
+      "original_physical_gates_passed": false
+    },
+    {
+      "method": "robot_only_hybr",
+      "solver_reported_success": true,
+      "message": "The solution converged.",
+      "body_residual_N": 5.103976247801583e-10,
+      "joint_effort_residual": 1.0725345724591534e-14,
+      "original_step_CCD_fraction": 0.4296875,
+      "original_physical_gates_passed": false
+    },
+    {
+      "method": "robot_only_lm",
+      "solver_reported_success": true,
+      "message": "The relative error between two consecutive iterates is at most 0.000000",
+      "body_residual_N": 5.103976247801583e-10,
+      "joint_effort_residual": 1.0846836574828751e-14,
+      "original_step_CCD_fraction": 0.4296875,
+      "original_physical_gates_passed": false
+    },
+    {
+      "method": "full15_numerical_TRF",
+      "solver_reported_success": true,
+      "message": "`xtol` termination condition is satisfied.",
+      "body_residual_N": 5.373192173942001e-12,
+      "joint_effort_residual": 5.40666717519393e-15,
+      "original_step_CCD_fraction": 0.4296875,
+      "original_physical_gates_passed": false
+    }
+  ],
+  "recovered_original_equation": false,
+  "numerical_iterations_are_physical_history": false
+}

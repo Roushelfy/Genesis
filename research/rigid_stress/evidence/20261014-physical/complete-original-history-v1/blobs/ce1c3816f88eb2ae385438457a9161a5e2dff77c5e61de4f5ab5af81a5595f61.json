@@ -1,0 +1,201 @@
+{
+  "phase": "original01967",
+  "direct_error": "Coupled Newton exceeded its budget: original01967",
+  "final_fraction": 1.0,
+  "recovered_original_equation": true,
+  "original_dt_s": 0.00125,
+  "internal_newton_target_N": 1e-10,
+  "pseudo_stage_residual_budget_N": 1e-09,
+  "original_physical_force_budget_N": 1e-09,
+  "physical_previous_state_fixed": true,
+  "pseudo_stages_are_physical_history": false,
+  "attempts": [
+    {
+      "fraction": 0.0625,
+      "dt_s": 0.00125,
+      "previous_fraction": 0.0,
+      "accepted": true,
+      "residuals": {
+        "phase": "saved_residual_continuation_stage",
+        "iteration": null,
+        "fraction": 0.0625,
+        "body_residual_N": 1.9987647887374021e-10,
+        "joint_residual_N_or_Nm": 1.5507391805394355e-11,
+        "continued_equation_stage_budget_N": 1e-09,
+        "internal_newton_target_N": 1e-10,
+        "strict_newton_target_met": false,
+        "physical_equation_body_residual_N": 0.05687788992699373,
+        "physical_equation_joint_effort_residual": 511.43662690142725,
+        "unmodified_physical_equation": false,
+        "fresh_robot_step_effort_residual": null,
+        "contact_groups": [
+          2,
+          1
+        ],
+        "internal_solver_error": "Coupled residual line search failed: original01967_residual_0.06250000 {'phase': 'original01967_residual_0.06250000', 'iteration': 17, 'body_residual_N': 1.9987647887374021e-10, 'joint_residual_N_or_Nm': 1.5507391805394355e-11, 'normal_stencils': 2}",
+        "intermediate_stage_is_physical_history": false
+      },
+      "contact_groups": [
+        2,
+        1
+      ],
+      "acceptance_route": "separately_checked_continued_equation_budget"
+    },
+    {
+      "fraction": 0.15625,
+      "dt_s": 0.00125,
+      "previous_fraction": 0.0625,
+      "accepted": true,
+      "residuals": {
+        "phase": "saved_residual_continuation_stage",
+        "iteration": null,
+        "fraction": 0.15625,
+        "body_residual_N": 2.1704354266554285e-10,
+        "joint_residual_N_or_Nm": 2.091701934253192e-11,
+        "continued_equation_stage_budget_N": 1e-09,
+        "internal_newton_target_N": 1e-10,
+        "strict_newton_target_met": false,
+        "physical_equation_body_residual_N": 0.05119010094354491,
+        "physical_equation_joint_effort_residual": 460.2929642112817,
+        "unmodified_physical_equation": false,
+        "fresh_robot_step_effort_residual": null,
+        "contact_groups": [
+          1,
+          2
+        ],
+        "internal_solver_error": "Coupled residual line search failed: original01967_residual_0.15625000 {'phase': 'original01967_residual_0.15625000', 'iteration': 11, 'body_residual_N': 2.1704354266554285e-10, 'joint_residual_N_or_Nm': 2.091701934253192e-11, 'normal_stencils': 2}",
+        "intermediate_stage_is_physical_history": false
+      },
+      "contact_groups": [
+        1,
+        2
+      ],
+      "acceptance_route": "separately_checked_continued_equation_budget"
+    },
+    {
+      "fraction": 0.296875,
+      "dt_s": 0.00125,
+      "previous_fraction": 0.15625,
+      "accepted": true,
+      "residuals": {
+        "phase": "saved_residual_continuation_stage",
+        "iteration": null,
+        "fraction": 0.296875,
+        "body_residual_N": 1.9356549765269773e-10,
+        "joint_residual_N_or_Nm": 2.015434000836137e-11,
+        "continued_equation_stage_budget_N": 1e-09,
+        "internal_newton_target_N": 1e-10,
+        "strict_newton_target_met": false,
+        "physical_equation_body_residual_N": 0.04265841743763598,
+        "physical_equation_joint_effort_residual": 383.5774701760765,
+        "unmodified_physical_equation": false,
+        "fresh_robot_step_effort_residual": null,
+        "contact_groups": [
+          2,
+          1
+        ],
+        "internal_solver_error": "Coupled residual line search failed: original01967_residual_0.29687500 {'phase': 'original01967_residual_0.29687500', 'iteration': 19, 'body_residual_N': 1.9356549765269773e-10, 'joint_residual_N_or_Nm': 2.015434000836137e-11, 'normal_stencils': 2}",
+        "intermediate_stage_is_physical_history": false
+      },
+      "contact_groups": [
+        2,
+        1
+      ],
+      "acceptance_route": "separately_checked_continued_equation_budget"
+    },
+    {
+      "fraction": 0.5078125,
+      "dt_s": 0.00125,
+      "previous_fraction": 0.296875,
+      "accepted": true,
+      "residuals": {
+        "phase": "saved_residual_continuation_stage",
+        "iteration": null,
+        "fraction": 0.5078125,
+        "body_residual_N": 2.0309785497608617e-10,
+        "joint_residual_N_or_Nm": 9.797016346700137e-12,
+        "continued_equation_stage_budget_N": 1e-09,
+        "internal_newton_target_N": 1e-10,
+        "strict_newton_target_met": false,
+        "physical_equation_body_residual_N": 0.02986089220252701,
+        "physical_equation_joint_effort_residual": 268.5042291232446,
+        "unmodified_physical_equation": false,
+        "fresh_robot_step_effort_residual": null,
+        "contact_groups": [
+          2,
+          1
+        ],
+        "internal_solver_error": "Coupled residual line search failed: original01967_residual_0.50781250 {'phase': 'original01967_residual_0.50781250', 'iteration': 24, 'body_residual_N': 2.0309785497608617e-10, 'joint_residual_N_or_Nm': 9.797016346700137e-12, 'normal_stencils': 2}",
+        "intermediate_stage_is_physical_history": false
+      },
+      "contact_groups": [
+        2,
+        1
+      ],
+      "acceptance_route": "separately_checked_continued_equation_budget"
+    },
+    {
+      "fraction": 0.7578125,
+      "dt_s": 0.00125,
+      "previous_fraction": 0.5078125,
+      "accepted": true,
+      "residuals": {
+        "phase": "saved_residual_continuation_stage",
+        "iteration": null,
+        "fraction": 0.7578125,
+        "body_residual_N": 2.1124824499732348e-10,
+        "joint_residual_N_or_Nm": 2.1679555427006292e-11,
+        "continued_equation_stage_budget_N": 1e-09,
+        "internal_newton_target_N": 1e-10,
+        "strict_newton_target_met": false,
+        "physical_equation_body_residual_N": 0.014693454907821653,
+        "physical_equation_joint_effort_residual": 132.12112861621208,
+        "unmodified_physical_equation": false,
+        "fresh_robot_step_effort_residual": null,
+        "contact_groups": [
+          1,
+          2
+        ],
+        "internal_solver_error": "Coupled residual line search failed: original01967_residual_0.75781250 {'phase': 'original01967_residual_0.75781250', 'iteration': 19, 'body_residual_N': 2.1124824499732348e-10, 'joint_residual_N_or_Nm': 2.1679555427006292e-11, 'normal_stencils': 2}",
+        "intermediate_stage_is_physical_history": false
+      },
+      "contact_groups": [
+        1,
+        2
+      ],
+      "acceptance_route": "separately_checked_continued_equation_budget"
+    },
+    {
+      "fraction": 1.0,
+      "dt_s": 0.00125,
+      "previous_fraction": 0.7578125,
+      "accepted": true,
+      "residuals": {
+        "phase": "saved_residual_continuation_stage",
+        "iteration": null,
+        "fraction": 1.0,
+        "body_residual_N": 1.9846398425337067e-10,
+        "joint_residual_N_or_Nm": 2.141613247516528e-11,
+        "continued_equation_stage_budget_N": 1e-09,
+        "internal_newton_target_N": 1e-10,
+        "strict_newton_target_met": false,
+        "physical_equation_body_residual_N": 1.9846398425337067e-10,
+        "physical_equation_joint_effort_residual": 2.141613247516528e-11,
+        "unmodified_physical_equation": true,
+        "fresh_robot_step_effort_residual": 2.141613247516528e-11,
+        "contact_groups": [
+          1,
+          2
+        ],
+        "internal_solver_error": "Coupled residual line search failed: original01967_residual_1.00000000 {'phase': 'original01967_residual_1.00000000', 'iteration': 17, 'body_residual_N': 1.9846398425337067e-10, 'joint_residual_N_or_Nm': 2.141613247516528e-11, 'normal_stencils': 2}",
+        "intermediate_stage_is_physical_history": false
+      },
+      "contact_groups": [
+        1,
+        2
+      ],
+      "acceptance_route": "separately_checked_continued_equation_budget",
+      "fresh_robot_effort_residual": 2.141613247516528e-11
+    }
+  ]
+}
