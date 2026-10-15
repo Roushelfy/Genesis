@@ -5,7 +5,17 @@ without narrowing its scope. Historical native performance completion does not
 establish the new physical stage. Dated reports preserve their observations;
 running or pending jobs count as scheduled work only.
 
-Current: [the moving-reference checkpoint](PHYSICAL_MOVING_REFERENCE_20261015.md)
+Current: [original-step recovery and fourth U](PHYSICAL_CONTACT_RECOVERY_20261015.md)
+independently audits all866 original physical states including recovered866 at
+the unchanged equation/budgets. Direct continuation accepts867/868, then rejects
+869; fixed-dt residual continuation subsequently recovers869, independently
+audited together with all preceding states. The complete3.3s history remains incomplete. Four U levels reduce tensor
+changes to7.38%, but displacement changes4.07%;0.0901% peak change does not close
+the physical tail. Three uniform egg meshes retain two active nodes and shrinking
+quadrature support. Globalized original history, fifth-U and nonlinear refinement
+are live/unverified. Every requirement in the table below remains in scope.
+
+The earlier [moving-reference checkpoint](PHYSICAL_MOVING_REFERENCE_20261015.md)
 independently audits280 moving time-step states,160 corresponding feedback
 states and12 actual native replays. All175 original accepted fields and one
 complete280-state initial-guess comparison qualify. A read-only observer verifies

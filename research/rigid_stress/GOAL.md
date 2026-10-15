@@ -31,7 +31,18 @@ egg/Franka and U contact references, resolved-load/native replay versus feedback
 remaining applicable load-model sensitivity and physically verified warmed costs.
 These are execution priorities within the complete linked objective.
 
-The [moving-reference checkpoint](docs/PHYSICAL_MOVING_REFERENCE_20261015.md)
+The [original-step recovery/fourth-U checkpoint](docs/PHYSICAL_CONTACT_RECOVERY_20261015.md)
+independently verifies original step866 and all865 preceding physical states at
+the unchanged timestep and force budgets. Direct continuation accepts867/868
+but rejects869; fixed-dt residual continuation then recovers869, independently
+audited together with all preceding states. Artificial continuation stages are
+only Newton iterates. Complete3.3s history remains unfinished. Four U levels reduce tensor changes to
+7.38%, with4.07% displacement change despite0.0901% peak change. Three uniform
+egg meshes retain two active nodes and area-quartering. Residual-globalized history,
+fifth-U and nonlinear refinement jobs are running/scheduled, not accepted results. The
+complete physical-contact/model/feedback/accuracy-cost scope remains active.
+
+The earlier [moving-reference checkpoint](docs/PHYSICAL_MOVING_REFERENCE_20261015.md)
 independently audits280 moving time-step states and160 corresponding feedback
 states, preserves all175 original accepted fields and qualifies a complete280-state
 initial-guess comparison. A read-only observer verifies330 original macro controls
