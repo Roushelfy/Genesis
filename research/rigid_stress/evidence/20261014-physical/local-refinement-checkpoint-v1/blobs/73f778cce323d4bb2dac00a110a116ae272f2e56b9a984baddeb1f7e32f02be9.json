@@ -1,0 +1,194 @@
+{
+  "scope": "Audit contact-centered local refinement geometry before assembling larger FEM solves.",
+  "radius_m": 0.001,
+  "centres_m": [
+    [
+      1.7697452569156308e-06,
+      0.022028914832074527,
+      0.0011846870585170005
+    ],
+    [
+      -2.268348684854836e-05,
+      -0.02196183354501063,
+      0.0020866068240277674
+    ]
+  ],
+  "installed_mesh_source_sha256": "92a19f6d8e415590cdced77482c71741bd8e766190995abe640b662bfd93b271",
+  "rows": [
+    {
+      "level": 0,
+      "tetrahedra": 480,
+      "vertices": 126,
+      "p2_body_dofs": 2430,
+      "min_edge_m": 0.0002499999999999955,
+      "max_edge_m": 0.018686553178036868,
+      "volume_m3": 3.2649241052006638e-06,
+      "com_m": [
+        2.2168449025537615e-18,
+        2.588958154053857e-18,
+        -1.564261184364498e-17
+      ],
+      "boundary_area_m2": 0.013893944984007998,
+      "history": [],
+      "contact_incident_cells": 20,
+      "contact_incident_max_edge_m": 0.01723233617345589,
+      "contact_incident_min_edge_m": 0.00024999999999999843,
+      "contact_incident_vertices": 20
+    },
+    {
+      "level": 3,
+      "tetrahedra": 1099,
+      "vertices": 259,
+      "p2_body_dofs": 5217,
+      "min_edge_m": 6.249999999999709e-05,
+      "max_edge_m": 0.018686553178036868,
+      "volume_m3": 3.264924105200664e-06,
+      "com_m": [
+        2.8823390825813487e-18,
+        -1.92631698661361e-18,
+        -1.478784076756212e-17
+      ],
+      "boundary_area_m2": 0.013893944984007998,
+      "history": [
+        {
+          "level": 1,
+          "marked_cells": 72,
+          "tetrahedra": 648
+        },
+        {
+          "level": 2,
+          "marked_cells": 104,
+          "tetrahedra": 849
+        },
+        {
+          "level": 3,
+          "marked_cells": 136,
+          "tetrahedra": 1099
+        }
+      ],
+      "contact_incident_cells": 20,
+      "contact_incident_max_edge_m": 0.0060118636360787766,
+      "contact_incident_min_edge_m": 6.249999999999855e-05,
+      "contact_incident_vertices": 20
+    },
+    {
+      "level": 6,
+      "tetrahedra": 3993,
+      "vertices": 836,
+      "p2_body_dofs": 17718,
+      "min_edge_m": 1.5624999999994942e-05,
+      "max_edge_m": 0.018686553178036868,
+      "volume_m3": 3.264924105200664e-06,
+      "com_m": [
+        3.718650626002213e-18,
+        -5.74004483696956e-19,
+        -1.4794532589769012e-17
+      ],
+      "boundary_area_m2": 0.013893944984007997,
+      "history": [
+        {
+          "level": 1,
+          "marked_cells": 72,
+          "tetrahedra": 648
+        },
+        {
+          "level": 2,
+          "marked_cells": 104,
+          "tetrahedra": 849
+        },
+        {
+          "level": 3,
+          "marked_cells": 136,
+          "tetrahedra": 1099
+        },
+        {
+          "level": 4,
+          "marked_cells": 166,
+          "tetrahedra": 1392
+        },
+        {
+          "level": 5,
+          "marked_cells": 209,
+          "tetrahedra": 1998
+        },
+        {
+          "level": 6,
+          "marked_cells": 306,
+          "tetrahedra": 3993
+        }
+      ],
+      "contact_incident_cells": 20,
+      "contact_incident_max_edge_m": 0.0015029659090196948,
+      "contact_incident_min_edge_m": 1.5624999999995213e-05,
+      "contact_incident_vertices": 20
+    },
+    {
+      "level": 9,
+      "tetrahedra": 20696,
+      "vertices": 4020,
+      "p2_body_dofs": 87987,
+      "min_edge_m": 1.9531249999986596e-06,
+      "max_edge_m": 0.018686553178036868,
+      "volume_m3": 3.264924105200664e-06,
+      "com_m": [
+        3.9096623315406395e-18,
+        -6.038781929372066e-18,
+        -2.118425415512064e-17
+      ],
+      "boundary_area_m2": 0.013893944984007998,
+      "history": [
+        {
+          "level": 1,
+          "marked_cells": 72,
+          "tetrahedra": 648
+        },
+        {
+          "level": 2,
+          "marked_cells": 104,
+          "tetrahedra": 849
+        },
+        {
+          "level": 3,
+          "marked_cells": 136,
+          "tetrahedra": 1099
+        },
+        {
+          "level": 4,
+          "marked_cells": 166,
+          "tetrahedra": 1392
+        },
+        {
+          "level": 5,
+          "marked_cells": 209,
+          "tetrahedra": 1998
+        },
+        {
+          "level": 6,
+          "marked_cells": 306,
+          "tetrahedra": 3993
+        },
+        {
+          "level": 7,
+          "marked_cells": 591,
+          "tetrahedra": 6969
+        },
+        {
+          "level": 8,
+          "marked_cells": 1233,
+          "tetrahedra": 12011
+        },
+        {
+          "level": 9,
+          "marked_cells": 3009,
+          "tetrahedra": 20696
+        }
+      ],
+      "contact_incident_cells": 32,
+      "contact_incident_max_edge_m": 0.0005385105054204961,
+      "contact_incident_min_edge_m": 3.906249999997283e-06,
+      "contact_incident_vertices": 26
+    }
+  ],
+  "goal_completion": false,
+  "limitations": "Geometry and mesh-size qualification only. Fixed polyhedral geometry, material and physical contact protocol are unchanged. Stress/contact convergence and a resolved physical patch require solved fields and independent tails."
+}

@@ -1,0 +1,23 @@
+{"level": 0, "tetrahedra": 480, "vertices": 126, "p2_body_dofs": 2430, "min_edge_m": 0.0002499999999999955, "max_edge_m": 0.018686553178036868, "volume_m3": 3.2649241052006638e-06, "com_m": [2.2168449025537615e-18, 2.588958154053857e-18, -1.564261184364498e-17], "boundary_area_m2": 0.013893944984007998, "contact_incident_cells": 20, "contact_incident_max_edge_m": 0.01723233617345589, "contact_incident_min_edge_m": 0.00024999999999999843, "contact_incident_vertices": 20}
+Transforming over 1000 elements to C_CONTIGUOUS.
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-mesh-qualification-v4/source/research/rigid_stress/qualify_local_franka_mesh.py", line 106, in <module>
+    main()
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-mesh-qualification-v4/source/research/rigid_stress/qualify_local_franka_mesh.py", line 88, in main
+    np.testing.assert_allclose(area, rows[0]["boundary_area_m2"], rtol=1e-12, atol=0)
+  File "/usr/local/lib/python3.10/dist-packages/numpy/testing/_private/utils.py", line 1715, in assert_allclose
+    assert_array_compare(compare, actual, desired, err_msg=str(err_msg),
+  File "/usr/local/lib/python3.10/dist-packages/numpy/testing/_private/utils.py", line 921, in assert_array_compare
+    raise AssertionError(msg)
+AssertionError: 
+Not equal to tolerance rtol=1e-12, atol=0
+
+Mismatched elements: 1 / 1 (100%)
+Max absolute difference among violations: 0.00101141
+Max relative difference among violations: 0.07279502
+ ACTUAL: array(0.014905)
+ DESIRED: array(0.013894)

@@ -10,6 +10,9 @@ from scipy import sparse
 from scipy.sparse.csgraph import connected_components
 
 from .franka_contact_reference import build_from_capture
+from .frozen_franka_contact import freeze_body_contact
+from .localized_franka_mesh import refine_local_body
+from .refine_franka_reference import refine_body
 from .refined_franka_contact import collision_vertices, refine_contact
 from .summarize_fine_references import closed_source
 
@@ -24,6 +27,9 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run", type=Path, nargs="+", required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument(
+        "--axis", choices=("contact_refinement", "body_refinement", "local_levels"), default="contact_refinement"
+    )
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     cases = []
@@ -32,13 +38,25 @@ def main():
         closed_source(run)
         assert int((run / "returncode.txt").read_text()) == 0
         config = json.loads((run / "results/configuration.json").read_text())
-        physical = {k: v for k, v in config.items() if k not in ("output", "contact_refinement")}
+        physical = {k: v for k, v in config.items() if k not in ("output", args.axis)}
         if frozen is None:
             frozen = physical
-        assert physical == frozen and config["body_refinement"] == 0
+        assert physical == frozen
         closure = json.loads((Path(config["closure_run"]) / "results/configuration.json").read_text())
         system, _ = build_from_capture(Path(closure["capture"]), closure["dhat"])
-        refine_contact(system, config["contact_refinement"])
+        seed = system
+        if "local_levels" in config:
+            system = refine_local_body(
+                system, config["local_levels"], Path(config["local_contact_run"]), config["local_radius"]
+            )
+        else:
+            system = refine_body(system, config["body_refinement"])
+        if config.get("freeze_contact", False):
+            freeze_body_contact(seed, system)
+            # Represent the original collision surface by an exact selection map.
+            refine_contact(system, 0)
+        else:
+            refine_contact(system, config.get("contact_refinement", 0))
         system.friction_potential = ipctk.FrictionPotential(config["dt"] * 4e-6)
         with np.load(run / f"results/step{config['steps']:04d}.npz") as saved:
             u = saved["displacement"].copy()
@@ -88,7 +106,11 @@ def main():
         body = system.contact_surface_groups == 0
         record = {
             "run": str(run),
-            "contact_refinement": config["contact_refinement"],
+            "contact_refinement": config.get("contact_refinement", 0),
+            "body_refinement": config["body_refinement"],
+            "local_levels": config.get("local_levels", 0),
+            "declared_level": config.get(args.axis, 0),
+            "body_tetrahedra": system.body.mesh.nelements,
             "bulk_dofs": len(u),
             "surface_vertices": len(current),
             "surface_triangles": len(system.contact_surface_faces),
@@ -120,7 +142,7 @@ def main():
             island_labels=labels,
         )
         cases.append(record)
-    cases.sort(key=lambda row: row["contact_refinement"])
+    cases.sort(key=lambda row: row["declared_level"])
     output = {
         "scope": __doc__,
         "cases": cases,

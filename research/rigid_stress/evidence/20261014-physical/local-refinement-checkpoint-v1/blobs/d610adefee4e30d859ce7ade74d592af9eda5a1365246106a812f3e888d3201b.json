@@ -1,0 +1,2253 @@
+{
+  "scope": "Closed finer cached reference, local mesh qualification/failures and exact zero controls",
+  "runs": [
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-cached-newton-spatial-1-v1",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-cached-spatial-1-equivalence-v1",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-mesh-qualification-v1",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-mesh-qualification-v2",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-mesh-qualification-v3",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-mesh-qualification-v4",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-mesh-qualification-v5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-contact-traction-audit-v2",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-coupled-0-v1",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-frozen-0-v1"
+  ],
+  "slurm_jobs": [
+    "714827_0",
+    "714839_0",
+    "714858_0",
+    "714862_0",
+    "714865_0",
+    "714866_0",
+    "714873_0",
+    "714868_0",
+    "714874_0",
+    "714874_4"
+  ],
+  "source_closure": [
+    {
+      "run": "franka-cached-newton-spatial-1-v1",
+      "job": "714827_0",
+      "state": "COMPLETED",
+      "wrapper_returncode": 0,
+      "verified_source_files": 40
+    },
+    {
+      "run": "franka-cached-spatial-1-equivalence-v1",
+      "job": "714839_0",
+      "state": "COMPLETED",
+      "wrapper_returncode": 0,
+      "verified_source_files": 40
+    },
+    {
+      "run": "franka-local-mesh-qualification-v1",
+      "job": "714858_0",
+      "state": "FAILED",
+      "wrapper_returncode": 1,
+      "verified_source_files": 46
+    },
+    {
+      "run": "franka-local-mesh-qualification-v2",
+      "job": "714862_0",
+      "state": "FAILED",
+      "wrapper_returncode": 1,
+      "verified_source_files": 46
+    },
+    {
+      "run": "franka-local-mesh-qualification-v3",
+      "job": "714865_0",
+      "state": "FAILED",
+      "wrapper_returncode": 1,
+      "verified_source_files": 46
+    },
+    {
+      "run": "franka-local-mesh-qualification-v4",
+      "job": "714866_0",
+      "state": "FAILED",
+      "wrapper_returncode": 1,
+      "verified_source_files": 46
+    },
+    {
+      "run": "franka-local-mesh-qualification-v5",
+      "job": "714873_0",
+      "state": "COMPLETED",
+      "wrapper_returncode": 0,
+      "verified_source_files": 46
+    },
+    {
+      "run": "franka-contact-traction-audit-v2",
+      "job": "714868_0",
+      "state": "COMPLETED",
+      "wrapper_returncode": 0,
+      "verified_source_files": 44
+    },
+    {
+      "run": "franka-local-coupled-0-v1",
+      "job": "714874_0",
+      "state": "COMPLETED",
+      "wrapper_returncode": 0,
+      "verified_source_files": 46
+    },
+    {
+      "run": "franka-local-frozen-0-v1",
+      "job": "714874_4",
+      "state": "COMPLETED",
+      "wrapper_returncode": 0,
+      "verified_source_files": 46
+    }
+  ],
+  "fine_reference_equivalence": {
+    "scope": "Compare every saved inertial state and every unaveraged corner tensor after a solver change.",
+    "states_checked": 80,
+    "body_tetrahedra": 3840,
+    "state_relative_maxima": {
+      "displacement": 1.976907733897601e-14,
+      "body_displacement": 1.787127934818949e-11,
+      "velocity": 5.0158500012097295e-11,
+      "body_velocity": 5.020627656963711e-11,
+      "acceleration": 1.0682808405349594e-09,
+      "body_acceleration": 1.0682970547206726e-09,
+      "contact_force_N": 8.339767619857983e-11,
+      "body_contact_force_N": 8.339543033111818e-11,
+      "applied_force_N": 0,
+      "body_applied_force_N": 0
+    },
+    "max_full_corner_tensor_relative_change": 4.5214021130106844e-11,
+    "rows": [
+      {
+        "step": 1,
+        "displacement_relative_change": 3.173288396173928e-17,
+        "body_displacement_relative_change": 9.565856085725303e-13,
+        "velocity_relative_change": 8.135376044047103e-12,
+        "body_velocity_relative_change": 8.143594472167989e-12,
+        "acceleration_relative_change": 8.135375824841717e-12,
+        "body_acceleration_relative_change": 8.143594252741161e-12,
+        "contact_force_N_relative_change": 0.0,
+        "body_contact_force_N_relative_change": 0.0,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 2.6241276628110348e-12,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226154.4060265235,
+            226154.4063544713
+          ],
+          [
+            226154.40602652472,
+            226154.40635447254
+          ]
+        ]
+      },
+      {
+        "step": 2,
+        "displacement_relative_change": 1.1390399514302996e-16,
+        "body_displacement_relative_change": 3.32329718041739e-12,
+        "velocity_relative_change": 1.7667422391074954e-11,
+        "body_velocity_relative_change": 1.7700146515954028e-11,
+        "acceleration_relative_change": 2.543126477573944e-11,
+        "body_acceleration_relative_change": 2.5458472031011888e-11,
+        "contact_force_N_relative_change": 8.303981067873316e-13,
+        "body_contact_force_N_relative_change": 8.304506474792164e-13,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 2.8488489652446807e-12,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226119.8449436726,
+            226119.84527162035
+          ],
+          [
+            226119.8449436731,
+            226119.84527162087
+          ]
+        ]
+      },
+      {
+        "step": 3,
+        "displacement_relative_change": 9.465261847209089e-17,
+        "body_displacement_relative_change": 2.5309099742832227e-12,
+        "velocity_relative_change": 1.7543414941825572e-11,
+        "body_velocity_relative_change": 1.7572971594237592e-11,
+        "acceleration_relative_change": 8.705663054034144e-11,
+        "body_acceleration_relative_change": 8.717560720190037e-11,
+        "contact_force_N_relative_change": 8.304287931956213e-13,
+        "body_contact_force_N_relative_change": 8.304828142524708e-13,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 3.5948300794597233e-12,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226127.91406649374,
+            226127.91439444156
+          ],
+          [
+            226127.9140664994,
+            226127.91439444717
+          ]
+        ]
+      },
+      {
+        "step": 4,
+        "displacement_relative_change": 2.1389488387216906e-16,
+        "body_displacement_relative_change": 4.903274255741662e-12,
+        "velocity_relative_change": 1.8370725404084872e-11,
+        "body_velocity_relative_change": 1.8398842864968617e-11,
+        "acceleration_relative_change": 1.2326241387649874e-10,
+        "body_acceleration_relative_change": 1.2339798378086846e-10,
+        "contact_force_N_relative_change": 1.3685298945103528e-13,
+        "body_contact_force_N_relative_change": 1.3686140377080126e-13,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 3.419341364474682e-12,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226133.21119277226,
+            226133.21152072004
+          ],
+          [
+            226133.21119277494,
+            226133.21152072275
+          ]
+        ]
+      },
+      {
+        "step": 5,
+        "displacement_relative_change": 2.1331801329390293e-16,
+        "body_displacement_relative_change": 3.988668173541911e-12,
+        "velocity_relative_change": 1.3471701160727327e-11,
+        "body_velocity_relative_change": 1.3490433546595134e-11,
+        "acceleration_relative_change": 1.3585690391705788e-10,
+        "body_acceleration_relative_change": 1.3597694167858073e-10,
+        "contact_force_N_relative_change": 5.630242123810288e-13,
+        "body_contact_force_N_relative_change": 5.629903390238801e-13,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 5.593434804325819e-12,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226133.22810941038,
+            226133.22843735816
+          ],
+          [
+            226133.22810934653,
+            226133.2284372943
+          ]
+        ]
+      },
+      {
+        "step": 6,
+        "displacement_relative_change": 2.5273366520989814e-16,
+        "body_displacement_relative_change": 3.774544915375971e-12,
+        "velocity_relative_change": 2.8817401116587265e-12,
+        "body_velocity_relative_change": 2.8853711107296724e-12,
+        "acceleration_relative_change": 6.979273170013286e-11,
+        "body_acceleration_relative_change": 6.984189219918873e-11,
+        "contact_force_N_relative_change": 3.34070282878926e-11,
+        "body_contact_force_N_relative_change": 3.340908459954651e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 3.92395495172043e-12,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226132.43725944392,
+            226132.43758739167
+          ],
+          [
+            226132.43725964887,
+            226132.43758759665
+          ]
+        ]
+      },
+      {
+        "step": 7,
+        "displacement_relative_change": 5.434272978680103e-16,
+        "body_displacement_relative_change": 6.0624414931067076e-12,
+        "velocity_relative_change": 2.5119149002841827e-11,
+        "body_velocity_relative_change": 2.2960821179985137e-11,
+        "acceleration_relative_change": 1.7625033172786094e-10,
+        "body_acceleration_relative_change": 1.6037467113627622e-10,
+        "contact_force_N_relative_change": 2.5052182969172517e-11,
+        "body_contact_force_N_relative_change": 2.5050677336641694e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 5.804190893267108e-12,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226132.0344496576,
+            226132.0347776054
+          ],
+          [
+            226132.0344497177,
+            226132.03477766548
+          ]
+        ]
+      },
+      {
+        "step": 8,
+        "displacement_relative_change": 4.881815557740757e-16,
+        "body_displacement_relative_change": 4.515907348067402e-12,
+        "velocity_relative_change": 8.696244135489759e-12,
+        "body_velocity_relative_change": 5.932625062517112e-12,
+        "acceleration_relative_change": 2.3577111764380873e-10,
+        "body_acceleration_relative_change": 2.0510774190156582e-10,
+        "contact_force_N_relative_change": 2.5093401063022696e-11,
+        "body_contact_force_N_relative_change": 2.5091820501172688e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 9.539430534043396e-12,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226131.81983649355,
+            226131.82016444133
+          ],
+          [
+            226131.81983629268,
+            226131.8201642405
+          ]
+        ]
+      },
+      {
+        "step": 9,
+        "displacement_relative_change": 9.941327035386438e-16,
+        "body_displacement_relative_change": 7.768941847517516e-12,
+        "velocity_relative_change": 5.0158500012097295e-11,
+        "body_velocity_relative_change": 5.020627656963711e-11,
+        "acceleration_relative_change": 4.25260451556902e-10,
+        "body_acceleration_relative_change": 4.221803932805093e-10,
+        "contact_force_N_relative_change": 2.5235615843807773e-11,
+        "body_contact_force_N_relative_change": 2.5237168691837245e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 5.433777465333041e-12,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226131.62160340257,
+            226131.62193135032
+          ],
+          [
+            226131.62160340248,
+            226131.6219313503
+          ]
+        ]
+      },
+      {
+        "step": 10,
+        "displacement_relative_change": 6.632769128230008e-16,
+        "body_displacement_relative_change": 3.964376697621582e-12,
+        "velocity_relative_change": 2.1390780719796072e-11,
+        "body_velocity_relative_change": 2.07855947991624e-11,
+        "acceleration_relative_change": 6.748805127539076e-10,
+        "body_acceleration_relative_change": 6.730181972150943e-10,
+        "contact_force_N_relative_change": 5.008917240075604e-11,
+        "body_contact_force_N_relative_change": 5.008606246931765e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 6.4286467063847775e-12,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226131.4208508471,
+            226131.42117879484
+          ],
+          [
+            226131.4208508345,
+            226131.42117878227
+          ]
+        ]
+      },
+      {
+        "step": 11,
+        "displacement_relative_change": 1.832467006680135e-15,
+        "body_displacement_relative_change": 9.980010105230969e-12,
+        "velocity_relative_change": 4.815198555470643e-11,
+        "body_velocity_relative_change": 4.7041497237408964e-11,
+        "acceleration_relative_change": 7.536623985255738e-10,
+        "body_acceleration_relative_change": 7.389908235755433e-10,
+        "contact_force_N_relative_change": 4.238035411865215e-11,
+        "body_contact_force_N_relative_change": 4.2381113421342846e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 1.0043510012489998e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226131.2298376823,
+            226131.23016563008
+          ],
+          [
+            226131.22983748026,
+            226131.23016542807
+          ]
+        ]
+      },
+      {
+        "step": 12,
+        "displacement_relative_change": 2.0462924014285493e-15,
+        "body_displacement_relative_change": 9.423954515011583e-12,
+        "velocity_relative_change": 7.900011060105769e-12,
+        "body_velocity_relative_change": 6.634889831960645e-12,
+        "acceleration_relative_change": 4.71789942960605e-10,
+        "body_acceleration_relative_change": 4.659352011678245e-10,
+        "contact_force_N_relative_change": 3.562615781609863e-11,
+        "body_contact_force_N_relative_change": 3.5626177967488404e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 1.0084210952075233e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226131.0518736878,
+            226131.05220163558
+          ],
+          [
+            226131.0518740971,
+            226131.05220204487
+          ]
+        ]
+      },
+      {
+        "step": 13,
+        "displacement_relative_change": 2.5961835018995933e-15,
+        "body_displacement_relative_change": 1.0357636511179265e-11,
+        "velocity_relative_change": 1.663317419024408e-11,
+        "body_velocity_relative_change": 1.616185977325885e-11,
+        "acceleration_relative_change": 1.6581563020182522e-10,
+        "body_acceleration_relative_change": 1.4805255200912584e-10,
+        "contact_force_N_relative_change": 2.5180095348708214e-11,
+        "body_contact_force_N_relative_change": 2.518154891751151e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 9.626827816880562e-12,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226130.8851578097,
+            226130.88548575746
+          ],
+          [
+            226130.88515795147,
+            226130.88548589926
+          ]
+        ]
+      },
+      {
+        "step": 14,
+        "displacement_relative_change": 3.19301724463828e-15,
+        "body_displacement_relative_change": 1.1112080089468898e-11,
+        "velocity_relative_change": 1.655428697098867e-11,
+        "body_velocity_relative_change": 1.614533093499233e-11,
+        "acceleration_relative_change": 1.9579415249101277e-11,
+        "body_acceleration_relative_change": 1.9580717953411866e-11,
+        "contact_force_N_relative_change": 1.1903602262049325e-12,
+        "body_contact_force_N_relative_change": 1.1903573377019507e-12,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 8.196261213466898e-12,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226130.72780754455,
+            226130.7281354923
+          ],
+          [
+            226130.72780755308,
+            226130.72813550083
+          ]
+        ]
+      },
+      {
+        "step": 15,
+        "displacement_relative_change": 3.976215666398673e-15,
+        "body_displacement_relative_change": 1.2126881086726437e-11,
+        "velocity_relative_change": 2.0007212998831792e-11,
+        "body_velocity_relative_change": 1.9410250202701717e-11,
+        "acceleration_relative_change": 8.517275978356926e-11,
+        "body_acceleration_relative_change": 6.666762243086343e-11,
+        "contact_force_N_relative_change": 1.9179377744515543e-12,
+        "body_contact_force_N_relative_change": 1.917866088445954e-12,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 9.334472262098376e-12,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226130.57856532873,
+            226130.5788932765
+          ],
+          [
+            226130.57856518807,
+            226130.57889313588
+          ]
+        ]
+      },
+      {
+        "step": 16,
+        "displacement_relative_change": 5.965410567934523e-15,
+        "body_displacement_relative_change": 1.6204070791437492e-11,
+        "velocity_relative_change": 4.828787046671317e-11,
+        "body_velocity_relative_change": 4.809278449666808e-11,
+        "acceleration_relative_change": 4.915826100044572e-10,
+        "body_acceleration_relative_change": 4.916040226498786e-10,
+        "contact_force_N_relative_change": 2.51254927612662e-11,
+        "body_contact_force_N_relative_change": 2.512698613379102e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 9.274672978631595e-12,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226130.4364165882,
+            226130.436744536
+          ],
+          [
+            226130.4364165873,
+            226130.43674453508
+          ]
+        ]
+      },
+      {
+        "step": 17,
+        "displacement_relative_change": 6.686718168115992e-15,
+        "body_displacement_relative_change": 1.616122584531134e-11,
+        "velocity_relative_change": 1.6306374346673253e-11,
+        "body_velocity_relative_change": 1.572711096894603e-11,
+        "acceleration_relative_change": 5.175872587696882e-10,
+        "body_acceleration_relative_change": 5.176027843138846e-10,
+        "contact_force_N_relative_change": 2.380328323333109e-12,
+        "body_contact_force_N_relative_change": 2.3803235429499026e-12,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 9.680576839814152e-12,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226130.30042478844,
+            226130.30075273625
+          ],
+          [
+            226130.30042478154,
+            226130.30075272935
+          ]
+        ]
+      },
+      {
+        "step": 18,
+        "displacement_relative_change": 7.884165048457355e-15,
+        "body_displacement_relative_change": 1.709931012111074e-11,
+        "velocity_relative_change": 2.554836760194281e-11,
+        "body_velocity_relative_change": 2.522785152876517e-11,
+        "acceleration_relative_change": 1.9274312333699457e-10,
+        "body_acceleration_relative_change": 1.927469137038836e-10,
+        "contact_force_N_relative_change": 7.056776091947287e-11,
+        "body_contact_force_N_relative_change": 7.056339926529584e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 1.0638867316816209e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226130.1697231504,
+            226130.17005109816
+          ],
+          [
+            226130.1697231325,
+            226130.17005108026
+          ]
+        ]
+      },
+      {
+        "step": 19,
+        "displacement_relative_change": 8.924278541419378e-15,
+        "body_displacement_relative_change": 1.7454837428391575e-11,
+        "velocity_relative_change": 2.1010887602518053e-11,
+        "body_velocity_relative_change": 2.0655522998353504e-11,
+        "acceleration_relative_change": 7.503898925106207e-11,
+        "body_acceleration_relative_change": 7.50399165175433e-11,
+        "contact_force_N_relative_change": 3.423817686152972e-11,
+        "body_contact_force_N_relative_change": 3.424027772435061e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 1.113703496577105e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226130.04352566175,
+            226130.04385360953
+          ],
+          [
+            226130.04352564755,
+            226130.04385359536
+          ]
+        ]
+      },
+      {
+        "step": 20,
+        "displacement_relative_change": 1.006112629699716e-14,
+        "body_displacement_relative_change": 1.787127934818949e-11,
+        "velocity_relative_change": 2.1998340328646118e-11,
+        "body_velocity_relative_change": 2.1849829310184696e-11,
+        "acceleration_relative_change": 7.119523207151102e-11,
+        "body_acceleration_relative_change": 4.7075585396323426e-11,
+        "contact_force_N_relative_change": 2.5235225332768813e-11,
+        "body_contact_force_N_relative_change": 2.5236764402000467e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 1.1923255672953606e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226129.92112241796,
+            226129.9214503658
+          ],
+          [
+            226129.92112242218,
+            226129.92145036996
+          ]
+        ]
+      },
+      {
+        "step": 21,
+        "displacement_relative_change": 1.0449208982909421e-14,
+        "body_displacement_relative_change": 1.6922302028221873e-11,
+        "velocity_relative_change": 7.894132656082893e-12,
+        "body_velocity_relative_change": 7.896712557174508e-12,
+        "acceleration_relative_change": 3.0601282236117285e-10,
+        "body_acceleration_relative_change": 3.013031917276298e-10,
+        "contact_force_N_relative_change": 2.513767073405048e-11,
+        "body_contact_force_N_relative_change": 2.5139221943736916e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 1.276408028403549e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226129.80186996094,
+            226129.80219790872
+          ],
+          [
+            226129.80186982948,
+            226129.80219777723
+          ]
+        ]
+      },
+      {
+        "step": 22,
+        "displacement_relative_change": 9.40573065739234e-15,
+        "body_displacement_relative_change": 1.3916494309144362e-11,
+        "velocity_relative_change": 2.0522495659180912e-11,
+        "body_velocity_relative_change": 2.038942495955899e-11,
+        "acceleration_relative_change": 5.860116242463233e-10,
+        "body_acceleration_relative_change": 5.835593261959133e-10,
+        "contact_force_N_relative_change": 1.2513094593818202e-12,
+        "body_contact_force_N_relative_change": 1.2512996787060514e-12,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 1.2985448152287493e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226129.68518642554,
+            226129.68551437333
+          ],
+          [
+            226129.68518635537,
+            226129.68551430316
+          ]
+        ]
+      },
+      {
+        "step": 23,
+        "displacement_relative_change": 9.080777315684834e-15,
+        "body_displacement_relative_change": 1.2345107494925477e-11,
+        "velocity_relative_change": 8.769402219317578e-12,
+        "body_velocity_relative_change": 8.468693693992358e-12,
+        "acceleration_relative_change": 2.9441597882647564e-10,
+        "body_acceleration_relative_change": 2.84473049403556e-10,
+        "contact_force_N_relative_change": 2.503688941177762e-11,
+        "body_contact_force_N_relative_change": 2.5035302392399943e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 1.3476254972815612e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226129.57054562157,
+            226129.5708735693
+          ],
+          [
+            226129.57054567427,
+            226129.57087362205
+          ]
+        ]
+      },
+      {
+        "step": 24,
+        "displacement_relative_change": 8.251202012179999e-15,
+        "body_displacement_relative_change": 1.0328808365969184e-11,
+        "velocity_relative_change": 1.6788843360826835e-11,
+        "body_velocity_relative_change": 1.6649248924585945e-11,
+        "acceleration_relative_change": 2.403548955543516e-10,
+        "body_acceleration_relative_change": 2.2802804954046357e-10,
+        "contact_force_N_relative_change": 1.8511124809044665e-12,
+        "body_contact_force_N_relative_change": 1.8511766034251322e-12,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 1.5279462550904825e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226129.45747120035,
+            226129.45779914813
+          ],
+          [
+            226129.4574710102,
+            226129.45779895794
+          ]
+        ]
+      },
+      {
+        "step": 25,
+        "displacement_relative_change": 7.981876848065684e-15,
+        "body_displacement_relative_change": 9.245502983481036e-12,
+        "velocity_relative_change": 8.115964546695246e-12,
+        "body_velocity_relative_change": 7.839319487004807e-12,
+        "acceleration_relative_change": 2.3081947759911633e-10,
+        "body_acceleration_relative_change": 2.3081949050055342e-10,
+        "contact_force_N_relative_change": 2.5119387452156696e-11,
+        "body_contact_force_N_relative_change": 2.5120978575498693e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 1.4475511805153998e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226129.3455313926,
+            226129.3458593404
+          ],
+          [
+            226129.3455314524,
+            226129.3458594002
+          ]
+        ]
+      },
+      {
+        "step": 26,
+        "displacement_relative_change": 8.190184154981102e-15,
+        "body_displacement_relative_change": 8.801491737359076e-12,
+        "velocity_relative_change": 4.591711467577393e-12,
+        "body_velocity_relative_change": 4.59270709345105e-12,
+        "acceleration_relative_change": 2.0608379229702677e-10,
+        "body_acceleration_relative_change": 1.9890964044800217e-10,
+        "contact_force_N_relative_change": 3.763412377762745e-13,
+        "body_contact_force_N_relative_change": 3.7636432277052383e-13,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 1.529347527436406e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226129.23433593533,
+            226129.23466388308
+          ],
+          [
+            226129.23433617974,
+            226129.23466412752
+          ]
+        ]
+      },
+      {
+        "step": 27,
+        "displacement_relative_change": 7.89355311461684e-15,
+        "body_displacement_relative_change": 7.895223214391914e-12,
+        "velocity_relative_change": 8.957796665431227e-12,
+        "body_velocity_relative_change": 8.743345862682296e-12,
+        "acceleration_relative_change": 2.4432849884877615e-10,
+        "body_acceleration_relative_change": 2.3828794529520123e-10,
+        "contact_force_N_relative_change": 1.109395645685227e-12,
+        "body_contact_force_N_relative_change": 1.1093268392140554e-12,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 1.5561352596931277e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226129.12353288874,
+            226129.12386083655
+          ],
+          [
+            226129.1235329475,
+            226129.1238608953
+          ]
+        ]
+      },
+      {
+        "step": 28,
+        "displacement_relative_change": 7.594628898576857e-15,
+        "body_displacement_relative_change": 7.087520535326758e-12,
+        "velocity_relative_change": 9.69861490636824e-12,
+        "body_velocity_relative_change": 9.51475537408281e-12,
+        "acceleration_relative_change": 3.251917200129095e-11,
+        "body_acceleration_relative_change": 3.251884979105312e-11,
+        "contact_force_N_relative_change": 3.541484162626854e-11,
+        "body_contact_force_N_relative_change": 3.5414811131475527e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 1.6351751337728383e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226129.01280316795,
+            226129.01313111573
+          ],
+          [
+            226129.0128031022,
+            226129.01313105
+          ]
+        ]
+      },
+      {
+        "step": 29,
+        "displacement_relative_change": 7.199994287565605e-15,
+        "body_displacement_relative_change": 6.271474247011328e-12,
+        "velocity_relative_change": 1.1815654881339867e-11,
+        "body_velocity_relative_change": 1.1817686491323824e-11,
+        "acceleration_relative_change": 1.0348801386724476e-10,
+        "body_acceleration_relative_change": 8.816757183374684e-11,
+        "contact_force_N_relative_change": 2.5057983570788567e-11,
+        "body_contact_force_N_relative_change": 2.5056466401409187e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 1.684443005404401e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226128.9018578089,
+            226128.90218575668
+          ],
+          [
+            226128.90185788771,
+            226128.90218583547
+          ]
+        ]
+      },
+      {
+        "step": 30,
+        "displacement_relative_change": 7.645963766999334e-15,
+        "body_displacement_relative_change": 6.233934703541541e-12,
+        "velocity_relative_change": 6.071734652543829e-12,
+        "body_velocity_relative_change": 5.810052097979408e-12,
+        "acceleration_relative_change": 4.263486058417771e-10,
+        "body_acceleration_relative_change": 4.228797278023262e-10,
+        "contact_force_N_relative_change": 3.5404590931608134e-11,
+        "body_contact_force_N_relative_change": 3.540451668675553e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 1.750674262764269e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226128.79043716844,
+            226128.79076511622
+          ],
+          [
+            226128.79043695825,
+            226128.79076490604
+          ]
+        ]
+      },
+      {
+        "step": 31,
+        "displacement_relative_change": 8.654699372207333e-15,
+        "body_displacement_relative_change": 6.628520644083145e-12,
+        "velocity_relative_change": 1.3625221654093694e-11,
+        "body_velocity_relative_change": 1.3519338323747677e-11,
+        "acceleration_relative_change": 3.003184908118676e-10,
+        "body_acceleration_relative_change": 3.003200500891441e-10,
+        "contact_force_N_relative_change": 2.5066228791215912e-11,
+        "body_contact_force_N_relative_change": 2.5067716302569243e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 1.7379845845772024e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226128.67830522935,
+            226128.6786331771
+          ],
+          [
+            226128.67830522606,
+            226128.67863317384
+          ]
+        ]
+      },
+      {
+        "step": 32,
+        "displacement_relative_change": 9.640490288913895e-15,
+        "body_displacement_relative_change": 6.948483828075749e-12,
+        "velocity_relative_change": 1.2827985026527631e-11,
+        "body_velocity_relative_change": 1.2721942727247175e-11,
+        "acceleration_relative_change": 7.886104632552218e-11,
+        "body_acceleration_relative_change": 1.6656408453747826e-11,
+        "contact_force_N_relative_change": 1.2984258068026097e-12,
+        "body_contact_force_N_relative_change": 1.2984198657785984e-12,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 1.819430186671983e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226128.56525011014,
+            226128.56557805793
+          ],
+          [
+            226128.56525030336,
+            226128.56557825117
+          ]
+        ]
+      },
+      {
+        "step": 33,
+        "displacement_relative_change": 1.0356743760041207e-14,
+        "body_displacement_relative_change": 7.032707933396799e-12,
+        "velocity_relative_change": 8.689954537880559e-12,
+        "body_velocity_relative_change": 8.540438280292286e-12,
+        "acceleration_relative_change": 1.6034581772102408e-10,
+        "body_acceleration_relative_change": 1.4051557053477597e-10,
+        "contact_force_N_relative_change": 3.551209142952934e-11,
+        "body_contact_force_N_relative_change": 3.551214259196028e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 1.9181023671477334e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226128.45108022474,
+            226128.45140817255
+          ],
+          [
+            226128.45108010306,
+            226128.45140805084
+          ]
+        ]
+      },
+      {
+        "step": 34,
+        "displacement_relative_change": 1.0791602574728263e-14,
+        "body_displacement_relative_change": 6.912959983505558e-12,
+        "velocity_relative_change": 5.33268711874146e-12,
+        "body_velocity_relative_change": 5.098455117100982e-12,
+        "acceleration_relative_change": 1.7079256763548598e-10,
+        "body_acceleration_relative_change": 1.5224412742210008e-10,
+        "contact_force_N_relative_change": 7.268871790848696e-11,
+        "body_contact_force_N_relative_change": 7.268423760550932e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 1.9628828489334424e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226128.33562270086,
+            226128.33595064867
+          ],
+          [
+            226128.33562284952,
+            226128.33595079734
+          ]
+        ]
+      },
+      {
+        "step": 35,
+        "displacement_relative_change": 1.1441525660133323e-14,
+        "body_displacement_relative_change": 6.9365938027294616e-12,
+        "velocity_relative_change": 7.42553077873076e-12,
+        "body_velocity_relative_change": 7.426349362541633e-12,
+        "acceleration_relative_change": 1.402822759067931e-10,
+        "body_acceleration_relative_change": 1.2911239678877407e-10,
+        "contact_force_N_relative_change": 7.056587797418847e-11,
+        "body_contact_force_N_relative_change": 7.056152952399807e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 1.9635284333897288e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226128.218721271,
+            226128.21904921875
+          ],
+          [
+            226128.2187212918,
+            226128.2190492396
+          ]
+        ]
+      },
+      {
+        "step": 36,
+        "displacement_relative_change": 1.1323871648005387e-14,
+        "body_displacement_relative_change": 6.4988798900595305e-12,
+        "velocity_relative_change": 6.243085242714311e-12,
+        "body_velocity_relative_change": 6.243725644095018e-12,
+        "acceleration_relative_change": 4.035078133997868e-10,
+        "body_acceleration_relative_change": 4.0351185871230545e-10,
+        "contact_force_N_relative_change": 1.204753909061759e-12,
+        "body_contact_force_N_relative_change": 1.2047533982526535e-12,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 2.0693527986666278e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226128.1002366164,
+            226128.10056456414
+          ],
+          [
+            226128.10023657102,
+            226128.10056451877
+          ]
+        ]
+      },
+      {
+        "step": 37,
+        "displacement_relative_change": 1.1778487158847745e-14,
+        "body_displacement_relative_change": 6.4143399731290894e-12,
+        "velocity_relative_change": 4.9810750112274125e-12,
+        "body_velocity_relative_change": 4.98155145082051e-12,
+        "acceleration_relative_change": 2.943261408106606e-10,
+        "body_acceleration_relative_change": 2.9432926339757645e-10,
+        "contact_force_N_relative_change": 8.719178329748265e-13,
+        "body_contact_force_N_relative_change": 8.718652879218557e-13,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 2.10442223095091e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226127.98004120684,
+            226127.98036915463
+          ],
+          [
+            226127.9800412495,
+            226127.98036919726
+          ]
+        ]
+      },
+      {
+        "step": 38,
+        "displacement_relative_change": 1.1705980877766786e-14,
+        "body_displacement_relative_change": 6.052601443492128e-12,
+        "velocity_relative_change": 5.46137498114706e-12,
+        "body_velocity_relative_change": 5.46186258393201e-12,
+        "acceleration_relative_change": 2.7948609237804033e-10,
+        "body_acceleration_relative_change": 2.7948928783423764e-10,
+        "contact_force_N_relative_change": 4.174874099934826e-11,
+        "body_contact_force_N_relative_change": 4.1749458562217804e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 2.1936032773701112e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226127.8580225043,
+            226127.8583504521
+          ],
+          [
+            226127.85802250492,
+            226127.85835045273
+          ]
+        ]
+      },
+      {
+        "step": 39,
+        "displacement_relative_change": 1.2506727696499445e-14,
+        "body_displacement_relative_change": 6.155321762493212e-12,
+        "velocity_relative_change": 8.573397394607614e-12,
+        "body_velocity_relative_change": 8.57411217488344e-12,
+        "acceleration_relative_change": 4.785852310300818e-10,
+        "body_acceleration_relative_change": 4.78591046427173e-10,
+        "contact_force_N_relative_change": 4.4471729768663774e-11,
+        "body_contact_force_N_relative_change": 4.447443879600752e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 2.2467602202397085e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226127.73407827585,
+            226127.73440622364
+          ],
+          [
+            226127.73407827868,
+            226127.73440622646
+          ]
+        ]
+      },
+      {
+        "step": 40,
+        "displacement_relative_change": 1.2461355862136168e-14,
+        "body_displacement_relative_change": 5.838443042453042e-12,
+        "velocity_relative_change": 5.471478388877288e-12,
+        "body_velocity_relative_change": 5.47190434604243e-12,
+        "acceleration_relative_change": 4.829060678380611e-10,
+        "body_acceleration_relative_change": 4.829121871569876e-10,
+        "contact_force_N_relative_change": 3.3416573711118486e-11,
+        "body_contact_force_N_relative_change": 3.341861896866053e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 2.2428452354631074e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226127.60811700506,
+            226127.60844495284
+          ],
+          [
+            226127.6081170101,
+            226127.60844495788
+          ]
+        ]
+      },
+      {
+        "step": 41,
+        "displacement_relative_change": 1.2587373533341862e-14,
+        "body_displacement_relative_change": 5.6222182265257355e-12,
+        "velocity_relative_change": 4.096972697797105e-12,
+        "body_velocity_relative_change": 4.097270954631571e-12,
+        "acceleration_relative_change": 8.73595655797006e-11,
+        "body_acceleration_relative_change": 8.736063223571949e-11,
+        "contact_force_N_relative_change": 7.729756929204442e-11,
+        "body_contact_force_N_relative_change": 7.729458775424355e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 2.3563272140827337e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226127.48005679378,
+            226127.48038474156
+          ],
+          [
+            226127.48005679186,
+            226127.4803847396
+          ]
+        ]
+      },
+      {
+        "step": 42,
+        "displacement_relative_change": 1.3030781460293864e-14,
+        "body_displacement_relative_change": 5.5569651577589945e-12,
+        "velocity_relative_change": 4.2488312499628396e-12,
+        "body_velocity_relative_change": 4.249120497690921e-12,
+        "acceleration_relative_change": 2.0019138038374403e-10,
+        "body_acceleration_relative_change": 2.001940975308247e-10,
+        "contact_force_N_relative_change": 7.543076894167863e-11,
+        "body_contact_force_N_relative_change": 7.542613655593485e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 2.316367253300962e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226127.34982448787,
+            226127.35015243565
+          ],
+          [
+            226127.34982448682,
+            226127.35015243458
+          ]
+        ]
+      },
+      {
+        "step": 43,
+        "displacement_relative_change": 1.3331335293945815e-14,
+        "body_displacement_relative_change": 5.437177194814338e-12,
+        "velocity_relative_change": 3.387742567215963e-12,
+        "body_velocity_relative_change": 3.1492229368691434e-12,
+        "acceleration_relative_change": 9.406771894817887e-11,
+        "body_acceleration_relative_change": 7.559522798330761e-11,
+        "contact_force_N_relative_change": 2.5057165591962102e-11,
+        "body_contact_force_N_relative_change": 2.5055647894464886e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 2.4559350704284554e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226127.21735388268,
+            226127.21768183043
+          ],
+          [
+            226127.217353799,
+            226127.21768174678
+          ]
+        ]
+      },
+      {
+        "step": 44,
+        "displacement_relative_change": 1.2816207276582335e-14,
+        "body_displacement_relative_change": 5.004353766203458e-12,
+        "velocity_relative_change": 1.1201031935362527e-11,
+        "body_velocity_relative_change": 1.1067549339034394e-11,
+        "acceleration_relative_change": 5.364042110560537e-10,
+        "body_acceleration_relative_change": 5.33465389136891e-10,
+        "contact_force_N_relative_change": 2.614933871404998e-11,
+        "body_contact_force_N_relative_change": 2.6147764357905176e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 2.4379453065226437e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226127.08258796783,
+            226127.08291591564
+          ],
+          [
+            226127.08258804376,
+            226127.08291599154
+          ]
+        ]
+      },
+      {
+        "step": 45,
+        "displacement_relative_change": 1.2151099438780132e-14,
+        "body_displacement_relative_change": 4.5464322667391194e-12,
+        "velocity_relative_change": 1.5121918421301918e-11,
+        "body_velocity_relative_change": 1.4932289081678612e-11,
+        "acceleration_relative_change": 2.1501683704686195e-10,
+        "body_acceleration_relative_change": 1.9972921085420782e-10,
+        "contact_force_N_relative_change": 2.5539504060384758e-11,
+        "body_contact_force_N_relative_change": 2.55409824918134e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 2.481457563712244e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226126.94547374034,
+            226126.94580168813
+          ],
+          [
+            226126.94547389523,
+            226126.94580184302
+          ]
+        ]
+      },
+      {
+        "step": 46,
+        "displacement_relative_change": 1.2045249328410893e-14,
+        "body_displacement_relative_change": 4.3237477193425026e-12,
+        "velocity_relative_change": 7.32491514259677e-12,
+        "body_velocity_relative_change": 7.135451674215529e-12,
+        "acceleration_relative_change": 3.8130342301087937e-10,
+        "body_acceleration_relative_change": 3.7284912518347346e-10,
+        "contact_force_N_relative_change": 3.908774011435968e-11,
+        "body_contact_force_N_relative_change": 3.9090108202012015e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 2.6304200518162812e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226126.80596621966,
+            226126.80629416744
+          ],
+          [
+            226126.80596584317,
+            226126.806293791
+          ]
+        ]
+      },
+      {
+        "step": 47,
+        "displacement_relative_change": 1.1906233046081511e-14,
+        "body_displacement_relative_change": 4.1030665334591805e-12,
+        "velocity_relative_change": 8.210455401487534e-12,
+        "body_velocity_relative_change": 8.048761436369994e-12,
+        "acceleration_relative_change": 7.027579660537667e-11,
+        "body_acceleration_relative_change": 7.027666324662895e-11,
+        "contact_force_N_relative_change": 4.4470364820591905e-11,
+        "body_contact_force_N_relative_change": 4.447307516111157e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 2.643025662207908e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226126.6640237926,
+            226126.66435174042
+          ],
+          [
+            226126.6640234774,
+            226126.6643514252
+          ]
+        ]
+      },
+      {
+        "step": 48,
+        "displacement_relative_change": 1.167071254369953e-14,
+        "body_displacement_relative_change": 3.863684413481725e-12,
+        "velocity_relative_change": 1.4284143745801613e-11,
+        "body_velocity_relative_change": 1.4195880021564936e-11,
+        "acceleration_relative_change": 3.247390723812633e-10,
+        "body_acceleration_relative_change": 3.2474392932757665e-10,
+        "contact_force_N_relative_change": 8.487760747756121e-13,
+        "body_contact_force_N_relative_change": 8.488284567513707e-13,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 2.651449710062339e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226126.519611085,
+            226126.5199390328
+          ],
+          [
+            226126.51961101152,
+            226126.5199389593
+          ]
+        ]
+      },
+      {
+        "step": 49,
+        "displacement_relative_change": 1.1684510176860944e-14,
+        "body_displacement_relative_change": 3.7177040682331405e-12,
+        "velocity_relative_change": 1.4003602044092816e-11,
+        "body_velocity_relative_change": 1.3960659722927917e-11,
+        "acceleration_relative_change": 5.744971976223699e-11,
+        "body_acceleration_relative_change": 7.03650249903547e-12,
+        "contact_force_N_relative_change": 2.533948397503681e-11,
+        "body_contact_force_N_relative_change": 2.5341023765189015e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 2.7686760636849317e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226126.37269759516,
+            226126.37302554297
+          ],
+          [
+            226126.37269754164,
+            226126.37302548945
+          ]
+        ]
+      },
+      {
+        "step": 50,
+        "displacement_relative_change": 1.210195690154448e-14,
+        "body_displacement_relative_change": 3.703255266004015e-12,
+        "velocity_relative_change": 7.283450625276697e-12,
+        "body_velocity_relative_change": 7.2028155570790675e-12,
+        "acceleration_relative_change": 1.0682808405349594e-09,
+        "body_acceleration_relative_change": 1.0682970547206726e-09,
+        "contact_force_N_relative_change": 3.539337101093941e-11,
+        "body_contact_force_N_relative_change": 3.5393397402223555e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 2.8175608573881386e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226126.2232550517,
+            226126.2235829995
+          ],
+          [
+            226126.22325512138,
+            226126.22358306916
+          ]
+        ]
+      },
+      {
+        "step": 51,
+        "displacement_relative_change": 1.2314513318155074e-14,
+        "body_displacement_relative_change": 3.6268958288923834e-12,
+        "velocity_relative_change": 5.465823292223383e-12,
+        "body_velocity_relative_change": 5.361711070622723e-12,
+        "acceleration_relative_change": 6.224447773670531e-10,
+        "body_acceleration_relative_change": 6.171382851839769e-10,
+        "contact_force_N_relative_change": 9.911192364429352e-13,
+        "body_contact_force_N_relative_change": 9.911430514871497e-13,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 2.8276076911539792e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226126.07125968006,
+            226126.07158762787
+          ],
+          [
+            226126.07125983798,
+            226126.07158778576
+          ]
+        ]
+      },
+      {
+        "step": 52,
+        "displacement_relative_change": 1.2546790564264276e-14,
+        "body_displacement_relative_change": 3.558858636980914e-12,
+        "velocity_relative_change": 4.122930549035746e-12,
+        "body_velocity_relative_change": 3.988814010572084e-12,
+        "acceleration_relative_change": 8.0706047596124e-11,
+        "body_acceleration_relative_change": 8.07072554647126e-11,
+        "contact_force_N_relative_change": 8.250365037682439e-13,
+        "body_contact_force_N_relative_change": 8.250879253293103e-13,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 2.9629935703706245e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226125.91669228533,
+            226125.91702023314
+          ],
+          [
+            226125.91669221612,
+            226125.91702016394
+          ]
+        ]
+      },
+      {
+        "step": 53,
+        "displacement_relative_change": 1.2786387882976294e-14,
+        "body_displacement_relative_change": 3.495421973602836e-12,
+        "velocity_relative_change": 8.422663780558084e-12,
+        "body_velocity_relative_change": 8.360332332333243e-12,
+        "acceleration_relative_change": 2.822898340964603e-10,
+        "body_acceleration_relative_change": 2.7019931678158647e-10,
+        "contact_force_N_relative_change": 1.1914669528858537e-12,
+        "body_contact_force_N_relative_change": 1.1914609283637845e-12,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 2.9397098181405576e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226125.75953489178,
+            226125.7598628396
+          ],
+          [
+            226125.7595347264,
+            226125.7598626742
+          ]
+        ]
+      },
+      {
+        "step": 54,
+        "displacement_relative_change": 1.304802177872884e-14,
+        "body_displacement_relative_change": 3.439920261257956e-12,
+        "velocity_relative_change": 1.9665867721456584e-12,
+        "body_velocity_relative_change": 1.966650214979891e-12,
+        "acceleration_relative_change": 4.4653881825527607e-10,
+        "body_acceleration_relative_change": 4.4276134619726507e-10,
+        "contact_force_N_relative_change": 1.026382294802873e-13,
+        "body_contact_force_N_relative_change": 1.0264451294126198e-13,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 2.9919125352460034e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226125.59977269496,
+            226125.6001006427
+          ],
+          [
+            226125.59977274324,
+            226125.60010069105
+          ]
+        ]
+      },
+      {
+        "step": 55,
+        "displacement_relative_change": 1.330897590848294e-14,
+        "body_displacement_relative_change": 3.3860506176156683e-12,
+        "velocity_relative_change": 5.086760295093425e-12,
+        "body_velocity_relative_change": 5.086915602963011e-12,
+        "acceleration_relative_change": 2.9537424059146604e-10,
+        "body_acceleration_relative_change": 2.9537866912794726e-10,
+        "contact_force_N_relative_change": 4.509958398255013e-11,
+        "body_contact_force_N_relative_change": 4.509851077864778e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 3.061896277025694e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226125.4373941637,
+            226125.43772211144
+          ],
+          [
+            226125.4373941803,
+            226125.43772212806
+          ]
+        ]
+      },
+      {
+        "step": 56,
+        "displacement_relative_change": 1.3553542647346219e-14,
+        "body_displacement_relative_change": 3.329888241681851e-12,
+        "velocity_relative_change": 3.748445294091243e-12,
+        "body_velocity_relative_change": 3.748553232020706e-12,
+        "acceleration_relative_change": 4.764194010378557e-10,
+        "body_acceleration_relative_change": 4.764265370354001e-10,
+        "contact_force_N_relative_change": 3.258947137970472e-11,
+        "body_contact_force_N_relative_change": 3.259145603908113e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 3.1494069864195707e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226125.27238965876,
+            226125.27271760654
+          ],
+          [
+            226125.27238962776,
+            226125.27271757548
+          ]
+        ]
+      },
+      {
+        "step": 57,
+        "displacement_relative_change": 1.3813130545462822e-14,
+        "body_displacement_relative_change": 3.2792173892882727e-12,
+        "velocity_relative_change": 6.1123431487526496e-12,
+        "body_velocity_relative_change": 6.1125097481289304e-12,
+        "acceleration_relative_change": 5.572137259084769e-10,
+        "body_acceleration_relative_change": 5.572220351194765e-10,
+        "contact_force_N_relative_change": 8.339767619857983e-11,
+        "body_contact_force_N_relative_change": 8.339543033111818e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 3.2247070415794833e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226125.10475136476,
+            226125.10507931255
+          ],
+          [
+            226125.10475135356,
+            226125.10507930137
+          ]
+        ]
+      },
+      {
+        "step": 58,
+        "displacement_relative_change": 1.4031806138202097e-14,
+        "body_displacement_relative_change": 3.220597870827099e-12,
+        "velocity_relative_change": 3.0161980077315155e-12,
+        "body_velocity_relative_change": 2.8651670942688027e-12,
+        "acceleration_relative_change": 5.124452321810284e-10,
+        "body_acceleration_relative_change": 5.090567134299866e-10,
+        "contact_force_N_relative_change": 2.5025678614175084e-11,
+        "body_contact_force_N_relative_change": 2.5024193667304502e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 3.208338019293197e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226124.9344740369,
+            226124.9348019847
+          ],
+          [
+            226124.93447411997,
+            226124.93480206776
+          ]
+        ]
+      },
+      {
+        "step": 59,
+        "displacement_relative_change": 1.4315389257423595e-14,
+        "body_displacement_relative_change": 3.178541273418655e-12,
+        "velocity_relative_change": 3.720780743388575e-12,
+        "body_velocity_relative_change": 3.603297095993107e-12,
+        "acceleration_relative_change": 3.578251919955205e-10,
+        "body_acceleration_relative_change": 3.479205343960883e-10,
+        "contact_force_N_relative_change": 9.196786797880389e-13,
+        "body_contact_force_N_relative_change": 9.19638348046964e-13,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 3.271443332435038e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226124.76155317444,
+            226124.76188112222
+          ],
+          [
+            226124.7615530434,
+            226124.76188099117
+          ]
+        ]
+      },
+      {
+        "step": 60,
+        "displacement_relative_change": 1.462571413534964e-14,
+        "body_displacement_relative_change": 3.1430735788315776e-12,
+        "velocity_relative_change": 4.84187025345133e-12,
+        "body_velocity_relative_change": 4.7549854959916665e-12,
+        "acceleration_relative_change": 9.511882836142146e-11,
+        "body_acceleration_relative_change": 9.511998332659871e-11,
+        "contact_force_N_relative_change": 2.523202320088441e-11,
+        "body_contact_force_N_relative_change": 2.523357849863723e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 3.352433187630549e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226124.58598698568,
+            226124.58631493343
+          ],
+          [
+            226124.58598698452,
+            226124.58631493227
+          ]
+        ]
+      },
+      {
+        "step": 61,
+        "displacement_relative_change": 1.4954153031733633e-14,
+        "body_displacement_relative_change": 3.1125062124510653e-12,
+        "velocity_relative_change": 3.201469825582995e-12,
+        "body_velocity_relative_change": 3.2015392253223315e-12,
+        "acceleration_relative_change": 1.3494635522994732e-10,
+        "body_acceleration_relative_change": 1.2106220096028883e-10,
+        "contact_force_N_relative_change": 2.5053419322689522e-11,
+        "body_contact_force_N_relative_change": 2.5051895573962046e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 3.3137087675969864e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226124.40777430485,
+            226124.40810225264
+          ],
+          [
+            226124.40777434316,
+            226124.4081022909
+          ]
+        ]
+      },
+      {
+        "step": 62,
+        "displacement_relative_change": 1.521485047695442e-14,
+        "body_displacement_relative_change": 3.068722788601123e-12,
+        "velocity_relative_change": 2.654319972925917e-12,
+        "body_velocity_relative_change": 2.339515975488609e-12,
+        "acceleration_relative_change": 2.7880559396647496e-10,
+        "body_acceleration_relative_change": 2.6563960928856625e-10,
+        "contact_force_N_relative_change": 5.0433565765599436e-11,
+        "body_contact_force_N_relative_change": 5.043509355866574e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 3.429977806676865e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226124.2269157404,
+            226124.22724368825
+          ],
+          [
+            226124.22691585857,
+            226124.22724380635
+          ]
+        ]
+      },
+      {
+        "step": 63,
+        "displacement_relative_change": 1.54457439906622e-14,
+        "body_displacement_relative_change": 3.0203995220235417e-12,
+        "velocity_relative_change": 5.169781970467847e-12,
+        "body_velocity_relative_change": 5.169882953822368e-12,
+        "acceleration_relative_change": 2.5634516993310507e-10,
+        "body_acceleration_relative_change": 2.4183105208212905e-10,
+        "contact_force_N_relative_change": 8.039101767224925e-11,
+        "body_contact_force_N_relative_change": 8.038770514234362e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 3.442534711316561e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226124.04341327137,
+            226124.04374121915
+          ],
+          [
+            226124.04341311654,
+            226124.0437410643
+          ]
+        ]
+      },
+      {
+        "step": 64,
+        "displacement_relative_change": 1.5770056199048436e-14,
+        "body_displacement_relative_change": 2.9913893260631075e-12,
+        "velocity_relative_change": 2.9397149236503383e-12,
+        "body_velocity_relative_change": 2.675499952417432e-12,
+        "acceleration_relative_change": 4.688397901822886e-10,
+        "body_acceleration_relative_change": 4.6099961674180874e-10,
+        "contact_force_N_relative_change": 7.568069601911098e-11,
+        "body_contact_force_N_relative_change": 7.567709176292795e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 3.5617452235325153e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226123.85726959212,
+            226123.85759753993
+          ],
+          [
+            226123.85726953976,
+            226123.8575974875
+          ]
+        ]
+      },
+      {
+        "step": 65,
+        "displacement_relative_change": 1.612683066131347e-14,
+        "body_displacement_relative_change": 2.968503925681366e-12,
+        "velocity_relative_change": 5.520044259061159e-12,
+        "body_velocity_relative_change": 5.454408739411808e-12,
+        "acceleration_relative_change": 2.7956819531493177e-10,
+        "body_acceleration_relative_change": 2.4445010622573926e-10,
+        "contact_force_N_relative_change": 7.499838876869691e-11,
+        "body_contact_force_N_relative_change": 7.499380232316225e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 3.602961730963505e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226123.66848809845,
+            226123.66881604624
+          ],
+          [
+            226123.6684883684,
+            226123.66881631617
+          ]
+        ]
+      },
+      {
+        "step": 66,
+        "displacement_relative_change": 1.6569266384507515e-14,
+        "body_displacement_relative_change": 2.9613878168283095e-12,
+        "velocity_relative_change": 7.520028571156956e-12,
+        "body_velocity_relative_change": 7.520154275984099e-12,
+        "acceleration_relative_change": 1.8597830538992233e-10,
+        "body_acceleration_relative_change": 1.757105451501884e-10,
+        "contact_force_N_relative_change": 3.5509093070020724e-11,
+        "body_contact_force_N_relative_change": 3.550910291750773e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 3.68136432030791e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226123.47707498074,
+            226123.47740292852
+          ],
+          [
+            226123.47707487148,
+            226123.47740281926
+          ]
+        ]
+      },
+      {
+        "step": 67,
+        "displacement_relative_change": 1.6677939828670402e-14,
+        "body_displacement_relative_change": 2.895555181408219e-12,
+        "velocity_relative_change": 5.731636845362472e-12,
+        "body_velocity_relative_change": 5.731727347228314e-12,
+        "acceleration_relative_change": 9.44667379587947e-10,
+        "body_acceleration_relative_change": 9.446801871887317e-10,
+        "contact_force_N_relative_change": 7.653051271675334e-11,
+        "body_contact_force_N_relative_change": 7.652761035466857e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 3.7059785456114115e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226123.2830344485,
+            226123.28336239627
+          ],
+          [
+            226123.2830345214,
+            226123.28336246917
+          ]
+        ]
+      },
+      {
+        "step": 68,
+        "displacement_relative_change": 1.6883660873437687e-14,
+        "body_displacement_relative_change": 2.8487094644079086e-12,
+        "velocity_relative_change": 3.645887863930744e-12,
+        "body_velocity_relative_change": 3.645942765258023e-12,
+        "acceleration_relative_change": 1.682822916424069e-10,
+        "body_acceleration_relative_change": 1.6828450264565093e-10,
+        "contact_force_N_relative_change": 3.3403369781291316e-11,
+        "body_contact_force_N_relative_change": 3.3405407761182084e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 3.840443605412595e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226123.08637418717,
+            226123.08670213495
+          ],
+          [
+            226123.0863741107,
+            226123.0867020585
+          ]
+        ]
+      },
+      {
+        "step": 69,
+        "displacement_relative_change": 1.717638638836036e-14,
+        "body_displacement_relative_change": 2.8176976913090814e-12,
+        "velocity_relative_change": 2.344169287536558e-12,
+        "body_velocity_relative_change": 2.344201794621216e-12,
+        "acceleration_relative_change": 3.822208060448407e-10,
+        "body_acceleration_relative_change": 3.822258095806482e-10,
+        "contact_force_N_relative_change": 3.340145593350954e-11,
+        "body_contact_force_N_relative_change": 3.340348414770577e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 3.8694804437642074e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226122.88710087922,
+            226122.887428827
+          ],
+          [
+            226122.8871008922,
+            226122.88742883998
+          ]
+        ]
+      },
+      {
+        "step": 70,
+        "displacement_relative_change": 1.737711609731151e-14,
+        "body_displacement_relative_change": 2.772955265777413e-12,
+        "velocity_relative_change": 1.5135893969918035e-12,
+        "body_velocity_relative_change": 1.2882637059495512e-12,
+        "acceleration_relative_change": 1.7379199465356342e-10,
+        "body_acceleration_relative_change": 1.623123945005646e-10,
+        "contact_force_N_relative_change": 7.443932920722062e-11,
+        "body_contact_force_N_relative_change": 7.443477933273826e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 3.878562056154877e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226122.685222759,
+            226122.68555070675
+          ],
+          [
+            226122.68522267241,
+            226122.6855506202
+          ]
+        ]
+      },
+      {
+        "step": 71,
+        "displacement_relative_change": 1.7516137321944872e-14,
+        "body_displacement_relative_change": 2.7200804076264365e-12,
+        "velocity_relative_change": 6.0580314465644966e-12,
+        "body_velocity_relative_change": 6.007083206109855e-12,
+        "acceleration_relative_change": 4.5300535787104605e-10,
+        "body_acceleration_relative_change": 4.4432363486909643e-10,
+        "contact_force_N_relative_change": 3.4230210324730816e-11,
+        "body_contact_force_N_relative_change": 3.4232286932273214e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 3.969863468681112e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226122.4807487349,
+            226122.48107668266
+          ],
+          [
+            226122.48074878065,
+            226122.48107672847
+          ]
+        ]
+      },
+      {
+        "step": 72,
+        "displacement_relative_change": 1.774965912756506e-14,
+        "body_displacement_relative_change": 2.683307557256217e-12,
+        "velocity_relative_change": 2.09737137534536e-12,
+        "body_velocity_relative_change": 1.7882844165446228e-12,
+        "acceleration_relative_change": 3.9756497150447494e-10,
+        "body_acceleration_relative_change": 3.9258680489834464e-10,
+        "contact_force_N_relative_change": 7.797037633168467e-11,
+        "body_contact_force_N_relative_change": 7.796657672707072e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 4.013857629246492e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226122.273687847,
+            226122.27401579474
+          ],
+          [
+            226122.27368754466,
+            226122.27401549244
+          ]
+        ]
+      },
+      {
+        "step": 73,
+        "displacement_relative_change": 1.799940131237148e-14,
+        "body_displacement_relative_change": 2.649676045535643e-12,
+        "velocity_relative_change": 1.0405952483823275e-11,
+        "body_velocity_relative_change": 1.034959934338225e-11,
+        "acceleration_relative_change": 7.681400406473858e-10,
+        "body_acceleration_relative_change": 7.681497219593357e-10,
+        "contact_force_N_relative_change": 7.056237952854472e-11,
+        "body_contact_force_N_relative_change": 7.055807032655847e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 4.051374819132651e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226122.06404952725,
+            226122.06437747504
+          ],
+          [
+            226122.06404950508,
+            226122.06437745286
+          ]
+        ]
+      },
+      {
+        "step": 74,
+        "displacement_relative_change": 1.832108295101953e-14,
+        "body_displacement_relative_change": 2.6269864971066728e-12,
+        "velocity_relative_change": 5.8878796562409945e-12,
+        "body_velocity_relative_change": 5.7899462113344325e-12,
+        "acceleration_relative_change": 3.775003621901753e-10,
+        "body_acceleration_relative_change": 3.7750506671905617e-10,
+        "contact_force_N_relative_change": 7.497436771691856e-11,
+        "body_contact_force_N_relative_change": 7.497084025488956e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 4.105801780629951e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226121.85184461446,
+            226121.85217256224
+          ],
+          [
+            226121.8518446063,
+            226121.8521725541
+          ]
+        ]
+      },
+      {
+        "step": 75,
+        "displacement_relative_change": 1.869525649677875e-14,
+        "body_displacement_relative_change": 2.6120846206558164e-12,
+        "velocity_relative_change": 7.703387967608917e-12,
+        "body_velocity_relative_change": 7.667108762024617e-12,
+        "acceleration_relative_change": 1.8762535300585316e-10,
+        "body_acceleration_relative_change": 1.764669053635999e-10,
+        "contact_force_N_relative_change": 2.524210323257575e-11,
+        "body_contact_force_N_relative_change": 2.524361265416168e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 4.131685483832785e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226121.63708389844,
+            226121.6374118462
+          ],
+          [
+            226121.63708389766,
+            226121.63741184544
+          ]
+        ]
+      },
+      {
+        "step": 76,
+        "displacement_relative_change": 1.8789496024275134e-14,
+        "body_displacement_relative_change": 2.559022330093642e-12,
+        "velocity_relative_change": 1.9128178893552945e-12,
+        "body_velocity_relative_change": 1.764328093056238e-12,
+        "acceleration_relative_change": 7.90030908316251e-10,
+        "body_acceleration_relative_change": 7.848235954329338e-10,
+        "contact_force_N_relative_change": 6.975514514184124e-11,
+        "body_contact_force_N_relative_change": 6.975089849023308e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 4.1993953004247485e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226121.4197783653,
+            226121.4201063131
+          ],
+          [
+            226121.41977858293,
+            226121.42010653074
+          ]
+        ]
+      },
+      {
+        "step": 77,
+        "displacement_relative_change": 1.907311912350355e-14,
+        "body_displacement_relative_change": 2.5329097252012018e-12,
+        "velocity_relative_change": 4.577792360409229e-12,
+        "body_velocity_relative_change": 4.519157491702875e-12,
+        "acceleration_relative_change": 5.278357508858905e-10,
+        "body_acceleration_relative_change": 5.278420454511033e-10,
+        "contact_force_N_relative_change": 5.100809952240445e-11,
+        "body_contact_force_N_relative_change": 5.100969799170584e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 4.2751190426990706e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226121.1999397579,
+            226121.20026770566
+          ],
+          [
+            226121.1999396974,
+            226121.20026764515
+          ]
+        ]
+      },
+      {
+        "step": 78,
+        "displacement_relative_change": 1.9278240791981802e-14,
+        "body_displacement_relative_change": 2.4976410326744574e-12,
+        "velocity_relative_change": 1.3504325312957667e-12,
+        "body_velocity_relative_change": 1.3504447849095833e-12,
+        "acceleration_relative_change": 3.148535939450578e-10,
+        "body_acceleration_relative_change": 3.0811453261934196e-10,
+        "contact_force_N_relative_change": 3.547189177116819e-11,
+        "body_contact_force_N_relative_change": 3.547187342822217e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 4.32929748414711e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226120.97758032387,
+            226120.97790827169
+          ],
+          [
+            226120.9775802629,
+            226120.97790821068
+          ]
+        ]
+      },
+      {
+        "step": 79,
+        "displacement_relative_change": 1.9394578627184843e-14,
+        "body_displacement_relative_change": 2.4517396502230516e-12,
+        "velocity_relative_change": 1.6849565858983527e-12,
+        "body_velocity_relative_change": 1.5259466664595382e-12,
+        "acceleration_relative_change": 2.1520585854606245e-10,
+        "body_acceleration_relative_change": 2.0509963132047833e-10,
+        "contact_force_N_relative_change": 4.171827675521232e-11,
+        "body_contact_force_N_relative_change": 4.171896268913796e-11,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 4.3952049818764736e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226120.7527125636,
+            226120.75304051134
+          ],
+          [
+            226120.7527124834,
+            226120.75304043118
+          ]
+        ]
+      },
+      {
+        "step": 80,
+        "displacement_relative_change": 1.976907733897601e-14,
+        "body_displacement_relative_change": 2.4397066293602362e-12,
+        "velocity_relative_change": 4.76445199779546e-12,
+        "body_velocity_relative_change": 4.764491926228484e-12,
+        "acceleration_relative_change": 5.501231573760375e-10,
+        "body_acceleration_relative_change": 5.462087919177322e-10,
+        "contact_force_N_relative_change": 1.2629879078501038e-12,
+        "body_contact_force_N_relative_change": 1.2629903168660053e-12,
+        "applied_force_N_relative_change": 0.0,
+        "body_applied_force_N_relative_change": 0.0,
+        "full_corner_tensor_relative_change": 4.5214021130106844e-11,
+        "raw_peak_lower_upper_Pa": [
+          [
+            226120.52534877567,
+            226120.52567672345
+          ],
+          [
+            226120.52534883405,
+            226120.52567678184
+          ]
+        ]
+      }
+    ],
+    "unchanged_full_force_budget_N": 1e-09,
+    "goal_completion": false,
+    "limitations": "Same complete physical inputs and original full mapped/body dynamic force gates; all original field states and unaveraged corner tensors are compared. This qualifies reference numerical equivalence only, not physical convergence, full-arm matching or an accuracy-cost operating range."
+  },
+  "mesh_qualification": {
+    "scope": "Audit contact-centered local refinement geometry before assembling larger FEM solves.",
+    "radius_m": 0.001,
+    "centres_m": [
+      [
+        1.7697452569156308e-06,
+        0.022028914832074527,
+        0.0011846870585170005
+      ],
+      [
+        -2.268348684854836e-05,
+        -0.02196183354501063,
+        0.0020866068240277674
+      ]
+    ],
+    "installed_mesh_source_sha256": "92a19f6d8e415590cdced77482c71741bd8e766190995abe640b662bfd93b271",
+    "rows": [
+      {
+        "level": 0,
+        "tetrahedra": 480,
+        "vertices": 126,
+        "p2_body_dofs": 2430,
+        "min_edge_m": 0.0002499999999999955,
+        "max_edge_m": 0.018686553178036868,
+        "volume_m3": 3.2649241052006638e-06,
+        "com_m": [
+          2.2168449025537615e-18,
+          2.588958154053857e-18,
+          -1.564261184364498e-17
+        ],
+        "boundary_area_m2": 0.013893944984007998,
+        "history": [],
+        "contact_incident_cells": 20,
+        "contact_incident_max_edge_m": 0.01723233617345589,
+        "contact_incident_min_edge_m": 0.00024999999999999843,
+        "contact_incident_vertices": 20
+      },
+      {
+        "level": 3,
+        "tetrahedra": 1099,
+        "vertices": 259,
+        "p2_body_dofs": 5217,
+        "min_edge_m": 6.249999999999709e-05,
+        "max_edge_m": 0.018686553178036868,
+        "volume_m3": 3.264924105200664e-06,
+        "com_m": [
+          2.8823390825813487e-18,
+          -1.92631698661361e-18,
+          -1.478784076756212e-17
+        ],
+        "boundary_area_m2": 0.013893944984007998,
+        "history": [
+          {
+            "level": 1,
+            "marked_cells": 72,
+            "tetrahedra": 648
+          },
+          {
+            "level": 2,
+            "marked_cells": 104,
+            "tetrahedra": 849
+          },
+          {
+            "level": 3,
+            "marked_cells": 136,
+            "tetrahedra": 1099
+          }
+        ],
+        "contact_incident_cells": 20,
+        "contact_incident_max_edge_m": 0.0060118636360787766,
+        "contact_incident_min_edge_m": 6.249999999999855e-05,
+        "contact_incident_vertices": 20
+      },
+      {
+        "level": 6,
+        "tetrahedra": 3993,
+        "vertices": 836,
+        "p2_body_dofs": 17718,
+        "min_edge_m": 1.5624999999994942e-05,
+        "max_edge_m": 0.018686553178036868,
+        "volume_m3": 3.264924105200664e-06,
+        "com_m": [
+          3.718650626002213e-18,
+          -5.74004483696956e-19,
+          -1.4794532589769012e-17
+        ],
+        "boundary_area_m2": 0.013893944984007997,
+        "history": [
+          {
+            "level": 1,
+            "marked_cells": 72,
+            "tetrahedra": 648
+          },
+          {
+            "level": 2,
+            "marked_cells": 104,
+            "tetrahedra": 849
+          },
+          {
+            "level": 3,
+            "marked_cells": 136,
+            "tetrahedra": 1099
+          },
+          {
+            "level": 4,
+            "marked_cells": 166,
+            "tetrahedra": 1392
+          },
+          {
+            "level": 5,
+            "marked_cells": 209,
+            "tetrahedra": 1998
+          },
+          {
+            "level": 6,
+            "marked_cells": 306,
+            "tetrahedra": 3993
+          }
+        ],
+        "contact_incident_cells": 20,
+        "contact_incident_max_edge_m": 0.0015029659090196948,
+        "contact_incident_min_edge_m": 1.5624999999995213e-05,
+        "contact_incident_vertices": 20
+      },
+      {
+        "level": 9,
+        "tetrahedra": 20696,
+        "vertices": 4020,
+        "p2_body_dofs": 87987,
+        "min_edge_m": 1.9531249999986596e-06,
+        "max_edge_m": 0.018686553178036868,
+        "volume_m3": 3.264924105200664e-06,
+        "com_m": [
+          3.9096623315406395e-18,
+          -6.038781929372066e-18,
+          -2.118425415512064e-17
+        ],
+        "boundary_area_m2": 0.013893944984007998,
+        "history": [
+          {
+            "level": 1,
+            "marked_cells": 72,
+            "tetrahedra": 648
+          },
+          {
+            "level": 2,
+            "marked_cells": 104,
+            "tetrahedra": 849
+          },
+          {
+            "level": 3,
+            "marked_cells": 136,
+            "tetrahedra": 1099
+          },
+          {
+            "level": 4,
+            "marked_cells": 166,
+            "tetrahedra": 1392
+          },
+          {
+            "level": 5,
+            "marked_cells": 209,
+            "tetrahedra": 1998
+          },
+          {
+            "level": 6,
+            "marked_cells": 306,
+            "tetrahedra": 3993
+          },
+          {
+            "level": 7,
+            "marked_cells": 591,
+            "tetrahedra": 6969
+          },
+          {
+            "level": 8,
+            "marked_cells": 1233,
+            "tetrahedra": 12011
+          },
+          {
+            "level": 9,
+            "marked_cells": 3009,
+            "tetrahedra": 20696
+          }
+        ],
+        "contact_incident_cells": 32,
+        "contact_incident_max_edge_m": 0.0005385105054204961,
+        "contact_incident_min_edge_m": 3.906249999997283e-06,
+        "contact_incident_vertices": 26
+      }
+    ],
+    "goal_completion": false,
+    "limitations": "Geometry and mesh-size qualification only. Fixed polyhedral geometry, material and physical contact protocol are unchanged. Stress/contact convergence and a resolved physical patch require solved fields and independent tails."
+  },
+  "zero_controls": [
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-coupled-0-v1",
+      "reference": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-cached-newton-control-v1/results",
+      "original_npz_archives": 83,
+      "npy_payloads_all_byte_identical": true,
+      "changed_arrays": []
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-frozen-0-v1",
+      "reference": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-cached-newton-control-v1/results",
+      "original_npz_archives": 83,
+      "npy_payloads_all_byte_identical": true,
+      "changed_arrays": []
+    }
+  ],
+  "goal_completion": false
+}

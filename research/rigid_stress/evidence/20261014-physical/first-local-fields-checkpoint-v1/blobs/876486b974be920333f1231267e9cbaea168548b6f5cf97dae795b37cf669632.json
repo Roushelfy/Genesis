@@ -1,0 +1,167 @@
+{
+  "scope": "Audit collision-surface traction quadrature and islands without nodal-load smoothing.",
+  "cases": [
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-coupled-0-v1",
+      "contact_refinement": 0,
+      "body_refinement": 0,
+      "local_levels": 0,
+      "declared_level": 0,
+      "body_tetrahedra": 480,
+      "bulk_dofs": 2970,
+      "surface_vertices": 502,
+      "surface_triangles": 948,
+      "normal_stencils": 2,
+      "active_body_nodes": 2,
+      "islands": [
+        {
+          "nodes": 1,
+          "current_lumped_area_m2": 4.825679461407207e-05,
+          "force_N": [
+            -0.00022302401840703585,
+            -0.399684091688566,
+            0.04017488576107795
+          ],
+          "moment_about_shared_origin_Nm": [
+            0.0013584064102733192,
+            -3.3534962171850596e-07,
+            4.204700127810257e-06
+          ],
+          "normal_resultant_N": [
+            -0.00010482214262993042,
+            -0.3996217523216802,
+            -0.0006111058291250915
+          ],
+          "shear_resultant_N": [
+            -0.00011820187577710543,
+            -6.233936688582676e-05,
+            0.04078599159020304
+          ]
+        },
+        {
+          "nodes": 1,
+          "current_lumped_area_m2": 4.825679594841854e-05,
+          "force_N": [
+            0.000220816318734163,
+            0.39968484571255997,
+            0.02388292096836625
+          ],
+          "moment_about_shared_origin_Nm": [
+            -0.0013585074570851784,
+            1.0024486063029513e-06,
+            -4.2156862233001485e-06
+          ],
+          "normal_resultant_N": [
+            0.00010484803488294602,
+            0.3997204634075447,
+            0.0006112567791662758
+          ],
+          "shear_resultant_N": [
+            0.00011596828385121701,
+            -3.5617694984718065e-05,
+            0.023271664189199976
+          ]
+        }
+      ],
+      "active_lumped_current_area_m2": 9.651359056249061e-05,
+      "active_lumped_rest_area_m2": 9.651441450379258e-05,
+      "normal_density_peak_Pa": 8283.205228869589,
+      "shear_density_peak_Pa": 845.1910417493231,
+      "normal_density_l2_Pa_m": 81.3652643251637,
+      "shear_density_l2_Pa_m": 6.759816571066479,
+      "total_contact_force_N": [
+        -8.131516293641283e-20,
+        5.551115123125783e-17,
+        -3.469446951953614e-18
+      ],
+      "total_contact_moment_Nm": [
+        -4.213884046815877e-08,
+        1.1914690317259974e-11,
+        -5.63381760730966e-10
+      ],
+      "saved_force_pullback_max_error_N": 0.0
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-coupled-3-v1",
+      "contact_refinement": 0,
+      "body_refinement": 0,
+      "local_levels": 3,
+      "declared_level": 3,
+      "body_tetrahedra": 1099,
+      "bulk_dofs": 5757,
+      "surface_vertices": 678,
+      "surface_triangles": 1300,
+      "normal_stencils": 2,
+      "active_body_nodes": 2,
+      "islands": [
+        {
+          "nodes": 1,
+          "current_lumped_area_m2": 2.4872478951957348e-06,
+          "force_N": [
+            -0.00022300372823480502,
+            -0.3996373862737306,
+            0.0401739863818304
+          ],
+          "moment_about_shared_origin_Nm": [
+            0.0013583245161053875,
+            -3.3531982998374055e-07,
+            4.204339823746648e-06
+          ],
+          "normal_resultant_N": [
+            -0.00010480989202987261,
+            -0.3995750483892927,
+            -0.0006110344089755145
+          ],
+          "shear_resultant_N": [
+            -0.0001181938362049324,
+            -6.233788443788225e-05,
+            0.04078502079080592
+          ]
+        },
+        {
+          "nodes": 1,
+          "current_lumped_area_m2": 3.9710859031975384e-06,
+          "force_N": [
+            0.00022079587239335198,
+            0.3996381261667366,
+            0.023883820317278287
+          ],
+          "moment_about_shared_origin_Nm": [
+            -0.0013584237411720418,
+            1.002438003543791e-06,
+            -4.2153260653116515e-06
+          ],
+          "normal_resultant_N": [
+            0.00010483578057626806,
+            0.3996737453441159,
+            0.0006111853374073602
+          ],
+          "shear_resultant_N": [
+            0.00011596009181708392,
+            -3.5619177379327134e-05,
+            0.023272634979870928
+          ]
+        }
+      ],
+      "active_lumped_current_area_m2": 6.458333798393274e-06,
+      "active_lumped_rest_area_m2": 6.4585595524097125e-06,
+      "normal_density_peak_Pa": 160649.66025580198,
+      "shear_density_peak_Pa": 16397.738146800162,
+      "normal_density_l2_Pa_m": 323.1366845286541,
+      "shear_density_l2_Pa_m": 28.375679162519337,
+      "total_contact_force_N": [
+        2.710505431213761e-20,
+        1.6653345369377348e-16,
+        -1.0408340855860843e-17
+      ],
+      "total_contact_moment_Nm": [
+        -3.3975046598289354e-08,
+        9.668400093390279e-12,
+        -4.947846813253137e-10
+      ],
+      "saved_force_pullback_max_error_N": 0.0
+    }
+  ],
+  "goal_completion": false,
+  "limitations": "Densities divide unsmoothed collision-vertex force resultants by current barycentric lumped areas. Support area is a quadrature diagnostic, not an independently resolved physical contact boundary. All source normal/friction forces and island wrenches remain visible. Total contact moment can retain finite-gap friction torque; its regularization error is separate from pullback conservation. No contact/stress tail or full-arm matching is inferred from aggregate force stability."
+}

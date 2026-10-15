@@ -1,0 +1,45 @@
+{"level": 0, "tetrahedra": 480, "vertices": 126, "p2_body_dofs": 2430, "min_edge_m": 0.0002499999999999955, "max_edge_m": 0.018686553178036868, "volume_m3": 3.2649241052006638e-06, "com_m": [2.2168449025537615e-18, 2.588958154053857e-18, -1.564261184364498e-17], "boundary_area_m2": 0.013893944984007998}
+Transforming over 1000 elements to C_CONTIGUOUS.
+{"level": 3, "tetrahedra": 1099, "vertices": 259, "p2_body_dofs": 5217, "min_edge_m": 6.249999999999709e-05, "max_edge_m": 0.018686553178036868, "volume_m3": 3.264924105200664e-06, "com_m": [2.8823390825813487e-18, -1.92631698661361e-18, -1.478784076756212e-17], "boundary_area_m2": 0.013893944984007998}
+Transforming over 1000 elements to C_CONTIGUOUS.
+Transforming over 1000 elements to C_CONTIGUOUS.
+Transforming over 1000 elements to C_CONTIGUOUS.
+Transforming over 1000 elements to C_CONTIGUOUS.
+{"level": 6, "tetrahedra": 3993, "vertices": 836, "p2_body_dofs": 17718, "min_edge_m": 1.5624999999994942e-05, "max_edge_m": 0.018686553178036868, "volume_m3": 3.264924105200664e-06, "com_m": [3.718650626002213e-18, -5.74004483696956e-19, -1.4794532589769012e-17], "boundary_area_m2": 0.013893944984007997}
+Transforming over 1000 elements to C_CONTIGUOUS.
+Transforming over 1000 elements to C_CONTIGUOUS.
+Transforming over 1000 elements to C_CONTIGUOUS.
+Transforming over 1000 elements to C_CONTIGUOUS.
+Transforming over 1000 vertices to C_CONTIGUOUS.
+Transforming over 1000 elements to C_CONTIGUOUS.
+Transforming over 1000 vertices to C_CONTIGUOUS.
+Transforming over 1000 elements to C_CONTIGUOUS.
+Transforming over 1000 vertices to C_CONTIGUOUS.
+Transforming over 1000 elements to C_CONTIGUOUS.
+{"level": 9, "tetrahedra": 20696, "vertices": 4020, "p2_body_dofs": 87987, "min_edge_m": 1.9531249999986596e-06, "max_edge_m": 0.018686553178036868, "volume_m3": 3.264924105200664e-06, "com_m": [3.9096623315406395e-18, -6.038781929372066e-18, -2.118425415512064e-17], "boundary_area_m2": 0.013893944984007998}
+Transforming over 1000 elements to C_CONTIGUOUS.
+Transforming over 1000 elements to C_CONTIGUOUS.
+Transforming over 1000 elements to C_CONTIGUOUS.
+Transforming over 1000 elements to C_CONTIGUOUS.
+Transforming over 1000 vertices to C_CONTIGUOUS.
+Transforming over 1000 elements to C_CONTIGUOUS.
+Transforming over 1000 vertices to C_CONTIGUOUS.
+Transforming over 1000 elements to C_CONTIGUOUS.
+Transforming over 1000 vertices to C_CONTIGUOUS.
+Transforming over 1000 elements to C_CONTIGUOUS.
+Transforming over 1000 vertices to C_CONTIGUOUS.
+Transforming over 1000 elements to C_CONTIGUOUS.
+Transforming over 1000 vertices to C_CONTIGUOUS.
+Transforming over 1000 elements to C_CONTIGUOUS.
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-mesh-qualification-v2/source/research/rigid_stress/qualify_local_franka_mesh.py", line 78, in <module>
+    main()
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-mesh-qualification-v2/source/research/rigid_stress/qualify_local_franka_mesh.py", line 38, in main
+    mesh, history = localized_mesh(system.body.mesh, centres, args.radius, level)
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-mesh-qualification-v2/source/research/rigid_stress/localized_franka_mesh.py", line 42, in localized_mesh
+    assert mesh.nelements <= max_cells, (level + 1, mesh.nelements, max_cells)
+AssertionError: (11, 94403, 60000)

@@ -152,6 +152,18 @@ are qualified. The next evidence gate is separated volume/contact resolution and
 a credible spatial/contact tail; full egg/U/application matching, model/feedback
 separation and verified warmed accuracy/cost remain required.
 
+The [local-refinement/reference update](docs/PHYSICAL_LOCAL_REFINEMENT_20261015.md)
+qualifies all80 finer3840-tet cached states and full corner tensors at4.522e-11
+relative difference. Four fixed-polyhedron local meshes retain volume, centre
+and boundary area while resolving the load neighbourhood more finely. A rejected
+custom ordering candidate and three other diagnostics remain visible. Coupled
+and fixed-contact local studies, a finer original-protocol reference and cached
+U studies are scheduled/running; none counts as physical tail acceptance.
+The first completed480/1099 local comparison changes tensors43.03%, with
+raw peak562kPa on both coupled and fixed-contact paths. Two active body nodes
+retain concentrated force/area and the peak changes contact neighbourhood.
+The complete original application/model/feedback/accuracy-cost goal remains.
+
 ## Previous nonconvex implementation brief, 2026-10-11
 
 Implement the contact mapping contract in

@@ -1,0 +1,18 @@
+--- a/research/rigid_stress/dynamic_franka_reference.py
++++ b/research/rigid_stress/dynamic_franka_reference.py
+@@ -13,2 +13,3 @@
+ from .refine_franka_reference import refine_body
++from .refined_franka_contact import refine_contact
+ from .summarize_fine_references import closed_source
+@@ -84,2 +85,3 @@
+     parser.add_argument("--cold-closure", action="store_true")
++    parser.add_argument("--contact-refinement", type=int, choices=(0,1,2,3), default=0)
+     parser.add_argument("--control-steps", type=int, default=64)
+@@ -94,3 +96,6 @@
+     assert args.cold_closure or args.body_refinement == 0
+-    static = refine_body(static, args.body_refinement)
++    static = refine_contact(refine_body(static, args.body_refinement), args.contact_refinement)
++    sparse.save_npz(args.output / "contact_node_map.npz", static.contact_node_map)
++    np.savez_compressed(args.output / "contact_geometry.npz", rest_positions=static.contact_surface_rest,
++                        faces=static.contact_surface_faces, groups=static.contact_surface_groups)
+     if args.cold_closure:

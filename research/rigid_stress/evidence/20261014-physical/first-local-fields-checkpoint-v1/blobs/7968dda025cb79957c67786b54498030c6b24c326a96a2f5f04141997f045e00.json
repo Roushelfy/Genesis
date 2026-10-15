@@ -1,0 +1,111 @@
+{
+  "scope": "Compare solved Panda spatial refinements at fixed material probes and physical times.",
+  "declared_discretization_axis": "local_levels",
+  "qualifications": [
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-coupled-0-v1",
+      "polynomial_displacement_max_error_m": 2.642742795433417e-19,
+      "polynomial_tensor_max_error_Pa": 3.039836883544922e-06,
+      "finite_rotation_tensor_max_error_Pa": 0.0001878887414932251
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-coupled-3-v1",
+      "polynomial_displacement_max_error_m": 2.642742795433417e-19,
+      "polynomial_tensor_max_error_Pa": 3.039836883544922e-06,
+      "finite_rotation_tensor_max_error_Pa": 0.00032093049958348274
+    }
+  ],
+  "cases": [
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-coupled-0-v1",
+      "body_tetrahedra": 480,
+      "contact_refinement": 0,
+      "local_levels": 0,
+      "fixed_seed_contact_boundary": false,
+      "final_peak_lower_Pa": 156447.0168566527,
+      "final_peak_upper_Pa": 156447.01718459814,
+      "final_lower_peak_reference_position_m": [
+        1.7697452569155986e-06,
+        0.022028914832074527,
+        0.001184687058517001
+      ],
+      "max_full_dynamic_residual_N": 2.6296758579809277e-10,
+      "max_body_dynamic_residual_N": 2.58060083821521e-10
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-coupled-3-v1",
+      "body_tetrahedra": 1099,
+      "contact_refinement": 0,
+      "local_levels": 3,
+      "fixed_seed_contact_boundary": false,
+      "final_peak_lower_Pa": 562064.4411138593,
+      "final_peak_upper_Pa": 562064.4414418138,
+      "final_lower_peak_reference_position_m": [
+        -2.2683486848548325e-05,
+        -0.02196183354501063,
+        0.002086606824027767
+      ],
+      "max_full_dynamic_residual_N": 2.598369792028325e-10,
+      "max_body_dynamic_residual_N": 2.5799792530228085e-10
+    }
+  ],
+  "comparisons": [
+    {
+      "previous_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-coupled-0-v1",
+      "current_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-local-coupled-3-v1",
+      "previous_tetrahedra": 480,
+      "current_tetrahedra": 1099,
+      "previous_contact_refinement": 0,
+      "current_contact_refinement": 0,
+      "varying_discretizations": [
+        "local_levels"
+      ],
+      "common_time_changes": {
+        "tensor": {
+          "absolute_l2_change": 63.37643668267585,
+          "relative_l2_change": 0.4302955298015036
+        },
+        "vm": {
+          "absolute_l2_change": 34.45515877578966,
+          "relative_l2_change": 0.2132029648050492
+        },
+        "objective_displacement": {
+          "absolute_l2_change": 8.751367171923459e-11,
+          "relative_l2_change": 0.19757701064301864
+        },
+        "velocity": {
+          "absolute_l2_change": 1.7603475550255078e-09,
+          "relative_l2_change": 0.0010219103721733644
+        },
+        "body_elastic_energy_J": {
+          "absolute_l2_change": 2.1969694575284574e-07,
+          "relative_l2_change": 0.3317496503587739
+        },
+        "force_N": {
+          "absolute_l2_change": 0.00020895990890024615,
+          "relative_l2_change": 0.00011578395593367855
+        },
+        "moment_Nm": {
+          "absolute_l2_change": 4.1489793770111455e-07,
+          "relative_l2_change": 6.82935658695881e-05
+        }
+      },
+      "raw_lower_peak_relative_change": 0.7216564411251188
+    }
+  ],
+  "common_material_points": 2400,
+  "sample_times_s": [
+    0.01,
+    0.02,
+    0.03,
+    0.04,
+    0.05,
+    0.06,
+    0.07,
+    0.08,
+    0.09,
+    0.1
+  ],
+  "goal_completion": false,
+  "limitations": "Fixed polyhedral geometry and physical held points. Configurations, explicit pairwise varying discretizations and fixed-contact-boundary markers define each comparison; body refinement changes contact triangles unless that boundary is frozen. A collision-only sweep keeps the volume fixed. Fixed material-coordinate interior probes carry seed-volume diagnostic weights, not an exact continuum norm. Tensors use each solution's proper finite body frame; contact wrenches use the shared fixed reference origin. Complete nonlinear global peak lower/upper bounds are retained separately. Two spatial levels or an equal-constructor control do not establish a physical tail. Contact quadrature/regularization/CAD geometry/full-arm support matching and feedback/model/accuracy-cost remain separate required studies."
+}
