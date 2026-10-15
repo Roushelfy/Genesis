@@ -1,0 +1,335 @@
+{
+  "scope": "Solve a rigid-egg counterpart of the declared full-arm deformable-contact hold.",
+  "reused_held_closure": {
+    "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-rigid-egg-coupled-pilot-v3/results/closure_state.npz",
+    "sha256": "6dbc1b91c9e98fbeae3b730b29788db2aa217d626bfcc4941d63434644e891ad"
+  },
+  "initial_motion": {
+    "mode": "captured_COM_twist_and_joint_velocity_at_solved_closure",
+    "source_capture_mode": "stationary_lift_hold",
+    "source_tick": 359,
+    "source_substep": 31,
+    "source_linear_velocity_world_m_s": [
+      -0.000140902746165569,
+      3.015307364012844e-08,
+      -2.6404621283884817e-06
+    ],
+    "source_link_origin_velocity_world_m_s": [
+      -8.097369892656747e-10,
+      2.938474602447765e-09,
+      -1.6506989220861653e-06
+    ],
+    "source_link_origin_to_com_world_m": [
+      1.1487800085085986e-05,
+      -1.788184444921913e-05,
+      -0.001635886153586924
+    ],
+    "source_angular_velocity_world_rad_s": [
+      2.324648212245598e-05,
+      0.0861215819388631,
+      -0.0009413463940837794
+    ],
+    "source_joint_velocity": [
+      -1.2832842544244413e-11,
+      4.180769198308092e-10,
+      -9.131662276560381e-10,
+      -1.3010709062287372e-09,
+      1.0896686842303391e-09,
+      -1.455125591910408e-09,
+      2.3511281954880766e-11,
+      -3.175969457616226e-09,
+      -3.1760682532234236e-09
+    ],
+    "solved_closure_minus_captured_joint_position": [
+      -9.050012789488899e-07,
+      -4.954504172167387e-06,
+      1.0055250897859696e-05,
+      1.5816549048280242e-06,
+      -1.7917321043275838e-07,
+      2.19656047949397e-06,
+      -3.973225473966318e-08,
+      5.158303328149655e-06,
+      5.0838803278960855e-06
+    ],
+    "initial_body_com_world_m": [
+      0.651153876786671,
+      -0.00027083676710841666,
+      0.1482336529585147
+    ],
+    "limitation": "Only initial velocities match the captured frame. The independently solved closure geometry/elastic state replaces the penetrated rigid snapshot; original approach/lift/support history and integrator/contact-law equivalence remain unverified."
+  },
+  "steps": [
+    {
+      "step": 1,
+      "time_s": 0.00125,
+      "fresh_robot_step_effort_residual": 1.0633871528351422e-11,
+      "body_resultant_residual_N": 1.4791125943227876e-11,
+      "body_moment_residual_Nm": 3.699693829729511e-13,
+      "phase": "dynamic0001",
+      "iteration": 3,
+      "body_force_equivalent_residual_N": 1.8855752087725396e-11,
+      "joint_residual_N_or_Nm": 1.0744986524805424e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 2,
+      "time_s": 0.0025,
+      "fresh_robot_step_effort_residual": 3.5142741779560154e-11,
+      "body_resultant_residual_N": 3.734818308376445e-11,
+      "body_moment_residual_Nm": 7.206011132798571e-13,
+      "phase": "dynamic0002",
+      "iteration": 15,
+      "body_force_equivalent_residual_N": 4.374611412158509e-11,
+      "joint_residual_N_or_Nm": 3.49188270099468e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 3,
+      "time_s": 0.00375,
+      "fresh_robot_step_effort_residual": 4.191019076135754e-11,
+      "body_resultant_residual_N": 4.9999747964052836e-11,
+      "body_moment_residual_Nm": 8.862068429910954e-13,
+      "phase": "dynamic0003",
+      "iteration": 14,
+      "body_force_equivalent_residual_N": 5.731218139772265e-11,
+      "joint_residual_N_or_Nm": 4.178352133412502e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 4,
+      "time_s": 0.005,
+      "fresh_robot_step_effort_residual": 4.5482265171524485e-11,
+      "body_resultant_residual_N": 2.2680597954621213e-11,
+      "body_moment_residual_Nm": 3.7542900478021166e-13,
+      "phase": "dynamic0004",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 2.5597648773802706e-11,
+      "joint_residual_N_or_Nm": 4.551612289028904e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 5,
+      "time_s": 0.00625,
+      "fresh_robot_step_effort_residual": 2.242175401745799e-11,
+      "body_resultant_residual_N": 2.328607878601298e-11,
+      "body_moment_residual_Nm": 1.101865791862904e-13,
+      "phase": "dynamic0005",
+      "iteration": 14,
+      "body_force_equivalent_residual_N": 2.3545132490994307e-11,
+      "joint_residual_N_or_Nm": 2.2533295177071036e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 6,
+      "time_s": 0.0075,
+      "fresh_robot_step_effort_residual": 1.314320622918526e-11,
+      "body_resultant_residual_N": 1.849229082829782e-11,
+      "body_moment_residual_Nm": 9.83214321893034e-13,
+      "phase": "dynamic0006",
+      "iteration": 14,
+      "body_force_equivalent_residual_N": 3.616439912372659e-11,
+      "joint_residual_N_or_Nm": 1.3076994878201568e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 7,
+      "time_s": 0.00875,
+      "fresh_robot_step_effort_residual": 4.2766016177267796e-11,
+      "body_resultant_residual_N": 4.2125228911399566e-11,
+      "body_moment_residual_Nm": 2.6515850351544757e-13,
+      "phase": "dynamic0007",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 4.295093805235302e-11,
+      "joint_residual_N_or_Nm": 4.273498937170146e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 8,
+      "time_s": 0.01,
+      "fresh_robot_step_effort_residual": 2.0145723501246732e-11,
+      "body_resultant_residual_N": 1.7696037794288484e-11,
+      "body_moment_residual_Nm": 1.8467570535892418e-14,
+      "phase": "dynamic0008",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 1.770560317241939e-11,
+      "joint_residual_N_or_Nm": 2.0183591508734937e-11,
+      "normal_stencils": 2
+    }
+  ],
+  "all_accepted_residuals": [
+    {
+      "phase": "dynamic0001",
+      "iteration": 3,
+      "body_force_equivalent_residual_N": 1.8855752087725396e-11,
+      "joint_residual_N_or_Nm": 1.0744986524805424e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0002",
+      "iteration": 15,
+      "body_force_equivalent_residual_N": 4.374611412158509e-11,
+      "joint_residual_N_or_Nm": 3.49188270099468e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0003",
+      "iteration": 14,
+      "body_force_equivalent_residual_N": 5.731218139772265e-11,
+      "joint_residual_N_or_Nm": 4.178352133412502e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0004",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 2.5597648773802706e-11,
+      "joint_residual_N_or_Nm": 4.551612289028904e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0005",
+      "iteration": 14,
+      "body_force_equivalent_residual_N": 2.3545132490994307e-11,
+      "joint_residual_N_or_Nm": 2.2533295177071036e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0006",
+      "iteration": 14,
+      "body_force_equivalent_residual_N": 3.616439912372659e-11,
+      "joint_residual_N_or_Nm": 1.3076994878201568e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0007",
+      "iteration": 13,
+      "body_force_equivalent_residual_N": 4.295093805235302e-11,
+      "joint_residual_N_or_Nm": 4.273498937170146e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0008",
+      "iteration": 12,
+      "body_force_equivalent_residual_N": 1.770560317241939e-11,
+      "joint_residual_N_or_Nm": 2.0183591508734937e-11,
+      "normal_stencils": 2
+    }
+  ],
+  "body_radius_m": 0.03163602421663285,
+  "kinematic_directional_error": 4.0657271835827173e-13,
+  "tangent_qualifications": [
+    {
+      "phase": "held",
+      "rows": [
+        {
+          "perturbation": 1e-08,
+          "relative_tangent_error": 0.2605586298541359
+        },
+        {
+          "perturbation": 3e-09,
+          "relative_tangent_error": 0.07852501656545853
+        },
+        {
+          "perturbation": 1e-09,
+          "relative_tangent_error": 0.026221052657243286
+        },
+        {
+          "perturbation": 3e-10,
+          "relative_tangent_error": 0.00787152967195081
+        },
+        {
+          "perturbation": 1e-10,
+          "relative_tangent_error": 0.0026243515235431706
+        },
+        {
+          "perturbation": 3e-11,
+          "relative_tangent_error": 0.0007873606181873843
+        },
+        {
+          "perturbation": 1e-11,
+          "relative_tangent_error": 0.0002624620073827472
+        }
+      ]
+    },
+    {
+      "phase": "dynamic",
+      "rows": [
+        {
+          "perturbation": 1e-08,
+          "relative_tangent_error": 0.42773315347458196
+        },
+        {
+          "perturbation": 3e-09,
+          "relative_tangent_error": 0.12825824372463276
+        },
+        {
+          "perturbation": 1e-09,
+          "relative_tangent_error": 0.04263403804671019
+        },
+        {
+          "perturbation": 3e-10,
+          "relative_tangent_error": 0.012653483361189247
+        },
+        {
+          "perturbation": 1e-10,
+          "relative_tangent_error": 0.004088700576257737
+        },
+        {
+          "perturbation": 3e-11,
+          "relative_tangent_error": 0.001099558203669839
+        },
+        {
+          "perturbation": 1e-11,
+          "relative_tangent_error": 0.00026889018077733585
+        }
+      ]
+    }
+  ],
+  "controller_target": [
+    -1.0429300070043328,
+    1.4284284666121048,
+    1.5294581926808155,
+    -1.7200574780985856,
+    -1.4357374863701315,
+    1.6324552119168398,
+    1.455392712925263,
+    0.018,
+    0.018
+  ],
+  "controller_kp": [
+    4500.0,
+    4500.0,
+    3500.0,
+    3500.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    100.0,
+    100.0
+  ],
+  "controller_kv": [
+    450.0,
+    450.0,
+    350.0,
+    350.0,
+    200.0,
+    200.0,
+    200.0,
+    10.0,
+    10.0
+  ],
+  "controller_caps": [
+    87.0,
+    87.0,
+    87.0,
+    87.0,
+    12.0,
+    12.0,
+    12.0,
+    4.0,
+    4.0
+  ],
+  "robot_solver_tolerance": 1e-14,
+  "precise_kinematic_max_discrepancy_m": 8.694755310603691e-16,
+  "goal_completion": false,
+  "limitations": "Rigid-body motion restricts the same collision surface and consistent mass, preserving actual robot control/contact laws. Body rotational residuals are scaled by the fixed reference radius only in the numerical merit. Raw force/moment and fresh robot-step gates are explicit. Initial velocities are explicitly declared; the held initializer differs from original approach/lift/support history. Spatial/contact/regularization convergence and independent balance/recovery replay remain required."
+}

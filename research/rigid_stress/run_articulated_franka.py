@@ -8,6 +8,7 @@ from pathlib import Path
 import numpy as np
 
 from .articulated_franka_contact import ArticulatedContact
+from .captured_reference_motion import initial_motion
 from .franka_contact_reference import build_from_capture
 from .summarize_fine_references import closed_source
 
@@ -43,6 +44,7 @@ def main():
     parser.add_argument("--check-jacobian", action="store_true")
     parser.add_argument("--closure-run", type=Path)
     parser.add_argument("--fixed-arm", action="store_true")
+    parser.add_argument("--captured-initial-velocity", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -111,7 +113,9 @@ def main():
         body_component_permutation=static.parts[0].permutation,
         world_coordinate_origin_m=static.world_coordinate_origin_m,
     )
-    velocity, body_velocity = np.zeros(9), np.zeros(system.n)
+    assert not (args.fixed_arm and args.captured_initial_velocity)
+    body_velocity, velocity, motion = initial_motion(static, previous, q, frame, args.captured_initial_velocity)
+    np.savez_compressed(args.output / "initial_velocity.npz", body_velocity=body_velocity, joint_velocity=velocity)
     system.fixed_arm = args.fixed_arm
     closure_q = q.copy()
     records = []
@@ -193,6 +197,7 @@ def main():
         "robot_solver_tolerance": system.robot.model.opt.tolerance,
         "precise_kinematic_max_discrepancy_m": system.kinematic_max_discrepancy_m,
         "fixed_arm_control": args.fixed_arm,
+        "initial_motion": motion,
         "closure_source": str(args.closure_run) if args.closure_run is not None else None,
         "reused_closure_sha256": (
             hashlib.sha256((args.closure_run / "results/closure_state.npz").read_bytes()).hexdigest()
@@ -201,7 +206,7 @@ def main():
         ),
         "authored_equality_solref": solref.tolist(),
         "goal_completion": False,
-        "limitations": "Complete nine-joint nonlinear kinematics/PD/equality and independent FEM/contact are coupled with original1e-9 body/joint force gates and fresh MuJoCo step checks. Held six-point quasi-static initialization followed by zero initial velocity differs from original approach/lift and captured angular history. Endpoint implicit body/contact/PD forces use a MuJoCo old-state step response; time-integration, history, spatial/contact/regularization and native feedback/model/accuracy-cost still need qualification. Newton CCD guards accepted endpoint chords; no continuous nonlinear rigid-motion CCD claim is made. This is an application pilot, not completion of full physical acceptance.",
+        "limitations": "Complete nine-joint nonlinear kinematics/PD/equality and independent FEM/contact are coupled with original1e-9 body/joint force gates and fresh MuJoCo step checks. Held six-point quasi-static initialization differs from original approach/lift; initial velocities are declared separately. Endpoint implicit body/contact/PD forces use a MuJoCo old-state step response; time-integration, history, spatial/contact/regularization and native feedback/model/accuracy-cost still need qualification. Newton CCD guards accepted endpoint chords; no continuous nonlinear rigid-motion CCD claim is made. This is an application pilot, not completion of full physical acceptance.",
     }
     (args.output / "summary.json").write_text(json.dumps(output, indent=2) + "\n")
     print(json.dumps({k: v for k, v in output.items() if k not in ["steps", "all_accepted_residuals"]}), flush=True)

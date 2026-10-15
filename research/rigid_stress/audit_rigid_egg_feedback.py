@@ -13,6 +13,7 @@ from .audit_articulated_contact import quadrature_fields
 from .audit_objective_frame import finite_frame
 from .franka_contact_reference import build_from_capture
 from .franka_mujoco_reference import PandaSkeleton
+from .reference_motion_audit import load_initial_motion, motion_moments
 from .summarize_fine_references import closed_source
 
 
@@ -84,7 +85,10 @@ def audit_case(run, rigid, steps, output):
         )
     with np.load(run / "results/closure_state.npz") as saved:
         previous, previous_q = saved["full_displacement"].copy(), saved["joint_position"].copy()
-    previous_body_velocity, previous_joint_velocity = np.zeros(n), np.zeros(9)
+    previous_body_velocity, previous_joint_velocity, initial_motion = load_initial_motion(
+        run, config, frame, static, previous
+    )
+    previous_motion = initial_motion
     previous_vector = np.empty(n)
     previous_vector[permutation] = previous[:n]
     previous_rotation = finite_frame(body, previous_vector)[0]
@@ -116,6 +120,7 @@ def audit_case(run, rigid, steps, output):
         rotation, shift, objective_u = finite_frame(body, vector)
         centre = rotation @ body.com + shift
         positions = static.rest + u.reshape(-1, 3)
+        motion = motion_moments(body, permutation, positions[: n // 3], body_velocity)
         inertial = mass @ acceleration
         balance = inertial - gravity[:n] - force[:n]
         resultant = balance.reshape(-1, 3).sum(axis=0)
@@ -196,7 +201,25 @@ def audit_case(run, rigid, steps, output):
             "contact_total_moment_about_body_com_Nm": np.cross(positions - centre, force.reshape(-1, 3))
             .sum(axis=0)
             .tolist(),
+            "body_linear_velocity_world_m_s": motion["linear_velocity_world_m_s"].tolist(),
+            "body_angular_velocity_world_rad_s": motion["angular_velocity_world_rad_s"].tolist(),
+            "body_angular_momentum_about_com_world_Nms": motion["angular_momentum_about_com_world_Nms"].tolist(),
+            "body_kinetic_energy_J": motion["kinetic_energy_J"],
+            "body_contact_moment_world_Nm": np.cross(positions[: n // 3] - centre, force[:n].reshape(-1, 3))
+            .sum(axis=0)
+            .tolist(),
         }
+        old_positions = static.rest[: n // 3] + previous[:n].reshape(-1, 3)
+        relative_increment = (positions[: n // 3] - centre - old_positions + previous_motion["centre_m"]) / dt
+        transport = np.cross(relative_increment, (mass @ previous_body_velocity).reshape(-1, 3)).sum(axis=0)
+        angular_rate = (
+            motion["angular_momentum_about_com_world_Nms"] - previous_motion["angular_momentum_about_com_world_Nms"]
+        ) / dt
+        gravity_moment = np.cross(positions[: n // 3] - centre, gravity[:n].reshape(-1, 3)).sum(axis=0)
+        row["angular_momentum_transport_world_Nm"] = transport.tolist()
+        row["angular_momentum_balance_residual_Nm"] = float(
+            np.linalg.norm(angular_rate - np.array(row["body_contact_moment_world_Nm"]) - gravity_moment - transport)
+        )
         rows.append(row)
         observed.append(
             {
@@ -226,7 +249,18 @@ def audit_case(run, rigid, steps, output):
         )
         previous, previous_q = u, q
         previous_body_velocity, previous_joint_velocity, previous_rotation = body_velocity, joint_velocity, rotation
-    return {"run": str(run), "rigid": rigid, "steps_checked": steps, "rows": rows}, observed, static.bulk.basis.dx
+        previous_motion = motion
+    return (
+        {
+            "run": str(run),
+            "rigid": rigid,
+            "steps_checked": steps,
+            "initial_motion": {k: v.tolist() if isinstance(v, np.ndarray) else v for k, v in initial_motion.items()},
+            "rows": rows,
+        },
+        observed,
+        static.bulk.basis.dx,
+    )
 
 
 def main():
@@ -241,6 +275,7 @@ def main():
     configs = [json.loads((r / "results/configuration.json").read_text()) for r in runs]
     for key in ["capture", "dt", "dhat", "control_steps"]:
         assert configs[0][key] == configs[1][key], key
+    assert configs[0].get("captured_initial_velocity", False) == configs[1].get("captured_initial_velocity", False)
     assert not configs[1].get("fixed_arm", False)
     assert len({hashlib.sha256(Path(c["mjcf"]).read_bytes()).hexdigest() for c in configs}) == 1
     reports = [json.loads((r / "results/summary.json").read_text()) for r in runs]

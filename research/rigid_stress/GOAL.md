@@ -31,6 +31,14 @@ egg/Franka and U contact references, resolved-load/native replay versus feedback
 remaining applicable load-model sensitivity and physically verified warmed costs.
 These are execution priorities within the complete linked objective.
 
+The [captured-motion checkpoint](docs/PHYSICAL_CAPTURED_MOTION_20261015.md)
+verifies COM-velocity transport over576 unchanged rigid captures and qualifies
+corrected8-step moving pilots. A full FEM hold rejects step49 at the original
+force gate; extended force contraction recovers that saved state only. Its full
+retry remains unverified. Narrow-band contact level12 still has two active
+nodes and a280.5MPa raw peak. Priority remains resolved physical contact tails
+and complete original history/model/feedback/accuracy-cost acceptance.
+
 Initial progress is in [PHYSICAL_VALIDATION_PROGRESS_20261014.md](docs/PHYSICAL_VALIDATION_PROGRESS_20261014.md).
 It establishes independent scikit-fem assembly/boundary integration, analytic
 free-body fields and seven initial full3D geometry assets.

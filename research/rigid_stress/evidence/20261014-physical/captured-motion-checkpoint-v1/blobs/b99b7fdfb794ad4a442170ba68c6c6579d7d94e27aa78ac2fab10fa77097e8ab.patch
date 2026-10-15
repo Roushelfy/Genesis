@@ -1,0 +1,47 @@
+--- a/research/rigid_stress/capture_franka_reference.py
++++ b/research/rigid_stress/capture_franka_reference.py
+@@ -72,6 +72,7 @@
+     mode, tick, save = "approach_lift", 0, False
+     macro_substep = 0
+     rows = []
++    velocity_observations = []
+ 
+     def observe(substep):
+         nonlocal macro_substep
+@@ -214,6 +215,23 @@
+             np.savez_compressed(args.output / row["articulated_operator_snapshot"], **operator_fields)
+         np.savez_compressed(args.output / f"{name}_geometry.npz", **fields)
+         (args.output / f"{name}.json").write_text(json.dumps(row, indent=2) + "\n")
++        com_position = array(solver.get_links_pos(workload.link.idx, ref=gs.link_ref_frame.link_COM)).reshape(3)
++        com_velocity = array(solver.get_links_vel(workload.link.idx, ref=gs.link_ref_frame.link_COM)).reshape(3)
++        origin = np.array(row["egg_position_m"])
++        origin_velocity = np.array(row["egg_velocity_m_s"])
++        angular_velocity = np.array(row["egg_angular_velocity_rad_s"])
++        transported = origin_velocity + np.cross(angular_velocity, com_position - origin)
++        np.testing.assert_allclose(com_position, row["egg_world_com_m"], rtol=0, atol=1e-12)
++        np.testing.assert_allclose(transported, com_velocity, rtol=0, atol=1e-12)
++        velocity_observations.append({
++            "mode": mode, "tick": tick, "substep": physical_substep,
++            "link_origin_position_world_m": origin.tolist(),
++            "link_origin_velocity_world_m_s": origin_velocity.tolist(),
++            "com_position_world_m": com_position.tolist(),
++            "com_velocity_api_world_m_s": com_velocity.tolist(),
++            "com_velocity_transport_world_m_s": transported.tolist(),
++            "angular_velocity_world_rad_s": angular_velocity.tolist(),
++        })
+         rows.append(row)
+ 
+     recovery.recover = observe
+@@ -274,6 +292,12 @@
+         "limitations": "This is an actual rigid-application input capture, not a deformable reference. The added stationary hold keeps lift targets and original PD gains/caps fixed after the original approach/grip/lift. Same-substep source forces, poses and effective friction are retained; equilibrium/velocity settling, matching full finger geometry/actuation/mass, contact-reference convergence and deformation feedback require independent verification.",
+     }
+     (args.output / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
++    (args.output / "com_velocity_observations.json").write_text(json.dumps({
++        "scope": "Read COM velocity independently without changing original captures or dynamics.",
++        "records": velocity_observations,
++        "source_linear_velocity_reference": "internal link origin, world coordinates",
++        "transport": "v_COM=v_origin+omega_world cross (x_COM-x_origin)",
++    }, indent=2) + "\n")
+ 
+ 
+ if __name__ == "__main__":

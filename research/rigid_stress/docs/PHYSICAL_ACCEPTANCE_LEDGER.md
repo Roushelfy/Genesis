@@ -5,6 +5,15 @@ without narrowing its scope. Historical native performance completion does not
 establish the new physical stage. Dated reports preserve their observations;
 running or pending jobs count as scheduled work only.
 
+Current: [the captured-motion checkpoint](PHYSICAL_CAPTURED_MOTION_20261015.md)
+verifies direct COM velocities and unchanged576 original records/16173 NPY
+payloads. Corrected moving8-step pilots pass; the full FEM hold stops after48
+accepted steps and rejects step49 above its unchanged1e-9N gate. Extended-force
+arithmetic recovers that saved state, with full retry unverified. Narrow-band
+level12 retains two active nodes and a280.5MPa raw peak. Original motion history,
+physical contact tails, model/feedback separation and verified accuracy/cost
+remain incomplete. Earlier dated blocks below describe their own checkpoints.
+
 The [contact-limit checkpoint](PHYSICAL_CONTACT_LIMIT_20261015.md) completes the
 fourth original local level: tensor changes remain32.75%, raw peaks reach30.8MPa
 and two active nodes persist. Fixed vertex geometry and a separate linear point-load
@@ -24,7 +33,7 @@ and physically verified warmed cost remain required. The table below retains
 the full original scope; historical two-level statements describe their dated
 evidence, not a claim that later controlled pilots completed those requirements.
 
-Latest: the [coupled full-arm/U checkpoint](PHYSICAL_COUPLED_FRANKA_U_20261015.md)
+The earlier [coupled full-arm/U checkpoint](PHYSICAL_COUPLED_FRANKA_U_20261015.md)
 solves the short actual-Panda/FEM hold and explicit fixed-arm control, independently
 auditing160 retained states at original1e-9 gates. It also completes the third
 resolved U level: tensor change decreases44.6%→12.2%, still above3%.
@@ -53,10 +62,11 @@ geometric/loading explanation, with the original peak retained. These numerical
 diagnostics are separate from measured load-model and omitted-feedback errors;
 no universal3% claim or tolerance relaxation is implied.
 
-Next evidence priorities are the scheduled separated U contact axes and third
-level, nonlinear pad/all-part comparison with objective finite-rotation checks,
-resolved full egg followed by actual Franka
-matching, regularization/history tails, and corresponding rigid-contact feedback.
+Next evidence priorities are the finer separated U/contact axes, actual
+egg contact/volume/geometry tails, original Franka approach/lift/support history,
+complete moving rigid/deformable comparisons and unchanged model/accuracy-cost
+requirements. A single-state arithmetic recovery does not establish a completed
+history. The dated paragraphs that follow retain earlier observations.
 The latest completed load-model replay checkpoint is
 [PHYSICAL_RESOLVED_MODELS_20261014.md](PHYSICAL_RESOLVED_MODELS_20261014.md).
 The [nonlinear bulk qualification](PHYSICAL_NONLINEAR_REFERENCE_20261014.md)

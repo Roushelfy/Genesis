@@ -11,6 +11,7 @@ import numpy as np
 from .audit_objective_frame import finite_frame
 from .franka_contact_reference import build_from_capture
 from .franka_mujoco_reference import PandaSkeleton
+from .reference_motion_audit import load_initial_motion, motion_moments
 from .summarize_fine_references import closed_source
 
 
@@ -65,8 +66,9 @@ def audit_run(run, output):
         previous = saved["full_displacement"].copy()
         previous_q = saved["joint_position"].copy()
         closure_q = previous_q.copy()
-    previous_velocity = np.zeros(9)
-    previous_body_velocity = np.zeros(n)
+    previous_body_velocity, previous_velocity, initial_motion = load_initial_motion(
+        run, config, capture_frame, static, previous
+    )
     dt = config["dt"]
     friction = ipctk.FrictionPotential(dt * 4e-6)
     mass = body.mass[permutation][:, permutation]
@@ -123,6 +125,7 @@ def audit_run(run, output):
             )
         joint_contact = np.zeros(9)
         positions = static.rest + u.reshape(-1, 3) + static.world_coordinate_origin_m
+        motion = motion_moments(body, permutation, positions[: n // 3], body_velocity)
         finger_wrenches = []
         for name, nodes in zip(["left_finger", "right_finger"], static.finger_nodes):
             origin = robot.data.xpos[robot.body_ids[name]]
@@ -153,6 +156,9 @@ def audit_run(run, output):
                 "body_wrench": body_wrench,
                 "objective_displacement": objective_u,
                 "joint_position": q.copy(),
+                "body_com_position": motion["centre_m"],
+                "body_com_velocity": motion["linear_velocity_world_m_s"],
+                "body_angular_velocity": motion["angular_velocity_world_rad_s"],
             }
         )
         rows.append(
@@ -168,6 +174,10 @@ def audit_run(run, output):
                 "raw_global_peak_lower_Pa": float(corner_vm.max()),
                 "raw_global_peak_upper_Pa": float(upper.max()),
                 "body_elastic_energy_J": energy,
+                "body_com_position_world_m": motion["centre_m"].tolist(),
+                "body_com_velocity_world_m_s": motion["linear_velocity_world_m_s"].tolist(),
+                "body_angular_velocity_world_rad_s": motion["angular_velocity_world_rad_s"].tolist(),
+                "body_kinetic_energy_J": motion["kinetic_energy_J"],
                 "objective_elastic_displacement_max_m": float(
                     np.linalg.norm(objective_u[body.component_dofs], axis=1).max()
                 ),
@@ -186,7 +196,13 @@ def audit_run(run, output):
         previous, previous_q, previous_velocity = u, q, velocity
         previous_body_velocity = body_velocity
     return (
-        {"run": str(run), "fixed_arm": fixed_arm, "steps_checked": len(rows), "rows": rows},
+        {
+            "run": str(run),
+            "fixed_arm": fixed_arm,
+            "steps_checked": len(rows),
+            "initial_motion": {k: v.tolist() if isinstance(v, np.ndarray) else v for k, v in initial_motion.items()},
+            "rows": rows,
+        },
         observations,
         static.bulk.basis.dx,
     )
