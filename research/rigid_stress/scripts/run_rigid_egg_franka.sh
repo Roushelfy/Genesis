@@ -8,7 +8,7 @@ shift
 test ! -e "$task_run"
 mkdir -p "$task_run/input-source" "$task_run/source" "$task_run/tmp"
 export TMPDIR="$task_run/tmp" PYTHONUNBUFFERED=1
-task_sources=(research/rigid_stress/{rigid_egg_articulated_contact,precise_panda_kinematics,articulated_franka_contact,run_rigid_egg_franka,franka_mujoco_reference,franka_contact_reference,franka_rigid_mode_coordinates,audit_franka_reference,contact_reference,neohookean_reference,stable_neohookean_reference,skfem_reference,summarize_fine_references}.py
+task_sources=(research/rigid_stress/{captured_reference_motion,rigid_egg_articulated_contact,precise_panda_kinematics,articulated_franka_contact,run_rigid_egg_franka,franka_mujoco_reference,franka_contact_reference,franka_rigid_mode_coordinates,audit_franka_reference,contact_reference,neohookean_reference,stable_neohookean_reference,skfem_reference,summarize_fine_references}.py
     research/rigid_stress/scripts/{run_rigid_egg_franka,cluster_env}.sh genesis/assets/xml/franka_emika_panda/panda.xml)
 sha256sum "${task_sources[@]}" > "$task_run/input-source.sha256"
 cp --parents "${task_sources[@]}" "$task_run/input-source"

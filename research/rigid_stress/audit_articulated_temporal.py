@@ -26,7 +26,7 @@ def main():
         for key in old:
             if key not in ["dt", "steps", "mjcf", "output"]:
                 assert old[key] == new[key], key
-    closure = None
+    closure, initial_velocity = None, None
     source_hashes, cases, histories, quadratures = [], [], [], []
     for index, (run, config) in enumerate(zip(args.run, configurations)):
         with np.load(run / "results/closure_state.npz") as saved:
@@ -36,6 +36,17 @@ def main():
             for key in closure:
                 np.testing.assert_array_equal(current[key], closure[key])
         closure = current
+        velocity_path = run / "results/initial_velocity.npz"
+        if velocity_path.exists():
+            with np.load(velocity_path) as saved:
+                current_velocity = {k: saved[k].copy() for k in saved.files}
+            if initial_velocity is not None:
+                assert current_velocity.keys() == initial_velocity.keys()
+                for key in initial_velocity:
+                    np.testing.assert_array_equal(current_velocity[key], initial_velocity[key])
+            initial_velocity = current_velocity
+        else:
+            assert not config.get("captured_initial_velocity", False)
         source_hashes.append(hashlib.sha256(Path(config["mjcf"]).read_bytes()).hexdigest())
         directory = args.output / f"case{index:02d}"
         directory.mkdir()
@@ -82,6 +93,12 @@ def main():
             peaks = [cases[j]["rows"][i]["raw_global_peak_lower_Pa"] for j, i in zip([first, first + 1], indices)]
             row["raw_peak_relative_change"] = abs(peaks[0] / peaks[1] - 1)
             row["raw_peak_absolute_change_Pa"] = abs(peaks[0] - peaks[1])
+            for key, unit in [
+                ("body_com_position", "m"),
+                ("body_com_velocity", "m_s"),
+                ("body_angular_velocity", "rad_s"),
+            ]:
+                row[key + "_absolute_change_" + unit] = float(np.linalg.norm(old[key] - new[key]))
             rows.append(row)
         comparisons.append({"coarse_case": first, "fine_case": first + 1, "common_times": rows})
     report = {
@@ -89,7 +106,7 @@ def main():
         "cases": cases,
         "adjacent_comparisons": comparisons,
         "goal_completion": False,
-        "limitations": "All steps retain complete original1e-9 body/joint/fresh-step budgets and common closure arrays. This tests the declared short hold with zero initial velocity at one coarse fixed-polyhedron/contact setting. It does not establish original approach/lift/angular-history matching, spatial/contact/regularization convergence, resolved-load/native feedback separation or a physical accuracy/cost range.",
+        "limitations": "All steps retain complete original1e-9 body/joint/fresh-step budgets, common closure arrays and identical declared initial velocities. This tests the short hold at one coarse fixed-polyhedron/contact setting. It does not establish original approach/lift/support-history matching, spatial/contact/regularization convergence, resolved-load/native feedback separation or a physical accuracy/cost range.",
     }
     (args.output / "summary.json").write_text(json.dumps(report, indent=2) + "\n")
     print(json.dumps({"cases": len(cases), "common_times_per_pair": len(comparisons[0]["common_times"])}))

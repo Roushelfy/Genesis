@@ -8,6 +8,7 @@ from pathlib import Path
 import numpy as np
 from scipy.spatial.transform import Rotation
 
+from .captured_reference_motion import initial_motion
 from .franka_contact_reference import build_from_capture
 from .rigid_egg_articulated_contact import RigidEggArticulatedContact, rotation_terms
 from .summarize_fine_references import closed_source
@@ -58,6 +59,7 @@ def main():
     parser.add_argument("--dhat", type=float, default=2.5e-6)
     parser.add_argument("--check-jacobian", action="store_true")
     parser.add_argument("--held-closure-run", type=Path)
+    parser.add_argument("--captured-initial-velocity", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -120,7 +122,8 @@ def main():
         body_component_permutation=static.parts[0].permutation,
         world_coordinate_origin_m=static.world_coordinate_origin_m,
     )
-    velocity, body_velocity = np.zeros(9), np.zeros(system.n)
+    body_velocity, velocity, motion = initial_motion(static, previous, q, frame, args.captured_initial_velocity)
+    np.savez_compressed(args.output / "initial_velocity.npz", body_velocity=body_velocity, joint_velocity=velocity)
     rows = []
     for step in range(1, args.steps + 1):
         old_q, old_velocity, old_full = q.copy(), velocity.copy(), previous.copy()
@@ -177,6 +180,7 @@ def main():
     summary = {
         "scope": __doc__,
         "reused_held_closure": closure_identity,
+        "initial_motion": motion,
         "steps": rows,
         "all_accepted_residuals": system.history,
         "body_radius_m": system.radius,
@@ -189,7 +193,7 @@ def main():
         "robot_solver_tolerance": system.robot.model.opt.tolerance,
         "precise_kinematic_max_discrepancy_m": system.kinematic_max_discrepancy_m,
         "goal_completion": False,
-        "limitations": "Rigid-body motion restricts the same collision surface and consistent mass, preserving actual robot control/contact laws. Body rotational residuals are scaled by the fixed reference radius only in the numerical merit. Raw force/moment and fresh robot-step gates are explicit. This short held-initializer/zero-velocity control is not original approach/angular-history matching or spatial/contact/regularization convergence. Independent balance/recovery replay and rigid/deformable feedback comparisons are required.",
+        "limitations": "Rigid-body motion restricts the same collision surface and consistent mass, preserving actual robot control/contact laws. Body rotational residuals are scaled by the fixed reference radius only in the numerical merit. Raw force/moment and fresh robot-step gates are explicit. Initial velocities are explicitly declared; the held initializer differs from original approach/lift/support history. Spatial/contact/regularization convergence and independent balance/recovery replay remain required.",
     }
     (args.output / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     print(json.dumps({"steps": len(rows), "body_radius_m": system.radius}), flush=True)
