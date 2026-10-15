@@ -5,6 +5,16 @@ without narrowing its scope. Historical native performance completion does not
 establish the new physical stage. Dated reports preserve their observations;
 running or pending jobs count as scheduled work only.
 
+The [feedback/time checkpoint](PHYSICAL_FEEDBACK_TIME_20261015.md) subsequently
+qualifies three full-arm time steps through280 original-budget states and a
+matched80-step rigid/deformable contact control. Native nodal replay is verified;
+time/feedback/constitutive differences remain scoped to one unresolved coarse
+spatial/contact setting. Genesis contact-law equivalence, original approach/
+angular history, spatial/contact/regularization tails, finite-footprint models
+and physically verified warmed cost remain required. The table below retains
+the full original scope; historical two-level statements describe their dated
+evidence, not a claim that later controlled pilots completed those requirements.
+
 Latest: the [coupled full-arm/U checkpoint](PHYSICAL_COUPLED_FRANKA_U_20261015.md)
 solves the short actual-Panda/FEM hold and explicit fixed-arm control, independently
 auditing160 retained states at original1e-9 gates. It also completes the third
