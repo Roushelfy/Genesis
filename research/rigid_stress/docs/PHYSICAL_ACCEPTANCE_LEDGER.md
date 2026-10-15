@@ -79,3 +79,17 @@ saved-increment guard and advances into the remaining original initialization.
 Complete egg contact acceptance remains unverified. Original fine
 qualification714444_2 isTIMEOUT, regardless of its wrapper returncode0.
 All original full physical gates remain.
+
+The [articulated/spatial checkpoint](PHYSICAL_ARTICULATED_SPATIAL_20261015.md)
+adds2400 common material probes and exact equal-constructor controls, full-arm
+contact-force tails0.824%/0.223%, and corrected physical inertia checks on all
+captured motion frames. Original working mass contains implicit damping; the
+near-stationary audit alone did not establish physical inertia. The new reader
+and explicit readouts remove that ambiguity without modifying dynamics.
+Fixed-contact coarse controls preserve83 original array archives exactly;
+the first completed480/3840 comparison changes full tensor probes56.2%, raw
+peak30.8% and energy35.2%, despite contact resultants changing only0.0071%.
+Original force budgets and componentwise postprocessor gates remain unchanged.
+Fixed-contact volume and third-level reference studies remain live; no spatial
+tail or singularity acceptance is inferred from these first two levels.
+Full coupled application, contact/stress convergence and every original gate remain.

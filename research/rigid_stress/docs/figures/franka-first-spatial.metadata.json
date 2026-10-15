@@ -1,0 +1,56 @@
+{
+  "claim_anchor": "franka-first-spatial-field-sensitivity",
+  "material_passport": [
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-spatial-cold-0-v1",
+      "section_elements": 131,
+      "projected_contact_nodes": 2,
+      "global_lower_peak_Pa": 156447.01685653493,
+      "global_upper_peak_Pa": 156447.01718448036,
+      "peak_reference_position_m": [
+        1.7697452569155986e-06,
+        0.022028914832074527,
+        0.001184687058517001
+      ]
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-spatial-cold-1-v1",
+      "section_elements": 541,
+      "projected_contact_nodes": 2,
+      "global_lower_peak_Pa": 226120.52534877567,
+      "global_upper_peak_Pa": 226120.52567672345,
+      "peak_reference_position_m": [
+        1.7697452569155986e-06,
+        0.022028914832074527,
+        0.001184687058517001
+      ]
+    }
+  ],
+  "plane_reference_x_m": 1.7697452569155986e-06,
+  "colour_limits_kPa": [
+    0,
+    240
+  ],
+  "figure_mm": [
+    183,
+    120
+  ],
+  "svg_text_editable": true,
+  "caption": "Reference-geometry sections of the full3D fixed-polyhedron Panda inertial pilot at0.1s. Each intersected tetrahedron is colored by its unaveraged four-corner von Mises maximum; this is an element envelope, not interpolated cut-plane stress or a smoothed nodal field. Shared0\u2013240kPa limits preserve the measured difference. Squares project all body contact nodes with force norm above1e-8N; stars mark the independently audited global corner lower peak. Whole-volume nonlinear peak upper bounds remain separate. Two levels do not establish convergence.",
+  "manual_preview_inspected": true,
+  "goal_completion": false,
+  "visual_qa": "pass: readable labels, shared scale, aligned panels, distinct markers and no overlap or glyph issues",
+  "actual_svg_size_mm": [
+    182.99999983055554,
+    119.99999988888891
+  ],
+  "final_png_dimensions": [
+    3242,
+    2125
+  ],
+  "final_png_dpi": 450,
+  "svg_text_elements": 32,
+  "preview_sha256": "fd1c26a36b8c43d4d7205670d05e6b81d94d37f827b9cf80e059625b261e1632",
+  "superseded_export_issue": "v1 NumPy2 cross warning and v2 tight-bbox cropping are corrected in v3; earlier v2 QA did not check physical export size",
+  "remaining_export_issues": []
+}
