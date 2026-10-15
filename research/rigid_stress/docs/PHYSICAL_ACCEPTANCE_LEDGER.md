@@ -51,3 +51,17 @@ histories are compared at80 exact common physical times. Normal-force changes
 are small, but orientation differences are nonmonotone and angular motion
 persists. Contact regularization/support matching, solved deformable application
 contact, actual full-arm matching and the original acceptance remain required.
+Subsequent source inspection identifies the temporary weld's automatic2*dt
+time constant: the earlier integration sweep also changes initializer compliance.
+It is a combined numerical observation, not pure fixed-support temporal evidence.
+The contact-only regularization study now records actual mixed contact parameters,
+penetration and runtime weld parameters at a fixed integration interval.
+The [contact-regularization/inertial checkpoint](PHYSICAL_CONTACT_REGULARIZATION_20261015.md)
+measures default rigid penetration near92% of wall thickness and contact-law
+load changes7.841%/3.010% at fixed dt/weld parameters. Independent actual-finger
+inertial references solve140 steps at three dt values with unchanged complete
+dynamic gates; their temporal tensor/velocity/energy diagnostics are below3%
+at one coarse spatial/contact setting. Actual native nodal replay agrees with
+independent linear FEM to7.77e-11 and that nonlinear dynamic field to4.80e-5.
+Physical spatial/contact tails, matched supports/longer/full-arm histories,
+load-model/feedback separation and the full operating-range acceptance remain.

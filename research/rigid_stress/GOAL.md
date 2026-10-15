@@ -104,6 +104,14 @@ contact floor using identical held rows and unchanged tolerance. Direct and
 least-squares free-body release remain unqualified. Actual full-arm matching,
 contact convergence, feedback and every original physical acceptance item
 remain active; small strains or narrow peak bounds are not equilibrium proof.
+The [contact regularization and inertial reference update](docs/PHYSICAL_CONTACT_REGULARIZATION_20261015.md)
+measures default rigid overlap comparable to wall thickness and separates its
+contact-only load sensitivity at fixed dt/weld parameters. Three solved
+actual-finger inertial pilots meet all original dynamic gates and common-time
+tensor/velocity/energy diagnostics; one actual native nodal replay passes.
+These are one coarse spatial/contact setting. Matched full-arm/support/history,
+physical contact/mesh tails, model/feedback separation and the original full
+accuracy/cost acceptance remain required.
 
 ## Previous nonconvex implementation brief, 2026-10-11
 

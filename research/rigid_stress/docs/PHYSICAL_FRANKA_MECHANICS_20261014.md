@@ -156,8 +156,15 @@ full-arm equivalence remain required. This is controlled fixed-hand evidence.
 The three temporal inputs contain288/576/1152 unique captured substeps.
 Audit714294 compares80 identical released-phase physical times from32.24 to
 51.99s, using physical_substep0 at the same macro ticks and no interpolation.
-Source geometry/order, frozen controls and all non-temporal configuration are
-checked. Normal forces are compared by the same two runtime source geoms.
+Source geometry/order, controller inputs and all non-temporal configuration
+are checked. Normal forces are compared by the same two runtime source geoms.
+Later source inspection finds that dynamically added welds automatically use
+a time constant equal to twice the physical substep. Thus fixed configuration
+does not freeze the initializer's numerical compliance in this temporal sweep.
+Its observations include that support-regularization change and cannot be
+called a pure fixed-support time-discretization comparison. Subsequent
+contact-only sweeps keep the integration interval and actual weld parameters
+fixed and record their runtime values explicitly.
 
 | Integration change | Normal-force L2 difference | Angular-velocity L2 difference | Maximum position difference | Maximum orientation difference |
 |---|---:|---:|---:|---:|
