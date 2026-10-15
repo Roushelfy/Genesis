@@ -174,6 +174,15 @@ The next application gate is the actual full-arm/FEM coupled solve and its
 complete force residuals, followed by the unchanged convergence/model/feedback/
 physical accuracy-cost completion requirements.
 
+The [coupled full-arm/U checkpoint](docs/PHYSICAL_COUPLED_FRANKA_U_20261015.md)
+solves80 dynamic steps of independent actual-Panda/FEM contact and an explicit
+fixed-arm support control. Independent audits reconstruct all160 balances at
+the original1e-9 gates. The third U level reduces tensor change44.6%→12.2%,
+still unresolved. Matched original approach/angular history, temporal and
+spatial/contact/regularization tails, feedback/model separation and physically
+verified warmed cost remain required. Scheduled temporal/fourth-U studies count
+as scheduled work only; the complete linked physical objective remains active.
+
 ## Previous nonconvex implementation brief, 2026-10-11
 
 Implement the contact mapping contract in

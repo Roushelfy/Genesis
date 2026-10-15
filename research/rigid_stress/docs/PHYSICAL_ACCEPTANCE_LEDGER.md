@@ -5,6 +5,14 @@ without narrowing its scope. Historical native performance completion does not
 establish the new physical stage. Dated reports preserve their observations;
 running or pending jobs count as scheduled work only.
 
+Latest: the [coupled full-arm/U checkpoint](PHYSICAL_COUPLED_FRANKA_U_20261015.md)
+solves the short actual-Panda/FEM hold and explicit fixed-arm control, independently
+auditing160 retained states at original1e-9 gates. It also completes the third
+resolved U level: tensor change decreases44.6%→12.2%, still above3%.
+This closes the first full-arm coupled-solve pilot, not original approach/lift/
+angular-history matching or spatial/contact convergence. Temporal and fourth-U
+studies are live/scheduled; all original requirements below remain active.
+
 | Requirement | Evidence needed for completion | Current evidence and remaining work |
 |---|---|---|
 | A: independent elasticity and boundary loads | Independent K, consistent mass, six rigid modes, boundary quadrature, full equilibrium/energy/gauge displacement/tensor/peak; common physical probes across independent meshes | Independent scikit-fem assembly, analytic fields, native CPU/CUDA algebra and continuous-boundary transfer are qualified. Seven-shape physical reference sweep completed. Representative continuum tails remain incomplete; algebra agreement alone does not satisfy A. |

@@ -1,0 +1,95 @@
+{
+  "scope": "Reconstruct full body and joint balances independently of the coupled Newton solver.",
+  "cases": [
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-articulated-coupled-pilot-v1",
+      "fixed_arm": false,
+      "steps_checked": 8,
+      "rows": [
+        {
+          "step": 1,
+          "body_force_residual_N": 3.266120201367903e-11,
+          "joint_force_residual_N_or_Nm": 4.07926758869353e-11,
+          "fresh_step_effort_residual": 4.060204987051326e-11,
+          "contact_pullback_max_error_N": 0.0,
+          "arm_support_effort_norm": 0.0,
+          "normal_stencils": 2,
+          "objective_elastic_displacement_max_m": 3.5163602990833996e-07
+        },
+        {
+          "step": 2,
+          "body_force_residual_N": 4.930828816297661e-11,
+          "joint_force_residual_N_or_Nm": 4.3296303023479024e-11,
+          "fresh_step_effort_residual": 4.3360797615146874e-11,
+          "contact_pullback_max_error_N": 0.0,
+          "arm_support_effort_norm": 0.0,
+          "normal_stencils": 2,
+          "objective_elastic_displacement_max_m": 3.516980624894027e-07
+        },
+        {
+          "step": 3,
+          "body_force_residual_N": 2.705065013206312e-10,
+          "joint_force_residual_N_or_Nm": 2.690658600616696e-10,
+          "fresh_step_effort_residual": 2.691539026177509e-10,
+          "contact_pullback_max_error_N": 0.0,
+          "arm_support_effort_norm": 0.0,
+          "normal_stencils": 2,
+          "objective_elastic_displacement_max_m": 3.51678228183715e-07
+        },
+        {
+          "step": 4,
+          "body_force_residual_N": 5.46384087554219e-11,
+          "joint_force_residual_N_or_Nm": 5.13492840688901e-11,
+          "fresh_step_effort_residual": 5.097619214053412e-11,
+          "contact_pullback_max_error_N": 0.0,
+          "arm_support_effort_norm": 0.0,
+          "normal_stencils": 2,
+          "objective_elastic_displacement_max_m": 3.5167110918327217e-07
+        },
+        {
+          "step": 5,
+          "body_force_residual_N": 5.0241258302379946e-11,
+          "joint_force_residual_N_or_Nm": 4.909340514379897e-11,
+          "fresh_step_effort_residual": 4.934728159136337e-11,
+          "contact_pullback_max_error_N": 0.0,
+          "arm_support_effort_norm": 0.0,
+          "normal_stencils": 2,
+          "objective_elastic_displacement_max_m": 3.5167157752187264e-07
+        },
+        {
+          "step": 6,
+          "body_force_residual_N": 6.137441446525564e-11,
+          "joint_force_residual_N_or_Nm": 2.5655216788022974e-11,
+          "fresh_step_effort_residual": 2.5731962063008027e-11,
+          "contact_pullback_max_error_N": 0.0,
+          "arm_support_effort_norm": 0.0,
+          "normal_stencils": 2,
+          "objective_elastic_displacement_max_m": 3.5167218158639265e-07
+        },
+        {
+          "step": 7,
+          "body_force_residual_N": 6.983149861402876e-10,
+          "joint_force_residual_N_or_Nm": 6.932999753674621e-10,
+          "fresh_step_effort_residual": 6.931922730634755e-10,
+          "contact_pullback_max_error_N": 0.0,
+          "arm_support_effort_norm": 0.0,
+          "normal_stencils": 2,
+          "objective_elastic_displacement_max_m": 3.516722471284486e-07
+        },
+        {
+          "step": 8,
+          "body_force_residual_N": 7.047457734136136e-11,
+          "joint_force_residual_N_or_Nm": 7.065839926149503e-11,
+          "fresh_step_effort_residual": 7.083416891648291e-11,
+          "contact_pullback_max_error_N": 0.0,
+          "arm_support_effort_norm": 0.0,
+          "normal_stencils": 2,
+          "objective_elastic_displacement_max_m": 3.516721978079508e-07
+        }
+      ]
+    }
+  ],
+  "support_comparisons": [],
+  "goal_completion": false,
+  "limitations": "All retained steps reconstruct complete body and joint balances, actual contact pullback and a fresh independent robot step with original1e-9 budgets. Volume quadrature tensor comparison is objective. Prescribed-arm reactions are explicit and all other matched protocol inputs remain fixed. This support-axis comparison does not establish rigid/deformable feedback, matched original approach/angular history or physical mesh/contact/time convergence."
+}

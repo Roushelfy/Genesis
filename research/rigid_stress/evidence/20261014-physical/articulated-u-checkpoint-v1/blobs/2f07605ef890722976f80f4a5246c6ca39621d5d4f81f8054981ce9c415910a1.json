@@ -1,0 +1,703 @@
+{
+  "scope": "Solve held initialization then free FEM/complete Panda joint contact dynamics.",
+  "steps": [
+    {
+      "step": 1,
+      "time_s": 0.00125,
+      "fresh_robot_step_effort_residual": 4.060203300853611e-11,
+      "phase": "dynamic0001",
+      "iteration": 4,
+      "body_residual_N": 3.2661202017748875e-11,
+      "joint_residual_N_or_Nm": 4.079266748411741e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 2,
+      "time_s": 0.0025,
+      "fresh_robot_step_effort_residual": 4.3360753636585463e-11,
+      "phase": "dynamic0002",
+      "iteration": 15,
+      "body_residual_N": 4.930831675089654e-11,
+      "joint_residual_N_or_Nm": 4.3296249767078375e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 3,
+      "time_s": 0.00375,
+      "fresh_robot_step_effort_residual": 2.6915390422594167e-10,
+      "phase": "dynamic0003",
+      "iteration": 13,
+      "body_residual_N": 2.705065058879781e-10,
+      "joint_residual_N_or_Nm": 2.690658675560043e-10,
+      "normal_stencils": 2
+    },
+    {
+      "step": 4,
+      "time_s": 0.005,
+      "fresh_robot_step_effort_residual": 5.0976196413094634e-11,
+      "phase": "dynamic0004",
+      "iteration": 15,
+      "body_residual_N": 5.4638415570073395e-11,
+      "joint_residual_N_or_Nm": 5.134928966309459e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 5,
+      "time_s": 0.00625,
+      "fresh_robot_step_effort_residual": 4.934729751724745e-11,
+      "phase": "dynamic0005",
+      "iteration": 16,
+      "body_residual_N": 5.024125785664749e-11,
+      "joint_residual_N_or_Nm": 4.909341250175438e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 6,
+      "time_s": 0.0075,
+      "fresh_robot_step_effort_residual": 2.5731963722207286e-11,
+      "phase": "dynamic0006",
+      "iteration": 14,
+      "body_residual_N": 6.137441516296962e-11,
+      "joint_residual_N_or_Nm": 2.5655224380883143e-11,
+      "normal_stencils": 2
+    },
+    {
+      "step": 7,
+      "time_s": 0.00875,
+      "fresh_robot_step_effort_residual": 6.931922785763212e-10,
+      "phase": "dynamic0007",
+      "iteration": 13,
+      "body_residual_N": 6.983149858799362e-10,
+      "joint_residual_N_or_Nm": 6.932999774258184e-10,
+      "normal_stencils": 2
+    },
+    {
+      "step": 8,
+      "time_s": 0.01,
+      "fresh_robot_step_effort_residual": 7.08341559579779e-11,
+      "phase": "dynamic0008",
+      "iteration": 15,
+      "body_residual_N": 7.047457698478271e-11,
+      "joint_residual_N_or_Nm": 7.065837794877572e-11,
+      "normal_stencils": 2
+    }
+  ],
+  "body_tetrahedra": 480,
+  "original_force_budgets": {
+    "body_N": 1e-09,
+    "joint_N_or_Nm": 1e-09
+  },
+  "all_accepted_residuals": [
+    {
+      "phase": "closure0001",
+      "iteration": 2,
+      "body_residual_N": 2.1817922250925037e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0002",
+      "iteration": 1,
+      "body_residual_N": 2.2275282554959457e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0003",
+      "iteration": 1,
+      "body_residual_N": 2.0875913154436297e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0004",
+      "iteration": 1,
+      "body_residual_N": 2.1451232070153307e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0005",
+      "iteration": 1,
+      "body_residual_N": 1.987486835102949e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0006",
+      "iteration": 1,
+      "body_residual_N": 1.9439513912473555e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0007",
+      "iteration": 1,
+      "body_residual_N": 2.1227016746895513e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0008",
+      "iteration": 1,
+      "body_residual_N": 2.0185284067117153e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0009",
+      "iteration": 1,
+      "body_residual_N": 2.0818448220564628e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0010",
+      "iteration": 1,
+      "body_residual_N": 2.00464944430253e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0011",
+      "iteration": 1,
+      "body_residual_N": 2.0244358101205458e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0012",
+      "iteration": 1,
+      "body_residual_N": 1.9842927580581107e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0013",
+      "iteration": 1,
+      "body_residual_N": 2.056969403221432e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0014",
+      "iteration": 1,
+      "body_residual_N": 2.0113041945007771e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0015",
+      "iteration": 1,
+      "body_residual_N": 2.09709727808543e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0016",
+      "iteration": 1,
+      "body_residual_N": 2.1493066909615785e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0017",
+      "iteration": 1,
+      "body_residual_N": 2.127805272625714e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0018",
+      "iteration": 1,
+      "body_residual_N": 2.0962978443197193e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0019",
+      "iteration": 1,
+      "body_residual_N": 2.131143718420737e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0020",
+      "iteration": 1,
+      "body_residual_N": 2.0379018204624877e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0021",
+      "iteration": 1,
+      "body_residual_N": 2.0718193633023642e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0022",
+      "iteration": 1,
+      "body_residual_N": 2.1191091235418013e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0023",
+      "iteration": 1,
+      "body_residual_N": 2.0408618374064995e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0024",
+      "iteration": 1,
+      "body_residual_N": 2.0456806089407342e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0025",
+      "iteration": 1,
+      "body_residual_N": 1.9952158104135712e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0026",
+      "iteration": 1,
+      "body_residual_N": 2.004788985054202e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0027",
+      "iteration": 1,
+      "body_residual_N": 2.1631514704551836e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0028",
+      "iteration": 1,
+      "body_residual_N": 2.201855107041576e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0029",
+      "iteration": 1,
+      "body_residual_N": 1.9507434169649425e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0030",
+      "iteration": 1,
+      "body_residual_N": 2.1312038825249482e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0031",
+      "iteration": 1,
+      "body_residual_N": 2.115775043432236e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0032",
+      "iteration": 1,
+      "body_residual_N": 2.1004736918984695e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0033",
+      "iteration": 1,
+      "body_residual_N": 2.0179514702377239e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0034",
+      "iteration": 1,
+      "body_residual_N": 2.0454663813634148e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0035",
+      "iteration": 1,
+      "body_residual_N": 2.1112609352736507e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0036",
+      "iteration": 1,
+      "body_residual_N": 2.0663035132023943e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0037",
+      "iteration": 1,
+      "body_residual_N": 2.1222684162211404e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0038",
+      "iteration": 1,
+      "body_residual_N": 2.1043131883184806e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0039",
+      "iteration": 1,
+      "body_residual_N": 2.1284677738762748e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0040",
+      "iteration": 1,
+      "body_residual_N": 2.2566738809109917e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0041",
+      "iteration": 1,
+      "body_residual_N": 2.0182510358194053e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0042",
+      "iteration": 1,
+      "body_residual_N": 2.147175830485017e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0043",
+      "iteration": 1,
+      "body_residual_N": 2.0797762440612323e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0044",
+      "iteration": 1,
+      "body_residual_N": 2.1859076837402588e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0045",
+      "iteration": 1,
+      "body_residual_N": 2.0314335928496232e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0046",
+      "iteration": 1,
+      "body_residual_N": 1.9644628050896414e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0047",
+      "iteration": 1,
+      "body_residual_N": 2.0314132916188356e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0048",
+      "iteration": 1,
+      "body_residual_N": 2.0519556996703392e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0049",
+      "iteration": 1,
+      "body_residual_N": 2.0914902613836603e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0050",
+      "iteration": 1,
+      "body_residual_N": 2.1378490223054828e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0051",
+      "iteration": 1,
+      "body_residual_N": 2.070046919813523e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0052",
+      "iteration": 1,
+      "body_residual_N": 2.1265337719783145e-13,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 0
+    },
+    {
+      "phase": "closure0053",
+      "iteration": 23,
+      "body_residual_N": 8.000520459532367e-10,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "closure0054",
+      "iteration": 7,
+      "body_residual_N": 9.076951826103678e-10,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "closure0055",
+      "iteration": 11,
+      "body_residual_N": 7.552871123505454e-10,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "closure0056",
+      "iteration": 8,
+      "body_residual_N": 9.041193779458717e-10,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "closure0057",
+      "iteration": 13,
+      "body_residual_N": 4.677949246029305e-10,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "closure0058",
+      "iteration": 14,
+      "body_residual_N": 8.491741820354265e-10,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "closure0059",
+      "iteration": 13,
+      "body_residual_N": 3.529273051619025e-10,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "closure0060",
+      "iteration": 11,
+      "body_residual_N": 9.465988499426576e-10,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "closure0061",
+      "iteration": 9,
+      "body_residual_N": 8.512833238757188e-10,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "closure0062",
+      "iteration": 9,
+      "body_residual_N": 9.85470315905197e-10,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "closure0063",
+      "iteration": 9,
+      "body_residual_N": 8.799148433817882e-10,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "closure0064",
+      "iteration": 24,
+      "body_residual_N": 8.883792766795469e-10,
+      "joint_residual_N_or_Nm": 0.0,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0001",
+      "iteration": 4,
+      "body_residual_N": 3.2661202017748875e-11,
+      "joint_residual_N_or_Nm": 4.079266748411741e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0002",
+      "iteration": 15,
+      "body_residual_N": 4.930831675089654e-11,
+      "joint_residual_N_or_Nm": 4.3296249767078375e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0003",
+      "iteration": 13,
+      "body_residual_N": 2.705065058879781e-10,
+      "joint_residual_N_or_Nm": 2.690658675560043e-10,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0004",
+      "iteration": 15,
+      "body_residual_N": 5.4638415570073395e-11,
+      "joint_residual_N_or_Nm": 5.134928966309459e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0005",
+      "iteration": 16,
+      "body_residual_N": 5.024125785664749e-11,
+      "joint_residual_N_or_Nm": 4.909341250175438e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0006",
+      "iteration": 14,
+      "body_residual_N": 6.137441516296962e-11,
+      "joint_residual_N_or_Nm": 2.5655224380883143e-11,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0007",
+      "iteration": 13,
+      "body_residual_N": 6.983149858799362e-10,
+      "joint_residual_N_or_Nm": 6.932999774258184e-10,
+      "normal_stencils": 2
+    },
+    {
+      "phase": "dynamic0008",
+      "iteration": 15,
+      "body_residual_N": 7.047457698478271e-11,
+      "joint_residual_N_or_Nm": 7.065837794877572e-11,
+      "normal_stencils": 2
+    }
+  ],
+  "tangent_qualifications": [
+    {
+      "phase": "held_contact",
+      "rows": [
+        {
+          "perturbation": 1e-08,
+          "relative_complete_tangent_error": 0.00018107743197746077
+        },
+        {
+          "perturbation": 3e-09,
+          "relative_complete_tangent_error": 5.447342288961343e-05
+        },
+        {
+          "perturbation": 1e-09,
+          "relative_complete_tangent_error": 1.8173517904908646e-05
+        }
+      ]
+    },
+    {
+      "phase": "free_inertial",
+      "rows": [
+        {
+          "perturbation": 1e-08,
+          "relative_complete_tangent_error": 2.0846070603946517e-05
+        },
+        {
+          "perturbation": 3e-09,
+          "relative_complete_tangent_error": 6.257643259678931e-06
+        },
+        {
+          "perturbation": 1e-09,
+          "relative_complete_tangent_error": 2.0876019672312016e-06
+        }
+      ]
+    }
+  ],
+  "body_peak_lower_Pa": 156450.71683314943,
+  "body_peak_upper_Pa": 156450.71716109483,
+  "body_determinant_lower_bound": 0.9999918756629661,
+  "final_joint_position": [
+    -1.0429308763251786,
+    1.4360017190607433,
+    1.521027162838045,
+    -1.720940033937696,
+    -1.4360621228731563,
+    1.6313329163141794,
+    1.4553924428497806,
+    0.02200036492072944,
+    0.02200032865531247
+  ],
+  "final_joint_velocity": [
+    7.901909653174988e-06,
+    3.4295710415712615e-05,
+    -7.636676190474362e-05,
+    -1.2105890698136774e-05,
+    1.16802258369025e-06,
+    -1.742739147868248e-05,
+    8.105857182940067e-07,
+    -1.9271718995399413e-06,
+    1.926254228957207e-06
+  ],
+  "controller_target": [
+    -1.0429300070043328,
+    1.4284284666121048,
+    1.5294581926808155,
+    -1.7200574780985856,
+    -1.4357374863701315,
+    1.6324552119168398,
+    1.455392712925263,
+    0.018,
+    0.018
+  ],
+  "controller_kp": [
+    4500.0,
+    4500.0,
+    3500.0,
+    3500.0,
+    2000.0,
+    2000.0,
+    2000.0,
+    100.0,
+    100.0
+  ],
+  "controller_kv": [
+    450.0,
+    450.0,
+    350.0,
+    350.0,
+    200.0,
+    200.0,
+    200.0,
+    10.0,
+    10.0
+  ],
+  "controller_caps": [
+    87.0,
+    87.0,
+    87.0,
+    87.0,
+    12.0,
+    12.0,
+    12.0,
+    4.0,
+    4.0
+  ],
+  "goal_completion": false,
+  "limitations": "Complete nine-joint nonlinear kinematics/PD/equality and independent FEM/contact are coupled with original1e-9 body/joint force gates and fresh MuJoCo step checks. Held six-point quasi-static initialization followed by zero initial velocity differs from original approach/lift and captured angular history. Endpoint implicit body/contact/PD forces use a MuJoCo old-state step response; time-integration, history, spatial/contact/regularization and native feedback/model/accuracy-cost still need qualification. Newton CCD guards accepted endpoint chords; no continuous nonlinear rigid-motion CCD claim is made. This is an application pilot, not completion of full physical acceptance."
+}
