@@ -31,6 +31,20 @@ egg/Franka and U contact references, resolved-load/native replay versus feedback
 remaining applicable load-model sensitivity and physically verified warmed costs.
 These are execution priorities within the complete linked objective.
 
+The [egg geometry/four-level checkpoint](docs/PHYSICAL_EGG_GEOMETRY_SPATIAL_20261015.md)
+independently checks480/3577/8433/30298-tet states at6.25ms: the last pair still
+changes tensor15.52% and energy9.35%; the finest resolved-load linear tensor
+differs11.22% from the nonlinear reference. Whole-volume raw peak bounds remain
+3.79–5.94GPa and measured corner Green strain reaches0.467. Exact continuum
+geometry independently identifies12.79% original volume/mass error; paired CAD
+meshes reduce it to0.219% at30720 tetrahedra without density changes. Both
+families retain all six original initializer points. Two newly solved1920-tet
+CAD/polyhedron contact cases have ten independently audited dynamic states;
+their different geometry/mass and0.284/0.357MPa peaks remain separate declared
+model diagnostics. Native increased-iteration checks recover original force
+gates but retain strict cached-corner field failures. Finer paired contact
+cases are live; all original convergence/model/feedback/accuracy-cost gates stay.
+
 The [fixed-surface thickness/original-recovery checkpoint](docs/PHYSICAL_THICKNESS_ORIGINAL_RECOVERY_20261015.md)
 independently verifies identical egg boundaries, volume and mass on2/3/4
 thickness layers; the corresponding FEM fields are running, not accepted tails.

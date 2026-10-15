@@ -5,6 +5,19 @@ without narrowing its scope. Historical native performance completion does not
 establish the new physical stage. Dated reports preserve their observations;
 running or pending jobs count as scheduled work only.
 
+Current: [four-level egg fields and independent continuum geometry](PHYSICAL_EGG_GEOMETRY_SPATIAL_20261015.md)
+retain15.52% common-point tensor/9.35% energy changes at6.25ms and11.22%
+resolved-load linear tensor discrepancy on30298 tetrahedra. The original
+polyhedron has12.79% volume/mass error from the independently integrated
+analytic egg; matched-connectivity CAD assets reduce that error to0.219%
+while retaining all six physical initializer points. Two1920-tet actual
+CAD/polyhedron references have ten independently audited dynamic states,
+with explicitly different represented mass and0.284/0.357MPa raw peaks.
+These are geometry-model diagnostics, not a physical tail. Increased native
+iteration caps pass original equilibrium but retain strict cached-corner
+comparison failures. Full histories, separate physical/contact/geometry axes,
+model/feedback and physically verified warmed costs remain required.
+
 Current: [fixed-surface egg thickness and original-state recovery](PHYSICAL_THICKNESS_ORIGINAL_RECOVERY_20261015.md)
 independently fixes actual boundaries, volume/COM and density across2/3/4 layers;
 FEM stresses remain pending. All1936 original global fields,12 native replays
