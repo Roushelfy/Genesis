@@ -5,14 +5,19 @@ without narrowing its scope. Historical native performance completion does not
 establish the new physical stage. Dated reports preserve their observations;
 running or pending jobs count as scheduled work only.
 
-Current: [the captured-motion checkpoint](PHYSICAL_CAPTURED_MOTION_20261015.md)
-verifies direct COM velocities and unchanged576 original records/16173 NPY
-payloads. Corrected moving8-step pilots pass; the full FEM hold stops after48
-accepted steps and rejects step49 above its unchanged1e-9N gate. Extended-force
-arithmetic recovers that saved state, with full retry unverified. Narrow-band
-level12 retains two active nodes and a280.5MPa raw peak. Original motion history,
-physical contact tails, model/feedback separation and verified accuracy/cost
-remain incomplete. Earlier dated blocks below describe their own checkpoints.
+Current: [the moving-reference checkpoint](PHYSICAL_MOVING_REFERENCE_20261015.md)
+independently audits280 moving time-step states,160 corresponding feedback
+states and12 actual native replays. All175 original accepted fields and one
+complete280-state initial-guess comparison qualify. A read-only observer verifies
+330 original macro controls and360 added hold controls, preserving576 original
+captures/16173 NPY payloads.
+The original first0.1s with actual initial state and ground support passes80
+independent state audits. A longer original attempt passes independent audits
+for all865 accepted states but rejects step866; full3.3s history is incomplete.
+Narrow-band level15 rejects step26 at its original gate, while level12 retains
+two active nodes and a280.5MPa raw peak. Physical contact tails, full original
+history, remaining model/feedback ranges and verified accuracy/cost stay open.
+Earlier dated blocks below describe their own checkpoints.
 
 The [contact-limit checkpoint](PHYSICAL_CONTACT_LIMIT_20261015.md) completes the
 fourth original local level: tensor changes remain32.75%, raw peaks reach30.8MPa
