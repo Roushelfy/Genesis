@@ -1,0 +1,788 @@
+{
+  "scope": "Publish exact source/results bytes with bounded, reconstructible JSON chunks.",
+  "summary": {
+    "scope": "Independent18-node traction diagnostic for the recovered8433-tet state26",
+    "report": {
+      "scope": "Independently assemble centered contact, body inertia and jaw PD balances for a recovered state.",
+      "source_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-tip-coupled-15-v1",
+      "recovery_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-precise-stencil-recovery-v1",
+      "recovered_step": 26,
+      "body_tetrahedra": 8433,
+      "complete_body_dynamic_residual_N": 4.3670840879952115e-13,
+      "complete_mapped_dynamic_residual_N": 9.611127123327818e-13,
+      "force_pullback_max_difference_N": 2.7755575615628914e-17,
+      "normal_stencils": 18,
+      "maximum_coulomb_violation_N": -3.753752865108503e-08,
+      "active_body_contact_nodes": 18,
+      "active_lumped_contact_area_m2": 2.8302513964066723e-09,
+      "maximum_unsmoothed_body_normal_force_per_area_Pa": 1459934867.2648609,
+      "goal_completion": false,
+      "limitations": "This reconstructs the recovered physical step without importing or calling the precision-aware coupled solver. Contact arithmetic, original consistent mass/armature, PD/caps/passive damping and unchanged force budgets are explicit. Full remaining history, independent old-state arithmetic comparisons and spatial/contact/geometry convergence remain required."
+    },
+    "goal_completion": false,
+    "sharded_original_files": []
+  },
+  "limitations": "Recovered8433-tet state26 has18 active body nodes,0.00283025mm\u00b2 lumped support and1.45993GPa unsmoothed normal force/area density. This is one recovered dynamic state, not a physical contact boundary, completed80-state trajectory or spatial/contact tail. All original requirements remain open. JSON files above200MB are preserved as exact ordered32MiB byte ranges, individually gzip-compressed, with original/part/stored SHA256 and offsets. Join decompressed ranges in index order to restore the original JSON exactly; no records are reduced or excluded. Runtime staging uses hard links for unchanged small originals.",
+  "files": [
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/arguments.txt",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/arguments.txt",
+      "artifact": "blobs/3f6ca6270ebb8c20dd03331f00d03a57df88421900d31c25d9d18eca74e8dc98.txt",
+      "encoding": "identity",
+      "bytes": 292,
+      "sha256": "3f6ca6270ebb8c20dd03331f00d03a57df88421900d31c25d9d18eca74e8dc98",
+      "stored_bytes": 292,
+      "stored_sha256": "3f6ca6270ebb8c20dd03331f00d03a57df88421900d31c25d9d18eca74e8dc98"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/cpu.txt",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/cpu.txt",
+      "artifact": "blobs/f2cc940a32edc4f3ae89dffab924af2aa2c7db610f5005f8b3240576d997764c.txt",
+      "encoding": "identity",
+      "bytes": 3911,
+      "sha256": "f2cc940a32edc4f3ae89dffab924af2aa2c7db610f5005f8b3240576d997764c",
+      "stored_bytes": 3911,
+      "stored_sha256": "f2cc940a32edc4f3ae89dffab924af2aa2c7db610f5005f8b3240576d997764c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/driver-origin.txt",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/driver-origin.txt",
+      "artifact": "blobs/0d5f23844490f399607e62b1426ee1103d3d2375f634c288bff18c17727118ff.txt",
+      "encoding": "identity",
+      "bytes": 194,
+      "sha256": "0d5f23844490f399607e62b1426ee1103d3d2375f634c288bff18c17727118ff",
+      "stored_bytes": 194,
+      "stored_sha256": "0d5f23844490f399607e62b1426ee1103d3d2375f634c288bff18c17727118ff"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/environment.json",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/environment.json",
+      "artifact": "blobs/56bac923565890f1c8a4a27462d108ec4edf4e5f547586c82d6b19998842348d.json",
+      "encoding": "identity",
+      "bytes": 266,
+      "sha256": "56bac923565890f1c8a4a27462d108ec4edf4e5f547586c82d6b19998842348d",
+      "stored_bytes": 266,
+      "stored_sha256": "56bac923565890f1c8a4a27462d108ec4edf4e5f547586c82d6b19998842348d"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/articulated_franka_contact.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/articulated_franka_contact.py",
+      "artifact": "blobs/e2bf97f33702aeaf661fa1c70f03dc8aa9020e49bdf4daffcff41408af039511.py",
+      "encoding": "identity",
+      "bytes": 13248,
+      "sha256": "e2bf97f33702aeaf661fa1c70f03dc8aa9020e49bdf4daffcff41408af039511",
+      "stored_bytes": 13248,
+      "stored_sha256": "e2bf97f33702aeaf661fa1c70f03dc8aa9020e49bdf4daffcff41408af039511"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/audit_franka_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/audit_franka_reference.py",
+      "artifact": "blobs/d73291d1ea1ad5d8e836c08e325cca71605b9a3c16a32c0c21f0f3f02083b5d8.py",
+      "encoding": "identity",
+      "bytes": 7552,
+      "sha256": "d73291d1ea1ad5d8e836c08e325cca71605b9a3c16a32c0c21f0f3f02083b5d8",
+      "stored_bytes": 7552,
+      "stored_sha256": "d73291d1ea1ad5d8e836c08e325cca71605b9a3c16a32c0c21f0f3f02083b5d8"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/audit_precise_spatial_state.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/audit_precise_spatial_state.py",
+      "artifact": "blobs/b70867cc549c8e14bcea09cf0f68748bf451fd543fb0b9374d312afc399960ce.py",
+      "encoding": "identity",
+      "bytes": 7845,
+      "sha256": "b70867cc549c8e14bcea09cf0f68748bf451fd543fb0b9374d312afc399960ce",
+      "stored_bytes": 7845,
+      "stored_sha256": "b70867cc549c8e14bcea09cf0f68748bf451fd543fb0b9374d312afc399960ce"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/cached_reference_newton.patch",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/cached_reference_newton.patch",
+      "artifact": "blobs/7075b40e7a7d94e40788c8a7d3be305b5379354da0f221b3ce9ff2332ffc9c0c.patch",
+      "encoding": "identity",
+      "bytes": 869,
+      "sha256": "7075b40e7a7d94e40788c8a7d3be305b5379354da0f221b3ce9ff2332ffc9c0c",
+      "stored_bytes": 869,
+      "stored_sha256": "7075b40e7a7d94e40788c8a7d3be305b5379354da0f221b3ce9ff2332ffc9c0c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/cached_reference_newton.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/cached_reference_newton.py",
+      "artifact": "blobs/c04428e0f44ec8dfd560793d0461bc46b7814493aa2a2a356492b279b71e0288.py",
+      "encoding": "identity",
+      "bytes": 2251,
+      "sha256": "c04428e0f44ec8dfd560793d0461bc46b7814493aa2a2a356492b279b71e0288",
+      "stored_bytes": 2251,
+      "stored_sha256": "c04428e0f44ec8dfd560793d0461bc46b7814493aa2a2a356492b279b71e0288"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/contact_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/contact_reference.py",
+      "artifact": "blobs/077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422.py",
+      "encoding": "identity",
+      "bytes": 30478,
+      "sha256": "077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422",
+      "stored_bytes": 30478,
+      "stored_sha256": "077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/dynamic_franka_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/dynamic_franka_reference.py",
+      "artifact": "blobs/8a752f4d3698cb2217b993efd93dee076f51d2ab87664c4586546f6b8af13898.py",
+      "encoding": "identity",
+      "bytes": 10804,
+      "sha256": "8a752f4d3698cb2217b993efd93dee076f51d2ab87664c4586546f6b8af13898",
+      "stored_bytes": 10804,
+      "stored_sha256": "8a752f4d3698cb2217b993efd93dee076f51d2ab87664c4586546f6b8af13898"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/franka_contact_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/franka_contact_reference.py",
+      "artifact": "blobs/8fdff22b417fed68dbdb553123547580ab346a38ef552ea8f495f3d073b829fc.py",
+      "encoding": "identity",
+      "bytes": 15825,
+      "sha256": "8fdff22b417fed68dbdb553123547580ab346a38ef552ea8f495f3d073b829fc",
+      "stored_bytes": 15825,
+      "stored_sha256": "8fdff22b417fed68dbdb553123547580ab346a38ef552ea8f495f3d073b829fc"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/franka_mujoco_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/franka_mujoco_reference.py",
+      "artifact": "blobs/954105661e1268bc01ed9d80919f5a8b385edde0638023d9ac8810e7e42d48ac.py",
+      "encoding": "identity",
+      "bytes": 3220,
+      "sha256": "954105661e1268bc01ed9d80919f5a8b385edde0638023d9ac8810e7e42d48ac",
+      "stored_bytes": 3220,
+      "stored_sha256": "954105661e1268bc01ed9d80919f5a8b385edde0638023d9ac8810e7e42d48ac"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/franka_rigid_mode_coordinates.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/franka_rigid_mode_coordinates.py",
+      "artifact": "blobs/e32c9a4ffd46b7be229260004763e5b01b70fe804ea55541f07c0836cc8bf984.py",
+      "encoding": "identity",
+      "bytes": 1825,
+      "sha256": "e32c9a4ffd46b7be229260004763e5b01b70fe804ea55541f07c0836cc8bf984",
+      "stored_bytes": 1825,
+      "stored_sha256": "e32c9a4ffd46b7be229260004763e5b01b70fe804ea55541f07c0836cc8bf984"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/frozen_franka_contact.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/frozen_franka_contact.py",
+      "artifact": "blobs/30513ce7c6b04a4a4c93e5b0217774a7349e396dae8f58b17085b8942f88364a.py",
+      "encoding": "identity",
+      "bytes": 1256,
+      "sha256": "30513ce7c6b04a4a4c93e5b0217774a7349e396dae8f58b17085b8942f88364a",
+      "stored_bytes": 1256,
+      "stored_sha256": "30513ce7c6b04a4a4c93e5b0217774a7349e396dae8f58b17085b8942f88364a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/localized_franka_driver.patch",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/localized_franka_driver.patch",
+      "artifact": "blobs/d57497175c3e219dcd0f211ca366fc1025f851ffc6576ffc2ea73102ce6d40a3.patch",
+      "encoding": "identity",
+      "bytes": 2430,
+      "sha256": "d57497175c3e219dcd0f211ca366fc1025f851ffc6576ffc2ea73102ce6d40a3",
+      "stored_bytes": 2430,
+      "stored_sha256": "d57497175c3e219dcd0f211ca366fc1025f851ffc6576ffc2ea73102ce6d40a3"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/localized_franka_mesh.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/localized_franka_mesh.py",
+      "artifact": "blobs/5ba6c25325e72abb55941932e9952b2376e9d9969ac83674d85679aeda01695a.py",
+      "encoding": "identity",
+      "bytes": 4221,
+      "sha256": "5ba6c25325e72abb55941932e9952b2376e9d9969ac83674d85679aeda01695a",
+      "stored_bytes": 4221,
+      "stored_sha256": "5ba6c25325e72abb55941932e9952b2376e9d9969ac83674d85679aeda01695a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/mapped_contact_vertices.patch",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/mapped_contact_vertices.patch",
+      "artifact": "blobs/31d2c21581b268b08680c7b4ec4bfd3b70b78523f210d4442f8234b60a398603.patch",
+      "encoding": "identity",
+      "bytes": 2510,
+      "sha256": "31d2c21581b268b08680c7b4ec4bfd3b70b78523f210d4442f8234b60a398603",
+      "stored_bytes": 2510,
+      "stored_sha256": "31d2c21581b268b08680c7b4ec4bfd3b70b78523f210d4442f8234b60a398603"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/neohookean_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/neohookean_reference.py",
+      "artifact": "blobs/8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8.py",
+      "encoding": "identity",
+      "bytes": 9763,
+      "sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8",
+      "stored_bytes": 9763,
+      "stored_sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/precise_panda_kinematics.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/precise_panda_kinematics.py",
+      "artifact": "blobs/b2c7ace034e1d644055c472bc6334787050f4a82ff3e4f9cef093f9127207355.py",
+      "encoding": "identity",
+      "bytes": 2729,
+      "sha256": "b2c7ace034e1d644055c472bc6334787050f4a82ff3e4f9cef093f9127207355",
+      "stored_bytes": 2729,
+      "stored_sha256": "b2c7ace034e1d644055c472bc6334787050f4a82ff3e4f9cef093f9127207355"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/qualify_local_franka_mesh.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/qualify_local_franka_mesh.py",
+      "artifact": "blobs/3bed566a81bcc49095e74cf506fb4bbf2f043d345bbfe72d82bfe75e23b33a6d.py",
+      "encoding": "identity",
+      "bytes": 4844,
+      "sha256": "3bed566a81bcc49095e74cf506fb4bbf2f043d345bbfe72d82bfe75e23b33a6d",
+      "stored_bytes": 4844,
+      "stored_sha256": "3bed566a81bcc49095e74cf506fb4bbf2f043d345bbfe72d82bfe75e23b33a6d"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/refine_franka_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/refine_franka_reference.py",
+      "artifact": "blobs/3cd69ca01c8b938254ef421a53a7a3c0b7293acefa6b4739ca1e9d5911933ac8.py",
+      "encoding": "identity",
+      "bytes": 2014,
+      "sha256": "3cd69ca01c8b938254ef421a53a7a3c0b7293acefa6b4739ca1e9d5911933ac8",
+      "stored_bytes": 2014,
+      "stored_sha256": "3cd69ca01c8b938254ef421a53a7a3c0b7293acefa6b4739ca1e9d5911933ac8"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/refined_franka_contact.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/refined_franka_contact.py",
+      "artifact": "blobs/c30bd704235c00540a9608f0499e000a9ebb86889e4d88889dec6cc27b64ec89.py",
+      "encoding": "identity",
+      "bytes": 4495,
+      "sha256": "c30bd704235c00540a9608f0499e000a9ebb86889e4d88889dec6cc27b64ec89",
+      "stored_bytes": 4495,
+      "stored_sha256": "c30bd704235c00540a9608f0499e000a9ebb86889e4d88889dec6cc27b64ec89"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/scripts/audit_precise_spatial_state.sh",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/scripts/audit_precise_spatial_state.sh",
+      "artifact": "blobs/001522fe21502c94e1995fe4e6451ba8dd0e20ae68a3c88d48f3cac79e7082df.sh",
+      "encoding": "identity",
+      "bytes": 3193,
+      "sha256": "001522fe21502c94e1995fe4e6451ba8dd0e20ae68a3c88d48f3cac79e7082df",
+      "stored_bytes": 3193,
+      "stored_sha256": "001522fe21502c94e1995fe4e6451ba8dd0e20ae68a3c88d48f3cac79e7082df"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/scripts/cluster_env.sh",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/scripts/cluster_env.sh",
+      "artifact": "blobs/bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40.sh",
+      "encoding": "identity",
+      "bytes": 701,
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40",
+      "stored_bytes": 701,
+      "stored_sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/skfem_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/skfem_reference.py",
+      "artifact": "blobs/e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918.py",
+      "encoding": "identity",
+      "bytes": 7865,
+      "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918",
+      "stored_bytes": 7865,
+      "stored_sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/sparse_franka_driver.patch",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/sparse_franka_driver.patch",
+      "artifact": "blobs/b55dcb8ac5727bf8d2ebceefa474b4e20714af31b36cf9a5af95324d1465db99.patch",
+      "encoding": "identity",
+      "bytes": 345,
+      "sha256": "b55dcb8ac5727bf8d2ebceefa474b4e20714af31b36cf9a5af95324d1465db99",
+      "stored_bytes": 345,
+      "stored_sha256": "b55dcb8ac5727bf8d2ebceefa474b4e20714af31b36cf9a5af95324d1465db99"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/sparse_franka_inertia.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/sparse_franka_inertia.py",
+      "artifact": "blobs/1404765c9b31b3608143ed67c6d952a790a85d7f84662372760c1acc1f56596e.py",
+      "encoding": "identity",
+      "bytes": 1512,
+      "sha256": "1404765c9b31b3608143ed67c6d952a790a85d7f84662372760c1acc1f56596e",
+      "stored_bytes": 1512,
+      "stored_sha256": "1404765c9b31b3608143ed67c6d952a790a85d7f84662372760c1acc1f56596e"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/stable_neohookean_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/stable_neohookean_reference.py",
+      "artifact": "blobs/1243ca7a4289e9cdab02cf7d21ef2cbbbe5656df04793a257e1ecc47ca68c083.py",
+      "encoding": "identity",
+      "bytes": 1620,
+      "sha256": "1243ca7a4289e9cdab02cf7d21ef2cbbbe5656df04793a257e1ecc47ca68c083",
+      "stored_bytes": 1620,
+      "stored_sha256": "1243ca7a4289e9cdab02cf7d21ef2cbbbe5656df04793a257e1ecc47ca68c083"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/summarize_fine_references.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/summarize_fine_references.py",
+      "artifact": "blobs/47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3.py",
+      "encoding": "identity",
+      "bytes": 8766,
+      "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3",
+      "stored_bytes": 8766,
+      "stored_sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/wide_coordinate_franka.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/wide_coordinate_franka.py",
+      "artifact": "blobs/265e3dab11838061c2f6782ee03f9cb7014a81580d4844209df9afe56acffab6.py",
+      "encoding": "identity",
+      "bytes": 7320,
+      "sha256": "265e3dab11838061c2f6782ee03f9cb7014a81580d4844209df9afe56acffab6",
+      "stored_bytes": 7320,
+      "stored_sha256": "265e3dab11838061c2f6782ee03f9cb7014a81580d4844209df9afe56acffab6"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/wide_spatial_franka.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source/research/rigid_stress/wide_spatial_franka.py",
+      "artifact": "blobs/9772f1d56e4348b1b55a72bbbca16e6f191bc2157a8b4621111d5d32526f56f0.py",
+      "encoding": "identity",
+      "bytes": 7113,
+      "sha256": "9772f1d56e4348b1b55a72bbbca16e6f191bc2157a8b4621111d5d32526f56f0",
+      "stored_bytes": 7113,
+      "stored_sha256": "9772f1d56e4348b1b55a72bbbca16e6f191bc2157a8b4621111d5d32526f56f0"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source-after.sha256",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source-after.sha256",
+      "artifact": "blobs/a4b1750640d35e7b4e56ac05dee94e1936e610d25c42da8c49b6a4f3cbc4a897.sha256",
+      "encoding": "identity",
+      "bytes": 3231,
+      "sha256": "a4b1750640d35e7b4e56ac05dee94e1936e610d25c42da8c49b6a4f3cbc4a897",
+      "stored_bytes": 3231,
+      "stored_sha256": "a4b1750640d35e7b4e56ac05dee94e1936e610d25c42da8c49b6a4f3cbc4a897"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source.sha256",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/input-source.sha256",
+      "artifact": "blobs/a4b1750640d35e7b4e56ac05dee94e1936e610d25c42da8c49b6a4f3cbc4a897.sha256",
+      "encoding": "identity",
+      "bytes": 3231,
+      "sha256": "a4b1750640d35e7b4e56ac05dee94e1936e610d25c42da8c49b6a4f3cbc4a897",
+      "stored_bytes": 3231,
+      "stored_sha256": "a4b1750640d35e7b4e56ac05dee94e1936e610d25c42da8c49b6a4f3cbc4a897"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/linear_solver_stats.json",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/linear_solver_stats.json",
+      "artifact": "blobs/1ffd11b6fdc70e019d69eaf854d5389a3f08eb3aacbc46154dbe9cf57a1a3187.json",
+      "encoding": "identity",
+      "bytes": 26,
+      "sha256": "1ffd11b6fdc70e019d69eaf854d5389a3f08eb3aacbc46154dbe9cf57a1a3187",
+      "stored_bytes": 26,
+      "stored_sha256": "1ffd11b6fdc70e019d69eaf854d5389a3f08eb3aacbc46154dbe9cf57a1a3187"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/node.txt",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/node.txt",
+      "artifact": "blobs/9b99de79354cb6170acc8f4805fceaa775b878342251f55b24c631d7f42e6820.txt",
+      "encoding": "identity",
+      "bytes": 12,
+      "sha256": "9b99de79354cb6170acc8f4805fceaa775b878342251f55b24c631d7f42e6820",
+      "stored_bytes": 12,
+      "stored_sha256": "9b99de79354cb6170acc8f4805fceaa775b878342251f55b24c631d7f42e6820"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/patch.log",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/patch.log",
+      "artifact": "blobs/02777b56fc6f0ddcdba24f5f43e5df193469fe4e0ae9c83143280d37182fc821.log",
+      "encoding": "identity",
+      "bytes": 235,
+      "sha256": "02777b56fc6f0ddcdba24f5f43e5df193469fe4e0ae9c83143280d37182fc821",
+      "stored_bytes": 235,
+      "stored_sha256": "02777b56fc6f0ddcdba24f5f43e5df193469fe4e0ae9c83143280d37182fc821"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/reference.log",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/reference.log",
+      "artifact": "blobs/1dbcd2c15b2ad9a14eab72b21405c8f210d1032a951305598faaee4734a35b22.log",
+      "encoding": "identity",
+      "bytes": 1280,
+      "sha256": "1dbcd2c15b2ad9a14eab72b21405c8f210d1032a951305598faaee4734a35b22",
+      "stored_bytes": 1280,
+      "stored_sha256": "1dbcd2c15b2ad9a14eab72b21405c8f210d1032a951305598faaee4734a35b22"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/results/audited_fields.npz",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/results/audited_fields.npz",
+      "artifact": "blobs/19fa6cfb31462932dcce90782617c94617e2bf0ff8b91f2a419cb813d7a544be.npz",
+      "encoding": "identity",
+      "bytes": 964098,
+      "sha256": "19fa6cfb31462932dcce90782617c94617e2bf0ff8b91f2a419cb813d7a544be",
+      "stored_bytes": 964098,
+      "stored_sha256": "19fa6cfb31462932dcce90782617c94617e2bf0ff8b91f2a419cb813d7a544be"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/results/summary.json",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/results/summary.json",
+      "artifact": "blobs/c56c6b579b2ad85093f7db565efc51f293e8b2160706d13f7719a2caa96c6712.json",
+      "encoding": "identity",
+      "bytes": 1312,
+      "sha256": "c56c6b579b2ad85093f7db565efc51f293e8b2160706d13f7719a2caa96c6712",
+      "stored_bytes": 1312,
+      "stored_sha256": "c56c6b579b2ad85093f7db565efc51f293e8b2160706d13f7719a2caa96c6712"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/returncode.txt",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/returncode.txt",
+      "artifact": "blobs/9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa.txt",
+      "encoding": "identity",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "stored_bytes": 2,
+      "stored_sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/__init__.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/__init__.py",
+      "artifact": "blobs/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.py",
+      "encoding": "identity",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/__init__.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/__init__.py",
+      "artifact": "blobs/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.py",
+      "encoding": "identity",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/articulated_franka_contact.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/articulated_franka_contact.py",
+      "artifact": "blobs/e2bf97f33702aeaf661fa1c70f03dc8aa9020e49bdf4daffcff41408af039511.py",
+      "encoding": "identity",
+      "bytes": 13248,
+      "sha256": "e2bf97f33702aeaf661fa1c70f03dc8aa9020e49bdf4daffcff41408af039511",
+      "stored_bytes": 13248,
+      "stored_sha256": "e2bf97f33702aeaf661fa1c70f03dc8aa9020e49bdf4daffcff41408af039511"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/audit_franka_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/audit_franka_reference.py",
+      "artifact": "blobs/d73291d1ea1ad5d8e836c08e325cca71605b9a3c16a32c0c21f0f3f02083b5d8.py",
+      "encoding": "identity",
+      "bytes": 7552,
+      "sha256": "d73291d1ea1ad5d8e836c08e325cca71605b9a3c16a32c0c21f0f3f02083b5d8",
+      "stored_bytes": 7552,
+      "stored_sha256": "d73291d1ea1ad5d8e836c08e325cca71605b9a3c16a32c0c21f0f3f02083b5d8"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/audit_precise_spatial_state.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/audit_precise_spatial_state.py",
+      "artifact": "blobs/b70867cc549c8e14bcea09cf0f68748bf451fd543fb0b9374d312afc399960ce.py",
+      "encoding": "identity",
+      "bytes": 7845,
+      "sha256": "b70867cc549c8e14bcea09cf0f68748bf451fd543fb0b9374d312afc399960ce",
+      "stored_bytes": 7845,
+      "stored_sha256": "b70867cc549c8e14bcea09cf0f68748bf451fd543fb0b9374d312afc399960ce"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/cached_reference_newton.patch",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/cached_reference_newton.patch",
+      "artifact": "blobs/7075b40e7a7d94e40788c8a7d3be305b5379354da0f221b3ce9ff2332ffc9c0c.patch",
+      "encoding": "identity",
+      "bytes": 869,
+      "sha256": "7075b40e7a7d94e40788c8a7d3be305b5379354da0f221b3ce9ff2332ffc9c0c",
+      "stored_bytes": 869,
+      "stored_sha256": "7075b40e7a7d94e40788c8a7d3be305b5379354da0f221b3ce9ff2332ffc9c0c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/cached_reference_newton.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/cached_reference_newton.py",
+      "artifact": "blobs/c04428e0f44ec8dfd560793d0461bc46b7814493aa2a2a356492b279b71e0288.py",
+      "encoding": "identity",
+      "bytes": 2251,
+      "sha256": "c04428e0f44ec8dfd560793d0461bc46b7814493aa2a2a356492b279b71e0288",
+      "stored_bytes": 2251,
+      "stored_sha256": "c04428e0f44ec8dfd560793d0461bc46b7814493aa2a2a356492b279b71e0288"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/contact_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/contact_reference.py",
+      "artifact": "blobs/8e4ad8fb0619c7471e8b7100b3bcd7ab61f6363e55d205f25e6cfb03c59afa8c.py",
+      "encoding": "identity",
+      "bytes": 30688,
+      "sha256": "8e4ad8fb0619c7471e8b7100b3bcd7ab61f6363e55d205f25e6cfb03c59afa8c",
+      "stored_bytes": 30688,
+      "stored_sha256": "8e4ad8fb0619c7471e8b7100b3bcd7ab61f6363e55d205f25e6cfb03c59afa8c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/contact_reference.py.orig",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/contact_reference.py.orig",
+      "artifact": "blobs/4cbc127f7c474217075338981abe39171e23078bba9bd99b44011657a4ff91f8.orig",
+      "encoding": "identity",
+      "bytes": 30587,
+      "sha256": "4cbc127f7c474217075338981abe39171e23078bba9bd99b44011657a4ff91f8",
+      "stored_bytes": 30587,
+      "stored_sha256": "4cbc127f7c474217075338981abe39171e23078bba9bd99b44011657a4ff91f8"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/dynamic_franka_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/dynamic_franka_reference.py",
+      "artifact": "blobs/8a752f4d3698cb2217b993efd93dee076f51d2ab87664c4586546f6b8af13898.py",
+      "encoding": "identity",
+      "bytes": 10804,
+      "sha256": "8a752f4d3698cb2217b993efd93dee076f51d2ab87664c4586546f6b8af13898",
+      "stored_bytes": 10804,
+      "stored_sha256": "8a752f4d3698cb2217b993efd93dee076f51d2ab87664c4586546f6b8af13898"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/franka_contact_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/franka_contact_reference.py",
+      "artifact": "blobs/8fdff22b417fed68dbdb553123547580ab346a38ef552ea8f495f3d073b829fc.py",
+      "encoding": "identity",
+      "bytes": 15825,
+      "sha256": "8fdff22b417fed68dbdb553123547580ab346a38ef552ea8f495f3d073b829fc",
+      "stored_bytes": 15825,
+      "stored_sha256": "8fdff22b417fed68dbdb553123547580ab346a38ef552ea8f495f3d073b829fc"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/franka_mujoco_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/franka_mujoco_reference.py",
+      "artifact": "blobs/954105661e1268bc01ed9d80919f5a8b385edde0638023d9ac8810e7e42d48ac.py",
+      "encoding": "identity",
+      "bytes": 3220,
+      "sha256": "954105661e1268bc01ed9d80919f5a8b385edde0638023d9ac8810e7e42d48ac",
+      "stored_bytes": 3220,
+      "stored_sha256": "954105661e1268bc01ed9d80919f5a8b385edde0638023d9ac8810e7e42d48ac"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/franka_rigid_mode_coordinates.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/franka_rigid_mode_coordinates.py",
+      "artifact": "blobs/e32c9a4ffd46b7be229260004763e5b01b70fe804ea55541f07c0836cc8bf984.py",
+      "encoding": "identity",
+      "bytes": 1825,
+      "sha256": "e32c9a4ffd46b7be229260004763e5b01b70fe804ea55541f07c0836cc8bf984",
+      "stored_bytes": 1825,
+      "stored_sha256": "e32c9a4ffd46b7be229260004763e5b01b70fe804ea55541f07c0836cc8bf984"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/frozen_franka_contact.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/frozen_franka_contact.py",
+      "artifact": "blobs/30513ce7c6b04a4a4c93e5b0217774a7349e396dae8f58b17085b8942f88364a.py",
+      "encoding": "identity",
+      "bytes": 1256,
+      "sha256": "30513ce7c6b04a4a4c93e5b0217774a7349e396dae8f58b17085b8942f88364a",
+      "stored_bytes": 1256,
+      "stored_sha256": "30513ce7c6b04a4a4c93e5b0217774a7349e396dae8f58b17085b8942f88364a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/localized_franka_driver.patch",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/localized_franka_driver.patch",
+      "artifact": "blobs/d57497175c3e219dcd0f211ca366fc1025f851ffc6576ffc2ea73102ce6d40a3.patch",
+      "encoding": "identity",
+      "bytes": 2430,
+      "sha256": "d57497175c3e219dcd0f211ca366fc1025f851ffc6576ffc2ea73102ce6d40a3",
+      "stored_bytes": 2430,
+      "stored_sha256": "d57497175c3e219dcd0f211ca366fc1025f851ffc6576ffc2ea73102ce6d40a3"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/localized_franka_mesh.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/localized_franka_mesh.py",
+      "artifact": "blobs/5ba6c25325e72abb55941932e9952b2376e9d9969ac83674d85679aeda01695a.py",
+      "encoding": "identity",
+      "bytes": 4221,
+      "sha256": "5ba6c25325e72abb55941932e9952b2376e9d9969ac83674d85679aeda01695a",
+      "stored_bytes": 4221,
+      "stored_sha256": "5ba6c25325e72abb55941932e9952b2376e9d9969ac83674d85679aeda01695a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/mapped_contact_vertices.patch",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/mapped_contact_vertices.patch",
+      "artifact": "blobs/31d2c21581b268b08680c7b4ec4bfd3b70b78523f210d4442f8234b60a398603.patch",
+      "encoding": "identity",
+      "bytes": 2510,
+      "sha256": "31d2c21581b268b08680c7b4ec4bfd3b70b78523f210d4442f8234b60a398603",
+      "stored_bytes": 2510,
+      "stored_sha256": "31d2c21581b268b08680c7b4ec4bfd3b70b78523f210d4442f8234b60a398603"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/neohookean_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/neohookean_reference.py",
+      "artifact": "blobs/8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8.py",
+      "encoding": "identity",
+      "bytes": 9763,
+      "sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8",
+      "stored_bytes": 9763,
+      "stored_sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/precise_panda_kinematics.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/precise_panda_kinematics.py",
+      "artifact": "blobs/b2c7ace034e1d644055c472bc6334787050f4a82ff3e4f9cef093f9127207355.py",
+      "encoding": "identity",
+      "bytes": 2729,
+      "sha256": "b2c7ace034e1d644055c472bc6334787050f4a82ff3e4f9cef093f9127207355",
+      "stored_bytes": 2729,
+      "stored_sha256": "b2c7ace034e1d644055c472bc6334787050f4a82ff3e4f9cef093f9127207355"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/qualify_local_franka_mesh.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/qualify_local_franka_mesh.py",
+      "artifact": "blobs/3bed566a81bcc49095e74cf506fb4bbf2f043d345bbfe72d82bfe75e23b33a6d.py",
+      "encoding": "identity",
+      "bytes": 4844,
+      "sha256": "3bed566a81bcc49095e74cf506fb4bbf2f043d345bbfe72d82bfe75e23b33a6d",
+      "stored_bytes": 4844,
+      "stored_sha256": "3bed566a81bcc49095e74cf506fb4bbf2f043d345bbfe72d82bfe75e23b33a6d"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/refine_franka_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/refine_franka_reference.py",
+      "artifact": "blobs/3cd69ca01c8b938254ef421a53a7a3c0b7293acefa6b4739ca1e9d5911933ac8.py",
+      "encoding": "identity",
+      "bytes": 2014,
+      "sha256": "3cd69ca01c8b938254ef421a53a7a3c0b7293acefa6b4739ca1e9d5911933ac8",
+      "stored_bytes": 2014,
+      "stored_sha256": "3cd69ca01c8b938254ef421a53a7a3c0b7293acefa6b4739ca1e9d5911933ac8"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/refined_franka_contact.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/refined_franka_contact.py",
+      "artifact": "blobs/c30bd704235c00540a9608f0499e000a9ebb86889e4d88889dec6cc27b64ec89.py",
+      "encoding": "identity",
+      "bytes": 4495,
+      "sha256": "c30bd704235c00540a9608f0499e000a9ebb86889e4d88889dec6cc27b64ec89",
+      "stored_bytes": 4495,
+      "stored_sha256": "c30bd704235c00540a9608f0499e000a9ebb86889e4d88889dec6cc27b64ec89"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/scripts/audit_precise_spatial_state.sh",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/scripts/audit_precise_spatial_state.sh",
+      "artifact": "blobs/001522fe21502c94e1995fe4e6451ba8dd0e20ae68a3c88d48f3cac79e7082df.sh",
+      "encoding": "identity",
+      "bytes": 3193,
+      "sha256": "001522fe21502c94e1995fe4e6451ba8dd0e20ae68a3c88d48f3cac79e7082df",
+      "stored_bytes": 3193,
+      "stored_sha256": "001522fe21502c94e1995fe4e6451ba8dd0e20ae68a3c88d48f3cac79e7082df"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/scripts/cluster_env.sh",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/scripts/cluster_env.sh",
+      "artifact": "blobs/bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40.sh",
+      "encoding": "identity",
+      "bytes": 701,
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40",
+      "stored_bytes": 701,
+      "stored_sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/skfem_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/skfem_reference.py",
+      "artifact": "blobs/e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918.py",
+      "encoding": "identity",
+      "bytes": 7865,
+      "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918",
+      "stored_bytes": 7865,
+      "stored_sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/sparse_franka_driver.patch",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/sparse_franka_driver.patch",
+      "artifact": "blobs/b55dcb8ac5727bf8d2ebceefa474b4e20714af31b36cf9a5af95324d1465db99.patch",
+      "encoding": "identity",
+      "bytes": 345,
+      "sha256": "b55dcb8ac5727bf8d2ebceefa474b4e20714af31b36cf9a5af95324d1465db99",
+      "stored_bytes": 345,
+      "stored_sha256": "b55dcb8ac5727bf8d2ebceefa474b4e20714af31b36cf9a5af95324d1465db99"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/sparse_franka_inertia.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/sparse_franka_inertia.py",
+      "artifact": "blobs/1404765c9b31b3608143ed67c6d952a790a85d7f84662372760c1acc1f56596e.py",
+      "encoding": "identity",
+      "bytes": 1512,
+      "sha256": "1404765c9b31b3608143ed67c6d952a790a85d7f84662372760c1acc1f56596e",
+      "stored_bytes": 1512,
+      "stored_sha256": "1404765c9b31b3608143ed67c6d952a790a85d7f84662372760c1acc1f56596e"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/stable_neohookean_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/stable_neohookean_reference.py",
+      "artifact": "blobs/1243ca7a4289e9cdab02cf7d21ef2cbbbe5656df04793a257e1ecc47ca68c083.py",
+      "encoding": "identity",
+      "bytes": 1620,
+      "sha256": "1243ca7a4289e9cdab02cf7d21ef2cbbbe5656df04793a257e1ecc47ca68c083",
+      "stored_bytes": 1620,
+      "stored_sha256": "1243ca7a4289e9cdab02cf7d21ef2cbbbe5656df04793a257e1ecc47ca68c083"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/summarize_fine_references.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/summarize_fine_references.py",
+      "artifact": "blobs/47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3.py",
+      "encoding": "identity",
+      "bytes": 8766,
+      "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3",
+      "stored_bytes": 8766,
+      "stored_sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/wide_coordinate_franka.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/wide_coordinate_franka.py",
+      "artifact": "blobs/265e3dab11838061c2f6782ee03f9cb7014a81580d4844209df9afe56acffab6.py",
+      "encoding": "identity",
+      "bytes": 7320,
+      "sha256": "265e3dab11838061c2f6782ee03f9cb7014a81580d4844209df9afe56acffab6",
+      "stored_bytes": 7320,
+      "stored_sha256": "265e3dab11838061c2f6782ee03f9cb7014a81580d4844209df9afe56acffab6"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/wide_spatial_franka.py",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source/research/rigid_stress/wide_spatial_franka.py",
+      "artifact": "blobs/9772f1d56e4348b1b55a72bbbca16e6f191bc2157a8b4621111d5d32526f56f0.py",
+      "encoding": "identity",
+      "bytes": 7113,
+      "sha256": "9772f1d56e4348b1b55a72bbbca16e6f191bc2157a8b4621111d5d32526f56f0",
+      "stored_bytes": 7113,
+      "stored_sha256": "9772f1d56e4348b1b55a72bbbca16e6f191bc2157a8b4621111d5d32526f56f0"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source-after.sha256",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source-after.sha256",
+      "artifact": "blobs/4435117fbb134f7974eac3adf5f1d59ce9b501b9c38e844058de06233c0610a1.sha256",
+      "encoding": "identity",
+      "bytes": 3418,
+      "sha256": "4435117fbb134f7974eac3adf5f1d59ce9b501b9c38e844058de06233c0610a1",
+      "stored_bytes": 3418,
+      "stored_sha256": "4435117fbb134f7974eac3adf5f1d59ce9b501b9c38e844058de06233c0610a1"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source.sha256",
+      "run_path": "20261014-physical-validation/publication-staging/stencil-patch-checkpoint-v1/20261014-physical-validation/franka-precise-stencil-state-audit-v2/source.sha256",
+      "artifact": "blobs/4435117fbb134f7974eac3adf5f1d59ce9b501b9c38e844058de06233c0610a1.sha256",
+      "encoding": "identity",
+      "bytes": 3418,
+      "sha256": "4435117fbb134f7974eac3adf5f1d59ce9b501b9c38e844058de06233c0610a1",
+      "stored_bytes": 3418,
+      "stored_sha256": "4435117fbb134f7974eac3adf5f1d59ce9b501b9c38e844058de06233c0610a1"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/stencil-patch-publication-v1/jobs.txt",
+      "run_path": "20261014-physical-validation/stencil-patch-publication-v1/jobs.txt",
+      "artifact": "blobs/a2f770111a6ba3ba3015e82a16990145d160da1613eefc2e60d39596afa2bf95.txt",
+      "encoding": "identity",
+      "bytes": 32,
+      "sha256": "a2f770111a6ba3ba3015e82a16990145d160da1613eefc2e60d39596afa2bf95",
+      "stored_bytes": 32,
+      "stored_sha256": "a2f770111a6ba3ba3015e82a16990145d160da1613eefc2e60d39596afa2bf95"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/stencil-patch-publication-v1/summary.json",
+      "run_path": "20261014-physical-validation/stencil-patch-publication-v1/summary.json",
+      "artifact": "blobs/c6cc6f6c308c433e087c8adfaed5523a042a5394db2bca8daebc4a979541a2d4.json",
+      "encoding": "identity",
+      "bytes": 1475,
+      "sha256": "c6cc6f6c308c433e087c8adfaed5523a042a5394db2bca8daebc4a979541a2d4",
+      "stored_bytes": 1475,
+      "stored_sha256": "c6cc6f6c308c433e087c8adfaed5523a042a5394db2bca8daebc4a979541a2d4"
+    }
+  ]
+}
