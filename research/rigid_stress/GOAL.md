@@ -31,6 +31,19 @@ egg/Franka and U contact references, resolved-load/native replay versus feedback
 remaining applicable load-model sensitivity and physically verified warmed costs.
 These are execution priorities within the complete linked objective.
 
+The [U contact/original-rigid recovery checkpoint](docs/PHYSICAL_U_CONTACT_RIGID_RECOVERY_20261015.md)
+closes all three coupled U final fields, retaining12.21% last tensor and5.34%
+raw peak changes. Six independently rebuilt final normal contact traces show
+that fixed-body pad7-to9 field stability does not establish pressure convergence:
+left maximum discrete normal density increases25.48%, with left/right active
+lumped areas changing-12.80%/-8.31%. Missing old friction histories remain
+explicit, and source shoes are not claimed as continuum islands. A failed full
+rigid continuation's2128 states independently pass original gates. One inexact
+frozen numerical seed then permits26 outer stages to recover the unchanged
+physical2129 equation; all2129 independently pass and every2128 prefix file is
+byte-identical. Full continuation/audit/feedback/native replay remain in progress,
+with every original physical/model/regularization/warmed-cost gate retained.
+
 The [covered-contact/reference-method checkpoint](docs/PHYSICAL_CONTACT_RESOLUTION_METHODS_20261015.md)
 closes the second64716-tet CAD case with all five independent force/coverage
 audits and158340 common-point full fields against31668 tetrahedra. Tensor9.68%
