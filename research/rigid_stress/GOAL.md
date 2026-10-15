@@ -44,6 +44,14 @@ A23-point shared set supplies rank6 anchors for a separate controlled test.
 Fixed-history barrier and initialization controls remain live; startup failures
 are retained. All original physical/model/feedback/warmed-cost requirements stay.
 
+The shared-initialization follow-up now schedules the same physical anchors,
+pad5 and744 original stages on845/2339/5669 body meshes. Independent coarse
+all-stage qualification must pass before the two finer producers; independent
+fine all-stage audits precede a strict75-probe/material-frame comparison.
+This removes the initialization-coordinate/count confound while explicitly
+retaining coupled body geometry/mass and volume/contact-trace approximation.
+Pending jobs do not establish any convergence or completion evidence.
+
 The [complete original feedback checkpoint](docs/PHYSICAL_COMPLETE_FEEDBACK_20261015.md)
 closes the original rigid counterpart's330 controls/2640 states/3.3s, independent
 all-state original physical gates, complete matched source-wrench history,
