@@ -5,6 +5,7 @@ import hashlib
 import json
 import subprocess
 import sys
+from itertools import pairwise
 from pathlib import Path
 
 from research.rigid_stress.scripts.publish_nonconvex_checkpoint import publish_bounded
@@ -15,11 +16,15 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--runtime-root", type=Path, required=True)
     parser.add_argument("--destination-root", type=Path, required=True)
-    parser.add_argument("--kind", choices=["barrier", "thickness"], required=True)
+    parser.add_argument("--kind", choices=["barrier", "barrier-four", "thickness"], required=True)
     parser.add_argument("--version", default="v1")
     args = parser.parse_args()
     p = args.runtime_root / "20261014-physical-validation"
-    label = "fixed-history-barrier" if args.kind == "barrier" else "five-level-thickness"
+    label = {
+        "barrier": "fixed-history-barrier",
+        "barrier-four": "fixed-history-barrier-four",
+        "thickness": "five-level-thickness",
+    }[args.kind]
     meta = p / f"{label}-publication-{args.version}"
     meta.mkdir(parents=True, exist_ok=False)
     jobs = {
@@ -29,6 +34,11 @@ def main():
             "u-fixed-history-barrier-625nm-v2": "718720_0",
             "u-fixed-history-barrier-625nm-audit-v2": "718721_0",
             "u-fixed-history-barrier-all-stage-comparison-v1": "718883_0",
+        },
+        "barrier-four": {
+            "u-fixed-history-barrier-312nm-v1": "718912_0",
+            "u-fixed-history-barrier-312nm-audit-v1": "718913_0",
+            "u-fixed-history-barrier-four-level-comparison-v1": "718914_0",
         },
         "thickness": {
             "egg-fixed-surface-layers5-v1": "716835_0",
@@ -42,6 +52,11 @@ def main():
             "recorded-contact-history-v1",
             "7f9accb7d15815fd1e73614c43e456071668a19cf0fe7d23494a0f66d9674e87",
             "recorded-contact-history-publication-v1",
+        ),
+        "barrier-four": (
+            "fixed-history-barrier-v1",
+            "9a2d395f263d86385c955e9e6c1be99762b1d0cbec2a02c9fae31b0b6b9634d6",
+            "fixed-history-barrier-publication-v1",
         ),
         "thickness": (
             "egg-thickness-fields-v1",
@@ -98,13 +113,29 @@ def main():
                 extras.add(path)
         return value
 
-    if args.kind == "barrier":
-        audits = [
-            read(name) for name in ["u-fixed-history-barrier-1250nm-audit-v2", "u-fixed-history-barrier-625nm-audit-v2"]
-        ]
-        comparison = read("u-fixed-history-barrier-all-stage-comparison-v1")
-        assert comparison["stages_compared_per_level"] == len(comparison["rows"]) == 744 and comparison["levels"] == 3
-        assert all(len(row["pairs"]) == len(row["levels"]) == 3 for row in comparison["rows"])
+    if args.kind in ["barrier", "barrier-four"]:
+        four_levels = args.kind == "barrier-four"
+        audit_names = (
+            ["u-fixed-history-barrier-312nm-audit-v1"]
+            if four_levels
+            else ["u-fixed-history-barrier-1250nm-audit-v2", "u-fixed-history-barrier-625nm-audit-v2"]
+        )
+        audits = [read(name) for name in audit_names]
+        comparison = read(
+            "u-fixed-history-barrier-four-level-comparison-v1"
+            if four_levels
+            else "u-fixed-history-barrier-all-stage-comparison-v1"
+        )
+        levels = 4 if four_levels else 3
+        assert comparison["stages_compared_per_level"] == len(comparison["rows"]) == 744
+        assert comparison["levels"] == levels
+        for row in comparison["rows"]:
+            assert len(row["levels"]) == levels
+            distances = [level["barrier_distance_m"] for level in row["levels"]]
+            expected_pairs = set(pairwise(distances))
+            expected_pairs.update((distances[0], distance) for distance in distances[2:])
+            actual_pairs = {(pair["from_barrier_m"], pair["to_barrier_m"]) for pair in row["pairs"]}
+            assert actual_pairs == expected_pairs and len(row["pairs"]) == len(expected_pairs)
         for audit in audits:
             assert audit["stages_checked"] == len(audit["rows"]) == 744
             assert audit["all_retained_stages_independent_current_friction_and_original_force_gate"]
@@ -117,16 +148,30 @@ def main():
             assert not audit["same_solution_equivalence_qualified"]
         details = {
             "independent_new_all_stage_audits": audits,
-            "all744_three_level_material_frame_comparison": comparison,
+            (
+                "all744_four_level_material_frame_comparison"
+                if four_levels
+                else "all744_three_level_material_frame_comparison"
+            ): comparison,
         }
         extras.update(
             p / "meta" / name
-            for name in [
-                "u-fixed-history-barrier-commands-v2.json",
-                "u-fixed-barrier-all-stage-comparison-commands-v1.json",
-            ]
+            for name in (
+                [
+                    "u-fixed-history-barrier-fourth-distance-commands-v1.json",
+                    "fixed-history-barrier-four-publication-v1.log",
+                    "publish_barrier_thickness_before_four_pair_scope_fix.py",
+                    "barrier-four-publication-pair-scope-correction-v1.json",
+                ]
+                if four_levels
+                else [
+                    "u-fixed-history-barrier-commands-v2.json",
+                    "u-fixed-barrier-all-stage-comparison-commands-v1.json",
+                ]
+            )
         )
-        limitations = "All744 corresponding stages at2.5/1.25/0.625um barriers retain independent current normal/friction forces, original1e-9N balances, complete corner/quadrature fields and raw unsmoothed global bounds. Original stage counts, geometry/mass/material, actuation/gravity/friction and tangential mollifier remain fixed. All-stage material-frame tensor, energy, displacement and source-wrench comparisons retain absolute errors near zero. The immutable baseline parent archive is fully reverified and referenced, not duplicated; every referenced actual parent input is rehashed. This coarse regularization family is not spatial/contact-pressure/history convergence, a continuum hard-contact limit, full Franka/model/feedback acceptance or verified warmed cost. Startup failures remain in their preceding evidence packet."
+        distances = "2.5/1.25/0.625/0.3125um" if four_levels else "2.5/1.25/0.625um"
+        limitations = f"All744 corresponding stages at{distances} barriers retain independent current normal/friction forces, original1e-9N balances, complete corner/quadrature fields and raw unsmoothed global bounds. Original stage counts, geometry/mass/material, actuation/gravity/friction and tangential mollifier remain fixed. All-stage material-frame tensor, energy, displacement and source-wrench comparisons retain absolute errors near zero. The immutable preceding parent archive is fully reverified and referenced, not duplicated; every referenced actual parent input is rehashed. This coarse regularization family is not spatial/contact-pressure/history convergence, a continuum hard-contact limit, full Franka/model/feedback acceptance or verified warmed cost. Startup failures remain in their preceding evidence packet."
     else:
         comparison = read("egg-fixed-surface-five-level-audit-v1")
         audit = read("egg-five-level-thickness-fem-reassembly-v1")

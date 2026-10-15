@@ -1,0 +1,29 @@
+--- a/research/rigid_stress/cached_reference_newton.py
++++ b/research/rigid_stress/cached_reference_newton.py
+@@ -9,7 +9,7 @@
+ import numpy as np
+ from scipy.sparse.linalg import LinearOperator, gmres
+ 
+-from .metis_reference_factor import factorize
++from .bordered_metis_reference_factor import factorize
+ 
+ RECORDS = []
+ 
+@@ -36,7 +36,7 @@
+     }
+     budget = max(1e-12, 1e-11 * float(np.linalg.norm(rhs)))
+     if cached is None or cached[0] != tag:
+-        factor = factorize(matrix.tocsc())
++        factor = factorize(matrix.tocsc(), phase)
+         system._reference_newton_factor = (tag, factor)
+         result = factor.solve(rhs)
+         record["fresh_factorization"] = True
+@@ -58,7 +58,7 @@
+         residual = float(np.linalg.norm(matrix @ result - rhs))
+         record.update(gmres_iterations=len(history), gmres_info=int(info), gmres_true_residual=residual)
+         if info or not np.isfinite(residual) or residual > budget:
+-            factor = factorize(matrix.tocsc())
++            factor = factorize(matrix.tocsc(), phase)
+             system._reference_newton_factor = (tag, factor)
+             result = factor.solve(rhs)
+             record["fresh_factorization"] = True
