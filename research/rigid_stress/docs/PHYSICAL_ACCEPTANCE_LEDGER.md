@@ -5,7 +5,21 @@ without narrowing its scope. Historical native performance completion does not
 establish the new physical stage. Dated reports preserve their observations;
 running or pending jobs count as scheduled work only.
 
-Current original application: [1784 independently checked physical states](PHYSICAL_ORIGINAL_HISTORY_20261015.md)
+Current: [nonlinear-U fields, geometry and objective load models](PHYSICAL_NONLINEAR_U_SPATIAL_20261015.md)
+independently checks two nonlinear U final fields, retaining44.58% probe tensor
+change. Exact CAD/analytic measures expose8.57%/4.04% coarse volume/mass errors;
+the fixed-density coupled study does not isolate elastic discretization alone.
+Actual medium native replay has2.88e-5 nonlinear tensor discrepancy, while three
+applicable fixed3mm models have2.92–2.94% load-mapping differences and explicit
+local wrench shifts. Pressure retains unsupported original moments. Editable
+stress/wrench figures pass QA. Interrupted sources retain separate post-termination
+observations, not invented EXIT records; all1875 saved original states pass
+independent original-budget audits. A five-step continuation and independent
+1880-state audit qualify the short235-macro prefix resume with byte-identical
+copied states. The complete330-macro history and finer/fixed-body U retries
+remain unverified. Every original acceptance requirement remains in scope.
+
+The earlier original application checkpoint: [1784 independently checked physical states](PHYSICAL_ORIGINAL_HISTORY_20261015.md)
 retain the original approach/lift controls, ground support, dt and1e-9 physical
 force/actual-robot/fresh-step gates through2.23s. The rejected1784 direct candidate
 passes those original gates without a new Newton/continuation step. All1783

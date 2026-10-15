@@ -31,7 +31,23 @@ egg/Franka and U contact references, resolved-load/native replay versus feedback
 remaining applicable load-model sensitivity and physically verified warmed costs.
 These are execution priorities within the complete linked objective.
 
-The [original-history checkpoint](docs/PHYSICAL_ORIGINAL_HISTORY_20261015.md)
+The [nonlinear-U/geometry/model checkpoint](docs/PHYSICAL_NONLINEAR_U_SPATIAL_20261015.md)
+independently verifies the completed2339-tet nonlinear contact reference and two
+full objective spatial fields. Their probe tensor still changes44.58%; analytic/
+CAD checks identify8.57%/4.04% volume/mass approximation on the two meshes at
+unchanged density. Actual medium native replay differs2.88e-5 from nonlinear
+volume tensors, while applicable fixed3mm load models differ2.92–2.94% and the
+aggregate prior shifts local shoe forces about0.36%. These are separate conditional
+diagnostics, not physical convergence. Editable stress/wrench figures pass QA.
+Several references are interrupted without EXIT records; separate source
+observations and an independent1875-state original-history audit preserve their
+declared scope without fabricating completion. Five new original physical steps
+and an independent1880-state audit qualify the short audited-prefix continuation;
+all copied prefix files remain byte-identical. The full330-macro continuation and
+finer/fixed-body nonlinear U retries remain unverified. The full original
+physical/contact/model/feedback/accuracy-cost objective remains active.
+
+The earlier [original-history checkpoint](docs/PHYSICAL_ORIGINAL_HISTORY_20261015.md)
 independently checks1784 original physical states through2.23s at unchanged
 dt/controls and original1e-9 force/robot gates. The1784th saved direct candidate
 already passes those gates, despite missing the stricter internal Newton target;

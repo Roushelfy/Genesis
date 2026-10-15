@@ -15,7 +15,7 @@ task_sources=(research/rigid_stress/{replay_objective_contact,audit_objective_fr
 from pathlib import Path
 paths = sorted(Path("genesis/engine/solvers/rigid/stress").rglob("*.py"))
 assert len(paths) > 10
-print("\n".join(str(path) for path in paths))
+print("\n".join(str(path) for path in [*paths, Path("genesis/options/rigid_stress.py")]))
 PY
 while IFS= read -r task_source; do task_sources+=("$task_source"); done < "$task_run/additional-sources.txt"
 sha256sum "${task_sources[@]}" > "$task_run/source.sha256"

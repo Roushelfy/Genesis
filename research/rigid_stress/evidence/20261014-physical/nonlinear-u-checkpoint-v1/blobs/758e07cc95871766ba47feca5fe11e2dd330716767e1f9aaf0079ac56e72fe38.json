@@ -1,0 +1,137 @@
+{
+  "scope": "Separate post-termination source identity observation; not a producer EXIT trap or a completed physical run",
+  "source_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-fixed-body-pad5-v1",
+  "job": "716104_0",
+  "scheduler_state": "FAILED",
+  "scheduler_exit_code": "1:0",
+  "scheduler_end": "2026-10-15T11:04:01",
+  "observed_at_UTC": "2026-10-15T11:24:13.758779+00:00",
+  "natural_producer_closure": false,
+  "producer_returncode_file_present": false,
+  "source_snapshot_matches_initial_identity": true,
+  "input_snapshot_matches_initial_identity": true,
+  "canonical_inputs_still_match_initial_identity": true,
+  "identities": [
+    {
+      "identity": "source",
+      "file": "research/rigid_stress/cached_reference_newton.py",
+      "sha256": "c04428e0f44ec8dfd560793d0461bc46b7814493aa2a2a356492b279b71e0288"
+    },
+    {
+      "identity": "source",
+      "file": "research/rigid_stress/grasp_contact_reference.py",
+      "sha256": "6db2d4bb431fd654dfc2fb00f34f6434ffeea624396ca85a1ec74f5ca524b6ed"
+    },
+    {
+      "identity": "source",
+      "file": "research/rigid_stress/contact_reference.py",
+      "sha256": "0028eba28121abb0381300be89d2a4f2fed63be81992c4e18f8334b78198a624"
+    },
+    {
+      "identity": "source",
+      "file": "research/rigid_stress/neohookean_reference.py",
+      "sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8"
+    },
+    {
+      "identity": "source",
+      "file": "research/rigid_stress/skfem_reference.py",
+      "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+    },
+    {
+      "identity": "source",
+      "file": "research/rigid_stress/finite_traction_reference.py",
+      "sha256": "5cc339453f1adf95b73e3070def86d1bd85385e682d8491057448fea05368c58"
+    },
+    {
+      "identity": "source",
+      "file": "research/rigid_stress/neohookean_grasp_driver.patch",
+      "sha256": "f7a166bf06720af59269bb908a9b45cfca4a7d5a44ba8a93dfaed98af21c7056"
+    },
+    {
+      "identity": "source",
+      "file": "research/rigid_stress/cached_reference_newton.patch",
+      "sha256": "7075b40e7a7d94e40788c8a7d3be305b5379354da0f221b3ce9ff2332ffc9c0c"
+    },
+    {
+      "identity": "source",
+      "file": "research/rigid_stress/rigid_nonlinear_approach.patch",
+      "sha256": "a4b3858d8fa96022fa9c0979dd4f9e7857a85c343102ecf389da49e18cc47a74"
+    },
+    {
+      "identity": "source",
+      "file": "research/rigid_stress/scripts/run_rigid_initialized_nonlinear.sh",
+      "sha256": "c65732567486cd4e36f1bab06c0fb259fc46d0b04c8b0c74fd43f7e068d612a0"
+    },
+    {
+      "identity": "source",
+      "file": "research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "identity": "source",
+      "file": "research/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "identity": "source",
+      "file": "research/rigid_stress/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "identity": "input-source",
+      "file": "research/rigid_stress/cached_reference_newton.py",
+      "sha256": "c04428e0f44ec8dfd560793d0461bc46b7814493aa2a2a356492b279b71e0288"
+    },
+    {
+      "identity": "input-source",
+      "file": "research/rigid_stress/grasp_contact_reference.py",
+      "sha256": "3c7e0ca85d15ef431f3105aa16bd368477fb81276220380a89715f10f289ad09"
+    },
+    {
+      "identity": "input-source",
+      "file": "research/rigid_stress/contact_reference.py",
+      "sha256": "077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422"
+    },
+    {
+      "identity": "input-source",
+      "file": "research/rigid_stress/neohookean_reference.py",
+      "sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8"
+    },
+    {
+      "identity": "input-source",
+      "file": "research/rigid_stress/skfem_reference.py",
+      "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+    },
+    {
+      "identity": "input-source",
+      "file": "research/rigid_stress/finite_traction_reference.py",
+      "sha256": "5cc339453f1adf95b73e3070def86d1bd85385e682d8491057448fea05368c58"
+    },
+    {
+      "identity": "input-source",
+      "file": "research/rigid_stress/neohookean_grasp_driver.patch",
+      "sha256": "f7a166bf06720af59269bb908a9b45cfca4a7d5a44ba8a93dfaed98af21c7056"
+    },
+    {
+      "identity": "input-source",
+      "file": "research/rigid_stress/cached_reference_newton.patch",
+      "sha256": "7075b40e7a7d94e40788c8a7d3be305b5379354da0f221b3ce9ff2332ffc9c0c"
+    },
+    {
+      "identity": "input-source",
+      "file": "research/rigid_stress/rigid_nonlinear_approach.patch",
+      "sha256": "a4b3858d8fa96022fa9c0979dd4f9e7857a85c343102ecf389da49e18cc47a74"
+    },
+    {
+      "identity": "input-source",
+      "file": "research/rigid_stress/scripts/run_rigid_initialized_nonlinear.sh",
+      "sha256": "c65732567486cd4e36f1bab06c0fb259fc46d0b04c8b0c74fd43f7e068d612a0"
+    },
+    {
+      "identity": "input-source",
+      "file": "research/rigid_stress/scripts/cluster_env.sh",
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    }
+  ],
+  "goal_completion": false
+}

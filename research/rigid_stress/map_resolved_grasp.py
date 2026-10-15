@@ -30,6 +30,9 @@ def main():
     parser.add_argument("--mesh", type=Path, required=True)
     parser.add_argument("--radius", type=float, default=0.003)
     parser.add_argument("--ports", type=int, default=2)
+    parser.add_argument(
+        "--objective", action="store_true", help="Use an independently audited finite-frame nonlinear contact replay"
+    )
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     closed_source(args.replay)
@@ -48,15 +51,42 @@ def main():
         material["material"]["body_density_kg_m3"],
     )
     volumes = abs(np.linalg.det(vertices[tets[:, 1:]] - vertices[tets[:, :1]])) / 6
-    with np.load(args.replay / "results/contact_hold.npz") as saved:
-        sources = (saved["source_normal_force_N"] + saved["source_shear_force_N"])[:, : len(reference.coordinates)]
-        body_force = saved["body_force_N"].copy()
-        body_tensor = saved["body_tensor_Pa"].copy()
-        body_u = saved["body_displacement"].copy()
-        current_positions = (
-            saved["rest_positions"][: len(reference.coordinates)]
-            + saved["displacement"].reshape(-1, 3)[: len(reference.coordinates)]
-        )
+    if args.objective:
+        assert hashlib.sha256(args.mesh.read_bytes()).hexdigest() == report["mesh_sha256"]
+        assert report["hold_original_coordinate_residual_N"] <= 1e-9
+        assert report["native_complete_budget_fraction"] <= 1
+        assert report["native_vs_independent_linear_tensor_relative_difference"] < 1e-8
+        with np.load(args.replay / "results/objective_replay.npz") as saved:
+            rotation = saved["rotation_world_from_material"].copy()
+            sources = (saved["source_normal_world_N"] + saved["source_shear_world_N"])[
+                :, : len(reference.coordinates)
+            ] @ rotation
+            body_force = saved["native_force_material_N"].copy()
+            current_positions = reference.coordinates + saved["body_objective_displacement_m"][reference.component_dofs]
+        np.testing.assert_allclose(rotation.T @ rotation, np.eye(3), rtol=0, atol=1e-12)
+        np.testing.assert_allclose(np.linalg.det(rotation), 1, rtol=0, atol=1e-12)
+        # Preserve the material anchors and rotate every original source force.
+        # This target measures mapping error separately from linearization error.
+        for key in ["normal_stencils", "friction_stencils"]:
+            report[key] = [
+                {**row, "body_resultant_N": (np.array(row["body_resultant_N"]) @ rotation).tolist()}
+                for row in report[key]
+            ]
+        resolved = reference.solve(body_force)
+        body_u, body_tensor = resolved.displacement, resolved.tensor_pa
+        reference_convention = "Independent linear FEM on the objective resolved nodal loads; nonlinear constitutive/geometry difference remains separate"
+    else:
+        with np.load(args.replay / "results/contact_hold.npz") as saved:
+            sources = (saved["source_normal_force_N"] + saved["source_shear_force_N"])[:, : len(reference.coordinates)]
+            body_force = saved["body_force_N"].copy()
+            body_tensor = saved["body_tensor_Pa"].copy()
+            body_u = saved["body_displacement"].copy()
+            current_positions = (
+                saved["rest_positions"][: len(reference.coordinates)]
+                + saved["displacement"].reshape(-1, 3)[: len(reference.coordinates)]
+            )
+        rotation = np.eye(3)
+        reference_convention = "Original linear contact-hold tensor and displacement"
     np.testing.assert_allclose(sources.sum(axis=0), body_force[reference.component_dofs], rtol=1e-10, atol=1e-12)
     boundary = reference.mesh.boundary_facets()
     triangles = vertices[reference.mesh.facets[:, boundary].T]
@@ -319,8 +349,13 @@ def main():
         "mesh_sha256": hashlib.sha256(args.mesh.read_bytes()).hexdigest(),
         "physical_radius_m": args.radius,
         "ports": args.ports,
+        "objective_nonlinear_input": args.objective,
+        "reference_elastic_field_convention": reference_convention,
+        "rotation_world_from_material": rotation.tolist(),
+        "source_replay_sha256": hashlib.sha256((args.replay / "results/summary.json").read_bytes()).hexdigest(),
         "reference_sources": source_rows,
         "rows": rows,
+        "goal_completion": False,
         "limitations": "Resolved nodal forces are reduced to source wrenches in linear-FEM material coordinates. Original force/moment inputs remain fixed across models; deformed-space moment differences are recorded. Native profile choice, finite footprint and IPC stencil integration weights are different declared measures. Spatial/regularization/nonlinear pad convergence, actual Franka matching and rigid-contact feedback remain required.",
     }
     (args.output / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
