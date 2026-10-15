@@ -1,0 +1,67 @@
+--- a/research/rigid_stress/recover_lagged_rigid_contact.py
++++ b/research/rigid_stress/recover_lagged_rigid_contact.py
+@@ -40,18 +40,36 @@
+             return contact.evaluate(displacement, old, frozen_friction, hessian=hessian, external_force=external_force)
+ 
+         contact.evaluate_updated_friction = lagged
++        inexact_inner = None
+         try:
+             solved = system.solve_rigid(pose.copy(), variable.copy(), previous, False, f"lagged_stage{stage:03d}")
+         except (RuntimeError, AssertionError, ValueError) as error:
+-            rows.append(
+-                {
+-                    "stage": stage,
+-                    "inner_equation_solved": False,
+-                    "error": str(error),
+-                    "is_physical_history_state": False,
+-                }
+-            )
+-            break
++            failed = getattr(system, "failure_state", None)
++            inexact = None
++            if isinstance(error, RuntimeError) and failed is not None:
++                trial_pose, trial_variable = failed["body_pose"], failed["robot_variable"]
++                trial = system.evaluate_rigid(trial_pose, trial_variable, previous, False)
++                errors = [float(np.linalg.norm(value)) for value in trial[:2]]
++                if max(errors) <= 1e-8:
++                    inexact = (trial_pose.copy(), trial_variable.copy(), trial[2], trial[3])
++                    inexact_inner = {
++                        "inner_solver_error": str(error),
++                        "frozen_body_residual_N": errors[0],
++                        "frozen_robot_effort_residual": errors[1],
++                        "working_bound_N_or_Nm": 1e-8,
++                        "is_physical_acceptance": False,
++                    }
++            if inexact is None:
++                rows.append(
++                    {
++                        "stage": stage,
++                        "inner_equation_solved": False,
++                        "error": str(error),
++                        "is_physical_history_state": False,
++                    }
++                )
++                break
++            solved = inexact
+         finally:
+             contact.evaluate_updated_friction = current_force_evaluation
+         new_pose, new_variable = solved[:2]
+@@ -61,7 +79,8 @@
+         motion = qualify_physical_motion(mesh, start, end)
+         row = {
+             "stage": stage,
+-            "inner_equation_solved": True,
++            "inner_equation_solved": inexact_inner is None,
++            "inexact_frozen_numerical_candidate": inexact_inner,
+             "original_current_body_residual_N": body,
+             "original_current_robot_effort_residual": robot,
+             "original_motion_CCD": motion,
+@@ -113,6 +132,8 @@
+         "attempts": rows,
+         "recovered_original_equation": candidate is not None,
+         "final_acceptance_uses_original_current_friction": True,
++        "original_physical_gate_N_or_Nm": 1e-9,
++        "frozen_numerical_stagnation_working_bound_N_or_Nm": 1e-8,
+         "numerical_iterations_are_physical_history": False,
+     }
+     (directory / "summary.json").write_text(json.dumps(report, indent=2) + "\n")

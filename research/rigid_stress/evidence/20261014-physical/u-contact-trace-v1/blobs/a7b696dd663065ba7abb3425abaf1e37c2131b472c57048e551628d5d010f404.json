@@ -1,0 +1,966 @@
+{
+  "scope": "Audit final nonlinear U contact traces against independently balanced saved fields.",
+  "comparisons": [
+    {
+      "audit": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-three-level-fields-v2",
+      "axis": "coupled"
+    },
+    {
+      "audit": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-fixed-body-pad-fields-v2",
+      "axis": "pad_at_fixed_body"
+    },
+    {
+      "audit": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-fixed-pad5-body-fields-v1",
+      "axis": "body_at_fixed_pad"
+    }
+  ],
+  "rows": [
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-1-v1",
+      "body_tetrahedra": 845,
+      "pad_resolution": 5,
+      "dhat_m": 2.5e-06,
+      "friction_mollifier_m": 1e-08,
+      "normal_stencils": 19,
+      "normal_gradient_reconstruction_max_difference_N": 1.734723475976807e-18,
+      "moment_origin_reference_com_m": [
+        8.019536527937062e-06,
+        0.006933145694362098,
+        1.9573019847762137e-06
+      ],
+      "body_total_force_N": [
+        2.8170347998734968e-11,
+        0.03912048459063218,
+        -1.9651805963777358e-10
+      ],
+      "sources": [
+        {
+          "source": 1,
+          "name": "left_shoe",
+          "normal_stencil_types": {
+            "EdgeEdgeNormalCollision": 8,
+            "FaceVertexNormalCollision": 3
+          },
+          "normal_force_on_body_N": [
+            -0.04880869597930912,
+            -2.212917895769888e-05,
+            -0.007328806331248859
+          ],
+          "saved_total_minus_normal_shear_on_body_N": [
+            -0.0011913039928620112,
+            0.020956226818540438,
+            0.007904515864295985
+          ],
+          "total_force_on_body_N": [
+            -0.049999999972171125,
+            0.02093409763958274,
+            0.0005757095330471253
+          ],
+          "normal_moment_on_body_about_reference_com_Nm": [
+            -8.05511835106647e-05,
+            -6.024706378955082e-05,
+            0.0005374020007792678
+          ],
+          "total_moment_on_body_about_reference_com_Nm": [
+            5.887374597753925e-06,
+            -2.0909357175972497e-05,
+            0.0004460326793140852
+          ],
+          "normal_action_reaction_force_error_N": 6.938901348528748e-18,
+          "normal_action_reaction_moment_error_Nm": 1.6280669543541572e-19,
+          "saved_total_action_reaction_force_error_N": 6.952433221959954e-18,
+          "saved_total_action_reaction_moment_Nm": [
+            7.19815564513321e-09,
+            1.920823053647611e-08,
+            -4.9933243580286744e-08
+          ],
+          "body_normal_density": {
+            "active_samples_above_1em8_N": 5,
+            "active_lumped_area_m2": 5.65062510952977e-06,
+            "unsigned_sample_force_N": 0.04935845591088096,
+            "maximum_sample_force_over_lumped_area_Pa": 17991.57679398333,
+            "sample_force_density_L2_N_per_m": 25.87179526358553
+          },
+          "body_shear_density": {
+            "active_samples_above_1em8_N": 5,
+            "active_lumped_area_m2": 5.65062510952977e-06,
+            "unsigned_sample_force_N": 0.024032195921475756,
+            "maximum_sample_force_over_lumped_area_Pa": 7738.029318970333,
+            "sample_force_density_L2_N_per_m": 12.04764724054709
+          },
+          "shoe_normal_density": {
+            "active_samples_above_1em8_N": 10,
+            "active_lumped_area_m2": 3.797195526723547e-06,
+            "unsigned_sample_force_N": 0.049358143895181276,
+            "maximum_sample_force_over_lumped_area_Pa": 37911.912961159076,
+            "sample_force_density_L2_N_per_m": 37.05391714588479
+          },
+          "body_support_samples": 5
+        },
+        {
+          "source": 2,
+          "name": "right_shoe",
+          "normal_stencil_types": {
+            "EdgeEdgeNormalCollision": 6,
+            "FaceVertexNormalCollision": 2
+          },
+          "normal_force_on_body_N": [
+            0.04893020332689878,
+            -0.00013311486395902017,
+            -0.007536185061823087
+          ],
+          "saved_total_minus_normal_shear_on_body_N": [
+            0.0010697966734426953,
+            0.018319501815008465,
+            0.006960475332257902
+          ],
+          "total_force_on_body_N": [
+            0.05000000000034147,
+            0.018186386951049446,
+            -0.000575709729565185
+          ],
+          "normal_moment_on_body_about_reference_com_Nm": [
+            -8.061508891122284e-05,
+            5.5425076448695836e-05,
+            -0.0005255507746306102
+          ],
+          "total_moment_on_body_about_reference_com_Nm": [
+            -6.893248543930733e-06,
+            2.0909356189444014e-05,
+            -0.000446028406986828
+          ],
+          "normal_action_reaction_force_error_N": 1.0842021724855044e-19,
+          "normal_action_reaction_moment_error_Nm": 2.839771910976937e-20,
+          "saved_total_action_reaction_force_error_N": 2.168404344971009e-19,
+          "saved_total_action_reaction_moment_Nm": [
+            6.517911070708749e-09,
+            -1.685549027120545e-08,
+            4.328076688638353e-08
+          ],
+          "body_normal_density": {
+            "active_samples_above_1em8_N": 4,
+            "active_lumped_area_m2": 4.484723842617924e-06,
+            "unsigned_sample_force_N": 0.0495088951361466,
+            "maximum_sample_force_over_lumped_area_Pa": 26685.474098640476,
+            "sample_force_density_L2_N_per_m": 30.6310315248033
+          },
+          "body_shear_density": {
+            "active_samples_above_1em8_N": 4,
+            "active_lumped_area_m2": 4.484723842617924e-06,
+            "unsigned_sample_force_N": 0.02147160394632134,
+            "maximum_sample_force_over_lumped_area_Pa": 8986.626678029215,
+            "sample_force_density_L2_N_per_m": 12.060584703778082
+          },
+          "shoe_normal_density": {
+            "active_samples_above_1em8_N": 8,
+            "active_lumped_area_m2": 3.023540160739331e-06,
+            "unsigned_sample_force_N": 0.04950921935089818,
+            "maximum_sample_force_over_lumped_area_Pa": 35381.25977380708,
+            "sample_force_density_L2_N_per_m": 34.82631807275397
+          },
+          "body_support_samples": 4
+        }
+      ],
+      "raw_global_peak_lower_Pa": 112413.88787732182,
+      "raw_global_peak_upper_Pa": 112414.74312226771
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-2-v1",
+      "body_tetrahedra": 2339,
+      "pad_resolution": 7,
+      "dhat_m": 2.5e-06,
+      "friction_mollifier_m": 1e-08,
+      "normal_stencils": 37,
+      "normal_gradient_reconstruction_max_difference_N": 1.734723475976807e-18,
+      "moment_origin_reference_com_m": [
+        9.381644648547212e-07,
+        0.007005342485276312,
+        -3.23344987295041e-07
+      ],
+      "body_total_force_N": [
+        -2.7886547238065162e-14,
+        0.04106042298235964,
+        -5.007022357492175e-13
+      ],
+      "sources": [
+        {
+          "source": 1,
+          "name": "left_shoe",
+          "normal_stencil_types": {
+            "EdgeEdgeNormalCollision": 13,
+            "FaceVertexNormalCollision": 5
+          },
+          "normal_force_on_body_N": [
+            -0.049006769121645276,
+            -9.867705406499711e-06,
+            0.0005829262802719709
+          ],
+          "saved_total_minus_normal_shear_on_body_N": [
+            -0.000993230878451755,
+            0.020066483946839558,
+            -0.001588161835337521
+          ],
+          "total_force_on_body_N": [
+            -0.050000000000097036,
+            0.020056616241433057,
+            -0.00100523555506555
+          ],
+          "normal_moment_on_body_about_reference_com_Nm": [
+            7.366514769525592e-06,
+            8.222094966203308e-06,
+            0.0005334686807036465
+          ],
+          "total_moment_on_body_about_reference_com_Nm": [
+            -9.649141618366631e-06,
+            6.814783440819813e-07,
+            0.0004425404405227217
+          ],
+          "normal_action_reaction_force_error_N": 6.969337058470953e-18,
+          "normal_action_reaction_moment_error_Nm": 9.124650199906908e-20,
+          "saved_total_action_reaction_force_error_N": 7.05981306231723e-18,
+          "saved_total_action_reaction_moment_Nm": [
+            -1.3991917427413037e-09,
+            -4.200272985367753e-09,
+            -4.699517894783645e-08
+          ],
+          "body_normal_density": {
+            "active_samples_above_1em8_N": 10,
+            "active_lumped_area_m2": 5.343244778956535e-06,
+            "unsigned_sample_force_N": 0.049927263897924276,
+            "maximum_sample_force_over_lumped_area_Pa": 21442.886024549054,
+            "sample_force_density_L2_N_per_m": 27.94089714507682
+          },
+          "body_shear_density": {
+            "active_samples_above_1em8_N": 10,
+            "active_lumped_area_m2": 5.343244778956535e-06,
+            "unsigned_sample_force_N": 0.02103963701975669,
+            "maximum_sample_force_over_lumped_area_Pa": 8621.519690785588,
+            "sample_force_density_L2_N_per_m": 11.220251048686128
+          },
+          "shoe_normal_density": {
+            "active_samples_above_1em8_N": 22,
+            "active_lumped_area_m2": 3.769010541188236e-06,
+            "unsigned_sample_force_N": 0.049928041110253285,
+            "maximum_sample_force_over_lumped_area_Pa": 33986.04678578648,
+            "sample_force_density_L2_N_per_m": 32.58504990526659
+          },
+          "body_support_samples": 10
+        },
+        {
+          "source": 2,
+          "name": "right_shoe",
+          "normal_stencil_types": {
+            "EdgeEdgeNormalCollision": 15,
+            "FaceVertexNormalCollision": 4
+          },
+          "normal_force_on_body_N": [
+            0.04935680629951071,
+            3.1941488133253165e-06,
+            -0.0012426228153265336
+          ],
+          "saved_total_minus_normal_shear_on_body_N": [
+            0.0006431937005584431,
+            0.021000612592113253,
+            0.002247858369891381
+          ],
+          "total_force_on_body_N": [
+            0.05000000000006916,
+            0.02100380674092658,
+            0.0010052355545648478
+          ],
+          "normal_moment_on_body_about_reference_com_Nm": [
+            -1.2831277448959477e-05,
+            1.0679115368088721e-05,
+            -0.0005420308742417823
+          ],
+          "total_moment_on_body_about_reference_com_Nm": [
+            1.0226760710845984e-05,
+            -6.814783445093197e-07,
+            -0.0004426034690055034
+          ],
+          "normal_action_reaction_force_error_N": 6.939294247774657e-18,
+          "normal_action_reaction_moment_error_Nm": 7.803341308224813e-20,
+          "saved_total_action_reaction_force_error_N": 3.496446946337351e-18,
+          "saved_total_action_reaction_moment_Nm": [
+            -6.874111447223753e-10,
+            -5.1274357103940986e-09,
+            4.927070840064123e-08
+          ],
+          "body_normal_density": {
+            "active_samples_above_1em8_N": 9,
+            "active_lumped_area_m2": 5.106581093149356e-06,
+            "unsigned_sample_force_N": 0.04987154348026346,
+            "maximum_sample_force_over_lumped_area_Pa": 22542.173095405622,
+            "sample_force_density_L2_N_per_m": 29.767660340751924
+          },
+          "body_shear_density": {
+            "active_samples_above_1em8_N": 9,
+            "active_lumped_area_m2": 5.106581093149356e-06,
+            "unsigned_sample_force_N": 0.021600795678357966,
+            "maximum_sample_force_over_lumped_area_Pa": 8838.981885559064,
+            "sample_force_density_L2_N_per_m": 11.713980371238398
+          },
+          "shoe_normal_density": {
+            "active_samples_above_1em8_N": 20,
+            "active_lumped_area_m2": 3.404582613492358e-06,
+            "unsigned_sample_force_N": 0.0498717478526249,
+            "maximum_sample_force_over_lumped_area_Pa": 45126.09316814694,
+            "sample_force_density_L2_N_per_m": 40.116731750326174
+          },
+          "body_support_samples": 9
+        }
+      ],
+      "raw_global_peak_lower_Pa": 100650.0152419383,
+      "raw_global_peak_upper_Pa": 100650.42738531402
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-3-v2",
+      "body_tetrahedra": 5669,
+      "pad_resolution": 9,
+      "dhat_m": 2.5e-06,
+      "friction_mollifier_m": 1e-08,
+      "normal_stencils": 80,
+      "normal_gradient_reconstruction_max_difference_N": 8.673617379884035e-19,
+      "moment_origin_reference_com_m": [
+        -1.5283991148262497e-06,
+        0.0070240838612304355,
+        -1.0341777058302283e-06
+      ],
+      "body_total_force_N": [
+        -8.839679856154081e-12,
+        0.04184600025651115,
+        8.101830610476174e-11
+      ],
+      "sources": [
+        {
+          "source": 1,
+          "name": "left_shoe",
+          "normal_stencil_types": {
+            "EdgeEdgeNormalCollision": 27,
+            "FaceVertexNormalCollision": 8
+          },
+          "normal_force_on_body_N": [
+            -0.049378359336223414,
+            4.194336032142222e-06,
+            0.003131006154583467
+          ],
+          "saved_total_minus_normal_shear_on_body_N": [
+            -0.0006216406686016447,
+            0.0212611328926751,
+            -0.003807744576916981
+          ],
+          "total_force_on_body_N": [
+            -0.05000000000482506,
+            0.02126532722870724,
+            -0.0006767384223335129
+          ],
+          "normal_moment_on_body_about_reference_com_Nm": [
+            3.507524119045589e-05,
+            2.0059438487767626e-05,
+            0.0005459762641812393
+          ],
+          "total_moment_on_body_about_reference_com_Nm": [
+            -6.152265758218936e-06,
+            1.255936378454917e-06,
+            0.0004455204904544849
+          ],
+          "normal_action_reaction_force_error_N": 6.938894110702378e-18,
+          "normal_action_reaction_moment_error_Nm": 1.499900198868456e-19,
+          "saved_total_action_reaction_force_error_N": 6.942281208919283e-18,
+          "saved_total_action_reaction_moment_Nm": [
+            -2.9946986794062364e-09,
+            -9.299175469489328e-09,
+            -5.010956967504041e-08
+          ],
+          "body_normal_density": {
+            "active_samples_above_1em8_N": 13,
+            "active_lumped_area_m2": 3.982839268563961e-06,
+            "unsigned_sample_force_N": 0.050090012799327066,
+            "maximum_sample_force_over_lumped_area_Pa": 21198.64021316699,
+            "sample_force_density_L2_N_per_m": 29.675424882007377
+          },
+          "body_shear_density": {
+            "active_samples_above_1em8_N": 13,
+            "active_lumped_area_m2": 3.982839268563961e-06,
+            "unsigned_sample_force_N": 0.021818882553078907,
+            "maximum_sample_force_over_lumped_area_Pa": 9719.671654839123,
+            "sample_force_density_L2_N_per_m": 12.476633319814802
+          },
+          "shoe_normal_density": {
+            "active_samples_above_1em8_N": 33,
+            "active_lumped_area_m2": 3.119218616931474e-06,
+            "unsigned_sample_force_N": 0.050090048998560205,
+            "maximum_sample_force_over_lumped_area_Pa": 29085.3504226093,
+            "sample_force_density_L2_N_per_m": 32.0140588079492
+          },
+          "body_support_samples": 13
+        },
+        {
+          "source": 2,
+          "name": "right_shoe",
+          "normal_stencil_types": {
+            "EdgeVertexNormalCollision": 1,
+            "EdgeEdgeNormalCollision": 34,
+            "FaceVertexNormalCollision": 10
+          },
+          "normal_force_on_body_N": [
+            0.04759870025796796,
+            -8.869371732292347e-06,
+            -0.0009023253485249925
+          ],
+          "saved_total_minus_normal_shear_on_body_N": [
+            0.002401299738017432,
+            0.020589542399536188,
+            0.0015790638518768112
+          ],
+          "total_force_on_body_N": [
+            0.049999999995985374,
+            0.0205806730278039,
+            0.0006767385033518189
+          ],
+          "normal_moment_on_body_about_reference_com_Nm": [
+            -9.355316337866832e-06,
+            6.456805895899609e-06,
+            -0.0005232524105126697
+          ],
+          "total_moment_on_body_about_reference_com_Nm": [
+            6.276051685066843e-06,
+            -1.2559361514292226e-06,
+            -0.00044581269032250496
+          ],
+          "normal_action_reaction_force_error_N": 6.98031259138393e-18,
+          "normal_action_reaction_moment_error_Nm": 2.0655995715882325e-20,
+          "saved_total_action_reaction_force_error_N": 5.0026267829018086e-18,
+          "saved_total_action_reaction_moment_Nm": [
+            8.512642252971488e-10,
+            -3.86431909305142e-09,
+            4.762499972362864e-08
+          ],
+          "body_normal_density": {
+            "active_samples_above_1em8_N": 13,
+            "active_lumped_area_m2": 3.9356940627418595e-06,
+            "unsigned_sample_force_N": 0.049435120947444997,
+            "maximum_sample_force_over_lumped_area_Pa": 20535.63840647367,
+            "sample_force_density_L2_N_per_m": 27.627655142440258
+          },
+          "body_shear_density": {
+            "active_samples_above_1em8_N": 13,
+            "active_lumped_area_m2": 3.9356940627418595e-06,
+            "unsigned_sample_force_N": 0.022631103613191646,
+            "maximum_sample_force_over_lumped_area_Pa": 9091.437599791325,
+            "sample_force_density_L2_N_per_m": 12.276246064275393
+          },
+          "shoe_normal_density": {
+            "active_samples_above_1em8_N": 35,
+            "active_lumped_area_m2": 3.340052065012215e-06,
+            "unsigned_sample_force_N": 0.04943571890163495,
+            "maximum_sample_force_over_lumped_area_Pa": 44764.3805713851,
+            "sample_force_density_L2_N_per_m": 38.466877150798645
+          },
+          "body_support_samples": 13
+        }
+      ],
+      "raw_global_peak_lower_Pa": 95543.8379030269,
+      "raw_global_peak_upper_Pa": 95544.17840950441
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-fixed-body-pad5-v2",
+      "body_tetrahedra": 2339,
+      "pad_resolution": 5,
+      "dhat_m": 2.5e-06,
+      "friction_mollifier_m": 1e-08,
+      "normal_stencils": 15,
+      "normal_gradient_reconstruction_max_difference_N": 4.336808689942018e-19,
+      "moment_origin_reference_com_m": [
+        9.381644648547212e-07,
+        0.007005342485276312,
+        -3.23344987295041e-07
+      ],
+      "body_total_force_N": [
+        9.986803051198478e-14,
+        0.04106042298561989,
+        4.652823265560713e-13
+      ],
+      "sources": [
+        {
+          "source": 1,
+          "name": "left_shoe",
+          "normal_stencil_types": {
+            "EdgeEdgeNormalCollision": 2,
+            "FaceVertexNormalCollision": 2
+          },
+          "normal_force_on_body_N": [
+            -0.048767255029668076,
+            -0.00010639496370391616,
+            -0.007702868070607124
+          ],
+          "saved_total_minus_normal_shear_on_body_N": [
+            -0.0012327449702520814,
+            0.018797259044266948,
+            0.00793280347115898
+          ],
+          "total_force_on_body_N": [
+            -0.04999999999992016,
+            0.018690864080563033,
+            0.00022993540055185656
+          ],
+          "normal_moment_on_body_about_reference_com_Nm": [
+            -8.158960449901101e-05,
+            -5.5641271087982043e-05,
+            0.0005190202411227994
+          ],
+          "total_moment_on_body_about_reference_com_Nm": [
+            2.3666052719290737e-06,
+            -1.619598229308394e-05,
+            0.0004384466905917438
+          ],
+          "normal_action_reaction_force_error_N": 7.156606985806635e-18,
+          "normal_action_reaction_moment_error_Nm": 3.271784684375769e-20,
+          "saved_total_action_reaction_force_error_N": 1.40009084684932e-17,
+          "saved_total_action_reaction_moment_Nm": [
+            6.742183659432617e-09,
+            1.86599750542352e-08,
+            -4.293471264941399e-08
+          ],
+          "body_normal_density": {
+            "active_samples_above_1em8_N": 4,
+            "active_lumped_area_m2": 2.0624283200189356e-06,
+            "unsigned_sample_force_N": 0.04937530549364177,
+            "maximum_sample_force_over_lumped_area_Pa": 44959.252633690696,
+            "sample_force_density_L2_N_per_m": 40.14738657079139
+          },
+          "body_shear_density": {
+            "active_samples_above_1em8_N": 4,
+            "active_lumped_area_m2": 2.0624283200189356e-06,
+            "unsigned_sample_force_N": 0.0210800152466979,
+            "maximum_sample_force_over_lumped_area_Pa": 14576.979936578613,
+            "sample_force_density_L2_N_per_m": 15.65483268789796
+          },
+          "shoe_normal_density": {
+            "active_samples_above_1em8_N": 8,
+            "active_lumped_area_m2": 3.024168190372328e-06,
+            "unsigned_sample_force_N": 0.04937537907191095,
+            "maximum_sample_force_over_lumped_area_Pa": 37561.024702717536,
+            "sample_force_density_L2_N_per_m": 33.29892670108507
+          },
+          "body_support_samples": 4
+        },
+        {
+          "source": 2,
+          "name": "right_shoe",
+          "normal_stencil_types": {
+            "EdgeEdgeNormalCollision": 8,
+            "FaceVertexNormalCollision": 3
+          },
+          "normal_force_on_body_N": [
+            0.048821800420311035,
+            3.4393221426679697e-06,
+            -0.007792856758874859
+          ],
+          "saved_total_minus_normal_shear_on_body_N": [
+            0.0011781995797089805,
+            0.022366119582914186,
+            0.007562921358788285
+          ],
+          "total_force_on_body_N": [
+            0.05000000000002003,
+            0.022369558905056854,
+            -0.00022993540008657467
+          ],
+          "normal_moment_on_body_about_reference_com_Nm": [
+            -8.549944240997942e-05,
+            5.378179187204873e-05,
+            -0.0005367120482485711
+          ],
+          "total_moment_on_body_about_reference_com_Nm": [
+            -2.9906588436605924e-06,
+            1.619598229261975e-05,
+            -0.00043839899015694884
+          ],
+          "normal_action_reaction_force_error_N": 3.5762451515414285e-18,
+          "normal_action_reaction_moment_error_Nm": 2.748618650999488e-20,
+          "saved_total_action_reaction_force_error_N": 3.476216610979977e-18,
+          "saved_total_action_reaction_moment_Nm": [
+            8.351084032630045e-09,
+            -1.8252543876499326e-08,
+            5.265923509286443e-08
+          ],
+          "body_normal_density": {
+            "active_samples_above_1em8_N": 5,
+            "active_lumped_area_m2": 2.975626677694382e-06,
+            "unsigned_sample_force_N": 0.049440404240863434,
+            "maximum_sample_force_over_lumped_area_Pa": 27505.766962711292,
+            "sample_force_density_L2_N_per_m": 33.67823932925949
+          },
+          "body_shear_density": {
+            "active_samples_above_1em8_N": 5,
+            "active_lumped_area_m2": 2.975626677694382e-06,
+            "unsigned_sample_force_N": 0.02464658183824412,
+            "maximum_sample_force_over_lumped_area_Pa": 14532.983633681091,
+            "sample_force_density_L2_N_per_m": 16.213637521114453
+          },
+          "shoe_normal_density": {
+            "active_samples_above_1em8_N": 10,
+            "active_lumped_area_m2": 3.7821592676773033e-06,
+            "unsigned_sample_force_N": 0.04944041987062899,
+            "maximum_sample_force_over_lumped_area_Pa": 28318.460761623915,
+            "sample_force_density_L2_N_per_m": 29.807114807943847
+          },
+          "body_support_samples": 5
+        }
+      ],
+      "raw_global_peak_lower_Pa": 100634.57999038362,
+      "raw_global_peak_upper_Pa": 100634.99046717647
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-fixed-body-pad9-v2",
+      "body_tetrahedra": 2339,
+      "pad_resolution": 9,
+      "dhat_m": 2.5e-06,
+      "friction_mollifier_m": 1e-08,
+      "normal_stencils": 47,
+      "normal_gradient_reconstruction_max_difference_N": 1.734723475976807e-18,
+      "moment_origin_reference_com_m": [
+        9.381644648547212e-07,
+        0.007005342485276312,
+        -3.23344987295041e-07
+      ],
+      "body_total_force_N": [
+        4.48007351702695e-11,
+        0.04106042291775,
+        -1.0588935186583298e-10
+      ],
+      "sources": [
+        {
+          "source": 1,
+          "name": "left_shoe",
+          "normal_stencil_types": {
+            "EdgeEdgeNormalCollision": 19,
+            "FaceVertexNormalCollision": 3
+          },
+          "normal_force_on_body_N": [
+            -0.04911548573350079,
+            -3.126007661571992e-05,
+            -0.0006535823866612372
+          ],
+          "saved_total_minus_normal_shear_on_body_N": [
+            -0.0008845142666397254,
+            0.020319776064072242,
+            0.0003756346101148787
+          ],
+          "total_force_on_body_N": [
+            -0.05000000000014053,
+            0.020288515987456526,
+            -0.0002779477765463585
+          ],
+          "normal_moment_on_body_about_reference_com_Nm": [
+            -6.702708026984341e-06,
+            -6.2358180271520356e-06,
+            0.0005387332307589493
+          ],
+          "total_moment_on_body_about_reference_com_Nm": [
+            -2.707664224573703e-06,
+            -3.97486738840761e-06,
+            0.00044562953946493145
+          ],
+          "normal_action_reaction_force_error_N": 7.059894363130865e-18,
+          "normal_action_reaction_moment_error_Nm": 1.9209693709204217e-20,
+          "saved_total_action_reaction_force_error_N": 1.3878211317825933e-17,
+          "saved_total_action_reaction_moment_Nm": [
+            -1.8895939213349735e-09,
+            4.94641754105201e-10,
+            -4.747084781950331e-08
+          ],
+          "body_normal_density": {
+            "active_samples_above_1em8_N": 9,
+            "active_lumped_area_m2": 4.659110504522534e-06,
+            "unsigned_sample_force_N": 0.04985427733611267,
+            "maximum_sample_force_over_lumped_area_Pa": 26906.559533751406,
+            "sample_force_density_L2_N_per_m": 29.101754193293868
+          },
+          "body_shear_density": {
+            "active_samples_above_1em8_N": 9,
+            "active_lumped_area_m2": 4.659110504522534e-06,
+            "unsigned_sample_force_N": 0.02093018465936186,
+            "maximum_sample_force_over_lumped_area_Pa": 8041.811726056232,
+            "sample_force_density_L2_N_per_m": 10.783465305262848
+          },
+          "shoe_normal_density": {
+            "active_samples_above_1em8_N": 29,
+            "active_lumped_area_m2": 2.7650035780179464e-06,
+            "unsigned_sample_force_N": 0.04985960084898382,
+            "maximum_sample_force_over_lumped_area_Pa": 43014.23934054988,
+            "sample_force_density_L2_N_per_m": 37.427679347439714
+          },
+          "body_support_samples": 9
+        },
+        {
+          "source": 2,
+          "name": "right_shoe",
+          "normal_stencil_types": {
+            "EdgeEdgeNormalCollision": 21,
+            "FaceVertexNormalCollision": 4
+          },
+          "normal_force_on_body_N": [
+            0.04918869215966878,
+            -2.269663717303703e-06,
+            -0.0018415877834568634
+          ],
+          "saved_total_minus_normal_shear_on_body_N": [
+            0.0008113078852724829,
+            0.02077417659401078,
+            0.0021195354541138703
+          ],
+          "total_force_on_body_N": [
+            0.05000000004494126,
+            0.02077190693029348,
+            0.00027794767065700667
+          ],
+          "normal_moment_on_body_about_reference_com_Nm": [
+            -1.9970772610813685e-05,
+            1.4803417800532967e-05,
+            -0.0005419714921009691
+          ],
+          "total_moment_on_body_about_reference_com_Nm": [
+            2.9820191208416504e-06,
+            3.9748678927651755e-06,
+            -0.00044559811204284
+          ],
+          "normal_action_reaction_force_error_N": 6.942283392126986e-18,
+          "normal_action_reaction_moment_error_Nm": 1.1198547604696501e-19,
+          "saved_total_action_reaction_force_error_N": 1.0417371955916405e-17,
+          "saved_total_action_reaction_moment_Nm": [
+            -1.0469793553192298e-09,
+            -4.768216046788455e-09,
+            4.843706489426945e-08
+          ],
+          "body_normal_density": {
+            "active_samples_above_1em8_N": 8,
+            "active_lumped_area_m2": 4.68234003196895e-06,
+            "unsigned_sample_force_N": 0.04991930392540706,
+            "maximum_sample_force_over_lumped_area_Pa": 21757.288268781605,
+            "sample_force_density_L2_N_per_m": 28.095411935599692
+          },
+          "body_shear_density": {
+            "active_samples_above_1em8_N": 8,
+            "active_lumped_area_m2": 4.68234003196895e-06,
+            "unsigned_sample_force_N": 0.02131887612249141,
+            "maximum_sample_force_over_lumped_area_Pa": 7749.370838446118,
+            "sample_force_density_L2_N_per_m": 10.803225458231143
+          },
+          "shoe_normal_density": {
+            "active_samples_above_1em8_N": 26,
+            "active_lumped_area_m2": 2.4833137159096646e-06,
+            "unsigned_sample_force_N": 0.049919596799399224,
+            "maximum_sample_force_over_lumped_area_Pa": 49822.22628744311,
+            "sample_force_density_L2_N_per_m": 40.861552387998344
+          },
+          "body_support_samples": 8
+        }
+      ],
+      "raw_global_peak_lower_Pa": 100667.75653326345,
+      "raw_global_peak_upper_Pa": 100668.16831666153
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-fixed-pad5-body5669-v1",
+      "body_tetrahedra": 5669,
+      "pad_resolution": 5,
+      "dhat_m": 2.5e-06,
+      "friction_mollifier_m": 1e-08,
+      "normal_stencils": 39,
+      "normal_gradient_reconstruction_max_difference_N": 1.734723475976807e-18,
+      "moment_origin_reference_com_m": [
+        -1.5283991148262497e-06,
+        0.0070240838612304355,
+        -1.0341777058302283e-06
+      ],
+      "body_total_force_N": [
+        3.173936807820965e-14,
+        0.04184600068335827,
+        -1.293346831542086e-12
+      ],
+      "sources": [
+        {
+          "source": 1,
+          "name": "left_shoe",
+          "normal_stencil_types": {
+            "EdgeEdgeNormalCollision": 11,
+            "FaceVertexNormalCollision": 6
+          },
+          "normal_force_on_body_N": [
+            -0.04969475757923375,
+            4.512286073811675e-06,
+            -0.0024919626983407263
+          ],
+          "saved_total_minus_normal_shear_on_body_N": [
+            -0.00030524242057677876,
+            0.020952492362009172,
+            0.00259517014821786
+          ],
+          "total_force_on_body_N": [
+            -0.04999999999981053,
+            0.020957004648082984,
+            0.00010320744987713372
+          ],
+          "normal_moment_on_body_about_reference_com_Nm": [
+            -2.6270361630482915e-05,
+            -1.370605863424161e-05,
+            0.0005478619689424744
+          ],
+          "total_moment_on_body_about_reference_com_Nm": [
+            7.803035877632819e-07,
+            -8.265232143333741e-07,
+            0.00044564324893192706
+          ],
+          "normal_action_reaction_force_error_N": 3.5299264499164485e-18,
+          "normal_action_reaction_moment_error_Nm": 8.157063615402271e-20,
+          "saved_total_action_reaction_force_error_N": 7.806255641895632e-18,
+          "saved_total_action_reaction_moment_Nm": [
+            3.0439898373115737e-09,
+            6.2499311124110205e-09,
+            -4.921440193612168e-08
+          ],
+          "body_normal_density": {
+            "active_samples_above_1em8_N": 10,
+            "active_lumped_area_m2": 3.063324517038521e-06,
+            "unsigned_sample_force_N": 0.050321650762934815,
+            "maximum_sample_force_over_lumped_area_Pa": 39325.46994840608,
+            "sample_force_density_L2_N_per_m": 37.59352462200553
+          },
+          "body_shear_density": {
+            "active_samples_above_1em8_N": 10,
+            "active_lumped_area_m2": 3.063324517038521e-06,
+            "unsigned_sample_force_N": 0.021285499856993892,
+            "maximum_sample_force_over_lumped_area_Pa": 15638.742429321974,
+            "sample_force_density_L2_N_per_m": 15.297339244755813
+          },
+          "shoe_normal_density": {
+            "active_samples_above_1em8_N": 15,
+            "active_lumped_area_m2": 5.739168698636939e-06,
+            "unsigned_sample_force_N": 0.05032166952500469,
+            "maximum_sample_force_over_lumped_area_Pa": 25736.399930281543,
+            "sample_force_density_L2_N_per_m": 27.87462126182058
+          },
+          "body_support_samples": 10
+        },
+        {
+          "source": 2,
+          "name": "right_shoe",
+          "normal_stencil_types": {
+            "EdgeEdgeNormalCollision": 13,
+            "FaceVertexNormalCollision": 9
+          },
+          "normal_force_on_body_N": [
+            0.049733227787035546,
+            -2.3399240170742425e-05,
+            4.903503838501147e-05
+          ],
+          "saved_total_minus_normal_shear_on_body_N": [
+            0.00026677221280671694,
+            0.020912395275446024,
+            -0.0001522424895554917
+          ],
+          "total_force_on_body_N": [
+            0.04999999999984226,
+            0.020888996035275286,
+            -0.00010320745117048077
+          ],
+          "normal_moment_on_body_about_reference_com_Nm": [
+            1.8763307094962277e-06,
+            6.417813519922206e-08,
+            -0.0005483181604530496
+          ],
+          "total_moment_on_body_about_reference_com_Nm": [
+            -7.624290090088771e-07,
+            8.265232037933538e-07,
+            -0.00044563145100119645
+          ],
+          "normal_action_reaction_force_error_N": 6.949274713132165e-18,
+          "normal_action_reaction_moment_error_Nm": 1.8132617446548652e-19,
+          "saved_total_action_reaction_force_error_N": 3.511543213478341e-18,
+          "saved_total_action_reaction_moment_Nm": [
+            4.5948131795183156e-10,
+            3.8957225964921635e-10,
+            4.9345924412915896e-08
+          ],
+          "body_normal_density": {
+            "active_samples_above_1em8_N": 14,
+            "active_lumped_area_m2": 4.223671698237788e-06,
+            "unsigned_sample_force_N": 0.05050397879119457,
+            "maximum_sample_force_over_lumped_area_Pa": 32452.814176940945,
+            "sample_force_density_L2_N_per_m": 33.65847770475829
+          },
+          "body_shear_density": {
+            "active_samples_above_1em8_N": 14,
+            "active_lumped_area_m2": 4.223671698237788e-06,
+            "unsigned_sample_force_N": 0.02103388009879084,
+            "maximum_sample_force_over_lumped_area_Pa": 13274.80802856986,
+            "sample_force_density_L2_N_per_m": 12.403891241427878
+          },
+          "shoe_normal_density": {
+            "active_samples_above_1em8_N": 18,
+            "active_lumped_area_m2": 6.9662141361493725e-06,
+            "unsigned_sample_force_N": 0.05050400433510114,
+            "maximum_sample_force_over_lumped_area_Pa": 26659.85829612709,
+            "sample_force_density_L2_N_per_m": 31.853059310091293
+          },
+          "body_support_samples": 14
+        }
+      ],
+      "raw_global_peak_lower_Pa": 95606.43905835784,
+      "raw_global_peak_upper_Pa": 95606.78000903038
+    }
+  ],
+  "input_sha256": {
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-three-level-fields-v2/results/summary.json": "6d25f54809a4b98e0f6d53fb1f092f510f6506ccf465ebeab58e4d02e4d54fd5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/matrix-mesh-u-v1/meshes/h0.0025.npz": "fca107fe6fcad9a1028ba5387f6123eb57540995349913c0e22b02e1509ce32b",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-1-v1/solution/fields.npz": "df176b22a40523f143a63e0d14c177243b325ffab876b26914c229b8bab43acd",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-1-v1/solution/configuration.json": "747a8d46c03381f2c8bcaf06349cc8dd61a2b0119da903903b1038681bf55810",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-1-v1/solution/result.json": "64f251a8a193f0bf00cd43e91ee81ef9746d9935531bd261b56423b4fe25c627",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-1-v1/solution/coordinate_map.npz": "7feb2304fc99214861560a71e9ab913cd17f5b7cde0e47727e51c2a6ef29223c",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-1-v1/solution/original_coordinate_map.npz": "7a6836ee15a312cef8a3381ff82cf6a5cc3f89cda9ac8817cfe5e66315f7344b",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-1-v1/solution/left_shoe_mesh.npz": "4bbf080f8fbf2076eab8ce05c1d53e6529e57f4735c136a92b8df1bda5da4db5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-1-v1/solution/right_shoe_mesh.npz": "e541784a6afb7a05105fc6dadf7a1c2d4bec42090747e41d677be06f283494cb",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/matrix-mesh-u-v1/meshes/h0.00175.npz": "37257d9f477e9aa3b0b229de8478add4e6a0cd564e0717b2c1dd11f69f9fb1d1",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-2-v1/solution/fields.npz": "d95e3a6b84c519ce49fe7007a0d195b359ab0b86ac5a2eb12a0ddeb048b686aa",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-2-v1/solution/configuration.json": "b3a0fe2c6ca8fda0030e70e7dc39426fcfe2b5d2d64ac77c1988d0e7a4740058",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-2-v1/solution/result.json": "959400767e9fe9e92585c7d9232f2ac97ce4de29f2defccf22ea2cd84c5887b3",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-2-v1/solution/coordinate_map.npz": "7ceaff09c46985bf091a4a19ad2ab8096c7e80dcdc4c54ca28ea91bc926852d3",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-2-v1/solution/original_coordinate_map.npz": "6df105c1ed05a95740135f87aa59f330ca25d79acb093beb4eb2fd2de760c03e",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-2-v1/solution/left_shoe_mesh.npz": "efa64359ac5c821c0c0236347e84494245780fcfce627fba5ecf674485dce2fd",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-2-v1/solution/right_shoe_mesh.npz": "cf82e2cd43b9ab7109839c9acf2c56deb9fe78e2fc9e76e0a05b7d624362d6d4",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/fine-matrix-mesh-u-v1/meshes/h0.00125.npz": "77f3d1ee35a10c39364c63924218df8e87ffb3b25bf78ba3d54fe82cf2cbc612",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-3-v2/solution/fields.npz": "5a38f64b6a1a29ce54d53fd05a03c5e1f54cb04976efe2fb2a2ae4af912acc42",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-3-v2/solution/configuration.json": "cfe84e8ebd39a1e7bf70f855d4084fd3adb6c59e7d6dca31af98d629c97d73c1",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-3-v2/solution/result.json": "6193befde8ba5a4074f38edb07ee168b7c3473eb6fae18c6505c17e79e93f2a8",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-3-v2/solution/coordinate_map.npz": "5896819604d4acd4196d012b2f6e65b01f238bd25018535a977cddebe7825503",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-3-v2/solution/original_coordinate_map.npz": "84b96d879422c126f1f629b138793e3e566499c9ef7a72f341218a8cc54e4307",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-3-v2/solution/left_shoe_mesh.npz": "8af5ba768f0486a9a356f2f5947130c6f9cfeeba24d687a6cf4f9698a14dd607",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-rigid-init-spatial-3-v2/solution/right_shoe_mesh.npz": "89c372303e0e7623374f60b3e7e744120cc98cca931ad7c20b9c2e890d727fc6",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-fixed-body-pad-fields-v2/results/summary.json": "1ae78614af7530970867727cef07a1d2d14f4ef69eacc798352f856cb1738f48",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-fixed-body-pad5-v2/solution/fields.npz": "747cc9839ce443935212fbc4addb0986bf941f5c4b07d95a0241da2e9d87dcf3",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-fixed-body-pad5-v2/solution/configuration.json": "54a918f09bdc5aebe1a7ae00d207ec14564796cd9eefc8c890e9a531f067a6c6",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-fixed-body-pad5-v2/solution/result.json": "97c7572afa325c6c3fb971c079402de6df6fa6aa6a48d457d2792492c291ebe8",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-fixed-body-pad5-v2/solution/coordinate_map.npz": "bd2c52d3a820e246df085d521a6664005f5fe5a4d04f28c9c2423b7b0b510368",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-fixed-body-pad5-v2/solution/original_coordinate_map.npz": "7a5d31a9099029fa17967b5b52f101ea2ec799479cb3fccd4f59285c2d690d94",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-fixed-body-pad5-v2/solution/left_shoe_mesh.npz": "4bbf080f8fbf2076eab8ce05c1d53e6529e57f4735c136a92b8df1bda5da4db5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-fixed-body-pad5-v2/solution/right_shoe_mesh.npz": "e541784a6afb7a05105fc6dadf7a1c2d4bec42090747e41d677be06f283494cb",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-fixed-body-pad9-v2/solution/fields.npz": "8a1b14bb0b0be52dec3f269391ade140a39bb7fe2eb9824329d9968297c77036",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-fixed-body-pad9-v2/solution/configuration.json": "d13e44b6a20ce9f868259387e3a16af0be0f099a0c70d915af6be0f03d433568",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-fixed-body-pad9-v2/solution/result.json": "ea755f56fc8d959c397ca9846bf06d07ceba755e659fb67fb3b0813a7fc7f49d",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-fixed-body-pad9-v2/solution/coordinate_map.npz": "d033ec97c05f87397103b4cc20e31a9f6d140ab28c8525038aaaa18f5518da35",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-fixed-body-pad9-v2/solution/original_coordinate_map.npz": "5cb0aca3ab16ee7088970c1a568c609899255bf89cf3a52d7bafd86c41187866",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-fixed-body-pad9-v2/solution/left_shoe_mesh.npz": "8af5ba768f0486a9a356f2f5947130c6f9cfeeba24d687a6cf4f9698a14dd607",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-fixed-body-pad9-v2/solution/right_shoe_mesh.npz": "89c372303e0e7623374f60b3e7e744120cc98cca931ad7c20b9c2e890d727fc6",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-fixed-pad5-body-fields-v1/results/summary.json": "c8c80dcd81f9a67b05425b03df4bc67f2c854297e22aa6df0f912ecc7b3bb5b5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-fixed-pad5-body5669-v1/solution/fields.npz": "b734c2b48e9add3c63249fa2638fe889f87862c4a8c97643080a7fb22a68038b",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-fixed-pad5-body5669-v1/solution/configuration.json": "e7796e2139955d4ca2e01f7d2962a18e458efb18a57baf9ea6b56c1d84b95825",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-fixed-pad5-body5669-v1/solution/result.json": "8238f88a0212d1ceb6929e87cb46ae8732262cae3d87be088b774c63d3db5b51",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-fixed-pad5-body5669-v1/solution/coordinate_map.npz": "e8a0e13ff0fd96274712b4e2489186e8754961da59df46d77d7f882b3f8002b2",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-fixed-pad5-body5669-v1/solution/original_coordinate_map.npz": "4a7248811805ff33334ffd23e8bcae68a75f09c0eea09f19862a5ebce68eabf2",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-fixed-pad5-body5669-v1/solution/left_shoe_mesh.npz": "4bbf080f8fbf2076eab8ce05c1d53e6529e57f4735c136a92b8df1bda5da4db5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/u-nonlinear-fixed-pad5-body5669-v1/solution/right_shoe_mesh.npz": "e541784a6afb7a05105fc6dadf7a1c2d4bec42090747e41d677be06f283494cb"
+  },
+  "goal_completion": false,
+  "limitations": "Final normal IPC stencils and forces are independently rebuilt; shear is the unchanged saved total contact force minus that normal force, not an independent friction-history audit. The original final/history force budgets are inherited only from the specified closed field audits. Shoe groups are physical source identities, not independently identified continuum islands. Disjoint body stencil supports permit exact source attribution; ambiguous nodes are rejected. Sample force divided by current incident-triangle lumped area is a discrete density, not continuum pressure/contact area. The1e-8N threshold affects reported active counts/areas only, never forces, norms, raw maxima or acceptance. No pressure convergence or goal completion follows from these diagnostics."
+}
