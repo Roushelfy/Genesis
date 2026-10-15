@@ -1,0 +1,144 @@
+{
+  "scope": "Compare solved inertial contact at exact common times and fixed physical laws.",
+  "comparisons": [
+    {
+      "previous_dt_s": 0.005,
+      "current_dt_s": 0.0025,
+      "common_physical_samples": 20,
+      "displacement_common_time_l2_relative_change": 4.0179929932989814e-05,
+      "displacement_final_relative_change": 6.1000868023405804e-05,
+      "velocity_common_time_l2_relative_change": 0.00458273991785225,
+      "velocity_final_relative_change": 0.005223979709464054,
+      "force_common_time_l2_relative_change": 4.750609531296448e-06,
+      "force_final_relative_change": 1.3986018167260672e-08,
+      "tensor_common_time_l2_relative_change": 1.921771942930213e-05,
+      "tensor_final_relative_change": 2.8435922106532354e-05,
+      "objective_displacement_common_time_l2_relative_change": 4.0609366984823585e-06,
+      "objective_displacement_final_relative_change": 5.574244785234426e-07,
+      "body_elastic_energy_J_common_time_l2_relative_change": 8.011119572683742e-06,
+      "body_elastic_energy_J_final_relative_change": 1.9192452665368605e-09,
+      "total_body_and_jaw_kinetic_energy_J_common_time_l2_relative_change": 0.009367613720053732,
+      "total_body_and_jaw_kinetic_energy_J_final_relative_change": 0.009734339033669872,
+      "raw_corner_peak_final_relative_change": 4.7583634659165197e-07,
+      "final_common_time_s": 0.1
+    },
+    {
+      "previous_dt_s": 0.0025,
+      "current_dt_s": 0.00125,
+      "common_physical_samples": 20,
+      "displacement_common_time_l2_relative_change": 2.0327759660289718e-05,
+      "displacement_final_relative_change": 3.0998354975002446e-05,
+      "velocity_common_time_l2_relative_change": 0.0022021824593452563,
+      "velocity_final_relative_change": 0.0025635947598399954,
+      "force_common_time_l2_relative_change": 3.686538890649794e-06,
+      "force_final_relative_change": 7.492087401376958e-09,
+      "tensor_common_time_l2_relative_change": 1.0055395084259861e-05,
+      "tensor_final_relative_change": 1.4450034614363083e-05,
+      "objective_displacement_common_time_l2_relative_change": 3.180959544971281e-06,
+      "objective_displacement_final_relative_change": 2.832633589250898e-07,
+      "body_elastic_energy_J_common_time_l2_relative_change": 6.31487309763567e-06,
+      "body_elastic_energy_J_final_relative_change": 9.777564564162682e-10,
+      "total_body_and_jaw_kinetic_energy_J_common_time_l2_relative_change": 0.00469010432174926,
+      "total_body_and_jaw_kinetic_energy_J_final_relative_change": 0.004772584626252575,
+      "raw_corner_peak_final_relative_change": 2.430987787516356e-07,
+      "final_common_time_s": 0.1
+    }
+  ],
+  "cases": [
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-inertial-dt-0-v1",
+      "dt_s": 0.005,
+      "final_peak_lower_Pa": 156446.90438129735,
+      "final_peak_upper_Pa": 156446.90470924275,
+      "final_objective_displacement_max_m": 3.516364499745625e-07,
+      "final_body_fit_translation_m": [
+        -2.115486100312697e-06,
+        -1.5611684167177755e-06,
+        -5.797226845977302e-08
+      ],
+      "final_body_fit_rotation": [
+        [
+          0.999999162787205,
+          2.6519668460468373e-05,
+          0.0012937239256759644
+        ],
+        [
+          -2.6519584488110016e-05,
+          0.9999999996483523,
+          -8.206199803626925e-08
+        ],
+        [
+          -0.001293723927397289,
+          4.775290839405982e-08,
+          0.999999163138849
+        ]
+      ],
+      "final_body_elastic_energy_J": 1.3994349402370265e-07,
+      "final_total_kinetic_energy_J": 7.534594913028735e-10
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-inertial-release-v1",
+      "dt_s": 0.0025,
+      "final_peak_lower_Pa": 156446.9788244562,
+      "final_peak_upper_Pa": 156446.97915240156,
+      "final_objective_displacement_max_m": 3.516364510908261e-07,
+      "final_body_fit_translation_m": [
+        -2.074447671408025e-06,
+        -1.5750197511156659e-06,
+        -5.77832624473402e-08
+      ],
+      "final_body_fit_rotation": [
+        [
+          0.9999991949350805,
+          2.600541173131172e-05,
+          0.0012686421521142376
+        ],
+        [
+          -2.6005347074558576e-05,
+          0.9999999996618598,
+          -6.746106488117099e-08
+        ],
+        [
+          -0.0012686421534396032,
+          3.4469531314226323e-08,
+          0.9999991952732196
+        ]
+      ],
+      "final_body_elastic_energy_J": 1.3994349429228853e-07,
+      "final_total_kinetic_energy_J": 7.608660190919129e-10
+    },
+    {
+      "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-inertial-dt-1-v1",
+      "dt_s": 0.00125,
+      "final_peak_lower_Pa": 156447.01685653493,
+      "final_peak_upper_Pa": 156447.01718448036,
+      "final_objective_displacement_max_m": 3.516364520704232e-07,
+      "final_body_fit_translation_m": [
+        -2.0535935371775634e-06,
+        -1.5820771034612792e-06,
+        -5.7686850986846585e-08
+      ],
+      "final_body_fit_rotation": [
+        [
+          0.9999992110302185,
+          2.574408649370087e-05,
+          0.001255896565235112
+        ],
+        [
+          -2.5744031384392253e-05,
+          0.9999999996686216,
+          -6.004637798912471e-08
+        ],
+        [
+          -0.0012558965663647642,
+          2.7714489945804774e-08,
+          0.9999992113615962
+        ]
+      ],
+      "final_body_elastic_energy_J": 1.399434944291192e-07,
+      "final_total_kinetic_energy_J": 7.645147303404795e-10
+    }
+  ],
+  "goal_completion": false,
+  "limitations": "Three inertial time resolutions retain the same held-row initial state, gravity, material, actual rigid fingers, clippedPD/passive damping, physical friction mollifier velocity and0.1s horizon. All saved steps satisfy their original full mapped/body dynamic-force gates. Common-time fields are unsmoothed original corner tensors; reported L2 values are discrete common-grid diagnostics rather than continuum physical accuracy. No spatial/contact regularization or matching to the rigid weld/full arm is inferred. Raw corner lower peaks and whole-volume nonlinear upper peaks remain separate."
+}

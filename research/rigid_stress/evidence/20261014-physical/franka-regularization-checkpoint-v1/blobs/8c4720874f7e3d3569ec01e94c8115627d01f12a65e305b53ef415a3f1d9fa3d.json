@@ -1,0 +1,622 @@
+{
+  "scope": "Raw Panda contact-only regularization, solved inertial reference/time axes and actual native replay",
+  "source_closures": [
+    {
+      "run": "franka-contact-reg-0-v1",
+      "returncode": 0
+    },
+    {
+      "run": "franka-contact-reg-1-v1",
+      "returncode": 0
+    },
+    {
+      "run": "franka-contact-reg-2-v1",
+      "returncode": 0
+    },
+    {
+      "run": "franka-contact-reg-audit-v1",
+      "returncode": 0
+    },
+    {
+      "run": "franka-inertial-qualification-v1",
+      "returncode": 0
+    },
+    {
+      "run": "franka-inertial-release-v1",
+      "returncode": 0
+    },
+    {
+      "run": "franka-inertial-dt-0-v1",
+      "returncode": 0
+    },
+    {
+      "run": "franka-inertial-dt-1-v1",
+      "returncode": 0
+    },
+    {
+      "run": "franka-inertial-axis-audit-v1",
+      "returncode": 0
+    },
+    {
+      "run": "franka-inertial-axis-audit-v2",
+      "returncode": 0
+    },
+    {
+      "run": "franka-inertial-replay-v1",
+      "returncode": 1
+    },
+    {
+      "run": "franka-inertial-replay-v2",
+      "returncode": 0
+    },
+    {
+      "run": "franka-contact-reg-plots-v1",
+      "returncode": 0
+    },
+    {
+      "run": "franka-contact-reg-plots-v2",
+      "returncode": 0
+    }
+  ],
+  "contact_only_regularization": {
+    "scope": "Audit raw rigid penetration and fixed-step contact-regularization sensitivity.",
+    "fixed_integration_interval_s": 0.00125,
+    "fixed_temporary_weld_sol_params": [
+      0.0025,
+      1.0,
+      0.9,
+      0.95,
+      0.001,
+      0.5,
+      2.0
+    ],
+    "cases": [
+      {
+        "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-contact-reg-0-v1",
+        "contact_timeconst_s": 0.01,
+        "source_summary_sha256": "0df22ab0b85460d54f312da10fda82b3ee997539bbff5cfdd448714e89dd9558",
+        "final_geometric_checks": [
+          {
+            "phase": "held_body_pd_closure",
+            "time_s": 31.99875,
+            "body_collision_to_independent_mesh_vertex_max_distance_m": 2.5224900999178098e-09,
+            "contacts": [
+              {
+                "fixture_geom": 4,
+                "source_geom": 16,
+                "support_vertex_projects_inside_finite_box_face": true,
+                "normal_axis": 1,
+                "rigid_fit_max_error_m": 1.1123893155135927e-16,
+                "raw_collider_penetration_m": 0.0004612467078081592,
+                "projected_overlap_along_captured_normal_m": 0.0004612467078081543,
+                "overlap_minus_collider_penetration_m": -4.87890977618477e-18,
+                "penetration_over_wall_thickness": 0.9224934156163184,
+                "normal_force_N": 0.35311076415298376,
+                "force_over_positive_penetration_N_per_m": 765.5572563996465,
+                "mixed_contact_sol_params": [
+                  0.01,
+                  1.0,
+                  0.9,
+                  0.95,
+                  0.001,
+                  0.5,
+                  2.0
+                ]
+              },
+              {
+                "fixture_geom": 11,
+                "source_geom": 23,
+                "support_vertex_projects_inside_finite_box_face": true,
+                "normal_axis": 1,
+                "rigid_fit_max_error_m": 6.938893903907228e-18,
+                "raw_collider_penetration_m": 0.0004615659911263018,
+                "projected_overlap_along_captured_normal_m": 0.00046156599112628927,
+                "overlap_minus_collider_penetration_m": -1.2522535092207576e-17,
+                "penetration_over_wall_thickness": 0.9231319822526035,
+                "normal_force_N": 0.3535101027211254,
+                "force_over_positive_penetration_N_per_m": 765.8928723463764,
+                "mixed_contact_sol_params": [
+                  0.01,
+                  1.0,
+                  0.9,
+                  0.95,
+                  0.001,
+                  0.5,
+                  2.0
+                ]
+              }
+            ]
+          },
+          {
+            "phase": "released_free_body_fixed_hand",
+            "time_s": 51.99875,
+            "body_collision_to_independent_mesh_vertex_max_distance_m": 2.5224900714511723e-09,
+            "contacts": [
+              {
+                "fixture_geom": 4,
+                "source_geom": 16,
+                "support_vertex_projects_inside_finite_box_face": true,
+                "normal_axis": 1,
+                "rigid_fit_max_error_m": 1.0408340855860843e-17,
+                "raw_collider_penetration_m": 0.00046123690083652545,
+                "projected_overlap_along_captured_normal_m": 0.0004612369008365272,
+                "overlap_minus_collider_penetration_m": 1.734723475976807e-18,
+                "penetration_over_wall_thickness": 0.9224738016730509,
+                "normal_force_N": 0.35309833492794845,
+                "force_over_positive_penetration_N_per_m": 765.5465863367593,
+                "mixed_contact_sol_params": [
+                  0.01,
+                  1.0,
+                  0.9,
+                  0.95,
+                  0.001,
+                  0.5,
+                  2.0
+                ]
+              },
+              {
+                "fixture_geom": 11,
+                "source_geom": 23,
+                "support_vertex_projects_inside_finite_box_face": true,
+                "normal_axis": 1,
+                "rigid_fit_max_error_m": 6.938893903907228e-18,
+                "raw_collider_penetration_m": 0.00046115852367850863,
+                "projected_overlap_along_captured_normal_m": 0.00046115852367851,
+                "overlap_minus_collider_penetration_m": 1.3552527156068805e-18,
+                "penetration_over_wall_thickness": 0.9223170473570173,
+                "normal_force_N": 0.35300037643448295,
+                "force_over_positive_penetration_N_per_m": 765.4642781374092,
+                "mixed_contact_sol_params": [
+                  0.01,
+                  1.0,
+                  0.9,
+                  0.95,
+                  0.001,
+                  0.5,
+                  2.0
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-contact-reg-1-v1",
+        "contact_timeconst_s": 0.005,
+        "source_summary_sha256": "4ade8b0800648f4ffdbe35928d8bdf39ecfb53e56f6274aa5b8e34f70d6b95d3",
+        "final_geometric_checks": [
+          {
+            "phase": "held_body_pd_closure",
+            "time_s": 31.99875,
+            "body_collision_to_independent_mesh_vertex_max_distance_m": 2.5224900871422186e-09,
+            "contacts": [
+              {
+                "fixture_geom": 4,
+                "source_geom": 16,
+                "support_vertex_projects_inside_finite_box_face": true,
+                "normal_axis": 1,
+                "rigid_fit_max_error_m": 6.938893903907228e-18,
+                "raw_collider_penetration_m": 0.00016125709328379818,
+                "projected_overlap_along_captured_normal_m": 0.00016125709328380228,
+                "overlap_minus_collider_penetration_m": 4.092863201132779e-18,
+                "penetration_over_wall_thickness": 0.32251418656759634,
+                "normal_force_N": 0.3831116338246468,
+                "force_over_positive_penetration_N_per_m": 2375.7815921337756,
+                "mixed_contact_sol_params": [
+                  0.005,
+                  1.0,
+                  0.9,
+                  0.95,
+                  0.001,
+                  0.5,
+                  2.0
+                ]
+              },
+              {
+                "fixture_geom": 11,
+                "source_geom": 23,
+                "support_vertex_projects_inside_finite_box_face": true,
+                "normal_axis": 1,
+                "rigid_fit_max_error_m": 3.469446951953614e-18,
+                "raw_collider_penetration_m": 0.00016142091139251678,
+                "projected_overlap_along_captured_normal_m": 0.00016142091139252635,
+                "overlap_minus_collider_penetration_m": 9.568084172184577e-18,
+                "penetration_over_wall_thickness": 0.32284182278503354,
+                "normal_force_N": 0.3835261374515905,
+                "force_over_positive_penetration_N_per_m": 2375.938372191412,
+                "mixed_contact_sol_params": [
+                  0.005,
+                  1.0,
+                  0.9,
+                  0.95,
+                  0.001,
+                  0.5,
+                  2.0
+                ]
+              }
+            ]
+          },
+          {
+            "phase": "released_free_body_fixed_hand",
+            "time_s": 51.99875,
+            "body_collision_to_independent_mesh_vertex_max_distance_m": 2.5224901078467834e-09,
+            "contacts": [
+              {
+                "fixture_geom": 4,
+                "source_geom": 16,
+                "support_vertex_projects_inside_finite_box_face": true,
+                "normal_axis": 1,
+                "rigid_fit_max_error_m": 1.1464934308770758e-16,
+                "raw_collider_penetration_m": 0.00016129113945007034,
+                "projected_overlap_along_captured_normal_m": 0.00016129113945006351,
+                "overlap_minus_collider_penetration_m": -6.830473686658678e-18,
+                "penetration_over_wall_thickness": 0.3225822789001407,
+                "normal_force_N": 0.38319770415687815,
+                "force_over_positive_penetration_N_per_m": 2375.8137332491333,
+                "mixed_contact_sol_params": [
+                  0.005,
+                  1.0,
+                  0.9,
+                  0.95,
+                  0.001,
+                  0.5,
+                  2.0
+                ]
+              },
+              {
+                "fixture_geom": 11,
+                "source_geom": 23,
+                "support_vertex_projects_inside_finite_box_face": true,
+                "normal_axis": 1,
+                "rigid_fit_max_error_m": 2.797157557069881e-17,
+                "raw_collider_penetration_m": 0.00016125242163841276,
+                "projected_overlap_along_captured_normal_m": 0.00016125242163840536,
+                "overlap_minus_collider_penetration_m": -7.399679827213568e-18,
+                "penetration_over_wall_thickness": 0.3225048432768255,
+                "normal_force_N": 0.3830997457046079,
+                "force_over_positive_penetration_N_per_m": 2375.7766972557997,
+                "mixed_contact_sol_params": [
+                  0.005,
+                  1.0,
+                  0.9,
+                  0.95,
+                  0.001,
+                  0.5,
+                  2.0
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-contact-reg-2-v1",
+        "contact_timeconst_s": 0.0025,
+        "source_summary_sha256": "62ae6b5411b775372d9c73a8f164ed0366c2237710df9f08b90c4573485ab6e4",
+        "final_geometric_checks": [
+          {
+            "phase": "held_body_pd_closure",
+            "time_s": 31.99875,
+            "body_collision_to_independent_mesh_vertex_max_distance_m": 2.522490098419427e-09,
+            "contacts": [
+              {
+                "fixture_geom": 4,
+                "source_geom": 16,
+                "support_vertex_projects_inside_finite_box_face": true,
+                "normal_axis": 1,
+                "rigid_fit_max_error_m": 1.1123893155135927e-16,
+                "raw_collider_penetration_m": 4.2821398521168535e-05,
+                "projected_overlap_along_captured_normal_m": 4.282139852115896e-05,
+                "overlap_minus_collider_penetration_m": -9.574860435762611e-18,
+                "penetration_over_wall_thickness": 0.08564279704233707,
+                "normal_force_N": 0.39495956249164577,
+                "force_over_positive_penetration_N_per_m": 9223.415771822576,
+                "mixed_contact_sol_params": [
+                  0.0025,
+                  1.0,
+                  0.9,
+                  0.95,
+                  0.001,
+                  0.5,
+                  2.0
+                ]
+              },
+              {
+                "fixture_geom": 11,
+                "source_geom": 23,
+                "support_vertex_projects_inside_finite_box_face": true,
+                "normal_axis": 1,
+                "rigid_fit_max_error_m": 2.8609792490763984e-17,
+                "raw_collider_penetration_m": 4.286736961712652e-05,
+                "projected_overlap_along_captured_normal_m": 4.286736961712015e-05,
+                "overlap_minus_collider_penetration_m": -6.3696877633523385e-18,
+                "penetration_over_wall_thickness": 0.08573473923425304,
+                "normal_force_N": 0.3953854797522283,
+                "force_over_positive_penetration_N_per_m": 9223.460251553726,
+                "mixed_contact_sol_params": [
+                  0.0025,
+                  1.0,
+                  0.9,
+                  0.95,
+                  0.001,
+                  0.5,
+                  2.0
+                ]
+              }
+            ]
+          },
+          {
+            "phase": "released_free_body_fixed_hand",
+            "time_s": 51.99875,
+            "body_collision_to_independent_mesh_vertex_max_distance_m": 2.5224900927723287e-09,
+            "contacts": [
+              {
+                "fixture_geom": 4,
+                "source_geom": 16,
+                "support_vertex_projects_inside_finite_box_face": true,
+                "normal_axis": 1,
+                "rigid_fit_max_error_m": 6.938893903907228e-18,
+                "raw_collider_penetration_m": 4.284045950361328e-05,
+                "projected_overlap_along_captured_normal_m": 4.2840459503611095e-05,
+                "overlap_minus_collider_penetration_m": -2.1819568721270777e-18,
+                "penetration_over_wall_thickness": 0.08568091900722655,
+                "normal_force_N": 0.39513614774450784,
+                "force_over_positive_penetration_N_per_m": 9223.43392958194,
+                "mixed_contact_sol_params": [
+                  0.0025,
+                  1.0,
+                  0.9,
+                  0.95,
+                  0.001,
+                  0.5,
+                  2.0
+                ]
+              },
+              {
+                "fixture_geom": 11,
+                "source_geom": 23,
+                "support_vertex_projects_inside_finite_box_face": true,
+                "normal_axis": 1,
+                "rigid_fit_max_error_m": 1.1123893155135927e-16,
+                "raw_collider_penetration_m": 4.2829886389397725e-05,
+                "projected_overlap_along_captured_normal_m": 4.282988638940055e-05,
+                "overlap_minus_collider_penetration_m": 2.825701912040346e-18,
+                "penetration_over_wall_thickness": 0.08565977277879545,
+                "normal_force_N": 0.3950381893332759,
+                "force_over_positive_penetration_N_per_m": 9223.423703292035,
+                "mixed_contact_sol_params": [
+                  0.0025,
+                  1.0,
+                  0.9,
+                  0.95,
+                  0.001,
+                  0.5,
+                  2.0
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "common_time_comparisons": [
+      {
+        "previous_contact_timeconst_s": 0.01,
+        "current_contact_timeconst_s": 0.005,
+        "common_physical_samples": 80,
+        "normal_force_l2_relative_change": 0.0784101238123714,
+        "maximum_sample_normal_force_change_N": 0.03009931537396121
+      },
+      {
+        "previous_contact_timeconst_s": 0.005,
+        "current_contact_timeconst_s": 0.0025,
+        "common_physical_samples": 80,
+        "normal_force_l2_relative_change": 0.030100982133743206,
+        "maximum_sample_normal_force_change_N": 0.011938398635156888
+      }
+    ],
+    "goal_completion": false,
+    "limitations": "Raw collider penetration is a solver-regularization observable, not material deformation. The independent body mesh agrees with runtime collision vertices within the declared geometry guard. Force/depth ratios are state diagnostics, not a universal contact stiffness; dynamics and solver impedance also contribute. Contact-only time constants change at fixed geometry, material, actuation, integration interval and recorded temporary-weld parameters. Three levels do not by themselves establish a credible zero-regularization tail. The body may retain angular motion; solved deformable/dynamic contact, support/history matching and native load replay remain required before interpreting deformation feedback or physical operating range."
+  },
+  "dynamic_solve_gates": [
+    {
+      "run": "franka-inertial-dt-0-v1",
+      "steps": 20,
+      "max_complete_residual_N": 2.775048240625158e-10
+    },
+    {
+      "run": "franka-inertial-release-v1",
+      "steps": 40,
+      "max_complete_residual_N": 3.0708131531809453e-10
+    },
+    {
+      "run": "franka-inertial-dt-1-v1",
+      "steps": 80,
+      "max_complete_residual_N": 2.590375523676675e-10
+    }
+  ],
+  "temporal_axis": {
+    "scope": "Compare solved inertial contact at exact common times and fixed physical laws.",
+    "comparisons": [
+      {
+        "previous_dt_s": 0.005,
+        "current_dt_s": 0.0025,
+        "common_physical_samples": 20,
+        "displacement_common_time_l2_relative_change": 4.0179929932989814e-05,
+        "displacement_final_relative_change": 6.1000868023405804e-05,
+        "velocity_common_time_l2_relative_change": 0.00458273991785225,
+        "velocity_final_relative_change": 0.005223979709464054,
+        "force_common_time_l2_relative_change": 4.750609531296448e-06,
+        "force_final_relative_change": 1.3986018167260672e-08,
+        "tensor_common_time_l2_relative_change": 1.921771942930213e-05,
+        "tensor_final_relative_change": 2.8435922106532354e-05,
+        "objective_displacement_common_time_l2_relative_change": 4.0609366984823585e-06,
+        "objective_displacement_final_relative_change": 5.574244785234426e-07,
+        "body_elastic_energy_J_common_time_l2_relative_change": 8.011119572683742e-06,
+        "body_elastic_energy_J_final_relative_change": 1.9192452665368605e-09,
+        "total_body_and_jaw_kinetic_energy_J_common_time_l2_relative_change": 0.009367613720053732,
+        "total_body_and_jaw_kinetic_energy_J_final_relative_change": 0.009734339033669872,
+        "raw_corner_peak_final_relative_change": 4.7583634659165197e-07,
+        "final_common_time_s": 0.1
+      },
+      {
+        "previous_dt_s": 0.0025,
+        "current_dt_s": 0.00125,
+        "common_physical_samples": 20,
+        "displacement_common_time_l2_relative_change": 2.0327759660289718e-05,
+        "displacement_final_relative_change": 3.0998354975002446e-05,
+        "velocity_common_time_l2_relative_change": 0.0022021824593452563,
+        "velocity_final_relative_change": 0.0025635947598399954,
+        "force_common_time_l2_relative_change": 3.686538890649794e-06,
+        "force_final_relative_change": 7.492087401376958e-09,
+        "tensor_common_time_l2_relative_change": 1.0055395084259861e-05,
+        "tensor_final_relative_change": 1.4450034614363083e-05,
+        "objective_displacement_common_time_l2_relative_change": 3.180959544971281e-06,
+        "objective_displacement_final_relative_change": 2.832633589250898e-07,
+        "body_elastic_energy_J_common_time_l2_relative_change": 6.31487309763567e-06,
+        "body_elastic_energy_J_final_relative_change": 9.777564564162682e-10,
+        "total_body_and_jaw_kinetic_energy_J_common_time_l2_relative_change": 0.00469010432174926,
+        "total_body_and_jaw_kinetic_energy_J_final_relative_change": 0.004772584626252575,
+        "raw_corner_peak_final_relative_change": 2.430987787516356e-07,
+        "final_common_time_s": 0.1
+      }
+    ],
+    "cases": [
+      {
+        "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-inertial-dt-0-v1",
+        "dt_s": 0.005,
+        "final_peak_lower_Pa": 156446.90438129735,
+        "final_peak_upper_Pa": 156446.90470924275,
+        "final_objective_displacement_max_m": 3.516364499745625e-07,
+        "final_body_fit_translation_m": [
+          -2.115486100312697e-06,
+          -1.5611684167177755e-06,
+          -5.797226845977302e-08
+        ],
+        "final_body_fit_rotation": [
+          [
+            0.999999162787205,
+            2.6519668460468373e-05,
+            0.0012937239256759644
+          ],
+          [
+            -2.6519584488110016e-05,
+            0.9999999996483523,
+            -8.206199803626925e-08
+          ],
+          [
+            -0.001293723927397289,
+            4.775290839405982e-08,
+            0.999999163138849
+          ]
+        ],
+        "final_body_elastic_energy_J": 1.3994349402370265e-07,
+        "final_total_kinetic_energy_J": 7.534594913028735e-10
+      },
+      {
+        "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-inertial-release-v1",
+        "dt_s": 0.0025,
+        "final_peak_lower_Pa": 156446.9788244562,
+        "final_peak_upper_Pa": 156446.97915240156,
+        "final_objective_displacement_max_m": 3.516364510908261e-07,
+        "final_body_fit_translation_m": [
+          -2.074447671408025e-06,
+          -1.5750197511156659e-06,
+          -5.77832624473402e-08
+        ],
+        "final_body_fit_rotation": [
+          [
+            0.9999991949350805,
+            2.600541173131172e-05,
+            0.0012686421521142376
+          ],
+          [
+            -2.6005347074558576e-05,
+            0.9999999996618598,
+            -6.746106488117099e-08
+          ],
+          [
+            -0.0012686421534396032,
+            3.4469531314226323e-08,
+            0.9999991952732196
+          ]
+        ],
+        "final_body_elastic_energy_J": 1.3994349429228853e-07,
+        "final_total_kinetic_energy_J": 7.608660190919129e-10
+      },
+      {
+        "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-inertial-dt-1-v1",
+        "dt_s": 0.00125,
+        "final_peak_lower_Pa": 156447.01685653493,
+        "final_peak_upper_Pa": 156447.01718448036,
+        "final_objective_displacement_max_m": 3.516364520704232e-07,
+        "final_body_fit_translation_m": [
+          -2.0535935371775634e-06,
+          -1.5820771034612792e-06,
+          -5.7686850986846585e-08
+        ],
+        "final_body_fit_rotation": [
+          [
+            0.9999992110302185,
+            2.574408649370087e-05,
+            0.001255896565235112
+          ],
+          [
+            -2.5744031384392253e-05,
+            0.9999999996686216,
+            -6.004637798912471e-08
+          ],
+          [
+            -0.0012558965663647642,
+            2.7714489945804774e-08,
+            0.9999992113615962
+          ]
+        ],
+        "final_body_elastic_energy_J": 1.399434944291192e-07,
+        "final_total_kinetic_energy_J": 7.645147303404795e-10
+      }
+    ],
+    "goal_completion": false,
+    "limitations": "Three inertial time resolutions retain the same held-row initial state, gravity, material, actual rigid fingers, clippedPD/passive damping, physical friction mollifier velocity and0.1s horizon. All saved steps satisfy their original full mapped/body dynamic-force gates. Common-time fields are unsmoothed original corner tensors; reported L2 values are discrete common-grid diagnostics rather than continuum physical accuracy. No spatial/contact regularization or matching to the rigid weld/full arm is inferred. Raw corner lower peaks and whole-volume nonlinear upper peaks remain separate."
+  },
+  "native_replay": {
+    "scope": "Replay solved inertial Panda loads and quantify full-inertia versus rigid relief.",
+    "reference": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-inertial-release-v1",
+    "dynamic_reference_complete_residual_N": 3.0708131531809453e-10,
+    "native_complete_budget_fraction": 0.01914424552141461,
+    "actual_native_vs_independent_linear_tensor_relative_difference": 7.771457447901117e-11,
+    "native_rigid_relief_vs_dynamic_nonlinear_reference_volume_tensor_difference": 4.80423112274959e-05,
+    "full_inertia_linear_vs_dynamic_nonlinear_reference_volume_tensor_difference": 4.8042472295074217e-05,
+    "rigid_relief_vs_full_inertia_linear_reference_volume_tensor_difference": 7.908269176554726e-10,
+    "native_raw_global_peak_Pa": 156442.86216279937,
+    "nonlinear_global_peak_lower_Pa": 156446.9788244562,
+    "nonlinear_global_peak_upper_Pa": 156446.97915240156,
+    "omega_material_rad_s": [
+      9.714147736575147e-06,
+      0.02389751687748474,
+      -0.0004900089964564571
+    ],
+    "deformation_induced_reference_moment_difference_Nm": [
+      -5.191779862697912e-11,
+      -6.282931339976024e-12,
+      -7.997331055295902e-14
+    ],
+    "objective_elastic_displacement_max_m": 3.516364510908261e-07,
+    "normal_stencils": 2,
+    "goal_completion": false,
+    "limitations": "Same-nodal-load native algebra gates use actual raw tensors and the global peak. Reference-volume nonlinear comparisons are one coarse solved dynamic state, not finite-footprint mapping, spatial/contact convergence or full-arm matching. The full-inertia diagnostic retains elastic acceleration but still uses reference geometry and linear constitutive response; its difference is not an exact causal decomposition. Fitted angular velocity is a backward finite rotation rate. Actual contact forces are rotated without changing their values; deformation-induced application moments are retained."
+  },
+  "figure_qa": {
+    "passed": true,
+    "manual_rendered_preview_inspected": true,
+    "source": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-contact-reg-plots-v2/results/franka_contact_regularization_preview.png",
+    "svg_editable_text_elements": 25,
+    "observations": "Readable/unclipped paired markers, source legend, axes and wall reference. Deterministic raw contact values are retained; no statistical uncertainty or unmeasured curves are drawn."
+  },
+  "earlier_attempts": "Original replay v1 omits required surface_triangles and fails before native recovery. Plot v1 omits an imported inactive mesh-generator definition from its source list; selected v2 captures it. Earlier energy-free temporal audit is retained, selected v2 adds body elastic and full kinetic energy.",
+  "live_jobs_excluded": [
+    "714003_0",
+    "714003_3"
+  ],
+  "goal_completion": false
+}

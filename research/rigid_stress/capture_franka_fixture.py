@@ -50,6 +50,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--capture", type=Path, required=True)
     parser.add_argument("--substeps", type=int, default=4)
+    parser.add_argument("--contact-timeconst", type=float)
     parser.add_argument("--control-steps", type=int, default=64)
     parser.add_argument("--target-hold-seconds", type=float, default=0.5)
     parser.add_argument("--release-hold-seconds", type=float, default=20)
@@ -113,6 +114,16 @@ def main():
         )
     )
     scene.build(n_envs=1)
+    solver = scene.rigid_solver
+    geom_indices = np.array([geom.idx for geom in (*robot.geoms, *egg.geoms)])
+    geom_parameters_before = array(solver.get_sol_params(geoms_idx=geom_indices)).reshape(-1, 7)
+    if args.contact_timeconst is not None:
+        assert args.contact_timeconst >= 2 * scene.dt / args.substeps
+        parameters = geom_parameters_before.copy()
+        parameters[:, 0] = args.contact_timeconst
+        solver.set_sol_params(parameters, geoms_idx=geom_indices)
+    geom_parameters_after = array(solver.get_sol_params(geoms_idx=geom_indices)).reshape(-1, 7)
+    np.testing.assert_allclose(geom_parameters_after[:, 1:], geom_parameters_before[:, 1:], rtol=0, atol=0)
     assert robot.n_dofs == 2
     joints = np.arange(2)
     robot.set_dofs_position([0, 0], joints)
@@ -141,6 +152,9 @@ def main():
         "source_capture": str(args.capture),
         "source_snapshot": row["geometry_snapshot"],
         "physical_jaw_position_offset_m": 0.04,
+        "contact_geom_indices": geom_indices.tolist(),
+        "contact_geom_sol_params_before": geom_parameters_before.tolist(),
+        "contact_geom_sol_params_after": geom_parameters_after.tolist(),
         "runtime_joint_armature_kg": array(robot.get_dofs_armature(joints)).reshape(2).tolist(),
         "runtime_joint_passive_damping_N_s_per_m": array(robot.get_dofs_damping(joints)).reshape(2).tolist(),
         "goal_completion": False,
@@ -150,7 +164,6 @@ def main():
     if args.geometry_only:
         print(json.dumps(report), flush=True)
         return
-    solver = scene.rigid_solver
     recovery = solver.stress_recovery
     entry, original = recovery.links[0], recovery.recover
     tick, substep_index, save, phase = 0, 0, False, "held_body_pd_closure"
@@ -175,7 +188,7 @@ def main():
         slots = qd_to_numpy(collider.contact_sort_idx, transpose=True, copy=True)[0]
         source = {
             key: qd_to_numpy(getattr(collider.contact_data, key), transpose=True, copy=True)[0]
-            for key in ("pos", "force", "normal", "link_a", "link_b", "geom_a", "geom_b")
+            for key in ("pos", "force", "normal", "link_a", "link_b", "geom_a", "geom_b", "penetration", "sol_params")
         }
         valid = qd_to_numpy(entry.contacts.valid, transpose=True, copy=True)[0]
         mu = qd_to_numpy(entry.contacts.friction, transpose=True, copy=True)[0]
@@ -198,6 +211,8 @@ def main():
                     "opposite_geom": int(source["geom_b" if a == egg.base_link.idx else "geom_a"][slot]),
                     "normal_force_N": normal,
                     "shear_force_N": shear,
+                    "penetration_m": float(source["penetration"][slot]),
+                    "mixed_contact_sol_params": source["sol_params"][slot].tolist(),
                 }
             )
         frame = {
@@ -216,12 +231,26 @@ def main():
             "contacts": contacts,
         }
         captures.append(frame)
+        last_tick = args.control_steps * round(args.target_hold_seconds / scene.dt) - 1
+        final_tick = last_tick + round(args.release_hold_seconds / scene.dt)
+        if tick in (last_tick, final_tick):
+            name = f"{phase}-{tick:06d}-s{physical_index:02d}_geometry.npz"
+            geometry_fields = {
+                f"geom{geom.idx}_world_vertices_m": array(geom.get_verts()).reshape(-1, 3)
+                for geom in (*robot.geoms, *egg.geoms)
+            }
+            np.savez_compressed(args.output / name, **geometry_fields)
+            frame["geometry_snapshot"] = name
         (args.output / f"{phase}-{tick:06d}-s{physical_index:02d}.json").write_text(json.dumps(frame, indent=2) + "\n")
 
     recovery.recover = observe
     palm = robot.get_link("fixed_hand")
     solver.add_weld_constraint(egg.base_link.idx, palm.idx)
     assert np.count_nonzero(array(solver.get_weld_constraints()["link_a"]) == egg.base_link.idx) == 1
+    assert solver.n_equalities == 0
+    report["runtime_temporary_weld_sol_params"] = qd_to_numpy(
+        solver.dyn_info.equalities.sol_params, transpose=True, copy=True
+    )[0, 0].tolist()
     hold_steps = round(args.target_hold_seconds / scene.dt)
     for control_step in range(1, args.control_steps + 1):
         target = 0.04 + (0.018 - 0.04) * control_step / args.control_steps

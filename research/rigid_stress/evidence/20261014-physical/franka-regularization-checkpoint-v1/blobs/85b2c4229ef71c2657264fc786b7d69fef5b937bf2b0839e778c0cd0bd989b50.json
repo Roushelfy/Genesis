@@ -1,0 +1,27 @@
+{
+  "scope": "Replay solved inertial Panda loads and quantify full-inertia versus rigid relief.",
+  "reference": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-inertial-release-v1",
+  "dynamic_reference_complete_residual_N": 3.0708131531809453e-10,
+  "native_complete_budget_fraction": 0.01914424552141461,
+  "actual_native_vs_independent_linear_tensor_relative_difference": 7.771457447901117e-11,
+  "native_rigid_relief_vs_dynamic_nonlinear_reference_volume_tensor_difference": 4.80423112274959e-05,
+  "full_inertia_linear_vs_dynamic_nonlinear_reference_volume_tensor_difference": 4.8042472295074217e-05,
+  "rigid_relief_vs_full_inertia_linear_reference_volume_tensor_difference": 7.908269176554726e-10,
+  "native_raw_global_peak_Pa": 156442.86216279937,
+  "nonlinear_global_peak_lower_Pa": 156446.9788244562,
+  "nonlinear_global_peak_upper_Pa": 156446.97915240156,
+  "omega_material_rad_s": [
+    9.714147736575147e-06,
+    0.02389751687748474,
+    -0.0004900089964564571
+  ],
+  "deformation_induced_reference_moment_difference_Nm": [
+    -5.191779862697912e-11,
+    -6.282931339976024e-12,
+    -7.997331055295902e-14
+  ],
+  "objective_elastic_displacement_max_m": 3.516364510908261e-07,
+  "normal_stencils": 2,
+  "goal_completion": false,
+  "limitations": "Same-nodal-load native algebra gates use actual raw tensors and the global peak. Reference-volume nonlinear comparisons are one coarse solved dynamic state, not finite-footprint mapping, spatial/contact convergence or full-arm matching. The full-inertia diagnostic retains elastic acceleration but still uses reference geometry and linear constitutive response; its difference is not an exact causal decomposition. Fitted angular velocity is a backward finite rotation rate. Actual contact forces are rotated without changing their values; deformation-induced application moments are retained."
+}

@@ -1,0 +1,37 @@
+{
+  "claim_anchor": "franka-contact-regularization-before-feedback",
+  "main_claim": "Contact regularization changes geometric penetration and normal loads at fixed physical inputs, integration interval and recorded weld parameters.",
+  "material_passport": [
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-contact-reg-audit-v1/results/summary.json",
+      "sha256": "915e3da462445034703f277bc6fb393acea9336b95a71461701ad55a8f8971e2"
+    },
+    {
+      "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/grasp-u-plots-v3/style/nature_mpl_style.py",
+      "sha256": "5ca3184cd5d1d5361996b98935354b56e63db598f405ed539afb5aed39e2eec1"
+    }
+  ],
+  "panel_roles": {
+    "a": "Both source-contact penetration depths compared with the physical wall thickness",
+    "b": "Both source-contact forces at the same three numerical time constants"
+  },
+  "panel_spec": [
+    {
+      "panel": "a",
+      "plot_type": "paired scatter",
+      "x": "tau_ms",
+      "y": "raw_penetration_mm"
+    },
+    {
+      "panel": "b",
+      "plot_type": "paired scatter",
+      "x": "tau_ms",
+      "y": "normal_force_N"
+    }
+  ],
+  "caption": "Actual compound Panda fingers and full hollow egg, fixed1.25ms integration interval, identical52s control protocol, friction0.6 and temporary-weld parameters. Symbols retain both source contacts16/23 at the same51.99875s instant. No smoothing, intermediate-value estimate or statistical interval is drawn. The dashed line in panel a is the0.5mm wall thickness; plotted penetration is rigid geometric overlap, not material deformation. The body retains angular motion, and these observations do not establish a zero-regularization or deformable-contact convergence tail.",
+  "alt_text": "Raw overlap decreases from about0.461mm to0.161mm and0.043mm as the contact time constant decreases from10ms to5ms and2.5ms. Normal forces increase from about0.353N to0.383N and0.395N.",
+  "body_argument": "The largest overlap is close to the wall thickness. Smaller contact time constants reduce that numerical overlap and increase the rigid-controller loads. Material-deformation feedback must be separated from this contact-law effect before comparing stress accuracy.",
+  "uncertainty": "Six paired deterministic values from three cases; no confidence interval or population estimate.",
+  "limits": "A coupled deformable reference and matched supports/history/contact regularization remain required. This is not a physical operating-range claim."
+}
