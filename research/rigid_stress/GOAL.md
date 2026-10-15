@@ -49,6 +49,13 @@ and preserves complete original corner/quadrature fields to6.05e-11. Its raw
 global interval remains3.79–5.94GPa at6.25ms; this is unresolved physical
 concentration, not a converged peak. The full80-step control is running.
 
+The fixed2339-tet body pad5/7 final-field audit now isolates the pad axis from
+body geometry/mesh/mass: tensor changes2.78267%, displacement2.67521%, energy
+0.673997% and raw peak0.0153356%, with identical hotspot coordinates. Original
+recorded and reconstructed1e-9N gates pass. Two levels do not establish a tail;
+pad9 and fixed-pad body refinement remain live. These norms do not form an
+additive decomposition of the earlier coupled44.58% change.
+
 The [nonlinear-U/geometry/model checkpoint](docs/PHYSICAL_NONLINEAR_U_SPATIAL_20261015.md)
 independently verifies the completed2339-tet nonlinear contact reference and two
 full objective spatial fields. Their probe tensor still changes44.58%; analytic/

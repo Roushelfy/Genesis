@@ -85,6 +85,35 @@ The fixed-body pad study keeps the body mesh, geometry and mass identical.
 The finer meshes' geometric measures are verified here; their interrupted
 contact calculations are not thereby qualified.
 
+## Subsequent fixed-body pad axis
+
+716309_0 completes pad5 on the existing2339-tet body in1h18m52s.716416_0
+independently checks it against the completed pad7 reference with
+`--axis pad_at_fixed_body`. The body mesh and semantic geometry hashes are
+identical, as is its4.185568092402535g discrete mass. All original force,
+material, gravity and force-stage controls stay fixed. Pad surface geometry,
+volume and contact resolution vary together on this declared axis.
+
+| Fixed body2339 | Pad5 | Pad7 |
+|---|---:|---:|
+| Original accepted residual records |624|598|
+| Independent body residual (N) |4.41440e-11|4.51518e-11|
+| Independent original-map residual (N) |4.42500e-11|4.55978e-11|
+| Raw global peak interval (kPa) |[100.634580,100.634990]|[100.650015,100.650427]|
+
+The75-probe full tensor changes2.78267%, von Mises1.22017%, objective
+displacement2.67521%, body energy0.673997% and raw peak lower bound0.0153356%.
+Both unrestricted maxima occur at[3.283124812,-3.822847291,-0.483103659]mm.
+Small peak change and a shared hotspot still do not establish a physical tail
+from two levels. The pad9 producer and fixed-pad5 body refinement remain live.
+
+The [fixed-body pad packet](../evidence/20261014-physical/u-fixed-body-pad-qualification-v1/README.md)
+preserves150 actual-runtime entries and72 source-identity records. Its final-field
+and recorded-history scope is unchanged: a missing complete friction trajectory
+is not reconstructed from final nodal loads. These deterministic changes at
+the fixed2339-tet body cannot be subtracted from the earlier coupled44.58%
+diagnostic or combined with the distinct volume-L2 load-model differences.
+
 ## Objective replay separates numerical, constitutive and load-model differences
 
 716089_0 adds one constant-load increment to the2339-tet reference with a known
