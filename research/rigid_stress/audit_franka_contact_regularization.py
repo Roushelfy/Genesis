@@ -70,7 +70,11 @@ def final_geometry(run, report, phase):
             records.append(record)
     return {
         "phase": phase,
-        "time_s": 0.01 * (row["tick"] + row["physical_substep"] / 8),
+        "time_s": 0.01
+        * (
+            row["tick"]
+            + row["physical_substep"] / json.loads((run / "results/configuration.json").read_text())["substeps"]
+        ),
         "body_collision_to_independent_mesh_vertex_max_distance_m": float(nearest.max()),
         "contacts": records,
     }
@@ -88,7 +92,7 @@ def main():
         assert int((run / "returncode.txt").read_text()) == 0
         config = json.loads((run / "results/configuration.json").read_text())
         frozen = {key: value for key, value in config.items() if key not in ("contact_timeconst", "output")}
-        assert config["substeps"] == 8
+        assert config["substeps"] >= 8
         report = json.loads((run / "results/summary.json").read_text())
         geom = json.loads((run / "results/fixture-assets/manifest.json").read_text())
         if fixed is None:
@@ -147,7 +151,7 @@ def main():
         )
     output = {
         "scope": __doc__,
-        "fixed_integration_interval_s": 0.00125,
+        "fixed_integration_interval_s": 0.01 / fixed["substeps"],
         "fixed_temporary_weld_sol_params": weld,
         "cases": records,
         "common_time_comparisons": comparisons,

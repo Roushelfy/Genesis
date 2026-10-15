@@ -21,6 +21,8 @@ def main():
     parser.add_argument("--approach-steps", type=int, default=330)
     parser.add_argument("--hold-steps", type=int, default=360)
     parser.add_argument("--substeps", type=int, default=1)
+    parser.add_argument("--contact-timeconst", type=float)
+    parser.add_argument("--dense-hold-tail-steps", type=int, default=0)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -36,6 +38,12 @@ def main():
     )
     workload.save_conditions(args.output / "conditions.npz")
     solver = workload.scene.rigid_solver
+    if args.contact_timeconst is not None:
+        assert args.contact_timeconst >= 2 * workload.scene.dt / args.substeps
+        geom_indices = np.arange(solver.n_geoms)
+        parameters = array(solver.get_sol_params(geoms_idx=geom_indices)).reshape(-1, 7)
+        parameters[:, 0] = args.contact_timeconst
+        solver.set_sol_params(parameters, geoms_idx=geom_indices)
     recovery = solver.stress_recovery
     entry = recovery.links[0]
     original = recovery.recover
@@ -83,7 +91,7 @@ def main():
         slots = qd_to_numpy(collider.contact_sort_idx, transpose=True, copy=True)[0]
         sources = {
             name: qd_to_numpy(getattr(collider.contact_data, name), transpose=True, copy=True)[0]
-            for name in ("pos", "force", "normal", "link_a", "link_b", "geom_a", "geom_b")
+            for name in ("pos", "force", "normal", "link_a", "link_b", "geom_a", "geom_b", "penetration", "sol_params")
         }
         valid = qd_to_numpy(entry.contacts.valid, transpose=True, copy=True)[0]
         friction = qd_to_numpy(entry.contacts.friction, transpose=True, copy=True)[0]
@@ -110,6 +118,8 @@ def main():
                     "opposite_geom": int(sources["geom_b" if a == workload.link.idx else "geom_a"][source]),
                     "normal_force_N": normal,
                     "shear_force_N": shear,
+                    "penetration_m": float(sources["penetration"][source]),
+                    "mixed_contact_sol_params": sources["sol_params"][source].tolist(),
                 }
             )
         poses = []
@@ -149,6 +159,11 @@ def main():
             "contacts": contacts,
             "hand_position_m": array(workload.hand.get_pos(relative=False)).reshape(3).tolist(),
             "hand_quaternion_wxyz": array(workload.hand.get_quat(relative=False)).reshape(4).tolist(),
+            "hand_velocity_m_s": array(workload.hand.get_vel(relative=False)).reshape(3).tolist(),
+            "hand_angular_velocity_rad_s": array(workload.hand.get_ang()).reshape(3).tolist(),
+            "robot_joint_position": array(workload.robot.get_dofs_position()).reshape(9).tolist(),
+            "robot_joint_velocity": array(workload.robot.get_dofs_velocity()).reshape(9).tolist(),
+            "robot_joint_control_force_readout": array(workload.robot.get_dofs_control_force()).reshape(9).tolist(),
         }
         name = f"{mode}-{tick:04d}-s{physical_substep:02d}"
         row["geometry_snapshot"] = name + "_geometry.npz"
@@ -170,7 +185,7 @@ def main():
     workload.robot.control_dofs_position(0.018, workload.fingers)
     for tick in range(args.hold_steps):
         macro_substep = 0
-        save = tick % 60 == 59 or tick == args.hold_steps - 1
+        save = tick % 60 == 59 or tick >= args.hold_steps - max(args.dense_hold_tail_steps, 1)
         workload.scene.step()
         solver.check_errno()
         if save:
@@ -178,6 +193,12 @@ def main():
     summary = {
         "scope": __doc__,
         "substeps": args.substeps,
+        "configuration": {key: str(value) if isinstance(value, Path) else value for key, value in vars(args).items()},
+        "robot_joint_kp": array(workload.robot.get_dofs_kp()).reshape(9).tolist(),
+        "robot_joint_kv": array(workload.robot.get_dofs_kv()).reshape(9).tolist(),
+        "robot_joint_armature": array(workload.robot.get_dofs_armature()).reshape(9).tolist(),
+        "robot_joint_passive_damping": array(workload.robot.get_dofs_damping()).reshape(9).tolist(),
+        "runtime_geom_sol_params": array(solver.get_sol_params(geoms_idx=np.arange(solver.n_geoms))).tolist(),
         "body_asset_metadata": json.loads(
             (Path("examples/rigid/assets/hollow_egg/level1/egg_shell.metadata.json")).read_text()
         ),

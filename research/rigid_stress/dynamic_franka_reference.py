@@ -10,6 +10,7 @@ from scipy import sparse
 
 from .franka_contact_reference import RigidFingerContactSystem, build_from_capture
 from .franka_rigid_mode_coordinates import coordinate_map
+from .refine_franka_reference import refine_body
 from .summarize_fine_references import closed_source
 
 
@@ -79,22 +80,80 @@ def main():
     parser.add_argument("--closure-run", type=Path, required=True)
     parser.add_argument("--dt", type=float, default=0.0025)
     parser.add_argument("--steps", type=int, default=40)
+    parser.add_argument("--body-refinement", type=int, choices=(0, 1, 2), default=0)
+    parser.add_argument("--cold-closure", action="store_true")
+    parser.add_argument("--control-steps", type=int, default=64)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     assert args.dt > 0 and args.steps > 0
+    args.output.mkdir(parents=True, exist_ok=False)
+    (args.output / "configuration.json").write_text(json.dumps(vars(args), default=str, indent=2) + "\n")
     closed_source(args.closure_run)
     config = json.loads((args.closure_run / "results/configuration.json").read_text())
     static, _ = build_from_capture(Path(config["capture"]), config["dhat"])
-    with np.load(args.closure_run / "results/force_failure.npz") as failed:
-        np.testing.assert_array_equal(failed["rest_positions"], static.rest)
-        u = failed["previous_displacement"].copy()
+    assert args.cold_closure or args.body_refinement == 0
+    static = refine_body(static, args.body_refinement)
+    if args.cold_closure:
+        u = np.zeros(static.stiffness.shape[0])
+        held_map, held = static.coordinate_map(True)
+        gravity = static.gravity_force([0, 0, -9.81])
+        for control_step in range(1, args.control_steps + 1):
+            static.q_target[:] = 0.04 + (0.018 - 0.04) * control_step / args.control_steps
+            (args.output / "closure_progress.json").write_text(
+                json.dumps(
+                    {
+                        "step": control_step,
+                        "target_m": static.q_target.tolist(),
+                        "body_tetrahedra": static.body.mesh.nelements,
+                        "fixed_points_m": static.fixed_initializer_points_m.tolist(),
+                        "fixed_components": static.fixed_initializer_components.tolist(),
+                    }
+                )
+                + "\n"
+            )
+            u, g, _f, _energy, _iterations = static.solve_updated_friction(
+                held,
+                np.zeros(len(held)),
+                1,
+                initial_displacement=u,
+                coordinate_map=held_map,
+                applied_force=gravity,
+                initial_force=gravity,
+                phase="same_fixed_points_cold_closure",
+                failure_path=args.output / "closure_failure.npz",
+            )
+            print(
+                json.dumps(
+                    {
+                        "cold_closure_target_step": control_step,
+                        "complete_held_residual_N": float(np.linalg.norm(held_map.T @ g)),
+                    }
+                ),
+                flush=True,
+            )
+        np.savez_compressed(
+            args.output / "closure_state.npz",
+            displacement=u,
+            fixed_points_m=static.fixed_initializer_points_m,
+            fixed_components=static.fixed_initializer_components,
+        )
+    else:
+        with np.load(args.closure_run / "results/force_failure.npz") as failed:
+            np.testing.assert_array_equal(failed["rest_positions"], static.rest)
+            u = failed["previous_displacement"].copy()
     system = InertialRigidFingerContactSystem(static, args.dt)
     system.q_target[:] = 0.018
     mapping = coordinate_map(system)
     external = system.gravity_force([0, 0, -9.81])
     velocity = np.zeros_like(u)
-    args.output.mkdir(parents=True, exist_ok=False)
     (args.output / "configuration.json").write_text(json.dumps(vars(args), default=str, indent=2) + "\n")
+    np.savez_compressed(
+        args.output / "reference_geometry.npz",
+        vertices=system.body.mesh.p.T,
+        tetrahedra=system.body.mesh.t.T,
+        fixed_initializer_points_m=static.fixed_initializer_points_m,
+        fixed_initializer_components=static.fixed_initializer_components,
+    )
     records = []
     for step in range(1, args.steps + 1):
         previous, old_velocity = u.copy(), velocity.copy()
@@ -142,6 +201,9 @@ def main():
     np.savez_compressed(args.output / "body_fields.npz", tensor_Pa=tensor, vm_Pa=vm, upper_peak_Pa=upper)
     report = {
         "scope": __doc__,
+        "body_tetrahedra": system.body.mesh.nelements,
+        "body_refinement_levels": args.body_refinement,
+        "cold_closure": args.cold_closure,
         "steps": records,
         "body_peak_lower_Pa": float(vm.max()),
         "body_peak_upper_Pa": float(upper.max()),

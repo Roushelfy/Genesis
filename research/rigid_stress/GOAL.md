@@ -112,6 +112,13 @@ tensor/velocity/energy diagnostics; one actual native nodal replay passes.
 These are one coarse spatial/contact setting. Matched full-arm/support/history,
 physical contact/mesh tails, model/feedback separation and the original full
 accuracy/cost acceptance remain required.
+The [finer contact and full-arm input update](docs/PHYSICAL_FRANKA_CONTACT_TAIL_20261015.md)
+adds decreasing force tails at fixed actual weld parameters and full original
+Franka controller/geometry input audits. Fixed-polyhedron body/contact refinement
+retains physical held points. Sparse inertia is equation- and array-identical in
+the tested coarse cold protocol; fine spatial studies remain live. The full-egg
+lagged initializer fails with exact retained evidence. The complete original
+physical-contact/model/feedback/accuracy-cost objective remains active.
 
 ## Previous nonconvex implementation brief, 2026-10-11
 
