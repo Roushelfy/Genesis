@@ -1,0 +1,55 @@
+{
+  "scope": "Finest covered CAD actual native resolved-load replay",
+  "prior_submission_recovery": {
+    "query": [
+      "sacct",
+      "-n",
+      "-X",
+      "-u",
+      "zhaofeng",
+      "-S",
+      "2026-10-14",
+      "--format=JobID,State,SubmitLine%15000",
+      "--parsable2"
+    ],
+    "matching_submit_lines": 0,
+    "target_directory_existed": false
+  },
+  "failed_scheduler_attempt": {
+    "argv": [
+      "sbatch",
+      "--parsable",
+      "--array=0-0",
+      "--partition=rtx-mid",
+      "--gres=gpu:1",
+      "--cpus-per-task=8",
+      "--mem=128G",
+      "--time=03:00:00",
+      "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-native-linearization-level3-v1-%A_%a.log",
+      "--dependency=afterok:719220:719345",
+      "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/replay_resolved_linearization.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-native-linearization-level3-v1 --audit-run /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1 --case 2 --max-iterations 100000'"
+    ],
+    "returncode": 1,
+    "stderr": "sbatch: error: Batch job submission failed: Job dependency problem",
+    "submitted_job": null
+  },
+  "completed_parent_guard": "719220_0|COMPLETED|0:0\n719345_0|COMPLETED|0:0\n",
+  "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-native-linearization-level3-v1",
+  "argv": [
+    "sbatch",
+    "--parsable",
+    "--array=0-0",
+    "--partition=rtx-mid",
+    "--gres=gpu:1",
+    "--cpus-per-task=8",
+    "--mem=128G",
+    "--time=03:00:00",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-native-linearization-level3-v1-%A_%a.log",
+    "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/replay_resolved_linearization.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-native-linearization-level3-v1 --audit-run /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-covered-cad-three-level-linearization-v1 --case 2 --max-iterations 100000'"
+  ],
+  "goal_completion": false,
+  "submission_returncode": 0,
+  "submission_stdout": "719430\n",
+  "submission_stderr": "",
+  "job": "719430"
+}

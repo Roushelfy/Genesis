@@ -31,6 +31,19 @@ egg/Franka and U contact references, resolved-load/native replay versus feedback
 remaining applicable load-model sensitivity and physically verified warmed costs.
 These are execution priorities within the complete linked objective.
 
+The [covered CAD contact-tail checkpoint](docs/PHYSICAL_COVERED_CAD_CONTACT_TAIL_20261015.md)
+reconstructs all15 dynamic source states with complete normal/shear forces,
+six-component wrenches and discrete-component threshold tails. Each finger
+contacts the same6mm crease with90-degree incident face planes. The final pair
+has96.17% of original weighted squared tensor change within250um of the actual
+normal-sample clouds; all158340 probes remain, but none samples within25um.
+These are localized unresolved contact discrepancies, not a singularity proof.
+Actual31668/64716-tet native replays pass both load modes at original budgets;
+the finest replay and fixed31668-tet2.5/1.25/0.625um distance controls remain
+separate pending evidence. Configuration preparation creates zero physical states.
+Editable matched figures retain actual rendering failure and inspected exports.
+All original physical/model/island/application/feedback/verified-cost gates stay.
+
 The [three-level covered CAD checkpoint](docs/PHYSICAL_COVERED_CAD_THREE_LEVEL_20261015.md)
 now closes every original fine dynamic force/coverage state, all158340 original
 common probes and independent three-level resolved-load linearization. Tensor
