@@ -142,6 +142,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run", type=Path, nargs="+", required=True)
     parser.add_argument("--sample-every", type=int, default=8)
+    parser.add_argument("--axis", choices=("body_refinement", "contact_refinement"), default="body_refinement")
     parser.add_argument("--qualify-only", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
@@ -152,7 +153,8 @@ def main():
         closed_source(run)
         assert int((run / "returncode.txt").read_text()) == 0
         config = json.loads((run / "results/configuration.json").read_text())
-        physical = {k: v for k, v in config.items() if k not in ("output", "body_refinement")}
+        config.setdefault("contact_refinement", 0)
+        physical = {k: v for k, v in config.items() if k not in ("output", args.axis)}
         assert physical["cold_closure"]
         if frozen is None:
             frozen = physical
@@ -167,7 +169,7 @@ def main():
             reference = SkfemElasticReference(saved["vertices"], saved["tetrahedra"], 1e10, 0.3, 2000)
             fixed = (saved["fixed_initializer_points_m"].copy(), saved["fixed_initializer_components"].copy())
         cases.append((reference.mesh.nelements, run, config, report, reference, fixed))
-    cases.sort(key=lambda row: row[0])
+    cases.sort(key=lambda row: row[2][args.axis])
     seed = cases[0][4]
     points, weights = common_probes(seed)
     np.savez_compressed(args.output / "common_probes.npz", reference_points_m=points, volume_weights_m3=weights)
@@ -253,6 +255,8 @@ def main():
             {
                 "run": str(run),
                 "body_tetrahedra": nelements,
+                "contact_refinement": config["contact_refinement"],
+                "fixed_seed_contact_boundary": (run / "results/frozen_contact_boundary.npz").exists(),
                 "final_peak_lower_Pa": report["body_peak_lower_Pa"],
                 "final_peak_upper_Pa": report["body_peak_upper_Pa"],
                 "final_lower_peak_reference_position_m": reference.corner_positions[element, corner].tolist(),
@@ -272,8 +276,29 @@ def main():
         }
         comparisons.append(
             {
+                "previous_run": str(cases[index][1]),
+                "current_run": str(cases[index + 1][1]),
                 "previous_tetrahedra": cases[index][0],
                 "current_tetrahedra": cases[index + 1][0],
+                "previous_contact_refinement": cases[index][2]["contact_refinement"],
+                "current_contact_refinement": cases[index + 1][2]["contact_refinement"],
+                "varying_discretizations": [
+                    key
+                    for key, before, after in [
+                        ("body_refinement", cases[index][2]["body_refinement"], cases[index + 1][2]["body_refinement"]),
+                        (
+                            "contact_refinement",
+                            cases[index][2]["contact_refinement"],
+                            cases[index + 1][2]["contact_refinement"],
+                        ),
+                        (
+                            "fixed_seed_contact_boundary",
+                            summaries[index]["fixed_seed_contact_boundary"],
+                            summaries[index + 1]["fixed_seed_contact_boundary"],
+                        ),
+                    ]
+                    if before != after
+                ],
                 "common_time_changes": changes,
                 "raw_lower_peak_relative_change": abs(
                     summaries[index + 1]["final_peak_lower_Pa"] - summaries[index]["final_peak_lower_Pa"]
@@ -283,13 +308,14 @@ def main():
         )
     output = {
         "scope": __doc__,
+        "declared_discretization_axis": args.axis,
         "qualifications": qualifications,
         "cases": summaries,
         "comparisons": comparisons,
         "common_material_points": len(points),
         "sample_times_s": [i * frozen["dt"] for i in step_indices],
         "goal_completion": False,
-        "limitations": "Fixed polyhedral geometry and physical held points; volume and contact triangles refine together. Fixed material-coordinate interior probes carry seed-volume diagnostic weights, not an exact continuum norm. Tensors use each solution's proper finite body frame; contact wrenches use the shared fixed reference origin. Complete nonlinear global peak lower/upper bounds are retained separately. Two spatial levels or an equal-constructor control do not establish a physical tail. Contact quadrature/regularization/CAD geometry/full-arm support matching and feedback/model/accuracy-cost remain separate required studies.",
+        "limitations": "Fixed polyhedral geometry and physical held points. Configurations, explicit pairwise varying discretizations and fixed-contact-boundary markers define each comparison; body refinement changes contact triangles unless that boundary is frozen. A collision-only sweep keeps the volume fixed. Fixed material-coordinate interior probes carry seed-volume diagnostic weights, not an exact continuum norm. Tensors use each solution's proper finite body frame; contact wrenches use the shared fixed reference origin. Complete nonlinear global peak lower/upper bounds are retained separately. Two spatial levels or an equal-constructor control do not establish a physical tail. Contact quadrature/regularization/CAD geometry/full-arm support matching and feedback/model/accuracy-cost remain separate required studies.",
     }
     (args.output / "summary.json").write_text(json.dumps(output, indent=2) + "\n")
     print(json.dumps(output), flush=True)
