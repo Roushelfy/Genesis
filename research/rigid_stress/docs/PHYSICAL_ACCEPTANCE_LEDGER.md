@@ -5,7 +5,19 @@ without narrowing its scope. Historical native performance completion does not
 establish the new physical stage. Dated reports preserve their observations;
 running or pending jobs count as scheduled work only.
 
-Current: [matched spatial fields](PHYSICAL_MATCHED_SPATIAL_20261015.md) close
+Current: [complete fine history and linearization](PHYSICAL_FULL_SPATIAL_20261015.md)
+independently audits all80 precision-aware8433-tet states with maximum body/mapped
+residuals5.54e-11/9.80e-11N at unchanged budgets. Complete480/3577/8433 histories
+retain23.94% tensor/49.66% energy change and2.023GPa final raw peak. Independent
+resolved-load linear FEM differs5.17% in volume-weighted tensor and3.00% in raw
+peak at the finest32.5ms state. Six actual native CUDA replays pass their original
+complete elastic residuals and agree with independent corner tensors to1.44e-10
+relative difference; they retain the measured nonlinear-model discrepancy. The
+original-history classifier now requires complete saved data and a matching
+summary, independently of wrapper code; scheduler status remains authoritative.
+Full physical/contact/geometry/history/model/feedback/cost requirements stay open.
+
+The earlier [matched spatial fields](PHYSICAL_MATCHED_SPATIAL_20261015.md) close
 480/3840/30720 uniform references, retaining49.32% final tensor change. Matched
 32.5ms480/3577/8433-tet states all satisfy independently reconstructed original
 force gates but retain23.94% tensor/49.66% energy changes and2.044GPa raw peak.
