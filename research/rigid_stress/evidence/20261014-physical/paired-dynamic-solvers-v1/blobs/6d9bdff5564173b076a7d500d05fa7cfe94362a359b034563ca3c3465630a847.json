@@ -1,0 +1,118 @@
+{
+  "scope": "Audit retained first-dynamic matrices and states after a capture metadata serialization failure.",
+  "capture_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-coarse-first-dynamic-matrix-v1",
+  "capture_actual_wrapper_code": 1,
+  "source_run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad1920-metis-qualification-candidate-v1",
+  "source_actual_wrapper_code": 0,
+  "body_tetrahedra": 1920,
+  "body_dofs": 9630,
+  "matrix_dimension": 9632,
+  "matrix_nonzeros": 840607,
+  "matrix_dtype": "float64",
+  "matrix_index_dtype": "int32",
+  "symmetric_graph_nonzeros": 832322,
+  "explicit_six_rigid_plus_two_jaw_columns": [
+    9624,
+    9625,
+    9626,
+    9627,
+    9628,
+    9629,
+    9630,
+    9631
+  ],
+  "border_degrees": [
+    9518,
+    9526,
+    9506,
+    9631,
+    9631,
+    9631,
+    15,
+    9
+  ],
+  "interior_maximum_degree": 200,
+  "largest_degree_columns": [
+    {
+      "column": 9627,
+      "degree": 9631,
+      "is_declared_border": true
+    },
+    {
+      "column": 9628,
+      "degree": 9631,
+      "is_declared_border": true
+    },
+    {
+      "column": 9629,
+      "degree": 9631,
+      "is_declared_border": true
+    },
+    {
+      "column": 9625,
+      "degree": 9526,
+      "is_declared_border": true
+    },
+    {
+      "column": 9624,
+      "degree": 9518,
+      "is_declared_border": true
+    },
+    {
+      "column": 9626,
+      "degree": 9506,
+      "is_declared_border": true
+    },
+    {
+      "column": 632,
+      "degree": 200,
+      "is_declared_border": false
+    },
+    {
+      "column": 634,
+      "degree": 200,
+      "is_declared_border": false
+    },
+    {
+      "column": 635,
+      "degree": 200,
+      "is_declared_border": false
+    },
+    {
+      "column": 668,
+      "degree": 200,
+      "is_declared_border": false
+    },
+    {
+      "column": 655,
+      "degree": 200,
+      "is_declared_border": false
+    },
+    {
+      "column": 640,
+      "degree": 200,
+      "is_declared_border": false
+    }
+  ],
+  "first_original_complete_mapped_residual_N": 0.12111506225782324,
+  "difference_from_retained_original_first_residual_N": null,
+  "dt_s": 0.00125,
+  "restored_closure_and_zero_initial_velocity_checked": true,
+  "original_force_and_hessian_sources_copied_unchanged": true,
+  "matrix_sha256": "0ffde5371ce3a92669cffba1bbed76a67737cbd5c7907e70ae21251cf0170c32",
+  "new_physical_states_accepted": 0,
+  "factorization_attempted": false,
+  "input_sha256": {
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-coarse-first-dynamic-matrix-v1/capture.log": "e9c908ac450fbd5b687159df3d52a87d3d91430e6182e8feaaf3b19c516bb055",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-coarse-first-dynamic-matrix-v1/parent-source-path.txt": "2e75ef612775c29ee2ff23e10d6fc7e0276ed31b9a7bd289906fc51b29b1e6ba",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-coarse-first-dynamic-matrix-v1/parent-source.sha256": "dd193448e97104caf811b2f32d55cb850e5c14ceafa46195041ef133dd1f8bce",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-coarse-first-dynamic-matrix-v1/results/first_dynamic_matrix.npz": "0ffde5371ce3a92669cffba1bbed76a67737cbd5c7907e70ae21251cf0170c32",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-coarse-first-dynamic-matrix-v1/results/original_coordinate_map.npz": "f581f2acc18409a39b4bd8315de3a5ae7137cfe573112f16ae699f109d55a229",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-coarse-first-dynamic-matrix-v1/results/first_dynamic_state.npz": "c679025f2143649f105b0f3c193d2f645f584a6934c616bd506bed19a3b6b56d",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad1920-metis-qualification-candidate-v1/results/configuration.json": "2ad5b0197b6a7cb430d9078e05155e495354afdf88914e7c6002b98b53c95c13",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad1920-metis-qualification-candidate-v1/results/closure_state.npz": "3e6bdf554416fc9eb54fdd0ddb27c2d955ad3bbd25fd9217c3b61f8617832e1d",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad1920-metis-qualification-candidate-v1/results/reference_geometry.npz": "61326e918c0a6cb6eb37d48c681e8709711f9fb03fe21e8bb12c1376cbbae64d"
+  },
+  "goal_completion": false,
+  "limitations": "The producer's real code1 metadata-serialization failure is retained. This independent postprocessing audits already-written matrix/state arrays without rerunning the expensive nonlinear assembly or inventing a successful producer exit. Declared graph columns are diagnostics, not proof of the MemoryError cause or qualification of a new factorization. No physical state, convergence or warmed-cost acceptance is inferred."
+}

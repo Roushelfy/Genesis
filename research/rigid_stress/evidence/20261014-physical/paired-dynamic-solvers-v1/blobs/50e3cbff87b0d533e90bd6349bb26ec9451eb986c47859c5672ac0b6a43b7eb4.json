@@ -1,0 +1,433 @@
+{
+  "scope": "Compare all saved paired-reference arrays and full stress fields without a new solve.",
+  "baseline": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad1920-metis-qualification-candidate-v1",
+  "candidate": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad1920-bordered-metis-candidate-v1",
+  "body_tetrahedra": 1920,
+  "states_checked": 5,
+  "rows": [
+    {
+      "step": 1,
+      "time_s": 0.00125,
+      "all_saved_array_changes": {
+        "displacement": {
+          "maximum_absolute_difference": 3.3881317890172014e-21,
+          "relative_L2_difference": 4.3138006381182925e-19
+        },
+        "velocity": {
+          "maximum_absolute_difference": 2.710505431213761e-18,
+          "relative_L2_difference": 3.2224290469809303e-15
+        },
+        "acceleration": {
+          "maximum_absolute_difference": 2.168404344971009e-15,
+          "relative_L2_difference": 3.2224290442458564e-15
+        },
+        "contact_force_N": {
+          "maximum_absolute_difference": 3.3639757646142243e-14,
+          "relative_L2_difference": 6.17517688964265e-14
+        },
+        "applied_force_N": {
+          "maximum_absolute_difference": 0.0,
+          "relative_L2_difference": 0.0
+        },
+        "body_component_permutation": {
+          "maximum_absolute_difference": 0.0,
+          "relative_L2_difference": 0.0
+        }
+      },
+      "all_corner_tensor_relative_change": 2.303597138875538e-15,
+      "all_quadrature_tensor_relative_change": 1.9467092707486028e-13,
+      "raw_global_peak_relative_change": 3.3306690738754696e-16,
+      "independent_force_audits": [
+        {
+          "step": 1,
+          "time_s": 0.00125,
+          "body_tetrahedra": 1920,
+          "complete_body_dynamic_residual_N": 1.1103324983877509e-12,
+          "complete_mapped_dynamic_residual_N": 1.9930345176765227e-12,
+          "force_pullback_max_difference_N": 0.0,
+          "normal_stencils": 2,
+          "maximum_coulomb_violation_N": -0.20951019222208195,
+          "active_body_contact_nodes": 4,
+          "active_lumped_contact_area_m2": 5.602666970252321e-05,
+          "maximum_unsmoothed_body_normal_force_per_area_Pa": 31283.111268284927,
+          "raw_global_peak_lower_Pa": 355362.5491619934,
+          "raw_global_peak_upper_Pa": 355362.54916215345,
+          "whole_volume_J_lower_bound": 0.9999764558404112,
+          "raw_peak_reference_position_m": [
+            1.7697452569155986e-06,
+            0.022028914832074527,
+            0.001184687058517001
+          ]
+        },
+        {
+          "step": 1,
+          "time_s": 0.00125,
+          "body_tetrahedra": 1920,
+          "complete_body_dynamic_residual_N": 1.1107641608431245e-12,
+          "complete_mapped_dynamic_residual_N": 2.0012007058327797e-12,
+          "force_pullback_max_difference_N": 0.0,
+          "normal_stencils": 2,
+          "maximum_coulomb_violation_N": -0.209510192222082,
+          "active_body_contact_nodes": 4,
+          "active_lumped_contact_area_m2": 5.602666970252321e-05,
+          "maximum_unsmoothed_body_normal_force_per_area_Pa": 31283.111268284927,
+          "raw_global_peak_lower_Pa": 355362.54916199326,
+          "raw_global_peak_upper_Pa": 355362.5491621534,
+          "whole_volume_J_lower_bound": 0.9999764558404112,
+          "raw_peak_reference_position_m": [
+            1.7697452569155986e-06,
+            0.022028914832074527,
+            0.001184687058517001
+          ]
+        }
+      ]
+    },
+    {
+      "step": 2,
+      "time_s": 0.0025,
+      "all_saved_array_changes": {
+        "displacement": {
+          "maximum_absolute_difference": 3.3881317890172014e-21,
+          "relative_L2_difference": 5.150098355414197e-19
+        },
+        "velocity": {
+          "maximum_absolute_difference": 3.425685788827109e-18,
+          "relative_L2_difference": 3.3671404277881496e-15
+        },
+        "acceleration": {
+          "maximum_absolute_difference": 3.965760825199588e-15,
+          "relative_L2_difference": 9.810320617481264e-15
+        },
+        "contact_force_N": {
+          "maximum_absolute_difference": 4.898859096158503e-15,
+          "relative_L2_difference": 1.1413874571787974e-14
+        },
+        "applied_force_N": {
+          "maximum_absolute_difference": 0.0,
+          "relative_L2_difference": 0.0
+        },
+        "body_component_permutation": {
+          "maximum_absolute_difference": 0.0,
+          "relative_L2_difference": 0.0
+        }
+      },
+      "all_corner_tensor_relative_change": 5.084391920562586e-15,
+      "all_quadrature_tensor_relative_change": 3.954260545484134e-13,
+      "raw_global_peak_relative_change": 8.881784197001252e-16,
+      "independent_force_audits": [
+        {
+          "step": 2,
+          "time_s": 0.0025,
+          "body_tetrahedra": 1920,
+          "complete_body_dynamic_residual_N": 2.6860116997353704e-12,
+          "complete_mapped_dynamic_residual_N": 6.3459238883081586e-12,
+          "force_pullback_max_difference_N": 0.0,
+          "normal_stencils": 2,
+          "maximum_coulomb_violation_N": -0.21064102380519112,
+          "active_body_contact_nodes": 4,
+          "active_lumped_contact_area_m2": 5.6026661442286524e-05,
+          "maximum_unsmoothed_body_normal_force_per_area_Pa": 31496.544074451915,
+          "raw_global_peak_lower_Pa": 357767.3582903994,
+          "raw_global_peak_upper_Pa": 357767.35829055955,
+          "whole_volume_J_lower_bound": 0.9999762966610772,
+          "raw_peak_reference_position_m": [
+            1.7697452569155986e-06,
+            0.022028914832074527,
+            0.001184687058517001
+          ]
+        },
+        {
+          "step": 2,
+          "time_s": 0.0025,
+          "body_tetrahedra": 1920,
+          "complete_body_dynamic_residual_N": 2.6833219319114032e-12,
+          "complete_mapped_dynamic_residual_N": 6.340409440914755e-12,
+          "force_pullback_max_difference_N": 0.0,
+          "normal_stencils": 2,
+          "maximum_coulomb_violation_N": -0.21064102380519092,
+          "active_body_contact_nodes": 4,
+          "active_lumped_contact_area_m2": 5.6026661442286524e-05,
+          "maximum_unsmoothed_body_normal_force_per_area_Pa": 31496.544074451915,
+          "raw_global_peak_lower_Pa": 357767.3582903997,
+          "raw_global_peak_upper_Pa": 357767.35829055985,
+          "whole_volume_J_lower_bound": 0.9999762966610772,
+          "raw_peak_reference_position_m": [
+            1.7697452569155986e-06,
+            0.022028914832074527,
+            0.001184687058517001
+          ]
+        }
+      ]
+    },
+    {
+      "step": 3,
+      "time_s": 0.00375,
+      "all_saved_array_changes": {
+        "displacement": {
+          "maximum_absolute_difference": 3.533776969137622e-21,
+          "relative_L2_difference": 8.260829167681838e-19
+        },
+        "velocity": {
+          "maximum_absolute_difference": 1.5182470009492295e-18,
+          "relative_L2_difference": 7.996153948414896e-16
+        },
+        "acceleration": {
+          "maximum_absolute_difference": 2.2566804246679575e-15,
+          "relative_L2_difference": 4.37538923920681e-15
+        },
+        "contact_force_N": {
+          "maximum_absolute_difference": 2.2620794126737565e-15,
+          "relative_L2_difference": 4.388247128085045e-15
+        },
+        "applied_force_N": {
+          "maximum_absolute_difference": 0.0,
+          "relative_L2_difference": 0.0
+        },
+        "body_component_permutation": {
+          "maximum_absolute_difference": 0.0,
+          "relative_L2_difference": 0.0
+        }
+      },
+      "all_corner_tensor_relative_change": 4.268126166470719e-15,
+      "all_quadrature_tensor_relative_change": 9.599708308589149e-13,
+      "raw_global_peak_relative_change": 0.0,
+      "independent_force_audits": [
+        {
+          "step": 3,
+          "time_s": 0.00375,
+          "body_tetrahedra": 1920,
+          "complete_body_dynamic_residual_N": 6.264466767321936e-12,
+          "complete_mapped_dynamic_residual_N": 1.4747502005145047e-11,
+          "force_pullback_max_difference_N": 0.0,
+          "normal_stencils": 2,
+          "maximum_coulomb_violation_N": -0.21044274579223016,
+          "active_body_contact_nodes": 4,
+          "active_lumped_contact_area_m2": 5.6026663169222826e-05,
+          "maximum_unsmoothed_body_normal_force_per_area_Pa": 31454.141678578428,
+          "raw_global_peak_lower_Pa": 357291.3699146866,
+          "raw_global_peak_upper_Pa": 357291.36991484667,
+          "whole_volume_J_lower_bound": 0.9999763309889899,
+          "raw_peak_reference_position_m": [
+            1.7697452569155986e-06,
+            0.022028914832074527,
+            0.001184687058517001
+          ]
+        },
+        {
+          "step": 3,
+          "time_s": 0.00375,
+          "body_tetrahedra": 1920,
+          "complete_body_dynamic_residual_N": 6.26334990061179e-12,
+          "complete_mapped_dynamic_residual_N": 1.4744766249738846e-11,
+          "force_pullback_max_difference_N": 0.0,
+          "normal_stencils": 2,
+          "maximum_coulomb_violation_N": -0.21044274579223024,
+          "active_body_contact_nodes": 4,
+          "active_lumped_contact_area_m2": 5.6026663169222826e-05,
+          "maximum_unsmoothed_body_normal_force_per_area_Pa": 31454.141678578428,
+          "raw_global_peak_lower_Pa": 357291.3699146866,
+          "raw_global_peak_upper_Pa": 357291.36991484667,
+          "whole_volume_J_lower_bound": 0.9999763309889899,
+          "raw_peak_reference_position_m": [
+            1.7697452569155986e-06,
+            0.022028914832074527,
+            0.001184687058517001
+          ]
+        }
+      ]
+    },
+    {
+      "step": 4,
+      "time_s": 0.005,
+      "all_saved_array_changes": {
+        "displacement": {
+          "maximum_absolute_difference": 5.467043463516098e-21,
+          "relative_L2_difference": 1.2697315942840213e-18
+        },
+        "velocity": {
+          "maximum_absolute_difference": 1.5471784700538842e-18,
+          "relative_L2_difference": 8.297575803858029e-16
+        },
+        "acceleration": {
+          "maximum_absolute_difference": 1.0842021724855044e-15,
+          "relative_L2_difference": 1.0493962403034215e-15
+        },
+        "contact_force_N": {
+          "maximum_absolute_difference": 7.729927808952652e-15,
+          "relative_L2_difference": 1.3679258126431682e-14
+        },
+        "applied_force_N": {
+          "maximum_absolute_difference": 0.0,
+          "relative_L2_difference": 0.0
+        },
+        "body_component_permutation": {
+          "maximum_absolute_difference": 0.0,
+          "relative_L2_difference": 0.0
+        }
+      },
+      "all_corner_tensor_relative_change": 5.194043196043881e-15,
+      "all_quadrature_tensor_relative_change": 1.6726148025775875e-12,
+      "raw_global_peak_relative_change": 1.1102230246251565e-16,
+      "independent_force_audits": [
+        {
+          "step": 4,
+          "time_s": 0.005,
+          "body_tetrahedra": 1920,
+          "complete_body_dynamic_residual_N": 6.151300834140147e-12,
+          "complete_mapped_dynamic_residual_N": 1.4484094844462714e-11,
+          "force_pullback_max_difference_N": 0.0,
+          "normal_stencils": 2,
+          "maximum_coulomb_violation_N": -0.21022973221830818,
+          "active_body_contact_nodes": 4,
+          "active_lumped_contact_area_m2": 5.602666466302992e-05,
+          "maximum_unsmoothed_body_normal_force_per_area_Pa": 31416.07736854872,
+          "raw_global_peak_lower_Pa": 356862.46909429645,
+          "raw_global_peak_upper_Pa": 356862.4690944565,
+          "whole_volume_J_lower_bound": 0.9999763596202605,
+          "raw_peak_reference_position_m": [
+            1.7697452569155986e-06,
+            0.022028914832074527,
+            0.001184687058517001
+          ]
+        },
+        {
+          "step": 4,
+          "time_s": 0.005,
+          "body_tetrahedra": 1920,
+          "complete_body_dynamic_residual_N": 6.1560975682726126e-12,
+          "complete_mapped_dynamic_residual_N": 1.4495880444230829e-11,
+          "force_pullback_max_difference_N": 0.0,
+          "normal_stencils": 2,
+          "maximum_coulomb_violation_N": -0.21022973221830824,
+          "active_body_contact_nodes": 4,
+          "active_lumped_contact_area_m2": 5.602666466302992e-05,
+          "maximum_unsmoothed_body_normal_force_per_area_Pa": 31416.07736854872,
+          "raw_global_peak_lower_Pa": 356862.4690942964,
+          "raw_global_peak_upper_Pa": 356862.46909445646,
+          "whole_volume_J_lower_bound": 0.9999763596202605,
+          "raw_peak_reference_position_m": [
+            1.7697452569155986e-06,
+            0.022028914832074527,
+            0.001184687058517001
+          ]
+        }
+      ]
+    },
+    {
+      "step": 5,
+      "time_s": 0.00625,
+      "all_saved_array_changes": {
+        "displacement": {
+          "maximum_absolute_difference": 7.304987085820641e-21,
+          "relative_L2_difference": 1.678034170981157e-18
+        },
+        "velocity": {
+          "maximum_absolute_difference": 1.5332619834282921e-18,
+          "relative_L2_difference": 6.170246226984077e-16
+        },
+        "acceleration": {
+          "maximum_absolute_difference": 1.0842021724855044e-15,
+          "relative_L2_difference": 5.509592721405378e-16
+        },
+        "contact_force_N": {
+          "maximum_absolute_difference": 1.5681900222830336e-14,
+          "relative_L2_difference": 3.057063989378186e-14
+        },
+        "applied_force_N": {
+          "maximum_absolute_difference": 0.0,
+          "relative_L2_difference": 0.0
+        },
+        "body_component_permutation": {
+          "maximum_absolute_difference": 0.0,
+          "relative_L2_difference": 0.0
+        }
+      },
+      "all_corner_tensor_relative_change": 6.895932846413218e-15,
+      "all_quadrature_tensor_relative_change": 2.5351638799064986e-12,
+      "raw_global_peak_relative_change": 2.220446049250313e-16,
+      "independent_force_audits": [
+        {
+          "step": 5,
+          "time_s": 0.00625,
+          "body_tetrahedra": 1920,
+          "complete_body_dynamic_residual_N": 5.554550259285836e-12,
+          "complete_mapped_dynamic_residual_N": 1.3088116245613393e-11,
+          "force_pullback_max_difference_N": 0.0,
+          "normal_stencils": 2,
+          "maximum_coulomb_violation_N": -0.21020809773685356,
+          "active_body_contact_nodes": 4,
+          "active_lumped_contact_area_m2": 5.602666485452175e-05,
+          "maximum_unsmoothed_body_normal_force_per_area_Pa": 31411.925148195238,
+          "raw_global_peak_lower_Pa": 356816.4186143518,
+          "raw_global_peak_upper_Pa": 356816.41861451184,
+          "whole_volume_J_lower_bound": 0.9999763634740495,
+          "raw_peak_reference_position_m": [
+            1.7697452569155986e-06,
+            0.022028914832074527,
+            0.001184687058517001
+          ]
+        },
+        {
+          "step": 5,
+          "time_s": 0.00625,
+          "body_tetrahedra": 1920,
+          "complete_body_dynamic_residual_N": 5.563996893071336e-12,
+          "complete_mapped_dynamic_residual_N": 1.3111062952229688e-11,
+          "force_pullback_max_difference_N": 0.0,
+          "normal_stencils": 2,
+          "maximum_coulomb_violation_N": -0.2102080977368576,
+          "active_body_contact_nodes": 4,
+          "active_lumped_contact_area_m2": 5.602666485452175e-05,
+          "maximum_unsmoothed_body_normal_force_per_area_Pa": 31411.925148195824,
+          "raw_global_peak_lower_Pa": 356816.41861435183,
+          "raw_global_peak_upper_Pa": 356816.4186145119,
+          "whole_volume_J_lower_bound": 0.9999763634740495,
+          "raw_peak_reference_position_m": [
+            1.7697452569155986e-06,
+            0.022028914832074527,
+            0.001184687058517001
+          ]
+        }
+      ]
+    }
+  ],
+  "input_sha256": {
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad1920-metis-qualification-candidate-v1/results/configuration.json": "2ad5b0197b6a7cb430d9078e05155e495354afdf88914e7c6002b98b53c95c13",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad1920-metis-qualification-audit-v1/results/summary.json": "9ccf00c0a95ff9e8be527c586445b341c724b7e2cd32d936382bdf8c3dcf7f7c",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad1920-bordered-metis-candidate-v1/results/configuration.json": "9393f2b320c2436c33601e1ac8f62aa19729fa4ac65fe21da438a2fa535b48d4",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad1920-bordered-metis-audit-v1/results/summary.json": "7950db7251741e94dc7959114a58030734d0139401f105cc5a4740b7151310bf",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad1920-metis-qualification-candidate-v1/results/reference_geometry.npz": "61326e918c0a6cb6eb37d48c681e8709711f9fb03fe21e8bb12c1376cbbae64d",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad1920-bordered-metis-candidate-v1/results/reference_geometry.npz": "61326e918c0a6cb6eb37d48c681e8709711f9fb03fe21e8bb12c1376cbbae64d",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad1920-metis-qualification-candidate-v1/results/contact_geometry.npz": "7bfd115720e74d9a24d4da55bf881079592b706a477e8d73bb002dc3f77eb896",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad1920-bordered-metis-candidate-v1/results/contact_geometry.npz": "7bfd115720e74d9a24d4da55bf881079592b706a477e8d73bb002dc3f77eb896",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad1920-metis-qualification-candidate-v1/results/contact_node_map.npz": "eeff400bf936f21837a58b04cc0634ef22a95e3ca48e0080e0a666132d445273",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad1920-bordered-metis-candidate-v1/results/contact_node_map.npz": "eeff400bf936f21837a58b04cc0634ef22a95e3ca48e0080e0a666132d445273",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad1920-metis-qualification-candidate-v1/results/closure_state.npz": "3e6bdf554416fc9eb54fdd0ddb27c2d955ad3bbd25fd9217c3b61f8617832e1d",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad1920-bordered-metis-candidate-v1/results/closure_state.npz": "3e6bdf554416fc9eb54fdd0ddb27c2d955ad3bbd25fd9217c3b61f8617832e1d",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad1920-metis-qualification-candidate-v1/results/step0001.npz": "e77a5dfe69065355990a013c026e85ee0ca25c1ffdd201e85f0996ce0da367fc",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad1920-bordered-metis-candidate-v1/results/step0001.npz": "2c050d200fbf91d623cfc414915672d3541df0ea5d3d0d57b76f1bc24c45e311",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad1920-metis-qualification-candidate-v1/results/step0002.npz": "9942b2b2f95e304e7eca7520ff6d14ea1ba19ebd41e5e643c28001056d6c1a84",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad1920-bordered-metis-candidate-v1/results/step0002.npz": "28bd6e8404dd480c60b03ce7f726592808cd10a5589991bdff45f3e16aa226c6",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad1920-metis-qualification-candidate-v1/results/step0003.npz": "f5f8bd8b0749c6da717d9aaed962a26ba81fe82a8c3e36fd48fdcbf5b2f8974f",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad1920-bordered-metis-candidate-v1/results/step0003.npz": "a949e6420cabf9d56798bc288d42139a63a0256d464ffc44a1c35204da01a157",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad1920-metis-qualification-candidate-v1/results/step0004.npz": "5fc5989545e8ff0e815889b6dcb39e8260685188115f59d6ab735d4e48ad56b4",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad1920-bordered-metis-candidate-v1/results/step0004.npz": "477cab1ba5798a4bc36be5a87f2163c1224b6b44d873486a4af670e8c3d4f7e5",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad1920-metis-qualification-candidate-v1/results/step0005.npz": "61b6ed3c8de9a6da07ab997c92d2a9bd95a4a936907dd2465dd127c5f1f68059",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad1920-bordered-metis-candidate-v1/results/step0005.npz": "41522109388fc81b304785d6afe672d8bc1cc6171baf521c9bf65db8075238a7"
+  },
+  "initializer_comparison": {
+    "independently_resolved_initializer_allowed": true,
+    "byte_identical": true,
+    "maximum_displacement_difference_m": 0.0,
+    "other_initializer_arrays_identical": true
+  },
+  "all_original_arrays_and_complete_fields_qualified": true,
+  "declared_existing_budgets": {
+    "state_relative": 1e-05,
+    "state_absolute": 1e-12,
+    "all_corner_and_quadrature_tensor_relative": 1e-06,
+    "independently_audited_physical_body_and_mapped_force_N": 1e-09
+  },
+  "goal_completion": false,
+  "limitations": "Complete saved histories are compared at identical physical inputs and byte-identical geometry. By default initializer bytes must match; the explicit resolved-initializer option instead checks every initializer array at the original state budget and retains its measured difference. Independent force-audit results are checked and retained, not reassembled in this field comparison. This proves numerical equivalence only for these saved states; it establishes neither physical convergence nor a controlled timing improvement or warmed production cost."
+}

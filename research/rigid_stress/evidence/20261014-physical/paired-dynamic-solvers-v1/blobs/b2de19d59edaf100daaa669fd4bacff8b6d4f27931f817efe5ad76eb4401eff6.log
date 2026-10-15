@@ -1,0 +1,17 @@
+Not enough memory to perform factorization.
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fine-first-dynamic-bordered-factor-v1/source/research/rigid_stress/factor_captured_paired_matrix.py", line 117, in <module>
+    main()
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fine-first-dynamic-bordered-factor-v1/source/research/rigid_stress/factor_captured_paired_matrix.py", line 75, in main
+    factor = factorize(matrix, "paired_dynamic1")
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fine-first-dynamic-bordered-factor-v1/source/research/rigid_stress/bordered_metis_reference_factor.py", line 88, in factorize
+    return BorderedReferenceFactor(matrix, np.arange(matrix.shape[0] - 8, matrix.shape[0]), phase)
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fine-first-dynamic-bordered-factor-v1/source/research/rigid_stress/bordered_metis_reference_factor.py", line 54, in __init__
+    self.factor = splu(matrix[self.permutation][:, self.permutation].tocsc(), permc_spec="NATURAL")
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/scipy/sparse/linalg/_dsolve/linsolve.py", line 428, in splu
+    return _superlu.gstrf(N, A.nnz, A.data, indices, indptr,
+MemoryError

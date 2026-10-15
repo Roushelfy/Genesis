@@ -1,0 +1,25 @@
+{
+  "scope": "Test a fully qualified declared-border ordering on the exact retained fine Newton matrix.",
+  "factor_kind": "schur",
+  "matrix_audit": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fine-first-dynamic-matrix-audit-v1",
+  "qualification": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad1920-schur-metis-fields-v1",
+  "captured_matrix_sha256": "0e22523ea900bf98ad492a4c8c6f4fe206860db9d8c82f828ca67f4b75cfa103",
+  "all_original_five_states_and_force_field_gates_qualified_before_large_factor": true,
+  "same_original_body_force_hessian_and_coordinate_sources_verified": true,
+  "dimension": 856172,
+  "matrix_nonzeros": 75040966,
+  "ordering_and_factor_seconds": 87.56631666398607,
+  "elastic_or_full_sparse_factor_nonzeros": 810468709,
+  "true_original_linear_residual_N": 3.99245333631021e-13,
+  "original_cached_newton_linear_budget_N": 1.1034389143016813e-12,
+  "original_matrix_arrays_unchanged": true,
+  "coefficient_pruning_or_regularization_added": false,
+  "new_physical_states_accepted": 0,
+  "goal_completion": false,
+  "input_sha256": {
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad1920-schur-metis-fields-v1/results/summary.json": "1148057b6b16647b07e4c86ed6829e839c20702aa1ac6c4793505747e650d763",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fine-first-dynamic-matrix-audit-v1/results/summary.json": "a7bccd320deeff3504f59f00aeac7bebcfdc36cdbe200487e765493f875fb5db",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fine-first-dynamic-matrix-v1/results/first_dynamic_matrix.npz": "0e22523ea900bf98ad492a4c8c6f4fe206860db9d8c82f828ca67f4b75cfa103"
+  },
+  "limitations": "Only the permutation and resulting LU fill change. The exact captured first dynamic equation is solved after complete original1920-tet five-state force/corner/quadrature qualification. The large linear correction is not a converged nonlinear contact state, a controlled warmed speedup, proof of the specific internal MemoryError limit or physical convergence. Full nonlinear continuation and independent original-budget state/field audits remain mandatory."
+}

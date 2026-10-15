@@ -1,0 +1,8 @@
+{
+  "job": "719070",
+  "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-coarse-matrix-capture-equivalence-v1",
+  "command": "sbatch --parsable --array=0-0 --partition=cpu --exclude=cpu-207-115 --cpus-per-task=4 --mem=8G --time=00:15:00 --output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-coarse-matrix-capture-equivalence-v1-%A_%a.log '--wrap=bash -c '\"'\"'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/compare_paired_matrix_captures.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-coarse-matrix-capture-equivalence-v1 --first /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-coarse-first-dynamic-matrix-v1 --second /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-coarse-first-dynamic-matrix-v2'\"'\"''",
+  "scope": "The corrected small capture matrix file is byte-identical, while the state NPZ hash differs. Inspect every actual array value/dtype/shape and storage-byte location rather than assuming either physical drift or padding. Preserve both original files and real exit codes.",
+  "time_utc": "2026-10-15T21:43:51.974876+00:00",
+  "goal_completion": false
+}
