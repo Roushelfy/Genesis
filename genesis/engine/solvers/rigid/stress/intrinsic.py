@@ -140,7 +140,11 @@ class IntrinsicContacts:
         )
         self.sources = create_sources(n_chunk, n_envs)
         self.footprints = create_footprints(
-            self.paths.info.positions.shape[0], n_chunk, n_envs, self.paths.info.face_ports.shape[1]
+            self.paths.info.positions.shape[0],
+            n_chunk,
+            n_envs,
+            self.paths.info.face_ports.shape[1],
+            sparse_paths=len(self.paths.info.distances.shape) == 0,
         )
         self.tractions = (
             create_surface_fan_tractions(

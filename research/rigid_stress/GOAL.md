@@ -20,15 +20,23 @@ The previous completion records do not establish this stage's acceptance.
 
 ### Immediate evidence gates
 
-The [extended finite-load matrix](docs/PHYSICAL_EXTENDED_MATRIX_20261016.md)
-freshly reassembles all30 original finest reference fields, reproducing every
-nodal load exactly and checking139973625 full quadrature components at unchanged
-budgets. Twelve new full3D assets use the byte-identical original CAD generator.
-Two finer five-case solves per shape and separate15-field auditors are now
-scheduled; original six-level probes/raw maxima and every physical load remain.
-The U shared-initialization fine producer also completes all744 original stages;
-its independent all-stage audit and three-level comparison remain pending.
-These close audit/asset gaps, not physical tails or any original A/B/C requirement.
+The [eight-level reference results](docs/PHYSICAL_EIGHT_LEVEL_REFERENCES_20261016.md)
+now close all12 additional five-case producers and six separate15-field audits.
+All90 fresh fields retain exact original nodal loads and pass unchanged budgets,
+including1553366925 quadrature components. All240 eight-level rows retain original
+probes/raw maxima. Ellipsoid/capsule opposing raw peaks still change16.75%/14.10%.
+Native four-model follow-ups fail while allocating/indexing the dense all-pairs
+port table. Qualify a bounded native search on the identical graph before fresh
+actual replays. The shared-initialization U all-stage audits and three-level
+comparison also complete, with final tensor changes44.86%/12.31%; preserve the
+complete744-stage raw histories. All60 added finite-load fields, separate90-field
+audits and the240-row summary now have complete reverified immutable archives.
+The [native capacity checkpoint](docs/PHYSICAL_NATIVE_PATH_CAPACITY_20261016.md)
+retains successful24-case CPU/CUDA tests, large CPU and CUDA graph qualifications
+and all failures. The large CUDA supplement checks5656950 entries before actual
+fine native fields and their separate independent audits, which remain live/
+scheduled evidence. U full-array publication and updated figures/reports remain required.
+Every original A/B/C/model/application/feedback/cost gate stays.
 
 The [separated-axis qualification](docs/PHYSICAL_SEPARATED_AXES_SETUP_20261016.md)
 preserves actual IPC geometry across2/4/8 radial layers and qualifies recording
