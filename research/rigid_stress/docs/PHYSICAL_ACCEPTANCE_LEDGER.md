@@ -5,7 +5,18 @@ without narrowing its scope. Historical native performance completion does not
 establish the new physical stage. Dated reports preserve their observations;
 running or pending jobs count as scheduled work only.
 
-Latest verified checkpoint: [covered CAD contact-tail localization](PHYSICAL_COVERED_CAD_CONTACT_TAIL_20261015.md)
+Latest verified checkpoint: [finest native replay and fixed-traction bulk extension](PHYSICAL_FINE_REPLAY_BULK_FOLLOWUP_20261016.md)
+closes both actual171228-tet native modes at original numerical gates, making
+six covered native replays. Conditional model agreement leaves the10.72%
+physical spatial/contact discrepancy unresolved. A separate complete15-field
+fixed-traction runtime audit passes with maximum force-budget fraction0.053535;
+last exact-volume changes1.86–2.03% retain nonmonotone original probes. Full bulk
+array publication remains outstanding. Fourth653088-tet mesh generation keeps
+the original three meshes byte-identical before pending producer719476 and
+20-field audit719477. Contact-distance controls and every original physical/
+model/island/application/feedback/verified-cost requirement remain open.
+
+Previous checkpoint: [covered CAD contact-tail localization](PHYSICAL_COVERED_CAD_CONTACT_TAIL_20261015.md)
 closes all15 complete dynamic source reconstructions, per-source normal/shear/
 total six-component wrenches, actual graph components and complete threshold
 tails. Every mesh uses the same6mm finger crease with90-degree face planes;

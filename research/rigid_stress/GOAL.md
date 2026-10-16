@@ -31,6 +31,17 @@ egg/Franka and U contact references, resolved-load/native replay versus feedback
 remaining applicable load-model sensitivity and physically verified warmed costs.
 These are execution priorities within the complete linked objective.
 
+The [finest native/bulk follow-up](docs/PHYSICAL_FINE_REPLAY_BULK_FOLLOWUP_20261016.md)
+closes both actual171228-tet native load modes at unchanged original budgets,
+bringing the covered series to six complete native replays. Numerical/model
+agreement does not close the10.72% physical/contact tail. A separate15-field
+fixed-traction runtime audit passes original budgets; last exact-volume tensor
+changes1.86–2.03% retain nonmonotone original probes and pending full-array
+publication. A new653088-tet fourth local mesh reproduces original levels0/1/2
+byte-for-byte before producer719476 and independent20-field audit719477.
+Fixed-mesh contact-distance controls and every original A/B/C physical/model/
+island/application/feedback/verified-cost requirement remain open.
+
 The [covered CAD contact-tail checkpoint](docs/PHYSICAL_COVERED_CAD_CONTACT_TAIL_20261015.md)
 reconstructs all15 dynamic source states with complete normal/shear forces,
 six-component wrenches and discrete-component threshold tails. Each finger

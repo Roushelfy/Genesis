@@ -62,9 +62,10 @@ def main():
     parser.add_argument("--base-mesh", type=Path, required=True)
     parser.add_argument("--base-probes", type=Path, required=True)
     parser.add_argument("--mesh-build", type=Path, required=True)
-    parser.add_argument("--level-run", type=Path, nargs=2, required=True)
+    parser.add_argument("--level-run", type=Path, nargs="+", required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
+    assert len(args.level_run) >= 2
     inputs = {}
 
     def retain(path):
@@ -78,10 +79,13 @@ def main():
         assert int((run / "returncode.txt").read_text()) == 0
     retain(args.mesh_build / "results/summary.json")
     mesh_report = json.loads((args.mesh_build / "results/summary.json").read_text())
-    assert len(mesh_report["rows"]) == 3
+    assert len(mesh_report["rows"]) >= len(args.level_run) + 1
     base_hash = retain(args.base_mesh)
     assert all(row["seed_sha256"] == base_hash for row in mesh_report["rows"])
-    meshes = [args.base_mesh, *[args.mesh_build / f"results/level{index}.npz" for index in [1, 2]]]
+    meshes = [
+        args.base_mesh,
+        *[args.mesh_build / f"results/level{index}.npz" for index in range(1, len(args.level_run) + 1)],
+    ]
     runs = [args.base_run, *args.level_run]
     previous_reference, previous_fields = None, None
     rows, changes = [], []
@@ -130,6 +134,13 @@ def main():
             rebuilt, rebuilt_vm = reference.corner_stress(u)
             np.testing.assert_allclose(rebuilt, tensor, rtol=1e-10, atol=1e-6)
             np.testing.assert_allclose(rebuilt_vm, vm, rtol=1e-10, atol=1e-6)
+            gradient = reference.basis.interpolate(u).grad.transpose(2, 3, 0, 1)
+            lam, mu = reference.lame
+            quadrature = mu * (gradient + gradient.swapaxes(-1, -2))
+            quadrature += lam * np.trace(gradient, axis1=-2, axis2=-1)[..., None, None] * np.eye(3)
+            barycentric = np.vstack((1 - reference.basis.X.sum(axis=0), reference.basis.X))
+            from_corners = np.einsum("cq,ecij->eqij", barycentric, tensor)
+            np.testing.assert_allclose(quadrature, from_corners, rtol=1e-10, atol=1e-6)
             probe_path = (
                 args.base_probes / f"results/{case}/reference_field.npz"
                 if level == 0
@@ -154,6 +165,8 @@ def main():
                 "raw_global_peak_position_m": reference.corner_positions[peak_cell, peak_corner].tolist(),
                 "energy_J": energy,
                 "exact_volume_tensor_L2_Pa_m1p5": np.sqrt(volume_squared(tensor, volume)),
+                "all_quadrature_tensor_components_checked": int(quadrature.size),
+                "quadrature_vs_corner_affine_maximum_error_Pa": float(np.max(abs(quadrature - from_corners))),
             }
             rows.append(row)
             if level:
@@ -222,6 +235,7 @@ def main():
         "scope": __doc__,
         "rows": rows,
         "adjacent_changes": changes,
+        "every_field_full_quadrature_directly_reconstructed": True,
         "input_sha256": {str(path): digest for path, digest in inputs.items()},
         "goal_completion": False,
         "limitations": "Independent reconstruction keeps original full force budgets, all36 physical probes and raw global maxima. Parent containment yields a nested P2 prolongation checked on every quadratic polynomial component. Common-volume affine tensor integrals are exact on the finer tetrahedra; nested energy identities include explicit residual-work bounds. These supplemental volume/energy norms do not replace the declared probe/peak criteria. Fixed quadrature and fixed polyhedral domain do not establish continuum geometry, contact integration, regularization/history, finite-footprint models, full deformable contact feedback or warmed native accuracy/cost acceptance.",
