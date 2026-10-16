@@ -30,6 +30,7 @@ def main():
             "bulk_fields",
             "bulk_audit",
             "axis_setup",
+            "matrix_setup",
         ]
         and plan["goal_completion"] is False
     )
@@ -376,6 +377,45 @@ def main():
             "fixed_mesh_continuous_traction_integrations": 15,
             "new_fine_thickness_or_quadrature_stress_fields_accepted": 0,
             "physical_convergence_accepted": False,
+        }
+    elif plan["kind"] == "matrix_setup":
+        shapes = ["ellipsoid", "capsule", "thin_neck", "u", "narrow_gap", "cavity"]
+        qualified_rows, mesh_rows = [], []
+        for shape in shapes:
+            qualification = summaries[f"extended-finite-{shape}-original-qualification-v1"]
+            assert qualification["qualify_only"] and qualification["new_equilibrium_states_solved"] == 0
+            assert qualification["all_original_five_loads_full_fields_and_probes_qualified"]
+            assert qualification["geometry"] == shape and len(qualification["rows"]) == 5
+            assert all(
+                row["original_full_nodal_force_maximum_difference_N"] == 0
+                and row["original_budget_fraction"] <= 1
+                and row["all_original_probe_coordinates_and_validity_retained"]
+                and row["all_quadrature_tensor_components_checked"] == 99 * qualification["tetrahedra"]
+                for row in qualification["rows"]
+            )
+            qualified_rows.extend(qualification["rows"])
+            generator = p / f"extended-matrix-mesh-{shape}-v1/source/research/rigid_stress/validation_meshes.py"
+            baseline_generator = p / f"fine-ref-{shape}-l2-v1/source/research/rigid_stress/validation_meshes.py"
+            retain(baseline_generator)
+            assert generator.read_bytes() == baseline_generator.read_bytes()
+            paths = sorted((p / f"extended-matrix-mesh-{shape}-v1/meshes").glob("*.json"))
+            assert len(paths) == 2
+            for path in paths:
+                mesh = json.loads(path.read_text())
+                assert mesh["geometry"]["name"] == shape and mesh["tetrahedra"] > qualification["tetrahedra"]
+                assert mesh["minimum_volume_m3"] > 0 and mesh["scaled_jacobian_percentiles"][0] > 0
+                assert digest(path.with_suffix(".npz"))[0] == mesh["mesh_sha256"]
+                mesh_rows.append(mesh)
+        scientific_checks = {
+            "original_finest_finite_load_fields_freshly_qualified": len(qualified_rows),
+            "every_original_nodal_load_exactly_reproduced": True,
+            "explicit_quadrature_tensor_components_checked": sum(
+                row["all_quadrature_tensor_components_checked"] for row in qualified_rows
+            ),
+            "complete_original_probes_and_validity_retained": True,
+            "new_meshes_with_identical_original_CAD_generator": len(mesh_rows),
+            "new_finer_equilibrium_states_accepted": 0,
+            "physical_tail_accepted": False,
         }
     else:
         audit = summaries["egg-frozen-traction-local-bulk-quadrature-audit-v2"]

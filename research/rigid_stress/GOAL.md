@@ -20,6 +20,16 @@ The previous completion records do not establish this stage's acceptance.
 
 ### Immediate evidence gates
 
+The [extended finite-load matrix](docs/PHYSICAL_EXTENDED_MATRIX_20261016.md)
+freshly reassembles all30 original finest reference fields, reproducing every
+nodal load exactly and checking139973625 full quadrature components at unchanged
+budgets. Twelve new full3D assets use the byte-identical original CAD generator.
+Two finer five-case solves per shape and separate15-field auditors are now
+scheduled; original six-level probes/raw maxima and every physical load remain.
+The U shared-initialization fine producer also completes all744 original stages;
+its independent all-stage audit and three-level comparison remain pending.
+These close audit/asset gaps, not physical tails or any original A/B/C requirement.
+
 The [separated-axis qualification](docs/PHYSICAL_SEPARATED_AXES_SETUP_20261016.md)
 preserves actual IPC geometry across2/4/8 radial layers and qualifies recording
 all64 initializer controls. Every original1920-tet dynamic array, corner/
