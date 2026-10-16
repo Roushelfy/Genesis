@@ -18,6 +18,19 @@ The new goal takes precedence over all older "every original gate remains"
 statements below and in linked reports. Preserve historical evidence and
 numerical tolerances; do not count unresolved accuracy questions as passed.
 
+### Engineering delivery evidence, 2026-10-16
+
+The [application report](docs/PRACTICAL_APPLICATION_RESULTS_20261016.md),
+[runnable commands](docs/RUNNING_PRACTICAL_APPLICATION.md) and
+[completion audit](docs/PRACTICAL_COMPLETION_AUDIT_20261016.md) now provide
+the requested conditional engineering scope:32 compact R/L/M variants,
+separate matched feedback, representative U/convex evidence, recommended
+settings, measured four-scope cost and repeated controlled grasp rewards.
+All original limitations and rejected cases remain. The main compact archive
+verifies791 entries against791 actual runtime originals, and the restored-input
+four-snapshot GPU reproduction also passes. This closes the application-delivery
+evidence; universal physical convergence and fracture calibration remain separate.
+
 ## Historical stage: load-model accuracy and physical convergence, 2026-10-14
 
 Follow [docs/LOAD_MODEL_PHYSICAL_VALIDATION.md](docs/LOAD_MODEL_PHYSICAL_VALIDATION.md).

@@ -1,0 +1,22 @@
+{
+  "utc": "2026-10-16T06:15:25.120395+00:00",
+  "argv": [
+    "sbatch",
+    "--parsable",
+    "--array=0-0",
+    "--partition=cpu",
+    "--exclude=cpu-207-115",
+    "--cpus-per-task=8",
+    "--mem=32G",
+    "--time=00:30:00",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v1-%A_%a.log",
+    "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/extract_franka_contact_packets.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v1 /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-rigid-deformable-feedback-v2 --run /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-physical-budget-full-history-v1 --fields /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-physical-budget-full-fields-v1 --feedback /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-rigid-deformable-feedback-v2 --steps 11 866 869 2640'"
+  ],
+  "stdout": "720559\n",
+  "stderr": "",
+  "returncode": 0,
+  "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-contact-packets-v1",
+  "scope": "Four selected already-qualified deformable contact states, no new physical equilibrium. Preserve actual per-stencil resultant, free moment, source identity, normal and friction and exact original group wrenches. Reuse original resolved full-inertia RHS, reference linear displacement and nonlinear tensor for compact R/L/M reconstruction experiments.",
+  "active_user_direction_revision": "96ada437e50aeeb9f5dc76d865fd05e72e9d7b63",
+  "goal_completion": false
+}

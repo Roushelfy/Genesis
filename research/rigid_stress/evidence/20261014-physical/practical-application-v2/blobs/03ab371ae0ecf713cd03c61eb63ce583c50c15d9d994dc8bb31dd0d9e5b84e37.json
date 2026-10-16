@@ -1,0 +1,21 @@
+{
+  "utc": "2026-10-16T06:27:00.885047+00:00",
+  "argv": [
+    "sbatch",
+    "--parsable",
+    "--array=0-0",
+    "--partition=rtx-mid",
+    "--gres=gpu:1",
+    "--cpus-per-task=8",
+    "--mem=32G",
+    "--time=00:45:00",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-v1-%A_%a.log",
+    "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/run_practical_reward_proxy.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-v1 /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/source-snapshots/practical-native-application-v1 --conditions /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-native-eight-env-diagnostic-v2/results/conditions.npz --model body_source_prior'"
+  ],
+  "stdout": "720613\n",
+  "stderr": "",
+  "returncode": 0,
+  "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-v1",
+  "scope": "Controlled1N/4N strong-grip choices on paired duplicates of each8 frozen conditions, same arm targets/radii/friction/weak-grip/release/reset schedule.900warmup and3x1200steps. Preserve raw global maximum traces, lift/exposure summaries, repeated episode variability, partial reset zero and unselected-peak invariance. Intrusive observation timing is not throughput. No fracture calibration or full RL training.",
+  "goal_completion": false
+}

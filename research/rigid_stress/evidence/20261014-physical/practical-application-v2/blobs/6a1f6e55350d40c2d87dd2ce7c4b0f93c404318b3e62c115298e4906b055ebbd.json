@@ -1,0 +1,218 @@
+{
+  "jobs": [
+    {
+      "run": "practical-franka-native-eight-env-diagnostic-v2",
+      "job": 720434,
+      "kind": "native_benchmark",
+      "state": "COMPLETED",
+      "returncode": 0
+    },
+    {
+      "run": "practical-franka-intrinsic-eight-env-diagnostic-v1",
+      "job": 720500,
+      "kind": "native_benchmark",
+      "state": "FAILED",
+      "returncode": 1
+    },
+    {
+      "run": "practical-franka-source-prior-eight-env-diagnostic-v1",
+      "job": 720547,
+      "kind": "native_benchmark",
+      "state": "COMPLETED",
+      "returncode": 0
+    },
+    {
+      "run": "practical-franka-four-contact-packets-v1",
+      "job": 720559,
+      "kind": "reference",
+      "state": "FAILED",
+      "returncode": 1
+    },
+    {
+      "run": "practical-franka-four-contact-packets-v2",
+      "job": 720562,
+      "kind": "reference",
+      "state": "FAILED",
+      "returncode": 1
+    },
+    {
+      "run": "practical-franka-four-contact-packets-v3",
+      "job": 720564,
+      "kind": "reference",
+      "state": "COMPLETED",
+      "returncode": 0
+    },
+    {
+      "run": "practical-franka-four-snapshot-reconstruction-v1",
+      "job": 720570,
+      "kind": "native_reference",
+      "state": "COMPLETED",
+      "returncode": 0
+    },
+    {
+      "run": "practical-franka-pressure-four-scopes-b32-v1",
+      "job": 720548,
+      "kind": "cost_group",
+      "state": "COMPLETED",
+      "returncode": 0
+    },
+    {
+      "run": "practical-franka-source-prior-four-scopes-b32-v1",
+      "job": 720565,
+      "kind": "cost_group",
+      "state": "COMPLETED",
+      "returncode": 0
+    },
+    {
+      "run": "practical-franka-application-analysis-v1",
+      "job": 720638,
+      "kind": "reference",
+      "state": "FAILED",
+      "returncode": 1
+    },
+    {
+      "run": "practical-franka-wrench-diagnostics-v1",
+      "job": 720653,
+      "kind": "reference",
+      "state": "FAILED",
+      "returncode": 1
+    },
+    {
+      "run": "practical-franka-wrench-diagnostics-v2",
+      "job": 720668,
+      "kind": "reference",
+      "state": "COMPLETED",
+      "returncode": 0
+    },
+    {
+      "run": "practical-franka-application-analysis-v2",
+      "job": 720686,
+      "kind": "reference",
+      "state": "COMPLETED",
+      "returncode": 0
+    },
+    {
+      "run": "practical-franka-reward-radius-analysis-v1",
+      "job": 720696,
+      "kind": "reference",
+      "state": "COMPLETED",
+      "returncode": 0
+    },
+    {
+      "run": "practical-franka-low-force-radius-analysis-v1",
+      "job": 720713,
+      "kind": "reference",
+      "state": "COMPLETED",
+      "returncode": 0
+    },
+    {
+      "run": "practical-franka-grip-choice-pressure-v1",
+      "job": 720612,
+      "kind": "native_reference",
+      "state": "COMPLETED",
+      "returncode": 0
+    },
+    {
+      "run": "practical-franka-grip-choice-body_source_prior-v1",
+      "job": 720613,
+      "kind": "native_reference",
+      "state": "COMPLETED",
+      "returncode": 0
+    },
+    {
+      "run": "practical-franka-grip-choice-pressure-half-radius-v1",
+      "job": 720664,
+      "kind": "native_reference",
+      "state": "COMPLETED",
+      "returncode": 0
+    },
+    {
+      "run": "practical-franka-grip-choice-body_source_prior-half-radius-v1",
+      "job": 720665,
+      "kind": "native_reference",
+      "state": "COMPLETED",
+      "returncode": 0
+    },
+    {
+      "run": "practical-franka-low-force-choice-pressure-v1",
+      "job": 720699,
+      "kind": "native_reference",
+      "state": "COMPLETED",
+      "returncode": 0
+    },
+    {
+      "run": "practical-franka-low-force-choice-body_source_prior-v1",
+      "job": 720701,
+      "kind": "native_reference",
+      "state": "COMPLETED",
+      "returncode": 0
+    },
+    {
+      "run": "practical-franka-low-force-choice-pressure-half-radius-v1",
+      "job": 720700,
+      "kind": "native_reference",
+      "state": "COMPLETED",
+      "returncode": 0
+    },
+    {
+      "run": "practical-franka-low-force-choice-body_source_prior-half-radius-v1",
+      "job": 720702,
+      "kind": "native_reference",
+      "state": "COMPLETED",
+      "returncode": 0
+    }
+  ],
+  "native_snapshot": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/source-snapshots/practical-native-application-v1",
+  "source_checkout": "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery",
+  "native_source_checkpoint": "cd42aed09a36c1bb71eb00bc702e76da41967ac0",
+  "extra_metadata": [
+    "meta/application-first-priority-job-cancellations-v1.json",
+    "meta/application-first-source-and-setup-handoff-v2-remote-verification-v1.json",
+    "meta/application-first-source-handoff-whitespace-check-v1.json",
+    "meta/matched-fixed-complete-archive-git-closure-v2.json",
+    "meta/matched-fixed-fields-part10-remote-verification-v2.json",
+    "meta/practical-franka-application-analysis-v1-command.json",
+    "meta/practical-franka-application-analysis-v2-command.json",
+    "meta/practical-franka-four-contact-packets-v1-command.json",
+    "meta/practical-franka-four-contact-packets-v2-command.json",
+    "meta/practical-franka-four-contact-packets-v3-command.json",
+    "meta/practical-franka-four-snapshot-reconstruction-v1-command.json",
+    "meta/practical-franka-grip-choice-body_source_prior-half-radius-v1-command.json",
+    "meta/practical-franka-grip-choice-body_source_prior-v1-command.json",
+    "meta/practical-franka-grip-choice-pressure-half-radius-v1-command.json",
+    "meta/practical-franka-grip-choice-pressure-v1-command.json",
+    "meta/practical-franka-intrinsic-eight-env-diagnostic-command-v1.json",
+    "meta/practical-franka-low-force-choice-body_source_prior-half-radius-v1-command.json",
+    "meta/practical-franka-low-force-choice-body_source_prior-v1-command.json",
+    "meta/practical-franka-low-force-choice-pressure-half-radius-v1-command.json",
+    "meta/practical-franka-low-force-choice-pressure-v1-command.json",
+    "meta/practical-franka-low-force-radius-analysis-v1-command.json",
+    "meta/practical-franka-map-visual-qa-v1.json",
+    "meta/practical-franka-native-eight-env-diagnostic-command-v1.json",
+    "meta/practical-franka-native-eight-env-diagnostic-command-v2.json",
+    "meta/practical-franka-pressure-four-scopes-b32-v1-command.json",
+    "meta/practical-franka-pressure-four-scopes-b32-v1.sh",
+    "meta/practical-franka-reward-radius-analysis-v1-command.json",
+    "meta/practical-franka-source-prior-eight-env-diagnostic-v1-command.json",
+    "meta/practical-franka-source-prior-four-scopes-b32-v1-command.json",
+    "meta/practical-franka-source-prior-four-scopes-b32-v1.sh",
+    "meta/practical-franka-wrench-diagnostics-v1-command.json",
+    "meta/practical-franka-wrench-diagnostics-v2-command.json",
+    "meta/practical-native-snapshot-git-reconstruction-v1.json",
+    "meta/remote-practical-direction-merge-v1/GOAL.md",
+    "meta/remote-practical-direction-merge-v1/PHYSICAL_ACCEPTANCE_LEDGER.md",
+    "meta/remote-practical-direction-merge-v1/apply-local-progress.log",
+    "meta/remote-practical-direction-merge-v1/commit.log",
+    "meta/remote-practical-direction-merge-v1/local-historical-progress.patch",
+    "meta/remote-practical-direction-merge-v1/local-verification.json",
+    "meta/remote-practical-direction-merge-v1/merge.log",
+    "meta/remote-practical-direction-merge-v1/push.log",
+    "meta/remote-practical-direction-merge-v1/remote-verification.json",
+    "meta/remote-practical-direction-merge-v1/scientific-source-before.json",
+    "meta/practical-application-publication-attempt-v1.json",
+    "meta/practical-application-v1-publication-plan.json",
+    "meta/practical-application-v1-publication.log"
+  ],
+  "engineering_scope": "Conditional native stress/reward observation,32 numerical R/L/M snapshot variants, actual sampled feedback, nonconvex/convex controls reused from prior evidence, measured32-env four-scope cost, raw repeated controlled grasp traces and physical radius/model limitations. Existing discrete verification is accepted within scope.",
+  "limitations": "This compact engineering application packet does not establish universal continuum convergence, calibrated contact footprint, absolute fracture accuracy or full RL training. Pressure local-cone violations, componentwise rejection, nearly cancelling aggregate budgets, all source-closed export/analysis failures and every unresolved reward choice remain explicit. Native package/assets are exactly reconstructible from the declared tracked Git checkpoint and full899-file identity manifest, avoiding repeated225MB asset copies. No original numerical acceptance tolerance or physical input was changed to pass."
+}

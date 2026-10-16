@@ -1,0 +1,14 @@
+{
+  "utc": "2026-10-16T06:50:56.620284+00:00",
+  "source_checkpoint": "cd42aed09a36c1bb71eb00bc702e76da41967ac0",
+  "native_run_source_revision": "c8333ea3898953e4105f2cc4a5fa6e5205c39e84",
+  "actual_executed_verification": "python3 research/rigid_stress/scripts/snapshot_practical_native.py --verify-against P/source-snapshots/practical-native-application-v1/snapshot.json",
+  "actual_result": {
+    "files": 899,
+    "bytes": 225384712,
+    "source_files_match_existing_snapshot_exactly": true
+  },
+  "all898_non_synthetic_source_asset_files_are_git_tracked_at_checkpoint": true,
+  "synthetic_source_patch_is_empty": true,
+  "purpose": "Reconstruct the unchanged native package/assets from Git rather than duplicate225MB into each new compact evidence packet."
+}

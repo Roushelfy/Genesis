@@ -1,0 +1,26 @@
+{
+  "utc": "2026-10-16T06:18:40.668282+00:00",
+  "argv": [
+    "sbatch",
+    "--parsable",
+    "--array=0-0",
+    "--partition=rtx-mid",
+    "--gres=gpu:1",
+    "--cpus-per-task=8",
+    "--mem=48G",
+    "--time=01:00:00",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-source-prior-four-scopes-b32-v1-%A_%a.log",
+    "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 /usr/bin/env CUDA_CACHE_PATH=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/cache/cuda/practical-franka-source-prior-four-scopes-b32-v1 bash /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/practical-franka-source-prior-four-scopes-b32-v1.sh'"
+  ],
+  "stdout": "720565\n",
+  "stderr": "",
+  "returncode": 0,
+  "orchestration": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/practical-franka-source-prior-four-scopes-b32-v1.sh",
+  "orchestration_sha256": "6034af3f2b12e2258b09e9e3dfcf625fa8cf8958a151947c63a80ff6476c8521",
+  "snapshot": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/source-snapshots/practical-native-application-v1",
+  "condition_bank": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-native-eight-env-diagnostic-v2/results/conditions.npz",
+  "conditions_sha256": "1d40197808823971cb0f5d76e51da266aaaae6cb28453467392a3e591e4bacfa",
+  "same_gpu_allocation_separate_processes": true,
+  "scope": "Existing robust body_source_prior intrinsic model on identical8 conditions repeated32env, same four-scope protocol and physical settings as pressure cost. Separate GPU allocation with paired same-GPU rigid baselines; preserve failures and hardware identity. Diagnostic720547 completed9600 observed timed envsteps with0 invalid before this cost run. Engineering/model-conditional cost, not absolute physical qualification.",
+  "goal_completion": false
+}

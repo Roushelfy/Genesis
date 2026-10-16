@@ -2,6 +2,12 @@
 
 ## Current stage: application-first qualification and delivery
 
+The engineering handoff is in the [application report](docs/PRACTICAL_APPLICATION_RESULTS_20261016.md),
+[runnable commands](docs/RUNNING_PRACTICAL_APPLICATION.md) and
+[requirement-by-requirement audit](docs/PRACTICAL_COMPLETION_AUDIT_20261016.md).
+It delivers the measured conditional native stress/reward scope and preserves
+all physical uncertainty and unsupported cases; it is not fracture calibration.
+
 The user's 2026-10-16 direction is in [GOAL.md](GOAL.md) and
 [the practical validation goal](docs/PRACTICAL_VALIDATION_GOAL.md).
 Prioritize the Franka/full hollow egg and a representative nonconvex interior

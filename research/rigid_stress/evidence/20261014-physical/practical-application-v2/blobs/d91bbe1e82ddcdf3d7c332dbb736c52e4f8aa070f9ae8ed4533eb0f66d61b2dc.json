@@ -1,0 +1,23 @@
+{
+  "utc": "2026-10-16T06:33:17.341135+00:00",
+  "argv": [
+    "sbatch",
+    "--parsable",
+    "--array=0-0",
+    "--partition=cpu",
+    "--exclude=cpu-207-115",
+    "--cpus-per-task=8",
+    "--mem=16G",
+    "--time=00:20:00",
+    "--dependency=afterok:720565",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-application-analysis-v1-%A_%a.log",
+    "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/analyse_practical_application.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-application-analysis-v1 /mnt/home/zhaofeng/.codex/skills/academic-figure-workflow/scripts/nature_mpl_style.py --reconstruction /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-four-snapshot-reconstruction-v1 --pressure-cost /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-pressure-four-scopes-b32-v1 --source-prior-cost /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-source-prior-four-scopes-b32-v1 --pressure-reward /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-pressure-v1 --source-prior-reward /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-grip-choice-body_source_prior-v1'"
+  ],
+  "stdout": "720638\n",
+  "stderr": "",
+  "returncode": 0,
+  "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-application-analysis-v1",
+  "dependency_state_before_submission": "JobId=720565 ArrayJobId=720565 ArrayTaskId=0 JobName=wrap\n   UserId=zhaofeng(2157) GroupId=zhaofeng(2157) MCS_label=N/A\n   Priority=1 Nice=0 Account=root QOS=normal\n   JobState=COMPLETED Reason=None Dependency=(null)\n   Requeue=1 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0\n   RunTime=00:13:20 TimeLimit=01:00:00 TimeMin=N/A\n   SubmitTime=2026-10-16T06:18:40 EligibleTime=2026-10-16T06:18:40\n   AccrueTime=2026-10-16T06:18:40\n   StartTime=2026-10-16T06:18:46 EndTime=2026-10-16T06:32:06 Deadline=N/A\n   PreemptEligibleTime=2026-10-16T06:18:46 PreemptTime=None\n   SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-16T06:18:46 Scheduler=Main\n   Partition=rtx-mid AllocNode:Sid=cpu-207-159:4174409\n   ReqNodeList=(null) ExcNodeList=(null)\n   NodeList=rtx-209-223\n   BatchHost=rtx-209-223\n   NumNodes=1 NumCPUs=8 NumTasks=1 CPUs/Task=8 ReqB:S:C:T=0:0:*:*\n   ReqTRES=cpu=8,mem=48G,node=1,billing=8,gres/gpu=1\n   AllocTRES=cpu=8,mem=48G,node=1,billing=8,gres/gpu=1\n   Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=*\n   MinCPUsNode=8 MinMemoryNode=48G MinTmpDiskNode=0\n   Features=(null) DelayBoot=00:00:00\n   OverSubscribe=OK Contiguous=0 Licenses=(null) LicensesAlloc=(null) Network=(null)\n   Command=(null)\n   WorkDir=/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery\n   StdErr=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-source-prior-four-scopes-b32-v1-720565_0.log\n   StdIn=/dev/null\n   StdOut=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/practical-franka-source-prior-four-scopes-b32-v1-720565_0.log\n   TresPerNode=gres/gpu:1\n   TresPerTask=cpu=8\n   \n\n",
+  "scope": "Independently aggregate32 compact reconstruction clouds with compensated original force/moment budgets, two matched four-scope cost allocations, and paired repeated reward traces. Plot unsmoothed material sections and all original positive-area traction samples with editable vector text and final-size previews. Rendered visual QA remains required.",
+  "goal_completion": false
+}

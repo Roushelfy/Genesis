@@ -1,0 +1,298 @@
+{
+  "scope": "Extract compact rigid-contact observations from qualified deformable Franka snapshots.\n\nOne packet per IPC stencil preserves its resultant, application point, free\nmoment and physical source. No new contact equilibrium is solved. The pullback\nuses the proper fitted rigid frame; deformation remaining after that pullback\nis retained in the application point and moment, rather than silently projected\nonto a different reference surface.\n",
+  "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-physical-budget-full-history-v1",
+  "fields": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-physical-budget-full-fields-v1",
+  "feedback": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-rigid-deformable-feedback-v2",
+  "dt": 0.00125,
+  "friction": 0.6,
+  "rows": [
+    {
+      "step": 11,
+      "time_s": 0.01375,
+      "packet_count": 1,
+      "sources": {
+        "1": {
+          "normal_force_on_body_N": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "shear_force_on_body_N": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "moment_on_body_about_current_com_Nm": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "normal_stencils": 0
+        },
+        "2": {
+          "normal_force_on_body_N": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "shear_force_on_body_N": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "moment_on_body_about_current_com_Nm": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "normal_stencils": 0
+        },
+        "3": {
+          "normal_force_on_body_N": [
+            0.0,
+            0.0,
+            0.058876831336888084
+          ],
+          "shear_force_on_body_N": [
+            1.5450153098492758e-08,
+            -2.996286277716099e-09,
+            0.0
+          ],
+          "moment_on_body_about_current_com_Nm": [
+            -8.494426996746135e-11,
+            -4.380095408648884e-10,
+            -1.6393811948816378e-26
+          ],
+          "normal_stencils": 1
+        }
+      },
+      "source_wrenches_exactly_match_qualified_feedback": true,
+      "current_minus_reference_wrench_Nm": [
+        1.278416797633075e-13,
+        6.592037549196288e-13,
+        -1.7588150195197355e-25
+      ]
+    },
+    {
+      "step": 866,
+      "time_s": 1.0825,
+      "packet_count": 2,
+      "sources": {
+        "1": {
+          "normal_force_on_body_N": [
+            -0.0003765884883486804,
+            2.5658968877149135,
+            0.0032289026611215205
+          ],
+          "shear_force_on_body_N": [
+            -0.00019025425888465194,
+            7.813903864345259e-05,
+            -0.06211657168951653
+          ],
+          "moment_on_body_about_current_com_Nm": [
+            -0.003621444052076449,
+            -1.2767436750476567e-06,
+            -2.0773501659866292e-05
+          ],
+          "normal_stencils": 1
+        },
+        "2": {
+          "normal_force_on_body_N": [
+            0.0004032126389774427,
+            -2.7473013314244548,
+            -0.0034571804589669537
+          ],
+          "shear_force_on_body_N": [
+            -0.005279231964029889,
+            -0.00016357215301767526,
+            0.1293693939399038
+          ],
+          "moment_on_body_about_current_com_Nm": [
+            0.0064974409112312755,
+            -8.273612226778075e-06,
+            7.108276457250045e-05
+          ],
+          "normal_stencils": 1
+        },
+        "3": {
+          "normal_force_on_body_N": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "shear_force_on_body_N": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "moment_on_body_about_current_com_Nm": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "normal_stencils": 0
+        }
+      },
+      "source_wrenches_exactly_match_qualified_feedback": true,
+      "current_minus_reference_wrench_Nm": [
+        -2.527751999290127e-07,
+        6.767957958953961e-10,
+        -4.859036150860633e-09
+      ]
+    },
+    {
+      "step": 869,
+      "time_s": 1.08625,
+      "packet_count": 3,
+      "sources": {
+        "1": {
+          "normal_force_on_body_N": [
+            -4.895767488087434e-05,
+            0.3335041346974338,
+            0.0004196909750863111
+          ],
+          "shear_force_on_body_N": [
+            1.7286923337828027e-05,
+            3.6433225816253576e-05,
+            -0.028949359990442354
+          ],
+          "moment_on_body_about_current_com_Nm": [
+            -1.1977551670384976e-05,
+            -1.530980800048173e-07,
+            -1.7765745008271218e-06
+          ],
+          "normal_stencils": 1
+        },
+        "2": {
+          "normal_force_on_body_N": [
+            4.481434784723931e-05,
+            -0.30527941404875497,
+            -0.0003841721934634682
+          ],
+          "shear_force_on_body_N": [
+            -0.00019247620234759516,
+            -2.480871341804346e-05,
+            0.01969159644761963
+          ],
+          "moment_on_body_about_current_com_Nm": [
+            0.000839116229307772,
+            -4.551096295743713e-07,
+            -7.790491869786619e-07
+          ],
+          "normal_stencils": 1
+        },
+        "3": {
+          "normal_force_on_body_N": [
+            0.0,
+            0.0,
+            0.07348943696981765
+          ],
+          "shear_force_on_body_N": [
+            0.000194095011242653,
+            -0.028248541982947083,
+            0.0
+          ],
+          "moment_on_body_about_current_com_Nm": [
+            -0.0008276878195273179,
+            8.412475150975293e-07,
+            2.5093959076130034e-06
+          ],
+          "normal_stencils": 1
+        }
+      },
+      "source_wrenches_exactly_match_qualified_feedback": true,
+      "current_minus_reference_wrench_Nm": [
+        -6.6524165238745776e-09,
+        2.803532774795461e-12,
+        2.368945646783603e-12
+      ]
+    },
+    {
+      "step": 2640,
+      "time_s": 3.3000000000000003,
+      "packet_count": 2,
+      "sources": {
+        "1": {
+          "normal_force_on_body_N": [
+            0.00011903253343665843,
+            0.4000352004993758,
+            0.0006172839835132527
+          ],
+          "shear_force_on_body_N": [
+            0.00022142215642823626,
+            -4.08077827717445e-05,
+            0.026403071451863155
+          ],
+          "moment_on_body_about_current_com_Nm": [
+            -0.0013576364600591637,
+            6.207718684483768e-07,
+            7.916566232252306e-06
+          ],
+          "normal_stencils": 1
+        },
+        "2": {
+          "normal_force_on_body_N": [
+            -0.00011900538556131114,
+            -0.39994396404884613,
+            -0.0006171431989030135
+          ],
+          "shear_force_on_body_N": [
+            -0.00019674176634788392,
+            -5.7857470616911596e-05,
+            0.037532876517638966
+          ],
+          "moment_on_body_about_current_com_Nm": [
+            0.001357638740076276,
+            -1.8016131222791632e-06,
+            -7.909309631299451e-06
+          ],
+          "normal_stencils": 1
+        },
+        "3": {
+          "normal_force_on_body_N": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "shear_force_on_body_N": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "moment_on_body_about_current_com_Nm": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "normal_stencils": 0
+        }
+      },
+      "source_wrenches_exactly_match_qualified_feedback": true,
+      "current_minus_reference_wrench_Nm": [
+        -3.395546327951656e-11,
+        1.294625341351681e-11,
+        -8.47233704543178e-14
+      ]
+    }
+  ],
+  "input_sha256": {
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-physical-budget-full-history-v1/results/configuration.json": "d20e30d357255104629653fb3da4a3ef9fc940cd5bfc08aa78117c1ca985e148",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-physical-budget-full-fields-v1/results/summary.json": "39a74a7b42911a7c79594173f52d5e1a7848f714d3a95c107702b757ce51715c",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-rigid-deformable-feedback-v2/results/summary.json": "d284cf570ae9a815b0ec8936c8c81d864cddf441fbbd9a015c404706e568ee67",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-physical-budget-full-history-v1/source/genesis/assets/xml/franka_emika_panda/panda.xml": "e502e07fcef6219024be02dfb9cd65d5c194b4767adf381ca51f10172ff8a32d",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-physical-budget-full-history-v1/results/step00011.npz": "ede80dae14c401ae54aca86853da2ff10c1249eabb5e668d00fd5027785a9ccc",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-physical-budget-full-history-v1/results/step00010.npz": "eae1cb1dcdfbae532e08e66f0b8c970db5af23fc116e709384c89ce71712ee48",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-physical-budget-full-fields-v1/results/step00011.npz": "79778c0234f35003123310c4dbfac31503b7074046ea1a0a8f278eeedc615ec6",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-physical-budget-full-history-v1/results/step00866.npz": "489674c34c93cbe4654511f9967009586600e206abe55653c9b0c9dd424e1a61",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-physical-budget-full-history-v1/results/step00865.npz": "a6ce86575a1db97855a4bc0c28093ba802382cddb33309feaa692d8a8f50bf6b",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-physical-budget-full-fields-v1/results/step00866.npz": "06ffdb51516ddcd290a3bdee894238b735d2e71e8f264e85b68c078560743b7b",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-physical-budget-full-history-v1/results/step00869.npz": "9409df3db0e400ed7781c91af6aa1e40be298bca9c7d143d7eaa62ce6c75be04",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-physical-budget-full-history-v1/results/step00868.npz": "3fbb4e447e332a43a2a7721a542d2cae2b59deb81863bff0c33f487b447baf79",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-physical-budget-full-fields-v1/results/step00869.npz": "8605371dba585a7c5a279a141339041278304498c9e48ea057bf0c46f4ca6e1f",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-physical-budget-full-history-v1/results/step02640.npz": "90dd6e2b4db6f44ee7a6ee59bce691e4167babfaccfa26586e749f2fedb3c51b",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-physical-budget-full-history-v1/results/step02639.npz": "0b927df28b345f64b2af2f79b8e65d34e671a59f303002762e0e2b1c2ac1490f",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/franka-original-physical-budget-full-fields-v1/results/step02640.npz": "88d69d44e70bac52c348a2fa29ea7ce63c6d43779de4ff675faaab00572f4edc"
+  },
+  "goal_completion": false,
+  "limitations": "Compact numerical-contact snapshots, not continuum or experimental truth. Finite rigid pullback preserves each actual stencil resultant and enabled free moment. Reference-versus-current material application geometry and fixed full-inertia RHS conventions must remain explicit in reconstructed replay. No footprint radius is inferred from a point wrench."
+}
