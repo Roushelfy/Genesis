@@ -20,6 +20,16 @@ The previous completion records do not establish this stage's acceptance.
 
 ### Immediate evidence gates
 
+The [separated-axis qualification](docs/PHYSICAL_SEPARATED_AXES_SETUP_20261016.md)
+preserves actual IPC geometry across2/4/8 radial layers and qualifies recording
+all64 initializer controls. Every original1920-tet dynamic array, corner/
+quadrature field and final initializer byte remains identical; all64 fresh
+static force/global-field audits pass unchanged gates. Both actual audit failures
+remain retained. Continuous-traction loads first reproduce all five originals
+exactly before fixed554574-tet integration controls. New radial contact histories
+and full traction-quadrature stress solves/audits are scheduled, not accepted.
+Every original A/B/C/model/island/application/feedback/cost requirement stays.
+
 The [contact-distance/depth checkpoint](docs/PHYSICAL_CONTACT_DISTANCE_DEPTH_20261016.md)
 closes all15 fixed31668-tet dynamic force/source/field states and the same576
 qualified near-surface probes across all three meshes and all distances.

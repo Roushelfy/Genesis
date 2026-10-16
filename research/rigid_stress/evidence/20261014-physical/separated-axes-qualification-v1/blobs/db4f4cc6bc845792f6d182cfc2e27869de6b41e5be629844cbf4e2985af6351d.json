@@ -1,0 +1,1270 @@
+{
+  "scope": "Qualify the original continuum traction law, then compare boundary integration on one fixed finer mesh without solving elasticity.",
+  "original_five_case_continuous_law_and_full_nodal_loads_qualified": [
+    {
+      "case": "opposing",
+      "original_quadrature_level": 3,
+      "full_original_nodal_load_maximum_error_N": 0.0,
+      "full_original_nodal_load_relative_L2": 0.0,
+      "quadrature_level": 3,
+      "force_N": [
+        -7.7021722333370235e-16,
+        0.0,
+        0.0
+      ],
+      "moment_about_original_com_Nm": [
+        0.0,
+        3.1027896517290404e-10,
+        1.8231081545497583e-10
+      ],
+      "patches": [
+        {
+          "name": "pad0",
+          "active_quadrature_samples": 88755,
+          "profile_integral_m2": 5.6141639326881215e-06,
+          "force_N": [
+            0.04999999999999987,
+            0.0,
+            0.0
+          ],
+          "moment_about_original_com_Nm": [
+            0.0,
+            9.797543823553233e-05,
+            5.316182800228161e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 1.4227506535912076e-22
+        },
+        {
+          "name": "pad1",
+          "active_quadrature_samples": 91522,
+          "profile_integral_m2": 5.6141370215601485e-06,
+          "force_N": [
+            -0.05000000000000064,
+            0.0,
+            0.0
+          ],
+          "moment_about_original_com_Nm": [
+            0.0,
+            -9.797512795656716e-05,
+            -3.4930746456784025e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 3.3881317890172014e-21
+        }
+      ]
+    },
+    {
+      "case": "bending",
+      "original_quadrature_level": 3,
+      "full_original_nodal_load_maximum_error_N": 0.0,
+      "full_original_nodal_load_relative_L2": 0.0,
+      "quadrature_level": 3,
+      "force_N": [
+        -4.926614671774132e-16,
+        0.0,
+        -7.806255641895632e-17
+      ],
+      "moment_about_original_com_Nm": [
+        -5.2386627296187383e-11,
+        0.0006313241693274883,
+        1.746220911041424e-10
+      ],
+      "patches": [
+        {
+          "name": "pad0",
+          "active_quadrature_samples": 88755,
+          "profile_integral_m2": 5.6141639326881215e-06,
+          "force_N": [
+            0.047891314261057374,
+            0.0,
+            0.014367394278317116
+          ],
+          "moment_about_original_com_Nm": [
+            -1.5275938865625613e-10,
+            0.0004095055804630548,
+            5.091979623491085e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 1.6940658945086007e-20
+        },
+        {
+          "name": "pad1",
+          "active_quadrature_samples": 91522,
+          "profile_integral_m2": 5.6141370215601485e-06,
+          "force_N": [
+            -0.04789131426105787,
+            0.0,
+            -0.014367394278317194
+          ],
+          "moment_about_original_com_Nm": [
+            1.0037276136006874e-10,
+            0.00022181858886443346,
+            -3.345758712449661e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 1.0164395367051604e-20
+        }
+      ]
+    },
+    {
+      "case": "asymmetric",
+      "original_quadrature_level": 3,
+      "full_original_nodal_load_maximum_error_N": 0.0,
+      "full_original_nodal_load_relative_L2": 0.0,
+      "quadrature_level": 3,
+      "force_N": [
+        -0.030000000000000006,
+        0.0,
+        0.0
+      ],
+      "moment_about_original_com_Nm": [
+        0.0,
+        -9.798212508987335e-05,
+        9.26433422308239e-11
+      ],
+      "patches": [
+        {
+          "name": "pad0",
+          "active_quadrature_samples": 88755,
+          "profile_integral_m2": 5.6141639326881215e-06,
+          "force_N": [
+            0.04999999999999987,
+            0.0,
+            0.0
+          ],
+          "moment_about_original_com_Nm": [
+            0.0,
+            9.797543823553233e-05,
+            5.316182800228161e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 1.4227506535912076e-22
+        },
+        {
+          "name": "pad1",
+          "active_quadrature_samples": 90847,
+          "profile_integral_m2": 5.5853901167135465e-06,
+          "force_N": [
+            -0.07999999999999988,
+            0.0,
+            0.0
+          ],
+          "moment_about_original_com_Nm": [
+            0.0,
+            -0.00019595756332540569,
+            -4.389749377919922e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 1.0587911840678754e-22
+        }
+      ]
+    },
+    {
+      "case": "near_slip",
+      "original_quadrature_level": 3,
+      "full_original_nodal_load_maximum_error_N": 0.0,
+      "full_original_nodal_load_relative_L2": 0.0,
+      "quadrature_level": 3,
+      "force_N": [
+        -8.915900945177802e-07,
+        2.0790521078186456e-07,
+        0.06228539538656633
+      ],
+      "moment_about_original_com_Nm": [
+        -9.9176488112557e-10,
+        2.023889902002217e-08,
+        5.346606225453602e-08
+      ],
+      "patches": [
+        {
+          "name": "pad0",
+          "active_quadrature_samples": 88755,
+          "profile_integral_m2": 5.6141639326881215e-06,
+          "force_N": [
+            0.05447289096222914,
+            -1.1027038241052855e-06,
+            0.031143141648243708
+          ],
+          "moment_about_original_com_Nm": [
+            1.8930486290216307e-09,
+            0.0007916920102809885,
+            2.456625166696671e-08
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 3.3881317890172014e-21
+        },
+        {
+          "name": "pad1",
+          "active_quadrature_samples": 91522,
+          "profile_integral_m2": 5.6141370215601485e-06,
+          "force_N": [
+            -0.05447378255232366,
+            1.31060903488715e-06,
+            0.03114225373832262
+          ],
+          "moment_about_original_com_Nm": [
+            -2.8848135101472007e-09,
+            -0.0007916717713819685,
+            2.889981058756931e-08
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 6.776263578034403e-21
+        }
+      ]
+    },
+    {
+      "case": "multiple",
+      "original_quadrature_level": 3,
+      "full_original_nodal_load_maximum_error_N": 0.0,
+      "full_original_nodal_load_relative_L2": 0.0,
+      "quadrature_level": 3,
+      "force_N": [
+        0.019611613513817554,
+        0.0,
+        -0.003922322702763672
+      ],
+      "moment_about_original_com_Nm": [
+        4.504641252299743e-11,
+        9.534913872243458e-05,
+        4.075428780753842e-10
+      ],
+      "patches": [
+        {
+          "name": "pad0",
+          "active_quadrature_samples": 88755,
+          "profile_integral_m2": 5.6141639326881215e-06,
+          "force_N": [
+            0.04999999999999987,
+            0.0,
+            0.0
+          ],
+          "moment_about_original_com_Nm": [
+            0.0,
+            9.797543823553233e-05,
+            5.316182800228161e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 1.4227506535912076e-22
+        },
+        {
+          "name": "pad1",
+          "active_quadrature_samples": 91522,
+          "profile_integral_m2": 5.6141370215601485e-06,
+          "force_N": [
+            -0.05000000000000064,
+            0.0,
+            0.0
+          ],
+          "moment_about_original_com_Nm": [
+            0.0,
+            -9.797512795656716e-05,
+            -3.4930746456784025e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 3.3881317890172014e-21
+        },
+        {
+          "name": "pad2",
+          "active_quadrature_samples": 93264,
+          "profile_integral_m2": 5.614315535898432e-06,
+          "force_N": [
+            0.019611613513818325,
+            0.0,
+            -0.003922322702763672
+          ],
+          "moment_about_original_com_Nm": [
+            4.504641252299743e-11,
+            9.53488284434694e-05,
+            2.2523206262040838e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 1.6940658945086007e-21
+        }
+      ]
+    }
+  ],
+  "fixed_mesh_rows": [
+    {
+      "case": "opposing",
+      "fixed_mesh_sha256": "fbd03bb2f80e1257cb2aa3d1219c4076819a6be0cdaba751a7aade6718c07a9a",
+      "fixed_mesh_tetrahedra": 554574,
+      "quadrature_level": 2,
+      "force_N": [
+        -5.48172618408671e-16,
+        0.0,
+        0.0
+      ],
+      "moment_about_original_com_Nm": [
+        0.0,
+        3.1084000992739544e-10,
+        1.8240174705604337e-10
+      ],
+      "patches": [
+        {
+          "name": "pad0",
+          "active_quadrature_samples": 67371,
+          "profile_integral_m2": 5.61416392836826e-06,
+          "force_N": [
+            0.05000000000000017,
+            0.0,
+            0.0
+          ],
+          "moment_about_original_com_Nm": [
+            0.0,
+            9.797543874778231e-05,
+            5.317872175700814e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 7.444625512977249e-23
+        },
+        {
+          "name": "pad1",
+          "active_quadrature_samples": 73832,
+          "profile_integral_m2": 5.614137020105838e-06,
+          "force_N": [
+            -0.05000000000000072,
+            0.0,
+            0.0
+          ],
+          "moment_about_original_com_Nm": [
+            0.0,
+            -9.797512790777238e-05,
+            -3.49385470514038e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 1.0164395367051604e-20
+        }
+      ]
+    },
+    {
+      "case": "opposing",
+      "fixed_mesh_sha256": "fbd03bb2f80e1257cb2aa3d1219c4076819a6be0cdaba751a7aade6718c07a9a",
+      "fixed_mesh_tetrahedra": 554574,
+      "quadrature_level": 3,
+      "force_N": [
+        -3.95516952522712e-16,
+        0.0,
+        0.0
+      ],
+      "moment_about_original_com_Nm": [
+        0.0,
+        3.1026223167788906e-10,
+        1.8230394422078074e-10
+      ],
+      "patches": [
+        {
+          "name": "pad0",
+          "active_quadrature_samples": 269479,
+          "profile_integral_m2": 5.614163932849776e-06,
+          "force_N": [
+            0.04999999999999937,
+            0.0,
+            0.0
+          ],
+          "moment_about_original_com_Nm": [
+            0.0,
+            9.797543827287731e-05,
+            5.316516123217818e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 6.776263578034403e-21
+        },
+        {
+          "name": "pad1",
+          "active_quadrature_samples": 295313,
+          "profile_integral_m2": 5.614137022001567e-06,
+          "force_N": [
+            -0.04999999999999977,
+            0.0,
+            0.0
+          ],
+          "moment_about_original_com_Nm": [
+            0.0,
+            -9.797512801064563e-05,
+            -3.4934766810100104e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 2.0328790734103208e-20
+        }
+      ]
+    },
+    {
+      "case": "opposing",
+      "fixed_mesh_sha256": "fbd03bb2f80e1257cb2aa3d1219c4076819a6be0cdaba751a7aade6718c07a9a",
+      "fixed_mesh_tetrahedra": 554574,
+      "quadrature_level": 4,
+      "force_N": [
+        8.118505867571457e-16,
+        0.0,
+        0.0
+      ],
+      "moment_about_original_com_Nm": [
+        0.0,
+        3.1023911572863015e-10,
+        1.8232339047869397e-10
+      ],
+      "patches": [
+        {
+          "name": "pad0",
+          "active_quadrature_samples": 1078004,
+          "profile_integral_m2": 5.614163930834084e-06,
+          "force_N": [
+            0.05000000000000122,
+            0.0,
+            0.0
+          ],
+          "moment_about_original_com_Nm": [
+            0.0,
+            9.797543826546424e-05,
+            5.316798833667809e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 3.3881317890172014e-21
+        },
+        {
+          "name": "pad1",
+          "active_quadrature_samples": 1181222,
+          "profile_integral_m2": 5.614137022491668e-06,
+          "force_N": [
+            -0.050000000000000405,
+            0.0,
+            0.0
+          ],
+          "moment_about_original_com_Nm": [
+            0.0,
+            -9.797512802634851e-05,
+            -3.493564928880869e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 5.387013739251593e-23
+        }
+      ]
+    },
+    {
+      "case": "bending",
+      "fixed_mesh_sha256": "fbd03bb2f80e1257cb2aa3d1219c4076819a6be0cdaba751a7aade6718c07a9a",
+      "fixed_mesh_tetrahedra": 554574,
+      "quadrature_level": 2,
+      "force_N": [
+        4.85722573273506e-17,
+        0.0,
+        -2.740863092043355e-16
+      ],
+      "moment_about_original_com_Nm": [
+        -5.241275628692573e-11,
+        0.0006313241698507802,
+        1.7470918769882605e-10
+      ],
+      "patches": [
+        {
+          "name": "pad0",
+          "active_quadrature_samples": 67371,
+          "profile_integral_m2": 5.61416392836826e-06,
+          "force_N": [
+            0.047891314261057694,
+            0.0,
+            0.014367394278317182
+          ],
+          "moment_about_original_com_Nm": [
+            -1.5280793250668347e-10,
+            0.0004095055809371146,
+            5.093597751019341e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 1.6940658945086007e-21
+        },
+        {
+          "name": "pad1",
+          "active_quadrature_samples": 73832,
+          "profile_integral_m2": 5.614137020105838e-06,
+          "force_N": [
+            -0.047891314261057645,
+            0.0,
+            -0.014367394278317456
+          ],
+          "moment_about_original_com_Nm": [
+            1.0039517621975774e-10,
+            0.00022181858891366562,
+            -3.3465058740310805e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 3.3881317890172014e-21
+        }
+      ]
+    },
+    {
+      "case": "bending",
+      "fixed_mesh_sha256": "fbd03bb2f80e1257cb2aa3d1219c4076819a6be0cdaba751a7aade6718c07a9a",
+      "fixed_mesh_tetrahedra": 554574,
+      "quadrature_level": 3,
+      "force_N": [
+        1.457167719820518e-16,
+        0.0,
+        -4.683753385137379e-16
+      ],
+      "moment_about_original_com_Nm": [
+        -5.2384652823216144e-11,
+        0.0006313241693081082,
+        1.7461550950399688e-10
+      ],
+      "patches": [
+        {
+          "name": "pad0",
+          "active_quadrature_samples": 269479,
+          "profile_integral_m2": 5.614163932849776e-06,
+          "force_N": [
+            0.04789131426105727,
+            0.0,
+            0.014367394278317189
+          ],
+          "moment_about_original_com_Nm": [
+            -1.5276896657840379e-10,
+            0.00040950558049756083,
+            5.09229888683867e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 9.429858983104515e-23
+        },
+        {
+          "name": "pad1",
+          "active_quadrature_samples": 295313,
+          "profile_integral_m2": 5.614137022001567e-06,
+          "force_N": [
+            -0.047891314261057125,
+            0.0,
+            -0.014367394278317657
+          ],
+          "moment_about_original_com_Nm": [
+            1.0038431375518764e-10,
+            0.00022181858881054734,
+            -3.346143791798701e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 1.3552527156068805e-20
+        }
+      ]
+    },
+    {
+      "case": "bending",
+      "fixed_mesh_sha256": "fbd03bb2f80e1257cb2aa3d1219c4076819a6be0cdaba751a7aade6718c07a9a",
+      "fixed_mesh_tetrahedra": 554574,
+      "quadrature_level": 4,
+      "force_N": [
+        2.983724378680108e-16,
+        0.0,
+        4.49293380277993e-16
+      ],
+      "moment_about_original_com_Nm": [
+        -5.239024070991734e-11,
+        0.0006313241692862946,
+        1.7463413584575698e-10
+      ],
+      "patches": [
+        {
+          "name": "pad0",
+          "active_quadrature_samples": 1078004,
+          "profile_integral_m2": 5.614163930834084e-06,
+          "force_N": [
+            0.04789131426105683,
+            0.0,
+            0.014367394278317748
+          ],
+          "moment_about_original_com_Nm": [
+            -1.5277709025220186e-10,
+            0.00040950558049151055,
+            5.092569674963234e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 2.371692252312041e-20
+        },
+        {
+          "name": "pad1",
+          "active_quadrature_samples": 1181222,
+          "profile_integral_m2": 5.614137022491668e-06,
+          "force_N": [
+            -0.047891314261056535,
+            0.0,
+            -0.014367394278317298
+          ],
+          "moment_about_original_com_Nm": [
+            1.0038684954228453e-10,
+            0.00022181858879478396,
+            -3.3462283165056645e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 1.0164395367051604e-20
+        }
+      ]
+    },
+    {
+      "case": "asymmetric",
+      "fixed_mesh_sha256": "fbd03bb2f80e1257cb2aa3d1219c4076819a6be0cdaba751a7aade6718c07a9a",
+      "fixed_mesh_tetrahedra": 554574,
+      "quadrature_level": 2,
+      "force_N": [
+        -0.029999999999999916,
+        0.0,
+        0.0
+      ],
+      "moment_about_original_com_Nm": [
+        0.0,
+        -9.798212501650332e-05,
+        9.329442032987124e-11
+      ],
+      "patches": [
+        {
+          "name": "pad0",
+          "active_quadrature_samples": 67371,
+          "profile_integral_m2": 5.61416392836826e-06,
+          "force_N": [
+            0.05000000000000017,
+            0.0,
+            0.0
+          ],
+          "moment_about_original_com_Nm": [
+            0.0,
+            9.797543874778231e-05,
+            5.317872175700814e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 7.444625512977249e-23
+        },
+        {
+          "name": "pad1",
+          "active_quadrature_samples": 71226,
+          "profile_integral_m2": 5.585390123374566e-06,
+          "force_N": [
+            -0.08000000000000008,
+            0.0,
+            0.0
+          ],
+          "moment_about_original_com_Nm": [
+            0.0,
+            -0.00019595756376428563,
+            -4.3849279724021013e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 2.0328790734103208e-20
+        }
+      ]
+    },
+    {
+      "case": "asymmetric",
+      "fixed_mesh_sha256": "fbd03bb2f80e1257cb2aa3d1219c4076819a6be0cdaba751a7aade6718c07a9a",
+      "fixed_mesh_tetrahedra": 554574,
+      "quadrature_level": 3,
+      "force_N": [
+        -0.03000000000000074,
+        0.0,
+        0.0
+      ],
+      "moment_about_original_com_Nm": [
+        0.0,
+        -9.798212497944879e-05,
+        9.273549818662648e-11
+      ],
+      "patches": [
+        {
+          "name": "pad0",
+          "active_quadrature_samples": 269479,
+          "profile_integral_m2": 5.614163932849776e-06,
+          "force_N": [
+            0.04999999999999937,
+            0.0,
+            0.0
+          ],
+          "moment_about_original_com_Nm": [
+            0.0,
+            9.797543827287731e-05,
+            5.316516123217818e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 6.776263578034403e-21
+        },
+        {
+          "name": "pad1",
+          "active_quadrature_samples": 284905,
+          "profile_integral_m2": 5.585390117397014e-06,
+          "force_N": [
+            -0.08000000000000011,
+            0.0,
+            0.0
+          ],
+          "moment_about_original_com_Nm": [
+            0.0,
+            -0.0001959575632523261,
+            -4.389161141351553e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 4.0657581468206416e-20
+        }
+      ]
+    },
+    {
+      "case": "asymmetric",
+      "fixed_mesh_sha256": "fbd03bb2f80e1257cb2aa3d1219c4076819a6be0cdaba751a7aade6718c07a9a",
+      "fixed_mesh_tetrahedra": 554574,
+      "quadrature_level": 4,
+      "force_N": [
+        -0.02999999999999827,
+        0.0,
+        0.0
+      ],
+      "moment_about_original_com_Nm": [
+        0.0,
+        -9.798212503562238e-05,
+        9.272323397692539e-11
+      ],
+      "patches": [
+        {
+          "name": "pad0",
+          "active_quadrature_samples": 1078004,
+          "profile_integral_m2": 5.614163930834084e-06,
+          "force_N": [
+            0.05000000000000122,
+            0.0,
+            0.0
+          ],
+          "moment_about_original_com_Nm": [
+            0.0,
+            9.797543826546424e-05,
+            5.316798833667809e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 3.3881317890172014e-21
+        },
+        {
+          "name": "pad1",
+          "active_quadrature_samples": 1139735,
+          "profile_integral_m2": 5.585390116714591e-06,
+          "force_N": [
+            -0.07999999999999949,
+            0.0,
+            0.0
+          ],
+          "moment_about_original_com_Nm": [
+            0.0,
+            -0.00019595756330108662,
+            -4.3895664938985547e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 1.0587911840678754e-22
+        }
+      ]
+    },
+    {
+      "case": "near_slip",
+      "fixed_mesh_sha256": "fbd03bb2f80e1257cb2aa3d1219c4076819a6be0cdaba751a7aade6718c07a9a",
+      "fixed_mesh_tetrahedra": 554574,
+      "quadrature_level": 2,
+      "force_N": [
+        -8.915818652741048e-07,
+        2.0791733210987196e-07,
+        0.06228539537462233
+      ],
+      "moment_about_original_com_Nm": [
+        -9.91933677550876e-10,
+        2.0239188946416693e-08,
+        5.346612194277667e-08
+      ],
+      "patches": [
+        {
+          "name": "pad0",
+          "active_quadrature_samples": 67371,
+          "profile_integral_m2": 5.61416392836826e-06,
+          "force_N": [
+            0.05447289097011987,
+            -1.1026970876989332e-06,
+            0.031143141635455694
+          ],
+          "moment_about_original_com_Nm": [
+            1.892938245140341e-09,
+            0.000791692010541377,
+            2.4566278766027897e-08
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 1.3552527156068805e-20
+        },
+        {
+          "name": "pad1",
+          "active_quadrature_samples": 73832,
+          "profile_integral_m2": 5.614137020105838e-06,
+          "force_N": [
+            -0.05447378255198514,
+            1.3106144198088052e-06,
+            0.031142253739166632
+          ],
+          "moment_about_original_com_Nm": [
+            -2.884871922691217e-09,
+            -0.0007916717713524306,
+            2.8899843176748774e-08
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 3.3881317890172014e-21
+        }
+      ]
+    },
+    {
+      "case": "near_slip",
+      "fixed_mesh_sha256": "fbd03bb2f80e1257cb2aa3d1219c4076819a6be0cdaba751a7aade6718c07a9a",
+      "fixed_mesh_tetrahedra": 554574,
+      "quadrature_level": 3,
+      "force_N": [
+        -8.915900072403726e-07,
+        2.0790914376364952e-07,
+        0.06228539538435547
+      ],
+      "moment_about_original_com_Nm": [
+        -9.918147884943825e-10,
+        2.0238880709040098e-08,
+        5.3466076014435316e-08
+      ],
+      "patches": [
+        {
+          "name": "pad0",
+          "active_quadrature_samples": 269479,
+          "profile_integral_m2": 5.614163932849776e-06,
+          "force_N": [
+            0.054472890962939356,
+            -1.1027024553909664e-06,
+            0.031143141647080246
+          ],
+          "moment_about_original_com_Nm": [
+            1.893030488358554e-09,
+            0.000791692010295662,
+            2.4566254091468204e-08
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 1.6940658945086007e-20
+        },
+        {
+          "name": "pad1",
+          "active_quadrature_samples": 295313,
+          "profile_integral_m2": 5.614137022001567e-06,
+          "force_N": [
+            -0.0544737825529466,
+            1.310611599154616e-06,
+            0.03114225373727523
+          ],
+          "moment_about_original_com_Nm": [
+            -2.8848452768529364e-09,
+            -0.0007916717714149529,
+            2.8899821922967115e-08
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 1.0164395367051604e-20
+        }
+      ]
+    },
+    {
+      "case": "near_slip",
+      "fixed_mesh_sha256": "fbd03bb2f80e1257cb2aa3d1219c4076819a6be0cdaba751a7aade6718c07a9a",
+      "fixed_mesh_tetrahedra": 554574,
+      "quadrature_level": 4,
+      "force_N": [
+        -8.915901865275133e-07,
+        2.0791110217806897e-07,
+        0.062285395384115004
+      ],
+      "moment_about_original_com_Nm": [
+        -9.918430485870443e-10,
+        2.0238871633075292e-08,
+        5.346606965890669e-08
+      ],
+      "patches": [
+        {
+          "name": "pad0",
+          "active_quadrature_samples": 1078004,
+          "profile_integral_m2": 5.614163930834084e-06,
+          "force_N": [
+            0.05447289096298999,
+            -1.1027007771328628e-06,
+            0.031143141647265882
+          ],
+          "moment_about_original_com_Nm": [
+            1.893007229735119e-09,
+            0.0007916920102934886,
+            2.4566250290445454e-08
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 1.6940658945086007e-20
+        },
+        {
+          "name": "pad1",
+          "active_quadrature_samples": 1181222,
+          "profile_integral_m2": 5.614137022491668e-06,
+          "force_N": [
+            -0.05447378255317652,
+            1.3106118793109318e-06,
+            0.03114225373684912
+          ],
+          "moment_about_original_com_Nm": [
+            -2.8848502783221634e-09,
+            -0.0007916717714218555,
+            2.8899819368461237e-08
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 3.3881317890172014e-21
+        }
+      ]
+    },
+    {
+      "case": "multiple",
+      "fixed_mesh_sha256": "fbd03bb2f80e1257cb2aa3d1219c4076819a6be0cdaba751a7aade6718c07a9a",
+      "fixed_mesh_tetrahedra": 554574,
+      "quadrature_level": 2,
+      "force_N": [
+        0.019611613513817856,
+        0.0,
+        -0.003922322702763681
+      ],
+      "moment_about_original_com_Nm": [
+        4.51117096254977e-11,
+        9.534913911280327e-05,
+        4.079602951930911e-10
+      ],
+      "patches": [
+        {
+          "name": "pad0",
+          "active_quadrature_samples": 67371,
+          "profile_integral_m2": 5.61416392836826e-06,
+          "force_N": [
+            0.05000000000000017,
+            0.0,
+            0.0
+          ],
+          "moment_about_original_com_Nm": [
+            0.0,
+            9.797543874778231e-05,
+            5.317872175700814e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 7.444625512977249e-23
+        },
+        {
+          "name": "pad1",
+          "active_quadrature_samples": 73832,
+          "profile_integral_m2": 5.614137020105838e-06,
+          "force_N": [
+            -0.05000000000000072,
+            0.0,
+            0.0
+          ],
+          "moment_about_original_com_Nm": [
+            0.0,
+            -9.797512790777238e-05,
+            -3.49385470514038e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 1.0164395367051604e-20
+        },
+        {
+          "name": "pad2",
+          "active_quadrature_samples": 23314,
+          "profile_integral_m2": 5.614315567744648e-06,
+          "force_N": [
+            0.019611613513818404,
+            0.0,
+            -0.003922322702763681
+          ],
+          "moment_about_original_com_Nm": [
+            4.51117096254977e-11,
+            9.534882827279334e-05,
+            2.2555854813704776e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 4.235164736271502e-22
+        }
+      ]
+    },
+    {
+      "case": "multiple",
+      "fixed_mesh_sha256": "fbd03bb2f80e1257cb2aa3d1219c4076819a6be0cdaba751a7aade6718c07a9a",
+      "fixed_mesh_tetrahedra": 554574,
+      "quadrature_level": 3,
+      "force_N": [
+        0.01961161351381793,
+        0.0,
+        -0.003922322702763672
+      ],
+      "moment_about_original_com_Nm": [
+        4.504641252299743e-11,
+        9.534913870570108e-05,
+        4.0753600684118913e-10
+      ],
+      "patches": [
+        {
+          "name": "pad0",
+          "active_quadrature_samples": 269479,
+          "profile_integral_m2": 5.614163932849776e-06,
+          "force_N": [
+            0.04999999999999937,
+            0.0,
+            0.0
+          ],
+          "moment_about_original_com_Nm": [
+            0.0,
+            9.797543827287731e-05,
+            5.316516123217818e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 6.776263578034403e-21
+        },
+        {
+          "name": "pad1",
+          "active_quadrature_samples": 295313,
+          "profile_integral_m2": 5.614137022001567e-06,
+          "force_N": [
+            -0.04999999999999977,
+            0.0,
+            0.0
+          ],
+          "moment_about_original_com_Nm": [
+            0.0,
+            -9.797512801064563e-05,
+            -3.4934766810100104e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 2.0328790734103208e-20
+        },
+        {
+          "name": "pad2",
+          "active_quadrature_samples": 93264,
+          "profile_integral_m2": 5.614315535898432e-06,
+          "force_N": [
+            0.019611613513818325,
+            0.0,
+            -0.003922322702763672
+          ],
+          "moment_about_original_com_Nm": [
+            4.504641252299743e-11,
+            9.53488284434694e-05,
+            2.2523206262040838e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 4.235164736271502e-22
+        }
+      ]
+    },
+    {
+      "case": "multiple",
+      "fixed_mesh_sha256": "fbd03bb2f80e1257cb2aa3d1219c4076819a6be0cdaba751a7aade6718c07a9a",
+      "fixed_mesh_tetrahedra": 554574,
+      "quadrature_level": 4,
+      "force_N": [
+        0.01961161351381904,
+        0.0,
+        -0.003922322702763715
+      ],
+      "moment_about_original_com_Nm": [
+        4.504157831736421e-11,
+        9.53491386966516e-05,
+        4.0753128202677164e-10
+      ],
+      "patches": [
+        {
+          "name": "pad0",
+          "active_quadrature_samples": 1078004,
+          "profile_integral_m2": 5.614163930834084e-06,
+          "force_N": [
+            0.05000000000000122,
+            0.0,
+            0.0
+          ],
+          "moment_about_original_com_Nm": [
+            0.0,
+            9.797543826546424e-05,
+            5.316798833667809e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 3.3881317890172014e-21
+        },
+        {
+          "name": "pad1",
+          "active_quadrature_samples": 1181222,
+          "profile_integral_m2": 5.614137022491668e-06,
+          "force_N": [
+            -0.050000000000000405,
+            0.0,
+            0.0
+          ],
+          "moment_about_original_com_Nm": [
+            0.0,
+            -9.797512802634851e-05,
+            -3.493564928880869e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 5.387013739251593e-23
+        },
+        {
+          "name": "pad2",
+          "active_quadrature_samples": 372978,
+          "profile_integral_m2": 5.614315539032079e-06,
+          "force_N": [
+            0.019611613513818228,
+            0.0,
+            -0.003922322702763715
+          ],
+          "moment_about_original_com_Nm": [
+            4.504157831736421e-11,
+            9.534882845753587e-05,
+            2.2520789154807764e-10
+          ],
+          "maximum_quadratic_virtual_work_error_N_m2": 1.6940658945086007e-21
+        }
+      ]
+    }
+  ],
+  "quadrature_load_changes": [
+    {
+      "case": "opposing",
+      "from_quadrature_level": 2,
+      "to_quadrature_level": 3,
+      "absolute_full_nodal_load_change_N": 1.484419396777428e-10,
+      "relative_full_nodal_load_change": 2.8480913930263878e-08
+    },
+    {
+      "case": "opposing",
+      "from_quadrature_level": 3,
+      "to_quadrature_level": 4,
+      "absolute_full_nodal_load_change_N": 1.5317616770978044e-11,
+      "relative_full_nodal_load_change": 2.9389249813857317e-09
+    },
+    {
+      "case": "bending",
+      "from_quadrature_level": 2,
+      "to_quadrature_level": 3,
+      "absolute_full_nodal_load_change_N": 1.4844193967722284e-10,
+      "relative_full_nodal_load_change": 2.848091393016412e-08
+    },
+    {
+      "case": "bending",
+      "from_quadrature_level": 3,
+      "to_quadrature_level": 4,
+      "absolute_full_nodal_load_change_N": 1.531761675953473e-11,
+      "relative_full_nodal_load_change": 2.938924979190152e-09
+    },
+    {
+      "case": "asymmetric",
+      "from_quadrature_level": 2,
+      "to_quadrature_level": 3,
+      "absolute_full_nodal_load_change_N": 2.902655120729767e-10,
+      "relative_full_nodal_load_change": 4.2699797268446926e-08
+    },
+    {
+      "case": "asymmetric",
+      "from_quadrature_level": 3,
+      "to_quadrature_level": 4,
+      "absolute_full_nodal_load_change_N": 2.67064602793842e-11,
+      "relative_full_nodal_load_change": 3.928680439228877e-09
+    },
+    {
+      "case": "near_slip",
+      "from_quadrature_level": 2,
+      "to_quadrature_level": 3,
+      "absolute_full_nodal_load_change_N": 1.8644617047794378e-10,
+      "relative_full_nodal_load_change": 2.848119658684064e-08
+    },
+    {
+      "case": "near_slip",
+      "from_quadrature_level": 3,
+      "to_quadrature_level": 4,
+      "absolute_full_nodal_load_change_N": 1.923924764650729e-11,
+      "relative_full_nodal_load_change": 2.9389544065969708e-09
+    },
+    {
+      "case": "multiple",
+      "from_quadrature_level": 2,
+      "to_quadrature_level": 3,
+      "absolute_full_nodal_load_change_N": 1.9004807519985737e-10,
+      "relative_full_nodal_load_change": 3.301651384169898e-08
+    },
+    {
+      "case": "multiple",
+      "from_quadrature_level": 3,
+      "to_quadrature_level": 4,
+      "absolute_full_nodal_load_change_N": 2.1227888207740565e-11,
+      "relative_full_nodal_load_change": 3.687860895650184e-09
+    }
+  ],
+  "frozen_sample_load_comparisons": [
+    {
+      "case": "opposing",
+      "quadrature_level": 2,
+      "absolute_full_nodal_load_difference_from_frozen_N": 1.2169642824164977e-06,
+      "relative_full_nodal_load_difference_from_frozen": 0.00023349368135885303
+    },
+    {
+      "case": "opposing",
+      "quadrature_level": 3,
+      "absolute_full_nodal_load_difference_from_frozen_N": 1.2169649371028397e-06,
+      "relative_full_nodal_load_difference_from_frozen": 0.00023349380710747938
+    },
+    {
+      "case": "opposing",
+      "quadrature_level": 4,
+      "absolute_full_nodal_load_difference_from_frozen_N": 1.2169647845158747e-06,
+      "relative_full_nodal_load_difference_from_frozen": 0.00023349377779556768
+    },
+    {
+      "case": "bending",
+      "quadrature_level": 2,
+      "absolute_full_nodal_load_difference_from_frozen_N": 1.21696428241681e-06,
+      "relative_full_nodal_load_difference_from_frozen": 0.00023349368135891298
+    },
+    {
+      "case": "bending",
+      "quadrature_level": 3,
+      "absolute_full_nodal_load_difference_from_frozen_N": 1.2169649371031573e-06,
+      "relative_full_nodal_load_difference_from_frozen": 0.00023349380710754037
+    },
+    {
+      "case": "bending",
+      "quadrature_level": 4,
+      "absolute_full_nodal_load_difference_from_frozen_N": 1.2169647845161271e-06,
+      "relative_full_nodal_load_difference_from_frozen": 0.00023349377779561606
+    },
+    {
+      "case": "asymmetric",
+      "quadrature_level": 2,
+      "absolute_full_nodal_load_difference_from_frozen_N": 1.6675737763578855e-06,
+      "relative_full_nodal_load_difference_from_frozen": 0.00024531010145104894
+    },
+    {
+      "case": "asymmetric",
+      "quadrature_level": 3,
+      "absolute_full_nodal_load_difference_from_frozen_N": 1.667572976827259e-06,
+      "relative_full_nodal_load_difference_from_frozen": 0.00024530998371919083
+    },
+    {
+      "case": "asymmetric",
+      "quadrature_level": 4,
+      "absolute_full_nodal_load_difference_from_frozen_N": 1.6675726987103722e-06,
+      "relative_full_nodal_load_difference_from_frozen": 0.0002453099427584122
+    },
+    {
+      "case": "near_slip",
+      "quadrature_level": 2,
+      "absolute_full_nodal_load_difference_from_frozen_N": 1.528520838317768e-06,
+      "relative_full_nodal_load_difference_from_frozen": 0.00023349421629905608
+    },
+    {
+      "case": "near_slip",
+      "quadrature_level": 3,
+      "absolute_full_nodal_load_difference_from_frozen_N": 1.5285216605742988e-06,
+      "relative_full_nodal_load_difference_from_frozen": 0.00023349434204233608
+    },
+    {
+      "case": "near_slip",
+      "quadrature_level": 4,
+      "absolute_full_nodal_load_difference_from_frozen_N": 1.528521468933662e-06,
+      "relative_full_nodal_load_difference_from_frozen": 0.000233494312731932
+    },
+    {
+      "case": "multiple",
+      "quadrature_level": 2,
+      "absolute_full_nodal_load_difference_from_frozen_N": 1.2169642881697937e-06,
+      "relative_full_nodal_load_difference_from_frozen": 0.00021141975915596987
+    },
+    {
+      "case": "multiple",
+      "quadrature_level": 3,
+      "absolute_full_nodal_load_difference_from_frozen_N": 1.2169649371028397e-06,
+      "relative_full_nodal_load_difference_from_frozen": 0.00021141987177962426
+    },
+    {
+      "case": "multiple",
+      "quadrature_level": 4,
+      "absolute_full_nodal_load_difference_from_frozen_N": 1.2169647846028817e-06,
+      "relative_full_nodal_load_difference_from_frozen": 0.0002114198452808795
+    }
+  ],
+  "fixed_mesh_sha256": "fbd03bb2f80e1257cb2aa3d1219c4076819a6be0cdaba751a7aade6718c07a9a",
+  "fixed_patch_radius_m": 0.003,
+  "new_equilibrium_states_solved": 0,
+  "input_sha256": {
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/source/research/rigid_stress/finite_traction_reference.py": "5cc339453f1adf95b73e3070def86d1bd85385e682d8491057448fea05368c58",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/mesh.npz": "8a8ecb0779b2a93350561d33e67fa5046bd8464db4f51409216d47ea90775b59",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-thickness-local-bulk-meshes-v1/results/level2.npz": "fbd03bb2f80e1257cb2aa3d1219c4076819a6be0cdaba751a7aade6718c07a9a",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/opposing/snapshot.json": "6330a5da69d742ca58769e77732829fb3f9fce55440f8f1de95c0a60f0f64ba1",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/opposing/reference_field.npz": "2c5c7373df290978e66dcfb8069f731b654ff5f687137b1b260a8cd27d09c206",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/bending/snapshot.json": "d42685752e9f51c1f6eec2db472423e86b37555ff478ed76b30371c890dc9700",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/bending/reference_field.npz": "e09d3926d943091336e194c74c0a7c6af884e7e6a7a8082b67e1e4c02b930726",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/asymmetric/snapshot.json": "a6b2da1775ee52c503f722538414452d13156bf90e54a35b551a7cd66964c407",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/asymmetric/reference_field.npz": "987d89a0e036d320a1fff94a4d864a6c5c99659b3772b88a872656c28cbb8bcb",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/near_slip/snapshot.json": "c0d73967d4b31e6621204cfbb0836414cc9e9d1cfb419fc1c06e7769c0002097",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/near_slip/reference_field.npz": "9d1d9b3b9c710ab8a281ffeb95a78e4d520d92459db3aa256966072ea2025efe",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/multiple/snapshot.json": "831cee01343e630001001251c251c83cf1f5247a797e8e5e62d82f8e75f2743e",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/multiple/reference_field.npz": "3482418860c121d1c28f90b7968dc8d424907b55b1d7b11af3ba9e6f69462896",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-local-bulk-level2-v2/results/opposing/reference_field.npz": "30056733d6f3aa5639a1ff0fc806f41075d95d28cea8f7c33d9ade99e872260f",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-local-bulk-level2-v2/results/opposing/snapshot.json": "c2b14fbad3adf0a8c95f433d97d90ba30c7a30f9cf19d6515dfb240815a6d921",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-local-bulk-level2-v2/results/bending/reference_field.npz": "f8101b847babf9a84e1b0ced586b0171a7509e27e79ed28166f07763dd64ce4c",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-local-bulk-level2-v2/results/bending/snapshot.json": "04d6bac523e617d9e7dd1043c0f310e03c90e0d15ceb81ad4dbc546817f7139a",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-local-bulk-level2-v2/results/asymmetric/reference_field.npz": "09df459fee8791f24b7eb7034a998581e14809418917d65e72e17a7bed843f26",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-local-bulk-level2-v2/results/asymmetric/snapshot.json": "bd56e35b491f0528d1b4d0f2c931977bcb5e25626268348cda38cf776bafb1a2",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-local-bulk-level2-v2/results/near_slip/reference_field.npz": "e2c889310f5ec64414863f1da6a869b7a55f1b7eeb718fadadce3ef0c39828c6",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-local-bulk-level2-v2/results/near_slip/snapshot.json": "fbc380a3b66177bd008a059a5d63424c740897e56bf275cab67a7c7dd6ccd387",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-local-bulk-level2-v2/results/multiple/reference_field.npz": "1308b13f18842daa3418677d28244120cb74375193b612eb3ec48f8b948b7712",
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-local-bulk-level2-v2/results/multiple/snapshot.json": "81d306ff33f8f3f1228ceef086e3b5f2f599106a243d5cad97c5220e61d551ea"
+  },
+  "goal_completion": false,
+  "limitations": "This load-only boundary-integration study keeps the existing physical centres, radius, compact profile, strengths, friction and normal/shear law unchanged. It first reproduces every original coarse nodal force at the original quadrature level using the unchanged original law source. On identical finer geometry it integrates that law on each current facet at three declared levels, retaining full nodal vectors and all physical quadrature arrays plus independent force/moment and quadratic-work checks. Frozen original-sample loading and newly integrated continuous-profile loading define distinct numerical load functionals. No stiffness/mass matrix or elasticity solve is assembled here. Small load changes or preserved total wrench do not certify stress accuracy; complete independent force/RHS/tensor/probe/peak/energy solves are still required before using this study as a physical convergence result."
+}

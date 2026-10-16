@@ -1,0 +1,20 @@
+{
+  "utc": "2026-10-16T01:15:51.769625+00:00",
+  "command": [
+    "sbatch",
+    "--parsable",
+    "--array=0-0",
+    "--partition=cpu",
+    "--exclude=cpu-207-115",
+    "--cpus-per-task=8",
+    "--mem=64G",
+    "--time=02:00:00",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad1920-record-initializer-all64-audit-v1-%A_%a.log",
+    "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/audit_paired_initializer_history.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad1920-record-initializer-all64-audit-v1 --run /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad1920-record-initializer-v1'"
+  ],
+  "returncode": 0,
+  "stdout": "719642\n",
+  "stderr": "",
+  "closed_producer_job": 719626,
+  "scope": "All64 original static initializer controls, independent current friction, constrained body/jaw forces and complete raw fields."
+}

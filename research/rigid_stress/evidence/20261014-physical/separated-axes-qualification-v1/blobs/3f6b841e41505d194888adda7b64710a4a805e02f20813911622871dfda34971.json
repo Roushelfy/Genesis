@@ -1,0 +1,18 @@
+{
+  "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-continuous-traction-load-axis-v1",
+  "job": "719549",
+  "argv": [
+    "sbatch",
+    "--parsable",
+    "--array=0-0",
+    "--partition=cpu",
+    "--exclude=cpu-207-115",
+    "--cpus-per-task=8",
+    "--mem=128G",
+    "--time=02:00:00",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-continuous-traction-load-axis-v1-%A_%a.log",
+    "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/audit_continuous_traction_load_axis.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-continuous-traction-load-axis-v1 --base-mesh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/mesh.npz --base-run /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem --fine-mesh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-thickness-local-bulk-meshes-v1/results/level2.npz --fine-run /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-local-bulk-level2-v2 --quadrature-levels 2 3 4'"
+  ],
+  "scope": "Before interpreting a conditional frozen-sample bulk tail as continuum finite-traction convergence, reproduce every original coarse nodal force from the unchanged law and examine current-facet quadrature levels2/3/4 on fixed554574-tet geometry. This stage solves zero elastic states; full stress solves remain required.",
+  "goal_completion": false
+}
