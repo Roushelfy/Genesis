@@ -1,0 +1,21 @@
+{
+  "original_rejected_submission_preserved": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/extended-six-shape-eight-level-summary-commands-v1.json",
+  "closed_parent_accounting": "719757|COMPLETED|0:0\n719760|COMPLETED|0:0\n719763|COMPLETED|0:0\n719766|COMPLETED|0:0\n",
+  "command": [
+    "sbatch",
+    "--parsable",
+    "--array=0-0",
+    "--partition=cpu",
+    "--exclude=cpu-207-115",
+    "--cpus-per-task=8",
+    "--mem=32G",
+    "--time=01:00:00",
+    "--dependency=afterok:719769:719772",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-six-shape-eight-level-summary-v1-%A_%a.log",
+    "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/summarize_extended_finite_references.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-six-shape-eight-level-summary-v1 --runtime-root /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation'"
+  ],
+  "returncode": 0,
+  "stdout": "719836\n",
+  "stderr": "",
+  "scope": "Only completed expired dependencies removed after actual accounting verification; both live auditors remain required."
+}

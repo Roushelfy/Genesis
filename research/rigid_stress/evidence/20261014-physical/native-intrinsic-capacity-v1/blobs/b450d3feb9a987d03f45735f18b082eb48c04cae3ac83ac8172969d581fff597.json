@@ -1,0 +1,41 @@
+[
+  {
+    "time_utc": "2026-10-16T02:33:25.707863+00:00",
+    "argv": [
+      "sbatch",
+      "--parsable",
+      "--array=0-0",
+      "--partition=cpu",
+      "--exclude=cpu-207-115",
+      "--cpus-per-task=8",
+      "--mem=32G",
+      "--time=00:45:00",
+      "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/intrinsic-path-heap-cpu-regression-%A_%a.log",
+      "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/test_intrinsic_path_scaling.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/intrinsic-path-heap-cpu-regression-v1 cpu'"
+    ],
+    "stdout": "719871\n",
+    "stderr": "",
+    "returncode": 0,
+    "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/intrinsic-path-heap-cpu-regression-v1"
+  },
+  {
+    "time_utc": "2026-10-16T02:33:25.740264+00:00",
+    "argv": [
+      "sbatch",
+      "--parsable",
+      "--array=0-0",
+      "--partition=rtx-mid",
+      "--exclude=cpu-207-115",
+      "--cpus-per-task=8",
+      "--mem=32G",
+      "--time=00:45:00",
+      "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/intrinsic-path-heap-gpu-regression-%A_%a.log",
+      "--gres=gpu:1",
+      "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/test_intrinsic_path_scaling.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/intrinsic-path-heap-gpu-regression-v1 gpu'"
+    ],
+    "stdout": "719872\n",
+    "stderr": "",
+    "returncode": 0,
+    "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/intrinsic-path-heap-gpu-regression-v1"
+  }
+]

@@ -1,0 +1,458 @@
+{
+  "geometry": "capsule",
+  "mesh_sha256": "a4f003acb6dd556acc6a300999ac43dee1cd3b23dcb6b49bf7b261694d26d8f8",
+  "probe_coordinate_sha256": "d9aa87ec2433339e920a0e5cf1a284ff4e016ebe15d0b835634f538f45ea47b4",
+  "probe_count": 45,
+  "valid_count": 45,
+  "outside_probe_indices": [],
+  "tetrahedra": 894,
+  "probe_definition": "Fixed physical interiors; no smoothing, relocating or omitted outside coordinates",
+  "displacement_gauge": "Independent scikit-fem consistent mass; translations and rotations removed identically",
+  "rows": [
+    {
+      "case": "asymmetric",
+      "field": "reference_field",
+      "input_sha256": "6a04b3776e2ba1e0b19f80c923be939ab043ed3c683ffc8c6ba2d6ad85af93ac",
+      "raw_global_peak_Pa": 8284.100035548488,
+      "raw_global_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "raw_native_peak_Pa": null,
+      "raw_native_peak_position_m": null
+    },
+    {
+      "case": "asymmetric",
+      "field": "pressure_field",
+      "input_sha256": "1d6b11fd7ff633726e98b197b05571d3ae316c9020c6fe042782823ffc11f9c1",
+      "raw_global_peak_Pa": 8284.19860931932,
+      "raw_global_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "raw_native_peak_Pa": 8284.198609268187,
+      "raw_native_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "probe_tensor_relative_error": 0.0003396564158980872,
+      "probe_vm_relative_error": 0.00017881315180243442,
+      "probe_displacement_relative_error": 0.00011834953953403847
+    },
+    {
+      "case": "asymmetric",
+      "field": "componentwise_field",
+      "input_sha256": "e815dc3a7fce2bdb47f6747d5441f07d674fc75fa00053630a2ffdb64b213a88",
+      "raw_global_peak_Pa": 8490.705696388315,
+      "raw_global_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "raw_native_peak_Pa": 8490.70569633629,
+      "raw_native_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "probe_tensor_relative_error": 0.003467885521203708,
+      "probe_vm_relative_error": 0.0028523456137172936,
+      "probe_displacement_relative_error": 0.0010663710149061173
+    },
+    {
+      "case": "asymmetric",
+      "field": "pair_union_field",
+      "input_sha256": "9e47b395bb1a46bfc44cc67521c724310fc309bd10cf56d14ea604591fc08cca",
+      "raw_global_peak_Pa": 8490.70569638831,
+      "raw_global_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "raw_native_peak_Pa": 8490.705696336543,
+      "raw_native_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "probe_tensor_relative_error": 0.0034678855212038574,
+      "probe_vm_relative_error": 0.002852345613717462,
+      "probe_displacement_relative_error": 0.0010663710148977568
+    },
+    {
+      "case": "asymmetric",
+      "field": "body_source_prior_field",
+      "input_sha256": "b5da130f3fa8f7b7ca89828dfc8ab52556a7b8a9f7c14ea4712d74e5510a7d33",
+      "raw_global_peak_Pa": 8545.75132299337,
+      "raw_global_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "raw_native_peak_Pa": 8545.751322940789,
+      "raw_native_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "probe_tensor_relative_error": 0.0078079204772772545,
+      "probe_vm_relative_error": 0.004807523465994341,
+      "probe_displacement_relative_error": 0.004282538073924137
+    },
+    {
+      "case": "bending",
+      "field": "reference_field",
+      "input_sha256": "6f9d87360963275046e0e8cc226e9c39489b8c252ab8ae167d61b6ee67e0d76d",
+      "raw_global_peak_Pa": 6350.994638833017,
+      "raw_global_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "raw_native_peak_Pa": null,
+      "raw_native_peak_position_m": null
+    },
+    {
+      "case": "bending",
+      "field": "pressure_field",
+      "input_sha256": "563fdc69a44fed37bb6fc6e9a07e27678ed22853e27032336a20371b125f667f",
+      "raw_global_peak_Pa": 6362.44197551237,
+      "raw_global_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "raw_native_peak_Pa": 6362.44197549567,
+      "raw_native_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "probe_tensor_relative_error": 0.0005121378013056931,
+      "probe_vm_relative_error": 0.00024961825193732024,
+      "probe_displacement_relative_error": 0.0002002380660267025
+    },
+    {
+      "case": "bending",
+      "field": "componentwise_field",
+      "input_sha256": "acb43cf834f193c3192fce3cfb167b941e8c1a910bdf05a24d5823411d0995c6",
+      "raw_global_peak_Pa": 6418.166212639898,
+      "raw_global_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "raw_native_peak_Pa": 6418.166212622988,
+      "raw_native_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "probe_tensor_relative_error": 0.0014574948033718427,
+      "probe_vm_relative_error": 0.0013112083087491871,
+      "probe_displacement_relative_error": 0.0007632045804284159
+    },
+    {
+      "case": "bending",
+      "field": "pair_union_field",
+      "input_sha256": "29a44a4550d98f702e86c8a55103e6b6ebd1f60e2c64f1cac4cd23b8d8dc8c50",
+      "raw_global_peak_Pa": 6418.166212639903,
+      "raw_global_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "raw_native_peak_Pa": 6418.166212622729,
+      "raw_native_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "probe_tensor_relative_error": 0.001457494803371949,
+      "probe_vm_relative_error": 0.0013112083087491685,
+      "probe_displacement_relative_error": 0.0007632045802148814
+    },
+    {
+      "case": "bending",
+      "field": "body_source_prior_field",
+      "input_sha256": "5db296fd33adf016aaa686a475eb6b6a83363a4e836d2bb43acbca6a656238b5",
+      "raw_global_peak_Pa": 6412.952047974457,
+      "raw_global_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "raw_native_peak_Pa": 6412.952047957894,
+      "raw_native_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "probe_tensor_relative_error": 0.0027666076411861453,
+      "probe_vm_relative_error": 0.0019097702434465237,
+      "probe_displacement_relative_error": 0.0020303904813576226
+    },
+    {
+      "case": "multiple",
+      "field": "reference_field",
+      "input_sha256": "2f998c302f84220f2a8fb664fd5d613d79419a5c7a6b2d6febfadcbafc8822e0",
+      "raw_global_peak_Pa": 5754.17473407956,
+      "raw_global_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "raw_native_peak_Pa": null,
+      "raw_native_peak_position_m": null
+    },
+    {
+      "case": "multiple",
+      "field": "pressure_field",
+      "input_sha256": "31ac8256cdbe9c62d2a43d0edc86c011244ee6a1681432c988d847139bda8ab4",
+      "raw_global_peak_Pa": 5754.209602741854,
+      "raw_global_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "raw_native_peak_Pa": 5754.209602696289,
+      "raw_native_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "probe_tensor_relative_error": 0.0004669483299657151,
+      "probe_vm_relative_error": 0.00028196917289707906,
+      "probe_displacement_relative_error": 0.00022915525351574443
+    },
+    {
+      "case": "multiple",
+      "field": "componentwise_field",
+      "input_sha256": "0dcc3592c50db26d4185f26e389a4e73b1e3b21074a811e786001ff8caa4a0b4",
+      "raw_global_peak_Pa": 5821.7235343231705,
+      "raw_global_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "raw_native_peak_Pa": 5821.723534278595,
+      "raw_native_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "probe_tensor_relative_error": 0.00147027469488355,
+      "probe_vm_relative_error": 0.0012569553814046187,
+      "probe_displacement_relative_error": 0.0007756363772259446
+    },
+    {
+      "case": "multiple",
+      "field": "pair_union_field",
+      "input_sha256": "3add210d6ac20c092d18e69cbd467c7b5c88d5ec8e89b54e81d8136c31ea96f1",
+      "raw_global_peak_Pa": 5820.710146814474,
+      "raw_global_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "raw_native_peak_Pa": 5820.710146767482,
+      "raw_native_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "probe_tensor_relative_error": 0.017897740271562268,
+      "probe_vm_relative_error": 0.006961933716664566,
+      "probe_displacement_relative_error": 0.02603511780359991
+    },
+    {
+      "case": "multiple",
+      "field": "body_source_prior_field",
+      "input_sha256": "0cdfdb37549db7d88e0249147d69d4beca6ab7f900ea4ab9695d76a030cf59c5",
+      "raw_global_peak_Pa": 5815.838850204131,
+      "raw_global_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "raw_native_peak_Pa": 5815.838850159102,
+      "raw_native_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "probe_tensor_relative_error": 0.0027610838347123766,
+      "probe_vm_relative_error": 0.0019011519054300393,
+      "probe_displacement_relative_error": 0.0019084981968210504
+    },
+    {
+      "case": "near_slip",
+      "field": "reference_field",
+      "input_sha256": "9bba0d31ff2f779e03cbf0caa4b80a77992237863171b7dff35b7272a21d4273",
+      "raw_global_peak_Pa": 8661.376231209199,
+      "raw_global_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        0.0017142857142857255
+      ],
+      "raw_native_peak_Pa": null,
+      "raw_native_peak_position_m": null
+    },
+    {
+      "case": "near_slip",
+      "field": "componentwise_field",
+      "input_sha256": "57ea718b0c5e91ce2b14ebfd10fde45129fa65f8207f10c6d3e8bef2cdfd4216",
+      "raw_global_peak_Pa": 8889.344449439317,
+      "raw_global_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        0.0017142857142857255
+      ],
+      "raw_native_peak_Pa": 8889.344449350177,
+      "raw_native_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        0.0017142857142857255
+      ],
+      "probe_tensor_relative_error": 0.013487524692589221,
+      "probe_vm_relative_error": 0.009203739351835152,
+      "probe_displacement_relative_error": 0.009061638282551262
+    },
+    {
+      "case": "near_slip",
+      "field": "pair_union_field",
+      "input_sha256": "abcf4ae3d66c22b084c70fdfcff6b2ad8feb0d55287427169586a3fcfb97fb41",
+      "raw_global_peak_Pa": 8889.344449439317,
+      "raw_global_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        0.0017142857142857255
+      ],
+      "raw_native_peak_Pa": 8889.34444934995,
+      "raw_native_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        0.0017142857142857255
+      ],
+      "probe_tensor_relative_error": 0.013487524692588284,
+      "probe_vm_relative_error": 0.009203739351834448,
+      "probe_displacement_relative_error": 0.009061638281735314
+    },
+    {
+      "case": "near_slip",
+      "field": "body_source_prior_field",
+      "input_sha256": "ff928b132b377529878423b586a9abe0ae0808bd13fddeb33fd0ee78eb55cd64",
+      "raw_global_peak_Pa": 8933.145272606453,
+      "raw_global_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        0.0017142857142857255
+      ],
+      "raw_native_peak_Pa": 8933.14527251518,
+      "raw_native_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        0.0017142857142857255
+      ],
+      "probe_tensor_relative_error": 0.01301210272103525,
+      "probe_vm_relative_error": 0.007412162462989488,
+      "probe_displacement_relative_error": 0.007481705221623515
+    },
+    {
+      "case": "opposing",
+      "field": "reference_field",
+      "input_sha256": "9ce6e00534775c85c780308c53821175f18fb71de997e1a7b3d2b254203a6f51",
+      "raw_global_peak_Pa": 5753.590519376274,
+      "raw_global_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "raw_native_peak_Pa": null,
+      "raw_native_peak_position_m": null
+    },
+    {
+      "case": "opposing",
+      "field": "pressure_field",
+      "input_sha256": "69bc27fc5f6f8f54f0dc2f21548359efdaac45d9654c439801a093d265fe81ce",
+      "raw_global_peak_Pa": 5753.625168089663,
+      "raw_global_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "raw_native_peak_Pa": 5753.625168103768,
+      "raw_native_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "probe_tensor_relative_error": 0.0004398835331555548,
+      "probe_vm_relative_error": 0.00024095135604191933,
+      "probe_displacement_relative_error": 0.00022096490733835463
+    },
+    {
+      "case": "opposing",
+      "field": "componentwise_field",
+      "input_sha256": "f34e45b28a2d3e848c204d4e681788591de050e1b4859ebc30a7077a76e5095f",
+      "raw_global_peak_Pa": 5821.134962582936,
+      "raw_global_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "raw_native_peak_Pa": 5821.134962596827,
+      "raw_native_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "probe_tensor_relative_error": 0.0014122203863676528,
+      "probe_vm_relative_error": 0.0012352014008730017,
+      "probe_displacement_relative_error": 0.0008361856274687972
+    },
+    {
+      "case": "opposing",
+      "field": "pair_union_field",
+      "input_sha256": "090cdd18dc5eb47cf936393bd96e013c29b3a1a42e4da349c0699d6180de7b66",
+      "raw_global_peak_Pa": 5821.134962582929,
+      "raw_global_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "raw_native_peak_Pa": 5821.134962596827,
+      "raw_native_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "probe_tensor_relative_error": 0.0014122203863678872,
+      "probe_vm_relative_error": 0.0012352014008732868,
+      "probe_displacement_relative_error": 0.000836185627473967
+    },
+    {
+      "case": "opposing",
+      "field": "body_source_prior_field",
+      "input_sha256": "c0c6688c9b4f602219b1a5dd83c04c68669663e4794bf3ce580988ce4d91ff7a",
+      "raw_global_peak_Pa": 5814.753425543505,
+      "raw_global_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "raw_native_peak_Pa": 5814.753425556684,
+      "raw_native_peak_position_m": [
+        0.008,
+        -1.959434878635765e-18,
+        -0.0017142857142857012
+      ],
+      "probe_tensor_relative_error": 0.0027741260575801278,
+      "probe_vm_relative_error": 0.0018781439442805432,
+      "probe_displacement_relative_error": 0.002131908050476063
+    }
+  ]
+}

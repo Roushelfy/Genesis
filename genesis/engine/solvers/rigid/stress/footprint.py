@@ -38,6 +38,9 @@ class StressFootprintState:
 
     port_distance: qd.Tensor
     seed_distance: qd.Tensor
+    port_heap: qd.Tensor
+    heap_position: qd.Tensor
+    heap_count: qd.Tensor
     status: qd.Tensor
     candidates: qd.Tensor
     samples: qd.Tensor
@@ -45,19 +48,90 @@ class StressFootprintState:
 
 
 def create_footprints(
-    n_ports: int, n_contacts: int, n_envs: int, n_face_ports: int | None = None
+    n_ports: int,
+    n_contacts: int,
+    n_envs: int,
+    n_face_ports: int | None = None,
+    *,
+    sparse_paths: bool = False,
 ) -> StressFootprintState:
     shape = (n_contacts, n_envs)
+    heap_shape = (n_ports, n_contacts, n_envs) if sparse_paths else ()
     return StressFootprintState(
         port_distance=V(dtype=gs.qd_float, shape=(n_ports, n_contacts, n_envs)),
         seed_distance=V(
             dtype=gs.qd_float, shape=(n_face_ports, n_contacts, n_envs) if n_face_ports is not None else ()
         ),
+        port_heap=V(dtype=gs.qd_int, shape=heap_shape),
+        heap_position=V(dtype=gs.qd_int, shape=heap_shape),
+        heap_count=V(dtype=gs.qd_int, shape=shape if sparse_paths else ()),
         status=V(dtype=gs.qd_int, shape=shape),
         candidates=V(dtype=gs.qd_int, shape=shape),
         samples=V(dtype=gs.qd_int, shape=shape),
         maximum_distance=V(dtype=gs.qd_float, shape=shape),
     )
+
+
+@qd.func
+def func_port_heap_decrease(i_p: int, i_c: int, i_b: int, distance: float, footprint_state: StressFootprintState):
+    i_slot = footprint_state.heap_position[i_p, i_c, i_b]
+    if i_slot < 0:
+        i_slot = footprint_state.heap_count[i_c, i_b]
+        footprint_state.heap_count[i_c, i_b] += 1
+    footprint_state.port_distance[i_p, i_c, i_b] = distance
+    is_active = True
+    # A heap indexed by signed 32-bit integers has at most 31 parent edges.
+    for _ in range(31):
+        if is_active and i_slot > 0:
+            i_parent = (i_slot - 1) // 2
+            i_other = footprint_state.port_heap[i_parent, i_c, i_b]
+            other_distance = footprint_state.port_distance[i_other, i_c, i_b]
+            is_before = distance < other_distance or (distance <= other_distance and i_p < i_other)
+            if is_before:
+                footprint_state.port_heap[i_slot, i_c, i_b] = i_other
+                footprint_state.heap_position[i_other, i_c, i_b] = i_slot
+                i_slot = i_parent
+            else:
+                is_active = False
+    footprint_state.port_heap[i_slot, i_c, i_b] = i_p
+    footprint_state.heap_position[i_p, i_c, i_b] = i_slot
+
+
+@qd.func
+def func_port_heap_pop(i_c: int, i_b: int, footprint_state: StressFootprintState):
+    i_nearest = footprint_state.port_heap[0, i_c, i_b]
+    count = footprint_state.heap_count[i_c, i_b] - 1
+    footprint_state.heap_count[i_c, i_b] = count
+    footprint_state.heap_position[i_nearest, i_c, i_b] = -2
+    if count > 0:
+        i_last = footprint_state.port_heap[count, i_c, i_b]
+        last_distance = footprint_state.port_distance[i_last, i_c, i_b]
+        i_slot = 0
+        is_active = True
+        for _ in range(31):
+            i_child = 2 * i_slot + 1
+            if is_active and i_child < count:
+                i_other = footprint_state.port_heap[i_child, i_c, i_b]
+                other_distance = footprint_state.port_distance[i_other, i_c, i_b]
+                if i_child + 1 < count:
+                    i_right = footprint_state.port_heap[i_child + 1, i_c, i_b]
+                    right_distance = footprint_state.port_distance[i_right, i_c, i_b]
+                    if right_distance < other_distance or (right_distance <= other_distance and i_right < i_other):
+                        i_child += 1
+                        i_other = i_right
+                        other_distance = right_distance
+                is_before = other_distance < last_distance or (other_distance <= last_distance and i_other < i_last)
+                if is_before:
+                    footprint_state.port_heap[i_slot, i_c, i_b] = i_other
+                    footprint_state.heap_position[i_other, i_c, i_b] = i_slot
+                    i_slot = i_child
+                else:
+                    is_active = False
+            else:
+                is_active = False
+        footprint_state.port_heap[i_slot, i_c, i_b] = i_last
+        footprint_state.heap_position[i_last, i_c, i_b] = i_slot
+    return i_nearest
 
 
 @qd.kernel
@@ -93,19 +167,52 @@ def kernel_footprint_ports(
         path_info.positions.shape[0], contact_state.valid.shape[0], contact_state.valid.shape[1]
     ):
         distance = gs.qd_float(float("inf"))
-        if contact_state.valid[i_c, i_b] and footprint_state.status[i_c, i_b] == StressFootprintStatus.SUCCESS:
-            i_anchor = contact_state.anchor_face[i_c, i_b]
-            anchor = contact_state.center[i_c, i_b]
-            for i_a in range(path_info.face_ports.shape[1]):
-                i_first = path_info.face_ports[i_anchor, i_a]
-                seed_distance = gs.qd_float(0.0)
-                if qd.static(len(footprint_state.seed_distance.shape) == 3):
-                    seed_distance = footprint_state.seed_distance[i_a, i_c, i_b]
-                else:
-                    seed_distance = (path_info.positions[i_first] - anchor).norm()
-                candidate = seed_distance + path_info.distances[i_first, i_p]
-                distance = qd.min(distance, candidate)
+        if qd.static(len(path_info.distances.shape) == 2):  # noqa: SIM102
+            if contact_state.valid[i_c, i_b] and footprint_state.status[i_c, i_b] == StressFootprintStatus.SUCCESS:
+                i_anchor = contact_state.anchor_face[i_c, i_b]
+                anchor = contact_state.center[i_c, i_b]
+                for i_a in range(path_info.face_ports.shape[1]):
+                    i_first = path_info.face_ports[i_anchor, i_a]
+                    seed_distance = gs.qd_float(0.0)
+                    if qd.static(len(footprint_state.seed_distance.shape) == 3):
+                        seed_distance = footprint_state.seed_distance[i_a, i_c, i_b]
+                    else:
+                        seed_distance = (path_info.positions[i_first] - anchor).norm()
+                    candidate = seed_distance + path_info.distances[i_first, i_p]
+                    distance = qd.min(distance, candidate)
         footprint_state.port_distance[i_p, i_c, i_b] = distance
+        if qd.static(len(path_info.distances.shape) == 0):
+            footprint_state.heap_position[i_p, i_c, i_b] = -1
+    for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
+        if qd.static(len(path_info.distances.shape) == 0):
+            qd.static_assert(len(footprint_state.port_heap.shape) == 3)
+            footprint_state.heap_count[i_c, i_b] = 0
+            if contact_state.valid[i_c, i_b] and footprint_state.status[i_c, i_b] == StressFootprintStatus.SUCCESS:
+                radius = contact_state.radius[i_c, i_b]
+                anchor = contact_state.center[i_c, i_b]
+                i_anchor = contact_state.anchor_face[i_c, i_b]
+                # Seed an implicit anchor vertex, then run multi-source Dijkstra on the unchanged port graph.
+                # Nonnegative final segments cannot bring a path of length >= radius back into compact support.
+                for i_step in range(path_info.positions.shape[0] + 1):
+                    begin, end = 0, 0
+                    distance = gs.qd_float(0.0)
+                    if i_step == 0:
+                        end = path_info.face_ports.shape[1]
+                    elif footprint_state.heap_count[i_c, i_b] > 0:
+                        i_nearest = func_port_heap_pop(i_c, i_b, footprint_state)
+                        distance = footprint_state.port_distance[i_nearest, i_c, i_b]
+                        begin, end = path_info.starts[i_nearest], path_info.starts[i_nearest + 1]
+                    for i_e in range(begin, end):
+                        i_port = -1
+                        candidate = gs.qd_float(0.0)
+                        if i_step == 0:
+                            i_port = path_info.face_ports[i_anchor, i_e]
+                            candidate = (path_info.positions[i_port] - anchor).norm()
+                        else:
+                            i_port = path_info.neighbors[i_e]
+                            candidate = distance + path_info.lengths[i_e]
+                        if candidate < radius and candidate < footprint_state.port_distance[i_port, i_c, i_b]:
+                            func_port_heap_decrease(i_port, i_c, i_b, candidate, footprint_state)
 
 
 @qd.func

@@ -1,0 +1,290 @@
+diff --git a/genesis/engine/solvers/rigid/stress/footprint.py b/genesis/engine/solvers/rigid/stress/footprint.py
+index 59d6db112..1fa73249a 100644
+--- a/genesis/engine/solvers/rigid/stress/footprint.py
++++ b/genesis/engine/solvers/rigid/stress/footprint.py
+@@ -38,6 +38,9 @@ class StressFootprintState:
+ 
+     port_distance: qd.Tensor
+     seed_distance: qd.Tensor
++    port_heap: qd.Tensor
++    heap_position: qd.Tensor
++    heap_count: qd.Tensor
+     status: qd.Tensor
+     candidates: qd.Tensor
+     samples: qd.Tensor
+@@ -45,14 +48,23 @@ class StressFootprintState:
+ 
+ 
+ def create_footprints(
+-    n_ports: int, n_contacts: int, n_envs: int, n_face_ports: int | None = None
++    n_ports: int,
++    n_contacts: int,
++    n_envs: int,
++    n_face_ports: int | None = None,
++    *,
++    sparse_paths: bool = False,
+ ) -> StressFootprintState:
+     shape = (n_contacts, n_envs)
++    heap_shape = (n_ports, n_contacts, n_envs) if sparse_paths else ()
+     return StressFootprintState(
+         port_distance=V(dtype=gs.qd_float, shape=(n_ports, n_contacts, n_envs)),
+         seed_distance=V(
+             dtype=gs.qd_float, shape=(n_face_ports, n_contacts, n_envs) if n_face_ports is not None else ()
+         ),
++        port_heap=V(dtype=gs.qd_int, shape=heap_shape),
++        heap_position=V(dtype=gs.qd_int, shape=heap_shape),
++        heap_count=V(dtype=gs.qd_int, shape=shape if sparse_paths else ()),
+         status=V(dtype=gs.qd_int, shape=shape),
+         candidates=V(dtype=gs.qd_int, shape=shape),
+         samples=V(dtype=gs.qd_int, shape=shape),
+@@ -60,6 +72,68 @@ def create_footprints(
+     )
+ 
+ 
++@qd.func
++def func_port_heap_decrease(i_p: int, i_c: int, i_b: int, distance: float, footprint_state: StressFootprintState):
++    i_slot = footprint_state.heap_position[i_p, i_c, i_b]
++    if i_slot < 0:
++        i_slot = footprint_state.heap_count[i_c, i_b]
++        footprint_state.heap_count[i_c, i_b] += 1
++    footprint_state.port_distance[i_p, i_c, i_b] = distance
++    is_active = True
++    # A heap indexed by signed 32-bit integers has at most 31 parent edges.
++    for _ in range(31):
++        if is_active and i_slot > 0:
++            i_parent = (i_slot - 1) // 2
++            i_other = footprint_state.port_heap[i_parent, i_c, i_b]
++            other_distance = footprint_state.port_distance[i_other, i_c, i_b]
++            is_before = distance < other_distance or (distance <= other_distance and i_p < i_other)
++            if is_before:
++                footprint_state.port_heap[i_slot, i_c, i_b] = i_other
++                footprint_state.heap_position[i_other, i_c, i_b] = i_slot
++                i_slot = i_parent
++            else:
++                is_active = False
++    footprint_state.port_heap[i_slot, i_c, i_b] = i_p
++    footprint_state.heap_position[i_p, i_c, i_b] = i_slot
++
++
++@qd.func
++def func_port_heap_pop(i_c: int, i_b: int, footprint_state: StressFootprintState):
++    i_nearest = footprint_state.port_heap[0, i_c, i_b]
++    count = footprint_state.heap_count[i_c, i_b] - 1
++    footprint_state.heap_count[i_c, i_b] = count
++    footprint_state.heap_position[i_nearest, i_c, i_b] = -2
++    if count > 0:
++        i_last = footprint_state.port_heap[count, i_c, i_b]
++        last_distance = footprint_state.port_distance[i_last, i_c, i_b]
++        i_slot = 0
++        is_active = True
++        for _ in range(31):
++            i_child = 2 * i_slot + 1
++            if is_active and i_child < count:
++                i_other = footprint_state.port_heap[i_child, i_c, i_b]
++                other_distance = footprint_state.port_distance[i_other, i_c, i_b]
++                if i_child + 1 < count:
++                    i_right = footprint_state.port_heap[i_child + 1, i_c, i_b]
++                    right_distance = footprint_state.port_distance[i_right, i_c, i_b]
++                    if right_distance < other_distance or (right_distance <= other_distance and i_right < i_other):
++                        i_child += 1
++                        i_other = i_right
++                        other_distance = right_distance
++                is_before = other_distance < last_distance or (other_distance <= last_distance and i_other < i_last)
++                if is_before:
++                    footprint_state.port_heap[i_slot, i_c, i_b] = i_other
++                    footprint_state.heap_position[i_other, i_c, i_b] = i_slot
++                    i_slot = i_child
++                else:
++                    is_active = False
++            else:
++                is_active = False
++        footprint_state.port_heap[i_slot, i_c, i_b] = i_last
++        footprint_state.heap_position[i_last, i_c, i_b] = i_slot
++    return i_nearest
++
++
+ @qd.kernel
+ def kernel_footprint_ports(
+     contact_state: StressContactState,
+@@ -93,19 +167,52 @@ def kernel_footprint_ports(
+         path_info.positions.shape[0], contact_state.valid.shape[0], contact_state.valid.shape[1]
+     ):
+         distance = gs.qd_float(float("inf"))
+-        if contact_state.valid[i_c, i_b] and footprint_state.status[i_c, i_b] == StressFootprintStatus.SUCCESS:
+-            i_anchor = contact_state.anchor_face[i_c, i_b]
+-            anchor = contact_state.center[i_c, i_b]
+-            for i_a in range(path_info.face_ports.shape[1]):
+-                i_first = path_info.face_ports[i_anchor, i_a]
+-                seed_distance = gs.qd_float(0.0)
+-                if qd.static(len(footprint_state.seed_distance.shape) == 3):
+-                    seed_distance = footprint_state.seed_distance[i_a, i_c, i_b]
+-                else:
+-                    seed_distance = (path_info.positions[i_first] - anchor).norm()
+-                candidate = seed_distance + path_info.distances[i_first, i_p]
+-                distance = qd.min(distance, candidate)
++        if qd.static(len(path_info.distances.shape) == 2):  # noqa: SIM102
++            if contact_state.valid[i_c, i_b] and footprint_state.status[i_c, i_b] == StressFootprintStatus.SUCCESS:
++                i_anchor = contact_state.anchor_face[i_c, i_b]
++                anchor = contact_state.center[i_c, i_b]
++                for i_a in range(path_info.face_ports.shape[1]):
++                    i_first = path_info.face_ports[i_anchor, i_a]
++                    seed_distance = gs.qd_float(0.0)
++                    if qd.static(len(footprint_state.seed_distance.shape) == 3):
++                        seed_distance = footprint_state.seed_distance[i_a, i_c, i_b]
++                    else:
++                        seed_distance = (path_info.positions[i_first] - anchor).norm()
++                    candidate = seed_distance + path_info.distances[i_first, i_p]
++                    distance = qd.min(distance, candidate)
+         footprint_state.port_distance[i_p, i_c, i_b] = distance
++        if qd.static(len(path_info.distances.shape) == 0):
++            footprint_state.heap_position[i_p, i_c, i_b] = -1
++    for i_c, i_b in qd.ndrange(contact_state.valid.shape[0], contact_state.valid.shape[1]):
++        if qd.static(len(path_info.distances.shape) == 0):
++            qd.static_assert(len(footprint_state.port_heap.shape) == 3)
++            footprint_state.heap_count[i_c, i_b] = 0
++            if contact_state.valid[i_c, i_b] and footprint_state.status[i_c, i_b] == StressFootprintStatus.SUCCESS:
++                radius = contact_state.radius[i_c, i_b]
++                anchor = contact_state.center[i_c, i_b]
++                i_anchor = contact_state.anchor_face[i_c, i_b]
++                # Seed an implicit anchor vertex, then run multi-source Dijkstra on the unchanged port graph.
++                # Nonnegative final segments cannot bring a path of length >= radius back into compact support.
++                for i_step in range(path_info.positions.shape[0] + 1):
++                    begin, end = 0, 0
++                    distance = gs.qd_float(0.0)
++                    if i_step == 0:
++                        end = path_info.face_ports.shape[1]
++                    elif footprint_state.heap_count[i_c, i_b] > 0:
++                        i_nearest = func_port_heap_pop(i_c, i_b, footprint_state)
++                        distance = footprint_state.port_distance[i_nearest, i_c, i_b]
++                        begin, end = path_info.starts[i_nearest], path_info.starts[i_nearest + 1]
++                    for i_e in range(begin, end):
++                        i_port = -1
++                        candidate = gs.qd_float(0.0)
++                        if i_step == 0:
++                            i_port = path_info.face_ports[i_anchor, i_e]
++                            candidate = (path_info.positions[i_port] - anchor).norm()
++                        else:
++                            i_port = path_info.neighbors[i_e]
++                            candidate = distance + path_info.lengths[i_e]
++                        if candidate < radius and candidate < footprint_state.port_distance[i_port, i_c, i_b]:
++                            func_port_heap_decrease(i_port, i_c, i_b, candidate, footprint_state)
+ 
+ 
+ @qd.func
+diff --git a/genesis/engine/solvers/rigid/stress/intrinsic.py b/genesis/engine/solvers/rigid/stress/intrinsic.py
+index 5038e1f3b..256a8a312 100644
+--- a/genesis/engine/solvers/rigid/stress/intrinsic.py
++++ b/genesis/engine/solvers/rigid/stress/intrinsic.py
+@@ -140,7 +140,11 @@ class IntrinsicContacts:
+         )
+         self.sources = create_sources(n_chunk, n_envs)
+         self.footprints = create_footprints(
+-            self.paths.info.positions.shape[0], n_chunk, n_envs, self.paths.info.face_ports.shape[1]
++            self.paths.info.positions.shape[0],
++            n_chunk,
++            n_envs,
++            self.paths.info.face_ports.shape[1],
++            sparse_paths=len(self.paths.info.distances.shape) == 0,
+         )
+         self.tractions = (
+             create_surface_fan_tractions(
+diff --git a/genesis/engine/solvers/rigid/stress/paths.py b/genesis/engine/solvers/rigid/stress/paths.py
+index 8792e6a3b..9f6e2938e 100644
+--- a/genesis/engine/solvers/rigid/stress/paths.py
++++ b/genesis/engine/solvers/rigid/stress/paths.py
+@@ -35,7 +35,7 @@ class StressSurfacePaths:
+     possible. Port paths otherwise overestimate continuous intrinsic distance.
+     """
+ 
+-    def __init__(self, stress_info: StressInfo, subdivisions: int):
++    def __init__(self, stress_info: StressInfo, subdivisions: int, *, precompute: bool | None = None):
+         if subdivisions < 1:
+             gs.raise_exception("Surface edge subdivisions must be positive.")
+         triangles = qd_to_numpy(stress_info.surface_nodes, transpose=True)[:3].T
+@@ -58,18 +58,22 @@ class StressSurfacePaths:
+         pairs = np.unique(pairs[pairs[:, 0] != pairs[:, 1]], axis=0)
+         starts = np.r_[0, np.cumsum(np.bincount(pairs[:, 0], minlength=len(endpoints)))]
+         n_ports = len(endpoints)
++        if precompute is None:
++            # Bound the shared table to 128 MiB in double precision. Larger graphs use per-contact searches.
++            precompute = n_ports <= 4096
++        if precompute and n_ports * n_ports >= 2**31:
++            gs.raise_exception("The surface distance table exceeds Quadrants' supported index range.")
+         self.info = StressPathInfo(
+             positions=V_VEC(3, dtype=gs.qd_float, shape=(n_ports,)),
+             face_ports=V(dtype=gs.qd_int, shape=face_ports.shape),
+             starts=V(dtype=gs.qd_int, shape=(n_ports + 1,)),
+             neighbors=V(dtype=gs.qd_int, shape=(len(pairs),)),
+             lengths=V(dtype=gs.qd_float, shape=(len(pairs),)),
+-            distances=V(dtype=gs.qd_float, shape=(n_ports, n_ports)),
++            distances=V(dtype=gs.qd_float, shape=(n_ports, n_ports) if precompute else ()),
+         )
+         self.info.face_ports.from_numpy(face_ports.astype(gs.np_int, copy=False))
+         self.info.starts.from_numpy(starts.astype(gs.np_int, copy=False))
+         self.info.neighbors.from_numpy(pairs[:, 1].astype(gs.np_int, copy=False))
+-        visited = V(dtype=gs.qd_bool, shape=(n_ports, n_ports))
+         kernel_port_geometry(
+             subdivisions,
+             endpoints.astype(gs.np_int, copy=False),
+@@ -78,7 +82,9 @@ class StressSurfacePaths:
+             self.info,
+         )
+         kernel_port_lengths(self.info)
+-        kernel_port_distances(visited, self.info)
++        if precompute:
++            visited = V(dtype=gs.qd_bool, shape=(n_ports, n_ports))
++            kernel_port_distances(visited, self.info)
+         qd.sync()
+ 
+ 
+@@ -223,6 +229,7 @@ def func_surface_distance(
+     surface_info: StressSurfaceInfo,
+     path_info: StressPathInfo,
+ ):
++    qd.static_assert(len(path_info.distances.shape) == 2)
+     straight = func_surface_segment(i_anchor, i_target, anchor, target, stress_info, surface_info)
+     distance = gs.qd_float(float("inf"))
+     if straight:
+diff --git a/tests/rigid/test_stress_footprint.py b/tests/rigid/test_stress_footprint.py
+index c578d85af..5c5be1ada 100644
+--- a/tests/rigid/test_stress_footprint.py
++++ b/tests/rigid/test_stress_footprint.py
+@@ -145,15 +145,22 @@ def cpu_anchor_fan_geometry(anchors, faces, vertices, triangles, positions, weig
+ 
+ @pytest.mark.required
+ @pytest.mark.precision("64")
++@pytest.mark.parametrize("precompute", (True, False))
+ @pytest.mark.parametrize(("anchor_fan", "packed"), ((False, False), (True, False), (True, True)))
+-def test_native_intrinsic_profiles_and_vector_recovery(nonconvex_material_mesh, asset_tmp_path, anchor_fan, packed):  # noqa: F811
++def test_native_intrinsic_profiles_and_vector_recovery(
++    nonconvex_material_mesh,  # noqa: F811
++    asset_tmp_path,
++    anchor_fan,
++    packed,
++    precompute,
++):
+     vertices, tetrahedra, triangles, shape = nonconvex_material_mesh
+     mesh = asset_tmp_path / f"footprint-{shape}.npz"
+     np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=triangles)
+     options = RigidStressOptions(mesh=mesh, method="direct")
+     model = StressModel(options)
+     surface = StressSurface(4, model.info)
+-    paths = StressSurfacePaths(model.info, 2)
++    paths = StressSurfacePaths(model.info, subdivisions=2, precompute=precompute)
+     info = create_traction_info(surface.info)
+     n_envs = 3
+     radius = 0.0014 if shape == "u" else 0.0012
+@@ -172,11 +179,9 @@ def test_native_intrinsic_profiles_and_vector_recovery(nonconvex_material_mesh,
+     target_faces = np.arange(len(positions)) // surface.info.shape.shape[0]
+     contacts = create_contacts(1, n_envs, radius)
+     sources = create_sources(1, n_envs)
+-    footprints = create_footprints(len(ports), 1, n_envs)
++    footprints = create_footprints(len(ports), n_contacts=1, n_envs=n_envs, sparse_paths=not precompute)
+     tractions = (
+-        create_anchor_fan_tractions(
+-            surface.info, 1, n_envs, compact=packed, packed=packed, cached_acceptance=True
+-        )
++        create_anchor_fan_tractions(surface.info, 1, n_envs, compact=packed, packed=packed, cached_acceptance=True)
+         if anchor_fan
+         else create_tractions(len(positions), 1, n_envs, cached_acceptance=True)
+     )

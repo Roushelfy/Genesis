@@ -31,6 +31,8 @@ def main():
             "bulk_audit",
             "axis_setup",
             "matrix_setup",
+            "matrix_fields",
+            "matrix_summary",
         ]
         and plan["goal_completion"] is False
     )
@@ -376,6 +378,50 @@ def main():
             "both_original_audit_failures_and_partial_arrays_preserved": True,
             "fixed_mesh_continuous_traction_integrations": 15,
             "new_fine_thickness_or_quadrature_stress_fields_accepted": 0,
+            "physical_convergence_accepted": False,
+        }
+    elif plan["kind"] == "matrix_summary":
+        combined = summaries["extended-six-shape-eight-level-summary-v1"]
+        assert len(combined["rows"]) == 240 and len(combined["tails"]) == 30
+        shapes = ["ellipsoid", "capsule", "thin_neck", "u", "narrow_gap", "cavity"]
+        for shape in shapes:
+            assert any(parent["label"] == f"extended-finite-{shape}-fields-v1" for parent in parents)
+            rows = [row for row in combined["rows"] if row["geometry"] == shape]
+            assert len(rows) == 40 and sorted({row["level"] for row in rows}) == list(range(8))
+            assert sum(row["separately_fresh_complete_field_audit"] for row in rows) == 15
+        assert all(not row["physical_convergence_accepted"] for row in combined["tails"])
+        scientific_checks = {
+            "original_and_new_geometry_load_level_rows": 240,
+            "complete_original_probe_coordinates_validity_raw_peaks_and_energies_retained": True,
+            "fresh_latest_three_level_complete_field_audits": 90,
+            "whole_matrix_physical_convergence_accepted": False,
+        }
+    elif plan["kind"] == "matrix_fields":
+        shape = plan["geometry"]
+        audit = summaries[f"extended-finite-{shape}-three-level-audit-v1"]
+        assert audit["geometry"] == shape and audit["all_original_and_new_fields_freshly_audited"]
+        assert len(audit["rows"]) == 15 and len(audit["adjacent_changes"]) == 10
+        assert all(
+            row["full_nodal_load_reintegration_maximum_error_N"] == 0
+            and row["original_budget_fraction"] <= 1
+            and row["all_quadrature_tensor_components_checked"] == 99 * row["tetrahedra"]
+            for row in audit["rows"]
+        )
+        for level in [1, 2]:
+            producer = summaries[f"extended-finite-{shape}-level{level}-v1"]
+            assert producer["new_equilibrium_states_solved"] == 5 and len(producer["rows"]) == 5
+            assert producer["tetrahedra"] == audit["tetrahedra"][level]
+        assert any(parent["label"] == "extended-six-shape-qualification-v1" for parent in parents)
+        assert any(parent["label"] == f"fine-reference-{shape}-v2" for parent in parents)
+        scientific_checks = {
+            "geometry": shape,
+            "new_finer_equilibrium_states_solved": 10,
+            "original_and_new_fields_freshly_audited": 15,
+            "every_original_nodal_load_exactly_reproduced": True,
+            "explicit_quadrature_tensor_components_checked": sum(
+                row["all_quadrature_tensor_components_checked"] for row in audit["rows"]
+            ),
+            "all_original_probes_validity_raw_global_peaks_and_energies_retained": True,
             "physical_convergence_accepted": False,
         }
     elif plan["kind"] == "matrix_setup":

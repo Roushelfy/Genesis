@@ -1,0 +1,182 @@
+[
+  {
+    "time_utc": "2026-10-16T02:47:27.164004+00:00",
+    "argv": [
+      "sbatch",
+      "--parsable",
+      "--array=0-0",
+      "--partition=rtx-mid",
+      "--exclude=cpu-207-115",
+      "--cpus-per-task=8",
+      "--mem=128G",
+      "--time=08:00:00",
+      "--dependency=afterok:719910:719911",
+      "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-native-ellipsoid-level1-models-v2-%A_%a.log",
+      "--gres=gpu:1",
+      "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/source-snapshots/native-intrinsic-heap-v1/research/rigid_stress/scripts/run_isolated_native_validation.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-native-ellipsoid-level1-models-v2 load_model_validation --mesh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-matrix-mesh-ellipsoid-v1/meshes/h0.000625.npz --geometry ellipsoid --backend cuda --method pcg --native-max-iterations 100000 --reference-solver amg-cg --models pressure componentwise pair_union body_source_prior --ports 8 --native-quadrature 10'"
+    ],
+    "stdout": "719912\n",
+    "stderr": "",
+    "returncode": 0,
+    "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-native-ellipsoid-level1-models-v2",
+    "snapshot": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/source-snapshots/native-intrinsic-heap-v1",
+    "scope": "All five unchanged finite loads and four declared models, ports8/quadrature10, original force/scatter/full-field budgets. Dependencies are qualification gates only; pending jobs provide no accepted physical evidence."
+  },
+  {
+    "time_utc": "2026-10-16T02:47:27.192588+00:00",
+    "argv": [
+      "sbatch",
+      "--parsable",
+      "--array=0-0",
+      "--partition=cpu",
+      "--exclude=cpu-207-115",
+      "--cpus-per-task=8",
+      "--mem=192G",
+      "--time=08:00:00",
+      "--dependency=afterok:719912",
+      "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-native-ellipsoid-level1-independent-audit-v2-%A_%a.log",
+      "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/source-snapshots/native-intrinsic-heap-v1/research/rigid_stress/scripts/run_isolated_native_validation.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-native-ellipsoid-level1-independent-audit-v2 audit_native_finite_models --run /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-native-ellipsoid-level1-models-v2 --mesh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-matrix-mesh-ellipsoid-v1/meshes/h0.000625.npz --scatter-qualification /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2'"
+    ],
+    "stdout": "719913\n",
+    "stderr": "",
+    "returncode": 0,
+    "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-native-ellipsoid-level1-independent-audit-v2",
+    "snapshot": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/source-snapshots/native-intrinsic-heap-v1",
+    "scope": "All five unchanged finite loads and four declared models, ports8/quadrature10, original force/scatter/full-field budgets. Dependencies are qualification gates only; pending jobs provide no accepted physical evidence."
+  },
+  {
+    "time_utc": "2026-10-16T02:47:27.222350+00:00",
+    "argv": [
+      "sbatch",
+      "--parsable",
+      "--array=0-0",
+      "--partition=rtx-mid",
+      "--exclude=cpu-207-115",
+      "--cpus-per-task=8",
+      "--mem=128G",
+      "--time=08:00:00",
+      "--dependency=afterok:719910:719911",
+      "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-native-ellipsoid-level2-models-v2-%A_%a.log",
+      "--gres=gpu:1",
+      "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/source-snapshots/native-intrinsic-heap-v1/research/rigid_stress/scripts/run_isolated_native_validation.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-native-ellipsoid-level2-models-v2 load_model_validation --mesh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-matrix-mesh-ellipsoid-v1/meshes/h0.0004375.npz --geometry ellipsoid --backend cuda --method pcg --native-max-iterations 100000 --reference-solver amg-cg --models pressure componentwise pair_union body_source_prior --ports 8 --native-quadrature 10'"
+    ],
+    "stdout": "719914\n",
+    "stderr": "",
+    "returncode": 0,
+    "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-native-ellipsoid-level2-models-v2",
+    "snapshot": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/source-snapshots/native-intrinsic-heap-v1",
+    "scope": "All five unchanged finite loads and four declared models, ports8/quadrature10, original force/scatter/full-field budgets. Dependencies are qualification gates only; pending jobs provide no accepted physical evidence."
+  },
+  {
+    "time_utc": "2026-10-16T02:47:27.253145+00:00",
+    "argv": [
+      "sbatch",
+      "--parsable",
+      "--array=0-0",
+      "--partition=cpu",
+      "--exclude=cpu-207-115",
+      "--cpus-per-task=8",
+      "--mem=192G",
+      "--time=08:00:00",
+      "--dependency=afterok:719914",
+      "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-native-ellipsoid-level2-independent-audit-v2-%A_%a.log",
+      "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/source-snapshots/native-intrinsic-heap-v1/research/rigid_stress/scripts/run_isolated_native_validation.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-native-ellipsoid-level2-independent-audit-v2 audit_native_finite_models --run /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-native-ellipsoid-level2-models-v2 --mesh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-matrix-mesh-ellipsoid-v1/meshes/h0.0004375.npz --scatter-qualification /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2'"
+    ],
+    "stdout": "719915\n",
+    "stderr": "",
+    "returncode": 0,
+    "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-native-ellipsoid-level2-independent-audit-v2",
+    "snapshot": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/source-snapshots/native-intrinsic-heap-v1",
+    "scope": "All five unchanged finite loads and four declared models, ports8/quadrature10, original force/scatter/full-field budgets. Dependencies are qualification gates only; pending jobs provide no accepted physical evidence."
+  },
+  {
+    "time_utc": "2026-10-16T02:47:27.282633+00:00",
+    "argv": [
+      "sbatch",
+      "--parsable",
+      "--array=0-0",
+      "--partition=rtx-mid",
+      "--exclude=cpu-207-115",
+      "--cpus-per-task=8",
+      "--mem=128G",
+      "--time=08:00:00",
+      "--dependency=afterok:719910:719911",
+      "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-native-capsule-level1-models-v2-%A_%a.log",
+      "--gres=gpu:1",
+      "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/source-snapshots/native-intrinsic-heap-v1/research/rigid_stress/scripts/run_isolated_native_validation.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-native-capsule-level1-models-v2 load_model_validation --mesh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-matrix-mesh-capsule-v1/meshes/h0.000625.npz --geometry capsule --backend cuda --method pcg --native-max-iterations 100000 --reference-solver amg-cg --models pressure componentwise pair_union body_source_prior --ports 8 --native-quadrature 10'"
+    ],
+    "stdout": "719916\n",
+    "stderr": "",
+    "returncode": 0,
+    "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-native-capsule-level1-models-v2",
+    "snapshot": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/source-snapshots/native-intrinsic-heap-v1",
+    "scope": "All five unchanged finite loads and four declared models, ports8/quadrature10, original force/scatter/full-field budgets. Dependencies are qualification gates only; pending jobs provide no accepted physical evidence."
+  },
+  {
+    "time_utc": "2026-10-16T02:47:27.310790+00:00",
+    "argv": [
+      "sbatch",
+      "--parsable",
+      "--array=0-0",
+      "--partition=cpu",
+      "--exclude=cpu-207-115",
+      "--cpus-per-task=8",
+      "--mem=192G",
+      "--time=08:00:00",
+      "--dependency=afterok:719916",
+      "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-native-capsule-level1-independent-audit-v2-%A_%a.log",
+      "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/source-snapshots/native-intrinsic-heap-v1/research/rigid_stress/scripts/run_isolated_native_validation.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-native-capsule-level1-independent-audit-v2 audit_native_finite_models --run /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-native-capsule-level1-models-v2 --mesh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-matrix-mesh-capsule-v1/meshes/h0.000625.npz --scatter-qualification /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2'"
+    ],
+    "stdout": "719917\n",
+    "stderr": "",
+    "returncode": 0,
+    "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-native-capsule-level1-independent-audit-v2",
+    "snapshot": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/source-snapshots/native-intrinsic-heap-v1",
+    "scope": "All five unchanged finite loads and four declared models, ports8/quadrature10, original force/scatter/full-field budgets. Dependencies are qualification gates only; pending jobs provide no accepted physical evidence."
+  },
+  {
+    "time_utc": "2026-10-16T02:47:27.340894+00:00",
+    "argv": [
+      "sbatch",
+      "--parsable",
+      "--array=0-0",
+      "--partition=rtx-mid",
+      "--exclude=cpu-207-115",
+      "--cpus-per-task=8",
+      "--mem=128G",
+      "--time=08:00:00",
+      "--dependency=afterok:719910:719911",
+      "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-native-capsule-level2-models-v2-%A_%a.log",
+      "--gres=gpu:1",
+      "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/source-snapshots/native-intrinsic-heap-v1/research/rigid_stress/scripts/run_isolated_native_validation.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-native-capsule-level2-models-v2 load_model_validation --mesh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-matrix-mesh-capsule-v1/meshes/h0.0004375.npz --geometry capsule --backend cuda --method pcg --native-max-iterations 100000 --reference-solver amg-cg --models pressure componentwise pair_union body_source_prior --ports 8 --native-quadrature 10'"
+    ],
+    "stdout": "719918\n",
+    "stderr": "",
+    "returncode": 0,
+    "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-native-capsule-level2-models-v2",
+    "snapshot": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/source-snapshots/native-intrinsic-heap-v1",
+    "scope": "All five unchanged finite loads and four declared models, ports8/quadrature10, original force/scatter/full-field budgets. Dependencies are qualification gates only; pending jobs provide no accepted physical evidence."
+  },
+  {
+    "time_utc": "2026-10-16T02:47:27.368674+00:00",
+    "argv": [
+      "sbatch",
+      "--parsable",
+      "--array=0-0",
+      "--partition=cpu",
+      "--exclude=cpu-207-115",
+      "--cpus-per-task=8",
+      "--mem=192G",
+      "--time=08:00:00",
+      "--dependency=afterok:719918",
+      "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-native-capsule-level2-independent-audit-v2-%A_%a.log",
+      "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/source-snapshots/native-intrinsic-heap-v1/research/rigid_stress/scripts/run_isolated_native_validation.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-native-capsule-level2-independent-audit-v2 audit_native_finite_models --run /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-native-capsule-level2-models-v2 --mesh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-matrix-mesh-capsule-v1/meshes/h0.0004375.npz --scatter-qualification /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2'"
+    ],
+    "stdout": "719919\n",
+    "stderr": "",
+    "returncode": 0,
+    "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-native-capsule-level2-independent-audit-v2",
+    "snapshot": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/source-snapshots/native-intrinsic-heap-v1",
+    "scope": "All five unchanged finite loads and four declared models, ports8/quadrature10, original force/scatter/full-field budgets. Dependencies are qualification gates only; pending jobs provide no accepted physical evidence."
+  }
+]

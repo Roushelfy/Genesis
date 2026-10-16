@@ -1,0 +1,171 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.10.12, pytest-8.4.2, pluggy-1.6.0 -- /mnt/data/zhaofeng/venvs/rigid-stress-physical/bin/python
+cachedir: /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/intrinsic-path-heap-cpu-regression-v1/pytest-cache
+rootdir: /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery
+configfile: pyproject.toml
+plugins: anyio-4.15.1, forked-1.7.5, print-1.2.0, timeout-2.4.0, xdist-3.8.0, quadrants-1.3.3, syrupy-6.1.1
+timeout: 1200.0s
+timeout method: signal
+timeout func_only: False
+[1mcollecting ... [0mcollected 12 items
+
+tests/rigid/test_stress_footprint.py::test_native_intrinsic_profiles_and_vector_recovery[u-False-False-True] [31mFAILED[0m[31m [  8%][0m
+
+=================================== FAILURES ===================================
+[31m[1m____ test_native_intrinsic_profiles_and_vector_recovery[u-False-False-True] ____[0m
+
+nonconvex_material_mesh = (array([[0.   , 0.   , 0.   ],
+       [0.   , 0.   , 0.001],
+       [0.   , 0.001, 0.   ],
+       [0.   , 0.001, 0.001...5, 24],
+       [24, 26, 27],
+       [29, 27, 26],
+       [26, 28, 29],
+       [31, 29, 28],
+       [28, 30, 31]]), 'u')
+asset_tmp_path = PosixPath('/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/intrinsic-path-heap-cpu-regression-v1/pytest-tmp/assets0')
+anchor_fan = False, packed = False, precompute = True
+
+    [0m[37m@pytest[39;49;00m.mark.required[90m[39;49;00m
+    [37m@pytest[39;49;00m.mark.precision([33m"[39;49;00m[33m64[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+    [37m@pytest[39;49;00m.mark.parametrize([33m"[39;49;00m[33mprecompute[39;49;00m[33m"[39;49;00m, ([94mTrue[39;49;00m, [94mFalse[39;49;00m))[90m[39;49;00m
+    [37m@pytest[39;49;00m.mark.parametrize(([33m"[39;49;00m[33manchor_fan[39;49;00m[33m"[39;49;00m, [33m"[39;49;00m[33mpacked[39;49;00m[33m"[39;49;00m), (([94mFalse[39;49;00m, [94mFalse[39;49;00m), ([94mTrue[39;49;00m, [94mFalse[39;49;00m), ([94mTrue[39;49;00m, [94mTrue[39;49;00m)))[90m[39;49;00m
+    [94mdef[39;49;00m[90m [39;49;00m[92mtest_native_intrinsic_profiles_and_vector_recovery[39;49;00m([90m[39;49;00m
+        nonconvex_material_mesh,  [90m# noqa: F811[39;49;00m[90m[39;49;00m
+        asset_tmp_path,[90m[39;49;00m
+        anchor_fan,[90m[39;49;00m
+        packed,[90m[39;49;00m
+        precompute,[90m[39;49;00m
+    ):[90m[39;49;00m
+        vertices, tetrahedra, triangles, shape = nonconvex_material_mesh[90m[39;49;00m
+        mesh = asset_tmp_path / [33mf[39;49;00m[33m"[39;49;00m[33mfootprint-[39;49;00m[33m{[39;49;00mshape[33m}[39;49;00m[33m.npz[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+        np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=triangles)[90m[39;49;00m
+        options = RigidStressOptions(mesh=mesh, method=[33m"[39;49;00m[33mdirect[39;49;00m[33m"[39;49;00m)[90m[39;49;00m
+        model = StressModel(options)[90m[39;49;00m
+        surface = StressSurface([94m4[39;49;00m, model.info)[90m[39;49;00m
+        paths = StressSurfacePaths(model.info, subdivisions=[94m2[39;49;00m, precompute=precompute)[90m[39;49;00m
+        info = create_traction_info(surface.info)[90m[39;49;00m
+        n_envs = [94m3[39;49;00m[90m[39;49;00m
+        radius = [94m0.0014[39;49;00m [94mif[39;49;00m shape == [33m"[39;49;00m[33mu[39;49;00m[33m"[39;49;00m [94melse[39;49;00m [94m0.0012[39;49;00m[90m[39;49;00m
+        anchors = ([90m[39;49;00m
+            np.array([[[94m0.00075[39;49;00m, [94m0.00251[39;49;00m, [94m0.001[39;49;00m], [[94m0.00072[39;49;00m, [94m0.00239[39;49;00m, [94m0.001[39;49;00m], [[94m0.00083[39;49;00m, [94m0.00248[39;49;00m, [94m0.001[39;49;00m]])[90m[39;49;00m
+            [94mif[39;49;00m shape == [33m"[39;49;00m[33mu[39;49;00m[33m"[39;49;00m[90m[39;49;00m
+            [94melse[39;49;00m np.array([[[94m0.001[39;49;00m, [94m0.00151[39;49;00m, [94m0.00149[39;49;00m], [[94m0.001[39;49;00m, [94m0.00140[39;49;00m, [94m0.00157[39;49;00m], [[94m0.001[39;49;00m, [94m0.00160[39;49;00m, [94m0.00138[39;49;00m]])[90m[39;49;00m
+        )[90m[39;49;00m
+        positions = qd_to_numpy(surface.info.positions, transpose=[94mTrue[39;49;00m, copy=[94mTrue[39;49;00m)[90m[39;49;00m
+        weights = qd_to_numpy(surface.info.weights, transpose=[94mTrue[39;49;00m, copy=[94mTrue[39;49;00m)[90m[39;49;00m
+        normals = qd_to_numpy(info.inward_normals, transpose=[94mTrue[39;49;00m, copy=[94mTrue[39;49;00m)[90m[39;49;00m
+        ports = qd_to_numpy(paths.info.positions, transpose=[94mTrue[39;49;00m, copy=[94mTrue[39;49;00m)[90m[39;49;00m
+        face_ports = qd_to_numpy(paths.info.face_ports, transpose=[94mTrue[39;49;00m, copy=[94mTrue[39;49;00m).T[90m[39;49;00m
+        starts = qd_to_numpy(paths.info.starts, transpose=[94mTrue[39;49;00m, copy=[94mTrue[39;49;00m)[90m[39;49;00m
+        neighbors = qd_to_numpy(paths.info.neighbors, transpose=[94mTrue[39;49;00m, copy=[94mTrue[39;49;00m)[90m[39;49;00m
+        target_faces = np.arange([96mlen[39;49;00m(positions)) // surface.info.shape.shape[[94m0[39;49;00m][90m[39;49;00m
+        contacts = create_contacts([94m1[39;49;00m, n_envs, radius)[90m[39;49;00m
+        sources = create_sources([94m1[39;49;00m, n_envs)[90m[39;49;00m
+        footprints = create_footprints([96mlen[39;49;00m(ports), n_contacts=[94m1[39;49;00m, n_envs=n_envs, sparse_paths=[95mnot[39;49;00m precompute)[90m[39;49;00m
+        tractions = ([90m[39;49;00m
+            create_anchor_fan_tractions(surface.info, [94m1[39;49;00m, n_envs, compact=packed, packed=packed, cached_acceptance=[94mTrue[39;49;00m)[90m[39;49;00m
+            [94mif[39;49;00m anchor_fan[90m[39;49;00m
+            [94melse[39;49;00m create_tractions([96mlen[39;49;00m(positions), [94m1[39;49;00m, n_envs, cached_acceptance=[94mTrue[39;49;00m)[90m[39;49;00m
+        )[90m[39;49;00m
+        kernel_profiles = kernel_anchor_fan_profiles [94mif[39;49;00m anchor_fan [94melse[39;49;00m kernel_footprint_profiles[90m[39;49;00m
+        points = anchors + [[94m0.00003[39;49;00m, -[94m0.00001[39;49;00m, [94m0.00002[39;49;00m][90m[39;49;00m
+        contacts.position.from_numpy(points[[94mNone[39;49;00m])[90m[39;49;00m
+        contacts.force.fill([94m0.0[39;49;00m)[90m[39;49;00m
+        contacts.valid.fill([94mTrue[39;49;00m)[90m[39;49;00m
+        sources.geom.fill([94m7[39;49;00m)[90m[39;49;00m
+        sources.pair.fill([94m11[39;49;00m)[90m[39;49;00m
+        sources.witness.from_numpy(anchors[[94mNone[39;49;00m])[90m[39;49;00m
+        epsilon = [96mfloat[39;49;00m(np.finfo(gs.np_float).eps)[90m[39;49;00m
+        kernel_resolve_sources([94m1e-8[39;49;00m, epsilon, contacts, sources, model.info, surface.info)[90m[39;49;00m
+        faces = qd_to_numpy(contacts.anchor_face, transpose=[94mTrue[39;49;00m, copy=[94mTrue[39;49;00m)[:, [94m0[39;49;00m][90m[39;49;00m
+        [94mif[39;49;00m anchor_fan:[90m[39;49;00m
+            sample_positions, sample_weights, sample_faces, sample_basis = cpu_anchor_fan_geometry([90m[39;49;00m
+                anchors, faces, vertices, triangles, positions, weights, [94m4[39;49;00m[90m[39;49;00m
+            )[90m[39;49;00m
+        [94melse[39;49;00m:[90m[39;49;00m
+            sample_positions = np.broadcast_to(positions, (n_envs, [96mlen[39;49;00m(positions), [94m3[39;49;00m))[90m[39;49;00m
+            sample_weights = np.broadcast_to(weights, (n_envs, [96mlen[39;49;00m(positions)))[90m[39;49;00m
+            sample_faces = np.broadcast_to(target_faces, (n_envs, [96mlen[39;49;00m(positions)))[90m[39;49;00m
+            basis = qd_to_numpy(surface.info.shape, transpose=[94mTrue[39;49;00m, copy=[94mTrue[39;49;00m)[[90m[39;49;00m
+                np.arange([96mlen[39;49;00m(positions)) % surface.info.shape.shape[[94m0[39;49;00m][90m[39;49;00m
+            ][90m[39;49;00m
+            sample_basis = np.broadcast_to(basis, (n_envs, [96mlen[39;49;00m(positions), [94m6[39;49;00m))[90m[39;49;00m
+        sample_normals = normals[sample_faces * surface.info.shape.shape[[94m0[39;49;00m]][90m[39;49;00m
+        distances = np.concatenate([90m[39;49;00m
+            [[90m[39;49;00m
+                cpu_intrinsic_distances([90m[39;49;00m
+                    anchors[i_b : i_b + [94m1[39;49;00m],[90m[39;49;00m
+                    faces[i_b : i_b + [94m1[39;49;00m],[90m[39;49;00m
+                    sample_positions[i_b],[90m[39;49;00m
+                    sample_faces[i_b],[90m[39;49;00m
+                    vertices,[90m[39;49;00m
+                    triangles,[90m[39;49;00m
+                    ports,[90m[39;49;00m
+                    face_ports,[90m[39;49;00m
+                    starts,[90m[39;49;00m
+                    neighbors,[90m[39;49;00m
+                )[90m[39;49;00m
+                [94mfor[39;49;00m i_b [95min[39;49;00m [96mrange[39;49;00m(n_envs)[90m[39;49;00m
+            ][90m[39;49;00m
+        )[90m[39;49;00m
+        expected = sample_weights * np.exp(-[94m0.5[39;49;00m * (distances / ([94m0.45[39;49;00m * radius)) ** [94m2[39;49;00m)[90m[39;49;00m
+        expected *= np.maximum([94m1.0[39;49;00m - (distances / radius) ** [94m2[39;49;00m, [94m0.0[39;49;00m) ** [94m2[39;49;00m[90m[39;49;00m
+>       kernel_footprint_ports(contacts, sources, footprints, surface.info, paths.info)[90m[39;49;00m
+
+[1m[31mtests/rigid/test_stress_footprint.py[0m:231: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/_quadrants_callable.py[0m:101: in __call__
+    [0m[94mreturn[39;49;00m [96mself[39;49;00m.wrapper.[92m__call__[39;49;00m(*args, **kwargs)[90m[39;49;00m
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = (StressContactState(position=Tensor(shape=(1, 3), dtype=<quadrants._lib.core.quadrants_python.DataTypeCxx object at 0x...shape=(122, 122), dtype=<quadrants._lib.core.quadrants_python.DataTypeCxx object at 0x78513122f550>, backend=NDARRAY)))
+kwargs = {}
+
+    [0m[37m@wraps[39;49;00m(_func)[90m[39;49;00m
+    [94mdef[39;49;00m[90m [39;49;00m[92mwrapped_func[39;49;00m(*args, **kwargs):[90m[39;49;00m
+        [94mtry[39;49;00m:[90m[39;49;00m
+            [94mreturn[39;49;00m primal(*args, **kwargs)[90m[39;49;00m
+        [94mexcept[39;49;00m (QuadrantsCompilationError, QuadrantsRuntimeError) [94mas[39;49;00m e:[90m[39;49;00m
+            [94mif[39;49;00m impl.get_runtime().print_full_traceback:[90m[39;49;00m
+                [94mraise[39;49;00m e[90m[39;49;00m
+>           [94mraise[39;49;00m [96mtype[39;49;00m(e)([33m"[39;49;00m[33m\n[39;49;00m[33m"[39;49;00m + [96mstr[39;49;00m(e)) [94mfrom[39;49;00m[90m [39;49;00m[94mNone[39;49;00m[90m[39;49;00m
+[1m[31mE           quadrants.lang.exception.QuadrantsCompilationError: [0m
+[1m[31mE           File "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/footprint.py", line 170, in kernel_footprint_ports:[0m
+[1m[31mE                   if qd.static(path_info.distances.shape[0] ==[0m
+[1m[31mE           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[1m[31mE           Traceback (most recent call last):[0m
+[1m[31mE             File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer_utils.py", line 40, in __call__[0m
+[1m[31mE               res = method(ctx, node)[0m
+[1m[31mE             File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformer.py", line 526, in build_Call[0m
+[1m[31mE               return CallTransformer.build_Call(ctx, node, build_stmt, build_stmts)[0m
+[1m[31mE             File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/ast/ast_transformers/call_transformer.py", line 501, in build_Call[0m
+[1m[31mE               node.ptr = func(*py_args, **py_kwargs)[0m
+[1m[31mE             File "/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/impl.py", line 1331, in static[0m
+[1m[31mE               raise ValueError(f"Input to qd.static must be compile-time constants or global pointers, instead of {type(x)}")[0m
+[1m[31mE           ValueError: Input to qd.static must be compile-time constants or global pointers, instead of <class 'quadrants.lang.expr.Expr'>[0m
+
+[1m[31m/mnt/data/zhaofeng/venvs/rigid-stress-recovery/lib/python3.10/site-packages/quadrants/lang/kernel_impl.py[0m:184: QuadrantsCompilationError
+---------------------------- Captured stdout setup -----------------------------
+[Genesis 02:34:44] Running on [AMD EPYC 9454 48-Core Processor] with backend gs.cpu. Device memory: 1510.38 GB.
+[Genesis 02:34:44] Genesis initialized. version: 1.4.3, theme: raw, seed: 0, debug: False, precision: 64, performance: False, verbose: INFO
+--------------------------- Captured stdout teardown ---------------------------
+[Genesis 02:34:47] Exiting Genesis and caching compiled kernels...
+[33m=============================== warnings summary ===============================[0m
+tests/rigid/test_stress_footprint.py::test_native_intrinsic_profiles_and_vector_recovery[u-False-False-True]
+tests/rigid/test_stress_footprint.py::test_native_intrinsic_profiles_and_vector_recovery[u-False-False-True]
+  /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/genesis/engine/solvers/rigid/stress/balance.py:66: SyntaxWarning: You are unrolling more than
+                          32 iterations, so the compile time may be extremely long.
+                          You can use a non-static for loop if you want to decrease the compile time.
+                          You can disable this warning by setting qd.init(unrolling_limit=0).
+    for a, b in qd.static(qd.ndrange(6, 6)):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/intrinsic-path-heap-cpu-regression-v1/junit.xml -
+================================= Failed tests =================================
+tests/rigid/test_stress_footprint.py::test_native_intrinsic_profiles_and_vect...
+============================== slowest durations ===============================
+
+(3 durations < 100s hidden.)
+[31m!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!![0m
+[31m======================== [31m[1m1 failed[0m, [33m2 warnings[0m[31m in 17.33s[0m[31m ========================[0m

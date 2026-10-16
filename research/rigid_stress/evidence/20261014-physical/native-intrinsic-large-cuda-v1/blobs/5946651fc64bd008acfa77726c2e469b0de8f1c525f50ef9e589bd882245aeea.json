@@ -1,0 +1,70 @@
+{
+  "scope": "Publish the completed large CUDA graph qualification as a supplement to the original capacity checkpoint.",
+  "job": 719911,
+  "scheduler_state": "COMPLETED",
+  "source_and_snapshot_closure": true,
+  "parent_manifest_sha256": "9fc23ff51bfd0b6c91c24806c6dd599277140ed31f59f254aecdf855c61fb407",
+  "parent_complete_reverification": {
+    "manifest": "research/rigid_stress/evidence/20261014-physical/native-intrinsic-capacity-v1/manifest.json",
+    "manifest_sha256": "9fc23ff51bfd0b6c91c24806c6dd599277140ed31f59f254aecdf855c61fb407",
+    "verified_entries": 6396,
+    "verified_originals": 6396,
+    "verified_original_prefixes": 0,
+    "appended_allocation_logs": [],
+    "reconstructed_complete_files": 0,
+    "restored_missing_artifacts": [],
+    "passed": true
+  },
+  "large_CUDA_qualification": {
+    "scope": "Check every native port distance against an independent graph solve on unchanged finite-load meshes.",
+    "port_count": 125710,
+    "directed_graph_edges": 5074032,
+    "all_pair_float64_bytes_avoided": 126424032800,
+    "per_contact_float64_distance_bytes": 15085200,
+    "heap_index_bytes": 15085260,
+    "initialization_seconds": 4.402772268000263,
+    "rows": [
+      {
+        "phase": 0,
+        "active_contacts": 11,
+        "all_port_entries_checked": 1885650,
+        "within_radius_entries": 21685,
+        "maximum_distance_difference_m": 8.673617379884035e-19,
+        "native_seconds_including_first_compile": 0.3281387930001074,
+        "all_support_membership_matches": true
+      },
+      {
+        "phase": 1,
+        "active_contacts": 10,
+        "all_port_entries_checked": 1885650,
+        "within_radius_entries": 18300,
+        "maximum_distance_difference_m": 8.673617379884035e-19,
+        "native_seconds_including_first_compile": 0.17187485799877322,
+        "all_support_membership_matches": true
+      },
+      {
+        "phase": 2,
+        "active_contacts": 11,
+        "all_port_entries_checked": 1885650,
+        "within_radius_entries": 21685,
+        "maximum_distance_difference_m": 8.673617379884035e-19,
+        "native_seconds_including_first_compile": 0.13352248500086716,
+        "all_support_membership_matches": true
+      }
+    ],
+    "exact_original_restoration": true,
+    "input_sha256": {
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-matrix-mesh-ellipsoid-v1/meshes/h0.000625.npz": "71d69ea1615655651a4a17e471fa902ae9d6363f781acaa1b8c50f1c4de66d06",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-finite-ellipsoid-level1-v1/results/opposing/snapshot.json": "daa50bbc3a4095a407feff1de1563d3b1d1d1157691b62a9e32437573bf3f2c2",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-finite-ellipsoid-level1-v1/results/bending/snapshot.json": "f82ff0742991abb5a7a4cb86eb47508a8886df73af54eaec09c57007e2362bc0",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-finite-ellipsoid-level1-v1/results/asymmetric/snapshot.json": "c03ff49190d54a48b53732a40bbc119727712ab9bc87d40c0ad3cf77d3a31b04",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-finite-ellipsoid-level1-v1/results/near_slip/snapshot.json": "ad05cb632734087039cbe53c8f2c2424002a00a5d9fadf041d003f3447bd76fa",
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-finite-ellipsoid-level1-v1/results/multiple/snapshot.json": "ce8edc81676ab9a29617e5a7da4f64239c7f1f63281b616cabf46b5b1b2adfec"
+    },
+    "goal_completion": false,
+    "limitations": "Qualifies the unchanged8-port graph at every port for all five original snapshots, release, radius and anchor changes, and exact restoration. Changed-phase inputs are numerical lifecycle controls. This is not a continuum-geodesic, traction-fit, elastic-field, physical-convergence or warmed-application-cost claim."
+  },
+  "current_worktree_engine_matches_executed_copy": true,
+  "pending_not_accepted": "Actual fine native four-model fields and their separate auditors, remaining physical/model/application/feedback/warmed-cost requirements.",
+  "goal_completion": false
+}

@@ -35,7 +35,7 @@ class StressSurfacePaths:
     possible. Port paths otherwise overestimate continuous intrinsic distance.
     """
 
-    def __init__(self, stress_info: StressInfo, subdivisions: int):
+    def __init__(self, stress_info: StressInfo, subdivisions: int, *, precompute: bool | None = None):
         if subdivisions < 1:
             gs.raise_exception("Surface edge subdivisions must be positive.")
         triangles = qd_to_numpy(stress_info.surface_nodes, transpose=True)[:3].T
@@ -58,18 +58,22 @@ class StressSurfacePaths:
         pairs = np.unique(pairs[pairs[:, 0] != pairs[:, 1]], axis=0)
         starts = np.r_[0, np.cumsum(np.bincount(pairs[:, 0], minlength=len(endpoints)))]
         n_ports = len(endpoints)
+        if precompute is None:
+            # Bound the shared table to 128 MiB in double precision. Larger graphs use per-contact searches.
+            precompute = n_ports <= 4096
+        if precompute and n_ports * n_ports >= 2**31:
+            gs.raise_exception("The surface distance table exceeds Quadrants' supported index range.")
         self.info = StressPathInfo(
             positions=V_VEC(3, dtype=gs.qd_float, shape=(n_ports,)),
             face_ports=V(dtype=gs.qd_int, shape=face_ports.shape),
             starts=V(dtype=gs.qd_int, shape=(n_ports + 1,)),
             neighbors=V(dtype=gs.qd_int, shape=(len(pairs),)),
             lengths=V(dtype=gs.qd_float, shape=(len(pairs),)),
-            distances=V(dtype=gs.qd_float, shape=(n_ports, n_ports)),
+            distances=V(dtype=gs.qd_float, shape=(n_ports, n_ports) if precompute else ()),
         )
         self.info.face_ports.from_numpy(face_ports.astype(gs.np_int, copy=False))
         self.info.starts.from_numpy(starts.astype(gs.np_int, copy=False))
         self.info.neighbors.from_numpy(pairs[:, 1].astype(gs.np_int, copy=False))
-        visited = V(dtype=gs.qd_bool, shape=(n_ports, n_ports))
         kernel_port_geometry(
             subdivisions,
             endpoints.astype(gs.np_int, copy=False),
@@ -78,7 +82,9 @@ class StressSurfacePaths:
             self.info,
         )
         kernel_port_lengths(self.info)
-        kernel_port_distances(visited, self.info)
+        if precompute:
+            visited = V(dtype=gs.qd_bool, shape=(n_ports, n_ports))
+            kernel_port_distances(visited, self.info)
         qd.sync()
 
 
@@ -223,6 +229,7 @@ def func_surface_distance(
     surface_info: StressSurfaceInfo,
     path_info: StressPathInfo,
 ):
+    qd.static_assert(len(path_info.distances.shape) == 2)
     straight = func_surface_segment(i_anchor, i_target, anchor, target, stress_info, surface_info)
     distance = gs.qd_float(float("inf"))
     if straight:

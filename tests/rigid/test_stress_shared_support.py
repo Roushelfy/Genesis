@@ -54,8 +54,9 @@ def kernel_shared_traction_queries(
 
 @pytest.mark.required
 @pytest.mark.precision("64")
+@pytest.mark.parametrize("precompute", (True, False))
 @pytest.mark.parametrize("tick", (710, 1160))
-def test_plane_pair_union_preserves_each_wrench_with_destination_friction(tick):
+def test_plane_pair_union_preserves_each_wrench_with_destination_friction(tick, precompute):
     with np.load(Path(__file__).with_name("assets") / f"nonconvex_plane_pair_tick{tick}.npz") as saved:
         points, anchors, forces = (saved[name] for name in ("position", "anchor", "force"))
         radii, mu = saved["radius"], saved["friction"]
@@ -64,10 +65,12 @@ def test_plane_pair_union_preserves_each_wrench_with_destination_friction(tick):
     options = RigidStressOptions(mesh=mesh, method="direct", intrinsic_support="pair_union")
     model, n_envs = StressModel(options), 3
     surface = StressSurface(10, model.info)
-    paths = StressSurfacePaths(model.info, 8)
+    paths = StressSurfacePaths(model.info, subdivisions=8, precompute=precompute)
     info = create_traction_info(surface.info)
     contacts, sources = create_contacts(2, n_envs, 0.006), create_sources(2, n_envs)
-    footprints = create_footprints(paths.info.positions.shape[0], 2, n_envs)
+    footprints = create_footprints(
+        paths.info.positions.shape[0], n_contacts=2, n_envs=n_envs, sparse_paths=not precompute
+    )
     tractions = create_surface_fan_tractions(surface.info, 2, n_envs, shared_support=True)
     frictions = np.array([mu, mu * [1.15, 1.4], [0.85, 1.2]])
     contacts.position.from_numpy(np.broadcast_to(points[:, None], (2, n_envs, 3)).copy())

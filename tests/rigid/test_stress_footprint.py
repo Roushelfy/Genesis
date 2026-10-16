@@ -145,15 +145,22 @@ def cpu_anchor_fan_geometry(anchors, faces, vertices, triangles, positions, weig
 
 @pytest.mark.required
 @pytest.mark.precision("64")
+@pytest.mark.parametrize("precompute", (True, False))
 @pytest.mark.parametrize(("anchor_fan", "packed"), ((False, False), (True, False), (True, True)))
-def test_native_intrinsic_profiles_and_vector_recovery(nonconvex_material_mesh, asset_tmp_path, anchor_fan, packed):  # noqa: F811
+def test_native_intrinsic_profiles_and_vector_recovery(
+    nonconvex_material_mesh,  # noqa: F811
+    asset_tmp_path,
+    anchor_fan,
+    packed,
+    precompute,
+):
     vertices, tetrahedra, triangles, shape = nonconvex_material_mesh
     mesh = asset_tmp_path / f"footprint-{shape}.npz"
     np.savez(mesh, vertices=vertices, tetrahedra=tetrahedra, surface_triangles=triangles)
     options = RigidStressOptions(mesh=mesh, method="direct")
     model = StressModel(options)
     surface = StressSurface(4, model.info)
-    paths = StressSurfacePaths(model.info, 2)
+    paths = StressSurfacePaths(model.info, subdivisions=2, precompute=precompute)
     info = create_traction_info(surface.info)
     n_envs = 3
     radius = 0.0014 if shape == "u" else 0.0012
@@ -172,11 +179,9 @@ def test_native_intrinsic_profiles_and_vector_recovery(nonconvex_material_mesh, 
     target_faces = np.arange(len(positions)) // surface.info.shape.shape[0]
     contacts = create_contacts(1, n_envs, radius)
     sources = create_sources(1, n_envs)
-    footprints = create_footprints(len(ports), 1, n_envs)
+    footprints = create_footprints(len(ports), n_contacts=1, n_envs=n_envs, sparse_paths=not precompute)
     tractions = (
-        create_anchor_fan_tractions(
-            surface.info, 1, n_envs, compact=packed, packed=packed, cached_acceptance=True
-        )
+        create_anchor_fan_tractions(surface.info, 1, n_envs, compact=packed, packed=packed, cached_acceptance=True)
         if anchor_fan
         else create_tractions(len(positions), 1, n_envs, cached_acceptance=True)
     )

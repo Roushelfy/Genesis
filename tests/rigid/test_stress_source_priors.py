@@ -149,6 +149,7 @@ def source_prior_fixture(case, vertices, faces):
 
 @pytest.mark.required
 @pytest.mark.precision("64")
+@pytest.mark.parametrize("precompute", (True, False))
 @pytest.mark.parametrize("native_pipeline", (False, True))
 @pytest.mark.parametrize(
     "case",
@@ -163,7 +164,7 @@ def source_prior_fixture(case, vertices, faces):
         "varied4096_slow",
     ),
 )
-def test_body_source_prior_wrench_cones_full_fields_and_gauge_rows(case, native_pipeline, record_property):
+def test_body_source_prior_wrench_cones_full_fields_and_gauge_rows(case, native_pipeline, record_property, precompute):
     mesh = Path(__file__).resolve().parents[2] / "examples/rigid/assets/hollow_egg/level1/elastic.npz"
     options = RigidStressOptions(mesh=mesh, method="direct", intrinsic_load_partition="body_source_prior")
     model, n_envs = StressModel(options), 3
@@ -171,10 +172,15 @@ def test_body_source_prior_wrench_cones_full_fields_and_gauge_rows(case, native_
         vertices, tets, faces = (asset[key] for key in ("vertices", "tetrahedra", "surface_triangles"))
     anchors, points, forces, radii, friction, anchor_faces, moments = source_prior_fixture(case, vertices, faces)
     n_sources = len(forces)
-    surface, paths = StressSurface(10, model.info), StressSurfacePaths(model.info, 8)
+    surface, paths = (
+        StressSurface(10, model.info),
+        StressSurfacePaths(model.info, subdivisions=8, precompute=precompute),
+    )
     info = create_traction_info(surface.info)
     contacts, sources = create_contacts(n_sources, n_envs, 0.006), create_sources(n_sources, n_envs)
-    footprints = create_footprints(paths.info.positions.shape[0], n_sources, n_envs, paths.info.face_ports.shape[1])
+    footprints = create_footprints(
+        paths.info.positions.shape[0], n_sources, n_envs, paths.info.face_ports.shape[1], sparse_paths=not precompute
+    )
     tractions = create_surface_fan_tractions(
         surface.info, n_sources, n_envs, shared_support=True, source_priors=True, cached_acceptance=True
     )
