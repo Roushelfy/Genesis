@@ -1,0 +1,85 @@
+{
+  "kind": "fixed_distance",
+  "label": "covered-cad-distance-depth-v1",
+  "closed_jobs": {
+    "egg-cad31668-barrier-1250nm-v1": {
+      "job": "719417_0",
+      "returncode": 0
+    },
+    "egg-cad31668-barrier-1250nm-v1-audit": {
+      "job": "719418_0",
+      "returncode": 0
+    },
+    "egg-cad31668-barrier-625nm-v1": {
+      "job": "719420_0",
+      "returncode": 0
+    },
+    "egg-cad31668-barrier-625nm-v1-audit": {
+      "job": "719421_0",
+      "returncode": 0
+    },
+    "covered-cad-fixed-distance-sources-v1": {
+      "job": "719439_0",
+      "returncode": 0
+    },
+    "covered-cad-fixed-distance-fields-v1": {
+      "job": "719440_0",
+      "returncode": 0
+    },
+    "covered-cad-fixed-distance-source-diagnostics-v1": {
+      "job": "719503_0",
+      "returncode": 0
+    },
+    "covered-cad-contact-depth-probes-v1": {
+      "job": "719502_0",
+      "returncode": 0
+    },
+    "covered-cad-fixed-distance-depth-probes-v1": {
+      "job": "719513_0",
+      "returncode": 0
+    },
+    "covered-cad-depth-distance-figures-v1": {
+      "job": "719523_0",
+      "returncode": 0
+    },
+    "covered-cad-depth-distance-figures-v2": {
+      "job": "719525_0",
+      "returncode": 0
+    }
+  },
+  "parent_manifests": [
+    {
+      "label": "covered-cad-three-level-v1",
+      "sha256": "cce9cb3219741026b3419a052700dbc152028851d59be18a569de69c0a2fd4a3"
+    },
+    {
+      "label": "covered-cad-contact-tail-v1",
+      "sha256": "a1a7a2a8dbfda20047040201eaa13aab7deaa270ec13875298b390e95fccda86"
+    }
+  ],
+  "accepted_figure_run": "covered-cad-depth-distance-figures-v2",
+  "export_qa": "meta/covered-cad-depth-distance-export-qa-v2.json",
+  "physical_configurations": [
+    "egg-cad31668-barrier-1250nm-v1/results/configuration.json",
+    "egg-cad31668-barrier-625nm-v1/results/configuration.json"
+  ],
+  "extra_files": [
+    "meta/covered-cad-fixed-geometry-barrier-commands-v1.json",
+    "meta/covered-cad-fixed-distance-analysis-commands-v1.json",
+    "meta/covered-cad-fixed-distance-source-diagnostics-commands-v1.json",
+    "meta/covered-cad-contact-depth-probes-commands-v1.json",
+    "meta/covered-cad-fixed-distance-depth-probes-commands-v1.json",
+    "meta/covered-cad-depth-distance-figure-commands-v1.json",
+    "meta/covered-cad-depth-distance-figure-commands-v2.json",
+    "meta/covered-cad-depth-distance-visual-qa-v1.json",
+    "meta/covered-cad-depth-distance-export-qa-v2.json",
+    "meta/covered-cad-sharp-feature-primary-literature-v1.json"
+  ],
+  "pending_work": [
+    "Original64-control initializer full fields are not retained at every increment; the existing independent force audits cover all five actual dynamic states only.",
+    "Spatial/geometry/contact trace axes remain coupled and have large near-surface discrepancies; coarse fixed-mesh distance sensitivity does not establish continuum contact acceptance.",
+    "All original A/B/C finite-load/model/island/history/application/feedback and verified accuracy/cost requirements remain."
+  ],
+  "limitations": "Both fresh original64-control/five-state producers and complete original-budget force audits close on the same31668-tet geometry/material/mass/actuation at1.25/.625um barrier distance. All15 independent source/corner/quadrature/raw-bound states compare against the original2.5um case. Final full-volume tensor changes0.9694%/.5716% coexist with large coupled spatial/contact changes. All158340 original probes and norms remain unchanged;576 additional fixed points fill a measured near-surface sampling gap,480 within25um of baseline normal samples. Every point is strictly inside every mesh and independently polynomial/finite-frame qualified; equal-point local norms are supplemental, not volume norms. On those identical points the last spatial pair changes44.59\u201384.35%, while the last coarse-mesh distance pair changes1.69\u20131.83% at6.25ms. Error norms cannot be subtracted into a causal budget. Discrete active areas, sharp features and literature analogies do not prove continuum pressure convergence or a singularity in this3D frictional model. Editable/PDF/1000dpi figures trace to complete retained data. Full objective remains active.",
+  "goal_completion": false
+}

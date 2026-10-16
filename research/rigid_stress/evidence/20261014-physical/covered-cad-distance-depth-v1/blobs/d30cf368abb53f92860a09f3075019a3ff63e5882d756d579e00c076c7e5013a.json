@@ -1,0 +1,114 @@
+{
+  "scope": "Independently verify every precision-aware spatial state and its unaveraged global field.",
+  "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-cad31668-barrier-1250nm-v1",
+  "states_checked": 5,
+  "rows": [
+    {
+      "step": 1,
+      "time_s": 0.00125,
+      "body_tetrahedra": 31668,
+      "complete_body_dynamic_residual_N": 4.087984579592937e-14,
+      "complete_mapped_dynamic_residual_N": 1.62626636196071e-13,
+      "force_pullback_max_difference_N": 5.551115123125783e-17,
+      "normal_stencils": 28,
+      "maximum_coulomb_violation_N": -3.504663440822035e-05,
+      "active_body_contact_nodes": 30,
+      "active_lumped_contact_area_m2": 2.715181858294505e-08,
+      "maximum_unsmoothed_body_normal_force_per_area_Pa": 71992879.02261794,
+      "raw_global_peak_lower_Pa": 41413425.58332781,
+      "raw_global_peak_upper_Pa": 41413425.58332797,
+      "whole_volume_J_lower_bound": 0.9975648897914328,
+      "raw_peak_reference_position_m": [
+        2.114692078892005e-05,
+        0.022251337693694837,
+        -0.001827384332560059
+      ]
+    },
+    {
+      "step": 2,
+      "time_s": 0.0025,
+      "body_tetrahedra": 31668,
+      "complete_body_dynamic_residual_N": 6.96144196493616e-14,
+      "complete_mapped_dynamic_residual_N": 9.213182841544029e-14,
+      "force_pullback_max_difference_N": 5.551115123125783e-17,
+      "normal_stencils": 28,
+      "maximum_coulomb_violation_N": -0.0007717232098434588,
+      "active_body_contact_nodes": 30,
+      "active_lumped_contact_area_m2": 2.715178651672141e-08,
+      "maximum_unsmoothed_body_normal_force_per_area_Pa": 72001060.73733132,
+      "raw_global_peak_lower_Pa": 41463055.92249264,
+      "raw_global_peak_upper_Pa": 41463055.9224928,
+      "whole_volume_J_lower_bound": 0.9975625768304698,
+      "raw_peak_reference_position_m": [
+        2.114692078892005e-05,
+        0.022251337693694837,
+        -0.001827384332560059
+      ]
+    },
+    {
+      "step": 3,
+      "time_s": 0.00375,
+      "body_tetrahedra": 31668,
+      "complete_body_dynamic_residual_N": 6.449726337473452e-14,
+      "complete_mapped_dynamic_residual_N": 1.954415983010396e-13,
+      "force_pullback_max_difference_N": 5.551115123125783e-17,
+      "normal_stencils": 28,
+      "maximum_coulomb_violation_N": -0.0007847123217290728,
+      "active_body_contact_nodes": 30,
+      "active_lumped_contact_area_m2": 2.7151751456079088e-08,
+      "maximum_unsmoothed_body_normal_force_per_area_Pa": 71985902.45231926,
+      "raw_global_peak_lower_Pa": 41480842.3476646,
+      "raw_global_peak_upper_Pa": 41480842.347664766,
+      "whole_volume_J_lower_bound": 0.9975589306676933,
+      "raw_peak_reference_position_m": [
+        2.114692078892005e-05,
+        0.022251337693694837,
+        -0.001827384332560059
+      ]
+    },
+    {
+      "step": 4,
+      "time_s": 0.005,
+      "body_tetrahedra": 31668,
+      "complete_body_dynamic_residual_N": 8.680185590552693e-14,
+      "complete_mapped_dynamic_residual_N": 2.289152594671418e-13,
+      "force_pullback_max_difference_N": 1.1102230246251565e-16,
+      "normal_stencils": 28,
+      "maximum_coulomb_violation_N": -0.0007991489637146372,
+      "active_body_contact_nodes": 30,
+      "active_lumped_contact_area_m2": 2.7151718730173006e-08,
+      "maximum_unsmoothed_body_normal_force_per_area_Pa": 71978773.70090574,
+      "raw_global_peak_lower_Pa": 41500712.701953284,
+      "raw_global_peak_upper_Pa": 41500712.70195345,
+      "whole_volume_J_lower_bound": 0.9975554432120117,
+      "raw_peak_reference_position_m": [
+        2.114692078892005e-05,
+        0.022251337693694837,
+        -0.001827384332560059
+      ]
+    },
+    {
+      "step": 5,
+      "time_s": 0.00625,
+      "body_tetrahedra": 31668,
+      "complete_body_dynamic_residual_N": 8.122015167579873e-14,
+      "complete_mapped_dynamic_residual_N": 2.2004655211011155e-13,
+      "force_pullback_max_difference_N": 5.551115123125783e-17,
+      "normal_stencils": 28,
+      "maximum_coulomb_violation_N": -0.0008147139188251357,
+      "active_body_contact_nodes": 30,
+      "active_lumped_contact_area_m2": 2.7151688201077426e-08,
+      "maximum_unsmoothed_body_normal_force_per_area_Pa": 71971972.46620728,
+      "raw_global_peak_lower_Pa": 41519019.98690139,
+      "raw_global_peak_upper_Pa": 41519019.98690155,
+      "whole_volume_J_lower_bound": 0.9975518327257764,
+      "raw_peak_reference_position_m": [
+        2.114692078892005e-05,
+        0.022251337693694837,
+        -0.001827384332560059
+      ]
+    }
+  ],
+  "goal_completion": false,
+  "limitations": "Every original dynamic step is independently reconstructed, including exact previous-state/velocity integration, unsmoothed centered normal/friction stencils, mass/armature and capped jaw PD. Raw global wide-coordinate field bounds remain visible. The original fixed-arm/two-jaw control and saved held initializer remain explicit. Full-arm application matching and physical spatial/contact/geometry convergence are separate incomplete requirements."
+}

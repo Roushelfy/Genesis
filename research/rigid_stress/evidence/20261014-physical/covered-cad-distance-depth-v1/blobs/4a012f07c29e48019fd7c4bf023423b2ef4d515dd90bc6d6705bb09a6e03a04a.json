@@ -1,0 +1,621 @@
+{
+  "scope": "Resolve matched original two-jaw controls on declared CAD or fixed-polyhedron egg geometry.",
+  "geometry": {
+    "mode": "CAD",
+    "level": 1,
+    "local_refinement_iterations": 7,
+    "target_CAD_surface_edge_length_m": 0.0001,
+    "maximum_local_CAD_surface_edge_length_m": 7.098562544543363e-05,
+    "mesh": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-adaptive-cad-polyhedron-geometry-v5/results/cad-level1.npz",
+    "mesh_sha256": "849aec05664bf21ff2ad18bc8beb34f48e01640ee8d5c6d8991fa86d9b51d8c7",
+    "tetrahedra": 31668,
+    "vertices": 7923,
+    "boundary_components": 2,
+    "volume_m3": 3.7120804080153644e-06,
+    "mass_kg": 0.007424160816030729,
+    "com_m": [
+      2.5430335014072275e-08,
+      -3.344480701668483e-07,
+      -0.0019419758907450592
+    ],
+    "inertia_about_com_kg_m2": [
+      [
+        3.216952476649382e-06,
+        -5.237594131903129e-12,
+        -4.051137322855756e-14
+      ],
+      [
+        -5.2375941318873175e-12,
+        3.215341445248264e-06,
+        -3.1708669799575147e-11
+      ],
+      [
+        -4.051137324366227e-14,
+        -3.170866979961453e-11,
+        2.4575027330098093e-06
+      ]
+    ],
+    "relative_volume_and_mass_error_from_continuum": -0.008449896177012861,
+    "outer_area_m2": 0.007607500449769312,
+    "inner_area_m2": 0.007298734579205541,
+    "outer_facet_centroid_radial_deficit_at_same_z_m_percentiles": [
+      6.114339260593349e-09,
+      6.635973263599548e-08,
+      0.000102017595144222,
+      0.00030353450995749404,
+      0.001016397604949993
+    ],
+    "outer_facet_centroid_normal_angle_at_same_z_degrees_percentiles": [
+      0.0004240290687566591,
+      0.03967435260488567,
+      0.5946777343427923,
+      1.6718602010537136,
+      3.392113640720658
+    ],
+    "original_initializer_all_anchors_retained": true,
+    "original_initializer_nearest_P2_node_distances_m": [
+      4.906828973092135e-18,
+      4.906656018863839e-18,
+      4.906656018863839e-18,
+      1.3548602585173248e-19,
+      1.3548602585173248e-19,
+      2.983058249904401e-19
+    ]
+  },
+  "physical_parameters": {
+    "young_Pa": 10000000000.0,
+    "poisson": 0.3,
+    "density_kg_m3": 2000,
+    "mass_kg": 0.007424160816030722,
+    "friction": 0.6,
+    "dhat_m": 1.25e-06
+  },
+  "closure": [
+    {
+      "step": 1,
+      "target_m": [
+        0.039656250000000004,
+        0.039656250000000004
+      ],
+      "complete_held_residual_N": 5.013803140458218e-13
+    },
+    {
+      "step": 2,
+      "target_m": [
+        0.0393125,
+        0.0393125
+      ],
+      "complete_held_residual_N": 1.488413626924236e-13
+    },
+    {
+      "step": 3,
+      "target_m": [
+        0.03896875,
+        0.03896875
+      ],
+      "complete_held_residual_N": 1.4965870947971903e-13
+    },
+    {
+      "step": 4,
+      "target_m": [
+        0.038625,
+        0.038625
+      ],
+      "complete_held_residual_N": 1.4723946618716993e-13
+    },
+    {
+      "step": 5,
+      "target_m": [
+        0.03828125,
+        0.03828125
+      ],
+      "complete_held_residual_N": 1.4576544290711443e-13
+    },
+    {
+      "step": 6,
+      "target_m": [
+        0.0379375,
+        0.0379375
+      ],
+      "complete_held_residual_N": 1.4237248344061963e-13
+    },
+    {
+      "step": 7,
+      "target_m": [
+        0.03759375,
+        0.03759375
+      ],
+      "complete_held_residual_N": 1.4800083359166228e-13
+    },
+    {
+      "step": 8,
+      "target_m": [
+        0.03725,
+        0.03725
+      ],
+      "complete_held_residual_N": 1.4808144107846838e-13
+    },
+    {
+      "step": 9,
+      "target_m": [
+        0.03690625,
+        0.03690625
+      ],
+      "complete_held_residual_N": 1.478296395252724e-13
+    },
+    {
+      "step": 10,
+      "target_m": [
+        0.0365625,
+        0.0365625
+      ],
+      "complete_held_residual_N": 1.4063796335349172e-13
+    },
+    {
+      "step": 11,
+      "target_m": [
+        0.03621875,
+        0.03621875
+      ],
+      "complete_held_residual_N": 1.4580359589974992e-13
+    },
+    {
+      "step": 12,
+      "target_m": [
+        0.035875000000000004,
+        0.035875000000000004
+      ],
+      "complete_held_residual_N": 1.5303237641900309e-13
+    },
+    {
+      "step": 13,
+      "target_m": [
+        0.03553125,
+        0.03553125
+      ],
+      "complete_held_residual_N": 1.409209310692017e-13
+    },
+    {
+      "step": 14,
+      "target_m": [
+        0.0351875,
+        0.0351875
+      ],
+      "complete_held_residual_N": 1.4631943527006832e-13
+    },
+    {
+      "step": 15,
+      "target_m": [
+        0.03484375,
+        0.03484375
+      ],
+      "complete_held_residual_N": 1.4755238712593587e-13
+    },
+    {
+      "step": 16,
+      "target_m": [
+        0.0345,
+        0.0345
+      ],
+      "complete_held_residual_N": 1.4695025431952102e-13
+    },
+    {
+      "step": 17,
+      "target_m": [
+        0.03415625,
+        0.03415625
+      ],
+      "complete_held_residual_N": 1.4582591134540239e-13
+    },
+    {
+      "step": 18,
+      "target_m": [
+        0.0338125,
+        0.0338125
+      ],
+      "complete_held_residual_N": 1.4667634194161422e-13
+    },
+    {
+      "step": 19,
+      "target_m": [
+        0.03346875,
+        0.03346875
+      ],
+      "complete_held_residual_N": 1.48814961532438e-13
+    },
+    {
+      "step": 20,
+      "target_m": [
+        0.033125,
+        0.033125
+      ],
+      "complete_held_residual_N": 1.4965317733573064e-13
+    },
+    {
+      "step": 21,
+      "target_m": [
+        0.03278125,
+        0.03278125
+      ],
+      "complete_held_residual_N": 1.4479971433045637e-13
+    },
+    {
+      "step": 22,
+      "target_m": [
+        0.0324375,
+        0.0324375
+      ],
+      "complete_held_residual_N": 1.489968831214584e-13
+    },
+    {
+      "step": 23,
+      "target_m": [
+        0.032093750000000004,
+        0.032093750000000004
+      ],
+      "complete_held_residual_N": 1.5139713007228073e-13
+    },
+    {
+      "step": 24,
+      "target_m": [
+        0.03175,
+        0.03175
+      ],
+      "complete_held_residual_N": 1.4322588041186e-13
+    },
+    {
+      "step": 25,
+      "target_m": [
+        0.03140625,
+        0.03140625
+      ],
+      "complete_held_residual_N": 1.4511807200020978e-13
+    },
+    {
+      "step": 26,
+      "target_m": [
+        0.0310625,
+        0.0310625
+      ],
+      "complete_held_residual_N": 1.4634626678820132e-13
+    },
+    {
+      "step": 27,
+      "target_m": [
+        0.03071875,
+        0.03071875
+      ],
+      "complete_held_residual_N": 1.4666105497379785e-13
+    },
+    {
+      "step": 28,
+      "target_m": [
+        0.030375,
+        0.030375
+      ],
+      "complete_held_residual_N": 1.4701392861243954e-13
+    },
+    {
+      "step": 29,
+      "target_m": [
+        0.030031250000000002,
+        0.030031250000000002
+      ],
+      "complete_held_residual_N": 1.4894247763054795e-13
+    },
+    {
+      "step": 30,
+      "target_m": [
+        0.0296875,
+        0.0296875
+      ],
+      "complete_held_residual_N": 1.4632101538607663e-13
+    },
+    {
+      "step": 31,
+      "target_m": [
+        0.029343750000000002,
+        0.029343750000000002
+      ],
+      "complete_held_residual_N": 1.4937410820158871e-13
+    },
+    {
+      "step": 32,
+      "target_m": [
+        0.028999999999999998,
+        0.028999999999999998
+      ],
+      "complete_held_residual_N": 1.4796609550689556e-13
+    },
+    {
+      "step": 33,
+      "target_m": [
+        0.02865625,
+        0.02865625
+      ],
+      "complete_held_residual_N": 1.4297548572617747e-13
+    },
+    {
+      "step": 34,
+      "target_m": [
+        0.028312499999999997,
+        0.028312499999999997
+      ],
+      "complete_held_residual_N": 1.4388871062406203e-13
+    },
+    {
+      "step": 35,
+      "target_m": [
+        0.02796875,
+        0.02796875
+      ],
+      "complete_held_residual_N": 1.4769575649003284e-13
+    },
+    {
+      "step": 36,
+      "target_m": [
+        0.027625,
+        0.027625
+      ],
+      "complete_held_residual_N": 1.4827279027296892e-13
+    },
+    {
+      "step": 37,
+      "target_m": [
+        0.02728125,
+        0.02728125
+      ],
+      "complete_held_residual_N": 1.466880323090426e-13
+    },
+    {
+      "step": 38,
+      "target_m": [
+        0.0269375,
+        0.0269375
+      ],
+      "complete_held_residual_N": 1.4593042160892076e-13
+    },
+    {
+      "step": 39,
+      "target_m": [
+        0.02659375,
+        0.02659375
+      ],
+      "complete_held_residual_N": 1.4449953555493952e-13
+    },
+    {
+      "step": 40,
+      "target_m": [
+        0.02625,
+        0.02625
+      ],
+      "complete_held_residual_N": 1.4758774364082856e-13
+    },
+    {
+      "step": 41,
+      "target_m": [
+        0.02590625,
+        0.02590625
+      ],
+      "complete_held_residual_N": 1.4856066913802443e-13
+    },
+    {
+      "step": 42,
+      "target_m": [
+        0.025562500000000002,
+        0.025562500000000002
+      ],
+      "complete_held_residual_N": 1.4544427258827867e-13
+    },
+    {
+      "step": 43,
+      "target_m": [
+        0.025218749999999998,
+        0.025218749999999998
+      ],
+      "complete_held_residual_N": 1.475731198862726e-13
+    },
+    {
+      "step": 44,
+      "target_m": [
+        0.024875,
+        0.024875
+      ],
+      "complete_held_residual_N": 1.4741127564983668e-13
+    },
+    {
+      "step": 45,
+      "target_m": [
+        0.024531249999999998,
+        0.024531249999999998
+      ],
+      "complete_held_residual_N": 1.4775755306663492e-13
+    },
+    {
+      "step": 46,
+      "target_m": [
+        0.0241875,
+        0.0241875
+      ],
+      "complete_held_residual_N": 1.480291773443412e-13
+    },
+    {
+      "step": 47,
+      "target_m": [
+        0.02384375,
+        0.02384375
+      ],
+      "complete_held_residual_N": 1.4683406711194403e-13
+    },
+    {
+      "step": 48,
+      "target_m": [
+        0.0235,
+        0.0235
+      ],
+      "complete_held_residual_N": 1.4751883284029468e-13
+    },
+    {
+      "step": 49,
+      "target_m": [
+        0.02315625,
+        0.02315625
+      ],
+      "complete_held_residual_N": 1.4431404442004447e-13
+    },
+    {
+      "step": 50,
+      "target_m": [
+        0.0228125,
+        0.0228125
+      ],
+      "complete_held_residual_N": 1.4201663526953586e-13
+    },
+    {
+      "step": 51,
+      "target_m": [
+        0.02246875,
+        0.02246875
+      ],
+      "complete_held_residual_N": 1.4780727202109342e-13
+    },
+    {
+      "step": 52,
+      "target_m": [
+        0.022125,
+        0.022125
+      ],
+      "complete_held_residual_N": 1.0325251269955057e-11
+    },
+    {
+      "step": 53,
+      "target_m": [
+        0.02178125,
+        0.02178125
+      ],
+      "complete_held_residual_N": 3.914874072322988e-12
+    },
+    {
+      "step": 54,
+      "target_m": [
+        0.021437499999999998,
+        0.021437499999999998
+      ],
+      "complete_held_residual_N": 3.384280101317778e-11
+    },
+    {
+      "step": 55,
+      "target_m": [
+        0.021093749999999998,
+        0.021093749999999998
+      ],
+      "complete_held_residual_N": 1.0843668657482023e-11
+    },
+    {
+      "step": 56,
+      "target_m": [
+        0.020749999999999998,
+        0.020749999999999998
+      ],
+      "complete_held_residual_N": 1.5038332251546236e-11
+    },
+    {
+      "step": 57,
+      "target_m": [
+        0.020406249999999997,
+        0.020406249999999997
+      ],
+      "complete_held_residual_N": 5.099631010853762e-11
+    },
+    {
+      "step": 58,
+      "target_m": [
+        0.0200625,
+        0.0200625
+      ],
+      "complete_held_residual_N": 1.8001378954383545e-11
+    },
+    {
+      "step": 59,
+      "target_m": [
+        0.01971875,
+        0.01971875
+      ],
+      "complete_held_residual_N": 3.582776221853849e-11
+    },
+    {
+      "step": 60,
+      "target_m": [
+        0.019375,
+        0.019375
+      ],
+      "complete_held_residual_N": 2.6839951578962764e-11
+    },
+    {
+      "step": 61,
+      "target_m": [
+        0.01903125,
+        0.01903125
+      ],
+      "complete_held_residual_N": 4.748909767349326e-11
+    },
+    {
+      "step": 62,
+      "target_m": [
+        0.0186875,
+        0.0186875
+      ],
+      "complete_held_residual_N": 4.201326153446975e-11
+    },
+    {
+      "step": 63,
+      "target_m": [
+        0.01834375,
+        0.01834375
+      ],
+      "complete_held_residual_N": 3.884866337186569e-11
+    },
+    {
+      "step": 64,
+      "target_m": [
+        0.018,
+        0.018
+      ],
+      "complete_held_residual_N": 1.4368979313447028e-11
+    }
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "time_s": 0.00125,
+      "complete_dynamic_residual_N": 1.6261850491070628e-13,
+      "complete_body_dynamic_residual_N": 4.088150810498288e-14
+    },
+    {
+      "step": 2,
+      "time_s": 0.0025,
+      "complete_dynamic_residual_N": 9.212865716445227e-14,
+      "complete_body_dynamic_residual_N": 6.961363826006732e-14
+    },
+    {
+      "step": 3,
+      "time_s": 0.00375,
+      "complete_dynamic_residual_N": 1.954362953218368e-13,
+      "complete_body_dynamic_residual_N": 6.449738195015264e-14
+    },
+    {
+      "step": 4,
+      "time_s": 0.005,
+      "complete_dynamic_residual_N": 2.289225505878993e-13,
+      "complete_body_dynamic_residual_N": 8.6801645826614e-14
+    },
+    {
+      "step": 5,
+      "time_s": 0.00625,
+      "complete_dynamic_residual_N": 2.200452292342905e-13,
+      "complete_body_dynamic_residual_N": 8.121929877402346e-14
+    }
+  ],
+  "goal_completion": false,
+  "limitations": "Original actual finger geoms, physical held points/components, material/density, friction, actuation, timestep and force budgets are preserved. CAD and polyhedral models have their explicitly measured different represented volume/mass. Five states are a short diagnostic, not a complete application/history or converged contact reference. Every saved state still requires independent force/global-field auditing. Geometry, bulk, contact integration and regularization axes, models/feedback and verified accuracy/cost remain open."
+}
