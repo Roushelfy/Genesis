@@ -5,7 +5,18 @@ without narrowing its scope. Historical native performance completion does not
 establish the new physical stage. Dated reports preserve their observations;
 running or pending jobs count as scheduled work only.
 
-Latest verified checkpoint: [fixed-distance and shared near-surface tensors](PHYSICAL_CONTACT_DISTANCE_DEPTH_20261016.md)
+Latest verified checkpoint: [separated-axis setup and all64-control qualification](PHYSICAL_SEPARATED_AXES_SETUP_20261016.md)
+retains original boundaries, actual IPC traces and physical anchors across2/4/8
+radial layers. Recording-only qualification keeps all original1920-tet dynamic
+arrays/full corner/quadrature fields and final initializer bytes identical;
+independent static audits cover all64 controls at unchanged original gates,
+with both actual failed audit attempts retained. Continuous-traction load-only
+integration reproduces all five originals exactly. New radial histories and
+fixed554574-tet quadrature stress solves/audits remain scheduled work; launch
+failures add zero physical states. Every original physical/model/island/full
+application/feedback/verified-cost requirement remains active.
+
+Previous checkpoint: [fixed-distance and shared near-surface tensors](PHYSICAL_CONTACT_DISTANCE_DEPTH_20261016.md)
 closes all15 fixed31668-tet dynamic force/source/full-field comparisons and
 qualifies576 fixed1–50um material probes on every spatial mesh and distance.
 The last distance volume tensor change is0.571557%, while last matched local

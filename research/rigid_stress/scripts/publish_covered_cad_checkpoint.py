@@ -1,4 +1,4 @@
-"""Archive closed three-level CAD fields or complete source/localization diagnostics without accepting physical convergence."""
+"""Archive closed physical-reference fields, qualifications and diagnostics without accepting physical convergence."""
 
 import argparse
 import json
@@ -21,7 +21,16 @@ def main():
     plan = json.loads(args.plan.read_text())
     assert (
         plan["kind"]
-        in ["fields", "sources", "native_followup", "fixed_distance", "bulk_inputs", "bulk_fields", "bulk_audit"]
+        in [
+            "fields",
+            "sources",
+            "native_followup",
+            "fixed_distance",
+            "bulk_inputs",
+            "bulk_fields",
+            "bulk_audit",
+            "axis_setup",
+        ]
         and plan["goal_completion"] is False
     )
     p = args.runtime_root / "20261014-physical-validation"
@@ -303,6 +312,70 @@ def main():
             "complete_large_arrays_retained": True,
             "independent_audit_requires_separate_closed_packet": True,
             "physical_tail_accepted": False,
+        }
+    elif plan["kind"] == "axis_setup":
+        geometry = summaries["egg-covered-fixed-trace-thickness-geometry-v1"]
+        trace = summaries["egg-covered-fixed-thickness-actual-trace-v1"]
+        assert [row["through_thickness_layers"] for row in geometry["rows"]] == [2, 4, 8]
+        assert [row["tetrahedra"] for row in geometry["rows"]] == [31668, 63336, 126672]
+        assert geometry["new_equilibrium_states_solved"] == trace["new_equilibrium_states_solved"] == 0
+        assert all(
+            row["all_original_vertices_byte_preserved"]
+            and row["both_original_boundary_triangle_sets_identical"]
+            and row["canonical_boundary_P2_coordinates_byte_identical"]
+            and row["original_initializer_all_anchors_retained"]
+            for row in geometry["rows"]
+        )
+        assert len(trace["rows"]) == 3 and all(
+            row["surface_vertices"] == 21294
+            and row["surface_triangles"] == 42532
+            and row["triangle_topology_identical_under_bijective_vertex_map"]
+            and row["all_vertex_lumped_areas_checked"]
+            and row["IPC_zero_and_affine_source_displacements_checked"]
+            and not row["IPC_initial_intersections"]
+            for row in trace["rows"]
+        )
+        equivalence = summaries["egg-cad1920-record-initializer-fields-v1"]
+        assert equivalence["all_original_arrays_and_complete_fields_qualified"]
+        assert equivalence["states_checked"] == len(equivalence["rows"]) == 5
+        assert equivalence["initializer_comparison"]["byte_identical"]
+        assert not equivalence["initializer_comparison"]["independently_resolved_initializer_allowed"]
+        assert all(
+            row["all_corner_tensor_relative_change"]
+            == row["all_quadrature_tensor_relative_change"]
+            == row["raw_global_peak_relative_change"]
+            == 0
+            and all(
+                change["maximum_absolute_difference"] == change["relative_L2_difference"] == 0
+                for change in row["all_saved_array_changes"].values()
+            )
+            for row in equivalence["rows"]
+        )
+        history = summaries["egg-cad1920-record-initializer-all64-audit-v3"]
+        assert history["all_original64_initializer_states_checked"]
+        assert history["states_checked"] == len(history["rows"]) == 64
+        assert all(row["independent_complete_held_residual_N"] <= 1e-9 for row in history["rows"])
+        for version in [1, 2]:
+            assert plan["closed_jobs"][f"egg-cad1920-record-initializer-all64-audit-v{version}"]["returncode"] == 1
+        assert (
+            len(
+                list((p / "egg-cad1920-record-initializer-all64-audit-v3/results").glob("step[0-9][0-9][0-9][0-9].npz"))
+            )
+            == 64
+        )
+        loads = summaries["egg-continuous-traction-load-axis-v1"]
+        assert loads["new_equilibrium_states_solved"] == 0 and len(loads["fixed_mesh_rows"]) == 15
+        assert len(loads["quadrature_load_changes"]) == 10
+        original = loads["original_five_case_continuous_law_and_full_nodal_loads_qualified"]
+        assert len(original) == 5 and all(row["full_original_nodal_load_maximum_error_N"] == 0 for row in original)
+        scientific_checks = {
+            "fixed_boundary_thickness_meshes_and_actual_IPC_traces": 3,
+            "recording_extension_original_dynamic_states_byte_preserved": 5,
+            "original_initializer_states_independently_reconstructed": 64,
+            "both_original_audit_failures_and_partial_arrays_preserved": True,
+            "fixed_mesh_continuous_traction_integrations": 15,
+            "new_fine_thickness_or_quadrature_stress_fields_accepted": 0,
+            "physical_convergence_accepted": False,
         }
     else:
         audit = summaries["egg-frozen-traction-local-bulk-quadrature-audit-v2"]

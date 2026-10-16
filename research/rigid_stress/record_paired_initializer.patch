@@ -1,0 +1,42 @@
+--- a/research/rigid_stress/run_paired_egg_contact.py
++++ b/research/rigid_stress/run_paired_egg_contact.py
+@@ -99,9 +99,21 @@
+     u = np.zeros(static.stiffness.shape[0])
+     held_map, held = static.coordinate_map(True)
+     gravity = static.gravity_force([0, 0, -9.81])
++    # Recording only: retain the actual held map and friction predecessor for
++    # independent reconstruction of every original initializer equation.
++    sparse.save_npz(args.output / "held_coordinate_map.npz", held_map)
++    np.savez_compressed(
++        args.output / "held_initializer_inputs.npz",
++        held_dofs=held,
++        applied_force_N=gravity,
++        body_component_permutation=static.parts[0].permutation,
++    )
++    initializer_output = args.output / "initializer_states"
++    initializer_output.mkdir()
+     closure_rows = []
+     for step in range(1, args.control_steps + 1):
+         static.q_target[:] = 0.04 + (0.018 - 0.04) * step / args.control_steps
++        recorded_previous = u.copy()
+         u, gradient, _force, _energy, _iterations = static.solve_updated_friction(
+             held,
+             np.zeros(len(held)),
+@@ -116,6 +128,17 @@
+         )
+         residual = float(np.linalg.norm(held_map.T @ gradient))
+         assert residual <= 1e-9
++        np.savez_compressed(
++            initializer_output / f"step{step:04d}.npz",
++            displacement=u,
++            previous_displacement=recorded_previous,
++            complete_gradient_N=gradient,
++            contact_force_N=_force,
++            applied_force_N=gravity,
++            q_target_m=static.q_target.copy(),
++            held_dofs=held,
++            body_component_permutation=static.parts[0].permutation,
++        )
+         closure_rows.append({"step": step, "target_m": static.q_target.tolist(), "complete_held_residual_N": residual})
+         print(json.dumps(closure_rows[-1]), flush=True)
+     np.savez_compressed(
