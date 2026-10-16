@@ -1,4 +1,4 @@
-"""Locate every last-three-level raw peak and measure compatibility of its prescribed incident boundary tractions."""
+"""Locate audited raw peaks and inspect boundary compatibility and unsmoothed incident-cell stress jumps."""
 
 import argparse
 import hashlib
@@ -31,6 +31,7 @@ def symmetric_traction_matrix(normals):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--runtime-root", type=Path, required=True)
+    parser.add_argument("--family", choices=["latest_cad", "fixed_polyhedron"], default="latest_cad")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     p = args.runtime_root
@@ -53,13 +54,25 @@ def main():
         rtol=1e-14,
         atol=1e-14,
     )
-    for geometry in ["ellipsoid", "capsule", "thin_neck", "u", "narrow_gap", "cavity"]:
-        qualification = p / f"extended-finite-{geometry}-original-qualification-v1"
+    geometries = ["ellipsoid", "capsule"]
+    if args.family == "latest_cad":
+        geometries += ["thin_neck", "u", "narrow_gap", "cavity"]
+    for geometry in geometries:
+        prefix = "extended-finite" if args.family == "latest_cad" else "fixed-polyhedron"
+        qualification = p / f"{prefix}-{geometry}-original-qualification-v1"
         closed_source(qualification)
+        assert int((qualification / "returncode.txt").read_text()) == 0
+        auditor = p / f"{prefix}-{geometry}-three-level-audit-v1"
+        closed_source(auditor)
+        assert int((auditor / "returncode.txt").read_text()) == 0
+        audit_path = auditor / "results/summary.json"
+        retain(audit_path)
+        audit = json.loads(audit_path.read_text())
+        assert audit["all_original_and_new_fields_freshly_audited"] and len(audit["rows"]) == 15
         config_path = qualification / "results/configuration.json"
         retain(config_path)
         config = json.loads(config_path.read_text())
-        runs = [Path(config["baseline_run"]), *(p / f"extended-finite-{geometry}-level{i}-v1" for i in [1, 2])]
+        runs = [Path(config["baseline_run"]), *(p / f"{prefix}-{geometry}-level{i}-v1" for i in [1, 2])]
         meshes = [Path(config["baseline_mesh"])]
         for run in runs[1:]:
             config_path = run / "results/configuration.json"
@@ -67,9 +80,25 @@ def main():
             meshes.append(Path(json.loads(config_path.read_text())["mesh"]))
         for level, (run, mesh_path) in enumerate(zip(runs, meshes, strict=True)):
             closed_source(run)
+            assert int((run / "returncode.txt").read_text()) == 0
             mesh_hash = retain(mesh_path)
             with np.load(mesh_path) as saved:
-                mesh = MeshTet(saved["vertices"].T, saved["tetrahedra"].T)
+                mesh = MeshTet(saved["vertices"].T, saved["tetrahedra"].T, sort_t=False)
+            cells = mesh.t.T
+            coordinates = mesh.p.T[cells]
+            volume = abs(np.linalg.det(coordinates[:, 1:] - coordinates[:, :1])) / 6
+            edge_squared = np.stack(
+                [np.sum((coordinates[:, j] - coordinates[:, i]) ** 2, axis=1) for i in range(4) for j in range(i)],
+                axis=1,
+            )
+            quality = 12 * (3 * volume) ** (2 / 3) / edge_squared.sum(axis=1)
+            assert np.all(volume > 0) and np.all(np.isfinite(quality))
+            np.savez_compressed(
+                args.output / f"{geometry}-level{level}-cell-quality.npz",
+                mean_ratio_quality=quality,
+                volume_m3=volume,
+                diameter_m=np.sqrt(edge_squared.max(axis=1)),
+            )
             boundary = mesh.boundary_facets()
             faces = mesh.facets[:, boundary].T
             triangles = mesh.p.T[faces]
@@ -90,10 +119,27 @@ def main():
                 retain(path)
                 snapshot = json.loads(path.read_text())
                 assert snapshot["mesh_sha256"] == mesh_hash and snapshot["patch_radius_m"] == 0.003
+                audited = next(row for row in audit["rows"] if row["level"] == level and row["case"] == case)
+                assert audited["mesh_sha256"] == mesh_hash and audited["original_budget_fraction"] <= 1
                 point = np.array(snapshot["reference_peak_position_m"])
+                np.testing.assert_array_equal(point, audited["raw_global_peak_position_m"])
+                np.testing.assert_allclose(snapshot["reference_peak_Pa"], audited["raw_global_peak_Pa"], rtol=0, atol=0)
+                field_path = run / f"results/{case}/reference_field.npz"
+                retain(field_path)
+                with np.load(field_path) as saved:
+                    vm = saved["vm_Pa"]
+                    tensor = saved["tensor_Pa"]
+                cell, corner = np.unravel_index(vm.argmax(), vm.shape)
+                np.testing.assert_array_equal(mesh.p.T[cells[cell, corner]], point)
+                np.testing.assert_allclose(vm[cell, corner], snapshot["reference_peak_Pa"], rtol=0, atol=0)
                 distances = np.linalg.norm(mesh.p.T - point, axis=1)
                 vertex = np.argmin(distances)
                 assert distances[vertex] < 1e-13
+                incident_cells, incident_corners = np.nonzero(cells == vertex)
+                incident_tensors = tensor[incident_cells, incident_corners]
+                incident_vm = vm[incident_cells, incident_corners]
+                peak_tensor = tensor[cell, corner]
+                tensor_jumps = np.linalg.norm(incident_tensors - peak_tensor, axis=(1, 2))
                 incident = np.flatnonzero((faces == vertex).any(axis=1))
                 _, distance_squared = triangle_closest_points(triangles, point)
                 nearest_boundary = float(np.sqrt(distance_squared.min()))
@@ -124,9 +170,12 @@ def main():
                     traction += amplitude * mask[:, None] * values
                     normal_control -= amplitude * mask[:, None] * normals[incident]
                 record = {
+                    "family": args.family,
                     "geometry": geometry,
                     "case": case,
                     "level": level,
+                    "run": str(run),
+                    "mesh_sha256": mesh_hash,
                     "tetrahedra": mesh.nelements,
                     "raw_global_peak_Pa": snapshot["reference_peak_Pa"],
                     "raw_global_peak_position_m": point.tolist(),
@@ -134,6 +183,19 @@ def main():
                     "peak_vertex": int(vertex),
                     "incident_boundary_faces": len(incident),
                     "is_boundary_peak": bool(len(incident)),
+                    "peak_cell": int(cell),
+                    "peak_corner": int(corner),
+                    "peak_cell_mean_ratio_quality": float(quality[cell]),
+                    "peak_cell_diameter_m": float(np.sqrt(edge_squared[cell].max())),
+                    "global_minimum_mean_ratio_quality": float(quality.min()),
+                    "fraction_cells_with_quality_at_most_peak_cell": float(np.mean(quality <= quality[cell])),
+                    "incident_cells": len(incident_cells),
+                    "incident_same_vertex_vm_minimum_Pa": float(incident_vm.min()),
+                    "incident_same_vertex_vm_maximum_Pa": float(incident_vm.max()),
+                    "incident_same_vertex_maximum_tensor_jump_Pa": float(tensor_jumps.max()),
+                    "incident_same_vertex_maximum_tensor_jump_relative_to_peak_tensor": float(
+                        tensor_jumps.max() / np.linalg.norm(peak_tensor)
+                    ),
                 }
                 arrays = {
                     "peak_m": point,
@@ -143,6 +205,12 @@ def main():
                     "normal_only_control_Pa": normal_control,
                     "selected_source_masks": np.array(selected_masks),
                     "source_amplitudes_Pa": np.array(amplitudes),
+                    "incident_cell_indices": incident_cells,
+                    "incident_cell_corner_indices": incident_corners,
+                    "incident_same_vertex_tensor_Pa": incident_tensors,
+                    "incident_same_vertex_vm_Pa": incident_vm,
+                    "incident_same_vertex_tensor_jump_Pa": tensor_jumps,
+                    "incident_cell_mean_ratio_quality": quality[incident_cells],
                 }
                 if len(incident):
                     matrix = symmetric_traction_matrix(normals[incident]).reshape(-1, 6)
@@ -173,16 +241,18 @@ def main():
                 np.savez_compressed(args.output / f"{geometry}-level{level}-{case}.npz", **arrays)
                 rows.append(record)
                 print(json.dumps(record), flush=True)
-    assert len(rows) == 90
+    assert len(rows) == len(geometries) * len(CASES) * 3
+    assert all(hashlib.sha256(Path(name).read_bytes()).hexdigest() == expected for name, expected in inputs.items())
     summary = {
         "scope": __doc__,
+        "family": args.family,
         "rows": rows,
         "input_sha256": inputs,
         "new_equilibrium_states_solved": 0,
         "manufactured_symmetric_stress_control_passed": True,
         "all_normal_only_trace_controls_passed": True,
         "goal_completion": False,
-        "limitations": "Diagnoses the exact recorded raw peaks and original boundary law on the latest three meshes. A single symmetric stress tensor requires n_i dot t_j = n_j dot t_i. Measured incompatibility concerns continuity of one stress tensor at that boundary vertex. It does not prove a stress singularity or continuum peak growth, and zero local defect does not exclude other singularities. Normal-only traces are algebraic controls only, not replacement physical loads. Original full fields, raw maxima, radii, loads and numerical budgets remain unchanged.",
+        "limitations": "Diagnoses the exact separately audited raw peaks and original boundary law on three meshes. The fixed-polyhedron family freezes CAD geometry, while volume/surface basis and boundary quadrature still refine together. A single symmetric stress tensor requires n_i dot t_j = n_j dot t_i. Measured incompatibility concerns continuity of one stress tensor at that boundary vertex. It does not prove a stress singularity or continuum peak growth, and zero local defect does not exclude other singularities. Same-vertex unsmoothed cell jumps and mean-ratio quality are diagnostics, not continuum errors or a causal explanation. Normal-only traces are algebraic controls only, not replacement physical loads. Original full fields, raw maxima, radii, loads and numerical budgets remain unchanged.",
     }
     (args.output / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
 

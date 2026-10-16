@@ -38,6 +38,12 @@ def main():
             "native_finite_fields",
             "fixed_polyhedron_setup",
             "matrix_figures",
+            "fixed_polyhedron_fields",
+            "fixed_polyhedron_peak_cells",
+            "native_matched_axis_fields",
+            "native_matched_axes_summary",
+            "local_finite_setup",
+            "u_shared_anchor_diagnosis",
         ]
         and plan["goal_completion"] is False
     )
@@ -448,6 +454,194 @@ def main():
             "all_original_nodal_loads_exactly_reproduced": True,
             "new_fine_equilibrium_states_accepted_in_this_archive": 0,
             "physical_convergence_accepted": False,
+        }
+    elif plan["kind"] == "local_finite_setup":
+        for shape in ["ellipsoid", "capsule"]:
+            generator = summaries[f"fixed-polyhedron-{shape}-local-hotspot-meshes-v1"]
+            qualifier = summaries[f"fixed-polyhedron-{shape}-local-original-qualification-v1"]
+            assert generator["new_equilibrium_states_solved"] == qualifier["new_equilibrium_states_solved"] == 0
+            assert len(generator["rows"]) == 3 and len(qualifier["rows"]) == 5
+            assert qualifier["all_original_five_loads_full_fields_and_probes_qualified"]
+            assert all(
+                row["original_full_nodal_force_maximum_difference_N"] == 0
+                and row["original_budget_fraction"] <= 1
+                and row["all_original_probe_coordinates_and_validity_retained"]
+                and row["all_quadrature_tensor_components_checked"] == 99 * qualifier["tetrahedra"]
+                for row in qualifier["rows"]
+            )
+            for level, row in enumerate(generator["rows"]):
+                assert row["unchanged_physical_load_radius_m"] == 0.003
+                assert row["passes_per_level"] == 2 and "no CAD projection" in row["geometry_mode"]
+                assert (
+                    digest(p / f"fixed-polyhedron-{shape}-local-hotspot-meshes-v1/results/level{level}.npz")[0]
+                    == row["mesh_sha256"]
+                )
+                assert all(
+                    item["all_child_tetrahedra_contained_in_declared_parent"]
+                    and item["each_parent_volume_preserved"]
+                    and item["maximum_parent_volume_relative_difference"] <= 1e-10
+                    for item in row["parent_partition_records"]
+                )
+            assert any(parent["label"] == f"fixed-polyhedron-{shape}-fields-v1" for parent in parents)
+        scientific_checks = {
+            "full_local_meshes_with_original_domain_and_parent_partitions": 6,
+            "original_million_cell_fields_freshly_requalified": 10,
+            "original_nodal_loads_exact_and_full_force_corner_quadrature_probe_budgets_retained": True,
+            "new_finer_equilibria_accepted_in_this_archive": 0,
+            "physical_convergence_accepted": False,
+        }
+    elif plan["kind"] == "u_shared_anchor_diagnosis":
+        old = summaries["u-shared-four-comparator-three-level-qualification-v1"]
+        assert len(old["rows"]) == 3 and old["common_material_points"] == 75
+        proof_path = p / "meta/u-shared-four-comparator-original-three-exact-records-v1.json"
+        retain(proof_path)
+        proof = json.loads(proof_path.read_text())
+        assert (
+            proof["all_original_three_level_rows_exactly_equal"]
+            and proof["all_original_adjacent_changes_exactly_equal"]
+        )
+        assert proof["original_common_material_points_unchanged"]
+        transfer = summaries["u-shared-initialization-fourth-anchor-transfer-qualification-v2"]
+        assert len(transfer["rows"]) == 6 and transfer["new_equilibrium_states_solved"] == 0
+        assert not transfer["all_original_anchors_are_existing_P2_nodes_at_original_1e_minus12_m_check"]
+        for name in [
+            "u-shared-initialization-fourth-v1",
+            "u-shared-initialization-fourth-anchor-transfer-qualification-v1",
+        ]:
+            assert plan["closed_jobs"][name]["returncode"] == 1
+        assert not (p / "u-shared-initialization-fourth-v1/accepted-contact-history/manifest.json").exists()
+        generator = summaries["u-shared-initialization-anchor-conforming-mesh-v1"]
+        assert generator["new_equilibrium_states_solved"] == 0 and len(generator["rows"]) == 1
+        row = generator["rows"][0]
+        assert row["tetrahedra"] == 16329 and row["same_U_CAD_constructor"]
+        assert row["CAD_volume_before_m3"] == row["CAD_volume_after_m3"]
+        assert max(row["original_anchor_used_mesh_vertex_distances_m"]) <= 1e-12
+        assert digest(p / "u-shared-initialization-anchor-conforming-mesh-v1/results/mesh.npz")[0] == row["mesh_sha256"]
+        scientific_checks = {
+            "original_three_level_rows_adjacent_changes_and75_probes_exactly_reproduced": True,
+            "original_six_anchor_coordinates_and_components_preserved": True,
+            "original_node_check_failure_and_isolation_import_failure_retained": True,
+            "same_U_CAD_volume_COM_and_original_anchor_vertices_qualified": True,
+            "new_contact_equilibria_or_fourth_level_stages_accepted": 0,
+            "physical_convergence_accepted": False,
+        }
+    elif plan["kind"] == "fixed_polyhedron_fields":
+        shape = plan["geometry"]
+        audit = summaries[f"fixed-polyhedron-{shape}-three-level-audit-v1"]
+        assert audit["geometry"] == shape and audit["all_original_and_new_fields_freshly_audited"]
+        expected_counts = [14916, 119328, 954624] if shape == "ellipsoid" else [15979, 127832, 1022656]
+        assert audit["tetrahedra"] == expected_counts
+        assert len(audit["rows"]) == 15 and len(audit["adjacent_changes"]) == 10
+        assert all(
+            row["full_nodal_load_reintegration_maximum_error_N"] == 0
+            and row["original_budget_fraction"] <= 1
+            and row["all_quadrature_tensor_components_checked"] == 99 * row["tetrahedra"]
+            for row in audit["rows"]
+        )
+        for level in [1, 2]:
+            producer = summaries[f"fixed-polyhedron-{shape}-level{level}-v1"]
+            assert producer["new_equilibrium_states_solved"] == 5 and len(producer["rows"]) == 5
+            assert producer["tetrahedra"] == expected_counts[level]
+        assert any(parent["label"] == "fixed-polyhedron-convex-setup-v1" for parent in parents)
+        for level in range(3):
+            path = p / f"fixed-polyhedron-{shape}-three-meshes-v1/meshes/level{level}.json"
+            retain(path)
+            metadata = json.loads(path.read_text())
+            assert "no CAD projection" in metadata["geometry_mode"]
+            assert metadata["tetrahedra"] == expected_counts[level]
+            assert digest(path.with_suffix(".npz"))[0] == metadata["mesh_sha256"]
+        scientific_checks = {
+            "geometry": shape,
+            "new_finer_equilibria": 10,
+            "original_and_new_fields_freshly_audited": 15,
+            "exact_original_nodal_reintegration_and_unchanged_complete_budgets": True,
+            "explicit_quadrature_tensor_components_checked": sum(
+                row["all_quadrature_tensor_components_checked"] for row in audit["rows"]
+            ),
+            "fixed_seed_polyhedral_domain_volume_area_and_COM_qualified_in_parent": True,
+            "volume_surface_basis_and_boundary_quadrature_still_coupled": True,
+            "physical_convergence_accepted": False,
+        }
+    elif plan["kind"] == "fixed_polyhedron_peak_cells":
+        diagnosis = summaries["fixed-polyhedron-raw-peak-cell-diagnosis-v1"]
+        assert diagnosis["family"] == "fixed_polyhedron" and len(diagnosis["rows"]) == 30
+        assert diagnosis["manufactured_symmetric_stress_control_passed"]
+        assert diagnosis["all_normal_only_trace_controls_passed"]
+        for shape in ["ellipsoid", "capsule"]:
+            assert any(parent["label"] == f"fixed-polyhedron-{shape}-fields-v1" for parent in parents)
+            path = p / f"fixed-polyhedron-{shape}-three-level-audit-v1/results/summary.json"
+            retain(path)
+            audit = json.loads(path.read_text())
+            for row in [item for item in diagnosis["rows"] if item["geometry"] == shape]:
+                original = next(
+                    item for item in audit["rows"] if item["case"] == row["case"] and item["level"] == row["level"]
+                )
+                assert row["raw_global_peak_Pa"] == original["raw_global_peak_Pa"]
+                assert row["raw_global_peak_position_m"] == original["raw_global_peak_position_m"]
+                assert row["incident_cells"] > 0 and 0 < row["peak_cell_mean_ratio_quality"] <= 1 + 1e-12
+        scientific_checks = {
+            "all_original_raw_maxima_and_locations_preserved": 30,
+            "every_cell_quality_and_unsmoothed_same_vertex_incident_tensor_retained": True,
+            "original_boundary_traction_compatibility_and_manufactured_controls_retained": True,
+            "new_equilibria_solved": 0,
+            "physical_convergence_causal_explanation_or_singularity_accepted": False,
+        }
+    elif plan["kind"] == "native_matched_axis_fields":
+        shape = plan["geometry"]
+        configurations = [(f"extended-native-{shape}-level0", 8, 10, "v2")]
+        configurations += [
+            (f"native-{shape}-fixed-original-p{ports}-q{quadrature}", ports, quadrature, "v1")
+            for ports, quadrature in [(4, 10), (16, 10), (8, 14)]
+        ]
+        checked_components = 0
+        for prefix, ports, quadrature, version in configurations:
+            producer = summaries[f"{prefix}-models-{version}"]
+            audit = summaries[f"{prefix}-independent-audit-{version}"]
+            assert audit["accepted_fields_freshly_audited"] == 19
+            assert audit["unsupported_or_rejected_inputs_retained"] == 1 and len(audit["rows"]) == 20
+            assert len(producer["cases"]) == 5
+            for case in producer["cases"]:
+                assert case["patch_radius_m"] == 0.003 and len(case["models"]) == 4
+                assert all(row["ports"] == ports and row["native_quadrature"] == quadrature for row in case["models"])
+            accepted = [row for row in audit["rows"] if row["accepted"]]
+            assert all(
+                row["original_budget_fraction"] <= 1
+                and row["all_original_corner_and_independent_quadrature_gates_passed"]
+                and row["all_quadrature_tensor_components_checked"] == 99 * audit["tetrahedra"]
+                for row in accepted
+            )
+            checked_components += sum(row["all_quadrature_tensor_components_checked"] for row in accepted)
+        assert any(parent["label"] == "native-intrinsic-capacity-v1" for parent in parents)
+        scientific_checks = {
+            "geometry": shape,
+            "accepted_native_fields_freshly_audited": 76,
+            "unsupported_original_pressure_rows_retained": 4,
+            "all_five_loads_four_models_and_ports4_8_16_quadrature10_14_retained": True,
+            "explicit_quadrature_tensor_components_checked": checked_components,
+            "original_force_scatter_corners_energy_source_gates_retained": True,
+            "physical_convergence_or_warmed_cost_accepted": False,
+        }
+    elif plan["kind"] == "native_matched_axes_summary":
+        study = summaries["native-convex-matched-numerical-axes-comparison-v1"]
+        assert study["manufactured_exact_volume_norm_control_passed"]
+        assert study["independently_audited_native_fields"] == 228 and study["unsupported_inputs_retained"] == 12
+        assert len(study["qualified_native_runs"]) == 12
+        for key in ["same_mesh_numerical_axis_comparisons", "three_spatial_level_model_bias_rows"]:
+            assert len(study[key]) == 120 and sum(row["accepted"] for row in study[key]) == 114
+        for row in study["same_mesh_numerical_axis_comparisons"]:
+            assert len(row["identical_frozen_inputs_sha256"]) == 64
+        for shape in ["ellipsoid", "capsule"]:
+            assert any(parent["label"] == f"native-{shape}-matched-axes-fields-v1" for parent in parents)
+            for level in [1, 2]:
+                assert any(parent["label"] == f"extended-native-{shape}-level{level}-fields-v1" for parent in parents)
+        scientific_checks = {
+            "independently_audited_actual_native_fields": 228,
+            "original_unsupported_rows_retained": 12,
+            "same_mesh_numeric_control_rows": 120,
+            "same_mesh_model_bias_rows_across_three_spatial_levels": 120,
+            "exact_volume_symmetric_tensor_norm_and_constant_four_point_controls_passed": True,
+            "original_frozen_input_bytes_identical_for_each_numerical_control": True,
+            "physical_convergence_or_warmed_accuracy_cost_accepted": False,
         }
     elif plan["kind"] == "native_finite_fields":
         shape, level = plan["geometry"], plan["level"]

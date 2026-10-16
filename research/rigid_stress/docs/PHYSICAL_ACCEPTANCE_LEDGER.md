@@ -26,6 +26,11 @@ The new summary is a change of priorities, not a claim that the remaining
 application comparisons or performance measurements have already completed.
 Live jobs still count only as scheduled work.
 
+The active execution checklist is [PRACTICAL_VALIDATION_STATUS.md](PRACTICAL_VALIDATION_STATUS.md).
+The new local convex and shared-U fourth-level jobs below were cancelled after
+the priority change, retaining partial outputs and all original inputs.
+Their earlier live/scheduled descriptions are historical execution states.
+
 ## Historical physical-validation status and evidence
 
 Current status, 2026-10-16: the full physical-validation goal remains open.
