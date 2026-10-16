@@ -20,6 +20,19 @@ The previous completion records do not establish this stage's acceptance.
 
 ### Immediate evidence gates
 
+The [contact-distance/depth checkpoint](docs/PHYSICAL_CONTACT_DISTANCE_DEPTH_20261016.md)
+closes all15 fixed31668-tet dynamic force/source/field states and the same576
+qualified near-surface probes across all three meshes and all distances.
+Last fixed-distance volume tensor change is0.571557%, but matched local spatial
+changes remain44.59–84.35%; neither is a physical convergence pass. All158340
+original probes/raw extrema remain. The complete933-entry publication retains
+915 actual originals and inspected vector/1000dpi exports. Full64-initializer
+field audits remain open. Fixed-traction inputs, all15 bulk fields and explicit
+778680045-component quadrature audit are now fully published in the linked
+fixed-traction reports; the fourth bulk field/audit remain live. Two-layer
+radial resolution motivates a separate fixed-boundary volume axis, without
+changing any original A/B/C/model/island/application/feedback/cost requirement.
+
 The next result must resolve the measured spatial/contact discrepancy rather
 than add another same-matrix agreement check. Complete at least three useful
 body/contact levels with fixed physical inputs, separated volume/contact axes,

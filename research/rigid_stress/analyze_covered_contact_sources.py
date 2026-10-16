@@ -27,6 +27,15 @@ def main():
     args.output.mkdir(parents=True, exist_ok=False)
     inputs = {str(summary_path): hashlib.sha256(summary_path.read_bytes()).hexdigest()}
     producers = list(dict.fromkeys(row["run"] for row in summary["rows"]))
+    distance_by_run = {}
+    for run in producers:
+        closed_source(Path(run))
+        configuration = Path(run) / "results/configuration.json"
+        inputs[str(configuration)] = hashlib.sha256(configuration.read_bytes()).hexdigest()
+        config = json.loads(configuration.read_text())
+        closure_path = Path(config["closure_run"]) / "results/configuration.json"
+        inputs[str(closure_path)] = hashlib.sha256(closure_path.read_bytes()).hexdigest()
+        distance_by_run[run] = json.loads(closure_path.read_text())["dhat"]
     rows, comparisons = [], []
     previous_by_step = {}
     for i_case, run in enumerate(producers):
@@ -133,6 +142,7 @@ def main():
                 "step": original["step"],
                 "time_s": original["time_s"],
                 "body_tetrahedra": original["body_tetrahedra"],
+                "declared_barrier_distance_m": distance_by_run[run],
                 "sources": source_rows,
             }
             rows.append(row)
@@ -188,6 +198,10 @@ def main():
                         "step": original["step"],
                         "coarse_tetrahedra": old["body_tetrahedra"],
                         "fine_tetrahedra": original["body_tetrahedra"],
+                        "first_run": old["run"],
+                        "second_run": original["run"],
+                        "first_barrier_distance_m": distance_by_run[old["run"]],
+                        "second_barrier_distance_m": distance_by_run[original["run"]],
                         "sources": changes,
                     }
                 )

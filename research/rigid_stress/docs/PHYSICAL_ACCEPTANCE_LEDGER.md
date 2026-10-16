@@ -5,7 +5,21 @@ without narrowing its scope. Historical native performance completion does not
 establish the new physical stage. Dated reports preserve their observations;
 running or pending jobs count as scheduled work only.
 
-Latest verified checkpoint: [finest native replay and fixed-traction bulk extension](PHYSICAL_FINE_REPLAY_BULK_FOLLOWUP_20261016.md)
+Latest verified checkpoint: [fixed-distance and shared near-surface tensors](PHYSICAL_CONTACT_DISTANCE_DEPTH_20261016.md)
+closes all15 fixed31668-tet dynamic force/source/full-field comparisons and
+qualifies576 fixed1–50um material probes on every spatial mesh and distance.
+The last distance volume tensor change is0.571557%, while last matched local
+spatial changes remain44.59–84.35%. Original158340 probes and raw extrema stay;
+these diagnostic norms cannot be subtracted as an error budget. Full initializer
+fields are still missing at the64 held controls. All933 publication entries
+verify against915 actual runtime originals, including nine reconstructed large
+files and inspected editable/vector/1000dpi figures. The fixed-traction inputs,
+all15 bulk fields and explicit full quadrature audit are now separately
+published in the fixed-traction reports. A separate fixed-boundary thickness
+axis addresses the existing two radial layers. Every original A/B/C physical/
+model/island/application/feedback and verified-cost requirement remains active.
+
+Previous checkpoint: [finest native replay and fixed-traction bulk extension](PHYSICAL_FINE_REPLAY_BULK_FOLLOWUP_20261016.md)
 closes both actual171228-tet native modes at original numerical gates, making
 six covered native replays. Conditional model agreement leaves the10.72%
 physical spatial/contact discrepancy unresolved. A separate complete15-field
