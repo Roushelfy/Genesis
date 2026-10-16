@@ -1,0 +1,73 @@
+{
+  "kind": "peak_boundary",
+  "label": "extended-finite-peak-boundary-v1",
+  "goal_completion": false,
+  "closed_jobs": {
+    "extended-finite-raw-peak-boundary-diagnosis-v1": {
+      "job": "719976_0",
+      "returncode": 0
+    }
+  },
+  "parent_manifests": [
+    {
+      "label": "extended-finite-ellipsoid-fields-v1",
+      "sha256": "aeb012371abac7bf30b28ff11b0e782563fd25c5e7219bcd3ae0242fe652a506"
+    },
+    {
+      "label": "extended-finite-capsule-fields-v1",
+      "sha256": "8c915c55c14f422ad4a3db588cb82a194429f140034ab648fd8c0e5e638234b5"
+    },
+    {
+      "label": "extended-finite-thin_neck-fields-v1",
+      "sha256": "f6875dfe8658855940f0a007b3fe169fb6df5810296f7c90a5374958f908f67b"
+    },
+    {
+      "label": "extended-finite-u-fields-v1",
+      "sha256": "48525fa194eb2ce0dced45eef26047428a95bef5713d9c718f2007cdbb9e4a80"
+    },
+    {
+      "label": "extended-finite-narrow_gap-fields-v1",
+      "sha256": "5349e4a7596702d37449232412c181140a4e4ce1bde3e6f1a33a842c8518a8c4"
+    },
+    {
+      "label": "extended-finite-cavity-fields-v1",
+      "sha256": "85cbe666065489aa9e1ea66e02564c14c894564e4036a5f144773480b9ef2f66"
+    },
+    {
+      "label": "fine-reference-ellipsoid-v2",
+      "sha256": "095347a1cce913f9ac70ab265bcb154079074de7f6c50337754ae6863f9aac78"
+    },
+    {
+      "label": "fine-reference-capsule-v2",
+      "sha256": "ab41d23849dad4dad393edce643e6edf985e508223ddabd6eefab971ea43bd18"
+    },
+    {
+      "label": "fine-reference-thin_neck-v2",
+      "sha256": "61deafe9404d0838686ca98b9993b80721256eaef040a3e10cc6672a951768ce"
+    },
+    {
+      "label": "fine-reference-u-v2",
+      "sha256": "5053af98b8792e72d987e922dda605f861d28781f8fbf5ffa734c938063ee3d6"
+    },
+    {
+      "label": "fine-reference-narrow_gap-v2",
+      "sha256": "5d4e03ee1a3bcec5878a16808dcaae01678033468f6b1132fbe5aa401e492b7c"
+    },
+    {
+      "label": "fine-reference-cavity-v2",
+      "sha256": "6ec1240d22a3280178c08b375c6d3d74cbd8d7cfd68a7e88e3391af9cf3126c7"
+    },
+    {
+      "label": "extended-six-shape-qualification-v1",
+      "sha256": "5244fc67f41f9ce8de36181019d697f4d3d079d9cc4bc91b7fb0aec74079a58b"
+    }
+  ],
+  "extra_files": [
+    "meta/extended-finite-raw-peak-boundary-diagnosis-command-v1.json"
+  ],
+  "pending_work": [
+    "Fixed-boundary volume refinement with unchanged physical loads and independent full fields.",
+    "Every original physical/model/island/egg-Franka/interior-hotspot/feedback/verified-warmed-cost requirement."
+  ],
+  "limitations": "All90 original finest-three-level global peaks and values remain exact. Boundary distance, topological incident faces, true outward normals, original prescribed tractions and symmetric-tensor compatibility are measured. Manufactured symmetric-stress and normal-only controls pass. Algebraic compatibility concerns a single continuous symmetric stress tensor at a boundary vertex and proves neither boundedness nor singularity of the elasticity solution. Several largest unresolved convex/cavity peaks are subsurface, so local boundary-vertex incompatibility alone does not explain their measured raw-peak changes. Zero new equilibrium states and no physical tail acceptance."
+}

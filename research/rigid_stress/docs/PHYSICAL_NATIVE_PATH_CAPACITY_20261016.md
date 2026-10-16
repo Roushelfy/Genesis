@@ -89,7 +89,7 @@ The first metadata-publisher attempt also failed because a verifier argument
 was missing. Its source, traceback and partial scheduler metadata remain in
 the archive. The corrected attempt completes full runtime-byte verification.
 
-## Pending evidence and original objective
+## Follow-up evidence and original objective
 
 Large CUDA qualification719911 now naturally completes with matching source
 and full snapshot verification. All5656950 entries have matching support
@@ -100,16 +100,30 @@ reverifies the original capacity archive and all actual new runtime bytes. Its
 manifest SHA256 is `794c919d364fac0a0df84adec52e766614d78b07bfe863c91a4a5093fe10b0fc`.
 The original archive retains its then-current queued status.
 
-This releases four new five-load/four-model native jobs719912/914/916/918
-and independent auditors719913/915/917/919. Both actual added ellipsoid/capsule
-levels retain original8-port resolution,10-point native quadrature, all models,
-physical inputs and numerical budgets. Pending jobs establish zero accepted
-physical cases. Additional pair-union and self-balanced source-prior regressions
-719945/719946 cover both algorithms. The CPU run completes all8 cases; CUDA
-remains queued. Their separately scoped evidence will be retained after closure.
+All four five-load/four-model native jobs719912/914/916/918 and separate
+auditors719913/915/917/919 now naturally complete. They retain original8-port
+resolution,10-point native quadrature, physical inputs and numerical budgets.
+The [fine-field report](PHYSICAL_FINE_NATIVE_MODELS_20261016.md) records76
+accepted fields, four unsupported pressure rows and1634920056 checked quadrature
+components. Complete first-level arrays are published; finest-level publication
+remains required. These are actual field checks, without physical convergence
+acceptance.
+
+Additional pair-union and self-balanced source-prior regressions719945/719946
+each complete8 cases with matching source closure on CPU and CUDA. Together
+with the24 earlier cases,40 selected tests pass at their unchanged assertions.
+This does not claim the entire expanded source-prior suite was run. The
+[separate model-regression archive](../evidence/20261014-physical/native-intrinsic-model-regression-v1/manifest.json)
+retains all1612 entries and verifies actual runtime bytes. Manifest SHA256:
+`c8f861453597bb79138ab19a87e2342c68083de7cc20299a528ef3a9dc2b891a`.
+The original wrapper did not copy three test NPZ assets before those runs.
+Their retained copies were reconstructed afterward from each recorded Git
+revision and matched unchanged current bytes; this retrospective provenance is
+explicit and is not presented as a pre-test capture. Future wrapper runs copy
+those assets before testing.
 
 This checkpoint establishes bounded native path storage with the numerical
-scope above. Actual fine traction/scatter/elastic fields,
-physical geodesic and contact convergence, model/island bias, resolved
+scope above and the separately audited fine fields. Physical geodesic and
+contact convergence, remaining model/island bias, resolved
 egg/Franka and interior-hotspot references, feedback and physically qualified
 warmed cost remain required by the complete original objective.

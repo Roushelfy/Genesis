@@ -1,0 +1,20 @@
+{
+  "claim_anchor": "eight-level-interior-probe-stability-does-not-certify-raw-global-peaks",
+  "figures": [
+    {
+      "stem": "finite_raw_peaks_eight_levels",
+      "caption": "Complete eight-level finite-load reference maxima. Panels a-f show ellipsoid, capsule, thin neck, rounded U, narrow gap and cavity. Every point is an original whole-domain unaveraged P2 corner von Mises maximum for one of five fixed physical load cases. Lines connect ordered meshes, with no fitted limit or uncertainty estimate. All240 rows, peak coordinates, energies and original probe validity masks remain in the source CSV. Coincident curves retain their separate case values. CAD geometry and volume/surface approximation change together.",
+      "description": "Six panels compare every original raw peak over eight increasingly resolved meshes. Convex controls and cavity peaks remain nonmonotone; the narrow-gap peak does not settle, while the rounded-U trends are calmer. Distinct markers and line styles identify all five loads without relying on colour.",
+      "placement": "After the complete eight-level numerical audit and before diagnosing physical error axes."
+    },
+    {
+      "stem": "finite_worst_adjacent_eight_levels",
+      "caption": "Worst adjacent refinement changes across the same five fixed loads. Each point is the maximum case change for one of the five original observables on that geometry, normalized by the finer result. Probe tensor, von Mises and gauge-aligned displacement retain their original physical points and pairwise validity intersections; these are not volume-integral errors. The vertical symmetric-log scale has a0.1percent linear core and retains zero. The initial3percent guide is a diagnostic, not a continuum error bound. The worst-case envelope is not statistical uncertainty. All210 case-pair rows and210 case-maximum observable rows remain available.",
+      "description": "Six panels show small probe and energy changes coexisting with larger or oscillating raw-peak changes. The dashed original3percent guide provides context; its crossing alone does not certify convergence.",
+      "placement": "Beside or immediately after the raw-peak figure to distinguish probe stability from global extrema."
+    }
+  ],
+  "body_text_handoff": "Use both plots to explain why successful independent discrete-field checks and stable original interior probes do not certify the raw global maximum. The U diagnostic is strongest; convex, narrow-gap and cavity raw extrema retain unresolved changes. Separate fixed-polyhedral geometry, volume/surface basis, quadrature and intrinsic-distance axes before assigning physical accuracy. Do not infer resolved-contact, model or warmed-cost accuracy from these curves.",
+  "assumptions": "Deterministic prescribed finite-area3mm load cases with no experimental replicates; no uncertainty bands or extrapolation.",
+  "goal_completion": false
+}

@@ -1,0 +1,86 @@
+{
+  "claim_anchor": "eight-level-interior-probe-stability-does-not-certify-raw-global-peaks",
+  "main_claim": "All original cases and eight levels retain unresolved raw maxima, even where the original probe/energy changes become small.",
+  "material_passport": {
+    "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-six-shape-eight-level-summary-v1/results/summary.json": "f2e398cb70e7e4ca047dda1be9eaacd6afcaf21020f47b75c10b6fc9aff125ee"
+  },
+  "intake": {
+    "purpose": "Physical-validation report and repository supplement",
+    "language": "English",
+    "evidence_gaps": [],
+    "target_venue": "Repository technical figures using established Nature-style defaults"
+  },
+  "data_profile": {
+    "geometries": 6,
+    "loads_per_geometry": 5,
+    "levels_per_load": 8,
+    "raw_rows": 240,
+    "adjacent_case_rows": 210,
+    "missing_adjacent_metrics": 0,
+    "statistics": "Deterministic individual solves. No replicates, fitted limits, confidence intervals or inferred continuum error bounds."
+  },
+  "chart_choice": {
+    "primary": "Faceted raw-peak lines with every ordered mesh observation",
+    "supplement": "Faceted maximum adjacent-change lines across the same five fixed cases",
+    "alternatives": [
+      "Last-pair point matrix loses the earlier nonmonotone history",
+      "Twenty-five adjacent curves per panel would obscure cases and observables"
+    ]
+  },
+  "panels": [
+    {
+      "panel": "a",
+      "geometry": "ellipsoid",
+      "title": "Ellipsoid",
+      "raw_role": "Retain the full raw whole-domain peak history for this distinct geometry",
+      "change_role": "Show the worst original load for each observable without asserting convergence"
+    },
+    {
+      "panel": "b",
+      "geometry": "capsule",
+      "title": "Capsule",
+      "raw_role": "Retain the full raw whole-domain peak history for this distinct geometry",
+      "change_role": "Show the worst original load for each observable without asserting convergence"
+    },
+    {
+      "panel": "c",
+      "geometry": "thin_neck",
+      "title": "Thin neck",
+      "raw_role": "Retain the full raw whole-domain peak history for this distinct geometry",
+      "change_role": "Show the worst original load for each observable without asserting convergence"
+    },
+    {
+      "panel": "d",
+      "geometry": "u",
+      "title": "Rounded U",
+      "raw_role": "Retain the full raw whole-domain peak history for this distinct geometry",
+      "change_role": "Show the worst original load for each observable without asserting convergence"
+    },
+    {
+      "panel": "e",
+      "geometry": "narrow_gap",
+      "title": "Narrow gap",
+      "raw_role": "Retain the full raw whole-domain peak history for this distinct geometry",
+      "change_role": "Show the worst original load for each observable without asserting convergence"
+    },
+    {
+      "panel": "f",
+      "geometry": "cavity",
+      "title": "Cavity",
+      "raw_role": "Retain the full raw whole-domain peak history for this distinct geometry",
+      "change_role": "Show the worst original load for each observable without asserting convergence"
+    }
+  ],
+  "export_targets": [
+    "editable SVG",
+    "PDF after accepted exact SVG/preview hashes",
+    "1000dpi RGB PNG after acceptance",
+    "colour and monochrome previews"
+  ],
+  "figure_size_mm": [
+    183,
+    170
+  ],
+  "body_text_handoff": "Use the raw curves to retain nonmonotonicity and the change panels to distinguish probe/energy stability from global extrema. The U diagnostic is strongest, while smooth convex, narrow-gap and cavity raw peaks retain important changes. Eight deterministic levels do not by themselves establish a tail. Local geometry/volume/contact controls and resolved physical comparisons remain necessary.",
+  "limitations": "CAD geometry and volume/surface approximation remain coupled. Probe norms use the original physical points and pairwise validity intersections, not volume integrals. Maximum across the five cases is an explicitly supplemental worst-case diagnostic, not uncertainty. All original rows, outside masks, raw peak positions and energies remain in the CSV and reverified input. No zero is dropped by the symmetric-log change axis. The3percent line is the original initial diagnostic, not continuum acceptance. The referenced shared notation file is absent locally; figure labels use plain English/units and standard log ticks, with direct vector and rendered text QA."
+}

@@ -1,0 +1,20 @@
+{
+  "time_utc": "2026-10-16T03:13:20.601351+00:00",
+  "argv": [
+    "sbatch",
+    "--parsable",
+    "--array=0-0",
+    "--partition=cpu",
+    "--exclude=cpu-207-115",
+    "--cpus-per-task=8",
+    "--mem=64G",
+    "--time=01:00:00",
+    "--output=/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-finite-raw-peak-boundary-diagnosis-v1-%A_%a.log",
+    "--wrap=bash -c 'source /mnt/data/shared/config/env.sh; GENESIS_IMAGE_VER=1_26 gs-srun --ntasks=1 bash /mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/diagnose_finite_peak_boundary.sh /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-finite-raw-peak-boundary-diagnosis-v1 --runtime-root /mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation'"
+  ],
+  "stdout": "719976\n",
+  "stderr": "",
+  "returncode": 0,
+  "run": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/extended-finite-raw-peak-boundary-diagnosis-v1",
+  "scope": "All90 latest-three-level raw peak positions and exact prescribed incident face tractions, symmetric-tensor compatibility and manufactured/normal-only algebraic controls. Zero new equilibria; no singularity or convergence assertion."
+}

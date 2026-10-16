@@ -19,6 +19,8 @@ from pathlib import Path
 files = [p for root in ('genesis', 'tests') for p in Path(root).rglob('*.py')]
 files += list(Path('research/rigid_stress').glob('*.py'))
 files += list(Path('tests/rigid/data').glob('stress_corner_cancellation.*'))
+files += [Path('examples/rigid/assets/hollow_egg/level1/elastic.npz')]
+files += list(Path('tests/rigid/assets').glob('nonconvex_plane_pair_tick*.npz'))
 files += [Path('research/rigid_stress/scripts/test_intrinsic_path_scaling.sh'),
           Path('research/rigid_stress/scripts/cluster_env.sh'), Path('pyproject.toml')]
 for path in sorted(set(files)):

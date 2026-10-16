@@ -20,23 +20,39 @@ The previous completion records do not establish this stage's acceptance.
 
 ### Immediate evidence gates
 
-The [eight-level reference results](docs/PHYSICAL_EIGHT_LEVEL_REFERENCES_20261016.md)
-now close all12 additional five-case producers and six separate15-field audits.
-All90 fresh fields retain exact original nodal loads and pass unchanged budgets,
-including1553366925 quadrature components. All240 eight-level rows retain original
-probes/raw maxima. Ellipsoid/capsule opposing raw peaks still change16.75%/14.10%.
-Native four-model follow-ups fail while allocating/indexing the dense all-pairs
-port table. Qualify a bounded native search on the identical graph before fresh
-actual replays. The shared-initialization U all-stage audits and three-level
-comparison also complete, with final tensor changes44.86%/12.31%; preserve the
-complete744-stage raw histories. All60 added finite-load fields, separate90-field
-audits and the240-row summary now have complete reverified immutable archives.
-The [native capacity checkpoint](docs/PHYSICAL_NATIVE_PATH_CAPACITY_20261016.md)
-retains successful24-case CPU/CUDA tests, large CPU and CUDA graph qualifications
-and all failures. The large CUDA supplement checks5656950 entries before actual
-fine native fields and their separate independent audits, which remain live/
-scheduled evidence. U full-array publication and updated figures/reports remain required.
-Every original A/B/C/model/application/feedback/cost gate stays.
+Current status, 2026-10-16: the complete physical-validation goal remains open.
+The [acceptance ledger](docs/PHYSICAL_ACCEPTANCE_LEDGER.md) tracks each original
+requirement; the dated checkpoint paragraphs below retain historical states.
+
+1. Resolve the physical tails. The [eight-level reference results](docs/PHYSICAL_EIGHT_LEVEL_REFERENCES_20261016.md)
+   retain all240 rows and original probes/raw maxima. All90 latest-three-level
+   fields pass fresh independent full-field audits, including1553366925
+   quadrature components; complete added fields, summary and inspected figures
+   are archived. Opposing ellipsoid/capsule raw peaks still change16.75%/14.10%.
+   The [90-peak location diagnosis](docs/PHYSICAL_FINITE_PEAK_LOCATION_20261016.md)
+   finds those finest opposing peaks below the surface, so a direct boundary
+   corner explanation does not resolve the discrepancy. Compare the separately
+   qualified fixed-polyhedron family while keeping its volume/surface-basis
+   and boundary-quadrature coupling explicit.
+2. Complete matched model and numerical-axis comparisons. The
+   [native capacity repair](docs/PHYSICAL_NATIVE_PATH_CAPACITY_20261016.md)
+   passes40 selected CPU/CUDA cases plus5656950 actual large-graph entries per
+   backend. [Four fine native producers and separate auditors](docs/PHYSICAL_FINE_NATIVE_MODELS_20261016.md)
+   now close76 accepted fields and retain four unsupported pressure rows.
+   The first added level's complete arrays are published; finest-level arrays
+   still need publication. Same-mesh ports4/8/16 and quadrature10/14 controls,
+   plus a third matched spatial level, are scheduled and count as no accepted
+   new evidence until their original gates and separate audits close.
+3. Complete the original coupled-contact/application and accuracy/cost gates.
+   Shared-initialization U audits cover all744 stages at each body level, but
+   final tensor changes44.86%/12.31% remain unresolved. Publish the full histories
+   and accepted figures. Separated contact/volume/geometry/history controls,
+   converged full egg/Franka and interior-hotspot references, actual patch/island
+   redistribution, native resolved-load replay versus omitted feedback and
+   physically qualified warmed costs remain required. Preserve every original
+   A/B/C/model/application requirement and every raw global maximum.
+
+### Historical checkpoints
 
 The [separated-axis qualification](docs/PHYSICAL_SEPARATED_AXES_SETUP_20261016.md)
 preserves actual IPC geometry across2/4/8 radial layers and qualifies recording

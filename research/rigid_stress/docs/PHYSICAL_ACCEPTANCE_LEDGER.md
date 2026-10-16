@@ -5,20 +5,32 @@ without narrowing its scope. Historical native performance completion does not
 establish the new physical stage. Dated reports preserve their observations;
 running or pending jobs count as scheduled work only.
 
-Latest verified checkpoint: [eight-level finite-load references](PHYSICAL_EIGHT_LEVEL_REFERENCES_20261016.md)
-closes all12 added five-case producers and six separate15-field auditors.
-All90 fields retain exact nodal reintegration and original complete budgets,
-including1553366925 quadrature components. The combined summary preserves240
-rows and all original probes/raw maxima. Final opposing raw-peak changes remain
-16.75%/14.10% on ellipsoid/capsule. Actual native jobs719781–719784 fail at the
-all-pairs path table, with matched source closures; their impossible unstarted
-auditors are cancelled and retained. A bounded native search on the identical
-graph now passes24 CPU/CUDA profile/full-field cases and5656950 large-graph
-entries per backend before fresh four-model replays, which remain live/scheduled. Shared-initialization
-U audits/comparison complete all744 stages at every level, retaining final
-tensor changes44.86%/12.31% and the complete initialization raw maxima. All60 added finite-load field arrays, six15-field audits and240-row summary
-now have reverified immutable archives. U full-array publication, updated
-figures/reports and every original completion requirement remain.
+Current status, 2026-10-16: the full physical-validation goal remains open.
+The [eight-level finite-load references](PHYSICAL_EIGHT_LEVEL_REFERENCES_20261016.md)
+close all12 added five-case producers and six separate15-field auditors.
+All90 fields retain exact nodal reintegration and unchanged complete budgets,
+including1553366925 quadrature components. Complete added arrays, all240 summary
+rows and inspected editable/vector/1000dpi figures have immutable publications.
+Opposing ellipsoid/capsule raw peaks still change16.75%/14.10%. The
+[90-peak diagnosis](PHYSICAL_FINITE_PEAK_LOCATION_20261016.md) locates both finest
+opposing maxima below the surface; direct boundary-corner compatibility does
+not explain their tail. Separate fixed-polyhedron controls retain the same
+physical loads and original-state qualification without implying a pure volume
+axis or an accepted continuum result.
+
+The [bounded native search](PHYSICAL_NATIVE_PATH_CAPACITY_20261016.md) now passes
+40 selected CPU/CUDA cases and5656950 actual large-graph entries per backend,
+retaining all original failures and the excluded source-race attempt.
+[Fine four-model replays](PHYSICAL_FINE_NATIVE_MODELS_20261016.md) and separate
+fresh auditors close76 accepted fields across two added ellipsoid/capsule levels;
+four pressure inputs remain unsupported. First-level full arrays are published;
+finest-level full publication remains required. Matched third-spatial-level,
+same-mesh ports4/8/16 and quadrature10/14 controls remain scheduled evidence.
+Shared-initialization U closes all744 stages at each level with final tensor
+changes44.86%/12.31%; full-array publication remains. Every original A/B/C,
+model/island, application/history, feedback and verified-cost gate stays active.
+
+The following dated checkpoints retain their then-current execution states.
 
 Previous checkpoint: [separated-axis setup and all64-control qualification](PHYSICAL_SEPARATED_AXES_SETUP_20261016.md)
 retains original boundaries, actual IPC traces and physical anchors across2/4/8
@@ -312,11 +324,11 @@ studies are live/scheduled; all original requirements below remain active.
 | Requirement | Evidence needed for completion | Current evidence and remaining work |
 |---|---|---|
 | A: independent elasticity and boundary loads | Independent K, consistent mass, six rigid modes, boundary quadrature, full equilibrium/energy/gauge displacement/tensor/peak; common physical probes across independent meshes | Independent scikit-fem/analytic/native CPU/CUDA and boundary-transfer checks are qualified. Fresh assembly verifies90 last-three-level finite-load fields, including1553366925 quadrature components. Separate15-field fixed-traction audits and their complete arrays are published. Extended shape tails, continuous-traction stress controls and credible physical ranges remain incomplete. |
-| B: identical-input model sensitivity | All applicable pressure/componentwise/pair_union/body_source_prior comparisons with fixed points, six-component wrenches, pose, omega, material, radius and friction; per-source/island loads, support areas, concentration, energy and full stress | Finite-traction matrix, fixed-wrench alternative profiles, changing histories and native port sweeps are published. Guarded resolved-U replay adds actual contact source wrenches and measured redistribution. Broader converged resolved references and remaining physical operating ranges are required. Unsupported pressure moments and near-zero aggregate arithmetic failures remain visible. |
+| B: identical-input model sensitivity | All applicable pressure/componentwise/pair_union/body_source_prior comparisons with fixed points, six-component wrenches, pose, omega, material, radius and friction; per-source/island loads, support areas, concentration, energy and full stress | Four fine native producers and separate fresh auditors close76 accepted fields and retain four unsupported pressure rows. First-level complete arrays show5–7% pair-union full-corner differences and measured redistribution between disjoint destination disks, conditional on the specified finite traction reference. Same-mesh distance/quadrature controls remain scheduled. Finite-traction profiles, changing histories and guarded resolved-U replay add evidence, but converged resolved references and physical operating ranges remain required. Near-zero aggregate arithmetic failures remain visible. |
 | C: coupled deformable contact | Converged unilateral/frictional controls followed by full hollow egg/Franka and an interior-hotspot case, matching geometry, compliance, supports and actuation | Original coarse egg/Franka330-control/2640-state histories complete. Three covered CAD meshes pass original dynamic gates but tensor changes grow9.68%→10.72%; supplemental near-surface changes remain44.59–84.35%. Shared-initialization U completes744 stages and independent audits at every body level; final tensor changes44.86%→12.31%. Fixed-boundary radial controls and physical/contact/geometry tails remain open. |
 | C: feedback separation and assumptions | Native replay of resolved loads plus corresponding rigid/deformable actuation/load comparisons; deformation bounded relative to thickness/gap/footprint | Complete coarse2640-state rigid/deformable source histories and scoped feedback/native checks are published. Feedback changes23.17% at snapshot869 while same-load linearization changes0.003865%, conditional on480 tets. All six covered CAD native load-mode replays pass original gates; finest conditional linearization is0.146786%. Fine feedback, physical small-scale validity and finite-footprint model comparisons remain required. |
 | Geometry and load coverage | Full3D smooth convex controls, hollow egg, rounded U, thin neck, cavity/narrow gap; opposing/asymmetric/shear/near-slip/count/island histories | Seven independent geometry assets and finite-load sweeps exist. Full resolved contact coverage remains concentrated in controls and U; egg/Franka is the principal unfinished application. Interior peak search remains global. |
-| Convergence and extrema | Fixed continuum geometry/load/radius/profile; separated volume, geometry, quadrature, distance and contact regularization axes; credible trends/tails, full fields and raw global extrema | Eight-level CAD comparisons retain all240 rows and every raw maximum. Ellipsoid/capsule opposing raw peaks still change16.75%/14.10%; no physical tail is accepted. Frozen-domain bulk changes1.86–2.03% retain nonmonotone original probes. Fixed31668-tet contact-distance last volume tensor change is0.571557%; all original158340 probes and576 supplemental points remain. Actual IPC traces are qualified across2/4/8 radial layers before live solves. Continuous-traction, spatial/contact/geometry and remaining physical tails stay open. |
+| Convergence and extrema | Fixed continuum geometry/load/radius/profile; separated volume, geometry, quadrature, distance and contact regularization axes; credible trends/tails, full fields and raw global extrema | Eight-level CAD comparisons and figures retain all240 rows and every raw maximum. Opposing ellipsoid/capsule peaks still change16.75%/14.10%; all90 peak locations are diagnosed, without a convergence or singularity claim. Fixed-polyhedron meshes and ten original fields qualify a separate coupled volume/surface-basis/quadrature family. Frozen-domain bulk changes1.86–2.03% retain nonmonotone probes. Fixed31668-tet distance change0.571557% retains all158340 original and576 supplemental probes. Actual IPC traces qualify2/4/8 radial layers; continuous-traction and remaining physical tails stay open. |
 | Accuracy/cost range | Warmed native costs measured at verified physical accuracy, declared representative settings and limitations; preserve qualified fast paths | Native2/4/8-port costs and numerical limits are measured, but contact-model/physical errors are not fully qualified. Do not infer a physical operating range from the previous large-batch rates. |
 | Deliverables | Reusable assets/snapshots/scripts, successful and failed runs, exact source/config/package/hardware identity, editable matched maps/traction/island charts, exact commands, commit/push | Immutable evidence and reports are incrementally published. New resolved-model figures and guarded observers are added; live jobs are excluded. Future accepted results require the same evidence closure. |
 

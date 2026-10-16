@@ -33,6 +33,11 @@ def main():
             "matrix_setup",
             "matrix_fields",
             "matrix_summary",
+            "peak_boundary",
+            "path_model_regression",
+            "native_finite_fields",
+            "fixed_polyhedron_setup",
+            "matrix_figures",
         ]
         and plan["goal_completion"] is False
     )
@@ -379,6 +384,149 @@ def main():
             "fixed_mesh_continuous_traction_integrations": 15,
             "new_fine_thickness_or_quadrature_stress_fields_accepted": 0,
             "physical_convergence_accepted": False,
+        }
+    elif plan["kind"] == "matrix_figures":
+        figures = summaries["extended-eight-level-reference-figures-v3"]
+        assert figures["full_original_rows_retained"] == 240
+        assert figures["worst_adjacent_case_observable_rows"] == 210 and len(figures["figures"]) == 2
+        qa_path = p / "meta/extended-eight-level-reference-export-qa-v3.json"
+        retain(qa_path)
+        qa = json.loads(qa_path.read_text())
+        assert qa["passed"] and len(qa["figures"]) == 2
+        assert all(
+            row["exports_after_exact_visual_source_qa"] and not row["text_qa_issues"] for row in figures["figures"]
+        )
+        output = p / "extended-eight-level-reference-figures-v3/results"
+        for row in qa["figures"]:
+            stem = row["stem"]
+            assert digest(output / f"{stem}.svg")[0] == row["accepted_editable_svg_sha256"]
+            assert digest(output / f"{stem}_preview.png")[0] == row["accepted_preview_sha256"]
+            assert digest(output / f"{stem}.pdf")[0] == row["PDF_sha256"]
+            assert digest(output / f"{stem}.png")[0] == row["PNG_sha256"]
+            assert row["PNG_pixels"] == [7204, 6692] and row["PDF_raster_images"] == 0
+            assert row["PDF_actual_decoded_TrueType_streams"] and row["ToUnicode_present"]
+            tree = element_tree.fromstring((output / f"{stem}.svg").read_bytes())
+            assert sum(node.tag.endswith("}text") for node in tree.iter()) > 50
+            assert not any(node.tag.endswith("}image") for node in tree.iter())
+        assert plan["closed_jobs"]["extended-eight-level-reference-figures-v1"]["returncode"] == 1
+        scientific_checks = {
+            "complete_original_raw_geometry_load_level_rows_retained": 240,
+            "explicit_worst_case_adjacent_observable_rows": 210,
+            "accepted_editable_and_colour_monochrome_previews": 2,
+            "matched_PDF_fonts_and_full1000dpi_rasters_after_exact_source_acceptance": True,
+            "initial_actual_text_QA_failure_retained": True,
+            "physical_convergence_accepted": False,
+        }
+    elif plan["kind"] == "fixed_polyhedron_setup":
+        meshes, qualified = [], []
+        for shape in ["ellipsoid", "capsule"]:
+            run = p / f"fixed-polyhedron-{shape}-three-meshes-v1"
+            rows = json.loads((run / "meshes/summary.json").read_text())["cases"]
+            assert len(rows) == 3
+            qualifier = summaries[f"fixed-polyhedron-{shape}-original-qualification-v1"]
+            assert qualifier["qualify_only"] and qualifier["new_equilibrium_states_solved"] == 0
+            assert qualifier["all_original_five_loads_full_fields_and_probes_qualified"]
+            assert len(qualifier["rows"]) == 5
+            assert all(
+                row["original_full_nodal_force_maximum_difference_N"] == 0
+                and row["original_budget_fraction"] <= 1
+                and row["all_original_probe_coordinates_and_validity_retained"]
+                for row in qualifier["rows"]
+            )
+            assert [row["tetrahedra"] for row in rows] == [qualifier["tetrahedra"] * 8**i for i in range(3)]
+            for i, row in enumerate(rows):
+                assert row["seed_sha256"] == qualifier["mesh_sha256"]
+                assert row["minimum_tetrahedron_volume_m3"] > 0
+                assert "no CAD projection" in row["geometry_mode"]
+                assert digest(run / f"meshes/level{i}.npz")[0] == row["mesh_sha256"]
+            meshes.extend(rows)
+            qualified.extend(qualifier["rows"])
+        scientific_checks = {
+            "full_polyhedral_meshes_with_volume_area_COM_checks": 6,
+            "original_five_case_fields_freshly_requalified": len(qualified),
+            "full_original_force_and_probe_budgets_retained": True,
+            "all_original_nodal_loads_exactly_reproduced": True,
+            "new_fine_equilibrium_states_accepted_in_this_archive": 0,
+            "physical_convergence_accepted": False,
+        }
+    elif plan["kind"] == "native_finite_fields":
+        shape, level = plan["geometry"], plan["level"]
+        producer = summaries[f"extended-native-{shape}-level{level}-models-v2"]
+        audit = summaries[f"extended-native-{shape}-level{level}-independent-audit-v2"]
+        assert len(producer["cases"]) == 5 and len(audit["rows"]) == 20
+        accepted = [row for row in audit["rows"] if row["accepted"]]
+        assert len(accepted) == audit["accepted_fields_freshly_audited"] > 0
+        assert len(audit["rows"]) - len(accepted) == audit["unsupported_or_rejected_inputs_retained"]
+        assert all(
+            row["all_original_corner_and_independent_quadrature_gates_passed"]
+            and row["original_budget_fraction"] <= 1
+            and row["all_quadrature_tensor_components_checked"] == 99 * audit["tetrahedra"]
+            for row in accepted
+        )
+        for case in producer["cases"]:
+            assert case["patch_radius_m"] == 0.003 and case["reference_quadrature_level"] == 3
+            assert len(case["models"]) == 4
+            assert {row["model"] for row in case["models"]} == {
+                "pressure",
+                "componentwise",
+                "pair_union",
+                "body_source_prior",
+            }
+            assert all(row["ports"] == 8 and row["native_quadrature"] == 10 for row in case["models"])
+        assert any(parent["label"] == f"extended-finite-{shape}-fields-v1" for parent in parents)
+        assert any(parent["label"] == "native-intrinsic-capacity-v1" for parent in parents)
+        scientific_checks = {
+            "geometry": shape,
+            "tetrahedra": audit["tetrahedra"],
+            "all_original_five_loads_four_models_retained": 20,
+            "accepted_native_fields_freshly_audited": len(accepted),
+            "unsupported_or_rejected_inputs_retained": len(audit["rows"]) - len(accepted),
+            "explicit_quadrature_tensor_components_checked": sum(
+                row["all_quadrature_tensor_components_checked"] for row in accepted
+            ),
+            "actual_physical_point_scatter_full_corners_equilibrium_energy_and_source_diagnostics": True,
+            "physical_convergence_or_warmed_accuracy_cost_accepted": False,
+        }
+    elif plan["kind"] == "path_model_regression":
+        for backend in ["cpu", "gpu"]:
+            run = p / f"intrinsic-path-heap-models-{backend}-regression-v1"
+            suites = list(element_tree.fromstring((run / "junit.xml").read_bytes()).iter("testsuite"))
+            assert sum(int(row.attrib["tests"]) for row in suites) == 8
+            assert all(int(row.attrib["failures"]) == int(row.attrib["errors"]) == 0 for row in suites)
+            for source in Path("genesis/engine/solvers/rigid/stress").rglob("*.py"):
+                assert digest(source)[0] == digest(run / "source" / source)[0]
+            assets = json.loads((run / "reconstructed-input-assets.json").read_text())
+            assert len(assets["assets"]) == 3 and assets["all_base_revision_blobs_match_current_assets"]
+            for row in assets["assets"]:
+                assert digest(run / row["reconstructed_copy"])[0] == row["sha256"]
+        scientific_checks = {
+            "additional_source_closed_CPU_CUDA_cases": 16,
+            "both_distance_algorithms_self_balanced_source_prior_and_pair_union_original_gates": True,
+            "current_worktree_engine_matches_tested_copies": True,
+            "input_assets_reconstructed_from_unchanged_recorded_Git_revisions": True,
+            "fine_physical_model_or_convergence_accepted": False,
+        }
+    elif plan["kind"] == "peak_boundary":
+        diagnosis = summaries["extended-finite-raw-peak-boundary-diagnosis-v1"]
+        assert diagnosis["new_equilibrium_states_solved"] == 0 and len(diagnosis["rows"]) == 90
+        assert diagnosis["manufactured_symmetric_stress_control_passed"]
+        assert diagnosis["all_normal_only_trace_controls_passed"]
+        for shape in ["ellipsoid", "capsule", "thin_neck", "u", "narrow_gap", "cavity"]:
+            assert any(parent["label"] == f"extended-finite-{shape}-fields-v1" for parent in parents)
+            source = p / f"extended-finite-{shape}-three-level-audit-v1/results/summary.json"
+            retain(source)
+            audit = json.loads(source.read_text())
+            original = {(row["case"], row["level"]): row for row in audit["rows"]}
+            for row in [row for row in diagnosis["rows"] if row["geometry"] == shape]:
+                old = original[(row["case"], row["level"])]
+                assert row["raw_global_peak_Pa"] == old["raw_global_peak_Pa"]
+                assert row["raw_global_peak_position_m"] == old["raw_global_peak_position_m"]
+        scientific_checks = {
+            "original_raw_peak_positions_and_values_preserved": 90,
+            "boundary_topology_normals_and_original_prescribed_tractions_retained": True,
+            "manufactured_stress_and_normal_only_algebraic_controls_passed": True,
+            "new_equilibrium_states_solved": 0,
+            "physical_convergence_or_singularity_accepted": False,
         }
     elif plan["kind"] == "matrix_summary":
         combined = summaries["extended-six-shape-eight-level-summary-v1"]
