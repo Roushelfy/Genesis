@@ -1,0 +1,2223 @@
+{
+  "scope": "Publish exact source/results bytes with bounded, reconstructible byte chunks.",
+  "summary": {
+    "scope": "Archive closed three-level CAD fields or complete source/localization diagnostics without accepting physical convergence.",
+    "kind": "bulk_inputs",
+    "closed_runs": [
+      {
+        "run": "egg-frozen-traction-load-qualification-v1",
+        "job": "718574_0",
+        "scheduler_state": "FAILED",
+        "actual_wrapper_code": 1
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v2",
+        "job": "718586_0",
+        "scheduler_state": "COMPLETED",
+        "actual_wrapper_code": 0
+      }
+    ],
+    "parents": [
+      {
+        "label": "five-level-thickness-v2",
+        "sha256": "c7b35308cbb0dcb776cb120b6ea8465805251b038249f068b40e624f5b53a2c8",
+        "manifest": "research/rigid_stress/evidence/20261014-physical/five-level-thickness-v2/manifest.json",
+        "complete_archive_reverification": {
+          "manifest": "research/rigid_stress/evidence/20261014-physical/five-level-thickness-v2/manifest.json",
+          "manifest_sha256": "c7b35308cbb0dcb776cb120b6ea8465805251b038249f068b40e624f5b53a2c8",
+          "verified_entries": 275,
+          "verified_originals": 275,
+          "verified_original_prefixes": 0,
+          "appended_allocation_logs": [],
+          "reconstructed_complete_files": 10,
+          "restored_missing_artifacts": [],
+          "passed": true
+        }
+      },
+      {
+        "label": "thickness-local-diagnosis-v1",
+        "sha256": "1f4644d9ef3628e7041c290e941c256bff9fd98cf02a0e2d7f266d6e577a0dc6",
+        "manifest": "research/rigid_stress/evidence/20261014-physical/thickness-local-diagnosis-v1/manifest.json",
+        "complete_archive_reverification": {
+          "manifest": "research/rigid_stress/evidence/20261014-physical/thickness-local-diagnosis-v1/manifest.json",
+          "manifest_sha256": "1f4644d9ef3628e7041c290e941c256bff9fd98cf02a0e2d7f266d6e577a0dc6",
+          "verified_entries": 151,
+          "verified_originals": 151,
+          "verified_original_prefixes": 0,
+          "appended_allocation_logs": [],
+          "reconstructed_complete_files": 0,
+          "restored_missing_artifacts": [],
+          "passed": true
+        }
+      }
+    ],
+    "source_identity_records": [
+      {
+        "run": "egg-frozen-traction-load-qualification-v1",
+        "kind": "source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/qualify_reference_scaling.py",
+        "sha256": "b57e7956e1a03645790c5318aed62870572b511ac5006142e298f2b53184dfd9"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v1",
+        "kind": "source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/spherical_shell_validation.py",
+        "sha256": "b8875ed4fd9a123ede2ee645086e3136cdb9e4b4b529705791b799334c672bcf"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v1",
+        "kind": "source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/finite_traction_reference.py",
+        "sha256": "5cc339453f1adf95b73e3070def86d1bd85385e682d8491057448fea05368c58"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v1",
+        "kind": "source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/frozen_traction_bulk_reference.py",
+        "sha256": "a66d3f5f9cf1cde23c971c90fd413119dd2bf40f8fdae9b9ee7887bfba51894a"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v1",
+        "kind": "source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/audit_objective_frame.py",
+        "sha256": "0d5977fe3bd2f7b14c0ceb906b9091b662f33f30ad6d27b7346eacfc7266f274"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v1",
+        "kind": "source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/neohookean_reference.py",
+        "sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v1",
+        "kind": "source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/contact_reference.py",
+        "sha256": "077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v1",
+        "kind": "source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/qualify_articulated_precision.py",
+        "sha256": "e12d9255a10c5ba3463b3885218fcfd362b414d0266480e5f04d7b125d6c8893"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v1",
+        "kind": "source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/sample_load_fields.py",
+        "sha256": "68a706aeb97b2325bd86282533f194cbe69e84f6b0babcb0ca8ee386f4ca2520"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v1",
+        "kind": "source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/skfem_reference.py",
+        "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v1",
+        "kind": "source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/summarize_fine_references.py",
+        "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v1",
+        "kind": "source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/validation_meshes.py",
+        "sha256": "60bc07bc8836aba670e7cbddcbe77be58f09eb89d62f115960f50f138cf5d0ce"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v1",
+        "kind": "source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/scripts/frozen_traction_bulk_reference.sh",
+        "sha256": "4f357fe79abaf30073fdad791d1781fbed7c2b9da1312c70f1b43b4583de936d"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v1",
+        "kind": "source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/scripts/cluster_env.sh",
+        "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v1",
+        "kind": "source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v1",
+        "kind": "source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v1",
+        "kind": "input-source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/qualify_reference_scaling.py",
+        "sha256": "b57e7956e1a03645790c5318aed62870572b511ac5006142e298f2b53184dfd9"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v1",
+        "kind": "input-source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/spherical_shell_validation.py",
+        "sha256": "b8875ed4fd9a123ede2ee645086e3136cdb9e4b4b529705791b799334c672bcf"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v1",
+        "kind": "input-source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/finite_traction_reference.py",
+        "sha256": "5cc339453f1adf95b73e3070def86d1bd85385e682d8491057448fea05368c58"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v1",
+        "kind": "input-source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/frozen_traction_bulk_reference.py",
+        "sha256": "a66d3f5f9cf1cde23c971c90fd413119dd2bf40f8fdae9b9ee7887bfba51894a"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v1",
+        "kind": "input-source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/audit_objective_frame.py",
+        "sha256": "0d5977fe3bd2f7b14c0ceb906b9091b662f33f30ad6d27b7346eacfc7266f274"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v1",
+        "kind": "input-source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/neohookean_reference.py",
+        "sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v1",
+        "kind": "input-source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/contact_reference.py",
+        "sha256": "077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v1",
+        "kind": "input-source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/qualify_articulated_precision.py",
+        "sha256": "e12d9255a10c5ba3463b3885218fcfd362b414d0266480e5f04d7b125d6c8893"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v1",
+        "kind": "input-source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/sample_load_fields.py",
+        "sha256": "68a706aeb97b2325bd86282533f194cbe69e84f6b0babcb0ca8ee386f4ca2520"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v1",
+        "kind": "input-source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/skfem_reference.py",
+        "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v1",
+        "kind": "input-source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/summarize_fine_references.py",
+        "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v1",
+        "kind": "input-source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/validation_meshes.py",
+        "sha256": "60bc07bc8836aba670e7cbddcbe77be58f09eb89d62f115960f50f138cf5d0ce"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v1",
+        "kind": "input-source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/scripts/frozen_traction_bulk_reference.sh",
+        "sha256": "4f357fe79abaf30073fdad791d1781fbed7c2b9da1312c70f1b43b4583de936d"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v1",
+        "kind": "input-source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/scripts/cluster_env.sh",
+        "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v2",
+        "kind": "source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/qualify_reference_scaling.py",
+        "sha256": "b57e7956e1a03645790c5318aed62870572b511ac5006142e298f2b53184dfd9"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v2",
+        "kind": "source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/spherical_shell_validation.py",
+        "sha256": "b8875ed4fd9a123ede2ee645086e3136cdb9e4b4b529705791b799334c672bcf"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v2",
+        "kind": "source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/finite_traction_reference.py",
+        "sha256": "5cc339453f1adf95b73e3070def86d1bd85385e682d8491057448fea05368c58"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v2",
+        "kind": "source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/frozen_traction_bulk_reference.py",
+        "sha256": "bc49339f1b1a552af6cfde573aba958a7fd48c47beb142fcd04be67a7f1e9030"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v2",
+        "kind": "source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/audit_objective_frame.py",
+        "sha256": "0d5977fe3bd2f7b14c0ceb906b9091b662f33f30ad6d27b7346eacfc7266f274"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v2",
+        "kind": "source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/neohookean_reference.py",
+        "sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v2",
+        "kind": "source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/contact_reference.py",
+        "sha256": "077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v2",
+        "kind": "source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/qualify_articulated_precision.py",
+        "sha256": "e12d9255a10c5ba3463b3885218fcfd362b414d0266480e5f04d7b125d6c8893"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v2",
+        "kind": "source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/sample_load_fields.py",
+        "sha256": "68a706aeb97b2325bd86282533f194cbe69e84f6b0babcb0ca8ee386f4ca2520"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v2",
+        "kind": "source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/skfem_reference.py",
+        "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v2",
+        "kind": "source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/summarize_fine_references.py",
+        "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v2",
+        "kind": "source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/validation_meshes.py",
+        "sha256": "60bc07bc8836aba670e7cbddcbe77be58f09eb89d62f115960f50f138cf5d0ce"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v2",
+        "kind": "source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/scripts/frozen_traction_bulk_reference.sh",
+        "sha256": "4f357fe79abaf30073fdad791d1781fbed7c2b9da1312c70f1b43b4583de936d"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v2",
+        "kind": "source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/scripts/cluster_env.sh",
+        "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v2",
+        "kind": "source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v2",
+        "kind": "source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v2",
+        "kind": "input-source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/qualify_reference_scaling.py",
+        "sha256": "b57e7956e1a03645790c5318aed62870572b511ac5006142e298f2b53184dfd9"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v2",
+        "kind": "input-source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/spherical_shell_validation.py",
+        "sha256": "b8875ed4fd9a123ede2ee645086e3136cdb9e4b4b529705791b799334c672bcf"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v2",
+        "kind": "input-source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/finite_traction_reference.py",
+        "sha256": "5cc339453f1adf95b73e3070def86d1bd85385e682d8491057448fea05368c58"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v2",
+        "kind": "input-source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/frozen_traction_bulk_reference.py",
+        "sha256": "bc49339f1b1a552af6cfde573aba958a7fd48c47beb142fcd04be67a7f1e9030"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v2",
+        "kind": "input-source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/audit_objective_frame.py",
+        "sha256": "0d5977fe3bd2f7b14c0ceb906b9091b662f33f30ad6d27b7346eacfc7266f274"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v2",
+        "kind": "input-source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/neohookean_reference.py",
+        "sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v2",
+        "kind": "input-source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/contact_reference.py",
+        "sha256": "077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v2",
+        "kind": "input-source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/qualify_articulated_precision.py",
+        "sha256": "e12d9255a10c5ba3463b3885218fcfd362b414d0266480e5f04d7b125d6c8893"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v2",
+        "kind": "input-source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/sample_load_fields.py",
+        "sha256": "68a706aeb97b2325bd86282533f194cbe69e84f6b0babcb0ca8ee386f4ca2520"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v2",
+        "kind": "input-source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/skfem_reference.py",
+        "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v2",
+        "kind": "input-source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/summarize_fine_references.py",
+        "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v2",
+        "kind": "input-source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/validation_meshes.py",
+        "sha256": "60bc07bc8836aba670e7cbddcbe77be58f09eb89d62f115960f50f138cf5d0ce"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v2",
+        "kind": "input-source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/scripts/frozen_traction_bulk_reference.sh",
+        "sha256": "4f357fe79abaf30073fdad791d1781fbed7c2b9da1312c70f1b43b4583de936d"
+      },
+      {
+        "run": "egg-frozen-traction-load-qualification-v2",
+        "kind": "input-source",
+        "path": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/scripts/cluster_env.sh",
+        "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+      }
+    ],
+    "actual_inputs_reverified": {
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/mesh.npz": {
+        "sha256": "8a8ecb0779b2a93350561d33e67fa5046bd8464db4f51409216d47ea90775b59",
+        "covered_by_reverified_parent": true
+      },
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/opposing/snapshot.json": {
+        "sha256": "6330a5da69d742ca58769e77732829fb3f9fce55440f8f1de95c0a60f0f64ba1",
+        "covered_by_reverified_parent": true
+      },
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/opposing/reference_patch0.npz": {
+        "sha256": "b14de877fedb05b7e311369dcf0ff57b2446b17d77a7622e1bace930b8197c04",
+        "covered_by_reverified_parent": true
+      },
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/opposing/reference_patch1.npz": {
+        "sha256": "f30701142b3773796b1e1f72c990b28b6bbdfd03b2bd0cf80c43a7994092f1f1",
+        "covered_by_reverified_parent": true
+      },
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/probes/results/opposing/reference_field.npz": {
+        "sha256": "bba48cd292fed0f02d7cb97b681800f596639810d4a65bf20223444421f698b9",
+        "covered_by_reverified_parent": true
+      },
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/opposing/reference_field.npz": {
+        "sha256": "2c5c7373df290978e66dcfb8069f731b654ff5f687137b1b260a8cd27d09c206",
+        "covered_by_reverified_parent": true
+      },
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/bending/snapshot.json": {
+        "sha256": "d42685752e9f51c1f6eec2db472423e86b37555ff478ed76b30371c890dc9700",
+        "covered_by_reverified_parent": true
+      },
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/bending/reference_patch0.npz": {
+        "sha256": "064ac6f7ecfd780a912da8198337e28805ce31f07518a4aca885bcfccd9126c6",
+        "covered_by_reverified_parent": true
+      },
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/bending/reference_patch1.npz": {
+        "sha256": "b2b978980743cc0fb011660000609168d05d4c7ae3d37fc3905f1aa1b701f48c",
+        "covered_by_reverified_parent": true
+      },
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/probes/results/bending/reference_field.npz": {
+        "sha256": "529963ca3d62603726d792379a453397c90c272663f29a1c1f4e385e1dd89c26",
+        "covered_by_reverified_parent": true
+      },
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/bending/reference_field.npz": {
+        "sha256": "e09d3926d943091336e194c74c0a7c6af884e7e6a7a8082b67e1e4c02b930726",
+        "covered_by_reverified_parent": true
+      },
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/asymmetric/snapshot.json": {
+        "sha256": "a6b2da1775ee52c503f722538414452d13156bf90e54a35b551a7cd66964c407",
+        "covered_by_reverified_parent": true
+      },
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/asymmetric/reference_patch0.npz": {
+        "sha256": "b14de877fedb05b7e311369dcf0ff57b2446b17d77a7622e1bace930b8197c04",
+        "covered_by_reverified_parent": true
+      },
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/asymmetric/reference_patch1.npz": {
+        "sha256": "78883722a55ae5f8c213de4be9da6569646185bc27f4412be35489b193e9d6db",
+        "covered_by_reverified_parent": true
+      },
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/probes/results/asymmetric/reference_field.npz": {
+        "sha256": "7ceb074b6da29c8f6d7ed4a8a1b00a1255374433598e9dec2a7e2435a1249f38",
+        "covered_by_reverified_parent": true
+      },
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/asymmetric/reference_field.npz": {
+        "sha256": "987d89a0e036d320a1fff94a4d864a6c5c99659b3772b88a872656c28cbb8bcb",
+        "covered_by_reverified_parent": true
+      },
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/near_slip/snapshot.json": {
+        "sha256": "c0d73967d4b31e6621204cfbb0836414cc9e9d1cfb419fc1c06e7769c0002097",
+        "covered_by_reverified_parent": true
+      },
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/near_slip/reference_patch0.npz": {
+        "sha256": "1d824ff684749a505365ef23b3b651428c1dfb72843e6462d62506014acc01b6",
+        "covered_by_reverified_parent": true
+      },
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/near_slip/reference_patch1.npz": {
+        "sha256": "4a919f4e15a86a76f8918d867ef2a462967cac4a5749806dbfcda4119534baba",
+        "covered_by_reverified_parent": true
+      },
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/probes/results/near_slip/reference_field.npz": {
+        "sha256": "13b6797cb36f692fa25c19a476ed0c68e0a2931f80176c9c190471392a48c1fc",
+        "covered_by_reverified_parent": true
+      },
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/near_slip/reference_field.npz": {
+        "sha256": "9d1d9b3b9c710ab8a281ffeb95a78e4d520d92459db3aa256966072ea2025efe",
+        "covered_by_reverified_parent": true
+      },
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/multiple/snapshot.json": {
+        "sha256": "831cee01343e630001001251c251c83cf1f5247a797e8e5e62d82f8e75f2743e",
+        "covered_by_reverified_parent": true
+      },
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/multiple/reference_patch0.npz": {
+        "sha256": "b14de877fedb05b7e311369dcf0ff57b2446b17d77a7622e1bace930b8197c04",
+        "covered_by_reverified_parent": true
+      },
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/multiple/reference_patch1.npz": {
+        "sha256": "f30701142b3773796b1e1f72c990b28b6bbdfd03b2bd0cf80c43a7994092f1f1",
+        "covered_by_reverified_parent": true
+      },
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/multiple/reference_patch2.npz": {
+        "sha256": "a6ec46d8bdae351fffa6f32001d3fed44863566e74cba216d3da62feaba27932",
+        "covered_by_reverified_parent": true
+      },
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/probes/results/multiple/reference_field.npz": {
+        "sha256": "ec18b9dd2a10f51af015ec44b7e3043a7bcf99793096968e95e91940752da837",
+        "covered_by_reverified_parent": true
+      },
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/multiple/reference_field.npz": {
+        "sha256": "3482418860c121d1c28f90b7968dc8d424907b55b1d7b11af3ba9e6f69462896",
+        "covered_by_reverified_parent": true
+      },
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/frozen-traction-local-bulk-commands-v1.json": {
+        "sha256": "824c428d9979640fffb28b76e187b567b40884c30fbc5e316b83d20d4f0c82f6",
+        "covered_by_reverified_parent": true
+      },
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/frozen-traction-local-bulk-commands-v2.json": {
+        "sha256": "e5d22e8e5e1909615dc2619485ed17208ab0d3a6892380ecda35973872c8a8d1",
+        "covered_by_reverified_parent": false
+      },
+      "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/frozen-traction-inputs-publication-plan-v1.json": {
+        "sha256": "14e11f88b94889692aa451cb6f1445eb62f529ccc009cf6880256502fe1c57d2",
+        "covered_by_reverified_parent": false
+      },
+      "/mnt/home/zhaofeng/workspace/Genesis/.worktrees/rigid-stress-recovery/research/rigid_stress/scripts/publish_covered_cad_checkpoint.py": {
+        "sha256": "296e26c4237264e6db1505c8c8413d652af05df41d054103cce4a535b738ddc4",
+        "covered_by_reverified_parent": false,
+        "archived_external_copy": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/frozen-traction-inputs-v1-publication/external-inputs/296e26c4237264e6db1505c8c8413d652af05df41d054103cce4a535b738ddc4.py"
+      }
+    },
+    "scientific_checks": {
+      "unchanged_original_quadrature_load_cases_qualified": 5,
+      "original_boundary_finder_failure_preserved": true,
+      "accepted_finer_equilibrium_fields": 0
+    },
+    "closed_run_summaries": {
+      "egg-frozen-traction-load-qualification-v2": {
+        "scope": "Isolate bulk refinement using byte-identical physical traction quadrature samples.",
+        "qualify_only": true,
+        "mesh_sha256": "8a8ecb0779b2a93350561d33e67fa5046bd8464db4f51409216d47ea90775b59",
+        "parent_mesh_sha256": "8a8ecb0779b2a93350561d33e67fa5046bd8464db4f51409216d47ea90775b59",
+        "tetrahedra": 502230,
+        "original_traction_samples_unchanged": true,
+        "quadrature_points_relocated": false,
+        "maximum_unmoved_point_boundary_plane_distance_m": 3.602423855278284e-18,
+        "maximum_quadratic_virtual_work_difference_N_m2": 1.0164395367051604e-20,
+        "all_original_five_cases_qualified": true,
+        "rows": [
+          {
+            "case": "opposing",
+            "original_load_max_difference_N": 3.2526065174565133e-18,
+            "original_rhs_max_difference_N": 3.2526065174565133e-18,
+            "all_original_corner_vm_fields_preserved": true,
+            "all_original_quadrature_fields_qualified": true,
+            "quadrature_max_difference_Pa": 4.8364199756179005e-08,
+            "complete_residual_N": 2.2901891657570013e-12,
+            "original_complete_budget_N": 8.75451621579287e-11,
+            "original_complete_budget_fraction": 0.02616008822538443,
+            "raw_global_peak_Pa": 143311.60556719918,
+            "raw_global_peak_position_m": [
+              -0.02196537334965042,
+              -0.00021117377721921425,
+              0.0002489050997086312
+            ],
+            "energy_J": 9.470487800584979e-09,
+            "unchanged_traction_sample_sha256": [
+              "b14de877fedb05b7e311369dcf0ff57b2446b17d77a7622e1bace930b8197c04",
+              "f30701142b3773796b1e1f72c990b28b6bbdfd03b2bd0cf80c43a7994092f1f1"
+            ]
+          },
+          {
+            "case": "bending",
+            "original_load_max_difference_N": 2.710505431213761e-18,
+            "original_rhs_max_difference_N": 2.710505431213761e-18,
+            "all_original_corner_vm_fields_preserved": true,
+            "all_original_quadrature_fields_qualified": true,
+            "quadrature_max_difference_Pa": 4.435241862665862e-08,
+            "complete_residual_N": 2.224132399565127e-12,
+            "original_complete_budget_N": 8.754541456632815e-11,
+            "original_complete_budget_fraction": 0.025405469956168058,
+            "raw_global_peak_Pa": 142402.72975259568,
+            "raw_global_peak_position_m": [
+              0.02205677086284144,
+              -5.402350767341075e-18,
+              -0.0004487822104580402
+            ],
+            "energy_J": 8.74051853982612e-09,
+            "unchanged_traction_sample_sha256": [
+              "064ac6f7ecfd780a912da8198337e28805ce31f07518a4aca885bcfccd9126c6",
+              "b2b978980743cc0fb011660000609168d05d4c7ae3d37fc3905f1aa1b701f48c"
+            ]
+          },
+          {
+            "case": "asymmetric",
+            "original_load_max_difference_N": 4.336808689942018e-18,
+            "original_rhs_max_difference_N": 4.336808689942018e-18,
+            "all_original_corner_vm_fields_preserved": true,
+            "all_original_quadrature_fields_qualified": true,
+            "quadrature_max_difference_Pa": 7.071935215208214e-08,
+            "complete_residual_N": 3.1443088672019742e-12,
+            "original_complete_budget_N": 1.1702635166204336e-10,
+            "original_complete_budget_fraction": 0.026868383253391703,
+            "raw_global_peak_Pa": 233147.15674290847,
+            "raw_global_peak_position_m": [
+              0.021938305616810625,
+              -5.373335150468707e-18,
+              0.00044878221045775913
+            ],
+            "energy_J": 1.6876073952156686e-08,
+            "unchanged_traction_sample_sha256": [
+              "b14de877fedb05b7e311369dcf0ff57b2446b17d77a7622e1bace930b8197c04",
+              "78883722a55ae5f8c213de4be9da6569646185bc27f4412be35489b193e9d6db"
+            ]
+          },
+          {
+            "case": "near_slip",
+            "original_load_max_difference_N": 4.119968255444917e-18,
+            "original_rhs_max_difference_N": 4.119968255444917e-18,
+            "all_original_corner_vm_fields_preserved": true,
+            "all_original_quadrature_fields_qualified": true,
+            "quadrature_max_difference_Pa": 6.490517989732325e-08,
+            "complete_residual_N": 2.339064691536343e-12,
+            "original_complete_budget_N": 1.0995746232243943e-10,
+            "original_complete_budget_fraction": 0.02127245065621164,
+            "raw_global_peak_Pa": 151216.1904138238,
+            "raw_global_peak_position_m": [
+              0.021938305616810625,
+              -5.373335150468707e-18,
+              0.00044878221045775913
+            ],
+            "energy_J": 1.0021673322762735e-08,
+            "unchanged_traction_sample_sha256": [
+              "1d824ff684749a505365ef23b3b651428c1dfb72843e6462d62506014acc01b6",
+              "4a919f4e15a86a76f8918d867ef2a462967cac4a5749806dbfcda4119534baba"
+            ]
+          },
+          {
+            "case": "multiple",
+            "original_load_max_difference_N": 3.2526065174565133e-18,
+            "original_rhs_max_difference_N": 3.2526065174565133e-18,
+            "all_original_corner_vm_fields_preserved": true,
+            "all_original_quadrature_fields_qualified": true,
+            "quadrature_max_difference_Pa": 5.169840733287856e-08,
+            "complete_residual_N": 2.6188649441006885e-12,
+            "original_complete_budget_N": 9.08902797862114e-11,
+            "original_complete_budget_fraction": 0.02881347653743262,
+            "raw_global_peak_Pa": 144095.1720768216,
+            "raw_global_peak_position_m": [
+              -0.02196537334965042,
+              -0.00021117377721921425,
+              0.0002489050997086312
+            ],
+            "energy_J": 1.1131776893584051e-08,
+            "unchanged_traction_sample_sha256": [
+              "b14de877fedb05b7e311369dcf0ff57b2446b17d77a7622e1bace930b8197c04",
+              "f30701142b3773796b1e1f72c990b28b6bbdfd03b2bd0cf80c43a7994092f1f1",
+              "a6ec46d8bdae351fffa6f32001d3fed44863566e74cba216d3da62feaba27932"
+            ]
+          }
+        ],
+        "input_sha256": {
+          "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/mesh.npz": "8a8ecb0779b2a93350561d33e67fa5046bd8464db4f51409216d47ea90775b59",
+          "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/opposing/snapshot.json": "6330a5da69d742ca58769e77732829fb3f9fce55440f8f1de95c0a60f0f64ba1",
+          "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/opposing/reference_patch0.npz": "b14de877fedb05b7e311369dcf0ff57b2446b17d77a7622e1bace930b8197c04",
+          "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/opposing/reference_patch1.npz": "f30701142b3773796b1e1f72c990b28b6bbdfd03b2bd0cf80c43a7994092f1f1",
+          "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/probes/results/opposing/reference_field.npz": "bba48cd292fed0f02d7cb97b681800f596639810d4a65bf20223444421f698b9",
+          "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/opposing/reference_field.npz": "2c5c7373df290978e66dcfb8069f731b654ff5f687137b1b260a8cd27d09c206",
+          "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/bending/snapshot.json": "d42685752e9f51c1f6eec2db472423e86b37555ff478ed76b30371c890dc9700",
+          "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/bending/reference_patch0.npz": "064ac6f7ecfd780a912da8198337e28805ce31f07518a4aca885bcfccd9126c6",
+          "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/bending/reference_patch1.npz": "b2b978980743cc0fb011660000609168d05d4c7ae3d37fc3905f1aa1b701f48c",
+          "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/probes/results/bending/reference_field.npz": "529963ca3d62603726d792379a453397c90c272663f29a1c1f4e385e1dd89c26",
+          "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/bending/reference_field.npz": "e09d3926d943091336e194c74c0a7c6af884e7e6a7a8082b67e1e4c02b930726",
+          "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/asymmetric/snapshot.json": "a6b2da1775ee52c503f722538414452d13156bf90e54a35b551a7cd66964c407",
+          "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/asymmetric/reference_patch0.npz": "b14de877fedb05b7e311369dcf0ff57b2446b17d77a7622e1bace930b8197c04",
+          "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/asymmetric/reference_patch1.npz": "78883722a55ae5f8c213de4be9da6569646185bc27f4412be35489b193e9d6db",
+          "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/probes/results/asymmetric/reference_field.npz": "7ceb074b6da29c8f6d7ed4a8a1b00a1255374433598e9dec2a7e2435a1249f38",
+          "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/asymmetric/reference_field.npz": "987d89a0e036d320a1fff94a4d864a6c5c99659b3772b88a872656c28cbb8bcb",
+          "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/near_slip/snapshot.json": "c0d73967d4b31e6621204cfbb0836414cc9e9d1cfb419fc1c06e7769c0002097",
+          "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/near_slip/reference_patch0.npz": "1d824ff684749a505365ef23b3b651428c1dfb72843e6462d62506014acc01b6",
+          "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/near_slip/reference_patch1.npz": "4a919f4e15a86a76f8918d867ef2a462967cac4a5749806dbfcda4119534baba",
+          "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/probes/results/near_slip/reference_field.npz": "13b6797cb36f692fa25c19a476ed0c68e0a2931f80176c9c190471392a48c1fc",
+          "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/near_slip/reference_field.npz": "9d1d9b3b9c710ab8a281ffeb95a78e4d520d92459db3aa256966072ea2025efe",
+          "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/multiple/snapshot.json": "831cee01343e630001001251c251c83cf1f5247a797e8e5e62d82f8e75f2743e",
+          "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/multiple/reference_patch0.npz": "b14de877fedb05b7e311369dcf0ff57b2446b17d77a7622e1bace930b8197c04",
+          "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/multiple/reference_patch1.npz": "f30701142b3773796b1e1f72c990b28b6bbdfd03b2bd0cf80c43a7994092f1f1",
+          "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/multiple/reference_patch2.npz": "a6ec46d8bdae351fffa6f32001d3fed44863566e74cba216d3da62feaba27932",
+          "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/probes/results/multiple/reference_field.npz": "ec18b9dd2a10f51af015ec44b7e3043a7bcf99793096968e95e91940752da837",
+          "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-fixed-surface-layers5-v1/fem/results/multiple/reference_field.npz": "3482418860c121d1c28f90b7968dc8d424907b55b1d7b11af3ba9e6f69462896"
+        },
+        "goal_completion": false,
+        "limitations": "The existing complete physical traction quadrature positions/weights/tractions are held byte-identical while nodal shape integration follows the refined bulk/trace basis. Unchanged physical domain/mass requires separate mesh partition evidence; no CAD geometry improvement is inferred. Qualification checks all five original nodal loads, full RHS/force budgets and complete corner/quadrature fields before finer use, without a redundant same-matrix re-solve. Finite quadrature itself remains a separately unresolved axis. Raw complete fields and all original36 probes are retained. These reference costs do not establish warmed native cost, physical/model/feedback convergence or full application acceptance."
+      }
+    },
+    "pending_work_excluded_from_successful_evidence": [
+      "Complete finer producer-field and independent full-quadrature/common-volume audit publications remain separate work.",
+      "Fourth653088-tet solve719476 and20-field audit719477 remain live/pending.",
+      "All original A/B/C physical/model/island/application/feedback and verified-cost requirements."
+    ],
+    "goal_completion": false,
+    "sharded_original_files": [
+      {
+        "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/asymmetric/reference_field.npz",
+        "bytes": 147960892,
+        "sha256": "ad8e87e86b07adfde27af0203127bd04e337707d3121b5465c3f41247a6ef7c2",
+        "encoding": "concatenated-decompressed-gzip-byte-ranges",
+        "parts": [
+          {
+            "file": "reference_field.npz.part0000.gz",
+            "offset": 0,
+            "bytes": 33554432,
+            "sha256": "960a3443424172b36b30b2fee0b1986bb2e7e6dc2a9fdd5f847c8d311da5bee6",
+            "stored_sha256": "f982da68614f5ca4f220a9de173fb98a042004f65cfd80bb89a9830e7905ca56"
+          },
+          {
+            "file": "reference_field.npz.part0001.gz",
+            "offset": 33554432,
+            "bytes": 33554432,
+            "sha256": "5607e56a914d2ef413f23f8bc7ccc59d9c4713ce85df0a068221d82037ab42e5",
+            "stored_sha256": "cc0451ac36d71a0601e22e875686fd7c189d9a09f4482a8bb750c01de7e381cf"
+          },
+          {
+            "file": "reference_field.npz.part0002.gz",
+            "offset": 67108864,
+            "bytes": 33554432,
+            "sha256": "341176a0689f2044c12bfba84fc06549b7cf937b1306cdfe50a273e097ab1dd0",
+            "stored_sha256": "ea8bc01d3c37e6ca308f96c0c159c411a28a58e6f31961398a032a0122b842fd"
+          },
+          {
+            "file": "reference_field.npz.part0003.gz",
+            "offset": 100663296,
+            "bytes": 33554432,
+            "sha256": "ee4dc2d002bfc948be4dd670dcca577a63a60264e1b3dbda259d50fc4124d2f1",
+            "stored_sha256": "ebd48da7ac99fed39fe6e5dd71f94ab6b2a199188be093a11526c76065b314c2"
+          },
+          {
+            "file": "reference_field.npz.part0004.gz",
+            "offset": 134217728,
+            "bytes": 13743164,
+            "sha256": "4a38708848e1ac6688e3507064e3a2ba405832629cbe3264792fb11ece0ded53",
+            "stored_sha256": "2a9e32234fa7a17e518ee476e75a26e1620aae1e458bd7bf84ebaa9b2a533f83"
+          }
+        ]
+      },
+      {
+        "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/bending/reference_field.npz",
+        "bytes": 148050224,
+        "sha256": "53a9de6492668c8fd850ebdc5a8ea0f0d7a2791eeebafa33a61057b274ac8844",
+        "encoding": "concatenated-decompressed-gzip-byte-ranges",
+        "parts": [
+          {
+            "file": "reference_field.npz.part0000.gz",
+            "offset": 0,
+            "bytes": 33554432,
+            "sha256": "9486aee0ea415ac5829144c79fc1c22b8f6fee6ecdbffacef5f2cbaaf29c8b88",
+            "stored_sha256": "a04b3baf3c289af6abd2522d26aa0e9e44dc66df652d0259e5ae1c6fe6fbe90d"
+          },
+          {
+            "file": "reference_field.npz.part0001.gz",
+            "offset": 33554432,
+            "bytes": 33554432,
+            "sha256": "c92699901c8bad222b6c7e89ebce97ba051ca3c67c0c7657c3ffeb601a1a9745",
+            "stored_sha256": "38c1ba144358df126d32d2e57c10aa56378622ecfbb429321225d3e3f5b2d774"
+          },
+          {
+            "file": "reference_field.npz.part0002.gz",
+            "offset": 67108864,
+            "bytes": 33554432,
+            "sha256": "d05c6c7186b5aabc480e6e7a07ba64cda189cb8391212556f63a3519350097ce",
+            "stored_sha256": "709a75794427dc510e4edcc92cf966a1b770d2a54c5d54226e922c78ea49bf89"
+          },
+          {
+            "file": "reference_field.npz.part0003.gz",
+            "offset": 100663296,
+            "bytes": 33554432,
+            "sha256": "51f27f2490a5d977d796e3486f88b3eefc6f3343ce6519e728ed40b1262093d1",
+            "stored_sha256": "3daf9e0564834e6697f14965c88997bbc0377d1db3b5bcac8c81ab9f1ec368ab"
+          },
+          {
+            "file": "reference_field.npz.part0004.gz",
+            "offset": 134217728,
+            "bytes": 13832496,
+            "sha256": "1fa56ade754ee2c8e5af05e3568964b7bdef5dafb07d9440899c2875b5cdde70",
+            "stored_sha256": "2824644196b46a0530d52a002fe04ff68b69e0fad76d0e56150024fcc37d9f8a"
+          }
+        ]
+      },
+      {
+        "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/multiple/reference_field.npz",
+        "bytes": 148129289,
+        "sha256": "91226bd893e01b4e3a27f4c38bc42e20cba1bcae8039b4411a758bb4f0fe7b1c",
+        "encoding": "concatenated-decompressed-gzip-byte-ranges",
+        "parts": [
+          {
+            "file": "reference_field.npz.part0000.gz",
+            "offset": 0,
+            "bytes": 33554432,
+            "sha256": "8a0e3873d3c2cfbe2f48040541e9c79425ccbbb6d05fafaa02a5d7aa9266d09c",
+            "stored_sha256": "747d4b0612e7faf18a265135b2318348a25104c79a18f2e6683cec9bb0f7df2f"
+          },
+          {
+            "file": "reference_field.npz.part0001.gz",
+            "offset": 33554432,
+            "bytes": 33554432,
+            "sha256": "b84e163750e2ba55c31e978e371b6353b496d88bf280c42c2d477c71bee5fbf5",
+            "stored_sha256": "22428a7b64fcdc6b1acc3672a2f26087eb8d0762879cadb1915e74e0edb8d290"
+          },
+          {
+            "file": "reference_field.npz.part0002.gz",
+            "offset": 67108864,
+            "bytes": 33554432,
+            "sha256": "d6660cf6c22b66e7a24851c95b8d13c229558bd429576a8d0db96493b1d7102d",
+            "stored_sha256": "bf7f3ddd8c0e9ed0c3ddcdbc33dceca70f295bf8ec57fc7e063d2cd6da78cbae"
+          },
+          {
+            "file": "reference_field.npz.part0003.gz",
+            "offset": 100663296,
+            "bytes": 33554432,
+            "sha256": "140d1b3e8edf6ee594340bc086bbe491b6121e9a376ac8566c2bd61cf9b7fee4",
+            "stored_sha256": "07725b5f110dd156311d5db22683d1e3a1405d33845cee37a2730d2f4cf89ecd"
+          },
+          {
+            "file": "reference_field.npz.part0004.gz",
+            "offset": 134217728,
+            "bytes": 13911561,
+            "sha256": "f1dcc988333dcf450273a3bacf1b4fc02bf3c6df2ee8ce08af04d81bccaca9a0",
+            "stored_sha256": "728a51f279aac9100668888922b9541b96b6849593e70f8e6c5ba373c8dea478"
+          }
+        ]
+      },
+      {
+        "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/near_slip/reference_field.npz",
+        "bytes": 147983628,
+        "sha256": "7f74ed21ee3693d8ebd85685ae07d5195386ea1a7eda6e484cce2a815cfa2f72",
+        "encoding": "concatenated-decompressed-gzip-byte-ranges",
+        "parts": [
+          {
+            "file": "reference_field.npz.part0000.gz",
+            "offset": 0,
+            "bytes": 33554432,
+            "sha256": "84c24cd29cb8cecd804f7cda6177990810305515aaacc6642f154003e9ea6cb3",
+            "stored_sha256": "c451ddf8b547248424b676afd89ff9d3bb86d46bbaa841006c7e46dd1838e8a4"
+          },
+          {
+            "file": "reference_field.npz.part0001.gz",
+            "offset": 33554432,
+            "bytes": 33554432,
+            "sha256": "80f302d0dd713d084b6d5f117a8d3b006c2535c79b1d8215eba06a5638e5244a",
+            "stored_sha256": "75884c89825dba5e2b818aed303fcf192e0e7494425b16b8e4e6db8a898e954c"
+          },
+          {
+            "file": "reference_field.npz.part0002.gz",
+            "offset": 67108864,
+            "bytes": 33554432,
+            "sha256": "46d207cf67807138104e40a964c91d54cc0765bf04a0a5bd6a1626c388b485e0",
+            "stored_sha256": "cc82d6835ac361f4dbbd1517379f39994b52c7f11b5ad84987b444758d4f2b57"
+          },
+          {
+            "file": "reference_field.npz.part0003.gz",
+            "offset": 100663296,
+            "bytes": 33554432,
+            "sha256": "7432a8e62e013d2edf99143ad1e156d73c4d5a81be7230f846da577fbe782976",
+            "stored_sha256": "660da0193ce807063b15307b86d871281819b4d342e73df3adbc9c6c8c0a90ce"
+          },
+          {
+            "file": "reference_field.npz.part0004.gz",
+            "offset": 134217728,
+            "bytes": 13765900,
+            "sha256": "2fe9631e17c5f88f256675a1b5ae5aebc904724a71a3c138770408283b95e493",
+            "stored_sha256": "95b3d5eb581dbf6d9cd3336b450eb12f86279ef38d1408e54a768e396158eb89"
+          }
+        ]
+      },
+      {
+        "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/opposing/reference_field.npz",
+        "bytes": 148033219,
+        "sha256": "a5aa699c7ccb44b0cbecf0173e97dfe192429b104f390f1bf2fc72f804e9ea01",
+        "encoding": "concatenated-decompressed-gzip-byte-ranges",
+        "parts": [
+          {
+            "file": "reference_field.npz.part0000.gz",
+            "offset": 0,
+            "bytes": 33554432,
+            "sha256": "0edc14da18122dc3c1fb113c42a084f8aa39e507ef51bf52823ee91340b8f7d1",
+            "stored_sha256": "ba44e49f5a9fdcef405a4021ace909ef4b9432595d09eead52d3935fe8a9fde2"
+          },
+          {
+            "file": "reference_field.npz.part0001.gz",
+            "offset": 33554432,
+            "bytes": 33554432,
+            "sha256": "3aa363b84b0b6d03c74846e4170d64ce1708c9fcd5b1de856f4d888d266db4f7",
+            "stored_sha256": "8a8fc4d25700beecd90bd1bb1104df676964438d9a0f9ddddcc16dd32245892d"
+          },
+          {
+            "file": "reference_field.npz.part0002.gz",
+            "offset": 67108864,
+            "bytes": 33554432,
+            "sha256": "b73bb124ef9a80ac1c6f1d3b82ca03dbd2d69d6f8304172e189f102fb97da404",
+            "stored_sha256": "db07cfc91c58fc9f95e061492a1b3bb126ecc64f6d5593c7d724d793afb67e93"
+          },
+          {
+            "file": "reference_field.npz.part0003.gz",
+            "offset": 100663296,
+            "bytes": 33554432,
+            "sha256": "0f915b62fb98cedbfd6d5f74806b2813ce8fd13098ef637ff061ef840d75949b",
+            "stored_sha256": "3b0abe79aa0f0cbffc9939e9b78e87ead6f0ee470c31ccf075442912f6e40a69"
+          },
+          {
+            "file": "reference_field.npz.part0004.gz",
+            "offset": 134217728,
+            "bytes": 13815491,
+            "sha256": "3da8fcfbce4a6868e7221449ce161d0a67e436bcc915bdb71e47bc2d94596e8f",
+            "stored_sha256": "2fdc958c4780d17ef8c0be318ceb51a155253fdcce6a200a3859651e911afa4d"
+          }
+        ]
+      }
+    ]
+  },
+  "limitations": "This packet retains the original real boundary-finder failure and full five-case qualification on the original502230-tet reference. Every physical traction position, weight and vector is unchanged; independent boundary ownership and quadratic virtual-work checks precede full nodal/RHS/original-budget/corner/quadrature comparisons. Qualification does not solve a redundant reference problem or establish convergence. All saved original large arrays remain exact and bounded; prior parent data are reverified. Finer fields and their complete independent quadrature/volume/energy audits are separate publications. Fixed quadrature, geometry, contact formulation, remaining load-model/local-island, full application/feedback and warmed accuracy/cost gates remain open. Files of at least50MB are preserved as exact ordered32MiB byte ranges, individually gzip-compressed, with original/part/stored SHA256 and offsets. Join decompressed ranges in index order to restore the original file exactly; no records are reduced or excluded. Runtime staging uses hard links for unchanged small originals.",
+  "files": [
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v1-718574_0.log",
+      "run_path": "20261014-physical-validation/egg-frozen-traction-load-qualification-v1-718574_0.log",
+      "artifact": "blobs/b947591b140f78a0de1e7ca46f855980802ef6f59f7d6f995f693244d2e3731c.log",
+      "encoding": "identity",
+      "bytes": 94,
+      "sha256": "b947591b140f78a0de1e7ca46f855980802ef6f59f7d6f995f693244d2e3731c",
+      "stored_bytes": 94,
+      "stored_sha256": "b947591b140f78a0de1e7ca46f855980802ef6f59f7d6f995f693244d2e3731c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v2-718586_0.log",
+      "run_path": "20261014-physical-validation/egg-frozen-traction-load-qualification-v2-718586_0.log",
+      "artifact": "blobs/6a10fcdb3f7bc245899cc30772a7863c870297ee53d2b3f0737be163ee0ff41c.log",
+      "encoding": "identity",
+      "bytes": 36,
+      "sha256": "6a10fcdb3f7bc245899cc30772a7863c870297ee53d2b3f0737be163ee0ff41c",
+      "stored_bytes": 36,
+      "stored_sha256": "6a10fcdb3f7bc245899cc30772a7863c870297ee53d2b3f0737be163ee0ff41c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/frozen-traction-inputs-v1-publication/external-inputs/296e26c4237264e6db1505c8c8413d652af05df41d054103cce4a535b738ddc4.py",
+      "run_path": "20261014-physical-validation/frozen-traction-inputs-v1-publication/external-inputs/296e26c4237264e6db1505c8c8413d652af05df41d054103cce4a535b738ddc4.py",
+      "artifact": "blobs/296e26c4237264e6db1505c8c8413d652af05df41d054103cce4a535b738ddc4.py",
+      "encoding": "identity",
+      "bytes": 19493,
+      "sha256": "296e26c4237264e6db1505c8c8413d652af05df41d054103cce4a535b738ddc4",
+      "stored_bytes": 19493,
+      "stored_sha256": "296e26c4237264e6db1505c8c8413d652af05df41d054103cce4a535b738ddc4"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/frozen-traction-inputs-v1-publication/job-commands.txt",
+      "run_path": "20261014-physical-validation/frozen-traction-inputs-v1-publication/job-commands.txt",
+      "artifact": "blobs/ce51ac0408d62e880abca6d2c9350feec7efc776ee87c7faef819460bde954a0.txt",
+      "encoding": "identity",
+      "bytes": 2568,
+      "sha256": "ce51ac0408d62e880abca6d2c9350feec7efc776ee87c7faef819460bde954a0",
+      "stored_bytes": 2568,
+      "stored_sha256": "ce51ac0408d62e880abca6d2c9350feec7efc776ee87c7faef819460bde954a0"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/frozen-traction-inputs-v1-publication/jobs.txt",
+      "run_path": "20261014-physical-validation/frozen-traction-inputs-v1-publication/jobs.txt",
+      "artifact": "blobs/9a8fe4a51285fd6baeca55650bf44623c13b5f56b968b64bafea87cab10c5997.txt",
+      "encoding": "identity",
+      "bytes": 165,
+      "sha256": "9a8fe4a51285fd6baeca55650bf44623c13b5f56b968b64bafea87cab10c5997",
+      "stored_bytes": 165,
+      "stored_sha256": "9a8fe4a51285fd6baeca55650bf44623c13b5f56b968b64bafea87cab10c5997"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/frozen-traction-inputs-v1-publication/summary.json",
+      "run_path": "20261014-physical-validation/frozen-traction-inputs-v1-publication/summary.json",
+      "artifact": "blobs/c97b7f37deb618986fa4d50a9c4a8646a00a942d1aeccca16d73855cbb992df8.json",
+      "encoding": "identity",
+      "bytes": 50141,
+      "sha256": "c97b7f37deb618986fa4d50a9c4a8646a00a942d1aeccca16d73855cbb992df8",
+      "stored_bytes": 50141,
+      "stored_sha256": "c97b7f37deb618986fa4d50a9c4a8646a00a942d1aeccca16d73855cbb992df8"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/frozen-traction-inputs-publication-plan-v1.json",
+      "run_path": "20261014-physical-validation/meta/frozen-traction-inputs-publication-plan-v1.json",
+      "artifact": "blobs/14e11f88b94889692aa451cb6f1445eb62f529ccc009cf6880256502fe1c57d2.json",
+      "encoding": "identity",
+      "bytes": 1923,
+      "sha256": "14e11f88b94889692aa451cb6f1445eb62f529ccc009cf6880256502fe1c57d2",
+      "stored_bytes": 1923,
+      "stored_sha256": "14e11f88b94889692aa451cb6f1445eb62f529ccc009cf6880256502fe1c57d2"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/meta/frozen-traction-local-bulk-commands-v2.json",
+      "run_path": "20261014-physical-validation/meta/frozen-traction-local-bulk-commands-v2.json",
+      "artifact": "blobs/e5d22e8e5e1909615dc2619485ed17208ab0d3a6892380ecda35973872c8a8d1.json",
+      "encoding": "identity",
+      "bytes": 5572,
+      "sha256": "e5d22e8e5e1909615dc2619485ed17208ab0d3a6892380ecda35973872c8a8d1",
+      "stored_bytes": 5572,
+      "stored_sha256": "e5d22e8e5e1909615dc2619485ed17208ab0d3a6892380ecda35973872c8a8d1"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/arguments.txt",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/arguments.txt",
+      "artifact": "blobs/05a3e6dd7b288910364288ab9a49a202fb66021c41e001d1dcb5196397dbd738.txt",
+      "encoding": "identity",
+      "bytes": 618,
+      "sha256": "05a3e6dd7b288910364288ab9a49a202fb66021c41e001d1dcb5196397dbd738",
+      "stored_bytes": 618,
+      "stored_sha256": "05a3e6dd7b288910364288ab9a49a202fb66021c41e001d1dcb5196397dbd738"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/audit.log",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/audit.log",
+      "artifact": "blobs/2ccda175f29c824f690d530d842248e262de7165e93c724c9391df80340c352d.log",
+      "encoding": "identity",
+      "bytes": 1768,
+      "sha256": "2ccda175f29c824f690d530d842248e262de7165e93c724c9391df80340c352d",
+      "stored_bytes": 1768,
+      "stored_sha256": "2ccda175f29c824f690d530d842248e262de7165e93c724c9391df80340c352d"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/cpu.txt",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/cpu.txt",
+      "artifact": "blobs/780869789ffb0a87d5163697bd0ffb46b63ceff82dede47d1018b5055fbfec22.txt",
+      "encoding": "identity",
+      "bytes": 3911,
+      "sha256": "780869789ffb0a87d5163697bd0ffb46b63ceff82dede47d1018b5055fbfec22",
+      "stored_bytes": 3911,
+      "stored_sha256": "780869789ffb0a87d5163697bd0ffb46b63ceff82dede47d1018b5055fbfec22"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/environment.json",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/environment.json",
+      "artifact": "blobs/330972896137d6c88c21cd49b2f3fa0dc6bb4cd01550e75f841ae6ed18a6e89a.json",
+      "encoding": "identity",
+      "bytes": 288,
+      "sha256": "330972896137d6c88c21cd49b2f3fa0dc6bb4cd01550e75f841ae6ed18a6e89a",
+      "stored_bytes": 288,
+      "stored_sha256": "330972896137d6c88c21cd49b2f3fa0dc6bb4cd01550e75f841ae6ed18a6e89a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/audit_objective_frame.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/audit_objective_frame.py",
+      "artifact": "blobs/0d5977fe3bd2f7b14c0ceb906b9091b662f33f30ad6d27b7346eacfc7266f274.py",
+      "encoding": "identity",
+      "bytes": 5509,
+      "sha256": "0d5977fe3bd2f7b14c0ceb906b9091b662f33f30ad6d27b7346eacfc7266f274",
+      "stored_bytes": 5509,
+      "stored_sha256": "0d5977fe3bd2f7b14c0ceb906b9091b662f33f30ad6d27b7346eacfc7266f274"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/contact_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/contact_reference.py",
+      "artifact": "blobs/077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422.py",
+      "encoding": "identity",
+      "bytes": 30478,
+      "sha256": "077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422",
+      "stored_bytes": 30478,
+      "stored_sha256": "077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/finite_traction_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/finite_traction_reference.py",
+      "artifact": "blobs/5cc339453f1adf95b73e3070def86d1bd85385e682d8491057448fea05368c58.py",
+      "encoding": "identity",
+      "bytes": 9703,
+      "sha256": "5cc339453f1adf95b73e3070def86d1bd85385e682d8491057448fea05368c58",
+      "stored_bytes": 9703,
+      "stored_sha256": "5cc339453f1adf95b73e3070def86d1bd85385e682d8491057448fea05368c58"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/frozen_traction_bulk_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/frozen_traction_bulk_reference.py",
+      "artifact": "blobs/a66d3f5f9cf1cde23c971c90fd413119dd2bf40f8fdae9b9ee7887bfba51894a.py",
+      "encoding": "identity",
+      "bytes": 10790,
+      "sha256": "a66d3f5f9cf1cde23c971c90fd413119dd2bf40f8fdae9b9ee7887bfba51894a",
+      "stored_bytes": 10790,
+      "stored_sha256": "a66d3f5f9cf1cde23c971c90fd413119dd2bf40f8fdae9b9ee7887bfba51894a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/neohookean_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/neohookean_reference.py",
+      "artifact": "blobs/8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8.py",
+      "encoding": "identity",
+      "bytes": 9763,
+      "sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8",
+      "stored_bytes": 9763,
+      "stored_sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/qualify_articulated_precision.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/qualify_articulated_precision.py",
+      "artifact": "blobs/e12d9255a10c5ba3463b3885218fcfd362b414d0266480e5f04d7b125d6c8893.py",
+      "encoding": "identity",
+      "bytes": 6860,
+      "sha256": "e12d9255a10c5ba3463b3885218fcfd362b414d0266480e5f04d7b125d6c8893",
+      "stored_bytes": 6860,
+      "stored_sha256": "e12d9255a10c5ba3463b3885218fcfd362b414d0266480e5f04d7b125d6c8893"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/qualify_reference_scaling.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/qualify_reference_scaling.py",
+      "artifact": "blobs/b57e7956e1a03645790c5318aed62870572b511ac5006142e298f2b53184dfd9.py",
+      "encoding": "identity",
+      "bytes": 6004,
+      "sha256": "b57e7956e1a03645790c5318aed62870572b511ac5006142e298f2b53184dfd9",
+      "stored_bytes": 6004,
+      "stored_sha256": "b57e7956e1a03645790c5318aed62870572b511ac5006142e298f2b53184dfd9"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/sample_load_fields.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/sample_load_fields.py",
+      "artifact": "blobs/68a706aeb97b2325bd86282533f194cbe69e84f6b0babcb0ca8ee386f4ca2520.py",
+      "encoding": "identity",
+      "bytes": 9417,
+      "sha256": "68a706aeb97b2325bd86282533f194cbe69e84f6b0babcb0ca8ee386f4ca2520",
+      "stored_bytes": 9417,
+      "stored_sha256": "68a706aeb97b2325bd86282533f194cbe69e84f6b0babcb0ca8ee386f4ca2520"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/scripts/cluster_env.sh",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/scripts/cluster_env.sh",
+      "artifact": "blobs/bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40.sh",
+      "encoding": "identity",
+      "bytes": 701,
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40",
+      "stored_bytes": 701,
+      "stored_sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/scripts/frozen_traction_bulk_reference.sh",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/scripts/frozen_traction_bulk_reference.sh",
+      "artifact": "blobs/4f357fe79abaf30073fdad791d1781fbed7c2b9da1312c70f1b43b4583de936d.sh",
+      "encoding": "identity",
+      "bytes": 2343,
+      "sha256": "4f357fe79abaf30073fdad791d1781fbed7c2b9da1312c70f1b43b4583de936d",
+      "stored_bytes": 2343,
+      "stored_sha256": "4f357fe79abaf30073fdad791d1781fbed7c2b9da1312c70f1b43b4583de936d"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/skfem_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/skfem_reference.py",
+      "artifact": "blobs/e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918.py",
+      "encoding": "identity",
+      "bytes": 7865,
+      "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918",
+      "stored_bytes": 7865,
+      "stored_sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/spherical_shell_validation.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/spherical_shell_validation.py",
+      "artifact": "blobs/b8875ed4fd9a123ede2ee645086e3136cdb9e4b4b529705791b799334c672bcf.py",
+      "encoding": "identity",
+      "bytes": 5749,
+      "sha256": "b8875ed4fd9a123ede2ee645086e3136cdb9e4b4b529705791b799334c672bcf",
+      "stored_bytes": 5749,
+      "stored_sha256": "b8875ed4fd9a123ede2ee645086e3136cdb9e4b4b529705791b799334c672bcf"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/summarize_fine_references.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/summarize_fine_references.py",
+      "artifact": "blobs/47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3.py",
+      "encoding": "identity",
+      "bytes": 8766,
+      "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3",
+      "stored_bytes": 8766,
+      "stored_sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/validation_meshes.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source/research/rigid_stress/validation_meshes.py",
+      "artifact": "blobs/60bc07bc8836aba670e7cbddcbe77be58f09eb89d62f115960f50f138cf5d0ce.py",
+      "encoding": "identity",
+      "bytes": 9588,
+      "sha256": "60bc07bc8836aba670e7cbddcbe77be58f09eb89d62f115960f50f138cf5d0ce",
+      "stored_bytes": 9588,
+      "stored_sha256": "60bc07bc8836aba670e7cbddcbe77be58f09eb89d62f115960f50f138cf5d0ce"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source-after.sha256",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source-after.sha256",
+      "artifact": "blobs/5878742085d710413f0c53aad7df4b38fb7f30cdc4d3afb70af8537820b56e08.sha256",
+      "encoding": "identity",
+      "bytes": 1613,
+      "sha256": "5878742085d710413f0c53aad7df4b38fb7f30cdc4d3afb70af8537820b56e08",
+      "stored_bytes": 1613,
+      "stored_sha256": "5878742085d710413f0c53aad7df4b38fb7f30cdc4d3afb70af8537820b56e08"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source.sha256",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/input-source.sha256",
+      "artifact": "blobs/5878742085d710413f0c53aad7df4b38fb7f30cdc4d3afb70af8537820b56e08.sha256",
+      "encoding": "identity",
+      "bytes": 1613,
+      "sha256": "5878742085d710413f0c53aad7df4b38fb7f30cdc4d3afb70af8537820b56e08",
+      "stored_bytes": 1613,
+      "stored_sha256": "5878742085d710413f0c53aad7df4b38fb7f30cdc4d3afb70af8537820b56e08"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/node.txt",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/node.txt",
+      "artifact": "blobs/8929b628c93b1998ed6a0dfb4dbe135eec0c63f3c453fbb78871f4b547dee898.txt",
+      "encoding": "identity",
+      "bytes": 12,
+      "sha256": "8929b628c93b1998ed6a0dfb4dbe135eec0c63f3c453fbb78871f4b547dee898",
+      "stored_bytes": 12,
+      "stored_sha256": "8929b628c93b1998ed6a0dfb4dbe135eec0c63f3c453fbb78871f4b547dee898"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/returncode.txt",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/returncode.txt",
+      "artifact": "blobs/4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865.txt",
+      "encoding": "identity",
+      "bytes": 2,
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "stored_bytes": 2,
+      "stored_sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/__init__.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/__init__.py",
+      "artifact": "blobs/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.py",
+      "encoding": "identity",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/__init__.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/__init__.py",
+      "artifact": "blobs/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.py",
+      "encoding": "identity",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/audit_objective_frame.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/audit_objective_frame.py",
+      "artifact": "blobs/0d5977fe3bd2f7b14c0ceb906b9091b662f33f30ad6d27b7346eacfc7266f274.py",
+      "encoding": "identity",
+      "bytes": 5509,
+      "sha256": "0d5977fe3bd2f7b14c0ceb906b9091b662f33f30ad6d27b7346eacfc7266f274",
+      "stored_bytes": 5509,
+      "stored_sha256": "0d5977fe3bd2f7b14c0ceb906b9091b662f33f30ad6d27b7346eacfc7266f274"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/contact_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/contact_reference.py",
+      "artifact": "blobs/077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422.py",
+      "encoding": "identity",
+      "bytes": 30478,
+      "sha256": "077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422",
+      "stored_bytes": 30478,
+      "stored_sha256": "077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/finite_traction_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/finite_traction_reference.py",
+      "artifact": "blobs/5cc339453f1adf95b73e3070def86d1bd85385e682d8491057448fea05368c58.py",
+      "encoding": "identity",
+      "bytes": 9703,
+      "sha256": "5cc339453f1adf95b73e3070def86d1bd85385e682d8491057448fea05368c58",
+      "stored_bytes": 9703,
+      "stored_sha256": "5cc339453f1adf95b73e3070def86d1bd85385e682d8491057448fea05368c58"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/frozen_traction_bulk_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/frozen_traction_bulk_reference.py",
+      "artifact": "blobs/a66d3f5f9cf1cde23c971c90fd413119dd2bf40f8fdae9b9ee7887bfba51894a.py",
+      "encoding": "identity",
+      "bytes": 10790,
+      "sha256": "a66d3f5f9cf1cde23c971c90fd413119dd2bf40f8fdae9b9ee7887bfba51894a",
+      "stored_bytes": 10790,
+      "stored_sha256": "a66d3f5f9cf1cde23c971c90fd413119dd2bf40f8fdae9b9ee7887bfba51894a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/neohookean_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/neohookean_reference.py",
+      "artifact": "blobs/8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8.py",
+      "encoding": "identity",
+      "bytes": 9763,
+      "sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8",
+      "stored_bytes": 9763,
+      "stored_sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/qualify_articulated_precision.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/qualify_articulated_precision.py",
+      "artifact": "blobs/e12d9255a10c5ba3463b3885218fcfd362b414d0266480e5f04d7b125d6c8893.py",
+      "encoding": "identity",
+      "bytes": 6860,
+      "sha256": "e12d9255a10c5ba3463b3885218fcfd362b414d0266480e5f04d7b125d6c8893",
+      "stored_bytes": 6860,
+      "stored_sha256": "e12d9255a10c5ba3463b3885218fcfd362b414d0266480e5f04d7b125d6c8893"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/qualify_reference_scaling.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/qualify_reference_scaling.py",
+      "artifact": "blobs/b57e7956e1a03645790c5318aed62870572b511ac5006142e298f2b53184dfd9.py",
+      "encoding": "identity",
+      "bytes": 6004,
+      "sha256": "b57e7956e1a03645790c5318aed62870572b511ac5006142e298f2b53184dfd9",
+      "stored_bytes": 6004,
+      "stored_sha256": "b57e7956e1a03645790c5318aed62870572b511ac5006142e298f2b53184dfd9"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/sample_load_fields.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/sample_load_fields.py",
+      "artifact": "blobs/68a706aeb97b2325bd86282533f194cbe69e84f6b0babcb0ca8ee386f4ca2520.py",
+      "encoding": "identity",
+      "bytes": 9417,
+      "sha256": "68a706aeb97b2325bd86282533f194cbe69e84f6b0babcb0ca8ee386f4ca2520",
+      "stored_bytes": 9417,
+      "stored_sha256": "68a706aeb97b2325bd86282533f194cbe69e84f6b0babcb0ca8ee386f4ca2520"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/scripts/cluster_env.sh",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/scripts/cluster_env.sh",
+      "artifact": "blobs/bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40.sh",
+      "encoding": "identity",
+      "bytes": 701,
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40",
+      "stored_bytes": 701,
+      "stored_sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/scripts/frozen_traction_bulk_reference.sh",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/scripts/frozen_traction_bulk_reference.sh",
+      "artifact": "blobs/4f357fe79abaf30073fdad791d1781fbed7c2b9da1312c70f1b43b4583de936d.sh",
+      "encoding": "identity",
+      "bytes": 2343,
+      "sha256": "4f357fe79abaf30073fdad791d1781fbed7c2b9da1312c70f1b43b4583de936d",
+      "stored_bytes": 2343,
+      "stored_sha256": "4f357fe79abaf30073fdad791d1781fbed7c2b9da1312c70f1b43b4583de936d"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/skfem_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/skfem_reference.py",
+      "artifact": "blobs/e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918.py",
+      "encoding": "identity",
+      "bytes": 7865,
+      "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918",
+      "stored_bytes": 7865,
+      "stored_sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/spherical_shell_validation.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/spherical_shell_validation.py",
+      "artifact": "blobs/b8875ed4fd9a123ede2ee645086e3136cdb9e4b4b529705791b799334c672bcf.py",
+      "encoding": "identity",
+      "bytes": 5749,
+      "sha256": "b8875ed4fd9a123ede2ee645086e3136cdb9e4b4b529705791b799334c672bcf",
+      "stored_bytes": 5749,
+      "stored_sha256": "b8875ed4fd9a123ede2ee645086e3136cdb9e4b4b529705791b799334c672bcf"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/summarize_fine_references.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/summarize_fine_references.py",
+      "artifact": "blobs/47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3.py",
+      "encoding": "identity",
+      "bytes": 8766,
+      "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3",
+      "stored_bytes": 8766,
+      "stored_sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/validation_meshes.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/validation_meshes.py",
+      "artifact": "blobs/60bc07bc8836aba670e7cbddcbe77be58f09eb89d62f115960f50f138cf5d0ce.py",
+      "encoding": "identity",
+      "bytes": 9588,
+      "sha256": "60bc07bc8836aba670e7cbddcbe77be58f09eb89d62f115960f50f138cf5d0ce",
+      "stored_bytes": 9588,
+      "stored_sha256": "60bc07bc8836aba670e7cbddcbe77be58f09eb89d62f115960f50f138cf5d0ce"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source-after.sha256",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source-after.sha256",
+      "artifact": "blobs/6279025ade758eb9cc32764d2691070565f6b630b90e8c281b68a6a17aaba9a3.sha256",
+      "encoding": "identity",
+      "bytes": 1800,
+      "sha256": "6279025ade758eb9cc32764d2691070565f6b630b90e8c281b68a6a17aaba9a3",
+      "stored_bytes": 1800,
+      "stored_sha256": "6279025ade758eb9cc32764d2691070565f6b630b90e8c281b68a6a17aaba9a3"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source.sha256",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source.sha256",
+      "artifact": "blobs/6279025ade758eb9cc32764d2691070565f6b630b90e8c281b68a6a17aaba9a3.sha256",
+      "encoding": "identity",
+      "bytes": 1800,
+      "sha256": "6279025ade758eb9cc32764d2691070565f6b630b90e8c281b68a6a17aaba9a3",
+      "stored_bytes": 1800,
+      "stored_sha256": "6279025ade758eb9cc32764d2691070565f6b630b90e8c281b68a6a17aaba9a3"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/arguments.txt",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/arguments.txt",
+      "artifact": "blobs/05a3e6dd7b288910364288ab9a49a202fb66021c41e001d1dcb5196397dbd738.txt",
+      "encoding": "identity",
+      "bytes": 618,
+      "sha256": "05a3e6dd7b288910364288ab9a49a202fb66021c41e001d1dcb5196397dbd738",
+      "stored_bytes": 618,
+      "stored_sha256": "05a3e6dd7b288910364288ab9a49a202fb66021c41e001d1dcb5196397dbd738"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/audit.log",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/audit.log",
+      "artifact": "blobs/2ce4bde15ef9d3684300ebbdea5a9321570b096093f9e252a792e081e918b583.log",
+      "encoding": "identity",
+      "bytes": 4167,
+      "sha256": "2ce4bde15ef9d3684300ebbdea5a9321570b096093f9e252a792e081e918b583",
+      "stored_bytes": 4167,
+      "stored_sha256": "2ce4bde15ef9d3684300ebbdea5a9321570b096093f9e252a792e081e918b583"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/cpu.txt",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/cpu.txt",
+      "artifact": "blobs/780869789ffb0a87d5163697bd0ffb46b63ceff82dede47d1018b5055fbfec22.txt",
+      "encoding": "identity",
+      "bytes": 3911,
+      "sha256": "780869789ffb0a87d5163697bd0ffb46b63ceff82dede47d1018b5055fbfec22",
+      "stored_bytes": 3911,
+      "stored_sha256": "780869789ffb0a87d5163697bd0ffb46b63ceff82dede47d1018b5055fbfec22"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/environment.json",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/environment.json",
+      "artifact": "blobs/330972896137d6c88c21cd49b2f3fa0dc6bb4cd01550e75f841ae6ed18a6e89a.json",
+      "encoding": "identity",
+      "bytes": 288,
+      "sha256": "330972896137d6c88c21cd49b2f3fa0dc6bb4cd01550e75f841ae6ed18a6e89a",
+      "stored_bytes": 288,
+      "stored_sha256": "330972896137d6c88c21cd49b2f3fa0dc6bb4cd01550e75f841ae6ed18a6e89a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/audit_objective_frame.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/audit_objective_frame.py",
+      "artifact": "blobs/0d5977fe3bd2f7b14c0ceb906b9091b662f33f30ad6d27b7346eacfc7266f274.py",
+      "encoding": "identity",
+      "bytes": 5509,
+      "sha256": "0d5977fe3bd2f7b14c0ceb906b9091b662f33f30ad6d27b7346eacfc7266f274",
+      "stored_bytes": 5509,
+      "stored_sha256": "0d5977fe3bd2f7b14c0ceb906b9091b662f33f30ad6d27b7346eacfc7266f274"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/contact_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/contact_reference.py",
+      "artifact": "blobs/077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422.py",
+      "encoding": "identity",
+      "bytes": 30478,
+      "sha256": "077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422",
+      "stored_bytes": 30478,
+      "stored_sha256": "077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/finite_traction_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/finite_traction_reference.py",
+      "artifact": "blobs/5cc339453f1adf95b73e3070def86d1bd85385e682d8491057448fea05368c58.py",
+      "encoding": "identity",
+      "bytes": 9703,
+      "sha256": "5cc339453f1adf95b73e3070def86d1bd85385e682d8491057448fea05368c58",
+      "stored_bytes": 9703,
+      "stored_sha256": "5cc339453f1adf95b73e3070def86d1bd85385e682d8491057448fea05368c58"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/frozen_traction_bulk_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/frozen_traction_bulk_reference.py",
+      "artifact": "blobs/bc49339f1b1a552af6cfde573aba958a7fd48c47beb142fcd04be67a7f1e9030.py",
+      "encoding": "identity",
+      "bytes": 14372,
+      "sha256": "bc49339f1b1a552af6cfde573aba958a7fd48c47beb142fcd04be67a7f1e9030",
+      "stored_bytes": 14372,
+      "stored_sha256": "bc49339f1b1a552af6cfde573aba958a7fd48c47beb142fcd04be67a7f1e9030"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/neohookean_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/neohookean_reference.py",
+      "artifact": "blobs/8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8.py",
+      "encoding": "identity",
+      "bytes": 9763,
+      "sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8",
+      "stored_bytes": 9763,
+      "stored_sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/qualify_articulated_precision.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/qualify_articulated_precision.py",
+      "artifact": "blobs/e12d9255a10c5ba3463b3885218fcfd362b414d0266480e5f04d7b125d6c8893.py",
+      "encoding": "identity",
+      "bytes": 6860,
+      "sha256": "e12d9255a10c5ba3463b3885218fcfd362b414d0266480e5f04d7b125d6c8893",
+      "stored_bytes": 6860,
+      "stored_sha256": "e12d9255a10c5ba3463b3885218fcfd362b414d0266480e5f04d7b125d6c8893"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/qualify_reference_scaling.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/qualify_reference_scaling.py",
+      "artifact": "blobs/b57e7956e1a03645790c5318aed62870572b511ac5006142e298f2b53184dfd9.py",
+      "encoding": "identity",
+      "bytes": 6004,
+      "sha256": "b57e7956e1a03645790c5318aed62870572b511ac5006142e298f2b53184dfd9",
+      "stored_bytes": 6004,
+      "stored_sha256": "b57e7956e1a03645790c5318aed62870572b511ac5006142e298f2b53184dfd9"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/sample_load_fields.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/sample_load_fields.py",
+      "artifact": "blobs/68a706aeb97b2325bd86282533f194cbe69e84f6b0babcb0ca8ee386f4ca2520.py",
+      "encoding": "identity",
+      "bytes": 9417,
+      "sha256": "68a706aeb97b2325bd86282533f194cbe69e84f6b0babcb0ca8ee386f4ca2520",
+      "stored_bytes": 9417,
+      "stored_sha256": "68a706aeb97b2325bd86282533f194cbe69e84f6b0babcb0ca8ee386f4ca2520"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/scripts/cluster_env.sh",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/scripts/cluster_env.sh",
+      "artifact": "blobs/bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40.sh",
+      "encoding": "identity",
+      "bytes": 701,
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40",
+      "stored_bytes": 701,
+      "stored_sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/scripts/frozen_traction_bulk_reference.sh",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/scripts/frozen_traction_bulk_reference.sh",
+      "artifact": "blobs/4f357fe79abaf30073fdad791d1781fbed7c2b9da1312c70f1b43b4583de936d.sh",
+      "encoding": "identity",
+      "bytes": 2343,
+      "sha256": "4f357fe79abaf30073fdad791d1781fbed7c2b9da1312c70f1b43b4583de936d",
+      "stored_bytes": 2343,
+      "stored_sha256": "4f357fe79abaf30073fdad791d1781fbed7c2b9da1312c70f1b43b4583de936d"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/skfem_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/skfem_reference.py",
+      "artifact": "blobs/e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918.py",
+      "encoding": "identity",
+      "bytes": 7865,
+      "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918",
+      "stored_bytes": 7865,
+      "stored_sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/spherical_shell_validation.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/spherical_shell_validation.py",
+      "artifact": "blobs/b8875ed4fd9a123ede2ee645086e3136cdb9e4b4b529705791b799334c672bcf.py",
+      "encoding": "identity",
+      "bytes": 5749,
+      "sha256": "b8875ed4fd9a123ede2ee645086e3136cdb9e4b4b529705791b799334c672bcf",
+      "stored_bytes": 5749,
+      "stored_sha256": "b8875ed4fd9a123ede2ee645086e3136cdb9e4b4b529705791b799334c672bcf"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/summarize_fine_references.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/summarize_fine_references.py",
+      "artifact": "blobs/47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3.py",
+      "encoding": "identity",
+      "bytes": 8766,
+      "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3",
+      "stored_bytes": 8766,
+      "stored_sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/validation_meshes.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source/research/rigid_stress/validation_meshes.py",
+      "artifact": "blobs/60bc07bc8836aba670e7cbddcbe77be58f09eb89d62f115960f50f138cf5d0ce.py",
+      "encoding": "identity",
+      "bytes": 9588,
+      "sha256": "60bc07bc8836aba670e7cbddcbe77be58f09eb89d62f115960f50f138cf5d0ce",
+      "stored_bytes": 9588,
+      "stored_sha256": "60bc07bc8836aba670e7cbddcbe77be58f09eb89d62f115960f50f138cf5d0ce"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source-after.sha256",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source-after.sha256",
+      "artifact": "blobs/c8d35476e423d0a71c771e546a083f39a9b0465e5b3a1e66658db465ba035f98.sha256",
+      "encoding": "identity",
+      "bytes": 1613,
+      "sha256": "c8d35476e423d0a71c771e546a083f39a9b0465e5b3a1e66658db465ba035f98",
+      "stored_bytes": 1613,
+      "stored_sha256": "c8d35476e423d0a71c771e546a083f39a9b0465e5b3a1e66658db465ba035f98"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source.sha256",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/input-source.sha256",
+      "artifact": "blobs/c8d35476e423d0a71c771e546a083f39a9b0465e5b3a1e66658db465ba035f98.sha256",
+      "encoding": "identity",
+      "bytes": 1613,
+      "sha256": "c8d35476e423d0a71c771e546a083f39a9b0465e5b3a1e66658db465ba035f98",
+      "stored_bytes": 1613,
+      "stored_sha256": "c8d35476e423d0a71c771e546a083f39a9b0465e5b3a1e66658db465ba035f98"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/node.txt",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/node.txt",
+      "artifact": "blobs/8929b628c93b1998ed6a0dfb4dbe135eec0c63f3c453fbb78871f4b547dee898.txt",
+      "encoding": "identity",
+      "bytes": 12,
+      "sha256": "8929b628c93b1998ed6a0dfb4dbe135eec0c63f3c453fbb78871f4b547dee898",
+      "stored_bytes": 12,
+      "stored_sha256": "8929b628c93b1998ed6a0dfb4dbe135eec0c63f3c453fbb78871f4b547dee898"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/asymmetric/probe_field.npz",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/asymmetric/probe_field.npz",
+      "artifact": "blobs/5dd1b6a1d15c57d0d5db042d0c4486a593b50e1a8ea4381eab47b0983f110f49.npz",
+      "encoding": "identity",
+      "bytes": 4622,
+      "sha256": "5dd1b6a1d15c57d0d5db042d0c4486a593b50e1a8ea4381eab47b0983f110f49",
+      "stored_bytes": 4622,
+      "stored_sha256": "5dd1b6a1d15c57d0d5db042d0c4486a593b50e1a8ea4381eab47b0983f110f49"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/asymmetric/reference_field.npz.chunks.json",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/asymmetric/reference_field.npz.chunks.json",
+      "artifact": "blobs/04cb2ee6fe13c1fe3bbf8d77f897c1d20ff39518f18ee8634f91df3f137842ea.json",
+      "encoding": "identity",
+      "bytes": 1812,
+      "sha256": "04cb2ee6fe13c1fe3bbf8d77f897c1d20ff39518f18ee8634f91df3f137842ea",
+      "stored_bytes": 1812,
+      "stored_sha256": "04cb2ee6fe13c1fe3bbf8d77f897c1d20ff39518f18ee8634f91df3f137842ea"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/asymmetric/reference_field.npz.part0000.gz",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/asymmetric/reference_field.npz.part0000.gz",
+      "artifact": "blobs/f982da68614f5ca4f220a9de173fb98a042004f65cfd80bb89a9830e7905ca56.gz",
+      "encoding": "identity",
+      "bytes": 33548429,
+      "sha256": "f982da68614f5ca4f220a9de173fb98a042004f65cfd80bb89a9830e7905ca56",
+      "stored_bytes": 33548429,
+      "stored_sha256": "f982da68614f5ca4f220a9de173fb98a042004f65cfd80bb89a9830e7905ca56"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/asymmetric/reference_field.npz.part0001.gz",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/asymmetric/reference_field.npz.part0001.gz",
+      "artifact": "blobs/cc0451ac36d71a0601e22e875686fd7c189d9a09f4482a8bb750c01de7e381cf.gz",
+      "encoding": "identity",
+      "bytes": 33451170,
+      "sha256": "cc0451ac36d71a0601e22e875686fd7c189d9a09f4482a8bb750c01de7e381cf",
+      "stored_bytes": 33451170,
+      "stored_sha256": "cc0451ac36d71a0601e22e875686fd7c189d9a09f4482a8bb750c01de7e381cf"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/asymmetric/reference_field.npz.part0002.gz",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/asymmetric/reference_field.npz.part0002.gz",
+      "artifact": "blobs/ea8bc01d3c37e6ca308f96c0c159c411a28a58e6f31961398a032a0122b842fd.gz",
+      "encoding": "identity",
+      "bytes": 33450133,
+      "sha256": "ea8bc01d3c37e6ca308f96c0c159c411a28a58e6f31961398a032a0122b842fd",
+      "stored_bytes": 33450133,
+      "stored_sha256": "ea8bc01d3c37e6ca308f96c0c159c411a28a58e6f31961398a032a0122b842fd"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/asymmetric/reference_field.npz.part0003.gz",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/asymmetric/reference_field.npz.part0003.gz",
+      "artifact": "blobs/ebd48da7ac99fed39fe6e5dd71f94ab6b2a199188be093a11526c76065b314c2.gz",
+      "encoding": "identity",
+      "bytes": 33454775,
+      "sha256": "ebd48da7ac99fed39fe6e5dd71f94ab6b2a199188be093a11526c76065b314c2",
+      "stored_bytes": 33454775,
+      "stored_sha256": "ebd48da7ac99fed39fe6e5dd71f94ab6b2a199188be093a11526c76065b314c2"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/asymmetric/reference_field.npz.part0004.gz",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/asymmetric/reference_field.npz.part0004.gz",
+      "artifact": "blobs/2a9e32234fa7a17e518ee476e75a26e1620aae1e458bd7bf84ebaa9b2a533f83.gz",
+      "encoding": "identity",
+      "bytes": 13747273,
+      "sha256": "2a9e32234fa7a17e518ee476e75a26e1620aae1e458bd7bf84ebaa9b2a533f83",
+      "stored_bytes": 13747273,
+      "stored_sha256": "2a9e32234fa7a17e518ee476e75a26e1620aae1e458bd7bf84ebaa9b2a533f83"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/asymmetric/snapshot.json",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/asymmetric/snapshot.json",
+      "artifact": "blobs/e1986243d408198f4646b5589e97a7521cbbf2e372f9489d75480bc869778d17.json",
+      "encoding": "identity",
+      "bytes": 5138,
+      "sha256": "e1986243d408198f4646b5589e97a7521cbbf2e372f9489d75480bc869778d17",
+      "stored_bytes": 5138,
+      "stored_sha256": "e1986243d408198f4646b5589e97a7521cbbf2e372f9489d75480bc869778d17"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/bending/probe_field.npz",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/bending/probe_field.npz",
+      "artifact": "blobs/cabaf8211cfd410a84625e185ac7bd786b5f745554c95a0b7ae8c1255884b4a8.npz",
+      "encoding": "identity",
+      "bytes": 4628,
+      "sha256": "cabaf8211cfd410a84625e185ac7bd786b5f745554c95a0b7ae8c1255884b4a8",
+      "stored_bytes": 4628,
+      "stored_sha256": "cabaf8211cfd410a84625e185ac7bd786b5f745554c95a0b7ae8c1255884b4a8"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/bending/reference_field.npz.chunks.json",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/bending/reference_field.npz.chunks.json",
+      "artifact": "blobs/ad87efdcccec970ee605163095fa4f65e3e27bd7c912ecc4ad794af443579526.json",
+      "encoding": "identity",
+      "bytes": 1809,
+      "sha256": "ad87efdcccec970ee605163095fa4f65e3e27bd7c912ecc4ad794af443579526",
+      "stored_bytes": 1809,
+      "stored_sha256": "ad87efdcccec970ee605163095fa4f65e3e27bd7c912ecc4ad794af443579526"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/bending/reference_field.npz.part0000.gz",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/bending/reference_field.npz.part0000.gz",
+      "artifact": "blobs/a04b3baf3c289af6abd2522d26aa0e9e44dc66df652d0259e5ae1c6fe6fbe90d.gz",
+      "encoding": "identity",
+      "bytes": 33548302,
+      "sha256": "a04b3baf3c289af6abd2522d26aa0e9e44dc66df652d0259e5ae1c6fe6fbe90d",
+      "stored_bytes": 33548302,
+      "stored_sha256": "a04b3baf3c289af6abd2522d26aa0e9e44dc66df652d0259e5ae1c6fe6fbe90d"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/bending/reference_field.npz.part0001.gz",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/bending/reference_field.npz.part0001.gz",
+      "artifact": "blobs/38c1ba144358df126d32d2e57c10aa56378622ecfbb429321225d3e3f5b2d774.gz",
+      "encoding": "identity",
+      "bytes": 33448610,
+      "sha256": "38c1ba144358df126d32d2e57c10aa56378622ecfbb429321225d3e3f5b2d774",
+      "stored_bytes": 33448610,
+      "stored_sha256": "38c1ba144358df126d32d2e57c10aa56378622ecfbb429321225d3e3f5b2d774"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/bending/reference_field.npz.part0002.gz",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/bending/reference_field.npz.part0002.gz",
+      "artifact": "blobs/709a75794427dc510e4edcc92cf966a1b770d2a54c5d54226e922c78ea49bf89.gz",
+      "encoding": "identity",
+      "bytes": 33444966,
+      "sha256": "709a75794427dc510e4edcc92cf966a1b770d2a54c5d54226e922c78ea49bf89",
+      "stored_bytes": 33444966,
+      "stored_sha256": "709a75794427dc510e4edcc92cf966a1b770d2a54c5d54226e922c78ea49bf89"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/bending/reference_field.npz.part0003.gz",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/bending/reference_field.npz.part0003.gz",
+      "artifact": "blobs/3daf9e0564834e6697f14965c88997bbc0377d1db3b5bcac8c81ab9f1ec368ab.gz",
+      "encoding": "identity",
+      "bytes": 33450816,
+      "sha256": "3daf9e0564834e6697f14965c88997bbc0377d1db3b5bcac8c81ab9f1ec368ab",
+      "stored_bytes": 33450816,
+      "stored_sha256": "3daf9e0564834e6697f14965c88997bbc0377d1db3b5bcac8c81ab9f1ec368ab"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/bending/reference_field.npz.part0004.gz",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/bending/reference_field.npz.part0004.gz",
+      "artifact": "blobs/2824644196b46a0530d52a002fe04ff68b69e0fad76d0e56150024fcc37d9f8a.gz",
+      "encoding": "identity",
+      "bytes": 13836622,
+      "sha256": "2824644196b46a0530d52a002fe04ff68b69e0fad76d0e56150024fcc37d9f8a",
+      "stored_bytes": 13836622,
+      "stored_sha256": "2824644196b46a0530d52a002fe04ff68b69e0fad76d0e56150024fcc37d9f8a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/bending/snapshot.json",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/bending/snapshot.json",
+      "artifact": "blobs/f70905183494b41548c97ad7ce48759802de985b0cbeda2a20e13c8635aaf112.json",
+      "encoding": "identity",
+      "bytes": 5303,
+      "sha256": "f70905183494b41548c97ad7ce48759802de985b0cbeda2a20e13c8635aaf112",
+      "stored_bytes": 5303,
+      "stored_sha256": "f70905183494b41548c97ad7ce48759802de985b0cbeda2a20e13c8635aaf112"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/multiple/probe_field.npz",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/multiple/probe_field.npz",
+      "artifact": "blobs/8aa04499e046f35434845bf5f92795d3f72167cbdc7a773a1df473fad2ef449a.npz",
+      "encoding": "identity",
+      "bytes": 4625,
+      "sha256": "8aa04499e046f35434845bf5f92795d3f72167cbdc7a773a1df473fad2ef449a",
+      "stored_bytes": 4625,
+      "stored_sha256": "8aa04499e046f35434845bf5f92795d3f72167cbdc7a773a1df473fad2ef449a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/multiple/reference_field.npz.chunks.json",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/multiple/reference_field.npz.chunks.json",
+      "artifact": "blobs/2871828ac56623b17ffe16f853392e8afc19ac566628c360beba7b0ddd3c980b.json",
+      "encoding": "identity",
+      "bytes": 1810,
+      "sha256": "2871828ac56623b17ffe16f853392e8afc19ac566628c360beba7b0ddd3c980b",
+      "stored_bytes": 1810,
+      "stored_sha256": "2871828ac56623b17ffe16f853392e8afc19ac566628c360beba7b0ddd3c980b"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/multiple/reference_field.npz.part0000.gz",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/multiple/reference_field.npz.part0000.gz",
+      "artifact": "blobs/747d4b0612e7faf18a265135b2318348a25104c79a18f2e6683cec9bb0f7df2f.gz",
+      "encoding": "identity",
+      "bytes": 33548504,
+      "sha256": "747d4b0612e7faf18a265135b2318348a25104c79a18f2e6683cec9bb0f7df2f",
+      "stored_bytes": 33548504,
+      "stored_sha256": "747d4b0612e7faf18a265135b2318348a25104c79a18f2e6683cec9bb0f7df2f"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/multiple/reference_field.npz.part0001.gz",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/multiple/reference_field.npz.part0001.gz",
+      "artifact": "blobs/22428a7b64fcdc6b1acc3672a2f26087eb8d0762879cadb1915e74e0edb8d290.gz",
+      "encoding": "identity",
+      "bytes": 33458527,
+      "sha256": "22428a7b64fcdc6b1acc3672a2f26087eb8d0762879cadb1915e74e0edb8d290",
+      "stored_bytes": 33458527,
+      "stored_sha256": "22428a7b64fcdc6b1acc3672a2f26087eb8d0762879cadb1915e74e0edb8d290"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/multiple/reference_field.npz.part0002.gz",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/multiple/reference_field.npz.part0002.gz",
+      "artifact": "blobs/bf7f3ddd8c0e9ed0c3ddcdbc33dceca70f295bf8ec57fc7e063d2cd6da78cbae.gz",
+      "encoding": "identity",
+      "bytes": 33455937,
+      "sha256": "bf7f3ddd8c0e9ed0c3ddcdbc33dceca70f295bf8ec57fc7e063d2cd6da78cbae",
+      "stored_bytes": 33455937,
+      "stored_sha256": "bf7f3ddd8c0e9ed0c3ddcdbc33dceca70f295bf8ec57fc7e063d2cd6da78cbae"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/multiple/reference_field.npz.part0003.gz",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/multiple/reference_field.npz.part0003.gz",
+      "artifact": "blobs/07725b5f110dd156311d5db22683d1e3a1405d33845cee37a2730d2f4cf89ecd.gz",
+      "encoding": "identity",
+      "bytes": 33460642,
+      "sha256": "07725b5f110dd156311d5db22683d1e3a1405d33845cee37a2730d2f4cf89ecd",
+      "stored_bytes": 33460642,
+      "stored_sha256": "07725b5f110dd156311d5db22683d1e3a1405d33845cee37a2730d2f4cf89ecd"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/multiple/reference_field.npz.part0004.gz",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/multiple/reference_field.npz.part0004.gz",
+      "artifact": "blobs/728a51f279aac9100668888922b9541b96b6849593e70f8e6c5ba373c8dea478.gz",
+      "encoding": "identity",
+      "bytes": 13915728,
+      "sha256": "728a51f279aac9100668888922b9541b96b6849593e70f8e6c5ba373c8dea478",
+      "stored_bytes": 13915728,
+      "stored_sha256": "728a51f279aac9100668888922b9541b96b6849593e70f8e6c5ba373c8dea478"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/multiple/snapshot.json",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/multiple/snapshot.json",
+      "artifact": "blobs/191aa7e13c8a3670d816b6e6e703dc4d08dfd8cfcbf65f2004726cf3f1d2b587.json",
+      "encoding": "identity",
+      "bytes": 6991,
+      "sha256": "191aa7e13c8a3670d816b6e6e703dc4d08dfd8cfcbf65f2004726cf3f1d2b587",
+      "stored_bytes": 6991,
+      "stored_sha256": "191aa7e13c8a3670d816b6e6e703dc4d08dfd8cfcbf65f2004726cf3f1d2b587"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/near_slip/probe_field.npz",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/near_slip/probe_field.npz",
+      "artifact": "blobs/2ab2337fbf8557f55ae9bdfea838c1989475b4247ab74a3d48be18d0919d7a52.npz",
+      "encoding": "identity",
+      "bytes": 4622,
+      "sha256": "2ab2337fbf8557f55ae9bdfea838c1989475b4247ab74a3d48be18d0919d7a52",
+      "stored_bytes": 4622,
+      "stored_sha256": "2ab2337fbf8557f55ae9bdfea838c1989475b4247ab74a3d48be18d0919d7a52"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/near_slip/reference_field.npz.chunks.json",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/near_slip/reference_field.npz.chunks.json",
+      "artifact": "blobs/701a585e18c85581cdfaee2d6f4f16ec13f06b80548fd78f462e5d44a2342b81.json",
+      "encoding": "identity",
+      "bytes": 1811,
+      "sha256": "701a585e18c85581cdfaee2d6f4f16ec13f06b80548fd78f462e5d44a2342b81",
+      "stored_bytes": 1811,
+      "stored_sha256": "701a585e18c85581cdfaee2d6f4f16ec13f06b80548fd78f462e5d44a2342b81"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/near_slip/reference_field.npz.part0000.gz",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/near_slip/reference_field.npz.part0000.gz",
+      "artifact": "blobs/c451ddf8b547248424b676afd89ff9d3bb86d46bbaa841006c7e46dd1838e8a4.gz",
+      "encoding": "identity",
+      "bytes": 33547180,
+      "sha256": "c451ddf8b547248424b676afd89ff9d3bb86d46bbaa841006c7e46dd1838e8a4",
+      "stored_bytes": 33547180,
+      "stored_sha256": "c451ddf8b547248424b676afd89ff9d3bb86d46bbaa841006c7e46dd1838e8a4"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/near_slip/reference_field.npz.part0001.gz",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/near_slip/reference_field.npz.part0001.gz",
+      "artifact": "blobs/75884c89825dba5e2b818aed303fcf192e0e7494425b16b8e4e6db8a898e954c.gz",
+      "encoding": "identity",
+      "bytes": 33457707,
+      "sha256": "75884c89825dba5e2b818aed303fcf192e0e7494425b16b8e4e6db8a898e954c",
+      "stored_bytes": 33457707,
+      "stored_sha256": "75884c89825dba5e2b818aed303fcf192e0e7494425b16b8e4e6db8a898e954c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/near_slip/reference_field.npz.part0002.gz",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/near_slip/reference_field.npz.part0002.gz",
+      "artifact": "blobs/cc82d6835ac361f4dbbd1517379f39994b52c7f11b5ad84987b444758d4f2b57.gz",
+      "encoding": "identity",
+      "bytes": 33455025,
+      "sha256": "cc82d6835ac361f4dbbd1517379f39994b52c7f11b5ad84987b444758d4f2b57",
+      "stored_bytes": 33455025,
+      "stored_sha256": "cc82d6835ac361f4dbbd1517379f39994b52c7f11b5ad84987b444758d4f2b57"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/near_slip/reference_field.npz.part0003.gz",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/near_slip/reference_field.npz.part0003.gz",
+      "artifact": "blobs/660da0193ce807063b15307b86d871281819b4d342e73df3adbc9c6c8c0a90ce.gz",
+      "encoding": "identity",
+      "bytes": 33459113,
+      "sha256": "660da0193ce807063b15307b86d871281819b4d342e73df3adbc9c6c8c0a90ce",
+      "stored_bytes": 33459113,
+      "stored_sha256": "660da0193ce807063b15307b86d871281819b4d342e73df3adbc9c6c8c0a90ce"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/near_slip/reference_field.npz.part0004.gz",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/near_slip/reference_field.npz.part0004.gz",
+      "artifact": "blobs/95b3d5eb581dbf6d9cd3336b450eb12f86279ef38d1408e54a768e396158eb89.gz",
+      "encoding": "identity",
+      "bytes": 13770024,
+      "sha256": "95b3d5eb581dbf6d9cd3336b450eb12f86279ef38d1408e54a768e396158eb89",
+      "stored_bytes": 13770024,
+      "stored_sha256": "95b3d5eb581dbf6d9cd3336b450eb12f86279ef38d1408e54a768e396158eb89"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/near_slip/snapshot.json",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/near_slip/snapshot.json",
+      "artifact": "blobs/06969406f83cefe8c0b7a099d1b3ce2cd150af40b954f307bd2a71f2fb4d443c.json",
+      "encoding": "identity",
+      "bytes": 5444,
+      "sha256": "06969406f83cefe8c0b7a099d1b3ce2cd150af40b954f307bd2a71f2fb4d443c",
+      "stored_bytes": 5444,
+      "stored_sha256": "06969406f83cefe8c0b7a099d1b3ce2cd150af40b954f307bd2a71f2fb4d443c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/opposing/probe_field.npz",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/opposing/probe_field.npz",
+      "artifact": "blobs/d3b421f3e52db413712d12227b059eac5199085bcc8cebaf3376dd93b8d9021c.npz",
+      "encoding": "identity",
+      "bytes": 4638,
+      "sha256": "d3b421f3e52db413712d12227b059eac5199085bcc8cebaf3376dd93b8d9021c",
+      "stored_bytes": 4638,
+      "stored_sha256": "d3b421f3e52db413712d12227b059eac5199085bcc8cebaf3376dd93b8d9021c"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/opposing/reference_field.npz.chunks.json",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/opposing/reference_field.npz.chunks.json",
+      "artifact": "blobs/812503530af0fa52701d160c42d13ef8e515459ae1201ad5e4139934e3d684d2.json",
+      "encoding": "identity",
+      "bytes": 1810,
+      "sha256": "812503530af0fa52701d160c42d13ef8e515459ae1201ad5e4139934e3d684d2",
+      "stored_bytes": 1810,
+      "stored_sha256": "812503530af0fa52701d160c42d13ef8e515459ae1201ad5e4139934e3d684d2"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/opposing/reference_field.npz.part0000.gz",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/opposing/reference_field.npz.part0000.gz",
+      "artifact": "blobs/ba44e49f5a9fdcef405a4021ace909ef4b9432595d09eead52d3935fe8a9fde2.gz",
+      "encoding": "identity",
+      "bytes": 33548420,
+      "sha256": "ba44e49f5a9fdcef405a4021ace909ef4b9432595d09eead52d3935fe8a9fde2",
+      "stored_bytes": 33548420,
+      "stored_sha256": "ba44e49f5a9fdcef405a4021ace909ef4b9432595d09eead52d3935fe8a9fde2"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/opposing/reference_field.npz.part0001.gz",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/opposing/reference_field.npz.part0001.gz",
+      "artifact": "blobs/8a8fc4d25700beecd90bd1bb1104df676964438d9a0f9ddddcc16dd32245892d.gz",
+      "encoding": "identity",
+      "bytes": 33455637,
+      "sha256": "8a8fc4d25700beecd90bd1bb1104df676964438d9a0f9ddddcc16dd32245892d",
+      "stored_bytes": 33455637,
+      "stored_sha256": "8a8fc4d25700beecd90bd1bb1104df676964438d9a0f9ddddcc16dd32245892d"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/opposing/reference_field.npz.part0002.gz",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/opposing/reference_field.npz.part0002.gz",
+      "artifact": "blobs/db07cfc91c58fc9f95e061492a1b3bb126ecc64f6d5593c7d724d793afb67e93.gz",
+      "encoding": "identity",
+      "bytes": 33453076,
+      "sha256": "db07cfc91c58fc9f95e061492a1b3bb126ecc64f6d5593c7d724d793afb67e93",
+      "stored_bytes": 33453076,
+      "stored_sha256": "db07cfc91c58fc9f95e061492a1b3bb126ecc64f6d5593c7d724d793afb67e93"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/opposing/reference_field.npz.part0003.gz",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/opposing/reference_field.npz.part0003.gz",
+      "artifact": "blobs/3b0abe79aa0f0cbffc9939e9b78e87ead6f0ee470c31ccf075442912f6e40a69.gz",
+      "encoding": "identity",
+      "bytes": 33458332,
+      "sha256": "3b0abe79aa0f0cbffc9939e9b78e87ead6f0ee470c31ccf075442912f6e40a69",
+      "stored_bytes": 33458332,
+      "stored_sha256": "3b0abe79aa0f0cbffc9939e9b78e87ead6f0ee470c31ccf075442912f6e40a69"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/opposing/reference_field.npz.part0004.gz",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/opposing/reference_field.npz.part0004.gz",
+      "artifact": "blobs/2fdc958c4780d17ef8c0be318ceb51a155253fdcce6a200a3859651e911afa4d.gz",
+      "encoding": "identity",
+      "bytes": 13819624,
+      "sha256": "2fdc958c4780d17ef8c0be318ceb51a155253fdcce6a200a3859651e911afa4d",
+      "stored_bytes": 13819624,
+      "stored_sha256": "2fdc958c4780d17ef8c0be318ceb51a155253fdcce6a200a3859651e911afa4d"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/opposing/snapshot.json",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/opposing/snapshot.json",
+      "artifact": "blobs/e2426e2880ce8b513c258ce919dc3a1c7984ce9441ddf3b9de822ff06d996d6e.json",
+      "encoding": "identity",
+      "bytes": 5121,
+      "sha256": "e2426e2880ce8b513c258ce919dc3a1c7984ce9441ddf3b9de822ff06d996d6e",
+      "stored_bytes": 5121,
+      "stored_sha256": "e2426e2880ce8b513c258ce919dc3a1c7984ce9441ddf3b9de822ff06d996d6e"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/summary.json",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/results/summary.json",
+      "artifact": "blobs/6a709fc782d112c3736f84ca861ee6f0fcc1347798ce501963734374a626986a.json",
+      "encoding": "identity",
+      "bytes": 12851,
+      "sha256": "6a709fc782d112c3736f84ca861ee6f0fcc1347798ce501963734374a626986a",
+      "stored_bytes": 12851,
+      "stored_sha256": "6a709fc782d112c3736f84ca861ee6f0fcc1347798ce501963734374a626986a"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/returncode.txt",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/returncode.txt",
+      "artifact": "blobs/9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa.txt",
+      "encoding": "identity",
+      "bytes": 2,
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "stored_bytes": 2,
+      "stored_sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/__init__.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/__init__.py",
+      "artifact": "blobs/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.py",
+      "encoding": "identity",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/__init__.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/__init__.py",
+      "artifact": "blobs/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.py",
+      "encoding": "identity",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stored_bytes": 0,
+      "stored_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/audit_objective_frame.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/audit_objective_frame.py",
+      "artifact": "blobs/0d5977fe3bd2f7b14c0ceb906b9091b662f33f30ad6d27b7346eacfc7266f274.py",
+      "encoding": "identity",
+      "bytes": 5509,
+      "sha256": "0d5977fe3bd2f7b14c0ceb906b9091b662f33f30ad6d27b7346eacfc7266f274",
+      "stored_bytes": 5509,
+      "stored_sha256": "0d5977fe3bd2f7b14c0ceb906b9091b662f33f30ad6d27b7346eacfc7266f274"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/contact_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/contact_reference.py",
+      "artifact": "blobs/077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422.py",
+      "encoding": "identity",
+      "bytes": 30478,
+      "sha256": "077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422",
+      "stored_bytes": 30478,
+      "stored_sha256": "077b2286223b2383028c4336e38034c716bacf291dbd37df3cbe2d3095962422"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/finite_traction_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/finite_traction_reference.py",
+      "artifact": "blobs/5cc339453f1adf95b73e3070def86d1bd85385e682d8491057448fea05368c58.py",
+      "encoding": "identity",
+      "bytes": 9703,
+      "sha256": "5cc339453f1adf95b73e3070def86d1bd85385e682d8491057448fea05368c58",
+      "stored_bytes": 9703,
+      "stored_sha256": "5cc339453f1adf95b73e3070def86d1bd85385e682d8491057448fea05368c58"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/frozen_traction_bulk_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/frozen_traction_bulk_reference.py",
+      "artifact": "blobs/bc49339f1b1a552af6cfde573aba958a7fd48c47beb142fcd04be67a7f1e9030.py",
+      "encoding": "identity",
+      "bytes": 14372,
+      "sha256": "bc49339f1b1a552af6cfde573aba958a7fd48c47beb142fcd04be67a7f1e9030",
+      "stored_bytes": 14372,
+      "stored_sha256": "bc49339f1b1a552af6cfde573aba958a7fd48c47beb142fcd04be67a7f1e9030"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/neohookean_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/neohookean_reference.py",
+      "artifact": "blobs/8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8.py",
+      "encoding": "identity",
+      "bytes": 9763,
+      "sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8",
+      "stored_bytes": 9763,
+      "stored_sha256": "8f1bee03853fe80ebe5324d9b93e0ae7e9f25d7e3f5f74aee19ffd40818051b8"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/qualify_articulated_precision.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/qualify_articulated_precision.py",
+      "artifact": "blobs/e12d9255a10c5ba3463b3885218fcfd362b414d0266480e5f04d7b125d6c8893.py",
+      "encoding": "identity",
+      "bytes": 6860,
+      "sha256": "e12d9255a10c5ba3463b3885218fcfd362b414d0266480e5f04d7b125d6c8893",
+      "stored_bytes": 6860,
+      "stored_sha256": "e12d9255a10c5ba3463b3885218fcfd362b414d0266480e5f04d7b125d6c8893"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/qualify_reference_scaling.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/qualify_reference_scaling.py",
+      "artifact": "blobs/b57e7956e1a03645790c5318aed62870572b511ac5006142e298f2b53184dfd9.py",
+      "encoding": "identity",
+      "bytes": 6004,
+      "sha256": "b57e7956e1a03645790c5318aed62870572b511ac5006142e298f2b53184dfd9",
+      "stored_bytes": 6004,
+      "stored_sha256": "b57e7956e1a03645790c5318aed62870572b511ac5006142e298f2b53184dfd9"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/sample_load_fields.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/sample_load_fields.py",
+      "artifact": "blobs/68a706aeb97b2325bd86282533f194cbe69e84f6b0babcb0ca8ee386f4ca2520.py",
+      "encoding": "identity",
+      "bytes": 9417,
+      "sha256": "68a706aeb97b2325bd86282533f194cbe69e84f6b0babcb0ca8ee386f4ca2520",
+      "stored_bytes": 9417,
+      "stored_sha256": "68a706aeb97b2325bd86282533f194cbe69e84f6b0babcb0ca8ee386f4ca2520"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/scripts/cluster_env.sh",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/scripts/cluster_env.sh",
+      "artifact": "blobs/bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40.sh",
+      "encoding": "identity",
+      "bytes": 701,
+      "sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40",
+      "stored_bytes": 701,
+      "stored_sha256": "bdff90da04a2cca38e2109660de66fe7e1afdc8b59e272cec7ed5a1e3f398c40"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/scripts/frozen_traction_bulk_reference.sh",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/scripts/frozen_traction_bulk_reference.sh",
+      "artifact": "blobs/4f357fe79abaf30073fdad791d1781fbed7c2b9da1312c70f1b43b4583de936d.sh",
+      "encoding": "identity",
+      "bytes": 2343,
+      "sha256": "4f357fe79abaf30073fdad791d1781fbed7c2b9da1312c70f1b43b4583de936d",
+      "stored_bytes": 2343,
+      "stored_sha256": "4f357fe79abaf30073fdad791d1781fbed7c2b9da1312c70f1b43b4583de936d"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/skfem_reference.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/skfem_reference.py",
+      "artifact": "blobs/e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918.py",
+      "encoding": "identity",
+      "bytes": 7865,
+      "sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918",
+      "stored_bytes": 7865,
+      "stored_sha256": "e30cf1636973d41e55b4c0337b74d620a9ba5926b5f178394e329909d1a17918"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/spherical_shell_validation.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/spherical_shell_validation.py",
+      "artifact": "blobs/b8875ed4fd9a123ede2ee645086e3136cdb9e4b4b529705791b799334c672bcf.py",
+      "encoding": "identity",
+      "bytes": 5749,
+      "sha256": "b8875ed4fd9a123ede2ee645086e3136cdb9e4b4b529705791b799334c672bcf",
+      "stored_bytes": 5749,
+      "stored_sha256": "b8875ed4fd9a123ede2ee645086e3136cdb9e4b4b529705791b799334c672bcf"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/summarize_fine_references.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/summarize_fine_references.py",
+      "artifact": "blobs/47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3.py",
+      "encoding": "identity",
+      "bytes": 8766,
+      "sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3",
+      "stored_bytes": 8766,
+      "stored_sha256": "47a3ffa1a6027522a37ddfc069e1e4e882a0181a306e6a466a9a6a9dda3cfce3"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/validation_meshes.py",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source/research/rigid_stress/validation_meshes.py",
+      "artifact": "blobs/60bc07bc8836aba670e7cbddcbe77be58f09eb89d62f115960f50f138cf5d0ce.py",
+      "encoding": "identity",
+      "bytes": 9588,
+      "sha256": "60bc07bc8836aba670e7cbddcbe77be58f09eb89d62f115960f50f138cf5d0ce",
+      "stored_bytes": 9588,
+      "stored_sha256": "60bc07bc8836aba670e7cbddcbe77be58f09eb89d62f115960f50f138cf5d0ce"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source-after.sha256",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source-after.sha256",
+      "artifact": "blobs/a728af422479af6ff0e12989add42c2f5f6b3597654890100b65a2908803197f.sha256",
+      "encoding": "identity",
+      "bytes": 1800,
+      "sha256": "a728af422479af6ff0e12989add42c2f5f6b3597654890100b65a2908803197f",
+      "stored_bytes": 1800,
+      "stored_sha256": "a728af422479af6ff0e12989add42c2f5f6b3597654890100b65a2908803197f"
+    },
+    {
+      "original": "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source.sha256",
+      "run_path": "20261014-physical-validation/publication-staging/frozen-traction-inputs-v1/20261014-physical-validation/egg-frozen-traction-load-qualification-v2/source.sha256",
+      "artifact": "blobs/a728af422479af6ff0e12989add42c2f5f6b3597654890100b65a2908803197f.sha256",
+      "encoding": "identity",
+      "bytes": 1800,
+      "sha256": "a728af422479af6ff0e12989add42c2f5f6b3597654890100b65a2908803197f",
+      "stored_bytes": 1800,
+      "stored_sha256": "a728af422479af6ff0e12989add42c2f5f6b3597654890100b65a2908803197f"
+    }
+  ]
+}

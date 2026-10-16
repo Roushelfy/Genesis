@@ -19,7 +19,11 @@ def main():
     parser.add_argument("--plan", type=Path, required=True)
     args = parser.parse_args()
     plan = json.loads(args.plan.read_text())
-    assert plan["kind"] in ["fields", "sources", "native_followup"] and plan["goal_completion"] is False
+    assert (
+        plan["kind"]
+        in ["fields", "sources", "native_followup", "fixed_distance", "bulk_inputs", "bulk_fields", "bulk_audit"]
+        and plan["goal_completion"] is False
+    )
     p = args.runtime_root / "20261014-physical-validation"
     label = plan["label"]
     meta = p / f"{label}-publication"
@@ -182,7 +186,7 @@ def main():
             "figure_editable_text_nodes": len(text),
             "figure_embedded_raster_images": 0,
         }
-    else:
+    elif plan["kind"] == "native_followup":
         native = summaries["egg-covered-cad-native-linearization-level3-v1"]
         assert native["all_existing_gates_passed"] and len(native["rows"]) == 2
         assert {row["mode"] for row in native["rows"]} == {"full_inertia", "rigid_relief"}
@@ -210,6 +214,104 @@ def main():
             "fourth_local_mesh_preserves_original_three_meshes_exactly": True,
             "fourth_mesh_tetrahedra": 653088,
             "fourth_mesh_equilibrium_fields_included": False,
+        }
+    elif plan["kind"] == "fixed_distance":
+        fields = summaries["covered-cad-fixed-distance-fields-v1"]
+        assert fields["all_geometry_and_contact_map_arrays_exactly_equal"]
+        assert fields["every_original_five_state_force_audit_and_raw_bounds_matched"]
+        assert len(fields["rows"]) == 15 and len(fields["comparisons"]) == 10
+        assert {row["tetrahedra"] for row in fields["rows"]} == {31668}
+        assert sorted({row["barrier_distance_m"] for row in fields["rows"]}, reverse=True) == [2.5e-6, 1.25e-6, 6.25e-7]
+        source = summaries["covered-cad-fixed-distance-sources-v1"]
+        assert source["selector_mesh_reconstruction_qualified"] and len(source["rows"]) == 15
+        assert all(
+            max(
+                row[key]
+                for key in [
+                    "normal_reconstruction_max_error_N",
+                    "shear_reconstruction_max_error_N",
+                    "full_force_pullback_max_error_N",
+                ]
+            )
+            <= 1e-12
+            for row in source["rows"]
+        )
+        diagnostic = summaries["covered-cad-fixed-distance-source-diagnostics-v1"]
+        assert len(diagnostic["rows"]) == 15 and len(diagnostic["comparisons"]) == 10
+        assert all(
+            row["first_run"] != row["second_run"] and row["first_barrier_distance_m"] > row["second_barrier_distance_m"]
+            for row in diagnostic["comparisons"]
+        )
+        probes = summaries["covered-cad-contact-depth-probes-v1"]
+        assert probes["all_shared_points_strictly_inside_every_mesh_and_evaluator_qualified"]
+        assert (
+            len(probes["rows"]) == 3
+            and len(probes["original158340_probe_tensor_changes_reproduced_without_replacement"]) == 2
+        )
+        assert (
+            probes["supplemental_probes"] == 576
+            and probes["supplemental_probes_within25um_of_baseline_normal_samples"] > 0
+        )
+        scientific_checks = {
+            "fixed_mesh_distance_full_dynamic_fields": 15,
+            "original_dynamic_source_states": 15,
+            "original_common_probes_retained": 158340,
+            "fixed_additional_material_points": 576,
+            "continuum_contact_convergence_accepted": False,
+        }
+    elif plan["kind"] == "bulk_inputs":
+        qualification = summaries["egg-frozen-traction-load-qualification-v2"]
+        assert qualification["qualify_only"] and qualification["all_original_five_cases_qualified"]
+        assert qualification["original_traction_samples_unchanged"] and not qualification["quadrature_points_relocated"]
+        assert qualification["tetrahedra"] == 502230 and len(qualification["rows"]) == 5
+        assert all(
+            row["all_original_corner_vm_fields_preserved"]
+            and row["all_original_quadrature_fields_qualified"]
+            and row["original_complete_budget_fraction"] <= 1
+            for row in qualification["rows"]
+        )
+        assert plan["closed_jobs"]["egg-frozen-traction-load-qualification-v1"]["returncode"] == 1
+        scientific_checks = {
+            "unchanged_original_quadrature_load_cases_qualified": 5,
+            "original_boundary_finder_failure_preserved": True,
+            "accepted_finer_equilibrium_fields": 0,
+        }
+    elif plan["kind"] == "bulk_fields":
+        producers = [summaries[f"egg-frozen-traction-local-bulk-level{level}-v2"] for level in [1, 2]]
+        assert [value["tetrahedra"] for value in producers] == [516287, 554574]
+        assert all(
+            not value["qualify_only"]
+            and value["original_traction_samples_unchanged"]
+            and not value["quadrature_points_relocated"]
+            and len(value["rows"]) == 5
+            for value in producers
+        )
+        assert all(row["original_complete_budget_fraction"] <= 1 for value in producers for row in value["rows"])
+        assert any(parent["label"] == "frozen-traction-inputs-v1" for parent in parents)
+        scientific_checks = {
+            "complete_original_force_budget_producer_fields": 10,
+            "complete_large_arrays_retained": True,
+            "independent_audit_requires_separate_closed_packet": True,
+            "physical_tail_accepted": False,
+        }
+    else:
+        audit = summaries["egg-frozen-traction-local-bulk-quadrature-audit-v2"]
+        assert len(audit["rows"]) == 15 and len(audit["adjacent_changes"]) == 10
+        assert audit["every_field_full_quadrature_directly_reconstructed"]
+        assert all(
+            row["complete_residual_N"] <= row["original_budget_N"]
+            and row["all_quadrature_tensor_components_checked"] == 99 * row["tetrahedra"]
+            for row in audit["rows"]
+        )
+        assert any(parent["label"] == "frozen-traction-bulk-fields-v1" for parent in parents)
+        scientific_checks = {
+            "independently_reconstructed_original_fields": 15,
+            "explicit_full_quadrature_tensor_components_checked": sum(
+                row["all_quadrature_tensor_components_checked"] for row in audit["rows"]
+            ),
+            "original36_probes_and_raw_extrema_retained": True,
+            "old_corner_only_audit_scope_retained_separately": True,
+            "physical_tail_accepted": False,
         }
 
     # Keep the physical capture and fixed geometry assets explicit, regardless

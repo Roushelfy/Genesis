@@ -1,0 +1,20 @@
+Transforming over 1000 vertices to C_CONTIGUOUS.
+Transforming over 1000 elements to C_CONTIGUOUS.
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/frozen_traction_bulk_reference.py", line 204, in <module>
+    main()
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/frozen_traction_bulk_reference.py", line 95, in main
+    load += assemble_samples(
+  File "/mnt/data/zhaofeng/projects/workspace/Genesis/rigid-stress-recovery/runs/20261014-physical-validation/egg-frozen-traction-load-qualification-v1/source/research/rigid_stress/frozen_traction_bulk_reference.py", line 19, in assemble_samples
+    evaluation = reference.basis.probes(positions[section].T)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-physical/lib/python3.10/site-packages/skfem/assembly/basis/cell_basis.py", line 208, in probes
+    cells = self.mesh.element_finder(mapping=self.mapping)(*x)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-physical/lib/python3.10/site-packages/skfem/mesh/mesh_tet_1.py", line 78, in finder
+    return finder(x, y, z, _search_all=True)
+  File "/mnt/data/zhaofeng/venvs/rigid-stress-physical/lib/python3.10/site-packages/skfem/mesh/mesh_tet_1.py", line 77, in finder
+    raise ValueError("Point is outside of the mesh.")
+ValueError: Point is outside of the mesh.

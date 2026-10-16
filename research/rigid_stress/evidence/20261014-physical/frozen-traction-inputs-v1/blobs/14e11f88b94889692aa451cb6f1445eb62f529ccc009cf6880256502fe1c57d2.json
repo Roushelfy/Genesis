@@ -1,0 +1,36 @@
+{
+  "kind": "bulk_inputs",
+  "label": "frozen-traction-inputs-v1",
+  "closed_jobs": {
+    "egg-frozen-traction-load-qualification-v1": {
+      "job": "718574_0",
+      "returncode": 1
+    },
+    "egg-frozen-traction-load-qualification-v2": {
+      "job": "718586_0",
+      "returncode": 0
+    }
+  },
+  "parent_manifests": [
+    {
+      "label": "five-level-thickness-v2",
+      "sha256": "c7b35308cbb0dcb776cb120b6ea8465805251b038249f068b40e624f5b53a2c8"
+    },
+    {
+      "label": "thickness-local-diagnosis-v1",
+      "sha256": "1f4644d9ef3628e7041c290e941c256bff9fd98cf02a0e2d7f266d6e577a0dc6"
+    }
+  ],
+  "extra_files": [
+    "meta/frozen-traction-local-bulk-commands-v1.json",
+    "meta/frozen-traction-local-bulk-commands-v2.json"
+  ],
+  "physical_configurations": [],
+  "pending_work": [
+    "Complete finer producer-field and independent full-quadrature/common-volume audit publications remain separate work.",
+    "Fourth653088-tet solve719476 and20-field audit719477 remain live/pending.",
+    "All original A/B/C physical/model/island/application/feedback and verified-cost requirements."
+  ],
+  "limitations": "This packet retains the original real boundary-finder failure and full five-case qualification on the original502230-tet reference. Every physical traction position, weight and vector is unchanged; independent boundary ownership and quadratic virtual-work checks precede full nodal/RHS/original-budget/corner/quadrature comparisons. Qualification does not solve a redundant reference problem or establish convergence. All saved original large arrays remain exact and bounded; prior parent data are reverified. Finer fields and their complete independent quadrature/volume/energy audits are separate publications. Fixed quadrature, geometry, contact formulation, remaining load-model/local-island, full application/feedback and warmed accuracy/cost gates remain open.",
+  "goal_completion": false
+}
